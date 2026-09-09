@@ -9,6 +9,7 @@ const p = (path: string) => localePath(locale, path);
 
 const flowHref = p('/research/seed-openevo/flow/');
 const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/');
+const seedPaperHref = 'https://arxiv.org/abs/2607.14777';
 ---
 
 <article class="briefing" data-ui-audit="surface" data-testid="progress-briefing">
@@ -29,8 +30,8 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
       <div class="agenda-pane">
         <h2 id="contents-title">{t('目录', 'Agenda')}</h2>
         <ol class="agenda-list">
-          <li><span>01</span><strong>{t('7B 长周期结果', '7B long-horizon result')}</strong></li>
-          <li><span>02</span><strong>{t('1.7B / 3B 诊断实验', '1.7B / 3B diagnostic experiments')}</strong></li>
+          <li><span>01</span><strong>{t('研究设置与结果', 'Research setup and results')}</strong></li>
+          <li><span>02</span><strong>{t('7B → 1.7B / 3B 诊断', '7B → 1.7B / 3B diagnostics')}</strong></li>
           <li><span>03</span><strong>{t('参数方向与更新准入', 'Parameter direction and update admission')}</strong></li>
           <li><span>04</span><strong>{t('当前结果与下一步选择', 'Current results and next priority')}</strong></li>
         </ol>
@@ -39,12 +40,27 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
         <p class="tldr-label">Too long, Don't read</p>
         <ul>
           <li>{t('7B 长周期实验完成后，最终测试是 49.33 / 100；这说明 OpenEVO 能持续学，但离我们想追的能力上限还有明显距离。', 'The long-horizon 7B run finished at 49.33 / 100 on the final panel: OpenEVO can keep learning, but the ceiling is still well below the target we want to understand.')}</li>
-          <li>{t('我们没有把低分简单归因给“步数太少”或“容量太小”：15→30 步仍然是 0；2048→4096 仍然解决不了 Text Memory 的容量问题。', 'We did not blame the low result on short horizons or small capacity: 15→30 steps remained zero, and 2048→4096 still did not solve Text Memory capacity.')}</li>
+          <li>{t('我们用小实验排除了两个最简单的解释：把动作预算翻倍，任务得分仍是 0；让 Text Memory 的一次生成更长，两条小模型线仍然失败。', 'Small diagnostics ruled out two simple explanations: doubling the action budget still produced zero task score, and allowing a longer single Text Memory generation still failed on both smaller-model lines.')}</li>
           <li>{t('真正值得追的信号出现在更新机制：1.7B 训练出了 44 个 SD-LoRA 参数更新候选，GDR（Gated Delta Rule，更新筛选规则）最终只让 7 个进入后续模型。', 'The more interesting signal appeared in update admission: the 1.7B run trained 44 SD-LoRA parameter-update candidates, but GDR (Gated Delta Rule, an update filter) admitted only 7 into later model states.')}</li>
           <li>{t('因此我们正在做 DirectApply（直接应用更新）对照：拿掉 GDR 的否决权。最终分数还没收口，当前不能提前宣布谁更好。', 'We are therefore running a DirectApply comparison, which applies qualifying updates without the GDR veto. Its final score is not sealed yet, so there is no winner to claim.')}</li>
         </ul>
       </aside>
-      <p class="slide-number">02 / 11</p>
+      <p class="slide-number">02 / 12</p>
+    </div>
+  </section>
+
+  <section id="research-setting" class="briefing-slide tone-blue" aria-labelledby="research-setting-title">
+    <div class="slide-inner">
+      <h2 id="research-setting-title">{t('研究问题：在相近训练预算下，OpenEVO 能走多远？', 'Research question: how far can OpenEVO go under a comparable training budget?')}</h2>
+      <p class="slide-thesis">{t('先把三个名字说清楚。它们分别是我们的方法、我们用来做实验的任务环境，以及我们拿来定义预算和结果参照的论文。', 'Three names first: our method, the task environment we use to test it, and the paper that provides the public training-budget and result reference.')}</p>
+      <div class="research-setting-grid">
+        <div class="research-setting-card"><strong>OpenEVO</strong><p>{t('我们的自我进化框架。每轮任务之后，经验可以进入文字记忆、技能集合、全局行为规则和参数更新；当前 WebShop 的参数路径使用 SD-LoRA。', 'Our self-evolution framework. After a task round, experience can be carried through text memory, reusable skills, higher-level agent rules, and parameter updates; the current WebShop parameter path uses SD-LoRA.')}</p></div>
+        <div class="research-setting-card"><strong>WebShop</strong><p>{t('一个模拟网购的交互式任务环境：模型读自然语言需求，自己搜索、筛选、点击并选择商品。Score 看要求满足了多少；Succ. 只看是否整道任务完整成功。', 'An interactive simulated-shopping task environment: the model reads a natural-language request, searches, filters, clicks, and selects a product. Score measures partial requirement satisfaction; Succ. counts only full task success.')}</p></div>
+        <div class="research-setting-card"><strong>SEED</strong><p>{t('一篇研究智能体自我进化的工作：《SEED: Self-Evolving On-Policy Distillation for Agentic Reinforcement Learning》（2026）。作者团队来自清华、浙大、港中文、南洋理工和同济；我们把它公开的 WebShop 训练设置和结果作为训练规模与外部参照。', 'A 2026 paper on self-evolving agents, with authors from Tsinghua, Zhejiang University, CUHK, NTU, and Tongji. We use its public WebShop training setup and results as the training-scale and external reference.')}</p></div>
+      </div>
+      <p class="research-question"><strong>{t('暑假核心问题：', 'Summer question:')}</strong>{t('把 SEED 公开 WebShop 训练的交互规模当作预算参照，OpenEVO 在相近资源约束下能走多远？如果卡住，真正的瓶颈在哪一层？', 'Using the public SEED WebShop interaction scale as the budget reference, how far can OpenEVO go under comparable resource constraints, and if it stalls, which layer is the real bottleneck?')}</p>
+      <p class="source-note"><a href={seedPaperHref} target="_blank" rel="noreferrer">SEED · Wu et al., 2026 · arXiv:2607.14777</a></p>
+      <p class="slide-number">03 / 12</p>
     </div>
   </section>
 
@@ -73,28 +89,28 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
         <p><strong>Score</strong> {t('看任务要求满足了多少；', 'measures partial requirement satisfaction;')} <strong>Succ.</strong> {t('只统计完整成功。', 'counts only fully completed tasks.')}</p>
         <p>{t('3B 确实做过独立实验线，但目前没有一个能与这张冻结终评表直接并列的最终分数，所以不硬填；DirectApply 也还没有最终分数。', 'The 3B line is real, but we do not have a final number that belongs beside this frozen panel, so it remains blank; DirectApply is also unfinished.')}</p>
       </div>
-      <p class="slide-number">03 / 11</p>
+      <p class="slide-number">04 / 12</p>
     </div>
   </section>
 
   <section id="seven-b" class="briefing-slide tone-blue" aria-labelledby="seven-b-title">
     <div class="slide-inner">
       <h2 id="seven-b-title">{t('7B 长周期实验：最终 49.33 分，瓶颈在哪里？', '7B long-horizon experiment: final Score 49.33 — where is the bottleneck?')}</h2>
-      <p class="slide-thesis">{t('这条线给了我们第一个完整基线：同一套 WebShop 任务流里，模型持续产生经验、吸收反馈并更新参数，最后再一次性看冻结终评。', 'This gave us the first complete baseline: on one WebShop trajectory stream, the model keeps collecting experience, absorbing feedback, updating parameters, and only then sees the frozen final evaluation.')}</p>
+      <p class="slide-thesis">{t('我们先从 7B 开始，是因为想先看较强基础模型上 OpenEVO 的能力上限，而不是一开始就把低分归因成“小模型太弱”。任务设置沿用 SEED WebShop 的主要协议，再让 OpenEVO 长周期持续从经验里更新。', 'We started with 7B to measure OpenEVO’s ceiling on a stronger base model rather than immediately blaming a low score on model scale. We kept the main SEED WebShop task protocol and let OpenEVO continue updating from experience over a long horizon.')}</p>
       <div class="three-questions">
         <li><span>1</span><div><strong>{t('第一阶段（Stage 1）', 'Stage 1')}</strong><p>{t('Qwen2.5-7B；180 个任务 × 每个任务 8 次尝试 = 1,440 条轨迹；temperature=0.4；每条最多 15 步。', 'Qwen2.5-7B; 180 tasks × 8 rollouts = 1,440 trajectories; temperature=0.4; max 15 steps.')}</p></div></li>
         <li><span>2</span><div><strong>{t('第二阶段（Stage 2）', 'Stage 2')}</strong><p>{t('长周期继续和环境交互，并做低秩参数更新（SD-LoRA）；最终完整收口 149 轮、19,072 条有效环境交互。', 'Long-horizon environment interaction with low-rank parameter updates (SD-LoRA); 149 completed rounds and 19,072 accepted rollouts.')}</p></div></li>
         <li><span>3</span><div><strong>{t('最终测试', 'Final test')}</strong><p><b>49.33 / 100</b><br />{t('完整成功 58 / 128（45.31%）', '58 / 128 complete successes (45.31%)')}</p></div></li>
       </div>
       <p class="bottom-claim">{t('这个结果把下一问变清楚：OpenEVO 已经能长期更新，但到底是哪一层限制了它继续变强？', 'The result sharpened the next question: OpenEVO can update for a long time, so which layer prevents those updates from translating into a higher ceiling?')}</p>
-      <p class="slide-number">04 / 11</p>
+      <p class="slide-number">05 / 12</p>
     </div>
   </section>
 
   <section id="small-arms" class="briefing-slide tone-green" aria-labelledby="small-arms-title">
     <div class="slide-inner">
       <h2 id="small-arms-title">{t('1.7B 和 3B：用更小实验定位瓶颈', '1.7B and 3B: smaller experiments to locate the bottleneck')}</h2>
-      <p class="slide-thesis">{t('小模型更适合做诊断：同一个假设可以更快做单变量实验，先排除错误解释，再决定值不值得回到大模型继续投入预算。', 'Smaller models are useful diagnostic instruments: we can isolate one hypothesis faster, eliminate bad explanations, and only then decide what deserves the larger-model budget.')}</p>
+      <p class="slide-thesis">{t('7B 已经证明长周期更新能完整跑起来，但最终分数仍然不够高。为了更快判断到底卡在哪，我们才转到 1.7B / 3B 做更便宜的诊断实验；这里不是在比较模型大小，而是在更快排除解释。', 'The 7B run showed that long-horizon updating can run end to end, but the final score was still below our target. We moved to 1.7B / 3B for cheaper diagnostics; this is not a model-size comparison, but a faster way to falsify explanations.')}</p>
       <div class="choice-grid">
         <div class="choice north">
           <span>1.7B</span><h3>{t('完整跑完 GDR 长周期线', 'Completed the GDR long-horizon line')}</h3>
@@ -105,40 +121,41 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
           <p>{t('Qwen2.5-3B 也按 180×8 的第一阶段采集过 1,440 条轨迹，后续也有独立的持续学习实验线。它帮助我们验证同一套任务接口、容量和持续学习设计。当前没有一个可直接并入最终冻结分数表的终评分数。', 'Qwen2.5-3B also collected 1,440 Stage-1 trajectories under the 180×8 schedule and had its own Stage-2 lineage. It helped test the shared task interface, capacity, and continual-learning design. We do not currently have a final score that belongs in the frozen results table.')}</p>
         </div>
       </div>
-      <p class="slide-number">05 / 11</p>
+      <p class="slide-number">06 / 12</p>
     </div>
   </section>
 
   <section id="horizon-diagnostic" class="briefing-slide tone-gold" aria-labelledby="horizon-title">
     <div class="slide-inner">
-      <h2 id="horizon-title">{t('15 → 30 步：任务得分仍然为 0', '15 → 30 steps: task score remains zero')}</h2>
-      <p class="slide-thesis">{t('这次只改一件事：每条轨迹最多能走 15 步还是 30 步。如果 30 步明显更好，才能说明问题主要出在步数限制。', 'Only one variable changes: whether each trajectory can take at most 15 or 30 actions. If 30 clearly improves behavior, the horizon explanation survives; otherwise it does not.')}</p>
+      <h2 id="horizon-title">{t('我们先怀疑：模型是不是还没走完任务就被截断了？', 'First hypothesis: is the model being cut off before it can finish the task?')}</h2>
+      <p class="slide-thesis">{t('最初每条 WebShop 轨迹最多 15 步，这个设置来自我们沿用的 SEED 公开的 WebShop 训练设置。前面的新任务诊断里，模型反复没有完成购买、任务得分为 0，所以我们先检查最简单的解释：是不是动作预算太短。', 'Our initial WebShop trajectory limit was 15 actions, inherited from the public SEED WebShop training setup. In the preceding fresh-task diagnostics the model repeatedly failed to finish a purchase and scored zero, so we tested the simplest explanation first: perhaps the action budget was too short.')}</p>
       <div class="before-after">
-        <div class="before"><span>15 步</span><strong>{t('任务得分 = 0', 'reward = 0')}</strong><p>{t('同一批任务、同一接口；轨迹在 15 步结束。', 'Same tasks and interface; traces end at 15 steps.')}</p></div>
-        <div class="after"><span>30 步</span><strong>{t('任务得分 = 0', 'reward = 0')}</strong><p>{t('64 / 64 条尝试有效；每个配对差值仍然是 0。', 'All 64 attempts are valid; every paired delta remains zero.')}</p></div>
+        <div class="before"><span>{t('原设置', 'inherited setting')}</span><strong>{t('最多 15 步', 'max 15 actions')}</strong><p>{t('来自 SEED 公开的 WebShop 训练设置；新任务诊断里仍反复没有完成购买。', 'Inherited from the public SEED WebShop training setup; fresh-task diagnostics still repeatedly failed to complete a purchase.')}</p></div>
+        <div class="after"><span>{t('只改一个变量', 'change one variable')}</span><strong>{t('最多 30 步', 'max 30 actions')}</strong><p>{t('把动作预算翻倍；64 / 64 条尝试有效，但任务得分仍为 0，所有配对差值都是 0。', 'Double the action budget; all 64 attempts are valid, but task score remains zero and every paired delta is zero.')}</p></div>
       </div>
-      <p class="bottom-claim">{t('结论很直接：把动作预算翻倍不足以解释失败。于是我们停止继续增加步数，换下一个假设。', 'Conclusion: doubling the action budget is not a sufficient explanation. We stop increasing the horizon and move to the next hypothesis.')}</p>
-      <p class="slide-number">06 / 11</p>
+      <p class="bottom-claim">{t('结论：问题不只是“15 步太短”。同一批比较里 30 步没有带来任何改善，因此我们停止继续加步数，转向下一层瓶颈。', 'Conclusion: the problem is not explained simply by “15 steps is too short.” Thirty actions produced no improvement on the paired comparison, so we stopped increasing the action budget and moved to the next bottleneck.')}</p>
+      <p class="slide-number">07 / 12</p>
     </div>
   </section>
 
   <section id="capacity-diagnostic" class="briefing-slide tone-gold" aria-labelledby="capacity-title">
     <div class="slide-inner">
       <h2 id="capacity-title">{t('我们把记忆容量翻倍了', 'We doubled the memory capacity')}</h2>
-      <p class="slide-thesis">{t('具体来说，我们把文本记忆模块一次生成能用的 token 上限从', 'Concretely, we increased the Text Memory generation token cap from')} <strong>2048 → 4096</strong>{t('。但这样还是不行，于是问题从“容量够不够大”转成“饱和以后应该怎样组织信息”。', '. But that still did not solve the problem, shifting the question from “is the capacity large enough?” to “how should information be organized after saturation?”')}</p>
+      <p class="slide-thesis">{t('问题先出现在 3B 的文本记忆模块（Text Memory）：每次最多把 20 条反思记录压成一段可复用记忆。原来的 Text Memory 规则在实验前把单次输出硬上限冻结为', 'The problem first appeared in 3B Text Memory: each call had to compress at most 20 reflection records into reusable memory. Before the run, the original Text Memory rule froze the single-call output cap at')} <strong>2048 tokens</strong>{t('。3B 的主调用和对同一批 20 条记录的一次更强压缩都撞到这个上限，于是按规则停住。', '. Both the primary call and one stronger compression pass over the exact same 20 records hit that bound, so the experiment stopped as specified.')}</p>
       <div class="before-after">
-        <div class="before"><span>{t('单次容量实验', 'single-call capacity')}</span><strong>2048 → 4096</strong><p>{t('单纯把 token 上限翻倍仍然没有解决容量失败。', 'Doubling the token cap alone did not resolve the capacity failure.')}</p></div>
-        <div class="after"><span>{t('结构化处理', 'structured recovery')}</span><strong>20 {t('条记录', 'records')} → 10 + 10</strong><p>{t('先保留原来的 20 条记录；如果同一批记录修复一次后仍然饱和，才固定拆成前 10 + 后 10，分别压缩后再合并。', 'Keep the original 20 records first; only if the same records still saturate after one repair pass do we split into first 10 + last 10, compress each half, then merge.')}</p></div>
+        <div class="before"><span>{t('先检验最简单的解释', 'test the simplest explanation')}</span><strong>2048 → 4096</strong><p>{t('第一步先不改结构：输入和 20 条记录的分组都不动，只把失败后的第二次压缩输出上限从 2048 提到 4096。结果 3B 和 1.7B 都仍然写满并失败。', 'The first test kept the structure fixed: inputs and the 20-record grouping stayed unchanged, and only the failed repair output cap increased from 2048 to 4096. Both 3B and 1.7B still saturated and failed.')}</p></div>
+        <div class="after"><span>{t('所以才改结构', 'then change the structure')}</span><strong>20 {t('条记录', 'records')} → 10 + 10</strong><p>{t('失败以后才改结构：只有在同一批 20 条的主调用和一次修复都饱和时，才固定拆成前 10 + 后 10；各自压缩后再合并，最多只拆一层。', 'Only after the longer-generation test failed did we change structure: split the same 20 records into first 10 + last 10 only after both the primary call and one repair saturate; compress each half, then merge, with a maximum depth of one.')}</p></div>
       </div>
-      <p class="bottom-claim">{t('这个结果把问题从“继续堆容量”推进到“怎样有边界地处理饱和”；最终成绩是否因此提高，仍由后续终评回答。', 'The result moves the question from “add more capacity” to “handle saturation with a bounded structure”; whether that improves the final score remains a later evaluation question.')}</p>
-      <p class="slide-number">07 / 11</p>
+      <p class="parameter-origin"><strong>{t('2048 从哪里来？', 'Where did 2048 come from?')}</strong>{t('它不是 SEED / WebShop 的任务参数，也不是模型上下文长度；它是我们在 A1 方案里事先冻结的 Text Memory 单次输出硬上限。现有实验记录能确认这条规则，但没有把 2048 推导成某个理论最优值。', 'It is neither a SEED/WebShop task parameter nor the model context length. It was the Text Memory per-call hard output cap frozen in our A1 design. The experiment record establishes that rule, not 2048 as a theoretically optimal value.')}</p>
+      <p class="bottom-claim">{t('4096 在两条小模型线上都没有救回来，因此被否掉的是“只要一次生成更长就够了”这个解释。下一步才转向有边界的 10+10；它是否提高最终成绩，仍由后续终评回答。', 'The 4096-token repair failed on both smaller-model lines, rejecting the explanation that one longer generation was sufficient. Only then did we move to bounded 10+10 structure; whether that improves the final score remains a later evaluation question.')}</p>
+      <p class="slide-number">08 / 12</p>
     </div>
   </section>
 
   <section id="mechanism" class="briefing-slide tone-gold" aria-labelledby="mechanism-title">
     <div class="slide-inner">
       <h2 id="mechanism-title">{t('TaskVector（参数更新方向）：检验模型连续更新时到底学到了什么', 'TaskVector (parameter-update direction): test what successive updates actually learn')}</h2>
-      <p class="slide-thesis">{t('如果连续两次更新真的学到了同一种东西，它们在参数空间里应该形成一个可测量的方向。TaskVector 把这个方向写成一个可以主动加回模型、拿掉或反向施加的量。', 'If successive updates learn something coherent, they should form a measurable direction in parameter space. TaskVector turns that direction into an intervention we can add, remove, or reverse.')}</p>
+      <p class="slide-thesis">{t('前两步已经排除了两个很自然的解释：把每题的操作步数翻倍没有改善，把 Text Memory 的第二次生成上限翻倍也没有解决饱和。于是问题再往下一层：SD-LoRA 连续更新时，参数本身到底有没有形成稳定的“学习方向”？', 'The previous two diagnostics ruled out two natural explanations: doubling task actions did not help, and doubling the Text Memory repair budget did not resolve saturation. So we move one layer deeper: do successive SD-LoRA updates form a stable learning direction in parameter space?')}</p>
       <div class="mechanism-math">
         <div class="formula-card">
           <strong>{t('定义一个参数方向', 'Define a parameter direction')}</strong>
@@ -152,14 +169,14 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
           <p class="source-note"><a href={technicalHref}>{t('完整技术推导与实验门槛', 'Full technical derivation and experimental thresholds')}</a></p>
         </div>
       </div>
-      <p class="slide-number">08 / 11</p>
+      <p class="slide-number">09 / 12</p>
     </div>
   </section>
 
   <section id="gdr" class="briefing-slide tone-rose" aria-labelledby="gdr-title">
     <div class="slide-inner">
       <h2 id="gdr-title">{t('GDR：本来有 44 次机会更新参数，实际只有 7 次进入了后续模型', 'GDR: 44 parameter-update opportunities were trained, but only 7 entered later model states')}</h2>
-      <p class="slide-thesis">{t('GDR 是 Gated Delta Rule。每次训练会产生一个 SD-LoRA 参数更新候选 Δ；GDR 再判断这个候选能不能进入下一轮模型。', 'GDR stands for Gated Delta Rule. Each update opportunity produces an SD-LoRA candidate Δ; GDR then decides whether that candidate is allowed into the next model state.')}</p>
+      <p class="slide-thesis">{t('1.7B 长周期训练里，我们注意到“训练了多少次候选”和“真正把多少次更新带到后续模型”差得很大。原因是 GDR（Gated Delta Rule）会先用一个短期小评测决定新候选能不能继续：每次训练先产生 SD-LoRA 参数更新候选 Δ，再由 GDR 接受或拒绝。', 'In the 1.7B long-horizon run, we saw a large gap between how many update candidates were trained and how many actually entered later model states. GDR (Gated Delta Rule) explains that gap: it uses a short-horizon probe to decide whether a newly trained SD-LoRA candidate Δ is admitted or rejected.')}</p>
       <div class="mechanism-math">
         <div class="formula-card">
           <strong>{t('最简单的写法', 'The simplest form')}</strong>
@@ -173,21 +190,21 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
         </div>
       </div>
       <p class="source-note"><a href={technicalHref}>{t('GDR 的判定逻辑与完整实验定义', 'GDR decision logic and full experimental definition')}</a></p>
-      <p class="slide-number">09 / 11</p>
+      <p class="slide-number">10 / 12</p>
     </div>
   </section>
 
   <section id="directapply" class="briefing-slide tone-green" aria-labelledby="directapply-title">
     <div class="slide-inner">
       <h2 id="directapply-title">{t('DirectApply：拿掉 GDR 的否决权，只改这一个变量', 'DirectApply: remove only the GDR veto')}</h2>
-      <p class="slide-thesis">{t('两条路线都训练同样的 SD-LoRA 候选；区别只有一个：GDR 可以拒绝候选，DirectApply 对满足共同训练条件的候选直接应用。', 'Both routes train the same kind of SD-LoRA candidate. The single intended difference is whether GDR may veto the update or DirectApply applies a qualifying candidate directly.')}</p>
+      <p class="slide-thesis">{t('看到 44→7 以后，下一问不再是“再调一个训练参数”，而是直接检验这个筛选机制本身。两条路线都训练同样的 SD-LoRA 候选；唯一变量是 GDR 能否否决候选，DirectApply 则把满足共同训练条件的候选直接应用。', 'After 44→7, the next question is no longer another training-parameter tweak; it is the filtering mechanism itself. Both routes train the same kind of SD-LoRA candidate. The only intended variable is whether GDR may veto it, while DirectApply applies a candidate that meets the shared training conditions.')}</p>
       <div class="before-after">
         <div class="before"><span>GDR</span><strong>{t('训练 Δ → 再决定要不要更新', 'train Δ → decide whether to update')}</strong><p>{t('候选可能被拒绝，因此后续模型不一定看到这次学习。', 'A candidate can be rejected, so later states may never see that learning event.')}</p></div>
         <div class="after"><span>DirectApply</span><strong>{t('训练 Δ → 直接进入后续模型', 'train Δ → apply it to the next state')}</strong><p>{t('不再用 GDR 做第二次否决。这样才能直接问：44→7 的筛选到底帮助了长期学习，还是限制了它？', 'There is no second GDR veto. This directly tests whether the 44→7 filtering helped long-term learning or constrained it.')}</p></div>
       </div>
       <div class="plain-language-result"><strong>{t('当前状态', 'Current state')}</strong><p>{t('DirectApply 的独立实验已经启动，但最终冻结分数还没有收口，所以结果表保持空白。由于暑期考核时间点就在这里，我们目前的能力天花板故事先讲到这里。', 'The independent DirectApply experiment has started, but its frozen final score is not sealed yet, so the results table remains blank. At the summer-review cutoff, this is where the current ceiling story stops.')}</p></div>
       <p class="source-note"><a href={technicalHref}>{t('严谨性、重复性与复现实验细节', 'Rigor, reproducibility, and execution details')}</a></p>
-      <p class="slide-number">10 / 11</p>
+      <p class="slide-number">11 / 12</p>
     </div>
   </section>
 
@@ -219,9 +236,10 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
   .cover-meta{display:grid;grid-template-columns:190px 220px 1fr;gap:16px;margin:auto 0 0}.cover-meta>div{padding:18px 20px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 82%,transparent);border:1px solid var(--rule)}.cover-meta dt{color:var(--muted);font-size:12px;font-weight:760}.cover-meta dd{margin:7px 0 0;font-size:16px;font-weight:720}
   .slide-number{position:absolute;right:42px;bottom:28px;margin:0;padding:6px 10px;border:1px solid var(--rule);border-radius:999px;background:color-mix(in srgb,var(--surface) 88%,transparent);color:var(--muted);font:800 12px/1 var(--font-mono);letter-spacing:.06em}
   .split-slide{display:grid;grid-template-columns:40% 60%;gap:48px;padding-top:70px}.agenda-pane,.tldr-pane{min-width:0}.agenda-list{margin:34px 0 0;padding:0;list-style:none;display:grid;gap:20px}.agenda-list li{display:flex;align-items:center;gap:16px}.agenda-list span{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:color-mix(in srgb,var(--blue) 14%,var(--surface));color:var(--blue);font:800 12px var(--font-mono)}.agenda-list strong{font-size:22px}.tldr-pane{align-self:center;padding:34px 38px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--positive) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--positive) 35%,var(--line))}.tldr-pane h3{margin-top:14px;font-size:30px}.tldr-pane ul{margin:24px 0 0;padding-left:22px;display:grid;gap:16px}.tldr-pane li{font-size:17px;line-height:1.48}
+  .research-setting-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px}.research-setting-card{padding:22px 24px;border:1px solid var(--rule);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 82%,transparent)}.research-setting-card strong{display:block;font-size:21px}.research-setting-card p{margin:9px 0 0;color:var(--muted);font-size:14px;line-height:1.5}.research-question{margin:auto 0 0;padding:16px 19px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--blue) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--blue) 28%,var(--line));font-size:18px;line-height:1.45}.research-question strong{color:var(--ink)}
   .table-boundary{max-width:1040px;margin:14px 0 0;padding:10px 14px;border-left:3px solid var(--warning);background:color-mix(in srgb,var(--warning) 7%,var(--surface));color:var(--muted);font-size:15px;line-height:1.4}.table-boundary strong{display:block;color:var(--ink);margin:0 0 3px;font-size:16px}.paper-table-wrap{margin-top:14px}.paper-table{width:100%;border-collapse:collapse;font-size:16px}.paper-table thead{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}.paper-table tbody{border-bottom:2px solid var(--ink)}.paper-table th,.paper-table td{padding:7px 18px;text-align:left}.paper-table thead th:nth-child(n+2),.paper-table td{text-align:center;font-variant-numeric:tabular-nums}.paper-table tbody tr:not(.method-group)+tr:not(.method-group){border-top:1px solid color-mix(in srgb,var(--line) 62%,transparent)}.paper-table tbody th{font-weight:650}.method-group{border-top:1.5px solid var(--ink);border-bottom:1px solid var(--rule);background:transparent}.method-group th{padding-top:13px;padding-bottom:8px;font-family:var(--font-editorial);font-size:15px;font-weight:760;letter-spacing:.02em}.method-group.ours th{color:var(--accent-deep)}.pending-row{color:var(--muted)}.table-notes{display:grid;grid-template-columns:1fr 1.65fr;gap:28px;margin-top:18px;color:var(--muted);font-size:13px;line-height:1.48}.table-notes p{margin:0}
   .three-questions{display:grid;grid-template-columns:repeat(3,1fr);margin:40px 0 0;padding:0;list-style:none;gap:18px}.three-questions li{padding:25px 26px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 82%,transparent)}.three-questions span,.quality-grid>div>span{display:grid;place-items:center;width:48px;height:48px;margin-bottom:18px;border-radius:50%;background:color-mix(in srgb,var(--blue) 15%,var(--surface));color:var(--blue);font:850 14px var(--font-mono)}.three-questions strong{display:block;font-size:22px}.three-questions p{margin:8px 0 0;color:var(--muted);font-size:16px;line-height:1.5}.three-questions p b{color:var(--ink);font:760 20px/1.2 var(--font-mono)}.quality-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px}.quality-grid>div{padding:20px 22px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 82%,transparent)}.quality-grid>div:nth-child(2)>span{background:color-mix(in srgb,var(--positive) 16%,var(--surface));color:var(--positive)}.quality-grid>div:nth-child(3)>span{background:color-mix(in srgb,var(--warning) 16%,var(--surface));color:var(--warning)}.quality-grid>div:nth-child(4)>span{background:color-mix(in srgb,var(--accent) 16%,var(--surface));color:var(--accent-deep)}.quality-grid strong{display:block;font-size:18px;line-height:1.28}.quality-grid p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.44}.quality-grid .speed-number{margin-top:10px;color:var(--ink);font:750 17px/1.2 var(--font-mono)}.quality-grid .speed-number b{color:var(--accent-deep)}
-  .bottom-claim{margin:auto 0 0;max-width:950px;padding:14px 18px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--surface) 76%,transparent);color:var(--muted);font-size:15px;line-height:1.5}
+  .bottom-claim{margin:auto 0 0;max-width:950px;padding:14px 18px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--surface) 76%,transparent);color:var(--muted);font-size:15px;line-height:1.5}.parameter-origin{margin:12px 0 0;max-width:1040px;color:var(--muted);font-size:12.5px;line-height:1.42}.parameter-origin strong{color:var(--ink);margin-right:6px}#capacity-diagnostic .slide-inner{padding-top:48px;padding-bottom:42px}#capacity-diagnostic h2{margin-top:6px;font-size:44px}#capacity-diagnostic .slide-thesis{margin-top:13px;font-size:18px;line-height:1.42}#capacity-diagnostic .before-after{margin-top:18px;gap:16px}#capacity-diagnostic .before-after>div{padding:20px 22px}#capacity-diagnostic .before-after strong{margin-top:10px;font-size:21px}#capacity-diagnostic .before-after p{margin-top:7px;font-size:13px;line-height:1.4}#capacity-diagnostic .bottom-claim{margin-top:auto;padding:10px 14px;font-size:12.5px;line-height:1.4}
   .mechanism-math{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}.formula-card{padding:18px 20px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 86%,transparent)}.formula-card>strong{font-size:15px}.equation{margin-top:11px;padding:9px 12px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--warning) 7%,var(--surface));font:650 22px/1.25 Georgia,"Times New Roman",serif;letter-spacing:.01em}.formula-card p{margin:10px 0 0;color:var(--muted);font-size:14px;line-height:1.46}.mechanism-rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}.mechanism-rules>div{padding:11px 13px;border-top:2px solid color-mix(in srgb,var(--warning) 45%,var(--line))}.mechanism-rules strong{display:block;font-size:12px}.mechanism-rules span{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.38}.mechanism-note{margin-top:10px;padding:11px 14px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--warning) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--warning) 28%,var(--line))}.mechanism-note strong{font-size:12px}.mechanism-note p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.38}.twin-design span,.before-after span,.choice>span{display:inline-block;padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--warning) 15%,var(--surface));color:var(--warning);font:800 11px var(--font-mono);letter-spacing:.05em}
   .twin-design{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:16px;margin-top:30px}.twin-design>div{padding:24px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 84%,transparent)}.twin-design .arm-a{background:color-mix(in srgb,var(--accent) 9%,var(--surface))}.twin-design .same-core{background:color-mix(in srgb,var(--blue) 8%,var(--surface))}.twin-design .arm-b{background:color-mix(in srgb,var(--positive) 9%,var(--surface))}.twin-design strong{display:block;margin-top:13px;font-size:21px}.twin-design p,.twin-design li{color:var(--muted);font-size:14px;line-height:1.48}.twin-design p{margin:8px 0 0}.twin-design ul{margin:12px 0 0;padding-left:18px}
   .before-after{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:34px}.before-after>div{padding:28px 30px;border-radius:var(--radius-feature);border:1px solid var(--rule)}.before{background:color-mix(in srgb,var(--accent) 9%,var(--surface))}.after{background:color-mix(in srgb,var(--positive) 11%,var(--surface))}.before-after .before span{background:color-mix(in srgb,var(--accent) 16%,var(--surface));color:var(--accent-deep)}.before-after .after span{background:color-mix(in srgb,var(--positive) 17%,var(--surface));color:var(--positive)}.before-after strong{display:block;margin-top:16px;font-size:24px}.before-after p{margin:10px 0 0;color:var(--muted);font-size:15px;line-height:1.48}.current-twin-status{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.current-twin-status>div{padding:14px 18px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 82%,transparent)}.current-twin-status span{color:var(--accent-deep);font:800 11px var(--font-mono)}.current-twin-status strong{display:block;margin-top:6px;font-size:16px}.current-twin-status p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.42}.plain-language-result{margin-top:14px;padding:14px 18px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--blue) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--blue) 30%,var(--line))}.plain-language-result p{display:inline;margin:0 0 0 8px;color:var(--muted);font-size:14px;line-height:1.46}
@@ -251,7 +269,7 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
     h2{max-width:none;margin-top:2px;font-size:30px;line-height:1.08}
     .cover-thesis{max-width:none;font-size:19px;line-height:1.52}
     .slide-thesis{max-width:none;margin-top:14px;font-size:17px;line-height:1.52}
-    .cover-meta,.split-slide,.three-questions,.quality-grid,.mechanism-math,.twin-design,.before-after,.current-twin-status,.seed-questions,.turning-list,.choice-grid,.speed-proof{grid-template-columns:1fr}
+    .cover-meta,.split-slide,.three-questions,.quality-grid,.mechanism-math,.twin-design,.before-after,.current-twin-status,.seed-questions,.turning-list,.choice-grid,.speed-proof,.research-setting-grid{grid-template-columns:1fr}
     .split-slide{display:grid;gap:18px;padding:28px 20px 44px}
     .cover-meta{gap:10px;margin-top:24px}.cover-meta>div{padding:13px 15px}
     .agenda-list{margin-top:18px;gap:12px}.agenda-list strong{font-size:17px}

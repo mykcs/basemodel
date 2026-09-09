@@ -8,6 +8,9 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 const briefingHref = p('/research/seed-openevo/study/briefing/');
 const h17 = 'https://github.com/mykcs/openevo-experiment/blob/b3091ed70f060742147e931b8533784c8dfe1745/docs/science/webshop/runs/2026-08-15/h1.17-horizon-interface-diagnostic.md';
+const textMemoryA1 = 'https://github.com/mykcs/openevo-experiment/blob/b33da487/docs/experiment-tracking/OPEN_EVO_CEILING_1.0_TEXT_MEMORY_A1_2026-08-31.md';
+const textMemoryA11 = 'https://github.com/mykcs/openevo-experiment/blob/59e505c1/scripts/openevo_webshop/ceiling1_build_text_memory_a11.py';
+const textMemoryA2 = 'https://github.com/mykcs/openevo-experiment/blob/42640385/docs/experiment-tracking/OPEN_EVO_CEILING_1.0_TEXT_MEMORY_A2_2026-08-31.md';
 const q17 = 'https://github.com/mykcs/openevo-experiment/pull/378';
 const direct = 'https://github.com/mykcs/openevo-experiment/pull/404';
 ---
@@ -21,20 +24,22 @@ const direct = 'https://github.com/mykcs/openevo-experiment/pull/404';
 
   <section>
     <h2>{t('1. 15 步还是 30 步：一次干净的负向实验', '1. 15 or 30 steps: a clean negative experiment')}</h2>
-    <p>{t('H1.17 只改变 WebShop 的 max_steps：15 与 30。memory、adapter、prompt、parser 和任务列表全部保持不变。64 条比较中 64 条尝试都有效，两种条件 reward 都是 0，每个配对差值都是 0。', 'H1.17 changed only WebShop max_steps: 15 versus 30. Memory, adapter, prompt, parser, and task identity stayed fixed. All 64 attempts were valid, both conditions had zero reward, and every paired delta was zero.')}</p>
+    <p>{t('15 步来自最初沿用的 SEED WebShop trainer recipe。前面的 fresh-task 诊断持续没有完成购买、reward 为 0，所以 H1.17 才把“动作预算太短”作为一个单变量假设：只把 WebShop max_steps 从 15 改到 30，memory、adapter、prompt、parser 和任务列表全部保持不变。64 条比较中 64 条尝试都有效，两种条件 reward 都是 0，每个配对差值都是 0。', 'The 15-action limit came from the inherited SEED WebShop trainer recipe. The preceding fresh-task diagnostics repeatedly failed to complete a purchase and returned zero reward, motivating one narrow hypothesis: perhaps the action budget was too short. H1.17 therefore changed only WebShop max_steps from 15 to 30 while memory, adapter, prompt, parser, and task identity stayed fixed. All 64 attempts were valid, both conditions had zero reward, and every paired delta was zero.')}</p>
     <div class="evidence-row"><span>15 steps</span><strong>0</strong><span>30 steps</span><strong>0</strong><span>Δ</span><strong>0.0</strong></div>
     <p>{t('因此，“15 步太短”不是充分解释。后续应该换科学问题，而不是继续在 horizon 上搜索。', 'Therefore “15 steps is too short” is not a sufficient explanation. The next move is a new scientific question, not more horizon search.')}</p>
     <p class="source"><a href={h17} target="_blank" rel="noreferrer"><ExternalBrandMark href={h17} /> H1.17 evidence</a></p>
   </section>
 
   <section>
-    <h2>{t('2. Text Memory：2048 → 4096 为什么仍然不够', '2. Text Memory: why 2048 → 4096 was still insufficient')}</h2>
+    <h2>{t('2. Text Memory：从 2048 的双重饱和到 10+10', '2. Text Memory: from double saturation at 2048 to bounded 10+10')}</h2>
+    <p>{t('2048 不是后来为了展示挑出的数字，而是 A1 在实验前冻结的单次输出硬上限。一个逻辑单元最多包含 20 条记录：主调用按固定顺序处理完整 20 条，最多输出 2048 tokens；只有主调用撞到上限时，才允许对完全相同的 20 条记录做一次更强压缩，repair 的上限仍然是 2048。A1 不允许拆分。', '2048 was not chosen later for presentation; it was the per-call hard output cap frozen by A1 before the run. One logical unit contains at most 20 records: the primary call processes the complete fixed-order unit with a 2048-token cap; only if it saturates may one stronger compression repair run on the exact same 20 records, still capped at 2048. A1 does not allow splitting.')}</p>
     <div class="capacity-chain" aria-label={t('Text Memory 容量实验链', 'Text Memory capacity experiment chain')}>
-      <div><strong>A1 · 2048</strong><p>{t('出现容量饱和。', 'Capacity saturated.')}</p></div><i>→</i>
-      <div><strong>A1.1 · cap=4096 tokens</strong><p>{t('对称翻倍单次 token 上限后仍然失败，否定“只要加容量就行”。', 'Symmetric doubling of the per-call token cap still failed, rejecting “just make it larger.”')}</p></div><i>→</i>
-      <div><strong>A2 · 20 records → 10+10</strong><p>{t('这里的 20 是记录数，不是 token 数：20 条 primary 与同 20 条 repair 都饱和时才固定拆成 10+10，随后压缩并回并；最大分裂深度 1。', 'Here 20 counts records, not tokens: only after the 20-item primary and the same 20-item repair both saturate do we split deterministically into 10+10, compress, and merge; max split depth is one.')}</p></div>
+      <div><strong>A1 · 20 records · 2048</strong><p>{t('3B 在一组 20 条记录上出现 primary=SATURATED 且 same-20 repair=SATURATED，因此按规则停止。', '3B hit primary=SATURATED and same-20 repair=SATURATED on one 20-record unit, so the run stopped as specified.')}</p></div><i>→</i>
+      <div><strong>A1.1 · one 4096 continuation</strong><p>{t('不改输入、不拆记录；双重饱和后只增加一次同提示词的延长，把这一回的上限从 2048 提到 4096。3B 与 1.7B 都仍 BLOCKED。', 'Do not change inputs or split records; after double saturation add one same-prompt continuation with this attempt extended from 2048 to 4096. Both 3B and 1.7B remained BLOCKED.')}</p></div><i>→</i>
+      <div><strong>A2 · 20 records → 10+10</strong><p>{t('因此才改变结构：只有同一批 20 条的 primary 与 repair 都饱和时，固定拆前 10 / 后 10；各自压缩后再合并，最大分裂深度 1。', 'Only then change structure: if both primary and repair saturate on the same 20 records, split deterministically into first 10 / last 10, compress each, then merge; maximum split depth is one.')}</p></div>
     </div>
-    <p>{t('这里的科学含义不是“10+10 一定让最终分数更高”，而是容量失败的解释发生了变化：单纯扩大容器不够，需要结构化、有限的分解。', 'The scientific claim is not that 10+10 necessarily raises the final benchmark score. The diagnosis changed: a larger container alone was insufficient, so the successor uses structured, bounded decomposition.')}</p>
+    <p>{t('这里否定的是“单纯让一次生成更长就足够”的解释，而不是声称 10+10 已经提高了最终 benchmark。A2 是否带来最终能力收益仍需由后续终评回答。', 'This rejects the explanation that one longer generation is sufficient; it does not claim that 10+10 has already improved the final benchmark. Any final capability benefit from A2 remains a question for later evaluation.')}</p>
+    <p class="source"><a href={textMemoryA1} target="_blank" rel="noreferrer"><ExternalBrandMark href={textMemoryA1} /> A1 freeze</a> · <a href={textMemoryA11} target="_blank" rel="noreferrer"><ExternalBrandMark href={textMemoryA11} /> A1.1 4096 continuation</a> · <a href={textMemoryA2} target="_blank" rel="noreferrer"><ExternalBrandMark href={textMemoryA2} /> A2 bounded 10+10</a></p>
   </section>
 
   <section>

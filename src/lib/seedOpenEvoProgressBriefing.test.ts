@@ -25,11 +25,11 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(appLayout).toContain("exactRoute('/research/seed-openevo/study/briefing/technical-notes') ? 'briefing'");
   });
 
-  it('keeps a fixed eleven-slide presentation sequence with no page number on cover/final', () => {
-    expect((briefing.match(/<section /g) ?? []).length).toBe(11);
-    for (let page = 2; page <= 10; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 11`);
-    expect(briefing).not.toContain('01 / 11');
-    expect(briefing).not.toContain('11 / 11');
+  it('keeps a fixed twelve-slide presentation sequence with no page number on cover/final', () => {
+    expect((briefing.match(/<section /g) ?? []).length).toBe(12);
+    for (let page = 2; page <= 11; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 12`);
+    expect(briefing).not.toContain('01 / 12');
+    expect(briefing).not.toContain('12 / 12');
     expect(briefing).not.toContain('下一页');
     expect(briefing).not.toContain('Next slide');
   });
@@ -46,12 +46,19 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   it('starts with a normal presentation cover and chronological agenda', () => {
     expect(briefing).toContain('OpenEVO 暑期考核汇报');
     expect(briefing).toContain('OpenEVO 让模型从任务经验中持续更新记忆与参数');
+    expect(briefing).toContain('研究问题：在相近训练预算下，OpenEVO 能走多远？');
+    expect(briefing).toContain('我们的自我进化框架');
+    expect(briefing).toContain('一个模拟网购的交互式任务环境');
+    expect(briefing).toContain('SEED: Self-Evolving On-Policy Distillation for Agentic Reinforcement Learning');
+    expect(briefing).toContain('arXiv:2607.14777');
+    expect(briefing).toContain('暑假核心问题');
+    expect(briefing).toContain('把 SEED 公开 WebShop 训练的交互规模当作预算参照');
     expect(briefing).toContain('汇报日期');
     expect(briefing).toContain('汇报人');
     expect(briefing).toContain("Too long, Don't read");
-    expect(briefing).toContain('7B 长周期结果');
+    expect(briefing).toContain('研究设置与结果');
     expect(briefing).toContain("{t('目录', 'Agenda')}");
-    expect(briefing).toContain('1.7B / 3B 诊断实验');
+    expect(briefing).toContain('7B → 1.7B / 3B 诊断');
   });
 
   it('uses a SEED-paper-style Score / Succ table and acknowledges the 3B line without inventing a score', () => {
@@ -98,26 +105,32 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('makes the negative 15→30 horizon diagnostic a scientific pivot', () => {
-    expect(briefing).toContain('15 → 30 步：任务得分仍然为 0');
-    expect(briefing).toContain('<span>15 步</span>');
-    expect(briefing).toContain('<span>30 步</span>');
+    expect(briefing).toContain('我们先怀疑：模型是不是还没走完任务就被截断了？');
+    expect(briefing).toContain('最初每条 WebShop 轨迹最多 15 步');
+    expect(briefing).toContain('来自我们沿用的 SEED 公开的 WebShop 训练设置');
+    expect(briefing).toContain('模型反复没有完成购买、任务得分为 0');
+    expect(briefing).toContain('最多 15 步');
+    expect(briefing).toContain('最多 30 步');
     expect(briefing).toContain('64 / 64 条尝试有效');
-    expect(briefing).toContain('任务得分 = 0');
-    expect(briefing).toContain('每个配对差值仍然是 0');
+    expect(briefing).toContain('所有配对差值都是 0');
+    expect(technical).toContain('15 步来自最初沿用的 SEED WebShop trainer recipe');
     expect(technical).toContain('max_steps');
   });
 
   it('keeps the 2048→4096→10+10 capacity chain and does not claim a benchmark win from it', () => {
-    expect(briefing).toContain('2048 → 4096');
     expect(briefing).toContain('我们把记忆容量翻倍了');
-    expect(briefing).not.toContain('2048 → 4096：单次记忆容量翻倍仍然失败');
+    expect(briefing).toContain('每次最多把 20 条反思记录压成一段可复用记忆');
+    expect(briefing).toContain('原来的 Text Memory 规则在实验前把单次输出硬上限冻结为');
+    expect(briefing).toContain('<strong>2048 tokens</strong>');
     expect(briefing).toContain('<strong>2048 → 4096</strong>');
-    expect(briefing).toContain("20 {t('条记录', 'records')}");
-    expect(briefing).toContain('10 + 10');
-    expect(technical).toContain('max split depth is one');
-    expect(briefing).not.toContain('20 条 primary');
-    expect(briefing).not.toContain('20 条 repair');
-    expect(technical).toContain('科学含义不是“10+10 一定让最终分数更高”');
+    expect(briefing).toContain('结果 3B 和 1.7B 都仍然写满并失败');
+    expect(briefing).toContain("20 {t('条记录', 'records')} → 10 + 10");
+    expect(briefing).not.toContain('A1.1 不改输入');
+    expect(briefing).not.toContain('A2 只有');
+    expect(technical).toContain('2048 不是后来为了展示挑出的数字');
+    expect(technical).toContain('A1.1 · one 4096 continuation');
+    expect(technical).toContain('maximum split depth is one');
+    expect(technical).toContain('这里否定的是“单纯让一次生成更长就足够”的解释');
   });
 
   it('uses a simple TaskVector formula in the talk and moves the hard derivation to the child page', () => {
@@ -135,7 +148,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
 
   it('explains GDR at first use and states exactly what 44 and 7 count', () => {
     expect(briefing).toContain('GDR（Gated Delta Rule，更新筛选规则）');
-    expect(briefing).toContain('GDR 是 Gated Delta Rule');
+    expect(briefing).toContain('GDR（Gated Delta Rule）会先用一个短期小评测决定新候选能不能继续');
     expect(briefing).toContain('本来有 44 次机会更新参数，实际只有 7 次进入了后续模型');
     expect(briefing).toContain('44 个 SD-LoRA 更新候选都真正训练出来了');
     expect(briefing).toContain('GDR 最终只接受 7 个');
@@ -144,7 +157,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
 
   it('keeps DirectApply in the main deck as one simple scientific variable and leaves the result unfinished', () => {
     expect(briefing).toContain('DirectApply：拿掉 GDR 的否决权，只改这一个变量');
-    expect(briefing).toContain('DirectApply 对满足共同训练条件的候选直接应用');
+    expect(briefing).toContain('看到 44→7 以后');
+    expect(briefing).toContain('唯一变量是 GDR 能否否决候选');
     expect(briefing).toContain('最终冻结分数还没有收口');
     expect(briefing).toContain('严谨性、重复性与复现实验细节');
   });
@@ -174,7 +188,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('先把 SEED 匹配比较做齐');
     expect(briefing).toContain('先追“为什么有效”的机制证据');
     expect(briefing).toContain('想请老师和学长判断优先级');
-    expect(briefing).not.toContain('11 / 11');
+    expect(briefing).not.toContain('12 / 12');
   });
 
   it('binds both public routes into Reader Contracts', () => {
