@@ -63,7 +63,8 @@ describe('human preference learning v2', () => {
     expect(brief.events.some((event) => event.id === 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT' && event.verdict === 'canonical')).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE')).toBe(false);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER' && reference.tier === 'silver')).toBe(true);
-    expect(brief.generationRules.join('\n')).toContain('No current-candidate visual is active');
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
+    expect(brief.generationRules.join('\n')).toContain('Current-candidate visual references are still under review');
   });
 
   it('retrieves the final briefing lessons for a different two-stage training talk before first draft', () => {
@@ -97,6 +98,25 @@ describe('human preference learning v2', () => {
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER')).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.tier === 'golden')).toBe(false);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')).toBe(true);
+  });
+
+  it('retrieves event-first headings and jargon boundaries for a paraphrased future research talk', () => {
+    const brief = buildHumanPreferenceBrief({
+      contractId: 'study-briefing',
+      query: '组会里训练跑了很久却没更新参数，后来查 gate 才找到原因；低分实验也是先看日志再决定改步数和记忆。听众不认识项目内部英文，请给自然标题。',
+    });
+    expect(brief.learnedPreferences.map(({ preference }) => preference.id)).toContain('PREF-EVENT-FIRST-RESEARCH-HEADINGS');
+    expect(brief.goldPairs.map(({ pair }) => pair.id)).toEqual(expect.arrayContaining([
+      'PAIR-090-GATE-HEADING',
+      'PAIR-090-DIAGNOSTIC-ENTRY',
+      'PAIR-090-COMPOSED-STATE',
+    ]));
+    expect(brief.hardFailureFamilies).toContain('compressed-shorthand-heading');
+    expect(brief.events.map((event) => event.id)).toEqual(expect.arrayContaining([
+      'EVENT-20260909-BRIEFING-STORYLINE-SHORTHAND-REPEAT',
+      'EVENT-20260909-BRIEFING-STORYLINE-ENGLISH-GLUE',
+    ]));
   });
 
   it('builds a recovery-scoped brief with rejected/current visual tiers and no invented Golden', () => {

@@ -63,6 +63,23 @@ describe('human preference learning loop', () => {
     ]));
   });
 
+  it('retrieves event-first research headings without banning meaningful result numbers', () => {
+    const result = retrieveHumanPreferenceContext(
+      '研究汇报标题不要先扔 7<8 或 7B 标签；先说训练没更新参数、为什么开始查，再解释 gate 和内部英文',
+      'study-briefing',
+      16,
+    );
+    expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-EVENT-FIRST-RESEARCH-HEADINGS');
+    expect(result.cases.map(({ precedent }) => precedent.id)).toContain('CASE-090');
+    expect(result.goldPairs.map(({ pair }) => pair.id)).toEqual(expect.arrayContaining([
+      'PAIR-090-GATE-HEADING',
+      'PAIR-090-MODEL-COLON-HEADING',
+      'PAIR-090-COMPOSED-STATE',
+    ]));
+    const preference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-EVENT-FIRST-RESEARCH-HEADINGS');
+    expect(preference?.antiOvergeneralization.join(' ')).toContain('44 个候选只有 7 个进入后续模型');
+  });
+
   it('keeps workflow-learning feedback separate from surface aesthetics', () => {
     const result = retrieveHumanPreferenceContext('案例库 触类旁通 preference learning Gold Pair cold read judge');
     expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-FEEDBACK-LEARNING-LOOP');
