@@ -1131,3 +1131,10 @@ owner 说明：`虽然我的网站里其他页面画了有关 SEED 是怎么做�
 边界：数字和模型名当然可以出现在标题。比如 `44 个候选只有 7 个进入后续模型` 同时说清两端对象，数字本身就是科研发现。`GDR / SD-LoRA / Agent` 等真实技术对象也应准确保留。需要避免的是读者必须先猜 operands / 内部词义才能理解标题。
 
 本轮具体视觉方向中，“可能的疑问”浅红圆框、SEED 89.7 的浅灰 pill、目录后科学尝试总结页和后段技术工作总结页都只绑定 OpenEVO briefing；没有“以后全站照此模板”的授权。PR #605 的 `670ab9b4…` 是历史 current-candidate；后续 `56b5120…` 虽然进入 main，但 owner 在该 exact head 后仍点名两条 hard failure，因此 `56b5120…` 记为 Rejected，不得因 Git merge 升级成 Silver / Golden。
+
+
+**2026-09-10 · CASE-087 补充 / 关键归因句不要让听众猜“问题”指什么**：owner 直接指出 `《为了判断问题是不是 SD-LoRA 独有》这里也讲清什么问题是不是 SD 罗拉独有。` 这里真正要排查的是：**成功轨迹已经有了，为什么把这些经验写进参数以后，任务能力还是没有明显提升？** 普通 LoRA 与 SD-LoRA 的对照随后才有含义：如果普通 LoRA 能学而 SD-LoRA 不能，才支持把原因指向 SD-LoRA 更新机制；如果两种都不行，就继续查数据、任务信号或训练逻辑。
+
+规律补充：**科研机制和归因实验里的关键 referent 先命名，再做因果归因。** `这个问题 / 这个现象 / 它` 本身完全可以使用；只有当它承担关键因果关系、但近邻没有清楚 antecedent 时才是 failure。该机制记为 `unnamed-scientific-referent`，当前只有一次直接事件，因此维持 normal，不假升级 repeated/hard；用 `PAIR-087-DIAGNOSTIC-REFERENT` 做 deterministic recurrence guard。
+
+同一 source window 里的 `把现在的 nogdr 也写进 slide 里面` 只约束当前 OpenEVO briefing 的内容新鲜度。No-GDR 的 round、rollout、loss、Score 与 shadow-GDR 数值属于会继续变化的科学事实，不进入长期 Preference Model；PR #614 exact head `0652a9cf…` 只记 `current-candidate`，没有新的 owner accepted / canonical 语言，所以不升 Silver / Golden。

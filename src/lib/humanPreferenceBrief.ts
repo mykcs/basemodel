@@ -60,6 +60,33 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
   const retrieved = retrieveHumanPreferenceContext(input.query, input.contractId, 16, retrievalScope);
   const review = input.contractId ? preferenceReviewContextForContract(input.contractId) : undefined;
 
+  const goldPairs = [...retrieved.goldPairs];
+  const hardGoldPairs = (review?.goldPairs ?? []).filter((pair) =>
+    pair.failureMechanisms.some((family) => failureFamilySeverity(family) === 'hard'),
+  );
+  for (const pair of hardGoldPairs) {
+    if (goldPairs.some((item) => item.pair.id === pair.id)) continue;
+    const replacement = goldPairs
+      .map((item, index) => ({
+        index,
+        item,
+        directRelevance: relevanceScore(
+          [item.pair.rejected, item.pair.accepted, item.pair.reason, ...item.pair.failureMechanisms].join(' '),
+          input.query,
+        ),
+      }))
+      .filter(({ item }) =>
+        !item.pair.failureMechanisms.some((family) => failureFamilySeverity(family) === 'hard') &&
+        !(workflowCue && item.pair.scopes.includes('workflow')),
+      )
+      .sort((a, b) => a.directRelevance - b.directRelevance || a.item.score - b.item.score || b.index - a.index)[0];
+    if (replacement) {
+      goldPairs.splice(replacement.index, 1, { pair, score: 0 });
+    } else if (goldPairs.length < 16) {
+      goldPairs.push({ pair, score: 0 });
+    }
+  }
+
   const rankedEvents = HUMAN_FEEDBACK_EVENTS
     .map((event) => {
       const scopeCompatible = !scope || event.scopes.includes(scope) || event.scopes.includes('all-public-ui') || (event.scopes.includes('workflow') && workflowCue);
@@ -145,7 +172,7 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
     trajectories,
     visualReferences,
     learnedPreferences: retrieved.preferences,
-    goldPairs: retrieved.goldPairs,
+    goldPairs,
     antiOvergeneralization,
     generationRules,
   };
