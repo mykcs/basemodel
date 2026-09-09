@@ -34,53 +34,62 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).not.toContain('Next slide');
   });
 
-
-  it('reflows on phones while keeping the desktop slide canvas capped at 1280×720', () => {
+  it('keeps a fixed 1280×720 slide canvas and does not add responsive reflow', () => {
     expect(briefing).toContain('--deck-w:1280px;--deck-h:720px');
-    expect(briefing).toContain('@media(max-width:720px)');
-    expect(briefing).toContain('width:calc(100vw - 20px);height:auto');
-    expect(briefing).toContain('.briefing{overflow-x:hidden');
-    expect(briefing).toContain('.paper-table{min-width:620px}');
+    expect(briefing).toContain('width:var(--deck-w);height:var(--deck-h)');
+    expect(briefing).toContain('overflow-x:auto');
+    expect(briefing).not.toContain('@media(max-width:720px)');
+    expect(briefing).not.toContain('width:calc(100vw - 20px);height:auto');
+    expect(briefing).not.toContain('.briefing{overflow-x:hidden');
   });
 
   it('starts with a normal presentation cover and chronological agenda', () => {
     expect(briefing).toContain('OpenEVO 暑期考核汇报');
-    expect(briefing).toContain('OpenEVO 让模型从任务经验中持续更新记忆与参数');
+    expect(briefing).toContain('我们用 WebShop 检查 OpenEVO 能不能从任务经验中持续变强');
     expect(briefing).toContain('汇报日期');
     expect(briefing).toContain('汇报人');
     expect(briefing).toContain("Too long, Don't read");
-    expect(briefing).toContain('7B 长周期结果');
+    expect(briefing).toContain('7B 初始结果');
     expect(briefing).toContain("{t('目录', 'Agenda')}");
-    expect(briefing).toContain('1.7B / 3B 诊断实验');
+    expect(briefing).toContain('1.7B / 3B 小实验');
+    expect(briefing).toContain('当前天花板与下一步选择');
   });
 
   it('uses a SEED-paper-style Score / Succ table and acknowledges the 3B line without inventing a score', () => {
     expect(briefing).toContain('class="paper-table"');
+    expect(briefing).toContain('Method / Model');
     expect(briefing).toContain('WebShop Score');
     expect(briefing).toContain('WebShop Succ.');
     expect(briefing).toContain('SEED (Qwen2.5-3B)');
     expect(briefing).toContain('<td>88.5</td><td>78.9%</td>');
     expect(briefing).toContain('OpenEVO {t(\'（7B，长周期训练）\'');
     expect(briefing).toContain('<td>49.33</td><td>45.31%</td>');
+    expect(briefing).toContain('OpenEVO {t(\'（3B，独立实验线）\'');
+    expect(briefing).toContain('尚无同口径终评');
     expect(briefing).toContain('OpenEVO {t(\'（1.7B，GDR）\'');
     expect(briefing).toContain('<td>37.60</td><td>0.78%</td>');
-    expect(briefing).toContain('OpenEVO {t(\'（3B，独立实验线）\'');
-    expect(briefing).toContain('3B 确实做过独立实验线');
     expect(briefing).toContain('OpenEVO {t(\'（1.7B，DirectApply）\'');
-    expect(briefing).toContain('<td>—</td><td>—</td>');
+    expect(briefing).toContain('尚未收口');
+
+    const sevenB = briefing.indexOf("OpenEVO {t('（7B，长周期训练）'");
+    const threeB = briefing.indexOf("OpenEVO {t('（3B，独立实验线）'");
+    const gdr = briefing.indexOf("OpenEVO {t('（1.7B，GDR）'");
+    const directApply = briefing.indexOf("OpenEVO {t('（1.7B，DirectApply）'");
+    expect(sevenB).toBeGreaterThan(-1);
+    expect(threeB).toBeGreaterThan(sevenB);
+    expect(gdr).toBeGreaterThan(threeB);
+    expect(directApply).toBeGreaterThan(gdr);
   });
 
   it('explains what the two WebShop metrics mean and preserves the SEED comparability boundary', () => {
-    expect(briefing).toContain('<strong>Score</strong>');
-    expect(briefing).toContain('看任务要求满足了多少');
-    expect(briefing).toContain('<strong>Succ.</strong>');
-    expect(briefing).toContain('只统计完整成功');
+    expect(briefing).toContain('Score 看任务要求满足了多少');
+    expect(briefing).toContain('Succ. 看整道任务是否完整成功');
     expect(briefing).toContain('SEED 与 OpenEVO 不是同协议直接对照');
-    expect(briefing).toContain('不能直接用 89.7 与 49.33 的差值判断胜负');
+    expect(briefing).toContain('不能直接用 89.7 与 49.33 的差值判胜负');
   });
 
   it('tells the 7B baseline with its actual experimental scale before jumping to mechanisms', () => {
-    expect(briefing).toContain('7B 长周期实验：最终 49.33 分，瓶颈在哪里？');
+    expect(briefing).toContain('7B 初始长周期线：最终 49.33 分');
     expect(briefing).toContain('Qwen2.5-7B');
     expect(briefing).toContain('180 个任务 × 每个任务 8 次尝试 = 1,440 条轨迹');
     expect(briefing).toContain('temperature=0.4');
@@ -90,11 +99,11 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('uses 1.7B and 3B as smaller diagnostic lines rather than erasing 3B history', () => {
-    expect(briefing).toContain('1.7B 和 3B：用更小实验定位瓶颈');
+    expect(briefing).toContain('转向 1.7B 和 3B：更快排除错误解释');
     expect(briefing).toContain('160 轮 / 20,480 次环境交互');
     expect(briefing).toContain('Qwen2.5-3B');
     expect(briefing).toContain('180×8 的第一阶段');
-    expect(briefing).toContain('独立的持续学习实验线');
+    expect(briefing).toContain('自己的持续学习实验线');
   });
 
   it('makes the negative 15→30 horizon diagnostic a scientific pivot', () => {
@@ -108,8 +117,9 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('keeps the 2048→4096→10+10 capacity chain and does not claim a benchmark win from it', () => {
+    expect(briefing).toContain('Text Memory（文本记忆）');
     expect(briefing).toContain('2048 → 4096');
-    expect(briefing).toContain('我们把记忆容量翻倍了');
+    expect(briefing).toContain('记忆容量翻倍后，问题还在');
     expect(briefing).not.toContain('2048 → 4096：单次记忆容量翻倍仍然失败');
     expect(briefing).toContain('<strong>2048 → 4096</strong>');
     expect(briefing).toContain("20 {t('条记录', 'records')}");
@@ -123,8 +133,11 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   it('uses a simple TaskVector formula in the talk and moves the hard derivation to the child page', () => {
     expect(briefing).toContain('TaskVector（参数更新方向）');
     expect(briefing).not.toContain('这里可以更硬核一点');
-    expect(briefing).toContain('τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub>');
-    expect(briefing).toContain('‖τ‖<sub>F</sub> = 0.608');
+    expect(briefing).toContain('更技术性的指标');
+    expect(briefing).toContain("τ = θ<sub>{t('较晚', 'later')}</sub> − θ<sub>{t('较早', 'earlier')}</sub>");
+    expect(briefing).toContain('‖τ‖ ≈ 0.608');
+    expect(briefing).not.toContain('τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub>');
+    expect(briefing).not.toContain('第 14、27、49 轮三个真实不同');
     expect(briefing).not.toContain('√(δcᵀGδc) = 0.6082257746');
     expect(briefing).toContain('完整技术推导与实验门槛');
     expect(briefing).not.toContain('Gram 范数和干预门槛');
@@ -135,18 +148,18 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
 
   it('explains GDR at first use and states exactly what 44 and 7 count', () => {
     expect(briefing).toContain('GDR（Gated Delta Rule，更新筛选规则）');
-    expect(briefing).toContain('GDR 是 Gated Delta Rule');
-    expect(briefing).toContain('本来有 44 次机会更新参数，实际只有 7 次进入了后续模型');
-    expect(briefing).toContain('44 个 SD-LoRA 更新候选都真正训练出来了');
+    expect(briefing).toContain('GDR = Gated Delta Rule');
+    expect(briefing).toContain('OpenEVO 产生了 44 次 SD-LoRA 更新候选，GDR 只让 7 次进入模型');
+    expect(briefing).toContain('44 个 SD-LoRA 更新候选都真的训练出来了');
     expect(briefing).toContain('GDR 最终只接受 7 个');
     expect(briefing).toContain('θ<sub>t+1</sub> = θ<sub>t</sub> + Δ<sub>t</sub>');
   });
 
   it('keeps DirectApply in the main deck as one simple scientific variable and leaves the result unfinished', () => {
-    expect(briefing).toContain('DirectApply：拿掉 GDR 的否决权，只改这一个变量');
-    expect(briefing).toContain('DirectApply 对满足共同训练条件的候选直接应用');
+    expect(briefing).toContain('DirectApply：把 GDR 拿掉，重新开一条对照线');
+    expect(briefing).toContain('把 DirectApply 作为独立对照重新开始');
     expect(briefing).toContain('最终冻结分数还没有收口');
-    expect(briefing).toContain('严谨性、重复性与复现实验细节');
+    expect(briefing).toContain('实验身份、冻结起点与复现实验细节');
   });
 
   it('removes engineering-rigor-as-highlight from the talk while preserving it in technical notes', () => {
@@ -167,13 +180,13 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('ends with a concrete advisor priority choice and no final page number', () => {
-    expect(briefing).toContain('下一步优先级：先做机制，还是先做 SEED 匹配比较？');
+    expect(briefing).toContain('下一阶段，请帮我们选优先级');
     expect(briefing).toContain('向北');
-    expect(briefing).toContain('先把机制证据做深');
+    expect(briefing).toContain('机制证据优先');
     expect(briefing).toContain('向南');
-    expect(briefing).toContain('先把 SEED 匹配比较做齐');
-    expect(briefing).toContain('先追“为什么有效”的机制证据');
-    expect(briefing).toContain('想请老师和学长判断优先级');
+    expect(briefing).toContain('SEED 匹配比较优先');
+    expect(briefing).toContain('先追“为什么有效”');
+    expect(briefing).toContain('先追“最终差多少”');
     expect(briefing).not.toContain('11 / 11');
   });
 
