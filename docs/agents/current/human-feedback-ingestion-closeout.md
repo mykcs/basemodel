@@ -624,6 +624,8 @@ A proper ingestion capability should eventually support:
 
 Until full automatic conversation extraction is technically available, the Agent may perform the extraction from the current conversation manually, but must still produce the same structured artifacts and completion receipt. Report that limitation honestly.
 
+**BaseModel implementation status (2026-09-09):** `src/data/humanFeedbackIngestionCloseouts.ts` owns structured coverage ledgers / closeout records, `src/lib/humanFeedbackIngestionCloseout.ts` validates references, verdict tiers, supersession, future-task retrieval and a deterministic rejected-example probe, and `npm run feedback:closeout:verify` emits the machine-readable completion receipt. Automatic extraction of raw ChatGPT turns is still unavailable to repository code; that first extraction step therefore remains Agent-assisted.
+
 ---
 
 ## 19. One-to-one delivery standard

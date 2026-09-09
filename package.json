@@ -34,7 +34,9 @@
     "preflight:ui": "tsx scripts/preflight-ui.ts",
     "preflight:ui:plan": "tsx scripts/preflight-ui.ts --plan",
     "feedback:retrieve": "tsx scripts/retrieve-human-feedback-precedents.ts",
+    "feedback:brief": "tsx scripts/generate-human-preference-brief.ts",
     "feedback:cold-read": "tsx scripts/generate-human-feedback-cold-read.ts",
+    "feedback:closeout:verify": "tsx scripts/verify-human-feedback-ingestion-closeout.ts",
     "feedback:judge": "tsx scripts/verify-human-preference-judge-receipt.ts",
     "test:e2e": "playwright test",
     "test:header": "playwright test tests/e2e/global-header-visibility.spec.ts tests/e2e/global-header-breakpoints.spec.ts --project=chromium",
@@ -63,7 +65,7 @@
     "audit:headings": "node scripts/audit-static-headings.mjs",
     "audit:brand-links": "node scripts/audit-external-brand-links.mjs",
     "audit:reader-contracts": "tsx scripts/audit-reader-contracts.ts",
-    "audit:human-feedback": "tsx scripts/audit-human-feedback-precedents.ts"
+    "audit:human-feedback": "tsx scripts/audit-human-feedback-precedents.ts && tsx scripts/verify-human-feedback-ingestion-closeout.ts"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.4",

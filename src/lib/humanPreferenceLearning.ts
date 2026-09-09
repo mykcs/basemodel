@@ -74,7 +74,7 @@ export function retrieveHumanPreferenceContext(
   })
     .filter(({ score }) => score > 4)
     .sort((a, b) => b.score - a.score || b.preference.priority - a.preference.priority)
-    .slice(0, 6);
+    .slice(0, limit);
 
   const preferenceIds = new Set(preferences.map(({ preference }) => preference.id));
   const goldPairs = HUMAN_FEEDBACK_GOLD_PAIRS.map((pair) => {
@@ -86,7 +86,7 @@ export function retrieveHumanPreferenceContext(
   })
     .filter(({ score }) => score > 0)
     .sort((a, b) => b.score - a.score || a.pair.id.localeCompare(b.pair.id))
-    .slice(0, 6);
+    .slice(0, limit);
 
   return { query, contractId, cases, preferences, goldPairs };
 }

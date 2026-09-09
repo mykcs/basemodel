@@ -992,3 +992,7 @@
 规律：**案例不是长期记忆的替代品，也不是墓碑。一次真人纠正只有在它改变下一次任务的 pre-write context 和 post-write evaluation 时，才真正产生累积学习。不能把单个页面实现细节升级成全局规则；当前明确指令 > 最新直接反馈 > 多案例偏好模型 > 通用设计原则 > Agent 自己的审美。**
 
 边界：这套系统不声称修改了模型权重，也不把 Agent 自评伪装成人类偏好测量。deterministic audit 保护已知 precedent；独立 Agent / 真人 cold read 检查注意力、自然度和阅读欲望；真正的人类反馈仍是最高价值的新训练样本。
+
+**2026-09-09 本轮 ingestion closeout**：本次 OpenEVO briefing 的完整反馈窗口按 `human-feedback-ingestion-closeout.md` 建立了逐条 coverage ledger。最终 PR #569 的具体结果已获准合并，因此 verdict 是 **accepted**；但 owner 同时明确“还不是 100%”，没有给出“以后按这个标准”的复用授权，所以最终视觉只能进入 **Silver**，不能升级 Golden / canonical。此前 `fixed 16:9 on every device` 作为历史 page-specific 证据保留，并由更新、更具体的 `phone reflow + capped desktop 16:9` 设备规则显式 supersede。
+
+closeout 还明确区分了**事实**与**偏好**：例如“3B 确实做过”属于实验历史，必须靠科学权威核验；系统只学习 owner 对“如何把 3B 放进科研故事、如何不让工程审计抢主线”的表达/设计偏好。未来 Agent 不得把实验数值、模型大小或一次临时状态回灌成审美规则。
