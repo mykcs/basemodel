@@ -127,7 +127,9 @@ Read:
 - [`current/release-closeout-protocol.md`](current/release-closeout-protocol.md)
 - [`current/multi-pr-semantic-integration-playbook.md`](current/multi-pr-semantic-integration-playbook.md) when PRs overlap or ship together
 
-Vercel owns ordinary Preview and Production. Historical Vercel pilot/adoption records are under `history/`; Cloudflare files in `current/` are conditional rollback/provider-specific runbooks, not normal release authority.
+Vercel owns exact-head final acceptance and Production. Repeated UI/copy/slide review may use the non-authoritative prebuilt review Preview lane from current deployment policy; that viewing surface is not merge evidence. Historical Vercel pilot/adoption records are under `history/`; Cloudflare files in `current/` are conditional rollback/provider-specific runbooks, not normal release authority.
+
+For a red Vercel/provider status, first use [`current/provider-failure-attribution-runbook.md`](current/provider-failure-attribution-runbook.md) to bind the exact deployed SHA and first failing execution phase before assigning blame or changing architecture. Its dated incident evidence is [`history/2026-09-09-briefing-vercel-failure-attribution-retrospective.md`](history/2026-09-09-briefing-vercel-failure-attribution-retrospective.md).
 
 For provider/browser performance incidents, use the dated retrospective that matches the failure after reading the current policy. For Vercel billing, `Overdue`, unexplained Build CPU, or spend-reduction work, read [`history/2026-08-28-vercel-billing-and-cost-control-retrospective.md`](history/2026-08-28-vercel-billing-and-cost-control-retrospective.md). For internal `src/pages/_*` modules being mistaken for public routes, Preview `READY` with skipped browser gates, or a Production changed-route smoke failure caused by route derivation, read [`history/2026-08-27-home-maintenance-shortcuts-release-retrospective.md`](history/2026-08-27-home-maintenance-shortcuts-release-retrospective.md).
 
