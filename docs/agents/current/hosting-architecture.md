@@ -15,7 +15,9 @@ working PR / development branch
   -> public hosted GitHub Actions preflight
   -> deterministic gate + shared risk planner
   -> full work uses 4 independent Chromium shards; bounded work uses focused coverage
-  -> no ordinary Vercel Preview while iterating
+  -> no Git-integrated Vercel acceptance Preview while iterating
+  -> when human visual review is needed: local/Agent static build -> prebuilt upload to a dedicated non-Git-connected review Preview
+  -> review Preview is non-authoritative, non-Production, and never moves `ci/vercel-gate-final`
 
 final non-draft current-base candidate
   -> `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>` pins non-deploy `ci/vercel-gate-base` to live `main`
@@ -78,17 +80,19 @@ The retained `.github/workflows/self-hosted-ci.yml` remains manual `workflow_dis
 ## Acceptance sequence
 
 ```text
-repository contract updated
+repository/UI batch updated
 -> public GHA preflight supplies early deterministic/browser evidence
+-> optional fast human-review Preview: local static build -> prebuilt non-Git-connected upload -> owner inspection
+-> continue edits without touching the final-gate ref
 -> exact PR head/current base receives required Vercel success
--> inspect real Preview route/metadata when the change is user-facing
+-> inspect the authoritative final Preview route/metadata when the change is user-facing
 -> merge accepted release to main
 -> Vercel Production runs the same deterministic/risk-based contract
 -> verify Production HTTP/routes/canonical/hreflang/robots/sitemap
 -> Cloudflare scheduled smoke continues independent observation
 ```
 
-A READY historical Preview is not current merge evidence. A green historical CircleCI run is not current merge evidence.
+The fast human-review Preview is a viewing convenience only. It may prove that the built page is inspectable, but it cannot prove merge readiness, exact-head acceptance, current-base freshness, or Production behavior. A READY historical/review Preview is not current merge evidence. A green historical CircleCI run is not current merge evidence.
 
 ## Public-source boundary
 
