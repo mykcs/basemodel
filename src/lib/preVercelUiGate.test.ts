@@ -23,6 +23,10 @@ const uiOverflowPreflight = readFileSync(
 describe('pre-Vercel UI regression gate', () => {
   it('classifies UI changes upward by blast radius', () => {
     expect(classifyUiFile('docs/agents/current/ui-design-principles.md')).toBe('none');
+    expect(classifyUiFile('src/lib/humanPreferenceBrief.ts')).toBe('none');
+    expect(classifyUiFile('src/data/humanPreferenceModel.ts')).toBe('none');
+    expect(classifyUiFile('src/lib/humanPreferenceBrief.test.ts')).toBe('none');
+    expect(classifyUiFile('src/components/example.spec.tsx')).toBe('none');
     expect(classifyUiFile('src/data/openEvoWebShopProgram.ts')).toBe('content');
     expect(classifyUiFile('src/pages/research/example.astro')).toBe('local');
     expect(classifyUiFile('src/components/research/Example.astro')).toBe('shared');

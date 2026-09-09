@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
+import { findUnexpectedHplRuntimeImporters, isHplControlPlanePath } from './hpl-control-plane.mjs';
 
 const BUILD_RELEVANT_PREFIXES = ['src/', 'public/', 'scripts/'];
 const NON_DEPLOY_TEST_FILE = /(?:^|\/)[^/]+\.(?:test|spec)\.[cm]?[jt]sx?$/;
@@ -22,6 +23,7 @@ export function mustRunAcceptanceBuild(env) {
 
 export function isBuildRelevantPath(filePath) {
   if (filePath.startsWith('tests/') || NON_DEPLOY_TEST_FILE.test(filePath)) return false;
+  if (isHplControlPlanePath(filePath)) return false;
   return (
     BUILD_RELEVANT_PREFIXES.some((prefix) => filePath.startsWith(prefix)) ||
     BUILD_RELEVANT_FILES.has(filePath) ||
@@ -63,7 +65,15 @@ export function main(env = process.env) {
 
     const output = runGit(['diff', '--name-only', '--no-renames', base, head]);
     const changedFiles = output ? output.split('\n').filter(Boolean) : [];
-    const relevantFiles = changedFiles.filter(isBuildRelevantPath);
+    const hplChanges = changedFiles.filter(isHplControlPlanePath);
+    const unexpectedHplImporters = hplChanges.length ? findUnexpectedHplRuntimeImporters() : [];
+    const relevantFiles = changedFiles.filter((filePath) =>
+      isBuildRelevantPath(filePath) || (isHplControlPlanePath(filePath) && unexpectedHplImporters.length > 0));
+
+    if (unexpectedHplImporters.length) {
+      console.log('[vercel-ignore-build] HPL control-plane detachment failed; Production build is required because runtime source imports HPL modules:');
+      for (const filePath of unexpectedHplImporters) console.log(`- ${filePath}`);
+    }
 
     if (relevantFiles.length === 0) {
       if (previewAcceptance) {
