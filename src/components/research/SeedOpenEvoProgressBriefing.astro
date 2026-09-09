@@ -123,7 +123,7 @@ const lastLoss17B = dynamics17B.loss.at(-1)?.loss ?? 0;
       <p class="table-boundary"><strong>{t('SEED 与 OpenEVO 不是同协议直接对照。', 'SEED and OpenEVO are not a same-protocol head-to-head comparison.')}</strong>{t('SEED 是论文报告值；OpenEVO 是本地冻结 128 题终评。这里统一用 Score / Succ. 方便读表，不能直接用 89.7 与 49.33 的差值判断胜负。', 'SEED values are paper-reported; OpenEVO uses our local frozen 128-task final panel. The shared Score / Succ. columns are for readability, not for declaring a winner from the 89.7 versus 49.33 gap.')}</p>
       <div class="paper-table-wrap" tabindex="0" aria-label={t('SEED 论文与 OpenEVO 当前 WebShop 结果', 'SEED paper and current OpenEVO WebShop results')}>
         <table class="paper-table">
-          <thead><tr><th>{t('方法', 'Method')}</th><th>WebShop Score</th><th>WebShop Succ.</th></tr></thead>
+          <thead><tr><th>Method / Model</th><th>WebShop Score</th><th>WebShop Succ.</th></tr></thead>
           <tbody>
             <tr class="method-group"><th colspan="3">SEED {t('（论文报告值）', '(paper-reported)')}</th></tr>
             <tr><th scope="row">SEED (Qwen2.5-3B)</th><td>88.5</td><td>78.9%</td></tr>
@@ -131,8 +131,8 @@ const lastLoss17B = dynamics17B.loss.at(-1)?.loss ?? 0;
             <tr><th scope="row">SEED (Qwen3-1.7B)</th><td>87.1</td><td>77.3%</td></tr>
             <tr class="method-group ours"><th colspan="3">OpenEVO {t('（我们的实验）', '(our experiments)')}</th></tr>
             <tr><th scope="row">OpenEVO {t('（7B，长周期训练）', '(7B, long-horizon)')}</th><td>49.33</td><td>45.31%</td></tr>
-            <tr><th scope="row">OpenEVO {t('（1.7B，GDR）', '(1.7B, GDR)')}</th><td>37.60</td><td>0.78%</td></tr>
             <tr class="pending-row"><th scope="row">OpenEVO {t('（3B，独立实验线）', '(3B, independent line)')}</th><td>—</td><td>—</td></tr>
+            <tr><th scope="row">OpenEVO {t('（1.7B，GDR）', '(1.7B, GDR)')}</th><td>37.60</td><td>0.78%</td></tr>
             <tr class="pending-row"><th scope="row">OpenEVO {t('（1.7B，DirectApply）', '(1.7B, DirectApply)')}</th><td>—</td><td>—</td></tr>
           </tbody>
         </table>

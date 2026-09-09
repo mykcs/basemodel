@@ -61,10 +61,20 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
 
   it('uses a SEED-paper-style Score / Succ table and acknowledges the 3B line without inventing a score', () => {
     expect(briefing).toContain('class="paper-table"');
+    expect(briefing).toContain('<th>Method / Model</th>');
     expect(briefing).toContain('WebShop Score');
     expect(briefing).toContain('WebShop Succ.');
     expect(briefing).toContain('SEED (Qwen2.5-3B)');
     expect(briefing).toContain('<td>88.5</td><td>78.9%</td>');
+    const openEvoRows = [
+      "OpenEVO {t('（7B，长周期训练）'",
+      "OpenEVO {t('（3B，独立实验线）'",
+      "OpenEVO {t('（1.7B，GDR）'",
+      "OpenEVO {t('（1.7B，DirectApply）'",
+    ];
+    const rowPositions = openEvoRows.map((row) => briefing.indexOf(row));
+    expect(rowPositions.every((position) => position >= 0)).toBe(true);
+    expect(rowPositions).toEqual([...rowPositions].sort((a, b) => a - b));
     expect(briefing).toContain('OpenEVO {t(\'（7B，长周期训练）\'');
     expect(briefing).toContain('<td>49.33</td><td>45.31%</td>');
     expect(briefing).toContain('OpenEVO {t(\'（1.7B，GDR）\'');
