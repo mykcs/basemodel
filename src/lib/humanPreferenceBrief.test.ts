@@ -65,6 +65,29 @@ describe('human preference learning v2', () => {
     expect(brief.generationRules.join('\n')).toContain('still under review');
   });
 
+  it('builds a recovery-scoped brief with rejected/current visual tiers and no invented Golden', () => {
+    const brief = buildHumanPreferenceBrief({
+      scope: 'recovery',
+      query: '做一个服务器故障自救入口：用户只拿着手机、很着急、完全失忆，但完整运行手册必须保留。',
+    });
+    expect(brief.learnedPreferences.map(({ preference }) => preference.id)).toEqual(expect.arrayContaining([
+      'PREF-RECOVERY-ACTION-FIRST',
+      'PREF-FIRST-SCREEN-ATTENTION',
+      'PREF-PROGRESSIVE-DISCLOSURE',
+    ]));
+    expect(brief.learnedPreferences.map(({ preference }) => preference.id)).not.toContain('PREF-BRIEFING-DEVICE-SCOPE');
+    expect(brief.goldPairs.map(({ pair }) => pair.id)).not.toContain('PAIR-082-DEVICE-SCOPE');
+    expect(brief.events.map((event) => event.id)).toEqual(expect.arrayContaining([
+      'EVENT-20260909-FUHUO-RECOVERY-TECHNICAL-FIRST',
+      'EVENT-20260909-FUHUO-RECOVERY-ACTION-FIRST-DIRECTION',
+    ]));
+    expect(brief.hardFailureFamilies).toContain('internal-detail-promoted-to-primary-attention');
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-FUHUO-RECOVERY-TECHNICAL-FIRST-REJECTED' && reference.tier === 'rejected')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-FUHUO-RECOVERY-ACTION-FIRST-CURRENT' && reference.tier === 'current-candidate')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.tier === 'silver' || reference.tier === 'golden')).toBe(false);
+    expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('复制 prompt / 命令') && boundary.includes('不是通用模板'))).toBe(true);
+  });
+
   it('generates three internal candidate slots with screenshots required', () => {
     const template = candidateReceiptTemplate('study-briefing', 'refresh advisor briefing');
     expect(template.variants).toHaveLength(3);

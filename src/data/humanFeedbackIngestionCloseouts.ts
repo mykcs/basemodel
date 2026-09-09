@@ -1,3 +1,5 @@
+import type { HumanPreferenceScopeV2 } from './humanPreferenceLearningHistory';
+
 export type FeedbackLedgerDisposition =
   | 'ingest'
   | 'merge-duplicate'
@@ -28,6 +30,7 @@ export type HumanFeedbackIngestionCloseoutSchema =
   | 'human-feedback-ingestion-closeout.v2';
 
 export interface HumanFeedbackIngestionSourceWindow {
+  sourceRepository?: string;
   start: string;
   end: string;
   route: string;
@@ -48,6 +51,7 @@ export interface HumanFeedbackIngestionCloseoutRecord {
   candidateFeedbackSignals: number;
   ledger: FeedbackCoverageLedgerItem[];
   futureTaskQuery: string;
+  preferenceBrief?: { contractId?: string; scope?: HumanPreferenceScopeV2 };
   expectedRetrievedSignals: string[];
   evaluationProof: {
     hardFamily?: string;
@@ -475,7 +479,90 @@ export const OPEN_EVO_BRIEFING_SUCCESSOR_INGESTION_20260909: HumanFeedbackIngest
   automationGap: 'Conversation-to-ledger extraction is still manually interpreted because the repository has no direct ChatGPT turn-export API. The v2 record adds an honest current-candidate closure state so an unfinished page cannot be mislabeled accepted; repository code validates coverage, retrieval, scope/tier boundaries, and evaluation-side recurrence rejection.',
 };
 
+
+export const FUHUO_MAC_RECOVERY_INGESTION_20260909: HumanFeedbackIngestionCloseoutRecord = {
+  id: 'INGESTION-20260909-FUHUO-MAC-RECOVERY',
+  schema: 'human-feedback-ingestion-closeout.v2',
+  task: 'fuhuo Mac remote recovery page: emergency-first / zero-context recovery closeout',
+  sourceWindow: {
+    sourceRepository: 'mykcs/fuhuo_20260419',
+    start: '2026-09-09 · owner asks for a zero-memory recovery page for reconnecting ChatGPT to the Mac',
+    end: '2026-09-09 · fuhuo main@123fb5e is the final owner-visible implementation before HPL closeout',
+    route: '/docs/mac-remote',
+    pullRequest: 22,
+    finalOwnerVisibleHead: '123fb5e479bcb167c894519067d64a23a276d137',
+    mainAtCloseout: '7b88e83ab80592a71c64ed18e9afee8375b012b7',
+    finalVerdict: 'current-candidate',
+  },
+  candidateFeedbackSignals: 5,
+  ledger: [
+    {
+      id: 'FB-R01-ELI5-CHAT-ANSWER',
+      date: '2026-09-09',
+      ownerSignal: 'eli5 你就简单告诉我，我想要什么？然后完成了没有？然后能完成吗？然后该怎么完成？还是说无法完成？',
+      disposition: 'out-of-scope',
+      rationale: '这是对当前聊天回复格式的要求，不是 rendered recovery page 的可复用视觉/文案证据；不能把聊天回答风格偷换成网站模板。',
+      scopes: ['chat-response'],
+    },
+    {
+      id: 'FB-R02-ZERO-MEMORY-RECOVERY-GOAL',
+      date: '2026-09-09',
+      ownerSignal: '等哪一天然后可能我不知道该怎么做的时候，你就把我当成完全失忆了。然后……我想这个用这个 ChatGPT 连回我的电脑。',
+      disposition: 'merge-duplicate',
+      rationale: '强化 CASE-086 / recovery action-first：恢复入口必须服务零上下文的未来自己；具体 Mac 睡眠参数属于任务事实，不从这句话泛化成设计规则。',
+      eventIds: ['EVENT-20260909-FUHUO-RECOVERY-ACTION-FIRST-DIRECTION'],
+      caseIds: ['CASE-086'],
+      preferenceIds: ['PREF-RECOVERY-ACTION-FIRST'],
+      excludedSubsignals: ['Mac AC/sleep/lid configuration is operational truth, not a reusable expression preference'],
+    },
+    {
+      id: 'FB-R03-OUTSIDE-ONE-ACTION-CONCEPT',
+      date: '2026-09-09',
+      ownerSignal: '我突然我在外面，我没有办法拿到我的 MacBook，然后我又想通过这个基于 ChatGPT 的这个插件，RDC 插件可以连接我的这个 MacBook……下面就出现，然后请复制这段这个 prompt 到 ChatGPT，还是说请复制到那个命令到什么什么东西上，然后这样就能救活。',
+      disposition: 'merge-duplicate',
+      rationale: '强化“场景 → 最短可执行动作”的 recovery 机制；owner 明确把 prompt 还是 command 作为待判断问题，因此不学习“所有恢复页必须有复制 prompt 按钮”。',
+      eventIds: ['EVENT-20260909-FUHUO-RECOVERY-ACTION-FIRST-DIRECTION'],
+      caseIds: ['CASE-086'],
+      preferenceIds: ['PREF-RECOVERY-ACTION-FIRST'],
+      excludedSubsignals: ['prompt-vs-command was exploratory, not a canonical UI control choice'],
+    },
+    {
+      id: 'FB-R04-DEVICE-VERIFICATION-CLICK',
+      date: '2026-09-09',
+      ownerSignal: '我不知道刚才是怎么了，然后你弹出来了一个这个 RCD 的这个验证网页，然后我就点验证了。如果打扰了你的工作的话，那你继续做。',
+      disposition: 'task-fact-not-preference',
+      rationale: '这是一次真实授权操作/执行状态，不表达长期页面文案、视觉或交互偏好。',
+    },
+    {
+      id: 'FB-R05-TECHNICAL-FIRST-REJECTED',
+      date: '2026-09-09',
+      ownerSignal: '具体的技术细节的话，你可以再往下放一放。就首先我打开这个网页，我前面几行我应该看的都是……我们发生了某种情况，然后现在我们进入到这种情况了，我们该怎么办？……你好像列了很多专有名词，或者是列的很详细，列的很工程化……这会对那个时候很着急的我造成困扰。',
+      disposition: 'ingest',
+      rationale: '强直接拒绝 + 明确 successor 方向，并且 owner 说“就像我大概那个上面我跟你对话的要求一样”，属于重复纠正。复用既有 internal-detail-primary-attention hard family，同时增加 recovery 专用 preference，避免把所有网页都简化成急救卡。',
+      eventIds: ['EVENT-20260909-FUHUO-RECOVERY-TECHNICAL-FIRST', 'EVENT-20260909-FUHUO-RECOVERY-ACTION-FIRST-DIRECTION'],
+      caseIds: ['CASE-068', 'CASE-086'],
+      preferenceIds: ['PREF-FIRST-SCREEN-ATTENTION', 'PREF-PROGRESSIVE-DISCLOSURE', 'PREF-RECOVERY-ACTION-FIRST'],
+      visualReferenceIds: ['VISUAL-FUHUO-RECOVERY-TECHNICAL-FIRST-REJECTED', 'VISUAL-FUHUO-RECOVERY-ACTION-FIRST-CURRENT'],
+    },
+  ],
+  futureTaskQuery: '我要做一个账号或服务器故障自救页面：用户可能只拿着手机、很着急、完全不记得内部脚本，但页面又必须保留完整工程排障资料。第一次打开时应该怎样安排最重要的信息和下一步，后面的深度放在哪里？',
+  preferenceBrief: { scope: 'recovery' },
+  expectedRetrievedSignals: [
+    'recovery-action-first',
+    'recovery-progressive-depth',
+    'recovery-internal-detail-hard-family',
+    'recovery-current-candidate-not-promoted',
+    'recovery-copy-action-not-universal',
+  ],
+  evaluationProof: {
+    hardFamily: 'internal-detail-promoted-to-primary-attention',
+    mechanism: 'candidate screening must reject a recurrence that skips the already-hard cross-form family; the recovery event adds direct stress-context evidence without creating a new global hard synonym',
+  },
+  automationGap: 'Conversation-to-ledger extraction is still manually interpreted because the repository has no direct ChatGPT turn-export API. This closeout adds scope-aware, cross-repository validation so the recorded ledger, current-candidate tier, future-task retrieval, and evaluation proof can be checked fail-closed without pretending the conversation extraction itself was automatic.',
+};
+
 export const HUMAN_FEEDBACK_INGESTION_CLOSEOUTS = [
   OPEN_EVO_BRIEFING_INGESTION_20260909,
   OPEN_EVO_BRIEFING_SUCCESSOR_INGESTION_20260909,
+  FUHUO_MAC_RECOVERY_INGESTION_20260909,
 ];

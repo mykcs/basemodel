@@ -54,12 +54,17 @@ export function retrieveHumanPreferenceContext(
   query: string,
   contractId?: string,
   limit = 8,
+  scope?: HumanPreferenceScope,
 ): HumanPreferenceRetrievalResult {
   const normalized = query.toLowerCase();
   const tokens = tokenizeHumanPreferenceQuery(query);
   const boundCases = new Set<HumanFeedbackCaseId>(
     (contractId ? READER_CONTRACT_PRECEDENTS[contractId] : []) as HumanFeedbackCaseId[],
   );
+  const explicitWorkflowCue = containsAny(normalized, ['反馈', '案例', '学习', 'judge', 'cold read', 'gold pair', 'preference model']);
+  const previewWorkflowCue = containsAny(normalized, ['preview', '预览', 'build', '构建', 'vercel', '网页草稿', '审阅', '迭代', '快速', '等待']);
+  const recoveryCue = containsAny(normalized, ['恢复', '急救', '自救', '故障', '救援', '失忆', '运行手册', 'runbook', 'reconnect', '连不上']);
+  const workflowCue = explicitWorkflowCue || previewWorkflowCue;
 
   const cases = HUMAN_FEEDBACK_PRECEDENTS.map((precedent) => {
     const fields = [precedent.title, precedent.principle, ...precedent.tags, ...precedent.antiPatterns, ...precedent.positiveSignals];
@@ -79,10 +84,11 @@ export function retrieveHumanPreferenceContext(
     const haystack = [preference.title, preference.statement, ...preference.retrievalTags, ...preference.antiOvergeneralization]
       .join(' ')
       .toLowerCase();
-    const explicitWorkflowCue = containsAny(normalized, ['反馈', '案例', '学习', 'judge', 'cold read', 'gold pair', 'preference model']);
-    const previewWorkflowCue = containsAny(normalized, ['preview', '预览', 'build', '构建', 'vercel', '网页草稿', '审阅', '迭代', '快速', '等待']);
+    const scopeCompatible = !scope || preference.scopes.includes(scope) || preference.scopes.includes('all-public-ui') || (preference.scopes.includes('workflow') && workflowCue);
+    if (!scopeCompatible) return { preference, score: 0 };
     if (preference.activation === 'explicit-cues' && !explicitWorkflowCue) return { preference, score: 0 };
     if (preference.activation === 'preview-cues' && !previewWorkflowCue) return { preference, score: 0 };
+    if (preference.activation === 'recovery-cues' && !recoveryCue) return { preference, score: 0 };
     let score = preference.priority;
     if (preference.scopes.includes('workflow') && explicitWorkflowCue) score += 12;
     for (const tag of preference.retrievalTags) if (normalized.includes(tag.toLowerCase())) score += 8;
@@ -100,6 +106,8 @@ export function retrieveHumanPreferenceContext(
   const preferenceIds = new Set(preferences.map(({ preference }) => preference.id));
   const preferenceById = new Map(HUMAN_PREFERENCE_MODEL.map((preference) => [preference.id, preference]));
   const goldPairs = HUMAN_FEEDBACK_GOLD_PAIRS.map((pair) => {
+    const pairScopeCompatible = !scope || pair.scopes.includes(scope) || pair.scopes.includes('all-public-ui') || (pair.scopes.includes('workflow') && workflowCue);
+    if (!pairScopeCompatible) return { pair, score: 0 };
     let score = rankedCaseIds.has(pair.caseId) ? 10 : boundCases.has(pair.caseId) ? 7 : 0;
     for (const preferenceId of pair.preferenceIds) {
       if (preferenceIds.has(preferenceId)) score += 6;
@@ -139,7 +147,7 @@ export function preferenceIdsForContract(contractId: string): HumanPreferenceId[
   const caseIds = new Set((READER_CONTRACT_PRECEDENTS[contractId] ?? []) as HumanFeedbackCaseId[]);
   const scopes = new Set(preferenceScopesForContract(contractId));
   return HUMAN_PREFERENCE_MODEL
-    .filter((preference) => preference.activation !== 'explicit-cues')
+    .filter((preference) => preference.activation !== 'explicit-cues' && preference.activation !== 'recovery-cues')
     .filter((preference) =>
       preference.scopes.some((scope) => scopes.has(scope)) ||
       preference.supportingCaseIds.some((caseId) => caseIds.has(caseId)),

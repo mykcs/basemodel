@@ -20,6 +20,7 @@ export type HumanPreferenceScopeV2 =
   | 'visual'
   | 'briefing-mobile'
   | 'briefing-desktop'
+  | 'recovery'
   | 'workflow';
 
 export interface HumanFeedbackEvent {
@@ -37,7 +38,7 @@ export interface HumanFeedbackEvent {
   repeatSignal?: 'explicit';
   supersedesEventIds?: HumanFeedbackEventId[];
   requestedSuccessorVariantId?: string;
-  evidence?: { route?: string; pullRequest?: number; gitSha?: string; ledgerId?: string };
+  evidence?: { repository?: string; route?: string; pullRequest?: number; gitSha?: string; ledgerId?: string };
 }
 
 export interface PreferenceTrajectoryComparison {
@@ -61,6 +62,7 @@ export interface HumanVisualReference {
   tier: VisualReferenceTier;
   scopes: HumanPreferenceScopeV2[];
   artifact: string;
+  repository?: string;
   gitSha?: string;
   pullRequest?: number;
   route?: string;
@@ -347,6 +349,37 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     evidence: { gitSha: '0da23c2969d563097d5690e22e980fc84a92fdb8', ledgerId: 'FB-S2-07-FAST-PREVIEW-FUTURE-DEFAULT' },
   },
 
+  {
+    id: 'EVENT-20260909-FUHUO-RECOVERY-TECHNICAL-FIRST',
+    date: '2026-09-09',
+    caseIds: ['CASE-068', 'CASE-086'],
+    scopes: ['recovery', 'visual'],
+    artifact: 'fuhuo Mac remote recovery page',
+    variantId: 'fuhuo-mac-remote-technical-first-f622ecd',
+    verdict: 'rejected',
+    ownerSignal: '你好像列了很多专有名词，或者是列的很详细，列的很工程化，这不是我们想要解决的，这不是我们想要的解决方案或解决风格，就这会对那个时候很着急的我造成困扰。',
+    reasons: ['恢复页要求着急的读者先解码工程内部名词', '真正要做的恢复动作被运行手册和实现细节压到后面'],
+    failureMechanisms: ['internal-detail-promoted-to-primary-attention'],
+    repeatSignal: 'explicit',
+    requestedSuccessorVariantId: 'fuhuo-mac-remote-scenario-action-direction',
+    evidence: { repository: 'mykcs/fuhuo_20260419', route: '/docs/mac-remote', pullRequest: 20, gitSha: 'f622ecd6931adc90c17a4c13e0a1039e96fdb437', ledgerId: 'FB-R05-TECHNICAL-FIRST-REJECTED' },
+  },
+  {
+    id: 'EVENT-20260909-FUHUO-RECOVERY-ACTION-FIRST-DIRECTION',
+    date: '2026-09-09',
+    caseIds: ['CASE-068', 'CASE-086'],
+    scopes: ['recovery'],
+    artifact: 'fuhuo Mac remote recovery page',
+    variantId: 'fuhuo-mac-remote-scenario-action-direction',
+    comparedToVariantId: 'fuhuo-mac-remote-technical-first-f622ecd',
+    verdict: 'promising',
+    ownerSignal: '具体的技术细节的话，你可以再往下放一放。就首先我打开这个网页，我前面几行我应该看的都是……我们发生了某种情况，然后现在我们进入到这种情况了，我们该怎么办？就大概就这么简单的一回事。',
+    reasons: ['先确认用户处境和唯一下一步，降低高压场景的排序负担', '技术细节仍保留，但不占第一行动层'],
+    failureMechanisms: ['internal-detail-promoted-to-primary-attention'],
+    requestedSuccessorVariantId: 'fuhuo-mac-remote-action-first-current-123fb5e',
+    evidence: { repository: 'mykcs/fuhuo_20260419', route: '/docs/mac-remote', pullRequest: 21, gitSha: '4a7fdaf6d17cac6b825ffdd801951229d51fbfc0', ledgerId: 'FB-R05-TECHNICAL-FIRST-REJECTED' },
+  },
+
 ];
 
 export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
@@ -455,6 +488,21 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
     note: 'canonical 只适用于 BaseModel 的迭代审阅 workflow；最终 merge/release 门槛不变。',
   },
 
+  {
+    id: 'TRAJECTORY-FUHUO-RECOVERY-ACTION-20260909',
+    scopes: ['recovery', 'visual'],
+    variantIds: ['fuhuo-mac-remote-technical-first-f622ecd', 'fuhuo-mac-remote-scenario-action-direction', 'fuhuo-mac-remote-action-first-current-123fb5e'],
+    comparisons: [
+      {
+        betterVariantId: 'fuhuo-mac-remote-scenario-action-direction',
+        worseVariantId: 'fuhuo-mac-remote-technical-first-f622ecd',
+        reason: 'owner 明确要求把技术细节下沉，让前几行先回答发生了什么和现在该怎么办；这是高压恢复场景的注意力排序修正。',
+        failureMechanisms: ['internal-detail-promoted-to-primary-attention'],
+      },
+    ],
+    note: 'owner 明确拒绝 technical-first，并给出 action-first successor 方向；最终 123fb5e 实现该方向但 closeout 前没有新的具体接受/模板授权，因此仍是 current-candidate，不补写第二条“final > direction”比较，也没有 canonicalVariantId。',
+  },
+
 ];
 export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
   {
@@ -519,6 +567,31 @@ export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
     route: '/research/seed-openevo/study/briefing/',
     ownerEvidence: 'owner 要求加入 checkpoint/W&B 训练趋势、补全 Slide 07 的真实行为证据与“怎么处理”；随后仍继续纠正内容与 Preview 工作流，没有给出该视觉版本的最终接受或模板授权。',
     note: 'CURRENT-CANDIDATE 不是 Silver/Golden。PR #594 仍是 draft；当前 phone 实现必须保持同一 16:9 构图，整张等比缩到 viewport 宽度且无横向滚动。',
+  },
+
+  {
+    id: 'VISUAL-FUHUO-RECOVERY-TECHNICAL-FIRST-REJECTED',
+    tier: 'rejected',
+    scopes: ['recovery', 'visual'],
+    artifact: 'fuhuo Mac recovery page · technical-first version',
+    repository: 'mykcs/fuhuo_20260419',
+    gitSha: 'f622ecd6931adc90c17a4c13e0a1039e96fdb437',
+    pullRequest: 20,
+    route: '/docs/mac-remote',
+    ownerEvidence: 'owner 明确说专有名词太多、太详细、太工程化，会让“那个时候很着急的我”更困扰。',
+    note: 'Rejected。没有稳定截图进入仓库；通过 source repo + exact SHA + route 可重建当时视觉状态。',
+  },
+  {
+    id: 'VISUAL-FUHUO-RECOVERY-ACTION-FIRST-CURRENT',
+    tier: 'current-candidate',
+    scopes: ['recovery', 'visual'],
+    artifact: 'fuhuo Mac recovery page · emergency-first current implementation',
+    repository: 'mykcs/fuhuo_20260419',
+    gitSha: '123fb5e479bcb167c894519067d64a23a276d137',
+    pullRequest: 22,
+    route: '/docs/mac-remote',
+    ownerEvidence: '该版本落实了“技术细节往下放、前几行先说处境和怎么办”的直接纠正；owner 随后进入 HPL closeout，但未对这个 exact visual 给出新的 accepted / canonical 语言。',
+    note: 'CURRENT-CANDIDATE，不是 Silver/Golden。桌面和 390×844 手机截图曾在实现会话中检查，但未作为稳定仓库资产保留；exact SHA + route + viewport 足以重建。',
   },
 
 ];

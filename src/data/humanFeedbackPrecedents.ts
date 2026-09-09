@@ -171,6 +171,14 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     positiveSignals: ['coherent edit → local build → prebuilt review Preview', 'merge-ready → exact-head Vercel final gate'],
   },
 
+  {
+    id: 'CASE-086',
+    title: '紧急恢复页先给行动，再给运行手册',
+    tags: ['恢复', '急救', '着急', '失忆', '零上下文', '下一步', '技术细节', 'action-first'],
+    principle: '人在高压恢复场景里不应先解码工程系统；首层先用普通话确认处境，再给一个最短且安全的下一步，并说明接下来会发生什么。完整运行手册和实现名词保留在后层。',
+    antiPatterns: ['一打开恢复页先展示设备型号、launchd、watchdog、pmset、token 等实现名词', '让着急的人先理解架构和排障历史，才能知道下一步做什么'],
+    positiveSignals: ['场景 → 一个主要动作 → 预期结果', '明确告诉读者技术细节平时不用读', '完整工程排障资料后置但仍可恢复'],
+  },
 ];
 
 export const READER_CONTRACT_PRECEDENTS: Record<string, HumanFeedbackCaseId[]> = {

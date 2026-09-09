@@ -9,6 +9,7 @@ export type HumanPreferenceScope =
   | 'run'
   | 'briefing'
   | 'capability'
+  | 'recovery'
   | 'workflow';
 
 export type HumanPreferenceConfidence =
@@ -30,7 +31,7 @@ export interface HumanPreferenceDimension {
   retrievalTags: string[];
   supportingCaseIds: HumanFeedbackCaseId[];
   antiOvergeneralization: string[];
-  activation?: 'explicit-cues' | 'preview-cues';
+  activation?: 'explicit-cues' | 'preview-cues' | 'recovery-cues';
 }
 
 export interface HumanFeedbackGoldPair {
@@ -82,11 +83,11 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     id: 'PREF-FIRST-SCREEN-ATTENTION',
     title: '一个首屏只承担一个主要理解任务',
     statement: '字号、加粗、卡片、CTA、导航和 provenance 都在消耗注意力；第一屏应只有一个明显认知中心。',
-    scopes: ['all-public-ui', 'research-ui', 'study', 'results', 'run', 'briefing', 'capability'],
+    scopes: ['all-public-ui', 'research-ui', 'study', 'results', 'run', 'briefing', 'capability', 'recovery'],
     confidence: 'explicit-project',
     priority: 5,
     retrievalTags: ['ADHD', '注意力', '认知负担', '首屏', '视觉中心', 'CTA', '信息密度'],
-    supportingCaseIds: ['CASE-068', 'CASE-069'],
+    supportingCaseIds: ['CASE-068', 'CASE-069', 'CASE-086'],
     antiOvergeneralization: [
       '不是越少越好；必须默认可见的科学边界、比较双方和当前状态不能为了简洁被藏掉。',
       '首屏预算是报警器，不替代真人 cold read。',
@@ -96,11 +97,11 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     id: 'PREF-PROGRESSIVE-DISCLOSURE',
     title: '按阅读时机分层，不把分层本身做成模板',
     statement: '首层只给开始理解所需的信息；可恢复的背景、provenance 和深层机制后置，但不要机械制造“一句话看懂 / 专业解释”等可见层级。',
-    scopes: ['all-public-ui', 'research-ui', 'research-copy', 'study', 'results', 'briefing', 'capability'],
+    scopes: ['all-public-ui', 'research-ui', 'research-copy', 'study', 'results', 'briefing', 'capability', 'recovery'],
     confidence: 'repeated-explicit',
     priority: 4,
     retrievalTags: ['渐进披露', 'progressive disclosure', '背景', 'TLDR', '专业解释', '详情', '折叠', 'SHA', '重复性', '技术子页'],
-    supportingCaseIds: ['CASE-062', 'CASE-068', 'CASE-071', 'CASE-082'],
+    supportingCaseIds: ['CASE-062', 'CASE-068', 'CASE-071', 'CASE-082', 'CASE-086'],
     antiOvergeneralization: [
       '不是 minimalism；exactly enough 比“越空越好”更重要。',
       '会改变结论含义的 caveat 不能被当成次要背景折叠。',
@@ -176,6 +177,23 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
       '不是所有网页都要固定 16:9；这里只适用于明确承担 slides / presentation 角色的 briefing。',
       '手机端适应窗口指整张 slide 等比缩放，不是把内部两列、卡片或层级重排成长网页。',
       '不要让手机默认出现横向滚动；桌面端仍保持 capped 1280×720，不随超宽屏放大。',
+    ],
+  },
+  {
+    id: 'PREF-RECOVERY-ACTION-FIRST',
+    title: '紧急恢复表面先给处境、动作和结果',
+    statement: '当读者是在故障中自救、可能只拿着手机且没有上下文时，首层先确认“现在发生了什么”，再给一个最短安全动作和预期结果；实现名词、架构、历史和完整 runbook 后置。',
+    scopes: ['recovery'],
+    confidence: 'repeated-explicit',
+    priority: 5,
+    retrievalTags: ['恢复', '急救', '自救', '故障', '着急', '失忆', '零上下文', '运行手册', '下一步', '技术细节', '手机'],
+    supportingCaseIds: ['CASE-086'],
+    activation: 'recovery-cues',
+    antiOvergeneralization: [
+      '不是所有网页都只保留一个按钮；只有高压恢复场景的首层需要把行动路径压到最短。',
+      '会改变安全性、授权边界或不可逆动作的警告必须在行动前可见，不能为了“简单”藏到后面。',
+      '完整工程 runbook 不是无用信息；它应保留在后层，供 Agent 或需要深查的人恢复系统。',
+      '“复制 prompt / 命令”不是通用模板；只有当主动作本来就是稳定、可复制且安全的文本操作时才适合提供一键复制。',
     ],
   },
   {

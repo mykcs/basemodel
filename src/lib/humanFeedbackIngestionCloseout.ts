@@ -49,8 +49,17 @@ function evidenceHead(record: HumanFeedbackIngestionCloseoutRecord): string {
   return record.sourceWindow.finalAcceptedHead ?? record.sourceWindow.finalOwnerVisibleHead ?? '';
 }
 
+export function buildHumanPreferenceBriefForCloseout(record: HumanFeedbackIngestionCloseoutRecord) {
+  const context = record.preferenceBrief;
+  return buildHumanPreferenceBrief({
+    query: record.futureTaskQuery,
+    contractId: context?.contractId ?? (context ? undefined : 'study-briefing'),
+    scope: context?.scope,
+  });
+}
+
 function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
-  const brief = buildHumanPreferenceBrief({ query: record.futureTaskQuery, contractId: 'study-briefing' });
+  const brief = buildHumanPreferenceBriefForCloseout(record);
   const events = new Set(brief.events.map((event) => event.id));
   const preferences = new Set(brief.learnedPreferences.map(({ preference }) => preference.id));
   const pairs = new Set(brief.goldPairs.map(({ pair }) => pair.id));
@@ -60,6 +69,14 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
   const finalEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-BRIEFING-FINAL-ACCEPTED');
   const fastPreviewEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT');
   const candidateHead = record.sourceWindow.finalOwnerVisibleHead;
+  const candidateScope = record.preferenceBrief?.scope;
+  const candidateVisual = candidateHead
+    ? HUMAN_VISUAL_REFERENCE_SET.find((reference) =>
+        reference.tier === 'current-candidate' &&
+        reference.gitSha === candidateHead &&
+        (!candidateScope || reference.scopes.includes(candidateScope)),
+      )
+    : undefined;
 
   const statuses: Record<string, boolean> = {
     'intermediate-better-is-not-canonical':
@@ -107,9 +124,25 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
       workflowTrajectory?.canonicalVariantId === 'fast-prebuilt-review-preview',
     'current-candidate-is-not-accepted':
       record.schema === 'human-feedback-ingestion-closeout.v2' && record.sourceWindow.finalVerdict === 'current-candidate' &&
-      visuals.has('VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE') &&
-      !!candidateHead &&
+      !!candidateVisual && !!candidateHead &&
       !HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === candidateHead && ['accepted', 'canonical'].includes(event.verdict)),
+    'recovery-action-first':
+      preferences.has('PREF-RECOVERY-ACTION-FIRST') &&
+      events.has('EVENT-20260909-FUHUO-RECOVERY-TECHNICAL-FIRST') &&
+      events.has('EVENT-20260909-FUHUO-RECOVERY-ACTION-FIRST-DIRECTION'),
+    'recovery-progressive-depth':
+      preferences.has('PREF-RECOVERY-ACTION-FIRST') && preferences.has('PREF-PROGRESSIVE-DISCLOSURE') &&
+      brief.antiOvergeneralization.some((boundary) => boundary.includes('完整工程 runbook') && boundary.includes('后层')),
+    'recovery-internal-detail-hard-family':
+      brief.hardFailureFamilies.includes('internal-detail-promoted-to-primary-attention') &&
+      events.has('EVENT-20260909-FUHUO-RECOVERY-TECHNICAL-FIRST'),
+    'recovery-current-candidate-not-promoted':
+      record.preferenceBrief?.scope === 'recovery' && !!candidateVisual &&
+      !HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('recovery') && reference.tier === 'golden') &&
+      !HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === candidateHead && ['accepted', 'canonical'].includes(event.verdict)),
+    'recovery-copy-action-not-universal':
+      preferences.has('PREF-RECOVERY-ACTION-FIRST') &&
+      brief.antiOvergeneralization.some((boundary) => boundary.includes('复制 prompt / 命令') && boundary.includes('不是通用模板')),
   };
   return { brief, statuses };
 }
@@ -226,6 +259,9 @@ export function validateHumanFeedbackIngestionCloseout(record: HumanFeedbackInge
     if (normalizedOwnerSignal.length >= 18 && normalizedFutureQuery.includes(normalizedOwnerSignal)) failures.push(`${record.id}: futureTaskQuery copies owner signal verbatim: ${item.id}`);
   }
   if (!record.automationGap.trim()) failures.push(`${record.id}: automationGap must be explicit`);
+  if (record.sourceWindow.sourceRepository !== undefined && !/^[^/\s]+\/[^/\s]+$/.test(record.sourceWindow.sourceRepository)) {
+    failures.push(`${record.id}: sourceRepository must be owner/repo when provided`);
+  }
 
   for (const item of record.ledger) {
     counts[item.disposition] += 1;
@@ -262,8 +298,13 @@ export function validateHumanFeedbackIngestionCloseout(record: HumanFeedbackInge
     if (!finalVisual || finalVisual.tier !== 'silver') failures.push(`${record.id}: accepted briefing visual must remain Silver without template approval`);
   } else if (record.sourceWindow.finalVerdict === 'current-candidate') {
     const candidateHead = record.sourceWindow.finalOwnerVisibleHead;
-    const candidateVisual = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE');
-    if (!candidateVisual || candidateVisual.tier !== 'current-candidate' || candidateVisual.gitSha !== candidateHead) failures.push(`${record.id}: v2 current candidate visual is missing or bound to wrong head`);
+    const candidateScope = record.preferenceBrief?.scope;
+    const candidateVisual = HUMAN_VISUAL_REFERENCE_SET.find((reference) =>
+      reference.tier === 'current-candidate' &&
+      reference.gitSha === candidateHead &&
+      (!candidateScope || reference.scopes.includes(candidateScope)),
+    );
+    if (!candidateVisual) failures.push(`${record.id}: v2 current candidate visual is missing, bound to wrong head, or outside the requested scope`);
     if (HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === candidateHead && ['accepted', 'canonical'].includes(event.verdict))) failures.push(`${record.id}: current candidate was incorrectly promoted to accepted/canonical`);
   }
   if (HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden')) failures.push(`${record.id}: briefing must not have a Golden visual without canonical owner language`);
