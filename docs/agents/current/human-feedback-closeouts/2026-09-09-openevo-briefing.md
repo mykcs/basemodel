@@ -16,4 +16,4 @@ The future-task proof uses a different reinforcement-learning lab-meeting reques
 
 Conversation-to-ledger semantic extraction was manual from the current conversation. The repository validates the structured result and recurrence behavior; it does not claim to read ChatGPT history automatically.
 
-Two signals that occur after the PR #569 acceptance window (checkpoint/W&B curve request and later build/Preview follow-up) are intentionally owned by the chained successor receipt rather than back-dated into this record. This record now includes the pre-merge direct horizon-behavior detail and the repeated iPhone reflow correction.
+Two signals that occur after the PR #569 acceptance window (checkpoint/W&B curve request and later build/Preview follow-up) are intentionally owned by the chained successor receipt rather than back-dated into this record. This record now includes the pre-merge direct horizon-behavior detail and the iPhone width-fit correction as historical evidence; the chained successor owns the later whole-slide fit-to-width interpretation.

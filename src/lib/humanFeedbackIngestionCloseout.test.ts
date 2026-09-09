@@ -31,7 +31,7 @@ describe('human feedback ingestion closeout', () => {
   it('keeps the current page successor under review rather than inventing acceptance', () => {
     expect(successor.schema).toBe('human-feedback-ingestion-closeout.v2');
     expect(successor.sourceWindow.finalVerdict).toBe('current-candidate');
-    expect(successor.sourceWindow.finalOwnerVisibleHead).toBe('93f7bcda83fc059a066c949de5e95ecb34399f3f');
+    expect(successor.sourceWindow.finalOwnerVisibleHead).toBe('e5d8a184c25cd49d0264efe8881cc02b302d9c51');
     expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === successor.sourceWindow.finalOwnerVisibleHead && ['accepted', 'canonical'].includes(event.verdict))).toBe(false);
   });
 

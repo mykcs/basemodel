@@ -73,7 +73,7 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
       events.has('EVENT-20260909-PARAMETER-TITLE-AND-MOBILE-FIT') && pairs.has('PAIR-082-PARAMETER-HEADING'),
     'phone-vs-desktop-scope-split':
       preferences.has('PREF-BRIEFING-DEVICE-SCOPE') && pairs.has('PAIR-082-DEVICE-SCOPE') &&
-      (events.has('EVENT-20260909-PARAMETER-TITLE-AND-MOBILE-FIT') || events.has('EVENT-20260909-MOBILE-REFLOW-REPEAT')),
+      (events.has('EVENT-20260909-PARAMETER-TITLE-AND-MOBILE-FIT') || events.has('EVENT-20260909-MOBILE-WHOLE-SLIDE-FIT-REPEAT')),
     'technical-depth-without-meta-performance':
       events.has('EVENT-20260909-TECHNICAL-DEPTH-WITHOUT-META') &&
       preferences.has('PREF-TECHNICAL-DEPTH-WITHOUT-META') && pairs.has('PAIR-082-TECHNICAL-WITHOUT-META'),
@@ -98,9 +98,9 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
     'training-dynamics-evidence-layers':
       preferences.has('PREF-DIAGNOSTIC-CLOSURE') && events.has('EVENT-20260909-TRAINING-DYNAMICS-EVIDENCE') &&
       brief.antiOvergeneralization.some((boundary) => boundary.includes('training loss') && boundary.includes('final eval')),
-    'mobile-reflow-repeat':
-      preferences.has('PREF-BRIEFING-DEVICE-SCOPE') && events.has('EVENT-20260909-MOBILE-REFLOW-REPEAT') &&
-      failureFamilySeverity('mobile-fixed-canvas-overflow') === 'repeated',
+    'mobile-whole-slide-fit-repeat':
+      preferences.has('PREF-BRIEFING-DEVICE-SCOPE') && events.has('EVENT-20260909-MOBILE-WHOLE-SLIDE-FIT-REPEAT') &&
+      pairs.has('PAIR-082-DEVICE-SCOPE') && failureFamilySeverity('mobile-fixed-canvas-overflow') === 'repeated',
     'fast-review-preview-canonical-workflow':
       preferences.has('PREF-FAST-REVIEW-PREVIEW') && pairs.has('PAIR-085-FAST-REVIEW-PREVIEW') &&
       events.has('EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT') && fastPreviewEvent?.verdict === 'canonical' &&

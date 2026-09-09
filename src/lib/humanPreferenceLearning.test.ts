@@ -108,6 +108,9 @@ describe('human preference learning loop', () => {
     );
     expect(result.goldPairs.some(({ pair }) => pair.id === 'PAIR-082-PARAMETER-HEADING')).toBe(true);
     expect(result.goldPairs.some(({ pair }) => pair.id === 'PAIR-082-DEVICE-SCOPE')).toBe(true);
+    const devicePair = HUMAN_FEEDBACK_GOLD_PAIRS.find((pair) => pair.id === 'PAIR-082-DEVICE-SCOPE');
+    expect(devicePair?.accepted).toContain('整张等比缩到 viewport 宽度');
+    expect(devicePair?.accepted).toContain('无横向滚动');
   });
 
 });
