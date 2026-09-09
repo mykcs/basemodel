@@ -178,14 +178,19 @@ const lastLoss = dynamics3B.loss.at(-1)?.loss ?? 0;
   </section>
 
   <section id="horizon-diagnostic" class="briefing-slide tone-gold" aria-labelledby="horizon-title">
-    <div class="slide-inner">
-      <h2 id="horizon-title">{t('15 → 30 步：任务得分仍然为 0', '15 → 30 steps: task score remains zero')}</h2>
-      <p class="slide-thesis">{t('这次只改一件事：每条轨迹最多能走 15 步还是 30 步。如果 30 步明显更好，才能说明问题主要出在步数限制。', 'Only one variable changes: whether each trajectory can take at most 15 or 30 actions. If 30 clearly improves behavior, the horizon explanation survives; otherwise it does not.')}</p>
-      <div class="before-after">
-        <div class="before"><span>15 步</span><strong>{t('任务得分 = 0', 'reward = 0')}</strong><p>{t('同一批任务、同一接口；轨迹在 15 步结束。', 'Same tasks and interface; traces end at 15 steps.')}</p></div>
-        <div class="after"><span>30 步</span><strong>{t('任务得分 = 0', 'reward = 0')}</strong><p>{t('64 / 64 条尝试有效；每个配对差值仍然是 0。', 'All 64 attempts are valid; every paired delta remains zero.')}</p></div>
+    <div class="slide-inner horizon-slide">
+      <h2 id="horizon-title">{t('多给 15 步，模型还是在几个导航动作里打转', 'Fifteen extra steps still leave the model looping through the same navigation actions')}</h2>
+      <p class="slide-thesis">{t('我们先看了真实轨迹，而不只看最后的 0 分：15 步版本里，模型反复执行 next（下一页）和 back（返回），一直没有进入 buy（购买）。所以当时最自然的怀疑是：会不会只是 15 步太短，还没来得及做完？', 'We inspected the actual traces rather than only the zero reward. At 15 steps the model repeatedly used next and back and never reached a buy transition. The natural hypothesis was therefore that 15 steps might simply be too short to finish.')}</p>
+      <div class="before-after horizon-compare">
+        <div class="before"><span>15 步</span><strong>next ↔ back ↔ next …</strong><p>{t('几个导航动作反复出现；轨迹走满 15 步，仍没有进入购买动作，任务得分为 0。', 'A few navigation actions repeat; the trace reaches the 15-step limit without a buy action, and the task score is zero.')}</p></div>
+        <div class="after"><span>30 步</span><strong>{t('多出来的 15 步没有打开新路径', 'The extra 15 steps do not open a new path')}</strong><p>{t('模型仍在同样几个导航动作里打转，没有进入 buy；BASE-15 和 BASE-30 的任务得分都为 0。', 'The model keeps cycling through the same navigation actions and still never reaches buy; both BASE-15 and BASE-30 score zero.')}</p></div>
       </div>
-      <div class="resolution-box"><strong>{t('我们怎么处理', 'What we did next')}</strong><p>{t('没有继续加步数。15→30 完全不改善后，我们把“步数太少”从原因列表里删掉，不再把 max_steps 当作调参方向，转去检查 Text Memory 的容量和信息组织。这一步解决的是错误诊断，不是把 0 分直接修成高分。', 'We stopped increasing the action budget. Because 15→30 produced no improvement, we removed “the horizon is too short” from the causal shortlist, fixed the horizon, and moved to Text Memory capacity and information organization. This resolves a wrong diagnosis; it does not pretend the zero score itself was already fixed.')}</p></div>
+      <div class="horizon-proof" aria-label={t('排除工程和任务不可达解释的补充证据', 'Supporting evidence against simple engineering and reachability explanations')}>
+        <span><strong>64 / 64</strong>{t(' 次模型尝试有效', ' model attempts valid')}</span>
+        <span><strong>Δ = 0.0</strong>{t(' 每个 30−15 配对都没有改善', ' for every paired 30−15 comparison')}</span>
+        <span><strong>6 / 8</strong>{t(' 个任务经 oracle 核对可到达目标', ' tasks had oracle-reachable targets')}</span>
+      </div>
+      <div class="resolution-box"><strong>{t('于是我们知道：问题不在“差几步就能做完”', 'So the problem is not simply “the model needed a few more steps”')}</strong><p>{t('步数翻倍后，行为模式本身没有改变。至少在可达任务上，瓶颈更像动作选择 / 规划，而不是 horizon。我们因此停止继续加步数，转去检查下一个假设。', 'Doubling the horizon did not change the behavior pattern. On the reachable tasks, the bottleneck looked more like action selection/planning than horizon length. We therefore stopped extending max_steps and moved to the next hypothesis.')}</p></div>
       <p class="slide-number">07 / 12</p>
     </div>
   </section>
@@ -275,9 +280,21 @@ const lastLoss = dynamics3B.loss.at(-1)?.loss ?? 0;
   </section>
 </article>
 
+<script is:inline>
+  const syncBriefingScale = () => {
+    const deck = document.querySelector('[data-testid="progress-briefing"]');
+    if (!(deck instanceof HTMLElement)) return;
+    const availableWidth = Math.min(1280, deck.clientWidth);
+    deck.style.setProperty('--deck-scale', String(availableWidth / 1280));
+  };
+  syncBriefingScale();
+  window.addEventListener('resize', syncBriefingScale, { passive: true });
+  window.visualViewport?.addEventListener('resize', syncBriefingScale, { passive: true });
+</script>
+
 <style>
-  .briefing{--deck-w:1280px;--deck-h:720px;--rule:color-mix(in srgb,var(--ink) 15%,var(--line));width:100%;max-width:100vw;overflow-x:auto;padding:32px 0 72px;background:color-mix(in srgb,var(--bg) 96%,var(--surface));color:var(--ink)}
-  .briefing-slide{position:relative;width:var(--deck-w);height:var(--deck-h);margin:0 auto 42px;overflow:hidden;border:1px solid color-mix(in srgb,var(--line) 78%,var(--accent));border-radius:var(--radius-feature);background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 7%,var(--surface)) 0%,var(--surface) 52%,color-mix(in srgb,var(--positive) 5%,var(--surface)) 100%);box-shadow:0 18px 54px color-mix(in srgb,var(--ink) 8%,transparent)}
+  .briefing{--deck-w:1280px;--deck-h:720px;--deck-scale:1;--rule:color-mix(in srgb,var(--ink) 15%,var(--line));width:100%;max-width:100vw;overflow-x:hidden;padding:32px 0 72px;background:color-mix(in srgb,var(--bg) 96%,var(--surface));color:var(--ink)}
+  .briefing-slide{position:relative;width:var(--deck-w);height:var(--deck-h);zoom:var(--deck-scale);margin:0 auto 42px;overflow:hidden;border:1px solid color-mix(in srgb,var(--line) 78%,var(--accent));border-radius:var(--radius-feature);background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 7%,var(--surface)) 0%,var(--surface) 52%,color-mix(in srgb,var(--positive) 5%,var(--surface)) 100%);box-shadow:0 18px 54px color-mix(in srgb,var(--ink) 8%,transparent)}
   .tone-blue{background:linear-gradient(145deg,color-mix(in srgb,var(--blue) 9%,var(--surface)) 0%,var(--surface) 58%,color-mix(in srgb,var(--accent) 5%,var(--surface)) 100%)}
   .tone-green{background:linear-gradient(145deg,color-mix(in srgb,var(--positive) 9%,var(--surface)) 0%,var(--surface) 60%,color-mix(in srgb,var(--blue) 5%,var(--surface)) 100%)}
   .tone-gold{background:linear-gradient(145deg,color-mix(in srgb,var(--warning) 10%,var(--surface)) 0%,var(--surface) 58%,color-mix(in srgb,var(--accent) 5%,var(--surface)) 100%)}
@@ -292,7 +309,7 @@ const lastLoss = dynamics3B.loss.at(-1)?.loss ?? 0;
   .table-boundary{max-width:1040px;margin:14px 0 0;padding:10px 14px;border-left:3px solid var(--warning);background:color-mix(in srgb,var(--warning) 7%,var(--surface));color:var(--muted);font-size:15px;line-height:1.4}.table-boundary strong{display:block;color:var(--ink);margin:0 0 3px;font-size:16px}.paper-table-wrap{margin-top:14px}.paper-table{width:100%;border-collapse:collapse;font-size:16px}.paper-table thead{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}.paper-table tbody{border-bottom:2px solid var(--ink)}.paper-table th,.paper-table td{padding:7px 18px;text-align:left}.paper-table thead th:nth-child(n+2),.paper-table td{text-align:center;font-variant-numeric:tabular-nums}.paper-table tbody tr:not(.method-group)+tr:not(.method-group){border-top:1px solid color-mix(in srgb,var(--line) 62%,transparent)}.paper-table tbody th{font-weight:650}.method-group{border-top:1.5px solid var(--ink);border-bottom:1px solid var(--rule);background:transparent}.method-group th{padding-top:13px;padding-bottom:8px;font-family:var(--font-editorial);font-size:15px;font-weight:760;letter-spacing:.02em}.method-group.ours th{color:var(--accent-deep)}.pending-row{color:var(--muted)}.table-notes{display:grid;grid-template-columns:1fr;gap:0;margin-top:18px;color:var(--muted);font-size:13px;line-height:1.48}.table-notes p{margin:0}
   .three-questions{display:grid;grid-template-columns:repeat(3,1fr);margin:40px 0 0;padding:0;list-style:none;gap:18px}.three-questions li{padding:25px 26px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 82%,transparent)}.three-questions span,.quality-grid>div>span{display:grid;place-items:center;width:48px;height:48px;margin-bottom:18px;border-radius:50%;background:color-mix(in srgb,var(--blue) 15%,var(--surface));color:var(--blue);font:850 14px var(--font-mono)}.three-questions strong{display:block;font-size:22px}.three-questions p{margin:8px 0 0;color:var(--muted);font-size:16px;line-height:1.5}.three-questions p b{color:var(--ink);font:760 20px/1.2 var(--font-mono)}.quality-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px}.quality-grid>div{padding:20px 22px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 82%,transparent)}.quality-grid>div:nth-child(2)>span{background:color-mix(in srgb,var(--positive) 16%,var(--surface));color:var(--positive)}.quality-grid>div:nth-child(3)>span{background:color-mix(in srgb,var(--warning) 16%,var(--surface));color:var(--warning)}.quality-grid>div:nth-child(4)>span{background:color-mix(in srgb,var(--accent) 16%,var(--surface));color:var(--accent-deep)}.quality-grid strong{display:block;font-size:18px;line-height:1.28}.quality-grid p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.44}.quality-grid .speed-number{margin-top:10px;color:var(--ink);font:750 17px/1.2 var(--font-mono)}.quality-grid .speed-number b{color:var(--accent-deep)}
   .bottom-claim{margin:auto 0 0;max-width:950px;padding:14px 18px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--surface) 76%,transparent);color:var(--muted);font-size:15px;line-height:1.5}
-  .resolution-box{margin:auto 0 0;max-width:1000px;padding:14px 18px;border-left:3px solid var(--positive);border-radius:0 var(--radius-panel) var(--radius-panel) 0;background:color-mix(in srgb,var(--positive) 7%,var(--surface))}.resolution-box strong{display:block;font-size:14px}.resolution-box p{margin:5px 0 0;color:var(--muted);font-size:13px;line-height:1.45}
+  .resolution-box{margin:auto 0 0;max-width:1000px;padding:14px 18px;border-left:3px solid var(--positive);border-radius:0 var(--radius-panel) var(--radius-panel) 0;background:color-mix(in srgb,var(--positive) 7%,var(--surface))}.resolution-box strong{display:block;font-size:14px}.resolution-box p{margin:5px 0 0;color:var(--muted);font-size:13px;line-height:1.45}.horizon-slide{padding-top:48px;padding-bottom:42px}.horizon-slide h2{max-width:1080px;font-size:45px}.horizon-slide .slide-thesis{margin-top:15px;font-size:18px;line-height:1.45}.horizon-compare{margin-top:20px;gap:18px}.horizon-compare>div{padding:21px 24px}.horizon-compare strong{margin-top:11px;font-size:21px}.horizon-compare p{margin-top:7px;font-size:13px;line-height:1.42}.horizon-proof{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.horizon-proof span{padding:9px 12px;border-top:1px solid var(--rule);color:var(--muted);font-size:11px;line-height:1.35}.horizon-proof strong{display:block;color:var(--ink);font:760 13px/1.2 var(--font-mono);margin-bottom:3px}.horizon-slide .resolution-box{margin-top:10px}
   .mechanism-math{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}.formula-card{padding:18px 20px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 86%,transparent)}.formula-card>strong{font-size:15px}.equation{margin-top:11px;padding:9px 12px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--warning) 7%,var(--surface));font:650 22px/1.25 Georgia,"Times New Roman",serif;letter-spacing:.01em}.formula-card p{margin:10px 0 0;color:var(--muted);font-size:14px;line-height:1.46}.mechanism-rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}.mechanism-rules>div{padding:11px 13px;border-top:2px solid color-mix(in srgb,var(--warning) 45%,var(--line))}.mechanism-rules strong{display:block;font-size:12px}.mechanism-rules span{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.38}.mechanism-note{margin-top:10px;padding:11px 14px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--warning) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--warning) 28%,var(--line))}.mechanism-note strong{font-size:12px}.mechanism-note p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.38}.twin-design span,.before-after span,.choice>span{display:inline-block;padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--warning) 15%,var(--surface));color:var(--warning);font:800 11px var(--font-mono);letter-spacing:.05em}
   .twin-design{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:16px;margin-top:30px}.twin-design>div{padding:24px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 84%,transparent)}.twin-design .arm-a{background:color-mix(in srgb,var(--accent) 9%,var(--surface))}.twin-design .same-core{background:color-mix(in srgb,var(--blue) 8%,var(--surface))}.twin-design .arm-b{background:color-mix(in srgb,var(--positive) 9%,var(--surface))}.twin-design strong{display:block;margin-top:13px;font-size:21px}.twin-design p,.twin-design li{color:var(--muted);font-size:14px;line-height:1.48}.twin-design p{margin:8px 0 0}.twin-design ul{margin:12px 0 0;padding-left:18px}
   .before-after{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:34px}.before-after>div{padding:28px 30px;border-radius:var(--radius-feature);border:1px solid var(--rule)}.before{background:color-mix(in srgb,var(--accent) 9%,var(--surface))}.after{background:color-mix(in srgb,var(--positive) 11%,var(--surface))}.before-after .before span{background:color-mix(in srgb,var(--accent) 16%,var(--surface));color:var(--accent-deep)}.before-after .after span{background:color-mix(in srgb,var(--positive) 17%,var(--surface));color:var(--positive)}.before-after strong{display:block;margin-top:16px;font-size:24px}.before-after p{margin:10px 0 0;color:var(--muted);font-size:15px;line-height:1.48}.current-twin-status{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.current-twin-status>div{padding:14px 18px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 82%,transparent)}.current-twin-status span{color:var(--accent-deep);font:800 11px var(--font-mono)}.current-twin-status strong{display:block;margin-top:6px;font-size:16px}.current-twin-status p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.42}.plain-language-result{margin-top:14px;padding:14px 18px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--blue) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--blue) 30%,var(--line))}.plain-language-result p{display:inline;margin:0 0 0 8px;color:var(--muted);font-size:14px;line-height:1.46}
@@ -316,27 +333,9 @@ const lastLoss = dynamics3B.loss.at(-1)?.loss ?? 0;
   #determinism .plain-language-result{margin-top:10px;padding:11px 15px}
   #determinism .plain-language-result p{font-size:12.5px;line-height:1.4}
 
-  @media(max-width:720px){
-    .briefing{overflow-x:hidden;padding:14px 0 44px}
-    .briefing-slide{width:calc(100vw - 20px);height:auto;min-height:0;margin:0 auto 18px;overflow:visible}
-    .slide-inner{height:auto;min-height:0;padding:28px 20px 44px}
-    h1{max-width:none;margin-top:8px;font-size:42px;line-height:1.02}
-    h2{max-width:none;margin-top:2px;font-size:30px;line-height:1.08}
-    .cover-thesis{max-width:none;font-size:19px;line-height:1.52}
-    .slide-thesis{max-width:none;margin-top:14px;font-size:17px;line-height:1.52}
-    .cover-meta,.split-slide,.three-questions,.quality-grid,.mechanism-math,.twin-design,.before-after,.current-twin-status,.seed-questions,.turning-list,.choice-grid,.speed-proof{grid-template-columns:1fr}
-    .split-slide{display:grid;gap:18px;padding:28px 20px 44px}
-    .cover-meta{gap:10px;margin-top:24px}.cover-meta>div{padding:13px 15px}
-    .agenda-list{margin-top:18px;gap:12px}.agenda-list strong{font-size:17px}
-    .tldr-pane{padding:22px 20px}.tldr-pane ul{margin-top:14px;gap:12px}.tldr-pane li{font-size:15px}
-    .paper-table-wrap{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.paper-table{min-width:620px}
-    .table-boundary{font-size:14px}.table-notes{grid-template-columns:1fr;gap:10px}
-    .three-questions,.mechanism-math,.before-after,.choice-grid{margin-top:20px;gap:12px}
-    .three-questions li,.formula-card,.before-after>div,.choice{padding:18px}
-    .pipeline-row{display:grid;grid-template-columns:1fr;gap:10px}.pipeline-row i{transform:rotate(90deg);justify-self:center}
-    .decision-note{margin-top:18px}.decision-note p{display:block;margin:8px 0 0;font-size:15px}
-    .slide-number{right:16px;bottom:14px}
-    .source-note,.final-source{margin-top:18px}
+  @media(max-width:1280px){
+    .briefing{padding:14px 0 44px}
+    .briefing-slide{margin-bottom:18px}
   }
 
 </style>

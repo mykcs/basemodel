@@ -30,17 +30,19 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     for (let page = 2; page <= 11; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 12`);
     expect(briefing).not.toContain('01 / 12');
     expect(briefing).not.toContain('12 / 12');
-    expect(briefing).not.toContain('下一页');
-    expect(briefing).not.toContain('Next slide');
+    expect(briefing).not.toContain('class="slide-next"');
+    expect(briefing).not.toContain('Next slide</button>');
   });
 
 
-  it('reflows on phones while keeping the desktop slide canvas capped at 1280×720', () => {
-    expect(briefing).toContain('--deck-w:1280px;--deck-h:720px');
-    expect(briefing).toContain('@media(max-width:720px)');
-    expect(briefing).toContain('width:calc(100vw - 20px);height:auto');
-    expect(briefing).toContain('.briefing{overflow-x:hidden');
-    expect(briefing).toContain('.paper-table{min-width:620px}');
+  it('keeps the 16:9 composition but scales the whole deck to phone width without horizontal scrolling', () => {
+    expect(briefing).toContain('--deck-w:1280px;--deck-h:720px;--deck-scale:1');
+    expect(briefing).toContain('zoom:var(--deck-scale)');
+    expect(briefing).toContain('overflow-x:hidden');
+    expect(briefing).toContain("const availableWidth = Math.min(1280, deck.clientWidth)");
+    expect(briefing).toContain("deck.style.setProperty('--deck-scale', String(availableWidth / 1280))");
+    expect(briefing).not.toContain('width:calc(100vw - 20px);height:auto');
+    expect(briefing).not.toContain('.paper-table{min-width:620px}');
   });
 
   it('starts with a normal presentation cover and chronological agenda', () => {
@@ -113,17 +115,15 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('Curve semantics, ledger provenance, and checkpoint-replay boundary');
   });
 
-  it('makes the negative 15→30 horizon diagnostic a scientific pivot', () => {
-    expect(briefing).toContain('15 → 30 步：任务得分仍然为 0');
-    expect(briefing).toContain('<span>15 步</span>');
-    expect(briefing).toContain('<span>30 步</span>');
-    expect(briefing).toContain('64 / 64 条尝试有效');
-    expect(briefing).toContain('任务得分 = 0');
-    expect(briefing).toContain('每个配对差值仍然是 0');
-    expect(briefing).toContain('我们怎么处理');
-    expect(briefing).toContain('把“步数太少”从原因列表里删掉');
-    expect(briefing).toContain('这一步解决的是错误诊断');
-    expect(technical).toContain('max_steps');
+  it('makes the negative 15→30 horizon diagnostic a trace-level scientific pivot', () => {
+    expect(briefing).toContain('多给 15 步，模型还是在几个导航动作里打转');
+    expect(briefing).toContain('next（下一页）和 back（返回）');
+    expect(briefing).toContain('一直没有进入 buy（购买）');
+    expect(briefing).toContain('多出来的 15 步没有打开新路径');
+    expect(briefing).toContain('64 / 64');
+    expect(briefing).toContain('Δ = 0.0');
+    expect(briefing).toContain('6 / 8');
+    expect(briefing).toContain('瓶颈更像动作选择 / 规划，而不是 horizon');
   });
 
   it('keeps the 2048→4096→10+10 capacity chain and does not claim a benchmark win from it', () => {
