@@ -1,6 +1,6 @@
 import { HUMAN_FEEDBACK_INGESTION_CLOSEOUTS } from '../src/data/humanFeedbackIngestionCloseouts';
-import { validateHumanFeedbackIngestionCloseout } from '../src/lib/humanFeedbackIngestionCloseout';
-import { buildHumanPreferenceBrief, renderHumanPreferenceBriefMarkdown } from '../src/lib/humanPreferenceBrief';
+import { buildHumanPreferenceBriefForCloseout, validateHumanFeedbackIngestionCloseout } from '../src/lib/humanFeedbackIngestionCloseout';
+import { renderHumanPreferenceBriefMarkdown } from '../src/lib/humanPreferenceBrief';
 
 const requestedId = process.argv[2];
 const records = requestedId
@@ -35,7 +35,7 @@ for (const record of records) {
     failures: result.failures,
   }, null, 2));
   if (process.env.HPL_CLOSEOUT_SHOW_BRIEF === '1') {
-    const brief = buildHumanPreferenceBrief({ query: record.futureTaskQuery, contractId: 'study-briefing' });
+    const brief = buildHumanPreferenceBriefForCloseout(record);
     console.log('\n--- Future-task Preference Brief ---\n');
     console.log(renderHumanPreferenceBriefMarkdown(brief));
   }

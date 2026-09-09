@@ -192,6 +192,18 @@ The brief compiles:
 
 If the brief says there is no Golden reference, the Agent must not invent one.
 
+For a material surface that is not owned by a BaseModel Reader Contract, use the narrow learned scope instead of borrowing a convenient research contract. Example:
+
+```bash
+npx tsx scripts/generate-human-preference-brief.ts \
+  --scope=recovery \
+  "账号故障自救页面：用户很着急、没有上下文，但完整运行手册仍要保留"
+```
+
+`scope` is an anti-overgeneralization gate, not a display label. Scoped Preference Briefs keep that scope plus genuinely `all-public-ui` evidence; briefing-only / research-only history must not leak into a recovery task merely because it has high global priority. Explicit workflow cues such as Preview/build/review may still retrieve workflow evidence across a page scope because they describe the delivery loop rather than the page's visual grammar.
+
+Cross-repository feedback remains valid training evidence when provenance is explicit: preserve the source repository, route, PR/SHA when available, and keep the learned rule in this BaseModel HPL authority. Do not copy the source product itself into BaseModel or pretend the source artifact was a BaseModel route.
+
 ## 8. Internal 2–3 candidate screening
 
 Material user-facing work should not expose the Agent's first aesthetic guess to the owner.

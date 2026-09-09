@@ -1035,3 +1035,18 @@ checkpoint/W&B 曲线属于同一个证据思想：连续轨迹可以帮助判�
 认可流程：`coherent UI/copy/slide 修改 → 本地 static build → 非权威 prebuilt review Preview → owner 继续反馈`；只有候选真正 `merge-ready` 时，才进入 `exact-head Vercel final gate → merge/release`。
 
 规律：**“让我马上看到页面”与“证明这个 commit 可以发布”是两个不同任务。** 快速 Preview 是 canonical 的 BaseModel 人审工作流，但它永远不是 merge evidence；final gate、科学边界和 Production 门槛没有被削弱。这条是 workflow canonical，不是视觉 Golden。
+
+
+<a id="case-086-紧急恢复页先给行动再给运行手册"></a>
+### CASE-086 — 紧急恢复页先给行动，再给运行手册
+**PREFERENCE · RECOVERY UI · 2026-09-09 · repeated direct owner feedback from fuhuo `/docs/mac-remote`**
+
+第一次版本把 `MacBook Pro · M2 Max`、`launchd`、watchdog、AC controller、`pmset`、refresh token 和 GitHub rescue 结构都放在恢复入口前部。owner 直接拒绝：`你好像列了很多专有名词，或者是列的很详细，列的很工程化……这会对那个时候很着急的我造成困扰。`
+
+owner 给出的 successor 方向是：`具体的技术细节的话，你可以再往下放一放。就首先我打开这个网页，我前面几行我应该看的都是……我们发生了某种情况，然后现在我们进入到这种情况了，我们该怎么办？就大概就这么简单的一回事。` 此前还明确要求未来可以把自己当作 `完全失忆了`，并设想人在外面、拿不到 MacBook 时仍能从页面找到恢复入口。
+
+规律：**高压恢复页的第一层不是 runbook。先用普通话确认“你现在遇到的是什么情况”，给一个最短且安全的主要动作，再告诉用户接下来会发生什么；实现架构、历史、排障细节和完整命令后置到明确的技术层。** 这复用 CASE-068 的注意力预算与 progressive disclosure，但把它收窄到“着急 + 零上下文 + 需要立即行动”的 recovery scope。
+
+边界：不是所有页面都要变成一个按钮，也不是把工程资料删掉。会改变安全性、授权边界或不可逆动作的警告必须在行动前可见。`复制 prompt / command` 只是这次可能的实现方式；owner 当时明确把二者作为待判断选项，因此不能过拟合成“所有恢复页都必须有复制按钮”。完整 runbook 仍应保留，供 Agent 或需要深查的人恢复系统。
+
+视觉证据：`mykcs/fuhuo_20260419` PR #20 / `f622ecd…` 为明确 Rejected 的 technical-first 状态；PR #22 / `123fb5e…` 实现 action-first、折叠技术 prompt 和单一恢复动作，但 closeout 前没有新的 concrete acceptance / template language，因此只能记为 `current-candidate`，不能升级成 Silver / Golden。

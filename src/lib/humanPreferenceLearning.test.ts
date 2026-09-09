@@ -31,6 +31,20 @@ describe('human preference learning loop', () => {
     expect(unrelated.preferences.map(({ preference }) => preference.id)).not.toContain('PREF-FAST-REVIEW-PREVIEW');
   });
 
+  it('activates recovery action-first learning only for actual recovery cues', () => {
+    const recovery = retrieveHumanPreferenceContext('手机上打开故障自救页面，用户很着急而且完全失忆，怎样先恢复再看运行手册？', undefined, 10);
+    expect(recovery.preferences.map(({ preference }) => preference.id)).toEqual(expect.arrayContaining([
+      'PREF-RECOVERY-ACTION-FIRST',
+      'PREF-FIRST-SCREEN-ATTENTION',
+      'PREF-PROGRESSIVE-DISCLOSURE',
+    ]));
+    expect(recovery.cases.map(({ precedent }) => precedent.id)).toContain('CASE-086');
+
+    const unrelated = retrieveHumanPreferenceContext('解释一个模型参数的数学定义和实验结果', 'study-briefing', 10);
+    expect(unrelated.preferences.map(({ preference }) => preference.id)).not.toContain('PREF-RECOVERY-ACTION-FIRST');
+    expect(preferenceIdsForContract('study-briefing')).not.toContain('PREF-RECOVERY-ACTION-FIRST');
+  });
+
   it('keeps workflow-learning feedback separate from surface aesthetics', () => {
     const result = retrieveHumanPreferenceContext('案例库 触类旁通 preference learning Gold Pair cold read judge');
     expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-FEEDBACK-LEARNING-LOOP');

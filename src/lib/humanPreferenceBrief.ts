@@ -9,6 +9,7 @@ import {
   type HumanVisualReference,
   type PreferenceTrajectory,
 } from '../data/humanPreferenceLearningHistory';
+import type { HumanPreferenceScope } from '../data/humanPreferenceModel';
 import {
   retrieveHumanPreferenceContext,
   preferenceReviewContextForContract,
@@ -52,19 +53,27 @@ function inferredScope(contractId?: string): HumanPreferenceScopeV2 | undefined 
 
 export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): HumanPreferenceBrief {
   const scope = input.scope ?? inferredScope(input.contractId);
-  const retrieved = retrieveHumanPreferenceContext(input.query, input.contractId, 10);
+  const workflowCue = /preview|预览|build|构建|vercel|网页草稿|审阅|迭代|快速|等待/i.test(input.query);
+  const retrievalScope: HumanPreferenceScope | undefined =
+    scope === 'briefing-mobile' || scope === 'briefing-desktop' ? 'briefing' :
+    scope === 'visual' ? undefined : scope;
+  const retrieved = retrieveHumanPreferenceContext(input.query, input.contractId, 10, retrievalScope);
   const review = input.contractId ? preferenceReviewContextForContract(input.contractId) : undefined;
 
   const events = HUMAN_FEEDBACK_EVENTS
-    .map((event) => ({
-      event,
-      score:
-        (scope && event.scopes.includes(scope) ? 8 : 0) +
-        relevanceScore(
-          [event.ownerSignal, ...event.reasons, ...event.failureMechanisms, event.artifact].join(' '),
-          input.query,
-        ),
-    }))
+    .map((event) => {
+      const scopeCompatible = !scope || event.scopes.includes(scope) || event.scopes.includes('all-public-ui') || (event.scopes.includes('workflow') && workflowCue);
+      return {
+        event,
+        score: scopeCompatible
+          ? (scope && event.scopes.includes(scope) ? 8 : 0) +
+            relevanceScore(
+              [event.ownerSignal, ...event.reasons, ...event.failureMechanisms, event.artifact].join(' '),
+              input.query,
+            )
+          : 0,
+      };
+    })
     .filter(({ score }) => score > 0)
     .sort((a, b) => b.score - a.score || b.event.date.localeCompare(a.event.date))
     .slice(0, 14)
@@ -86,7 +95,12 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
     ...retrieved.preferences.flatMap(({ preference }) => preference.antiOvergeneralization),
   ].filter((value, index, array) => array.indexOf(value) === index);
 
-  const hard = hardFailureFamilies();
+  const hard = hardFailureFamilies().filter((family) =>
+    HUMAN_FEEDBACK_EVENTS.some((event) =>
+      event.failureMechanisms.includes(family) &&
+      (!scope || event.scopes.includes(scope) || event.scopes.includes('all-public-ui')),
+    ),
+  );
   const repeated = [...new Set(events.flatMap((event) => event.failureMechanisms))]
     .filter((family) => failureFamilySeverity(family) === 'repeated')
     .sort();
@@ -163,7 +177,7 @@ export function renderHumanPreferenceBriefMarkdown(brief: HumanPreferenceBrief):
   lines.push('', '## Visual references');
   if (!brief.visualReferences.length) lines.push('- none');
   for (const reference of brief.visualReferences) {
-    const locator = [reference.gitSha && `sha=${reference.gitSha}`, reference.pullRequest && `PR=#${reference.pullRequest}`, reference.route]
+    const locator = [reference.repository && `repo=${reference.repository}`, reference.gitSha && `sha=${reference.gitSha}`, reference.pullRequest && `PR=#${reference.pullRequest}`, reference.route]
       .filter(Boolean)
       .join(' · ');
     lines.push(`- ${reference.tier.toUpperCase()} · ${reference.id} · ${locator || 'no locator'}`);

@@ -584,6 +584,10 @@ Example future-task cues:
 
 The brief must retrieve the newly learned mechanisms, scope, visual evidence, and anti-overgeneralization boundaries.
 
+For a source surface outside BaseModel, or a BaseModel task without a matching Reader Contract, record explicit cross-repository provenance (`sourceRepository`, route, exact source head) and give the closeout a narrow `preferenceBrief.scope`. Do not force a recovery/dashboard/other surface through `study-briefing` just because an earlier ingestion implementation used that contract. The closeout validator must bind a `current-candidate` by exact source head + requested scope rather than one hard-coded visual reference ID.
+
+Scope is part of the retrieval proof: specialized briefing/research preferences must not leak into a recovery task simply because they have high priority. `all-public-ui` evidence may still apply, and explicit workflow cues may retrieve workflow evidence across surface scopes because workflow describes the delivery loop rather than the page's visual grammar.
+
 ### Step 7 — prove evaluation-side learning
 
 Verify that the relevant hard/repeated failure family or deterministic guard can reject a recurrence before owner review.
