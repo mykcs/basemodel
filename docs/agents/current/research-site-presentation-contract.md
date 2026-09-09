@@ -33,6 +33,19 @@ scientific question
 
 Do not invert this order by making setup, code, run IDs, CI, hashes, or terminal instructions the reader's first job.
 
+When the research contribution is an iterative diagnosis rather than one final benchmark, the visible story may instead use the scientist's decision sequence:
+
+```text
+question / surprising observation
+-> hypothesis
+-> controlled test
+-> outcome (including nulls)
+-> rejected explanation / new boundary
+-> next scientific question
+```
+
+This is preferred over a module/status taxonomy when it makes the research judgment legible.
+
 ## 2. What stays visible; what becomes optional depth
 
 ### Visible by default
@@ -74,6 +87,12 @@ A disclosure summary must name the thing inside it. Prefer:
 Avoid generic summaries such as `More`, `Details`, or an icon-only affordance.
 
 **Progressive disclosure is not permission to hide scientific caveats.** If a detail changes the conclusion, it belongs in the visible argument even when its raw implementation evidence stays collapsed.
+
+### Engineering validity vs scientific contribution
+
+Correct hashes, deterministic replay, resumability, CI, deployment, and other engineering validity checks are normally **preconditions for trusting the experiment**, not standalone research contributions. Do not spend the main research narrative proving routine engineering competence unless the engineering fact changes scientific interpretation, experiment eligibility, or causal validity.
+
+Keep the implementation proof in technical/reproduction depth. If a bug or measurement correction changes what a metric means, show the **scientific consequence** in the mainline and keep the plumbing evidence optional.
 
 ## 3. Code has two different roles
 
@@ -197,6 +216,8 @@ A chart is successful when the reader can understand the relation it encodes, no
 ## 10. Responsive, theme, and accessibility requirements
 
 Research depth must remain usable across the normal browser matrix.
+
+**Explicit projected-deck exception.** A route whose declared product role is a projected presentation may keep one capped 16:9 internal composition when the owner explicitly requests slide/PPT behavior. On narrow screens, fit the **whole slide** to the viewport width by uniform scaling; do not reflow its internal composition into a long page, and do not require page-level horizontal dragging. The reader may zoom manually for detail. Treat this as a route-role exception: it does not weaken responsiveness requirements for ordinary research/result pages. The deck still needs semantic HTML, readable content, and overflow acceptance.
 
 At minimum check 390px, 768px, and 1440px pressure points when the changed surface can wrap or overflow. Preserve light and dark themes.
 
