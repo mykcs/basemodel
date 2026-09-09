@@ -48,13 +48,14 @@ Before any GitHub/provider mutation:
 
 1. use read/search/fetch operations to discover current state and the available capability;
 2. know the exact intended target, content, and rollback/cleanup path;
-3. do not create probe files, comments, branches, deployments, or other mutations merely to test whether a tool works;
-4. when several files form one coherent change, prepare them before the first provider-triggering update and prefer one atomic multi-file commit when practical;
-5. after a write, verify the returned target/branch/SHA instead of assuming the intended mutation happened;
-6. if an accidental write occurs, stop, classify it, clean or neutralize it immediately when possible, and disclose any residue in closeout rather than hiding it.
-7. immediately before mutating a shared branch or PR, refresh its remote head and current PR state; if another Agent changed the head, base, body, draft state, or overlapping files, re-read that delta before writing rather than treating your earlier snapshot as a lock.
+3. bind the target object to the exact mutation action/schema before dispatch (for example, `open PR -> create_pull_request`); if the selected action targets a different object, stop rather than treating a nearby write capability as equivalent;
+4. do not create probe files, comments, branches, deployments, or other mutations merely to test whether a tool works;
+5. when several files form one coherent change, prepare them before the first provider-triggering update and prefer one atomic multi-file commit when practical;
+6. after a write, verify the returned target/branch/SHA instead of assuming the intended mutation happened;
+7. if an accidental write occurs, stop, classify it, clean or neutralize it immediately when possible, and disclose any residue in closeout rather than hiding it;
+8. immediately before mutating a shared branch or PR, refresh its remote head and current PR state; if another Agent changed the head, base, body, draft state, or overlapping files, re-read that delta before writing rather than treating your earlier snapshot as a lock.
 
-Tool discovery and capability testing should be read-only whenever a read path exists. This rule is especially important on repositories with Git-connected deployment because every unnecessary ref mutation can also consume build/review attention.
+Tool discovery and capability testing should be read-only whenever a read path exists. This rule is especially important on repositories with Git-connected deployment because every unnecessary ref mutation can also consume build/review attention. If the same target/action mismatch recurs after an explicit correction-to-action witness, stop retrying that mutation surface and switch to an explicit programmatic path whose object and action are visible in one schema/command (for example, `gh pr create` for opening a PR).
 
 ### Choose the fastest safe execution surface
 

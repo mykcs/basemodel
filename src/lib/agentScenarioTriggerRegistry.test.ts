@@ -11,6 +11,7 @@ const websiteSpec = readFileSync(new URL('../../docs/agents/current/website-desi
 const copyCases = readFileSync(new URL('../../docs/agents/current/website-copy-cases.md', import.meta.url), 'utf8');
 const history = readFileSync(new URL('../../docs/agents/history/2026-08-11-seed-preview-and-agent-workflow-lessons.md', import.meta.url), 'utf8');
 const attentionHistory = readFileSync(new URL('../../docs/agents/history/2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md', import.meta.url), 'utf8');
+const conversationCloseoutEntry = readFileSync(new URL('../../docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md', import.meta.url), 'utf8');
 
 describe('Agent scenario-trigger discovery', () => {
   it('routes future non-trivial work through the trigger registry', () => {
@@ -21,6 +22,27 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('Re-scan when the task changes state');
     expect(principles).toContain('Make recurring lessons triggerable');
     expect(principles).toContain('re-scanned when the task changes state');
+  });
+
+  it('keeps the reusable conversation-closeout trigger resolvable without duplicating protocol authority', () => {
+    expect(registry).toContain('../../operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md');
+    expect(conversationCloseoutEntry).toContain('navigation-only compatibility entrypoint');
+    expect(conversationCloseoutEntry).toContain('mykcs/openevo-experiment/docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md');
+    expect(conversationCloseoutEntry).toContain('does **not** copy the protocol body');
+  });
+
+  it('routes advisor briefings through live experiment authority and presentation-role checks', () => {
+    expect(registry).toContain('Advisor briefing / slides / projected-deck specialization');
+    expect(registry).toContain('the current website is publication state, not experiment-inventory authority');
+    expect(registry).toContain('engineering validity as a prerequisite rather than an automatic research highlight');
+    expect(registry).toContain('`HTML` is an implementation medium, not a visual-style reset');
+  });
+
+  it('binds provider writes to the intended object and changes surface after repeated mismatch', () => {
+    expect(principles).toContain('bind the target object to the exact mutation action/schema before dispatch');
+    expect(principles).toContain('open PR -> create_pull_request');
+    expect(principles).toContain('stop retrying that mutation surface');
+    expect(principles).toContain('`gh pr create` for opening a PR');
   });
 
   it('protects the recurring high-cost situations from this project', () => {
