@@ -6,6 +6,7 @@ import {
   OPEN_EVO_BRIEFING_STORYLINE_INGESTION_20260909,
   OPEN_EVO_BRIEFING_FINAL_CLOSEOUT_INGESTION_20260909,
   FUHUO_MAC_RECOVERY_INGESTION_20260909,
+  SITEWIDE_APPLE_REFERENCE_INGESTION_20260909,
 } from '../data/humanFeedbackIngestionCloseouts';
 import { HUMAN_FEEDBACK_EVENTS, HUMAN_VISUAL_REFERENCE_SET, failureFamilySeverity } from '../data/humanPreferenceLearningHistory';
 import { aggregateHumanFeedbackIngestionCoverage, validateHumanFeedbackIngestionCloseout } from './humanFeedbackIngestionCloseout';
@@ -16,6 +17,7 @@ const finalSuccessor = OPEN_EVO_BRIEFING_FINAL_SUCCESSOR_INGESTION_20260909;
 const storyline = OPEN_EVO_BRIEFING_STORYLINE_INGESTION_20260909;
 const finalCloseout = OPEN_EVO_BRIEFING_FINAL_CLOSEOUT_INGESTION_20260909;
 const recovery = FUHUO_MAC_RECOVERY_INGESTION_20260909;
+const sitewideApple = SITEWIDE_APPLE_REFERENCE_INGESTION_20260909;
 
 describe('human feedback ingestion closeout', () => {
   it('covers every identified signal across the chained source windows with no unresolved hold', () => {
@@ -25,9 +27,10 @@ describe('human feedback ingestion closeout', () => {
     expect(storyline.ledger).toHaveLength(storyline.candidateFeedbackSignals);
     expect(finalCloseout.ledger).toHaveLength(finalCloseout.candidateFeedbackSignals);
     expect(recovery.ledger).toHaveLength(recovery.candidateFeedbackSignals);
-    expect(original.candidateFeedbackSignals + successor.candidateFeedbackSignals + finalSuccessor.candidateFeedbackSignals + storyline.candidateFeedbackSignals + finalCloseout.candidateFeedbackSignals + recovery.candidateFeedbackSignals).toBe(76);
-    const all = [...original.ledger, ...successor.ledger, ...finalSuccessor.ledger, ...storyline.ledger, ...finalCloseout.ledger, ...recovery.ledger];
-    expect(new Set(all.map((item) => item.id)).size).toBe(76);
+    expect(sitewideApple.ledger).toHaveLength(sitewideApple.candidateFeedbackSignals);
+    expect(original.candidateFeedbackSignals + successor.candidateFeedbackSignals + finalSuccessor.candidateFeedbackSignals + storyline.candidateFeedbackSignals + finalCloseout.candidateFeedbackSignals + recovery.candidateFeedbackSignals + sitewideApple.candidateFeedbackSignals).toBe(81);
+    const all = [...original.ledger, ...successor.ledger, ...finalSuccessor.ledger, ...storyline.ledger, ...finalCloseout.ledger, ...recovery.ledger, ...sitewideApple.ledger];
+    expect(new Set(all.map((item) => item.id)).size).toBe(81);
     expect(all.filter((item) => item.disposition === 'ambiguous-hold')).toEqual([]);
   });
 
@@ -42,6 +45,7 @@ describe('human feedback ingestion closeout', () => {
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE')?.tier).toBe('current-candidate');
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER')?.tier).toBe('silver');
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-605-MERGED-REJECTED')?.tier).toBe('rejected');
+    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-SITEWIDE-APPLE-SURFACE-REJECTED')?.tier).toBe('rejected');
   });
 
   it('keeps the current page successor under review rather than inventing acceptance', () => {
@@ -93,6 +97,7 @@ describe('human feedback ingestion closeout', () => {
     expect(failureFamilySeverity('presenter-language')).toBe('repeated');
     expect(failureFamilySeverity('technical-detail-wrong-layer')).toBe('repeated');
     expect(failureFamilySeverity('story-compression-hides-causal-sequence')).toBe('normal');
+    expect(failureFamilySeverity('reference-surface-imitation')).toBe('hard');
   });
 
   it('passes both receipts, future-task retrieval, and negative/positive evaluation proof', () => {
@@ -156,6 +161,31 @@ describe('human feedback ingestion closeout', () => {
       'internal-detail-primary-attention',
     ]) expect(result.retrievedSignals[signal], signal).toBe(true);
     expect(result.evaluationProofFailures).toContain('hard failure family not checked: internal-detail-promoted-to-primary-attention');
+    expect(result.evaluationProofPassFailures).toEqual([]);
+  });
+
+
+  it('closes the sitewide Apple-reference recurrence as rejected without inventing a PR or successor acceptance', () => {
+    expect(sitewideApple.schema).toBe('human-feedback-ingestion-closeout.v2');
+    expect(sitewideApple.sourceWindow.pullRequest).toBeUndefined();
+    expect(sitewideApple.sourceWindow.finalVerdict).toBe('rejected');
+    expect(sitewideApple.sourceWindow.finalOwnerVisibleHead).toBe('84eca7135db376f5ffa539a9a7c78b1f64c86ca7');
+    const event = HUMAN_FEEDBACK_EVENTS.find((item) => item.id === 'EVENT-20260909-SITEWIDE-APPLE-SURFACE-REPEAT');
+    expect(event?.verdict).toBe('rejected');
+    expect(event?.repeatSignal).toBe('explicit');
+    expect(event?.failureMechanisms).toContain('reference-surface-imitation');
+    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-SITEWIDE-APPLE-SURFACE-REJECTED')?.gitSha).toBe(sitewideApple.sourceWindow.finalOwnerVisibleHead);
+    expect(HUMAN_FEEDBACK_EVENTS.some((item) => item.evidence?.gitSha === sitewideApple.sourceWindow.finalOwnerVisibleHead && ['accepted', 'canonical'].includes(item.verdict))).toBe(false);
+  });
+
+  it('proves the sitewide recurrence changes a future-task brief and can be rejected before owner review', () => {
+    const result = validateHumanFeedbackIngestionCloseout(sitewideApple);
+    expect(result.failures).toEqual([]);
+    expect(result.retrievedSignals['reference-surface-imitation-hard']).toBe(true);
+    expect(result.retrievedSignals['apple-cognition-not-visual-skin']).toBe(true);
+    expect(result.retrievedSignals['sitewide-reference-visual-rejected-only']).toBe(true);
+    expect(result.retrievedEventIds).toContain('EVENT-20260909-SITEWIDE-APPLE-SURFACE-REPEAT');
+    expect(result.evaluationProofFailures).toContain('hard failure family not checked: reference-surface-imitation');
     expect(result.evaluationProofPassFailures).toEqual([]);
   });
 
