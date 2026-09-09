@@ -116,6 +116,9 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('64 / 64 条尝试有效');
     expect(briefing).toContain('任务得分 = 0');
     expect(briefing).toContain('每个配对差值仍然是 0');
+    expect(briefing).toContain('我们怎么处理');
+    expect(briefing).toContain('把“步数太少”从原因列表里删掉');
+    expect(briefing).toContain('这一步解决的是错误诊断');
     expect(technical).toContain('max_steps');
   });
 
@@ -126,6 +129,9 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('<strong>2048 → 4096</strong>');
     expect(briefing).toContain("20 {t('条记录', 'records')}");
     expect(briefing).toContain('10 + 10');
+    expect(briefing).toContain('最终怎么解决容量饱和');
+    expect(briefing).toContain('最终采用 A2 方案');
+    expect(briefing).toContain('容量一满就卡死');
     expect(technical).toContain('max split depth is one');
     expect(briefing).not.toContain('20 条 primary');
     expect(briefing).not.toContain('20 条 repair');
