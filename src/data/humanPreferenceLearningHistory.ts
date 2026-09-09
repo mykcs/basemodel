@@ -277,7 +277,7 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 594, ledgerId: 'FB-22-HORIZON-BEHAVIOR-MUST-BE-VISIBLE' },
   },
   {
-    id: 'EVENT-20260909-MOBILE-REFLOW-REPEAT',
+    id: 'EVENT-20260909-MOBILE-WHOLE-SLIDE-FIT-REPEAT',
     date: '2026-09-09',
     caseIds: ['CASE-082'],
     scopes: ['briefing', 'visual', 'briefing-mobile'],
@@ -285,9 +285,9 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     variantId: 'briefing-phone-horizontal-scroll',
     verdict: 'rejected',
     ownerSignal: 'iPhone要自适应宽度，就是在iPhone上看，宽度应该是对齐的，我自己选择放大或者怎么样，不要我再去横着滑动。',
-    reasons: ['手机阅读不应强迫用户横向拖动画布', '这是对既有 phone reflow 偏好的第二次直接证据'],
+    reasons: ['手机阅读不应强迫用户横向拖动画布', '“自适应宽度 + 用户自己选择放大”要求的是整张 slide fit-to-width，而不是把 slide 内部重排成长网页'],
     failureMechanisms: ['mobile-fixed-canvas-overflow'],
-    requestedSuccessorVariantId: 'briefing-phone-viewport-reflow',
+    requestedSuccessorVariantId: 'briefing-phone-whole-slide-fit',
     evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 594, ledgerId: 'FB-23-IPHONE-REFLOW-REPEAT' },
   },
   {
@@ -302,7 +302,7 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     reasons: ['连续训练轨迹比单个最终低分更能回答训练是否真正发生', '曲线用于缩小工程故障解释，而不是把训练 loss 当成最终能力'],
     failureMechanisms: ['final-score-without-training-dynamics', 'evidence-layer-conflation'],
     requestedSuccessorVariantId: 'briefing-training-dynamics-layered',
-    evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 594, gitSha: '93f7bcda83fc059a066c949de5e95ecb34399f3f', ledgerId: 'FB-S2-02-CHECKPOINT-WANDB-CURVE' },
+    evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 594, gitSha: 'e5d8a184c25cd49d0264efe8881cc02b302d9c51', ledgerId: 'FB-S2-02-CHECKPOINT-WANDB-CURVE' },
   },
   {
     id: 'EVENT-20260909-DIAGNOSTIC-MISSING-RESOLUTION',
@@ -402,16 +402,22 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
   {
     id: 'TRAJECTORY-BRIEFING-DEVICE-SCOPE-20260909',
     scopes: ['briefing', 'visual', 'briefing-mobile', 'briefing-desktop'],
-    variantIds: ['briefing-fixed-16-9-all-devices', 'briefing-responsive-final-89fe1190'],
+    variantIds: ['briefing-fixed-16-9-all-devices', 'briefing-responsive-final-89fe1190', 'briefing-phone-whole-slide-fit'],
     comparisons: [
       {
         betterVariantId: 'briefing-responsive-final-89fe1190',
         worseVariantId: 'briefing-fixed-16-9-all-devices',
-        reason: '较新的 owner 指令只在手机 scope 覆盖旧的全设备固定画布规则：手机重排；桌面仍保持 capped 16:9。',
+        reason: '较新的 owner 指令先纠正了把 1280×720 原尺寸画布硬塞进手机的问题；这是中间态。',
         failureMechanisms: ['mobile-fixed-canvas-overflow', 'unbounded-desktop-scaling'],
       },
+      {
+        betterVariantId: 'briefing-phone-whole-slide-fit',
+        worseVariantId: 'briefing-responsive-final-89fe1190',
+        reason: '最新 owner 指令进一步明确：iPhone 宽度要对齐、默认不横向滑动，细看时由用户自己放大；因此保留同一 16:9 slide 构图，只改变整张画布的显示比例，不把内部结构重排成长网页。',
+        failureMechanisms: ['mobile-fixed-canvas-overflow', 'presentation-composition-vs-responsive-reading'],
+      },
     ],
-    note: 'scope-specific supersession：历史规则保留，current authority 是 phone reflow + desktop capped composition。',
+    note: 'scope-specific supersession：历史固定原尺寸与中间 phone reflow 都保留为证据；current authority 是 desktop capped 1280×720 + phone whole-slide 16:9 scale-to-width, no horizontal scroll。',
   },
   {
     id: 'TRAJECTORY-BRIEFING-DIAGNOSTIC-CLOSURE-20260909',
@@ -501,18 +507,18 @@ export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
     gitSha: '89fe1190d0f92909f6da40b9a47ea75c9f45d2d5',
     route: '/research/seed-openevo/study/briefing/',
     ownerEvidence: 'owner 明确说“虽然做的不是100完成，先合并进main”；随后 PR #569 从 exact head 89fe1190… 合入 main。',
-    note: '具体结果 accepted，但没有未来模板授权，所以仍是 Silver 而不是 Golden。桌面 capped 16:9，手机按窗口重排。',
+    note: '具体结果 accepted，但没有未来模板授权，所以仍是 Silver 而不是 Golden。它保留当时的 phone-reflow 历史实现；后续最新 phone whole-slide fit 指令只作为 superseding preference，不倒改这张历史视觉证据。',
   },
   {
     id: 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE',
     tier: 'current-candidate',
     scopes: ['briefing', 'visual', 'briefing-mobile', 'briefing-desktop'],
     artifact: 'training-dynamics / diagnostic-closure successor under review',
-    gitSha: '93f7bcda83fc059a066c949de5e95ecb34399f3f',
+    gitSha: 'e5d8a184c25cd49d0264efe8881cc02b302d9c51',
     pullRequest: 594,
     route: '/research/seed-openevo/study/briefing/',
     ownerEvidence: 'owner 要求加入 checkpoint/W&B 训练趋势、补全 Slide 07 的真实行为证据与“怎么处理”；随后仍继续纠正内容与 Preview 工作流，没有给出该视觉版本的最终接受或模板授权。',
-    note: 'CURRENT-CANDIDATE 不是 Silver/Golden。PR #594 仍是 draft；其任何 phone/fixed-canvas 实现都必须继续服从较新的 phone reflow 偏好。',
+    note: 'CURRENT-CANDIDATE 不是 Silver/Golden。PR #594 仍是 draft；当前 phone 实现必须保持同一 16:9 构图，整张等比缩到 viewport 宽度且无横向滚动。',
   },
 
 ];
