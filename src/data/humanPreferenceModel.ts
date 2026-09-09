@@ -63,17 +63,18 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
   {
     id: 'PREF-DIRECT-FACTS',
     title: '事实和主题优先于主持人、叙事隐喻和防御性开场',
-    statement: '能直接说做了什么、发生了什么、结果是什么时，不用“怎样读 / 先看 / 分岔 / 这不是”等作者姿态抢第一理解层。',
+    statement: '能直接说做了什么、发生了什么、结果是什么时，不用“怎样读 / 先看 / 分岔 / 这不是”等作者姿态抢第一理解层；参数细节也不应为了冲击力抢在自然语言对象之前。',
     scopes: ['all-public-ui', 'research-ui', 'research-copy', 'study', 'results', 'run', 'briefing', 'capability'],
     confidence: 'repeated-explicit',
     priority: 5,
-    retrievalTags: ['AI味', '说人话', '主持人', '标题', '英文眉题', '分岔', '隐喻', '开场', '不是', '不能'],
-    supportingCaseIds: ['CASE-027', 'CASE-063', 'CASE-067', 'CASE-081'],
+    retrievalTags: ['AI味', '说人话', '主持人', '标题', '英文眉题', '分岔', '隐喻', '开场', '不是', '不能', '参数', '数字'],
+    supportingCaseIds: ['CASE-027', 'CASE-063', 'CASE-067', 'CASE-081', 'CASE-082'],
     antiOvergeneralization: [
       '真实研究问题可以是问句。',
       '真正改变科学解释的否定句和 caveat 必须保留，并贴近所约束的 claim。',
       '能建立正确心智模型的必要类比不是禁用项。',
       'LoRA / RL / GDR / TaskVector 等真实技术对象不是禁用项；要删的是不增加信息的英文装饰标签。',
+      '不是禁止标题出现数字；当数字本身就是主要科研结果（例如最终分数或 44→7 的准入瓶颈）时可以前置。具体实现参数若能先用自然语言说清，则把精确数值放在正文。',
     ],
   },
   {
@@ -143,7 +144,7 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     supportingCaseIds: ['CASE-082'],
     antiOvergeneralization: [
       '不是删除工程证据；当工程事实决定实验是否有效时，它就是科学叙事的一部分。',
-      '“像汇报”描述信息节奏；当用户明确要求固定 16:9 HTML 演讲稿时，应保留固定演讲构图。',
+      '“像汇报”描述信息节奏；桌面端可保留固定 16:9 演讲构图并设置宽度上限，但手机端应优先适应窗口和可读性，不把 1280×720 画布强塞进窄屏。',
       '降低认知负担不等于降低科研深度；机制页可以用公式、真实参数和定量阈值，只要它们直接回答研究问题。',
     ],
   },

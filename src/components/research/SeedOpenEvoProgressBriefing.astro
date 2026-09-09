@@ -124,8 +124,8 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
 
   <section id="capacity-diagnostic" class="briefing-slide tone-gold" aria-labelledby="capacity-title">
     <div class="slide-inner">
-      <h2 id="capacity-title">{t('2048 → 4096：单次记忆容量翻倍仍然失败', 'Second explanation: does a larger single memory budget solve it? 2048 → 4096 still fails')}</h2>
-      <p class="slide-thesis">{t('我们先把文本记忆模块一次生成能用的 token 上限从 2048 对称翻到 4096。结果仍然失败，于是问题从“容量够不够大”转成“饱和以后应该怎样组织信息”。', 'We first doubled the Text Memory generation token cap symmetrically from 2048 to 4096. It still failed, shifting the question from “is the capacity large enough?” to “how should information be organized after saturation?”')}</p>
+      <h2 id="capacity-title">{t('我们把记忆容量翻倍了', 'We doubled the memory capacity')}</h2>
+      <p class="slide-thesis">{t('具体来说，我们把文本记忆模块一次生成能用的 token 上限从', 'Concretely, we increased the Text Memory generation token cap from')} <strong>2048 → 4096</strong>{t('。但这样还是不行，于是问题从“容量够不够大”转成“饱和以后应该怎样组织信息”。', '. But that still did not solve the problem, shifting the question from “is the capacity large enough?” to “how should information be organized after saturation?”')}</p>
       <div class="before-after">
         <div class="before"><span>{t('单次容量实验', 'single-call capacity')}</span><strong>2048 → 4096</strong><p>{t('单纯把 token 上限翻倍仍然没有解决容量失败。', 'Doubling the token cap alone did not resolve the capacity failure.')}</p></div>
         <div class="after"><span>{t('结构化处理', 'structured recovery')}</span><strong>20 {t('条记录', 'records')} → 10 + 10</strong><p>{t('先保留原来的 20 条记录；如果同一批记录修复一次后仍然饱和，才固定拆成前 10 + 后 10，分别压缩后再合并。', 'Keep the original 20 records first; only if the same records still saturate after one repair pass do we split into first 10 + last 10, compress each half, then merge.')}</p></div>
@@ -242,5 +242,28 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
   #determinism .current-twin-status>div{padding:11px 15px}
   #determinism .plain-language-result{margin-top:10px;padding:11px 15px}
   #determinism .plain-language-result p{font-size:12.5px;line-height:1.4}
+
+  @media(max-width:720px){
+    .briefing{overflow-x:hidden;padding:14px 0 44px}
+    .briefing-slide{width:calc(100vw - 20px);height:auto;min-height:0;margin:0 auto 18px;overflow:visible}
+    .slide-inner{height:auto;min-height:0;padding:28px 20px 44px}
+    h1{max-width:none;margin-top:8px;font-size:42px;line-height:1.02}
+    h2{max-width:none;margin-top:2px;font-size:30px;line-height:1.08}
+    .cover-thesis{max-width:none;font-size:19px;line-height:1.52}
+    .slide-thesis{max-width:none;margin-top:14px;font-size:17px;line-height:1.52}
+    .cover-meta,.split-slide,.three-questions,.quality-grid,.mechanism-math,.twin-design,.before-after,.current-twin-status,.seed-questions,.turning-list,.choice-grid,.speed-proof{grid-template-columns:1fr}
+    .split-slide{display:grid;gap:18px;padding:28px 20px 44px}
+    .cover-meta{gap:10px;margin-top:24px}.cover-meta>div{padding:13px 15px}
+    .agenda-list{margin-top:18px;gap:12px}.agenda-list strong{font-size:17px}
+    .tldr-pane{padding:22px 20px}.tldr-pane ul{margin-top:14px;gap:12px}.tldr-pane li{font-size:15px}
+    .paper-table-wrap{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.paper-table{min-width:620px}
+    .table-boundary{font-size:14px}.table-notes{grid-template-columns:1fr;gap:10px}
+    .three-questions,.mechanism-math,.before-after,.choice-grid{margin-top:20px;gap:12px}
+    .three-questions li,.formula-card,.before-after>div,.choice{padding:18px}
+    .pipeline-row{display:grid;grid-template-columns:1fr;gap:10px}.pipeline-row i{transform:rotate(90deg);justify-self:center}
+    .decision-note{margin-top:18px}.decision-note p{display:block;margin:8px 0 0;font-size:15px}
+    .slide-number{right:16px;bottom:14px}
+    .source-note,.final-source{margin-top:18px}
+  }
 
 </style>

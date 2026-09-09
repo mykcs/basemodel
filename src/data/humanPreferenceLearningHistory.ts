@@ -175,6 +175,19 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     failureMechanisms: ['project-status-as-research-story', 'chronology-with-scientific-judgment'],
   },
   {
+    id: 'EVENT-20260909-PARAMETER-TITLE-AND-MOBILE-FIT',
+    date: '2026-09-09',
+    caseIds: ['CASE-082'],
+    scopes: ['briefing', 'research-copy', 'visual'],
+    artifact: 'OpenEVO summer review',
+    variantId: 'briefing-chronology-responsive-refinement',
+    comparedToVariantId: 'briefing-chronology-science-story',
+    verdict: 'better',
+    ownerSignal: '整体效果比上一版好多了；参数数字不要放在标题里营造冲击力，手机端要适应窗口，桌面端保持有上限的演讲画布。',
+    reasons: ['自然语言结论应先于具体参数数字', '手机可读性优先于固定 16:9 构图', '桌面演讲画布不应随超宽屏无限扩张'],
+    failureMechanisms: ['numeric-shock-heading', 'mobile-fixed-canvas-overflow', 'unbounded-desktop-scaling'],
+  },
+  {
     id: 'EVENT-20260908-MECHANISM-DEPTH',
     date: '2026-09-08',
     caseIds: ['CASE-082'],
@@ -201,6 +214,7 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
       'briefing-mechanism-math-depth',
       'briefing-rigor-mainline',
       'briefing-chronology-science-story',
+      'briefing-chronology-responsive-refinement',
     ],
     comparisons: [
       {
@@ -220,6 +234,12 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
         worseVariantId: 'briefing-engineering-gate-highlight',
         reason: '机制公式和定量对照直接展示科研设计；普通工程修复本身不构成科研亮点。',
         failureMechanisms: ['missing-scientific-meaning'],
+      },
+      {
+        betterVariantId: 'briefing-chronology-responsive-refinement',
+        worseVariantId: 'briefing-chronology-science-story',
+        reason: '用户明确说整体更好，但要求数字退出冲击式标题，同时手机端响应窗口、桌面端保持有上限的演讲画布。',
+        failureMechanisms: ['numeric-shock-heading', 'mobile-fixed-canvas-overflow', 'unbounded-desktop-scaling'],
       },
       {
         betterVariantId: 'briefing-chronology-science-story',

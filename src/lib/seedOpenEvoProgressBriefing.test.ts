@@ -34,6 +34,15 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).not.toContain('Next slide');
   });
 
+
+  it('reflows on phones while keeping the desktop slide canvas capped at 1280×720', () => {
+    expect(briefing).toContain('--deck-w:1280px;--deck-h:720px');
+    expect(briefing).toContain('@media(max-width:720px)');
+    expect(briefing).toContain('width:calc(100vw - 20px);height:auto');
+    expect(briefing).toContain('.briefing{overflow-x:hidden');
+    expect(briefing).toContain('.paper-table{min-width:620px}');
+  });
+
   it('starts with a normal presentation cover and chronological agenda', () => {
     expect(briefing).toContain('OpenEVO 暑期考核汇报');
     expect(briefing).toContain('OpenEVO 让模型从任务经验中持续更新记忆与参数');
@@ -100,7 +109,9 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
 
   it('keeps the 2048→4096→10+10 capacity chain and does not claim a benchmark win from it', () => {
     expect(briefing).toContain('2048 → 4096');
-    expect(briefing).toContain('2048 → 4096：单次记忆容量翻倍仍然失败');
+    expect(briefing).toContain('我们把记忆容量翻倍了');
+    expect(briefing).not.toContain('2048 → 4096：单次记忆容量翻倍仍然失败');
+    expect(briefing).toContain('<strong>2048 → 4096</strong>');
     expect(briefing).toContain("20 {t('条记录', 'records')}");
     expect(briefing).toContain('10 + 10');
     expect(technical).toContain('max split depth is one');
