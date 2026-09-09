@@ -61,8 +61,42 @@ describe('human preference learning v2', () => {
       'PAIR-082-DEVICE-SCOPE',
     ]));
     expect(brief.events.some((event) => event.id === 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT' && event.verdict === 'canonical')).toBe(true);
-    expect(brief.visualReferences.some((reference) => reference.tier === 'current-candidate')).toBe(true);
-    expect(brief.generationRules.join('\n')).toContain('still under review');
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER' && reference.tier === 'silver')).toBe(true);
+    expect(brief.generationRules.join('\n')).toContain('No current-candidate visual is active');
+  });
+
+  it('retrieves the final briefing lessons for a different two-stage training talk before first draft', () => {
+    const brief = buildHumanPreferenceBrief({
+      contractId: 'study-briefing',
+      query: '我要准备一场新的多模态代理训练组会：项目有两个训练阶段、几条不同模型尺寸的长周期实验、一个更新 gate、多个负向诊断和连续训练曲线。听众懂机器学习但没读过项目网站；同一份 HTML deck 还要在手机预览和会议室大屏展示。请给出第一版结构、机制文案和图表表达，并说明怎样避免把训练过程指标误当最终评测。',
+    });
+    const preferenceIds = brief.learnedPreferences.map(({ preference }) => preference.id);
+    const pairIds = brief.goldPairs.map(({ pair }) => pair.id);
+    expect(preferenceIds).toEqual(expect.arrayContaining([
+      'PREF-BRIEFING-SELF-CONTAINED-METHOD',
+      'PREF-CONCRETE-MECHANISM-WORDING',
+      'PREF-CONSISTENT-EXPERIMENT-VISUAL-GRAMMAR',
+      'PREF-DIAGNOSTIC-CLOSURE',
+      'PREF-BRIEFING-DEVICE-SCOPE',
+    ]));
+    expect(pairIds).toEqual(expect.arrayContaining([
+      'PAIR-089-BRIEFING-METHOD-CONTEXT',
+      'PAIR-087-CONCRETE-MECHANISM',
+      'PAIR-088-EXPERIMENT-CHART-GRAMMAR',
+      'PAIR-084-DIAGNOSTIC-CLOSE-LOOP',
+      'PAIR-082-DEVICE-SCOPE',
+    ]));
+    expect(brief.hardFailureFamilies).toContain('incomplete-scientific-decision-loop');
+    expect(brief.events.map((event) => event.id)).toEqual(expect.arrayContaining([
+      'EVENT-20260909-BRIEFING-METHOD-CONTEXT',
+      'EVENT-20260909-GDR-ABSTRACT-MECHANISM-PHRASING',
+      'EVENT-20260909-UNIFIED-EXPERIMENT-CHART-GRAMMAR',
+      'EVENT-20260909-DIAGNOSTIC-MOTIVATION-MISSING',
+    ]));
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.tier === 'golden')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE')).toBe(false);
   });
 
   it('builds a recovery-scoped brief with rejected/current visual tiers and no invented Golden', () => {
