@@ -35,12 +35,12 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
 
-  it('reflows on phones while keeping the desktop slide canvas capped at 1280×720', () => {
+  it('keeps the same fixed 1280×720 16:9 slide canvas on phones and desktops', () => {
     expect(briefing).toContain('--deck-w:1280px;--deck-h:720px');
-    expect(briefing).toContain('@media(max-width:720px)');
-    expect(briefing).toContain('width:calc(100vw - 20px);height:auto');
-    expect(briefing).toContain('.briefing{overflow-x:hidden');
-    expect(briefing).toContain('.paper-table{min-width:620px}');
+    expect(briefing).toContain('width:var(--deck-w);height:var(--deck-h)');
+    expect(briefing).toContain('overflow-x:auto');
+    expect(briefing).not.toContain('@media(max-width:720px)');
+    expect(briefing).not.toContain('width:calc(100vw - 20px);height:auto');
   });
 
   it('starts with a normal presentation cover and chronological agenda', () => {
