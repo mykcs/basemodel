@@ -72,6 +72,7 @@ A replacement provider `ERROR` must also be localized by **execution phase** bef
 - `[vercel-preview]` is only a historical/review marker and never opens the spend gate;
 - a docs/governance-only final candidate still runs `verify:deploy` when its explicit gate ref is created, but the browser planner may skip Chromium when the diff is proven non-UI;
 - a docs/governance-only change on `main` remains non-deploy-relevant and **must not publish a Production build**. This preserves the rule that changing `AGENTS.md` or `docs/agents/**` cannot replace the website Production artifact.
+- a proven HPL control-plane-only final candidate still runs `verify:deploy` + static build on the explicit gate Preview, but skips Chromium when `scripts/hpl-control-plane.mjs` proves the changed HPL modules remain detached from ordinary runtime source; after merge, the same detached HPL-only range is non-deploy-relevant on `main`, so it does not publish an identical Production artifact. Any runtime importer or gate-owner change fails closed and restores the normal build/browser path.
 
 ### Fast human-review Preview lane
 
@@ -108,6 +109,13 @@ npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && nod
 non-UI / governance-only diff
 -> verify:deploy + static build
 -> hosted browser layer may skip
+
+detached HPL control-plane-only diff
+-> public GHA deterministic + HPL/Reader audits still run
+-> exact-head Vercel Preview runs verify:deploy + static build
+-> hosted Chromium skips when detachment invariant passes
+-> merged main range is ignored as non-deploy-relevant (no duplicate Production rebuild)
+-> any runtime HPL importer or gate-owner change fails closed
 
 bounded route-owned UI diff
 -> verify:deploy + build

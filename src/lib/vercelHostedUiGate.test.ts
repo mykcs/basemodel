@@ -172,6 +172,26 @@ describe('Vercel hosted UI gate planner', () => {
     expect(research.specs).toContain('tests/e2e/results-mobile-overflow.spec.ts');
   });
 
+  it('skips the browser layer for HPL control-plane-only changes after deterministic validation', () => {
+    const plan = planHostedUi([
+      'src/data/humanPreferenceModel.ts',
+      'src/data/humanPreferenceLearningHistory.ts',
+      'src/lib/humanPreferenceBrief.ts',
+      'src/lib/humanPreferenceLearning.ts',
+      'scripts/verify-human-feedback-ingestion-closeout.ts',
+      'src/lib/humanFeedbackIngestionCloseout.test.ts',
+      'src/lib/humanPreferenceBrief.test.ts',
+      'src/lib/humanPreferenceLearning.test.ts',
+    ]);
+    expect(plan.mode).toBe('skip');
+    expect(plan.risk).toBe('none');
+  });
+
+  it('keeps the HPL detachment and ignored-build owners fail-closed', () => {
+    expect(planHostedUi(['scripts/hpl-control-plane.mjs']).mode).toBe('full');
+    expect(planHostedUi(['scripts/vercel-ignore-build.mjs']).mode).toBe('full');
+  });
+
   it('skips the browser layer for non-UI files after deterministic build validation', () => {
     const plan = planHostedUi(['docs/agents/current/deployment-policy.md']);
     expect(plan.mode).toBe('skip');

@@ -84,6 +84,22 @@ describe('Vercel build-budget contract', () => {
     expect(shouldBuildForFiles(['README.md', 'src/pages/index.astro'])).toBe(true);
   });
 
+  it('treats detached HPL control-plane changes as non-deploy while keeping gate owners deploy-relevant', () => {
+    const hplOnly = [
+      'src/data/humanPreferenceModel.ts',
+      'src/data/humanPreferenceLearningHistory.ts',
+      'src/lib/humanPreferenceBrief.ts',
+      'src/lib/humanPreferenceLearning.ts',
+      'scripts/verify-human-feedback-ingestion-closeout.ts',
+      'src/lib/humanPreferenceBrief.test.ts',
+      'docs/agents/current/human-feedback-closeouts/example.md',
+    ];
+    expect(shouldBuildForFiles(hplOnly)).toBe(false);
+    expect(shouldBuildForFiles([...hplOnly, 'src/pages/index.astro'])).toBe(true);
+    expect(isBuildRelevantPath('scripts/hpl-control-plane.mjs')).toBe(true);
+    expect(isBuildRelevantPath('scripts/vercel-ignore-build.mjs')).toBe(true);
+  });
+
   it('keeps the Agent push/build budget discoverable and concrete in the current policy owner', () => {
     for (const token of [
       'Vercel build-budget discipline',
