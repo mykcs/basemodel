@@ -175,6 +175,19 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     failureMechanisms: ['project-status-as-research-story', 'chronology-with-scientific-judgment'],
   },
   {
+    id: 'EVENT-20260909-MOBILE-169-OWNER-CORRECTION',
+    date: '2026-09-09',
+    caseIds: ['CASE-082'],
+    scopes: ['briefing', 'visual'],
+    artifact: 'OpenEVO summer review',
+    variantId: 'briefing-mobile-fixed-169-correction',
+    comparedToVariantId: 'briefing-chronology-responsive-refinement',
+    verdict: 'better',
+    ownerSignal: '实际复看 Preview 后，明确要求手机上也保持 16:9。',
+    reasons: ['演讲稿在手机上仍应保持 slide 身份和构图一致性', '窄屏可通过内部横向查看承载固定画布，而不是把 slide 拆成长网页'],
+    failureMechanisms: ['mobile-reflow-changes-slide-identity'],
+  },
+  {
     id: 'EVENT-20260909-PARAMETER-TITLE-AND-MOBILE-FIT',
     date: '2026-09-09',
     caseIds: ['CASE-082'],
@@ -234,6 +247,12 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
         worseVariantId: 'briefing-engineering-gate-highlight',
         reason: '机制公式和定量对照直接展示科研设计；普通工程修复本身不构成科研亮点。',
         failureMechanisms: ['missing-scientific-meaning'],
+      },
+      {
+        betterVariantId: 'briefing-mobile-fixed-169-correction',
+        worseVariantId: 'briefing-chronology-responsive-refinement',
+        reason: '用户实际复看响应式 Preview 后明确纠正：手机上也要保留 16:9 slide，而不是纵向 reflow。',
+        failureMechanisms: ['mobile-reflow-changes-slide-identity'],
       },
       {
         betterVariantId: 'briefing-chronology-responsive-refinement',
