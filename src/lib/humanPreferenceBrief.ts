@@ -60,7 +60,7 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
   const retrieved = retrieveHumanPreferenceContext(input.query, input.contractId, 16, retrievalScope);
   const review = input.contractId ? preferenceReviewContextForContract(input.contractId) : undefined;
 
-  const events = HUMAN_FEEDBACK_EVENTS
+  const rankedEvents = HUMAN_FEEDBACK_EVENTS
     .map((event) => {
       const scopeCompatible = !scope || event.scopes.includes(scope) || event.scopes.includes('all-public-ui') || (event.scopes.includes('workflow') && workflowCue);
       return {
@@ -75,9 +75,15 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
       };
     })
     .filter(({ score }) => score > 0)
-    .sort((a, b) => b.score - a.score || b.event.date.localeCompare(a.event.date))
-    .slice(0, 22)
-    .map(({ event }) => event);
+    .sort((a, b) => b.score - a.score || b.event.date.localeCompare(a.event.date));
+
+  const hardFamilySet = new Set(hardFailureFamilies());
+  const eventById = new Map<string, HumanFeedbackEvent>();
+  for (const { event } of rankedEvents.slice(0, 20)) eventById.set(event.id, event);
+  for (const { event } of rankedEvents) {
+    if (event.failureMechanisms.some((family) => hardFamilySet.has(family))) eventById.set(event.id, event);
+  }
+  const events = [...eventById.values()].slice(0, 30);
 
   const eventVariantIds = new Set(events.map((event) => event.variantId));
   const trajectories = HUMAN_PREFERENCE_TRAJECTORIES.filter(

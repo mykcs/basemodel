@@ -431,6 +431,17 @@ export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [
     ownerStatus: 'accepted',
   },
   {
+    id: 'PAIR-081-BINARY-CONTRAST-SUMMARY',
+    caseId: 'CASE-081',
+    preferenceIds: ['PREF-DIRECT-FACTS', 'PREF-EVENT-FIRST-RESEARCH-HEADINGS'],
+    scopes: ['briefing', 'research-copy'],
+    rejected: '我们不是只跑一次实验，而是一步步换问题去验证',
+    accepted: '我们做过哪些尝试',
+    reason: '这一页承担的是“列出做过的科学尝试”；直接命名主题比先构造一个读者没有提出的二元对比更自然。否定句本身没有被禁用，真正的科学排除仍应贴着相关 claim 出现。',
+    failureMechanisms: ['defensive-negation-opening', 'anticipatory-rebuttal'],
+    ownerStatus: 'accepted',
+  },
+  {
     id: 'PAIR-082-RESEARCH-NARRATIVE',
     caseId: 'CASE-082',
     preferenceIds: ['PREF-RESEARCH-JUDGMENT'],

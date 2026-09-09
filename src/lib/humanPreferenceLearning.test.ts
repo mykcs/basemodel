@@ -75,6 +75,7 @@ describe('human preference learning loop', () => {
       'PAIR-090-GATE-HEADING',
       'PAIR-090-MODEL-COLON-HEADING',
       'PAIR-090-COMPOSED-STATE',
+      'PAIR-081-BINARY-CONTRAST-SUMMARY',
     ]));
     const preference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-EVENT-FIRST-RESEARCH-HEADINGS');
     expect(preference?.antiOvergeneralization.join(' ')).toContain('44 个候选只有 7 个进入后续模型');

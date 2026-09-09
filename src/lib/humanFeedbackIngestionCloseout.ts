@@ -70,6 +70,8 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
   const fastPreviewEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT');
   const final604Event = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-BRIEFING-604-ACCEPTED');
   const final604Visual = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER');
+  const final605Event = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-BRIEFING-605-ACCEPTED');
+  const final605Visual = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-605-ACCEPTED-SILVER');
   const candidateHead = record.sourceWindow.finalOwnerVisibleHead;
   const candidateScope = record.preferenceBrief?.scope;
   const candidateVisual = candidateHead
@@ -171,6 +173,18 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
     'science-vs-engineering-summary-split':
       preferences.has('PREF-RESEARCH-JUDGMENT') && preferences.has('PREF-PROGRESSIVE-DISCLOSURE') &&
       events.has('EVENT-20260909-BRIEFING-STORYLINE-SUMMARY-DIRECTION'),
+    'defensive-negation-framing-hard':
+      brief.hardFailureFamilies.includes('defensive-negation-opening') &&
+      brief.hardFailureFamilies.includes('anticipatory-rebuttal') &&
+      pairs.has('PAIR-081-BINARY-CONTRAST-SUMMARY') &&
+      events.has('EVENT-20260909-BRIEFING-BINARY-CONTRAST-REPEAT'),
+    'briefing-605-concrete-accepted-not-canonical':
+      final605Event?.verdict === 'accepted' &&
+      final605Event.evidence?.gitSha === '56b5120b22b6c709aaf485e3b1fdea348fb3041b' &&
+      final605Visual?.tier === 'silver' &&
+      final605Visual.gitSha === '56b5120b22b6c709aaf485e3b1fdea348fb3041b' &&
+      !HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === final605Event.evidence?.gitSha && event.verdict === 'canonical') &&
+      !HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden'),
     'recovery-action-first':
       preferences.has('PREF-RECOVERY-ACTION-FIRST') &&
       events.has('EVENT-20260909-FUHUO-RECOVERY-TECHNICAL-FIRST') &&
@@ -377,7 +391,7 @@ export function validateHumanFeedbackIngestionCloseout(record: HumanFeedbackInge
   const families = new Set(HUMAN_FEEDBACK_EVENTS.flatMap((event) => event.failureMechanisms));
   const repeatedFamilies = [...families].filter((family) => failureFamilySeverity(family) === 'repeated').sort();
   const hardFamilies = hardFailureFamilies();
-  for (const requiredHard of ['meaningless-english-eyebrow', 'engineering-as-science-highlight', 'internal-detail-promoted-to-primary-attention', 'incomplete-scientific-decision-loop']) if (!hardFamilies.includes(requiredHard)) failures.push(`${record.id}: expected hard family missing: ${requiredHard}`);
+  for (const requiredHard of ['meaningless-english-eyebrow', 'engineering-as-science-highlight', 'internal-detail-promoted-to-primary-attention', 'incomplete-scientific-decision-loop', 'defensive-negation-opening']) if (!hardFamilies.includes(requiredHard)) failures.push(`${record.id}: expected hard family missing: ${requiredHard}`);
   if (record.schema === 'human-feedback-ingestion-closeout.v2') {
     for (const requiredRepeated of ['incomplete-scientific-decision-loop', 'mobile-fixed-canvas-overflow']) {
       if (!['repeated', 'hard'].includes(failureFamilySeverity(requiredRepeated))) failures.push(`${record.id}: expected repeated family missing: ${requiredRepeated}`);

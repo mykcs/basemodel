@@ -962,6 +962,11 @@
 规律：**人类汇报通常先陈述对象、事实、做法或进展，再在会改变科学解释的位置补限制。不要为了显得严谨，一开口就用“不是 / 不能 / 不要”抢占注意力；那会产生防御性、AI 式的主持人口吻。科学 caveat 仍必须保留，但应该贴着它所约束的 claim，而不是提前否定一个没人提出的主张。**
 
 
+**2026-09-09 repeated evidence**：在 HPL 已经记录这条规则以后，PR #605 的一版 Slide 3 仍写成 `我们不是只跑一次实验，而是一步步换问题去验证`。owner 直接指出：`Slide 的第3页还是犯了“不是……而是……”这样的错误。再照着这个标准看一看，然后改。` 最终 accepted 版本改成直接主题 `我们做过哪些尝试`。
+
+这次重复纠正把 `defensive-negation-opening / anticipatory-rebuttal` 升级为 **hard**：future Agent 在交给 owner 前必须主动扫描标题、lede 和大号 callout 是否先制造了读者没有提出的二元反驳。**这里仍然不是禁用“不是 / 而是”**；科学澄清、责任边界和真正的排除结论可以正常使用否定句，前提是读者已经知道被否定的对象和 claim。
+
+
 <a id="case-082-科研阶段汇报要展示研究判断"></a>
 ### CASE-082 — 科研阶段汇报要展示研究判断，不是项目状态流水账
 **PREFERENCE · 2026-09-08 · direct human feedback on the advisor progress briefing**
@@ -1117,4 +1122,4 @@ owner 说明：`虽然我的网站里其他页面画了有关 SEED 是怎么做�
 
 边界：数字和模型名当然可以出现在标题。比如 `44 个候选只有 7 个进入后续模型` 同时说清两端对象，数字本身就是科研发现。`GDR / SD-LoRA / Agent` 等真实技术对象也应准确保留。需要避免的是读者必须先猜 operands / 内部词义才能理解标题。
 
-本轮具体视觉方向中，“可能的疑问”浅红圆框、SEED 89.7 的浅灰 pill、目录后科学尝试总结页和后段技术工作总结页都只绑定 OpenEVO briefing；没有“以后全站照此模板”的授权。PR #605 exact head `670ab9b4…` 仍是 current-candidate，不得因进入 closeout 就升级成 Silver / Golden。
+本轮具体视觉方向中，“可能的疑问”浅红圆框、SEED 89.7 的浅灰 pill、目录后科学尝试总结页和后段技术工作总结页都只绑定 OpenEVO briefing；没有“以后全站照此模板”的授权。`670ab9b4…` 是上一轮 closeout 当时的 historical current-candidate；之后 `e9b767d4…` 又复发了 `我们不是只跑一次实验，而是…` 的二元标题并被明确拒绝。最终 PR #605 exact head `56b5120b…` 在整套 slides 冷读修正后获得 `合并进 main` 的明确 concrete acceptance，因此记为 **accepted / Silver**；仍没有 canonical / Golden 授权。

@@ -192,7 +192,7 @@ The brief compiles:
 
 `feedback:retrieve` remains a useful low-level search tool. The **Preference Brief** is the generation-time owner because it combines the old retrieval layer with trajectories, visual evidence, and escalation.
 
-As the case/pair corpus grows, retrieval capacity must grow enough to preserve older hard constraints as well as newer high-similarity evidence. Current briefs allow up to 16 learned preferences/Gold Pairs and 22 direct events; this is a bounded context expansion, not permission to dump the full history. Regression tests must prove older closeout receipts still retrieve their required signals after new cases are added.
+As the case/pair corpus grows, retrieval must preserve older hard constraints as well as newer high-similarity evidence. Current briefs allow up to 16 learned preferences/Gold Pairs. Direct events use a bounded two-part selection: the 20 most relevant events first, then any additional in-scope event that carries a hard failure family, with an absolute cap of 30. This is not permission to dump the full history; it prevents new high-similarity events from silently evicting direct evidence for an already-hard correction. Regression tests must prove older closeout receipts still retrieve their required signals after new cases are added.
 
 If the brief says there is no Golden reference, the Agent must not invent one.
 
@@ -341,7 +341,9 @@ The PR #605 storyline review adds a further research-copy distinction:
 
 `7 < 8` is useful evidence after the gate is introduced, but the human entry point is `训练跑了很久，但参数一次都没有更新`. Likewise, `7B：结论` and `composed state` are not globally banned tokens: prefer a directly repeatable event sentence, preserve technical names that denote real objects, and translate author-internal English glue that adds no scientific precision. The owner repeated this family during closeout, so `compressed-shorthand-heading` is now hard.
 
-The same source window creates a new active `current-candidate` for PR #605. That means older tests saying “no active current-candidate” must not be preserved as historical truth: the correct invariant is that an active candidate may appear in a Preference Brief but must never be misreported as accepted or Golden.
+The post-closeout application exposed one more recurrence: an HPL-informed draft still titled Slide 3 `我们不是只跑一次实验，而是一步步换问题去验证`. The owner explicitly said the slide **still** made the same `不是……而是……` mistake. Reuse CASE-081 rather than inventing a keyword ban: `defensive-negation-opening` and `anticipatory-rebuttal` are now hard mechanisms. A direct topic such as `我们做过哪些尝试` wins when the contrast adds no scientific information; real scientific negation/caveats remain allowed next to the claim they constrain.
+
+PR #605 visual state is now closed: `670ab9b4…` remains a historical current-candidate from the earlier source window, `e9b767d4…` is a rejected recurrence, and exact head `56b5120b…` received explicit `合并进 main` concrete acceptance and is therefore Silver. There is still no Golden briefing visual because the owner never granted future-template/canonical visual language. Task-time briefs must hide superseded current-candidates from the active set while preserving them for audit.
 
 ## End-of-conversation ingestion closeout
 

@@ -63,8 +63,9 @@ describe('human preference learning v2', () => {
     expect(brief.events.some((event) => event.id === 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT' && event.verdict === 'canonical')).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE')).toBe(false);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER' && reference.tier === 'silver')).toBe(true);
-    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
-    expect(brief.generationRules.join('\n')).toContain('Current-candidate visual references are still under review');
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-605-ACCEPTED-SILVER' && reference.tier === 'silver')).toBe(true);
+    expect(brief.generationRules.join('\n')).toContain('No current-candidate visual is active for this scope');
   });
 
   it('retrieves the final briefing lessons for a different two-stage training talk before first draft', () => {
@@ -98,7 +99,8 @@ describe('human preference learning v2', () => {
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER')).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.tier === 'golden')).toBe(false);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE')).toBe(false);
-    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-605-ACCEPTED-SILVER')).toBe(true);
   });
 
   it('retrieves event-first headings and jargon boundaries for a paraphrased future research talk', () => {
@@ -117,6 +119,19 @@ describe('human preference learning v2', () => {
       'EVENT-20260909-BRIEFING-STORYLINE-SHORTHAND-REPEAT',
       'EVENT-20260909-BRIEFING-STORYLINE-ENGLISH-GLUE',
     ]));
+  });
+
+  it('retrieves the repeated binary-contrast failure as hard while preserving normal scientific negation', () => {
+    const brief = buildHumanPreferenceBrief({
+      contractId: 'study-briefing',
+      query: '准备下一次研究汇报：有一页只是列我们做过的实验尝试，标题不要先替观众构造一个二元反驳；同时结果页仍需要保留真正的科学 caveat。',
+    });
+    expect(brief.hardFailureFamilies).toEqual(expect.arrayContaining(['defensive-negation-opening', 'anticipatory-rebuttal']));
+    expect(brief.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-081-BINARY-CONTRAST-SUMMARY');
+    expect(brief.events.map((event) => event.id)).toContain('EVENT-20260909-BRIEFING-BINARY-CONTRAST-REPEAT');
+    expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('否定句') || boundary.includes('caveat'))).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-605-ACCEPTED-SILVER')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')).toBe(false);
   });
 
   it('builds a recovery-scoped brief with rejected/current visual tiers and no invented Golden', () => {

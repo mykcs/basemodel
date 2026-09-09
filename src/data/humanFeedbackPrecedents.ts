@@ -133,10 +133,10 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
   {
     id: 'CASE-081',
     title: '不要用防御性否定开场',
-    tags: ['开场', 'AI味', '科研边界'],
-    principle: '先说发生了什么和我们做了什么，再在真正改变结论的地方补“不代表什么”。',
-    antiPatterns: ['第一句连续解释“这不是…”'],
-    positiveSignals: ['事实先行', '边界紧邻相关 claim'],
+    tags: ['开场', 'AI味', '科研边界', 'briefing', '二元对抗'],
+    principle: '先说发生了什么和我们做了什么，再在真正改变结论的地方补“不代表什么”；如果标题可以直接命名主题，就不要先摆“不是 X，而是 Y”的作者对照姿态。',
+    antiPatterns: ['第一句连续解释“这不是…”', '我们不是只跑一次实验，而是一步步换问题去验证'],
+    positiveSignals: ['事实先行', '边界紧邻相关 claim', '我们做过哪些尝试'],
   },
   {
     id: 'CASE-082',

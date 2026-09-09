@@ -4,6 +4,7 @@ import {
   OPEN_EVO_BRIEFING_SUCCESSOR_INGESTION_20260909,
   OPEN_EVO_BRIEFING_FINAL_SUCCESSOR_INGESTION_20260909,
   OPEN_EVO_BRIEFING_STORYLINE_INGESTION_20260909,
+  OPEN_EVO_BRIEFING_POST_HPL_APPLICATION_INGESTION_20260909,
   FUHUO_MAC_RECOVERY_INGESTION_20260909,
 } from '../data/humanFeedbackIngestionCloseouts';
 import { HUMAN_FEEDBACK_EVENTS, HUMAN_VISUAL_REFERENCE_SET, failureFamilySeverity } from '../data/humanPreferenceLearningHistory';
@@ -13,6 +14,7 @@ const original = OPEN_EVO_BRIEFING_INGESTION_20260909;
 const successor = OPEN_EVO_BRIEFING_SUCCESSOR_INGESTION_20260909;
 const finalSuccessor = OPEN_EVO_BRIEFING_FINAL_SUCCESSOR_INGESTION_20260909;
 const storyline = OPEN_EVO_BRIEFING_STORYLINE_INGESTION_20260909;
+const postHpl = OPEN_EVO_BRIEFING_POST_HPL_APPLICATION_INGESTION_20260909;
 const recovery = FUHUO_MAC_RECOVERY_INGESTION_20260909;
 
 describe('human feedback ingestion closeout', () => {
@@ -21,10 +23,11 @@ describe('human feedback ingestion closeout', () => {
     expect(successor.ledger).toHaveLength(successor.candidateFeedbackSignals);
     expect(finalSuccessor.ledger).toHaveLength(finalSuccessor.candidateFeedbackSignals);
     expect(storyline.ledger).toHaveLength(storyline.candidateFeedbackSignals);
+    expect(postHpl.ledger).toHaveLength(postHpl.candidateFeedbackSignals);
     expect(recovery.ledger).toHaveLength(recovery.candidateFeedbackSignals);
-    expect(original.candidateFeedbackSignals + successor.candidateFeedbackSignals + finalSuccessor.candidateFeedbackSignals + storyline.candidateFeedbackSignals + recovery.candidateFeedbackSignals).toBe(73);
-    const all = [...original.ledger, ...successor.ledger, ...finalSuccessor.ledger, ...storyline.ledger, ...recovery.ledger];
-    expect(new Set(all.map((item) => item.id)).size).toBe(73);
+    expect(original.candidateFeedbackSignals + successor.candidateFeedbackSignals + finalSuccessor.candidateFeedbackSignals + storyline.candidateFeedbackSignals + postHpl.candidateFeedbackSignals + recovery.candidateFeedbackSignals).toBe(80);
+    const all = [...original.ledger, ...successor.ledger, ...finalSuccessor.ledger, ...storyline.ledger, ...postHpl.ledger, ...recovery.ledger];
+    expect(new Set(all.map((item) => item.id)).size).toBe(80);
     expect(all.filter((item) => item.disposition === 'ambiguous-hold')).toEqual([]);
   });
 
@@ -38,6 +41,7 @@ describe('human feedback ingestion closeout', () => {
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-FINAL-ACCEPTED-SILVER')?.tier).toBe('silver');
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE')?.tier).toBe('current-candidate');
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER')?.tier).toBe('silver');
+    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-605-ACCEPTED-SILVER')?.tier).toBe('silver');
   });
 
   it('keeps the current page successor under review rather than inventing acceptance', () => {
@@ -57,12 +61,24 @@ describe('human feedback ingestion closeout', () => {
     expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden')).toBe(false);
   });
 
-  it('keeps PR #605 storyline as the active current-candidate without inventing acceptance', () => {
+  it('preserves the historical PR #605 storyline candidate but supersedes it with the later accepted final', () => {
     expect(storyline.sourceWindow.finalVerdict).toBe('current-candidate');
     expect(storyline.sourceWindow.finalOwnerVisibleHead).toBe('670ab9b4d800bdda3d73ad2406f2b38314f84bf5');
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-LABEL-FIRST-REJECTED')?.tier).toBe('rejected');
-    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')?.tier).toBe('current-candidate');
+    const historicalCandidate = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE');
+    expect(historicalCandidate?.tier).toBe('current-candidate');
+    expect(historicalCandidate?.supersededByReferenceId).toBe('VISUAL-BRIEFING-605-ACCEPTED-SILVER');
     expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === storyline.sourceWindow.finalOwnerVisibleHead && ['accepted', 'canonical'].includes(event.verdict))).toBe(false);
+  });
+
+  it('binds the post-HPL PR #605 final to exact concrete acceptance without inventing Golden', () => {
+    expect(postHpl.sourceWindow.finalVerdict).toBe('accepted');
+    expect(postHpl.sourceWindow.finalOwnerVisibleHead).toBe('56b5120b22b6c709aaf485e3b1fdea348fb3041b');
+    expect(postHpl.sourceWindow.mergedMainCommit).toBe('edad8507de74fe3ead01512954c7355456e182de');
+    expect(HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-BRIEFING-605-ACCEPTED')?.verdict).toBe('accepted');
+    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-605-ACCEPTED-SILVER')?.tier).toBe('silver');
+    expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === postHpl.sourceWindow.finalOwnerVisibleHead && event.verdict === 'canonical')).toBe(false);
+    expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden')).toBe(false);
   });
 
   it('keeps the fuhuo recovery successor as current-candidate and validates cross-repository evidence', () => {
@@ -81,6 +97,8 @@ describe('human feedback ingestion closeout', () => {
     expect(failureFamilySeverity('mobile-fixed-canvas-overflow')).toBe('repeated');
     expect(failureFamilySeverity('compressed-shorthand-heading')).toBe('hard');
     expect(failureFamilySeverity('presenter-language')).toBe('repeated');
+    expect(failureFamilySeverity('defensive-negation-opening')).toBe('hard');
+    expect(failureFamilySeverity('anticipatory-rebuttal')).toBe('hard');
   });
 
   it('passes both receipts, future-task retrieval, and negative/positive evaluation proof', () => {
@@ -116,6 +134,22 @@ describe('human feedback ingestion closeout', () => {
       'current-candidate-is-not-accepted',
     ]) expect(result.retrievedSignals[signal], signal).toBe(true);
     expect(result.evaluationProofFailures).toContain('hard failure family not checked: compressed-shorthand-heading');
+    expect(result.evaluationProofPassFailures).toEqual([]);
+  });
+
+  it('passes post-HPL coverage, future-task retrieval, exact acceptance, and defensive-framing recurrence proof', () => {
+    const result = validateHumanFeedbackIngestionCloseout(postHpl);
+    expect(result.failures).toEqual([]);
+    for (const signal of [
+      'defensive-negation-framing-hard',
+      'event-first-research-heading',
+      'briefing-self-contained-method-context',
+      'diagnostic-motivation-before-intervention',
+      'scientific-decision-chain',
+      'internal-detail-primary-attention',
+      'briefing-605-concrete-accepted-not-canonical',
+    ]) expect(result.retrievedSignals[signal], signal).toBe(true);
+    expect(result.evaluationProofFailures).toContain('hard failure family not checked: defensive-negation-opening');
     expect(result.evaluationProofPassFailures).toEqual([]);
   });
 
