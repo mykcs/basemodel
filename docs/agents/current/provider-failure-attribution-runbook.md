@@ -1,7 +1,7 @@
 # Provider failure attribution runbook
 
-Status: **current operational runbook**  
-Scope: BaseModel Preview / Production / hosted CI and deployment failures  
+Status: **current operational runbook**
+Scope: BaseModel Preview / Production / hosted CI and deployment failures
 Owner relationship: refines `AGENTS.md`, `scenario-trigger-registry.md`, `website-engineering-standard.md`, and `deployment-policy.md`; it does not replace them.
 
 ## Purpose

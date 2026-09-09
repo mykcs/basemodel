@@ -1,6 +1,6 @@
 # 2026-09-09 — Briefing Vercel failure attribution retrospective
 
-Status: **historical case / superseded state evidence**  
+Status: **historical case / superseded state evidence**
 Do not treat PR numbers, SHAs, deployment IDs, or review state below as current authority.
 
 ## Scope
