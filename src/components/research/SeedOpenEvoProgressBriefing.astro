@@ -292,23 +292,23 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
 
   <section id="diagnostic-entry" class="briefing-slide tone-gold" aria-labelledby="diagnostic-entry-title">
     <div class="slide-inner diagnostic-entry-slide">
-      <h2 id="diagnostic-entry-title">{t('为什么后来会去改“15 步”和 Text Memory？因为日志里先暴露了两个很具体的问题', 'Why did we change the 15-step horizon and Text Memory? The logs first exposed two concrete failure patterns')}</h2>
-      <p class="slide-thesis">{t('低分以后我们没有直接开始调参数，而是先回看失败轨迹和训练日志。看到什么问题，就针对那个问题做一个最小改动。下面两页就是这两条诊断线。', 'After the low score we did not immediately tune everything. We first read failed traces and training logs, then made the smallest change that directly tested each observed problem. The next two slides are those two diagnostic lines.')}</p>
+      <h2 id="diagnostic-entry-title">{t('分数很低，我们先去看日志，看看是不是哪里出了问题', 'The scores were low, so we first went back to the logs: what was actually going wrong?')}</h2>
+      <p class="slide-thesis">{t('当时第一反应不是继续调参数，而是先检查失败轨迹和训练日志。结果我们确实发现了两个具体问题：有些任务把 15 步走满了还在 next / back 之间打转；Text Memory 整理 20 条记录时又会撞到 2048-token 上限。于是我们分别做两个最小改动：把步数从 15 拉到 30；把 Text Memory 从 2048 扩到 4096，仍然饱和时再做 10+10 分块。', 'Our first response was not to keep tuning parameters, but to inspect failed traces and training logs. Two concrete anomalies stood out: some tasks used all 15 steps while still looping between next and back, and Text Memory hit a 2048-token cap while consolidating 20 records. We therefore made two minimal changes: extend the horizon from 15 to 30, and increase Text Memory from 2048 to 4096 with a bounded 10+10 split if saturation remained.') }</p>
       <div class="diagnostic-branch-grid">
         <article>
-          <span>{t('做题行为里看到的', 'Observed in task behavior')}</span>
+          <span>{t('第一个问题', 'First issue found in the logs')}</span>
           <h3>{t('有些失败任务把 15 步全部走完，却一直在 next / back 等几个导航动作里绕', 'Some failures consume all 15 steps while looping through next / back and a few navigation actions')}</h3>
           <p>{t('所以当时第一个自然怀疑是：是不是不是不会做，而只是 15 步太短，还没来得及走到 buy？', 'The first natural hypothesis was therefore: maybe the model can solve the task but 15 steps are simply too short to reach buy.')}</p>
           <div><strong>15 → 30</strong><em>{t('只把最大交互步数翻倍，看行为会不会真正打开新路径', 'double only the interaction horizon and see whether behavior actually opens a new path')}</em></div>
         </article>
         <article>
-          <span>{t('训练日志里看到的', 'Observed in training logs')}</span>
+          <span>{t('第二个问题', 'Second issue found in the logs')}</span>
           <h3>{t('Text Memory 在汇总 20 条记录时会撞到一次生成的 2048-token 上限', 'Text Memory summarization of 20 records hits the 2048-token generation cap')}</h3>
           <p>{t('所以另一个怀疑是：是不是经验根本没有被完整整理进记忆，后面的模型拿到的是被截断的总结？', 'The other hypothesis was that experience was not being fully consolidated into memory, leaving later rounds with a truncated summary.')}</p>
           <div><strong>2048 → 4096 → 10+10</strong><em>{t('先加容量；仍饱和后才改成有边界的分块恢复', 'increase capacity first; only after saturation remains, switch to bounded decomposition')}</em></div>
         </article>
       </div>
-      <p class="diagnostic-note">{t('这两条不是同一个 bug：一条在“模型怎么做题”，一条在“经验怎么被整理”。把它们分开，才能知道哪个解释真的被实验排除了。', 'These are not the same bug: one is about how the model acts, the other about how experience is consolidated. Keeping them separate lets each experiment falsify one explanation cleanly.')}</p>
+      <p class="diagnostic-note">{t('接下来我们就分别验证这两个怀疑：先看“多给 15 步有没有用”，再看“给 Text Memory 更多容量有没有用”。', 'We then tested the two hypotheses separately: first whether 15 extra steps helped, then whether giving Text Memory more capacity helped.') }</p>
       <p class="slide-number">09 / 16</p>
     </div>
   </section>

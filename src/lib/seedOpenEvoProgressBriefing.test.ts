@@ -156,13 +156,15 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('introduces the observed failure patterns before the 15→30 and Text Memory interventions', () => {
-    expect(briefing).toContain('为什么后来会去改“15 步”和 Text Memory？因为日志里先暴露了两个很具体的问题');
+    expect(briefing).toContain('分数很低，我们先去看日志，看看是不是哪里出了问题');
+    expect(briefing).toContain('当时第一反应不是继续调参数，而是先检查失败轨迹和训练日志');
+    expect(briefing).toContain('于是我们分别做两个最小改动');
     expect(briefing).toContain('有些失败任务把 15 步全部走完');
     expect(briefing).toContain('一直在 next / back 等几个导航动作里绕');
     expect(briefing).toContain('Text Memory 在汇总 20 条记录时会撞到一次生成的 2048-token 上限');
     expect(briefing).toContain('15 → 30');
     expect(briefing).toContain('2048 → 4096 → 10+10');
-    expect(briefing).toContain('这两条不是同一个 bug');
+    expect(briefing).toContain('接下来我们就分别验证这两个怀疑');
   });
 
   it('makes the negative 15→30 horizon diagnostic a trace-level scientific pivot', () => {
