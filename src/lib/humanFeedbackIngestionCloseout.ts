@@ -7,15 +7,21 @@ import {
 } from '../data/humanPreferenceLearningHistory';
 import { HUMAN_FEEDBACK_PRECEDENTS } from '../data/humanFeedbackPrecedents';
 import { HUMAN_FEEDBACK_GOLD_PAIRS, HUMAN_PREFERENCE_MODEL } from '../data/humanPreferenceModel';
-import type {
-  FeedbackLedgerDisposition,
-  HumanFeedbackIngestionCloseoutRecord,
+import {
+  HUMAN_FEEDBACK_INGESTION_CLOSEOUTS,
+  type FeedbackLedgerDisposition,
+  type HumanFeedbackIngestionCloseoutRecord,
 } from '../data/humanFeedbackIngestionCloseouts';
 import {
   buildHumanPreferenceBrief,
   candidateReceiptTemplate,
   verifyCandidateReceipt,
 } from './humanPreferenceBrief';
+import { goldPairIdsForContract, preferenceIdsForContract } from './humanPreferenceLearning';
+import {
+  validateHumanPreferenceJudgeReceipt,
+  type HumanPreferenceJudgeReceipt,
+} from './humanPreferenceJudge';
 
 export interface HumanFeedbackIngestionValidation {
   failures: string[];
@@ -39,115 +45,185 @@ const allDispositions: FeedbackLedgerDisposition[] = [
   'out-of-scope',
 ];
 
+function evidenceHead(record: HumanFeedbackIngestionCloseoutRecord): string {
+  return record.sourceWindow.finalAcceptedHead ?? record.sourceWindow.finalOwnerVisibleHead ?? '';
+}
+
 function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
-  const brief = buildHumanPreferenceBrief({
-    query: record.futureTaskQuery,
-    contractId: 'study-briefing',
-  });
+  const brief = buildHumanPreferenceBrief({ query: record.futureTaskQuery, contractId: 'study-briefing' });
   const events = new Set(brief.events.map((event) => event.id));
   const preferences = new Set(brief.learnedPreferences.map(({ preference }) => preference.id));
   const pairs = new Set(brief.goldPairs.map(({ pair }) => pair.id));
   const visuals = new Set(brief.visualReferences.map((reference) => reference.id));
   const trajectory = HUMAN_PREFERENCE_TRAJECTORIES.find((item) => item.id === 'TRAJECTORY-BRIEFING-VISUAL-20260908');
+  const workflowTrajectory = HUMAN_PREFERENCE_TRAJECTORIES.find((item) => item.id === 'TRAJECTORY-ITERATIVE-PREVIEW-WORKFLOW-20260909');
   const finalEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-BRIEFING-FINAL-ACCEPTED');
+  const fastPreviewEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT');
+  const candidateHead = record.sourceWindow.finalOwnerVisibleHead;
 
   const statuses: Record<string, boolean> = {
     'intermediate-better-is-not-canonical':
       events.has('EVENT-20260908-SOFT-SLIDE-DIRECTION') &&
-      HUMAN_FEEDBACK_EVENTS.some(
-        (event) => event.id === 'EVENT-20260908-SOFT-SLIDE-DIRECTION' && event.verdict === 'better',
-      ) &&
+      HUMAN_FEEDBACK_EVENTS.some((event) => event.id === 'EVENT-20260908-SOFT-SLIDE-DIRECTION' && event.verdict === 'better') &&
       !trajectory?.canonicalVariantId &&
       !HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden'),
     'meaningless-english-eyebrow':
-      brief.hardFailureFamilies.includes('meaningless-english-eyebrow') &&
-      events.has('EVENT-20260908-MEANINGLESS-ENGLISH-EYEBROW'),
+      brief.hardFailureFamilies.includes('meaningless-english-eyebrow') && pairs.has('PAIR-027-ENGLISH-EYEBROW'),
     'numeric-shock-heading':
-      events.has('EVENT-20260909-PARAMETER-TITLE-AND-MOBILE-FIT') &&
-      pairs.has('PAIR-082-PARAMETER-HEADING'),
+      events.has('EVENT-20260909-PARAMETER-TITLE-AND-MOBILE-FIT') && pairs.has('PAIR-082-PARAMETER-HEADING'),
     'phone-vs-desktop-scope-split':
-      events.has('EVENT-20260909-PARAMETER-TITLE-AND-MOBILE-FIT') &&
-      preferences.has('PREF-BRIEFING-DEVICE-SCOPE') &&
-      pairs.has('PAIR-082-DEVICE-SCOPE'),
+      preferences.has('PREF-BRIEFING-DEVICE-SCOPE') && pairs.has('PAIR-082-DEVICE-SCOPE') &&
+      (events.has('EVENT-20260909-PARAMETER-TITLE-AND-MOBILE-FIT') || events.has('EVENT-20260909-MOBILE-REFLOW-REPEAT')),
     'technical-depth-without-meta-performance':
       events.has('EVENT-20260909-TECHNICAL-DEPTH-WITHOUT-META') &&
-      preferences.has('PREF-TECHNICAL-DEPTH-WITHOUT-META') &&
-      pairs.has('PAIR-082-TECHNICAL-WITHOUT-META'),
+      preferences.has('PREF-TECHNICAL-DEPTH-WITHOUT-META') && pairs.has('PAIR-082-TECHNICAL-WITHOUT-META'),
     'engineering-rigor-progressive-disclosure':
-      events.has('EVENT-20260909-MAINLINE-RIGOR-TAX') &&
-      pairs.has('PAIR-082-ENGINEERING-DEPTH'),
+      events.has('EVENT-20260909-MAINLINE-RIGOR-TAX') && pairs.has('PAIR-082-ENGINEERING-DEPTH'),
     'scientific-decision-chain':
-      events.has('EVENT-20260909-CHRONOLOGY-SCIENCE-STORY') &&
       preferences.has('PREF-RESEARCH-JUDGMENT') &&
-      pairs.has('PAIR-082-CHRONOLOGICAL-SCIENCE-STORY'),
+      pairs.has('PAIR-082-CHRONOLOGICAL-SCIENCE-STORY') &&
+      (events.has('EVENT-20260909-CHRONOLOGY-SCIENCE-STORY') || events.has('EVENT-20260909-DIAGNOSTIC-BEHAVIOR-EVIDENCE')),
     'internal-detail-primary-attention':
       brief.hardFailureFamilies.includes('internal-detail-promoted-to-primary-attention') &&
-      pairs.has('PAIR-082-PARAMETER-HEADING') &&
-      pairs.has('PAIR-082-ENGINEERING-DEPTH'),
+      pairs.has('PAIR-082-PARAMETER-HEADING') && pairs.has('PAIR-082-ENGINEERING-DEPTH'),
     'concrete-accepted-is-not-canonical':
-      finalEvent?.verdict === 'accepted' &&
-      !trajectory?.canonicalVariantId &&
+      finalEvent?.verdict === 'accepted' && !trajectory?.canonicalVariantId &&
       visuals.has('VISUAL-BRIEFING-FINAL-ACCEPTED-SILVER') &&
       !HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden'),
+    'diagnostic-observation-to-decision':
+      preferences.has('PREF-DIAGNOSTIC-CLOSURE') && pairs.has('PAIR-084-DIAGNOSTIC-CLOSE-LOOP') &&
+      events.has('EVENT-20260909-DIAGNOSTIC-BEHAVIOR-EVIDENCE') &&
+      events.has('EVENT-20260909-DIAGNOSTIC-MISSING-RESOLUTION') &&
+      failureFamilySeverity('incomplete-scientific-decision-loop') === 'repeated',
+    'training-dynamics-evidence-layers':
+      preferences.has('PREF-DIAGNOSTIC-CLOSURE') && events.has('EVENT-20260909-TRAINING-DYNAMICS-EVIDENCE') &&
+      brief.antiOvergeneralization.some((boundary) => boundary.includes('training loss') && boundary.includes('final eval')),
+    'mobile-reflow-repeat':
+      preferences.has('PREF-BRIEFING-DEVICE-SCOPE') && events.has('EVENT-20260909-MOBILE-REFLOW-REPEAT') &&
+      failureFamilySeverity('mobile-fixed-canvas-overflow') === 'repeated',
+    'fast-review-preview-canonical-workflow':
+      preferences.has('PREF-FAST-REVIEW-PREVIEW') && pairs.has('PAIR-085-FAST-REVIEW-PREVIEW') &&
+      events.has('EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT') && fastPreviewEvent?.verdict === 'canonical' &&
+      workflowTrajectory?.canonicalVariantId === 'fast-prebuilt-review-preview',
+    'current-candidate-is-not-accepted':
+      record.schema === 'human-feedback-ingestion-closeout.v2' && record.sourceWindow.finalVerdict === 'current-candidate' &&
+      visuals.has('VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE') &&
+      !!candidateHead &&
+      !HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === candidateHead && ['accepted', 'canonical'].includes(event.verdict)),
   };
   return { brief, statuses };
 }
 
-function buildEvaluationProofReceipt(record: HumanFeedbackIngestionCloseoutRecord) {
+function buildHardFamilyCandidateReceipt(record: HumanFeedbackIngestionCloseoutRecord, hardFamily: string) {
   const receipt = candidateReceiptTemplate('study-briefing', 'future advisor briefing recurrence check');
-  receipt.exactGitSha = record.sourceWindow.finalAcceptedHead;
+  receipt.exactGitSha = evidenceHead(record);
   receipt.variants = receipt.variants.slice(0, 2).map((variant, index) => ({
     ...variant,
     id: index === 0 ? 'A' : 'B',
-    hypothesis: index === 0 ? 'decorative eyebrow recurrence' : 'direct Chinese subject heading',
-    attentionCenter: index === 0 ? 'English eyebrow' : 'scientific question',
+    hypothesis: index === 0 ? 'known failure recurrence' : 'learned preference applied',
+    attentionCenter: index === 0 ? 'author-internal framing' : 'scientific question',
     informationDensity: 'bounded',
     visualLanguage: 'semantic HTML',
     screenshotRef: `/tmp/future-candidate-${index === 0 ? 'a' : 'b'}.png`,
-    predictedFailureFamilies: index === 0 ? [record.evaluationProof.hardFamily] : [],
+    predictedFailureFamilies: index === 0 ? [hardFamily] : [],
   }));
   receipt.selectedVariantId = 'B';
-  receipt.comparisons = [
-    {
-      winnerId: 'B',
-      loserId: 'A',
-      reason: 'removes author-internal attention tax',
-      evidence: 'candidate B starts directly with the scientific subject',
-    },
-  ];
-  receipt.hardFamiliesChecked = hardFailureFamilies().filter(
-    (family) => family !== record.evaluationProof.hardFamily,
-  );
+  receipt.comparisons = [{ winnerId: 'B', loserId: 'A', reason: 'removes the known failure mechanism', evidence: 'candidate B applies the learned preference' }];
+  receipt.hardFamiliesChecked = hardFailureFamilies().filter((family) => family !== hardFamily);
   return receipt;
 }
 
-export function validateHumanFeedbackIngestionCloseout(
-  record: HumanFeedbackIngestionCloseoutRecord,
-): HumanFeedbackIngestionValidation {
+function buildGoldPairJudgeReceipt(record: HumanFeedbackIngestionCloseoutRecord, pairId: `PAIR-${string}`): HumanPreferenceJudgeReceipt {
+  return {
+    schemaVersion: 1,
+    contractId: 'study-briefing',
+    exactHead: evidenceHead(record),
+    candidateUrl: 'https://example.test/future-review',
+    reviewer: { kind: 'independent-agent', label: 'closeout-recurrence-proof' },
+    blindCompletedBeforePreferenceReveal: true,
+    blind: {
+      about: 'A research diagnostic briefing.',
+      firstAttention: 'The diagnostic result.',
+      mostImportant: 'A hypothesis was tested and should change the next step.',
+      machineLike: 'No unrelated presenter framing is needed.',
+      terminologyFriction: 'Terms are explained in place.',
+      competingCenters: 'One main scientific decision.',
+      hiddenBoundary: 'Training-process evidence remains separate from final evaluation.',
+      suggestedChange: 'Close the diagnostic loop from observation to next action.',
+      readingDesireScore: 4,
+      readingDesireReason: 'The next research question is visible.',
+    },
+    preferenceJudgments: preferenceIdsForContract('study-briefing').map((preferenceId) => ({ preferenceId, verdict: 'pass', evidence: 'Synthetic recurrence proof supplies a judgment for every required preference.' })),
+    pairJudgments: goldPairIdsForContract('study-briefing').map((requiredPairId) => ({ pairId: requiredPairId, verdict: requiredPairId === pairId ? 'rejected-like' : 'accepted-like', evidence: requiredPairId === pairId ? 'Candidate reports a diagnostic result without the learned observation-to-next-action closure.' : 'No recurrence injected for this pair.' })),
+    scientificBoundary: { verdict: 'pass', evidence: 'Synthetic proof keeps claim-changing boundaries visible.' },
+    unresolvedConcerns: [],
+    finalVerdict: 'PASS',
+    rationale: 'Deliberately inconsistent PASS used to prove the preference judge rejects a known recurrence.',
+  };
+}
+
+function validateEvaluationProof(record: HumanFeedbackIngestionCloseoutRecord, failures: string[]) {
+  if (record.evaluationProof.hardFamily) {
+    const hardFamily = record.evaluationProof.hardFamily;
+    const receipt = buildHardFamilyCandidateReceipt(record, hardFamily);
+    const negative = verifyCandidateReceipt(receipt);
+    const expected = `hard failure family not checked: ${hardFamily}`;
+    if (!negative.includes(expected)) failures.push(`${record.id}: evaluation-side proof did not reject omitted hard family ${hardFamily}`);
+    receipt.hardFamiliesChecked = hardFailureFamilies();
+    const positive = verifyCandidateReceipt(receipt);
+    if (positive.length) failures.push(`${record.id}: evaluation receipt still fails after restoring all hard-family checks: ${positive.join('; ')}`);
+    return { evaluationProofFailures: negative, evaluationProofPassFailures: positive };
+  }
+
+  if (record.evaluationProof.pairId && record.evaluationProof.failureFamily) {
+    const pairId = record.evaluationProof.pairId;
+    const family = record.evaluationProof.failureFamily;
+    const severity = failureFamilySeverity(family);
+    if (!['repeated', 'hard'].includes(severity)) failures.push(`${record.id}: evaluation failure family ${family} must be repeated/hard, got ${severity}`);
+    if (!goldPairIdsForContract('study-briefing').includes(pairId as never)) failures.push(`${record.id}: evaluation pair ${pairId} is not required by study-briefing`);
+    const receipt = buildGoldPairJudgeReceipt(record, pairId);
+    const negative = validateHumanPreferenceJudgeReceipt(receipt);
+    if (!negative.includes('PASS receipt cannot be rejected-like against a Gold Pair')) failures.push(`${record.id}: preference judge did not reject recurrence for ${pairId}`);
+    const target = receipt.pairJudgments.find((item) => item.pairId === pairId);
+    if (target) target.verdict = 'accepted-like';
+    receipt.rationale = 'Repaired synthetic receipt applies the learned diagnostic Gold Pair.';
+    const positive = validateHumanPreferenceJudgeReceipt(receipt);
+    if (positive.length) failures.push(`${record.id}: repaired preference-judge receipt still fails: ${positive.join('; ')}`);
+    return { evaluationProofFailures: negative, evaluationProofPassFailures: positive };
+  }
+
+  failures.push(`${record.id}: evaluationProof must define hardFamily or failureFamily+pairId`);
+  return { evaluationProofFailures: ['missing evaluation proof configuration'], evaluationProofPassFailures: [] };
+}
+
+export function validateHumanFeedbackIngestionCloseout(record: HumanFeedbackIngestionCloseoutRecord): HumanFeedbackIngestionValidation {
   const failures: string[] = [];
-  const counts = Object.fromEntries(allDispositions.map((item) => [item, 0])) as Record<
-    FeedbackLedgerDisposition,
-    number
-  >;
+  const counts = Object.fromEntries(allDispositions.map((item) => [item, 0])) as Record<FeedbackLedgerDisposition, number>;
   const ledgerIds = new Set<string>();
   const eventIds = new Set(HUMAN_FEEDBACK_EVENTS.map((event) => event.id));
   const caseIds = new Set(HUMAN_FEEDBACK_PRECEDENTS.map((item) => item.id));
   const preferenceIds = new Set(HUMAN_PREFERENCE_MODEL.map((item) => item.id));
   const pairIds = new Set(HUMAN_FEEDBACK_GOLD_PAIRS.map((item) => item.id));
   const visualIds = new Set(HUMAN_VISUAL_REFERENCE_SET.map((item) => item.id));
+  const ingestionIds = new Set(HUMAN_FEEDBACK_INGESTION_CLOSEOUTS.map((item) => item.id));
 
-  if (record.schema !== 'human-feedback-ingestion-closeout.v1') failures.push(`${record.id}: wrong schema`);
-  if (!/^[0-9a-f]{40}$/i.test(record.sourceWindow.finalAcceptedHead)) failures.push(`${record.id}: invalid finalAcceptedHead`);
-  if (!/^[0-9a-f]{40}$/i.test(record.sourceWindow.mergedMainCommit)) failures.push(`${record.id}: invalid mergedMainCommit`);
+  if (!['human-feedback-ingestion-closeout.v1', 'human-feedback-ingestion-closeout.v2'].includes(record.schema)) failures.push(`${record.id}: wrong schema`);
+  if (record.schema === 'human-feedback-ingestion-closeout.v1') {
+    if (!/^[0-9a-f]{40}$/i.test(record.sourceWindow.finalAcceptedHead ?? '')) failures.push(`${record.id}: invalid finalAcceptedHead`);
+    if (!/^[0-9a-f]{40}$/i.test(record.sourceWindow.mergedMainCommit ?? '')) failures.push(`${record.id}: invalid mergedMainCommit`);
+  } else {
+    if (!/^[0-9a-f]{40}$/i.test(record.sourceWindow.finalOwnerVisibleHead ?? '')) failures.push(`${record.id}: invalid finalOwnerVisibleHead`);
+    if (!/^[0-9a-f]{40}$/i.test(record.sourceWindow.mainAtCloseout ?? '')) failures.push(`${record.id}: invalid mainAtCloseout`);
+    if (!['accepted', 'current-candidate'].includes(record.sourceWindow.finalVerdict ?? '')) failures.push(`${record.id}: v2 finalVerdict must be accepted/current-candidate`);
+    for (const predecessor of record.predecessorIngestionIds ?? []) if (!ingestionIds.has(predecessor)) failures.push(`${record.id}: unknown predecessor ingestion ${predecessor}`);
+  }
   if (!Number.isInteger(record.candidateFeedbackSignals) || record.candidateFeedbackSignals < 1) failures.push(`${record.id}: candidateFeedbackSignals must be a positive integer`);
   if (record.ledger.length !== record.candidateFeedbackSignals) failures.push(`${record.id}: candidateFeedbackSignals=${record.candidateFeedbackSignals} but ledger has ${record.ledger.length}`);
   if (!record.futureTaskQuery.trim()) failures.push(`${record.id}: futureTaskQuery is empty`);
   const normalizedFutureQuery = record.futureTaskQuery.replace(/\s+/g, '').toLowerCase();
   for (const item of record.ledger) {
     const normalizedOwnerSignal = item.ownerSignal.replace(/\s+/g, '').toLowerCase();
-    if (normalizedOwnerSignal.length >= 18 && normalizedFutureQuery.includes(normalizedOwnerSignal)) {
-      failures.push(`${record.id}: futureTaskQuery copies owner signal verbatim: ${item.id}`);
-    }
+    if (normalizedOwnerSignal.length >= 18 && normalizedFutureQuery.includes(normalizedOwnerSignal)) failures.push(`${record.id}: futureTaskQuery copies owner signal verbatim: ${item.id}`);
   }
   if (!record.automationGap.trim()) failures.push(`${record.id}: automationGap must be explicit`);
 
@@ -157,9 +233,6 @@ export function validateHumanFeedbackIngestionCloseout(
     ledgerIds.add(item.id);
     if (!item.ownerSignal.trim()) failures.push(`${item.id}: missing ownerSignal`);
     if (!item.rationale.trim()) failures.push(`${item.id}: missing rationale`);
-    if (['ingest', 'merge-duplicate', 'superseded'].includes(item.disposition) && !item.ownerSignal.trim()) {
-      failures.push(`${item.id}: learned disposition requires raw owner evidence`);
-    }
     for (const eventId of item.eventIds ?? []) if (!eventIds.has(eventId)) failures.push(`${item.id}: unknown event ${eventId}`);
     for (const caseId of item.caseIds ?? []) if (!caseIds.has(caseId as never)) failures.push(`${item.id}: unknown case ${caseId}`);
     for (const preferenceId of item.preferenceIds ?? []) if (!preferenceIds.has(preferenceId as never)) failures.push(`${item.id}: unknown preference ${preferenceId}`);
@@ -179,46 +252,35 @@ export function validateHumanFeedbackIngestionCloseout(
     const linked = successorEvents.some((event) => (event.supersedesEventIds ?? []).some((eventId) => oldEventIds.has(eventId)));
     if (oldEventIds.size && !linked) failures.push(`${item.id}: structured supersession is not preserved by successor event ${item.supersededBy}`);
   }
-
   if (counts['ambiguous-hold'] !== 0) failures.push(`${record.id}: unresolved ambiguous-hold entries remain`);
 
   const finalEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-BRIEFING-FINAL-ACCEPTED');
-  if (!finalEvent || finalEvent.verdict !== 'accepted') failures.push(`${record.id}: final concrete briefing must be accepted`);
-  if (HUMAN_FEEDBACK_EVENTS.some((event) => event.variantId === finalEvent?.variantId && event.verdict === 'canonical')) {
-    failures.push(`${record.id}: final concrete acceptance was incorrectly promoted to canonical`);
-  }
   const finalVisual = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-FINAL-ACCEPTED-SILVER');
-  if (!finalVisual || finalVisual.tier !== 'silver') failures.push(`${record.id}: accepted briefing visual must remain Silver without template approval`);
-  if (HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden')) {
-    failures.push(`${record.id}: briefing must not have a Golden visual without canonical owner language`);
+  if (record.schema === 'human-feedback-ingestion-closeout.v1') {
+    if (!finalEvent || finalEvent.verdict !== 'accepted') failures.push(`${record.id}: final concrete briefing must be accepted`);
+    if (HUMAN_FEEDBACK_EVENTS.some((event) => event.variantId === finalEvent?.variantId && event.verdict === 'canonical')) failures.push(`${record.id}: final concrete acceptance was incorrectly promoted to canonical`);
+    if (!finalVisual || finalVisual.tier !== 'silver') failures.push(`${record.id}: accepted briefing visual must remain Silver without template approval`);
+  } else if (record.sourceWindow.finalVerdict === 'current-candidate') {
+    const candidateHead = record.sourceWindow.finalOwnerVisibleHead;
+    const candidateVisual = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE');
+    if (!candidateVisual || candidateVisual.tier !== 'current-candidate' || candidateVisual.gitSha !== candidateHead) failures.push(`${record.id}: v2 current candidate visual is missing or bound to wrong head`);
+    if (HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === candidateHead && ['accepted', 'canonical'].includes(event.verdict))) failures.push(`${record.id}: current candidate was incorrectly promoted to accepted/canonical`);
   }
-  if (HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'current-candidate')) {
-    failures.push(`${record.id}: completed briefing closeout must not leave a stale current-candidate visual`);
-  }
+  if (HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden')) failures.push(`${record.id}: briefing must not have a Golden visual without canonical owner language`);
 
   const families = new Set(HUMAN_FEEDBACK_EVENTS.flatMap((event) => event.failureMechanisms));
   const repeatedFamilies = [...families].filter((family) => failureFamilySeverity(family) === 'repeated').sort();
   const hardFamilies = hardFailureFamilies();
-  for (const requiredHard of ['meaningless-english-eyebrow', 'engineering-as-science-highlight', 'internal-detail-promoted-to-primary-attention']) {
-    if (!hardFamilies.includes(requiredHard)) failures.push(`${record.id}: expected hard family missing: ${requiredHard}`);
+  for (const requiredHard of ['meaningless-english-eyebrow', 'engineering-as-science-highlight', 'internal-detail-promoted-to-primary-attention']) if (!hardFamilies.includes(requiredHard)) failures.push(`${record.id}: expected hard family missing: ${requiredHard}`);
+  if (record.schema === 'human-feedback-ingestion-closeout.v2') {
+    for (const requiredRepeated of ['incomplete-scientific-decision-loop', 'mobile-fixed-canvas-overflow']) {
+      if (!['repeated', 'hard'].includes(failureFamilySeverity(requiredRepeated))) failures.push(`${record.id}: expected repeated family missing: ${requiredRepeated}`);
+    }
   }
 
   const { brief, statuses } = signalStatus(record);
-  for (const signal of record.expectedRetrievedSignals) {
-    if (!statuses[signal]) failures.push(`${record.id}: future Preference Brief failed to recover ${signal}`);
-  }
-
-  const evaluationReceipt = buildEvaluationProofReceipt(record);
-  const evaluationProofFailures = verifyCandidateReceipt(evaluationReceipt);
-  const expectedFailure = `hard failure family not checked: ${record.evaluationProof.hardFamily}`;
-  if (!evaluationProofFailures.includes(expectedFailure)) {
-    failures.push(`${record.id}: evaluation-side proof did not reject omitted hard family ${record.evaluationProof.hardFamily}`);
-  }
-  evaluationReceipt.hardFamiliesChecked = hardFailureFamilies();
-  const evaluationProofPassFailures = verifyCandidateReceipt(evaluationReceipt);
-  if (evaluationProofPassFailures.length) {
-    failures.push(`${record.id}: evaluation receipt still fails after restoring all hard-family checks: ${evaluationProofPassFailures.join('; ')}`);
-  }
+  for (const signal of record.expectedRetrievedSignals) if (!statuses[signal]) failures.push(`${record.id}: future Preference Brief failed to recover ${signal}`);
+  const { evaluationProofFailures, evaluationProofPassFailures } = validateEvaluationProof(record, failures);
 
   return {
     failures,

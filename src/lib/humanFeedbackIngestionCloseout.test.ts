@@ -1,43 +1,54 @@
 import { describe, expect, it } from 'vitest';
-import { OPEN_EVO_BRIEFING_INGESTION_20260909 } from '../data/humanFeedbackIngestionCloseouts';
+import {
+  OPEN_EVO_BRIEFING_INGESTION_20260909,
+  OPEN_EVO_BRIEFING_SUCCESSOR_INGESTION_20260909,
+} from '../data/humanFeedbackIngestionCloseouts';
 import { HUMAN_FEEDBACK_EVENTS, HUMAN_VISUAL_REFERENCE_SET, failureFamilySeverity } from '../data/humanPreferenceLearningHistory';
 import { validateHumanFeedbackIngestionCloseout } from './humanFeedbackIngestionCloseout';
 
-const record = OPEN_EVO_BRIEFING_INGESTION_20260909;
+const original = OPEN_EVO_BRIEFING_INGESTION_20260909;
+const successor = OPEN_EVO_BRIEFING_SUCCESSOR_INGESTION_20260909;
 
 describe('human feedback ingestion closeout', () => {
-  it('covers every identified candidate owner-feedback signal with one disposition', () => {
-    expect(record.ledger).toHaveLength(record.candidateFeedbackSignals);
-    expect(new Set(record.ledger.map((item) => item.id)).size).toBe(record.candidateFeedbackSignals);
-    expect(record.ledger.filter((item) => item.disposition === 'ambiguous-hold')).toEqual([]);
-    expect(record.ledger.find((item) => item.id === 'FB-29-THREE-B-EXPERIMENT-EXISTS')?.disposition).toBe('task-fact-not-preference');
+  it('covers every identified signal across the chained source windows with no unresolved hold', () => {
+    expect(original.ledger).toHaveLength(original.candidateFeedbackSignals);
+    expect(successor.ledger).toHaveLength(successor.candidateFeedbackSignals);
+    expect(original.candidateFeedbackSignals + successor.candidateFeedbackSignals).toBe(37);
+    expect(new Set([...original.ledger, ...successor.ledger].map((item) => item.id)).size).toBe(37);
+    expect([...original.ledger, ...successor.ledger].filter((item) => item.disposition === 'ambiguous-hold')).toEqual([]);
   });
 
-  it('preserves intermediate better versus concrete accepted versus canonical', () => {
+  it('preserves better, accepted, workflow-canonical, and visual tiers without conflating them', () => {
     expect(HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260908-SOFT-SLIDE-DIRECTION')?.verdict).toBe('better');
-    expect(HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-PARAMETER-TITLE-AND-MOBILE-FIT')?.verdict).toBe('better');
     expect(HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-BRIEFING-FINAL-ACCEPTED')?.verdict).toBe('accepted');
-    expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.verdict === 'canonical')).toBe(false);
+    expect(HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT')?.verdict).toBe('canonical');
+    expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.scopes.includes('briefing') && event.verdict === 'canonical')).toBe(false);
     expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.tier === 'golden')).toBe(false);
+    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-FINAL-ACCEPTED-SILVER')?.tier).toBe('silver');
+    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE')?.tier).toBe('current-candidate');
   });
 
-  it('keeps the all-device fixed deck as history and supersedes it only for the phone/desktop scope split', () => {
-    const current = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-PARAMETER-TITLE-AND-MOBILE-FIT')!;
-    expect(current.supersedesEventIds).toContain('EVENT-20260908-FIXED-DECK-ALL-DEVICES');
-    expect(current.scopes).toEqual(expect.arrayContaining(['briefing-mobile', 'briefing-desktop']));
+  it('keeps the current page successor under review rather than inventing acceptance', () => {
+    expect(successor.schema).toBe('human-feedback-ingestion-closeout.v2');
+    expect(successor.sourceWindow.finalVerdict).toBe('current-candidate');
+    expect(successor.sourceWindow.finalOwnerVisibleHead).toBe('93f7bcda83fc059a066c949de5e95ecb34399f3f');
+    expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === successor.sourceWindow.finalOwnerVisibleHead && ['accepted', 'canonical'].includes(event.verdict))).toBe(false);
   });
 
-  it('escalates repeated cross-form attention mistakes without turning them into a word blacklist', () => {
+  it('escalates only the repeated mechanisms actually evidenced by this conversation', () => {
     expect(failureFamilySeverity('meaningless-english-eyebrow')).toBe('hard');
     expect(failureFamilySeverity('engineering-as-science-highlight')).toBe('hard');
     expect(failureFamilySeverity('internal-detail-promoted-to-primary-attention')).toBe('hard');
-    expect(failureFamilySeverity('project-status-as-research-story')).toBe('repeated');
+    expect(failureFamilySeverity('incomplete-scientific-decision-loop')).toBe('repeated');
+    expect(failureFamilySeverity('mobile-fixed-canvas-overflow')).toBe('repeated');
   });
 
-  it('passes coverage, future-generation retrieval, and evaluation-side recurrence proof', () => {
-    const result = validateHumanFeedbackIngestionCloseout(record);
-    expect(result.evaluationProofFailures).toContain('hard failure family not checked: internal-detail-promoted-to-primary-attention');
-    expect(result.evaluationProofPassFailures).toEqual([]);
-    expect(result.failures).toEqual([]);
+  it('passes both receipts, future-task retrieval, and negative/positive evaluation proof', () => {
+    const oldResult = validateHumanFeedbackIngestionCloseout(original);
+    const newResult = validateHumanFeedbackIngestionCloseout(successor);
+    expect(oldResult.failures).toEqual([]);
+    expect(newResult.evaluationProofFailures).toContain('PASS receipt cannot be rejected-like against a Gold Pair');
+    expect(newResult.evaluationProofPassFailures).toEqual([]);
+    expect(newResult.failures).toEqual([]);
   });
 });

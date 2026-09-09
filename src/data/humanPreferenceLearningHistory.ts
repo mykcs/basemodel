@@ -19,7 +19,8 @@ export type HumanPreferenceScopeV2 =
   | 'results'
   | 'visual'
   | 'briefing-mobile'
-  | 'briefing-desktop';
+  | 'briefing-desktop'
+  | 'workflow';
 
 export interface HumanFeedbackEvent {
   id: HumanFeedbackEventId;
@@ -261,6 +262,91 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     failureMechanisms: [],
     evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 569, gitSha: '89fe1190d0f92909f6da40b9a47ea75c9f45d2d5', ledgerId: 'FB-24-FINAL-MERGE-AUTHORIZATION' },
   },
+  {
+    id: 'EVENT-20260909-DIAGNOSTIC-BEHAVIOR-EVIDENCE',
+    date: '2026-09-09',
+    caseIds: ['CASE-082', 'CASE-084'],
+    scopes: ['briefing', 'research-copy'],
+    artifact: 'OpenEVO summer review · horizon diagnostic',
+    variantId: 'briefing-horizon-scalar-only',
+    verdict: 'rejected',
+    ownerSignal: 'slide07写得还是有问题，你应该写出来，我们当时实际看了15、30步，都是在固定那几个动作打转，然后30步了还是打转，那我们就知道问题不在这里了，这个类型的细节要说出来。',
+    reasons: ['负向实验需要展示行为证据，而不是只报 0/0', '行为没有因额外步数改变，才支撑排除“步数太少”'],
+    failureMechanisms: ['incomplete-scientific-decision-loop', 'diagnostic-conclusion-without-observed-evidence'],
+    requestedSuccessorVariantId: 'briefing-diagnostic-closed-loop',
+    evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 594, ledgerId: 'FB-22-HORIZON-BEHAVIOR-MUST-BE-VISIBLE' },
+  },
+  {
+    id: 'EVENT-20260909-MOBILE-REFLOW-REPEAT',
+    date: '2026-09-09',
+    caseIds: ['CASE-082'],
+    scopes: ['briefing', 'visual', 'briefing-mobile'],
+    artifact: 'OpenEVO summer review · iPhone layout',
+    variantId: 'briefing-phone-horizontal-scroll',
+    verdict: 'rejected',
+    ownerSignal: 'iPhone要自适应宽度，就是在iPhone上看，宽度应该是对齐的，我自己选择放大或者怎么样，不要我再去横着滑动。',
+    reasons: ['手机阅读不应强迫用户横向拖动画布', '这是对既有 phone reflow 偏好的第二次直接证据'],
+    failureMechanisms: ['mobile-fixed-canvas-overflow'],
+    requestedSuccessorVariantId: 'briefing-phone-viewport-reflow',
+    evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 594, ledgerId: 'FB-23-IPHONE-REFLOW-REPEAT' },
+  },
+  {
+    id: 'EVENT-20260909-TRAINING-DYNAMICS-EVIDENCE',
+    date: '2026-09-09',
+    caseIds: ['CASE-084'],
+    scopes: ['briefing', 'research-copy', 'visual'],
+    artifact: 'OpenEVO summer review · checkpoint / W&B evidence',
+    variantId: 'briefing-training-dynamics-request',
+    verdict: 'promising',
+    ownerSignal: '我们的训练过程不是会有很多 checkpoint 吗？把这些 checkpoint 的 loss 和最终得分展示出来，画一条曲线，看它到底是慢慢收敛，还是有上涨趋势；这个应该跟当时的 W&B 相关很大。',
+    reasons: ['连续训练轨迹比单个最终低分更能回答训练是否真正发生', '曲线用于缩小工程故障解释，而不是把训练 loss 当成最终能力'],
+    failureMechanisms: ['final-score-without-training-dynamics', 'evidence-layer-conflation'],
+    requestedSuccessorVariantId: 'briefing-training-dynamics-layered',
+    evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 594, gitSha: '93f7bcda83fc059a066c949de5e95ecb34399f3f', ledgerId: 'FB-S2-02-CHECKPOINT-WANDB-CURVE' },
+  },
+  {
+    id: 'EVENT-20260909-DIAGNOSTIC-MISSING-RESOLUTION',
+    date: '2026-09-09',
+    caseIds: ['CASE-082', 'CASE-084'],
+    scopes: ['briefing', 'research-copy'],
+    artifact: 'OpenEVO summer review · Slide 07 diagnostic',
+    variantId: 'briefing-diagnostic-no-resolution',
+    verdict: 'rejected',
+    ownerSignal: 'slide07 你也没说这个问题我们怎么解决的',
+    reasons: ['诊断页不能停在“这个解释不成立”而让观众猜后续', '要区分真正解决了什么与仍未解决什么，并显式连接下一问'],
+    failureMechanisms: ['incomplete-scientific-decision-loop', 'diagnostic-result-without-next-action'],
+    requestedSuccessorVariantId: 'briefing-diagnostic-closed-loop',
+    evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 594, ledgerId: 'FB-S2-05-DIAGNOSTIC-RESOLUTION-MISSING' },
+  },
+  {
+    id: 'EVENT-20260909-FULL-GATE-ITERATION-LATENCY',
+    date: '2026-09-09',
+    caseIds: ['CASE-085'],
+    scopes: ['workflow'],
+    artifact: 'BaseModel iterative UI review workflow',
+    variantId: 'full-final-gate-every-edit',
+    verdict: 'rejected',
+    ownerSignal: '每次build怎么这么久 能不能加快一点',
+    reasons: ['最终发布验收被错误用于每一轮小修改的人审 Preview', '同一浏览器验收在 GitHub/Vercel 重复消耗反馈时间'],
+    failureMechanisms: ['final-gate-used-as-iterative-preview', 'duplicate-acceptance-work'],
+    requestedSuccessorVariantId: 'fast-prebuilt-review-preview',
+    evidence: { ledgerId: 'FB-S2-06-FULL-BUILD-TOO-SLOW' },
+  },
+  {
+    id: 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT',
+    date: '2026-09-09',
+    caseIds: ['CASE-085'],
+    scopes: ['workflow'],
+    artifact: 'BaseModel iterative UI review workflow',
+    variantId: 'fast-prebuilt-review-preview',
+    comparedToVariantId: 'full-final-gate-every-edit',
+    verdict: 'canonical',
+    ownerSignal: '把这个规则合并到main或者怎么样 我希望以后都这样改',
+    reasons: ['明确 future-default 语言支持仓库级 canonical workflow', '快速 prebuilt review Preview 用于反复审阅，exact-head final gate 仍只在 merge-ready 时运行', '这里只 canonicalize 审阅流程，不批准任何视觉模板'],
+    failureMechanisms: [],
+    evidence: { gitSha: '0da23c2969d563097d5690e22e980fc84a92fdb8', ledgerId: 'FB-S2-07-FAST-PREVIEW-FUTURE-DEFAULT' },
+  },
+
 ];
 
 export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
@@ -327,6 +413,42 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
     ],
     note: 'scope-specific supersession：历史规则保留，current authority 是 phone reflow + desktop capped composition。',
   },
+  {
+    id: 'TRAJECTORY-BRIEFING-DIAGNOSTIC-CLOSURE-20260909',
+    scopes: ['briefing', 'research-copy'],
+    variantIds: ['briefing-horizon-scalar-only', 'briefing-diagnostic-no-resolution', 'briefing-diagnostic-closed-loop'],
+    comparisons: [
+      {
+        betterVariantId: 'briefing-diagnostic-closed-loop',
+        worseVariantId: 'briefing-horizon-scalar-only',
+        reason: 'owner 要求把 15/30 步都在固定动作间打转的观察写出来，才能说明为什么排除“只是步数太少”。',
+        failureMechanisms: ['diagnostic-conclusion-without-observed-evidence'],
+      },
+      {
+        betterVariantId: 'briefing-diagnostic-closed-loop',
+        worseVariantId: 'briefing-diagnostic-no-resolution',
+        reason: 'owner 再次指出页面没有说后续怎么处理；闭环版本必须写清停止继续加步数、转查下一机制，并区分解决错误诊断与解决最终低分。',
+        failureMechanisms: ['diagnostic-result-without-next-action', 'incomplete-scientific-decision-loop'],
+      },
+    ],
+    note: '这是内容/推理结构 trajectory，不是 owner 已批准的视觉模板；当前 successor 仍在 review。',
+  },
+  {
+    id: 'TRAJECTORY-ITERATIVE-PREVIEW-WORKFLOW-20260909',
+    scopes: ['workflow'],
+    variantIds: ['full-final-gate-every-edit', 'fast-prebuilt-review-preview'],
+    comparisons: [
+      {
+        betterVariantId: 'fast-prebuilt-review-preview',
+        worseVariantId: 'full-final-gate-every-edit',
+        reason: 'review Preview 只解决“让人马上看到页面”，最终 exact-head gate 只在 merge-ready 时运行；owner 明确要求以后默认这样。',
+        failureMechanisms: ['final-gate-used-as-iterative-preview', 'duplicate-acceptance-work'],
+      },
+    ],
+    canonicalVariantId: 'fast-prebuilt-review-preview',
+    note: 'canonical 只适用于 BaseModel 的迭代审阅 workflow；最终 merge/release 门槛不变。',
+  },
+
 ];
 export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
   {
@@ -381,6 +503,18 @@ export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
     ownerEvidence: 'owner 明确说“虽然做的不是100完成，先合并进main”；随后 PR #569 从 exact head 89fe1190… 合入 main。',
     note: '具体结果 accepted，但没有未来模板授权，所以仍是 Silver 而不是 Golden。桌面 capped 16:9，手机按窗口重排。',
   },
+  {
+    id: 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE',
+    tier: 'current-candidate',
+    scopes: ['briefing', 'visual', 'briefing-mobile', 'briefing-desktop'],
+    artifact: 'training-dynamics / diagnostic-closure successor under review',
+    gitSha: '93f7bcda83fc059a066c949de5e95ecb34399f3f',
+    pullRequest: 594,
+    route: '/research/seed-openevo/study/briefing/',
+    ownerEvidence: 'owner 要求加入 checkpoint/W&B 训练趋势、补全 Slide 07 的真实行为证据与“怎么处理”；随后仍继续纠正内容与 Preview 工作流，没有给出该视觉版本的最终接受或模板授权。',
+    note: 'CURRENT-CANDIDATE 不是 Silver/Golden。PR #594 仍是 draft；其任何 phone/fixed-canvas 实现都必须继续服从较新的 phone reflow 偏好。',
+  },
+
 ];
 export function failureFamilySeverity(failureMechanism: string): FailureFamilySeverity {
   const events = HUMAN_FEEDBACK_EVENTS.filter((event) => event.failureMechanisms.includes(failureMechanism));

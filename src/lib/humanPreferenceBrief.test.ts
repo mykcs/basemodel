@@ -28,8 +28,9 @@ describe('human preference learning v2', () => {
     expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.tier === 'rejected')).toBe(true);
     expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.tier === 'silver')).toBe(true);
     expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.tier === 'golden')).toBe(false);
-    expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.tier === 'current-candidate')).toBe(false);
+    expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
     expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.id === 'VISUAL-BRIEFING-FINAL-ACCEPTED-SILVER' && reference.tier === 'silver')).toBe(true);
+    expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.scopes.includes('briefing') && event.verdict === 'canonical')).toBe(false);
   });
 
   it('compiles a task-time brief from events, trajectories, visuals, and the existing preference model', () => {
@@ -42,6 +43,26 @@ describe('human preference learning v2', () => {
     expect(brief.visualReferences.some((reference) => reference.tier === 'silver')).toBe(true);
     expect(brief.generationRules.join('\n')).toContain('2–3 candidates');
     expect(brief.generationRules.join('\n')).toContain('There is no Golden visual reference');
+  });
+
+  it('retrieves the successor diagnostic and fast-preview rules for a genuinely different future task', () => {
+    const brief = buildHumanPreferenceBrief({
+      contractId: 'study-briefing',
+      query: '下一次我要做一场新的机器人强化学习诊断组会：有若干负向实验、连续训练 checkpoint，还会和导师快速来回看网页草稿。请设计第一次汇报和审阅流程，让人能看出为什么排除了某个解释、训练过程是否在学，同时适合手机和会议室屏幕。',
+    });
+    expect(brief.learnedPreferences.map(({ preference }) => preference.id)).toEqual(expect.arrayContaining([
+      'PREF-DIAGNOSTIC-CLOSURE',
+      'PREF-FAST-REVIEW-PREVIEW',
+      'PREF-BRIEFING-DEVICE-SCOPE',
+    ]));
+    expect(brief.goldPairs.map(({ pair }) => pair.id)).toEqual(expect.arrayContaining([
+      'PAIR-084-DIAGNOSTIC-CLOSE-LOOP',
+      'PAIR-085-FAST-REVIEW-PREVIEW',
+      'PAIR-082-DEVICE-SCOPE',
+    ]));
+    expect(brief.events.some((event) => event.id === 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT' && event.verdict === 'canonical')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.tier === 'current-candidate')).toBe(true);
+    expect(brief.generationRules.join('\n')).toContain('still under review');
   });
 
   it('generates three internal candidate slots with screenshots required', () => {

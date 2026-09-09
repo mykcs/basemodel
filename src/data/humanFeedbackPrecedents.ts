@@ -154,13 +154,30 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     antiPatterns: ['写入案例库 → 等未来 Agent 自己想起来', '只靠 style guide 或词语黑名单'],
     positiveSignals: ['Rejected → Accepted Gold Pair', 'Preference Model', 'task-time retrieval', 'blind cold read', 'preference judge'],
   },
+  {
+    id: 'CASE-084',
+    title: '负向诊断必须闭环到观察、排除与下一步',
+    tags: ['briefing', '科研汇报', '诊断', '负结果', 'checkpoint', 'loss', 'W&B', '下一步'],
+    principle: '诊断实验不能只报一个分数或“没改善”；要把观察到的行为证据、因此排除的解释、随后采取的处理或下一问连起来。训练 loss、训练过程任务表现与冻结终评是不同证据层，展示曲线时必须分清。',
+    antiPatterns: ['15→30 仍然 0，所以 horizon 不是问题', '只画 loss 就声称任务能力在收敛', '报完负结果却不说停止调什么、转查什么'],
+    positiveSignals: ['15/30 步都在同几类动作间打转 → 排除单纯步数不足 → 固定 horizon 转查 Text Memory', '训练 loss 与在线任务分数分别画，并把 frozen final eval 作为独立终评点'],
+  },
+  {
+    id: 'CASE-085',
+    title: '人审 Preview 与最终验收是两条不同的工作流',
+    tags: ['workflow', 'Preview', 'build', 'Vercel', '审阅', '迭代', '速度'],
+    principle: '还在反复改 UI/copy/slide 时，用本地静态构建加非权威 prebuilt Preview 快速给人看；只有准备 merge/release 时才运行 exact-head 最终 Vercel gate。',
+    antiPatterns: ['每改一句文案都跑完整 205 项 Chromium 最终 gate', '把快速 review Preview 当成 merge evidence'],
+    positiveSignals: ['coherent edit → local build → prebuilt review Preview', 'merge-ready → exact-head Vercel final gate'],
+  },
+
 ];
 
 export const READER_CONTRACT_PRECEDENTS: Record<string, HumanFeedbackCaseId[]> = {
   study: ['CASE-061', 'CASE-062', 'CASE-063', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'study-results': ['CASE-029', 'CASE-030', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'study-run': ['CASE-064', 'CASE-068', 'CASE-070', 'CASE-081'],
-  'study-briefing': ['CASE-027', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-070', 'CASE-081', 'CASE-082'],
+  'study-briefing': ['CASE-027', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-070', 'CASE-081', 'CASE-082', 'CASE-084'],
   'capability-home': ['CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'capability-first-run': ['CASE-029', 'CASE-030', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
 };

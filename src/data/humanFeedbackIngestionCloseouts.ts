@@ -23,24 +23,36 @@ export interface FeedbackCoverageLedgerItem {
   excludedSubsignals?: string[];
 }
 
+export type HumanFeedbackIngestionCloseoutSchema =
+  | 'human-feedback-ingestion-closeout.v1'
+  | 'human-feedback-ingestion-closeout.v2';
+
+export interface HumanFeedbackIngestionSourceWindow {
+  start: string;
+  end: string;
+  route: string;
+  pullRequest: number;
+  finalAcceptedHead?: string;
+  mergedMainCommit?: string;
+  finalOwnerVisibleHead?: string;
+  mainAtCloseout?: string;
+  finalVerdict?: 'accepted' | 'current-candidate';
+}
+
 export interface HumanFeedbackIngestionCloseoutRecord {
   id: `INGESTION-${string}`;
-  schema: 'human-feedback-ingestion-closeout.v1';
+  schema: HumanFeedbackIngestionCloseoutSchema;
   task: string;
-  sourceWindow: {
-    start: string;
-    end: string;
-    route: string;
-    pullRequest: number;
-    finalAcceptedHead: string;
-    mergedMainCommit: string;
-  };
+  sourceWindow: HumanFeedbackIngestionSourceWindow;
+  predecessorIngestionIds?: `INGESTION-${string}`[];
   candidateFeedbackSignals: number;
   ledger: FeedbackCoverageLedgerItem[];
   futureTaskQuery: string;
   expectedRetrievedSignals: string[];
   evaluationProof: {
-    hardFamily: string;
+    hardFamily?: string;
+    failureFamily?: string;
+    pairId?: `PAIR-${string}`;
     mechanism: string;
   };
   automationGap: string;
@@ -256,18 +268,26 @@ export const OPEN_EVO_BRIEFING_INGESTION_20260909: HumanFeedbackIngestionCloseou
       rationale: '属于 OpenEVO 研究页族的信息架构要求，不升级成通用视觉偏好。',
     },
     {
-      id: 'FB-22-WANDB-CHECKPOINT-CURVE',
+      id: 'FB-22-HORIZON-BEHAVIOR-MUST-BE-VISIBLE',
       date: '2026-09-09',
-      ownerSignal: '把 checkpoint 的 loss 和最终得分展示出来，画一条曲线，看它到底是慢慢收敛还是有上涨趋势；这能帮助说明分数低不是工程问题。',
-      disposition: 'page-specific-only',
-      rationale: '属于本次科学证据展示需求；是否长期使用取决于后续实验数据，不升级成全局图表规则。',
+      ownerSignal: 'slide07写得还是有问题，你应该写出来，我们当时实际看了15、30步，都是在固定那几个动作打转，然后30步了还是打转，那我们就知道问题不在这里了，这个类型的细节要说出来。',
+      disposition: 'ingest',
+      rationale: '补足旧 chronology 抽象：负向诊断必须展示真实行为证据，说明为什么能排除“只是步数太少”。',
+      eventIds: ['EVENT-20260909-DIAGNOSTIC-BEHAVIOR-EVIDENCE'],
+      caseIds: ['CASE-082', 'CASE-084'],
+      preferenceIds: ['PREF-RESEARCH-JUDGMENT', 'PREF-DIAGNOSTIC-CLOSURE'],
+      pairIds: ['PAIR-084-DIAGNOSTIC-CLOSE-LOOP'],
     },
     {
-      id: 'FB-23-BUILD-PREVIEW-STATUS',
+      id: 'FB-23-IPHONE-REFLOW-REPEAT',
       date: '2026-09-09',
-      ownerSignal: 'build失败 / 网页preview呢。',
-      disposition: 'task-fact-not-preference',
-      rationale: '这是临时交付/构建状态，不是可复用的人类表达偏好。',
+      ownerSignal: 'iPhone要自适应宽度，就是在iPhone上看，宽度应该是对齐的，我自己选择放大或者怎么样，不要我再去横着滑动。',
+      disposition: 'ingest',
+      rationale: '第二次直接 phone-scope 证据：强化已有 phone reflow 规则，但不扩成所有网页/设备的通用固定布局政策。',
+      eventIds: ['EVENT-20260909-MOBILE-REFLOW-REPEAT'],
+      caseIds: ['CASE-082'],
+      preferenceIds: ['PREF-BRIEFING-DEVICE-SCOPE'],
+      pairIds: ['PAIR-082-DEVICE-SCOPE'],
     },
     {
       id: 'FB-24-FINAL-MERGE-AUTHORIZATION',
@@ -344,4 +364,118 @@ export const OPEN_EVO_BRIEFING_INGESTION_20260909: HumanFeedbackIngestionCloseou
     'Conversation-to-ledger extraction is still interpreted manually by the Agent because ChatGPT conversation turns are not exposed to a repository ingestion API. The repository now validates the structured ledger, cross-references, verdict/tier boundaries, retrieval proof, and evaluation proof fail-closed.',
 };
 
-export const HUMAN_FEEDBACK_INGESTION_CLOSEOUTS = [OPEN_EVO_BRIEFING_INGESTION_20260909];
+
+export const OPEN_EVO_BRIEFING_SUCCESSOR_INGESTION_20260909: HumanFeedbackIngestionCloseoutRecord = {
+  id: 'INGESTION-20260909-OPENEVO-BRIEFING-SUCCESSOR',
+  schema: 'human-feedback-ingestion-closeout.v2',
+  task: 'OpenEVO briefing successor: diagnostic closure, training dynamics, and iterative review workflow',
+  sourceWindow: {
+    start: '2026-09-09T04:30:37Z',
+    end: '2026-09-09T06:34:17Z',
+    route: '/research/seed-openevo/study/briefing/',
+    pullRequest: 594,
+    finalOwnerVisibleHead: '93f7bcda83fc059a066c949de5e95ecb34399f3f',
+    mainAtCloseout: '6b6f58ae62b69edadc8b72949a0456bed2815cc2',
+    finalVerdict: 'current-candidate',
+  },
+  predecessorIngestionIds: ['INGESTION-20260909-OPENEVO-BRIEFING'],
+  candidateFeedbackSignals: 8,
+  ledger: [
+    {
+      id: 'FB-S2-01-BUILD-FAILED-STATUS',
+      date: '2026-09-09',
+      ownerSignal: 'build失败',
+      disposition: 'task-fact-not-preference',
+      rationale: '单次构建失败是交付状态；长期 workflow 偏好由后续“每次 build 怎么这么久”和 future-default 指令单独吸收。',
+    },
+    {
+      id: 'FB-S2-02-CHECKPOINT-WANDB-CURVE',
+      date: '2026-09-09',
+      ownerSignal: '我们的训练过程不是会有很多 checkpoint 吗？把这些 checkpoint 的 loss 和最终得分展示出来，画一条曲线，看它到底是慢慢收敛，还是有上涨趋势。这个应该跟当时的 W&B 相关很大。',
+      disposition: 'ingest',
+      rationale: '吸收“用连续训练证据解释低分”的科研表达方向；保持 loss / 在线任务表现 / frozen final eval 三层边界，不能据此证明所有工程问题都不存在。',
+      eventIds: ['EVENT-20260909-TRAINING-DYNAMICS-EVIDENCE'],
+      caseIds: ['CASE-084'],
+      preferenceIds: ['PREF-DIAGNOSTIC-CLOSURE', 'PREF-SCIENTIFIC-BOUNDARY'],
+      visualReferenceIds: ['VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE'],
+    },
+    {
+      id: 'FB-S2-03-PREVIEW-MISSING',
+      date: '2026-09-09',
+      ownerSignal: '网页preview呢',
+      disposition: 'task-fact-not-preference',
+      rationale: '这是对当轮交付缺失的追问；可复用的审阅速度规则由 FB-S2-06/07 承担。',
+    },
+    {
+      id: 'FB-S2-04-FAILURE-STATUS',
+      date: '2026-09-09',
+      ownerSignal: '失败了吗',
+      disposition: 'task-fact-not-preference',
+      rationale: '这是当前部署状态询问，不升级为表达或视觉规则。',
+    },
+    {
+      id: 'FB-S2-05-DIAGNOSTIC-RESOLUTION-MISSING',
+      date: '2026-09-09',
+      ownerSignal: 'slide07 你也没说这个问题我们怎么解决的',
+      disposition: 'ingest',
+      rationale: '第二个同机制纠正：诊断页不能只排除一个解释，还要说我们停止继续调什么、转向什么，以及“解决错误诊断”与“解决最终低分”的边界。',
+      eventIds: ['EVENT-20260909-DIAGNOSTIC-MISSING-RESOLUTION'],
+      caseIds: ['CASE-082', 'CASE-084'],
+      preferenceIds: ['PREF-DIAGNOSTIC-CLOSURE', 'PREF-RESEARCH-JUDGMENT'],
+      pairIds: ['PAIR-084-DIAGNOSTIC-CLOSE-LOOP'],
+    },
+    {
+      id: 'FB-S2-06-FULL-BUILD-TOO-SLOW',
+      date: '2026-09-09',
+      ownerSignal: '每次build怎么这么久 能不能加快一点',
+      disposition: 'ingest',
+      rationale: '拒绝把最终全量验收用于每次小修改的人审反馈环；问题机制是 review 与 release acceptance 混用。',
+      eventIds: ['EVENT-20260909-FULL-GATE-ITERATION-LATENCY'],
+      caseIds: ['CASE-085'],
+      preferenceIds: ['PREF-FAST-REVIEW-PREVIEW'],
+      pairIds: ['PAIR-085-FAST-REVIEW-PREVIEW'],
+    },
+    {
+      id: 'FB-S2-07-FAST-PREVIEW-FUTURE-DEFAULT',
+      date: '2026-09-09',
+      ownerSignal: '把这个规则合并到main或者怎么样 我希望以后都这样改',
+      disposition: 'ingest',
+      rationale: '明确 future-default 语言，足以把 BaseModel 的快速 review Preview 工作流升级为 canonical；不涉及视觉 Golden。',
+      eventIds: ['EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT'],
+      caseIds: ['CASE-085'],
+      preferenceIds: ['PREF-FAST-REVIEW-PREVIEW'],
+      pairIds: ['PAIR-085-FAST-REVIEW-PREVIEW'],
+    },
+    {
+      id: 'FB-S2-08-HPL-CLOSEOUT-SUCCESS-CRITERION',
+      date: '2026-09-09',
+      ownerSignal: '未来完全不同的 Agent 在没有读过本对话的情况下，只依赖 current main，也应该能在第一次生成时明显更接近我的要求，并减少我重复纠正同一类问题的次数。',
+      disposition: 'merge-duplicate',
+      rationale: '强化既有 CASE-083 / PREF-FEEDBACK-LEARNING-LOOP；这是 HPL 的成功指标，不创建新的近义 workflow family。',
+      caseIds: ['CASE-083'],
+      preferenceIds: ['PREF-FEEDBACK-LEARNING-LOOP'],
+      pairIds: ['PAIR-083-LEARNING-LOOP'],
+    },
+  ],
+  futureTaskQuery: '下一次我要做一场新的机器人强化学习诊断组会：有若干负向实验、连续训练 checkpoint，还会和导师快速来回看网页草稿。请设计第一次汇报和审阅流程，让人能看出为什么排除了某个解释、训练过程是否在学，同时适合手机和会议室屏幕。',
+  expectedRetrievedSignals: [
+    'diagnostic-observation-to-decision',
+    'training-dynamics-evidence-layers',
+    'mobile-reflow-repeat',
+    'fast-review-preview-canonical-workflow',
+    'current-candidate-is-not-accepted',
+    'scientific-decision-chain',
+    'phone-vs-desktop-scope-split',
+  ],
+  evaluationProof: {
+    failureFamily: 'incomplete-scientific-decision-loop',
+    pairId: 'PAIR-084-DIAGNOSTIC-CLOSE-LOOP',
+    mechanism: 'preference judge must reject a PASS receipt that is rejected-like against the diagnostic-close-loop Gold Pair, then pass after the recurrence is repaired',
+  },
+  automationGap: 'Conversation-to-ledger extraction is still manually interpreted because the repository has no direct ChatGPT turn-export API. The v2 record adds an honest current-candidate closure state so an unfinished page cannot be mislabeled accepted; repository code validates coverage, retrieval, scope/tier boundaries, and evaluation-side recurrence rejection.',
+};
+
+export const HUMAN_FEEDBACK_INGESTION_CLOSEOUTS = [
+  OPEN_EVO_BRIEFING_INGESTION_20260909,
+  OPEN_EVO_BRIEFING_SUCCESSOR_INGESTION_20260909,
+];
