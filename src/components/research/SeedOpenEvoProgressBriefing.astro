@@ -156,15 +156,15 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
         <div class="after"><span>{t('后来误用：Stage 2 gate', 'Later misuse: Stage-2 gate')}</span><strong>{t('每 256 次 rollout 不到 8 个身份就不更新', 'no update unless a 256-rollout window reaches 8 identities')}</strong><p>{t('实际窗口最多只有 7 个 qualifying identities；于是 20,480 次 rollout 和 797 条 positive 轨迹，仍然得到 0 次参数更新。', 'A real window topped out at 7 qualifying identities; thus 20,480 rollouts and 797 positive trajectories still produced zero parameter updates.')}</p></div>
       </div>
       <div class="resolution-box"><strong>{t('我们怎么解决', 'How we fixed the scientific rule')}</strong><p>{t('撤掉旧 7-vs-8 gate，把正式 Stage 2 固定成 round-local：一轮 128 次 WebShop 尝试里，只要出现至少一个 clean exact-success task，就给 SD-LoRA 一次更新机会；如果没有成功，就明确记为 NOOP。这样模型有没有学到东西，才不再被历史控制门槛挡住。', 'We removed the old 7-vs-8 gate and froze formal Stage 2 as round-local: in one 128-rollout WebShop round, at least one clean exact-success task gives SD-LoRA one update opportunity; if there is no success, the round is recorded as NOOP. Only then is learning no longer blocked by a historical control threshold.')}</p></div>
-      <p class="bottom-claim">{t('后来遇到的 64-component 上限是另一个问题：一开始代码为了控制容量，限制最多写入 64 个 SD-LoRA component。和学长确认后，我们把它当成工程容量限制处理，单独解开“到 64 就停”这一条，其他训练规则不变。更细的 child-runtime / 51→52 排查留在技术页。', 'The later 64-component limit was a separate issue: the code originally capped the run at 64 SD-LoRA components as a capacity guard. After confirming with the senior that this was an engineering limit, we removed only the independent stop-at-64 rule and left the scientific training rule unchanged. Lower-level child-runtime / 51→52 debugging stays in the technical notes.')}</p>
+      <p class="bottom-claim">{t('后来遇到的 64-component 上限是另一个问题：一开始代码为了控制容量，限制最多写入 64 个 SD-LoRA component。我们只解除“到 64 就停”这一条、保持其他训练规则不变以后，7B 跨过 64 并继续累计更新。因此 64 只代表工程容量边界，不能当作模型能力上限。更细的运行时排查留在技术页。', 'The later 64-component limit was a separate issue: the code originally capped the run at 64 SD-LoRA components as a capacity guard. We removed only the stop-at-64 rule while keeping the other training rules unchanged, and the 7B run then crossed 64 and continued accumulating updates. This evidence identifies 64 as an engineering capacity boundary; it cannot be treated as a model-capability ceiling. Lower-level runtime debugging stays in the technical notes.')}</p>
       <p class="slide-bridge">{t('这个 gate 不再挡住学习以后，下一步才是看 7B 长跑到底在更新什么。', 'Once this gate no longer blocked learning, the next question was what the 7B long run was actually updating.')}</p>
       <p class="slide-number">05 / 18</p>
     </div>
   </section>
   <section id="openevo-method" class="briefing-slide tone-green" aria-labelledby="openevo-method-title">
     <div class="slide-inner method-slide">
-      <h2 id="openevo-method-title">{t('后来那条 7B 长跑，每轮会同时更新几类东西', 'The later 7B long run updated several kinds of state each round')}</h2>
-      <p class="slide-thesis">{t('最早的 7B Stage 1 只收集 1,440 条原始 WebShop 轨迹；后来跑到 49.33 的 Ceiling-1.0 7B，已经包含四类会滚动更新的状态：Text Memory、Skill Bundle、Agent System 和 SD-LoRA。MiniMax 只在第一阶段任务结束后回看轨迹，不替 Qwen 搜索或点击；进入第二阶段以后，外部老师不再持续介入。', 'The earliest 7B Stage 1 only collected 1,440 raw WebShop trajectories. The later Ceiling-1.0 7B run that ended at 49.33 already carried four rolling state types: Text Memory, Skill Bundle, Agent System, and SD-LoRA. MiniMax reviewed completed trajectories only after Stage 1; it never searched or clicked for Qwen, and the external teacher did not keep intervening during Stage 2.')}</p>
+      <h2 id="openevo-method-title">{t('后来 7B 的下一轮状态，到底由哪些东西共同组成？', 'What together defined the next state in the later 7B run?')}</h2>
+      <p class="slide-thesis">{t('最早的 7B Stage 1 只收集 1,440 条原始 WebShop 轨迹；后来跑到 49.33 的 Ceiling-1.0 7B，下一轮实际使用的状态由 Text Memory、Skill Bundle、Agent System 和累计 SD-LoRA 参数状态共同定义。MiniMax 只在第一阶段任务结束后回看轨迹，不替 Qwen 搜索或点击；进入第二阶段以后，外部老师不再持续介入。', 'The earliest 7B Stage 1 only collected 1,440 raw WebShop trajectories. The later Ceiling-1.0 7B run that ended at 49.33 used Text Memory, Skill Bundle, Agent System, and the cumulative SD-LoRA parameter state together as the next state. MiniMax reviewed completed trajectories only after Stage 1; it never searched or clicked for Qwen, and the external teacher did not keep intervening during Stage 2.')}</p>
       <div class="method-stage-grid">
         <article>
           <header><span>Stage 1</span><strong>{t('先把 1,440 条学生轨迹变成一个可学习的起点', 'Turn 1,440 student trajectories into a learnable starting state')}</strong></header>
@@ -178,8 +178,8 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
           <header><span>Stage 2</span><strong>{t('之后每 128 次任务形成一轮，模型只用自己的新经验继续学', 'Then every 128 attempts form one round, using only newly self-generated experience')}</strong></header>
           <ol>
             <li><b>{t('做题', 'act')}</b><p>{t('当前模型继续跑 WebShop，得到这一轮新的 128 条任务记录。', 'The current model runs WebShop and produces 128 new task records for the round.')}</p></li>
-            <li><b>{t('分别判断要不要更新', 'decide updates independently')}</b><p>{t('SD-LoRA、Text Memory、Skill Bundle、Agent System 都只看“上一轮状态 + 本轮证据”。', 'SD-LoRA, Text Memory, Skill Bundle, and Agent System each see only the previous state plus current-round evidence.')}</p></li>
-            <li><b>{t('合成下一轮', 'merge the next state')}</b><p>{t('四类状态都判断完以后才合并成下一轮模型；TaskVector 只做诊断，不偷偷改训练。', 'Only after all four decisions are complete are they merged into the next state; TaskVector remains diagnostic and does not silently change training.')}</p></li>
+            <li><b>{t('分别判断要不要更新', 'decide updates independently')}</b><p>{t('每轮按正式协议分别判断哪些状态需要更新；没有证据触发时可以保持不变。', 'Each round follows the formal protocol to decide which state should update; a state may remain unchanged when its evidence condition is not met.')}</p></li>
+            <li><b>{t('合成下一轮', 'merge the next state')}</b><p>{t('这些状态共同定义下一轮实际使用的模型状态；TaskVector 只做诊断，不偷偷改训练。', 'Together these states define what the next round actually uses; TaskVector remains diagnostic and does not silently change training.')}</p></li>
           </ol>
         </article>
       </div>
@@ -189,7 +189,7 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
         <span><strong>Agent System</strong>{t('全局行为与恢复规则', 'global behavior and recovery rules')}</span>
         <span><strong>SD-LoRA</strong>{t('持续参数更新', 'continual parameter updates')}</span>
       </div>
-      <p class="method-state-note"><strong>{t('最后更新成什么样？', 'What did the final state contain?')}</strong>{t('最终下一轮模型状态由 Text Memory + Skill Bundle + Agent System + 143 个已写入的 SD-LoRA 参数组件共同组成。', 'Text Memory + Skill Bundle + Agent System + 143 written SD-LoRA parameter components together defined the later model state.')}</p>
+      <p class="method-state-note"><strong>{t('最后更新成什么样？', 'What did the final state contain?')}</strong>{t('最终评测状态包含 Text Memory、Skill Bundle、Agent System，以及累计写入 143 次更新后形成的 SD-LoRA 参数状态。', 'The final evaluated state contained Text Memory, Skill Bundle, Agent System, and the cumulative SD-LoRA parameter state produced after 143 written updates.')}</p>
       <p class="slide-bridge">{t('既然训练过程真的在变好，下一步就要看它的冻结终评到底停在哪里。', 'Since the training process genuinely improved, the next step is to compare it with the frozen final result.')}</p>
       <p class="slide-number">06 / 18</p>
     </div>

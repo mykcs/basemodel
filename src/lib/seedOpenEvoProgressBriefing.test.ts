@@ -84,11 +84,11 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('撤掉旧 7-vs-8 gate');
     expect(briefing).toContain('至少一个 clean exact-success task');
     expect(briefing).toContain('64-component 上限是另一个问题');
-    expect(briefing).toContain('更细的 child-runtime / 51→52 排查留在技术页');
+    expect(briefing).toContain('更细的运行时排查留在技术页');
   });
 
   it('adds a one-slide OpenEVO Stage 1 → Stage 2 mental model for the live audience', () => {
-    expect(briefing).toContain('后来那条 7B 长跑，每轮会同时更新几类东西');
+    expect(briefing).toContain('后来 7B 的下一轮状态，到底由哪些东西共同组成？');
     expect(briefing).toContain('Stage 1');
     expect(briefing).toContain('180 个 WebShop 任务 × 每题 8 次完整尝试');
     expect(briefing).toContain('MiniMax 1,440 / 1,440');
@@ -99,8 +99,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     for (const carrier of ['Text Memory', 'Skill Bundle', 'Agent System', 'SD-LoRA']) expect(briefing).toContain(carrier);
     expect(briefing).toContain('TaskVector 只做诊断，不偷偷改训练');
     expect(briefing).toContain('最早的 7B Stage 1 只收集 1,440 条原始 WebShop 轨迹');
-    expect(briefing).toContain('Text Memory + Skill Bundle + Agent System + 143 个已写入的 SD-LoRA 参数组件');
-    expect(briefing).toContain('最终下一轮模型状态由 Text Memory');
+    expect(briefing).toContain('最终评测状态包含 Text Memory、Skill Bundle、Agent System，以及累计写入 143 次更新后形成的 SD-LoRA 参数状态');
   });
 
   it('shows 7B training dynamics, the old 64-component guard, and the direction-question pivot', () => {
@@ -240,7 +239,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(finalSlide).not.toContain('W&B + HF + checkpoint 归档');
     expect(finalSlide).not.toContain('composed state');
     expect(briefing).toContain('训练跑了很久，但参数一次都没有更新');
-    expect(briefing).toContain('后来那条 7B 长跑，每轮会同时更新几类东西');
+    expect(briefing).toContain('后来 7B 的下一轮状态，到底由哪些东西共同组成？');
     expect(finalSlide).not.toContain('15 / 15');
   });
 
