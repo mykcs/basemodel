@@ -157,6 +157,20 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
       final604Visual.gitSha === '59f46044e15aa92d95f50f0332a9798adf8d385b' &&
       !HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === final604Event.evidence?.gitSha && event.verdict === 'canonical') &&
       !HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden'),
+    'event-first-research-heading':
+      preferences.has('PREF-EVENT-FIRST-RESEARCH-HEADINGS') && pairs.has('PAIR-090-GATE-HEADING') &&
+      events.has('EVENT-20260909-BRIEFING-STORYLINE-SHORTHAND-REPEAT'),
+    'low-score-log-first-causal-sequence':
+      preferences.has('PREF-RESEARCH-JUDGMENT') && pairs.has('PAIR-090-DIAGNOSTIC-ENTRY') &&
+      events.has('EVENT-20260909-BRIEFING-STORYLINE-DIAGNOSTIC-ENTRY'),
+    'compressed-shorthand-heading-hard':
+      brief.hardFailureFamilies.includes('compressed-shorthand-heading') && pairs.has('PAIR-090-GATE-HEADING'),
+    'unnecessary-project-jargon-translated':
+      preferences.has('PREF-INLINE-TERMINOLOGY') && pairs.has('PAIR-090-COMPOSED-STATE') &&
+      events.has('EVENT-20260909-BRIEFING-STORYLINE-ENGLISH-GLUE'),
+    'science-vs-engineering-summary-split':
+      preferences.has('PREF-RESEARCH-JUDGMENT') && preferences.has('PREF-PROGRESSIVE-DISCLOSURE') &&
+      events.has('EVENT-20260909-BRIEFING-STORYLINE-SUMMARY-DIRECTION'),
     'recovery-action-first':
       preferences.has('PREF-RECOVERY-ACTION-FIRST') &&
       events.has('EVENT-20260909-FUHUO-RECOVERY-TECHNICAL-FIRST') &&

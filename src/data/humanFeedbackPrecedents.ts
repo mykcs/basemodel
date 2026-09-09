@@ -203,13 +203,22 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     antiPatterns: ['直接从 7B / 1.7B / 3B 结果开始，默认观众已经读过网站其他方法页', '为了自包含把完整实现手册和所有参数重复搬进主演讲'],
     positiveSignals: ['一页交代 Stage 1 轨迹采集 + MiniMax 回看 + 学习载体，再交代 Stage 2 自生成 round 与更新', '只保留理解后续科学判断必需的方法背景，深实现继续留技术页'],
   },
+  {
+    id: 'CASE-090',
+    title: '科研标题先说发生了什么，再给数字缩写和内部标签',
+    tags: ['briefing', '科研汇报', '标题', '说人话', '数字', '模型名', '术语', '因果顺序'],
+    principle: '科研汇报的标题和段落入口先用一句自然语言说明发生了什么、为什么开始查；如果 7<8、7B:、intervention 名或内部英文需要读者先解码，就把它们放到正文、图注或就地解释层。',
+    antiPatterns: ['7 < 8：不是模型没有成功经验，而是一个控制门槛挡住了长期训练', '7B：训练过程明显学起来，但冻结终评仍是 49.33', '为什么后来会去改“15 步”和 Text Memory？', 'Ceiling-1.0 7B 已经是 composed state'],
+    positiveSignals: ['训练跑了很久，但参数一次都没有更新', '分数很低，我们先去看日志，看看是不是哪里出了问题', '我们做了一次 7B 长跑：训练在变好，冻结终评是 49.33', '必要的 Agent / SD-LoRA / GDR 技术对象保留并就地解释'],
+  },
+
 ];
 
 export const READER_CONTRACT_PRECEDENTS: Record<string, HumanFeedbackCaseId[]> = {
   study: ['CASE-061', 'CASE-062', 'CASE-063', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'study-results': ['CASE-029', 'CASE-030', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'study-run': ['CASE-064', 'CASE-068', 'CASE-070', 'CASE-081'],
-  'study-briefing': ['CASE-027', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-070', 'CASE-081', 'CASE-082', 'CASE-084', 'CASE-087', 'CASE-088', 'CASE-089'],
+  'study-briefing': ['CASE-027', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-070', 'CASE-081', 'CASE-082', 'CASE-084', 'CASE-087', 'CASE-088', 'CASE-089', 'CASE-090'],
   'capability-home': ['CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'capability-first-run': ['CASE-029', 'CASE-030', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
 };

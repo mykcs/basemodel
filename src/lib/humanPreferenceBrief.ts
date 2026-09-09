@@ -76,7 +76,7 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
     })
     .filter(({ score }) => score > 0)
     .sort((a, b) => b.score - a.score || b.event.date.localeCompare(a.event.date))
-    .slice(0, 18)
+    .slice(0, 22)
     .map(({ event }) => event);
 
   const eventVariantIds = new Set(events.map((event) => event.variantId));

@@ -192,7 +192,7 @@ The brief compiles:
 
 `feedback:retrieve` remains a useful low-level search tool. The **Preference Brief** is the generation-time owner because it combines the old retrieval layer with trajectories, visual evidence, and escalation.
 
-As the case/pair corpus grows, retrieval capacity must grow enough to preserve older hard constraints as well as newer high-similarity evidence. Current briefs allow up to 16 learned preferences/Gold Pairs and 18 direct events; this is a bounded context expansion, not permission to dump the full history. Regression tests must prove older closeout receipts still retrieve their required signals after new cases are added.
+As the case/pair corpus grows, retrieval capacity must grow enough to preserve older hard constraints as well as newer high-similarity evidence. Current briefs allow up to 16 learned preferences/Gold Pairs and 22 direct events; this is a bounded context expansion, not permission to dump the full history. Regression tests must prove older closeout receipts still retrieve their required signals after new cases are added.
 
 If the brief says there is no Golden reference, the Agent must not invent one.
 
@@ -333,6 +333,15 @@ It is:
 > **Remove elements that make the reader decide where to look or decode author-internal language; preserve information, color, mathematics, or structure when they directly carry the research argument.**
 
 That is why a decorative pale bubble can be rejected while a dense TaskVector formula can be preferred on the mechanism slide.
+
+
+The PR #605 storyline review adds a further research-copy distinction:
+
+> **A scientifically meaningful shorthand can still be the wrong first sentence if the audience must decode it before they know the event.**
+
+`7 < 8` is useful evidence after the gate is introduced, but the human entry point is `训练跑了很久，但参数一次都没有更新`. Likewise, `7B：结论` and `composed state` are not globally banned tokens: prefer a directly repeatable event sentence, preserve technical names that denote real objects, and translate author-internal English glue that adds no scientific precision. The owner repeated this family during closeout, so `compressed-shorthand-heading` is now hard.
+
+The same source window creates a new active `current-candidate` for PR #605. That means older tests saying “no active current-candidate” must not be preserved as historical truth: the correct invariant is that an active candidate may appear in a Preference Brief but must never be misreported as accepted or Golden.
 
 ## End-of-conversation ingestion closeout
 

@@ -3,6 +3,7 @@ import {
   OPEN_EVO_BRIEFING_INGESTION_20260909,
   OPEN_EVO_BRIEFING_SUCCESSOR_INGESTION_20260909,
   OPEN_EVO_BRIEFING_FINAL_SUCCESSOR_INGESTION_20260909,
+  OPEN_EVO_BRIEFING_STORYLINE_INGESTION_20260909,
   FUHUO_MAC_RECOVERY_INGESTION_20260909,
 } from '../data/humanFeedbackIngestionCloseouts';
 import { HUMAN_FEEDBACK_EVENTS, HUMAN_VISUAL_REFERENCE_SET, failureFamilySeverity } from '../data/humanPreferenceLearningHistory';
@@ -11,6 +12,7 @@ import { validateHumanFeedbackIngestionCloseout } from './humanFeedbackIngestion
 const original = OPEN_EVO_BRIEFING_INGESTION_20260909;
 const successor = OPEN_EVO_BRIEFING_SUCCESSOR_INGESTION_20260909;
 const finalSuccessor = OPEN_EVO_BRIEFING_FINAL_SUCCESSOR_INGESTION_20260909;
+const storyline = OPEN_EVO_BRIEFING_STORYLINE_INGESTION_20260909;
 const recovery = FUHUO_MAC_RECOVERY_INGESTION_20260909;
 
 describe('human feedback ingestion closeout', () => {
@@ -18,10 +20,11 @@ describe('human feedback ingestion closeout', () => {
     expect(original.ledger).toHaveLength(original.candidateFeedbackSignals);
     expect(successor.ledger).toHaveLength(successor.candidateFeedbackSignals);
     expect(finalSuccessor.ledger).toHaveLength(finalSuccessor.candidateFeedbackSignals);
+    expect(storyline.ledger).toHaveLength(storyline.candidateFeedbackSignals);
     expect(recovery.ledger).toHaveLength(recovery.candidateFeedbackSignals);
-    expect(original.candidateFeedbackSignals + successor.candidateFeedbackSignals + finalSuccessor.candidateFeedbackSignals + recovery.candidateFeedbackSignals).toBe(61);
-    const all = [...original.ledger, ...successor.ledger, ...finalSuccessor.ledger, ...recovery.ledger];
-    expect(new Set(all.map((item) => item.id)).size).toBe(61);
+    expect(original.candidateFeedbackSignals + successor.candidateFeedbackSignals + finalSuccessor.candidateFeedbackSignals + storyline.candidateFeedbackSignals + recovery.candidateFeedbackSignals).toBe(73);
+    const all = [...original.ledger, ...successor.ledger, ...finalSuccessor.ledger, ...storyline.ledger, ...recovery.ledger];
+    expect(new Set(all.map((item) => item.id)).size).toBe(73);
     expect(all.filter((item) => item.disposition === 'ambiguous-hold')).toEqual([]);
   });
 
@@ -54,6 +57,14 @@ describe('human feedback ingestion closeout', () => {
     expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden')).toBe(false);
   });
 
+  it('keeps PR #605 storyline as the active current-candidate without inventing acceptance', () => {
+    expect(storyline.sourceWindow.finalVerdict).toBe('current-candidate');
+    expect(storyline.sourceWindow.finalOwnerVisibleHead).toBe('670ab9b4d800bdda3d73ad2406f2b38314f84bf5');
+    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-LABEL-FIRST-REJECTED')?.tier).toBe('rejected');
+    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')?.tier).toBe('current-candidate');
+    expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === storyline.sourceWindow.finalOwnerVisibleHead && ['accepted', 'canonical'].includes(event.verdict))).toBe(false);
+  });
+
   it('keeps the fuhuo recovery successor as current-candidate and validates cross-repository evidence', () => {
     expect(recovery.sourceWindow.sourceRepository).toBe('mykcs/fuhuo_20260419');
     expect(recovery.sourceWindow.finalVerdict).toBe('current-candidate');
@@ -68,6 +79,8 @@ describe('human feedback ingestion closeout', () => {
     expect(failureFamilySeverity('internal-detail-promoted-to-primary-attention')).toBe('hard');
     expect(failureFamilySeverity('incomplete-scientific-decision-loop')).toBe('hard');
     expect(failureFamilySeverity('mobile-fixed-canvas-overflow')).toBe('repeated');
+    expect(failureFamilySeverity('compressed-shorthand-heading')).toBe('hard');
+    expect(failureFamilySeverity('presenter-language')).toBe('repeated');
   });
 
   it('passes both receipts, future-task retrieval, and negative/positive evaluation proof', () => {
@@ -87,6 +100,23 @@ describe('human feedback ingestion closeout', () => {
     expect(finalResult.evaluationProofFailures).toContain('hard failure family not checked: incomplete-scientific-decision-loop');
     expect(finalResult.evaluationProofPassFailures).toEqual([]);
     expect(finalResult.failures).toEqual([]);
+  });
+
+  it('passes storyline coverage, future-task retrieval, and repeated-heading recurrence proof', () => {
+    const result = validateHumanFeedbackIngestionCloseout(storyline);
+    expect(result.failures).toEqual([]);
+    for (const signal of [
+      'event-first-research-heading',
+      'low-score-log-first-causal-sequence',
+      'compressed-shorthand-heading-hard',
+      'unnecessary-project-jargon-translated',
+      'science-vs-engineering-summary-split',
+      'scientific-decision-chain',
+      'internal-detail-primary-attention',
+      'current-candidate-is-not-accepted',
+    ]) expect(result.retrievedSignals[signal], signal).toBe(true);
+    expect(result.evaluationProofFailures).toContain('hard failure family not checked: compressed-shorthand-heading');
+    expect(result.evaluationProofPassFailures).toEqual([]);
   });
 
   it('passes recovery coverage, scope-aware retrieval, and hard-family recurrence proof', () => {
