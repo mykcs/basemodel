@@ -17,7 +17,7 @@ const chain = [
   <div class="mission-hero__copy">
     <h1 id="mission-title">{t('ALFWorld 与 WebShop 研究', 'ALFWorld and WebShop research')}</h1>
     <p class="mission-hero__lede">{t('我们把 SEED 和 OpenEvo 放进尽量相同的模型、任务、评分规则和训练预算里比较。只有这些条件对齐时，差异才算公平可比（matched comparison）；没有足够实验记录支持的“提升”，就不写成已经成立。','We compare SEED and OpenEvo with models, tasks, scoring rules, and training budgets matched as closely as possible. A difference counts as a fair matched comparison only when those conditions align; a “gain” without enough experiment evidence is not presented as established.')}</p>
-    {!compact && <div class="mission-hero__actions"><a class="button button-primary" href={p('/research/seed-openevo/flow/')}>{t('研究总览 →','Research overview →')}</a><a class="button button-secondary" href={p('/research/seed-openevo/study/results/')}>{t('研究结果','Research findings')}</a></div>}
+    {!compact && <div class="mission-hero__actions"><a class="button button-primary mission-hero__briefing-cta" href={p('/research/seed-openevo/study/briefing/')}>{t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')}</a><a class="button button-secondary" href={p('/research/seed-openevo/flow/')}>{t('研究总览','Research overview')}</a></div>}
   </div>
 
   <details class="mission-hero__secondary">

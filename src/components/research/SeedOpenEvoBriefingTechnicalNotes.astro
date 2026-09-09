@@ -14,6 +14,8 @@ const final7 = 'https://github.com/mykcs/openevo-experiment/pull/291';
 const final17 = 'https://github.com/mykcs/openevo-experiment/blob/main/docs/evidence/server-runs/2026-09-06/qwen3-1p7b-final-closeout/FINAL_ANALYSIS.json';
 const wandb7 = 'https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/runs/ceiling1-stage2-7b-202609041833-b01d24a468';
 const wandb17 = 'https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/runs/ceiling1-stage2-qwen3-1p7b-202609041833-4c1bb58e9f';
+const taskVectorPr358 = 'https://github.com/mykcs/openevo-experiment/pull/358';
+const parameterMeasurementPr317 = 'https://github.com/mykcs/openevo-experiment/pull/317';
 ---
 
 <article class="technical-notes" data-ui-audit="surface">
@@ -70,7 +72,7 @@ const wandb17 = 'https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/ru
     <div class="capacity-chain" aria-label={t('Text Memory 容量实验链', 'Text Memory capacity experiment chain')}>
       <div><strong>A1 · 2048</strong><p>{t('20 条记录的整理达到输出上限；同一批记录 repair 一次后仍可再次饱和。', 'Consolidating the 20 records can hit the output cap, and one repair pass on the same records can saturate again.')}</p></div><i>→</i>
       <div><strong>A1.1 · cap=4096 tokens</strong><p>{t('只把失败 repair 的输出上限翻倍，输入和分组不变；3B / 1.7B 仍然失败。', 'Only the failed repair output cap doubles; input and grouping stay fixed, and 3B / 1.7B still fail.')}</p></div><i>→</i>
-      <div><strong>A2 · 20 records → 10+10</strong><p>{t('这里的 20 统计记录数，区别于 token 数：20 条 primary 与同 20 条 repair 都饱和时才固定拆成 10+10，随后压缩并回并；最大分裂深度 1。', 'Here 20 counts records and is separate from tokens: only after the 20-item primary and the same 20-item repair both saturate do we split deterministically into 10+10, compress, and merge; max split depth is one.')}</p></div>
+      <div><strong>{t('第二种方案', 'Second plan')} · 20 records → 10+10</strong><p>{t('这里的 20 统计记录数，区别于 token 数：20 条 primary 与同 20 条 repair 都饱和时才固定拆成 10+10，随后压缩并回并；最大分裂深度 1。', 'Here 20 counts records and is separate from tokens: only after the 20-item primary and the same 20-item repair both saturate do we split deterministically into 10+10, compress, and merge; max split depth is one.')}</p></div>
     </div>
     <p>{t('这里的科学含义是容量失败的解释发生了变化；它没有声称“10+10 一定让最终分数更高”：单纯扩大容器不够，需要结构化、有限的分解。', 'The scientific claim is that the capacity-failure diagnosis changed. It does not claim that 10+10 necessarily raises the final benchmark score: a larger container alone was insufficient, so the successor uses structured, bounded decomposition.')}</p>
   </section>
@@ -81,6 +83,9 @@ const wandb17 = 'https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/ru
     <div class="equation">τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub> = Σ<sub>i</sub> δc<sub>i</sub>B<sub>i</sub>A<sub>i</sub></div>
     <p>{t('为了不把 7 个系数的欧氏距离误当成真实权重距离，我们使用组件之间的 Gram 矩阵 G：', 'To avoid treating Euclidean distance between seven coefficients as the true weight-space distance, we use the component Gram matrix G:')}</p>
     <div class="equation">‖τ‖<sub>F</sub> = √(δcᵀGδc) = 0.6082257746</div>
+    <p class="source"><a href={taskVectorPr358} target="_blank" rel="noreferrer"><ExternalBrandMark href={taskVectorPr358} /> PR #358 · R14 / R27 / R49 与 Frobenius 几何证据</a></p>
+    <p>{t('另一条参数分析线把这些方向放进更完整的 measurement pack：精确组件 Gram 重建、TaskVector cross-check、参数谱 / stable rank、principal parameter themes，以及 GPU replay-only causal ablation。它读取已经接受的参数状态，不回放正式训练，也不打开 final panel。', 'A separate parameter-analysis line places these directions in a fuller measurement pack: exact component-Gram reconstruction, TaskVector cross-checks, parameter spectra / stable rank, principal parameter themes, and GPU replay-only causal ablations. It reads accepted parameter states without replaying formal training or opening the final panel.')}</p>
+    <p class="source"><a href={parameterMeasurementPr317} target="_blank" rel="noreferrer"><ExternalBrandMark href={parameterMeasurementPr317} /> PR #317 · {t('参数 measurement pack 与机制分析', 'parameter measurement pack and mechanism analysis')}</a></p>
     <p>{t('基底包含 7 个 rank-8 SD-LoRA 组件。干预使用 λ∈{−1,0,0.5,1} 的有符号剂量，并加入 3 个与 τ 同 Frobenius 范数的随机方向。这样可以区分“这个方向有用”和“只要参数动得够多就会变”。', 'The basis contains seven rank-8 SD-LoRA components. Interventions use signed doses λ∈{−1,0,0.5,1} and three random directions with the same Frobenius norm as τ. This separates a direction-specific effect from generic parameter movement.')}</p>
     <div class="equation">θ′(λ) = θ<sub>R14</sub> + λτ</div>
     <p>{t('最多 9 组条件 × 64 个配对任务 = 576 条闭环轨迹。只有 +1.0τ 比三个同范数随机对照的中位数至少高 1.0 Task Score，同时完整成功不下降，才进入后续 1,536 条轨迹实验。', 'The cap is 9 conditions × 64 paired tasks = 576 closed-loop episodes. The follow-up 1,536-rollout experiment unlocks only if +1.0τ beats the median of the three norm-matched random controls by at least 1.0 Task Score without degrading exact success.')}</p>
@@ -89,9 +94,9 @@ const wandb17 = 'https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/ru
 
   <section>
     <h2>{t('5. Gated Delta Rule 与 DirectApply 到底只差什么', '5. What exactly differs between Gated Delta Rule and DirectApply')}</h2>
-    <p>{t('两条路线都会先训练出同类 SD-LoRA 候选 Δt。GDR（Gated Delta Rule）多一步准入判断：', 'Both routes first train the same kind of SD-LoRA candidate Δt. GDR (Gated Delta Rule) adds one admission decision:')}</p>
+    <p>{t('两条路线都会先训练出同类 SD-LoRA 候选 Δt。GDR = Gated Delta Rule：候选训练完成后，再跑固定的 16-task 短期 probe，由 task-score acceptance 决定接受或拒绝。', 'Both routes first train the same kind of SD-LoRA candidate Δt. GDR = Gated Delta Rule: after candidate training, a fixed 16-task short probe runs and task-score acceptance decides whether to accept or reject the candidate.')}</p>
     <div class="equation piecewise">θ<sub>t+1</sub> = θ<sub>t</sub> + Δ<sub>t</sub> &nbsp; {t('若接受', 'if accepted')}<br />θ<sub>t+1</sub> = θ<sub>t</sub> &nbsp; {t('若拒绝', 'if rejected')}</div>
-    <p>{t('DirectApply 去掉这一步否决：满足共同训练条件的候选直接进入后续模型。1.7B 的 44 个候选中只有 7 个被 GDR 接受，因此这是可能改变长期学习轨迹的机制变量，影响超过小实现差异。', 'DirectApply removes that veto: a candidate that satisfies the shared training conditions enters the next state directly. GDR admitted only 7 of 44 candidates in the 1.7B run, so this is a mechanism variable that can change the long-term learning trajectory.')}</p>
+    <p>{t('DirectApply 保留共同的数据合同、工程安全、determinism 与 SD-LoRA 训练条件；候选通过这些共同合同后直接进入后续模型，16-task task-score probe 不再拥有接受 / 拒绝决定权。1.7B 的 44 个候选中只有 7 个被 GDR 接受，因此这个准入差异可能改变长期学习轨迹。', 'DirectApply keeps the shared data contracts, engineering safety, determinism, and SD-LoRA training conditions. Once a candidate passes those shared contracts, it enters the next state directly; the 16-task task-score probe no longer has accept/reject authority. GDR admitted only 7 of 44 candidates in the 1.7B run, so this admission difference can change the long-term learning trajectory.')}</p>
     <p class="source"><a href={q17} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17} /> GDR / DirectApply diagnostic lineage</a></p>
   </section>
 
