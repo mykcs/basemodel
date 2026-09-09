@@ -73,6 +73,23 @@ A replacement provider `ERROR` must also be localized by **execution phase** bef
 - a docs/governance-only final candidate still runs `verify:deploy` when its explicit gate ref is created, but the browser planner may skip Chromium when the diff is proven non-UI;
 - a docs/governance-only change on `main` remains non-deploy-relevant and **must not publish a Production build**. This preserves the rule that changing `AGENTS.md` or `docs/agents/**` cannot replace the website Production artifact.
 
+### Fast human-review Preview lane
+
+Repeated visual review while a page, briefing, or slide deck is still being edited uses a separate **review-only** lane. Its purpose is latency, not acceptance:
+
+```text
+edit coherent UI/copy batch
+-> run the local/Agent static build
+-> package the already-built static output as a Vercel prebuilt artifact
+-> upload it to a dedicated non-Git-connected, non-Production review Preview surface
+-> give the owner the temporary Preview URL for inspection
+-> continue editing without moving `ci/vercel-gate-final`
+```
+
+The review Preview may omit `verify:deploy`, the canonical Chromium matrix, and the Lab gate because it is **not release evidence**. It must remain noindex/non-Production, must not change canonical Production identity, and must not be promoted or treated as a successful final candidate. Do not persist provider account IDs, opaque project/team IDs, bypass tokens, or temporary share URLs in repository files or PR/Issue prose.
+
+Use this lane by default when the owner asks to repeatedly see the page after small UI/copy/slide revisions. The moment the question changes from “does this look right?” to “can this merge/release?”, stop using review-Preview success as evidence and run the ordinary exact-current-base sequence: public GHA preflight, `request-vercel-final-gate.mjs`, required exact-head Vercel acceptance, then merge.
+
 ### Shared risk-aware browser gate: public GHA preflight + Vercel final
 
 Public GHA and Vercel use the same risk taxonomy. Public GHA provides the cheap parallel feedback lane; Vercel proves the exact final candidate in the deployment provider. Full/global public-GHA work is timing-balanced over four independent shards with one worker each; bounded work remains focused; unknown ownership fails closed. Vercel retains the required status and its own risk-based Chromium/Lab acceptance.
