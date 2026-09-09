@@ -26,11 +26,11 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/technical-notes/'");
   });
 
-  it('keeps a nineteen-slide deck with page numbers only on inner slides', () => {
-    expect((briefing.match(/<section /g) ?? []).length).toBe(19);
-    for (let page = 2; page <= 18; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 19`);
-    expect(briefing).not.toContain('01 / 19');
-    expect(briefing).not.toContain('19 / 19');
+  it('keeps a twenty-slide deck with page numbers only on inner slides', () => {
+    expect((briefing.match(/<section /g) ?? []).length).toBe(20);
+    for (let page = 2; page <= 19; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 20`);
+    expect(briefing).not.toContain('01 / 20');
+    expect(briefing).not.toContain('20 / 20');
     expect(briefing).not.toContain('class="slide-next"');
     expect(briefing).not.toContain('返回顶部');
   });
@@ -248,8 +248,27 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('数据合同、工程安全和 determinism 检查仍然保留');
     expect(briefing).toContain('候选 → 16-task probe → 接受 / 拒绝');
     expect(briefing).toContain('候选 → 共同合同通过 → 直接进入下一轮');
-    expect(briefing).toContain('冻结终评还没有封存');
+    expect(briefing).toContain('冻结终评仍未打开');
     expect(technical).toContain('16-task task-score probe 不再拥有接受 / 拒绝决定权');
+  });
+
+  it('shows the current No-GDR snapshot without promoting it to a frozen final', () => {
+    expect(sectionPosition('directapply')).toBeLessThan(sectionPosition('directapply-progress'));
+    expect(sectionPosition('directapply-progress')).toBeLessThan(sectionPosition('technical-work-summary'));
+    for (const item of [
+      'No-GDR 已跑完 R0–R76：76 个 SD-LoRA 候选都进入了后续模型',
+      '2026-09-10 01:00 SGT',
+      '77 rounds · 9,856 rollout',
+      '76 / 76',
+      '35 pass · 41 reject',
+      '41.83 → 52.58',
+      '1.046 → 0.133',
+      '0 accesses · —',
+      'shadow GDR 会拒绝其中 41 个',
+      '还不能回答“哪条路线最终 WebShop 更高”',
+      'current No-GDR controller authority · 7422ab54',
+    ]) expect(briefing).toContain(item);
+    expect(briefing).toContain('DirectApply 的最终 Score / Succ. 继续保持空白');
   });
 
   it('keeps engineering work as a simple summary immediately before the final choice', () => {
@@ -313,7 +332,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('keeps the scientific story in the requested causal order', () => {
-    const ids = ['results','openevo-method','stage2-gate','component-cap','seven-b','diagnostic-entry','horizon-diagnostic','capacity-diagnostic','training-dynamics','mechanism','gdr','one-seven-b','directapply','technical-work-summary','next'];
+    const ids = ['results','openevo-method','stage2-gate','component-cap','seven-b','diagnostic-entry','horizon-diagnostic','capacity-diagnostic','training-dynamics','mechanism','gdr','one-seven-b','directapply','directapply-progress','technical-work-summary','next'];
     const positions = ids.map(sectionPosition);
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect(positions).toEqual([...positions].sort((a, b) => a - b));
