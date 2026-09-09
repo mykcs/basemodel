@@ -157,6 +157,17 @@ current explicit owner instruction
 
 One page-specific correction must not silently become a universal law.
 
+### Owner instruction vs generic reviewer
+
+A generic blind/preference reviewer is evidence, not a higher authority than the owner. If a reviewer recommendation conflicts with an explicit current owner requirement:
+
+1. preserve the owner-required object;
+2. record the conflict as an **intentional owner override** rather than silently deleting the requirement;
+3. keep any independent valid concern from the review (for example terminology friction or weak visual hierarchy);
+4. do not manufacture a PASS by treating generic taste as task authority.
+
+This is not permission to bypass scientific/product truth. Executable truth and non-hideable scientific boundaries still outrank presentation preference.
+
 ## 7. Mandatory task-time Preference Brief
 
 For material user-facing copy/layout/design work, **do this before the first substantial draft**, not after a rejection:
@@ -223,6 +234,12 @@ The verifier fails when:
 - the receipt says the owner was shown the discarded internal variants.
 
 The point is not to make the owner choose among three drafts. The point is to use historical feedback to reject weak drafts **before** the owner sees them.
+
+### Evidence binds to the final artifact
+
+Candidate selection, screenshots, and judge receipts are evidence for a concrete artifact, not for a task name in the abstract. A material change after selection — scientific result/caveat, information hierarchy, composition, or other user-visible content that can change attention — invalidates the old rendered evidence. Re-render and rerun the relevant comparison/review, then bind the receipt to the final Git SHA / artifact identity.
+
+A non-semantic mechanical fix may use a narrower revalidation only when the current contract allows it, but the final receipt must still identify the final tree. Never cite screenshots from an earlier candidate as exact-head evidence for a materially changed version.
 
 ## 9. Two-phase cold read remains mandatory after generation
 
