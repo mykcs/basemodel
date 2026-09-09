@@ -31,6 +31,20 @@ describe('Agent scenario-trigger discovery', () => {
     expect(conversationCloseoutEntry).toContain('does **not** copy the protocol body');
   });
 
+  it('routes advisor briefings through live experiment authority and presentation-role checks', () => {
+    expect(registry).toContain('Advisor briefing / slides / projected-deck specialization');
+    expect(registry).toContain('the current website is publication state, not experiment-inventory authority');
+    expect(registry).toContain('engineering validity as a prerequisite rather than an automatic research highlight');
+    expect(registry).toContain('`HTML` is an implementation medium, not a visual-style reset');
+  });
+
+  it('binds provider writes to the intended object and changes surface after repeated mismatch', () => {
+    expect(principles).toContain('bind the target object to the exact mutation action/schema before dispatch');
+    expect(principles).toContain('open PR -> create_pull_request');
+    expect(principles).toContain('stop retrying that mutation surface');
+    expect(principles).toContain('`gh pr create` for opening a PR');
+  });
+
   it('protects the recurring high-cost situations from this project', () => {
     for (const trigger of [
       'TRIGGER: remembered plan or current doc may be stale',

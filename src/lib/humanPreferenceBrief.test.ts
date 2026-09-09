@@ -63,8 +63,9 @@ describe('human preference learning v2', () => {
     expect(brief.events.some((event) => event.id === 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT' && event.verdict === 'canonical')).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE')).toBe(false);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER' && reference.tier === 'silver')).toBe(true);
-    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
-    expect(brief.generationRules.join('\n')).toContain('Current-candidate visual references are still under review');
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-605-MERGED-REJECTED' && reference.tier === 'rejected')).toBe(true);
+    expect(brief.generationRules.join('\n')).toContain('No current-candidate visual is active for this scope');
   });
 
   it('retrieves the final briefing lessons for a different two-stage training talk before first draft', () => {
@@ -98,7 +99,8 @@ describe('human preference learning v2', () => {
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER')).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.tier === 'golden')).toBe(false);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE')).toBe(false);
-    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-605-MERGED-REJECTED')).toBe(true);
   });
 
   it('retrieves event-first headings and jargon boundaries for a paraphrased future research talk', () => {
@@ -140,6 +142,20 @@ describe('human preference learning v2', () => {
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-FUHUO-RECOVERY-ACTION-FIRST-CURRENT' && reference.tier === 'current-candidate')).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.tier === 'silver' || reference.tier === 'golden')).toBe(false);
     expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('复制 prompt / 命令') && boundary.includes('不是通用模板'))).toBe(true);
+  });
+
+
+  it('retrieves Apple cognition over surface imitation for a different site-design task', () => {
+    const brief = buildHumanPreferenceBrief({
+      scope: 'all-public-ui',
+      query: '重新设计科研工具首页、模型目录和论文入口；参考 Apple Developer 的信息设计，但不要照搬大留白、Hero 或字体皮肤，首屏还要保留必要证据。',
+    });
+    expect(brief.hardFailureFamilies).toContain('reference-surface-imitation');
+    expect(brief.events.map((event) => event.id)).toContain('EVENT-20260909-SITEWIDE-APPLE-SURFACE-REPEAT');
+    expect(brief.learnedPreferences.map(({ preference }) => preference.id)).toContain('PREF-FIRST-SCREEN-ATTENTION');
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-SITEWIDE-APPLE-SURFACE-REJECTED' && reference.tier === 'rejected')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.tier === 'silver' || reference.tier === 'golden' || reference.tier === 'current-candidate')).toBe(false);
+    expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('参考品牌') && boundary.includes('机械复制'))).toBe(true);
   });
 
   it('generates three internal candidate slots with screenshots required', () => {

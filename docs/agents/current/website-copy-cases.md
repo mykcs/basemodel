@@ -620,6 +620,8 @@
 
 **owner 的进一步纠正**：不要把“学 Apple”理解成大字、留白、圆角或营销式 hero。真正要学的是人机界面的认知假设：读者的时间和注意力都很少；设计要替读者先完成取舍。第一次看的人应在几秒内知道“这是什么、最重要的结果是什么、为什么值得继续看”，而不是先浏览一张信息清单。
 
+**2026-09-09 重复证据**：全站 cold read 再次发现同一机制以新形式返回：多个普通入口页把 `100svh` / 垂直居中 / 大块无语义空白、模板驱动的标题字体和实现细节优先误当成“attention-first”。owner 直接指出：`这个是因为我之前让 agent 模仿 Apple 开发者设计的思路，看来只模仿其形未模仿其神。` 这不是新的近义 CASE，而是 CASE-068 的重复纠正：**参考产品先抽“它怎样帮助人识别、分组、决定和继续”，再决定本站自己的视觉实现；不能把参考产品的表面构图当成认知原则本身。**
+
 **认可处理**：first-run 首屏只保留主题 `3B 和 7B 的第一轮实验` 与一个事实结果：`7B 持续更新参数，并完成最终测试；旧 3B 因购物接口和动作格式问题停止。` 主要入口直接指向两种模型各自发生了什么。五问式 orientation 仍保留，但降到原生 `<details>` 的 `实验信息`；任务/研究位置仍可见，但使用 compact context，不再与 H1 竞争。完整实验过程、数字、术语和历史证据继续留在正常文档流中。
 
 **边界**：这不是“越少越好”，也不是把关键科学 caveat 藏起来。会改变结论含义的证据边界、核心比较双方、当前状态和必要下一步必须默认可见。应该后置的是重复信息、可以从后文完整恢复的辅助 orientation、诊断历史和深层术语。Simplicity 的目标是 **exactly enough**，不是 minimalism。
@@ -1000,6 +1002,13 @@
 
 完整 signal-level coverage 与排除理由由 `src/data/humanFeedbackIngestionCloseouts.ts -> INGESTION-20260909-OPENEVO-BRIEFING` 持有，避免把“better / promising / accepted / canonical”再次压扁成二元喜欢/不喜欢。
 
+**2026-09-09 PR #605 最晚反馈补充**：在 PR #605 最后代码 head `56b5120…` 已经生成之后，owner 明确说：`这轮 hard-failure 不是“建议”，是必须修掉`。其中两条不能被 merge 状态覆盖：
+
+- `TaskVector 页面现在太像数学附录。` 主 deck 只保留 `v = θ_after − θ_before`、参数变化的 **norm**、更新方向的 **cosine** 和一句 faithful 科学判断；完整 Gram matrix、Frobenius geometry、R14/R27/R49、同范数随机对照、identifiability gate 下沉 `technical-notes`。这是对此前“机制页允许更硬核”的**更晚收窄**：技术深度保留，但主演讲只保留当前决策真正需要的最小数学量。
+- `不要把“科学尝试”页做成数字清单；应拆成几张 slide。` 这里不是全局禁止 checklist；而是当连续小实验如何排除解释本身就是研究能力证据时，主讲需要让每个关键问题/实验/结论获得足够空间，不能把因果推进压平为四个等权短语。
+
+这两条发生在 `56b5120…` 之后，而 PR #605 没有新的页面 commit 再处理它们。**Git merge 只能证明代码进入 main，不能倒推出 owner 接受了这版视觉/叙事。** 因此 HPL 里该 exact visual 必须记作 Rejected；此前 `670ab9b4…` 的 current-candidate 只保留为历史中间态，没有 Golden。
+
 <a id="case-083-案例库必须进入生成和验收闭环"></a>
 ### CASE-083 — 案例库必须改变下一次任务的生成与验收
 **PREFERENCE · PROCESS · 2026-09-08 · direct owner workflow feedback**
@@ -1117,4 +1126,4 @@ owner 说明：`虽然我的网站里其他页面画了有关 SEED 是怎么做�
 
 边界：数字和模型名当然可以出现在标题。比如 `44 个候选只有 7 个进入后续模型` 同时说清两端对象，数字本身就是科研发现。`GDR / SD-LoRA / Agent` 等真实技术对象也应准确保留。需要避免的是读者必须先猜 operands / 内部词义才能理解标题。
 
-本轮具体视觉方向中，“可能的疑问”浅红圆框、SEED 89.7 的浅灰 pill、目录后科学尝试总结页和后段技术工作总结页都只绑定 OpenEVO briefing；没有“以后全站照此模板”的授权。PR #605 exact head `670ab9b4…` 仍是 current-candidate，不得因进入 closeout 就升级成 Silver / Golden。
+本轮具体视觉方向中，“可能的疑问”浅红圆框、SEED 89.7 的浅灰 pill、目录后科学尝试总结页和后段技术工作总结页都只绑定 OpenEVO briefing；没有“以后全站照此模板”的授权。PR #605 的 `670ab9b4…` 是历史 current-candidate；后续 `56b5120…` 虽然进入 main，但 owner 在该 exact head 后仍点名两条 hard failure，因此 `56b5120…` 记为 Rejected，不得因 Git merge 升级成 Silver / Golden。

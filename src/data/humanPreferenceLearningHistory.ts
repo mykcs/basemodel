@@ -521,6 +521,34 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
   },
 
   {
+    id: 'EVENT-20260909-BRIEFING-TASKVECTOR-DETAIL-LAYER-REJECTED',
+    date: '2026-09-09',
+    caseIds: ['CASE-082'],
+    scopes: ['briefing', 'research-copy'],
+    artifact: 'OpenEVO summer review · PR #605 final merged head',
+    variantId: 'briefing-pr605-final-merged-rejected-56b5120',
+    verdict: 'rejected',
+    ownerSignal: '这轮 hard-failure 不是“建议”，是必须修掉：TaskVector 页面现在太像数学附录。主 deck 只保留 v = θ_after − θ_before、参数变化的 norm、更新方向的 cosine；完整 Gram matrix、Frobenius geometry、R14/R27/R49、random norm-matched controls、identifiability gate 全部下沉 technical-notes。',
+    reasons: ['主演讲只保留能支撑科研判断的最小技术量', '完整参数几何与可识别性推导仍然重要，但属于按需技术深度', 'merged Git state 不能覆盖更新更晚的真人拒绝'],
+    failureMechanisms: ['technical-detail-wrong-layer', 'internal-detail-promoted-to-primary-attention', 'missing-progressive-disclosure'],
+    requestedSuccessorVariantId: 'briefing-taskvector-v-norm-cosine-mainline',
+    evidence: { repository: 'mykcs/basemodel', route: '/research/seed-openevo/study/briefing/', pullRequest: 605, gitSha: '56b5120b22b6c709aaf485e3b1fdea348fb3041b', ledgerId: 'FB-S5-01-TASKVECTOR-DETAIL-LAYER' },
+  },
+  {
+    id: 'EVENT-20260909-BRIEFING-SCIENCE-CHECKLIST-REJECTED',
+    date: '2026-09-09',
+    caseIds: ['CASE-082'],
+    scopes: ['briefing', 'research-copy', 'visual'],
+    artifact: 'OpenEVO summer review · PR #605 final merged head',
+    variantId: 'briefing-pr605-final-merged-rejected-56b5120',
+    verdict: 'rejected',
+    ownerSignal: '不要把“科学尝试”页做成数字清单；应拆成几张 slide。',
+    reasons: ['科学主线本身是研究能力证据，不能被压成等权 checklist', '需要按“问题 → 最小实验 → 排除解释 → 下一问”让每个关键转折获得足够演讲空间'],
+    failureMechanisms: ['project-status-as-research-story', 'story-compression-hides-causal-sequence'],
+    requestedSuccessorVariantId: 'briefing-science-attempts-sequenced-slides',
+    evidence: { repository: 'mykcs/basemodel', route: '/research/seed-openevo/study/briefing/', pullRequest: 605, gitSha: '56b5120b22b6c709aaf485e3b1fdea348fb3041b', ledgerId: 'FB-S5-02-SCIENCE-ATTEMPTS-NOT-CHECKLIST' },
+  },
+  {
     id: 'EVENT-20260909-FUHUO-RECOVERY-TECHNICAL-FIRST',
     date: '2026-09-09',
     caseIds: ['CASE-068', 'CASE-086'],
@@ -549,6 +577,21 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     failureMechanisms: ['internal-detail-promoted-to-primary-attention'],
     requestedSuccessorVariantId: 'fuhuo-mac-remote-action-first-current-123fb5e',
     evidence: { repository: 'mykcs/fuhuo_20260419', route: '/docs/mac-remote', pullRequest: 21, gitSha: '4a7fdaf6d17cac6b825ffdd801951229d51fbfc0', ledgerId: 'FB-R05-TECHNICAL-FIRST-REJECTED' },
+  },
+  {
+    id: 'EVENT-20260909-SITEWIDE-APPLE-SURFACE-REPEAT',
+    date: '2026-09-09',
+    caseIds: ['CASE-068'],
+    scopes: ['all-public-ui', 'visual'],
+    artifact: 'BaseModel public gateway and reference-page family',
+    variantId: 'sitewide-reference-surface-imitation-84eca713',
+    verdict: 'rejected',
+    ownerSignal: '这个是因为我之前让 agent 模仿 Apple 开发者设计的思路，看来只模仿其形未模仿其神。',
+    reasons: ['此前已明确要求学习 Apple 的认知设计而不是视觉皮肤，但同一错误又以满屏 Hero、大块无语义留白和模板驱动视觉语言返回', '参考产品的视觉特征被直接当成目标，替代了对本站 reader task、mental model、grouping 与 progressive disclosure 的重新推导'],
+    failureMechanisms: ['reference-surface-imitation'],
+    repeatSignal: 'explicit',
+    requestedSuccessorVariantId: 'sitewide-cognition-first-reference-direction',
+    evidence: { repository: 'mykcs/basemodel', route: '/', gitSha: '84eca7135db376f5ffa539a9a7c78b1f64c86ca7', ledgerId: 'FB-SW02-APPLE-SURFACE-NOT-SPIRIT' },
   },
 
 ];
@@ -666,7 +709,7 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
   {
     id: 'TRAJECTORY-BRIEFING-STORYLINE-NATURAL-COPY-20260909',
     scopes: ['briefing', 'research-copy', 'visual'],
-    variantIds: ['briefing-diagnostic-intervention-first-0aa9693c', 'briefing-log-first-a83eb0da', 'briefing-storyline-human-causal-670ab9b4'],
+    variantIds: ['briefing-diagnostic-intervention-first-0aa9693c', 'briefing-log-first-a83eb0da', 'briefing-storyline-human-causal-670ab9b4', 'briefing-pr605-final-merged-rejected-56b5120'],
     comparisons: [
       {
         betterVariantId: 'briefing-log-first-a83eb0da',
@@ -681,7 +724,7 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
         failureMechanisms: ['compressed-shorthand-heading', 'presenter-language', 'meta-narration', 'jargon-memory-load'],
       },
     ],
-    note: '670ab9b4 是 PR #605 的 active current-candidate。owner 给出明确 successor 方向后启动 HPL closeout，但没有对该 exact visual 说 accepted / canonical；因此没有 canonicalVariantId，也不能成为 Golden。',
+    note: '670ab9b4 是 PR #605 的历史 current-candidate；后续 exact head 56b5120 进入 main，但 owner 在该 head 之后明确指出 TaskVector 技术层级和“科学尝试”checklist 仍是必须修掉的 hard failure。merge 不是 accepted evidence；56b5120 记为 Rejected，仍没有 canonicalVariantId / Golden。',
   },
   {
     id: 'TRAJECTORY-BRIEFING-EXPERIMENT-CHART-GRAMMAR-20260909',
@@ -726,6 +769,20 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
       },
     ],
     note: 'owner 明确拒绝 technical-first，并给出 action-first successor 方向；最终 123fb5e 实现该方向但 closeout 前没有新的具体接受/模板授权，因此仍是 current-candidate，不补写第二条“final > direction”比较，也没有 canonicalVariantId。',
+  },
+  {
+    id: 'TRAJECTORY-SITEWIDE-REFERENCE-DESIGN-20260909',
+    scopes: ['all-public-ui', 'visual'],
+    variantIds: ['sitewide-reference-surface-imitation-84eca713', 'sitewide-cognition-first-reference-direction'],
+    comparisons: [
+      {
+        betterVariantId: 'sitewide-cognition-first-reference-direction',
+        worseVariantId: 'sitewide-reference-surface-imitation-84eca713',
+        reason: 'owner 明确把旧全站方向概括为“只模仿其形未模仿其神”；CASE-068 已定义认可方向是 visibility / mental model / grouping / progressive disclosure，而不是复制 Apple 的大字、留白、圆角或 marketing hero。',
+        failureMechanisms: ['reference-surface-imitation'],
+      },
+    ],
+    note: '这是“被拒绝的具体视觉状态 → 明确要求的 successor 方向”的 trajectory。successor direction 尚未作为一个 owner-reviewed concrete visual 出现，因此没有 accepted/canonicalVariantId，也不创建 Silver/Golden/current-candidate 视觉引用。',
   },
 
 ];
@@ -817,7 +874,20 @@ export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
     pullRequest: 605,
     route: '/research/seed-openevo/study/briefing/',
     ownerEvidence: '该版本落实 low-score→logs→problems→interventions、自然事件标题、科学/技术工作分开总结和 composed-state 去黑话；owner 随后启动 HPL closeout，但没有对 exact visual 给出 accepted / canonical 语言。',
-    note: 'CURRENT-CANDIDATE，不是 Silver/Golden。浅红问题框、SEED 灰色 pill 等具体样式只记为本 briefing 的实现方向，不升级成全站视觉模板。',
+    note: '这是 PR #605 的历史 CURRENT-CANDIDATE，不是 Silver/Golden。后续 exact head 56b5120 已合并但仍被 owner 指出 hard failure，因此本候选已被后继 Rejected 视觉状态取代。',
+    supersededByReferenceId: 'VISUAL-BRIEFING-605-MERGED-REJECTED',
+  },
+  {
+    id: 'VISUAL-BRIEFING-605-MERGED-REJECTED',
+    tier: 'rejected',
+    scopes: ['briefing', 'visual', 'briefing-mobile', 'briefing-desktop'],
+    artifact: 'OpenEVO briefing · PR #605 merged head with unresolved owner hard failures',
+    repository: 'mykcs/basemodel',
+    gitSha: '56b5120b22b6c709aaf485e3b1fdea348fb3041b',
+    pullRequest: 605,
+    route: '/research/seed-openevo/study/briefing/',
+    ownerEvidence: 'owner 在 56b5120 之后明确说“这轮 hard-failure 不是建议，是必须修掉”，并点名 TaskVector 太像数学附录、科学尝试页不应是数字 checklist。',
+    note: 'Rejected。该 head 后来被合进 main 只说明 Git 状态变化，不构成 owner acceptance。没有新的页面 commit 解决这两条反馈；可用 exact SHA + route 重建视觉。',
   },
   {
     id: 'VISUAL-BRIEFING-604-ACCEPTED-SILVER',
@@ -855,6 +925,17 @@ export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
     route: '/docs/mac-remote',
     ownerEvidence: '该版本落实了“技术细节往下放、前几行先说处境和怎么办”的直接纠正；owner 随后进入 HPL closeout，但未对这个 exact visual 给出新的 accepted / canonical 语言。',
     note: 'CURRENT-CANDIDATE，不是 Silver/Golden。桌面和 390×844 手机截图曾在实现会话中检查，但未作为稳定仓库资产保留；exact SHA + route + viewport 足以重建。',
+  },
+  {
+    id: 'VISUAL-SITEWIDE-APPLE-SURFACE-REJECTED',
+    tier: 'rejected',
+    scopes: ['all-public-ui', 'visual'],
+    artifact: 'BaseModel public entry-page family · reference-surface imitation',
+    repository: 'mykcs/basemodel',
+    gitSha: '84eca7135db376f5ffa539a9a7c78b1f64c86ca7',
+    route: '/',
+    ownerEvidence: 'owner 直接说“这个是因为我之前让 agent 模仿 Apple 开发者设计的思路，看来只模仿其形未模仿其神”，并要求继续修改全站审计出的同类问题。',
+    note: 'Rejected 的是跨页面视觉机制，不是否定该 SHA 的每个像素：普通 Home / Models / Papers / Landscape / Guide / Workspace / Lab / Study 等入口把满屏居中、大块无语义留白、模板驱动字体或实现细节优先误当 attention-first。没有稳定截图进入仓库；可用 repo + exact SHA + 对应 routes + 1280×633 / 390×844 重建。此次 closeout 前没有 owner-reviewed successor，因此不升级 Silver / Golden / current-candidate。',
   },
 
 ];

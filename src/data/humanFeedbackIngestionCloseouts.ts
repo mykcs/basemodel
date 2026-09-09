@@ -34,12 +34,12 @@ export interface HumanFeedbackIngestionSourceWindow {
   start: string;
   end: string;
   route: string;
-  pullRequest: number;
+  pullRequest?: number;
   finalAcceptedHead?: string;
   mergedMainCommit?: string;
   finalOwnerVisibleHead?: string;
   mainAtCloseout?: string;
-  finalVerdict?: 'accepted' | 'current-candidate';
+  finalVerdict?: 'accepted' | 'current-candidate' | 'rejected';
 }
 
 export interface HumanFeedbackIngestionCloseoutRecord {
@@ -861,6 +861,77 @@ export const OPEN_EVO_BRIEFING_STORYLINE_INGESTION_20260909: HumanFeedbackIngest
 };
 
 
+
+export const OPEN_EVO_BRIEFING_FINAL_CLOSEOUT_INGESTION_20260909: HumanFeedbackIngestionCloseoutRecord = {
+  id: 'INGESTION-20260909-OPENEVO-BRIEFING-FINAL-CLOSEOUT',
+  schema: 'human-feedback-ingestion-closeout.v2',
+  task: 'OpenEVO briefing final conversation closeout after PR #605 merge: preserve post-head owner rejection and cumulative coverage',
+  sourceWindow: {
+    start: '2026-09-09T14:03:11Z · owner post-head hard-failure review',
+    end: '2026-09-09T14:16:50Z · PR #605 merged with no later page commit; closeout follows',
+    route: '/research/seed-openevo/study/briefing/',
+    pullRequest: 605,
+    finalOwnerVisibleHead: '56b5120b22b6c709aaf485e3b1fdea348fb3041b',
+    mainAtCloseout: 'edad8507de74fe3ead01512954c7355456e182de',
+    finalVerdict: 'rejected',
+  },
+  predecessorIngestionIds: ['INGESTION-20260909-OPENEVO-BRIEFING-STORYLINE'],
+  candidateFeedbackSignals: 3,
+  ledger: [
+    {
+      id: 'FB-S5-01-TASKVECTOR-DETAIL-LAYER',
+      date: '2026-09-09',
+      ownerSignal: '这轮 hard-failure 不是“建议”，是必须修掉：TaskVector 页面现在太像数学附录。主 deck 只保留 v = θ_after − θ_before、参数变化的 norm、更新方向的 cosine；完整 Gram matrix、Frobenius geometry、R14/R27/R49、random norm-matched controls、identifiability gate 全部下沉 technical-notes。',
+      disposition: 'ingest',
+      rationale: '这是比“机制页可以更技术”更晚、更窄的直接反馈：保留数学深度，但当前主演讲只保留支撑决策的最小量；完整参数几何下沉技术页。',
+      scopes: ['briefing', 'research-copy'],
+      eventIds: ['EVENT-20260909-BRIEFING-TASKVECTOR-DETAIL-LAYER-REJECTED'],
+      caseIds: ['CASE-082'],
+      preferenceIds: ['PREF-TECHNICAL-DEPTH-WITHOUT-META', 'PREF-PROGRESSIVE-DISCLOSURE'],
+      visualReferenceIds: ['VISUAL-BRIEFING-605-MERGED-REJECTED'],
+      excludedSubsignals: ['the exact scientific sentence about whether accumulated updates form one direction is project-specific evidence/copy and is not generalized into a universal preference'],
+    },
+    {
+      id: 'FB-S5-02-SCIENCE-ATTEMPTS-NOT-CHECKLIST',
+      date: '2026-09-09',
+      ownerSignal: '不要把“科学尝试”页做成数字清单；应拆成几张 slide。',
+      disposition: 'ingest',
+      rationale: '当连续实验如何排除解释本身就是研究能力证据时，一张等权 checklist 会压平因果推进；复用 PREF-RESEARCH-JUDGMENT，不新建全局“禁止 checklist”规则。',
+      scopes: ['briefing', 'research-copy', 'visual'],
+      eventIds: ['EVENT-20260909-BRIEFING-SCIENCE-CHECKLIST-REJECTED'],
+      caseIds: ['CASE-082'],
+      preferenceIds: ['PREF-RESEARCH-JUDGMENT'],
+      visualReferenceIds: ['VISUAL-BRIEFING-605-MERGED-REJECTED'],
+      excludedSubsignals: ['one-experiment-per-slide is a briefing-specific composition choice, not a universal public-page template'],
+    },
+    {
+      id: 'FB-S5-03-CLOSEOUT-FUTURE-AGENT-SUCCESS',
+      date: '2026-09-09',
+      ownerSignal: '未来完全不同的 Agent 在没有读过本对话的情况下，只依赖 current main，也应该能在第一次生成时明显更接近我的要求，并减少我重复纠正同一类问题的次数。',
+      disposition: 'merge-duplicate',
+      rationale: '再次强化 CASE-083 / PREF-FEEDBACK-LEARNING-LOOP；成功指标是未来首次生成与验收被历史偏好改变，不是 CASE 数量。',
+      scopes: ['workflow'],
+      caseIds: ['CASE-083'],
+      preferenceIds: ['PREF-FEEDBACK-LEARNING-LOOP'],
+      pairIds: ['PAIR-083-LEARNING-LOOP'],
+    },
+  ],
+  futureTaskQuery: '我要准备一场新的算法机制组会：有几条连续的负向诊断、小模型对照和参数方向分析；听众懂机器学习但不熟项目内部实现。机制里有参数差、范数、方向相似度和更深的矩阵推导；这些诊断彼此有因果先后，不能只压成一张项目总览。请设计第一版 slide 故事顺序、技术深度分层和 owner-review 前的验收重点。',
+  expectedRetrievedSignals: [
+    'latest-merged-briefing-is-rejected-not-accepted',
+    'taskvector-progressive-disclosure-latest',
+    'science-story-not-checklist',
+    'scientific-decision-chain',
+    'technical-depth-without-meta-performance',
+    'internal-detail-primary-attention',
+  ],
+  evaluationProof: {
+    hardFamily: 'internal-detail-promoted-to-primary-attention',
+    mechanism: 'candidate screening must reject a future mechanism briefing that omits the already-hard primary-attention family; latest TaskVector feedback adds a concrete technical-depth recurrence without inventing a synonym hard family',
+  },
+  automationGap: 'Conversation-to-ledger extraction is still manually interpreted because the repository has no direct ChatGPT turn-export API. This final record closes the segmented briefing source windows through predecessor lineage, adds a rejected final-owner-visible state because Git merge is not human acceptance, and requires cumulative coverage + future retrieval + evaluation-side recurrence rejection to pass fail-closed.',
+};
+
 export const FUHUO_MAC_RECOVERY_INGESTION_20260909: HumanFeedbackIngestionCloseoutRecord = {
   id: 'INGESTION-20260909-FUHUO-MAC-RECOVERY',
   schema: 'human-feedback-ingestion-closeout.v2',
@@ -942,10 +1013,96 @@ export const FUHUO_MAC_RECOVERY_INGESTION_20260909: HumanFeedbackIngestionCloseo
   automationGap: 'Conversation-to-ledger extraction is still manually interpreted because the repository has no direct ChatGPT turn-export API. This closeout adds scope-aware, cross-repository validation so the recorded ledger, current-candidate tier, future-task retrieval, and evaluation proof can be checked fail-closed without pretending the conversation extraction itself was automatic.',
 };
 
+export const SITEWIDE_APPLE_REFERENCE_INGESTION_20260909: HumanFeedbackIngestionCloseoutRecord = {
+  id: 'INGESTION-20260909-SITEWIDE-APPLE-REFERENCE',
+  schema: 'human-feedback-ingestion-closeout.v2',
+  task: 'BaseModel whole-site preference audit: Apple cognition over surface imitation',
+  sourceWindow: {
+    sourceRepository: 'mykcs/basemodel',
+    start: '2026-09-09 · owner asks to audit the whole website against the learned human preferences',
+    end: '2026-09-09 · owner identifies Apple surface imitation as the recurring cause, authorizes the sibling fixes, then invokes HPL closeout',
+    route: 'sitewide public UI: /, /models/, /papers/, /landscape/, /guide/, /workspace/, /lab/, /research/seed-openevo/study/',
+    finalOwnerVisibleHead: '84eca7135db376f5ffa539a9a7c78b1f64c86ca7',
+    mainAtCloseout: 'b0c809e6fa60b5836699bfe4311a5874c0e0aef7',
+    finalVerdict: 'rejected',
+  },
+  candidateFeedbackSignals: 5,
+  ledger: [
+    {
+      id: 'FB-SW01-WHOLE-SITE-PREFERENCE-AUDIT',
+      date: '2026-09-09',
+      ownerSignal: '你现在根据我总结的偏好，去看一看整个网页上还有没有哪些不符合我们现在这种标准或偏好的地方。',
+      disposition: 'merge-duplicate',
+      rationale: '强化既有 sibling/sitewide propagation：偏好不是只修被点名页面，未来 Agent 要用 learned mechanisms 主动扫描同类公开 surface。',
+      scopes: ['all-public-ui', 'workflow'],
+      caseIds: ['CASE-064', 'CASE-083'],
+      preferenceIds: ['PREF-FEEDBACK-LEARNING-LOOP'],
+      pairIds: ['PAIR-083-LEARNING-LOOP'],
+    },
+    {
+      id: 'FB-SW02-APPLE-SURFACE-NOT-SPIRIT',
+      date: '2026-09-09',
+      ownerSignal: '这个是因为我之前让 agent 模仿 Apple 开发者设计的思路，看来只模仿其形未模仿其神。',
+      disposition: 'ingest',
+      rationale: 'CASE-068 早已记录“Apple cognition ≠ visual skin”，但这次同一机制在多个普通入口页再次出现；因此补 V2 Event、Rejected visual、trajectory，并用 explicit repeat 把机制升级 hard，而不是再建一个近义 CASE。',
+      scopes: ['all-public-ui', 'visual'],
+      eventIds: ['EVENT-20260909-SITEWIDE-APPLE-SURFACE-REPEAT'],
+      caseIds: ['CASE-068'],
+      preferenceIds: ['PREF-FIRST-SCREEN-ATTENTION'],
+      visualReferenceIds: ['VISUAL-SITEWIDE-APPLE-SURFACE-REJECTED'],
+      excludedSubsignals: ['do not learn “Apple is forbidden”; the failure is copying surface styling without re-deriving the reader task and cognition'],
+    },
+    {
+      id: 'FB-SW03-CONTINUE-SIBLING-FIXES',
+      date: '2026-09-09',
+      ownerSignal: '其他的你提到的继续修改。',
+      disposition: 'merge-duplicate',
+      rationale: 'owner 接受本轮全站 cold-read 指出的同类偏离作为需要修复的对象：Study 的内部项目表达、Guide 的主持人 CTA、Papers/Landscape 的实现/数据维护先行，以及模板驱动视觉不一致；这些都已有 object-first / direct-facts / attention / progressive-disclosure / inline-terminology owner，不制造近义 family。',
+      scopes: ['all-public-ui'],
+      caseIds: ['CASE-061', 'CASE-063', 'CASE-068', 'CASE-069', 'CASE-070', 'CASE-071'],
+      preferenceIds: ['PREF-OBJECT-FIRST', 'PREF-DIRECT-FACTS', 'PREF-FIRST-SCREEN-ATTENTION', 'PREF-PROGRESSIVE-DISCLOSURE', 'PREF-INLINE-TERMINOLOGY'],
+    },
+    {
+      id: 'FB-SW04-FUTURE-FIRST-DRAFT-SUCCESS',
+      date: '2026-09-09',
+      ownerSignal: '未来完全不同的 Agent 在没有读过本对话的情况下，只依赖 current main，也应该能在第一次生成时明显更接近我的要求，并减少我重复纠正同一类问题的次数。',
+      disposition: 'merge-duplicate',
+      rationale: '再次强化 CASE-083 / PREF-FEEDBACK-LEARNING-LOOP；成功指标是未来 first draft 和 pre-owner-review evaluation 被历史偏好改变，而不是新增 CASE 数量。',
+      scopes: ['workflow'],
+      caseIds: ['CASE-083'],
+      preferenceIds: ['PREF-FEEDBACK-LEARNING-LOOP'],
+      pairIds: ['PAIR-083-LEARNING-LOOP'],
+    },
+    {
+      id: 'FB-SW05-CLOSEOUT-MERGE-CONDITION',
+      date: '2026-09-09',
+      ownerSignal: '如果全部验证通过，并且最终改动仅涉及 Human Preference Learning 资产、相关 Agent 文档、测试以及必要的 ingestion 工具，请完成 PR closeout 并合并进 main。',
+      disposition: 'task-fact-not-preference',
+      rationale: '这是本次 closeout 的执行授权/停止条件，不是可推广到公开网页视觉或文案的长期偏好。',
+      scopes: ['workflow'],
+      excludedSubsignals: ['本次要求的八项汇报格式、focused tests 和 merge 条件属于任务交付合同，不写成 UI 偏好或视觉模板'],
+    },
+  ],
+  futureTaskQuery: '我要重新设计一个科研工具网站的首页、模型目录和论文入口。团队想参考 Apple Developer 的信息设计，但页面同时有研究对象、筛选动作、证据说明和实现细节。请给首屏与视觉层级的第一版方案，既降低注意力切换，又保留必要技术深度，并说明哪些参考元素不能机械照搬。',
+  preferenceBrief: { scope: 'all-public-ui' },
+  expectedRetrievedSignals: [
+    'reference-surface-imitation-hard',
+    'apple-cognition-not-visual-skin',
+    'sitewide-reference-visual-rejected-only',
+  ],
+  evaluationProof: {
+    hardFamily: 'reference-surface-imitation',
+    mechanism: 'candidate screening must fail when a future public-UI draft does not explicitly check the repeated reference-surface-imitation family; the check is about re-deriving cognition and reader task, not banning Apple or any specific visual token',
+  },
+  automationGap: 'Conversation-to-ledger extraction is still manually interpreted because the repository has no direct ChatGPT turn-export API. This source window has no product PR, so the closeout records exact owner-visible Git state + sitewide route family instead of inventing a PR number; the ingestion schema now allows pullRequest to be absent when the protocol says it is unavailable.',
+};
+
 export const HUMAN_FEEDBACK_INGESTION_CLOSEOUTS = [
   OPEN_EVO_BRIEFING_INGESTION_20260909,
   OPEN_EVO_BRIEFING_SUCCESSOR_INGESTION_20260909,
   OPEN_EVO_BRIEFING_FINAL_SUCCESSOR_INGESTION_20260909,
   OPEN_EVO_BRIEFING_STORYLINE_INGESTION_20260909,
+  OPEN_EVO_BRIEFING_FINAL_CLOSEOUT_INGESTION_20260909,
   FUHUO_MAC_RECOVERY_INGESTION_20260909,
+  SITEWIDE_APPLE_REFERENCE_INGESTION_20260909,
 ];

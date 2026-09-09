@@ -482,18 +482,3 @@ This document intentionally omits as durable facts:
 - current experiment round/progress/GPU occupancy.
 
 Future Agents must query those live. Their omission is deliberate evidence-lifetime hygiene, not an incomplete retrospective.
-
-## 12. Late-session closeout delta and coverage ledger
-
-Coverage note: this conversation is longer than the verbatim context still available at closeout. This addendum cross-checks the accessible late turns against current repository evidence and the earlier sections above; it does not claim access to unseen chat text.
-
-| Feedback / failure | Repeated? | Reusable lesson | Canonical destination | Why there |
-| --- | --- | --- | --- | --- |
-| The reusable closeout prompt named a protocol path that did not exist inside BaseModel | New routing gap | A short trigger must resolve without creating a second mutable protocol | `docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md` navigation stub + scenario registry | Keeps the protocol single-owned in `openevo-experiment` while making the BaseModel-relative prompt executable |
-| A stale briefing candidate touched shared registries while `main` had newer unrelated rows | Yes: moving-main/shared-owner family | Reconcile shared owners entry-by-entry on current `main`; never recover one useful row by copying an older whole-file blob | `multi-pr-semantic-integration-playbook.md`; overlapping-PR trigger now routes there explicitly | The current playbook already owns this rule; the failure was discoverability/use-site routing, not missing policy |
-| Intentional copy rewrites left old literal test strings behind | Yes | Decide whether a string assertion protects a semantic/scientific invariant or only old wording; update the latter atomically with the copy | Existing §3.7 + executable copy tests | The guard caught the stale wording; adding another policy would duplicate an already-working defense |
-| Focused briefing tests passed before the full Gate exposed a shared navigation invariant | Yes: focused-PASS family | Focused green is preflight only; run the repository acceptance Gate on the integrated final tree | Existing §3.6 + `researchNavigation.test.ts` | The full Gate did exactly what it should; the narrow repair preserved the canonical route mapping and added the child-route alias separately |
-| A generic preference reviewer suggested changes that conflicted with explicit owner requirements | Yes | Preserve explicit owner-required objects as intentional exceptions while still fixing independent readability problems | Existing §6 + Human Preference Learning V2 | The second review cycle converged without deleting owner-required Agenda/TLDR/final advisor choice |
-| The first proposed closeout branch name was already owned by another worktree | Yes: unexpected-shared-state family | Treat a name collision as stop-and-read evidence; inspect ownership and choose a fresh ref instead of deleting/resetting unknown work | Root pre-mutation guard + current Agent principles | The existing concurrency rule worked; no new standing rule is needed |
-
-No transient PR head, Preview URL, PID, port, worktree path, provider queue state, or live experiment progress from this closeout is promoted to current policy or long-term memory.

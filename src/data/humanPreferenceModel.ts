@@ -83,15 +83,16 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
   {
     id: 'PREF-FIRST-SCREEN-ATTENTION',
     title: '一个首屏只承担一个主要理解任务',
-    statement: '字号、加粗、卡片、CTA、导航和 provenance 都在消耗注意力；第一屏应只有一个明显认知中心。',
+    statement: '字号、加粗、卡片、CTA、导航、空白和内容到达位置都在分配注意力；第一屏应只有一个明显认知中心。参考 Apple 等设计系统时，先转译它怎样帮助人识别、分组、决定和继续，再决定本站自己的视觉实现，不把品牌表面构图当成认知原则。',
     scopes: ['all-public-ui', 'research-ui', 'study', 'results', 'run', 'briefing', 'capability', 'recovery'],
     confidence: 'explicit-project',
     priority: 5,
-    retrievalTags: ['ADHD', '注意力', '认知负担', '首屏', '视觉中心', 'CTA', '信息密度'],
+    retrievalTags: ['ADHD', '注意力', '认知负担', '首屏', '视觉中心', 'CTA', '信息密度', 'Apple', '参考设计', '视觉皮肤', '留白', 'Hero', '100vh', '100svh', '垂直居中', '字体'],
     supportingCaseIds: ['CASE-068', 'CASE-069', 'CASE-086'],
     antiOvergeneralization: [
       '不是越少越好；必须默认可见的科学边界、比较双方和当前状态不能为了简洁被藏掉。',
       '首屏预算是报警器，不替代真人 cold read。',
+      '不是禁止留白、大标题、serif、圆角或一屏一页 presentation；当它们服务当前 reader task、分组、阅读节奏或真实 presentation 介质时可以使用，不能因为参考品牌用了就机械复制。',
     ],
   },
   {
@@ -150,6 +151,7 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     antiOvergeneralization: [
       '不是删除工程证据；当工程事实决定实验是否有效时，它就是科学叙事的一部分。',
       '不是要求按逐分钟日志复述历史；“先问题、后 intervention”指因果理解顺序，不是机械时间线。',
+      '可以有目录/总结页，但当“这些实验如何一步步排除解释”本身就是科研贡献时，不能只用一张等权 checklist 代替主线实验；是否拆页取决于它是否承载因果理解，而不是固定模板。',
     ],
   },
   {
@@ -165,6 +167,7 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
       '不是把公式加到每一页；只有公式、参数或阈值直接承担科研论证时才提高技术密度。',
       '不是删除深推导；主演讲保留理解科学判断所需的简式，完整推导可以进入相邻技术页。',
       '“更硬核”可以是内部设计目标，但不应成为面向老师的自我评价标签。',
+      '当前 OpenEVO TaskVector briefing 的最新 owner 边界是：主演讲只留 v = θ_after − θ_before、norm、cosine 和一条科学判断；Gram/Frobenius、R14/R27/R49、同范数随机对照与 identifiability 下沉 technical-notes。这个具体配方是 briefing-scoped 例子，不是所有机制页的公式数量上限。',
     ],
   },
   {

@@ -538,6 +538,10 @@ Record:
 - current exact SHA / PR if available;
 - final owner-visible candidate(s).
 
+When the source conversation has already been split across earlier closeouts, connect them through `predecessorIngestionIds` instead of copying old ledger rows into a new record. The final closeout must compute cumulative lineage coverage across the full predecessor DAG, reject duplicate ledger IDs / cycles / unresolved `ambiguous-hold`, and report the cumulative disposition counts. A segmented closeout is not complete merely because each window passes separately.
+
+`finalVerdict` follows the latest direct owner evidence about the exact owner-visible head, not repository state. `accepted` requires explicit concrete acceptance. A head may be `rejected` even if it was later merged, deployed, or marked green when newer direct owner feedback rejects that exact version and no successor implementation follows.
+
 ### Step 2 — build the coverage ledger
 
 List every candidate feedback turn and disposition it.
