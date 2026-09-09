@@ -15,8 +15,12 @@ let failed = false;
 for (const record of records) {
   const result = validateHumanFeedbackIngestionCloseout(record);
   console.log(JSON.stringify({
-    schema: 'human-feedback-ingestion-closeout-receipt.v1',
+    schema: record.schema === 'human-feedback-ingestion-closeout.v2'
+      ? 'human-feedback-ingestion-closeout-receipt.v2'
+      : 'human-feedback-ingestion-closeout-receipt.v1',
     id: record.id,
+    sourceState: record.sourceWindow.finalVerdict ?? 'accepted',
+    predecessorIngestionIds: record.predecessorIngestionIds ?? [],
     status: result.failures.length ? 'FAIL' : 'PASS',
     coverage: { total: record.ledger.length, ...result.dispositionCounts },
     hardFamilies: result.hardFamilies,

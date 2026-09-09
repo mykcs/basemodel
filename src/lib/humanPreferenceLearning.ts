@@ -80,7 +80,9 @@ export function retrieveHumanPreferenceContext(
       .join(' ')
       .toLowerCase();
     const explicitWorkflowCue = containsAny(normalized, ['反馈', '案例', '学习', 'judge', 'cold read', 'gold pair', 'preference model']);
+    const previewWorkflowCue = containsAny(normalized, ['preview', '预览', 'build', '构建', 'vercel', '网页草稿', '审阅', '迭代', '快速', '等待']);
     if (preference.activation === 'explicit-cues' && !explicitWorkflowCue) return { preference, score: 0 };
+    if (preference.activation === 'preview-cues' && !previewWorkflowCue) return { preference, score: 0 };
     let score = preference.priority;
     if (preference.scopes.includes('workflow') && explicitWorkflowCue) score += 12;
     for (const tag of preference.retrievalTags) if (normalized.includes(tag.toLowerCase())) score += 8;

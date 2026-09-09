@@ -1007,3 +1007,29 @@
 边界：这套系统不声称修改了模型权重，也不把 Agent 自评伪装成人类偏好测量。deterministic audit 保护已知 precedent；独立 Agent / 真人 cold read 检查注意力、自然度和阅读欲望；真正的人类反馈仍是最高价值的新训练样本。
 
 **2026-09-09 closeout 补充**：owner 的原始目标是 `我希望你能把这个库维护好，然后从这个库里学习，然后越来越变得更加聪明一些、更加符合我的要求一些。` 成功标准不是 CASE 数量，而是未来 Agent 第一版更接近、同一 failure family 的重复纠正次数下降。`先把这个工作流应用先落地，然后再应用` 是本次任务的执行顺序，归类为 task fact，不自动泛化成所有未来页面任务都要先修改偏好系统。
+
+
+<a id="case-084-负向诊断必须闭环到观察排除与下一步"></a>
+### CASE-084 — 负向诊断必须闭环到观察、排除与下一步
+**PREFERENCE · RESEARCH COPY · 2026-09-09 · repeated direct owner feedback**
+
+原始纠正一：`slide07写得还是有问题，你应该写出来，我们当时实际看了15、30步，都是在固定那几个动作打转，然后30步了还是打转，那我们就知道问题不在这里了，这个类型的细节要说出来。`
+
+原始纠正二：`slide07 你也没说这个问题我们怎么解决的`。
+
+规律：**负向实验不是“一个数字没变”就结束。主讲页至少要让人看到：观察到了什么行为 → 它排除了哪个解释 → 因此停止继续调什么 → 接下来转查什么。** 这里 `15→30` 的关键证据不是两个 0，而是两种 horizon 下都在同一小组动作间打转；所以能排除“只是步数不够”，固定 horizon 后转查 Text Memory / 参数更新。若这一步只解决了错误诊断，就明确说“解决的是错误诊断”，不要伪装成最终低分已经被治好。
+
+checkpoint/W&B 曲线属于同一个证据思想：连续轨迹可以帮助判断训练是否真正发生、是否有上涨趋势，但 `training loss`、训练过程的任务 Score、以及冻结 final eval 是不同测量层。**loss 降低不能被画成“最终能力正在收敛”的同义词；曲线只能排除它真正支持排除的简单解释。**
+
+
+<a id="case-085-人审preview与最终验收是两条工作流"></a>
+### CASE-085 — 人审 Preview 与最终验收是两条工作流
+**PREFERENCE · WORKFLOW · 2026-09-09 · explicit future-default owner instruction**
+
+摩擦：owner 在连续改 slide 时问 `每次build怎么这么久 能不能加快一点`。实测瓶颈不是 Astro 静态 build，而是每次人审修改都错误触发了完整最终浏览器验收，导致一个本应很短的视觉反馈回路被拉长。
+
+随后 owner 明确要求：`把这个规则合并到main或者怎么样 我希望以后都这样改`。
+
+认可流程：`coherent UI/copy/slide 修改 → 本地 static build → 非权威 prebuilt review Preview → owner 继续反馈`；只有候选真正 `merge-ready` 时，才进入 `exact-head Vercel final gate → merge/release`。
+
+规律：**“让我马上看到页面”与“证明这个 commit 可以发布”是两个不同任务。** 快速 Preview 是 canonical 的 BaseModel 人审工作流，但它永远不是 merge evidence；final gate、科学边界和 Production 门槛没有被削弱。这条是 workflow canonical，不是视觉 Golden。

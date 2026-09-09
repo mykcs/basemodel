@@ -23,6 +23,14 @@ describe('human preference learning loop', () => {
     expect(result.goldPairs.map(({ pair }) => pair.id)).toEqual(expect.arrayContaining(['PAIR-063-HEADING', 'PAIR-067-METAPHOR']));
   });
 
+  it('retrieves fast review Preview only when the task actually mentions iterative preview/build cues', () => {
+    const relevant = retrieveHumanPreferenceContext('反复改网页草稿 预览 build 太慢 Vercel 审阅', 'study-briefing', 10);
+    expect(relevant.preferences.map(({ preference }) => preference.id)).toContain('PREF-FAST-REVIEW-PREVIEW');
+    expect(relevant.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-085-FAST-REVIEW-PREVIEW');
+    const unrelated = retrieveHumanPreferenceContext('解释一个模型参数的数学定义', 'study-briefing', 10);
+    expect(unrelated.preferences.map(({ preference }) => preference.id)).not.toContain('PREF-FAST-REVIEW-PREVIEW');
+  });
+
   it('keeps workflow-learning feedback separate from surface aesthetics', () => {
     const result = retrieveHumanPreferenceContext('案例库 触类旁通 preference learning Gold Pair cold read judge');
     expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-FEEDBACK-LEARNING-LOOP');

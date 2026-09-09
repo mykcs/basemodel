@@ -105,6 +105,9 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
     visualReferences.some((reference) => reference.tier === 'golden')
       ? 'Golden visual references may be used as canonical visual anchors within their recorded scope.'
       : 'There is no Golden visual reference for this scope; do not claim an owner-approved template exists.',
+    visualReferences.some((reference) => reference.tier === 'current-candidate')
+      ? 'Current-candidate visual references are still under review; use them only as evidence of the live iteration state, never as accepted or Golden preference.'
+      : 'No current-candidate visual is active for this scope.',
     'For material user-facing work, internally produce 2–3 candidates, rank them pairwise against this brief, and show the owner only the selected candidate.',
     'For visual work, every internal candidate needs a screenshot reference before pairwise ranking.',
     'After generation, run the existing blind cold read before revealing preference evidence, then run the preference comparison/judge.',

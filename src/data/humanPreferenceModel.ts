@@ -30,7 +30,7 @@ export interface HumanPreferenceDimension {
   retrievalTags: string[];
   supportingCaseIds: HumanFeedbackCaseId[];
   antiOvergeneralization: string[];
-  activation?: 'explicit-cues';
+  activation?: 'explicit-cues' | 'preview-cues';
 }
 
 export interface HumanFeedbackGoldPair {
@@ -143,7 +143,7 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     confidence: 'repeated-explicit',
     priority: 5,
     retrievalTags: ['科研汇报', 'briefing', '研究问题', '状态流水账', '诊断', '排除解释', '下一问', 'Ceiling', 'Mechanism', 'Control'],
-    supportingCaseIds: ['CASE-082'],
+    supportingCaseIds: ['CASE-082', 'CASE-084'],
     antiOvergeneralization: [
       '不是删除工程证据；当工程事实决定实验是否有效时，它就是科学叙事的一部分。',
     ],
@@ -168,7 +168,7 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     title: '演讲构图按设备分工：桌面封顶，手机重排',
     statement: 'HTML briefing 在桌面端可以保留 capped 16:9 演讲画布；手机端优先适应窗口与可读性，不把固定 1280×720 画布强塞进窄屏。',
     scopes: ['briefing'],
-    confidence: 'page-specific',
+    confidence: 'repeated-explicit',
     priority: 4,
     retrievalTags: ['手机', 'mobile', '桌面', 'desktop', '16:9', '1280×720', '超宽屏', 'viewport', 'responsive'],
     supportingCaseIds: ['CASE-082'],
@@ -193,6 +193,38 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
       '不是声称模型权重被训练；这是仓库级 retrieval + evaluation 学习循环。',
     ],
   },
+  {
+    id: 'PREF-DIAGNOSTIC-CLOSURE',
+    title: '诊断实验要让观察、排除和处理形成闭环',
+    statement: '科研汇报里的负向或诊断实验应说明实际观察到了什么、它排除了哪个解释、因此停止继续调什么并转向哪个下一问；长期训练证据要区分优化 loss、训练过程任务表现和冻结终评。',
+    scopes: ['research-copy', 'briefing'],
+    confidence: 'repeated-explicit',
+    priority: 5,
+    retrievalTags: ['诊断', '负结果', '排除', '下一步', '解决', 'checkpoint', 'loss', 'W&B', '收敛', '训练曲线'],
+    supportingCaseIds: ['CASE-082', 'CASE-084'],
+    antiOvergeneralization: [
+      '不是每个负结果都必须声称“问题已经解决”；如果只排除了一个解释，就明确写“解决的是错误诊断”，再说明下一步。',
+      'training loss 下降不等于最终任务能力提高；在线 round score、优化 loss、冻结 final eval 必须保持不同证据层。',
+      '工程恢复可以解决流程卡死，但不能自动升级成 benchmark gain。',
+    ],
+  },
+  {
+    id: 'PREF-FAST-REVIEW-PREVIEW',
+    title: '迭代审阅走快速 Preview，最终验收只在 merge-ready 时运行',
+    statement: '用户还在反复看 UI/copy/slide 时，默认本地构建并上传非权威 prebuilt review Preview；只有候选真正准备 merge/release 时才触发 exact-head Vercel final gate。',
+    scopes: ['workflow'],
+    confidence: 'explicit-project',
+    priority: 4,
+    retrievalTags: ['Preview', '预览', 'build', '构建', 'Vercel', '网页草稿', '审阅', '迭代', '快速', '等待'],
+    supportingCaseIds: ['CASE-085'],
+    activation: 'preview-cues',
+    antiOvergeneralization: [
+      '快速 review Preview 只证明页面可供人检查，绝不能作为 merge evidence 或替代 exact-head final acceptance。',
+      '不是跳过必要的本地/focused 检查；省掉的是每次小改都重复运行最终全站验收。',
+      'Production、科学内容和最终发布边界不因 review Preview 变快而放宽。',
+    ],
+  },
+
 ];
 
 export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [
@@ -394,4 +426,27 @@ export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [
     failureMechanisms: ['passive-case-library', 'retrieval-not-executed', 'evaluation-not-updated'],
     ownerStatus: 'accepted',
   },
+  {
+    id: 'PAIR-084-DIAGNOSTIC-CLOSE-LOOP',
+    caseId: 'CASE-084',
+    preferenceIds: ['PREF-DIAGNOSTIC-CLOSURE', 'PREF-RESEARCH-JUDGMENT'],
+    scopes: ['briefing', 'research-copy'],
+    rejected: '15→30 仍然 0，所以 horizon 不是问题。',
+    accepted: '15 步和 30 步都在同几类动作间打转；多给 15 步没有改变行为，因此停止继续加步数，把“步数太少”从原因列表移除，转去检查 Text Memory 与后续更新机制。',
+    reason: 'owner 要求把真实行为细节和后续处理写出来；负结果的价值是缩小原因空间，而不是只留下一个 0 分。',
+    failureMechanisms: ['incomplete-scientific-decision-loop', 'diagnostic-conclusion-without-observed-evidence', 'diagnostic-result-without-next-action'],
+    ownerStatus: 'accepted',
+  },
+  {
+    id: 'PAIR-085-FAST-REVIEW-PREVIEW',
+    caseId: 'CASE-085',
+    preferenceIds: ['PREF-FAST-REVIEW-PREVIEW'],
+    scopes: ['workflow'],
+    rejected: '每次改一两句 slide 文案 → Vercel 最终 gate → 205 项 Chromium → 等数分钟再看页面',
+    accepted: '一组 coherent 修改 → 本地 build → prebuilt review Preview；真正 merge-ready 时再跑 exact-head Vercel final gate',
+    reason: 'owner 明确要求“以后都这样改”；把人审反馈回路和最终发布验收分开，既缩短等待又不降低最终门槛。',
+    failureMechanisms: ['final-gate-used-as-iterative-preview', 'duplicate-acceptance-work'],
+    ownerStatus: 'accepted',
+  },
+
 ];
