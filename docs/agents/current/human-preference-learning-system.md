@@ -301,6 +301,16 @@ It is:
 
 That is why a decorative pale bubble can be rejected while a dense TaskVector formula can be preferred on the mechanism slide.
 
+## End-of-conversation ingestion closeout
+
+When the owner asks to absorb a whole modification conversation, follow [`human-feedback-ingestion-closeout.md`](human-feedback-ingestion-closeout.md). The closeout source of truth is machine-readable: `src/data/humanFeedbackIngestionCloseouts.ts`. Validate a recorded closeout with:
+
+```bash
+npm run feedback:ingestion-closeout -- INGESTION-20260909-OPENEVO-BRIEFING
+```
+
+`src/lib/humanFeedbackIngestionCloseout.ts` verifies ledger coverage, structured references, verdict/tier boundaries, supersession, a real future-task Preference Brief, and an evaluation-side recurrence failure. Conversation → ledger semantic extraction is still Agent-interpreted because repository tooling cannot read ChatGPT conversation history directly; never call that part automatic ingestion.
+
 ## Ownership map
 
 - raw feedback history: `docs/agents/current/website-copy-cases.md`;
@@ -315,4 +325,6 @@ That is why a decorative pale bubble can be rejected while a dense TaskVector fo
 - blind/compare protocol: `feedback:cold-read`;
 - final preference judge: `src/lib/humanPreferenceJudge.ts` + `feedback:judge`;
 - deterministic integrity: structural tests + `audit:human-feedback`;
+- end-of-conversation coverage ledger: `src/data/humanFeedbackIngestionCloseouts.ts`;
+- closeout integrity + future-task retrieval + evaluation proof: `src/lib/humanFeedbackIngestionCloseout.ts` + `feedback:ingestion-closeout`;
 - rendered geometry: Reader Contract + browser gates.

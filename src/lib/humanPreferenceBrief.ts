@@ -12,6 +12,7 @@ import {
 import {
   retrieveHumanPreferenceContext,
   preferenceReviewContextForContract,
+  tokenizeHumanPreferenceQuery,
 } from './humanPreferenceLearning';
 
 export interface HumanPreferenceBriefInput {
@@ -34,15 +35,10 @@ export interface HumanPreferenceBrief {
 }
 
 const normalize = (value: string) => value.toLowerCase();
-const terms = (value: string) =>
-  normalize(value)
-    .split(/[\s,，。/|:：;；()（）\[\]【】→]+/)
-    .map((token) => token.trim())
-    .filter((token) => token.length >= 2);
 
 function relevanceScore(haystack: string, query: string): number {
   const normalized = normalize(haystack);
-  return terms(query).reduce((score, token) => score + (normalized.includes(token) ? 2 : 0), 0);
+  return tokenizeHumanPreferenceQuery(query).reduce((score, token) => score + (normalized.includes(token) ? 2 : 0), 0);
 }
 
 function inferredScope(contractId?: string): HumanPreferenceScopeV2 | undefined {
@@ -71,7 +67,7 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
     }))
     .filter(({ score }) => score > 0)
     .sort((a, b) => b.score - a.score || b.event.date.localeCompare(a.event.date))
-    .slice(0, 10)
+    .slice(0, 14)
     .map(({ event }) => event);
 
   const eventVariantIds = new Set(events.map((event) => event.variantId));

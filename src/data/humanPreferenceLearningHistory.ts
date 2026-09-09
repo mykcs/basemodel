@@ -1,5 +1,7 @@
 import type { HumanFeedbackCaseId } from './humanFeedbackPrecedents';
 
+export type HumanFeedbackEventId = `EVENT-${string}`;
+
 export type HumanFeedbackVerdict =
   | 'rejected'
   | 'better'
@@ -15,10 +17,12 @@ export type HumanPreferenceScopeV2 =
   | 'research-copy'
   | 'briefing'
   | 'results'
-  | 'visual';
+  | 'visual'
+  | 'briefing-mobile'
+  | 'briefing-desktop';
 
 export interface HumanFeedbackEvent {
-  id: `EVENT-${string}`;
+  id: HumanFeedbackEventId;
   date: string;
   caseIds: HumanFeedbackCaseId[];
   scopes: HumanPreferenceScopeV2[];
@@ -30,6 +34,9 @@ export interface HumanFeedbackEvent {
   reasons: string[];
   failureMechanisms: string[];
   repeatSignal?: 'explicit';
+  supersedesEventIds?: HumanFeedbackEventId[];
+  requestedSuccessorVariantId?: string;
+  evidence?: { route?: string; pullRequest?: number; gitSha?: string; ledgerId?: string };
 }
 
 export interface PreferenceTrajectoryComparison {
@@ -133,8 +140,20 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     verdict: 'rejected',
     ownerSignal: '这个问题以前在普通网页就说过；无意义英文小标题增加人的认知负担。',
     reasons: ['删掉英文眉题不损失对象身份或技术定义', '中文观众被迫多做一次解码'],
-    failureMechanisms: ['meaningless-english-eyebrow', 'attention-tax'],
+    failureMechanisms: ['meaningless-english-eyebrow', 'attention-tax', 'internal-detail-promoted-to-primary-attention'],
     repeatSignal: 'explicit',
+  },
+  {
+    id: 'EVENT-20260908-DEFENSIVE-NEGATION-OPENING',
+    date: '2026-09-08',
+    caseIds: ['CASE-081'],
+    scopes: ['briefing', 'research-copy'],
+    artifact: 'OpenEVO advisor briefing',
+    variantId: 'briefing-defensive-negation-opening',
+    verdict: 'rejected',
+    ownerSignal: '不要一上来就用“不是 / 不能 / 不要”反驳读者；先说发生了什么、我们做了什么。',
+    reasons: ['防御性否定把作者姿态放在事实之前', '科学边界应贴着真正受约束的 claim'],
+    failureMechanisms: ['defensive-negation-opening', 'anticipatory-rebuttal'],
   },
   {
     id: 'EVENT-20260908-DECORATIVE-BUBBLES',
@@ -158,7 +177,7 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     verdict: 'rejected',
     ownerSignal: '工程严谨性、SHA 和重复性是实验成立的默认前提，不应该单独占一页当科研亮点；感兴趣的人再去技术子页看。',
     reasons: ['主演讲时间应该用于会改变科学问题的判断', '工程证据应渐进披露而不是与科研亮点等权'],
-    failureMechanisms: ['engineering-as-science-highlight', 'mainline-rigor-tax', 'missing-progressive-disclosure'],
+    failureMechanisms: ['engineering-as-science-highlight', 'mainline-rigor-tax', 'missing-progressive-disclosure', 'internal-detail-promoted-to-primary-attention'],
     repeatSignal: 'explicit',
   },
   {
@@ -175,17 +194,32 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     failureMechanisms: ['project-status-as-research-story', 'chronology-with-scientific-judgment'],
   },
   {
+    id: 'EVENT-20260908-FIXED-DECK-ALL-DEVICES',
+    date: '2026-09-08',
+    caseIds: ['CASE-082'],
+    scopes: ['briefing', 'visual', 'briefing-mobile', 'briefing-desktop'],
+    artifact: 'OpenEVO summer review',
+    variantId: 'briefing-fixed-16-9-all-devices',
+    verdict: 'accepted',
+    ownerSignal: '这里因为是展示 slides，我会刻意做成标准 PowerPoint 的长宽比，反而不做屏幕适配。',
+    reasons: ['当时明确要求固定演讲构图，不随设备重排'],
+    failureMechanisms: ['presentation-composition-vs-responsive-reading'],
+    evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 569, ledgerId: 'FB-18-FIXED-16-9-ALL-DEVICES' },
+  },
+  {
     id: 'EVENT-20260909-PARAMETER-TITLE-AND-MOBILE-FIT',
     date: '2026-09-09',
     caseIds: ['CASE-082'],
-    scopes: ['briefing', 'research-copy', 'visual'],
+    scopes: ['briefing', 'research-copy', 'visual', 'briefing-mobile', 'briefing-desktop'],
     artifact: 'OpenEVO summer review',
-    variantId: 'briefing-chronology-responsive-refinement',
-    comparedToVariantId: 'briefing-chronology-science-story',
+    variantId: 'briefing-chronology-science-story',
     verdict: 'better',
-    ownerSignal: '整体效果比上一版好多了；参数数字不要放在标题里营造冲击力，手机端要适应窗口，桌面端保持有上限的演讲画布。',
-    reasons: ['自然语言结论应先于具体参数数字', '手机可读性优先于固定 16:9 构图', '桌面演讲画布不应随超宽屏无限扩张'],
-    failureMechanisms: ['numeric-shock-heading', 'mobile-fixed-canvas-overflow', 'unbounded-desktop-scaling'],
+    ownerSignal: '目前整体效果比上一版好多了；2048~4096 不要放标题，直接说“我们把记忆容量翻倍了”，具体参数放正文加粗；手机端适应窗口，电脑端不要随超宽屏无限放大。',
+    reasons: ['自然语言主题应先于实现参数数字', '手机可读性优先于固定 16:9 画布', '桌面演讲画布应保持有上限'],
+    failureMechanisms: ['numeric-shock-heading', 'mobile-fixed-canvas-overflow', 'unbounded-desktop-scaling', 'internal-detail-promoted-to-primary-attention'],
+    supersedesEventIds: ['EVENT-20260908-FIXED-DECK-ALL-DEVICES'],
+    requestedSuccessorVariantId: 'briefing-responsive-final-89fe1190',
+    evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 569, gitSha: '1ca186d42279424f8c848d54cbdc62e5a6342444', ledgerId: 'FB-19-PARAMETER-TITLE-PHONE-DESKTOP-SPLIT' },
   },
   {
     id: 'EVENT-20260908-MECHANISM-DEPTH',
@@ -198,6 +232,34 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     ownerSignal: 'TaskVector、范数和参数机制这里可以稍微硬核，加入 LaTeX 公式和详细数据。',
     reasons: ['降低认知负担不等于删除能证明研究设计的数学细节'],
     failureMechanisms: ['scientific-depth-preserved'],
+  },
+  {
+    id: 'EVENT-20260909-TECHNICAL-DEPTH-WITHOUT-META',
+    date: '2026-09-09',
+    caseIds: ['CASE-082'],
+    scopes: ['briefing', 'research-copy'],
+    artifact: 'OpenEVO summer review',
+    variantId: 'briefing-mechanism-technical-metric',
+    comparedToVariantId: 'briefing-mechanism-math-depth',
+    verdict: 'better',
+    ownerSignal: '“这里可以更硬核一点”我们自己知道就行，没有必要向老师展示；可以换成“我们采用一个更技术性的指标”。GDR 只放简单公式，更硬核的推导单独放 BaseModel 子网页。',
+    reasons: ['技术深度应由公式和数据本身体现，不需要 meta 自我评价', '主演讲保留理解科学判断所需的简式，完整推导渐进披露'],
+    failureMechanisms: ['meta-technical-performance', 'technical-detail-wrong-layer'],
+    evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 569, ledgerId: 'FB-12-MECHANISM-DEPTH-WITHOUT-META-HARDCORE' },
+  },
+  {
+    id: 'EVENT-20260909-BRIEFING-FINAL-ACCEPTED',
+    date: '2026-09-09',
+    caseIds: ['CASE-082'],
+    scopes: ['briefing', 'research-copy', 'visual', 'briefing-mobile', 'briefing-desktop'],
+    artifact: 'OpenEVO summer review',
+    variantId: 'briefing-responsive-final-89fe1190',
+    comparedToVariantId: 'briefing-chronology-responsive-refinement',
+    verdict: 'accepted',
+    ownerSignal: '继续推进 OpenEVO 夏季汇报的 BaseModel PR #569：如果 Vercel 和 GitHub Actions 都通过，就直接合并到 main；如果有失败，先修复后再合并。',
+    reasons: ['对通过最终 gate 的具体 PR 版本给出了明确合并授权', '该授权接受具体结果，但没有要求把这一视觉版本作为未来通用模板'],
+    failureMechanisms: [],
+    evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 569, gitSha: '89fe1190d0f92909f6da40b9a47ea75c9f45d2d5', ledgerId: 'FB-24-FINAL-MERGE-AUTHORIZATION' },
   },
 ];
 
@@ -212,9 +274,10 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
       'briefing-engineering-gate-highlight',
       'briefing-decorative-bubbles',
       'briefing-mechanism-math-depth',
+      'briefing-mechanism-technical-metric',
       'briefing-rigor-mainline',
       'briefing-chronology-science-story',
-      'briefing-chronology-responsive-refinement',
+      'briefing-responsive-final-89fe1190',
     ],
     comparisons: [
       {
@@ -230,16 +293,10 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
         failureMechanisms: ['overlearned-minimalism'],
       },
       {
-        betterVariantId: 'briefing-mechanism-math-depth',
+        betterVariantId: 'briefing-mechanism-technical-metric',
         worseVariantId: 'briefing-engineering-gate-highlight',
-        reason: '机制公式和定量对照直接展示科研设计；普通工程修复本身不构成科研亮点。',
-        failureMechanisms: ['missing-scientific-meaning'],
-      },
-      {
-        betterVariantId: 'briefing-chronology-responsive-refinement',
-        worseVariantId: 'briefing-chronology-science-story',
-        reason: '用户明确说整体更好，但要求数字退出冲击式标题，同时手机端响应窗口、桌面端保持有上限的演讲画布。',
-        failureMechanisms: ['numeric-shock-heading', 'mobile-fixed-canvas-overflow', 'unbounded-desktop-scaling'],
+        reason: '机制公式和定量对照直接展示科研设计；普通工程修复本身不构成科研亮点，技术深度也不需要“更硬核”元话术。',
+        failureMechanisms: ['missing-scientific-meaning', 'meta-technical-performance'],
       },
       {
         betterVariantId: 'briefing-chronology-science-story',
@@ -247,11 +304,30 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
         reason: '按科学问题演进讲负向实验与设计转折，比单独展示工程严谨性更能说明研究能力。',
         failureMechanisms: ['mainline-rigor-tax', 'chronology-with-scientific-judgment'],
       },
+      {
+        betterVariantId: 'briefing-responsive-final-89fe1190',
+        worseVariantId: 'briefing-chronology-science-story',
+        reason: 'owner 对 chronology 版给出“好多了”但明确提出参数标题与手机/桌面修正；这些修正进入 89fe1190，随后该 exact-head 获得条件式合并授权并合入 main。',
+        failureMechanisms: ['numeric-shock-heading', 'mobile-fixed-canvas-overflow', 'unbounded-desktop-scaling'],
+      },
     ],
-    note: '没有 canonicalVariantId：owner 只给过“好多了 / 更接近”的中间反馈，不能升级成最终模板。',
+    note: '最终 PR #569 的具体结果 accepted；但 owner 没有说“以后按这版 / 作为模板”，所以没有 canonicalVariantId，也没有 Golden 视觉模板。',
+  },
+  {
+    id: 'TRAJECTORY-BRIEFING-DEVICE-SCOPE-20260909',
+    scopes: ['briefing', 'visual', 'briefing-mobile', 'briefing-desktop'],
+    variantIds: ['briefing-fixed-16-9-all-devices', 'briefing-responsive-final-89fe1190'],
+    comparisons: [
+      {
+        betterVariantId: 'briefing-responsive-final-89fe1190',
+        worseVariantId: 'briefing-fixed-16-9-all-devices',
+        reason: '较新的 owner 指令只在手机 scope 覆盖旧的全设备固定画布规则：手机重排；桌面仍保持 capped 16:9。',
+        failureMechanisms: ['mobile-fixed-canvas-overflow', 'unbounded-desktop-scaling'],
+      },
+    ],
+    note: 'scope-specific supersession：历史规则保留，current authority 是 phone reflow + desktop capped composition。',
   },
 ];
-
 export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
   {
     id: 'VISUAL-BRIEFING-DENSE-REJECTED',
@@ -261,7 +337,7 @@ export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
     gitSha: '49ab2665ee7131dec7484063fd132198655da792',
     route: '/research/seed-openevo/study/briefing/',
     ownerEvidence: '用户明确报告注意力涣散、心烦意乱。',
-    note: '可 checkout 该 SHA 重建截图；不要把卡片墙和等权重信息块作为默认美学。',
+    note: '不要把卡片墙和等权重信息块作为默认美学；可用 SHA 重建。',
   },
   {
     id: 'VISUAL-BRIEFING-SOFT-SILVER',
@@ -284,18 +360,28 @@ export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
     note: '认知负担低 != 极简主义。',
   },
   {
-    id: 'VISUAL-BRIEFING-CURRENT-CANDIDATE',
-    tier: 'current-candidate',
+    id: 'VISUAL-BRIEFING-CHRONOLOGY-SILVER',
+    tier: 'silver',
     scopes: ['briefing', 'visual'],
-    artifact: 'fixed 16:9 advisor briefing candidate',
+    artifact: 'scientific-chronology briefing before responsive refinement',
+    gitSha: '1ca186d42279424f8c848d54cbdc62e5a6342444',
     pullRequest: 569,
-    gitSha: 'caa35d010d16ce13fca12d23fec0bd7585397107',
     route: '/research/seed-openevo/study/briefing/',
-    ownerEvidence: '当前候选，尚未获得 owner 最终通过。',
-    note: '必须继续以 current-candidate 对待；只有明确“OK/可以/按这个标准”后才能创建 golden reference。',
+    ownerEvidence: '用户说“目前整体效果比上一版好多了”，同时继续提出参数标题与手机/桌面修正。',
+    note: '明确 better，因此是 Silver；后续仍有纠正，所以不是 accepted / Golden。',
+  },
+  {
+    id: 'VISUAL-BRIEFING-FINAL-ACCEPTED-SILVER',
+    tier: 'silver',
+    scopes: ['briefing', 'visual', 'briefing-mobile', 'briefing-desktop'],
+    artifact: 'responsive OpenEVO summer review final result',
+    pullRequest: 569,
+    gitSha: '89fe1190d0f92909f6da40b9a47ea75c9f45d2d5',
+    route: '/research/seed-openevo/study/briefing/',
+    ownerEvidence: 'owner 明确授权：exact-head 的 GitHub Actions 与 Vercel 通过后直接合并；随后 PR #569 已合入 main。',
+    note: '具体结果 accepted，但没有未来模板授权，所以仍是 Silver 而不是 Golden。桌面 capped 16:9，手机按窗口重排。',
   },
 ];
-
 export function failureFamilySeverity(failureMechanism: string): FailureFamilySeverity {
   const events = HUMAN_FEEDBACK_EVENTS.filter((event) => event.failureMechanisms.includes(failureMechanism));
   if (events.some((event) => event.repeatSignal === 'explicit') || events.length >= 3) return 'hard';

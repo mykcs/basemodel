@@ -14,12 +14,31 @@ import {
   type HumanPreferenceScope,
 } from '../data/humanPreferenceModel';
 
-const tokenize = (value: string) =>
-  value
+const commonCjkNgrams = new Set([
+  '我们', '这个', '可以', '不要', '一个', '然后', '就是', '如果', '已经', '现在', '这里', '还是', '进行',
+]);
+
+export const tokenizeHumanPreferenceQuery = (value: string) => {
+  const segments = value
     .toLowerCase()
     .split(/[\s,，。/|:：;；()（）\[\]【】→]+/)
     .map((token) => token.trim())
     .filter((token) => token.length >= 2);
+  const tokens = new Set<string>(segments);
+  for (const segment of segments) {
+    for (const run of segment.match(/[\p{Script=Han}]{2,}/gu) ?? []) {
+      for (const width of [2, 3, 4]) {
+        if (run.length < width) continue;
+        for (let index = 0; index <= run.length - width; index += 1) {
+          const gram = run.slice(index, index + width);
+          if (width === 2 && commonCjkNgrams.has(gram)) continue;
+          tokens.add(gram);
+        }
+      }
+    }
+  }
+  return [...tokens];
+};
 
 const containsAny = (haystack: string, tokens: string[]) => tokens.some((token) => haystack.includes(token));
 
@@ -37,7 +56,7 @@ export function retrieveHumanPreferenceContext(
   limit = 8,
 ): HumanPreferenceRetrievalResult {
   const normalized = query.toLowerCase();
-  const tokens = tokenize(query);
+  const tokens = tokenizeHumanPreferenceQuery(query);
   const boundCases = new Set<HumanFeedbackCaseId>(
     (contractId ? READER_CONTRACT_PRECEDENTS[contractId] : []) as HumanFeedbackCaseId[],
   );
@@ -74,7 +93,7 @@ export function retrieveHumanPreferenceContext(
   })
     .filter(({ score }) => score > 4)
     .sort((a, b) => b.score - a.score || b.preference.priority - a.preference.priority)
-    .slice(0, 6);
+    .slice(0, Math.min(limit, 10));
 
   const preferenceIds = new Set(preferences.map(({ preference }) => preference.id));
   const goldPairs = HUMAN_FEEDBACK_GOLD_PAIRS.map((pair) => {
@@ -86,7 +105,7 @@ export function retrieveHumanPreferenceContext(
   })
     .filter(({ score }) => score > 0)
     .sort((a, b) => b.score - a.score || a.pair.id.localeCompare(b.pair.id))
-    .slice(0, 6);
+    .slice(0, Math.min(limit, 10));
 
   return { query, contractId, cases, preferences, goldPairs };
 }
