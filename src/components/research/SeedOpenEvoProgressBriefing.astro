@@ -108,8 +108,8 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
 
   <section id="science-attempts" class="briefing-slide tone-blue" aria-labelledby="science-attempts-title">
     <div class="slide-inner summary-slide">
-      <h2 id="science-attempts-title">{t('这一轮我们真正改过、验证过的实验方法', 'Experimental methods we actually changed and tested')}</h2>
-      <p class="slide-thesis">{t('这页先把主线摊开：我们没有只报一个最后分数，而是在每个低分节点去查原因，再用小实验把错误解释逐个排掉。', 'This slide lays out the main line: instead of reporting only one final score, we checked each low-score point and used small experiments to eliminate wrong explanations one by one.')}</p>
+      <h2 id="science-attempts-title">{t('我们不是只跑一次实验，而是一步步换问题去验证', 'We did not just run one experiment; we kept changing the question and testing it')}</h2>
+      <p class="slide-thesis">{t('每次分数低或训练卡住，我们先看日志和轨迹，再做一个最小改动。下面四件事是主线上的科学尝试。', 'Whenever scores were low or training stalled, we first checked logs and traces, then made one minimal change. These four items are the scientific attempts in the main story.')}</p>
       <ol class="summary-list">
         <li><span>01</span><strong>{t('修正长期训练的更新门槛', 'fix the long-run update gate')}</strong><p>{t('旧规则让训练跑很久却 0 次参数更新；修正后，7B 才能真正进入长期学习。', 'The old rule let training run for a long time with zero parameter updates; after the fix, 7B could truly enter long-run learning.')}</p></li>
         <li><span>02</span><strong>{t('做一次 7B 长周期训练', 'run one long 7B training line')}</strong><p>{t('看训练曲线、loss 和冻结终评是否一致，避免只看最后一个分数。', 'Compare training curves, loss, and frozen final results instead of relying on one final number.')}</p></li>
@@ -163,8 +163,8 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
   </section>
   <section id="openevo-method" class="briefing-slide tone-green" aria-labelledby="openevo-method-title">
     <div class="slide-inner method-slide">
-      <h2 id="openevo-method-title">{t('后来那条 7B 长跑，每轮不是只改一个 adapter', 'The later 7B long run was not just one adapter being changed')}</h2>
-      <p class="slide-thesis">{t('最早的 7B Stage 1 只是收集 1,440 条原始 WebShop 轨迹；后来跑到 49.33 的 Ceiling-1.0 7B，已经不是裸模型，也不是只多了一个 adapter。它每轮会同时更新四类东西：Text Memory、Skill Bundle、Agent System 和 SD-LoRA。MiniMax 只在第一阶段任务结束后回看轨迹，不替 Qwen 搜索或点击；进入第二阶段以后，不再持续调用外部老师。', 'The earliest 7B Stage 1 only collected 1,440 raw WebShop trajectories. The later Ceiling-1.0 7B run that ended at 49.33 was no longer a bare model or a single added adapter. Each round updated four things together: Text Memory, Skill Bundle, Agent System, and SD-LoRA. MiniMax reviewed completed trajectories only after Stage 1; it never searched or clicked for Qwen, and Stage 2 no longer called an external teacher continuously.')}</p>
+      <h2 id="openevo-method-title">{t('后来那条 7B 长跑，每轮会同时更新几类东西', 'The later 7B long run updated several kinds of state each round')}</h2>
+      <p class="slide-thesis">{t('最早的 7B Stage 1 只是收集 1,440 条原始 WebShop 轨迹；后来跑到 49.33 的 Ceiling-1.0 7B，已经不是裸模型，也不是只多了一组参数。它每轮会同时更新四类东西：Text Memory、Skill Bundle、Agent System 和 SD-LoRA。MiniMax 只在第一阶段任务结束后回看轨迹，不替 Qwen 搜索或点击；进入第二阶段以后，不再持续调用外部老师。', 'The earliest 7B Stage 1 only collected 1,440 raw WebShop trajectories. The later Ceiling-1.0 7B run that ended at 49.33 was no longer a bare model or a single parameter adapter. Each round updated four things together: Text Memory, Skill Bundle, Agent System, and SD-LoRA. MiniMax reviewed completed trajectories only after Stage 1; it never searched or clicked for Qwen, and Stage 2 no longer called an external teacher continuously.')}</p>
       <div class="method-stage-grid">
         <article>
           <header><span>Stage 1</span><strong>{t('先把 1,440 条学生轨迹变成一个可学习的起点', 'Turn 1,440 student trajectories into a learnable starting state')}</strong></header>
@@ -386,7 +386,7 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
   <section id="technical-work-summary" class="briefing-slide tone-paper" aria-labelledby="technical-work-title">
     <div class="slide-inner summary-slide tech-summary-slide">
       <h2 id="technical-work-title">{t('这些技术工作没有占主线，但它们让实验能跑、能查、能复现', 'Engineering work stayed out of the main claim, but made the experiment runnable and auditable')}</h2>
-      <p class="slide-thesis">{t('这页只说明基础设施做了哪些保障，让老师知道：低分不能简单归因为实验没有跑起来。', 'This slide explains the infrastructure safeguards, so low scores are not simply attributed to the experiment failing to run.')}</p>
+      <p class="slide-thesis">{t('这些工作不直接当科研亮点，但它们让低分不能简单归因为“实验根本没跑起来”。', 'This work is not presented as the research highlight, but it prevents low scores from being dismissed as the experiment simply not running.')}</p>
       <ol class="summary-list technical-summary-list">
         <li><span>01</span><strong>{t('动作接口与 parser', 'action interface and parser')}</strong><p>{t('把无效动作、解析失败、repair 记录成可审计指标，不能只凭感觉说“环境坏了”。', 'Track invalid actions, parsing failures, and repairs as auditable metrics instead of guessing that the environment broke.')}</p></li>
         <li><span>02</span><strong>{t('checkpoint、W&B、Hugging Face 归档', 'checkpoint, W&B, and Hugging Face archival')}</strong><p>{t('训练过程、loss、候选更新和可恢复资产分开保存，方便事后重放与核对。', 'Keep training curves, losses, candidate updates, and recoverable assets separately archived for replay and verification.')}</p></li>

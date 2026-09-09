@@ -88,7 +88,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('adds a one-slide OpenEVO Stage 1 → Stage 2 mental model for the live audience', () => {
-    expect(briefing).toContain('后来那条 7B 长跑，每轮不是只改一个 adapter');
+    expect(briefing).toContain('后来那条 7B 长跑，每轮会同时更新几类东西');
     expect(briefing).toContain('Stage 1');
     expect(briefing).toContain('180 个 WebShop 任务 × 每题 8 次完整尝试');
     expect(briefing).toContain('MiniMax 1,440 / 1,440');
@@ -239,11 +239,13 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(finalSlide).toContain('想请老师和学长判断优先级');
     expect(finalSlide).not.toContain('W&B + HF + checkpoint 归档');
     expect(finalSlide).not.toContain('composed state');
+    expect(briefing).toContain('训练跑了很久，但参数一次都没有更新');
+    expect(briefing).toContain('后来那条 7B 长跑，每轮会同时更新几类东西');
     expect(finalSlide).not.toContain('15 / 15');
   });
 
   it('keeps meaningless English eyebrows and decorative bubbles out of the deck', () => {
-    for (const token of ['OpenEVO · SEED × WebShop', '>AGENDA<', '>RESULTS<', '>QUESTION<', '>DESIGN<', '>MECHANISM<', '老师很可能会问', '钩子：', 'composed state']) expect(briefing).not.toContain(token);
+    for (const token of ['OpenEVO · SEED × WebShop', '>AGENDA<', '>RESULTS<', '>QUESTION<', '>DESIGN<', '>MECHANISM<', '老师很可能会问', '钩子：', 'composed state', '这页先', 'This slide lays out', 'This slide explains']) expect(briefing).not.toContain(token);
     const h2Titles = [...briefing.matchAll(/<h2[^>]*>\{t\('([^']+)'/g)].map((match) => String(match[1] ?? ''));
     expect(h2Titles.some((title) => /^(7B|1\.7B|3B)：/.test(title))).toBe(false);
     expect(briefing).not.toContain('.briefing-slide::before');
