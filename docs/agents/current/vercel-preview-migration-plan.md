@@ -18,8 +18,8 @@ This path remains only because `src/lib/vercelBuildBudget.test.ts` and `src/lib/
 
 ## Compatibility assertions retained for the existing tests
 
-The main saving comes from reducing provider-triggering ref updates, not from assuming canceled jobs are free. Ordinary working PR refs are disabled. For the persistent final gate, `ci/vercel-gate-base` records live `main` and `ci/vercel-gate-final` records the exact candidate; browser scope is computed from that pair so unrelated prior PRs do not create false-full runs. `VERCEL_GIT_PREVIOUS_SHA` remains relevant to ordinary `main`/Production ignored-build decisions. The full build-budget policy is owned by `deployment-policy.md`.
+Ordinary working PR refs remain disabled in Vercel because required CI now runs in public GitHub Actions. When an optional provider Preview is explicitly requested, `ci/vercel-gate-base` records live `main` and `ci/vercel-gate-final` records the exact candidate; browser scope is computed from that pair so unrelated prior PRs do not create false-full runs. `VERCEL_GIT_PREVIOUS_SHA` remains relevant to ordinary `main`/Production ignored-build decisions. The full build-budget policy is owned by `deployment-policy.md`.
 
-Historical providers are not ordinary report dimensions. Ordinary completion reporting is Vercel-first unless a legacy provider is explicitly part of the task or unexpectedly activates.
+Historical providers are not ordinary report dimensions. Ordinary completion reporting starts with required `public-ci-gate`, then reports Vercel Production separately; an optional Preview appears only when one was actually requested.
 
 Temporary Vercel share access is ephemeral: never persist a share URL or `_vercel_share` parameter in repository files, PR/Issue bodies, or GitHub comments.

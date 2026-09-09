@@ -249,7 +249,7 @@ A broad model-data audit is complete only when:
 6. family current pointers use internal model IDs correctly;
 7. concrete critical fields have field-level evidence or precise semantic unknowns;
 8. deterministic deployment Gates pass;
-9. when deployment-sensitive work requires hosted acceptance under current repository policy, the exact final PR head receives a successful Vercel Preview; docs/governance-only work may be legitimately skipped by the current build-scope rules;
+9. the exact current-base PR head receives successful required `public-ci-gate`; when deployment-sensitive review specifically needs a real provider-rendered candidate, request and verify an exact-head Vercel Preview separately; docs/governance-only work need no Vercel Preview by default;
 10. the PR is merged without weakening the research-integrity contract.
 
 “Added a few recent model names” is not a full-catalog audit.

@@ -1,6 +1,6 @@
 # Exact-head release closeout protocol
 
-Last reviewed: **2026-09-08**
+Last reviewed: **2026-09-09**
 
 Status: **current**
 Audience: coding Agents, review Agents, integration Agents, release Agents
@@ -15,11 +15,15 @@ The historical cases that motivated these rules include `../history/2026-08-17-p
 
 A previously valid report becomes historical evidence when the PR head changes or when the intended merge base changes materially.
 
-## 0. Keep working refs cheap; request hosted acceptance explicitly
+## 0. Required CI is automatic; Vercel Preview is explicit and optional
 
-Before the first branch/ref mutation, read `branch-and-pr-conventions.md` and executable `vercel.json` / `scripts/vercel-ignore-build.mjs`. Branch prefixes express semantic ownership; ordinary working branches are intentionally not Vercel deployment triggers.
+Before the first branch/ref mutation, read `branch-and-pr-conventions.md`, the live ruleset, `.github/workflows/public-pr-ci.yml`, and executable Vercel configuration. Branch prefixes express semantic ownership; they do not choose merge authority.
 
-When a PR is genuinely ready for hosted acceptance, run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`; it pins the non-deploy base ref to live `main` and then moves the existing persistent `ci/vercel-gate-final` ref to the **exact current PR head SHA**. The gate ref is an execution alias only: no extra commit, cherry-pick, or rewritten tree is allowed. Once the gate ref reaches Vercel, the Ignored Build Step fails open because it cannot safely prove PR identity; `[vercel-preview]` is not an executable acceptance switch. If the exact candidate SHA has no Vercel acceptance object after the persistent gate ref update, inspect integration/provider state rather than manufacturing probe commits or creating another alias ref.
+Every ordinary PR receives required public GitHub Actions CI. Merge acceptance is `public-ci-gate=SUCCESS` on the exact PR head while it remains current with protected `main`.
+
+A Vercel Preview is separate provider/human-review evidence. Only when a real Vercel-rendered candidate or provider-specific diagnosis is useful, run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`; it pins the non-deploy base ref to live `main` and moves existing `ci/vercel-gate-final` to the exact PR head SHA. The Preview ref is an execution alias only: no extra commit, cherry-pick, or rewritten tree is allowed. `[vercel-preview]` is not an executable switch.
+
+Do not manufacture probe commits or new alias refs because an optional Preview did not appear; inspect the integration/provider state instead.
 
 ## 1. Resolve the acceptance identity first
 
@@ -30,8 +34,9 @@ PR number
 current head SHA
 current intended base branch + base SHA
 changed files / shared surfaces
-provider deployment SHA
-required Gate/browser evidence
+required check name + bound SHA + terminal state
+provider deployment SHA only when Preview/deployment evidence is in scope
+required deterministic/browser evidence
 ```
 
 If a report names an older head, do not “carry forward” its green result by assumption.
@@ -237,7 +242,7 @@ This is the same ownership principle as escaped-regression wiring: **a test that
 
 A successful GitHub status context is not sufficient when the provider can report success for an ignored/skipped deployment. Read the owning provider object and classify its actual state.
 
-For BaseModel Vercel Preview acceptance:
+For an explicitly requested BaseModel Vercel Preview:
 
 ```text
 GitHub context = success
@@ -248,7 +253,7 @@ AND the required build path actually executed
 
 `CANCELED`, ignored build, or policy skip is **SKIPPED BY POLICY**, not a product Preview PASS. This remains true when the outer GitHub `Vercel` context is green.
 
-For every gate Preview that is intentionally triggered, `scripts/vercel-ignore-build.mjs` must continue into real acceptance without relying on `VERCEL_GIT_PULL_REQUEST_ID`; that variable was absent at the ignore step in a real open-PR deployment. `[vercel-preview]` is not a build/skip requirement. A PR acceptance claim still requires the required build path to have executed on the exact candidate SHA; a green outer status attached to an ignored/canceled provider object is not equivalent evidence.
+For every gate Preview that is intentionally triggered, `scripts/vercel-ignore-build.mjs` must continue into real acceptance without relying on `VERCEL_GIT_PULL_REQUEST_ID`; that variable was absent at the ignore step in a real open-PR deployment. `[vercel-preview]` is not a build/skip requirement. A **Vercel Preview acceptance** claim requires the real Preview build path to have executed on the exact candidate SHA; a green outer provider status attached to an ignored/canceled object is not equivalent Preview evidence. This optional Preview evidence does not replace or define required `public-ci-gate` merge authority.
 
 Do not add provider exceptions to compensate for a release-topology mistake. Fix the candidate topology so the provider sees the intended product diff and the intended opt-in on the same acceptance identity.
 
@@ -310,7 +315,8 @@ Right before merge, re-read live state and require all applicable conditions to 
 ```text
 PR head == accepted exact head
 intended base has not moved materially since final validation
-provider status == success/READY for accepted head
+required public-ci-gate == SUCCESS for accepted head
+provider status == success/READY only when explicit provider acceptance is part of this closeout
 PR is mergeable
 required review threads are resolved
 required Gate/browser evidence is still the accepted run
@@ -393,8 +399,8 @@ accepted PR head
 Verify:
 
 - Production built the intended merge/main SHA;
-- normal Production Gate/build succeeded;
-- conditional browser gates either execute or skip exactly according to the **current designed boundary**; any gate explicitly required on `main` must actually execute and may not be counted as passed when skipped;
+- `verify:deploy` and the real Production build succeeded;
+- the Production browser wrapper reports the **current designed boundary**: duplicate Chromium/Lab is intentionally skipped on `VERCEL_ENV=production`, while a Preview/unknown environment must still execute its provider browser gates;
 - representative changed routes return and render successfully;
 - canonical/hreflang/robots/sitemap/discovery are checked when the change can affect them.
 
@@ -500,7 +506,7 @@ was the deployment READY / ERROR / CANCELED / ignored?
 is the GitHub status callback describing a real deployment or only provider status state?
 ```
 
-A non-PR Preview intentionally skipped by deployment policy is a **policy outcome**, not a provider outage. An open PR is expected to produce an automatic Vercel acceptance path; absence of that path is therefore an actionable integration/policy defect, not something to paper over with a no-op commit.
+A Preview intentionally absent because no explicit provider review was requested is a **policy outcome**, not a provider outage. Ordinary PR acceptance is expected from public GitHub Actions. Only after `ci/vercel-gate-final` is intentionally moved should absence of the corresponding Vercel Preview be treated as an integration/provider defect.
 
 Do not create no-op commits/ref mutations merely to probe whether Git integration will “wake up”. Shared repository state is not a provider-discovery scratchpad; use provider/repository reads first.
 

@@ -120,13 +120,13 @@ Keep strict reproduction, method reproduction, modern rerun, diagnostic evidence
 
 Read:
 
-- [`current/ci-provider-decision.md`](current/ci-provider-decision.md) — why BaseModel uses final-candidate-only Vercel instead of always-on CircleCI / GitHub Actions / Cloudflare CI; read before proposing a provider migration
+- [`current/ci-provider-decision.md`](current/ci-provider-decision.md) — why BaseModel uses required public GitHub Actions CI, Vercel Production/on-demand Preview, Cloudflare smoke, and manual CircleCI/Mac fallbacks; read before proposing a provider migration
 - [`current/hosting-architecture.md`](current/hosting-architecture.md)
 - [`current/deployment-policy.md`](current/deployment-policy.md)
 - [`current/release-closeout-protocol.md`](current/release-closeout-protocol.md)
 - [`current/multi-pr-semantic-integration-playbook.md`](current/multi-pr-semantic-integration-playbook.md) when PRs overlap or ship together
 
-Vercel owns ordinary Preview and Production. Historical Vercel pilot/adoption records are under `history/`; Cloudflare files in `current/` are conditional rollback/provider-specific runbooks, not normal release authority.
+Public GitHub Actions owns ordinary required PR CI. Vercel owns Production and optional provider/human Previews. Historical Vercel pilot/adoption records are under `history/`; Cloudflare files in `current/` are conditional rollback/provider-specific runbooks except for the active monitoring-only production-smoke Worker.
 
 For provider/browser performance incidents, use the dated retrospective that matches the failure after reading the current policy. For Vercel billing, `Overdue`, unexplained Build CPU, or spend-reduction work, read [`history/2026-08-28-vercel-billing-and-cost-control-retrospective.md`](history/2026-08-28-vercel-billing-and-cost-control-retrospective.md). For internal `src/pages/_*` modules being mistaken for public routes, Preview `READY` with skipped browser gates, or a Production changed-route smoke failure caused by route derivation, read [`history/2026-08-27-home-maintenance-shortcuts-release-retrospective.md`](history/2026-08-27-home-maintenance-shortcuts-release-retrospective.md).
 

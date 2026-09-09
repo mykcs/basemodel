@@ -22,6 +22,8 @@ describe('Vercel production deployment architecture', () => {
   const sitemap = readText('../../src/pages/sitemap.xml.ts');
   const buildCloudflare = readText('../../scripts/build-cloudflare.mjs');
   const dependabot = readText('../../.github/dependabot.yml');
+  const publicPrWorkflow = readText('../../.github/workflows/public-pr-ci.yml');
+  const vercelBrowserGates = readText('../../scripts/vercel-browser-gates.mjs');
   const playwright = readText('../../playwright.config.ts');
   const ogCover = readText('../../public/og-cover.svg');
   const packageJson = readJson<{ scripts: Record<string, string> }>('../../package.json');
@@ -31,7 +33,7 @@ describe('Vercel production deployment architecture', () => {
     github?: { autoJobCancelation?: boolean };
   }>('../../vercel.json');
 
-  it('uses Vercel as primary CI while retaining CircleCI and Mac as manual fallbacks', () => {
+  it('uses public GitHub Actions as primary CI while retaining Vercel deployment and manual fallbacks', () => {
     const workflowFiles = existsSync(workflowsDir) ? readdirSync(workflowsDir).filter((name) => /\.ya?ml$/i.test(name)) : [];
     expect(workflowFiles).toEqual(['public-pr-ci.yml', 'self-hosted-ci.yml']);
     expect(circleCiConfig).not.toContain('pr_cloud_ci:');
@@ -183,10 +185,14 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerDockerfile).toContain('sha256sum -c -');
   });
 
-  it('runs provider-owned deterministic and browser acceptance inside the Vercel build command', () => {
-    expect(vercelConfig.buildCommand).toBe('npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs');
-    expect(vercelConfig.buildCommand).toContain('vercel-ui-gate');
-    expect(vercelConfig.buildCommand).toContain('vercel-lab-browser-gate');
+  it('keeps required browser CI in public GHA and skips duplicate Vercel Production browser work', () => {
+    expect(publicPrWorkflow).toContain('name: public-ci-gate');
+    expect(publicPrWorkflow).toContain('needs: [deterministic, browser]');
+    expect(vercelConfig.buildCommand).toBe('npm run verify:deploy && npm run build && node scripts/vercel-browser-gates.mjs');
+    expect(vercelBrowserGates).toContain("env.VERCEL_ENV !== 'production'");
+    expect(vercelBrowserGates).toContain("run('scripts/vercel-ui-gate.mjs')");
+    expect(vercelBrowserGates).toContain("run('scripts/vercel-lab-browser-gate.mjs')");
+    expect(vercelBrowserGates).toContain('skip duplicate Vercel Chromium/Lab execution');
     expect(readText('../../scripts/ci-ui-gate.mjs')).toContain('const ciInfrastructureChanged');
     expect(readText('../../scripts/ci-ui-gate.mjs')).toContain("file.startsWith('.github/runner/')");
   });

@@ -37,7 +37,7 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 **Automatic response:**
 
 1. For normal deployment read `hosting-architecture.md`, `deployment-policy.md`, and `release-closeout-protocol.md`.
-2. Treat Vercel as the only ordinary Preview + Production authority.
+2. Treat public GitHub Actions `public-ci-gate` as ordinary required merge CI. Treat Vercel as the only ordinary Production provider; Preview is explicit/on-demand provider or human-review evidence.
 3. Load Cloudflare runbooks only when the task explicitly needs rollback, retirement, Cloudflare-specific fidelity, or fresh evidence shows legacy-provider activity.
 4. Do not intentionally trigger a Cloudflare Pages Git build unless the owner is told why Cloudflare-specific execution is necessary and explicitly authorizes it.
 5. If Cloudflare Direct Upload is the required fallback, use `direct-upload-preview-policy.md` and `direct-upload-preview-command.md`; never silently substitute a Git-connected Pages build because credentials are missing.

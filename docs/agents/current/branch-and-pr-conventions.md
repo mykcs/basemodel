@@ -43,23 +43,23 @@ Do not create new branches such as `chatgpt/*`, `claude/*`, or `codex/*` merely 
 | `review/` | Temporary review/salvage work; do not treat it as a long-lived release line. |
 | `agent/` | Work whose subject is Agent automation, Agent policy, or an Agent-owned release mechanism. Do **not** use it merely because an Agent created the branch. |
 
-The prefix is not determined only by the file extension. A Markdown change can still be `research/*` if it is part of a research release that must receive an exact-head Preview.
+The prefix is not determined only by the file extension. A Markdown change can still be `research/*` when it belongs to a research release. Vercel Preview eligibility is independent and now optional.
 
-## BaseModel deployment exception: final-gate refs have executable meaning
+## BaseModel deployment exception: Vercel refs are optional Preview controls
 
-Current `vercel.json` deliberately keeps ordinary working branches out of Vercel. Branch prefixes such as `research/`, `fix/`, `docs/`, and `agent/` remain semantic/readability conventions; hosted acceptance is requested separately by moving the persistent `ci/vercel-gate-final` ref to the exact final PR head SHA.
+Current `vercel.json` deliberately keeps ordinary working branches out of Vercel. Branch prefixes such as `research/`, `fix/`, `docs/`, and `agent/` remain semantic/readability conventions; required PR CI comes from public GitHub Actions and does not depend on branch naming.
 
-The spend rule is now:
+The spend/Preview rule is:
 
-1. **Ordinary working branch:** no Vercel deployment while iterating.
-2. **Final candidate:** run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>` so the non-deploy base ref is pinned first and the already-existing `ci/vercel-gate-final` ref moves to the exact same commit SHA; do not add a commit or rebuild the candidate on the gate ref. Creating a brand-new alias at an already-known SHA is not a valid trigger because the Git integration may emit no build event.
-3. **Any triggered gate Preview:** automatic real acceptance. The Ignored Build Step does not trust `VERCEL_GIT_PULL_REQUEST_ID`; once provider compute is intentionally requested, it fails open into the real Gate.
-4. **`[vercel-preview]`:** optional historical/review marker only; it does not control spend.
-5. **Docs/governance-only final candidate:** the explicit gate still runs `verify:deploy`; the risk planner may skip Chromium if UI risk is proven absent.
+1. **Ordinary PR:** public GHA runs the required exact-head/current-base gate; no Vercel deployment while iterating.
+2. **Merge authority:** require exact-head `public-ci-gate=SUCCESS` while the PR remains current with protected `main`.
+3. **Optional provider Preview:** when a real Vercel-rendered page/provider diagnosis is useful, run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>` so the non-deploy base ref is pinned first and the existing `ci/vercel-gate-final` ref moves to the exact same commit SHA. Do not add or rebuild the candidate on that ref.
+4. **Any triggered gate Preview:** automatic real Vercel acceptance. The Ignored Build Step fails open once provider compute is intentionally requested.
+5. **`[vercel-preview]`:** optional historical/review marker only; it does not control spend or merge readiness.
 6. **Docs/governance-only `main`:** remains non-deploy-relevant and must not replace the Production website.
-7. If this document disagrees with `vercel.json` / `scripts/vercel-ignore-build.mjs`, executable configuration wins and this document must be corrected.
+7. If this document disagrees with live ruleset / `vercel.json` / executable scripts, live/executable state wins and this document must be corrected.
 
-Therefore choose `research/`, `fix/`, `docs/`, `ci/`, or `agent/` for semantic ownership, not Vercel eligibility. The separate gate ref is the execution control.
+Therefore choose `research/`, `fix/`, `docs/`, `ci/`, or `agent/` for semantic ownership, not Vercel eligibility. `public-ci-gate` owns required CI; the separate persistent Vercel ref is only an on-demand Preview control.
 
 ## PR titles
 

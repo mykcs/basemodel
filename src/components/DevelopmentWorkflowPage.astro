@@ -10,8 +10,8 @@ const t = (cn: string, en: string) => zh ? cn : en;
 <AppLayout
   title={t('BaseModel 的开发与上线', 'How BaseModel is developed and shipped')}
   description={t(
-    'BaseModel 当前使用 GitHub、Vercel、Cloudflare、CircleCI、GitHub Actions，以及 ChatGPT 的 GitHub 与 Remote Desktop Commander 插件完成开发、CI、发布和恢复。',
-    'How BaseModel uses GitHub, Vercel, Cloudflare, CircleCI, GitHub Actions, and ChatGPT with the GitHub and Remote Desktop Commander plugins for development, CI, release, and recovery.',
+    'BaseModel 当前用 GitHub 管理源码，用公开 GitHub Actions 做合并前 CI，用 Vercel 发布 Production 和按需 Preview，并由 Cloudflare 独立检查线上状态。',
+    'BaseModel keeps source in GitHub, uses public GitHub Actions for pre-merge CI, ships Production and on-demand Previews with Vercel, and uses Cloudflare for independent live-site checks.',
   )}
   locale={locale}
 >
@@ -20,8 +20,8 @@ const t = (cn: string, en: string) => zh ? cn : en;
       <h1>{t('BaseModel 的开发与上线', 'How BaseModel is developed and shipped')}</h1>
       <p class="lede">
         {t(
-          '我们在 ChatGPT 网页端发起和审阅工作，用 GitHub 管代码，用 Vercel 做最终候选验收和 Production，用 Cloudflare 盯线上状态；CircleCI 和 GitHub Actions 只保留手动恢复。',
-          'We start and review work in ChatGPT, keep the code in GitHub, use Vercel for final-candidate acceptance and Production, and use Cloudflare to watch the live site; CircleCI and GitHub Actions are manual recovery paths only.',
+          '我们在 ChatGPT 里提出和审阅改动，GitHub 保存代码并用免费的公开 Runner 做合并检查；通过后由 Vercel 发布 main，Cloudflare 再从外部检查线上状态。',
+          'We start and review changes in ChatGPT. GitHub stores the code and uses free public runners for merge checks; after acceptance, Vercel ships main and Cloudflare checks the live site from the outside.',
         )}
       </p>
     </header>
@@ -31,14 +31,14 @@ const t = (cn: string, en: string) => zh ? cn : en;
       <ol class="development-flow" aria-label={t('BaseModel 开发与上线流程', 'BaseModel development and release flow')}>
         <li data-role="control"><span>01</span><div><strong>ChatGPT</strong><small>{t('说清目标、审阅结果', 'set the goal, review the result')}</small></div></li>
         <li data-role="source"><span>02</span><div><strong>GitHub</strong><small>{t('源码、分支、PR、main', 'source, branches, PRs, main')}</small></div></li>
-        <li data-role="accept"><span>03</span><div><strong>Vercel</strong><small>{t('最终候选 CI + Preview', 'final-candidate CI + Preview')}</small></div></li>
-        <li data-role="ship"><span>04</span><div><strong>Vercel Production</strong><small>{t('main 上线', 'ship main')}</small></div></li>
+        <li data-role="accept"><span>03</span><div><strong>GitHub Actions</strong><small>{t('required CI · 4 路 Chromium', 'required CI · 4 Chromium shards')}</small></div></li>
+        <li data-role="ship"><span>04</span><div><strong>Vercel Production</strong><small>{t('main 构建与上线', 'build and ship main')}</small></div></li>
         <li data-role="observe"><span>05</span><div><strong>Cloudflare</strong><small>{t('上线后健康检查', 'post-deploy health checks')}</small></div></li>
       </ol>
       <p class="system-boundary">
         {t(
-          '平时开发不会因为每次 push 都启动一套重型云 CI。只有真正准备合并的版本才花一次完整验收资源。',
-          'Ordinary development does not start a heavy cloud CI run for every push. Full hosted acceptance is reserved for a version that is actually ready to merge.',
+          '合并前的浏览器 CI 已经放到 GitHub 的公开 Runner 上并行运行；Vercel 不再为了同一个候选重复跑一遍完整浏览器矩阵。',
+          'Pre-merge browser CI runs in parallel on GitHub public runners; Vercel no longer repeats the full browser matrix for the same candidate.',
         )}
       </p>
     </section>
@@ -46,14 +46,14 @@ const t = (cn: string, en: string) => zh ? cn : en;
     <section aria-labelledby="tool-roles-title">
       <h2 id="tool-roles-title">{t('每个工具负责什么', 'What each tool does')}</h2>
       <div class="tool-roles">
-        <article><h3>{t('ChatGPT 网页端', 'ChatGPT on the web')}</h3><p>{t('这是人的控制界面：提出目标、给反馈、看 Preview、决定是否继续。它不替代 GitHub 里的源码和历史。', 'This is the human control surface: set goals, give feedback, review Previews, and decide what happens next. It does not replace source or history in GitHub.')}</p></article>
+        <article><h3>{t('ChatGPT 网页端', 'ChatGPT on the web')}</h3><p>{t('这是人的控制界面：提出目标、给反馈、看结果、决定是否继续。它不替代 GitHub 里的源码和历史。', 'This is the human control surface: set goals, give feedback, review results, and decide what happens next. It does not replace source or history in GitHub.')}</p></article>
         <article><h3>{t('GitHub 插件', 'GitHub plugin')}</h3><p>{t('让 Agent 直接读写仓库、PR、检查状态和评论。能走 API 的控制面优先走 API，不靠浏览器反复点按钮。', 'It lets the Agent read and write repositories, pull requests, checks, and comments directly. Provider control planes use APIs first instead of repeated browser clicking.')}</p></article>
-        <article><h3>Remote Desktop Commander</h3><p>{t('需要真实文件系统、终端、Git、Node、Playwright 或本机 CLI 时，通过授权的电脑执行。它是开发工具；只有主 CI 不可用时，才作为手动恢复路径。', 'When the work needs the real filesystem, terminal, Git, Node, Playwright, or a local CLI, it runs on an authorized computer. It is a development tool and only becomes a manual recovery path when the primary CI is unavailable.')}</p></article>
-        <article><h3>GitHub</h3><p>{t('源码的唯一主线。分支、PR、main、required check 和可审计历史都在这里。合并只认当前候选 SHA 的验收结果。', 'The source-of-truth repository. Branches, PRs, main, required checks, and auditable history live here. Merge acceptance belongs to the current candidate SHA.')}</p></article>
-        <article><h3>Vercel</h3><p>{t('既是 BaseModel 的正式部署平台，也是最终候选的主要 CI。最终候选会跑仓库检查、静态构建和按风险选择的 Chromium 验收；main 负责 Production。', 'Vercel is both the BaseModel deployment platform and the primary final-candidate CI surface. A final candidate runs repository checks, the static build, and risk-based Chromium acceptance; main owns Production.')}</p></article>
-        <article><h3>Cloudflare</h3><p>{t('当前不负责 BaseModel 的普通部署。它保留上线后的 production smoke：独立检查正式站点的 HTTP、canonical、robots、sitemap 和跳转是否健康。', 'Cloudflare is not the ordinary BaseModel deployment provider. Its active role is post-deploy production smoke: independently checking HTTP, canonical metadata, robots, sitemap, and redirects on the live site.')}</p></article>
-        <article><h3>CircleCI</h3><p>{t('2026-09-08，CircleCI credits 已耗尽，因此它退出普通 PR/main 流程。已经验证过的配置仍保留，只在需要独立恢复或交叉验证时显式手动触发。', 'On 2026-09-08, the CircleCI credit balance was exhausted, so it left the ordinary PR/main path. The qualified configuration remains available only for explicit manual recovery or cross-checking.')}</p></article>
-        <article><h3>GitHub Actions</h3><p>{t('不承担日常托管 CI。仓库只保留 workflow_dispatch 等手动恢复入口，需要时可以调用 Mac/OrbStack 的手动恢复环境，而不是让个人电脑一直在线等任务。', 'It is not the everyday hosted CI path. The repository keeps manual workflow_dispatch recovery, including the Mac/OrbStack recovery environment when needed, without requiring a personal computer to stay online waiting for jobs.')}</p></article>
+        <article><h3>Remote Desktop Commander</h3><p>{t('需要真实文件系统、终端、Git、Node、Playwright 或本机 CLI 时，通过授权的电脑执行。它用于加快开发和本地验证，不是常驻 CI 服务器。', 'When the work needs the real filesystem, terminal, Git, Node, Playwright, or a local CLI, it runs on an authorized computer. It accelerates development and local validation; it is not an always-on CI server.')}</p></article>
+        <article><h3>GitHub</h3><p>{t('源码的唯一主线。分支、PR、main、required check 和可审计历史都在这里；合并只认当前候选 SHA 和当前 main 上的检查结果。', 'The source-of-truth repository. Branches, PRs, main, required checks, and auditable history live here; merge acceptance belongs to the current candidate SHA and current main.')}</p></article>
+        <article><h3>GitHub Actions</h3><p>{t('BaseModel 公开后，它成为主要 CI。每个 PR 用只读权限跑确定性检查和按风险选择的 Chromium；完整 UI 任务拆成 4 个独立 Runner 并行，最后由 public-ci-gate 汇总。', 'After BaseModel became public, GitHub Actions became the primary CI. Each PR runs read-only deterministic checks and risk-based Chromium coverage; full UI work is split across four independent runners and aggregated by public-ci-gate.')}</p></article>
+        <article><h3>Vercel</h3><p>{t('负责正式网站 Production，也保留按需 Preview。Production 会做仓库验证和静态构建，但不重复 GitHub Actions 已经通过的完整浏览器 CI；需要看真实 Vercel Preview 时再显式请求。', 'Vercel owns the Production site and retains on-demand Previews. Production runs repository validation and the static build without repeating the full browser CI already passed in GitHub Actions; a real Vercel Preview is requested only when needed.')}</p></article>
+        <article><h3>Cloudflare</h3><p>{t('不负责 BaseModel 的普通部署。一个很小的 Worker 定时从外部检查正式站点的 HTTP、canonical、robots、sitemap 和关键跳转。', 'Cloudflare is not the ordinary BaseModel deployment provider. A small Worker periodically checks the Production site from the outside: HTTP, canonical metadata, robots, sitemap, and key redirects.')}</p></article>
+        <article><h3>CircleCI</h3><p>{t('2026-09-08，CircleCI credits 已耗尽，因此退出普通 PR/main 流程。已经验证过的配置仍保留，只在需要独立恢复或交叉验证时显式手动触发。', 'On 2026-09-08, the CircleCI credit balance was exhausted, so it left the ordinary PR/main path. The qualified configuration remains available only for explicit manual recovery or cross-checking.')}</p></article>
       </div>
     </section>
 
@@ -61,22 +61,22 @@ const t = (cn: string, en: string) => zh ? cn : en;
       <h2 id="ci-title">{t('CI 方案', 'CI design')}</h2>
       <p class="section-lede">
         {t(
-          '我们优化的不是“哪家免费次数最多”，而是一次可信合并要花多少钱、等多久。',
-          'The optimization target is not “which provider has the biggest free quota,” but the cost and waiting time of one trustworthy merge.',
+          '现在的原则很简单：免费的 GitHub Runner 负责合并前的重测试，付费的 Vercel 只做它真正擅长的部署和必要 Preview。',
+          'The rule is simple: free GitHub runners own heavy pre-merge testing; paid Vercel is reserved for deployment and Previews that are actually useful.',
         )}
       </p>
       <ol class="ci-steps">
-        <li><strong>{t('普通分支只开发。', 'Ordinary branches are for development.')}</strong><span>{t('research、fix、docs 等分支可以继续迭代，不因为每个 push 都消耗 Vercel Preview。', 'research, fix, docs, and other working branches can keep moving without paying for a Vercel Preview on every push.')}</span></li>
-        <li><strong>{t('最终候选才请求 Vercel。', 'Only a final candidate requests Vercel.')}</strong><span>{t('候选必须与当前 main 对齐，并把验收状态绑定到同一个 exact SHA。', 'The candidate must be current with main, and acceptance must bind to that exact SHA.')}</span></li>
-        <li><strong>{t('测试范围按风险升级。', 'Browser scope escalates with risk.')}</strong><span>{t('非 UI 改动可以不跑浏览器；局部页面只跑映射测试；共享、全局或无法判断的改动会完整跑 Chromium。', 'Non-UI changes can skip browsers; bounded page changes use mapped tests; shared, global, or uncertain changes run the full Chromium matrix.')}</span></li>
-        <li><strong>{t('GitHub 决定能不能合并。', 'GitHub decides whether the PR can merge.')}</strong><span>{t('main 的 required check 是 Vercel。旧的 CircleCI green、旧 Preview 或别的 SHA 都不能借来当当前证据。', 'The required check on main is Vercel. An old CircleCI green, an old Preview, or a result from another SHA cannot be borrowed as current evidence.')}</span></li>
-        <li><strong>{t('合并后再看真正的 Production。', 'Production is verified after merge.')}</strong><span>{t('Vercel 发布 main；Cloudflare 再从外部观察正式站点。CI、部署和上线后监控是三层不同证据。', 'Vercel ships main; Cloudflare then observes the live site independently. CI, deployment, and post-deploy monitoring are three different evidence layers.')}</span></li>
+        <li><strong>{t('PR push 自动检查。', 'Every PR push is checked automatically.')}</strong><span>{t('GitHub Actions 绑定 exact PR head 和当前 base；确定性检查与浏览器检查都在同一个候选身份上完成。', 'GitHub Actions binds the exact PR head and current base; deterministic and browser checks run against the same candidate identity.')}</span></li>
+        <li><strong>{t('完整浏览器任务并行。', 'Full browser work runs in parallel.')}</strong><span>{t('共享、全局或无法判断的 UI 改动拆成 4 个独立 Chromium shard；局部改动仍按风险只跑必要覆盖。', 'Shared, global, or uncertain UI changes split into four independent Chromium shards; bounded changes still run only the mapped coverage required by risk.')}</span></li>
+        <li><strong>{t('public-ci-gate 决定能不能合并。', 'public-ci-gate decides merge readiness.')}</strong><span>{t('GitHub main 的 required check 绑定 GitHub Actions。旧的 Vercel、CircleCI green 或别的 SHA 都不能借来当当前证据。', 'The required check on main is bound to GitHub Actions. An old Vercel or CircleCI green, or a result from another SHA, cannot be borrowed as current evidence.')}</span></li>
+        <li><strong>{t('Preview 变成按需工具。', 'Preview becomes an on-demand tool.')}</strong><span>{t('只有真人需要看真实 Vercel 页面、排查 provider 差异或做恢复验证时，才移动持久 Preview ref；它不再卡住每次合并。', 'The persistent Preview ref moves only when a human needs a real Vercel page, a provider-specific diagnosis, or recovery evidence; it no longer blocks every merge.')}</span></li>
+        <li><strong>{t('合并后只做上线需要的工作。', 'After merge, do only what shipping needs.')}</strong><span>{t('Vercel 对 main 做验证、静态构建和 Production 发布，不重复完整 Chromium；Cloudflare 再从外部检查正式站点。', 'Vercel validates, builds, and publishes main without repeating the full Chromium matrix; Cloudflare then checks the Production site externally.')}</span></li>
       </ol>
 
       <details class="technical-detail">
-        <summary>{t('Agent 执行时用到的 exact-head 细节', 'Exact-head details used by the Agent')}</summary>
-        <p>{t('真正准备合并时，Agent 运行', 'When a PR is genuinely ready, the Agent runs')} <code>node scripts/request-vercel-final-gate.mjs &lt;PR_NUMBER&gt;</code>{zh ? '。' : '.'}</p>
-        <p>{t('这个 helper 先把', 'The helper first pins')} <code>ci/vercel-gate-base</code> {t('固定到当前 main，再把持久的', 'to live main, then moves persistent')} <code>ci/vercel-gate-final</code> {t('移动到 PR 的 exact head。具体规则仍以仓库文档和可执行配置为准。', 'to the exact PR head. Repository docs and executable configuration remain authoritative for the details.')}</p>
+        <summary>{t('按需 Vercel Preview 的 exact-head 细节', 'Exact-head details for an on-demand Vercel Preview')}</summary>
+        <p>{t('只有确实需要 Vercel Preview 时，Agent 才运行', 'Only when a Vercel Preview is genuinely needed does the Agent run')} <code>node scripts/request-vercel-final-gate.mjs &lt;PR_NUMBER&gt;</code>{zh ? '。' : '.'}</p>
+        <p>{t('这个 helper 先把', 'The helper first pins')} <code>ci/vercel-gate-base</code> {t('固定到当前 main，再把持久的', 'to live main, then moves persistent')} <code>ci/vercel-gate-final</code> {t('移动到 PR 的 exact head。这个 Preview 是 provider 验证或人工审阅工具，不是 required merge check。', 'to the exact PR head. This Preview is for provider validation or human review, not the required merge check.')}</p>
       </details>
     </section>
 
@@ -85,9 +85,9 @@ const t = (cn: string, en: string) => zh ? cn : en;
       <ol class="change-flow">
         <li><span>1</span><div><strong>{t('在 ChatGPT 里说清楚要改什么', 'Describe the change in ChatGPT')}</strong><p>{t('人负责目标、反馈和最终判断。', 'The human owns the goal, feedback, and final judgment.')}</p></div></li>
         <li><span>2</span><div><strong>{t('Agent 在 GitHub / 本机完成实现', 'The Agent implements through GitHub / the local machine')}</strong><p>{t('仓库读写优先 GitHub 插件；文件、终端和本机工具需要时用 Remote Desktop Commander。', 'Repository operations prefer the GitHub plugin; filesystem, terminal, and local tools use Remote Desktop Commander when needed.')}</p></div></li>
-        <li><span>3</span><div><strong>{t('先做便宜的本地检查', 'Run cheap local checks first')}</strong><p>{t('类型检查、单元测试和静态 build 在本地完成；这些检查通过后才请求托管计算。', 'Type checks, unit tests, and the static build catch predictable problems before hosted compute is spent.')}</p></div></li>
-        <li><span>4</span><div><strong>{t('最终候选跑一次 Vercel 验收', 'Run one Vercel acceptance on the final candidate')}</strong><p>{t('这一次才做 exact-head Preview 和需要的浏览器测试。', 'This is when the exact-head Preview and the required browser tests run.')}</p></div></li>
-        <li><span>5</span><div><strong>{t('通过后合并 main', 'Merge to main after acceptance')}</strong><p>{t('如果 main 或候选变了，就重新验当前 SHA。', 'If main or the candidate changes, acceptance is repeated on the new current SHA.')}</p></div></li>
+        <li><span>3</span><div><strong>{t('先做便宜的本地检查', 'Run cheap local checks first')}</strong><p>{t('类型检查、单元测试和静态 build 能在本地解决的问题，不留给云端重复发现。', 'Type checks, unit tests, and the static build catch predictable problems locally instead of rediscovering them in hosted CI.')}</p></div></li>
+        <li><span>4</span><div><strong>{t('GitHub Actions 自动跑 required CI', 'GitHub Actions runs the required CI')}</strong><p>{t('确定性检查和 4 路 Chromium 在公开 Runner 上并行；需要真实 Preview 时再单独请求 Vercel。', 'Deterministic checks and four Chromium shards run on public runners; request Vercel separately only when a real Preview is useful.')}</p></div></li>
+        <li><span>5</span><div><strong>{t('public-ci-gate 通过后合并 main', 'Merge to main after public-ci-gate passes')}</strong><p>{t('如果 main 或候选变了，就重新验当前 SHA。', 'If main or the candidate changes, acceptance is repeated on the new current SHA.')}</p></div></li>
         <li><span>6</span><div><strong>{t('检查 Production', 'Verify Production')}</strong><p>{t('确认 Vercel 正式部署，再看 Cloudflare smoke 和真实公开页面。', 'Confirm the Vercel Production deployment, then check Cloudflare smoke and the real public site.')}</p></div></li>
       </ol>
     </section>

@@ -46,7 +46,8 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('Do not intentionally trigger a Cloudflare Pages Git build');
     expect(registry).toContain('never silently substitute a Git-connected Pages build');
     expect(registry).toContain('Do not quote exact provider quota/price counters without authoritative current evidence');
-    expect(registry).toContain('Treat Vercel as the only ordinary Preview + Production authority');
+    expect(registry).toContain('Treat public GitHub Actions `public-ci-gate` as ordinary required merge CI');
+    expect(registry).toContain('Treat Vercel as the only ordinary Production provider');
   });
 
   it('requires stale remembered plans to refresh against current truth', () => {
@@ -126,19 +127,22 @@ describe('Agent scenario-trigger discovery', () => {
       'map those concepts into SEED',
     ]) expect(seedWorkflow).toContain(token);
     expect(seedWorkflow).not.toContain('PR #104 is the active implementation path');
-    expect(seedWorkflow).toContain('Vercel Pro deterministic + risk-based browser acceptance on automatic PR Previews');
+    expect(seedWorkflow).toContain('required public GitHub Actions deterministic + risk-based browser CI on PRs');
+    expect(seedWorkflow).toContain('Vercel reserved for Production and explicitly requested provider/human Previews');
     expect(seedWorkflow).toContain('CircleCI automatic PR/main workflows disabled and only explicit API-triggered fallback retained');
   });
 
   it('does not silently restore Direct Upload as the ordinary Preview default', () => {
-    expect(repositoryMap).toContain('GitHub PR / release candidate          -> automatic Vercel Pro acceptance Preview');
-    expect(repositoryMap).toContain('GitHub non-main Preview ref               -> Vercel Preview real acceptance (token-independent)');
-    expect(repositoryMap).toContain('GitHub main                              -> Vercel Production with the same acceptance contract');
-    expect(repositoryMap).toContain('Production identity                     -> https://basemodel-preview.vercel.app');
-    expect(repositoryMap).toContain('CircleCI                                -> automatic PR/main disabled; explicit API fallback only');
-    expect(repositoryMap).toContain('Cloudflare production-smoke Worker       -> post-deploy monitoring only');
-    expect(repositoryMap).toContain('Cloudflare Pages/Direct Upload/shadow     -> rollback or provider-specific fallback only');
-    expect(repositoryMap).toContain('Vercel Pro is the ordinary CI and deployment authority');
+    expect(repositoryMap).toContain('GitHub PR / release candidate          -> required public GitHub Actions CI');
+    expect(repositoryMap).toContain('public-ci-gate                         -> exact-head/current-base merge authority');
+    expect(repositoryMap).toContain('optional ci/vercel-gate-final          -> Vercel Preview for provider/human review only');
+    expect(repositoryMap).toContain('GitHub main                            -> Vercel Production validation + build; duplicate browser CI skipped');
+    expect(repositoryMap).toContain('Production identity                    -> https://basemodel-preview.vercel.app');
+    expect(repositoryMap).toContain('CircleCI                               -> automatic PR/main disabled; explicit API fallback only');
+    expect(repositoryMap).toContain('Cloudflare production-smoke Worker     -> post-deploy monitoring only');
+    expect(repositoryMap).toContain('Cloudflare Pages/Direct Upload/shadow  -> rollback or provider-specific fallback only');
+    expect(repositoryMap).toContain('Public GitHub-hosted Actions is the ordinary required CI authority');
+    expect(repositoryMap).toContain('Vercel is the ordinary deployment provider and optional Preview surface, not merge authority');
     expect(repositoryMap).not.toContain('default to local build + Direct Upload public Preview');
   });
 

@@ -22,10 +22,12 @@ describe('human-facing development workflow', () => {
   });
 
   it('keeps the current BaseModel CI authority and fallbacks honest', () => {
-    expect(page).toContain('final-candidate CI + Preview');
+    expect(page).toContain('required CI · 4 Chromium shards');
+    expect(page).toContain('public-ci-gate decides merge readiness');
     expect(page).toContain('ci/vercel-gate-final');
     expect(page).toContain('Cloudflare is not the ordinary BaseModel deployment provider');
-    expect(page).toContain('CircleCI and GitHub Actions are manual recovery paths only');
+    expect(page).toContain('After BaseModel became public, GitHub Actions became the primary CI');
+    expect(page).toContain('not the required merge check');
     expect(page).not.toContain('heavy acceptance runs in CircleCI');
   });
 

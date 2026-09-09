@@ -22,6 +22,7 @@ const HOSTED_GATE_OWNERS = new Set([
   'scripts/request-vercel-final-gate.mjs',
   'scripts/vercel-ui-gate.mjs',
   'scripts/vercel-lab-browser-gate.mjs',
+  'scripts/vercel-browser-gates.mjs',
   'vercel.json',
   'scripts/ci-ui-gate.mjs',
   'scripts/ci-ui-test-list.mjs',

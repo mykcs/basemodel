@@ -54,7 +54,7 @@ The classifier includes committed, staged, unstaged, and untracked paths relativ
 
 When a shared/global change requires WebKit, run the preflight on supported macOS, Ubuntu, or Debian. Do not downgrade the candidate to Chromium-only merely because the current execution environment lacks a supported WebKit runtime; keep the cross-browser boundary explicit until a suitable runner is available.
 
-Only after this pre-provider gate passes should an Agent move a ref that can create a Vercel Preview/Production deployment. Vercel remains the exact-head deployment/environment check and final product inspection layer, not the ordinary first place to discover theme, overflow, navigation, hydration, or geometry regressions.
+After this local/pre-provider gate, push the PR and let required public GitHub Actions own exact-head/current-base browser CI. Do not request a Vercel Preview merely to duplicate that green matrix. Vercel remains the real deployment/environment and optional provider-rendered inspection layer; Production is verified after merge.
 
 A GitHub/Vercel commit status is not by itself proof that a deployment object was created or a build ran. When deployment usage/quota matters, distinguish the provider status callback from live Vercel deployment records.
 

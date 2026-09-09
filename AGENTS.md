@@ -27,7 +27,7 @@ You are already reading the repository bootstrap. After this file, read in this 
 10. [`docs/agents/current/ui-change-visual-acceptance-gate.md`](docs/agents/current/ui-change-visual-acceptance-gate.md) and [`docs/agents/current/theme-contrast-contract.md`](docs/agents/current/theme-contrast-contract.md) — required browser/theme/layout acceptance for UI work.
 11. [`docs/agents/current/seed-openevo-research-mission-first-principles.md`](docs/agents/current/seed-openevo-research-mission-first-principles.md), [`docs/agents/current/reproduction-guide-design-principles.md`](docs/agents/current/reproduction-guide-design-principles.md), and [`docs/agents/current/audience-centered-technical-copy.md`](docs/agents/current/audience-centered-technical-copy.md) when changing the current SEED × OpenEvo mission, reproduction flow, or technical copy.
 12. [`docs/agents/current/model-catalog-verification-policy.md`](docs/agents/current/model-catalog-verification-policy.md) — required for current/latest model-family or evidence changes.
-13. [`docs/agents/current/ci-provider-decision.md`](docs/agents/current/ci-provider-decision.md), [`docs/agents/current/hosting-architecture.md`](docs/agents/current/hosting-architecture.md), and [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — BaseModel CI provider rationale plus current Vercel Pro authority, final-candidate-only spend model, CircleCI/manual fallback boundaries, Preview + Production workflow, and release closeout.
+13. [`docs/agents/current/ci-provider-decision.md`](docs/agents/current/ci-provider-decision.md), [`docs/agents/current/hosting-architecture.md`](docs/agents/current/hosting-architecture.md), and [`docs/agents/current/deployment-policy.md`](docs/agents/current/deployment-policy.md) — BaseModel CI provider rationale plus required public GitHub Actions authority, Vercel Production/on-demand Preview boundaries, CircleCI/Mac fallbacks, Cloudflare smoke, and release closeout.
 14. [`docs/agents/current/public-release-security-gate.md`](docs/agents/current/public-release-security-gate.md) — required before any private → public visibility change.
 15. [`docs/agents/current/repository-map.md`](docs/agents/current/repository-map.md) — detailed ownership/change-to-check map.
 16. `package.json`, `vercel.json`, config, source and task-specific tests — executable truth.
@@ -39,7 +39,7 @@ Files under `docs/agents/history/` and `docs/agent-context/` are evidence and ra
 Before creating a branch, running compound local/remote shell automation, or mutating shared experiment-server storage:
 
 - **Repeated correction needs a use-site witness (REPEAT-CORRECTION).** Before repeating the next affected command, design choice, or completion claim, record `trigger -> current owner -> checked artifact -> allowed next action -> invalidation cue` in the existing task/PR record. Reading or linking a retrospective is not proof that its check ran. Follow [the correction-to-action rule](docs/agents/current/project-agent-operating-principles.md#correction-to-action-witness); do not add a new approval layer.
-- **PR acceptance is provider-owned, branch names are semantic.** Ordinary working PR refs do **not** enter Vercel. When the exact current-base candidate is ready, run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`, which pins non-deploy `ci/vercel-gate-base` to live `main` and then moves persistent `ci/vercel-gate-final` to that exact PR head SHA; every Preview that then reaches Vercel fails open into real `verify:deploy`. Do not use `[vercel-preview]` or a freshly created alias ref as a spend/acceptance gate.
+- **PR acceptance is exact-head/current-base GitHub Actions authority.** The protected required check is `public-ci-gate` from the read-only public PR workflow; stale results from another SHA/base are invalid. Ordinary PR refs do not enter Vercel. A Vercel Preview is optional provider/human-review evidence: only when one is actually needed, run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>` to pin live `main` in `ci/vercel-gate-base` and move persistent `ci/vercel-gate-final` to the exact PR head. Do not use `[vercel-preview]` or a fresh alias ref as a gate.
 - **Provider control planes are CLI/API-first.** For GitHub, Vercel, Cloudflare, and similar services, use an authorized connector, CLI, or REST/API route before browser GUI automation. Use browser interaction only when no supported programmatic control exists; repeated coordinate/mouse clicking is never the default control-plane method.
 - **BaseModel execution uses the fastest safe path.** Do not force either GitHub-only or RDC-first development. Keep small/self-contained repository edits on GitHub; use an isolated RDC/local worktree when UI, shared/multi-file changes, or local test/build/dev/Playwright feedback materially shortens the loop or reduces hosted retries; then return PR/status/provider authority to GitHub/Vercel. RDC is an accelerator, never a required dependency. Follow [the execution-surface rule](docs/agents/current/project-agent-operating-principles.md#choose-the-fastest-safe-execution-surface).
 - **Name the shell when syntax matters.** If a command depends on Bash semantics (`VAR=value`, `set -euo pipefail`, loops, arrays, heredocs, process substitution), set the execution tool's shell/interpreter to `/bin/bash` or run a standalone Bash/Python script explicitly. Do not assume an inner `bash -lc` protects a complex command from an outer `fish` parser; nested quoting can fail before Bash starts. A parser failure under `fish` is an execution-surface failure, not repository or server failure.
@@ -90,35 +90,40 @@ Preserve Learn / Run / Compare as distinct entry modes. Keep ALFWorld success-ra
 ```text
 GitHub = source of truth
 
-non-draft PR / release candidate
-  -> Vercel project `basemodel-preview` Preview
-  -> npm run verify:deploy
-  -> npm run build
+non-draft PR / candidate
+  -> public GitHub Actions `pull_request`
+  -> exact PR head + current base identity
+  -> deterministic repository gate
   -> risk-based Chromium acceptance
-  -> Lab gate when relevant
-  -> required GitHub status: Vercel
-  -> CircleCI automatic PR/main workflows are disabled; explicit API fallback only
+  -> full/global work uses 4 independent public runners
+  -> required GitHub status: public-ci-gate
 
-non-main Preview ref
-  -> Vercel Preview runs real acceptance; `[vercel-preview]` is only a historical/review marker, not an ignore gate
+optional provider/human Preview
+  -> persistent ci/vercel-gate-base / ci/vercel-gate-final
+  -> exact candidate Vercel Preview
+  -> repository validation + build + Vercel Chromium/Lab acceptance
+  -> not ordinary merge authority
 
 main
   -> Vercel project `basemodel-preview` Production
-  -> same deterministic + risk-based browser contract
+  -> npm run verify:deploy + npm run build
+  -> Production browser wrapper skips duplicate full Chromium/Lab CI
   -> https://basemodel-preview.vercel.app
+  -> Cloudflare production-smoke observes the released origin
 
 manual CI recovery only
+  -> CircleCI explicit API trigger
   -> GitHub Actions workflow_dispatch
   -> Mac/OrbStack `basemodel-ci` fallback runner
 ```
 
-**Vercel is the only ordinary deployment provider.** Historical Cloudflare files, snapshots and fallback scripts are not part of normal Preview, release, Production verification, quota reporting or completion reports. Load them only for an explicitly legacy-hosting, rollback or retirement task, or when live evidence shows unexpected legacy-provider activity.
+**GitHub Actions is the ordinary merge CI authority.** The public workflow is read-only, secret-free, exact-head-bound, and aggregates deterministic + risk-based browser work into required `public-ci-gate`. Full/global UI work is four-way parallel; strict branch/ruleset freshness keeps the result current with `main`.
 
-Vercel Pro is the ordinary Base Model CI and deployment path. CircleCI automatic PR/main workflows are disabled; `.circleci/config.yml` is retained only for explicit API-triggered manual fallback and must never become a merge-latency dependency. GitHub-hosted Actions compute and GitHub Pages remain outside the ordinary path; GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner. Do not read a scheduler name as proof of where compute runs. Astro/React remain the application stack; do not rewrite them merely because deployment or CI execution ownership changes.
+**Vercel is the only ordinary deployment provider.** It owns Production and explicitly requested Previews, but no longer duplicates the required full browser matrix on Production. `vercel.json` keeps ordinary PR refs deployment-disabled; `main` and persistent `ci/vercel-gate-final` remain the only enabled refs. Preview/unknown Vercel environments still fail closed into the Vercel browser gates.
 
-Pull-request Previews are automatic acceptance builds. The Ignored Build Step must fail open for **every** `VERCEL_ENV=preview` because real provider evidence showed `VERCEL_GIT_PULL_REQUEST_ID` is not reliable at that pre-build boundary. `[vercel-preview]` no longer controls whether a Git-integrated Preview runs; Production on `main` remains automatic.
+CircleCI automatic PR/main workflows are disabled and `.circleci/config.yml` is retained only for explicit API-triggered manual recovery. The separate self-hosted GitHub Actions workflow is manual Mac/OrbStack fallback. Cloudflare's active role is the small Production smoke Worker; historical hosting/shadow assets are not ordinary deployment authority.
 
-**Agent-control documents are never website-production inputs.** A change limited to root `AGENTS.md`, `docs/agents/**`, repository prose, or test-only governance may run repository CI, but `scripts/vercel-ignore-build.mjs` must classify it non-deploy-relevant, so it must not build or replace the Production website. Vercel may still record an `IGNORED`/`CANCELED` Git-integration event before the ignored-build decision; that provider record is not a website publication and must not be reported as Production changed. Cloudflare is not an ordinary deployment provider for this repository.
+**Agent-control documents are never website-production inputs.** A change limited to root `AGENTS.md`, `docs/agents/**`, repository prose, or test-only governance may run public GHA CI, but `scripts/vercel-ignore-build.mjs` must classify a docs-only `main` range as non-deploy-relevant so it cannot replace the Production website. A provider record created before an ignored-build decision is not a publication.
 
 ## Repository map
 
@@ -164,52 +169,54 @@ Full browser suites or third-party network/vendor audits remain on demand when t
 read LATEST + current policy
 -> scan scenario-trigger-registry and load matched guidance
 -> inspect overlapping PRs and relevant code/data/tests
--> classify independent, stacked, superseded and semantically conflicting work
--> finish one coherent change or one explicit integration/release head before the first provider-triggering push
--> publish one atomic multi-file branch update when possible
--> keep ordinary PR pushes outside Vercel; only when the exact candidate is ready, run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>` so `ci/vercel-gate-base` records live `main` before persistent `ci/vercel-gate-final` moves to that PR head SHA and treat the resulting Preview as real acceptance
--> verify that exact-head Preview
--> verify build logs and inspect real Preview route(s)
--> batch evidence-driven fixes into at most one normal corrective push
--> synchronize with current main only when materially required
+-> finish one coherent change or one explicit integration/release head
+-> use GitHub for small repository edits; use an isolated RDC/local worktree when local build/Playwright feedback is faster
+-> push/update the PR
+-> let public GHA run exact-head/current-base deterministic + browser CI
+-> require public-ci-gate SUCCESS
+-> request one Vercel Preview only when a real provider-rendered page/provider diagnosis is needed
+-> synchronize with current main when materially required and re-run required CI
+-> immediately before merge re-check head/base, public-ci-gate and review threads
 -> merge the accepted release to main once
--> let Vercel create one Production deployment for the accepted release batch
+-> let Vercel create one Production deployment for deploy-relevant work
 -> verify https://basemodel-preview.vercel.app separately
+-> verify Cloudflare smoke when release/hosting observation is in scope
 ```
 
-A clean Git merge is not combined-product acceptance. When several PRs belong to one release, use the parallel/stacked integration policy in `deployment-policy.md`; preserve attribution and ancestry, but resolve the final file tree by current product intent, executable invariants and current provider truth.
+A clean Git merge is not combined-product acceptance. When several PRs belong to one release, use the parallel/stacked integration policy in `deployment-policy.md`; preserve attribution and ancestry, but resolve the final tree by current product intent, executable invariants and current provider truth.
 
 Protected Vercel Preview URLs may require authentication. When the owner needs anonymous review access, generate a temporary share link through the connected Vercel capability, deliver it only through an ephemeral review/chat surface, and never persist the URL or `_vercel_share` parameter in repository files, PR/Issue bodies, or GitHub comments.
 
-## Vercel build-budget boundary
+## CI and Vercel budget boundary
 
-Vercel deployments/builds are finite resources. Optimize provider-triggering ref updates, not only build duration.
+At the current public-repository/provider state, standard public GitHub-hosted runners are the ordinary zero-marginal-cost CI compute lane. Vercel deployments/builds are finite paid resources.
 
 Default target for one coherent feature or accepted release batch:
 
 ```text
 one branch / integration PR
--> ordinary working pushes spend zero Vercel build compute
--> move the existing persistent `ci/vercel-gate-final` ref to the exact final-candidate SHA
--> at most one corrective gate Preview after real inspection
--> one Production build per accepted release batch
+-> public GHA on PR updates
+-> zero ordinary Vercel Preview builds
+-> optional one Preview only when it answers a real human/provider question
+-> one Production build per accepted deploy-relevant release batch
 ```
 
-Do not push every typo, file write, speculative experiment or intermediate thought to a provider-triggering ref. Reuse the same PR for corrections. Prefer a worktree or one Git data API commit (`blob -> tree -> commit -> ref`) over sequential Contents API writes. Ordinary working refs are not deployment-enabled; Vercel acceptance begins only when the **existing persistent** `ci/vercel-gate-final` ref is updated to the exact PR head SHA. Live qualification proved that creating a new alias ref directly at an already-existing SHA may not emit the Vercel Git push event, so do not use ref creation as the Gate trigger. Every Preview that does reach Vercel remains fail-open into real risk-based acceptance. `[vercel-preview]` may remain in historical commit messages or as a human review marker, but it is not a spend switch.
+Do not push every typo or speculative intermediate state merely to obtain a hosted badge. Reuse the same PR, prefer atomic multi-file updates, and use local/RDC checks when they shorten the loop. `ci/vercel-gate-final` is an on-demand Preview trigger, not merge authority. Every Preview that reaches Vercel remains real provider acceptance; `[vercel-preview]` is only a marker.
 
-Ordinary completion reports are **Vercel-first** and report, when live evidence is available:
+Ordinary completion reports are **CI-first** and distinguish:
 
 ```text
-Vercel deployment triggers: total
-READY / ERROR / CANCELED / ignored or skipped
-exact-head Preview acceptance
+exact PR head / current base
+public-ci-gate + deterministic/browser outcome
+optional Vercel Preview only if actually requested
 merge commit
-Production deployment and public verification
+Vercel Production deployment and public verification
+Cloudflare smoke when relevant to release/hosting closeout
 ```
 
-Do not add a Cloudflare line merely because historical config exists. Mention a legacy provider only when the task explicitly concerns it, it changed, or live provider evidence shows unexpected activity.
+Provider/control-plane work is connector/CLI/API-first. Do not use repeated coordinate-based browser clicking when a programmatic path exists.
 
-A legacy external Git integration may still require an existing skip prefix until it is disabled account-side. Treat that as a silent compatibility safeguard, not as an ordinary deployment stage or reporting requirement.
+A legacy external Git integration may still require an existing skip prefix until disabled account-side. Treat that as a silent compatibility safeguard, not an ordinary stage or quota dimension.
 
 ## Product / research-integrity invariants
 

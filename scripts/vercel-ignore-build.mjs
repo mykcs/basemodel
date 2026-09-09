@@ -16,7 +16,7 @@ const BUILD_RELEVANT_CONFIG = [
 ];
 
 export function mustRunAcceptanceBuild(env) {
-  // Required Preview acceptance fails open here because PR identity is not reliable at the Ignored Build Step boundary.
+  // Any explicitly triggered Preview fails open into real provider acceptance because PR identity is not reliable at the Ignored Build Step boundary.
   return env.VERCEL_ENV === 'preview';
 }
 
@@ -57,7 +57,7 @@ export function main(env = process.env) {
     const previewAcceptance = mustRunAcceptanceBuild(env);
     if (previewAcceptance) {
       console.log(
-        '[vercel-ignore-build] Preview acceptance cannot be safely skipped before PR identity is proven; running verify:deploy.',
+        '[vercel-ignore-build] Triggered Preview cannot be safely skipped before PR identity is proven; running verify:deploy.',
       );
     }
 

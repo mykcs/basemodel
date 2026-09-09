@@ -50,7 +50,7 @@ wrangler.jsonc                        dormant/legacy provider-specific helper, n
 Important current owners include:
 
 - `current/css-architecture.md` — CSS composition/ownership/migration debt;
-- `current/hosting-architecture.md` + `current/deployment-policy.md` — Vercel release authority;
+- `current/hosting-architecture.md` + `current/deployment-policy.md` — public GHA merge CI + Vercel deployment authority;
 - `current/product-and-research-integrity.md` — product/research false-complete rules;
 - `current/audience-centered-technical-copy.md` plus the writing stack in `docs/agents/README.md` — public/research language;
 - `current/research-journey-experience.md` — canonical research route roles and explainer deduplication;
@@ -73,23 +73,25 @@ The historical-looking CSS filenames are **live migration debt**, not documentat
 ## Deployment map
 
 ```text
-GitHub PR / release candidate          -> automatic Vercel Pro acceptance Preview
-GitHub non-main Preview ref               -> Vercel Preview real acceptance (token-independent)
-GitHub main                              -> Vercel Production with the same acceptance contract
-Production identity                     -> https://basemodel-preview.vercel.app
-CircleCI                                -> automatic PR/main disabled; explicit API fallback only
-Cloudflare production-smoke Worker       -> post-deploy monitoring only
-Cloudflare Pages/Direct Upload/shadow     -> rollback or provider-specific fallback only
+GitHub PR / release candidate          -> required public GitHub Actions CI
+public-ci-gate                         -> exact-head/current-base merge authority
+optional ci/vercel-gate-final          -> Vercel Preview for provider/human review only
+GitHub main                            -> Vercel Production validation + build; duplicate browser CI skipped
+Production identity                    -> https://basemodel-preview.vercel.app
+CircleCI                               -> automatic PR/main disabled; explicit API fallback only
+Mac/OrbStack self-hosted workflow      -> manual workflow_dispatch fallback only
+Cloudflare production-smoke Worker     -> post-deploy monitoring only
+Cloudflare Pages/Direct Upload/shadow  -> rollback or provider-specific fallback only
 ```
 
-Vercel Pro is the ordinary CI and deployment authority. CircleCI automatic PR/main workflows are disabled and only explicit API-triggered fallback is retained; GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner. GitHub-hosted runners and GitHub Pages are not part of the ordinary architecture. `cloudflare/production-smoke/` is the one active monitoring-only Cloudflare exception; other Cloudflare deployment helpers remain fallback/history surfaces.
+Public GitHub-hosted Actions is the ordinary required CI authority. Vercel is the ordinary deployment provider and optional Preview surface, not merge authority. CircleCI and the Mac/OrbStack workflow are manual recovery only. `cloudflare/production-smoke/` is the active monitoring exception; other Cloudflare deployment helpers remain fallback/history surfaces.
 
 ## Change-to-check guidance
 
 - docs/Agent-only: verify lifecycle, precedence, links, and executable consumers; no hosted deployment unless executable semantics changed;
-- data/schema/domain: run the repository Gate and task-specific tests; Preview when rendered behavior changes;
-- CSS/global visual ownership: `npm run audit:css` + Gate + required real-browser matrix + exact-head Preview;
-- UI/routing/i18n/SEO: Gate + exact-head Preview + real route/metadata/interaction acceptance;
+- data/schema/domain: run the repository Gate and task-specific tests; request Vercel Preview only when provider-rendered review is materially useful;
+- CSS/global visual ownership: `npm run audit:css` + Gate + required public-GHA real-browser matrix; add an exact-head Vercel Preview only when human/provider review needs it;
+- UI/routing/i18n/SEO: Gate + required public-GHA browser CI + real route/metadata/interaction acceptance; Preview is optional provider evidence;
 - public copy/onboarding/status: load the writing stack, run contextual/strict copy audits, review both locales and affected route owners;
 - deployment architecture: current docs + executable provider config/tests + live provider validation must change together;
 - Production release: verify the actual Vercel Production deployment separately from merge/Preview.
