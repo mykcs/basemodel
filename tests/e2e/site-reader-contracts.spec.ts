@@ -137,3 +137,31 @@ for (const viewport of viewports) {
     expect(failures).toEqual([]);
   });
 }
+
+
+test('briefing fits phone width and caps the desktop slide canvas', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/research/seed-openevo/study/briefing/#capacity-diagnostic', { waitUntil: 'networkidle' });
+  const phone = await page.evaluate(() => {
+    const slide = document.querySelector('#capacity-diagnostic');
+    if (!slide) return null;
+    const box = slide.getBoundingClientRect();
+    return {
+      viewport: innerWidth,
+      documentWidth: document.documentElement.scrollWidth,
+      slideWidth: box.width,
+      slideHeight: box.height,
+    };
+  });
+  expect(phone).not.toBeNull();
+  expect(phone!.documentWidth).toBeLessThanOrEqual(phone!.viewport + 2);
+  expect(phone!.slideWidth).toBeLessThanOrEqual(phone!.viewport - 16);
+  expect(phone!.slideHeight).not.toBe(720);
+
+  await page.setViewportSize({ width: 2560, height: 1440 });
+  await page.goto('/research/seed-openevo/study/briefing/#capacity-diagnostic', { waitUntil: 'networkidle' });
+  const desktop = await page.locator('#capacity-diagnostic').boundingBox();
+  expect(desktop).not.toBeNull();
+  expect(desktop!.width).toBe(1280);
+  expect(desktop!.height).toBe(720);
+});

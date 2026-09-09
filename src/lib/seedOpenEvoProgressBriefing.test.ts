@@ -3,191 +3,183 @@ import { describe, expect, it } from 'vitest';
 
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const briefing = read('../components/research/SeedOpenEvoProgressBriefing.astro');
+const technical = read('../components/research/SeedOpenEvoBriefingTechnicalNotes.astro');
 const nav = read('../components/research/SeedOpenEvoResearchNav.astro');
 const zhPage = read('../pages/research/seed-openevo/study/briefing/index.astro');
 const enPage = read('../pages/en/research/seed-openevo/study/briefing/index.astro');
+const zhTechnical = read('../pages/research/seed-openevo/study/briefing/technical-notes/index.astro');
+const enTechnical = read('../pages/en/research/seed-openevo/study/briefing/technical-notes/index.astro');
 const contracts = read('../data/siteReaderContracts.ts');
 const sitemap = read('./sitemapRoutes.ts');
+const appLayout = read('../layouts/AppLayout.astro');
 
 describe('SEED × OpenEVO summer review HTML deck', () => {
-  it('publishes a bilingual briefing route without the study subnav competing with the deck', () => {
+  it('publishes the bilingual deck and bilingual technical drill-down', () => {
     expect(zhPage).toContain('OpenEVO 暑期考核汇报');
     expect(enPage).toContain('OpenEVO Summer Research Review');
-    expect(zhPage).not.toContain('SeedOpenEvoResearchNav');
-    expect(enPage).not.toContain('SeedOpenEvoResearchNav');
+    expect(zhTechnical).toContain('技术推导与实验严谨性');
+    expect(enTechnical).toContain('Technical derivations and experimental rigor');
     expect(nav).toContain("id: 'briefing'");
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/'");
+    expect(sitemap).toContain("'/research/seed-openevo/study/briefing/technical-notes/'");
+    expect(appLayout).toContain("exactRoute('/research/seed-openevo/study/briefing/technical-notes') ? 'briefing'");
   });
 
-  it('uses a normal presentation cover with basic information', () => {
+  it('keeps a fixed eleven-slide presentation sequence with no page number on cover/final', () => {
+    expect((briefing.match(/<section /g) ?? []).length).toBe(11);
+    for (let page = 2; page <= 10; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 11`);
+    expect(briefing).not.toContain('01 / 11');
+    expect(briefing).not.toContain('11 / 11');
+    expect(briefing).not.toContain('下一页');
+    expect(briefing).not.toContain('Next slide');
+  });
+
+
+  it('reflows on phones while keeping the desktop slide canvas capped at 1280×720', () => {
+    expect(briefing).toContain('--deck-w:1280px;--deck-h:720px');
+    expect(briefing).toContain('@media(max-width:720px)');
+    expect(briefing).toContain('width:calc(100vw - 20px);height:auto');
+    expect(briefing).toContain('.briefing{overflow-x:hidden');
+    expect(briefing).toContain('.paper-table{min-width:620px}');
+  });
+
+  it('starts with a normal presentation cover and chronological agenda', () => {
     expect(briefing).toContain('OpenEVO 暑期考核汇报');
+    expect(briefing).toContain('OpenEVO 让模型从任务经验中持续更新记忆与参数');
     expect(briefing).toContain('汇报日期');
-    expect(briefing).toContain('2026-09-08');
     expect(briefing).toContain('汇报人');
-    expect(briefing).toContain('OpenEVO 项目组');
-    expect(briefing).toContain('OpenEVO 做到了什么、这些结果为什么可信、遇到问题以后我们怎样把它变成更干净的下一步实验');
-  });
-
-  it('puts a plain-language agenda beside a Too long, Don\'t read summary', () => {
-    expect(briefing).toContain('id="contents"');
-    expect(briefing).toContain('今天讲四件事');
     expect(briefing).toContain("Too long, Don't read");
-    expect(briefing).toContain('我们现在做到哪了');
-    expect(briefing).toContain('这些结果说明了什么');
-    expect(briefing).toContain('接下来优先押哪条线');
+    expect(briefing).toContain('7B 长周期结果');
+    expect(briefing).toContain("{t('目录', 'Agenda')}");
+    expect(briefing).toContain('1.7B / 3B 诊断实验');
   });
 
-
-
-  it('removes meaningless English eyebrow labels and decorative bubbles', () => {
-    for (const token of ['OpenEVO · SEED × WebShop', '>AGENDA<', '>RESULTS<', '>QUESTION<', '>DESIGN<', '>MECHANISM<', '>Q17 UPDATE<', '>SEED CONTROL<', '>RESEARCH LOGIC<', '>DISCUSSION<']) {
-      expect(briefing).not.toContain(token);
-    }
-    expect(briefing).toContain("Too long, Don't read");
-    expect(briefing).not.toContain('.briefing-slide::before');
-    expect(briefing).not.toContain('.briefing-slide::after');
-  });
-  it('starts results with a SEED-paper-style WebShop Score / Succ table', () => {
+  it('uses a SEED-paper-style Score / Succ table and acknowledges the 3B line without inventing a score', () => {
     expect(briefing).toContain('class="paper-table"');
     expect(briefing).toContain('WebShop Score');
     expect(briefing).toContain('WebShop Succ.');
     expect(briefing).toContain('SEED (Qwen2.5-3B)');
     expect(briefing).toContain('<td>88.5</td><td>78.9%</td>');
-    expect(briefing).toContain('SEED (Qwen2.5-7B)');
-    expect(briefing).toContain('<td>89.7</td><td>78.1%</td>');
-    expect(briefing).toContain('SEED (Qwen3-1.7B)');
-    expect(briefing).toContain('<td>87.1</td><td>77.3%</td>');
-  });
-
-  it('uses OpenEVO plus a readable variant explanation for our rows and never invents DirectApply results', () => {
     expect(briefing).toContain('OpenEVO {t(\'（7B，长周期训练）\'');
     expect(briefing).toContain('<td>49.33</td><td>45.31%</td>');
-    expect(briefing).toContain('OpenEVO {t(\'（1.7B，GDR 筛选）\'');
+    expect(briefing).toContain('OpenEVO {t(\'（1.7B，GDR）\'');
     expect(briefing).toContain('<td>37.60</td><td>0.78%</td>');
-    expect(briefing).toContain('OpenEVO {t(\'（1.7B，不经过 GDR）\'');
-    expect(briefing).toContain('DirectApply 尚无最终分数，所以留空');
+    expect(briefing).toContain('OpenEVO {t(\'（3B，独立实验线）\'');
+    expect(briefing).toContain('3B 确实做过独立实验线');
+    expect(briefing).toContain('OpenEVO {t(\'（1.7B，DirectApply）\'');
     expect(briefing).toContain('<td>—</td><td>—</td>');
   });
 
-  it('explains the two WebShop numbers rather than leaving naked metrics', () => {
+  it('explains what the two WebShop metrics mean and preserves the SEED comparability boundary', () => {
     expect(briefing).toContain('<strong>Score</strong>');
     expect(briefing).toContain('看任务要求满足了多少');
     expect(briefing).toContain('<strong>Succ.</strong>');
-    expect(briefing).toContain('只看任务是否完整成功');
-    expect(briefing).toContain('SEED 是论文报告值');
-    expect(briefing).toContain('本地冻结的 128 题最终测试');
+    expect(briefing).toContain('只统计完整成功');
+    expect(briefing).toContain('SEED 与 OpenEVO 不是同协议直接对照');
+    expect(briefing).toContain('不能直接用 89.7 与 49.33 的差值判断胜负');
   });
 
-  it('keeps the research arc understandable before internal experiment names', () => {
-    expect(briefing).toContain('我们真正想回答的，不只是“最后多少分”');
-    expect(briefing).toContain('能力上限 → 参数机制 → 因果控制');
-    expect(briefing).toContain('我怎么保证：结果可信，而且推进得快');
-    expect(briefing).toContain('Q17 两组只差：候选更新要不要经过 GDR');
+  it('tells the 7B baseline with its actual experimental scale before jumping to mechanisms', () => {
+    expect(briefing).toContain('7B 长周期实验：最终 49.33 分，瓶颈在哪里？');
+    expect(briefing).toContain('Qwen2.5-7B');
+    expect(briefing).toContain('180 个任务 × 每个任务 8 次尝试 = 1,440 条轨迹');
+    expect(briefing).toContain('temperature=0.4');
+    expect(briefing).toContain('每条最多 15 步');
+    expect(briefing).toContain('149 轮、19,072 条有效环境交互');
+    expect(briefing).toContain('完整成功 58 / 128（45.31%）');
   });
 
-  it('makes the parameter mechanism genuinely technical with equations, controls, and exact data', () => {
-    expect(briefing).toContain('TaskVector：把“参数方向”变成一个可以被实验操纵的量');
+  it('uses 1.7B and 3B as smaller diagnostic lines rather than erasing 3B history', () => {
+    expect(briefing).toContain('1.7B 和 3B：用更小实验定位瓶颈');
+    expect(briefing).toContain('160 轮 / 20,480 次环境交互');
+    expect(briefing).toContain('Qwen2.5-3B');
+    expect(briefing).toContain('180×8 的第一阶段');
+    expect(briefing).toContain('独立的持续学习实验线');
+  });
+
+  it('makes the negative 15→30 horizon diagnostic a scientific pivot', () => {
+    expect(briefing).toContain('15 → 30 步：任务得分仍然为 0');
+    expect(briefing).toContain('<span>15 步</span>');
+    expect(briefing).toContain('<span>30 步</span>');
+    expect(briefing).toContain('64 / 64 条尝试有效');
+    expect(briefing).toContain('任务得分 = 0');
+    expect(briefing).toContain('每个配对差值仍然是 0');
+    expect(technical).toContain('max_steps');
+  });
+
+  it('keeps the 2048→4096→10+10 capacity chain and does not claim a benchmark win from it', () => {
+    expect(briefing).toContain('2048 → 4096');
+    expect(briefing).toContain('我们把记忆容量翻倍了');
+    expect(briefing).not.toContain('2048 → 4096：单次记忆容量翻倍仍然失败');
+    expect(briefing).toContain('<strong>2048 → 4096</strong>');
+    expect(briefing).toContain("20 {t('条记录', 'records')}");
+    expect(briefing).toContain('10 + 10');
+    expect(technical).toContain('max split depth is one');
+    expect(briefing).not.toContain('20 条 primary');
+    expect(briefing).not.toContain('20 条 repair');
+    expect(technical).toContain('科学含义不是“10+10 一定让最终分数更高”');
+  });
+
+  it('uses a simple TaskVector formula in the talk and moves the hard derivation to the child page', () => {
+    expect(briefing).toContain('TaskVector（参数更新方向）');
+    expect(briefing).not.toContain('这里可以更硬核一点');
     expect(briefing).toContain('τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub>');
-    expect(briefing).toContain('√(δcᵀGδc) = 0.6082257746');
-    expect(briefing).toContain('θ′(λ) = θ<sub>R14</sub> + λτ');
-    expect(briefing).toContain('λ ∈ &#123;−1, 0, 0.5, 1&#125;');
-    expect(briefing).toContain('‖r<sub>i</sub>‖<sub>F</sub> = ‖τ‖<sub>F</sub>');
-    expect(briefing).toContain('参数基底有 7 个 SD-LoRA 组件，每个组件 rank=8');
-    expect(briefing).toContain('9 组实验条件 × 每组 64 个配对任务 = 最多 576 条');
-    expect(briefing).toContain('高至少 1.0 个 Task Score 点');
-    expect(briefing).toContain('τ = 0');
-    expect(briefing).toContain('R14 / R27 / R49');
+    expect(briefing).toContain('‖τ‖<sub>F</sub> = 0.608');
+    expect(briefing).not.toContain('√(δcᵀGδc) = 0.6082257746');
+    expect(briefing).toContain('完整技术推导与实验门槛');
+    expect(briefing).not.toContain('Gram 范数和干预门槛');
+    expect(technical).toContain('√(δcᵀGδc) = 0.6082257746');
+    expect(technical).toContain('λ∈{−1,0,0.5,1}');
+    expect(technical).toContain('9 组条件 × 64 个配对任务 = 576');
   });
 
-  it('explains what 44 and 7 count before asking the GDR question', () => {
-    expect(briefing).toContain('训练出 44 个参数更新候选，最后只有 7 个真正进入模型');
-    expect(briefing).toContain('GDR 会不会把短期看起来变差、长期却有价值的更新拒绝得太早');
-    expect(briefing).toContain('如果经过 GDR');
-    expect(briefing).toContain('如果直接应用');
-    expect(briefing).toContain('至少需要 3 个 training seeds');
+  it('explains GDR at first use and states exactly what 44 and 7 count', () => {
+    expect(briefing).toContain('GDR（Gated Delta Rule，更新筛选规则）');
+    expect(briefing).toContain('GDR 是 Gated Delta Rule');
+    expect(briefing).toContain('本来有 44 次机会更新参数，实际只有 7 次进入了后续模型');
+    expect(briefing).toContain('44 个 SD-LoRA 更新候选都真正训练出来了');
+    expect(briefing).toContain('GDR 最终只接受 7 个');
+    expect(briefing).toContain('θ<sub>t+1</sub> = θ<sub>t</sub> + Δ<sub>t</sub>');
   });
 
-  it('explains why the old twin was frozen and the fresh DirectApply experiment has a new identity', () => {
-    expect(briefing).toContain('发现旧实验不能再“硬接”以后，我们重新开了一条 DirectApply 实验');
-    expect(briefing).toContain('不能把后续路线就地改成只用 DirectApply');
-    expect(briefing).toContain('GDR 线曾推进到第 13 轮');
-    expect(briefing).toContain('84 / 128 个有效位置');
-    expect(briefing).toContain('旧实验轮次不复用');
-    expect(briefing).toContain('新的实验身份');
-    expect(briefing).toContain('不能在旧实验里中途换问题');
-    expect(briefing).toContain('仍然没有 GDR / DirectApply 的最终胜负结论');
+  it('keeps DirectApply in the main deck as one simple scientific variable and leaves the result unfinished', () => {
+    expect(briefing).toContain('DirectApply：拿掉 GDR 的否决权，只改这一个变量');
+    expect(briefing).toContain('DirectApply 对满足共同训练条件的候选直接应用');
+    expect(briefing).toContain('最终冻结分数还没有收口');
+    expect(briefing).toContain('严谨性、重复性与复现实验细节');
   });
 
-  it('shows the SEED control as three understandable contribution questions', () => {
-    expect(briefing).toContain('SEED 对照线：把“起点、教师、后续训练”拆开看');
-    expect(briefing).toContain('Stage1 · 1,440');
-    expect(briefing).toContain('MiniMax');
-    expect(briefing).toContain('SFT · 1,296 / 144');
-    expect(briefing).toContain('起点贡献多少？');
-    expect(briefing).toContain('教师贡献多少？');
-    expect(briefing).toContain('第二阶段训练贡献多少？');
+  it('removes engineering-rigor-as-highlight from the talk while preserving it in technical notes', () => {
+    expect(briefing).not.toContain('我怎么保证：结果可信，而且推进得快');
+    expect(briefing).not.toContain('636.7 s → 389.6 s');
+    expect(briefing).not.toContain('固定 GPU 重复性');
+    expect(technical).toContain('固定 GPU 重复性与参数哈希');
+    expect(technical).toContain('636.7 s → 389.6 s');
+    expect(technical).toContain('1.63×');
   });
 
-  it('shows thought, quality, and speed through concrete problem-to-solution evidence', () => {
-    expect(briefing).toContain('遇到问题，我们先判断“哪一层科学有效性坏了”');
-    expect(briefing).toContain('不可识别，不是因果零效应');
-    expect(briefing).toContain('后续差异不能归因给 GDR');
-    expect(briefing).toContain('思路');
-    expect(briefing).toContain('质量');
-    expect(briefing).toContain('速度');
-    expect(briefing).toContain('当天把不可归因的 Q17 从旧双组对照拆成新的实验身份');
-    expect(briefing).toContain('1.63× 提速不改结果');
+  it('keeps meaningless English eyebrows and decorative bubbles out of the deck', () => {
+    for (const token of ['OpenEVO · SEED × WebShop', '>AGENDA<', '>RESULTS<', '>QUESTION<', '>DESIGN<', '>MECHANISM<']) {
+      expect(briefing).not.toContain(token);
+    }
+    expect(briefing).not.toContain('.briefing-slide::before');
+    expect(briefing).not.toContain('.briefing-slide::after');
   });
 
-  it('proves speed without silently changing the experiment', () => {
-    expect(briefing).toContain('636.7 s → 389.6 s');
-    expect(briefing).toContain('1.63×');
-    expect(briefing).toContain('独立 DirectApply 第 0 轮');
-    expect(briefing).toContain('128 条尝试记录逐字节相同');
-    expect(briefing).toContain('5 / 128 完整成功');
-    expect(briefing).toContain('LoRA adapter 与训练损失全部一致');
-    expect(briefing).toContain('DirectApply 并行资格实验 · PR #404');
-    expect(briefing).toContain('第 4 轮的影子回放已经逐条复现前 12 / 16 个候选评估结果');
-    expect(briefing).toContain('候选评估并行资格 · #406');
-  });
-
-  it('makes the final advisor decision concrete enough to choose', () => {
-    expect(briefing).toContain('最后想请老师和学长帮我选一个优先级');
-    expect(briefing).toContain('旧 Q17 双组对照已经冻结');
-    expect(briefing).toContain('新的 DirectApply 独立实验还在推进');
+  it('ends with a concrete advisor priority choice and no final page number', () => {
+    expect(briefing).toContain('下一步优先级：先做机制，还是先做 SEED 匹配比较？');
     expect(briefing).toContain('向北');
-    expect(briefing).toContain('先做参数因果实验');
-    expect(briefing).toContain('OpenEVO 为什么会变强？模型内部到底学到了什么？');
+    expect(briefing).toContain('先把机制证据做深');
     expect(briefing).toContain('向南');
-    expect(briefing).toContain('先做 SEED 匹配对照');
-    expect(briefing).toContain('OpenEVO 和 SEED 到底差多少？');
-    expect(briefing).toContain('先把论文故事做深（向北），还是先把对照结果做齐（向南）');
-  });
-
-  it('is a fixed 16:9 HTML deck rather than a responsive web article or image-backed PPT', () => {
-    expect(briefing.match(/<section id=/g)?.length).toBe(11);
-    expect(briefing).toContain('--deck-w:1280px');
-    expect(briefing).toContain('--deck-h:720px');
-    expect(briefing).toContain('width:var(--deck-w);height:var(--deck-h)');
-    expect(briefing).not.toContain('@media(');
-    expect(briefing).toContain('02 / 11');
-    expect(briefing).toContain('10 / 11');
-    expect(briefing).not.toContain('01 / 11');
+    expect(briefing).toContain('先把 SEED 匹配比较做齐');
+    expect(briefing).toContain('先追“为什么有效”的机制证据');
+    expect(briefing).toContain('想请老师和学长判断优先级');
     expect(briefing).not.toContain('11 / 11');
-    expect(briefing).not.toContain('下一页');
-    expect(briefing).not.toContain('Next:');
-    expect(briefing).not.toContain('<img');
-    expect(briefing).not.toContain('background-image:url');
   });
 
-  it('registers the fixed-deck reader contract without pretending SEED and OpenEVO are already apples-to-apples', () => {
+  it('binds both public routes into Reader Contracts', () => {
     expect(contracts).toContain("c('study-briefing'");
-    expect(contracts).toContain('固定 16:9 HTML 演讲稿');
-    expect(contracts).toContain('DirectApply 尚无最终分数');
-    expect(contracts).toContain('旧 Q17 twin 已冻结为诊断证据');
-    expect(contracts).toContain('新的 DirectApply 独立实验从同一冻结起点重新开始');
-    expect(contracts).toContain('probe 并行仍在资格中');
-    expect(contracts).toContain("'#briefing-title'");
-    expect(briefing).toContain('data-briefing-primary');
+    expect(contracts).toContain("c('study-briefing-technical'");
+    expect(contracts).toContain("'.technical-intro'");
   });
 });
