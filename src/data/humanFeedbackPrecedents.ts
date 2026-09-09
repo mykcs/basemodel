@@ -179,13 +179,37 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     antiPatterns: ['一打开恢复页先展示设备型号、launchd、watchdog、pmset、token 等实现名词', '让着急的人先理解架构和排障历史，才能知道下一步做什么'],
     positiveSignals: ['场景 → 一个主要动作 → 预期结果', '明确告诉读者技术细节平时不用读', '完整工程排障资料后置但仍可恢复'],
   },
+  {
+    id: 'CASE-087',
+    title: '机制解释先说谁做了什么，再说抽象关系',
+    tags: ['briefing', '科研汇报', '说人话', '机制', '语序', 'GDR', 'SD-LoRA'],
+    principle: '技术机制能按主体→动作→结果说清时，先写“谁做了什么、因此下一状态怎样”；不要把动词全部名词化成“X 与 Y 之间存在落差”让观众自己还原过程。',
+    antiPatterns: ['“训练出一个更新”和“让这个更新进入后续模型”之间出现了很大的落差', '用抽象关系名词代替候选训练、GDR 拒绝、下一轮不变这条实际动作链'],
+    positiveSignals: ['44 次都训练出了 SD-LoRA 候选；GDR 只同意 7 次真正改到下一轮', '保留 GDR / SD-LoRA 等真实技术对象，同时用自然句序解释它们做什么'],
+  },
+  {
+    id: 'CASE-088',
+    title: '同类实验图共享一套视觉语法',
+    tags: ['briefing', '科研汇报', '图表', 'checkpoint', 'loss', 'Score', 'SD-LoRA', '视觉一致性'],
+    principle: '同一组实验若展示相同证据类型，应复用同一图表位置、线型与更新标记语义；坐标范围和单位可以因真实技术差异调整。',
+    antiPatterns: ['7B、1.7B、3B 各自发明不同的 Score / loss / update 视觉编码', '为了视觉整齐强迫不同量纲共用同一数值轴'],
+    positiveSignals: ['左侧训练过程 Score、右侧 SD-LoRA loss、底部 candidate/accepted update 标记保持一致', '轴范围随实验真实数值变化但图表语义不变'],
+  },
+  {
+    id: 'CASE-089',
+    title: '阶段汇报要自带理解后续结论所需的最小方法背景',
+    tags: ['briefing', '科研汇报', 'Stage 1', 'Stage 2', 'MiniMax', 'OPSD', 'Agent System', 'Text Memory', '自包含'],
+    principle: '即使网站已有完整方法页，现场汇报仍要在结果之前给听众一份最小方法心智模型：阶段怎么接、谁产生轨迹、谁做回看、哪些状态会训练或更新。',
+    antiPatterns: ['直接从 7B / 1.7B / 3B 结果开始，默认观众已经读过网站其他方法页', '为了自包含把完整实现手册和所有参数重复搬进主演讲'],
+    positiveSignals: ['一页交代 Stage 1 轨迹采集 + MiniMax 回看 + 学习载体，再交代 Stage 2 自生成 round 与更新', '只保留理解后续科学判断必需的方法背景，深实现继续留技术页'],
+  },
 ];
 
 export const READER_CONTRACT_PRECEDENTS: Record<string, HumanFeedbackCaseId[]> = {
   study: ['CASE-061', 'CASE-062', 'CASE-063', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'study-results': ['CASE-029', 'CASE-030', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'study-run': ['CASE-064', 'CASE-068', 'CASE-070', 'CASE-081'],
-  'study-briefing': ['CASE-027', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-070', 'CASE-081', 'CASE-082', 'CASE-084'],
+  'study-briefing': ['CASE-027', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-070', 'CASE-081', 'CASE-082', 'CASE-084', 'CASE-087', 'CASE-088', 'CASE-089'],
   'capability-home': ['CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'capability-first-run': ['CASE-029', 'CASE-030', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
 };

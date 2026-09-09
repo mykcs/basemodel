@@ -28,6 +28,10 @@ describe('human-feedback precedent registry', () => {
     );
   });
 
+  it('binds the final briefing-specific language and chart precedents into the briefing Reader Contract', () => {
+    expect(READER_CONTRACT_PRECEDENTS['study-briefing']).toEqual(expect.arrayContaining(['CASE-087', 'CASE-088', 'CASE-089']));
+  });
+
   it('requires the highest-risk research entry points to load human-feedback precedent', () => {
     for (const contractId of ['study', 'study-results', 'study-run', 'study-briefing', 'capability-home', 'capability-first-run']) {
       expect(READER_CONTRACT_PRECEDENTS[contractId]?.length, contractId).toBeGreaterThan(0);

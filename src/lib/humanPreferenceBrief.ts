@@ -57,7 +57,7 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
   const retrievalScope: HumanPreferenceScope | undefined =
     scope === 'briefing-mobile' || scope === 'briefing-desktop' ? 'briefing' :
     scope === 'visual' ? undefined : scope;
-  const retrieved = retrieveHumanPreferenceContext(input.query, input.contractId, 10, retrievalScope);
+  const retrieved = retrieveHumanPreferenceContext(input.query, input.contractId, 16, retrievalScope);
   const review = input.contractId ? preferenceReviewContextForContract(input.contractId) : undefined;
 
   const events = HUMAN_FEEDBACK_EVENTS
@@ -76,7 +76,7 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
     })
     .filter(({ score }) => score > 0)
     .sort((a, b) => b.score - a.score || b.event.date.localeCompare(a.event.date))
-    .slice(0, 14)
+    .slice(0, 18)
     .map(({ event }) => event);
 
   const eventVariantIds = new Set(events.map((event) => event.variantId));
@@ -86,9 +86,13 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
       trajectory.variantIds.some((variantId) => eventVariantIds.has(variantId)),
   );
 
-  const visualReferences = HUMAN_VISUAL_REFERENCE_SET.filter(
-    (reference) => !scope || reference.scopes.includes(scope),
-  );
+  const visualReferences = HUMAN_VISUAL_REFERENCE_SET.filter((reference) => {
+    if (scope && !reference.scopes.includes(scope)) return false;
+    if (reference.tier === 'current-candidate' && reference.supersededByReferenceId) {
+      return !HUMAN_VISUAL_REFERENCE_SET.some((candidate) => candidate.id === reference.supersededByReferenceId);
+    }
+    return true;
+  });
 
   const antiOvergeneralization = [
     ...(review?.preferences.flatMap((preference) => preference.antiOvergeneralization) ?? []),

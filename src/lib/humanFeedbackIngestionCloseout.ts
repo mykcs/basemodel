@@ -68,6 +68,8 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
   const workflowTrajectory = HUMAN_PREFERENCE_TRAJECTORIES.find((item) => item.id === 'TRAJECTORY-ITERATIVE-PREVIEW-WORKFLOW-20260909');
   const finalEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-BRIEFING-FINAL-ACCEPTED');
   const fastPreviewEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT');
+  const final604Event = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-BRIEFING-604-ACCEPTED');
+  const final604Visual = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER');
   const candidateHead = record.sourceWindow.finalOwnerVisibleHead;
   const candidateScope = record.preferenceBrief?.scope;
   const candidateVisual = candidateHead
@@ -111,7 +113,7 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
       preferences.has('PREF-DIAGNOSTIC-CLOSURE') && pairs.has('PAIR-084-DIAGNOSTIC-CLOSE-LOOP') &&
       events.has('EVENT-20260909-DIAGNOSTIC-BEHAVIOR-EVIDENCE') &&
       events.has('EVENT-20260909-DIAGNOSTIC-MISSING-RESOLUTION') &&
-      failureFamilySeverity('incomplete-scientific-decision-loop') === 'repeated',
+      failureFamilySeverity('incomplete-scientific-decision-loop') === 'hard',
     'training-dynamics-evidence-layers':
       preferences.has('PREF-DIAGNOSTIC-CLOSURE') && events.has('EVENT-20260909-TRAINING-DYNAMICS-EVIDENCE') &&
       brief.antiOvergeneralization.some((boundary) => boundary.includes('training loss') && boundary.includes('final eval')),
@@ -126,6 +128,35 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
       record.schema === 'human-feedback-ingestion-closeout.v2' && record.sourceWindow.finalVerdict === 'current-candidate' &&
       !!candidateVisual && !!candidateHead &&
       !HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === candidateHead && ['accepted', 'canonical'].includes(event.verdict)),
+    'briefing-self-contained-method-context':
+      preferences.has('PREF-BRIEFING-SELF-CONTAINED-METHOD') &&
+      pairs.has('PAIR-089-BRIEFING-METHOD-CONTEXT') &&
+      events.has('EVENT-20260909-BRIEFING-METHOD-CONTEXT'),
+    'concrete-mechanism-wording':
+      preferences.has('PREF-CONCRETE-MECHANISM-WORDING') &&
+      pairs.has('PAIR-087-CONCRETE-MECHANISM') &&
+      events.has('EVENT-20260909-GDR-ABSTRACT-MECHANISM-PHRASING'),
+    'consistent-experiment-visual-grammar':
+      preferences.has('PREF-CONSISTENT-EXPERIMENT-VISUAL-GRAMMAR') &&
+      pairs.has('PAIR-088-EXPERIMENT-CHART-GRAMMAR') &&
+      events.has('EVENT-20260909-UNIFIED-EXPERIMENT-CHART-GRAMMAR'),
+    'diagnostic-motivation-before-intervention':
+      preferences.has('PREF-DIAGNOSTIC-CLOSURE') &&
+      pairs.has('PAIR-084-DIAGNOSTIC-CLOSE-LOOP') &&
+      events.has('EVENT-20260909-DIAGNOSTIC-MOTIVATION-MISSING') &&
+      failureFamilySeverity('incomplete-scientific-decision-loop') === 'hard',
+    'phone-internal-canvas-scaled-as-unit':
+      preferences.has('PREF-BRIEFING-DEVICE-SCOPE') &&
+      pairs.has('PAIR-082-DEVICE-SCOPE') &&
+      events.has('EVENT-20260909-PHONE-INTERNAL-CANVAS-SQUEEZED') &&
+      visuals.has('VISUAL-BRIEFING-604-ACCEPTED-SILVER'),
+    'briefing-604-concrete-accepted-not-canonical':
+      final604Event?.verdict === 'accepted' &&
+      final604Event.evidence?.gitSha === '59f46044e15aa92d95f50f0332a9798adf8d385b' &&
+      final604Visual?.tier === 'silver' &&
+      final604Visual.gitSha === '59f46044e15aa92d95f50f0332a9798adf8d385b' &&
+      !HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === final604Event.evidence?.gitSha && event.verdict === 'canonical') &&
+      !HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden'),
     'recovery-action-first':
       preferences.has('PREF-RECOVERY-ACTION-FIRST') &&
       events.has('EVENT-20260909-FUHUO-RECOVERY-TECHNICAL-FIRST') &&
@@ -240,6 +271,14 @@ export function validateHumanFeedbackIngestionCloseout(record: HumanFeedbackInge
   const visualIds = new Set(HUMAN_VISUAL_REFERENCE_SET.map((item) => item.id));
   const ingestionIds = new Set(HUMAN_FEEDBACK_INGESTION_CLOSEOUTS.map((item) => item.id));
 
+  for (const reference of HUMAN_VISUAL_REFERENCE_SET) {
+    if (!reference.supersededByReferenceId) continue;
+    if (reference.supersededByReferenceId === reference.id) failures.push(`${record.id}: visual reference ${reference.id} cannot supersede itself`);
+    if (!HUMAN_VISUAL_REFERENCE_SET.some((candidate) => candidate.id === reference.supersededByReferenceId)) {
+      failures.push(`${record.id}: visual reference ${reference.id} points to unknown successor ${reference.supersededByReferenceId}`);
+    }
+  }
+
   if (!['human-feedback-ingestion-closeout.v1', 'human-feedback-ingestion-closeout.v2'].includes(record.schema)) failures.push(`${record.id}: wrong schema`);
   if (record.schema === 'human-feedback-ingestion-closeout.v1') {
     if (!/^[0-9a-f]{40}$/i.test(record.sourceWindow.finalAcceptedHead ?? '')) failures.push(`${record.id}: invalid finalAcceptedHead`);
@@ -306,13 +345,25 @@ export function validateHumanFeedbackIngestionCloseout(record: HumanFeedbackInge
     );
     if (!candidateVisual) failures.push(`${record.id}: v2 current candidate visual is missing, bound to wrong head, or outside the requested scope`);
     if (HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === candidateHead && ['accepted', 'canonical'].includes(event.verdict))) failures.push(`${record.id}: current candidate was incorrectly promoted to accepted/canonical`);
+  } else if (record.sourceWindow.finalVerdict === 'accepted') {
+    const acceptedHead = record.sourceWindow.finalOwnerVisibleHead;
+    const acceptedScope = record.preferenceBrief?.scope;
+    const acceptedEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.evidence?.gitSha === acceptedHead && event.verdict === 'accepted');
+    const acceptedVisual = HUMAN_VISUAL_REFERENCE_SET.find((reference) =>
+      ['silver', 'golden'].includes(reference.tier) &&
+      reference.gitSha === acceptedHead &&
+      (!acceptedScope || reference.scopes.includes(acceptedScope)),
+    );
+    if (!acceptedEvent) failures.push(`${record.id}: v2 accepted final must bind an accepted feedback event to exact head ${acceptedHead}`);
+    if (!acceptedVisual) failures.push(`${record.id}: v2 accepted final must bind a Silver/Golden visual reference to exact head ${acceptedHead}`);
+    if (HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === acceptedHead && event.verdict === 'canonical')) failures.push(`${record.id}: concrete accepted head was incorrectly promoted to canonical`);
   }
   if (HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden')) failures.push(`${record.id}: briefing must not have a Golden visual without canonical owner language`);
 
   const families = new Set(HUMAN_FEEDBACK_EVENTS.flatMap((event) => event.failureMechanisms));
   const repeatedFamilies = [...families].filter((family) => failureFamilySeverity(family) === 'repeated').sort();
   const hardFamilies = hardFailureFamilies();
-  for (const requiredHard of ['meaningless-english-eyebrow', 'engineering-as-science-highlight', 'internal-detail-promoted-to-primary-attention']) if (!hardFamilies.includes(requiredHard)) failures.push(`${record.id}: expected hard family missing: ${requiredHard}`);
+  for (const requiredHard of ['meaningless-english-eyebrow', 'engineering-as-science-highlight', 'internal-detail-promoted-to-primary-attention', 'incomplete-scientific-decision-loop']) if (!hardFamilies.includes(requiredHard)) failures.push(`${record.id}: expected hard family missing: ${requiredHard}`);
   if (record.schema === 'human-feedback-ingestion-closeout.v2') {
     for (const requiredRepeated of ['incomplete-scientific-decision-loop', 'mobile-fixed-canvas-overflow']) {
       if (!['repeated', 'hard'].includes(failureFamilySeverity(requiredRepeated))) failures.push(`${record.id}: expected repeated family missing: ${requiredRepeated}`);

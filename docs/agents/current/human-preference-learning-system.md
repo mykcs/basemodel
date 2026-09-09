@@ -111,7 +111,9 @@ Visual preference cannot be represented faithfully by prose alone.
 
 A visual reference should be reconstructable when possible with Git SHA / PR / route. Screenshots may be stored when they are stable and worth the repository weight, but an unapproved screenshot must never be promoted to Golden merely because an Agent likes it.
 
-**Golden promotion rule:** only explicit owner language such as `OK / 可以 / 就按这个标准 / 以后参考这个` can create a Golden reference.
+When an old `current-candidate` is later superseded by an accepted successor, keep the historical record but point it at the successor with `supersededByReferenceId`. Task-time briefs must hide that stale candidate from the **active** visual set while still preserving the source-window history for audit. This avoids the failure mode where a future Agent is told that an already-merged predecessor is “still under review.”
+
+**Golden promotion rule:** only explicit owner language such as `OK / 可以 / 就按这个标准 / 以后参考这个` can create a Golden reference. A concrete `先合并进 main` / `merge this version` is `accepted` and may support Silver, but it is not future-template authorization by itself.
 
 ## 5. Failure-family escalation
 
@@ -189,6 +191,8 @@ The brief compiles:
 - anti-overgeneralization boundaries.
 
 `feedback:retrieve` remains a useful low-level search tool. The **Preference Brief** is the generation-time owner because it combines the old retrieval layer with trajectories, visual evidence, and escalation.
+
+As the case/pair corpus grows, retrieval capacity must grow enough to preserve older hard constraints as well as newer high-similarity evidence. Current briefs allow up to 16 learned preferences/Gold Pairs and 18 direct events; this is a bounded context expansion, not permission to dump the full history. Regression tests must prove older closeout receipts still retrieve their required signals after new cases are added.
 
 If the brief says there is no Golden reference, the Agent must not invent one.
 

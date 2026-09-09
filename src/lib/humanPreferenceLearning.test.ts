@@ -45,6 +45,24 @@ describe('human preference learning loop', () => {
     expect(preferenceIdsForContract('study-briefing')).not.toContain('PREF-RECOVERY-ACTION-FIRST');
   });
 
+  it('retrieves natural mechanism wording, chart grammar, and local method context from paraphrased briefing cues', () => {
+    const result = retrieveHumanPreferenceContext(
+      '做一个两阶段 agent 训练汇报，解释 gating 为什么拒绝已经训练好的候选；多条模型训练曲线最好统一图例，听众没看过方法页',
+      'study-briefing',
+      12,
+    );
+    expect(result.preferences.map(({ preference }) => preference.id)).toEqual(expect.arrayContaining([
+      'PREF-CONCRETE-MECHANISM-WORDING',
+      'PREF-CONSISTENT-EXPERIMENT-VISUAL-GRAMMAR',
+      'PREF-BRIEFING-SELF-CONTAINED-METHOD',
+    ]));
+    expect(result.goldPairs.map(({ pair }) => pair.id)).toEqual(expect.arrayContaining([
+      'PAIR-087-CONCRETE-MECHANISM',
+      'PAIR-088-EXPERIMENT-CHART-GRAMMAR',
+      'PAIR-089-BRIEFING-METHOD-CONTEXT',
+    ]));
+  });
+
   it('keeps workflow-learning feedback separate from surface aesthetics', () => {
     const result = retrieveHumanPreferenceContext('案例库 触类旁通 preference learning Gold Pair cold read judge');
     expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-FEEDBACK-LEARNING-LOOP');
