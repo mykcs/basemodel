@@ -139,6 +139,9 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(technical).toContain('max split depth is one');
     expect(briefing).not.toContain('20 条 primary');
     expect(briefing).not.toContain('20 条 repair');
+    expect(technical).toContain('不是模型上下文长度，也不是 WebShop 的动作步数');
+    expect(technical).toContain('只把已经失败的 repair 输出上限从 2048 提到 4096');
+    expect(technical).toContain('3B 与 1.7B 的小模型诊断线仍然出现饱和');
     expect(technical).toContain('科学含义不是“10+10 一定让最终分数更高”');
   });
 

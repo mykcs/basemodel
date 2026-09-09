@@ -38,9 +38,10 @@ const direct = 'https://github.com/mykcs/openevo-experiment/pull/404';
 
   <section>
     <h2>{t('3. Text Memory：2048 → 4096 为什么仍然不够', '3. Text Memory: why 2048 → 4096 was still insufficient')}</h2>
+    <p>{t('这里的 2048 / 4096 是 Text Memory 一次整理反思记录时允许生成的输出 token 上限，不是模型上下文长度，也不是 WebShop 的动作步数。A1.1 保持输入记录和分组不变，只把已经失败的 repair 输出上限从 2048 提到 4096；3B 与 1.7B 的小模型诊断线仍然出现饱和，因此“单纯再给更多输出 token”被否定。', 'Here 2048 / 4096 is the Text Memory per-call output-token cap used while consolidating reflection records. It is neither model context length nor the WebShop action horizon. A1.1 kept the input records and grouping fixed and changed only the failed repair output cap from 2048 to 4096; both the 3B and 1.7B diagnostic lines still saturated, rejecting “just give the consolidator more output tokens.”')}</p>
     <div class="capacity-chain" aria-label={t('Text Memory 容量实验链', 'Text Memory capacity experiment chain')}>
-      <div><strong>A1 · 2048</strong><p>{t('出现容量饱和。', 'Capacity saturated.')}</p></div><i>→</i>
-      <div><strong>A1.1 · cap=4096 tokens</strong><p>{t('对称翻倍单次 token 上限后仍然失败，否定“只要加容量就行”。', 'Symmetric doubling of the per-call token cap still failed, rejecting “just make it larger.”')}</p></div><i>→</i>
+      <div><strong>A1 · 2048</strong><p>{t('20 条记录的整理达到输出上限；同一批记录 repair 一次后仍可再次饱和。', 'Consolidating the 20 records can hit the output cap, and one repair pass on the same records can saturate again.')}</p></div><i>→</i>
+      <div><strong>A1.1 · cap=4096 tokens</strong><p>{t('只把失败 repair 的输出上限翻倍，输入和分组不变；3B / 1.7B 仍然失败。', 'Only the failed repair output cap doubles; input and grouping stay fixed, and 3B / 1.7B still fail.')}</p></div><i>→</i>
       <div><strong>A2 · 20 records → 10+10</strong><p>{t('这里的 20 是记录数，不是 token 数：20 条 primary 与同 20 条 repair 都饱和时才固定拆成 10+10，随后压缩并回并；最大分裂深度 1。', 'Here 20 counts records, not tokens: only after the 20-item primary and the same 20-item repair both saturate do we split deterministically into 10+10, compress, and merge; max split depth is one.')}</p></div>
     </div>
     <p>{t('这里的科学含义不是“10+10 一定让最终分数更高”，而是容量失败的解释发生了变化：单纯扩大容器不够，需要结构化、有限的分解。', 'The scientific claim is not that 10+10 necessarily raises the final benchmark score. The diagnosis changed: a larger container alone was insufficient, so the successor uses structured, bounded decomposition.')}</p>
