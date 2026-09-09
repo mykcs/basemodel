@@ -11,7 +11,7 @@ function fixture(t, changedFile = 'docs/note.md') {
   const cwd = mkdtempSync(join(tmpdir(), 'basemodel-browser-budget-'));
   t.after(() => rmSync(cwd, { recursive: true, force: true }));
   mkdirSync(join(cwd, 'scripts'));
-  for (const name of ['ci-ui-gate.mjs', 'vercel-ui-plan.ts', 'preflight-ui.ts']) {
+  for (const name of ['ci-ui-gate.mjs', 'vercel-ui-plan.ts', 'vercel-git-range.mjs', 'preflight-ui.ts']) {
     copyFileSync(new URL(`../scripts/${name}`, import.meta.url), join(cwd, 'scripts', name));
   }
   writeFileSync(join(cwd, 'package.json'), '{"type":"module"}\n');

@@ -2,7 +2,7 @@
 
 Last updated: **2026-08-28** (research-state snapshot)
 
-CI architecture last verified: **2026-09-08**
+CI architecture last verified: **2026-09-09**
 
 Status: **The SEED × OpenEvo Results route is aligned to the closed Track A paired measurement and the adopted WB1 Gen28 state-v28 boundary. Track A remains `measurement-not-proven-stable-improvement`; WB1 is `GEN28_STATE_V28_BARRIER_PASS_ADOPTED` at 3,584/20,640 counted episodes with 17,056 remaining, while Gen29/GPU/formal-task/final authority remains locked.**
 
@@ -11,8 +11,8 @@ This file is a short current-state router. Detailed policy belongs under `docs/a
 ## Current architecture
 
 ```text
-GitHub `mykcs/basemodel`          = website source of truth
-ordinary working PR/ref           -> no Vercel Preview compute
+GitHub `mykcs/basemodel`          = public website source of truth
+ordinary working PR/ref           -> public GHA preflight; no Vercel Preview compute
 final current-base PR candidate   -> persistent exact-SHA Vercel final gate
 main                              -> Vercel Production
 Production                        -> https://basemodel-preview.vercel.app
@@ -22,11 +22,11 @@ mykcs/openevo-experiment         = scientific experiment/result authority
 
 **Live CI control plane (verified 2026-09-08):** protected `main` requires the GitHub status **`Vercel` only**. The Vercel-first cutover is complete; CircleCI has no merge authority.
 
-Ordinary working refs are not Vercel deployment-enabled. Hosted acceptance is requested only for a final current-base candidate through `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`, which pins `ci/vercel-gate-base` to live `main` and moves persistent `ci/vercel-gate-final` to the exact PR head. Every Preview that reaches that gate enters real acceptance; `[vercel-preview]` is only a historical/review marker. Proven docs/governance-only `main` changes remain ignored so they cannot replace Production. **Vercel is the ordinary CI and deployment authority.** CircleCI automatic PR/main workflows are disabled and only explicit API-triggered manual fallback is retained; GitHub Actions is retained only as manual `workflow_dispatch` control plane for the repository-scoped Mac/OrbStack fallback runner.
+Ordinary working refs are not Vercel deployment-enabled. They now receive an automatic **public GitHub Actions PR preflight**: read-only exact-head deterministic validation plus the shared risk-based browser planner; full/global browser work is timing-balanced over four independent Chromium shards with one worker each and retries=0. Hosted Vercel acceptance is requested only for a final current-base candidate through `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`, which pins `ci/vercel-gate-base` to live `main` and moves persistent `ci/vercel-gate-final` to the exact PR head. Every Preview that reaches that gate enters real acceptance; `[vercel-preview]` is only a historical/review marker. Proven docs/governance-only `main` changes remain ignored so they cannot replace Production. **Public GitHub Actions is the ordinary PR preflight compute lane; Vercel remains the required final-candidate CI and deployment authority.** CircleCI automatic PR/main workflows are disabled and only explicit API-triggered manual fallback is retained; the separate self-hosted GitHub Actions workflow remains manual `workflow_dispatch` control plane for the repository-scoped Mac/OrbStack fallback runner.
 
 Provider-selection rationale is `current/ci-provider-decision.md`; current hosting authority is `current/hosting-architecture.md`; release/deployment authority is `current/deployment-policy.md`. Historical Cloudflare deployment paths remain rollback/provider-specific tooling, while `cloudflare/production-smoke/` is the active monitoring-only exception and never deploys the site.
 
-Browser-heavy acceptance now runs **inside Vercel Pro before merge**. The Vercel gate and retained manual CircleCI fallback share `vercel-ui-plan.ts` skip/focused/full policy; first/unknown PR comparisons fail closed to the complete Chromium matrix, and the 12-case Lab gate runs where relevant. Vercel Production runs the same deterministic + risk-based browser contract. Cloudflare production-smoke independently checks the real Production origin every 30 minutes for HTTP, canonical, robots, sitemap and redirect health.
+Browser-heavy **preflight** now runs first on public GitHub-hosted runners, while exact-head **final acceptance** still runs inside Vercel Pro before merge. Public GHA, the Vercel gate, and retained manual CircleCI fallback share `vercel-ui-plan.ts` skip/focused/full policy; first/unknown comparisons fail closed to complete Chromium coverage, and the 12-case Lab gate remains relevant where owned. Qualification run `34261768688` on exact head `b1551fffefa9061530a688e48343ea21e4ab0670` assigned all 204 canonical Chromium tests exactly once as `51 + 51 + 52 + 50`; the slowest browser step was `191 s`, versus about `402 s` for the representative Vercel full-browser tail (~52.5% faster). Vercel Production runs the deterministic + risk-based browser contract. Cloudflare production-smoke independently checks the real Production origin every 30 minutes for HTTP, canonical, robots, sitemap and redirect health.
 
 ## Current research state
 

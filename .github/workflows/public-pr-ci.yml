@@ -1,0 +1,116 @@
+name: Public PR CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: basemodel-public-pr-ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  CI: '1'
+
+jobs:
+  deterministic:
+    name: public-deterministic
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/head
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Bind exact candidate identity
+        env:
+          CI_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          CI_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$CI_HEAD_SHA"
+          git cat-file -e "$CI_BASE_SHA^{commit}"
+
+      - name: Validate CI contracts
+        run: node --test tests/ci-plan.test.mjs tests/ci-circleci-prepare.test.mjs tests/ci-browser-budget.test.mjs
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deterministic repository gate
+        run: npm run verify:deploy
+
+      - name: Build static artifact
+        run: npm run build
+
+  browser:
+    name: public-browser-${{ matrix.shard }}-of-4
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    env:
+      CI_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      CI_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      CI_BROWSER_SHARD_INDEX: ${{ matrix.shard }}
+      CI_BROWSER_SHARD_TOTAL: '4'
+      CI_BROWSER_INSTALL: '1'
+      CI_BROWSER_BUILD: '1'
+      CI_PLAYWRIGHT_WITH_DEPS: '0'
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+      PLAYWRIGHT_WORKERS: '1'
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/head
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Bind exact candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          test "$(git rev-parse HEAD)" = "$CI_HEAD_SHA"
+          git cat-file -e "$CI_BASE_SHA^{commit}"
+
+      - name: Risk-based browser acceptance shard
+        run: node scripts/ci-ui-gate.mjs
+
+  gate:
+    name: public-ci-gate
+    if: always()
+    needs: [deterministic, browser]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Require every public CI job
+        env:
+          DETERMINISTIC_RESULT: ${{ needs.deterministic.result }}
+          BROWSER_RESULT: ${{ needs.browser.result }}
+        run: |
+          set -euo pipefail
+          test "$DETERMINISTIC_RESULT" = success
+          test "$BROWSER_RESULT" = success

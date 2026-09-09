@@ -1,6 +1,6 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-09-08**
+Last reviewed: **2026-09-09**
 
 ## Authority
 
@@ -10,6 +10,7 @@ Provider-selection rationale: [`ci-provider-decision.md`](ci-provider-decision.m
 GitHub = canonical source
 
 working PR / development branch
+-> public hosted GitHub Actions preflight: deterministic gate + shared risk planner + up to 4 independent Chromium shards
 -> no ordinary Vercel Preview while iterating
 
 final non-draft current-base candidate
@@ -35,7 +36,7 @@ manual recovery only
 
 **Cutover state: complete.** Live `main` branch protection was verified on **2026-09-08** at `main@f64f742807e269885970eb2c5e7499b7af3639d2`: the only required GitHub status is **`Vercel`**. CircleCI contexts are not required checks and do not own merge readiness. Automatic CircleCI PR/main workflows are disabled.
 
-**Vercel is the ordinary CI and deployment authority.** GitHub-hosted Actions compute and GitHub Pages remain outside the ordinary Base Model path. CircleCI is retained only as explicit API-triggered manual fallback; `.circleci/config.yml` has no automatic PR/main workflow, so ordinary repository activity must not launch CircleCI or produce CircleCI failure notifications. Cloudflare remains post-deploy observation plus dormant fallback assets, not a second deployment authority.
+**Vercel remains the required final-candidate CI and deployment authority.** Public GitHub-hosted Actions is now the ordinary non-required PR preflight compute lane; it runs automatically because the public repository can use standard hosted runners without consuming the former private-repository minute budget. CircleCI remains explicit API-triggered fallback, and the Mac/OrbStack workflow remains self-hosted manual fallback. Cloudflare remains post-deploy observation plus dormant fallback assets, not a second deployment authority.
 
 ### Exact-head and current-base acceptance
 
@@ -72,6 +73,10 @@ A replacement provider `ERROR` must also be localized by **execution phase** bef
 - a docs/governance-only final candidate still runs `verify:deploy` when its explicit gate ref is created, but the browser planner may skip Chromium when the diff is proven non-UI;
 - a docs/governance-only change on `main` remains non-deploy-relevant and **must not publish a Production build**. This preserves the rule that changing `AGENTS.md` or `docs/agents/**` cannot replace the website Production artifact.
 
+### Shared risk-aware browser gate: public GHA preflight + Vercel final
+
+Public GHA and Vercel use the same risk taxonomy. Public GHA provides the cheap parallel feedback lane; Vercel proves the exact final candidate in the deployment provider. Full/global public-GHA work is timing-balanced over four independent shards with one worker each; bounded work remains focused; unknown ownership fails closed. Vercel retains the required status and its own risk-based Chromium/Lab acceptance.
+
 ### Risk-aware browser gate on Vercel Pro
 
 The Vercel build command is:
@@ -80,7 +85,7 @@ The Vercel build command is:
 npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs
 ```
 
-`vercel-ui-gate.mjs` and `ci-ui-gate.mjs` share `scripts/vercel-ui-plan.ts`; there is one risk taxonomy, not a provider-specific weaker copy.
+`vercel-ui-gate.mjs` and `ci-ui-gate.mjs` share `scripts/vercel-ui-plan.ts`; there is one risk taxonomy, not a provider-specific weaker copy. The public GHA full path preserves canonical identities, retries=0, and one worker per independent shard.
 
 ```text
 non-UI / governance-only diff
@@ -105,7 +110,7 @@ The canonical Chromium suite remains `npm run test:ui`. Vercel chooses Playwrigh
 
 ### Budget-first execution
 
-Vercel Pro is metered, so fail-open Preview acceptance does not authorize push spam. Keep `github.autoJobCancelation=true`, finish coherent batches before pushing, and let the risk-aware planner control unchanged browser work. A skipped/focused/full browser plan is an optimization of **which unchanged tests need to run**, never an assertion reduction.
+Vercel Pro is metered, so ordinary pushes use the public GHA preflight and spend zero Vercel compute. Keep `github.autoJobCancelation=true`, finish coherent batches before requesting the persistent Vercel final gate, and let the shared risk-aware planner control unchanged browser work. A skipped/focused/full browser plan is an optimization of **which unchanged tests need to run**, never an assertion reduction.
 
 Routine Dependabot version updates keep their existing weekly schedule, grouping and major-upgrade boundaries, with at most one open version-update PR. Security updates have a separate GitHub limit and are not disabled. This bounds concurrent update churn; it does not retroactively cancel existing PRs or guarantee fewer eventual updates.
 
@@ -164,7 +169,7 @@ Do not move repository compilation, npm installation, Vitest, the full Playwrigh
 - Optimize test selection and sharding before buying larger runners or moving the same inefficient gate to another provider.
 - Re-check CircleCI/Cloudflare/GitHub/Vercel quota and billing semantics live; dated free-tier numbers are historical evidence, not repository authority.
 - Vercel project build-machine selection remains fixed Standard unless a measured same-workload cost reason justifies a change.
-- Heavy Chromium/Lab acceptance belongs to the Vercel Pro gate. CircleCI may run the retained contract only when explicitly triggered through the manual API fallback; it must not duplicate ordinary merge authority.
+- Parallel Chromium preflight belongs on public GitHub-hosted runners; exact final Preview/Chromium/Lab acceptance and merge authority remain on Vercel Pro. CircleCI may run the retained contract only when explicitly triggered through the manual API fallback; it must not duplicate ordinary merge authority.
 - CircleCI fork PR builds and fork-secret passing remain disabled; SSH reruns remain disabled; redundant branch workflows remain auto-cancelled.
 - A provider scheduler is not the compute surface. Keep source hosting, CI control plane, CI compute, deployment, and post-deploy monitoring conceptually separate.
 
