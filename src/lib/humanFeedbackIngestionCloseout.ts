@@ -498,7 +498,7 @@ export function validateHumanFeedbackIngestionCloseout(record: HumanFeedbackInge
   const families = new Set(HUMAN_FEEDBACK_EVENTS.flatMap((event) => event.failureMechanisms));
   const repeatedFamilies = [...families].filter((family) => failureFamilySeverity(family) === 'repeated').sort();
   const hardFamilies = hardFailureFamilies();
-  for (const requiredHard of ['meaningless-english-eyebrow', 'engineering-as-science-highlight', 'internal-detail-promoted-to-primary-attention', 'incomplete-scientific-decision-loop']) if (!hardFamilies.includes(requiredHard)) failures.push(`${record.id}: expected hard family missing: ${requiredHard}`);
+  for (const requiredHard of ['meaningless-english-eyebrow', 'engineering-as-science-highlight', 'internal-detail-promoted-to-primary-attention', 'incomplete-scientific-decision-loop', 'defensive-negation-opening']) if (!hardFamilies.includes(requiredHard)) failures.push(`${record.id}: expected hard family missing: ${requiredHard}`);
   if (record.schema === 'human-feedback-ingestion-closeout.v2') {
     for (const requiredRepeated of ['incomplete-scientific-decision-loop', 'mobile-fixed-canvas-overflow']) {
       if (!['repeated', 'hard'].includes(failureFamilySeverity(requiredRepeated))) failures.push(`${record.id}: expected repeated family missing: ${requiredRepeated}`);

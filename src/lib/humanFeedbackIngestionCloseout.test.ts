@@ -95,6 +95,8 @@ describe('human feedback ingestion closeout', () => {
     expect(failureFamilySeverity('mobile-fixed-canvas-overflow')).toBe('repeated');
     expect(failureFamilySeverity('compressed-shorthand-heading')).toBe('hard');
     expect(failureFamilySeverity('presenter-language')).toBe('repeated');
+    expect(failureFamilySeverity('defensive-negation-opening')).toBe('hard');
+    expect(failureFamilySeverity('anticipatory-rebuttal')).toBe('hard');
     expect(failureFamilySeverity('technical-detail-wrong-layer')).toBe('repeated');
     expect(failureFamilySeverity('story-compression-hides-causal-sequence')).toBe('normal');
     expect(failureFamilySeverity('reference-surface-imitation')).toBe('hard');

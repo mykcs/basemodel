@@ -121,6 +121,20 @@ describe('human preference learning v2', () => {
     ]));
   });
 
+  it('retrieves the repeated binary-contrast failure as hard while preserving normal scientific negation', () => {
+    const brief = buildHumanPreferenceBrief({
+      contractId: 'study-briefing',
+      query: '准备下一次研究汇报：有一页只是列我们做过的实验尝试，标题不要先替观众构造一个二元反驳；同时结果页仍需要保留真正的科学 caveat。',
+    });
+    expect(brief.hardFailureFamilies).toEqual(expect.arrayContaining(['defensive-negation-opening', 'anticipatory-rebuttal']));
+    expect(brief.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-081-BINARY-CONTRAST-SUMMARY');
+    expect(brief.events.map((event) => event.id)).toContain('EVENT-20260909-BRIEFING-BINARY-CONTRAST-REPEAT');
+    expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('否定句') || boundary.includes('caveat'))).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-BINARY-CONTRAST-REJECTED')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-605-MERGED-REJECTED')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.tier === 'golden')).toBe(false);
+  });
+
   it('builds a recovery-scoped brief with rejected/current visual tiers and no invented Golden', () => {
     const brief = buildHumanPreferenceBrief({
       scope: 'recovery',

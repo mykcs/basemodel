@@ -436,6 +436,21 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 605, gitSha: 'a83eb0da4481de465191c0b4a0d36cd8ff60c2c0', ledgerId: 'FB-S4-10-COMPOSED-STATE' },
   },
   {
+    id: 'EVENT-20260909-BRIEFING-BINARY-CONTRAST-REPEAT',
+    date: '2026-09-09',
+    caseIds: ['CASE-081', 'CASE-090'],
+    scopes: ['briefing', 'research-copy', 'visual'],
+    artifact: 'OpenEVO summer review · Slide 3 science-attempt summary',
+    variantId: 'briefing-binary-contrast-recurrence-e9b767d4',
+    verdict: 'rejected',
+    ownerSignal: 'Slide 的第3页还是犯了“不是……而是……”这样的错误。再照着这个标准看一看，然后改。',
+    reasons: ['HPL 规则已经存在，但第一版仍把“我们不是只跑一次实验，而是一步步换问题去验证”做成主标题，说明同一防御式二元 framing 仍会复发', '问题不在“不是 / 而是”两个字本身，而在标题先展示作者的对照姿态；直接主题“我们做过哪些尝试”更自然'],
+    failureMechanisms: ['defensive-negation-opening', 'anticipatory-rebuttal'],
+    repeatSignal: 'explicit',
+    requestedSuccessorVariantId: 'briefing-pr605-final-merged-rejected-56b5120',
+    evidence: { route: '/research/seed-openevo/study/briefing/', pullRequest: 605, gitSha: 'e9b767d4f278edd1d03e68006f94116399f1db7f', ledgerId: 'FB-S5-02-BINARY-CONTRAST-REPEAT' },
+  },
+  {
     id: 'EVENT-20260909-BRIEFING-METHOD-CONTEXT',
     date: '2026-09-09',
     caseIds: ['CASE-089'],
@@ -709,7 +724,7 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
   {
     id: 'TRAJECTORY-BRIEFING-STORYLINE-NATURAL-COPY-20260909',
     scopes: ['briefing', 'research-copy', 'visual'],
-    variantIds: ['briefing-diagnostic-intervention-first-0aa9693c', 'briefing-log-first-a83eb0da', 'briefing-storyline-human-causal-670ab9b4', 'briefing-pr605-final-merged-rejected-56b5120'],
+    variantIds: ['briefing-diagnostic-intervention-first-0aa9693c', 'briefing-log-first-a83eb0da', 'briefing-storyline-human-causal-670ab9b4', 'briefing-binary-contrast-recurrence-e9b767d4', 'briefing-pr605-final-merged-rejected-56b5120'],
     comparisons: [
       {
         betterVariantId: 'briefing-log-first-a83eb0da',
@@ -722,6 +737,12 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
         worseVariantId: 'briefing-log-first-a83eb0da',
         reason: '进一步移除 7<8 / 7B:结论 这类压缩标题、“老师很可能会问”元话术和 composed state 内部英文，并把科学尝试与技术工作分开总结。',
         failureMechanisms: ['compressed-shorthand-heading', 'presenter-language', 'meta-narration', 'jargon-memory-load'],
+      },
+      {
+        betterVariantId: 'briefing-pr605-final-merged-rejected-56b5120',
+        worseVariantId: 'briefing-binary-contrast-recurrence-e9b767d4',
+        reason: '在“科学尝试”标题这一维，后继版本把“我们不是只跑一次实验，而是……”改成直接主题“我们做过哪些尝试”。该后继版本后来仍因 TaskVector 技术层级与科学尝试页结构问题被整体判为 Rejected；这里仅记录这一个文案维度的改进。',
+        failureMechanisms: ['defensive-negation-opening', 'anticipatory-rebuttal'],
       },
     ],
     note: '670ab9b4 是 PR #605 的历史 current-candidate；后续 exact head 56b5120 进入 main，但 owner 在该 head 之后明确指出 TaskVector 技术层级和“科学尝试”checklist 仍是必须修掉的 hard failure。merge 不是 accepted evidence；56b5120 记为 Rejected，仍没有 canonicalVariantId / Golden。',
@@ -876,6 +897,18 @@ export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
     ownerEvidence: '该版本落实 low-score→logs→problems→interventions、自然事件标题、科学/技术工作分开总结和 composed-state 去黑话；owner 随后启动 HPL closeout，但没有对 exact visual 给出 accepted / canonical 语言。',
     note: '这是 PR #605 的历史 CURRENT-CANDIDATE，不是 Silver/Golden。后续 exact head 56b5120 已合并但仍被 owner 指出 hard failure，因此本候选已被后继 Rejected 视觉状态取代。',
     supersededByReferenceId: 'VISUAL-BRIEFING-605-MERGED-REJECTED',
+  },
+  {
+    id: 'VISUAL-BRIEFING-BINARY-CONTRAST-REJECTED',
+    tier: 'rejected',
+    scopes: ['briefing', 'visual'],
+    artifact: 'OpenEVO briefing · HPL-applied draft with binary-contrast Slide 3 recurrence',
+    repository: 'mykcs/basemodel',
+    gitSha: 'e9b767d4f278edd1d03e68006f94116399f1db7f',
+    pullRequest: 605,
+    route: '/research/seed-openevo/study/briefing/',
+    ownerEvidence: 'owner 明确说 Slide 3 “还是犯了‘不是……而是……’这样的错误”，要求按已有标准重新检查整套。',
+    note: 'Rejected 的是 Slide 3 的防御式二元 framing / copy grammar；不表示该 commit 的所有视觉元素都被逐项否定。',
   },
   {
     id: 'VISUAL-BRIEFING-605-MERGED-REJECTED',
