@@ -108,11 +108,11 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
 
   <section id="science-attempts" class="briefing-slide tone-blue" aria-labelledby="science-attempts-title">
     <div class="slide-inner summary-slide">
-      <h2 id="science-attempts-title">{t('我们不是只跑一次实验，而是一步步换问题去验证', 'We did not just run one experiment; we kept changing the question and testing it')}</h2>
+      <h2 id="science-attempts-title">{t('低分出现以后，我们一步步把问题拆小来验证', 'After the low score appeared, we broke the problem into smaller tests')}</h2>
       <p class="slide-thesis">{t('每次分数低或训练卡住，我们先看日志和轨迹，再做一个最小改动。下面四件事是主线上的科学尝试。', 'Whenever scores were low or training stalled, we first checked logs and traces, then made one minimal change. These four items are the scientific attempts in the main story.')}</p>
       <ol class="summary-list">
         <li><span>01</span><strong>{t('修正长期训练的更新门槛', 'fix the long-run update gate')}</strong><p>{t('旧规则让训练跑很久却 0 次参数更新；修正后，7B 才能真正进入长期学习。', 'The old rule let training run for a long time with zero parameter updates; after the fix, 7B could truly enter long-run learning.')}</p></li>
-        <li><span>02</span><strong>{t('做一次 7B 长周期训练', 'run one long 7B training line')}</strong><p>{t('看训练曲线、loss 和冻结终评是否一致，避免只看最后一个分数。', 'Compare training curves, loss, and frozen final results instead of relying on one final number.')}</p></li>
+        <li><span>02</span><strong>{t('做一次 7B 长周期训练', 'run one long 7B training line')}</strong><p>{t('看训练曲线、loss 和冻结终评是否一致，避免只看最后一个分数。', 'Compare training curves, loss, and frozen final results before interpreting one final number.')}</p></li>
         <li><span>03</span><strong>{t('用 1.7B / 3B 做便宜诊断', 'use 1.7B / 3B for cheaper diagnostics')}</strong><p>{t('检查步数、Text Memory、动作接口和参数方向，快速排除具体解释。', 'Check step limit, Text Memory, action interface, and parameter direction to eliminate concrete explanations quickly.')}</p></li>
         <li><span>04</span><strong>{t('把 GDR 与 DirectApply 分开比较', 'separate GDR from DirectApply')}</strong><p>{t('专门问：44 次已经训练出来的更新，为什么只有 7 次真正进入后续模型？', 'Ask directly why 44 trained updates became only 7 updates that entered later model states.')}</p></li>
       </ol>
@@ -123,7 +123,7 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
     <div class="slide-inner">
       <h2 id="results-title">{t('当前 WebShop 结果与 SEED 论文参照', 'Current WebShop results and the SEED paper reference')}</h2>
       <p class="slide-thesis">{t('沿用 SEED 论文常见的两列：Score 看任务要求完成了多少，Succ. 看整道任务是否完整成功。', 'Use the familiar two WebShop columns from the SEED paper: Score for partial task completion and Succ. for full task success.')}</p>
-      <p class="table-boundary"><strong>{t('SEED 与 OpenEVO 不是同协议直接对照。', 'SEED and OpenEVO are not a same-protocol head-to-head comparison.')}</strong>{t('SEED 是论文报告值；OpenEVO 是本地冻结 128 题终评。这里统一用 Score / Succ. 方便读表，不能直接用 89.7 与 49.33 的差值判断胜负。', 'SEED values are paper-reported; OpenEVO uses our local frozen 128-task final panel. The shared Score / Succ. columns are for readability, not for declaring a winner from the 89.7 versus 49.33 gap.')}</p>
+      <p class="table-boundary"><strong>{t('SEED 与 OpenEVO 口径不同。', 'SEED and OpenEVO use different measurement setups.')}</strong>{t('SEED 是论文报告值；OpenEVO 是本地冻结 128 题终评。这里统一用 Score / Succ. 方便读表，不能直接用 89.7 与 49.33 的差值判断胜负。', 'SEED values are paper-reported; OpenEVO uses our local frozen 128-task final panel. The shared Score / Succ. columns are for readability, not for declaring a winner from the 89.7 versus 49.33 gap.')}</p>
       <div class="paper-table-wrap" tabindex="0" aria-label={t('SEED 论文与 OpenEVO 当前 WebShop 结果', 'SEED paper and current OpenEVO WebShop results')}>
         <table class="paper-table">
           <thead><tr><th>Method / Model</th><th>WebShop Score</th><th>WebShop Succ.</th></tr></thead>
@@ -152,7 +152,7 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
       <div class="focus-question"><span>{t('可能的疑问', 'Possible question')}</span><p>{t('既然已经有不少成功和正向轨迹，为什么模型没有把这些经验写进参数？', 'If there were successful and positive trajectories, why did none of that experience become a parameter update?')}</p></div>
       <p class="slide-thesis">{t('我们回头查旧 Stage 2 的更新规则。模型确实产生过成功和正向轨迹；真正卡住的是一个早期控制实验条件被带进了长期训练。这个条件要求一个 256-rollout 窗口里至少有 8 个合格任务身份；真实窗口最多只有 7 个，所以 gate 一直不放行。', 'We inspected the old Stage-2 update rule. The model did produce successful and positive trajectories; the blocker was an early control-experiment condition that had leaked into long-run training. A 256-rollout window needed at least eight qualifying task identities before parameters could update. Real windows reached at most seven, so the gate never opened.')}</p>
       <div class="before-after gate-compare">
-        <div class="before"><span>{t('原本用途：控制实验', 'Original use: control experiment')}</span><strong>{t('8 个任务身份 × 每个 2 条成功', '8 task identities × 2 successes each')}</strong><p>{t('为了比较 LoRA / SD-LoRA，让两种训练方法看到同一份成功数据。这里的 8 是方法对照条件，不是长期学习算法。', 'This made LoRA and SD-LoRA see the same success data in a method comparison. The number 8 was a control condition, not the long-run learning algorithm.')}</p></div>
+        <div class="before"><span>{t('原本用途：控制实验', 'Original use: control experiment')}</span><strong>{t('8 个任务身份 × 每个 2 条成功', '8 task identities × 2 successes each')}</strong><p>{t('为了比较 LoRA / SD-LoRA，让两种训练方法看到同一份成功数据。这里的 8 属于方法对照条件；长期学习不应沿用它。', 'This made LoRA and SD-LoRA see the same success data in a method comparison. The number 8 belonged to the method-control setup; long-run learning should not inherit it.')}</p></div>
         <div class="after"><span>{t('后来误用：Stage 2 gate', 'Later misuse: Stage-2 gate')}</span><strong>{t('每 256 次 rollout 不到 8 个身份就不更新', 'no update unless a 256-rollout window reaches 8 identities')}</strong><p>{t('实际窗口最多只有 7 个 qualifying identities；于是 20,480 次 rollout 和 797 条 positive 轨迹，仍然得到 0 次参数更新。', 'A real window topped out at 7 qualifying identities; thus 20,480 rollouts and 797 positive trajectories still produced zero parameter updates.')}</p></div>
       </div>
       <div class="resolution-box"><strong>{t('我们怎么解决', 'How we fixed the scientific rule')}</strong><p>{t('撤掉旧 7-vs-8 gate，把正式 Stage 2 固定成 round-local：一轮 128 次 WebShop 尝试里，只要出现至少一个 clean exact-success task，就给 SD-LoRA 一次更新机会；如果没有成功，就明确记为 NOOP。这样模型有没有学到东西，才不再被历史控制门槛挡住。', 'We removed the old 7-vs-8 gate and froze formal Stage 2 as round-local: in one 128-rollout WebShop round, at least one clean exact-success task gives SD-LoRA one update opportunity; if there is no success, the round is recorded as NOOP. Only then is learning no longer blocked by a historical control threshold.')}</p></div>
@@ -164,7 +164,7 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
   <section id="openevo-method" class="briefing-slide tone-green" aria-labelledby="openevo-method-title">
     <div class="slide-inner method-slide">
       <h2 id="openevo-method-title">{t('后来那条 7B 长跑，每轮会同时更新几类东西', 'The later 7B long run updated several kinds of state each round')}</h2>
-      <p class="slide-thesis">{t('最早的 7B Stage 1 只是收集 1,440 条原始 WebShop 轨迹；后来跑到 49.33 的 Ceiling-1.0 7B，已经不是裸模型，也不是只多了一组参数。它每轮会同时更新四类东西：Text Memory、Skill Bundle、Agent System 和 SD-LoRA。MiniMax 只在第一阶段任务结束后回看轨迹，不替 Qwen 搜索或点击；进入第二阶段以后，不再持续调用外部老师。', 'The earliest 7B Stage 1 only collected 1,440 raw WebShop trajectories. The later Ceiling-1.0 7B run that ended at 49.33 was no longer a bare model or a single parameter adapter. Each round updated four things together: Text Memory, Skill Bundle, Agent System, and SD-LoRA. MiniMax reviewed completed trajectories only after Stage 1; it never searched or clicked for Qwen, and Stage 2 no longer called an external teacher continuously.')}</p>
+      <p class="slide-thesis">{t('最早的 7B Stage 1 只收集 1,440 条原始 WebShop 轨迹；后来跑到 49.33 的 Ceiling-1.0 7B，已经包含四类会滚动更新的状态：Text Memory、Skill Bundle、Agent System 和 SD-LoRA。MiniMax 只在第一阶段任务结束后回看轨迹，不替 Qwen 搜索或点击；进入第二阶段以后，外部老师不再持续介入。', 'The earliest 7B Stage 1 only collected 1,440 raw WebShop trajectories. The later Ceiling-1.0 7B run that ended at 49.33 already carried four rolling state types: Text Memory, Skill Bundle, Agent System, and SD-LoRA. MiniMax reviewed completed trajectories only after Stage 1; it never searched or clicked for Qwen, and the external teacher did not keep intervening during Stage 2.')}</p>
       <div class="method-stage-grid">
         <article>
           <header><span>Stage 1</span><strong>{t('先把 1,440 条学生轨迹变成一个可学习的起点', 'Turn 1,440 student trajectories into a learnable starting state')}</strong></header>
@@ -189,7 +189,7 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
         <span><strong>Agent System</strong>{t('全局行为与恢复规则', 'global behavior and recovery rules')}</span>
         <span><strong>SD-LoRA</strong>{t('持续参数更新', 'continual parameter updates')}</span>
       </div>
-      <p class="method-state-note"><strong>{t('最后更新成什么样？', 'What did the final state contain?')}</strong>{t('不是一个单独 memory 文件或一个 adapter，而是 Text Memory + Skill Bundle + Agent System + 143 个已写入的 SD-LoRA 参数组件一起组成下一轮模型状态。', 'Not one memory file or one adapter alone: Text Memory + Skill Bundle + Agent System + 143 written SD-LoRA parameter components together defined the later model state.')}</p>
+      <p class="method-state-note"><strong>{t('最后更新成什么样？', 'What did the final state contain?')}</strong>{t('最终下一轮模型状态由 Text Memory + Skill Bundle + Agent System + 143 个已写入的 SD-LoRA 参数组件共同组成。', 'Text Memory + Skill Bundle + Agent System + 143 written SD-LoRA parameter components together defined the later model state.')}</p>
       <p class="slide-bridge">{t('既然训练过程真的在变好，下一步就要看它的冻结终评到底停在哪里。', 'Since the training process genuinely improved, the next step is to compare it with the frozen final result.')}</p>
       <p class="slide-number">06 / 18</p>
     </div>
@@ -197,7 +197,7 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
   <section id="seven-b" class="briefing-slide tone-blue" aria-labelledby="seven-b-title">
     <div class="slide-inner dynamics-slide seven-b-dynamics">
       <h2 id="seven-b-title">{t('我们做了一次 7B 长跑：训练在变好，冻结终评是 49.33', 'We ran one long 7B training line: training improves, the frozen final is 49.33')}</h2>
-      <p class="slide-thesis">{t(`149 轮训练里，每轮 WebShop Score 从前 20 轮平均 ${earlyScoreMean7B.toFixed(2)} 提到最后 20 轮平均 ${lateScoreMean7B.toFixed(2)}；143 次真正采用的 SD-LoRA 更新里，loss 从 ${firstLoss7B.toFixed(2)} 降到 ${lastLoss7B.toFixed(2)}。所以“训练有没有发生”不是主要疑问。它确实学起来了；真正的问题是，为什么最后冻结 128 题终评停在 49.33，而 SEED 论文里的 7B 参照是 89.7。`, `Across 149 rounds, mean WebShop Score rises from ${earlyScoreMean7B.toFixed(2)} over the first 20 rounds to ${lateScoreMean7B.toFixed(2)} over the last 20; across 143 SD-LoRA updates actually applied, loss falls from ${firstLoss7B.toFixed(2)} to ${lastLoss7B.toFixed(2)}. Training clearly happened; the question is why the frozen 128-task final stops at 49.33 while the SEED paper's 7B reference is 89.7.`)}</p>
+      <p class="slide-thesis">{t(`149 轮训练里，每轮 WebShop Score 从前 20 轮平均 ${earlyScoreMean7B.toFixed(2)} 提到最后 20 轮平均 ${lateScoreMean7B.toFixed(2)}；143 次真正采用的 SD-LoRA 更新里，loss 从 ${firstLoss7B.toFixed(2)} 降到 ${lastLoss7B.toFixed(2)}。训练曲线已经说明它确实学起来了；接下来的问题是，为什么最后冻结 128 题终评停在 49.33，而 SEED 论文里的 7B 参照是 89.7。`, `Across 149 rounds, mean WebShop Score rises from ${earlyScoreMean7B.toFixed(2)} over the first 20 rounds to ${lateScoreMean7B.toFixed(2)} over the last 20; across 143 SD-LoRA updates actually applied, loss falls from ${firstLoss7B.toFixed(2)} to ${lastLoss7B.toFixed(2)}. The curves show that training clearly happened; the next question is why the frozen 128-task final stops at 49.33 while the SEED paper's 7B reference is 89.7.`)}</p>
       <div class="dynamics-grid">
         <figure class="dynamics-chart score-chart">
           <figcaption>{t('训练过程中每轮 WebShop Score', 'WebShop Score during training')} <span>{t('细线=原始轮次；粗线=12轮移动平均', 'thin=raw rounds; thick=12-round moving average')}</span></figcaption>
@@ -219,9 +219,9 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
         </figure>
       </div>
       <div class="milestone-grid">
-        <div><strong>{t(`R${update64Round7B}：第 64 个 component`, `R${update64Round7B}: component 64`)}</strong><p>{t('原设计到这里有一个 64-component 保护上限。它是容量 guard，不是“模型科学上最多只能学 64 次”的结论。', 'The original design had a 64-component protection limit here. It was a capacity guard, not a scientific claim that the model can learn at most 64 times.')}</p></div>
+        <div><strong>{t(`R${update64Round7B}：第 64 个 component`, `R${update64Round7B}: component 64`)}</strong><p>{t('原设计到这里有一个 64-component 保护上限。它是容量 guard，不能解读成“模型科学上最多只能学 64 次”。', 'The original design had a 64-component protection limit here. It was a capacity guard and should not be read as a scientific claim that the model can learn at most 64 times.')}</p></div>
         <div><strong>{t(`R${update65Round7B} 开始越过 64，最后到 143`, `R${update65Round7B} crosses 64; the run ends at 143`)}</strong><p>{t('我们单独做 capacity amendment，取消“到 64 就停”这一条，但仍保留 effective rank ≤ 4096 等保护；没有为了继续跑而偷偷启用 rank reduction。', 'A dedicated capacity amendment removed the independent stop-at-64 rule while keeping safeguards such as effective rank ≤ 4096; rank reduction was not silently enabled to extend the run.')}</p></div>
-        <div><strong>{t('学长提出的下一问：别只数次数，要看“方向”', 'The senior’s next question: do not only count updates—look at their direction')}</strong><p>{t('连续更新到底是不是在参数空间里学同一种东西？这个建议后来变成 TaskVector：去测连续更新形成的参数方向，而不是把“更新很多次”本身当机制证据。', 'Are successive updates learning something coherent in parameter space? That suggestion became the TaskVector line: measure update direction rather than treating a high update count itself as mechanism evidence.')}</p></div>
+        <div><strong>{t('学长提出的下一问：别只数次数，要看“方向”', 'The senior’s next question: count direction and frequency separately')}</strong><p>{t('连续更新到底是否在参数空间里学同一种东西？这个建议后来变成 TaskVector：去测连续更新形成的参数方向；单纯“更新很多次”不能直接当机制证据。', 'Are successive updates learning something coherent in parameter space? That suggestion became the TaskVector line: measure update direction; a high update count alone is not mechanism evidence.')}</p></div>
       </div>
       <p class="final-eval-note"><strong>{t('冻结终评', 'Frozen final')}</strong> 49.33 / 100 · 58 / 128 {t('完整成功', 'exact successes')} <span class="muted-pill">SEED 7B 论文参照：89.7</span>{t('训练曲线和终评必须分开读。', 'Training curves and final evaluation are different measurements.')}</p>
       <p class="slide-number">07 / 18</p>
@@ -229,19 +229,19 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
   </section>
   <section id="diagnostic-entry" class="briefing-slide tone-gold" aria-labelledby="diagnostic-entry-title">
     <div class="slide-inner diagnostic-entry-slide">
-      <h2 id="diagnostic-entry-title">{t('分数很低，我们先去看日志，看看是不是哪里出了问题', 'The scores were low, so we first went back to the logs: what was actually going wrong?')}</h2>
-      <p class="slide-thesis">{t('当时第一反应不是继续调参数，而是先检查失败轨迹和训练日志。结果我们确实发现了两个具体问题：有些任务把 15 步走满了还在 next / back 之间打转；Text Memory 整理 20 条记录时又会撞到 2048-token 上限。于是我们分别做两个最小改动：把步数从 15 拉到 30；把 Text Memory 从 2048 扩到 4096，仍然饱和时再做 10+10 分块。', 'Our first response was not to keep tuning parameters, but to inspect failed traces and training logs. Two concrete anomalies stood out: some tasks used all 15 steps while still looping between next and back, and Text Memory hit a 2048-token cap while consolidating 20 records. We therefore made two minimal changes: extend the horizon from 15 to 30, and increase Text Memory from 2048 to 4096 with a bounded 10+10 split if saturation remained.')}</p>
+      <h2 id="diagnostic-entry-title">{t('分数很低，我们先去看日志，找具体卡点', 'The scores were low, so we went back to the logs and looked for concrete blockers')}</h2>
+      <p class="slide-thesis">{t('当时第一步是检查失败轨迹和训练日志。结果我们确实发现了两个具体问题：有些任务把 15 步走满了还在 next / back 之间打转；Text Memory 整理 20 条记录时又会撞到 2048-token 上限。于是我们分别做两个最小改动：把步数从 15 拉到 30；把 Text Memory 从 2048 扩到 4096，仍然饱和时再做 10+10 分块。', 'We started by inspecting failed traces and training logs. Two concrete anomalies stood out: some tasks used all 15 steps while still looping between next and back, and Text Memory hit a 2048-token cap while consolidating 20 records. We therefore made two minimal changes: extend the horizon from 15 to 30, and increase Text Memory from 2048 to 4096 with a bounded 10+10 split if saturation remained.')}</p>
       <div class="diagnostic-branch-grid">
         <article>
           <span>{t('第一个问题', 'First issue found in the logs')}</span>
           <h3>{t('有些失败任务把 15 步全部走完，却一直在 next / back 等几个导航动作里绕', 'Some failures consume all 15 steps while looping through next / back and a few navigation actions')}</h3>
-          <p>{t('所以当时第一个自然怀疑是：是不是不是不会做，而只是 15 步太短，还没来得及走到 buy？', 'The first natural hypothesis was therefore: maybe the model can solve the task but 15 steps are simply too short to reach buy.')}</p>
+          <p>{t('所以当时第一个自然怀疑是：模型会不会能做，只是 15 步太短，还没来得及走到 buy？', 'The first natural hypothesis was therefore: maybe the model can solve the task but 15 steps are simply too short to reach buy.')}</p>
           <div><strong>15 → 30</strong><em>{t('只把最大交互步数翻倍，看行为会不会真正打开新路径', 'double only the interaction horizon and see whether behavior actually opens a new path')}</em></div>
         </article>
         <article>
           <span>{t('第二个问题', 'Second issue found in the logs')}</span>
           <h3>{t('Text Memory 在汇总 20 条记录时会撞到一次生成的 2048-token 上限', 'Text Memory summarization of 20 records hits the 2048-token generation cap')}</h3>
-          <p>{t('所以另一个怀疑是：是不是经验根本没有被完整整理进记忆，后面的模型拿到的是被截断的总结？', 'The other hypothesis was that experience was not being fully consolidated into memory, leaving later rounds with a truncated summary.')}</p>
+          <p>{t('所以另一个怀疑是：经验可能没有被完整整理进记忆，后面的模型拿到的是被截断的总结。', 'The other hypothesis was that experience was not being fully consolidated into memory, leaving later rounds with a truncated summary.')}</p>
           <div><strong>2048 → 4096 → 10+10</strong><em>{t('先加容量；仍饱和后才改成有边界的分块恢复', 'increase capacity first; only after saturation remains, switch to bounded decomposition')}</em></div>
         </article>
       </div>
@@ -252,7 +252,7 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
   <section id="horizon-diagnostic" class="briefing-slide tone-gold" aria-labelledby="horizon-title">
     <div class="slide-inner horizon-slide">
       <h2 id="horizon-title">{t('多给 15 步，模型还是在几个导航动作里打转', 'Fifteen extra steps still leave the model looping through the same navigation actions')}</h2>
-      <p class="slide-thesis">{t('我们先看了真实轨迹，而不只看最后的 0 分：15 步版本里，模型反复执行 next（下一页）和 back（返回），一直没有进入 buy（购买）。所以当时最自然的怀疑是：会不会只是 15 步太短，还没来得及做完？', 'We inspected the actual traces rather than only the zero reward. At 15 steps the model repeatedly used next and back and never reached a buy transition. The natural hypothesis was therefore that 15 steps might simply be too short to finish.')}</p>
+      <p class="slide-thesis">{t('我们先看真实轨迹，没有停在最后的 0 分：15 步版本里，模型反复执行 next（下一页）和 back（返回），一直没有进入 buy（购买）。所以当时最自然的怀疑是：会不会只是 15 步太短，还没来得及做完？', 'We inspected the actual traces before interpreting the zero reward. At 15 steps the model repeatedly used next and back and never reached a buy transition. The natural hypothesis was therefore that 15 steps might simply be too short to finish.')}</p>
       <div class="before-after horizon-compare">
         <div class="before"><span>15 步</span><strong>next ↔ back ↔ next …</strong><p>{t('几个导航动作反复出现；轨迹走满 15 步，仍没有进入购买动作，任务得分为 0。', 'A few navigation actions repeat; the trace reaches the 15-step limit without a buy action, and the task score is zero.')}</p></div>
         <div class="after"><span>30 步</span><strong>{t('多出来的 15 步没有打开新路径', 'The extra 15 steps do not open a new path')}</strong><p>{t('模型仍在同样几个导航动作里打转，没有进入 buy；BASE-15 和 BASE-30 的任务得分都为 0。', 'The model keeps cycling through the same navigation actions and still never reaches buy; both BASE-15 and BASE-30 score zero.')}</p></div>
@@ -262,14 +262,14 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
         <span><strong>Δ = 0.0</strong>{t(' 每个 30−15 配对都没有改善', ' for every paired 30−15 comparison')}</span>
         <span><strong>6 / 8</strong>{t(' 个任务经 oracle 核对可到达目标', ' tasks had oracle-reachable targets')}</span>
       </div>
-      <div class="resolution-box"><strong>{t('于是我们知道：问题不在“差几步就能做完”', 'So the problem is not simply “the model needed a few more steps”')}</strong><p>{t('步数翻倍后，行为模式本身没有改变。至少在可达任务上，瓶颈更像动作选择 / 规划，而不是 horizon。我们因此停止继续加步数，转去检查下一个假设。', 'Doubling the horizon did not change the behavior pattern. On the reachable tasks, the bottleneck looked more like action selection/planning than horizon length. We therefore stopped extending max_steps and moved to the next hypothesis.')}</p></div>
+      <div class="resolution-box"><strong>{t('于是我们判断：继续加步数帮不上忙', 'So adding more steps does not solve this failure')}</strong><p>{t('步数翻倍后，行为模式本身没有改变。至少在可达任务上，瓶颈指向动作选择 / 规划；继续加 horizon 已经帮不上忙。我们因此停止继续加步数，转去检查下一个假设。', 'Doubling the horizon did not change the behavior pattern. On the reachable tasks, the bottleneck points to action selection/planning; more horizon had already failed to help. We therefore stopped extending max_steps and moved to the next hypothesis.')}</p></div>
       <p class="slide-number">09 / 18</p>
     </div>
   </section>
   <section id="capacity-diagnostic" class="briefing-slide tone-gold" aria-labelledby="capacity-title">
     <div class="slide-inner">
       <h2 id="capacity-title">{t('我们把记忆容量翻倍了', 'We doubled the memory capacity')}</h2>
-      <p class="slide-thesis">{t('我们先把文本记忆模块一次生成能用的 token 上限从', 'We first increased the Text Memory generation token cap from')} <strong>2048 → 4096</strong>{t('，仍然饱和。最后不再继续堆容量，而是改成有边界的分块处理：同一批 20 条记录修复一次后若仍饱和，才固定拆成 10 + 10，分别压缩再合并。', '. It still saturated. Instead of continuing to add capacity, we switched to bounded decomposition: if the same 20 records still saturate after one repair pass, split them deterministically into 10 + 10, compress each half, then merge them.')}</p>
+      <p class="slide-thesis">{t('我们先把文本记忆模块一次生成能用的 token 上限从', 'We first increased the Text Memory generation token cap from')} <strong>2048 → 4096</strong>{t('，仍然饱和。最后我们停止继续堆容量，改成有边界的分块处理：同一批 20 条记录修复一次后若仍饱和，才固定拆成 10 + 10，分别压缩再合并。', '. It still saturated. We stopped adding more capacity and switched to bounded decomposition: if the same 20 records still saturate after one repair pass, split them deterministically into 10 + 10, compress each half, then merge them.')}</p>
       <div class="before-after">
         <div class="before"><span>{t('单次容量实验', 'single-call capacity')}</span><strong>2048 → 4096</strong><p>{t('单纯把 token 上限翻倍仍然没有解决容量失败。', 'Doubling the token cap alone did not resolve the capacity failure.')}</p></div>
         <div class="after"><span>{t('结构化处理', 'structured recovery')}</span><strong>20 {t('条记录', 'records')} → 10 + 10</strong><p>{t('先保留原来的 20 条记录；如果同一批记录修复一次后仍然饱和，才固定拆成前 10 + 后 10，分别压缩后再合并。', 'Keep the original 20 records first; only if the same records still saturate after one repair pass do we split into first 10 + last 10, compress each half, then merge.')}</p></div>
@@ -281,7 +281,7 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
   <section id="training-dynamics" class="briefing-slide tone-blue" aria-labelledby="training-dynamics-title">
     <div class="slide-inner dynamics-slide experiment-dynamics">
       <h2 id="training-dynamics-title">{t('3B 这条线也在变好，loss 同时下降', 'The 3B line also improves while loss falls')}</h2>
-      <p class="slide-thesis">{t(`123 个已封存 round 中，训练过程的 WebShop Score 从前 20 轮平均 ${earlyScoreMean.toFixed(2)} 提到最后 23 轮平均 ${lateScoreMean.toFixed(2)}；31 次候选训练的 loss 从 ${firstLoss.toFixed(2)} 降到约 ${lastLoss.toFixed(2)}。这说明这条训练线不是“根本没工作”，但它目前没有一个能和 7B / 1.7B 同表的冻结终评分数。`, `Across 123 sealed rounds, mean training-round WebShop Score rises from ${earlyScoreMean.toFixed(2)} over the first 20 rounds to ${lateScoreMean.toFixed(2)} over the last 23; loss across 31 candidate trainings falls from ${firstLoss.toFixed(2)} to about ${lastLoss.toFixed(2)}. This training line clearly ran, but it does not currently have a same-protocol frozen final score to place beside 7B / 1.7B.`)}</p>
+      <p class="slide-thesis">{t(`123 个已封存 round 中，训练过程的 WebShop Score 从前 20 轮平均 ${earlyScoreMean.toFixed(2)} 提到最后 23 轮平均 ${lateScoreMean.toFixed(2)}；31 次候选训练的 loss 从 ${firstLoss.toFixed(2)} 降到约 ${lastLoss.toFixed(2)}。这说明这条训练线确实在工作；但它目前没有一个能和 7B / 1.7B 同表的冻结终评分数。`, `Across 123 sealed rounds, mean training-round WebShop Score rises from ${earlyScoreMean.toFixed(2)} over the first 20 rounds to ${lateScoreMean.toFixed(2)} over the last 23; loss across 31 candidate trainings falls from ${firstLoss.toFixed(2)} to about ${lastLoss.toFixed(2)}. This training line clearly ran; it does not currently have a same-protocol frozen final score to place beside 7B / 1.7B.`)}</p>
       <div class="dynamics-grid">
         <figure class="dynamics-chart score-chart">
           <figcaption>{t('训练过程中每轮 WebShop Score', 'WebShop Score during training')} <span>{t('底部短线=候选；绿色粗线=真正采用', 'bottom ticks=candidates; thick green=accepted')}</span></figcaption>
@@ -316,7 +316,7 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
           <strong>{t('定义一个参数方向', 'Define a parameter direction')}</strong>
           <div class="equation">τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub></div>
           <div class="equation">‖τ‖<sub>F</sub> = 0.608</div>
-          <p>{t('然后比较 +τ、−τ 和同范数随机方向，看行为变化是不是“方向特异”的，而不只是因为参数动得更多。', 'Then compare +τ, −τ, and norm-matched random directions to test whether behavior is direction-specific rather than merely responding to larger parameter movement.')}</p>
+          <p>{t('然后比较 +τ、−τ 和同范数随机方向，检查行为变化是否“方向特异”，并排除只是参数动得更多。', 'Then compare +τ, −τ, and norm-matched random directions to test whether behavior is direction-specific and rule out mere response to larger parameter movement.')}</p>
         </div>
         <div class="formula-card">
           <strong>{t('一次失败反而让定义更严格', 'A failed construction made the definition stricter')}</strong>
@@ -332,10 +332,10 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
       <h2 id="gdr-title">{t('SD-LoRA 先训出来，GDR 再决定这次用不用', 'SD-LoRA is trained first; GDR then decides whether to use it')}</h2>
       <p class="slide-thesis">{t('1.7B 这条线里，训练程序有 44 次都真的训练出了一个 SD-LoRA 候选。加入 GDR（Gated Delta Rule）以后，事情多了一步：候选先训出来，GDR 再看短期效果，决定这次参数到底要不要真的改到下一轮模型上。', 'In our original OpenEVO Stage 2 design, each parameter-evolution event trains an SD-LoRA update that enters the next model state. The 1.7B long-horizon run actually produced and trained 44 such updates. We later added GDR (Gated Delta Rule): train the update first, then use its short-term effect to decide whether it is written into the continuing model.')}</p>
       <div class="before-after gdr-flow">
-        <div class="before"><span>{t('原本的参数进化', 'Original parameter evolution')}</span><strong>{t('满足训练条件 → 训练 SD-LoRA → 下一轮直接用', 'evolve → train SD-LoRA → update parameters')}</strong><p>{t('这一步不是‘准备训练’，而是真的跑了 SD-LoRA 训练。1.7B 一共出现了 44 次这样的候选。', 'Each parameter-evolution event corresponds to one actually trained SD-LoRA update. The 1.7B line produced 44 of them.')}</p></div>
+        <div class="before"><span>{t('原本的参数进化', 'Original parameter evolution')}</span><strong>{t('满足训练条件 → 训练 SD-LoRA → 下一轮直接用', 'evolve → train SD-LoRA → update parameters')}</strong><p>{t('这一步已经进入实际 SD-LoRA 训练。1.7B 一共出现了 44 次这样的候选。', 'Each parameter-evolution event corresponds to one actually trained SD-LoRA candidate. The 1.7B line produced 44 of them.')}</p></div>
         <div class="after"><span>GDR = Gated Delta Rule</span><strong>{t('满足训练条件 → 训练 SD-LoRA → GDR 再说 yes / no', 'evolve → train SD-LoRA → gate it → decide whether to write')}</strong><p>{t('44 个候选都已经训练出来了，但 GDR 只同意 7 次真的改到下一轮模型上，另外 37 次被它拒绝。', 'All 44 updates were trained, but GDR admitted only 7 into later model states; the other 37 trained updates were rejected.')}</p></div>
       </div>
-      <p class="bottom-claim">{t('所以 44 不是我们提前规定的预算，而是训练里真实发生的 44 次 SD-LoRA 候选。真正让我们警觉的是：已经训练了 44 次，最后只有 7 次真正影响后面的模型。于是问题变成：GDR 会不会筛得太保守？', 'So 44 is not an arbitrary “update budget”; it is the 44 SD-LoRA parameter-evolution events that actually occurred in this run. Seeing 44 → 7 led to the next question: is GDR filtering too conservatively?')}</p>
+      <p class="bottom-claim">{t('所以 44 代表训练里真实发生的 44 次 SD-LoRA 候选。真正让我们警觉的是：已经训练了 44 次，最后只有 7 次真正影响后面的模型。于是问题变成：GDR 会不会筛得太保守？', 'So 44 counts the SD-LoRA parameter-evolution events that actually occurred in this run. Seeing 44 → 7 led to the next question: is GDR filtering too conservatively?')}</p>
       <p class="source-note"><a href={technicalHref}>{t('GDR 的判定逻辑与完整实验定义', 'GDR decision logic and full experimental definition')}</a></p>
       <p class="slide-number">13 / 18</p>
     </div>
@@ -388,7 +388,7 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
       <h2 id="technical-work-title">{t('这些技术工作没有占主线，但它们让实验能跑、能查、能复现', 'Engineering work stayed out of the main claim, but made the experiment runnable and auditable')}</h2>
       <p class="slide-thesis">{t('这些工作不直接当科研亮点，但它们让低分不能简单归因为“实验根本没跑起来”。', 'This work is not presented as the research highlight, but it prevents low scores from being dismissed as the experiment simply not running.')}</p>
       <ol class="summary-list technical-summary-list">
-        <li><span>01</span><strong>{t('动作接口与 parser', 'action interface and parser')}</strong><p>{t('把无效动作、解析失败、repair 记录成可审计指标，不能只凭感觉说“环境坏了”。', 'Track invalid actions, parsing failures, and repairs as auditable metrics instead of guessing that the environment broke.')}</p></li>
+        <li><span>01</span><strong>{t('动作接口与 parser', 'action interface and parser')}</strong><p>{t('把无效动作、解析失败、repair 记录成可审计指标，避免凭感觉说“环境坏了”。', 'Track invalid actions, parsing failures, and repairs as auditable metrics so the environment diagnosis rests on evidence.')}</p></li>
         <li><span>02</span><strong>{t('checkpoint、W&B、Hugging Face 归档', 'checkpoint, W&B, and Hugging Face archival')}</strong><p>{t('训练过程、loss、候选更新和可恢复资产分开保存，方便事后重放与核对。', 'Keep training curves, losses, candidate updates, and recoverable assets separately archived for replay and verification.')}</p></li>
         <li><span>03</span><strong>{t('断点续跑与 GPU 调度', 'resume and GPU scheduling')}</strong><p>{t('中断后按身份继续，不把不同实验线混在一起；GPU 并行只提高速度，不改变科学规则。', 'Resume by identity after interruption without mixing experiment lines; GPU parallelism improves speed without changing the scientific rule.')}</p></li>
         <li><span>04</span><strong>{t('快速 Preview 与最终 gate 分离', 'fast Preview separated from the final gate')}</strong><p>{t('平时改 PPT 先给人快速审阅；准备合并时再跑完整验收，质量门槛不降低。', 'Use fast previews for human review while keeping full validation for merge-ready changes.')}</p></li>
@@ -398,7 +398,7 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
   </section>
   <section id="technical-details" class="briefing-slide tone-paper" aria-labelledby="technical-details-title">
     <div class="slide-inner technical-slide">
-      <h2 id="technical-details-title">{t('W&B 记录的是训练过程，不是每个 checkpoint 的终评分数', 'W&B records the training process, not a frozen-final score for every checkpoint')}</h2>
+      <h2 id="technical-details-title">{t('W&B 记录训练过程；冻结终评另算', 'W&B records the training process; frozen finals are separate')}</h2>
       <p class="slide-thesis">{t('我们有大量 checkpoint / round 记录，但“训练过程指标”和“冻结终评”从一开始就故意分开。这样 final panel 才不会在训练中被反复打开，变成调参集。', 'We have extensive checkpoint / round records, but training-process metrics and the frozen final evaluation were deliberately kept separate from the start. That keeps the final panel from being repeatedly opened during training and turned into a tuning set.')}</p>
       <div class="technical-grid">
         <article><span>01 · W&B</span><h3>{t('训练过程中已经有的曲线', 'Curves already recorded during training')}</h3><ul><li>{t('7B 记录：149 轮 Score + 143 次已应用 SD-LoRA loss', '7B record: 149 round Scores + 143 applied SD-LoRA losses')}</li><li>{t('1.7B 记录：160 轮 Score + 44 个候选位置 + 7 个可核验 loss', '1.7B record: 160 round Scores + 44 candidate locations + 7 authoritative losses')}</li><li>{t('3B 记录：123 轮 Score + 31 次候选训练 loss', '3B record: 123 round Scores + 31 candidate-training losses')}</li></ul></article>

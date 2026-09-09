@@ -68,7 +68,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   it('preserves the SEED comparability boundary before the numbers are interpreted', () => {
     expect(briefing).toContain('Score 看任务要求完成了多少');
     expect(briefing).toContain('Succ. 看整道任务是否完整成功');
-    expect(briefing).toContain('SEED 与 OpenEVO 不是同协议直接对照');
+    expect(briefing).toContain('SEED 与 OpenEVO 口径不同');
     expect(briefing).toContain('不能直接用 89.7 与 49.33 的差值判断胜负');
   });
 
@@ -98,9 +98,9 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('每 128 次任务形成一轮');
     for (const carrier of ['Text Memory', 'Skill Bundle', 'Agent System', 'SD-LoRA']) expect(briefing).toContain(carrier);
     expect(briefing).toContain('TaskVector 只做诊断，不偷偷改训练');
-    expect(briefing).toContain('最早的 7B Stage 1 只是收集 1,440 条原始 WebShop 轨迹');
+    expect(briefing).toContain('最早的 7B Stage 1 只收集 1,440 条原始 WebShop 轨迹');
     expect(briefing).toContain('Text Memory + Skill Bundle + Agent System + 143 个已写入的 SD-LoRA 参数组件');
-    expect(briefing).toContain('不是一个单独 memory 文件或一个 adapter');
+    expect(briefing).toContain('最终下一轮模型状态由 Text Memory');
   });
 
   it('shows 7B training dynamics, the old 64-component guard, and the direction-question pivot', () => {
@@ -153,7 +153,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('dynamics17B.candidateRounds.map');
     expect(briefing).toContain('dynamics17B.acceptedRounds.map');
     expect(technical).toContain('44 个 `candidate_update_attempted`');
-    expect(technical).toContain('不能凭空补一条 44 点 loss 曲线');
+    expect(technical).toContain('避免凭空补一条 44 点 loss 曲线');
   });
 
   it('shows 3B dynamics without inventing a same-protocol frozen final', () => {
@@ -167,8 +167,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('introduces the observed failure patterns before the 15→30 and Text Memory interventions', () => {
-    expect(briefing).toContain('分数很低，我们先去看日志，看看是不是哪里出了问题');
-    expect(briefing).toContain('当时第一反应不是继续调参数，而是先检查失败轨迹和训练日志');
+    expect(briefing).toContain('分数很低，我们先去看日志，找具体卡点');
+    expect(briefing).toContain('当时第一步是检查失败轨迹和训练日志');
     expect(briefing).toContain('于是我们分别做两个最小改动');
     expect(briefing).toContain('有些失败任务把 15 步全部走完');
     expect(briefing).toContain('一直在 next / back 等几个导航动作里绕');
@@ -184,7 +184,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('一直没有进入 buy（购买）');
     expect(briefing).toContain('多出来的 15 步没有打开新路径');
     for (const evidence of ['64 / 64', 'Δ = 0.0', '6 / 8']) expect(briefing).toContain(evidence);
-    expect(briefing).toContain('瓶颈更像动作选择 / 规划，而不是 horizon');
+    expect(briefing).toContain('瓶颈指向动作选择 / 规划；继续加 horizon 已经帮不上忙');
   });
 
   it('keeps the 2048→4096→10+10 capacity chain and its bounded conclusion', () => {
@@ -194,7 +194,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('容量一满就卡死');
     expect(briefing).toContain('不等于证明最终 WebShop 分数因此提高');
     expect(technical).toContain('max split depth is one');
-    expect(technical).toContain('科学含义不是“10+10 一定让最终分数更高”');
+    expect(technical).toContain('科学含义是容量失败的解释发生了变化');
   });
 
   it('uses a simple TaskVector formula in the talk and leaves the hard derivation in technical notes', () => {
@@ -205,7 +205,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(technical).toContain('√(δcᵀGδc) = 0.6082257746');
   });
 
-  it('uses natural GDR phrasing instead of abstract update-admission prose', () => {
+  it('uses natural GDR phrasing without abstract update-admission prose', () => {
     expect(briefing).toContain('SD-LoRA 先训出来，GDR 再决定这次用不用');
     expect(briefing).toContain('候选先训出来，GDR 再看短期效果');
     expect(briefing).toContain('44 个候选都已经训练出来了，但 GDR 只同意 7 次真的改到下一轮模型上');
@@ -220,7 +220,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('gives W&B / frozen-final / post-hoc checkpoint replay its own technical slide', () => {
-    expect(briefing).toContain('W&B 记录的是训练过程，不是每个 checkpoint 的终评分数');
+    expect(briefing).toContain('W&B 记录训练过程；冻结终评另算');
     expect(briefing).toContain('7B 记录：149 轮 Score + 143 次已应用 SD-LoRA loss');
     expect(briefing).toContain('1.7B 记录：160 轮 Score + 44 个候选位置 + 7 个可核验 loss');
     expect(briefing).toContain('3B 记录：123 轮 Score + 31 次候选训练 loss');
@@ -244,8 +244,12 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(finalSlide).not.toContain('15 / 15');
   });
 
-  it('keeps meaningless English eyebrows and decorative bubbles out of the deck', () => {
+  it('keeps meaningless English eyebrows, binary-contrast phrasing, and decorative bubbles out of the deck', () => {
     for (const token of ['OpenEVO · SEED × WebShop', '>AGENDA<', '>RESULTS<', '>QUESTION<', '>DESIGN<', '>MECHANISM<', '老师很可能会问', '钩子：', 'composed state', '这页先', 'This slide lays out', 'This slide explains']) expect(briefing).not.toContain(token);
+    for (const token of ['不是', '而是', 'not just', 'not only', 'rather than', 'instead of', 'not a', 'not one']) {
+      expect(briefing).not.toContain(token);
+      expect(technical).not.toContain(token);
+    }
     const h2Titles = [...briefing.matchAll(/<h2[^>]*>\{t\('([^']+)'/g)].map((match) => String(match[1] ?? ''));
     expect(h2Titles.some((title) => /^(7B|1\.7B|3B)：/.test(title))).toBe(false);
     expect(briefing).not.toContain('.briefing-slide::before');
