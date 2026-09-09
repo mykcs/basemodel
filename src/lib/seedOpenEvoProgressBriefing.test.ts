@@ -24,11 +24,11 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/technical-notes/'");
   });
 
-  it('keeps a fixed fifteen-slide sequence with page numbers only on the inner slides', () => {
-    expect((briefing.match(/<section /g) ?? []).length).toBe(15);
-    for (let page = 2; page <= 14; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 15`);
-    expect(briefing).not.toContain('01 / 15');
-    expect(briefing).not.toContain('15 / 15');
+  it('keeps a fixed sixteen-slide sequence with page numbers only on the inner slides', () => {
+    expect((briefing.match(/<section /g) ?? []).length).toBe(16);
+    for (let page = 2; page <= 15; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 16`);
+    expect(briefing).not.toContain('01 / 16');
+    expect(briefing).not.toContain('16 / 16');
     expect(briefing).not.toContain('class="slide-next"');
   });
 
@@ -48,7 +48,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('OpenEVO 暑期考核汇报');
     expect(briefing).toContain("Too long, Don't read");
     expect(briefing).toContain("{t('目录', 'Agenda')}");
-    for (const attempt of ['最大步数 15 → 30', 'Text Memory 2048 → 4096，再做 10+10 分块', 'TaskVector 参数更新方向分析', 'GDR 选择性更新 vs DirectApply']) expect(briefing).toContain(attempt);
+    for (const attempt of ['7-vs-8 控制门槛误入 Stage 2', '最大步数 15 → 30', 'Text Memory 2048 → 4096，再做 10+10 分块', 'TaskVector 参数更新方向分析', 'GDR 选择性更新 vs DirectApply']) expect(briefing).toContain(attempt);
   });
 
   it('uses the requested SEED-style Score / Succ table and correct OpenEVO row order', () => {
@@ -72,17 +72,33 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('不能直接用 89.7 与 49.33 的差值判断胜负');
   });
 
+
+  it('explains why the 7-vs-8 control condition blocked Stage 2 and how the rule was fixed', () => {
+    expect(briefing).toContain('7 < 8：不是模型没有成功经验，而是一个控制门槛挡住了长期训练');
+    expect(briefing).toContain('原本用途：控制实验');
+    expect(briefing).toContain('8 个任务身份 × 每个 2 条成功');
+    expect(briefing).toContain('后来误用：Stage 2 gate');
+    expect(briefing).toContain('20,480 次 rollout 和 797 条 positive 轨迹，仍然得到 0 次参数更新');
+    expect(briefing).toContain('撤掉旧 7-vs-8 gate');
+    expect(briefing).toContain('至少一个 clean exact-success task');
+    expect(briefing).toContain('64-component 上限是另一个问题');
+    expect(briefing).toContain('child-runtime / 51→52 这类调试细节放在技术页');
+  });
+
   it('adds a one-slide OpenEVO Stage 1 → Stage 2 mental model for the live audience', () => {
-    expect(briefing).toContain('先说清楚 OpenEVO 到底怎么训练');
+    expect(briefing).toContain('先说清楚 OpenEVO 怎么训练：7B 长跑每轮更新四类载体');
     expect(briefing).toContain('Stage 1');
     expect(briefing).toContain('180 个 WebShop 任务 × 每题 8 次完整尝试');
     expect(briefing).toContain('MiniMax 1,440 / 1,440');
     expect(briefing).toContain('任务结束后做老式的回看分析');
-    expect(briefing).toContain('不替 Qwen 在 WebShop 里搜索或点击');
+    expect(briefing).toContain('不替 Qwen 搜索或点击');
     expect(briefing).toContain('Stage 2');
     expect(briefing).toContain('每 128 次任务形成一轮');
-    for (const carrier of ['OPSD', 'SD-LoRA', 'Text Memory / Skill', 'Agent System']) expect(briefing).toContain(carrier);
+    for (const carrier of ['Text Memory', 'Skill Bundle', 'Agent System', 'SD-LoRA']) expect(briefing).toContain(carrier);
     expect(briefing).toContain('TaskVector 只做诊断，不偷偷改训练');
+    expect(briefing).toContain('最早的 7B Stage 1 只是收集 1,440 条 raw WebShop 轨迹');
+    expect(briefing).toContain('Text Memory + Skill Bundle + Agent System + 143 个已写入的 SD-LoRA 参数组件');
+    expect(briefing).toContain('不是一个单独 memory 文件或一个 adapter');
   });
 
   it('shows 7B training dynamics, the old 64-component guard, and the direction-question pivot', () => {
@@ -97,6 +113,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('学长提出的下一问：别只数次数，要看“方向”');
     expect(briefing).toContain('这个建议后来变成 TaskVector');
     expect(briefing).toContain('49.33 / 100 · 58 / 128');
+    expect(briefing).toContain('最终状态 = Text Memory + Skill Bundle + Agent System + 143 个 SD-LoRA components');
   });
 
   it('pins the 7B and 1.7B charts to canonical W&B identities', () => {
