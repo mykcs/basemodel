@@ -83,6 +83,14 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     positiveSignals: ['7B · 基础模型', '7B · 使用 OpenEVO 学习结果', '同一批 128 个 WebShop 任务'],
   },
   {
+    id: 'CASE-059',
+    title: '数字必须带现实对象和最小语义解释',
+    tags: ['数字', '指标', 'Task Score', '44→7', '参数', '对象'],
+    principle: '决定性数字也必须让零上下文读者知道它数的是什么、量的是什么；指标名、单位/分母和最小语义解释不能因为版面紧而被删掉。',
+    antiPatterns: ['49.33 / 58⁄128', '44 → 7 但不解释 44 和 7 的对象', '只有参数上限数字、没有说明数的是什么'],
+    positiveSignals: ['Task Score · 49.33 / 100', '完整成功 · 58 / 128 个任务', '训练出 44 个参数更新候选，最终 7 个进入模型'],
+  },
+  {
     id: 'CASE-067',
     title: '直接说实验事实，少用叙事隐喻',
     tags: ['AI味', '隐喻', '实验', '标题'],

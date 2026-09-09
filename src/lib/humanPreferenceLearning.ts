@@ -14,12 +14,19 @@ import {
   type HumanPreferenceScope,
 } from '../data/humanPreferenceModel';
 
-const tokenize = (value: string) =>
-  value
-    .toLowerCase()
+const tokenize = (value: string) => {
+  const base = value.toLowerCase()
     .split(/[\s,，。/|:：;；()（）\[\]【】→]+/)
     .map((token) => token.trim())
     .filter((token) => token.length >= 2);
+  const expanded = base.flatMap((token) => {
+    if (!/[\u3400-\u9fff]/.test(token)) return [token];
+    const chars = [...token];
+    const bigrams = chars.slice(0, -1).map((_, index) => chars.slice(index, index + 2).join(''));
+    return [token, ...bigrams];
+  });
+  return [...new Set(expanded)];
+};
 
 const containsAny = (haystack: string, tokens: string[]) => tokens.some((token) => haystack.includes(token));
 

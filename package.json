@@ -63,7 +63,8 @@
     "audit:headings": "node scripts/audit-static-headings.mjs",
     "audit:brand-links": "node scripts/audit-external-brand-links.mjs",
     "audit:reader-contracts": "tsx scripts/audit-reader-contracts.ts",
-    "audit:human-feedback": "tsx scripts/audit-human-feedback-precedents.ts"
+    "audit:human-feedback": "tsx scripts/audit-human-feedback-precedents.ts",
+    "feedback:ingestion:verify": "tsx scripts/verify-human-feedback-ingestion-closeout.ts"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.4",

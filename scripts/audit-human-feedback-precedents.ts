@@ -8,6 +8,8 @@ import {
   READER_CONTRACT_PRECEDENTS,
 } from '../src/data/humanFeedbackPrecedents';
 import { HUMAN_FEEDBACK_GOLD_PAIRS, HUMAN_PREFERENCE_MODEL } from '../src/data/humanPreferenceModel';
+import { HUMAN_FEEDBACK_INGESTION_CLOSEOUTS } from '../src/data/humanFeedbackIngestionCloseouts';
+import { validateHumanFeedbackIngestionCloseout } from '../src/lib/humanFeedbackIngestionCloseout';
 import { goldPairIdsForContract, preferenceIdsForContract } from '../src/lib/humanPreferenceLearning';
 
 const root = process.cwd();
@@ -90,6 +92,12 @@ if (!researchAgents.includes('feedback:cold-read')) failures.push('research AGEN
 if (!scenarioRegistry.includes('feedback:retrieve')) failures.push('scenario trigger does not execute task-time preference retrieval');
 if (!caseLibrary.includes('CASE-083')) failures.push('canonical case library is missing CASE-083 learning-loop correction');
 
+
+for (const closeout of HUMAN_FEEDBACK_INGESTION_CLOSEOUTS) {
+  const validation = validateHumanFeedbackIngestionCloseout(closeout);
+  for (const failure of validation.failures) failures.push(`ingestion ${closeout.id}: ${failure}`);
+}
+
 const publicSurfaceFiles = [join(root, 'src/pages'), join(root, 'src/components')].flatMap(walkTextFiles);
 for (const file of publicSurfaceFiles) {
   const text = readFileSync(file, 'utf8');
@@ -108,5 +116,6 @@ console.log(
   `Human-feedback learning audit PASS: ${HUMAN_FEEDBACK_PRECEDENTS.length} precedents, ` +
     `${HUMAN_PREFERENCE_MODEL.length} preference dimensions, ${HUMAN_FEEDBACK_GOLD_PAIRS.length} Gold Pairs, ` +
     `${Object.keys(READER_CONTRACT_PRECEDENTS).length} reader-contract bindings, ` +
+    `${HUMAN_FEEDBACK_INGESTION_CLOSEOUTS.length} ingestion closeout(s), ` +
     `${publicSurfaceFiles.length} public source files checked.`,
 );

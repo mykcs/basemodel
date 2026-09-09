@@ -307,6 +307,9 @@ That is why a decorative pale bubble can be rejected while a dense TaskVector fo
 - structured precedent index: `src/data/humanFeedbackPrecedents.ts`;
 - cross-case model + Gold Pairs: `src/data/humanPreferenceModel.ts`;
 - event / trajectory / visual / escalation evidence: `src/data/humanPreferenceLearningHistory.ts`;
+- conversation-closeout coverage ledgers + source-window receipts: `src/data/humanFeedbackIngestionCloseouts.ts`;
+- ingestion closeout validator: `src/lib/humanFeedbackIngestionCloseout.ts`;
+- ingestion closeout CLI: `npm run feedback:ingestion:verify -- [INGESTION-ID]`;
 - old retrieval + cold-read context: `src/lib/humanPreferenceLearning.ts`;
 - V2 Preference Brief + candidate receipt verification: `src/lib/humanPreferenceBrief.ts`;
 - Preference Brief CLI: `scripts/generate-human-preference-brief.ts`;

@@ -9,6 +9,7 @@ import {
   type HumanVisualReference,
   type PreferenceTrajectory,
 } from '../data/humanPreferenceLearningHistory';
+import { HUMAN_FEEDBACK_INGESTION_CLOSEOUTS, type FeedbackCoverageLedgerItem } from '../data/humanFeedbackIngestionCloseouts';
 import {
   retrieveHumanPreferenceContext,
   preferenceReviewContextForContract,
@@ -25,6 +26,7 @@ export interface HumanPreferenceBrief {
   contractId?: string;
   hardFailureFamilies: string[];
   events: HumanFeedbackEvent[];
+  heldFeedback: FeedbackCoverageLedgerItem[];
   trajectories: PreferenceTrajectory[];
   visualReferences: HumanVisualReference[];
   learnedPreferences: ReturnType<typeof retrieveHumanPreferenceContext>['preferences'];
@@ -34,11 +36,19 @@ export interface HumanPreferenceBrief {
 }
 
 const normalize = (value: string) => value.toLowerCase();
-const terms = (value: string) =>
-  normalize(value)
+const terms = (value: string) => {
+  const base = normalize(value)
     .split(/[\s,，。/|:：;；()（）\[\]【】→]+/)
     .map((token) => token.trim())
     .filter((token) => token.length >= 2);
+  const expanded = base.flatMap((token) => {
+    if (!/[\u3400-\u9fff]/.test(token)) return [token];
+    const chars = [...token];
+    const bigrams = chars.slice(0, -1).map((_, index) => chars.slice(index, index + 2).join(''));
+    return [token, ...bigrams];
+  });
+  return [...new Set(expanded)];
+};
 
 function relevanceScore(haystack: string, query: string): number {
   const normalized = normalize(haystack);
@@ -73,6 +83,10 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
     .sort((a, b) => b.score - a.score || b.event.date.localeCompare(a.event.date))
     .slice(0, 10)
     .map(({ event }) => event);
+
+  const heldFeedback = HUMAN_FEEDBACK_INGESTION_CLOSEOUTS
+    .filter((record) => !scope || (scope === 'briefing' && record.sourceWindow.route.includes('/briefing/')))
+    .flatMap((record) => record.ledger.filter((item) => item.disposition === 'ambiguous-hold'));
 
   const eventVariantIds = new Set(events.map((event) => event.variantId));
   const trajectories = HUMAN_PREFERENCE_TRAJECTORIES.filter(
@@ -109,6 +123,12 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
     visualReferences.some((reference) => reference.tier === 'golden')
       ? 'Golden visual references may be used as canonical visual anchors within their recorded scope.'
       : 'There is no Golden visual reference for this scope; do not claim an owner-approved template exists.',
+    visualReferences.some((reference) => reference.tier === 'current-candidate')
+      ? 'Current-candidate visual references are under review only; never use them as preference evidence or let them override verified direct feedback.'
+      : 'There is no active current-candidate visual reference for this scope.',
+    heldFeedback.length
+      ? 'Ambiguous/held feedback is unresolved evidence, not a learned preference. Surface the conflict and do not resolve it by guessing.'
+      : 'There is no ambiguous held feedback for this scope.',
     'For material user-facing work, internally produce 2–3 candidates, rank them pairwise against this brief, and show the owner only the selected candidate.',
     'For visual work, every internal candidate needs a screenshot reference before pairwise ranking.',
     'After generation, run the existing blind cold read before revealing preference evidence, then run the preference comparison/judge.',
@@ -119,6 +139,7 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
     contractId: input.contractId,
     hardFailureFamilies: hard,
     events,
+    heldFeedback,
     trajectories,
     visualReferences,
     learnedPreferences: retrieved.preferences,
@@ -149,7 +170,15 @@ export function renderHumanPreferenceBriefMarkdown(brief: HumanPreferenceBrief):
   for (const event of brief.events) {
     lines.push(`- ${event.id} · ${event.verdict} · ${event.variantId}`);
     lines.push(`  owner: ${event.ownerSignal}`);
-    lines.push(`  mechanism: ${event.failureMechanisms.join(', ')}`);
+    lines.push(`  scope: ${event.scopes.join(', ')}`);
+    lines.push(`  mechanism: ${event.failureMechanisms.join(', ') || 'none (positive/acceptance evidence)'}`);
+  }
+
+  lines.push('', '## Ambiguous / held feedback — do not guess');
+  if (!brief.heldFeedback.length) lines.push('- none');
+  for (const item of brief.heldFeedback) {
+    lines.push(`- ${item.id}: ${item.ownerSignal}`);
+    lines.push(`  hold reason: ${item.rationale}`);
   }
 
   lines.push('', '## Preference trajectories');

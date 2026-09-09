@@ -624,6 +624,16 @@ A proper ingestion capability should eventually support:
 
 Until full automatic conversation extraction is technically available, the Agent may perform the extraction from the current conversation manually, but must still produce the same structured artifacts and completion receipt. Report that limitation honestly.
 
+### Current repository implementation
+
+BaseModel now stores closeout ledgers in `src/data/humanFeedbackIngestionCloseouts.ts`, validates cross-references / verdicts / supersession / visual tiers / future-task retrieval / evaluation proof in `src/lib/humanFeedbackIngestionCloseout.ts`, and exposes:
+
+```bash
+npm run feedback:ingestion:verify -- [INGESTION-ID]
+```
+
+`audit:human-feedback` runs the same validator for every registered closeout, so a stale event reference, fake Golden promotion, missing hard-family retrieval, or broken evaluation proof fails closed in ordinary repository validation. Conversation-to-ledger extraction is still an Agent interpretation step until the conversation runtime exposes a repository ingestion API; do not describe that part as automatic.
+
 ---
 
 ## 19. One-to-one delivery standard

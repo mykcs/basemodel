@@ -1,0 +1,99 @@
+{
+  "schema": "human-feedback-ingestion-closeout-receipt.v1",
+  "id": "INGESTION-20260909-OPENEVO-BRIEFING",
+  "task": "OpenEVO summer/advisor briefing webpage human-preference closeout",
+  "sourceWindow": {
+    "start": "2026-09-08T03:02:15Z",
+    "end": "2026-09-09T05:37:34Z",
+    "route": "/research/seed-openevo/study/briefing/",
+    "pullRequests": [
+      569,
+      594
+    ],
+    "finalAcceptedHead": "89fe1190d0f92909f6da40b9a47ea75c9f45d2d5",
+    "mergedMainCommit": "2471d63593df808040a62a83654c360ceb9e38d2",
+    "currentCandidate": {
+      "pullRequest": 594,
+      "head": "88653a8de98c05f8da5529266ac3dd5589ea2222"
+    }
+  },
+  "coverage": {
+    "candidateFeedbackTurns": 25,
+    "dispositions": {
+      "ingest": 12,
+      "merge-duplicate": 6,
+      "superseded": 1,
+      "task-fact-not-preference": 1,
+      "page-specific-only": 4,
+      "ambiguous-hold": 1,
+      "out-of-scope": 0
+    }
+  },
+  "hardFamilies": [
+    "attention-tax",
+    "engineering-as-science-highlight",
+    "mainline-rigor-tax",
+    "meaningless-english-eyebrow",
+    "missing-progressive-disclosure"
+  ],
+  "repeatedFamilies": [
+    "project-status-as-research-story"
+  ],
+  "visualTiers": {
+    "rejected": [
+      "VISUAL-BRIEFING-DENSE-REJECTED",
+      "VISUAL-BRIEFING-OVERMINIMAL-REJECTED"
+    ],
+    "silver": [
+      "VISUAL-BRIEFING-SOFT-SILVER",
+      "VISUAL-BRIEFING-FIXED16-INTERMEDIATE-SILVER",
+      "VISUAL-BRIEFING-FINAL-ACCEPTED-SILVER"
+    ],
+    "golden": [],
+    "currentCandidate": [
+      "VISUAL-BRIEFING-TRAINING-DYNAMICS-CURRENT-CANDIDATE"
+    ]
+  },
+  "retrievalProof": {
+    "query": "给导师做下一轮科研汇报：讲清实验失败如何推进科学问题，参数机制可以用公式；手机要能读，桌面用于投影；不要让工程验证、英文小标签或参数数字抢主线。",
+    "eventIds": [
+      "EVENT-20260909-MAINLINE-RIGOR-TAX",
+      "EVENT-20260909-PARAMETER-TITLE-AND-MOBILE-FIT",
+      "EVENT-20260909-CHRONOLOGY-SCIENCE-STORY",
+      "EVENT-20260908-ENGINEERING-AS-HIGHLIGHT",
+      "EVENT-20260908-MEANINGLESS-ENGLISH-EYEBROW",
+      "EVENT-20260908-MECHANISM-DEPTH",
+      "EVENT-20260909-BRIEFING-FINAL-ACCEPTED",
+      "EVENT-20260908-BRIEFING-DENSE-STATUS",
+      "EVENT-20260908-DEFENSIVE-NEGATION-OPENING",
+      "EVENT-20260908-NAKED-METRICS"
+    ],
+    "goldPairIds": [
+      "PAIR-082-RESEARCH-NARRATIVE",
+      "PAIR-082-ENGINEERING-DEPTH",
+      "PAIR-082-PARAMETER-HEADING",
+      "PAIR-081-DEFENSIVE-OPENING",
+      "PAIR-068-ATTENTION",
+      "PAIR-067-METAPHOR"
+    ],
+    "signals": {
+      "intermediate-better-is-not-canonical": true,
+      "meaningless-english-eyebrow": true,
+      "numeric-shock-heading": true,
+      "phone-vs-desktop-scope-split": true,
+      "ambiguous-mobile-16-9-held": true,
+      "technical-depth-without-meta-performance": true,
+      "engineering-rigor-progressive-disclosure": true,
+      "scientific-decision-chain": true
+    }
+  },
+  "evaluationProof": {
+    "targetHardFamily": "meaningless-english-eyebrow",
+    "verifierFailures": [
+      "hard failure family not checked: meaningless-english-eyebrow"
+    ]
+  },
+  "automationGap": "Conversation-to-ledger extraction is still interpreted manually by the Agent because ChatGPT conversation turns are not exposed to a repository ingestion API. The repository now validates the structured ledger, cross-references, verdict/tier boundaries, retrieval proof, and evaluation proof fail-closed.",
+  "status": "PASS",
+  "failures": []
+}

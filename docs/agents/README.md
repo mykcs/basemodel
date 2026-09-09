@@ -31,6 +31,7 @@ Always load the relevant combination of:
 - [`current/product-and-research-integrity.md`](current/product-and-research-integrity.md) — product/research truth and false-complete boundaries;
 - [`current/website-design-spec.md`](current/website-design-spec.md) — canonical website-level design/copy preference: what “说人话 / 去 AI 味” means, information order, heading voice, and conflict resolution;
 - [`current/human-preference-learning-system.md`](current/human-preference-learning-system.md) — executable human-feedback learning loop: scoped Preference Model, rejected↔accepted Gold Pairs, task-time retrieval, two-phase cold read, and judge receipts;
+- [`current/human-feedback-ingestion-closeout.md`](current/human-feedback-ingestion-closeout.md) — end-of-conversation Human Preference Learning closeout: 100% feedback coverage ledger, verdict/scope/supersession/trajectory/visual-tier ingestion, future Preference Brief proof, and evaluation-side recurrence rejection;
 - [`current/site-reader-attention-contract.md`](current/site-reader-attention-contract.md) — executable per-route audience/task/first-viewport/boundary/next-step contract; register or update it before public-page HTML is substantially written or rearranged;
 - [`current/human-thinking-web-expression-contract.md`](current/human-thinking-web-expression-contract.md) — semantic HTML/visual expression and information-density contract;
 - [`current/audience-centered-technical-copy.md`](current/audience-centered-technical-copy.md) — site-wide technical-copy baseline;
