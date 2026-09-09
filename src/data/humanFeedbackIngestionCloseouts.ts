@@ -35,6 +35,7 @@ export interface HumanFeedbackIngestionCloseoutRecord {
     finalAcceptedHead: string;
     mergedMainCommit: string;
   };
+  candidateFeedbackSignals: number;
   ledger: FeedbackCoverageLedgerItem[];
   futureTaskQuery: string;
   expectedRetrievedSignals: string[];
@@ -51,12 +52,13 @@ export const OPEN_EVO_BRIEFING_INGESTION_20260909: HumanFeedbackIngestionCloseou
   task: 'OpenEVO summer/advisor briefing webpage human-preference closeout',
   sourceWindow: {
     start: '2026-09-08T03:02:15Z',
-    end: '2026-09-09T04:08:41Z',
+    end: '2026-09-09T04:30:36Z',
     route: '/research/seed-openevo/study/briefing/',
     pullRequest: 569,
     finalAcceptedHead: '89fe1190d0f92909f6da40b9a47ea75c9f45d2d5',
     mergedMainCommit: '2471d63593df808040a62a83654c360ceb9e38d2',
   },
+  candidateFeedbackSignals: 29,
   ledger: [
     {
       id: 'FB-01-RESEARCH-IDEAS-MISSING',
@@ -270,9 +272,9 @@ export const OPEN_EVO_BRIEFING_INGESTION_20260909: HumanFeedbackIngestionCloseou
     {
       id: 'FB-24-FINAL-MERGE-AUTHORIZATION',
       date: '2026-09-09',
-      ownerSignal: '继续推进 OpenEVO 夏季汇报的 BaseModel PR #569：如果 Vercel 和 GitHub Actions 都通过，就直接合并到 main；如果有失败，先修复后再合并。',
+      ownerSignal: '虽然做的不是100完成，先合并进main',
       disposition: 'ingest',
-      rationale: '这是对通过 gate 的具体最终版本的 accepted 信号；没有 future-template 语言，所以不能升级为 canonical/Golden。',
+      rationale: '这是对当前具体版本的明确合并授权；“不是100完成”同时明确阻止把它升级为 canonical/Golden。',
       eventIds: ['EVENT-20260909-BRIEFING-FINAL-ACCEPTED'],
       caseIds: ['CASE-082'],
       visualReferenceIds: ['VISUAL-BRIEFING-FINAL-ACCEPTED-SILVER'],
@@ -281,10 +283,10 @@ export const OPEN_EVO_BRIEFING_INGESTION_20260909: HumanFeedbackIngestionCloseou
       id: 'FB-25-SLIDE-SOURCE-OF-TRUTH',
       date: '2026-09-08',
       ownerSignal: '为什么没有按照你前面对话发给我的 slide 做？',
-      disposition: 'superseded',
-      rationale: '这一纠正要求承接已得到正向反馈的 slide 视觉方向；随后“两个中和一下”明确说明不是逐像素复刻，而是保留视觉节奏并继续用原生 HTML。',
+      disposition: 'page-specific-only',
+      rationale: '只能恢复到邻近 assistant 对 owner 意图的复述，无法验证 direct owner 原句；保留为本页实现历史，但不作为 supersession 或长期规则证据。',
       caseIds: ['CASE-082'],
-      supersededBy: 'FB-26-SLIDE-HTML-HYBRID',
+      excludedSubsignals: ['no verified direct-owner wording; do not promote this reconstructed sentence into Preference Model or Gold Pairs'],
     },
     {
       id: 'FB-26-SLIDE-HTML-HYBRID',
@@ -312,9 +314,17 @@ export const OPEN_EVO_BRIEFING_INGESTION_20260909: HumanFeedbackIngestionCloseou
       rationale: '这是本次任务的执行顺序授权，不足以推导成所有未来页面任务都必须先改偏好系统再做产品工作。',
       caseIds: ['CASE-083'],
     },
+    {
+      id: 'FB-29-THREE-B-EXPERIMENT-EXISTS',
+      date: '2026-09-09',
+      ownerSignal: '我记得除了“OpenEVO （1.7B，GDR 筛选）”我们应该还做过 3B 的实验，对吗？',
+      disposition: 'task-fact-not-preference',
+      rationale: '这是对实验资产/科学事实的核对，不代表长期表达或视觉偏好；后续叙事偏好由 FB-15 单独吸收。',
+      scopes: ['briefing'],
+    },
   ],
   futureTaskQuery:
-    '准备下一轮给导师的科研汇报：说人话，不要无意义英文小标题；参数数字不要为了冲击力抢标题；按遇到问题、做小实验排除解释、进入下一问来讲研究思路。TaskVector 和 GDR 机制可以用公式和真实数据，但不要写“这里更硬核”；SHA、重复性等工程严谨性细节按需放技术页。手机适应窗口，桌面保持有上限的 16:9 演讲构图，不随超宽屏无限拉伸。',
+    '准备一场新的科研组会，介绍一个强化学习机制排查项目。听众懂机器学习，但不了解项目内部工程。汇报里有几个负结果、几次超参数调整和小型诊断实验，机制部分需要少量公式；同一份 HTML 需要能在手机阅读，也要在会议室大屏展示。请给出第一版结构与表达方案。',
   expectedRetrievedSignals: [
     'intermediate-better-is-not-canonical',
     'meaningless-english-eyebrow',

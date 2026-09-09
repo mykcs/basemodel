@@ -26,6 +26,7 @@ export interface HumanFeedbackIngestionValidation {
   retrievedGoldPairIds: string[];
   retrievedSignals: Record<string, boolean>;
   evaluationProofFailures: string[];
+  evaluationProofPassFailures: string[];
 }
 
 const allDispositions: FeedbackLedgerDisposition[] = [
@@ -138,7 +139,16 @@ export function validateHumanFeedbackIngestionCloseout(
   if (record.schema !== 'human-feedback-ingestion-closeout.v1') failures.push(`${record.id}: wrong schema`);
   if (!/^[0-9a-f]{40}$/i.test(record.sourceWindow.finalAcceptedHead)) failures.push(`${record.id}: invalid finalAcceptedHead`);
   if (!/^[0-9a-f]{40}$/i.test(record.sourceWindow.mergedMainCommit)) failures.push(`${record.id}: invalid mergedMainCommit`);
+  if (!Number.isInteger(record.candidateFeedbackSignals) || record.candidateFeedbackSignals < 1) failures.push(`${record.id}: candidateFeedbackSignals must be a positive integer`);
+  if (record.ledger.length !== record.candidateFeedbackSignals) failures.push(`${record.id}: candidateFeedbackSignals=${record.candidateFeedbackSignals} but ledger has ${record.ledger.length}`);
   if (!record.futureTaskQuery.trim()) failures.push(`${record.id}: futureTaskQuery is empty`);
+  const normalizedFutureQuery = record.futureTaskQuery.replace(/\s+/g, '').toLowerCase();
+  for (const item of record.ledger) {
+    const normalizedOwnerSignal = item.ownerSignal.replace(/\s+/g, '').toLowerCase();
+    if (normalizedOwnerSignal.length >= 18 && normalizedFutureQuery.includes(normalizedOwnerSignal)) {
+      failures.push(`${record.id}: futureTaskQuery copies owner signal verbatim: ${item.id}`);
+    }
+  }
   if (!record.automationGap.trim()) failures.push(`${record.id}: automationGap must be explicit`);
 
   for (const item of record.ledger) {
@@ -162,9 +172,14 @@ export function validateHumanFeedbackIngestionCloseout(
   }
   for (const item of record.ledger) {
     if (item.supersededBy && !ledgerIds.has(item.supersededBy)) failures.push(`${item.id}: unknown superseding ledger item ${item.supersededBy}`);
+    if (item.disposition !== 'superseded' || !item.supersededBy) continue;
+    const successor = record.ledger.find((candidate) => candidate.id === item.supersededBy);
+    const oldEventIds = new Set(item.eventIds ?? []);
+    const successorEvents = HUMAN_FEEDBACK_EVENTS.filter((event) => successor?.eventIds?.includes(event.id));
+    const linked = successorEvents.some((event) => (event.supersedesEventIds ?? []).some((eventId) => oldEventIds.has(eventId)));
+    if (oldEventIds.size && !linked) failures.push(`${item.id}: structured supersession is not preserved by successor event ${item.supersededBy}`);
   }
 
-  if (record.id === 'INGESTION-20260909-OPENEVO-BRIEFING' && record.ledger.length !== 28) failures.push(`${record.id}: expected 28 identified candidate feedback turns, got ${record.ledger.length}`);
   if (counts['ambiguous-hold'] !== 0) failures.push(`${record.id}: unresolved ambiguous-hold entries remain`);
 
   const finalEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-BRIEFING-FINAL-ACCEPTED');
@@ -199,6 +214,11 @@ export function validateHumanFeedbackIngestionCloseout(
   if (!evaluationProofFailures.includes(expectedFailure)) {
     failures.push(`${record.id}: evaluation-side proof did not reject omitted hard family ${record.evaluationProof.hardFamily}`);
   }
+  evaluationReceipt.hardFamiliesChecked = hardFailureFamilies();
+  const evaluationProofPassFailures = verifyCandidateReceipt(evaluationReceipt);
+  if (evaluationProofPassFailures.length) {
+    failures.push(`${record.id}: evaluation receipt still fails after restoring all hard-family checks: ${evaluationProofPassFailures.join('; ')}`);
+  }
 
   return {
     failures,
@@ -209,5 +229,6 @@ export function validateHumanFeedbackIngestionCloseout(
     retrievedGoldPairIds: brief.goldPairs.map(({ pair }) => pair.id),
     retrievedSignals: statuses,
     evaluationProofFailures,
+    evaluationProofPassFailures,
   };
 }

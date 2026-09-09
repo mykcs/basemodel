@@ -6,10 +6,11 @@ import { validateHumanFeedbackIngestionCloseout } from './humanFeedbackIngestion
 const record = OPEN_EVO_BRIEFING_INGESTION_20260909;
 
 describe('human feedback ingestion closeout', () => {
-  it('covers every identified candidate owner-feedback turn with one disposition', () => {
-    expect(record.ledger).toHaveLength(28);
-    expect(new Set(record.ledger.map((item) => item.id)).size).toBe(28);
+  it('covers every identified candidate owner-feedback signal with one disposition', () => {
+    expect(record.ledger).toHaveLength(record.candidateFeedbackSignals);
+    expect(new Set(record.ledger.map((item) => item.id)).size).toBe(record.candidateFeedbackSignals);
     expect(record.ledger.filter((item) => item.disposition === 'ambiguous-hold')).toEqual([]);
+    expect(record.ledger.find((item) => item.id === 'FB-29-THREE-B-EXPERIMENT-EXISTS')?.disposition).toBe('task-fact-not-preference');
   });
 
   it('preserves intermediate better versus concrete accepted versus canonical', () => {
@@ -34,6 +35,9 @@ describe('human feedback ingestion closeout', () => {
   });
 
   it('passes coverage, future-generation retrieval, and evaluation-side recurrence proof', () => {
-    expect(validateHumanFeedbackIngestionCloseout(record).failures).toEqual([]);
+    const result = validateHumanFeedbackIngestionCloseout(record);
+    expect(result.evaluationProofFailures).toContain('hard failure family not checked: internal-detail-promoted-to-primary-attention');
+    expect(result.evaluationProofPassFailures).toEqual([]);
+    expect(result.failures).toEqual([]);
   });
 });

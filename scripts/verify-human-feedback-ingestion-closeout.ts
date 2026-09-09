@@ -26,6 +26,7 @@ for (const record of records) {
     retrievedGoldPairIds: result.retrievedGoldPairIds,
     evaluationProof: record.evaluationProof,
     evaluationProofFailures: result.evaluationProofFailures,
+    evaluationProofPassFailures: result.evaluationProofPassFailures,
     automationGap: record.automationGap,
     failures: result.failures,
   }, null, 2));

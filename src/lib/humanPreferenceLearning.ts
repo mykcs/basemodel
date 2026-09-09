@@ -96,9 +96,16 @@ export function retrieveHumanPreferenceContext(
     .slice(0, Math.min(limit, 10));
 
   const preferenceIds = new Set(preferences.map(({ preference }) => preference.id));
+  const preferenceById = new Map(HUMAN_PREFERENCE_MODEL.map((preference) => [preference.id, preference]));
   const goldPairs = HUMAN_FEEDBACK_GOLD_PAIRS.map((pair) => {
     let score = rankedCaseIds.has(pair.caseId) ? 10 : boundCases.has(pair.caseId) ? 7 : 0;
-    for (const preferenceId of pair.preferenceIds) if (preferenceIds.has(preferenceId)) score += 6;
+    for (const preferenceId of pair.preferenceIds) {
+      if (preferenceIds.has(preferenceId)) score += 6;
+      const preference = preferenceById.get(preferenceId);
+      for (const tag of preference?.retrievalTags ?? []) {
+        if (normalized.includes(tag.toLowerCase())) score += 8;
+      }
+    }
     const haystack = [pair.rejected, pair.accepted, pair.reason, ...pair.failureMechanisms].join(' ').toLowerCase();
     for (const token of tokens) if (haystack.includes(token)) score += 2;
     return { pair, score };

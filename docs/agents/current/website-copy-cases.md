@@ -983,16 +983,16 @@
 
 **2026-09-09 ingestion closeout 原始 owner 信号（中间态、supersession 与接受边界）**：
 
-- `为什么没有按照你前面对话发给我的 slide 做？` 随后被 `两者中和一下` 收窄：承接已得到正向反馈的视觉方向，但不是把 slide 当图片逐像素复刻。
+- 关于“为什么没承接前面的 slide 视觉方向”的那一轮，只能恢复到邻近 assistant 的复述，找不到可验证的 owner 原句；因此 closeout 仅保留为 page-specific 历史，不用于新增长期规则。随后可验证的 owner 原话 `两者中和一下` 只约束本 briefing：承接 slide 注意力结构，同时保留原生 HTML。
 - `还是不像之前你给的 slides，多色彩、柔和、圆形什么的；之前 slides 上的信息也有一点点多。` 说明反例不是“信息多”，而是竞争注意力；过度极简同样会丢失正向视觉信号。
 - `这个问题以前在普通网页就说过；无意义英文小标题增加人的认知负担。` 是显式重复纠正；机制不是“英文禁用”，而是作者内部编码抢读者第一注意力。
 - `slide 上莫名的淡色气泡不要。` 拒绝无信息装饰，不连带禁止柔和色彩、圆角或有功能的圆形编号。
 - `“这里可以更硬核一点”我们自己知道就行……可以换成“我们采用一个更技术性的指标”。` 技术深度由公式、数据和指标自己证明，不需要 meta 自我评价。
 - `工程严谨性、SHA 和重复性是实验成立的默认前提，不应该单独占一页当科研亮点。` 默认下沉；只有影响科学有效性、可识别性或因果归因时回到主线。
 - `从 7B 起点讲到 1.7B / 3B，再讲 15→30、2048→4096、10+10……最后进入 GDR / DirectApply。` 主叙事要让老师看到问题如何被小实验一步步缩窄。
-- `目前整体效果比上一版好多了。` 对当时可见的 `1ca186d4…` 只支持 `better / Silver`；同一句继续提出参数标题和手机/桌面修正。后续 `89fe1190…` 在通过 Gate 后得到具体合并授权，因此是 concrete `accepted`，但没有“以后按这版”的模板授权，仍不是 `canonical / Golden`。
+- `目前整体效果比上一版好多了。` 对当时可见的 `1ca186d4…` 只支持 `better / Silver`；同一句继续提出参数标题和手机/桌面修正。后续 owner 明确说 `虽然做的不是100完成，先合并进main`，`89fe1190…` 因此是 concrete `accepted`，但没有“以后按这版”的模板授权，仍不是 `canonical / Golden`。
 
-完整 turn-level coverage 与排除理由由 `src/data/humanFeedbackIngestionCloseouts.ts -> INGESTION-20260909-OPENEVO-BRIEFING` 持有，避免把“better / promising / accepted / canonical”再次压扁成二元喜欢/不喜欢。
+完整 signal-level coverage 与排除理由由 `src/data/humanFeedbackIngestionCloseouts.ts -> INGESTION-20260909-OPENEVO-BRIEFING` 持有，避免把“better / promising / accepted / canonical”再次压扁成二元喜欢/不喜欢。
 
 <a id="case-083-案例库必须进入生成和验收闭环"></a>
 ### CASE-083 — 案例库必须改变下一次任务的生成与验收
