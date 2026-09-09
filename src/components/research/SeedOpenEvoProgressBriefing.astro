@@ -1,5 +1,7 @@
 ---
 import { localePath, type Locale } from '../../i18n';
+import { OPEN_EVO_3B_TRAINING_DYNAMICS } from '../../data/openEvo3BTrainingDynamics';
+import { OPEN_EVO_LONG_RUN_TRAINING_DYNAMICS } from '../../data/openEvoLongRunTrainingDynamics';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -9,6 +11,62 @@ const p = (path: string) => localePath(locale, path);
 
 const flowHref = p('/research/seed-openevo/flow/');
 const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/');
+
+const dynamics3B = OPEN_EVO_3B_TRAINING_DYNAMICS;
+const dynamics7B = OPEN_EVO_LONG_RUN_TRAINING_DYNAMICS.sevenB;
+const dynamics17B = OPEN_EVO_LONG_RUN_TRAINING_DYNAMICS.onePointSevenB;
+const movingAverage = (series: readonly { round: number; score: number }[], window = 12) => series.map((point, index) => {
+  const start = Math.max(0, index - window + 1);
+  const windowRows = series.slice(start, index + 1);
+  return { round: point.round, score: windowRows.reduce((sum, row) => sum + row.score, 0) / windowRows.length };
+});
+const meanScore = (series: readonly { score: number }[]) => series.reduce((sum, row) => sum + row.score, 0) / series.length;
+
+const scoreTrend = movingAverage(dynamics3B.score);
+const scoreChart = { left: 42, right: 676, top: 16, bottom: 220, maxRound: dynamics3B.score.at(-1)?.round ?? 122, maxScore: 22 };
+const scoreX = (round: number) => scoreChart.left + (round / scoreChart.maxRound) * (scoreChart.right - scoreChart.left);
+const scoreY = (score: number) => scoreChart.bottom - (score / scoreChart.maxScore) * (scoreChart.bottom - scoreChart.top);
+const scoreRawPoints = dynamics3B.score.map((point) => `${scoreX(point.round).toFixed(1)},${scoreY(point.score).toFixed(1)}`).join(' ');
+const scoreTrendPoints = scoreTrend.map((point) => `${scoreX(point.round).toFixed(1)},${scoreY(point.score).toFixed(1)}`).join(' ');
+const lossChart = { left: 36, right: 340, top: 16, bottom: 220, minLoss: 0.95, maxLoss: 1.85 };
+const lossX = (round: number) => lossChart.left + (round / scoreChart.maxRound) * (lossChart.right - lossChart.left);
+const lossY = (loss: number) => lossChart.bottom - ((loss - lossChart.minLoss) / (lossChart.maxLoss - lossChart.minLoss)) * (lossChart.bottom - lossChart.top);
+const lossPoints = dynamics3B.loss.map((point) => `${lossX(point.round).toFixed(1)},${lossY(point.loss).toFixed(1)}`).join(' ');
+const earlyScoreMean = meanScore(dynamics3B.score.slice(0, 20));
+const lateScoreRows = dynamics3B.score.slice(-23);
+const lateScoreMean = meanScore(lateScoreRows);
+const firstLoss = dynamics3B.loss[0]?.loss ?? 0;
+const lastLoss = dynamics3B.loss.at(-1)?.loss ?? 0;
+
+const scoreTrend7B = movingAverage(dynamics7B.score);
+const scoreChart7B = { left: 42, right: 676, top: 16, bottom: 220, maxRound: 148, maxScore: 90 };
+const scoreX7B = (round: number) => scoreChart7B.left + (round / scoreChart7B.maxRound) * (scoreChart7B.right - scoreChart7B.left);
+const scoreY7B = (score: number) => scoreChart7B.bottom - (score / scoreChart7B.maxScore) * (scoreChart7B.bottom - scoreChart7B.top);
+const scoreRawPoints7B = dynamics7B.score.map((point) => `${scoreX7B(point.round).toFixed(1)},${scoreY7B(point.score).toFixed(1)}`).join(' ');
+const scoreTrendPoints7B = scoreTrend7B.map((point) => `${scoreX7B(point.round).toFixed(1)},${scoreY7B(point.score).toFixed(1)}`).join(' ');
+const lossChart7B = { left: 36, right: 340, top: 16, bottom: 220, minLoss: 0, maxLoss: 0.70 };
+const lossX7B = (round: number) => lossChart7B.left + (round / scoreChart7B.maxRound) * (lossChart7B.right - lossChart7B.left);
+const lossY7B = (loss: number) => lossChart7B.bottom - ((loss - lossChart7B.minLoss) / (lossChart7B.maxLoss - lossChart7B.minLoss)) * (lossChart7B.bottom - lossChart7B.top);
+const lossPoints7B = dynamics7B.loss.map((point) => `${lossX7B(point.round).toFixed(1)},${lossY7B(point.loss).toFixed(1)}`).join(' ');
+const earlyScoreMean7B = meanScore(dynamics7B.score.slice(0, 20));
+const lateScoreMean7B = meanScore(dynamics7B.score.slice(-20));
+const firstLoss7B = dynamics7B.loss[0]?.loss ?? 0;
+const lastLoss7B = dynamics7B.loss.at(-1)?.loss ?? 0;
+
+const scoreTrend17B = movingAverage(dynamics17B.score);
+const miniScore17B = { left: 28, right: 492, top: 10, bottom: 112, maxRound: 159, maxScore: 65 };
+const miniScoreX17B = (round: number) => miniScore17B.left + (round / miniScore17B.maxRound) * (miniScore17B.right - miniScore17B.left);
+const miniScoreY17B = (score: number) => miniScore17B.bottom - (score / miniScore17B.maxScore) * (miniScore17B.bottom - miniScore17B.top);
+const miniScoreRaw17B = dynamics17B.score.map((point) => `${miniScoreX17B(point.round).toFixed(1)},${miniScoreY17B(point.score).toFixed(1)}`).join(' ');
+const miniScoreTrend17B = scoreTrend17B.map((point) => `${miniScoreX17B(point.round).toFixed(1)},${miniScoreY17B(point.score).toFixed(1)}`).join(' ');
+const miniLoss17B = { left: 28, right: 492, top: 8, bottom: 60, minLoss: 0, maxLoss: 1.10 };
+const miniLossX17B = (round: number) => miniLoss17B.left + (round / miniScore17B.maxRound) * (miniLoss17B.right - miniLoss17B.left);
+const miniLossY17B = (loss: number) => miniLoss17B.bottom - ((loss - miniLoss17B.minLoss) / (miniLoss17B.maxLoss - miniLoss17B.minLoss)) * (miniLoss17B.bottom - miniLoss17B.top);
+const miniLossPoints17B = dynamics17B.loss.map((point) => `${miniLossX17B(point.round).toFixed(1)},${miniLossY17B(point.loss).toFixed(1)}`).join(' ');
+const earlyScoreMean17B = meanScore(dynamics17B.score.slice(0, 20));
+const lateScoreMean17B = meanScore(dynamics17B.score.slice(-20));
+const firstLoss17B = dynamics17B.loss[0]?.loss ?? 0;
+const lastLoss17B = dynamics17B.loss.at(-1)?.loss ?? 0;
 ---
 
 <article class="briefing" data-ui-audit="surface" data-testid="progress-briefing">
@@ -38,13 +96,23 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
       <aside class="tldr-pane" aria-label="Too long, Don't read">
         <p class="tldr-label">Too long, Don't read</p>
         <ul>
-          <li>{t('7B 长周期实验完成后，最终测试是 49.33 / 100；这说明 OpenEVO 能持续学，但离我们想追的能力上限还有明显距离。', 'The long-horizon 7B run finished at 49.33 / 100 on the final panel: OpenEVO can keep learning, but the ceiling is still well below the target we want to understand.')}</li>
-          <li>{t('我们没有把低分简单归因给“步数太少”或“容量太小”：15→30 步仍然是 0；2048→4096 仍然解决不了 Text Memory 的容量问题。', 'We did not blame the low result on short horizons or small capacity: 15→30 steps remained zero, and 2048→4096 still did not solve Text Memory capacity.')}</li>
-          <li>{t('真正值得追的信号出现在更新机制：1.7B 训练出了 44 个 SD-LoRA 参数更新候选，GDR（Gated Delta Rule，更新筛选规则）最终只让 7 个进入后续模型。', 'The more interesting signal appeared in update admission: the 1.7B run trained 44 SD-LoRA parameter-update candidates, but GDR (Gated Delta Rule, an update filter) admitted only 7 into later model states.')}</li>
-          <li>{t('因此我们正在做 DirectApply（直接应用更新）对照：拿掉 GDR 的否决权。最终分数还没收口，当前不能提前宣布谁更好。', 'We are therefore running a DirectApply comparison, which applies qualifying updates without the GDR veto. Its final score is not sealed yet, so there is no winner to claim.')}</li>
+          <li>{t('7B 长周期实验最终测试是 49.33 / 100：模型能持续学习，但离我们想追的能力上限还有明显距离。', 'The 7B long-horizon run finishes at 49.33 / 100: the model can keep learning, but the ceiling remains well below the target we want to understand.')}</li>
+          <li>{t('我们随后用更小实验逐个排除解释：步数、记忆容量、信息组织、参数更新方向都分别做了对照。', 'We then used smaller experiments to test explanations one by one: action horizon, memory capacity, information organization, and parameter-update direction.')}</li>
+          <li>{t('最后问题集中到参数更新：1.7B 实验实际训练了 44 个 SD-LoRA 更新；加入 GDR（Gated Delta Rule，选择性更新规则）后只有 7 个真正写入后续模型，因此我们又启动 DirectApply 对照。', 'The question eventually narrows to parameter updates: the 1.7B run actually trained 44 SD-LoRA updates; after adding GDR (Gated Delta Rule, a selective update rule), only 7 entered later model states, motivating a DirectApply comparison.')}</li>
         </ul>
       </aside>
-      <p class="slide-number">02 / 11</p>
+      <div class="attempts-summary" aria-label={t('本次具体尝试', 'Concrete attempts in this review')}>
+        <strong>{t('这次具体做过的尝试', 'Concrete experiments and diagnostics')}</strong>
+        <div>
+          <span>{t('7B 长周期训练基线', '7B long-horizon baseline')}</span>
+          <span>{t('1.7B / 3B 小模型诊断线', '1.7B / 3B diagnostic lines')}</span>
+          <span>{t('最大步数 15 → 30', 'max steps 15 → 30')}</span>
+          <span>{t('Text Memory 2048 → 4096，再做 10+10 分块', 'Text Memory 2048 → 4096, then bounded 10+10')}</span>
+          <span>{t('TaskVector 参数更新方向分析', 'TaskVector update-direction analysis')}</span>
+          <span>{t('GDR 选择性更新 vs DirectApply', 'selective GDR updates vs DirectApply')}</span>
+        </div>
+      </div>
+      <p class="slide-number">02 / 12</p>
     </div>
   </section>
 
@@ -69,69 +137,162 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
           </tbody>
         </table>
       </div>
-      <div class="table-notes">
-        <p><strong>Score</strong> {t('看任务要求满足了多少；', 'measures partial requirement satisfaction;')} <strong>Succ.</strong> {t('只统计完整成功。', 'counts only fully completed tasks.')}</p>
+      <div class="table-notes single-note">
         <p>{t('3B 确实做过独立实验线，但目前没有一个能与这张冻结终评表直接并列的最终分数，所以不硬填；DirectApply 也还没有最终分数。', 'The 3B line is real, but we do not have a final number that belongs beside this frozen panel, so it remains blank; DirectApply is also unfinished.')}</p>
       </div>
-      <p class="slide-number">03 / 11</p>
+      <p class="slide-number">03 / 12</p>
     </div>
   </section>
 
   <section id="seven-b" class="briefing-slide tone-blue" aria-labelledby="seven-b-title">
-    <div class="slide-inner">
-      <h2 id="seven-b-title">{t('7B 长周期实验：最终 49.33 分，瓶颈在哪里？', '7B long-horizon experiment: final Score 49.33 — where is the bottleneck?')}</h2>
-      <p class="slide-thesis">{t('这条线给了我们第一个完整基线：同一套 WebShop 任务流里，模型持续产生经验、吸收反馈并更新参数，最后再一次性看冻结终评。', 'This gave us the first complete baseline: on one WebShop trajectory stream, the model keeps collecting experience, absorbing feedback, updating parameters, and only then sees the frozen final evaluation.')}</p>
-      <div class="three-questions">
-        <li><span>1</span><div><strong>{t('第一阶段（Stage 1）', 'Stage 1')}</strong><p>{t('Qwen2.5-7B；180 个任务 × 每个任务 8 次尝试 = 1,440 条轨迹；temperature=0.4；每条最多 15 步。', 'Qwen2.5-7B; 180 tasks × 8 rollouts = 1,440 trajectories; temperature=0.4; max 15 steps.')}</p></div></li>
-        <li><span>2</span><div><strong>{t('第二阶段（Stage 2）', 'Stage 2')}</strong><p>{t('长周期继续和环境交互，并做低秩参数更新（SD-LoRA）；最终完整收口 149 轮、19,072 条有效环境交互。', 'Long-horizon environment interaction with low-rank parameter updates (SD-LoRA); 149 completed rounds and 19,072 accepted rollouts.')}</p></div></li>
-        <li><span>3</span><div><strong>{t('最终测试', 'Final test')}</strong><p><b>49.33 / 100</b><br />{t('完整成功 58 / 128（45.31%）', '58 / 128 complete successes (45.31%)')}</p></div></li>
+    <div class="slide-inner dynamics-slide seven-b-dynamics">
+      <h2 id="seven-b-title">{t('7B：训练过程明显学起来，但冻结终评仍是 49.33', '7B: training clearly improves, while the frozen final remains 49.33')}</h2>
+      <p class="slide-thesis">{t(`Qwen2.5-7B 先按 180 个任务 × 每个任务 8 次尝试 = 1,440 条轨迹启动（temperature=0.4，每条最多 15 步），再进入长周期 Stage 2。训练轮次的 WebShop Score 前 20 轮平均 ${earlyScoreMean7B.toFixed(2)} / 100，最后 20 轮平均 ${lateScoreMean7B.toFixed(2)} / 100；143 次已接纳 SD-LoRA 更新的 loss 从 ${firstLoss7B.toFixed(2)} 降到 ${lastLoss7B.toFixed(2)}。`, `Qwen2.5-7B starts from 180 tasks × 8 rollouts = 1,440 Stage-1 trajectories (temperature=0.4, max 15 steps) and then enters long-horizon Stage 2. Training-round WebShop Score averages ${earlyScoreMean7B.toFixed(2)} / 100 over the first 20 rounds and ${lateScoreMean7B.toFixed(2)} / 100 over the last 20; loss across 143 admitted SD-LoRA updates falls from ${firstLoss7B.toFixed(2)} to ${lastLoss7B.toFixed(2)}.`)}</p>
+      <div class="dynamics-grid">
+        <figure class="dynamics-chart score-chart">
+          <figcaption>{t('7B 每轮 WebShop Score', '7B WebShop Score by round')} <span>{t('细线=原始轮次；粗线=12轮移动平均', 'thin=raw rounds; thick=12-round moving average')}</span></figcaption>
+          <svg viewBox="0 0 700 248" role="img" aria-label={t('7B 每轮 WebShop Score 与移动平均曲线', '7B WebShop Score and moving-average curve by round')}>
+            <line x1="42" y1="220" x2="676" y2="220" class="chart-axis" />
+            <line x1="42" y1="118" x2="676" y2="118" class="chart-gridline" />
+            <line x1="42" y1="16" x2="676" y2="16" class="chart-gridline" />
+            <text x="14" y="224" class="chart-label">0</text><text x="8" y="122" class="chart-label">45</text><text x="8" y="20" class="chart-label">90</text>
+            <text x="42" y="242" class="chart-label">R0</text><text x="350" y="242" class="chart-label">R74</text><text x="646" y="242" class="chart-label">R148</text>
+            <polyline points={scoreRawPoints7B} class="score-raw" />
+            <polyline points={scoreTrendPoints7B} class="score-trend" />
+          </svg>
+        </figure>
+        <figure class="dynamics-chart loss-chart">
+          <figcaption>{t('143 次已接纳更新的 SD-LoRA loss', 'SD-LoRA loss for 143 admitted updates')} <span>{t('每个点对应一次真正写入后续模型的参数更新', 'each point is an update written into the continuing model')}</span></figcaption>
+          <svg viewBox="0 0 360 248" role="img" aria-label={t('7B 已接纳 SD-LoRA 更新的训练 loss 曲线', '7B admitted SD-LoRA update training-loss curve')}>
+            <line x1="36" y1="220" x2="340" y2="220" class="chart-axis" />
+            <line x1="36" y1="118" x2="340" y2="118" class="chart-gridline" />
+            <line x1="36" y1="16" x2="340" y2="16" class="chart-gridline" />
+            <text x="6" y="224" class="chart-label">0</text><text x="3" y="122" class="chart-label">0.35</text><text x="3" y="20" class="chart-label">0.70</text>
+            <text x="36" y="242" class="chart-label">R0</text><text x="310" y="242" class="chart-label">R148</text>
+            <polyline points={lossPoints7B} class="loss-line" />
+          </svg>
+        </figure>
       </div>
-      <p class="bottom-claim">{t('这个结果把下一问变清楚：OpenEVO 已经能长期更新，但到底是哪一层限制了它继续变强？', 'The result sharpened the next question: OpenEVO can update for a long time, so which layer prevents those updates from translating into a higher ceiling?')}</p>
-      <p class="slide-number">04 / 11</p>
+      <div class="long-run-strip" aria-label={t('7B 实验尺度与冻结终评', '7B scale and frozen final evaluation')}>
+        <span><strong>Stage 1</strong>1,440 {t('条启动轨迹', 'startup trajectories')}</span>
+        <span><strong>Stage 2</strong>149 {t('轮 · 19,072 次有效环境交互', 'rounds · 19,072 accepted rollouts')}</span>
+        <span><strong>{t('冻结 128 题终评', 'Frozen 128-task final')}</strong>49.33 / 100 · {t('完整成功 58 / 128（45.31%）', '58 / 128 complete successes (45.31%)')}</span>
+      </div>
+      <p class="dynamics-boundary">{t('这里最重要的不是“训练中某一轮最高有多高”，而是训练过程和最终泛化要分开看：Score 曲线与 loss 都说明参数学习确实发生；冻结终评 49.33 则说明这些学习还没有等量转化成未参与训练的最终任务能力。于是我们继续追问：瓶颈是在任务长度、记忆组织，还是参数更新机制？', 'The key point is not the highest training-round score. Training dynamics and final generalization are different measurements: the Score curve and loss show real parameter learning, while the frozen 49.33 final shows that learning does not transfer one-for-one to held-out final tasks. That motivates the next question: is the bottleneck task horizon, memory organization, or the parameter-update mechanism?')}</p>
+      <p class="source-note"><a href={technicalHref}>{t('W&B 曲线身份、训练分数与冻结终评边界', 'W&B run identity and the training-vs-final boundary')}</a></p>
+      <p class="slide-number">04 / 12</p>
     </div>
   </section>
 
   <section id="small-arms" class="briefing-slide tone-green" aria-labelledby="small-arms-title">
-    <div class="slide-inner">
+    <div class="slide-inner small-arms-slide">
       <h2 id="small-arms-title">{t('1.7B 和 3B：用更小实验定位瓶颈', '1.7B and 3B: smaller experiments to locate the bottleneck')}</h2>
-      <p class="slide-thesis">{t('小模型更适合做诊断：同一个假设可以更快做单变量实验，先排除错误解释，再决定值不值得回到大模型继续投入预算。', 'Smaller models are useful diagnostic instruments: we can isolate one hypothesis faster, eliminate bad explanations, and only then decide what deserves the larger-model budget.')}</p>
-      <div class="choice-grid">
-        <div class="choice north">
-          <span>1.7B</span><h3>{t('完整跑完 GDR 长周期线', 'Completed the GDR long-horizon line')}</h3>
-          <p>{t('160 轮 / 20,480 次环境交互；最终 Score 37.60 / 100，完整成功 1 / 128。更重要的是，它暴露出 44→7 的更新准入瓶颈。', '160 rounds / 20,480 rollouts; final Score 37.60 / 100 and 1 / 128 complete success. More importantly, it exposed the 44→7 update-admission bottleneck.')}</p>
-        </div>
-        <div class="choice south">
-          <span>3B</span><h3>{t('独立实验线确实做过', 'A real independent experiment line')}</h3>
-          <p>{t('Qwen2.5-3B 也按 180×8 的第一阶段采集过 1,440 条轨迹，后续也有独立的持续学习实验线。它帮助我们验证同一套任务接口、容量和持续学习设计。当前没有一个可直接并入最终冻结分数表的终评分数。', 'Qwen2.5-3B also collected 1,440 Stage-1 trajectories under the 180×8 schedule and had its own Stage-2 lineage. It helped test the shared task interface, capacity, and continual-learning design. We do not currently have a final score that belongs in the frozen results table.')}</p>
-        </div>
+      <p class="slide-thesis">{t('小模型让我们更快做单变量诊断。1.7B 的完整 GDR 线尤其关键：训练过程并没有停住，但“训练出一个更新”和“让这个更新进入后续模型”之间出现了很大的落差。', 'Smaller models let us run one-variable diagnostics faster. The complete 1.7B GDR line is especially revealing: training does not stop, yet a large gap appears between training an update and admitting it into the continuing model.')}</p>
+      <div class="small-model-grid">
+        <article class="small-model-card one-seven-card">
+          <header><span>1.7B</span><div><h3>{t('160 轮都跑完了，但 44 个候选只接纳 7 个', 'All 160 rounds finish, but only 7 of 44 candidates are admitted')}</h3><p>{t(`前 20 轮任务 Score 平均 ${earlyScoreMean17B.toFixed(2)}，最后 20 轮 ${lateScoreMean17B.toFixed(2)}。`, `Training-round Score averages ${earlyScoreMean17B.toFixed(2)} over the first 20 rounds and ${lateScoreMean17B.toFixed(2)} over the last 20.`)}</p></div></header>
+          <figure class="mini-score-chart">
+            <figcaption>{t('每轮 WebShop Score；下方短线 = 候选更新发生的轮次', 'WebShop Score by round; bottom ticks = candidate-update rounds')}</figcaption>
+            <svg viewBox="0 0 520 126" role="img" aria-label={t('1.7B 每轮 WebShop Score、候选更新与 GDR 接纳轮次', '1.7B WebShop Score, candidate updates, and GDR admissions by round')}>
+              <line x1="28" y1="112" x2="492" y2="112" class="chart-axis" />
+              <line x1="28" y1="61" x2="492" y2="61" class="chart-gridline" />
+              <text x="5" y="115" class="chart-label">0</text><text x="1" y="64" class="chart-label">32.5</text><text x="1" y="14" class="chart-label">65</text>
+              <polyline points={miniScoreRaw17B} class="score-raw" />
+              <polyline points={miniScoreTrend17B} class="score-trend mini" />
+              {dynamics17B.candidateRounds.map((round) => <line x1={miniScoreX17B(round)} x2={miniScoreX17B(round)} y1="115" y2="122" class="candidate-tick" />)}
+              {dynamics17B.acceptedRounds.map((round) => <line x1={miniScoreX17B(round)} x2={miniScoreX17B(round)} y1="113" y2="124" class="accepted-tick" />)}
+            </svg>
+          </figure>
+          <figure class="mini-loss-chart">
+            <figcaption>{t('canonical W&B 中可核验的 loss：7 个被 GDR 接纳的更新', 'Verifiable loss in canonical W&B: the 7 updates admitted by GDR')}</figcaption>
+            <svg viewBox="0 0 520 68" role="img" aria-label={t('1.7B 七个被接纳 SD-LoRA 更新的训练 loss', 'Training loss for the seven admitted 1.7B SD-LoRA updates')}>
+              <line x1="28" y1="60" x2="492" y2="60" class="chart-axis" />
+              <polyline points={miniLossPoints17B} class="loss-line mini" />
+              {dynamics17B.loss.map((point) => <circle cx={miniLossX17B(point.round)} cy={miniLossY17B(point.loss)} r="3.2" class="loss-dot accepted" />)}
+              <text x="30" y="12" class="chart-label">{firstLoss17B.toFixed(2)}</text><text x="455" y="50" class="chart-label">{lastLoss17B.toFixed(2)}</text>
+            </svg>
+          </figure>
+          <div class="small-model-stats"><span><strong>44</strong>{t(' 个 SD-LoRA 候选实际训练', ' SD-LoRA candidates trained')}</span><span><strong>7</strong>{t(' 个进入后续模型', ' entered later model states')}</span><span><strong>37.60</strong>{t(' 冻结终评', ' frozen final')}</span></div>
+          <p class="mini-boundary">{t('160 轮 / 20,480 次环境交互全部完成。W&B 对 44 个候选轮次都有发生记录，但候选被拒绝后没有保留可作为 authority 的 training_loss 字段；所以这里不补造 37 个 loss 点。', 'All 160 rounds / 20,480 environment interactions completed. W&B records all 44 candidate-attempt rounds, but rejected candidates do not retain an authoritative training_loss field; we therefore do not fabricate 37 missing loss points.')}</p>
+        </article>
+        <article class="small-model-card three-b-card">
+          <header><span>3B</span><div><h3>{t('另一条独立持续学习线也确实学起来了', 'The independent 3B continual-learning line also shows learning')}</h3><p>{t('Qwen2.5-3B 先按 180×8 的第一阶段采集 1,440 条轨迹，后续进入独立的持续学习实验线。', 'Qwen2.5-3B first collected 1,440 Stage-1 trajectories under the 180×8 schedule, then entered its own continual-learning line.')}</p></div></header>
+          <div class="three-b-preview">
+            <div><strong>{earlyScoreMean.toFixed(2)} → {lateScoreMean.toFixed(2)}</strong><span>{t('前 20 轮 → 最后 23 轮平均任务 Score', 'first-20 → last-23 mean training-round Score')}</span></div>
+            <div><strong>{firstLoss.toFixed(2)} → {lastLoss.toFixed(2)}</strong><span>{t('已记录候选训练 loss', 'recorded candidate-training loss')}</span></div>
+            <div><strong>—</strong><span>{t('没有同口径冻结终评，不硬填最终分数', 'no same-protocol frozen final score; leave it blank')}</span></div>
+          </div>
+          <p class="three-b-next">{t('下一页把 3B 的完整 123 轮 Score 与候选训练 loss 展开。它帮助排除“这条训练线根本没工作”的简单工程解释，但不能代替冻结终评。', 'The next slide expands the full 123-round 3B Score and candidate-training loss. It rules out the simple engineering claim that this training line never worked, but it cannot substitute for a frozen final evaluation.')}</p>
+        </article>
       </div>
-      <p class="slide-number">05 / 11</p>
+      <p class="slide-number">05 / 12</p>
+    </div>
+  </section>
+
+  <section id="training-dynamics" class="briefing-slide tone-blue" aria-labelledby="training-dynamics-title">
+    <div class="slide-inner dynamics-slide">
+      <h2 id="training-dynamics-title">{t('3B：任务得分上升，训练 loss 同时下降', '3B: task score rises while training loss falls')}</h2>
+      <p class="slide-thesis">{t(`左图是每轮 WebShop 任务得分（Score），不是 loss：123 个已封存 round 中，前 20 轮平均 ${earlyScoreMean.toFixed(2)} / 100，最后 23 轮平均 ${lateScoreMean.toFixed(2)} / 100。右图才是 SD-LoRA 训练 loss：从 ${firstLoss.toFixed(2)} 降到约 ${lastLoss.toFixed(2)}。`, `The left chart is per-round WebShop task Score, not loss: across 123 sealed rounds, the first 20 average ${earlyScoreMean.toFixed(2)} / 100 and the last 23 average ${lateScoreMean.toFixed(2)} / 100. The right chart is SD-LoRA training loss, falling from ${firstLoss.toFixed(2)} to about ${lastLoss.toFixed(2)}.`)}</p>
+      <div class="dynamics-grid">
+        <figure class="dynamics-chart score-chart">
+          <figcaption>{t('每轮 WebShop Score', 'WebShop Score by round')} <span>{t('细线=原始轮次；粗线=12轮移动平均', 'thin=raw rounds; thick=12-round moving average')}</span></figcaption>
+          <svg viewBox="0 0 700 248" role="img" aria-label={t('3B 每轮 WebShop Score 与移动平均曲线', '3B WebShop Score and moving-average curve by round')}>
+            <line x1="42" y1="220" x2="676" y2="220" class="chart-axis" />
+            <line x1="42" y1="127.3" x2="676" y2="127.3" class="chart-gridline" />
+            <line x1="42" y1="34.5" x2="676" y2="34.5" class="chart-gridline" />
+            <text x="14" y="224" class="chart-label">0</text><text x="8" y="131" class="chart-label">10</text><text x="8" y="38" class="chart-label">20</text>
+            <text x="42" y="242" class="chart-label">R0</text><text x="350" y="242" class="chart-label">R61</text><text x="646" y="242" class="chart-label">R122</text>
+            <polyline points={scoreRawPoints} class="score-raw" />
+            <polyline points={scoreTrendPoints} class="score-trend" />
+          </svg>
+        </figure>
+        <figure class="dynamics-chart loss-chart">
+          <figcaption>{t('发生候选训练时的 SD-LoRA loss', 'SD-LoRA loss when candidate training occurs')} <span>{t('只有真正训练候选的轮次才有点', 'points exist only when a candidate is actually trained')}</span></figcaption>
+          <svg viewBox="0 0 360 248" role="img" aria-label={t('3B SD-LoRA 候选训练 loss 曲线', '3B SD-LoRA candidate-training loss curve')}>
+            <line x1="36" y1="220" x2="340" y2="220" class="chart-axis" />
+            <line x1="36" y1="118" x2="340" y2="118" class="chart-gridline" />
+            <line x1="36" y1="27.3" x2="340" y2="27.3" class="chart-gridline" />
+            <text x="4" y="224" class="chart-label">0.95</text><text x="6" y="122" class="chart-label">1.40</text><text x="6" y="31" class="chart-label">1.80</text>
+            <text x="36" y="242" class="chart-label">R0</text><text x="315" y="242" class="chart-label">R122</text>
+            <polyline points={lossPoints} class="loss-line" />
+            {dynamics3B.loss.map((point) => <circle cx={lossX(point.round)} cy={lossY(point.loss)} r={point.accepted ? 4.2 : 2.4} class={point.accepted ? 'loss-dot accepted' : 'loss-dot'} />)}
+          </svg>
+        </figure>
+      </div>
+      <p class="dynamics-boundary">{t(`这段曲线是训练过程证据，不是 128 题最终终评。${dynamics3B.acceptedRolloutsTotal.toLocaleString('en-US')} 次正式环境尝试里，ledger 记录的 engineering invalid、parser repair、invalid-action termination 都是 0。它支持排除“训练根本没工作”这个简单解释；下一问变成：这些学习为什么只有限地转化成最终任务能力？`, `These are training-process measurements, not the frozen 128-task final evaluation. Across ${dynamics3B.acceptedRolloutsTotal.toLocaleString('en-US')} formal environment attempts, the ledger records zero engineering-invalid, parser-repair, or invalid-action-termination events. That rules out the simple claim that training never worked; the next question is why the learning translates only partially into final task ability.`)}</p>
+      <p class="source-note"><a href={technicalHref}>{t('曲线口径、ledger 来源与 checkpoint 回放边界', 'Curve semantics, ledger provenance, and checkpoint-replay boundary')}</a></p>
+      <p class="slide-number">06 / 12</p>
     </div>
   </section>
 
   <section id="horizon-diagnostic" class="briefing-slide tone-gold" aria-labelledby="horizon-title">
-    <div class="slide-inner">
-      <h2 id="horizon-title">{t('15 → 30 步：任务得分仍然为 0', '15 → 30 steps: task score remains zero')}</h2>
-      <p class="slide-thesis">{t('这次只改一件事：每条轨迹最多能走 15 步还是 30 步。如果 30 步明显更好，才能说明问题主要出在步数限制。', 'Only one variable changes: whether each trajectory can take at most 15 or 30 actions. If 30 clearly improves behavior, the horizon explanation survives; otherwise it does not.')}</p>
-      <div class="before-after">
-        <div class="before"><span>15 步</span><strong>{t('任务得分 = 0', 'reward = 0')}</strong><p>{t('同一批任务、同一接口；轨迹在 15 步结束。', 'Same tasks and interface; traces end at 15 steps.')}</p></div>
-        <div class="after"><span>30 步</span><strong>{t('任务得分 = 0', 'reward = 0')}</strong><p>{t('64 / 64 条尝试有效；每个配对差值仍然是 0。', 'All 64 attempts are valid; every paired delta remains zero.')}</p></div>
+    <div class="slide-inner horizon-slide">
+      <h2 id="horizon-title">{t('多给 15 步，模型还是在几个导航动作里打转', 'Fifteen extra steps still leave the model looping through the same navigation actions')}</h2>
+      <p class="slide-thesis">{t('我们先看了真实轨迹，而不只看最后的 0 分：15 步版本里，模型反复执行 next（下一页）和 back（返回），一直没有进入 buy（购买）。所以当时最自然的怀疑是：会不会只是 15 步太短，还没来得及做完？', 'We inspected the actual traces rather than only the zero reward. At 15 steps the model repeatedly used next and back and never reached a buy transition. The natural hypothesis was therefore that 15 steps might simply be too short to finish.')}</p>
+      <div class="before-after horizon-compare">
+        <div class="before"><span>15 步</span><strong>next ↔ back ↔ next …</strong><p>{t('几个导航动作反复出现；轨迹走满 15 步，仍没有进入购买动作，任务得分为 0。', 'A few navigation actions repeat; the trace reaches the 15-step limit without a buy action, and the task score is zero.')}</p></div>
+        <div class="after"><span>30 步</span><strong>{t('多出来的 15 步没有打开新路径', 'The extra 15 steps do not open a new path')}</strong><p>{t('模型仍在同样几个导航动作里打转，没有进入 buy；BASE-15 和 BASE-30 的任务得分都为 0。', 'The model keeps cycling through the same navigation actions and still never reaches buy; both BASE-15 and BASE-30 score zero.')}</p></div>
       </div>
-      <p class="bottom-claim">{t('结论很直接：把动作预算翻倍不足以解释失败。于是我们停止继续增加步数，换下一个假设。', 'Conclusion: doubling the action budget is not a sufficient explanation. We stop increasing the horizon and move to the next hypothesis.')}</p>
-      <p class="slide-number">06 / 11</p>
+      <div class="horizon-proof" aria-label={t('排除工程和任务不可达解释的补充证据', 'Supporting evidence against simple engineering and reachability explanations')}>
+        <span><strong>64 / 64</strong>{t(' 次模型尝试有效', ' model attempts valid')}</span>
+        <span><strong>Δ = 0.0</strong>{t(' 每个 30−15 配对都没有改善', ' for every paired 30−15 comparison')}</span>
+        <span><strong>6 / 8</strong>{t(' 个任务经 oracle 核对可到达目标', ' tasks had oracle-reachable targets')}</span>
+      </div>
+      <div class="resolution-box"><strong>{t('于是我们知道：问题不在“差几步就能做完”', 'So the problem is not simply “the model needed a few more steps”')}</strong><p>{t('步数翻倍后，行为模式本身没有改变。至少在可达任务上，瓶颈更像动作选择 / 规划，而不是 horizon。我们因此停止继续加步数，转去检查下一个假设。', 'Doubling the horizon did not change the behavior pattern. On the reachable tasks, the bottleneck looked more like action selection/planning than horizon length. We therefore stopped extending max_steps and moved to the next hypothesis.')}</p></div>
+      <p class="slide-number">07 / 12</p>
     </div>
   </section>
 
   <section id="capacity-diagnostic" class="briefing-slide tone-gold" aria-labelledby="capacity-title">
     <div class="slide-inner">
       <h2 id="capacity-title">{t('我们把记忆容量翻倍了', 'We doubled the memory capacity')}</h2>
-      <p class="slide-thesis">{t('具体来说，我们把文本记忆模块一次生成能用的 token 上限从', 'Concretely, we increased the Text Memory generation token cap from')} <strong>2048 → 4096</strong>{t('。但这样还是不行，于是问题从“容量够不够大”转成“饱和以后应该怎样组织信息”。', '. But that still did not solve the problem, shifting the question from “is the capacity large enough?” to “how should information be organized after saturation?”')}</p>
+      <p class="slide-thesis">{t('我们先把文本记忆模块一次生成能用的 token 上限从', 'We first increased the Text Memory generation token cap from')} <strong>2048 → 4096</strong>{t('，仍然饱和。最后不再继续堆容量，而是改成有边界的分块处理：同一批 20 条记录修复一次后若仍饱和，才固定拆成 10 + 10，分别压缩再合并。', '. It still saturated. Instead of continuing to add capacity, we switched to bounded decomposition: if the same 20 records still saturate after one repair pass, split them deterministically into 10 + 10, compress each half, then merge them.')}</p>
       <div class="before-after">
         <div class="before"><span>{t('单次容量实验', 'single-call capacity')}</span><strong>2048 → 4096</strong><p>{t('单纯把 token 上限翻倍仍然没有解决容量失败。', 'Doubling the token cap alone did not resolve the capacity failure.')}</p></div>
         <div class="after"><span>{t('结构化处理', 'structured recovery')}</span><strong>20 {t('条记录', 'records')} → 10 + 10</strong><p>{t('先保留原来的 20 条记录；如果同一批记录修复一次后仍然饱和，才固定拆成前 10 + 后 10，分别压缩后再合并。', 'Keep the original 20 records first; only if the same records still saturate after one repair pass do we split into first 10 + last 10, compress each half, then merge.')}</p></div>
       </div>
-      <p class="bottom-claim">{t('这个结果把问题从“继续堆容量”推进到“怎样有边界地处理饱和”；最终成绩是否因此提高，仍由后续终评回答。', 'The result moves the question from “add more capacity” to “handle saturation with a bounded structure”; whether that improves the final score remains a later evaluation question.')}</p>
-      <p class="slide-number">07 / 11</p>
+      <div class="resolution-box"><strong>{t('最终怎么解决容量饱和', 'How we ultimately handled saturation')}</strong><p>{t('最终采用 A2 方案：先处理全部 20 条原始记录；如果达到容量上限，就用同 20 条、同样顺序再修复一次；如果仍然饱和，才固定拆成前 10 + 后 10，分别压缩后再合并。这样把“容量一满就卡死”变成一个有边界、可复现的恢复路径；但它只解决容量故障，不等于证明最终 WebShop 分数因此提高。', 'We adopted the A2 procedure: process all 20 original records; if the output reaches the capacity limit, repair the same 20 in the same order once; only if it still saturates do we split deterministically into first 10 + last 10, compress each half, and merge them. This turns saturation from a blocking failure into a bounded, reproducible recovery path; it does not by itself prove a higher final WebShop score.')}</p></div>
+      <p class="slide-number">08 / 12</p>
     </div>
   </section>
 
@@ -152,28 +313,21 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
           <p class="source-note"><a href={technicalHref}>{t('完整技术推导与实验门槛', 'Full technical derivation and experimental thresholds')}</a></p>
         </div>
       </div>
-      <p class="slide-number">08 / 11</p>
+      <p class="slide-number">09 / 12</p>
     </div>
   </section>
 
   <section id="gdr" class="briefing-slide tone-rose" aria-labelledby="gdr-title">
     <div class="slide-inner">
-      <h2 id="gdr-title">{t('GDR：本来有 44 次机会更新参数，实际只有 7 次进入了后续模型', 'GDR: 44 parameter-update opportunities were trained, but only 7 entered later model states')}</h2>
-      <p class="slide-thesis">{t('GDR 是 Gated Delta Rule。每次训练会产生一个 SD-LoRA 参数更新候选 Δ；GDR 再判断这个候选能不能进入下一轮模型。', 'GDR stands for Gated Delta Rule. Each update opportunity produces an SD-LoRA candidate Δ; GDR then decides whether that candidate is allowed into the next model state.')}</p>
-      <div class="mechanism-math">
-        <div class="formula-card">
-          <strong>{t('最简单的写法', 'The simplest form')}</strong>
-          <div class="equation">θ<sub>t+1</sub> = θ<sub>t</sub> + Δ<sub>t</sub> &nbsp; {t('如果 GDR 接受', 'if GDR accepts')}</div>
-          <div class="equation">θ<sub>t+1</sub> = θ<sub>t</sub> &nbsp; {t('如果 GDR 拒绝', 'if GDR rejects')}</div>
-        </div>
-        <div class="formula-card">
-          <strong>44 → 7</strong>
-          <p>{t('1.7B 长周期实验里，44 个 SD-LoRA 更新候选都真正训练出来了；但 GDR 最终只接受 7 个，所以只有 7 次更新进入后续模型状态。', 'In the 1.7B long-horizon run, all 44 SD-LoRA update candidates were actually trained; GDR admitted only 7, so only seven updates entered later model states.')}</p>
-          <p>{t('这把问题从“学习率还要不要调”变成了一个更有意思的问题：一次短期判断，会不会过早拒绝那些短期变差、长期却有价值的更新？', 'This shifts the question away from another learning-rate tweak: can a short-term gate reject updates that look worse immediately but would help later?')}</p>
-        </div>
+      <h2 id="gdr-title">{t('GDR：我们给 SD-LoRA 参数更新加了一道筛选', 'GDR: adding a selective gate to SD-LoRA parameter updates')}</h2>
+      <p class="slide-thesis">{t('按我们原先的 OpenEVO Stage 2 设计，每次发生参数进化，就会训练一个 SD-LoRA 更新并写入后续模型。1.7B 长周期实验里，实际发生并训练了 44 次这样的更新。后来我们加入 GDR（Gated Delta Rule）：更新先训练，再根据短期效果决定是否真正写入模型。', 'In our original OpenEVO Stage 2 design, each parameter-evolution event trains an SD-LoRA update that enters the next model state. The 1.7B long-horizon run actually produced and trained 44 such updates. We later added GDR (Gated Delta Rule): train the update first, then use its short-term effect to decide whether it is written into the continuing model.')}</p>
+      <div class="before-after gdr-flow">
+        <div class="before"><span>{t('原本的参数进化', 'Original parameter evolution')}</span><strong>{t('发生进化 → 训练 SD-LoRA → 更新参数', 'evolve → train SD-LoRA → update parameters')}</strong><p>{t('一次参数进化对应一个真正训练出来的 SD-LoRA 更新。1.7B 这条线一共发生了 44 次。', 'Each parameter-evolution event corresponds to one actually trained SD-LoRA update. The 1.7B line produced 44 of them.')}</p></div>
+        <div class="after"><span>GDR = Gated Delta Rule</span><strong>{t('发生进化 → 训练 SD-LoRA → 先筛选 → 再决定是否写入', 'evolve → train SD-LoRA → gate it → decide whether to write')}</strong><p>{t('44 个更新都训练了，但 GDR 最后只让 7 个进入后续模型。其余 37 个训练结果被拒绝。', 'All 44 updates were trained, but GDR admitted only 7 into later model states; the other 37 trained updates were rejected.')}</p></div>
       </div>
+      <p class="bottom-claim">{t('所以 44 不是人为设定的“更新预算”，而是这条实验里真实发生的 44 次 SD-LoRA 参数进化。看到 44 → 7 之后，我们开始追问：GDR 会不会筛得过于保守？', 'So 44 is not an arbitrary “update budget”; it is the 44 SD-LoRA parameter-evolution events that actually occurred in this run. Seeing 44 → 7 led to the next question: is GDR filtering too conservatively?')}</p>
       <p class="source-note"><a href={technicalHref}>{t('GDR 的判定逻辑与完整实验定义', 'GDR decision logic and full experimental definition')}</a></p>
-      <p class="slide-number">09 / 11</p>
+      <p class="slide-number">10 / 12</p>
     </div>
   </section>
 
@@ -187,7 +341,7 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
       </div>
       <div class="plain-language-result"><strong>{t('当前状态', 'Current state')}</strong><p>{t('DirectApply 的独立实验已经启动，但最终冻结分数还没有收口，所以结果表保持空白。由于暑期考核时间点就在这里，我们目前的能力天花板故事先讲到这里。', 'The independent DirectApply experiment has started, but its frozen final score is not sealed yet, so the results table remains blank. At the summer-review cutoff, this is where the current ceiling story stops.')}</p></div>
       <p class="source-note"><a href={technicalHref}>{t('严谨性、重复性与复现实验细节', 'Rigor, reproducibility, and execution details')}</a></p>
-      <p class="slide-number">10 / 11</p>
+      <p class="slide-number">11 / 12</p>
     </div>
   </section>
 
@@ -200,14 +354,35 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
         <div class="choice south"><span>{t('向南', 'SOUTH')}</span><h3>{t('先把 SEED 匹配比较做齐', 'Complete the matched SEED comparison first')}</h3><p>{t('把训练条件尽量匹配后完成最终测试。回答：在相近资源和协议下，OpenEVO 和 SEED 到底差多少？', 'Match the training conditions as closely as possible and finish the final evaluation. Answer: under comparable resources and protocol, how far apart are OpenEVO and SEED?')}</p></div>
       </div>
       <div class="decision-note"><strong>{t('想请老师和学长判断优先级：', 'Advisor decision:')}</strong><p>{t('先追“为什么有效”的机制证据，还是先追“到底差多少”的对外比较结果？', 'first deepen the evidence for why it works, or first finish the externally legible comparison of how much it differs?')}</p></div>
+      <div class="engineering-strip">
+        <strong>{t('我们解决的工程性问题（这里只列，不展开）', 'Engineering problems we resolved (listed only)')}</strong>
+        <ul>
+          <li>{t('动作接口与解析导致的无效动作', 'invalid actions caused by action-interface / parsing issues')}</li>
+          <li>{t('长实验中断后的安全续跑与状态恢复', 'safe resume and state recovery after long-run interruptions')}</li>
+          <li>{t('多卡任务分配与空闲 GPU 动态回填', 'multi-GPU scheduling and dynamic backfill of idle GPUs')}</li>
+          <li>{t('checkpoint、证据、W&B / HF 的实验身份与归档', 'experiment identity and archival across checkpoints, evidence, W&B, and HF')}</li>
+        </ul>
+      </div>
       <p class="final-source"><a href={flowHref}>{t('实验流程', 'Experiment flow')}</a> · <a href={technicalHref}>{t('技术推导与实验严谨性', 'Technical derivations and rigor')}</a></p>
     </div>
   </section>
 </article>
 
+<script is:inline>
+  const syncBriefingScale = () => {
+    const deck = document.querySelector('[data-testid="progress-briefing"]');
+    if (!(deck instanceof HTMLElement)) return;
+    const availableWidth = Math.min(1280, deck.clientWidth);
+    deck.style.setProperty('--deck-scale', String(availableWidth / 1280));
+  };
+  syncBriefingScale();
+  window.addEventListener('resize', syncBriefingScale, { passive: true });
+  window.visualViewport?.addEventListener('resize', syncBriefingScale, { passive: true });
+</script>
+
 <style>
-  .briefing{--deck-w:1280px;--deck-h:720px;--rule:color-mix(in srgb,var(--ink) 15%,var(--line));width:100%;max-width:100vw;overflow-x:auto;padding:32px 0 72px;background:color-mix(in srgb,var(--bg) 96%,var(--surface));color:var(--ink)}
-  .briefing-slide{position:relative;width:var(--deck-w);height:var(--deck-h);margin:0 auto 42px;overflow:hidden;border:1px solid color-mix(in srgb,var(--line) 78%,var(--accent));border-radius:var(--radius-feature);background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 7%,var(--surface)) 0%,var(--surface) 52%,color-mix(in srgb,var(--positive) 5%,var(--surface)) 100%);box-shadow:0 18px 54px color-mix(in srgb,var(--ink) 8%,transparent)}
+  .briefing{--deck-w:1280px;--deck-h:720px;--deck-scale:1;--rule:color-mix(in srgb,var(--ink) 15%,var(--line));width:100%;max-width:100vw;overflow-x:hidden;padding:32px 0 72px;background:color-mix(in srgb,var(--bg) 96%,var(--surface));color:var(--ink)}
+  .briefing-slide{position:relative;width:var(--deck-w);height:var(--deck-h);zoom:var(--deck-scale);margin:0 auto 42px;overflow:hidden;border:1px solid color-mix(in srgb,var(--line) 78%,var(--accent));border-radius:var(--radius-feature);background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 7%,var(--surface)) 0%,var(--surface) 52%,color-mix(in srgb,var(--positive) 5%,var(--surface)) 100%);box-shadow:0 18px 54px color-mix(in srgb,var(--ink) 8%,transparent)}
   .tone-blue{background:linear-gradient(145deg,color-mix(in srgb,var(--blue) 9%,var(--surface)) 0%,var(--surface) 58%,color-mix(in srgb,var(--accent) 5%,var(--surface)) 100%)}
   .tone-green{background:linear-gradient(145deg,color-mix(in srgb,var(--positive) 9%,var(--surface)) 0%,var(--surface) 60%,color-mix(in srgb,var(--blue) 5%,var(--surface)) 100%)}
   .tone-gold{background:linear-gradient(145deg,color-mix(in srgb,var(--warning) 10%,var(--surface)) 0%,var(--surface) 58%,color-mix(in srgb,var(--accent) 5%,var(--surface)) 100%)}
@@ -218,18 +393,23 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
   h1,h2,h3{margin:0;color:var(--ink);text-wrap:balance}h1{max-width:920px;margin-top:34px;font-family:var(--font-editorial);font-size:76px;line-height:.98;letter-spacing:-.055em;font-weight:690}h2{max-width:980px;margin-top:14px;font-size:48px;line-height:1.04;letter-spacing:-.04em;font-weight:760}.slide-thesis,.cover-thesis{max-width:960px;margin:20px 0 0;font-size:21px;line-height:1.55;font-weight:560;letter-spacing:-.012em}.cover-thesis{max-width:760px;font-size:26px}
   .cover-meta{display:grid;grid-template-columns:190px 220px 1fr;gap:16px;margin:auto 0 0}.cover-meta>div{padding:18px 20px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 82%,transparent);border:1px solid var(--rule)}.cover-meta dt{color:var(--muted);font-size:12px;font-weight:760}.cover-meta dd{margin:7px 0 0;font-size:16px;font-weight:720}
   .slide-number{position:absolute;right:42px;bottom:28px;margin:0;padding:6px 10px;border:1px solid var(--rule);border-radius:999px;background:color-mix(in srgb,var(--surface) 88%,transparent);color:var(--muted);font:800 12px/1 var(--font-mono);letter-spacing:.06em}
-  .split-slide{display:grid;grid-template-columns:40% 60%;gap:48px;padding-top:70px}.agenda-pane,.tldr-pane{min-width:0}.agenda-list{margin:34px 0 0;padding:0;list-style:none;display:grid;gap:20px}.agenda-list li{display:flex;align-items:center;gap:16px}.agenda-list span{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:color-mix(in srgb,var(--blue) 14%,var(--surface));color:var(--blue);font:800 12px var(--font-mono)}.agenda-list strong{font-size:22px}.tldr-pane{align-self:center;padding:34px 38px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--positive) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--positive) 35%,var(--line))}.tldr-pane h3{margin-top:14px;font-size:30px}.tldr-pane ul{margin:24px 0 0;padding-left:22px;display:grid;gap:16px}.tldr-pane li{font-size:17px;line-height:1.48}
-  .table-boundary{max-width:1040px;margin:14px 0 0;padding:10px 14px;border-left:3px solid var(--warning);background:color-mix(in srgb,var(--warning) 7%,var(--surface));color:var(--muted);font-size:15px;line-height:1.4}.table-boundary strong{display:block;color:var(--ink);margin:0 0 3px;font-size:16px}.paper-table-wrap{margin-top:14px}.paper-table{width:100%;border-collapse:collapse;font-size:16px}.paper-table thead{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}.paper-table tbody{border-bottom:2px solid var(--ink)}.paper-table th,.paper-table td{padding:7px 18px;text-align:left}.paper-table thead th:nth-child(n+2),.paper-table td{text-align:center;font-variant-numeric:tabular-nums}.paper-table tbody tr:not(.method-group)+tr:not(.method-group){border-top:1px solid color-mix(in srgb,var(--line) 62%,transparent)}.paper-table tbody th{font-weight:650}.method-group{border-top:1.5px solid var(--ink);border-bottom:1px solid var(--rule);background:transparent}.method-group th{padding-top:13px;padding-bottom:8px;font-family:var(--font-editorial);font-size:15px;font-weight:760;letter-spacing:.02em}.method-group.ours th{color:var(--accent-deep)}.pending-row{color:var(--muted)}.table-notes{display:grid;grid-template-columns:1fr 1.65fr;gap:28px;margin-top:18px;color:var(--muted);font-size:13px;line-height:1.48}.table-notes p{margin:0}
+  .split-slide{display:grid;grid-template-columns:36% 64%;grid-template-rows:auto auto;gap:20px 34px;padding-top:50px;padding-bottom:50px}.agenda-pane,.tldr-pane{min-width:0}.agenda-list{margin:24px 0 0;padding:0;list-style:none;display:grid;gap:14px}.agenda-list li{display:flex;align-items:center;gap:16px}.agenda-list span{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:color-mix(in srgb,var(--blue) 14%,var(--surface));color:var(--blue);font:800 12px var(--font-mono)}.agenda-list strong{font-size:22px}.tldr-pane{align-self:start;padding:24px 30px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--positive) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--positive) 35%,var(--line))}.tldr-pane h3{margin-top:14px;font-size:30px}.tldr-pane ul{margin:16px 0 0;padding-left:20px;display:grid;gap:11px}.tldr-pane li{font-size:15px;line-height:1.42}.attempts-summary{grid-column:1/-1;margin-top:0;padding-top:14px;border-top:1px solid var(--rule)}.attempts-summary>strong{display:block;font-size:13px}.attempts-summary>div{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 10px;margin-top:9px}.attempts-summary span{padding:8px 10px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--blue) 6%,var(--surface));border:1px solid var(--rule);font-size:11.5px;line-height:1.3;font-weight:650}
+  .table-boundary{max-width:1040px;margin:14px 0 0;padding:10px 14px;border-left:3px solid var(--warning);background:color-mix(in srgb,var(--warning) 7%,var(--surface));color:var(--muted);font-size:15px;line-height:1.4}.table-boundary strong{display:block;color:var(--ink);margin:0 0 3px;font-size:16px}.paper-table-wrap{margin-top:14px}.paper-table{width:100%;border-collapse:collapse;font-size:16px}.paper-table thead{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}.paper-table tbody{border-bottom:2px solid var(--ink)}.paper-table th,.paper-table td{padding:7px 18px;text-align:left}.paper-table thead th:nth-child(n+2),.paper-table td{text-align:center;font-variant-numeric:tabular-nums}.paper-table tbody tr:not(.method-group)+tr:not(.method-group){border-top:1px solid color-mix(in srgb,var(--line) 62%,transparent)}.paper-table tbody th{font-weight:650}.method-group{border-top:1.5px solid var(--ink);border-bottom:1px solid var(--rule);background:transparent}.method-group th{padding-top:13px;padding-bottom:8px;font-family:var(--font-editorial);font-size:15px;font-weight:760;letter-spacing:.02em}.method-group.ours th{color:var(--accent-deep)}.pending-row{color:var(--muted)}.table-notes{display:grid;grid-template-columns:1fr;gap:0;margin-top:18px;color:var(--muted);font-size:13px;line-height:1.48}.table-notes p{margin:0}
   .three-questions{display:grid;grid-template-columns:repeat(3,1fr);margin:40px 0 0;padding:0;list-style:none;gap:18px}.three-questions li{padding:25px 26px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 82%,transparent)}.three-questions span,.quality-grid>div>span{display:grid;place-items:center;width:48px;height:48px;margin-bottom:18px;border-radius:50%;background:color-mix(in srgb,var(--blue) 15%,var(--surface));color:var(--blue);font:850 14px var(--font-mono)}.three-questions strong{display:block;font-size:22px}.three-questions p{margin:8px 0 0;color:var(--muted);font-size:16px;line-height:1.5}.three-questions p b{color:var(--ink);font:760 20px/1.2 var(--font-mono)}.quality-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px}.quality-grid>div{padding:20px 22px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 82%,transparent)}.quality-grid>div:nth-child(2)>span{background:color-mix(in srgb,var(--positive) 16%,var(--surface));color:var(--positive)}.quality-grid>div:nth-child(3)>span{background:color-mix(in srgb,var(--warning) 16%,var(--surface));color:var(--warning)}.quality-grid>div:nth-child(4)>span{background:color-mix(in srgb,var(--accent) 16%,var(--surface));color:var(--accent-deep)}.quality-grid strong{display:block;font-size:18px;line-height:1.28}.quality-grid p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.44}.quality-grid .speed-number{margin-top:10px;color:var(--ink);font:750 17px/1.2 var(--font-mono)}.quality-grid .speed-number b{color:var(--accent-deep)}
   .bottom-claim{margin:auto 0 0;max-width:950px;padding:14px 18px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--surface) 76%,transparent);color:var(--muted);font-size:15px;line-height:1.5}
+  .resolution-box{margin:auto 0 0;max-width:1000px;padding:14px 18px;border-left:3px solid var(--positive);border-radius:0 var(--radius-panel) var(--radius-panel) 0;background:color-mix(in srgb,var(--positive) 7%,var(--surface))}.resolution-box strong{display:block;font-size:14px}.resolution-box p{margin:5px 0 0;color:var(--muted);font-size:13px;line-height:1.45}.horizon-slide{padding-top:48px;padding-bottom:42px}.horizon-slide h2{max-width:1080px;font-size:45px}.horizon-slide .slide-thesis{margin-top:15px;font-size:18px;line-height:1.45}.horizon-compare{margin-top:20px;gap:18px}.horizon-compare>div{padding:21px 24px}.horizon-compare strong{margin-top:11px;font-size:21px}.horizon-compare p{margin-top:7px;font-size:13px;line-height:1.42}.horizon-proof{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.horizon-proof span{padding:9px 12px;border-top:1px solid var(--rule);color:var(--muted);font-size:11px;line-height:1.35}.horizon-proof strong{display:block;color:var(--ink);font:760 13px/1.2 var(--font-mono);margin-bottom:3px}.horizon-slide .resolution-box{margin-top:10px}
   .mechanism-math{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}.formula-card{padding:18px 20px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 86%,transparent)}.formula-card>strong{font-size:15px}.equation{margin-top:11px;padding:9px 12px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--warning) 7%,var(--surface));font:650 22px/1.25 Georgia,"Times New Roman",serif;letter-spacing:.01em}.formula-card p{margin:10px 0 0;color:var(--muted);font-size:14px;line-height:1.46}.mechanism-rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}.mechanism-rules>div{padding:11px 13px;border-top:2px solid color-mix(in srgb,var(--warning) 45%,var(--line))}.mechanism-rules strong{display:block;font-size:12px}.mechanism-rules span{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.38}.mechanism-note{margin-top:10px;padding:11px 14px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--warning) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--warning) 28%,var(--line))}.mechanism-note strong{font-size:12px}.mechanism-note p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.38}.twin-design span,.before-after span,.choice>span{display:inline-block;padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--warning) 15%,var(--surface));color:var(--warning);font:800 11px var(--font-mono);letter-spacing:.05em}
   .twin-design{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:16px;margin-top:30px}.twin-design>div{padding:24px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 84%,transparent)}.twin-design .arm-a{background:color-mix(in srgb,var(--accent) 9%,var(--surface))}.twin-design .same-core{background:color-mix(in srgb,var(--blue) 8%,var(--surface))}.twin-design .arm-b{background:color-mix(in srgb,var(--positive) 9%,var(--surface))}.twin-design strong{display:block;margin-top:13px;font-size:21px}.twin-design p,.twin-design li{color:var(--muted);font-size:14px;line-height:1.48}.twin-design p{margin:8px 0 0}.twin-design ul{margin:12px 0 0;padding-left:18px}
   .before-after{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:34px}.before-after>div{padding:28px 30px;border-radius:var(--radius-feature);border:1px solid var(--rule)}.before{background:color-mix(in srgb,var(--accent) 9%,var(--surface))}.after{background:color-mix(in srgb,var(--positive) 11%,var(--surface))}.before-after .before span{background:color-mix(in srgb,var(--accent) 16%,var(--surface));color:var(--accent-deep)}.before-after .after span{background:color-mix(in srgb,var(--positive) 17%,var(--surface));color:var(--positive)}.before-after strong{display:block;margin-top:16px;font-size:24px}.before-after p{margin:10px 0 0;color:var(--muted);font-size:15px;line-height:1.48}.current-twin-status{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.current-twin-status>div{padding:14px 18px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 82%,transparent)}.current-twin-status span{color:var(--accent-deep);font:800 11px var(--font-mono)}.current-twin-status strong{display:block;margin-top:6px;font-size:16px}.current-twin-status p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.42}.plain-language-result{margin-top:14px;padding:14px 18px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--blue) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--blue) 30%,var(--line))}.plain-language-result p{display:inline;margin:0 0 0 8px;color:var(--muted);font-size:14px;line-height:1.46}
   .pipeline{margin:34px 0 0}.pipeline-row{display:flex;align-items:stretch;gap:9px}.pipeline-row>div{flex:1;min-width:0;padding:20px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--blue) 8%,var(--surface));border:1px solid var(--rule)}.pipeline-row span{color:var(--blue);font:800 11px var(--font-mono)}.pipeline-row strong{display:block;margin-top:9px;font-size:14px;line-height:1.35}.pipeline-row i{align-self:center;color:var(--muted);font-style:normal}.pipeline figcaption{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.48}.seed-questions{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}.seed-questions>div{padding:18px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 80%,transparent);border:1px solid var(--rule)}.seed-questions strong{font-size:16px}.seed-questions p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.45}
   .turning-list{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0 0;padding:0;list-style:none}.turning-list li{display:grid;grid-template-columns:42px 1fr;gap:14px;padding:16px 18px;border-radius:var(--radius-feature);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 84%,transparent)}.turning-list span{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:color-mix(in srgb,var(--warning) 16%,var(--surface));color:var(--warning);font:800 10px var(--font-mono)}.turning-list strong{font-size:15px}.turning-list p{margin:5px 0 0;color:var(--muted);font-size:11px;line-height:1.4}.proof-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.proof-strip>div{padding:12px 14px;border-radius:var(--radius-panel);border:1px solid var(--rule);background:color-mix(in srgb,var(--surface) 80%,transparent)}.proof-strip strong{display:block;color:var(--accent-deep);font-size:12px}.proof-strip span{display:block;margin-top:4px;color:var(--muted);font-size:10.5px;line-height:1.38}
-  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px}.choice{padding:30px 32px;border-radius:var(--radius-feature);border:1px solid var(--rule)}.choice.north{background:color-mix(in srgb,var(--blue) 10%,var(--surface))}.choice.south{background:color-mix(in srgb,var(--positive) 10%,var(--surface))}.choice.north>span{background:color-mix(in srgb,var(--blue) 16%,var(--surface));color:var(--blue)}.choice.south>span{background:color-mix(in srgb,var(--positive) 16%,var(--surface));color:var(--positive)}.choice h3{margin-top:16px;font-size:30px}.choice>p{margin:10px 0 0;color:var(--muted);font-size:15px;line-height:1.48}.choice dl{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0 0}.choice dl>div{padding-top:12px;border-top:1px solid var(--rule)}.choice dt{color:var(--muted);font-size:11px;font-weight:800}.choice dd{margin:6px 0 0;font-size:13px;line-height:1.42}.decision-note{margin-top:24px;padding:18px 22px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--warning) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--warning) 30%,var(--line))}.decision-note p{display:inline;margin-left:7px;font-size:17px}.source-note,.final-source{margin:auto 0 0;color:var(--muted);font-size:12px}.source-note a,.final-source a{color:var(--ink);font-weight:700;text-decoration:none}.source-note a:hover,.source-note a:focus-visible,.final-source a:hover,.final-source a:focus-visible{text-decoration:underline;text-underline-offset:.2em}.source-note a,.final-source a{color:var(--ink);font-weight:700;text-decoration:none}.source-note a:hover,.source-note a:focus-visible,.final-source a:hover,.final-source a:focus-visible{text-decoration:underline;text-underline-offset:.2em}
+  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px}.choice{padding:30px 32px;border-radius:var(--radius-feature);border:1px solid var(--rule)}.choice.north{background:color-mix(in srgb,var(--blue) 10%,var(--surface))}.choice.south{background:color-mix(in srgb,var(--positive) 10%,var(--surface))}.choice.north>span{background:color-mix(in srgb,var(--blue) 16%,var(--surface));color:var(--blue)}.choice.south>span{background:color-mix(in srgb,var(--positive) 16%,var(--surface));color:var(--positive)}.choice h3{margin-top:16px;font-size:30px}.choice>p{margin:10px 0 0;color:var(--muted);font-size:15px;line-height:1.48}.choice dl{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0 0}.choice dl>div{padding-top:12px;border-top:1px solid var(--rule)}.choice dt{color:var(--muted);font-size:11px;font-weight:800}.choice dd{margin:6px 0 0;font-size:13px;line-height:1.42}.decision-note{margin-top:16px;padding:13px 18px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--warning) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--warning) 30%,var(--line))}.decision-note p{display:inline;margin-left:7px;font-size:15px}.engineering-strip{margin-top:12px;padding-top:10px;border-top:1px solid var(--rule)}.engineering-strip>strong{font-size:12px}.engineering-strip ul{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0 0;padding:0;list-style:none}.engineering-strip li{padding:8px 10px;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--ink) 4%,var(--surface));color:var(--muted);font-size:10.5px;line-height:1.3}.briefing-final .slide-inner{padding-top:48px;padding-bottom:38px}.briefing-final h2{font-size:42px;margin-top:6px}.briefing-final .slide-thesis{margin-top:12px;font-size:17px;line-height:1.4}.briefing-final .choice-grid{margin-top:18px;gap:16px}.briefing-final .choice{padding:19px 22px}.briefing-final .choice h3{margin-top:10px;font-size:22px}.briefing-final .choice>p{margin-top:7px;font-size:12.5px;line-height:1.4}.source-note,.final-source{margin:auto 0 0;color:var(--muted);font-size:12px}.source-note a,.final-source a{color:var(--ink);font-weight:700;text-decoration:none}.source-note a:hover,.source-note a:focus-visible,.final-source a:hover,.final-source a:focus-visible{text-decoration:underline;text-underline-offset:.2em}.source-note a,.final-source a{color:var(--ink);font-weight:700;text-decoration:none}.source-note a:hover,.source-note a:focus-visible,.final-source a:hover,.final-source a:focus-visible{text-decoration:underline;text-underline-offset:.2em}
   a:focus-visible,.paper-table-wrap:focus-visible{outline:3px solid var(--accent-deep);outline-offset:3px}
   .quality-flow{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr;gap:10px;align-items:stretch;margin-top:34px}.quality-flow>div{padding:24px 25px;border-top:3px solid color-mix(in srgb,var(--positive) 44%,var(--line));background:color-mix(in srgb,var(--surface) 72%,transparent)}.quality-flow i{align-self:center;text-align:center;color:var(--muted);font-style:normal;font-size:24px}.quality-flow strong{font-size:20px}.quality-flow p{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.45}.speed-proof{display:grid;grid-template-columns:37% 1fr;gap:26px;align-items:center;margin-top:25px;padding:20px 24px;border:1px solid var(--rule);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--positive) 8%,var(--surface))}.speed-proof-number span{display:block;color:var(--muted);font-size:12px;font-weight:750}.speed-proof-number strong{display:block;margin-top:8px;font:760 23px/1.2 var(--font-mono)}.speed-proof-number b{color:var(--accent-deep);margin-left:10px}.speed-proof>div:last-child strong{font-size:17px}.speed-proof>div:last-child p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.45}.diagnosis-table{display:grid;margin-top:24px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}.diagnosis-table>div{display:grid;grid-template-columns:28% 30% 42%;align-items:center;border-top:1px solid var(--rule);min-height:66px}.diagnosis-table>div:first-child{border-top:0}.diagnosis-table b,.diagnosis-table span,.diagnosis-table p,.diagnosis-table strong{margin:0;padding:10px 14px}.diagnosis-table b{font-size:14px}.diagnosis-table span,.diagnosis-table p{color:var(--muted);font-size:12px;line-height:1.38}.diagnosis-table>.diagnosis-head{min-height:42px;background:color-mix(in srgb,var(--warning) 7%,var(--surface))}.diagnosis-head strong{font-size:12px}.proof-line{display:grid;grid-template-columns:auto 1fr auto 1fr auto 1.35fr;gap:8px 12px;align-items:start;margin-top:18px;padding-top:14px;border-top:1px solid var(--rule)}.proof-line strong{color:var(--accent-deep);font-size:12px}.proof-line span{color:var(--muted);font-size:11px;line-height:1.4}
+
+  .dynamics-slide{padding-top:48px;padding-bottom:42px}.dynamics-slide h2{font-size:44px;max-width:1050px}.dynamics-slide .slide-thesis{margin-top:14px;font-size:18px;line-height:1.42}.dynamics-grid{display:grid;grid-template-columns:1.72fr .88fr;gap:18px;margin-top:18px}.dynamics-chart{margin:0;padding:15px 16px 10px;border:1px solid var(--rule);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 88%,transparent)}.dynamics-chart figcaption{display:flex;justify-content:space-between;gap:12px;align-items:baseline;font-size:14px;font-weight:760}.dynamics-chart figcaption span{color:var(--muted);font-size:10px;font-weight:620}.dynamics-chart svg{display:block;width:100%;height:224px;margin-top:5px}.chart-axis{stroke:color-mix(in srgb,var(--ink) 52%,transparent);stroke-width:1.4}.chart-gridline{stroke:color-mix(in srgb,var(--ink) 12%,transparent);stroke-width:1}.chart-label{fill:var(--muted);font:700 10px var(--font-mono)}.score-raw{fill:none;stroke:color-mix(in srgb,var(--blue) 32%,transparent);stroke-width:1.15;vector-effect:non-scaling-stroke}.score-trend{fill:none;stroke:var(--blue);stroke-width:3.2;vector-effect:non-scaling-stroke}.loss-line{fill:none;stroke:var(--warning);stroke-width:2.4;vector-effect:non-scaling-stroke}.loss-dot{fill:var(--warning)}.loss-dot.accepted{fill:var(--positive);stroke:var(--surface);stroke-width:1.2}.dynamics-boundary{margin:11px 0 0;padding:10px 13px;border-left:3px solid var(--blue);background:color-mix(in srgb,var(--blue) 6%,var(--surface));color:var(--muted);font-size:11.5px;line-height:1.4}.dynamics-slide .source-note{margin-top:7px}
+  .seven-b-dynamics{padding-top:42px;padding-bottom:36px}.seven-b-dynamics h2{font-size:40px;max-width:1120px}.seven-b-dynamics .slide-thesis{margin-top:10px;font-size:15.5px;line-height:1.36;max-width:1110px}.seven-b-dynamics .dynamics-grid{margin-top:11px}.seven-b-dynamics .dynamics-chart{padding-top:11px}.seven-b-dynamics .dynamics-chart svg{height:176px}.seven-b-dynamics .dynamics-boundary{margin-top:8px;padding:8px 12px;font-size:10.5px;line-height:1.34}.seven-b-dynamics .source-note{margin-top:5px}.long-run-strip{display:grid;grid-template-columns:.7fr 1.05fr 1.3fr;gap:9px;margin-top:8px}.long-run-strip span{padding:7px 10px;border-top:1px solid var(--rule);color:var(--muted);font-size:9.8px;line-height:1.3}.long-run-strip strong{display:block;color:var(--ink);font-size:10.5px;margin-bottom:2px}
+  .small-arms-slide{padding-top:43px;padding-bottom:39px}.small-arms-slide h2{font-size:40px}.small-arms-slide .slide-thesis{margin-top:10px;font-size:16px;line-height:1.38;max-width:1080px}.small-model-grid{display:grid;grid-template-columns:1.32fr .68fr;gap:16px;margin-top:15px;min-height:0}.small-model-card{min-width:0;padding:16px 18px;border:1px solid var(--rule);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 84%,transparent)}.small-model-card header{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}.small-model-card header>span{display:grid;place-items:center;min-width:52px;height:32px;padding:0 9px;border-radius:999px;background:color-mix(in srgb,var(--blue) 15%,var(--surface));color:var(--blue);font:800 11px/1 var(--font-mono)}.small-model-card h3{font-size:18px;line-height:1.2}.small-model-card header p{margin:4px 0 0;color:var(--muted);font-size:10.5px;line-height:1.33}.mini-score-chart,.mini-loss-chart{margin:8px 0 0}.mini-score-chart figcaption,.mini-loss-chart figcaption{color:var(--muted);font-size:9.5px;font-weight:700}.mini-score-chart svg{display:block;width:100%;height:108px;margin-top:2px}.mini-loss-chart{margin-top:4px}.mini-loss-chart svg{display:block;width:100%;height:52px;margin-top:1px}.score-trend.mini{stroke-width:2.4}.loss-line.mini{stroke-width:2}.candidate-tick{stroke:color-mix(in srgb,var(--warning) 55%,transparent);stroke-width:1}.accepted-tick{stroke:var(--positive);stroke-width:2.4}.small-model-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:5px}.small-model-stats span{padding:6px 7px;border-top:1px solid var(--rule);color:var(--muted);font-size:8.8px;line-height:1.2}.small-model-stats strong{display:block;color:var(--ink);font:800 12px/1.15 var(--font-mono);margin-bottom:2px}.mini-boundary{margin:6px 0 0;padding:6px 8px;border-left:2px solid var(--warning);background:color-mix(in srgb,var(--warning) 6%,var(--surface));color:var(--muted);font-size:8.8px;line-height:1.28}.three-b-card header>span{background:color-mix(in srgb,var(--positive) 16%,var(--surface));color:var(--positive)}.three-b-preview{display:grid;gap:8px;margin-top:18px}.three-b-preview>div{padding:10px 2px;border-top:1px solid var(--rule)}.three-b-preview strong{display:block;font:760 18px/1.15 var(--font-mono)}.three-b-preview span{display:block;margin-top:4px;color:var(--muted);font-size:10px;line-height:1.3}.three-b-next{margin:16px 0 0;padding:10px 12px;border-left:2px solid var(--positive);background:color-mix(in srgb,var(--positive) 6%,var(--surface));color:var(--muted);font-size:10px;line-height:1.34}
 
   #determinism .slide-inner{padding-top:48px;padding-bottom:42px}
   #determinism h2{max-width:1040px;margin-top:8px;font-size:43px;line-height:1.02}
@@ -243,27 +423,9 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
   #determinism .plain-language-result{margin-top:10px;padding:11px 15px}
   #determinism .plain-language-result p{font-size:12.5px;line-height:1.4}
 
-  @media(max-width:720px){
-    .briefing{overflow-x:hidden;padding:14px 0 44px}
-    .briefing-slide{width:calc(100vw - 20px);height:auto;min-height:0;margin:0 auto 18px;overflow:visible}
-    .slide-inner{height:auto;min-height:0;padding:28px 20px 44px}
-    h1{max-width:none;margin-top:8px;font-size:42px;line-height:1.02}
-    h2{max-width:none;margin-top:2px;font-size:30px;line-height:1.08}
-    .cover-thesis{max-width:none;font-size:19px;line-height:1.52}
-    .slide-thesis{max-width:none;margin-top:14px;font-size:17px;line-height:1.52}
-    .cover-meta,.split-slide,.three-questions,.quality-grid,.mechanism-math,.twin-design,.before-after,.current-twin-status,.seed-questions,.turning-list,.choice-grid,.speed-proof{grid-template-columns:1fr}
-    .split-slide{display:grid;gap:18px;padding:28px 20px 44px}
-    .cover-meta{gap:10px;margin-top:24px}.cover-meta>div{padding:13px 15px}
-    .agenda-list{margin-top:18px;gap:12px}.agenda-list strong{font-size:17px}
-    .tldr-pane{padding:22px 20px}.tldr-pane ul{margin-top:14px;gap:12px}.tldr-pane li{font-size:15px}
-    .paper-table-wrap{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.paper-table{min-width:620px}
-    .table-boundary{font-size:14px}.table-notes{grid-template-columns:1fr;gap:10px}
-    .three-questions,.mechanism-math,.before-after,.choice-grid{margin-top:20px;gap:12px}
-    .three-questions li,.formula-card,.before-after>div,.choice{padding:18px}
-    .pipeline-row{display:grid;grid-template-columns:1fr;gap:10px}.pipeline-row i{transform:rotate(90deg);justify-self:center}
-    .decision-note{margin-top:18px}.decision-note p{display:block;margin:8px 0 0;font-size:15px}
-    .slide-number{right:16px;bottom:14px}
-    .source-note,.final-source{margin-top:18px}
+  @media(max-width:1280px){
+    .briefing{padding:14px 0 44px}
+    .briefing-slide{margin-bottom:18px}
   }
 
 </style>
