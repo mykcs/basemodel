@@ -352,7 +352,7 @@ Historical table-family case: [`../history/2026-08-31-arxiv-like-experiment-tabl
 
 **Cues:** multiple open PRs touch the same docs/page/layout/policy; an old branch encodes an earlier product/scientific state.
 
-**Automatic response:** inspect base/head, changed files, checks, shared owners, and semantic intent. Prefer current `main` plus the still-valid contribution; do not resurrect stale scientific/deployment state merely to keep an old PR mergeable. Use one coherent integration head when several accepted changes must ship together. Close/supersede obsolete duplicate PRs once the replacement is clear.
+**Automatic response:** read [`multi-pr-semantic-integration-playbook.md`](multi-pr-semantic-integration-playbook.md), then inspect base/head, changed files, checks, shared owners, and semantic intent. Prefer current `main` plus the still-valid contribution; for shared registries/owners transplant only the narrow current-valid entry instead of copying an older whole-file blob. Do not resurrect stale scientific/deployment state merely to keep an old PR mergeable. Use one coherent integration head when several accepted changes must ship together. Close/supersede obsolete duplicate PRs once the replacement is clear.
 
 ---
 
@@ -368,19 +368,20 @@ previous retrospective did not prevent recurrence.
 
 **Automatic response:**
 
-1. read the root Agent router, current Agent principles, documentation index,
+1. read [`../../operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md`](../../operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md); it is BaseModel's navigation-only entrypoint to the single canonical protocol in `mykcs/openevo-experiment`; never duplicate the protocol body here;
+2. read the root Agent router, current Agent principles, documentation index,
    scenario registry, and the task's current scientific/engineering owner;
-2. search existing current policies and history before creating a new file;
-3. separate stable rules, project-specific lessons, and temporary state;
-4. promote only cross-task rules to the existing current owner or executable
+3. search existing current policies and history before creating a new file;
+4. separate stable rules, project-specific lessons, and temporary state;
+5. promote only cross-task rules to the existing current owner or executable
    guard; put causal incident detail in an indexed history case;
-5. update the trigger/index so a future Agent can discover the case;
-6. check whether a real memory-write capability exists; never claim that a
+6. update the trigger/index so a future Agent can discover the case;
+7. check whether a real memory-write capability exists; never claim that a
    search, repository commit, or conversation summary was written to long-term
    memory;
-7. before summarizing “blocked/done”, reconstruct the outcome from exact refs, PR/check/provider/test artifacts rather than trusting a previous assistant sentence or arbitrary working-tree file;
-8. record what was deliberately not persisted and why; if a rule already existed but was violated, identify the missing use-site witness rather than claiming the rule was absent;
-9. correct dated snapshots that masquerade as current authority by adding an explicit historical scope and current-owner pointer, without changing their recorded facts; report memory-write availability separately from repository persistence.
+8. before summarizing “blocked/done”, reconstruct the outcome from exact refs, PR/check/provider/test artifacts rather than trusting a previous assistant sentence or arbitrary working-tree file;
+9. record what was deliberately not persisted and why; if a rule already existed but was violated, identify the missing use-site witness rather than claiming the rule was absent;
+10. correct dated snapshots that masquerade as current authority by adding an explicit historical scope and current-owner pointer, without changing their recorded facts; report memory-write availability separately from repository persistence.
 
 **Refresh cue:** current refs, provider behavior, deployment policy, model/runtime
 behavior, and live resource state must be re-checked when the next task begins.

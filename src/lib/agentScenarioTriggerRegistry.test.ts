@@ -11,6 +11,7 @@ const websiteSpec = readFileSync(new URL('../../docs/agents/current/website-desi
 const copyCases = readFileSync(new URL('../../docs/agents/current/website-copy-cases.md', import.meta.url), 'utf8');
 const history = readFileSync(new URL('../../docs/agents/history/2026-08-11-seed-preview-and-agent-workflow-lessons.md', import.meta.url), 'utf8');
 const attentionHistory = readFileSync(new URL('../../docs/agents/history/2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md', import.meta.url), 'utf8');
+const conversationCloseoutEntry = readFileSync(new URL('../../docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md', import.meta.url), 'utf8');
 
 describe('Agent scenario-trigger discovery', () => {
   it('routes future non-trivial work through the trigger registry', () => {
@@ -21,6 +22,13 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('Re-scan when the task changes state');
     expect(principles).toContain('Make recurring lessons triggerable');
     expect(principles).toContain('re-scanned when the task changes state');
+  });
+
+  it('keeps the reusable conversation-closeout trigger resolvable without duplicating protocol authority', () => {
+    expect(registry).toContain('../../operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md');
+    expect(conversationCloseoutEntry).toContain('navigation-only compatibility entrypoint');
+    expect(conversationCloseoutEntry).toContain('mykcs/openevo-experiment/docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md');
+    expect(conversationCloseoutEntry).toContain('does **not** copy the protocol body');
   });
 
   it('protects the recurring high-cost situations from this project', () => {
