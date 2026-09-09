@@ -1,5 +1,6 @@
 ---
 import { localePath, type Locale } from '../../i18n';
+import { OPEN_EVO_3B_TRAINING_DYNAMICS } from '../../data/openEvo3BTrainingDynamics';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -9,6 +10,28 @@ const p = (path: string) => localePath(locale, path);
 
 const flowHref = p('/research/seed-openevo/flow/');
 const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/');
+
+const dynamics3B = OPEN_EVO_3B_TRAINING_DYNAMICS;
+const movingAverage = (series: readonly { round: number; score: number }[], window = 12) => series.map((point, index) => {
+  const start = Math.max(0, index - window + 1);
+  const windowRows = series.slice(start, index + 1);
+  return { round: point.round, score: windowRows.reduce((sum, row) => sum + row.score, 0) / windowRows.length };
+});
+const scoreTrend = movingAverage(dynamics3B.score);
+const scoreChart = { left: 42, right: 676, top: 16, bottom: 220, maxRound: dynamics3B.score.at(-1)?.round ?? 122, maxScore: 22 };
+const scoreX = (round: number) => scoreChart.left + (round / scoreChart.maxRound) * (scoreChart.right - scoreChart.left);
+const scoreY = (score: number) => scoreChart.bottom - (score / scoreChart.maxScore) * (scoreChart.bottom - scoreChart.top);
+const scoreRawPoints = dynamics3B.score.map((point) => `${scoreX(point.round).toFixed(1)},${scoreY(point.score).toFixed(1)}`).join(' ');
+const scoreTrendPoints = scoreTrend.map((point) => `${scoreX(point.round).toFixed(1)},${scoreY(point.score).toFixed(1)}`).join(' ');
+const lossChart = { left: 36, right: 340, top: 16, bottom: 220, minLoss: 0.95, maxLoss: 1.85 };
+const lossX = (round: number) => lossChart.left + (round / scoreChart.maxRound) * (lossChart.right - lossChart.left);
+const lossY = (loss: number) => lossChart.bottom - ((loss - lossChart.minLoss) / (lossChart.maxLoss - lossChart.minLoss)) * (lossChart.bottom - lossChart.top);
+const lossPoints = dynamics3B.loss.map((point) => `${lossX(point.round).toFixed(1)},${lossY(point.loss).toFixed(1)}`).join(' ');
+const earlyScoreMean = dynamics3B.score.slice(0, 20).reduce((sum, row) => sum + row.score, 0) / 20;
+const lateScoreRows = dynamics3B.score.slice(-23);
+const lateScoreMean = lateScoreRows.reduce((sum, row) => sum + row.score, 0) / lateScoreRows.length;
+const firstLoss = dynamics3B.loss[0]?.loss ?? 0;
+const lastLoss = dynamics3B.loss.at(-1)?.loss ?? 0;
 ---
 
 <article class="briefing" data-ui-audit="surface" data-testid="progress-briefing">
@@ -44,7 +67,7 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
           <li>{t('因此我们正在做 DirectApply（直接应用更新）对照：拿掉 GDR 的否决权。最终分数还没收口，当前不能提前宣布谁更好。', 'We are therefore running a DirectApply comparison, which applies qualifying updates without the GDR veto. Its final score is not sealed yet, so there is no winner to claim.')}</li>
         </ul>
       </aside>
-      <p class="slide-number">02 / 11</p>
+      <p class="slide-number">02 / 12</p>
     </div>
   </section>
 
@@ -73,7 +96,7 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
         <p><strong>Score</strong> {t('看任务要求满足了多少；', 'measures partial requirement satisfaction;')} <strong>Succ.</strong> {t('只统计完整成功。', 'counts only fully completed tasks.')}</p>
         <p>{t('3B 确实做过独立实验线，但目前没有一个能与这张冻结终评表直接并列的最终分数，所以不硬填；DirectApply 也还没有最终分数。', 'The 3B line is real, but we do not have a final number that belongs beside this frozen panel, so it remains blank; DirectApply is also unfinished.')}</p>
       </div>
-      <p class="slide-number">03 / 11</p>
+      <p class="slide-number">03 / 12</p>
     </div>
   </section>
 
@@ -87,7 +110,7 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
         <li><span>3</span><div><strong>{t('最终测试', 'Final test')}</strong><p><b>49.33 / 100</b><br />{t('完整成功 58 / 128（45.31%）', '58 / 128 complete successes (45.31%)')}</p></div></li>
       </div>
       <p class="bottom-claim">{t('这个结果把下一问变清楚：OpenEVO 已经能长期更新，但到底是哪一层限制了它继续变强？', 'The result sharpened the next question: OpenEVO can update for a long time, so which layer prevents those updates from translating into a higher ceiling?')}</p>
-      <p class="slide-number">04 / 11</p>
+      <p class="slide-number">04 / 12</p>
     </div>
   </section>
 
@@ -105,7 +128,43 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
           <p>{t('Qwen2.5-3B 也按 180×8 的第一阶段采集过 1,440 条轨迹，后续也有独立的持续学习实验线。它帮助我们验证同一套任务接口、容量和持续学习设计。当前没有一个可直接并入最终冻结分数表的终评分数。', 'Qwen2.5-3B also collected 1,440 Stage-1 trajectories under the 180×8 schedule and had its own Stage-2 lineage. It helped test the shared task interface, capacity, and continual-learning design. We do not currently have a final score that belongs in the frozen results table.')}</p>
         </div>
       </div>
-      <p class="slide-number">05 / 11</p>
+      <p class="slide-number">05 / 12</p>
+    </div>
+  </section>
+
+  <section id="training-dynamics" class="briefing-slide tone-blue" aria-labelledby="training-dynamics-title">
+    <div class="slide-inner dynamics-slide">
+      <h2 id="training-dynamics-title">{t('3B 训练后半程，任务得分明显抬升', '3B task scores rise clearly in the later training rounds')}</h2>
+      <p class="slide-thesis">{t(`123 个已封存 round 中，前 20 轮平均 ${earlyScoreMean.toFixed(2)} / 100，最后 23 轮平均 ${lateScoreMean.toFixed(2)} / 100。与此同时，发生 SD-LoRA 候选训练时的 loss 从 ${firstLoss.toFixed(2)} 降到约 ${lastLoss.toFixed(2)}。`, `Across 123 sealed rounds, the first 20 average ${earlyScoreMean.toFixed(2)} / 100 while the final 23 average ${lateScoreMean.toFixed(2)} / 100. On rounds with SD-LoRA candidate training, loss falls from ${firstLoss.toFixed(2)} to about ${lastLoss.toFixed(2)}.`)}</p>
+      <div class="dynamics-grid">
+        <figure class="dynamics-chart score-chart">
+          <figcaption>{t('每轮 WebShop Score', 'WebShop Score by round')} <span>{t('细线=原始轮次；粗线=12轮移动平均', 'thin=raw rounds; thick=12-round moving average')}</span></figcaption>
+          <svg viewBox="0 0 700 248" role="img" aria-label={t('3B 每轮 WebShop Score 与移动平均曲线', '3B WebShop Score and moving-average curve by round')}>
+            <line x1="42" y1="220" x2="676" y2="220" class="chart-axis" />
+            <line x1="42" y1="127.3" x2="676" y2="127.3" class="chart-gridline" />
+            <line x1="42" y1="34.5" x2="676" y2="34.5" class="chart-gridline" />
+            <text x="14" y="224" class="chart-label">0</text><text x="8" y="131" class="chart-label">10</text><text x="8" y="38" class="chart-label">20</text>
+            <text x="42" y="242" class="chart-label">R0</text><text x="350" y="242" class="chart-label">R61</text><text x="646" y="242" class="chart-label">R122</text>
+            <polyline points={scoreRawPoints} class="score-raw" />
+            <polyline points={scoreTrendPoints} class="score-trend" />
+          </svg>
+        </figure>
+        <figure class="dynamics-chart loss-chart">
+          <figcaption>{t('发生候选训练时的 SD-LoRA loss', 'SD-LoRA loss when candidate training occurs')} <span>{t('只有真正训练候选的轮次才有点', 'points exist only when a candidate is actually trained')}</span></figcaption>
+          <svg viewBox="0 0 360 248" role="img" aria-label={t('3B SD-LoRA 候选训练 loss 曲线', '3B SD-LoRA candidate-training loss curve')}>
+            <line x1="36" y1="220" x2="340" y2="220" class="chart-axis" />
+            <line x1="36" y1="118" x2="340" y2="118" class="chart-gridline" />
+            <line x1="36" y1="27.3" x2="340" y2="27.3" class="chart-gridline" />
+            <text x="4" y="224" class="chart-label">0.95</text><text x="6" y="122" class="chart-label">1.40</text><text x="6" y="31" class="chart-label">1.80</text>
+            <text x="36" y="242" class="chart-label">R0</text><text x="315" y="242" class="chart-label">R122</text>
+            <polyline points={lossPoints} class="loss-line" />
+            {dynamics3B.loss.map((point) => <circle cx={lossX(point.round)} cy={lossY(point.loss)} r={point.accepted ? 4.2 : 2.4} class={point.accepted ? 'loss-dot accepted' : 'loss-dot'} />)}
+          </svg>
+        </figure>
+      </div>
+      <p class="dynamics-boundary">{t(`这段曲线是训练过程证据，不是 128 题最终终评。${dynamics3B.acceptedRolloutsTotal.toLocaleString('en-US')} 次正式环境尝试里，ledger 记录的 engineering invalid、parser repair、invalid-action termination 都是 0。它支持排除“训练根本没工作”这个简单解释；下一问变成：这些学习为什么只有限地转化成最终任务能力？`, `These are training-process measurements, not the frozen 128-task final evaluation. Across ${dynamics3B.acceptedRolloutsTotal.toLocaleString('en-US')} formal environment attempts, the ledger records zero engineering-invalid, parser-repair, or invalid-action-termination events. That rules out the simple claim that training never worked; the next question is why the learning translates only partially into final task ability.`)}</p>
+      <p class="source-note"><a href={technicalHref}>{t('曲线口径、ledger 来源与 checkpoint 回放边界', 'Curve semantics, ledger provenance, and checkpoint-replay boundary')}</a></p>
+      <p class="slide-number">06 / 12</p>
     </div>
   </section>
 
@@ -118,7 +177,7 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
         <div class="after"><span>30 步</span><strong>{t('任务得分 = 0', 'reward = 0')}</strong><p>{t('64 / 64 条尝试有效；每个配对差值仍然是 0。', 'All 64 attempts are valid; every paired delta remains zero.')}</p></div>
       </div>
       <p class="bottom-claim">{t('结论很直接：把动作预算翻倍不足以解释失败。于是我们停止继续增加步数，换下一个假设。', 'Conclusion: doubling the action budget is not a sufficient explanation. We stop increasing the horizon and move to the next hypothesis.')}</p>
-      <p class="slide-number">06 / 11</p>
+      <p class="slide-number">07 / 12</p>
     </div>
   </section>
 
@@ -131,7 +190,7 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
         <div class="after"><span>{t('结构化处理', 'structured recovery')}</span><strong>20 {t('条记录', 'records')} → 10 + 10</strong><p>{t('先保留原来的 20 条记录；如果同一批记录修复一次后仍然饱和，才固定拆成前 10 + 后 10，分别压缩后再合并。', 'Keep the original 20 records first; only if the same records still saturate after one repair pass do we split into first 10 + last 10, compress each half, then merge.')}</p></div>
       </div>
       <p class="bottom-claim">{t('这个结果把问题从“继续堆容量”推进到“怎样有边界地处理饱和”；最终成绩是否因此提高，仍由后续终评回答。', 'The result moves the question from “add more capacity” to “handle saturation with a bounded structure”; whether that improves the final score remains a later evaluation question.')}</p>
-      <p class="slide-number">07 / 11</p>
+      <p class="slide-number">08 / 12</p>
     </div>
   </section>
 
@@ -152,7 +211,7 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
           <p class="source-note"><a href={technicalHref}>{t('完整技术推导与实验门槛', 'Full technical derivation and experimental thresholds')}</a></p>
         </div>
       </div>
-      <p class="slide-number">08 / 11</p>
+      <p class="slide-number">09 / 12</p>
     </div>
   </section>
 
@@ -173,7 +232,7 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
         </div>
       </div>
       <p class="source-note"><a href={technicalHref}>{t('GDR 的判定逻辑与完整实验定义', 'GDR decision logic and full experimental definition')}</a></p>
-      <p class="slide-number">09 / 11</p>
+      <p class="slide-number">10 / 12</p>
     </div>
   </section>
 
@@ -187,7 +246,7 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
       </div>
       <div class="plain-language-result"><strong>{t('当前状态', 'Current state')}</strong><p>{t('DirectApply 的独立实验已经启动，但最终冻结分数还没有收口，所以结果表保持空白。由于暑期考核时间点就在这里，我们目前的能力天花板故事先讲到这里。', 'The independent DirectApply experiment has started, but its frozen final score is not sealed yet, so the results table remains blank. At the summer-review cutoff, this is where the current ceiling story stops.')}</p></div>
       <p class="source-note"><a href={technicalHref}>{t('严谨性、重复性与复现实验细节', 'Rigor, reproducibility, and execution details')}</a></p>
-      <p class="slide-number">10 / 11</p>
+      <p class="slide-number">11 / 12</p>
     </div>
   </section>
 
@@ -230,6 +289,8 @@ const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/'
   .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px}.choice{padding:30px 32px;border-radius:var(--radius-feature);border:1px solid var(--rule)}.choice.north{background:color-mix(in srgb,var(--blue) 10%,var(--surface))}.choice.south{background:color-mix(in srgb,var(--positive) 10%,var(--surface))}.choice.north>span{background:color-mix(in srgb,var(--blue) 16%,var(--surface));color:var(--blue)}.choice.south>span{background:color-mix(in srgb,var(--positive) 16%,var(--surface));color:var(--positive)}.choice h3{margin-top:16px;font-size:30px}.choice>p{margin:10px 0 0;color:var(--muted);font-size:15px;line-height:1.48}.choice dl{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0 0}.choice dl>div{padding-top:12px;border-top:1px solid var(--rule)}.choice dt{color:var(--muted);font-size:11px;font-weight:800}.choice dd{margin:6px 0 0;font-size:13px;line-height:1.42}.decision-note{margin-top:24px;padding:18px 22px;border-radius:var(--radius-feature);background:color-mix(in srgb,var(--warning) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--warning) 30%,var(--line))}.decision-note p{display:inline;margin-left:7px;font-size:17px}.source-note,.final-source{margin:auto 0 0;color:var(--muted);font-size:12px}.source-note a,.final-source a{color:var(--ink);font-weight:700;text-decoration:none}.source-note a:hover,.source-note a:focus-visible,.final-source a:hover,.final-source a:focus-visible{text-decoration:underline;text-underline-offset:.2em}.source-note a,.final-source a{color:var(--ink);font-weight:700;text-decoration:none}.source-note a:hover,.source-note a:focus-visible,.final-source a:hover,.final-source a:focus-visible{text-decoration:underline;text-underline-offset:.2em}
   a:focus-visible,.paper-table-wrap:focus-visible{outline:3px solid var(--accent-deep);outline-offset:3px}
   .quality-flow{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr;gap:10px;align-items:stretch;margin-top:34px}.quality-flow>div{padding:24px 25px;border-top:3px solid color-mix(in srgb,var(--positive) 44%,var(--line));background:color-mix(in srgb,var(--surface) 72%,transparent)}.quality-flow i{align-self:center;text-align:center;color:var(--muted);font-style:normal;font-size:24px}.quality-flow strong{font-size:20px}.quality-flow p{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.45}.speed-proof{display:grid;grid-template-columns:37% 1fr;gap:26px;align-items:center;margin-top:25px;padding:20px 24px;border:1px solid var(--rule);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--positive) 8%,var(--surface))}.speed-proof-number span{display:block;color:var(--muted);font-size:12px;font-weight:750}.speed-proof-number strong{display:block;margin-top:8px;font:760 23px/1.2 var(--font-mono)}.speed-proof-number b{color:var(--accent-deep);margin-left:10px}.speed-proof>div:last-child strong{font-size:17px}.speed-proof>div:last-child p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.45}.diagnosis-table{display:grid;margin-top:24px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}.diagnosis-table>div{display:grid;grid-template-columns:28% 30% 42%;align-items:center;border-top:1px solid var(--rule);min-height:66px}.diagnosis-table>div:first-child{border-top:0}.diagnosis-table b,.diagnosis-table span,.diagnosis-table p,.diagnosis-table strong{margin:0;padding:10px 14px}.diagnosis-table b{font-size:14px}.diagnosis-table span,.diagnosis-table p{color:var(--muted);font-size:12px;line-height:1.38}.diagnosis-table>.diagnosis-head{min-height:42px;background:color-mix(in srgb,var(--warning) 7%,var(--surface))}.diagnosis-head strong{font-size:12px}.proof-line{display:grid;grid-template-columns:auto 1fr auto 1fr auto 1.35fr;gap:8px 12px;align-items:start;margin-top:18px;padding-top:14px;border-top:1px solid var(--rule)}.proof-line strong{color:var(--accent-deep);font-size:12px}.proof-line span{color:var(--muted);font-size:11px;line-height:1.4}
+
+  .dynamics-slide{padding-top:48px;padding-bottom:42px}.dynamics-slide h2{font-size:44px;max-width:1050px}.dynamics-slide .slide-thesis{margin-top:14px;font-size:18px;line-height:1.42}.dynamics-grid{display:grid;grid-template-columns:1.72fr .88fr;gap:18px;margin-top:18px}.dynamics-chart{margin:0;padding:15px 16px 10px;border:1px solid var(--rule);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 88%,transparent)}.dynamics-chart figcaption{display:flex;justify-content:space-between;gap:12px;align-items:baseline;font-size:14px;font-weight:760}.dynamics-chart figcaption span{color:var(--muted);font-size:10px;font-weight:620}.dynamics-chart svg{display:block;width:100%;height:224px;margin-top:5px}.chart-axis{stroke:color-mix(in srgb,var(--ink) 52%,transparent);stroke-width:1.4}.chart-gridline{stroke:color-mix(in srgb,var(--ink) 12%,transparent);stroke-width:1}.chart-label{fill:var(--muted);font:700 10px var(--font-mono)}.score-raw{fill:none;stroke:color-mix(in srgb,var(--blue) 32%,transparent);stroke-width:1.15;vector-effect:non-scaling-stroke}.score-trend{fill:none;stroke:var(--blue);stroke-width:3.2;vector-effect:non-scaling-stroke}.loss-line{fill:none;stroke:var(--warning);stroke-width:2.4;vector-effect:non-scaling-stroke}.loss-dot{fill:var(--warning)}.loss-dot.accepted{fill:var(--positive);stroke:var(--surface);stroke-width:1.2}.dynamics-boundary{margin:11px 0 0;padding:10px 13px;border-left:3px solid var(--blue);background:color-mix(in srgb,var(--blue) 6%,var(--surface));color:var(--muted);font-size:11.5px;line-height:1.4}.dynamics-slide .source-note{margin-top:7px}
 
   #determinism .slide-inner{padding-top:48px;padding-bottom:42px}
   #determinism h2{max-width:1040px;margin-top:8px;font-size:43px;line-height:1.02}

@@ -20,7 +20,16 @@ const direct = 'https://github.com/mykcs/openevo-experiment/pull/404';
   </header>
 
   <section>
-    <h2>{t('1. 15 步还是 30 步：一次干净的负向实验', '1. 15 or 30 steps: a clean negative experiment')}</h2>
+    <h2>{t('1. 训练过程曲线：什么能画，什么不能混在一起', '1. Training dynamics: what can be plotted and what must stay separate')}</h2>
+    <p>{t('主汇报新增的 3B 曲线来自服务器 formal-vnext-v1 的 canonical Stage2 metrics ledger。当前覆盖 R0–R122，共 123 个已封存 round、15,744 次正式环境尝试。每个 round 的 WebShop Score 描述当轮 128 次环境交互的行为表现；它不是冻结 128 题 final panel 的终评分数。', 'The new 3B curve in the main briefing comes from the canonical Stage2 metrics ledger for formal-vnext-v1. It currently covers R0–R122: 123 sealed rounds and 15,744 formal environment attempts. WebShop Score at each round describes the 128 environment interactions in that round; it is not the frozen 128-task final-panel score.')}</p>
+    <p>{t('SD-LoRA training loss 也不是每轮都有：只有真正训练出候选更新的 round 才有 loss 点。当前 ledger 中有 31 个候选训练 loss 点；图上不能把 NOOP round 补成 0，也不能把候选训练次数与真正进入 active model 的参数更新次数混为一谈。', 'SD-LoRA training loss is also not defined on every round: a loss point exists only when a candidate update is actually trained. The current ledger has 31 candidate-training loss points; NOOP rounds must not be filled with zero, and candidate-training count must not be confused with updates actually admitted to the active model.')}</p>
+    <div class="evidence-row"><span>{t('前20轮平均 Score', 'first-20 mean Score')}</span><strong>2.69</strong><span>{t('后23轮平均 Score', 'last-23 mean Score')}</span><strong>14.67</strong><span>{t('candidate loss', 'candidate loss')}</span><strong>1.78 → 1.03</strong></div>
+    <p>{t('这 15,744 次尝试里，ledger 记录的 engineering invalid、parser repair、invalid-action termination 都是 0。这只能排除已经观测到的这些简单工程故障解释，不能证明系统不存在任何工程误差。', 'Across these 15,744 attempts, the ledger records zero engineering-invalid, parser-repair, and invalid-action-termination events. This rules out those observed simple engineering-failure explanations; it does not prove that every possible engineering error is absent.')}</p>
+    <aside><strong>{t('如果要画 checkpoint 的“最终得分曲线”', 'If we replay final scores across checkpoints')}</strong><p>{t('应当在训练和 checkpoint 选择全部结束以后，固定若干里程碑 checkpoint，统一回放同一套冻结评测，并明确标成 post-hoc checkpoint replay。回放结果不能反过来用于训练、early stopping 或 checkpoint selection；否则 final panel 就被变成了调参集。', 'Do it only after training and checkpoint selection are complete: freeze milestone checkpoints, replay the same frozen evaluation, and label the result as post-hoc checkpoint replay. Those replay scores must not feed back into training, early stopping, or checkpoint selection, or the final panel becomes a tuning set.')}</p></aside>
+  </section>
+
+  <section>
+    <h2>{t('2. 15 步还是 30 步：一次干净的负向实验', '2. 15 or 30 steps: a clean negative experiment')}</h2>
     <p>{t('H1.17 只改变 WebShop 的 max_steps：15 与 30。memory、adapter、prompt、parser 和任务列表全部保持不变。64 条比较中 64 条尝试都有效，两种条件 reward 都是 0，每个配对差值都是 0。', 'H1.17 changed only WebShop max_steps: 15 versus 30. Memory, adapter, prompt, parser, and task identity stayed fixed. All 64 attempts were valid, both conditions had zero reward, and every paired delta was zero.')}</p>
     <div class="evidence-row"><span>15 steps</span><strong>0</strong><span>30 steps</span><strong>0</strong><span>Δ</span><strong>0.0</strong></div>
     <p>{t('因此，“15 步太短”不是充分解释。后续应该换科学问题，而不是继续在 horizon 上搜索。', 'Therefore “15 steps is too short” is not a sufficient explanation. The next move is a new scientific question, not more horizon search.')}</p>
@@ -28,7 +37,7 @@ const direct = 'https://github.com/mykcs/openevo-experiment/pull/404';
   </section>
 
   <section>
-    <h2>{t('2. Text Memory：2048 → 4096 为什么仍然不够', '2. Text Memory: why 2048 → 4096 was still insufficient')}</h2>
+    <h2>{t('3. Text Memory：2048 → 4096 为什么仍然不够', '3. Text Memory: why 2048 → 4096 was still insufficient')}</h2>
     <div class="capacity-chain" aria-label={t('Text Memory 容量实验链', 'Text Memory capacity experiment chain')}>
       <div><strong>A1 · 2048</strong><p>{t('出现容量饱和。', 'Capacity saturated.')}</p></div><i>→</i>
       <div><strong>A1.1 · cap=4096 tokens</strong><p>{t('对称翻倍单次 token 上限后仍然失败，否定“只要加容量就行”。', 'Symmetric doubling of the per-call token cap still failed, rejecting “just make it larger.”')}</p></div><i>→</i>
@@ -38,7 +47,7 @@ const direct = 'https://github.com/mykcs/openevo-experiment/pull/404';
   </section>
 
   <section>
-    <h2>{t('3. TaskVector：从 SD-LoRA 更新到真实参数方向', '3. TaskVector: from SD-LoRA updates to a real parameter direction')}</h2>
+    <h2>{t('4. TaskVector：从 SD-LoRA 更新到真实参数方向', '4. TaskVector: from SD-LoRA updates to a real parameter direction')}</h2>
     <p>{t('每个 SD-LoRA 组件都对应真实权重空间中的一个 ΔW。相邻且不同的状态 R27 与 R49 定义方向：', 'Each SD-LoRA component corresponds to a real ΔW in weight space. Adjacent distinct states R27 and R49 define the direction:')}</p>
     <div class="equation">τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub> = Σ<sub>i</sub> δc<sub>i</sub>B<sub>i</sub>A<sub>i</sub></div>
     <p>{t('为了不把 7 个系数的欧氏距离误当成真实权重距离，我们使用组件之间的 Gram 矩阵 G：', 'To avoid treating Euclidean distance between seven coefficients as the true weight-space distance, we use the component Gram matrix G:')}</p>
@@ -50,7 +59,7 @@ const direct = 'https://github.com/mykcs/openevo-experiment/pull/404';
   </section>
 
   <section>
-    <h2>{t('4. Gated Delta Rule 与 DirectApply 到底只差什么', '4. What exactly differs between Gated Delta Rule and DirectApply')}</h2>
+    <h2>{t('5. Gated Delta Rule 与 DirectApply 到底只差什么', '5. What exactly differs between Gated Delta Rule and DirectApply')}</h2>
     <p>{t('两条路线都会先训练出同类 SD-LoRA 候选 Δt。GDR（Gated Delta Rule）多一步准入判断：', 'Both routes first train the same kind of SD-LoRA candidate Δt. GDR (Gated Delta Rule) adds one admission decision:')}</p>
     <div class="equation piecewise">θ<sub>t+1</sub> = θ<sub>t</sub> + Δ<sub>t</sub> &nbsp; {t('若接受', 'if accepted')}<br />θ<sub>t+1</sub> = θ<sub>t</sub> &nbsp; {t('若拒绝', 'if rejected')}</div>
     <p>{t('DirectApply 去掉这一步否决：满足共同训练条件的候选直接进入后续模型。1.7B 的 44 个候选中只有 7 个被 GDR 接受，因此这不是一个小实现差异，而是可能改变长期学习轨迹的机制变量。', 'DirectApply removes that veto: a candidate that satisfies the shared training conditions enters the next state directly. GDR admitted only 7 of 44 candidates in the 1.7B run, so this is a mechanism variable that can change the long-term learning trajectory.')}</p>
@@ -58,7 +67,7 @@ const direct = 'https://github.com/mykcs/openevo-experiment/pull/404';
   </section>
 
   <section>
-    <h2>{t('5. 严谨性与复现：为什么这些细节放在这里', '5. Rigor and reproducibility')}</h2>
+    <h2>{t('6. 严谨性与复现：为什么这些细节放在这里', '6. Rigor and reproducibility')}</h2>
     <p>{t('这些证据是实验成立的前提，而不是演讲主线。只有当它们改变“这个结果还能不能解释”时，才需要回到主汇报。', 'These checks are prerequisites for a valid experiment, not the main talk. They return to the main narrative only when they change whether the result is interpretable.')}</p>
     <details>
       <summary>{t('为什么旧 Q17 不继续原地修改', 'Why the old Q17 experiment was not modified in place')}</summary>

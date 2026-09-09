@@ -25,11 +25,11 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(appLayout).toContain("exactRoute('/research/seed-openevo/study/briefing/technical-notes') ? 'briefing'");
   });
 
-  it('keeps a fixed eleven-slide presentation sequence with no page number on cover/final', () => {
-    expect((briefing.match(/<section /g) ?? []).length).toBe(11);
-    for (let page = 2; page <= 10; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 11`);
-    expect(briefing).not.toContain('01 / 11');
-    expect(briefing).not.toContain('11 / 11');
+  it('keeps a fixed twelve-slide presentation sequence with no page number on cover/final', () => {
+    expect((briefing.match(/<section /g) ?? []).length).toBe(12);
+    for (let page = 2; page <= 11; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 12`);
+    expect(briefing).not.toContain('01 / 12');
+    expect(briefing).not.toContain('12 / 12');
     expect(briefing).not.toContain('下一页');
     expect(briefing).not.toContain('Next slide');
   });
@@ -95,6 +95,18 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('Qwen2.5-3B');
     expect(briefing).toContain('180×8 的第一阶段');
     expect(briefing).toContain('独立的持续学习实验线');
+  });
+
+  it('shows the 3B longitudinal training dynamics without turning training-round score into a final-eval claim', () => {
+    expect(briefing).toContain('3B 训练后半程，任务得分明显抬升');
+    expect(briefing).toContain('123 个已封存 round');
+    expect(briefing).toContain('最后 23 轮平均');
+    expect(briefing).toContain('发生 SD-LoRA 候选训练时的 loss');
+    expect(briefing).toContain('这段曲线是训练过程证据，不是 128 题最终终评');
+    expect(briefing).toContain('dynamics3B.acceptedRolloutsTotal.toLocaleString');
+    expect(technical).toContain('15,744 次正式环境尝试');
+    expect(briefing).toContain('engineering invalid、parser repair、invalid-action termination 都是 0');
+    expect(briefing).toContain('Curve semantics, ledger provenance, and checkpoint-replay boundary');
   });
 
   it('makes the negative 15→30 horizon diagnostic a scientific pivot', () => {
@@ -174,7 +186,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('先把 SEED 匹配比较做齐');
     expect(briefing).toContain('先追“为什么有效”的机制证据');
     expect(briefing).toContain('想请老师和学长判断优先级');
-    expect(briefing).not.toContain('11 / 11');
+    expect(briefing).not.toContain('12 / 12');
   });
 
   it('binds both public routes into Reader Contracts', () => {
