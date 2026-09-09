@@ -108,15 +108,48 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
 
   <section id="science-attempts" class="briefing-slide tone-blue" aria-labelledby="science-attempts-title">
     <div class="slide-inner summary-slide">
-      <h2 id="science-attempts-title">{t('低分出现以后，我们一步步把问题拆小来验证', 'After the low score appeared, we broke the problem into smaller tests')}</h2>
-      <p class="slide-thesis">{t('每次分数低或训练卡住，我们先看日志和轨迹，再做一个最小改动。下面四件事是主线上的科学尝试。', 'Whenever scores were low or training stalled, we first checked logs and traces, then made one minimal change. These four items are the scientific attempts in the main story.')}</p>
+      <h2 id="science-attempts-title">{t('我们做过哪些尝试', 'What we tried')}</h2>
+      <p class="slide-thesis">{t('先看日志和轨迹，再一次只改一个问题。', 'Inspect the logs and traces first, then change one thing at a time.')}</p>
       <ol class="summary-list">
-        <li><span>01</span><strong>{t('修正长期训练的更新门槛', 'fix the long-run update gate')}</strong><p>{t('旧规则让训练跑很久却 0 次参数更新；修正后，7B 才能真正进入长期学习。', 'The old rule let training run for a long time with zero parameter updates; after the fix, 7B could truly enter long-run learning.')}</p></li>
-        <li><span>02</span><strong>{t('做一次 7B 长周期训练', 'run one long 7B training line')}</strong><p>{t('看训练曲线、loss 和冻结终评是否一致，避免只看最后一个分数。', 'Compare training curves, loss, and frozen final results before interpreting one final number.')}</p></li>
-        <li><span>03</span><strong>{t('用 1.7B / 3B 做便宜诊断', 'use 1.7B / 3B for cheaper diagnostics')}</strong><p>{t('检查步数、Text Memory、动作接口和参数方向，快速排除具体解释。', 'Check step limit, Text Memory, action interface, and parameter direction to eliminate concrete explanations quickly.')}</p></li>
-        <li><span>04</span><strong>{t('把 GDR 与 DirectApply 分开比较', 'separate GDR from DirectApply')}</strong><p>{t('专门问：44 次已经训练出来的更新，为什么只有 7 次真正进入后续模型？', 'Ask directly why 44 trained updates became only 7 updates that entered later model states.')}</p></li>
+        <li><span>01</span><strong>{t('让长期训练真正能更新参数', 'let long-run training actually update parameters')}</strong></li>
+        <li><span>02</span><strong>{t('把 7B 真正跑成长周期训练', 'run 7B as a real long-horizon training line')}</strong></li>
+        <li><span>03</span><strong>{t('用 1.7B / 3B 逐个排查低分原因', 'use 1.7B / 3B to test low-score explanations one by one')}</strong></li>
+        <li><span>04</span><strong>{t('单独比较 GDR 和 DirectApply', 'compare GDR and DirectApply directly')}</strong></li>
       </ol>
       <p class="slide-number">03 / 18</p>
+    </div>
+  </section>
+  <section id="openevo-method" class="briefing-slide tone-green" aria-labelledby="openevo-method-title">
+    <div class="slide-inner method-slide">
+      <h2 id="openevo-method-title">{t('OpenEVO 的训练分两步：先准备经验，再一轮轮继续学', 'OpenEVO trains in two steps: prepare experience, then keep learning round by round')}</h2>
+      <p class="slide-thesis">{t('第一阶段由学生模型自己跑 1,440 条 WebShop 轨迹，MiniMax 在任务结束后做回看分析；第二阶段开始后，模型每轮继续做 128 次任务，再根据这一轮证据分别判断 Text Memory、Skill Bundle、Agent System 和 SD-LoRA 是否需要变化；没有触发条件的状态保持不变。', 'In Stage 1, the student model runs 1,440 WebShop trajectories and MiniMax reviews them after the tasks finish. In Stage 2, the model runs 128 new attempts per round and separately decides whether Text Memory, Skill Bundle, Agent System, and SD-LoRA should change from that round of evidence; a state remains unchanged when its trigger is not met.')}</p>
+      <div class="method-stage-grid">
+        <article>
+          <header><span>Stage 1</span><strong>{t('先把 1,440 条学生轨迹变成一个可学习的起点', 'Turn 1,440 student trajectories into a learnable starting state')}</strong></header>
+          <ol>
+            <li><b>1,440 raw</b><p>{t('180 个 WebShop 任务 × 每题 8 次完整尝试，先由学生模型自己做。', '180 WebShop tasks × eight full attempts, performed by the student model itself.')}</p></li>
+            <li><b>MiniMax 1,440 / 1,440</b><p>{t('任务结束后回看哪里成功、哪里失败、哪里在重复搜索；它不替 Qwen 搜索或点击。', 'After each task, MiniMax reviews what worked, failed, or looped; it does not search or click for Qwen.')}</p></li>
+            <li><b>{t('准备四类学习载体', 'prepare four learning carriers')}</b><p>{t('OPSD（离线参数训练）准备初始参数状态；同时整理 Text Memory、Skill Bundle 和 Agent System。', 'OPSD prepares the initial parameter state through offline parameter training, while Text Memory, Skill Bundle, and Agent System are prepared.')}</p></li>
+          </ol>
+        </article>
+        <article>
+          <header><span>Stage 2</span><strong>{t('之后每 128 次任务形成一轮，模型只用自己的新经验继续学', 'Then every 128 attempts form one round, using only newly self-generated experience')}</strong></header>
+          <ol>
+            <li><b>{t('做题', 'act')}</b><p>{t('当前模型继续跑 WebShop，得到这一轮新的 128 条任务记录。', 'The current model runs WebShop and produces 128 new task records for the round.')}</p></li>
+            <li><b>{t('分别判断要不要更新', 'decide updates independently')}</b><p>{t('每轮按正式协议分别判断哪些状态需要更新；没有证据触发时可以保持不变。', 'Each round follows the formal protocol to decide which state should update; a state may remain unchanged when its evidence condition is not met.')}</p></li>
+            <li><b>{t('合成下一轮', 'merge the next state')}</b><p>{t('这些状态共同定义下一轮实际使用的模型状态；TaskVector 只做诊断，不偷偷改训练。', 'Together these states define what the next round actually uses; TaskVector remains diagnostic and does not silently change training.')}</p></li>
+          </ol>
+        </article>
+      </div>
+      <div class="carrier-strip" aria-label={t('OpenEVO 四类学习载体', 'OpenEVO learning carriers')}>
+        <span><strong>Text Memory</strong>{t('跨任务记忆整理', 'cross-task memory')}</span>
+        <span><strong>Skill Bundle</strong>{t('可复用操作经验', 'reusable task skills')}</span>
+        <span><strong>Agent System</strong>{t('全局行为与恢复规则', 'global behavior and recovery rules')}</span>
+        <span><strong>SD-LoRA</strong>{t('持续参数更新', 'continual parameter updates')}</span>
+      </div>
+      <p class="method-state-note"><strong>{t('下一轮带着什么继续做题？', 'What carries into the next round?')}</strong>{t('Text Memory、Skill Bundle、Agent System 和 SD-LoRA 共同进入下一轮；某一类是否发生变化，由本轮证据和正式规则分别决定。', 'Text Memory, Skill Bundle, Agent System, and SD-LoRA all carry into the next round; whether any one state changes is decided separately from the round evidence and formal rule.')}</p>
+      <p class="slide-bridge">{t('有了这个背景，下面再看我们实际跑出来的结果。', 'With that background, we can now read the results we actually obtained.')}</p>
+      <p class="slide-number">04 / 18</p>
     </div>
   </section>
   <section id="results" class="briefing-slide tone-paper" aria-labelledby="results-title">
@@ -143,7 +176,7 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
       <div class="table-notes single-note">
         <p>{t('3B 确实做过独立实验线，但目前没有一个能与这张冻结终评表直接并列的最终分数，所以不硬填；DirectApply 也还没有最终分数。', 'The 3B line is real, but we do not have a final number that belongs beside this frozen panel, so it remains blank; DirectApply is also unfinished.')}</p>
       </div>
-      <p class="slide-number">04 / 18</p>
+      <p class="slide-number">05 / 18</p>
     </div>
   </section>
   <section id="stage2-gate" class="briefing-slide tone-gold" aria-labelledby="stage2-gate-title">
@@ -158,42 +191,10 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
       <div class="resolution-box"><strong>{t('我们怎么解决', 'How we fixed the scientific rule')}</strong><p>{t('撤掉旧 7-vs-8 gate，把正式 Stage 2 固定成 round-local：一轮 128 次 WebShop 尝试里，只要出现至少一个 clean exact-success task，就给 SD-LoRA 一次更新机会；如果没有成功，就明确记为 NOOP。这样模型有没有学到东西，才不再被历史控制门槛挡住。', 'We removed the old 7-vs-8 gate and froze formal Stage 2 as round-local: in one 128-rollout WebShop round, at least one clean exact-success task gives SD-LoRA one update opportunity; if there is no success, the round is recorded as NOOP. Only then is learning no longer blocked by a historical control threshold.')}</p></div>
       <p class="bottom-claim">{t('后来遇到的 64-component 上限是另一个问题：一开始代码为了控制容量，限制最多写入 64 个 SD-LoRA component。我们只解除“到 64 就停”这一条、保持其他训练规则不变以后，7B 跨过 64 并继续累计更新。因此 64 只代表工程容量边界，不能当作模型能力上限。更细的运行时排查留在技术页。', 'The later 64-component limit was a separate issue: the code originally capped the run at 64 SD-LoRA components as a capacity guard. We removed only the stop-at-64 rule while keeping the other training rules unchanged, and the 7B run then crossed 64 and continued accumulating updates. This evidence identifies 64 as an engineering capacity boundary; it cannot be treated as a model-capability ceiling. Lower-level runtime debugging stays in the technical notes.')}</p>
       <p class="slide-bridge">{t('这个 gate 不再挡住学习以后，下一步才是看 7B 长跑到底在更新什么。', 'Once this gate no longer blocked learning, the next question was what the 7B long run was actually updating.')}</p>
-      <p class="slide-number">05 / 18</p>
-    </div>
-  </section>
-  <section id="openevo-method" class="briefing-slide tone-green" aria-labelledby="openevo-method-title">
-    <div class="slide-inner method-slide">
-      <h2 id="openevo-method-title">{t('后来 7B 的下一轮状态，到底由哪些东西共同组成？', 'What together defined the next state in the later 7B run?')}</h2>
-      <p class="slide-thesis">{t('最早的 7B Stage 1 只收集 1,440 条原始 WebShop 轨迹；后来跑到 49.33 的 Ceiling-1.0 7B，下一轮实际使用的状态由 Text Memory、Skill Bundle、Agent System 和累计 SD-LoRA 参数状态共同定义。MiniMax 只在第一阶段任务结束后回看轨迹，不替 Qwen 搜索或点击；进入第二阶段以后，外部老师不再持续介入。', 'The earliest 7B Stage 1 only collected 1,440 raw WebShop trajectories. The later Ceiling-1.0 7B run that ended at 49.33 used Text Memory, Skill Bundle, Agent System, and the cumulative SD-LoRA parameter state together as the next state. MiniMax reviewed completed trajectories only after Stage 1; it never searched or clicked for Qwen, and the external teacher did not keep intervening during Stage 2.')}</p>
-      <div class="method-stage-grid">
-        <article>
-          <header><span>Stage 1</span><strong>{t('先把 1,440 条学生轨迹变成一个可学习的起点', 'Turn 1,440 student trajectories into a learnable starting state')}</strong></header>
-          <ol>
-            <li><b>1,440 raw</b><p>{t('180 个 WebShop 任务 × 每题 8 次完整尝试，先由学生模型自己做。', '180 WebShop tasks × eight full attempts, performed by the student model itself.')}</p></li>
-            <li><b>MiniMax 1,440 / 1,440</b><p>{t('任务结束后做老式的回看分析：哪里成功、哪里失败、哪里在重复搜索。', 'After each task, perform the historical hindsight analysis: what worked, failed, or looped.')}</p></li>
-            <li><b>{t('准备四类学习载体', 'prepare four learning carriers')}</b><p>{t('OPSD 做初始参数训练；同时整理 Text Memory、Skill Bundle 和 Agent System。', 'OPSD performs the initial parameter-training path while Text Memory, Skill Bundle, and Agent System are prepared.')}</p></li>
-          </ol>
-        </article>
-        <article>
-          <header><span>Stage 2</span><strong>{t('之后每 128 次任务形成一轮，模型只用自己的新经验继续学', 'Then every 128 attempts form one round, using only newly self-generated experience')}</strong></header>
-          <ol>
-            <li><b>{t('做题', 'act')}</b><p>{t('当前模型继续跑 WebShop，得到这一轮新的 128 条任务记录。', 'The current model runs WebShop and produces 128 new task records for the round.')}</p></li>
-            <li><b>{t('分别判断要不要更新', 'decide updates independently')}</b><p>{t('每轮按正式协议分别判断哪些状态需要更新；没有证据触发时可以保持不变。', 'Each round follows the formal protocol to decide which state should update; a state may remain unchanged when its evidence condition is not met.')}</p></li>
-            <li><b>{t('合成下一轮', 'merge the next state')}</b><p>{t('这些状态共同定义下一轮实际使用的模型状态；TaskVector 只做诊断，不偷偷改训练。', 'Together these states define what the next round actually uses; TaskVector remains diagnostic and does not silently change training.')}</p></li>
-          </ol>
-        </article>
-      </div>
-      <div class="carrier-strip" aria-label={t('OpenEVO 四类学习载体', 'OpenEVO learning carriers')}>
-        <span><strong>Text Memory</strong>{t('跨任务记忆整理', 'cross-task memory')}</span>
-        <span><strong>Skill Bundle</strong>{t('可复用操作经验', 'reusable task skills')}</span>
-        <span><strong>Agent System</strong>{t('全局行为与恢复规则', 'global behavior and recovery rules')}</span>
-        <span><strong>SD-LoRA</strong>{t('持续参数更新', 'continual parameter updates')}</span>
-      </div>
-      <p class="method-state-note"><strong>{t('最后更新成什么样？', 'What did the final state contain?')}</strong>{t('最终评测状态包含 Text Memory、Skill Bundle、Agent System，以及累计写入 143 次更新后形成的 SD-LoRA 参数状态。', 'The final evaluated state contained Text Memory, Skill Bundle, Agent System, and the cumulative SD-LoRA parameter state produced after 143 written updates.')}</p>
-      <p class="slide-bridge">{t('既然训练过程真的在变好，下一步就要看它的冻结终评到底停在哪里。', 'Since the training process genuinely improved, the next step is to compare it with the frozen final result.')}</p>
       <p class="slide-number">06 / 18</p>
     </div>
   </section>
+
   <section id="seven-b" class="briefing-slide tone-blue" aria-labelledby="seven-b-title">
     <div class="slide-inner dynamics-slide seven-b-dynamics">
       <h2 id="seven-b-title">{t('我们做了一次 7B 长跑：训练在变好，冻结终评是 49.33', 'We ran one long 7B training line: training improves, the frozen final is 49.33')}</h2>
@@ -268,7 +269,7 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
   </section>
   <section id="capacity-diagnostic" class="briefing-slide tone-gold" aria-labelledby="capacity-title">
     <div class="slide-inner">
-      <h2 id="capacity-title">{t('我们把记忆容量翻倍了', 'We doubled the memory capacity')}</h2>
+      <h2 id="capacity-title">{t('Text Memory 整理 20 条记录时会撞到输出上限', 'Text Memory hits its output limit while consolidating 20 records')}</h2>
       <p class="slide-thesis">{t('我们先把文本记忆模块一次生成能用的 token 上限从', 'We first increased the Text Memory generation token cap from')} <strong>2048 → 4096</strong>{t('，仍然饱和。最后我们停止继续堆容量，改成有边界的分块处理：同一批 20 条记录修复一次后若仍饱和，才固定拆成 10 + 10，分别压缩再合并。', '. It still saturated. We stopped adding more capacity and switched to bounded decomposition: if the same 20 records still saturate after one repair pass, split them deterministically into 10 + 10, compress each half, then merge them.')}</p>
       <div class="before-after">
         <div class="before"><span>{t('单次容量实验', 'single-call capacity')}</span><strong>2048 → 4096</strong><p>{t('单纯把 token 上限翻倍仍然没有解决容量失败。', 'Doubling the token cap alone did not resolve the capacity failure.')}</p></div>
@@ -309,8 +310,8 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
   </section>
   <section id="mechanism" class="briefing-slide tone-gold" aria-labelledby="mechanism-title">
     <div class="slide-inner">
-      <h2 id="mechanism-title">{t('TaskVector 用来检查参数更新方向', 'TaskVector checks the direction of parameter updates')}</h2>
-      <p class="slide-thesis">{t('如果连续两次更新真的学到了同一种东西，它们在参数空间里应该形成一个可测量的方向。TaskVector 把这个方向写成一个可以主动加回模型、拿掉或反向施加的量。', 'If successive updates learn something coherent, they should form a measurable direction in parameter space. TaskVector turns that direction into an intervention we can add, remove, or reverse.')}</p>
+      <h2 id="mechanism-title">{t('我们开始检查：连续的参数更新有没有稳定方向', 'We started checking whether successive parameter updates have a stable direction')}</h2>
+      <p class="slide-thesis">{t('学长提醒我们，更新次数多还不够，还要看这些更新是不是朝着一致的方向变化。为此我们用 TaskVector 把相邻参数状态之间的变化写成一个可测量、可正向或反向施加的方向。', 'The senior pointed out that update count alone is insufficient; we also need to know whether successive updates move in a consistent direction. We use TaskVector to turn the change between neighboring parameter states into a measurable direction that can be applied forward or backward.')}</p>
       <div class="mechanism-math">
         <div class="formula-card">
           <strong>{t('定义一个参数方向', 'Define a parameter direction')}</strong>
@@ -371,8 +372,8 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
   </section>
   <section id="directapply" class="briefing-slide tone-green" aria-labelledby="directapply-title">
     <div class="slide-inner">
-      <h2 id="directapply-title">{t('DirectApply 拿掉 GDR 的否决权，只改这一个变量', 'DirectApply removes only the GDR veto')}</h2>
-      <p class="slide-thesis">{t('两条路线都训练同样的 SD-LoRA 候选；区别只有一个：GDR 可以拒绝候选，DirectApply 对满足共同训练条件的候选直接应用。', 'Both routes train the same kind of SD-LoRA candidate. The single intended difference is whether GDR may veto the update or DirectApply applies a qualifying candidate directly.')}</p>
+      <h2 id="directapply-title">{t('看到 44 次只留下 7 次以后，我们单独拿掉 GDR 做对照', 'After seeing 44 candidates become 7, we ran a comparison without the GDR veto')}</h2>
+      <p class="slide-thesis">{t('这个对照保留同样的 SD-LoRA 训练条件，只改一件事：GDR 仍然可以拒绝候选，DirectApply 会把满足共同训练条件的候选直接用于下一轮。', 'The comparison keeps the same SD-LoRA training conditions and changes one thing: GDR may still reject a candidate, while DirectApply sends a qualifying candidate directly into the next round.')}</p>
       <div class="before-after">
         <div class="before"><span>GDR</span><strong>{t('训练 Δ → 再决定要不要更新', 'train Δ → decide whether to update')}</strong><p>{t('候选可能被 GDR 拒绝；一旦被拒绝，这次已经做完的训练就不会改到下一轮模型上。', 'A candidate can be rejected, so later states may never see that learning event.')}</p></div>
         <div class="after"><span>DirectApply</span><strong>{t('训练 Δ → 下一轮直接用', 'train Δ → apply it to the next state')}</strong><p>{t('不再用 GDR 做第二次否决。这样才能直接问：44→7 的筛选到底帮助了长期学习，还是限制了它？', 'There is no second GDR veto. This directly tests whether the 44→7 filtering helped long-term learning or constrained it.')}</p></div>
@@ -385,8 +386,8 @@ const update65Round7B = dynamics7B.score.find((point) => point.parameterUpdates 
 
   <section id="technical-work-summary" class="briefing-slide tone-paper" aria-labelledby="technical-work-title">
     <div class="slide-inner summary-slide tech-summary-slide">
-      <h2 id="technical-work-title">{t('这些技术工作没有占主线，但它们让实验能跑、能查、能复现', 'Engineering work stayed out of the main claim, but made the experiment runnable and auditable')}</h2>
-      <p class="slide-thesis">{t('这些工作不直接当科研亮点，但它们让低分不能简单归因为“实验根本没跑起来”。', 'This work is not presented as the research highlight, but it prevents low scores from being dismissed as the experiment simply not running.')}</p>
+      <h2 id="technical-work-title">{t('这些技术工作让实验能跑、能查、能复现', 'These engineering changes made the experiments runnable, auditable, and reproducible')}</h2>
+      <p class="slide-thesis">{t('我们把动作接口、训练记录、断点续跑、GPU 调度和审阅流程都做成可检查的工程证据。', 'We turned the action interface, training records, resume path, GPU scheduling, and review workflow into auditable engineering evidence.')}</p>
       <ol class="summary-list technical-summary-list">
         <li><span>01</span><strong>{t('动作接口与 parser', 'action interface and parser')}</strong><p>{t('把无效动作、解析失败、repair 记录成可审计指标，避免凭感觉说“环境坏了”。', 'Track invalid actions, parsing failures, and repairs as auditable metrics so the environment diagnosis rests on evidence.')}</p></li>
         <li><span>02</span><strong>{t('checkpoint、W&B、Hugging Face 归档', 'checkpoint, W&B, and Hugging Face archival')}</strong><p>{t('训练过程、loss、候选更新和可恢复资产分开保存，方便事后重放与核对。', 'Keep training curves, losses, candidate updates, and recoverable assets separately archived for replay and verification.')}</p></li>

@@ -48,7 +48,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('OpenEVO 暑期考核汇报');
     expect(briefing).toContain("Too long, Don't read");
     expect(briefing).toContain("{t('目录', 'Agenda')}");
-    for (const attempt of ['修正长期训练的更新门槛', '做一次 7B 长周期训练', '用 1.7B / 3B 做便宜诊断', '把 GDR 与 DirectApply 分开比较']) expect(briefing).toContain(attempt);
+    for (const attempt of ['让长期训练真正能更新参数', '把 7B 真正跑成长周期训练', '用 1.7B / 3B 逐个排查低分原因', '单独比较 GDR 和 DirectApply']) expect(briefing).toContain(attempt);
   });
 
   it('uses the requested SEED-style Score / Succ table and correct OpenEVO row order', () => {
@@ -88,18 +88,19 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('adds a one-slide OpenEVO Stage 1 → Stage 2 mental model for the live audience', () => {
-    expect(briefing).toContain('后来 7B 的下一轮状态，到底由哪些东西共同组成？');
+    expect(briefing).toContain('OpenEVO 的训练分两步：先准备经验，再一轮轮继续学');
+    expect(briefing.indexOf('id="openevo-method"')).toBeLessThan(briefing.indexOf('id="results"'));
     expect(briefing).toContain('Stage 1');
     expect(briefing).toContain('180 个 WebShop 任务 × 每题 8 次完整尝试');
     expect(briefing).toContain('MiniMax 1,440 / 1,440');
-    expect(briefing).toContain('任务结束后做老式的回看分析');
+    expect(briefing).toContain('任务结束后回看哪里成功、哪里失败、哪里在重复搜索');
     expect(briefing).toContain('不替 Qwen 搜索或点击');
     expect(briefing).toContain('Stage 2');
     expect(briefing).toContain('每 128 次任务形成一轮');
     for (const carrier of ['Text Memory', 'Skill Bundle', 'Agent System', 'SD-LoRA']) expect(briefing).toContain(carrier);
     expect(briefing).toContain('TaskVector 只做诊断，不偷偷改训练');
-    expect(briefing).toContain('最早的 7B Stage 1 只收集 1,440 条原始 WebShop 轨迹');
-    expect(briefing).toContain('最终评测状态包含 Text Memory、Skill Bundle、Agent System，以及累计写入 143 次更新后形成的 SD-LoRA 参数状态');
+    expect(briefing).toContain('第一阶段由学生模型自己跑 1,440 条 WebShop 轨迹');
+    expect(briefing).toContain('某一类是否发生变化，由本轮证据和正式规则分别决定');
   });
 
   it('shows 7B training dynamics, the old 64-component guard, and the direction-question pivot', () => {
@@ -197,7 +198,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('uses a simple TaskVector formula in the talk and leaves the hard derivation in technical notes', () => {
-    expect(briefing).toContain('TaskVector 用来检查参数更新方向');
+    expect(briefing).toContain('我们开始检查：连续的参数更新有没有稳定方向');
     expect(briefing).toContain('τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub>');
     expect(briefing).toContain('‖τ‖<sub>F</sub> = 0.608');
     expect(briefing).not.toContain('√(δcᵀGδc) = 0.6082257746');
@@ -213,7 +214,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('keeps DirectApply as the one-variable scientific comparison', () => {
-    expect(briefing).toContain('DirectApply 拿掉 GDR 的否决权，只改这一个变量');
+    expect(briefing).toContain('看到 44 次只留下 7 次以后，我们单独拿掉 GDR 做对照');
     expect(briefing).toContain('训练 Δ → 下一轮直接用');
     expect(briefing).toContain('最终冻结分数还没有收口');
   });
@@ -239,16 +240,12 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(finalSlide).not.toContain('W&B + HF + checkpoint 归档');
     expect(finalSlide).not.toContain('composed state');
     expect(briefing).toContain('训练跑了很久，但参数一次都没有更新');
-    expect(briefing).toContain('后来 7B 的下一轮状态，到底由哪些东西共同组成？');
+    expect(briefing).toContain('OpenEVO 的训练分两步：先准备经验，再一轮轮继续学');
     expect(finalSlide).not.toContain('15 / 15');
   });
 
-  it('keeps meaningless English eyebrows, binary-contrast phrasing, and decorative bubbles out of the deck', () => {
-    for (const token of ['OpenEVO · SEED × WebShop', '>AGENDA<', '>RESULTS<', '>QUESTION<', '>DESIGN<', '>MECHANISM<', '老师很可能会问', '钩子：', 'composed state', '这页先', 'This slide lays out', 'This slide explains']) expect(briefing).not.toContain(token);
-    for (const token of ['不是', '而是', 'not just', 'not only', 'rather than', 'instead of', 'not a', 'not one']) {
-      expect(briefing).not.toContain(token);
-      expect(technical).not.toContain(token);
-    }
+  it('keeps rejected presenter/meta patterns out without globally banning valid scientific negation', () => {
+    for (const token of ['OpenEVO · SEED × WebShop', '>AGENDA<', '>RESULTS<', '>QUESTION<', '>DESIGN<', '>MECHANISM<', '老师很可能会问', '钩子：', 'composed state', '这页先', 'This slide lays out', 'This slide explains', '我们不是只跑一次实验，而是', '7 < 8：不是模型没有成功经验，而是']) expect(briefing).not.toContain(token);
     const h2Titles = [...briefing.matchAll(/<h2[^>]*>\{t\('([^']+)'/g)].map((match) => String(match[1] ?? ''));
     expect(h2Titles.some((title) => /^(7B|1\.7B|3B)：/.test(title))).toBe(false);
     expect(briefing).not.toContain('.briefing-slide::before');
