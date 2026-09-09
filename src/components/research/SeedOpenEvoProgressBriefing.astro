@@ -1,6 +1,7 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 import { OPEN_EVO_3B_TRAINING_DYNAMICS } from '../../data/openEvo3BTrainingDynamics';
+import { OPEN_EVO_LONG_RUN_TRAINING_DYNAMICS } from '../../data/openEvoLongRunTrainingDynamics';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -12,11 +13,15 @@ const flowHref = p('/research/seed-openevo/flow/');
 const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/');
 
 const dynamics3B = OPEN_EVO_3B_TRAINING_DYNAMICS;
+const dynamics7B = OPEN_EVO_LONG_RUN_TRAINING_DYNAMICS.sevenB;
+const dynamics17B = OPEN_EVO_LONG_RUN_TRAINING_DYNAMICS.onePointSevenB;
 const movingAverage = (series: readonly { round: number; score: number }[], window = 12) => series.map((point, index) => {
   const start = Math.max(0, index - window + 1);
   const windowRows = series.slice(start, index + 1);
   return { round: point.round, score: windowRows.reduce((sum, row) => sum + row.score, 0) / windowRows.length };
 });
+const meanScore = (series: readonly { score: number }[]) => series.reduce((sum, row) => sum + row.score, 0) / series.length;
+
 const scoreTrend = movingAverage(dynamics3B.score);
 const scoreChart = { left: 42, right: 676, top: 16, bottom: 220, maxRound: dynamics3B.score.at(-1)?.round ?? 122, maxScore: 22 };
 const scoreX = (round: number) => scoreChart.left + (round / scoreChart.maxRound) * (scoreChart.right - scoreChart.left);
@@ -27,11 +32,41 @@ const lossChart = { left: 36, right: 340, top: 16, bottom: 220, minLoss: 0.95, m
 const lossX = (round: number) => lossChart.left + (round / scoreChart.maxRound) * (lossChart.right - lossChart.left);
 const lossY = (loss: number) => lossChart.bottom - ((loss - lossChart.minLoss) / (lossChart.maxLoss - lossChart.minLoss)) * (lossChart.bottom - lossChart.top);
 const lossPoints = dynamics3B.loss.map((point) => `${lossX(point.round).toFixed(1)},${lossY(point.loss).toFixed(1)}`).join(' ');
-const earlyScoreMean = dynamics3B.score.slice(0, 20).reduce((sum, row) => sum + row.score, 0) / 20;
+const earlyScoreMean = meanScore(dynamics3B.score.slice(0, 20));
 const lateScoreRows = dynamics3B.score.slice(-23);
-const lateScoreMean = lateScoreRows.reduce((sum, row) => sum + row.score, 0) / lateScoreRows.length;
+const lateScoreMean = meanScore(lateScoreRows);
 const firstLoss = dynamics3B.loss[0]?.loss ?? 0;
 const lastLoss = dynamics3B.loss.at(-1)?.loss ?? 0;
+
+const scoreTrend7B = movingAverage(dynamics7B.score);
+const scoreChart7B = { left: 42, right: 676, top: 16, bottom: 220, maxRound: 148, maxScore: 90 };
+const scoreX7B = (round: number) => scoreChart7B.left + (round / scoreChart7B.maxRound) * (scoreChart7B.right - scoreChart7B.left);
+const scoreY7B = (score: number) => scoreChart7B.bottom - (score / scoreChart7B.maxScore) * (scoreChart7B.bottom - scoreChart7B.top);
+const scoreRawPoints7B = dynamics7B.score.map((point) => `${scoreX7B(point.round).toFixed(1)},${scoreY7B(point.score).toFixed(1)}`).join(' ');
+const scoreTrendPoints7B = scoreTrend7B.map((point) => `${scoreX7B(point.round).toFixed(1)},${scoreY7B(point.score).toFixed(1)}`).join(' ');
+const lossChart7B = { left: 36, right: 340, top: 16, bottom: 220, minLoss: 0, maxLoss: 0.70 };
+const lossX7B = (round: number) => lossChart7B.left + (round / scoreChart7B.maxRound) * (lossChart7B.right - lossChart7B.left);
+const lossY7B = (loss: number) => lossChart7B.bottom - ((loss - lossChart7B.minLoss) / (lossChart7B.maxLoss - lossChart7B.minLoss)) * (lossChart7B.bottom - lossChart7B.top);
+const lossPoints7B = dynamics7B.loss.map((point) => `${lossX7B(point.round).toFixed(1)},${lossY7B(point.loss).toFixed(1)}`).join(' ');
+const earlyScoreMean7B = meanScore(dynamics7B.score.slice(0, 20));
+const lateScoreMean7B = meanScore(dynamics7B.score.slice(-20));
+const firstLoss7B = dynamics7B.loss[0]?.loss ?? 0;
+const lastLoss7B = dynamics7B.loss.at(-1)?.loss ?? 0;
+
+const scoreTrend17B = movingAverage(dynamics17B.score);
+const miniScore17B = { left: 28, right: 492, top: 10, bottom: 112, maxRound: 159, maxScore: 65 };
+const miniScoreX17B = (round: number) => miniScore17B.left + (round / miniScore17B.maxRound) * (miniScore17B.right - miniScore17B.left);
+const miniScoreY17B = (score: number) => miniScore17B.bottom - (score / miniScore17B.maxScore) * (miniScore17B.bottom - miniScore17B.top);
+const miniScoreRaw17B = dynamics17B.score.map((point) => `${miniScoreX17B(point.round).toFixed(1)},${miniScoreY17B(point.score).toFixed(1)}`).join(' ');
+const miniScoreTrend17B = scoreTrend17B.map((point) => `${miniScoreX17B(point.round).toFixed(1)},${miniScoreY17B(point.score).toFixed(1)}`).join(' ');
+const miniLoss17B = { left: 28, right: 492, top: 8, bottom: 60, minLoss: 0, maxLoss: 1.10 };
+const miniLossX17B = (round: number) => miniLoss17B.left + (round / miniScore17B.maxRound) * (miniLoss17B.right - miniLoss17B.left);
+const miniLossY17B = (loss: number) => miniLoss17B.bottom - ((loss - miniLoss17B.minLoss) / (miniLoss17B.maxLoss - miniLoss17B.minLoss)) * (miniLoss17B.bottom - miniLoss17B.top);
+const miniLossPoints17B = dynamics17B.loss.map((point) => `${miniLossX17B(point.round).toFixed(1)},${miniLossY17B(point.loss).toFixed(1)}`).join(' ');
+const earlyScoreMean17B = meanScore(dynamics17B.score.slice(0, 20));
+const lateScoreMean17B = meanScore(dynamics17B.score.slice(-20));
+const firstLoss17B = dynamics17B.loss[0]?.loss ?? 0;
+const lastLoss17B = dynamics17B.loss.at(-1)?.loss ?? 0;
 ---
 
 <article class="briefing" data-ui-audit="surface" data-testid="progress-briefing">
@@ -110,32 +145,85 @@ const lastLoss = dynamics3B.loss.at(-1)?.loss ?? 0;
   </section>
 
   <section id="seven-b" class="briefing-slide tone-blue" aria-labelledby="seven-b-title">
-    <div class="slide-inner">
-      <h2 id="seven-b-title">{t('7B 长周期实验：最终 49.33 分，瓶颈在哪里？', '7B long-horizon experiment: final Score 49.33 — where is the bottleneck?')}</h2>
-      <p class="slide-thesis">{t('这条线给了我们第一个完整基线：同一套 WebShop 任务流里，模型持续产生经验、吸收反馈并更新参数，最后再一次性看冻结终评。', 'This gave us the first complete baseline: on one WebShop trajectory stream, the model keeps collecting experience, absorbing feedback, updating parameters, and only then sees the frozen final evaluation.')}</p>
-      <div class="three-questions">
-        <li><span>1</span><div><strong>{t('第一阶段（Stage 1）', 'Stage 1')}</strong><p>{t('Qwen2.5-7B；180 个任务 × 每个任务 8 次尝试 = 1,440 条轨迹；temperature=0.4；每条最多 15 步。', 'Qwen2.5-7B; 180 tasks × 8 rollouts = 1,440 trajectories; temperature=0.4; max 15 steps.')}</p></div></li>
-        <li><span>2</span><div><strong>{t('第二阶段（Stage 2）', 'Stage 2')}</strong><p>{t('长周期继续和环境交互，并做低秩参数更新（SD-LoRA）；最终完整收口 149 轮、19,072 条有效环境交互。', 'Long-horizon environment interaction with low-rank parameter updates (SD-LoRA); 149 completed rounds and 19,072 accepted rollouts.')}</p></div></li>
-        <li><span>3</span><div><strong>{t('最终测试', 'Final test')}</strong><p><b>49.33 / 100</b><br />{t('完整成功 58 / 128（45.31%）', '58 / 128 complete successes (45.31%)')}</p></div></li>
+    <div class="slide-inner dynamics-slide seven-b-dynamics">
+      <h2 id="seven-b-title">{t('7B：训练过程明显学起来，但冻结终评仍是 49.33', '7B: training clearly improves, while the frozen final remains 49.33')}</h2>
+      <p class="slide-thesis">{t(`Qwen2.5-7B 先按 180 个任务 × 每个任务 8 次尝试 = 1,440 条轨迹启动（temperature=0.4，每条最多 15 步），再进入长周期 Stage 2。训练轮次的 WebShop Score 前 20 轮平均 ${earlyScoreMean7B.toFixed(2)} / 100，最后 20 轮平均 ${lateScoreMean7B.toFixed(2)} / 100；143 次已接纳 SD-LoRA 更新的 loss 从 ${firstLoss7B.toFixed(2)} 降到 ${lastLoss7B.toFixed(2)}。`, `Qwen2.5-7B starts from 180 tasks × 8 rollouts = 1,440 Stage-1 trajectories (temperature=0.4, max 15 steps) and then enters long-horizon Stage 2. Training-round WebShop Score averages ${earlyScoreMean7B.toFixed(2)} / 100 over the first 20 rounds and ${lateScoreMean7B.toFixed(2)} / 100 over the last 20; loss across 143 admitted SD-LoRA updates falls from ${firstLoss7B.toFixed(2)} to ${lastLoss7B.toFixed(2)}.`)}</p>
+      <div class="dynamics-grid">
+        <figure class="dynamics-chart score-chart">
+          <figcaption>{t('7B 每轮 WebShop Score', '7B WebShop Score by round')} <span>{t('细线=原始轮次；粗线=12轮移动平均', 'thin=raw rounds; thick=12-round moving average')}</span></figcaption>
+          <svg viewBox="0 0 700 248" role="img" aria-label={t('7B 每轮 WebShop Score 与移动平均曲线', '7B WebShop Score and moving-average curve by round')}>
+            <line x1="42" y1="220" x2="676" y2="220" class="chart-axis" />
+            <line x1="42" y1="118" x2="676" y2="118" class="chart-gridline" />
+            <line x1="42" y1="16" x2="676" y2="16" class="chart-gridline" />
+            <text x="14" y="224" class="chart-label">0</text><text x="8" y="122" class="chart-label">45</text><text x="8" y="20" class="chart-label">90</text>
+            <text x="42" y="242" class="chart-label">R0</text><text x="350" y="242" class="chart-label">R74</text><text x="646" y="242" class="chart-label">R148</text>
+            <polyline points={scoreRawPoints7B} class="score-raw" />
+            <polyline points={scoreTrendPoints7B} class="score-trend" />
+          </svg>
+        </figure>
+        <figure class="dynamics-chart loss-chart">
+          <figcaption>{t('143 次已接纳更新的 SD-LoRA loss', 'SD-LoRA loss for 143 admitted updates')} <span>{t('每个点对应一次真正写入后续模型的参数更新', 'each point is an update written into the continuing model')}</span></figcaption>
+          <svg viewBox="0 0 360 248" role="img" aria-label={t('7B 已接纳 SD-LoRA 更新的训练 loss 曲线', '7B admitted SD-LoRA update training-loss curve')}>
+            <line x1="36" y1="220" x2="340" y2="220" class="chart-axis" />
+            <line x1="36" y1="118" x2="340" y2="118" class="chart-gridline" />
+            <line x1="36" y1="16" x2="340" y2="16" class="chart-gridline" />
+            <text x="6" y="224" class="chart-label">0</text><text x="3" y="122" class="chart-label">0.35</text><text x="3" y="20" class="chart-label">0.70</text>
+            <text x="36" y="242" class="chart-label">R0</text><text x="310" y="242" class="chart-label">R148</text>
+            <polyline points={lossPoints7B} class="loss-line" />
+          </svg>
+        </figure>
       </div>
-      <p class="bottom-claim">{t('这个结果把下一问变清楚：OpenEVO 已经能长期更新，但到底是哪一层限制了它继续变强？', 'The result sharpened the next question: OpenEVO can update for a long time, so which layer prevents those updates from translating into a higher ceiling?')}</p>
+      <div class="long-run-strip" aria-label={t('7B 实验尺度与冻结终评', '7B scale and frozen final evaluation')}>
+        <span><strong>Stage 1</strong>1,440 {t('条启动轨迹', 'startup trajectories')}</span>
+        <span><strong>Stage 2</strong>149 {t('轮 · 19,072 次有效环境交互', 'rounds · 19,072 accepted rollouts')}</span>
+        <span><strong>{t('冻结 128 题终评', 'Frozen 128-task final')}</strong>49.33 / 100 · {t('完整成功 58 / 128（45.31%）', '58 / 128 complete successes (45.31%)')}</span>
+      </div>
+      <p class="dynamics-boundary">{t('这里最重要的不是“训练中某一轮最高有多高”，而是训练过程和最终泛化要分开看：Score 曲线与 loss 都说明参数学习确实发生；冻结终评 49.33 则说明这些学习还没有等量转化成未参与训练的最终任务能力。于是我们继续追问：瓶颈是在任务长度、记忆组织，还是参数更新机制？', 'The key point is not the highest training-round score. Training dynamics and final generalization are different measurements: the Score curve and loss show real parameter learning, while the frozen 49.33 final shows that learning does not transfer one-for-one to held-out final tasks. That motivates the next question: is the bottleneck task horizon, memory organization, or the parameter-update mechanism?')}</p>
+      <p class="source-note"><a href={technicalHref}>{t('W&B 曲线身份、训练分数与冻结终评边界', 'W&B run identity and the training-vs-final boundary')}</a></p>
       <p class="slide-number">04 / 12</p>
     </div>
   </section>
 
   <section id="small-arms" class="briefing-slide tone-green" aria-labelledby="small-arms-title">
-    <div class="slide-inner">
+    <div class="slide-inner small-arms-slide">
       <h2 id="small-arms-title">{t('1.7B 和 3B：用更小实验定位瓶颈', '1.7B and 3B: smaller experiments to locate the bottleneck')}</h2>
-      <p class="slide-thesis">{t('小模型更适合做诊断：同一个假设可以更快做单变量实验，先排除错误解释，再决定值不值得回到大模型继续投入预算。', 'Smaller models are useful diagnostic instruments: we can isolate one hypothesis faster, eliminate bad explanations, and only then decide what deserves the larger-model budget.')}</p>
-      <div class="choice-grid">
-        <div class="choice north">
-          <span>1.7B</span><h3>{t('完整跑完 GDR 长周期线', 'Completed the GDR long-horizon line')}</h3>
-          <p>{t('160 轮 / 20,480 次环境交互；最终 Score 37.60 / 100，完整成功 1 / 128。更重要的是，它暴露出 44→7 的更新准入瓶颈。', '160 rounds / 20,480 rollouts; final Score 37.60 / 100 and 1 / 128 complete success. More importantly, it exposed the 44→7 update-admission bottleneck.')}</p>
-        </div>
-        <div class="choice south">
-          <span>3B</span><h3>{t('独立实验线确实做过', 'A real independent experiment line')}</h3>
-          <p>{t('Qwen2.5-3B 也按 180×8 的第一阶段采集过 1,440 条轨迹，后续也有独立的持续学习实验线。它帮助我们验证同一套任务接口、容量和持续学习设计。当前没有一个可直接并入最终冻结分数表的终评分数。', 'Qwen2.5-3B also collected 1,440 Stage-1 trajectories under the 180×8 schedule and had its own Stage-2 lineage. It helped test the shared task interface, capacity, and continual-learning design. We do not currently have a final score that belongs in the frozen results table.')}</p>
-        </div>
+      <p class="slide-thesis">{t('小模型让我们更快做单变量诊断。1.7B 的完整 GDR 线尤其关键：训练过程并没有停住，但“训练出一个更新”和“让这个更新进入后续模型”之间出现了很大的落差。', 'Smaller models let us run one-variable diagnostics faster. The complete 1.7B GDR line is especially revealing: training does not stop, yet a large gap appears between training an update and admitting it into the continuing model.')}</p>
+      <div class="small-model-grid">
+        <article class="small-model-card one-seven-card">
+          <header><span>1.7B</span><div><h3>{t('160 轮都跑完了，但 44 个候选只接纳 7 个', 'All 160 rounds finish, but only 7 of 44 candidates are admitted')}</h3><p>{t(`前 20 轮任务 Score 平均 ${earlyScoreMean17B.toFixed(2)}，最后 20 轮 ${lateScoreMean17B.toFixed(2)}。`, `Training-round Score averages ${earlyScoreMean17B.toFixed(2)} over the first 20 rounds and ${lateScoreMean17B.toFixed(2)} over the last 20.`)}</p></div></header>
+          <figure class="mini-score-chart">
+            <figcaption>{t('每轮 WebShop Score；下方短线 = 候选更新发生的轮次', 'WebShop Score by round; bottom ticks = candidate-update rounds')}</figcaption>
+            <svg viewBox="0 0 520 126" role="img" aria-label={t('1.7B 每轮 WebShop Score、候选更新与 GDR 接纳轮次', '1.7B WebShop Score, candidate updates, and GDR admissions by round')}>
+              <line x1="28" y1="112" x2="492" y2="112" class="chart-axis" />
+              <line x1="28" y1="61" x2="492" y2="61" class="chart-gridline" />
+              <text x="5" y="115" class="chart-label">0</text><text x="1" y="64" class="chart-label">32.5</text><text x="1" y="14" class="chart-label">65</text>
+              <polyline points={miniScoreRaw17B} class="score-raw" />
+              <polyline points={miniScoreTrend17B} class="score-trend mini" />
+              {dynamics17B.candidateRounds.map((round) => <line x1={miniScoreX17B(round)} x2={miniScoreX17B(round)} y1="115" y2="122" class="candidate-tick" />)}
+              {dynamics17B.acceptedRounds.map((round) => <line x1={miniScoreX17B(round)} x2={miniScoreX17B(round)} y1="113" y2="124" class="accepted-tick" />)}
+            </svg>
+          </figure>
+          <figure class="mini-loss-chart">
+            <figcaption>{t('canonical W&B 中可核验的 loss：7 个被 GDR 接纳的更新', 'Verifiable loss in canonical W&B: the 7 updates admitted by GDR')}</figcaption>
+            <svg viewBox="0 0 520 68" role="img" aria-label={t('1.7B 七个被接纳 SD-LoRA 更新的训练 loss', 'Training loss for the seven admitted 1.7B SD-LoRA updates')}>
+              <line x1="28" y1="60" x2="492" y2="60" class="chart-axis" />
+              <polyline points={miniLossPoints17B} class="loss-line mini" />
+              {dynamics17B.loss.map((point) => <circle cx={miniLossX17B(point.round)} cy={miniLossY17B(point.loss)} r="3.2" class="loss-dot accepted" />)}
+              <text x="30" y="12" class="chart-label">{firstLoss17B.toFixed(2)}</text><text x="455" y="50" class="chart-label">{lastLoss17B.toFixed(2)}</text>
+            </svg>
+          </figure>
+          <div class="small-model-stats"><span><strong>44</strong>{t(' 个 SD-LoRA 候选实际训练', ' SD-LoRA candidates trained')}</span><span><strong>7</strong>{t(' 个进入后续模型', ' entered later model states')}</span><span><strong>37.60</strong>{t(' 冻结终评', ' frozen final')}</span></div>
+          <p class="mini-boundary">{t('160 轮 / 20,480 次环境交互全部完成。W&B 对 44 个候选轮次都有发生记录，但候选被拒绝后没有保留可作为 authority 的 training_loss 字段；所以这里不补造 37 个 loss 点。', 'All 160 rounds / 20,480 environment interactions completed. W&B records all 44 candidate-attempt rounds, but rejected candidates do not retain an authoritative training_loss field; we therefore do not fabricate 37 missing loss points.')}</p>
+        </article>
+        <article class="small-model-card three-b-card">
+          <header><span>3B</span><div><h3>{t('另一条独立持续学习线也确实学起来了', 'The independent 3B continual-learning line also shows learning')}</h3><p>{t('Qwen2.5-3B 先按 180×8 的第一阶段采集 1,440 条轨迹，后续进入独立的持续学习实验线。', 'Qwen2.5-3B first collected 1,440 Stage-1 trajectories under the 180×8 schedule, then entered its own continual-learning line.')}</p></div></header>
+          <div class="three-b-preview">
+            <div><strong>{earlyScoreMean.toFixed(2)} → {lateScoreMean.toFixed(2)}</strong><span>{t('前 20 轮 → 最后 23 轮平均任务 Score', 'first-20 → last-23 mean training-round Score')}</span></div>
+            <div><strong>{firstLoss.toFixed(2)} → {lastLoss.toFixed(2)}</strong><span>{t('已记录候选训练 loss', 'recorded candidate-training loss')}</span></div>
+            <div><strong>—</strong><span>{t('没有同口径冻结终评，不硬填最终分数', 'no same-protocol frozen final score; leave it blank')}</span></div>
+          </div>
+          <p class="three-b-next">{t('下一页把 3B 的完整 123 轮 Score 与候选训练 loss 展开。它帮助排除“这条训练线根本没工作”的简单工程解释，但不能代替冻结终评。', 'The next slide expands the full 123-round 3B Score and candidate-training loss. It rules out the simple engineering claim that this training line never worked, but it cannot substitute for a frozen final evaluation.')}</p>
+        </article>
       </div>
       <p class="slide-number">05 / 12</p>
     </div>
@@ -320,6 +408,8 @@ const lastLoss = dynamics3B.loss.at(-1)?.loss ?? 0;
   .quality-flow{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr;gap:10px;align-items:stretch;margin-top:34px}.quality-flow>div{padding:24px 25px;border-top:3px solid color-mix(in srgb,var(--positive) 44%,var(--line));background:color-mix(in srgb,var(--surface) 72%,transparent)}.quality-flow i{align-self:center;text-align:center;color:var(--muted);font-style:normal;font-size:24px}.quality-flow strong{font-size:20px}.quality-flow p{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.45}.speed-proof{display:grid;grid-template-columns:37% 1fr;gap:26px;align-items:center;margin-top:25px;padding:20px 24px;border:1px solid var(--rule);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--positive) 8%,var(--surface))}.speed-proof-number span{display:block;color:var(--muted);font-size:12px;font-weight:750}.speed-proof-number strong{display:block;margin-top:8px;font:760 23px/1.2 var(--font-mono)}.speed-proof-number b{color:var(--accent-deep);margin-left:10px}.speed-proof>div:last-child strong{font-size:17px}.speed-proof>div:last-child p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.45}.diagnosis-table{display:grid;margin-top:24px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}.diagnosis-table>div{display:grid;grid-template-columns:28% 30% 42%;align-items:center;border-top:1px solid var(--rule);min-height:66px}.diagnosis-table>div:first-child{border-top:0}.diagnosis-table b,.diagnosis-table span,.diagnosis-table p,.diagnosis-table strong{margin:0;padding:10px 14px}.diagnosis-table b{font-size:14px}.diagnosis-table span,.diagnosis-table p{color:var(--muted);font-size:12px;line-height:1.38}.diagnosis-table>.diagnosis-head{min-height:42px;background:color-mix(in srgb,var(--warning) 7%,var(--surface))}.diagnosis-head strong{font-size:12px}.proof-line{display:grid;grid-template-columns:auto 1fr auto 1fr auto 1.35fr;gap:8px 12px;align-items:start;margin-top:18px;padding-top:14px;border-top:1px solid var(--rule)}.proof-line strong{color:var(--accent-deep);font-size:12px}.proof-line span{color:var(--muted);font-size:11px;line-height:1.4}
 
   .dynamics-slide{padding-top:48px;padding-bottom:42px}.dynamics-slide h2{font-size:44px;max-width:1050px}.dynamics-slide .slide-thesis{margin-top:14px;font-size:18px;line-height:1.42}.dynamics-grid{display:grid;grid-template-columns:1.72fr .88fr;gap:18px;margin-top:18px}.dynamics-chart{margin:0;padding:15px 16px 10px;border:1px solid var(--rule);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 88%,transparent)}.dynamics-chart figcaption{display:flex;justify-content:space-between;gap:12px;align-items:baseline;font-size:14px;font-weight:760}.dynamics-chart figcaption span{color:var(--muted);font-size:10px;font-weight:620}.dynamics-chart svg{display:block;width:100%;height:224px;margin-top:5px}.chart-axis{stroke:color-mix(in srgb,var(--ink) 52%,transparent);stroke-width:1.4}.chart-gridline{stroke:color-mix(in srgb,var(--ink) 12%,transparent);stroke-width:1}.chart-label{fill:var(--muted);font:700 10px var(--font-mono)}.score-raw{fill:none;stroke:color-mix(in srgb,var(--blue) 32%,transparent);stroke-width:1.15;vector-effect:non-scaling-stroke}.score-trend{fill:none;stroke:var(--blue);stroke-width:3.2;vector-effect:non-scaling-stroke}.loss-line{fill:none;stroke:var(--warning);stroke-width:2.4;vector-effect:non-scaling-stroke}.loss-dot{fill:var(--warning)}.loss-dot.accepted{fill:var(--positive);stroke:var(--surface);stroke-width:1.2}.dynamics-boundary{margin:11px 0 0;padding:10px 13px;border-left:3px solid var(--blue);background:color-mix(in srgb,var(--blue) 6%,var(--surface));color:var(--muted);font-size:11.5px;line-height:1.4}.dynamics-slide .source-note{margin-top:7px}
+  .seven-b-dynamics{padding-top:42px;padding-bottom:36px}.seven-b-dynamics h2{font-size:40px;max-width:1120px}.seven-b-dynamics .slide-thesis{margin-top:10px;font-size:15.5px;line-height:1.36;max-width:1110px}.seven-b-dynamics .dynamics-grid{margin-top:11px}.seven-b-dynamics .dynamics-chart{padding-top:11px}.seven-b-dynamics .dynamics-chart svg{height:176px}.seven-b-dynamics .dynamics-boundary{margin-top:8px;padding:8px 12px;font-size:10.5px;line-height:1.34}.seven-b-dynamics .source-note{margin-top:5px}.long-run-strip{display:grid;grid-template-columns:.7fr 1.05fr 1.3fr;gap:9px;margin-top:8px}.long-run-strip span{padding:7px 10px;border-top:1px solid var(--rule);color:var(--muted);font-size:9.8px;line-height:1.3}.long-run-strip strong{display:block;color:var(--ink);font-size:10.5px;margin-bottom:2px}
+  .small-arms-slide{padding-top:43px;padding-bottom:39px}.small-arms-slide h2{font-size:40px}.small-arms-slide .slide-thesis{margin-top:10px;font-size:16px;line-height:1.38;max-width:1080px}.small-model-grid{display:grid;grid-template-columns:1.32fr .68fr;gap:16px;margin-top:15px;min-height:0}.small-model-card{min-width:0;padding:16px 18px;border:1px solid var(--rule);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 84%,transparent)}.small-model-card header{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}.small-model-card header>span{display:grid;place-items:center;min-width:52px;height:32px;padding:0 9px;border-radius:999px;background:color-mix(in srgb,var(--blue) 15%,var(--surface));color:var(--blue);font:800 11px/1 var(--font-mono)}.small-model-card h3{font-size:18px;line-height:1.2}.small-model-card header p{margin:4px 0 0;color:var(--muted);font-size:10.5px;line-height:1.33}.mini-score-chart,.mini-loss-chart{margin:8px 0 0}.mini-score-chart figcaption,.mini-loss-chart figcaption{color:var(--muted);font-size:9.5px;font-weight:700}.mini-score-chart svg{display:block;width:100%;height:108px;margin-top:2px}.mini-loss-chart{margin-top:4px}.mini-loss-chart svg{display:block;width:100%;height:52px;margin-top:1px}.score-trend.mini{stroke-width:2.4}.loss-line.mini{stroke-width:2}.candidate-tick{stroke:color-mix(in srgb,var(--warning) 55%,transparent);stroke-width:1}.accepted-tick{stroke:var(--positive);stroke-width:2.4}.small-model-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:5px}.small-model-stats span{padding:6px 7px;border-top:1px solid var(--rule);color:var(--muted);font-size:8.8px;line-height:1.2}.small-model-stats strong{display:block;color:var(--ink);font:800 12px/1.15 var(--font-mono);margin-bottom:2px}.mini-boundary{margin:6px 0 0;padding:6px 8px;border-left:2px solid var(--warning);background:color-mix(in srgb,var(--warning) 6%,var(--surface));color:var(--muted);font-size:8.8px;line-height:1.28}.three-b-card header>span{background:color-mix(in srgb,var(--positive) 16%,var(--surface));color:var(--positive)}.three-b-preview{display:grid;gap:8px;margin-top:18px}.three-b-preview>div{padding:10px 2px;border-top:1px solid var(--rule)}.three-b-preview strong{display:block;font:760 18px/1.15 var(--font-mono)}.three-b-preview span{display:block;margin-top:4px;color:var(--muted);font-size:10px;line-height:1.3}.three-b-next{margin:16px 0 0;padding:10px 12px;border-left:2px solid var(--positive);background:color-mix(in srgb,var(--positive) 6%,var(--surface));color:var(--muted);font-size:10px;line-height:1.34}
 
   #determinism .slide-inner{padding-top:48px;padding-bottom:42px}
   #determinism h2{max-width:1040px;margin-top:8px;font-size:43px;line-height:1.02}

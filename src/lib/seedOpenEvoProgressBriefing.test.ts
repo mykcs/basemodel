@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const briefing = read('../components/research/SeedOpenEvoProgressBriefing.astro');
 const technical = read('../components/research/SeedOpenEvoBriefingTechnicalNotes.astro');
+const longDynamics = read('../data/openEvoLongRunTrainingDynamics.ts');
 const nav = read('../components/research/SeedOpenEvoResearchNav.astro');
 const zhPage = read('../pages/research/seed-openevo/study/briefing/index.astro');
 const enPage = read('../pages/en/research/seed-openevo/study/briefing/index.astro');
@@ -84,13 +85,20 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('tells the 7B baseline with its actual experimental scale before jumping to mechanisms', () => {
-    expect(briefing).toContain('7B 长周期实验：最终 49.33 分，瓶颈在哪里？');
+    expect(briefing).toContain('7B：训练过程明显学起来，但冻结终评仍是 49.33');
     expect(briefing).toContain('Qwen2.5-7B');
     expect(briefing).toContain('180 个任务 × 每个任务 8 次尝试 = 1,440 条轨迹');
     expect(briefing).toContain('temperature=0.4');
     expect(briefing).toContain('每条最多 15 步');
-    expect(briefing).toContain('149 轮、19,072 条有效环境交互');
+    expect(briefing).toContain("轮 · 19,072 次有效环境交互");
     expect(briefing).toContain('完整成功 58 / 128（45.31%）');
+    expect(briefing).toContain('143 次已接纳 SD-LoRA 更新的 loss');
+    expect(briefing).toContain('前 20 轮平均');
+    expect(briefing).toContain('最后 20 轮平均');
+    expect(briefing).toContain('训练过程和最终泛化要分开看');
+    expect(technical).toContain('ceiling1-stage2-7b-202609041833-b01d24a468');
+    expect(technical).toContain('13.42 → 65.02');
+    expect(technical).toContain('0.666 → 0.028');
   });
 
   it('uses 1.7B and 3B as smaller diagnostic lines rather than erasing 3B history', () => {
@@ -99,6 +107,32 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('Qwen2.5-3B');
     expect(briefing).toContain('180×8 的第一阶段');
     expect(briefing).toContain('独立的持续学习实验线');
+  });
+
+  it('pins long-run dynamics to the canonical 7B and 1.7B W&B identities', () => {
+    expect(longDynamics).toContain("runId: 'ceiling1-stage2-7b-202609041833-b01d24a468'");
+    expect(longDynamics).toContain('sealedRounds: 149');
+    expect(longDynamics).toContain('acceptedRolloutsTotal: 19072');
+    expect(longDynamics).toContain('candidateUpdateCount: 143');
+    expect(longDynamics).toContain("runId: 'ceiling1-stage2-qwen3-1p7b-202609041833-4c1bb58e9f'");
+    expect(longDynamics).toContain('sealedRounds: 160');
+    expect(longDynamics).toContain('acceptedRolloutsTotal: 20480');
+    expect(longDynamics).toContain('candidateUpdateCount: 44');
+    expect(longDynamics).toContain('acceptedUpdateCount: 7');
+    expect(longDynamics).toContain('W&B preserves 1.7B candidate-attempt flags for all 44 candidate rounds');
+  });
+
+  it('shows the complete 1.7B score curve, 44 candidate locations, and only the 7 authoritative accepted-update losses', () => {
+    expect(briefing).toContain('160 轮都跑完了，但 44 个候选只接纳 7 个');
+    expect(briefing).toContain('每轮 WebShop Score；下方短线 = 候选更新发生的轮次');
+    expect(briefing).toContain('canonical W&B 中可核验的 loss：7 个被 GDR 接纳的更新');
+    expect(briefing).toContain('44 个候选轮次都有发生记录');
+    expect(briefing).toContain('这里不补造 37 个 loss 点');
+    expect(briefing).toContain('dynamics17B.candidateRounds.map');
+    expect(briefing).toContain('dynamics17B.acceptedRounds.map');
+    expect(technical).toContain('ceiling1-stage2-qwen3-1p7b-202609041833-4c1bb58e9f');
+    expect(technical).toContain('44 个 `candidate_update_attempted`');
+    expect(technical).toContain('不能凭空补一条 44 点 loss 曲线');
   });
 
   it('shows the 3B longitudinal training dynamics without turning training-round score into a final-eval claim', () => {

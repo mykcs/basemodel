@@ -10,6 +10,10 @@ const briefingHref = p('/research/seed-openevo/study/briefing/');
 const h17 = 'https://github.com/mykcs/openevo-experiment/blob/b3091ed70f060742147e931b8533784c8dfe1745/docs/science/webshop/runs/2026-08-15/h1.17-horizon-interface-diagnostic.md';
 const q17 = 'https://github.com/mykcs/openevo-experiment/pull/378';
 const direct = 'https://github.com/mykcs/openevo-experiment/pull/404';
+const final7 = 'https://github.com/mykcs/openevo-experiment/pull/291';
+const final17 = 'https://github.com/mykcs/openevo-experiment/blob/main/docs/evidence/server-runs/2026-09-06/qwen3-1p7b-final-closeout/FINAL_ANALYSIS.json';
+const wandb7 = 'https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/runs/ceiling1-stage2-7b-202609041833-b01d24a468';
+const wandb17 = 'https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/runs/ceiling1-stage2-qwen3-1p7b-202609041833-4c1bb58e9f';
 ---
 
 <article class="technical-notes" data-ui-audit="surface">
@@ -21,7 +25,20 @@ const direct = 'https://github.com/mykcs/openevo-experiment/pull/404';
 
   <section>
     <h2>{t('1. 训练过程曲线：什么能画，什么不能混在一起', '1. Training dynamics: what can be plotted and what must stay separate')}</h2>
-    <p>{t('主汇报新增的 3B 曲线来自服务器 formal-vnext-v1 的 canonical Stage2 metrics ledger。当前覆盖 R0–R122，共 123 个已封存 round、15,744 次正式环境尝试。每个 round 的 WebShop Score 描述当轮 128 次环境交互的行为表现；它不是冻结 128 题 final panel 的终评分数。', 'The new 3B curve in the main briefing comes from the canonical Stage2 metrics ledger for formal-vnext-v1. It currently covers R0–R122: 123 sealed rounds and 15,744 formal environment attempts. WebShop Score at each round describes the 128 environment interactions in that round; it is not the frozen 128-task final-panel score.')}</p>
+    <h3>{t('7B：149 轮训练曲线与冻结终评是两层证据', '7B: the 149-round training curve and frozen final are different evidence layers')}</h3>
+    <p>{t('7B 主线使用 canonical W&B run `ceiling1-stage2-7b-202609041833-b01d24a468`。它保留 R0–R148 共 149 个训练 round 的 WebShop Score，以及 143 次真正写入后续模型的 SD-LoRA 更新 loss。前 20 轮平均 Score 为 13.42，最后 20 轮为 65.02；更新 loss 从 0.666 降到 0.028。这个 run 的 Stage2 身份与最终发布线一致：149 个完成 round、19,072 次 accepted rollout、143 个 SD-LoRA generations。', 'The 7B main line uses canonical W&B run `ceiling1-stage2-7b-202609041833-b01d24a468`. It preserves WebShop Score for all 149 training rounds R0–R148 and loss for 143 SD-LoRA updates actually written into later model states. Mean Score rises from 13.42 over the first 20 rounds to 65.02 over the last 20, while update loss falls from 0.666 to 0.028. The run identity matches the published endpoint: 149 completed rounds, 19,072 accepted rollouts, and 143 SD-LoRA generations.')}</p>
+    <div class="evidence-row"><span>{t('训练 Score', 'training Score')}</span><strong>13.42 → 65.02</strong><span>{t('update loss', 'update loss')}</span><strong>0.666 → 0.028</strong><span>{t('冻结终评', 'frozen final')}</span><strong>49.33</strong></div>
+    <p>{t('49.33 来自训练完成以后一次性打开的冻结 128 题 final panel；它不能与训练轮次 Score 当成同一条曲线。训练曲线说明“模型确实在训练过程中学到了东西”，终评回答“这些学习能否转化到冻结未参与训练的最终任务”。', 'The 49.33 score comes from the frozen 128-task final panel opened only after training completed. It must not be treated as another point on the training-round Score curve. The training curve answers whether learning occurred during training; the final panel asks whether that learning transfers to held-out final tasks.')}</p>
+    <p class="source"><a href={wandb7} target="_blank" rel="noreferrer">7B canonical W&B run</a> · <a href={final7} target="_blank" rel="noreferrer"><ExternalBrandMark href={final7} /> 7B published final lineage</a></p>
+
+    <h3>{t('1.7B：44 个候选发生过，但 authority loss 只保留了 7 个接纳更新', '1.7B: 44 candidates occurred, but authoritative loss is retained for only 7 admitted updates')}</h3>
+    <p>{t('1.7B canonical W&B run `ceiling1-stage2-qwen3-1p7b-202609041833-4c1bb58e9f` 保留完整 R0–R159 的 160 个训练轮次 Score，也保留 44 个 `candidate_update_attempted` 事件和 7 个 `active_update_accepted` 事件。前 20 轮平均 Score 44.66，最后 20 轮 51.22。', 'The 1.7B canonical W&B run `ceiling1-stage2-qwen3-1p7b-202609041833-4c1bb58e9f` preserves Score for all 160 training rounds R0–R159, plus 44 `candidate_update_attempted` events and 7 `active_update_accepted` events. Mean Score is 44.66 over the first 20 rounds and 51.22 over the last 20.')}</p>
+    <p>{t('关键缺口必须如实保留：canonical W&B 只在那 7 个最终被 GDR 接纳的更新行里保留 `update/training_loss`，没有为另外 37 个被拒绝候选留下可作为 authority 的 loss 字段。7 个可核验 loss 从 1.041 降到 0.196。我们可以画 44 个候选发生位置、7 个接纳位置和这 7 个 loss；不能凭空补一条 44 点 loss 曲线。', 'A key gap must remain explicit: canonical W&B retains `update/training_loss` only on the 7 updates admitted by GDR, not an authoritative loss field for the other 37 rejected candidates. The 7 verifiable losses fall from 1.041 to 0.196. We may plot all 44 candidate locations, the 7 admissions, and these 7 losses; we must not invent a 44-point loss curve.')}</p>
+    <div class="evidence-row"><span>{t('候选训练', 'candidate attempts')}</span><strong>44</strong><span>{t('GDR 接纳', 'GDR admitted')}</span><strong>7</strong><span>{t('冻结终评', 'frozen final')}</span><strong>37.60</strong></div>
+    <p class="source"><a href={wandb17} target="_blank" rel="noreferrer">1.7B canonical W&B run</a> · <a href={final17} target="_blank" rel="noreferrer"><ExternalBrandMark href={final17} /> 1.7B final analysis</a></p>
+
+    <h3>{t('3B：当前可核验到 R0–R122', '3B: the currently verified ledger covers R0–R122')}</h3>
+    <p>{t('3B 曲线来自服务器 formal-vnext-v1 的 canonical Stage2 metrics ledger。当前覆盖 R0–R122，共 123 个已封存 round、15,744 次正式环境尝试。每个 round 的 WebShop Score 描述当轮 128 次环境交互的行为表现；它不是冻结 128 题 final panel 的终评分数。', 'The 3B curve comes from the canonical Stage2 metrics ledger for formal-vnext-v1. It currently covers R0–R122: 123 sealed rounds and 15,744 formal environment attempts. WebShop Score at each round describes the 128 environment interactions in that round; it is not the frozen 128-task final-panel score.')}</p>
     <p>{t('SD-LoRA training loss 也不是每轮都有：只有真正训练出候选更新的 round 才有 loss 点。当前 ledger 中有 31 个候选训练 loss 点；图上不能把 NOOP round 补成 0，也不能把候选训练次数与真正进入 active model 的参数更新次数混为一谈。', 'SD-LoRA training loss is also not defined on every round: a loss point exists only when a candidate update is actually trained. The current ledger has 31 candidate-training loss points; NOOP rounds must not be filled with zero, and candidate-training count must not be confused with updates actually admitted to the active model.')}</p>
     <div class="evidence-row"><span>{t('前20轮平均 Score', 'first-20 mean Score')}</span><strong>2.69</strong><span>{t('后23轮平均 Score', 'last-23 mean Score')}</span><strong>14.67</strong><span>{t('candidate loss', 'candidate loss')}</span><strong>1.78 → 1.03</strong></div>
     <p>{t('这 15,744 次尝试里，ledger 记录的 engineering invalid、parser repair、invalid-action termination 都是 0。这只能排除已经观测到的这些简单工程故障解释，不能证明系统不存在任何工程误差。', 'Across these 15,744 attempts, the ledger records zero engineering-invalid, parser-repair, and invalid-action-termination events. This rules out those observed simple engineering-failure explanations; it does not prove that every possible engineering error is absent.')}</p>
@@ -95,6 +112,7 @@ const direct = 'https://github.com/mykcs/openevo-experiment/pull/404';
   .technical-intro>p{max-width:780px;margin:22px 0 0;color:var(--muted);font-size:20px;line-height:1.65}
   section{padding:44px 0;border-bottom:1px solid var(--line)}
   h2{margin:0 0 18px;font-size:30px;line-height:1.2;letter-spacing:-.025em}
+  section h3{margin:30px 0 10px;font-size:20px;line-height:1.3;letter-spacing:-.015em}
   section>p{max-width:820px;margin:12px 0;color:var(--muted);font-size:16px;line-height:1.75}
   .equation{margin:18px 0;padding:18px 22px;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface);font:650 24px/1.45 Georgia,'Times New Roman',serif;overflow-x:auto}
   .piecewise{line-height:1.8}
