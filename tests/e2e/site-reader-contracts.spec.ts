@@ -139,24 +139,29 @@ for (const viewport of viewports) {
 }
 
 
-test('briefing fits phone width and caps the desktop slide canvas', async ({ page }) => {
+test('briefing keeps fixed 16:9 slides and uses internal horizontal scroll on narrow screens', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/research/seed-openevo/study/briefing/#capacity-diagnostic', { waitUntil: 'networkidle' });
   const phone = await page.evaluate(() => {
-    const slide = document.querySelector('#capacity-diagnostic');
-    if (!slide) return null;
+    const scroller = document.querySelector('.briefing') as HTMLElement | null;
+    const slide = document.querySelector('#capacity-diagnostic') as HTMLElement | null;
+    if (!slide || !scroller) return null;
     const box = slide.getBoundingClientRect();
     return {
       viewport: innerWidth,
       documentWidth: document.documentElement.scrollWidth,
+      scrollerClientWidth: scroller.clientWidth,
+      scrollerScrollWidth: scroller.scrollWidth,
       slideWidth: box.width,
       slideHeight: box.height,
     };
   });
   expect(phone).not.toBeNull();
   expect(phone!.documentWidth).toBeLessThanOrEqual(phone!.viewport + 2);
-  expect(phone!.slideWidth).toBeLessThanOrEqual(phone!.viewport - 16);
-  expect(phone!.slideHeight).not.toBe(720);
+  expect(phone!.scrollerClientWidth).toBeLessThanOrEqual(phone!.viewport + 2);
+  expect(phone!.scrollerScrollWidth).toBeGreaterThanOrEqual(1280);
+  expect(phone!.slideWidth).toBe(1280);
+  expect(phone!.slideHeight).toBe(720);
 
   await page.setViewportSize({ width: 2560, height: 1440 });
   await page.goto('/research/seed-openevo/study/briefing/#capacity-diagnostic', { waitUntil: 'networkidle' });
