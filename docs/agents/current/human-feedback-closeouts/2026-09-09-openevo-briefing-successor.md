@@ -19,6 +19,6 @@ New reusable learning in this successor:
 - the second direct iPhone correction upgrades `mobile-fixed-canvas-overflow` to repeated while staying briefing/device-scoped;
 - repeated human review should use a fast non-authoritative prebuilt Preview, while final acceptance remains unchanged.
 
-The future-task proof is deliberately a different robot-RL lab-meeting request. It must retrieve diagnostic closure, training-dynamics boundaries, phone reflow, the canonical review-preview workflow, and the fact that the current visual candidate is still unaccepted. Evaluation proof injects a `PAIR-084-DIAGNOSTIC-CLOSE-LOOP` recurrence into a synthetic PASS receipt; the Preference Judge must reject it, then pass after that recurrence is repaired.
+The future-task proof is deliberately a different robot-RL lab-meeting request. It must retrieve diagnostic closure, training-dynamics boundaries, whole-slide 16:9 phone fit-to-width with no horizontal drag, the canonical review-preview workflow, and the fact that the current visual candidate is still unaccepted. Evaluation proof injects a `PAIR-084-DIAGNOSTIC-CLOSE-LOOP` recurrence into a synthetic PASS receipt; the Preference Judge must reject it, then pass after that recurrence is repaired.
 
 Conversation-to-ledger extraction remains Agent-interpreted because the repository has no direct ChatGPT turn-export API. The repository validates the structured ledger, source-state distinction, retrieval, severity, tier boundaries, and evaluation proof; it does not claim automatic semantic extraction.
