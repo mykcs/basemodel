@@ -35,6 +35,14 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     positiveSignals: ['说明观察如何支持当前判断'],
   },
   {
+    id: 'CASE-059',
+    title: '数字第一次出现必须带对象和测量含义',
+    tags: ['ELI5', '数字', '对象', '指标', '分母', 'briefing'],
+    principle: '重要数字不能要求读者猜它在数什么；第一次出现时给对象、单位/分母和必要的测量含义。',
+    antiPatterns: ['49.33 / 58⁄128', '44 → 7 但不说 44 和 7 分别是什么'],
+    positiveSignals: ['49.33 / 100 Task Score', '58 / 128 个任务完整成功', '44 个 SD-LoRA 更新候选中 7 个进入后续模型'],
+  },
+  {
     id: 'CASE-061',
     title: '首屏先建立对象身份',
     tags: ['首屏', '身份', '标题', 'Harness', 'WebShop'],
@@ -132,11 +140,11 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
   },
   {
     id: 'CASE-082',
-    title: '科研汇报按研究问题组织',
-    tags: ['briefing', '科研汇报', '叙事', '研究问题'],
-    principle: '阶段汇报按问题 → 假设 → 实验 → 结果 → 决策转折组织，不让工程状态模块替代研究主线；真正决定机制理解的公式、参数和对照数据可以更硬核。',
-    antiPatterns: ['按工程模块或项目状态流水账组织汇报', '为了极简删掉能够证明机制设计的数学细节', '纯装饰气泡抢占科研内容注意力'],
-    positiveSignals: ['Ceiling → Mechanism → Control', '问题驱动叙事', '关键机制用公式 + 真实参数 + 对照阈值解释'],
+    title: '科研汇报按问题、诊断和下一问组织',
+    tags: ['briefing', '科研汇报', '叙事', '研究问题', '参数标题', '技术推导', '手机', '16:9'],
+    principle: '阶段汇报按科学问题 → 诊断实验 → 排除解释 → 下一问组织；默认工程正确不等于科研亮点；技术深度由公式和数据本身承担；实现参数不为冲击力抢标题；presentation 的手机与桌面可承担不同布局责任。',
+    antiPatterns: ['按工程模块或项目状态流水账组织汇报', '把 SHA / 重复性等默认工程正确性单独做成科研亮点', '为了极简删掉能够证明机制设计的数学细节', '用“这里更硬核”替代真实技术指标', '纯装饰气泡抢占科研内容注意力', '实现参数数字为了冲击力抢标题', '手机强制承载桌面固定 16:9 画布'],
+    positiveSignals: ['问题 → 诊断 → 排除 → 下一问', '主演讲简式 + 技术子页完整推导', '自然语言标题 + 正文精确参数', '桌面 capped 16:9 + 手机 viewport reflow'],
   },
   {
     id: 'CASE-083',
@@ -150,9 +158,9 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
 
 export const READER_CONTRACT_PRECEDENTS: Record<string, HumanFeedbackCaseId[]> = {
   study: ['CASE-061', 'CASE-062', 'CASE-063', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
-  'study-results': ['CASE-029', 'CASE-030', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
+  'study-results': ['CASE-029', 'CASE-030', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'study-run': ['CASE-064', 'CASE-068', 'CASE-070', 'CASE-081'],
-  'study-briefing': ['CASE-027', 'CASE-064', 'CASE-068', 'CASE-070', 'CASE-081', 'CASE-082'],
+  'study-briefing': ['CASE-027', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-070', 'CASE-081', 'CASE-082'],
   'capability-home': ['CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
   'capability-first-run': ['CASE-029', 'CASE-030', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
 };

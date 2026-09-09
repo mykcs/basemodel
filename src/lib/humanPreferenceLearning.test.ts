@@ -92,6 +92,16 @@ describe('human preference learning loop', () => {
   it('accepts a complete exact-head PASS receipt', () => {
     expect(validateHumanPreferenceJudgeReceipt(validReceipt('study'))).toEqual([]);
   });
+  it('retrieves a Gold Pair when Chinese wording is paraphrased rather than copied exactly', () => {
+    const result = retrieveHumanPreferenceContext(
+      '做导师汇报时别让参数数字为了冲击力占标题；手机要适应窗口，桌面保持有上限的 16:9',
+      'study-briefing',
+      10,
+    );
+    expect(result.goldPairs.some(({ pair }) => pair.id === 'PAIR-082-PARAMETER-HEADING')).toBe(true);
+    expect(result.goldPairs.some(({ pair }) => pair.id === 'PAIR-082-DEVICE-SCOPE')).toBe(true);
+  });
+
 });
 
 function validReceipt(contractId: string): HumanPreferenceJudgeReceipt {

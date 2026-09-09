@@ -24,10 +24,12 @@ describe('human preference learning v2', () => {
     expect(failureFamilySeverity('meaningless-english-eyebrow')).toBe('hard');
   });
 
-  it('keeps rejected, silver, and current-candidate visual evidence distinct', () => {
+  it('keeps rejected and silver visual evidence distinct without inventing Golden after concrete acceptance', () => {
     expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.tier === 'rejected')).toBe(true);
     expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.tier === 'silver')).toBe(true);
-    expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.tier === 'current-candidate')).toBe(true);
+    expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.tier === 'golden')).toBe(false);
+    expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.tier === 'current-candidate')).toBe(false);
+    expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.id === 'VISUAL-BRIEFING-FINAL-ACCEPTED-SILVER' && reference.tier === 'silver')).toBe(true);
   });
 
   it('compiles a task-time brief from events, trajectories, visuals, and the existing preference model', () => {

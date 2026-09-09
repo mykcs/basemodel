@@ -624,6 +624,14 @@ A proper ingestion capability should eventually support:
 
 Until full automatic conversation extraction is technically available, the Agent may perform the extraction from the current conversation manually, but must still produce the same structured artifacts and completion receipt. Report that limitation honestly.
 
+Current executable closeout owner:
+
+```bash
+npm run feedback:ingestion-closeout -- <INGESTION_ID>
+```
+
+Recorded ledgers live in `src/data/humanFeedbackIngestionCloseouts.ts`; generic integrity, retrieval and evaluation proof live in `src/lib/humanFeedbackIngestionCloseout.ts`. This validates a manually interpreted conversation ledger; it does not claim direct ChatGPT-history ingestion.
+
 ---
 
 ## 19. One-to-one delivery standard
