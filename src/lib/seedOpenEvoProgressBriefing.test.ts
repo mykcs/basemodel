@@ -52,6 +52,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('7B 长周期结果');
     expect(briefing).toContain("{t('目录', 'Agenda')}");
     expect(briefing).toContain('1.7B / 3B 诊断实验');
+    expect(briefing).toContain('这次具体做过的尝试');
+    for (const attempt of ['最大步数 15 → 30', 'Text Memory 2048 → 4096，再做 10+10 分块', 'TaskVector 参数更新方向分析', 'GDR 选择性更新 vs DirectApply']) expect(briefing).toContain(attempt);
   });
 
   it('uses a SEED-paper-style Score / Succ table and acknowledges the 3B line without inventing a score', () => {
@@ -71,10 +73,10 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('explains what the two WebShop metrics mean and preserves the SEED comparability boundary', () => {
-    expect(briefing).toContain('<strong>Score</strong>');
-    expect(briefing).toContain('看任务要求满足了多少');
-    expect(briefing).toContain('<strong>Succ.</strong>');
-    expect(briefing).toContain('只统计完整成功');
+    expect(briefing).toContain('Score 看任务要求完成了多少');
+    expect(briefing).toContain('Succ. 看整道任务是否完整成功');
+    expect((briefing.match(/Score 看任务要求完成了多少/g) ?? []).length).toBe(1);
+    expect((briefing.match(/Succ\. 看整道任务是否完整成功/g) ?? []).length).toBe(1);
     expect(briefing).toContain('SEED 与 OpenEVO 不是同协议直接对照');
     expect(briefing).toContain('不能直接用 89.7 与 49.33 的差值判断胜负');
   });
@@ -98,10 +100,12 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('shows the 3B longitudinal training dynamics without turning training-round score into a final-eval claim', () => {
-    expect(briefing).toContain('3B 训练后半程，任务得分明显抬升');
+    expect(briefing).toContain('3B：任务得分上升，训练 loss 同时下降');
+    expect(briefing).toContain('左图是每轮 WebShop 任务得分（Score），不是 loss');
+    expect(briefing).toContain('右图才是 SD-LoRA 训练 loss');
     expect(briefing).toContain('123 个已封存 round');
     expect(briefing).toContain('最后 23 轮平均');
-    expect(briefing).toContain('发生 SD-LoRA 候选训练时的 loss');
+    expect(briefing).toContain('发生候选训练时的 SD-LoRA loss');
     expect(briefing).toContain('这段曲线是训练过程证据，不是 128 题最终终评');
     expect(briefing).toContain('dynamics3B.acceptedRolloutsTotal.toLocaleString');
     expect(technical).toContain('15,744 次正式环境尝试');
@@ -151,13 +155,14 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(technical).toContain('9 组条件 × 64 个配对任务 = 576');
   });
 
-  it('explains GDR at first use and states exactly what 44 and 7 count', () => {
-    expect(briefing).toContain('GDR（Gated Delta Rule，更新筛选规则）');
-    expect(briefing).toContain('GDR 是 Gated Delta Rule');
-    expect(briefing).toContain('本来有 44 次机会更新参数，实际只有 7 次进入了后续模型');
-    expect(briefing).toContain('44 个 SD-LoRA 更新候选都真正训练出来了');
-    expect(briefing).toContain('GDR 最终只接受 7 个');
-    expect(briefing).toContain('θ<sub>t+1</sub> = θ<sub>t</sub> + Δ<sub>t</sub>');
+  it('explains why 44 SD-LoRA updates existed before explaining the GDR filter', () => {
+    expect(briefing).toContain('GDR（Gated Delta Rule，选择性更新规则）');
+    expect(briefing).toContain('GDR：我们给 SD-LoRA 参数更新加了一道筛选');
+    expect(briefing).toContain('每次发生参数进化，就会训练一个 SD-LoRA 更新并写入后续模型');
+    expect(briefing).toContain('实际发生并训练了 44 次这样的更新');
+    expect(briefing).toContain('44 个更新都训练了，但 GDR 最后只让 7 个进入后续模型');
+    expect(briefing).toContain('44 不是人为设定的“更新预算”');
+    expect(briefing).toContain('其余 37 个训练结果被拒绝');
   });
 
   it('keeps DirectApply in the main deck as one simple scientific variable and leaves the result unfinished', () => {
@@ -192,6 +197,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('先把 SEED 匹配比较做齐');
     expect(briefing).toContain('先追“为什么有效”的机制证据');
     expect(briefing).toContain('想请老师和学长判断优先级');
+    expect(briefing).toContain('我们解决的工程性问题（这里只列，不展开）');
+    for (const item of ['动作接口与解析导致的无效动作', '长实验中断后的安全续跑与状态恢复', '多卡任务分配与空闲 GPU 动态回填', 'checkpoint、证据、W&B / HF 的实验身份与归档']) expect(briefing).toContain(item);
     expect(briefing).not.toContain('12 / 12');
   });
 
