@@ -1,5 +1,5 @@
 import { HUMAN_FEEDBACK_INGESTION_CLOSEOUTS } from '../src/data/humanFeedbackIngestionCloseouts';
-import { buildHumanPreferenceBriefForCloseout, validateHumanFeedbackIngestionCloseout } from '../src/lib/humanFeedbackIngestionCloseout';
+import { aggregateHumanFeedbackIngestionCoverage, buildHumanPreferenceBriefForCloseout, validateHumanFeedbackIngestionCloseout } from '../src/lib/humanFeedbackIngestionCloseout';
 import { renderHumanPreferenceBriefMarkdown } from '../src/lib/humanPreferenceBrief';
 
 const requestedId = process.argv[2];
@@ -14,6 +14,7 @@ if (!records.length) {
 let failed = false;
 for (const record of records) {
   const result = validateHumanFeedbackIngestionCloseout(record);
+  const lineageCoverage = aggregateHumanFeedbackIngestionCoverage(record);
   console.log(JSON.stringify({
     schema: record.schema === 'human-feedback-ingestion-closeout.v2'
       ? 'human-feedback-ingestion-closeout-receipt.v2'
@@ -21,8 +22,14 @@ for (const record of records) {
     id: record.id,
     sourceState: record.sourceWindow.finalVerdict ?? 'accepted',
     predecessorIngestionIds: record.predecessorIngestionIds ?? [],
-    status: result.failures.length ? 'FAIL' : 'PASS',
+    status: result.failures.length || lineageCoverage.failures.length ? 'FAIL' : 'PASS',
     coverage: { total: record.ledger.length, ...result.dispositionCounts },
+    lineageCoverage: {
+      ingestionIds: lineageCoverage.ingestionIds,
+      total: lineageCoverage.totalSignals,
+      ...lineageCoverage.dispositionCounts,
+      failures: lineageCoverage.failures,
+    },
     hardFamilies: result.hardFamilies,
     repeatedFamilies: result.repeatedFamilies,
     retrievedSignals: result.retrievedSignals,
@@ -39,6 +46,6 @@ for (const record of records) {
     console.log('\n--- Future-task Preference Brief ---\n');
     console.log(renderHumanPreferenceBriefMarkdown(brief));
   }
-  if (result.failures.length) failed = true;
+  if (result.failures.length || lineageCoverage.failures.length) failed = true;
 }
 if (failed) process.exit(1);
