@@ -70,6 +70,8 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
   const fastPreviewEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT');
   const final604Event = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-BRIEFING-604-ACCEPTED');
   const final604Visual = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER');
+  const sitewideAppleEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-SITEWIDE-APPLE-SURFACE-REPEAT');
+  const sitewideAppleVisual = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-SITEWIDE-APPLE-SURFACE-REJECTED');
   const candidateHead = record.sourceWindow.finalOwnerVisibleHead;
   const candidateScope = record.preferenceBrief?.scope;
   const candidateVisual = candidateHead
@@ -204,12 +206,33 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
     'recovery-copy-action-not-universal':
       preferences.has('PREF-RECOVERY-ACTION-FIRST') &&
       brief.antiOvergeneralization.some((boundary) => boundary.includes('复制 prompt / 命令') && boundary.includes('不是通用模板')),
+    'reference-surface-imitation-hard':
+      events.has('EVENT-20260909-SITEWIDE-APPLE-SURFACE-REPEAT') &&
+      sitewideAppleEvent?.verdict === 'rejected' &&
+      sitewideAppleEvent.repeatSignal === 'explicit' &&
+      failureFamilySeverity('reference-surface-imitation') === 'hard' &&
+      brief.hardFailureFamilies.includes('reference-surface-imitation'),
+    'apple-cognition-not-visual-skin':
+      events.has('EVENT-20260909-SITEWIDE-APPLE-SURFACE-REPEAT') &&
+      preferences.has('PREF-FIRST-SCREEN-ATTENTION') &&
+      brief.antiOvergeneralization.some((boundary) => boundary.includes('参考品牌') && boundary.includes('留白') && boundary.includes('机械复制')),
+    'sitewide-reference-visual-rejected-only':
+      visuals.has('VISUAL-SITEWIDE-APPLE-SURFACE-REJECTED') &&
+      sitewideAppleVisual?.tier === 'rejected' &&
+      sitewideAppleVisual.gitSha === '84eca7135db376f5ffa539a9a7c78b1f64c86ca7' &&
+      !HUMAN_VISUAL_REFERENCE_SET.some((reference) =>
+        reference.gitSha === sitewideAppleVisual.gitSha && ['silver', 'golden', 'current-candidate'].includes(reference.tier),
+      ) &&
+      !HUMAN_FEEDBACK_EVENTS.some((event) =>
+        event.evidence?.gitSha === sitewideAppleVisual.gitSha && ['accepted', 'canonical'].includes(event.verdict),
+      ),
   };
   return { brief, statuses };
 }
 
 function buildHardFamilyCandidateReceipt(record: HumanFeedbackIngestionCloseoutRecord, hardFamily: string) {
-  const receipt = candidateReceiptTemplate('study-briefing', 'future advisor briefing recurrence check');
+  const reviewSurface = record.preferenceBrief?.contractId ?? (record.preferenceBrief?.scope ? `scope:${record.preferenceBrief.scope}` : 'study-briefing');
+  const receipt = candidateReceiptTemplate(reviewSurface, 'future preference recurrence check');
   receipt.exactGitSha = evidenceHead(record);
   receipt.variants = receipt.variants.slice(0, 2).map((variant, index) => ({
     ...variant,
@@ -397,6 +420,9 @@ export function validateHumanFeedbackIngestionCloseout(record: HumanFeedbackInge
   if (!record.automationGap.trim()) failures.push(`${record.id}: automationGap must be explicit`);
   if (record.sourceWindow.sourceRepository !== undefined && !/^[^/\s]+\/[^/\s]+$/.test(record.sourceWindow.sourceRepository)) {
     failures.push(`${record.id}: sourceRepository must be owner/repo when provided`);
+  }
+  if (record.sourceWindow.pullRequest !== undefined && (!Number.isInteger(record.sourceWindow.pullRequest) || record.sourceWindow.pullRequest < 1)) {
+    failures.push(`${record.id}: pullRequest must be a positive integer when provided`);
   }
 
   for (const item of record.ledger) {

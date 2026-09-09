@@ -80,6 +80,20 @@ describe('human preference learning loop', () => {
     expect(preference?.antiOvergeneralization.join(' ')).toContain('44 个候选只有 7 个进入后续模型');
   });
 
+
+  it('retrieves cognition-first reference design without turning Apple into a banned visual style', () => {
+    const result = retrieveHumanPreferenceContext(
+      '参考 Apple Developer 设计科研网站，避免照搬大留白、满屏 Hero、100vh 和字体皮肤，先按人的注意力和任务组织首屏',
+      undefined,
+      12,
+      'all-public-ui',
+    );
+    expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-FIRST-SCREEN-ATTENTION');
+    expect(result.cases.map(({ precedent }) => precedent.id)).toContain('CASE-068');
+    const preference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-FIRST-SCREEN-ATTENTION');
+    expect(preference?.antiOvergeneralization.join(' ')).toContain('不是禁止留白、大标题、serif、圆角或一屏一页 presentation');
+  });
+
   it('keeps workflow-learning feedback separate from surface aesthetics', () => {
     const result = retrieveHumanPreferenceContext('案例库 触类旁通 preference learning Gold Pair cold read judge');
     expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-FEEDBACK-LEARNING-LOOP');

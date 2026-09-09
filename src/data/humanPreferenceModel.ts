@@ -83,15 +83,16 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
   {
     id: 'PREF-FIRST-SCREEN-ATTENTION',
     title: '一个首屏只承担一个主要理解任务',
-    statement: '字号、加粗、卡片、CTA、导航和 provenance 都在消耗注意力；第一屏应只有一个明显认知中心。',
+    statement: '字号、加粗、卡片、CTA、导航、空白和内容到达位置都在分配注意力；第一屏应只有一个明显认知中心。参考 Apple 等设计系统时，先转译它怎样帮助人识别、分组、决定和继续，再决定本站自己的视觉实现，不把品牌表面构图当成认知原则。',
     scopes: ['all-public-ui', 'research-ui', 'study', 'results', 'run', 'briefing', 'capability', 'recovery'],
     confidence: 'explicit-project',
     priority: 5,
-    retrievalTags: ['ADHD', '注意力', '认知负担', '首屏', '视觉中心', 'CTA', '信息密度'],
+    retrievalTags: ['ADHD', '注意力', '认知负担', '首屏', '视觉中心', 'CTA', '信息密度', 'Apple', '参考设计', '视觉皮肤', '留白', 'Hero', '100vh', '100svh', '垂直居中', '字体'],
     supportingCaseIds: ['CASE-068', 'CASE-069', 'CASE-086'],
     antiOvergeneralization: [
       '不是越少越好；必须默认可见的科学边界、比较双方和当前状态不能为了简洁被藏掉。',
       '首屏预算是报警器，不替代真人 cold read。',
+      '不是禁止留白、大标题、serif、圆角或一屏一页 presentation；当它们服务当前 reader task、分组、阅读节奏或真实 presentation 介质时可以使用，不能因为参考品牌用了就机械复制。',
     ],
   },
   {

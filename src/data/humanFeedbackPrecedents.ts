@@ -101,10 +101,10 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
   {
     id: 'CASE-068',
     title: '首屏只承担一个主要理解任务',
-    tags: ['ADHD', '注意力', '首屏', '认知负担', '信息层级'],
-    principle: '首屏不是正确字段库存；只保留完成当前 primary task 必需的对象、结论、边界和下一步。',
-    antiPatterns: ['多个同权重 CTA、卡片、导航和 provenance 同时竞争'],
-    positiveSignals: ['一个明显认知中心', '次要深度后置'],
+    tags: ['ADHD', '注意力', '首屏', '认知负担', '信息层级', 'Apple', '参考设计', '视觉皮肤', 'Hero', '留白'],
+    principle: '首屏不是正确字段库存；只保留完成当前 primary task 必需的对象、结论、边界和下一步。参考 Apple 等产品时先抽 visibility、mental model、grouping 与 progressive disclosure 等认知原则，不把其字体、留白、圆角或 Hero 表面构图当成目标。',
+    antiPatterns: ['多个同权重 CTA、卡片、导航和 provenance 同时竞争', '照抄参考产品的大留白、满屏 Hero 或字体皮肤，却没有重新推导本站 reader task'],
+    positiveSignals: ['一个明显认知中心', '次要深度后置', '参考设计先解释人的感知/决定/推进，再决定本站 HTML/CSS'],
   },
   {
     id: 'CASE-069',

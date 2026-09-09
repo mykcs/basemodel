@@ -578,6 +578,21 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     requestedSuccessorVariantId: 'fuhuo-mac-remote-action-first-current-123fb5e',
     evidence: { repository: 'mykcs/fuhuo_20260419', route: '/docs/mac-remote', pullRequest: 21, gitSha: '4a7fdaf6d17cac6b825ffdd801951229d51fbfc0', ledgerId: 'FB-R05-TECHNICAL-FIRST-REJECTED' },
   },
+  {
+    id: 'EVENT-20260909-SITEWIDE-APPLE-SURFACE-REPEAT',
+    date: '2026-09-09',
+    caseIds: ['CASE-068'],
+    scopes: ['all-public-ui', 'visual'],
+    artifact: 'BaseModel public gateway and reference-page family',
+    variantId: 'sitewide-reference-surface-imitation-84eca713',
+    verdict: 'rejected',
+    ownerSignal: '这个是因为我之前让 agent 模仿 Apple 开发者设计的思路，看来只模仿其形未模仿其神。',
+    reasons: ['此前已明确要求学习 Apple 的认知设计而不是视觉皮肤，但同一错误又以满屏 Hero、大块无语义留白和模板驱动视觉语言返回', '参考产品的视觉特征被直接当成目标，替代了对本站 reader task、mental model、grouping 与 progressive disclosure 的重新推导'],
+    failureMechanisms: ['reference-surface-imitation'],
+    repeatSignal: 'explicit',
+    requestedSuccessorVariantId: 'sitewide-cognition-first-reference-direction',
+    evidence: { repository: 'mykcs/basemodel', route: '/', gitSha: '84eca7135db376f5ffa539a9a7c78b1f64c86ca7', ledgerId: 'FB-SW02-APPLE-SURFACE-NOT-SPIRIT' },
+  },
 
 ];
 
@@ -755,6 +770,20 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
     ],
     note: 'owner 明确拒绝 technical-first，并给出 action-first successor 方向；最终 123fb5e 实现该方向但 closeout 前没有新的具体接受/模板授权，因此仍是 current-candidate，不补写第二条“final > direction”比较，也没有 canonicalVariantId。',
   },
+  {
+    id: 'TRAJECTORY-SITEWIDE-REFERENCE-DESIGN-20260909',
+    scopes: ['all-public-ui', 'visual'],
+    variantIds: ['sitewide-reference-surface-imitation-84eca713', 'sitewide-cognition-first-reference-direction'],
+    comparisons: [
+      {
+        betterVariantId: 'sitewide-cognition-first-reference-direction',
+        worseVariantId: 'sitewide-reference-surface-imitation-84eca713',
+        reason: 'owner 明确把旧全站方向概括为“只模仿其形未模仿其神”；CASE-068 已定义认可方向是 visibility / mental model / grouping / progressive disclosure，而不是复制 Apple 的大字、留白、圆角或 marketing hero。',
+        failureMechanisms: ['reference-surface-imitation'],
+      },
+    ],
+    note: '这是“被拒绝的具体视觉状态 → 明确要求的 successor 方向”的 trajectory。successor direction 尚未作为一个 owner-reviewed concrete visual 出现，因此没有 accepted/canonicalVariantId，也不创建 Silver/Golden/current-candidate 视觉引用。',
+  },
 
 ];
 export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
@@ -896,6 +925,17 @@ export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
     route: '/docs/mac-remote',
     ownerEvidence: '该版本落实了“技术细节往下放、前几行先说处境和怎么办”的直接纠正；owner 随后进入 HPL closeout，但未对这个 exact visual 给出新的 accepted / canonical 语言。',
     note: 'CURRENT-CANDIDATE，不是 Silver/Golden。桌面和 390×844 手机截图曾在实现会话中检查，但未作为稳定仓库资产保留；exact SHA + route + viewport 足以重建。',
+  },
+  {
+    id: 'VISUAL-SITEWIDE-APPLE-SURFACE-REJECTED',
+    tier: 'rejected',
+    scopes: ['all-public-ui', 'visual'],
+    artifact: 'BaseModel public entry-page family · reference-surface imitation',
+    repository: 'mykcs/basemodel',
+    gitSha: '84eca7135db376f5ffa539a9a7c78b1f64c86ca7',
+    route: '/',
+    ownerEvidence: 'owner 直接说“这个是因为我之前让 agent 模仿 Apple 开发者设计的思路，看来只模仿其形未模仿其神”，并要求继续修改全站审计出的同类问题。',
+    note: 'Rejected 的是跨页面视觉机制，不是否定该 SHA 的每个像素：普通 Home / Models / Papers / Landscape / Guide / Workspace / Lab / Study 等入口把满屏居中、大块无语义留白、模板驱动字体或实现细节优先误当 attention-first。没有稳定截图进入仓库；可用 repo + exact SHA + 对应 routes + 1280×633 / 390×844 重建。此次 closeout 前没有 owner-reviewed successor，因此不升级 Silver / Golden / current-candidate。',
   },
 
 ];
