@@ -1000,6 +1000,13 @@
 
 完整 signal-level coverage 与排除理由由 `src/data/humanFeedbackIngestionCloseouts.ts -> INGESTION-20260909-OPENEVO-BRIEFING` 持有，避免把“better / promising / accepted / canonical”再次压扁成二元喜欢/不喜欢。
 
+**2026-09-09 PR #605 最晚反馈补充**：在 PR #605 最后代码 head `56b5120…` 已经生成之后，owner 明确说：`这轮 hard-failure 不是“建议”，是必须修掉`。其中两条不能被 merge 状态覆盖：
+
+- `TaskVector 页面现在太像数学附录。` 主 deck 只保留 `v = θ_after − θ_before`、参数变化的 **norm**、更新方向的 **cosine** 和一句 faithful 科学判断；完整 Gram matrix、Frobenius geometry、R14/R27/R49、同范数随机对照、identifiability gate 下沉 `technical-notes`。这是对此前“机制页允许更硬核”的**更晚收窄**：技术深度保留，但主演讲只保留当前决策真正需要的最小数学量。
+- `不要把“科学尝试”页做成数字清单；应拆成几张 slide。` 这里不是全局禁止 checklist；而是当连续小实验如何排除解释本身就是研究能力证据时，主讲需要让每个关键问题/实验/结论获得足够空间，不能把因果推进压平为四个等权短语。
+
+这两条发生在 `56b5120…` 之后，而 PR #605 没有新的页面 commit 再处理它们。**Git merge 只能证明代码进入 main，不能倒推出 owner 接受了这版视觉/叙事。** 因此 HPL 里该 exact visual 必须记作 Rejected；此前 `670ab9b4…` 的 current-candidate 只保留为历史中间态，没有 Golden。
+
 <a id="case-083-案例库必须进入生成和验收闭环"></a>
 ### CASE-083 — 案例库必须改变下一次任务的生成与验收
 **PREFERENCE · PROCESS · 2026-09-08 · direct owner workflow feedback**
@@ -1117,4 +1124,4 @@ owner 说明：`虽然我的网站里其他页面画了有关 SEED 是怎么做�
 
 边界：数字和模型名当然可以出现在标题。比如 `44 个候选只有 7 个进入后续模型` 同时说清两端对象，数字本身就是科研发现。`GDR / SD-LoRA / Agent` 等真实技术对象也应准确保留。需要避免的是读者必须先猜 operands / 内部词义才能理解标题。
 
-本轮具体视觉方向中，“可能的疑问”浅红圆框、SEED 89.7 的浅灰 pill、目录后科学尝试总结页和后段技术工作总结页都只绑定 OpenEVO briefing；没有“以后全站照此模板”的授权。PR #605 exact head `670ab9b4…` 仍是 current-candidate，不得因进入 closeout 就升级成 Silver / Golden。
+本轮具体视觉方向中，“可能的疑问”浅红圆框、SEED 89.7 的浅灰 pill、目录后科学尝试总结页和后段技术工作总结页都只绑定 OpenEVO briefing；没有“以后全站照此模板”的授权。PR #605 的 `670ab9b4…` 是历史 current-candidate；后续 `56b5120…` 虽然进入 main，但 owner 在该 exact head 后仍点名两条 hard failure，因此 `56b5120…` 记为 Rejected，不得因 Git merge 升级成 Silver / Golden。

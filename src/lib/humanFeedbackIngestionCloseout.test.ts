@@ -4,15 +4,17 @@ import {
   OPEN_EVO_BRIEFING_SUCCESSOR_INGESTION_20260909,
   OPEN_EVO_BRIEFING_FINAL_SUCCESSOR_INGESTION_20260909,
   OPEN_EVO_BRIEFING_STORYLINE_INGESTION_20260909,
+  OPEN_EVO_BRIEFING_FINAL_CLOSEOUT_INGESTION_20260909,
   FUHUO_MAC_RECOVERY_INGESTION_20260909,
 } from '../data/humanFeedbackIngestionCloseouts';
 import { HUMAN_FEEDBACK_EVENTS, HUMAN_VISUAL_REFERENCE_SET, failureFamilySeverity } from '../data/humanPreferenceLearningHistory';
-import { validateHumanFeedbackIngestionCloseout } from './humanFeedbackIngestionCloseout';
+import { aggregateHumanFeedbackIngestionCoverage, validateHumanFeedbackIngestionCloseout } from './humanFeedbackIngestionCloseout';
 
 const original = OPEN_EVO_BRIEFING_INGESTION_20260909;
 const successor = OPEN_EVO_BRIEFING_SUCCESSOR_INGESTION_20260909;
 const finalSuccessor = OPEN_EVO_BRIEFING_FINAL_SUCCESSOR_INGESTION_20260909;
 const storyline = OPEN_EVO_BRIEFING_STORYLINE_INGESTION_20260909;
+const finalCloseout = OPEN_EVO_BRIEFING_FINAL_CLOSEOUT_INGESTION_20260909;
 const recovery = FUHUO_MAC_RECOVERY_INGESTION_20260909;
 
 describe('human feedback ingestion closeout', () => {
@@ -21,10 +23,11 @@ describe('human feedback ingestion closeout', () => {
     expect(successor.ledger).toHaveLength(successor.candidateFeedbackSignals);
     expect(finalSuccessor.ledger).toHaveLength(finalSuccessor.candidateFeedbackSignals);
     expect(storyline.ledger).toHaveLength(storyline.candidateFeedbackSignals);
+    expect(finalCloseout.ledger).toHaveLength(finalCloseout.candidateFeedbackSignals);
     expect(recovery.ledger).toHaveLength(recovery.candidateFeedbackSignals);
-    expect(original.candidateFeedbackSignals + successor.candidateFeedbackSignals + finalSuccessor.candidateFeedbackSignals + storyline.candidateFeedbackSignals + recovery.candidateFeedbackSignals).toBe(73);
-    const all = [...original.ledger, ...successor.ledger, ...finalSuccessor.ledger, ...storyline.ledger, ...recovery.ledger];
-    expect(new Set(all.map((item) => item.id)).size).toBe(73);
+    expect(original.candidateFeedbackSignals + successor.candidateFeedbackSignals + finalSuccessor.candidateFeedbackSignals + storyline.candidateFeedbackSignals + finalCloseout.candidateFeedbackSignals + recovery.candidateFeedbackSignals).toBe(76);
+    const all = [...original.ledger, ...successor.ledger, ...finalSuccessor.ledger, ...storyline.ledger, ...finalCloseout.ledger, ...recovery.ledger];
+    expect(new Set(all.map((item) => item.id)).size).toBe(76);
     expect(all.filter((item) => item.disposition === 'ambiguous-hold')).toEqual([]);
   });
 
@@ -38,6 +41,7 @@ describe('human feedback ingestion closeout', () => {
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-FINAL-ACCEPTED-SILVER')?.tier).toBe('silver');
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE')?.tier).toBe('current-candidate');
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER')?.tier).toBe('silver');
+    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-605-MERGED-REJECTED')?.tier).toBe('rejected');
   });
 
   it('keeps the current page successor under review rather than inventing acceptance', () => {
@@ -53,16 +57,22 @@ describe('human feedback ingestion closeout', () => {
     expect(finalSuccessor.sourceWindow.finalOwnerVisibleHead).toBe('59f46044e15aa92d95f50f0332a9798adf8d385b');
     expect(HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-BRIEFING-604-ACCEPTED')?.verdict).toBe('accepted');
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER')?.tier).toBe('silver');
+    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-605-MERGED-REJECTED')?.tier).toBe('rejected');
     expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === finalSuccessor.sourceWindow.finalOwnerVisibleHead && event.verdict === 'canonical')).toBe(false);
     expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden')).toBe(false);
   });
 
-  it('keeps PR #605 storyline as the active current-candidate without inventing acceptance', () => {
+  it('preserves PR #605 storyline history but closes the latest merged head as rejected, not accepted', () => {
     expect(storyline.sourceWindow.finalVerdict).toBe('current-candidate');
     expect(storyline.sourceWindow.finalOwnerVisibleHead).toBe('670ab9b4d800bdda3d73ad2406f2b38314f84bf5');
-    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-LABEL-FIRST-REJECTED')?.tier).toBe('rejected');
-    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')?.tier).toBe('current-candidate');
-    expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === storyline.sourceWindow.finalOwnerVisibleHead && ['accepted', 'canonical'].includes(event.verdict))).toBe(false);
+    const historical = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE');
+    expect(historical?.tier).toBe('current-candidate');
+    expect(historical?.supersededByReferenceId).toBe('VISUAL-BRIEFING-605-MERGED-REJECTED');
+    expect(finalCloseout.sourceWindow.finalVerdict).toBe('rejected');
+    expect(finalCloseout.sourceWindow.finalOwnerVisibleHead).toBe('56b5120b22b6c709aaf485e3b1fdea348fb3041b');
+    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-605-MERGED-REJECTED')?.gitSha).toBe(finalCloseout.sourceWindow.finalOwnerVisibleHead);
+    expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === finalCloseout.sourceWindow.finalOwnerVisibleHead && event.verdict === 'rejected')).toBe(true);
+    expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === finalCloseout.sourceWindow.finalOwnerVisibleHead && ['accepted', 'canonical'].includes(event.verdict))).toBe(false);
   });
 
   it('keeps the fuhuo recovery successor as current-candidate and validates cross-repository evidence', () => {
@@ -81,6 +91,8 @@ describe('human feedback ingestion closeout', () => {
     expect(failureFamilySeverity('mobile-fixed-canvas-overflow')).toBe('repeated');
     expect(failureFamilySeverity('compressed-shorthand-heading')).toBe('hard');
     expect(failureFamilySeverity('presenter-language')).toBe('repeated');
+    expect(failureFamilySeverity('technical-detail-wrong-layer')).toBe('repeated');
+    expect(failureFamilySeverity('story-compression-hides-causal-sequence')).toBe('normal');
   });
 
   it('passes both receipts, future-task retrieval, and negative/positive evaluation proof', () => {
@@ -116,6 +128,34 @@ describe('human feedback ingestion closeout', () => {
       'current-candidate-is-not-accepted',
     ]) expect(result.retrievedSignals[signal], signal).toBe(true);
     expect(result.evaluationProofFailures).toContain('hard failure family not checked: compressed-shorthand-heading');
+    expect(result.evaluationProofPassFailures).toEqual([]);
+  });
+
+  it('rolls the segmented briefing closeouts into one complete lineage and proves the latest feedback changes retrieval', () => {
+    const coverage = aggregateHumanFeedbackIngestionCoverage(finalCloseout);
+    expect(coverage.failures).toEqual([]);
+    expect(coverage.ingestionIds).toEqual([
+      'INGESTION-20260909-OPENEVO-BRIEFING',
+      'INGESTION-20260909-OPENEVO-BRIEFING-SUCCESSOR',
+      'INGESTION-20260909-OPENEVO-BRIEFING-FINAL-SUCCESSOR',
+      'INGESTION-20260909-OPENEVO-BRIEFING-STORYLINE',
+      'INGESTION-20260909-OPENEVO-BRIEFING-FINAL-CLOSEOUT',
+    ]);
+    expect(coverage.totalSignals).toBe(71);
+    expect(new Set(coverage.ledgerIds).size).toBe(71);
+    expect(coverage.dispositionCounts['ambiguous-hold']).toBe(0);
+
+    const result = validateHumanFeedbackIngestionCloseout(finalCloseout);
+    expect(result.failures).toEqual([]);
+    for (const signal of [
+      'latest-merged-briefing-is-rejected-not-accepted',
+      'taskvector-progressive-disclosure-latest',
+      'science-story-not-checklist',
+      'scientific-decision-chain',
+      'technical-depth-without-meta-performance',
+      'internal-detail-primary-attention',
+    ]) expect(result.retrievedSignals[signal], signal).toBe(true);
+    expect(result.evaluationProofFailures).toContain('hard failure family not checked: internal-detail-promoted-to-primary-attention');
     expect(result.evaluationProofPassFailures).toEqual([]);
   });
 

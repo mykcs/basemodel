@@ -39,7 +39,7 @@ export interface HumanFeedbackIngestionSourceWindow {
   mergedMainCommit?: string;
   finalOwnerVisibleHead?: string;
   mainAtCloseout?: string;
-  finalVerdict?: 'accepted' | 'current-candidate';
+  finalVerdict?: 'accepted' | 'current-candidate' | 'rejected';
 }
 
 export interface HumanFeedbackIngestionCloseoutRecord {
@@ -861,6 +861,77 @@ export const OPEN_EVO_BRIEFING_STORYLINE_INGESTION_20260909: HumanFeedbackIngest
 };
 
 
+
+export const OPEN_EVO_BRIEFING_FINAL_CLOSEOUT_INGESTION_20260909: HumanFeedbackIngestionCloseoutRecord = {
+  id: 'INGESTION-20260909-OPENEVO-BRIEFING-FINAL-CLOSEOUT',
+  schema: 'human-feedback-ingestion-closeout.v2',
+  task: 'OpenEVO briefing final conversation closeout after PR #605 merge: preserve post-head owner rejection and cumulative coverage',
+  sourceWindow: {
+    start: '2026-09-09T14:03:11Z · owner post-head hard-failure review',
+    end: '2026-09-09T14:16:50Z · PR #605 merged with no later page commit; closeout follows',
+    route: '/research/seed-openevo/study/briefing/',
+    pullRequest: 605,
+    finalOwnerVisibleHead: '56b5120b22b6c709aaf485e3b1fdea348fb3041b',
+    mainAtCloseout: 'edad8507de74fe3ead01512954c7355456e182de',
+    finalVerdict: 'rejected',
+  },
+  predecessorIngestionIds: ['INGESTION-20260909-OPENEVO-BRIEFING-STORYLINE'],
+  candidateFeedbackSignals: 3,
+  ledger: [
+    {
+      id: 'FB-S5-01-TASKVECTOR-DETAIL-LAYER',
+      date: '2026-09-09',
+      ownerSignal: '这轮 hard-failure 不是“建议”，是必须修掉：TaskVector 页面现在太像数学附录。主 deck 只保留 v = θ_after − θ_before、参数变化的 norm、更新方向的 cosine；完整 Gram matrix、Frobenius geometry、R14/R27/R49、random norm-matched controls、identifiability gate 全部下沉 technical-notes。',
+      disposition: 'ingest',
+      rationale: '这是比“机制页可以更技术”更晚、更窄的直接反馈：保留数学深度，但当前主演讲只保留支撑决策的最小量；完整参数几何下沉技术页。',
+      scopes: ['briefing', 'research-copy'],
+      eventIds: ['EVENT-20260909-BRIEFING-TASKVECTOR-DETAIL-LAYER-REJECTED'],
+      caseIds: ['CASE-082'],
+      preferenceIds: ['PREF-TECHNICAL-DEPTH-WITHOUT-META', 'PREF-PROGRESSIVE-DISCLOSURE'],
+      visualReferenceIds: ['VISUAL-BRIEFING-605-MERGED-REJECTED'],
+      excludedSubsignals: ['the exact scientific sentence about whether accumulated updates form one direction is project-specific evidence/copy and is not generalized into a universal preference'],
+    },
+    {
+      id: 'FB-S5-02-SCIENCE-ATTEMPTS-NOT-CHECKLIST',
+      date: '2026-09-09',
+      ownerSignal: '不要把“科学尝试”页做成数字清单；应拆成几张 slide。',
+      disposition: 'ingest',
+      rationale: '当连续实验如何排除解释本身就是研究能力证据时，一张等权 checklist 会压平因果推进；复用 PREF-RESEARCH-JUDGMENT，不新建全局“禁止 checklist”规则。',
+      scopes: ['briefing', 'research-copy', 'visual'],
+      eventIds: ['EVENT-20260909-BRIEFING-SCIENCE-CHECKLIST-REJECTED'],
+      caseIds: ['CASE-082'],
+      preferenceIds: ['PREF-RESEARCH-JUDGMENT'],
+      visualReferenceIds: ['VISUAL-BRIEFING-605-MERGED-REJECTED'],
+      excludedSubsignals: ['one-experiment-per-slide is a briefing-specific composition choice, not a universal public-page template'],
+    },
+    {
+      id: 'FB-S5-03-CLOSEOUT-FUTURE-AGENT-SUCCESS',
+      date: '2026-09-09',
+      ownerSignal: '未来完全不同的 Agent 在没有读过本对话的情况下，只依赖 current main，也应该能在第一次生成时明显更接近我的要求，并减少我重复纠正同一类问题的次数。',
+      disposition: 'merge-duplicate',
+      rationale: '再次强化 CASE-083 / PREF-FEEDBACK-LEARNING-LOOP；成功指标是未来首次生成与验收被历史偏好改变，不是 CASE 数量。',
+      scopes: ['workflow'],
+      caseIds: ['CASE-083'],
+      preferenceIds: ['PREF-FEEDBACK-LEARNING-LOOP'],
+      pairIds: ['PAIR-083-LEARNING-LOOP'],
+    },
+  ],
+  futureTaskQuery: '我要准备一场新的算法机制组会：有几条连续的负向诊断、小模型对照和参数方向分析；听众懂机器学习但不熟项目内部实现。机制里有参数差、范数、方向相似度和更深的矩阵推导；这些诊断彼此有因果先后，不能只压成一张项目总览。请设计第一版 slide 故事顺序、技术深度分层和 owner-review 前的验收重点。',
+  expectedRetrievedSignals: [
+    'latest-merged-briefing-is-rejected-not-accepted',
+    'taskvector-progressive-disclosure-latest',
+    'science-story-not-checklist',
+    'scientific-decision-chain',
+    'technical-depth-without-meta-performance',
+    'internal-detail-primary-attention',
+  ],
+  evaluationProof: {
+    hardFamily: 'internal-detail-promoted-to-primary-attention',
+    mechanism: 'candidate screening must reject a future mechanism briefing that omits the already-hard primary-attention family; latest TaskVector feedback adds a concrete technical-depth recurrence without inventing a synonym hard family',
+  },
+  automationGap: 'Conversation-to-ledger extraction is still manually interpreted because the repository has no direct ChatGPT turn-export API. This final record closes the segmented briefing source windows through predecessor lineage, adds a rejected final-owner-visible state because Git merge is not human acceptance, and requires cumulative coverage + future retrieval + evaluation-side recurrence rejection to pass fail-closed.',
+};
+
 export const FUHUO_MAC_RECOVERY_INGESTION_20260909: HumanFeedbackIngestionCloseoutRecord = {
   id: 'INGESTION-20260909-FUHUO-MAC-RECOVERY',
   schema: 'human-feedback-ingestion-closeout.v2',
@@ -947,5 +1018,6 @@ export const HUMAN_FEEDBACK_INGESTION_CLOSEOUTS = [
   OPEN_EVO_BRIEFING_SUCCESSOR_INGESTION_20260909,
   OPEN_EVO_BRIEFING_FINAL_SUCCESSOR_INGESTION_20260909,
   OPEN_EVO_BRIEFING_STORYLINE_INGESTION_20260909,
+  OPEN_EVO_BRIEFING_FINAL_CLOSEOUT_INGESTION_20260909,
   FUHUO_MAC_RECOVERY_INGESTION_20260909,
 ];

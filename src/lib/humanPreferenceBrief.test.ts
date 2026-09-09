@@ -63,8 +63,9 @@ describe('human preference learning v2', () => {
     expect(brief.events.some((event) => event.id === 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT' && event.verdict === 'canonical')).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE')).toBe(false);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER' && reference.tier === 'silver')).toBe(true);
-    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
-    expect(brief.generationRules.join('\n')).toContain('Current-candidate visual references are still under review');
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-605-MERGED-REJECTED' && reference.tier === 'rejected')).toBe(true);
+    expect(brief.generationRules.join('\n')).toContain('No current-candidate visual is active for this scope');
   });
 
   it('retrieves the final briefing lessons for a different two-stage training talk before first draft', () => {
@@ -98,7 +99,8 @@ describe('human preference learning v2', () => {
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER')).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.tier === 'golden')).toBe(false);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-DYNAMICS-CURRENT-CANDIDATE')).toBe(false);
-    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-605-MERGED-REJECTED')).toBe(true);
   });
 
   it('retrieves event-first headings and jargon boundaries for a paraphrased future research talk', () => {

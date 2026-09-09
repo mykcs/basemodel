@@ -115,6 +115,8 @@ When an old `current-candidate` is later superseded by an accepted successor, ke
 
 **Golden promotion rule:** only explicit owner language such as `OK / 可以 / 就按这个标准 / 以后参考这个` can create a Golden reference. A concrete `先合并进 main` / `merge this version` is `accepted` and may support Silver, but it is not future-template authorization by itself.
 
+**Merge is not a verdict.** A Git merge / green CI / production deployment never upgrades a visual to `accepted`. If the owner gives a later direct rejection against the exact merged head and no successor page commit resolves it, record that exact head as `rejected` evidence. Preserve the Git fact and the human verdict separately; do not rewrite history to make them agree.
+
 ## 5. Failure-family escalation
 
 A repeated correction is stronger evidence than a one-off page detail.

@@ -150,6 +150,7 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     antiOvergeneralization: [
       '不是删除工程证据；当工程事实决定实验是否有效时，它就是科学叙事的一部分。',
       '不是要求按逐分钟日志复述历史；“先问题、后 intervention”指因果理解顺序，不是机械时间线。',
+      '可以有目录/总结页，但当“这些实验如何一步步排除解释”本身就是科研贡献时，不能只用一张等权 checklist 代替主线实验；是否拆页取决于它是否承载因果理解，而不是固定模板。',
     ],
   },
   {
@@ -165,6 +166,7 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
       '不是把公式加到每一页；只有公式、参数或阈值直接承担科研论证时才提高技术密度。',
       '不是删除深推导；主演讲保留理解科学判断所需的简式，完整推导可以进入相邻技术页。',
       '“更硬核”可以是内部设计目标，但不应成为面向老师的自我评价标签。',
+      '当前 OpenEVO TaskVector briefing 的最新 owner 边界是：主演讲只留 v = θ_after − θ_before、norm、cosine 和一条科学判断；Gram/Frobenius、R14/R27/R49、同范数随机对照与 identifiability 下沉 technical-notes。这个具体配方是 briefing-scoped 例子，不是所有机制页的公式数量上限。',
     ],
   },
   {

@@ -128,6 +128,22 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
       record.schema === 'human-feedback-ingestion-closeout.v2' && record.sourceWindow.finalVerdict === 'current-candidate' &&
       !!candidateVisual && !!candidateHead &&
       !HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === candidateHead && ['accepted', 'canonical'].includes(event.verdict)),
+    'latest-merged-briefing-is-rejected-not-accepted':
+      record.schema === 'human-feedback-ingestion-closeout.v2' && record.sourceWindow.finalVerdict === 'rejected' &&
+      !!candidateHead &&
+      events.has('EVENT-20260909-BRIEFING-TASKVECTOR-DETAIL-LAYER-REJECTED') &&
+      events.has('EVENT-20260909-BRIEFING-SCIENCE-CHECKLIST-REJECTED') &&
+      visuals.has('VISUAL-BRIEFING-605-MERGED-REJECTED') &&
+      !HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === candidateHead && ['accepted', 'canonical'].includes(event.verdict)),
+    'taskvector-progressive-disclosure-latest':
+      events.has('EVENT-20260909-BRIEFING-TASKVECTOR-DETAIL-LAYER-REJECTED') &&
+      preferences.has('PREF-TECHNICAL-DEPTH-WITHOUT-META') &&
+      preferences.has('PREF-PROGRESSIVE-DISCLOSURE') &&
+      brief.antiOvergeneralization.some((boundary) => boundary.includes('TaskVector') && boundary.includes('norm') && boundary.includes('cosine')),
+    'science-story-not-checklist':
+      events.has('EVENT-20260909-BRIEFING-SCIENCE-CHECKLIST-REJECTED') &&
+      preferences.has('PREF-RESEARCH-JUDGMENT') &&
+      brief.antiOvergeneralization.some((boundary) => boundary.includes('checklist') && boundary.includes('因果')),
     'briefing-self-contained-method-context':
       preferences.has('PREF-BRIEFING-SELF-CONTAINED-METHOD') &&
       pairs.has('PAIR-089-BRIEFING-METHOD-CONTEXT') &&
@@ -274,6 +290,73 @@ function validateEvaluationProof(record: HumanFeedbackIngestionCloseoutRecord, f
   return { evaluationProofFailures: ['missing evaluation proof configuration'], evaluationProofPassFailures: [] };
 }
 
+export interface HumanFeedbackIngestionLineageCoverage {
+  ingestionIds: `INGESTION-${string}`[];
+  totalSignals: number;
+  dispositionCounts: Record<FeedbackLedgerDisposition, number>;
+  ledgerIds: string[];
+  failures: string[];
+}
+
+export function collectHumanFeedbackIngestionLineage(record: HumanFeedbackIngestionCloseoutRecord): HumanFeedbackIngestionCloseoutRecord[] {
+  const byId = new Map(HUMAN_FEEDBACK_INGESTION_CLOSEOUTS.map((item) => [item.id, item]));
+  const ordered: HumanFeedbackIngestionCloseoutRecord[] = [];
+  const visited = new Set<string>();
+  const visiting = new Set<string>();
+
+  const visit = (item: HumanFeedbackIngestionCloseoutRecord) => {
+    if (visited.has(item.id)) return;
+    if (visiting.has(item.id)) throw new Error(`ingestion lineage cycle at ${item.id}`);
+    visiting.add(item.id);
+    for (const predecessorId of item.predecessorIngestionIds ?? []) {
+      const predecessor = byId.get(predecessorId);
+      if (!predecessor) throw new Error(`unknown predecessor ingestion ${predecessorId}`);
+      visit(predecessor);
+    }
+    visiting.delete(item.id);
+    visited.add(item.id);
+    ordered.push(item);
+  };
+
+  visit(record);
+  return ordered;
+}
+
+export function aggregateHumanFeedbackIngestionCoverage(record: HumanFeedbackIngestionCloseoutRecord): HumanFeedbackIngestionLineageCoverage {
+  const failures: string[] = [];
+  let lineage: HumanFeedbackIngestionCloseoutRecord[] = [];
+  try {
+    lineage = collectHumanFeedbackIngestionLineage(record);
+  } catch (error) {
+    return {
+      ingestionIds: [],
+      totalSignals: 0,
+      dispositionCounts: Object.fromEntries(allDispositions.map((item) => [item, 0])) as Record<FeedbackLedgerDisposition, number>,
+      ledgerIds: [],
+      failures: [error instanceof Error ? error.message : String(error)],
+    };
+  }
+  const counts = Object.fromEntries(allDispositions.map((item) => [item, 0])) as Record<FeedbackLedgerDisposition, number>;
+  const ledgerIds: string[] = [];
+  const seenLedgerIds = new Set<string>();
+  for (const item of lineage) {
+    for (const ledgerItem of item.ledger) {
+      counts[ledgerItem.disposition] += 1;
+      if (seenLedgerIds.has(ledgerItem.id)) failures.push(`duplicate ledger id across ingestion lineage: ${ledgerItem.id}`);
+      seenLedgerIds.add(ledgerItem.id);
+      ledgerIds.push(ledgerItem.id);
+      if (ledgerItem.disposition === 'ambiguous-hold') failures.push(`unresolved ambiguous-hold in ingestion lineage: ${ledgerItem.id}`);
+    }
+  }
+  return {
+    ingestionIds: lineage.map((item) => item.id),
+    totalSignals: ledgerIds.length,
+    dispositionCounts: counts,
+    ledgerIds,
+    failures,
+  };
+}
+
 export function validateHumanFeedbackIngestionCloseout(record: HumanFeedbackIngestionCloseoutRecord): HumanFeedbackIngestionValidation {
   const failures: string[] = [];
   const counts = Object.fromEntries(allDispositions.map((item) => [item, 0])) as Record<FeedbackLedgerDisposition, number>;
@@ -300,7 +383,7 @@ export function validateHumanFeedbackIngestionCloseout(record: HumanFeedbackInge
   } else {
     if (!/^[0-9a-f]{40}$/i.test(record.sourceWindow.finalOwnerVisibleHead ?? '')) failures.push(`${record.id}: invalid finalOwnerVisibleHead`);
     if (!/^[0-9a-f]{40}$/i.test(record.sourceWindow.mainAtCloseout ?? '')) failures.push(`${record.id}: invalid mainAtCloseout`);
-    if (!['accepted', 'current-candidate'].includes(record.sourceWindow.finalVerdict ?? '')) failures.push(`${record.id}: v2 finalVerdict must be accepted/current-candidate`);
+    if (!['accepted', 'current-candidate', 'rejected'].includes(record.sourceWindow.finalVerdict ?? '')) failures.push(`${record.id}: v2 finalVerdict must be accepted/current-candidate/rejected`);
     for (const predecessor of record.predecessorIngestionIds ?? []) if (!ingestionIds.has(predecessor)) failures.push(`${record.id}: unknown predecessor ingestion ${predecessor}`);
   }
   if (!Number.isInteger(record.candidateFeedbackSignals) || record.candidateFeedbackSignals < 1) failures.push(`${record.id}: candidateFeedbackSignals must be a positive integer`);
@@ -359,6 +442,18 @@ export function validateHumanFeedbackIngestionCloseout(record: HumanFeedbackInge
     );
     if (!candidateVisual) failures.push(`${record.id}: v2 current candidate visual is missing, bound to wrong head, or outside the requested scope`);
     if (HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === candidateHead && ['accepted', 'canonical'].includes(event.verdict))) failures.push(`${record.id}: current candidate was incorrectly promoted to accepted/canonical`);
+  } else if (record.sourceWindow.finalVerdict === 'rejected') {
+    const rejectedHead = record.sourceWindow.finalOwnerVisibleHead;
+    const rejectedScope = record.preferenceBrief?.scope;
+    const rejectedEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.evidence?.gitSha === rejectedHead && event.verdict === 'rejected');
+    const rejectedVisual = HUMAN_VISUAL_REFERENCE_SET.find((reference) =>
+      reference.tier === 'rejected' &&
+      reference.gitSha === rejectedHead &&
+      (!rejectedScope || reference.scopes.includes(rejectedScope)),
+    );
+    if (!rejectedEvent) failures.push(`${record.id}: v2 rejected final must bind a rejected feedback event to exact head ${rejectedHead}`);
+    if (!rejectedVisual) failures.push(`${record.id}: v2 rejected final must bind a Rejected visual reference to exact head ${rejectedHead}`);
+    if (HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === rejectedHead && ['accepted', 'canonical'].includes(event.verdict))) failures.push(`${record.id}: rejected exact head was incorrectly promoted to accepted/canonical`);
   } else if (record.sourceWindow.finalVerdict === 'accepted') {
     const acceptedHead = record.sourceWindow.finalOwnerVisibleHead;
     const acceptedScope = record.preferenceBrief?.scope;
