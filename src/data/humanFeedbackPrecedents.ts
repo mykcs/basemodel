@@ -165,10 +165,10 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
   {
     id: 'CASE-085',
     title: '人审 Preview 与最终验收是两条不同的工作流',
-    tags: ['workflow', 'Preview', 'build', 'Vercel', '审阅', '迭代', '速度'],
-    principle: '还在反复改 UI/copy/slide 时，用本地静态构建加非权威 prebuilt Preview 快速给人看；只有准备 merge/release 时才运行 exact-head 最终 Vercel gate。',
-    antiPatterns: ['每改一句文案都跑完整 205 项 Chromium 最终 gate', '把快速 review Preview 当成 merge evidence'],
-    positiveSignals: ['coherent edit → local build → prebuilt review Preview', 'merge-ready → exact-head Vercel final gate'],
+    tags: ['workflow', 'Preview', 'build', 'Vercel', '审阅', '迭代', '速度', '可见性', 'stale preview'],
+    principle: '还在反复改 UI/copy/slide 时，用本地静态构建加非权威 prebuilt Preview 快速给人看；发链接前打开这次实际要审的目标 route / slide，确认声称的可见改动真的存在；只有准备 merge/release 时才运行 exact-head 最终 Vercel gate。',
+    antiPatterns: ['每改一句文案都跑完整 205 项 Chromium 最终 gate', '把快速 review Preview 当成 merge evidence', '代码已经改了却复用旧 Preview URL，没打开目标 slide 就告诉 owner“已经能看到”'],
+    positiveSignals: ['coherent edit → local build → prebuilt review Preview → 打开目标 surface 核对声称改动', 'merge-ready → exact-head Vercel final gate'],
   },
 
   {
@@ -190,10 +190,10 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
   {
     id: 'CASE-088',
     title: '同类实验图共享一套视觉语法',
-    tags: ['briefing', '科研汇报', '图表', 'checkpoint', 'loss', 'Score', 'SD-LoRA', '视觉一致性'],
-    principle: '同一组实验若展示相同证据类型，应复用同一图表位置、线型与更新标记语义；坐标范围和单位可以因真实技术差异调整。',
-    antiPatterns: ['7B、1.7B、3B 各自发明不同的 Score / loss / update 视觉编码', '为了视觉整齐强迫不同量纲共用同一数值轴'],
-    positiveSignals: ['左侧训练过程 Score、右侧 SD-LoRA loss、底部 candidate/accepted update 标记保持一致', '轴范围随实验真实数值变化但图表语义不变'],
+    tags: ['briefing', '科研汇报', '图表', 'checkpoint', 'loss', 'Score', 'SD-LoRA', '视觉一致性', '新实验', 'DirectApply', 'No-GDR'],
+    principle: '同一组实验若展示相同证据类型，应复用同一图表位置、线型与更新标记语义；后续新增实验只要也在展示 per-round Score / SD-LoRA loss / update 位置，就继承这套语法，不因“是新实验”重新改成摘要卡片；坐标范围和单位可以因真实技术差异调整。',
+    antiPatterns: ['7B、1.7B、3B 各自发明不同的 Score / loss / update 视觉编码', '已有实验用 Score / loss 曲线，新实验只有摘要数字卡片，导致横向比较重新学习表现方式', '为了视觉整齐强迫不同量纲共用同一数值轴'],
+    positiveSignals: ['左侧训练过程 Score、右侧 SD-LoRA loss、底部 candidate/accepted update 标记保持一致', '新增 DirectApply / No-GDR 等同类训练线沿用既有 Score + loss 语法', '轴范围随实验真实数值变化但图表语义不变'],
   },
   {
     id: 'CASE-089',

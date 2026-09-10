@@ -1057,6 +1057,10 @@ checkpoint/W&B 曲线属于同一个证据思想：连续轨迹可以帮助判�
 
 规律：**“让我马上看到页面”与“证明这个 commit 可以发布”是两个不同任务。** 快速 Preview 是 canonical 的 BaseModel 人审工作流，但它永远不是 merge evidence；final gate、科学边界和 Production 门槛没有被削弱。这条是 workflow canonical，不是视觉 Golden。
 
+**2026-09-10 补充**：在 No-GDR slide 已经声称改成曲线版以后，Agent 把旧 Preview URL 发给 owner；owner 只回了四个字：`没看到曲线`。这不是“曲线样式不好”，而是 review artifact 与声称的候选不一致。后续正确恢复是：重新构建 → 新建 prebuilt Preview → **实际打开托管后的目标 `#directapply-progress` slide** → 核对 `2 SVG / 3 polyline`、左 Score / 右 loss 确实可见 → 再把这个新 URL 发给 owner。
+
+补充规律：**快 Preview 仍然要验证它真的是这次 Preview。** 发送 review URL 前做最小的 target-specific hosted 可见性检查；不需要因此每次跑 205 项全站 browser final gate。要验证的是“我刚声称改的这个东西，在我发的这个目标页面里确实看得到”。`review-preview-not-visually-verified` 当前只有这一次直接事件，因此维持 normal，不假升级 repeated/hard。
+
 
 <a id="case-086-紧急恢复页先给行动再给运行手册"></a>
 ### CASE-086 — 紧急恢复页先给行动，再给运行手册
@@ -1100,6 +1104,10 @@ owner 要求：`我所有实验如果要出现这种 checkpoint loss、得分的
 规律：**一致的是视觉语义，不是数值范围。** 同一个证据对象跨实验必须复用位置、线型、marker 含义；真实量纲、范围、缺失数据不能为了视觉对称被伪造或抹平。
 
 边界：不同科学对象不必硬套同一个 chart type；没有 authoritative loss 的 rejected candidate 仍然留空，不能为了“统一”补假点。
+
+**2026-09-10 重复证据**：owner 在新 No-GDR / DirectApply 实验加入 briefing 后再次明确：`我新实验也得用在html表现和其他实验一样的分数loss表`。当时新实验页主要是 6 个摘要数字卡片，虽然数字本身正确，却打破了已经在 7B / 1.7B / 3B 建立的横向比较语法。随后 successor 把同一批 authoritative 数据重新画成 **左侧 WebShop Score（原始 round + 12-round moving average）、右侧 SD-LoRA training loss、底部 update / progress 证据条**。
+
+这次重复把 CASE-088 从一次 project-specific 明确偏好升级为 **repeated-explicit**：后续新增同类训练实验，只要真的有同类 per-round Score / loss / update 数据，默认继承现有视觉语义。两个 failure family `inconsistent-experiment-chart-grammar` 与 `cross-experiment-legend-relearning` 都已有两次直接事件，因此升级为 **repeated**，还不到 hard。边界不变：不能为了统一伪造不存在的曲线、缺失 loss 或相同 y 轴。
 
 <a id="case-089-阶段汇报需要最小方法背景"></a>
 ### CASE-089 — 阶段汇报要自带理解结果所需的最小方法背景
