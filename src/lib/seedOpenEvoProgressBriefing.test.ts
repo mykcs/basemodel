@@ -359,22 +359,33 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     for (const item of [
       '别只等曲线：把平台期拆成可验证问题',
       'R90–99 的 49.90 后，R110–119 回到 63.52',
-      'Success@1 从 R90–99 的 23.91% 到 R110–119 的 33.67%',
+      'Success@1 从 R90–99 的 25.62% 到 R110–119 的 34.38%',
       'Success@8 只从 51.88% 到 56.25%',
       'state/action coverage',
       'Frontier Curriculum',
       'partial-credit preference',
       'ΔSuccess@8',
       '待填',
-      '永久 Markdown PR #420',
+      '固定来源 #420 @ 301c7823',
     ]) expect(frontierSection).toContain(item);
     expect(directApplyFrontierPlan.status).toBe('PLAN_AND_READ_ONLY_DIAGNOSTIC_NOT_FINAL_EVALUATION');
     expect(directApplyFrontierPlan.metrics.sealed_rounds).toBe(122);
     expect(directApplyFrontierPlan.metrics.formal_rollouts).toBe(15616);
     expect(directApplyFrontierPlan.metrics.score_block_mean_pct.r110_r119).toBe(63.52);
-    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r110_r119.at1).toBe(33.67);
+    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r90_r99.at1).toBe(25.62);
+    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r100_r109.at1).toBe(30.62);
+    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r110_r119.at1).toBe(34.38);
     expect(directApplyFrontierPlan.metrics.sd_lora_selection.equal_to_exact_success_task_count_rounds).toBe(111);
-    expect(directApplyFrontierPlan.placeholders).toContain('frontier_curriculum_delta_success_at_8');
+    expect(directApplyFrontierPlan.metrics.final_panel_access_count).toBe(0);
+    expect(directApplyFrontierPlan.source_plan.exact_head_sha).toBe('301c78235327dbb0baa13da4ac9401f94c42a486');
+    expect(directApplyFrontierPlan.authority).toMatchObject({ may_authorize_run_mutation: false, may_authorize_recovery: false, may_authorize_successor_launch: false, may_authorize_final_panel: false });
+    expect(directApplyFrontierPlan.metrics).not.toHaveProperty('r122_rollout_only');
+    expect(directApplyFrontierPlan.placeholders).toEqual({
+      frontier_curriculum_delta_success_at_8: null,
+      frontier_curriculum_state_coverage_delta: null,
+      delayed_reject_counterfactual: null,
+      partial_credit_preference_start_decision: null,
+    });
     expect(directApplyFrontierPlan.interpretation.not_claiming).toContain('No final-panel result');
   });
 
