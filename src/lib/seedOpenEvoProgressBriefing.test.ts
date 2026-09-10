@@ -362,6 +362,9 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(directApplyPlateauDiagnostic.decision_boundary).toContain('Do not change the running R160 DirectApply treatment');
     expect(briefing).toContain("const adaptiveAutoHarnessHref = 'https://arxiv.org/abs/2606.01770'");
     expect(briefing).toContain("const reasoningBankHref = 'https://arxiv.org/abs/2509.25140'");
+    for (const paperHref of ['webShopPaperHref','seedPaperHref','loraPaperHref','harnessBenefitPaperHref','taskArithmeticHref','gatedDeltaPaperHref','adaptiveAutoHarnessHref','reasoningBankHref']) {
+      expect(briefing).toContain(`<ExternalBrandMark href={${paperHref}} />`);
+    }
   });
 
   it('keeps engineering work as a simple summary immediately before the final choice', () => {
