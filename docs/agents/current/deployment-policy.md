@@ -79,13 +79,19 @@ A replacement provider `ERROR` must also be localized by **execution phase** bef
 Repeated visual review while a page, briefing, or slide deck is still being edited uses a separate **review-only** lane. Its purpose is latency, not acceptance:
 
 ```text
-edit coherent UI/copy batch
--> run the local/Agent static build
--> package the already-built static output as a Vercel prebuilt artifact
+edit one coherent UI/copy batch
+-> run only the local/focused checks owned by the changed surface
+-> complete a fresh static build for the current working tree
+-> package that successful build output as a Vercel prebuilt artifact
 -> upload it to a dedicated non-Git-connected, non-Production review Preview surface
--> give the owner the temporary Preview URL for inspection
+-> open the hosted target route / anchor / slide and confirm the specific claimed change is visibly present
+-> only then give the owner the temporary Preview URL
 -> continue editing without moving `ci/vercel-gate-final`
 ```
+
+A review URL is not a completed review artifact until the claimed target has been inspected on that deployment. Provider `READY`, a successful upload, or source code containing the new element does not prove the owner-facing Preview contains it. For a slide claim such as “Score + loss curves are now visible”, inspect that exact hosted slide/anchor and verify those chart objects before handoff.
+
+The build artifact must also be fresh. If the current static build fails, **do not upload the last successful `dist/`**. If the failure is caused by stale/missing generated chunks, clear only the repository-owned generated output needed for a clean rebuild, then rebuild and package the new successful output; do not broaden cleanup into source files, shared caches, or unrelated worktrees.
 
 The review Preview may omit `verify:deploy`, the canonical Chromium matrix, and the Lab gate because it is **not release evidence**. It must remain noindex/non-Production, must not change canonical Production identity, and must not be promoted or treated as a successful final candidate. Do not persist provider account IDs, opaque project/team IDs, bypass tokens, or temporary share URLs in repository files or PR/Issue prose.
 
