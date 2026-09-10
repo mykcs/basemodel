@@ -250,6 +250,8 @@ describe('retained correction use-site routing', () => {
   it('keeps the first shell and checkout discovery safeguards on the fast path', () => {
     expect(root).toContain('Before the first compound shell call');
     expect(root).toContain('/bin/bash');
+    expect(root).toContain('The requested shell is not execution proof');
+    expect(principles).toContain('Verify the interpreter actually launched from the tool/process result');
     expect(principles).toContain('Do not guess a local checkout path');
     expect(principles).toContain('resolved root, branch, `HEAD`, dirty state, and intended remote/ref');
   });

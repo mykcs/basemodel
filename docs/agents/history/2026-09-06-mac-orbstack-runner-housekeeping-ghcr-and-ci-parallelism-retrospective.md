@@ -243,17 +243,17 @@ cache/log/tmp                    -> do not archive; regenerate
 
 ## 14. Friction 11 — Fish/Bash mismatch recurred even after earlier retrospectives
 
-**What happened:** a compound command using Bash `if ...; then ...; else ...; fi` syntax was accidentally sent through a Fish-default remote execution surface and failed before doing the intended checks.
+**What happened:** a compound Bash command first failed under the Mac's Fish-default execution surface. During the 2026-09-10 closeout, the execution request explicitly asked for `/bin/bash`, but the tool result still reported `shell: /opt/homebrew/bin/fish`. A simple outer `exec /bin/bash -lc ...` handoff then executed the read-only command correctly.
 
-**Why:** the shell was implicit in the tool call, while the command was authored with Bash assumptions.
+**Why:** the previous rule treated *requesting* Bash as if it proved the execution surface had actually launched Bash. Tool adapters may ignore, normalize, or fail to honor a requested shell.
 
-**Missing assumption:** shell dialect is runtime identity just like Python/Node/container identity.
+**Missing assumption:** shell dialect is runtime identity just like Python/Node/container identity, and requested runtime identity must be verified from the actual process/tool result.
 
-**Precheck next time:** if the command uses Bash assignment, `set -euo pipefail`, arrays, heredocs, process substitution, or compound loops/conditionals, set `/bin/bash` explicitly or run a checked-in script.
+**Precheck next time:** before the first compound command, request the intended interpreter **and verify the reported launched shell**. If it still reports Fish or another dialect, do not send compound Bash syntax through that outer parser. Use a simple explicit interpreter handoff only when quoting is trivial; otherwise write and syntax-check a standalone Bash/Python script.
 
-**Defensive rule:** parser failure under the wrong shell is `NOT_EXECUTED`, not evidence about Docker/Git/repository health.
+**Defensive rule:** **requested shell != executed shell**. Wrong-shell parser failure is `NOT_EXECUTED`, not evidence about Docker/Git/repository health.
 
-**Anti-example:** retrying the same Bash compound command through the default Fish shell and then debugging the repository because it still fails.
+**Anti-example:** passing `shell=/bin/bash`, ignoring a tool result that says it actually launched Fish, and assuming later parser behavior proves anything about the repository or machine.
 
 ## 15. Friction 12 — current provider architecture and historical Mac documents drifted apart
 
@@ -399,7 +399,7 @@ Several failures had already appeared in earlier BaseModel/OpenEvo retrospective
 
 | Repeated issue | Why prior deposition was insufficient | This closeout's fix |
 | --- | --- | --- |
-| Fish/Bash mismatch | detailed cases existed, but an execution tool still defaulted to Fish and the rule was not always activated at command construction | keep explicit-shell guard in root startup rules and current operating principles; treat shell as runtime identity |
+| Fish/Bash mismatch | detailed cases existed, but the rule still trusted the requested shell instead of verifying the interpreter the tool actually launched | root/current policy now requires requested-shell **and launched-shell** verification, with a use-site test that protects the wording |
 | dirty/stale worktree use | historical cases documented moving-main and worktree contamination, but convenience still pulled work toward long-lived dirty checkouts | current operating principles already route to isolated worktrees; this case adds exact remote/blob verification before cleanup |
 | queued self-hosted CI mistaken for stuck | queue diagnosis lived mainly in dated retrospectives | Mac fallback trigger now requires queue/runner/child-process readback before cancellation |
 | provider-role confusion | old Mac/Cloudflare/CircleCI cases remained discoverable and could look operational | current provider owner is explicit; old activation docs must be marked historical/manual fallback |
@@ -425,7 +425,7 @@ The closeout deliberately avoids copying every lesson into every layer. The curr
 
 | Lesson | Class | Durable owner / protection | Placement decision |
 | --- | --- | --- | --- |
-| Bash semantics require explicit Bash | A | `/AGENTS.md` + `project-agent-operating-principles.md` | already startup-visible; do not repeat here as current authority |
+| Bash semantics require explicit **and verified** Bash | A | `/AGENTS.md` + `project-agent-operating-principles.md` + `agentScenarioTriggerRegistry.test.ts` | startup-visible and mechanically protected; the request field alone is not execution proof |
 | dirty/concurrent worktree and moving shared state | A | `project-agent-operating-principles.md` + `release-closeout-protocol.md` | existing current rules already require isolation, live refresh, and race-check |
 | provider halt is not shell exit | A | `deployment-policy.md` + `tests/ci-plan.test.mjs` | current policy + executable regression guard |
 | inherited Git output must not page interactively | A | `deployment-policy.md` + `scripts/ci-docs-contract.mjs` + `tests/ci-plan.test.mjs` | landed during this conversation via #484/#485; no second policy owner needed |
@@ -444,7 +444,7 @@ Cross-conversation memory candidates from this case are intentionally narrow:
 
 - the owner's Mac is a control-plane device as well as a possible fallback runner, so ordinary CI should prefer cloud execution and avoid persistent Mac contention;
 - the owner prefers free/cloud CI when it preserves the acceptance contract and does not use the scientific GPU server;
-- explicit Bash should be selected for Bash semantics;
+- Bash semantics require both selecting Bash and verifying the execution surface actually launched it;
 - dirty concurrent worktrees must not be reset/rebased merely for convenience;
 - current provider/experiment authority must be re-read instead of inferred from a historical retrospective;
 - backups must be identity-verified before local destructive cleanup;
