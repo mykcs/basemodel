@@ -27,11 +27,11 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/technical-notes/'");
   });
 
-  it('keeps a twenty-slide deck with page numbers only on inner slides', () => {
-    expect((briefing.match(/<section /g) ?? []).length).toBe(20);
-    for (let page = 2; page <= 19; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 20`);
-    expect(briefing).not.toContain('01 / 20');
-    expect(briefing).not.toContain('20 / 20');
+  it('keeps a twenty-one-slide deck with page numbers only on inner slides', () => {
+    expect((briefing.match(/<section /g) ?? []).length).toBe(21);
+    for (let page = 2; page <= 20; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 21`);
+    expect(briefing).not.toContain('01 / 21');
+    expect(briefing).not.toContain('21 / 21');
     expect(briefing).not.toContain('class="slide-next"');
     expect(briefing).not.toContain('返回顶部');
   });
@@ -207,29 +207,47 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(technical).toContain('15,744 次正式环境尝试');
   });
 
-  it('keeps TaskVector simple in the main deck and moves full geometry to technical notes', () => {
-    const taskSlide = briefing.slice(sectionPosition('mechanism'), sectionPosition('gdr'));
-    expect(taskSlide).toContain('训练确实在发生以后，新的问题是：参数到底学到了什么？');
+  it('keeps TaskVector definition simple before showing behavior evidence', () => {
+    const taskSlide = briefing.slice(sectionPosition('mechanism'), sectionPosition('taskvector-behavior'));
+    expect(taskSlide).toContain('参数更新开始发生后，我们开始追它往哪里学');
     expect(taskSlide).toContain('v = θ<sub>after</sub> − θ<sub>before</sub>');
     expect(taskSlide).toContain('‖v‖ 告诉我们参数移动了多少');
     expect(taskSlide).toContain('夹角 / cosine');
+    expect(taskSlide).toContain('Editing Models with Task Arithmetic');
+    expect(taskSlide).not.toContain('0.56 → 0.35');
+    expect(taskSlide).not.toContain('24 / 24');
     expect(taskSlide).not.toContain('τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub>');
     expect(taskSlide).not.toContain('‖τ‖<sub>F</sub> = 0.608');
     expect(taskSlide).not.toContain('同范数随机方向');
+  });
+
+  it('shows TaskVector direction stability and causal intervention as evidence, not final score proof', () => {
+    const behaviorSlide = briefing.slice(sectionPosition('taskvector-behavior'), sectionPosition('gdr'));
+    expect(behaviorSlide).toContain('拿掉累计参数变化后，24 个输入全部换了第一选择');
+    expect(behaviorSlide).toContain('1.7B 的 7 次正式更新没有从头到尾稳定同向');
+    expect(behaviorSlide).toContain('0.56 → 0.35 → 0.03 → -0.02 → 0.11 → 0.79');
+    expect(behaviorSlide).toContain('24 / 24');
+    expect(behaviorSlide).toContain('0.15 → 1.02');
+    expect(behaviorSlide).toContain('TaskVector 已经能改变模型行为');
+    expect(behaviorSlide).toContain('最终 WebShop 分数仍由冻结终评回答');
+    expect(behaviorSlide).toContain("PR #317 · {t('参数机制分析'");
+    expect(behaviorSlide).not.toContain('τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub>');
+    expect(behaviorSlide).not.toContain('‖τ‖<sub>F</sub> = 0.608');
     expect(technical).toContain('√(δcᵀGδc) = 0.6082257746');
     expect(technical).toContain('PR #358 · R14 / R27 / R49 与 Frobenius 几何证据');
     expect(technical).toContain('R14 / R27 / R49');
   });
 
   it('defines GDR in place and separates candidate training from admission', () => {
-    expect(briefing).toContain('OpenEVO 准备用 SD-LoRA 更新参数时，GDR 作为 gate 决定是否真的更新');
+    expect(briefing).toContain('GDR 把一次参数更新变成可测的准入判断');
     expect(briefing).toContain('GDR = Gated Delta Rule');
-    expect(briefing).toContain('这个 S / k / v 属于论文的 fast-weight memory 语义');
-    expect(briefing).toContain('旧状态与完整候选各做 16-task probe');
-    expect(briefing).toContain('至少一个任务指标必须严格提高');
-    expect(briefing).toContain('为什么最后变成了 gate？');
+    expect(briefing).toContain('S 是当前 fast-memory state，k 是要改写的关联位置，v 是准备写入的新 value');
+    expect(briefing).toContain('当前 OpenEVO 状态 + 完整候选状态 → 16-task probe → 是否采用');
+    expect(briefing).toContain('短期任务表现判断候选是否进入下一轮');
+    expect(briefing).toContain('为什么采用 gate 版本？');
     expect(briefing).not.toContain('把 16-task probe 得到的短期任务证据记作 k');
-    expect(briefing).toContain('OpenEVO 到底训练出了多少个 SD-LoRA 候选');
+    expect(briefing).not.toContain('所以你记得');
+    expect(briefing).toContain('OpenEVO 训练出了多少个 SD-LoRA 候选');
     expect(briefing).toContain('GDR 最终让多少个候选真正更新到后续模型');
     expect(technical).toContain('固定的 16-task 短期 probe');
   });
@@ -258,7 +276,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(sectionPosition('directapply')).toBeLessThan(sectionPosition('directapply-progress'));
     expect(sectionPosition('directapply-progress')).toBeLessThan(sectionPosition('technical-work-summary'));
     for (const item of [
-      '所有已训练的 SD-LoRA 候选都进入了后续模型；最终评测仍未打开',
+      'DirectApply 持续接纳参数候选，冻结终评仍未打开',
       '2026-09-10 08:40 SGT',
       '95 rounds · 12,160 rollout',
       '94 / 94',
@@ -348,7 +366,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('keeps the scientific story in the requested causal order', () => {
-    const ids = ['results','openevo-method','stage2-gate','component-cap','seven-b','diagnostic-entry','horizon-diagnostic','capacity-diagnostic','training-dynamics','mechanism','gdr','one-seven-b','directapply','directapply-progress','technical-work-summary','next'];
+    const ids = ['results','openevo-method','stage2-gate','component-cap','seven-b','diagnostic-entry','horizon-diagnostic','capacity-diagnostic','training-dynamics','mechanism','taskvector-behavior','gdr','one-seven-b','directapply','directapply-progress','technical-work-summary','next'];
     const positions = ids.map(sectionPosition);
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect(positions).toEqual([...positions].sort((a, b) => a - b));
