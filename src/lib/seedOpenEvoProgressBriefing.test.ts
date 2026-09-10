@@ -257,7 +257,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(sectionPosition('directapply')).toBeLessThan(sectionPosition('directapply-progress'));
     expect(sectionPosition('directapply-progress')).toBeLessThan(sectionPosition('technical-work-summary'));
     for (const item of [
-      'No-GDR 已跑完 R0–R94：94 个 SD-LoRA 候选都进入了后续模型',
+      'DirectApply 已完成 94 次参数更新；最终评测仍未打开',
       '2026-09-10 08:40 SGT',
       '95 rounds · 12,160 rollout',
       '94 / 94',
@@ -265,8 +265,9 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
       '41.83 → 55.81',
       '1.046 → 0.130',
       '0 accesses · —',
-      'shadow GDR 会拒绝其中 54 个',
-      '还不能回答“哪条路线最终 WebShop 更高”',
+      '同一批候选的 shadow GDR（只做标签）',
+      '不是另一条真实跑过的 GDR 长跑',
+      '不能推出完整 GDR 最终只会更新 40 次',
       '08:40 SGT 可审计快照',
       'current No-GDR controller · 911e3afe',
     ]) expect(briefing).toContain(item);
@@ -278,6 +279,9 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(directApplyLiveSnapshot.metrics.sd_lora_candidates_trained).toBe(94);
     expect(directApplyLiveSnapshot.metrics.directapply_admissions).toBe(94);
     expect(directApplyLiveSnapshot.metrics.final_panel_access_count).toBe(0);
+    expect(directApplyLiveSnapshot.metrics.shadow_gdr_labels).toEqual({ pass: 40, reject: 54, total: 94 });
+    expect(directApplyLiveSnapshot.counterfactual_boundary).toContain('not outcomes from a separately executed full GDR trajectory');
+    expect(briefing).not.toContain('长期参数轨迹已经出现实质分叉');
   });
 
   it('keeps engineering work as a simple summary immediately before the final choice', () => {
