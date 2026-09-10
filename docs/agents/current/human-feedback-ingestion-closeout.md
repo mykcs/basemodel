@@ -63,6 +63,8 @@ If ingestion reveals a real unresolved page regression, record it and report it.
 
 Before ingestion, resolve current repository authority from **current `main`**, not from remembered paths or stale chat SHA values.
 
+Before the first local/RDC/terminal command in this closeout, read the current repository root `AGENTS.md` and `docs/agents/README.md`. This is an execution preflight, not merely a pre-mutation step: the root bootstrap may already own shell/worktree/tool rules that this protocol intentionally does not duplicate. If the command depends on Bash syntax, set the outer shell/interpreter explicitly (for example `/bin/bash`) before running it. Do not discover this only after a Fish parser error.
+
 At minimum inspect:
 
 - root `AGENTS.md`;
@@ -594,6 +596,10 @@ For a source surface outside BaseModel, or a BaseModel task without a matching R
 
 Scope is part of the retrieval proof: specialized briefing/research preferences must not leak into a recovery task simply because they have high priority. `all-public-ui` evidence may still apply, and explicit workflow cues may retrieve workflow evidence across surface scopes because workflow describes the delivery loop rather than the page's visual grammar.
 
+Treat scope as a semantic contract, not a knob for making the receipt pass. If the future task is specifically copy, a `research-copy` brief may be more correct than a broad `research-ui` brief; do not widen stored Events/Gold Pairs to unrelated scopes merely to force retrieval. When a receipt misses an expected signal, first check whether the requested scope actually matches the evidence owner.
+
+For workflow-scoped learning, also prove **activation-cue parity** across the low-level retrieval and the compiled Preference Brief. If a genuine feedback/case-learning cue activates a workflow preference, the corresponding direct Event/trajectory must not be silently dropped by a different cue filter. Conversely, Preview/build/review-specific workflow evidence must not be pinned for a generic feedback-learning task that never asked about Preview. Fix the cue taxonomy or retrieval pipeline; do not pad the query with irrelevant keywords, inflate failure severity, dump the full history, or broaden scopes just to manufacture a PASS.
+
 ### Step 7 — prove evaluation-side learning
 
 Verify that the relevant hard/repeated failure family or deterministic guard can reject a recurrence before owner review.
@@ -602,6 +608,7 @@ Verify that the relevant hard/repeated failure family or deterministic guard can
 
 At minimum, as applicable:
 
+- the actual `feedback:ingestion-closeout` receipt for the new/updated record (a green focused unit-test subset is not a substitute for the integrated retrieval/evaluation proof);
 - Human Preference focused tests;
 - `audit:human-feedback`;
 - candidate receipt verifier;

@@ -210,6 +210,14 @@ npx tsx scripts/generate-human-preference-brief.ts \
 
 Cross-repository feedback remains valid training evidence when provenance is explicit: preserve the source repository, route, PR/SHA when available, and keep the learned rule in this BaseModel HPL authority. Do not copy the source product itself into BaseModel or pretend the source artifact was a BaseModel route.
 
+### Activation cues are one end-to-end contract
+
+A task-time Preference Brief is compiled from several layers, so activation semantics must agree across them. The low-level Preference Model/Gold Pair retrieval and the V2 Event/trajectory/visual selection must not use incompatible cue taxonomies for the same workflow. A query such as `真人反馈 / 案例簇 / preference learning` should be able to retrieve the feedback-learning workflow evidence without requiring fake `Preview` terms; a Preview-specific canonical workflow should appear only when Preview/build/review cues are actually present.
+
+Regression tests should cover both directions: **positive activation** for the intended workflow evidence and **negative activation** for an adjacent workflow that was not requested. If these disagree, fix retrieval/compilation rather than widening every Event scope, promoting a one-off family to `hard`, adding irrelevant query words, or returning the full history.
+
+Scope is part of the same contract. Choose the narrowest honest task scope (`research-copy`, `briefing`, `recovery`, etc.) and let incompatible evidence stay out. A broader scope is not automatically more complete.
+
 ## 8. Internal 2–3 candidate screening
 
 Material user-facing work should not expose the Agent's first aesthetic guess to the owner.
