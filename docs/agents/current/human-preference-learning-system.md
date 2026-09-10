@@ -253,6 +253,20 @@ The verifier fails when:
 
 The point is not to make the owner choose among three drafts. The point is to use historical feedback to reject weak drafts **before** the owner sees them.
 
+### Named design references need a cognition-translation witness
+
+When the owner names Apple Developer, another product, a design system, or a visual reference, do not let “looks similar” become the candidate hypothesis. Before ranking candidates, write one compact witness:
+
+```text
+reference cue
+-> cognition / interaction principle being borrowed
+-> this page's reader task and mental model
+-> concrete behavior/layout decision
+-> surface shortcut deliberately not copied
+```
+
+For the current HPL corpus, `reference-surface-imitation` is a hard failure family. A candidate rationale that only says “large whitespace / serif / rounded / full-screen hero / more Apple-like” has not checked that family. Those tokens may still be valid when independently justified by the page role; resemblance to the reference is not the justification.
+
 ### Evidence binds to the final artifact
 
 Candidate selection, screenshots, and judge receipts are evidence for a concrete artifact, not for a task name in the abstract. A material change after selection — scientific result/caveat, information hierarchy, composition, or other user-visible content that can change attention — invalidates the old rendered evidence. Re-render and rerun the relevant comparison/review, then bind the receipt to the final Git SHA / artifact identity.

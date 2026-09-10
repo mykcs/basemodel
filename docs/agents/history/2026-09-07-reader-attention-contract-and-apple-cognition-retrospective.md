@@ -200,3 +200,48 @@ human feedback captured as evidence
 ```
 
 任何一层缺失都应按真实状态报告；不要用“页面看起来好多了”“CI 全绿”或“我会记住”替代另一层证据。
+
+## 12. 2026-09-10 follow-up：规则已经存在，为什么还是“只学其形”
+
+2026-09-10 的全站 cold-read audit 再次命中同一个根因。owner 直接总结：`这个是因为我之前让 agent 模仿 Apple 开发者设计的思路，看来只模仿其形未模仿其神。` 这次不是 CASE-068 缺失：CASE-068、`ui-design-principles.md` 和本历史文件早已写明 Apple 只提供 cognition 参考，不是视觉皮肤。真正的问题是旧知识没有在每个候选设计的 **use site** 形成强制转换步骤。
+
+随后 HPL closeout 已把这个重复机制结构化为 hard family `reference-surface-imitation`。本次 conversation-lessons closeout 不再复制那批 HPL Event/CASE/Visual data；只补“为什么规则没生效”的执行层经验。
+
+### 新暴露的因果链
+
+1. **参考原则没有变成候选前的转换 witness。** Agent 能读到“不要抄 Apple 外观”，但仍可直接从大留白、full-screen Hero、serif 等 token 开始实现。以后必须先写 `reference -> cognition principle -> reader task -> concrete behavior -> rejected surface shortcut`；视觉相似本身不构成理由。
+2. **Gate 的代理指标也会反向塑造产品。** 旧 first-viewport 计数按物理 viewport 内可见内容统计。只要把 Hero 撑到 `100vh/100svh`、垂直居中或增加空白，就能把下一节推下折叠线、让计数下降。这样的 Gate 虽然数值更绿，却可能奖励更慢的 content arrival。自动化预算必须被当成 overload alarm，而不是“占满一屏”的设计目标。
+3. **布局变化可能改变交互状态机。** 去掉无意义大空白后，Lab/Server 的被观察 section 会在初始加载时进入 viewport；`IntersectionObserver` 因而把“初始可见”误当成“用户已经滚到 step 0”，WebKit 全矩阵更容易暴露这个 race。初始可见是 observation，不是 intent；scroll-linked state 应在当前文档收到真实滚动/导航意图后再同步。
+4. **测试可以保护错的实现细节。** 一条 Lab 测试曾要求 `position: static`，但真实产品边界只是“读者尚未进入 explainer 时，不要出现 viewport-level fixed controls”。`sticky` 也满足该语义。修 stale test 时应保留行为合同，而不是恢复被拒绝的 CSS token。
+5. **并行 PR / moving main 与工具 timeout 这轮也再次出现，但没有形成新规则。** 关闭的 #554 被 successor 接管、PR head/base 漂移、Git push/远程命令 timeout 都按现有 `multi-pr-semantic-integration-playbook.md`、`project-agent-operating-principles.md` 的 read-before-write / durable-state reconstruction 处理；因此这里只记作“旧规则这次成功阻止了误操作”，不再创建近义 policy。
+
+### Follow-up coverage ledger
+
+| Feedback / failure | Repeated? | Reusable lesson | Canonical destination | Why there |
+| --- | --- | --- | --- | --- |
+| `只模仿其形未模仿其神` | 是，owner 明确指出旧规则仍复发 | 设计参考必须先转译 cognition 与 reader task，再决定视觉 token | HPL hard family + `human-preference-learning-system.md` | HPL 已保存原始偏好证据；current owner 补 use-site witness，避免重复 CASE |
+| 案例库很多但第一版仍不够接近 owner | 是 | CASE 只是训练证据；必须进入 pre-write retrieval + post-write judge | `human-preference-learning-system.md` / CASE-083 | 该闭环已经在前序 HPL closeout 建立，本次不重复写第二套系统 |
+| Contract/预算可 PASS，但页面仍靠满屏 Hero 与空白获得“聚焦” | 是，同类“结构 PASS ≠ 认知 PASS”再次出现 | Gate 不能奖励用空白推迟内容；预算只做 overload alarm | `site-reader-attention-contract.md` | 属于 Reader Attention Gate 的激励/反规避边界 |
+| Guide/Papers/Landscape/Study 等审计出的主持人话术、实现细节优先、对象太晚出现 | 同 failure family 的 sibling | 继续复用 object-first / direct-facts / progressive-disclosure / inline-terminology | 已有 HPL Preference owners | 单页 finding 不应在 lessons closeout 再造页面级永久规则 |
+| Lab `position: static` stale assertion | 否 | 测试保护产品语义，不保护偶然 CSS token | `website-engineering-standard.md` | 跨 UI 测试都可复用的工程规则 |
+| 去空白后 IntersectionObserver 初始自动推进 | 否 | 初始可见 != 用户滚动意图；显式 arm scroll-linked state | `website-engineering-standard.md` | 共享交互/浏览器时序工程规则 |
+| HPL source window 没有真实产品 PR | 否 | 没有 PR 就省略字段，用 exact source head/route；不能伪造 provenance | `human-feedback-ingestion-closeout.md` | ingestion schema/证据完整性规则 |
+| HPL closeout 之后又做 conversation lessons closeout | 可重复流程 | 后者只补 HPL 尚未覆盖的工程/知识系统经验，不能重复计数同一真人反馈 | `scenario-trigger-registry.md` | 任务切换时最容易被未来 Agent 直接命中的 router use site |
+| closed/successor PR、moving main、远程/Git timeout | 是，但已有 owner | refresh live head、找 successor、从 durable artifacts 重建，不 force/不把 timeout 当失败 | existing multi-PR / project Agent principles | 现有规则足够且本轮实际被正确执行，不复制新 authority |
+| 临时 Preview URL、端口、PID、worktree、本地未发布 candidate、当时的 provider pending 状态 | 否，临时状态 | 不进入 standing policy | 不持久化 | 只对当时执行有用，未来会过期 |
+
+### Future-Agent test
+
+一个完全没读过本对话的 Agent 从 root `AGENTS.md` 出发，应能在一到两跳内完成以下动作：
+
+1. 设计任务点名 Apple/其他参考产品时，scenario/HPL 路由会要求先生成 Preference Brief；`reference-surface-imitation` hard family 会进入候选检查，同时 current HPL owner 要求写 cognition-translation witness。
+2. 首屏预算红灯时，`site-reader-attention-contract.md` 明确禁止用 `100vh/100svh`、空 spacer 或无语义大留白把下一节推走来换绿灯；要判断真正的 competing center 与 cold read。
+3. 共享 spacing/layout 改动让 observed section 初始可见时，`website-engineering-standard.md` 会提醒先保护 overview 初始状态，再验证真实用户 scroll 后仍能同步，且 WebKit 要进入 focused regression。
+4. 如果前一阶段已经完成 HPL ingestion，retrospective trigger 会要求复用 HPL ledger 作为 predecessor evidence，而不是再造 CASE、再判一次 visual tier。
+5. closeout 没有产品 PR 时，ingestion protocol 允许 `pullRequest` 缺省，并禁止为了“字段完整”制造假的 provenance。
+
+如果未来 Agent 仍然能只写“Apple-like whitespace / serif / hero”就进入 owner review，或者能通过添加空白来让 Reader Attention Gate 变绿，那么这次 closeout 仍然没有真正解决知识系统的复发问题。
+
+### 刻意不永久保存
+
+本 follow-up 不保存当时的临时 Preview、PR mergeability、deployment id、local port/PID/worktree 路径，也不把未经过 owner review 的本地视觉 successor 写成 `current-candidate / Silver / Golden`。这些状态要么已经由 Git/provider 历史重建，要么会快速过期；standing policy 只保留可复用的因果规则。

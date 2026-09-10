@@ -4,6 +4,9 @@ import { describe, expect, it } from 'vitest';
 const root = readFileSync(new URL('../../AGENTS.md', import.meta.url), 'utf8');
 const readme = readFileSync(new URL('../../docs/agents/README.md', import.meta.url), 'utf8');
 const principles = readFileSync(new URL('../../docs/agents/current/project-agent-operating-principles.md', import.meta.url), 'utf8');
+const engineering = readFileSync(new URL('../../docs/agents/current/website-engineering-standard.md', import.meta.url), 'utf8');
+const hpl = readFileSync(new URL('../../docs/agents/current/human-preference-learning-system.md', import.meta.url), 'utf8');
+const ingestion = readFileSync(new URL('../../docs/agents/current/human-feedback-ingestion-closeout.md', import.meta.url), 'utf8');
 const registry = readFileSync(new URL('../../docs/agents/current/scenario-trigger-registry.md', import.meta.url), 'utf8');
 const repositoryMap = readFileSync(new URL('../../docs/agents/current/repository-map.md', import.meta.url), 'utf8');
 const seedWorkflow = readFileSync(new URL('../../docs/agents/current/seed-guided-research-workflow.md', import.meta.url), 'utf8');
@@ -125,6 +128,21 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('Escalate repeated action-selection mismatch by changing execution surface');
     expect(registry).toContain('Do not keep retrying the same connector mutation');
     expect(registry).toContain('`gh pr create` for opening a PR');
+  });
+
+  it('keeps HPL and conversation-lessons closeout from double-counting the same feedback', () => {
+    expect(registry).toContain('Do not double-ingest a conversation that already ran Human Preference Learning closeout');
+    expect(registry).toContain('machine-readable HPL ledger/events/trajectory as predecessor evidence');
+    expect(ingestion).toContain('If the source window has **no real product PR**');
+    expect(ingestion).toContain('Never invent a PR number');
+  });
+
+  it('turns named visual references into cognition witnesses and protects scroll intent', () => {
+    expect(hpl).toContain('Named design references need a cognition-translation witness');
+    expect(hpl).toContain('reference-surface-imitation');
+    expect(engineering).toContain('Initial visibility is not scroll intent');
+    expect(engineering).toContain('initial load preserves the declared starting state');
+    expect(engineering).toContain('Protect the semantic behavior, not an incidental CSS token');
   });
 
   it('routes advisor briefing work through scientific-story and experiment-inventory preflight', () => {
