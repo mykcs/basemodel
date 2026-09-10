@@ -11,7 +11,8 @@ const enPage = read('../pages/en/research/seed-openevo/study/briefing/index.astr
 const zhTechnical = read('../pages/research/seed-openevo/study/briefing/technical-notes/index.astro');
 const enTechnical = read('../pages/en/research/seed-openevo/study/briefing/technical-notes/index.astro');
 const contracts = read('../data/siteReaderContracts.ts');
-const directApplyLiveSnapshot = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-live-snapshot-20260910-0840-sgt.json'));
+const directApplyLiveSnapshot = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-live-snapshot-20260910-0952-sgt.json'));
+const directApplyLiveDynamics = read('../data/openEvoDirectApplyLiveDynamics.ts');
 const sitemap = read('./sitemapRoutes.ts');
 
 const sectionPosition = (id: string) => briefing.indexOf(`<section id="${id}"`);
@@ -272,33 +273,43 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(technical).toContain('16-task task-score probe 不再拥有接受 / 拒绝决定权');
   });
 
-  it('shows the current No-GDR snapshot without promoting it to a frozen final', () => {
+  it('shows the current No-GDR snapshot with the same Score/loss chart grammar and no frozen-final claim', () => {
     expect(sectionPosition('directapply')).toBeLessThan(sectionPosition('directapply-progress'));
     expect(sectionPosition('directapply-progress')).toBeLessThan(sectionPosition('technical-work-summary'));
+    const directApplySection = briefing.slice(sectionPosition('directapply-progress'), sectionPosition('technical-work-summary'));
     for (const item of [
-      'DirectApply 持续接纳参数候选，冻结终评仍未打开',
-      '2026-09-10 08:40 SGT',
-      '95 rounds · 12,160 rollout',
-      '94 / 94',
-      '40 pass · 54 reject',
-      '41.83 → 55.81',
-      '1.046 → 0.130',
-      '0 accesses · —',
-      '同一批候选的 shadow GDR（只做标签）',
-      '完整 GDR 长跑没有在同一起点实际执行',
-      '不能推出完整 GDR 最终只会更新 40 次',
-      '08:40 SGT 可审计快照',
+      'DirectApply 长跑正在上升；最终评测仍未打开',
+      '2026-09-10 09:52 SGT',
+      '和 7B、3B、1.7B GDR 一样，用左侧 Score 图和右侧 SD-LoRA loss 图展示训练过程',
+      '训练过程中每轮 WebShop Score',
+      'SD-LoRA training loss',
+      '每个点=DirectApply 已采用的候选更新',
+      'shadow GDR 只做诊断标签',
+      '完整 GDR 长跑没有在同一起点实际执行；最终 WebShop 胜负仍要等冻结终评。',
+      '09:52 SGT 可审计快照',
       'current No-GDR controller · 911e3afe',
-    ]) expect(briefing).toContain(item);
+    ]) expect(directApplySection).toContain(item);
+    expect(directApplySection).toContain('class="dynamics-grid"');
+    expect(directApplySection).toContain('scoreRawPointsDirectApply');
+    expect(directApplySection).toContain('lossPointsDirectApply');
+    expect(directApplySection).not.toContain('live-progress-grid');
     expect(briefing).toContain('DirectApply 的最终 Score / Succ. 继续保持空白');
-    expect(directApplyLiveSnapshot.snapshot_label_sgt).toBe('2026-09-10T08:40:00+08:00');
+    expect(directApplyLiveSnapshot.snapshot_label_sgt).toBe('2026-09-10T09:52:00+08:00');
     expect(directApplyLiveSnapshot.status).toBe('LIVE_TRAINING_SNAPSHOT_NOT_FINAL_EVALUATION');
     expect(directApplyLiveSnapshot.controller_sha).toBe('911e3afec1bc14d2194fa59b8feb3a232c34da85');
-    expect(directApplyLiveSnapshot.metrics.sealed_rounds).toBe(95);
-    expect(directApplyLiveSnapshot.metrics.sd_lora_candidates_trained).toBe(94);
-    expect(directApplyLiveSnapshot.metrics.directapply_admissions).toBe(94);
+    expect(directApplyLiveSnapshot.metrics.sealed_rounds).toBe(98);
+    expect(directApplyLiveSnapshot.metrics.formal_rollouts).toBe(12544);
+    expect(directApplyLiveSnapshot.metrics.sd_lora_candidates_trained).toBe(97);
+    expect(directApplyLiveSnapshot.metrics.directapply_admissions).toBe(97);
     expect(directApplyLiveSnapshot.metrics.final_panel_access_count).toBe(0);
-    expect(directApplyLiveSnapshot.metrics.shadow_gdr_labels).toEqual({ pass: 40, reject: 54, total: 94 });
+    expect(directApplyLiveSnapshot.metrics.shadow_gdr_labels).toEqual({ pass: 42, reject: 55, total: 98 });
+    expect(directApplyLiveSnapshot.metrics.training_round_score_mean_pct.latest_20).toBeCloseTo(53.0628, 3);
+    expect(directApplyLiveSnapshot.metrics.sd_lora_training_loss.latest).toBeCloseTo(0.107326, 6);
+    expect(directApplyLiveSnapshot.score).toHaveLength(98);
+    expect(directApplyLiveSnapshot.loss).toHaveLength(97);
+    expect(directApplyLiveDynamics).toContain('sealed R0-R97');
+    expect(directApplyLiveDynamics).toContain('score: [');
+    expect(directApplyLiveDynamics).toContain('loss: [');
     expect(directApplyLiveSnapshot.counterfactual_boundary).toContain('not outcomes from a separately executed full GDR trajectory');
     expect(briefing).not.toContain('长期参数轨迹已经出现实质分叉');
   });
