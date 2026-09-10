@@ -21,7 +21,7 @@ const directApplyLiveAuthorityHref = 'https://github.com/mykcs/openevo-experimen
 const directApplyLiveSnapshotHref = OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS.evidenceHref;
 const directApplyPlateauEvidenceHref = '/research/seed-openevo/evidence/q17-directapply-plateau-diagnostic-20260910-1038-sgt.json';
 const frontierPlanHref = p('/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/');
-const frontierPlanMarkdownHref = 'https://github.com/mykcs/openevo-experiment/blob/301c78235327dbb0baa13da4ac9401f94c42a486/docs/experiment-tracking/Q17_DIRECTAPPLY_FRONTIER_PLAN_20260910.md';
+const frontierPlanMarkdownHref = 'https://github.com/mykcs/openevo-experiment/blob/369053c94c1fd9b4484cb38c9c244dc97e78521a/docs/experiment-tracking/Q17_DIRECTAPPLY_FRONTIER_PLAN_20260910.md';
 const frontierEvidenceHref = '/research/seed-openevo/evidence/q17-directapply-frontier-plan-20260910-2312-sgt.json';
 
 const dynamics3B = OPEN_EVO_3B_TRAINING_DYNAMICS;
@@ -515,7 +515,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
         <article><span>03 · {t('下一步实验', 'next experiments')}</span><strong>{t('先 Frontier，再 Preference', 'frontier first, preference later')}</strong><p>{t('先做 CPU-only 离线诊断；再在相同 128-rollout 预算下测试 Frontier Curriculum；partial-credit preference 和 delayed counterfactual 单独立项。', 'Start with CPU-only diagnostics; then test Frontier Curriculum under the same 128-rollout budget; keep partial-credit preference and delayed counterfactual separate.')}</p></article>
       </div>
       <div class="frontier-blanks"><span data-placeholder-key="frontier_curriculum_delta_success_at_8"><strong>ΔSuccess@8</strong>{t('待填', 'TBD')}</span><span data-placeholder-key="frontier_curriculum_state_coverage_delta"><strong>{t('State coverage', 'State coverage')}</strong>{t('待填', 'TBD')}</span><span data-placeholder-key="delayed_reject_counterfactual"><strong>{t('Delayed reject', 'Delayed reject')}</strong>{t('待填', 'TBD')}</span><span data-placeholder-key="partial_credit_preference_start_decision"><strong>{t('Partial-credit preference', 'Partial-credit preference')}</strong>{t('待填', 'TBD')}</span></div>
-      <p class="source-note"><a href={frontierPlanHref}>{t('网页计划页', 'roadmap page')}</a> · <a href={frontierPlanMarkdownHref}><ExternalBrandMark href={frontierPlanMarkdownHref} /> {t('固定来源 #420 @ 301c7823', 'pinned source #420 @ 301c7823')}</a> · <a href={frontierEvidenceHref}>{t('只读投影证据', 'read-only projection evidence')}</a> · <span>{t('final panel = 0；展示层不授权运行或恢复', 'final panel = 0; publication surface cannot authorize execution or recovery')}</span></p>
+      <p class="source-note"><a href={frontierPlanHref}>{t('网页计划页', 'roadmap page')}</a> · <a href={frontierPlanMarkdownHref}><ExternalBrandMark href={frontierPlanMarkdownHref} /> {t('固定来源 #420 @ 369053c9', 'pinned source #420 @ 369053c9')}</a> · <a href={frontierEvidenceHref}>{t('只读投影证据', 'read-only projection evidence')}</a> · <span>{t('final panel = 0；展示层不授权运行或恢复', 'final panel = 0; publication surface cannot authorize execution or recovery')}</span></p>
       <p class="slide-number">21 / 23</p>
     </div>
   </section>

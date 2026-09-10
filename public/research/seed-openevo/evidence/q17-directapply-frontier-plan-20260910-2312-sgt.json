@@ -9,7 +9,7 @@
   "source_plan": {
     "repository": "mykcs/openevo-experiment",
     "pull_request": 420,
-    "exact_head_sha": "301c78235327dbb0baa13da4ac9401f94c42a486",
+    "exact_head_sha": "369053c94c1fd9b4484cb38c9c244dc97e78521a",
     "plan_path": "docs/experiment-tracking/Q17_DIRECTAPPLY_FRONTIER_PLAN_20260910.md",
     "quantitative_summary_path": "analysis/q17_directapply_frontier/20260910T1640Z/q17_frontier_summary_R000_R121.md",
     "quantitative_json_path": "analysis/q17_directapply_frontier/20260910T1640Z/q17_frontier_metrics_R000_R121.json"
