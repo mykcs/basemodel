@@ -105,6 +105,19 @@ export const CAPABILITY_READER_ROUTES = [
     }
   },
   {
+    "route": "q17-directapply-frontier",
+    "coverage": "contextualized",
+    "owner": "OpenEvoQ17FrontierRoadmap",
+    "label": {
+      "zh": "Q17 Frontier 计划",
+      "en": "Q17 Frontier plan"
+    },
+    "purpose": {
+      "zh": "固定 DirectApply 长跑的 frontier 诊断、待补指标和 successor 实验计划。",
+      "en": "Freeze the DirectApply long-run frontier diagnosis, missing metrics, and successor experiment plan."
+    }
+  },
+  {
     "route": "stage1-evolution",
     "coverage": "contextualized",
     "owner": "OpenEvoSuccessorExplorationMap",

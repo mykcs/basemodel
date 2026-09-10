@@ -11,7 +11,7 @@ for (const entry of cases) {
       await page.setViewportSize(viewport);
       const response = await page.goto(entry.route, { waitUntil: 'domcontentloaded' });
       expect(response?.status()).toBe(200);
-      await expect(page.locator('.briefing-slide')).toHaveCount(22);
+      await expect(page.locator('.briefing-slide')).toHaveCount(23);
 
       const geometry = await page.evaluate(() => {
         const slide = document.querySelector<HTMLElement>('.briefing-slide');

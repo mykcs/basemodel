@@ -10,9 +10,12 @@ const zhPage = read('../pages/research/seed-openevo/study/briefing/index.astro')
 const enPage = read('../pages/en/research/seed-openevo/study/briefing/index.astro');
 const zhTechnical = read('../pages/research/seed-openevo/study/briefing/technical-notes/index.astro');
 const enTechnical = read('../pages/en/research/seed-openevo/study/briefing/technical-notes/index.astro');
+const zhFrontierPage = read('../pages/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.astro');
+const enFrontierPage = read('../pages/en/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.astro');
 const contracts = read('../data/siteReaderContracts.ts');
 const directApplyLiveSnapshot = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-live-snapshot-20260910-0952-sgt.json'));
 const directApplyPlateauDiagnostic = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-plateau-diagnostic-20260910-1038-sgt.json'));
+const directApplyFrontierPlan = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-frontier-plan-20260910-2312-sgt.json'));
 const directApplyLiveDynamics = read('../data/openEvoDirectApplyLiveDynamics.ts');
 const sitemap = read('./sitemapRoutes.ts');
 
@@ -27,13 +30,16 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(nav).toContain("id: 'briefing'");
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/'");
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/technical-notes/'");
+    expect(sitemap).toContain("'/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/'");
+    expect(zhFrontierPage).toContain('OpenEvoQ17FrontierRoadmap');
+    expect(enFrontierPage).toContain('OpenEvoQ17FrontierRoadmap');
   });
 
-  it('keeps a twenty-two-slide deck with page numbers only on inner slides', () => {
-    expect((briefing.match(/<section /g) ?? []).length).toBe(22);
-    for (let page = 2; page <= 21; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 22`);
-    expect(briefing).not.toContain('01 / 22');
-    expect(briefing).not.toContain('22 / 22');
+  it('keeps a twenty-three-slide deck with page numbers only on inner slides', () => {
+    expect((briefing.match(/<section /g) ?? []).length).toBe(23);
+    for (let page = 2; page <= 22; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 23`);
+    expect(briefing).not.toContain('01 / 23');
+    expect(briefing).not.toContain('23 / 23');
     expect(briefing).not.toContain('class="slide-next"');
     expect(briefing).not.toContain('返回顶部');
   });
@@ -286,7 +292,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   it('shows the current No-GDR snapshot with the same Score/loss chart grammar and no frozen-final claim', () => {
     expect(sectionPosition('directapply')).toBeLessThan(sectionPosition('directapply-progress'));
     expect(sectionPosition('directapply-progress')).toBeLessThan(sectionPosition('directapply-plateau'));
-    expect(sectionPosition('directapply-plateau')).toBeLessThan(sectionPosition('technical-work-summary'));
+    expect(sectionPosition('directapply-plateau')).toBeLessThan(sectionPosition('frontier-roadmap'));
+    expect(sectionPosition('frontier-roadmap')).toBeLessThan(sectionPosition('technical-work-summary'));
     const directApplySection = briefing.slice(sectionPosition('directapply-progress'), sectionPosition('directapply-plateau'));
     for (const item of [
       'DirectApply 前期抬高了分数，最近进入震荡平台',
@@ -326,10 +333,10 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('adds a bounded plateau diagnosis and keeps successor ideas separate from the running treatment', () => {
-    const plateauSection = briefing.slice(sectionPosition('directapply-plateau'), sectionPosition('technical-work-summary'));
+    const plateauSection = briefing.slice(sectionPosition('directapply-plateau'), sectionPosition('frontier-roadmap'));
     for (const item of [
-      'R70 以后分数不再稳定上涨，但训练和参数更新都没有停',
-      '下面三项只是线索，用来决定下一步该测什么',
+      'R70 后曾经震荡，但到 R121 又回升：现在不能说训练已经卡住',
+      'R110–119 的平均 Score 回到 63.52',
       '58.35 → 55.36 → 50.83',
       '94 / 98 轮',
       '8.25 / 16 道题进入训练',
@@ -339,10 +346,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
       'Text Memory · 2',
       'Agent System · 1',
       'Skill · 1',
-      '当前 DirectApply 先按原规则跑完 R160',
-      '平台真正为什么出现，还没有证明',
-      '每轮 128 次任务尝试',
-      '让部分得分也能参与学习',
+      '当前 DirectApply 仍按原规则跑完 R160',
+      'R121 的回升说明我们不该把 R97 的平台直接当成最终结论',
       '冻结终评还没打开',
       '论文里也见过两个相似问题',
       'Adaptive Auto-Harness：系统一直在更新，任务表现也可能先升后降',
@@ -365,6 +370,31 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     for (const paperHref of ['webShopPaperHref','seedPaperHref','loraPaperHref','harnessBenefitPaperHref','taskArithmeticHref','gatedDeltaPaperHref','adaptiveAutoHarnessHref','reasoningBankHref']) {
       expect(briefing).toContain(`<ExternalBrandMark href={${paperHref}} />`);
     }
+  });
+
+  it('adds an ELI5 frontier roadmap without changing the running DirectApply experiment', () => {
+    const frontierSection = briefing.slice(sectionPosition('frontier-roadmap'), sectionPosition('technical-work-summary'));
+    for (const item of [
+      '下一步先问清楚：是“会的题更稳了”，还是“不会的题也开始会了”？',
+      'R90–99 的平均 Score 是 49.90，R110–119 回到 63.52',
+      'Success@1 从 23.91% → 33.67%',
+      '到底有没有学会更多原来不会的题',
+      '同样 128 次机会，多给“差一点成功”的难题',
+      '先做不占 GPU 的离线统计',
+      '一次仍只改一个变量',
+      '待填',
+      '实验仓库计划 PR #420',
+      'R0–R121 只读数据',
+    ]) expect(frontierSection).toContain(item);
+    expect(directApplyFrontierPlan.status).toBe('PLAN_AND_READ_ONLY_DIAGNOSTIC_NOT_FINAL_EVALUATION');
+    expect(directApplyFrontierPlan.metrics.sealed_rounds).toBe(122);
+    expect(directApplyFrontierPlan.metrics.score_block_mean_pct.r90_r99).toBe(49.9);
+    expect(directApplyFrontierPlan.metrics.score_block_mean_pct.r110_r119).toBe(63.52);
+    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r90_r99.at1).toBe(23.91);
+    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r110_r119.at1).toBe(33.67);
+    expect(directApplyFrontierPlan.placeholders).toContain('frontier_curriculum_delta_success_at_8');
+    expect(frontierSection).not.toContain('最终胜出');
+    expect(frontierSection).not.toContain('DirectApply 已经失败');
   });
 
   it('keeps engineering work as a simple summary immediately before the final choice', () => {
@@ -442,7 +472,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('keeps the scientific story in the requested causal order', () => {
-    const ids = ['results','openevo-method','stage2-gate','component-cap','seven-b','diagnostic-entry','horizon-diagnostic','prompt-diagnostic','capacity-diagnostic','training-dynamics','mechanism','m1a-identifiability','gdr','one-seven-b','directapply','directapply-progress','directapply-plateau','technical-work-summary','next'];
+    const ids = ['results','openevo-method','stage2-gate','component-cap','seven-b','diagnostic-entry','horizon-diagnostic','prompt-diagnostic','capacity-diagnostic','training-dynamics','mechanism','m1a-identifiability','gdr','one-seven-b','directapply','directapply-progress','directapply-plateau','frontier-roadmap','technical-work-summary','next'];
     const positions = ids.map(sectionPosition);
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect(positions).toEqual([...positions].sort((a, b) => a - b));
