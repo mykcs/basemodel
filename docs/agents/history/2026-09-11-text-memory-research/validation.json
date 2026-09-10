@@ -1,0 +1,128 @@
+{
+  "schema": "basemodel.text-memory-projection-validation.20260911",
+  "plan_authority": "mykcs/openevo-experiment/docs/experiment-tracking/Q17_TEXT_MEMORY_REDESIGN_PLAN_2026-09-11.md",
+  "experiment_evidence_head": "77a45fb64ae8123f0be037b53929d9abeba9fcbe",
+  "main_observed": "8f2385adf4e62d88af8d22601e69a6b1ba6167c6",
+  "briefing_parent": {
+    "parent_pr": 625,
+    "parent_head": "6df62b8a4ac8433f532ebf0d05e332f994944bec",
+    "child_pr": 624,
+    "existing_slide_count": 23,
+    "integrated_slide_count": 24,
+    "added_ids": [
+      "text-memory-redesign"
+    ],
+    "existing_slide_bodies_identical_except_page_numbers": true,
+    "comparison": "exact per-section UTF-8 text after replacing only slide-number markup",
+    "section_sha256": {
+      "briefing-top": "a2caddd2fce30861dbe9d1501af379ebc83b2e1b2e325dc2c4f2d43cca17267d",
+      "contents": "108381491a38c05dc6f77770152475685c09068cf6b10127767dfb308ef006e8",
+      "science-attempts": "5f0663298ad5009b31a4d395a752835a256984f0a9f4860c2b1a5d5506e2179d",
+      "results": "daaa345e5b8cd7796b2416ea38c01311be5470597342e949cc0754216b094e6a",
+      "openevo-method": "40d77d5d83aae3d38aa9642382a0b2a6d9189c0ad5c73acb72e5e4ace97016c5",
+      "stage2-gate": "e96de69ab17bbbb4325c3c1c7d7e65196748e31bd7fec8b2d834094590f692e4",
+      "component-cap": "aae854689d37a37bc11f4d8e6b6e9c9e97ba376e559f6d7650f0155182284f1c",
+      "seven-b": "45de4e8db4a62c98efe2e124cb85d7349613d26f131cd3099f90faed299c25af",
+      "diagnostic-entry": "43d360733ed296a6f8eee1a566fc76bd97975cf23e96f79cf490b153f732d107",
+      "horizon-diagnostic": "be3755e2f30a9f47fb526c8c78908af88874827ed7cb2f3634f226857b8a2b69",
+      "prompt-diagnostic": "fb51f9deb391ac75513122dd4c7e87a0c0da5ed70d7456e1f255231cd4807a79",
+      "capacity-diagnostic": "73e83c0eb0f4a8157e35b72b7f290765e8f599d32c1051c2810008137da9054d",
+      "training-dynamics": "f4b3347bea4340846e8b71d786a30744c8d97fb83545d125a981fae2ee2763bd",
+      "mechanism": "7c75579485967fcb12f3caabb61902c452ba29f68d73d17ae702481cf037aa55",
+      "m1a-identifiability": "c4946664d4f9893b9b0ff0a524cec4284e2a839fc0b23ae7847d58f4e9d23d97",
+      "gdr": "b7173b917c5c518bbf585d75bcee96b25bc0a9b5919bbfacefe098390638fdcf",
+      "one-seven-b": "b499b07dc9ff7187e23315e8bb61368cf10cef0f1ee70b15fbb9ebfed8d8a934",
+      "directapply": "7fefa268197972874b5bf7bcb4ec23813967a284819c3a6a8b6357e308a72fd6",
+      "directapply-progress": "24a625023c701c67d2beab594b4b459e29f9658744a9f57814836c7ba9da25e6",
+      "directapply-plateau": "182a181c9104cf960bdd63fc3a72f9ad266aa0a0e7e68ff78206ac37060a3a66",
+      "frontier-roadmap": "b9ad69d19a229d472c34f76557c897e46195d719f9ddca33ff474ab276cd63af",
+      "technical-work-summary": "20947d1fb7a02f5ae3ba133f47b9f44a7a9907c21a19cd6692f9ea700115683f",
+      "next": "c2c29a672bf68f8ce8e41f3c3be1bae9eed2d91788ea7d43200a7b06b014b07a"
+    }
+  },
+  "scope": "LOCAL_SOFTWARE_AND_BROWSER_VALIDATION_NOT_OWNER_ACCEPTANCE",
+  "structural": {
+    "tests": 650,
+    "suites": 99,
+    "status": "PASS"
+  },
+  "astro_check": {
+    "errors": 0,
+    "warnings": 0,
+    "hints": 2
+  },
+  "static_build": {
+    "routes": 488,
+    "status": "PASS",
+    "noindex": true
+  },
+  "browser": {
+    "tests": 14,
+    "status": "PASS",
+    "engines": [
+      "chromium",
+      "webkit"
+    ],
+    "locales": [
+      "zh",
+      "en"
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "viewports": [
+      1440,
+      768,
+      390
+    ],
+    "screenshots_captured": 48,
+    "retries": 0,
+    "new_slide_text_outside_canvas": false,
+    "page_overflow": false
+  },
+  "source_sha256": {
+    "src/components/research/OpenEvoTextMemoryPlan.astro": "e4078bb1f915e36fcf0871c3b68f6ef2600267726324195de8e399bcd31fef99",
+    "src/components/research/OpenEvoTextMemoryResearchLink.astro": "d3399d37ff8eef8d9678d5d6442185937e28fc63c58a2f943e0cd5dfd72b89f8",
+    "src/components/research/SeedOpenEvoProgressBriefing.astro": "ae5be96b118ff8445edf1a9ed8194fa0e0172d95f1b7d4253c420ab276c67f3a",
+    "src/data/capabilityReaderRoutes.ts": "95e2099fa5dc94e47c9c78392c1e944e968bb07ce9c648905f5dd9fb4fcadeab",
+    "src/data/siteReaderContracts.ts": "3f2c691581a46521b9383c9012e5b7954340ea05d3bff0b71d0ed0f2656b1150",
+    "src/lib/sitemapRoutes.ts": "9ab33fd6b2ad24637d209c21403167eb96b6f1243736bcd7a0abab4436762c46",
+    "src/lib/openEvoTextMemoryPlan.test.ts": "42ea20d7d8f7831beafe7a6ed7299e1e2194f7b6c93d1db615527db6b5095beb",
+    "src/lib/seedOpenEvoProgressBriefing.test.ts": "d4673332a4c0b7220f2d9627fbbc80beb0c60773bc7ddf7ed7f903a4112a9e9d",
+    "tests/e2e/text-memory-research.spec.ts": "d06e649959ce2a11c48958d73edef4ff59caf28f3d3df764d1cf6596dd95e02f",
+    "tests/e2e/seed-openevo-briefing.spec.ts": "83a051bb8ad74340cf38f413db15ff49a5014c43b9f26aa4f947210ccf36d312",
+    "public/research/seed-openevo/evidence/q17-text-memory-research-20260911.json": "3dd036bc8d38c2be0a76bc9c34869517493417c23eb1a3d63e3aa01716f64555"
+  },
+  "screenshots_sha256": {
+    "zh-light-1440-page.png": "fb14478855d9a15f60d4bf389b03692bef0167077187b1b46b8474dea558c378",
+    "candidate-a-original-page.png": "91c107035a9f12b4fc73bc8a8c386c5e672b8e54bfd6d4ec34fe9065cddaa326",
+    "zh-light-1440-slide.png": "a3a9c1e3651a7e62b9e22e3425bc8e0cdd4bfb51202a917701998b602d71f8b9",
+    "zh-light-390-page.png": "6ebbd41fc86ed48ab3b10ff6fbce0f26bb125ad754411810b7d6941443ced55d",
+    "en-dark-1440-slide.png": "81f5bc52a9df122d14e5462b6234c98335bdb6aaa7cdf9894246710509179d27"
+  },
+  "local_log_sha256": {
+    "structural": "17fd29a0597e7ddf8bd392d3ad59e8420bd43285decff1965a08b4cd954fea48",
+    "browser": "c2010957beef720722dc31d57fae78bdad45a43d09ea628f191b6d9958da496f",
+    "check": "b152ec386fde256f943c25f7a8b485cdbcb7a9cba9e43e86f5366acef52e6622",
+    "build": "cc1c00c8ad4c635c1897c3a0169e0e35e912bd372aa9dc81380f332fb8e29210"
+  },
+  "owner_approval": "PENDING",
+  "independent_blind_reader": "NOT_PERFORMED",
+  "release_gate": "NOT_REQUESTED: parent briefing still requires its own approval/acceptance",
+  "production": "UNCHANGED",
+  "real_model_shadow": "NOT_RUN",
+  "known_limits": [
+    "Mobile tables intentionally scroll inside their own containers; visible scroll hints are present.",
+    "Same-author visual comparison is not blind-reader or owner acceptance.",
+    "Software prototype results are not teacher efficacy or WebShop results."
+  ],
+  "repaired_engineering_issues": [
+    "Existing page was absent from reader contract registry and threw at render.",
+    "Existing English route imports were one directory level short.",
+    "Existing duplicated locale entry copy became one typed bilingual component.",
+    "Sparse checkout omitted test dependencies; full checkout restored without changing checks.",
+    "Pagination assertion now matches slide-number markup, not an unrelated existing 24 / 24 scientific observation."
+  ],
+  "archived_text_log_representation": "ANSI stripped, local checkout path replaced, trailing whitespace removed; original log digests remain in local_log_sha256."
+}

@@ -1,6 +1,7 @@
 ---
 import AppLayout from '../../../../../layouts/AppLayout.astro';
 import SeedOpenEvoStudyOverview from '../../../../../components/research/SeedOpenEvoStudyOverview.astro';
+import OpenEvoTextMemoryResearchLink from '../../../../../components/research/OpenEvoTextMemoryResearchLink.astro';
 const locale = 'en' as const;
 ---
 
@@ -11,17 +12,5 @@ const locale = 'en' as const;
 >
   <SeedOpenEvoStudyOverview locale={locale} />
 
-  <section class="text-memory-callout" aria-label="Text Memory redesign plan">
-    <strong>{locale === 'zh' ? '今天的新问题：Text Memory 老师怎么写才算好？' : 'New issue today: what should a good Text Memory teacher write?'}</strong>
-    <p>{locale === 'zh' ? 'Stage 1 的输出上限、10+10，和 Stage 2 的 R104 / R122 都说明：我们需要把“读很多经历”和“写一张短笔记”拆清楚。' : 'Stage-1 output caps, 10+10, and Stage-2 R104 / R122 show that reading many experiences and writing one short note must be separated.'}</p>
-    <a href={locale === 'zh' ? '/research/seed-openevo/study/capability-exploration/text-memory/' : '/en/research/seed-openevo/study/capability-exploration/text-memory/'}>{locale === 'zh' ? '打开 Text Memory 计划 →' : 'Open the Text Memory plan →'}</a>
-  </section>
+  <OpenEvoTextMemoryResearchLink locale={locale} />
 </AppLayout>
-
-<style>
-
-  .text-memory-callout{width:min(1120px,calc(100% - 2rem));margin:2rem auto 0;padding:1rem 1.1rem;border:1px solid var(--line);border-radius:16px;background:var(--surface-muted)}
-  .text-memory-callout strong{display:block;color:var(--accent-deep);font-size:.92rem}
-  .text-memory-callout p{margin:.45rem 0 0;color:var(--muted);font-size:.82rem;line-height:1.7}
-  .text-memory-callout a{display:inline-flex;margin-top:.7rem;color:var(--accent-deep);font-size:.82rem;font-weight:800;text-decoration:none}
-</style>

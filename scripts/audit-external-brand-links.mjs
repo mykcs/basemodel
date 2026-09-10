@@ -14,6 +14,7 @@ const expectedBrand = (href) => {
     const host = url.hostname.toLowerCase();
     if (host === 'github.com' || host.endsWith('.github.com')) return 'github';
     if (host === 'huggingface.co' || host.endsWith('.huggingface.co')) return 'huggingface';
+    if (host === 'arxiv.org' || host.endsWith('.arxiv.org')) return 'arxiv';
   } catch {}
   return null;
 };
@@ -45,4 +46,4 @@ if (failures.length) {
   if (failures.length > 80) console.error(`  ... ${failures.length - 80} more`);
   process.exit(1);
 }
-console.log(`[audit-external-brand-links] PASS: ${checkedLinks} GitHub/Hugging Face links carry the matching official brand mark across ${pages.length} static routes`);
+console.log(`[audit-external-brand-links] PASS: ${checkedLinks} GitHub/Hugging Face/arXiv links carry the matching official brand mark across ${pages.length} static routes`);

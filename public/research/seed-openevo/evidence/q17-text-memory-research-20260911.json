@@ -1,0 +1,89 @@
+{
+  "schema": "basemodel.q17-text-memory-research.20260911",
+  "status": "HISTORICAL_ANALYSIS_AND_SOFTWARE_PROTOTYPE_NOT_EFFICACY_RESULT",
+  "observed_at_utc": "2026-09-10T18:33:42.049133+00:00",
+  "plan_authority": "https://github.com/mykcs/openevo-experiment/blob/main/docs/experiment-tracking/Q17_TEXT_MEMORY_REDESIGN_PLAN_2026-09-11.md",
+  "experiment_evidence_revision": "77a45fb64ae8123f0be037b53929d9abeba9fcbe",
+  "source_access": "Experiment source receipts require repository access; this JSON is a public-safe projection, not another plan.",
+  "receipt_bundle_sha256": "72c4a351ca95dca80cd4000972cc37ce10ba7a66a84429f1ed84a0a0f4692ace",
+  "formal_run_observation": {
+    "model": "Qwen3-1.7B",
+    "method": "Q17 DirectApply / No-GDR",
+    "last_sealed_round": 125,
+    "active_round": 126,
+    "target_training_round_count": 160,
+    "training_complete": false,
+    "final_panel_access_count": 0,
+    "round_index_zero_based": true
+  },
+  "r104": {
+    "primary": {
+      "output_tokens": 117,
+      "saturated": false,
+      "exact_prior_double": true,
+      "valid": false,
+      "sha256": "d60baab4f8f2e53a4dc582bdc05275d59c05d853d497de33fbeddb934112f719"
+    },
+    "repair": {
+      "output_tokens": 117,
+      "saturated": false,
+      "exact_prior_double": true,
+      "valid": false,
+      "sha256": "d60baab4f8f2e53a4dc582bdc05275d59c05d853d497de33fbeddb934112f719"
+    }
+  },
+  "r122": {
+    "primary": {
+      "output_tokens": 1024,
+      "saturated": true,
+      "exact_prior_double": false,
+      "valid": false,
+      "sha256": "f512bd8b2c2d5b6e6bd7872684cacb9f174bc3dccdcea2e783974fb5f2608507"
+    },
+    "repair": {
+      "output_tokens": 117,
+      "saturated": false,
+      "exact_prior_double": true,
+      "valid": false,
+      "sha256": "d60baab4f8f2e53a4dc582bdc05275d59c05d853d497de33fbeddb934112f719"
+    },
+    "recovery_new_model_calls": 0,
+    "rollout_replay": 0,
+    "sd_retraining": 0,
+    "new_memory_adopted": false,
+    "old_memory_sha256": "c01c9ff77b66b5d99973e260deb6950bfdf5837179f8452620d6307dc273ddce",
+    "terminal_reason": "NOOP_KEEP_PRIOR_TYPED_CONTRACT_REJECTED_AFTER_REPAIR"
+  },
+  "historical_stage1": {
+    "evidence": "three-arm closeout plus versioned A1/A2 policy",
+    "larger_cap_4096_still_saturated": true,
+    "ten_plus_ten_qualification_is_webshop_result": false,
+    "original_a1_per_call_population_complete": false,
+    "overall_failure_frequency": null
+  },
+  "prototype": {
+    "test_counts": {
+      "lineage": 12,
+      "teacher_contract": 21,
+      "shadow_preparation": 10
+    },
+    "scripted_fixture_count": 8,
+    "actual_model_calls": 0,
+    "real_model_shadow_rows": 0,
+    "semantic_duplicate_review": "PENDING",
+    "evidence_entailment_review": "PENDING",
+    "formal_activation": false
+  },
+  "unknown_results": {
+    "shadow_20_vs_larger_cap_vs_ten_plus_ten": null,
+    "webshop_score_effect": null,
+    "budget_matched_advantage": null,
+    "successor_activation": null
+  },
+  "next_scientific_freeze_required": [
+    "teacher model and revision",
+    "sampling",
+    "per-strategy total model calls and tokens including consolidation",
+    "cost-matched versus explicitly cost-reported comparison"
+  ]
+}

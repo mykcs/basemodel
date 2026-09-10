@@ -1,103 +1,148 @@
 ---
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
-
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import evidence from '../../../public/research/seed-openevo/evidence/q17-text-memory-research-20260911.json';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
-
-const briefingHref = p('/research/seed-openevo/study/briefing/');
-const designHref = 'https://github.com/mykcs/openevo-experiment/blob/main/docs/experiment-tracking/Q17_TEXT_MEMORY_REDESIGN_PLAN_2026-09-11.md';
+const briefingHref = p('/research/seed-openevo/study/briefing/') + '#text-memory-redesign';
+const designHref = evidence.plan_authority;
+const evidenceHref = '/research/seed-openevo/evidence/q17-text-memory-research-20260911.json';
+const codeHref = `https://github.com/mykcs/openevo-experiment/tree/${evidence.experiment_evidence_revision}`;
+const totalTests = Object.values(evidence.prototype.test_counts).reduce((sum, n) => sum + n, 0);
+const cases = [
+  ['Stage1 · 2048', t('最初整理经验时，一次输出最多 2048 token。历史诊断记录过写满输出上限。', 'Initial experience synthesis allowed 2,048 output tokens. Historical diagnostics recorded output-cap saturation.'), t('原始逐次调用记录尚未全部取回；总体失败频率未知。', 'The full original call population has not been recovered; overall failure frequency remains unknown.')],
+  ['Stage1 · 2048 → 4096', t('后来的扩容诊断仍写满 4096 上限，先前的输出前缀也完整保留。', 'Later larger-cap diagnostics still saturated at 4,096 and retained the earlier output prefix.'), t('这说明这些案例没有被单纯扩容解决；还不能断言所有失败都有同一原因。', 'These cases were not resolved by a larger cap alone; this does not identify one cause for every failure.')],
+  ['Stage1 · 20 → 10+10', t('历史设计在同一批 20 条记录连续两次写满后，才固定拆成前 10 条和后 10 条，最后合并。', 'The historical design split the same 20 records into first 10 and last 10 only after two saturated attempts, then consolidated them.'), t('已有资格测试通过记录，未证明 WebShop 得分提高；不能拿来回头救 R122。', 'Qualification passed, but no WebShop gain follows. This design cannot be used to rescue R122 retroactively.')],
+  ['Stage2 · R104', t('第一次和唯一一次修复，都把旧笔记重复写了两遍。两份都不合法。', 'Both the first attempt and the single repair repeated the prior note twice. Both were invalid.'), t('按该轮的窄范围恢复记录保留旧笔记，不能自动变成以后每轮的新规则。', 'The round-specific recovery kept the prior note; it does not automatically become a rule for later rounds.')],
+  ['Stage2 · R122', t('第一次写满 1024 上限且不合法；第二次没有写满，但重复旧笔记，仍不合法。', 'The first attempt saturated at 1,024 and was invalid. The repair did not saturate, but duplicated the prior note and remained invalid.'), t('没有新增第三次调用。新笔记没有被采用，继续用原来的合法笔记。', 'No third call was added. No new note was adopted; the prior legal note remained active.')],
+];
+const hypotheses = [
+  t('只增加输出上限，可能解决不了主要问题。', 'Increasing the output cap alone may not address the main problem.'),
+  t('把“读很多经历”和“写最终笔记”分开，可能减少膨胀或重复。', 'Separating evidence reading from final note writing may reduce expansion or duplication.'),
+  t('10+10 分块阅读可能比一次处理更稳定，但要把合并步骤的调用和 token 也算进去。', 'Reading 10+10 may be more stable than one pass, but consolidation calls and tokens must count too.'),
+  t('没有新经验时，老师应能正常回答“不更新”（NOOP），而不必硬写一份新笔记。', 'With no new lesson, the teacher could explicitly choose no update (NOOP), without forcing a new note.'),
+  t('对照旧笔记做去重，可能减少原文重复或换个说法的重复。', 'Comparing with the prior note may reduce verbatim and paraphrased duplication.'),
+  t('笔记更稳定，仍可能没有让购物任务做得更好；这需要独立实验回答。', 'More stable notes may still fail to improve shopping performance; a separate experiment must answer that.')
+];
 ---
-
 <main class="tm-plan" data-testid="text-memory-plan">
-  <header class="tm-hero">
-    <a class="tm-back" href={p('/research/seed-openevo/study/capability-exploration/')}>{t('← 回到 OpenEVO 能力探索', '← Back to OpenEVO capability exploration')}</a>
-    <p class="tm-kicker">{t('OpenEVO Text Memory · 2026-09-11 工作计划', 'OpenEVO Text Memory · 2026-09-11 work plan')}</p>
-    <h1>{t('把 Text Memory 这位老师重新写好', 'Redesign the Text Memory teacher')}</h1>
-    <strong>{t(
-      '今天的主题不是“把 R122 糊过去”，而是先忠实记录失败、让当前正式实验继续按原规则跑完，再把 Text Memory 的下一代设计拆成可验证的工程步骤。',
-      'The theme is not to hide the R122 failure. We first record it faithfully, let the current formal run continue under its original rules, and then turn the next Text Memory design into verifiable engineering steps.'
-    )}</strong>
+  <header class="tm-hero" data-reader-primary>
+    <p class="tm-kicker">{t('OpenEVO · 文字经验研究', 'OpenEVO · Research on written experience')}</p>
+    <h1>{t('让 Text Memory 写出真正有用的短笔记', 'Make Text Memory produce useful, concise notes')}</h1>
+    <p class="tm-lede">{t('OpenEVO 在模拟购物任务 WebShop 中学习。整理 Text Memory 的模型像一位老师：从做题经历里挑出 1–4 条可重复使用的经验。它有时写满输出上限，或把旧笔记重复两遍。', 'OpenEVO learns through simulated shopping tasks in WebShop. The model that writes Text Memory acts like a teacher, selecting 1–4 reusable lessons from experience. It sometimes fills the output cap or repeats the old note twice.')}</p>
+    <p class="tm-boundary">{t('当前训练保留失败记录、沿用合法旧笔记；下一代单独验证新写法。WebShop 能否因此做得更好，仍然未知。', 'The current run records failures and retains the legal prior note. New writing methods need separate validation. Whether they improve WebShop performance remains unknown.')}</p>
   </header>
 
-  <section class="tm-section tm-answer" aria-labelledby="tm-answer-title">
-    <p class="tm-label">{t('先确认主题', 'Confirm the theme')}</p>
-    <h2 id="tm-answer-title">{t('你的理解是对的，但要分成两层', 'Your reading is right, with two layers')}</h2>
+  <section class="tm-section" aria-labelledby="tm-scope-title">
+    <h2 id="tm-scope-title">{t('当前训练与下一代设计，分开处理', 'Keep the current run and the next design separate')}</h2>
     <div class="tm-two">
-      <article>
-        <span>{t('当前正式实验', 'Current formal run')}</span>
-        <h3>{t('忠实记录失败，不给额外帮助', 'Record failure; add no extra help')}</h3>
-        <p>{t('R122 的 Text Memory 两次候选都不合法，所以它不是一次成功更新。我们只允许 KEEP_PRIOR：坏候选不进状态，上一份合法 Memory 继续使用，已完成的 rollout 和 SD-LoRA 不重做。', 'R122 produced no valid Text Memory candidate across the two allowed attempts. It is recorded as a failed update. KEEP_PRIOR means failed candidates do not enter state, the prior legal Memory remains active, and the completed rollout / SD-LoRA work is not replayed.')}</p>
-      </article>
-      <article>
-        <span>{t('下一代设计', 'Next design')}</span>
-        <h3>{t('研究老师怎么写更好', 'Study how the teacher should write')}</h3>
-        <p>{t('Stage 1 的 2048/4096、10+10，Stage 2 的 R104 和 R122 都说明：Text Memory 不是纸不够，而是“读很多经历”和“写一张短笔记”没有被拆清楚。下一代要正式验证这个设计问题。', 'Stage-1 2048/4096, 10+10, and Stage-2 R104/R122 point to the same design weakness: the system did not cleanly separate reading many experiences from writing a small durable note. The successor must test that design directly.')}</p>
-      </article>
+      <article><h3>{t('当前训练：不追加一次机会', 'Current run: no extra attempt')}</h3><p>{t('R122 已用完一次生成和一次修复。两份候选都失败，新笔记没有进入模型状态；已经做完的购物尝试和参数训练没有重做。', 'R122 used its first generation and one repair. Both candidates failed, no new note entered the model state, and completed shopping attempts and parameter training were not replayed.')}</p><p>{t('保留旧笔记是失败后的处理记录，不代表这次更新成功。', 'Keeping the prior note records the response to failure; it does not make this update successful.')}</p></article>
+      <article><h3>{t('下一代：验证老师怎样读、怎样选', 'Next design: test how the teacher reads and selects')}</h3><p>{t('先分析历史失败，再写隔离原型，随后用相同材料比较不同写法。只有真实模型对照有证据、预算和规则另行冻结后，才讨论独立的新实验。', 'Analyze historical failures, build an isolated prototype, then compare writing methods on the same evidence. A separate experiment can be considered only after real-model comparisons and a separately frozen budget and contract.')}</p><p>{t('正常判断“不更新”和“写失败了”必须保留为两种状态。', 'A normal decision not to update must remain distinct from a failed attempt to write.')}</p></article>
     </div>
-  </section>
-
-  <section class="tm-section" aria-labelledby="tm-map-title">
-    <p class="tm-label">{t('我们今天要做什么', 'What we do today')}</p>
-    <h2 id="tm-map-title">{t('先把证据留下，再开始设计下一代', 'Keep the evidence first, then design the successor')}</h2>
-    <div class="tm-timeline">
-      <article><b>01</b><h3>{t('封存 R122 工程恢复', 'Seal R122 recovery')}</h3><p>{t('记录两次 Text Memory 候选都失败；确认 0 新模型调用、0 rollout replay、0 SD retraining、teacher=0、final panel=0。', 'Record both failed Text Memory candidates and confirm 0 new model calls, 0 rollout replay, 0 SD retraining, teacher=0, and final panel=0.')}</p></article>
-      <article><b>02</b><h3>{t('完成当前 160 轮正式实验', 'Finish the current 160-round run')}</h3><p>{t('R123 以后恢复普通 frozen 行为；不把 R122 的一次性恢复推广成新算法。', 'R123 onward returns to the frozen behavior; the R122 recovery is not promoted into a new algorithm.')}</p></article>
-      <article><b>03</b><h3>{t('整理 Text Memory 失败谱系', 'Build the Text Memory failure lineage')}</h3><p>{t('把 Stage 1 saturation、10+10、R104 duplicate、R122 mixed failure 放进同一张表，标明哪些是事实、哪些只是待验证解释。', 'Put Stage-1 saturation, 10+10, R104 duplicate, and R122 mixed failure into one table, separating facts from hypotheses.')}</p></article>
-      <article><b>04</b><h3>{t('写下一代代码级计划', 'Write the code-level successor plan')}</h3><p>{t('在实验仓库 main 分支留下可以逐项打勾的 Markdown：脚本、测试、验收标准、禁止事项和交付物都写清楚。', 'Leave a checklist Markdown on the experiment repository main branch: scripts, tests, acceptance standards, forbidden changes, and deliverables.')}</p></article>
-    </div>
+    <p class="tm-evidence"><a href={evidenceHref}>{t('原始收据的公开安全摘要', 'Public-safe summary of the source receipts')}</a> · {t('只读观测时间', 'Read-only observation')}: <time datetime={evidence.observed_at_utc}>{evidence.observed_at_utc}</time>。{t(`当时已封存 R0–R${evidence.formal_run_observation.last_sealed_round}，R${evidence.formal_run_observation.active_round} 正在进行；160 轮尚未结束，最终测试集未打开。此时间点之后的进度不在这份快照内。`, `R0–R${evidence.formal_run_observation.last_sealed_round} were sealed and R${evidence.formal_run_observation.active_round} was active. The 160-round run was unfinished and the final panel unopened. Later progress is outside this snapshot.`)}</p>
   </section>
 
   <section class="tm-section" aria-labelledby="tm-cases-title">
-    <p class="tm-label">{t('已经知道的四个案例', 'Four known cases')}</p>
-    <h2 id="tm-cases-title">{t('同一个老师问题，表现不完全一样', 'The same teacher problem appears in different forms')}</h2>
-    <div class="tm-case-grid">
-      <article><span>{t('Stage 1', 'Stage 1')}</span><h3>2048 → 4096</h3><p>{t('老师写满输出上限；给更多纸仍然写满，说明问题不是单纯空间不够。', 'The teacher filled the output cap; giving more room still filled it, so the issue was not simply lack of space.')}</p></article>
-      <article><span>{t('Stage 1', 'Stage 1')}</span><h3>20 → 10+10</h3><p>{t('把“读很多经历”拆小后更合理；但它是下一代设计候选，不能拿来临时救 R122。', 'Splitting the reading load is more reasonable, but it is a successor-design candidate, not an ad-hoc R122 rescue.')}</p></article>
-      <article><span>{t('Stage 2 · R104', 'Stage 2 · R104')}</span><h3>{t('旧 Memory 重复两遍', 'Prior Memory repeated twice')}</h3><p>{t('primary 和 repair 完全一样，都是 prior+prior；这是很窄的 duplicate recovery。', 'Primary and repair were identical prior+prior outputs; this supported a narrow duplicate recovery.')}</p></article>
-      <article><span>{t('Stage 2 · R122', 'Stage 2 · R122')}</span><h3>{t('第一次写太多，第二次重复旧笔记', 'First too long, then duplicate')}</h3><p>{t('primary 是 1024 saturation，repair 是 prior+prior；两者不同，所以不能直接照抄 R104。', 'Primary hit 1024-token saturation; repair was prior+prior. They differ, so R104 cannot be copied blindly.')}</p></article>
-    </div>
+    <h2 id="tm-cases-title">{t('五类记录，不能合写成一个 bug', 'Five records, not one interchangeable bug')}</h2>
+    <p>{t('Stage1 是最初整理经验的阶段；Stage2 是训练中继续更新经验的阶段。R104、R122 是后者的轮次编号。输出上限写满、重复旧文和分块处理，是不同的观测或设计。', 'Stage1 builds the initial experience summaries; Stage2 updates experience during training. R104 and R122 identify rounds in Stage2. Saturation, repeated text and chunked processing are different observations or designs.')}</p>
+    <div class="tm-table-wrap" tabindex="0" aria-label={t('历史案例，可横向滚动', 'Historical cases, horizontally scrollable')}><table><caption>{t('历史 Text Memory 证据与解释边界', 'Historical Text Memory evidence and its limits')}</caption><thead><tr><th>{t('案例', 'Case')}</th><th>{t('收据或配置记录了什么', 'What receipts or policies record')}</th><th>{t('仍然不能证明什么', 'What remains unproven')}</th></tr></thead><tbody>{cases.map(([label, fact, limit]) => <tr><th scope="row">{label}</th><td>{fact}</td><td>{limit}</td></tr>)}</tbody></table></div>
+    <p class="tm-scroll-hint">{t('左右滑动可查看完整对照。', 'Scroll sideways to view the full comparison.')}</p>
+    <p class="tm-evidence"><a href={evidenceHref}>{t('案例摘要与候选文件哈希', 'Case summary and candidate hashes')}</a> · <a href={codeHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={codeHref} /> {t('完整历史分析及复现代码（需仓库权限）', 'Full lineage analysis and replay code (repository access required)')}</a></p>
+  </section>
+
+  <section class="tm-section" aria-labelledby="tm-rounds-title">
+    <h2 id="tm-rounds-title">{t('R104 两次重复；R122 先写满，再重复', 'R104 duplicated twice; R122 saturated, then duplicated')}</h2>
+    <div class="tm-table-wrap" tabindex="0" aria-label={t('R104 与 R122 对照', 'R104 and R122 comparison')}><table><thead><tr><th>{t('比较项', 'Comparison')}</th><th>R104</th><th>R122</th></tr></thead><tbody>
+      <tr><th scope="row">{t('第一次输出', 'First output')}</th><td>{t('117 token；旧笔记重复两遍；不合法', '117 tokens; prior note twice; invalid')}</td><td>{t('1024 token；写满上限；不合法', '1,024 tokens; saturated; invalid')}</td></tr>
+      <tr><th scope="row">{t('唯一一次修复', 'Single repair')}</th><td>{t('117 token；仍是旧笔记重复两遍', '117 tokens; prior note twice again')}</td><td>{t('117 token；旧笔记重复两遍', '117 tokens; prior note twice')}</td></tr>
+      <tr><th scope="row">{t('是否得到合法新笔记', 'Legal new note produced?')}</th><td>{t('没有', 'No')}</td><td>{t('没有', 'No')}</td></tr>
+      <tr><th scope="row">{t('恢复处理', 'Recovery disposition')}</th><td>{t('按该轮批准范围保留旧笔记', 'Keep prior within the round-specific approval')}</td><td>{t('保留旧笔记；新增模型调用为 0', 'Keep prior; zero additional model calls')}</td></tr>
+    </tbody></table></div>
+    <p class="tm-scroll-hint">{t('左右滑动可查看完整对照。', 'Scroll sideways to view the full comparison.')}</p>
+    <p>{t('R122 的第一次输出并不等于 R104 的重复输出，所以不能直接套用同一个恢复理由。两轮都保留原始失败候选，没有人工挑几句拼成“成功”。', 'R122’s first output is not the duplicated output seen in R104, so the same recovery rationale cannot simply be reused. Both rounds retain the original failed candidates; no sentences were hand-picked into a successful replacement.')}</p>
+  </section>
+
+  <section class="tm-section" aria-labelledby="tm-progress-title">
+    <h2 id="tm-progress-title">{t('历史分析与软件原型已有证据，真实模型对照尚未开始', 'Historical analysis and software prototypes exist; real-model comparisons have not started')}</h2>
+    <ol class="tm-progress">
+      <li><strong>{t('历史分析已归档', 'Historical analysis preserved')}</strong><p>{t('五类案例按来源、候选哈希和未知项分开记录。分析器只读离线收据；原始记录不完整的地方明确写未知。', 'Five case types retain sources, candidate hashes and unknowns. The analyzer reads offline receipts only and labels incomplete historical records as unknown.')}</p></li>
+      <li><strong>{t('隔离软件原型已建立', 'Isolated software prototype built')}</strong><p>{t(`已通过 ${totalTests} 个软件测试，涵盖历史分析、老师接口和对照准备；8 类预先编写的样例检查程序行为，实际模型调用为 0。语义重复识别和证据是否支持某条经验仍待验证。`, `${totalTests} software tests cover lineage, teacher contracts and comparison preparation. Eight scripted fixtures test program behavior, with zero actual model calls. Semantic duplication and whether evidence supports a lesson remain unvalidated.`)}</p></li>
+      <li><strong>{t('真实模型对照：等待冻结预算', 'Real-model comparison: budget not yet frozen')}</strong><p>{t('教师模型及版本、采样方式、每种写法的总调用与 token 预算尚未确定。预先写好的样例通过，不能填入真实模型的效果表。', 'The teacher model and revision, sampling, and each strategy’s total call and token budgets remain unfrozen. Passing predetermined fixtures cannot populate real-model outcome tables.')}</p></li>
+    </ol>
+  </section>
+
+  <section class="tm-section" aria-labelledby="tm-hypotheses-title">
+    <h2 id="tm-hypotheses-title">{t('下一代老师的六个待验证想法', 'Six hypotheses for the next teacher')}</h2>
+    <p>{t('这些是研究假设，不是已经找到的原因或已经奏效的修复。', 'These are hypotheses, not established causes or demonstrated fixes.')}</p>
+    <ol class="tm-hypotheses">{hypotheses.map((hypothesis) => <li>{hypothesis}</li>)}</ol>
+  </section>
+
+  <section class="tm-section" aria-labelledby="tm-shadow-title">
+    <h2 id="tm-shadow-title">{t('同一批经历，比较三种写法', 'Compare three writing methods on the same evidence')}</h2>
+    <div class="tm-table-wrap" tabindex="0" aria-label={t('计划中的三种写法', 'Three planned methods')}><table><thead><tr><th>{t('写法', 'Method')}</th><th>{t('改变什么', 'What changes')}</th><th>{t('结果', 'Result')}</th></tr></thead><tbody>
+      <tr><th scope="row">{t('20 条一次处理', '20 records in one pass')}</th><td>{t('作为对照写法', 'Baseline strategy')}</td><td>{t('待测', 'Not measured')}</td></tr>
+      <tr><th scope="row">{t('20 条 + 更大输出上限', '20 records + larger cap')}</th><td>{t('只增加输出空间', 'Increase output room')}</td><td>{t('待测', 'Not measured')}</td></tr>
+      <tr><th scope="row">10+10</th><td>{t('前后两半分别阅读，再合并；合并也计费', 'Read each ordered half, then consolidate; consolidation counts too')}</td><td>{t('待测', 'Not measured')}</td></tr>
+    </tbody></table></div>
+    <p class="tm-scroll-hint">{t('左右滑动可查看完整对照。', 'Scroll sideways to view the full comparison.')}</p>
+    <p>{t('先比较合法率、写满率、重复率、正常不更新比例、规则数量、单题事实混入情况及调用/token 成本。只有这一层取得真实证据，才考虑下一条独立 WebShop 实验；模型、任务、预算、停止条件和最终测试权限都需单独冻结。', 'First compare legality, saturation, duplication, normal no-update rate, rule counts, task-local leakage, and call/token cost. Only real evidence at this layer can motivate a separate WebShop experiment, with its own frozen model, tasks, budget, stopping rule and final-panel access policy.')}</p>
+    <p class="tm-boundary">{t('当前正式训练不采用 10+10 或新的“不更新”规则，不重做 R122。', 'The current formal run does not adopt 10+10 or a new no-update rule, and R122 is not replayed.')}</p>
   </section>
 
   <section class="tm-section" aria-labelledby="tm-blanks-title">
-    <p class="tm-label">{t('等待填数的空白框', 'Blank boxes waiting for evidence')}</p>
-    <h2 id="tm-blanks-title">{t('没有事实依据的地方先留空', 'Leave blanks where evidence is not ready')}</h2>
+    <h2 id="tm-blanks-title">{t('等待真实结果', 'Awaiting real results')}</h2>
     <div class="tm-blank-grid">
-      <div class="tm-blank" data-blank="final-r160-score">{t('待填：R160 结束后的训练曲线与最终封存状态', 'TBD: R160 training curve and final sealed state')}</div>
-      <div class="tm-blank" data-blank="historical-frequency">{t('待填：历史 Text Memory 失败频率与分类统计', 'TBD: frequency and taxonomy of historical Text Memory failures')}</div>
-      <div class="tm-blank" data-blank="successor-ablation">{t('待填：10+10 / first-class NOOP / de-dup 设计的 shadow 结果', 'TBD: shadow results for 10+10 / first-class NOOP / de-dup design')}</div>
-      <div class="tm-blank" data-blank="next-run-activation">{t('待填：下一代 Text Memory 正式 activation hash 与 frozen contract', 'TBD: successor activation hash and frozen contract')}</div>
+      <div class="research-placeholder" data-placeholder="text-memory-failure-frequency" data-blank="historical-frequency">{t('待填：历史 Text Memory 失败频率与分类统计', 'TBD: historical Text Memory failure frequency and taxonomy')}</div>
+      <div class="research-placeholder" data-placeholder="text-memory-shadow-results" data-blank="successor-ablation">{t('待填：20 / 更大上限 / 10+10 的真实模型对照与总成本', 'TBD: real-model comparison and total cost for 20 / larger cap / 10+10')}</div>
+      <div class="research-placeholder" data-placeholder="text-memory-successor-result">{t('待填：下一代独立实验的 WebShop 成绩与同预算比较', 'TBD: successor WebShop performance and budget-matched comparison')}</div>
+      <div class="research-placeholder" data-blank="final-r160-score">{t('待填：当前 160 轮训练结束后的封存状态；最终测试须另获授权', 'TBD: sealed closeout after the current 160 training rounds; final testing requires separate authorization')}</div>
     </div>
   </section>
 
   <section class="tm-section tm-links" aria-labelledby="tm-links-title">
-    <p class="tm-label">{t('下一步入口', 'Next entry points')}</p>
-    <h2 id="tm-links-title">{t('网页负责讲清楚，仓库负责打勾执行', 'The page explains; the repo checklist executes')}</h2>
-    <p>{t('汇报 Slide 已加入一页 Text Memory 计划页；实验仓库里的 Markdown 负责代码级步骤和交付标准。', 'The briefing slide deck now includes one Text Memory plan slide; the experiment repository Markdown carries the code-level steps and acceptance standards.')}</p>
-    <p><a href={briefingHref}>{t('打开汇报 Slide →', 'Open the briefing slide →')}</a> <a href={designHref}>{t('打开代码级计划 →', 'Open code-level plan →')}</a></p>
+    <h2 id="tm-links-title">{t('执行清单、证据与汇报', 'Execution checklist, evidence and briefing')}</h2>
+    <p>{t('实验仓库的 Markdown 是唯一总计划与打勾清单；本页展示同一研究线的事实、假设和空白结果，不另设运行授权。', 'The experiment repository Markdown is the sole plan and checklist. This page presents that same research line’s facts, hypotheses and unknowns, and grants no execution authority.')}</p>
+    <p><a href={briefingHref}>{t('查看现有汇报中的 Text Memory 一页', 'Open the Text Memory page in the existing briefing')}</a> · <a href={designHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={designHref} /> {t('唯一执行清单（需仓库权限）', 'Sole execution checklist (repository access required)')}</a></p>
+    <details><summary>{t('核验与复现：来源、哈希和未完成项', 'Audit and reproduction: sources, hashes and open items')}</summary><p><a href={evidenceHref}>{t('公开安全 JSON 摘要', 'Public-safe JSON summary')}</a> · <a href={codeHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={codeHref} /> {t('固定版本代码及收据（需仓库权限）', 'Pinned code and receipts (repository access required)')}</a></p><p>{t('收据包 SHA-256', 'Receipt-bundle SHA-256')}: <code>{evidence.receipt_bundle_sha256}</code></p><p>{t('原始 A1 逐次调用记录未全部取回；没有重读全部模型张量；软件回放没有实际模型调用。真实对照和独立盲读/真人验收仍需各自证据。', 'The full original A1 call population was not recovered, all model tensors were not rehashed, and software replay made no model calls. Real comparisons and independent blind/human review each still require their own evidence.')}</p></details>
   </section>
 </main>
-
 <style>
-  .tm-plan{width:min(1120px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;color:var(--text)}
-  .tm-hero{padding:3rem 0 2rem;border-bottom:1px solid var(--line)}
-  .tm-back{display:inline-flex;margin-bottom:1.4rem;color:var(--accent-deep);font-size:.85rem;text-decoration:none}
-  .tm-kicker,.tm-label{margin:0 0 .7rem;color:var(--accent-deep);font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
-  .tm-hero h1{margin:0;font-size:clamp(2.6rem,7vw,5.2rem);line-height:.96;letter-spacing:-.06em;max-width:850px}
-  .tm-hero strong{display:block;margin-top:1.2rem;max-width:850px;font-size:clamp(1.05rem,2vw,1.35rem);line-height:1.7;color:var(--muted)}
-  .tm-section{margin-top:2rem;padding:1.4rem;border:1px solid var(--line);border-radius:24px;background:var(--surface)}
-  .tm-section h2{margin:.2rem 0 1rem;font-size:clamp(1.6rem,3vw,2.4rem);letter-spacing:-.04em}
-  .tm-two,.tm-case-grid,.tm-blank-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
-  .tm-timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem}
-  .tm-two article,.tm-case-grid article,.tm-timeline article{padding:1rem;border-radius:18px;background:var(--surface-muted);border:1px solid var(--line)}
-  .tm-two span,.tm-case-grid span{display:block;margin-bottom:.6rem;color:var(--accent-deep);font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-  .tm-two h3,.tm-case-grid h3,.tm-timeline h3{margin:0 0 .5rem;font-size:1.1rem;letter-spacing:-.02em}
-  .tm-two p,.tm-case-grid p,.tm-timeline p,.tm-links p{margin:0;color:var(--muted);font-size:.92rem;line-height:1.75}
-  .tm-timeline b{display:inline-flex;width:2rem;height:2rem;align-items:center;justify-content:center;border-radius:999px;background:var(--accent-soft);color:var(--accent-deep);font-size:.78rem;margin-bottom:.7rem}
-  .tm-blank{min-height:5.8rem;display:flex;align-items:center;justify-content:center;text-align:center;border:1px dashed color-mix(in srgb,var(--accent-deep) 45%,var(--line));border-radius:18px;background:linear-gradient(135deg,var(--surface-muted),transparent);color:var(--muted);font-weight:700;padding:1rem}
-  .tm-links a{display:inline-flex;margin:.7rem .8rem 0 0;color:var(--accent-deep);font-weight:800;text-decoration:none}
-  @media (max-width:820px){.tm-two,.tm-case-grid,.tm-blank-grid,.tm-timeline{grid-template-columns:1fr}.tm-section{padding:1rem}.tm-hero h1{font-size:2.6rem}}
+  .tm-plan{width:min(1080px,calc(100% - 2rem));margin:0 auto;padding:1.5rem 0 4rem;color:var(--text)}
+  .tm-hero{padding:1.8rem 0 1.5rem;border-bottom:1px solid var(--line);max-width:58rem}
+  .tm-kicker{margin:0 0 .7rem;color:var(--muted);font-size:.8rem;font-weight:700}
+  .tm-hero h1{margin:0;font-size:clamp(2rem,4.4vw,3.5rem);line-height:1.18;letter-spacing:-.035em;max-width:55rem}
+  .tm-lede{max-width:51rem;margin:1rem 0 0;font-size:1.05rem;line-height:1.75}
+  .tm-boundary{padding-left:1rem;border-left:3px solid var(--accent-deep);font-weight:650;line-height:1.7}
+  .tm-section{margin-top:2rem;padding-top:1.3rem;border-top:1px solid var(--line)}
+  .tm-section h2{margin:0 0 1rem;font-size:clamp(1.4rem,2.5vw,2rem);line-height:1.3;letter-spacing:-.025em}
+  .tm-section h3{margin:0 0 .6rem;font-size:1.1rem;line-height:1.4}
+  .tm-section p{font-size:.98rem;line-height:1.8;max-width:66rem}
+  .tm-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem}
+  .tm-two article{padding:1rem 0;border-top:2px solid var(--accent-deep)}
+  .tm-two article p{margin:.45rem 0}
+  .tm-scroll-hint{display:none}
+  @media(max-width:680px){.tm-scroll-hint{display:block;font-size:.8rem!important;color:var(--muted)}}
+  .tm-table-wrap{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+  table{width:100%;min-width:620px;border-collapse:collapse;font-size:.94rem;line-height:1.7;text-align:left}
+  caption{text-align:left;font-size:.85rem;color:var(--muted);padding-bottom:.5rem}
+  th,td{padding:.85rem .8rem;vertical-align:top;border-bottom:1px solid var(--line)}
+  thead{border-top:2px solid var(--line);border-bottom:1px solid var(--line)}
+  tbody th{width:21%;font-weight:650}
+  .tm-evidence{font-size:.8rem!important;color:var(--muted);overflow-wrap:anywhere}
+  a{color:var(--accent-deep);text-underline-offset:.2em}
+  a:focus-visible,summary:focus-visible,.tm-table-wrap:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}
+  .tm-progress{padding-left:1.5rem;display:grid;gap:1rem}
+  .tm-progress p{margin:.25rem 0}
+  .tm-hypotheses{padding-left:1.5rem;line-height:1.8}
+  .tm-hypotheses li{margin:.6rem 0}
+  .tm-blank-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+  .research-placeholder{padding:1rem;border:1px dashed var(--muted);background:var(--surface-muted);line-height:1.7;font-weight:650;min-height:5rem}
+  details{margin-top:1rem;padding:1rem;border:1px solid var(--line)}
+  summary{cursor:pointer;font-weight:650;line-height:1.6}
+  code{overflow-wrap:anywhere;word-break:break-word}
+  @media(max-width:680px){.tm-two,.tm-blank-grid{grid-template-columns:1fr}.tm-hero{padding-top:1rem}.tm-lede{font-size:1rem}.tm-section{margin-top:1.5rem}.tm-plan{width:calc(100% - 1.5rem)}th,td{padding:.65rem}.tm-progress{padding-left:1.2rem}}
 </style>

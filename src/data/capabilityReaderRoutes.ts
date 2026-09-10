@@ -43,10 +43,10 @@ export const CAPABILITY_READER_ROUTES = [
     "route": "text-memory",
     "coverage": "contextualized",
     "owner": "OpenEvoTextMemoryPlan",
-    "label": { "zh": "Text Memory 计划", "en": "Text Memory plan" },
+    "label": { "zh": "Text Memory 研究", "en": "Text Memory research" },
     "purpose": {
-      "zh": "解释 R104/R122 与 Stage1 saturation 暴露的老师写笔记问题，并把当前正式实验恢复与下一代设计分开。",
-      "en": "Explain the teacher-writing problem exposed by R104/R122 and Stage-1 saturation, while separating current-run recovery from the successor design."
+      "zh": "记录写满输出上限与重复旧笔记的不同案例；当前训练与下一代验证分开。",
+      "en": "Document distinct cases of output saturation and repeated prior notes; keep current training separate from future validation."
     }
   },
   {
@@ -112,6 +112,19 @@ export const CAPABILITY_READER_ROUTES = [
     "purpose": {
       "zh": "任务接口（Harness）把模型输出变成网页动作；这里保留旧接口的资格检查，不代表新版实验状态。",
       "en": "The harness turns model output into website actions. This preserves qualification of an older interface, not the current experiment state."
+    }
+  },
+  {
+    "route": "q17-directapply-frontier",
+    "coverage": "contextualized",
+    "owner": "OpenEvoQ17FrontierRoadmap",
+    "label": {
+      "zh": "Q17 Frontier 计划",
+      "en": "Q17 Frontier plan"
+    },
+    "purpose": {
+      "zh": "固定 DirectApply 长跑的 frontier 诊断、待补指标和 successor 实验计划。",
+      "en": "Freeze the DirectApply long-run frontier diagnosis, missing metrics, and successor experiment plan."
     }
   },
   {

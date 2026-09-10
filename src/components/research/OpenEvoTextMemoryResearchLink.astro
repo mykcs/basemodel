@@ -1,0 +1,17 @@
+---
+import { localePath, type Locale } from '../../i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+---
+<section class="text-memory-callout" aria-label={zh ? 'Text Memory 研究' : 'Text Memory research'}>
+  <strong>{zh ? 'Text Memory 有时写不出可用的短笔记' : 'Text Memory sometimes fails to produce a usable short note'}</strong>
+  <p>{zh ? '历史记录出现过写满输出上限和重复旧笔记。当前训练保留失败；分块阅读等新写法在下一代单独验证，购物成绩能否提高仍然未知。' : 'Historical records show output saturation and duplicated prior notes. The current run preserves these failures; chunked reading and other new methods need separate validation. Their effect on shopping performance remains unknown.'}</p>
+  <a href={localePath(locale, '/research/seed-openevo/study/capability-exploration/text-memory/')}>{zh ? '打开 Text Memory 研究 →' : 'Open the Text Memory research →'}</a>
+</section>
+<style>
+  .text-memory-callout{width:min(1120px,calc(100% - 2rem));margin:2rem auto 0;padding:1rem 1.1rem;border:1px solid var(--line);border-radius:16px;background:var(--surface-muted)}
+  .text-memory-callout strong{display:block;color:var(--accent-deep);font-size:.92rem}
+  .text-memory-callout p{margin:.45rem 0 0;color:var(--muted);font-size:.9rem;line-height:1.7}
+  .text-memory-callout a{display:inline-flex;margin-top:.7rem;color:var(--accent-deep);font-size:.85rem;font-weight:700;text-underline-offset:.2em}
+</style>
