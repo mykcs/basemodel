@@ -40,6 +40,16 @@ export const CAPABILITY_READER_ROUTES = [
     }
   },
   {
+    "route": "text-memory",
+    "coverage": "contextualized",
+    "owner": "OpenEvoTextMemoryPlan",
+    "label": { "zh": "Text Memory 计划", "en": "Text Memory plan" },
+    "purpose": {
+      "zh": "解释 R104/R122 与 Stage1 saturation 暴露的老师写笔记问题，并把当前正式实验恢复与下一代设计分开。",
+      "en": "Explain the teacher-writing problem exposed by R104/R122 and Stage-1 saturation, while separating current-run recovery from the successor design."
+    }
+  },
+  {
     "route": "first-run",
     "coverage": "contextualized",
     "owner": "OpenEvoFirstRunMap",

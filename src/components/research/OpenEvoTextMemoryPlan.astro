@@ -1,0 +1,103 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+
+const briefingHref = p('/research/seed-openevo/study/briefing/');
+const designHref = 'https://github.com/mykcs/openevo-experiment/blob/main/docs/experiment-tracking/Q17_TEXT_MEMORY_REDESIGN_PLAN_2026-09-11.md';
+---
+
+<main class="tm-plan" data-testid="text-memory-plan">
+  <header class="tm-hero">
+    <a class="tm-back" href={p('/research/seed-openevo/study/capability-exploration/')}>{t('← 回到 OpenEVO 能力探索', '← Back to OpenEVO capability exploration')}</a>
+    <p class="tm-kicker">{t('OpenEVO Text Memory · 2026-09-11 工作计划', 'OpenEVO Text Memory · 2026-09-11 work plan')}</p>
+    <h1>{t('把 Text Memory 这位老师重新写好', 'Redesign the Text Memory teacher')}</h1>
+    <strong>{t(
+      '今天的主题不是“把 R122 糊过去”，而是先忠实记录失败、让当前正式实验继续按原规则跑完，再把 Text Memory 的下一代设计拆成可验证的工程步骤。',
+      'The theme is not to hide the R122 failure. We first record it faithfully, let the current formal run continue under its original rules, and then turn the next Text Memory design into verifiable engineering steps.'
+    )}</strong>
+  </header>
+
+  <section class="tm-section tm-answer" aria-labelledby="tm-answer-title">
+    <p class="tm-label">{t('先确认主题', 'Confirm the theme')}</p>
+    <h2 id="tm-answer-title">{t('你的理解是对的，但要分成两层', 'Your reading is right, with two layers')}</h2>
+    <div class="tm-two">
+      <article>
+        <span>{t('当前正式实验', 'Current formal run')}</span>
+        <h3>{t('忠实记录失败，不给额外帮助', 'Record failure; add no extra help')}</h3>
+        <p>{t('R122 的 Text Memory 两次候选都不合法，所以它不是一次成功更新。我们只允许 KEEP_PRIOR：坏候选不进状态，上一份合法 Memory 继续使用，已完成的 rollout 和 SD-LoRA 不重做。', 'R122 produced no valid Text Memory candidate across the two allowed attempts. It is recorded as a failed update. KEEP_PRIOR means failed candidates do not enter state, the prior legal Memory remains active, and the completed rollout / SD-LoRA work is not replayed.')}</p>
+      </article>
+      <article>
+        <span>{t('下一代设计', 'Next design')}</span>
+        <h3>{t('研究老师怎么写更好', 'Study how the teacher should write')}</h3>
+        <p>{t('Stage 1 的 2048/4096、10+10，Stage 2 的 R104 和 R122 都说明：Text Memory 不是纸不够，而是“读很多经历”和“写一张短笔记”没有被拆清楚。下一代要正式验证这个设计问题。', 'Stage-1 2048/4096, 10+10, and Stage-2 R104/R122 point to the same design weakness: the system did not cleanly separate reading many experiences from writing a small durable note. The successor must test that design directly.')}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="tm-section" aria-labelledby="tm-map-title">
+    <p class="tm-label">{t('我们今天要做什么', 'What we do today')}</p>
+    <h2 id="tm-map-title">{t('先把证据留下，再开始设计下一代', 'Keep the evidence first, then design the successor')}</h2>
+    <div class="tm-timeline">
+      <article><b>01</b><h3>{t('封存 R122 工程恢复', 'Seal R122 recovery')}</h3><p>{t('记录两次 Text Memory 候选都失败；确认 0 新模型调用、0 rollout replay、0 SD retraining、teacher=0、final panel=0。', 'Record both failed Text Memory candidates and confirm 0 new model calls, 0 rollout replay, 0 SD retraining, teacher=0, and final panel=0.')}</p></article>
+      <article><b>02</b><h3>{t('完成当前 160 轮正式实验', 'Finish the current 160-round run')}</h3><p>{t('R123 以后恢复普通 frozen 行为；不把 R122 的一次性恢复推广成新算法。', 'R123 onward returns to the frozen behavior; the R122 recovery is not promoted into a new algorithm.')}</p></article>
+      <article><b>03</b><h3>{t('整理 Text Memory 失败谱系', 'Build the Text Memory failure lineage')}</h3><p>{t('把 Stage 1 saturation、10+10、R104 duplicate、R122 mixed failure 放进同一张表，标明哪些是事实、哪些只是待验证解释。', 'Put Stage-1 saturation, 10+10, R104 duplicate, and R122 mixed failure into one table, separating facts from hypotheses.')}</p></article>
+      <article><b>04</b><h3>{t('写下一代代码级计划', 'Write the code-level successor plan')}</h3><p>{t('在实验仓库 main 分支留下可以逐项打勾的 Markdown：脚本、测试、验收标准、禁止事项和交付物都写清楚。', 'Leave a checklist Markdown on the experiment repository main branch: scripts, tests, acceptance standards, forbidden changes, and deliverables.')}</p></article>
+    </div>
+  </section>
+
+  <section class="tm-section" aria-labelledby="tm-cases-title">
+    <p class="tm-label">{t('已经知道的四个案例', 'Four known cases')}</p>
+    <h2 id="tm-cases-title">{t('同一个老师问题，表现不完全一样', 'The same teacher problem appears in different forms')}</h2>
+    <div class="tm-case-grid">
+      <article><span>{t('Stage 1', 'Stage 1')}</span><h3>2048 → 4096</h3><p>{t('老师写满输出上限；给更多纸仍然写满，说明问题不是单纯空间不够。', 'The teacher filled the output cap; giving more room still filled it, so the issue was not simply lack of space.')}</p></article>
+      <article><span>{t('Stage 1', 'Stage 1')}</span><h3>20 → 10+10</h3><p>{t('把“读很多经历”拆小后更合理；但它是下一代设计候选，不能拿来临时救 R122。', 'Splitting the reading load is more reasonable, but it is a successor-design candidate, not an ad-hoc R122 rescue.')}</p></article>
+      <article><span>{t('Stage 2 · R104', 'Stage 2 · R104')}</span><h3>{t('旧 Memory 重复两遍', 'Prior Memory repeated twice')}</h3><p>{t('primary 和 repair 完全一样，都是 prior+prior；这是很窄的 duplicate recovery。', 'Primary and repair were identical prior+prior outputs; this supported a narrow duplicate recovery.')}</p></article>
+      <article><span>{t('Stage 2 · R122', 'Stage 2 · R122')}</span><h3>{t('第一次写太多，第二次重复旧笔记', 'First too long, then duplicate')}</h3><p>{t('primary 是 1024 saturation，repair 是 prior+prior；两者不同，所以不能直接照抄 R104。', 'Primary hit 1024-token saturation; repair was prior+prior. They differ, so R104 cannot be copied blindly.')}</p></article>
+    </div>
+  </section>
+
+  <section class="tm-section" aria-labelledby="tm-blanks-title">
+    <p class="tm-label">{t('等待填数的空白框', 'Blank boxes waiting for evidence')}</p>
+    <h2 id="tm-blanks-title">{t('没有事实依据的地方先留空', 'Leave blanks where evidence is not ready')}</h2>
+    <div class="tm-blank-grid">
+      <div class="tm-blank" data-blank="final-r160-score">{t('待填：R160 结束后的训练曲线与最终封存状态', 'TBD: R160 training curve and final sealed state')}</div>
+      <div class="tm-blank" data-blank="historical-frequency">{t('待填：历史 Text Memory 失败频率与分类统计', 'TBD: frequency and taxonomy of historical Text Memory failures')}</div>
+      <div class="tm-blank" data-blank="successor-ablation">{t('待填：10+10 / first-class NOOP / de-dup 设计的 shadow 结果', 'TBD: shadow results for 10+10 / first-class NOOP / de-dup design')}</div>
+      <div class="tm-blank" data-blank="next-run-activation">{t('待填：下一代 Text Memory 正式 activation hash 与 frozen contract', 'TBD: successor activation hash and frozen contract')}</div>
+    </div>
+  </section>
+
+  <section class="tm-section tm-links" aria-labelledby="tm-links-title">
+    <p class="tm-label">{t('下一步入口', 'Next entry points')}</p>
+    <h2 id="tm-links-title">{t('网页负责讲清楚，仓库负责打勾执行', 'The page explains; the repo checklist executes')}</h2>
+    <p>{t('汇报 Slide 已加入一页 Text Memory 计划页；实验仓库里的 Markdown 负责代码级步骤和交付标准。', 'The briefing slide deck now includes one Text Memory plan slide; the experiment repository Markdown carries the code-level steps and acceptance standards.')}</p>
+    <p><a href={briefingHref}>{t('打开汇报 Slide →', 'Open the briefing slide →')}</a> <a href={designHref}>{t('打开代码级计划 →', 'Open code-level plan →')}</a></p>
+  </section>
+</main>
+
+<style>
+  .tm-plan{width:min(1120px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;color:var(--text)}
+  .tm-hero{padding:3rem 0 2rem;border-bottom:1px solid var(--line)}
+  .tm-back{display:inline-flex;margin-bottom:1.4rem;color:var(--accent-deep);font-size:.85rem;text-decoration:none}
+  .tm-kicker,.tm-label{margin:0 0 .7rem;color:var(--accent-deep);font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+  .tm-hero h1{margin:0;font-size:clamp(2.6rem,7vw,5.2rem);line-height:.96;letter-spacing:-.06em;max-width:850px}
+  .tm-hero strong{display:block;margin-top:1.2rem;max-width:850px;font-size:clamp(1.05rem,2vw,1.35rem);line-height:1.7;color:var(--muted)}
+  .tm-section{margin-top:2rem;padding:1.4rem;border:1px solid var(--line);border-radius:24px;background:var(--surface)}
+  .tm-section h2{margin:.2rem 0 1rem;font-size:clamp(1.6rem,3vw,2.4rem);letter-spacing:-.04em}
+  .tm-two,.tm-case-grid,.tm-blank-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+  .tm-timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem}
+  .tm-two article,.tm-case-grid article,.tm-timeline article{padding:1rem;border-radius:18px;background:var(--surface-muted);border:1px solid var(--line)}
+  .tm-two span,.tm-case-grid span{display:block;margin-bottom:.6rem;color:var(--accent-deep);font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  .tm-two h3,.tm-case-grid h3,.tm-timeline h3{margin:0 0 .5rem;font-size:1.1rem;letter-spacing:-.02em}
+  .tm-two p,.tm-case-grid p,.tm-timeline p,.tm-links p{margin:0;color:var(--muted);font-size:.92rem;line-height:1.75}
+  .tm-timeline b{display:inline-flex;width:2rem;height:2rem;align-items:center;justify-content:center;border-radius:999px;background:var(--accent-soft);color:var(--accent-deep);font-size:.78rem;margin-bottom:.7rem}
+  .tm-blank{min-height:5.8rem;display:flex;align-items:center;justify-content:center;text-align:center;border:1px dashed color-mix(in srgb,var(--accent-deep) 45%,var(--line));border-radius:18px;background:linear-gradient(135deg,var(--surface-muted),transparent);color:var(--muted);font-weight:700;padding:1rem}
+  .tm-links a{display:inline-flex;margin:.7rem .8rem 0 0;color:var(--accent-deep);font-weight:800;text-decoration:none}
+  @media (max-width:820px){.tm-two,.tm-case-grid,.tm-blank-grid,.tm-timeline{grid-template-columns:1fr}.tm-section{padding:1rem}.tm-hero h1{font-size:2.6rem}}
+</style>

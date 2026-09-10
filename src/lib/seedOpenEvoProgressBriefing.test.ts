@@ -29,11 +29,11 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/technical-notes/'");
   });
 
-  it('keeps a twenty-two-slide deck with page numbers only on inner slides', () => {
-    expect((briefing.match(/<section /g) ?? []).length).toBe(22);
-    for (let page = 2; page <= 21; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 22`);
-    expect(briefing).not.toContain('01 / 22');
-    expect(briefing).not.toContain('22 / 22');
+  it('keeps a twenty-three-slide deck with page numbers only on inner slides', () => {
+    expect((briefing.match(/<section /g) ?? []).length).toBe(23);
+    for (let page = 2; page <= 22; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 23`);
+    expect(briefing).not.toContain('01 / 23');
+    expect(briefing).not.toContain('23 / 23');
     expect(briefing).not.toContain('class="slide-next"');
     expect(briefing).not.toContain('返回顶部');
   });

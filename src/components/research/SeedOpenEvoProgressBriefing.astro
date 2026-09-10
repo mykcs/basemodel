@@ -13,6 +13,7 @@ const p = (path: string) => localePath(locale, path);
 
 const flowHref = p('/research/seed-openevo/flow/');
 const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/');
+const textMemoryPlanHref = p('/research/seed-openevo/study/capability-exploration/text-memory/');
 const taskArithmeticHref = 'https://arxiv.org/abs/2212.04089';
 const measurementPackHref = 'https://github.com/mykcs/openevo-experiment/pull/317';
 const gatedDeltaPaperHref = 'https://arxiv.org/abs/2412.06464';
@@ -126,7 +127,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
           <li>{t('最后问题集中到参数更新：GDR = Gated Delta Rule，它决定训练好的 SD-LoRA 候选能否进入下一轮模型。1.7B 正式线训练出 44 个候选，最后只有 7 个进入后续模型，于是我们启动 DirectApply 对照。', 'The question eventually narrows to parameter updates: GDR = Gated Delta Rule decides whether a trained SD-LoRA candidate enters the next model state. The formal 1.7B line trained 44 candidates and only 7 entered later states, motivating a DirectApply comparison.')}</li>
         </ul>
       </aside>
-      <p class="slide-number">02 / 22</p>
+      <p class="slide-number">02 / 23</p>
     </div>
   </section>
   <section id="science-attempts" class="briefing-slide tone-blue" aria-labelledby="science-attempts-title">
@@ -138,7 +139,30 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
         <article><span>{t('再排除简单解释', 'rule out simple explanations')}</span><strong>{t('15 → 30、state-aware prompt、2048 → 4096、20 → 10+10、3B Harness', '15 → 30, state-aware prompt, 2048 → 4096, 20 → 10+10, 3B Harness')}</strong><p>{t('这些实验回答：低分来自步数、记忆容量、动作接口，还是更深的学习机制。', 'These experiments ask whether the low score came from horizon, memory capacity, action interface, or a deeper learning mechanism.')}</p></article>
         <article><span>{t('最后追参数机制', 'then inspect parameter mechanics')}</span><strong>{t('TaskVector、GDR、DirectApply / No-GDR', 'TaskVector, GDR, DirectApply / No-GDR')}</strong><p>{t('这一步转向新的因果问题：参数到底往哪里学，准入规则会不会截断长期有用的更新。', 'This turns to the next causal question: where parameters move and whether admission rules cut off useful long-term updates.')}</p></article>
       </div>
-      <p class="slide-number">03 / 22</p>
+      <p class="slide-number">03 / 23</p>
+    </div>
+  </section>
+
+  <section id="text-memory-redesign" class="briefing-slide tone-green" aria-labelledby="text-memory-redesign-title">
+    <div class="slide-inner text-memory-briefing-slide">
+      <h2 id="text-memory-redesign-title">{t('Text Memory 暴露的是老师怎么写笔记的问题', 'Text Memory exposes a teacher-writing problem')}</h2>
+      <p class="slide-thesis">{t('当前正式实验只做一件事：忠实记录 R122 Text Memory 更新失败，坏候选不进状态，继续用上一张合法 Memory。下一代实验再专门研究老师怎样从很多经历里写出 1–4 条真正可复用的规则。', 'The current formal run does one thing only: record the R122 Text Memory update failure, reject both bad candidates, and keep the prior legal Memory. The successor experiment will separately study how the teacher should turn many experiences into 1–4 reusable rules.')}</p>
+      <div class="text-memory-briefing-grid">
+        <article><span>{t('过去的信号', 'Past signal')}</span><strong>2048 → 4096 → 10+10</strong><p>{t('给更多输出空间没有根治；把阅读材料拆小才像真正的方向。', 'More output room did not fix the issue; splitting the reading load looks like the real direction.')}</p></article>
+        <article><span>R104</span><strong>{t('两次都是旧 Memory × 2', 'Both attempts were prior Memory × 2')}</strong><p>{t('这是窄 duplicate recovery，不能自动推广。', 'This supports a narrow duplicate recovery, not a general policy change.')}</p></article>
+        <article><span>R122</span><strong>{t('第一次写太多，第二次重复旧笔记', 'First too long, then duplicate')}</strong><p>{t('两次都不合法，所以记为失败并 KEEP_PRIOR；不增加第三次老师机会。', 'Both candidates are invalid, so record failure and KEEP_PRIOR; do not add a third teacher attempt.')}</p></article>
+      </div>
+      <div class="text-memory-briefing-next">
+        <strong>{t('下一步设计问题', 'Next design question')}</strong>
+        <p>{t('把“看学生做题材料”和“写最终长期笔记”拆成两步；允许真正的 NOOP；再用 shadow/historical tests 验证 10+10、去重和 1–4 条规则。', 'Separate reading student evidence from writing the final durable note; make genuine NOOP first-class; then validate 10+10, de-duplication, and the 1–4 rule with shadow/historical tests.')}</p>
+        <div class="briefing-placeholder-row" aria-label={t('待填结果', 'Pending results')}>
+          <span>{t('待填：R160 封口结果', 'TBD: R160 seal')}</span>
+          <span>{t('待填：历史失败频率', 'TBD: failure frequency')}</span>
+          <span>{t('待填：successor shadow 结果', 'TBD: successor shadow result')}</span>
+        </div>
+      </div>
+      <p class="source-note"><a href={textMemoryPlanHref}>{t('打开 Text Memory 计划页 →', 'Open the Text Memory plan →')}</a></p>
+      <p class="slide-number">04 / 23</p>
     </div>
   </section>
   <section id="results" class="briefing-slide tone-paper" aria-labelledby="results-title">
@@ -165,7 +189,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
       <div class="table-notes single-note">
         <p>{t('3B 确实做过独立实验线，但目前没有同口径冻结终评，所以保持空白；DirectApply 也还没有封存最终分数。GDR = Gated Delta Rule，决定一个已经训练好的 SD-LoRA 候选是否进入下一轮模型。', 'The 3B line is real, but it has no same-protocol frozen final, so it remains blank; DirectApply is also unfinished. GDR = Gated Delta Rule decides whether an already-trained SD-LoRA candidate enters the next model state.')}</p>
       </div>
-      <p class="slide-number">04 / 22</p>
+      <p class="slide-number">05 / 23</p>
     </div>
   </section>
   <section id="openevo-method" class="briefing-slide tone-green" aria-labelledby="openevo-method-title">
@@ -196,7 +220,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
         <span><strong>Agent System</strong>{t('影响 Agent 在环境里的思考与行动规则', 'shapes how the agent reasons and acts in the environment')}</span>
         <span><strong>SD-LoRA</strong>{t('真正改变模型参数侧行为', 'changes parameter-side model behavior')}</span>
       </div>
-      <p class="slide-number">05 / 22</p>
+      <p class="slide-number">06 / 23</p>
     </div>
   </section>
   <section id="stage2-gate" class="briefing-slide tone-gold" aria-labelledby="stage2-gate-title">
@@ -210,7 +234,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
       </div>
       <div class="resolution-box"><strong>{t('我们怎么解决', 'How we fixed the scientific rule')}</strong><p>{t('撤掉这个人数门槛，把正式 Stage 2 固定成 round-local：一轮 128 次 WebShop 尝试里，只要出现至少一个 clean exact-success task，就给 SD-LoRA 一次更新机会；如果没有成功，就明确记为 NOOP。这样模型有没有学到东西，才不再被历史控制门槛挡住。', 'We removed this identity-count gate and froze formal Stage 2 as round-local: in one 128-rollout WebShop round, at least one clean exact-success task gives SD-LoRA one update opportunity; if there is no success, the round is recorded as NOOP. Only then is learning no longer blocked by a historical control threshold.')}</p></div>
       <p class="slide-bridge">{t('撤掉这个 gate 以后，参数终于开始连续更新；接着才暴露出另一个完全不同的 64-component 工程容量问题。', 'After removing this gate, parameter updates finally began to accumulate; only then did a separate 64-component engineering-capacity problem appear.')}</p>
-      <p class="slide-number">06 / 22</p>
+      <p class="slide-number">07 / 23</p>
     </div>
   </section>
   <section id="component-cap" class="briefing-slide tone-gold" aria-labelledby="component-cap-title">
@@ -224,7 +248,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
       </div>
       <p class="slide-bridge">{t('工程上限不再挡路以后，我们再看这条 7B 长跑本身学得怎么样。', 'With the engineering cap removed, we can examine how the 7B long run itself learned.')}</p>
       <p class="source-note"><a href={technicalHref}>{t('64-component 的运行时排查与资格验证', 'Runtime debugging and qualification for the 64-component limit')}</a></p>
-      <p class="slide-number">07 / 22</p>
+      <p class="slide-number">08 / 23</p>
     </div>
   </section>
   <section id="seven-b" class="briefing-slide tone-blue" aria-labelledby="seven-b-title">
@@ -257,7 +281,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
         <span><strong>49.33 · 58 / 128</strong>{t('冻结终评 Score · 完整成功任务', 'frozen final Score · exact-success tasks')}</span>
       </div>
       <p class="final-eval-note"><strong>{t('三种 measurement 分开读：', 'Keep the three measurements separate:')}</strong>{t('训练 round Score 看训练中任务表现；SD-LoRA loss 看优化过程；49.33 / 58 / 128 是训练结束后一次性打开的冻结终评。', 'training-round Score measures task behavior during training; SD-LoRA loss measures optimization; 49.33 / 58 of 128 comes from the frozen final opened only after training.')} <span class="muted-pill">{t('SEED 7B 论文参照 89.7 · evaluation protocol 不同', 'SEED 7B paper reference 89.7 · different evaluation protocol')}</span></p>
-      <p class="slide-number">08 / 22</p>
+      <p class="slide-number">09 / 23</p>
     </div>
   </section>
   <section id="diagnostic-entry" class="briefing-slide tone-gold" aria-labelledby="diagnostic-entry-title">
@@ -284,7 +308,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
         </article>
       </div>
       <p class="diagnostic-note">{t('接下来我们就分别验证这两个怀疑：先看“多给 15 步有没有用”，再看“给 Text Memory 更多容量有没有用”。', 'We then tested the two hypotheses separately: first whether 15 extra steps helped, then whether giving Text Memory more capacity helped.')}</p>
-      <p class="slide-number">09 / 22</p>
+      <p class="slide-number">10 / 23</p>
     </div>
   </section>
   <section id="horizon-diagnostic" class="briefing-slide tone-gold" aria-labelledby="horizon-title">
@@ -300,7 +324,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
         <li><span>02</span><strong>{t('采用第二种方案：保持原 prompt，只把 15 步改成 30 步', 'Use the second plan: keep the prompt fixed and change only 15 steps to 30')}</strong><p>{t('这样只测试“多给时间有没有用”，不把 prompt 干预混进同一个实验。', 'This isolates whether extra time helps without mixing a prompt intervention into the same test.')}</p></li>
         <li><span>03</span><strong>{t('结果仍然打转，于是回到接口语义', 'The loop remained, so we moved back to action-interface semantics')}</strong><p>{t('步数解释被排除；后续继续检查 prompt、deliberation 和 action channel，但不能把这一步说成已经解决最终低分。', 'Horizon is not the main explanation; later work investigates prompt, deliberation, and the action channel, but this step does not solve the final low score.')}</p></li>
       </ol>
-      <p class="slide-number">10 / 22</p>
+      <p class="slide-number">11 / 23</p>
     </div>
   </section>
   <section id="prompt-diagnostic" class="briefing-slide tone-gold" aria-labelledby="prompt-diagnostic-title">
@@ -315,7 +339,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
       </ol>
       <p class="prompt-chain-conclusion"><strong>{t('最后保留的科学结论', 'Scientific takeaway')}</strong>{t('不把“禁止 next / back”硬塞进原实验；把状态感知 prompt 当作独立变量来测。它提供了局部行为证据，但没有解决广泛泛化问题。', 'Do not hard-code a next / back ban into the original experiment; test a state-aware prompt as its own variable. It produced local behavioral evidence without solving broad generalization.')}</p>
       <p class="source-note"><a href={stateAwarePromptHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={stateAwarePromptHref} /> H1.8 · state-aware-v3 prompt contract</a></p>
-      <p class="slide-number">11 / 22</p>
+      <p class="slide-number">12 / 23</p>
     </div>
   </section>
   <section id="capacity-diagnostic" class="briefing-slide tone-gold" aria-labelledby="capacity-title">
@@ -327,7 +351,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
         <div class="after"><span>{t('结构化处理', 'structured recovery')}</span><strong>20 {t('条记录', 'records')} → 10 + 10</strong><p>{t('先保留原来的 20 条记录；如果同一批记录修复一次后仍然饱和，才固定拆成前 10 + 后 10，分别压缩后再合并。', 'Keep the original 20 records first; only if the same records still saturate after one repair pass do we split into first 10 + last 10, compress each half, then merge.')}</p></div>
       </div>
       <div class="resolution-box"><strong>{t('最终怎么解决容量饱和', 'How we ultimately handled saturation')}</strong><p>{t('最终处理方式是：先处理全部 20 条原始记录；如果达到容量上限，就用同 20 条、同样顺序再修复一次；如果仍然饱和，才固定拆成前 10 + 后 10，分别压缩后再合并。这样把“容量一满就卡死”变成一个有边界、可复现的恢复路径；但它只解决容量故障，不等于证明最终 WebShop 分数因此提高。', 'The final procedure is: process all 20 original records; if the output reaches the capacity limit, repair the same 20 in the same order once; only if it still saturates do we split deterministically into first 10 + last 10, compress each half, and merge them. This turns saturation from a blocking failure into a bounded, reproducible recovery path; it does not by itself prove a higher final WebShop score.')}</p></div>
-      <p class="slide-number">12 / 22</p>
+      <p class="slide-number">13 / 23</p>
     </div>
   </section>
   <section id="training-dynamics" class="briefing-slide tone-blue" aria-labelledby="training-dynamics-title">
@@ -356,7 +380,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
       </div>
       <div class="experiment-strip"><span><strong>123</strong>{t(' 个 sealed rounds', ' sealed rounds')}</span><span><strong>31</strong>{t(' 次候选训练', ' candidate trainings')}</span><span><strong>2</strong>{t(' 次真正采用', ' accepted updates')}</span><span><strong>—</strong>{t(' 无同口径冻结终评', ' no same-protocol frozen final')}</span></div>
       <p class="dynamics-boundary">{t(`这 ${dynamics3B.acceptedRolloutsTotal.toLocaleString('en-US')} 次正式环境尝试里，ledger 记录的 engineering invalid、parser repair、invalid-action termination 都是 0。它帮助我们排除“动作接口持续坏着”这个简单解释；这条线目前仍没有同口径冻结终评，所以结果表保持空白。`, `Across these ${dynamics3B.acceptedRolloutsTotal.toLocaleString('en-US')} formal environment attempts, the ledger records zero engineering-invalid, parser-repair, and invalid-action-termination events. This helps rule out a persistently broken action interface; the line still has no same-protocol frozen final, so its results-table cells remain blank.`)}</p>
-      <p class="slide-number">13 / 22</p>
+      <p class="slide-number">14 / 23</p>
     </div>
   </section>
   <section id="mechanism" class="briefing-slide tone-gold" aria-labelledby="mechanism-title">
@@ -376,7 +400,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
       <p class="taskvector-paper"><strong>{t('参考思想', 'Reference idea')}</strong><a href={taskArithmeticHref} target="_blank" rel="noreferrer">Ilharco et al. · Editing Models with Task Arithmetic ↗</a><span>{t('论文把微调前后的参数差看成权重空间方向；我们进一步追踪 OpenEVO 连续自我训练产生的一系列方向。', 'The paper treats the before-after fine-tuning difference as a direction in weight space; we extend that idea to a sequence of OpenEVO self-training updates.')}</span></p>
       <p class="slide-bridge">{t('这一页定义怎么观察参数；下一页展示这个观察带来的两个直接证据。', 'This slide defines how we inspect parameters; the next slide shows two direct pieces of evidence from that inspection.')}</p>
       <p class="source-note"><a href={technicalHref}>{t('TaskVector 完整推导与实验门槛', 'Full TaskVector derivation and experimental thresholds')}</a></p>
-      <p class="slide-number">14 / 22</p>
+      <p class="slide-number">15 / 23</p>
     </div>
   </section>
   <section id="taskvector-behavior" class="briefing-slide tone-gold" aria-labelledby="taskvector-behavior-title">
@@ -390,7 +414,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
       </div>
       <p class="taskvector-behavior-boundary"><strong>{t('这一步说明什么', 'What this establishes')}</strong>{t('TaskVector 已经能改变模型行为；下一步要继续区分哪些方向带来真正任务能力，哪些方向只是改变了动作偏好。最终 WebShop 分数仍由冻结终评回答。', 'TaskVector already changes model behavior. The next question is which directions contribute real task ability and which only change action preference. The frozen final evaluation still answers the final WebShop score.')}</p>
       <p class="source-note"><a href={measurementPackHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={measurementPackHref} /> PR #317 · {t('参数机制分析', 'parameter-mechanism analysis')}</a> · <a href={technicalHref}>{t('完整 Gram matrix 与 Frobenius 几何', 'Full Gram matrix and Frobenius geometry')}</a></p>
-      <p class="slide-number">15 / 22</p>
+      <p class="slide-number">16 / 23</p>
     </div>
   </section>
   <section id="gdr" class="briefing-slide tone-rose" aria-labelledby="gdr-title">
@@ -411,7 +435,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
       <p class="gdr-why-gate"><strong>{t('为什么采用 gate 版本？', 'Why use a gate version?')}</strong>{t('当时还不能可靠判断哪段参数该擦、擦多少、哪段方向更正确，所以先使用可测任务表现作保守替代：候选先训练，再由 probe 决定是否进入下一轮。这个选择产生新的科学问题：短期不退步的准入，会不会提前截断长期有价值的更新？', 'At that point we could not reliably identify which parameter segment should be removed, how much to remove, or which new direction was correct. We therefore used measurable task behavior as a conservative substitute: train the candidate, then let the probe decide whether it enters the next round. This creates a new scientific question: can a short-horizon non-regression gate cut off updates that would become valuable later?')}</p>
       <p class="bottom-claim">{t('因此我们把两个计数分开看：OpenEVO 训练出了多少个 SD-LoRA 候选，以及 GDR 最终让多少个候选真正更新到后续模型。下一页就是 1.7B 正式线的实际结果。', 'We therefore track two counts separately: how many SD-LoRA candidates OpenEVO trained, and how many GDR allowed to update later model states. The next slide shows the formal 1.7B result.')}</p>
       <p class="source-note"><a href={technicalHref}>{t('GDR 的完整判定逻辑与实验定义', 'Full GDR decision logic and experiment definition')}</a></p>
-      <p class="slide-number">16 / 22</p>
+      <p class="slide-number">17 / 23</p>
     </div>
   </section>
   <section id="one-seven-b" class="briefing-slide tone-green" aria-labelledby="one-seven-b-title">
@@ -440,7 +464,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
       </div>
       <div class="experiment-strip"><span><strong>44</strong>{t(' 次候选训练', ' candidate trainings')}</span><span><strong>7</strong>{t(' 次 GDR 同意真正应用', ' admitted by GDR')}</span><span><strong>37</strong>{t(' 次训练结果被 GDR 拒绝', ' trained results rejected by GDR')}</span><span><strong>37.60 · 1 / 128</strong>{t(' 冻结终评 Score · 完整成功', ' frozen final Score · exact success')}</span></div>
       <p class="dynamics-boundary">{t('简单说，训练程序有 44 次都已经把一个 SD-LoRA 候选训出来了，但 GDR 又做了一次筛选，只同意其中 7 次真的改到下一轮模型上。W&B 对 44 个候选发生位置都有记录；被拒绝的 37 个候选没有保留可作为 authority 的 loss，所以右图不补假点。', 'In plain terms: 44 times the training program actually produced an SD-LoRA candidate, then GDR applied a second filter and allowed only 7 to change the next model state. W&B records all 44 candidate locations; the 37 rejected candidates do not retain authoritative loss values, so the right chart does not invent them.')}</p>
-      <p class="slide-number">17 / 22</p>
+      <p class="slide-number">18 / 23</p>
     </div>
   </section>
   <section id="directapply" class="briefing-slide tone-green" aria-labelledby="directapply-title">
@@ -453,7 +477,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
       </div>
       <div class="plain-language-result"><strong>{t('现在已经有运行中证据', 'The comparison now has live running evidence')}</strong><p>{t('No-GDR / DirectApply 已经持续长跑；下一页只展示一个带时间戳的 live snapshot。冻结终评仍未打开，所以开场结果表继续保持空白。', 'No-GDR / DirectApply is now well into its long run; the next slide shows only a timestamped live snapshot. The frozen final is still unopened, so the opening result table remains blank.')}</p></div>
       <p class="source-note"><a href={technicalHref}>{t('冻结起点、treatment identity、seed 与 determinism 证据', 'Frozen start, treatment identity, seeds, and determinism evidence')}</a></p>
-      <p class="slide-number">18 / 22</p>
+      <p class="slide-number">19 / 23</p>
     </div>
   </section>
   <section id="directapply-progress" class="briefing-slide tone-green" aria-labelledby="directapply-progress-title">
@@ -483,7 +507,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
       <div class="experiment-strip"><span><strong>{dynamicsDirectApply.sealedRounds} rounds · {dynamicsDirectApply.formalRollouts.toLocaleString('en-US')}</strong>{t('已封口训练进度', 'sealed training progress')}</span><span><strong>{dynamicsDirectApply.directApplyAdmissions} / {dynamicsDirectApply.sdLoraCandidatesTrained}</strong>{t(' 候选全部进入后续模型', ' candidates entered later states')}</span><span><strong>{dynamicsDirectApply.shadowGdrPass} pass · {dynamicsDirectApply.shadowGdrReject} reject</strong>{t(' shadow GDR 只做诊断标签', ' shadow GDR labels only')}</span><span><strong>{firstLossDirectApply.toFixed(3)} → {lastLossDirectApply.toFixed(3)}</strong>{t(' SD-LoRA training loss', ' SD-LoRA training loss')}</span></div>
       <p class="dynamics-boundary"><strong>{t('曲线怎么读：', 'How to read the curves:')}</strong>{t(`前 20 个已封口 round 的平均 Score 是 ${earlyScoreMeanDirectApply.toFixed(2)}，最近 20 个是 ${lateScoreMeanDirectApply.toFixed(2)}，说明相对起点确实抬高；但 R70–79 / R80–89 / R90–97 的均值是 58.35 → 55.36 → 50.83，最近没有继续稳定上升。下一页只分析这个平台期，不把它提前写成最终方法胜负。`, `Mean Score is ${earlyScoreMeanDirectApply.toFixed(2)} over the first 20 sealed rounds and ${lateScoreMeanDirectApply.toFixed(2)} over the latest 20, so the trajectory did improve relative to its start. But R70–79 / R80–89 / R90–97 average 58.35 → 55.36 → 50.83, so the recent segment is no longer rising steadily. The next slide analyzes this plateau without turning it into a final method verdict.`)}</p>
       <p class="source-note"><a href={directApplyLiveSnapshotHref}>{t('09:52 SGT 可审计快照', '09:52 SGT auditable snapshot')}</a> · <a href={directApplyLiveAuthorityHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={directApplyLiveAuthorityHref} /> {t('当前 No-GDR controller · 911e3afe', 'current No-GDR controller · 911e3afe')}</a></p>
-      <p class="slide-number">19 / 22</p>
+      <p class="slide-number">20 / 23</p>
     </div>
   </section>
   <section id="directapply-plateau" class="briefing-slide tone-gold" aria-labelledby="directapply-plateau-title">
@@ -498,7 +522,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
       <div class="plateau-carriers"><span><strong>SD-LoRA · 97</strong>{t(' 次更新', ' updates')}</span><span><strong>Text Memory · 2</strong>{t(' 次更新', ' updates')}</span><span><strong>Agent System · 1</strong>{t(' 次更新', ' update')}</span><span><strong>Skill · 1</strong>{t(' 次更新', ' update')}</span></div>
       <p class="plateau-decision"><strong>{t('现在怎么做', 'Decision now')}</strong>{t('当前 DirectApply 继续按冻结合同跑完 R160，保持这条长期证据干净；同时设计 successor：先在相同 128-rollout 预算里，把更多探索机会给高 partial-reward / hard tasks。若仍然平台，再单独测试 partial-credit / preference learning。', 'Keep the current DirectApply run unchanged through R160 so the long-horizon evidence stays clean. In parallel, design a successor that reallocates the same 128-rollout budget toward high-partial-reward / hard tasks. If that still plateaus, test partial-credit / preference learning as a separate treatment.')}</p>
       <p class="source-note"><a href={directApplyPlateauEvidenceHref}>{t('10:38 SGT 平台期诊断快照', '10:38 SGT plateau diagnostic')}</a> · <span>{t('诊断用于提出下一条假设；冻结 final panel access = 0', 'diagnostic for successor design; frozen final panel access = 0')}</span></p>
-      <p class="slide-number">20 / 22</p>
+      <p class="slide-number">21 / 23</p>
     </div>
   </section>
   <section id="technical-work-summary" class="briefing-slide tone-paper" aria-labelledby="technical-work-title">
@@ -514,7 +538,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
         <li><span>06</span><div><strong>{t('为了加速但不改科学语义', 'Safe speedup')}</strong><p>{t('Ray 多模型并行、resource-only handoff 和 formal rollout replay = 0 的恢复检查，让 GPU 调度可以优化，同时保留同一实验身份。', 'Ray multi-model parallelism, resource-only handoffs, and formal-rollout-replay = 0 checks let scheduling improve while preserving the same scientific identity.')}</p></div></li>
       </ol>
       <p class="source-note"><a href={technicalHref}>{t('查看完整技术证据', 'Open the full technical evidence')}</a></p>
-      <p class="slide-number">21 / 22</p>
+      <p class="slide-number">22 / 23</p>
     </div>
   </section>
   <section id="next" class="briefing-slide briefing-final" aria-labelledby="next-title">
@@ -640,4 +664,16 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
     .briefing-slide{margin-bottom:18px}
   }
 
+
+  .text-memory-briefing-slide .slide-thesis{max-width:930px}
+  .text-memory-briefing-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin-top:1rem}
+  .text-memory-briefing-grid article{padding:.9rem;border-radius:18px;background:rgba(255,255,255,.62);border:1px solid rgba(23,54,47,.14)}
+  .text-memory-briefing-grid span{display:block;margin-bottom:.45rem;color:#1e6b5c;font-size:.64rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+  .text-memory-briefing-grid strong{display:block;font-size:.96rem;line-height:1.25;color:#17362f}
+  .text-memory-briefing-grid p{margin:.45rem 0 0;color:#4f625d;font-size:.74rem;line-height:1.55}
+  .text-memory-briefing-next{margin-top:.9rem;padding:.9rem;border-radius:18px;background:rgba(23,54,47,.08);border:1px solid rgba(23,54,47,.12)}
+  .text-memory-briefing-next strong{display:block;color:#17362f;font-size:.92rem}
+  .text-memory-briefing-next p{margin:.35rem 0 0;color:#4f625d;font-size:.78rem;line-height:1.55}
+  .briefing-placeholder-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin-top:.75rem}
+  .briefing-placeholder-row span{display:flex;min-height:2.35rem;align-items:center;justify-content:center;text-align:center;border:1px dashed rgba(30,107,92,.42);border-radius:12px;color:#5d736c;font-size:.68rem;font-weight:800;background:rgba(255,255,255,.48)}
 </style>
