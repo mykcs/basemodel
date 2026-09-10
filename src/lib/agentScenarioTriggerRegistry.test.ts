@@ -141,6 +141,19 @@ describe('Agent scenario-trigger discovery', () => {
     expect(ingestion).toContain('Never invent a PR number');
   });
 
+  it('requires HPL closeout bootstrap and end-to-end activation-cue parity', () => {
+    expect(ingestion).toContain('Before the first local/RDC/terminal command');
+    expect(ingestion).toContain('set the outer shell/interpreter explicitly (for example `/bin/bash`)');
+    expect(ingestion).toContain('activation-cue parity');
+    expect(ingestion).toContain('scope as a semantic contract, not a knob for making the receipt pass');
+    expect(ingestion).toContain('a green focused unit-test subset is not a substitute');
+    expect(hpl).toContain('Activation cues are one end-to-end contract');
+    expect(hpl).toContain('positive activation');
+    expect(hpl).toContain('negative activation');
+    expect(registry).toContain('HPL / feedback-learning retrieval parity');
+    expect(registry).toContain('Do not require unrelated `Preview/build` words');
+  });
+
   it('turns named visual references into cognition witnesses and protects scroll intent', () => {
     expect(hpl).toContain('Named design references need a cognition-translation witness');
     expect(hpl).toContain('reference-surface-imitation');
@@ -218,6 +231,9 @@ describe('Agent scenario-trigger discovery', () => {
     expect(briefingPreviewHistory).toContain('Temporary information intentionally not promoted');
     expect(briefingPreviewHistory).toContain('live No-GDR round, Score, loss');
     expect(briefingPreviewHistory).toContain('temporary Vercel share URLs');
+    expect(briefingPreviewHistory).toContain('First RDC discovery command again used a Bash compound loop under the default Fish shell');
+    expect(briefingPreviewHistory).toContain('Scope is semantic evidence selection, not a PASS knob');
+    expect(briefingPreviewHistory).toContain('HPL retrieval activation is a pipeline contract');
   });
 
   it('keeps the historical case reusable without freezing transient state', () => {
