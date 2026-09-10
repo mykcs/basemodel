@@ -54,6 +54,12 @@ const ROUTE_OWNERS = new Map<string, RouteOwner>([
     routes: ['/research/seed-openevo/study/capability-exploration/mechanism-1-0/', '/en/research/seed-openevo/study/capability-exploration/mechanism-1-0/'],
     specs: ['tests/e2e/openevo-two-map.spec.ts'],
   }],
+  // The briefing component is imported by exactly the Chinese and English briefing pages.
+  // Keep slide-only edits on those two routes instead of paying for the full-site matrix.
+  ['src/components/research/SeedOpenEvoProgressBriefing.astro', {
+    routes: ['/research/seed-openevo/study/briefing/', '/en/research/seed-openevo/study/briefing/'],
+    specs: ['tests/e2e/seed-openevo-briefing.spec.ts'],
+  }],
 ]);
 const ROUTE_OWNER_COMPANIONS = new Set([
   'src/lib/interactiveResearchExplainers.test.ts',
