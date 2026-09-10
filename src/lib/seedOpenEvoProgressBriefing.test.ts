@@ -48,23 +48,24 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).not.toContain('width:calc(100vw - 20px);height:auto');
   });
 
-  it('uses a normal cover/agenda and a directory-like scientific-attempt summary', () => {
+  it('uses a normal cover/agenda and a science-story overview without checklist overload', () => {
     expect(briefing).toContain('OpenEVO 暑期考核汇报');
     expect(briefing).toContain("{t('目录', 'Agenda')}");
     expect(briefing).toContain("{t('先看三件事', 'Three things to know')}");
     expect(briefing).not.toContain("Too long, Don't read");
     expect(briefing).toContain('我们做过哪些科学尝试');
+    expect(briefing).toContain('science-path-list');
     for (const attempt of [
-      '撤掉误带进 Stage 2 的旧 gate',
-      '解开 64-component 工程上限',
-      '把最大动作步数从 15 提到 30',
-      '把 Text Memory 输出容量从 2048 提到 4096',
-      '把 20 条记录拆成 10 + 10',
-      '修正 3B Harness 与动作接口',
-      '用 TaskVector 检查参数方向',
-      '用 GDR 筛选已训练的参数候选',
-      '启动 DirectApply 独立对照',
+      '先让训练真正发生',
+      '撤掉旧 Stage 2 gate，解开 64-component 上限',
+      '再排除简单解释',
+      '15 → 30、state-aware prompt、2048 → 4096、20 → 10+10、3B Harness',
+      '最后追参数机制',
+      'TaskVector、GDR、DirectApply / No-GDR',
     ]) expect(briefing).toContain(attempt);
+    const summarySlide = briefing.slice(sectionPosition('science-attempts'), sectionPosition('results'));
+    expect(summarySlide).not.toContain('science-attempt-list');
+    expect(summarySlide).not.toContain('<span>01</span>');
   });
 
   it('shows the results first, with the protocol boundary before the table numbers', () => {
@@ -223,7 +224,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   it('defines GDR in place and separates candidate training from admission', () => {
     expect(briefing).toContain('OpenEVO 准备用 SD-LoRA 更新参数时，GDR 作为 gate 决定是否真的更新');
     expect(briefing).toContain('GDR = Gated Delta Rule');
-    expect(briefing).toContain('这个 S / k / v 是论文的 fast-weight memory 语义');
+    expect(briefing).toContain('这个 S / k / v 属于论文的 fast-weight memory 语义');
     expect(briefing).toContain('旧状态与完整候选各做 16-task probe');
     expect(briefing).toContain('至少一个任务指标必须严格提高');
     expect(briefing).toContain('为什么最后变成了 gate？');
@@ -234,7 +235,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('shows the authoritative 1.7B GDR result including frozen exact success', () => {
-    expect(briefing).toContain('在 1.7B 实验里，44 次候选只有 7 次进入后续模型');
+    expect(briefing).toContain('训练产生了 44 个参数候选，GDR 只让 7 个进入后续模型');
     expect(briefing).toContain('160 轮 / 20,480 次任务都跑完了');
     expect(briefing).toContain('44</strong>{t(\' 次候选训练\'');
     expect(briefing).toContain('7</strong>{t(\' 次 GDR 同意真正应用\'');
@@ -244,7 +245,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('keeps DirectApply as the one-variable causal comparison while preserving safety contracts', () => {
-    expect(briefing).toContain('为了回答 GDR 会不会限制长期学习，我们从相同条件启动 DirectApply 对照');
+    expect(briefing).toContain('我们从相同条件启动 DirectApply，对照 GDR 是否太保守');
     expect(briefing).toContain('DirectApply 只取消短期 task-score probe 对候选生死的决定权');
     expect(briefing).toContain('数据合同、工程安全和 determinism 检查仍然保留');
     expect(briefing).toContain('候选 → 16-task probe → 接受 / 拒绝');
@@ -257,7 +258,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(sectionPosition('directapply')).toBeLessThan(sectionPosition('directapply-progress'));
     expect(sectionPosition('directapply-progress')).toBeLessThan(sectionPosition('technical-work-summary'));
     for (const item of [
-      'DirectApply 已完成 94 次参数更新；最终评测仍未打开',
+      '所有已训练的 SD-LoRA 候选都进入了后续模型；最终评测仍未打开',
       '2026-09-10 08:40 SGT',
       '95 rounds · 12,160 rollout',
       '94 / 94',
@@ -266,7 +267,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
       '1.046 → 0.130',
       '0 accesses · —',
       '同一批候选的 shadow GDR（只做标签）',
-      '不是另一条真实跑过的 GDR 长跑',
+      '完整 GDR 长跑没有在同一起点实际执行',
       '不能推出完整 GDR 最终只会更新 40 次',
       '08:40 SGT 可审计快照',
       'current No-GDR controller · 911e3afe',
@@ -337,6 +338,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
       'not just',
       'not only',
       'rather than',
+      '不是',
+      '而是',
     ]) expect(briefing).not.toContain(token);
     const h2Titles = [...briefing.matchAll(/<h2[^>]*>\{t\('([^']+)'/g)].map((match) => String(match[1] ?? ''));
     expect(h2Titles.some((title) => /^(7B|1\.7B|3B|GDR)：/.test(title))).toBe(false);
