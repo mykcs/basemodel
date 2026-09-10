@@ -89,3 +89,56 @@ A new Agent starting from `/AGENTS.md` reaches `scenario-trigger-registry.md`, t
 4. Final completion still requires a fresh live-state read; this history file never acts as current PR, Preview, or experiment authority.
 
 The most serious repeat from this conversation — “owner becomes the first person to discover that the claimed Preview is not the claimed artifact” — now has an explicit use-site check before the URL is sent.
+
+## Follow-up — reader-first case-cluster closeout and HPL retrieval proof
+
+This later window continued the same BaseModel conversation after the earlier closeout. Product wording preferences such as `Track A` / `配对评测` and the case-cluster requirement already belong to the HPL CASE / Preference Model system; this follow-up therefore does **not** duplicate them as a second preference authority. It records only the execution and knowledge-system lessons that were still missing.
+
+### Coverage ledger
+
+| Feedback / failure | Repeated? | Reusable lesson | Canonical destination | Why there |
+| --- | --- | --- | --- | --- |
+| `OpenEvo · Track A 7B` and then `配对评测？这是什么意思？` | preference family already captured | Internal code and method jargon cannot replace concrete comparison objects in the first reader layer. | HPL CASE-065/066 + Preference Model | Already ingested preference evidence; conversation-lessons closeout must not count it again. |
+| `Agent 能通过一系列案例总结出规律然后修改其他地方` | yes | Case clusters must change generation and sibling scanning, not become a larger blacklist. | HPL CASE-064/083 + current HPL owner | Existing preference owner already has the rule; this follow-up only checks the retrieval machinery. |
+| First HPL closeout receipt missed case-cluster workflow evidence even though low-level retrieval knew the preference | new engineering gap | Workflow activation cues must agree across Preference Model retrieval and compiled Event/trajectory selection. Generic feedback-learning cues must not depend on Preview words, while Preview-specific evidence must stay opt-in. | `human-preference-learning-system.md` + `human-feedback-ingestion-closeout.md` | This is retrieval correctness, not a page preference. |
+| First future-task proof used a broad `research-ui` scope while the relevant comparison Gold Pairs were owned by `research-copy` | no | Scope is semantic evidence selection, not a PASS knob. Pick the narrow honest task scope; do not broaden evidence to force retrieval. | `human-feedback-ingestion-closeout.md` | The closeout protocol owns future-task retrieval proof. |
+| Focused HPL unit tests were green before the actual closeout receipt exposed missing retrieval signals | no | The source-window `feedback:ingestion-closeout` receipt is the integrated proof; focused tests are necessary but insufficient. | `human-feedback-ingestion-closeout.md` | Prevents false-complete HPL closeouts. |
+| First RDC discovery command again used a Bash compound loop under the default Fish shell | **yes, repeated known failure** | Read root `AGENTS.md` before the first local terminal command in a closeout and name `/bin/bash` when Bash syntax is used. A task protocol read is not a substitute for the repository bootstrap. | root `AGENTS.md` already owns shell rule; HPL closeout now adds a use-site preflight | The rule already existed at startup and was still skipped, so another history reminder alone would not help. |
+| Repeated status questions about “都完成了吗” | project-wide repeat, existing owner | Completion language must name the actual evidence stage instead of collapsing local draft / branch / PR / main / Production / HPL receipt into `done`. | existing exact-state closeout + project operating principles | Already current and startup-visible; no duplicate rule added. |
+
+### Why the Fish/Bash repeat matters
+
+This was not a new shell discovery. Root `AGENTS.md` already said, before any compound shell call, to set the outer interpreter to `/bin/bash` when Bash syntax is required. The failure happened because the task-specific HPL closeout started local execution before reloading the repository bootstrap. That makes the repair a **use-site ordering fix**: the HPL closeout protocol now explicitly loads root Agent instructions before its first local/RDC/terminal command.
+
+The command failed at parsing, before repository mutation. Do not misclassify this as repository corruption or tool unavailability.
+
+### HPL retrieval activation is a pipeline contract
+
+The HPL stack has more than one selection layer. A workflow preference can exist and rank correctly in `retrieveHumanPreferenceContext(...)` but still disappear from the final task-time Brief if Event/trajectory selection uses a different cue family. The same mistake can also over-activate adjacent workflow evidence: for example, adding `feedback` cues must not automatically pin the canonical fast-Preview Event when the task says nothing about Preview.
+
+The durable rule is therefore two-sided:
+
+```text
+intended workflow cue -> low-level preference + direct event/trajectory can appear
+unrequested adjacent workflow cue -> remains absent
+```
+
+This is a bounded retrieval requirement, not permission to dump the whole preference history.
+
+### Scope mismatch is not evidence loss
+
+The first receipt also demonstrated that `research-ui` and `research-copy` are not interchangeable labels. If a comparison preference/Gold Pair is intentionally copy-scoped, a broad UI query can exclude it. The correct response is to choose the future task's honest scope, not to widen all historical evidence until the test passes.
+
+### Temporary information intentionally not promoted
+
+This follow-up does not preserve local worktree paths, temporary branch names, process IDs, transient test process state, current open-PR status, one observed SHA, or the momentary state of an unmerged HPL workline. Those facts must be refreshed from Git/provider state when needed. No account-level long-term memory write is claimed by this repository closeout.
+
+### Future-Agent test
+
+A new Agent starting from root `AGENTS.md` should now hit three defenses before repeating this window's mistakes:
+
+1. root Fast Start names the shell before the first compound command;
+2. the HPL closeout protocol repeats that rule at the task use site before any local/RDC/terminal execution;
+3. HPL retrieval guidance requires positive/negative activation-cue parity plus honest task scope, and the integrated ingestion receipt remains the final generation/evaluation proof.
+
+The key goal is not that the next Agent remembers this retrospective. It is that the next closeout is less likely to fail only after the owner or the final receipt exposes the same problem.

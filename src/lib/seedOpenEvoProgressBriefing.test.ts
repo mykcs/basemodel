@@ -53,6 +53,10 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   it('uses a normal cover/agenda and a science-story overview without checklist overload', () => {
     expect(briefing).toContain('OpenEVO 在 WebShop 上到底学到了什么？');
     expect(briefing).toContain("{t('目录', 'Agenda')}");
+    expect(briefing).toContain('参数往哪改、哪些改动最后被用上');
+    for (const staleReaderJargon of ['参数方向与更新准入', 'accepted rollout', 'W&B 可核验', 'authority 的 loss']) {
+      expect(briefing).not.toContain(staleReaderJargon);
+    }
     expect(briefing).toContain("{t('先看三件事', 'Three things to know')}");
     expect(briefing).not.toContain("Too long, Don't read");
     expect(briefing).toContain('我们做过哪些科学尝试');
@@ -121,7 +125,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('撤掉这个人数门槛');
     expect(briefing).toContain('一轮做 128 次 WebShop 任务');
     expect(briefing).toContain('至少有一道题完整成功，而且记录有效');
-    expect(briefing).toContain('NOOP');
+    expect(briefing).toContain('这一轮不更新');
+    expect(briefing).not.toContain('NOOP');
     expect(sectionPosition('stage2-gate')).toBeLessThan(sectionPosition('component-cap'));
   });
 
@@ -137,7 +142,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
 
   it('keeps 7B training Score, SD-LoRA loss, and frozen final as three measurements', () => {
     expect(briefing).toContain('我们做了一次 7B 长跑：训练在变好，冻结终评是 49.33');
-    expect(briefing).toContain('149 rounds · 19,072 rollout');
+    expect(briefing).toContain('149 轮 · 19,072 次任务尝试');
     expect(briefing).toContain('143 个点 = 143 次真正采用的参数更新');
     expect(briefing).toContain('49.33 · 58 / 128');
     expect(briefing).toContain('三种数要分开读');
@@ -269,7 +274,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('7</strong>{t(\' 次 GDR 同意真正应用\'');
     expect(briefing).toContain('37</strong>{t(\' 次训练结果被 GDR 拒绝\'');
     expect(briefing).toContain('37.60 · 1 / 128');
-    expect(briefing).toContain('被拒绝的 37 个候选没有保留可作为 authority 的 loss');
+    expect(briefing).toContain('被拒绝的 37 个候选没有留下可作为可靠依据的 loss');
   });
 
   it('keeps DirectApply as the one-variable causal comparison while preserving safety contracts', () => {
