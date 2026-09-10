@@ -53,7 +53,7 @@ export interface HumanPreferenceRetrievalResult {
 export function retrieveHumanPreferenceContext(
   query: string,
   contractId?: string,
-  limit = 8,
+  limit = 12,
   scope?: HumanPreferenceScope,
 ): HumanPreferenceRetrievalResult {
   const normalized = query.toLowerCase();

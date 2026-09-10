@@ -154,6 +154,14 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
       preferences.has('PREF-CONCRETE-MECHANISM-WORDING') &&
       pairs.has('PAIR-087-CONCRETE-MECHANISM') &&
       events.has('EVENT-20260909-GDR-ABSTRACT-MECHANISM-PHRASING'),
+    'diagnostic-referent-spelled-out':
+      preferences.has('PREF-CONCRETE-MECHANISM-WORDING') &&
+      pairs.has('PAIR-087-DIAGNOSTIC-REFERENT') &&
+      events.has('EVENT-20260910-BRIEFING-UNNAMED-DIAGNOSTIC-REFERENT'),
+    'live-snapshot-final-boundary':
+      preferences.has('PREF-SCIENTIFIC-BOUNDARY') &&
+      visuals.has('VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE') &&
+      brief.antiOvergeneralization.some((boundary) => boundary.includes('训练过程信号') && boundary.includes('最终评测')),
     'consistent-experiment-visual-grammar':
       preferences.has('PREF-CONSISTENT-EXPERIMENT-VISUAL-GRAMMAR') &&
       pairs.has('PAIR-088-EXPERIMENT-CHART-GRAMMAR') &&
@@ -292,11 +300,13 @@ function validateEvaluationProof(record: HumanFeedbackIngestionCloseoutRecord, f
     return { evaluationProofFailures: negative, evaluationProofPassFailures: positive };
   }
 
-  if (record.evaluationProof.pairId && record.evaluationProof.failureFamily) {
+  if (record.evaluationProof.pairId) {
     const pairId = record.evaluationProof.pairId;
     const family = record.evaluationProof.failureFamily;
-    const severity = failureFamilySeverity(family);
-    if (!['repeated', 'hard'].includes(severity)) failures.push(`${record.id}: evaluation failure family ${family} must be repeated/hard, got ${severity}`);
+    if (family) {
+      const severity = failureFamilySeverity(family);
+      if (!['repeated', 'hard'].includes(severity)) failures.push(`${record.id}: evaluation failure family ${family} must be repeated/hard, got ${severity}`);
+    }
     if (!goldPairIdsForContract('study-briefing').includes(pairId as never)) failures.push(`${record.id}: evaluation pair ${pairId} is not required by study-briefing`);
     const receipt = buildGoldPairJudgeReceipt(record, pairId);
     const negative = validateHumanPreferenceJudgeReceipt(receipt);
@@ -309,7 +319,7 @@ function validateEvaluationProof(record: HumanFeedbackIngestionCloseoutRecord, f
     return { evaluationProofFailures: negative, evaluationProofPassFailures: positive };
   }
 
-  failures.push(`${record.id}: evaluationProof must define hardFamily or failureFamily+pairId`);
+  failures.push(`${record.id}: evaluationProof must define hardFamily or a deterministic pairId guard`);
   return { evaluationProofFailures: ['missing evaluation proof configuration'], evaluationProofPassFailures: [] };
 }
 

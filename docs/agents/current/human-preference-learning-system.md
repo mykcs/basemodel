@@ -347,6 +347,12 @@ A later HPL-informed draft still titled Slide 3 `我们不是只跑一次实验�
 
 PR #605 visual state still follows the later #611 closeout: exact head `56b5120b…` is Rejected because later owner hard-failure feedback remained unresolved on that exact page head. The binary-contrast correction is preserved as a dimension-level improvement only; it does not upgrade the whole visual to accepted/Silver.
 
+A 2026-09-10 follow-up adds one narrower mechanism to CASE-087: a critical causal referent must be named before attribution. `为了判断问题是不是 SD-LoRA 独有` fails because the audience has to guess what “问题” refers to; the usable form first names the failure — successful trajectories were already available, yet parameter learning still did not clearly improve task ability — and only then explains why ordinary LoRA is a control for whether the failure is SD-LoRA-specific. This does **not** ban `问题 / 现象 / 它`; nearby, unambiguous antecedents remain normal writing. `unnamed-scientific-referent` has one direct event and therefore stays `normal`, not repeated/hard.
+
+Step-7 recurrence protection also follows that evidence honestly: a new single-occurrence family does not need to be falsely escalated merely to obtain a Gate. A required Gold Pair may itself be the deterministic guard: the preference judge must reject a future candidate that repeats the rejected side and pass once the accepted direction is restored. Hard/repeated families continue to use the existing hard-family receipt guard.
+
+The simultaneously requested live No-GDR slide is kept separate from preference learning. Its exact round, score, loss, and shadow-GDR counts are reconstructible scientific state and must be refreshed from experiment authority; PR #614 is recorded only as the current visual candidate because the owner requested the content but did not approve that exact visual as Silver/Golden.
+
 ## End-of-conversation ingestion closeout
 
 When the owner asks to absorb a whole modification conversation, follow [`human-feedback-ingestion-closeout.md`](human-feedback-ingestion-closeout.md). The closeout source of truth is machine-readable: `src/data/humanFeedbackIngestionCloseouts.ts`. Validate a recorded closeout with:

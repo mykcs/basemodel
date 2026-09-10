@@ -594,6 +594,20 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     evidence: { repository: 'mykcs/fuhuo_20260419', route: '/docs/mac-remote', pullRequest: 21, gitSha: '4a7fdaf6d17cac6b825ffdd801951229d51fbfc0', ledgerId: 'FB-R05-TECHNICAL-FIRST-REJECTED' },
   },
   {
+    id: 'EVENT-20260910-BRIEFING-UNNAMED-DIAGNOSTIC-REFERENT',
+    date: '2026-09-10',
+    caseIds: ['CASE-087'],
+    scopes: ['briefing', 'research-copy'],
+    artifact: 'OpenEVO summer review · LoRA / SD-LoRA diagnostic explanation',
+    variantId: 'briefing-sdlora-unnamed-diagnostic-referent',
+    verdict: 'rejected',
+    ownerSignal: '《为了判断问题是不是 SD-LoRA 独有》这里也讲清什么问题是不是 SD 罗拉独有。',
+    reasons: ['“问题”承担关键归因却没有把被诊断的失败说出来，听众必须跨段猜 antecedent', 'LoRA / SD-LoRA 对照只有先说明“成功轨迹写进参数后能力仍没有明显提升”这个失败，才能解释它在排查什么'],
+    failureMechanisms: ['unnamed-scientific-referent'],
+    requestedSuccessorVariantId: 'briefing-sdlora-explicit-diagnostic-referent-30d55de',
+    evidence: { repository: 'mykcs/basemodel', route: '/research/seed-openevo/study/briefing/', pullRequest: 608, gitSha: '9cc3159ca84db963e613d85a968e7b374eaad35a', ledgerId: 'FB-S6-01-SDLORA-REFERENT' },
+  },
+  {
     id: 'EVENT-20260909-SITEWIDE-APPLE-SURFACE-REPEAT',
     date: '2026-09-09',
     caseIds: ['CASE-068'],
@@ -724,7 +738,7 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
   {
     id: 'TRAJECTORY-BRIEFING-STORYLINE-NATURAL-COPY-20260909',
     scopes: ['briefing', 'research-copy', 'visual'],
-    variantIds: ['briefing-diagnostic-intervention-first-0aa9693c', 'briefing-log-first-a83eb0da', 'briefing-storyline-human-causal-670ab9b4', 'briefing-binary-contrast-recurrence-e9b767d4', 'briefing-pr605-final-merged-rejected-56b5120'],
+    variantIds: ['briefing-diagnostic-intervention-first-0aa9693c', 'briefing-log-first-a83eb0da', 'briefing-storyline-human-causal-670ab9b4', 'briefing-binary-contrast-recurrence-e9b767d4', 'briefing-pr605-final-merged-rejected-56b5120', 'briefing-sdlora-unnamed-diagnostic-referent', 'briefing-sdlora-explicit-diagnostic-referent-30d55de'],
     comparisons: [
       {
         betterVariantId: 'briefing-log-first-a83eb0da',
@@ -744,8 +758,14 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
         reason: '在“科学尝试”标题这一维，后继版本把“我们不是只跑一次实验，而是……”改成直接主题“我们做过哪些尝试”。该后继版本后来仍因 TaskVector 技术层级与科学尝试页结构问题被整体判为 Rejected；这里仅记录这一个文案维度的改进。',
         failureMechanisms: ['defensive-negation-opening', 'anticipatory-rebuttal'],
       },
+      {
+        betterVariantId: 'briefing-sdlora-explicit-diagnostic-referent-30d55de',
+        worseVariantId: 'briefing-sdlora-unnamed-diagnostic-referent',
+        reason: 'owner 直接指出“问题是不是 SD-LoRA 独有”没有说清“问题”是什么；后继表达先写成功轨迹进入参数后能力仍未明显提升，再解释普通 LoRA 对照如何定位是否为 SD-LoRA 特有。',
+        failureMechanisms: ['unnamed-scientific-referent'],
+      },
     ],
-    note: '670ab9b4 是 PR #605 的历史 current-candidate；后续 exact head 56b5120 进入 main，但 owner 在该 head 之后明确指出 TaskVector 技术层级和“科学尝试”checklist 仍是必须修掉的 hard failure。merge 不是 accepted evidence；56b5120 记为 Rejected，仍没有 canonicalVariantId / Golden。',
+    note: '670ab9b4 是 PR #605 的历史 current-candidate；后续 exact head 56b5120 进入 main，但 owner 在该 head 之后明确指出 TaskVector 技术层级和“科学尝试”checklist 仍是必须修掉的 hard failure。2026-09-10 又补充“关键归因句不能让听众猜‘问题’指什么”。这些是 copy/storyline trajectory；PR #614 的 No-GDR successor 仍在 review，没有新的 canonicalVariantId / Golden。',
   },
   {
     id: 'TRAJECTORY-BRIEFING-EXPERIMENT-CHART-GRAMMAR-20260909',
@@ -935,6 +955,18 @@ export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
     note: 'Concrete accepted result → Silver。没有“以后按这版 / 作为模板”的未来视觉授权，因此不是 Golden；可用 repo + exact SHA + route + 390/1280 viewport 重建。',
   },
 
+  {
+    id: 'VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE',
+    tier: 'current-candidate',
+    scopes: ['briefing', 'visual', 'briefing-mobile', 'briefing-desktop'],
+    artifact: 'OpenEVO summer review · live No-GDR / DirectApply snapshot successor',
+    repository: 'mykcs/basemodel',
+    gitSha: '0652a9cf4665ade62b786dea26ecec0be52c7da5',
+    pullRequest: 614,
+    route: '/research/seed-openevo/study/briefing/',
+    ownerEvidence: 'owner 要求“把现在的 nogdr 也写进 slide 里面”；PR #614 增加带时间戳的 live No-GDR snapshot，并继续把冻结终评保持为空白。closeout 前没有对该 exact visual 的 accepted / canonical 表述。',
+    note: 'CURRENT-CANDIDATE。实时 round / loss / shadow-GDR 数值是可重建的科学状态，不是视觉偏好；该视觉只表示当前迭代落点。没有 owner 模板授权，因此不是 Silver / Golden。',
+  },
   {
     id: 'VISUAL-FUHUO-RECOVERY-TECHNICAL-FIRST-REJECTED',
     tier: 'rejected',
