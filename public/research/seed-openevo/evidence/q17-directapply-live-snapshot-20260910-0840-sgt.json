@@ -1,0 +1,45 @@
+{
+  "schema": "basemodel.q17-directapply-live-snapshot.v2",
+  "snapshot_label_sgt": "2026-09-10T08:40:00+08:00",
+  "status": "LIVE_TRAINING_SNAPSHOT_NOT_FINAL_EVALUATION",
+  "scope": "R0-R94 sealed receipts; R95 rollout active",
+  "controller_sha": "911e3afec1bc14d2194fa59b8feb3a232c34da85",
+  "frozen_science_sha": "ac130148ee08b6462d9728e482a858fe5f514047",
+  "active_core_sha": "59478929d884ca794cce2cb49cc6cc16103d6abe",
+  "capacity_policy_sha256": "5a8cea229d463336df301dfe55c959a8c708fc5d3268017352674c3f81e414aa",
+  "metrics": {
+    "sealed_rounds": 95,
+    "formal_rollouts": 12160,
+    "sd_lora_candidates_trained": 94,
+    "directapply_admissions": 94,
+    "shadow_gdr_labels": {
+      "pass": 40,
+      "reject": 54,
+      "total": 94
+    },
+    "training_round_score_mean_pct": {
+      "first_20": 41.83003063559704,
+      "latest_20": 55.81480978873556
+    },
+    "sd_lora_training_loss": {
+      "first_update_round": 0,
+      "first": 1.0461295127868653,
+      "latest_update_round": 94,
+      "latest": 0.13010922756834623
+    },
+    "final_panel_access_count": 0
+  },
+  "counterfactual_boundary": "Shadow GDR values are diagnostic labels on candidates produced along the DirectApply trajectory. They are not outcomes from a separately executed full GDR trajectory and do not imply that such a trajectory would contain exactly 40 updates.",
+  "cutoff_boundary": {
+    "r95_state_before_sha256": "48c23307dc2ca1608f88f78d23e076f85281f26d1ed27e83fc9e86e821ad97dc",
+    "interpretation": "At 08:40 SGT rounds R0-R94 were sealed and R95 rollout execution was active; no R95 result is included in this snapshot."
+  },
+  "provenance": {
+    "reconstruction": "Read-only recomputation from already-sealed R0-R94 receipts while R95 was running; no GPU work or experiment state was changed.",
+    "round094_state_after_sha256": "48c23307dc2ca1608f88f78d23e076f85281f26d1ed27e83fc9e86e821ad97dc",
+    "round094_round_complete_sha256": "89c36586ec705bff794218464953af738644b6f80f5d02f26cff677f3752dae7",
+    "round094_summary_sha256": "026faeef4c62f0a86070c7ffed18e10c68fa09827d1366fea4267211988d93d1",
+    "round094_update_sha256": "07693480e265ccf495de637b98f5b3a037335927196ce80a37b3b8fd309fbc77",
+    "round094_decision_sha256": "ab7cfb28ceb1224ef1639973d1ff7d20893a49c28f606c9480ae6c7c76d45d68"
+  }
+}

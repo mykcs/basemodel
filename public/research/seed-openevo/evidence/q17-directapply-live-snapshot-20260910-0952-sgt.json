@@ -1,0 +1,1317 @@
+{
+  "schema": "basemodel.q17-directapply-live-dynamics.v1",
+  "snapshot_label_sgt": "2026-09-10T09:52:00+08:00",
+  "status": "LIVE_TRAINING_SNAPSHOT_NOT_FINAL_EVALUATION",
+  "scope": "R0-R97 sealed receipts; later active work excluded",
+  "controller_sha": "911e3afec1bc14d2194fa59b8feb3a232c34da85",
+  "frozen_science_sha": "ac130148ee08b6462d9728e482a858fe5f514047",
+  "run_root": "/data/home/wangr/workspace/runs/q17-direct-apply-only-w2-202609082022/q17-direct-apply-only-w2-202609082022-direct",
+  "metrics": {
+    "sealed_rounds": 98,
+    "formal_rollouts": 12544,
+    "sd_lora_candidates_trained": 97,
+    "directapply_admissions": 97,
+    "shadow_gdr_labels": {
+      "pass": 42,
+      "reject": 55,
+      "total": 98
+    },
+    "training_round_score_mean_pct": {
+      "first_20": 41.830030635597026,
+      "latest_20": 53.06277408572329
+    },
+    "sd_lora_training_loss": {
+      "first_update_round": 0,
+      "first": 1.0461295127868653,
+      "latest_update_round": 97,
+      "latest": 0.1073259175984635
+    },
+    "final_panel_access_count": 0
+  },
+  "score": [
+    {
+      "round": 0,
+      "score": 33.64082792207789
+    },
+    {
+      "round": 1,
+      "score": 40.71293290043292
+    },
+    {
+      "round": 2,
+      "score": 38.21608946608945
+    },
+    {
+      "round": 3,
+      "score": 40.254920860389596
+    },
+    {
+      "round": 4,
+      "score": 44.450036075036046
+    },
+    {
+      "round": 5,
+      "score": 41.860350153318905
+    },
+    {
+      "round": 6,
+      "score": 51.0448908730159
+    },
+    {
+      "round": 7,
+      "score": 56.23647186147186
+    },
+    {
+      "round": 8,
+      "score": 40.7300037202381
+    },
+    {
+      "round": 9,
+      "score": 56.50906385281391
+    },
+    {
+      "round": 10,
+      "score": 43.608940972222214
+    },
+    {
+      "round": 11,
+      "score": 46.657084235209254
+    },
+    {
+      "round": 12,
+      "score": 50.80059523809523
+    },
+    {
+      "round": 13,
+      "score": 46.25128235479797
+    },
+    {
+      "round": 14,
+      "score": 43.712036661255404
+    },
+    {
+      "round": 15,
+      "score": 27.073412698412696
+    },
+    {
+      "round": 16,
+      "score": 44.7284226190476
+    },
+    {
+      "round": 17,
+      "score": 36.77504678481239
+    },
+    {
+      "round": 18,
+      "score": 33.06107954545455
+    },
+    {
+      "round": 19,
+      "score": 20.27712391774892
+    },
+    {
+      "round": 20,
+      "score": 42.436598124098104
+    },
+    {
+      "round": 21,
+      "score": 22.777791869588743
+    },
+    {
+      "round": 22,
+      "score": 37.77986336580085
+    },
+    {
+      "round": 23,
+      "score": 27.26077741702742
+    },
+    {
+      "round": 24,
+      "score": 35.38938492063492
+    },
+    {
+      "round": 25,
+      "score": 32.849279626623385
+    },
+    {
+      "round": 26,
+      "score": 26.094990079365072
+    },
+    {
+      "round": 27,
+      "score": 21.774384469696976
+    },
+    {
+      "round": 28,
+      "score": 38.716856060606055
+    },
+    {
+      "round": 29,
+      "score": 21.94661458333334
+    },
+    {
+      "round": 30,
+      "score": 21.328125000000007
+    },
+    {
+      "round": 31,
+      "score": 41.19318181818182
+    },
+    {
+      "round": 32,
+      "score": 30.414958739177482
+    },
+    {
+      "round": 33,
+      "score": 33.98306446158009
+    },
+    {
+      "round": 34,
+      "score": 26.388015196608954
+    },
+    {
+      "round": 35,
+      "score": 60.348236832611825
+    },
+    {
+      "round": 36,
+      "score": 48.14732142857143
+    },
+    {
+      "round": 37,
+      "score": 28.70907738095239
+    },
+    {
+      "round": 38,
+      "score": 36.90538194444446
+    },
+    {
+      "round": 39,
+      "score": 34.17671130952381
+    },
+    {
+      "round": 40,
+      "score": 41.583102227633475
+    },
+    {
+      "round": 41,
+      "score": 41.57107909451659
+    },
+    {
+      "round": 42,
+      "score": 41.8346974206349
+    },
+    {
+      "round": 43,
+      "score": 44.51215277777777
+    },
+    {
+      "round": 44,
+      "score": 56.24070504148628
+    },
+    {
+      "round": 45,
+      "score": 52.76455965909088
+    },
+    {
+      "round": 46,
+      "score": 63.86532738095233
+    },
+    {
+      "round": 47,
+      "score": 64.77381234217164
+    },
+    {
+      "round": 48,
+      "score": 44.379763032106794
+    },
+    {
+      "round": 49,
+      "score": 46.00778995310243
+    },
+    {
+      "round": 50,
+      "score": 57.005546536796516
+    },
+    {
+      "round": 51,
+      "score": 38.94328327922078
+    },
+    {
+      "round": 52,
+      "score": 42.30424783549782
+    },
+    {
+      "round": 53,
+      "score": 43.963023088023064
+    },
+    {
+      "round": 54,
+      "score": 45.86712549603171
+    },
+    {
+      "round": 55,
+      "score": 53.74291181908368
+    },
+    {
+      "round": 56,
+      "score": 52.62231691919188
+    },
+    {
+      "round": 57,
+      "score": 48.598276289682495
+    },
+    {
+      "round": 58,
+      "score": 36.289908008658
+    },
+    {
+      "round": 59,
+      "score": 34.19401887175325
+    },
+    {
+      "round": 60,
+      "score": 58.82778679653675
+    },
+    {
+      "round": 61,
+      "score": 53.485017586580085
+    },
+    {
+      "round": 62,
+      "score": 28.12736742424244
+    },
+    {
+      "round": 63,
+      "score": 49.6962932900433
+    },
+    {
+      "round": 64,
+      "score": 38.122519841269835
+    },
+    {
+      "round": 65,
+      "score": 42.377795815295784
+    },
+    {
+      "round": 66,
+      "score": 51.27021329365073
+    },
+    {
+      "round": 67,
+      "score": 66.12599206349205
+    },
+    {
+      "round": 68,
+      "score": 60.86230609668111
+    },
+    {
+      "round": 69,
+      "score": 70.46435335497831
+    },
+    {
+      "round": 70,
+      "score": 61.949855699855725
+    },
+    {
+      "round": 71,
+      "score": 57.38849431818177
+    },
+    {
+      "round": 72,
+      "score": 62.58181141774891
+    },
+    {
+      "round": 73,
+      "score": 51.14632936507937
+    },
+    {
+      "round": 74,
+      "score": 57.020906610750345
+    },
+    {
+      "round": 75,
+      "score": 57.44622564935062
+    },
+    {
+      "round": 76,
+      "score": 65.6031295093795
+    },
+    {
+      "round": 77,
+      "score": 69.3303571428571
+    },
+    {
+      "round": 78,
+      "score": 50.646250450937934
+    },
+    {
+      "round": 79,
+      "score": 50.370727362914856
+    },
+    {
+      "round": 80,
+      "score": 49.9268353174603
+    },
+    {
+      "round": 81,
+      "score": 51.05068542568544
+    },
+    {
+      "round": 82,
+      "score": 66.47085813492065
+    },
+    {
+      "round": 83,
+      "score": 61.67740462662342
+    },
+    {
+      "round": 84,
+      "score": 58.07314213564212
+    },
+    {
+      "round": 85,
+      "score": 58.657247700216466
+    },
+    {
+      "round": 86,
+      "score": 45.94742063492063
+    },
+    {
+      "round": 87,
+      "score": 49.30135619588742
+    },
+    {
+      "round": 88,
+      "score": 57.64198908730157
+    },
+    {
+      "round": 89,
+      "score": 54.85987103174603
+    },
+    {
+      "round": 90,
+      "score": 59.182534045815274
+    },
+    {
+      "round": 91,
+      "score": 55.356669372294334
+    },
+    {
+      "round": 92,
+      "score": 54.64611235119045
+    },
+    {
+      "round": 93,
+      "score": 43.524108270202035
+    },
+    {
+      "round": 94,
+      "score": 56.58327132936506
+    },
+    {
+      "round": 95,
+      "score": 55.44704861111111
+    },
+    {
+      "round": 96,
+      "score": 47.01611539502164
+    },
+    {
+      "round": 97,
+      "score": 34.87583423520923
+    }
+  ],
+  "loss": [
+    {
+      "round": 0,
+      "loss": 1.0461295127868653,
+      "accepted": true
+    },
+    {
+      "round": 1,
+      "loss": 0.6120680198073387,
+      "accepted": true
+    },
+    {
+      "round": 3,
+      "loss": 0.328932660476615,
+      "accepted": true
+    },
+    {
+      "round": 4,
+      "loss": 0.35103823692770675,
+      "accepted": true
+    },
+    {
+      "round": 5,
+      "loss": 0.32050574431195855,
+      "accepted": true
+    },
+    {
+      "round": 6,
+      "loss": 0.511879283003509,
+      "accepted": true
+    },
+    {
+      "round": 7,
+      "loss": 0.28425083433588344,
+      "accepted": true
+    },
+    {
+      "round": 8,
+      "loss": 0.21309355273842812,
+      "accepted": true
+    },
+    {
+      "round": 9,
+      "loss": 0.2841887984138269,
+      "accepted": true
+    },
+    {
+      "round": 10,
+      "loss": 0.25629793437054527,
+      "accepted": true
+    },
+    {
+      "round": 11,
+      "loss": 0.22617647921045622,
+      "accepted": true
+    },
+    {
+      "round": 12,
+      "loss": 0.24198913927345225,
+      "accepted": true
+    },
+    {
+      "round": 13,
+      "loss": 0.25948646600143266,
+      "accepted": true
+    },
+    {
+      "round": 14,
+      "loss": 0.23416634369641542,
+      "accepted": true
+    },
+    {
+      "round": 15,
+      "loss": 0.27519291386540445,
+      "accepted": true
+    },
+    {
+      "round": 16,
+      "loss": 0.2748468764575905,
+      "accepted": true
+    },
+    {
+      "round": 17,
+      "loss": 0.2482408585445005,
+      "accepted": true
+    },
+    {
+      "round": 18,
+      "loss": 0.24100645105436183,
+      "accepted": true
+    },
+    {
+      "round": 19,
+      "loss": 0.1886747343093157,
+      "accepted": true
+    },
+    {
+      "round": 20,
+      "loss": 0.2162989963424103,
+      "accepted": true
+    },
+    {
+      "round": 21,
+      "loss": 0.2620350777808773,
+      "accepted": true
+    },
+    {
+      "round": 22,
+      "loss": 0.19854316674172878,
+      "accepted": true
+    },
+    {
+      "round": 23,
+      "loss": 0.2161860763153527,
+      "accepted": true
+    },
+    {
+      "round": 24,
+      "loss": 0.21720775239850565,
+      "accepted": true
+    },
+    {
+      "round": 25,
+      "loss": 0.19795159512842206,
+      "accepted": true
+    },
+    {
+      "round": 26,
+      "loss": 0.2108398679070748,
+      "accepted": true
+    },
+    {
+      "round": 27,
+      "loss": 0.2074960543988989,
+      "accepted": true
+    },
+    {
+      "round": 28,
+      "loss": 0.22204441358537777,
+      "accepted": true
+    },
+    {
+      "round": 29,
+      "loss": 0.17627905774861574,
+      "accepted": true
+    },
+    {
+      "round": 30,
+      "loss": 0.20052511382848023,
+      "accepted": true
+    },
+    {
+      "round": 31,
+      "loss": 0.2070265767397359,
+      "accepted": true
+    },
+    {
+      "round": 32,
+      "loss": 0.16158062455776548,
+      "accepted": true
+    },
+    {
+      "round": 33,
+      "loss": 0.16777053850689042,
+      "accepted": true
+    },
+    {
+      "round": 34,
+      "loss": 0.183441026829597,
+      "accepted": true
+    },
+    {
+      "round": 35,
+      "loss": 0.18948037856898736,
+      "accepted": true
+    },
+    {
+      "round": 36,
+      "loss": 0.19526930590809294,
+      "accepted": true
+    },
+    {
+      "round": 37,
+      "loss": 0.19785505497801892,
+      "accepted": true
+    },
+    {
+      "round": 38,
+      "loss": 0.23900060724980873,
+      "accepted": true
+    },
+    {
+      "round": 39,
+      "loss": 0.20410727903639014,
+      "accepted": true
+    },
+    {
+      "round": 40,
+      "loss": 0.18050625105388463,
+      "accepted": true
+    },
+    {
+      "round": 41,
+      "loss": 0.20650618122742762,
+      "accepted": true
+    },
+    {
+      "round": 42,
+      "loss": 0.17404006390521923,
+      "accepted": true
+    },
+    {
+      "round": 43,
+      "loss": 0.16607410547094067,
+      "accepted": true
+    },
+    {
+      "round": 44,
+      "loss": 0.1811371586815107,
+      "accepted": true
+    },
+    {
+      "round": 45,
+      "loss": 0.19469836599340565,
+      "accepted": true
+    },
+    {
+      "round": 46,
+      "loss": 0.18322822427557361,
+      "accepted": true
+    },
+    {
+      "round": 47,
+      "loss": 0.16392960087598665,
+      "accepted": true
+    },
+    {
+      "round": 48,
+      "loss": 0.16819721725034087,
+      "accepted": true
+    },
+    {
+      "round": 49,
+      "loss": 0.16062004035828928,
+      "accepted": true
+    },
+    {
+      "round": 50,
+      "loss": 0.1538421171765352,
+      "accepted": true
+    },
+    {
+      "round": 51,
+      "loss": 0.1626155579407864,
+      "accepted": true
+    },
+    {
+      "round": 52,
+      "loss": 0.1696009588598901,
+      "accepted": true
+    },
+    {
+      "round": 53,
+      "loss": 0.1321056790355789,
+      "accepted": true
+    },
+    {
+      "round": 54,
+      "loss": 0.11546071490738541,
+      "accepted": true
+    },
+    {
+      "round": 55,
+      "loss": 0.12039780300886681,
+      "accepted": true
+    },
+    {
+      "round": 56,
+      "loss": 0.12739571878749334,
+      "accepted": true
+    },
+    {
+      "round": 57,
+      "loss": 0.1325091135005156,
+      "accepted": true
+    },
+    {
+      "round": 58,
+      "loss": 0.11145199163417731,
+      "accepted": true
+    },
+    {
+      "round": 59,
+      "loss": 0.11331089914407737,
+      "accepted": true
+    },
+    {
+      "round": 60,
+      "loss": 0.12063926264837191,
+      "accepted": true
+    },
+    {
+      "round": 61,
+      "loss": 0.11551523326312775,
+      "accepted": true
+    },
+    {
+      "round": 62,
+      "loss": 0.11799919016993954,
+      "accepted": true
+    },
+    {
+      "round": 63,
+      "loss": 0.11396650869648942,
+      "accepted": true
+    },
+    {
+      "round": 64,
+      "loss": 0.11879978172946722,
+      "accepted": true
+    },
+    {
+      "round": 65,
+      "loss": 0.11797574801397893,
+      "accepted": true
+    },
+    {
+      "round": 66,
+      "loss": 0.12396243723730246,
+      "accepted": true
+    },
+    {
+      "round": 67,
+      "loss": 0.12644954108362716,
+      "accepted": true
+    },
+    {
+      "round": 68,
+      "loss": 0.12722065342514186,
+      "accepted": true
+    },
+    {
+      "round": 69,
+      "loss": 0.1328633869941369,
+      "accepted": true
+    },
+    {
+      "round": 70,
+      "loss": 0.1328475200230392,
+      "accepted": true
+    },
+    {
+      "round": 71,
+      "loss": 0.1271382763516158,
+      "accepted": true
+    },
+    {
+      "round": 72,
+      "loss": 0.10893102657670777,
+      "accepted": true
+    },
+    {
+      "round": 73,
+      "loss": 0.12572290846708647,
+      "accepted": true
+    },
+    {
+      "round": 74,
+      "loss": 0.11275125672575087,
+      "accepted": true
+    },
+    {
+      "round": 75,
+      "loss": 0.1086014777908779,
+      "accepted": true
+    },
+    {
+      "round": 76,
+      "loss": 0.1327895867167778,
+      "accepted": true
+    },
+    {
+      "round": 77,
+      "loss": 0.12069632726304821,
+      "accepted": true
+    },
+    {
+      "round": 78,
+      "loss": 0.12377196482339059,
+      "accepted": true
+    },
+    {
+      "round": 79,
+      "loss": 0.11172851622349729,
+      "accepted": true
+    },
+    {
+      "round": 80,
+      "loss": 0.12012143424627456,
+      "accepted": true
+    },
+    {
+      "round": 81,
+      "loss": 0.10090455161873252,
+      "accepted": true
+    },
+    {
+      "round": 82,
+      "loss": 0.10799403372686356,
+      "accepted": true
+    },
+    {
+      "round": 83,
+      "loss": 0.10044340484409019,
+      "accepted": true
+    },
+    {
+      "round": 84,
+      "loss": 0.10641352684431515,
+      "accepted": true
+    },
+    {
+      "round": 85,
+      "loss": 0.11459039391838419,
+      "accepted": true
+    },
+    {
+      "round": 86,
+      "loss": 0.1127135419788269,
+      "accepted": true
+    },
+    {
+      "round": 87,
+      "loss": 0.10236613060911431,
+      "accepted": true
+    },
+    {
+      "round": 88,
+      "loss": 0.10405535204336047,
+      "accepted": true
+    },
+    {
+      "round": 89,
+      "loss": 0.1107445179240115,
+      "accepted": true
+    },
+    {
+      "round": 90,
+      "loss": 0.09691206933542465,
+      "accepted": true
+    },
+    {
+      "round": 91,
+      "loss": 0.11660148704627893,
+      "accepted": true
+    },
+    {
+      "round": 92,
+      "loss": 0.09574470197171119,
+      "accepted": true
+    },
+    {
+      "round": 93,
+      "loss": 0.12226226988394617,
+      "accepted": true
+    },
+    {
+      "round": 94,
+      "loss": 0.13010922756834623,
+      "accepted": true
+    },
+    {
+      "round": 95,
+      "loss": 0.12277393209282308,
+      "accepted": true
+    },
+    {
+      "round": 96,
+      "loss": 0.11057399876881391,
+      "accepted": true
+    },
+    {
+      "round": 97,
+      "loss": 0.1073259175984635,
+      "accepted": true
+    }
+  ],
+  "shadow_gdr_rounds": [
+    {
+      "round": 0,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 1,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 2,
+      "shadow_gdr_accepted": null
+    },
+    {
+      "round": 3,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 4,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 5,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 6,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 7,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 8,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 9,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 10,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 11,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 12,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 13,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 14,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 15,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 16,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 17,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 18,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 19,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 20,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 21,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 22,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 23,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 24,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 25,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 26,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 27,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 28,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 29,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 30,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 31,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 32,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 33,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 34,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 35,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 36,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 37,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 38,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 39,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 40,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 41,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 42,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 43,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 44,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 45,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 46,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 47,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 48,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 49,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 50,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 51,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 52,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 53,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 54,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 55,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 56,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 57,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 58,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 59,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 60,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 61,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 62,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 63,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 64,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 65,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 66,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 67,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 68,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 69,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 70,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 71,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 72,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 73,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 74,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 75,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 76,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 77,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 78,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 79,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 80,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 81,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 82,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 83,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 84,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 85,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 86,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 87,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 88,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 89,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 90,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 91,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 92,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 93,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 94,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 95,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 96,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 97,
+      "shadow_gdr_accepted": true
+    }
+  ],
+  "counterfactual_boundary": "Shadow GDR values are diagnostic labels on candidates produced along the DirectApply trajectory. They are not outcomes from a separately executed full GDR trajectory and do not imply that such a trajectory would contain exactly the same updates.",
+  "cutoff_boundary": {
+    "interpretation": "At 09:52 SGT rounds R0-R97 were sealed; later active work is excluded from this snapshot."
+  },
+  "provenance": {
+    "reconstruction": "Read-only recomputation from already-sealed receipts; no GPU work or experiment state was changed.",
+    "latest_state_after_sha256": "1d4bc03f09e6868e13e144690bcf5881d8d869a2f9c153960fb8e24ee2603fa8",
+    "latest_summary_sha256": "de2c62e0a959ed1fa2afd6218f436fbcc89a5bb36308f5f1ecf49447230f7104",
+    "latest_update_sha256": "0fcf16b487e71562e23169ebc5da7bcce4f2e087f339c3c2b71e84135351d985",
+    "latest_decision_sha256": "b7c4f10c929734bcc2a292355158b3ef4cc924ad3049cbb1169eb0335228b7c6"
+  }
+}

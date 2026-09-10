@@ -11,6 +11,9 @@ const enPage = read('../pages/en/research/seed-openevo/study/briefing/index.astr
 const zhTechnical = read('../pages/research/seed-openevo/study/briefing/technical-notes/index.astro');
 const enTechnical = read('../pages/en/research/seed-openevo/study/briefing/technical-notes/index.astro');
 const contracts = read('../data/siteReaderContracts.ts');
+const directApplyLiveSnapshot = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-live-snapshot-20260910-0952-sgt.json'));
+const directApplyPlateauDiagnostic = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-plateau-diagnostic-20260910-1038-sgt.json'));
+const directApplyLiveDynamics = read('../data/openEvoDirectApplyLiveDynamics.ts');
 const sitemap = read('./sitemapRoutes.ts');
 
 const sectionPosition = (id: string) => briefing.indexOf(`<section id="${id}"`);
@@ -26,11 +29,11 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/technical-notes/'");
   });
 
-  it('keeps a nineteen-slide deck with page numbers only on inner slides', () => {
-    expect((briefing.match(/<section /g) ?? []).length).toBe(19);
-    for (let page = 2; page <= 18; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 19`);
-    expect(briefing).not.toContain('01 / 19');
-    expect(briefing).not.toContain('19 / 19');
+  it('keeps a twenty-two-slide deck with page numbers only on inner slides', () => {
+    expect((briefing.match(/<section /g) ?? []).length).toBe(22);
+    for (let page = 2; page <= 21; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 22`);
+    expect(briefing).not.toContain('01 / 22');
+    expect(briefing).not.toContain('22 / 22');
     expect(briefing).not.toContain('class="slide-next"');
     expect(briefing).not.toContain('返回顶部');
   });
@@ -47,23 +50,24 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).not.toContain('width:calc(100vw - 20px);height:auto');
   });
 
-  it('uses a normal cover/agenda and a directory-like scientific-attempt summary', () => {
+  it('uses a normal cover/agenda and a science-story overview without checklist overload', () => {
     expect(briefing).toContain('OpenEVO 暑期考核汇报');
     expect(briefing).toContain("{t('目录', 'Agenda')}");
     expect(briefing).toContain("{t('先看三件事', 'Three things to know')}");
     expect(briefing).not.toContain("Too long, Don't read");
     expect(briefing).toContain('我们做过哪些科学尝试');
+    expect(briefing).toContain('science-path-list');
     for (const attempt of [
-      '撤掉误带进 Stage 2 的旧 gate',
-      '解开 64-component 工程上限',
-      '把最大动作步数从 15 提到 30',
-      '把 Text Memory 输出容量从 2048 提到 4096',
-      '把 20 条记录拆成 10 + 10',
-      '修正 3B Harness 与动作接口',
-      '用 TaskVector 检查参数方向',
-      '用 GDR 筛选已训练的参数候选',
-      '启动 DirectApply 独立对照',
+      '先让训练真正发生',
+      '撤掉旧 Stage 2 gate，解开 64-component 上限',
+      '再排除简单解释',
+      '15 → 30、state-aware prompt、2048 → 4096、20 → 10+10、3B Harness',
+      '最后追参数机制',
+      'TaskVector、GDR、DirectApply / No-GDR',
     ]) expect(briefing).toContain(attempt);
+    const summarySlide = briefing.slice(sectionPosition('science-attempts'), sectionPosition('results'));
+    expect(summarySlide).not.toContain('science-attempt-list');
+    expect(summarySlide).not.toContain('<span>01</span>');
   });
 
   it('shows the results first, with the protocol boundary before the table numbers', () => {
@@ -205,35 +209,53 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(technical).toContain('15,744 次正式环境尝试');
   });
 
-  it('keeps TaskVector simple in the main deck and moves full geometry to technical notes', () => {
-    const taskSlide = briefing.slice(sectionPosition('mechanism'), sectionPosition('gdr'));
-    expect(taskSlide).toContain('训练确实在发生以后，新的问题是：参数到底学到了什么？');
+  it('keeps TaskVector definition simple before showing behavior evidence', () => {
+    const taskSlide = briefing.slice(sectionPosition('mechanism'), sectionPosition('taskvector-behavior'));
+    expect(taskSlide).toContain('参数更新开始发生后，我们开始追它往哪里学');
     expect(taskSlide).toContain('v = θ<sub>after</sub> − θ<sub>before</sub>');
     expect(taskSlide).toContain('‖v‖ 告诉我们参数移动了多少');
     expect(taskSlide).toContain('夹角 / cosine');
+    expect(taskSlide).toContain('Editing Models with Task Arithmetic');
+    expect(taskSlide).not.toContain('0.56 → 0.35');
+    expect(taskSlide).not.toContain('24 / 24');
     expect(taskSlide).not.toContain('τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub>');
     expect(taskSlide).not.toContain('‖τ‖<sub>F</sub> = 0.608');
     expect(taskSlide).not.toContain('同范数随机方向');
+  });
+
+  it('shows TaskVector direction stability and causal intervention as evidence, not final score proof', () => {
+    const behaviorSlide = briefing.slice(sectionPosition('taskvector-behavior'), sectionPosition('gdr'));
+    expect(behaviorSlide).toContain('拿掉累计参数变化后，24 个输入全部换了第一选择');
+    expect(behaviorSlide).toContain('1.7B 的 7 次正式更新没有从头到尾稳定同向');
+    expect(behaviorSlide).toContain('0.56 → 0.35 → 0.03 → -0.02 → 0.11 → 0.79');
+    expect(behaviorSlide).toContain('24 / 24');
+    expect(behaviorSlide).toContain('0.15 → 1.02');
+    expect(behaviorSlide).toContain('TaskVector 已经能改变模型行为');
+    expect(behaviorSlide).toContain('最终 WebShop 分数仍由冻结终评回答');
+    expect(behaviorSlide).toContain("PR #317 · {t('参数机制分析'");
+    expect(behaviorSlide).not.toContain('τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub>');
+    expect(behaviorSlide).not.toContain('‖τ‖<sub>F</sub> = 0.608');
     expect(technical).toContain('√(δcᵀGδc) = 0.6082257746');
     expect(technical).toContain('PR #358 · R14 / R27 / R49 与 Frobenius 几何证据');
     expect(technical).toContain('R14 / R27 / R49');
   });
 
   it('defines GDR in place and separates candidate training from admission', () => {
-    expect(briefing).toContain('OpenEVO 准备用 SD-LoRA 更新参数时，GDR 作为 gate 决定是否真的更新');
+    expect(briefing).toContain('GDR 把一次参数更新变成可测的准入判断');
     expect(briefing).toContain('GDR = Gated Delta Rule');
-    expect(briefing).toContain('这个 S / k / v 是论文的 fast-weight memory 语义');
-    expect(briefing).toContain('旧状态与完整候选各做 16-task probe');
-    expect(briefing).toContain('至少一个任务指标必须严格提高');
-    expect(briefing).toContain('为什么最后变成了 gate？');
+    expect(briefing).toContain('S 是当前 fast-memory state，k 是要改写的关联位置，v 是准备写入的新 value');
+    expect(briefing).toContain('当前 OpenEVO 状态 + 完整候选状态 → 16-task probe → 是否采用');
+    expect(briefing).toContain('短期任务表现判断候选是否进入下一轮');
+    expect(briefing).toContain('为什么采用 gate 版本？');
     expect(briefing).not.toContain('把 16-task probe 得到的短期任务证据记作 k');
-    expect(briefing).toContain('OpenEVO 到底训练出了多少个 SD-LoRA 候选');
+    expect(briefing).not.toContain('所以你记得');
+    expect(briefing).toContain('OpenEVO 训练出了多少个 SD-LoRA 候选');
     expect(briefing).toContain('GDR 最终让多少个候选真正更新到后续模型');
     expect(technical).toContain('固定的 16-task 短期 probe');
   });
 
   it('shows the authoritative 1.7B GDR result including frozen exact success', () => {
-    expect(briefing).toContain('在 1.7B 实验里，44 次候选只有 7 次进入后续模型');
+    expect(briefing).toContain('训练产生了 44 个参数候选，GDR 只让 7 个进入后续模型');
     expect(briefing).toContain('160 轮 / 20,480 次任务都跑完了');
     expect(briefing).toContain('44</strong>{t(\' 次候选训练\'');
     expect(briefing).toContain('7</strong>{t(\' 次 GDR 同意真正应用\'');
@@ -243,13 +265,86 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('keeps DirectApply as the one-variable causal comparison while preserving safety contracts', () => {
-    expect(briefing).toContain('为了回答 GDR 会不会限制长期学习，我们从相同条件启动 DirectApply 对照');
+    expect(briefing).toContain('我们从相同条件启动 DirectApply，对照 GDR 是否太保守');
     expect(briefing).toContain('DirectApply 只取消短期 task-score probe 对候选生死的决定权');
     expect(briefing).toContain('数据合同、工程安全和 determinism 检查仍然保留');
     expect(briefing).toContain('候选 → 16-task probe → 接受 / 拒绝');
     expect(briefing).toContain('候选 → 共同合同通过 → 直接进入下一轮');
-    expect(briefing).toContain('冻结终评还没有封存');
+    expect(briefing).toContain('冻结终评仍未打开');
     expect(technical).toContain('16-task task-score probe 不再拥有接受 / 拒绝决定权');
+  });
+
+  it('shows the current No-GDR snapshot with the same Score/loss chart grammar and no frozen-final claim', () => {
+    expect(sectionPosition('directapply')).toBeLessThan(sectionPosition('directapply-progress'));
+    expect(sectionPosition('directapply-progress')).toBeLessThan(sectionPosition('directapply-plateau'));
+    expect(sectionPosition('directapply-plateau')).toBeLessThan(sectionPosition('technical-work-summary'));
+    const directApplySection = briefing.slice(sectionPosition('directapply-progress'), sectionPosition('directapply-plateau'));
+    for (const item of [
+      'DirectApply 前期抬高了分数，最近进入震荡平台',
+      '2026-09-10 09:52 SGT',
+      '和 7B、3B、1.7B GDR 一样，用左侧 Score 图和右侧 SD-LoRA loss 图展示训练过程',
+      '训练过程中每轮 WebShop Score',
+      'SD-LoRA training loss',
+      '每个点=DirectApply 已采用的候选更新',
+      'shadow GDR 只做诊断标签',
+      'R70–79 / R80–89 / R90–97 的均值是 58.35 → 55.36 → 50.83',
+      '09:52 SGT 可审计快照',
+      'current No-GDR controller · 911e3afe',
+    ]) expect(directApplySection).toContain(item);
+    expect(directApplySection).toContain('class="dynamics-grid"');
+    expect(directApplySection).toContain('scoreRawPointsDirectApply');
+    expect(directApplySection).toContain('lossPointsDirectApply');
+    expect(directApplySection).not.toContain('live-progress-grid');
+    expect(briefing).toContain('DirectApply 的最终 Score / Succ. 继续保持空白');
+    expect(directApplyLiveSnapshot.snapshot_label_sgt).toBe('2026-09-10T09:52:00+08:00');
+    expect(directApplyLiveSnapshot.status).toBe('LIVE_TRAINING_SNAPSHOT_NOT_FINAL_EVALUATION');
+    expect(directApplyLiveSnapshot.controller_sha).toBe('911e3afec1bc14d2194fa59b8feb3a232c34da85');
+    expect(directApplyLiveSnapshot.metrics.sealed_rounds).toBe(98);
+    expect(directApplyLiveSnapshot.metrics.formal_rollouts).toBe(12544);
+    expect(directApplyLiveSnapshot.metrics.sd_lora_candidates_trained).toBe(97);
+    expect(directApplyLiveSnapshot.metrics.directapply_admissions).toBe(97);
+    expect(directApplyLiveSnapshot.metrics.final_panel_access_count).toBe(0);
+    expect(directApplyLiveSnapshot.metrics.shadow_gdr_labels).toEqual({ pass: 42, reject: 55, total: 98 });
+    expect(directApplyLiveSnapshot.metrics.training_round_score_mean_pct.latest_20).toBeCloseTo(53.0628, 3);
+    expect(directApplyLiveSnapshot.metrics.sd_lora_training_loss.latest).toBeCloseTo(0.107326, 6);
+    expect(directApplyLiveSnapshot.score).toHaveLength(98);
+    expect(directApplyLiveSnapshot.loss).toHaveLength(97);
+    expect(directApplyLiveDynamics).toContain('sealed R0-R97');
+    expect(directApplyLiveDynamics).toContain('score: [');
+    expect(directApplyLiveDynamics).toContain('loss: [');
+    expect(directApplyLiveSnapshot.counterfactual_boundary).toContain('not outcomes from a separately executed full GDR trajectory');
+    expect(briefing).not.toContain('长期参数轨迹已经出现实质分叉');
+  });
+
+  it('adds a bounded plateau diagnosis and keeps successor ideas separate from the running treatment', () => {
+    const plateauSection = briefing.slice(sectionPosition('directapply-plateau'), sectionPosition('technical-work-summary'));
+    for (const item of [
+      '训练没卡死，但 R70 以后明显进入震荡平台',
+      '58.35 → 55.36 → 50.83',
+      '94 / 98 rounds',
+      '8.25 / 16 个 task 进入训练',
+      'cos ≈ −0.046',
+      'shadow GDR 只有 3 / 10 会通过',
+      'SD-LoRA · 97',
+      'Text Memory · 2',
+      'Agent System · 1',
+      'Skill · 1',
+      '当前 DirectApply 继续按冻结合同跑完 R160',
+      '相同 128-rollout 预算',
+      'partial-credit / preference learning',
+      '冻结 final panel access = 0',
+    ]) expect(plateauSection).toContain(item);
+    expect(directApplyPlateauDiagnostic.status).toBe('READ_ONLY_TRAINING_DIAGNOSTIC_NOT_FINAL_EVALUATION');
+    expect(directApplyPlateauDiagnostic.metrics.score_band_mean_pct).toEqual({ r70_r79: 58.3484087, r80_r89: 55.360681, r90_r97: 50.8289615 });
+    expect(directApplyPlateauDiagnostic.metrics.training_signal.selection_equals_clean_exact_success_task_count_rounds).toBe(94);
+    expect(directApplyPlateauDiagnostic.metrics.training_signal.latest_20_selected_task_count_mean).toBe(8.25);
+    expect(directApplyPlateauDiagnostic.metrics.update_direction.latest_10_adjacent_cosine_mean).toBe(-0.0459);
+    expect(directApplyPlateauDiagnostic.metrics.update_direction.latest_10_negative_adjacent_cosine_count).toBe(7);
+    expect(directApplyPlateauDiagnostic.metrics.shadow_gdr.latest_10_pass).toBe(3);
+    expect(directApplyPlateauDiagnostic.metrics.carrier_updates).toMatchObject({ sd_lora: 97, text_memory: 2, agent_system: 1, skill_bundle: 1 });
+    expect(directApplyPlateauDiagnostic.metrics.final_panel_access_count).toBe(0);
+    expect(directApplyPlateauDiagnostic.scientific_boundary).toContain('hypothesis-generating correlations');
+    expect(directApplyPlateauDiagnostic.decision_boundary).toContain('Do not change the running R160 DirectApply treatment');
   });
 
   it('keeps engineering work as a simple summary immediately before the final choice', () => {
@@ -305,6 +400,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
       'not just',
       'not only',
       'rather than',
+      '不是',
+      '而是',
     ]) expect(briefing).not.toContain(token);
     const h2Titles = [...briefing.matchAll(/<h2[^>]*>\{t\('([^']+)'/g)].map((match) => String(match[1] ?? ''));
     expect(h2Titles.some((title) => /^(7B|1\.7B|3B|GDR)：/.test(title))).toBe(false);
@@ -313,7 +410,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('keeps the scientific story in the requested causal order', () => {
-    const ids = ['results','openevo-method','stage2-gate','component-cap','seven-b','diagnostic-entry','horizon-diagnostic','capacity-diagnostic','training-dynamics','mechanism','gdr','one-seven-b','directapply','technical-work-summary','next'];
+    const ids = ['results','openevo-method','stage2-gate','component-cap','seven-b','diagnostic-entry','horizon-diagnostic','capacity-diagnostic','training-dynamics','mechanism','taskvector-behavior','gdr','one-seven-b','directapply','directapply-progress','directapply-plateau','technical-work-summary','next'];
     const positions = ids.map(sectionPosition);
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect(positions).toEqual([...positions].sort((a, b) => a - b));
