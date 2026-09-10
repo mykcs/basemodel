@@ -1,0 +1,82 @@
+{
+  "schema": "basemodel.q17-directapply-frontier-plan.v1",
+  "snapshot_label_sgt": "2026-09-10T23:12:00+08:00",
+  "status": "PLAN_AND_READ_ONLY_DIAGNOSTIC_NOT_FINAL_EVALUATION",
+  "scope": "R0-R121 sealed receipts; R122 rollout-only active/unsealed note excluded from trend claims",
+  "run_root": "/data/home/wangr/workspace/runs/q17-direct-apply-only-w2-202609082022/q17-direct-apply-only-w2-202609082022-direct",
+  "metrics": {
+    "sealed_rounds": 122,
+    "formal_rollouts": 15616,
+    "active_unsealed_round": 122,
+    "r122_rollout_only": {
+      "mean_score_pct": 52.94,
+      "clean_exact_success_count": 34,
+      "clean_exact_success_task_count": 6,
+      "engineering_invalid_count": 0
+    },
+    "score_block_mean_pct": {
+      "r70_r79": 58.35,
+      "r80_r89": 55.36,
+      "r90_r99": 49.9,
+      "r100_r109": 57.44,
+      "r110_r119": 63.52
+    },
+    "success_at_k_pct": {
+      "r90_r99": {
+        "at1": 23.91,
+        "at8": 51.88,
+        "best_of_8_score": 78.04
+      },
+      "r100_r109": {
+        "at1": 29.38,
+        "at8": 53.75,
+        "best_of_8_score": 78.95
+      },
+      "r110_r119": {
+        "at1": 33.67,
+        "at8": 56.25,
+        "best_of_8_score": 80.72
+      }
+    },
+    "sd_lora_selection": {
+      "never_exceeds_exact_success_task_count_rounds": 122,
+      "equal_to_exact_success_task_count_rounds": 111,
+      "rounds_checked": 122,
+      "latest_20_selected_task_count_mean": 8.35
+    },
+    "carrier_updates": {
+      "sd_lora": 121,
+      "text_memory": 2,
+      "text_memory_rounds": [
+        7,
+        95
+      ],
+      "agent_system": 2,
+      "agent_system_rounds": [
+        41,
+        115
+      ],
+      "skill_bundle": 1,
+      "skill_bundle_rounds": [
+        0
+      ]
+    },
+    "update_direction_latest_10": {
+      "adjacent_cosine_mean": 0.0644,
+      "negative_count": 3,
+      "count": 10
+    }
+  },
+  "interpretation": {
+    "theme": "Not a simple stall: the run recovered after R90-R99; current evidence points to reliability improvement before broad frontier expansion.",
+    "next_question": "Measure whether frontier tasks with partial reward are starved of supervised updates, then test same-budget frontier allocation separately.",
+    "not_claiming": "No final-panel result, no DirectApply/GDR winner, no causal proof that shadow-GDR rejected updates helped."
+  },
+  "placeholders": [
+    "frontier_curriculum_delta_success_at_8",
+    "state_coverage_delta",
+    "delayed_reject_counterfactual",
+    "partial_preference_start_decision"
+  ],
+  "durable_plan_pr": "https://github.com/mykcs/openevo-experiment/pull/420"
+}
