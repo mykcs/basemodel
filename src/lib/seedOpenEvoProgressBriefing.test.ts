@@ -12,6 +12,7 @@ const zhTechnical = read('../pages/research/seed-openevo/study/briefing/technica
 const enTechnical = read('../pages/en/research/seed-openevo/study/briefing/technical-notes/index.astro');
 const contracts = read('../data/siteReaderContracts.ts');
 const directApplyLiveSnapshot = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-live-snapshot-20260910-0952-sgt.json'));
+const directApplyPlateauDiagnostic = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-plateau-diagnostic-20260910-1038-sgt.json'));
 const directApplyLiveDynamics = read('../data/openEvoDirectApplyLiveDynamics.ts');
 const sitemap = read('./sitemapRoutes.ts');
 
@@ -28,11 +29,11 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/technical-notes/'");
   });
 
-  it('keeps a twenty-one-slide deck with page numbers only on inner slides', () => {
-    expect((briefing.match(/<section /g) ?? []).length).toBe(21);
-    for (let page = 2; page <= 20; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 21`);
-    expect(briefing).not.toContain('01 / 21');
-    expect(briefing).not.toContain('21 / 21');
+  it('keeps a twenty-two-slide deck with page numbers only on inner slides', () => {
+    expect((briefing.match(/<section /g) ?? []).length).toBe(22);
+    for (let page = 2; page <= 21; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 22`);
+    expect(briefing).not.toContain('01 / 22');
+    expect(briefing).not.toContain('22 / 22');
     expect(briefing).not.toContain('class="slide-next"');
     expect(briefing).not.toContain('返回顶部');
   });
@@ -275,17 +276,18 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
 
   it('shows the current No-GDR snapshot with the same Score/loss chart grammar and no frozen-final claim', () => {
     expect(sectionPosition('directapply')).toBeLessThan(sectionPosition('directapply-progress'));
-    expect(sectionPosition('directapply-progress')).toBeLessThan(sectionPosition('technical-work-summary'));
-    const directApplySection = briefing.slice(sectionPosition('directapply-progress'), sectionPosition('technical-work-summary'));
+    expect(sectionPosition('directapply-progress')).toBeLessThan(sectionPosition('directapply-plateau'));
+    expect(sectionPosition('directapply-plateau')).toBeLessThan(sectionPosition('technical-work-summary'));
+    const directApplySection = briefing.slice(sectionPosition('directapply-progress'), sectionPosition('directapply-plateau'));
     for (const item of [
-      'DirectApply 长跑正在上升；最终评测仍未打开',
+      'DirectApply 前期抬高了分数，最近进入震荡平台',
       '2026-09-10 09:52 SGT',
       '和 7B、3B、1.7B GDR 一样，用左侧 Score 图和右侧 SD-LoRA loss 图展示训练过程',
       '训练过程中每轮 WebShop Score',
       'SD-LoRA training loss',
       '每个点=DirectApply 已采用的候选更新',
       'shadow GDR 只做诊断标签',
-      '完整 GDR 长跑没有在同一起点实际执行；最终 WebShop 胜负仍要等冻结终评。',
+      'R70–79 / R80–89 / R90–97 的均值是 58.35 → 55.36 → 50.83',
       '09:52 SGT 可审计快照',
       'current No-GDR controller · 911e3afe',
     ]) expect(directApplySection).toContain(item);
@@ -312,6 +314,37 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(directApplyLiveDynamics).toContain('loss: [');
     expect(directApplyLiveSnapshot.counterfactual_boundary).toContain('not outcomes from a separately executed full GDR trajectory');
     expect(briefing).not.toContain('长期参数轨迹已经出现实质分叉');
+  });
+
+  it('adds a bounded plateau diagnosis and keeps successor ideas separate from the running treatment', () => {
+    const plateauSection = briefing.slice(sectionPosition('directapply-plateau'), sectionPosition('technical-work-summary'));
+    for (const item of [
+      '训练没卡死，但 R70 以后明显进入震荡平台',
+      '58.35 → 55.36 → 50.83',
+      '94 / 98 rounds',
+      '8.25 / 16 个 task 进入训练',
+      'cos ≈ −0.046',
+      'shadow GDR 只有 3 / 10 会通过',
+      'SD-LoRA · 97',
+      'Text Memory · 2',
+      'Agent System · 1',
+      'Skill · 1',
+      '当前 DirectApply 继续按冻结合同跑完 R160',
+      '相同 128-rollout 预算',
+      'partial-credit / preference learning',
+      '冻结 final panel access = 0',
+    ]) expect(plateauSection).toContain(item);
+    expect(directApplyPlateauDiagnostic.status).toBe('READ_ONLY_TRAINING_DIAGNOSTIC_NOT_FINAL_EVALUATION');
+    expect(directApplyPlateauDiagnostic.metrics.score_band_mean_pct).toEqual({ r70_r79: 58.3484087, r80_r89: 55.360681, r90_r97: 50.8289615 });
+    expect(directApplyPlateauDiagnostic.metrics.training_signal.selection_equals_clean_exact_success_task_count_rounds).toBe(94);
+    expect(directApplyPlateauDiagnostic.metrics.training_signal.latest_20_selected_task_count_mean).toBe(8.25);
+    expect(directApplyPlateauDiagnostic.metrics.update_direction.latest_10_adjacent_cosine_mean).toBe(-0.0459);
+    expect(directApplyPlateauDiagnostic.metrics.update_direction.latest_10_negative_adjacent_cosine_count).toBe(7);
+    expect(directApplyPlateauDiagnostic.metrics.shadow_gdr.latest_10_pass).toBe(3);
+    expect(directApplyPlateauDiagnostic.metrics.carrier_updates).toMatchObject({ sd_lora: 97, text_memory: 2, agent_system: 1, skill_bundle: 1 });
+    expect(directApplyPlateauDiagnostic.metrics.final_panel_access_count).toBe(0);
+    expect(directApplyPlateauDiagnostic.scientific_boundary).toContain('hypothesis-generating correlations');
+    expect(directApplyPlateauDiagnostic.decision_boundary).toContain('Do not change the running R160 DirectApply treatment');
   });
 
   it('keeps engineering work as a simple summary immediately before the final choice', () => {
@@ -377,7 +410,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('keeps the scientific story in the requested causal order', () => {
-    const ids = ['results','openevo-method','stage2-gate','component-cap','seven-b','diagnostic-entry','horizon-diagnostic','capacity-diagnostic','training-dynamics','mechanism','taskvector-behavior','gdr','one-seven-b','directapply','directapply-progress','technical-work-summary','next'];
+    const ids = ['results','openevo-method','stage2-gate','component-cap','seven-b','diagnostic-entry','horizon-diagnostic','capacity-diagnostic','training-dynamics','mechanism','taskvector-behavior','gdr','one-seven-b','directapply','directapply-progress','directapply-plateau','technical-work-summary','next'];
     const positions = ids.map(sectionPosition);
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect(positions).toEqual([...positions].sort((a, b) => a - b));

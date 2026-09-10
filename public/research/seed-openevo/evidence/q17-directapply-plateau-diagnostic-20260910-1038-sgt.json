@@ -1,0 +1,65 @@
+{
+  "schema": "basemodel.q17-directapply-plateau-diagnostic.v1",
+  "snapshot_label_sgt": "2026-09-10T10:38:35+08:00",
+  "status": "READ_ONLY_TRAINING_DIAGNOSTIC_NOT_FINAL_EVALUATION",
+  "scope": "R0-R97 sealed receipts from q17-direct-apply-only-w2-202609082022; no GPU work and no experiment state mutation",
+  "controller_sha": "911e3afec1bc14d2194fa59b8feb3a232c34da85",
+  "frozen_science_sha": "ac130148ee08b6462d9728e482a858fe5f514047",
+  "metrics": {
+    "sealed_rounds": 98,
+    "formal_rollouts": 12544,
+    "directapply_admissions": 97,
+    "final_panel_access_count": 0,
+    "score_band_mean_pct": {
+      "r70_r79": 58.3484087,
+      "r80_r89": 55.360681,
+      "r90_r97": 50.8289615
+    },
+    "training_signal": {
+      "selection_equals_clean_exact_success_task_count_rounds": 94,
+      "rounds_checked": 98,
+      "latest_20_selected_task_count_mean": 8.25,
+      "tasks_per_round": 16
+    },
+    "update_direction": {
+      "latest_10_adjacent_cosine_mean": -0.0459,
+      "latest_10_negative_adjacent_cosine_count": 7,
+      "latest_10_count": 10,
+      "latest_10_cumulative_alignment_mean": 0.1498
+    },
+    "shadow_gdr": {
+      "latest_10_pass": 3,
+      "latest_10_total": 10,
+      "latest_20_pass": 7,
+      "latest_20_total": 20
+    },
+    "carrier_updates": {
+      "sd_lora": 97,
+      "text_memory": 2,
+      "text_memory_rounds": [
+        7,
+        95
+      ],
+      "agent_system": 1,
+      "agent_system_rounds": [
+        41
+      ],
+      "skill_bundle": 1,
+      "skill_bundle_rounds": [
+        0
+      ]
+    }
+  },
+  "interpretation": {
+    "plateau": "Recent training-round Score blocks decline after the R70s while SD-LoRA continues to update, so the run is active but recent gains are not stable.",
+    "training_signal_hypothesis": "Selection is tightly coupled to tasks that already achieve clean exact success, which can starve persistently hard tasks of supervised updates.",
+    "direction_hypothesis": "Recent adjacent SD-LoRA update directions are weakly aligned on average and frequently oppose one another, consistent with unstable incremental learning.",
+    "carrier_context": "Most online state change is carried by SD-LoRA; the other carriers update much less frequently. This is context for successor design, not a bug claim."
+  },
+  "decision_boundary": "Do not change the running R160 DirectApply treatment. Use these diagnostics to design a separate successor under the same 128-rollout budget; evaluate any new treatment independently.",
+  "scientific_boundary": "These are training-process diagnostics and hypothesis-generating correlations. They do not establish a causal explanation for the plateau, a frozen final score, or a GDR-vs-DirectApply winner.",
+  "provenance": {
+    "input_file_count": 391,
+    "input_manifest_sha256": "a159782c053408d23843e9e2f65a9044a204421eab798ec7de590309d05c12f6"
+  }
+}
