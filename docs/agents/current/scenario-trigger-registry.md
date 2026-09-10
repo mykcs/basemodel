@@ -1,6 +1,6 @@
 # Scenario trigger registry
 
-Last reviewed: **2026-09-08**
+Last reviewed: **2026-09-10**
 
 This is a **just-in-time attention router**, not a second governance system. Scan it after `/AGENTS.md`, `docs/agents/LATEST.md`, and the core bootstrap in `docs/agents/README.md`. Load only the matched owner, executable truth, and live evidence.
 
@@ -45,6 +45,7 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 7. Do not quote exact provider quota/price counters without authoritative current evidence.
 8. If the task changes the blocking CI/provider owner, treat cutover as a transaction: inspect the exact-head provider execution **and** live GitHub required-status/ruleset state before mutation and again before closeout. Repository docs/config alone cannot prove blocking authority moved; a concurrent live ruleset change is a stop-and-read event, not permission to overwrite it.
 9. Localize provider red states by the first failing execution phase before changing architecture. A repository `verify:deploy` assertion failure, browser/product failure, environment/bootstrap failure, ignored policy outcome, and provider infrastructure failure require different fixes.
+10. During iterative human review, use the fast review-only lane rather than the final gate. A review handoff is complete only after opening the **hosted target route / anchor / slide** and confirming the specific claimed change is visible there. If the current build failed, do not reuse an older successful static output or old Preview URL as if it represented the new candidate; rebuild fresh generated output first. This target-specific check is not permission to rerun the unrelated full 205-case final matrix on every edit.
 
 Completed Vercel pilot/adoption records live under `docs/agents/history/`; they explain why the current architecture exists but do not own today's release behavior. For the 2026-08-28/29 self-hosted-runner + Vercel-browser-offload + Cloudflare-smoke migration, including failed isolation/bootstrap attempts, CI-vs-deploy relevance mistakes, and the later Doctor-led safe disk/cache maintenance pass, read [`../history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md`](../history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md).
 
@@ -355,7 +356,7 @@ Historical table-family case: [`../history/2026-08-31-arxiv-like-experiment-tabl
 
 **Cues:** multiple open PRs touch the same docs/page/layout/policy; an old branch encodes an earlier product/scientific state.
 
-**Automatic response:** read [`multi-pr-semantic-integration-playbook.md`](multi-pr-semantic-integration-playbook.md), then inspect base/head, changed files, checks, shared owners, and semantic intent. Prefer current `main` plus the still-valid contribution; for shared registries/owners transplant only the narrow current-valid entry instead of copying an older whole-file blob. Do not resurrect stale scientific/deployment state merely to keep an old PR mergeable. Use one coherent integration head when several accepted changes must ship together. Close/supersede obsolete duplicate PRs once the replacement is clear.
+**Automatic response:** read [`multi-pr-semantic-integration-playbook.md`](multi-pr-semantic-integration-playbook.md), then inspect base/head, changed files, checks, shared owners, and semantic intent. Prefer current `main` plus the still-valid contribution; for shared registries/owners transplant only the narrow current-valid entry instead of copying an older whole-file blob. Do not resurrect stale scientific/deployment state merely to keep an old PR mergeable. If the owner is still iterating one route/deck/surface, designate one survivor product PR and keep applying same-surface corrections there unless a real authority/base/authorization boundary requires a successor. Use one coherent integration head when several independent accepted changes must ship together. Close/supersede obsolete duplicate PRs once the replacement is clear.
 
 ---
 
@@ -388,6 +389,7 @@ previous retrospective did not prevent recurrence.
 11. **Tool/connector capability discovery must stay read-only.** Use schema/list/search/fetch/read operations to confirm an available action or current state; never call `create` / `update` / `delete` merely to prove a connector works. If an accidental probe write occurs, clean only that exact object immediately, verify the cleanup, and record the recurrence instead of hiding it.
 12. **Before any permitted closeout mutation, bind the target noun to the exact action.** Record a compact `REPEAT-CORRECTION` witness such as `open PR -> create_pull_request`; if the chosen tool/action names a different object (`create_branch`, `update_ref`, `create_file`, etc.), stop before dispatch. A nearby write capability is not an acceptable substitute for the intended mutation.
 13. **Escalate repeated action-selection mismatch by changing execution surface.** If a provider write still targets the wrong object after an explicit target→action witness, stop using that ambiguous mutation surface for this task. Clean and verify the accidental object, then switch to a programmatic path whose intended object/action is visible in one explicit command or schema (for example `gh pr create` for opening a PR). Do not keep retrying the same connector mutation until it happens to hit the right action.
+14. **Do not double-ingest a conversation that already ran Human Preference Learning closeout.** Treat the machine-readable HPL ledger/events/trajectory as predecessor evidence. Conversation-lessons closeout should add only the still-missing operational, engineering, authority-routing, or knowledge-system lesson; link the existing HPL owner instead of creating a second CASE, reclassifying visual tiers, or counting the same owner correction twice.
 
 **Refresh cue:** current refs, provider behavior, deployment policy, model/runtime
 behavior, and live resource state must be re-checked when the next task begins.

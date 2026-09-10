@@ -59,6 +59,8 @@ describe('site-wide reader attention contracts', () => {
     expect(spec).toContain('新增页面没有 `audience / primaryTask / firstViewportGoal / mustStayVisible / nextStep / attentionMode` 时，CI 应直接失败');
     expect(contractDoc).toContain('一个首屏通常只承担一个主要理解任务');
     expect(contractDoc).toContain('不允许新增 catch-all contract');
+    expect(contractDoc).toContain('不让 Gate 奖励“空白作弊”');
+    expect(contractDoc).toContain('不得为了过首屏预算而新增满屏 `min-height`、空占位或无语义大留白');
     expect(contractDoc).toContain('人工冷读能在 5–10 秒回答');
     expect(triggers).toContain('Before writing or substantially rearranging public-page HTML');
     expect(triggers).toContain('src/data/siteReaderContracts.ts');

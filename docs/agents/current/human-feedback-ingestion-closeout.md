@@ -538,6 +538,8 @@ Record:
 - current exact SHA / PR if available;
 - final owner-visible candidate(s).
 
+If the source window has **no real product PR**, leave `pullRequest` absent and bind the evidence with the exact source head/route (or the strongest available stable artifact identity). Never invent a PR number, borrow an unrelated governance PR, or create a throwaway PR only to satisfy the ingestion schema. A PR is provenance when it exists, not a mandatory proof object.
+
 When the source conversation has already been split across earlier closeouts, connect them through `predecessorIngestionIds` instead of copying old ledger rows into a new record. The final closeout must compute cumulative lineage coverage across the full predecessor DAG, reject duplicate ledger IDs / cycles / unresolved `ambiguous-hold`, and report the cumulative disposition counts. A segmented closeout is not complete merely because each window passes separately.
 
 `finalVerdict` follows the latest direct owner evidence about the exact owner-visible head, not repository state. `accepted` requires explicit concrete acceptance. A head may be `rejected` even if it was later merged, deployed, or marked green when newer direct owner feedback rejects that exact version and no successor implementation follows.

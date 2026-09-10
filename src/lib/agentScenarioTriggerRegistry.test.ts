@@ -4,6 +4,9 @@ import { describe, expect, it } from 'vitest';
 const root = readFileSync(new URL('../../AGENTS.md', import.meta.url), 'utf8');
 const readme = readFileSync(new URL('../../docs/agents/README.md', import.meta.url), 'utf8');
 const principles = readFileSync(new URL('../../docs/agents/current/project-agent-operating-principles.md', import.meta.url), 'utf8');
+const engineering = readFileSync(new URL('../../docs/agents/current/website-engineering-standard.md', import.meta.url), 'utf8');
+const hpl = readFileSync(new URL('../../docs/agents/current/human-preference-learning-system.md', import.meta.url), 'utf8');
+const ingestion = readFileSync(new URL('../../docs/agents/current/human-feedback-ingestion-closeout.md', import.meta.url), 'utf8');
 const registry = readFileSync(new URL('../../docs/agents/current/scenario-trigger-registry.md', import.meta.url), 'utf8');
 const repositoryMap = readFileSync(new URL('../../docs/agents/current/repository-map.md', import.meta.url), 'utf8');
 const seedWorkflow = readFileSync(new URL('../../docs/agents/current/seed-guided-research-workflow.md', import.meta.url), 'utf8');
@@ -11,6 +14,7 @@ const websiteSpec = readFileSync(new URL('../../docs/agents/current/website-desi
 const copyCases = readFileSync(new URL('../../docs/agents/current/website-copy-cases.md', import.meta.url), 'utf8');
 const history = readFileSync(new URL('../../docs/agents/history/2026-08-11-seed-preview-and-agent-workflow-lessons.md', import.meta.url), 'utf8');
 const attentionHistory = readFileSync(new URL('../../docs/agents/history/2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md', import.meta.url), 'utf8');
+const briefingPreviewHistory = readFileSync(new URL('../../docs/agents/history/2026-09-10-briefing-fast-preview-pr-workline-and-hpl-closeout-retrospective.md', import.meta.url), 'utf8');
 const conversationCloseoutEntry = readFileSync(new URL('../../docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md', import.meta.url), 'utf8');
 
 describe('Agent scenario-trigger discovery', () => {
@@ -69,6 +73,9 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('never silently substitute a Git-connected Pages build');
     expect(registry).toContain('Do not quote exact provider quota/price counters without authoritative current evidence');
     expect(registry).toContain('Treat Vercel as the only ordinary Preview + Production authority');
+    expect(registry).toContain('hosted target route / anchor / slide');
+    expect(registry).toContain('old Preview URL');
+    expect(registry).toContain('not permission to rerun the unrelated full 205-case final matrix');
   });
 
   it('requires stale remembered plans to refresh against current truth', () => {
@@ -125,6 +132,21 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('Escalate repeated action-selection mismatch by changing execution surface');
     expect(registry).toContain('Do not keep retrying the same connector mutation');
     expect(registry).toContain('`gh pr create` for opening a PR');
+  });
+
+  it('keeps HPL and conversation-lessons closeout from double-counting the same feedback', () => {
+    expect(registry).toContain('Do not double-ingest a conversation that already ran Human Preference Learning closeout');
+    expect(registry).toContain('machine-readable HPL ledger/events/trajectory as predecessor evidence');
+    expect(ingestion).toContain('If the source window has **no real product PR**');
+    expect(ingestion).toContain('Never invent a PR number');
+  });
+
+  it('turns named visual references into cognition witnesses and protects scroll intent', () => {
+    expect(hpl).toContain('Named design references need a cognition-translation witness');
+    expect(hpl).toContain('reference-surface-imitation');
+    expect(engineering).toContain('Initial visibility is not scroll intent');
+    expect(engineering).toContain('initial load preserves the declared starting state');
+    expect(engineering).toContain('Protect the semantic behavior, not an incidental CSS token');
   });
 
   it('routes advisor briefing work through scientific-story and experiment-inventory preflight', () => {
@@ -186,6 +208,16 @@ describe('Agent scenario-trigger discovery', () => {
     expect(repositoryMap).toContain('Cloudflare Pages/Direct Upload/shadow     -> rollback or provider-specific fallback only');
     expect(repositoryMap).toContain('Vercel Pro is the ordinary CI and deployment authority');
     expect(repositoryMap).not.toContain('default to local build + Direct Upload public Preview');
+  });
+
+  it('indexes the briefing Preview/workline closeout while keeping transient state historical', () => {
+    expect(readme).toContain('2026-09-10-briefing-fast-preview-pr-workline-and-hpl-closeout-retrospective.md');
+    expect(briefingPreviewHistory).toContain('one survivor product PR');
+    expect(briefingPreviewHistory).toContain('designated product PR');
+    expect(briefingPreviewHistory).toContain('open hosted target route/anchor');
+    expect(briefingPreviewHistory).toContain('Temporary information intentionally not promoted');
+    expect(briefingPreviewHistory).toContain('live No-GDR round, Score, loss');
+    expect(briefingPreviewHistory).toContain('temporary Vercel share URLs');
   });
 
   it('keeps the historical case reusable without freezing transient state', () => {

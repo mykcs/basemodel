@@ -109,6 +109,18 @@ Testing follows the product contract:
 
 This is the root-cause boundary: synchronize the **product state** first; test synchronization then consumes that state instead of inventing a parallel readiness model.
 
+### Initial visibility is not scroll intent
+
+Scroll-linked explainers often use `IntersectionObserver` to synchronize an article section with an interactive step. Treat **initial visibility on load/hydration as an observation, not as proof that the reader intentionally entered that step**. A spacing or typography change can move an observed section into the initial viewport and otherwise make the component auto-advance before the user does anything.
+
+For scroll-linked state:
+
+- initialize the product-owned overview/starting state explicitly;
+- unless the product contract intentionally says otherwise, arm observer-driven step changes only after the current document receives real scroll/navigation intent or another explicit user action;
+- handle history restoration/deep links deliberately rather than relying on a transient inherited `scrollY`;
+- regression-test both halves: initial load preserves the declared starting state, and real user scrolling still synchronizes the step;
+- for shared scroll/visibility logic, include WebKit in the focused regression because event/observer timing can expose races that an isolated Chromium run misses.
+
 Detailed owner: `ui-change-visual-acceptance-gate.md`. Historical evidence remains under `docs/agents/history/`, including the 2026-09-07 root-cause closeout case.
 
 ## 5. Browser-local persistence is untrusted, long-lived input
@@ -153,7 +165,7 @@ inherited base debt
 
 - Do not weaken a valid threshold to get green.
 - Retries are diagnostic, not proof of stability.
-- A stale test should be updated to the current product contract, not satisfied by restoring retired UI.
+- A stale test should be updated to the current product contract, not satisfied by restoring retired UI. **Protect the semantic behavior, not an incidental CSS token:** if the real contract is “controls must not become viewport-fixed before the reader reaches the explainer,” a test should not require `position: static` when `sticky` also satisfies the product behavior.
 - An unsupported browser runner or missing library is environment evidence, not a browser-product failure.
 - Before attributing a surprising budget, performance, geometry, or deterministic-test failure to the candidate branch, reproduce the **same command in the same relevant environment on the exact intended base/current `main`** when the failure could plausibly pre-exist. Compare measured values and failure mode, not only PASS/FAIL.
 - `branch FAIL + base FAIL with the same relevant value/failure` is inherited base debt until evidence shows a candidate delta. Report it separately; do not raise the threshold, revert unrelated feature work, or claim a regression merely because the candidate is the tree on which the red result was first noticed.
