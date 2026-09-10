@@ -11,6 +11,7 @@ const enPage = read('../pages/en/research/seed-openevo/study/briefing/index.astr
 const zhTechnical = read('../pages/research/seed-openevo/study/briefing/technical-notes/index.astro');
 const enTechnical = read('../pages/en/research/seed-openevo/study/briefing/technical-notes/index.astro');
 const contracts = read('../data/siteReaderContracts.ts');
+const directApplyLiveSnapshot = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-live-snapshot-20260910-0840-sgt.json'));
 const sitemap = read('./sitemapRoutes.ts');
 
 const sectionPosition = (id: string) => briefing.indexOf(`<section id="${id}"`);
@@ -256,19 +257,27 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(sectionPosition('directapply')).toBeLessThan(sectionPosition('directapply-progress'));
     expect(sectionPosition('directapply-progress')).toBeLessThan(sectionPosition('technical-work-summary'));
     for (const item of [
-      'No-GDR 已跑完 R0–R76：76 个 SD-LoRA 候选都进入了后续模型',
-      '2026-09-10 01:00 SGT',
-      '77 rounds · 9,856 rollout',
-      '76 / 76',
-      '35 pass · 41 reject',
-      '41.83 → 52.58',
-      '1.046 → 0.133',
+      'No-GDR 已跑完 R0–R94：94 个 SD-LoRA 候选都进入了后续模型',
+      '2026-09-10 08:40 SGT',
+      '95 rounds · 12,160 rollout',
+      '94 / 94',
+      '40 pass · 54 reject',
+      '41.83 → 55.81',
+      '1.046 → 0.130',
       '0 accesses · —',
-      'shadow GDR 会拒绝其中 41 个',
+      'shadow GDR 会拒绝其中 54 个',
       '还不能回答“哪条路线最终 WebShop 更高”',
-      'current No-GDR controller authority · 7422ab54',
+      '08:40 SGT 可审计快照',
+      'current No-GDR controller · 911e3afe',
     ]) expect(briefing).toContain(item);
     expect(briefing).toContain('DirectApply 的最终 Score / Succ. 继续保持空白');
+    expect(directApplyLiveSnapshot.snapshot_label_sgt).toBe('2026-09-10T08:40:00+08:00');
+    expect(directApplyLiveSnapshot.status).toBe('LIVE_TRAINING_SNAPSHOT_NOT_FINAL_EVALUATION');
+    expect(directApplyLiveSnapshot.controller_sha).toBe('911e3afec1bc14d2194fa59b8feb3a232c34da85');
+    expect(directApplyLiveSnapshot.metrics.sealed_rounds).toBe(95);
+    expect(directApplyLiveSnapshot.metrics.sd_lora_candidates_trained).toBe(94);
+    expect(directApplyLiveSnapshot.metrics.directapply_admissions).toBe(94);
+    expect(directApplyLiveSnapshot.metrics.final_panel_access_count).toBe(0);
   });
 
   it('keeps engineering work as a simple summary immediately before the final choice', () => {

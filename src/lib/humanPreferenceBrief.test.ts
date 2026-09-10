@@ -65,7 +65,8 @@ describe('human preference learning v2', () => {
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER' && reference.tier === 'silver')).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')).toBe(false);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-605-MERGED-REJECTED' && reference.tier === 'rejected')).toBe(true);
-    expect(brief.generationRules.join('\n')).toContain('No current-candidate visual is active for this scope');
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
+    expect(brief.generationRules.join('\n')).toContain('Current-candidate visual references are still under review');
   });
 
   it('retrieves the final briefing lessons for a different two-stage training talk before first draft', () => {
@@ -119,6 +120,24 @@ describe('human preference learning v2', () => {
       'EVENT-20260909-BRIEFING-STORYLINE-SHORTHAND-REPEAT',
       'EVENT-20260909-BRIEFING-STORYLINE-ENGLISH-GLUE',
     ]));
+  });
+
+  it('retrieves the explicit scientific referent correction for a different causal-mechanism talk', () => {
+    const brief = buildHumanPreferenceBrief({
+      contractId: 'study-briefing',
+      query: '下一次做参数更新机制组会：我会比较普通 LoRA 和另一种参数更新方法，想解释为什么已有成功轨迹写进参数后任务能力仍没明显改善，以及这个对照到底在定位哪一种原因。还有一条训练正在跑，只有训练过程数据，最终冻结评测还没打开。',
+    });
+    const preferenceIds = brief.learnedPreferences.map(({ preference }) => preference.id);
+    const pairIds = brief.goldPairs.map(({ pair }) => pair.id);
+    expect(preferenceIds).toContain('PREF-CONCRETE-MECHANISM-WORDING');
+    expect(pairIds).toContain('PAIR-087-DIAGNOSTIC-REFERENT');
+    expect(brief.events.map((event) => event.id)).toContain('EVENT-20260910-BRIEFING-UNNAMED-DIAGNOSTIC-REFERENT');
+    expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('近邻 antecedent') && boundary.includes('代词'))).toBe(true);
+    expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('训练过程信号') && boundary.includes('最终评测'))).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.tier === 'golden')).toBe(false);
+    expect(brief.hardFailureFamilies).not.toContain('unnamed-scientific-referent');
+    expect(failureFamilySeverity('unnamed-scientific-referent')).toBe('normal');
   });
 
   it('retrieves the repeated binary-contrast failure as hard while preserving normal scientific negation', () => {

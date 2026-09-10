@@ -63,6 +63,21 @@ describe('human preference learning loop', () => {
     ]));
   });
 
+  it('retrieves the explicit diagnostic referent guard for a paraphrased attribution experiment', () => {
+    const result = retrieveHumanPreferenceContext(
+      '组会要解释普通 LoRA 和特殊参数更新方法的归因对照：成功轨迹已经进了训练，但能力仍没明显提升。不要让听众自己猜“这个问题”到底指哪个失败。',
+      'study-briefing',
+      16,
+    );
+    expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-CONCRETE-MECHANISM-WORDING');
+    expect(result.cases.map(({ precedent }) => precedent.id)).toContain('CASE-087');
+    expect(result.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-087-DIAGNOSTIC-REFERENT');
+    expect(goldPairIdsForContract('study-briefing')).toContain('PAIR-087-DIAGNOSTIC-REFERENT');
+    const preference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-CONCRETE-MECHANISM-WORDING');
+    expect(preference?.antiOvergeneralization.join(' ')).toContain('近邻 antecedent');
+    expect(preference?.antiOvergeneralization.join(' ')).toContain('不是禁止“问题 / 现象 / 它”等代词');
+  });
+
   it('retrieves event-first research headings without banning meaningful result numbers', () => {
     const result = retrieveHumanPreferenceContext(
       '研究汇报标题不要先扔 7<8 或 7B 标签；先说训练没更新参数、为什么开始查，再解释 gate 和内部英文',
