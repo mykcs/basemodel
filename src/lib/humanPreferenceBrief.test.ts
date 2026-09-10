@@ -65,7 +65,8 @@ describe('human preference learning v2', () => {
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER' && reference.tier === 'silver')).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')).toBe(false);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-605-MERGED-REJECTED' && reference.tier === 'rejected')).toBe(true);
-    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
     expect(brief.generationRules.join('\n')).toContain('Current-candidate visual references are still under review');
   });
 
@@ -134,10 +135,42 @@ describe('human preference learning v2', () => {
     expect(brief.events.map((event) => event.id)).toContain('EVENT-20260910-BRIEFING-UNNAMED-DIAGNOSTIC-REFERENT');
     expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('近邻 antecedent') && boundary.includes('代词'))).toBe(true);
     expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('训练过程信号') && boundary.includes('最终评测'))).toBe(true);
-    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.tier === 'golden')).toBe(false);
     expect(brief.hardFailureFamilies).not.toContain('unnamed-scientific-referent');
     expect(failureFamilySeverity('unnamed-scientific-referent')).toBe('normal');
+  });
+
+  it('retrieves repeated sibling-experiment chart grammar and target-verified fast Preview for a new model line', () => {
+    const brief = buildHumanPreferenceBrief({
+      contractId: 'study-briefing',
+      query: '下个月新增一条 2B 长跑实验，旧 deck 已经有几条模型的 per-round Score、adapter loss 和 update 位置。我要第一版 HTML slide 直接能横向比较，还要用快速 Preview 给我看，发链接前确认目标页真的有这次新增的两张训练曲线。',
+    });
+    const preferenceIds = brief.learnedPreferences.map(({ preference }) => preference.id);
+    const pairIds = brief.goldPairs.map(({ pair }) => pair.id);
+    const eventIds = brief.events.map((event) => event.id);
+    expect(preferenceIds).toEqual(expect.arrayContaining([
+      'PREF-CONSISTENT-EXPERIMENT-VISUAL-GRAMMAR',
+      'PREF-FAST-REVIEW-PREVIEW',
+    ]));
+    expect(pairIds).toEqual(expect.arrayContaining([
+      'PAIR-088-EXPERIMENT-CHART-GRAMMAR',
+      'PAIR-085-FAST-REVIEW-PREVIEW',
+    ]));
+    expect(eventIds).toEqual(expect.arrayContaining([
+      'EVENT-20260910-NOGDR-CHART-GRAMMAR-REPEAT',
+      'EVENT-20260910-REVIEW-PREVIEW-MISSING-CLAIMED-CURVES',
+    ]));
+    expect(failureFamilySeverity('inconsistent-experiment-chart-grammar')).toBe('repeated');
+    expect(failureFamilySeverity('cross-experiment-legend-relearning')).toBe('repeated');
+    expect(failureFamilySeverity('review-preview-not-visually-verified')).toBe('normal');
+    expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('新实验') && boundary.includes('不存在的曲线'))).toBe(true);
+    expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('205') && boundary.includes('目标 slide'))).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-SUMMARY-CARDS-REJECTED' && reference.tier === 'rejected')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.tier === 'golden')).toBe(false);
   });
 
   it('retrieves the repeated binary-contrast failure as hard while preserving normal scientific negation', () => {

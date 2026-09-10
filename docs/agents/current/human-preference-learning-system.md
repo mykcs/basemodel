@@ -353,6 +353,17 @@ Step-7 recurrence protection also follows that evidence honestly: a new single-o
 
 The simultaneously requested live No-GDR slide is kept separate from preference learning. Its exact round, score, loss, and shadow-GDR counts are reconstructible scientific state and must be refreshed from experiment authority; PR #614 is recorded only as the current visual candidate because the owner requested the content but did not approve that exact visual as Silver/Golden.
 
+
+A later 2026-09-10 briefing window adds two more durable lessons without creating parallel preference dimensions:
+
+- **CASE-088 / chart grammar is now repeated.** The owner first required 7B / 1.7B / 3B training evidence to share one Score/loss/update grammar, then repeated the same requirement when No-GDR / DirectApply was added: `我新实验也得用在html表现和其他实验一样的分数loss表`. The rule therefore applies to later sibling experiment lines when the measurement objects are the same. It still does not authorize fabricated curves, common numeric axes, or one chart type for unrelated science.
+- **CASE-085 / fast review Preview now includes target verification.** After an Agent claimed the curve version was ready but sent an older Preview, the owner replied `没看到曲线`. Fast review remains canonical, but the handoff is incomplete until the hosted target route/slide is opened and the claimed visible change is confirmed. This is a small visibility check, not a reason to re-run the full 205-case final gate for every edit.
+
+The No-GDR visual trajectory remains deliberately conservative: the summary-card state at `0ff4b053…` is Rejected only on the chart-grammar dimension; the curve successor at `b1f86769…` is the latest owner-visible `current-candidate`. The owner did not say `OK / accepted / 以后按这版`, so it is **not Silver or Golden**. Exact live scores/losses/round counts remain scientific state, not preference data.
+
+
+This closeout also exposed a retrieval-capacity failure during regression tests: adding the new events pushed a still-relevant phone whole-slide event and the canonical fast-Preview event out of the bounded event set for older future-task receipts. The fix preserves bounded retrieval instead of dumping the full history: expand the direct relevance core modestly, retain hard-family closure, and pin the canonical Preview workflow event only when Preview/build/review cues activate that workflow. Historical closeout receipts continue to validate their source-window exact visual even after that visual is superseded in the active task-time visual set.
+
 ## End-of-conversation ingestion closeout
 
 When the owner asks to absorb a whole modification conversation, follow [`human-feedback-ingestion-closeout.md`](human-feedback-ingestion-closeout.md). The closeout source of truth is machine-readable: `src/data/humanFeedbackIngestionCloseouts.ts`. Validate a recorded closeout with:

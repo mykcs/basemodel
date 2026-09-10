@@ -106,11 +106,17 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
 
   const hardFamilySet = new Set(hardFailureFamilies());
   const eventById = new Map<string, HumanFeedbackEvent>();
-  for (const { event } of rankedEvents.slice(0, 22)) eventById.set(event.id, event);
+  for (const { event } of rankedEvents.slice(0, 26)) eventById.set(event.id, event);
+  if (workflowCue) {
+    const canonicalWorkflowEvent = HUMAN_FEEDBACK_EVENTS.find(
+      (event) => event.id === 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT' && event.verdict === 'canonical',
+    );
+    if (canonicalWorkflowEvent) eventById.set(canonicalWorkflowEvent.id, canonicalWorkflowEvent);
+  }
   for (const { event } of rankedEvents) {
     if (event.failureMechanisms.some((family) => hardFamilySet.has(family))) eventById.set(event.id, event);
   }
-  const events = [...eventById.values()].slice(0, 30);
+  const events = [...eventById.values()].slice(0, 34);
 
   const eventVariantIds = new Set(events.map((event) => event.variantId));
   const trajectories = HUMAN_PREFERENCE_TRAJECTORIES.filter(
