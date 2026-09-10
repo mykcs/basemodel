@@ -93,7 +93,7 @@ const papers = [
       <h2 id="literature">{t('它们分别提醒我们该补什么证据', 'They tell us which evidence to add')}</h2>
       <p>{t('WebRL / SPEAR 指向 curriculum 与探索；Agent Q / GiGPO 指向失败轨迹的比较学习；ReST-MCTS* 提醒不要把 partial failure 直接当正确答案；continual-learning 与 RL’s Razor 指向遗忘和 KL drift。', 'WebRL / SPEAR point to curriculum and exploration; Agent Q / GiGPO point to comparative learning from failed traces; ReST-MCTS* warns against treating partial failures as correct demonstrations; continual-learning work and RL’s Razor motivate forgetting and KL-drift diagnostics.')}</p>
       <div class="paper-links">
-        {papers.map(([label, href]) => <a href={href}>{href.includes('github.com') ? <ExternalBrandMark href={href} /> : null}{label}</a>)}
+        {papers.map(([label, href]) => <a href={href}><ExternalBrandMark href={href} />{label}</a>)}
       </div>
     </div>
     <aside class="boundary-box muted">
