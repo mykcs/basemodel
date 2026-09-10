@@ -66,6 +66,7 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
   const visuals = new Set(brief.visualReferences.map((reference) => reference.id));
   const trajectory = HUMAN_PREFERENCE_TRAJECTORIES.find((item) => item.id === 'TRAJECTORY-BRIEFING-VISUAL-20260908');
   const workflowTrajectory = HUMAN_PREFERENCE_TRAJECTORIES.find((item) => item.id === 'TRAJECTORY-ITERATIVE-PREVIEW-WORKFLOW-20260909');
+  const chartTrajectory = HUMAN_PREFERENCE_TRAJECTORIES.find((item) => item.id === 'TRAJECTORY-BRIEFING-EXPERIMENT-CHART-GRAMMAR-20260909');
   const finalEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-BRIEFING-FINAL-ACCEPTED');
   const fastPreviewEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-FAST-PREVIEW-FUTURE-DEFAULT');
   const final604Event = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-BRIEFING-604-ACCEPTED');
@@ -160,12 +161,30 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
       events.has('EVENT-20260910-BRIEFING-UNNAMED-DIAGNOSTIC-REFERENT'),
     'live-snapshot-final-boundary':
       preferences.has('PREF-SCIENTIFIC-BOUNDARY') &&
-      visuals.has('VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE') &&
+      candidateVisual?.id === 'VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE' &&
+      candidateVisual.gitSha === record.sourceWindow.finalOwnerVisibleHead &&
       brief.antiOvergeneralization.some((boundary) => boundary.includes('训练过程信号') && boundary.includes('最终评测')),
     'consistent-experiment-visual-grammar':
       preferences.has('PREF-CONSISTENT-EXPERIMENT-VISUAL-GRAMMAR') &&
       pairs.has('PAIR-088-EXPERIMENT-CHART-GRAMMAR') &&
       events.has('EVENT-20260909-UNIFIED-EXPERIMENT-CHART-GRAMMAR'),
+    'experiment-chart-grammar-repeated':
+      preferences.has('PREF-CONSISTENT-EXPERIMENT-VISUAL-GRAMMAR') &&
+      pairs.has('PAIR-088-EXPERIMENT-CHART-GRAMMAR') &&
+      events.has('EVENT-20260909-UNIFIED-EXPERIMENT-CHART-GRAMMAR') &&
+      events.has('EVENT-20260910-NOGDR-CHART-GRAMMAR-REPEAT') &&
+      failureFamilySeverity('inconsistent-experiment-chart-grammar') === 'repeated' &&
+      failureFamilySeverity('cross-experiment-legend-relearning') === 'repeated' &&
+      chartTrajectory?.variantIds.includes('briefing-nogdr-score-loss-curves-b1f86769') === true,
+    'review-preview-target-verified':
+      preferences.has('PREF-FAST-REVIEW-PREVIEW') &&
+      events.has('EVENT-20260910-REVIEW-PREVIEW-MISSING-CLAIMED-CURVES') &&
+      workflowTrajectory?.comparisons.some((comparison) => comparison.failureMechanisms.includes('review-preview-not-visually-verified')) === true &&
+      brief.antiOvergeneralization.some((boundary) => boundary.includes('205') && boundary.includes('目标 slide')),
+    'latest-nogdr-curves-current-candidate':
+      candidateVisual?.id === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE' &&
+      candidateVisual.tier === 'current-candidate' &&
+      HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE')?.supersededByReferenceId === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE',
     'diagnostic-motivation-before-intervention':
       preferences.has('PREF-DIAGNOSTIC-CLOSURE') &&
       pairs.has('PAIR-084-DIAGNOSTIC-CLOSE-LOOP') &&

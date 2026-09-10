@@ -27,6 +27,9 @@ describe('human preference learning loop', () => {
     const relevant = retrieveHumanPreferenceContext('反复改网页草稿 预览 build 太慢 Vercel 审阅', 'study-briefing', 10);
     expect(relevant.preferences.map(({ preference }) => preference.id)).toContain('PREF-FAST-REVIEW-PREVIEW');
     expect(relevant.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-085-FAST-REVIEW-PREVIEW');
+    const previewPreference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-FAST-REVIEW-PREVIEW');
+    expect(previewPreference?.statement).toContain('打开这次要审的目标 route / slide');
+    expect(previewPreference?.antiOvergeneralization.join(' ')).toContain('205');
     const unrelated = retrieveHumanPreferenceContext('解释一个模型参数的数学定义', 'study-briefing', 10);
     expect(unrelated.preferences.map(({ preference }) => preference.id)).not.toContain('PREF-FAST-REVIEW-PREVIEW');
   });
@@ -61,6 +64,20 @@ describe('human preference learning loop', () => {
       'PAIR-088-EXPERIMENT-CHART-GRAMMAR',
       'PAIR-089-BRIEFING-METHOD-CONTEXT',
     ]));
+  });
+
+  it('retrieves the new-experiment chart recurrence without turning every visualization into one template', () => {
+    const result = retrieveHumanPreferenceContext(
+      '新增一条模型训练线，也有逐轮 Score、SD-LoRA loss 和 update 位置；想让它和现有实验可以直接横向比较，不要重新学图例',
+      'study-briefing',
+      16,
+    );
+    expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-CONSISTENT-EXPERIMENT-VISUAL-GRAMMAR');
+    expect(result.cases.map(({ precedent }) => precedent.id)).toContain('CASE-088');
+    expect(result.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-088-EXPERIMENT-CHART-GRAMMAR');
+    const preference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-CONSISTENT-EXPERIMENT-VISUAL-GRAMMAR');
+    expect(preference?.confidence).toBe('repeated-explicit');
+    expect(preference?.antiOvergeneralization.join(' ')).toContain('不存在的曲线');
   });
 
   it('retrieves the explicit diagnostic referent guard for a paraphrased attribution experiment', () => {
