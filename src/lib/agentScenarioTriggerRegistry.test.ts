@@ -14,6 +14,7 @@ const websiteSpec = readFileSync(new URL('../../docs/agents/current/website-desi
 const copyCases = readFileSync(new URL('../../docs/agents/current/website-copy-cases.md', import.meta.url), 'utf8');
 const history = readFileSync(new URL('../../docs/agents/history/2026-08-11-seed-preview-and-agent-workflow-lessons.md', import.meta.url), 'utf8');
 const attentionHistory = readFileSync(new URL('../../docs/agents/history/2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md', import.meta.url), 'utf8');
+const briefingPreviewHistory = readFileSync(new URL('../../docs/agents/history/2026-09-10-briefing-fast-preview-pr-workline-and-hpl-closeout-retrospective.md', import.meta.url), 'utf8');
 const conversationCloseoutEntry = readFileSync(new URL('../../docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md', import.meta.url), 'utf8');
 
 describe('Agent scenario-trigger discovery', () => {
@@ -72,6 +73,9 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('never silently substitute a Git-connected Pages build');
     expect(registry).toContain('Do not quote exact provider quota/price counters without authoritative current evidence');
     expect(registry).toContain('Treat Vercel as the only ordinary Preview + Production authority');
+    expect(registry).toContain('hosted target route / anchor / slide');
+    expect(registry).toContain('old Preview URL');
+    expect(registry).toContain('not permission to rerun the unrelated full 205-case final matrix');
   });
 
   it('requires stale remembered plans to refresh against current truth', () => {
@@ -204,6 +208,16 @@ describe('Agent scenario-trigger discovery', () => {
     expect(repositoryMap).toContain('Cloudflare Pages/Direct Upload/shadow     -> rollback or provider-specific fallback only');
     expect(repositoryMap).toContain('Vercel Pro is the ordinary CI and deployment authority');
     expect(repositoryMap).not.toContain('default to local build + Direct Upload public Preview');
+  });
+
+  it('indexes the briefing Preview/workline closeout while keeping transient state historical', () => {
+    expect(readme).toContain('2026-09-10-briefing-fast-preview-pr-workline-and-hpl-closeout-retrospective.md');
+    expect(briefingPreviewHistory).toContain('one survivor product PR');
+    expect(briefingPreviewHistory).toContain('designated product PR');
+    expect(briefingPreviewHistory).toContain('open hosted target route/anchor');
+    expect(briefingPreviewHistory).toContain('Temporary information intentionally not promoted');
+    expect(briefingPreviewHistory).toContain('live No-GDR round, Score, loss');
+    expect(briefingPreviewHistory).toContain('temporary Vercel share URLs');
   });
 
   it('keeps the historical case reusable without freezing transient state', () => {

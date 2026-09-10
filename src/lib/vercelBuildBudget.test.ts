@@ -111,6 +111,8 @@ describe('Vercel build-budget contract', () => {
       'Sequential Contents API writes',
       'Git data API multi-file commit',
       'deployment triggers separately as `READY`, `ERROR`, `CANCELED`',
+      'hosted target route / anchor / slide',
+      'do not upload the last successful `dist/`',
     ]) {
       expect(deploymentPolicy).toContain(token);
     }

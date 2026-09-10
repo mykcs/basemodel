@@ -7,6 +7,7 @@ const read = (relative: string) =>
 const agents = read('../../AGENTS.md');
 const latest = read('../../docs/agents/LATEST.md');
 const deploymentPolicy = read('../../docs/agents/current/deployment-policy.md');
+const integrationPlaybook = read('../../docs/agents/current/multi-pr-semantic-integration-playbook.md');
 const integrationRecord = read('../../docs/agents/history/2026-08-12-open-pr-semantic-integration.md');
 
 describe('semantic release integration policy', () => {
@@ -27,6 +28,14 @@ describe('semantic release integration policy', () => {
     for (const pr of ['#64', '#69', '#116', '#119', '#121', '#125', '#128', '#129']) {
       expect(integrationRecord).toContain(pr);
     }
+  });
+
+
+  it('keeps one live product workline while the owner iterates one surface', () => {
+    expect(integrationPlaybook).toContain('one designated survivor product PR');
+    expect(integrationPlaybook).toContain('do not turn every owner correction on one active surface into another parallel product PR');
+    expect(integrationPlaybook).toContain('HPL/control-plane closeout');
+    expect(integrationPlaybook).toContain('absorbed / superseded / rejected / deferred');
   });
 
   it('protects ancestry and semantic conflict resolution from squash loss', () => {

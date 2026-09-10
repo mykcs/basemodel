@@ -1,6 +1,6 @@
 # Multi-PR semantic integration playbook
 
-Last reviewed: **2026-09-08**
+Last reviewed: **2026-09-10**
 
 Use this playbook when several Agent-authored PRs must become one coherent release. Provider and build-budget rules remain in [`deployment-policy.md`](./deployment-policy.md). The case that produced these lessons is [`../history/2026-08-12-open-pr-semantic-integration.md`](../history/2026-08-12-open-pr-semantic-integration.md).
 
@@ -140,6 +140,40 @@ Treat an `absorbed into #N` statement as a **disposition claim to verify, not pr
 
 Historical case: [`../history/2026-09-08-open-pr-backlog-consolidation-and-exact-head-closeout-retrospective.md`](../history/2026-09-08-open-pr-backlog-consolidation-and-exact-head-closeout-retrospective.md).
 
+
+### 3.4 Iterative owner feedback on one surface: keep one live product workline
+
+When the owner is repeatedly revising the same route, briefing, deck, component family, or product decision, the default is **one designated survivor product PR**. A new correction is usually another commit on that survivor, not a reason to open a fresh product PR.
+
+Before opening a successor PR for the same surface, prove at least one real boundary changed:
+
+- the old branch cannot be safely continued because its base/authority topology is obsolete or contaminated;
+- the intended scientific/product semantics changed enough that the predecessor must remain a historical rejected/superseded line;
+- the new work has a genuinely different merge/authorization boundary, such as an HPL/control-plane closeout that deliberately contains no product files;
+- or an integration head is required to absorb several independent accepted worklines.
+
+If none applies, update the existing survivor. If a successor is necessary, immediately record `absorbed / superseded / rejected / deferred` for the predecessor and leave only one live release authority for that product decision.
+
+This is not “always use one PR for everything”. Independent surfaces and deliberately separate control-plane/governance work can remain separate. The rule is narrower: **do not turn every owner correction on one active surface into another parallel product PR**.
+
+Anti-pattern:
+
+```text
+same briefing surface
+-> copy correction PR
+-> chart correction PR
+-> Preview correction PR
+-> three open candidates that all claim to be current
+```
+
+Preferred:
+
+```text
+same briefing surface
+-> one survivor product PR accumulates accepted corrections
+-> separate HPL/docs closeout only when its file/authorization boundary is truly different
+-> one current product authority remains obvious
+```
 
 ### 4. Check conflict classes
 
