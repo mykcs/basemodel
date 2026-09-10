@@ -1,0 +1,47 @@
+{
+  "schema": "basemodel.q17-directapply-live-snapshot.v1",
+  "snapshot_label_sgt": "2026-09-10T01:00:00+08:00",
+  "status": "LIVE_TRAINING_SNAPSHOT_NOT_FINAL_EVALUATION",
+  "scope": "R0-R76 sealed receipts; R77 rollout boundary only",
+  "controller_sha": "7422ab5448caf31f322a1d29f3b7a835e7ec92ec",
+  "frozen_science_sha": "ac130148ee08b6462d9728e482a858fe5f514047",
+  "frozen_core_sha": "af59656a27c24c8d5d4b40fc4cfdf52a80207aaf",
+  "metrics": {
+    "sealed_rounds": 77,
+    "formal_rollouts": 9856,
+    "sd_lora_candidates_trained": 76,
+    "directapply_admissions": 76,
+    "shadow_gdr_labels": {
+      "pass": 35,
+      "reject": 41,
+      "total": 76
+    },
+    "training_round_score_mean_pct": {
+      "first_20": 41.83003063559704,
+      "latest_20": 52.57893006516052
+    },
+    "sd_lora_training_loss": {
+      "first_update_round": 0,
+      "first": 1.0461295127868653,
+      "latest_update_round": 76,
+      "latest": 0.1327895867167778
+    },
+    "final_panel_access_count": 0
+  },
+  "counterfactual_boundary": "Shadow GDR values are diagnostic labels on candidates produced along the DirectApply trajectory. They are not outcomes from a separately executed full GDR trajectory and do not imply that such a trajectory would contain exactly 35 updates.",
+  "cutoff_boundary": {
+    "r77_rollout_complete_mtime_utc": "2026-09-09T16:59:14.412515166Z",
+    "r77_sd_update_mtime_utc": "2026-09-09T17:15:28.637765947Z",
+    "interpretation": "At 01:00 SGT the R77 rollouts had completed, while the R77 SD-LoRA update receipt had not yet been written."
+  },
+  "provenance": {
+    "reconstruction": "Read-only recomputation after the live run had advanced beyond R76, using already-sealed historical receipts only; no GPU work or experiment state was changed.",
+    "receipt_file_count": 307,
+    "receipt_manifest_sha256": "32fb8dce5f55f94679f30b63e5e0ca1b730c79a807f5bbf2c8283c2527126b35",
+    "round076_state_after_sha256": "c65a7857232ceaf5387367639351bf67dc48268f879d366b999d902178620e0f",
+    "round076_round_complete_sha256": "d28fe34fbe60398d0492d793e058917fc8039655404100fceed0a281b23bd8cf",
+    "round076_summary_sha256": "d5f187f9ee108f06be38f4ce34d99efa3da7fcb520b1dd269ed13a77d85023fd",
+    "round076_update_sha256": "211c5c572d4aef12d782a5fa993bf038245ea28ce419be1bed93bce80fadb67a",
+    "round076_decision_sha256": "d29b48b096da469db4613bc4bb1457cdccd78d9cf002b1e4e95a744e12f4b335"
+  }
+}
