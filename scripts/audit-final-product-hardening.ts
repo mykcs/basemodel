@@ -127,9 +127,9 @@ assert(
     && appStyles.indexOf("@import './actionable-content.css';") > appStyles.indexOf("@import './final-hardening.css';")
     && actionableLayer.includes("querySelectorAll?.('pre')")
     && actionableLayer.includes("querySelectorAll?.('code')")
-    && actionableLayer.includes('MutationObserver')
+    && !actionableLayer.includes('MutationObserver')
     && actionableLayer.includes("closest('astro-island')"),
-  'static actionable content is enhanced site-wide through the canonical CSS entry without mutating React islands',
+  'static actionable content is enhanced once at page load through the canonical CSS entry, without a page-wide DOM observer or React-island mutation',
 );
 assert('HARDEN-ACTION-002', actionableLayer.includes('aria-live="polite"') && actionableLayer.includes('navigator.clipboard') && actionableLayer.includes('window.isSecureContext') && !actionableLayer.includes('fallbackCopy') && actionableCss.includes('@media(max-width:640px)') && actionableCss.includes('prefers-reduced-motion'), 'copy affordances expose modern clipboard feedback, explicit failure handling, mobile behavior, and reduced-motion handling');
 assert('HARDEN-ACTION-003', copyButton.includes('copyTextToClipboard') && clipboard.includes('navigator.clipboard.writeText') && !clipboard.includes('document.execCommand') && hardwareCalculator.includes('<CopyButton') && taskSummary.includes('<CopyButton') && memo.includes('<CopyButton') && modelTools.includes('<CopyButton'), 'React-owned reusable outputs use the shared modern clipboard primitive without deprecated execCommand');
