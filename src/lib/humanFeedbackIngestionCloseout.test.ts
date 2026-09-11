@@ -7,6 +7,7 @@ import {
   OPEN_EVO_BRIEFING_FINAL_CLOSEOUT_INGESTION_20260909,
   OPEN_EVO_BRIEFING_NOGDR_CLOSEOUT_INGESTION_20260910,
   OPEN_EVO_BRIEFING_CHART_PREVIEW_CLOSEOUT_INGESTION_20260910,
+  OPEN_EVO_BRIEFING_PR619_ACCEPTANCE_INGESTION_20260911,
   FUHUO_MAC_RECOVERY_INGESTION_20260909,
   SITEWIDE_APPLE_REFERENCE_INGESTION_20260909,
 } from '../data/humanFeedbackIngestionCloseouts';
@@ -20,6 +21,7 @@ const storyline = OPEN_EVO_BRIEFING_STORYLINE_INGESTION_20260909;
 const finalCloseout = OPEN_EVO_BRIEFING_FINAL_CLOSEOUT_INGESTION_20260909;
 const lateBriefing = OPEN_EVO_BRIEFING_NOGDR_CLOSEOUT_INGESTION_20260910;
 const chartPreviewCloseout = OPEN_EVO_BRIEFING_CHART_PREVIEW_CLOSEOUT_INGESTION_20260910;
+const pr619Closeout = OPEN_EVO_BRIEFING_PR619_ACCEPTANCE_INGESTION_20260911;
 const recovery = FUHUO_MAC_RECOVERY_INGESTION_20260909;
 const sitewideApple = SITEWIDE_APPLE_REFERENCE_INGESTION_20260909;
 
@@ -32,11 +34,12 @@ describe('human feedback ingestion closeout', () => {
     expect(finalCloseout.ledger).toHaveLength(finalCloseout.candidateFeedbackSignals);
     expect(lateBriefing.ledger).toHaveLength(lateBriefing.candidateFeedbackSignals);
     expect(chartPreviewCloseout.ledger).toHaveLength(chartPreviewCloseout.candidateFeedbackSignals);
+    expect(pr619Closeout.ledger).toHaveLength(pr619Closeout.candidateFeedbackSignals);
     expect(recovery.ledger).toHaveLength(recovery.candidateFeedbackSignals);
     expect(sitewideApple.ledger).toHaveLength(sitewideApple.candidateFeedbackSignals);
-    expect(original.candidateFeedbackSignals + successor.candidateFeedbackSignals + finalSuccessor.candidateFeedbackSignals + storyline.candidateFeedbackSignals + finalCloseout.candidateFeedbackSignals + lateBriefing.candidateFeedbackSignals + chartPreviewCloseout.candidateFeedbackSignals + recovery.candidateFeedbackSignals + sitewideApple.candidateFeedbackSignals).toBe(93);
-    const all = [...original.ledger, ...successor.ledger, ...finalSuccessor.ledger, ...storyline.ledger, ...finalCloseout.ledger, ...lateBriefing.ledger, ...chartPreviewCloseout.ledger, ...recovery.ledger, ...sitewideApple.ledger];
-    expect(new Set(all.map((item) => item.id)).size).toBe(93);
+    expect(original.candidateFeedbackSignals + successor.candidateFeedbackSignals + finalSuccessor.candidateFeedbackSignals + storyline.candidateFeedbackSignals + finalCloseout.candidateFeedbackSignals + lateBriefing.candidateFeedbackSignals + chartPreviewCloseout.candidateFeedbackSignals + pr619Closeout.candidateFeedbackSignals + recovery.candidateFeedbackSignals + sitewideApple.candidateFeedbackSignals).toBe(101);
+    const all = [...original.ledger, ...successor.ledger, ...finalSuccessor.ledger, ...storyline.ledger, ...finalCloseout.ledger, ...lateBriefing.ledger, ...chartPreviewCloseout.ledger, ...pr619Closeout.ledger, ...recovery.ledger, ...sitewideApple.ledger];
+    expect(new Set(all.map((item) => item.id)).size).toBe(101);
     expect(all.filter((item) => item.disposition === 'ambiguous-hold')).toEqual([]);
   });
 
@@ -54,6 +57,7 @@ describe('human feedback ingestion closeout', () => {
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE')?.tier).toBe('current-candidate');
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-SUMMARY-CARDS-REJECTED')?.tier).toBe('rejected');
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE')?.tier).toBe('current-candidate');
+    expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-619-ACCEPTED-SILVER')?.tier).toBe('silver');
     expect(HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-SITEWIDE-APPLE-SURFACE-REJECTED')?.tier).toBe('rejected');
   });
 
@@ -152,7 +156,7 @@ describe('human feedback ingestion closeout', () => {
   });
 
   it('rolls the segmented briefing closeouts into one complete lineage and proves the latest feedback changes retrieval', () => {
-    const coverage = aggregateHumanFeedbackIngestionCoverage(chartPreviewCloseout);
+    const coverage = aggregateHumanFeedbackIngestionCoverage(pr619Closeout);
     expect(coverage.failures).toEqual([]);
     expect(coverage.ingestionIds).toEqual([
       'INGESTION-20260909-OPENEVO-BRIEFING',
@@ -162,28 +166,46 @@ describe('human feedback ingestion closeout', () => {
       'INGESTION-20260909-OPENEVO-BRIEFING-FINAL-CLOSEOUT',
       'INGESTION-20260910-OPENEVO-BRIEFING-NOGDR-CLOSEOUT',
       'INGESTION-20260910-OPENEVO-BRIEFING-CHART-PREVIEW-CLOSEOUT',
+      'INGESTION-20260911-OPENEVO-BRIEFING-PR619-ACCEPTANCE',
     ]);
-    expect(coverage.totalSignals).toBe(83);
-    expect(new Set(coverage.ledgerIds).size).toBe(83);
+    expect(coverage.totalSignals).toBe(91);
+    expect(new Set(coverage.ledgerIds).size).toBe(91);
     expect(coverage.dispositionCounts['ambiguous-hold']).toBe(0);
 
     const priorResult = validateHumanFeedbackIngestionCloseout(lateBriefing);
     expect(priorResult.failures).toEqual([]);
-    const result = validateHumanFeedbackIngestionCloseout(chartPreviewCloseout);
+    const result = validateHumanFeedbackIngestionCloseout(pr619Closeout);
     expect(result.failures).toEqual([]);
     for (const signal of [
-      'experiment-chart-grammar-repeated',
-      'consistent-experiment-visual-grammar',
-      'review-preview-target-verified',
-      'fast-review-preview-canonical-workflow',
-      'latest-nogdr-curves-current-candidate',
-      'current-candidate-is-not-accepted',
+      'pr619-concrete-accepted-not-canonical',
+      'pr619-latest-accepted-briefing-visual',
+      'prior-nogdr-candidate-superseded-by-pr619',
+      'unnecessary-project-jargon-translated',
+      'scientific-decision-chain',
+      'briefing-self-contained-method-context',
     ]) expect(result.retrievedSignals[signal], signal).toBe(true);
-    expect(result.retrievedEventIds).toContain('EVENT-20260910-NOGDR-CHART-GRAMMAR-REPEAT');
-    expect(result.retrievedEventIds).toContain('EVENT-20260910-REVIEW-PREVIEW-MISSING-CLAIMED-CURVES');
-    expect(result.retrievedGoldPairIds).toContain('PAIR-088-EXPERIMENT-CHART-GRAMMAR');
-    expect(result.evaluationProofFailures).toContain('PASS receipt cannot be rejected-like against a Gold Pair');
+    expect(result.retrievedEventIds).toContain('EVENT-20260911-BRIEFING-619-ACCEPTED');
+    expect(result.evaluationProofFailures).toContain('hard failure family not checked: internal-detail-promoted-to-primary-attention');
     expect(result.evaluationProofPassFailures).toEqual([]);
+  });
+
+
+  it('records PR #619 as concrete accepted Silver and retires the older active No-GDR candidate without inventing Golden', () => {
+    expect(pr619Closeout.schema).toBe('human-feedback-ingestion-closeout.v2');
+    expect(pr619Closeout.sourceWindow.finalVerdict).toBe('accepted');
+    expect(pr619Closeout.sourceWindow.finalAcceptedHead).toBe('6fcef6aacdb61fe904bbf9f69389e44f9c718ed6');
+    expect(pr619Closeout.sourceWindow.mergedMainCommit).toBe('33649b9486ea2868703980d108c55536d08f2046');
+    const event = HUMAN_FEEDBACK_EVENTS.find((item) => item.id === 'EVENT-20260911-BRIEFING-619-ACCEPTED');
+    const accepted = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-619-ACCEPTED-SILVER');
+    const prior = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE');
+    expect(event?.verdict).toBe('accepted');
+    expect(event?.ownerSignal).toBe('合并');
+    expect(event?.evidence?.gitSha).toBe(pr619Closeout.sourceWindow.finalAcceptedHead);
+    expect(accepted?.tier).toBe('silver');
+    expect(accepted?.gitSha).toBe(pr619Closeout.sourceWindow.finalAcceptedHead);
+    expect(prior?.supersededByReferenceId).toBe('VISUAL-BRIEFING-619-ACCEPTED-SILVER');
+    expect(HUMAN_FEEDBACK_EVENTS.some((item) => item.evidence?.gitSha === pr619Closeout.sourceWindow.finalAcceptedHead && item.verdict === 'canonical')).toBe(false);
+    expect(HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden')).toBe(false);
   });
 
 

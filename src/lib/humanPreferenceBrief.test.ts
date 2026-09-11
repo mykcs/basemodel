@@ -66,8 +66,9 @@ describe('human preference learning v2', () => {
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-STORYLINE-CURRENT-CANDIDATE')).toBe(false);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-605-MERGED-REJECTED' && reference.tier === 'rejected')).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE')).toBe(false);
-    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
-    expect(brief.generationRules.join('\n')).toContain('Current-candidate visual references are still under review');
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-619-ACCEPTED-SILVER' && reference.tier === 'silver')).toBe(true);
+    expect(brief.generationRules.join('\n')).toContain('No current-candidate visual is active for this scope');
   });
 
   it('retrieves the final briefing lessons for a different two-stage training talk before first draft', () => {
@@ -136,7 +137,8 @@ describe('human preference learning v2', () => {
     expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('近邻 antecedent') && boundary.includes('代词'))).toBe(true);
     expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('训练过程信号') && boundary.includes('最终评测'))).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE')).toBe(false);
-    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-619-ACCEPTED-SILVER' && reference.tier === 'silver')).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.tier === 'golden')).toBe(false);
     expect(brief.hardFailureFamilies).not.toContain('unnamed-scientific-referent');
     expect(failureFamilySeverity('unnamed-scientific-referent')).toBe('normal');
@@ -168,7 +170,7 @@ describe('human preference learning v2', () => {
     expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('新实验') && boundary.includes('不存在的曲线'))).toBe(true);
     expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('205') && boundary.includes('目标 slide'))).toBe(true);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-SUMMARY-CARDS-REJECTED' && reference.tier === 'rejected')).toBe(true);
-    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE')).toBe(false);
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-LIVE-CURRENT-CANDIDATE')).toBe(false);
     expect(brief.visualReferences.some((reference) => reference.tier === 'golden')).toBe(false);
   });
