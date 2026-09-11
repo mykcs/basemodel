@@ -109,12 +109,12 @@ export const CAPABILITY_READER_ROUTES = [
     "coverage": "contextualized",
     "owner": "OpenEvoQ17AdvisorDiagnostics",
     "label": {
-      "zh": "Q17 固定同题诊断",
-      "en": "Q17 same-task diagnostics"
+      "zh": "R127 / R128 同题重测",
+      "en": "R127 / R128 same-task check"
     },
     "purpose": {
-      "zh": "比较 R127 与 R128 在同一批 WebShop 题上的成功率、分数、输出长度和 entropy，并保留仍未证明的边界。",
-      "en": "Compare R127 and R128 on the same WebShop tasks using success, score, output length, and entropy while keeping unproven conclusions explicit."
+      "zh": "让 R127 和 R128 做同样的 32 道 WebShop 题，看看训练曲线的大幅掉分到底是模型变差了，还是两轮题目不同造成的。",
+      "en": "Run R127 and R128 on the same 32 WebShop tasks to separate model change from differences in the task samples used by the two training rounds."
     }
   },
   {

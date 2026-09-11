@@ -25,12 +25,13 @@ describe('Q17 advisor diagnostics publication', () => {
 
   it('keeps the result and boundary visible in both language routes', () => {
     const component = read('src/components/research/OpenEvoQ17AdvisorDiagnostics.astro');
-    expect(component).toContain('有些能力换了位置，但还不能说整体发生了遗忘');
-    expect(component).toContain('some capabilities moved, but the evidence does not show overall forgetting');
-    expect(component).toContain('95% CI');
-    expect(component).toContain('final-panel access = 0');
-    expect(component).toContain('GPU2 独立复现');
-    expect(component).toContain('Independent GPU2 replication');
+    expect(component).toContain('R128 比 R127 稍差，但没有训练曲线看起来那么严重');
+    expect(component).toContain('R128 was a little worse than R127—but not nearly as bad as the training curve suggested');
+    expect(component).toContain('这个范围里包含“没有差别”，所以还不能确定整体真的下降');
+    expect(component).toContain('最终 128 题完全没打开');
+    expect(component).toContain('另一张 GPU 又跑了一遍');
+    expect(component).toContain('The result was rerun on another GPU');
     expect(component).toContain('f6fa4d05b7433685088ac59b1b488eecb42c781e');
+    expect(component).not.toContain('任务能力发生了重排');
   });
 });
