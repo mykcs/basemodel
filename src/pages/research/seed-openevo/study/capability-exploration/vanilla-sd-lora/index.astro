@@ -5,8 +5,8 @@ import ResearchRouteContext from '../../../../../../components/research/Research
 const locale = 'zh' as const;
 ---
 <AppLayout
-  title="Vanilla SD-LoRA 到底怎么工作"
-  description="OpenEvo × WebShop 一轮 SD-LoRA 的真实机制：128 次 rollout 怎样筛成训练数据，bounded replay 怎样参与，旧方向、新方向与 coefficient 如何组成下一轮累计 adapter。"
+  title="Vanilla SD-LoRA 一轮怎样更新参数"
+  description="OpenEvo × WebShop 一轮 SD-LoRA 的真实机制：128 次任务尝试如何筛成训练数据，旧方向如何冻结，新方向和幅度系数如何形成候选累计 LoRA。"
   locale={locale}
 >
   <ResearchRouteContext locale={locale} route="vanilla-sd-lora" />

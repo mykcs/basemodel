@@ -5,8 +5,8 @@ import ResearchRouteContext from '../../../../../../../components/research/Resea
 const locale = 'en' as const;
 ---
 <AppLayout
-  title="How Vanilla SD-LoRA works"
-  description="The actual OpenEvo × WebShop SD-LoRA round: how 128 rollouts become training data, how bounded replay enters optimization, and how frozen directions, a new direction, and coefficients form the next cumulative adapter."
+  title="How one Vanilla SD-LoRA round updates parameters"
+  description="The actual OpenEvo × WebShop SD-LoRA round: how 128 task attempts become training data, how old directions stay frozen, and how a new direction plus magnitude coefficients form a candidate cumulative LoRA."
   locale={locale}
 >
   <ResearchRouteContext locale={locale} route="vanilla-sd-lora" />

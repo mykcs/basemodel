@@ -24,9 +24,9 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
 test('English route preserves the mechanism and boundary', async ({ page }) => {
   await page.goto(routes.en, { waitUntil: 'domcontentloaded' });
   const body = page.getByTestId('vanilla-sd-lora-mechanism');
-  await expect(page.locator('h1')).toContainText('How Vanilla SD-LoRA works');
-  await expect(body).toContainText('16 tasks × 8 attempts');
-  await expect(body).toContainText('Earliest clean exact success per task');
+  await expect(page.locator('h1')).toContainText('One Vanilla SD-LoRA update round');
+  await expect(body).toContainText('16 tasks × 8');
+  await expect(body).toContainText('Earliest fully checked success per task');
   await expect(body).toContainText('Old directions');
   await expect(body).toContainText('All magnitudes');
   await expect(body).toContainText('risks to measure, not causes already proven');

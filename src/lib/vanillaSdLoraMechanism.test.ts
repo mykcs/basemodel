@@ -24,15 +24,15 @@ describe('Vanilla SD-LoRA mechanism projection', () => {
   it('keeps the visual mainline on one SD-LoRA round rather than an OpenEvo system overview', () => {
     for (const phrase of [
       '16 个任务 × 每题 8 次',
-      '每个任务最早一条通过全部检查的完整成功（clean exact success）',
+      '每个任务最早一条通过全部检查的完整成功',
       '最多回放 64 条旧经验',
       'Dₜ ← BₜAₜ',
       'α₁ · α₂ · … · αₜ',
       'ΔWₜ = Σ αᵢDᵢ',
-      'candidate cumulative adapter',
+      '候选累计 LoRA',
       'SD-LoRA 到这里结束',
     ]) expect(projectionSource).toContain(phrase);
-    expect(component).toContain('本轮 dataset 不把旧轮次的原始任务尝试（raw rollout）直接拼回来');
+    expect(component).toContain('本轮训练集不把旧轮次的原始任务尝试直接拼回来');
     expect(component).toContain('这些是需要测的风险，不是当前已经证明的故障原因');
   });
 
