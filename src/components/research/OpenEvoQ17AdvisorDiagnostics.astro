@@ -1,109 +1,99 @@
 ---
 import type { Locale } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
+const evidenceHref = '/research/seed-openevo/evidence/q17-advisor-diagnostics-20260911.json';
+const sourceHref = 'https://github.com/mykcs/openevo-experiment/blob/38223bf7f07aa2c2978c8583bcfb12097e9ee052/docs/evidence/q17-advisor-diagnostics-20260911/README.md';
+
+const rows = [
+  [t('WebShop 平均分', 'Mean WebShop score'), '63.58', '59.41', '−4.18', t('95% CI：−17.13 ～ +8.00', '95% CI: −17.13 to +8.00')],
+  [t('真正完成任务', 'Exact success'), '31.25%', '25.00%', '−6.25 pp', t('95% CI：−18.75 ～ +6.25 pp', '95% CI: −18.75 to +6.25 pp')],
+  [t('拿到正奖励', 'Positive reward'), '84.38%', '78.13%', '−6.25 pp', ''],
+  [t('平均环境步数', 'Mean environment steps'), '7.41', '7.53', '+0.13', ''],
+  [t('每步输出 token', 'Output tokens / step'), '24.49', '24.95', '+0.47', ''],
+  [t('推理阶段 entropy', 'Reasoning entropy'), '0.392', '0.343', '−0.050', t('nats / token；越低表示当前解码分布更集中', 'nats / token; lower means a more concentrated decoding distribution')],
+] as const;
 ---
 
-<section class="advisor-diagnostics" data-q17-advisor-diagnostics aria-labelledby="advisor-diagnostics-title">
-  <header class="diagnostic-hero">
-    <p class="eyebrow">2026-09-11 · {t('学长建议后的诊断方案', 'Advisor-guided diagnostic plan')}</p>
-    <h2 id="advisor-diagnostics-title">{t('先别猜原因，先看模型到底怎么变了', 'Do not guess the cause yet; first measure how the model changed')}</h2>
-    <p class="lede">{t('现在只有 round Score 和 SD-LoRA loss，还不足以判断 R70 以后到底是能力真的退化、每轮题目难度不同，还是模型的行为方式发生了变化。下一步先补观测，不先改算法。', 'Round Score and SD-LoRA loss alone are not enough to tell whether the post-R70 fluctuation is real capability regression, task-sampling difficulty, or a change in model behavior. The next step is to improve measurement before changing the algorithm.')}</p>
+<section class="advisor-diagnostics" data-q17-advisor-diagnostics data-reader-primary aria-labelledby="advisor-diagnostics-title">
+  <header class="result-hero">
+    <p class="eyebrow">2026-09-11 · {t('固定同题诊断', 'Same-task diagnostic')}</p>
+    <h1 id="advisor-diagnostics-title">{t('R127 到 R128：有些能力换了位置，但还不能说整体发生了遗忘', 'R127 to R128: some capabilities moved, but the evidence does not show overall forgetting')}</h1>
+    <p class="lede">{t('我们把两个 checkpoint 放到完全相同的 32 道 WebShop 题上。平均分从 63.58 降到 59.41，成功率从 31.25% 降到 25.00%；3 道原本成功的题变成失败，1 道原本失败的题变成成功。两项主要差值的 95% 置信区间都跨过 0，所以目前能确认的是“任务能力发生了重排，并伴随小幅下滑”，还不能把它写成“整体显著遗忘”。', 'We evaluated both checkpoints on the same 32 WebShop tasks. Mean score fell from 63.58 to 59.41 and exact success from 31.25% to 25.00%; three previously solved tasks became failures while one previously failed task became a success. Both primary 95% confidence intervals cross zero, so the supported claim is task-level capability reallocation with a modest downward shift—not statistically clear overall forgetting.')}</p>
+    <div class="evidence-links" aria-label={t('诊断证据', 'Diagnostic evidence')}>
+      <a href={evidenceHref}>{t('网站证据摘要', 'Site evidence summary')}</a>
+      <a href={sourceHref}><ExternalBrandMark href={sourceHref} />{t('实验仓完整证据', 'Full experiment evidence')}</a>
+    </div>
   </header>
 
-  <div class="question-grid" aria-label={t('优先补的四类信息', 'Four measurements to add first')}>
-    <article>
-      <span>01</span>
-      <h3>{t('真的完成了吗？', 'Did it actually finish tasks?')}</h3>
-      <p>{t('同时看 Score、exact success rate 和 positive reward rate。分数下降不一定等于真正的成功率下降。', 'Track Score together with exact success rate and positive-reward rate. A lower score does not automatically mean fewer true task completions.')}</p>
-    </article>
-    <article>
-      <span>02</span>
-      <h3>{t('做题方式变了吗？', 'Did behavior change?')}</h3>
-      <p>{t('看每个 action / episode 的输出长度、episode steps、invalid action、parse failure 和提前结束。要区分“更啰嗦”“走更多步”和“真的不会做”。', 'Measure output length per action and episode, episode steps, invalid actions, parse failures, and early termination. Separate verbosity, extra wandering, and actual inability.')}</p>
-    </article>
-    <article>
-      <span>03</span>
-      <h3>{t('模型变得更死板还是更犹豫？', 'Did the policy become rigid or uncertain?')}</h3>
-      <p>{t('如果日志已经保存 token logprob / logits，就计算 token entropy；如果没有，不为了这个指标修改当前正式 run。可以先看 action-type entropy，再在固定诊断题上补 token entropy。', 'If token logprobs or logits are already stored, compute token entropy. If not, do not modify the formal run just to collect it. Use action-type entropy first, then add token entropy on the fixed diagnostic panel.')}</p>
-    </article>
-    <article>
-      <span>04</span>
-      <h3>{t('同样的题，模型真的变差了吗？', 'On the same tasks, did the model really get worse?')}</h3>
-      <p>{t('这是最关键的一步：用同一批合法的 train/dev 诊断题重测多个 checkpoint，把“模型变化”和“这一轮题更难”分开。', 'This is the key test: evaluate multiple checkpoints on the same legal train/dev diagnostic tasks, separating model change from round-to-round task difficulty.')}</p>
-    </article>
-  </div>
+  <section class="result-section" aria-labelledby="same-task-result">
+    <h2 id="same-task-result">{t('同样 32 道题，变化比训练 round 的 76.1 → 48.9 小得多', 'On the same 32 tasks, the change is much smaller than the live-round 76.1 → 48.9 swing')}</h2>
+    <p>{t('训练过程里的每一轮并不是同一套题，所以 round score 同时混入了任务抽样难度。固定同题之后仍能看到 R128 略差，但差距明显缩小：这说明原来的大幅回撤不能直接等同于模型突然失去同样比例的能力。', 'Training rounds do not contain the same task sample, so live round score mixes model change with task difficulty. The fixed-task test still trends downward at R128, but the gap is much smaller. The large live-round drop therefore cannot be treated as an equally large loss of model capability.')}</p>
 
-  <div class="diagnostic-stage-grid">
-    <section class="diagnostic-stage" aria-labelledby="offline-first-title">
-      <p class="stage-kicker">A · {t('先整理已有数据', 'First: mine existing logs')}</p>
-      <h3 id="offline-first-title">{t('不动现在的 160 轮实验，先把 R1–当前已封口轮次整理成一张表', 'Keep the 160-round run unchanged and build one table from all sealed rounds')}</h3>
-      <ul>
-        <li>{t('表现：mean / median Score、exact success rate、positive reward rate。', 'Performance: mean / median Score, exact success rate, positive-reward rate.')}</li>
-        <li>{t('长度：每 action 与每 episode 的 generated tokens，至少保存 mean / median / P90。', 'Length: generated tokens per action and per episode, keeping at least mean / median / P90.')}</li>
-        <li>{t('交互：episode steps、invalid action、parse failure、early termination、动作类型比例。', 'Interaction: episode steps, invalid actions, parse failures, early termination, and action-type mix.')}</li>
-        <li>{t('训练：SD-LoRA loss、这一轮是否更新、训练 task / token 数；已有的话再对齐 update norm 与相邻 update cosine。', 'Training: SD-LoRA loss, whether an update occurred, training task/token count; where already available, align update norm and adjacent-update cosine.')}</li>
-        <li>{t('Entropy：只有已有 logprob / logits 才从正式轨迹离线计算；没有就不重放历史正式轮次。', 'Entropy: compute it offline from formal traces only when logprobs/logits already exist; otherwise do not replay historical formal rounds just for this metric.')}</li>
-      </ul>
-    </section>
-
-    <section class="diagnostic-stage" aria-labelledby="fixed-panel-title">
-      <p class="stage-kicker">B · {t('固定同一批题', 'Second: same-task checkpoint test')}</p>
-      <h3 id="fixed-panel-title">{t('建立一个小型 Fixed Diagnostic Panel', 'Freeze a small Fixed Diagnostic Panel')}</h3>
-      <p>{t('默认建议从合法 train/dev 范围冻结约 32 个任务；正式执行前先封存 exact task manifest。它不是 final 128，也不允许读取 final panel。', 'Default proposal: freeze about 32 legal train/dev tasks and seal the exact task manifest before execution. This is not the final 128 and must not access the final panel.')}</p>
-      <p>{t('优先比较 R70、R110、R127、R128、当前最新已封口 checkpoint，以及 R160 完成后的 checkpoint。R127 → R128 是第一组重点：如果同一批题也明显变差，才开始支持“真实能力退化”；如果同题表现基本不变，原来的 76.1 → 48.9 更可能包含很大的任务采样噪声。', 'Prioritize R70, R110, R127, R128, the latest sealed checkpoint, and R160 when available. R127 → R128 is the first key comparison: degradation on the same tasks would support real capability regression; stable same-task performance would instead suggest that much of the 76.1 → 48.9 swing came from task-sampling noise.')}</p>
-      <p>{t('每个 checkpoint 都记录 Score、success rate、output length、episode steps、invalid / parse failure，以及可合法获得的 entropy。', 'For every checkpoint record Score, success rate, output length, episode steps, invalid/parse failures, and entropy where it can be collected without changing the formal run.')}</p>
-    </section>
-  </div>
-
-  <section class="decision-section" aria-labelledby="decision-title">
-    <p class="stage-kicker">C · {t('看到什么，再决定查什么', 'Let the measurements choose the next question')}</p>
-    <h3 id="decision-title">{t('不要提前把“遗忘、冲突、容量瓶颈”写成结论', 'Do not pre-label the problem as forgetting, conflict, or capacity')}</h3>
-    <div class="decision-grid">
-      <article><b>{t('Fixed panel 稳定，round Score 乱跳', 'Fixed panel stable, round Score noisy')}</b><p>{t('优先解释为任务采样 / 测量噪声，不先改 SD-LoRA。', 'Prioritize task-sampling or measurement noise; do not change SD-LoRA first.')}</p></article>
-      <article><b>{t('Fixed panel 也明显退化', 'Fixed panel also regresses')}</b><p>{t('才开始检查能力是否被后续更新破坏，并对齐 update norm / cosine。', 'Then investigate whether later updates damage prior ability, aligned with update norm/cosine.')}</p></article>
-      <article><b>{t('Success 稳定，但输出和步数变长', 'Success stable, outputs and steps grow')}</b><p>{t('更像策略效率下降或行为变得绕，不等于整体能力消失。', 'More consistent with policy-efficiency degradation or wandering than total capability loss.')}</p></article>
-      <article><b>{t('Entropy 下降，动作也越来越单一', 'Entropy and action diversity both fall')}</b><p>{t('检查策略是否过度收缩，但先把它当现象，不直接叫“塌缩”。', 'Check for policy over-concentration, but keep it as an observation before calling it collapse.')}</p></article>
-      <article><b>{t('Loss 继续降，Fixed success 却下降', 'Loss falls while fixed-task success falls')}</b><p>{t('这是最值得深挖的情况：训练目标变好，但 WebShop 能力没有跟着变好。', 'This is the most important case: the training objective improves while WebShop capability does not.')}</p></article>
-      <article><b>{t('这些指标都一起停住', 'All of these metrics flatten')}</b><p>{t('再把数据新颖性、LoRA 容量等更后面的假设提到前面。', 'Only then promote later hypotheses such as data novelty or LoRA capacity.')}</p></article>
+    <div class="table-wrap" role="region" aria-label={t('R127 与 R128 固定同题指标', 'R127 versus R128 fixed-task metrics')} tabindex="0">
+      <table>
+        <thead><tr><th>{t('指标', 'Metric')}</th><th>R127</th><th>R128</th><th>{t('变化', 'Change')}</th><th>{t('统计 / 说明', 'Uncertainty / note')}</th></tr></thead>
+        <tbody>{rows.map(([label, left, right, delta, note]) => <tr><th scope="row">{label}</th><td>{left}</td><td>{right}</td><td>{delta}</td><td>{note || '—'}</td></tr>)}</tbody>
+      </table>
     </div>
+
+    <dl class="transition-line">
+      <div><dt>{t('两边都成功', 'Solved by both')}</dt><dd>7</dd></div>
+      <div><dt>{t('成功 → 失败', 'Success → failure')}</dt><dd>3</dd></div>
+      <div><dt>{t('失败 → 成功', 'Failure → success')}</dt><dd>1</dd></div>
+      <div><dt>{t('两边都失败', 'Failed by both')}</dt><dd>21</dd></div>
+    </dl>
   </section>
 
-  <section class="plot-section" aria-labelledby="plot-title">
-    <p class="stage-kicker">D · {t('最后只保留几张真正有用的图', 'Keep only the plots that answer decisions')}</p>
-    <h3 id="plot-title">{t('目标不是堆指标，而是回答问题', 'The goal is not more metrics; it is clearer decisions')}</h3>
-    <ol>
-      <li>{t('Round × Score + exact success rate：分数波动有没有对应真实完成率变化。', 'Round × Score + exact success rate: does score volatility track real completion changes?')}</li>
-      <li>{t('Round × output length + episode steps：模型是不是越来越啰嗦或绕路。', 'Round × output length + episode steps: is the model becoming verbose or wandering?')}</li>
-      <li>{t('Round × entropy / action diversity：策略确定性和探索是否变化。', 'Round × entropy / action diversity: did policy certainty or exploration change?')}</li>
-      <li>{t('Round × SD-LoRA loss：loss 和任务能力是否开始脱钩。', 'Round × SD-LoRA loss: did loss become decoupled from task capability?')}</li>
-      <li>{t('Round × update norm / cosine：掉分附近是否出现异常更新。', 'Round × update norm / cosine: were unusual updates aligned with performance drops?')}</li>
-      <li>{t('Checkpoint × Fixed Diagnostic Score / Success：同题情况下模型到底有没有真的越来越强。', 'Checkpoint × fixed-diagnostic Score / Success: on identical tasks, did the model truly improve?')}</li>
-    </ol>
+  <section class="result-section reasoning" aria-labelledby="what-it-means">
+    <h2 id="what-it-means">{t('2026-09-11 固定同题诊断削弱了两个过早的解释', 'The diagnostic weakens two premature explanations')}</h2>
+    <div class="reasoning-line">
+      <article>
+        <h3>{t('不是一个明显的接口故障', 'Not an obvious interface failure')}</h3>
+        <p>{t('两个 checkpoint 的 32 题诊断都没有 invalid action 或 constraint escape。正式 R127 / R128 日志里对应的 invalid、repair、constraint-escape 也都是 0。掉分不能先归因给 parser 或动作接口坏了。', 'Neither 32-task checkpoint run produced invalid actions or constraint escapes; the corresponding formal R127/R128 logs also recorded zero invalid, repair, and constraint-escape events. The drop should not be attributed first to a broken parser or action interface.')}</p>
+      </article>
+      <article>
+        <h3>{t('也不是“模型突然更迷茫”', 'Nor did the model simply become more uncertain')}</h3>
+        <p>{t('推理阶段 entropy 从 0.392 降到 0.343 nats/token，受动作约束后的 entropy 也从 0.0238 降到 0.0167。R128 的解码反而更集中一些；这更像策略偏好发生变化，而不是整体不确定性突然上升。', 'Reasoning entropy fell from 0.392 to 0.343 nats/token, and constrained-action entropy fell from 0.0238 to 0.0167. Decoding became somewhat more concentrated at R128, pointing toward a policy-preference shift rather than a sudden rise in global uncertainty.')}</p>
+      </article>
+    </div>
+    <aside class="claim-boundary">
+      <strong>{t('现在还不能证明：', 'Still not established:')}</strong>
+      <p>{t('这 32 题不足以证明整体发生了显著遗忘，也不足以证明某个负的 update cosine 就是原因。把 R127 写进 R128 的那次 SD-LoRA 更新，adjacent cosine 是 −0.135；但 R120–R134 之间还有更负的更新，所以它目前只是需要继续检查的线索。', 'These 32 tasks do not establish statistically clear overall forgetting, and they do not establish a negative update cosine as the cause. The SD-LoRA update that produced the R128 entering state had adjacent cosine −0.135, but more negative updates also occurred between R120 and R134. It remains a clue, not a causal result.')}</p>
+    </aside>
   </section>
 
-  <aside class="science-boundary" aria-label={t('科学边界', 'Scientific boundary')}>
-    <strong>{t('这份设计不改变当前正式实验', 'This design does not change the current formal run')}</strong>
-    <p>{t('R1–R160 继续按当前冻结设置跑完；不为了收指标改 learning rate、replay、prompt、sampling 或 SD-LoRA 规则。当前尚未封口的 round 不写成正式结果。Fixed Diagnostic Panel 只用合法 train/dev 任务；final panel access 继续为 0。所有“遗忘 / 更新冲突 / LoRA 容量”都保持为待验证假设。', 'R1–R160 continues under the frozen treatment: do not change learning rate, replay, prompt, sampling, or SD-LoRA rules just to collect diagnostics. Unsealed rounds are not reported as formal results. The Fixed Diagnostic Panel uses only legal train/dev tasks; final-panel access remains 0. Forgetting, update conflict, and LoRA capacity remain hypotheses until measured.')}</p>
-  </aside>
+  <section class="result-section" aria-labelledby="next-question">
+    <h2 id="next-question">{t('下一步：把“会不会互相冲掉”变成可重复的同题测量', 'Next: turn possible interference into a repeatable same-task measurement')}</h2>
+    <p>{t('当前 R1–R160 正式训练继续按冻结设置运行，不因为 2026-09-11 这组固定同题诊断改 learning rate、replay、prompt、sampling 或 SD-LoRA 规则。等更多 checkpoint 和 R160 可用后，再用同一批题看“哪些能力获得、哪些能力丢失”是否持续出现；只有这种现象稳定复现，才值得设计 retention / replay / update-conflict 的后继实验。', 'The formal R1–R160 run continues under the frozen treatment. This diagnostic does not change learning rate, replay, prompt, sampling, or SD-LoRA rules. When more checkpoints and R160 become available, the same panel can test whether gains and losses recur. Only a repeatable pattern would justify successor interventions for retention, replay, or update conflict.')}</p>
+  </section>
+
+  <details class="method-depth">
+    <summary>{t('诊断是怎么做的，以及它不是什么', 'How the diagnostic was run—and what it is not')}</summary>
+    <div class="method-grid">
+      <div><strong>{t('固定题目', 'Fixed tasks')}</strong><p>{t('32 个任务来自诊断用 train/dev 范围；在看 R127 / R128 对比结果前就冻结。它们与锁定 final 128 的 goal / instruction overlap 都是 0。', 'The 32 diagnostic train/dev tasks were frozen before inspecting the R127/R128 result. Their goal and instruction overlap with the locked final 128 is zero.')}</p></div>
+      <div><strong>{t('固定其他条件', 'Matched conditions')}</strong><p>{t('两边使用相同任务、generation seed、Harness201.1、Text Memory、Skill 和 Agent System。变化的是进入 R127 与进入 R128 的 SD-LoRA adapter。', 'Both checkpoints use identical tasks, generation seeds, Harness201.1, Text Memory, Skill, and Agent System. The changed factor is the SD-LoRA adapter entering R127 versus R128.')}</p></div>
+      <div><strong>{t('Entropy 的含义', 'What entropy means here')}</strong><p>{t('这里是实际解码过程在当前 logits processor / action constraint 之后的 operational decoding entropy，不是“完全无约束模型”的原始 entropy。4 题 OFF/ON 资格测试证明加入观测后输出、动作和得分 4/4 完全一致。', 'This is operational decoding entropy after the active logits processors and action constraint, not unconstrained raw-model entropy. A four-task OFF/ON qualification reproduced output, actions, and scores exactly 4/4 after instrumentation was added.')}</p></div>
+      <div><strong>{t('没有碰最终测试', 'Final evaluation stayed locked')}</strong><p>{t('final-panel access = 0，formal task consumption = 0，external teacher calls = 0。这个页面是实验仓证据的只读投影，不能授权修改正式 run 或打开 final panel。', 'Final-panel access = 0, formal task consumption = 0, and external teacher calls = 0. This page is a read-only projection of experiment evidence and cannot authorize formal-run changes or final-panel access.')}</p></div>
+    </div>
+  </details>
 </section>
 
 <style>
-.advisor-diagnostics{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem;padding-top:1rem;color:var(--ink)}
-.diagnostic-hero{padding:3rem 0 2rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.eyebrow,.stage-kicker{margin:0 0 .75rem;font:800 18px/1.25 var(--font-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--accent-deep)}
-.diagnostic-hero h2{max-width:900px;margin:0;font-size:clamp(2rem,4vw,4rem);line-height:1;letter-spacing:-.055em}
-.lede{max-width:820px;margin:1rem 0 0;color:var(--muted);font-size:1.08rem;line-height:1.65}
-.question-grid,.decision-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;padding:2rem 0}
-.question-grid article,.decision-grid article,.diagnostic-stage,.science-boundary{border:1px solid var(--line);background:var(--surface);padding:1.15rem}
-.question-grid span{display:inline-grid;place-items:center;width:2rem;height:2rem;border-radius:999px;background:var(--accent-deep);color:var(--surface);font:800 18px/1 var(--font-mono)}
-.question-grid h3,.diagnostic-stage h3,.decision-section h3,.plot-section h3{margin:.8rem 0 .55rem;font-size:1.35rem;line-height:1.2}
-.question-grid p,.diagnostic-stage p,.diagnostic-stage li,.decision-grid p,.plot-section li,.science-boundary p{color:var(--muted);line-height:1.6}
-.diagnostic-stage-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;padding:0 0 2rem}.diagnostic-stage ul{padding-left:1.2rem}.diagnostic-stage li+li{margin-top:.55rem}
-.decision-section,.plot-section{padding:2.5rem 0;border-top:1px solid var(--line)}.decision-grid{padding-bottom:0}.decision-grid article b{display:block;margin-bottom:.45rem}.decision-grid p{margin:0}
-.plot-section ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem 1.5rem;padding-left:1.3rem}.science-boundary{margin-top:.5rem;border-left:4px solid var(--warning)}.science-boundary strong{display:block;font-size:1.15rem}.science-boundary p{margin:.6rem 0 0}
-@media(max-width:820px){.question-grid,.decision-grid,.diagnostic-stage-grid,.plot-section ol{grid-template-columns:1fr}.diagnostic-hero{padding-top:2rem}}
+.advisor-diagnostics{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--ink)}
+.result-hero{padding:4.5rem 0 2.4rem;border-bottom:1px solid var(--line)}
+.eyebrow{margin:0 0 .8rem;font:800 18px/1.25 var(--font-mono);letter-spacing:.06em;color:var(--accent-deep)}
+.result-hero h1{max-width:980px;margin:0;font-size:clamp(2.35rem,5.5vw,4.8rem);line-height:.98;letter-spacing:-.065em}
+.lede{max-width:900px;margin:1.25rem 0 0;color:var(--muted);font-size:1.12rem;line-height:1.68}
+.evidence-links{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.3rem}.evidence-links a{border-bottom:1px solid var(--line);padding:.35rem 0;color:var(--accent-deep);text-decoration:none;margin-right:1rem}
+.result-section{padding:2.8rem 0;border-bottom:1px solid var(--line)}.result-section h2{max-width:900px;margin:0 0 1rem;font-size:clamp(1.65rem,3.2vw,2.8rem);line-height:1.08;letter-spacing:-.045em}.result-section>p,.reasoning-line p,.claim-boundary p,.method-grid p{max-width:900px;color:var(--muted);line-height:1.65}
+.table-wrap{overflow-x:auto;margin-top:1.5rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:.85rem .7rem;text-align:left;border-bottom:1px solid color-mix(in srgb,var(--line) 75%,transparent);vertical-align:top}thead th{font-size:.8rem;color:var(--muted);letter-spacing:.04em}tbody th{font-weight:700}td:nth-child(2),td:nth-child(3),td:nth-child(4){font-family:var(--font-mono);font-weight:700}
+.transition-line{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:1.5rem 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.transition-line div{padding:1rem;border-right:1px solid var(--line)}.transition-line div:last-child{border-right:0}.transition-line dt{color:var(--muted);font-size:.88rem}.transition-line dd{margin:.3rem 0 0;font:850 1.8rem/1 var(--font-mono)}
+.reasoning-line{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem;margin-top:1.5rem}.reasoning-line article{padding-top:1rem;border-top:2px solid var(--accent-deep)}.reasoning-line h3{margin:0;font-size:1.25rem}.claim-boundary{margin-top:1.8rem;padding:1rem 0 0;border-top:1px solid var(--warning)}.claim-boundary strong{font-size:1.05rem}.claim-boundary p{margin:.55rem 0 0}
+.method-depth{margin-top:2rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:1rem 0}.method-depth summary{cursor:pointer;font-weight:750;color:var(--accent-deep)}.method-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.2rem 2rem;padding:1.2rem 0 .4rem}.method-grid p{margin:.35rem 0 0;font-size:.94rem}
+@media(max-width:820px){.result-hero{padding-top:2.6rem}.reasoning-line,.method-grid,.transition-line{grid-template-columns:1fr}.transition-line div{border-right:0;border-bottom:1px solid var(--line)}.transition-line div:last-child{border-bottom:0}}
 </style>
