@@ -10,9 +10,12 @@ const zhPage = read('../pages/research/seed-openevo/study/briefing/index.astro')
 const enPage = read('../pages/en/research/seed-openevo/study/briefing/index.astro');
 const zhTechnical = read('../pages/research/seed-openevo/study/briefing/technical-notes/index.astro');
 const enTechnical = read('../pages/en/research/seed-openevo/study/briefing/technical-notes/index.astro');
+const zhFrontierPage = read('../pages/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.astro');
+const enFrontierPage = read('../pages/en/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.astro');
 const contracts = read('../data/siteReaderContracts.ts');
 const directApplyLiveSnapshot = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-live-snapshot-20260910-0952-sgt.json'));
 const directApplyPlateauDiagnostic = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-plateau-diagnostic-20260910-1038-sgt.json'));
+const directApplyFrontierPlan = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-frontier-plan-20260910-2312-sgt.json'));
 const directApplyLiveDynamics = read('../data/openEvoDirectApplyLiveDynamics.ts');
 const sitemap = read('./sitemapRoutes.ts');
 
@@ -24,16 +27,19 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(enPage).toContain('OpenEVO Summer Research Review');
     expect(zhTechnical).toContain('技术推导与实验严谨性');
     expect(enTechnical).toContain('Technical derivations and experimental rigor');
+    expect(zhFrontierPage).toContain('Q17 DirectApply Frontier Plan');
+    expect(enFrontierPage).toContain('Q17 DirectApply Frontier Plan');
     expect(nav).toContain("id: 'briefing'");
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/'");
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/technical-notes/'");
+    expect(sitemap).toContain("'/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/'");
   });
 
-  it('keeps a twenty-two-slide deck with page numbers only on inner slides', () => {
-    expect((briefing.match(/<section /g) ?? []).length).toBe(22);
-    for (let page = 2; page <= 21; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 22`);
-    expect(briefing).not.toContain('01 / 22');
-    expect(briefing).not.toContain('22 / 22');
+  it('keeps a twenty-three-slide deck with page numbers only on inner slides', () => {
+    expect((briefing.match(/<section /g) ?? []).length).toBe(23);
+    for (let page = 2; page <= 22; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 23`);
+    expect(briefing).not.toContain('01 / 23');
+    expect(briefing).not.toContain('23 / 23');
     expect(briefing).not.toContain('class="slide-next"');
     expect(briefing).not.toContain('返回顶部');
   });
@@ -291,7 +297,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   it('shows the current No-GDR snapshot with the same Score/loss chart grammar and no frozen-final claim', () => {
     expect(sectionPosition('directapply')).toBeLessThan(sectionPosition('directapply-progress'));
     expect(sectionPosition('directapply-progress')).toBeLessThan(sectionPosition('directapply-plateau'));
-    expect(sectionPosition('directapply-plateau')).toBeLessThan(sectionPosition('technical-work-summary'));
+    expect(sectionPosition('directapply-plateau')).toBeLessThan(sectionPosition('frontier-roadmap'));
+    expect(sectionPosition('frontier-roadmap')).toBeLessThan(sectionPosition('technical-work-summary'));
     const directApplySection = briefing.slice(sectionPosition('directapply-progress'), sectionPosition('directapply-plateau'));
     for (const item of [
       'DirectApply 前期抬高了分数，最近进入震荡平台',
@@ -331,9 +338,9 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('adds a bounded plateau diagnosis and keeps successor ideas separate from the running treatment', () => {
-    const plateauSection = briefing.slice(sectionPosition('directapply-plateau'), sectionPosition('technical-work-summary'));
+    const plateauSection = briefing.slice(sectionPosition('directapply-plateau'), sectionPosition('frontier-roadmap'));
     for (const item of [
-      'R70 以后分数不再稳定上涨，但训练和参数更新都没有停',
+      'R97 看到平台；R121 显示后续恢复',
       '下面三项只是线索，用来决定下一步该测什么',
       '58.35 → 55.36 → 50.83',
       '94 / 98 轮',
@@ -370,6 +377,43 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     for (const paperHref of ['webShopPaperHref','seedPaperHref','loraPaperHref','harnessBenefitPaperHref','taskArithmeticHref','gatedDeltaPaperHref','adaptiveAutoHarnessHref','reasoningBankHref']) {
       expect(briefing).toContain(`<ExternalBrandMark href={${paperHref}} />`);
     }
+  });
+
+  it('adds a Q17 frontier roadmap slide with blanks for unmeasured successor results', () => {
+    const frontierSection = briefing.slice(sectionPosition('frontier-roadmap'), sectionPosition('technical-work-summary'));
+    for (const item of [
+      '别只等曲线：把平台期拆成可验证问题',
+      'R90–99 的 49.90 后，R110–119 回到 63.52',
+      'Success@1 从 R90–99 的 25.62% 到 R110–119 的 34.38%',
+      'Success@8 只从 51.88% 到 56.25%',
+      'state/action coverage',
+      'Frontier Curriculum',
+      'partial-credit preference',
+      'ΔSuccess@8',
+      '待填',
+      '固定来源 #420 @ afc7b745',
+      'selected-vs-success task identity',
+    ]) expect(frontierSection).toContain(item);
+    expect(directApplyFrontierPlan.status).toBe('PLAN_AND_READ_ONLY_DIAGNOSTIC_NOT_FINAL_EVALUATION');
+    expect(directApplyFrontierPlan.metrics.sealed_rounds).toBe(122);
+    expect(directApplyFrontierPlan.metrics.formal_rollouts).toBe(15616);
+    expect(directApplyFrontierPlan.metrics.score_block_mean_pct.r110_r119).toBe(63.52);
+    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r90_r99.at1).toBe(25.62);
+    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r100_r109.at1).toBe(30.62);
+    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r110_r119.at1).toBe(34.38);
+    expect(directApplyFrontierPlan.metrics.sd_lora_selection.equal_to_exact_success_task_count_rounds).toBe(111);
+    expect(directApplyFrontierPlan.metrics.final_panel_access_count).toBe(0);
+    expect(directApplyFrontierPlan.source_plan.exact_head_sha).toBe('afc7b74500b98134c12f2ee9cc880ac2980ffc10');
+    expect(directApplyFrontierPlan.diagnostic_completion).toEqual({ artifact_pack_present: true, input_integrity_verified_count: 608, selected_vs_exact_identity_audit_complete: false, deliverable_a_complete: false });
+    expect(directApplyFrontierPlan.authority).toMatchObject({ may_authorize_run_mutation: false, may_authorize_recovery: false, may_authorize_successor_launch: false, may_authorize_final_panel: false });
+    expect(directApplyFrontierPlan.metrics).not.toHaveProperty('r122_rollout_only');
+    expect(directApplyFrontierPlan.placeholders).toEqual({
+      frontier_curriculum_delta_success_at_8: null,
+      frontier_curriculum_state_coverage_delta: null,
+      delayed_reject_counterfactual: null,
+      partial_credit_preference_start_decision: null,
+    });
+    expect(directApplyFrontierPlan.interpretation.not_claiming).toContain('No final-panel result');
   });
 
   it('keeps engineering work as a simple summary immediately before the final choice', () => {
@@ -447,7 +491,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   });
 
   it('keeps the scientific story in the requested causal order', () => {
-    const ids = ['results','openevo-method','stage2-gate','component-cap','seven-b','diagnostic-entry','horizon-diagnostic','prompt-diagnostic','capacity-diagnostic','training-dynamics','mechanism','m1a-identifiability','gdr','one-seven-b','directapply','directapply-progress','directapply-plateau','technical-work-summary','next'];
+    const ids = ['results','openevo-method','stage2-gate','component-cap','seven-b','diagnostic-entry','horizon-diagnostic','prompt-diagnostic','capacity-diagnostic','training-dynamics','mechanism','m1a-identifiability','gdr','one-seven-b','directapply','directapply-progress','directapply-plateau','frontier-roadmap','technical-work-summary','next'];
     const positions = ids.map(sectionPosition);
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect(positions).toEqual([...positions].sort((a, b) => a - b));

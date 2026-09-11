@@ -1,0 +1,14 @@
+---
+import AppLayout from '../../../../../../../layouts/AppLayout.astro';
+import OpenEvoQ17FrontierRoadmap from '../../../../../../../components/research/OpenEvoQ17FrontierRoadmap.astro';
+import ResearchRouteContext from '../../../../../../../components/research/ResearchRouteContext.astro';
+const locale = 'en' as const;
+---
+<AppLayout
+  title="Q17 DirectApply Frontier Plan"
+  description="Qwen3-1.7B DirectApply / No-GDR WebShop long-run learning: plateau, reliability, frontier metrics, and successor experiments."
+  locale={locale}
+>
+  <ResearchRouteContext locale={locale} route="q17-directapply-frontier" />
+  <OpenEvoQ17FrontierRoadmap locale={locale} />
+</AppLayout>
