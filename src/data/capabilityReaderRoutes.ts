@@ -9,8 +9,8 @@ export const CAPABILITY_READER_ROUTES = [
       "en": "Research gateway"
     },
     "purpose": {
-      "zh": "比较三条不同研究路径，选择历史、新设计或参数机制。",
-      "en": "Choose between historical exploration, the successor design, and parameter mechanisms."
+      "zh": "先看到最新固定同题诊断，再选择历史、新设计或参数机制路径。",
+      "en": "See the latest same-task diagnostic first, then choose the historical, successor-design, or parameter-mechanism path."
     }
   },
   {
@@ -22,8 +22,8 @@ export const CAPABILITY_READER_ROUTES = [
       "en": "GDR and DirectApply decision record"
     },
     "purpose": {
-      "zh": "解释 GDR-v1 为什么把 44 个 SD-LoRA candidate 过滤成 7 次正式更新，以及 DirectApply 独立消融真正改变了什么、尚未证明什么。",
-      "en": "Explain why GDR-v1 filtered 44 SD-LoRA candidates into 7 formal updates, what the independent DirectApply ablation changes, and what remains unproven."
+      "zh": "解释 GDR-v1 为什么把 44 个 SD-LoRA candidate 过滤成 7 次正式更新，并用最新固定同题诊断区分任务抽样波动、checkpoint 变化与仍未完成的最终对照。",
+      "en": "Explain why GDR-v1 filtered 44 SD-LoRA candidates into seven formal updates, then use the latest same-task diagnostic to separate task-sampling variation, checkpoint change, and the still-unfinished final comparison."
     }
   },
   {
@@ -35,8 +35,8 @@ export const CAPABILITY_READER_ROUTES = [
       "en": "Mechanism experiments"
     },
     "purpose": {
-      "zh": "检验学习留下的参数变化是否改变购物行为，并说明每个实验何时开始和结束。",
-      "en": "Test whether learned parameter changes alter shopping behavior, with explicit start and stop conditions."
+      "zh": "以上游同题诊断作为动机，检验学习留下的参数变化是否因果改变购物行为，并说明每个实验何时开始和结束。",
+      "en": "Use the upstream same-task diagnostic as motivation, then test whether learned parameter changes causally alter shopping behavior with explicit start and stop conditions."
     }
   },
   {

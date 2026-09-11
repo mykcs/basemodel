@@ -17,6 +17,8 @@ test('GDR → DirectApply explainer publishes the required scientific contract',
   await expect(body).toContainText('Concept · Not Yet Validated');
   await expect(body).toContainText('e47595a0');
   await expect(body).toContainText('90fa6eb4');
+  await expect(page.getByTestId('directapply-same-task-evidence')).toContainText('63.58→59.41');
+  await expect(page.getByTestId('directapply-same-task-evidence')).toContainText('31.25%→25.00%');
 
   const round0 = page.getByTestId('round0-semantic-match');
   await expect(round0).toContainText('128 / 128');
@@ -31,6 +33,10 @@ test('GDR → DirectApply explainer publishes the required scientific contract',
 
 test('the capability-exploration lobby exposes a real navigation entry', async ({ page }) => {
   await page.goto(lobbyPath, { waitUntil: 'domcontentloaded' });
+  const latest = page.locator('[data-latest-evidence="q17-same-task"] a');
+  await expect(latest).toBeVisible();
+  await expect(latest).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/');
+
   const entry = page.locator('[data-current-ablation="gdr-directapply"] a');
   await expect(entry).toBeVisible();
   await expect(entry).toHaveAttribute('href', zhPath);
@@ -46,7 +52,7 @@ test('English route has parity for the core claim boundary', async ({ page }) =>
   await expect(body).toContainText('No-GDR ≠ No Safety');
   await expect(body).toContainText('semantic-matched');
   await expect(body).toContainText('OPEN QUESTION');
-  await expect(body).toContainText('not a final result');
+  await expect(page.getByTestId('directapply-same-task-evidence')).toContainText('does not decide whether DirectApply ultimately beats GDR-v1');
 });
 
 for (const viewport of [

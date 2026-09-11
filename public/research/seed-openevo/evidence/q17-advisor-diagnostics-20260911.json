@@ -1,5 +1,5 @@
 {
-  "schema": "basemodel.q17-advisor-diagnostics.202609110900",
+  "schema": "basemodel.q17-advisor-diagnostics.202609111800",
   "status": "READ_ONLY_PUBLICATION_PROJECTION_NOT_FINAL_EVALUATION",
   "source": {
     "repository": "mykcs/openevo-experiment",
@@ -33,9 +33,15 @@
   },
   "paired": {
     "score_diff_r128_minus_r127": -0.04178571428571429,
-    "score_diff_bootstrap_95ci": [-0.17125, 0.08],
+    "score_diff_bootstrap_95ci": [
+      -0.17125,
+      0.08
+    ],
     "success_rate_diff_r128_minus_r127": -0.0625,
-    "success_rate_diff_bootstrap_95ci": [-0.1875, 0.0625],
+    "success_rate_diff_bootstrap_95ci": [
+      -0.1875,
+      0.0625
+    ],
     "mean_steps_diff": 0.125,
     "mean_output_tokens_per_episode_diff": 6.59375,
     "transitions": {
@@ -60,5 +66,15 @@
       "negative adjacent update cosine as the causal mechanism",
       "final evaluation outcome"
     ]
+  },
+  "replication": {
+    "repository": "mykcs/openevo-experiment",
+    "merge_sha": "f6fa4d05b7433685088ac59b1b488eecb42c781e",
+    "evidence_path": "docs/evidence/q17-advisor-diagnostics-20260911/gpu2-replication-20260911/GPU2_REPLICATION_RECEIPT.json",
+    "enter_r127_rows_exact_match": true,
+    "enter_r128_rows_exact_match": true,
+    "paired_rows_exact_match": true,
+    "authoritative_comparison_fields_exact_match": true,
+    "interpretation": "Independent GPU2 replication strengthens reproducibility only; it does not change the statistical claim boundary."
   }
 }
