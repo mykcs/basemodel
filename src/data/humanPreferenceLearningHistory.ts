@@ -654,6 +654,24 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
   },
 
   {
+    id: 'EVENT-20260911-Q17-PLAIN-LANGUAGE-REPEAT',
+    date: '2026-09-11',
+    caseIds: ['CASE-070', 'CASE-090'],
+    scopes: ['research-copy', 'research-ui'],
+    artifact: 'Q17 R127/R128 same-task result page',
+    variantId: 'q17-statistical-jargon-dd77e7a9',
+    verdict: 'rejected',
+    ownerSignal: '但是你创造的这个网页里的语言，请说人话',
+    reasons: [
+      '科学边界虽然正确，但首屏让普通读者先解码“能力重排 / CI 跨 0 / entropy / adjacent cosine”等研究者内部表达',
+      '首屏应该先讲发生了什么、差多少、现在能不能下结论；统计术语和更新诊断量下沉到解释与实验细节层',
+    ],
+    failureMechanisms: ['jargon-memory-load', 'internal-detail-promoted-to-primary-attention'],
+    requestedSuccessorVariantId: 'q17-plain-language-same-task-result-20260911',
+    evidence: { repository: 'mykcs/basemodel', route: '/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/', gitSha: 'dd77e7a905c5d16a0151430e684232f7fae8f7f7' },
+  },
+
+  {
     id: 'EVENT-20260911-BRIEFING-619-ACCEPTED',
     date: '2026-09-11',
     caseIds: ['CASE-027', 'CASE-082', 'CASE-083', 'CASE-087', 'CASE-088', 'CASE-089', 'CASE-090'],

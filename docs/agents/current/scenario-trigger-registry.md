@@ -168,6 +168,7 @@ Historical cases: [`benchmark causality`](../history/2026-09-06-circleci-benchma
 8. Verify provider metadata points to that exact commit and read the provider's real execution state. `READY` is provider completion; `ignored/skipped/canceled` is not Preview acceptance even when the outer GitHub status is green.
 9. Inspect the required real route/interaction/metadata; provider READY remains separate from visual/product acceptance.
 10. Keep readiness separate from mutation authority. A later explicit “merge” changes authorization only; re-read the live merge tuple and use expected-head locking rather than spending an earlier readiness report. See `release-closeout-protocol.md` §6.5–8.
+11. If the owner says **continue until complete** and the remaining work is a live check that can be polled in the current session, keep reading that exact provider/check to a terminal state or a real blocker. Do not end the task at `pending` and imply that you will come back later. A future watcher is only for genuinely future delivery, not a substitute for synchronous work that can still be completed now.
 
 ---
 
