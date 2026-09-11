@@ -8,6 +8,7 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const evidenceHref = '/research/seed-openevo/evidence/q17-advisor-diagnostics-20260911.json';
 const sourceHref = 'https://github.com/mykcs/openevo-experiment/blob/38223bf7f07aa2c2978c8583bcfb12097e9ee052/docs/evidence/q17-advisor-diagnostics-20260911/README.md';
+const replicationHref = 'https://github.com/mykcs/openevo-experiment/blob/f6fa4d05b7433685088ac59b1b488eecb42c781e/docs/evidence/q17-advisor-diagnostics-20260911/gpu2-replication-20260911/README.md';
 
 const rows = [
   [t('WebShop 平均分', 'Mean WebShop score'), '63.58', '59.41', '−4.18', t('95% CI：−17.13 ～ +8.00', '95% CI: −17.13 to +8.00')],
@@ -27,6 +28,7 @@ const rows = [
     <div class="evidence-links" aria-label={t('诊断证据', 'Diagnostic evidence')}>
       <a href={evidenceHref}>{t('网站证据摘要', 'Site evidence summary')}</a>
       <a href={sourceHref}><ExternalBrandMark href={sourceHref} />{t('实验仓完整证据', 'Full experiment evidence')}</a>
+      <a href={replicationHref}><ExternalBrandMark href={replicationHref} />{t('GPU2 独立复现', 'Independent GPU2 replication')}</a>
     </div>
   </header>
 
@@ -79,6 +81,7 @@ const rows = [
       <div><strong>{t('固定其他条件', 'Matched conditions')}</strong><p>{t('两边使用相同任务、generation seed、Harness201.1、Text Memory、Skill 和 Agent System。变化的是进入 R127 与进入 R128 的 SD-LoRA adapter。', 'Both checkpoints use identical tasks, generation seeds, Harness201.1, Text Memory, Skill, and Agent System. The changed factor is the SD-LoRA adapter entering R127 versus R128.')}</p></div>
       <div><strong>{t('Entropy 的含义', 'What entropy means here')}</strong><p>{t('这里是实际解码过程在当前 logits processor / action constraint 之后的 operational decoding entropy，不是“完全无约束模型”的原始 entropy。4 题 OFF/ON 资格测试证明加入观测后输出、动作和得分 4/4 完全一致。', 'This is operational decoding entropy after the active logits processors and action constraint, not unconstrained raw-model entropy. A four-task OFF/ON qualification reproduced output, actions, and scores exactly 4/4 after instrumentation was added.')}</p></div>
       <div><strong>{t('没有碰最终测试', 'Final evaluation stayed locked')}</strong><p>{t('final-panel access = 0，formal task consumption = 0，external teacher calls = 0。这个页面是实验仓证据的只读投影，不能授权修改正式 run 或打开 final panel。', 'Final-panel access = 0, formal task consumption = 0, and external teacher calls = 0. This page is a read-only projection of experiment evidence and cannot authorize formal-run changes or final-panel access.')}</p></div>
+      <div><strong>{t('独立复现', 'Independent replication')}</strong><p>{t('同一套 32 题后来又在服务器 GPU2 上完整重跑。两个 checkpoint 的 32 个 task rows、paired rows 和主要 comparison fields 与原 GPU0 证据完全一致。这个结果增强的是可复现性，不会把跨 0 的置信区间变成“显著遗忘”。', 'The same 32-task diagnostic was later rerun independently on server GPU2. Both 32-task row sets, all paired rows, and every authoritative comparison field exactly match the original GPU0 evidence. This strengthens reproducibility; it does not turn confidence intervals that cross zero into statistically clear forgetting.')}</p></div>
     </div>
   </details>
 </section>

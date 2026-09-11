@@ -65,6 +65,9 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(capabilityLobby).toContain('第一轮：OpenEvo 能不能真的持续更新？');
     expect(capabilityLobby).toContain("id: 'redesign'");
     expect(capabilityLobby).toContain('不会把旧轨迹冒充成新实验数据');
+    expect(capabilityLobby).toContain('训练分数的大幅回撤，在同一批题上缩小了很多');
+    expect(capabilityLobby).toContain('63.58→59.41');
+    expect(capabilityLobby).toContain('q17-directapply-frontier');
     expect(stage1Versions).toContain('旧 Stage 1 没有因为旧 Stage 2 错误而作废');
     expect(stage1Versions).toContain('旧版仍能回答“当时这套 Qwen + WebShop harness 产生了什么轨迹”');
     expect(stage1Versions).toContain('/stage1-previous/');

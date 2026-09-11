@@ -11,6 +11,11 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(data.source.merge_sha).toBe('38223bf7f07aa2c2978c8583bcfb12097e9ee052');
     expect(data.panel.task_count).toBe(32);
     expect(data.boundaries.final_panel_access).toBe(0);
+    expect(data.replication.merge_sha).toBe('f6fa4d05b7433685088ac59b1b488eecb42c781e');
+    expect(data.replication.enter_r127_rows_exact_match).toBe(true);
+    expect(data.replication.enter_r128_rows_exact_match).toBe(true);
+    expect(data.replication.paired_rows_exact_match).toBe(true);
+    expect(data.replication.authoritative_comparison_fields_exact_match).toBe(true);
     expect(data.paired.transitions).toEqual({ both_win: 7, win_to_loss: 3, loss_to_win: 1, both_loss: 21 });
     expect(data.paired.score_diff_bootstrap_95ci[0]).toBeLessThan(0);
     expect(data.paired.score_diff_bootstrap_95ci[1]).toBeGreaterThan(0);
@@ -24,5 +29,8 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(component).toContain('some capabilities moved, but the evidence does not show overall forgetting');
     expect(component).toContain('95% CI');
     expect(component).toContain('final-panel access = 0');
+    expect(component).toContain('GPU2 独立复现');
+    expect(component).toContain('Independent GPU2 replication');
+    expect(component).toContain('f6fa4d05b7433685088ac59b1b488eecb42c781e');
   });
 });
