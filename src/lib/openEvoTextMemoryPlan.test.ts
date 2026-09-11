@@ -17,6 +17,9 @@ describe('Text Memory receipt-based research projection', () => {
     expect(hero).toContain('1–4 条可重复使用的经验');
     expect(hero).toContain('仍然未知');
     expect(hero).not.toContain('SHA');
+    expect(component).not.toContain('当前训练');
+    expect(component).not.toContain('The current run');
+    expect(read('../components/research/OpenEvoTextMemoryResearchLink.astro')).not.toContain('The current run');
   });
   it('registers real bilingual pages, navigation, sitemap and reader contract', () => {
     for (const prefix of ['', 'en/']) {
@@ -84,7 +87,7 @@ describe('Text Memory receipt-based research projection', () => {
     expect(section).toContain('22 / 24');
     expect(section).toContain('不追加第三次调用');
     expect(section).toContain('真实模型对照尚未开始');
-    expect(section).toContain('当前正式实验保持原规则');
+    expect(section).toContain('这份快照中的正式实验保持原规则');
     expect(section).not.toContain('更像真正的方向');
   });
   it('does not retain the old cause-as-result claim on the study entry points', () => {

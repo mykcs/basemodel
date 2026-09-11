@@ -4,7 +4,7 @@
 
 ## 承接关系
 
-复用 BaseModel PR #624。它最初叠在 PR #625 上；#625 合并后，`main` 又吸收了后续 Q17 same-task publication 与治理修订。本次以 current `main@02ba9feac907ae35cdcee52fe14671d6eba3e4f1` 为实际父版本重新核对：`briefing-parent-preservation.json` 逐节证明 current main 的 23 页正文保持相同，仅页码分母更新；只新增 `text-memory-redesign` 一页，合计 24 页。没有把旧 22/23 页 briefing 快照或已被后续 Q17 页面取代的文案覆盖回来。历史 #625 head `6df62b8a4ac8433f532ebf0d05e332f994944bec` 只保留为栈来源记录。
+复用 BaseModel PR #624。它最初叠在 PR #625 上；#625 合并后，`main` 又吸收了后续 Q17 same-task publication 与治理修订。本次以 current `main@1710e03fd65fb7737540fa5e9318c424c7666ac9` 为实际父版本重新核对：`briefing-parent-preservation.json` 逐节证明 current main 的 23 页正文保持相同，仅页码分母更新；只新增 `text-memory-redesign` 一页，合计 24 页。没有把旧 22/23 页 briefing 快照或已被后续 Q17 页面取代的文案覆盖回来。历史 #625 head `6df62b8a4ac8433f532ebf0d05e332f994944bec` 只保留为栈来源记录。
 
 ## 实际完成的核验
 
@@ -35,4 +35,4 @@ PLAYWRIGHT_REUSE_BUILD=1 PLAYWRIGHT_PORT=4428 npx playwright test tests/e2e/text
 
 端口必须空闲且归当前 worktree，不得接管别人的服务器进程。完整 checkout 是全站结构检查的输入要求；之前缺少 `.github` 和 `cloudflare` 的 sparse checkout 导致读取失败，通过补齐 checkout 修复，没有删除或放宽测试。
 
-未进入本批次完成项：独立盲读、owner approval、正式 Vercel exact-head 发布验收、生产站发布、真实模型 shadow、正式 WebShop successor 结果。当前正式实验没有被本次工作改写。
+未进入本批次完成项：独立盲读、owner approval、正式 Vercel exact-head 发布验收、生产站发布、真实模型 shadow、正式 WebShop successor 结果。正式实验没有被本次 publication 工作改写。
