@@ -54,7 +54,7 @@ const routes = [
 
     <nav class="source-links" aria-label={zh ? '对照、论文与实验资源' : 'Comparison, paper, and experiment resources'}>
       <span>{zh ? '和 SEED 对照' : 'Compared with SEED'}</span>
-      <a href={seedPaper} target="_blank" rel="noreferrer"><span class="paper-mark" aria-hidden="true">▱</span>{zh ? 'SEED 论文' : 'SEED paper'}</a>
+      <a href={seedPaper} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedPaper} />{zh ? 'SEED 论文' : 'SEED paper'}</a>
       <a href={sourceRepo} target="_blank" rel="noreferrer"><ExternalBrandMark href={sourceRepo} />GitHub</a>
       <a href={runDetails}>{zh ? '训练资源与运行条件' : 'Training resources and run conditions'}</a>
       <a href={flowOverview}>{zh ? '流程理解图：OpenEVO / SEED / WebShop' : 'Flow explainer: OpenEVO / SEED / WebShop'}</a>
@@ -148,7 +148,7 @@ const routes = [
   .study{width:min(1080px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--color-text)}
   .study-hero{max-width:980px;min-height:calc(100svh - 4.6rem - var(--research-nav-offset,0rem));padding:2.6rem 0 2.4rem}
   .study-hero h1{margin:0;font-size:clamp(2.6rem,5vw,4.2rem);line-height:1;letter-spacing:-.055em;word-break:keep-all}
-  .source-links{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem 1rem;margin:1.05rem 0 0;color:var(--color-text-muted);font-size:.84rem;line-height:1.5}.source-links>span{font-weight:760;color:var(--color-text)}.source-links a{display:inline-flex;align-items:center;gap:.32rem;color:inherit;text-underline-offset:.2em}.paper-mark{font-size:1.05rem}
+  .source-links{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem 1rem;margin:1.05rem 0 0;color:var(--color-text-muted);font-size:.84rem;line-height:1.5}.source-links>span{font-weight:760;color:var(--color-text)}.source-links a{display:inline-flex;align-items:center;gap:.32rem;color:inherit;text-underline-offset:.2em}
   .tldr{display:grid;grid-template-columns:5rem minmax(0,1fr);gap:1rem;margin:2rem 0 0;padding:1.35rem 0;border-block:1px solid var(--color-text)}.tldr-label{margin:.2rem 0 0;color:var(--color-accent);font-size:.76rem;font-weight:800;letter-spacing:.04em}.tldr div{max-width:78ch}.tldr div p{margin:0;font-size:1rem;line-height:1.72}.tldr .lead{font-size:clamp(1.12rem,2vw,1.35rem);line-height:1.55;letter-spacing:-.015em}.tldr div p+p{margin-top:.85rem;color:var(--color-text-muted)}
   section{padding:3rem 0;border-top:1px solid var(--color-border)}.section-heading{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:1rem;max-width:900px;margin-bottom:1.5rem}.section-heading>span{padding-top:.35rem;color:var(--color-accent);font-size:.72rem;font-weight:800}.section-heading h2{margin:0;font-size:clamp(1.65rem,3.5vw,2.7rem);line-height:1.13;letter-spacing:-.04em}.section-heading div>p{max-width:72ch;margin:.6rem 0 0;color:var(--color-text-muted);font-size:.94rem;line-height:1.68}
   .question-list{border-top:1px solid var(--color-border)}.question-list article{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:1rem;padding:1.2rem 0;border-bottom:1px solid var(--color-border)}.question-list article>span{color:var(--color-accent);font-size:.74rem;font-weight:800}.question-list h3{margin:0;font-size:1.04rem;line-height:1.5}.question-list p{max-width:76ch;margin:.42rem 0 0;color:var(--color-text-muted);font-size:.89rem;line-height:1.68}

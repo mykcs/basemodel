@@ -12,6 +12,7 @@ const zhTechnical = read('../pages/research/seed-openevo/study/briefing/technica
 const enTechnical = read('../pages/en/research/seed-openevo/study/briefing/technical-notes/index.astro');
 const zhFrontierPage = read('../pages/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.astro');
 const enFrontierPage = read('../pages/en/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.astro');
+const frontierRoadmap = read('../components/research/OpenEvoQ17FrontierRoadmap.astro');
 const contracts = read('../data/siteReaderContracts.ts');
 const directApplyLiveSnapshot = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-live-snapshot-20260910-0952-sgt.json'));
 const directApplyPlateauDiagnostic = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-plateau-diagnostic-20260910-1038-sgt.json'));
@@ -414,6 +415,19 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
       partial_credit_preference_start_decision: null,
     });
     expect(directApplyFrontierPlan.interpretation.not_claiming).toContain('No final-panel result');
+    for (const item of [
+      '训练还在继续，但分数没有稳定往上',
+      '每轮 WebShop Score',
+      'SD-LoRA training loss',
+      'R70–79 / R80–89 / R90–97',
+      '58.35 → 55.36 → 50.83',
+      'R110–119 恢复到 63.52',
+      '不是永久卡死',
+      '还不能证明平台由 SD-LoRA 本身造成',
+      '在 Slide 里看同一张图',
+    ]) expect(frontierRoadmap).toContain(item);
+    expect(frontierRoadmap).toContain("OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS");
+    expect(frontierRoadmap).toContain('data-q17-plateau-visual');
   });
 
   it('keeps engineering work as a simple summary immediately before the final choice', () => {

@@ -40,14 +40,22 @@ function createRef(ref, sha) {
   if (readback !== sha) throw new Error(`ref creation did not read back exactly: ${ref}=${readback} expected=${sha}`);
 }
 
-const pr = json(['pr', 'view', prNumber, '--repo', REPO, '--json', 'state,isDraft,baseRefName,baseRefOid,headRefOid,url']);
+const pr = json(['pr', 'view', prNumber, '--repo', REPO, '--json', 'state,isDraft,baseRefName,headRefOid,url']);
 if (pr.state !== 'OPEN' || pr.isDraft) throw new Error('final gate requires an open non-draft PR');
 if (pr.baseRefName !== 'main') throw new Error(`final gate requires direct base main, got ${pr.baseRefName}`);
 
-const currentMain = json(['api', `repos/${REPO}/commits/main`]).sha;
-if (pr.baseRefOid !== currentMain) {
-  throw new Error(`PR is not current with main: base=${pr.baseRefOid} live_main=${currentMain}`);
+function assertHeadContainsMain(mainSha, headSha) {
+  const comparison = json(['api', `repos/${REPO}/compare/${mainSha}...${headSha}`]);
+  const mergeBase = comparison.merge_base_commit?.sha;
+  const behindBy = comparison.behind_by;
+  const status = comparison.status;
+  if (mergeBase !== mainSha || behindBy !== 0 || !['ahead', 'identical'].includes(status)) {
+    throw new Error(`PR is not current with main: main=${mainSha} head=${headSha} merge_base=${mergeBase ?? 'unknown'} behind_by=${behindBy ?? 'unknown'} status=${status ?? 'unknown'}`);
+  }
 }
+
+const currentMain = json(['api', `repos/${REPO}/commits/main`]).sha;
+assertHeadContainsMain(currentMain, pr.headRefOid);
 
 const currentFinal = refSha(VERCEL_FINAL_GATE_REF);
 if (!currentFinal) {
@@ -70,17 +78,18 @@ const baseCurrent = refSha(VERCEL_FINAL_BASE_REF);
 if (baseCurrent) updateRef(VERCEL_FINAL_BASE_REF, currentMain);
 else createRef(VERCEL_FINAL_BASE_REF, currentMain);
 
-const prAfterBase = json(['pr', 'view', prNumber, '--repo', REPO, '--json', 'state,isDraft,baseRefOid,headRefOid']);
+const prAfterBase = json(['pr', 'view', prNumber, '--repo', REPO, '--json', 'state,isDraft,baseRefName,headRefOid']);
 const mainAfterBase = json(['api', `repos/${REPO}/commits/main`]).sha;
 if (
   prAfterBase.state !== 'OPEN'
   || prAfterBase.isDraft
+  || prAfterBase.baseRefName !== 'main'
   || prAfterBase.headRefOid !== pr.headRefOid
-  || prAfterBase.baseRefOid !== currentMain
   || mainAfterBase !== currentMain
 ) {
   throw new Error('PR/main identity moved while arming the non-deploy gate-base ref; retry from fresh identities');
 }
+assertHeadContainsMain(currentMain, prAfterBase.headRefOid);
 
 updateRef(VERCEL_FINAL_GATE_REF, pr.headRefOid);
 console.log(JSON.stringify({

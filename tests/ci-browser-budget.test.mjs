@@ -84,6 +84,20 @@ test('focused primary shard still owns install and acceptance', (t) => {
   assert.equal(readFileSync(state.log, 'utf8'), 'npm\nci\n');
 });
 
+test('briefing-only changes spend nothing on non-owner browser shards', (t) => {
+  const state = fixture(t, 'src/components/research/SeedOpenEvoProgressBriefing.astro');
+  const result = run(state, { CI_BROWSER_SHARD_INDEX: '2' });
+  assert.match(result.stdout, /plan=focused/);
+  noSpend(state, result);
+});
+test('briefing-only shard 1 still owns install and focused acceptance', (t) => {
+  const state = fixture(t, 'src/components/research/SeedOpenEvoProgressBriefing.astro');
+  const result = run(state);
+  assert.match(result.stdout, /plan=focused/);
+  assert.equal(result.status, 73);
+  assert.equal(readFileSync(state.log, 'utf8'), 'npm\nci\n');
+});
+
 test('mechanism-copy changes spend nothing on browser shard 2', (t) => {
   const state = fixture(t, 'src/components/research/OpenEvoMechanismMap.astro');
   const result = run(state, { CI_BROWSER_SHARD_INDEX: '2' });
