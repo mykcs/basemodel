@@ -1,5 +1,5 @@
 {
-  "schema": "basemodel.q17-advisor-diagnostics.202609111800",
+  "schema": "basemodel.q17-advisor-diagnostics.202609111900",
   "status": "READ_ONLY_PUBLICATION_PROJECTION_NOT_FINAL_EVALUATION",
   "source": {
     "repository": "mykcs/openevo-experiment",
