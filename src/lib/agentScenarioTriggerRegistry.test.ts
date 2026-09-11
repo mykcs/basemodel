@@ -19,6 +19,7 @@ const pr619CloseoutHistory = readFileSync(new URL('../../docs/agents/history/202
 const publicationWorkflow = readFileSync(new URL('../../docs/agents/current/experiment-result-publication-workflow.md', import.meta.url), 'utf8');
 const q17ConversationCloseoutHistory = readFileSync(new URL('../../docs/agents/history/2026-09-11-q17-diagnostics-publication-conversation-closeout.md', import.meta.url), 'utf8');
 const conversationCloseoutEntry = readFileSync(new URL('../../docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md', import.meta.url), 'utf8');
+const releaseCloseout = readFileSync(new URL('../../docs/agents/current/release-closeout-protocol.md', import.meta.url), 'utf8');
 
 describe('Agent scenario-trigger discovery', () => {
   it('routes future non-trivial work through the trigger registry', () => {
@@ -27,6 +28,8 @@ describe('Agent scenario-trigger discovery', () => {
     expect(readme).toContain('load the matched bundle below');
     expect(registry).toContain('just-in-time attention router');
     expect(registry).toContain('Re-scan when the task changes state');
+    expect(registry).toContain('conversation resumes from a handoff/summary');
+    expect(registry).toContain('prior assistant summary is context, not bootstrap authority');
     expect(principles).toContain('Make recurring lessons triggerable');
     expect(principles).toContain('re-scanned when the task changes state');
   });
@@ -97,6 +100,18 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('continue until complete');
     expect(registry).toContain('Do not end the task at `pending`');
     expect(websiteSpec).toContain('ELI5 要扫完整个可见表面，不只扫正文');
+  });
+
+  it('preserves dated audit truth while allowing current publication to advance', () => {
+    expect(publicationWorkflow).toContain('#### Dated projections with later audit evidence');
+    expect(publicationWorkflow).toContain('historical fixture retains its original status');
+    expect(publicationWorkflow).toContain('current rendered surface must not repeat obsolete');
+  });
+
+  it('keeps PR narrative metadata aligned with the accepted release tuple', () => {
+    expect(releaseCloseout).toContain('PR narrative must still be fresh enough not to mislead the owner');
+    expect(releaseCloseout).toContain('metadata-only PR-body edit does not change the candidate Git SHA');
+    expect(releaseCloseout).toContain('green exact-head gate does not make stale PR prose true');
   });
 
   it('keeps valid Gates stronger than convenience', () => {
