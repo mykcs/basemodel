@@ -1,7 +1,7 @@
 {
   "historical_parent_pr": 625,
   "historical_parent_head": "6df62b8a4ac8433f532ebf0d05e332f994944bec",
-  "current_base": "1710e03fd65fb7737540fa5e9318c424c7666ac9",
+  "current_base": "6aa2d47570e8041e7f5834cfa2f7ada22b89dc98",
   "child_pr": 624,
   "existing_slide_count": 23,
   "integrated_slide_count": 24,
@@ -32,8 +32,8 @@
     "directapply": "9b06353a11528ee841e30b0ac7e89d6fff810f6b825882f74421e1c4151fe07c",
     "directapply-progress": "1df3264d48012362041b58d96051974d3fea9224247cb89b7a44ec71fd0fdb08",
     "directapply-plateau": "871c24e879461f1b07b221e9d421bf1011b870c8497bb892a9710210c6d525fc",
-    "frontier-roadmap": "07cf0ff6fdfe7497060cd5c4b00aa7160cbf2ad88c7b7727be231cbd591358d3",
-    "technical-work-summary": "0e2704813e6758df6258c2b518cd2cf50f173d44b721343ddfe5b55ce1bf2c51",
-    "next": "c2c29a672bf68f8ce8e41f3c3be1bae9eed2d91788ea7d43200a7b06b014b07a"
+    "frontier-roadmap": "9472a219e7a13f34e6242b1d897d48ac3ff24d650e67cdf3dabab237a2519f53",
+    "technical-work-summary": "d0d6a48a8bb9e0f0d5ffeef5f8b6fb92fa8ebde13f9e279d7f38f1ae79464481",
+    "next": "8efe24f833c16dee01f9cc54888c3ad7caefabe8beae69157da1174f26da0eaf"
   }
 }

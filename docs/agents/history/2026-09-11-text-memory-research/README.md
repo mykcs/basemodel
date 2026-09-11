@@ -4,7 +4,7 @@
 
 ## 承接关系
 
-复用 BaseModel PR #624。它最初叠在 PR #625 上；#625 合并后，`main` 又吸收了后续 Q17 same-task publication 与治理修订。本次以 current `main@1710e03fd65fb7737540fa5e9318c424c7666ac9` 为实际父版本重新核对：`briefing-parent-preservation.json` 逐节证明 current main 的 23 页正文保持相同，仅页码分母更新；只新增 `text-memory-redesign` 一页，合计 24 页。没有把旧 22/23 页 briefing 快照或已被后续 Q17 页面取代的文案覆盖回来。历史 #625 head `6df62b8a4ac8433f532ebf0d05e332f994944bec` 只保留为栈来源记录。
+复用 BaseModel PR #624。它最初叠在 PR #625 上；#625 合并后，`main` 又吸收了后续 Q17 same-task publication 与治理修订。本次以 current `main@6aa2d47570e8041e7f5834cfa2f7ada22b89dc98` 为实际父版本重新核对：`briefing-parent-preservation.json` 逐节证明 current main 的 23 页正文保持相同，仅页码分母更新；只新增 `text-memory-redesign` 一页，合计 24 页。没有把旧 22/23 页 briefing 快照或已被后续 Q17 页面取代的文案覆盖回来。历史 #625 head `6df62b8a4ac8433f532ebf0d05e332f994944bec` 只保留为栈来源记录。
 
 ## 实际完成的核验
 
