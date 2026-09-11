@@ -1,6 +1,6 @@
 # Multi-PR semantic integration playbook
 
-Last reviewed: **2026-09-10**
+Last reviewed: **2026-09-11**
 
 Use this playbook when several Agent-authored PRs must become one coherent release. Provider and build-budget rules remain in [`deployment-policy.md`](./deployment-policy.md). The case that produced these lessons is [`../history/2026-08-12-open-pr-semantic-integration.md`](../history/2026-08-12-open-pr-semantic-integration.md).
 
@@ -214,6 +214,12 @@ Path-set intersection is an attribution aid, not a semantic-compatibility proof.
 
 Anti-example: `main` advances through PR B, ten files now conflict, and the integrator chooses the candidate's whole-file versions while calling PR B “the conflict source” without checking that PR B's own changed paths are disjoint. That can silently erase valid work and creates a false causal record.
 
+### 4.2 Use a control PR only after matching the execution shape
+
+A nearby green PR is useful control evidence only when it exercises the same relevant execution surface. Before using it to rule out shared CI/browser infrastructure, compare provider/workflow revision, risk-plan mode, browser/test identities, shard shape, and executor/environment. If those differ, the control may be green for reasons unrelated to the candidate failure.
+
+When the candidate changes the planner or gate itself, first read the **actual planned mode**. A fail-closed planner self-change may run the complete matrix, which means a failure in that run is not evidence that the new focused path selected the wrong routes. Localize the first failing assertion/test family and use the matched control only for the layer both runs truly share.
+
 ### 5. Build one integration head
 
 ```text
@@ -290,6 +296,8 @@ Record each worker PR as:
 - rejected with reason.
 
 Stacked PRs may need explicit comments linking the integration PR because GitHub's merged flag can be misleading when their base was not `main`.
+
+Before changing any worker PR state, **read its live `state` and merge record again**. An integration narrative such as “absorbed into #N” does not prove the predecessor is still open or unmerged: it may already be a historical merged PR whose contribution was later reconciled again. Close only an actually open duplicate path; preserve an already-merged PR as merged history and record the later integration relationship separately. Do not rewrite live GitHub history to fit the planned disposition table.
 
 ### 10. Run a post-release audit
 
