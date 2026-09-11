@@ -22,8 +22,8 @@ export const CAPABILITY_READER_ROUTES = [
       "en": "GDR and DirectApply decision record"
     },
     "purpose": {
-      "zh": "解释 GDR-v1 为什么把 44 个 SD-LoRA candidate 过滤成 7 次正式更新，并用最新固定同题诊断区分任务抽样波动、checkpoint 变化与仍未完成的最终对照。",
-      "en": "Explain why GDR-v1 filtered 44 SD-LoRA candidates into seven formal updates, then use the latest same-task diagnostic to separate task-sampling variation, checkpoint change, and the still-unfinished final comparison."
+      "zh": "解释本地 GDR-v1 为什么把 44 个 SD-LoRA candidate 过滤成 7 次正式更新，区分它与原始 recurrent Gated Delta Rule，并说明 Task Vector 在当前讨论中是诊断对象而不是运行时 gate 输入。",
+      "en": "Explain why local GDR-v1 filtered 44 SD-LoRA candidates into seven formal updates, distinguish it from the original recurrent Gated Delta Rule, and clarify that Task Vector is currently a diagnostic object rather than a runtime gate input."
     }
   },
   {
