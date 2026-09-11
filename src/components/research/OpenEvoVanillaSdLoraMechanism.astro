@@ -118,7 +118,7 @@ const risks = zh ? [
   </section>
 
   <section class="sdlora__section" id="mechanism-risks" aria-labelledby="mechanism-risks-title">
-    <h2 id="mechanism-risks-title">{t('为什么它可能学会东西，也为什么不能保证越学越好', 'Why it can learn — and why improvement is not guaranteed')}</h2>
+    <h2 id="mechanism-risks-title">{t('旧方向不会被直接重写，但能力仍不保证单调提高', 'Old directions are not directly overwritten, but capability need not improve monotonically')}</h2>
     <div class="sdlora-two-col sdlora-two-col--evidence">
       <div data-ui-audit-item><h3>{t('设计想解决什么', 'What the design is trying to do')}</h3><ul>{helps.map((item) => <li>{item}</li>)}</ul></div>
       <div data-ui-audit-item><h3>{t('机制层面的检查点', 'Mechanism-level failure points')}</h3><ul>{risks.map((item) => <li>{item}</li>)}</ul><p><strong>{t('这些是需要测的风险，不是当前已经证明的故障原因。', 'These are risks to measure, not causes already proven in the current run.')}</strong></p></div>

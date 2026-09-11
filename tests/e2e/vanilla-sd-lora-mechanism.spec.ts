@@ -54,18 +54,20 @@ for (const viewport of [
   }
 }
 
-test('desktop mechanism canvas is 16:9 and can be reused as one slide', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(routes.zh, { waitUntil: 'domcontentloaded' });
-  const box = await page.locator('[data-slide-canvas]').boundingBox();
-  expect(box).not.toBeNull();
-  const ratio = box!.width / box!.height;
-  expect(Math.abs(ratio - 16 / 9)).toBeLessThan(0.02);
-  expect(box!.height).toBeLessThanOrEqual(650);
-  const slideContainment = await page.locator('[data-slide-canvas]').evaluate((node) => ({
-    scrollWidth: node.scrollWidth, clientWidth: node.clientWidth,
-    scrollHeight: node.scrollHeight, clientHeight: node.clientHeight,
-  }));
-  expect(slideContainment.scrollWidth).toBeLessThanOrEqual(slideContainment.clientWidth + 2);
-  expect(slideContainment.scrollHeight).toBeLessThanOrEqual(slideContainment.clientHeight + 2);
-});
+for (const [locale, route] of Object.entries(routes)) {
+  test(`desktop ${locale} mechanism canvas is 16:9 and can be reused as one slide`, async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(route, { waitUntil: 'domcontentloaded' });
+    const box = await page.locator('[data-slide-canvas]').boundingBox();
+    expect(box).not.toBeNull();
+    const ratio = box!.width / box!.height;
+    expect(Math.abs(ratio - 16 / 9)).toBeLessThan(0.02);
+    expect(box!.height).toBeLessThanOrEqual(650);
+    const slideContainment = await page.locator('[data-slide-canvas]').evaluate((node) => ({
+      scrollWidth: node.scrollWidth, clientWidth: node.clientWidth,
+      scrollHeight: node.scrollHeight, clientHeight: node.clientHeight,
+    }));
+    expect(slideContainment.scrollWidth).toBeLessThanOrEqual(slideContainment.clientWidth + 2);
+    expect(slideContainment.scrollHeight).toBeLessThanOrEqual(slideContainment.clientHeight + 2);
+  });
+}
