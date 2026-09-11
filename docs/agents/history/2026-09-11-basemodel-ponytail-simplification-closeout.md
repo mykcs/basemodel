@@ -59,6 +59,17 @@ The first two rules were added to the existing rendering/performance and CSS arc
 | Lifecycle glue existed without a router consumer | Newly exposed | Prove router/re-entry topology before lifecycle hooks | `rendering-and-performance-policy.md` | Rendering/hydration owner |
 | Runtime Page Outline styles looked defined but matched no dynamic nodes | Newly exposed | Scoped CSS reach must match runtime DOM construction | `css-architecture.md` | Selector/ownership owner |
 | axe found red output during candidate validation | Known class | Reproduce exact base before calling it a regression | Existing website engineering standard + this history case | Differential attribution was already policy; this is a new concrete case |
+| Multilayer Bash/Python quoting failed before mutation while embedding Markdown/code text | Yes — same class was already known | Correct shell selection is necessary but not sufficient; complex content should not travel through nested shell quoting | `scenario-trigger-registry.md` -> existing `project-agent-operating-principles.md` | The current owner existed, but the use-site cue was still too vague |
+| The owner had to say `继续完成` while merge/Production work was still safely actionable | Yes | Do not stop at a still-pollable or still-authorized completion boundary | Existing exact-head/pending-check trigger + release closeout policy | Already current authority; record recurrence instead of duplicating the rule |
+| A protected Vercel Preview opened to an authentication page in a plain browser | Known class | Use the authorized provider/share path; do not weaken protection or persist temporary share credentials | Existing deployment/release policy and historical Vercel cases | Existing authority already covered the recovery path |
+
+## Conversation-closeout addendum — 2026-09-12
+
+The only new durable gap found after the original audit write-up was at the shell-quoting use site. The outer interpreter was correctly Bash, but a long inline Bash/Python command still embedded Markdown containing backticks and angle-bracket syntax. Parsing failed before mutation. The failure was correctly treated as `NOT_EXECUTED`, and the retry used a standalone file instead of deeper quoting.
+
+This is a repeated class, not a new shell architecture rule. The existing owner already says non-trivial quoting belongs in a standalone script. The scenario trigger is therefore tightened only enough to classify multiline Markdown/code/data as non-trivial quoting by default.
+
+Two other events were deliberately deduplicated rather than promoted into new policy: the owner again had to say `继续完成` while a live gate/release path remained actionable, and the protected Preview required an authorized share path for browser inspection. Both already have current owners. No Preview/share token, deployment ID, PID, port, worktree path, branch head, or other transient release state is retained here.
 
 ## Validation and stopping rule
 
