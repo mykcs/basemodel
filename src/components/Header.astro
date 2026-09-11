@@ -75,7 +75,7 @@ const commandMenuLabels = {
     </a>
 
     <nav aria-label={m.nav.mainNav} class="desktop-nav mission-nav">
-      <div class="journey-nav" aria-label={t('两条研究主线', 'Two primary research paths')}>
+      <div class="journey-nav">
         {journeyLinks.map((link, index) => (
           <a class="journey-link" href={link.href} aria-current={link.current ? 'page' : undefined} data-active={link.active ? 'true' : undefined} data-journey={link.id}>
             <span class="journey-link__index">{String(index + 1).padStart(2, '0')}</span>

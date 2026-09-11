@@ -1,5 +1,22 @@
 import { expect, test } from '@playwright/test';
 
+test('long-page outline has real geometry and navigates to a heading', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/research/seed-openevo/study/capability-exploration/mechanism-1-0/');
+  const outline = page.locator('[data-page-outline]');
+  await expect(outline).toBeVisible();
+  const firstLink = outline.locator('a').first();
+  const bar = firstLink.locator('.page-outline__bar');
+  await expect(firstLink).toHaveCSS('display', 'flex');
+  await expect(bar).toHaveCSS('display', 'block');
+  expect((await firstLink.boundingBox())?.width ?? 0).toBeGreaterThan(20);
+  expect((await bar.boundingBox())?.width ?? 0).toBeGreaterThan(0);
+  const target = await firstLink.getAttribute('data-outline-target');
+  await firstLink.click();
+  await expect(page).toHaveURL(new RegExp(`#${target}$`));
+  await expect(firstLink).toHaveAttribute('aria-current', 'location');
+});
+
 test('does not mount the global quick-view shell on unrelated routes', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('.global-quick-view')).toHaveCount(0);

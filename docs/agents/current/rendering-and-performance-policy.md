@@ -47,6 +47,18 @@ Rules:
 
 This distinction is important: **“remove every hydration guard” is not a valid optimization strategy.**
 
+### Processed Astro scripts do not need invented page lifecycle glue
+
+A normal Astro `<script>` without attributes is processed as a module. On this static site, a full-page navigation creates a new document and runs that page's processed module scripts again; do not wrap ordinary setup in `DOMContentLoaded`, `document.readyState`, or `astro:page-load` merely as defensive ceremony.
+
+Before removing or adding a lifecycle hook, prove the real navigation topology first:
+
+- check whether `ClientRouter` / view transitions or another same-document navigation system actually exists;
+- identify whether the behavior genuinely needs re-initialization after client navigation rather than once per document;
+- protect the observable interaction with a real-browser regression, not only a source assertion.
+
+If client routing is introduced later, `astro:page-load` may become the correct hook. This is a topology-dependent rule, not a ban on Astro lifecycle events.
+
 ## Choosing an Astro client directive
 
 Use the least eager directive that still preserves product behavior:
