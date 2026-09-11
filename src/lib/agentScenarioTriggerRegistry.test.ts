@@ -74,6 +74,8 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('Do not quote exact provider quota/price counters without authoritative current evidence');
     expect(registry).toContain('Treat Vercel as the only ordinary Preview + Production authority');
     expect(registry).toContain('hosted target route / anchor / slide');
+    expect(registry).toContain('classify whether the owner is still reviewing/correcting the surface or the candidate is actually merge-ready');
+    expect(registry).toContain('A review handoff with no clickable current-candidate Preview URL in the owner-facing response is false-complete');
     expect(registry).toContain('old Preview URL');
     expect(registry).toContain('not permission to rerun the unrelated full 205-case final matrix');
   });

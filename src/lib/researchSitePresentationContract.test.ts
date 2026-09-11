@@ -51,6 +51,13 @@ describe('research-site presentation contract', () => {
     expect(attentionContract).toContain('src/data/siteReaderContracts.ts');
   });
 
+  it('protects longitudinal research figures from silent recent-window cropping', () => {
+    const contract = readFileSync(join(repoRoot, 'docs/agents/current/research-site-presentation-contract.md'), 'utf8');
+    expect(contract).toContain('preserve the full relevant time axis and the actual earlier trajectory');
+    expect(contract).toContain('not silent replacements for earlier history');
+    expect(contract).toContain('say that scope in the title/caption');
+  });
+
   it('keeps copy-paste operational commands behind explicit technical disclosure', () => {
     const findings: string[] = [];
 

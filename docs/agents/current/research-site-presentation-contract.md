@@ -2,6 +2,7 @@
 
 Status: **current project-wide research publication and progressive-disclosure contract**
 Decision date: **2026-08-30**
+Last reviewed: **2026-09-11**
 
 This document consolidates durable owner preferences for how BaseModel presents scientific research to people who did not personally run every experiment. It is a content-and-presentation contract, not a replacement for the existing visual, evidence, or browser-acceptance policies.
 
@@ -206,6 +207,7 @@ This contract inherits `ui-design-principles.md`: **Research Editorial × Experi
 For quantitative scientific relationships, prefer real web-native structure over decorative imagery:
 
 - HTML/SVG/data-driven plots for curves, bars, state transitions, and comparisons;
+- longitudinal run/progress figures that claim a whole run or sealed snapshot must preserve the full relevant time axis and the actual earlier trajectory; recent-window block means, plateau windows, or recovery summaries may be overlays, annotations, or secondary panels, not silent replacements for earlier history. If a figure intentionally narrows to a recent window, say that scope in the title/caption instead of implying a whole-run view;
 - real tables when row/column alignment carries meaning;
 - within one experiment-report series, use one consistent paper-like table grammar for benchmark/result tables: serif editorial typography, compact rows, restrained `booktabs`-style horizontal rules, aligned numeric columns, and theme-safe emphasis; sibling reports should not alternate between dashboard-card tables and paper tables unless the semantic object genuinely differs;
 - labeled axes, units, sample counts, uncertainty, and evidence provenance when they affect interpretation;
