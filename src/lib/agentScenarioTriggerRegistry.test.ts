@@ -16,6 +16,8 @@ const history = readFileSync(new URL('../../docs/agents/history/2026-08-11-seed-
 const attentionHistory = readFileSync(new URL('../../docs/agents/history/2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md', import.meta.url), 'utf8');
 const briefingPreviewHistory = readFileSync(new URL('../../docs/agents/history/2026-09-10-briefing-fast-preview-pr-workline-and-hpl-closeout-retrospective.md', import.meta.url), 'utf8');
 const pr619CloseoutHistory = readFileSync(new URL('../../docs/agents/history/2026-09-11-pr619-eli5-exact-head-closeout.md', import.meta.url), 'utf8');
+const publicationWorkflow = readFileSync(new URL('../../docs/agents/current/experiment-result-publication-workflow.md', import.meta.url), 'utf8');
+const q17ConversationCloseoutHistory = readFileSync(new URL('../../docs/agents/history/2026-09-11-q17-diagnostics-publication-conversation-closeout.md', import.meta.url), 'utf8');
 const conversationCloseoutEntry = readFileSync(new URL('../../docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md', import.meta.url), 'utf8');
 
 describe('Agent scenario-trigger discovery', () => {
@@ -276,6 +278,22 @@ describe('retained correction use-site routing', () => {
     expect(principles).toContain('### Correction-to-action witness');
     expect(principles).toContain('trigger -> current owner -> checked artifact -> allowed next action -> invalidation cue');
     expect(registry).toContain('REPEAT-CORRECTION');
+  });
+
+  it('routes compound-shell work through an outer-interpreter use-site check', () => {
+    expect(registry).toContain('TRIGGER: compound shell / RDC / SSH multi-command');
+    expect(registry).toContain('verify the tool reports that interpreter actually launched');
+    expect(registry).toContain('parser failure before mutation is `NOT_EXECUTED`');
+  });
+
+  it('keeps current-facing longitudinal charts bound to a fresh sealed snapshot', () => {
+    expect(registry).toContain('TRIGGER: current-facing longitudinal research chart or “latest sealed” snapshot');
+    expect(registry).toContain("Do not start from the website's existing chart cutoff");
+    expect(publicationWorkflow).toContain('#### Current-facing longitudinal figures');
+    expect(publicationWorkflow).toContain('latest **completed/sealed** upstream boundary at publication time');
+    expect(publicationWorkflow).toContain('separate current-snapshot source rather than mutating the shared history in place');
+    expect(q17ConversationCloseoutHistory).toContain('## Coverage ledger');
+    expect(q17ConversationCloseoutHistory).toContain('Temporary state intentionally not promoted');
   });
   it('keeps first-screen acceptance scoped and dated snapshots historical', () => {
     const expression = readFileSync(new URL('../../docs/agents/current/human-thinking-web-expression-contract.md', import.meta.url), 'utf8');

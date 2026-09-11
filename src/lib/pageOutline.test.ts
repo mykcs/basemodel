@@ -25,6 +25,7 @@ describe('long-page outline', () => {
   });
 
   it('keeps the rail desktop-only, theme-aware, and reduced-motion safe', () => {
+    expect(component).toContain('<style is:global>');
     expect(component).toContain('@media (min-width: 1320px) and (min-height: 640px) and (hover: hover) and (pointer: fine)');
     expect(component).toContain('@media (prefers-reduced-motion: reduce)');
     expect(component).toContain('background: var(--surface)');
@@ -37,6 +38,9 @@ describe('long-page outline', () => {
     expect(component).toContain("locale === 'zh' ? '本页导航' : 'On this page'");
     expect(component).toContain('hidden>');
     expect(component).toContain('root.hidden = false');
-    expect(component).toContain("document.addEventListener('astro:page-load', initPageOutline)");
+    expect(component).toContain('initPageOutline();');
+    expect(component).not.toContain('astro:page-load');
+    expect(component).not.toContain('__atlasPageOutlineCleanup');
+    expect(layout).not.toContain('ClientRouter');
   });
 });
