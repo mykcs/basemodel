@@ -83,7 +83,7 @@ const risks = zh ? [
   </section>
 
   <section class="sdlora__section" id="inside-update" aria-labelledby="inside-update-title">
-    <h2 id="inside-update-title">{t('训练器内部到底做了什么？', 'What actually happens inside the trainer?')}</h2>
+    <h2 id="inside-update-title">{t('训练器内部做了什么？', 'What happens inside the trainer?')}</h2>
     <ol class="sdlora-detail-steps">
       <li data-ui-audit-item><span>1</span><div><strong>{t('准备当前 examples', 'Prepare current examples')}</strong><p>{t('把成功轨迹里的每一步转成 chat/tool training example，只让 assistant 输出位置计算 loss。', 'Turn each successful step into a chat/tool training example and compute loss only on assistant output tokens.')}</p></div></li>
       <li data-ui-audit-item><span>2</span><div><strong>{t('加入 bounded replay', 'Add bounded replay')}</strong><p>{t(`上一轮 adapter 自带容量 ${facts.trainer.replayCapacity} 的 replay buffer；如果已有历史，trainer 从中取 replay examples 与本轮 examples 一起优化。`, `The prior adapter carries a replay buffer capped at ${facts.trainer.replayCapacity}; when history exists, replay examples are optimized alongside the current examples.`)}</p></div></li>
@@ -94,7 +94,7 @@ const risks = zh ? [
   </section>
 
   <section class="sdlora__section" id="round-boundary" aria-labelledby="round-boundary-title">
-    <h2 id="round-boundary-title">{t('更新完以后，下一轮到底用哪个参数状态？', 'Which parameter state does the next round actually use?')}</h2>
+    <h2 id="round-boundary-title">{t('更新完以后，下一轮用哪个参数状态？', 'Which parameter state does the next round use?')}</h2>
     <div class="sdlora-boundary" data-ui-audit="contrast layout">
       <div data-ui-audit-item>
         <small>{t('SD-LoRA 到这里结束', 'SD-LoRA ends here')}</small>

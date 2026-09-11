@@ -53,8 +53,8 @@ const risks = zh ? [
         )}</p>
       </div>
       <p class="sdlora-slide__scope">{t(
-        '这里只讲当前 OpenEvo 的基础 SD-LoRA 参数学习，不是全系统图，也不是论文协议逐项复刻。语言 Agent 使用容量受限的旧经验回放（bounded replay）；训练后再由“采用新参数还是沿用旧参数”的规则（GDR / DirectApply）决定下一轮状态。',
-        'Current OpenEvo parameter path only—not the whole system or paper-exact. It uses bounded replay; GDR / DirectApply later chooses the new or old state.'
+        '这里只讲当前 OpenEvo 的 SD-LoRA 参数学习：语言 Agent 会做容量受限的旧经验回放，并非论文协议逐项复刻。训练后由 GDR / DirectApply 选择新旧参数；一次更新也不代表能力一定变好。',
+        'Current OpenEvo parameter path only: bounded replay means it is not paper-exact. GDR / DirectApply later chooses new vs old state; an update does not imply better capability.'
       )}</p>
     </header>
 
