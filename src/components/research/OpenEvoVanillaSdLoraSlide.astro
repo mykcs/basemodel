@@ -35,7 +35,7 @@ const risks = zh ? [
   '只从完整成功轨迹直接学习，难题可能长期没有监督信号。',
   'replay 有容量上限，不等于保存全部历史。',
   '旧方向虽冻结，α 仍会变化，所以旧方向的实际影响并非固定。',
-  'loss 下降、component 增加，不保证 WebShop 能力单调上升。',
+  '训练 loss 下降、低秩方向增加，不保证 WebShop 能力单调上升。',
 ] : [
   'Only exact success trains directly.',
   'Replay is bounded.',
@@ -53,8 +53,8 @@ const risks = zh ? [
         )}</p>
       </div>
       <p class="sdlora-slide__scope">{t(
-        '当前实现会回放有限旧经验，不是论文协议逐项复刻。训练后还要选择新/旧参数；更新不等于能力一定变好。',
-        'Current OpenEvo replays a bounded set of old examples, so it is not paper-exact. A later state choice can keep new or old parameters; an update need not improve capability.'
+        '只讲 SD-LoRA 参数学习，不是 OpenEvo 全系统图。当前实现回放有限旧经验，也非论文逐项复刻；训练后另选新/旧参数，更新不等于能力变好。',
+        'SD-LoRA parameter learning only—not the whole system. Current code replays bounded old examples and is not paper-exact; later it may keep new or old parameters. An update need not improve capability.'
       )}</p>
     </header>
 
@@ -101,7 +101,7 @@ const risks = zh ? [
 
     <div class="sdlora-slide__insights">
       <section aria-labelledby="sdlora-helps-title">
-        <h2 id="sdlora-helps-title">{t('为什么它看起来合理', 'Why it can help')}</h2>
+        <h2 id="sdlora-helps-title">{t('它保留了什么', 'What it preserves')}</h2>
         <ul>{helps.slice(0, 3).map((item) => <li>{item}</li>)}</ul>
       </section>
       <section aria-labelledby="sdlora-risks-title">

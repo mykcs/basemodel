@@ -18,7 +18,7 @@ const helps = zh ? [
   '基础模型不做全参数更新。',
   '过去学到的方向不会被下一轮直接重写。',
   '新成功经验仍能增加一个新的参数方向。',
-  'bounded replay 让优化器还能看到一部分过去经验。',
+  '容量受限的旧经验回放（bounded replay）让优化器还能看到一部分过去经验。',
 ] : [
   'The base model avoids full-parameter updates.',
   'Earlier learned directions are not directly overwritten.',
@@ -29,7 +29,7 @@ const risks = zh ? [
   '只从完整成功轨迹直接学习，难题可能长期没有监督信号。',
   'replay 有容量上限，不等于保存全部历史。',
   '旧方向虽冻结，α 仍会变化，所以旧方向的实际影响并非固定。',
-  'loss 下降、component 增加，不保证 WebShop 能力单调上升。',
+  '训练 loss 下降、低秩方向（component）增加，不保证 WebShop 能力单调上升。',
 ] : [
   'Direct supervision comes only from exact success, so hard tasks may remain unseen by the trainer.',
   'Replay is bounded rather than a complete history.',
@@ -87,9 +87,9 @@ const risks = zh ? [
     <ol class="sdlora-detail-steps">
       <li data-ui-audit-item><span>1</span><div><strong>{t('准备当前 examples', 'Prepare current examples')}</strong><p>{t('把成功轨迹里的每一步转成 chat/tool training example，只让 assistant 输出位置计算 loss。', 'Turn each successful step into a chat/tool training example and compute loss only on assistant output tokens.')}</p></div></li>
       <li data-ui-audit-item><span>2</span><div><strong>{t('加入容量受限的旧经验回放（bounded replay）', 'Add bounded replay')}</strong><p>{t(`上一轮 adapter 自带容量 ${facts.trainer.replayCapacity} 的旧经验池（replay buffer）；如果已有历史，trainer 从中取旧例子与本轮 examples 一起优化。`, `The prior adapter carries a replay buffer capped at ${facts.trainer.replayCapacity}; when history exists, replay examples are optimized alongside the current examples.`)}</p></div></li>
-      <li data-ui-audit-item><span>3</span><div><strong>{t('冻结 base 和旧方向', 'Freeze the base and prior directions')}</strong><p>{t('W₀ 不训练；过去 component 的 A/B 也设为不求梯度。只有本轮 Aₜ/Bₜ 和共享幅度系数向量（coefficient vector）参与优化。', 'W₀ is frozen, and prior component A/B matrices do not receive gradients. Only current Aₜ/Bₜ plus the shared coefficient vector are optimized.')}</p></div></li>
+      <li data-ui-audit-item><span>3</span><div><strong>{t('冻结 base 和旧方向', 'Freeze the base and prior directions')}</strong><p>{t('W₀ 不训练；过去的低秩方向（component）的 A/B 也设为不求梯度。只有本轮 Aₜ/Bₜ 和共享幅度系数向量（coefficient vector）参与优化。', 'W₀ is frozen, and prior component A/B matrices do not receive gradients. Only current Aₜ/Bₜ plus the shared coefficient vector are optimized.')}</p></div></li>
       <li data-ui-audit-item><span>4</span><div><strong>{t('同时学习新方向与全部 α', 'Optimize the new direction and every α')}</strong><p>{t(`新方向使用学习率 ${facts.trainer.learningRate}；幅度系数（coefficients）使用独立学习率 ${facts.trainer.coefficientLearningRate}。这意味着旧方向本身不变，但它们在累计 adapter 里的“音量”可以改变。`, `The new direction uses learning rate ${facts.trainer.learningRate}; coefficients use a separate ${facts.trainer.coefficientLearningRate}. Old directions stay fixed, but their “volume” in the cumulative adapter can change.`)}</p></div></li>
-      <li data-ui-audit-item><span>5</span><div><strong>{t('归一化新方向，再折成一个 adapter', 'Normalize the new direction, then fold everything into one adapter')}</strong><p>{t('训练后把新 BₜAₜ 归一化为单位 Frobenius 方向，原来的大小吸收到 αₜ；随后所有 component 被拼成一份兼容 PEFT 的单一累计 LoRA（cumulative LoRA）。', 'After training, normalize BₜAₜ to a unit Frobenius direction and absorb its original magnitude into αₜ; all components are then folded into one PEFT-compatible cumulative LoRA.')}</p></div></li>
+      <li data-ui-audit-item><span>5</span><div><strong>{t('归一化新方向，再折成一个 adapter', 'Normalize the new direction, then fold everything into one adapter')}</strong><p>{t('训练后把新 BₜAₜ 归一化为单位 Frobenius 方向，原来的大小吸收到 αₜ；随后所有低秩方向（components）被拼成一份兼容 PEFT 的单一累计 LoRA（cumulative LoRA）。', 'After training, normalize BₜAₜ to a unit Frobenius direction and absorb its original magnitude into αₜ; all components are then folded into one PEFT-compatible cumulative LoRA.')}</p></div></li>
     </ol>
   </section>
 
@@ -99,13 +99,13 @@ const risks = zh ? [
       <div data-ui-audit-item>
         <small>{t('SD-LoRA 到这里结束', 'SD-LoRA ends here')}</small>
         <strong>{t('训练出候选累计 adapter（candidate cumulative adapter）', 'Train a candidate cumulative adapter')}</strong>
-        <p>{t('adapter 还同时保存 SD-LoRA state 与 bounded replay，供后续 round 继续累计。', 'The adapter also carries SD-LoRA state and bounded replay for the next continual update.')}</p>
+        <p>{t('adapter 还同时保存 SD-LoRA 参数状态和容量受限的旧经验回放，供后续轮次继续累计。', 'The adapter also carries SD-LoRA state and bounded replay for the next continual update.')}</p>
       </div>
       <span aria-hidden="true">→</span>
       <div data-ui-audit-item>
         <small>{t('状态准入 · 另一层机制', 'State admission · separate mechanism')}</small>
         <strong>{t('DirectApply（直接采用新参数）或历史 GDR-v1（先小测再决定）选择下一轮状态', 'DirectApply or GDR chooses the successor state')}</strong>
-        <p>{t('当前 Q17 DirectApply 在工程/数据合同通过后直接采用新 candidate；历史 GDR-v1 还会做 16-task 小测（probe），再决定采用新状态还是继续旧状态。', 'Current Q17 DirectApply adopts the new candidate after engineering/data contracts pass; historical GDR-v1 adds a 16-task probe and may keep the prior state.')}</p>
+        <p>{t('当前 DirectApply 主线在工程/数据合同通过后直接采用新候选参数；历史 GDR-v1 还会做 16-task 小测（probe），再决定采用新状态还是继续旧状态。', 'Current Q17 DirectApply adopts the new candidate after engineering/data contracts pass; historical GDR-v1 adds a 16-task probe and may keep the prior state.')}</p>
       </div>
       <span aria-hidden="true">→</span>
       <div data-ui-audit-item>
@@ -114,7 +114,7 @@ const risks = zh ? [
         <p>{t('新的行为再产生新的成功/失败证据，循环继续。', 'New behavior produces the next round of success/failure evidence and the loop repeats.')}</p>
       </div>
     </div>
-    <p class="sdlora-note">{t('因此“SD-LoRA candidate 训练成功”和“模型状态正式更新”必须分开计数。历史 GDR 线的 44 candidates → 7 accepted updates 正是这个区别。', '“SD-LoRA candidate trained successfully” and “model state formally updated” are separate events. The historical GDR line’s 44 candidates → 7 accepted updates is exactly this distinction.')}</p>
+    <p class="sdlora-note">{t('因此“SD-LoRA 候选参数训练成功（candidate trained）”和“模型状态正式更新”必须分开计数。历史 GDR 线的 44 个候选 → 7 次正式采用，正是这个区别。', '“SD-LoRA candidate trained successfully” and “model state formally updated” are separate events. The historical GDR line’s 44 candidates → 7 accepted updates is exactly this distinction.')}</p>
   </section>
 
   <section class="sdlora__section" id="mechanism-risks" aria-labelledby="mechanism-risks-title">
