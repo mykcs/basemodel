@@ -11,81 +11,80 @@ const sourceHref = 'https://github.com/mykcs/openevo-experiment/blob/38223bf7f07
 const replicationHref = 'https://github.com/mykcs/openevo-experiment/blob/f6fa4d05b7433685088ac59b1b488eecb42c781e/docs/evidence/q17-advisor-diagnostics-20260911/gpu2-replication-20260911/README.md';
 
 const rows = [
-  [t('WebShop 平均分', 'Mean WebShop score'), '63.58', '59.41', '−4.18', t('95% CI：−17.13 ～ +8.00', '95% CI: −17.13 to +8.00')],
-  [t('真正完成任务', 'Exact success'), '31.25%', '25.00%', '−6.25 pp', t('95% CI：−18.75 ～ +6.25 pp', '95% CI: −18.75 to +6.25 pp')],
-  [t('拿到正奖励', 'Positive reward'), '84.38%', '78.13%', '−6.25 pp', ''],
-  [t('平均环境步数', 'Mean environment steps'), '7.41', '7.53', '+0.13', ''],
-  [t('每步输出 token', 'Output tokens / step'), '24.49', '24.95', '+0.47', ''],
-  [t('推理阶段 entropy', 'Reasoning entropy'), '0.392', '0.343', '−0.050', t('nats / token；越低表示当前解码分布更集中', 'nats / token; lower means a more concentrated decoding distribution')],
+  [t('WebShop 平均分', 'Average WebShop score'), '63.58', '59.41', '−4.18', t('用常见的 95% 统计范围看，真实差值可能在 −17.13 ～ +8.00；这个范围里包含“没有差别”，所以还不能确定整体真的下降。', 'The 95% uncertainty range runs from −17.13 to +8.00. It includes “no difference,” so we cannot tell whether the overall score really dropped.')],
+  [t('32 题里完全做对', 'Tasks fully solved'), '10 / 32 (31.25%)', '8 / 32 (25.00%)', t('少 2 题', '2 fewer tasks'), t('用同样的 95% 统计范围看，成功率变化可能在 −18.75 ～ +6.25 个百分点之间；里面同样包含“没有差别”。', 'The same 95% uncertainty range puts the success-rate change between −18.75 and +6.25 percentage points; it also includes “no difference.”')],
+  [t('32 题里拿到正奖励', 'Tasks with a positive reward'), '27 / 32 (84.38%)', '25 / 32 (78.13%)', t('少 2 题', '2 fewer tasks'), ''],
+  [t('平均每题走几步', 'Average steps per task'), '7.41', '7.53', '+0.13', ''],
+  [t('每一步平均输出长度', 'Average output length per step'), '24.49 token', '24.95 token', '+0.47 token', ''],
+  [t('生成选择有多分散（entropy）', 'How spread out the model’s next-token choices were (entropy)'), '0.392', '0.343', '−0.050', t('数值越低，说明模型把概率更集中在少数选择上。', 'Lower means the model put more probability on a smaller set of choices.')],
 ] as const;
 ---
 
 <section class="advisor-diagnostics" data-q17-advisor-diagnostics data-reader-primary aria-labelledby="advisor-diagnostics-title">
   <header class="result-hero">
-    <p class="eyebrow">2026-09-11 · {t('固定同题诊断', 'Same-task diagnostic')}</p>
-    <h1 id="advisor-diagnostics-title">{t('R127 到 R128：有些能力换了位置，但还不能说整体发生了遗忘', 'R127 to R128: some capabilities moved, but the evidence does not show overall forgetting')}</h1>
-    <p class="lede">{t('我们把两个 checkpoint 放到完全相同的 32 道 WebShop 题上。平均分从 63.58 降到 59.41，成功率从 31.25% 降到 25.00%；3 道原本成功的题变成失败，1 道原本失败的题变成成功。两项主要差值的 95% 置信区间都跨过 0，所以目前能确认的是“任务能力发生了重排，并伴随小幅下滑”，还不能把它写成“整体显著遗忘”。', 'We evaluated both checkpoints on the same 32 WebShop tasks. Mean score fell from 63.58 to 59.41 and exact success from 31.25% to 25.00%; three previously solved tasks became failures while one previously failed task became a success. Both primary 95% confidence intervals cross zero, so the supported claim is task-level capability reallocation with a modest downward shift—not statistically clear overall forgetting.')}</p>
-    <div class="evidence-links" aria-label={t('诊断证据', 'Diagnostic evidence')}>
-      <a href={evidenceHref}>{t('网站证据摘要', 'Site evidence summary')}</a>
-      <a href={sourceHref}><ExternalBrandMark href={sourceHref} />{t('实验仓完整证据', 'Full experiment evidence')}</a>
-      <a href={replicationHref}><ExternalBrandMark href={replicationHref} />{t('GPU2 独立复现', 'Independent GPU2 replication')}</a>
+    <p class="eyebrow">2026-09-11 · {t('R127 / R128 同题重测', 'R127 / R128 same-task check')}</p>
+    <h1 id="advisor-diagnostics-title">{t('R128 比 R127 稍差，但没有训练曲线看起来那么严重', 'R128 was a little worse than R127—but not nearly as bad as the training curve suggested')}</h1>
+    <p class="lede">{t('训练时，两轮分数从 76.1 掉到 48.9。我们让两个模型重新做完全相同的 32 道题，平均分变成 63.58 → 59.41，完全做对 10 题 → 8 题。差距小了很多；只有 32 题，而且原来两轮训练用的题不同，所以现在还不能说模型整体真的退步了。', 'The live training-round score fell from 76.1 to 48.9. We reran both saved model states on exactly the same 32 tasks: the average score became 63.58 → 59.41, and fully solved tasks went from 10 to 8. The gap became much smaller; with only 32 tasks, and different task samples in the original training rounds, we still cannot say the model got worse overall.')}</p>
+    <div class="evidence-links" aria-label={t('实验记录', 'Experiment records')}>
+      <a href={evidenceHref}>{t('看数字摘要', 'View the data summary')}</a>
+      <a href={sourceHref}><ExternalBrandMark href={sourceHref} />{t('看完整实验记录', 'View the full experiment record')}</a>
     </div>
   </header>
 
   <section class="result-section" aria-labelledby="same-task-result">
-    <h2 id="same-task-result">{t('同样 32 道题，变化比训练 round 的 76.1 → 48.9 小得多', 'On the same 32 tasks, the change is much smaller than the live-round 76.1 → 48.9 swing')}</h2>
-    <p>{t('训练过程里的每一轮并不是同一套题，所以 round score 同时混入了任务抽样难度。固定同题之后仍能看到 R128 略差，但差距明显缩小：这说明原来的大幅回撤不能直接等同于模型突然失去同样比例的能力。', 'Training rounds do not contain the same task sample, so live round score mixes model change with task difficulty. The fixed-task test still trends downward at R128, but the gap is much smaller. The large live-round drop therefore cannot be treated as an equally large loss of model capability.')}</p>
+    <h2 id="same-task-result">{t('训练曲线掉了很多，同题重测只掉了一点', 'The live curve dropped a lot; the same-task test dropped only a little')}</h2>
+    <p>{t('训练的每一轮不是同一批题，所以 76.1 → 48.9 混了两种影响：模型本身变了，题目也换了。固定成同样 32 道题后，差距缩小到 63.58 → 59.41。也就是说，原来的大跌不能直接理解成模型一下子丢掉了同样多的能力。', 'Each training round uses a different task sample, so the 76.1 → 48.9 swing mixed two things together: the model changed, and the tasks changed. When we fixed the tasks to the same 32, the gap shrank to 63.58 → 59.41. The large live-round drop therefore cannot be read as an equally large loss of model ability.')}</p>
 
-    <div class="table-wrap" role="region" aria-label={t('R127 与 R128 固定同题指标', 'R127 versus R128 fixed-task metrics')} tabindex="0">
+    <div class="table-wrap" role="region" aria-label={t('R127 与 R128 同题重测结果', 'R127 versus R128 on the same tasks')} tabindex="0">
       <table>
-        <thead><tr><th>{t('指标', 'Metric')}</th><th>R127</th><th>R128</th><th>{t('变化', 'Change')}</th><th>{t('统计 / 说明', 'Uncertainty / note')}</th></tr></thead>
+        <thead><tr><th>{t('看什么', 'What we measured')}</th><th>R127</th><th>R128</th><th>{t('相差', 'Difference')}</th><th>{t('怎么理解', 'What it means')}</th></tr></thead>
         <tbody>{rows.map(([label, left, right, delta, note]) => <tr><th scope="row">{label}</th><td>{left}</td><td>{right}</td><td>{delta}</td><td>{note || '—'}</td></tr>)}</tbody>
       </table>
     </div>
 
     <dl class="transition-line">
-      <div><dt>{t('两边都成功', 'Solved by both')}</dt><dd>7</dd></div>
-      <div><dt>{t('成功 → 失败', 'Success → failure')}</dt><dd>3</dd></div>
-      <div><dt>{t('失败 → 成功', 'Failure → success')}</dt><dd>1</dd></div>
-      <div><dt>{t('两边都失败', 'Failed by both')}</dt><dd>21</dd></div>
+      <div><dt>{t('两次都做对', 'Solved both times')}</dt><dd>7</dd></div>
+      <div><dt>{t('R127 对，R128 错', 'R127 solved, R128 failed')}</dt><dd>3</dd></div>
+      <div><dt>{t('R127 错，R128 对', 'R127 failed, R128 solved')}</dt><dd>1</dd></div>
+      <div><dt>{t('两次都没做对', 'Failed both times')}</dt><dd>21</dd></div>
     </dl>
   </section>
 
   <section class="result-section reasoning" aria-labelledby="what-it-means">
-    <h2 id="what-it-means">{t('2026-09-11 固定同题诊断削弱了两个过早的解释', 'The diagnostic weakens two premature explanations')}</h2>
+    <h2 id="what-it-means">{t('目前看，接口没坏，模型也没有变得更犹豫', 'So far, the interface still works and the model did not become more uncertain')}</h2>
     <div class="reasoning-line">
       <article>
-        <h3>{t('不是一个明显的接口故障', 'Not an obvious interface failure')}</h3>
-        <p>{t('两个 checkpoint 的 32 题诊断都没有 invalid action 或 constraint escape。正式 R127 / R128 日志里对应的 invalid、repair、constraint-escape 也都是 0。掉分不能先归因给 parser 或动作接口坏了。', 'Neither 32-task checkpoint run produced invalid actions or constraint escapes; the corresponding formal R127/R128 logs also recorded zero invalid, repair, and constraint-escape events. The drop should not be attributed first to a broken parser or action interface.')}</p>
+        <h3>{t('购物动作都能正常执行', 'The shopping actions still executed')}</h3>
+        <p>{t('两次 32 题测试里，都没有出现动作格式坏掉、需要修复，或者动作被规则拦下的情况。正式 R127 / R128 日志里这些计数也都是 0。所以 R127 到 R128 的掉分不像是“模型本来想对了，但接口把动作弄坏了”。', 'Across both 32-task runs, there were no broken action formats, repair events, or actions rejected by the constraint. The formal R127/R128 logs also show zeros for those counts. So the drop does not look like a case where the model chose the right thing but the interface broke the action.')}</p>
       </article>
       <article>
-        <h3>{t('也不是“模型突然更迷茫”', 'Nor did the model simply become more uncertain')}</h3>
-        <p>{t('推理阶段 entropy 从 0.392 降到 0.343 nats/token，受动作约束后的 entropy 也从 0.0238 降到 0.0167。R128 的解码反而更集中一些；这更像策略偏好发生变化，而不是整体不确定性突然上升。', 'Reasoning entropy fell from 0.392 to 0.343 nats/token, and constrained-action entropy fell from 0.0238 to 0.0167. Decoding became somewhat more concentrated at R128, pointing toward a policy-preference shift rather than a sudden rise in global uncertainty.')}</p>
+        <h3>{t('模型的生成选择反而更集中', 'The model’s choices became more concentrated')}</h3>
+        <p>{t('我们记录了模型生成下一步时，概率分在多少不同选择上（entropy）。R127 是 0.392，R128 是 0.343。数值变低，表示概率更集中，所以 R128 并不是“更拿不定主意”。它更像是更坚定地偏向了某些选择。', 'We measured how spread out the model’s probabilities were when generating the next step (entropy). R127 was 0.392 and R128 was 0.343. Lower means the probabilities were more concentrated, so R128 was not simply more unsure; it was more strongly favoring some choices.')}</p>
       </article>
     </div>
     <aside class="claim-boundary">
-      <strong>{t('现在还不能证明：', 'Still not established:')}</strong>
-      <p>{t('这 32 题不足以证明整体发生了显著遗忘，也不足以证明某个负的 update cosine 就是原因。把 R127 写进 R128 的那次 SD-LoRA 更新，adjacent cosine 是 −0.135；但 R120–R134 之间还有更负的更新，所以它目前只是需要继续检查的线索。', 'These 32 tasks do not establish statistically clear overall forgetting, and they do not establish a negative update cosine as the cause. The SD-LoRA update that produced the R128 entering state had adjacent cosine −0.135, but more negative updates also occurred between R120 and R134. It remains a clue, not a causal result.')}</p>
+      <strong>{t('我们现在只敢说到这里：', 'What we can safely say:')}</strong>
+      <p>{t('R128 在这 32 题上稍差，而且确实有 3 题从做对变成做错、1 题从做错变成做对。但 32 题还不足以证明模型整体退步，也还不知道是哪一次参数更新造成的。', 'R128 was a little worse on these 32 tasks, with three tasks going from solved to failed and one going the other way. But 32 tasks are not enough to show that the model got worse overall, and we still do not know which parameter update—if any—caused the change.')}</p>
     </aside>
   </section>
 
   <section class="result-section" aria-labelledby="next-question">
-    <h2 id="next-question">{t('下一步：把“会不会互相冲掉”变成可重复的同题测量', 'Next: turn possible interference into a repeatable same-task measurement')}</h2>
-    <p>{t('当前 R1–R160 正式训练继续按冻结设置运行，不因为 2026-09-11 这组固定同题诊断改 learning rate、replay、prompt、sampling 或 SD-LoRA 规则。等更多 checkpoint 和 R160 可用后，再用同一批题看“哪些能力获得、哪些能力丢失”是否持续出现；只有这种现象稳定复现，才值得设计 retention / replay / update-conflict 的后继实验。', 'The formal R1–R160 run continues under the frozen treatment. This diagnostic does not change learning rate, replay, prompt, sampling, or SD-LoRA rules. When more checkpoints and R160 become available, the same panel can test whether gains and losses recur. Only a repeatable pattern would justify successor interventions for retention, replay, or update conflict.')}</p>
+    <h2 id="next-question">{t('接下来继续用同一批题复查', 'Next, keep retesting the same tasks')}</h2>
+    <p>{t('正式 R1–R160 训练继续原样跑，不因为 2026-09-11 这组诊断改训练规则。等更多模型保存点和 R160 出来，再让它们做同样的 32 道题。如果反复出现“新学会一些题，同时又丢掉一些旧题”，我们才有理由专门研究怎么保留旧能力，或者参数更新是不是在互相冲突。', 'The formal R1–R160 run continues unchanged. When more saved model states and R160 are available, we will run the same 32 tasks again. If we repeatedly see the model learn some tasks while losing others, then it will make sense to study ways to preserve old abilities or test whether updates are interfering with one another.')}</p>
   </section>
 
   <details class="method-depth">
-    <summary>{t('诊断是怎么做的，以及它不是什么', 'How the diagnostic was run—and what it is not')}</summary>
+    <summary>{t('实验细节：32 道题的来源和 entropy 记录方法', 'Experiment details: where the 32 tasks came from and how entropy was measured')}</summary>
     <div class="method-grid">
-      <div><strong>{t('固定题目', 'Fixed tasks')}</strong><p>{t('32 个任务来自诊断用 train/dev 范围；在看 R127 / R128 对比结果前就冻结。它们与锁定 final 128 的 goal / instruction overlap 都是 0。', 'The 32 diagnostic train/dev tasks were frozen before inspecting the R127/R128 result. Their goal and instruction overlap with the locked final 128 is zero.')}</p></div>
-      <div><strong>{t('固定其他条件', 'Matched conditions')}</strong><p>{t('两边使用相同任务、generation seed、Harness201.1、Text Memory、Skill 和 Agent System。变化的是进入 R127 与进入 R128 的 SD-LoRA adapter。', 'Both checkpoints use identical tasks, generation seeds, Harness201.1, Text Memory, Skill, and Agent System. The changed factor is the SD-LoRA adapter entering R127 versus R128.')}</p></div>
-      <div><strong>{t('Entropy 的含义', 'What entropy means here')}</strong><p>{t('这里是实际解码过程在当前 logits processor / action constraint 之后的 operational decoding entropy，不是“完全无约束模型”的原始 entropy。4 题 OFF/ON 资格测试证明加入观测后输出、动作和得分 4/4 完全一致。', 'This is operational decoding entropy after the active logits processors and action constraint, not unconstrained raw-model entropy. A four-task OFF/ON qualification reproduced output, actions, and scores exactly 4/4 after instrumentation was added.')}</p></div>
-      <div><strong>{t('没有碰最终测试', 'Final evaluation stayed locked')}</strong><p>{t('final-panel access = 0，formal task consumption = 0，external teacher calls = 0。这个页面是实验仓证据的只读投影，不能授权修改正式 run 或打开 final panel。', 'Final-panel access = 0, formal task consumption = 0, and external teacher calls = 0. This page is a read-only projection of experiment evidence and cannot authorize formal-run changes or final-panel access.')}</p></div>
-      <div><strong>{t('独立复现', 'Independent replication')}</strong><p>{t('同一套 32 题后来又在服务器 GPU2 上完整重跑。两个 checkpoint 的 32 个 task rows、paired rows 和主要 comparison fields 与原 GPU0 证据完全一致。这个结果增强的是可复现性，不会把跨 0 的置信区间变成“显著遗忘”。', 'The same 32-task diagnostic was later rerun independently on server GPU2. Both 32-task row sets, all paired rows, and every authoritative comparison field exactly match the original GPU0 evidence. This strengthens reproducibility; it does not turn confidence intervals that cross zero into statistically clear forgetting.')}</p></div>
+      <div><strong>{t('32 道题怎么选', 'Where the 32 tasks came from')}</strong><p>{t('它们来自训练 / 开发用的任务范围，而且在看 R127 / R128 的结果前就已经固定。它们和锁住的最终 128 题没有重合。', 'They came from the train/development task range and were frozen before we looked at the R127/R128 result. They do not overlap with the locked final 128 tasks.')}</p></div>
+      <div><strong>{t('两边除了参数状态都一样', 'Everything else was held fixed')}</strong><p>{t('两边用了同样的题、同样的生成 seed、同样的 Harness201.1、Text Memory、Skill 和 Agent System。只换了进入 R127 与进入 R128 时加载的 SD-LoRA 参数。', 'Both runs used the same tasks, generation seeds, Harness201.1, Text Memory, Skill, and Agent System. The only changed model state was the SD-LoRA adapter entering R127 versus R128.')}</p></div>
+      <div><strong>{t('entropy 是什么', 'What entropy means')}</strong><p>{t('模型每生成下一个 token，都会给很多候选分配概率。entropy 表示这些概率有多分散：越低越集中。这里记录的是实际动作规则已经生效后的数值。我们先用 4 道题做了“开记录 / 不开记录”的对照，输出、动作和得分 4 / 4 完全一样，所以记录 entropy 本身没有改变模型行为。', 'For every next token, the model assigns probabilities to many possible choices. Entropy measures how spread out those probabilities are: lower means more concentrated. The value here is measured after the real action rules are applied. Before the 32-task run, a four-task instrumentation on/off check reproduced outputs, actions, and scores exactly 4/4, so recording entropy did not change behavior.')}</p></div>
+      <div><strong>{t('最终测试没有动', 'The final test stayed locked')}</strong><p>{t('最终 128 题完全没打开，也没有增加正式任务消耗或额外调用外部 teacher。这组实验只是诊断，不是最终评测。', 'The final 128 tasks were never opened. This diagnostic consumed no formal final tasks and made no extra external-teacher calls. It is a diagnostic, not the final evaluation.')}</p></div>
+      <div><strong>{t('为什么还不能怪某一次参数更新', 'Why we cannot blame one update yet')}</strong><p>{t('把 R127 变成 R128 的那次 SD-LoRA 更新，和前一轮更新方向有些相反（adjacent cosine = −0.135）。但 R120–R134 之间还有更负的更新，而且它们不都对应掉分，所以这个数值现在只能当线索。', 'The SD-LoRA update that produced the R128 state pointed somewhat against the previous update (adjacent cosine = −0.135). But there were even more negative updates between R120 and R134, and they did not all line up with score drops, so this number is only a clue for now.')}</p></div>
+      <div><strong>{t('另一张 GPU 又跑了一遍', 'The result was rerun on another GPU')}</strong><p>{t('后来我们在服务器 GPU2 上把同样 32 道题完整重跑。R127、R128 的逐题结果和两两比较都与 GPU0 完全一样，所以这组结果可以重复得到；但样本仍然只有这 32 题，结论边界没有变。', 'We later reran the same 32 tasks on server GPU2. Every R127 row, R128 row, and paired comparison matched the GPU0 run exactly. That shows the result is reproducible, but it is still the same 32-task sample, so the claim boundary does not change.')} <a href={replicationHref}><ExternalBrandMark href={replicationHref} />{t('查看复跑记录', 'View the replication record')}</a></p></div>
     </div>
   </details>
 </section>
-
 <style>
 .advisor-diagnostics{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--ink)}
 .result-hero{padding:4.5rem 0 2.4rem;border-bottom:1px solid var(--line)}
