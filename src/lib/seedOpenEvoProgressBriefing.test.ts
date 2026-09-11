@@ -13,10 +13,8 @@ const enTechnical = read('../pages/en/research/seed-openevo/study/briefing/techn
 const zhFrontierPage = read('../pages/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.astro');
 const enFrontierPage = read('../pages/en/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.astro');
 const contracts = read('../data/siteReaderContracts.ts');
-const directApplyLiveSnapshot = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-live-snapshot-20260910-0952-sgt.json'));
 const directApplyPlateauDiagnostic = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-plateau-diagnostic-20260910-1038-sgt.json'));
 const directApplyFrontierPlan = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-frontier-plan-20260910-2312-sgt.json'));
-const directApplyLiveDynamics = read('../data/openEvoDirectApplyLiveDynamics.ts');
 const sitemap = read('./sitemapRoutes.ts');
 
 const sectionPosition = (id: string) => briefing.indexOf(`<section id="${id}"`);
@@ -302,39 +300,30 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(sectionPosition('frontier-roadmap')).toBeLessThan(sectionPosition('technical-work-summary'));
     const directApplySection = briefing.slice(sectionPosition('directapply-progress'), sectionPosition('directapply-plateau'));
     for (const item of [
-      'DirectApply 前期抬高了分数，最近进入震荡平台',
-      '2026-09-10 09:52 SGT',
-      '和 7B、3B、1.7B GDR 一样，用左侧 Score 图和右侧 SD-LoRA loss 图展示训练过程',
-      '训练过程中每轮 WebShop Score',
-      'SD-LoRA training loss',
-      '每个点=DirectApply 已采用的候选更新',
-      '影子 GDR 只打诊断标签，不控制训练',
-      'R70–79 / R80–89 / R90–97 的均值是 58.35 → 55.36 → 50.83',
-      '09:52 SGT 运行中快照',
-      'current No-GDR controller · 911e3afe',
+      'DirectApply 到 R121：低点后重新上升，冻结终评仍未打开',
+      '2026-09-10 23:12 SGT',
+      'R0–R121 已封口，共 122 轮 / 15,616 次正式任务尝试',
+      'R122 还没封口，所以完全排除',
+      '49.90 → 57.44 → 63.52',
+      '25.62% → 34.38%',
+      '51.88% → 56.25%',
+      '78.04 到 80.72',
+      'SD-LoRA · 121',
+      'Text Memory 2 次、Agent System 2 次、Skill 1 次更新',
+      'final panel = 0',
+      'DirectApply 的最终 Score / Succ. 仍然不能填写',
+      '分析 authority · #420 @ afc7b745',
     ]) expect(directApplySection).toContain(item);
-    expect(directApplySection).toContain('class="dynamics-grid"');
-    expect(directApplySection).toContain('scoreRawPointsDirectApply');
-    expect(directApplySection).toContain('lossPointsDirectApply');
-    expect(directApplySection).not.toContain('live-progress-grid');
-    expect(briefing).toContain('DirectApply 的最终 Score / Succ. 继续保持空白');
-    expect(directApplyLiveSnapshot.snapshot_label_sgt).toBe('2026-09-10T09:52:00+08:00');
-    expect(directApplyLiveSnapshot.status).toBe('LIVE_TRAINING_SNAPSHOT_NOT_FINAL_EVALUATION');
-    expect(directApplyLiveSnapshot.controller_sha).toBe('911e3afec1bc14d2194fa59b8feb3a232c34da85');
-    expect(directApplyLiveSnapshot.metrics.sealed_rounds).toBe(98);
-    expect(directApplyLiveSnapshot.metrics.formal_rollouts).toBe(12544);
-    expect(directApplyLiveSnapshot.metrics.sd_lora_candidates_trained).toBe(97);
-    expect(directApplyLiveSnapshot.metrics.directapply_admissions).toBe(97);
-    expect(directApplyLiveSnapshot.metrics.final_panel_access_count).toBe(0);
-    expect(directApplyLiveSnapshot.metrics.shadow_gdr_labels).toEqual({ pass: 42, reject: 55, total: 98 });
-    expect(directApplyLiveSnapshot.metrics.training_round_score_mean_pct.latest_20).toBeCloseTo(53.0628, 3);
-    expect(directApplyLiveSnapshot.metrics.sd_lora_training_loss.latest).toBeCloseTo(0.107326, 6);
-    expect(directApplyLiveSnapshot.score).toHaveLength(98);
-    expect(directApplyLiveSnapshot.loss).toHaveLength(97);
-    expect(directApplyLiveDynamics).toContain('sealed R0-R97');
-    expect(directApplyLiveDynamics).toContain('score: [');
-    expect(directApplyLiveDynamics).toContain('loss: [');
-    expect(directApplyLiveSnapshot.counterfactual_boundary).toContain('not outcomes from a separately executed full GDR trajectory');
+    expect(directApplySection).toContain('directApplyBlockScorePoints');
+    expect(directApplySection).not.toContain('09:52 SGT');
+    expect(directApplySection).not.toContain('scoreRawPointsDirectApply');
+    expect(directApplySection).not.toContain('lossPointsDirectApply');
+    expect(directApplySection).not.toContain('current No-GDR controller · 911e3afe');
+    expect(directApplyFrontierPlan.metrics.sealed_rounds).toBe(122);
+    expect(directApplyFrontierPlan.metrics.formal_rollouts).toBe(15616);
+    expect(directApplyFrontierPlan.metrics.carrier_updates).toMatchObject({ sd_lora: 121, text_memory: 2, agent_system: 2, skill_bundle: 1 });
+    expect(directApplyFrontierPlan.metrics.final_panel_access_count).toBe(0);
+    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r110_r119).toMatchObject({ at1: 34.38, at8: 56.25, best_of_8_score: 80.72 });
     expect(briefing).not.toContain('长期参数轨迹已经出现实质分叉');
   });
 
