@@ -383,7 +383,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   it('adds a Q17 frontier roadmap slide with blanks for unmeasured successor results', () => {
     const frontierSection = briefing.slice(sectionPosition('frontier-roadmap'), sectionPosition('technical-work-summary'));
     for (const item of [
-      '别只等曲线：把平台期拆成可验证问题',
+      '平台期之后，我们把原因拆成可以逐个验证的问题',
       'R90–99 的 49.90 后，R110–119 回到 63.52',
       'Success@1 从 R90–99 的 25.62% 到 R110–119 的 34.38%',
       'Success@8 只从 51.88% 到 56.25%',
@@ -426,6 +426,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
       '还不能证明平台由 SD-LoRA 本身造成',
       '在 Slide 里看同一张图',
     ]) expect(frontierRoadmap).toContain(item);
+    expect(frontierSection).not.toContain('Q17 DirectApply / No-GDR · Frontier Plan');
     expect(frontierRoadmap).toContain("OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS");
     expect(frontierRoadmap).toContain('data-q17-plateau-visual');
   });
@@ -433,7 +434,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   it('keeps engineering work as a simple summary immediately before the final choice', () => {
     expect(sectionPosition('technical-work-summary')).toBeLessThan(sectionPosition('next'));
     expect(briefing).not.toContain('id="technical-details"');
-    expect(briefing).toContain('我们做过哪些技术工作');
+    expect(briefing).toContain('这些技术工作保护了实验结论能被追溯、比较和恢复');
     for (const item of [
       '为了可追溯',
       'Git commit SHA',
@@ -458,6 +459,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(finalSlide).toContain('保持每轮 128 次任务尝试的总预算不变');
     expect(finalSlide).toContain('优先那些已经接近成功、但还没完全做对的难题');
     expect(finalSlide).toContain('让部分得分参与学习');
+    expect(finalSlide).toContain('训练结束后只打开一次冻结终评');
+    expect(finalSlide).toContain('再启动下一条单变量实验');
     expect(finalSlide).not.toContain('向北');
     expect(finalSlide).not.toContain('向南');
     expect(finalSlide).not.toContain('想请老师和学长判断优先级');
