@@ -14,7 +14,11 @@ test('GDR → DirectApply explainer publishes the required scientific contract',
   await expect(body).toContainText('No-GDR ≠ No Safety');
   await expect(body).toContainText('semantic-matched');
   await expect(body).toContainText('Known / Unknown');
-  await expect(body).toContainText('Concept · Not Yet Validated');
+  await expect(body).toContainText('设计中 · 尚未执行新实验');
+  await expect(page.getByTestId('original-gated-delta-rule')).toContainText('原始 Gated Delta Rule');
+  await expect(page.getByTestId('original-gated-delta-rule')).toContainText('v − state·k');
+  await expect(page.getByTestId('task-vector-role')).toContainText('Task Vector');
+  await expect(page.getByTestId('task-vector-role')).toContainText('不直接设置 β / g');
   await expect(body).toContainText('e47595a0');
   await expect(body).toContainText('90fa6eb4');
   await expect(page.getByTestId('directapply-same-task-evidence')).toContainText('63.58→59.41');
@@ -52,6 +56,8 @@ test('English route has parity for the core claim boundary', async ({ page }) =>
   await expect(body).toContainText('No-GDR ≠ No Safety');
   await expect(body).toContainText('semantic-matched');
   await expect(body).toContainText('OPEN QUESTION');
+  await expect(page.getByTestId('original-gated-delta-rule')).toContainText('Original Gated Delta Rule');
+  await expect(page.getByTestId('task-vector-role')).toContainText('does not directly set β / g');
   await expect(page.getByTestId('directapply-same-task-evidence')).toContainText('does not decide whether DirectApply ultimately beats GDR-v1');
 });
 
@@ -71,5 +77,6 @@ for (const viewport of [
     await expect(page.getByTestId('long-horizon-trajectory')).toBeVisible();
     await expect(page.getByTestId('resource-handoff-timeline')).toBeVisible();
     await expect(page.getByTestId('no-gdr-not-no-safety')).toBeVisible();
+    await expect(page.getByTestId('original-gated-delta-rule')).toBeVisible();
   });
 }
