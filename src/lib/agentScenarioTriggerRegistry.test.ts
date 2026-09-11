@@ -15,6 +15,7 @@ const copyCases = readFileSync(new URL('../../docs/agents/current/website-copy-c
 const history = readFileSync(new URL('../../docs/agents/history/2026-08-11-seed-preview-and-agent-workflow-lessons.md', import.meta.url), 'utf8');
 const attentionHistory = readFileSync(new URL('../../docs/agents/history/2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md', import.meta.url), 'utf8');
 const briefingPreviewHistory = readFileSync(new URL('../../docs/agents/history/2026-09-10-briefing-fast-preview-pr-workline-and-hpl-closeout-retrospective.md', import.meta.url), 'utf8');
+const pr619CloseoutHistory = readFileSync(new URL('../../docs/agents/history/2026-09-11-pr619-eli5-exact-head-closeout.md', import.meta.url), 'utf8');
 const conversationCloseoutEntry = readFileSync(new URL('../../docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md', import.meta.url), 'utf8');
 
 describe('Agent scenario-trigger discovery', () => {
@@ -89,6 +90,9 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('read the provider\'s real execution state');
     expect(registry).toContain('`ignored/skipped/canceled` is not Preview acceptance');
     expect(registry).toContain('provider READY remains separate from visual/product acceptance');
+    expect(registry).toContain('continue until complete');
+    expect(registry).toContain('Do not end the task at `pending`');
+    expect(websiteSpec).toContain('ELI5 要扫完整个可见表面，不只扫正文');
   });
 
   it('keeps valid Gates stronger than convenience', () => {
@@ -234,6 +238,14 @@ describe('Agent scenario-trigger discovery', () => {
     expect(briefingPreviewHistory).toContain('First RDC discovery command again used a Bash compound loop under the default Fish shell');
     expect(briefingPreviewHistory).toContain('Scope is semantic evidence selection, not a PASS knob');
     expect(briefingPreviewHistory).toContain('HPL retrieval activation is a pipeline contract');
+  });
+
+  it('indexes the PR619 closeout without freezing temporary provider state', () => {
+    expect(readme).toContain('2026-09-11-pr619-eli5-exact-head-closeout.md');
+    expect(pr619CloseoutHistory).toContain('ELI5 cleanup had been treated too much like body-copy cleanup');
+    expect(pr619CloseoutHistory).toContain('A synchronous completion request nearly stopped at provider `pending`');
+    expect(pr619CloseoutHistory).toContain('does **not** freeze temporary PR head SHAs');
+    expect(pr619CloseoutHistory).toContain('No account-level long-term ChatGPT memory write is claimed');
   });
 
   it('keeps the historical case reusable without freezing transient state', () => {

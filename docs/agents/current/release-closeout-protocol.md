@@ -293,6 +293,7 @@ Rules:
 3. **Notification thresholds are not merge thresholds.** “Either shard finished” means send a progress notification. “All named required checks are terminal” means summarize failures or prepare readiness. Neither statement authorizes merge unless the user/task already granted that mutation.
 4. **A later merge instruction changes authorization, not evidence identity.** Treat an explicit later “merge” as a new mutation authorization. Immediately re-run the Section 7 live race-check and then use the Section 8 expected-head guard when supported; do not merge from the earlier readiness sentence.
 5. **No fake background work.** If the environment cannot install a real future condition watch, say so instead of promising to monitor asynchronously. If it can, install the watch only after the immediate live read proves the condition is still pending.
+6. **`Continue until complete` is synchronous unless the owner asked for future delivery.** When the current session can keep polling a required provider/check, continue live reads until that exact SHA reaches a terminal state, the head/base identity changes, or a concrete blocker prevents further progress. Do not stop at `pending` merely because the check is slow, and do not turn an in-session completion request into an implied background promise.
 
 Anti-examples:
 
