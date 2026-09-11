@@ -35,21 +35,15 @@ const variants = [
   <p class="parameter-example__caption">{t('箭头是二维概念示意，坐标没有物理单位，也不是实际参数投影。示意不显示购物成绩；哪种修改有效要由真实实验回答。', 'The arrows are a two-dimensional conceptual illustration, not measured parameter projections; the axes have no physical units. No shopping scores are shown. The real experiment must determine which changes have an effect.')}</p>
 </section>
 <script>
-function initializeParameterExamples() {
- document.querySelectorAll<HTMLElement>('[data-parameter-example]').forEach((root) => {
-  if (root.dataset.initialized) return;
-  const controls = root.querySelector<HTMLElement>('[data-parameter-controls]');
-  const cases = [...root.querySelectorAll<HTMLElement>('[data-parameter-case]')];
-  const inputs = [...root.querySelectorAll<HTMLInputElement>('input[type="radio"]')];
-  if (!controls || cases.length !== 3 || inputs.length !== 3) return;
-  root.dataset.initialized = 'true';
-  const show = () => cases.forEach((panel) => { panel.hidden = panel.dataset.parameterCase !== inputs.find((input) => input.checked)?.value; });
-  inputs.forEach((input) => input.addEventListener('change', show));
-  show(); controls.hidden = false;
- });
-}
-initializeParameterExamples();
-document.addEventListener('astro:page-load', initializeParameterExamples);
+document.querySelectorAll<HTMLElement>('[data-parameter-example]').forEach((root) => {
+ const controls = root.querySelector<HTMLElement>('[data-parameter-controls]');
+ const cases = [...root.querySelectorAll<HTMLElement>('[data-parameter-case]')];
+ const inputs = [...root.querySelectorAll<HTMLInputElement>('input[type="radio"]')];
+ if (!controls || cases.length !== 3 || inputs.length !== 3) return;
+ const show = () => cases.forEach((panel) => { panel.hidden = panel.dataset.parameterCase !== inputs.find((input) => input.checked)?.value; });
+ inputs.forEach((input) => input.addEventListener('change', show));
+ show(); controls.hidden = false;
+});
 </script>
 <style>
 .parameter-example{margin:2rem 0;padding:1.5rem 0;border-block:1px solid var(--line);color:var(--ink);font-size:1rem;line-height:1.8}

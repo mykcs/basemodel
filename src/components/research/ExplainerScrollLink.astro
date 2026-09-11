@@ -31,8 +31,8 @@
 
   const start = () => {
     if (observer) return;
-    // Queried lazily: this inline script may run before the article body is
-    // parsed, so the target list must be read at start time, not at parse time.
+    // Query when synchronization starts so a later wide-screen activation uses
+    // the sections in the current document.
     const targets = Array.from(document.querySelectorAll(`[${STEP_ATTR}]`));
     if (targets.length === 0) return;
     const io = new IntersectionObserver((entries) => {
@@ -52,13 +52,6 @@
   };
 
   const sync = () => (media.matches ? start() : stop());
-  const boot = () => {
-    sync();
-    media.addEventListener('change', sync);
-  };
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot, { once: true });
-  } else {
-    boot();
-  }
+  sync();
+  media.addEventListener('change', sync);
 </script>

@@ -69,42 +69,36 @@ const steps = [
   <p>{t('OpenEvo 研究怎样把做任务的经验用于后续尝试；SEED 是研究采用的参照方法。具体实验可能只收集经验，也可能继续训练，必须分别看它的开始和结束条件。', 'OpenEvo studies how task experience can inform later attempts; SEED is the reference method. An experiment may only collect experience or may continue training, so each has its own start and stop conditions.')}</p>
 </section>
 <script>
-  function initializeTaskExamples() {
-    document.querySelectorAll<HTMLElement>('[data-task-example]').forEach((root) => {
-      if (root.dataset.initialized) return;
-      root.dataset.initialized = 'true';
-      const nodes = [...root.querySelectorAll<HTMLElement>('[data-example-step]')];
-      const details = [...root.querySelectorAll<HTMLTemplateElement>('[data-example-detail]')];
-      const controls = root.querySelector<HTMLElement>('[data-example-controls]');
-      const previous = root.querySelector<HTMLButtonElement>('[data-example-previous]');
-      const next = root.querySelector<HTMLButtonElement>('[data-example-next]');
-      const reset = root.querySelector<HTMLButtonElement>('[data-example-reset]');
-      const position = root.querySelector<HTMLElement>('[data-example-position]');
-      const explanation = root.querySelector<HTMLElement>('[data-example-explanation]');
-      if (!controls || !previous || !next || !reset || !position || !explanation || nodes.length === 0 || nodes.length !== details.length) return;
-      let step = 0;
-      const frames = [...root.querySelectorAll<HTMLElement>('[data-shopping-frame]')];
-      const show = () => {
-        frames.forEach((frame, index) => { frame.hidden = index !== step; });
-        nodes.forEach((node, index) => {
-          if (index === step) node.setAttribute('aria-current', 'step');
-          else node.removeAttribute('aria-current');
-        });
-        previous.disabled = step === 0;
-        next.disabled = step === nodes.length - 1;
-        position.textContent = `${step + 1} / ${nodes.length}`;
-        explanation.textContent = details[step]?.content.textContent ?? '';
-      };
-      previous.addEventListener('click', () => { step = Math.max(0, step - 1); show(); });
-      next.addEventListener('click', () => { step = Math.min(nodes.length - 1, step + 1); show(); });
-      reset.addEventListener('click', () => { step = 0; show(); });
-      controls.hidden = false;
-      explanation.hidden = false;
-      show();
-    });
-  }
-  initializeTaskExamples();
-  document.addEventListener('astro:page-load', initializeTaskExamples);
+  document.querySelectorAll<HTMLElement>('[data-task-example]').forEach((root) => {
+    const nodes = [...root.querySelectorAll<HTMLElement>('[data-example-step]')];
+    const details = [...root.querySelectorAll<HTMLTemplateElement>('[data-example-detail]')];
+    const controls = root.querySelector<HTMLElement>('[data-example-controls]');
+    const previous = root.querySelector<HTMLButtonElement>('[data-example-previous]');
+    const next = root.querySelector<HTMLButtonElement>('[data-example-next]');
+    const reset = root.querySelector<HTMLButtonElement>('[data-example-reset]');
+    const position = root.querySelector<HTMLElement>('[data-example-position]');
+    const explanation = root.querySelector<HTMLElement>('[data-example-explanation]');
+    if (!controls || !previous || !next || !reset || !position || !explanation || nodes.length === 0 || nodes.length !== details.length) return;
+    let step = 0;
+    const frames = [...root.querySelectorAll<HTMLElement>('[data-shopping-frame]')];
+    const show = () => {
+      frames.forEach((frame, index) => { frame.hidden = index !== step; });
+      nodes.forEach((node, index) => {
+        if (index === step) node.setAttribute('aria-current', 'step');
+        else node.removeAttribute('aria-current');
+      });
+      previous.disabled = step === 0;
+      next.disabled = step === nodes.length - 1;
+      position.textContent = `${step + 1} / ${nodes.length}`;
+      explanation.textContent = details[step]?.content.textContent ?? '';
+    };
+    previous.addEventListener('click', () => { step = Math.max(0, step - 1); show(); });
+    next.addEventListener('click', () => { step = Math.min(nodes.length - 1, step + 1); show(); });
+    reset.addEventListener('click', () => { step = 0; show(); });
+    controls.hidden = false;
+    explanation.hidden = false;
+    show();
+  });
 </script>
 <style>
 .task-context{margin:1.5rem 0;min-width:0;color:var(--ink)}.task-context h2{font-size:1.5rem;line-height:1.4;margin:0 0 .6rem}.task-context>p{max-width:48rem;line-height:1.8;margin:.75rem 0}.task-example{margin:1.2rem 0;padding:1.1rem 0;border-block:1px solid var(--line)}.task-example ol{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2rem;list-style:none;padding:0;margin:0}.task-example li{position:relative;min-width:0;padding:.7rem 0;border-top:3px solid var(--line);transition:border-color .18s ease,background-color .18s ease}.task-example li[aria-current="step"]{border-color:var(--accent-deep);background:var(--surface-muted)}.task-example__number{display:block;font:700 .85rem/1.5 var(--font-mono);color:var(--accent-deep);margin-bottom:.3rem}.task-example strong{display:block;font-size:1rem;line-height:1.5}.task-example li p{font-size:.95rem;line-height:1.7;margin:.5rem 0}.task-example__arrow{position:absolute;width:1.5rem;height:1rem;right:-1.75rem;top:2.8rem;fill:none;stroke:var(--muted);stroke-width:1.5}.task-example li:last-child .task-example__arrow{display:none}.task-example figcaption{font-size:.85rem;color:var(--muted);line-height:1.7;margin-top:.7rem}.task-example__controls:not([hidden]){display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:1rem}.task-example button{padding:.55rem .8rem;min-height:44px;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}.task-example button:disabled{color:var(--muted);cursor:default}.task-example button:focus-visible{outline:2px solid var(--accent-deep);outline-offset:3px}.task-example button:hover:enabled{border-color:var(--accent-deep)}.task-example__explanation{max-width:48rem;min-height:3.5em;line-height:1.75;padding-left:1rem;border-left:2px solid var(--accent-deep)}@media(max-width:760px){.task-example ol{grid-template-columns:1fr;gap:1.1rem}.task-example li{padding:.5rem 0 .5rem 2rem;border-top:0;border-left:3px solid var(--line)}.task-example__number{position:absolute;left:.65rem}.task-example li p{margin:.25rem 0}.task-example__arrow{top:auto;bottom:-1rem;left:.15rem;transform:rotate(90deg);width:1.25rem}.task-example__explanation{min-height:0}}@media(prefers-reduced-motion:reduce){.task-example li{transition:none}}

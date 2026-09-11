@@ -341,6 +341,18 @@ Record the upstream branch/SHA and checked date together. Preserve old experimen
 
 If the website needs live-state wording, make clear that it is a snapshot and provide the route for resolving current upstream truth.
 
+#### Current-facing longitudinal figures
+
+A whole-run or “current/latest” training curve is a publication snapshot, not a timeless asset. When the upstream run can advance:
+
+- resolve the latest **completed/sealed** upstream boundary at publication time; never infer it from the website's existing endpoint or from a remembered/user-estimated round number;
+- create a new dated evidence object whose cutoff, source identity, and claim boundary are explicit;
+- preserve earlier dated curves byte-for-byte as historical snapshots when they are still useful; do not silently stretch or rewrite the historical evidence file;
+- if a historical briefing and a current page consume the same old data module, keep the historical consumer pinned and give the current page a separate current-snapshot source rather than mutating the shared history in place;
+- verify before release that the chart's terminal x-axis label, plotted rows, update/loss series, caption, and evidence link all agree on the same cutoff.
+
+This does **not** require a static website to chase every newly completed round in real time. It requires honesty about the checked cutoff: a dated snapshot may remain historical, but it must not be presented as `current`, `latest`, or the full run after newer sealed evidence has been deliberately incorporated elsewhere on the same page.
+
 ### 3. Update the correct website owners
 
 For SEED × OpenEvo Results work, the ordinary change set may include:

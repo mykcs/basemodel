@@ -30,6 +30,33 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 
 ---
 
+## TRIGGER: compound shell / RDC / SSH multi-command
+
+**Cues:** a command uses Bash-only syntax such as `for ... do ... done`, heredocs, arrays, `set -euo pipefail`, process substitution, or compound remote shell logic; the execution surface is Remote Desktop Commander, SSH, or another tool whose outer shell may be Fish/Zsh/sh; or the command embeds multiline Markdown/code/data containing shell-significant characters.
+
+**Automatic response:**
+
+1. Re-read the shell-dialect rule in `project-agent-operating-principles.md`; this registry is only the use-site reminder.
+2. Before sending compound syntax, set the execution surface's outer interpreter explicitly (normally `/bin/bash`) **and verify the tool reports that interpreter actually launched**.
+3. If the tool still reports Fish or another dialect, do not send compound Bash syntax through it. Use a simple explicit interpreter handoff only when quoting is trivial; otherwise use a standalone Bash/Python script or `bash -s`.
+4. Treat multiline Markdown/code/data, backticks, `$()` / `${...}`, nested quotes, or heredoc delimiters as **non-trivial quoting by default**. When the payload is content, move it through a file/connector API or temporary file; when logic is required, write and syntax-check a standalone script. A correct outer Bash interpreter does not make nested content quoting safe.
+5. A parser failure before mutation is `NOT_EXECUTED`. Do not reinterpret it as repository, server, or scientific failure.
+
+---
+
+## TRIGGER: current-facing longitudinal research chart or “latest sealed” snapshot
+
+**Cues:** a public research page says `current`, `latest`, `through R…`, `whole run`, `完整曲线`, `latest sealed`, or shows a training trajectory that can advance while the experiment is still running.
+
+**Automatic response:**
+
+1. Read `scientific-state-provenance.md` and `experiment-result-publication-workflow.md`, then resolve the experiment-side latest completed/sealed boundary from current authority **immediately before building the publication snapshot**. Do not start from the website's existing chart cutoff.
+2. Treat any older dated curve as historical evidence. If it is still useful, keep it immutable and label it historical; do not reuse it as the current full-run figure merely because it already has the right fields.
+3. Generate a new dated, receipt-backed website evidence object for the current-facing figure. If a historical briefing and a current page share one old data module, split the current source instead of mutating the historical snapshot in place.
+4. Before release, verify the figure's terminal round/cutoff, source evidence, axis labels, and prose all describe the same bounded snapshot. A later advancing run does not rewrite history, but the page must not call an older cutoff “current/latest”.
+
+---
+
 ## TRIGGER: Preview, Production, release, hosting, or Cloudflare
 
 **Cues:** Vercel, deploy, Preview URL, Production, release, Cloudflare Pages/Workers, `pages.dev`, Direct Upload, Wrangler, build quota/count.
