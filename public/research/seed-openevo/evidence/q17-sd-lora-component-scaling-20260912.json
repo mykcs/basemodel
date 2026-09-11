@@ -1,0 +1,60 @@
+{
+  "schema": "basemodel.q17-sd-lora-component-scaling.v1",
+  "status": "diagnostic-mechanism-evidence",
+  "checked_at": "2026-09-12",
+  "source": {
+    "repository": "mykcs/openevo-experiment",
+    "commit": "80145bc38aa76afa0607a48fca525ac0cfb5f596",
+    "evidence_path": "docs/evidence/q17-sd-lora-latency-202609112003/",
+    "scaling_summary_path": "docs/evidence/q17-sd-lora-latency-202609112003/scaling/component-scaling-summary.json"
+  },
+  "fixed_workload": {
+    "model": "Qwen3-1.7B",
+    "current_examples": 47,
+    "replay_examples": 47,
+    "optimizer_steps": 94,
+    "batch_size": 1,
+    "dtype": "BF16",
+    "rank_per_component": 8,
+    "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj"],
+    "gradient_checkpointing": true
+  },
+  "points": [
+    {"prior_components": 1, "trainer_seconds": 44.0458693341, "forward_seconds": 10.1731296234, "backward_seconds": 24.6346825562},
+    {"prior_components": 32, "trainer_seconds": 248.4977676007, "forward_seconds": 61.1632492676, "backward_seconds": 162.4571563721},
+    {"prior_components": 64, "trainer_seconds": 417.9571227729, "forward_seconds": 104.3090938721, "backward_seconds": 287.4085285645},
+    {"prior_components": 128, "trainer_seconds": 803.8778089201, "forward_seconds": 203.2603552246, "backward_seconds": 559.0183408203},
+    {"prior_components": 148, "trainer_seconds": 969.1709041460, "forward_seconds": 241.5460744629, "backward_seconds": 677.7445908203}
+  ],
+  "fits": {
+    "trainer": {"intercept_seconds": 38.0663209598, "slope_seconds_per_component": 6.1480371796, "r2": 0.9978517413},
+    "forward": {"intercept_seconds": 8.6056641699, "slope_seconds_per_component": 1.5480524976, "r2": 0.9987331291},
+    "backward": {"intercept_seconds": 17.5952403533, "slope_seconds_per_component": 4.3519761324, "r2": 0.9979151757}
+  },
+  "r149_profile": {
+    "formal_trainer_seconds": 919.4829086727,
+    "uninstrumented_reproduction_seconds": 925.91,
+    "instrumented_trainer_seconds": 969.1709041460,
+    "forward_seconds": 241.5460744629,
+    "backward_seconds": 677.7445908203,
+    "training_loop_fraction": 0.951,
+    "profiler_observer_effect_percent": 4.67
+  },
+  "replication": {
+    "prior_components": 128,
+    "primary_trainer_seconds": 803.8778089201,
+    "independent_same_hardware_trainer_seconds": 804.5730200578,
+    "delta_percent": 0.0864821904,
+    "same_loss": true,
+    "same_optimizer_steps": true,
+    "same_component_count": true,
+    "same_peak_memory": true
+  },
+  "claim": "Under the fixed R149 workload, Vanilla SD-LoRA update latency grows strongly and approximately linearly with accumulated prior component count; the growth is concentrated in forward/backward computation.",
+  "boundary": [
+    "Synthetic component prefixes are mechanism diagnostics, not historical checkpoints or formal Q17 treatment rounds.",
+    "This evidence does not establish which replacement algorithm is best.",
+    "This evidence does not by itself prove that component accumulation causes task-capability degradation or continual-learning forgetting.",
+    "This is evidence about the current Vanilla SD-LoRA implementation and fixed workload, not a universal law for every LoRA implementation."
+  ]
+}

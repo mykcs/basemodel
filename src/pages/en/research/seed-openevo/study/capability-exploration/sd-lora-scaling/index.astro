@@ -1,0 +1,12 @@
+---
+import AppLayout from '../../../../../../../layouts/AppLayout.astro';
+import OpenEvoSdLoraScaling from '../../../../../../../components/research/OpenEvoSdLoraScaling.astro';
+const locale = 'en' as const;
+---
+<AppLayout
+  title="SD-LoRA Compute Scaling"
+  description="Hold one 94-step workload fixed and vary only prior SD-LoRA component count to explain why later updates become slower."
+  locale={locale}
+>
+  <OpenEvoSdLoraScaling locale={locale} />
+</AppLayout>

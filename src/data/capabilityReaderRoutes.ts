@@ -154,6 +154,19 @@ export const CAPABILITY_READER_ROUTES = [
     }
   },
   {
+    "route": "sd-lora-scaling",
+    "coverage": "rebuilt",
+    "owner": "OpenEvoSdLoraScaling",
+    "label": {
+      "zh": "SD-LoRA 计算扩展性",
+      "en": "SD-LoRA compute scaling"
+    },
+    "purpose": {
+      "zh": "解释同样的 94-step 更新为什么会随着历史 component 增多而变慢，并把外围工程开销与 forward/backward 计算分开。",
+      "en": "Explain why the same 94-step update becomes slower as historical components accumulate, separating pipeline overhead from forward/backward compute."
+    }
+  },
+  {
     "route": "stage1-evolution",
     "coverage": "contextualized",
     "owner": "OpenEvoSuccessorExplorationMap",
