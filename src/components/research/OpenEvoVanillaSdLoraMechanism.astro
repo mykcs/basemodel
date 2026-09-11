@@ -46,7 +46,7 @@ const risks = zh ? [
     <h2 id="round-inputs-title">{t('一轮开始时，系统手上有什么？', 'What does the system have at the start of a round?')}</h2>
     <div class="sdlora-two-col">
       <div data-ui-audit-item>
-        <h3>{t('直接决定 rollout 的状态', 'State that directly shapes rollout')}</h3>
+        <h3>{t('直接决定任务尝试（rollout）的状态', 'State that directly shapes rollout')}</h3>
         <ul>
           <li>{t('冻结的 base model。', 'The frozen base model.')}</li>
           <li>{t('上一轮选定的 cumulative SD-LoRA adapter。', 'The cumulative SD-LoRA adapter selected after the prior round.')}</li>
@@ -55,8 +55,8 @@ const risks = zh ? [
       </div>
       <div data-ui-audit-item>
         <h3>{t('本轮任务', 'Tasks for this round')}</h3>
-        <p><strong>{facts.round.taskCount} × {facts.round.rolloutsPerTask} = {facts.round.rolloutCount} rollouts</strong></p>
-        <p>{t('每条 rollout 都留下动作轨迹、模型原始输出、最终 task score、是否完整成功以及 parser / repair / engineering-invalid 等诊断字段。', 'Every rollout records the action trajectory, raw model output, final task score, exact-success state, and parser / repair / engineering-invalid diagnostics.')}</p>
+        <p><strong>{facts.round.taskCount} × {facts.round.rolloutsPerTask} = {facts.round.rolloutCount} {t('次任务尝试（rollouts）', 'rollouts')}</strong></p>
+        <p>{t('每次任务尝试（rollout）都留下动作轨迹、模型原始输出、最终 task score、是否完整成功以及 parser / repair / engineering-invalid 等诊断字段。', 'Every rollout records the action trajectory, raw model output, final task score, exact-success state, and parser / repair / engineering-invalid diagnostics.')}</p>
       </div>
     </div>
   </section>
@@ -72,12 +72,12 @@ const risks = zh ? [
       <div class="sdlora-filter__arrow" aria-hidden="true">→</div>
       <div class="sdlora-filter__train" data-ui-audit-item>
         <small>{t('监督训练子集', 'Supervised subset')}</small>
-        <strong>{t('每个任务最早一条 clean exact success', 'Earliest clean exact success per task')}</strong>
+        <strong>{t('每个任务最早一条通过全部检查的完整成功（clean exact success）', 'Earliest clean exact success per task')}</strong>
         <p>{t('要求完整成功、身份与轨迹完整，而且没有解析失败、解析修复、工程无效或运行错误。', 'Requires exact success, valid identity and a complete trace, with no parser failure, parser repair, engineering-invalid state, or runtime error.')}</p>
       </div>
     </div>
     <p class="sdlora-note">{t(
-      `一个成功任务会保留整条 ${facts.selection.traceStepsMin}–${facts.selection.traceStepsMax} 步轨迹，再拆成 step-level assistant targets；当前一轮最多 ${facts.selection.maxTraceExamples} 个 trace examples，配置上限 ${facts.selection.maxRecords}。本轮 dataset 不把旧 round 的 raw rollout 直接拼回来；跨轮旧例子来自上一版 adapter 自带的 bounded replay。`,
+      `一个成功任务会保留整条 ${facts.selection.traceStepsMin}–${facts.selection.traceStepsMax} 步轨迹，再拆成 step-level assistant targets；当前一轮最多 ${facts.selection.maxTraceExamples} 个 trace examples，配置上限 ${facts.selection.maxRecords}。本轮 dataset 不把旧轮次的原始任务尝试（raw rollout）直接拼回来；跨轮旧例子来自上一版 adapter 自带的容量受限旧经验回放（bounded replay）。`,
       `A successful task keeps its full ${facts.selection.traceStepsMin}–${facts.selection.traceStepsMax}-step trajectory and is then split into step-level assistant targets. The current round is bounded at ${facts.selection.maxTraceExamples} trace examples, below the configured maximum of ${facts.selection.maxRecords}. The round dataset does not concatenate raw rollouts from earlier rounds; cross-round examples enter through bounded replay carried by the prior adapter.`
     )}</p>
   </section>
@@ -86,10 +86,10 @@ const risks = zh ? [
     <h2 id="inside-update-title">{t('训练器内部做了什么？', 'What happens inside the trainer?')}</h2>
     <ol class="sdlora-detail-steps">
       <li data-ui-audit-item><span>1</span><div><strong>{t('准备当前 examples', 'Prepare current examples')}</strong><p>{t('把成功轨迹里的每一步转成 chat/tool training example，只让 assistant 输出位置计算 loss。', 'Turn each successful step into a chat/tool training example and compute loss only on assistant output tokens.')}</p></div></li>
-      <li data-ui-audit-item><span>2</span><div><strong>{t('加入 bounded replay', 'Add bounded replay')}</strong><p>{t(`上一轮 adapter 自带容量 ${facts.trainer.replayCapacity} 的 replay buffer；如果已有历史，trainer 从中取 replay examples 与本轮 examples 一起优化。`, `The prior adapter carries a replay buffer capped at ${facts.trainer.replayCapacity}; when history exists, replay examples are optimized alongside the current examples.`)}</p></div></li>
-      <li data-ui-audit-item><span>3</span><div><strong>{t('冻结 base 和旧方向', 'Freeze the base and prior directions')}</strong><p>{t('W₀ 不训练；过去 component 的 A/B 也设为不求梯度。只有本轮 Aₜ/Bₜ 和共享 coefficient vector 参与优化。', 'W₀ is frozen, and prior component A/B matrices do not receive gradients. Only current Aₜ/Bₜ plus the shared coefficient vector are optimized.')}</p></div></li>
-      <li data-ui-audit-item><span>4</span><div><strong>{t('同时学习新方向与全部 α', 'Optimize the new direction and every α')}</strong><p>{t(`新方向使用学习率 ${facts.trainer.learningRate}；coefficients 使用独立学习率 ${facts.trainer.coefficientLearningRate}。这意味着旧方向本身不变，但它们在累计 adapter 里的“音量”可以改变。`, `The new direction uses learning rate ${facts.trainer.learningRate}; coefficients use a separate ${facts.trainer.coefficientLearningRate}. Old directions stay fixed, but their “volume” in the cumulative adapter can change.`)}</p></div></li>
-      <li data-ui-audit-item><span>5</span><div><strong>{t('归一化新方向，再折成一个 adapter', 'Normalize the new direction, then fold everything into one adapter')}</strong><p>{t('训练后把新 BₜAₜ 归一化为单位 Frobenius 方向，原来的大小吸收到 αₜ；随后所有 component 被拼成一份 PEFT-compatible cumulative LoRA。', 'After training, normalize BₜAₜ to a unit Frobenius direction and absorb its original magnitude into αₜ; all components are then folded into one PEFT-compatible cumulative LoRA.')}</p></div></li>
+      <li data-ui-audit-item><span>2</span><div><strong>{t('加入容量受限的旧经验回放（bounded replay）', 'Add bounded replay')}</strong><p>{t(`上一轮 adapter 自带容量 ${facts.trainer.replayCapacity} 的旧经验池（replay buffer）；如果已有历史，trainer 从中取旧例子与本轮 examples 一起优化。`, `The prior adapter carries a replay buffer capped at ${facts.trainer.replayCapacity}; when history exists, replay examples are optimized alongside the current examples.`)}</p></div></li>
+      <li data-ui-audit-item><span>3</span><div><strong>{t('冻结 base 和旧方向', 'Freeze the base and prior directions')}</strong><p>{t('W₀ 不训练；过去 component 的 A/B 也设为不求梯度。只有本轮 Aₜ/Bₜ 和共享幅度系数向量（coefficient vector）参与优化。', 'W₀ is frozen, and prior component A/B matrices do not receive gradients. Only current Aₜ/Bₜ plus the shared coefficient vector are optimized.')}</p></div></li>
+      <li data-ui-audit-item><span>4</span><div><strong>{t('同时学习新方向与全部 α', 'Optimize the new direction and every α')}</strong><p>{t(`新方向使用学习率 ${facts.trainer.learningRate}；幅度系数（coefficients）使用独立学习率 ${facts.trainer.coefficientLearningRate}。这意味着旧方向本身不变，但它们在累计 adapter 里的“音量”可以改变。`, `The new direction uses learning rate ${facts.trainer.learningRate}; coefficients use a separate ${facts.trainer.coefficientLearningRate}. Old directions stay fixed, but their “volume” in the cumulative adapter can change.`)}</p></div></li>
+      <li data-ui-audit-item><span>5</span><div><strong>{t('归一化新方向，再折成一个 adapter', 'Normalize the new direction, then fold everything into one adapter')}</strong><p>{t('训练后把新 BₜAₜ 归一化为单位 Frobenius 方向，原来的大小吸收到 αₜ；随后所有 component 被拼成一份兼容 PEFT 的单一累计 LoRA（cumulative LoRA）。', 'After training, normalize BₜAₜ to a unit Frobenius direction and absorb its original magnitude into αₜ; all components are then folded into one PEFT-compatible cumulative LoRA.')}</p></div></li>
     </ol>
   </section>
 
@@ -98,19 +98,19 @@ const risks = zh ? [
     <div class="sdlora-boundary" data-ui-audit="contrast layout">
       <div data-ui-audit-item>
         <small>{t('SD-LoRA 到这里结束', 'SD-LoRA ends here')}</small>
-        <strong>{t('训练出 candidate cumulative adapter', 'Train a candidate cumulative adapter')}</strong>
+        <strong>{t('训练出候选累计 adapter（candidate cumulative adapter）', 'Train a candidate cumulative adapter')}</strong>
         <p>{t('adapter 还同时保存 SD-LoRA state 与 bounded replay，供后续 round 继续累计。', 'The adapter also carries SD-LoRA state and bounded replay for the next continual update.')}</p>
       </div>
       <span aria-hidden="true">→</span>
       <div data-ui-audit-item>
         <small>{t('状态准入 · 另一层机制', 'State admission · separate mechanism')}</small>
-        <strong>{t('DirectApply 或 GDR 决定 successor state', 'DirectApply or GDR chooses the successor state')}</strong>
-        <p>{t('当前 Q17 DirectApply 在工程/数据合同通过后采用新 candidate；历史 GDR-v1 还会做 16-task probe，可能继续使用旧状态。', 'Current Q17 DirectApply adopts the new candidate after engineering/data contracts pass; historical GDR-v1 adds a 16-task probe and may keep the prior state.')}</p>
+        <strong>{t('DirectApply（直接采用新参数）或历史 GDR-v1（先小测再决定）选择下一轮状态', 'DirectApply or GDR chooses the successor state')}</strong>
+        <p>{t('当前 Q17 DirectApply 在工程/数据合同通过后直接采用新 candidate；历史 GDR-v1 还会做 16-task 小测（probe），再决定采用新状态还是继续旧状态。', 'Current Q17 DirectApply adopts the new candidate after engineering/data contracts pass; historical GDR-v1 adds a 16-task probe and may keep the prior state.')}</p>
       </div>
       <span aria-hidden="true">→</span>
       <div data-ui-audit-item>
         <small>Round t + 1</small>
-        <strong>{t('用选定状态继续 rollout', 'Roll out with the selected state')}</strong>
+        <strong>{t('用选定状态继续任务尝试（rollout）', 'Roll out with the selected state')}</strong>
         <p>{t('新的行为再产生新的成功/失败证据，循环继续。', 'New behavior produces the next round of success/failure evidence and the loop repeats.')}</p>
       </div>
     </div>
@@ -165,7 +165,7 @@ const risks = zh ? [
         </ul>
         <h3>{t('下一层问题', 'Next layer')}</h3>
         <nav class="sdlora-next" aria-label={t('相关研究页面', 'Related research pages')}>
-          <a href={gdrHref}>{t('GDR / DirectApply：candidate 为什么被采用或拒绝', 'GDR / DirectApply: why a candidate is adopted or rejected')}</a>
+          <a href={gdrHref}>{t('状态准入：为什么候选参数会被采用或拒绝（GDR / DirectApply）', 'GDR / DirectApply: why a candidate is adopted or rejected')}</a>
           <a href={q17Href}>{t('R127 → R128：同一批题上的 checkpoint 变化', 'R127 → R128: checkpoint change on the same tasks')}</a>
           <a href={mechanismHref}>{t('Mechanism-1.0：进一步做参数因果干预', 'Mechanism-1.0: causal parameter interventions')}</a>
         </nav>

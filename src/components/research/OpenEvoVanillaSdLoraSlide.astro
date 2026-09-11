@@ -5,19 +5,19 @@ const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const rail = zh ? [
-  { n: '01', kind: 'run', title: '带着当前状态开始', body: '冻结 base + 当前累计 SD-LoRA adapter；其他 carriers 只作为 rollout 背景。' },
+  { n: '01', kind: 'run', title: '带着当前状态开始', body: '冻结 base + 累计 adapter；其他 carriers 只影响 rollout（任务尝试）。' },
   { n: '02', kind: 'run', title: '做 128 次 WebShop', body: '16 个任务 × 每题 8 次。所有动作、输出、分数与错误都留下记录。' },
-  { n: '03', kind: 'data', title: '只挑干净的完整成功', body: '每个任务只取最早一条 clean exact success；失败和部分成功留作评估。' },
+  { n: '03', kind: 'data', title: '只留检查全通过的成功', body: '每题最早一条完整成功（clean exact success）；失败/部分成功只诊断。' },
   { n: '04', kind: 'data', title: '变成训练例子 + replay', body: '成功轨迹逐步拆成 assistant targets，再从容量 64 的旧经验池取回放样本。' },
   { n: '05', kind: 'learn', title: '学新方向，重调幅度', body: '旧方向冻结；新增一个 rank-8 方向；所有 α 一起重新学习。' },
-  { n: '06', kind: 'state', title: '合成累计 adapter', body: '所有方向折成一份 PEFT LoRA；“用新还是用旧”规则（DirectApply / GDR）决定下一轮状态。' },
+  { n: '06', kind: 'state', title: '合成累计 adapter', body: '折成一份 PEFT LoRA；DirectApply 直接用新参数，GDR-v1 小测后选新旧。' },
 ] : [
-  { n: '01', kind: 'run', title: 'Start from the current state', body: 'Frozen base + current cumulative adapter; other carriers only shape rollout context.' },
+  { n: '01', kind: 'run', title: 'Start from the current state', body: 'Frozen base + cumulative adapter; other carriers only shape rollout attempts.' },
   { n: '02', kind: 'run', title: 'Run 128 WebShop attempts', body: '16 tasks × 8 attempts; actions, scores, and errors stay logged.' },
-  { n: '03', kind: 'data', title: 'Keep only clean exact success', body: 'Earliest clean exact success per task; failures stay diagnostic.' },
-  { n: '04', kind: 'data', title: 'Build targets + replay', body: 'Turn successful steps into assistant targets + up to 64 replay examples.' },
+  { n: '03', kind: 'data', title: 'Keep one fully checked success', body: 'Earliest fully checked success (clean exact success) per task; others stay diagnostic.' },
+  { n: '04', kind: 'data', title: 'Build targets + old-example replay', body: 'Turn successful steps into assistant targets + up to 64 replay examples.' },
   { n: '05', kind: 'learn', title: 'Learn a direction; rebalance magnitudes', body: 'Freeze old directions, add one rank-8 direction, and relearn every α.' },
-  { n: '06', kind: 'state', title: 'Compose one cumulative adapter', body: 'Fold into one PEFT LoRA; GDR / DirectApply chooses the new or old state.' },
+  { n: '06', kind: 'state', title: 'Compose one cumulative adapter', body: 'One PEFT LoRA; DirectApply uses the new state, while GDR-v1 probes before choosing.' },
 ];
 
 const helps = zh ? [
@@ -53,8 +53,8 @@ const risks = zh ? [
         )}</p>
       </div>
       <p class="sdlora-slide__scope">{t(
-        '这里只讲当前 OpenEvo 的 SD-LoRA 参数学习：语言 Agent 会做容量受限的旧经验回放，并非论文协议逐项复刻。训练后由 GDR / DirectApply 选择新旧参数；一次更新也不代表能力一定变好。',
-        'Current OpenEvo parameter path only: bounded replay means it is not paper-exact. GDR / DirectApply later chooses new vs old state; an update does not imply better capability.'
+        '当前实现会回放有限旧经验，不是论文协议逐项复刻。训练后还要选择新/旧参数；更新不等于能力一定变好。',
+        'Current OpenEvo replays a bounded set of old examples, so it is not paper-exact. A later state choice can keep new or old parameters; an update need not improve capability.'
       )}</p>
     </header>
 
@@ -111,7 +111,7 @@ const risks = zh ? [
     </div>
 
     <div class="sdlora-legend" aria-label={t('图例', 'Legend')}>
-      <span data-kind="run">{t('运行 / rollout', 'runtime / rollout')}</span>
+      <span data-kind="run">{t('任务尝试 / rollout', 'runtime / rollout')}</span>
       <span data-kind="data">{t('训练数据', 'training data')}</span>
       <span data-kind="learn">{t('参数学习', 'parameter learning')}</span>
       <span data-kind="state">{t('状态 / 记录', 'state / records')}</span>

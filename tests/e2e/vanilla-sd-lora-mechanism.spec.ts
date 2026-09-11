@@ -11,8 +11,8 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
   await expect(body).toBeVisible();
   await expect(page.locator('h1')).toContainText('Vanilla SD-LoRA');
   await expect(body).toContainText('16 个任务 × 每题 8 次');
-  await expect(body).toContainText('每个任务最早一条 clean exact success');
-  await expect(body).toContainText('bounded replay');
+  await expect(body).toContainText('每个任务最早一条通过全部检查的完整成功');
+  await expect(body).toContainText('容量受限的旧经验回放');
   await expect(body).toContainText('旧方向');
   await expect(body).toContainText('全部幅度');
   await expect(body).toContainText('ΔWₜ = Σ αᵢDᵢ');
