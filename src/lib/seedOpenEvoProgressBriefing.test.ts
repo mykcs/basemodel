@@ -127,7 +127,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('撤掉这个人数门槛');
     expect(briefing).toContain('一轮做 128 次 WebShop 任务');
     expect(briefing).toContain('至少有一道题完整成功，而且记录有效');
-    expect(briefing).toContain('NOOP');
+    expect(briefing).toContain('这一轮不更新');
+    expect(briefing).not.toContain('NOOP');
     expect(sectionPosition('stage2-gate')).toBeLessThan(sectionPosition('component-cap'));
   });
 
@@ -275,7 +276,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('7</strong>{t(\' 次 GDR 同意真正应用\'');
     expect(briefing).toContain('37</strong>{t(\' 次训练结果被 GDR 拒绝\'');
     expect(briefing).toContain('37.60 · 1 / 128');
-    expect(briefing).toContain('被拒绝的 37 个候选没有保留可作为 authority 的 loss');
+    expect(briefing).toContain('被拒绝的 37 个候选没有留下可作为可靠依据的 loss');
   });
 
   it('keeps DirectApply as the one-variable causal comparison while preserving safety contracts', () => {
