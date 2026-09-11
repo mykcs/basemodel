@@ -16,7 +16,6 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
 </nav>
 
 <script>
-  type PageOutlineWindow = Window & { __atlasPageOutlineCleanup?: () => void };
   const ignoredAncestorSelector = [
     '[data-page-outline-ignore]',
     '[hidden]',
@@ -64,9 +63,6 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
   };
 
   const initPageOutline = () => {
-    const windowState = window as PageOutlineWindow;
-    windowState.__atlasPageOutlineCleanup?.();
-
     const root = document.querySelector<HTMLElement>('[data-page-outline]');
     const main = document.querySelector<HTMLElement>('#main-content');
     const list = root?.querySelector<HTMLOListElement>('[data-page-outline-list]');
@@ -165,26 +161,19 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
       frame = window.requestAnimationFrame(updateActive);
     };
 
-    const abortController = new AbortController();
-    window.addEventListener('scroll', scheduleActiveUpdate, { passive: true, signal: abortController.signal });
-    window.addEventListener('resize', scheduleActiveUpdate, { passive: true, signal: abortController.signal });
-    window.addEventListener('hashchange', scheduleActiveUpdate, { signal: abortController.signal });
+    window.addEventListener('scroll', scheduleActiveUpdate, { passive: true });
+    window.addEventListener('resize', scheduleActiveUpdate, { passive: true });
+    window.addEventListener('hashchange', scheduleActiveUpdate);
 
     root.hidden = false;
     root.classList.add('is-visible');
     updateActive();
-
-    windowState.__atlasPageOutlineCleanup = () => {
-      abortController.abort();
-      if (frame) window.cancelAnimationFrame(frame);
-    };
   };
 
   initPageOutline();
-  document.addEventListener('astro:page-load', initPageOutline);
 </script>
 
-<style>
+<style is:global>
   .page-outline {
     position: fixed;
     z-index: 18;

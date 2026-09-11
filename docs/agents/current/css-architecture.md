@@ -99,6 +99,8 @@ A new global stylesheet must have a durable semantic responsibility that can be 
 
 Prefer feature styling beside or directly imported by the owning component when rules do not need page-wide reach. A component should not depend on a later global override merely because it is faster to patch there.
 
+Astro scoped CSS only matches elements that carry the component's generated scope marker. DOM nodes created later by a component script do not automatically inherit that marker. When a component intentionally creates runtime DOM, keep styling ownership local but make the selector reach explicit: use a tightly namespaced `<style is:global>` block or another proven mechanism that reaches those runtime nodes, then browser-test real geometry/interaction. `is:global` changes selector reach, not semantic ownership, and it does not override stricter component-specific rules such as the Header global-style prohibition above.
+
 `SeedOpenEvoMissionHero.astro` owns the complete `.mission-chain` visual system, including its narrow-screen horizontal rail. `mobile-composition.css` no longer carries a compatibility copy of those selectors. A named cross-cutting mobile layer may provide shared tokens/composition primitives, but it must not become a second owner for a feature that can own its own responsive behavior.
 
 Ordinary corner radii follow the shared 6 / 10 / 16px system in `tokens.css`. Existing one-off pixel radii are migration debt, not a palette to copy. Clean/new components should use `--radius-control`, `--radius-panel`, or `--radius-feature`; pills and circles keep their separate fully rounded semantics. The CSS audit freezes remaining legacy per-file/per-value debt so it can decrease but cannot grow.
