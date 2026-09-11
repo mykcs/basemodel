@@ -1,6 +1,6 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-09-09**
+Last reviewed: **2026-09-11**
 
 ## Authority
 
@@ -41,6 +41,8 @@ manual recovery only
 ### Exact-head and current-base acceptance
 
 `main` branch protection must keep strict up-to-date semantics and require the `Vercel` status. Ordinary working refs do not spend Vercel compute. When a PR is ready for merge, run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`; it first pins non-deploy `ci/vercel-gate-base` to live `main`, then moves the **already-existing persistent** `ci/vercel-gate-final` ref to the **same exact commit SHA** as the current PR head; the gate ref must not add, cherry-pick, rebuild, or otherwise change content. Do not rely on creating a new ref at an already-known SHA: live Vercel qualification showed ref creation produced no provider event, while an existing-ref update did. GitHub status is accepted only for that exact candidate SHA. If `main` moves, strict protection makes the PR stale and forces a current-base update plus a fresh gate ref / Vercel result before merge; a historical Preview is never current merge evidence.
+
+**Current-base proof is a live ancestry relation, not a cached PR base-SHA field.** A PR API may continue to report the base commit recorded when the PR was opened even after the head has absorbed newer `main`. Before arming the final gate, require the PR to still target `main`, compare live `main...head`, and accept current-base identity only when the live merge base equals live `main`, `behind_by = 0`, and the comparison is `ahead` or `identical`. Re-run that proof after pinning `ci/vercel-gate-base`; any missing, moved, or contradictory identity fails closed. Do not replace this with raw `baseRefOid == currentMain` equality.
 
 For the persistent final-gate Preview, `scripts/request-vercel-final-gate.mjs` first pins non-deploy `ci/vercel-gate-base` to the exact live `main`, then moves `ci/vercel-gate-final` to the candidate. `scripts/vercel-git-range.mjs` independently checks that the remote base ref still equals live `main` and compares that base tree directly with the exact candidate. It deliberately does **not** use `VERCEL_GIT_PREVIOUS_SHA` for the persistent gate, because that SHA can belong to an unrelated prior PR and would cause expensive false-full browser runs. Missing/stale base identity fails closed to the complete Chromium matrix.
 
