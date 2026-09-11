@@ -27,8 +27,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(enPage).toContain('OpenEVO Summer Research Review');
     expect(zhTechnical).toContain('技术推导与实验严谨性');
     expect(enTechnical).toContain('Technical derivations and experimental rigor');
-    expect(zhFrontierPage).toContain('Q17 DirectApply Frontier Plan');
-    expect(enFrontierPage).toContain('Q17 DirectApply Frontier Plan');
+    expect(zhFrontierPage).toContain('Q17 DirectApply 固定同题诊断结果');
+    expect(enFrontierPage).toContain('Q17 DirectApply Same-task Diagnostic Results');
     expect(nav).toContain("id: 'briefing'");
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/'");
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/technical-notes/'");

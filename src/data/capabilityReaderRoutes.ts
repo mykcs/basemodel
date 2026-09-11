@@ -107,14 +107,14 @@ export const CAPABILITY_READER_ROUTES = [
   {
     "route": "q17-directapply-frontier",
     "coverage": "contextualized",
-    "owner": "OpenEvoQ17FrontierRoadmap",
+    "owner": "OpenEvoQ17AdvisorDiagnostics",
     "label": {
-      "zh": "Q17 Frontier 计划",
-      "en": "Q17 Frontier plan"
+      "zh": "Q17 固定同题诊断",
+      "en": "Q17 same-task diagnostics"
     },
     "purpose": {
-      "zh": "固定 DirectApply 长跑的 frontier 诊断、待补指标和 successor 实验计划。",
-      "en": "Freeze the DirectApply long-run frontier diagnosis, missing metrics, and successor experiment plan."
+      "zh": "比较 R127 与 R128 在同一批 WebShop 题上的成功率、分数、输出长度和 entropy，并保留仍未证明的边界。",
+      "en": "Compare R127 and R128 on the same WebShop tasks using success, score, output length, and entropy while keeping unproven conclusions explicit."
     }
   },
   {

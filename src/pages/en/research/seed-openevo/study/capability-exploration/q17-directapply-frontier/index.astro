@@ -6,11 +6,11 @@ import ResearchRouteContext from '../../../../../../../components/research/Resea
 const locale = 'en' as const;
 ---
 <AppLayout
-  title="Q17 DirectApply Frontier Plan"
-  description="Qwen3-1.7B DirectApply / No-GDR WebShop long-run learning: plateau behavior, diagnostic metrics, same-task checkpoint comparisons, and successor experiment design."
+  title="Q17 DirectApply Same-task Diagnostic Results"
+  description="Qwen3-1.7B DirectApply / No-GDR WebShop: fixed-task R127 vs R128 comparison, success rate, output length, entropy, and current evidence boundaries."
   locale={locale}
 >
   <ResearchRouteContext locale={locale} route="q17-directapply-frontier" />
-  <OpenEvoQ17FrontierRoadmap locale={locale} />
   <OpenEvoQ17AdvisorDiagnostics locale={locale} />
+  <OpenEvoQ17FrontierRoadmap locale={locale} />
 </AppLayout>
