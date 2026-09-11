@@ -53,8 +53,8 @@ const risks = zh ? [
         )}</p>
       </div>
       <p class="sdlora-slide__scope">{t(
-        '这里的“Vanilla”指当前 OpenEvo 里基础的 SD-LoRA 参数学习路径；GDR / DirectApply 是训练完成后的状态准入规则。',
-        '“Vanilla” here means the base SD-LoRA parameter-learning path in current OpenEvo. GDR / DirectApply is a separate state-admission rule after training.'
+        '这里的“Vanilla”指当前 OpenEvo 的基础 SD-LoRA 参数学习路径。它不是论文协议的逐项复刻：当前语言 Agent 会用 bounded replay；训练后再由“采用新参数还是沿用旧参数”的规则（GDR / DirectApply）决定下一轮状态。',
+        '“Vanilla” here means the base SD-LoRA parameter-learning path in current OpenEvo. It is not an item-for-item copy of the paper protocol: the language-agent path uses bounded replay, and a separate adopt-new-or-keep-old rule (GDR / DirectApply) chooses the next state after training.'
       )}</p>
     </header>
 
