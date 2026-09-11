@@ -653,6 +653,23 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     evidence: { repository: 'mykcs/basemodel', route: '/', gitSha: '84eca7135db376f5ffa539a9a7c78b1f64c86ca7', ledgerId: 'FB-SW02-APPLE-SURFACE-NOT-SPIRIT' },
   },
 
+  {
+    id: 'EVENT-20260911-BRIEFING-619-ACCEPTED',
+    date: '2026-09-11',
+    caseIds: ['CASE-027', 'CASE-082', 'CASE-083', 'CASE-087', 'CASE-088', 'CASE-089', 'CASE-090'],
+    scopes: ['briefing', 'research-copy', 'research-ui', 'visual', 'briefing-mobile', 'briefing-desktop'],
+    artifact: 'OpenEVO × SEED 22-slide briefing · PR #619 ELI5/science successor',
+    variantId: 'briefing-pr619-eli5-science-accepted-6fcef6aa',
+    verdict: 'accepted',
+    ownerSignal: '合并',
+    reasons: [
+      'owner first asked for an exact-current-version cold read against recent slide feedback and scientific boundaries, then explicitly authorized merge after the remaining ELI5 surface cleanup and exact-head/current-base acceptance passed',
+      'the approval accepts this concrete briefing result; there is no future-template language, so it must not become canonical or Golden',
+    ],
+    failureMechanisms: [],
+    evidence: { repository: 'mykcs/basemodel', route: '/research/seed-openevo/study/briefing/', pullRequest: 619, gitSha: '6fcef6aacdb61fe904bbf9f69389e44f9c718ed6', ledgerId: 'FB-S8-05-PR619-CONCRETE-ACCEPTANCE' },
+  },
+
 ];
 
 export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
@@ -672,6 +689,7 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
       'briefing-responsive-final-89fe1190',
       'briefing-training-dynamics-layered',
       'briefing-method-context-unified-charts-59f46044',
+      'briefing-pr619-eli5-science-accepted-6fcef6aa',
     ],
     comparisons: [
       {
@@ -711,7 +729,7 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
         failureMechanisms: ['briefing-method-context-assumed', 'abstract-nominalized-mechanism', 'inconsistent-experiment-chart-grammar', 'intervention-before-observed-problem', 'presentation-canvas-not-scaled-as-unit'],
       },
     ],
-    note: 'PR #569 与后续 PR #604 都有 concrete acceptance；最新 accepted visual 是 59f46044。owner 从未说“以后按这版 / 作为模板”，所以仍没有 canonicalVariantId，也没有 Golden 视觉模板。',
+    note: 'PR #569、#604 与 #619 都有 concrete acceptance；当前最新明确 accepted visual 是 PR #619 exact head 6fcef6aa。#619 的接受发生在完整 ELI5 / 科学边界 cold-read 与 exact-head/current-base 验收之后，但 owner 从未说“以后按这版 / 作为模板”，所以仍没有 canonicalVariantId，也没有 Golden 视觉模板。',
   },
   {
     id: 'TRAJECTORY-BRIEFING-DEVICE-SCOPE-20260909',
@@ -795,7 +813,7 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
         failureMechanisms: ['unnamed-scientific-referent'],
       },
     ],
-    note: '670ab9b4 是 PR #605 的历史 current-candidate；后续 exact head 56b5120 进入 main，但 owner 在该 head 之后明确指出 TaskVector 技术层级和“科学尝试”checklist 仍是必须修掉的 hard failure。2026-09-10 又补充“关键归因句不能让听众猜‘问题’指什么”。这些是 copy/storyline trajectory；PR #614 的 No-GDR successor 仍在 review，没有新的 canonicalVariantId / Golden。',
+    note: '670ab9b4 是 PR #605 的历史 current-candidate；后续 exact head 56b5120 进入 main，但 owner 在该 head 之后明确指出 TaskVector 技术层级和“科学尝试”checklist 仍是必须修掉的 hard failure。2026-09-10 又补充“关键归因句不能让听众猜‘问题’指什么”。PR #614 的 No-GDR 曲线版当时仍是 current-candidate；2026-09-11 的独立 PR #619 后续获得 concrete acceptance，因此 #614 只保留历史候选身份。没有 canonicalVariantId / Golden。',
   },
   {
     id: 'TRAJECTORY-BRIEFING-EXPERIMENT-CHART-GRAMMAR-20260909',
@@ -815,7 +833,7 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
         failureMechanisms: ['inconsistent-experiment-chart-grammar', 'cross-experiment-legend-relearning'],
       },
     ],
-    note: 'PR #604 的统一图表具体实现被接受；2026-09-10 的新增 No-GDR 线再次复现同一要求，因此两条 failure family 升到 repeated。这条 trajectory 学的是“相同证据对象继承同一视觉语义”，不是固定数值轴、固定颜色模板或所有研究图都必须长这样。',
+    note: 'PR #604 的统一图表具体实现被接受；2026-09-10 的新增 No-GDR 线再次复现同一要求，因此两条 failure family 升到 repeated。PR #614 曲线版在当时只到 current-candidate，后由独立 PR #619 的 accepted Silver 取代 active briefing authority。这条 trajectory 学的是“相同证据对象继承同一视觉语义”，不是固定数值轴、固定颜色模板或所有研究图都必须长这样。',
   },
   {
     id: 'TRAJECTORY-ITERATIVE-PREVIEW-WORKFLOW-20260909',
@@ -1032,8 +1050,22 @@ export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
     pullRequest: 614,
     route: '/research/seed-openevo/study/briefing/',
     ownerEvidence: 'owner 要求新实验沿用其他实验的分数/loss表现；随后 Agent 重新生成 Preview，并实际核对该 slide 有 2 张 SVG、3 条 polyline。owner 在看到该链接后直接进入 closeout，没有对 exact visual 给出 accepted / canonical 语言。',
-    note: 'CURRENT-CANDIDATE。它在 chart-grammar 维度落实了明确要求，但“实现了要求”不等于整张视觉获得人类接受；没有 Silver / Golden 升级。exact SHA + route 可重建。',
+    note: '历史 CURRENT-CANDIDATE。它在 chart-grammar 维度落实了明确要求，但当时没有整张视觉的 owner acceptance。后续独立 PR #619 成为新的明确 owner-approved HPL-rated briefing reference；这里的 supersession 表示 active visual/current-authority 被后继替代，不声称两个 Git head 有祖先关系。',
+    supersededByReferenceId: 'VISUAL-BRIEFING-619-ACCEPTED-SILVER',
   },
+  {
+    id: 'VISUAL-BRIEFING-619-ACCEPTED-SILVER',
+    tier: 'silver',
+    scopes: ['briefing', 'visual', 'briefing-mobile', 'briefing-desktop'],
+    artifact: 'OpenEVO × SEED 22-slide briefing · owner-approved ELI5/science successor',
+    repository: 'mykcs/basemodel',
+    gitSha: '6fcef6aacdb61fe904bbf9f69389e44f9c718ed6',
+    pullRequest: 619,
+    route: '/research/seed-openevo/study/briefing/',
+    ownerEvidence: 'owner asked for the exact current #619 to be cold-read against recent slide feedback and scientific boundaries; after the remaining ELI5 surface cleanup, current-main sync, and exact-head Vercel success were confirmed, owner explicitly said “合并”.',
+    note: 'Concrete accepted result → Silver. No “以后按这版 / 作为模板” future-reference authorization exists, so this is not Golden. Exact repo + SHA + route can reconstruct the accepted state; transient Preview URLs are intentionally not retained.',
+  },
+
   {
     id: 'VISUAL-FUHUO-RECOVERY-TECHNICAL-FIRST-REJECTED',
     tier: 'rejected',
