@@ -389,11 +389,14 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
       'Success@8 只从 51.88% 到 56.25%',
       'state/action coverage',
       'Frontier Curriculum',
-      'partial-credit preference',
+      'Partial-credit preference',
       'ΔSuccess@8',
       '待填',
       '固定来源 #420 @ afc7b745',
-      'selected-vs-success task identity',
+      '122/122 个封口轮次',
+      '111/122 轮集合完全相等',
+      '不证明 success-only 学习造成平台',
+      'task-identity 核对 PASS @ 9922003',
     ]) expect(frontierSection).toContain(item);
     expect(directApplyFrontierPlan.status).toBe('PLAN_AND_READ_ONLY_DIAGNOSTIC_NOT_FINAL_EVALUATION');
     expect(directApplyFrontierPlan.metrics.sealed_rounds).toBe(122);
@@ -405,7 +408,10 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(directApplyFrontierPlan.metrics.sd_lora_selection.equal_to_exact_success_task_count_rounds).toBe(111);
     expect(directApplyFrontierPlan.metrics.final_panel_access_count).toBe(0);
     expect(directApplyFrontierPlan.source_plan.exact_head_sha).toBe('afc7b74500b98134c12f2ee9cc880ac2980ffc10');
+    // Keep the dated 2026-09-10 projection immutable; the later identity-audit PASS is cited separately in the briefing.
     expect(directApplyFrontierPlan.diagnostic_completion).toEqual({ artifact_pack_present: true, input_integrity_verified_count: 608, selected_vs_exact_identity_audit_complete: false, deliverable_a_complete: false });
+    expect(frontierSection).not.toContain('还差 selected-vs-success task identity 逐项核对');
+    expect(frontierSection).not.toContain('the selected-vs-success task-identity audit is still open');
     expect(directApplyFrontierPlan.authority).toMatchObject({ may_authorize_run_mutation: false, may_authorize_recovery: false, may_authorize_successor_launch: false, may_authorize_final_panel: false });
     expect(directApplyFrontierPlan.metrics).not.toHaveProperty('r122_rollout_only');
     expect(directApplyFrontierPlan.placeholders).toEqual({
@@ -459,8 +465,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(finalSlide).toContain('保持每轮 128 次任务尝试的总预算不变');
     expect(finalSlide).toContain('优先那些已经接近成功、但还没完全做对的难题');
     expect(finalSlide).toContain('让部分得分参与学习');
-    expect(finalSlide).toContain('训练结束后只打开一次冻结终评');
-    expect(finalSlide).toContain('再启动下一条单变量实验');
+    expect(finalSlide).toContain('R160 正式封口并获得终评授权后，只打开一次冻结终评');
+    expect(finalSlide).toContain('再经单独预注册和授权，启动下一条单变量实验');
     expect(finalSlide).not.toContain('向北');
     expect(finalSlide).not.toContain('向南');
     expect(finalSlide).not.toContain('想请老师和学长判断优先级');

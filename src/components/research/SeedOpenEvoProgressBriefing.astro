@@ -31,6 +31,7 @@ const directApplyPlateauEvidenceHref = '/research/seed-openevo/evidence/q17-dire
 const frontierPlanHref = p('/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/');
 const frontierPlanMarkdownHref = 'https://github.com/mykcs/openevo-experiment/blob/afc7b74500b98134c12f2ee9cc880ac2980ffc10/docs/experiment-tracking/Q17_DIRECTAPPLY_FRONTIER_PLAN_20260910.md';
 const frontierEvidenceHref = '/research/seed-openevo/evidence/q17-directapply-frontier-plan-20260910-2312-sgt.json';
+const frontierIdentityAuditHref = 'https://github.com/mykcs/openevo-experiment/blob/9922003d1ac091bd7851fc0de1315bbd4e24c69f/analysis/q17_directapply_frontier/202609110309-identity/README.md';
 
 const dynamics3B = OPEN_EVO_3B_TRAINING_DYNAMICS;
 const dynamics7B = OPEN_EVO_LONG_RUN_TRAINING_DYNAMICS.sevenB;
@@ -517,12 +518,12 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
       <h2 id="frontier-roadmap-title">{t('平台期之后，我们把原因拆成可以逐个验证的问题', 'After the plateau, we split the possible causes into testable questions')}</h2>
       <p class="slide-thesis">{t('2026-09-10 23:12 SGT 的快照封口到 R121：R90–99 的 49.90 后，R110–119 回到 63.52；当时 R122 未封口并被排除。这里展示的是历史快照，不代表当前运行状态。', 'The 2026-09-10 23:12 SGT snapshot was sealed through R121: after R90–99 averaged 49.90, R110–119 recovered to 63.52; R122 was then unsealed and excluded. This is a historical snapshot, not live run status.')}</p>
       <div class="frontier-plan-grid">
-        <article><span>01 · {t('已经知道', 'known')}</span><strong>{t('可靠性在变强', 'reliability is improving')}</strong><p>{t('生成诊断包：Success@1 从 R90–99 的 25.62% 到 R110–119 的 34.38%；Success@8 只从 51.88% 到 56.25%。这是快照证据，不代表 successor 已有效。', 'Generated diagnostics: Success@1 rose from 25.62% in R90–99 to 34.38% in R110–119; Success@8 rose from 51.88% to 56.25%. This is snapshot evidence, not proof that a successor works.')}</p></article>
+        <article><span>01 · {t('已经知道', 'known')}</span><strong>{t('这个快照里，可靠性先于覆盖面改善', 'In this snapshot, reliability improved before coverage')}</strong><p>{t('生成诊断包：Success@1 从 R90–99 的 25.62% 到 R110–119 的 34.38%；Success@8 只从 51.88% 到 56.25%。这是快照证据，不代表 successor 已有效。', 'Generated diagnostics: Success@1 rose from 25.62% in R90–99 to 34.38% in R110–119; Success@8 rose from 51.88% to 56.25%. This is snapshot evidence, not proof that a successor works.')}</p></article>
         <article><span>02 · {t('缺的指标', 'missing measurements')}</span><strong>{t('覆盖面和探索', 'coverage and exploration')}</strong><p>{t('补 Success@k、best-of-8、frontier count、selected-vs-success identity、state/action coverage；KL 和 ACC/BWT/FWT 后补。', 'Add Success@k, best-of-8, frontier count, selected-vs-success identity, and state/action coverage; add KL and ACC/BWT/FWT later.')}</p></article>
-        <article><span>03 · {t('下一步实验', 'next experiments')}</span><strong>{t('先 Frontier，再 Preference', 'frontier first, preference later')}</strong><p>{t('CPU-only 诊断包已经生成并核过 608 个输入；还差 selected-vs-success task identity 逐项核对。A 关掉后，才在相同 128-rollout 预算下测试 Frontier Curriculum；partial-credit preference 和 delayed counterfactual 继续单独立项。', 'The CPU-only diagnostic pack exists and 608 inputs passed integrity checks; the selected-vs-success task-identity audit is still open. Close A before testing Frontier Curriculum under the same 128-rollout budget; keep partial-credit preference and delayed counterfactual as separate successors.')}</p></article>
+        <article><span>03 · {t('下一步实验', 'next experiments')}</span><strong>{t('先 Frontier，再 Preference', 'frontier first, preference later')}</strong><p>{t('后续 task-identity 核对已经完成：122/122 个封口轮次里，SD-LoRA 选中的题目 identity 都属于 clean-exact success 题目；111/122 轮集合完全相等。这只证明选中的题都有成功证据，不证明 success-only 学习造成平台，也不证明 Frontier Curriculum 会改善结果。后续 B 仍需单独预注册和授权。', 'The later task-identity audit is complete: in 122/122 sealed rounds, every task identity selected by SD-LoRA belonged to the clean-exact-success set, with exact set equality in 111/122 rounds. This only proves that selected tasks had success evidence; it does not prove success-only learning caused the plateau or that Frontier Curriculum will improve it. Successor B still requires separate preregistration and authorization.')}</p></article>
       </div>
       <div class="frontier-blanks"><span data-placeholder-key="frontier_curriculum_delta_success_at_8"><strong>ΔSuccess@8</strong>{t('待填', 'TBD')}</span><span data-placeholder-key="frontier_curriculum_state_coverage_delta"><strong>{t('State coverage', 'State coverage')}</strong>{t('待填', 'TBD')}</span><span data-placeholder-key="delayed_reject_counterfactual"><strong>{t('Delayed reject', 'Delayed reject')}</strong>{t('待填', 'TBD')}</span><span data-placeholder-key="partial_credit_preference_start_decision"><strong>{t('Partial-credit preference', 'Partial-credit preference')}</strong>{t('待填', 'TBD')}</span></div>
-      <p class="source-note"><a href={frontierPlanHref}>{t('网页计划页', 'roadmap page')}</a> · <a href={frontierPlanMarkdownHref}><ExternalBrandMark href={frontierPlanMarkdownHref} /> {t('固定来源 #420 @ afc7b745', 'pinned source #420 @ afc7b745')}</a> · <a href={frontierEvidenceHref}>{t('只读投影证据', 'read-only projection evidence')}</a> · <span>{t('final panel = 0；展示层不授权运行或恢复', 'final panel = 0; publication surface cannot authorize execution or recovery')}</span></p>
+      <p class="source-note"><a href={frontierPlanHref}>{t('网页计划页', 'roadmap page')}</a> · <a href={frontierPlanMarkdownHref}><ExternalBrandMark href={frontierPlanMarkdownHref} /> {t('固定来源 #420 @ afc7b745', 'pinned source #420 @ afc7b745')}</a> · <a href={frontierIdentityAuditHref}><ExternalBrandMark href={frontierIdentityAuditHref} /> {t('task-identity 核对 PASS @ 9922003', 'task-identity audit PASS @ 9922003')}</a> · <a href={frontierEvidenceHref}>{t('历史只读投影证据', 'historical read-only projection evidence')}</a> · <span>{t('final panel = 0；展示层不授权运行、恢复、终评或 successor', 'final panel = 0; publication surface cannot authorize execution, recovery, final evaluation, or a successor')}</span></p>
       <p class="slide-number">21 / 23</p>
     </div>
   </section>
@@ -553,9 +554,9 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
       <div class="final-order" aria-label={t('下一步执行顺序', 'Execution order')}>
         <span><b>01</b>{t('DirectApply 原样跑到 R160', 'Run DirectApply unchanged through R160')}</span>
         <i aria-hidden="true">→</i>
-        <span><b>02</b>{t('训练结束后只打开一次冻结终评', 'Open the frozen final once after training')}</span>
+        <span><b>02</b>{t('R160 正式封口并获得终评授权后，只打开一次冻结终评', 'After R160 is sealed and final-eval access is authorized, open the frozen final once')}</span>
         <i aria-hidden="true">→</i>
-        <span><b>03</b>{t('再启动下一条单变量实验', 'Then start the next one-variable experiment')}</span>
+        <span><b>03</b>{t('再经单独预注册和授权，启动下一条单变量实验', 'Then preregister and separately authorize the next one-variable experiment')}</span>
       </div>
       <p class="final-source"><a href={flowHref}>{t('实验流程', 'Experiment flow')}</a> · <a href={technicalHref}>{t('技术推导与实验严谨性', 'Technical derivations and rigor')}</a></p>
     </div>
