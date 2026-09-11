@@ -19,6 +19,7 @@ const successorReportHref = p('/research/seed-openevo/study/capability-explorati
 const stage1EvolutionHref = p('/research/seed-openevo/study/capability-exploration/stage1-evolution/');
 const stage2AnalysisHref = p('/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/');
 const mechanismHref = p('/research/seed-openevo/study/capability-exploration/mechanism-1-0/');
+const vanillaSdLoraHref = p('/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/');
 const gdrDirectApplyHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
 const q17DiagnosticsHref = p('/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/');
 const archiveLinks = [
@@ -121,6 +122,7 @@ const steps = zh ? [
     intro={t("实验报告汇总设置与结果；设计过程解释修改原因；7B 专题检查历史参数变化。", "The report summarizes setup and results; design history explains revisions; the 7B study examines historical parameter changes.")}
   >
     <nav class="map-lobby__deep-links" aria-label={t('专题研究地图', 'Focused research maps')}>
+      <a href={vanillaSdLoraHref} data-deep-dive="vanilla-sd-lora"><small>{t('Stage2 · 参数机制', 'STAGE 2 · PARAMETER MECHANISM')}</small><strong>{t('Vanilla SD-LoRA 一轮到底怎么工作？', 'How does one Vanilla SD-LoRA round work?')}</strong><span>{t('从 128 次 rollout 开始，看成功轨迹怎样变成训练数据、参数方向怎样累计、下一轮又怎样接着用。', 'Start from 128 rollouts and follow how successful trajectories become training data, parameter directions accumulate, and the next round continues.')}</span></a>
       <a href={gdrDirectApplyHref} data-deep-dive="gdr-directapply"><small>{t('Stage2 · 机制消融', 'STAGE 2 · MECHANISM ABLATION')}</small><strong>{t('为什么 44 次 SD-LoRA 尝试只留下 7 次更新？', 'Why did 44 SD-LoRA attempts become only 7 updates?')}</strong><span>{t('从 GDR-v1 的一步放行规则走到 DirectApply / No-GDR，对照短期 gate 是否截断长期学习路径。', 'Follow the decision from GDR-v1 to DirectApply / No-GDR and test whether a one-step gate truncates longer-horizon learning.')}</span></a>
       <a href={successorExplorationHref} data-deep-dive="successor-exploration"><small>{t('第二代 · 探索版', 'SECOND GENERATION · EXPLORATION')}</small><strong>{t('看假设怎样被证伪、回退和重新冻结', 'See how hypotheses were falsified, backtracked, and refrozen')}</strong><span>{t('适合想知道“为什么最后会变成现在这套 Harness”的读者。', 'Best when you want to know why the current harness ended up this way.')}</span></a>
       <a href={successorReportHref} data-deep-dive="successor-report"><small>{t('第二代 · 报告版', 'SECOND GENERATION · REPORT')}</small><strong>{t("实验设置、结果与结论范围", "Experiment setup, results, and claim scope")}</strong><span>{t('适合汇报、论文讨论和快速核对当前结论。', 'Best for presentations, paper discussion, and fast claim checking.')}</span></a>

@@ -1,0 +1,182 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import { VANILLA_SD_LORA_MECHANISM as facts } from '../../data/vanillaSdLoraMechanism';
+import OpenEvoVanillaSdLoraSlide from './OpenEvoVanillaSdLoraSlide.astro';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const capabilityHref = p('/research/seed-openevo/study/capability-exploration/');
+const gdrHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
+const q17Href = p('/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/');
+const mechanismHref = p('/research/seed-openevo/study/capability-exploration/mechanism-1-0/');
+const helps = zh ? [
+  '基础模型不做全参数更新。',
+  '过去学到的方向不会被下一轮直接重写。',
+  '新成功经验仍能增加一个新的参数方向。',
+  'bounded replay 让优化器还能看到一部分过去经验。',
+] : [
+  'The base model avoids full-parameter updates.',
+  'Earlier learned directions are not directly overwritten.',
+  'New successful experience can add a new parameter direction.',
+  'Bounded replay keeps some earlier experience visible to the optimizer.',
+];
+const risks = zh ? [
+  '只从完整成功轨迹直接学习，难题可能长期没有监督信号。',
+  'replay 有容量上限，不等于保存全部历史。',
+  '旧方向虽冻结，α 仍会变化，所以旧方向的实际影响并非固定。',
+  'loss 下降、component 增加，不保证 WebShop 能力单调上升。',
+] : [
+  'Direct supervision comes only from exact success, so hard tasks may remain unseen by the trainer.',
+  'Replay is bounded rather than a complete history.',
+  'Old directions freeze, but α can still change their behavioral contribution.',
+  'Lower loss and more components do not guarantee monotonic WebShop improvement.',
+];
+
+---
+<article class="sdlora" data-copy-review data-testid="vanilla-sd-lora-mechanism" data-reader-page="research-explainer" data-ui-audit="contrast layout">
+  <a class="sdlora__back" href={capabilityHref}>← {t('OpenEvo 能力探索', 'OpenEvo capability exploration')}</a>
+
+  <OpenEvoVanillaSdLoraSlide locale={locale} />
+  <section class="sdlora__section" id="round-inputs" aria-labelledby="round-inputs-title">
+    <h2 id="round-inputs-title">{t('一轮开始时，系统手上有什么？', 'What does the system have at the start of a round?')}</h2>
+    <div class="sdlora-two-col">
+      <div data-ui-audit-item>
+        <h3>{t('直接决定 rollout 的状态', 'State that directly shapes rollout')}</h3>
+        <ul>
+          <li>{t('冻结的 base model。', 'The frozen base model.')}</li>
+          <li>{t('上一轮选定的 cumulative SD-LoRA adapter。', 'The cumulative SD-LoRA adapter selected after the prior round.')}</li>
+          <li>Text Memory / Skill Bundle / Agent System — {t('它们会影响模型看到的上下文或行为，但不是 SD-LoRA optimizer 的直接参数输入。', 'they can shape context or behavior, but are not direct parameter inputs to the SD-LoRA optimizer.')}</li>
+        </ul>
+      </div>
+      <div data-ui-audit-item>
+        <h3>{t('本轮任务', 'Tasks for this round')}</h3>
+        <p><strong>{facts.round.taskCount} × {facts.round.rolloutsPerTask} = {facts.round.rolloutCount} rollouts</strong></p>
+        <p>{t('每条 rollout 都留下动作轨迹、模型原始输出、最终 task score、是否完整成功以及 parser / repair / engineering-invalid 等诊断字段。', 'Every rollout records the action trajectory, raw model output, final task score, exact-success state, and parser / repair / engineering-invalid diagnostics.')}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sdlora__section" id="training-data" aria-labelledby="training-data-title">
+    <h2 id="training-data-title">{t('128 次尝试里，哪些真的进入 SD-LoRA？', 'Which of the 128 attempts actually train SD-LoRA?')}</h2>
+    <div class="sdlora-filter" data-ui-audit="contrast layout">
+      <div class="sdlora-filter__all" data-ui-audit-item>
+        <small>{facts.round.rolloutCount} rollouts</small>
+        <strong>{t('全部保留为评估与诊断记录', 'All remain evaluation and diagnostic evidence')}</strong>
+        <p>{t('失败、部分成功、parser repair、invalid 等仍然能解释 round 为什么涨跌。', 'Failures, partial success, parser repair, and invalid states still help explain round-level movement.')}</p>
+      </div>
+      <div class="sdlora-filter__arrow" aria-hidden="true">→</div>
+      <div class="sdlora-filter__train" data-ui-audit-item>
+        <small>{t('监督训练子集', 'Supervised subset')}</small>
+        <strong>{t('每个任务最早一条 clean exact success', 'Earliest clean exact success per task')}</strong>
+        <p>{t('要求完整成功、身份与轨迹完整，而且没有解析失败、解析修复、工程无效或运行错误。', 'Requires exact success, valid identity and a complete trace, with no parser failure, parser repair, engineering-invalid state, or runtime error.')}</p>
+      </div>
+    </div>
+    <p class="sdlora-note">{t(
+      `一个成功任务会保留整条 ${facts.selection.traceStepsMin}–${facts.selection.traceStepsMax} 步轨迹，再拆成 step-level assistant targets；当前一轮最多 ${facts.selection.maxTraceExamples} 个 trace examples，配置上限 ${facts.selection.maxRecords}。本轮 dataset 不把旧 round 的 raw rollout 直接拼回来；跨轮旧例子来自上一版 adapter 自带的 bounded replay。`,
+      `A successful task keeps its full ${facts.selection.traceStepsMin}–${facts.selection.traceStepsMax}-step trajectory and is then split into step-level assistant targets. The current round is bounded at ${facts.selection.maxTraceExamples} trace examples, below the configured maximum of ${facts.selection.maxRecords}. The round dataset does not concatenate raw rollouts from earlier rounds; cross-round examples enter through bounded replay carried by the prior adapter.`
+    )}</p>
+  </section>
+
+  <section class="sdlora__section" id="inside-update" aria-labelledby="inside-update-title">
+    <h2 id="inside-update-title">{t('训练器内部到底做了什么？', 'What actually happens inside the trainer?')}</h2>
+    <ol class="sdlora-detail-steps">
+      <li data-ui-audit-item><span>1</span><div><strong>{t('准备当前 examples', 'Prepare current examples')}</strong><p>{t('把成功轨迹里的每一步转成 chat/tool training example，只让 assistant 输出位置计算 loss。', 'Turn each successful step into a chat/tool training example and compute loss only on assistant output tokens.')}</p></div></li>
+      <li data-ui-audit-item><span>2</span><div><strong>{t('加入 bounded replay', 'Add bounded replay')}</strong><p>{t(`上一轮 adapter 自带容量 ${facts.trainer.replayCapacity} 的 replay buffer；如果已有历史，trainer 从中取 replay examples 与本轮 examples 一起优化。`, `The prior adapter carries a replay buffer capped at ${facts.trainer.replayCapacity}; when history exists, replay examples are optimized alongside the current examples.`)}</p></div></li>
+      <li data-ui-audit-item><span>3</span><div><strong>{t('冻结 base 和旧方向', 'Freeze the base and prior directions')}</strong><p>{t('W₀ 不训练；过去 component 的 A/B 也设为不求梯度。只有本轮 Aₜ/Bₜ 和共享 coefficient vector 参与优化。', 'W₀ is frozen, and prior component A/B matrices do not receive gradients. Only current Aₜ/Bₜ plus the shared coefficient vector are optimized.')}</p></div></li>
+      <li data-ui-audit-item><span>4</span><div><strong>{t('同时学习新方向与全部 α', 'Optimize the new direction and every α')}</strong><p>{t(`新方向使用学习率 ${facts.trainer.learningRate}；coefficients 使用独立学习率 ${facts.trainer.coefficientLearningRate}。这意味着旧方向本身不变，但它们在累计 adapter 里的“音量”可以改变。`, `The new direction uses learning rate ${facts.trainer.learningRate}; coefficients use a separate ${facts.trainer.coefficientLearningRate}. Old directions stay fixed, but their “volume” in the cumulative adapter can change.`)}</p></div></li>
+      <li data-ui-audit-item><span>5</span><div><strong>{t('归一化新方向，再折成一个 adapter', 'Normalize the new direction, then fold everything into one adapter')}</strong><p>{t('训练后把新 BₜAₜ 归一化为单位 Frobenius 方向，原来的大小吸收到 αₜ；随后所有 component 被拼成一份 PEFT-compatible cumulative LoRA。', 'After training, normalize BₜAₜ to a unit Frobenius direction and absorb its original magnitude into αₜ; all components are then folded into one PEFT-compatible cumulative LoRA.')}</p></div></li>
+    </ol>
+  </section>
+
+  <section class="sdlora__section" id="round-boundary" aria-labelledby="round-boundary-title">
+    <h2 id="round-boundary-title">{t('更新完以后，下一轮到底用哪个参数状态？', 'Which parameter state does the next round actually use?')}</h2>
+    <div class="sdlora-boundary" data-ui-audit="contrast layout">
+      <div data-ui-audit-item>
+        <small>{t('SD-LoRA 到这里结束', 'SD-LoRA ends here')}</small>
+        <strong>{t('训练出 candidate cumulative adapter', 'Train a candidate cumulative adapter')}</strong>
+        <p>{t('adapter 还同时保存 SD-LoRA state 与 bounded replay，供后续 round 继续累计。', 'The adapter also carries SD-LoRA state and bounded replay for the next continual update.')}</p>
+      </div>
+      <span aria-hidden="true">→</span>
+      <div data-ui-audit-item>
+        <small>{t('状态准入 · 另一层机制', 'State admission · separate mechanism')}</small>
+        <strong>{t('DirectApply 或 GDR 决定 successor state', 'DirectApply or GDR chooses the successor state')}</strong>
+        <p>{t('当前 Q17 DirectApply 在工程/数据合同通过后采用新 candidate；历史 GDR-v1 还会做 16-task probe，可能继续使用旧状态。', 'Current Q17 DirectApply adopts the new candidate after engineering/data contracts pass; historical GDR-v1 adds a 16-task probe and may keep the prior state.')}</p>
+      </div>
+      <span aria-hidden="true">→</span>
+      <div data-ui-audit-item>
+        <small>Round t + 1</small>
+        <strong>{t('用选定状态继续 rollout', 'Roll out with the selected state')}</strong>
+        <p>{t('新的行为再产生新的成功/失败证据，循环继续。', 'New behavior produces the next round of success/failure evidence and the loop repeats.')}</p>
+      </div>
+    </div>
+    <p class="sdlora-note">{t('因此“SD-LoRA candidate 训练成功”和“模型状态正式更新”必须分开计数。历史 GDR 线的 44 candidates → 7 accepted updates 正是这个区别。', '“SD-LoRA candidate trained successfully” and “model state formally updated” are separate events. The historical GDR line’s 44 candidates → 7 accepted updates is exactly this distinction.')}</p>
+  </section>
+
+  <section class="sdlora__section" id="mechanism-risks" aria-labelledby="mechanism-risks-title">
+    <h2 id="mechanism-risks-title">{t('为什么它可能学会东西，也为什么不能保证越学越好', 'Why it can learn — and why improvement is not guaranteed')}</h2>
+    <div class="sdlora-two-col sdlora-two-col--evidence">
+      <div data-ui-audit-item><h3>{t('设计想解决什么', 'What the design is trying to do')}</h3><ul>{helps.map((item) => <li>{item}</li>)}</ul></div>
+      <div data-ui-audit-item><h3>{t('机制层面的检查点', 'Mechanism-level failure points')}</h3><ul>{risks.map((item) => <li>{item}</li>)}</ul><p><strong>{t('这些是需要测的风险，不是当前已经证明的故障原因。', 'These are risks to measure, not causes already proven in the current run.')}</strong></p></div>
+    </div>
+    <p class="sdlora-caveat">{t('尤其不能把“某一轮分数下降”直接等同于“对应 checkpoint 更新让模型整体退化”：不同 round 抽到的 WebShop 任务不同。2026-09-11 的固定同题诊断显示，task sampling 可以明显放大看起来的单轮回撤。', 'A lower score in one round cannot by itself mean the parameter update globally degraded the model: different rounds sample different WebShop tasks. Current same-task diagnostics already show that task sampling can amplify apparent round-to-round drops.')}</p>
+  </section>
+
+  <details class="sdlora__details">
+    <summary>{t('当前 Q17 / OpenEvo 实现参数与精确边界', 'Current Q17 / OpenEvo configuration and exact boundaries')}</summary>
+    <dl class="sdlora-config">
+      <div><dt>rank</dt><dd>{facts.trainer.rank}</dd></div>
+      <div><dt>direction lr</dt><dd>{facts.trainer.learningRate}</dd></div>
+      <div><dt>coefficient lr</dt><dd>{facts.trainer.coefficientLearningRate}</dd></div>
+      <div><dt>epochs</dt><dd>{facts.trainer.epochs}</dd></div>
+      <div><dt>replay capacity</dt><dd>{facts.trainer.replayCapacity}</dd></div>
+      <div><dt>max length</dt><dd>{facts.trainer.maxLength}</dd></div>
+      <div><dt>dtype</dt><dd>{facts.trainer.dtype}</dd></div>
+      <div><dt>seed</dt><dd>{facts.trainer.seed}</dd></div>
+      <div><dt>effective-rank limit</dt><dd>{facts.state.effectiveRankLimit}</dd></div>
+      <div class="wide"><dt>target modules</dt><dd>{facts.trainer.targetModules.join(' · ')}</dd></div>
+    </dl>
+    <p>{t(`当前语言 Agent 适配明确标记 paper_equivalent=false、rehearsal_free=false、routing_mode=single_cumulative_adapter、retention_strategy=bounded_trajectory_replay。每个 component 的 rank 是 ${facts.trainer.rank}，所以累计 effective rank 随 component 数增长；当前 Qwen3 路线的上限是 ${facts.state.effectiveRankLimit}。如果已有 prior replay buffer，trainer 会按本轮 current examples 的数量抽取 replay examples；buffer 本身最多保留 ${facts.trainer.replayCapacity} 条。`, `The current language-agent adaptation explicitly records paper_equivalent=false, rehearsal_free=false, routing_mode=single_cumulative_adapter, and retention_strategy=bounded_trajectory_replay. Each component has rank ${facts.trainer.rank}, so cumulative effective rank grows with component count; the current Qwen3 path is capped at ${facts.state.effectiveRankLimit}. When a prior replay buffer exists, the trainer samples replay examples to match the current-example count; the buffer itself retains at most ${facts.trainer.replayCapacity} entries.`)}</p>
+    <p>{t('因此它复用了 SD-LoRA 的方向/幅度分解思想，但不是 ICLR 2025 vision protocol 的逐项复刻。', 'It therefore reuses SD-LoRA’s direction/magnitude decomposition but is not an item-for-item reproduction of the ICLR 2025 vision protocol.')}</p>
+  </details>
+
+  <section class="sdlora__section sdlora__sources" aria-labelledby="sdlora-sources-title">
+    <h2 id="sdlora-sources-title">{t('来源与继续阅读', 'Sources and next steps')}</h2>
+    <div class="sdlora-sources-grid">
+      <div>
+        <h3>{t('实现证据', 'Implementation evidence')}</h3>
+        <ul>
+          <li><a href={facts.sources.dataset} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={facts.sources.dataset} />{t('Q17 冻结执行：训练数据选择器', 'Q17 frozen execution: training-data selector')}</a></li>
+          <li><a href={facts.sources.wrapper} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={facts.sources.wrapper} />{t('Q17 冻结执行：SD-LoRA wrapper', 'Q17 frozen execution: SD-LoRA wrapper')}</a></li>
+          <li><a href={facts.sources.capacity} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={facts.sources.capacity} />{t('Qwen3-1.7B effective-rank 容量合同', 'Qwen3-1.7B effective-rank capacity contract')}</a></li>
+          <li><a href={facts.sources.upstreamAudit} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={facts.sources.upstreamAudit} />{t('OpenEvo 上游审计与适配边界', 'OpenEvo upstream audit and adaptation boundary')}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>{t('方法来源', 'Method source')}</h3>
+        <ul>
+          <li><a href={facts.sources.paper} target="_blank" rel="noopener noreferrer">SD-LoRA · ICLR 2025 Oral</a></li>
+          <li><a href={facts.sources.officialCode} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={facts.sources.officialCode} />SD-LoRA official code</a></li>
+        </ul>
+        <h3>{t('下一层问题', 'Next layer')}</h3>
+        <nav class="sdlora-next" aria-label={t('相关研究页面', 'Related research pages')}>
+          <a href={gdrHref}>{t('GDR / DirectApply：candidate 为什么被采用或拒绝', 'GDR / DirectApply: why a candidate is adopted or rejected')}</a>
+          <a href={q17Href}>{t('R127 → R128：同一批题上的 checkpoint 变化', 'R127 → R128: checkpoint change on the same tasks')}</a>
+          <a href={mechanismHref}>{t('Mechanism-1.0：进一步做参数因果干预', 'Mechanism-1.0: causal parameter interventions')}</a>
+        </nav>
+      </div>
+    </div>
+    <footer>{t('边界：这是当前 OpenEvo × WebShop 参数路径的机制解释图，不是 OpenEvo 全系统总览，也不把尚未验证的 interference / forgetting 假设写成结论。', 'Boundary: this explains the current OpenEvo × WebShop parametric path. It is not an OpenEvo system overview and does not promote unverified interference / forgetting hypotheses into conclusions.')}</footer>
+  </section>
+</article>
+
+<style>
+.sdlora{width:min(1120px,calc(100% - 2rem));margin:1rem auto 4rem;color:var(--ink);font-size:1rem;line-height:1.65}.sdlora__back{display:inline-flex;margin:.25rem 0 .65rem;color:var(--accent-deep);font-size:1rem;text-underline-offset:.2em}.sdlora a:focus-visible,.sdlora summary:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}.sdlora__section{margin-top:2.25rem;padding-top:1.45rem;border-top:1px solid var(--line)}.sdlora__section h2{max-width:36ch;margin:0 0 .85rem;font-size:clamp(1.45rem,2.5vw,1.95rem);line-height:1.25;letter-spacing:-.02em}.sdlora__section h3{margin:.1rem 0 .55rem;font-size:1.03rem;line-height:1.35}.sdlora__section>p{max-width:50rem}.sdlora-two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.4rem}.sdlora-two-col>div{min-width:0;padding:.85rem 0;border-top:2px solid var(--line)}.sdlora-two-col p,.sdlora-two-col ul{margin:.5rem 0}.sdlora-two-col ul{padding-left:1.15rem}.sdlora-two-col li{margin:.35rem 0}.sdlora-two-col--evidence>div:first-child{border-top-color:var(--color-positive)}.sdlora-two-col--evidence>div:last-child{border-top-color:var(--color-warning)}.sdlora-filter{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:1rem;align-items:center;margin:1rem 0}.sdlora-filter>div:not(.sdlora-filter__arrow){min-width:0;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.sdlora-filter__train{border-color:var(--color-positive)!important}.sdlora-filter small{display:block;color:var(--muted);font-size:1rem;font-weight:800}.sdlora-filter strong{display:block;margin:.25rem 0;font-size:1.05rem}.sdlora-filter p{margin:.35rem 0 0;color:var(--muted)}.sdlora-filter__arrow{color:var(--muted);font-size:1.2rem}.sdlora-note{max-width:52rem;padding:.7rem .85rem;border-left:3px solid var(--color-info);background:var(--surface-muted);color:var(--muted)}.sdlora-detail-steps{list-style:none;margin:1rem 0 0;padding:0;display:grid;gap:.55rem}.sdlora-detail-steps li{display:grid;grid-template-columns:2.1rem minmax(0,1fr);gap:.7rem;align-items:start;padding:.65rem 0;border-top:1px solid var(--line)}.sdlora-detail-steps li>span{font-size:1rem;display:grid;place-items:center;width:1.8rem;height:1.8rem;border:1px solid var(--accent-deep);border-radius:50%;color:var(--accent-deep);font:800 1rem/1 var(--font-mono)}.sdlora-detail-steps strong{font-size:1rem}.sdlora-detail-steps p{max-width:52rem;margin:.2rem 0 0;color:var(--muted)}.sdlora-boundary{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,.8fr);gap:.8rem;align-items:center;margin:1rem 0}.sdlora-boundary>div{min-width:0;padding:.9rem;border-top:2px solid var(--line);background:var(--surface-muted)}.sdlora-boundary>div:first-child{border-top-color:var(--accent-deep)}.sdlora-boundary>div:last-of-type{border-top-color:var(--color-info)}.sdlora-boundary small{display:block;color:var(--muted);font-size:1rem;font-weight:800}.sdlora-boundary strong{display:block;margin:.2rem 0}.sdlora-boundary p{margin:.25rem 0 0;color:var(--muted);font-size:1rem}.sdlora-boundary>span{color:var(--muted);font-size:1rem}.sdlora-caveat{padding:.75rem .9rem;border-left:3px solid var(--color-warning);background:var(--surface-muted)}.sdlora__details{margin:2rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}.sdlora__details summary{min-height:44px;cursor:pointer;font-weight:800}.sdlora__details>p{max-width:52rem;color:var(--muted)}.sdlora-config{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1rem 0}.sdlora-config>div{padding:.55rem .7rem;border-top:1px solid var(--line)}.sdlora-config .wide{grid-column:span 2}.sdlora-config dt{color:var(--muted);font-size:.8rem;font-weight:800}.sdlora-config dd{margin:.15rem 0 0;font-family:var(--font-mono);overflow-wrap:anywhere}.sdlora-sources-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.4rem}.sdlora-sources-grid>div{min-width:0}.sdlora-sources-grid ul{padding-left:1.1rem}.sdlora-sources-grid li{margin:.45rem 0;overflow-wrap:anywhere}.sdlora-sources-grid a,.sdlora-next a{color:var(--accent-deep);text-underline-offset:.2em}.sdlora-next{display:grid;gap:.4rem}.sdlora__sources footer{margin-top:1.2rem;padding-top:.8rem;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
+@media(max-width:900px){.sdlora-boundary{grid-template-columns:1fr}.sdlora-boundary>span{transform:rotate(90deg);justify-self:start;margin-left:.8rem}.sdlora-config{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.sdlora{width:min(100% - 1rem,1120px);margin-top:.6rem}.sdlora-two-col,.sdlora-filter,.sdlora-sources-grid{grid-template-columns:1fr}.sdlora-filter__arrow{transform:rotate(90deg);justify-self:start;margin-left:1rem}.sdlora-config{grid-template-columns:1fr}.sdlora-config .wide{grid-column:auto}}
+@media print{.sdlora__back,.sdlora__section,.sdlora__details{display:none}.sdlora{width:100%;margin:0}}
+</style>

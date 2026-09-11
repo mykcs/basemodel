@@ -1,0 +1,14 @@
+---
+import AppLayout from '../../../../../../../layouts/AppLayout.astro';
+import OpenEvoVanillaSdLoraMechanism from '../../../../../../../components/research/OpenEvoVanillaSdLoraMechanism.astro';
+import ResearchRouteContext from '../../../../../../../components/research/ResearchRouteContext.astro';
+const locale = 'en' as const;
+---
+<AppLayout
+  title="How Vanilla SD-LoRA works"
+  description="The actual OpenEvo × WebShop SD-LoRA round: how 128 rollouts become training data, how bounded replay enters optimization, and how frozen directions, a new direction, and coefficients form the next cumulative adapter."
+  locale={locale}
+>
+  <ResearchRouteContext locale={locale} route="vanilla-sd-lora" />
+  <OpenEvoVanillaSdLoraMechanism locale={locale} />
+</AppLayout>

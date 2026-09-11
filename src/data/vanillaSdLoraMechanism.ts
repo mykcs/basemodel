@@ -1,0 +1,47 @@
+export const VANILLA_SD_LORA_MECHANISM = {
+  authority: {
+    q17ExecutionSha: 'ac130148ee08b6462d9728e482a858fe5f514047',
+    upstreamStableSha: '796e6248a61112a61c880885844d3b0420c0b6ae',
+    effectiveRankCoreSha: '0ef8b0ebdf8c6d50d67bdfd0e60c8ac04a3f3ed0',
+  },
+  round: {
+    taskCount: 16,
+    rolloutsPerTask: 8,
+    rolloutCount: 128,
+    maxSteps: 15,
+  },
+  selection: {
+    rule: 'earliest clean exact success per distinct task identity',
+    traceStepsMin: 2,
+    traceStepsMax: 15,
+    maxSelectedTasks: 16,
+    maxTraceExamples: 240,
+    maxRecords: 256,
+  },
+  trainer: {
+    rank: 8,
+    learningRate: 2e-4,
+    coefficientLearningRate: 1e-2,
+    epochs: 1,
+    replayCapacity: 64,
+    maxLength: 2048,
+    dtype: 'bfloat16',
+    seed: 1993,
+    targetModules: ['q_proj', 'k_proj', 'v_proj', 'o_proj'],
+  },
+  state: {
+    paperEquivalent: false,
+    rehearsalFree: false,
+    routingMode: 'single_cumulative_adapter',
+    retentionStrategy: 'bounded_trajectory_replay',
+    effectiveRankLimit: 4096,
+  },
+  sources: {
+    dataset: 'https://github.com/mykcs/openevo-experiment/blob/ac130148ee08b6462d9728e482a858fe5f514047/scripts/openevo_webshop/ceiling1_stage2_parametric_dataset_v2.py',
+    wrapper: 'https://github.com/mykcs/openevo-experiment/blob/ac130148ee08b6462d9728e482a858fe5f514047/scripts/openevo_webshop/ceiling1_stage2_sd_lora.py',
+    capacity: 'https://github.com/mykcs/openevo-experiment/blob/ac130148ee08b6462d9728e482a858fe5f514047/configs/experiment/designs/openevo-ceiling1-stage2-vnext-qwen3-1p7b-capacity-v1.json',
+    upstreamAudit: 'https://github.com/mykcs/openevo-experiment/blob/87938b167222dfecf034e1c5cb6dc358655b415c/docs/science/upstream/OPENEVO_AUDIT_2026-08-14.md',
+    paper: 'https://openreview.net/forum?id=5U1rlpX68A',
+    officialCode: 'https://github.com/WuYichen-97/SD-Lora-CL',
+  },
+} as const;
