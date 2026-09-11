@@ -101,6 +101,33 @@ describe('Vercel hosted UI gate planner', () => {
     expect(plan.specs).toEqual(['tests/e2e/openevo-two-map.spec.ts']);
   });
 
+  it('focuses the fixed 16:9 briefing on only its two locale routes', () => {
+    const plan = planHostedUi([
+      'src/components/research/SeedOpenEvoProgressBriefing.astro',
+      'src/lib/seedOpenEvoProgressBriefing.test.ts',
+    ]);
+    expect(plan.mode).toBe('focused');
+    expect(plan.risk).toBe('shared');
+    expect(plan.routes).toEqual([
+      '/en/research/seed-openevo/study/briefing/',
+      '/research/seed-openevo/study/briefing/',
+    ]);
+    expect(plan.specs).toEqual(['tests/e2e/seed-openevo-briefing.spec.ts']);
+  });
+
+  it('keeps the briefing owner local to the two registered page entrypoints', () => {
+    const src = new URL('../', import.meta.url);
+    const importers = readdirSync(src, { recursive: true, encoding: 'utf8' })
+      .filter((file) => /\.(?:astro|[cm]?[jt]sx?)$/.test(file) && !/\.(?:test|spec)\./.test(file))
+      .filter((file) => /['"][^'"\n]*\/SeedOpenEvoProgressBriefing\.astro(?:\?[^'"\n]*)?['"]/.test(readFileSync(new URL(file, src), 'utf8')))
+      .map((file) => `src/${file.replaceAll('\\', '/')}`)
+      .sort();
+    expect(importers).toEqual([
+      'src/pages/en/research/seed-openevo/study/briefing/index.astro',
+      'src/pages/research/seed-openevo/study/briefing/index.astro',
+    ]);
+  });
+
   it('keeps the mechanism map local to the two registered page entrypoints', () => {
     const src = new URL('../', import.meta.url);
     const importers = readdirSync(src, { recursive: true, encoding: 'utf8' })
