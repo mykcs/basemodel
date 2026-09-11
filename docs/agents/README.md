@@ -214,3 +214,5 @@ Cloudflare Pages/Direct Upload/Workers material is loaded only for explicit roll
 Shared GitHub state is not a scratchpad. Prefer read/search for discovery, one coherent branch/PR, and one atomic multi-file commit over sequential write probes. Use GitHub for GitHub-owned state, Vercel for Vercel-owned state, and a user device only when the task materially depends on local-only state.
 
 At task completion, persist only knowledge whose future utility justifies another durable rule. Current cross-task rule → update its existing `current/` owner; short-lived state → `LATEST.md`; reusable incident/migration rationale → `history/`; superseded pre-current milestone/context → `archive/`.
+
+- [`history/2026-09-11-pr619-eli5-exact-head-closeout.md`](history/2026-09-11-pr619-eli5-exact-head-closeout.md) — PR #619 ELI5 surface-wide cleanup, synchronous pending-check completion, moving-main evidence, and explicit merge-authorization boundary.

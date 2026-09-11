@@ -73,8 +73,13 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
   const final604Visual = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-604-ACCEPTED-SILVER');
   const sitewideAppleEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260909-SITEWIDE-APPLE-SURFACE-REPEAT');
   const sitewideAppleVisual = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-SITEWIDE-APPLE-SURFACE-REJECTED');
+  const pr619AcceptedEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260911-BRIEFING-619-ACCEPTED');
+  const pr619AcceptedVisual = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-619-ACCEPTED-SILVER');
+  const priorNogdrCurveVisual = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE');
   const candidateHead = record.sourceWindow.finalOwnerVisibleHead;
   const candidateScope = record.preferenceBrief?.scope;
+  // Historical closeout receipts bind the visual that was current for that exact source head,
+  // even after a later accepted successor removes it from today's active Preference Brief.
   const candidateVisual = candidateHead
     ? HUMAN_VISUAL_REFERENCE_SET.find((reference) =>
         reference.tier === 'current-candidate' &&
@@ -253,6 +258,25 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
       !HUMAN_FEEDBACK_EVENTS.some((event) =>
         event.evidence?.gitSha === sitewideAppleVisual.gitSha && ['accepted', 'canonical'].includes(event.verdict),
       ),
+    'pr619-concrete-accepted-not-canonical':
+      pr619AcceptedEvent?.verdict === 'accepted' &&
+      pr619AcceptedEvent.evidence?.gitSha === '6fcef6aacdb61fe904bbf9f69389e44f9c718ed6' &&
+      pr619AcceptedVisual?.tier === 'silver' &&
+      pr619AcceptedVisual.gitSha === pr619AcceptedEvent.evidence?.gitSha &&
+      visuals.has('VISUAL-BRIEFING-619-ACCEPTED-SILVER') &&
+      !HUMAN_FEEDBACK_EVENTS.some((event) => event.evidence?.gitSha === pr619AcceptedEvent.evidence?.gitSha && event.verdict === 'canonical') &&
+      !HUMAN_VISUAL_REFERENCE_SET.some((reference) => reference.scopes.includes('briefing') && reference.tier === 'golden'),
+    'pr619-latest-accepted-briefing-visual':
+      visuals.has('VISUAL-BRIEFING-619-ACCEPTED-SILVER') &&
+      pr619AcceptedVisual?.pullRequest === 619 &&
+      pr619AcceptedVisual?.tier === 'silver' &&
+      record.sourceWindow.finalVerdict === 'accepted' &&
+      record.sourceWindow.finalAcceptedHead === pr619AcceptedVisual.gitSha,
+    'prior-nogdr-candidate-superseded-by-pr619':
+      priorNogdrCurveVisual?.tier === 'current-candidate' &&
+      priorNogdrCurveVisual.supersededByReferenceId === 'VISUAL-BRIEFING-619-ACCEPTED-SILVER' &&
+      !visuals.has('VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE') &&
+      visuals.has('VISUAL-BRIEFING-619-ACCEPTED-SILVER'),
   };
   return { brief, statuses };
 }

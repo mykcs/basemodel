@@ -1,19 +1,38 @@
 {
   "schema": "basemodel.q17-directapply-frontier-plan.v1",
   "snapshot_label_sgt": "2026-09-10T23:12:00+08:00",
+  "diagnostic_generated_at_utc": "2026-09-10T16:42:22Z",
   "status": "PLAN_AND_READ_ONLY_DIAGNOSTIC_NOT_FINAL_EVALUATION",
-  "scope": "R0-R121 sealed receipts; R122 rollout-only active/unsealed note excluded from trend claims",
-  "run_root": "/data/home/wangr/workspace/runs/q17-direct-apply-only-w2-202609082022/q17-direct-apply-only-w2-202609082022-direct",
+  "projection_role": "DERIVED_PUBLICATION_PROJECTION_ONLY",
+  "scope": "Historical snapshot: R0-R121 sealed receipts; R122 was active/unsealed at the snapshot and was excluded. This field is not live run status.",
+  "run_id": "q17-direct-apply-only-w2-202609082022-direct",
+  "source_plan": {
+    "repository": "mykcs/openevo-experiment",
+    "pull_request": 420,
+    "exact_head_sha": "afc7b74500b98134c12f2ee9cc880ac2980ffc10",
+    "plan_path": "docs/experiment-tracking/Q17_DIRECTAPPLY_FRONTIER_PLAN_20260910.md",
+    "quantitative_summary_path": "analysis/q17_directapply_frontier/20260910T1640Z/q17_frontier_summary_R000_R121.md",
+    "quantitative_json_path": "analysis/q17_directapply_frontier/20260910T1640Z/q17_frontier_metrics_R000_R121.json"
+  },
+  "diagnostic_completion": {
+    "artifact_pack_present": true,
+    "input_integrity_verified_count": 608,
+    "selected_vs_exact_identity_audit_complete": false,
+    "deliverable_a_complete": false
+  },
+  "authority": {
+    "quantitative_snapshot_source": "generated offline diagnostic pack in openevo-experiment",
+    "current_round_and_recovery_source": "exact live controller checkout plus immutable run receipts",
+    "may_authorize_run_mutation": false,
+    "may_authorize_recovery": false,
+    "may_authorize_successor_launch": false,
+    "may_authorize_final_panel": false
+  },
   "metrics": {
     "sealed_rounds": 122,
     "formal_rollouts": 15616,
-    "active_unsealed_round": 122,
-    "r122_rollout_only": {
-      "mean_score_pct": 52.94,
-      "clean_exact_success_count": 34,
-      "clean_exact_success_task_count": 6,
-      "engineering_invalid_count": 0
-    },
+    "active_unsealed_round_at_snapshot": 122,
+    "final_panel_access_count": 0,
     "score_block_mean_pct": {
       "r70_r79": 58.35,
       "r80_r89": 55.36,
@@ -23,17 +42,17 @@
     },
     "success_at_k_pct": {
       "r90_r99": {
-        "at1": 23.91,
+        "at1": 25.62,
         "at8": 51.88,
         "best_of_8_score": 78.04
       },
       "r100_r109": {
-        "at1": 29.38,
+        "at1": 30.62,
         "at8": 53.75,
         "best_of_8_score": 78.95
       },
       "r110_r119": {
-        "at1": 33.67,
+        "at1": 34.38,
         "at8": 56.25,
         "best_of_8_score": 80.72
       }
@@ -68,15 +87,15 @@
     }
   },
   "interpretation": {
-    "theme": "Not a simple stall: the run recovered after R90-R99; current evidence points to reliability improvement before broad frontier expansion.",
-    "next_question": "Measure whether frontier tasks with partial reward are starved of supervised updates, then test same-budget frontier allocation separately.",
-    "not_claiming": "No final-panel result, no DirectApply/GDR winner, no causal proof that shadow-GDR rejected updates helped."
+    "theme": "Not a simple stall: the sealed R0-R121 snapshot recovered after R90-R99; evidence points to reliability improvement before broad frontier expansion.",
+    "next_question": "Measure whether frontier tasks with partial reward are starved of supervised updates, then test same-budget frontier allocation as a separate successor treatment.",
+    "not_claiming": "No final-panel result, no DirectApply/GDR winner, no causal proof that shadow-GDR rejected updates helped, and no proof that a successor will improve the frontier."
   },
-  "placeholders": [
-    "frontier_curriculum_delta_success_at_8",
-    "state_coverage_delta",
-    "delayed_reject_counterfactual",
-    "partial_preference_start_decision"
-  ],
+  "placeholders": {
+    "frontier_curriculum_delta_success_at_8": null,
+    "frontier_curriculum_state_coverage_delta": null,
+    "delayed_reject_counterfactual": null,
+    "partial_credit_preference_start_decision": null
+  },
   "durable_plan_pr": "https://github.com/mykcs/openevo-experiment/pull/420"
 }

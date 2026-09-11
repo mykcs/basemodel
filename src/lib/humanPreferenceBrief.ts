@@ -113,6 +113,13 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
     );
     if (canonicalWorkflowEvent) eventById.set(canonicalWorkflowEvent.id, canonicalWorkflowEvent);
   }
+  // Keep the latest explicit owner acceptance for the active surface in the bounded brief.
+  // Short owner signals such as “合并” carry decisive verdict state but score poorly in lexical retrieval.
+  const latestAcceptedSurfaceEvent = [...HUMAN_FEEDBACK_EVENTS].reverse().find((event) =>
+    ['accepted', 'canonical'].includes(event.verdict) &&
+    (!scope || event.scopes.includes(scope) || event.scopes.includes('all-public-ui')),
+  );
+  if (latestAcceptedSurfaceEvent) eventById.set(latestAcceptedSurfaceEvent.id, latestAcceptedSurfaceEvent);
   for (const { event } of rankedEvents) {
     if (event.failureMechanisms.some((family) => hardFamilySet.has(family))) eventById.set(event.id, event);
   }

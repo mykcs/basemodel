@@ -1,0 +1,101 @@
+---
+import type { Locale } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const evidenceHref = '/research/seed-openevo/evidence/q17-advisor-diagnostics-20260911.json';
+const sourceHref = 'https://github.com/mykcs/openevo-experiment/blob/38223bf7f07aa2c2978c8583bcfb12097e9ee052/docs/evidence/q17-advisor-diagnostics-20260911/README.md';
+const replicationHref = 'https://github.com/mykcs/openevo-experiment/blob/f6fa4d05b7433685088ac59b1b488eecb42c781e/docs/evidence/q17-advisor-diagnostics-20260911/gpu2-replication-20260911/README.md';
+
+const rows = [
+  [t('WebShop 平均分', 'Average WebShop score'), '63.58', '59.41', '−4.18', t('用常见的 95% 统计范围看，真实差值可能在 −17.13 ～ +8.00；这个范围里包含“没有差别”，所以还不能确定整体真的下降。', 'The 95% uncertainty range runs from −17.13 to +8.00. It includes “no difference,” so we cannot tell whether the overall score really dropped.')],
+  [t('32 题里完全做对', 'Tasks fully solved'), '10 / 32 (31.25%)', '8 / 32 (25.00%)', t('少 2 题', '2 fewer tasks'), t('用同样的 95% 统计范围看，成功率变化可能在 −18.75 ～ +6.25 个百分点之间；里面同样包含“没有差别”。', 'The same 95% uncertainty range puts the success-rate change between −18.75 and +6.25 percentage points; it also includes “no difference.”')],
+  [t('32 题里拿到正奖励', 'Tasks with a positive reward'), '27 / 32 (84.38%)', '25 / 32 (78.13%)', t('少 2 题', '2 fewer tasks'), ''],
+  [t('平均每题走几步', 'Average steps per task'), '7.41', '7.53', '+0.13', ''],
+  [t('每一步平均输出长度', 'Average output length per step'), '24.49 token', '24.95 token', '+0.47 token', ''],
+  [t('生成选择有多分散（entropy）', 'How spread out the model’s next-token choices were (entropy)'), '0.392', '0.343', '−0.050', t('数值越低，说明模型把概率更集中在少数选择上。', 'Lower means the model put more probability on a smaller set of choices.')],
+] as const;
+---
+
+<section class="advisor-diagnostics" data-q17-advisor-diagnostics data-reader-primary aria-labelledby="advisor-diagnostics-title">
+  <header class="result-hero">
+    <p class="eyebrow">2026-09-11 · {t('R127 / R128 同题重测', 'R127 / R128 same-task check')}</p>
+    <h1 id="advisor-diagnostics-title">{t('R128 比 R127 稍差，但没有训练曲线看起来那么严重', 'R128 was a little worse than R127—but not nearly as bad as the training curve suggested')}</h1>
+    <p class="lede">{t('训练时，两轮分数从 76.1 掉到 48.9。我们让两个模型重新做完全相同的 32 道题，平均分变成 63.58 → 59.41，完全做对 10 题 → 8 题。差距小了很多；只有 32 题，而且原来两轮训练用的题不同，所以现在还不能说模型整体真的退步了。', 'The live training-round score fell from 76.1 to 48.9. We reran both saved model states on exactly the same 32 tasks: the average score became 63.58 → 59.41, and fully solved tasks went from 10 to 8. The gap became much smaller; with only 32 tasks, and different task samples in the original training rounds, we still cannot say the model got worse overall.')}</p>
+    <div class="evidence-links" aria-label={t('实验记录', 'Experiment records')}>
+      <a href={evidenceHref}>{t('看数字摘要', 'View the data summary')}</a>
+      <a href={sourceHref}><ExternalBrandMark href={sourceHref} />{t('看完整实验记录', 'View the full experiment record')}</a>
+    </div>
+  </header>
+
+  <section class="result-section" aria-labelledby="same-task-result">
+    <h2 id="same-task-result">{t('训练曲线掉了很多，同题重测只掉了一点', 'The live curve dropped a lot; the same-task test dropped only a little')}</h2>
+    <p>{t('训练的每一轮不是同一批题，所以 76.1 → 48.9 混了两种影响：模型本身变了，题目也换了。固定成同样 32 道题后，差距缩小到 63.58 → 59.41。也就是说，原来的大跌不能直接理解成模型一下子丢掉了同样多的能力。', 'Each training round uses a different task sample, so the 76.1 → 48.9 swing mixed two things together: the model changed, and the tasks changed. When we fixed the tasks to the same 32, the gap shrank to 63.58 → 59.41. The large live-round drop therefore cannot be read as an equally large loss of model ability.')}</p>
+
+    <div class="table-wrap" role="region" aria-label={t('R127 与 R128 同题重测结果', 'R127 versus R128 on the same tasks')} tabindex="0">
+      <table>
+        <thead><tr><th>{t('看什么', 'What we measured')}</th><th>R127</th><th>R128</th><th>{t('相差', 'Difference')}</th><th>{t('怎么理解', 'What it means')}</th></tr></thead>
+        <tbody>{rows.map(([label, left, right, delta, note]) => <tr><th scope="row">{label}</th><td>{left}</td><td>{right}</td><td>{delta}</td><td>{note || '—'}</td></tr>)}</tbody>
+      </table>
+    </div>
+
+    <dl class="transition-line">
+      <div><dt>{t('两次都做对', 'Solved both times')}</dt><dd>7</dd></div>
+      <div><dt>{t('R127 对，R128 错', 'R127 solved, R128 failed')}</dt><dd>3</dd></div>
+      <div><dt>{t('R127 错，R128 对', 'R127 failed, R128 solved')}</dt><dd>1</dd></div>
+      <div><dt>{t('两次都没做对', 'Failed both times')}</dt><dd>21</dd></div>
+    </dl>
+  </section>
+
+  <section class="result-section reasoning" aria-labelledby="what-it-means">
+    <h2 id="what-it-means">{t('目前看，接口没坏，模型也没有变得更犹豫', 'So far, the interface still works and the model did not become more uncertain')}</h2>
+    <div class="reasoning-line">
+      <article>
+        <h3>{t('购物动作都能正常执行', 'The shopping actions still executed')}</h3>
+        <p>{t('两次 32 题测试里，都没有出现动作格式坏掉、需要修复，或者动作被规则拦下的情况。正式 R127 / R128 日志里这些计数也都是 0。所以 R127 到 R128 的掉分不像是“模型本来想对了，但接口把动作弄坏了”。', 'Across both 32-task runs, there were no broken action formats, repair events, or actions rejected by the constraint. The formal R127/R128 logs also show zeros for those counts. So the drop does not look like a case where the model chose the right thing but the interface broke the action.')}</p>
+      </article>
+      <article>
+        <h3>{t('模型的生成选择反而更集中', 'The model’s choices became more concentrated')}</h3>
+        <p>{t('我们记录了模型生成下一步时，概率分在多少不同选择上（entropy）。R127 是 0.392，R128 是 0.343。数值变低，表示概率更集中，所以 R128 并不是“更拿不定主意”。它更像是更坚定地偏向了某些选择。', 'We measured how spread out the model’s probabilities were when generating the next step (entropy). R127 was 0.392 and R128 was 0.343. Lower means the probabilities were more concentrated, so R128 was not simply more unsure; it was more strongly favoring some choices.')}</p>
+      </article>
+    </div>
+    <aside class="claim-boundary">
+      <strong>{t('我们现在只敢说到这里：', 'What we can safely say:')}</strong>
+      <p>{t('R128 在这 32 题上稍差，而且确实有 3 题从做对变成做错、1 题从做错变成做对。但 32 题还不足以证明模型整体退步，也还不知道是哪一次参数更新造成的。', 'R128 was a little worse on these 32 tasks, with three tasks going from solved to failed and one going the other way. But 32 tasks are not enough to show that the model got worse overall, and we still do not know which parameter update—if any—caused the change.')}</p>
+    </aside>
+  </section>
+
+  <section class="result-section" aria-labelledby="next-question">
+    <h2 id="next-question">{t('接下来继续用同一批题复查', 'Next, keep retesting the same tasks')}</h2>
+    <p>{t('正式 R1–R160 训练继续原样跑，不因为 2026-09-11 这组诊断改训练规则。等更多模型保存点和 R160 出来，再让它们做同样的 32 道题。如果反复出现“新学会一些题，同时又丢掉一些旧题”，我们才有理由专门研究怎么保留旧能力，或者参数更新是不是在互相冲突。', 'The formal R1–R160 run continues unchanged. When more saved model states and R160 are available, we will run the same 32 tasks again. If we repeatedly see the model learn some tasks while losing others, then it will make sense to study ways to preserve old abilities or test whether updates are interfering with one another.')}</p>
+  </section>
+
+  <details class="method-depth">
+    <summary>{t('实验细节：32 道题的来源和 entropy 记录方法', 'Experiment details: where the 32 tasks came from and how entropy was measured')}</summary>
+    <div class="method-grid">
+      <div><strong>{t('32 道题怎么选', 'Where the 32 tasks came from')}</strong><p>{t('它们来自训练 / 开发用的任务范围，而且在看 R127 / R128 的结果前就已经固定。它们和锁住的最终 128 题没有重合。', 'They came from the train/development task range and were frozen before we looked at the R127/R128 result. They do not overlap with the locked final 128 tasks.')}</p></div>
+      <div><strong>{t('两边除了参数状态都一样', 'Everything else was held fixed')}</strong><p>{t('两边用了同样的题、同样的生成 seed、同样的 Harness201.1、Text Memory、Skill 和 Agent System。只换了进入 R127 与进入 R128 时加载的 SD-LoRA 参数。', 'Both runs used the same tasks, generation seeds, Harness201.1, Text Memory, Skill, and Agent System. The only changed model state was the SD-LoRA adapter entering R127 versus R128.')}</p></div>
+      <div><strong>{t('entropy 是什么', 'What entropy means')}</strong><p>{t('模型每生成下一个 token，都会给很多候选分配概率。entropy 表示这些概率有多分散：越低越集中。这里记录的是实际动作规则已经生效后的数值。我们先用 4 道题做了“开记录 / 不开记录”的对照，输出、动作和得分 4 / 4 完全一样，所以记录 entropy 本身没有改变模型行为。', 'For every next token, the model assigns probabilities to many possible choices. Entropy measures how spread out those probabilities are: lower means more concentrated. The value here is measured after the real action rules are applied. Before the 32-task run, a four-task instrumentation on/off check reproduced outputs, actions, and scores exactly 4/4, so recording entropy did not change behavior.')}</p></div>
+      <div><strong>{t('最终测试没有动', 'The final test stayed locked')}</strong><p>{t('最终 128 题完全没打开，也没有增加正式任务消耗或额外调用外部 teacher。这组实验只是诊断，不是最终评测。', 'The final 128 tasks were never opened. This diagnostic consumed no formal final tasks and made no extra external-teacher calls. It is a diagnostic, not the final evaluation.')}</p></div>
+      <div><strong>{t('为什么还不能怪某一次参数更新', 'Why we cannot blame one update yet')}</strong><p>{t('把 R127 变成 R128 的那次 SD-LoRA 更新，和前一轮更新方向有些相反（adjacent cosine = −0.135）。但 R120–R134 之间还有更负的更新，而且它们不都对应掉分，所以这个数值现在只能当线索。', 'The SD-LoRA update that produced the R128 state pointed somewhat against the previous update (adjacent cosine = −0.135). But there were even more negative updates between R120 and R134, and they did not all line up with score drops, so this number is only a clue for now.')}</p></div>
+      <div><strong>{t('另一张 GPU 又跑了一遍', 'The result was rerun on another GPU')}</strong><p>{t('后来我们在服务器 GPU2 上把同样 32 道题完整重跑。R127、R128 的逐题结果和两两比较都与 GPU0 完全一样，所以这组结果可以重复得到；但样本仍然只有这 32 题，结论边界没有变。', 'We later reran the same 32 tasks on server GPU2. Every R127 row, R128 row, and paired comparison matched the GPU0 run exactly. That shows the result is reproducible, but it is still the same 32-task sample, so the claim boundary does not change.')} <a href={replicationHref}><ExternalBrandMark href={replicationHref} />{t('查看复跑记录', 'View the replication record')}</a></p></div>
+    </div>
+  </details>
+</section>
+<style>
+.advisor-diagnostics{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--ink)}
+.result-hero{padding:4.5rem 0 2.4rem;border-bottom:1px solid var(--line)}
+.eyebrow{margin:0 0 .8rem;font:800 18px/1.25 var(--font-mono);letter-spacing:.06em;color:var(--accent-deep)}
+.result-hero h1{max-width:980px;margin:0;font-size:clamp(2.35rem,5.5vw,4.8rem);line-height:.98;letter-spacing:-.065em}
+.lede{max-width:900px;margin:1.25rem 0 0;color:var(--muted);font-size:1.12rem;line-height:1.68}
+.evidence-links{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.3rem}.evidence-links a{border-bottom:1px solid var(--line);padding:.35rem 0;color:var(--accent-deep);text-decoration:none;margin-right:1rem}
+.result-section{padding:2.8rem 0;border-bottom:1px solid var(--line)}.result-section h2{max-width:900px;margin:0 0 1rem;font-size:clamp(1.65rem,3.2vw,2.8rem);line-height:1.08;letter-spacing:-.045em}.result-section>p,.reasoning-line p,.claim-boundary p,.method-grid p{max-width:900px;color:var(--muted);line-height:1.65}
+.table-wrap{overflow-x:auto;margin-top:1.5rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:.85rem .7rem;text-align:left;border-bottom:1px solid color-mix(in srgb,var(--line) 75%,transparent);vertical-align:top}thead th{font-size:.8rem;color:var(--muted);letter-spacing:.04em}tbody th{font-weight:700}td:nth-child(2),td:nth-child(3),td:nth-child(4){font-family:var(--font-mono);font-weight:700}
+.transition-line{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:1.5rem 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.transition-line div{padding:1rem;border-right:1px solid var(--line)}.transition-line div:last-child{border-right:0}.transition-line dt{color:var(--muted);font-size:.88rem}.transition-line dd{margin:.3rem 0 0;font:850 1.8rem/1 var(--font-mono)}
+.reasoning-line{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem;margin-top:1.5rem}.reasoning-line article{padding-top:1rem;border-top:2px solid var(--accent-deep)}.reasoning-line h3{margin:0;font-size:1.25rem}.claim-boundary{margin-top:1.8rem;padding:1rem 0 0;border-top:1px solid var(--warning)}.claim-boundary strong{font-size:1.05rem}.claim-boundary p{margin:.55rem 0 0}
+.method-depth{margin-top:2rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:1rem 0}.method-depth summary{cursor:pointer;font-weight:750;color:var(--accent-deep)}.method-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.2rem 2rem;padding:1.2rem 0 .4rem}.method-grid p{margin:.35rem 0 0;font-size:.94rem}
+@media(max-width:820px){.result-hero{padding-top:2.6rem}.reasoning-line,.method-grid,.transition-line{grid-template-columns:1fr}.transition-line div{border-right:0;border-bottom:1px solid var(--line)}.transition-line div:last-child{border-bottom:0}}
+</style>

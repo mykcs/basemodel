@@ -1,6 +1,6 @@
 # Scenario trigger registry
 
-Last reviewed: **2026-09-10**
+Last reviewed: **2026-09-11**
 
 This is a **just-in-time attention router**, not a second governance system. Scan it after `/AGENTS.md`, `docs/agents/LATEST.md`, and the core bootstrap in `docs/agents/README.md`. Load only the matched owner, executable truth, and live evidence.
 
@@ -45,7 +45,7 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 7. Do not quote exact provider quota/price counters without authoritative current evidence.
 8. If the task changes the blocking CI/provider owner, treat cutover as a transaction: inspect the exact-head provider execution **and** live GitHub required-status/ruleset state before mutation and again before closeout. Repository docs/config alone cannot prove blocking authority moved; a concurrent live ruleset change is a stop-and-read event, not permission to overwrite it.
 9. Localize provider red states by the first failing execution phase before changing architecture. A repository `verify:deploy` assertion failure, browser/product failure, environment/bootstrap failure, ignored policy outcome, and provider infrastructure failure require different fixes.
-10. During iterative human review, use the fast review-only lane rather than the final gate. A review handoff is complete only after opening the **hosted target route / anchor / slide** and confirming the specific claimed change is visible there. If the current build failed, do not reuse an older successful static output or old Preview URL as if it represented the new candidate; rebuild fresh generated output first. This target-specific check is not permission to rerun the unrelated full 205-case final matrix on every edit.
+10. During iterative human review, use the fast review-only lane rather than the final gate. Before moving the final gate, classify whether the owner is still reviewing/correcting the surface or the candidate is actually merge-ready; active review stays on the review-only lane. A review handoff is complete only after opening the **hosted target route / anchor / slide** and confirming the specific claimed change is visible there. A review handoff with no clickable current-candidate Preview URL in the owner-facing response is false-complete. If the current build failed, do not reuse an older successful static output or old Preview URL as if it represented the new candidate; rebuild fresh generated output first. This target-specific check is not permission to rerun the unrelated full 205-case final matrix on every edit.
 
 Completed Vercel pilot/adoption records live under `docs/agents/history/`; they explain why the current architecture exists but do not own today's release behavior. For the 2026-08-28/29 self-hosted-runner + Vercel-browser-offload + Cloudflare-smoke migration, including failed isolation/bootstrap attempts, CI-vs-deploy relevance mistakes, and the later Doctor-led safe disk/cache maintenance pass, read [`../history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md`](../history/2026-08-29-ci-runner-cloudflare-vercel-offload-retrospective.md).
 
@@ -168,6 +168,7 @@ Historical cases: [`benchmark causality`](../history/2026-09-06-circleci-benchma
 8. Verify provider metadata points to that exact commit and read the provider's real execution state. `READY` is provider completion; `ignored/skipped/canceled` is not Preview acceptance even when the outer GitHub status is green.
 9. Inspect the required real route/interaction/metadata; provider READY remains separate from visual/product acceptance.
 10. Keep readiness separate from mutation authority. A later explicit “merge” changes authorization only; re-read the live merge tuple and use expected-head locking rather than spending an earlier readiness report. See `release-closeout-protocol.md` §6.5–8.
+11. If the owner says **continue until complete** and the remaining work is a live check that can be polled in the current session, keep reading that exact provider/check to a terminal state or a real blocker. Do not end the task at `pending` and imply that you will come back later. A future watcher is only for genuinely future delivery, not a substitute for synchronous work that can still be completed now.
 
 ---
 

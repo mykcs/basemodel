@@ -1,0 +1,80 @@
+{
+  "schema": "basemodel.q17-advisor-diagnostics.202609111900",
+  "status": "READ_ONLY_PUBLICATION_PROJECTION_NOT_FINAL_EVALUATION",
+  "source": {
+    "repository": "mykcs/openevo-experiment",
+    "merge_sha": "38223bf7f07aa2c2978c8583bcfb12097e9ee052",
+    "evidence_path": "docs/evidence/q17-advisor-diagnostics-20260911/README.md",
+    "comparison_path": "docs/evidence/q17-advisor-diagnostics-20260911/r127-vs-r128-comparison.json"
+  },
+  "panel": {
+    "task_count": 32,
+    "sha256": "d50531523dc58aeea7d7f5ee0d6f45ad75511e8597c94d4f4e05f1c1386cf723",
+    "final_panel_overlap_goal_count": 0,
+    "final_panel_overlap_instruction_count": 0
+  },
+  "enter_r127": {
+    "mean_score": 0.6358378427128427,
+    "success_rate": 0.3125,
+    "positive_reward_rate": 0.84375,
+    "mean_episode_steps": 7.40625,
+    "mean_output_tokens_per_step": 24.485232067510548,
+    "reasoning_entropy_mean_nats": 0.39235331416515573,
+    "action_entropy_mean_nats": 0.023805322919740083
+  },
+  "enter_r128": {
+    "mean_score": 0.5940521284271284,
+    "success_rate": 0.25,
+    "positive_reward_rate": 0.78125,
+    "mean_episode_steps": 7.53125,
+    "mean_output_tokens_per_step": 24.95435684647303,
+    "reasoning_entropy_mean_nats": 0.34255101250136655,
+    "action_entropy_mean_nats": 0.01672962303310429
+  },
+  "paired": {
+    "score_diff_r128_minus_r127": -0.04178571428571429,
+    "score_diff_bootstrap_95ci": [
+      -0.17125,
+      0.08
+    ],
+    "success_rate_diff_r128_minus_r127": -0.0625,
+    "success_rate_diff_bootstrap_95ci": [
+      -0.1875,
+      0.0625
+    ],
+    "mean_steps_diff": 0.125,
+    "mean_output_tokens_per_episode_diff": 6.59375,
+    "transitions": {
+      "both_win": 7,
+      "win_to_loss": 3,
+      "loss_to_win": 1,
+      "both_loss": 21
+    }
+  },
+  "qualification": {
+    "task_identity_pass": "4/4",
+    "instrumentation_behavior_equivalence_pass": "4/4",
+    "invalid_or_constraint_escape_count_both_checkpoints": 0
+  },
+  "boundaries": {
+    "final_panel_access": 0,
+    "formal_task_consumption": 0,
+    "external_teacher_calls": 0,
+    "supported_interpretation": "Task-level capability reallocation with a modest same-task downward shift; both primary paired 95% confidence intervals cross zero.",
+    "not_established": [
+      "statistically clear overall catastrophic forgetting",
+      "negative adjacent update cosine as the causal mechanism",
+      "final evaluation outcome"
+    ]
+  },
+  "replication": {
+    "repository": "mykcs/openevo-experiment",
+    "merge_sha": "f6fa4d05b7433685088ac59b1b488eecb42c781e",
+    "evidence_path": "docs/evidence/q17-advisor-diagnostics-20260911/gpu2-replication-20260911/GPU2_REPLICATION_RECEIPT.json",
+    "enter_r127_rows_exact_match": true,
+    "enter_r128_rows_exact_match": true,
+    "paired_rows_exact_match": true,
+    "authoritative_comparison_fields_exact_match": true,
+    "interpretation": "Independent GPU2 replication strengthens reproducibility only; it does not change the statistical claim boundary."
+  }
+}

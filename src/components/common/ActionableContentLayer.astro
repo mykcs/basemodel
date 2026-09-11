@@ -149,10 +149,5 @@ const zh = locale === 'zh';
   };
 
   enhance(document);
-  new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-      mutation.addedNodes.forEach((node) => { if (node.nodeType === Node.ELEMENT_NODE) enhance(node); });
-    }
-  }).observe(document.body, { childList: true, subtree: true });
 })();
 </script>

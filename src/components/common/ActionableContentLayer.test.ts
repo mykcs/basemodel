@@ -23,12 +23,12 @@ describe('site-wide actionable content UX', () => {
     expect(actionableImport).toBeGreaterThan(hardeningImport);
   });
 
-  it('automatically enhances static block and inline code', () => {
+  it('automatically enhances static block and inline code without a page-wide observer', () => {
     expect(layer).toContain("querySelectorAll?.('pre')");
     expect(layer).toContain("querySelectorAll?.('code')");
     expect(layer).toContain('actionable-code-shell');
     expect(layer).toContain('actionable-inline-code');
-    expect(layer).toContain('MutationObserver');
+    expect(layer).not.toContain('MutationObserver');
     expect(layer).toContain("event.key === 'Enter'");
     expect(layer).toContain("event.key === ' '");
   });

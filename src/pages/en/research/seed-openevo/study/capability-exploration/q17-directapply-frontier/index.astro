@@ -1,14 +1,16 @@
 ---
 import AppLayout from '../../../../../../../layouts/AppLayout.astro';
 import OpenEvoQ17FrontierRoadmap from '../../../../../../../components/research/OpenEvoQ17FrontierRoadmap.astro';
+import OpenEvoQ17AdvisorDiagnostics from '../../../../../../../components/research/OpenEvoQ17AdvisorDiagnostics.astro';
 import ResearchRouteContext from '../../../../../../../components/research/ResearchRouteContext.astro';
 const locale = 'en' as const;
 ---
 <AppLayout
-  title="Q17 DirectApply Frontier Plan"
-  description="Qwen3-1.7B DirectApply / No-GDR WebShop long-run learning: plateau, reliability, frontier metrics, and successor experiments."
+  title="R127 vs R128 on the Same 32 Tasks"
+  description="We reran R127 and R128 on the same 32 WebShop tasks to see how much of the large training-curve drop came from the model itself rather than different task samples."
   locale={locale}
 >
   <ResearchRouteContext locale={locale} route="q17-directapply-frontier" />
+  <OpenEvoQ17AdvisorDiagnostics locale={locale} />
   <OpenEvoQ17FrontierRoadmap locale={locale} />
 </AppLayout>

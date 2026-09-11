@@ -42,6 +42,10 @@ describe('persistent Vercel final-gate range', () => {
     expect(request).toContain('another Vercel final gate is still pending');
     expect(request.indexOf('updateRef(VERCEL_FINAL_BASE_REF')).toBeLessThan(request.indexOf('updateRef(VERCEL_FINAL_GATE_REF'));
     expect(request).toContain('PR/main identity moved while arming');
+    expect(request).toContain('repos/${REPO}/compare/${mainSha}...${headSha}');
+    expect(request).toContain("mergeBase !== mainSha || behindBy !== 0 || !['ahead', 'identical'].includes(status)");
+    expect(request).not.toContain('pr.baseRefOid !== currentMain');
+    expect(request).toContain('assertHeadContainsMain(currentMain, prAfterBase.headRefOid)');
     expect(request).toContain('must already exist; do not create a fresh final alias');
   });
 });

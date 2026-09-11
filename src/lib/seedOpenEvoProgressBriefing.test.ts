@@ -12,6 +12,7 @@ const zhTechnical = read('../pages/research/seed-openevo/study/briefing/technica
 const enTechnical = read('../pages/en/research/seed-openevo/study/briefing/technical-notes/index.astro');
 const zhFrontierPage = read('../pages/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.astro');
 const enFrontierPage = read('../pages/en/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.astro');
+const frontierRoadmap = read('../components/research/OpenEvoQ17FrontierRoadmap.astro');
 const contracts = read('../data/siteReaderContracts.ts');
 const directApplyLiveSnapshot = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-live-snapshot-20260910-0952-sgt.json'));
 const directApplyPlateauDiagnostic = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-directapply-plateau-diagnostic-20260910-1038-sgt.json'));
@@ -27,12 +28,12 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(enPage).toContain('OpenEVO Summer Research Review');
     expect(zhTechnical).toContain('技术推导与实验严谨性');
     expect(enTechnical).toContain('Technical derivations and experimental rigor');
+    expect(zhFrontierPage).toContain('R127 与 R128 同题重测');
+    expect(enFrontierPage).toContain('R127 vs R128 on the Same 32 Tasks');
     expect(nav).toContain("id: 'briefing'");
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/'");
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/technical-notes/'");
     expect(sitemap).toContain("'/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/'");
-    expect(zhFrontierPage).toContain('OpenEvoQ17FrontierRoadmap');
-    expect(enFrontierPage).toContain('OpenEvoQ17FrontierRoadmap');
   });
 
   it('keeps a twenty-four-slide deck with page numbers only on inner slides', () => {
@@ -59,6 +60,10 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   it('uses a normal cover/agenda and a science-story overview without checklist overload', () => {
     expect(briefing).toContain('OpenEVO 在 WebShop 上到底学到了什么？');
     expect(briefing).toContain("{t('目录', 'Agenda')}");
+    expect(briefing).toContain('参数往哪改、哪些改动最后被用上');
+    for (const staleReaderJargon of ['参数方向与更新准入', 'accepted rollout', 'W&B 可核验', 'authority 的 loss']) {
+      expect(briefing).not.toContain(staleReaderJargon);
+    }
     expect(briefing).toContain("{t('先看三件事', 'Three things to know')}");
     expect(briefing).not.toContain("Too long, Don't read");
     expect(briefing).toContain('我们做过哪些科学尝试');
@@ -144,7 +149,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
 
   it('keeps 7B training Score, SD-LoRA loss, and frozen final as three measurements', () => {
     expect(briefing).toContain('我们做了一次 7B 长跑：训练在变好，冻结终评是 49.33');
-    expect(briefing).toContain('149 rounds · 19,072 rollout');
+    expect(briefing).toContain('149 轮 · 19,072 次任务尝试');
     expect(briefing).toContain('143 个点 = 143 次真正采用的参数更新');
     expect(briefing).toContain('49.33 · 58 / 128');
     expect(briefing).toContain('三种数要分开读');
@@ -336,8 +341,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
   it('adds a bounded plateau diagnosis and keeps successor ideas separate from the running treatment', () => {
     const plateauSection = briefing.slice(sectionPosition('directapply-plateau'), sectionPosition('frontier-roadmap'));
     for (const item of [
-      'R70 后曾经震荡，但到 R121 又回升：现在不能说训练已经卡住',
-      'R110–119 的平均 Score 回到 63.52',
+      'R97 看到平台；R121 显示后续恢复',
+      '下面三项只是线索，用来决定下一步该测什么',
       '58.35 → 55.36 → 50.83',
       '94 / 98 轮',
       '8.25 / 16 道题进入训练',
@@ -347,8 +352,10 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
       'Text Memory · 2',
       'Agent System · 1',
       'Skill · 1',
-      '当前 DirectApply 仍按原规则跑完 R160',
-      'R121 的回升说明我们不该把 R97 的平台直接当成最终结论',
+      '当前 DirectApply 先按原规则跑完 R160',
+      '平台真正为什么出现，还没有证明',
+      '每轮 128 次任务尝试',
+      '让部分得分也能参与学习',
       '冻结终评还没打开',
       '论文里也见过两个相似问题',
       'Adaptive Auto-Harness：系统一直在更新，任务表现也可能先升后降',
@@ -373,29 +380,54 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     }
   });
 
-  it('adds an ELI5 frontier roadmap without changing the running DirectApply experiment', () => {
+  it('adds a Q17 frontier roadmap slide with blanks for unmeasured successor results', () => {
     const frontierSection = briefing.slice(sectionPosition('frontier-roadmap'), sectionPosition('technical-work-summary'));
     for (const item of [
-      '下一步先问清楚：是“会的题更稳了”，还是“不会的题也开始会了”？',
-      'R90–99 的平均 Score 是 49.90，R110–119 回到 63.52',
-      'Success@1 从 23.91% → 33.67%',
-      '到底有没有学会更多原来不会的题',
-      '同样 128 次机会，多给“差一点成功”的难题',
-      '先做不占 GPU 的离线统计',
-      '一次仍只改一个变量',
+      '别只等曲线：把平台期拆成可验证问题',
+      'R90–99 的 49.90 后，R110–119 回到 63.52',
+      'Success@1 从 R90–99 的 25.62% 到 R110–119 的 34.38%',
+      'Success@8 只从 51.88% 到 56.25%',
+      'state/action coverage',
+      'Frontier Curriculum',
+      'partial-credit preference',
+      'ΔSuccess@8',
       '待填',
-      '实验仓库计划 PR #420',
-      'R0–R121 只读数据',
+      '固定来源 #420 @ afc7b745',
+      'selected-vs-success task identity',
     ]) expect(frontierSection).toContain(item);
     expect(directApplyFrontierPlan.status).toBe('PLAN_AND_READ_ONLY_DIAGNOSTIC_NOT_FINAL_EVALUATION');
     expect(directApplyFrontierPlan.metrics.sealed_rounds).toBe(122);
-    expect(directApplyFrontierPlan.metrics.score_block_mean_pct.r90_r99).toBe(49.9);
+    expect(directApplyFrontierPlan.metrics.formal_rollouts).toBe(15616);
     expect(directApplyFrontierPlan.metrics.score_block_mean_pct.r110_r119).toBe(63.52);
-    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r90_r99.at1).toBe(23.91);
-    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r110_r119.at1).toBe(33.67);
-    expect(directApplyFrontierPlan.placeholders).toContain('frontier_curriculum_delta_success_at_8');
-    expect(frontierSection).not.toContain('最终胜出');
-    expect(frontierSection).not.toContain('DirectApply 已经失败');
+    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r90_r99.at1).toBe(25.62);
+    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r100_r109.at1).toBe(30.62);
+    expect(directApplyFrontierPlan.metrics.success_at_k_pct.r110_r119.at1).toBe(34.38);
+    expect(directApplyFrontierPlan.metrics.sd_lora_selection.equal_to_exact_success_task_count_rounds).toBe(111);
+    expect(directApplyFrontierPlan.metrics.final_panel_access_count).toBe(0);
+    expect(directApplyFrontierPlan.source_plan.exact_head_sha).toBe('afc7b74500b98134c12f2ee9cc880ac2980ffc10');
+    expect(directApplyFrontierPlan.diagnostic_completion).toEqual({ artifact_pack_present: true, input_integrity_verified_count: 608, selected_vs_exact_identity_audit_complete: false, deliverable_a_complete: false });
+    expect(directApplyFrontierPlan.authority).toMatchObject({ may_authorize_run_mutation: false, may_authorize_recovery: false, may_authorize_successor_launch: false, may_authorize_final_panel: false });
+    expect(directApplyFrontierPlan.metrics).not.toHaveProperty('r122_rollout_only');
+    expect(directApplyFrontierPlan.placeholders).toEqual({
+      frontier_curriculum_delta_success_at_8: null,
+      frontier_curriculum_state_coverage_delta: null,
+      delayed_reject_counterfactual: null,
+      partial_credit_preference_start_decision: null,
+    });
+    expect(directApplyFrontierPlan.interpretation.not_claiming).toContain('No final-panel result');
+    for (const item of [
+      '训练还在继续，但分数没有稳定往上',
+      '每轮 WebShop Score',
+      'SD-LoRA training loss',
+      'R70–79 / R80–89 / R90–97',
+      '58.35 → 55.36 → 50.83',
+      'R110–119 恢复到 63.52',
+      '不是永久卡死',
+      '还不能证明平台由 SD-LoRA 本身造成',
+      '在 Slide 里看同一张图',
+    ]) expect(frontierRoadmap).toContain(item);
+    expect(frontierRoadmap).toContain("OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS");
+    expect(frontierRoadmap).toContain('data-q17-plateau-visual');
   });
 
   it('keeps engineering work as a simple summary immediately before the final choice', () => {

@@ -4,13 +4,14 @@
 
 ## 承接关系
 
-复用 BaseModel PR #624；将现有汇报整合 PR #625 的 exact head `6df62b8a4ac8433f532ebf0d05e332f994944bec` 作为父版本。`briefing-parent-preservation.json` 逐节证明父版本的 23 页正文保持相同，仅页码分母更新；仅新增 `text-memory-redesign` 一页，合计 24 页。没有把旧 22 页快照覆盖回当前故事。
+复用 BaseModel PR #624。它最初叠在 PR #625 上；#625 合并后，`main` 又吸收了后续 Q17 same-task publication 与治理修订。本次以 current `main@02ba9feac907ae35cdcee52fe14671d6eba3e4f1` 为实际父版本重新核对：`briefing-parent-preservation.json` 逐节证明 current main 的 23 页正文保持相同，仅页码分母更新；只新增 `text-memory-redesign` 一页，合计 24 页。没有把旧 22/23 页 briefing 快照或已被后续 Q17 页面取代的文案覆盖回来。历史 #625 head `6df62b8a4ac8433f532ebf0d05e332f994944bec` 只保留为栈来源记录。
 
 ## 实际完成的核验
 
-- 99 个结构测试套件、650 个测试通过；Astro check 为 0 errors，2 个既有提示。
+- 100 个结构测试文件、655 个测试通过；Astro check 为 0 errors、0 warnings、2 个既有提示。
 - 新鲜静态构建产出 488 个 route，review build 为 noindex。未复用失败构建前的旧 dist。
 - 14 个 Playwright 测试通过，零重试。覆盖 Chromium/WebKit、中英文、明暗主题、1440/768/390 宽度；页面不横向溢出，新增 Slide 的文本均在 16:9 画布内。
+- `npm run verify:deploy` 在 current-main 重整候选上完整通过；这只是本地确定性验收，不替代新 exact head 的 Public PR CI / Vercel final gate。
 - 共生成 48 张截图，本目录保留四张代表图及各源文件 SHA-256；手机表格在自身容器内横向滚动，并有可见提示。
 - source JSON 明确区分 43 个实验仓库软件测试、8 类脚本样例与 0 行真实模型 shadow。未来模型效果和 WebShop 收益均为空值，网页与单页 Slide 显式显示 TBD。
 
