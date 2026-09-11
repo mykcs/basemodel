@@ -314,7 +314,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
       'DirectApply 的最终 Score / Succ. 仍然不能填写',
       '分析 authority · #420 @ afc7b745',
     ]) expect(directApplySection).toContain(item);
-    expect(directApplySection).toContain('directApplyBlockScorePoints');
+    expect(directApplySection).toContain('directApplyScoreRawPointsR0R121');
+    expect(directApplySection).toContain('directApplyScoreTrendPointsR0R121');
     expect(directApplySection).not.toContain('09:52 SGT');
     expect(directApplySection).not.toContain('scoreRawPointsDirectApply');
     expect(directApplySection).not.toContain('lossPointsDirectApply');
