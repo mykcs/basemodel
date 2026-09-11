@@ -13,7 +13,7 @@ const directApplyHref = p('/research/seed-openevo/study/briefing/#directapply-pr
 const gdrHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
 const evidenceHref = '/research/seed-openevo/evidence/q17-directapply-frontier-plan-20260910-2312-sgt.json';
 const planPrHref = 'https://github.com/mykcs/openevo-experiment/pull/420';
-const planFileHref = 'https://github.com/mykcs/openevo-experiment/blob/369053c94c1fd9b4484cb38c9c244dc97e78521a/docs/experiment-tracking/Q17_DIRECTAPPLY_FRONTIER_PLAN_20260910.md';
+const planFileHref = 'https://github.com/mykcs/openevo-experiment/blob/afc7b74500b98134c12f2ee9cc880ac2980ffc10/docs/experiment-tracking/Q17_DIRECTAPPLY_FRONTIER_PLAN_20260910.md';
 const papers = [
   ['WebRL', 'https://proceedings.iclr.cc/paper_files/paper/2025/hash/c66e1fcc9691aae706250638f36f681b-Abstract-Conference.html'],
   ['SPEAR', 'https://github.com/TencentYoutuResearch/SPEAR'],
@@ -80,7 +80,7 @@ const papers = [
     <p class="frontier-section-kicker">04 · {t('再做实验', 'Then run experiments')}</p>
     <h2 id="experiments-plan">{t('把一个大问题拆成四个小问题', 'Split one large question into four small tests')}</h2>
     <div class="experiment-grid">
-      <article><span>A</span><h3>{t('Offline Diagnostic Pack', 'Offline Diagnostic Pack')}</h3><p>{t('已完成：R0–R121 sealed 轨迹已经生成 JSON、CSV、Markdown 和 manifest，全程只读、CPU-only、final panel access = 0。', 'Completed: the sealed R0–R121 traces produced JSON, CSV, Markdown, and a manifest using a read-only CPU-only path with final-panel access = 0.')}</p></article>
+      <article><span>A</span><h3>{t('Offline Diagnostic Pack', 'Offline Diagnostic Pack')}</h3><p>{t('诊断包已生成并核过 608 个输入；A 还没全部完成，因为 selected task 与 exact-success task 的身份重合还要逐项核对。补完前不进入 B。全程只读、CPU-only、final panel access = 0。', 'The diagnostic pack exists and 608 inputs were integrity-checked. A is still open because selected-task versus exact-success task identities need an item-level audit. Do not move to B before that closes. The path remains read-only, CPU-only, with final-panel access = 0.')}</p></article>
       <article><span>B</span><h3>{t('Frontier Curriculum', 'Frontier Curriculum')}</h3><p>{t('同样 128 rollout，只把第二波机会优先给“没有成功但已经接近”的 task。', 'Keep 128 rollouts, but give the second wave to tasks that are not solved yet but are close.')}</p></article>
       <article><span>C</span><h3>{t('Partial-credit Preference', 'Partial-credit Preference')}</h3><p>{t('失败轨迹先做比较信号，不把整条失败轨迹当正确答案 SFT。', 'Use failed traces as comparative signal, not as full positive SFT targets.')}</p></article>
       <article><span>D</span><h3>{t('Delayed Counterfactual', 'Delayed Counterfactual')}</h3><p>{t('未来若单独授权，在 shadow-GDR reject 边界建立独立 successor roots，比较“采用”和 KEEP_PRIOR 之后 5/10 轮；不改当前 DirectApply root。', 'If separately authorized later, create independent successor roots at shadow-GDR reject boundaries and compare adopted vs KEEP_PRIOR after 5/10 rounds; do not alter the current DirectApply root.')}</p></article>
