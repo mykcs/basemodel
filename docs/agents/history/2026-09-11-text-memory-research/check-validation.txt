@@ -2,13 +2,13 @@
 > agent-model-atlas@0.1.0 check
 > astro sync && astro check
 
-22:12:08 [content] Syncing content
-22:12:08 [content] Synced content
-22:12:08 [types] Generated 460ms
-22:12:09 [content] Syncing content
-22:12:10 [content] Synced content
-22:12:10 [types] Generated 349ms
-22:12:10 [check] Getting diagnostics for Astro files in <CHECKOUT>...
+02:30:37 [content] Syncing content
+02:30:37 [content] Synced content
+02:30:37 [types] Generated 355ms
+02:30:38 [content] Syncing content
+02:30:38 [content] Synced content
+02:30:38 [types] Generated 315ms
+02:30:38 [check] Getting diagnostics for Astro files in /Users/myk/.cache/basemodel-pr624-reconcile-20260911...
 src/data/openEvoMechanismNarrative.ts:41:25 - warning ts(6385): '(params?: string | { abort?: boolean | undefined; local?: boolean | undefined; precision?: number | null | undefined; offset?: boolean | undefined; error?: string | $ZodErrorMap<$ZodIssueInvalidStringFormat> | undefined; message?: string | undefined; } | undefined): ZodString' is deprecated.
 
 41   actualEnd: z.string().datetime({ offset: true }).nullable(),

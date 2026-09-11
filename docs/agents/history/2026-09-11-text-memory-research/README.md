@@ -8,7 +8,7 @@
 
 ## 实际完成的核验
 
-- 100 个结构测试文件、655 个测试通过；Astro check 为 0 errors、0 warnings、2 个既有提示。
+- 100 个结构测试文件、657 个测试通过；Astro check 为 0 errors、0 warnings、2 个既有提示。
 - 新鲜静态构建产出 488 个 route，review build 为 noindex。未复用失败构建前的旧 dist。
 - 14 个 Playwright 测试通过，零重试。覆盖 Chromium/WebKit、中英文、明暗主题、1440/768/390 宽度；页面不横向溢出，新增 Slide 的文本均在 16:9 画布内。
 - `npm run verify:deploy` 在 current-main 重整候选上完整通过；这只是本地确定性验收，不替代新 exact head 的 Public PR CI / Vercel final gate。
