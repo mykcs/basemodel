@@ -2,7 +2,7 @@
 
 Status: **historical evidence; not current policy**
 Date: 2026-09-11
-Current rules live in `../current/deployment-policy.md` and `../current/multi-pr-semantic-integration-playbook.md`.
+Current rules live in `../current/deployment-policy.md`, `../current/multi-pr-semantic-integration-playbook.md`, `../current/scenario-trigger-registry.md`, and `../current/release-closeout-protocol.md`.
 
 ## Scope
 
@@ -37,6 +37,12 @@ During this closeout, this happened twice at use-sites: first a nested Bash/Pyth
 
 Reusable rule: when a known rule already exists and the failure is non-use rather than missing knowledge, record the miss and follow the existing rule instead of adding another copy.
 
+### 5. “Continue until complete” means finish the live gate when the session still can
+
+This PR #625 conversation repeated a completion failure that had already appeared elsewhere: the Agent twice stopped with a user-facing summary while a required Vercel/Production check was still live and pollable, leaving the owner to say “继续解决” again. The later turns correctly kept the exact candidate under synchronous observation until final Vercel acceptance, merge, Production acceptance, and live-route smoke checks were terminal.
+
+PR #634 already strengthened the current use-site rules in `scenario-trigger-registry.md` and `release-closeout-protocol.md`, so this record does **not** add another policy copy. It records that the miss recurred in the PR #625 workflow too: provider `pending` is not a completion boundary when the owner asked to continue and the current session can still poll the same exact check.
+
 ## Coverage ledger
 
 | Feedback / failure | Repeated? | Reusable lesson | Canonical destination | Why there |
@@ -45,12 +51,13 @@ Reusable rule: when a known rule already exists and the failure is non-use rathe
 | Final gate rejected an actually current-base head because cached PR base metadata lagged | No | Prove current-base by live ancestry/compare and re-check after arming gate base | `deployment-policy.md` exact-head/current-base section | Final-candidate identity and Vercel gate semantics |
 | Planned “absorbed/superseded” labels were almost applied to PRs already merged | **Yes** | Re-read live PR state/merge record immediately before closeout mutation | `multi-pr-semantic-integration-playbook.md` §9 | Concrete mutation point where remembered status escaped |
 | Complex nested shell quoting failed despite an existing standalone-script rule | **Yes** | Use the existing root shell rule at the command site; do not duplicate it | root `AGENTS.md` | Knowledge existed; execution discipline failed |
+| Owner had to say “继续解决” again after the Agent stopped while Vercel/Production checks were still pollable | **Yes** | If the owner asked to continue until completion, keep the exact live check in-session until terminal state, identity drift, or a real blocker | `scenario-trigger-registry.md` + `release-closeout-protocol.md` | The rule must fire at the release-state use-site; PR #634 already owns the current wording |
 | Temporary Preview/build/port/worktree/provider state accumulated during diagnosis | No | Keep it out of standing rules | intentionally not persisted | No durable predictive value |
 
 ## Future-Agent test
 
-A future Agent starting from root `AGENTS.md` reaches the overlapping-PR/release bundle through `docs/agents/README.md`, then the multi-PR playbook and deployment policy. Before diagnosing a multi-shard failure it now has an explicit control-matching check; before final-gate arming it has an explicit ancestry check; before closing worker PRs it has an explicit live-state read.
+A future Agent starting from root `AGENTS.md` reaches the overlapping-PR/release bundle through `docs/agents/README.md`, then the multi-PR playbook, deployment policy, scenario trigger registry, and release closeout protocol. Before diagnosing a multi-shard failure it now has an explicit control-matching check; before final-gate arming it has an explicit ancestry check; before closing worker PRs it has an explicit live-state read; and when the owner asks to continue until completion it has an explicit rule not to stop at a still-pollable `pending` provider check.
 
 The most likely repeated error was trusting remembered/planned PR status. The new rule is intentionally located at the mutation point instead of adding another generic reminder.
 
-The shell quoting miss was also repeated, but the canonical rule was already explicit. The corrective action was to use a standalone syntax-checked script during this closeout, not to add a second mutable shell policy.
+The shell quoting miss and the premature-stop-at-`pending` miss were also repeated. Their current canonical rules already exist, so this closeout records the recurrence and relies on the existing use-site rules/tests instead of creating duplicate mutable authorities.
