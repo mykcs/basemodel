@@ -1,4 +1,4 @@
-export type ExternalLinkBrand = 'github' | 'huggingface';
+export type ExternalLinkBrand = 'github' | 'huggingface' | 'arxiv';
 
 const isHostOrSubdomain = (hostname: string, root: string) => hostname === root || hostname.endsWith(`.${root}`);
 
@@ -10,6 +10,7 @@ export function externalLinkBrand(href: string | undefined | null): ExternalLink
     const hostname = url.hostname.toLowerCase();
     if (isHostOrSubdomain(hostname, 'github.com')) return 'github';
     if (isHostOrSubdomain(hostname, 'huggingface.co')) return 'huggingface';
+    if (isHostOrSubdomain(hostname, 'arxiv.org')) return 'arxiv';
     return null;
   } catch {
     return null;
@@ -28,5 +29,11 @@ export const externalBrandAssetProvenance = {
     asset: '/brands/hugging-face-mark.svg',
     upstream: 'https://huggingface.co/datasets/huggingface/brand-assets/blob/f0f32c486dede7d548c2f02cb7efb62f655de595/hf-logo.svg',
     sha256: '942cad1ccda905ac5a659dfd2d78b344fccfb84a8a3ac3721e08f488205638a0',
+  },
+  arxiv: {
+    label: 'arXiv',
+    asset: '/brands/arxiv-mark.png',
+    upstream: 'https://arxiv.org/static/browse/0.3.4/images/icons/favicon-32x32.png',
+    sha256: '5add8f07a3a7268c6690dfbfa3bd8cf84f527074b92eb3936d4bb8e010f9e60d',
   },
 } as const;
