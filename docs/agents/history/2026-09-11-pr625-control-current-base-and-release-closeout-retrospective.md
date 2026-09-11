@@ -33,7 +33,7 @@ This repeated an older failure pattern: conversational or planning state was all
 
 ### 4. Existing shell rules still have to be executed at the use-site
 
-During this closeout, a nested Bash/Python heredoc was made more complicated than necessary and failed during parsing before the repository write executed. The worktree stayed clean. Root `AGENTS.md` already says that non-trivial quoting should move into a standalone, syntax-checked script, so no duplicate shell policy was added.
+During this closeout, this happened twice at use-sites: first a nested Bash/Python heredoc failed during parsing before the repository write executed; later a compound Bash line used for final-gate preflight failed on nested quoting before the gate requester ran. Neither failure mutated repository or provider state. Root `AGENTS.md` already says that non-trivial quoting should move into a standalone, syntax-checked script, so no duplicate shell policy was added.
 
 Reusable rule: when a known rule already exists and the failure is non-use rather than missing knowledge, record the miss and follow the existing rule instead of adding another copy.
 
