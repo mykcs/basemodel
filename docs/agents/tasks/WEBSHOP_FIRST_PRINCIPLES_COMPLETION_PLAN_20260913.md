@@ -335,7 +335,7 @@ Update this section rather than relying on chat memory.
 | Repository | `mykcs/basemodel` |
 | Working PR | `#655` |
 | Working branch | `feat/webshop-reader-map-20260912` |
-| Live main reconciled | `2b8fb0d5dc3c2ec2325fc22255e75a28d1f9441b` (PR #656 merged) |
+| Live main reconciled | `545cc745c2005c2296fa9d80121685ce8d366c2a` (PR #656 + docs/test-only PR #657 merged) |
 | Pre-reconciliation branch head | `efcd1b89636c4fa9b98b22e492b2a34403170ffb` |
 | Current-base merge candidate | `9c07e040f974c5e2484b92e2e157744021ef0224` |
 | Original PR head observed | `df75940c49e91e80460a1085b4e3b06ac7c53984` |
@@ -360,6 +360,7 @@ Whenever status changes, append the exact evidence (SHA, PR state, deployment id
 - Current-base candidate `9c07e040f974c5e2484b92e2e157744021ef0224` passed `npm run preflight:ui`: deterministic gates PASS, 506-page build PASS, overflow preflight PASS, and 414/414 cross-browser Playwright tests PASS.
 - Focused bilingual check on Chinese/English desktop + 390px mobile: exactly one H1, zero root overflow, all six contents anchors resolve, and the settings table remains local-scrollable with `tabindex=0`.
 - Vercel toolbar unresolved threads for this branch: none at the time of the check; GitHub review threads: none.
+- Immediately before publish, `main` advanced again via PR #657 to `545cc745...`; its delta is governance prose plus `agentScenarioTriggerRegistry.test.ts`, with zero overlap against the WebShop production paths. It was merged conflict-free; exact-head public CI will cover that non-UI delta.
 
 ---
 
