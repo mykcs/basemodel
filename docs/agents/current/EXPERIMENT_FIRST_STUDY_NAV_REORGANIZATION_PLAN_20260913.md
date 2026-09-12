@@ -61,7 +61,7 @@
 目标不是把旧页面全部搬目录，而是让读者从任何实验页都能回答：**我在哪次实验里、这是结果还是分析、下一步回哪里。**
 
 - [x] 为五个实验建立统一的实验 Hub / context 结构；优先复用一个共享组件，不在每页复制导航 HTML。证据：现有 `ResearchRouteContext.astro` 新增类型化 `experimentId`，统一渲染“实验目录 / 所属实验 / 当前页面”层级并暴露 `data-experiment-id`；五个 canonical 实验入口的中英文页面都显式绑定对应 experiment id，没有新建第二套导航组件。定向 Vitest 9/9 PASS，`npm run check` 0 errors / 0 warnings（仅 2 个既有 deprecation hints），`npm run build` PASS（506 routes）；真实浏览器核验 GDR-v1 桌面与 DirectApply 390×844 手机页面均显示正确 experiment id / breadcrumb 且无 root overflow。
-- [ ] 每个实验 Hub 至少包含：实验名称、为什么做、实验结果入口、由该实验引出的分析、原始证据/历史入口。
+- [x] 每个实验 Hub 至少包含：实验名称、为什么做、实验结果入口、由该实验引出的分析、原始证据/历史入口。证据：`src/data/openEvoExperimentNavigation.ts` 为五个实验统一增加 `motivation` 与显式 `evidenceLink`，并继续复用既有 `title / primaryHref / childLinks`；`ResearchRouteContext.astro` 只在 canonical experiment Hub 上用一个渐进展开的共享 `<details data-experiment-hub>` 从同一数据 owner 渲染“实验结果 / 分析与机制 / 原始证据与历史”，Hub 的 purpose 直接回答“为什么做”。结构 Vitest 10/10 PASS；`npm run check` 0 errors / 0 warnings（Playwright report 生成物带来 195 个非源码 hints）；`npm run build` PASS（506 routes、单 H1 与 external-brand audits PASS）；Chromium 定向回归覆盖中英文 `all declared routes` 与 `every experiment hub` 共 4/4 PASS，并修正了旧测试仍强制返回 Capability 大厅的过时假设。
 - [ ] 现有 `ResearchRouteContext.astro` / capability reader map 若承担相同职责，优先改造或复用，避免第二套导航系统。
 - [ ] 子分析页提供返回所属实验的明确入口；跨实验页面可链接多个实验，但只能有一个 canonical 内容 owner。
 - [ ] `archive`、`stage1-previous`、兼容性入口降到历史/证据层，不再与五个主要实验抢同级注意力。
@@ -144,7 +144,7 @@
 ## 10. 当前执行快照（2026-09-13）
 
 - 当前 MVP：Experiment-first Study 首页代码已实现，中英文共用一个实验树组件。
-- 当前科学结构：五个实验的机器可读子页面归属已经完成；第三阶段已建立统一 experiment context 骨架，下一步是让各子分析页继承所属实验并完善 Hub 内的结果/分析/证据入口。
+- 当前科学结构：五个实验的机器可读子页面归属已经完成；五个 canonical Hub 已从同一数据 owner 展示实验动机、结果、分析与证据。第三阶段下一步是让各子分析页继承所属实验，并继续复用 `ResearchRouteContext` / capability reader map，而不是新建第二套导航。
 - 当前验证：定向结构测试、Astro check、build、桌面/手机/dark 冒烟与 Reader Contract 定向测试已通过；完整跨浏览器矩阵已使用空闲端口完成，Chromium + WebKit 共 414 / 414 PASS。
 - 当前 Git / PR 状态：分支 `feat/experiment-first-study-nav-20260912` 已推送，PR #661 已打开；首个实现提交为 `8671e0d1106ca8acebbe3414fcfe3e2ec404898b`。
 - 当前自动执行：每小时任务已启用，并指向本 Markdown 作为唯一 checklist authority。

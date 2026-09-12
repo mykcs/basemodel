@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { OPEN_EVO_EXPERIMENTS } from '../data/openEvoExperimentNavigation';
 
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const context = read('../components/research/ResearchRouteContext.astro');
@@ -20,6 +21,20 @@ describe('experiment context hierarchy', () => {
     expect(context).toContain('data-experiment-id={experiment?.id}');
     expect(context).toContain("'实验目录'");
     expect(context).toContain("'Experiment index'");
+  });
+
+  it('gives every experiment hub a motivation, result path, analysis path, and evidence/history path', () => {
+    for (const experiment of OPEN_EVO_EXPERIMENTS) {
+      expect(experiment.motivation.zh.length).toBeGreaterThan(10);
+      expect(experiment.motivation.en.length).toBeGreaterThan(10);
+      expect(experiment.childLinks.some((link) => ['analysis', 'mechanism', 'diagnostic'].includes(link.role))).toBe(true);
+      expect(['evidence', 'history']).toContain(experiment.evidenceLink.role);
+      expect(experiment.evidenceLink.href.startsWith('/research/seed-openevo/study/')).toBe(true);
+    }
+    expect(context).toContain('data-experiment-hub');
+    expect(context).toContain('data-hub-group="result"');
+    expect(context).toContain('data-hub-group="analysis"');
+    expect(context).toContain('data-hub-group="evidence"');
   });
 
   it('binds all five canonical experiment entries in both locales', () => {

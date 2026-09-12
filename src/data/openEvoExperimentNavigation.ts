@@ -27,8 +27,10 @@ export interface OpenEvoExperimentNavigationItem {
   number: string;
   title: LocalizedCopy;
   summary: LocalizedCopy;
+  motivation: LocalizedCopy;
   primaryHref: string;
   childLinks: OpenEvoExperimentChildLink[];
+  evidenceLink: OpenEvoExperimentChildLink;
   lineageNote?: LocalizedCopy;
   status: ExperimentStatus;
 }
@@ -40,30 +42,35 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
     number: '01',
     title: { zh: '训练跑了很久，但参数一直没有更新', en: 'Training ran for a long time, but the parameters never updated' },
     summary: { zh: '旧 Stage 2 做了很多任务，也收集到了成功轨迹；但旧 Gate 要求至少 8 个不同任务重复成功，最好的一批只有 7 个，所以没有触发参数更新。', en: 'The old Stage 2 collected successful trajectories, but its gate required repeated success on at least eight distinct tasks. The best block reached seven, so no parameter update fired.' },
+    motivation: { zh: '检验成功经验能否在旧 Stage 2 规则下真正触发参数学习，并解释为什么训练持续运行却没有参数变化。', en: 'Test whether successful experience could actually trigger parameter learning under the old Stage-2 rule, and explain why training kept running without parameter change.' },
     primaryHref: `${cap}/stage2-256-window/`,
     status: 'historical',
     childLinks: [
       { role: 'analysis', label: { zh: '旧 Gate 为什么卡住了更新', en: 'Why the old gate blocked updates' }, href: `${cap}/stage2-256-window/` },
       { role: 'history', label: { zh: '第一轮 3B / 7B 实验记录', en: 'First 3B / 7B experiment record' }, href: `${cap}/first-run/` },
     ],
+    evidenceLink: { role: 'history', label: { zh: '第一轮实验记录', en: 'First-run experiment record' }, href: `${cap}/first-run/` },
   },
   {
     id: '7b-long-run',
     number: '02',
     title: { zh: '7B 长周期实验', en: '7B long-run experiment' },
     summary: { zh: '7B 完成 149 轮学习后冻结模型，再打开 128 道最终测试题：49.33 / 100，58 / 128 完全成功。', en: 'After 149 learning rounds, the 7B model was frozen and evaluated on 128 final tasks: 49.33 / 100 with 58 / 128 exact successes.' },
+    motivation: { zh: '删除旧的 7 对 8 更新门槛后，观察 7B 在固定资源预算里能否持续产生参数更新，并在训练结束后做冻结终评。', en: 'After removing the old seven-versus-eight update gate, observe whether 7B can keep producing parameter updates under a fixed budget and then measure the frozen final model.' },
     primaryHref: `${cap}/stage2-ceiling/`,
     status: 'completed',
     childLinks: [
       { role: 'result', label: { zh: '7B 最终结果', en: '7B final result' }, href: `${cap}/stage2-ceiling/` },
       { role: 'analysis', label: { zh: '7B SD-LoRA / 参数变化分析', en: '7B SD-LoRA / parameter-change analysis' }, href: `${cap}/stage2-7b-analysis/` },
     ],
+    evidenceLink: { role: 'evidence', label: { zh: '7B 冻结结果与归档依据', en: '7B frozen-result and archive evidence' }, href: `${cap}/stage2-ceiling/#ceiling-7b-final-closeout` },
   },
   {
     id: 'successor-3b-1p7b',
     number: '03',
     title: { zh: '3B + 1.7B 后继实验', en: '3B + 1.7B successor experiment' },
     summary: { zh: '旧 3B 暴露购物接口和动作格式问题后，我们固定共同购物规则，分别用 3B 和 1.7B 继续做实验。', en: 'After the old 3B run exposed shopping-interface and action-format problems, the successor experiment fixed shared shopping rules and continued separately with 3B and 1.7B.' },
+    motivation: { zh: '旧 3B 暴露动作接口问题后，用同一套购物规则重新建立 3B 和 1.7B 的可解释起点，再分别继续学习。', en: 'After the old 3B run exposed action-interface problems, rebuild an interpretable starting point for 3B and 1.7B under the same shopping rules before continuing learning separately.' },
     primaryHref: `${cap}/openevo-2-0/`,
     status: 'completed',
     childLinks: [
@@ -72,12 +79,14 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
       { role: 'diagnostic', label: { zh: '购物接口与排查过程', en: 'Shopping-interface diagnosis' }, href: `${cap}/openevo-2-0/exploration/` },
       { role: 'diagnostic', label: { zh: 'Harness 2.0 接口对照实验', en: 'Harness 2.0 interface comparison' }, href: `${cap}/openevo-2-0/harness-2-0/` },
     ],
+    evidenceLink: { role: 'evidence', label: { zh: '研究报告与实验依据', en: 'Research report and experiment evidence' }, href: `${cap}/openevo-2-0/report/` },
   },
   {
     id: 'gdr-v1-1p7b',
     number: '04',
     title: { zh: '1.7B · GDR-v1 实验', en: '1.7B · GDR-v1 experiment' },
     summary: { zh: '这条 1.7B 线一共产生 44 个 SD-LoRA 候选，但 GDR-v1 只让 7 个进入后续模型；冻结终评为 37.60 / 100，1 / 128 完全成功。', en: 'This 1.7B line produced 44 SD-LoRA candidates, but GDR-v1 admitted only seven into later model states. Its frozen final was 37.60 / 100 with 1 / 128 exact success.' },
+    motivation: { zh: '检查短期 task-score 小测作为 candidate 准入规则时，会不会过早拒绝已经训练出来的 SD-LoRA 更新。', en: 'Test whether a short-horizon task-score probe used as the candidate-admission rule rejects trained SD-LoRA updates too early.' },
     primaryHref: `${cap}/gdr-directapply/`,
     status: 'historical',
     lineageNote: { zh: '它同时属于上一项 3B + 1.7B 后继实验；这里单独列出来，是因为它后来引出了 GDR 机制问题。', en: 'It is also the 1.7B arm of the successor experiment above; it is listed separately here because it later became the subject of the GDR mechanism question.' },
@@ -87,12 +96,14 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
       { role: 'mechanism', label: { zh: 'Vanilla SD-LoRA 一轮怎样产生候选参数', en: 'How one Vanilla SD-LoRA round produces a candidate' }, href: `${cap}/vanilla-sd-lora/` },
       { role: 'mechanism', label: { zh: '本地 GDR-v1 与原始 Gated Delta Rule 的区别', en: 'Local GDR-v1 versus the original Gated Delta Rule' }, href: `${cap}/gdr-directapply/#original-gated-delta` },
     ],
+    evidenceLink: { role: 'evidence', label: { zh: 'GDR-v1 原始运行依据', en: 'GDR-v1 raw run evidence' }, href: `${cap}/gdr-directapply/#technical-evidence` },
   },
   {
     id: 'directapply-1p7b',
     number: '05',
     title: { zh: '1.7B · DirectApply / No-GDR 实验', en: '1.7B · DirectApply / No-GDR experiment' },
     summary: { zh: '这次实验去掉 GDR-v1 的短期否决权，合法的 SD-LoRA 候选直接进入下一轮；160 轮训练和一次冻结终评都已经完成。', en: 'This experiment removed GDR-v1’s short-horizon veto, so valid SD-LoRA candidates entered the next round directly. All 160 training rounds and one frozen final are complete.' },
+    motivation: { zh: '移除 GDR-v1 的短期 task-score 否决，让通过工程合同的候选继续进入下一轮，再观察长期学习轨迹和参数历史。', en: 'Remove GDR-v1’s short-horizon task-score veto, let candidates that pass engineering contracts enter the next round, and observe the longer learning trajectory and parameter history.' },
     primaryHref: `${cap}/q17-directapply-analysis/`,
     status: 'completed',
     childLinks: [
@@ -104,6 +115,7 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
       { role: 'analysis', label: { zh: 'D1 参数几何：159 次更新能否低维近似', en: 'D1 geometry: can 159 updates be approximated in fewer directions?' }, href: `${cap}/q17-directapply-analysis/#geometry` },
       { role: 'diagnostic', label: { zh: 'D1 行为保持：压缩后还是同一个模型吗', en: 'D1 function preservation: is the compressed model still equivalent?' }, href: `${cap}/q17-directapply-analysis/#function` },
     ],
+    evidenceLink: { role: 'evidence', label: { zh: '冻结 final 与原始依据', en: 'Frozen final and raw evidence' }, href: `${cap}/q17-directapply-analysis/#final` },
   },
 ];
 

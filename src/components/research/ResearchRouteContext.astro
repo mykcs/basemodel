@@ -26,7 +26,16 @@ const compactPurpose = route === 'first-run'
     : route === 'openevo-2-0/report'
       ? (zh ? '实验方法、结果与结论边界。' : 'Methods, results, and claim boundaries.')
       : record.purpose[locale];
-const purpose = compact ? compactPurpose : record.purpose[locale];
+const purpose = isExperimentHub && experiment ? experiment.motivation[locale] : (compact ? compactPurpose : record.purpose[locale]);
+const resultLinks = experiment ? experiment.childLinks.filter((link) => link.role === 'result') : [];
+const hubResults = experiment && resultLinks.length === 0
+  ? [{ role: 'result' as const, label: { zh: '本实验结果与分析', en: 'Experiment result and analysis' }, href: experiment.primaryHref }]
+  : resultLinks;
+const hubAnalyses = experiment?.childLinks.filter((link) => ['analysis', 'mechanism', 'diagnostic'].includes(link.role)) ?? [];
+const hubEvidence = experiment
+  ? [...experiment.childLinks.filter((link) => link.role === 'history' || link.role === 'evidence'), experiment.evidenceLink]
+      .filter((link, index, links) => links.findIndex((candidate) => candidate.href === link.href) === index)
+  : [];
 ---
 <aside class="research-route-context" data-compact={compact ? 'true' : undefined} data-reader-route={route} data-reader-coverage={record.coverage} data-reader-context data-experiment-context={experiment ? 'true' : undefined} data-experiment-id={experiment?.id} aria-label={zh ? '任务与研究位置' : 'Task and research context'}>
   <p class="research-route-context__location">
@@ -45,7 +54,18 @@ const purpose = compact ? compactPurpose : record.purpose[locale];
   </p>
   <p data-reader-task>{task}</p>
   <p data-reader-purpose>{purpose}</p>
+  {isExperimentHub && experiment && (
+    <details class="research-route-context__hub" data-experiment-hub>
+      <summary>{zh ? '本实验的结果、分析与证据' : 'Results, analysis, and evidence for this experiment'}</summary>
+      <dl>
+        <div data-hub-group="result"><dt>{zh ? '结果' : 'Result'}</dt><dd>{hubResults.map((link) => <a href={localePath(locale, link.href)}>{link.label[locale]}</a>)}</dd></div>
+        <div data-hub-group="analysis"><dt>{zh ? '分析' : 'Analysis'}</dt><dd>{hubAnalyses.map((link) => <a href={localePath(locale, link.href)}>{link.label[locale]}</a>)}</dd></div>
+        <div data-hub-group="evidence"><dt>{zh ? '证据 / 历史' : 'Evidence / history'}</dt><dd>{hubEvidence.map((link) => <a href={localePath(locale, link.href)}>{link.label[locale]}</a>)}</dd></div>
+      </dl>
+    </details>
+  )}
 </aside>
 <style>
 .research-route-context{width:min(1120px,calc(100% - 2rem));margin:.75rem auto 0;padding:0 0 .55rem;border-bottom:1px solid var(--line);font-size:.95rem;color:var(--ink)}.research-route-context p{max-width:60rem;line-height:1.52;margin:.22rem 0}.research-route-context__location{font-size:.85rem;line-height:1.4}.research-route-context a{color:var(--accent-deep);text-underline-offset:.2em}.research-route-context a:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}.research-route-context[data-compact="true"]{display:grid;grid-template-columns:max-content minmax(0,1.25fr) minmax(0,1fr);gap:.25rem .9rem;align-items:baseline;margin-top:.55rem;padding-bottom:.4rem;font-size:.82rem}.research-route-context[data-compact="true"] p{max-width:none;margin:0;color:var(--muted);line-height:1.35}.research-route-context[data-compact="true"] .research-route-context__location{color:var(--ink);font-size:.8rem}@media(max-width:900px){.research-route-context[data-compact="true"]{grid-template-columns:1fr;gap:.12rem;margin-top:.45rem}.research-route-context[data-compact="true"] p{font-size:.78rem}}
+.research-route-context__hub{grid-column:1/-1;margin:.35rem 0 0;padding-top:.25rem;border-top:1px solid var(--line)}.research-route-context__hub summary{width:max-content;max-width:100%;min-height:36px;cursor:pointer;color:var(--accent-deep);font-weight:750}.research-route-context__hub dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin:.5rem 0 0}.research-route-context__hub dl>div{min-width:0}.research-route-context__hub dt{font-weight:800;color:var(--ink)}.research-route-context__hub dd{display:grid;gap:.25rem;margin:.18rem 0 0}.research-route-context__hub dd a{overflow-wrap:anywhere}.research-route-context__hub summary:focus-visible{outline:2px solid var(--accent-deep);outline-offset:3px}@media(max-width:680px){.research-route-context__hub dl{grid-template-columns:1fr}}
 </style>

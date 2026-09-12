@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { CAPABILITY_READER_ROUTES } from '../../src/data/capabilityReaderRoutes';
+import { OPEN_EVO_EXPERIMENTS } from '../../src/data/openEvoExperimentNavigation';
 import { OPEN_EVO_MECHANISM_EXPERIMENTS, mechanismDisplayState, mechanismStateSummary } from '../../src/data/openEvoMechanismNarrative';
 
 const root = '/research/seed-openevo/study/capability-exploration/';
@@ -166,9 +167,32 @@ export function registerReaderJourneyTests() {
         await expect(page.locator('[data-reader-purpose]').first(), path).toBeVisible();
         await expect(page.locator('[data-reader-task]').first(), path).toBeVisible();
         if (route.coverage === 'contextualized') {
-          await expect(page.locator('[data-reader-route]')).toHaveAttribute('data-reader-route', route.route);
-          await expect(page.locator('[data-reader-route] a')).toHaveAttribute('href', `${prefix}${root}`);
+          const routeContext = page.locator('[data-reader-route]');
+          await expect(routeContext).toHaveAttribute('data-reader-route', route.route);
+          const experimentId = await routeContext.getAttribute('data-experiment-id');
+          const expectedRoot = experimentId ? `${prefix}/research/seed-openevo/study/` : `${prefix}${root}`;
+          await expect(routeContext.locator('.research-route-context__location a').first()).toHaveAttribute('href', expectedRoot);
         }
+      }
+    });
+
+    test(`reader journey ${locale}: every experiment hub exposes motivation, result, analysis, and evidence`, async ({ page }) => {
+      for (const experiment of OPEN_EVO_EXPERIMENTS) {
+        const path = `${prefix}${experiment.primaryHref}`;
+        await page.goto(path, { waitUntil: 'domcontentloaded' });
+        const context = page.locator(`[data-experiment-id="${experiment.id}"]`);
+        await expect(context.locator('[data-reader-purpose]'), path).toHaveText(experiment.motivation[locale]);
+        const hub = context.locator('[data-experiment-hub]');
+        await expect(hub, path).toBeVisible();
+        await hub.locator('summary').click();
+        for (const group of ['result', 'analysis', 'evidence']) {
+          const links = hub.locator(`[data-hub-group="${group}"] a`);
+          expect(await links.count(), `${path} ${group}`).toBeGreaterThan(0);
+        }
+        const evidenceHref = `${prefix}${experiment.evidenceLink.href}`;
+        await expect(hub.locator('[data-hub-group="evidence"] a')).toHaveAttribute('href', evidenceHref);
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+        expect(overflow, path).toBe(false);
       }
     });
 
