@@ -167,6 +167,22 @@ where I am
 
 Do not solve a page request by appending an isolated block at the bottom unless the information architecture actually calls for an appendix.
 
+### 5.1 Scaffold-first is a real phase boundary
+
+When the owner explicitly asks to **create the page / route skeleton first** — even if the pages are blank or contain only a title and one short sentence — treat that as an implementation boundary, not as permission to finish the later content phase early.
+
+For an owner-authorized scaffold-first task:
+
+- create the real canonical routes (and locale mates when the route family is bilingual);
+- wire the owning parent entry, series / overview navigation, previous / next links where they express a real sequence, and a visible return path;
+- register the route in the repository-owned reader-contract / route-inventory / sitemap systems that apply;
+- use **honest minimal placeholders** that identify the page role or research question without inventing unfinished scientific results;
+- stop after the scaffold acceptance is complete unless the owner separately authorizes filling the content.
+
+The scaffold must follow the conceptual dependency structure. If discussion reveals one parent question with several subquestions, prefer one overview / series owner plus ordered or branched child routes over a flat set of equal-weight pages. This rule applies only to real intended route owners; do not invent fake stages merely to make a navigation tree look complete.
+
+Historical enforcement case: [`../history/2026-09-13-sd-lora-series-webpage-scaffold-and-handoff-closeout.md`](../history/2026-09-13-sd-lora-series-webpage-scaffold-and-handoff-closeout.md).
+
 ---
 
 ## 6. Use progressive disclosure without hiding necessary meaning
