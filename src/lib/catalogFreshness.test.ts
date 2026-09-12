@@ -4,6 +4,7 @@ import { buildDataHealth } from './dataHealth';
 
 const notice = readFileSync(new URL('../components/catalog/CatalogFreshnessNotice.astro', import.meta.url), 'utf8');
 const modelsIndex = readFileSync(new URL('../pages/_bodies/models-index.astro', import.meta.url), 'utf8');
+const dataStatus = readFileSync(new URL('../pages/_bodies/data-status.astro', import.meta.url), 'utf8');
 
 describe('catalog freshness boundary', () => {
   it('keeps post-snapshot first-party evidence visible without inferring flagship or release dates', () => {
@@ -17,7 +18,10 @@ describe('catalog freshness boundary', () => {
     expect(notice).toContain('不是模型发布日期');
     expect(notice).toContain('不能单独证明');
     expect(notice).toContain('does not by itself establish');
-    expect(modelsIndex).toContain('showSignals={true}');
+    expect(modelsIndex).toContain('compact={true}');
+    expect(modelsIndex).toContain("localePath(locale, '/data-status/')");
+    expect(modelsIndex).not.toContain('showSignals={true}');
+    expect(dataStatus).toContain('showSignals={true}');
   });
 
   it('marks a family snapshot stale after its vendor refresh window instead of leaving old current claims silently trusted', () => {
