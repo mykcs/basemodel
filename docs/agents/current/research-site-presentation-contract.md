@@ -2,7 +2,7 @@
 
 Status: **current project-wide research publication and progressive-disclosure contract**
 Decision date: **2026-08-30**
-Last reviewed: **2026-09-11**
+Last reviewed: **2026-09-12**
 
 This document consolidates durable owner preferences for how BaseModel presents scientific research to people who did not personally run every experiment. It is a content-and-presentation contract, not a replacement for the existing visual, evidence, or browser-acceptance policies.
 
@@ -228,6 +228,8 @@ At minimum check 390px, 768px, and 1440px pressure points when the changed surfa
 - disclosure summaries must be keyboard focusable and semantically named;
 - links need readable text, not only a `↗` icon;
 - color never carries evidence state alone;
+- scientific meaning must not be hidden in microcopy: if a table cell, figure caption, helper label, status word, or metric qualifier changes interpretation, treat it as primary research prose and keep it at the repository's readable-prose size on desktop and mobile rather than shrinking it to 13–15px helper text;
+- wide scientific tables may scroll locally on narrow screens, but their cells and thresholds must remain readable and the page itself must stay overflow-safe;
 - opening or closing `<details>` must not break layout or reading order.
 
 ## 11. Sitewide back-audit baseline — 2026-08-30

@@ -37,7 +37,7 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 **Automatic response:**
 
 1. Re-read the shell-dialect rule in `project-agent-operating-principles.md`; this registry is only the use-site reminder.
-2. Before sending compound syntax, set the execution surface's outer interpreter explicitly (normally `/bin/bash`) **and verify the tool reports that interpreter actually launched**.
+2. Before sending compound syntax, set the execution surface's outer interpreter explicitly (normally `/bin/bash`) **and verify the tool reports that interpreter actually launched**. For Remote Desktop Commander `start_process`, this means setting the tool call's `shell` argument itself (for example `shell=/bin/bash`) before the compound call; wrapping the payload in an inner `bash -lc` while the outer tool still launches Fish does not satisfy this witness.
 3. If the tool still reports Fish or another dialect, do not send compound Bash syntax through it. Use a simple explicit interpreter handoff only when quoting is trivial; otherwise use a standalone Bash/Python script or `bash -s`.
 4. Treat multiline Markdown/code/data, backticks, `$()` / `${...}`, nested quotes, or heredoc delimiters as **non-trivial quoting by default**. When the payload is content, move it through a file/connector API or temporary file; when logic is required, write and syntax-check a standalone script. A correct outer Bash interpreter does not make nested content quoting safe.
 5. A parser failure before mutation is `NOT_EXECUTED`. Do not reinterpret it as repository, server, or scientific failure.

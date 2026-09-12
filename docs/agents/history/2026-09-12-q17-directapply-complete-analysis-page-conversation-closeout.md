@@ -26,7 +26,8 @@ The closeout does not mutate the experiment, reinterpret its results, alter the 
 | Independent visual reviewer attempts failed to return a verdict | New evaluation-integrity gap | Timeout/auth/reconnect/no-output is `NOT_EXECUTED`/unavailable; self-review cannot masquerade as `independent-agent` | `human-preference-learning-system.md` | Preserves the meaning of judge receipts without freezing tool-specific failures |
 | Material page edits made earlier rendered evidence stale | Known family | Screenshots/cold-read evidence binds to the exact rendered artifact; rerender after material changes | existing HPL artifact-binding rule | Already current authority; no duplicate rule added |
 | CSS audit rejected new `!important` / raw state-color fallback | Existing mechanical protection worked | Fix semantic selector/token ownership instead of weakening the Gate | existing CSS audit/policy | The repository already prevented recurrence mechanically |
-| Compound shell / Fish-vs-Bash failure family surfaced again in the wider work | Yes | Verify the actual outer interpreter before compound Bash; pre-mutation parser failure is `NOT_EXECUTED` | existing root/scenario rule | Repeated mistake, but the use-site rule already exists |
+| The long analysis page passed structure/build but Reader Journey found 13–15px captions, table cells, and helper labels carrying scientific meaning | New concrete presentation failure | Scientific qualifiers, thresholds, and metric labels are primary research prose even when styled as captions/helper text; keep them readable at desktop and mobile sizes | `research-site-presentation-contract.md` + existing browser Gate | The failure was semantic ownership of typography, not just one CSS selector |
+| Compound shell / Fish-vs-Bash failure family surfaced again in the wider work | Yes, despite an existing scenario trigger | Bind the correction witness to the actual execution-tool parameter; for RDC compound Bash, set and verify the outer `shell` argument before dispatch | existing root/scenario rule, refined at the use site | The knowledge existed; the tool invocation did not execute it |
 | Long provider checks / moving `main` repeatedly tempted premature “done” reports | Yes | Continue exact-head/current-base closeout to terminal state or a real blocker; keep branch/PR/main/Production distinct | existing release/scenario/closeout owners | Already current and mechanically relevant; duplicating it would add drift |
 
 ## 1. A complete experiment needs one place where the reader can reconstruct it
@@ -47,11 +48,17 @@ During the page review workflow, multiple external reviewer entry points failed 
 
 The durable rule is semantic: **no returned independent verdict means no independent receipt**. Exact CLI flags, authentication state, retry counts, and provider outages are temporary execution details and are intentionally not retained as policy.
 
-## 4. Existing rules that repeated are not copied again
+## 4. Scientific helper text is still scientific prose
+
+The dedicated page initially passed deterministic structure/build checks but failed the rendered Reader Journey because many D1 thresholds, table cells, agreement labels, and figure captions were only 13–15px. Those strings were not decorative metadata: they changed how the reader interpreted whether geometry passed, behavior failed, and how close K64/K80/K96 were to the preregistered boundary.
+
+The durable rule is semantic rather than numeric: **if removing or shrinking a label would weaken the scientific interpretation, it is primary research prose even when it lives in a caption, table cell, `<small>`, or helper row**. The browser Gate remains the mechanical enforcement; the presentation contract now tells authors why that Gate is correct. Wide tables may scroll locally on phones, but readable text and page-level overflow safety remain required.
+
+## 5. Existing rules that repeated are not copied again
 
 Several familiar failure families appeared in the broader work: wrong-shell parsing, stale rendered evidence after material edits, moving-base/exact-head churn, and the temptation to stop while a provider check was still pollable. Current BaseModel authority already has explicit use-site checks for those cases.
 
-This closeout therefore does not add a second shell policy, second release policy, or second screenshot rule. The repeated-mistake lesson is that future work must actually invoke the current scenario trigger before the affected action; another retrospective paragraph would not improve retrieval.
+The Fish/Bash case is especially important because it repeated **after** the scenario trigger already existed. The failure was no longer retrieval; it was use-site execution. The trigger is therefore refined to name the actual RDC `shell` tool argument. A future correction witness is not satisfied by saying “use Bash” while the tool still launches Fish. No second shell policy is created.
 
 ## Temporary information intentionally not promoted
 
@@ -71,7 +78,9 @@ Scientific result values belong to the experiment authority and public evidence 
 A future Agent starting from root `AGENTS.md` should now encounter two new defenses before repeating this conversation's new failures:
 
 1. the scenario registry recognizes “一整页 HTML / 全部分析 / 完整实验分析” and routes the task to the canonical long-form experiment-analysis rule instead of endlessly growing the briefing;
-2. the HPL owner says an unavailable independent reviewer cannot be replaced by self-review or a fabricated `independent-agent` PASS.
+2. the HPL owner says an unavailable independent reviewer cannot be replaced by self-review or a fabricated `independent-agent` PASS;
+3. the research-presentation owner says D1 thresholds/captions/table cells that change interpretation cannot be demoted to unreadable helper microcopy;
+4. the shell trigger names the actual RDC outer-shell argument, so the repeated Fish/Bash correction has a concrete use-site witness rather than another reminder.
 
 The current route owner also tells that Agent how to publish supported later evidence without inventing an earlier chronology.
 
