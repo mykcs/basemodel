@@ -4,89 +4,183 @@ interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
-const rail = zh ? [
-  { n: '01', kind: 'run', title: '做 128 次任务尝试', body: '16 个任务 × 每题 8 次；动作、输出、分数和错误全部记录。' },
-  { n: '02', kind: 'data', title: '只用检查全通过的成功训练', body: '每题只取最早一条完整成功；失败和部分成功只做诊断。' },
-  { n: '03', kind: 'learn', title: '训练 SD-LoRA', body: '最多回放 64 条旧经验；旧方向冻结，新学一个低秩方向，同时重调所有幅度 α。' },
-  { n: '04', kind: 'state', title: '得到候选累计 adapter', body: '所有方向合成一份 LoRA。训练只产生候选；是否正式采用由另一层规则决定。' },
-] : [
-  { n: '01', kind: 'run', title: 'Run 128 attempts', body: '16 tasks × 8; log actions, scores, and errors.' },
-  { n: '02', kind: 'data', title: 'Train on clean success', body: 'Earliest fully checked success per task; failures stay diagnostic.' },
-  { n: '03', kind: 'learn', title: 'Update SD-LoRA', body: 'Replay ≤64 old examples; freeze old directions, add one rank-8 direction, relearn all α.' },
-  { n: '04', kind: 'state', title: 'Make a candidate adapter', body: 'Fold directions into one LoRA; state adoption is separate.' },
-];
+const arrowId = `sdlora-flow-arrow-${locale}`;
+const arrowUrl = `url(#${arrowId})`;
 ---
 <section class="sdlora-slide" data-locale={locale} data-slide-canvas data-ui-audit="contrast layout" aria-labelledby="sdlora-title">
   <header class="sdlora-slide__header">
     <div>
       <h1 id="sdlora-title">{t('Vanilla SD-LoRA 一轮怎样更新参数', 'One Vanilla SD-LoRA update round')}</h1>
       <p>{t(
-        '128 次任务尝试 → 只让检查全通过的成功进入训练 → 学一个新方向、重调所有幅度 → 得到候选 adapter。',
-        '128 attempts → clean successes train → add one direction and rebalance α → candidate adapter.'
+        '不是四张卡片排成一排：经验先变成训练数据，旧经验从旁路加入，SD-LoRA 产生候选参数，再由另一层状态规则决定下一轮用什么。',
+        'This is a routed loop, not four cards in a row: experience becomes training data, bounded replay joins from the side, SD-LoRA makes a candidate, and a separate state rule decides what the next round uses.'
       )}</p>
       <p class="sdlora-slide__scope">{t(
-        '范围：这里只讲 SD-LoRA 参数学习。当前实现会回放有限旧经验，并非论文协议逐项复刻；参数更新也不等于能力一定变好。',
-        'Scope: SD-LoRA parameter learning only. This implementation uses bounded replay; it is not paper-exact, and an update need not improve capability.'
+        '范围：图中实线是当前 Vanilla SD-LoRA 主流程；虚线/分支说明 replay 与状态准入。动画只沿已有路线移动，关闭动画后所有方向仍然完整可读。',
+        'Scope: solid routes show the current Vanilla SD-LoRA mainline; side routes show replay and state admission. Motion only traces authored routes; the complete direction remains readable with motion disabled.'
       )}</p>
     </div>
   </header>
 
-  <ol class="sdlora-rail" aria-label={t('一轮 SD-LoRA 主流程', 'One SD-LoRA round')}>
-    {rail.map((step) => (
-      <li data-ui-audit-item data-kind={step.kind}>
-        <span>{step.n}</span>
-        <strong>{step.title}</strong>
-        <p>{step.body}</p>
-      </li>
-    ))}
-  </ol>
+  <figure class="sdlora-map" data-testid="sdlora-topology-map" aria-labelledby="sdlora-map-caption">
+    <figcaption id="sdlora-map-caption" class="sdlora-map__caption">
+      {t(
+        '当前累计 adapter 产生 WebShop rollout；clean exact success 进入训练，容量受限 replay 从旁路加入；SD-LoRA 冻结旧方向、学习新方向并重调 α，形成 candidate；DirectApply 或历史 GDR-v1 决定下一轮状态，然后流程回到下一轮 rollout。',
+        'The current cumulative adapter produces WebShop rollouts; clean exact successes train while bounded replay joins from the side; SD-LoRA freezes old directions, learns a new direction, and relearns α to produce a candidate; DirectApply or historical GDR-v1 chooses the next state, then the loop returns to the next rollout.'
+      )}
+    </figcaption>
 
-  <div class="sdlora-core" data-testid="sdlora-direction-magnitude-core">
-    <div class="sdlora-core__fixed" data-ui-audit-item>
-      <small>{t('基础模型 · 冻结', 'Base model · frozen')}</small>
-      <strong>W₀</strong>
-    </div>
-    <div class="sdlora-core__old" data-ui-audit-item>
-      <small>{t('旧方向 · 冻结', 'Old directions · frozen')}</small>
-      <strong>D₁ · D₂ · … · Dₜ₋₁</strong>
-    </div>
-    <div class="sdlora-core__new" data-ui-audit-item>
-      <small>{t('本轮新增 · 学习', 'New this round · train')}</small>
-      <strong>Dₜ ← BₜAₜ</strong>
-    </div>
-    <div class="sdlora-core__alpha" data-ui-audit-item>
-      <small>{t('全部幅度 · 重学', 'All magnitudes · relearn')}</small>
-      <strong>α₁ · α₂ · … · αₜ</strong>
-    </div>
-    <div class="sdlora-core__formula" role="note">
-      <code>Dₜ = BₜAₜ / ‖BₜAₜ‖<sub>F</sub></code>
-      <span aria-hidden="true">→</span>
-      <code>ΔWₜ = Σ αᵢDᵢ</code>
-      <span aria-hidden="true">→</span>
-      <code>W<sub>eff</sub> = W₀ + ΔWₜ</code>
-    </div>
-    <p class="sdlora-core__translation"><strong>D</strong> = {t('往哪里改', 'where to move')} · <strong>α</strong> = {t('这个方向改多少', 'how much that direction matters')}</p>
-  </div>
+    <div class="sdlora-map__desktop" data-flow-layout="desktop" aria-hidden="false">
+      <svg class="sdlora-map__edges" viewBox="0 0 1200 520" preserveAspectRatio="none" role="img" aria-label={t('Vanilla SD-LoRA 路由与分支', 'Vanilla SD-LoRA routes and branches')}>
+        <defs>
+          <marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" class="sdlora-map__arrowhead" />
+          </marker>
+        </defs>
 
-  <div class="sdlora-state-note" role="note">
-    <strong>{t('训练结束 ≠ 正式采用', 'Training finished ≠ state adopted')}</strong>
-    <p>{t(
-      '状态选择是另一层机制：当前主线检查通过后采用新候选；历史条件还会先做一次 16-task 小测，再决定用新状态还是旧状态。',
-      'State adoption is separate: DirectApply uses a new candidate after checks; historical GDR-v1 adds a 16-task probe and can keep the old state.'
-    )}</p>
-  </div>
+        <path data-edge="prior-rollout" class="sdlora-map__edge sdlora-map__edge--main" d="M200 72 H245" marker-end={arrowUrl} />
+        <path data-edge="rollout-clean" class="sdlora-map__edge sdlora-map__edge--main" d="M405 72 H450" marker-end={arrowUrl} />
+        <path data-edge="clean-update" class="sdlora-map__edge sdlora-map__edge--main" d="M640 72 H700" marker-end={arrowUrl} />
+        <path data-edge="update-candidate" class="sdlora-map__edge sdlora-map__edge--main" d="M930 72 H995" marker-end={arrowUrl} />
+
+        <path data-edge="replay-update" class="sdlora-map__edge sdlora-map__edge--side" d="M620 260 H655 Q685 260 700 225" marker-end={arrowUrl} />
+        <text class="sdlora-map__edge-label" x="628" y="242">{t('≤64 条旧经验', '≤64 old examples')}</text>
+
+        <path data-edge="candidate-directapply" class="sdlora-map__edge sdlora-map__edge--branch" d="M1090 122 V155 H1015 V225" marker-end={arrowUrl} />
+        <path data-edge="candidate-gdr" class="sdlora-map__edge sdlora-map__edge--branch" d="M1090 122 V155 H1145 V225" marker-end={arrowUrl} />
+        <text class="sdlora-map__edge-label" x="1036" y="147">{t('状态准入', 'state admission')}</text>
+
+        <path data-edge="directapply-next" class="sdlora-map__edge sdlora-map__edge--branch" d="M1015 320 V348 H1090 V380" marker-end={arrowUrl} />
+        <path data-edge="gdr-next" class="sdlora-map__edge sdlora-map__edge--branch" d="M1145 320 V348 H1090 V380" marker-end={arrowUrl} />
+
+        <path data-edge="round-return" class="sdlora-map__edge sdlora-map__edge--return" d="M995 430 H950 V492 H315 V126" marker-end={arrowUrl} />
+        <text class="sdlora-map__edge-label sdlora-map__edge-label--return" x="606" y="482">{t('Round t+1：回到下一轮任务尝试', 'Round t+1: return to the next task attempts')}</text>
+      </svg>
+
+      <article class="sdlora-node sdlora-node--prior" data-flow-node="prior" data-ui-audit-item>
+        <small>{t('起点 · 已选定状态', 'Start · selected state')}</small>
+        <strong>{t('当前累计 adapter', 'Current cumulative adapter')}</strong>
+        <p>{t('冻结 base model，加载上一轮选定的累计 LoRA。', 'Frozen base model with the cumulative LoRA selected after the prior round.')}</p>
+      </article>
+
+      <article class="sdlora-node sdlora-node--rollout" data-flow-node="rollout" data-ui-audit-item>
+        <small>01 · rollout</small>
+        <strong>{t('做 128 次任务尝试', 'Run 128 task attempts')}</strong>
+        <p>{t('16 个任务 × 每题 8 次；动作、输出、分数和错误全部记录。', '16 tasks × 8; actions, outputs, scores, and errors are all recorded.')}</p>
+      </article>
+
+      <article class="sdlora-node sdlora-node--clean" data-flow-node="clean" data-ui-audit-item>
+        <small>02 · training data</small>
+        <strong>{t('只让 clean exact success 进入监督训练', 'Only clean exact success becomes supervised training')}</strong>
+        <p>{t('每题取最早一条完整成功；失败、partial、repair、invalid 只留作诊断。', 'Keep the earliest fully checked success per task; failures, partials, repairs, and invalids remain diagnostic.')}</p>
+      </article>
+
+      <aside class="sdlora-node sdlora-node--replay" data-flow-node="replay" data-ui-audit-item>
+        <small>{t('旁路输入 · bounded replay', 'Side input · bounded replay')}</small>
+        <strong>{t('上一版 adapter 带来的旧经验', 'Old experience carried by the prior adapter')}</strong>
+        <p>{t('最多回放 64 条旧经验；它从旁边加入训练，而不是假装成当前 rollout。', 'Replay up to 64 old examples; they join training from the side rather than pretending to be current rollouts.')}</p>
+      </aside>
+
+      <article class="sdlora-node sdlora-node--update" data-flow-node="update" data-testid="sdlora-direction-magnitude-core" data-ui-audit-item>
+        <small>03 · SD-LoRA update</small>
+        <strong>{t('训练一个新方向，同时重调所有方向的幅度', 'Learn one new direction and rebalance every direction')}</strong>
+        <div class="sdlora-update-grid" aria-label={t('SD-LoRA 参数内部', 'Inside the SD-LoRA update')}>
+          <span><b>W₀</b>{t('冻结', 'frozen')}</span>
+          <span><b>D₁…Dₜ₋₁</b>{t('方向冻结', 'directions frozen')}</span>
+          <span><b>Dₜ ← BₜAₜ</b>{t('本轮学习', 'learn this round')}</span>
+          <span><b>α₁ · α₂ · … · αₜ</b>{t('全部幅度重学', 'All magnitudes relearned')}</span>
+        </div>
+        <code>Dₜ = BₜAₜ / ‖BₜAₜ‖<sub>F</sub>　→　ΔWₜ = Σ αᵢDᵢ</code>
+      </article>
+
+      <article class="sdlora-node sdlora-node--candidate" data-flow-node="candidate" data-ui-audit-item>
+        <small>04 · candidate</small>
+        <strong>{t('得到候选累计 adapter', 'Produce a candidate cumulative adapter')}</strong>
+        <p>{t('所有方向折成一份兼容 PEFT 的累计 LoRA。到这里，SD-LoRA 训练结束。', 'All directions fold into one PEFT-compatible cumulative LoRA. SD-LoRA training ends here.')}</p>
+      </article>
+
+      <article class="sdlora-node sdlora-node--direct" data-flow-node="directapply" data-ui-audit-item>
+        <small>{t('当前主线', 'Current path')}</small>
+        <strong>DirectApply</strong>
+        <p>{t('检查通过后采用新候选。', 'Adopt the new candidate after checks.')}</p>
+      </article>
+
+      <article class="sdlora-node sdlora-node--gdr" data-flow-node="gdr" data-ui-audit-item>
+        <small>{t('历史本地规则', 'Historical local rule')}</small>
+        <strong>GDR-v1</strong>
+        <p>{t('先做 16-task probe，再选新/旧状态。', 'Run a 16-task probe, then choose new or old state.')}</p>
+      </article>
+
+      <article class="sdlora-node sdlora-node--next" data-flow-node="next" data-ui-audit-item>
+        <small>Round t + 1</small>
+        <strong>{t('下一轮使用选定状态', 'The next round uses the selected state')}</strong>
+        <p>{t('新的行为产生新的成功/失败证据，沿回环再次进入 rollout。', 'New behavior produces new success/failure evidence and follows the return route into rollout again.')}</p>
+      </article>
+    </div>
+
+    <div class="sdlora-map__mobile" data-flow-layout="mobile">
+      <article class="sdlora-mobile-node" data-flow-node="prior-mobile">
+        <small>{t('起点', 'Start')}</small><strong>{t('当前累计 adapter', 'Current cumulative adapter')}</strong>
+      </article>
+      <svg class="sdlora-mobile-edge" viewBox="0 0 40 44" role="img" aria-label={t('进入 rollout', 'to rollout')}><path data-edge="prior-rollout-mobile" d="M20 2 V32"/><path d="M14 26 L20 34 L26 26"/></svg>
+
+      <article class="sdlora-mobile-node" data-flow-node="rollout-mobile">
+        <small>01 · rollout</small><strong>{t('128 次任务尝试', '128 task attempts')}</strong><p>{t('16 个任务 × 每题 8 次。', '16 tasks × 8.')}</p>
+      </article>
+      <svg class="sdlora-mobile-edge" viewBox="0 0 40 44" role="img" aria-label={t('筛选 clean success', 'select clean success')}><path data-edge="rollout-clean-mobile" d="M20 2 V32"/><path d="M14 26 L20 34 L26 26"/></svg>
+
+      <article class="sdlora-mobile-node" data-flow-node="clean-mobile">
+        <small>02 · training data</small><strong>{t('clean exact success', 'clean exact success')}</strong><p>{t('失败和部分成功保留作诊断，不直接监督训练。', 'Failures and partial successes remain diagnostic rather than directly supervising training.')}</p>
+      </article>
+
+      <div class="sdlora-mobile-join">
+        <aside class="sdlora-mobile-side" data-flow-node="replay-mobile"><small>replay</small><strong>{t('≤64 条旧经验', '≤64 old examples')}</strong></aside>
+        <svg viewBox="0 0 64 88" role="img" aria-label={t('旧经验从旁路加入训练', 'bounded replay joins training from the side')}><path data-edge="replay-update-mobile" d="M4 28 H36 Q52 28 52 44 V58"/><path d="M46 52 L52 60 L58 52"/></svg>
+        <article class="sdlora-mobile-node sdlora-mobile-node--update" data-flow-node="update-mobile">
+          <small>03 · SD-LoRA update</small><strong>{t('旧方向冻结；学 Dₜ；重调全部 α', 'Freeze old directions; learn Dₜ; relearn every α')}</strong><code>ΔWₜ = Σ αᵢDᵢ</code>
+        </article>
+      </div>
+
+      <svg class="sdlora-mobile-edge" viewBox="0 0 40 44" role="img" aria-label={t('形成候选 adapter', 'produce candidate adapter')}><path data-edge="update-candidate-mobile" d="M20 2 V32"/><path d="M14 26 L20 34 L26 26"/></svg>
+      <article class="sdlora-mobile-node" data-flow-node="candidate-mobile"><small>04 · candidate</small><strong>{t('候选累计 adapter', 'Candidate cumulative adapter')}</strong><p>{t('训练完成不等于正式采用。', 'Training finished does not mean state adopted.')}</p></article>
+
+      <div class="sdlora-mobile-branch" aria-label={t('状态准入分支', 'state-admission branch')}>
+        <svg class="sdlora-mobile-branch__split" viewBox="0 0 300 54" role="img" aria-label={t('候选状态分成 DirectApply 与 GDR-v1', 'candidate branches to DirectApply and GDR-v1')}>
+          <path data-edge="candidate-directapply-mobile" d="M150 2 V20 H72 V42"/><path d="M66 36 L72 44 L78 36"/>
+          <path data-edge="candidate-gdr-mobile" d="M150 2 V20 H228 V42"/><path d="M222 36 L228 44 L234 36"/>
+        </svg>
+        <div class="sdlora-mobile-branch__choices">
+          <article><small>{t('当前主线', 'Current')}</small><strong>DirectApply</strong></article>
+          <article><small>{t('历史本地规则', 'Historical')}</small><strong>GDR-v1</strong></article>
+        </div>
+        <svg class="sdlora-mobile-branch__join" viewBox="0 0 300 54" role="img" aria-label={t('两个分支汇合为下一轮状态', 'both branches join the next-round state')}>
+          <path data-edge="directapply-next-mobile" d="M72 2 V18 H150 V42"/><path data-edge="gdr-next-mobile" d="M228 2 V18 H150 V42"/><path d="M144 36 L150 44 L156 36"/>
+        </svg>
+      </div>
+
+      <article class="sdlora-mobile-node" data-flow-node="next-mobile"><small>Round t + 1</small><strong>{t('下一轮使用选定状态', 'Next round uses the selected state')}</strong></article>
+      <svg class="sdlora-mobile-return" viewBox="0 0 320 72" role="img" aria-label={t('下一轮回到任务尝试', 'next round returns to task attempts')}>
+        <path data-edge="round-return-mobile" d="M286 10 H64 Q24 10 24 42 H236"/>
+        <path d="M228 36 L238 42 L228 48"/>
+        <text x="78" y="64">{t('回到下一轮 128 次任务尝试', 'return to the next 128 attempts')}</text>
+      </svg>
+    </div>
+  </figure>
 
   <div class="sdlora-legend" aria-label={t('图例', 'Legend')}>
-    <span data-kind="run">{t('任务尝试 / rollout', 'runtime / rollout')}</span>
-    <span data-kind="data">{t('训练数据', 'training data')}</span>
-    <span data-kind="learn">{t('参数学习', 'parameter learning')}</span>
-    <span data-kind="state">{t('状态选择', 'state choice')}</span>
+    <span data-kind="main">{t('主流程', 'main path')}</span>
+    <span data-kind="side">{t('旁路输入', 'side input')}</span>
+    <span data-kind="branch">{t('状态分支', 'state branch')}</span>
+    <span data-kind="return">{t('下一轮回环', 'round return')}</span>
   </div>
 </section>
+
 <style>
-.sdlora-slide{box-sizing:border-box;aspect-ratio:16/9;min-height:0;padding:1.2rem 1.4rem .9rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface);display:grid;grid-template-rows:auto auto 1fr auto auto;gap:.65rem}.sdlora-slide__header{display:block;border-bottom:1px solid var(--line);padding-bottom:.65rem}.sdlora-slide h1{max-width:16ch;margin:0;font-size:clamp(2rem,4vw,3.65rem);line-height:1.02;letter-spacing:-.045em}.sdlora-slide__header>div>p{max-width:48rem;margin:.45rem 0 0;font-size:1.05rem;line-height:1.5}.sdlora-slide__scope{max-width:66rem;margin:.35rem 0 0;color:var(--muted);font-size:.74rem;line-height:1.42}.sdlora-rail{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin:0;padding:0}.sdlora-rail li{position:relative;min-width:0;padding:.58rem .3rem .5rem;border-top:4px solid var(--line)}.sdlora-rail li[data-kind="run"]{border-top-color:var(--color-info)}.sdlora-rail li[data-kind="data"]{border-top-color:var(--color-positive)}.sdlora-rail li[data-kind="learn"]{border-top-color:var(--accent-deep)}.sdlora-rail li[data-kind="state"]{border-top-color:var(--muted)}.sdlora-rail li:not(:last-child)::after{content:"→";position:absolute;right:-.8rem;top:.48rem;color:var(--muted);font-weight:800}.sdlora-rail li>span{display:block;color:var(--muted);font:800 .68rem/1 var(--font-mono);letter-spacing:.08em}.sdlora-rail strong{display:block;margin:.26rem 0 0;font-size:.96rem;line-height:1.3}.sdlora-rail p{margin:.26rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.42}.sdlora-core{display:grid;grid-template-columns:.6fr 1.2fr 1fr 1fr;grid-template-rows:auto auto auto;gap:.35rem .7rem;align-content:center;padding:.55rem .8rem;border-top:1px solid var(--line)}.sdlora-core>div:not(.sdlora-core__formula){min-width:0;padding:.25rem .55rem;border-left:2px solid var(--line)}.sdlora-core>div.sdlora-core__old{border-left-color:var(--muted)}.sdlora-core>div.sdlora-core__new{border-left-color:var(--accent-deep)}.sdlora-core>div.sdlora-core__alpha{border-left-color:var(--color-positive)}.sdlora-core small{display:block;color:var(--muted);font-size:.67rem;font-weight:800;line-height:1.25}.sdlora-core strong{display:block;margin:.1rem 0;font:800 .88rem/1.25 var(--font-mono)}.sdlora-core__formula{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:.8rem;padding:.4rem .3rem 0;border-top:1px solid var(--line);overflow-wrap:anywhere}.sdlora-core__formula code{font-size:.84rem;color:var(--ink)}.sdlora-core__formula>span{color:var(--muted);font-size:.86rem}.sdlora-core__translation{grid-column:1/-1;margin:0;text-align:center;color:var(--muted);font-size:.71rem}.sdlora-core__translation strong{display:inline;font:800 .74rem/1 var(--font-mono);color:var(--ink)}.sdlora-state-note{display:grid;grid-template-columns:auto 1fr;gap:.75rem;align-items:start;padding:.55rem .75rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.sdlora-state-note strong{font-size:.78rem;white-space:nowrap}.sdlora-state-note p{margin:0;color:var(--muted);font-size:.72rem;line-height:1.42}.sdlora-legend{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .8rem;padding-top:.4rem;border-top:1px solid var(--line);font-size:.67rem;color:var(--muted)}.sdlora-legend span::before{content:"";display:inline-block;width:.52rem;height:.16rem;margin-right:.3rem;vertical-align:.22rem;background:var(--line)}.sdlora-legend span[data-kind="run"]::before{background:var(--color-info)}.sdlora-legend span[data-kind="data"]::before{background:var(--color-positive)}.sdlora-legend span[data-kind="learn"]::before{background:var(--accent-deep)}
-@media(min-width:901px){.sdlora-slide[data-locale="en"]{padding:1.05rem 1.4rem .75rem;gap:.5rem}}
-@media(max-width:900px){.sdlora-slide{min-height:0;aspect-ratio:auto}.sdlora-rail{grid-template-columns:repeat(2,minmax(0,1fr))}.sdlora-rail li:nth-child(2)::after{display:none}.sdlora-core{grid-template-columns:repeat(2,minmax(0,1fr))}.sdlora-state-note{grid-template-columns:1fr}.sdlora-state-note strong{white-space:normal}}
-@media(max-width:620px){.sdlora-slide{padding:1rem .8rem;border-radius:var(--radius-panel)}.sdlora-slide h1{font-size:2rem}.sdlora-slide__header>div>p{font-size:.96rem}.sdlora-rail{grid-template-columns:1fr;gap:.25rem}.sdlora-rail li{padding:.55rem .2rem .55rem 2.5rem;border-top:0;border-left:3px solid var(--line)}.sdlora-rail li:not(:last-child)::after{content:"↓";left:.7rem;right:auto;top:auto;bottom:-.38rem}.sdlora-rail li>span{position:absolute;left:.55rem;top:.72rem}.sdlora-core{grid-template-columns:1fr}.sdlora-core__formula{flex-direction:column;gap:.25rem}.sdlora-core__formula>span{transform:rotate(90deg)}}
-@media print{.sdlora-slide{border:0;border-radius:0;min-height:0;aspect-ratio:16/9;break-inside:avoid}}
+.sdlora-slide{box-sizing:border-box;aspect-ratio:16/9;min-height:0;padding:1.05rem 1.25rem .75rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface);display:grid;grid-template-rows:auto 1fr auto;gap:.55rem;overflow:hidden}.sdlora-slide__header{border-bottom:1px solid var(--line);padding-bottom:.58rem}.sdlora-slide h1{max-width:17ch;margin:0;font-size:clamp(1.95rem,3.7vw,3.45rem);line-height:1.02;letter-spacing:-.045em}.sdlora-slide__header>div>p{max-width:66rem;margin:.38rem 0 0;font-size:.92rem;line-height:1.42}.sdlora-slide__header>div>p.sdlora-slide__scope{color:var(--muted);font-size:.69rem}.sdlora-map{position:relative;min-height:0;margin:0}.sdlora-map__caption{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.sdlora-map__desktop{position:relative;height:100%;min-height:0}.sdlora-map__mobile{display:none}.sdlora-map__edges{position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:visible}.sdlora-map__edge{fill:none;stroke:var(--line-strong,var(--line));stroke-width:2.2;vector-effect:non-scaling-stroke}.sdlora-map__edge--main{stroke:var(--accent-deep);stroke-dasharray:10 8;animation:sdlora-route-trace 2.8s linear infinite}.sdlora-map__edge--side{stroke:var(--color-info);stroke-dasharray:6 6}.sdlora-map__edge--branch{stroke:var(--muted);stroke-dasharray:5 5}.sdlora-map__edge--return{stroke:var(--color-positive);stroke-dasharray:11 9;animation:sdlora-route-trace 3.3s linear infinite}.sdlora-map__arrowhead{fill:var(--ink)}.sdlora-map__edge-label{fill:var(--muted);font:700 13px/1 var(--font-sans)}.sdlora-map__edge-label--return{fill:var(--color-positive)}.sdlora-node{position:absolute;z-index:1;box-sizing:border-box;padding:.55rem .65rem;border:1px solid var(--line);border-radius:.72rem;background:color-mix(in srgb,var(--surface) 96%,transparent);box-shadow:0 8px 22px color-mix(in srgb,var(--ink) 7%,transparent)}.sdlora-node small{display:block;color:var(--muted);font:800 .58rem/1.2 var(--font-mono);letter-spacing:.03em}.sdlora-node strong{display:block;margin:.18rem 0 0;font-size:.76rem;line-height:1.24}.sdlora-node p{margin:.22rem 0 0;color:var(--muted);font-size:.61rem;line-height:1.34}.sdlora-node--prior{left:1.2%;top:2%;width:15.5%}.sdlora-node--rollout{left:20.3%;top:2%;width:15.2%}.sdlora-node--clean{left:38.4%;top:2%;width:16.8%}.sdlora-node--update{left:58.4%;top:0;width:19.4%;min-height:51%;border-color:color-mix(in srgb,var(--accent-deep) 48%,var(--line));background:color-mix(in srgb,var(--accent) 7%,var(--surface))}.sdlora-node--candidate{left:82.2%;top:2%;width:16.5%}.sdlora-node--replay{left:39.2%;top:42%;width:16.4%;border-style:dashed}.sdlora-node--direct{left:80.5%;top:43%;width:8.7%;text-align:center}.sdlora-node--gdr{left:90.7%;top:43%;width:8.1%;text-align:center}.sdlora-node--direct p,.sdlora-node--gdr p{font-size:.55rem}.sdlora-node--next{left:82.2%;top:72%;width:16.5%;border-color:color-mix(in srgb,var(--color-positive) 48%,var(--line))}.sdlora-update-grid{display:grid;grid-template-columns:1fr 1fr;gap:.24rem;margin:.45rem 0 .4rem}.sdlora-update-grid span{display:grid;gap:.08rem;padding:.25rem .3rem;border:1px solid var(--line);border-radius:.42rem;background:var(--surface)}.sdlora-update-grid b{font:800 .59rem/1.15 var(--font-mono)}.sdlora-update-grid span{color:var(--muted);font-size:.49rem;line-height:1.2}.sdlora-node--update code{display:block;padding-top:.28rem;border-top:1px solid var(--line);white-space:normal;color:var(--ink);font-size:.55rem;line-height:1.3}.sdlora-legend{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .9rem;padding-top:.36rem;border-top:1px solid var(--line);font-size:.64rem;color:var(--muted)}.sdlora-legend span::before{content:"";display:inline-block;width:.72rem;height:.16rem;margin-right:.3rem;vertical-align:.2rem;background:var(--line)}.sdlora-legend span[data-kind="main"]::before{background:var(--accent-deep)}.sdlora-legend span[data-kind="side"]::before{background:var(--color-info)}.sdlora-legend span[data-kind="branch"]::before{background:var(--muted)}.sdlora-legend span[data-kind="return"]::before{background:var(--color-positive)}
+@keyframes sdlora-route-trace{to{stroke-dashoffset:-36}}
+@media(prefers-reduced-motion:reduce){.sdlora-map__edge--main,.sdlora-map__edge--return{animation:none}}
+@media(max-width:900px){.sdlora-slide{aspect-ratio:auto;overflow:visible}.sdlora-map__desktop{display:none}.sdlora-map__mobile{display:grid;gap:.12rem;padding:.3rem 0}.sdlora-mobile-node{padding:.68rem .75rem;border:1px solid var(--line);border-radius:.72rem;background:var(--surface-muted)}.sdlora-mobile-node small,.sdlora-mobile-side small,.sdlora-mobile-branch article small{display:block;color:var(--muted);font:800 .61rem/1.2 var(--font-mono)}.sdlora-mobile-node strong,.sdlora-mobile-side strong,.sdlora-mobile-branch article strong{display:block;margin-top:.15rem;font-size:.84rem;line-height:1.28}.sdlora-mobile-node p{margin:.2rem 0 0;color:var(--muted);font-size:.7rem;line-height:1.4}.sdlora-mobile-node code{display:block;margin-top:.34rem;padding-top:.3rem;border-top:1px solid var(--line);font-size:.66rem}.sdlora-mobile-edge{width:40px;height:32px;justify-self:center;overflow:visible}.sdlora-mobile-edge path,.sdlora-mobile-join svg path,.sdlora-mobile-branch svg path,.sdlora-mobile-return path{fill:none;stroke:var(--accent-deep);stroke-width:2.2;vector-effect:non-scaling-stroke}.sdlora-mobile-edge path:first-child{stroke-dasharray:7 6;animation:sdlora-route-trace 2.8s linear infinite}.sdlora-mobile-join{display:grid;grid-template-columns:minmax(0,.72fr) 48px minmax(0,1.45fr);align-items:center;gap:.35rem}.sdlora-mobile-side{padding:.55rem .6rem;border:1px dashed var(--color-info);border-radius:.68rem;background:var(--surface)}.sdlora-mobile-join svg{width:48px;height:72px}.sdlora-mobile-join svg path{stroke:var(--color-info);stroke-dasharray:5 5}.sdlora-mobile-node--update{border-color:color-mix(in srgb,var(--accent-deep) 48%,var(--line));background:color-mix(in srgb,var(--accent) 7%,var(--surface))}.sdlora-mobile-branch{display:grid;gap:0}.sdlora-mobile-branch__split,.sdlora-mobile-branch__join{width:min(300px,86%);height:48px;justify-self:center}.sdlora-mobile-branch svg path{stroke:var(--muted);stroke-dasharray:5 5}.sdlora-mobile-branch__choices{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}.sdlora-mobile-branch__choices article{padding:.58rem .65rem;border:1px solid var(--line);border-radius:.68rem;text-align:center;background:var(--surface)}.sdlora-mobile-return{width:min(320px,94%);height:68px;justify-self:center}.sdlora-mobile-return path{stroke:var(--color-positive);stroke-dasharray:9 7;animation:sdlora-route-trace 3.3s linear infinite}.sdlora-mobile-return text{fill:var(--color-positive);font:700 12px/1 var(--font-sans)}.sdlora-legend{font-size:.62rem}}
+@media(max-width:620px){.sdlora-slide{padding:.9rem .75rem;border-radius:var(--radius-panel)}.sdlora-slide h1{font-size:1.95rem}.sdlora-slide__header>div>p{font-size:.84rem}.sdlora-slide__header>div>p.sdlora-slide__scope{font-size:.66rem}.sdlora-mobile-join{grid-template-columns:minmax(0,.8fr) 34px minmax(0,1.35fr);gap:.22rem}.sdlora-mobile-join svg{width:34px}.sdlora-mobile-side{padding:.48rem}.sdlora-mobile-side strong{font-size:.74rem}.sdlora-mobile-node--update strong{font-size:.78rem}}
+@media(prefers-reduced-motion:reduce) and (max-width:900px){.sdlora-mobile-edge path:first-child,.sdlora-mobile-return path{animation:none}}
+@media print{.sdlora-slide{border:0;border-radius:0;min-height:0;aspect-ratio:16/9;break-inside:avoid}.sdlora-map__desktop{display:block}.sdlora-map__mobile{display:none}.sdlora-map__edge--main,.sdlora-map__edge--return{animation:none}}
 </style>
