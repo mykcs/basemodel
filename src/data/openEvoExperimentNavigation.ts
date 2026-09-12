@@ -50,7 +50,7 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
     status: 'completed',
     childLinks: [
       { role: 'result', label: { zh: '7B 最终结果', en: '7B final result' }, href: `${cap}/stage2-ceiling/` },
-      { role: 'analysis', label: { zh: '7B 参数变化分析', en: '7B parameter-change analysis' }, href: `${cap}/stage2-7b-analysis/` },
+      { role: 'analysis', label: { zh: '7B SD-LoRA / 参数变化分析', en: '7B SD-LoRA / parameter-change analysis' }, href: `${cap}/stage2-7b-analysis/` },
     ],
   },
   {

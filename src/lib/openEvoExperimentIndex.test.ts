@@ -25,6 +25,18 @@ describe('experiment-first Study index', () => {
     ]));
   });
 
+  it('keeps the 7B long run attached to its sealed result and SD-LoRA parameter analysis', () => {
+    const longRun = OPEN_EVO_EXPERIMENTS.find((item) => item.id === '7b-long-run');
+    expect(longRun?.primaryHref).toBe('/research/seed-openevo/study/capability-exploration/stage2-ceiling/');
+    expect(longRun?.childLinks).toEqual(expect.arrayContaining([
+      expect.objectContaining({ role: 'result', href: '/research/seed-openevo/study/capability-exploration/stage2-ceiling/' }),
+      expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/' }),
+    ]));
+    const parameterAnalysis = readFileSync(new URL('../components/research/OpenEvo7BStage2AnalysisMap.astro', import.meta.url), 'utf8');
+    expect(parameterAnalysis).toContain('7B 已发生真实参数更新');
+    expect(parameterAnalysis).toContain('SD-LoRA 参数更新');
+  });
+
   it('keeps the five experiment parents and key lineage/analysis children', () => {
     const titles = OPEN_EVO_EXPERIMENTS.map((item) => item.title.zh);
     expect(titles).toEqual([
