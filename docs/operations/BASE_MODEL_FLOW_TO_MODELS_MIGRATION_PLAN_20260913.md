@@ -163,14 +163,23 @@ npm run feedback:judge -- /tmp/model-migration-preference-judge.json
 
 ## 10. Phase H — Git / PR / exact-head
 
-- [ ] 运行 `git diff --check`，不得有 whitespace error。
+- [x] 运行 `git diff --check`，不得有 whitespace error。
 - [ ] 删除/忽略所有仅用于本地运行的临时状态；不得提交 `node_modules` symlink、临时端口、`/tmp` 截图路径作为产品事实。
-- [ ] 提交当前迁移代码 + 本计划文件，commit message 明确写出 canonical-owner migration。
-- [ ] push `research/move-base-model-content-to-models-20260912` 到 GitHub。
-- [ ] 创建或复用唯一 PR；不得为同一迁移制造平行 PR。
-- [ ] PR body 写明：旧 owner → 新 owner、兼容路由、测试证据、科学边界、剩余验收。
-- [ ] PR 创建后重新读取 live `main`；若 `main` 前进，先做 current-base refresh，再重跑受影响验收。
+- [x] 提交当前迁移代码 + 本计划文件，commit message 明确写出 canonical-owner migration。
+- [x] push `research/move-base-model-content-to-models-20260912` 到 GitHub。
+- [x] 创建或复用唯一 PR；不得为同一迁移制造平行 PR。
+- [x] PR body 写明：旧 owner → 新 owner、兼容路由、测试证据、科学边界、剩余验收。
+- [x] PR 创建后重新读取 live `main`；若 `main` 前进，先做 current-base refresh，再重跑受影响验收。
 - [ ] 确认 PR head 与最新 `main` 可干净集成，且没有覆盖其他 Agent 的语义更新。
+
+### 当前 durable evidence
+
+- current base: `2b8fb0d5dc3c2ec2325fc22255e75a28d1f9441b`
+- current branch head before this checklist-status commit: `de9abb786f043d226220e86adfffcdc247ac2156`
+- PR: `#658` — `Move SEED/OpenEVO base-model content into Models`
+- current-base ancestry check: `origin/main` is an ancestor of the branch head
+- current-base focused structural tests: 27/27 PASS
+- current-base `npm run check`: 0 errors / 0 warnings; 2 pre-existing deprecation hints
 
 ## 11. Phase I — Vercel final gate
 
