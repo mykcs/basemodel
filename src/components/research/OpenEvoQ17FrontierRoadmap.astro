@@ -1,7 +1,7 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
-import { OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS } from '../../data/openEvoDirectApplyLiveDynamics';
+import { OPEN_EVO_DIRECT_APPLY_R97_DYNAMICS } from '../../data/openEvoDirectApplyHistoricalR97';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -23,7 +23,7 @@ const papers = [
   ["RL's Razor", 'https://proceedings.iclr.cc/paper_files/paper/2026/hash/618c95f4557c15b253fb0e6f548ea0c0-Abstract-Conference.html'],
 ] as const;
 
-const plateauDynamics = OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS;
+const plateauDynamics = OPEN_EVO_DIRECT_APPLY_R97_DYNAMICS;
 const plateauMovingAverage = plateauDynamics.score.map((point, index) => {
   const rows = plateauDynamics.score.slice(Math.max(0, index - 11), index + 1);
   return { round: point.round, score: rows.reduce((sum, row) => sum + row.score, 0) / rows.length };
