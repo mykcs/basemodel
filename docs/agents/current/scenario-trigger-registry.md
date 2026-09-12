@@ -1,6 +1,6 @@
 # Scenario trigger registry
 
-Last reviewed: **2026-09-11**
+Last reviewed: **2026-09-12**
 
 This is a **just-in-time attention router**, not a second governance system. Scan it after `/AGENTS.md`, `docs/agents/LATEST.md`, and the core bootstrap in `docs/agents/README.md`. Load only the matched owner, executable truth, and live evidence.
 
@@ -13,7 +13,7 @@ current user instruction
 > historical case evidence
 ```
 
-Re-scan when the task changes state: a blocker appears, an overlapping PR is discovered, a provider boundary is crossed, `main` moves, a Gate reveals an invariant, or a current/latest external claim becomes decision-relevant.
+Re-scan when the task changes state: a blocker appears, an overlapping PR is discovered, a provider boundary is crossed, `main` moves, a Gate reveals an invariant, a current/latest external claim becomes decision-relevant, **or the conversation resumes from a handoff/summary into a different action phase**. A prior assistant summary is context, not bootstrap authority: before review/advice becomes repository mutation, provider acceptance, merge, or Production verification, reload the matched current owner and live state.
 
 ---
 

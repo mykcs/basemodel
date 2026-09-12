@@ -353,6 +353,15 @@ A whole-run or “current/latest” training curve is a publication snapshot, no
 
 This does **not** require a static website to chase every newly completed round in real time. It requires honesty about the checked cutoff: a dated snapshot may remain historical, but it must not be presented as `current`, `latest`, or the full run after newer sealed evidence has been deliberately incorporated elsewhere on the same page.
 
+#### Dated projections with later audit evidence
+
+The same preservation rule applies to non-chart evidence. If a dated projection truthfully recorded an audit/check as open, and later upstream evidence closes it:
+
+- keep the dated projection bytes/status unchanged and label/use it as historical;
+- cite the later immutable audit/receipt separately from current copy instead of flipping the historical boolean or rewriting its checked-at semantics;
+- make regression tests protect both truths: the historical fixture retains its original status, while the current rendered surface must not repeat obsolete `open` / `Pending` wording once the later evidence has been intentionally incorporated;
+- keep causal boundaries explicit: closing an audit can prove a narrow identity/provenance fact without proving the hypothesized mechanism caused the observed performance pattern or that a proposed successor will improve it.
+
 ### 3. Update the correct website owners
 
 For SEED × OpenEvo Results work, the ordinary change set may include:
