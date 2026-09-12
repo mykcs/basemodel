@@ -49,7 +49,7 @@
 
 逐页盘点 `src/pages/research/seed-openevo/study/**` 以及对应英文页面。每个读者可见研究页必须归类为：`experiment-result`、`experiment-analysis`、`cross-experiment`、`historical/archive` 或 `compatibility`。
 
-- [ ] 建立一份机器可读的实验 → 子页面映射，优先放在 `src/data/`，避免长期把关系硬编码散落在组件中。
+- [x] 建立一份机器可读的实验 → 子页面映射，优先放在 `src/data/`，避免长期把关系硬编码散落在组件中。证据：`src/data/openEvoExperimentNavigation.ts` 现在集中拥有五个实验、`primaryHref`、带语义 `role` 的 `childLinks`、lineage 与 status；`OpenEvoExperimentIndex.astro` 已改为从该数据 owner 渲染。定向 Vitest 7/7 PASS，`npm run check` 0 errors / 0 warnings（仅 2 个既有 deprecation hints）。
 - [ ] Gate 失败实验至少覆盖 `stage2-256-window` 与相关 first-run 历史证据。
 - [ ] 7B 长周期实验至少覆盖 `stage2-ceiling`、`stage2-7b-analysis` 及真正属于该实验的 SD-LoRA/参数分析。
 - [ ] 3B + 1.7B 后继实验至少覆盖 `openevo-2-0`、`report`、`exploration`、Harness/interface 诊断。
