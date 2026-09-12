@@ -244,10 +244,10 @@ npm run preflight:ui
 
 This expands to the repository-owned deterministic gate, production build, overflow preflight, and `test:ui:all` cross-browser matrix.
 
-- [ ] **Final exact candidate** `npm run preflight:ui` completes with exit code 0 after all WebShop fixes.
-- [ ] Record exact candidate SHA in §11 after the final preflight is green.
-- [ ] If a failure is unrelated to the branch, prove it on current `main` before changing shared code or tests.
-- [ ] If a failure is branch-induced, make the narrowest semantic fix, rerun the affected focused spec, then rerun full preflight.
+- [x] **Final exact current-base deployable tree** `npm run preflight:ui` completes with exit code 0 after all WebShop fixes.
+- [x] Record the current-base preflight candidate SHA in §11 after the final preflight is green.
+- [x] No unrelated final-preflight failure remained. Earlier failures were proven branch-induced before any shared-owner change.
+- [x] Branch-induced mobile Grid overflow and explainer-wrapper transport regressions received narrow fixes, focused revalidation, and final full preflight.
 
 Current execution note at file creation: an exact-head full preflight was running on the post-regression-fix candidate; do not mark it green until its process exits 0.
 
@@ -259,7 +259,7 @@ Working PR: **BaseModel #655**.
 
 Repository deployment contract requires ordinary branch work to stay off Vercel until the final candidate is ready.
 
-- [ ] Refresh `origin/main` and PR #655 immediately before publishing final branch state; inspect unexpected main/PR drift before proceeding.
+- [x] Refreshed `origin/main` and PR #655; detected main advance through PR #656, inspected the only overlapping file (`siteReaderContracts.ts`), reconciled without semantic conflict, and revalidated.
 - [ ] Push the selected implementation and this checklist to `feat/webshop-reader-map-20260912` without overwriting unknown concurrent work.
 - [ ] Confirm PR #655 head SHA equals the pushed local candidate SHA.
 - [ ] Confirm PR #655 remains mergeable against current `main`; if main moved materially, reconcile/revalidate rather than assuming the old base is current.
@@ -294,28 +294,28 @@ https://basemodel-preview.vercel.app/en/research/seed-openevo/flow/webshop/
 
 ### Product / research
 
-- [ ] A first-time reader sees a real contents section before detailed WebShop mechanisms.
-- [ ] WebShop identity is stated directly and the original paper is linked.
-- [ ] Scale is visible: 1.18M products / 12,087 instructions.
-- [ ] Impact is visible as a dated/source-labelled citation observation, not an undated popularity claim.
-- [ ] SEED setting is visible near the top and separated into PAPER / RELEASED CODE / UNKNOWN.
-- [ ] The exact-final-128-task uncertainty remains visible and is not rhetorically erased.
-- [ ] Existing detailed interaction / dataset / small-world / goal-generation / split / evaluation figures remain reachable in one coherent page.
+- [x] A first-time reader sees a real contents section before detailed WebShop mechanisms.
+- [x] WebShop identity is stated directly and the original paper is linked.
+- [x] Scale is visible: 1.18M products / 12,087 instructions.
+- [x] Impact is visible as a dated/source-labelled citation observation, not an undated popularity claim.
+- [x] SEED setting is visible near the top and separated into PAPER / RELEASED CODE / UNKNOWN.
+- [x] The exact-final-128-task uncertainty remains visible and is not rhetorically erased.
+- [x] Existing detailed interaction / dataset / small-world / goal-generation / split / evaluation figures remain reachable in one coherent page.
 
 ### UX / accessibility
 
-- [ ] Chinese and English routes are semantically aligned.
-- [ ] Exactly one H1 per rendered route.
-- [ ] Contents anchors land on the intended sections.
-- [ ] No document horizontal overflow at 390px, 768px, or desktop widths.
-- [ ] Internal table scrolling is local and keyboard-focusable.
-- [ ] Light and dark themes preserve text/border/surface readability.
-- [ ] WebShop Previous / Next controls keep the correct fixed standalone behavior.
-- [ ] Reduced-motion/static reading does not lose meaning from the existing mechanism explainer.
+- [x] Chinese and English routes are semantically aligned.
+- [x] Exactly one H1 per rendered route.
+- [x] Contents anchors land on the intended sections.
+- [x] No document horizontal overflow at 390px, 768px, or desktop widths.
+- [x] Internal table scrolling is local and keyboard-focusable.
+- [x] Light and dark themes preserve text/border/surface readability.
+- [x] WebShop Previous / Next controls keep the correct fixed standalone behavior.
+- [x] Reduced-motion/static reading does not lose meaning from the existing mechanism explainer.
 
 ### Engineering / release
 
-- [ ] Final exact code tree passes `npm run preflight:ui`.
+- [x] Final current-base deployable code tree passes `npm run preflight:ui`.
 - [ ] PR #655 exact head is accepted by required GitHub/Vercel gates.
 - [ ] PR #655 is merged into `main`.
 - [ ] Production Vercel deployment is READY.
@@ -335,20 +335,31 @@ Update this section rather than relying on chat memory.
 | Repository | `mykcs/basemodel` |
 | Working PR | `#655` |
 | Working branch | `feat/webshop-reader-map-20260912` |
+| Live main reconciled | `2b8fb0d5dc3c2ec2325fc22255e75a28d1f9441b` (PR #656 merged) |
+| Pre-reconciliation branch head | `efcd1b89636c4fa9b98b22e492b2a34403170ffb` |
+| Current-base merge candidate | `9c07e040f974c5e2484b92e2e157744021ef0224` |
 | Original PR head observed | `df75940c49e91e80460a1085b4e3b06ac7c53984` |
 | Selected candidate direction | `B — vertical research-document hierarchy` |
-| Post-layout-fix local candidate observed | `7493ec8f893dbb79a7d3229fe883c2e74744cad1` before adding this checklist; refresh after final commit |
+| Post-layout-fix local candidate observed | `7493ec8f893dbb79a7d3229fe883c2e74744cad1`; current-main reconciliation candidate `9c07e040f974c5e2484b92e2e157744021ef0224` |
 | Candidate preference receipt | PASS, 3 candidates, selected B |
 | Mobile overflow regression | found (378px) → fixed via `minmax(0,1fr)` |
 | Transport regression | found (`sticky`) → fixed by removing wrapper and linking `#irx-webshop-title` |
-| Focused canonical/transport browser tests | PASS after fixes |
-| Final full `preflight:ui` | **RUNNING / must refresh** |
-| Exact-head Vercel final gate | **NOT YET CONFIRMED** |
+| Focused canonical/transport browser tests | PASS after fixes; bilingual anchor/H1/mobile-table check also PASS on current-base candidate |
+| Final full `preflight:ui` | **PASS** on current-base candidate `9c07e040f974c5e2484b92e2e157744021ef0224`; 414/414 Playwright tests PASS, 506 static routes built, exit 0 |
+| Exact-head Vercel final gate | **NOT YET CONFIRMED**; must run after publishing the current-base PR head |
 | Merge commit | **NOT YET** |
 | Production deployment | **NOT YET** |
 | Hourly automation | **ENABLED · RRULE:FREQ=HOURLY · Asia/Shanghai scheduler timezone** |
 
 Whenever status changes, append the exact evidence (SHA, PR state, deployment id/url, test count, or provider status) before checking the associated box.
+
+### 11.1 Current-base local acceptance — 2026-09-13 SGT
+
+- `origin/main` advanced from the original PR base to `2b8fb0d5...` through merged PR #656.
+- Only `src/data/siteReaderContracts.ts` overlapped; WebShop changed `flow-webshop`, while main added SD-LoRA-series contracts. The merge was conflict-free and both semantics are present.
+- Current-base candidate `9c07e040f974c5e2484b92e2e157744021ef0224` passed `npm run preflight:ui`: deterministic gates PASS, 506-page build PASS, overflow preflight PASS, and 414/414 cross-browser Playwright tests PASS.
+- Focused bilingual check on Chinese/English desktop + 390px mobile: exactly one H1, zero root overflow, all six contents anchors resolve, and the settings table remains local-scrollable with `tabindex=0`.
+- Vercel toolbar unresolved threads for this branch: none at the time of the check; GitHub review threads: none.
 
 ---
 
