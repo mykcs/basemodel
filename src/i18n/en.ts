@@ -65,7 +65,7 @@ export const en: Messages = {
   },
   modelsIndex: {
     pageTitle: 'Model explorer',
-    lede: 'Filter by vendor, architecture, checkpoint, openness, and research readiness. Unverified values never auto-become “no”.',
+    lede: 'Filter by vendor, architecture, checkpoint, openness, and research readiness (whether a model fits the current experiment constraints). Unknown or unverified does not mean unsupported.',
   },
   families: {
     pageTitle: 'Model families',

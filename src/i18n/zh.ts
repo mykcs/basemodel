@@ -63,7 +63,7 @@ export const zh: Messages = {
   },
   modelsIndex: {
     pageTitle: '模型浏览器',
-    lede: '按厂商、架构、模型类型、开放性和研究可用性组合筛选。未核验字段不会自动变成“否”。',
+    lede: '按厂商、架构、模型类型、开放性和研究可用性（是否适合当前实验约束）组合筛选。未知或未核验不代表“不支持”。',
   },
   families: {
     pageTitle: '模型家族',
