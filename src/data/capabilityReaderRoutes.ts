@@ -128,6 +128,19 @@ export const CAPABILITY_READER_ROUTES = [
     }
   },
   {
+    "route": "q17-directapply-analysis",
+    "coverage": "contextualized",
+    "owner": "OpenEvoQ17DirectApplyAnalysis",
+    "label": {
+      "zh": "DirectApply 完整实验分析",
+      "en": "DirectApply complete analysis"
+    },
+    "purpose": {
+      "zh": "把 DirectApply 的完整 160 轮训练、一次冻结终评、历史同题诊断和 D1 参数方向压缩放在同一条证据链里；训练分数、final 与参数几何保持不同证据层。",
+      "en": "Connect the full 160-round DirectApply trajectory, one frozen final, historical same-task diagnostics, and D1 parameter-direction compression in one evidence chain while keeping training scores, final evaluation, and parameter geometry as distinct evidence layers."
+    }
+  },
+  {
     "route": "q17-directapply-frontier",
     "coverage": "contextualized",
     "owner": "OpenEvoQ17AdvisorDiagnostics",

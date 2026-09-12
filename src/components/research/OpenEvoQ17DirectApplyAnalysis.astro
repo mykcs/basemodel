@@ -1,0 +1,196 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import { OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS } from '../../data/openEvoDirectApplyLiveDynamics';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const dynamics = OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS;
+
+const upstreamSha = 'ce942086ffce8a925ff0b54f71c15c0ae7eb95c3';
+const upstreamRoot = `https://github.com/mykcs/openevo-experiment/blob/${upstreamSha}/docs/evidence/q17-final-closeout-20260912`;
+const evidence = {
+  closeout: `${upstreamRoot}/CLOSEOUT.json`,
+  finalAnalysis: `${upstreamRoot}/FINAL_ANALYSIS.json`,
+  stage2Seal: `${upstreamRoot}/STAGE2_SEAL_Q17_DIRECTAPPLY.json`,
+  d1Geometry: `${upstreamRoot}/D1_GEOMETRY.json`,
+  d1Function: `${upstreamRoot}/D1_FUNCTION_PRESERVATION.json`,
+  d1Closeout: `${upstreamRoot}/D1_CLOSEOUT.json`,
+  frozenInputs: `${upstreamRoot}/FROZEN_AUTHORITY_INPUT_INDEX_202609121056.json`,
+};
+const sameTaskHref = p('/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/');
+const gdrHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
+const vanillaHref = p('/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/');
+
+const moving = dynamics.score.map((point, index) => {
+  const rows = dynamics.score.slice(Math.max(0, index - 11), index + 1);
+  return { round: point.round, score: rows.reduce((sum, row) => sum + row.score, 0) / rows.length };
+});
+const scoreChart = { left: 44, right: 716, top: 18, bottom: 238, maxRound: 159, maxScore: 85 };
+const sx = (round: number) => scoreChart.left + (round / scoreChart.maxRound) * (scoreChart.right - scoreChart.left);
+const sy = (score: number) => scoreChart.bottom - (score / scoreChart.maxScore) * (scoreChart.bottom - scoreChart.top);
+const scoreRaw = dynamics.score.map((d) => `${sx(d.round).toFixed(1)},${sy(d.score).toFixed(1)}`).join(' ');
+const scoreTrend = moving.map((d) => `${sx(d.round).toFixed(1)},${sy(d.score).toFixed(1)}`).join(' ');
+const lossChart = { left: 42, right: 364, top: 18, bottom: 238, maxLoss: 1.1 };
+const lx = (round: number) => lossChart.left + (round / 159) * (lossChart.right - lossChart.left);
+const ly = (loss: number) => lossChart.bottom - (loss / lossChart.maxLoss) * (lossChart.bottom - lossChart.top);
+const lossPoints = dynamics.loss.map((d) => `${lx(d.round).toFixed(1)},${ly(d.loss).toFixed(1)}`).join(' ');
+
+const geometry = [
+  { label: t('末 40 次更新的中位残差能量', 'Median residual energy over the last 40 updates'), value: '0.203', threshold: '≤ 0.25', pass: true },
+  { label: t('解释 95% 更新变化需要的方向', 'Directions needed for 95% of update variation'), value: '78 / 159', threshold: '≤ 75% of 159', pass: true },
+  { label: t('K64 最终参数相对误差', 'K64 final-parameter relative error'), value: '4.15%', threshold: '≤ 10%', pass: true },
+  { label: t('159 次增量首尾相加误差', 'Telescoping error across all 159 increments'), value: '0', threshold: '≤ 10⁻⁶', pass: true },
+];
+const candidates = [
+  { label: 'K64', capacity: 64, paramError: 4.154385438658514, action: 87.5, changed: 4, top1: 100, js: 0.0009001075265344768, l2: 0.0627352852433374, nll: 0.026722590904682875, newInvalid: 2 },
+  { label: 'K80', capacity: 80, paramError: 3.307157015933826, action: 90.625, changed: 3, top1: 96.875, js: 0.0013132991776848913, l2: 0.05152450157263226, nll: 0.025391229428350925, newInvalid: 0 },
+  { label: 'K96', capacity: 96, paramError: 2.2204774938003487, action: 96.875, changed: 1, top1: 93.75, js: 0.002655115576801553, l2: 0.03894482730722437, nll: 0.014272548258304596, newInvalid: 0 },
+];
+---
+
+<article class="q17-analysis" data-copy-review data-q17-directapply-analysis>
+  <header class="q17-analysis__hero">
+    <p class="q17-analysis__eyebrow">Q17 · DirectApply / No-GDR · 2026-09-12</p>
+    <h1>{t('DirectApply 完整实验分析', 'DirectApply: complete experiment analysis')}</h1>
+    <dl class="q17-analysis__headline-metrics">
+      <div><dt>{t('训练', 'Training')}</dt><dd>160 {t('轮', 'rounds')}</dd><span>20,480 {t('次任务尝试', 'attempts')}</span></div>
+      <div><dt>SD-LoRA</dt><dd>159 {t('次更新', 'updates')}</dd><span>R159 {t('训练分数', 'training score')} 72.90</span></div>
+      <div><dt>{t('冻结终评', 'Frozen final')}</dt><dd>60.72 / 100</dd><span>50 / 128 = 39.06%</span></div>
+      <div><dt>D1</dt><dd>{t('几何通过', 'Geometry PASS')}</dd><span>{t('行为保持失败', 'Function preservation FAIL')}</span></div>
+    </dl>
+    <p class="q17-analysis__boundary"><strong>{t('两条边界必须一起看：', 'Two boundaries stay visible:')}</strong>{t('R159 的 72.90 是训练过程分数，不是固定题集 final；历史 GDR 的 37.60 与 DirectApply 的 60.72 也不是同一套冻结题，不能直接相减当作方法效果。', 'R159 = 72.90 is a training-round score, not the fixed-panel final. Historical GDR 37.60 and DirectApply 60.72 also come from different frozen panels, so their difference is not a causal method effect.')}</p>
+  </header>
+  <p class="q17-analysis__lede">{t('这条 1.7B 实验完整跑完 160 轮、20,480 次 WebShop 尝试和 159 次 SD-LoRA 参数更新。训练结束后只打开一次冻结的 128 题终评，得到 60.72 / 100，50 / 128 道题完整成功。随后做的 D1 诊断发现：159 次更新在参数几何上可以被更少方向近似，但 K64 / K80 / K96 都不能无损保持模型行为，所以最终结果仍使用原始 R159 状态。', 'This 1.7B run completed 160 rounds, 20,480 WebShop attempts, and 159 SD-LoRA updates. After training, the frozen 128-task final was opened exactly once: 60.72 / 100 with 50 / 128 exact successes. A post-training D1 diagnostic then found that the 159 updates are geometrically compressible, but K64 / K80 / K96 do not preserve behavior exactly, so the reported final still uses the original R159 state.')}</p>
+
+  <section class="q17-analysis__section" id="trajectory" aria-labelledby="trajectory-title">
+    <p class="q17-analysis__section-index">01 · {t('完整训练轨迹', 'Complete training trajectory')}</p>
+    <h2 id="trajectory-title">{t('训练后段恢复了，但训练曲线不能替代最终考试', 'Training recovered late, but the training curve is not the final exam')}</h2>
+    <p>{t(`前 20 轮平均 Score 是 41.83，最后 20 轮是 67.07；R159 是 72.90。与此同时，SD-LoRA training loss 从 1.046 降到 ${dynamics.loss.at(-1)?.loss.toFixed(3)}。这说明训练过程确实持续改变参数与任务表现，但每轮抽到的题不同，因此只能把它当成学习轨迹。`, `Mean Score was 41.83 over the first 20 rounds and 67.07 over the last 20; R159 reached 72.90. Meanwhile SD-LoRA training loss fell from 1.046 to ${dynamics.loss.at(-1)?.loss.toFixed(3)}. Training therefore kept changing both parameters and task behavior, but each round sampled different tasks, so this remains trajectory evidence rather than a fixed-panel endpoint.`)}</p>
+    <div class="q17-analysis__charts">
+      <figure>
+        <figcaption><strong>{t('每轮 WebShop Score', 'WebShop Score by round')}</strong><span>{t('细线=原始轮次 · 粗线=12轮移动平均', 'thin=raw rounds · thick=12-round moving average')}</span></figcaption>
+        <svg viewBox="0 0 760 270" role="img" aria-label={t('R0 到 R159 的每轮 WebShop Score', 'WebShop Score from R0 through R159')}>
+          <line x1="44" y1="238" x2="716" y2="238" class="axis"/><line x1="44" y1="128" x2="716" y2="128" class="grid"/><line x1="44" y1="18" x2="716" y2="18" class="grid"/>
+          <text x="18" y="242">0</text><text x="10" y="132">42.5</text><text x="18" y="22">85</text><text x="44" y="260">R0</text><text x="365" y="260">R80</text><text x="684" y="260">R159</text>
+          <polyline points={scoreRaw} class="score-raw"/><polyline points={scoreTrend} class="score-trend"/>
+        </svg>
+      </figure>
+      <figure>
+        <figcaption><strong>SD-LoRA training loss</strong><span>{t('159 个真实更新点；R2 没有 candidate', '159 real update points; R2 had no candidate')}</span></figcaption>
+        <svg viewBox="0 0 400 270" role="img" aria-label={t('R0 到 R159 的 SD-LoRA training loss', 'SD-LoRA training loss from R0 through R159')}>
+          <line x1="42" y1="238" x2="364" y2="238" class="axis"/><line x1="42" y1="128" x2="364" y2="128" class="grid"/><line x1="42" y1="18" x2="364" y2="18" class="grid"/>
+          <text x="10" y="242">0</text><text x="5" y="132">0.55</text><text x="8" y="22">1.10</text><text x="42" y="260">R0</text><text x="330" y="260">R159</text>
+          <polyline points={lossPoints} class="loss-line"/>{dynamics.loss.map((d) => <circle cx={lx(d.round)} cy={ly(d.loss)} r="2.1" class="loss-dot"/>)}
+        </svg>
+      </figure>
+    </div>
+    <details class="q17-analysis__evidence"><summary>{t('展开训练与封存依据', 'Open training and seal evidence')}</summary><div><a href={dynamics.evidenceHref}>{t('网站封存曲线快照', 'Sealed website trajectory snapshot')}</a><a href={evidence.stage2Seal} target="_blank" rel="noreferrer"><ExternalBrandMark href={evidence.stage2Seal}/>{t('Stage2 seal @ ce942086', 'Stage2 seal @ ce942086')}</a><a href={evidence.finalAnalysis} target="_blank" rel="noreferrer"><ExternalBrandMark href={evidence.finalAnalysis}/>{t('最终分析 @ ce942086', 'Final analysis @ ce942086')}</a></div></details>
+  </section>
+
+  <section class="q17-analysis__section" id="before-final" aria-labelledby="before-final-title">
+    <p class="q17-analysis__section-index">02 · {t('最终考试前已经看见的两个现象', 'Two observations before the final')}</p>
+    <h2 id="before-final-title">{t('R97 的平台后来恢复；R127→R128 的大跌也没有在同题重测里等比例出现', 'The R97 plateau later recovered, and the R127→R128 drop was much smaller on identical tasks')}</h2>
+    <div class="q17-analysis__diagnostic-ledger">
+      <article><span>R70–R97</span><h3>{t('训练仍在继续，但分数进入震荡平台', 'Training continued through a noisy plateau')}</h3><p>{t('R70–79 / R80–89 / R90–97 的平均 Score 是 58.35 → 55.36 → 50.83。后来 R110–119 又恢复到 63.52，所以这段证据支持“震荡平台”，不支持“训练永久卡死”。', 'Mean Score over R70–79 / R80–89 / R90–97 was 58.35 → 55.36 → 50.83. R110–119 later recovered to 63.52, supporting a noisy plateau rather than a permanent stall.')}</p></article>
+      <article><span>R127 → R128</span><h3>{t('训练轮分数骤降，不等于能力同幅度下降', 'A sharp round-score drop did not imply an equal capability drop')}</h3><p>{t('训练曲线从 76.1 掉到 48.9；但把两个 checkpoint 放到同样 32 道题上，Score 只从 63.58 变成 59.41，完整做对从 10 题变成 8 题。不同轮抽题带来的噪声解释了部分波动，但这项局部诊断也不能证明“完全没有遗忘”。', 'The training curve fell from 76.1 to 48.9. On the same 32 tasks, however, Score moved only from 63.58 to 59.41 and exact successes from 10 to 8. Different task samples explain part of the volatility, but this local diagnostic does not prove that forgetting was absent.')}</p><a href={sameTaskHref}>{t('查看完整 R127 / R128 同题诊断 →', 'Open the full R127 / R128 same-task diagnostic →')}</a></article>
+    </div>
+  </section>
+
+  <section class="q17-analysis__section q17-analysis__final" id="final" aria-labelledby="final-title">
+    <p class="q17-analysis__section-index">03 · {t('唯一一次冻结终评', 'The one frozen final')}</p>
+    <h2 id="final-title">{t('最终状态在 128 道冻结题上得到 60.72 / 100，50 道题完整成功', 'The sealed final state scored 60.72 / 100 with 50 exact successes out of 128')}</h2>
+    <div class="q17-analysis__final-grid">
+      <div class="q17-analysis__final-number"><span>{t('Final Task Score', 'Final Task Score')}</span><strong>60.716</strong><small>/ 100</small></div>
+      <dl>
+        <div><dt>{t('完整成功', 'Exact success')}</dt><dd>50 / 128 · 39.0625%</dd></div>
+        <div><dt>{t('拿到正分', 'Positive score')}</dt><dd>112 / 128</dd></div>
+        <div><dt>{t('有效测量', 'Valid measurements')}</dt><dd>128 / 128</dd></div>
+        <div><dt>{t('工程无效 / 接口失败 / parser repair', 'Engineering invalid / interface failure / parser repair')}</dt><dd>0 / 0 / 0</dd></div>
+      </dl>
+    </div>
+    <p class="q17-analysis__interpretation">{t('这回答的是“这一条 DirectApply 训练轨迹最终到哪里”。它不回答“DirectApply 作为算法是否优于 GDR”：历史 GDR final 使用了不同冻结题集；而且这里只完成了一条 DirectApply trajectory 和一次 final measurement。', 'This answers where this particular DirectApply trajectory ended. It does not establish that DirectApply is algorithmically superior to GDR: the historical GDR final used a different frozen panel, and this evidence contains one DirectApply trajectory plus one final measurement.')}</p>
+    <p class="q17-analysis__one-shot"><strong>{t('这场考试不会重考。', 'This final is not rerun.')}</strong>{t(' 训练期间 final-panel access = 0；训练封口后只产生 1 次有效 final measurement，closeout 明确写入 rerun_authorized=false。', ' Final-panel access stayed at 0 during training; after seal there was exactly one valid final measurement, and the closeout records rerun_authorized=false.')}</p>
+    <details class="q17-analysis__evidence"><summary>{t('展开 Final 依据与一次性边界', 'Open final evidence and one-shot boundary')}</summary><div><a href={evidence.closeout} target="_blank" rel="noreferrer"><ExternalBrandMark href={evidence.closeout}/>{t('Closeout @ ce942086', 'Closeout @ ce942086')}</a><a href={evidence.finalAnalysis} target="_blank" rel="noreferrer"><ExternalBrandMark href={evidence.finalAnalysis}/>{t('Final analysis @ ce942086', 'Final analysis @ ce942086')}</a><a href={evidence.frozenInputs} target="_blank" rel="noreferrer"><ExternalBrandMark href={evidence.frozenInputs}/>{t('冻结输入字节索引', 'Frozen-input byte index')}</a></div></details>
+  </section>
+
+  <section class="q17-analysis__section" id="geometry" aria-labelledby="geometry-title">
+    <p class="q17-analysis__section-index">04 · D1 · {t('参数方向压缩', 'Parameter-direction compression')}</p>
+    <h2 id="geometry-title">{t('159 次更新在参数几何上存在明显冗余', 'The 159 updates contain substantial geometric redundancy')}</h2>
+    <p>{t('每次 SD-LoRA 更新都可以写成一支参数箭头 vₜ = θₜ − θₜ₋₁。D1 先问：后面的箭头是不是越来越能被前面已有的方向解释？如果只保留少量主要方向，最终参数位置还能不能近似回来？', 'Each SD-LoRA update can be written as a parameter vector vₜ = θₜ − θₜ₋₁. D1 first asks whether later vectors increasingly lie inside the span of earlier directions, and whether a smaller basis can reconstruct the final parameter state.')}</p>
+    <div class="q17-analysis__geometry-flow" role="img" aria-label={t('159 次更新的参数方向压缩关系', 'Geometric compression of 159 parameter updates')}>
+      <div><b>159</b><span>{t('真实参数更新', 'real updates')}</span></div><i>→</i><div><b>78</b><span>{t('方向解释 95% 变化', 'directions explain 95% variation')}</span></div><i>→</i><div><b>K64</b><span>{t('最终参数误差 4.15%', 'final-parameter error 4.15%')}</span></div>
+    </div>
+    <div class="q17-analysis__geometry-table" role="table" aria-label={t('D1 几何预注册检查', 'D1 preregistered geometry checks')}>
+      {geometry.map((row) => <div role="row"><span role="cell">{row.label}</span><strong role="cell">{row.value}</strong><span role="cell">{row.threshold}</span><b role="cell" class="pass">PASS</b></div>)}
+    </div>
+    <p class="q17-analysis__interpretation"><strong>{t('这一层只证明“参数位置可以被低维方向近似”。', 'This layer only shows that parameter position is low-dimensionally approximable.')}</strong>{t(' 它还没有证明压缩后的模型会作出同样的动作。正因为几何门通过了，预注册才要求继续做 32 行行为保持测试。', ' It does not show that the compressed model will choose the same actions. Because the geometry gate passed, the preregistration required the next 32-row function-preservation test.')}</p>
+    <details class="q17-analysis__evidence"><summary>{t('展开 D1 几何原始结果', 'Open raw D1 geometry result')}</summary><div><a href={evidence.d1Geometry} target="_blank" rel="noreferrer"><ExternalBrandMark href={evidence.d1Geometry}/>D1_GEOMETRY.json @ ce942086</a></div></details>
+  </section>
+
+  <section class="q17-analysis__section" id="function" aria-labelledby="function-title">
+    <p class="q17-analysis__section-index">05 · D1 · {t('行为保持', 'Function preservation')}</p>
+    <h2 id="function-title">{t('参数误差很小，但 K64 / K80 / K96 都不是原模型的无损替身', 'Small parameter error did not make K64 / K80 / K96 lossless behavioral substitutes')}</h2>
+    <p>{t('固定探针只用了训练阶段已经消费过的 16 个任务，每个任务取 2 行，共 32 行；没有新 WebShop 调用，也没有打开 final panel。预注册要求动作完全一致、top-1 token 完全一致，并限制 JS divergence、logit 相对误差和 NLL 变化。', 'The fixed probe used 16 tasks already consumed during training, two rows per task, for 32 rows total. It made no new WebShop calls and did not open the final panel. The preregistration required exact action agreement, exact top-1 token agreement, and tight JS-divergence, logit-error, and NLL-delta bounds.')}</p>
+    <div class="q17-analysis__agreement">
+      <div class="q17-analysis__agreement-head"><span>{t('动作完全一致率', 'Exact action agreement')}</span><em>{t('预注册要求 100%', 'preregistered requirement: 100%')}</em></div>
+      {candidates.map((c) => <div class="q17-analysis__agreement-row"><b>{c.label}</b><div><i style={`width:${c.action}%`}></i><u></u></div><span>{c.action.toFixed(3).replace('.000','')}%</span><small>{t(`${c.changed} / 32 行动作改变`, `${c.changed} / 32 rows changed action`)}</small></div>)}
+    </div>
+    <div class="q17-analysis__table-wrap" tabindex="0" aria-label={t('D1 K64 K80 K96 行为保持指标', 'D1 K64 K80 K96 function-preservation metrics')}>
+      <table>
+        <thead><tr><th>{t('候选', 'Candidate')}</th><th>{t('参数相对误差', 'Parameter error')}</th><th>{t('动作一致', 'Action agreement')}</th><th>Top-1 token</th><th>JS</th><th>{t('Logit 相对误差', 'Logit rel. error')}</th><th>ΔNLL</th><th>{t('新增 parse-invalid', 'New parse-invalid')}</th><th>{t('结论', 'Verdict')}</th></tr></thead>
+        <tbody>
+          {candidates.map((c) => <tr><th>{c.label}</th><td>{c.paramError.toFixed(2)}%</td><td>{c.action.toFixed(3).replace('.000','')}%</td><td>{c.top1.toFixed(3).replace('.000','')}%</td><td>{c.js.toExponential(2)}</td><td>{c.l2.toFixed(4)}</td><td>{c.nll.toFixed(4)}</td><td>{c.newInvalid}</td><td><strong class="fail">FAIL</strong></td></tr>)}
+        </tbody>
+        <tfoot><tr><th>{t('预注册要求', 'Preregistered')}</th><td>{t('K64 ≤ 10%', 'K64 ≤ 10%')}</td><td>100%</td><td>100%</td><td>≤ 1e-4</td><td>≤ 0.05</td><td>≤ 0.01</td><td>0</td><td>—</td></tr></tfoot>
+      </table>
+    </div>
+    <div class="q17-analysis__candidate-notes">
+      <p><strong>K64：</strong>{t('最终参数只差 4.15%，但 4 / 32 行动作发生变化，而且新增 2 行 parse-invalid；JS、logit 误差和 ΔNLL 也都越过阈值。', 'The final parameters differ by only 4.15%, yet 4 / 32 rows change action and two new rows become parse-invalid; JS, logit error, and ΔNLL also exceed thresholds.')}</p>
+      <p><strong>K96：</strong>{t('参数误差进一步降到 2.22%，动作只剩 1 / 32 行不同，但预注册要求是 32 / 32 完全一致；top-1 token、JS 和 ΔNLL 也没有通过。', 'Parameter error falls to 2.22% and only 1 / 32 actions changes, but the preregistered criterion was exact 32 / 32 agreement; top-1 token, JS, and ΔNLL also fail.')}</p>
+    </div>
+    <p class="q17-analysis__d1-verdict"><strong>D1_FAIL_FUNCTION_NOT_PRESERVED</strong><span>{t('几何上能压缩，不等于功能上能无损压缩。D1 没有修改 R159，也没有获得把压缩 candidate 写回正式 lineage 的权限。', 'Geometric compressibility is not lossless functional compressibility. D1 did not modify R159 and had no authority to write a compressed candidate back into the formal lineage.')}</span></p>
+    <details class="q17-analysis__evidence"><summary>{t('展开 D1 行为保持与 closeout', 'Open D1 function-preservation and closeout evidence')}</summary><div><a href={evidence.d1Function} target="_blank" rel="noreferrer"><ExternalBrandMark href={evidence.d1Function}/>D1_FUNCTION_PRESERVATION.json</a><a href={evidence.d1Closeout} target="_blank" rel="noreferrer"><ExternalBrandMark href={evidence.d1Closeout}/>D1_CLOSEOUT.json</a></div></details>
+  </section>
+
+  <section class="q17-analysis__section" id="meaning" aria-labelledby="meaning-title">
+    <p class="q17-analysis__section-index">06 · {t('当前可以下什么结论', 'What the evidence supports now')}</p>
+    <h2 id="meaning-title">{t('这次实验把“最终表现”和“参数结构”同时测清了，但还没有回答算法胜负', 'The experiment now has both an endpoint measurement and a parameter-structure diagnosis, but not an algorithmic winner')}</h2>
+    <div class="q17-analysis__claims">
+      <div><span>{t('支持', 'Supported')}</span><strong>{t('DirectApply 在冻结 treatment 下完整跑完 160 轮，并得到一次有效 final。', 'DirectApply completed all 160 rounds under the frozen treatment and produced one valid final.')}</strong></div>
+      <div><span>{t('支持', 'Supported')}</span><strong>{t('159 次 SD-LoRA 更新具有低维几何结构；更少方向可以近似最终参数。', 'The 159 SD-LoRA updates have lower-dimensional geometric structure; fewer directions can approximate the final parameters.')}</strong></div>
+      <div><span>{t('不支持', 'Not supported')}</span><strong>{t('K64 / K80 / K96 可以直接替代原始 R159 而不改变模型行为。', 'K64 / K80 / K96 can directly replace R159 without changing behavior.')}</strong></div>
+      <div><span>{t('不支持', 'Not supported')}</span><strong>{t('60.72 − 37.60 就是 DirectApply 相对 GDR 的方法增益。两次 final 不是同一题集。', '60.72 − 37.60 is the DirectApply-vs-GDR method gain. The two finals used different panels.')}</strong></div>
+      <div><span>{t('仍待实验', 'Still open')}</span><strong>{t('能否设计“既压缩方向、又保持功能”的 function-aware 规则；以及哪些更新短期看差、长期却有价值。', 'Whether a function-aware rule can compress directions while preserving behavior, and whether some updates look worse short-term but help later.')}</strong></div>
+    </div>
+    <p class="q17-analysis__next">{t('因此，D1 更像一个新的研究入口：我们已经知道“参数空间里有冗余”，下一步若要利用它，应把功能保持本身写进新的预注册实验，而不是把这次 D1 失败改写成压缩成功。GDR / DirectApply 的方法比较也需要同一冻结 final panel 才能回答。', 'D1 therefore opens a new research question: we now know the parameter trajectory is redundant, but exploiting that structure requires a new preregistered experiment that treats function preservation as a first-class constraint. The current D1 failure must not be relabeled as a compression success. A GDR / DirectApply method comparison likewise requires the same frozen final panel.')}</p>
+    <nav class="q17-analysis__related" aria-label={t('相关机制与历史诊断', 'Related mechanisms and historical diagnostics')}><a href={vanillaHref}>{t('Vanilla SD-LoRA 一轮怎样更新参数', 'How Vanilla SD-LoRA updates parameters')}</a><a href={gdrHref}>{t('GDR-v1 与 DirectApply 到底差在哪里', 'What differs between GDR-v1 and DirectApply')}</a><a href={sameTaskHref}>{t('R127 / R128 同题重测', 'R127 / R128 same-task diagnostic')}</a></nav>
+  </section>
+</article>
+
+<style>
+.q17-analysis{width:min(1160px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--ink)}
+.q17-analysis__hero{padding:1.45rem 0 1.5rem;border-bottom:1px solid var(--line)}
+.q17-analysis__eyebrow,.q17-analysis__section-index{margin:0 0 .7rem;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
+.q17-analysis__hero h1{max-width:900px;margin:0;font-size:clamp(2.45rem,5.7vw,4.9rem);line-height:.94;letter-spacing:-.07em}
+.q17-analysis__lede{max-width:880px;margin:1rem 0 0;font-size:clamp(1rem,1.6vw,1.12rem);line-height:1.58;color:var(--ink)}
+.q17-analysis__headline-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:1.15rem 0 0;border-block:1px solid var(--line)}
+.q17-analysis__headline-metrics>div{padding:.72rem .8rem .72rem 0;border-right:1px solid var(--line)}.q17-analysis__headline-metrics>div+div{padding-left:.8rem}.q17-analysis__headline-metrics>div:last-child{border-right:0}
+.q17-analysis__headline-metrics dt{color:var(--muted);font:750 .88rem/1.3 var(--font-mono);letter-spacing:.05em}.q17-analysis__headline-metrics dd{margin:.35rem 0 .15rem;font-size:clamp(1.35rem,2.5vw,2.1rem);font-weight:850;letter-spacing:-.04em}.q17-analysis__headline-metrics span{color:var(--muted);font-size:1rem}
+.q17-analysis__boundary{max-width:920px;margin:.85rem 0 0;padding-left:.85rem;border-left:3px solid var(--warning);line-height:1.6;color:var(--muted)}.q17-analysis__boundary strong{color:var(--ink)}
+.q17-analysis__section{padding:3.4rem 0;border-bottom:1px solid var(--line)}.q17-analysis__section h2{max-width:930px;margin:.15rem 0 1rem;font-size:clamp(2rem,4.6vw,4rem);line-height:1;letter-spacing:-.055em}.q17-analysis__section>p:not(.q17-analysis__section-index){max-width:900px;font-size:1.04rem;line-height:1.68;color:var(--muted)}
+.q17-analysis__charts{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,.8fr);gap:1rem;margin-top:1.5rem}.q17-analysis__charts figure{min-width:0;margin:0;padding:1rem;border:1px solid var(--line);background:var(--surface)}.q17-analysis__charts figcaption{display:flex;justify-content:space-between;gap:1rem;align-items:baseline}.q17-analysis__charts figcaption span{color:var(--muted);font-size:1rem}.q17-analysis__charts svg{display:block;width:100%;height:auto;margin-top:.4rem}.q17-analysis svg text{fill:var(--muted);font:700 10px var(--font-mono)}.axis{stroke:color-mix(in srgb,var(--ink) 48%,transparent);stroke-width:1.4}.grid{stroke:color-mix(in srgb,var(--ink) 11%,transparent);stroke-width:1}.score-raw{fill:none;stroke:color-mix(in srgb,var(--blue) 32%,transparent);stroke-width:1.1;vector-effect:non-scaling-stroke}.score-trend{fill:none;stroke:var(--blue);stroke-width:3;vector-effect:non-scaling-stroke}.loss-line{fill:none;stroke:var(--warning);stroke-width:2.2;vector-effect:non-scaling-stroke}.loss-dot{fill:var(--positive);stroke:var(--surface);stroke-width:.9}
+.q17-analysis__evidence{max-width:900px;margin-top:1.25rem;border-block:1px solid var(--line)}.q17-analysis__evidence summary{padding:.75rem 0;cursor:pointer;color:var(--accent-deep);font-weight:800}.q17-analysis__evidence>div{display:flex;flex-wrap:wrap;gap:.55rem 1rem;padding:0 0 1rem}.q17-analysis__evidence a{color:var(--accent-deep);text-underline-offset:.2em}
+.q17-analysis__diagnostic-ledger{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:1.5rem}.q17-analysis__diagnostic-ledger article{padding:1rem 0;border-top:3px solid var(--line)}.q17-analysis__diagnostic-ledger span{color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}.q17-analysis__diagnostic-ledger h3{margin:.45rem 0 .5rem;font-size:1.35rem;line-height:1.2}.q17-analysis__diagnostic-ledger p{margin:0;color:var(--muted);line-height:1.65}.q17-analysis__diagnostic-ledger a{display:inline-flex;margin-top:.8rem;color:var(--accent-deep);font-weight:800}
+.q17-analysis__final-grid{display:grid;grid-template-columns:minmax(260px,.75fr) minmax(0,1.25fr);gap:1.4rem;align-items:stretch;margin-top:1.6rem}.q17-analysis__final-number{display:grid;align-content:center;padding:1.2rem;border:1px solid var(--accent-deep);background:color-mix(in srgb,var(--accent-deep) 5%,var(--surface))}.q17-analysis__final-number span{font-weight:800}.q17-analysis__final-number strong{font-size:clamp(3.8rem,8vw,7rem);line-height:.85;letter-spacing:-.08em}.q17-analysis__final-number small{margin-top:.45rem;color:var(--muted);font-size:1.1rem}.q17-analysis__final-grid dl{margin:0;border-top:1px solid var(--line)}.q17-analysis__final-grid dl div{display:grid;grid-template-columns:minmax(180px,.8fr) minmax(0,1.2fr);gap:1rem;padding:.85rem 0;border-bottom:1px solid var(--line)}.q17-analysis__final-grid dt{color:var(--muted)}.q17-analysis__final-grid dd{margin:0;font-weight:800}.q17-analysis__interpretation,.q17-analysis__one-shot{margin-top:1.25rem;padding-left:1rem;border-left:3px solid var(--accent-deep)}.q17-analysis__one-shot{border-left-color:var(--warning)}
+.q17-analysis__geometry-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:.8rem;align-items:center;margin:1.5rem 0}.q17-analysis__geometry-flow div{min-height:130px;padding:1rem;border-block:1px solid var(--line);display:grid;align-content:center}.q17-analysis__geometry-flow b{font:850 clamp(2.4rem,5vw,4.6rem)/.9 var(--font-mono);letter-spacing:-.06em}.q17-analysis__geometry-flow span{margin-top:.5rem;color:var(--muted);line-height:1.4}.q17-analysis__geometry-flow i{font-style:normal;color:var(--muted);font-size:1.4rem}.q17-analysis__geometry-table{margin-top:1.4rem;border-top:1px solid var(--line)}.q17-analysis__geometry-table>div{display:grid;grid-template-columns:minmax(0,2fr) .7fr .8fr .45fr;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--line);align-items:center}.q17-analysis__geometry-table>div>span:nth-child(3){color:var(--muted)}.pass{color:var(--positive)}
+.q17-analysis__agreement{max-width:900px;margin:1.5rem 0}.q17-analysis__agreement-head,.q17-analysis__agreement-row{display:grid;grid-template-columns:80px minmax(0,1fr) 80px 160px;gap:.8rem;align-items:center}.q17-analysis__agreement-head{grid-template-columns:80px 1fr 240px;margin-bottom:.65rem;color:var(--muted);font-size:1rem}.q17-analysis__agreement-head span{grid-column:2}.q17-analysis__agreement-head em{text-align:right;font-style:normal}.q17-analysis__agreement-row{padding:.55rem 0}.q17-analysis__agreement-row>div{position:relative;height:14px;background:color-mix(in srgb,var(--line) 60%,transparent)}.q17-analysis__agreement-row i{display:block;height:100%;background:var(--blue)}.q17-analysis__agreement-row u{position:absolute;right:0;top:-4px;width:2px;height:22px;background:var(--ink);text-decoration:none}.q17-analysis__agreement-row>span{text-align:right;font:800 1rem var(--font-mono)}.q17-analysis__agreement-row small{color:var(--muted);font-size:1rem}
+.q17-analysis__table-wrap{overflow-x:auto;margin-top:1.2rem;border-block:1px solid var(--line)}.q17-analysis table{width:100%;min-width:1040px;border-collapse:collapse;font-size:1rem}.q17-analysis th,.q17-analysis td{padding:.72rem .55rem;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}.q17-analysis td{font-size:1rem}.q17-analysis th:first-child,.q17-analysis td:first-child{text-align:left}.q17-analysis thead th{color:var(--muted);font-size:.78rem}.q17-analysis tfoot{color:var(--muted)}.fail{color:var(--danger)}
+.q17-analysis__candidate-notes{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;max-width:980px;margin-top:1.25rem}.q17-analysis__candidate-notes p{margin:0;color:var(--muted);line-height:1.6}.q17-analysis__candidate-notes strong{color:var(--ink)}.q17-analysis__d1-verdict{display:grid;grid-template-columns:minmax(260px,.7fr) minmax(0,1.3fr);gap:1.2rem;align-items:start;margin-top:1.5rem;padding:1.1rem 0;border-block:2px solid var(--ink)}.q17-analysis__d1-verdict strong{font:850 1.05rem/1.3 var(--font-mono);color:var(--ink)}.q17-analysis__d1-verdict span{color:var(--muted);line-height:1.6}
+.q17-analysis__claims{margin-top:1.4rem;border-top:1px solid var(--line)}.q17-analysis__claims>div{display:grid;grid-template-columns:120px minmax(0,1fr);gap:1rem;padding:.95rem 0;border-bottom:1px solid var(--line)}.q17-analysis__claims span{color:var(--accent-deep);font:800 1rem/1.4 var(--font-mono)}.q17-analysis__claims strong{font-size:1.08rem;line-height:1.48}.q17-analysis__section > p.q17-analysis__next{margin-top:1.5rem;color:var(--ink)}.q17-analysis__related{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.2rem}.q17-analysis__related a{padding:.55rem .75rem;border:1px solid var(--line);color:var(--accent-deep);font-weight:750;text-decoration:none}.q17-analysis__related a:hover,.q17-analysis__related a:focus-visible{border-color:var(--accent-deep)}
+@media(max-width:860px){.q17-analysis{width:min(100% - 1rem,1160px)}.q17-analysis .q17-analysis__headline-metrics span,.q17-analysis .q17-analysis__charts figcaption span,.q17-analysis .q17-analysis__geometry-table span,.q17-analysis .q17-analysis__geometry-table strong,.q17-analysis .q17-analysis__agreement-head span,.q17-analysis .q17-analysis__agreement-row>span,.q17-analysis .q17-analysis__agreement-row small,.q17-analysis .q17-analysis__claims span,.q17-analysis td{font-size:1rem}.q17-analysis__headline-metrics{grid-template-columns:1fr 1fr}.q17-analysis__headline-metrics>div{border-bottom:1px solid var(--line)}.q17-analysis__charts,.q17-analysis__diagnostic-ledger,.q17-analysis__final-grid,.q17-analysis__candidate-notes{grid-template-columns:1fr}.q17-analysis__geometry-flow{grid-template-columns:1fr}.q17-analysis__geometry-flow i{transform:rotate(90deg);justify-self:center}.q17-analysis__geometry-table>div{grid-template-columns:1.5fr .65fr .75fr .45fr;gap:.5rem;font-size:.9rem}.q17-analysis__agreement-head,.q17-analysis__agreement-row{grid-template-columns:58px minmax(0,1fr) 70px}.q17-analysis__agreement-head{grid-template-columns:58px 1fr 150px}.q17-analysis__agreement-row small{grid-column:2 / -1}.q17-analysis__d1-verdict,.q17-analysis__claims>div{grid-template-columns:1fr}.q17-analysis__related{display:grid}.q17-analysis__final-grid dl div{grid-template-columns:1fr}}
+</style>
