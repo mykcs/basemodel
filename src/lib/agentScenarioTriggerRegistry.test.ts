@@ -7,6 +7,7 @@ const principles = readFileSync(new URL('../../docs/agents/current/project-agent
 const engineering = readFileSync(new URL('../../docs/agents/current/website-engineering-standard.md', import.meta.url), 'utf8');
 const hpl = readFileSync(new URL('../../docs/agents/current/human-preference-learning-system.md', import.meta.url), 'utf8');
 const ingestion = readFileSync(new URL('../../docs/agents/current/human-feedback-ingestion-closeout.md', import.meta.url), 'utf8');
+const layeredExplainer = readFileSync(new URL('../../docs/agents/current/layered-technical-explainer-copy.md', import.meta.url), 'utf8');
 const registry = readFileSync(new URL('../../docs/agents/current/scenario-trigger-registry.md', import.meta.url), 'utf8');
 const repositoryMap = readFileSync(new URL('../../docs/agents/current/repository-map.md', import.meta.url), 'utf8');
 const seedWorkflow = readFileSync(new URL('../../docs/agents/current/seed-guided-research-workflow.md', import.meta.url), 'utf8');
@@ -72,6 +73,15 @@ describe('Agent scenario-trigger discovery', () => {
       'TRIGGER: reusable lesson discovered',
       'TRIGGER: retrospective, handoff, or experience retention',
     ]) expect(registry).toContain(trigger);
+  });
+
+  it('keeps canonical experiment pages from dropping conversation-proven ELI5 explanations', () => {
+    expect(registry).toContain('所有 ELI5 / 大白话解释');
+    expect(registry).toContain('plain-language coverage pass');
+    expect(registry).toContain('A correct table or threshold list is not proof that the ELI5 layer survived');
+    expect(layeredExplainer).toContain('Conversation-proven plain-language explanations are part of publication coverage');
+    expect(layeredExplainer).toContain('does **not** by itself prove that the ELI5 explanation survived');
+    expect(layeredExplainer).toContain('159 parameter-update arrows mostly reuse a smaller set of directions');
   });
 
   it('keeps provider build-budget boundaries explicit', () => {

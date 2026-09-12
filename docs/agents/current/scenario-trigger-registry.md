@@ -46,7 +46,7 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 
 ## TRIGGER: one complete experiment-analysis page / 一整页 HTML / 全部分析
 
-**Cues:** the owner asks for `一整页 HTML`, `全部分析`, `完整实验分析`, a dedicated long-form experiment page, or says the evidence should not remain scattered across briefing/diagnostic/mechanism routes.
+**Cues:** the owner asks for `一整页 HTML`, `全部分析`, `完整实验分析`, a dedicated long-form experiment page, says the evidence should not remain scattered across briefing/diagnostic/mechanism routes, or asks whether `所有 ELI5 / 大白话解释` from the working conversation were actually carried into that page.
 
 **Automatic response:**
 
@@ -55,6 +55,7 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 3. It is valid to publish authoritative later-stage sections before the earlier narrative is fully reconstructed. Mark missing earlier analysis explicitly; never invent chronology or weaken finished later evidence just to make the page look complete.
 4. Make the first viewport identify the experiment and expose the decisive final metric plus the main interpretation/boundary. Keep training-process score vs frozen final, historical panel vs current final, and parameter-geometry similarity vs behavioral equivalence visibly distinct.
 5. Register/update the Reader Contract and follow the existing HPL artifact-binding rule: material visual/content changes invalidate earlier screenshots/review evidence. Do not reuse an old render as proof for the new page.
+6. When the conversation already contains an owner-requested ELI5/plain-language explanation that materially resolved a comprehension gap, run a **plain-language coverage pass** before release. For each major technical section, preserve an equivalent `what this means` bridge before/alongside the professional metric. A correct table or threshold list is not proof that the ELI5 layer survived. Do not paste every chat sentence: keep durable comprehension bridges, keep scientific boundaries, and exclude temporary state.
 
 ---
 
