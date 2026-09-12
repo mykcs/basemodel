@@ -2,6 +2,7 @@
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
 import InteractiveResearchExplainer from '../../../../components/research/InteractiveResearchExplainer.tsx';
+import WebShopReaderMap from '../../../../components/research/WebShopReaderMap.astro';
 import WebShopDatasetCanonicalFigure from '../../../../components/research/WebShopDatasetCanonicalFigure.astro';
 import WebShopSmallWorldFigure from '../../../../components/research/WebShopSmallWorldFigure.astro';
 import WebShopGoalGenerationFigure from '../../../../components/research/WebShopGoalGenerationFigure.astro';
@@ -10,8 +11,9 @@ import WebShopEvaluationFigure from '../../../../components/research/WebShopEval
 import SeedWebShopCanonicalFigure from '../../../../components/research/SeedWebShopCanonicalFigure.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="WebShop 原理、交互与评测" description="逐步解释 WebShop 的购物交互、原始基准（benchmark）、官方小型商品世界（small world）、合成任务目标生成（synthetic goal generation）、SEED 任务编号划分（goal-index split）与最终评分。" locale={locale}>
+<AppLayout title="WebShop 原理、交互与评测" description="WebShop 基准、论文影响力、SEED 使用的 WebShop 设置，以及购物交互、任务生成、任务划分与最终评分。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="webshop">
+    <WebShopReaderMap locale={locale} />
     <InteractiveResearchExplainer locale={locale} kind="webshop" client:visible />
     <WebShopDatasetCanonicalFigure locale={locale} />
     <WebShopSmallWorldFigure locale={locale} />
