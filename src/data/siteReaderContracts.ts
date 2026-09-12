@@ -59,7 +59,7 @@ export const SITE_READER_CONTRACTS = [
   c('flow-seed', '/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/seed/', 'narrative', '理解 SEED 怎样从经验形成训练信号', '先看 SEED 的输入、处理和输出顺序', '论文方法与本地实现边界', '继续查看 benchmark 或对照实验'),
   c('flow-openevo', '/research/seed-openevo/flow/openevo/', '/research/seed-openevo/flow/openevo/', 'narrative', '理解 OpenEvo 怎样把经验用于后续学习', '先看经验如何进入下一次模型变化', '机制说明不能升级成效果结论', '继续到具体实验'),
   c('flow-benchmarks', '/research/seed-openevo/flow/benchmarks/', '/research/seed-openevo/flow/benchmarks/', 'comparison', '理解 ALFWorld 与 WebShop 分别测什么', '先区分两个 benchmark 的任务和评分对象', '不同 benchmark 的分数不能直接混比', '进入具体环境说明'),
-  c('flow-webshop', '/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/webshop/', 'narrative', '理解一次 WebShop 任务怎样进行和怎样评分', '先看模型看到什么、做什么、何时成功', '动作解析错误与模型能力错误要分开', '继续到实验设置或结果'),
+  c('flow-webshop', '/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/webshop/', 'reference', '理解 WebShop 是什么、为什么它是本研究的 Web Agent benchmark，以及 SEED 使用什么 WebShop 设置', '先认出 WebShop 是 NeurIPS 2022 的模拟电商 benchmark，并看到论文入口、数据规模和当前引用证据', '论文报告、released code 默认值和论文最终 exact 128-task manifest 的未知边界必须分开', '按目录进入 Agent 交互、任务生成与划分、评分和公平比较', '.plain-detail__header p'),
   c('flow-alfworld', '/research/seed-openevo/flow/alfworld/', '/research/seed-openevo/flow/alfworld/', 'narrative', '理解一次 ALFWorld 任务怎样进行和怎样评分', '先看环境、动作和成功定义', 'ALFWorld 成功率语义独立于 WebShop 分数', '继续到 benchmark 或实验设计'),
   c('flow-loops', '/research/seed-openevo/flow/loops/', '/research/seed-openevo/flow/loops/', 'narrative', '理解经验、反馈和参数更新怎样形成循环', '先看到循环的真实输入输出而不是抽象口号', '循环存在不等于已经证明持续提升', '进入对应实验验证'),
 
