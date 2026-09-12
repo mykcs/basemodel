@@ -52,7 +52,7 @@
 - [x] 建立一份机器可读的实验 → 子页面映射，优先放在 `src/data/`，避免长期把关系硬编码散落在组件中。证据：`src/data/openEvoExperimentNavigation.ts` 现在集中拥有五个实验、`primaryHref`、带语义 `role` 的 `childLinks`、lineage 与 status；`OpenEvoExperimentIndex.astro` 已改为从该数据 owner 渲染。定向 Vitest 7/7 PASS，`npm run check` 0 errors / 0 warnings（仅 2 个既有 deprecation hints）。
 - [x] Gate 失败实验至少覆盖 `stage2-256-window` 与相关 first-run 历史证据。证据：`OPEN_EVO_EXPERIMENTS[id=gate-no-update]` 以 `stage2-256-window` 为 primary/analysis，并以 `first-run` 为 history child；`openEvoExperimentIndex.test.ts` 对这两个语义归属做结构回归。
 - [x] 7B 长周期实验至少覆盖 `stage2-ceiling`、`stage2-7b-analysis` 及真正属于该实验的 SD-LoRA/参数分析。证据：`OPEN_EVO_EXPERIMENTS[id=7b-long-run]` 以 `stage2-ceiling` 为 primary/result，并把 `stage2-7b-analysis` 明确标成 `7B SD-LoRA / 参数变化分析`；结构测试同时验证该分析页实际包含“7B 已发生真实参数更新”和“SD-LoRA 参数更新”的参数证据。定向 Vitest 9/9 PASS，`npm run check` 0 errors / 0 warnings（仅 2 个既有 deprecation hints）。
-- [ ] 3B + 1.7B 后继实验至少覆盖 `openevo-2-0`、`report`、`exploration`、Harness/interface 诊断。
+- [x] 3B + 1.7B 后继实验至少覆盖 `openevo-2-0`、`report`、`exploration`、Harness/interface 诊断。证据：`OPEN_EVO_EXPERIMENTS[id=successor-3b-1p7b]` 以 `openevo-2-0` 为 primary/result，并把 `report` 标为 evidence、`exploration` 与 `harness-2-0` 标为 diagnostic；结构测试验证四个子入口以及 Harness 页面确实是购物接口历史对照实验。定向 Vitest 17/17 PASS，`npm run check` 与 `npm run build` PASS（506 routes，单 H1 / brand-link audits PASS），Study Reader Contract Chromium desktop/phone/briefing 3/3 PASS。
 - [ ] GDR-v1 实验至少覆盖冻结结果、44→7 candidate admission 分析、Vanilla SD-LoRA candidate 机制和 GDR-v1 / 原始 Gated Delta Rule 区分。
 - [ ] DirectApply / No-GDR 实验至少覆盖完整 160 轮分析、R127/R128、SD-LoRA scaling/history 系列、Text Memory、D1/geometry/function-preservation 等已公开分析。
 

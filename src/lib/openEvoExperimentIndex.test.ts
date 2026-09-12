@@ -37,6 +37,21 @@ describe('experiment-first Study index', () => {
     expect(parameterAnalysis).toContain('SD-LoRA 参数更新');
   });
 
+  it('keeps the 3B + 1.7B successor attached to its overview, report, exploration, and Harness interface diagnostic', () => {
+    const successor = OPEN_EVO_EXPERIMENTS.find((item) => item.id === 'successor-3b-1p7b');
+    expect(successor?.primaryHref).toBe('/research/seed-openevo/study/capability-exploration/openevo-2-0/');
+    expect(successor?.childLinks).toEqual(expect.arrayContaining([
+      expect.objectContaining({ role: 'result', href: '/research/seed-openevo/study/capability-exploration/openevo-2-0/' }),
+      expect.objectContaining({ role: 'evidence', href: '/research/seed-openevo/study/capability-exploration/openevo-2-0/report/' }),
+      expect.objectContaining({ role: 'diagnostic', href: '/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/' }),
+      expect.objectContaining({ role: 'diagnostic', href: '/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/' }),
+    ]));
+
+    const harnessStudy = readFileSync(new URL('../components/research/OpenEvoHarness2MiniStudy.astro', import.meta.url), 'utf8');
+    expect(harnessStudy).toContain('购物接口的历史对照实验');
+    expect(harnessStudy).toContain('正式 Stage 2');
+  });
+
   it('keeps the five experiment parents and key lineage/analysis children', () => {
     const titles = OPEN_EVO_EXPERIMENTS.map((item) => item.title.zh);
     expect(titles).toEqual([
