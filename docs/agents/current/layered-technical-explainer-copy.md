@@ -28,6 +28,22 @@ Depth 3 is usually local progressive disclosure such as `实验依据`, `数据�
 
 All depths must describe the same fact. Do not make the plain-language statement more confident than the precise interpretation, and do not hide a claim-changing caveat only in evidence. See CASE-067–069 in `website-copy-cases.md`.
 
+
+### 2.1 Conversation-proven plain-language explanations are part of publication coverage
+
+When the owner explicitly asks for `ELI5`, `大白话`, `说人话`, or later asks whether the useful plain-language explanations from the conversation made it into a canonical research page, treat that as a **coverage requirement**, not as a request to shorten the professional prose.
+
+Before releasing a canonical long-form experiment analysis, run a plain-language coverage pass over every major technical section:
+
+1. identify the precise scientific claim or mechanism;
+2. identify any owner-facing explanation from the working conversation that materially resolved a comprehension gap;
+3. preserve an equivalent Depth-1 bridge on the page: what the object is, what changed, and why the result matters;
+4. keep the exact metric/threshold/provenance in Depth 2/3 without making the reader reconstruct the meaning from a table alone.
+
+A technically correct table, threshold list, or professional conclusion does **not** by itself prove that the ELI5 explanation survived. Conversely, this rule does not require copying every chat sentence or metaphor verbatim. Keep only durable explanations that reduce decoding while preserving the real mechanism; temporary PR/provider state, one-off jokes, and misleading analogies stay out of publication.
+
+For example, if `rank95=78/159` is already explained successfully as “159 parameter-update arrows mostly reuse a smaller set of directions,” the canonical analysis should preserve that conceptual bridge before asking the reader to interpret `rank95`, residual energy, or K64 reconstruction error. The analogy remains optional; the reader model is mandatory.
+
 ## 3. Chinese-first technical language
 
 On Chinese routes, Chinese carries the meaning. English remains when it preserves scientific identity, maps to code, or helps source lookup.
@@ -165,3 +181,4 @@ Before publishing a Chinese technical research page, verify:
 8. Would removing the English parenthetical still leave grammatical, understandable Chinese?
 9. Is the page explaining the research rather than the website’s content-management decisions?
 10. Are old scientific boundaries and provenance constraints still preserved?
+11. If the working conversation established a useful ELI5 / plain-language explanation for a major technical section, does an equivalent Depth-1 meaning survive on the canonical page rather than only the professional metric/table?
