@@ -172,13 +172,15 @@ Do not declare the conversation complete until every unchecked item below is sat
 - [x] Re-check open PRs that touch the Vanilla SD-LoRA route, especially PR `#656` or its successor; determine whether it changes only surrounding series navigation or also conflicts with the mechanism visual.
 - [x] If `main` advanced or a relevant PR merged, reconcile this branch onto current `main` without dropping either the routed-flow work or newer navigation/content. Never overwrite unrelated work.
 - [x] If reconciliation changes runtime/UI-owned files, rerun the minimum required validation. For meaningful UI/head changes, rerun the repository-prescribed `preflight:ui`; do not reuse stale green evidence.
-- [ ] Create or update one PR from `feat/vanilla-sd-lora-archify-flow-20260912` to current `main` with a concise Page Expression Brief, FLOW-WITNESS summary, Archify receipt, and local validation evidence.
-- [ ] Confirm the PR changed-file set is limited to intended mechanism/evidence/test/plan files plus any explicitly reconciled navigation changes; no accidental generated output, machine state, or unrelated edits.
-- [ ] Confirm PR mergeability against current main and inspect unresolved review threads / requested changes.
-- [ ] Request the repository’s exact-head Vercel final gate using the current repository authority (currently `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>` unless current main changes the policy).
-- [ ] Record the exact PR head SHA submitted to the final gate.
-- [ ] Confirm a real Vercel deployment object exists for that exact head; `SKIPPED`, ignored, canceled, stale-head, or status-only callbacks are not PASS.
-- [ ] Require the exact-head Vercel gate / deployment to reach its required successful terminal state.
+- [x] Create or update one PR from `feat/vanilla-sd-lora-archify-flow-20260912` to current `main` with a concise Page Expression Brief, FLOW-WITNESS summary, Archify receipt, and local validation evidence.
+- [x] Confirm the PR changed-file set is limited to intended mechanism/evidence/test/plan files plus any explicitly reconciled navigation changes; no accidental generated output, machine state, or unrelated edits.
+- [x] Confirm PR mergeability against current main and inspect unresolved review threads / requested changes.
+- [x] Request the repository’s exact-head Vercel final gate using the current repository authority (currently `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>` unless current main changes the policy).
+- [x] Record the exact PR head SHA submitted to the final gate.
+- [x] Confirm a real Vercel deployment object exists for that exact head; `SKIPPED`, ignored, canceled, stale-head, or status-only callbacks are not PASS.
+- [x] Require the exact-head Vercel gate / deployment to reach its required successful terminal state.
+- [ ] After recording the PR/Preview evidence in this checklist changes the PR head, request one final exact-head Vercel gate for that docs-only head before merge.
+- [ ] Confirm the final docs-only head changes no runtime/UI/evidence-owner file versus `b78ba9ebf2fd697cfe40af793ec2d2e32d7b577d`; if it does, rerun the affected visual acceptance instead of inheriting the prior Preview result.
 
 ## 7. Exact-head Preview visual acceptance — remaining work
 
@@ -191,19 +193,19 @@ For the exact PR head Preview, inspect the real rendered route in both locales:
 
 Required acceptance:
 
-- [ ] Desktop light: the reader can visually follow the main path before reading body prose.
-- [ ] Desktop dark: connectors, arrowheads, labels, nodes, and contrast remain legible.
-- [ ] Phone / 390px: the mobile topology visibly preserves replay join, state split/join, and return edge.
-- [ ] Tablet / 768px: no overlap, clipping, root horizontal overflow, or unreadably compressed branch labels.
-- [ ] Motion enabled: trace motion follows authored routes and does not move geometry.
-- [ ] Reduced motion: complete meaning remains visible with animation disabled.
-- [ ] DirectApply is clearly marked as the current path.
-- [ ] GDR-v1 is clearly marked as historical local behavior, not the original recurrent Gated Delta Rule.
-- [ ] SD-LoRA update and state admission are visibly separate conceptual layers.
-- [ ] Replay visibly enters training from the side rather than appearing to be a current rollout.
-- [ ] The Round `t+1` return is visible as a real route rather than only mentioned in prose.
-- [ ] The figure still reads as one primary mechanism visual rather than two competing diagrams.
-- [ ] The exact-head Preview passes a final subjective cold-read: a technically curious first-time reader should understand “what flows where” within roughly 30 seconds.
+- [x] Desktop light: the reader can visually follow the main path before reading body prose.
+- [x] Desktop dark: connectors, arrowheads, labels, nodes, and contrast remain legible.
+- [x] Phone / 390px: the mobile topology visibly preserves replay join, state split/join, and return edge.
+- [x] Tablet / 768px: no overlap, clipping, root horizontal overflow, or unreadably compressed branch labels.
+- [x] Motion enabled: trace motion follows authored routes and does not move geometry.
+- [x] Reduced motion: complete meaning remains visible with animation disabled.
+- [x] DirectApply is clearly marked as the current path.
+- [x] GDR-v1 is clearly marked as historical local behavior, not the original recurrent Gated Delta Rule.
+- [x] SD-LoRA update and state admission are visibly separate conceptual layers.
+- [x] Replay visibly enters training from the side rather than appearing to be a current rollout.
+- [x] The Round `t+1` return is visible as a real route rather than only mentioned in prose.
+- [x] The figure still reads as one primary mechanism visual rather than two competing diagrams.
+- [x] The exact-head Preview passes a final subjective cold-read: a technically curious first-time reader should understand “what flows where” within roughly 30 seconds.
 
 ## 8. Merge and Production acceptance — remaining work
 
@@ -277,13 +279,22 @@ Append durable evidence here. Keep temporary provider queue state, local port nu
 - Routed-flow branch was merged with current `main` without conflict; local reconciled head before checklist evidence commit: `1349056e1fcc1b67298dc88a30f8bc7c6f82b9ba`.
 - Because #656 adds UI-owned route/navigation code, the full shared-UI preflight was rerun on the reconciled head instead of reusing stale evidence. Result: PASS; 506 static pages built, one-H1 audit PASS across 506 routes, root overflow PASS, and cross-browser matrix 414/414 PASS (207 Chromium + 207 WebKit).
 
+### 2026-09-13 — PR #659 exact-head Preview evidence
+
+- PR #659 opened from `feat/vanilla-sd-lora-archify-flow-20260912` to `main@2b8fb0d5dc3c2ec2325fc22255e75a28d1f9441b`; GitHub reports `mergeable=true`, with 6 intended changed files, 0 review threads, and 0 submitted reviews at inspection time.
+- Exact Preview-validated head: `b78ba9ebf2fd697cfe40af793ec2d2e32d7b577d`.
+- Vercel deployment: `dpl_4ahCsi7EyoDU81pU8ehcv2bUrqCi`, URL `basemodel-preview-nyfh2g1r6-wangrui92-team.vercel.app`, terminal state `READY`, metadata `githubCommitSha=b78ba9ebf2fd697cfe40af793ec2d2e32d7b577d`.
+- Protected Preview was accessed with a temporary Vercel share session; the login wall was explicitly rejected as invalid visual evidence before re-running against the authenticated page.
+- Real Preview cold-read: zh desktop light/dark, zh 768px, zh 390px, en desktop, and reduced-motion all returned HTTP 200 with no console/page errors and zero root horizontal overflow. The routed mechanism visibly preserves main flow, bounded-replay side join, DirectApply/GDR-v1 split and rejoin, and Round t+1 return.
+- Reduced-motion inspection reports the route-trace animation disabled (`animation-name: none`) while the complete static route remains visible.
+
 ### Final release evidence
 
-- PR: **pending**
+- PR: `#659`
 - latest reconciled main SHA: `2b8fb0d5dc3c2ec2325fc22255e75a28d1f9441b`
-- exact PR head SHA: **pending**
-- exact-head Vercel deployment/gate: **pending**
-- Preview cold-read: **pending**
+- exact PR head SHA validated in Preview: `b78ba9ebf2fd697cfe40af793ec2d2e32d7b577d` (a final docs-only checklist head gate is still pending)
+- exact-head Vercel deployment/gate: `dpl_4ahCsi7EyoDU81pU8ehcv2bUrqCi` READY for `b78ba9eb…`; final docs-only head gate pending
+- Preview cold-read: PASS on real authenticated Vercel Preview for `b78ba9eb…`
 - merge SHA: **pending**
 - Production successor: **pending**
 - public zh/en route verification: **pending**
