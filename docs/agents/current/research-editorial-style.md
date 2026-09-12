@@ -94,6 +94,24 @@ Keep these distinct:
 
 A failed measurement is not a failed method. An unrun experiment has no result.
 
+## Method names need identity boundaries
+
+A local experiment may borrow a paper or library method name while implementing it at a different abstraction level. A shared label is **not** proof that the two mechanisms are the same.
+
+Before publishing or revising a research explanation that uses a literature-derived method name:
+
+1. resolve the upstream/original method from first-party paper or implementation evidence;
+2. resolve what the local historical run actually executed from the experiment authority, code, receipts, and frozen lineage;
+3. name the two identities separately when their update rule, control point, state object, or execution timing differs;
+4. preserve the historical local run truthfully instead of retroactively rewriting it to match a later design;
+5. keep a proposed successor design explicitly **proposed / unexecuted** until executable evidence exists.
+
+Do not promote a diagnostic object, offline teacher signal, correlation, or post-hoc analysis into a runtime control input merely because it could be used that way in a future design. A quantity controls the runtime only when executable evidence shows that it is actually read by the update path.
+
+When the owner corrects one such identity boundary, scan sibling pages, slides, technical notes, route metadata, and tests for the same overloaded term before declaring the publication repair complete. Fix the semantic family, not only the sentence that exposed the problem.
+
+This publication rule does not authorize taking over a parallel implementation or mathematical-derivation task. The website may state the current evidence boundary and link to the owning workline, but it must not silently freeze an unfinished successor design.
+
 ## Prose and page-form anti-patterns
 
 Avoid the recurring AI-presentation habits below unless the content genuinely requires them:
@@ -123,5 +141,8 @@ For a research-results page, verify all of the following:
 8. Does the page remain readable as continuous prose rather than an AI-generated dashboard of summaries?
 9. Are detailed evidence and full lineage still available for audit without interrupting the main path?
 10. Have browser, mobile, theme, no-JS/print, and overflow acceptance checks passed where applicable?
+11. If a local method name overlaps an upstream paper/library term, can the reader tell which mechanism actually ran, which semantics belong to the original method, and which successor ideas remain unexecuted?
 
 When reader feedback identifies a recurring unnatural writing pattern, update this contract and add executable regression coverage where practical. Do not rely on conversational memory alone.
+
+Historical case evidence for the method-identity rule: [`../history/2026-09-12-gdr-sitewide-semantic-consistency-closeout.md`](../history/2026-09-12-gdr-sitewide-semantic-consistency-closeout.md). It records why a local candidate-admission rule and an upstream recurrent state-update rule needed explicit separation; the current contract above remains the authority.
