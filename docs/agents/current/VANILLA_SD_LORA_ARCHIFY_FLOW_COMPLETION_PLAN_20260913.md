@@ -209,8 +209,8 @@ Required acceptance:
 
 ## 8. Merge and Production acceptance — remaining work
 
-- [ ] Before merging, refresh current main and confirm the PR head/base relationship is still valid.
-- [ ] Follow the current BaseModel merge policy. Self-merge only if current policy permits it and no explicit owner-approval requirement applies; never bypass a required human approval.
+- [x] Before merging, refresh current main and confirm the PR head/base relationship is still valid.
+- [x] Follow the current BaseModel merge policy. Self-merge only if current policy permits it and no explicit owner-approval requirement applies; never bypass a required human approval.
 - [ ] Merge the PR only after required checks, exact-head Vercel, review state, and Preview visual acceptance are all green.
 - [ ] Record the merge commit SHA.
 - [ ] Confirm a READY / successful Production successor is built from the merged `main` state.
@@ -295,6 +295,13 @@ Append durable evidence here. Keep temporary provider queue state, local port nu
 - The same task branch was refreshed onto `main@dd511119…` without conflict. Pre-evidence combined head: `96c486844ed2e9d1fc0271b7cd6b593a3ccca6f0`. The PR contribution versus current main remains the same six intended Vanilla mechanism/evidence/test/plan files.
 - Because the refreshed combined tree contains independent runtime/UI ancestry after `b78ba9eb…`, affected acceptance was rerun rather than blindly inherited: `src/lib/vanillaSdLoraMechanism.test.ts` = 4/4 PASS and `tests/e2e/vanilla-sd-lora-mechanism.spec.ts` Chromium = 13/13 PASS with retries=0, covering zh/en, routed desktop topology, mobile replay/split/join/return, reduced motion, light/dark at 390/768/1440, no root overflow, and 16:9 slide reuse.
 - Concurrent PRs #661 and #658 were inspected before spending another final Gate. #661 is behind current main and has no exact-head Vercel acceptance; #658 likewise has no exact-head Vercel acceptance. Neither modifies the Vanilla SD-LoRA mechanism owner, so neither justifies replacing this live PR or waiting indefinitely for another base move.
+
+### 2026-09-13 — final current-base pre-merge refresh
+
+- Live `main` advanced from `dd511119…` to `a31b1656f991f170313021f5fe383d1c734b496d` only through merged WebShop checklist closeout PR #662; the range changes only `docs/agents/tasks/WEBSHOP_FIRST_PRINCIPLES_COMPLETION_PLAN_20260913.md` and does not touch Vanilla SD-LoRA runtime/UI/evidence owners.
+- The task branch was merged with `main@a31b1656…` cleanly. Post-merge ancestry proof: merge base equals live `main` and `origin/main...HEAD = 0 behind / 9 ahead` before the evidence commit.
+- Concurrent PRs were refreshed before release work: #661 changes study-index/navigation owners but not the Vanilla mechanism owner; #658 changes broader research/navigation/layout owners but not `OpenEvoVanillaSdLoraSlide.astro`; #647 is governance/test-only. None supersedes this routed mechanism PR.
+- Live `main` protection requires strict up-to-date `Vercel` only; `required_pull_request_reviews=null`, no submitted reviews, no review comments, and no explicit owner-approval requirement applies. Self-merge is therefore permitted once the fresh exact-head Vercel acceptance is green.
 
 ### Final release evidence
 
