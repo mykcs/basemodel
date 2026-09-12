@@ -40,6 +40,66 @@ export const CAPABILITY_READER_ROUTES = [
     }
   },
   {
+    "route": "sd-lora-history",
+    "coverage": "contextualized",
+    "owner": "OpenEvoSdLoraHistorySkeleton",
+    "label": { "zh": "SD-LoRA 历史专题", "en": "SD-LoRA history series" },
+    "purpose": {
+      "zh": "作为七个连续问题的总入口：从 Vanilla 机制与计算变慢，走到历史新颖度、当前函数、未来学习和固定大小状态。",
+      "en": "Serve as the gateway to seven connected questions, from Vanilla mechanics and compute scaling to history novelty, present function, future learning, and bounded state."
+    }
+  },
+  {
+    "route": "sd-lora-equivalence",
+    "coverage": "contextualized",
+    "owner": "OpenEvoSdLoraHistorySkeleton",
+    "label": { "zh": "SD-LoRA 严格等价", "en": "Strict SD-LoRA equivalence" },
+    "purpose": {
+      "zh": "解释为什么数学上等价的并行计算可能改变 BF16 backward 的实际累加语义；当前先建立页面入口，不把待整理证据写成新结论。",
+      "en": "Explain why mathematically equivalent parallel compute can change effective BF16 backward accumulation; for now establish the route without upgrading unfinished evidence into a new conclusion."
+    }
+  },
+  {
+    "route": "sd-lora-history-novelty",
+    "coverage": "contextualized",
+    "owner": "OpenEvoSdLoraHistorySkeleton",
+    "label": { "zh": "SD-LoRA 历史新颖度", "en": "SD-LoRA history novelty" },
+    "purpose": {
+      "zh": "研究不断增加的 component 是否一直带来同等数量的新有效方向，并把这个问题与平台期分开检验。",
+      "en": "Test whether each additional component contributes a comparable amount of new effective direction, keeping that question separate from the score plateau itself."
+    }
+  },
+  {
+    "route": "sd-lora-present-function",
+    "coverage": "contextualized",
+    "owner": "OpenEvoSdLoraHistorySkeleton",
+    "label": { "zh": "当前函数保持", "en": "Present-function preservation" },
+    "purpose": {
+      "zh": "研究压缩、删除或合并历史以后，模型当前行为是否仍被保留；参数接近本身不等于函数保持。",
+      "en": "Test whether current behavior survives compression, deletion, or merging of history; parameter similarity alone does not establish function preservation."
+    }
+  },
+  {
+    "route": "sd-lora-future-learning",
+    "coverage": "contextualized",
+    "owner": "OpenEvoSdLoraHistorySkeleton",
+    "label": { "zh": "未来学习保持", "en": "Future-learning preservation" },
+    "purpose": {
+      "zh": "让完整历史与压缩状态接受相同后续经验，检验今天行为相近是否足以保证未来继续学得一样。",
+      "en": "Give full-history and compressed states the same later experience to test whether matching behavior today is enough to preserve future learning."
+    }
+  },
+  {
+    "route": "sd-lora-bounded-state",
+    "coverage": "contextualized",
+    "owner": "OpenEvoSdLoraHistorySkeleton",
+    "label": { "zh": "固定大小学习状态", "en": "Bounded learning state" },
+    "purpose": {
+      "zh": "在前面的科学问题有结果以后，再讨论能否用固定大小状态替代不断增长的历史，以及 GDR、WY、chunkwise 在其中分别扮演什么角色。",
+      "en": "Only after the earlier scientific questions are answered, ask whether a fixed-size state can replace growing history and what roles GDR, WY, and chunkwise might play."
+    }
+  },
+  {
     "route": "mechanism-1-0",
     "coverage": "rebuilt",
     "owner": "OpenEvoMechanismMap",

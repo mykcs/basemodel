@@ -1,6 +1,7 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoVanillaSdLoraMechanism from '../../../../../../components/research/OpenEvoVanillaSdLoraMechanism.astro';
+import OpenEvoSdLoraHistorySeriesNav from '../../../../../../components/research/OpenEvoSdLoraHistorySeriesNav.astro';
 import ResearchRouteContext from '../../../../../../components/research/ResearchRouteContext.astro';
 const locale = 'zh' as const;
 ---
@@ -10,5 +11,6 @@ const locale = 'zh' as const;
   locale={locale}
 >
   <ResearchRouteContext locale={locale} route="vanilla-sd-lora" />
+  <OpenEvoSdLoraHistorySeriesNav locale={locale} />
   <OpenEvoVanillaSdLoraMechanism locale={locale} />
 </AppLayout>
