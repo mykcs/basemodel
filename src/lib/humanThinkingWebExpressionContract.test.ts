@@ -78,6 +78,15 @@ describe('human-thinking web expression contract', () => {
     expect(uiGate).toContain('real connector / return edge');
   });
 
+  it('treats an owner-requested scaffold-first webpage task as a real phase boundary', () => {
+    expect(expressionContract).toContain('Scaffold-first is a real phase boundary');
+    expect(expressionContract).toContain('create the real canonical routes');
+    expect(expressionContract).toContain('owning parent entry');
+    expect(expressionContract).toContain('honest minimal placeholders');
+    expect(expressionContract).toContain('without inventing unfinished scientific results');
+    expect(expressionContract).toContain('overview / series owner');
+  });
+
   it('protects density layers, whole-page flow, and the downstream visual gate', () => {
     expect(expressionContract).toContain('L0 orientation');
     expect(expressionContract).toContain('L1 primary path');
