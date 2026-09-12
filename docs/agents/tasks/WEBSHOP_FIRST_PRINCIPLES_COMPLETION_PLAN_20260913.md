@@ -260,33 +260,33 @@ Working PR: **BaseModel #655**.
 Repository deployment contract requires ordinary branch work to stay off Vercel until the final candidate is ready.
 
 - [x] Refreshed `origin/main` and PR #655; detected main advance through PR #656, inspected the only overlapping file (`siteReaderContracts.ts`), reconciled without semantic conflict, and revalidated.
-- [ ] Push the selected implementation and this checklist to `feat/webshop-reader-map-20260912` without overwriting unknown concurrent work.
-- [ ] Confirm PR #655 head SHA equals the pushed local candidate SHA.
-- [ ] Confirm PR #655 remains mergeable against current `main`; if main moved materially, reconcile/revalidate rather than assuming the old base is current.
-- [ ] Update PR body if needed so it describes the final document-style implementation, scientific boundary, regression fixes, and validation evidence.
-- [ ] Run the repository's final candidate gate:
+- [x] Pushed the selected implementation and checklist to `feat/webshop-reader-map-20260912`; final PR head was `b89f4477e29a319855bbfb67c30277987bde9ff8`. The remote task branch was auto-deleted after merge, so durable authority now lives on `main`.
+- [x] PR #655 exact final head is `b89f4477e29a319855bbfb67c30277987bde9ff8`, matching the candidate accepted by Public PR CI and Vercel.
+- [x] PR #655 was reconciled to then-current `main=e110446ca8227b47a9ad741ae74d0864bbd97dd3`; GitHub subsequently accepted and merged exact head `b89f4477...` as merge commit `dd511119...`.
+- [x] PR #655 body records the final document-style implementation, PAPER / RELEASED CODE / UNKNOWN boundary, mobile-overflow fix, transport fix, current-main reconciliation, and release boundary.
+- [x] Ran the repository final-candidate gate for PR #655; the resulting exact-head Vercel status and Preview are green:
 
 ```bash
 node scripts/request-vercel-final-gate.mjs 655
 ```
 
-- [ ] Confirm persistent `ci/vercel-gate-base` records live `main` and `ci/vercel-gate-final` points to the exact PR head.
-- [ ] Confirm Vercel Preview exists for that exact head and reaches **READY / SUCCESS**.
-- [ ] Inspect Vercel build logs if ERROR; fix only the smallest validated cause.
-- [ ] Verify the Preview WebShop route in Chinese and English.
-- [ ] Verify Preview at 390px mobile and desktop, light/dark, no document overflow, no overlap/clipping, and working contents anchors.
-- [ ] Verify no toolbar/reviewer comments remain unresolved for this route if provider state exposes them.
-- [ ] Merge PR #655 only after required checks and exact-head Vercel acceptance are green.
-- [ ] Record merge commit SHA.
-- [ ] Confirm `main` Production deployment reaches READY.
-- [ ] Verify public Production route:
+- [x] Gate invariant is evidenced: task Preview metadata records `githubCommitRef=ci/vercel-gate-final` at exact head `b89f4477...`; after merge, current `ci/vercel-gate-base=dd511119...=origin/main`. The shared final-gate ref has since advanced for later unrelated work, which does not invalidate the task Preview receipt.
+- [x] Exact-head Vercel Preview `dpl_78q57AzL5Yqwm4fJwJSZAc18gyyQ` for `b89f4477...` reached **READY**; GitHub `Vercel` commit status is `success` (“Deployment has completed”).
+- [x] Not applicable at final gate: the exact-head Preview reached READY without ERROR, so no error-log correction was required.
+- [x] Exact-head Preview Chinese and English WebShop routes both returned 200 and passed browser verification.
+- [x] Exact-head Preview browser matrix passed **8/8**: zh/en × 390px/1440px × light/dark; one H1, zero root overflow, six valid Contents anchors, local keyboard-focusable table scroll, fixed in-viewport transport.
+- [x] Live closeout check found zero unresolved Vercel toolbar threads for the WebShop route and zero GitHub PR review threads.
+- [x] PR #655 merged only after exact head `b89f4477...` had successful Public PR CI and Vercel exact-head acceptance.
+- [x] Merge commit recorded: `dd511119d22b7679927165ef65a430d499a0b922`.
+- [x] Production deployment `dpl_8T1xo5qBubxo9tgCqyrJALnk685g` for merge commit `dd511119...` is **READY**, target=`production`, with canonical alias `basemodel-preview.vercel.app`.
+- [x] Verified public Production routes (both HTTP 200 and browser-accepted):
 
 ```text
 https://basemodel-preview.vercel.app/research/seed-openevo/flow/webshop/
 https://basemodel-preview.vercel.app/en/research/seed-openevo/flow/webshop/
 ```
 
-- [ ] Production cold read still satisfies the 5–10 second reader target in §5.
+- [x] Production cold read satisfies §5: H1/lede immediately identify WebShop and its role; Contents exposes the six-step reading path; benchmark scale/impact and the PAPER / RELEASED CODE / UNKNOWN setting boundary appear before the detailed interaction mechanics.
 
 ---
 
@@ -316,11 +316,11 @@ https://basemodel-preview.vercel.app/en/research/seed-openevo/flow/webshop/
 ### Engineering / release
 
 - [x] Final current-base deployable code tree passes `npm run preflight:ui`.
-- [ ] PR #655 exact head is accepted by required GitHub/Vercel gates.
-- [ ] PR #655 is merged into `main`.
-- [ ] Production Vercel deployment is READY.
-- [ ] Public Production route is manually/browser verified after merge.
-- [ ] This checklist is updated with final SHA / PR / deployment evidence and every completed item is `[x]`.
+- [x] PR #655 exact head is accepted by required GitHub/Vercel gates.
+- [x] PR #655 is merged into `main`.
+- [x] Production Vercel deployment is READY.
+- [x] Public Production route is browser verified after merge.
+- [x] This checklist is updated with final SHA / PR / deployment evidence and every completion item is `[x]`.
 
 **Only when every checkbox in this §10 is `[x]` may the automation report “WebShop first-principles page complete”.**
 
@@ -335,21 +335,26 @@ Update this section rather than relying on chat memory.
 | Repository | `mykcs/basemodel` |
 | Working PR | `#655` |
 | Working branch | `feat/webshop-reader-map-20260912` |
-| Live main reconciled | `545cc745c2005c2296fa9d80121685ce8d366c2a` (PR #656 + docs/test-only PR #657 merged) |
+| Live main / merged task | `dd511119d22b7679927165ef65a430d499a0b922` — merge commit for PR #655 |
+| Final PR head | `b89f4477e29a319855bbfb67c30277987bde9ff8` |
 | Pre-reconciliation branch head | `efcd1b89636c4fa9b98b22e492b2a34403170ffb` |
 | Current-base merge candidate | `9c07e040f974c5e2484b92e2e157744021ef0224` |
 | Original PR head observed | `df75940c49e91e80460a1085b4e3b06ac7c53984` |
 | Selected candidate direction | `B — vertical research-document hierarchy` |
-| Post-layout-fix local candidate observed | `7493ec8f893dbb79a7d3229fe883c2e74744cad1`; current-main reconciliation candidate `9c07e040f974c5e2484b92e2e157744021ef0224` |
+| Post-layout-fix local candidate observed | `7493ec8f893dbb79a7d3229fe883c2e74744cad1`; later exact final head `b89f4477e29a319855bbfb67c30277987bde9ff8` |
 | Candidate preference receipt | PASS, 3 candidates, selected B |
 | Mobile overflow regression | found (378px) → fixed via `minmax(0,1fr)` |
 | Transport regression | found (`sticky`) → fixed by removing wrapper and linking `#irx-webshop-title` |
 | Focused canonical/transport browser tests | PASS after fixes; bilingual anchor/H1/mobile-table check also PASS on current-base candidate |
 | Final full `preflight:ui` | **PASS** on current-base candidate `9c07e040f974c5e2484b92e2e157744021ef0224`; 414/414 Playwright tests PASS, 506 static routes built, exit 0 |
-| Exact-head Vercel final gate | **NOT YET CONFIRMED**; must run after publishing the current-base PR head |
-| Merge commit | **NOT YET** |
-| Production deployment | **NOT YET** |
-| Hourly automation | **ENABLED · RRULE:FREQ=HOURLY · Asia/Shanghai scheduler timezone** |
+| Exact-head Public PR CI | **PASS** — run `34708480716`, exact head `b89f4477...`; workflow completed `success` with deterministic + browser shards |
+| Exact-head Vercel final gate | **READY / SUCCESS** — `dpl_78q57AzL5Yqwm4fJwJSZAc18gyyQ`, ref `ci/vercel-gate-final`, SHA `b89f4477...`; GitHub Vercel status `success` |
+| Exact-head Preview browser acceptance | **PASS 8/8** — zh/en × 390px/1440px × light/dark; root overflow 0; six anchors; local table scroll; fixed transport |
+| Merge commit | `dd511119d22b7679927165ef65a430d499a0b922` |
+| Production deployment | **READY** — `dpl_8T1xo5qBubxo9tgCqyrJALnk685g`, target `production`, SHA `dd511119...`, alias `basemodel-preview.vercel.app` |
+| Production browser acceptance | **PASS 8/8** — zh/en × 390px/1440px × light/dark; HTTP 200; one H1; root overflow 0; six anchors; table/transport contracts intact |
+| Review comments | **0 unresolved** Vercel toolbar threads on WebShop route; **0** GitHub PR review threads at closeout |
+| Automation disposition | Completion reached; scheduled continuation should be disabled after this closeout commit lands on `main` |
 
 Whenever status changes, append the exact evidence (SHA, PR state, deployment id/url, test count, or provider status) before checking the associated box.
 
@@ -361,6 +366,16 @@ Whenever status changes, append the exact evidence (SHA, PR state, deployment id
 - Focused bilingual check on Chinese/English desktop + 390px mobile: exactly one H1, zero root overflow, all six contents anchors resolve, and the settings table remains local-scrollable with `tabindex=0`.
 - Vercel toolbar unresolved threads for this branch: none at the time of the check; GitHub review threads: none.
 - Immediately before publish, `main` advanced again via PR #657 to `545cc745...`; its delta is governance prose plus `agentScenarioTriggerRegistry.test.ts`, with zero overlap against the WebShop production paths. It was merged conflict-free; exact-head public CI will cover that non-UI delta.
+
+### 11.2 Provider + Production closeout — 2026-09-13 SGT
+
+- Final PR head `b89f4477e29a319855bbfb67c30277987bde9ff8` completed Public PR CI run `34708480716` with conclusion `success`.
+- GitHub commit status for that exact SHA records Vercel `success` / “Deployment has completed”; Vercel deployment `dpl_78q57AzL5Yqwm4fJwJSZAc18gyyQ` is READY and records `githubCommitRef=ci/vercel-gate-final` plus the exact task SHA.
+- The exact-head Preview passed an 8-case live Chromium matrix: Chinese/English × 390px/1440px × light/dark. Every case returned 200, had one H1, zero root horizontal overflow, six valid Contents anchors, keyboard-focusable local table overflow, and fixed Previous/Next transport inside the viewport.
+- PR #655 merged as `dd511119d22b7679927165ef65a430d499a0b922`. The corresponding Production deployment `dpl_8T1xo5qBubxo9tgCqyrJALnk685g` is READY and aliases `basemodel-preview.vercel.app`.
+- The public Production Chinese and English routes both return HTTP 200 and passed the same 8-case browser matrix. The first-reader copy exposes WebShop identity, benchmark role, Contents, 1.18M / 12,087 scale, dated citation evidence, and PAPER / RELEASED CODE / UNKNOWN setting provenance before the detailed mechanism.
+- The scientific boundary remains explicit in Production: public evidence does **not** uniquely identify the paper-final validation ordinal, checkpoint, or exact 128-task manifest. No guessed manifest was introduced.
+- No unresolved Vercel toolbar thread for the WebShop route and no GitHub PR review thread remained at closeout.
 
 ---
 
@@ -387,7 +402,7 @@ Every hourly run must execute this algorithm:
 
 ### Hourly automation stopping behavior
 
-The automation itself may remain scheduled, but once §10 is fully complete each run must become a no-op except for confirming that completion evidence still exists. It must not keep modifying the page after acceptance.
+Once §10 is fully complete and the closeout evidence is committed to `main`, the scheduled continuation must be disabled. Future work should reopen only for a new owner request or evidence that the accepted Production state has regressed; it must not keep modifying the page after acceptance.
 
 ### Forbidden shortcuts
 
@@ -408,17 +423,17 @@ The automation itself may remain scheduled, but once §10 is fully complete each
 When all criteria are satisfied, the final checklist commit must record:
 
 ```text
-final PR head SHA:
-merge commit SHA:
-Vercel Preview deployment id/url + READY status:
-Vercel Production deployment id/url + READY status:
-production verification timestamp:
+final PR head SHA: b89f4477e29a319855bbfb67c30277987bde9ff8
+merge commit SHA: dd511119d22b7679927165ef65a430d499a0b922
+Vercel Preview deployment id/url + READY status: dpl_78q57AzL5Yqwm4fJwJSZAc18gyyQ / basemodel-preview-gz41om51v-wangrui92-team.vercel.app / READY
+Vercel Production deployment id/url + READY status: dpl_8T1xo5qBubxo9tgCqyrJALnk685g / basemodel-preview.vercel.app / READY
+production verification timestamp: 2026-09-13 SGT
 Chinese route: PASS
 English route: PASS
 390px mobile: PASS
 Desktop: PASS
 light/dark: PASS
-contents anchors: PASS
+contents anchors: PASS (6/6)
 root horizontal overflow: 0
 PAPER / RELEASED CODE / UNKNOWN boundary: PASS
 zero-context cold read: PASS
