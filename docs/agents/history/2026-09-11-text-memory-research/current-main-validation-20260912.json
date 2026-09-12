@@ -1,0 +1,70 @@
+{
+  "schema": "basemodel.text-memory-current-main-validation.20260912",
+  "main_observed": "ccf8cbd48934981b8e5a6800185a47b6a401db13",
+  "scope": "CURRENT_MAIN_RECONCILIATION_AND_LOCAL_VALIDATION_NOT_OWNER_ACCEPTANCE",
+  "briefing_preservation": {
+    "base_sections": 23,
+    "candidate_sections": 24,
+    "added_ids": [
+      "text-memory-redesign"
+    ],
+    "removed_ids": [],
+    "mismatched_existing_after_page_number_normalization": [],
+    "superseded_briefing_or_q17_revived": false
+  },
+  "validation": {
+    "node": "24.20.0",
+    "structural_suites": 101,
+    "structural_tests": 663,
+    "astro_files": 579,
+    "astro_errors": 0,
+    "astro_warnings": 0,
+    "astro_hints": 2,
+    "static_routes": 490,
+    "heading_audit": "PASS",
+    "brand_links": 4179,
+    "browser_tests": 34,
+    "browser_engines": [
+      "chromium",
+      "webkit"
+    ],
+    "browser_retries": 0,
+    "verify_deploy": "PASS"
+  },
+  "source_sha256": {
+    "src/components/research/OpenEvoTextMemoryPlan.astro": "86a5a8922bca4289a98f4d09c1216a4841a0daafa05ad5d18fb641eeff4541b0",
+    "src/components/research/OpenEvoTextMemoryResearchLink.astro": "f1f6d7a7b33b8887450d011db80af282364392c18d71d3e48b73a15f53c860b7",
+    "src/components/research/SeedOpenEvoProgressBriefing.astro": "1ce7e6fe04bd5028913084694f1273e7fc221b1cacc3cd551bffc408f320d290",
+    "src/data/capabilityReaderRoutes.ts": "040db58ca65c1ac837a7d9c5ac9b7acf806ac1ab21b51ccb1d488ccd68c0221e",
+    "src/data/siteReaderContracts.ts": "00fd3462f07fc1aa6106e7bc097b8fca6a872e6bbb871d4ae1ed9204872f1837",
+    "src/lib/sitemapRoutes.ts": "6ac65b540505a5b67d69341cc3083ae5d1ecc707febc476f06b305d456dda738",
+    "src/lib/openEvoTextMemoryPlan.test.ts": "fdba39130aa0e96a36fe9f4af5329977467dda949fff624f670e9d8674296a55",
+    "src/lib/seedOpenEvoProgressBriefing.test.ts": "e2af3f140fe167d89e1124e0a29b20399050e02c5a0faa375d59826d57d06106",
+    "tests/e2e/text-memory-research.spec.ts": "d06e649959ce2a11c48958d73edef4ff59caf28f3d3df764d1cf6596dd95e02f",
+    "tests/e2e/seed-openevo-briefing.spec.ts": "83a051bb8ad74340cf38f413db15ff49a5014c43b9f26aa4f947210ccf36d312",
+    "public/research/seed-openevo/evidence/q17-text-memory-research-20260911.json": "3dd036bc8d38c2be0a76bc9c34869517493417c23eb1a3d63e3aa01716f64555"
+  },
+  "log_sha256": {
+    "structural.txt": "19ef2254fe4370f4224bc946b4a64611aed678608d29f3707c6addccfa32ebb8",
+    "check.txt": "b4c08181b0724105d6106fdf83ea111ccbed5497bba30ec5e1c1fdfc61a04ad6",
+    "build.txt": "623238a34c04bddc1490784d0e2d3f2c99a3815d5d35f7ce93fc0a742bcd40c0",
+    "browser.txt": "7345386a16172dc2afc8aedf3a4b461966da99ff9249c72808e45bcd59025ea6",
+    "verify-deploy.txt": "9e6cee4c9f0060f365a3896cea8bc5690452a36d41eab67adf65815dd265783a"
+  },
+  "scientific_boundary": {
+    "real_model_shadow": "NOT_RUN",
+    "new_model_calls": 0,
+    "webshop_improvement_claimed": false,
+    "final_panel_access": 0,
+    "formal_run_mutated": false
+  },
+  "approval": {
+    "owner_approval": "PENDING",
+    "independent_blind_reader": "NOT_PERFORMED",
+    "provider_gate": "FRESH_EXACT_HEAD_REQUIRED"
+  },
+  "notes": [
+    "2026-09-11 validation.json and briefing-parent-preservation.json remain historical and are not rewritten.",
+    "Latest main includes later Q17/GDR/Vanilla SD-LoRA/briefing work; all 23 existing briefing sections are preserved byte-for-byte after normalizing only page-number markup."
+  ]
+}
