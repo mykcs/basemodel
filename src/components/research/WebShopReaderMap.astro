@@ -1,0 +1,162 @@
+---
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import { type Locale } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+
+const webshopPaper = 'https://arxiv.org/abs/2207.01206';
+const webshopProject = 'https://webshop-pnlp.github.io/';
+const webshopCode = 'https://github.com/princeton-nlp/WebShop';
+const impactSource = 'https://collaborate.princeton.edu/en/publications/webshop-towards-scalable-real-world-web-interaction-with-grounded/';
+const seedPaper = 'https://arxiv.org/abs/2607.14777';
+const seedCodeRoot = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8e1405182ba8d90e6c';
+const seedWebShopLauncher = `${seedCodeRoot}/examples/seed_trainer/_common/webshop.sh`;
+const seedTaskSampler = `${seedCodeRoot}/agent_system/environments/env_package/webshop/envs.py`;
+---
+
+<section class="webshop-entry" data-ui-audit="contrast layout overflow">
+  <nav class="page-contents" aria-labelledby="webshop-contents-title">
+    <h2 id="webshop-contents-title">{t('目录', 'Contents')}</h2>
+    <ol>
+      <li><a href="#webshop-benchmark"><span>01</span>{t('WebShop 基准', 'WebShop benchmark')}</a></li>
+      <li><a href="#webshop-impact"><span>02</span>{t('论文影响力', 'Paper impact')}</a></li>
+      <li><a href="#webshop-seed-setting"><span>03</span>{t('SEED 的 WebShop 设置', 'SEED WebShop setting')}</a></li>
+      <li><a href="#irx-webshop-title"><span>04</span>{t('Agent 交互', 'Agent interaction')}</a></li>
+      <li><a href="#fig-webshop-small-world"><span>05</span>{t('任务生成与划分', 'Task generation and split')}</a></li>
+      <li><a href="#fig-webshop-evaluation"><span>06</span>{t('评分与公平比较', 'Scoring and fair comparison')}</a></li>
+    </ol>
+  </nav>
+
+  <section id="webshop-benchmark" class="benchmark-summary" aria-labelledby="webshop-benchmark-title">
+    <header>
+      <h2 id="webshop-benchmark-title">{t('WebShop 基准', 'WebShop benchmark')}</h2>
+      <p>{t(
+        'WebShop 是一个模拟电商网站 benchmark。Agent 接到自然语言购物要求后，需要连续搜索、浏览、选择商品属性并完成购买；环境可以程序化计算部分完成度和最终成功。',
+        'WebShop is a simulated e-commerce benchmark. Given a natural-language shopping request, an agent must search, browse, select product attributes, and complete a purchase across multiple actions; the environment can score partial completion and final success programmatically.'
+      )}</p>
+    </header>
+
+    <dl class="benchmark-facts">
+      <div>
+        <dt>{t('论文', 'Paper')}</dt>
+        <dd><a href={webshopPaper} target="_blank" rel="noreferrer"><ExternalBrandMark href={webshopPaper} />WebShop: Towards Scalable Real-World Web Interaction with Grounded Language Agents ↗</a><small>NeurIPS 2022</small></dd>
+      </div>
+      <div>
+        <dt>{t('规模', 'Scale')}</dt>
+        <dd><strong>1.18M</strong> {t('真实商品', 'real-world products')} · <strong>12,087</strong> {t('条众包购物指令', 'crowd-sourced shopping instructions')}</dd>
+      </div>
+      <div id="webshop-impact">
+        <dt>{t('引用', 'Citations')}</dt>
+        <dd><strong>386</strong> Scopus citations<small>{t('截至 2026-09-12 · ', 'As of 2026-09-12 · ')}<a href={impactSource} target="_blank" rel="noreferrer">Princeton Research Portal ↗</a>{t('；不同数据库与日期会有不同计数。', '; counts vary by database and date.')}</small></dd>
+      </div>
+    </dl>
+
+    <p class="benchmark-role">{t(
+      '它把语言理解、搜索改写、网页导航和连续决策放进同一个可重复评分的环境，因此适合检验长程 Agent 的行为与学习。',
+      'It combines language understanding, query reformulation, web navigation, and sequential decisions in one reproducibly scored environment, making it useful for evaluating long-horizon agents and learning methods.'
+    )}</p>
+    <div class="source-row">
+      <a href={webshopProject} target="_blank" rel="noreferrer"><ExternalBrandMark href={webshopProject} />{t('项目主页 ↗', 'Project page ↗')}</a>
+      <a href={webshopCode} target="_blank" rel="noreferrer"><ExternalBrandMark href={webshopCode} />{t('官方代码 ↗', 'Official code ↗')}</a>
+      <a href={impactSource} target="_blank" rel="noreferrer"><ExternalBrandMark href={impactSource} />{t('引用数来源 ↗', 'Citation source ↗')}</a>
+    </div>
+  </section>
+
+  <section id="webshop-seed-setting" class="seed-setting" aria-labelledby="webshop-seed-setting-title">
+    <header>
+      <h2 id="webshop-seed-setting-title">{t('SEED 的 WebShop 设置', 'SEED WebShop setting')}</h2>
+      <p>{t(
+        '论文报告的实验设置、当前公开代码的默认值，以及公开资料没有唯一给出的信息分开列出。',
+        'The experimental setting reported by the paper, defaults in the current released code, and information not uniquely specified by public evidence are kept separate.'
+      )}</p>
+    </header>
+
+    <div class="setting-table-wrap" tabindex="0" role="region" aria-label={t('SEED WebShop 设置证据表', 'SEED WebShop setting evidence table')}>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">{t('证据层', 'Evidence layer')}</th>
+            <th scope="col">{t('可以确定的设置', 'What is supported')}</th>
+            <th scope="col">{t('来源', 'Source')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">{t('论文报告', 'Paper')}</th>
+            <td>
+              <ul>
+                <li><strong>128</strong> {t('个 WebShop 测试样本', 'WebShop test samples')}</li>
+                <li>{t('训练 batch', 'training batch')} <strong>16</strong> · rollout group <strong>8</strong></li>
+                <li>{t('最大交互', 'maximum interaction')} <strong>15</strong> {t('步', 'steps')}</li>
+                <li><strong>150</strong> policy updates</li>
+              </ul>
+            </td>
+            <td><a href={seedPaper} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedPaper} />SEED paper ↗</a></td>
+          </tr>
+          <tr>
+            <th scope="row">{t('公开代码', 'Released code')}</th>
+            <td>
+              <ul>
+                <li>small WebShop: <strong>1,000</strong> {t('个商品', 'products')} · <strong>6,910</strong> goals</li>
+                <li>{t('训练候选', 'training candidates')} goal <strong>500–6909</strong></li>
+                <li>held-out {t('候选', 'candidates')} goal <strong>0–499</strong></li>
+                <li>validation size <strong>128</strong> · T=<strong>0.4</strong> · max steps <strong>15</strong></li>
+              </ul>
+            </td>
+            <td><span class="source-stack"><a href={seedWebShopLauncher} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedWebShopLauncher} />{t('固定版本 launcher ↗', 'Pinned launcher ↗')}</a><a href={seedTaskSampler} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedTaskSampler} />{t('任务抽样代码 ↗', 'Task sampling code ↗')}</a></span></td>
+          </tr>
+          <tr>
+            <th scope="row">{t('未公开边界', 'Unknown')}</th>
+            <td>{t('论文最终结果对应的 validation 次序、checkpoint 和 exact 128-task manifest 没有被公开资料唯一绑定。', 'Public evidence does not uniquely bind the paper’s final result to one validation ordinal, checkpoint, and exact 128-task manifest.')}</td>
+            <td><a href="#fig-seed-webshop">{t('公平比较边界 ↓', 'Fair-comparison boundary ↓')}</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>
+
+<style>
+  .webshop-entry{display:grid;grid-template-columns:minmax(0,1fr);gap:2rem;width:min(1120px,100%);margin:0 auto 2.2rem}
+  .page-contents{padding:.9rem 0 1rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .page-contents h2{margin:0 0 .75rem;font-size:1rem;letter-spacing:-.01em}
+  .page-contents ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0;padding:0;list-style:none}
+  .page-contents li{min-width:0;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+  .page-contents li:nth-child(-n+3){border-top:0}
+  .page-contents a{display:flex;gap:.65rem;align-items:baseline;padding:.7rem .45rem;color:var(--ink);font-size:.78rem;font-weight:750;text-decoration:none}
+  .page-contents a:hover,.page-contents a:focus-visible{color:var(--accent);text-decoration:underline;text-underline-offset:.18em}
+  .page-contents span{flex:0 0 auto;color:var(--muted);font:700 .61rem/1 var(--font-mono)}
+  .benchmark-summary,.seed-setting,#webshop-impact{scroll-margin-top:5rem}
+  .benchmark-summary>header,.seed-setting>header{max-width:850px}
+  .benchmark-summary h2,.seed-setting h2{margin:0 0 .5rem;font-size:clamp(1.35rem,2.8vw,2rem);letter-spacing:-.03em}
+  .benchmark-summary>header p,.seed-setting>header p{margin:0;color:var(--muted);line-height:1.68}
+  .benchmark-facts{display:grid;grid-template-columns:1.2fr .8fr .8fr;margin:1.1rem 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .benchmark-facts>div{min-width:0;padding:.85rem .9rem .9rem 0}
+  .benchmark-facts>div+div{padding-left:.9rem;border-left:1px solid var(--line)}
+  .benchmark-facts dt{margin:0 0 .35rem;color:var(--muted);font-size:.66rem;font-weight:800}
+  .benchmark-facts dd{margin:0;font-size:.78rem;line-height:1.48;overflow-wrap:anywhere}
+  .benchmark-facts dd>a{display:inline-flex;gap:.35rem;align-items:flex-start;color:var(--ink);font-weight:750;text-decoration:none}
+  .benchmark-facts dd>a:hover,.benchmark-facts dd>a:focus-visible{color:var(--accent);text-decoration:underline;text-underline-offset:.18em}
+  .benchmark-facts strong{font-size:1rem}
+  .benchmark-facts small{display:block;margin-top:.35rem;color:var(--muted);font-size:.64rem;line-height:1.45}
+  .benchmark-role{max-width:850px;margin:1rem 0 0;line-height:1.65}
+  .source-row{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:.75rem}
+  .source-row a,.setting-table-wrap a{display:inline-flex;gap:.32rem;align-items:center;color:var(--ink);font-size:.7rem;font-weight:750;text-decoration:none}.source-stack{display:grid;gap:.42rem;justify-items:start}
+  .source-row a:hover,.source-row a:focus-visible,.setting-table-wrap a:hover,.setting-table-wrap a:focus-visible{color:var(--accent);text-decoration:underline;text-underline-offset:.18em}
+  .seed-setting{padding-top:.2rem}
+  .setting-table-wrap{margin-top:1rem;overflow-x:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .setting-table-wrap:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  table{width:100%;min-width:760px;border-collapse:collapse;text-align:left}
+  th,td{padding:.85rem .75rem;border-bottom:1px solid var(--line);vertical-align:top;font-size:.72rem;line-height:1.5}
+  thead th{color:var(--muted);font-size:.64rem;font-weight:800}
+  tbody th{width:18%;font-size:.74rem}
+  tbody td:nth-child(2){width:58%}
+  tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
+  td ul{display:grid;gap:.25rem;margin:0;padding-left:1rem}
+  td strong{color:var(--ink)}
+  @media(max-width:800px){.page-contents ol{grid-template-columns:repeat(2,minmax(0,1fr))}.page-contents li:nth-child(-n+3){border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}.page-contents li:nth-child(-n+2){border-top:0}.benchmark-facts{grid-template-columns:1fr}.benchmark-facts>div,.benchmark-facts>div+div{padding:.8rem 0;border-left:0;border-top:1px solid var(--line)}.benchmark-facts>div:first-child{border-top:0}}
+  @media(max-width:560px){.page-contents ol{grid-template-columns:1fr}.page-contents li:nth-child(-n+2){border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}.page-contents li:first-child{border-top:0}.page-contents a{padding:.62rem 0}.source-row{display:grid;gap:.55rem}}
+</style>

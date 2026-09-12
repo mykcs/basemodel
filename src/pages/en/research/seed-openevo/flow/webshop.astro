@@ -2,6 +2,7 @@
 import AppLayout from '../../../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../../../components/research/SeedOpenEvoResearchPage.astro';
 import InteractiveResearchExplainer from '../../../../../components/research/InteractiveResearchExplainer.tsx';
+import WebShopReaderMap from '../../../../../components/research/WebShopReaderMap.astro';
 import WebShopDatasetCanonicalFigure from '../../../../../components/research/WebShopDatasetCanonicalFigure.astro';
 import WebShopSmallWorldFigure from '../../../../../components/research/WebShopSmallWorldFigure.astro';
 import WebShopGoalGenerationFigure from '../../../../../components/research/WebShopGoalGenerationFigure.astro';
@@ -10,8 +11,9 @@ import WebShopEvaluationFigure from '../../../../../components/research/WebShopE
 import SeedWebShopCanonicalFigure from '../../../../../components/research/SeedWebShopCanonicalFigure.astro';
 const locale = 'en' as const;
 ---
-<AppLayout title="WebShop principles, interaction, and evaluation" description="Step through WebShop interaction, the original benchmark, the official small product world, synthetic goal generation, SEED goal-index splitting, and final evaluation." locale={locale}>
+<AppLayout title="WebShop principles, interaction, and evaluation" description="First establish what WebShop is, why it matters, and which setting SEED uses; then step through interaction, the original benchmark, the small product world, goal generation, task splitting, and final evaluation." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="webshop">
+    <WebShopReaderMap locale={locale} />
     <InteractiveResearchExplainer locale={locale} kind="webshop" client:visible />
     <WebShopDatasetCanonicalFigure locale={locale} />
     <WebShopSmallWorldFigure locale={locale} />
