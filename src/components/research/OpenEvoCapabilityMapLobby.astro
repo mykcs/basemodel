@@ -23,6 +23,7 @@ const mechanismHref = p('/research/seed-openevo/study/capability-exploration/mec
 const vanillaSdLoraHref = p('/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/');
 const gdrDirectApplyHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
 const directApplyAnalysisHref = p('/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/');
+const sdLoraScalingHref = p('/research/seed-openevo/study/capability-exploration/sd-lora-scaling/');
 const directApplyFinal = OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS;
 const archiveLinks = [
   { href: p('/research/seed-openevo/study/capability-exploration/stage1-previous/'), label: t('历史 Stage 1', 'Historical Stage 1') },
@@ -94,8 +95,18 @@ const steps = zh ? [
       <strong>{t('DirectApply 跑完 160 轮，冻结终评 60.72 / 100', 'DirectApply completed 160 rounds; frozen final = 60.72 / 100')}</strong>
       <p>{t(`Stage2 共 ${directApplyFinal.sealedRounds} 轮、${directApplyFinal.formalRollouts.toLocaleString('en-US')} 次 WebShop 尝试；训练后只做一次冻结 128 题 final，完整成功 ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount}（${directApplyFinal.finalSuccess.toFixed(2)}%）。`, `Stage 2 completed ${directApplyFinal.sealedRounds} rounds and ${directApplyFinal.formalRollouts.toLocaleString('en-US')} WebShop attempts. The frozen 128-task final was measured exactly once, with ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount} exact successes (${directApplyFinal.finalSuccess.toFixed(2)}%).`)}</p>
       <p>{t('这完成了 DirectApply 自己的结果，但没有完成 GDR-v1 的同题 final；历史 GDR 37.60 与 DirectApply 60.72 不是同一冻结题集，不能直接当方法差。', 'This closes the DirectApply endpoint, not a same-panel GDR-v1 final. Historical GDR 37.60 and DirectApply 60.72 come from different frozen panels and are not a causal method delta.')}</p>
+
     </div>
     <a href={directApplyAnalysisHref}>{t('查看完整实验分析 →', 'Open the complete experiment analysis →')}</a>
+  </aside>
+
+  <aside class="map-lobby__latest-evidence map-lobby__latest-evidence--compute" data-latest-evidence="sd-lora-scaling">
+    <div>
+      <p class="map-lobby__latest-evidence-meta">2026-09-12 · {t('SD-LoRA 计算诊断', 'SD-LoRA compute diagnostic')}</p>
+      <strong>{t('历史 component 越多，下一次参数更新越慢', 'More historical components make the next parameter update slower')}</strong>
+      <p>{t('固定同一个 1.7B 模型、47+47 条训练样本和 94 个 optimizer steps，只改变历史 component 数：K=1 时 44.05 秒，K=148 时 969.17 秒；增长主要发生在 forward / backward。', 'Holding the same 1.7B model, 47+47 training examples, and 94 optimizer steps fixed, changing only prior component count raises update time from 44.05 seconds at K=1 to 969.17 seconds at K=148; most growth is in forward / backward.')}</p>
+    </div>
+    <a href={sdLoraScalingHref}>{t('查看 SD-LoRA 计算扩展性 →', 'Open SD-LoRA compute scaling →')}</a>
   </aside>
 
   <ResearchTaskContext locale={locale} />
