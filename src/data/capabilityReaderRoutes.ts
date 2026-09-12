@@ -53,6 +53,16 @@ export const CAPABILITY_READER_ROUTES = [
     }
   },
   {
+    "route": "text-memory",
+    "coverage": "contextualized",
+    "owner": "OpenEvoTextMemoryPlan",
+    "label": { "zh": "Text Memory 研究", "en": "Text Memory research" },
+    "purpose": {
+      "zh": "记录写满输出上限与重复旧笔记的不同案例；正式实验快照与下一代验证分开。",
+      "en": "Document distinct cases of output saturation and repeated prior notes; keep the dated formal-run snapshot separate from future validation."
+    }
+  },
+  {
     "route": "first-run",
     "coverage": "contextualized",
     "owner": "OpenEvoFirstRunMap",

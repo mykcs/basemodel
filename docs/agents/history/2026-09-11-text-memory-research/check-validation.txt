@@ -1,0 +1,24 @@
+
+> agent-model-atlas@0.1.0 check
+> astro sync && astro check
+
+22:12:08 [content] Syncing content
+22:12:08 [content] Synced content
+22:12:08 [types] Generated 460ms
+22:12:09 [content] Syncing content
+22:12:10 [content] Synced content
+22:12:10 [types] Generated 349ms
+22:12:10 [check] Getting diagnostics for Astro files in <CHECKOUT>...
+src/data/openEvoMechanismNarrative.ts:41:25 - warning ts(6385): '(params?: string | { abort?: boolean | undefined; local?: boolean | undefined; precision?: number | null | undefined; offset?: boolean | undefined; error?: string | $ZodErrorMap<$ZodIssueInvalidStringFormat> | undefined; message?: string | undefined; } | undefined): ZodString' is deprecated.
+
+41   actualEnd: z.string().datetime({ offset: true }).nullable(),
+                           ~~~~~~~~
+src/data/openEvoMechanismNarrative.ts:40:27 - warning ts(6385): '(params?: string | { abort?: boolean | undefined; local?: boolean | undefined; precision?: number | null | undefined; offset?: boolean | undefined; error?: string | $ZodErrorMap<$ZodIssueInvalidStringFormat> | undefined; message?: string | undefined; } | undefined): ZodString' is deprecated.
+
+40   actualStart: z.string().datetime({ offset: true }).nullable(),
+                             ~~~~~~~~
+
+Result (572 files):
+- 0 errors
+- 0 warnings
+- 2 hints

@@ -1,6 +1,7 @@
 ---
 import AppLayout from '../../../../../layouts/AppLayout.astro';
 import SeedOpenEvoStudyOverview from '../../../../../components/research/SeedOpenEvoStudyOverview.astro';
+import OpenEvoTextMemoryResearchLink from '../../../../../components/research/OpenEvoTextMemoryResearchLink.astro';
 const locale = 'en' as const;
 ---
 
@@ -10,4 +11,6 @@ const locale = 'en' as const;
   locale={locale}
 >
   <SeedOpenEvoStudyOverview locale={locale} />
+
+  <OpenEvoTextMemoryResearchLink locale={locale} />
 </AppLayout>

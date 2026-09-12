@@ -1,0 +1,135 @@
+{
+  "schema": "basemodel.text-memory-projection-validation.20260911",
+  "plan_authority": "mykcs/openevo-experiment/docs/experiment-tracking/Q17_TEXT_MEMORY_REDESIGN_PLAN_2026-09-11.md",
+  "experiment_evidence_head": "77a45fb64ae8123f0be037b53929d9abeba9fcbe",
+  "main_observed": "02ba9feac907ae35cdcee52fe14671d6eba3e4f1",
+  "briefing_parent": {
+    "historical_parent_pr": 625,
+    "historical_parent_head": "6df62b8a4ac8433f532ebf0d05e332f994944bec",
+    "current_base": "02ba9feac907ae35cdcee52fe14671d6eba3e4f1",
+    "child_pr": 624,
+    "existing_slide_count": 23,
+    "integrated_slide_count": 24,
+    "added_ids": [
+      "text-memory-redesign"
+    ],
+    "existing_slide_bodies_identical_except_page_numbers": true,
+    "superseded_briefing_snapshot_revived": false,
+    "comparison": "current main vs candidate, exact per-section UTF-8 text after replacing only slide-number markup",
+    "section_sha256": {
+      "briefing-top": "a2caddd2fce30861dbe9d1501af379ebc83b2e1b2e325dc2c4f2d43cca17267d",
+      "contents": "cbc382469db30ddba746768cecc8b0fded9de6773dbda0539432d67d491a3459",
+      "science-attempts": "2753ab3e966f9e60470b6a8e49d5019e660d8ab9efaf20e9faa7a8eae7f73d77",
+      "results": "242ace9ce355d829bf0422932331ddab02457c88affd27efb773a58b196bad14",
+      "openevo-method": "d5321767a3bf1591ce5f078e1eb3ecc3debb1e29aa389108869808205e5b804e",
+      "stage2-gate": "f53a150030ec4f5b748784b11752d53462d0a8cbf8c78c89afa3f050f9e16801",
+      "component-cap": "a17ca7997ba7adf3ea8b3540eca3b39672072f5eb2c04ce35aa29a8cceb0495f",
+      "seven-b": "1315845f415dccfa02bdde96538368f105aafd3b36dbe39137e3e5f780c806c6",
+      "diagnostic-entry": "cd8f2773e1496bbdddf95482b334e307cc911ebcca640668b3b829fe09b74371",
+      "horizon-diagnostic": "afda9aa4b7436cec6b769a7d76a184f05f8b0a1f7b84cb396cffcfcbe87fa903",
+      "prompt-diagnostic": "a6a8f9f292d5f106a345b1a8288f0080a0d6633399dca11557d9ee7e0438a75b",
+      "capacity-diagnostic": "4dcc6e486f4e7915f3bc097be7ee99495f19b9bbc685d99f88390a733648d1c5",
+      "training-dynamics": "cfa9294cddb60932a270717e0d223e36d1d1abd6cd67fd955ac5894fc8530459",
+      "mechanism": "fee7e7a2fb20a59c97f89d2bda1ef25e68063fcc142d8c77a90145da105415e6",
+      "m1a-identifiability": "f02b3e6b0ed96dcf3c6f06482bd3a64b7dc865c0a4f46c46be721621dd07c021",
+      "gdr": "e02fab3a703e7cc3fa845acd5b7e09fc6b517bc7b46825d7065c97d64f637c84",
+      "one-seven-b": "55ecd27999f62ca725c420c87e8e9243591e86fd28837c95de182a7696704c53",
+      "directapply": "cfd9793742a5759918c0b61b935ee3093bf868460ba2fd4dc35492a25ab9973a",
+      "directapply-progress": "e602916e96ae6ec72949f700d33b8bec2aa47d2fb66d7f61481f58872975a523",
+      "directapply-plateau": "3543717e22f84f969da03f3be57e8e15ba244ea911a7b13d97d72128d7c80c53",
+      "frontier-roadmap": "1c3b34ca75e01986efc9cc0903b216de16ea58e7ab51caa30a102084eae23c7a",
+      "technical-work-summary": "a611ea92ea3760d01407c64cf5ebda53a08e48032f5f5ef9dbb5b136cc09a294",
+      "next": "c2c29a672bf68f8ce8e41f3c3be1bae9eed2d91788ea7d43200a7b06b014b07a"
+    }
+  },
+  "scope": "LOCAL_SOFTWARE_AND_BROWSER_VALIDATION_NOT_OWNER_ACCEPTANCE",
+  "structural": {
+    "tests": 655,
+    "suites": 100,
+    "status": "PASS"
+  },
+  "astro_check": {
+    "errors": 0,
+    "warnings": 0,
+    "hints": 2
+  },
+  "static_build": {
+    "routes": 488,
+    "status": "PASS",
+    "noindex": true
+  },
+  "browser": {
+    "tests": 14,
+    "status": "PASS",
+    "engines": [
+      "chromium",
+      "webkit"
+    ],
+    "locales": [
+      "zh",
+      "en"
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "viewports": [
+      1440,
+      768,
+      390
+    ],
+    "screenshots_captured": 48,
+    "retries": 0,
+    "new_slide_text_outside_canvas": false,
+    "page_overflow": false
+  },
+  "source_sha256": {
+    "src/components/research/OpenEvoTextMemoryPlan.astro": "0a5169842542b1270b1f155d39d5b2cbf723beb73d4d874ff598305d1fbc1485",
+    "src/components/research/OpenEvoTextMemoryResearchLink.astro": "d3399d37ff8eef8d9678d5d6442185937e28fc63c58a2f943e0cd5dfd72b89f8",
+    "src/components/research/SeedOpenEvoProgressBriefing.astro": "1251b10ac194322c453c6c4abafdc28402a0e47b97f74a2c767f6df715fe8a0c",
+    "src/data/capabilityReaderRoutes.ts": "f4934b31d3e9c6c142f8c4d5ae79c76d5834a5e0fc4a438a8087e69d90773f92",
+    "src/data/siteReaderContracts.ts": "62399036dd3a5cf1a5641d6274c1979dc80e8593f1287d1e008e6564d6a32180",
+    "src/lib/sitemapRoutes.ts": "9ab33fd6b2ad24637d209c21403167eb96b6f1243736bcd7a0abab4436762c46",
+    "src/lib/openEvoTextMemoryPlan.test.ts": "42ea20d7d8f7831beafe7a6ed7299e1e2194f7b6c93d1db615527db6b5095beb",
+    "src/lib/seedOpenEvoProgressBriefing.test.ts": "d91a7b71a6ef6855a84187b287d8caefe748a96f96fd5ce6576d90a934dcb06e",
+    "tests/e2e/text-memory-research.spec.ts": "d06e649959ce2a11c48958d73edef4ff59caf28f3d3df764d1cf6596dd95e02f",
+    "tests/e2e/seed-openevo-briefing.spec.ts": "83a051bb8ad74340cf38f413db15ff49a5014c43b9f26aa4f947210ccf36d312",
+    "public/research/seed-openevo/evidence/q17-text-memory-research-20260911.json": "3dd036bc8d38c2be0a76bc9c34869517493417c23eb1a3d63e3aa01716f64555"
+  },
+  "screenshots_sha256": {
+    "zh-light-1440-page.png": "e375939d4a4d9aecf5b461641b2be481333d9cf4b132fb29c89f98dc5578369e",
+    "candidate-a-original-page.png": "91c107035a9f12b4fc73bc8a8c386c5e672b8e54bfd6d4ec34fe9065cddaa326",
+    "zh-light-1440-slide.png": "a3a9c1e3651a7e62b9e22e3425bc8e0cdd4bfb51202a917701998b602d71f8b9",
+    "zh-light-390-page.png": "a429bc11f37474633e4b02ba16150f1c4a459f9ea4b2301b8aa3ff39bccb3914",
+    "en-dark-1440-slide.png": "81f5bc52a9df122d14e5462b6234c98335bdb6aaa7cdf9894246710509179d27"
+  },
+  "local_log_sha256": {
+    "structural": "722328a67b5deb42cc5d276d8c16b9c42acf2841469f58fc56b10758c2ae78e2",
+    "browser": "1a14b2bb6d20b3f6dd8851853954dfd35d4b9c8b3cdb410887621461899c728a",
+    "check": "a8fbbae0c30220bf4470a9fff6e32379385c40700efd668fd21afa057e490db0",
+    "build": "e2dff9355af5918f6d511a150441d3c6caf6a2a8df327db749c3d5f087ea4337"
+  },
+  "owner_approval": "PENDING",
+  "independent_blind_reader": "NOT_PERFORMED",
+  "release_gate": "FRESH_EXACT_HEAD_REQUIRED_AFTER_CURRENT_MAIN_RECONCILIATION; OLD_HEAD_GATES_NOT_REUSED",
+  "production": "UNCHANGED",
+  "real_model_shadow": "NOT_RUN",
+  "known_limits": [
+    "Mobile tables intentionally scroll inside their own containers; visible scroll hints are present.",
+    "Same-author visual comparison is not blind-reader or owner acceptance.",
+    "Software prototype results are not teacher efficacy or WebShop results.",
+    "Provider acceptance must bind to the new remote exact head after this current-main reconciliation."
+  ],
+  "repaired_engineering_issues": [
+    "Existing page was absent from reader contract registry and threw at render.",
+    "Existing English route imports were one directory level short.",
+    "Existing duplicated locale entry copy became one typed bilingual component.",
+    "Sparse checkout omitted test dependencies; full checkout restored without changing checks.",
+    "Pagination assertion now matches slide-number markup, not an unrelated existing 24 / 24 scientific observation."
+  ],
+  "archived_text_log_representation": "ANSI stripped, local checkout path replaced, trailing whitespace removed; original log digests remain in local_log_sha256.",
+  "verify_deploy": {
+    "status": "PASS",
+    "note": "fresh current-main reconciled candidate; local deterministic gate only, not provider acceptance"
+  }
+}

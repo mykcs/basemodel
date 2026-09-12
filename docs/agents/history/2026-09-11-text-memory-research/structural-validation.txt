@@ -1,0 +1,112 @@
+
+> agent-model-atlas@0.1.0 test:structural
+> vitest run --config vitest.structural.config.ts --maxWorkers=2
+
+
+ RUN  v3.2.7 <CHECKOUT>
+
+ ✓ src/lib/openEvoWebShopResults.test.ts (16 tests) 6ms
+ ✓ src/lib/seedOpenEvoProgressBriefing.test.ts (29 tests) 13ms
+ ✓ src/lib/openEvoExperimentResultLanguage.test.ts (16 tests) 7ms
+ ✓ src/lib/humanFeedbackIngestionCloseout.test.ts (16 tests) 52ms
+ ✓ src/lib/agentScenarioTriggerRegistry.test.ts (30 tests) 5ms
+ ✓ src/lib/deploymentArchitecture.test.ts (18 tests) 4ms
+ ✓ src/lib/humanPreferenceBrief.test.ts (17 tests) 40ms
+ ✓ src/lib/seedOpenEvoReaderVoiceProtection.test.ts (14 tests) 6ms
+ ✓ src/lib/humanPreferenceLearning.test.ts (18 tests) 21ms
+ ✓ src/lib/interactiveResearchExplainers.test.ts (14 tests) 6ms
+ ✓ src/lib/uiSafetyGate.test.ts (13 tests) 4ms
+ ✓ src/lib/vercelHostedUiGate.test.ts (18 tests) 88ms
+ ✓ src/lib/atlas.test.ts (15 tests) 11ms
+ ✓ src/lib/openEvoWebShopProgramData.test.ts (10 tests) 6ms
+ ✓ src/lib/optimizationPhase.test.ts (14 tests) 4ms
+ ✓ src/lib/canonicalResearchFigures.test.ts (12 tests) 3ms
+ ✓ src/lib/audienceCopyAudit.test.ts (12 tests) 270ms
+ ✓ src/lib/researchArchitectureDiagrams.test.ts (10 tests) 3ms
+ ✓ src/lib/modelCatalogDifferentialAudit.test.ts (6 tests) 5ms
+ ✓ src/lib/seedWebShopReproductionBoundary.test.ts (5 tests) 2ms
+ ✓ src/lib/vercelBuildBudget.test.ts (9 tests) 3ms
+ ✓ src/lib/hostingArchitecture.test.ts (6 tests) 2ms
+ ✓ src/lib/openEvoTextMemoryPlan.test.ts (9 tests) 3ms
+ ✓ src/lib/researchSitePresentationContract.test.ts (6 tests) 24ms
+ ✓ src/lib/researchNavigation.test.ts (5 tests) 2ms
+ ✓ src/lib/themeContrast.test.ts (10 tests) 3ms
+ ✓ src/lib/researchJourneyExperience.test.ts (8 tests) 3ms
+ ✓ src/lib/humanReadableProductLanguage.test.ts (7 tests) 2ms
+ ✓ src/lib/openEvoScientificState.test.ts (5 tests) 4ms
+ ✓ src/lib/uiRegressionHardening.test.ts (5 tests) 16ms
+ ✓ src/lib/studyOverviewStructure.test.ts (7 tests) 2ms
+ ✓ src/lib/openEvoExperimentArchive.test.ts (7 tests) 3ms
+ ✓ src/lib/humanFeedbackVisualLanguageProtection.test.ts (5 tests) 2ms
+ ✓ src/lib/sitemapRoutes.test.ts (9 tests) 7ms
+ ✓ src/lib/readerFirstCopyHierarchy.test.ts (3 tests) 19ms
+ ✓ src/lib/openEvoRedesignMap.test.ts (7 tests) 2ms
+ ✓ src/lib/globalShellOwnership.test.ts (8 tests) 10ms
+ ✓ src/lib/openEvoExperimentProgram.test.ts (6 tests) 2ms
+ ✓ src/data/openEvoMechanismNarrative.test.ts (6 tests) 5ms
+ ✓ src/lib/openEvoHarness2MiniStudy.test.ts (4 tests) 2ms
+ ✓ src/lib/openEvoCeiling7BFinalCloseout.test.ts (6 tests) 2ms
+ ✓ src/lib/seedOpenEvoTrainingDesignIntegration.test.ts (7 tests) 2ms
+ ✓ src/lib/researchRouteHierarchy.test.ts (6 tests) 3ms
+ ✓ src/lib/siteReaderContracts.test.ts (5 tests) 10ms
+ ✓ src/lib/preVercelUiGate.test.ts (5 tests) 3ms
+ ✓ src/components/SeedStudentReproductionGuide.test.ts (7 tests) 2ms
+ ✓ src/lib/openEvoFirstRunMap.test.ts (7 tests) 6ms
+ ✓ src/lib/seedOpenEvoCurrentState.test.ts (5 tests) 2ms
+ ✓ src/lib/editorialHeadingPolicy.test.ts (3 tests) 3ms
+ ✓ src/lib/openEvo7BScoreComparison.test.ts (5 tests) 2ms
+ ✓ src/components/common/ActionableContentLayer.test.ts (6 tests) 2ms
+ ✓ src/lib/researchComprehensionContract.test.ts (7 tests) 3ms
+ ✓ src/lib/publicServerCopy.test.ts (4 tests) 2ms
+ ✓ src/lib/humanThinkingWebExpressionContract.test.ts (5 tests) 2ms
+ ✓ src/lib/v2CloseoutRegression.test.ts (7 tests) 3ms
+ ✓ src/lib/resultNoteReaderFirst.test.ts (4 tests) 2ms
+ ✓ src/lib/minimaxH146TeacherEvidence.test.ts (7 tests) 2ms
+ ✓ src/lib/caseClusterReaderFollowthrough.test.ts (4 tests) 2ms
+ ✓ src/lib/openEvoExperimentDesignCatalog.test.ts (5 tests) 2ms
+ ✓ src/lib/vercelPersistentGateRange.test.ts (5 tests) 3ms
+ ✓ src/lib/visualIdentityContract.test.ts (6 tests) 2ms
+ ✓ src/lib/capabilityReaderRoutes.test.ts (3 tests) 7ms
+ ✓ src/lib/directUploadPreview.test.ts (6 tests) 2ms
+ ✓ src/lib/researchAttentionHierarchy.test.ts (3 tests) 1ms
+ ✓ src/lib/releaseIntegrationPolicy.test.ts (4 tests) 2ms
+ ✓ src/lib/publicReleaseSecurityGate.test.ts (4 tests) 1ms
+ ✓ src/lib/seed3090PairedRunAudit.test.ts (3 tests) 2ms
+ ✓ src/lib/contextBeforeStateCopy.test.ts (2 tests) 10ms
+ ✓ src/lib/q17AdvisorDiagnostics.test.ts (2 tests) 2ms
+ ✓ src/lib/headingOwnership.test.ts (4 tests) 2ms
+ ✓ src/lib/hplControlPlaneDeployScope.test.ts (4 tests) 42ms
+ ✓ src/lib/seed3090ParametricProgress.test.ts (3 tests) 2ms
+ ✓ src/lib/seed3090EvidenceGate.test.ts (3 tests) 1ms
+ ✓ src/lib/publicGithubCi.test.ts (3 tests) 2ms
+ ✓ src/lib/pageOutline.test.ts (4 tests) 2ms
+ ✓ src/lib/agentMechanismDialogues.test.ts (3 tests) 1ms
+ ✓ src/lib/visualCloseout.test.ts (3 tests) 1ms
+ ✓ src/lib/openEvoWrapperAuditCurrent.test.ts (2 tests) 1ms
+ ✓ src/lib/catalogFreshness.test.ts (2 tests) 2ms
+ ✓ src/lib/websiteCopyCaseIdGovernance.test.ts (2 tests) 2ms
+ ✓ src/lib/humanFeedbackPrecedents.test.ts (5 tests) 2ms
+ ✓ src/lib/developmentWorkflow.test.ts (4 tests) 2ms
+ ✓ src/components/PersonalComputeProfile.test.ts (3 tests) 2ms
+ ✓ src/lib/externalLinkBrand.test.ts (3 tests) 2ms
+ ✓ src/lib/runtimeContract.test.ts (3 tests) 1ms
+ ✓ src/lib/nativeGlobalState.test.ts (2 tests) 1ms
+ ✓ src/lib/siteCopyStageDirections.test.ts (1 test) 17ms
+ ✓ src/data/openEvoM1DResults.test.ts (3 tests) 2ms
+ ✓ src/lib/researchExplainerStageNavigation.test.ts (2 tests) 2ms
+ ✓ src/lib/openEvoWebShopResultsMobileSafety.test.ts (2 tests) 1ms
+ ✓ src/lib/vercelHeaders.test.ts (2 tests) 1ms
+ ✓ src/lib/researchVisualLanguage.test.ts (2 tests) 2ms
+ ✓ src/lib/testTaxonomy.test.ts (1 test) 5ms
+ ✓ src/lib/ciRouteSharding.test.ts (3 tests) 2ms
+ ✓ src/lib/paperCorrections.test.ts (2 tests) 1ms
+ ✓ src/lib/defaultTheme.test.ts (2 tests) 1ms
+ ✓ src/lib/alfworldTaskFamilies.test.ts (1 test) 1ms
+ ✓ src/lib/astroConfig.test.ts (1 test) 1ms
+ ✓ src/components/landscape/LandscapePrototype.test.tsx (1 test) 5ms
+ ✓ src/lib/nodeRuntimePolicy.test.ts (1 test) 1ms
+
+ Test Files  100 passed (100)
+      Tests  655 passed (655)
+   Start at  22:11:19
+   Duration  6.57s (transform 510ms, setup 0ms, collect 1.23s, tests 870ms, environment 7ms, prepare 2.61s)

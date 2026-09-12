@@ -1,0 +1,14 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import ResearchRouteContext from '../../../../../../components/research/ResearchRouteContext.astro';
+import OpenEvoTextMemoryPlan from '../../../../../../components/research/OpenEvoTextMemoryPlan.astro';
+const locale = 'zh' as const;
+---
+<AppLayout
+  title="OpenEVO Text Memory 重新设计计划"
+  description="记录 Qwen3-1.7B DirectApply 正式实验中的 Text Memory 失败、R104/R122 差异，以及下一代 OpenEVO Text Memory 老师的代码级设计计划。"
+  locale={locale}
+>
+  <ResearchRouteContext locale={locale} route="text-memory" compact />
+  <OpenEvoTextMemoryPlan locale={locale} />
+</AppLayout>

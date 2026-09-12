@@ -29,6 +29,7 @@ export const bilingualStaticPaths = [
   '/research/seed-openevo/study/capability-exploration/gdr-directapply/',
   '/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/',
   '/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/',
+  '/research/seed-openevo/study/capability-exploration/text-memory/',
   '/research/seed-openevo/study/capability-exploration/stage1-previous/',
   '/research/seed-openevo/study/capability-exploration/stage2-256-window/',
   '/research/seed-openevo/study/capability-exploration/stage2-ceiling/',

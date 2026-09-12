@@ -1,0 +1,39 @@
+{
+  "historical_parent_pr": 625,
+  "historical_parent_head": "6df62b8a4ac8433f532ebf0d05e332f994944bec",
+  "current_base": "02ba9feac907ae35cdcee52fe14671d6eba3e4f1",
+  "child_pr": 624,
+  "existing_slide_count": 23,
+  "integrated_slide_count": 24,
+  "added_ids": [
+    "text-memory-redesign"
+  ],
+  "existing_slide_bodies_identical_except_page_numbers": true,
+  "superseded_briefing_snapshot_revived": false,
+  "comparison": "current main vs candidate, exact per-section UTF-8 text after replacing only slide-number markup",
+  "section_sha256": {
+    "briefing-top": "a2caddd2fce30861dbe9d1501af379ebc83b2e1b2e325dc2c4f2d43cca17267d",
+    "contents": "cbc382469db30ddba746768cecc8b0fded9de6773dbda0539432d67d491a3459",
+    "science-attempts": "2753ab3e966f9e60470b6a8e49d5019e660d8ab9efaf20e9faa7a8eae7f73d77",
+    "results": "242ace9ce355d829bf0422932331ddab02457c88affd27efb773a58b196bad14",
+    "openevo-method": "d5321767a3bf1591ce5f078e1eb3ecc3debb1e29aa389108869808205e5b804e",
+    "stage2-gate": "f53a150030ec4f5b748784b11752d53462d0a8cbf8c78c89afa3f050f9e16801",
+    "component-cap": "a17ca7997ba7adf3ea8b3540eca3b39672072f5eb2c04ce35aa29a8cceb0495f",
+    "seven-b": "1315845f415dccfa02bdde96538368f105aafd3b36dbe39137e3e5f780c806c6",
+    "diagnostic-entry": "cd8f2773e1496bbdddf95482b334e307cc911ebcca640668b3b829fe09b74371",
+    "horizon-diagnostic": "afda9aa4b7436cec6b769a7d76a184f05f8b0a1f7b84cb396cffcfcbe87fa903",
+    "prompt-diagnostic": "a6a8f9f292d5f106a345b1a8288f0080a0d6633399dca11557d9ee7e0438a75b",
+    "capacity-diagnostic": "4dcc6e486f4e7915f3bc097be7ee99495f19b9bbc685d99f88390a733648d1c5",
+    "training-dynamics": "cfa9294cddb60932a270717e0d223e36d1d1abd6cd67fd955ac5894fc8530459",
+    "mechanism": "fee7e7a2fb20a59c97f89d2bda1ef25e68063fcc142d8c77a90145da105415e6",
+    "m1a-identifiability": "f02b3e6b0ed96dcf3c6f06482bd3a64b7dc865c0a4f46c46be721621dd07c021",
+    "gdr": "e02fab3a703e7cc3fa845acd5b7e09fc6b517bc7b46825d7065c97d64f637c84",
+    "one-seven-b": "55ecd27999f62ca725c420c87e8e9243591e86fd28837c95de182a7696704c53",
+    "directapply": "cfd9793742a5759918c0b61b935ee3093bf868460ba2fd4dc35492a25ab9973a",
+    "directapply-progress": "e602916e96ae6ec72949f700d33b8bec2aa47d2fb66d7f61481f58872975a523",
+    "directapply-plateau": "3543717e22f84f969da03f3be57e8e15ba244ea911a7b13d97d72128d7c80c53",
+    "frontier-roadmap": "1c3b34ca75e01986efc9cc0903b216de16ea58e7ab51caa30a102084eae23c7a",
+    "technical-work-summary": "a611ea92ea3760d01407c64cf5ebda53a08e48032f5f5ef9dbb5b136cc09a294",
+    "next": "c2c29a672bf68f8ce8e41f3c3be1bae9eed2d91788ea7d43200a7b06b014b07a"
+  }
+}
