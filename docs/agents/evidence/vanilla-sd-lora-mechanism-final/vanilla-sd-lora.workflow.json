@@ -1,0 +1,257 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Vanilla SD-LoRA 一轮机制",
+    "locale": "zh-CN",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    {
+      "id": "runtime",
+      "label": "本轮 WebShop 行为"
+    },
+    {
+      "id": "training",
+      "label": "训练数据"
+    },
+    {
+      "id": "param",
+      "label": "SD-LoRA 参数更新"
+    },
+    {
+      "id": "boundary",
+      "label": "下一轮状态",
+      "variant": "exception"
+    }
+  ],
+  "phases": [
+    {
+      "id": "collect",
+      "label": "产生经验",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "select",
+      "label": "筛成监督数据",
+      "fromCol": 2,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "learn",
+      "label": "参数写入",
+      "fromCol": 4,
+      "toCol": 5,
+      "variant": "emphasis"
+    }
+  ],
+  "mainPath": [
+    "state_t",
+    "rollouts",
+    "clean_success",
+    "targets",
+    "sd_update",
+    "adapter"
+  ],
+  "semanticChecks": {
+    "allowedRoots": [
+      "state_t",
+      "prior_replay",
+      "old_directions"
+    ],
+    "allowedTerminals": [
+      "adapter",
+      "transition"
+    ],
+    "requiredEdges": [
+      {
+        "from": "state_t",
+        "to": "rollouts"
+      },
+      {
+        "from": "rollouts",
+        "to": "clean_success"
+      },
+      {
+        "from": "clean_success",
+        "to": "targets"
+      },
+      {
+        "from": "targets",
+        "to": "sd_update"
+      },
+      {
+        "from": "sd_update",
+        "to": "adapter"
+      },
+      {
+        "from": "prior_replay",
+        "to": "targets"
+      },
+      {
+        "from": "old_directions",
+        "to": "sd_update"
+      },
+      {
+        "from": "adapter",
+        "to": "transition"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "state_t",
+      "lane": "runtime",
+      "col": 0,
+      "type": "backend",
+      "label": "当前状态 Sₜ",
+      "sublabel": "base + adapter",
+      "width": 120
+    },
+    {
+      "id": "rollouts",
+      "lane": "runtime",
+      "col": 1,
+      "type": "external",
+      "label": "128 次 WebShop",
+      "sublabel": "16 × 8",
+      "width": 120
+    },
+    {
+      "id": "clean_success",
+      "lane": "training",
+      "col": 2,
+      "type": "database",
+      "label": "完整成功",
+      "sublabel": "每任务首个 clean success",
+      "width": 128
+    },
+    {
+      "id": "targets",
+      "lane": "training",
+      "col": 3,
+      "type": "database",
+      "label": "训练 targets",
+      "sublabel": "assistant 输出",
+      "width": 120
+    },
+    {
+      "id": "prior_replay",
+      "lane": "training",
+      "col": 1,
+      "type": "database",
+      "label": "旧 replay",
+      "sublabel": "≤ 64",
+      "width": 110
+    },
+    {
+      "id": "old_directions",
+      "lane": "param",
+      "col": 3,
+      "type": "backend",
+      "label": "旧方向 D₁…Dₜ₋₁",
+      "sublabel": "方向冻结",
+      "width": 130
+    },
+    {
+      "id": "sd_update",
+      "lane": "param",
+      "col": 4,
+      "type": "backend",
+      "label": "新方向 Dₜ",
+      "sublabel": "rank-8 + 全部 α",
+      "width": 128
+    },
+    {
+      "id": "adapter",
+      "lane": "param",
+      "col": 5,
+      "type": "backend",
+      "label": "累计 adapter",
+      "sublabel": "Σ αᵢDᵢ",
+      "width": 120
+    },
+    {
+      "id": "transition",
+      "lane": "boundary",
+      "col": 5,
+      "type": "security",
+      "label": "状态准入",
+      "sublabel": "DirectApply / GDR",
+      "width": 128
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "state_t",
+      "to": "rollouts",
+      "variant": "default"
+    },
+    {
+      "id": "e2",
+      "from": "rollouts",
+      "to": "clean_success",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e3",
+      "from": "clean_success",
+      "to": "targets",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e4",
+      "from": "targets",
+      "to": "sd_update",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e5",
+      "from": "prior_replay",
+      "to": "targets",
+      "variant": "dashed",
+      "role": "branch"
+    },
+    {
+      "id": "e6",
+      "from": "old_directions",
+      "to": "sd_update",
+      "variant": "dashed",
+      "role": "branch"
+    },
+    {
+      "id": "e7",
+      "from": "sd_update",
+      "to": "adapter",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e8",
+      "from": "adapter",
+      "to": "transition",
+      "variant": "security",
+      "role": "branch"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "参数核心",
+      "items": [
+        "旧方向冻结，新方向新增",
+        "所有 α 一起重新学习"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "科学边界",
+      "items": [
+        "成功训练 candidate ≠ 已采用新状态",
+        "round 分数波动 ≠ 参数一定退化"
+      ]
+    }
+  ]
+}
