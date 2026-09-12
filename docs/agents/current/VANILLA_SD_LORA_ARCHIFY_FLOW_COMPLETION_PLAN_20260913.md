@@ -167,11 +167,11 @@ The implementation has already been committed and pushed on:
 
 Do not declare the conversation complete until every unchecked item below is satisfied.
 
-- [ ] Confirm the plan file itself is present on the same GitHub branch and record its commit SHA in the Evidence Log.
-- [ ] Re-fetch `origin/main` immediately before PR creation / final-gate work and record the current main SHA.
-- [ ] Re-check open PRs that touch the Vanilla SD-LoRA route, especially PR `#656` or its successor; determine whether it changes only surrounding series navigation or also conflicts with the mechanism visual.
-- [ ] If `main` advanced or a relevant PR merged, reconcile this branch onto current `main` without dropping either the routed-flow work or newer navigation/content. Never overwrite unrelated work.
-- [ ] If reconciliation changes runtime/UI-owned files, rerun the minimum required validation. For meaningful UI/head changes, rerun the repository-prescribed `preflight:ui`; do not reuse stale green evidence.
+- [x] Confirm the plan file itself is present on the same GitHub branch and record its commit SHA in the Evidence Log.
+- [x] Re-fetch `origin/main` immediately before PR creation / final-gate work and record the current main SHA.
+- [x] Re-check open PRs that touch the Vanilla SD-LoRA route, especially PR `#656` or its successor; determine whether it changes only surrounding series navigation or also conflicts with the mechanism visual.
+- [x] If `main` advanced or a relevant PR merged, reconcile this branch onto current `main` without dropping either the routed-flow work or newer navigation/content. Never overwrite unrelated work.
+- [x] If reconciliation changes runtime/UI-owned files, rerun the minimum required validation. For meaningful UI/head changes, rerun the repository-prescribed `preflight:ui`; do not reuse stale green evidence.
 - [ ] Create or update one PR from `feat/vanilla-sd-lora-archify-flow-20260912` to current `main` with a concise Page Expression Brief, FLOW-WITNESS summary, Archify receipt, and local validation evidence.
 - [ ] Confirm the PR changed-file set is limited to intended mechanism/evidence/test/plan files plus any explicitly reconciled navigation changes; no accidental generated output, machine state, or unrelated edits.
 - [ ] Confirm PR mergeability against current main and inspect unresolved review threads / requested changes.
@@ -269,10 +269,18 @@ Append durable evidence here. Keep temporary provider queue state, local port nu
 - Root overflow preflight: PASS at 390 / 768 / 1440 representative widths.
 - CSS audit: PASS after removing newly introduced `!important` usage.
 
+### 2026-09-13 — current-main reconciliation evidence
+
+- Plan file added on the routed-flow branch by commit `f63ff5aef01b68bec9af10bf8eacbc28198b3f93`.
+- `main` advanced to `2b8fb0d5dc3c2ec2325fc22255e75a28d1f9441b` via merged PR #656 (`Add SD-LoRA growing-history research page skeleton`).
+- PR #656 was re-read before reconciliation: it adds surrounding SD-LoRA series navigation/routes and does not modify `src/components/research/OpenEvoVanillaSdLoraSlide.astro`; it was therefore treated as compatible surrounding navigation, not as a replacement mechanism visual.
+- Routed-flow branch was merged with current `main` without conflict; local reconciled head before checklist evidence commit: `1349056e1fcc1b67298dc88a30f8bc7c6f82b9ba`.
+- Because #656 adds UI-owned route/navigation code, the full shared-UI preflight was rerun on the reconciled head instead of reusing stale evidence. Result: PASS; 506 static pages built, one-H1 audit PASS across 506 routes, root overflow PASS, and cross-browser matrix 414/414 PASS (207 Chromium + 207 WebKit).
+
 ### Final release evidence
 
 - PR: **pending**
-- latest reconciled main SHA: **pending**
+- latest reconciled main SHA: `2b8fb0d5dc3c2ec2325fc22255e75a28d1f9441b`
 - exact PR head SHA: **pending**
 - exact-head Vercel deployment/gate: **pending**
 - Preview cold-read: **pending**
