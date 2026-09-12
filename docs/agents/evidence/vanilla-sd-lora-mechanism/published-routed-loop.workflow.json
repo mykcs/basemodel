@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "locale": "zh-CN",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "title": "Vanilla SD-LoRA：从 rollout 到下一轮的真实回路"
+  },
+  "lanes": [
+    { "id": "state", "label": "模型状态" },
+    { "id": "experience", "label": "WebShop 经验" },
+    { "id": "training", "label": "SD-LoRA 训练" },
+    { "id": "admission-current", "label": "当前状态准入" },
+    { "id": "admission-history", "label": "历史状态准入", "variant": "exception" }
+  ],
+  "mainPath": ["current", "rollout", "clean", "update", "candidate", "directapply", "next"],
+  "nodes": [
+    { "id": "current", "lane": "state", "col": 0, "type": "cloud", "label": "当前累计 adapter", "sublabel": "冻结 base + 上一轮选定 LoRA", "width": 154 },
+    { "id": "rollout", "lane": "experience", "col": 1, "type": "external", "label": "128 次任务尝试", "sublabel": "16 tasks × 8 rollouts", "width": 154 },
+    { "id": "clean", "lane": "experience", "col": 2, "type": "database", "label": "clean exact success", "sublabel": "每题最早一条完整成功", "width": 164 },
+    { "id": "replay", "lane": "training", "col": 2, "type": "database", "label": "bounded replay", "sublabel": "≤64 条旧经验", "width": 144 },
+    { "id": "update", "lane": "training", "col": 3, "type": "backend", "label": "SD-LoRA update", "sublabel": "冻结旧方向 · 学 Dₜ · 重调全部 α", "width": 176 },
+    { "id": "candidate", "lane": "state", "col": 4, "type": "cloud", "label": "候选累计 adapter", "sublabel": "训练完成 ≠ 正式采用", "width": 164 },
+    { "id": "directapply", "lane": "admission-current", "col": 5, "type": "backend", "label": "DirectApply", "sublabel": "当前主线：检查通过后采用", "width": 150 },
+    { "id": "gdr", "lane": "admission-history", "col": 5, "type": "security", "label": "历史 GDR-v1", "sublabel": "16-task probe 后选新/旧状态", "width": 154 },
+    { "id": "next", "lane": "state", "col": 5, "type": "cloud", "label": "Round t+1", "sublabel": "用选定状态继续下一轮", "width": 150 }
+  ],
+  "edges": [
+    { "from": "current", "to": "rollout", "label": "加载状态", "variant": "emphasis", "role": "main" },
+    { "from": "rollout", "to": "clean", "label": "筛选", "variant": "emphasis", "role": "main" },
+    { "from": "clean", "to": "update", "label": "当前监督数据", "variant": "emphasis", "role": "main" },
+    { "from": "replay", "to": "update", "label": "旁路加入旧经验", "variant": "dashed", "role": "branch" },
+    { "from": "update", "to": "candidate", "label": "合成累计 LoRA", "variant": "emphasis", "role": "main" },
+    { "from": "candidate", "to": "directapply", "label": "当前状态规则", "variant": "emphasis", "role": "main" },
+    { "from": "candidate", "to": "gdr", "label": "历史条件", "variant": "dashed", "role": "branch" },
+    { "from": "gdr", "to": "next", "label": "选新/旧", "variant": "dashed", "role": "branch" },
+    { "from": "directapply", "to": "next", "label": "采用新候选", "variant": "emphasis", "role": "main" },
+    { "from": "next", "to": "rollout", "label": "下一轮", "variant": "dashed", "role": "return" }
+  ],
+  "cards": [
+    { "dot": "violet", "title": "SD-LoRA 内部", "items": ["W₀ 与旧方向 D₁…Dₜ₋₁ 冻结", "本轮学习 Dₜ，并重新学习 α₁…αₜ", "ΔWₜ = Σ αᵢDᵢ"] },
+    { "dot": "emerald", "title": "边界", "items": ["bounded replay 是训练旁路，不是当前 rollout", "DirectApply / GDR-v1 属于候选状态准入，不属于 SD-LoRA 更新公式"] }
+  ]
+}
