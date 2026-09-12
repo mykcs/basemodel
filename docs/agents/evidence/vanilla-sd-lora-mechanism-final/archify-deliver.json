@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "deliver",
+  "type": "workflow",
+  "input": "/Users/myk/.cache/basemodel-vanilla-sdlora-20260911/docs/agents/evidence/vanilla-sd-lora-mechanism-final/vanilla-sd-lora.workflow.json",
+  "output": "/Users/myk/.cache/basemodel-vanilla-sdlora-20260911/docs/agents/evidence/vanilla-sd-lora-mechanism-final/vanilla-sd-lora.workflow.html",
+  "specification": {
+    "sha256": "e5b90117630e6fa430f566b3071fe513ba7ec44663d82111a21a2eb7a61dd024",
+    "bytes": 4946
+  },
+  "artifact": {
+    "sha256": "d352c2fbb870d60734b8266a3b142f8f8d1ef653a745b3a5a7457841b895b497",
+    "bytes": 806802
+  },
+  "validation": {
+    "checksPassed": 9,
+    "checkCount": 9,
+    "compositionProfile": "showcase",
+    "compositionStatus": "pass",
+    "errors": 0,
+    "warnings": 0
+  }
+}
