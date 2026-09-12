@@ -367,7 +367,7 @@ Capability lobby 需要同时让读者看见“历史 GDR-v1 / DirectApply”与
 - [x] A1. 重新读取 BaseModel `main`、本 branch dirty state、open overlapping PR；若 main 有重叠移动，先分类再继续。
 - [x] A2. 重新读取 active Gated-Delta scientific branch / PR #461 exact head、D1 decision/prereg/evidence；把发布 snapshot 的 source head 更新到最新实际值。
 - [x] A3. 完成本计划 Markdown，`git diff --check` PASS。
-- [ ] A4. 只提交这份计划作为第一个 commit，并 push 到 `research/gated-delta-page-restructure-20260912`；记录 exact commit SHA。
+- [x] A4. 只提交这份计划作为第一个 commit，并 push 到 `research/gated-delta-page-restructure-20260912`；记录 exact commit SHA。
 
 ### Phase B — reader contract / HPL before UI
 
@@ -466,3 +466,4 @@ Capability lobby 需要同时让读者看见“历史 GDR-v1 / DirectApply”与
 - Open PR #647：governance-only，改 `research-editorial-style.md` / history / policy test，不改产品 route；若在首次 public-copy implementation 前合并，重新读取最新 policy。
 - Gated-Delta scientific branch：`research/gated-delta-sd-lora-event-write-202609120918`，首次刷新 exact head `4dc70ccbfe52d25863461bb3be34c16da8efa291`。
 - 截止计划 first commit 前，**没有任何 `src/` 页面代码修改**；第一个 commit 必须只包含本计划文件。
+- A4 durable checkpoint：`0bfdb1a69ae90a8a8701d0ac65b563596715d06b`，已 push 到 `origin/research/gated-delta-page-restructure-20260912`；该 commit 只包含本计划文件。
