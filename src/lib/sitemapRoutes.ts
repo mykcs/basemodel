@@ -14,7 +14,6 @@ export const bilingualStaticPaths = [
   '/lab/',
   '/research/seed-openevo/flow/',
   '/research/seed-openevo/flow/server/',
-  '/research/seed-openevo/flow/base-model/',
   '/research/seed-openevo/flow/seed/',
   '/research/seed-openevo/flow/openevo/',
   '/research/seed-openevo/study/',
@@ -50,6 +49,7 @@ export const bilingualStaticPaths = [
 ] as const;
 
 export const bilingualCompatibilityPaths = [
+  '/research/seed-openevo/flow/base-model/',
   '/research/seed-openevo/study/design/',
 ] as const;
 
