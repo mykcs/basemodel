@@ -1,0 +1,19 @@
+
+> agent-model-atlas@0.1.0 feedback:cold-read
+> tsx scripts/generate-human-feedback-cold-read.ts models-index --phase=blind --url=http://127.0.0.1:4340/models/
+
+# Phase A · zero-context cold read · http://127.0.0.1:4340/models/
+Do not read the implementation, PR description, Reader Contract, case library, Preference Model, or Gold Pairs first.
+Look only at the rendered page. Answer from what the page itself communicates.
+
+1. In 5–10 seconds, what is this page about?
+2. What did your attention land on first?
+3. What is the one most important fact, result, or next action?
+4. Which sentence, heading, card, bold phrase, or label feels most machine-written or presenter-like? Why?
+5. Did any terminology force you to leave the reading path or reconstruct missing context?
+6. Are two or more visual centers competing for equal attention? Name them.
+7. Is any caveat or safety/scientific boundary hidden so deeply that the visible claim becomes misleading?
+8. What would you remove, rename, or move one layer down while preserving the meaning?
+9. How much do you want to continue reading, from 1–5? Give the reason, not just the number.
+
+Save these answers before running Phase B. Phase B intentionally reveals the historical preference evidence.

@@ -1,0 +1,17 @@
+Base Model Flow → Models final local UI gate
+source product SHA: bb0a012b203ecc3c89705bda194db51b677d5f63
+base main SHA: 68f6cc3118bf0515cef7aa4ceaa2fd7f4349f259
+
+Commands:
+- npm run verify:deploy
+- npm run build
+- npm run ui:overflow-preflight
+- PLAYWRIGHT_PORT=44937 npm run test:ui:all
+
+Result: PASS (combined exit code 0)
+- Reader Contract audit: PASS
+- Human-feedback learning audit: PASS
+- strict copy invariant failures: 0
+- ui-overflow-preflight: PASS at 390x844, 768x1024, 1440x1000
+- Chromium + WebKit UI matrix: 416 passed
+- migration-specific ui-safety test: PASS in Chromium and WebKit

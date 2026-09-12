@@ -118,6 +118,8 @@ rg "flow/base-model|page === 'base-model'|model-name-diagram" src
 - [x] Research Flow 实测所有 Qwen 模型入口统一指向同一新地址。
 - [x] 旧中文 URL 实测最终落到新模型详情锚点。
 
+最终产品源 SHA `bb0a012b203ecc3c89705bda194db51b677d5f63` 上又执行完整 global-risk Gate：`npm run verify:deploy`、`npm run build`、`npm run ui:overflow-preflight`、`npm run test:ui:all` 全部 PASS；Chromium + WebKit 共 **416/416** PASS，migration-specific ui-safety 在两浏览器均 PASS。摘要保存在 `docs/agents/evidence/base-model-flow-to-models-20260913/final-ui-gate-current.txt`。
+
 已完成整仓证据：
 
 ```text
@@ -130,8 +132,8 @@ Reader contract:  PASS
 Strict copy invariant failures: 0
 ```
 
-- [ ] 在最终 commit SHA 上重跑受影响 route 的正常 UI gate，确认没有“测试写完但未进入最终树”的情况。
-- [ ] 最终 commit SHA 上确认 console error = 0，中文/英文/手机均无 overflow、遮挡、重复 H1。
+- [x] 在最终产品源 commit SHA 上重跑受影响 route 的正常 UI gate，确认没有“测试写完但未进入最终树”的情况。
+- [x] 最终产品源 commit SHA 上确认 console error = 0，中文/英文/手机均无 overflow、遮挡、重复 H1。
 
 ## 9. Phase G — Human Preference Learning / 冷读
 
@@ -139,24 +141,28 @@ Strict copy invariant failures: 0
 
 仍需完成：
 
-- [ ] 用 `scripts/generate-human-preference-candidate-receipt.ts` 生成本任务 candidate receipt。
-- [ ] 将 3 个候选的 hypothesis、attention center、density、visual rationale、截图证据写入 receipt。
-- [ ] 记录 pairwise comparison，保证最终候选显式胜过另外两个。
-- [ ] 运行 `verify-human-preference-candidate-receipt.ts` 并 PASS。
-- [ ] 在最终渲染树上运行 Phase A blind cold read，并先保存结果。
-- [ ] 再运行 Phase B compare，把 blind 观察与 Reader Contract / 历史偏好对照。
-- [ ] 若独立 reviewer 可用，生成并通过 final preference judge receipt；若不可用，必须写 `NOT_EXECUTED`，不得伪造 PASS。
+- [x] 用 `scripts/generate-human-preference-candidate-receipt.ts` 生成本任务 candidate receipt。
+- [x] 将 3 个候选的 hypothesis、attention center、density、visual rationale、截图证据写入 receipt。
+- [x] 记录 pairwise comparison，保证最终候选显式胜过另外两个。
+- [x] 运行 `verify-human-preference-candidate-receipt.ts` 并 PASS。
+- [x] 在最终渲染树上运行 Phase A blind cold read，并先保存结果。
+- [x] 再运行 Phase B compare，把 blind 观察与 Reader Contract / 历史偏好对照。
+- [x] 独立 reviewer 可用；已生成并通过 final preference judge receipt。
+
+> **HPL scope correction（2026-09-13）**：三候选比较的是 `/models/` 上实验模型入口的层级与首屏注意力，因此 candidate/cold-read contract 应为 `models-index`，不是整页 `model-detail`。早期用 `model-detail` 得到的 NEEDS_FIX 不作为放行证据；已在最终产品源 SHA `bb0a012b203ecc3c89705bda194db51b677d5f63` 上重跑 `models-index` blind-first review。独立 Phase B 给出 `MIGRATION_VERDICT: PASS`，final judge receipt PASS。
+
+最终 HPL 证据：`docs/agents/evidence/base-model-flow-to-models-20260913/`。
 
 建议命令骨架：
 
 ```bash
 npx tsx scripts/generate-human-preference-candidate-receipt.ts \
-  --contract=model-detail \
+  --contract=models-index \
   "move SEED/OpenEVO base-model content into canonical Qwen model record"
 
-npm run feedback:cold-read -- model-detail --phase=blind --url=<FINAL_RENDERED_URL>
-npm run feedback:cold-read -- model-detail --phase=compare
-npm run feedback:cold-read -- model-detail --phase=receipt --url=<FINAL_RENDERED_URL> \
+npm run feedback:cold-read -- models-index --phase=blind --url=<FINAL_RENDERED_URL>
+npm run feedback:cold-read -- models-index --phase=compare
+npm run feedback:cold-read -- models-index --phase=receipt --url=<FINAL_RENDERED_URL> \
   > /tmp/model-migration-preference-judge.json
 npm run feedback:judge -- /tmp/model-migration-preference-judge.json
 ```
@@ -164,7 +170,7 @@ npm run feedback:judge -- /tmp/model-migration-preference-judge.json
 ## 10. Phase H — Git / PR / exact-head
 
 - [x] 运行 `git diff --check`，不得有 whitespace error。
-- [ ] 删除/忽略所有仅用于本地运行的临时状态；不得提交 `node_modules` symlink、临时端口、`/tmp` 截图路径作为产品事实。
+- [x] 删除/忽略所有仅用于本地运行的临时状态；不得提交 `node_modules` symlink、临时端口、`/tmp` 截图路径作为产品事实。
 - [x] 提交当前迁移代码 + 本计划文件，commit message 明确写出 canonical-owner migration。
 - [x] push `research/move-base-model-content-to-models-20260912` 到 GitHub。
 - [x] 创建或复用唯一 PR；不得为同一迁移制造平行 PR。
