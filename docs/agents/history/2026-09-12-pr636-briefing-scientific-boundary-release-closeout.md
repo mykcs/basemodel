@@ -1,7 +1,7 @@
 # PR #636 briefing / scientific-boundary / release closeout
 
-Status: **historical case record, not current authority**  
-Date: 2026-09-12  
+Status: **historical case record, not current authority**
+Date: 2026-09-12
 Current rule owners: `scenario-trigger-registry.md`, `experiment-result-publication-workflow.md`, `release-closeout-protocol.md`
 
 ## Scope and evidence coverage
