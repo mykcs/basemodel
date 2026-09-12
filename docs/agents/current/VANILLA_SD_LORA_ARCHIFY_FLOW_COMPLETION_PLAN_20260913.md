@@ -1,6 +1,6 @@
 # Vanilla SD-LoRA × Archify Flow — Completion Plan
 
-Status: **ACTIVE — single checklist authority for this conversation**  
+Status: **COMPLETE**  
 Repository: `mykcs/basemodel`  
 Initial work branch: `feat/vanilla-sd-lora-archify-flow-20260912`  
 Initial implementation commit: `be37d084`  
@@ -211,13 +211,13 @@ Required acceptance:
 
 - [x] Before merging, refresh current main and confirm the PR head/base relationship is still valid.
 - [x] Follow the current BaseModel merge policy. Self-merge only if current policy permits it and no explicit owner-approval requirement applies; never bypass a required human approval.
-- [ ] Merge the PR only after required checks, exact-head Vercel, review state, and Preview visual acceptance are all green.
-- [ ] Record the merge commit SHA.
-- [ ] Confirm a READY / successful Production successor is built from the merged `main` state.
-- [ ] Open the public Production Chinese route and confirm the routed topology is the version from the merged commit.
-- [ ] Open the public Production English route and confirm the same topology/boundaries.
-- [ ] Re-check one desktop and one mobile Production view for obvious clipping/overlap and for the real return edge.
-- [ ] Confirm no superseded card-adjacency primary visual was accidentally restored by a later merge.
+- [x] Merge the PR only after required checks, exact-head Vercel, review state, and Preview visual acceptance are all green.
+- [x] Record the merge commit SHA.
+- [x] Confirm a READY / successful Production successor is built from the merged `main` state.
+- [x] Open the public Production Chinese route and confirm the routed topology is the version from the merged commit.
+- [x] Open the public Production English route and confirm the same topology/boundaries.
+- [x] Re-check one desktop and one mobile Production view for obvious clipping/overlap and for the real return edge.
+- [x] Confirm no superseded card-adjacency primary visual was accidentally restored by a later merge.
 
 ## 9. Final delivery standard
 
@@ -305,11 +305,13 @@ Append durable evidence here. Keep temporary provider queue state, local port nu
 
 ### Final release evidence
 
-- PR: `#659`
-- latest reconciled main SHA: `dd511119d22b7679927165ef65a430d499a0b922`
-- exact PR head SHA validated in Preview: `b78ba9ebf2fd697cfe40af793ec2d2e32d7b577d`; later post-evidence exact-head gate: `4b5eb1d4abc899d8afa06f1e5c2ddaa6f93c6dbf`; current-base candidate will be the evidence commit made after `main@dd511119…` refresh
-- exact-head Vercel deployment/gate: `dpl_4ahCsi7EyoDU81pU8ehcv2bUrqCi` READY for `b78ba9eb…`; `dpl_Bg8kePHEtsPH61aHWuur4YyfUDDc` READY for `4b5eb1d4…`; a fresh current-base final Gate is still required after the `dd511119…` refresh
-- Preview cold-read: PASS on real authenticated Vercel Preview for `b78ba9eb…`
-- merge SHA: **pending**
-- Production successor: **pending**
-- public zh/en route verification: **pending**
+- PR: `#659`, merged on 2026-09-13 after the required exact-head checks were green.
+- final pre-merge base: `a31b1656f991f170313021f5fe383d1c734b496d`.
+- final PR head: `065d99b407a183c5be5a5169b6910fc5f05a97d9`.
+- final exact-head Vercel Preview: `dpl_HayANAs12E2QWY5BEoDte9guNR9w`, terminal `READY`, with `meta.githubCommitSha=065d99b407a183c5be5a5169b6910fc5f05a97d9`.
+- merge commit: `68f6cc3118bf0515cef7aa4ceaa2fd7f4349f259` on `main`.
+- Production successor: `dpl_72SLKvTHpS3fQ9h9DrhFM1cbgg9Z`, target `production`, terminal `READY`, with `meta.githubCommitSha=68f6cc3118bf0515cef7aa4ceaa2fd7f4349f259`.
+- public Production Chinese route: HTTP 200 at `/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/`; desktop 1440px and mobile 390px both have zero root horizontal overflow and exactly one `sdlora-topology-map` primary figure. Desktop shows the routed replay join, DirectApply/GDR-v1 split + rejoin, and Round return; mobile preserves the corresponding `*-mobile` routed edges.
+- public Production English route: HTTP 200 at `/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/`; desktop has zero root horizontal overflow, the same routed topology, DirectApply / historical GDR-v1 labels, and the visible SD-LoRA/state-admission boundary.
+- Production browser inspection emitted no console/page errors for the checked zh desktop, zh mobile, or en desktop views. The superseded four-card adjacency is not the primary mechanism visual: the released page contains one canonical routed topology figure with explicit side-input, branch/join, and return edges.
+- Concurrent PR #661 was refreshed after merge; it changes the Study experiment index/navigation owners and does not modify `OpenEvoVanillaSdLoraSlide.astro`, so it does not invalidate this Production mechanism acceptance.
