@@ -15,9 +15,11 @@ const canonical = [
 
 describe('experiment context hierarchy', () => {
   it('extends the existing research context instead of creating a second navigation system', () => {
+    expect(context).toContain("CAPABILITY_READER_ROUTES");
     expect(context).toContain("OPEN_EVO_EXPERIMENTS");
     expect(context).toContain('experimentId?: OpenEvoExperimentId');
     expect(context).toContain('data-experiment-context');
+    expect(context).toContain('data-experiment-hub-context');
     expect(context).toContain('data-experiment-id={experiment?.id}');
     expect(context).toContain("'实验目录'");
     expect(context).toContain("'Experiment index'");
@@ -32,6 +34,7 @@ describe('experiment context hierarchy', () => {
       expect(experiment.evidenceLink.href.startsWith('/research/seed-openevo/study/')).toBe(true);
     }
     expect(context).toContain('data-experiment-hub');
+    expect(context).toContain('data-hub-motivation');
     expect(context).toContain('data-hub-group="result"');
     expect(context).toContain('data-hub-group="analysis"');
     expect(context).toContain('data-hub-group="evidence"');
