@@ -2,6 +2,7 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
+import { OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS } from '../../data/openEvoDirectApplyLiveDynamics';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -10,6 +11,8 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 const q17DiagnosticsHref = p('/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/');
 const vanillaSdLoraHref = p('/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/');
+const directApplyFinalHref = p('/research/seed-openevo/study/briefing/#directapply-progress');
+const directApplyFinal = OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS;
 const flaGdrHref = 'https://github.com/fla-org/flash-linear-attention/blob/main/fla/ops/gated_delta_rule/naive.py';
 const nvlabsGdrHref = 'https://github.com/NVlabs/GatedDeltaNet';
 const gatedDeltaPaperHref = 'https://arxiv.org/abs/2412.06464';
@@ -72,6 +75,7 @@ const known = zh ? [
   'DirectApply R0 与 GDR R0 的 128 个 rollout case 在 seed、raw completion、action trajectory、reward 与 invalid 上逐一匹配。',
   'R127→R128 的固定 32 题诊断只看到小幅平均下降和少数任务得失交换；正式不同题 round 的大回撤不能直接当成同等幅度的整体遗忘。',
   '两个 checkpoint 的固定同题诊断都没有 invalid action 或 constraint escape；推理与动作阶段的解码 entropy 反而下降。',
+  'DirectApply 后来完整跑完 160 轮，并在训练结束后只做一次冻结 128 题 final：Task Score 60.72 / 100，50 / 128 道题完整成功。',
 ] : [
   'The 1.7B GDR-v1 run produced 44 SD-LoRA candidates, far more than seven formal updates.',
   'Only seven SD-LoRA candidates were accepted by GDR and entered the successor model state.',
@@ -80,18 +84,17 @@ const known = zh ? [
   'DirectApply R0 matches GDR R0 case-by-case across 128 rollout cases for seeds, raw completions, action trajectories, rewards, and invalid status.',
   'The fixed 32-task R127→R128 diagnostic shows only a modest average decline with a few task outcomes changing; the much larger different-task live-round drop cannot be treated as equally large global forgetting.',
   'Neither fixed-task checkpoint produced invalid actions or constraint escapes; decoding entropy fell in both reasoning and constrained-action phases.',
+  'DirectApply later completed all 160 rounds and then ran exactly one frozen 128-task final: Task Score 60.72 / 100 with 50 / 128 exact successes.',
 ];
 const unknown = zh ? [
-  'GDR 是否降低 160 rounds 后的最终性能。',
-  'DirectApply 是否最终优于 GDR-v1。',
+  'GDR-v1 与 DirectApply 还没有在同一个冻结 final panel 上做最终对照，因此谁更好仍未知。',
   '被 GDR 拒绝的 candidate 是否本来就是“好 candidate”。',
   '更多 SD-LoRA updates 是否一定带来更高 final score。',
   '这种任务能力重新分配是否会在更多 checkpoint 与 R160 上持续出现。',
   'R127 附近的负 update cosine 是否与任务能力交换存在因果关系。',
   '把原始 Gated Delta Rule 搬到 SD-LoRA 参数状态后，是否会优于本地 GDR-v1 或 DirectApply；具体映射尚未冻结。',
 ] : [
-  'Whether GDR lowers final performance after 160 rounds.',
-  'Whether DirectApply ultimately beats GDR-v1.',
+  'GDR-v1 and DirectApply still lack a same-panel frozen final comparison, so the method winner remains unknown.',
   'Whether rejected candidates were actually “good candidates.”',
   'Whether more SD-LoRA updates necessarily yield a higher final score.',
   'Whether this task-level capability reallocation persists across more checkpoints and at R160.',
@@ -143,6 +146,16 @@ const unknown = zh ? [
         <p class="gdr-evidence__boundary">{t('这项结果只解释 DirectApply 内部的一次 checkpoint 变化；DirectApply 与 GDR-v1 谁更好，仍要等完整对照。', 'This result diagnoses one checkpoint change inside DirectApply. It does not decide whether DirectApply ultimately beats GDR-v1.')}</p>
       </div>
       <a href={q17DiagnosticsHref}>{t('查看同一批题复测 →', 'Open the same-task diagnostic →')}</a>
+    </div>
+
+    <div class="gdr-evidence" data-testid="directapply-final-evidence">
+      <div>
+        <p class="gdr-evidence__meta">2026-09-12 · {t('DirectApply 最终结果', 'DirectApply final')}</p>
+        <strong>{t(`160 轮训练完成；冻结 final = ${directApplyFinal.finalScore.toFixed(2)} / 100`, `160 training rounds completed; frozen final = ${directApplyFinal.finalScore.toFixed(2)} / 100`)}</strong>
+        <p>{t(`Stage2 共 ${directApplyFinal.formalRollouts.toLocaleString('en-US')} 次 WebShop 尝试，159 次 SD-LoRA candidate 都按 DirectApply 进入后续状态。训练结束后只打开一次冻结 128 题 final，完整成功 ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount}（${directApplyFinal.finalSuccess.toFixed(2)}%）。`, `Stage 2 used ${directApplyFinal.formalRollouts.toLocaleString('en-US')} WebShop attempts, and all 159 SD-LoRA candidates entered successor states under DirectApply. After training, the frozen 128-task final was opened exactly once, with ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount} exact successes (${directApplyFinal.finalSuccess.toFixed(2)}%).`)}</p>
+        <p class="gdr-evidence__boundary">{t('这完成了 DirectApply 这条线，但不是 GDR-v1 的同题对照：历史 GDR final 使用不同冻结题集，不能拿 37.60 与 60.72 的差直接当作 GDR gate 的因果效果。', 'This closes the DirectApply line, not a same-panel GDR-v1 comparison. The historical GDR final used a different frozen panel, so 37.60 versus 60.72 is not a causal effect of the GDR gate.')}</p>
+      </div>
+      <a href={directApplyFinalHref}>{t('查看完整 R0–R159 曲线与 final →', 'Open the full R0–R159 trajectory and final →')}</a>
     </div>
   </header>
 

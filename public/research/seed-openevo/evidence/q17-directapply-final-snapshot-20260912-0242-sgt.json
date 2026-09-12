@@ -1,0 +1,1987 @@
+{
+  "controller_sha": "3da0f2f7a4ff292f76e0aae5e3fd1d609938c90a",
+  "counterfactual_boundary": "Shadow GDR values are diagnostic labels on candidates produced along the DirectApply trajectory, not outcomes from a separately executed full GDR trajectory.",
+  "cutoff_boundary": "The training trajectory is complete through R159. There are no later Stage2 rounds in this treatment.",
+  "d1": {
+    "accepted_parametric_updates": 159,
+    "classification": "D1_FAIL_FUNCTION_NOT_PRESERVED",
+    "final_state_mutated": false,
+    "geometry_status": "PASS",
+    "k64_parameter_relative_error": 0.04154385438658514,
+    "late_median_residual_energy": 0.20337864520921628,
+    "primary_pass": false,
+    "rank95": 78
+  },
+  "final_evaluation": {
+    "attempts_sha256": "7e2720aca14601cf06125b83dd75461e68457b1a90bc7baee9af3e6629a8dff8",
+    "engineering_invalid_count": 0,
+    "exact_success_count": 50,
+    "interface_failure_count": 0,
+    "parser_repair_count": 0,
+    "positive_score_count": 112,
+    "score_percent": 60.71597673160174,
+    "success_percent": 39.0625,
+    "summary_sha256": "4597b223093963b420c0f5b1807eec1c738f7bd80180af8a63fe76e70a1a99df",
+    "valid_count": 128
+  },
+  "final_evaluation_boundary": "The one frozen Q17 final panel is not the historical Ceiling/GDR final panel. This final measures the completed DirectApply lineage only and does not establish DirectApply-vs-GDR or DirectApply-vs-SEED superiority.",
+  "frozen_science_sha": "ac130148ee08b6462d9728e482a858fe5f514047",
+  "loss": [
+    {
+      "loss": 1.0461295127868653,
+      "round": 0
+    },
+    {
+      "loss": 0.6120680198073387,
+      "round": 1
+    },
+    {
+      "loss": 0.328932660476615,
+      "round": 3
+    },
+    {
+      "loss": 0.35103823692770675,
+      "round": 4
+    },
+    {
+      "loss": 0.32050574431195855,
+      "round": 5
+    },
+    {
+      "loss": 0.511879283003509,
+      "round": 6
+    },
+    {
+      "loss": 0.28425083433588344,
+      "round": 7
+    },
+    {
+      "loss": 0.21309355273842812,
+      "round": 8
+    },
+    {
+      "loss": 0.2841887984138269,
+      "round": 9
+    },
+    {
+      "loss": 0.25629793437054527,
+      "round": 10
+    },
+    {
+      "loss": 0.22617647921045622,
+      "round": 11
+    },
+    {
+      "loss": 0.24198913927345225,
+      "round": 12
+    },
+    {
+      "loss": 0.25948646600143266,
+      "round": 13
+    },
+    {
+      "loss": 0.23416634369641542,
+      "round": 14
+    },
+    {
+      "loss": 0.27519291386540445,
+      "round": 15
+    },
+    {
+      "loss": 0.2748468764575905,
+      "round": 16
+    },
+    {
+      "loss": 0.2482408585445005,
+      "round": 17
+    },
+    {
+      "loss": 0.24100645105436183,
+      "round": 18
+    },
+    {
+      "loss": 0.1886747343093157,
+      "round": 19
+    },
+    {
+      "loss": 0.2162989963424103,
+      "round": 20
+    },
+    {
+      "loss": 0.2620350777808773,
+      "round": 21
+    },
+    {
+      "loss": 0.19854316674172878,
+      "round": 22
+    },
+    {
+      "loss": 0.2161860763153527,
+      "round": 23
+    },
+    {
+      "loss": 0.21720775239850565,
+      "round": 24
+    },
+    {
+      "loss": 0.19795159512842206,
+      "round": 25
+    },
+    {
+      "loss": 0.2108398679070748,
+      "round": 26
+    },
+    {
+      "loss": 0.2074960543988989,
+      "round": 27
+    },
+    {
+      "loss": 0.22204441358537777,
+      "round": 28
+    },
+    {
+      "loss": 0.17627905774861574,
+      "round": 29
+    },
+    {
+      "loss": 0.20052511382848023,
+      "round": 30
+    },
+    {
+      "loss": 0.2070265767397359,
+      "round": 31
+    },
+    {
+      "loss": 0.16158062455776548,
+      "round": 32
+    },
+    {
+      "loss": 0.16777053850689042,
+      "round": 33
+    },
+    {
+      "loss": 0.183441026829597,
+      "round": 34
+    },
+    {
+      "loss": 0.18948037856898736,
+      "round": 35
+    },
+    {
+      "loss": 0.19526930590809294,
+      "round": 36
+    },
+    {
+      "loss": 0.19785505497801892,
+      "round": 37
+    },
+    {
+      "loss": 0.23900060724980873,
+      "round": 38
+    },
+    {
+      "loss": 0.20410727903639014,
+      "round": 39
+    },
+    {
+      "loss": 0.18050625105388463,
+      "round": 40
+    },
+    {
+      "loss": 0.20650618122742762,
+      "round": 41
+    },
+    {
+      "loss": 0.17404006390521923,
+      "round": 42
+    },
+    {
+      "loss": 0.16607410547094067,
+      "round": 43
+    },
+    {
+      "loss": 0.1811371586815107,
+      "round": 44
+    },
+    {
+      "loss": 0.19469836599340565,
+      "round": 45
+    },
+    {
+      "loss": 0.18322822427557361,
+      "round": 46
+    },
+    {
+      "loss": 0.16392960087598665,
+      "round": 47
+    },
+    {
+      "loss": 0.16819721725034087,
+      "round": 48
+    },
+    {
+      "loss": 0.16062004035828928,
+      "round": 49
+    },
+    {
+      "loss": 0.1538421171765352,
+      "round": 50
+    },
+    {
+      "loss": 0.1626155579407864,
+      "round": 51
+    },
+    {
+      "loss": 0.1696009588598901,
+      "round": 52
+    },
+    {
+      "loss": 0.1321056790355789,
+      "round": 53
+    },
+    {
+      "loss": 0.11546071490738541,
+      "round": 54
+    },
+    {
+      "loss": 0.12039780300886681,
+      "round": 55
+    },
+    {
+      "loss": 0.12739571878749334,
+      "round": 56
+    },
+    {
+      "loss": 0.1325091135005156,
+      "round": 57
+    },
+    {
+      "loss": 0.11145199163417731,
+      "round": 58
+    },
+    {
+      "loss": 0.11331089914407737,
+      "round": 59
+    },
+    {
+      "loss": 0.12063926264837191,
+      "round": 60
+    },
+    {
+      "loss": 0.11551523326312775,
+      "round": 61
+    },
+    {
+      "loss": 0.11799919016993954,
+      "round": 62
+    },
+    {
+      "loss": 0.11396650869648942,
+      "round": 63
+    },
+    {
+      "loss": 0.11879978172946722,
+      "round": 64
+    },
+    {
+      "loss": 0.11797574801397893,
+      "round": 65
+    },
+    {
+      "loss": 0.12396243723730246,
+      "round": 66
+    },
+    {
+      "loss": 0.12644954108362716,
+      "round": 67
+    },
+    {
+      "loss": 0.12722065342514186,
+      "round": 68
+    },
+    {
+      "loss": 0.1328633869941369,
+      "round": 69
+    },
+    {
+      "loss": 0.1328475200230392,
+      "round": 70
+    },
+    {
+      "loss": 0.1271382763516158,
+      "round": 71
+    },
+    {
+      "loss": 0.10893102657670777,
+      "round": 72
+    },
+    {
+      "loss": 0.12572290846708647,
+      "round": 73
+    },
+    {
+      "loss": 0.11275125672575087,
+      "round": 74
+    },
+    {
+      "loss": 0.1086014777908779,
+      "round": 75
+    },
+    {
+      "loss": 0.1327895867167778,
+      "round": 76
+    },
+    {
+      "loss": 0.12069632726304821,
+      "round": 77
+    },
+    {
+      "loss": 0.12377196482339059,
+      "round": 78
+    },
+    {
+      "loss": 0.11172851622349729,
+      "round": 79
+    },
+    {
+      "loss": 0.12012143424627456,
+      "round": 80
+    },
+    {
+      "loss": 0.10090455161873252,
+      "round": 81
+    },
+    {
+      "loss": 0.10799403372686356,
+      "round": 82
+    },
+    {
+      "loss": 0.10044340484409019,
+      "round": 83
+    },
+    {
+      "loss": 0.10641352684431515,
+      "round": 84
+    },
+    {
+      "loss": 0.11459039391838419,
+      "round": 85
+    },
+    {
+      "loss": 0.1127135419788269,
+      "round": 86
+    },
+    {
+      "loss": 0.10236613060911431,
+      "round": 87
+    },
+    {
+      "loss": 0.10405535204336047,
+      "round": 88
+    },
+    {
+      "loss": 0.1107445179240115,
+      "round": 89
+    },
+    {
+      "loss": 0.09691206933542465,
+      "round": 90
+    },
+    {
+      "loss": 0.11660148704627893,
+      "round": 91
+    },
+    {
+      "loss": 0.09574470197171119,
+      "round": 92
+    },
+    {
+      "loss": 0.12226226988394617,
+      "round": 93
+    },
+    {
+      "loss": 0.13010922756834623,
+      "round": 94
+    },
+    {
+      "loss": 0.12277393209282308,
+      "round": 95
+    },
+    {
+      "loss": 0.11057399876881391,
+      "round": 96
+    },
+    {
+      "loss": 0.1073259175984635,
+      "round": 97
+    },
+    {
+      "loss": 0.11698201397957746,
+      "round": 98
+    },
+    {
+      "loss": 0.12487508535412127,
+      "round": 99
+    },
+    {
+      "loss": 0.10454767264799206,
+      "round": 100
+    },
+    {
+      "loss": 0.1004600357159805,
+      "round": 101
+    },
+    {
+      "loss": 0.11399310782602796,
+      "round": 102
+    },
+    {
+      "loss": 0.11859089481136338,
+      "round": 103
+    },
+    {
+      "loss": 0.1002717190662977,
+      "round": 104
+    },
+    {
+      "loss": 0.11362297691997479,
+      "round": 105
+    },
+    {
+      "loss": 0.11205153775076862,
+      "round": 106
+    },
+    {
+      "loss": 0.11305640835438252,
+      "round": 107
+    },
+    {
+      "loss": 0.09924920811511886,
+      "round": 108
+    },
+    {
+      "loss": 0.1296912282380871,
+      "round": 109
+    },
+    {
+      "loss": 0.15730160226424536,
+      "round": 110
+    },
+    {
+      "loss": 0.14264180894843453,
+      "round": 111
+    },
+    {
+      "loss": 0.12743199529512295,
+      "round": 112
+    },
+    {
+      "loss": 0.14001589059135972,
+      "round": 113
+    },
+    {
+      "loss": 0.106818556327556,
+      "round": 114
+    },
+    {
+      "loss": 0.11112292875477578,
+      "round": 115
+    },
+    {
+      "loss": 0.17758710673560613,
+      "round": 116
+    },
+    {
+      "loss": 0.11345833922655041,
+      "round": 117
+    },
+    {
+      "loss": 0.10359808726302024,
+      "round": 118
+    },
+    {
+      "loss": 0.10782405846304137,
+      "round": 119
+    },
+    {
+      "loss": 0.12440369566920997,
+      "round": 120
+    },
+    {
+      "loss": 0.10384781108322469,
+      "round": 121
+    },
+    {
+      "loss": 0.13299833057904975,
+      "round": 122
+    },
+    {
+      "loss": 0.1185708245581114,
+      "round": 123
+    },
+    {
+      "loss": 0.0823184404053145,
+      "round": 124
+    },
+    {
+      "loss": 0.112381054240166,
+      "round": 125
+    },
+    {
+      "loss": 0.09985704729832443,
+      "round": 126
+    },
+    {
+      "loss": 0.10342744555479537,
+      "round": 127
+    },
+    {
+      "loss": 0.10653583148039197,
+      "round": 128
+    },
+    {
+      "loss": 0.11378395146488114,
+      "round": 129
+    },
+    {
+      "loss": 0.14504034685378428,
+      "round": 130
+    },
+    {
+      "loss": 0.1069419704418739,
+      "round": 131
+    },
+    {
+      "loss": 0.12733219730258963,
+      "round": 132
+    },
+    {
+      "loss": 0.14557032345253212,
+      "round": 133
+    },
+    {
+      "loss": 0.1192950701281871,
+      "round": 134
+    },
+    {
+      "loss": 0.11022501228966147,
+      "round": 135
+    },
+    {
+      "loss": 0.11413398081834505,
+      "round": 136
+    },
+    {
+      "loss": 0.10763622038568571,
+      "round": 137
+    },
+    {
+      "loss": 0.12053471891069933,
+      "round": 138
+    },
+    {
+      "loss": 0.1135617433670244,
+      "round": 139
+    },
+    {
+      "loss": 0.14726792761047686,
+      "round": 140
+    },
+    {
+      "loss": 0.14117186814779414,
+      "round": 141
+    },
+    {
+      "loss": 0.11990241007262023,
+      "round": 142
+    },
+    {
+      "loss": 0.12814318770066496,
+      "round": 143
+    },
+    {
+      "loss": 0.1008559626325377,
+      "round": 144
+    },
+    {
+      "loss": 0.13911508816738866,
+      "round": 145
+    },
+    {
+      "loss": 0.1248655196682808,
+      "round": 146
+    },
+    {
+      "loss": 0.1332437820346351,
+      "round": 147
+    },
+    {
+      "loss": 0.15045619327454537,
+      "round": 148
+    },
+    {
+      "loss": 0.11324562538233139,
+      "round": 149
+    },
+    {
+      "loss": 0.1232737666210876,
+      "round": 150
+    },
+    {
+      "loss": 0.10989408848379266,
+      "round": 151
+    },
+    {
+      "loss": 0.11787082762809102,
+      "round": 152
+    },
+    {
+      "loss": 0.10329073957067782,
+      "round": 153
+    },
+    {
+      "loss": 0.0881646744454308,
+      "round": 154
+    },
+    {
+      "loss": 0.1107165810524748,
+      "round": 155
+    },
+    {
+      "loss": 0.13944894378281397,
+      "round": 156
+    },
+    {
+      "loss": 0.1207676948883639,
+      "round": 157
+    },
+    {
+      "loss": 0.13161202080504508,
+      "round": 158
+    },
+    {
+      "loss": 0.10159392904359266,
+      "round": 159
+    }
+  ],
+  "metrics": {
+    "directapply_admissions": 159,
+    "final_panel_access_during_stage2": 0,
+    "formal_rollouts": 20480,
+    "sd_lora_candidates_trained": 159,
+    "sd_lora_training_loss": {
+      "first": 1.0461295127868653,
+      "first_update_round": 0,
+      "latest": 0.10159392904359266,
+      "latest_update_round": 159
+    },
+    "sealed_rounds": 160,
+    "shadow_gdr_labels": {
+      "labeled": 159,
+      "pass": 67,
+      "reject": 92,
+      "total_rounds": 160,
+      "unlabeled": 1
+    },
+    "training_round_score_mean_pct": {
+      "best_round": 80.78108089826837,
+      "final_round": 72.90029761904762,
+      "first_20": 41.83003063559704,
+      "latest_20": 67.06920995670995
+    }
+  },
+  "provenance": {
+    "final_attempts_sha256": "7e2720aca14601cf06125b83dd75461e68457b1a90bc7baee9af3e6629a8dff8",
+    "final_summary_sha256": "4597b223093963b420c0f5b1807eec1c738f7bd80180af8a63fe76e70a1a99df",
+    "reconstruction": "Read-only recomputation from already-sealed Stage2 receipts plus sealed final-evaluation evidence; no experiment state was changed.",
+    "upstream_final_analysis_commit": "8d8734fa26b9a61684a46173d68e707e3b03fc92"
+  },
+  "schema": "basemodel.q17-directapply-final-snapshot.v1",
+  "scope": "R0-R159 sealed training receipts plus one frozen 128-task final measurement",
+  "score": [
+    {
+      "round": 0,
+      "score": 33.64082792207789
+    },
+    {
+      "round": 1,
+      "score": 40.71293290043292
+    },
+    {
+      "round": 2,
+      "score": 38.21608946608945
+    },
+    {
+      "round": 3,
+      "score": 40.254920860389596
+    },
+    {
+      "round": 4,
+      "score": 44.450036075036046
+    },
+    {
+      "round": 5,
+      "score": 41.860350153318905
+    },
+    {
+      "round": 6,
+      "score": 51.0448908730159
+    },
+    {
+      "round": 7,
+      "score": 56.23647186147186
+    },
+    {
+      "round": 8,
+      "score": 40.7300037202381
+    },
+    {
+      "round": 9,
+      "score": 56.50906385281391
+    },
+    {
+      "round": 10,
+      "score": 43.608940972222214
+    },
+    {
+      "round": 11,
+      "score": 46.657084235209254
+    },
+    {
+      "round": 12,
+      "score": 50.80059523809523
+    },
+    {
+      "round": 13,
+      "score": 46.25128235479797
+    },
+    {
+      "round": 14,
+      "score": 43.712036661255404
+    },
+    {
+      "round": 15,
+      "score": 27.073412698412696
+    },
+    {
+      "round": 16,
+      "score": 44.7284226190476
+    },
+    {
+      "round": 17,
+      "score": 36.77504678481239
+    },
+    {
+      "round": 18,
+      "score": 33.06107954545455
+    },
+    {
+      "round": 19,
+      "score": 20.27712391774892
+    },
+    {
+      "round": 20,
+      "score": 42.436598124098104
+    },
+    {
+      "round": 21,
+      "score": 22.777791869588743
+    },
+    {
+      "round": 22,
+      "score": 37.77986336580085
+    },
+    {
+      "round": 23,
+      "score": 27.26077741702742
+    },
+    {
+      "round": 24,
+      "score": 35.38938492063492
+    },
+    {
+      "round": 25,
+      "score": 32.849279626623385
+    },
+    {
+      "round": 26,
+      "score": 26.094990079365072
+    },
+    {
+      "round": 27,
+      "score": 21.774384469696976
+    },
+    {
+      "round": 28,
+      "score": 38.716856060606055
+    },
+    {
+      "round": 29,
+      "score": 21.94661458333334
+    },
+    {
+      "round": 30,
+      "score": 21.328125000000007
+    },
+    {
+      "round": 31,
+      "score": 41.19318181818182
+    },
+    {
+      "round": 32,
+      "score": 30.414958739177482
+    },
+    {
+      "round": 33,
+      "score": 33.98306446158009
+    },
+    {
+      "round": 34,
+      "score": 26.388015196608954
+    },
+    {
+      "round": 35,
+      "score": 60.348236832611825
+    },
+    {
+      "round": 36,
+      "score": 48.14732142857143
+    },
+    {
+      "round": 37,
+      "score": 28.70907738095239
+    },
+    {
+      "round": 38,
+      "score": 36.90538194444446
+    },
+    {
+      "round": 39,
+      "score": 34.17671130952381
+    },
+    {
+      "round": 40,
+      "score": 41.583102227633475
+    },
+    {
+      "round": 41,
+      "score": 41.57107909451659
+    },
+    {
+      "round": 42,
+      "score": 41.8346974206349
+    },
+    {
+      "round": 43,
+      "score": 44.51215277777777
+    },
+    {
+      "round": 44,
+      "score": 56.24070504148628
+    },
+    {
+      "round": 45,
+      "score": 52.76455965909088
+    },
+    {
+      "round": 46,
+      "score": 63.86532738095233
+    },
+    {
+      "round": 47,
+      "score": 64.77381234217164
+    },
+    {
+      "round": 48,
+      "score": 44.379763032106794
+    },
+    {
+      "round": 49,
+      "score": 46.00778995310243
+    },
+    {
+      "round": 50,
+      "score": 57.005546536796516
+    },
+    {
+      "round": 51,
+      "score": 38.94328327922078
+    },
+    {
+      "round": 52,
+      "score": 42.30424783549782
+    },
+    {
+      "round": 53,
+      "score": 43.963023088023064
+    },
+    {
+      "round": 54,
+      "score": 45.86712549603171
+    },
+    {
+      "round": 55,
+      "score": 53.74291181908368
+    },
+    {
+      "round": 56,
+      "score": 52.62231691919188
+    },
+    {
+      "round": 57,
+      "score": 48.598276289682495
+    },
+    {
+      "round": 58,
+      "score": 36.289908008658
+    },
+    {
+      "round": 59,
+      "score": 34.19401887175325
+    },
+    {
+      "round": 60,
+      "score": 58.82778679653675
+    },
+    {
+      "round": 61,
+      "score": 53.485017586580085
+    },
+    {
+      "round": 62,
+      "score": 28.12736742424244
+    },
+    {
+      "round": 63,
+      "score": 49.6962932900433
+    },
+    {
+      "round": 64,
+      "score": 38.122519841269835
+    },
+    {
+      "round": 65,
+      "score": 42.377795815295784
+    },
+    {
+      "round": 66,
+      "score": 51.27021329365073
+    },
+    {
+      "round": 67,
+      "score": 66.12599206349205
+    },
+    {
+      "round": 68,
+      "score": 60.86230609668111
+    },
+    {
+      "round": 69,
+      "score": 70.46435335497831
+    },
+    {
+      "round": 70,
+      "score": 61.949855699855725
+    },
+    {
+      "round": 71,
+      "score": 57.38849431818177
+    },
+    {
+      "round": 72,
+      "score": 62.58181141774891
+    },
+    {
+      "round": 73,
+      "score": 51.14632936507937
+    },
+    {
+      "round": 74,
+      "score": 57.020906610750345
+    },
+    {
+      "round": 75,
+      "score": 57.44622564935062
+    },
+    {
+      "round": 76,
+      "score": 65.6031295093795
+    },
+    {
+      "round": 77,
+      "score": 69.3303571428571
+    },
+    {
+      "round": 78,
+      "score": 50.646250450937934
+    },
+    {
+      "round": 79,
+      "score": 50.370727362914856
+    },
+    {
+      "round": 80,
+      "score": 49.9268353174603
+    },
+    {
+      "round": 81,
+      "score": 51.05068542568544
+    },
+    {
+      "round": 82,
+      "score": 66.47085813492065
+    },
+    {
+      "round": 83,
+      "score": 61.67740462662342
+    },
+    {
+      "round": 84,
+      "score": 58.07314213564212
+    },
+    {
+      "round": 85,
+      "score": 58.657247700216466
+    },
+    {
+      "round": 86,
+      "score": 45.94742063492063
+    },
+    {
+      "round": 87,
+      "score": 49.30135619588742
+    },
+    {
+      "round": 88,
+      "score": 57.64198908730157
+    },
+    {
+      "round": 89,
+      "score": 54.85987103174603
+    },
+    {
+      "round": 90,
+      "score": 59.182534045815274
+    },
+    {
+      "round": 91,
+      "score": 55.356669372294334
+    },
+    {
+      "round": 92,
+      "score": 54.64611235119045
+    },
+    {
+      "round": 93,
+      "score": 43.524108270202035
+    },
+    {
+      "round": 94,
+      "score": 56.58327132936506
+    },
+    {
+      "round": 95,
+      "score": 55.44704861111111
+    },
+    {
+      "round": 96,
+      "score": 47.01611539502164
+    },
+    {
+      "round": 97,
+      "score": 34.87583423520923
+    },
+    {
+      "round": 98,
+      "score": 50.732182314213524
+    },
+    {
+      "round": 99,
+      "score": 41.61923363095236
+    },
+    {
+      "round": 100,
+      "score": 55.28324540043289
+    },
+    {
+      "round": 101,
+      "score": 54.71489448051948
+    },
+    {
+      "round": 102,
+      "score": 45.23860254329005
+    },
+    {
+      "round": 103,
+      "score": 40.826231060606055
+    },
+    {
+      "round": 104,
+      "score": 48.708660263347745
+    },
+    {
+      "round": 105,
+      "score": 68.45466382575755
+    },
+    {
+      "round": 106,
+      "score": 63.58982683982679
+    },
+    {
+      "round": 107,
+      "score": 70.21318091630584
+    },
+    {
+      "round": 108,
+      "score": 73.81727430555554
+    },
+    {
+      "round": 109,
+      "score": 53.57147084686146
+    },
+    {
+      "round": 110,
+      "score": 68.16059591450212
+    },
+    {
+      "round": 111,
+      "score": 70.38566468253967
+    },
+    {
+      "round": 112,
+      "score": 80.78108089826837
+    },
+    {
+      "round": 113,
+      "score": 66.1344189664502
+    },
+    {
+      "round": 114,
+      "score": 59.48293763528135
+    },
+    {
+      "round": 115,
+      "score": 54.16214319534628
+    },
+    {
+      "round": 116,
+      "score": 64.85429067460319
+    },
+    {
+      "round": 117,
+      "score": 45.3425155573593
+    },
+    {
+      "round": 118,
+      "score": 56.43532986111109
+    },
+    {
+      "round": 119,
+      "score": 69.48908730158733
+    },
+    {
+      "round": 120,
+      "score": 62.95928030303028
+    },
+    {
+      "round": 121,
+      "score": 66.16133432539685
+    },
+    {
+      "round": 122,
+      "score": 52.939326298701275
+    },
+    {
+      "round": 123,
+      "score": 54.60486562049061
+    },
+    {
+      "round": 124,
+      "score": 69.07298430735932
+    },
+    {
+      "round": 125,
+      "score": 57.28202786796533
+    },
+    {
+      "round": 126,
+      "score": 70.63738670183986
+    },
+    {
+      "round": 127,
+      "score": 76.13529265873012
+    },
+    {
+      "round": 128,
+      "score": 48.880749458874455
+    },
+    {
+      "round": 129,
+      "score": 66.63465007215007
+    },
+    {
+      "round": 130,
+      "score": 56.71931367243869
+    },
+    {
+      "round": 131,
+      "score": 55.40997023809524
+    },
+    {
+      "round": 132,
+      "score": 55.59138257575758
+    },
+    {
+      "round": 133,
+      "score": 58.73691716269843
+    },
+    {
+      "round": 134,
+      "score": 57.098721590909086
+    },
+    {
+      "round": 135,
+      "score": 67.81729121572869
+    },
+    {
+      "round": 136,
+      "score": 64.02076569264065
+    },
+    {
+      "round": 137,
+      "score": 61.294022817460345
+    },
+    {
+      "round": 138,
+      "score": 57.7882733585859
+    },
+    {
+      "round": 139,
+      "score": 59.67464826839828
+    },
+    {
+      "round": 140,
+      "score": 64.45684523809526
+    },
+    {
+      "round": 141,
+      "score": 68.9729606331169
+    },
+    {
+      "round": 142,
+      "score": 59.18532422438672
+    },
+    {
+      "round": 143,
+      "score": 74.64962121212122
+    },
+    {
+      "round": 144,
+      "score": 74.35200216450207
+    },
+    {
+      "round": 145,
+      "score": 63.53282828282827
+    },
+    {
+      "round": 146,
+      "score": 74.47485457251074
+    },
+    {
+      "round": 147,
+      "score": 49.773375496031754
+    },
+    {
+      "round": 148,
+      "score": 69.91099612193361
+    },
+    {
+      "round": 149,
+      "score": 64.25809433621936
+    },
+    {
+      "round": 150,
+      "score": 72.75177556818176
+    },
+    {
+      "round": 151,
+      "score": 69.75463338744588
+    },
+    {
+      "round": 152,
+      "score": 63.35403138528135
+    },
+    {
+      "round": 153,
+      "score": 68.10639880952381
+    },
+    {
+      "round": 154,
+      "score": 67.41217983405483
+    },
+    {
+      "round": 155,
+      "score": 70.27295274170274
+    },
+    {
+      "round": 156,
+      "score": 65.09064980158736
+    },
+    {
+      "round": 157,
+      "score": 69.8323638167388
+    },
+    {
+      "round": 158,
+      "score": 58.342013888888864
+    },
+    {
+      "round": 159,
+      "score": 72.90029761904762
+    }
+  ],
+  "shadow_gdr_rounds": [
+    {
+      "round": 0,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 1,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 2,
+      "shadow_gdr_accepted": null
+    },
+    {
+      "round": 3,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 4,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 5,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 6,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 7,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 8,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 9,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 10,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 11,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 12,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 13,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 14,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 15,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 16,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 17,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 18,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 19,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 20,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 21,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 22,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 23,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 24,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 25,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 26,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 27,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 28,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 29,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 30,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 31,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 32,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 33,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 34,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 35,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 36,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 37,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 38,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 39,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 40,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 41,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 42,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 43,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 44,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 45,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 46,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 47,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 48,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 49,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 50,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 51,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 52,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 53,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 54,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 55,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 56,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 57,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 58,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 59,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 60,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 61,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 62,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 63,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 64,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 65,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 66,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 67,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 68,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 69,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 70,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 71,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 72,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 73,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 74,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 75,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 76,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 77,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 78,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 79,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 80,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 81,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 82,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 83,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 84,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 85,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 86,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 87,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 88,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 89,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 90,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 91,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 92,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 93,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 94,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 95,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 96,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 97,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 98,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 99,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 100,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 101,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 102,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 103,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 104,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 105,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 106,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 107,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 108,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 109,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 110,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 111,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 112,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 113,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 114,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 115,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 116,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 117,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 118,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 119,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 120,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 121,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 122,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 123,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 124,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 125,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 126,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 127,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 128,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 129,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 130,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 131,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 132,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 133,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 134,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 135,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 136,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 137,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 138,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 139,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 140,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 141,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 142,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 143,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 144,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 145,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 146,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 147,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 148,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 149,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 150,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 151,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 152,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 153,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 154,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 155,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 156,
+      "shadow_gdr_accepted": true
+    },
+    {
+      "round": 157,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 158,
+      "shadow_gdr_accepted": false
+    },
+    {
+      "round": 159,
+      "shadow_gdr_accepted": true
+    }
+  ],
+  "snapshot_label_sgt": "2026-09-12T02:42:20+08:00",
+  "status": "STAGE2_AND_FINAL_EVALUATION_SEALED"
+}
