@@ -98,11 +98,11 @@
 
 ## 7. Git / PR / Preview / Production 交付
 
-- [ ] 工作基线必须刷新到提交时的最新 `origin/main`；发现 shared-state drift 时先读再继续，不覆盖未知并发改动。
-- [ ] 将本计划文件与对应代码一起 commit；计划文件必须进入 GitHub，不能只存在本地工作区。
-- [ ] 推送 `feat/experiment-first-study-nav-20260912` 或语义等价的当前工作分支。
-- [ ] 创建/更新一个聚焦 PR；PR body 写明 Experiment-first IA、五个实验、旧 URL 保留、科学边界、已跑验证。
-- [ ] PR 变更不得夹带无关实验代码、服务器状态或临时截图。
+- [x] 工作基线已在首个提交前刷新到当时最新 `origin/main@e110446ca8227b47a9ad741ae74d0864bbd97dd3`；新增 main 提交均先做 shared-state drift 检查。
+- [x] 本计划文件与对应代码已一起 commit 并进入 GitHub；首个实现提交为 `8671e0d1106ca8acebbe3414fcfe3e2ec404898b`。
+- [x] 已推送 `feat/experiment-first-study-nav-20260912`。
+- [x] 已创建聚焦 PR #661；PR body 已写明 Experiment-first IA、五个实验、旧 URL 保留、科学边界与已跑验证。
+- [x] PR #661 当前只包含本任务的 Study IA、Reader Contract、回归测试与本计划；未夹带服务器状态或临时截图。
 - [ ] 普通工作 PR 先通过 GitHub Actions preflight；需要 owner 看页面时使用仓库允许的轻量 review Preview，不把 Preview 当 merge evidence。
 - [ ] 候选真正 merge-ready 后按仓库规则请求 exact-head Vercel final gate；`Vercel` 必须绑定 exact PR head 且真实执行。
 - [ ] exact-head Preview 中实际打开中文和英文 Study 首页，确认五实验目录可见、链接可点、手机无溢出。
@@ -127,6 +127,8 @@
 
 ## 9. 每小时自动执行规则
 
+- [x] 已创建并启用 ChatGPT 每小时自动任务；任务唯一执行权威为本 Markdown，并要求每轮以真实证据打勾。
+
 本文件是定时任务的唯一 checklist authority。每次小时触发后：
 
 1. 读取仓库根 `AGENTS.md`、本文件和当前 `origin/main` / open PR / provider 状态。
@@ -144,5 +146,6 @@
 - 当前 MVP：Experiment-first Study 首页代码已实现，中英文共用一个实验树组件。
 - 当前科学结构：五实验入口已经落地；现有子页面尚未全部迁移到机器可读的统一映射，所以第二阶段仍未完成。
 - 当前验证：定向结构测试、Astro check、build、桌面/手机/dark 冒烟与 Reader Contract 定向测试已通过；完整跨浏览器矩阵已使用空闲端口完成，Chromium + WebKit 共 414 / 414 PASS。
-- 当前 Git 状态：工作树已刷新到 `origin/main@e110446ca8227b47a9ad741ae74d0864bbd97dd3`；该 main 前进只涉及 governance/history/test 文档，不与本任务 runtime 文件重叠。尚待 commit / push / PR。
-- 当前人工需求：无。若后续 exact-head final gate 需要 owner 明确审批，则在对应项保留未完成并汇报。
+- 当前 Git / PR 状态：分支 `feat/experiment-first-study-nav-20260912` 已推送，PR #661 已打开；首个实现提交为 `8671e0d1106ca8acebbe3414fcfe3e2ec404898b`。
+- 当前自动执行：每小时任务已启用，并指向本 Markdown 作为唯一 checklist authority。
+- 当前人工需求：无。若后续 exact-head final gate 或 merge policy 需要 owner 明确审批，则在对应项保留未完成并汇报。
