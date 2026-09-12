@@ -43,4 +43,30 @@ describe('Q17 DirectApply complete analysis page', () => {
     expect(component).toContain('did not modify R159');
     expect(component).toContain('one DirectApply trajectory plus one final measurement');
   });
+
+  it('publishes the real mid-run diagnostics instead of only the endpoint', () => {
+    for (const token of ['Success@1', '122 / 122', '111 / 122', '0.3924', '0.3426', 'GPU2']) {
+      expect(component).toContain(token);
+    }
+    expect(component).toContain('[−0.1713, +0.0800]');
+    expect(component).toContain('3 success→failure');
+    expect(component).toContain('invalid / constraint escape');
+  });
+
+  it('records actual carrier and Text Memory behavior without upgrading the redesign plan to a result', () => {
+    for (const token of ['Text Memory</b><strong>R95', 'Agent System</b><strong>R148', 'R104', 'R122', 'R132', 'NOOP/KEEP_PRIOR', 'prospective plan']) {
+      expect(component).toContain(token);
+    }
+    expect(component).toContain('no human-edited candidate written back');
+    expect(component).toContain('must not be presented as a WebShop improvement');
+  });
+
+  it('includes the measured SD-LoRA component-count latency mechanism and rejected speedups', () => {
+    for (const token of ['919.48', '241.55', '677.74', 'T(K)=38.07+6.148K', 'R²=0.9979', '26.89', '36×', '1.76×', 'CUDA OOM']) {
+      expect(component).toContain(token);
+    }
+    expect(component).toContain('not a capability defect');
+    expect(component).toContain('never entered the formal run');
+  });
+
 });
