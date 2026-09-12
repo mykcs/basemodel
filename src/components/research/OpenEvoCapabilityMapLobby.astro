@@ -5,6 +5,7 @@ import ResearchOrientation from './ResearchOrientation.astro';
 import ResearchJourney from './ResearchJourney.astro';
 import ResearchDepth from './ResearchDepth.astro';
 import ResearchTaskContext from './ResearchTaskContext.astro';
+import { OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS } from '../../data/openEvoDirectApplyLiveDynamics';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -21,7 +22,8 @@ const stage2AnalysisHref = p('/research/seed-openevo/study/capability-exploratio
 const mechanismHref = p('/research/seed-openevo/study/capability-exploration/mechanism-1-0/');
 const vanillaSdLoraHref = p('/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/');
 const gdrDirectApplyHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
-const q17DiagnosticsHref = p('/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/');
+const directApplyBriefingHref = p('/research/seed-openevo/study/briefing/#directapply-progress');
+const directApplyFinal = OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS;
 const archiveLinks = [
   { href: p('/research/seed-openevo/study/capability-exploration/stage1-previous/'), label: t('历史 Stage 1', 'Historical Stage 1') },
   { href: p('/research/seed-openevo/study/capability-exploration/stage2-256-window/'), label: t('旧 Stage 2：256-window 设计', 'Old Stage 2: 256-window design') },
@@ -73,27 +75,27 @@ const steps = zh ? [
     locale={locale}
     layout="focus"
     title={t("OpenEvo 的 WebShop 学习实验", "OpenEvo WebShop learning experiments")}
-    lede={t("最新的同一批题复测把一次“大幅回撤”拆开看：换成完全相同的 32 道题后，R127 到 R128 只剩小幅下降和少数任务得失交换。现在更值得追问的是：哪些参数更新在重新分配能力，这种变化会不会持续？", "The latest same-task test shrinks the apparent R127→R128 drop: on the same 32 tasks, the decline is modest and only a few outcomes change. Which parameter updates redistribute capability, and does that pattern persist?")}
-    question={t("模型是在整体变差，还是有些任务变差、有些任务变好？", "Is the model broadly getting worse, or are some tasks getting worse while others improve?")}
-    why={t("不同训练轮次抽到的题不同；把题目固定住，才能把抽题波动和模型变化分开。", "Training rounds contain different task samples; fixing the tasks helps separate sampling variation from checkpoint change.")}
-    start={t("先看 R127 与 R128 的同一批题复测，再选择历史、新设计或参数机制路径。", "Start with the R127/R128 same-task diagnostic, then choose the historical, successor-design, or parameter-mechanism path.")}
+    lede={t("DirectApply 已经完整跑完 160 轮，并在训练结束后只做了一次冻结 128 题 final：Task Score 60.72 / 100，50 / 128 道题完整成功。此前 R127→R128 的同题复测仍然重要，因为它告诉我们单轮曲线的大跌不能直接当成同幅度的能力下降。", "DirectApply completed all 160 rounds and one frozen 128-task final: 60.72 / 100, with 50 / 128 exact successes. The earlier R127→R128 same-task check shows why a round-to-round drop is not the same as an equal loss of capability.")}
+    question={t("去掉 GDR 的短期二次筛选以后，DirectApply 长跑最后表现怎样？这个结果能不能说明 GDR 更差？", "How did the full DirectApply run end after removing GDR's short-horizon veto, and does that result show that GDR is worse?")}
+    why={t("完整训练曲线回答“训练过程中发生了什么”，冻结 final 回答“最终状态在固定 128 题上表现怎样”。但历史 GDR final 不是同一个冻结题集，所以 DirectApply 的 60.72 不能直接减去 GDR 的 37.60 当作方法效果。", "The full training curve answers what happened during learning, while the frozen final measures the completed state on one fixed 128-task panel. The historical GDR final used a different frozen panel, so DirectApply 60.72 minus GDR 37.60 is not a causal method effect.")}
+    start={t("先看 DirectApply 完整 R0–R159 曲线和 final，再按需要回到 R127→R128 同题诊断或 GDR 机制页。", "Start with the completed R0–R159 DirectApply trajectory and final, then return to the R127/R128 same-task diagnostic or the GDR mechanism page as needed.")}
     finish={t("这里负责研究导航；详细诊断和因果实验分别在对应子页。", "This page is the research gateway; detailed diagnostics and causal experiments stay on their dedicated routes.")}
-    state={t("同一批题的复测证据已封存；DirectApply 与 GDR-v1 的最终优劣仍未确定。", "The same-task evidence is sealed; the final DirectApply-versus-GDR-v1 comparison remains unresolved.")}
+    state={t("DirectApply 的 160 轮训练和一次冻结 final 已封存；它自己的最终结果已确定，但 DirectApply 与 GDR-v1 谁更好仍没有同题 final 对照。", "DirectApply's 160 training rounds and one frozen final are sealed. Its own endpoint is now known, but DirectApply versus GDR-v1 still lacks a same-panel final comparison.")}
     stateTone="authorized"
-    actionHref={q17DiagnosticsHref}
-    actionLabel={t("查看最新同题复测", "View the latest same-task result")}
+    actionHref={directApplyBriefingHref}
+    actionLabel={t("查看 DirectApply 完整曲线与 final", "View the completed DirectApply trajectory and final")}
     showGlossary={false}
   />
   </div>
 
-  <aside class="map-lobby__latest-evidence" data-latest-evidence="q17-same-task">
+  <aside class="map-lobby__latest-evidence" data-latest-evidence="q17-directapply-final">
     <div>
-      <p class="map-lobby__latest-evidence-meta">2026-09-11 · {t('最新证据', 'Latest evidence')}</p>
-      <strong>{t('训练分数的大幅回撤，在同一批题上缩小了很多', 'The large live-round drop shrinks substantially on the same tasks')}</strong>
-      <p>{t('正式 R127→R128 每轮用的题不同，看起来约 76.1→48.9；固定同一批 32 题后是 63.58→59.41，成功率 31.25%→25.00%。3 道题从成功变失败，1 道题从失败变成功；两项主要 95% 置信区间都跨过 0。', 'The different-task live rounds look like roughly 76.1→48.9. On the same 32 tasks, the comparison is 63.58→59.41, with exact success 31.25%→25.00%. Three tasks move from success to failure and one from failure to success; both primary 95% confidence intervals cross zero.')}</p>
-      <p>{t('目前更像“有些能力换了位置，并伴随小幅下滑”，还不能写成整体显著遗忘。', 'The evidence currently supports capability reallocation with a modest downward shift, not statistically clear overall forgetting.')}</p>
+      <p class="map-lobby__latest-evidence-meta">2026-09-12 · {t('最新封口结果', 'Latest sealed result')}</p>
+      <strong>{t('DirectApply 跑完 160 轮，冻结终评 60.72 / 100', 'DirectApply completed 160 rounds; frozen final = 60.72 / 100')}</strong>
+      <p>{t(`Stage2 共 ${directApplyFinal.sealedRounds} 轮、${directApplyFinal.formalRollouts.toLocaleString('en-US')} 次 WebShop 尝试；训练后只做一次冻结 128 题 final，完整成功 ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount}（${directApplyFinal.finalSuccess.toFixed(2)}%）。`, `Stage 2 completed ${directApplyFinal.sealedRounds} rounds and ${directApplyFinal.formalRollouts.toLocaleString('en-US')} WebShop attempts. The frozen 128-task final was measured exactly once, with ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount} exact successes (${directApplyFinal.finalSuccess.toFixed(2)}%).`)}</p>
+      <p>{t('这完成了 DirectApply 自己的结果，但没有完成 GDR-v1 的同题 final；历史 GDR 37.60 与 DirectApply 60.72 不是同一冻结题集，不能直接当方法差。', 'This closes the DirectApply endpoint, not a same-panel GDR-v1 final. Historical GDR 37.60 and DirectApply 60.72 come from different frozen panels and are not a causal method delta.')}</p>
     </div>
-    <a href={q17DiagnosticsHref}>{t('查看 R127 → R128 同题复测 →', 'Open the R127 → R128 same-task diagnostic →')}</a>
+    <a href={directApplyBriefingHref}>{t('查看 R0–R159 曲线与 final →', 'Open the R0–R159 trajectory and final →')}</a>
   </aside>
 
   <ResearchTaskContext locale={locale} />
@@ -111,7 +113,7 @@ const steps = zh ? [
   </details>
 
   <aside class="map-lobby__current-ablation" data-current-ablation="gdr-directapply">
-    <div><small>{t('Stage 2 机制消融', 'Stage 2 mechanism ablation')}</small><strong>{t('为什么 44 次 SD-LoRA 尝试只留下 7 次更新？', 'Why did 44 SD-LoRA attempts become only 7 updates?')}</strong><p>{t('GDR-v1 用 16-task 小考试决定新状态能否继续；DirectApply 移除了这道 task-score gate。最新同题诊断已经说明单轮大跌混入了明显的抽题波动，但两种方法最终谁更好仍未定。', 'GDR-v1 uses a 16-task probe to decide whether a changed state may continue; DirectApply removes that task-score gate. The latest same-task diagnostic shows that large single-round drops include substantial task-sampling variation, while the final DirectApply-versus-GDR comparison remains unresolved.')}</p></div>
+    <div><small>{t('Stage 2 机制消融', 'Stage 2 mechanism ablation')}</small><strong>{t('为什么 44 次 SD-LoRA 尝试只留下 7 次更新？', 'Why did 44 SD-LoRA attempts become only 7 updates?')}</strong><p>{t('GDR-v1 用 16-task 小考试决定新状态能否继续；DirectApply 移除了这道 task-score gate，并已经完整跑完 160 轮、完成一次冻结 final。DirectApply 自己的结果已知，但历史 GDR final 与它不是同一题集，所以两种方法最终谁更好仍未定。', 'GDR-v1 uses a 16-task probe to decide whether a changed state may continue; DirectApply removes that task-score gate and has now completed all 160 rounds plus one frozen final. The DirectApply endpoint is known, but the historical GDR final used a different panel, so the method comparison remains unresolved.')}</p></div>
     <a href={gdrDirectApplyHref}>{t('进入 GDR → DirectApply 决策页 →', 'Open the GDR → DirectApply decision page →')}</a>
   </aside>
 
