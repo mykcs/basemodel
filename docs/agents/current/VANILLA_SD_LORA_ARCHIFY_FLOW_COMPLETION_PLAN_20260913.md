@@ -179,8 +179,8 @@ Do not declare the conversation complete until every unchecked item below is sat
 - [x] Record the exact PR head SHA submitted to the final gate.
 - [x] Confirm a real Vercel deployment object exists for that exact head; `SKIPPED`, ignored, canceled, stale-head, or status-only callbacks are not PASS.
 - [x] Require the exact-head Vercel gate / deployment to reach its required successful terminal state.
-- [ ] After recording the PR/Preview evidence in this checklist changes the PR head, request one final exact-head Vercel gate for that docs-only head before merge.
-- [ ] Confirm the final docs-only head changes no runtime/UI/evidence-owner file versus `b78ba9ebf2fd697cfe40af793ec2d2e32d7b577d`; if it does, rerun the affected visual acceptance instead of inheriting the prior Preview result.
+- [x] After recording the PR/Preview evidence in this checklist changes the PR head, request one final exact-head Vercel gate for that docs-only head before merge.
+- [x] Confirm the final docs-only head changes no runtime/UI/evidence-owner file versus `b78ba9ebf2fd697cfe40af793ec2d2e32d7b577d`; if it does, rerun the affected visual acceptance instead of inheriting the prior Preview result.
 
 ## 7. Exact-head Preview visual acceptance — remaining work
 
@@ -288,12 +288,20 @@ Append durable evidence here. Keep temporary provider queue state, local port nu
 - Real Preview cold-read: zh desktop light/dark, zh 768px, zh 390px, en desktop, and reduced-motion all returned HTTP 200 with no console/page errors and zero root horizontal overflow. The routed mechanism visibly preserves main flow, bounded-replay side join, DirectApply/GDR-v1 split and rejoin, and Round t+1 return.
 - Reduced-motion inspection reports the route-trace animation disabled (`animation-name: none`) while the complete static route remains visible.
 
+### 2026-09-13 — post-evidence exact-head gate and later current-main refresh
+
+- The checklist-evidence update produced a later exact-head candidate `4b5eb1d4abc899d8afa06f1e5c2ddaa6f93c6dbf`; Vercel deployment `dpl_Bg8kePHEtsPH61aHWuur4YyfUDDc` is a real Preview object in terminal `READY` state with `meta.githubCommitSha=4b5eb1d4abc899d8afa06f1e5c2ddaa6f93c6dbf`. Public PR CI on that head also completed green: deterministic + four browser shards + aggregate gate. This satisfies the post-evidence exact-head-gate requirement; it is historical acceptance after later base movement, not current merge evidence.
+- `main` later advanced independently to `dd511119d22b7679927165ef65a430d499a0b922` via merged PR #655 (WebShop reader map). The intervening product files are WebShop-specific plus `SeedOpenEvoResearchDetail.astro` / `siteReaderContracts.ts`; no Vanilla SD-LoRA mechanism owner changed, and the Vanilla route/component does not import those WebShop owners.
+- The same task branch was refreshed onto `main@dd511119…` without conflict. Pre-evidence combined head: `96c486844ed2e9d1fc0271b7cd6b593a3ccca6f0`. The PR contribution versus current main remains the same six intended Vanilla mechanism/evidence/test/plan files.
+- Because the refreshed combined tree contains independent runtime/UI ancestry after `b78ba9eb…`, affected acceptance was rerun rather than blindly inherited: `src/lib/vanillaSdLoraMechanism.test.ts` = 4/4 PASS and `tests/e2e/vanilla-sd-lora-mechanism.spec.ts` Chromium = 13/13 PASS with retries=0, covering zh/en, routed desktop topology, mobile replay/split/join/return, reduced motion, light/dark at 390/768/1440, no root overflow, and 16:9 slide reuse.
+- Concurrent PRs #661 and #658 were inspected before spending another final Gate. #661 is behind current main and has no exact-head Vercel acceptance; #658 likewise has no exact-head Vercel acceptance. Neither modifies the Vanilla SD-LoRA mechanism owner, so neither justifies replacing this live PR or waiting indefinitely for another base move.
+
 ### Final release evidence
 
 - PR: `#659`
-- latest reconciled main SHA: `2b8fb0d5dc3c2ec2325fc22255e75a28d1f9441b`
-- exact PR head SHA validated in Preview: `b78ba9ebf2fd697cfe40af793ec2d2e32d7b577d` (a final docs-only checklist head gate is still pending)
-- exact-head Vercel deployment/gate: `dpl_4ahCsi7EyoDU81pU8ehcv2bUrqCi` READY for `b78ba9eb…`; final docs-only head gate pending
+- latest reconciled main SHA: `dd511119d22b7679927165ef65a430d499a0b922`
+- exact PR head SHA validated in Preview: `b78ba9ebf2fd697cfe40af793ec2d2e32d7b577d`; later post-evidence exact-head gate: `4b5eb1d4abc899d8afa06f1e5c2ddaa6f93c6dbf`; current-base candidate will be the evidence commit made after `main@dd511119…` refresh
+- exact-head Vercel deployment/gate: `dpl_4ahCsi7EyoDU81pU8ehcv2bUrqCi` READY for `b78ba9eb…`; `dpl_Bg8kePHEtsPH61aHWuur4YyfUDDc` READY for `4b5eb1d4…`; a fresh current-base final Gate is still required after the `dd511119…` refresh
 - Preview cold-read: PASS on real authenticated Vercel Preview for `b78ba9eb…`
 - merge SHA: **pending**
 - Production successor: **pending**
