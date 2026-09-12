@@ -95,8 +95,8 @@ describe('Text Memory receipt-based research projection', () => {
       const page = read(`../pages/${prefix}research/seed-openevo/study/index.astro`);
       expect(page).not.toContain('都说明：我们需要');
       expect(page).not.toContain('must be separated');
-      expect(page).toContain('OpenEvoTextMemoryResearchLink');
-      expect(read('../components/research/OpenEvoTextMemoryResearchLink.astro')).toContain('成绩能否提高仍然未知');
+      expect(page).toContain('OpenEvoExperimentIndex');
+      expect(read('../components/research/OpenEvoExperimentIndex.astro')).toContain('/text-memory/');
     }
   });
 });

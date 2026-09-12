@@ -1,0 +1,162 @@
+---
+import { localePath, type Locale } from '../../i18n';
+
+interface Props { locale: Locale }
+type Copy = { zh: string; en: string };
+type ChildLink = { label: Copy; href: string; note?: Copy };
+type Experiment = {
+  number: string;
+  title: Copy;
+  summary: Copy;
+  href: string;
+  relation?: Copy;
+  children: ChildLink[];
+};
+
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (copy: Copy) => zh ? copy.zh : copy.en;
+const p = (path: string) => localePath(locale, path);
+const cap = '/research/seed-openevo/study/capability-exploration';
+
+const experiments: Experiment[] = [
+  {
+    number: '01',
+    title: { zh: '训练跑了很久，但参数一直没有更新', en: 'Training ran for a long time, but the parameters never updated' },
+    summary: { zh: '旧 Stage 2 做了很多任务，也收集到了成功轨迹；但旧 Gate 要求至少 8 个不同任务重复成功，最好的一批只有 7 个，所以没有触发参数更新。', en: 'The old Stage 2 collected successful trajectories, but its gate required repeated success on at least eight distinct tasks. The best block reached seven, so no parameter update fired.' },
+    href: `${cap}/stage2-256-window/`,
+    children: [
+      { label: { zh: '旧 Gate 为什么卡住了更新', en: 'Why the old gate blocked updates' }, href: `${cap}/stage2-256-window/` },
+      { label: { zh: '第一轮 3B / 7B 实验记录', en: 'First 3B / 7B experiment record' }, href: `${cap}/first-run/` },
+    ],
+  },
+  {
+    number: '02',
+    title: { zh: '7B 长周期实验', en: '7B long-run experiment' },
+    summary: { zh: '7B 完成 149 轮学习后冻结模型，再打开 128 道最终测试题：49.33 / 100，58 / 128 完全成功。', en: 'After 149 learning rounds, the 7B model was frozen and evaluated on 128 final tasks: 49.33 / 100 with 58 / 128 exact successes.' },
+    href: `${cap}/stage2-ceiling/`,
+    children: [
+      { label: { zh: '7B 最终结果', en: '7B final result' }, href: `${cap}/stage2-ceiling/` },
+      { label: { zh: '7B 参数变化分析', en: '7B parameter-change analysis' }, href: `${cap}/stage2-7b-analysis/` },
+    ],
+  },
+  {
+    number: '03',
+    title: { zh: '3B + 1.7B 后继实验', en: '3B + 1.7B successor experiment' },
+    summary: { zh: '旧 3B 暴露购物接口和动作格式问题后，我们固定共同购物规则，分别用 3B 和 1.7B 继续做实验。', en: 'After the old 3B run exposed shopping-interface and action-format problems, the successor experiment fixed shared shopping rules and continued separately with 3B and 1.7B.' },
+    href: `${cap}/openevo-2-0/`,
+    children: [
+      { label: { zh: '3B + 1.7B 实验总览', en: '3B + 1.7B experiment overview' }, href: `${cap}/openevo-2-0/` },
+      { label: { zh: '研究报告', en: 'Research report' }, href: `${cap}/openevo-2-0/report/` },
+      { label: { zh: '购物接口与排查过程', en: 'Shopping-interface diagnosis' }, href: `${cap}/openevo-2-0/exploration/` },
+    ],
+  },
+  {
+    number: '04',
+    title: { zh: '1.7B · GDR-v1 实验', en: '1.7B · GDR-v1 experiment' },
+    summary: { zh: '这条 1.7B 线一共产生 44 个 SD-LoRA 候选，但 GDR-v1 只让 7 个进入后续模型；冻结终评为 37.60 / 100，1 / 128 完全成功。', en: 'This 1.7B line produced 44 SD-LoRA candidates, but GDR-v1 admitted only seven into later model states. Its frozen final was 37.60 / 100 with 1 / 128 exact success.' },
+    relation: { zh: '它同时属于上一项 3B + 1.7B 后继实验；这里单独列出来，是因为它后来引出了 GDR 机制问题。', en: 'It is also the 1.7B arm of the successor experiment above; it is listed separately here because it later became the subject of the GDR mechanism question.' },
+    href: `${cap}/gdr-directapply/`,
+    children: [
+      { label: { zh: 'GDR-v1 为什么 44 个候选只留下 7 个', en: 'Why GDR-v1 kept only 7 of 44 candidates' }, href: `${cap}/gdr-directapply/` },
+      { label: { zh: '这条 1.7B 的冻结结果', en: 'Frozen result for this 1.7B line' }, href: `${cap}/openevo-2-0/report/` },
+      { label: { zh: 'Vanilla SD-LoRA 一轮怎样产生候选参数', en: 'How one Vanilla SD-LoRA round produces a candidate' }, href: `${cap}/vanilla-sd-lora/` },
+    ],
+  },
+  {
+    number: '05',
+    title: { zh: '1.7B · DirectApply / No-GDR 实验', en: '1.7B · DirectApply / No-GDR experiment' },
+    summary: { zh: '这次实验去掉 GDR-v1 的短期否决权，合法的 SD-LoRA 候选直接进入下一轮；160 轮训练和一次冻结终评都已经完成。', en: 'This experiment removed GDR-v1’s short-horizon veto, so valid SD-LoRA candidates entered the next round directly. All 160 training rounds and one frozen final are complete.' },
+    href: `${cap}/q17-directapply-analysis/`,
+    children: [
+      { label: { zh: '完整 160 轮实验分析', en: 'Full 160-round experiment analysis' }, href: `${cap}/q17-directapply-analysis/` },
+      { label: { zh: 'R127 / R128 同题诊断', en: 'R127 / R128 same-task diagnostic' }, href: `${cap}/q17-directapply-frontier/` },
+      { label: { zh: 'SD-LoRA 为什么越来越慢', en: 'Why SD-LoRA gets slower over time' }, href: `${cap}/sd-lora-scaling/` },
+      { label: { zh: 'Text Memory 在这条线里发生了什么', en: 'What happened to Text Memory in this line' }, href: `${cap}/text-memory/` },
+    ],
+  },
+];
+
+const secondary = [
+  { label: { zh: '实验流程背景', en: 'Experiment flow background' }, href: '/research/seed-openevo/flow/' },
+  { label: { zh: '跨实验结果索引', en: 'Cross-experiment results index' }, href: '/research/seed-openevo/study/results/' },
+  { label: { zh: '复现实验', en: 'Reproduce experiments' }, href: '/research/seed-openevo/study/run/' },
+];
+---
+
+<main class="experiment-index" data-ui-audit="layout" data-testid="experiment-first-study-index">
+  <header class="study-hero">
+    <h1>{zh ? 'OpenEVO × WebShop 实验' : 'OpenEVO × WebShop experiments'}</h1>
+    <p class="study-hero__lede">{zh
+      ? '五次主要实验按研究过程排列。先选一次实验，再看它的结果和由它引出的分析。'
+      : 'Five major experiments are organized by the research sequence. Pick an experiment first, then follow its results and the analyses it produced.'}</p>
+  </header>
+  <ol class="experiment-tree" aria-label={zh ? '主要实验目录' : 'Major experiment index'}>
+    {experiments.map((experiment) => (
+      <li class="experiment-node" data-ui-audit-item>
+        <div class="experiment-node__rail" aria-hidden="true"><span>{experiment.number}</span></div>
+        <article>
+          <a class="experiment-node__main" href={p(experiment.href)}>
+            <strong>{t(experiment.title)}</strong>
+            <span aria-hidden="true">→</span>
+          </a>
+          <p>{t(experiment.summary)}</p>
+          {experiment.relation && <p class="experiment-node__relation">{t(experiment.relation)}</p>}
+          <ul class="experiment-children">
+            {experiment.children.map((child) => (
+              <li><a href={p(child.href)}>{t(child.label)} <span aria-hidden="true">→</span></a></li>
+            ))}
+          </ul>
+        </article>
+      </li>
+    ))}
+  </ol>
+
+  <aside class="secondary-routes" aria-label={zh ? '跨实验入口' : 'Cross-experiment routes'}>
+    <strong>{zh ? '跨实验入口' : 'Across experiments'}</strong>
+    <nav>
+      {secondary.map((item) => <a href={p(item.href)}>{t(item.label)}</a>)}
+    </nav>
+  </aside>
+</main>
+
+<style>
+  .experiment-index{width:min(960px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--color-text)}
+  .study-hero{padding:2.7rem 0 1.8rem;border-bottom:1px solid var(--color-border)}
+  .study-hero h1{max-width:18ch;margin:0;font-size:clamp(2.5rem,6vw,4.7rem);line-height:1;letter-spacing:-.055em}
+  .study-hero__lede{max-width:44rem;margin:1.2rem 0 0;font-size:clamp(1.05rem,2vw,1.3rem);line-height:1.7;color:var(--color-text-muted)}
+  .experiment-tree{list-style:none;margin:0;padding:0;counter-reset:none}
+  .experiment-node{display:grid;grid-template-columns:4.25rem minmax(0,1fr);gap:1.1rem;padding:2rem 0;border-bottom:1px solid var(--color-border)}
+  .experiment-node__rail{position:relative;display:flex;justify-content:center}
+  .experiment-node__rail::after{content:'';position:absolute;top:2.5rem;bottom:-2rem;width:1px;background:var(--color-border)}
+  .experiment-node:last-child .experiment-node__rail::after{display:none}
+  .experiment-node__rail span{position:relative;z-index:1;display:grid;place-items:center;width:2.7rem;height:2.7rem;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);font:800 .86rem/1 var(--font-mono)}
+  .experiment-node article{min-width:0}
+  .experiment-node__main{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;color:var(--color-text);text-decoration:none}
+  .experiment-node__main strong{font-size:clamp(1.35rem,2.6vw,2rem);line-height:1.2;letter-spacing:-.025em}
+  .experiment-node__main>span{font-size:1.35rem;color:var(--color-text-muted)}
+  .experiment-node p{max-width:48rem;margin:.65rem 0 0;line-height:1.7;color:var(--color-text-muted)}
+  .experiment-node__relation{padding-left:.75rem;border-left:2px solid var(--color-warning);color:var(--color-text)}
+  .experiment-children{list-style:none;margin:1rem 0 0;padding:0 0 0 1.15rem;border-left:1px solid var(--color-border)}
+  .experiment-children li+li{margin-top:.38rem}
+  .experiment-children a{display:inline-block;padding:.2rem 0;color:var(--color-text);text-underline-offset:.22em}
+  .experiment-children a span{color:var(--color-text-muted)}
+  .secondary-routes{display:flex;align-items:flex-start;justify-content:space-between;gap:1.2rem;padding:1.5rem 0;border-bottom:1px solid var(--color-border)}
+  .secondary-routes>strong{font-size:.95rem}
+  .secondary-routes nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.65rem 1.1rem}
+  .secondary-routes a{color:var(--color-text-muted);text-underline-offset:.22em}
+  a:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px}
+  @media(max-width:640px){
+    .experiment-index{width:calc(100% - 1.25rem)}
+    .study-hero{padding:1.7rem 0 1.3rem}
+    .study-hero h1{font-size:2.55rem}
+    .experiment-node{grid-template-columns:2.5rem minmax(0,1fr);gap:.7rem;padding:1.55rem 0}
+    .experiment-node__rail{justify-content:flex-start}
+    .experiment-node__rail span{width:2.3rem;height:2.3rem}
+    .experiment-node__rail::after{left:1.12rem;top:2.2rem;bottom:-1.55rem}
+    .experiment-node__main strong{font-size:1.35rem}
+    .experiment-children{padding-left:.75rem}
+    .secondary-routes{display:block}
+    .secondary-routes nav{justify-content:flex-start;margin-top:.65rem}
+  }
+</style>

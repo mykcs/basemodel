@@ -1,0 +1,148 @@
+# OpenEVO × WebShop 实验区：Experiment-first 重组执行计划
+
+状态：**ACTIVE CHECKLIST / 本次对话唯一施工清单**  
+创建日期：2026-09-13  
+仓库：`mykcs/basemodel`  
+科学事实权威：`mykcs/openevo-experiment`  
+目标路由：`/research/seed-openevo/study/`
+
+> 本计划只重组 BaseModel 的读者入口和父子关系，不改写实验历史、不删除旧 URL、不把网站变成第二份实验真相数据库。
+
+## 0. 用户目标
+
+当前 Study / Capability Exploration 已同时把实验、结果、机制、历史入口、诊断页放在近似同一层级，读者很难先回答“我现在在看哪一次实验”。本次重组采用：**实验是树干，结果与分析是树枝。**
+
+第一层固定为五个主要实验入口；进入一次实验后，再继续看它的结果、机制解释、诊断和派生分析。`Results / Capability / Stage1 / Stage2` 等内部分类继续保留旧 URL 和证据价值，但不再承担主要人类导航。
+
+## 1. 五个一级实验单元
+
+1. **训练跑了很久，但参数一直没有更新**  
+   历史旧 Gate：成功轨迹存在，但最好只有 7 个不同任务满足重复成功条件，而规则要求 8 个，因此没有触发后续参数更新。
+2. **7B 长周期实验**  
+   7B 持续学习、参数更新、冻结终评与参数分析属于同一个实验单元。
+3. **3B + 1.7B 后继实验**  
+   在共享购物规则 / Harness 下，分别使用 3B 与 1.7B 做后继实验；接口诊断、研究报告和两条 arm 的结果挂在这里。
+4. **1.7B · GDR-v1 实验**  
+   本地 GDR-v1 实际是 SD-LoRA candidate admission gate；44 个 candidate 中 7 个正式进入后续状态。该 1.7B arm 同时属于第 3 项后继实验，但因其后来产生独立机制问题，允许作为一个主要入口重复引用，必须明确 lineage 关系。
+5. **1.7B · DirectApply / No-GDR 实验**  
+   去掉 GDR-v1 的 task-score veto；完整 160 轮、冻结 final、R127/R128 同题诊断、SD-LoRA latency/scaling、Text Memory 运行语义与 D1 等分析优先挂在这一单元下。
+
+科学边界：历史 GDR final 与 DirectApply final 不是同一冻结题集，不得把 `60.72 - 37.60` 写成 GDR/DirectApply 的因果方法增益。
+
+## 2. 第一阶段：最小可用 Experiment-first 首页
+
+- [x] 新建 `src/components/research/OpenEvoExperimentIndex.astro`。
+- [x] `/research/seed-openevo/study/` 中文入口只渲染新的 Experiment-first 目录。
+- [x] `/en/research/seed-openevo/study/` 使用同一组件和同一层级。
+- [x] 五个一级实验全部在目录中可见、可点击。
+- [x] 派生分析使用缩进子链接表达父子关系，不再与实验入口平级。
+- [x] `SD-LoRA 为什么越来越慢` 挂在 DirectApply / No-GDR 实验下面。
+- [x] GDR-v1 入口明确写出它同时属于 3B + 1.7B 后继实验，避免伪造独立 lineage。
+- [x] 保留旧 `capability-exploration/*`、`results/*` 等 URL；本阶段不移动、不删除旧页面。
+- [x] 保留跨实验的 Flow / Results / Run 入口，但降为二级工具入口。
+- [x] 更新 `src/data/siteReaderContracts.ts`：Study 的首要任务变为“先选实验，再看结果/分析”。
+- [x] Study 首屏明确允许五个一级实验入口，`maxInteractive=5`；不得通过隐藏第五个实验来满足旧预算。
+- [x] 新增 `src/lib/openEvoExperimentIndex.test.ts`，保护五实验结构、缩进子链接和 SD-LoRA scaling 归属。
+- [x] 更新已经过时的 Study owner / Text Memory / heading tests，使测试保护新的 Experiment-first 信息架构，而不是强行恢复旧首页。
+
+## 3. 第二阶段：把现有页面完整挂回实验树
+
+逐页盘点 `src/pages/research/seed-openevo/study/**` 以及对应英文页面。每个读者可见研究页必须归类为：`experiment-result`、`experiment-analysis`、`cross-experiment`、`historical/archive` 或 `compatibility`。
+
+- [ ] 建立一份机器可读的实验 → 子页面映射，优先放在 `src/data/`，避免长期把关系硬编码散落在组件中。
+- [ ] Gate 失败实验至少覆盖 `stage2-256-window` 与相关 first-run 历史证据。
+- [ ] 7B 长周期实验至少覆盖 `stage2-ceiling`、`stage2-7b-analysis` 及真正属于该实验的 SD-LoRA/参数分析。
+- [ ] 3B + 1.7B 后继实验至少覆盖 `openevo-2-0`、`report`、`exploration`、Harness/interface 诊断。
+- [ ] GDR-v1 实验至少覆盖冻结结果、44→7 candidate admission 分析、Vanilla SD-LoRA candidate 机制和 GDR-v1 / 原始 Gated Delta Rule 区分。
+- [ ] DirectApply / No-GDR 实验至少覆盖完整 160 轮分析、R127/R128、SD-LoRA scaling/history 系列、Text Memory、D1/geometry/function-preservation 等已公开分析。
+
+## 4. 第三阶段：统一导航与页面归属表达
+
+目标不是把旧页面全部搬目录，而是让读者从任何实验页都能回答：**我在哪次实验里、这是结果还是分析、下一步回哪里。**
+
+- [ ] 为五个实验建立统一的实验 Hub / context 结构；优先复用一个共享组件，不在每页复制导航 HTML。
+- [ ] 每个实验 Hub 至少包含：实验名称、为什么做、实验结果入口、由该实验引出的分析、原始证据/历史入口。
+- [ ] 现有 `ResearchRouteContext.astro` / capability reader map 若承担相同职责，优先改造或复用，避免第二套导航系统。
+- [ ] 子分析页提供返回所属实验的明确入口；跨实验页面可链接多个实验，但只能有一个 canonical 内容 owner。
+- [ ] `archive`、`stage1-previous`、兼容性入口降到历史/证据层，不再与五个主要实验抢同级注意力。
+- [ ] `flow/*` 继续负责“系统/方法怎么工作”，不混入实验历史树；实验页按需链接过去。
+- [ ] `results/*` 继续作为跨实验结果索引，不重复拥有五个实验的正文。
+- [ ] 中英文页面保持同一实验层级；英文不得新增中文没有的独立 IA。
+
+## 5. 页面与代码级实现约束
+
+- [ ] 新的实验树关系最终由 `src/data/` 的单一数据 owner 驱动，Study 首页和实验 Hub 从同一来源渲染。
+- [ ] 数据结构至少包含 `id / title / summary / primaryHref / childLinks / lineageNote / status`，子链接至少包含 `role / label / href`。
+- [ ] `role` 只能表达真实语义，例如 `result`、`analysis`、`mechanism`、`diagnostic`、`history`、`evidence`；不要用 `misc` 兜底。
+- [ ] 任何新公开 route 都必须先登记 `src/data/siteReaderContracts.ts`，并通过 `audit:reader-contracts`。
+- [ ] 保持一个页面一个 `<h1>`；嵌入组件不得自行制造第二个 H1。
+- [ ] 不新增无意义英文 eyebrow、内部代号优先标题或 `7 < 8` 式需先解码的主标题。
+- [ ] 不为了目录整齐复制科学数字；数字继续由现有 canonical 页面 / 数据源拥有。
+- [ ] 不删除现有深链；若未来迁移 URL，必须显式 compatibility redirect 并更新 sitemap / locale 可用性测试。
+- [ ] 不把历史 GDR-v1、DirectApply 与未来可能的 recurrent Gated Delta Rule successor 混成同一实验。
+
+## 6. 验证与回归清单
+
+每次完成一个可见阶段后，至少执行与改动范围匹配的最小验证；准备合并时执行完整仓库 Gate。
+
+- [x] `vitest`：Experiment-first 结构测试通过。
+- [x] `astro check`：当前 MVP 0 errors。
+- [x] `npm run build`：506 个静态页面构建通过，heading / external-brand audit 通过。
+- [x] 本地浏览器人工/自动冒烟：桌面 1280×633、手机 390×844、dark mode；五个实验存在、单 H1、无页面级横向溢出。
+- [x] Reader Contract 定向测试：desktop / phone / briefing 共 3/3 PASS；Study 的 5-entry 首屏预算已与新任务一致。
+- [ ] `npm run verify:deploy` 最终 exact tree PASS；刷新到提交时最新 main 后必须再跑。
+- [x] `npm run ui:overflow-preflight` 最终 exact tree PASS。
+- [ ] `npm run test:ui:all` 最终 exact tree 在可用的 Chromium + WebKit runner 上完整 PASS。已有前一 runtime candidate 证据：414 / 414 PASS；首次固定端口被其他项目占用后使用空闲 `PLAYWRIGHT_PORT` 重跑，环境阻断未被写成 PASS。
+- [ ] 新增/更新实验映射后，为“每个主要实验至少有一个结果/分析子页、所有 href 可解析、无重复 canonical owner”添加结构测试。
+- [ ] 手机 390px、平板 768px、桌面 1440px均无 root overflow；中英文、light/dark 都可读。
+
+## 7. Git / PR / Preview / Production 交付
+
+- [ ] 工作基线必须刷新到提交时的最新 `origin/main`；发现 shared-state drift 时先读再继续，不覆盖未知并发改动。
+- [ ] 将本计划文件与对应代码一起 commit；计划文件必须进入 GitHub，不能只存在本地工作区。
+- [ ] 推送 `feat/experiment-first-study-nav-20260912` 或语义等价的当前工作分支。
+- [ ] 创建/更新一个聚焦 PR；PR body 写明 Experiment-first IA、五个实验、旧 URL 保留、科学边界、已跑验证。
+- [ ] PR 变更不得夹带无关实验代码、服务器状态或临时截图。
+- [ ] 普通工作 PR 先通过 GitHub Actions preflight；需要 owner 看页面时使用仓库允许的轻量 review Preview，不把 Preview 当 merge evidence。
+- [ ] 候选真正 merge-ready 后按仓库规则请求 exact-head Vercel final gate；`Vercel` 必须绑定 exact PR head 且真实执行。
+- [ ] exact-head Preview 中实际打开中文和英文 Study 首页，确认五实验目录可见、链接可点、手机无溢出。
+- [ ] 合并后确认 Production successor 来自合并后的 `main`，并打开 `https://basemodel-preview.vercel.app/research/seed-openevo/study/` 做最终可见性检查。
+- [ ] 只有 Production 与仓库 main 一致、关键路由可访问后，才把本计划状态改成 `COMPLETE`。
+
+## 8. 明确交付标准（Definition of Done）
+
+以下条件必须**全部同时成立**，不能用“页面已经能打开”替代：
+
+- [ ] `/study/` 首层只把五个主要实验当主要研究入口；Results / Capability / Stage 术语不再承担主导航职责。
+- [ ] 第一次来的读者能在 5–10 秒内回答：这是 OpenEVO × WebShop 的实验目录、共有哪五次主要实验、某个分析属于哪次实验。
+- [ ] 五个实验的关键历史关系准确，尤其 GDR-v1 与 3B+1.7B successor 的 lineage 重叠被明确说明。
+- [ ] DirectApply 下可找到完整 160 轮、R127/R128、SD-LoRA scaling/history、Text Memory、D1 等已经公开的主要分析；不得让这些页面继续像无父级的孤岛。
+- [ ] 7B、Gate failure、3B+1.7B、GDR-v1 也都至少有结果/分析的清晰子入口。
+- [ ] 所有旧 URL 仍可用，或有明确、安全的 compatibility redirect；没有死链和 locale 假链接。
+- [ ] 科学 caveat 默认可见：不同 frozen final panel 不能直接做 GDR vs DirectApply 因果比较。
+- [ ] 中文与英文 IA 同构；移动端、桌面、明暗主题通过验收。
+- [ ] 全部自动测试、Reader Contract、build、overflow 与最终 browser gate 满足当前仓库 acceptance policy。
+- [ ] PR exact-head Vercel final gate 为绿色，合并后 Production 可见并由当前 main 提供。
+- [ ] 本 Markdown 中所有必须项已由真实证据从 `[ ]` 改为 `[x]`，每个关键完成项能追溯到 file / test / commit / PR / deployment 证据。
+
+## 9. 每小时自动执行规则
+
+本文件是定时任务的唯一 checklist authority。每次小时触发后：
+
+1. 读取仓库根 `AGENTS.md`、本文件和当前 `origin/main` / open PR / provider 状态。
+2. 不依赖上一次聊天记忆；从本文件找到**第一个仍未完成且当前可安全执行的 `[ ]` 项**。
+3. 优先继续已有 PR/分支，不重复创建平行实现；若 main 已前进，按当前规则安全刷新。
+4. 真正执行该项：改代码/文档、跑必要测试、检查真实页面或 provider 状态。
+5. 只有证据成立时才把 `[ ]` 改成 `[x]`；失败、NOT_EXECUTED、仍在 BUILDING 都不能打勾。
+6. 把必要证据写回本文件相邻位置或 PR/commit；临时端口、PID、机器瞬态不作为永久事实保存。
+7. 每轮汇报统一用 ELI5 中文说明：**现在做了什么；离目标还差多少；进行到哪里；是否需要人工处理。**
+8. 若遇到真实的人类边界（owner approval、凭据、外部账户动作等），不要伪造完成；保留未勾选项并明确指出人工需求。
+9. 当所有 Definition of Done 项均为 `[x]` 时，做一次最终冷读与 Production 复核，把文件状态改成 `COMPLETE`；之后不再制造新的重构任务。
+
+## 10. 当前执行快照（2026-09-13）
+
+- 当前 MVP：Experiment-first Study 首页代码已实现，中英文共用一个实验树组件。
+- 当前科学结构：五实验入口已经落地；现有子页面尚未全部迁移到机器可读的统一映射，所以第二阶段仍未完成。
+- 当前验证：定向结构测试、Astro check、build、桌面/手机/dark 冒烟与 Reader Contract 定向测试已通过；完整跨浏览器矩阵已使用空闲端口完成，Chromium + WebKit 共 414 / 414 PASS。
+- 当前 Git 状态：工作树已刷新到 `origin/main@e110446ca8227b47a9ad741ae74d0864bbd97dd3`；该 main 前进只涉及 governance/history/test 文档，不与本任务 runtime 文件重叠。尚待 commit / push / PR。
+- 当前人工需求：无。若后续 exact-head final gate 需要 owner 明确审批，则在对应项保留未完成并汇报。

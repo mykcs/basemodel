@@ -7,6 +7,7 @@ const studyEn = read('src/pages/en/research/seed-openevo/study/index.astro');
 const designZh = read('src/pages/research/seed-openevo/study/design/index.astro');
 const designEn = read('src/pages/en/research/seed-openevo/study/design/index.astro');
 const overview = read('src/components/research/SeedOpenEvoStudyOverview.astro');
+const experimentIndex = read('src/components/research/OpenEvoExperimentIndex.astro');
 const hub = read('src/components/research/SeedOpenEvoResearchHub.astro');
 const training = read('src/components/research/SeedOpenEvoTrainingDesignOverview.astro');
 
@@ -20,12 +21,14 @@ const formerHomepageOwners = [
 describe('study overview information architecture', () => {
   it('keeps one canonical Study owner while preserving the accepted reader-first semantics', () => {
     for (const page of [studyZh, studyEn]) {
-      expect(page).toContain('import SeedOpenEvoStudyOverview from');
-      expect(page).toContain('<SeedOpenEvoStudyOverview locale={locale} />');
+      expect(page).toContain('import OpenEvoExperimentIndex from');
+      expect(page).toContain('<OpenEvoExperimentIndex locale={locale} />');
       expect(page).not.toContain('SeedOpenEvoStudyOverviewReaderFirst');
       for (const owner of formerHomepageOwners) expect(page).not.toContain(owner);
     }
-    expect((overview.match(/<h1\b/g) ?? []).length).toBe(1);
+    expect((experimentIndex.match(/<h1\b/g) ?? []).length).toBe(1);
+    expect(experimentIndex).toContain('训练跑了很久，但参数一直没有更新');
+    expect(experimentIndex).toContain('1.7B · DirectApply / No-GDR 实验');
     for (const required of [
       'OpenEVO (Harness) · WebShop 数据集实验',
       '和 SEED 对照',
