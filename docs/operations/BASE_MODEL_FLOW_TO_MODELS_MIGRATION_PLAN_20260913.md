@@ -118,7 +118,7 @@ rg "flow/base-model|page === 'base-model'|model-name-diagram" src
 - [x] Research Flow 实测所有 Qwen 模型入口统一指向同一新地址。
 - [x] 旧中文 URL 实测最终落到新模型详情锚点。
 
-最终产品源 SHA `bb0a012b203ecc3c89705bda194db51b677d5f63` 上又执行完整 global-risk Gate：`npm run verify:deploy`、`npm run build`、`npm run ui:overflow-preflight`、`npm run test:ui:all` 全部 PASS；Chromium + WebKit 共 **416/416** PASS，migration-specific ui-safety 在两浏览器均 PASS。摘要保存在 `docs/agents/evidence/base-model-flow-to-models-20260913/final-ui-gate-current.txt`。
+最终产品源 SHA `f425a37f25c6c50b9fa5839104f37ee1a3970c6b` 上又执行完整 global-risk Gate：`npm run verify:deploy`、`npm run build`、`npm run ui:overflow-preflight`、`npm run test:ui:all` 全部 PASS；Chromium + WebKit 共 **416/416** PASS，migration-specific ui-safety 在两浏览器均 PASS。摘要保存在 `docs/agents/evidence/base-model-flow-to-models-20260913/final-ui-gate-current.txt`。
 
 已完成整仓证据：
 
@@ -149,7 +149,7 @@ Strict copy invariant failures: 0
 - [x] 再运行 Phase B compare，把 blind 观察与 Reader Contract / 历史偏好对照。
 - [x] 独立 reviewer 可用；已生成并通过 final preference judge receipt。
 
-> **HPL scope correction（2026-09-13）**：三候选比较的是 `/models/` 上实验模型入口的层级与首屏注意力，因此 candidate/cold-read contract 应为 `models-index`，不是整页 `model-detail`。早期用 `model-detail` 得到的 NEEDS_FIX 不作为放行证据；已在最终产品源 SHA `bb0a012b203ecc3c89705bda194db51b677d5f63` 上重跑 `models-index` blind-first review。独立 Phase B 给出 `MIGRATION_VERDICT: PASS`，final judge receipt PASS。
+> **HPL scope correction（2026-09-13）**：三候选比较的是 `/models/` 上实验模型入口的层级与首屏注意力，因此 candidate/cold-read contract 应为 `models-index`，不是整页 `model-detail`。早期用 `model-detail` 得到的 NEEDS_FIX 不作为放行证据；已在最终产品源 SHA `f425a37f25c6c50b9fa5839104f37ee1a3970c6b` 上重跑 `models-index` blind-first review。独立 Phase B 给出 `MIGRATION_VERDICT: PASS`，final judge receipt PASS。
 
 最终 HPL 证据：`docs/agents/evidence/base-model-flow-to-models-20260913/`。
 
@@ -176,16 +176,18 @@ npm run feedback:judge -- /tmp/model-migration-preference-judge.json
 - [x] 创建或复用唯一 PR；不得为同一迁移制造平行 PR。
 - [x] PR body 写明：旧 owner → 新 owner、兼容路由、测试证据、科学边界、剩余验收。
 - [x] PR 创建后重新读取 live `main`；若 `main` 前进，先做 current-base refresh，再重跑受影响验收。
-- [ ] 确认 PR head 与最新 `main` 可干净集成，且没有覆盖其他 Agent 的语义更新。
+- [x] 确认 PR head 与最新 `main` 可干净集成，且没有覆盖其他 Agent 的语义更新。
 
 ### 当前 durable evidence
 
-- current base: `2b8fb0d5dc3c2ec2325fc22255e75a28d1f9441b`
-- current branch head before this checklist-status commit: `de9abb786f043d226220e86adfffcdc247ac2156`
+- current base: `68f6cc3118bf0515cef7aa4ceaa2fd7f4349f259`
+- current integration head before this evidence update: `627ed4170ca4c0edc9c4065453e1271912d1a984`
 - PR: `#658` — `Move SEED/OpenEVO base-model content into Models`
 - current-base ancestry check: `origin/main` is an ancestor of the branch head
 - current-base focused structural tests: 27/27 PASS
 - current-base `npm run check`: 0 errors / 0 warnings; 2 pre-existing deprecation hints
+- latest `origin/main` is an ancestor of the task branch; merge-tree conflict scan is clean
+- the two former remote-only task commits are patch-equivalent (`git cherry` = `-`), then remote task ancestry was merged with an unchanged tree; no unknown concurrent semantics were overwritten
 
 ## 11. Phase I — Vercel final gate
 

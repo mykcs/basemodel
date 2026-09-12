@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "contractId": "models-index",
-  "exactHead": "bb0a012b203ecc3c89705bda194db51b677d5f63",
+  "exactHead": "f425a37f25c6c50b9fa5839104f37ee1a3970c6b",
   "candidateUrl": "http://127.0.0.1:4340/models/",
   "reviewer": {
     "kind": "independent-agent",

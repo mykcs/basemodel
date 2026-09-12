@@ -2,7 +2,7 @@
   "schema": "human-preference-candidate-set.v2",
   "contractId": "models-index",
   "task": "move SEED/OpenEVO base-model content into canonical Qwen model record",
-  "exactGitSha": "bb0a012b203ecc3c89705bda194db51b677d5f63",
+  "exactGitSha": "f425a37f25c6c50b9fa5839104f37ee1a3970c6b",
   "variants": [
     {
       "id": "A",
@@ -77,7 +77,7 @@
   ],
   "ownerSawOnlySelectedCandidate": true,
   "notes": [
-    "Selected candidate A was re-rendered from runtime source SHA bb0a012b203ecc3c89705bda194db51b677d5f63 after the final first-use terminology correction. The selected screenshot reference is exact-source evidence for the current candidate.",
+    "Selected candidate A was re-rendered from runtime source SHA f425a37f25c6c50b9fa5839104f37ee1a3970c6b after the final first-use terminology correction. The selected screenshot reference is exact-source evidence for the current candidate.",
     "B/C remain discarded layout witnesses for the earlier pairwise layout comparison; the later edits clarify shared terminology without changing the A/B/C placement hypotheses."
   ]
 }
