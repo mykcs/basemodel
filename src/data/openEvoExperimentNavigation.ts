@@ -76,8 +76,10 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
     status: 'historical',
     lineageNote: { zh: '它同时属于上一项 3B + 1.7B 后继实验；这里单独列出来，是因为它后来引出了 GDR 机制问题。', en: 'It is also the 1.7B arm of the successor experiment above; it is listed separately here because it later became the subject of the GDR mechanism question.' },
     childLinks: [
-      { role: 'analysis', label: { zh: 'GDR-v1 为什么 44 个候选只留下 7 个', en: 'Why GDR-v1 kept only 7 of 44 candidates' }, href: `${cap}/gdr-directapply/` },      { role: 'result', label: { zh: '这条 1.7B 的冻结结果', en: 'Frozen result for this 1.7B line' }, href: `${cap}/openevo-2-0/report/` },
+      { role: 'result', label: { zh: '这条 1.7B 的冻结结果', en: 'Frozen result for this 1.7B line' }, href: `${cap}/openevo-2-0/report/` },
+      { role: 'analysis', label: { zh: 'GDR-v1 为什么 44 个候选只留下 7 个', en: 'Why GDR-v1 kept only 7 of 44 candidates' }, href: `${cap}/gdr-directapply/` },
       { role: 'mechanism', label: { zh: 'Vanilla SD-LoRA 一轮怎样产生候选参数', en: 'How one Vanilla SD-LoRA round produces a candidate' }, href: `${cap}/vanilla-sd-lora/` },
+      { role: 'mechanism', label: { zh: '本地 GDR-v1 与原始 Gated Delta Rule 的区别', en: 'Local GDR-v1 versus the original Gated Delta Rule' }, href: `${cap}/gdr-directapply/#original-gated-delta` },
     ],
   },
   {

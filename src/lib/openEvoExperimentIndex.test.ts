@@ -52,6 +52,30 @@ describe('experiment-first Study index', () => {
     expect(harnessStudy).toContain('正式 Stage 2');
   });
 
+  it('keeps GDR-v1 attached to its frozen result, 44-to-7 analysis, candidate mechanism, and original-rule distinction', () => {
+    const gdr = OPEN_EVO_EXPERIMENTS.find((item) => item.id === 'gdr-v1-1p7b');
+    expect(gdr?.primaryHref).toBe('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
+    expect(gdr?.childLinks).toEqual(expect.arrayContaining([
+      expect.objectContaining({ role: 'result', href: '/research/seed-openevo/study/capability-exploration/openevo-2-0/report/' }),
+      expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/gdr-directapply/' }),
+      expect.objectContaining({ role: 'mechanism', href: '/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/' }),
+      expect.objectContaining({ role: 'mechanism', href: '/research/seed-openevo/study/capability-exploration/gdr-directapply/#original-gated-delta' }),
+    ]));
+
+    const gdrExplainer = readFileSync(new URL('../components/research/OpenEvoGdrDirectApplyExplainer.astro', import.meta.url), 'utf8');
+    expect(gdrExplainer).toContain('44 个 SD-LoRA candidate');
+    expect(gdrExplainer).toContain('id="original-gated-delta"');
+    expect(gdrExplainer).toContain('原始 Gated Delta Rule');
+
+    const frozenResult = readFileSync(new URL('../components/research/OpenEvoSuccessorReport.astro', import.meta.url), 'utf8');
+    expect(frozenResult).toContain('1.7B 最终测试 37.60 分');
+    expect(frozenResult).toContain('1/128');
+
+    const vanilla = readFileSync(new URL('../components/research/OpenEvoVanillaSdLoraMechanism.astro', import.meta.url), 'utf8');
+    expect(vanilla).toContain('候选参数训练完成');
+    expect(vanilla).toContain('44 个候选');
+  });
+
   it('keeps the five experiment parents and key lineage/analysis children', () => {
     const titles = OPEN_EVO_EXPERIMENTS.map((item) => item.title.zh);
     expect(titles).toEqual([
