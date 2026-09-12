@@ -52,7 +52,7 @@ describe('human-readable product language contract', () => {
 
   it('keeps high-traffic navigation and tools concrete', () => {
     expect(header).toContain("t('流程理解图', 'Flow map')");
-    expect(header).toContain("t('OpenEVO Harness · WebShop', 'OpenEVO Harness · WebShop')");
+    expect(header).toContain("t('OpenEVO 购物实验 · WebShop', 'OpenEVO experiments · WebShop')");
     expect(header).toContain("t('实验工作台', 'Experiment workspace')");
     expect(header).toContain("t('资料', 'Resources')");
     expect(header).not.toContain("t('研究总览', 'Research map')");

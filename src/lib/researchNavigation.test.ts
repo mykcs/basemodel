@@ -49,7 +49,7 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(navigation).toContain("const pages = currentTrack === 'flow' ? flowPages : studyPages;");
     expect(navigation).toContain('data-research-track={currentTrack}');
     expect(navigation).toContain("label: t('流程理解图', 'Flow map')");
-    expect(navigation).toContain("label: t('OpenEVO Harness · WebShop', 'OpenEVO Harness · WebShop')");
+    expect(navigation).toContain("label: t('OpenEVO 购物实验 · WebShop', 'OpenEVO experiments · WebShop')");
     expect(navigation).toContain("t('实验流程', 'Experiment workflow')");
     expect(navigation).toContain("t('运行实验', 'Run experiment')");
     expect(navigation).toContain("t('OpenEVO 基础能力探索实验', 'OpenEVO capability exploration')");
