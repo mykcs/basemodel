@@ -76,6 +76,29 @@ describe('experiment-first Study index', () => {
     expect(vanilla).toContain('44 个候选');
   });
 
+  it('keeps DirectApply attached to its full run, same-task check, SD-LoRA history, Text Memory, and D1 diagnostics', () => {
+    const directApply = OPEN_EVO_EXPERIMENTS.find((item) => item.id === 'directapply-1p7b');
+    expect(directApply?.primaryHref).toBe('/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/');
+    expect(directApply?.childLinks).toEqual(expect.arrayContaining([
+      expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/' }),
+      expect.objectContaining({ role: 'diagnostic', href: '/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/' }),
+      expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/sd-lora-scaling/' }),
+      expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/sd-lora-history/' }),
+      expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/text-memory/' }),
+      expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/#geometry' }),
+      expect.objectContaining({ role: 'diagnostic', href: '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/#function' }),
+    ]));
+
+    const analysis = readFileSync(new URL('../components/research/OpenEvoQ17DirectApplyAnalysis.astro', import.meta.url), 'utf8');
+    expect(analysis).toContain('完整跑完 160 轮、20,480 次 WebShop 尝试和 159 次 SD-LoRA 参数更新');
+    expect(analysis).toContain('id="geometry"');
+    expect(analysis).toContain('id="function"');
+    expect(analysis).toContain('D1_FAIL_FUNCTION_NOT_PRESERVED');
+
+    const historySeries = readFileSync(new URL('../components/research/OpenEvoSdLoraHistorySkeleton.astro', import.meta.url), 'utf8');
+    expect(historySeries).toContain('没有完成的科学实验不会提前写成结论');
+  });
+
   it('keeps the five experiment parents and key lineage/analysis children', () => {
     const titles = OPEN_EVO_EXPERIMENTS.map((item) => item.title.zh);
     expect(titles).toEqual([

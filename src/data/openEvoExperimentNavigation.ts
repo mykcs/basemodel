@@ -93,7 +93,10 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
       { role: 'analysis', label: { zh: '完整 160 轮实验分析', en: 'Full 160-round experiment analysis' }, href: `${cap}/q17-directapply-analysis/` },
       { role: 'diagnostic', label: { zh: 'R127 / R128 同题诊断', en: 'R127 / R128 same-task diagnostic' }, href: `${cap}/q17-directapply-frontier/` },
       { role: 'analysis', label: { zh: 'SD-LoRA 为什么越来越慢', en: 'Why SD-LoRA gets slower over time' }, href: `${cap}/sd-lora-scaling/` },
+      { role: 'analysis', label: { zh: 'SD-LoRA 历史专题：已测结果与待验证问题', en: 'SD-LoRA history series: measured results and open questions' }, href: `${cap}/sd-lora-history/` },
       { role: 'analysis', label: { zh: 'Text Memory 在这条线里发生了什么', en: 'What happened to Text Memory in this line' }, href: `${cap}/text-memory/` },
+      { role: 'analysis', label: { zh: 'D1 参数几何：159 次更新能否低维近似', en: 'D1 geometry: can 159 updates be approximated in fewer directions?' }, href: `${cap}/q17-directapply-analysis/#geometry` },
+      { role: 'diagnostic', label: { zh: 'D1 行为保持：压缩后还是同一个模型吗', en: 'D1 function preservation: is the compressed model still equivalent?' }, href: `${cap}/q17-directapply-analysis/#function` },
     ],
   },
 ];
