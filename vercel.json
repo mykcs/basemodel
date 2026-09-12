@@ -17,17 +17,35 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Content-Security-Policy-Report-Only", "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https:" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Content-Security-Policy-Report-Only",
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https:"
+        }
       ]
     },
     {
       "source": "/model-data/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+        }
       ]
     }
   ],
@@ -44,12 +62,22 @@
     },
     {
       "source": "/research/seed-openevo/base-model",
-      "destination": "/research/seed-openevo/flow/base-model/",
+      "destination": "/models/qwen2-5-3b-instruct/",
       "permanent": true
     },
     {
       "source": "/research/seed-openevo/base-model/",
-      "destination": "/research/seed-openevo/flow/base-model/",
+      "destination": "/models/qwen2-5-3b-instruct/",
+      "permanent": true
+    },
+    {
+      "source": "/research/seed-openevo/flow/base-model",
+      "destination": "/models/qwen2-5-3b-instruct/",
+      "permanent": true
+    },
+    {
+      "source": "/research/seed-openevo/flow/base-model/",
+      "destination": "/models/qwen2-5-3b-instruct/",
       "permanent": true
     },
     {
@@ -159,12 +187,22 @@
     },
     {
       "source": "/en/research/seed-openevo/base-model",
-      "destination": "/en/research/seed-openevo/flow/base-model/",
+      "destination": "/en/models/qwen2-5-3b-instruct/",
       "permanent": true
     },
     {
       "source": "/en/research/seed-openevo/base-model/",
-      "destination": "/en/research/seed-openevo/flow/base-model/",
+      "destination": "/en/models/qwen2-5-3b-instruct/",
+      "permanent": true
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/base-model",
+      "destination": "/en/models/qwen2-5-3b-instruct/",
+      "permanent": true
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/base-model/",
+      "destination": "/en/models/qwen2-5-3b-instruct/",
       "permanent": true
     },
     {

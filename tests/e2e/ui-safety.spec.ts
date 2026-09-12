@@ -318,3 +318,29 @@ test('theme switching updates page and surface colors without a reload', async (
     });
   }
 });
+
+
+test('SEED / OpenEVO model setup has one canonical model-detail owner', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/models/', { waitUntil: 'domcontentloaded' });
+  const entry = page.locator('.models-research-model');
+  await expect(entry).toContainText('Qwen2.5-3B-Instruct');
+  await expect(entry.locator('a')).toHaveAttribute('href', '/models/qwen2-5-3b-instruct/#experiment-setup');
+
+  await page.goto('/models/qwen2-5-3b-instruct/#experiment-setup', { waitUntil: 'domcontentloaded' });
+  const setup = page.locator('#experiment-setup');
+  await expect(setup).toBeVisible();
+  await expect(setup).toContainText('SEED / OpenEVO 实验设置');
+  await expect(setup).toContainText('Checkpoint / revision');
+  await expect(setup).toContainText('prompt / parser');
+  await expect(page.locator('html')).toHaveJSProperty('scrollWidth', 390);
+
+  await page.goto('/en/models/qwen2-5-3b-instruct/#experiment-setup', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#experiment-setup')).toContainText('SEED / OpenEVO experiment setup');
+
+  await page.goto('/models/kimi-k2-thinking/', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#experiment-setup')).toHaveCount(0);
+
+  await page.goto('/research/seed-openevo/flow/base-model/', { waitUntil: 'domcontentloaded' });
+  await page.waitForURL('**/models/qwen2-5-3b-instruct/#experiment-setup');
+});

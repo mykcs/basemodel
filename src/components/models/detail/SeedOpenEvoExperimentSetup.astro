@@ -1,0 +1,93 @@
+---
+import type { Locale } from '../../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+
+const nameParts = [
+  { value: 'Qwen', meaning: t('模型家族', 'model family') },
+  { value: '2.5', meaning: t('代际标签', 'generation label') },
+  { value: '3B', meaning: t('参数规模', 'parameter scale') },
+  { value: 'Instruct', meaning: t('指令对齐 checkpoint', 'instruction-aligned checkpoint') },
+];
+
+const reproductionFields = [
+  { term: 'Base / Instruct', meaning: t('不同 checkpoint 类型，不能在复现中无说明地互换。', 'Different checkpoint types; they are not interchangeable without disclosure.') },
+  { term: 'Parameters', meaning: t('影响存储、显存与计算，不直接等同于任务表现。', 'Affects storage, memory, and compute; it is not task performance itself.') },
+  { term: 'Context', meaning: t('一次推理可处理的 token 窗口，不等于 Agent 的有效长期记忆。', 'The token window for one inference call, not effective long-term agent memory.') },
+  { term: 'BF16 / FP16 / INT4', meaning: t('数值精度或量化状态，会影响显存、吞吐和数值行为。', 'Precision or quantization affects memory, throughput, and numerical behavior.') },
+  { term: 'SFT / LoRA / RL', meaning: t('不同的权重更新方式，必须在比较时明确。', 'Different weight-update modes that must be explicit in comparisons.') },
+  { term: 'Checkpoint / revision', meaning: t('真正可复现的模型状态。', 'The reproducible model state.') },
+];
+const comparisonControls = [
+  { variable: 'checkpoint', impact: t('动作质量、token 分布、训练起点', 'action quality, token distribution, training start'), treatment: t('严格复现时固定；换模型另立实验', 'pin for strict reproduction; model changes are separate experiments') },
+  { variable: t('精度 / 量化', 'precision / quantization'), impact: t('显存、吞吐、采样', 'memory, throughput, sampling'), treatment: t('记录并固定', 'record and hold fixed') },
+  { variable: t('推理后端', 'inference backend'), impact: t('采样与运行行为', 'sampling and runtime behavior'), treatment: t('作为协议变量记录', 'record as a protocol variable') },
+  { variable: 'prompt / parser', impact: t('合法动作与解析失败时的备用动作（fallback）', 'valid actions and fallback actions used when parsing fails'), treatment: t('比较时保持一致', 'hold fixed in comparisons') },
+];
+---
+<section class="detail-section experiment-setup" id="experiment-setup" aria-labelledby="experiment-setup-title" data-seed-openevo-experiment-setup>
+  <h2 id="experiment-setup-title">{t('SEED / OpenEVO 实验设置', 'SEED / OpenEVO experiment setup')}</h2>
+  <p class="experiment-setup__lede">
+    {t(
+      'SEED / OpenEVO 这组实验使用 Qwen2.5-3B-Instruct。要复现同一个实验条件，还要同时固定具体 revision、数值精度、量化、上下文、推理后端、chat template、prompt / action grammar，以及权重是否和怎样更新。只写模型名还不够。',
+      'The SEED / OpenEVO experiments use Qwen2.5-3B-Instruct. Reproducing the same condition also requires the exact revision, numerical precision, quantization, context, inference backend, chat template, prompt / action grammar, and whether and how weights are updated. The model name alone is not enough.',
+    )}
+  </p>
+
+  <div class="experiment-setup__group">
+    <h3>{t('模型名', 'Model name')}</h3>
+    <dl class="model-name-anatomy">
+      {nameParts.map((part) => <div><dt>{part.value}</dt><dd>{part.meaning}</dd></div>)}
+    </dl>
+  </div>
+
+  <div class="experiment-setup__group">
+    <h3>{t('复现实验需要记录的字段', 'Fields required for reproduction')}</h3>
+    <dl class="experiment-fields">
+      {reproductionFields.map((field) => <div><dt>{field.term}</dt><dd>{field.meaning}</dd></div>)}
+    </dl>
+  </div>
+
+  <div class="experiment-setup__group">
+    <h3>{t('公平比较时固定什么', 'What to hold fixed for fair comparison')}</h3>
+    <div class="experiment-table-wrap">
+      <table class="experiment-table">
+        <thead><tr><th>{t('变量', 'Variable')}</th><th>{t('影响', 'Impact')}</th><th>{t('处理', 'Treatment')}</th></tr></thead>
+        <tbody>
+          {comparisonControls.map((row) => <tr><td>{row.variable}</td><td>{row.impact}</td><td>{row.treatment}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<style>
+  .experiment-setup{scroll-margin-top:calc(var(--site-header-height) + 1.5rem)}
+  .experiment-setup__lede{max-width:76ch;margin:.55rem 0 0;color:var(--muted);line-height:1.7}
+  .experiment-setup__group{margin-top:1.55rem}
+  .experiment-setup__group h3{margin:0 0 .65rem;font-size:.9rem}
+  .model-name-anatomy,.experiment-fields{display:grid;margin:0;border-top:1px solid var(--line)}
+  .model-name-anatomy{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .model-name-anatomy div{padding:.8rem .7rem .75rem 0;border-bottom:1px solid var(--line)}
+  .model-name-anatomy div+div{padding-left:.7rem;border-left:1px solid var(--line)}
+  .model-name-anatomy dt{font-size:.88rem;font-weight:800}
+  .model-name-anatomy dd{margin:.3rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.45}
+  .experiment-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .experiment-fields div{padding:.8rem 0;border-bottom:1px solid var(--line)}
+  .experiment-fields div:nth-child(even){padding-left:1rem;border-left:1px solid var(--line)}
+  .experiment-fields dt{font-size:.78rem;font-weight:800}
+  .experiment-fields dd{margin:.28rem 0 0;color:var(--muted);font-size:.75rem;line-height:1.55}
+  .experiment-table-wrap{max-width:100%;overflow-x:auto;border-top:1px solid var(--line)}
+  .experiment-table{width:100%;border-collapse:collapse;font-size:.75rem}
+  .experiment-table th,.experiment-table td{padding:.72rem .7rem .72rem 0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5}
+  .experiment-table th{color:var(--muted);font-size:.68rem}
+  .experiment-table td:first-child{font-weight:750}
+  @media(max-width:640px){
+    .model-name-anatomy,.experiment-fields{grid-template-columns:1fr}
+    .model-name-anatomy div+div,.experiment-fields div:nth-child(even){padding-left:0;border-left:0}
+    .experiment-table{min-width:620px}
+  }
+</style>
