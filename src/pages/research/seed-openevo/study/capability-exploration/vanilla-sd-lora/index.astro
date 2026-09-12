@@ -1,0 +1,14 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvoVanillaSdLoraMechanism from '../../../../../../components/research/OpenEvoVanillaSdLoraMechanism.astro';
+import ResearchRouteContext from '../../../../../../components/research/ResearchRouteContext.astro';
+const locale = 'zh' as const;
+---
+<AppLayout
+  title="Vanilla SD-LoRA 一轮怎样更新参数"
+  description="OpenEvo × WebShop 一轮 SD-LoRA 的真实机制：128 次任务尝试如何筛成训练数据，旧方向如何冻结，新方向和幅度系数如何形成候选累计 LoRA。"
+  locale={locale}
+>
+  <ResearchRouteContext locale={locale} route="vanilla-sd-lora" />
+  <OpenEvoVanillaSdLoraMechanism locale={locale} />
+</AppLayout>

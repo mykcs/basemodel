@@ -352,6 +352,8 @@ A client/tool schema error that is explicitly rejected **before dispatch** is no
 
 PR-body wording, local logs, or a remembered green matrix are not locks. The lock is the exact accepted head plus the live merge guard and readback.
 
+PR narrative must still be fresh enough not to mislead the owner. If the body records a final-review head/base SHA, validation counts, final-gate state, or an execution-order summary, refresh those fields after the last current-base sync and before owner approval/merge. A metadata-only PR-body edit does not change the candidate Git SHA, so it does not by itself invalidate exact-head CI/provider acceptance; conversely, a green exact-head gate does not make stale PR prose true. Always re-read the live tuple.
+
 ### 7.1 Explicit acceptance rules are merge-authorization boundaries
 
 A PR can be mergeable and all currently required checks can be green while the work is still **not authorized to merge**. This is especially common for CI/performance experiments whose PR body pre-registers a later steady-state benchmark, control, canary, or repeat requirement.

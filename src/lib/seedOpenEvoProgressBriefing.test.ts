@@ -92,7 +92,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing.indexOf('两组数字回答的评测问题不同')).toBeLessThan(briefing.indexOf('<table class="paper-table">'));
     expect(briefing).toContain('https://arxiv.org/abs/2207.01206');
     expect(briefing).toContain('https://arxiv.org/abs/2607.14777');
-    expect(briefing).toContain('GDR 这个名字来自 Gated Delta Rule');
+    expect(briefing).toContain('本地 GDR-v1 的名字来自 Gated Delta Rule，但实现层级不同');
   });
 
   it('uses the requested Score / Succ table and authoritative OpenEVO row order only', () => {
@@ -263,15 +263,16 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
 
   it('separates the Gated Delta Networks paper mechanism from the local GDR-v1 admission rule', () => {
     const gdrSlide = briefing.slice(sectionPosition('gdr'), sectionPosition('one-seven-b'));
-    expect(gdrSlide).toContain('为什么训练好的参数更新，还要再做一次 16 题小测？');
-    expect(gdrSlide).toContain('GDR 这个名字来自 Gated Delta Rule');
-    expect(gdrSlide).toContain('Gated Delta Networks 论文只提供“更新可以被一道门控制”的背景');
-    expect(gdrSlide).toContain('我们本地真正做的事很简单');
+    expect(gdrSlide).toContain('我们当时叫它 GDR-v1，但真正跑的是“候选更新放不放行”');
+    expect(gdrSlide).toContain('本地 GDR-v1 的名字来自 Gated Delta Rule，但实现层级不同');
+    expect(gdrSlide).toContain('recurrent state：读旧值 → 算 residual → β 写回');
+    expect(gdrSlide).toContain('已有 state 参与 residual');
     expect(gdrSlide).toContain('当前模型 + 训练好的候选更新 → 固定 16 题小测 → 用不用这次更新');
-    expect(gdrSlide).toContain('没有把论文公式直接当成我们的 16 题规则');
+    expect(gdrSlide).toContain('不能再用同一个“GDR”概念混讲');
     expect(gdrSlide).toContain('一次很短的小测，会不会过早拒绝那些短期不够好、但长期可能有用的更新？');
     expect(briefing).toContain('https://arxiv.org/abs/2412.06464');
-    expect(technical).toContain('固定的 16-task 短期 probe');
+    expect(technical).toContain('本地规则，并不是论文里的 recurrent Gated Delta Rule');
+    expect(technical).toContain('Task Vector 用来观察 / 比较参数状态移动，不直接设置 β 或 g');
   });
 
   it('shows the authoritative 1.7B GDR result including frozen exact success', () => {

@@ -27,6 +27,19 @@ export const CAPABILITY_READER_ROUTES = [
     }
   },
   {
+    "route": "vanilla-sd-lora",
+    "coverage": "contextualized",
+    "owner": "OpenEvoVanillaSdLoraMechanism",
+    "label": {
+      "zh": "Vanilla SD-LoRA 机制",
+      "en": "Vanilla SD-LoRA mechanism"
+    },
+    "purpose": {
+      "zh": "解释一轮 WebShop rollout 怎样筛成 SD-LoRA 训练数据、旧方向与新方向怎样组合，以及 candidate adapter 怎样进入下一轮。",
+      "en": "Explain how one WebShop round becomes SD-LoRA training data, how old and new directions are composed, and how the candidate adapter can feed the next round."
+    }
+  },
+  {
     "route": "mechanism-1-0",
     "coverage": "rebuilt",
     "owner": "OpenEvoMechanismMap",
