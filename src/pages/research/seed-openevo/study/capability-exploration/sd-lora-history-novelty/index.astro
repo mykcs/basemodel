@@ -1,0 +1,14 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvoSdLoraHistorySkeleton from '../../../../../../components/research/OpenEvoSdLoraHistorySkeleton.astro';
+import ResearchRouteContext from '../../../../../../components/research/ResearchRouteContext.astro';
+const locale = 'zh' as const;
+---
+<AppLayout
+  title="SD-LoRA 历史真的一直在增加新信息吗"
+  description="SD-LoRA 增长历史专题的一页。当前先建立页面结构和导航；对应实验完成后再填入可追溯证据。"
+  locale={locale}
+>
+  <ResearchRouteContext locale={locale} route="sd-lora-history-novelty" />
+  <OpenEvoSdLoraHistorySkeleton locale={locale} />
+</AppLayout>
