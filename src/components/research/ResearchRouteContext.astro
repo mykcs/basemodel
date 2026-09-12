@@ -2,12 +2,20 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import { CAPABILITY_READER_ROUTES, type CapabilityReaderRoute } from '../../data/capabilityReaderRoutes';
-interface Props { locale: Locale; route: CapabilityReaderRoute; compact?: boolean }
-const { locale, route, compact = false } = Astro.props;
+import { OPEN_EVO_EXPERIMENTS, type OpenEvoExperimentId } from '../../data/openEvoExperimentNavigation';
+interface Props { locale: Locale; route: CapabilityReaderRoute; compact?: boolean; experimentId?: OpenEvoExperimentId }
+const { locale, route, compact = false, experimentId } = Astro.props;
 const record = CAPABILITY_READER_ROUTES.find((entry) => entry.route === route);
 if (!record) throw new Error(`Missing reader role for ${route}`);
 const zh = locale === 'zh';
 const root = localePath(locale, '/research/seed-openevo/study/capability-exploration/');
+const studyRoot = localePath(locale, '/research/seed-openevo/study/');
+const experiment = experimentId ? OPEN_EVO_EXPERIMENTS.find((item) => item.id === experimentId) : undefined;
+if (experimentId && !experiment) throw new Error(`Missing experiment context for ${experimentId}`);
+const experimentPrimaryRoute = experiment?.primaryHref
+  .replace('/research/seed-openevo/study/capability-exploration/', '')
+  .replace(/\/$/, '');
+const isExperimentHub = Boolean(experiment && route === experimentPrimaryRoute);
 const task = compact
   ? (zh ? 'WebShop：按要求搜索、选规格、购买商品。' : 'WebShop: search, choose options, and buy the requested product.')
   : (zh ? 'WebShop 是模拟购物任务：模型读取页面，选择搜索、选规格或购买等动作。OpenEvo 研究怎样把这些经验用于后续尝试。' : 'WebShop is a simulated shopping task: the model reads pages and chooses actions such as searching, selecting options, or purchasing. OpenEvo studies how that experience can inform later attempts.');
@@ -20,8 +28,21 @@ const compactPurpose = route === 'first-run'
       : record.purpose[locale];
 const purpose = compact ? compactPurpose : record.purpose[locale];
 ---
-<aside class="research-route-context" data-compact={compact ? 'true' : undefined} data-reader-route={route} data-reader-coverage={record.coverage} data-reader-context aria-label={zh ? '任务与研究位置' : 'Task and research context'}>
-  <p class="research-route-context__location"><a href={root}>{zh ? '能力探索' : 'Capability exploration'}</a><span aria-hidden="true"> / </span><strong>{record.label[locale]}</strong></p>
+<aside class="research-route-context" data-compact={compact ? 'true' : undefined} data-reader-route={route} data-reader-coverage={record.coverage} data-reader-context data-experiment-context={experiment ? 'true' : undefined} data-experiment-id={experiment?.id} aria-label={zh ? '任务与研究位置' : 'Task and research context'}>
+  <p class="research-route-context__location">
+    {experiment ? (
+      <>
+        <a href={studyRoot}>{zh ? '实验目录' : 'Experiment index'}</a><span aria-hidden="true"> / </span>
+        {isExperimentHub ? (
+          <strong>{experiment.title[locale]}</strong>
+        ) : (
+          <><a href={localePath(locale, experiment.primaryHref)}>{experiment.title[locale]}</a><span aria-hidden="true"> / </span><strong>{record.label[locale]}</strong></>
+        )}
+      </>
+    ) : (
+      <><a href={root}>{zh ? '能力探索' : 'Capability exploration'}</a><span aria-hidden="true"> / </span><strong>{record.label[locale]}</strong></>
+    )}
+  </p>
   <p data-reader-task>{task}</p>
   <p data-reader-purpose>{purpose}</p>
 </aside>

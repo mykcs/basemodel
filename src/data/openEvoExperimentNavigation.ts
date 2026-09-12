@@ -9,6 +9,12 @@ export type ExperimentChildRole =
   | 'evidence';
 
 export type ExperimentStatus = 'historical' | 'completed';
+export type OpenEvoExperimentId =
+  | 'gate-no-update'
+  | '7b-long-run'
+  | 'successor-3b-1p7b'
+  | 'gdr-v1-1p7b'
+  | 'directapply-1p7b';
 
 export interface OpenEvoExperimentChildLink {
   role: ExperimentChildRole;
@@ -17,7 +23,7 @@ export interface OpenEvoExperimentChildLink {
 }
 
 export interface OpenEvoExperimentNavigationItem {
-  id: string;
+  id: OpenEvoExperimentId;
   number: string;
   title: LocalizedCopy;
   summary: LocalizedCopy;

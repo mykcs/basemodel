@@ -60,7 +60,7 @@
 
 目标不是把旧页面全部搬目录，而是让读者从任何实验页都能回答：**我在哪次实验里、这是结果还是分析、下一步回哪里。**
 
-- [ ] 为五个实验建立统一的实验 Hub / context 结构；优先复用一个共享组件，不在每页复制导航 HTML。
+- [x] 为五个实验建立统一的实验 Hub / context 结构；优先复用一个共享组件，不在每页复制导航 HTML。证据：现有 `ResearchRouteContext.astro` 新增类型化 `experimentId`，统一渲染“实验目录 / 所属实验 / 当前页面”层级并暴露 `data-experiment-id`；五个 canonical 实验入口的中英文页面都显式绑定对应 experiment id，没有新建第二套导航组件。定向 Vitest 9/9 PASS，`npm run check` 0 errors / 0 warnings（仅 2 个既有 deprecation hints），`npm run build` PASS（506 routes）；真实浏览器核验 GDR-v1 桌面与 DirectApply 390×844 手机页面均显示正确 experiment id / breadcrumb 且无 root overflow。
 - [ ] 每个实验 Hub 至少包含：实验名称、为什么做、实验结果入口、由该实验引出的分析、原始证据/历史入口。
 - [ ] 现有 `ResearchRouteContext.astro` / capability reader map 若承担相同职责，优先改造或复用，避免第二套导航系统。
 - [ ] 子分析页提供返回所属实验的明确入口；跨实验页面可链接多个实验，但只能有一个 canonical 内容 owner。
@@ -144,7 +144,7 @@
 ## 10. 当前执行快照（2026-09-13）
 
 - 当前 MVP：Experiment-first Study 首页代码已实现，中英文共用一个实验树组件。
-- 当前科学结构：五实验入口已经落地；现有子页面尚未全部迁移到机器可读的统一映射，所以第二阶段仍未完成。
+- 当前科学结构：五个实验的机器可读子页面归属已经完成；第三阶段已建立统一 experiment context 骨架，下一步是让各子分析页继承所属实验并完善 Hub 内的结果/分析/证据入口。
 - 当前验证：定向结构测试、Astro check、build、桌面/手机/dark 冒烟与 Reader Contract 定向测试已通过；完整跨浏览器矩阵已使用空闲端口完成，Chromium + WebKit 共 414 / 414 PASS。
 - 当前 Git / PR 状态：分支 `feat/experiment-first-study-nav-20260912` 已推送，PR #661 已打开；首个实现提交为 `8671e0d1106ca8acebbe3414fcfe3e2ec404898b`。
 - 当前自动执行：每小时任务已启用，并指向本 Markdown 作为唯一 checklist authority。
