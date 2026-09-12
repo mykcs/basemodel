@@ -1,6 +1,7 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoSdLoraScaling from '../../../../../../components/research/OpenEvoSdLoraScaling.astro';
+import OpenEvoSdLoraHistorySeriesNav from '../../../../../../components/research/OpenEvoSdLoraHistorySeriesNav.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
@@ -9,4 +10,5 @@ const locale = 'zh' as const;
   locale={locale}
 >
   <OpenEvoSdLoraScaling locale={locale} />
+  <OpenEvoSdLoraHistorySeriesNav locale={locale} />
 </AppLayout>

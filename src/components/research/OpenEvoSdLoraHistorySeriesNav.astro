@@ -1,0 +1,44 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+import { SD_LORA_HISTORY_OVERVIEW_ROUTE, SD_LORA_HISTORY_SERIES } from '../../data/sdLoraHistorySeries';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const root = '/research/seed-openevo/study/capability-exploration/';
+const neutral = Astro.url.pathname.replace(/^\/en(?=\/|$)/, '').replace(/\/+$/, '');
+const current = neutral.split('/').at(-1) || SD_LORA_HISTORY_OVERVIEW_ROUTE;
+const entries = [
+  { route: SD_LORA_HISTORY_OVERVIEW_ROUTE, number: '00', title: t('专题总览', 'Series overview') },
+  ...SD_LORA_HISTORY_SERIES.map((item) => ({ route: item.route, number: item.number, title: item.title[locale] })),
+];
+const currentIndex = entries.findIndex((item) => item.route === current);
+const previous = currentIndex > 0 ? entries[currentIndex - 1] : undefined;
+const next = currentIndex >= 0 && currentIndex < entries.length - 1 ? entries[currentIndex + 1] : undefined;
+const hrefFor = (route: string) => p(`${root}${route}/`);
+---
+<nav class="series-nav" data-sdlora-series-nav aria-label={t('SD-LoRA 专题导航', 'SD-LoRA series navigation')}>
+  <div class="series-nav__return">
+    <a href={p(root)}>← {t('返回能力探索', 'Back to capability exploration')}</a>
+    <span aria-hidden="true">/</span>
+    <a href={hrefFor(SD_LORA_HISTORY_OVERVIEW_ROUTE)}>{t('SD-LoRA 历史专题', 'SD-LoRA history series')}</a>
+  </div>
+  <div class="series-nav__chapters">
+    {entries.map((item) => (
+      <a href={hrefFor(item.route)} aria-current={item.route === current ? 'page' : undefined}>
+        <span>{item.number}</span>{item.title}
+      </a>
+    ))}
+  </div>
+  {(previous || next) && <div class="series-nav__pager">
+    {previous ? <a href={hrefFor(previous.route)}>← {previous.number} · {previous.title}</a> : <span></span>}
+    {next ? <a href={hrefFor(next.route)}>{next.number} · {next.title} →</a> : <span></span>}
+  </div>}
+</nav>
+<style>
+.series-nav{width:min(1120px,calc(100% - 2rem));margin:1rem auto 1.5rem;padding:.8rem 0;border-block:1px solid var(--line)}
+.series-nav__return,.series-nav__chapters,.series-nav__pager{display:flex;align-items:center;gap:.6rem}.series-nav__return{font-size:1rem}.series-nav a{color:var(--accent-deep);text-underline-offset:.2em}.series-nav a:focus-visible{outline:2px solid var(--accent-deep);outline-offset:3px}.series-nav__chapters{margin-top:.7rem;overflow-x:auto;padding:.1rem 0 .35rem;scrollbar-width:thin}.series-nav__chapters a{display:flex;flex:0 0 auto;gap:.35rem;align-items:center;min-height:42px;padding:.45rem .6rem;border:1px solid var(--line);border-radius:var(--radius-panel);color:var(--muted);font-size:1rem;text-decoration:none;white-space:nowrap}.series-nav__chapters a span{font:800 .78rem/1 var(--font-mono);color:var(--accent-deep)}.series-nav__chapters a[aria-current='page']{border-color:var(--accent-deep);color:var(--ink);background:var(--surface-muted)}.series-nav__pager{justify-content:space-between;margin-top:.65rem;font-size:1rem}.series-nav__pager a:last-child{text-align:right}@media(max-width:680px){.series-nav{width:min(100% - 1rem,1120px)}.series-nav__return{flex-wrap:wrap}.series-nav__pager{align-items:flex-start}.series-nav__pager a{max-width:48%}}
+</style>

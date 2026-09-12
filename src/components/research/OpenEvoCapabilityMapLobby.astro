@@ -21,6 +21,7 @@ const stage1EvolutionHref = p('/research/seed-openevo/study/capability-explorati
 const stage2AnalysisHref = p('/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/');
 const mechanismHref = p('/research/seed-openevo/study/capability-exploration/mechanism-1-0/');
 const vanillaSdLoraHref = p('/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/');
+const sdLoraHistoryHref = p('/research/seed-openevo/study/capability-exploration/sd-lora-history/');
 const gdrDirectApplyHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
 const directApplyAnalysisHref = p('/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/');
 const sdLoraScalingHref = p('/research/seed-openevo/study/capability-exploration/sd-lora-scaling/');
@@ -98,6 +99,15 @@ const steps = zh ? [
 
     </div>
     <a href={directApplyAnalysisHref}>{t('查看完整实验分析 →', 'Open the complete experiment analysis →')}</a>
+  </aside>
+
+  <aside class="map-lobby__latest-evidence" data-latest-evidence="sd-lora-history-series">
+    <div>
+      <p class="map-lobby__latest-evidence-meta">2026-09-12 · {t('新专题入口', 'New research series')}</p>
+      <strong>{t('SD-LoRA：从不断增长的历史，到固定大小的学习状态', 'SD-LoRA: from growing history to a fixed-size learning state')}</strong>
+      <p>{t('把 Vanilla 机制、计算变慢、严格等价、历史新颖度、当前函数、未来学习与 bounded state 拆成七个连续问题。已完成的页面保留原证据；后续科学页先建立入口，结果按实验逐步填入。', 'Follow seven connected questions: Vanilla mechanics, compute scaling, strict equivalence, history novelty, present function, future learning, and bounded state. Existing evidence stays intact; later scientific pages start as navigable shells and gain results only as experiments close.')}</p>
+    </div>
+    <a href={sdLoraHistoryHref}>{t('进入 SD-LoRA 专题总览 →', 'Open the SD-LoRA series →')}</a>
   </aside>
 
   <aside class="map-lobby__latest-evidence map-lobby__latest-evidence--compute" data-latest-evidence="sd-lora-scaling">
