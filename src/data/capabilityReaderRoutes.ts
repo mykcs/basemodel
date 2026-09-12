@@ -136,8 +136,8 @@ export const CAPABILITY_READER_ROUTES = [
       "en": "DirectApply complete analysis"
     },
     "purpose": {
-      "zh": "把 DirectApply 的完整 160 轮训练、一次冻结终评、历史同题诊断和 D1 参数方向压缩放在同一条证据链里；训练分数、final 与参数几何保持不同证据层。",
-      "en": "Connect the full 160-round DirectApply trajectory, one frozen final, historical same-task diagnostics, and D1 parameter-direction compression in one evidence chain while keeping training scores, final evaluation, and parameter geometry as distinct evidence layers."
+      "zh": "把 DirectApply 的完整 160 轮训练、可靠性与覆盖变化、R127→R128 同题行为、四种学习载体、SD-LoRA component-count latency、一次冻结终评和 D1 参数压缩放在同一条证据链里，并明确区分真实结果、工程机制和仍未执行的下一代设计。",
+      "en": "Connect the full 160-round DirectApply trajectory, reliability versus coverage, R127→R128 same-task behavior, the four learning carriers, SD-LoRA component-count latency, the one frozen final, and D1 compression in one evidence chain while separating measured results, engineering mechanisms, and still-prospective redesigns."
     }
   },
   {
