@@ -91,6 +91,24 @@ A visualization is justified only when it improves at least one of these:
 
 If it only makes the page look busier, do not add it.
 
+### 3.1 Non-linear flow diagrams require a use-site topology witness
+
+When the semantic shape includes a **branch, side input, feedback loop, dependency, or explicit diagram requirement**, extend the Page Expression Brief with a compact `FLOW-WITNESS` before implementation:
+
+- **Main path** — the ordered nodes a reader should follow first.
+- **Side branches / side inputs** — where each non-mainline path leaves or joins the main path.
+- **Return / terminal** — the real return edge for a loop, or the explicit terminal state when the path stops.
+- **Connector carrier** — which semantic HTML / CSS / SVG structure actually carries the relationship.
+- **Rendered topology acceptance** — what browser-visible evidence will prove the relationship exists on desktop and narrow layouts.
+
+A simple linear procedure may still be an ordinary `<ol>`; do not over-engineer it into a graph. But **card adjacency, columns, duplicated step prose, or character arrows inside text do not prove a non-linear flow**. If the meaning depends on a return edge or branch, that relationship must exist in the static rendered structure rather than only in the reader's reconstruction.
+
+For non-linear flows, at least one executable rendered assertion must test topology rather than only text presence. Acceptable witnesses include a required connector / return edge in the DOM or SVG, an endpoint relationship, or ordered node geometry at representative desktop and mobile widths. A test that only counts cards, finds labels, or checks that all step strings exist is insufficient evidence that the flow is visually recoverable.
+
+When the **same mechanism** must serve both a web explainer and a reusable 16:9 slide, prefer one canonical semantic visual owner or shared semantic source. A separate summary canvas plus a second equally dominant diagram is justified only when they answer different reader tasks; otherwise it creates competing primary centers and makes the reader learn the mechanism twice.
+
+Historical enforcement case: [`../history/2026-09-12-vanilla-sd-lora-html-flow-conversation-closeout.md`](../history/2026-09-12-vanilla-sd-lora-html-flow-conversation-closeout.md).
+
 ---
 
 ## 4. Treat information density as a designed budget
