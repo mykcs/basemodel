@@ -188,7 +188,7 @@ Historical cases: [`benchmark causality`](../history/2026-09-06-circleci-benchma
 1. Pin the PR number, exact watched/accepted head SHA, named required checks, notification thresholds, and whether merge is currently authorized.
 2. Perform an immediate live read before creating any watcher. If the requested condition is already true, report it immediately; if the head no longer matches, stop rather than silently retargeting. Only install a real future condition watch when the condition remains pending and the environment actually supports background monitoring.
 3. Compare the candidate head with current intended `main`.
-4. Classify intervening changes by file, contract, provider config, research state, and shared UI ownership.
+4. Classify intervening changes by file, contract, provider config, research state, and shared UI ownership. If the drift changed bootstrap/current governance or release-gate owners, re-read those changed owners before the next provider/merge action; merely merging newer authority files into the branch does not activate them.
 5. Keep one live semantic candidate through independent drift; synchronize that candidate when current-base policy requires it. Create a successor only when semantics, routing, or authority changes.
 6. Before an expensive final run, inspect other near-merge PRs that can advance the same base and choose a stable closeout window.
 7. Re-run the checks required by the **current** protection/provider contract on the accepted head, plus any overlap-affected checks.

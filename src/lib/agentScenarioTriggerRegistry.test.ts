@@ -86,6 +86,12 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('not permission to rerun the unrelated full 205-case final matrix');
   });
 
+  it('keeps content-bearing shell arguments behind a separate quoting boundary', () => {
+    expect(registry).toContain('backticks, `$()` / `${...}`');
+    expect(registry).toContain('non-trivial quoting by default');
+    expect(registry).toContain('A correct outer Bash interpreter does not make nested content quoting safe');
+  });
+
   it('requires stale remembered plans to refresh against current truth', () => {
     expect(registry).toContain('Treat remembered/chat state as a hypothesis');
     expect(registry).toContain('If live/executable truth contradicts a `current/` doc, update or demote that doc');
@@ -97,8 +103,11 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('read the provider\'s real execution state');
     expect(registry).toContain('`ignored/skipped/canceled` is not Preview acceptance');
     expect(registry).toContain('provider READY remains separate from visual/product acceptance');
+    expect(registry).toContain('merely merging newer authority files into the branch does not activate them');
     expect(registry).toContain('continue until complete');
     expect(registry).toContain('Do not end the task at `pending`');
+    expect(releaseCloseout).toContain('base-refresh authority witness');
+    expect(releaseCloseout).toContain('Missing exact-head hosted acceptance is actionable topology, not passive pending');
     expect(websiteSpec).toContain('ELI5 要扫完整个可见表面，不只扫正文');
   });
 

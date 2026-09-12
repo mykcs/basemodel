@@ -1,6 +1,6 @@
 # Exact-head release closeout protocol
 
-Last reviewed: **2026-09-08**
+Last reviewed: **2026-09-12**
 
 Status: **current**
 Audience: coding Agents, review Agents, integration Agents, release Agents
@@ -261,9 +261,11 @@ Before an expensive final Gate:
 1. inspect open/recent PRs that are likely to merge into the same base and choose a reasonably stable acceptance window;
 2. keep one live candidate PR for one semantic root fix;
 3. when `main` advances, compare the intervening paths/contracts with the candidate's semantic diff;
-4. for provably independent drift, update/synchronize the same candidate branch when repository policy requires current-base freshness, preserving the semantic contribution;
-5. rerun the checks required by the **current** branch-protection/provider contract, plus any checks affected by overlap;
-6. create a successor PR only when the semantic scope, release routing, authority owner, or acceptance topology actually changes.
+4. if that drift touches bootstrap/current governance or release-gate owners (`AGENTS.md`, `docs/agents/current/**`, `vercel.json`, `scripts/request-vercel-final-gate.mjs`, or required-check/provider configuration), treat it as **authority drift**: re-read the changed owner(s) and executable gate before the next provider or merge action. Git-merging a newer rule into the candidate is not evidence that the Agent activated it;
+5. record a compact **base-refresh authority witness**: prior base -> current base; whether authority/gate-owner paths changed; owners re-read; allowed next action; invalidation cue. This is a use-site check, not a new approval layer;
+6. for provably independent drift, update/synchronize the same candidate branch when repository policy requires current-base freshness, preserving the semantic contribution;
+7. rerun the checks required by the **current** branch-protection/provider contract, plus any checks affected by overlap;
+8. create a successor PR only when the semantic scope, release routing, authority owner, or acceptance topology actually changes.
 
 A current-base refresh may change ancestry without changing the semantic fix. Keep those claims separate. Do not manufacture a chain of `#N -> #N+1 -> #N+2` successors solely because unrelated documentation merged while CI was running.
 
@@ -294,6 +296,7 @@ Rules:
 4. **A later merge instruction changes authorization, not evidence identity.** Treat an explicit later “merge” as a new mutation authorization. Immediately re-run the Section 7 live race-check and then use the Section 8 expected-head guard when supported; do not merge from the earlier readiness sentence.
 5. **No fake background work.** If the environment cannot install a real future condition watch, say so instead of promising to monitor asynchronously. If it can, install the watch only after the immediate live read proves the condition is still pending.
 6. **`Continue until complete` is synchronous unless the owner asked for future delivery.** When the current session can keep polling a required provider/check, continue live reads until that exact SHA reaches a terminal state, the head/base identity changes, or a concrete blocker prevents further progress. Do not stop at `pending` merely because the check is slow, and do not turn an in-session completion request into an implied background promise.
+7. **Missing exact-head hosted acceptance is actionable topology, not passive pending.** If the candidate is already ready for hosted acceptance, ordinary PR refs are intentionally non-deploying, and no exact-head Vercel acceptance object exists yet, run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>` before switching into poll-only mode. Only poll once the persistent final-gate request has actually produced the exact-head provider object; “Vercel remains” is not a terminal closeout state when the request itself is still actionable.
 
 Anti-examples:
 
