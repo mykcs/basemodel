@@ -60,6 +60,24 @@ describe('human-thinking web expression contract', () => {
     expect(expressionContract).toContain('If it only makes the page look busier, do not add it.');
   });
 
+  it('requires topology-specific evidence for non-linear flows instead of card/text presence', () => {
+    for (const required of [
+      'FLOW-WITNESS',
+      '**Main path**',
+      '**Side branches / side inputs**',
+      '**Return / terminal**',
+      '**Connector carrier**',
+      '**Rendered topology acceptance**',
+    ]) {
+      expect(expressionContract).toContain(required);
+    }
+    expect(expressionContract).toContain('card adjacency, columns, duplicated step prose, or character arrows inside text do not prove a non-linear flow');
+    expect(expressionContract).toContain('A test that only counts cards, finds labels, or checks that all step strings exist is insufficient evidence');
+    expect(uiGate).toContain('Scenario H — all nodes exist, but the flow is not visually recoverable');
+    expect(uiGate).toContain('actual topology');
+    expect(uiGate).toContain('real connector / return edge');
+  });
+
   it('protects density layers, whole-page flow, and the downstream visual gate', () => {
     expect(expressionContract).toContain('L0 orientation');
     expect(expressionContract).toContain('L1 primary path');

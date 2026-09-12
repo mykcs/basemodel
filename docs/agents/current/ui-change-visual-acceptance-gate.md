@@ -170,6 +170,24 @@ Required falsification:
 - verify the static route, numbering, arrows, and labels still communicate order;
 - animation may reinforce flow, never define it.
 
+### Scenario H — all nodes exist, but the flow is not visually recoverable
+
+Predicted failure:
+
+- every step/card and label is present, but the reader must infer direction from prose or proximity;
+- a feedback loop says “next round” in text but has no real return edge;
+- replay, diagnostics, or another side input appears as an equal card instead of visibly joining/leaving the owning step;
+- desktop order is understandable while the narrow layout destroys the same topology;
+- two equally dominant summaries/diagrams make the reader choose between competing versions of the same mechanism.
+
+Required falsification:
+
+- identify the main route from the static rendered surface before relying on body prose;
+- when meaning includes a branch or loop, assert a real connector / return edge rather than only node text;
+- add at least one browser assertion for the **actual topology**: connector/edge existence or endpoint relationship, or ordered node geometry at representative desktop and mobile widths;
+- keep text/content assertions, but do not use card count or label presence as the sole proof that a process “flows”;
+- when one mechanism is reused as both page visual and slide, verify there is one primary visual owner unless the two surfaces deliberately answer different reader tasks.
+
 ---
 
 ## 3. Required acceptance matrix
