@@ -17,6 +17,7 @@ const seedExperimentModelHref = localePath(locale, '/models/qwen2-5-3b-instruct/
     <h1>{m.modelsIndex.pageTitle}</h1>
     <p class="lede">{m.modelsIndex.lede}</p>
     <p><a class="button button-primary" href="#model-browser">{locale === 'zh' ? '开始筛选模型 ↓' : 'Start filtering models ↓'}</a></p>
+    <p class="models-entry__preview">{locale === 'zh' ? '筛选后可直接比较参数规模、开放权重、单卡运行、LoRA 微调和强化学习适用性。' : 'Filtering lets you compare parameter scale, open weights, single-GPU use, LoRA fine-tuning, and reinforcement-learning fit.'}</p>
     <details class="models-entry-more">
       <summary>{locale === 'zh' ? '展开其他浏览方式 ↓' : 'Show other ways to browse ↓'}</summary>
       <div class="models-page-quick-entry" aria-label={locale === 'zh' ? '模型区域入口' : 'Model area entry points'}>
@@ -27,7 +28,8 @@ const seedExperimentModelHref = localePath(locale, '/models/qwen2-5-3b-instruct/
       </div>
     </details>
   </header>
-  <CatalogFreshnessNotice locale={locale} showSignals={true} />
+  <CatalogFreshnessNotice locale={locale} compact={true} />
+  <p class="models-catalog-evidence-link"><a class="text-link" href={localePath(locale, '/data-status/')}>{locale === 'zh' ? '查看目录更新记录与完整核验依据' : 'See catalog update history and full verification evidence'} →</a></p>
   <section class="models-research-model" aria-labelledby="models-research-model-title">
     <h2 id="models-research-model-title">{locale === 'zh' ? '本研究使用的实验模型' : 'Experiment model used in this study'}</h2>
     <p>{locale === 'zh' ? 'Qwen2.5-3B-Instruct 用于本研究的 SEED 基准复现与 OpenEVO 演化实验；模型记录同时列出复现实验字段和公平比较时需要固定的变量。' : 'Qwen2.5-3B-Instruct is used for this study’s SEED benchmark reproduction and OpenEVO evolution experiments; its model record also lists the reproduction fields and variables that must be held fixed for fair comparison.'}</p>
@@ -45,5 +47,5 @@ const seedExperimentModelHref = localePath(locale, '/models/qwen2-5-3b-instruct/
 
 <style>
   .models-research-model{max-width:880px;margin:0 0 2rem;padding:1rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.models-research-model h2{margin:0;font-size:1.1rem}.models-research-model p{max-width:68ch;margin:.45rem 0;color:var(--muted);font-size:.82rem;line-height:1.6}.models-research-model a{font-size:.82rem;font-weight:750}
-  .models-entry{box-sizing:border-box;min-height:calc(100svh - 110px);display:flex;flex-direction:column;justify-content:center;max-width:880px}.models-entry .lede{max-width:58ch}.models-entry-more{max-width:720px;margin-top:.8rem;border-top:1px solid var(--line)}.models-entry-more>summary{width:max-content;max-width:100%;padding:.7rem 0;color:var(--muted);font-size:.84rem;font-weight:700;cursor:pointer;list-style:none}.models-entry-more>summary::-webkit-details-marker{display:none}.models-entry-more[open]>summary{color:var(--ink)}@media(max-width:720px){.models-entry{min-height:calc(100svh - 96px)}}
+  .models-entry{box-sizing:border-box;min-height:clamp(420px,62svh,620px);display:flex;flex-direction:column;justify-content:center;max-width:880px}.models-entry .lede{max-width:58ch}.models-entry__preview{max-width:64ch;margin:.55rem 0 0;color:var(--muted);font-size:.82rem;line-height:1.55}.models-catalog-evidence-link{max-width:880px;margin:-.4rem 0 1.1rem;font-size:.8rem}.models-entry-more{max-width:720px;margin-top:.8rem;border-top:1px solid var(--line)}.models-entry-more>summary{width:max-content;max-width:100%;padding:.7rem 0;color:var(--muted);font-size:.84rem;font-weight:700;cursor:pointer;list-style:none}.models-entry-more>summary::-webkit-details-marker{display:none}.models-entry-more[open]>summary{color:var(--ink)}@media(max-width:720px){.models-entry{min-height:clamp(360px,58svh,520px)}}
 </style>
