@@ -1,0 +1,14 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvoQ17DirectApplyAnalysis from '../../../../../../components/research/OpenEvoQ17DirectApplyAnalysis.astro';
+import ResearchRouteContext from '../../../../../../components/research/ResearchRouteContext.astro';
+const locale = 'zh' as const;
+---
+<AppLayout
+  title="DirectApply 完整实验分析"
+  description="Qwen3-1.7B DirectApply / No-GDR 的完整 160 轮训练、冻结 128 题终评，以及 D1 参数方向压缩与行为保持分析。"
+  locale={locale}
+>
+  <ResearchRouteContext locale={locale} route="q17-directapply-analysis" compact />
+  <OpenEvoQ17DirectApplyAnalysis locale={locale} />
+</AppLayout>
