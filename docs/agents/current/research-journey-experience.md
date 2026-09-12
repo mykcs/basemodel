@@ -41,6 +41,18 @@ The dedicated WebShop and ALFWorld pages keep the interactive, scroll-following 
 
 `/research/seed-openevo/study/` owns experiment state, study framing, evidence, source references, and live-state resolution. It uses a compact concept index rather than embedding method/environment figures.
 
+## Canonical complete-experiment analysis route
+
+When one experiment or lineage accumulates enough evidence that a reader would otherwise have to reconstruct it by hopping among a briefing, result index, diagnostics, and mechanism pages, give that experiment **one canonical long-form analysis route**.
+
+Use this role when the same scientific object now has several of these layers: full training trajectory, one formal/frozen final evaluation, historical diagnostics, ablations, post-run parameter analysis, or mechanism-level interpretation. The canonical page should connect those layers into one evidence chain instead of continuing to pack the briefing with detail.
+
+The canonical analysis page does **not** absorb every other route. A briefing stays a concise presentation; a reusable mechanism keeps its own explainer; a dated diagnostic stays historical evidence. Those surfaces summarize or link to the canonical analysis page, while the canonical page links back to the closest evidence and specialist explainers.
+
+If authoritative late-stage evidence is ready before the earlier story has been fully reconstructed, publish the supported later sections first. Mark the unreconstructed earlier portion explicitly as incomplete or pending reconstruction; do not invent chronology, suppress the finished later analysis, or delay a valid final/diagnostic section merely to make the page look narratively complete.
+
+The first viewport should identify the concrete experiment and expose the decisive endpoint plus the most important interpretation/boundary. Keep evidence layers distinct: training-process score is not frozen final score; a historical panel is not a current final panel; geometric parameter similarity is not automatically behavioral equivalence.
+
 ### Reproduction guide
 
 `/research/seed-openevo/study/run/` stays execution-first: machine/code boundary, numbered gates, commands, expected evidence, and troubleshooting. Conceptual diagrams are references, not repeated content.

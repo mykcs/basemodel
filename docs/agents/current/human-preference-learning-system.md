@@ -314,6 +314,18 @@ A PASS requires exact Git SHA + rendered URL, a real blind-first ordering, compl
 
 Browser/structural PASS still does not prove human comprehension.
 
+### Reviewer unavailability is not an independent verdict
+
+The reviewer identity in a judge receipt is evidence, not a label the author can fill in for convenience.
+
+- Authentication failure, timeout, repeated reconnect, wrong invocation, or an empty/no-verdict response means the independent review is **unavailable / NOT_EXECUTED**.
+- A self-authored cold-read note may still help iteration, but it cannot be relabeled as `independent-agent` and cannot satisfy the independent judge receipt.
+- Never fill missing preference judgments from the author's own expectation merely to make `feedback:judge` pass.
+- If the current task/contract requires an independent judge, no independent verdict means no judge PASS. If the judge is optional, continue the deterministic/browser acceptance that still applies and report the independent-review gap literally.
+- Exact CLI flags, temporary authentication state, retry counts, and one provider outage are execution state; do not promote them into preference policy.
+
+This boundary protects the meaning of the receipt: the reviewer field must describe who actually returned the verdict.
+
 ## 11. Feedback ingestion lifecycle
 
 When the owner gives new direct feedback:
