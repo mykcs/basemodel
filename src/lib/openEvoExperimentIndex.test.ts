@@ -16,6 +16,15 @@ describe('experiment-first Study index', () => {
     expect(source).toContain('experiment.childLinks.map');
   });
 
+  it('keeps the historical gate-failure experiment attached to its blocked-update analysis and first-run evidence', () => {
+    const gateFailure = OPEN_EVO_EXPERIMENTS.find((item) => item.id === 'gate-no-update');
+    expect(gateFailure?.primaryHref).toBe('/research/seed-openevo/study/capability-exploration/stage2-256-window/');
+    expect(gateFailure?.childLinks).toEqual(expect.arrayContaining([
+      expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/stage2-256-window/' }),
+      expect.objectContaining({ role: 'history', href: '/research/seed-openevo/study/capability-exploration/first-run/' }),
+    ]));
+  });
+
   it('keeps the five experiment parents and key lineage/analysis children', () => {
     const titles = OPEN_EVO_EXPERIMENTS.map((item) => item.title.zh);
     expect(titles).toEqual([

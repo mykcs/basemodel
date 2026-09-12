@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { OPEN_EVO_EXPERIMENTS } from '../data/openEvoExperimentNavigation';
 
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 const studyZh = read('src/pages/research/seed-openevo/study/index.astro');
@@ -27,8 +28,8 @@ describe('study overview information architecture', () => {
       for (const owner of formerHomepageOwners) expect(page).not.toContain(owner);
     }
     expect((experimentIndex.match(/<h1\b/g) ?? []).length).toBe(1);
-    expect(experimentIndex).toContain('训练跑了很久，但参数一直没有更新');
-    expect(experimentIndex).toContain('1.7B · DirectApply / No-GDR 实验');
+    expect(OPEN_EVO_EXPERIMENTS.map((item) => item.title.zh)).toContain('训练跑了很久，但参数一直没有更新');
+    expect(OPEN_EVO_EXPERIMENTS.map((item) => item.title.zh)).toContain('1.7B · DirectApply / No-GDR 实验');
     for (const required of [
       'OpenEVO (Harness) · WebShop 数据集实验',
       '和 SEED 对照',
