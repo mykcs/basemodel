@@ -348,8 +348,9 @@ When the owner gives new direct feedback:
 8. update a Silver/Golden/Rejected visual reference only when evidence supports the tier;
 9. update Preference Model / Gold Pair only when the abstraction is reusable and scoped;
 10. scan sibling surfaces by failure mechanism;
-11. add deterministic protection only for mechanically detectable invariants;
-12. run Preference Brief → internal candidates → blind cold read → preference compare on the next material task.
+11. before claiming that a reusable preference is institutionalized, run a small **transfer validation**: inspect at least one sibling surface likely to share the mechanism and one unrelated positive-control or route-role exception. Classify each as `PASS / REVIEW / FAIL` from current source/render evidence. A CASE, Preference Model rule, reader contract, or green audit proves the rule exists; it does not by itself prove semantic transfer. Do not mass-fix lexical hints such as `先…`, eyebrows, cards, or `overflow-x:auto`; preserve legitimate sequence, state, provenance, operational, archive, and presentation-role exceptions;
+12. add deterministic protection only for mechanically detectable invariants;
+13. run Preference Brief → internal candidates → blind cold read → preference compare on the next material task.
 
 ## 12. Anti-overfitting rules
 

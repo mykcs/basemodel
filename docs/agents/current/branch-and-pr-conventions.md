@@ -93,6 +93,14 @@ A successful GitHub login and a functioning local Git credential helper are dist
 
 Historical case: [`../history/2026-09-02-official-external-brand-links-retrospective.md`](../history/2026-09-02-official-external-brand-links-retrospective.md).
 
+## Opening a pull request
+
+Before calling a PR-create mutation, prove the proposed head already exists in the remote repository and contains the intended commit(s) relative to the selected base. For a normal same-repository PR, the safe order is: resolve current base -> create the semantic task branch from that base -> commit/push the task content -> verify the remote head and non-empty base...head delta -> open the PR.
+
+A provider response such as `422 invalid head` or `no commits between base and head` means the PR mutation did **not** execute. Re-read the remote refs/delta, repair only the missing branch/commit/ref state, then retry the same intended PR. Do not switch bases, create probe PRs, or weaken repository policy merely to make the request succeed.
+
+For a deliberately long-running checklist/audit workline, the first PR may be Draft, but it still needs a real remote branch and an initial committed checklist before the PR is opened.
+
 ## Lifecycle and cleanup
 
 - Do not rename historical or active branches merely to satisfy this convention.
