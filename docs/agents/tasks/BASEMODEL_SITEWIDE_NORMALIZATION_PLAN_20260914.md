@@ -91,9 +91,9 @@ PR #669 的 `SITEWIDE_FIRST_PRINCIPLES_DESIGN_TRANSFER_AUDIT_20260913.md` 是重
 - [x] WebShop 作为正对照：对象优先，先解释 benchmark、研究用途和评分，再进入机制与数据细节。
 - [x] Capability landing 冷读：当前首屏已经先给 DirectApply 160 轮、冻结 final 和 R127→R128 解释边界；暂不做大改。
 - [x] SD-LoRA history 冷读：早期 scaffold/施工说明已被近期 main 清掉，不再照旧审计机械重写。
-- [ ] **P0 ALFWorld**：首屏仍是机制优先；H1/lede/reader contract 都应先让零背景读者知道它是什么 benchmark、研究中测什么、评分语义是什么。
-- [ ] **P1 Benchmarks**：`环境 / 证据 / 对比` 与相邻 H2 基本重复，需去除无独立信息量的 hierarchy noise。
-- [ ] **P1 SD-LoRA history**：overview 的 `SD-LoRA 专题总览` eyebrow 与 breadcrumb/H1/专题导航重复；child page 的 `NN / 07` 属于真实序号，必须保留。
+- [x] **P0 ALFWorld**：对象优先入口已修复；H1/lede/reader contract 先说明 benchmark 身份、Agent 行为与评分语义，再进入机制。
+- [x] **P1 Benchmarks**：已移除重复的 `环境 / 证据 / 对比` kicker，保留 `01 / 02 / 03` 顺序与原比较内容。
+- [x] **P1 SD-LoRA history**：overview 重复 eyebrow 已移除；使用 skeleton 的 child page 仍保留 `NN / 07` 真实序号。
 
 当前重叠 PR：
 
@@ -353,17 +353,17 @@ current main
 - [x] 检查 open PR，识别 #687 / #671 / #669 等并行语义 owner。
 - [x] 真实浏览器冷读 WebShop / ALFWorld / Benchmarks / SD-LoRA history / Capability landing。
 - [x] 建立本计划为唯一 checklist authority。
-- [ ] 将本计划提交并 push。
-- [ ] 创建 Draft PR，并把本文件路径写入 PR body。
+- [x] 将本计划提交并 push。
+- [x] 创建 Draft PR，并把本文件路径写入 PR body。
 
 ### 11.2 第一批确定性修复
 
-- [ ] ALFWorld H1 / lede 对象优先。
-- [ ] ALFWorld reader contract 同步。
-- [ ] ALFWorld focused regression。
-- [ ] Benchmarks 重复 kicker 去噪。
-- [ ] SD-LoRA overview 重复 eyebrow 去噪，同时保留 child `NN / 07`。
-- [ ] 中文 + 英文 source parity 冷读。
+- [x] ALFWorld H1 / lede 对象优先。
+- [x] ALFWorld reader contract 同步。
+- [x] ALFWorld focused regression。
+- [x] Benchmarks 重复 kicker 去噪。
+- [x] SD-LoRA overview 重复 eyebrow 去噪，同时保留 child `NN / 07`。
+- [x] 中文 + 英文 source parity 冷读。
 
 ### 11.3 扩展全站审计
 
@@ -374,10 +374,10 @@ current main
 - [ ] Shared-component failure families 完成。
 ### 11.4 验收与发布
 
-- [ ] `audit:reader-contracts` PASS。
+- [x] `audit:reader-contracts` PASS。
 - [ ] `audit:copy:strict` PASS；contextual candidates 被人工分类，不冒充 0 design debt。
 - [ ] `audit:human-feedback` PASS。
-- [ ] Type/Astro `check` PASS。
+- [x] Type/Astro `check` PASS。
 - [ ] Production build PASS。
 - [ ] affected browser suite PASS。
 - [ ] 390 / 768 / 1280×633 / 1440 几何验收 PASS。
@@ -446,9 +446,11 @@ git log --oneline --decorate -10
 | overlap scan | DONE | #687 Q17 chronology；#671 SD-LoRA flow nav；#669 stale sitewide audit |
 | browser cold read | DONE | WebShop PASS control；ALFWorld FAIL；Benchmarks REVIEW；SD-LoRA history REVIEW；Capability landing PASS/no broad rewrite |
 | plan | ACTIVE | 本文件 |
-| implementation | TODO | 后续 commit SHA / tests 填入 |
-| browser acceptance | TODO | 后续 exact-head evidence 填入 |
+| implementation | FIRST BATCH DONE | `87b1fbe5`；focused Vitest 24/24 PASS；`audit:reader-contracts` PASS；Astro/Type check 0 errors |
+| browser acceptance | PARTIAL | 第一批本地 exact-source 冷读：ALFWorld zh/en；Benchmarks zh/en；390/1440 无 root overflow；SD-LoRA overview eyebrow removed，child `04 / 07` preserved；ALFWorld dark-mode smoke PASS |
 | provider acceptance | TODO | 仅 final candidate 后填入 |
+
+第一批实现证据（2026-09-14）：`87b1fbe5bed6fce648ec98c89cf2d3d07123324d`。Focused tests：`sitewideNormalization` 4/4、`interactiveResearchExplainers` 14/14、`siteReaderContracts` 6/6，共 24/24 PASS；`git diff --check`、reader-contract audit、Astro/Type check 均 PASS。浏览器冷读确认 ALFWorld 中英首屏对象优先；Benchmarks 三个重复 kicker 消失且顺序/内容保留；SD-LoRA overview 无重复 eyebrow，skeleton child 仍显示 `04 / 07`。
 
 ## 16. Stopping rule
 
