@@ -15,6 +15,18 @@ const canonical = [
 ] as const;
 
 describe('experiment context hierarchy', () => {
+  it('uses one src/data owner for both the Study index and experiment Hub', () => {
+    const index = read('../components/research/OpenEvoExperimentIndex.astro');
+    const owner = read('../data/openEvoExperimentNavigation.ts');
+    expect(index).toContain("from '../../data/openEvoExperimentNavigation'");
+    expect(context).toContain("from '../../data/openEvoExperimentNavigation'");
+    expect(index).toContain('OPEN_EVO_EXPERIMENTS.map');
+    expect(context).toContain('OPEN_EVO_EXPERIMENTS.find');
+    expect(owner.match(/export const OPEN_EVO_EXPERIMENTS/g)).toHaveLength(1);
+    expect(index).not.toContain('const experiments =');
+    expect(context).not.toContain('const experiments =');
+  });
+
   it('extends the existing research context instead of creating a second navigation system', () => {
     expect(context).toContain("CAPABILITY_READER_ROUTES");
     expect(context).toContain("OPEN_EVO_EXPERIMENTS");
