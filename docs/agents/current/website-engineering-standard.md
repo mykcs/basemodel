@@ -199,6 +199,12 @@ Rules:
 - Heuristic changed-test features may be useful as an early signal but cannot silently replace the final merge/release proof when the tool itself documents incomplete impact inference.
 - Preserve the strongest required acceptance on the exact merge candidate. Do not save minutes by converting a real merge gate into a non-blocking nightly check unless the product-risk contract is deliberately changed.
 
+### Development-only fast deterministic feedback
+
+For ordinary local iteration on a **small set of existing concrete leaf Astro pages**, use `npm run verify:fast` instead of paying the full repository typecheck after every edit. This is allowed only when the executable planner proves that every runtime-affecting change is an existing non-dynamic `src/pages/**/*.astro` leaf page (currently at most four); docs and source-test companions do not widen runtime scope. The fast path uses scoped Astro diagnostics, changed-page ESLint, the complete Vitest suite, and the cheap CSS/copy/Reader/HPL audits.
+
+The boundary is fail-closed: shared components, data/content, dynamic routes, deletes/renames, unknown files, package/config changes, and any fast-gate/planner owner must fall back to `npm run verify:deploy`. `npm run check:watch` is useful for shared-code iteration when a resident whole-project checker is preferable, but it is not release evidence. `verify:fast` and `check:watch` are development feedback only; public GHA, final-candidate Vercel, merge, and Production keep the full deterministic/build/browser contracts unchanged. The dated measurement and acceptance evidence lives in [`../history/2026-09-13-fast-local-gate-experiment.md`](../history/2026-09-13-fast-local-gate-experiment.md).
+
 Provider selection is a separate decision. Before adopting a runner/provider, verify live:
 
 ```text
