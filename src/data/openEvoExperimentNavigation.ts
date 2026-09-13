@@ -119,6 +119,31 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
   },
 ];
 
+
+export const OPEN_EVO_CANONICAL_ROUTE_OWNERS: Readonly<Record<string, OpenEvoExperimentId>> = {
+  'stage2-256-window': 'gate-no-update',
+  'first-run': 'gate-no-update',
+  'stage2-ceiling': '7b-long-run',
+  'stage2-7b-analysis': '7b-long-run',
+  'openevo-2-0': 'successor-3b-1p7b',
+  'openevo-2-0/report': 'successor-3b-1p7b',
+  'openevo-2-0/exploration': 'successor-3b-1p7b',
+  'openevo-2-0/harness-2-0': 'successor-3b-1p7b',
+  'stage1-evolution': 'successor-3b-1p7b',
+  'gdr-directapply': 'gdr-v1-1p7b',
+  'q17-directapply-analysis': 'directapply-1p7b',
+  'q17-directapply-frontier': 'directapply-1p7b',
+  'vanilla-sd-lora': 'directapply-1p7b',
+  'sd-lora-scaling': 'directapply-1p7b',
+  'sd-lora-history': 'directapply-1p7b',
+  'sd-lora-equivalence': 'directapply-1p7b',
+  'sd-lora-history-novelty': 'directapply-1p7b',
+  'sd-lora-present-function': 'directapply-1p7b',
+  'sd-lora-future-learning': 'directapply-1p7b',
+  'sd-lora-bounded-state': 'directapply-1p7b',
+  'text-memory': 'directapply-1p7b',
+};
+
 export const OPEN_EVO_SECONDARY_ROUTES = [
   { label: { zh: '实验流程背景', en: 'Experiment flow background' }, href: '/research/seed-openevo/flow/' },
   { label: { zh: '跨实验结果索引', en: 'Cross-experiment results index' }, href: '/research/seed-openevo/study/results/' },

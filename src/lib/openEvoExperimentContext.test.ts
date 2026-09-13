@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { OPEN_EVO_EXPERIMENTS } from '../data/openEvoExperimentNavigation';
+import { OPEN_EVO_CANONICAL_ROUTE_OWNERS, OPEN_EVO_EXPERIMENTS } from '../data/openEvoExperimentNavigation';
+import { CAPABILITY_READER_ROUTES } from '../data/capabilityReaderRoutes';
 
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const context = read('../components/research/ResearchRouteContext.astro');
@@ -38,6 +39,22 @@ describe('experiment context hierarchy', () => {
     expect(context).toContain('data-hub-group="result"');
     expect(context).toContain('data-hub-group="analysis"');
     expect(context).toContain('data-hub-group="evidence"');
+  });
+
+  it('gives experiment-derived child routes one canonical parent and leaves archive-only routes unclaimed', () => {
+    const experimentIds = new Set(OPEN_EVO_EXPERIMENTS.map((item) => item.id));
+    const declaredRoutes = new Set<string>(CAPABILITY_READER_ROUTES.map((item) => item.route));
+    for (const [route, owner] of Object.entries(OPEN_EVO_CANONICAL_ROUTE_OWNERS)) {
+      expect(declaredRoutes.has(route), route).toBe(true);
+      expect(experimentIds.has(owner), `${route} -> ${owner}`).toBe(true);
+    }
+    for (const route of ['stage2-7b-analysis', 'openevo-2-0/report', 'openevo-2-0/exploration', 'q17-directapply-frontier', 'sd-lora-scaling', 'sd-lora-history', 'text-memory']) {
+      expect(OPEN_EVO_CANONICAL_ROUTE_OWNERS[route], route).toBeDefined();
+    }
+    expect(OPEN_EVO_CANONICAL_ROUTE_OWNERS.archive).toBeUndefined();
+    expect(OPEN_EVO_CANONICAL_ROUTE_OWNERS['stage1-previous']).toBeUndefined();
+    expect(context).toContain('OPEN_EVO_CANONICAL_ROUTE_OWNERS');
+    expect(context).toContain('resolvedExperimentId');
   });
 
   it('binds all five canonical experiment entries in both locales', () => {

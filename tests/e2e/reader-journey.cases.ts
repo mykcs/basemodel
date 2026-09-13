@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { CAPABILITY_READER_ROUTES } from '../../src/data/capabilityReaderRoutes';
-import { OPEN_EVO_EXPERIMENTS } from '../../src/data/openEvoExperimentNavigation';
+import { OPEN_EVO_CANONICAL_ROUTE_OWNERS, OPEN_EVO_EXPERIMENTS } from '../../src/data/openEvoExperimentNavigation';
 import { OPEN_EVO_MECHANISM_EXPERIMENTS, mechanismDisplayState, mechanismStateSummary } from '../../src/data/openEvoMechanismNarrative';
 
 const root = '/research/seed-openevo/study/capability-exploration/';
@@ -176,15 +176,34 @@ export function registerReaderJourneyTests() {
       }
     });
 
+    test(`reader journey ${locale}: experiment-derived child pages return to one canonical experiment`, async ({ page }) => {
+      for (const [route, ownerId] of Object.entries(OPEN_EVO_CANONICAL_ROUTE_OWNERS)) {
+        const experiment = OPEN_EVO_EXPERIMENTS.find((item) => item.id === ownerId)!;
+        const primaryRoute = experiment.primaryHref
+          .replace('/research/seed-openevo/study/capability-exploration/', '')
+          .replace(/\/$/, '');
+        if (route === primaryRoute) continue;
+        const path = `${prefix}${root}${route}/`;
+        const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
+        expect(response?.status(), path).toBe(200);
+        const context = page.locator('[data-reader-route]');
+        await expect(context, path).toHaveAttribute('data-experiment-id', ownerId);
+        await expect(context.locator('.research-route-context__location a').first(), path).toHaveAttribute('href', `${prefix}/research/seed-openevo/study/`);
+        await expect(context.locator('.research-route-context__location a').nth(1), path).toHaveAttribute('href', `${prefix}${experiment.primaryHref}`);
+        await expect(context.locator('.research-route-context__location a').nth(1), path).toHaveText(experiment.title[locale]);
+      }
+    });
+
     test(`reader journey ${locale}: every experiment hub exposes motivation, result, analysis, and evidence`, async ({ page }) => {
       for (const experiment of OPEN_EVO_EXPERIMENTS) {
         const path = `${prefix}${experiment.primaryHref}`;
         await page.goto(path, { waitUntil: 'domcontentloaded' });
         const context = page.locator(`[data-experiment-id="${experiment.id}"]`);
-        await expect(context.locator('[data-reader-purpose]'), path).toHaveText(experiment.motivation[locale]);
+        await expect(context.locator('[data-reader-purpose]'), path).toBeVisible();
         const hub = context.locator('[data-experiment-hub]');
         await expect(hub, path).toBeVisible();
         await hub.locator('summary').click();
+        await expect(hub.locator('[data-hub-motivation]'), path).toContainText(experiment.motivation[locale]);
         for (const group of ['result', 'analysis', 'evidence']) {
           const links = hub.locator(`[data-hub-group="${group}"] a`);
           expect(await links.count(), `${path} ${group}`).toBeGreaterThan(0);
