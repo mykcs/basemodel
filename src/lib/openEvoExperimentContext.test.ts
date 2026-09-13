@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { OPEN_EVO_CANONICAL_ROUTE_OWNERS, OPEN_EVO_EXPERIMENTS } from '../data/openEvoExperimentNavigation';
 import { CAPABILITY_READER_ROUTES } from '../data/capabilityReaderRoutes';
@@ -74,6 +74,34 @@ describe('experiment context hierarchy', () => {
         const page = read(`../pages/${prefix}research/seed-openevo/study/capability-exploration/${route}/index.astro`);
         expect(page).toContain(`route=\"${route}\" experimentId=\"${experimentId}\"`);
       }
+    }
+  });
+
+  it('keeps Chinese and English on one experiment IA with matching owned routes', () => {
+    const zhStudy = read('../pages/research/seed-openevo/study/index.astro');
+    const enStudy = read('../pages/en/research/seed-openevo/study/index.astro');
+    for (const study of [zhStudy, enStudy]) {
+      expect(study).toContain('OpenEvoExperimentIndex');
+      expect(study).toContain('<OpenEvoExperimentIndex locale={locale} />');
+      expect(study).not.toContain('OPEN_EVO_EXPERIMENTS.map');
+    }
+
+    const routeSourceExists = (prefix: string, route: string) => {
+      const directoryRoute = new URL(`../pages/${prefix}research/seed-openevo/study/capability-exploration/${route}/index.astro`, import.meta.url);
+      const fileRoute = new URL(`../pages/${prefix}research/seed-openevo/study/capability-exploration/${route}.astro`, import.meta.url);
+      return existsSync(directoryRoute) || existsSync(fileRoute);
+    };
+    for (const route of Object.keys(OPEN_EVO_CANONICAL_ROUTE_OWNERS)) {
+      expect(routeSourceExists('', route), `missing zh route: ${route}`).toBe(true);
+      expect(routeSourceExists('en/', route), `missing en route: ${route}`).toBe(true);
+    }
+
+    for (const experiment of OPEN_EVO_EXPERIMENTS) {
+      expect(experiment.title.zh).toBeTruthy();
+      expect(experiment.title.en).toBeTruthy();
+      expect(experiment.summary.zh).toBeTruthy();
+      expect(experiment.summary.en).toBeTruthy();
+      expect(experiment.childLinks.every((link) => Boolean(link.label.zh && link.label.en))).toBe(true);
     }
   });
 });
