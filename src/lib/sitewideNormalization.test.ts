@@ -6,6 +6,7 @@ const read = (relative: string) => readFileSync(new URL(relative, import.meta.ur
 const detail = read('../components/research/SeedOpenEvoResearchDetail.astro');
 const core = read('../components/research/SeedOpenEvoResearchPageCore.astro');
 const sdLoraHistory = read('../components/research/OpenEvoSdLoraHistorySkeleton.astro');
+const vanillaSdLoraSlide = read('../components/research/OpenEvoVanillaSdLoraSlide.astro');
 const alfworldZh = read('../pages/research/seed-openevo/flow/alfworld.astro');
 const alfworldEn = read('../pages/en/research/seed-openevo/flow/alfworld.astro');
 
@@ -71,5 +72,13 @@ describe('sitewide normalization first repair batch', () => {
     expect(openevo?.mustStayVisible).toContain('任务内行为与任务后演化边界');
     expect(openevo?.firstViewportSelector).toBe('.plain-detail__header p');
   });
+
+  it('explains Vanilla SD-LoRA flow directly without narrating the rejected card metaphor', () => {
+    expect(vanillaSdLoraSlide).toContain('一轮更新沿着会回到下一轮任务的流程移动');
+    expect(vanillaSdLoraSlide).toContain('One update follows a routed loop back into the next task round');
+    expect(vanillaSdLoraSlide).not.toContain('四张卡片');
+    expect(vanillaSdLoraSlide).not.toContain('four cards in a row');
+  });
+
 
 });
