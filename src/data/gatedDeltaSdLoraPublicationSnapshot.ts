@@ -1,9 +1,9 @@
 export const GATED_DELTA_SD_LORA_PUBLICATION = {
-  checkedAt: '2026-09-14T00:44:31+08:00',
+  checkedAt: '2026-09-14T02:05:13+08:00',
   source: {
     repository: 'mykcs/openevo-experiment',
     branch: 'research/gated-delta-sd-lora-event-write-202609120918',
-    head: '06cceb3f2961d46cab0293bda481b96b723b95e0',
+    head: 'fb43e2176d0b911d5da0c349124d0effe012eb55',
     pr: 461,
   },
   status: {
@@ -92,16 +92,16 @@ export const GATED_DELTA_SD_LORA_PUBLICATION = {
     },
   ] as const,
   evidence: {
-    eventWriteDesign: 'https://github.com/mykcs/openevo-experiment/blob/06cceb3f2961d46cab0293bda481b96b723b95e0/docs/science/webshop/GATED_DELTA_SD_LORA_EVENT_WRITE_SUCCESSOR_202609120357.md',
-    treatmentDecision: 'https://github.com/mykcs/openevo-experiment/blob/06cceb3f2961d46cab0293bda481b96b723b95e0/docs/science/webshop/GATED_DELTA_SD_LORA_D1_TREATMENT_DECISION_202609121550.md',
-    d1Preregistration: 'https://github.com/mykcs/openevo-experiment/blob/06cceb3f2961d46cab0293bda481b96b723b95e0/docs/science/webshop/GATED_DELTA_SD_LORA_D1_PREREGISTRATION_202609121905.md',
-    d26Qualification: 'https://github.com/mykcs/openevo-experiment/blob/06cceb3f2961d46cab0293bda481b96b723b95e0/docs/evidence/gated-delta-event-write-qualification-20260912/d26-qualification-202609121930.json',
-    d1ScopeAmendment: 'https://github.com/mykcs/openevo-experiment/blob/06cceb3f2961d46cab0293bda481b96b723b95e0/docs/evidence/gated-delta-event-write-qualification-20260912/d1-preregistration-amendment-1-202609121945.json',
-    d27Qualification: 'https://github.com/mykcs/openevo-experiment/blob/06cceb3f2961d46cab0293bda481b96b723b95e0/docs/evidence/gated-delta-event-write-qualification-20260912/d27-qualification-202609122329.json',
-    d1Activation: 'https://github.com/mykcs/openevo-experiment/blob/06cceb3f2961d46cab0293bda481b96b723b95e0/docs/evidence/gated-delta-event-write-qualification-20260912/d1-activation-202609130034.json',
-    d1ExecutionPlan: 'https://github.com/mykcs/openevo-experiment/blob/06cceb3f2961d46cab0293bda481b96b723b95e0/docs/experiment-tracking/GATED_DELTA_D1_EXECUTION_CLOSEOUT_PLAN_20260913.md',
-    routeSExecutionSeal: 'https://github.com/mykcs/openevo-experiment/blob/06cceb3f2961d46cab0293bda481b96b723b95e0/docs/evidence/gated-delta-event-write-qualification-20260912/route-s-seal-202609131251/route-s-execution-seal-202609131259.json',
-    pairedPostrolloutRecovery: 'https://github.com/mykcs/openevo-experiment/blob/06cceb3f2961d46cab0293bda481b96b723b95e0/docs/evidence/gated-delta-event-write-qualification-20260912/d1-paired-postrollout-recovery-202609131654.json',
+    eventWriteDesign: 'https://github.com/mykcs/openevo-experiment/blob/fb43e2176d0b911d5da0c349124d0effe012eb55/docs/science/webshop/GATED_DELTA_SD_LORA_EVENT_WRITE_SUCCESSOR_202609120357.md',
+    treatmentDecision: 'https://github.com/mykcs/openevo-experiment/blob/fb43e2176d0b911d5da0c349124d0effe012eb55/docs/science/webshop/GATED_DELTA_SD_LORA_D1_TREATMENT_DECISION_202609121550.md',
+    d1Preregistration: 'https://github.com/mykcs/openevo-experiment/blob/fb43e2176d0b911d5da0c349124d0effe012eb55/docs/science/webshop/GATED_DELTA_SD_LORA_D1_PREREGISTRATION_202609121905.md',
+    d26Qualification: 'https://github.com/mykcs/openevo-experiment/blob/fb43e2176d0b911d5da0c349124d0effe012eb55/docs/evidence/gated-delta-event-write-qualification-20260912/d26-qualification-202609121930.json',
+    d1ScopeAmendment: 'https://github.com/mykcs/openevo-experiment/blob/fb43e2176d0b911d5da0c349124d0effe012eb55/docs/evidence/gated-delta-event-write-qualification-20260912/d1-preregistration-amendment-1-202609121945.json',
+    d27Qualification: 'https://github.com/mykcs/openevo-experiment/blob/fb43e2176d0b911d5da0c349124d0effe012eb55/docs/evidence/gated-delta-event-write-qualification-20260912/d27-qualification-202609122329.json',
+    d1Activation: 'https://github.com/mykcs/openevo-experiment/blob/fb43e2176d0b911d5da0c349124d0effe012eb55/docs/evidence/gated-delta-event-write-qualification-20260912/d1-activation-202609130034.json',
+    d1ExecutionPlan: 'https://github.com/mykcs/openevo-experiment/blob/fb43e2176d0b911d5da0c349124d0effe012eb55/docs/experiment-tracking/GATED_DELTA_D1_EXECUTION_CLOSEOUT_PLAN_20260913.md',
+    routeSExecutionSeal: 'https://github.com/mykcs/openevo-experiment/blob/fb43e2176d0b911d5da0c349124d0effe012eb55/docs/evidence/gated-delta-event-write-qualification-20260912/route-s-seal-202609131251/route-s-execution-seal-202609131259.json',
+    pairedPostrolloutRecovery: 'https://github.com/mykcs/openevo-experiment/blob/fb43e2176d0b911d5da0c349124d0effe012eb55/docs/evidence/gated-delta-event-write-qualification-20260912/d1-paired-postrollout-recovery-202609131654.json',
     upstreamPr: 'https://github.com/mykcs/openevo-experiment/pull/461',
   },
 } as const;
