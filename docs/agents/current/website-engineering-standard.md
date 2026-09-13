@@ -50,6 +50,7 @@ Detailed owners: `css-architecture.md`, `rendering-and-performance-policy.md`.
 - Shared Header/shell behavior belongs to established semantic owners under `src/styles/components/`.
 - Feature styles stay with their feature unless global reach is genuinely required.
 - Heading ownership follows component ownership: the page root owns the single `<h1>`; embeddable components use lower ranks or an explicit heading-level prop. `npm run build` audits generated static HTML so duplicate page-level headings fail before deployment.
+- Same-page anchors should bind to an existing semantic owner or existing heading/section target when possible. Do not insert an otherwise unnecessary wrapper solely to host an `id` without checking selector ownership: an extra DOM level can invalidate direct-child CSS, hydration boundaries, and sticky/fixed positioning. If a wrapper is semantically necessary, classify it as a real structure/layout change and rerun selector-dependent browser tests.
 - Do not add new global files whose purpose is effectively “fix”, “final”, “hardening”, “closeout” or “refinement”.
 - Do not increase specificity or add `!important` as the default cascade strategy; repair ownership first.
 - Do not use HTML `hidden` as an implementation flag for content that is still intentionally visible. A visible preview/locked state needs its own state attribute/class plus keyboard/ARIA behavior; reserve `hidden` for content that should not be presented.

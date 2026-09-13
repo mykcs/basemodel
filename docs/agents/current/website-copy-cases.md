@@ -227,11 +227,11 @@
 ## 6. 技术解释：先给上下文，再给术语和机器细节
 
 <a id="case-025-先解释-webshop-任务再讲内部对象"></a>
-### CASE-025 — 先让第一次来的读者知道 WebShop 在做什么
-**PREFERENCE · 2026-08-24 · PR [#215](https://github.com/mykcs/basemodel/pull/215)**
-前：页面更快进入 split、goal ID、wrapper 等内部结构。
-后：先解释一个购物任务如何从自然语言要求变成搜索、点击、选项和评分，再进入数据集切分。
-规律：**first-reader 不是“降低智力”，而是补齐项目上下文。**
+### CASE-025 — 先让第一次来的读者知道 WebShop 是什么、为什么在这里
+**PREFERENCE · 2026-08-24 → 2026-09-13 · PR [#215](https://github.com/mykcs/basemodel/pull/215) + 后续 WebShop first-principles 重构**
+前：页面更快进入 split、goal ID、wrapper 等内部结构；后来的中间稿虽然提前解释了交互，却仍把读者直接带进机制，甚至一度用多张同权重 card 做“orientation”。
+后：先建立实验对象：WebShop 是什么、原论文/规模等为什么让它成为这里的 benchmark、当前实验怎样使用它；再进入搜索/点击交互、goal generation、split、scoring 和公平比较。需要比较 paper / released code / unknown 时，用真实证据层而不是把它们压成一个“设置”。
+规律：**first-reader 不是“降低智力”，而是先补齐实验对象和证据边界，再让机制细节有落点。卡片数量和“30 秒看懂”文案不能替代这个顺序。**
 
 <a id="case-026-先给一句话含义再给专业解释和证据"></a>
 ### CASE-026 — L1 → L2 → L3 分层，而不是把所有细节平铺
