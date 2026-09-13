@@ -10,7 +10,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 
 const objects = [
-  { index:'01', title:'Qwen2.5-3B-Instruct', body:t('实验使用的模型版本（revision）、数值精度和运行设置。','Experiment model revision, numerical precision, and runtime settings.'), href:p('/research/seed-openevo/flow/base-model/') },
+  { index:'01', title:'Qwen2.5-3B-Instruct', body:t('实验使用的模型版本（revision）、数值精度和运行设置。','Experiment model revision, numerical precision, and runtime settings.'), href:p('/models/qwen2-5-3b-instruct/#experiment-setup') },
   { index:'02', title:'SEED', body:t('SEED 怎样把事后成功经验整理成技能，并通过 OPD / GRPO 更新模型参数。','How SEED turns hindsight experience into skills and updates model parameters through OPD / GRPO.'), href:p('/research/seed-openevo/flow/seed/') },
   { index:'03', title:'OpenEvo', body:t('OpenEvo 怎样封存任务，把学习产物保存成适配器（adapter）或演化产物（artifact），再交给下一版本继续使用。','How OpenEvo seals tasks, stores learned outputs as adapters or artifacts, and passes them to successor revisions.'), href:p('/research/seed-openevo/flow/openevo/') },
   { index:'04', title:'ALFWorld', body:t('文本形式的具身任务：模型读环境状态、执行动作，并按任务家族统计成功率。','Text-based embodied tasks where the model reads world state, takes actions, and is evaluated by task-family success rates.'), href:p('/research/seed-openevo/flow/alfworld/') },

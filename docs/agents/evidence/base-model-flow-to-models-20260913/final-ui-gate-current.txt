@@ -1,0 +1,18 @@
+Base Model Flow → Models final local gate
+Product source SHA: b24c307e56e4a11527474ec34dcec2c46286147f
+Current main included: b0eb5d5558e1a43455fa1f65313c2ac18b369447
+
+Deterministic gates:
+- npm run verify:deploy: PASS
+- npm run build: PASS (506 static routes; heading audit 506/506; brand-link audit PASS)
+- npm run ui:overflow-preflight: PASS (390 / 768 / 1440 representative widths)
+
+Browser matrix:
+- First attempt could not start because 127.0.0.1:4327 belonged to an unrelated existing GDKVM Astro preview; that process was inspected and left untouched.
+- Second fixed backup port was also occupied, so no process was killed.
+- Final isolated run used PLAYWRIGHT_PORT=62772.
+- npm run test:ui:all: PASS, 416/416 across Chromium + WebKit.
+- migration-specific ui-safety canonical-owner test: PASS in both browsers.
+- site-reader-contracts phone first-screen test: PASS in both browsers (the exact family that had failed on the earlier Vercel gate).
+
+Conclusion: product gate is green. Port collisions were local orchestration conflicts, not product/test failures.
