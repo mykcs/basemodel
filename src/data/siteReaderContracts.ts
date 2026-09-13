@@ -55,7 +55,7 @@ export const SITE_READER_CONTRACTS = [
 
   c('flow', '/research/seed-openevo/flow/', '/research/seed-openevo/flow/', 'choice', '建立 OpenEvo、SEED、环境和训练流程的整体心智模型', '先看研究主题和公平比较边界，再下滑理解对象关系', '流程关系不等于实验结果', '进入流程对象与训练设计', '.mission-hero__lede', { maxInteractive: 1, maxHeadings: 1, maxTextChars: 440 }),
   c('flow-server', '/research/seed-openevo/flow/server/', '/research/seed-openevo/flow/server/', 'reference', '理解服务器在实验流程中的角色', '先知道服务器提供什么资源而不承担什么科学语义', '资源事实与实验授权分开', '继续看资源详情', '.server-hero', { maxInteractive: 0, maxHeadings: 1, maxTextChars: 560 }),
-  c('flow-base-model', '/research/seed-openevo/flow/base-model/', '/research/seed-openevo/flow/base-model/', 'reference', '理解基础模型在实验开始时是什么', '先认出基础模型和它进入实验前的状态', '模型身份、权重和后续训练状态不可混写', '继续到 SEED 或 OpenEvo 流程'),
+  { ...c('flow-base-model', '/research/seed-openevo/flow/base-model/', '/research/seed-openevo/flow/base-model/', 'reference', '从旧模型说明地址进入 Qwen2.5-3B-Instruct 的唯一模型记录', '直接到模型详情中的 SEED / OpenEVO 实验设置', '旧 URL 只做兼容迁移；模型身份与复现实验字段只维护一份', '继续查看模型记录或返回实验流程', '.model-detail-intro'), redirectsTo: '/models/qwen2-5-3b-instruct/' },
   c('flow-seed', '/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/seed/', 'narrative', '理解 SEED 怎样从经验形成训练信号', '先看 SEED 的输入、处理和输出顺序', '论文方法与本地实现边界', '继续查看 benchmark 或对照实验'),
   c('flow-openevo', '/research/seed-openevo/flow/openevo/', '/research/seed-openevo/flow/openevo/', 'narrative', '理解 OpenEvo 怎样把经验用于后续学习', '先看经验如何进入下一次模型变化', '机制说明不能升级成效果结论', '继续到具体实验'),
   c('flow-benchmarks', '/research/seed-openevo/flow/benchmarks/', '/research/seed-openevo/flow/benchmarks/', 'comparison', '理解 ALFWorld 与 WebShop 分别测什么', '先区分两个 benchmark 的任务和评分对象', '不同 benchmark 的分数不能直接混比', '进入具体环境说明'),

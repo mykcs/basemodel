@@ -3,7 +3,7 @@ import type { Locale } from '../../i18n';
 import SeedOpenEvoResearchPageCore from './SeedOpenEvoResearchPageCore.astro';
 import ExplainerScrollLink from './ExplainerScrollLink.astro';
 
-type DetailPage = 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'results';
+type DetailPage = 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'results';
 interface Props { locale: Locale; page: DetailPage }
 const { locale, page } = Astro.props;
 const zh = locale === 'zh';
@@ -11,10 +11,6 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const hasExplainer = Astro.slots.has('default');
 
 const copy: Record<DetailPage, { title: string; lede: string }> = {
-  'base-model': {
-    title: t('Qwen2.5-3B-Instruct 实验设置', 'Qwen2.5-3B-Instruct experiment setup'),
-    lede: t('记录 checkpoint、revision、精度、量化、上下文、推理后端和权重更新方式。', 'Record the checkpoint, revision, precision, quantization, context, inference backend, and weight-update mode.'),
-  },
   seed: {
     title: t('SEED 方法与参数更新', 'SEED method and parameter updates'),
     lede: t('Stage 1 先由 Qwen policy 通过 SEED / verl-agent 的交互 harness 驱动 Princeton WebShop 环境完成 rollout，轨迹封存后才交给外部 GLM-5.2 生成 hindsight skill 并做 SFT；Stage 2 继续使用同一交互合同，但改由当前 policy 自己复盘，再通过 OPD 与 GRPO 更新参数。', 'Stage 1 first lets the Qwen policy complete rollouts in Princeton WebShop through the SEED / verl-agent interaction harness; only after each trajectory is sealed does external GLM-5.2 generate hindsight skills for SFT. Stage 2 keeps the same interaction contract, moves hindsight analysis to the current policy itself, and then updates parameters with OPD and GRPO.'),

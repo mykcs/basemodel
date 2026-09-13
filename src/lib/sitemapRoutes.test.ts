@@ -13,7 +13,6 @@ import {
 const missionPaths = [
   '/research/seed-openevo/flow/',
   '/research/seed-openevo/flow/server/',
-  '/research/seed-openevo/flow/base-model/',
   '/research/seed-openevo/flow/seed/',
   '/research/seed-openevo/flow/openevo/',
   '/research/seed-openevo/study/',
@@ -52,14 +51,15 @@ describe('sitemap route coverage', () => {
     expect(availableLocalesForRoute(path)).toEqual(['zh', 'en']);
   });
 
-  it('keeps moved training design as a compatibility route, not a sitemap page', () => {
-    const path = '/research/seed-openevo/study/design/';
-    expect(bilingualCompatibilityPaths).toContain(path);
-    expect(bilingualStaticPaths).not.toContain(path);
-    expect(sitemapStaticPaths()).not.toContain(path);
-    expect(sitemapStaticPaths()).not.toContain(toEnglishPath(path));
-    expect(availableLocalesForRoute(path)).toEqual(['zh', 'en']);
-    expect(localizedRoute(path, 'en')).toBe(toEnglishPath(path));
+  it('keeps moved pages as compatibility routes, not sitemap pages', () => {
+    for (const path of ['/research/seed-openevo/flow/base-model/', '/research/seed-openevo/study/design/']) {
+      expect(bilingualCompatibilityPaths).toContain(path);
+      expect(bilingualStaticPaths).not.toContain(path);
+      expect(sitemapStaticPaths()).not.toContain(path);
+      expect(sitemapStaticPaths()).not.toContain(toEnglishPath(path));
+      expect(availableLocalesForRoute(path)).toEqual(['zh', 'en']);
+      expect(localizedRoute(path, 'en')).toBe(toEnglishPath(path));
+    }
   });
 
   it('covers the released bilingual product and research routes', () => {

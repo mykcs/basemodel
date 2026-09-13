@@ -7,7 +7,7 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 const chain = [
-  { eyebrow:t('模型','Model'), title:'Qwen2.5-3B-Instruct', body:t('固定同一份模型参数版本（checkpoint）、数值精度和运行设置。','Pin the same model-parameter version (checkpoint), numeric precision, and runtime settings.'), href:p('/research/seed-openevo/flow/base-model/') },
+  { eyebrow:t('模型','Model'), title:'Qwen2.5-3B-Instruct', body:t('固定同一份模型参数版本（checkpoint）、数值精度和运行设置。','Pin the same model-parameter version (checkpoint), numeric precision, and runtime settings.'), href:p('/models/qwen2-5-3b-instruct/#experiment-setup') },
   { eyebrow:t('方法','Methods'), title:'SEED / OpenEvo', body:t('比较“学到的东西”被存在哪里：模型参数、适配器或可复用经验状态。','Compare where learned information is stored: model parameters, adapters, or reusable experience state.'), href:p('/research/seed-openevo/flow/loops/') },
   { eyebrow:t('环境','Environments'), title:'ALFWorld / WebShop', body:t('任务、能做的动作和评分规则都由环境决定；环境不同，分数不能直接混在一起。','The environment defines the task, allowed actions, and scoring; scores from different environments are not directly interchangeable.'), href:p('/research/seed-openevo/flow/benchmarks/') },
   { eyebrow:t('实验记录','Experiment record'), title:'openevo-experiment', body:t('每个结果都要能追溯到实际工作分支、实验总表（campaign）和实验对账（reconciliation）。','Every result must trace back to the working branch, experiment ledger (campaign), and reconciliation.'), href:p('/research/seed-openevo/study/results/') },

@@ -1,8 +1,0 @@
----
-import AppLayout from '../../../../layouts/AppLayout.astro';
-import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
-const locale = 'zh' as const;
----
-<AppLayout title="Base Model：读懂实验里的模型" description="解释 Qwen2.5-3B-Instruct 的模型检查点（checkpoint）、参数规模、数值精度、量化、上下文长度和训练方式，分别会怎样影响 SEED / OpenEvo 实验。" locale={locale}>
-  <SeedOpenEvoResearchPage locale={locale} page="base-model" />
-</AppLayout>

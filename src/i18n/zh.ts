@@ -63,7 +63,7 @@ export const zh: Messages = {
   },
   modelsIndex: {
     pageTitle: '模型浏览器',
-    lede: '按厂商、架构、模型类型、开放性和研究可用性组合筛选。未核验字段不会自动变成“否”。',
+    lede: '按厂商、架构、模型类型、开放性和研究适用条件组合筛选。这里的“研究适用”指模型是否满足你要复现或运行实验的要求；未知或未核验不代表“不支持”。',
   },
   families: {
     pageTitle: '模型家族',
@@ -341,10 +341,10 @@ export const zh: Messages = {
     searchLabel: '搜索模型',
     filter: '筛选',
     quickOpenWeights: '开放权重',
-    quickLora: '可 LoRA',
-    quickRl: '适合 RL',
+    quickLora: '可用 LoRA 微调',
+    quickRl: '适合强化学习（RL）',
     quickSingleGpu: '单卡可运行',
-    quickCurrent: '当前代',
+    quickCurrent: '官方当前代',
     quickPaperUse: '有论文采用',
     sort: '排序',
     sortRelease: '最新发布',

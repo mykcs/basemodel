@@ -1,0 +1,82 @@
+{
+  "schema": "human-preference-candidate-set.v2",
+  "contractId": "models-index",
+  "task": "move SEED/OpenEVO base-model content into canonical Qwen model record",
+  "exactGitSha": "b24c307e56e4a11527474ec34dcec2c46286147f",
+  "variants": [
+    {
+      "id": "A",
+      "hypothesis": "Keep the model browser as the only first-screen task; expose the SEED/OpenEVO experiment model immediately after the first-screen orientation instead of competing with filtering.",
+      "attentionCenter": "Model browser title, explanation, and Start filtering models CTA.",
+      "informationDensity": "Low first-screen density; experiment-specific context appears one layer later, where a reader looking for model records can discover it without paying an attention tax.",
+      "visualLanguage": "Reuse the existing editorial type scale and text-link grammar; no new hero, card wall, badge system, or reference-surface imitation.",
+      "screenshotRef": "docs/agents/evidence/base-model-flow-to-models-20260913/candidate-a-models-index-desktop-b24c307e.png",
+      "predictedFailureFamilies": [
+        "attention-tax",
+        "internal-detail-promoted-to-primary-attention",
+        "missing-progressive-disclosure",
+        "reference-surface-imitation"
+      ]
+    },
+    {
+      "id": "B",
+      "hypothesis": "Promote the experiment-model entry directly under the primary CTA so it is discoverable without scrolling.",
+      "attentionCenter": "Competing centers: Start filtering models CTA and SEED/OpenEVO experiment-model block.",
+      "informationDensity": "Medium first-screen density; adds project-specific detail before the reader has chosen whether they are browsing the catalog or reproducing this experiment.",
+      "visualLanguage": "Same typography, but the extra block functions like a second first-screen callout and risks turning an internal project detail into primary attention.",
+      "screenshotRef": "docs/agents/evidence/base-model-flow-to-models-20260913/candidate-b-models-index-desktop.png",
+      "predictedFailureFamilies": [
+        "attention-tax",
+        "internal-detail-promoted-to-primary-attention",
+        "project-status-as-research-story"
+      ]
+    },
+    {
+      "id": "C",
+      "hypothesis": "Place the experiment-model entry after the expanded secondary browse controls so all model-area links live together.",
+      "attentionCenter": "Secondary browse controls first; experiment-model entry becomes visually subordinate to an optional disclosure.",
+      "informationDensity": "High secondary-navigation density; discoverability depends on opening a disclosure and scanning mixed-purpose links.",
+      "visualLanguage": "Groups related links, but creates a denser navigation cluster and weakens the experiment model as a clear canonical destination.",
+      "screenshotRef": "docs/agents/evidence/base-model-flow-to-models-20260913/candidate-c-models-index-desktop.png",
+      "predictedFailureFamilies": [
+        "attention-tax",
+        "missing-progressive-disclosure",
+        "compressed-shorthand-heading"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "winnerId": "A",
+      "loserId": "B",
+      "reason": "A preserves one first-screen job instead of promoting an experiment-specific route beside the catalog CTA.",
+      "evidence": "Candidate A screenshot keeps the first viewport centered on “模型浏览器 / 开始筛选模型”; candidate B visibly adds a second SEED/OpenEVO block in the same attention zone."
+    },
+    {
+      "winnerId": "A",
+      "loserId": "C",
+      "reason": "A keeps experiment discovery outside the optional secondary-browse disclosure while still placing it immediately after the first-screen orientation.",
+      "evidence": "Candidate C screenshot requires the expanded “其他浏览方式” cluster before reaching the experiment entry; A avoids that mixed-purpose navigation density."
+    }
+  ],
+  "selectedVariantId": "A",
+  "hardFamiliesChecked": [
+    "anticipatory-rebuttal",
+    "attention-tax",
+    "compressed-shorthand-heading",
+    "defensive-negation-opening",
+    "engineering-as-science-highlight",
+    "incomplete-scientific-decision-loop",
+    "internal-detail-promoted-to-primary-attention",
+    "mainline-rigor-tax",
+    "meaningless-english-eyebrow",
+    "missing-progressive-disclosure",
+    "numeric-shock-heading",
+    "project-status-as-research-story",
+    "reference-surface-imitation"
+  ],
+  "ownerSawOnlySelectedCandidate": true,
+  "notes": [
+    "Final candidate A re-rendered on exact product SHA b24c307e56e4a11527474ec34dcec2c46286147f after the current-main refresh and the two migration-scoped layout corrections. B/C remain discarded layout witnesses; selected A still keeps the experiment-model entry below the phone first screen while placing it before catalog-audit detail."
+  ]
+}

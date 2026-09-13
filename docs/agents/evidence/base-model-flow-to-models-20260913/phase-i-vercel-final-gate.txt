@@ -1,0 +1,29 @@
+Base Model Flow -> Models migration: Phase I Vercel final gate evidence
+
+Observed PR #658 head before evidence-only status commit:
+f7f1f14e5749e4a72008981d045f1ca4f08274d1
+
+Observed live main / ci/vercel-gate-base:
+b0eb5d5558e1a43455fa1f65313c2ac18b369447
+
+Observed ci/vercel-gate-final:
+f7f1f14e5749e4a72008981d045f1ca4f08274d1
+
+request-vercel-final-gate.mjs 658:
+{"status":"ALREADY_TARGETED","pr":658,"head":"f7f1f14e5749e4a72008981d045f1ca4f08274d1","vercel":"success"}
+
+GitHub required commit status:
+Vercel = success
+Target deployment: dpl_HCP5Xxx3ayaMPk52swJE8jdPsRg8
+Deployment state: READY
+Preview URL: https://basemodel-preview-5mcni0976-wangrui92-team.vercel.app
+
+Provider preview browser smoke:
+- /models/: H1=模型浏览器, one H1, width 1280/1280
+- /models/qwen2-5-3b-instruct/#experiment-setup: H1=Qwen2.5-3B-Instruct, #experiment-setup present
+- /en/models/qwen2-5-3b-instruct/#experiment-setup: English title/H1, #experiment-setup present
+- /research/seed-openevo/flow/base-model/: final URL /models/qwen2-5-3b-instruct/, experiment section present
+- /en/research/seed-openevo/flow/base-model/: final URL /en/models/qwen2-5-3b-instruct/, experiment section present
+- 390x844 /models/: scrollWidth=390, clientWidth=390, Qwen2.5-3B-Instruct experiment entry visible in document
+
+No provider failure occurred, so no failure-specific correction was required.

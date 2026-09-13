@@ -14,6 +14,7 @@ import ModelDetailTools from '../../components/models/detail/ModelDetailTools';
 import ModelAlternatives from '../../components/models/detail/ModelAlternatives.astro';
 import SemanticStatusLegend from '../../components/common/SemanticStatusLegend.astro';
 import CatalogFreshnessNotice from '../../components/catalog/CatalogFreshnessNotice.astro';
+import SeedOpenEvoExperimentSetup from '../../components/models/detail/SeedOpenEvoExperimentSetup.astro';
 
 interface Props { model: AtlasModel; models?: AtlasModel[]; papers: AtlasPaper[]; locale?: Locale }
 const { model, models = [model], papers } = Astro.props;
@@ -57,7 +58,7 @@ const positioning = model.checkpoint.specializations.length ? model.checkpoint.s
       <details class="model-detail-actions">
         <summary>{locale === 'zh' ? '引用、来源与页内导航' : 'Citation, sources, and page navigation'}</summary>
         <ModelDetailTools client:load model={model} locale={locale} />
-        <ModelDetailNav locale={locale} />
+        <ModelDetailNav locale={locale} modelId={model.id} />
       </details>
     </header>
     <CatalogFreshnessNotice locale={locale} compact={true} />
@@ -66,6 +67,8 @@ const positioning = model.checkpoint.specializations.length ? model.checkpoint.s
       <ModelResearchSummary model={model} papers={papers} locale={locale} />
       <ModelTaskFit client:load model={model} papers={papers} m={m} locale={locale} />
     </div>
+
+    {model.id === 'qwen2-5-3b-instruct' && <SeedOpenEvoExperimentSetup locale={locale} />}
 
     <div id="access-openness"><AccessLadder model={model} locale={locale} /></div>
 

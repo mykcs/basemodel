@@ -1,10 +1,12 @@
 ---
 import type { Locale } from '../../../i18n';
-interface Props { locale: Locale }
-const { locale } = Astro.props;
+interface Props { locale: Locale; modelId?: string }
+const { locale, modelId } = Astro.props;
+const showExperimentSetup = modelId === 'qwen2-5-3b-instruct';
 const items = locale === 'zh'
   ? [
       ['research-summary', '研究速览'],
+      ...(showExperimentSetup ? [['experiment-setup', 'SEED / OpenEVO 实验设置']] : []),
       ['access-openness', '获取与开放性'],
       ['architecture', '架构'],
       ['training-runtime', '训练与运行时'],
@@ -16,6 +18,7 @@ const items = locale === 'zh'
     ]
   : [
       ['research-summary', 'Research summary'],
+      ...(showExperimentSetup ? [['experiment-setup', 'SEED / OpenEVO experiment setup']] : []),
       ['access-openness', 'Access & openness'],
       ['architecture', 'Architecture'],
       ['training-runtime', 'Training & runtime'],

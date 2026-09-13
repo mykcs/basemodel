@@ -29,7 +29,7 @@ const labEn = read('src/pages/en/lab.astro');
 describe('research journey experience', () => {
   it('keeps the global navigation focused on the research journey', () => {
     expect(header).toContain("t('流程理解图', 'Flow map')");
-    expect(header).toContain("t('OpenEVO Harness · WebShop', 'OpenEVO Harness · WebShop')");
+    expect(header).toContain("t('WebShop 购物实验', 'WebShop experiments')");
   });
 
   it('gives each true step-by-step explainer one canonical bilingual route', () => {

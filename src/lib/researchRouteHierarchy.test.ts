@@ -10,7 +10,6 @@ const vercel = JSON.parse(read('vercel.json')) as { redirects?: Array<{ source: 
 
 const canonicalPages = [
   'src/pages/research/seed-openevo/flow/index.astro',
-  'src/pages/research/seed-openevo/flow/base-model.astro',
   'src/pages/research/seed-openevo/flow/seed.astro',
   'src/pages/research/seed-openevo/flow/openevo.astro',
   'src/pages/research/seed-openevo/flow/benchmarks.astro',
@@ -20,6 +19,10 @@ const canonicalPages = [
   'src/pages/research/seed-openevo/study/index.astro',
   'src/pages/research/seed-openevo/study/run.astro',
   'src/pages/research/seed-openevo/study/results.astro',
+];
+
+const compatibilityPages = [
+  'src/pages/research/seed-openevo/flow/base-model/index.astro',
 ];
 
 const legacyPages = [
@@ -44,18 +47,23 @@ describe('research URL hierarchy', () => {
 
   it('moves canonical page ownership into the grouped directories', () => {
     for (const path of canonicalPages) expect(existsSync(new URL(`../../${path}`, import.meta.url)), path).toBe(true);
+    for (const path of compatibilityPages) expect(existsSync(new URL(`../../${path}`, import.meta.url)), path).toBe(true);
     for (const path of legacyPages) expect(existsSync(new URL(`../../${path}`, import.meta.url)), path).toBe(false);
   });
 
   it('keeps old public URLs as permanent compatibility redirects', () => {
     const expected = new Map([
       ['/research/seed-openevo', '/research/seed-openevo/flow/'],
+      ['/research/seed-openevo/base-model', '/models/qwen2-5-3b-instruct/'],
+      ['/research/seed-openevo/flow/base-model', '/models/qwen2-5-3b-instruct/'],
       ['/research/seed-openevo/webshop', '/research/seed-openevo/flow/webshop/'],
       ['/research/seed-openevo/experiment', '/research/seed-openevo/study/'],
       ['/guide/openevo-webshop-alfworld', '/research/seed-openevo/study/run/'],
       ['/research/seed-openevo/results', '/research/seed-openevo/study/results/'],
       ['/research/seed-openevo/results/:path*', '/research/seed-openevo/study/results/:path*'],
       ['/en/research/seed-openevo', '/en/research/seed-openevo/flow/'],
+      ['/en/research/seed-openevo/base-model', '/en/models/qwen2-5-3b-instruct/'],
+      ['/en/research/seed-openevo/flow/base-model', '/en/models/qwen2-5-3b-instruct/'],
       ['/en/research/seed-openevo/results/:path*', '/en/research/seed-openevo/study/results/:path*'],
     ]);
     for (const [source, destination] of expected) {
@@ -83,6 +91,8 @@ describe('research URL hierarchy', () => {
   it('publishes only canonical grouped URLs in the sitemap', () => {
     expect(sitemap).toContain('/research/seed-openevo/flow/');
     expect(sitemap).toContain('/research/seed-openevo/study/results/');
+    const staticRoutes = sitemap.slice(0, sitemap.indexOf('export const bilingualCompatibilityPaths'));
+    expect(staticRoutes).not.toContain("'/research/seed-openevo/flow/base-model/'");
     expect(sitemap).not.toContain("'/research/seed-openevo/webshop/'");
     expect(sitemap).not.toContain("'/research/seed-openevo/results/'");
     expect(sitemap).not.toContain("'/guide/openevo-webshop-alfworld/'");

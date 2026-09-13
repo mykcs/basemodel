@@ -1,7 +1,7 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 
-type ResearchPage = 'hub' | 'experiment' | 'design' | 'capability' | 'briefing' | 'server' | 'base-model' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'run' | 'results';
+type ResearchPage = 'hub' | 'experiment' | 'design' | 'capability' | 'briefing' | 'server' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'run' | 'results';
 type ResearchTrack = 'flow' | 'study';
 
 interface Props {
@@ -21,7 +21,7 @@ const flowPages = [
   { id: 'hub', label: t('流程总览', 'Flow overview'), href: p('/research/seed-openevo/flow/') },
   { id: 'training-design', label: t('训练设计', 'Training design'), href: p('/research/seed-openevo/flow/#training-design') },
   { id: 'server', label: 'lyg2171', href: p('/research/seed-openevo/flow/server/') },
-  { id: 'base-model', label: t('模型', 'Model'), href: p('/research/seed-openevo/flow/base-model/') },
+  { id: 'model', label: t('模型', 'Model'), href: p('/models/qwen2-5-3b-instruct/#experiment-setup') },
   { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/flow/seed/') },
   { id: 'openevo', label: 'OpenEVO', href: p('/research/seed-openevo/flow/openevo/') },
   { id: 'benchmarks', label: t('环境总览', 'Environment overview'), href: p('/research/seed-openevo/flow/benchmarks/') },
@@ -50,7 +50,7 @@ const identity = currentTrack === 'flow'
     }
   : {
       index: '02',
-      label: t('OpenEVO Harness · WebShop', 'OpenEVO Harness · WebShop'),
+      label: t('OpenEVO 购物实验 · WebShop', 'OpenEVO experiments · WebShop'),
       meta: t('实验流程 · 运行 · 基础能力探索 · 阶段汇报 · 研究结果', 'workflow · execution · capability exploration · briefing · findings'),
       aria: t('OpenEVO Harness · WebShop 研究子导航', 'OpenEVO Harness · WebShop study subnavigation'),
     };

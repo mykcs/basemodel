@@ -65,7 +65,7 @@ export const en: Messages = {
   },
   modelsIndex: {
     pageTitle: 'Model explorer',
-    lede: 'Filter by vendor, architecture, checkpoint, openness, and research readiness. Unverified values never auto-become “no”.',
+    lede: 'Filter by vendor, architecture, checkpoint, openness, and research fit. Here, “research fit” means whether a model meets the requirements of the experiment you want to reproduce or run; unknown or unverified does not mean unsupported.',
   },
   families: {
     pageTitle: 'Model families',
@@ -343,10 +343,10 @@ export const en: Messages = {
     searchLabel: 'Search models',
     filter: 'Filters',
     quickOpenWeights: 'Open weights',
-    quickLora: 'LoRA-ready',
-    quickRl: 'RL-ready',
+    quickLora: 'LoRA fine-tuning ready',
+    quickRl: 'Reinforcement-learning (RL) ready',
     quickSingleGpu: 'Single-GPU runnable',
-    quickCurrent: 'Current generation',
+    quickCurrent: 'Official current generation',
     quickPaperUse: 'Paper adoption',
     sort: 'Sort',
     sortRelease: 'Latest release',

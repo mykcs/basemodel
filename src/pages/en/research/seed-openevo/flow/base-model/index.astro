@@ -1,0 +1,14 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+const target = '/en/models/qwen2-5-3b-instruct/#experiment-setup';
+---
+<AppLayout title="Qwen2.5-3B-Instruct" description="Model identity and SEED / OpenEVO experiment setup now live in the canonical model record." locale="en">
+  <main class="moved-model">
+    <h1>Qwen2.5-3B-Instruct</h1>
+    <p><a href={target}>Open the model record and experiment setup →</a></p>
+  </main>
+  <script is:inline define:vars={{ target }}>window.location.replace(target);</script>
+</AppLayout>
+<style>
+  .moved-model{width:min(760px,calc(100% - 2rem));margin:4rem auto}.moved-model h1{margin:0}.moved-model p{margin-top:1rem}.moved-model a{font-weight:750}
+</style>
