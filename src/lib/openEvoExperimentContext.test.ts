@@ -47,6 +47,17 @@ describe('experiment context hierarchy', () => {
     }
   });
 
+  it('allows only explicit semantic child roles and never falls back to misc', () => {
+    const allowedRoles = ['result', 'analysis', 'mechanism', 'diagnostic', 'history', 'evidence'];
+    const owner = read('../data/openEvoExperimentNavigation.ts');
+    expect(owner).not.toMatch(/['\"]misc['\"]/);
+    for (const experiment of OPEN_EVO_EXPERIMENTS) {
+      for (const child of [...experiment.childLinks, experiment.evidenceLink]) {
+        expect(allowedRoles).toContain(child.role);
+      }
+    }
+  });
+
   it('extends the existing research context instead of creating a second navigation system', () => {
     expect(context).toContain("CAPABILITY_READER_ROUTES");
     expect(context).toContain("OPEN_EVO_EXPERIMENTS");
