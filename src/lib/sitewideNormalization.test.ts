@@ -16,6 +16,11 @@ const baseModelCompat = read('../pages/research/seed-openevo/flow/base-model/ind
 const studyDesignCompat = read('../pages/research/seed-openevo/study/design/index.astro');
 const alfworldZh = read('../pages/research/seed-openevo/flow/alfworld.astro');
 const alfworldEn = read('../pages/en/research/seed-openevo/flow/alfworld.astro');
+const explainerStyles = [
+  read('../styles/interactive-research-explainer-core.css'),
+  read('../styles/interactive-research-explainer-environments.css'),
+  read('../styles/interactive-research-explainer-methods.css'),
+].join('\n');
 
 describe('sitewide normalization first repair batch', () => {
   it('introduces ALFWorld as a benchmark before mechanism details and aligns its reader contract', () => {
@@ -114,6 +119,11 @@ describe('sitewide normalization first repair batch', () => {
     for (const page of [baseModelCompat, studyDesignCompat]) {
       expect(page).toContain('window.location.replace(target)');
     }
+  });
+
+  it('keeps shared interactive explainers on the site typography token instead of a parallel monospace stack', () => {
+    expect(explainerStyles).toContain('var(--font-mono)');
+    expect(explainerStyles).not.toContain('ui-monospace,SFMono-Regular,Menlo,monospace');
   });
 
 });

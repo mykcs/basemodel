@@ -371,7 +371,7 @@ current main
 - [x] Study / results / capability family 完成。
 - [x] Catalog / decision / evidence family 完成。
 - [x] Archive / operational / projected-deck exceptions 完成。
-- [ ] Shared-component failure families 完成。
+- [x] Shared-component failure families 完成。
 ### 11.4 验收与发布
 
 - [x] `audit:reader-contracts` PASS。
@@ -446,7 +446,7 @@ git log --oneline --decorate -10
 | overlap scan | DONE | #687 Q17 chronology；#671 SD-LoRA flow nav；#669 stale sitewide audit |
 | browser cold read | DONE | WebShop PASS control；ALFWorld FAIL；Benchmarks REVIEW；SD-LoRA history REVIEW；Capability landing PASS/no broad rewrite |
 | plan | ACTIVE | 本文件 |
-| implementation | CATALOG FAMILY DONE | first batch `87b1fbe5`; Flow `9202aa9d`; Study fixes `630bd177` / `64815195`; Catalog family required no public-code rewrite after cold read |
+| implementation | SHARED FAMILY DONE | first batch `87b1fbe5`; Flow `9202aa9d`; Study fixes `630bd177` / `64815195`; shared explainer typography normalized to the site token |
 | browser acceptance | PARTIAL | Flow + Study + Catalog families 已完成 family cold read；Catalog 11 routes × zh/en × 390/1280 = 44 renders 全部 HTTP 200 且无 root overflow |
 | provider acceptance | TODO | 仅 final candidate 后填入 |
 
@@ -459,6 +459,8 @@ Study/results/capability family evidence（2026-09-14）：`630bd177` 把 Vanill
 Catalog/decision/evidence family evidence（2026-09-14）：真实浏览器冷读覆盖 Home、Models index + model detail、Families、Landscape、Papers index + paper detail、Compare、Workspace、Methodology、Data status，共 11 routes × zh/en × 390/1280 = 44 renders；全部 HTTP 200 且 `scrollWidth == clientWidth`。Home 保持 matched-comparison orientation；Models/Families/Landscape 先建立对象与浏览维度；MetaGPT specimen 对未核验 method summary 明确保持 unknown；`ModelComparison.tsx` 的差异行带 `impactCode` → `researchImpact`，并提供 only-impacts filter；Workspace 保持 operational entry；Methodology/Data status 明确来源、unknown、freshness 与 evidence gap。因此本轮没有为了“统一”新增 UI 改动。
 
 Special-page exception evidence（2026-09-14）：Archive 冷读发现首层没有直接满足“not current/live state” contract，因此在 `OpenEvoExperimentArchive.astro` 与 `capabilityReaderRoutes.ts` 只补该边界，不改历史事实；focused structural regressions 28/28 PASS。随后 zh/en × 390/1280 复核 Archive 与 `study/run`，全部 `scrollWidth == clientWidth`；run 首层先给 authorization / persistent workspace，并从 Gate 01 开始。Briefing zh/en 在 390/1280 均为 24 slides、首张几何比例 16:9、inner content 保持在 slide bounds 内且无 root overflow。`flow/base-model` 与 `study/design` 的 zh/en compatibility route 均在真实浏览器落到唯一 canonical target（model `#experiment-setup` / Flow `#training-design`），未形成第二内容 owner。
+Shared-component family evidence（2026-09-14）：逐一检查 `ResearchOrientation` 的 6 个 consumer；`focus` 页面把 question / why / start / finish / state 收进默认关闭的 details，而 Mechanism 的 `narrative` layout 因生命周期本身属于科学边界而保留首层字段。`InteractiveResearchExplainer` 的 `30 秒直觉 / 逐步操作 / 技术边界` 分别对应真实 overview、step playback 与 Level-3 技术层，因此不作为 narrator chrome 删除。发现一个跨 consumer 的共享失败：三份 explainer shared CSS 共 45 处绕过全站字体 token 的硬编码 monospace stack；已统一改用 `var(--font-mono)`，影响 WebShop / ALFWorld / SEED / OpenEvo / server 等共同 owner。Focused regression 30/30 PASS，reader-contract audit 64/64 PASS；浏览器抽样覆盖 WebShop、SEED、server 的 zh/en × 390/1280，共 12 renders，全部 HTTP 200、无 root overflow，computed mono family 均解析为全站 token；Capability / First-run focus details 默认关闭，Mechanism narrative lifecycle 保持显式，三者无 root overflow。
+
 
 ## 16. Stopping rule
 
