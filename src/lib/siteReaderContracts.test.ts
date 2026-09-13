@@ -36,6 +36,13 @@ describe('site-wide reader attention contracts', () => {
     }
   });
 
+  it('keeps the Study phone budget at five experiment parents plus one featured current result', () => {
+    const row = SITE_READER_CONTRACTS.find((contract) => contract.id === 'study');
+    expect(row?.firstViewportBudget?.maxInteractive).toBe(6);
+    expect(row?.firstViewportGoal).toContain('五次主要实验');
+    expect(row?.mustStayVisible).toContain('SD-LoRA v2');
+  });
+
   it('resolves exact pages before dynamic families and shares contracts across locales', () => {
     expect(readerContractForRoute('/models/kimi-k2-thinking/')?.id).toBe('model-detail');
     expect(readerContractForRoute('/en/models/kimi-k2-thinking/')?.id).toBe('model-detail');
