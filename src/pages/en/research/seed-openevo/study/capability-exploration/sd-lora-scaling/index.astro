@@ -2,6 +2,7 @@
 import AppLayout from '../../../../../../../layouts/AppLayout.astro';
 import OpenEvoSdLoraScaling from '../../../../../../../components/research/OpenEvoSdLoraScaling.astro';
 import OpenEvoSdLoraHistorySeriesNav from '../../../../../../../components/research/OpenEvoSdLoraHistorySeriesNav.astro';
+import ResearchRouteContext from '../../../../../../../components/research/ResearchRouteContext.astro';
 const locale = 'en' as const;
 ---
 <AppLayout
@@ -9,6 +10,7 @@ const locale = 'en' as const;
   description="Hold one 94-step workload fixed and vary only prior SD-LoRA component count to explain why later updates become slower."
   locale={locale}
 >
+  <ResearchRouteContext locale={locale} route="sd-lora-scaling" compact />
   <OpenEvoSdLoraScaling locale={locale} />
   <OpenEvoSdLoraHistorySeriesNav locale={locale} />
 </AppLayout>

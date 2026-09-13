@@ -24,6 +24,11 @@ export function registerOpenEvoResearchDeepDiveTests() {
     await expect(page.locator('[data-deep-dive="successor-exploration"]')).toHaveAttribute('href', explorationPath);
     await expect(page.locator('[data-deep-dive="successor-report"]')).toHaveAttribute('href', reportPath);
     await expect(page.locator('[data-deep-dive="stage2-7b-analysis"]')).toHaveAttribute('href', stage2Path);
+    await expect(page.locator('[data-deep-dive="stage1-evolution"]')).toHaveCount(0);
+    const history = page.locator('[data-research-depth="history"]').last();
+    await history.locator('summary').click();
+    await expect(history.locator('[data-archive-tier="history-evidence"]')).toBeVisible();
+    await expect(history.locator(`a[href="${stage1CompatPath}"]`)).toContainText('兼容旧书签');
   });
 
   test('successor gateway makes exploration and report two views of one evidence set', async ({ page }) => {

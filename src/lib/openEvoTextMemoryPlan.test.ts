@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { OPEN_EVO_EXPERIMENTS } from '../data/openEvoExperimentNavigation';
 import { readerContractForRoute } from '../data/siteReaderContracts';
 
 const read = (p: string) => readFileSync(new URL(p, import.meta.url), 'utf8');
@@ -95,8 +96,8 @@ describe('Text Memory receipt-based research projection', () => {
       const page = read(`../pages/${prefix}research/seed-openevo/study/index.astro`);
       expect(page).not.toContain('都说明：我们需要');
       expect(page).not.toContain('must be separated');
-      expect(page).toContain('OpenEvoTextMemoryResearchLink');
-      expect(read('../components/research/OpenEvoTextMemoryResearchLink.astro')).toContain('成绩能否提高仍然未知');
+      expect(page).toContain('OpenEvoExperimentIndex');
+      expect(OPEN_EVO_EXPERIMENTS.some((experiment) => experiment.childLinks.some((child) => child.href.endsWith('/text-memory/')))).toBe(true);
     }
   });
 });

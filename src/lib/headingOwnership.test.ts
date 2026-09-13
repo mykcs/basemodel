@@ -17,7 +17,7 @@ describe('page heading ownership', () => {
 
   it('keeps training design as an H2 section owned by the flow hub', () => {
     expect((overview.match(/<h1\b/g) ?? []).length).toBe(1);
-    expect(studyZh).toContain('SeedOpenEvoStudyOverview');
+    expect(studyZh).toContain('OpenEvoExperimentIndex');
     expect(hub).toContain('id="training-design"');
     expect(hub).toContain('<h2 id="training-design-title">');
     expect(training).not.toContain('<h1');

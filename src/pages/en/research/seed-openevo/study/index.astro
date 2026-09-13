@@ -1,7 +1,6 @@
 ---
 import AppLayout from '../../../../../layouts/AppLayout.astro';
-import SeedOpenEvoStudyOverview from '../../../../../components/research/SeedOpenEvoStudyOverview.astro';
-import OpenEvoTextMemoryResearchLink from '../../../../../components/research/OpenEvoTextMemoryResearchLink.astro';
+import OpenEvoExperimentIndex from '../../../../../components/research/OpenEvoExperimentIndex.astro';
 const locale = 'en' as const;
 ---
 
@@ -10,7 +9,5 @@ const locale = 'en' as const;
   description="Overview of the OpenEVO Harness experiments on WebShop, covering the research questions, the directly comparable 7B result, mechanism-study boundaries, and reproduction routes."
   locale={locale}
 >
-  <SeedOpenEvoStudyOverview locale={locale} />
-
-  <OpenEvoTextMemoryResearchLink locale={locale} />
+  <OpenEvoExperimentIndex locale={locale} />
 </AppLayout>

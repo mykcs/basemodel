@@ -5,6 +5,6 @@ import ResearchRouteContext from '../../../../../../components/research/Research
 const locale = 'zh' as const;
 ---
 <AppLayout title="Ceiling-1.0 7B 最终结果：49.33 分 / 45.31% 完整成功" description="Ceiling-1.0 保留 2026-08-31 历史快照，并新增 7B 最终 closeout：149 个完整 round、19,072 accepted rollouts、143 个 SD-LoRA components；冻结 128 题 final panel 上 Task Score ×100 = 49.33，完整成功 58/128 = 45.31%。" locale={locale}>
-  <ResearchRouteContext locale={locale} route="stage2-ceiling" compact />
+  <ResearchRouteContext locale={locale} route="stage2-ceiling" experimentId="7b-long-run" compact />
   <OpenEvoCeilingStrategy locale={locale} />
 </AppLayout>

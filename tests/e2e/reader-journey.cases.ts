@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { CAPABILITY_READER_ROUTES } from '../../src/data/capabilityReaderRoutes';
+import { OPEN_EVO_CANONICAL_ROUTE_OWNERS, OPEN_EVO_EXPERIMENTS } from '../../src/data/openEvoExperimentNavigation';
 import { OPEN_EVO_MECHANISM_EXPERIMENTS, mechanismDisplayState, mechanismStateSummary } from '../../src/data/openEvoMechanismNarrative';
 
 const root = '/research/seed-openevo/study/capability-exploration/';
@@ -162,13 +163,59 @@ export function registerReaderJourneyTests() {
         const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
         expect(response?.status(), path).toBe(200);
         await expect(page.locator('h1'), path).toHaveCount(1);
-        await expect(page.locator('[data-reader-context]'), path).toBeVisible();
-        await expect(page.locator('[data-reader-purpose]').first(), path).toBeVisible();
-        await expect(page.locator('[data-reader-task]').first(), path).toBeVisible();
         if (route.coverage === 'contextualized') {
-          await expect(page.locator('[data-reader-route]')).toHaveAttribute('data-reader-route', route.route);
-          await expect(page.locator('[data-reader-route] a')).toHaveAttribute('href', `${prefix}${root}`);
+          const routeContext = page.locator('[data-reader-context][data-reader-route]');
+          await expect(routeContext, path).toBeVisible();
+          await expect(routeContext.locator('[data-reader-purpose]'), path).toBeVisible();
+          await expect(routeContext.locator('[data-reader-task]'), path).toBeVisible();
+          await expect(routeContext).toHaveAttribute('data-reader-route', route.route);
+          const experimentId = await routeContext.getAttribute('data-experiment-id');
+          const expectedRoot = experimentId ? `${prefix}/research/seed-openevo/study/` : `${prefix}${root}`;
+          await expect(routeContext.locator('.research-route-context__location a').first()).toHaveAttribute('href', expectedRoot);
+        } else {
+          await expect(page.locator('[data-reader-context]').first(), path).toBeVisible();
+          await expect(page.locator('[data-reader-purpose]').first(), path).toBeVisible();
+          await expect(page.locator('[data-reader-task]').first(), path).toBeVisible();
         }
+      }
+    });
+
+    test(`reader journey ${locale}: experiment-derived child pages return to one canonical experiment`, async ({ page }) => {
+      for (const [route, ownerId] of Object.entries(OPEN_EVO_CANONICAL_ROUTE_OWNERS)) {
+        const experiment = OPEN_EVO_EXPERIMENTS.find((item) => item.id === ownerId)!;
+        const primaryRoute = experiment.primaryHref
+          .replace('/research/seed-openevo/study/capability-exploration/', '')
+          .replace(/\/$/, '');
+        if (route === primaryRoute) continue;
+        const path = `${prefix}${root}${route}/`;
+        const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
+        expect(response?.status(), path).toBe(200);
+        const context = page.locator('[data-reader-route]');
+        await expect(context, path).toHaveAttribute('data-experiment-id', ownerId);
+        await expect(context.locator('.research-route-context__location a').first(), path).toHaveAttribute('href', `${prefix}/research/seed-openevo/study/`);
+        await expect(context.locator('.research-route-context__location a').nth(1), path).toHaveAttribute('href', `${prefix}${experiment.primaryHref}`);
+        await expect(context.locator('.research-route-context__location a').nth(1), path).toHaveText(experiment.title[locale]);
+      }
+    });
+
+    test(`reader journey ${locale}: every experiment hub exposes motivation, result, analysis, and evidence`, async ({ page }) => {
+      for (const experiment of OPEN_EVO_EXPERIMENTS) {
+        const path = `${prefix}${experiment.primaryHref}`;
+        await page.goto(path, { waitUntil: 'domcontentloaded' });
+        const context = page.locator(`[data-experiment-id="${experiment.id}"]`);
+        await expect(context.locator('[data-reader-purpose]'), path).toBeVisible();
+        const hub = context.locator('[data-experiment-hub]');
+        await expect(hub, path).toBeVisible();
+        await hub.locator('summary').click();
+        await expect(hub.locator('[data-hub-motivation]'), path).toContainText(experiment.motivation[locale]);
+        for (const group of ['result', 'analysis', 'evidence']) {
+          const links = hub.locator(`[data-hub-group="${group}"] a`);
+          expect(await links.count(), `${path} ${group}`).toBeGreaterThan(0);
+        }
+        const evidenceHref = `${prefix}${experiment.evidenceLink.href}`;
+        await expect(hub.locator('[data-hub-group="evidence"] a')).toHaveAttribute('href', evidenceHref);
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+        expect(overflow, path).toBe(false);
       }
     });
 
