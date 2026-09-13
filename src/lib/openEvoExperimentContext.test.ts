@@ -58,6 +58,15 @@ describe('experiment context hierarchy', () => {
     }
   });
 
+  it('keeps experiment-first headings human-readable instead of leading with internal shorthand', () => {
+    const forbiddenLead = /^(?:7\s*<\s*8|Stage\s*\d|Q17|Track\s+[A-Z]|GATE\b)/i;
+    for (const experiment of OPEN_EVO_EXPERIMENTS) {
+      expect(experiment.title.zh).not.toMatch(forbiddenLead);
+      expect(experiment.title.en).not.toMatch(forbiddenLead);
+    }
+    expect(OPEN_EVO_EXPERIMENTS[0].title.zh).toBe('训练跑了很久，但参数一直没有更新');
+  });
+
   it('extends the existing research context instead of creating a second navigation system', () => {
     expect(context).toContain("CAPABILITY_READER_ROUTES");
     expect(context).toContain("OPEN_EVO_EXPERIMENTS");
