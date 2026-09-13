@@ -115,6 +115,7 @@ Required falsification:
 - assert audited sibling items do not geometrically overlap;
 - verify intentional horizontal scrolling is contained locally;
 - for wide children inside grid/flex, inspect both the scroll container and its owning track/item. Local scrolling is not containment if min-content propagation widens the page; prefer shrinkable owner geometry such as `minmax(0,1fr)` / `min-width:0`, then assert root `scrollWidth == clientWidth`. Do not mask the failure with global `overflow-x:hidden`.
+- when responsive markup intentionally contains more than one DOM instance of the same semantic target (for example a desktop child link plus a phone-only featured link), verify the **visible instance** at the current breakpoint. Do not use `.first()` / the first text match as visibility or clickability proof. Assert visible-count, computed visibility/geometry, destination, and the principal click path; a zero-size hidden sibling does not mean the user-facing target is absent.
 
 ### Scenario D — English or long Chinese strings break an otherwise valid layout
 

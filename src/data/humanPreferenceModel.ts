@@ -31,7 +31,7 @@ export interface HumanPreferenceDimension {
   retrievalTags: string[];
   supportingCaseIds: HumanFeedbackCaseId[];
   antiOvergeneralization: string[];
-  activation?: 'explicit-cues' | 'preview-cues' | 'recovery-cues';
+  activation?: 'explicit-cues' | 'preview-cues' | 'recovery-cues' | 'approved-prose-cues';
 }
 
 export interface HumanFeedbackGoldPair {
@@ -78,6 +78,22 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
       '不是禁止标题出现数字；当数字本身就是主要科研结果且两端对象已经说清时可以前置。像 7<8 这种需要先解释 operands 与 gate 的诊断 shorthand，应先说观众能直接复述的事件，再在正文给精确值。',
       '不是禁止模型名出现在标题；如果“7B：结论”只是压缩标签而完整事件句更自然，就优先完整事件句。',
       '不是把所有工程/内部信息都后置；如果它本身决定科学有效性、对象身份或因果归因，就必须在相关 claim 附近可见。',
+    ],
+  },
+  {
+    id: 'PREF-PRESERVE-APPROVED-PROSE',
+    title: '已经说清楚的人话先保真，再做网页结构',
+    statement: 'owner 明确说当前对话里的表达已经好、可以直接复用时，把它当作 accepted copy baseline；先保留对象、因果顺序和自然语气，再做标题、分段、去重、证据分层与事实校验，不为“网页更正式”重新学术化。',
+    scopes: ['research-ui', 'research-copy', 'study', 'results', 'capability'],
+    confidence: 'repeated-explicit',
+    priority: 5,
+    retrievalTags: ['说人话', '对话', '聊天', '照抄', '原话', '原句', '网页', '网页化', '改写', '学术化', '论文腔', 'AI味', 'copy baseline'],
+    supportingCaseIds: ['CASE-090', 'CASE-091'],
+    activation: 'approved-prose-cues',
+    antiOvergeneralization: [
+      '不是逐字复制整段聊天；临时进度、PR/Preview 状态、重复寒暄和过期数字仍应删除。',
+      '不是跳过科学校验；数字、比较边界和当前结论仍必须对照最新 authority。',
+      '允许改善网页结构与可扫描性；保真的是对象、因果顺序、语气和可复述性，不是聊天的轮次格式。',
     ],
   },
   {
@@ -632,6 +648,17 @@ export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [
     accepted: '结果前先用一页交代 Stage 1 的轨迹采集与 MiniMax 回看，再说明 Stage 2 如何用 SD-LoRA、Text Memory、Skill 和 Agent System 继续滚动学习。',
     reason: 'owner 明确说即使网站别处已有方法图，现场观众仍需要最小方法背景；这层只承担后续结果所需的上下文，不复制完整实现手册。',
     failureMechanisms: ['briefing-method-context-assumed', 'cross-page-context-dependency'],
+    ownerStatus: 'accepted',
+  },
+  {
+    id: 'PAIR-091-PRESERVE-APPROVED-PROSE',
+    caseId: 'CASE-091',
+    preferenceIds: ['PREF-PRESERVE-APPROVED-PROSE'],
+    scopes: ['research-ui', 'research-copy', 'study', 'results', 'capability'],
+    rejected: '把已经自然讲清的聊天结论重新改写成 promotion gate / treatment boundary / disposition 等抽象网页语言。',
+    accepted: 'SD-LoRA 的 900 多秒不是非得忍着。我们已经做出了一个确实能更快训练的 SD-LoRA v2；它不是原算法一模一样的复制品，但目前的小规模真实 WebShop 检查没有发现它因为加速而明显变笨。',
+    reason: 'owner 明确说当前对话回复直接放网页已经不错；网页施工应保留这套自然表达，只在事实、边界、结构和证据层做必要编辑。',
+    failureMechanisms: ['webification-language-regression', 'approved-prose-rewritten-into-jargon'],
     ownerStatus: 'accepted',
   },
 

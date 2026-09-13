@@ -1150,3 +1150,17 @@ owner 说明：`虽然我的网站里其他页面画了有关 SEED 是怎么做�
 规律补充：**科研机制和归因实验里的关键 referent 先命名，再做因果归因。** `这个问题 / 这个现象 / 它` 本身完全可以使用；只有当它承担关键因果关系、但近邻没有清楚 antecedent 时才是 failure。该机制记为 `unnamed-scientific-referent`，当前只有一次直接事件，因此维持 normal，不假升级 repeated/hard；用 `PAIR-087-DIAGNOSTIC-REFERENT` 做 deterministic recurrence guard。
 
 同一 source window 里的 `把现在的 nogdr 也写进 slide 里面` 只约束当前 OpenEVO briefing 的内容新鲜度。No-GDR 的 round、rollout、loss、Score 与 shadow-GDR 数值属于会继续变化的科学事实，不进入长期 Preference Model；PR #614 exact head `0652a9cf…` 只记 `current-candidate`，没有新的 owner accepted / canonical 语言，所以不升 Silver / Golden。
+
+<a id="case-091-已经说清楚的人话先保真再网页化"></a>
+### CASE-091 — 已经说清楚的人话先保真，再网页化
+**PREFERENCE · RESEARCH COPY · 2026-09-13 · repeated direct owner feedback**
+
+owner 在 SD-LoRA v2 结果已经能用自然语言讲清以后明确说：`你即使是把我们现在对话里的内容，也就是你给我的回复，完全照抄到这个网页上，内容就已经不错了。` 随后指出旧失败机制：`之前我让你放到网页上的时候，你的内容和文字都变得非常差，一点都不像说人话。`
+
+反面流程：聊天里已经用“900 多秒不是非得忍着 / v2 大约 2× / 小规模 WebShop 没看到明显变笨”讲清楚；进入网页施工后却重新从“正式科研网页”的默认文风起稿，把同一事实改成 `promotion gate / treatment boundary / disposition / numerical semantics` 等抽象包装，结果事实没更严谨，人却更难读。
+
+认可方向：把已经得到 owner 正向确认的聊天表达当作当前任务的 copy baseline。网页化可以拆标题、分段、去重复、补当前证据和科学边界，但默认不重新翻译它的对象、因果顺序和语气。比如 `SD-LoRA 的 900 多秒不是非得忍着` 可以直接成为页面主句；精确 SHA、candidate 名和实现细节留到证据层。
+
+规律：**“从聊天搬到网页”首先是信息结构转换，不自动等于文体升级。owner 已明确认可的自然语言是正向证据；除非事实/边界需要纠正，否则不要为了显得正式而把它重新学术化、项目管理化或名词化。** 这不是要求逐字复制整段聊天：临时进度、PR/Preview 状态、重复寒暄和过期数字仍应删除，科学事实仍要对照当前 authority。
+
+这是对 2026-09-11 `但是你创造的这个网页里的语言，请说人话` 的同类复发；因此 `webification-language-regression / approved-prose-rewritten-into-jargon` 作为 repeated-explicit failure family 进入 HPL 的 task-time retrieval，而不是只留在 Markdown。

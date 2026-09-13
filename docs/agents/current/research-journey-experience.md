@@ -41,6 +41,14 @@ The dedicated WebShop and ALFWorld pages keep the interactive, scroll-following 
 
 `/research/seed-openevo/study/` owns experiment state, study framing, evidence, source references, and live-state resolution. It uses a compact concept index rather than embedding method/environment figures.
 
+### Publication discoverability is part of the journey
+
+A research child page that is intended to be part of the Study journey is not information-architecture-complete merely because its direct URL returns `200`. The nearest canonical parent/index must expose a real path to it on every supported reader mode where that result is meant to be discoverable. If a child is intentionally omitted from the parent, that omission needs an explicit route-role reason rather than accidental absence.
+
+For the same canonical journey route, shared navigation owners should use one stable reader-facing name. Global header, local/sticky navigation, index labels, and nearby meta copy must not make one destination look like several different concepts unless a deliberately different contextual label is documented.
+
+Responsive reachability is rendered reachability: “the anchor exists in the DOM/data” is not enough. Desktop and phone acceptance must prove the intended entry is actually visible and usable at that breakpoint.
+
 ## Canonical complete-experiment analysis route
 
 When one experiment or lineage accumulates enough evidence that a reader would otherwise have to reconstruct it by hopping among a briefing, result index, diagnostics, and mechanism pages, give that experiment **one canonical long-form analysis route**.
@@ -66,7 +74,7 @@ The two tracks are:
 | Primary journey | Child navigation owns |
 | --- | --- |
 | `01 · 流程理解图 / Flow map` | 流程总览, 模型, SEED, OpenEvo, 环境总览, WebShop, ALFWorld, 更新机制 |
-| `02 · OpenEvo × WebShop 科学研究 / study` | 实验流程, 运行实验, 研究结果 |
+| `02 · OpenEvo × WebShop 科学研究 / study` | 实验目录, 运行实验, 研究结果 |
 
 `SeedOpenEvoResearchNav.astro` must choose exactly one of these child sets from the current page ID. Do not restore the old flat row containing both conceptual-learning routes and experiment/result routes together. The old flat row duplicated the top-level journey switch and made the two navigation bars feel unrelated.
 

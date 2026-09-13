@@ -212,6 +212,15 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     positiveSignals: ['训练跑了很久，但参数一次都没有更新', '分数很低，我们先去看日志，看看是不是哪里出了问题', '我们做了一次 7B 长跑：训练在变好，冻结终评是 49.33', '必要的 Agent / SD-LoRA / GDR 技术对象保留并就地解释'],
   },
 
+  {
+    id: 'CASE-091',
+    title: '已经说清楚的人话先保真，再网页化',
+    tags: ['说人话', '对话', '聊天', '网页', '改写', '学术化', '原话', 'copy baseline'],
+    principle: 'owner 明确认可当前对话表达时，把它当作网页文案的正向基线；网页化默认只做结构、去重、证据分层和事实校验，不从更“正式”的抽象文风重新起稿。',
+    antiPatterns: ['聊天里已经讲清，网页里重新改成抽象名词、项目管理语言或研究者内部黑话', '把“网页化”误当成必须重写语气和因果顺序'],
+    positiveSignals: ['保留 owner 已认可的自然句序与对象', '标题/分段/证据层做最小结构化', '临时状态与过期数字仍删除并重新校验'],
+  },
+
 ];
 
 export const READER_CONTRACT_PRECEDENTS: Record<string, HumanFeedbackCaseId[]> = {

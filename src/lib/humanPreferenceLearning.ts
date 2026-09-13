@@ -64,6 +64,7 @@ export function retrieveHumanPreferenceContext(
   const explicitWorkflowCue = containsAny(normalized, ['反馈', '案例', '学习', 'judge', 'cold read', 'gold pair', 'preference model']);
   const previewWorkflowCue = containsAny(normalized, ['preview', '预览', 'build', '构建', 'vercel', '网页草稿', '审阅', '迭代', '快速', '等待']);
   const recoveryCue = containsAny(normalized, ['恢复', '急救', '自救', '故障', '救援', '失忆', '运行手册', 'runbook', 'reconnect', '连不上']);
+  const approvedProseCue = containsAny(normalized, ['聊天', '对话', '照抄', '原话', '原句', '网页化', '直接放到网页', '论文腔']);
   const workflowCue = explicitWorkflowCue || previewWorkflowCue;
 
   const cases = HUMAN_FEEDBACK_PRECEDENTS.map((precedent) => {
@@ -89,6 +90,7 @@ export function retrieveHumanPreferenceContext(
     if (preference.activation === 'explicit-cues' && !explicitWorkflowCue) return { preference, score: 0 };
     if (preference.activation === 'preview-cues' && !previewWorkflowCue) return { preference, score: 0 };
     if (preference.activation === 'recovery-cues' && !recoveryCue) return { preference, score: 0 };
+    if (preference.activation === 'approved-prose-cues' && !approvedProseCue) return { preference, score: 0 };
     let score = preference.priority;
     if (preference.scopes.includes('workflow') && explicitWorkflowCue) score += 12;
     for (const tag of preference.retrievalTags) if (normalized.includes(tag.toLowerCase())) score += 8;
@@ -147,7 +149,7 @@ export function preferenceIdsForContract(contractId: string): HumanPreferenceId[
   const caseIds = new Set((READER_CONTRACT_PRECEDENTS[contractId] ?? []) as HumanFeedbackCaseId[]);
   const scopes = new Set(preferenceScopesForContract(contractId));
   return HUMAN_PREFERENCE_MODEL
-    .filter((preference) => preference.activation !== 'explicit-cues' && preference.activation !== 'recovery-cues')
+    .filter((preference) => preference.activation !== 'explicit-cues' && preference.activation !== 'recovery-cues' && preference.activation !== 'approved-prose-cues')
     .filter((preference) =>
       preference.scopes.some((scope) => scopes.has(scope)) ||
       preference.supportingCaseIds.some((caseId) => caseIds.has(caseId)),
