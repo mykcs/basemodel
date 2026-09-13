@@ -1,6 +1,6 @@
 # Scenario trigger registry
 
-Last reviewed: **2026-09-12**
+Last reviewed: **2026-09-13**
 
 This is a **just-in-time attention router**, not a second governance system. Scan it after `/AGENTS.md`, `docs/agents/LATEST.md`, and the core bootstrap in `docs/agents/README.md`. Load only the matched owner, executable truth, and live evidence.
 
@@ -27,6 +27,22 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 2. Re-read `LATEST.md`, the task-owning current policy, executable config/tests/manifests, and live provider/experiment state.
 3. Re-verify time-sensitive first-party claims when they affect the decision.
 4. If live/executable truth contradicts a `current/` doc, update or demote that doc. Do not add another workaround policy.
+
+---
+
+## TRIGGER: first-principles benchmark/environment page / 目录 / “先讲是什么”
+
+**Cues:** the owner asks to reorganize a benchmark/environment page from first principles, asks for a visible `目录 / Contents`, says a zero-context reader should first understand “这是什么 / 为什么重要 / 实验怎么用它”, or explicitly rejects a mechanism-first/card-wall opening.
+
+**Automatic response:**
+
+1. Before the first public-page mutation, read `human-thinking-web-expression-contract.md`, `site-reader-attention-contract.md`, `research-site-presentation-contract.md`, and the relevant cases in `website-copy-cases.md`; generate the task-time Preference Brief / reader contract before choosing components. Do not build a dashboard first and retrieve the preference rules afterward.
+2. Establish the experimental object before its mechanics: normally object identity and role -> the evidence that makes the object relevant/credible -> the experiment-specific protocol or setting -> interaction/data/evaluation detail. Adapt the middle evidence to the page's real role; do not mechanically add citation metrics where they do not help the reader's decision.
+3. Map the thought structure to semantic HTML. Same-page directories are navigation (`<nav><ol>`), object facts fit `<dl>`, and provenance-layer comparisons whose rows/columns carry meaning stay real `<table>`s. Do not default to a wall of equal-weight cards, decorative English eyebrows, or “how to read this page” narrator copy.
+4. Keep evidence provenance explicit when it changes scientific meaning: paper-reported settings, released-code defaults, and unknown/unpublished exact identities must not collapse into one neat-looking setting. Dated external metrics must keep their source and observation date.
+5. Reuse an existing semantic target for same-page anchors when possible. An extra wrapper added only to host an `id` can change direct-child selector, hydration, and sticky/fixed ownership; if a structural wrapper is genuinely required, treat it as a layout change and rerun the owner-sensitive browser checks.
+6. A locally scrollable wide table is not proven contained until the **document** also stays within the viewport. In grid/flex owners, inspect min-content propagation and make the owning track/item shrinkable (`minmax(0,1fr)` / `min-width:0`) rather than hiding root overflow. Verify at 390px, 768px, and desktop.
+7. At owner handoff, re-scan the Preview/Production trigger below and include the exact hosted route that was actually verified; a merged PR or READY badge is not a page-delivery handoff by itself.
 
 ---
 

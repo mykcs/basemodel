@@ -104,7 +104,8 @@ Predicted failure:
 - a sticky/fixed element covers content;
 - long labels overlap adjacent nodes;
 - the document gains horizontal page overflow;
-- a scroll container is missing and a table escapes the viewport.
+- a scroll container is missing and a table escapes the viewport;
+- a table has local `overflow-x:auto`, but its min-content width still expands the owning grid/flex track, so the **whole document** overflows anyway.
 
 Required falsification:
 
@@ -112,7 +113,8 @@ Required falsification:
 - assert no document-level horizontal overflow;
 - assert critical text is not clipped by `overflow: hidden/clip`;
 - assert audited sibling items do not geometrically overlap;
-- verify intentional horizontal scrolling is contained locally.
+- verify intentional horizontal scrolling is contained locally;
+- for wide children inside grid/flex, inspect both the scroll container and its owning track/item. Local scrolling is not containment if min-content propagation widens the page; prefer shrinkable owner geometry such as `minmax(0,1fr)` / `min-width:0`, then assert root `scrollWidth == clientWidth`. Do not mask the failure with global `overflow-x:hidden`.
 
 ### Scenario D — English or long Chinese strings break an otherwise valid layout
 
