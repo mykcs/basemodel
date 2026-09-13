@@ -222,10 +222,10 @@ P0/P1 修复后继续，不把本任务停在三个页面。
 
 ### 5.4 特殊页面类型
 
-- [ ] 历史档案页：允许历史身份与来源优先，但必须明确它不是当前运行状态；
-- [ ] 运行类页面：当前状态、授权边界和下一安全动作优先；
-- [ ] briefing / slide 页面：按 16:9 演示介质规则审查，不机械套长网页规则；
-- [ ] compatibility redirect：不能被误判成第二个内容 owner。
+- [x] 历史档案页：历史身份与来源优先，首层已明确这是技术/历史档案而不是当前运行状态；中英 390/1280 冷读无 root overflow。
+- [x] 运行类页面：`study/run` 首层先确认授权与持久工作区，明确技术能力不等于项目授权，并把 Gate 01 作为下一安全动作；中英 390/1280 冷读通过。
+- [x] briefing / slide 页面：按固定 16:9 演示介质审查；中英 24 slides 在 390/1280 均保持 16:9、inner content 在 slide 内且无 root overflow，没有改套长网页模板。
+- [x] compatibility redirect：`flow/base-model` 与 `study/design` 中英入口均实测跳到 canonical model / Flow training-design owner；兼容页不承担第二份内容。
 
 每个实际改动页面都必须同时检查中文和英文；语义一致即可，不要求逐字镜像。
 ## 6. Shared component / visual system 审计
@@ -370,7 +370,7 @@ current main
 - [x] Flow family 完成。
 - [x] Study / results / capability family 完成。
 - [x] Catalog / decision / evidence family 完成。
-- [ ] Archive / operational / projected-deck exceptions 完成。
+- [x] Archive / operational / projected-deck exceptions 完成。
 - [ ] Shared-component failure families 完成。
 ### 11.4 验收与发布
 
@@ -457,6 +457,8 @@ Flow family evidence（2026-09-14）：`9202aa9d4625ea32b11de111d97438e9e4aeabba
 Study/results/capability family evidence（2026-09-14）：`630bd177` 把 Vanilla SD-LoRA 首层从“不是四张卡片”改为直接解释 routed loop；focused regressions 27/27 PASS，zh 1280 与 en 390 浏览器冷读无 root overflow。随后 family cold read 覆盖 Study gateway、results、four-arm、3B/7B self/MiniMax、GDR/DirectApply、Vanilla、scaling、Q17、Stage1/Stage2 历史页与 SD-LoRA 01–07 问题链；zh 代表 route 做 1280/390，英语 family 做 390，sampled render 全部 `scrollWidth == clientWidth`。冷读发现 four-arm 仍有“等待四组结果齐全 / 页面骨架冻结”旧脚手架；`6481519568a4217847cd5e9bb2d665f06a69443d` 已改成真实历史状态：3B/MiniMax 在 74.58% 停止且无 final eval，缺失 endpoint 不补成 0，历史 arm 差异不直接升级为 MiniMax/模型规模因果效应。修复后 zh/en 390/1280 复核 PASS；focused `sitewideNormalization + siteReaderContracts` 14/14 PASS，`git diff --check` PASS。
 
 Catalog/decision/evidence family evidence（2026-09-14）：真实浏览器冷读覆盖 Home、Models index + model detail、Families、Landscape、Papers index + paper detail、Compare、Workspace、Methodology、Data status，共 11 routes × zh/en × 390/1280 = 44 renders；全部 HTTP 200 且 `scrollWidth == clientWidth`。Home 保持 matched-comparison orientation；Models/Families/Landscape 先建立对象与浏览维度；MetaGPT specimen 对未核验 method summary 明确保持 unknown；`ModelComparison.tsx` 的差异行带 `impactCode` → `researchImpact`，并提供 only-impacts filter；Workspace 保持 operational entry；Methodology/Data status 明确来源、unknown、freshness 与 evidence gap。因此本轮没有为了“统一”新增 UI 改动。
+
+Special-page exception evidence（2026-09-14）：Archive 冷读发现首层没有直接满足“not current/live state” contract，因此在 `OpenEvoExperimentArchive.astro` 与 `capabilityReaderRoutes.ts` 只补该边界，不改历史事实；focused structural regressions 28/28 PASS。随后 zh/en × 390/1280 复核 Archive 与 `study/run`，全部 `scrollWidth == clientWidth`；run 首层先给 authorization / persistent workspace，并从 Gate 01 开始。Briefing zh/en 在 390/1280 均为 24 slides、首张几何比例 16:9、inner content 保持在 slide bounds 内且无 root overflow。`flow/base-model` 与 `study/design` 的 zh/en compatibility route 均在真实浏览器落到唯一 canonical target（model `#experiment-setup` / Flow `#training-design`），未形成第二内容 owner。
 
 ## 16. Stopping rule
 

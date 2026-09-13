@@ -8,6 +8,12 @@ const core = read('../components/research/SeedOpenEvoResearchPageCore.astro');
 const sdLoraHistory = read('../components/research/OpenEvoSdLoraHistorySkeleton.astro');
 const vanillaSdLoraSlide = read('../components/research/OpenEvoVanillaSdLoraSlide.astro');
 const experimentResults = read('../components/research/OpenEvoExperimentResultsScaffold.astro');
+const archive = read('../components/research/OpenEvoExperimentArchive.astro');
+const capabilityRoutes = read('../data/capabilityReaderRoutes.ts');
+const runGuide = read('../components/OpenEvoSeedBenchmarksGuide.astro');
+const briefing = read('../components/research/SeedOpenEvoProgressBriefing.astro');
+const baseModelCompat = read('../pages/research/seed-openevo/flow/base-model/index.astro');
+const studyDesignCompat = read('../pages/research/seed-openevo/study/design/index.astro');
 const alfworldZh = read('../pages/research/seed-openevo/flow/alfworld.astro');
 const alfworldEn = read('../pages/en/research/seed-openevo/flow/alfworld.astro');
 
@@ -89,6 +95,25 @@ describe('sitewide normalization first repair batch', () => {
     expect(experimentResults).not.toContain('页面骨架冻结：2026-08-29');
     expect(experimentResults).not.toContain('Waiting for all four arms');
     expect(experimentResults).not.toContain('Page scaffold frozen: 2026-08-29');
+  });
+
+  it('keeps special page types honest about archive, operational, deck, and compatibility roles', () => {
+    expect(archive).toContain('这是技术与历史档案，不是当前运行状态页');
+    expect(archive).toContain('not a live-run status page');
+    expect(capabilityRoutes).toContain('这是技术与历史档案，不代表当前运行状态');
+    expect(capabilityRoutes).toContain('not live run state');
+
+    expect(runGuide).toContain('先确认授权。');
+    expect(runGuide).toContain('Technical capability is not project authorization');
+    expect(runGuide).toContain('从 Gate 01 开始 ↓');
+
+    expect(briefing).toContain('--deck-w:1280px');
+    expect(briefing).toContain('--deck-h:720px');
+    expect(briefing).toContain('class="briefing-slide');
+
+    for (const page of [baseModelCompat, studyDesignCompat]) {
+      expect(page).toContain('window.location.replace(target)');
+    }
   });
 
 });
