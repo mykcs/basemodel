@@ -1,9 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
+  OPEN_EVO_CROSS_EXPERIMENT_RESULTS_ROUTE,
   OPEN_EVO_EXPERIMENTS,
   OPEN_EVO_METHOD_BACKGROUND_ROUTE,
   OPEN_EVO_SECONDARY_ROUTES,
+  OPEN_EVO_CANONICAL_ROUTE_OWNERS,
 } from '../data/openEvoExperimentNavigation';
 
 const source = readFileSync(new URL('../components/research/OpenEvoExperimentIndex.astro', import.meta.url), 'utf8');
@@ -98,6 +100,28 @@ describe('experiment-first Study index', () => {
 
     const historySeries = readFileSync(new URL('../components/research/OpenEvoSdLoraHistorySkeleton.astro', import.meta.url), 'utf8');
     expect(historySeries).toContain('没有完成的科学实验不会提前写成结论');
+  });
+
+  it('keeps Results as a cross-experiment index rather than a second owner of the five experiment bodies', () => {
+    const experimentOwnedHrefs = OPEN_EVO_EXPERIMENTS.flatMap((experiment) => [
+      experiment.primaryHref,
+      experiment.evidenceLink.href,
+      ...experiment.childLinks.map((link) => link.href),
+    ]);
+    expect(experimentOwnedHrefs.every((href) => !href.startsWith('/research/seed-openevo/study/results/'))).toBe(true);
+    expect(Object.keys(OPEN_EVO_CANONICAL_ROUTE_OWNERS).every((route) => !route.startsWith('results'))).toBe(true);
+    expect(OPEN_EVO_CROSS_EXPERIMENT_RESULTS_ROUTE).toEqual({
+      id: 'cross-experiment-results',
+      label: { zh: '跨实验结果索引', en: 'Cross-experiment results index' },
+      href: '/research/seed-openevo/study/results/',
+    });
+    expect(OPEN_EVO_SECONDARY_ROUTES[1]).toEqual(OPEN_EVO_CROSS_EXPERIMENT_RESULTS_ROUTE);
+    expect(source).toContain('data-secondary-route={item.id}');
+
+    const resultsZh = readFileSync(new URL('../pages/research/seed-openevo/study/results.astro', import.meta.url), 'utf8');
+    const resultsEn = readFileSync(new URL('../pages/en/research/seed-openevo/study/results.astro', import.meta.url), 'utf8');
+    expect(resultsZh).not.toContain('openEvoExperimentNavigation');
+    expect(resultsEn).not.toContain('openEvoExperimentNavigation');
   });
 
   it('keeps system/method flow outside the experiment history tree', () => {

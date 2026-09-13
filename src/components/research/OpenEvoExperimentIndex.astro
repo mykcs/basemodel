@@ -45,7 +45,7 @@ const p = (path: string) => localePath(locale, path);
   <aside class="secondary-routes" aria-label={zh ? '跨实验入口' : 'Cross-experiment routes'}>
     <strong>{zh ? '跨实验入口' : 'Across experiments'}</strong>
     <nav>
-      {OPEN_EVO_SECONDARY_ROUTES.map((item) => <a href={p(item.href)}>{t(item.label)}</a>)}
+      {OPEN_EVO_SECONDARY_ROUTES.map((item) => <a data-secondary-route={item.id} href={p(item.href)}>{t(item.label)}</a>)}
     </nav>
   </aside>
 </main>
