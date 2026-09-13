@@ -43,6 +43,7 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 5. Reuse an existing semantic target for same-page anchors when possible. An extra wrapper added only to host an `id` can change direct-child selector, hydration, and sticky/fixed ownership; if a structural wrapper is genuinely required, treat it as a layout change and rerun the owner-sensitive browser checks.
 6. A locally scrollable wide table is not proven contained until the **document** also stays within the viewport. In grid/flex owners, inspect min-content propagation and make the owning track/item shrinkable (`minmax(0,1fr)` / `min-width:0`) rather than hiding root overflow. Verify at 390px, 768px, and desktop.
 7. At owner handoff, re-scan the Preview/Production trigger below and include the exact hosted route that was actually verified; a merged PR or READY badge is not a page-delivery handoff by itself.
+8. If this task creates or materially refines a reusable reader/preference rule, run the HPL transfer validation before calling that preference “沉淀 / institutionalized”: inspect at least one likely sibling and one unrelated positive-control or route-role exception, then record `PASS / REVIEW / FAIL` with the reason. A valid reader contract or green copy/reader audit is structural coverage, not proof that older sibling pages already embody the same mental model. Record newly exposed debt as a bounded follow-up/audit unless the owner separately authorizes widening the current page task.
 
 ---
 
