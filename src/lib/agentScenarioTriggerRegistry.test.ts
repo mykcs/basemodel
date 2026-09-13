@@ -19,6 +19,7 @@ const briefingPreviewHistory = readFileSync(new URL('../../docs/agents/history/2
 const pr619CloseoutHistory = readFileSync(new URL('../../docs/agents/history/2026-09-11-pr619-eli5-exact-head-closeout.md', import.meta.url), 'utf8');
 const publicationWorkflow = readFileSync(new URL('../../docs/agents/current/experiment-result-publication-workflow.md', import.meta.url), 'utf8');
 const q17ConversationCloseoutHistory = readFileSync(new URL('../../docs/agents/history/2026-09-11-q17-diagnostics-publication-conversation-closeout.md', import.meta.url), 'utf8');
+const modelMigrationCloseoutHistory = readFileSync(new URL('../../docs/agents/history/2026-09-13-base-model-flow-to-models-conversation-closeout.md', import.meta.url), 'utf8');
 const conversationCloseoutEntry = readFileSync(new URL('../../docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md', import.meta.url), 'utf8');
 const releaseCloseout = readFileSync(new URL('../../docs/agents/current/release-closeout-protocol.md', import.meta.url), 'utf8');
 
@@ -321,6 +322,22 @@ describe('retained correction use-site routing', () => {
     expect(registry).toContain('TRIGGER: compound shell / RDC / SSH multi-command');
     expect(registry).toContain('verify the tool reports that interpreter actually launched');
     expect(registry).toContain('parser failure before mutation is `NOT_EXECUTED`');
+  });
+
+  it('binds HPL, browser evidence, shell probes, and progress to the artifact actually under review', () => {
+    expect(readme).toContain('2026-09-13-base-model-flow-to-models-conversation-closeout.md');
+    expect(hpl).toContain('### Candidate review contract follows the surface that actually changed');
+    expect(hpl).toContain('candidate-introduced or materially worsened');
+    expect(engineering).toContain('A dirty working tree means the rendered artifact is `HEAD + local delta`');
+    expect(engineering).toContain("task-owned server's **actual emitted URL**");
+    expect(principles).toContain('make that first probe dialect-neutral');
+    expect(principles).toContain('task-owned server that actually launched');
+    expect(principles).toContain('recompute **both numerator and denominator from that exact ref-qualified checklist on every report**');
+    expect(registry).toContain('Bind HPL review to the surface actually varied');
+    expect(registry).toContain('Bind local visual evidence to the actual tree and server');
+    expect(modelMigrationCloseoutHistory).toContain('## Coverage ledger');
+    expect(modelMigrationCloseoutHistory).toContain('## Temporary state intentionally not promoted');
+    expect(modelMigrationCloseoutHistory).toContain('No account-level long-term ChatGPT memory write is claimed');
   });
 
   it('keeps current-facing longitudinal charts bound to a fresh sealed snapshot', () => {
