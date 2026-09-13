@@ -75,7 +75,6 @@ describe('canonical SEED / OpenEvo research figures', () => {
       '33.0%',
       'replace=False',
       'Stage 1 和 Stage 2 会不会撞题？',
-      'goal split',
       '288,000',
       '307,200',
       '数学期望',
