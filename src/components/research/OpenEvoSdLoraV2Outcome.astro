@@ -1,0 +1,258 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import OpenEvoSdLoraHistorySeriesNav from './OpenEvoSdLoraHistorySeriesNav.astro';
+import {
+  SD_LORA_STRICT_ACCELERATION,
+  SD_LORA_V2_BOUNDARIES,
+  SD_LORA_V2_LOCAL,
+  SD_LORA_V2_PUBLICATION_SOURCE,
+  SD_LORA_V2_WEBSHOP,
+} from '../../data/sdLoraV2Outcome';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const evidenceHref = '/research/seed-openevo/evidence/sd-lora-v2-closeout-20260913.json';
+const commit = SD_LORA_V2_PUBLICATION_SOURCE.commit;
+const sourceBase = `https://github.com/${SD_LORA_V2_PUBLICATION_SOURCE.repository}/blob/${commit}`;
+const strictHref = `${sourceBase}/${SD_LORA_V2_PUBLICATION_SOURCE.strictCloseoutPath}`;
+const planHref = `${sourceBase}/${SD_LORA_V2_PUBLICATION_SOURCE.v2PlanPath}`;
+const v2EvidenceHref = `${sourceBase}/${SD_LORA_V2_PUBLICATION_SOURCE.v2ComparisonPath}`;
+const v3EvidenceHref = `${sourceBase}/${SD_LORA_V2_PUBLICATION_SOURCE.v3CloseoutPath}`;
+const speedup = SD_LORA_V2_LOCAL.eightStepSpeedup.toFixed(2);
+const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
+---
+<article class="sdlora-v2" data-copy-review data-sd-lora-v2-outcome data-ui-audit="contrast layout evidence">
+  <header class="sdlora-v2__hero">
+    <p class="sdlora-v2__chapter">03 / 07</p>
+    <h1>{t('SD-LoRA 的 900 多秒不是非得忍着', 'SD-LoRA does not have to stay stuck near 900 seconds')}</h1>
+    <p class="sdlora-v2__lede">
+      {t(
+        '我们已经做出了一个确实能更快训练的 SD-LoRA v2；它不是原算法一模一样的复制品，但目前的小规模真实 WebShop 检查没有发现它因为加速而明显变笨。',
+        'We now have an SD-LoRA v2 that really trains faster. It is not an identical copy of the old algorithm, but the small prospective WebShop check did not show an obvious behavioral collapse from the speedup.',
+      )}
+    </p>
+    <div class="sdlora-v2__headline-metric" aria-label={t('8 步 matched trainer 时间', 'Matched eight-step trainer time')}>
+      <span>{SD_LORA_V2_LOCAL.referenceEightStepSeconds.toFixed(1)} s</span>
+      <b aria-hidden="true">→</b>
+      <span>{SD_LORA_V2_LOCAL.v2EightStepSeconds.toFixed(1)} s</span>
+      <strong>{speedup}×</strong>
+    </div>
+    <p class="sdlora-v2__hero-boundary">
+      {t(
+        '关键边界也很明确：v2 是新的数值更新规则，不是 Vanilla SD-LoRA 的严格等价替代。',
+        'The boundary is equally important: v2 is a new numerical update rule, not a strict-equivalence replacement for Vanilla SD-LoRA.',
+      )}
+    </p>
+    <nav class="sdlora-v2__hero-links" aria-label={t('本页证据', 'Evidence for this page')}>
+      <a href={evidenceHref}>{t('公开结果 JSON', 'Public result JSON')}</a>
+      <a href={planHref}><ExternalBrandMark href={planHref} />{t('上游实验计划与终态', 'Upstream experiment plan and terminal state')}</a>
+    </nav>
+  </header>
+
+  <section class="sdlora-v2__section" aria-labelledby="strict-speed-title">
+    <div class="sdlora-v2__copy">
+      <h2 id="strict-speed-title">{t('我们先试过：算法别变，只把它算快', 'We first tried to keep the algorithm unchanged and only make it faster')}</h2>
+      <p>{t(
+        `最直接的 grouped / batched 实现确实很快：同一份 R149 工作量里，trainer 从 ${SD_LORA_STRICT_ACCELERATION.vanillaSeconds.toFixed(0)} 秒降到 ${SD_LORA_STRICT_ACCELERATION.fastBatchedSeconds.toFixed(0)} 秒，约 ${SD_LORA_STRICT_ACCELERATION.speedup.toFixed(2)}×。所以“SD-LoRA 能不能跑快”这个问题，其实很早就已经得到肯定答案。`,
+        `The direct grouped / batched implementation really was fast: on the same R149 workload, trainer time fell from ${SD_LORA_STRICT_ACCELERATION.vanillaSeconds.toFixed(0)} seconds to ${SD_LORA_STRICT_ACCELERATION.fastBatchedSeconds.toFixed(0)} seconds, about ${SD_LORA_STRICT_ACCELERATION.speedup.toFixed(2)}×. So the question “can SD-LoRA run faster?” had already been answered yes.`,
+      )}</p>
+      <p>{t(
+        '真正卡住的是另一件事：一旦我们改变 BF16 backward 里历史 component 的累加方式，最后几位梯度就会变化。一次看起来很小，连续经过很多 optimizer step 以后，系数和新学到的 LoRA 参数会走到另一条轨迹上。',
+        'The real problem was different: once the accumulation topology of historical components changes inside BF16 backward, the last bits of the gradients change. Each difference can look tiny, but across many optimizer steps the coefficients and newly learned LoRA parameters move onto another trajectory.',
+      )}</p>
+    </div>
+    <div class="strict-flow" role="img" aria-label={t('严格等价加速路线：跑快后数值轨迹改变，因此停止', 'Strict-equivalence acceleration: faster execution changed the numerical trajectory, so the route stopped')}>
+      <div><strong>{t('原 Vanilla', 'Vanilla')}</strong><span>969 s</span></div>
+      <b aria-hidden="true">→</b>
+      <div><strong>{t('一起算', 'Grouped compute')}</strong><span>352 s · 2.75×</span></div>
+      <b aria-hidden="true">→</b>
+      <div><strong>{t('训练轨迹变了', 'Trajectory changed')}</strong><span>BF16 backward</span></div>
+      <b aria-hidden="true">→</b>
+      <div class="strict-flow__stop"><strong>{t('严格等价路线停止', 'Strict-equivalence route stopped')}</strong><span>NO_STRICT_SUCCESSOR</span></div>
+    </div>
+    <p class="sdlora-v2__plain-result">{t(
+      '所以这里失败的不是“加速 SD-LoRA”。失败的是更苛刻的目标：既明显更快，又完全沿着旧 Vanilla 的有效 BF16 训练语义走。Candidate A v3 最后在第一道严格门槛就失败，而 untouched control 能逐 bit 复现 reference，于是我们按预注册规则停了，没有继续用后面的漂亮速度数字来“救”它。',
+      'So the failed goal was not “speed up SD-LoRA.” The failed goal was stricter: be materially faster while preserving the effective BF16 training semantics of old Vanilla. Candidate A v3 failed the first strict gate while the untouched control reproduced the reference bitwise, so the preregistered ladder stopped instead of using later speed numbers to rescue it.',
+    )}</p>
+  </section>
+
+  <section class="sdlora-v2__section" aria-labelledby="v2-definition-title">
+    <div class="sdlora-v2__copy">
+      <h2 id="v2-definition-title">{t('于是我们换了问题：明确做一个新的 SD-LoRA v2', 'So we changed the question and explicitly made a new SD-LoRA v2')}</h2>
+      <p>{t(
+        '我们不再把旧 Vanilla 的偶然 BF16 累加顺序当成必须复制的真理，而是把新的 reduction rule 写清楚：component 内部仍用 BF16 做矩阵计算，每 16 个 component 一组；跨 component 的结果和共享输入梯度先升到 FP32 再累加，最后再转回冻结的运行 dtype。',
+        'Instead of treating the accidental BF16 accumulation order of old Vanilla as something sacred, v2 specifies its reduction rule directly: component-local matrix work stays in BF16, components are handled in fixed groups of 16, cross-component outputs and shared-input gradients accumulate in FP32, and the final result is cast back to the frozen runtime dtype.',
+      )}</p>
+    </div>
+    <figure class="v2-rule" aria-labelledby="v2-rule-caption">
+      <div><span>16 ×</span><strong>{t('BF16 component 计算', 'BF16 component compute')}</strong></div>
+      <b aria-hidden="true">→</b>
+      <div><span>FP32</span><strong>{t('跨 component 累加', 'cross-component reduction')}</strong></div>
+      <b aria-hidden="true">→</b>
+      <div><span>BF16</span><strong>{t('回到冻结运行 dtype', 'return to frozen runtime dtype')}</strong></div>
+      <figcaption id="v2-rule-caption">{t(
+        '这条规则不靠 Task Vector、reward、probe 或 GDR 来决定更新。v2 的正确性先看“自己的规则是否可重复、是否 finite、历史 prior 是否不动”，而不是再要求逐 bit 模仿 Vanilla。',
+        'This rule does not use Task Vector, reward, probes, or GDR to decide the update. v2 is judged first by whether its own rule is deterministic and finite and keeps historical priors unchanged, rather than by bitwise imitation of Vanilla.',
+      )}</figcaption>
+    </figure>
+  </section>
+
+  <section class="sdlora-v2__section" aria-labelledby="eight-step-title">
+    <div class="sdlora-v2__copy">
+      <h2 id="eight-step-title">{t('v2 真的能继续学，而且 8 步大约快了 2×', 'v2 really keeps learning, and the matched eight-step trainer is about 2× faster')}</h2>
+      <p>{t(
+        '局部 benchmark 跑得快还不够。我们从同一个封存起点出发，让 Vanilla 和 v2 各自吃完全相同的 47 条当前样本 + 47 条 replay，只跑前 8 个 optimizer steps。两边都正常完成，loss 和参数都是 finite。',
+        'A fast local benchmark is not enough. Starting from the same sealed state, Vanilla and v2 each consumed the same 47 current examples plus 47 replay examples and ran the first eight optimizer steps. Both completed normally with finite losses and parameters.',
+      )}</p>
+    </div>
+    <div class="comparison-table-wrap">
+      <table class="comparison-table">
+        <thead><tr><th scope="col">{t('同一 8-step 训练', 'Same eight-step training')}</th><th scope="col">Vanilla</th><th scope="col">SD-LoRA v2</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">{t('Trainer 时间', 'Trainer time')}</th><td>{SD_LORA_V2_LOCAL.referenceEightStepSeconds.toFixed(2)} s</td><td><strong>{SD_LORA_V2_LOCAL.v2EightStepSeconds.toFixed(2)} s</strong></td></tr>
+          <tr><th scope="row">{t('Optimizer steps', 'Optimizer steps')}</th><td>8 / 8</td><td>8 / 8</td></tr>
+          <tr><th scope="row">{t('历史 prior', 'Historical priors')}</th><td>{t('不修改', 'unchanged')}</td><td>{SD_LORA_V2_LOCAL.priorTensorCount.toLocaleString()} {t('个 tensor 全部不变', 'tensors unchanged')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="sdlora-v2__plain-result">{t(
+      `结果不是“v2 和 Vanilla 又变回一样了”。它们的 loss / 参数轨迹确实不同；这正是我们把 v2 明确当成新方法的原因。我们真正得到的是另一件更实用的结果：在同一小段学习里，v2 能正常更新，而且 trainer 从 ${SD_LORA_V2_LOCAL.referenceEightStepSeconds.toFixed(1)} 秒降到 ${SD_LORA_V2_LOCAL.v2EightStepSeconds.toFixed(1)} 秒，约 ${speedup}×。`,
+      `The result is not that v2 somehow became Vanilla again. Their loss and parameter trajectories really differ, which is exactly why v2 is treated as a new method. The useful result is narrower: on the same short learning segment, v2 updates normally while trainer time falls from ${SD_LORA_V2_LOCAL.referenceEightStepSeconds.toFixed(1)} seconds to ${SD_LORA_V2_LOCAL.v2EightStepSeconds.toFixed(1)} seconds, about ${speedup}×.`,
+    )}</p>
+  </section>
+
+  <section class="sdlora-v2__section" aria-labelledby="webshop-title">
+    <div class="sdlora-v2__copy">
+      <h2 id="webshop-title">{t('再去 WebShop 看：没有发现它因为加速而明显变笨', 'Then we checked WebShop: the speedup did not produce an obvious behavioral collapse')}</h2>
+      <p>{t(
+        `我们先冻结了 ${SD_LORA_V2_WEBSHOP.taskCount} 个全新的 train-namespace WebShop 任务，每题 ${SD_LORA_V2_WEBSHOP.rolloutsPerTask} 次 rollout。Vanilla 和 v2 使用完全相同的 ${SD_LORA_V2_WEBSHOP.attemptsPerArm} 个任务 / seed 身份；这不是 final panel，也没有拿结果回来以后再换题。`,
+        `We prospectively froze ${SD_LORA_V2_WEBSHOP.taskCount} fresh train-namespace WebShop tasks with ${SD_LORA_V2_WEBSHOP.rolloutsPerTask} rollouts each. Vanilla and v2 used the exact same ${SD_LORA_V2_WEBSHOP.attemptsPerArm} task/seed identities. This was not the final panel, and tasks were not replaced after seeing outcomes.`,
+      )}</p>
+    </div>
+    <div class="webshop-compare" aria-label={t('Vanilla 与 SD-LoRA v2 的 WebShop 结果', 'WebShop results for Vanilla and SD-LoRA v2')}>
+      <div class="webshop-compare__row">
+        <strong>{t('平均任务完成度', 'Mean task reward')}</strong>
+        <div><span>Vanilla</span><b>{SD_LORA_V2_WEBSHOP.referenceMeanReward.toFixed(3)}</b></div>
+        <div><span>v2</span><b>{SD_LORA_V2_WEBSHOP.v2MeanReward.toFixed(3)}</b></div>
+        <small>Δ {SD_LORA_V2_WEBSHOP.meanRewardDelta > 0 ? '+' : ''}{SD_LORA_V2_WEBSHOP.meanRewardDelta.toFixed(3)}</small>
+      </div>
+      <div class="webshop-compare__row">
+        <strong>{t('完整成功率', 'Exact success rate')}</strong>
+        <div><span>Vanilla</span><b>{pct(SD_LORA_V2_WEBSHOP.referenceSuccessRate)}</b></div>
+        <div><span>v2</span><b>{pct(SD_LORA_V2_WEBSHOP.v2SuccessRate)}</b></div>
+        <small>Δ +{(SD_LORA_V2_WEBSHOP.successRateDelta * 100).toFixed(2)} pp</small>
+      </div>
+    </div>
+    <p class="paired-counts">{t(
+      `128 对 rollout 里：v2 更高 ${SD_LORA_V2_WEBSHOP.pairedPositive} 对，完全一样 ${SD_LORA_V2_WEBSHOP.pairedTie} 对，v2 更低 ${SD_LORA_V2_WEBSHOP.pairedNegative} 对。`,
+      `Across 128 paired rollouts: v2 scored higher on ${SD_LORA_V2_WEBSHOP.pairedPositive}, tied on ${SD_LORA_V2_WEBSHOP.pairedTie}, and scored lower on ${SD_LORA_V2_WEBSHOP.pairedNegative}.`,
+    )}</p>
+    <p class="sdlora-v2__boundary">{t(
+      '这不是“v2 显著更好”的证据。这个小实验真正支持的是更窄的一句话：在这块预先冻结的 16-task 非-final 面板上，我们没有观察到 v2 因为加速而出现 aggregate reward / success 退化。',
+      'This is not evidence that v2 is statistically superior. The supported claim is narrower: on this preregistered 16-task non-final panel, we did not observe aggregate reward or success degradation from the v2 speedup.',
+    )}</p>
+  </section>
+
+  <section class="sdlora-v2__section sdlora-v2__conclusion" aria-labelledby="conclusion-title">
+    <h2 id="conclusion-title">{t('现在能说什么', 'What we can say now')}</h2>
+    <blockquote>
+      {t(
+        '原来的 900 多秒不是非得忍着。我们已经做出了一个确实能更快训练的 SD-LoRA v2；它不是原算法一模一样的复制品，但目前的小规模真实 WebShop 检查没有发现它因为加速而明显变笨。',
+        'The old 900-plus-second update is not something we simply have to tolerate. We now have an SD-LoRA v2 that really trains faster; it is not an identical copy of the original algorithm, but the small real WebShop check did not show an obvious loss of behavior caused by the speedup.',
+      )}
+    </blockquote>
+    <p>{t(
+      '这已经足够把 v2 当成一个新的 fast baseline，但还不够把它叫成“Vanilla 的无损替代品”。更不能从这个 16-task 面板直接推出 v2 全局更强。',
+      'That is enough to treat v2 as a new fast baseline, but not enough to call it a lossless Vanilla replacement or conclude from this 16-task panel that v2 is globally stronger.',
+    )}</p>
+    <ul class="boundary-list">
+      {SD_LORA_V2_BOUNDARIES.map((item, index) => <li>{zh ? item : [
+        'No global behavioral equivalence claim.',
+        'No statistical-superiority claim.',
+        'No protected-final-panel claim.',
+        'No claim that v2 is better than GDR.',
+        'No formal-Q17 replacement claim.',
+      ][index]}</li>)}
+    </ul>
+  </section>
+
+  <section class="sdlora-v2__section" aria-labelledby="next-title">
+    <div class="sdlora-v2__copy">
+      <h2 id="next-title">{t('下一步不是继续死磕 v2，而是把它变成 GDR 的强基线', 'The next step is not more v2 tuning; it is to use v2 as a strong baseline for GDR')}</h2>
+      <p>{t(
+        '现在再继续换 chunk size、换 accumulator、追一个更漂亮的 v2 数字，反而会开始围着已经看过的结果调方法。更有价值的是把 v2 冻结下来，然后问 GDR 一个更难的问题：它除了“少算一点历史”，有没有真的学到一种更好的历史状态更新方式？',
+        'Continuing to tune chunk sizes, accumulators, or a prettier v2 number would start adapting the method after seeing the result. The more useful move is to freeze v2 and ask GDR a harder question: beyond avoiding repeated historical compute, does it provide a genuinely better way to update learning state?',
+      )}</p>
+    </div>
+    <table class="next-table">
+      <thead><tr><th scope="col">{t('方法', 'Arm')}</th><th scope="col">{t('它回答什么问题', 'What it asks')}</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Vanilla SD-LoRA</th><td>{t('原方法 reference：历史 component 全部保留，每次继续一起算。', 'Reference method: retain all historical components and keep computing through them.')}</td></tr>
+        <tr><th scope="row">SD-LoRA v2</th><td>{t('如果只是把 reduction rule 写清楚、并行得更合理，能做到什么？', 'What can we get simply by specifying a stable, more parallel reduction rule?')}</td></tr>
+        <tr><th scope="row">GDR SD-LoRA</th><td>{t('如果把历史变成 recurrent / bounded state，会不会得到额外的科学价值？', 'Does turning history into recurrent / bounded state add scientific value beyond compute engineering?')}</td></tr>
+      </tbody>
+    </table>
+    <p class="next-question">{t(
+      '接下来的总问题可以压成一句：历史 SD-LoRA component 到底需要被全部保留，还是可以被一种稳定的并行 reduction，甚至一个有界 recurrent state 所替代？',
+      'The next question can be stated in one line: must historical SD-LoRA components all be retained, or can they be replaced by a stable parallel reduction—or even by a bounded recurrent state?',
+    )}</p>
+    <p class="next-link"><a href={p('/research/seed-openevo/study/capability-exploration/gdr-directapply/')}>{t('继续看：GDR 这条线到底在研究什么', 'Continue: what the GDR line is actually testing')} →</a></p>
+  </section>
+
+  <details class="sdlora-v2__evidence">
+    <summary>{t('实验依据：严格等价失败、v2 八步训练、WebShop paired 结果', 'Evidence: strict-equivalence failure, v2 eight-step training, and paired WebShop result')}</summary>
+    <div class="evidence-grid">
+      <div><strong>{t('严格等价路线', 'Strict-equivalence route')}</strong><p>{t('最快的 grouped candidate 约 2.75×，但训练轨迹不同；Candidate A v3 的 known-good control 能逐 bit 对上 reference，而 candidate 本身没过第一道 B0 gate，所以终态是 NO_STRICT_SUCCESSOR。', 'The fastest grouped candidate reached about 2.75× but changed the training trajectory. Candidate A v3 had a bitwise-exact known-good control while the candidate itself failed the first B0 gate, closing the route as NO_STRICT_SUCCESSOR.')}</p><a href={strictHref}><ExternalBrandMark href={strictHref} />{t('严格等价 closeout', 'Strict-equivalence closeout')}</a></div>
+      <div><strong>{t('v2 八步训练', 'v2 eight-step training')}</strong><p>{t(`同一起点、同 47 current + 47 replay、同 8 optimizer steps。${SD_LORA_V2_LOCAL.priorTensorCount.toLocaleString()} 个历史 prior tensor 全部 bitwise 不变；trainer ${SD_LORA_V2_LOCAL.referenceEightStepSeconds.toFixed(2)}s → ${SD_LORA_V2_LOCAL.v2EightStepSeconds.toFixed(2)}s。`, `Same start, same 47 current + 47 replay examples, same eight optimizer steps. All ${SD_LORA_V2_LOCAL.priorTensorCount.toLocaleString()} historical prior tensors stayed bitwise unchanged; trainer time fell from ${SD_LORA_V2_LOCAL.referenceEightStepSeconds.toFixed(2)}s to ${SD_LORA_V2_LOCAL.v2EightStepSeconds.toFixed(2)}s.`)}</p><a href={v2EvidenceHref}><ExternalBrandMark href={v2EvidenceHref} />V2_COMPARISON.json</a></div>
+      <div><strong>{t('WebShop paired 检查', 'Paired WebShop check')}</strong><p>{t('16 个预先冻结的非-final train-namespace tasks × 8 rollouts；两臂各 128 条 task-bearing attempts，engineering-invalid 都是 0。', 'Sixteen preregistered non-final train-namespace tasks × eight rollouts; each arm completed 128 task-bearing attempts with zero engineering-invalid attempts.')}</p><a href={v3EvidenceHref}><ExternalBrandMark href={v3EvidenceHref} />V3_CLOSEOUT_RECEIPT.json</a></div>
+      <div><strong>{t('一次无效执行没有被混进科学结果', 'One invalid execution was kept out of the science result')}</strong><p>{t('第一次 V3 runner 因采样接口不兼容，256/256 都是 engineering-invalid，task-bearing=0。它被单独封存；修完接口以后才按同一批 identity 重跑。', 'The first V3 runner had a sampling-interface mismatch: 256/256 attempts were engineering-invalid and task-bearing=0. That attempt was sealed separately; the exact same identities were rerun only after the interface was repaired.')}</p></div>
+    </div>
+    <p class="evidence-links"><a href={evidenceHref}>{t('公开结果 JSON', 'Public result JSON')}</a><a href={planHref}><ExternalBrandMark href={planHref} />{t('完整计划与 claim boundary', 'Full plan and claim boundary')}</a></p>
+  </details>
+
+  <OpenEvoSdLoraHistorySeriesNav locale={locale} />
+</article>
+
+<style>
+.sdlora-v2{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--ink)}
+.sdlora-v2__hero{padding:clamp(2.5rem,7vw,5.8rem) 0 2.4rem;border-bottom:1px solid var(--line)}
+.sdlora-v2__chapter{margin:0 0 .65rem;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}
+.sdlora-v2__hero h1{max-width:16ch;margin:0;font-family:var(--font-editorial);font-size:clamp(2.35rem,6vw,5rem);line-height:.98;letter-spacing:-.045em}
+.sdlora-v2__lede{max-width:52rem;margin:1.25rem 0 0;font-size:clamp(1.15rem,2vw,1.45rem);line-height:1.64}
+.sdlora-v2__headline-metric{display:flex;flex-wrap:wrap;align-items:baseline;gap:.45rem 1rem;margin:1.6rem 0 0;padding:1rem 0;border-block:1px solid var(--line);font-variant-numeric:tabular-nums}
+.sdlora-v2__headline-metric span{font:800 clamp(1.45rem,3.2vw,2.35rem)/1.1 var(--font-mono)}
+.sdlora-v2__headline-metric b{color:var(--muted);font-size:1.35rem}.sdlora-v2__headline-metric strong{color:var(--accent-deep);font:800 1.1rem/1.2 var(--font-mono)}
+.sdlora-v2__hero-boundary{max-width:50rem;margin:1rem 0 0;color:var(--muted);line-height:1.6}
+.sdlora-v2__hero-links{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin-top:1rem}.sdlora-v2__hero-links a,.sdlora-v2__evidence a,.next-link a{color:var(--accent-deep);font-weight:750;text-underline-offset:.22em}
+.sdlora-v2__section{padding:2.8rem 0;border-bottom:1px solid var(--line)}
+.sdlora-v2__copy{max-width:52rem}.sdlora-v2__section h2{margin:0;font-family:var(--font-editorial);font-size:clamp(1.7rem,3.4vw,2.65rem);line-height:1.08;letter-spacing:-.025em}
+.sdlora-v2__section p{line-height:1.68}.sdlora-v2__copy p{margin:.85rem 0 0;color:var(--ink)}
+.sdlora-v2__plain-result{max-width:54rem;margin:1.25rem 0 0;padding-left:1rem;border-left:3px solid var(--accent-deep);font-size:1.06rem}
+
+.strict-flow,.v2-rule{display:flex;align-items:stretch;gap:.7rem;margin:1.5rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}
+.strict-flow>div,.v2-rule>div{min-width:0;flex:1;padding:.85rem .9rem;background:var(--surface-muted);border-radius:var(--radius-control)}
+.strict-flow>div{display:flex;flex-direction:column;gap:.35rem}.strict-flow>div span,.v2-rule>div span{color:var(--muted);font:700 1rem/1.35 var(--font-mono);overflow-wrap:anywhere}
+.strict-flow>b,.v2-rule>b{align-self:center;color:var(--muted);font-size:1.25rem}.strict-flow__stop{border-left:3px solid var(--color-warning)}
+.v2-rule{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center}.v2-rule>div{display:grid;gap:.35rem;text-align:center}.v2-rule figcaption{grid-column:1/-1;margin-top:.35rem;padding-top:.85rem;border-top:1px solid var(--line);color:var(--muted);line-height:1.6}
+.comparison-table-wrap,.next-table{margin-top:1.35rem;overflow-x:auto}.comparison-table,.next-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.comparison-table th,.comparison-table td,.next-table th,.next-table td{padding:.75rem .85rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:1rem}
+.comparison-table thead th,.next-table thead th{color:var(--muted);font-size:1rem}.comparison-table td strong{color:var(--accent-deep)}
+.webshop-compare{margin-top:1.35rem;border-block:1px solid var(--line)}.webshop-compare__row{display:grid;grid-template-columns:minmax(9rem,1.2fr) repeat(2,minmax(7rem,.8fr)) auto;gap:.75rem;align-items:baseline;padding:.9rem 0;border-bottom:1px solid var(--line)}
+.webshop-compare__row:last-child{border-bottom:0}.webshop-compare__row>div{display:flex;align-items:baseline;gap:.5rem}.webshop-compare__row span{color:var(--muted);font-size:1rem}.webshop-compare__row b{font:800 1.2rem/1.1 var(--font-mono)}.webshop-compare__row small{color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}
+.paired-counts{max-width:52rem;margin:1rem 0 0;font-weight:700}.sdlora-v2__boundary{max-width:52rem;margin:.7rem 0 0;color:var(--muted)}
+.sdlora-v2__conclusion blockquote{max-width:52rem;margin:1.3rem 0 0;padding:0 0 0 1rem;border-left:4px solid var(--color-positive);font-family:var(--font-editorial);font-size:clamp(1.2rem,2.4vw,1.6rem);line-height:1.55}
+.sdlora-v2__conclusion>p{max-width:52rem}.boundary-list{max-width:50rem;margin:1rem 0 0;padding-left:1.2rem;color:var(--muted);line-height:1.6}
+.next-table th:first-child{width:12rem}.next-question{max-width:54rem;margin:1.25rem 0 0;font-size:1.08rem;font-weight:700}.next-link{margin:.8rem 0 0}
+
+.sdlora-v2__evidence{margin:2rem 0;border-block:1px solid var(--line)}.sdlora-v2__evidence>summary{padding:1rem 0;cursor:pointer;font-weight:800}.evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 1.5rem;padding-bottom:1rem}.evidence-grid>div{padding:.95rem 0;border-top:1px solid var(--line)}.evidence-grid p{margin:.4rem 0 .55rem;color:var(--muted);line-height:1.58}.evidence-links{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin:0 0 1.1rem}
+@media(max-width:760px){
+  .sdlora-v2{width:min(100% - 1rem,1120px)}.sdlora-v2__hero{padding-top:2rem}.sdlora-v2__hero h1{font-size:clamp(2.1rem,11vw,3.35rem)}
+  .sdlora-v2__hero-links{display:grid}.strict-flow{display:grid;grid-template-columns:1fr}.strict-flow>b{transform:rotate(90deg);justify-self:center}.v2-rule{grid-template-columns:1fr}.v2-rule>b{transform:rotate(90deg);justify-self:center}.v2-rule figcaption{grid-column:auto}
+  .webshop-compare__row{grid-template-columns:1fr 1fr}.webshop-compare__row>strong,.webshop-compare__row>small{grid-column:1/-1}.comparison-table,.next-table{min-width:0;table-layout:fixed;font-size:1rem}.comparison-table th,.comparison-table td,.next-table th,.next-table td{padding:.62rem .45rem;overflow-wrap:anywhere}.next-table th:first-child{width:8.5rem}.evidence-grid{grid-template-columns:1fr}
+}
+</style>

@@ -1,0 +1,61 @@
+{
+  "schema": "basemodel.public.sd-lora-v2-closeout.v1",
+  "checked_date": "2026-09-13",
+  "source": {
+    "repository": "mykcs/openevo-experiment",
+    "branch": "research/sd-lora-v2-stable-reduction-202609131200",
+    "commit": "0bf76b5a04d0429da52998fcb05cf30848d05198"
+  },
+  "strict_equivalence_acceleration": {
+    "reference_trainer_seconds": 969.17,
+    "fast_batched_trainer_seconds": 352.12,
+    "fast_batched_speedup": 2.75,
+    "qualified_successor": false,
+    "disposition": "NO_STRICT_SUCCESSOR",
+    "reason": "Fast grouped execution changed the effective BF16 backward/reduction trajectory; Candidate A v3 later failed the frozen B0 bitwise shared-gradient gate while the known-good control stayed exact."
+  },
+  "sd_lora_v2": {
+    "treatment": "stable-fp32-reducer-c16",
+    "new_treatment_not_vanilla_equivalence": true,
+    "chunk_size": 16,
+    "component_local_gemm_dtype": "BF16",
+    "cross_component_reduction_dtype": "FP32",
+    "synthetic_speedup_2048_to_2048": 2.538,
+    "synthetic_speedup_2048_to_1024": 2.465,
+    "matched_eight_step": {
+      "reference_seconds": 105.11307090613991,
+      "v2_seconds": 52.28121632896364,
+      "optimizer_steps": 8,
+      "current_examples": 47,
+      "replay_examples": 47,
+      "historical_prior_tensors_unchanged": 33152,
+      "status": "V2_LOCAL_SUCCESS"
+    }
+  },
+  "prospective_webshop": {
+    "task_count": 16,
+    "rollouts_per_task": 8,
+    "attempts_per_arm": 128,
+    "protected_final_panel_accessed": false,
+    "engineering_invalid_per_arm": 0,
+    "vanilla": {
+      "mean_reward": 0.29605034722222223,
+      "success_rate": 0.1015625,
+      "invalid_action_terminations": 72
+    },
+    "sd_lora_v2": {
+      "mean_reward": 0.30789930555555556,
+      "success_rate": 0.109375,
+      "invalid_action_terminations": 71
+    },
+    "paired": {
+      "mean_reward_delta_v2_minus_vanilla": 0.011848958333333326,
+      "success_rate_delta_v2_minus_vanilla": 0.0078125,
+      "positive": 8,
+      "tie": 117,
+      "negative": 3
+    },
+    "status": "V2_WEBSHOP_QUALIFIED"
+  },
+  "claim_boundary": "On this preregistered 16-task non-final train-namespace panel only, SD-LoRA v2 showed no aggregate reward/success degradation relative to Vanilla. This is not global equivalence, statistical superiority, protected-final-panel efficacy, a GDR comparison, or a formal-Q17 replacement."
+}

@@ -52,11 +52,11 @@ export const CAPABILITY_READER_ROUTES = [
   {
     "route": "sd-lora-equivalence",
     "coverage": "contextualized",
-    "owner": "OpenEvoSdLoraHistorySkeleton",
-    "label": { "zh": "SD-LoRA 严格等价", "en": "Strict SD-LoRA equivalence" },
+    "owner": "OpenEvoSdLoraV2Outcome",
+    "label": { "zh": "SD-LoRA v2 加速结果", "en": "SD-LoRA v2 acceleration" },
     "purpose": {
-      "zh": "解释为什么数学上等价的并行计算可能改变 BF16 backward 的实际累加语义；当前先建立页面入口，不把待整理证据写成新结论。",
-      "en": "Explain why mathematically equivalent parallel compute can change effective BF16 backward accumulation; for now establish the route without upgrading unfinished evidence into a new conclusion."
+      "zh": "解释严格等价加速为什么失败、为什么后来明确做成新的 SD-LoRA v2，以及约 2× trainer 加速与 prospective WebShop 小面板到底支持什么。",
+      "en": "Explain why strict-equivalence acceleration failed, why the successor became an explicit SD-LoRA v2 treatment, and what the ~2× trainer speedup plus prospective WebShop panel actually support."
     }
   },
   {

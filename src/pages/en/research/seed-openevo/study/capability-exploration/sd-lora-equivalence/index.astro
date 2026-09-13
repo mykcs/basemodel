@@ -1,14 +1,14 @@
 ---
 import AppLayout from '../../../../../../../layouts/AppLayout.astro';
-import OpenEvoSdLoraHistorySkeleton from '../../../../../../../components/research/OpenEvoSdLoraHistorySkeleton.astro';
+import OpenEvoSdLoraV2Outcome from '../../../../../../../components/research/OpenEvoSdLoraV2Outcome.astro';
 import ResearchRouteContext from '../../../../../../../components/research/ResearchRouteContext.astro';
 const locale = 'en' as const;
 ---
 <AppLayout
-  title="Why strict SD-LoRA equivalence is difficult"
-  description="This route is part of the SD-LoRA growing-history research series. The page structure and navigation are in place; evidence will be added only after the corresponding experiment is complete."
+  title="SD-LoRA v2: what we did after strict equivalence failed"
+  description="Strict-equivalence acceleration found no qualified successor. SD-LoRA v2 is about 2× faster in the matched eight-step trainer, with no aggregate reward/success degradation observed on the prospective non-final WebShop panel."
   locale={locale}
 >
   <ResearchRouteContext locale={locale} route="sd-lora-equivalence" />
-  <OpenEvoSdLoraHistorySkeleton locale={locale} />
+  <OpenEvoSdLoraV2Outcome locale={locale} />
 </AppLayout>
