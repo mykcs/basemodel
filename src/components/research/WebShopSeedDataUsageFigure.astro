@@ -1,0 +1,206 @@
+---
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import { type Locale } from '../../i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+
+const seedCommit = '2cf2fadca3c5aba28da68e8e1405182ba8d90e6c';
+const seedBase = `https://github.com/jinyangwu/SEED/blob/${seedCommit}`;
+const stage1Url = `${seedBase}/scripts/sft/webshop/pipeline.py`;
+const stage2Url = `${seedBase}/agent_system/environments/env_package/webshop/envs.py`;
+const launcherUrl = `${seedBase}/examples/seed_trainer/_common/webshop.sh`;
+const paperNoteUrl = `${seedBase}/docs/gigpo/seed_algorithm_technical_note.md`;
+const prepareUrl = `${seedBase}/examples/data_preprocess/prepare.py`;
+
+const trainGoals = 6410;
+const stage1Goals = 180;
+const stage1Pct = (stage1Goals / trainGoals * 100).toFixed(1);
+
+const rows = [
+  {
+    label: t('Stage 1 · hindsight-skill SFT', 'Stage 1 · hindsight-skill SFT'),
+    schedule: t('180 个不同 goal × 每个 8 条 rollout', '180 distinct goals × 8 rollouts each'),
+    trajectories: '1,440',
+    coverage: t(`${stage1Pct}% 的 6,410-goal 训练候选池`, `${stage1Pct}% of the 6,410-goal training-candidate pool`),
+    note: t('先固定抽出 180 个 goal；这 180 个内部不重复。', 'A fixed set of 180 goals is sampled first; those 180 do not repeat within the set.'),
+  },
+  {
+    label: t('Stage 2 · 论文设置', 'Stage 2 · paper setting'),
+    schedule: t('150 policy updates × 每轮 16 个 goal × 每个 8 条 rollout', '150 policy updates × 16 goals/update × 8 rollouts/goal'),
+    trajectories: '19,200',
+    coverage: t('最多 2,400 个不同 goal；按 released sampler 的期望值约 2,004 个（31.3%）', 'At most 2,400 distinct goals; expected ≈2,004 (31.3%) under the released sampler'),
+    note: t('跨 update 可以重新抽到旧 goal，因此不是把训练池顺序扫一遍。', 'Goals can be sampled again in later updates, so this is not a sequential sweep through the training pool.'),
+  },
+  {
+    label: t('Stage 2 · 当前公开脚本默认', 'Stage 2 · current released-script default'),
+    schedule: t('160 epochs/updates × 每轮 16 个 goal × 每个 8 条 rollout', '160 epochs/updates × 16 goals/update × 8 rollouts/goal'),
+    trajectories: '20,480',
+    coverage: t('最多 2,560 个不同 goal；期望约 2,113 个（33.0%）', 'At most 2,560 distinct goals; expected ≈2,113 (33.0%)'),
+    note: t('公开脚本的 total_epochs=160；官方技术说明把论文设置记为 150 policy updates。', 'The released launcher defaults to total_epochs=160; the repository technical note records 150 policy updates for the paper.'),
+  },
+];
+---
+
+<section id="fig-webshop-seed-data-usage" class="canonical-figure webshop-seed-data-usage" aria-labelledby="webshop-seed-data-usage-title" data-ui-audit="contrast layout overflow">
+  <header class="figure-header">
+    <div class="figure-label">{t('补充 · SEED 到底用了多少 WebShop？','SUPPLEMENT · HOW MUCH WEBSHOP DOES SEED ACTUALLY USE?')}</div>
+    <h2 id="webshop-seed-data-usage-title">{t('不是“1,000 个商品跑了 150 轮”这么算','It is not “1,000 products × 150 rounds”')}</h2>
+    <p>{t(
+      '这里必须先分清四个单位：商品目录、goal 训练池、每轮抽到的 goal，以及同一 goal 上的多条 rollout。SEED 的 RL 并没有把 6,410 个训练 goal 完整跑一遍。',
+      'Four units must be separated: the product catalog, the goal pool, the goals sampled in each update, and multiple rollouts on the same goal. SEED RL does not complete one full pass over all 6,410 training goals.'
+    )}</p>
+  </header>
+
+  <figure class="usage-story" aria-labelledby="webshop-seed-data-usage-title">
+    <aside class="answer" role="note">
+      <strong>{t('一句话答案','One-sentence answer')}</strong>
+      <p>{t(
+        'WebShop small 装载 1,000 个商品并产生 6,910 个 executable goals；SEED 把 goal 0–499 留在 non-train pool，把 goal 500–6909（6,410 个）作为训练候选。论文的 150-update RL 在 released sampling rule 下，期望只碰到约 2,004 个不同训练 goal，也就是约 31.3%。',
+        'WebShop small loads 1,000 products and yields 6,910 executable goals. SEED keeps goals 0–499 in the non-train pool and uses goals 500–6909 (6,410 goals) as training candidates. Under the released sampling rule, the paper’s 150-update RL schedule is expected to touch only about 2,004 distinct training goals, or about 31.3%.'
+      )}</p>
+    </aside>
+
+    <section class="unit-map" aria-label={t('四种数据单位','Four data units')}>
+      <div><small>CATALOG</small><strong>1,000</strong><span>{t('商品','products')}</span></div>
+      <span aria-hidden="true">→</span>
+      <div><small>GOAL POOL</small><strong>6,410</strong><span>{t('训练候选 goals','training-candidate goals')}</span></div>
+      <span aria-hidden="true">→</span>
+      <div><small>PER UPDATE</small><strong>16</strong><span>{t('不同 goals','distinct goals')}</span></div>
+      <span aria-hidden="true">→</span>
+      <div><small>ROLLOUT GROUP</small><strong>8×</strong><span>{t('同一 goal','same goal')}</span></div>
+    </section>
+
+    <div class="table-wrap" tabindex="0" role="region" aria-label={t('SEED WebShop 数据使用量对照表','SEED WebShop data-usage comparison table')}>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">{t('阶段','Stage')}</th>
+            <th scope="col">{t('怎样取 task','Task schedule')}</th>
+            <th scope="col">{t('轨迹数','Trajectories')}</th>
+            <th scope="col">{t('不同 goal 覆盖','Distinct-goal coverage')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr>
+              <th scope="row">{row.label}</th>
+              <td>{row.schedule}<small>{row.note}</small></td>
+              <td><strong>{row.trajectories}</strong></td>
+              <td>{row.coverage}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <section class="sampling" aria-labelledby="seed-sampling-title">
+      <h3 id="seed-sampling-title">{t('每个 RL update 到底怎么抽？','What exactly happens in each RL update?')}</h3>
+      <ol>
+        <li>
+          <strong>{t('从 6,410 个训练 goal 里抽 16 个','Sample 16 goals from the 6,410-goal training pool')}</strong>
+          <p>{t('代码使用 choice(..., size=16, replace=False)：同一个 update 内，这 16 个 goal 不重复。','The code uses choice(..., size=16, replace=False), so the 16 goals are distinct within one update.')}</p>
+        </li>
+        <li>
+          <strong>{t('把每个 goal 复制成 8 条 rollout','Repeat each selected goal into an 8-rollout group')}</strong>
+          <p>{t('16 个 task group × 8 条轨迹 = 每个 update 128 条 rollout。8 条不是 8 个新 goal，而是在同一个购买要求上采样多条行为轨迹。','16 task groups × 8 trajectories = 128 rollouts per update. The eight trajectories are not eight new goals; they are multiple behavior samples for the same shopping request.')}</p>
+        </li>
+        <li>
+          <strong>{t('下一轮重新从同一个池子抽','Sample again from the same pool next update')}</strong>
+          <p>{t('RNG 会继续向前，但代码没有“这个 goal 已经用过”的全局 used-mask。因此不同 update 之间可以重叠。固定 seed 让抽样序列可复现，不会让它自动变成无重复的一轮 epoch。','The RNG state advances, but there is no global used-goal mask. Later updates may overlap earlier ones. A fixed seed makes the sequence reproducible; it does not turn sampling into a no-repeat epoch.')}</p>
+        </li>
+      </ol>
+    </section>
+
+    <aside class="epoch-note" role="note">
+      <strong>{t('所以：它没有“跑完一轮 WebShop 训练集”','Therefore: it does not finish one epoch over the WebShop training goals')}</strong>
+      <p>{t(
+        '甚至按最乐观的“完全不重叠”上限，150 × 16 = 2,400，也只有 6,410 的 37.4%；160 × 16 = 2,560，也只有 39.9%。真实 sampler 允许跨轮重复，所以不同 goal 的期望覆盖进一步降到约 31.3% / 33.0%。',
+        'Even under the impossible best case of zero cross-update overlap, 150 × 16 = 2,400 is only 37.4% of 6,410, and 160 × 16 = 2,560 is only 39.9%. Because the real sampler permits repeats across updates, expected distinct-goal coverage falls further to about 31.3% / 33.0%.'
+      )}</p>
+    </aside>
+
+    <section class="questions" aria-labelledby="usage-questions-title">
+      <h3 id="usage-questions-title">{t('真正应该继续问什么？','What else should we care about?')}</h3>
+      <dl>
+        <div>
+          <dt>{t('商品覆盖 ≠ goal 覆盖','Product coverage ≠ goal coverage')}</dt>
+          <dd>{t('1,000 是搜索目录大小；6,410 是训练候选购买要求。多个 goal 可以围绕同一商品或相近属性，不能把“不同 goal 数”直接当成“不同商品数”。','1,000 is the catalog size; 6,410 is the pool of training-candidate shopping requests. Multiple goals can concern the same product or related attributes, so distinct goals are not the same thing as distinct products.')}</dd>
+        </div>
+        <div>
+          <dt>{t('Stage 1 和 Stage 2 会不会撞题？','Can Stage 1 and Stage 2 reuse the same goals?')}</dt>
+          <dd>{t('会。Stage 1 从 goal 500 之后的同一个训练池固定抽 180 个；released Stage 2 sampler 没有排除这 180 个，因此 RL 后续可以再次抽到它们。','Yes. Stage 1 samples 180 goals from the same post-500 training pool; the released Stage 2 sampler does not exclude those 180, so RL can revisit them.')}</dd>
+        </div>
+        <div>
+          <dt>{t('训练 / 测试到底隔离了什么？','What exactly is separated between training and evaluation?')}</dt>
+          <dd>{t('released wrapper 按 goal index 隔离：0–499 与 500–6909 不重叠；但它们仍在同一个 1,000-product small catalog 里。这更接近“新购买要求”泛化，而不是“从未见过的商品目录”泛化。','The released wrapper separates goal indices: 0–499 and 500–6909 do not overlap, while both live in the same 1,000-product small catalog. This is closer to generalizing to different shopping requests than to a wholly unseen product catalog.')}</dd>
+        </div>
+        <div>
+          <dt>{t('只数 rollout 公平吗？','Is rollout count alone a fair compute budget?')}</dt>
+          <dd>{t('不够。SEED 还要分析完整轨迹、生成 hindsight skill，并做额外的 teacher / student re-scoring。比较 OpenEvo 与 SEED 时，至少应同时记录 environment rollouts、environment steps、analyzer generation 与额外 forward / backward compute。','Not by itself. SEED also analyzes complete trajectories, generates hindsight skills, and performs additional teacher/student re-scoring. A fair SEED–OpenEvo comparison should track environment rollouts, environment steps, analyzer generation, and extra forward/backward compute.')}</dd>
+        </div>
+        <div>
+          <dt>{t('19,200 条 rollout 等于多少环境交互？','How many environment interactions can 19,200 rollouts imply?')}</dt>
+          <dd>{t('WebShop horizon 上限是 15 steps，所以 150-update 设置最多对应 288,000 个环境 step；160 默认最多 307,200。实际值会因为提前成功或终止而更低。','With a 15-step WebShop horizon, the 150-update schedule has an upper bound of 288,000 environment steps; the 160-update default has an upper bound of 307,200. Actual counts are lower when episodes terminate early.')}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <aside class="calculation-boundary" role="note">
+      <strong>{t('31.3% / 33.0% 是数学期望，不是某个训练日志的实测唯一值','31.3% / 33.0% are mathematical expectations, not exact counts from one training log')}</strong>
+      <p>{t(
+        '计算使用 released sampler：每轮从 N=6,410 中无放回抽 16 个，但跨轮重新抽。T 轮后的不同 goal 期望值为 N × [1 − (1 − 16/N)^T]。如果要回答某一次具体 run “究竟碰过哪 2,0xx 个 goal”，应该直接从那次 run 的 task / rollout receipt 统计唯一 goal_idx。',
+        'The calculation follows the released sampler: sample 16 without replacement inside each update from N=6,410, then sample again in the next update. Expected distinct goals after T updates are N × [1 − (1 − 16/N)^T]. To answer exactly which 2,0xx goals a particular run touched, count unique goal_idx values from that run’s task/rollout receipts.'
+      )}</p>
+    </aside>
+
+    <details class="evidence">
+      <summary>{t('查看代码证据与“150 / 160”边界','See code evidence and the 150 / 160 boundary')}</summary>
+      <div class="evidence-grid">
+        <article>
+          <small>STAGE 1 · RELEASED CODE</small>
+          <strong>180 × 8 = 1,440</strong>
+          <p>{t('pipeline.py 把 goal 500 之后的 pool 打乱后取前 180 个，因此 Stage 1 task list 内部不重复。','pipeline.py shuffles the post-500 goal pool and takes the first 180, so the Stage 1 task list itself has no duplicate goals.')}</p>
+          <a href={stage1Url} target="_blank" rel="noreferrer"><ExternalBrandMark href={stage1Url} />pipeline.py ↗</a>
+        </article>
+        <article>
+          <small>STAGE 2 · RELEASED CODE</small>
+          <strong>choice(..., replace=False) → repeat × 8</strong>
+          <p>{t('envs.py 定义 500..len(goals)-1 的训练池、每次 reset 的无放回 batch 抽样，以及 group_n 次重复。','envs.py defines the post-500 training pool, without-replacement sampling inside each reset, and group_n repetition.')}</p>
+          <a href={stage2Url} target="_blank" rel="noreferrer"><ExternalBrandMark href={stage2Url} />envs.py ↗</a>
+        </article>
+        <article>
+          <small>PAPER vs SCRIPT</small>
+          <strong>{t('论文 150 updates · 脚本默认 160','Paper: 150 updates · script default: 160')}</strong>
+          <p>{t('SEED 仓库技术说明明确记录这一差异；public launcher 也把 trainer.total_epochs 设为 160。','The SEED repository technical note records this difference explicitly, while the public launcher defaults trainer.total_epochs to 160.')}</p>
+          <p class="source-links"><a href={paperNoteUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={paperNoteUrl} />technical note ↗</a><a href={launcherUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={launcherUrl} />launcher ↗</a></p>
+        </article>
+        <article>
+          <small>{t('为什么 total_epochs 不是 6,410-goal epoch','WHY total_epochs IS NOT A 6,410-GOAL EPOCH')}</small>
+          <strong>{t('16-row parquet 只是 shape / batch-size carrier','The 16-row parquet is only a shape / batch-size carrier')}</strong>
+          <p>{t('prepare.py 明确写明它不使用 Geometry3k 内容，只借它表示 modality 和 data size；真正的 WebShop goal identity 由环境 reset 时抽样。','prepare.py explicitly says it does not use Geometry3k content; it only indicates modality and data size. Actual WebShop goal identity is sampled when the environment resets.')}</p>
+          <a href={prepareUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={prepareUrl} />prepare.py ↗</a>
+        </article>
+      </div>
+    </details>
+
+    <figcaption>{t(
+      '数据使用量要按“catalog → goal pool → sampled goals → rollout trajectories”分层报告；否则“1000 商品”“150 updates”“19,200 rollouts”会被误当成同一种数据规模。',
+      'Data usage should be reported as catalog → goal pool → sampled goals → rollout trajectories; otherwise “1,000 products,” “150 updates,” and “19,200 rollouts” get mistaken for the same kind of data scale.'
+    )}</figcaption>
+  </figure>
+</section>
+
+<style>
+  .webshop-seed-data-usage{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface);scroll-margin-top:7rem}
+  .figure-header{max-width:950px}.figure-label{color:var(--accent);font:800 .66rem/1.2 var(--font-mono);letter-spacing:.08em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.55rem,3.5vw,2.75rem);line-height:1.08;letter-spacing:-.04em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}.usage-story{margin:1.55rem 0 0}
+  .answer,.epoch-note,.calculation-boundary{padding:1rem 1.1rem;border-left:3px solid var(--accent);background:var(--surface-muted)}.answer strong,.epoch-note strong,.calculation-boundary strong{display:block;font-size:.9rem}.answer p,.epoch-note p,.calculation-boundary p{margin:.4rem 0 0;color:var(--muted);font-size:.82rem;line-height:1.65}
+  .unit-map{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:.55rem;align-items:center;margin-top:1rem}.unit-map>div{min-width:0;padding:.85rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.unit-map>span{color:var(--muted);font-weight:900}.unit-map small,.unit-map strong,.unit-map div>span{display:block}.unit-map small{color:var(--muted);font:800 .55rem/1.2 var(--font-mono);letter-spacing:.06em}.unit-map strong{margin:.28rem 0 .12rem;font-size:1.25rem}.unit-map div>span{color:var(--muted);font-size:.72rem}
+  .table-wrap{max-width:100%;margin-top:1rem;overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius-panel)}.table-wrap:focus-visible{outline:2px solid var(--accent);outline-offset:2px}table{width:100%;min-width:830px;border-collapse:collapse;background:var(--surface)}th,td{padding:.8rem .85rem;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:.75rem;line-height:1.5}thead th{background:var(--surface-muted);color:var(--muted);font:800 .6rem/1.3 var(--font-mono);letter-spacing:.04em}tbody th{width:19%;font-size:.76rem}tbody td:nth-child(2){width:35%}tbody td:nth-child(3){width:12%;font-variant-numeric:tabular-nums}tbody tr:last-child>*{border-bottom:0}td small{display:block;margin-top:.3rem;color:var(--muted);line-height:1.45}td strong{font-size:.88rem}
+  .sampling,.questions{margin-top:1.35rem}.sampling h3,.questions h3{margin:0 0 .75rem;font-size:1.05rem}.sampling ol{display:grid;gap:.65rem;margin:0;padding:0;list-style:none;counter-reset:step}.sampling li{position:relative;padding:.85rem .9rem .85rem 3rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted);counter-increment:step}.sampling li::before{content:counter(step);position:absolute;left:.9rem;top:.85rem;display:grid;width:1.45rem;height:1.45rem;place-items:center;border:1px solid var(--line);border-radius:50%;font:800 .64rem/1 var(--font-mono)}.sampling li strong{font-size:.8rem}.sampling li p{margin:.28rem 0 0;color:var(--muted);font-size:.74rem;line-height:1.55}.epoch-note,.calculation-boundary{margin-top:1rem}
+  .questions dl{display:grid;gap:0;margin:0;border-top:1px solid var(--line)}.questions dl>div{display:grid;grid-template-columns:minmax(180px,.32fr) minmax(0,1fr);gap:1rem;padding:.85rem 0;border-bottom:1px solid var(--line)}.questions dt{font-weight:850;font-size:.78rem}.questions dd{margin:0;color:var(--muted);font-size:.75rem;line-height:1.6}
+  .evidence{margin-top:1rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.evidence summary{cursor:pointer;padding:.85rem 0;font-size:.75rem;font-weight:850}.evidence-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;padding:0 0 .9rem}.evidence-grid article{padding:.85rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.evidence-grid small{display:block;color:var(--muted);font:800 .55rem/1.2 var(--font-mono);letter-spacing:.05em}.evidence-grid strong{display:block;margin:.3rem 0;font-size:.78rem}.evidence-grid p{margin:.3rem 0;color:var(--muted);font-size:.7rem;line-height:1.5}.evidence-grid a{display:inline-flex;align-items:center;gap:.25rem;color:var(--accent);font-size:.65rem;font-weight:800}.source-links{display:flex;flex-wrap:wrap;gap:.7rem}figcaption{margin-top:1rem;color:var(--muted);font-size:.68rem;line-height:1.5}
+  @media(max-width:760px){.webshop-seed-data-usage{width:min(100% - 1rem,1120px);margin:1.1rem auto;padding:1rem}.unit-map{grid-template-columns:1fr}.unit-map>span{transform:rotate(90deg);justify-self:center}.questions dl>div{grid-template-columns:1fr;gap:.3rem}.evidence-grid{grid-template-columns:1fr}.table-wrap{overscroll-behavior-x:contain}}
+</style>

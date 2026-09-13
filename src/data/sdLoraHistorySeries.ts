@@ -22,8 +22,8 @@ export const SD_LORA_HISTORY_SERIES = [
   },
   {
     route: 'sd-lora-equivalence', number: '03',
-    title: { zh: '为什么“一起算”很快，却可能不再等价？', en: 'Why can faster grouped compute stop being equivalent?' },
-    summary: { zh: '这页将解释 BF16、backward 和梯度累加顺序为什么会改变训练轨迹。', en: 'This page will explain how BF16, backward, and gradient accumulation can alter the training trajectory.' },
+    title: { zh: '算快以后，它还是原来的 SD-LoRA 吗？', en: 'After speeding it up, is it still the same SD-LoRA?' },
+    summary: { zh: '严格等价加速没有找到合格 successor；于是我们明确做了新的 SD-LoRA v2，8-step trainer 约快 2×，小规模 WebShop 没看到整体退化。', en: 'Strict-equivalence acceleration found no qualified successor, so we defined SD-LoRA v2 as a new treatment: about 2× faster in the matched eight-step trainer, with no aggregate degradation on the small WebShop panel.' },
   },
   {
     route: 'sd-lora-history-novelty', number: '04',

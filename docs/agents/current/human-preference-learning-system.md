@@ -301,6 +301,8 @@ npm run feedback:cold-read -- study-briefing --phase=blind --url=<rendered-url>
 
 The reviewer sees only the rendered artifact and answers what it appears to be about, first attention target, terminology friction, competing centers, hidden boundaries, suggested changes, and desire to continue reading.
 
+**Phase A starts from the real default rendered state.** Do not pre-open a resource menu, `<details>`, filter, dialog, drawer, hover state, or scroll position before the blind first-attention read unless that state is genuinely the route's default/persisted entry state or the task is explicitly evaluating that interaction state. If an expanded/open state needs review, capture it as a separate interaction-state witness. A manually expanded diagnostic screenshot may prove that a link is absent/present inside the menu; it cannot stand in for the page's default first-screen cold read.
+
 Save Phase A before revealing preference evidence.
 
 ### Phase B — compare

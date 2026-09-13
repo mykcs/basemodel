@@ -20,6 +20,8 @@ const pr619CloseoutHistory = readFileSync(new URL('../../docs/agents/history/202
 const publicationWorkflow = readFileSync(new URL('../../docs/agents/current/experiment-result-publication-workflow.md', import.meta.url), 'utf8');
 const q17ConversationCloseoutHistory = readFileSync(new URL('../../docs/agents/history/2026-09-11-q17-diagnostics-publication-conversation-closeout.md', import.meta.url), 'utf8');
 const modelMigrationCloseoutHistory = readFileSync(new URL('../../docs/agents/history/2026-09-13-base-model-flow-to-models-conversation-closeout.md', import.meta.url), 'utf8');
+const modelNavCloseoutHistory = readFileSync(new URL('../../docs/agents/history/2026-09-13-remove-model-navigation-conversation-closeout.md', import.meta.url), 'utf8');
+const researchJourney = readFileSync(new URL('../../docs/agents/current/research-journey-experience.md', import.meta.url), 'utf8');
 const conversationCloseoutEntry = readFileSync(new URL('../../docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md', import.meta.url), 'utf8');
 const releaseCloseout = readFileSync(new URL('../../docs/agents/current/release-closeout-protocol.md', import.meta.url), 'utf8');
 
@@ -83,6 +85,19 @@ describe('Agent scenario-trigger discovery', () => {
     expect(layeredExplainer).toContain('Conversation-proven plain-language explanations are part of publication coverage');
     expect(layeredExplainer).toContain('does **not** by itself prove that the ELI5 explanation survived');
     expect(layeredExplainer).toContain('159 parameter-update arrows mostly reuse a smaller set of directions');
+  });
+
+  it('keeps navigation demotion narrower than capability deletion and blind review on the real default state', () => {
+    expect(researchJourney).toContain('Navigation demotion is not capability deletion');
+    expect(researchJourney).toContain('desktop header/resource menu, mobile menu, local child navigation');
+    expect(researchJourney).toContain('positive-control assertion');
+    expect(hpl).toContain('Phase A starts from the real default rendered state');
+    expect(hpl).toContain('manually expanded diagnostic screenshot');
+    expect(registry).toContain('Treat navigation-entry removal as a shared-shell scan, not capability deletion');
+    expect(registry).toContain('Blind cold read starts from the true default state');
+    expect(readme).toContain('2026-09-13-remove-model-navigation-conversation-closeout.md');
+    expect(modelNavCloseoutHistory).toContain('Removing a navigation entry is narrower than deleting the model capability');
+    expect(modelNavCloseoutHistory).toContain('A diagnostic interaction state is not the default-page cold read');
   });
 
   it('keeps provider build-budget boundaries explicit', () => {

@@ -13,7 +13,6 @@ const resultsEn = read('src/pages/en/research/seed-openevo/study/results.astro')
 
 const flowIds = [
   "id: 'hub'",
-  "id: 'model'",
   "id: 'seed'",
   "id: 'openevo'",
   "id: 'benchmarks'",
@@ -54,7 +53,9 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(navigation).toContain("t('运行实验', 'Run experiment')");
     expect(navigation).toContain("t('OpenEVO 基础能力探索实验', 'OpenEVO capability exploration')");
     expect(navigation).toContain("t('阶段汇报', 'Progress briefing')");
-    expect(navigation).toContain("{ id: 'model', label: t('模型', 'Model'), href: p('/models/qwen2-5-3b-instruct/#experiment-setup') }");
+    expect(navigation).not.toContain("id: 'model'");
+    expect(navigation).not.toContain("label: t('模型', 'Model')");
+    expect(navigation).not.toContain("p('/models/qwen2-5-3b-instruct/#experiment-setup')");
     expect(navigation).toContain("{ id: 'openevo', label: 'OpenEVO'");
     expect(navigation).toContain("t('研究结果', 'Research findings')");
     expect(navigation).not.toContain("t('研究导航', 'Research navigation')");
