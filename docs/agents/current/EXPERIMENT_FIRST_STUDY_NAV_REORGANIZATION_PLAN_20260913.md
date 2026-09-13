@@ -91,7 +91,7 @@
 - [x] `npm run build`：506 个静态页面构建通过，heading / external-brand audit 通过。
 - [x] 本地浏览器人工/自动冒烟：桌面 1280×633、手机 390×844、dark mode；五个实验存在、单 H1、无页面级横向溢出。
 - [x] Reader Contract 定向测试：desktop / phone / briefing 共 3/3 PASS；Study 的 5-entry 首屏预算已与新任务一致。
-- [ ] `npm run verify:deploy` 最终 exact tree PASS；刷新到提交时最新 main 后必须再跑。
+- [x] `npm run verify:deploy` 最终 exact tree PASS；证据：候选 `9768ccb39e7f11207493bf0c0cda82702b070f99` 已合入当时最新 `origin/main@57e3db8f4f2e2711334b5026cc01523e5a55ef08`（`MAIN_IS_ANCESTOR=yes`），并在该 exact tree 执行 `npm run verify:deploy` exit 0；Astro check 0 errors / 0 warnings（2 个既有 hints），其余 deterministic audits/tests 全部 PASS。
 - [x] `npm run ui:overflow-preflight` 最终 exact tree PASS。
 - [ ] `npm run test:ui:all` 最终 exact tree 在可用的 Chromium + WebKit runner 上完整 PASS。已有前一 runtime candidate 证据：414 / 414 PASS；首次固定端口被其他项目占用后使用空闲 `PLAYWRIGHT_PORT` 重跑，环境阻断未被写成 PASS。
 - [x] 新增/更新实验映射后，为“每个主要实验至少有一个结果/分析子页、所有 href 可解析、无重复 canonical owner”添加结构测试。证据：`openEvoExperimentContext.test.ts` 新增完整映射回归：五个实验都必须至少有一个 `result` 或 `analysis` child；primary / child / evidence href 必须在 zh/en 两侧解析；同一 route 若被多个实验交叉引用，必须在 `OPEN_EVO_CANONICAL_ROUTE_OWNERS` 中声明唯一 canonical owner，且该 owner 必须属于实际引用它的实验上下文之一。
