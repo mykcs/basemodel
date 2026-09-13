@@ -127,6 +127,20 @@ describe('human preference learning loop', () => {
     expect(preference?.antiOvergeneralization.join(' ')).toContain('不是禁止留白、大标题、serif、圆角或一屏一页 presentation');
   });
 
+  it('preserves owner-approved conversation prose when turning research chat into a webpage', () => {
+    const result = retrieveHumanPreferenceContext(
+      '把聊天里已经说清楚的研究结论放到网页；用户说这些原话直接用就很好，不要重新学术化或改成内部黑话',
+      'capability-home',
+      16,
+    );
+    expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-PRESERVE-APPROVED-PROSE');
+    expect(result.cases.map(({ precedent }) => precedent.id)).toContain('CASE-091');
+    expect(result.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-091-PRESERVE-APPROVED-PROSE');
+    const preference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-PRESERVE-APPROVED-PROSE');
+    expect(preference?.antiOvergeneralization.join(' ')).toContain('临时进度');
+    expect(preference?.antiOvergeneralization.join(' ')).toContain('最新 authority');
+  });
+
   it('keeps workflow-learning feedback separate from surface aesthetics', () => {
     const result = retrieveHumanPreferenceContext('案例库 触类旁通 preference learning Gold Pair cold read judge');
     expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-FEEDBACK-LEARNING-LOOP');

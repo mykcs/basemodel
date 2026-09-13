@@ -144,6 +144,20 @@ describe('human preference learning v2', () => {
     expect(failureFamilySeverity('unnamed-scientific-referent')).toBe('normal');
   });
 
+  it('treats conversation-to-web language regression as a repeated hard failure family', () => {
+    const brief = buildHumanPreferenceBrief({
+      contractId: 'capability-home',
+      query: '用户说聊天里的解释已经很好，直接放到科研网页就行；不要一网页化就改成抽象术语和论文腔。',
+    });
+    expect(brief.learnedPreferences.map(({ preference }) => preference.id)).toContain('PREF-PRESERVE-APPROVED-PROSE');
+    expect(brief.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-091-PRESERVE-APPROVED-PROSE');
+    expect(brief.events.map((event) => event.id)).toContain('EVENT-20260913-SDLORA-V2-WEB-COPY-REGRESSION');
+    expect(brief.hardFailureFamilies).toEqual(expect.arrayContaining([
+      'webification-language-regression',
+      'approved-prose-rewritten-into-jargon',
+    ]));
+  });
+
   it('retrieves repeated sibling-experiment chart grammar and target-verified fast Preview for a new model line', () => {
     const brief = buildHumanPreferenceBrief({
       contractId: 'study-briefing',

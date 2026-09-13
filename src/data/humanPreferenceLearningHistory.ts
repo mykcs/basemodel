@@ -688,6 +688,25 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     evidence: { repository: 'mykcs/basemodel', route: '/research/seed-openevo/study/briefing/', pullRequest: 619, gitSha: '6fcef6aacdb61fe904bbf9f69389e44f9c718ed6', ledgerId: 'FB-S8-05-PR619-CONCRETE-ACCEPTANCE' },
   },
 
+  {
+    id: 'EVENT-20260913-SDLORA-V2-WEB-COPY-REGRESSION',
+    date: '2026-09-13',
+    caseIds: ['CASE-090', 'CASE-091'],
+    scopes: ['research-copy', 'research-ui'],
+    artifact: 'SD-LoRA v2 research publication copy',
+    variantId: 'sdlora-v2-web-copy-reacademicized',
+    verdict: 'rejected',
+    ownerSignal: '你即使把我们现在对话里的回复完全照抄到网页上，内容就已经不错了；之前一放到网页上，内容和文字反而变得非常差，一点都不像说人话。',
+    reasons: [
+      'owner 已经认可聊天里的自然解释，网页施工却曾把同一内容重新翻译成更抽象、更像内部研究记录的语言',
+      '2026-09-11 已出现“网页里的语言，请说人话”的同类纠正，这次进一步指出触发器就是 conversation → webpage 的二次改写',
+    ],
+    failureMechanisms: ['webification-language-regression', 'approved-prose-rewritten-into-jargon'],
+    repeatSignal: 'explicit',
+    requestedSuccessorVariantId: 'sdlora-v2-conversation-faithful-copy',
+    evidence: { repository: 'mykcs/basemodel', route: '/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/' },
+  },
+
 ];
 
 export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
