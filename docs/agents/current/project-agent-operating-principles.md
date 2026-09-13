@@ -249,6 +249,10 @@ For repeated “continue / where are we?” requests, report the current goal, t
 
 “Almost done”, “last gate”, and an unmeasured 80%/90% are not acceptance evidence. Use a phase/acceptance checklist; keep implementation, local testing, PR, hosted acceptance, Production, and real-reader feedback separate. If the owner asks for a percentage, compute it from an explicit checklist denominator and only count rows with durable acceptance evidence; planning, opening a PR, starting a task, or an in-flight provider run does not increase the percentage. Name the next missing milestone beside the percentage so progress cannot hide the actual blocker. Report test suite, ref/tree, and environment together; the total number of green tests is not a measure of understanding. Do not promise later background delivery without an actual supported automation.
 
+When a task names one canonical checklist and asks for a completion percentage, recompute **both numerator and denominator from that exact ref-qualified checklist on every report**. Count only acceptance items whose stated durable evidence already exists. Never carry a denominator forward from chat memory or change the counting scope silently; if the checklist itself changes, say so and recount from the new checklist before reporting the next percentage.
+
+Historical case: [`../history/2026-09-13-vanilla-sd-lora-archify-release-checklist-closeout.md`](../history/2026-09-13-vanilla-sd-lora-archify-release-checklist-closeout.md).
+
 For conversation retention, distinguish visible user/tool evidence, independently fetched repository evidence, prior assistant summaries, and unavailable/redacted material. Summaries may locate evidence but cannot fill missing commands, outcomes, or responsibility attribution. A repository write, a personal-context search, and a real long-term-memory write have different receipts.
 
 ## 4. Make recurring lessons triggerable
