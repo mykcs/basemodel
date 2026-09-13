@@ -1,9 +1,9 @@
 # Sitewide first-principles design transfer audit
 
-Status: **OPEN TASK CHECKLIST · audit-only baseline**  
-Repository: `mykcs/basemodel`  
-Audit branch: `research/sitewide-first-principles-design-audit-20260913`  
-Baseline main: `57e3db8f4f2e2711334b5026cc01523e5a55ef08`  
+Status: **OPEN TASK CHECKLIST · audit-only baseline**
+Repository: `mykcs/basemodel`
+Audit branch: `research/sitewide-first-principles-design-audit-20260913`
+Baseline main: `57e3db8f4f2e2711334b5026cc01523e5a55ef08`
 Created: 2026-09-13
 
 > This file is the task/checklist authority for this audit PR. It does **not** replace the standing design authorities under `docs/agents/current/`. Future work on this PR should update checkboxes and evidence here instead of reconstructing the task from chat memory.
