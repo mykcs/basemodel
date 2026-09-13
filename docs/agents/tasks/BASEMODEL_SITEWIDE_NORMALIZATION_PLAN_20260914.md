@@ -205,12 +205,12 @@ P0/P1 修复后继续，不把本任务停在三个页面。
 
 ### 5.2 Study / results / capability 家族
 
-- [ ] `study` gateway：主实验层级与精选结果层级清楚；
-- [ ] `study-results`：result-first，claim-changing caveat 首层可见；
-- [ ] four-arm / 3B / 7B 分析：结果、解释、provenance 三层不互相冒充；
-- [ ] DirectApply / GDR / Vanilla SD-LoRA / scaling：科学对象先于 run ledger；
-- [ ] Stage 1 / Stage 2 历史页：历史身份不被现代化改写；
-- [ ] 七页 SD-LoRA 系列：作为一个 family 审，不逐页制造新 mini design system。
+- [x] `study` gateway：五次主要实验保持首层，精选结果只作为 05 的子结果；中英 390/1280 冷读通过。
+- [x] `study-results`：result-first；同一 128 题仍未证明可靠优势的边界在首层可见，中英冷读通过。
+- [x] four-arm / 3B / 7B 分析：历史结果、解释与 provenance 已分层；四组页旧“等待结果/页面骨架”文案已改为真实 stop/final 状态，缺失 endpoint 不补 0。
+- [x] DirectApply / GDR / Vanilla SD-LoRA / scaling：科学对象、机制结论或边界先于 run ledger；Vanilla 首层改为直接描述 routed loop，不再复述被拒绝的卡片比喻。
+- [x] Stage 1 / Stage 2 历史页：H1/状态继续明确 historical / superseded / sealed 边界，没有被当前设计现代化改写。
+- [x] 七页 SD-LoRA 系列：按同一 series owner / 01–07 问题链整体冷读；01–03 保留封存结果，04–07 明确未完成，不新增 mini design system。
 ### 5.3 Catalog / decision / evidence 家族
 
 - [ ] Home：只做低密度 orientation，不变成目录墙；
@@ -368,7 +368,7 @@ current main
 ### 11.3 扩展全站审计
 
 - [x] Flow family 完成。
-- [ ] Study / results / capability family 完成。
+- [x] Study / results / capability family 完成。
 - [ ] Catalog / decision / evidence family 完成。
 - [ ] Archive / operational / projected-deck exceptions 完成。
 - [ ] Shared-component failure families 完成。
@@ -446,13 +446,15 @@ git log --oneline --decorate -10
 | overlap scan | DONE | #687 Q17 chronology；#671 SD-LoRA flow nav；#669 stale sitewide audit |
 | browser cold read | DONE | WebShop PASS control；ALFWorld FAIL；Benchmarks REVIEW；SD-LoRA history REVIEW；Capability landing PASS/no broad rewrite |
 | plan | ACTIVE | 本文件 |
-| implementation | FLOW FAMILY DONE | first batch `87b1fbe5`; Flow identity repair `9202aa9d`; focused Vitest 26/26 PASS; `audit:reader-contracts` 64/64 PASS |
-| browser acceptance | PARTIAL | Flow family current-head cold read：SEED / OpenEvo / Benchmarks / WebShop / ALFWorld / loops / server 均做 zh/en + 390/1440；SEED/OpenEvo/ALFWorld 另做 768/1280；全部 sampled renders 无 root overflow；ALFWorld light→dark→light PASS |
+| implementation | STUDY FAMILY DONE | first batch `87b1fbe5`; Flow identity `9202aa9d`; Vanilla direct-flow `630bd177`; four-arm closeout `64815195`; focused regressions PASS |
+| browser acceptance | PARTIAL | Flow family 已完成；Study/results/capability 代表 route 共做 zh + 390/1280，英语 family 做 390，全部 sampled renders 无 root overflow；four-arm 修复后 zh/en 390/1280 复核 PASS |
 | provider acceptance | TODO | 仅 final candidate 后填入 |
 
 第一批实现证据（2026-09-14）：`87b1fbe5bed6fce648ec98c89cf2d3d07123324d`。Focused tests：`sitewideNormalization` 4/4、`interactiveResearchExplainers` 14/14、`siteReaderContracts` 6/6，共 24/24 PASS；`git diff --check`、reader-contract audit、Astro/Type check 均 PASS。浏览器冷读确认 ALFWorld 中英首屏对象优先；Benchmarks 三个重复 kicker 消失且顺序/内容保留；SD-LoRA overview 无重复 eyebrow，skeleton child 仍显示 `04 / 07`。
 
 Flow family evidence（2026-09-14）：`9202aa9d4625ea32b11de111d97438e9e4aeabba` 把 SEED / OpenEvo 首屏改成对象/方法身份优先，并同步 reader contracts 与 regression。当前 head focused tests：`sitewideNormalization` 6/6、`interactiveResearchExplainers` 14/14、`siteReaderContracts` 6/6，共 26/26 PASS；`audit:reader-contracts` 64/64 PASS。真实浏览器冷读覆盖 Flow 七类 route 的 zh/en、390/1440；SEED/OpenEvo/ALFWorld 额外覆盖 768/1280×633；sampled render 均 `scrollWidth == clientWidth`。`flow-server` 的 authority owner 明确“technical capability ≠ authorization scope”；`flow-loops` reader contract 明确循环存在不等于持续提升。
+
+Study/results/capability family evidence（2026-09-14）：`630bd177` 把 Vanilla SD-LoRA 首层从“不是四张卡片”改为直接解释 routed loop；focused regressions 27/27 PASS，zh 1280 与 en 390 浏览器冷读无 root overflow。随后 family cold read 覆盖 Study gateway、results、four-arm、3B/7B self/MiniMax、GDR/DirectApply、Vanilla、scaling、Q17、Stage1/Stage2 历史页与 SD-LoRA 01–07 问题链；zh 代表 route 做 1280/390，英语 family 做 390，sampled render 全部 `scrollWidth == clientWidth`。冷读发现 four-arm 仍有“等待四组结果齐全 / 页面骨架冻结”旧脚手架；`6481519568a4217847cd5e9bb2d665f06a69443d` 已改成真实历史状态：3B/MiniMax 在 74.58% 停止且无 final eval，缺失 endpoint 不补成 0，历史 arm 差异不直接升级为 MiniMax/模型规模因果效应。修复后 zh/en 390/1280 复核 PASS；focused `sitewideNormalization + siteReaderContracts` 14/14 PASS，`git diff --check` PASS。
 
 ## 16. Stopping rule
 
