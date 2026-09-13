@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   OPEN_EVO_EXPERIMENTS,
+  OPEN_EVO_METHOD_BACKGROUND_ROUTE,
   OPEN_EVO_SECONDARY_ROUTES,
 } from '../data/openEvoExperimentNavigation';
 
@@ -97,6 +98,21 @@ describe('experiment-first Study index', () => {
 
     const historySeries = readFileSync(new URL('../components/research/OpenEvoSdLoraHistorySkeleton.astro', import.meta.url), 'utf8');
     expect(historySeries).toContain('没有完成的科学实验不会提前写成结论');
+  });
+
+  it('keeps system/method flow outside the experiment history tree', () => {
+    const experimentOwnedHrefs = OPEN_EVO_EXPERIMENTS.flatMap((experiment) => [
+      experiment.primaryHref,
+      experiment.evidenceLink.href,
+      ...experiment.childLinks.map((link) => link.href),
+    ]);
+    expect(experimentOwnedHrefs.every((href) => !href.startsWith('/research/seed-openevo/flow/'))).toBe(true);
+    expect(OPEN_EVO_METHOD_BACKGROUND_ROUTE.href).toBe('/research/seed-openevo/flow/');
+    expect(OPEN_EVO_SECONDARY_ROUTES[0]).toEqual(OPEN_EVO_METHOD_BACKGROUND_ROUTE);
+
+    const contextSource = readFileSync(new URL('../components/research/ResearchRouteContext.astro', import.meta.url), 'utf8');
+    expect(contextSource).toContain('data-hub-method-background');
+    expect(contextSource).toContain('OPEN_EVO_METHOD_BACKGROUND_ROUTE');
   });
 
   it('keeps the five experiment parents and key lineage/analysis children', () => {

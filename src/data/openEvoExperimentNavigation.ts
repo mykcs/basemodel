@@ -144,8 +144,13 @@ export const OPEN_EVO_CANONICAL_ROUTE_OWNERS: Readonly<Record<string, OpenEvoExp
   'text-memory': 'directapply-1p7b',
 };
 
+export const OPEN_EVO_METHOD_BACKGROUND_ROUTE = {
+  label: { zh: '系统 / 方法背景', en: 'System / method background' },
+  href: '/research/seed-openevo/flow/',
+} satisfies { label: LocalizedCopy; href: string };
+
 export const OPEN_EVO_SECONDARY_ROUTES = [
-  { label: { zh: '实验流程背景', en: 'Experiment flow background' }, href: '/research/seed-openevo/flow/' },
+  OPEN_EVO_METHOD_BACKGROUND_ROUTE,
   { label: { zh: '跨实验结果索引', en: 'Cross-experiment results index' }, href: '/research/seed-openevo/study/results/' },
   { label: { zh: '复现实验', en: 'Reproduce experiments' }, href: '/research/seed-openevo/study/run/' },
 ] satisfies Array<{ label: LocalizedCopy; href: string }>;
