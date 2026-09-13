@@ -79,8 +79,8 @@
 - [x] 保持一个页面一个 `<h1>`；嵌入组件不得自行制造第二个 H1。证据：最新分支树执行 `npm run build` 后 `audit-static-headings` 对 506 个静态 routes 全部 PASS，每个 route 恰好一个 `<h1>`；Experiment Hub/context 继续使用 aside/details，不引入第二个页面标题。
 - [x] 不新增无意义英文 eyebrow、内部代号优先标题或 `7 < 8` 式需先解码的主标题。证据：五个实验主标题由同一 navigation owner 提供，`openEvoExperimentContext.test.ts` 新增首标题回归，禁止 `7 < 8`、`Stage N`、`Q17`、`Track X`、`GATE` 等内部 shorthand 抢占标题开头，并锁定第一项继续使用“训练跑了很久，但参数一直没有更新”；同时 `npm run audit:copy:strict` PASS。
 - [x] 不为了目录整齐复制科学数字；数字继续由现有 canonical 页面 / 数据源拥有。证据：Experiment navigation 已移除 Gate 具体阈值、7B final、GDR 44→7 / final、DirectApply 轮数与 D1 update-count 等结果数字，只保留“发生了什么 / 去哪里看”的目录语义；精确值继续由 `OpenEvoCeilingStrategy`、`OpenEvoSuccessorReport`、`OpenEvoQ17DirectApplyAnalysis` 等 canonical 页面拥有。`openEvoExperimentContext.test.ts` 明确禁止这些已知结果数字重新进入 navigation owner，并确认 canonical owners 仍保留精确值。
-- [ ] 不删除现有深链；若未来迁移 URL，必须显式 compatibility redirect 并更新 sitemap / locale 可用性测试。
-- [ ] 不把历史 GDR-v1、DirectApply 与未来可能的 recurrent Gated Delta Rule successor 混成同一实验。
+- [x] 不删除现有深链；若未来迁移 URL，必须显式 compatibility redirect 并更新 sitemap / locale 可用性测试。证据：本次重组没有删除/搬迁旧 route；`openEvoExperimentContext.test.ts` 现在遍历五个实验的 primary / child / evidence href，去掉 hash 后逐一要求中文与英文 Astro route source 都真实存在，同时兼容 directory `index.astro` 与 file-route `.astro` 两种形式。未来任何已挂入实验树的旧深链被删都会直接失败。
+- [x] 不把历史 GDR-v1、DirectApply 与未来可能的 recurrent Gated Delta Rule successor 混成同一实验。证据：五实验 registry 分别保留 `gdr-v1-1p7b` 与 `directapply-1p7b`，没有把尚未执行的 recurrent-GDR successor 注册成第六个既成实验；`openEvoExperimentContext.test.ts` 锁定这一身份分离，并检查 `OpenEvoGdrDirectApplyExplainer.astro` 明确写出“三个对象必须分开记录”、本地 GDR-v1、DirectApply 和“原始 Gated Delta Rule 启发的 state update”，且未来对象继续标记“设计中 · 尚未执行新实验”。
 
 ## 6. 验证与回归清单
 
@@ -94,7 +94,7 @@
 - [ ] `npm run verify:deploy` 最终 exact tree PASS；刷新到提交时最新 main 后必须再跑。
 - [x] `npm run ui:overflow-preflight` 最终 exact tree PASS。
 - [ ] `npm run test:ui:all` 最终 exact tree 在可用的 Chromium + WebKit runner 上完整 PASS。已有前一 runtime candidate 证据：414 / 414 PASS；首次固定端口被其他项目占用后使用空闲 `PLAYWRIGHT_PORT` 重跑，环境阻断未被写成 PASS。
-- [ ] 新增/更新实验映射后，为“每个主要实验至少有一个结果/分析子页、所有 href 可解析、无重复 canonical owner”添加结构测试。
+- [x] 新增/更新实验映射后，为“每个主要实验至少有一个结果/分析子页、所有 href 可解析、无重复 canonical owner”添加结构测试。证据：`openEvoExperimentContext.test.ts` 新增完整映射回归：五个实验都必须至少有一个 `result` 或 `analysis` child；primary / child / evidence href 必须在 zh/en 两侧解析；同一 route 若被多个实验交叉引用，必须在 `OPEN_EVO_CANONICAL_ROUTE_OWNERS` 中声明唯一 canonical owner，且该 owner 必须属于实际引用它的实验上下文之一。
 - [ ] 手机 390px、平板 768px、桌面 1440px均无 root overflow；中英文、light/dark 都可读。
 
 ## 7. Git / PR / Preview / Production 交付

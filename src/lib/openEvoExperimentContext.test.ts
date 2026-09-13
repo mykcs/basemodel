@@ -139,6 +139,57 @@ describe('experiment context hierarchy', () => {
     }
   });
 
+  it('keeps experiment deep links resolvable and every experiment attached to result or analysis content', () => {
+    const capabilityPrefix = '/research/seed-openevo/study/capability-exploration/';
+    const routeSourceExists = (localePrefix: string, href: string) => {
+      const path = href.split('#')[0];
+      if (!path?.startsWith(capabilityPrefix)) return false;
+      const route = path.slice(capabilityPrefix.length).replace(/\/$/, '');
+      const directoryRoute = new URL(`../pages/${localePrefix}research/seed-openevo/study/capability-exploration/${route}/index.astro`, import.meta.url);
+      const fileRoute = new URL(`../pages/${localePrefix}research/seed-openevo/study/capability-exploration/${route}.astro`, import.meta.url);
+      return existsSync(directoryRoute) || existsSync(fileRoute);
+    };
+
+    const appearances = new Map<string, Set<string>>();
+    for (const experiment of OPEN_EVO_EXPERIMENTS) {
+      expect(experiment.childLinks.some((link) => ['result', 'analysis'].includes(link.role)), experiment.id).toBe(true);
+      for (const link of [
+        { href: experiment.primaryHref },
+        ...experiment.childLinks,
+        experiment.evidenceLink,
+      ]) {
+        expect(routeSourceExists('', link.href), `missing zh deep link: ${link.href}`).toBe(true);
+        expect(routeSourceExists('en/', link.href), `missing en deep link: ${link.href}`).toBe(true);
+        const route = link.href.split('#')[0]?.slice(capabilityPrefix.length).replace(/\/$/, '');
+        if (!route) continue;
+        const owners = appearances.get(route) ?? new Set<string>();
+        owners.add(experiment.id);
+        appearances.set(route, owners);
+      }
+    }
+
+    for (const [route, owners] of appearances) {
+      if (owners.size < 2) continue;
+      expect(OPEN_EVO_CANONICAL_ROUTE_OWNERS[route], `cross-linked route needs one canonical owner: ${route}`).toBeDefined();
+      expect(owners.has(OPEN_EVO_CANONICAL_ROUTE_OWNERS[route]!), `${route} canonical owner must be one of its experiment contexts`).toBe(true);
+    }
+  });
+
+  it('keeps historical GDR-v1, DirectApply, and any future recurrent-GDR successor as distinct objects', () => {
+    const ids = OPEN_EVO_EXPERIMENTS.map((item) => item.id);
+    expect(ids).toContain('gdr-v1-1p7b');
+    expect(ids).toContain('directapply-1p7b');
+    expect(ids.filter((id) => id.includes('gdr'))).toEqual(['gdr-v1-1p7b']);
+    expect(OPEN_EVO_EXPERIMENTS.find((item) => item.id === 'gdr-v1-1p7b')?.lineageNote?.zh).toContain('GDR 机制问题');
+
+    const gdrExplainer = read('../components/research/OpenEvoGdrDirectApplyExplainer.astro');
+    expect(gdrExplainer).toContain('三个对象必须分开记录');
+    expect(gdrExplainer).toContain('本地 GDR-v1');
+    expect(gdrExplainer).toContain('DirectApply / No-GDR');
+    expect(gdrExplainer).toContain('原始 Gated Delta Rule 启发的 state update');
+    expect(gdrExplainer).toContain('设计中 · 尚未执行新实验');
+  });
+
   it('keeps Chinese and English on one experiment IA with matching owned routes', () => {
     const zhStudy = read('../pages/research/seed-openevo/study/index.astro');
     const enStudy = read('../pages/en/research/seed-openevo/study/index.astro');
