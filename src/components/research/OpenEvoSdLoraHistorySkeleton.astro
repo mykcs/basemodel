@@ -27,7 +27,7 @@ const summary = overview
     <p class="series-page__eyebrow">{overview ? t('SD-LoRA 专题总览', 'SD-LoRA SERIES OVERVIEW') : `${item!.number} / 07`}</p>
     <h1>{title}</h1>
     <p class="series-page__lede">{summary}</p>
-    <p class="series-page__state">{t('当前先建立页面结构和导航。没有完成的科学实验不会提前写成结论。', 'For now this route establishes structure and navigation. Unfinished scientific experiments are not presented as conclusions.')}</p>
+    <p class="series-page__state">{overview ? t('01–03 已经有封存的机制、扩展性和加速结果；后面的研究问题如果还没有完成，就继续明确留空，不提前写成结论。', 'Chapters 01–03 now contain sealed mechanism, scaling, and acceleration results. Later questions stay explicitly open until their experiments are complete.') : t('当前先建立页面结构和导航。没有完成的科学实验不会提前写成结论。', 'For now this route establishes structure and navigation. Unfinished scientific experiments are not presented as conclusions.')}</p>
   </header>
 
   {overview ? (
