@@ -1,6 +1,6 @@
 # OpenEVO × WebShop 实验区：Experiment-first 重组执行计划
 
-状态：**ACTIVE CHECKLIST / 本次对话唯一施工清单**  
+状态：**COMPLETE / 已通过 Production 冷读并停止继续重构**
 创建日期：2026-09-13  
 仓库：`mykcs/basemodel`  
 科学事实权威：`mykcs/openevo-experiment`  
@@ -105,26 +105,26 @@
 - [x] 已创建聚焦 PR #661；PR body 已写明 Experiment-first IA、五个实验、旧 URL 保留、科学边界与已跑验证。
 - [x] PR #661 当前只包含本任务的 Study IA、Reader Contract、回归测试与本计划；未夹带服务器状态或临时截图。
 - [x] 普通工作 PR 先通过 GitHub Actions preflight；需要 owner 看页面时使用仓库允许的轻量 review Preview，不把 Preview 当 merge evidence。证据：PR #661 exact head `cda7c98a12ae4f885f9034d6b15e61c6c767f26c` 的 Public PR CI `34740319667` 中 `public-deterministic`、`public-browser-1-of-4`、`2-of-4`、`3-of-4`、`4-of-4` 与 `public-ci-gate` 均为 `SUCCESS`。
-- [ ] 候选真正 merge-ready 后按仓库规则请求 exact-head Vercel final gate；`Vercel` 必须绑定 exact PR head 且真实执行。
-- [ ] exact-head Preview 中实际打开中文和英文 Study 首页，确认五实验目录可见、链接可点、手机无溢出。
-- [ ] 合并后确认 Production successor 来自合并后的 `main`，并打开 `https://basemodel-preview.vercel.app/research/seed-openevo/study/` 做最终可见性检查。
-- [ ] 只有 Production 与仓库 main 一致、关键路由可访问后，才把本计划状态改成 `COMPLETE`。
+- [x] 候选真正 merge-ready 后按仓库规则请求 exact-head Vercel final gate；`Vercel` 必须绑定 exact PR head 且真实执行。证据：PR #661 最终 head 为 `162edd49daab149b78f26ea08436edcbf7110d3a`；GitHub `Vercel` status 为 `SUCCESS`，目标 deployment `dpl_E2XBvoDSv4Di5XL3pZMgaoZyJ6yq`；Vercel provider metadata 同时记录 `githubCommitRef=ci/vercel-gate-final`、`githubCommitSha=162edd49...`，deployment 最终 `READY`。
+- [x] exact-head Preview 中实际打开中文和英文 Study 首页，确认五实验目录可见、链接可点、手机无溢出。证据：PR #661 的 final-acceptance comment `issuecomment-5651560542` 记录 exact-head Preview 在 390×844 下中英文首页均 HTTP 200、恰好 5 个 visible experiment-primary、首屏 child=0、root width=390/390；中英文共 10 个 primary experiment 深链逐个打开均 HTTP 200。
+- [x] 合并后确认 Production successor 来自合并后的 `main`，并打开 `https://basemodel-preview.vercel.app/research/seed-openevo/study/` 做最终可见性检查。证据：PR #661 于 2026-09-13 合并为 `41c086f367f790f7624461a4ff0ff3758ef23108`，closeout 前 `origin/main` 与该 SHA 一致；Production deployment `dpl_9yujbPnUKPwecbPpru9xEBvtLP3E` 为 `READY`、`target=production`，metadata 绑定 `githubCommitRef=main` 与同一 SHA。正式域名冷读中，中英文 Study 首页均 HTTP 200，390px 下 5 个 primary 全部首屏可见、child=0、root width=390/390；中英文 10 个 primary 深链全部 HTTP 200。
+- [x] 只有 Production 与仓库 main 一致、关键路由可访问后，才把本计划状态改成 `COMPLETE`。证据：上述 Production deployment 与 `origin/main@41c086f...` 一致，正式中英文 Study 与十个 primary 深链全部通过冷读；因此本 closeout 将状态改为 `COMPLETE`，并按停止规则不再制造新的重构事项。
 
 ## 8. 明确交付标准（Definition of Done）
 
 以下条件必须**全部同时成立**，不能用“页面已经能打开”替代：
 
-- [ ] `/study/` 首层只把五个主要实验当主要研究入口；Results / Capability / Stage 术语不再承担主导航职责。
-- [ ] 第一次来的读者能在 5–10 秒内回答：这是 OpenEVO × WebShop 的实验目录、共有哪五次主要实验、某个分析属于哪次实验。
-- [ ] 五个实验的关键历史关系准确，尤其 GDR-v1 与 3B+1.7B successor 的 lineage 重叠被明确说明。
-- [ ] DirectApply 下可找到完整 160 轮、R127/R128、SD-LoRA scaling/history、Text Memory、D1 等已经公开的主要分析；不得让这些页面继续像无父级的孤岛。
-- [ ] 7B、Gate failure、3B+1.7B、GDR-v1 也都至少有结果/分析的清晰子入口。
-- [ ] 所有旧 URL 仍可用，或有明确、安全的 compatibility redirect；没有死链和 locale 假链接。
-- [ ] 科学 caveat 默认可见：不同 frozen final panel 不能直接做 GDR vs DirectApply 因果比较。
-- [ ] 中文与英文 IA 同构；移动端、桌面、明暗主题通过验收。
-- [ ] 全部自动测试、Reader Contract、build、overflow 与最终 browser gate 满足当前仓库 acceptance policy。
-- [ ] PR exact-head Vercel final gate 为绿色，合并后 Production 可见并由当前 main 提供。
-- [ ] 本 Markdown 中所有必须项已由真实证据从 `[ ]` 改为 `[x]`，每个关键完成项能追溯到 file / test / commit / PR / deployment 证据。
+- [x] `/study/` 首层只把五个主要实验当主要研究入口；Results / Capability / Stage 术语不再承担主导航职责。证据：正式 Production 冷读的 `[data-experiment-primary]` 数量恰为 5，首屏 child=0；跨实验 Results / Flow / Run 只保留 secondary route。
+- [x] 第一次来的读者能在 5–10 秒内回答：这是 OpenEVO × WebShop 的实验目录、共有哪五次主要实验、某个分析属于哪次实验。证据：Production H1 为“OpenEVO × WebShop 实验”/“OpenEVO × WebShop experiments”，首屏直接列出 01–05 五实验；`reader-journey` 的中英文 experiment-parent / canonical-child / visible-answer contracts 与 390/768/1440 light/dark geometry 全部在最终 browser matrix 中 PASS。
+- [x] 五个实验的关键历史关系准确，尤其 GDR-v1 与 3B+1.7B successor 的 lineage 重叠被明确说明。证据：`src/data/openEvoExperimentNavigation.ts` 的单一 registry 保留五个独立 id、lineageNote 与 canonical owner；结构测试锁定 GDR-v1 同时属于 successor lineage 但作为独立机制问题入口，不把它伪造成互不相关实验。
+- [x] DirectApply 下可找到完整 160 轮、R127/R128、SD-LoRA scaling/history、Text Memory、D1 等已经公开的主要分析；不得让这些页面继续像无父级的孤岛。证据：第二阶段 DirectApply registry 回归已经锁定完整 160 轮、R127/R128、`sd-lora-scaling`、`sd-lora-history`、Text Memory、`#geometry` 与 `#function`；canonical-owned child route 的中英文 breadcrumb/return contract 也在 browser gate 中 PASS。
+- [x] 7B、Gate failure、3B+1.7B、GDR-v1 也都至少有结果/分析的清晰子入口。证据：`openEvoExperimentContext.test.ts` 强制五个 experiment 每个至少拥有一个 `result` 或 `analysis` child，并验证 primary / child / evidence href 与 canonical owner；最终结构测试与 browser gate 均 PASS。
+- [x] 所有旧 URL 仍可用，或有明确、安全的 compatibility redirect；没有死链和 locale 假链接。证据：本任务没有删除或搬迁旧 route；结构回归逐一要求实验树全部 primary / child / evidence href 在 zh/en 两侧存在真实 Astro route，`locale-availability` 与最终 browser matrix PASS；Production 冷读的中英文十个一级深链全部 HTTP 200。
+- [x] 科学 caveat 默认可见：不同 frozen final panel 不能直接做 GDR vs DirectApply 因果比较。证据：Study 计划与页面数据保留该科学边界；最终 `reader-journey` 中英文 `historical scope and final-result comparisons stay explicit` contract 均 PASS，避免把历史 GDR final 与 DirectApply final 的分数差写成因果方法增益。
+- [x] 中文与英文 IA 同构；移动端、桌面、明暗主题通过验收。证据：中英文 Study 复用同一个 `OpenEvoExperimentIndex` 与同一 navigation owner；最终 Chromium + WebKit 426/426 PASS 覆盖 zh/en × 390/768/1440 × light/dark，Production 390px 中英文再次冷读无 root overflow。
+- [x] 全部自动测试、Reader Contract、build、overflow 与最终 browser gate 满足当前仓库 acceptance policy。证据：`npm run verify:deploy`、`npm run build`、`npm run ui:overflow-preflight` 已在最终 runtime tree PASS；Chromium + WebKit 426/426 PASS；PR #661 Public PR CI deterministic + 4 browser shards + `public-ci-gate` 全绿，exact-head Vercel final gate READY。
+- [x] PR exact-head Vercel final gate 为绿色，合并后 Production 可见并由当前 main 提供。证据：Preview `dpl_E2XB...` READY 且绑定 exact PR head `162edd49...`；PR #661 merge commit / closeout 时 `origin/main` 为 `41c086f...`；Production `dpl_9yuj...` READY 且 metadata 绑定同一 main SHA。
+- [x] 本 Markdown 中所有必须项已由真实证据从 `[ ]` 改为 `[x]`，每个关键完成项能追溯到 file / test / commit / PR / deployment 证据。证据集中在第 2–8 节：数据 owner / 结构测试 / Reader Contract / 426-case browser matrix / PR #661 / exact-head Preview / merge commit / Production deployment / 正式域名冷读形成闭环。
 
 ## 9. 每小时自动执行规则
 
@@ -144,9 +144,9 @@
 
 ## 10. 当前执行快照（2026-09-13）
 
-- 当前 MVP：Experiment-first Study 首页代码已实现，中英文共用一个实验树组件。
-- 当前科学结构：五个实验的机器可读子页面归属已经完成；五个 canonical Hub 已从同一数据 owner 展示实验动机、结果、分析与证据。第三阶段下一步是让各子分析页继承所属实验，并继续复用 `ResearchRouteContext` / capability reader map，而不是新建第二套导航。
-- 当前验证：定向结构测试、Astro check、build、桌面/手机/dark 冒烟与 Reader Contract 定向测试已通过；完整跨浏览器矩阵已使用空闲端口完成，Chromium + WebKit 共 414 / 414 PASS。
-- 当前 Git / PR 状态：分支 `feat/experiment-first-study-nav-20260912` 已推送，PR #661 已打开；首个实现提交为 `8671e0d1106ca8acebbe3414fcfe3e2ec404898b`。
-- 当前自动执行：每小时任务已启用，并指向本 Markdown 作为唯一 checklist authority。
-- 当前人工需求：无。若后续 exact-head final gate 或 merge policy 需要 owner 明确审批，则在对应项保留未完成并汇报。
+- 当前状态：**COMPLETE**。Experiment-first Study 首页、中英文五实验 IA、canonical experiment Hub / child ownership 与兼容旧路由均已落地；不再继续制造新的导航重构事项。
+- 当前科学结构：五个实验与派生分析由 `src/data/openEvoExperimentNavigation.ts` 单一 owner 驱动；GDR-v1 / DirectApply / successor lineage 与 frozen-final 不可直接因果比较的边界已由结构测试和 Reader Contract 保护。
+- 当前验证：最终 runtime tree 的 `verify:deploy`、build、overflow 与 Chromium + WebKit **426 / 426 PASS**；PR #661 Public PR CI 全绿，exact-head Vercel Preview `dpl_E2XB...` READY。
+- 当前 Git / Release：PR #661 已于 2026-09-13 合并，merge commit 为 `41c086f367f790f7624461a4ff0ff3758ef23108`；Production `dpl_9yujbPnUKPwecbPpru9xEBvtLP3E` READY 并绑定该 `main` SHA。
+- 当前 Production 冷读：正式中英文 Study 首页均 HTTP 200；390px 下五个 primary 全部首屏可见、child=0、root width=390/390；中英文十个 primary 深链全部 HTTP 200。
+- 当前人工需求：无。该计划已达到 Definition of Done，后续自动巡检应停止继续施工。
