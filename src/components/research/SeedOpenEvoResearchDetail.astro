@@ -20,7 +20,7 @@ const copy: Record<DetailPage, { title: string; lede: string }> = {
     lede: t('OpenEvo 以任务边界封存证据，运行演化方法，并让后续任务加载接受的 artifact、adapter 或 revision。', 'OpenEvo seals evidence at task boundaries, runs evolution methods, and lets later tasks load accepted artifacts, adapters, or revisions.'),
   },
   benchmarks: {
-    title: 'ALFWorld 与 WebShop',
+    title: t('ALFWorld 与 WebShop', 'ALFWorld and WebShop'),
     lede: t('两种 benchmark 的任务结构、动作空间和评分方式不同，应分别保存结果和失败模式。', 'The benchmarks use different task structures, action spaces, and scoring, so outcomes and failure modes should be recorded separately.'),
   },
   webshop: {
@@ -28,8 +28,8 @@ const copy: Record<DetailPage, { title: string; lede: string }> = {
     lede: t('WebShop 是一个模拟电商网站 benchmark：Agent 根据自然语言购物要求连续搜索、浏览、选择商品属性并完成购买。SEED 用它评测长程 Agent，并分别报告 normalized Score 与 exact Success。', 'WebShop is a simulated e-commerce benchmark where an agent follows a natural-language shopping request through repeated search, browsing, product-option selection, and purchase. SEED uses it to evaluate long-horizon agents and reports normalized Score and exact Success separately.'),
   },
   alfworld: {
-    title: t('ALFWorld 世界状态与任务成功', 'ALFWorld world state and task success'),
-    lede: t('沿着物体位置、容器状态、动作前置条件与终局目标，理解文本化具身任务的长期规划。', 'Follow object locations, receptacle state, action preconditions, and terminal goals through a text-based embodied task.'),
+    title: t('ALFWorld 任务与评测', 'ALFWorld tasks and evaluation'),
+    lede: t('ALFWorld 是一个文本化具身任务 benchmark：Agent 根据家务目标在可执行世界里移动、拿取、打开、放置、加热等，直到满足终局条件。这里分别记录任务是否成功、各任务家族成功率和 macro-average；这些指标不能和 WebShop normalized Score 混用。', 'ALFWorld is a text-based embodied-task benchmark where an agent follows household goals by moving, picking up, opening, placing, heating, and otherwise changing an executable world until the terminal condition is satisfied. We report task success, task-family success rates, and the macro-average separately; these metrics are not interchangeable with WebShop normalized Score.'),
   },
   loops: {
     title: t('SEED 与 OpenEvo 更新机制', 'SEED and OpenEvo update mechanisms'),
