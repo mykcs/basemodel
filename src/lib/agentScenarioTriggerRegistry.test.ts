@@ -340,6 +340,8 @@ describe('retained correction use-site routing', () => {
     expect(registry).toContain('TRIGGER: compound shell / RDC / SSH multi-command');
     expect(registry).toContain('verify the tool reports that interpreter actually launched');
     expect(registry).toContain('parser failure before mutation is `NOT_EXECUTED`');
+    expect(registry).toContain('REPEAT-CORRECTION escalation');
+    expect(registry).toContain('stop sending inline compound Bash payloads');
   });
 
   it('binds HPL, browser evidence, shell probes, and progress to the artifact actually under review', () => {

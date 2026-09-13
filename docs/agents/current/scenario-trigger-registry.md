@@ -58,6 +58,7 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 3. If the tool still reports Fish or another dialect, do not send compound Bash syntax through it. Use a simple explicit interpreter handoff only when quoting is trivial; otherwise use a standalone Bash/Python script or `bash -s`.
 4. Treat multiline Markdown/code/data, backticks, `$()` / `${...}`, nested quotes, or heredoc delimiters as **non-trivial quoting by default**. When the payload is content, move it through a file/connector API or temporary file; when logic is required, write and syntax-check a standalone script. A correct outer Bash interpreter does not make nested content quoting safe.
 5. A parser failure before mutation is `NOT_EXECUTED`. Do not reinterpret it as repository, server, or scientific failure.
+6. If a wrong-shell parser failure repeats in the same task after this rule was already loaded, treat that as a **REPEAT-CORRECTION escalation**: stop sending inline compound Bash payloads for the affected task. Switch to a standalone Bash/Python script or dialect-neutral single commands, syntax-check the script before execution, and record the correction-to-action witness. Do not keep retrying the same inline shape with another reminder to use Bash.
 
 ---
 

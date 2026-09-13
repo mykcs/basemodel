@@ -29,6 +29,9 @@ The closeout does not mutate the experiment, reinterpret its results, alter the 
 | CSS audit rejected new `!important` / raw state-color fallback | Existing mechanical protection worked | Fix semantic selector/token ownership instead of weakening the Gate | existing CSS audit/policy | The repository already prevented recurrence mechanically |
 | The long analysis page passed structure/build but Reader Journey found 13–15px captions, table cells, and helper labels carrying scientific meaning | New concrete presentation failure | Scientific qualifiers, thresholds, and metric labels are primary research prose even when styled as captions/helper text; keep them readable at desktop and mobile sizes | `research-site-presentation-contract.md` + existing browser Gate | The failure was semantic ownership of typography, not just one CSS selector |
 | Compound shell / Fish-vs-Bash failure family surfaced again in the wider work | Yes, despite an existing scenario trigger | Bind the correction witness to the actual execution-tool parameter; for RDC compound Bash, set and verify the outer `shell` argument before dispatch | existing root/scenario rule, refined at the use site | The knowledge existed; the tool invocation did not execute it |
+| The same wrong-shell parser failure happened again later even after the outer-shell rule and regression coverage existed | Yes; repeated after the first closeout | A second recurrence means reminders are no longer enough: stop inline compound Bash for the affected task and switch to a standalone script or dialect-neutral single commands | `scenario-trigger-registry.md` + routing regression test | The remaining failure mode was action-time compliance, not discoverability |
+| The ELI5 coverage pass initially exposed labels such as `大白话版 / 大白话结论` | New concrete HPL correction | Plain-language explanation belongs in the content itself; do not turn explanation depth into visible presenter/template chrome when object-first labels work | existing HPL / plain-language preference owners; history only | Current preference rules already rejected visible layer-template chrome, so no duplicate policy was needed |
+| `main` advanced independently while exact-head provider acceptance was running | Known release family, observed again | Keep one live semantic candidate, refresh only when the current-base contract requires it, and revalidate the exact refreshed head instead of manufacturing successor PRs | existing `release-closeout-protocol.md` | Current authority already owns this; this conversation only provides another worked instance |
 | Long provider checks / moving `main` repeatedly tempted premature “done” reports | Yes | Continue exact-head/current-base closeout to terminal state or a real blocker; keep branch/PR/main/Production distinct | existing release/scenario/closeout owners | Already current and mechanically relevant; duplicating it would add drift |
 
 ## 1. A complete experiment needs one place where the reader can reconstruct it
@@ -71,6 +74,30 @@ The audit found a real knowledge-system gap. The page already preserved the main
 The reusable lesson is narrower than “copy the chat into the page.” For a canonical experiment-analysis route, when an ELI5/plain-language explanation demonstrably resolved a reader confusion, publication closeout must check that an equivalent Depth-1 meaning survives next to the corresponding professional analysis. A metric table alone is insufficient. The exact metaphor is optional and may be dropped when the literal mechanism is clearer; temporary statuses, PR/provider details, and conversational filler remain excluded.
 
 This was a **new abstraction gap**, not a recurrence of the old “说人话” failure in exactly the same form. Existing policy already required ordinary-language first layers; what was missing was a coverage witness from conversation-proven explanation → canonical publication. The current explainer owner and one-page-analysis trigger now contain that witness instead of creating a second policy source.
+
+## 7. Follow-up implementation: the ELI5 coverage requirement was actually closed
+
+After the earlier closeout identified the gap, the canonical Q17 analysis page was updated rather than leaving the lesson only in governance prose. The durable comprehension bridges that survived publication were the experiment-level five-step overview, the one-shot-final-exam explanation, the parameter-update-arrow explanation for D1 geometry, and the distinction between parameter similarity and behavioral equivalence. The professional metrics remained present underneath those bridges.
+
+This matters because closeout should not confuse “we wrote a rule about explanation coverage” with “the page now satisfies that coverage.” The publication work was separately validated and released; exact release identities and provider state remain outside standing policy.
+
+## 8. Plain-language content is not the same thing as visible “ELI5 mode” chrome
+
+The first implementation of the coverage fix introduced visible labels equivalent to `大白话版` and `大白话结论`. The preference comparison correctly flagged those as layer-template / presenter-language debt: they describe the author’s explanatory mode instead of the research object. The content stayed, but the labels were changed to object-first wording such as `实验全貌` and `这次真正发现的是`.
+
+No new current copy rule was needed because the HPL / copy preference system already covered this pattern. The lesson belongs here as a worked case: **preserve the simple explanation, not the meta-label announcing that the explanation is simple.**
+
+## 9. Moving-main release evidence should refresh the same semantic candidate
+
+During final publication, `main` advanced independently while expensive exact-head acceptance was in flight. The correct response was to classify the intervening paths, keep the same semantic candidate, refresh it onto current `main`, and rerun the acceptance required by the current contract. The work did not need a chain of successor PRs merely because unrelated site/navigation changes landed.
+
+This is retained only as historical evidence for the current `release-closeout-protocol.md`; that current protocol remains the authority. Exact temporary heads, deployment IDs, queue timings, and provider URLs are intentionally not copied here.
+
+## 10. Repeated Fish/Bash failure escalates the execution surface
+
+The shell failure repeated once more after the repository already had all three of the earlier defenses: a startup rule, a scenario trigger naming RDC’s outer `shell` argument, and regression coverage proving that text was discoverable. That means the remaining problem was no longer retrieval or wording. The instruction was known but still not converted into the next action.
+
+The stronger use-site rule is therefore now: **after a repeated wrong-shell parser failure in the same task, stop using inline compound Bash for that task.** Move the logic into a standalone Bash/Python script (or use dialect-neutral single commands), syntax-check it, and record the correction-to-action witness. This is intentionally narrower than banning inline shell globally; it activates only after the known failure escapes again.
 
 ## Temporary information intentionally not promoted
 
