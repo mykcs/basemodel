@@ -213,32 +213,42 @@ npm run feedback:judge -- /tmp/model-migration-preference-judge.json
 
 ## 12. Phase J — 合并与 Production
 
-- [ ] exact-head Vercel green 后，确认没有新的 blocking review / conflict / main drift。
-- [ ] 按仓库当前 merge policy 合并 PR 到 `main`；不得以本地 build 代替 required provider gate。
-- [ ] 记录 merge commit SHA。
-- [ ] 等待 `main` 的 Vercel Production deployment。
-- [ ] Production 必须成功，且 canonical/hreflang/noindex 语义符合 production contract。
-- [ ] 在线访问旧 `/research/seed-openevo/flow/base-model/`，确认最终跳到新 Qwen 模型详情。
-- [ ] 在线访问 `/models/` 与中英文 Qwen 页，确认内容、链接、手机布局无回归。
+- [x] exact-head Vercel green 后，确认没有新的 blocking review / conflict / main drift。
+- [x] 按仓库当前 merge policy 合并 PR 到 `main`；不得以本地 build 代替 required provider gate。
+- [x] 记录 merge commit SHA。
+- [x] 等待 `main` 的 Vercel Production deployment。
+- [x] Production 必须成功，且 canonical/hreflang/noindex 语义符合 production contract。
+- [x] 在线访问旧 `/research/seed-openevo/flow/base-model/`，确认最终跳到新 Qwen 模型详情。
+- [x] 在线访问 `/models/` 与中英文 Qwen 页，确认内容、链接、手机布局无回归。
+
+### Phase J durable evidence
+
+- PR #658 merged at `2026-09-13T00:51:19Z`; merge commit `19fc39971874644ecd30ae6ee7bb0f468373f1d9`. GitHub reports no submitted reviews and no unresolved review threads.
+- Vercel Production deployment `dpl_FDBZ4sJ4hCftPXBkszdQEdKYkGvD` is `READY`, targets `production`, and is built from the exact merge SHA `19fc3997…`; canonical alias is `https://basemodel-preview.vercel.app`.
+- 390×844 Production browser smoke passed for `/models/`, `/en/models/`, both Qwen detail routes, and Chinese/English legacy redirects with and without trailing slash. All checked pages have one H1 and no page-level horizontal overflow.
+- Qwen Production head semantics: canonical is the Chinese Qwen URL, `hreflang=zh-CN` / `en` / `x-default` are correct, and Production has no `noindex` robots meta.
+- full receipt: `docs/agents/evidence/base-model-flow-to-models-20260913/phase-j-production-closeout.txt`.
 
 ## 13. 最终交付标准（Definition of Done）
 
 只有以下 **全部成立** 才能把本任务写成 COMPLETE：
 
-- [ ] 内容归属：Qwen 实验设置只由 `/models/qwen2-5-3b-instruct/` 维护一份。
-- [ ] 信息完整：旧页有价值的模型名解释、复现字段、公平比较控制变量都能在新 owner 找到。
-- [ ] 目录逻辑：`/models/` 能自然发现该实验模型，但不破坏模型浏览器的首屏主任务。
-- [ ] Flow 逻辑：Research Flow 只链接模型记录，不继续拥有模型正文。
-- [ ] 兼容性：旧中英文 URL、带/不带 trailing slash 都安全迁移。
-- [ ] 国际化：中文和英文都通过。
-- [ ] 响应式：390px 手机及桌面无页面级水平溢出、遮挡、元素重叠。
-- [ ] 可访问性/结构：每页一个 H1；Reader Contract 和正常 UI gate 通过。
-- [ ] 回归：结构测试、行为测试、build、受影响 Playwright 都 green。
-- [ ] HPL：内部候选筛选有可核验证据；blind-first 冷读完成；不可用的独立 reviewer 不得被伪装为 PASS。
-- [ ] Git：最终 PR 基于 current `main`，无未知并发覆盖，无第二个同目的 PR。
-- [ ] Provider：exact-head Vercel required status green。
-- [ ] Release：PR 已合并，Vercel Production green，线上真实路由通过 smoke check。
-- [ ] Closeout：本文件所有必要 checkbox 都是 `[x]`，并写入最终 SHA / PR / provider 证据。
+> **Status: COMPLETE — 2026-09-13.** 产品迁移、HPL、最终 UI Gate、exact-head Vercel、PR 合并、Production 与线上 smoke 均已有 durable evidence；按协议停止额外优化。
+
+- [x] 内容归属：Qwen 实验设置只由 `/models/qwen2-5-3b-instruct/` 维护一份。
+- [x] 信息完整：旧页有价值的模型名解释、复现字段、公平比较控制变量都能在新 owner 找到。
+- [x] 目录逻辑：`/models/` 能自然发现该实验模型，但不破坏模型浏览器的首屏主任务。
+- [x] Flow 逻辑：Research Flow 只链接模型记录，不继续拥有模型正文。
+- [x] 兼容性：旧中英文 URL、带/不带 trailing slash 都安全迁移。
+- [x] 国际化：中文和英文都通过。
+- [x] 响应式：390px 手机及桌面无页面级水平溢出、遮挡、元素重叠。
+- [x] 可访问性/结构：每页一个 H1；Reader Contract 和正常 UI gate 通过。
+- [x] 回归：结构测试、行为测试、build、受影响 Playwright 都 green。
+- [x] HPL：内部候选筛选有可核验证据；blind-first 冷读完成；不可用的独立 reviewer 不得被伪装为 PASS。
+- [x] Git：最终 PR 基于 current `main`，无未知并发覆盖，无第二个同目的 PR。
+- [x] Provider：exact-head Vercel required status green。
+- [x] Release：PR 已合并，Vercel Production green，线上真实路由通过 smoke check。
+- [x] Closeout：本文件所有必要 checkbox 都是 `[x]`，并写入最终 SHA / PR / provider 证据。
 
 ## 14. 每小时自动执行协议
 
