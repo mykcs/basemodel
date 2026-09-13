@@ -421,7 +421,7 @@ Capability lobby 需要同时让读者看见“历史 GDR-v1 / DirectApply”与
 
 - [x] H1. 发布前再次刷新 BaseModel `main` 与 upstream Gated-Delta scientific head；若 scientific state 前进，只更新 current snapshot / current-facing copy，不篡改历史页面。
 - [x] H2. rebase / reconcile current `main` 只在语义兼容时进行；遇到 overlapping research-page PR 先 cold-read semantic delta。
-- [ ] H3. commit/push final candidate；PR body 写清 Page Expression Brief、route ownership、scientific source head、validation evidence。
+- [x] H3. commit/push final candidate；PR body 写清 Page Expression Brief、route ownership、scientific source head、validation evidence。
 - [ ] H4. ordinary public GitHub Actions PR preflight PASS。
 - [ ] H5. owner 需要视觉复核时先用 review-only Preview；只有 merge-ready candidate 才触发 `ci/vercel-gate-final`。
 - [ ] H6. exact-head Vercel required check PASS，打开托管 current/historical 两个目标 route 做 real-route smoke。
@@ -520,3 +520,12 @@ This is the exact pre-commit tree intended for H3. After H3, any head-changing c
 - Targeted `tests/e2e/gated-delta-publication-split.spec.ts`: **18/18 PASS** across Chromium + WebKit after the rebase.
 - Earlier exact combined-tree hosted-equivalent UI evidence remains **446/446 PASS**; the final rebase touched only non-overlapping fast-gate infrastructure in `main`.
 - H3 remains unchecked until the final candidate commit is pushed; H4–H8 remain publication/provider/merge/Production work.
+
+### H3 publication receipt — 2026-09-14
+
+- Final product freshness commit: `96e869ddc34c4539fc2d96f39b4707b514078536`; pushed to `origin/research/gated-delta-page-restructure-20260912`.
+- PR: BaseModel #688, `research: split current Gated-Delta from historical GDR-v1`.
+- PR body now records the one-page/one-question route ownership, current scientific source `mykcs/openevo-experiment@fb43e2176d0b911d5da0c349124d0effe012eb55`, Route-S execution-proof-only boundary, full paired-D1 incompleteness, and local acceptance evidence.
+- Final authority-only refresh changed only `src/data/gatedDeltaSdLoraPublicationSnapshot.ts` (head/check time/evidence URLs); scientific polarity and rendered mechanism copy did not change.
+- After that refresh, `npm run verify:fast` correctly failed closed to the full deterministic repository gate and PASSed; targeted current/history browser regression remained **18/18 PASS**.
+- This receipt commit is plan/documentation-only. H4/H6 must be evaluated against the exact head produced by this receipt commit; earlier provider PASS from `3de51ade…` is not reused.
