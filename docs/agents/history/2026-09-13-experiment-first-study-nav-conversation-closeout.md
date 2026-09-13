@@ -43,6 +43,12 @@ The correct completion chain is literal and layered:
 
 A later docs-only administrative event can be cancelled or skipped without making the already-verified runtime release untrue. Conversely, a docs-only merge cannot manufacture missing runtime acceptance.
 
+### 3.1 Do not make an accepted head record its own acceptance
+
+The task repeatedly updated its canonical checklist with newly obtained CI/Preview evidence on the same product PR. Each evidence-only commit changed the PR head, so the exact-head acceptance that had just been recorded no longer belonged to the current candidate and another final gate became necessary.
+
+The general exact-head rule already existed, but this recording-channel failure was not explicit enough at the use site. The durable correction is now in `release-closeout-protocol.md`: once exact-head acceptance starts, record live gate evidence in PR metadata/comments or another non-head-changing receipt; merge the accepted product head; verify Production; then use a separate docs/governance-only closeout PR when the repository checklist must persist final `COMPLETE` evidence. A substantive product/test/science/policy fix still creates a new head and must be revalidated.
+
 ### 4. Definition of Done is also a stopping rule
 
 The owner required a final Production/cold-read review once every Definition-of-Done row was actually satisfied, then required the plan to become `COMPLETE` and new refactor work to stop.
@@ -67,6 +73,7 @@ The useful simplification is linguistic, not evidentiary. The report may be plai
 | Only mark `[x]` after real file/test/commit/PR/provider evidence; `NOT_EXECUTED`/`BUILDING` stay open | Repeated owner preference, already encoded | Checklist state is an acceptance claim tied to exact durable evidence | `project-agent-operating-principles.md` + task checklist | Existing owner already covers done/progress semantics; no duplicate policy needed |
 | Continue existing implementation/PR instead of parallel work | **Yes — duplicate PR family recurred as #673/#674** | Run overlap/open-PR scan before creating a closeout PR; if overlap exists, choose one canonical owner and stop multiplying work | root `AGENTS.md` + `scenario-trigger-registry.md` + existing concurrency/PR guidance | The durable rule already existed; failure was activation before creation, not missing policy |
 | Do not let docs-only closeout status replace runtime release evidence | Known exact-state family | Keep implementation, provider, merge, Production, and checklist-closeout layers distinct | release/deployment policy + exact-state principles | Provider/release owners define those evidence boundaries |
+| Evidence-only checklist commits changed the accepted PR head and forced another exact-head gate | New use-site gap in a known exact-head family | Record acceptance off-tree; merge the accepted head; persist final checklist evidence in a post-merge docs-only closeout PR when needed | `release-closeout-protocol.md` + regression test | Exact-head release sequencing is the canonical owner |
 | Stop once Definition of Done and final Production/cold read are satisfied | Repeated scope-control preference | Treat DoD as a stopping boundary; successor polish requires new authorization | website engineering/project operating principles + task plan | Prevents endless optional refactor churn |
 | ELI5 reports still need literal state distinctions | Repeated | Simplify language, not evidence states | project-agent-operating-principles / owner-facing task contract | Keeps plain-language updates truthful |
 
@@ -79,7 +86,8 @@ A future Agent starting from root Agent guidance and this task's checklist shoul
 3. Is there already an open branch/PR that owns this same implementation or closeout?
 4. What durable artifact proves the item is complete, and is any required provider still only queued/building?
 5. Are runtime acceptance, merge state, Production state, and docs-only closeout being kept separate?
-6. If every Definition-of-Done row is accepted, did the Agent stop instead of inventing another refactor?
+6. If the release head is already accepted, would the next proposed commit change that head only to document acceptance that already happened?
+7. If every Definition-of-Done row is accepted, did the Agent stop instead of inventing another refactor?
 
 If those checks are performed, the most important failure in this conversation—the creation of parallel closeout PRs despite an explicit anti-duplication instruction—is materially harder to repeat.
 
