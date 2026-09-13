@@ -37,7 +37,6 @@ const journeyLinks = [
 }));
 
 const utilityLinks = [
-  { path: '/models/', label: m.nav.models, description: t('具体模型、checkpoint、权重和运行条件', 'Concrete models, checkpoints, weights, and runtime conditions') },
   { path: '/papers/', label: m.nav.papers, description: t('论文方法、模型角色、训练条件和来源', 'Paper methods, model roles, training conditions, and sources') },
   { path: '/compare/', label: t('比较模型', 'Compare models'), description: t('并排检查会改变实验公平性的模型差异', 'Inspect model differences that can change experimental fairness') },
   { path: '/workspace/', label: t('实验工作台', 'Experiment workspace'), description: t('保存模型、GPU、网络和训练条件', 'Save model, GPU, network, and training settings') },
@@ -92,7 +91,7 @@ const commandMenuLabels = {
         <div class="resource-menu__panel">
           <div class="resource-menu__intro">
             <small>{t('实验资料', 'Research resources')}</small>
-            <strong>{t('模型、论文、实验、证据与开发', 'Models, papers, experiments, evidence, and development')}</strong>
+            <strong>{t('论文、实验、证据与开发', 'Papers, experiments, evidence, and development')}</strong>
           </div>
           <div class="resource-menu__links">
             {utilityLinks.map((link) => (
@@ -134,7 +133,7 @@ const commandMenuLabels = {
       <section class="mobile-menu__section mobile-menu__utilities" aria-labelledby="mobile-tools-title">
         <div class="mobile-menu__heading">
           <span id="mobile-tools-title">{t('资料', 'Resources')}</span>
-          <small>{t('模型、论文、实验、证据与开发', 'Models, papers, experiments, evidence, and development')}</small>
+          <small>{t('论文、实验、证据与开发', 'Papers, experiments, evidence, and development')}</small>
         </div>
         <nav class="mobile-utility-links" aria-label={t('资料', 'Resources')}>
           {utilityLinks.map((link) => <a href={link.href} aria-current={link.active ? 'page' : undefined}>{link.label}</a>)}
