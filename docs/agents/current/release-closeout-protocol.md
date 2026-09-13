@@ -357,6 +357,22 @@ PR-body wording, local logs, or a remembered green matrix are not locks. The loc
 
 PR narrative must still be fresh enough not to mislead the owner. If the body records a final-review head/base SHA, validation counts, final-gate state, or an execution-order summary, refresh those fields after the last current-base sync and before owner approval/merge. A metadata-only PR-body edit does not change the candidate Git SHA, so it does not by itself invalidate exact-head CI/provider acceptance; conversely, a green exact-head gate does not make stale PR prose true. Always re-read the live tuple.
 
+### 7.0.1 Do not make the accepted head document its own acceptance
+
+Once exact-head acceptance has started, an evidence-only commit to the same release branch is still a **new head**. Do not append "CI passed", "Preview READY", final deployment IDs, or checklist-complete prose to the candidate Git tree merely to record acceptance that belongs to the previous SHA; that creates a self-invalidating loop in which the act of documenting the gate invalidates the gate.
+
+Default closeout sequence:
+
+```text
+accepted release head
+-> record live acceptance in PR metadata/comment or another non-head-changing receipt
+-> merge that accepted head
+-> verify Production against the merge/main SHA
+-> if a repository checklist/history needs final COMPLETE evidence, use a separate docs/governance-only closeout PR from current main
+```
+
+Scope boundary: this rule applies only to evidence/status/checklist updates that do not need to ship with the product candidate. A real product fix, test fix, scientific correction, release-policy change, or task contract that explicitly requires the evidence file on the candidate must still create a new head and receive whatever fresh acceptance that new tree requires. Do not move substantive changes into PR comments to evade Git review.
+
 ### 7.1 Explicit acceptance rules are merge-authorization boundaries
 
 A PR can be mergeable and all currently required checks can be green while the work is still **not authorized to merge**. This is especially common for CI/performance experiments whose PR body pre-registers a later steady-state benchmark, control, canary, or repeat requirement.

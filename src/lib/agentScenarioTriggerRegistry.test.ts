@@ -122,6 +122,9 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('Do not end the task at `pending`');
     expect(releaseCloseout).toContain('base-refresh authority witness');
     expect(releaseCloseout).toContain('Missing exact-head hosted acceptance is actionable topology, not passive pending');
+    expect(releaseCloseout).toContain('Do not make the accepted head document its own acceptance');
+    expect(releaseCloseout).toContain('evidence-only commit to the same release branch is still a **new head**');
+    expect(releaseCloseout).toContain('separate docs/governance-only closeout PR from current main');
     expect(websiteSpec).toContain('ELI5 要扫完整个可见表面，不只扫正文');
   });
 
