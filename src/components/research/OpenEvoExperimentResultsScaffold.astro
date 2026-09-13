@@ -196,13 +196,13 @@ const contrasts = [
       {mode !== 'cross-arm' && current?.eyebrow && <p class="exp-scaffold__eyebrow">{current.eyebrow}</p>}
       <h1>{mode === 'cross-arm' ? t('四组实验比较', 'Four-arm comparison') : current?.title}</h1>
       <p class="exp-scaffold__lead">{mode === 'cross-arm'
-        ? t('四个 arm 是 3B/self、7B/self、3B/MiniMax、7B/MiniMax。现在先固定“以后要比较什么、用什么证据、哪些格子还不能填”，避免实验跑完后再临时挑指标。', 'The four arms are 3B/self, 7B/self, 3B/MiniMax, and 7B/MiniMax. We fix the comparisons, evidence, and still-empty cells now so metrics are not chosen opportunistically after the runs finish.')
+        ? t('四个历史 arm 是 3B/self、7B/self、3B/MiniMax、7B/MiniMax。前三个有可解释的封存或停止状态；3B/MiniMax 在 74.58% 时主动停止且没有 final eval，所以缺失不能填成 0。这里报告能由历史证据支持的 arm 差异，但不把这些差异直接写成 MiniMax 或模型规模的因果效应。', 'The four historical arms are 3B/self, 7B/self, 3B/MiniMax, and 7B/MiniMax. Each has a preserved completion or stop state; 3B/MiniMax stopped at 74.58% without a final evaluation, so the missing endpoint must not be filled with zero. This page reports arm differences supported by the historical evidence without turning them directly into causal effects of MiniMax or model size.')
         : current?.question}</p>
     </div>
     <div class="exp-scaffold__status" aria-label={t('当前状态', 'Current status')}>
       <span>{t('当前状态', 'STATUS')}</span>
-      <strong>{mode === 'cross-arm' ? t('等待四组结果齐全', 'Waiting for all four arms') : current?.status}</strong>
-      <small>{mode === '7b-self' ? t('训练保存点补测完成：2026-08-29', 'Checkpoint sweep completed: 2026-08-29') : t('页面骨架冻结：2026-08-29', 'Page scaffold frozen: 2026-08-29')}</small>
+      <strong>{mode === 'cross-arm' ? t('历史结果已整理；3B/MiniMax 无 final eval', 'Historical results summarized; 3B/MiniMax has no final evaluation') : current?.status}</strong>
+      <small>{mode === '7b-self' ? t('训练保存点补测完成：2026-08-29', 'Checkpoint sweep completed: 2026-08-29') : mode === 'cross-arm' ? t('缺失 endpoint 保持缺失，不补成 0', 'Missing endpoint stays missing; it is not backfilled as zero') : t('历史实验记录', 'Historical run record')}</small>
     </div>
   </header>
   <OpenEvoStage2StrategyChooser locale={locale} active="legacy" />

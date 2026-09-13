@@ -7,6 +7,7 @@ const detail = read('../components/research/SeedOpenEvoResearchDetail.astro');
 const core = read('../components/research/SeedOpenEvoResearchPageCore.astro');
 const sdLoraHistory = read('../components/research/OpenEvoSdLoraHistorySkeleton.astro');
 const vanillaSdLoraSlide = read('../components/research/OpenEvoVanillaSdLoraSlide.astro');
+const experimentResults = read('../components/research/OpenEvoExperimentResultsScaffold.astro');
 const alfworldZh = read('../pages/research/seed-openevo/flow/alfworld.astro');
 const alfworldEn = read('../pages/en/research/seed-openevo/flow/alfworld.astro');
 
@@ -80,5 +81,14 @@ describe('sitewide normalization first repair batch', () => {
     expect(vanillaSdLoraSlide).not.toContain('four cards in a row');
   });
 
+  it('keeps the historical four-arm page result-first instead of narrating an unfinished scaffold', () => {
+    expect(experimentResults).toContain('历史结果已整理；3B/MiniMax 无 final eval');
+    expect(experimentResults).toContain('缺失不能填成 0');
+    expect(experimentResults).toContain('不把这些差异直接写成 MiniMax 或模型规模的因果效应');
+    expect(experimentResults).not.toContain('等待四组结果齐全');
+    expect(experimentResults).not.toContain('页面骨架冻结：2026-08-29');
+    expect(experimentResults).not.toContain('Waiting for all four arms');
+    expect(experimentResults).not.toContain('Page scaffold frozen: 2026-08-29');
+  });
 
 });
