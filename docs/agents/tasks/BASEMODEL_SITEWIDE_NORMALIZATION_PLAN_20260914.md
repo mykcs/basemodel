@@ -383,9 +383,10 @@ current main
 - [x] 390 / 768 / 1280×633 / 1440 几何验收 PASS。
 - [x] light → dark → light PASS。
 - [x] 中文 / 英文 PASS。
-- [ ] current-base refresh 后仍无语义冲突。
+- [x] current-base refresh 后仍无语义冲突。
 - [ ] exact-head final provider gate PASS。
-- [ ] PR 从 Draft 改为 Ready 前完成最后一次 zero-context cold read。
+  - closeout 注：验收开始后遵守 `release-closeout-protocol.md` §7.0.1；provider live receipt 写入 PR metadata/comment，不为记录 READY/status 再制造 evidence-only head。
+- [x] PR 从 Draft 改为 Ready 前完成最后一次 zero-context cold read。
 
 ## 12. 交付标准（Definition of Done）
 
@@ -463,6 +464,9 @@ Shared-component family evidence（2026-09-14）：逐一检查 `ResearchOrienta
 
 
 Final local acceptance evidence（2026-09-14）：`audit:copy:strict` 扫描 588 个 production source files，strict invariant failures=0；917 条 contextual candidates 作为 review queue 保留，并结合本文件已完成的 Flow / Study / Catalog / special-page / shared-component 人工 family cold read 分类，不把它们宣称为 0 design debt。`audit:human-feedback` PASS（26 precedents / 18 preference dimensions / 30 Gold Pairs / 6 reader-contract bindings / 321 public source files）。Production build PASS：508 routes，heading audit 508/508，external brand-link audit 4241 links PASS。UI risk planner 判定 `global`；`verify:deploy`、production build 与 root-overflow preflight 均 PASS。默认 4327 端口被独立 `gdkvm-ponytail-20260912` worktree 占用，因此没有杀掉其他 Agent 的服务，而是使用仓库原生 `PLAYWRIGHT_PORT` 隔离到 4359：`PLAYWRIGHT_REUSE_BUILD=1 npm run test:ui:all` 最终 Chromium + WebKit **446/446 PASS**。矩阵覆盖 zh/en、390/768/1280×633/1440、mobile/tablet/desktop、light/dark、reduced-motion、connector geometry 与 root overflow；`ui-safety` 的主题回归在同一 session 明确执行 light → dark → light 并二次 `auditUi` PASS。
+
+
+Final pre-provider identity / cold-read evidence（2026-09-14）：候选 `b98370e0...` 刷新远端后，live `origin/main=5c376872...`，`merge-base(head, main)=5c376872...` 且 `main` 是 head 的 ancestor（behind=0）；#671 仍是 Vanilla SD-LoRA Flow routing/navigation 的独立语义 owner，更新时间未变化，本 PR 未吸收或覆盖其 owner。最后一次 zero-context cold read 在本地 production-static artifact 上复核 Home、Flow、SEED、OpenEvo、ALFWorld、Benchmarks、Study、Results、Capability、Q17、SD-LoRA history、Archive、Models、Papers、Workspace：zh 1280×633 + 390，以及关键 en route 1280×633 + 390；对象/结果先于内部机制，结果页 caveat 与 Archive 非-current 边界仍可见，所有抽样 `scrollWidth == clientWidth`。本次 evidence 写入后还需重新确认最终 commit 的 live-main ancestry，再请求 exact-head provider gate。
 
 
 ## 16. Stopping rule
