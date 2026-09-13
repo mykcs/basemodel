@@ -3,6 +3,7 @@
 Status: **OPEN TASK CHECKLIST · audit-only baseline**
 Repository: `mykcs/basemodel`
 Audit branch: `research/sitewide-first-principles-design-audit-20260913`
+Working PR: **#669** · Draft long-running audit workline
 Baseline main: `57e3db8f4f2e2711334b5026cc01523e5a55ef08`
 Created: 2026-09-13
 
@@ -275,6 +276,7 @@ This PR is intentionally a **draft long-running audit workline**.
 
 | Evidence | Baseline |
 | --- | --- |
+| Working PR | `#669` · Draft |
 | Audit main | `57e3db8f4f2e2711334b5026cc01523e5a55ef08` |
 | Overlapping open audit PR | none found before branch creation |
 | Reader-contract audit | **PASS · 63 / 63 public page patterns** |
