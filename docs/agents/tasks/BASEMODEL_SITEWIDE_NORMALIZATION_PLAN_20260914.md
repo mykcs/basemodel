@@ -213,12 +213,12 @@ P0/P1 修复后继续，不把本任务停在三个页面。
 - [x] 七页 SD-LoRA 系列：按同一 series owner / 01–07 问题链整体冷读；01–03 保留封存结果，04–07 明确未完成，不新增 mini design system。
 ### 5.3 Catalog / decision / evidence 家族
 
-- [ ] Home：只做低密度 orientation，不变成目录墙；
-- [ ] Models / Families / Landscape：对象身份、访问、硬件、证据层次先后清楚；
-- [ ] Papers：paper claim 与本站 reproduction evidence 不混写；
-- [ ] Compare：difference → research impact，而不是普通规格表；
-- [ ] Workspace：保持 operational density，不套 benchmark/reference 模板；
-- [ ] Methodology / Data status：未知状态、freshness、evidence ladder 可见。
+- [x] Home：首屏保持低密度研究 orientation，只给研究主题、matched-comparison 边界与主要入口，没有变成目录墙。
+- [x] Models / Families / Landscape：对象身份与浏览维度先建立；模型详情继续把来源、访问、硬件和证据状态分层。
+- [x] Papers：未核验方法摘要明确保持未知；paper claim、模型角色与本站 reproduction material 分开。
+- [x] Compare：差异行通过 `impactCode` 映射 research impact，并支持只看影响实验的差异，不是普通规格表。
+- [x] Workspace：保持 operational density，首屏直接收集研究目标、角色和资源限制，没有套 benchmark/reference 模板。
+- [x] Methodology / Data status：unknown、来源分层、freshness 和 evidence gap 均保持可见，不把缺失补成确定值。
 
 ### 5.4 特殊页面类型
 
@@ -369,7 +369,7 @@ current main
 
 - [x] Flow family 完成。
 - [x] Study / results / capability family 完成。
-- [ ] Catalog / decision / evidence family 完成。
+- [x] Catalog / decision / evidence family 完成。
 - [ ] Archive / operational / projected-deck exceptions 完成。
 - [ ] Shared-component failure families 完成。
 ### 11.4 验收与发布
@@ -446,8 +446,8 @@ git log --oneline --decorate -10
 | overlap scan | DONE | #687 Q17 chronology；#671 SD-LoRA flow nav；#669 stale sitewide audit |
 | browser cold read | DONE | WebShop PASS control；ALFWorld FAIL；Benchmarks REVIEW；SD-LoRA history REVIEW；Capability landing PASS/no broad rewrite |
 | plan | ACTIVE | 本文件 |
-| implementation | STUDY FAMILY DONE | first batch `87b1fbe5`; Flow identity `9202aa9d`; Vanilla direct-flow `630bd177`; four-arm closeout `64815195`; focused regressions PASS |
-| browser acceptance | PARTIAL | Flow family 已完成；Study/results/capability 代表 route 共做 zh + 390/1280，英语 family 做 390，全部 sampled renders 无 root overflow；four-arm 修复后 zh/en 390/1280 复核 PASS |
+| implementation | CATALOG FAMILY DONE | first batch `87b1fbe5`; Flow `9202aa9d`; Study fixes `630bd177` / `64815195`; Catalog family required no public-code rewrite after cold read |
+| browser acceptance | PARTIAL | Flow + Study + Catalog families 已完成 family cold read；Catalog 11 routes × zh/en × 390/1280 = 44 renders 全部 HTTP 200 且无 root overflow |
 | provider acceptance | TODO | 仅 final candidate 后填入 |
 
 第一批实现证据（2026-09-14）：`87b1fbe5bed6fce648ec98c89cf2d3d07123324d`。Focused tests：`sitewideNormalization` 4/4、`interactiveResearchExplainers` 14/14、`siteReaderContracts` 6/6，共 24/24 PASS；`git diff --check`、reader-contract audit、Astro/Type check 均 PASS。浏览器冷读确认 ALFWorld 中英首屏对象优先；Benchmarks 三个重复 kicker 消失且顺序/内容保留；SD-LoRA overview 无重复 eyebrow，skeleton child 仍显示 `04 / 07`。
@@ -455,6 +455,8 @@ git log --oneline --decorate -10
 Flow family evidence（2026-09-14）：`9202aa9d4625ea32b11de111d97438e9e4aeabba` 把 SEED / OpenEvo 首屏改成对象/方法身份优先，并同步 reader contracts 与 regression。当前 head focused tests：`sitewideNormalization` 6/6、`interactiveResearchExplainers` 14/14、`siteReaderContracts` 6/6，共 26/26 PASS；`audit:reader-contracts` 64/64 PASS。真实浏览器冷读覆盖 Flow 七类 route 的 zh/en、390/1440；SEED/OpenEvo/ALFWorld 额外覆盖 768/1280×633；sampled render 均 `scrollWidth == clientWidth`。`flow-server` 的 authority owner 明确“technical capability ≠ authorization scope”；`flow-loops` reader contract 明确循环存在不等于持续提升。
 
 Study/results/capability family evidence（2026-09-14）：`630bd177` 把 Vanilla SD-LoRA 首层从“不是四张卡片”改为直接解释 routed loop；focused regressions 27/27 PASS，zh 1280 与 en 390 浏览器冷读无 root overflow。随后 family cold read 覆盖 Study gateway、results、four-arm、3B/7B self/MiniMax、GDR/DirectApply、Vanilla、scaling、Q17、Stage1/Stage2 历史页与 SD-LoRA 01–07 问题链；zh 代表 route 做 1280/390，英语 family 做 390，sampled render 全部 `scrollWidth == clientWidth`。冷读发现 four-arm 仍有“等待四组结果齐全 / 页面骨架冻结”旧脚手架；`6481519568a4217847cd5e9bb2d665f06a69443d` 已改成真实历史状态：3B/MiniMax 在 74.58% 停止且无 final eval，缺失 endpoint 不补成 0，历史 arm 差异不直接升级为 MiniMax/模型规模因果效应。修复后 zh/en 390/1280 复核 PASS；focused `sitewideNormalization + siteReaderContracts` 14/14 PASS，`git diff --check` PASS。
+
+Catalog/decision/evidence family evidence（2026-09-14）：真实浏览器冷读覆盖 Home、Models index + model detail、Families、Landscape、Papers index + paper detail、Compare、Workspace、Methodology、Data status，共 11 routes × zh/en × 390/1280 = 44 renders；全部 HTTP 200 且 `scrollWidth == clientWidth`。Home 保持 matched-comparison orientation；Models/Families/Landscape 先建立对象与浏览维度；MetaGPT specimen 对未核验 method summary 明确保持 unknown；`ModelComparison.tsx` 的差异行带 `impactCode` → `researchImpact`，并提供 only-impacts filter；Workspace 保持 operational entry；Methodology/Data status 明确来源、unknown、freshness 与 evidence gap。因此本轮没有为了“统一”新增 UI 改动。
 
 ## 16. Stopping rule
 
