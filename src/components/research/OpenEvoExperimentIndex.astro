@@ -26,7 +26,7 @@ const p = (path: string) => localePath(locale, path);
       <li class="experiment-node" data-ui-audit-item>
         <div class="experiment-node__rail" aria-hidden="true"><span>{experiment.number}</span></div>
         <article>
-          <a class="experiment-node__main" href={p(experiment.primaryHref)}>
+          <a class="experiment-node__main" data-experiment-primary={experiment.id} href={p(experiment.primaryHref)}>
             <strong>{t(experiment.title)}</strong>
             <span aria-hidden="true">→</span>
           </a>
@@ -80,12 +80,13 @@ const p = (path: string) => localePath(locale, path);
     .experiment-index{width:calc(100% - 1.25rem)}
     .study-hero{padding:1.7rem 0 1.3rem}
     .study-hero h1{font-size:2.55rem}
-    .experiment-node{grid-template-columns:2.5rem minmax(0,1fr);gap:.7rem;padding:1.55rem 0}
+    .experiment-node{grid-template-columns:2.5rem minmax(0,1fr);gap:.7rem;padding:.85rem 0}
     .experiment-node__rail{justify-content:flex-start}
     .experiment-node__rail span{width:2.3rem;height:2.3rem}
-    .experiment-node__rail::after{left:1.12rem;top:2.2rem;bottom:-1.55rem}
-    .experiment-node__main strong{font-size:1.35rem}
-    .experiment-children{padding-left:.75rem}
+    .experiment-node__rail::after{left:1.12rem;top:2.2rem;bottom:-.85rem}
+    .experiment-node__main strong{font-size:1.28rem}
+    .experiment-node p,.experiment-children{display:none}
+    .experiment-tree{min-height:calc(100svh - 14rem)}
     .secondary-routes{display:block}
     .secondary-routes nav{justify-content:flex-start;margin-top:.65rem}
   }

@@ -17,6 +17,8 @@ describe('experiment-first Study index', () => {
     expect(source).toContain("from '../../data/openEvoExperimentNavigation'");
     expect(source).toContain('OPEN_EVO_EXPERIMENTS.map');
     expect(source).toContain('experiment.childLinks.map');
+    expect(source).toContain('data-experiment-primary={experiment.id}');
+    expect(source).toContain('.experiment-node p,.experiment-children{display:none}');
   });
 
   it('keeps the historical gate-failure experiment attached to its blocked-update analysis and first-run evidence', () => {
