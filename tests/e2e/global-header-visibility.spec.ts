@@ -274,6 +274,23 @@ test('responsive navigation controls remain operable instead of merely visible',
   await expect(resourceSummary).toBeFocused();
 });
 
+test('shared navigation does not promote the model catalog as a direct destination', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const resourceMenu = page.locator('[data-resource-menu]');
+  await resourceMenu.locator('summary').click();
+  await expect(resourceMenu.locator('.resource-menu__links a[href="/models/"]')).toHaveCount(0);
+
+  await page.goto('/research/seed-openevo/flow/', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.research-navigation__links a[href="/models/qwen2-5-3b-instruct/#experiment-setup"]')).toHaveCount(0);
+  await expect(page.locator('.research-navigation__links').getByRole('link', { name: '模型', exact: true })).toHaveCount(0);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await page.locator('[data-menu-toggle]').click();
+  await expect(page.locator('.mobile-utility-links a[href="/models/"]')).toHaveCount(0);
+});
+
 test('404 fallback keeps a usable global navigation escape hatch', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('atlas-theme', 'light'));
   const response = await page.goto(fallbackRoute, { waitUntil: 'domcontentloaded' });

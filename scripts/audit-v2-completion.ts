@@ -51,9 +51,10 @@ pass('V2-WORKSPACE-003', read('src/components/workspace/DecisionMemo.tsx').inclu
 const header = read('src/components/Header.astro');
 pass(
   'V2-NAV-001',
-  ['/models/', '/papers/', '/compare/', '/workspace/', '/data-status/', '/methodology/'].every((path) => header.includes(`path: '${path}'`))
+  ['/papers/', '/compare/', '/workspace/', '/data-status/', '/methodology/'].every((path) => header.includes(`path: '${path}'`))
+    && !header.includes("path: '/models/'")
     && !['/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/', '/research/seed-openevo/flow/benchmarks/', '/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/'].some((path) => header.includes(`path: '${path}'`)),
-  'global header exposes top-level resources without duplicating research subpages',
+  'global header exposes research actions without promoting the model catalog or duplicating research subpages',
 );
 pass('V2-SEARCH-001', existsSync(join(root, 'src/components/navigation/CommandMenu.astro')) && existsSync(join(root, 'src/pages/search-index.json.ts')) && read('src/components/navigation/CommandMenu.astro').includes('ArrowDown'), 'search index and keyboard navigation exist');
 pass('V2-COMPARE-001', read('src/components/workspace/CompareTray.astro').includes('data-compare-base') && read('src/components/workspace/CompareTray.astro').includes('?models='), 'compare tray uses canonical URL');
