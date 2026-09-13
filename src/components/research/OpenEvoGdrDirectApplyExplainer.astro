@@ -1,22 +1,18 @@
 ---
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
-import ExternalBrandMark from '../common/ExternalBrandMark';
 import { OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS } from '../../data/openEvoDirectApplyLiveDynamics';
+import ResearchRouteContext from './ResearchRouteContext.astro';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
+const currentGatedDeltaHref = p('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/');
 const q17DiagnosticsHref = p('/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/');
-const vanillaSdLoraHref = p('/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/');
 const directApplyFinalHref = p('/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/');
 const directApplyFinal = OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS;
-const flaGdrHref = 'https://github.com/fla-org/flash-linear-attention/blob/main/fla/ops/gated_delta_rule/naive.py';
-const nvlabsGdrHref = 'https://github.com/NVlabs/GatedDeltaNet';
-const gatedDeltaPaperHref = 'https://arxiv.org/abs/2412.06464';
-
 const gdr = {
   rounds: 160,
   rollouts: 20480,
@@ -26,373 +22,103 @@ const gdr = {
   post49Candidates: 16,
   post49Accepted: 0,
 };
-const historicalSnapshot = {
-  verifiedAt: '2026-09-07T04:28:35Z',
-  completedRounds: 15,
-  rollouts: 1920,
-  totalRollouts: 20480,
-  gdrProbeCalls: 0,
-  acceptanceEvaluations: 0,
-  execution: '90fa6eb4',
-};
-const controls = zh ? [
-  ['Base model', 'Qwen3-1.7B', '相同'],
-  ['Stage1 lineage', '同一封存 lineage', '相同'],
-  ['Harness', '201.1', '相同'],
-  ['Sampling', '同一冻结配置', '相同'],
-  ['Task / seed policy', '同一 schedule + injective seed policy', '相同'],
-  ['每轮预算', '128 rollouts', '相同'],
-  ['总预算', '160 rounds = 20,480 rollouts', '相同'],
-  ['Memory / Skill / Agent / SD-LoRA', '同一机制与容量合同', '相同'],
-  ['Final panel', '训练期间隔离', '相同'],
-  ['External teacher calls', '0', '相同'],
-  ['Candidate transition policy', 'GDR-v1：probe 后 Accept / Reject；DirectApply：通过工程合同后直接进入下一状态', '唯一主要 treatment'],
-] : [
-  ['Base model', 'Qwen3-1.7B', 'Matched'],
-  ['Stage-1 lineage', 'Same sealed lineage', 'Matched'],
-  ['Harness', '201.1', 'Matched'],
-  ['Sampling', 'Same frozen configuration', 'Matched'],
-  ['Task / seed policy', 'Same schedule + injective seed policy', 'Matched'],
-  ['Per-round budget', '128 rollouts', 'Matched'],
-  ['Total budget', '160 rounds = 20,480 rollouts', 'Matched'],
-  ['Memory / Skill / Agent / SD-LoRA', 'Same mechanisms and capacity contract', 'Matched'],
-  ['Final panel', 'Isolated during training', 'Matched'],
-  ['External teacher calls', '0', 'Matched'],
-  ['Candidate transition policy', 'GDR-v1: probe then Accept / Reject; DirectApply: apply after engineering contracts pass', 'Primary treatment'],
-];
-const safetyChecks = zh ? [
-  'artifact integrity', 'dataset contract', 'action / schema contract', 'capacity limit',
-  'SD training success', 'execution identity', 'rollout denominator', 'final-panel isolation',
-] : [
-  'artifact integrity', 'dataset contract', 'action / schema contract', 'capacity limit',
-  'SD training success', 'execution identity', 'rollout denominator', 'final-panel isolation',
-];
-const known = zh ? [
-  '1.7B GDR-v1 产生了 44 个 SD-LoRA candidate，远多于 7 次正式更新。',
-  '只有 7 个 SD-LoRA candidate 被 GDR 接受并进入后续模型状态。',
-  'R49 之后又产生 16 个 SD-LoRA candidate，但 0 个被接受。',
-  'DirectApply 的 transition 不调用 GDR task-score probe；已核验的 DirectApply 记录里 probe_calls 与 acceptance_evaluations 都是 0。',
-  'DirectApply R0 与 GDR R0 的 128 个 rollout case 在 seed、raw completion、action trajectory、reward 与 invalid 上逐一匹配。',
-  'R127→R128 的固定 32 题诊断只看到小幅平均下降和少数任务得失交换；正式不同题 round 的大回撤不能直接当成同等幅度的整体遗忘。',
-  '两个 checkpoint 的固定同题诊断都没有 invalid action 或 constraint escape；推理与动作阶段的解码 entropy 反而下降。',
-  'DirectApply 后来完整跑完 160 轮，并在训练结束后只做一次冻结 128 题 final：Task Score 60.72 / 100，50 / 128 道题完整成功。',
-] : [
-  'The 1.7B GDR-v1 run produced 44 SD-LoRA candidates, far more than seven formal updates.',
-  'Only seven SD-LoRA candidates were accepted by GDR and entered the successor model state.',
-  'After R49, 16 more SD-LoRA candidates were produced and none were accepted.',
-  'DirectApply transitions do not call the GDR task-score probe; the verified DirectApply records contain zero probe calls and zero acceptance evaluations.',
-  'DirectApply R0 matches GDR R0 case-by-case across 128 rollout cases for seeds, raw completions, action trajectories, rewards, and invalid status.',
-  'The fixed 32-task R127→R128 diagnostic shows only a modest average decline with a few task outcomes changing; the much larger different-task live-round drop cannot be treated as equally large global forgetting.',
-  'Neither fixed-task checkpoint produced invalid actions or constraint escapes; decoding entropy fell in both reasoning and constrained-action phases.',
-  'DirectApply later completed all 160 rounds and then ran exactly one frozen 128-task final: Task Score 60.72 / 100 with 50 / 128 exact successes.',
-];
-const unknown = zh ? [
-  'GDR-v1 与 DirectApply 还没有在同一个冻结 final panel 上做最终对照，因此谁更好仍未知。',
-  '被 GDR 拒绝的 candidate 是否本来就是“好 candidate”。',
-  '更多 SD-LoRA updates 是否一定带来更高 final score。',
-  '这种任务能力重新分配是否会在更多 checkpoint 与 R160 上持续出现。',
-  'R127 附近的负 update cosine 是否与任务能力交换存在因果关系。',
-  '把原始 Gated Delta Rule 搬到 SD-LoRA 参数状态后，是否会优于本地 GDR-v1 或 DirectApply；具体映射尚未冻结。',
-] : [
-  'GDR-v1 and DirectApply still lack a same-panel frozen final comparison, so the method winner remains unknown.',
-  'Whether rejected candidates were actually “good candidates.”',
-  'Whether more SD-LoRA updates necessarily yield a higher final score.',
-  'Whether this task-level capability reallocation persists across more checkpoints and at R160.',
-  'Whether the negative update cosine near R127 is causally related to the task-level capability changes.',
-  'Whether an SD-LoRA state-update successor inspired by the original Gated Delta Rule would beat local GDR-v1 or DirectApply; the mapping is not frozen yet.',
-];
 ---
 
-<article data-copy-review class="gdr-page" data-testid="gdr-directapply-page" data-ui-audit="contrast layout" data-reader-page="research-explainer">
-  <header class="gdr-hero" id="top">
-    <a class="gdr-back" href={p('/research/seed-openevo/study/capability-exploration/')}>← {t('OpenEvo 能力探索', 'OpenEvo capability exploration')}</a>
-    <h1>{t('为什么 44 次学习尝试，最后只让 7 次进入模型？', 'Why did 44 learning attempts become only 7 model updates?')}</h1>
-    <p class="gdr-lede">{t(
-      '我们发现，Qwen3-1.7B 的 Stage2 并不是只训练了 7 次 SD-LoRA。它实际产生了 44 个 SD-LoRA candidate，但旧版 GDR 会先让每个新状态参加一个 16-task 小考试；只要关键指标出现退步，就继续使用旧状态。这个现象让我们提出一个新的对照：如果不让短期分数决定 candidate 能否继续学习，会发生什么？',
-      'Qwen3-1.7B did not train SD-LoRA only seven times. Stage 2 produced 44 SD-LoRA candidates, but GDR-v1 first gave each changed state a 16-task probe and kept the old state whenever key metrics regressed. That raised a new ablation question: what happens if short-horizon task score no longer decides whether a candidate may continue learning?'
+<article class="gdr-history" data-testid="gdr-directapply-page" data-copy-review data-reader-page="research-explainer">
+  <header class="gdr-history__hero" data-reader-context>
+    <a class="gdr-history__back" href={p('/research/seed-openevo/study/')}>← {t('实验目录', 'Experiment index')}</a>
+    <h1>{t('历史 GDR-v1 / DirectApply', 'Historical GDR-v1 / DirectApply')}</h1>
+    <p class="gdr-history__lede" data-reader-task data-reader-purpose>{t(
+      '这次历史实验不是 recurrent Gated Delta Rule。SD-LoRA candidate 会先完整训练出来；本地 GDR-v1 再用固定 16 道题做一次短期检查，决定采用新状态还是继续旧状态。160 轮里一共训练出 44 个 candidate，最后只有 7 次真正进入后续模型。',
+      'This historical experiment was not a recurrent Gated Delta Rule. Each SD-LoRA candidate was trained first; local GDR-v1 then used a fixed 16-task short-horizon check to decide whether to adopt the new state or keep the old one. Across 160 rounds it trained 44 candidates, but only seven entered later model states.'
     )}</p>
-    <dl class="gdr-glossary" aria-label={t('第一次阅读术语', 'First-read glossary')}>
-      <div><dt>{t('本地 GDR-v1', 'Local GDR-v1')}</dt><dd>{t('我们当时实际跑的规则：candidate 训练出来以后，再用 16-task probe 决定采用新状态还是继续旧状态。它是 candidate 放行规则，不等同于论文里的 recurrent Gated Delta Rule。', 'The rule we actually ran: after a candidate is trained, a 16-task probe decides whether to adopt it or keep the incumbent. It is a candidate-admission rule, not the recurrent Gated Delta Rule from the paper.')}</dd></div>
-      <div><dt>SD-LoRA</dt><dd>{t('一次小型参数学习得到的 adapter candidate；candidate 被训练出来，不等于已经被正式采用。', 'A small trainable adapter candidate; producing it does not mean it has been formally adopted.')}</dd></div>
-    </dl>
-    <p class="gdr-mechanism-link"><a href={vanillaSdLoraHref}>{t('先看 Vanilla SD-LoRA candidate 本身是怎么训练出来的 →', 'First see how the Vanilla SD-LoRA candidate itself is trained →')}</a></p>
-
-    <div class="gdr-answer" role="note">
-      <strong>{t('44 次尝试学习 → GDR 小考试 → 7 次正式进入模型状态', '44 learning attempts → GDR probe → 7 entered the model state')}</strong>
-      <p>{t('所以「7 次 UPDATE」≠「只训练了 7 次 SD-LoRA」。', 'So “7 updates” does not mean “SD-LoRA trained only seven times.”')} <code>44 candidates → 7 updates</code></p>
-    </div>
-
-    <dl class="gdr-metrics" aria-label={t('GDR-v1 核心数字', 'GDR-v1 key numbers')}>
-      <div><dt>Stage2 rounds</dt><dd>{gdr.rounds}</dd></div>
-      <div><dt>Formal rollouts</dt><dd>{gdr.rollouts.toLocaleString('en-US')}</dd></div>
-      <div class="is-candidate"><dt>SD-LoRA candidates</dt><dd>{gdr.candidates}</dd></div>
-      <div class="is-accepted"><dt>{t('正式 SD UPDATE', 'Formal SD updates')}</dt><dd>{gdr.accepted}</dd></div>
-      <div><dt>Acceptance rate</dt><dd>{gdr.acceptanceRate}</dd></div>
-      <div><dt>{t('R49 后', 'After R49')}</dt><dd>{gdr.post49Candidates} → {gdr.post49Accepted}</dd></div>
-    </dl>
-
-    <figure class="gdr-funnel" data-testid="gdr-44-to-7-funnel">
-      <div class="gdr-funnel__candidate"><b>44</b><span>{t('SD-LoRA candidate 训练尝试', 'SD-LoRA candidate training attempts')}</span></div>
-      <div class="gdr-funnel__gate"><span>GDR-v1</span><small>{t('16-task probe · one-step gate', '16-task probe · one-step gate')}</small></div>
-      <div class="gdr-funnel__accepted"><b>7</b><span>{t('进入后续模型状态', 'entered successor model state')}</span></div>
-      <figcaption>{t('R49 时累计 28 candidates / 7 accepted；最终 44 / 7。因此 R49 后新增 16 candidates，接受数没有再增加。', 'At R49 the cumulative count was 28 candidates / 7 accepted; the sealed run ended at 44 / 7. Thus 16 additional candidates appeared after R49 and none were accepted.')}</figcaption>
-    </figure>
-
-    <div class="gdr-evidence" data-testid="directapply-same-task-evidence">
-      <div>
-        <p class="gdr-evidence__meta">2026-09-11 · {t('同一批题复测', 'Same-task diagnostic')}</p>
-        <strong>{t('训练分数的大幅回撤，在同一批 32 题上缩小了很多', 'The large live-round drop shrinks substantially on the same 32 tasks')}</strong>
-        <p>{t('R127→R128 每轮用的题不同，看起来约 76.1→48.9；固定同一批题后是 63.58→59.41，成功率 31.25%→25.00%。这说明抽题差异占了很大一部分，同时 checkpoint 更新确实改变了少数任务的成败。', 'The different-task R127→R128 live rounds look like roughly 76.1→48.9. On the same 32 tasks, the comparison is 63.58→59.41 with exact success 31.25%→25.00%. Task sampling explains a large part of the apparent swing, while the checkpoint update still changes outcomes on a small number of tasks.')}</p>
-        <p class="gdr-evidence__boundary">{t('这项结果只解释 DirectApply 内部的一次 checkpoint 变化；DirectApply 与 GDR-v1 谁更好，仍要等完整对照。', 'This result diagnoses one checkpoint change inside DirectApply. It does not decide whether DirectApply ultimately beats GDR-v1.')}</p>
-      </div>
-      <a href={q17DiagnosticsHref}>{t('查看同一批题复测 →', 'Open the same-task diagnostic →')}</a>
-    </div>
-
-    <div class="gdr-evidence" data-testid="directapply-final-evidence">
-      <div>
-        <p class="gdr-evidence__meta">2026-09-12 · {t('DirectApply 最终结果', 'DirectApply final')}</p>
-        <strong>{t(`160 轮训练完成；冻结 final = ${directApplyFinal.finalScore.toFixed(2)} / 100`, `160 training rounds completed; frozen final = ${directApplyFinal.finalScore.toFixed(2)} / 100`)}</strong>
-        <p>{t(`Stage2 共 ${directApplyFinal.formalRollouts.toLocaleString('en-US')} 次 WebShop 尝试，159 次 SD-LoRA candidate 都按 DirectApply 进入后续状态。训练结束后只打开一次冻结 128 题 final，完整成功 ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount}（${directApplyFinal.finalSuccess.toFixed(2)}%）。`, `Stage 2 used ${directApplyFinal.formalRollouts.toLocaleString('en-US')} WebShop attempts, and all 159 SD-LoRA candidates entered successor states under DirectApply. After training, the frozen 128-task final was opened exactly once, with ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount} exact successes (${directApplyFinal.finalSuccess.toFixed(2)}%).`)}</p>
-        <p class="gdr-evidence__boundary">{t('这完成了 DirectApply 这条线，但不是 GDR-v1 的同题对照：历史 GDR final 使用不同冻结题集，不能拿 37.60 与 60.72 的差直接当作 GDR gate 的因果效果。', 'This closes the DirectApply line, not a same-panel GDR-v1 comparison. The historical GDR final used a different frozen panel, so 37.60 versus 60.72 is not a causal effect of the GDR gate.')}</p>
-      </div>
-      <a href={directApplyFinalHref}>{t('查看完整 R0–R159 曲线与 final →', 'Open the full R0–R159 trajectory and final →')}</a>
-    </div>
+    <a class="gdr-history__current" href={currentGatedDeltaHref}>{t('查看现在真正研究的 Gated-Delta SD-LoRA →', 'Open the current Gated-Delta SD-LoRA derivation →')}</a>
   </header>
-
-  <section class="gdr-section" id="two-policies" aria-labelledby="two-policies-title">
-    <p class="gdr-so-what">{t('所以呢？我们不是把 GDR「调松」，而是专门做一个不使用 task-score acceptance gate 的独立 treatment。', 'So what? We did not merely “loosen” GDR. We created a separate treatment with no task-score acceptance gate.')}</p>
-    <h2 id="two-policies-title">{t('同样学习，只有「candidate 怎么进入下一状态」不同', 'Same learning pipeline; only the candidate transition rule changes')}</h2>
-    <div class="gdr-flow-compare">
-      <figure class="gdr-flow is-gdr">
-        <figcaption><b>GDR-v1</b><span>{t('hard one-step monotonic gate', 'hard one-step monotonic gate')}</span></figcaption>
+  <ResearchRouteContext locale={locale} route="gdr-directapply" experimentId="gdr-v1-1p7b" compact />
+  <section class="gdr-history__section" id="admission-rule" aria-labelledby="admission-rule-title">
+    <h2 id="admission-rule-title">{t('旧 GDR-v1 做的是 candidate admission', 'Local GDR-v1 was candidate admission')}</h2>
+    <div class="gdr-history__compare">
+      <figure>
+        <figcaption><strong>GDR-v1</strong><span>{t('candidate 训练完以后再筛一次', 'screen again after candidate training')}</span></figcaption>
         <ol>
-          <li><span>1</span><div><strong>Rollout</strong><small>{t('每轮 128 次 WebShop 尝试', '128 WebShop attempts per round')}</small></div></li>
-          <li><span>2</span><div><strong>{t('生成 candidate', 'Generate candidate')}</strong><small>Memory / Skill / Agent / SD-LoRA</small></div></li>
-          <li class="is-gate"><span>3</span><div><strong>16-task probe</strong><small>exact / positive / mean / invalid</small></div></li>
-          <li><span>4</span><div><strong>Accept / Reject</strong><small>{t('所有 non-regression 成立，且至少一项严格改善才接受', 'Accept only if every non-regression check passes and at least one task metric strictly improves')}</small></div></li>
-          <li><span>5</span><div><strong>{t('Reject → 继续旧状态', 'Reject → keep incumbent')}</strong><small>{t('challenger 不进入下一轮', 'challenger does not enter the next round')}</small></div></li>
+          <li><b>1</b><span>{t('完成一轮 WebShop rollout', 'complete one WebShop rollout round')}</span></li>
+          <li><b>2</b><span>{t('训练 SD-LoRA candidate', 'train an SD-LoRA candidate')}</span></li>
+          <li><b>3</b><span>{t('固定 16 题 probe 比较新旧状态', 'compare new and old states on a fixed 16-task probe')}</span></li>
+          <li><b>4</b><span>{t('通过才采用；否则 KEEP PRIOR', 'adopt only if it passes; otherwise KEEP PRIOR')}</span></li>
         </ol>
       </figure>
-      <figure class="gdr-flow is-direct">
-        <figcaption><b>DirectApply / No-GDR</b><span>{t('independent ablation', 'independent ablation')}</span></figcaption>
+      <figure>
+        <figcaption><strong>DirectApply</strong><span>{t('移除 task-score veto', 'remove the task-score veto')}</span></figcaption>
         <ol>
-          <li><span>1</span><div><strong>Rollout</strong><small>{t('同样每轮 128 次 WebShop 尝试', 'the same 128 WebShop attempts per round')}</small></div></li>
-          <li><span>2</span><div><strong>{t('生成 candidate', 'Generate candidate')}</strong><small>Memory / Skill / Agent / SD-LoRA</small></div></li>
-          <li class="is-contract"><span>3</span><div><strong>{t('工程 / 数据合同', 'Engineering / data contracts')}</strong><small>{t('身份、schema、训练成功、容量等仍然 fail-closed', 'identity, schema, training success, capacity, etc. remain fail-closed')}</small></div></li>
-          <li><span>4</span><div><strong>DirectApply</strong><small>{t('通过合同的 changed candidate 直接成为下一状态', 'a changed candidate that passes contracts becomes the next state')}</small></div></li>
-          <li><span>5</span><div><strong>{t('继续学习', 'Continue learning')}</strong><small>{t('不再用短期 task score 决定生死', 'short-term task score no longer decides survival')}</small></div></li>
+          <li><b>1</b><span>{t('完成相同预算的 WebShop rollout', 'complete the matched WebShop rollout budget')}</span></li>
+          <li><b>2</b><span>{t('训练同类 SD-LoRA candidate', 'train the same kind of SD-LoRA candidate')}</span></li>
+          <li><b>3</b><span>{t('工程 / 数据合同继续 fail-closed', 'engineering / data contracts remain fail-closed')}</span></li>
+          <li><b>4</b><span>{t('通过合同后直接进入下一状态', 'enter the next state directly after those contracts pass')}</span></li>
         </ol>
       </figure>
     </div>
-
-    <aside class="gdr-safety" data-testid="no-gdr-not-no-safety">
-      <div><span>✓</span><strong>No-GDR ≠ No Safety</strong></div>
-      <p>{t('删除的只有：根据短期 task-score probe 决定 candidate 是否可以进入下一状态。下面这些合同继续保留：', 'Only one thing is removed: using a short-horizon task-score probe to decide whether a candidate may enter the next state. These contracts remain:')}</p>
-      <ul>{safetyChecks.map((item) => <li>{item}</li>)}</ul>
-    </aside>
   </section>
 
-  <section class="gdr-section" id="original-gated-delta" aria-labelledby="original-gated-delta-title" data-testid="original-gated-delta-rule">
-    <h2 id="original-gated-delta-title">{t('原始 Gated Delta Rule：状态怎样读、改、写', 'Original Gated Delta Rule: how the state is read, corrected and written')}</h2>
-    <p class="gdr-section-lede">{t(
-      '后来回看原始论文和 Flash Linear Attention 的 reference implementation，我们确认了一个概念偏差：本地 GDR-v1 在 SD-LoRA candidate 已经训练完成以后再决定“要不要采用”；原始 Gated Delta Rule 则直接定义 recurrent state 在每个时间步怎样更新。两者不是同一个机制。',
-      'Re-reading the original work and the Flash Linear Attention reference implementation exposed a conceptual mismatch: local GDR-v1 waits until an SD-LoRA candidate already exists and then decides whether to adopt it; the original Gated Delta Rule directly defines how a recurrent state changes at each step. They are not the same mechanism.'
-    )}</p>
-
-    <div class="gdr-mechanism-table" role="region" aria-label={t('本地 GDR-v1 与原始 Gated Delta Rule 对比', 'Local GDR-v1 versus the original Gated Delta Rule')} tabindex="0">
-      <table>
-        <thead><tr><th>{t('比较项', 'Question')}</th><th>{t('本地 GDR-v1', 'Local GDR-v1')}</th><th>{t('原始 Gated Delta Rule', 'Original Gated Delta Rule')}</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">{t('它决定什么', 'What it decides')}</th><td>{t('candidate 已经训练出来后，要不要让它进入下一轮模型。', 'After a candidate already exists, whether it enters the next model state.')}</td><td>{t('旧 state 读出什么、当前 value 与它差多少、这次 residual 怎样写回 state。', 'What the old state reads out, how the current value differs, and how that residual is written back.')}</td></tr>
-          <tr><th scope="row">{t('控制来自哪里', 'Where control comes from')}</th><td>{t('外部 16-task task-score probe。', 'An external 16-task task-score probe.')}</td><td>{t('当前序列位置的输入 / hidden representation 产生 k、v、β、g；已有 state 参与 residual。', 'The current sequence input / hidden representation produces k, v, β and g; the existing state participates through the residual.')}</td></tr>
-          <tr><th scope="row">{t('失败时发生什么', 'What happens when the proposal disagrees')}</th><td>{t('整个 changed candidate 可以被拒绝，继续使用 prior state。', 'The whole changed candidate can be rejected and the prior state kept.')}</td><td>{t('先读旧 state，再把 v − state·k 的差值按 β 写回；它不是一次外部 PASS / FAIL。', 'Read the old state, then write the v − state·k correction with β; this is not an external PASS / FAIL decision.')}</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <figure class="gdr-original-rule" aria-labelledby="gdr-rule-caption">
-      <div class="gdr-rule-input"><span>{t('当前序列输入', 'current sequence input')}</span><strong>x<sub>t</sub> → k<sub>t</sub>, v<sub>t</sub>, β<sub>t</sub>, g<sub>t</sub></strong></div>
-      <div class="gdr-rule-equations" aria-label={t('Gated Delta Rule 简式', 'Simplified Gated Delta Rule')}>
-        <code>S̃<sub>t−1</sub> = exp(g<sub>t</sub>) S<sub>t−1</sub></code>
-        <code>r<sub>t</sub> = v<sub>t</sub> − S̃<sub>t−1</sub> k<sub>t</sub></code>
-        <code>S<sub>t</sub> = S̃<sub>t−1</sub> + β<sub>t</sub> k<sub>t</sub> r<sub>t</sub><sup>T</sup></code>
-      </div>
-      <figcaption id="gdr-rule-caption">{t('不同实现的张量转置约定可以不同；这里保留的是 reference recurrence 的语义：旧 state 先衰减 → 用 k 读取旧 value → 计算 residual → β 控制 residual 写入。', 'Tensor transpose conventions vary across implementations; the invariant shown here is the reference recurrence: decay the old state → read it with k → compute the residual → use β to scale the residual write.')}</figcaption>
-    </figure>
-
-    <div class="gdr-task-vector" data-testid="task-vector-role">
-      <h3>Task Vector</h3>
-      <p>{t('在这轮讨论里，Task Vector 是“参数状态实际移动了多少、朝哪里移动”的量尺：Δθₜ = θₜ − θₜ₋₁。它帮助我们观察 Vanilla / DirectApply 的更新是否呈现 recurrent structure，也可以在后续研究里作为监督或比较对象。', 'In this discussion, a Task Vector is a ruler for how far and in what direction parameter state actually moved: Δθₜ = θₜ − θₜ₋₁. It lets us inspect whether Vanilla / DirectApply updates have recurrent structure and may later serve as a supervision or comparison target.')}</p>
-      <p class="gdr-task-vector__boundary">{t('第一版“忠实原始 GDR”的语义边界是：Task Vector 不直接设置 β / g，也不充当外部 veto。具体的 Agent learning event → x / K / V / β / g → SD-LoRA state 映射仍在设计中，尚未作为实验事实发布。', 'For a first faithful interpretation of the original rule, the Task Vector does not directly set β / g and does not act as an external veto. The concrete mapping from an Agent learning event → x / K / V / β / g → SD-LoRA state is still being designed and is not published here as an experimental fact.')}</p>
-    </div>
-
-    <nav class="gdr-reference-links" aria-label={t('Gated Delta Rule 参考实现', 'Gated Delta Rule references')}>
-      <a href={flaGdrHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={flaGdrHref} />Flash Linear Attention · <code>naive_recurrent_gated_delta_rule</code></a>
-      <a href={nvlabsGdrHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={nvlabsGdrHref} />NVlabs · GatedDeltaNet</a>
-      <a href={gatedDeltaPaperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={gatedDeltaPaperHref} />Gated Delta Networks · arXiv:2412.06464</a>
-    </nav>
-  </section>
-
-  <section class="gdr-section" id="why-question-gdr" aria-labelledby="why-question-gdr-title">
-    <p class="gdr-so-what">{t('所以呢？GDR-v1 的问题不是「有 gate」本身，而是它用一步之后的结果，替 160 轮之后的目标做决定。', 'So what? The issue is not simply that GDR has a gate; it lets a one-step result decide for a 160-round objective.')}</p>
-    <h2 id="why-question-gdr-title">{t('为什么我们开始怀疑 GDR-v1 太保守？', 'Why did we begin to suspect GDR-v1 was too conservative?')}</h2>
-    <div class="gdr-problems">
-      <article><span>01</span><h3>Myopic objective</h3><p>{t('真正的问题是「160 rounds 后模型有多好？」；GDR-v1 实际问的是「这个 candidate 下一步是不是立刻不变差，而且至少一项更好？」两者不是同一个目标。', 'The real objective is “how good is the model after 160 rounds?” GDR-v1 instead asks whether this candidate is immediately non-worse on every metric and strictly better on at least one. Those are different objectives.')}</p></article>
-      <article><span>02</span><h3>{t('小 probe 的离散噪声', 'Discrete noise in a small probe')}</h3><p>{t('probe 只有 16 tasks。2/16 → 1/16 只少一题，却会被 hard non-regression rule 看成明显 exact regression。小 panel 的单题波动很容易触发 veto。', 'The probe contains only 16 tasks. A 2/16 → 1/16 shift is one task, yet a hard non-regression rule treats it as an exact-success regression. One discrete task can therefore trigger a veto.')}</p></article>
-      <article><span>03</span><h3>{t('Carrier attribution', 'Carrier attribution')}</h3><p>{t('Memory、Skill、Agent、SD-LoRA 组成同一个 candidate state 再整体评价。因此「整体 candidate 变差」不能直接推出「SD-LoRA delta 本身变差」。', 'Memory, Skill, Agent and SD-LoRA form one candidate state and are evaluated together. A worse combined candidate does not identify the SD-LoRA delta itself as the cause.')}</p></article>
-      <article><span>04</span><h3>{t('探索被提前截断', 'Exploration is truncated')}</h3><p>{t('challenger 在 t 时刻可能比 incumbent 差，但沿同一方向继续几轮后可能反超。GDR-v1 在 t 就把它删除，因此永远观察不到 t+3 / t+5。', 'A challenger can be worse at t yet become better after several more steps along the same path. GDR-v1 deletes it at t, so t+3 or t+5 is never observed.')}</p></article>
-    </div>
-
-    <figure class="gdr-horizon" data-testid="long-horizon-trajectory">
-      <div class="gdr-horizon__chart">
-        <svg viewBox="0 0 760 300" role="img">
-          <title>{t('概念图：challenger 先下降，之后可能超过 incumbent', 'Concept: challenger dips before potentially overtaking incumbent')}</title>
-          <line x1="70" y1="245" x2="720" y2="245" class="axis"/><line x1="70" y1="245" x2="70" y2="35" class="axis"/>
-          <line x1="70" y1="150" x2="720" y2="150" class="incumbent"/>
-          <path d="M110 176 C180 190 230 206 290 188 S405 130 470 112 S590 82 680 68" class="challenger"/>
-          <circle cx="110" cy="176" r="7" class="point p1"/><circle cx="290" cy="188" r="7" class="point p2"/><circle cx="470" cy="112" r="7" class="point p3"/><circle cx="680" cy="68" r="7" class="point p4"/>
-          <text x="82" y="140">incumbent</text><text x="105" y="210">t</text><text x="278" y="220">t+1</text><text x="452" y="102">t+3</text><text x="662" y="58">t+5</text>
-          <text x="580" y="270">future rounds →</text><text x="24" y="65" transform="rotate(-90 24 65)">score</text>
-        </svg>
-      </div>
-      <figcaption><strong>{t('这是研究动机，不是已观测结果。', 'This is a hypothesis illustration, not an observed result.')}</strong> {t('DirectApply 的目的正是让这条可能的长期路径有机会被真实实验观察，而不是在 t 就假设它一定会成功。', 'DirectApply lets such a long-horizon path become observable; it does not assume that the path will actually succeed.')}</figcaption>
-    </figure>
-  </section>
-
-  <section class="gdr-section" id="three-generations" aria-labelledby="three-generations-title">
-    <h2 id="three-generations-title">{t('三个对象必须分开记录', 'Three objects must stay separate')}</h2>
-    <p class="gdr-section-lede">{t('旧实验不会因为我们重新理解了论文机制而被改名或重写。历史 GDR-v1、DirectApply 对照，以及未来可能采用原始 Gated Delta Rule 的 SD-LoRA state-update successor，是三个不同对象。', 'Re-reading the paper does not rename or rewrite an old experiment. Historical GDR-v1, the DirectApply ablation, and a possible future SD-LoRA state-update successor based on the original Gated Delta Rule are three different objects.')}</p>
-    <div class="gdr-generations">
-      <article class="is-history"><span>{t('历史实验', 'Historical experiment')}</span><h3>{t('本地 GDR-v1', 'Local GDR-v1')}</h3><p>{t('task-score probe 决定 candidate 接受 / 拒绝', 'task-score probe decides candidate accept / reject')}</p><small>{t('保留原样，不事后重写', 'Preserved as run; never retroactively rewritten')}</small></article>
-      <div class="gdr-generation-arrow" aria-hidden="true">→</div>
-      <article class="is-running"><span>{t('独立对照', 'Independent ablation')}</span><h3>DirectApply / No-GDR</h3><p>{t('移除 task-score candidate admission gate', 'removes the task-score candidate-admission gate')}</p><small>{t('回答旧 gate 的因果问题', 'tests the causal role of the old gate')}</small></article>
-      <div class="gdr-generation-arrow" aria-hidden="true">→</div>
-      <article class="is-future"><span>{t('后继研究', 'Successor research')}</span><h3>{t('原始 Gated Delta Rule 启发的 state update', 'Original-Gated-Delta-inspired state update')}</h3><p>{t('让 recurrent rule 本身决定 state 怎样读、改、写', 'make the recurrent rule itself define how state is read, corrected and written')}</p><small>{t('映射与程序仍在设计 · 未执行', 'mapping and implementation under design · not executed')}</small></article>
-    </div>
-  </section>
-
-  <section class="gdr-section" id="experiment-design" aria-labelledby="experiment-design-title">
-    <p class="gdr-so-what">{t('所以呢？这个实验要回答的不是「能不能多做 update」，而是「candidate transition policy 会不会改变长期学习轨迹」。', 'So what? This experiment is not asking whether we can merely do more updates. It asks whether candidate transition policy changes the long-horizon learning trajectory.')}</p>
-    <h2 id="experiment-design-title">{t('DirectApply 对照实验：只动一个主要 treatment', 'DirectApply ablation: change one primary treatment')}</h2>
-    <div class="gdr-question"><span>{t('实验问题', 'Scientific question')}</span><strong>{t('GDR 到底是在保护模型免受坏更新，还是在阻止长期有价值的学习路径？', 'Does GDR protect the model from bad updates, or block learning paths that become valuable over a longer horizon?')}</strong></div>
-    <div class="gdr-control-table" role="region" aria-label={t('实验控制变量表', 'Experiment controls table')} tabindex="0">
-      <table>
-        <thead><tr><th>{t('变量', 'Variable')}</th><th>{t('冻结 / 对齐', 'Frozen / matched')}</th><th>{t('角色', 'Role')}</th></tr></thead>
-        <tbody>{controls.map(([name, value, role]) => <tr class:list={{ treatment: name === 'Candidate transition policy' }}><th scope="row">{name}</th><td>{value}</td><td>{role}</td></tr>)}</tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="gdr-section" id="round0-match" aria-labelledby="round0-match-title">
-    <p class="gdr-so-what">{t('Round 0 对齐要求：两组开始使用不同 transition policy 之前，先证明 128 个 episode 的行为起点一致。', 'Round 0 matching requirement: before the two arms use different transition policies, verify that all 128 episodes start from the same behavior.')}</p>
-    <h2 id="round0-match-title">{t('Round 0：行为语义匹配，但 adapter 不是 bitwise-identical', 'Round 0: behavior is semantically matched, but the adapter is not bitwise-identical')}</h2>
-    <div class="gdr-match-grid" data-testid="round0-semantic-match">
-      <div><strong>128 / 128</strong><span>task_id</span><small>{t('一致', 'matched')}</small></div>
-      <div><strong>128 / 128</strong><span>rollout + generation seeds</span><small>{t('一致', 'matched')}</small></div>
-      <div><strong>128 / 128</strong><span>raw completion</span><small>{t('逐步一致', 'stepwise matched')}</small></div>
-      <div><strong>128 / 128</strong><span>action trajectory</span><small>{t('逐步一致', 'stepwise matched')}</small></div>
-      <div><strong>128 / 128</strong><span>reward + invalid</span><small>{t('一致', 'matched')}</small></div>
-      <div class="is-mean"><strong>0.3364082792207789</strong><span>mean score</span><small>{t('两边完全相同', 'exactly equal')}</small></div>
-    </div>
-    <div class="gdr-adapter-drift">
-      <div><span>{t('GDR-v1 R0 task-vector norm', 'GDR-v1 R0 task-vector norm')}</span><b>0.3315128741</b></div>
-      <div><span>{t('DirectApply R0 task-vector norm', 'DirectApply R0 task-vector norm')}</span><b>0.3307554585</b></div>
-      <div><span>{t('相对漂移', 'Relative drift')}</span><b>≈ 0.228%</b></div>
-      <p>{t('trainer seed 都是 1993，训练数据语义与 OpenEVO Core 相同；但运行 GPU 不同，adapter digest / task-vector norm 没有 bitwise 对齐。因此网页只使用 semantic-matched。', 'Both use trainer seed 1993 with the same dataset semantics and OpenEVO Core, but the training GPU differed and adapter digests / task-vector norms are not bitwise equal. The correct claim is semantic-matched.')}</p>
-    </div>
-    <p class="gdr-warning"><strong>{t('禁止的说法：', 'Do not say:')}</strong> “the whole experiment is bitwise-identical.”</p>
-  </section>
-
-  <section class="gdr-section" id="resource-handoffs" aria-labelledby="resource-handoffs-title">
-    <p class="gdr-so-what">{t('所以呢？换 GPU 位置可能只是资源优化；改 worker topology 就已经碰到执行语义。不能只看 Agent 写了一句 scientific_semantics_changed=false。', 'So what? Moving GPU placement can be resource-only; changing worker topology touches execution semantics. An Agent writing scientific_semantics_changed=false is not sufficient evidence.')}</p>
-    <h2 id="resource-handoffs-title">{t('实验运行中的 Agent / Ray handoff：哪些能接受，哪些先拒绝', 'Agent / Ray handoffs: what was accepted, and what was held back')}</h2>
-    <ol class="gdr-timeline" data-testid="resource-handoff-timeline">
-      <li class="is-safe"><span class="gdr-timeline__rail">1</span><div><small>{t('起始执行', 'Source execution')}</small><h3><code>88af1b80</code></h3><p>{t('DirectApply exact-runtime treatment source。transition policy = DIRECT_APPLY_NO_GDR。', 'Exact-runtime DirectApply treatment source. Transition policy = DIRECT_APPLY_NO_GDR.')}</p></div></li>
-      <li class="is-safe"><span class="gdr-timeline__rail">2</span><div><small>{t('resource-only successor', 'resource-only successor')}</small><h3><code>d1a0252c</code> → <code>90fa6eb4</code></h3><p>{t('把资源迁移到 GPU0–3，并增加显式 recovery authority / execution lineage。我们检查了实际 diff：design 没变，Harness / sampling / seed / budget / DirectApply policy 没变；formal rollout replay = 0。', 'Moves resources to GPU0–3 and adds explicit recovery authority / execution lineage. We inspected the actual diff: the design, Harness, sampling, seeds, budget and DirectApply policy are unchanged; formal rollout replay = 0.')}</p><b>{t('采用：继续运行', 'ADOPTED')}</b></div></li>
-      <li class="is-handoff"><span class="gdr-timeline__rail">3</span><div><small>{t('controller handoff', 'controller handoff')}</small><h3>{t('保留已经启动 / 完成的 rollout', 'Preserve the in-flight / completed rollout')}</h3><p>{t('R5 handoff 只终止 controller，rollout container 继续。R5 最终已有 128/128 attempts；恢复时没有重新消费 formal rollout，直接完成 post-rollout transaction。', 'The R5 handoff terminates only the controller while leaving the rollout container running. R5 ultimately has 128/128 attempts; recovery does not consume the formal rollout again and resumes the post-rollout transaction.')}</p><b>formal_rollout_replay = 0</b></div></li>
-      <li class="is-held"><span class="gdr-timeline__rail">4</span><div><small>{t('未经等价验证的 successor', 'unverified-equivalence successor')}</small><h3><code>e47595a0</code> · 4 GPUs × 5 workers/GPU</h3><p>{t('这不是单纯换 GPU：实际 diff 修改了 round driver、launcher、workers_per_gpu、shard layout，并加入 OMP_NUM_THREADS / MKL_NUM_THREADS / TOKENIZERS_PARALLELISM 环境。即使 task 与 seed 不变，也需要先证明行为等价。', 'This is not merely a GPU move. The actual diff changes the round driver, launcher, workers_per_gpu, shard layout, and OMP/MKL/tokenizer thread settings. Even with matched tasks and seeds, behavioral equivalence must be demonstrated first.')}</p><b>{t('未采用：最后核验的正式执行 lineage 仍是 90fa6eb4；5× successor 未获行为等价证明', 'NOT ADOPTED: the last verified formal execution lineage remains 90fa6eb4; the 5× successor lacks behavioral-equivalence evidence')}</b></div></li>
-    </ol>
-  </section>
-
-  <section class="gdr-section" id="engineering-lessons" aria-labelledby="engineering-lessons-title">
-    <p class="gdr-so-what">{t('所以呢？科研系统里「跑得更快」不是独立于科学问题的。每次 handoff 都要像数据库事务一样可核对。', 'So what? In a scientific system, “run it faster” is not automatically independent of the scientific question. Every handoff needs transaction-like evidence.')}</p>
-    <h2 id="engineering-lessons-title">{t('这次留下的六条工程规则', 'Six engineering rules from this incident')}</h2>
-    <ol class="gdr-rules">
-      <li><b>Resource optimization is not automatically scientifically neutral.</b><p>{t('资源优化必须证明没有改变 scientific semantics，而不是默认中立。', 'Resource optimization must demonstrate semantic neutrality; it cannot assume it.')}</p></li>
-      <li><b>{t('Controller handoff 必须是显式事务。', 'Controller handoff must be an explicit transaction.')}</b><p>old SHA · new SHA · state_id · next_round · rollouts_consumed · replay · Harness · sampling · transition policy</p></li>
-      <li><b>{t('不要相信标签，要看实际 diff。', 'Do not trust the label; inspect the actual diff.')}</b><p><code>scientific_semantics_changed=false</code> {t('只能是声明，不是证明。', 'is a claim, not proof.')}</p></li>
-      <li><b>{t('已有 rollout 不得因为 controller 重启而重复消费。', 'Existing rollouts must not be re-consumed after a controller restart.')}</b><p>{t('恢复点应该识别已经 materialized 的 128/128，再继续 post-rollout。', 'Recovery should recognize the already materialized 128/128 and continue post-rollout.')}</p></li>
-      <li><b>{t('历史 receipt 与当前 authority 分开。', 'Historical receipts and current authority are different.')}</b><p>{t('旧 READY 文件存在不代表 Ray pool 仍然 live；必须再检查 heartbeat / liveness。', 'An old READY file does not prove the Ray pool is live; heartbeat / liveness still matters.')}</p></li>
-      <li><b>{t('非标准 provenance receipt 不进入 seal 输入目录。', 'Non-standard provenance receipts stay out of seal inputs.')}</b><p>{t('否则可能训练完 160 rounds 才在 seal 阶段因为额外文件失败。', 'Otherwise a 160-round run can fail only at seal time because of an unexpected extra file.')}</p></li>
-    </ol>
-  </section>
-
-  <section class="gdr-section" id="known-unknown" aria-labelledby="known-unknown-title">
-    <p class="gdr-so-what">{t('现在多了一层证据：单个训练轮次的大跌不能直接当成整体遗忘；同一批题复测只看到较小的下降和任务得失交换。DirectApply 是否最终优于 GDR-v1 仍要等完整实验。', 'We now have another layer of evidence: a large single-round drop is not the same as global forgetting. The same-task diagnostic shows a smaller decline and task-level gains and losses. Whether DirectApply ultimately beats GDR-v1 remains unresolved.')}</p>
-    <h2 id="known-unknown-title">{t('Known / Unknown：我们现在知道什么 / 还不知道什么', 'Known / Unknown: what we know / what remains unknown')}</h2>
-    <div class="gdr-known-unknown">
-      <article class="is-known"><span>{t('KNOWN · 有证据', 'KNOWN · supported by evidence')}</span><ul>{known.map((item) => <li>{item}</li>)}</ul></article>
-      <article class="is-unknown"><span>{t('OPEN QUESTION · 等实验', 'OPEN QUESTION · pending experiment')}</span><ul>{unknown.map((item) => <li>{item}</li>)}</ul></article>
-    </div>
-  </section>
-
-  <section class="gdr-section" id="future" aria-labelledby="future-title">
-    <h2 id="future-title">{t('后继研究的边界', 'Boundary for successor research')}</h2>
-    <p>{t('已经明确的是机制层级：旧 GDR-v1 是 candidate admission gate；原始 Gated Delta Rule 是 recurrent state update；Task Vector 目前负责观察参数状态怎样移动，而不是直接控制 β / g。', 'The mechanism boundary is now clear: local GDR-v1 is a candidate-admission gate; the original Gated Delta Rule is a recurrent state update; and the Task Vector currently measures how parameter state moves rather than directly controlling β / g.')}</p>
-    <dl class="gdr-future-boundary">
-      <div><dt>{t('尚未冻结', 'Not frozen')}</dt><dd>{t('Agent learning event 怎样编码成 x，以及 S / K / V / β / g 怎样映射到 SD-LoRA 参数状态。', 'How an Agent learning event becomes x, and how S / K / V / β / g map to SD-LoRA parameter state.')}</dd></div>
-      <div><dt>{t('主要参考', 'Primary reference')}</dt><dd>{t('杨松霖的原始 Gated Delta Rule 与 Flash Linear Attention 实现。', 'Songlin Yang’s original Gated Delta Rule and the Flash Linear Attention implementation.')}</dd></div>
-      <div><dt>{t('后续可借鉴', 'Later references')}</dt><dd>{t('Gated DeltaNet-2 和其他 linear-attention state-update 变体可以提供设计线索，但不会反过来改变第一版“忠实原始 GDR”的定义。', 'Gated DeltaNet-2 and other linear-attention state-update variants may inform later design, but they do not redefine the first faithful-original-GDR target.')}</dd></div>
+  <section class="gdr-history__section" id="what-happened" aria-labelledby="what-happened-title">
+    <h2 id="what-happened-title">{t('历史 GDR-v1 训练了 44 个 candidate，只采用了 7 个', 'Historical GDR-v1 trained 44 candidates and adopted seven')}</h2>
+    <dl class="gdr-history__metrics">
+      <div><dt>{t('训练轮数', 'Rounds')}</dt><dd>{gdr.rounds}</dd></div>
+      <div><dt>{t('WebShop 尝试', 'WebShop attempts')}</dt><dd>{gdr.rollouts.toLocaleString('en-US')}</dd></div>
+      <div><dt>SD-LoRA candidates</dt><dd>{gdr.candidates}</dd></div>
+      <div><dt>{t('正式进入后续模型', 'Adopted updates')}</dt><dd>{gdr.accepted}</dd></div>
+      <div><dt>{t('采用比例', 'Admission rate')}</dt><dd>{gdr.acceptanceRate}</dd></div>
+      <div><dt>{t('R49 之后', 'After R49')}</dt><dd>{gdr.post49Candidates} candidates → {gdr.post49Accepted} adopted</dd></div>
     </dl>
-    <strong class="gdr-concept-label">{t('设计中 · 尚未执行新实验', 'UNDER DESIGN · NO NEW EXPERIMENT EXECUTED')}</strong>
+    <p>{t('R49 时累计已经有 28 个 candidate、7 次采用；之后又训练出 16 个 candidate，但采用次数没有再增加。这个事实说明旧 GDR-v1 的第二次筛选对长期学习轨迹影响很强，但它本身不能告诉我们被拒绝的 candidate 最终会不会变好。', 'By R49 there were already 28 candidates and seven admissions. Sixteen more candidates were trained afterward, but the admission count never increased. This shows that the second-stage screen strongly constrained the long-run learning path, but it cannot tell us whether rejected candidates would later have become useful.')}</p>
   </section>
 
-  <section class="gdr-section" id="technical-evidence" aria-labelledby="technical-evidence-title">
-    <p class="gdr-so-what">{t('所以呢？上面的故事可以先读懂；下面才是为了审计而保留的 SHA、路径和运行身份。', 'So what? The scientific story should be understandable first. SHAs, paths and execution identities live below for audit.')}</p>
-    <h2 id="technical-evidence-title">{t('Technical Evidence / Provenance', 'Technical Evidence / Provenance')}</h2>
-    <details class="gdr-details" data-testid="technical-provenance">
-      <summary>{t('展开 canonical artifacts 与 execution lineage', 'Expand canonical artifacts and execution lineage')}</summary>
-      <div class="gdr-provenance-grid">
-        <section><h3>GDR-v1 sealed source</h3><dl>
-          <dt>Capsule</dt><dd><code>mechanism1-source-capsule/qwen3-1p7b-ceiling-202609061600-audit1</code></dd>
-          <dt>Sealed state</dt><dd><code>identities/STAGE2_SEALED_qwen3-1p7b.json</code></dd>
-          <dt>Final counters</dt><dd><code>rounds=160 · rollouts=20480 · vnext_sd_candidate_generation_count=44 · parametric_sd_lora=7</code></dd>
-          <dt>R49 state-after</dt><dd><code>vnext_sd_candidate_generation_count=28 · vnext_candidate_accept_count=7</code></dd>
-          <dt>Raw R0 archive</dt><dd><code>miyuki17/openevo-stage2-archive-20260903 @ 360b9ec7…</code></dd>
-          <dt>Raw R0 archive SHA256</dt><dd><code>0c56eca29bddf90e46c2074a49ec2faef69a11bd99fad7e0c6607c7bc2e1a9a3</code></dd>
-        </dl></section>
-        <section><h3>DirectApply treatment</h3><dl>
-          <dt>Design source</dt><dd><code>88af1b80e761a74163a9a19ad34a06b51b4ab20a</code></dd>
-          <dt>Transition policy</dt><dd><code>DIRECT_APPLY_NO_GDR</code></dd>
-          <dt>R0 mean</dt><dd><code>0.3364082792207789</code></dd>
-          <dt>GDR transition calls</dt><dd><code>candidate_probe_calls=0 · acceptance_evaluations=0</code></dd>
-          <dt>Resource lineage</dt><dd><code>88af1b80 → d1a0252c → 90fa6eb4</code></dd>
-          <dt>Held 5× successor</dt><dd><code>e47595a0b2f6f2ce27af7303393fcccb70cfecb4</code></dd>
-        </dl></section>
-        <section><h3>Round-0 semantic comparison</h3><dl>
-          <dt>Cases compared</dt><dd><code>128 / 128</code></dd>
-          <dt>Exact fields</dt><dd><code>task_id · rollout_seed · worker_seed · per-step generation_seed · raw_completion · action · final_task_score · invalid flags</code></dd>
-          <dt>GDR task-vector norm</dt><dd><code>0.3315128741263799</code></dd>
-          <dt>DirectApply task-vector norm</dt><dd><code>0.330755458504799</code></dd>
-          <dt>Relative norm drift</dt><dd><code>0.2284724609%</code></dd>
-          <dt>Trainer seed</dt><dd><code>1993</code></dd>
-        </dl></section>
-        <section><h3>Historical live snapshot · 2026-09-07</h3><dl>
-          <dt>Verified at</dt><dd><code>{historicalSnapshot.verifiedAt}</code></dd>
-          <dt>Completed then</dt><dd><code>{historicalSnapshot.completedRounds}/160 rounds · {historicalSnapshot.rollouts}/{historicalSnapshot.totalRollouts} rollouts</code></dd>
-          <dt>Execution recorded then</dt><dd><code>{historicalSnapshot.execution}</code></dd>
-          <dt>Authority boundary</dt><dd>{t('本网页是 presentation layer；以上路径只用于核验，不授予、修改或重启任何实验。', 'This page is a presentation layer. These paths are evidence references; the site does not grant, modify, or restart experiment authority.')}</dd>
-        </dl></section>
-      </div>
-    </details>
-    <footer class="gdr-footer">
-      <p><strong>{t('历史运行快照', 'Historical run snapshot')}:</strong> <time datetime={historicalSnapshot.verifiedAt}>{historicalSnapshot.verifiedAt.replace('T', ' ').replace('Z', ' UTC')}</time></p>
-      <p>{t('这份 2026-09-07 进度只保留执行 lineage，不再代表当前进度。GDR-v1 数字来自 sealed capsule；2026-09-11 的同一批题复测是更新的行为证据。', 'The 2026-09-07 progress snapshot is retained only for execution lineage and is no longer current progress. GDR-v1 numbers come from the sealed capsule; the 2026-09-11 same-task result is newer behavioral evidence.')}</p>
-      <p>{t('网站修改只发生在 basemodel 的独立 worktree；没有写入 experiment output、Ray pool、Docker 或 experiment authority。', 'Website changes live only in an independent basemodel worktree; no experiment output, Ray pool, Docker resource, or experiment authority is modified by this page.')}</p>
-    </footer>
+  <section class="gdr-history__section" id="directapply-result" aria-labelledby="directapply-result-title">
+    <h2 id="directapply-result-title">{t('DirectApply 让 candidate 继续学习，但不能和旧 GDR final 直接相减', 'DirectApply let candidates continue, but its final cannot be subtracted from the historical GDR final')}</h2>
+    <p>{t(`DirectApply 后来跑完 ${directApplyFinal.sealedRounds} 轮、${directApplyFinal.formalRollouts.toLocaleString('en-US')} 次 WebShop 尝试，159 次 SD-LoRA candidate 都进入后续状态。训练结束后只打开一次冻结 128 题 final：Task Score ${directApplyFinal.finalScore.toFixed(2)} / 100，完整成功 ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount}。`, `DirectApply later completed ${directApplyFinal.sealedRounds} rounds and ${directApplyFinal.formalRollouts.toLocaleString('en-US')} WebShop attempts, with all 159 SD-LoRA candidates entering later states. After training it opened one frozen 128-task final: Task Score ${directApplyFinal.finalScore.toFixed(2)} / 100 with ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount} exact successes.`)}</p>
+    <p class="gdr-history__boundary">{t('历史 GDR final 与 DirectApply final 不是同一个冻结题集，因此旧 GDR 的 37.60 和 DirectApply 的 60.72 不能直接当成 gate 的因果效果。', 'The historical GDR final and the DirectApply final used different frozen panels, so historical GDR 37.60 versus DirectApply 60.72 is not a causal effect of the gate.')}</p>
+    <p class="gdr-history__links"><a href={directApplyFinalHref}>{t('查看 DirectApply 完整 R0–R159 曲线与 final →', 'Open the complete DirectApply R0–R159 trajectory and final →')}</a></p>
   </section>
+  <section class="gdr-history__section" id="diagnostic" aria-labelledby="diagnostic-title">
+    <h2 id="diagnostic-title">{t('同一批题复测说明：单轮大跌不等于同幅度整体遗忘', 'A same-task check showed that a large live-round drop is not the same as equal global forgetting')}</h2>
+    <p>{t('DirectApply 的 R127→R128 在不同训练题上看起来约 76.1→48.9；把两个 checkpoint 放到同一批 32 题上以后，是 63.58→59.41，完整成功 10 题→8 题。抽题差异解释了很大一部分表面波动，同时参数更新确实重新分配了少数任务的成败。', 'R127→R128 looked like roughly 76.1→48.9 on different training-task samples. On the same 32 tasks, the two checkpoints measured 63.58→59.41 with exact successes moving from 10 to 8. Task sampling explains much of the apparent swing, while the parameter update still reallocates success on a small number of tasks.')}</p>
+    <p class="gdr-history__boundary">{t('这项诊断只解释 DirectApply 内部一次 checkpoint 变化，不证明旧 GDR-v1 的 veto 一定错误，也不决定两种方法的最终胜负。', 'This diagnostic explains one checkpoint transition inside DirectApply. It does not prove that the historical GDR-v1 veto was always wrong, and it does not decide the final method comparison.')}</p>
+    <p class="gdr-history__links"><a href={q17DiagnosticsHref}>{t('查看 R127 / R128 固定同题诊断 →', 'Open the R127 / R128 same-task diagnostic →')}</a></p>
+  </section>
+
+  <section class="gdr-history__section" id="why-new-mechanism" aria-labelledby="why-new-mechanism-title">
+    <h2 id="why-new-mechanism-title">{t('这项旧实验留下的是一个机制问题', 'The old experiment left a mechanism question')}</h2>
+    <p>{t('本地 GDR-v1 回答的是“已经训练好的 candidate 要不要放行”，不是“参数 State 应该怎样连续更新”。因此旧实验保留原样；新的 Gated-Delta SD-LoRA 研究另开一页，从 recurrent State update 本身重新推导。', 'Local GDR-v1 answered whether an already-trained candidate should be admitted, not how parameter State should be updated continuously. The old experiment therefore stays intact, while the new Gated-Delta SD-LoRA work gets its own page and re-derives the recurrent State update itself.')}</p>
+    <a class="gdr-history__current gdr-history__current--end" href={currentGatedDeltaHref}>{t('进入当前 Gated-Delta SD-LoRA 推导 →', 'Open the current Gated-Delta SD-LoRA derivation →')}</a>
+  </section>
+
+  <details class="gdr-history__evidence">
+    <summary>{t('技术证据：历史运行的关键对齐与边界', 'Technical evidence: key historical alignment and boundaries')}</summary>
+    <dl>
+      <div><dt>GDR-v1</dt><dd><code>160 rounds · 20,480 rollouts · 44 candidates · 7 adopted</code></dd></div>
+      <div><dt>{t('R49 之后', 'After R49')}</dt><dd><code>16 candidates · 0 adopted</code></dd></div>
+      <div><dt>Round 0</dt><dd>{t('DirectApply 与 GDR-v1 的 128 个 rollout case 在 task / seed / completion / action / reward / invalid 上逐一语义匹配；adapter bytes 不是 bitwise-identical。', 'DirectApply and GDR-v1 matched semantically case-by-case across all 128 Round-0 rollouts for task / seed / completion / action / reward / invalid; adapter bytes were not bitwise-identical.')}</dd></div>
+      <div><dt>{t('比较边界', 'Comparison boundary')}</dt><dd>{t('两条线没有同一个 frozen final panel，因此没有最终 paired method effect。', 'The two lines do not share one frozen final panel, so there is no final paired method effect.')}</dd></div>
+    </dl>
+  </details>
 </article>
-
 <style>
-.gdr-page{width:min(1160px,calc(100% - 2rem));margin:1.5rem auto 5rem;color:var(--ink);font-size:1rem;line-height:1.7;overflow-wrap:anywhere}.gdr-page *{box-sizing:border-box}.gdr-page small{font-size:1rem}.gdr-hero{padding:1rem 0 3rem}.gdr-back{display:inline-flex;min-height:44px;align-items:center;color:var(--accent-deep);font-weight:700;text-underline-offset:.2em}.gdr-page h1{max-width:19ch;margin:1.1rem 0 0;font-size:clamp(2.25rem,5.5vw,4.35rem);line-height:1.08;letter-spacing:-.045em}.gdr-lede{max-width:52rem;margin:1.25rem 0 0;font-size:clamp(1.05rem,1.8vw,1.28rem);line-height:1.75;color:var(--ink)}.gdr-glossary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;max-width:52rem;margin:1rem 0 0}.gdr-glossary>div{padding:.75rem .85rem;border-left:3px solid var(--line);background:var(--surface-muted)}.gdr-glossary dt{font-weight:850}.gdr-glossary dd{margin:.15rem 0 0;color:var(--ink);font-size:1rem;line-height:1.55}.gdr-mechanism-link{margin:.75rem 0 0;font-size:1rem}.gdr-mechanism-link a{color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}.gdr-answer{margin:1.7rem 0 1.25rem;padding:1.15rem 1.25rem;border:1px solid var(--line);border-left:5px solid var(--accent-deep);border-radius:var(--radius-panel);background:var(--surface-muted);box-shadow:0 14px 36px rgb(0 0 0/.045)}.gdr-answer>strong{display:block;margin:0;font-size:clamp(1.16rem,2.2vw,1.55rem);line-height:1.4}.gdr-answer p{margin:.25rem 0 0;color:var(--ink)}.gdr-metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.7rem;margin:1rem 0 1.35rem}.gdr-metrics>div{min-width:0;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-metrics dt{font-size:1rem;font-weight:800;color:var(--muted);line-height:1.35}.gdr-metrics dd{margin:.35rem 0 0;font-size:clamp(1.45rem,2.5vw,2rem);font-weight:850;line-height:1.1;letter-spacing:-.03em}.gdr-metrics .is-candidate{border-top:4px solid var(--color-warning)}.gdr-metrics .is-accepted{border-top:4px solid var(--accent-deep)}.gdr-funnel{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(140px,.62fr) minmax(0,.78fr);align-items:stretch;gap:.75rem;margin:1.5rem 0}.gdr-funnel>div{display:flex;flex-direction:column;justify-content:center;min-height:116px;padding:1rem 1.15rem;border-radius:var(--radius-feature)}.gdr-funnel__candidate{background:var(--surface-muted);border:1px solid var(--line)}.gdr-funnel__gate{align-items:center;text-align:center;border:1px dashed var(--color-warning);background:color-mix(in srgb,var(--surface) 88%,var(--color-warning))}.gdr-funnel__accepted{background:color-mix(in srgb,var(--surface) 88%,var(--accent));border:1px solid var(--accent-deep)}.gdr-funnel b{font-size:2.3rem;line-height:1}.gdr-funnel span{font-weight:750}.gdr-funnel small{margin-top:.25rem;color:var(--ink)}.gdr-funnel figcaption{grid-column:1/-1;color:var(--muted);font-size:1rem;line-height:1.6}.gdr-evidence{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.2rem;align-items:end;padding:1rem 0 1rem 1.1rem;border-left:4px solid var(--accent-deep)}.gdr-evidence .gdr-evidence__meta{margin:0;color:var(--muted);font-size:1rem;font-weight:750;line-height:1.4}.gdr-evidence strong{display:block;margin:.2rem 0;font-size:clamp(1.18rem,2vw,1.5rem);line-height:1.35}.gdr-evidence p{max-width:52rem;margin:.35rem 0 0;color:var(--muted);font-size:1rem}.gdr-evidence .gdr-evidence__boundary{color:var(--ink)}.gdr-evidence>a{display:inline-flex;align-items:center;min-height:44px;color:var(--accent-deep);font-weight:800;text-underline-offset:.2em}.gdr-section{padding:3.6rem 0;border-top:1px solid var(--line)}.gdr-section h2{max-width:28ch;margin:.4rem 0 1.35rem;font-size:clamp(1.75rem,3vw,2.6rem);line-height:1.16;letter-spacing:-.035em}.gdr-so-what{max-width:51rem;margin:0;color:var(--accent-deep);font-size:1rem;font-weight:800;line-height:1.65}.gdr-flow-compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.gdr-flow{margin:0;padding:1.2rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface);box-shadow:0 12px 32px rgb(0 0 0/.035)}.gdr-flow figcaption{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding-bottom:1rem;border-bottom:1px solid var(--line)}.gdr-flow figcaption b{font-size:1.35rem}.gdr-flow figcaption span{font-size:1rem;color:var(--muted);text-align:right}.gdr-flow ol{list-style:none;padding:0;margin:1rem 0 0;display:grid;gap:.55rem}.gdr-flow li{display:grid;grid-template-columns:2rem 1fr;gap:.7rem;align-items:center;padding:.75rem;border:1px solid var(--line);border-radius:var(--radius-panel);position:relative}.gdr-flow li:not(:last-child)::after{content:'↓';position:absolute;bottom:-.75rem;left:1.3rem;z-index:2;color:var(--muted);font-weight:900}.gdr-flow li>span{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;background:var(--surface-muted);font-weight:850}.gdr-flow strong,.gdr-flow small{display:block}.gdr-flow small{margin-top:.1rem;color:var(--muted);line-height:1.45}.gdr-flow .is-gate{border-color:var(--color-warning);background:color-mix(in srgb,var(--surface) 93%,var(--color-warning))}.gdr-flow .is-contract{border-color:var(--color-success);background:color-mix(in srgb,var(--surface) 93%,var(--color-success))}.gdr-safety{margin-top:1rem;padding:1.2rem;border:1px solid var(--color-success);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 96%,var(--color-success))}.gdr-safety>div{display:flex;gap:.6rem;align-items:center}.gdr-safety>div span{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;background:var(--color-success);color:white;font-size:1.2rem;font-weight:900}.gdr-safety>div strong{font-size:1.18rem}.gdr-safety p{max-width:53rem;margin:.7rem 0}.gdr-safety ul{display:flex;flex-wrap:wrap;gap:.45rem;padding:0;margin:.7rem 0 0;list-style:none}.gdr-safety li{padding:.35rem .6rem;border-radius:999px;background:var(--surface);border:1px solid var(--line);font:700 1rem/1.35 var(--font-mono)}.gdr-section-lede{max-width:55rem;margin:-.35rem 0 1.35rem;color:var(--ink);font-size:1.05rem;line-height:1.72}.gdr-mechanism-table{max-width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-mechanism-table:focus-visible{outline:2px solid var(--accent-deep);outline-offset:3px}.gdr-mechanism-table table{width:100%;min-width:760px;border-collapse:collapse}.gdr-mechanism-table th,.gdr-mechanism-table td{padding:.85rem .95rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);font-size:1rem}.gdr-mechanism-table thead{background:var(--surface-muted)}.gdr-mechanism-table tbody th{width:11rem;font-weight:850}.gdr-mechanism-table tr:last-child>*{border-bottom:0}.gdr-original-rule{max-width:56rem;margin:1.25rem 0;padding:1.2rem;border-left:4px solid var(--accent-deep);background:var(--surface-muted)}.gdr-rule-input{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem 1rem}.gdr-rule-input span{color:var(--muted);font-weight:800}.gdr-rule-input strong{font:800 1.05rem/1.4 var(--font-mono)}.gdr-rule-equations{display:grid;gap:.4rem;margin:1rem 0}.gdr-rule-equations code{display:block;padding:.65rem .75rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface);font-size:clamp(.92rem,1.7vw,1.05rem);overflow-wrap:anywhere}.gdr-original-rule figcaption{color:var(--muted);font-size:1rem;line-height:1.6}.gdr-task-vector{max-width:56rem;margin:1.3rem 0;padding:1.1rem 1.2rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-task-vector h3{margin:0 0 .45rem;font-size:1.25rem}.gdr-task-vector p{margin:.45rem 0;line-height:1.68}.gdr-task-vector__boundary{font-weight:700}.gdr-reference-links{display:flex;flex-wrap:wrap;gap:.55rem 1rem;margin-top:1rem}.gdr-reference-links a{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}.gdr-reference-links code{font-size:.9em}.gdr-future-boundary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin:1.1rem 0}.gdr-future-boundary>div{padding:1rem;border-top:3px solid var(--line);background:var(--surface-muted)}.gdr-future-boundary dt{font-weight:850}.gdr-future-boundary dd{margin:.35rem 0 0;color:var(--muted);line-height:1.6}.gdr-problems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}.gdr-problems article{padding:1.15rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-problems article>span{color:var(--accent-deep);font:850 1rem/1 var(--font-mono)}.gdr-problems h3{margin:.55rem 0 .35rem;font-size:1.18rem}.gdr-problems p{margin:0;color:var(--muted);line-height:1.65}.gdr-horizon{margin:1.2rem 0 0;padding:1.15rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface-muted)}.gdr-horizon__chart{width:100%;overflow:hidden}.gdr-horizon svg{display:block;width:100%;height:auto;max-height:320px}.gdr-horizon .axis{stroke:var(--muted);stroke-width:1.2}.gdr-horizon .incumbent{stroke:var(--ink);stroke-width:2;stroke-dasharray:7 7}.gdr-horizon .challenger{fill:none;stroke:var(--accent-deep);stroke-width:4;stroke-linecap:round}.gdr-horizon .point{fill:var(--surface);stroke:var(--accent-deep);stroke-width:4}.gdr-horizon text{fill:var(--muted);font:700 16px/1 var(--font-sans)}.gdr-horizon figcaption{max-width:52rem;margin-top:.7rem;color:var(--ink);line-height:1.6}.gdr-horizon figcaption strong{color:var(--ink)}.gdr-generations{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);gap:.7rem;align-items:stretch}.gdr-generations article{padding:1.15rem;border-radius:var(--radius-feature);border:1px solid var(--line);background:var(--surface)}.gdr-generations article>span{font-size:1rem;font-weight:850;color:var(--muted)}.gdr-generations h3{margin:.45rem 0 .15rem;font-size:1.35rem}.gdr-generations p{margin:.2rem 0}.gdr-generations small{display:block;margin-top:.6rem;color:var(--muted)}.gdr-generations .is-running{border-color:var(--accent-deep);box-shadow:inset 0 4px 0 var(--accent-deep)}.gdr-generations .is-future{border-style:dashed}.gdr-generation-arrow{display:grid;place-items:center;color:var(--muted);font-size:1.4rem}.gdr-question{display:grid;gap:.3rem;max-width:53rem;padding:1.1rem 1.2rem;border-left:4px solid var(--accent-deep);background:var(--surface-muted)}.gdr-question span{font-size:1rem;color:var(--accent-deep);font-weight:850}.gdr-question strong{font-size:1.18rem}.gdr-control-table{max-width:100%;margin-top:1rem;overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-control-table:focus-visible{outline:2px solid var(--accent-deep);outline-offset:3px}.gdr-control-table table{width:100%;min-width:760px;border-collapse:collapse}.gdr-control-table th,.gdr-control-table td{padding:.78rem .9rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);font-size:1rem}.gdr-control-table thead{background:var(--surface-muted)}.gdr-control-table tbody th{font-weight:800}.gdr-control-table tr:last-child>*{border-bottom:0}.gdr-control-table tr.treatment{background:color-mix(in srgb,var(--surface) 90%,var(--accent))}.gdr-match-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}.gdr-match-grid>div{display:flex;flex-direction:column;min-height:122px;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-match-grid strong{font-size:1.35rem;line-height:1.2}.gdr-match-grid span{margin-top:auto;font-weight:750}.gdr-match-grid small{color:var(--color-success);font-weight:800}.gdr-match-grid .is-mean strong{font-size:1rem;overflow-wrap:anywhere}.gdr-adapter-drift{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;margin-top:.65rem;padding:1rem;border:1px dashed var(--color-warning);border-radius:var(--radius-feature)}.gdr-adapter-drift>div{min-width:0}.gdr-adapter-drift span,.gdr-adapter-drift b{display:block}.gdr-adapter-drift span{font-size:1rem;color:var(--muted)}.gdr-adapter-drift b{font:800 1rem/1.4 var(--font-mono)}.gdr-adapter-drift p{grid-column:1/-1;margin:.3rem 0 0;color:var(--muted)}.gdr-warning{display:inline-block;margin:.8rem 0 0;padding:.55rem .75rem;border-radius:var(--radius-panel);background:color-mix(in srgb,var(--surface) 87%,var(--color-warning));font-size:1rem}.gdr-timeline{list-style:none;margin:0;padding:0;display:grid;gap:.8rem;position:relative}.gdr-timeline::before{content:'';position:absolute;left:1.35rem;top:1rem;bottom:1rem;border-left:2px solid var(--line)}.gdr-timeline li{display:grid;grid-template-columns:2.7rem 1fr;gap:.8rem;position:relative}.gdr-timeline__rail{display:grid;place-items:center;align-self:start;width:2.7rem;height:2.7rem;border-radius:50%;background:var(--surface);border:2px solid var(--line);font-weight:900;z-index:1}.gdr-timeline li>div{padding:1rem 1.1rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-timeline small{font-weight:850;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.gdr-timeline h3{margin:.3rem 0;font-size:1.12rem}.gdr-timeline p{max-width:55rem;margin:.35rem 0;color:var(--muted)}.gdr-timeline li>div>b{display:inline-block;margin-top:.4rem;color:var(--accent-deep)}.gdr-timeline .is-safe .gdr-timeline__rail{border-color:var(--color-success)}.gdr-timeline .is-held .gdr-timeline__rail{border-color:var(--color-warning)}.gdr-timeline .is-held>div{border-style:dashed;border-color:var(--color-warning)}.gdr-rules{counter-reset:rules;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;padding:0;margin:0}.gdr-rules li{padding:1rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-rules li::before{counter-increment:rules;content:'RULE ' counter(rules,decimal-leading-zero);display:block;margin-bottom:.5rem;color:var(--accent-deep);font:850 1rem/1 var(--font-mono)}.gdr-rules b{line-height:1.4}.gdr-rules p{margin:.4rem 0 0;color:var(--muted);line-height:1.55}.gdr-known-unknown{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}.gdr-known-unknown article{padding:1.1rem;border:1px solid var(--line);border-radius:var(--radius-feature)}.gdr-known-unknown article>span{font:850 1rem/1.2 var(--font-mono);letter-spacing:.03em}.gdr-known-unknown ul{padding-left:1.2rem;margin:.9rem 0 0}.gdr-known-unknown li{margin:.55rem 0}.gdr-known-unknown .is-known{border-color:var(--color-success);background:color-mix(in srgb,var(--surface) 96%,var(--color-success))}.gdr-known-unknown .is-unknown{border-color:var(--color-warning);background:color-mix(in srgb,var(--surface) 96%,var(--color-warning))}.gdr-future-flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem}.gdr-future-flow>div{display:flex;flex-direction:column;gap:.25rem;padding:1rem;border:1px dashed var(--line);border-radius:var(--radius-feature)}.gdr-future-flow .is-probation{border-color:var(--accent-deep);background:var(--surface-muted)}.gdr-future-flow span{color:var(--ink)}.gdr-concept-label{display:inline-block;margin-top:.5rem;color:var(--muted);font:850 1rem/1.3 var(--font-mono)}.gdr-details{border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.gdr-details summary{display:list-item;min-height:48px;padding:1rem 1.1rem;cursor:pointer;font-weight:850}.gdr-details summary:focus-visible{outline:2px solid var(--accent-deep);outline-offset:3px}.gdr-details[open] summary{border-bottom:1px solid var(--line)}.gdr-provenance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;padding:1rem}.gdr-provenance-grid section{min-width:0;padding:.9rem;background:var(--surface-muted);border-radius:var(--radius-panel)}.gdr-provenance-grid h3{margin:0 0 .7rem;font-size:1rem}.gdr-provenance-grid dl{margin:0}.gdr-provenance-grid dt{font-size:1rem;font-weight:850;color:var(--muted)}.gdr-provenance-grid dd{margin:.1rem 0 .7rem;font-size:1rem}.gdr-provenance-grid code{white-space:normal;overflow-wrap:anywhere}.gdr-footer{max-width:55rem;margin-top:1rem;color:var(--muted);font-size:1rem}.gdr-footer p{margin:.35rem 0}.gdr-page a:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}@media(prefers-reduced-motion:reduce){.gdr-horizon .point{animation:none}}@media(max-width:900px){.gdr-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.gdr-flow-compare,.gdr-problems,.gdr-known-unknown,.gdr-future-boundary{grid-template-columns:1fr}.gdr-generations{grid-template-columns:1fr}.gdr-generation-arrow{transform:rotate(90deg);min-height:1.2rem}.gdr-match-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.gdr-provenance-grid{grid-template-columns:1fr}}@media(max-width:640px){.gdr-page{width:calc(100% - 1.4rem);margin-top:.5rem}.gdr-hero{padding-bottom:2.4rem}.gdr-page h1{font-size:2.35rem}.gdr-lede{font-size:1.02rem}.gdr-glossary{grid-template-columns:1fr}.gdr-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.gdr-metrics>div{padding:.8rem}.gdr-funnel{grid-template-columns:1fr}.gdr-funnel>div{min-height:auto}.gdr-funnel__gate{min-height:80px}.gdr-funnel figcaption{grid-column:auto}.gdr-evidence{grid-template-columns:1fr;gap:.4rem;padding-left:.8rem}.gdr-section{padding:2.7rem 0}.gdr-flow{padding:.8rem}.gdr-control-table,.gdr-mechanism-table{overflow:visible;border:0;background:transparent}.gdr-control-table table,.gdr-mechanism-table table{min-width:0}.gdr-control-table thead,.gdr-mechanism-table thead{display:none}.gdr-control-table tbody,.gdr-control-table tr,.gdr-control-table th,.gdr-control-table td,.gdr-mechanism-table tbody,.gdr-mechanism-table tr,.gdr-mechanism-table th,.gdr-mechanism-table td{display:block;width:100%}.gdr-control-table tr,.gdr-mechanism-table tr{margin:0 0 .55rem;padding:.7rem .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface)}.gdr-control-table th,.gdr-control-table td,.gdr-mechanism-table th,.gdr-mechanism-table td{padding:.2rem 0;border:0}.gdr-control-table th{font-size:1rem}.gdr-control-table td{color:var(--muted);font-size:1rem}.gdr-control-table td:first-of-type::before{content:'对齐 / Match · ';font-weight:800;color:var(--ink)}.gdr-control-table td:last-of-type::before{content:'角色 / Role · ';font-weight:800;color:var(--ink)}.gdr-control-table tr.treatment{border-color:var(--accent-deep);background:color-mix(in srgb,var(--surface) 92%,var(--accent))}.gdr-flow figcaption{display:grid}.gdr-flow figcaption span{text-align:left}.gdr-problems{grid-template-columns:1fr}.gdr-horizon{padding:.7rem}.gdr-horizon text{font-size:18px}.gdr-match-grid{grid-template-columns:1fr}.gdr-adapter-drift{grid-template-columns:1fr}.gdr-adapter-drift p{grid-column:auto}.gdr-rules{grid-template-columns:1fr}.gdr-future-flow{grid-template-columns:1fr}.gdr-timeline li{grid-template-columns:2.5rem 1fr}.gdr-timeline__rail{width:2.5rem;height:2.5rem}.gdr-timeline::before{left:1.25rem}.gdr-provenance-grid{padding:.7rem}}@media print{.gdr-page{width:100%;margin:0}.gdr-horizon .point{animation:none}.gdr-details{break-inside:avoid}.gdr-details:not([open])>*:not(summary){display:block}}
+.gdr-history{width:min(980px,calc(100% - 2rem));margin:0 auto;padding:2.3rem 0 5rem;color:var(--text)}
+.gdr-history__hero{padding:1rem 0 2.2rem;border-bottom:1px solid var(--line)}
+.gdr-history__back,.gdr-history__current,.gdr-history__links a{color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}
+.gdr-history__hero h1{margin:.9rem 0 .8rem;font-size:clamp(2.5rem,6vw,4.6rem);line-height:1;letter-spacing:-.04em}
+.gdr-history__lede{max-width:52rem;margin:0;font-size:clamp(1.2rem,2.4vw,1.55rem);line-height:1.65}
+.gdr-history__current{display:inline-flex;margin-top:1rem}.gdr-history__current--end{margin-top:.5rem}
+.gdr-history__section{padding:2.6rem 0;border-bottom:1px solid var(--line)}
+.gdr-history__section h2{max-width:46rem;margin:0 0 .8rem;font-size:clamp(1.75rem,3.8vw,2.5rem);line-height:1.15;letter-spacing:-.02em}
+.gdr-history__section>p{max-width:50rem;margin:.75rem 0;font-size:1.06rem;line-height:1.72}
+.gdr-history__boundary{padding-left:1rem;border-left:3px solid var(--accent-deep);font-weight:650}
+.gdr-history__compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1.4rem}
+.gdr-history__compare figure{margin:0;padding:1rem;border-top:2px solid var(--line);background:var(--surface-muted)}
+.gdr-history__compare figcaption{display:grid;gap:.18rem;margin-bottom:.8rem}.gdr-history__compare figcaption strong{font-size:1.1rem}.gdr-history__compare figcaption span{color:var(--muted);font-size:1rem}
+.gdr-history__compare ol{list-style:none;margin:0;padding:0}.gdr-history__compare li{display:grid;grid-template-columns:2rem 1fr;gap:.55rem;padding:.55rem 0;border-top:1px solid var(--line)}
+.gdr-history__compare li b{font:800 .9rem/1.4 var(--font-mono);color:var(--accent-deep)}.gdr-history__compare li span{line-height:1.5}
+.gdr-history__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.2rem 0 1rem;border-block:1px solid var(--line)}
+.gdr-history__metrics>div{padding:.85rem 1rem;border-right:1px solid var(--line)}.gdr-history__metrics>div:nth-child(3n){border-right:0}.gdr-history__metrics dt{color:var(--muted);font-size:.9rem}.gdr-history__metrics dd{margin:.2rem 0 0;font-size:1.35rem;font-weight:800}
+.gdr-history__evidence{margin-top:2rem;border-block:1px solid var(--line)}.gdr-history__evidence summary{padding:1rem 0;cursor:pointer;color:var(--accent-deep);font-weight:750}.gdr-history__evidence dl{margin:0 0 1rem}.gdr-history__evidence dl>div{display:grid;grid-template-columns:10rem 1fr;gap:1rem;padding:.6rem 0;border-top:1px solid var(--line)}.gdr-history__evidence dt{font-weight:800}.gdr-history__evidence dd{margin:0;line-height:1.55}.gdr-history code{overflow-wrap:anywhere}
+@media(max-width:760px){.gdr-history{width:min(100% - 1rem,980px);padding-top:1.2rem}.gdr-history__compare,.gdr-history__metrics{grid-template-columns:1fr}.gdr-history__metrics>div{border-right:0;border-bottom:1px solid var(--line)}.gdr-history__metrics>div:last-child{border-bottom:0}.gdr-history__evidence dl>div{grid-template-columns:1fr;gap:.2rem}}
 </style>

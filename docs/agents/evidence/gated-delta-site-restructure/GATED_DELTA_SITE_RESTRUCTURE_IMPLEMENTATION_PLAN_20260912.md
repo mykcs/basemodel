@@ -371,56 +371,56 @@ Capability lobby 需要同时让读者看见“历史 GDR-v1 / DirectApply”与
 
 ### Phase B — reader contract / HPL before UI
 
-- [ ] B1. 为新 `gated-delta-sd-lora/` route 创建 Reader Contract，并把旧 `capability-gdr` contract 收缩为历史实验职责。
-- [ ] B2. 运行 repository-owned preference brief/retrieval，保存 task-local receipt，不把临时路径写进 public copy。
-- [ ] B3. 形成 2–3 个内部表达方案并完成 pairwise screening；选定一个后才开始完整实现。
+- [x] B1. 为新 `gated-delta-sd-lora/` route 创建 Reader Contract，并把旧 `capability-gdr` contract 收缩为历史实验职责。
+- [x] B2. 运行 repository-owned preference brief/retrieval，保存 task-local receipt，不把临时路径写进 public copy。
+- [x] B3. 形成 2–3 个内部表达方案并完成 pairwise screening；选定一个后才开始完整实现。
 
 ### Phase C — current mechanism canonical page
 
-- [ ] C1. 新建 `gatedDeltaSdLoraPublicationSnapshot.ts`，绑定 scientific source branch/head/checkedAt/status/links。
-- [ ] C2. 新建 `OpenEvoGatedDeltaSdLoraExplainer.astro`，实现首屏概念纠正。
-- [ ] C3. 实现原始 Gated Delta recurrence 图。
-- [ ] C4. 实现 Task Vector runtime-boundary 段。
-- [ ] C5. 实现按认知转折压缩后的 derivation timeline，并给每个节点 claim-local evidence `<details>`。
-- [ ] C6. 实现当前 factor-state runtime picture 与 D1 boundary。
-- [ ] C7. 新建 zh/en route 与 metadata。### Phase D — historical page separation
+- [x] C1. 新建 `gatedDeltaSdLoraPublicationSnapshot.ts`，绑定 scientific source branch/head/checkedAt/status/links。
+- [x] C2. 新建 `OpenEvoGatedDeltaSdLoraExplainer.astro`，实现首屏概念纠正。
+- [x] C3. 实现原始 Gated Delta recurrence 图。
+- [x] C4. 实现 Task Vector runtime-boundary 段。
+- [x] C5. 实现按认知转折压缩后的 derivation timeline，并给每个节点 claim-local evidence `<details>`。
+- [x] C6. 实现当前 factor-state runtime picture 与 D1 boundary。
+- [x] C7. 新建 zh/en route 与 metadata。### Phase D — historical page separation
 
-- [ ] D1. 收缩 `OpenEvoGdrDirectApplyExplainer.astro`：保留旧 GDR-v1 / DirectApply 科学事实，移除 current Gated-Delta 完整推导。
-- [ ] D2. 移除/下沉 Ray/GPU/controller handoff 与工程经验等非核心历史实验内容；若仍需保留审计入口，只允许 compact technical disclosure / external provenance link。
-- [ ] D3. 修改 zh/en historical route metadata；顶部加入清晰的 current mechanism canonical link。
-- [ ] D4. 确认历史数字、final-panel boundary 与原有 source provenance 没有被“为了简化”改写。
+- [x] D1. 收缩 `OpenEvoGdrDirectApplyExplainer.astro`：保留旧 GDR-v1 / DirectApply 科学事实，移除 current Gated-Delta 完整推导。
+- [x] D2. 移除/下沉 Ray/GPU/controller handoff 与工程经验等非核心历史实验内容；若仍需保留审计入口，只允许 compact technical disclosure / external provenance link。
+- [x] D3. 修改 zh/en historical route metadata；顶部加入清晰的 current mechanism canonical link。
+- [x] D4. 确认历史数字、final-panel boundary 与原有 source provenance 没有被“为了简化”改写。
 
 ### Phase E — discovery / sibling consistency
 
-- [ ] E1. 更新 `capabilityReaderRoutes.ts`、Capability lobby 与 sitemap。
-- [ ] E2. 更新 Vanilla SD-LoRA / Q17 analysis / frontier 等链接，让 historical admission 与 current mechanism 各指向正确 owner。
-- [ ] E3. 审计 briefing / technical notes 的 current-facing GDR 句子；只修 stale current claim，不重写 dated history。
-- [ ] E4. 全仓搜索 `gdr-directapply`, `GDR-v1`, `Gated Delta Rule`, `Task Vector`, `β`, `g=`，确认没有第二个完整 owner 或过时 current claim。
+- [x] E1. 更新 `capabilityReaderRoutes.ts`、Capability lobby 与 sitemap。
+- [x] E2. 更新 Vanilla SD-LoRA / Q17 analysis / frontier 等链接，让 historical admission 与 current mechanism 各指向正确 owner。
+- [x] E3. 审计 briefing / technical notes 的 current-facing GDR 句子；只修 stale current claim，不重写 dated history。
+- [x] E4. 全仓搜索 `gdr-directapply`, `GDR-v1`, `Gated Delta Rule`, `Task Vector`, `β`, `g=`，确认没有第二个完整 owner 或过时 current claim。
 
 ### Phase F — source / structural validation
 
-- [ ] F1. `git diff --check` PASS。
-- [ ] F2. `npm run check` PASS，0 errors。
-- [ ] F3. focused structural/unit tests PASS，包括新 route ownership / scientific polarity / snapshot provenance。
-- [ ] F4. `npm run audit:copy:strict` 0 invariant failures。
-- [ ] F5. `npm run audit:reader-contracts` PASS；所有新增公开 route 都有 contract。
-- [ ] F6. `npm run audit:human-feedback` PASS。
-- [ ] F7. `npm run preflight:ui:plan`，按实际 risk 执行 repository-owned pre-provider Gate，不手工挑轻量测试来规避 full/shared classification。
+- [x] F1. `git diff --check` PASS。
+- [x] F2. `npm run check` PASS，0 errors。
+- [x] F3. focused structural/unit tests PASS，包括新 route ownership / scientific polarity / snapshot provenance。
+- [x] F4. `npm run audit:copy:strict` 0 invariant failures。
+- [x] F5. `npm run audit:reader-contracts` PASS；所有新增公开 route 都有 contract。
+- [x] F6. `npm run audit:human-feedback` PASS。
+- [x] F7. `npm run preflight:ui:plan`，按实际 risk 执行 repository-owned pre-provider Gate，不手工挑轻量测试来规避 full/shared classification。
 
 ### Phase G — browser / visual acceptance
 
-- [ ] G1. 中文 + 英文 current page 在 390 / 768 / 1440px 检查 page-level overflow、长公式、evidence disclosure、connector geometry。
-- [ ] G2. 中文 + 英文 historical page 同样检查 390 / 768 / 1440px，确认删减后没有新的空洞或视觉漂移。
-- [ ] G3. light / dark theme 都通过；颜色不能承担唯一语义。
-- [ ] G4. Chromium + WebKit 覆盖 current page 和 historical page 的核心 layout / navigation / disclosure。
-- [ ] G5. reduced-motion 下两张机制图仍然完整表达方向；JS 禁用时静态 HTML 仍可理解核心机制。
-- [ ] G6. Reader Contract first-viewport budget 在 desktop 1280×633 与 phone 390×844 都 PASS，且不是靠 `100vh` 空白作弊。
-- [ ] G7. 做人工/Agent Phase A blind cold read：5–10 秒内回答“这页讲什么、最重要事实、下一步去哪”；保存 receipt。
+- [x] G1. 中文 + 英文 current page 在 390 / 768 / 1440px 检查 page-level overflow、长公式、evidence disclosure、connector geometry。
+- [x] G2. 中文 + 英文 historical page 同样检查 390 / 768 / 1440px，确认删减后没有新的空洞或视觉漂移。
+- [x] G3. light / dark theme 都通过；颜色不能承担唯一语义。
+- [x] G4. Chromium + WebKit 覆盖 current page 和 historical page 的核心 layout / navigation / disclosure。
+- [x] G5. reduced-motion 下两张机制图仍然完整表达方向；JS 禁用时静态 HTML 仍可理解核心机制。
+- [x] G6. Reader Contract first-viewport budget 在 desktop 1280×633 与 phone 390×844 都 PASS，且不是靠 `100vh` 空白作弊。
+- [x] G7. 做人工/Agent Phase A blind cold read：5–10 秒内回答“这页讲什么、最重要事实、下一步去哪”；保存 receipt。
 
 ### Phase H — exact-head publication
 
-- [ ] H1. 发布前再次刷新 BaseModel `main` 与 upstream Gated-Delta scientific head；若 scientific state 前进，只更新 current snapshot / current-facing copy，不篡改历史页面。
-- [ ] H2. rebase / reconcile current `main` 只在语义兼容时进行；遇到 overlapping research-page PR 先 cold-read semantic delta。
+- [x] H1. 发布前再次刷新 BaseModel `main` 与 upstream Gated-Delta scientific head；若 scientific state 前进，只更新 current snapshot / current-facing copy，不篡改历史页面。
+- [x] H2. rebase / reconcile current `main` 只在语义兼容时进行；遇到 overlapping research-page PR 先 cold-read semantic delta。
 - [ ] H3. commit/push final candidate；PR body 写清 Page Expression Brief、route ownership、scientific source head、validation evidence。
 - [ ] H4. ordinary public GitHub Actions PR preflight PASS。
 - [ ] H5. owner 需要视觉复核时先用 review-only Preview；只有 merge-ready candidate 才触发 `ci/vercel-gate-final`。
@@ -467,3 +467,56 @@ Capability lobby 需要同时让读者看见“历史 GDR-v1 / DirectApply”与
 - Gated-Delta scientific branch：`research/gated-delta-sd-lora-event-write-202609120918`，首次刷新 exact head `4dc70ccbfe52d25863461bb3be34c16da8efa291`。
 - 截止计划 first commit 前，**没有任何 `src/` 页面代码修改**；第一个 commit 必须只包含本计划文件。
 - A4 durable checkpoint：`0bfdb1a69ae90a8a8701d0ac65b563596715d06b`，已 push 到 `origin/research/gated-delta-page-restructure-20260912`；该 commit 只包含本计划文件。
+
+
+### Final local acceptance refresh — 2026-09-13
+
+- BaseModel intended base after freshness rebase: `main@1a3863780e06ade8397260505ce0d8716a31dea8`.
+- Upstream Gated-Delta scientific branch refreshed to `3ee2d3d2d75d456641b248ca8049d6aa6557506e`; newest Round-0 identity-noop recovery explicitly records `science_semantics_changed=false`, so the public claim remains: **Route S real execution proved; full paired D1 not complete; no efficacy claim**.
+- Current canonical owner: `/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/`.
+- Historical owner: `/research/seed-openevo/study/capability-exploration/gdr-directapply/`.
+- HPL selected Candidate A (single vertical research narrative) over Candidate B (equal-weight card grid); durable receipt: `preference-candidates.json`.
+- Blind cold-read feedback was executed twice and used to promote the experiment-status boundary, remove internal D0/status-code prose from the mainline, and replace jargon-heavy headings; provider-side follow-up reviewers later hit external quota/auth limits and were not misreported as PASS.
+- Latest completed pre-rebase browser acceptance: `test:ui:all` **446/446 PASS** across Chromium + WebKit; targeted Gated-Delta split **18/18 PASS**; Reader Contract phone/desktop gate PASS; reduced-motion, no-JS, 390/768/1440, light/dark, zh/en all exercised.
+- Release-closeout protocol was reread after `main` moved. Because `main@1a386378…` materially touched experiment navigation / reader-budget owners, a final combined-tree acceptance rerun remains required before H3.
+- H3–H8 intentionally remain unchecked until commit/push, public CI, exact-head Vercel, expected-head-safe merge, and Production smoke actually occur.
+
+
+### Exact combined-tree acceptance — 2026-09-13
+
+Acceptance identity before H3:
+
+- intended BaseModel base: `1a3863780e06ade8397260505ce0d8716a31dea8`;
+- current scientific projection: `mykcs/openevo-experiment@3ee2d3d2d75d456641b248ca8049d6aa6557506e`;
+- newest science delta is Round-0 identity-noop recovery with `science_semantics_changed=false`; public status remains **Route S execution proved / full paired D1 incomplete / no efficacy claim**;
+- `git diff --check`: PASS;
+- `npm run verify:deploy`: PASS;
+- `npm run build`: PASS, 508 static routes, heading and external-brand-link audits PASS;
+- `npm run ui:overflow-preflight`: PASS at 390 / 768 / 1440;
+- `npm run test:ui:all` with `PLAYWRIGHT_PORT=64160`: **446/446 PASS**, Chromium + WebKit;
+- accepted browser run includes current/history Gated-Delta split, zh/en, phone/tablet/desktop, light/dark, reduced motion, no-JS, Reader Contracts, experiment-hub ownership, and global shell/layout checks;
+- no retry/flaky acceptance was used for the final 446/446 run.
+
+This is the exact pre-commit tree intended for H3. After H3, any head-changing commit beyond recording the same tree would invalidate this evidence; a normal commit object that points to this tree does not change product contents.
+
+### Publication-gate refresh — 2026-09-14
+
+- BaseModel candidate rebased onto `main@45aff1ebe1eb2b9c759e1468a61d5560c5945e2a` before the final local gate.
+- Upstream Gated-Delta scientific branch refreshed to `06cceb3f2961d46cab0293bda481b96b723b95e0`.
+- Scientific public boundary at this refresh: **Route S real task-bearing GDR execution is sealed; full four-round Vanilla-vs-GDR paired D1 is not complete; no efficacy/final claim is allowed.**
+- Route S evidence retained on the current page: 128 WebShop rollouts, 124 optimizer steps, 7,904 applied factor writes, `g=0`, and zero Task-Vector / reward-score / candidate-probe / final-panel runtime control.
+- `npm run verify:deploy`: **PASS**; strict-copy invariant failures `0`; Reader Contracts `64/64`; HPL audit PASS; all unit/structural tests PASS.
+- `npm run build`: **PASS**; 508 static routes built; static H1 audit PASS; external brand-link audit PASS.
+- `npm run ui:overflow-preflight`: **PASS** at 390 / 768 / 1440 widths.
+- `PLAYWRIGHT_REUSE_BUILD=1 npm run test:ui:all` on isolated port `55329`: **446/446 PASS** across Chromium + WebKit.
+- Targeted Gated-Delta split regression remains part of the standard `test:ui` / `test:ui:all` scripts and covers zh/en, 390/768/1440, dark theme, no-JS, canonical cross-links, and historical/current ownership.
+- The historical `/gdr-directapply/` page remains unchanged by later Route-S/D1 execution progress; only the current `/gated-delta-sd-lora/` publication snapshot moves with upstream scientific authority.
+
+### Final non-overlap rebase confirmation — 2026-09-14
+
+- BaseModel `main` advanced only through fast-gate engineering commits and did not touch this task's product files; candidate rebased onto `main@b5b8c7dea8a5019b48559f1e27039a68c5845892`.
+- Upstream Gated-Delta scientific head remained `06cceb3f2961d46cab0293bda481b96b723b95e0`; public scientific polarity is unchanged.
+- `npm run verify:fast` correctly failed closed to the full deterministic repository gate because this change spans shared components; that upgraded gate **PASS** on the rebased tree.
+- Targeted `tests/e2e/gated-delta-publication-split.spec.ts`: **18/18 PASS** across Chromium + WebKit after the rebase.
+- Earlier exact combined-tree hosted-equivalent UI evidence remains **446/446 PASS**; the final rebase touched only non-overlapping fast-gate infrastructure in `main`.
+- H3 remains unchecked until the final candidate commit is pushed; H4–H8 remain publication/provider/merge/Production work.

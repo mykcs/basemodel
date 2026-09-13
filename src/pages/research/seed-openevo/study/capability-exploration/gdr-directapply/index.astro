@@ -1,14 +1,12 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoGdrDirectApplyExplainer from '../../../../../../components/research/OpenEvoGdrDirectApplyExplainer.astro';
-import ResearchRouteContext from '../../../../../../components/research/ResearchRouteContext.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
-  title="GDR → DirectApply：为什么 44 次学习尝试只留下 7 次更新"
-  description="Qwen3-1.7B Stage2 的 GDR-v1 决策反思与 DirectApply / No-GDR 独立对照：44 个 SD-LoRA candidates、7 次正式更新、Round-0 semantic matching 与资源 handoff 的科学语义。"
+  title="历史 GDR-v1 / DirectApply：candidate admission 实验记录"
+  description="历史本地 GDR-v1 / DirectApply 实验记录：44 个已训练 SD-LoRA candidates 中只有 7 次进入后续模型；保留 16-task candidate-admission、DirectApply 对照和 final 不可直接相减的边界。"
   locale={locale}
 >
-  <ResearchRouteContext locale={locale} route="gdr-directapply" experimentId="gdr-v1-1p7b" />
   <OpenEvoGdrDirectApplyExplainer locale={locale} />
 </AppLayout>

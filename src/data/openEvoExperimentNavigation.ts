@@ -95,7 +95,7 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
       { role: 'result', label: { zh: '这条 1.7B 的冻结结果', en: 'Frozen result for this 1.7B line' }, href: `${cap}/openevo-2-0/report/` },
       { role: 'analysis', label: { zh: 'GDR-v1 为什么拒绝了大多数候选更新', en: 'Why GDR-v1 rejected most candidate updates' }, href: `${cap}/gdr-directapply/` },
       { role: 'mechanism', label: { zh: 'Vanilla SD-LoRA 一轮怎样产生候选参数', en: 'How one Vanilla SD-LoRA round produces a candidate' }, href: `${cap}/vanilla-sd-lora/` },
-      { role: 'mechanism', label: { zh: '本地 GDR-v1 与原始 Gated Delta Rule 的区别', en: 'Local GDR-v1 versus the original Gated Delta Rule' }, href: `${cap}/gdr-directapply/#original-gated-delta` },
+      { role: 'mechanism', label: { zh: '当前 Gated-Delta SD-LoRA：从 admission gate 到 recurrent write', en: 'Current Gated-Delta SD-LoRA: from admission gate to recurrent write' }, href: `${cap}/gated-delta-sd-lora/` },
     ],
     evidenceLink: { role: 'evidence', label: { zh: 'GDR-v1 原始运行依据', en: 'GDR-v1 raw run evidence' }, href: `${cap}/gdr-directapply/#technical-evidence` },
   },

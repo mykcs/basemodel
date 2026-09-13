@@ -130,11 +130,20 @@ describe('experiment context hierarchy', () => {
     expect(lobby).toContain('它们用于追溯证据，不是新的主要实验入口');
   });
 
-  it('binds all five canonical experiment entries in both locales', () => {
+  it('binds all five canonical experiment entries in both locales without forcing self-contained pages to prepend generic context', () => {
     for (const [route, experimentId] of canonical) {
+      const reader = CAPABILITY_READER_ROUTES.find((item) => item.route === route);
+      expect(reader, route).toBeDefined();
       for (const prefix of ['', 'en/']) {
         const page = read(`../pages/${prefix}research/seed-openevo/study/capability-exploration/${route}/index.astro`);
-        expect(page).toContain(`route=\"${route}\" experimentId=\"${experimentId}\"`);
+        if (reader?.coverage === 'self-contained') {
+          const owner = read(`../components/research/${reader.owner}.astro`);
+          expect(page).not.toContain('<ResearchRouteContext');
+          expect(owner).toContain(`experimentId=\"${experimentId}\"`);
+          expect(owner).toContain('ResearchRouteContext');
+        } else {
+          expect(page).toContain(`route=\"${route}\" experimentId=\"${experimentId}\"`);
+        }
       }
     }
   });
@@ -175,19 +184,22 @@ describe('experiment context hierarchy', () => {
     }
   });
 
-  it('keeps historical GDR-v1, DirectApply, and any future recurrent-GDR successor as distinct objects', () => {
+  it('keeps historical GDR-v1, DirectApply, and the recurrent-GDR successor as distinct objects', () => {
     const ids = OPEN_EVO_EXPERIMENTS.map((item) => item.id);
     expect(ids).toContain('gdr-v1-1p7b');
     expect(ids).toContain('directapply-1p7b');
     expect(ids.filter((id) => id.includes('gdr'))).toEqual(['gdr-v1-1p7b']);
     expect(OPEN_EVO_EXPERIMENTS.find((item) => item.id === 'gdr-v1-1p7b')?.lineageNote?.zh).toContain('GDR 机制问题');
 
-    const gdrExplainer = read('../components/research/OpenEvoGdrDirectApplyExplainer.astro');
-    expect(gdrExplainer).toContain('三个对象必须分开记录');
-    expect(gdrExplainer).toContain('本地 GDR-v1');
-    expect(gdrExplainer).toContain('DirectApply / No-GDR');
-    expect(gdrExplainer).toContain('原始 Gated Delta Rule 启发的 state update');
-    expect(gdrExplainer).toContain('设计中 · 尚未执行新实验');
+    const history = read('../components/research/OpenEvoGdrDirectApplyExplainer.astro');
+    const current = read('../components/research/OpenEvoGatedDeltaSdLoraExplainer.astro');
+    expect(history).toContain('本地 GDR-v1');
+    expect(history).toContain('DirectApply');
+    expect(history).toContain('candidate admission');
+    expect(history).not.toContain('id=\"recurrence\"');
+    expect(current).toContain('原始 Gated Delta Rule 更新的是 State');
+    expect(current).toContain('真实 GDR 路径已经跑通');
+    expect(current).toContain('完整四轮 Vanilla vs GDR paired D1 仍未完成');
   });
 
   it('keeps Chinese and English on one experiment IA with matching owned routes', () => {

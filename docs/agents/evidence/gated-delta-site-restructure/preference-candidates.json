@@ -1,0 +1,58 @@
+{
+  "schema": "human-preference-candidate-set.v2",
+  "contractId": "capability-gated-delta",
+  "task": "Gated-Delta SD-LoRA canonical explainer restructure",
+  "exactGitSha": "cf02509951100d41a8d06b12ee93764ba0e47afb",
+  "variants": [
+    {
+      "id": "A",
+      "hypothesis": "A single vertical research-editorial narrative will reduce context switching while preserving the causal derivation.",
+      "attentionCenter": "One opening claim: historical GDR-v1 operated at the wrong layer; current work is recurrent parameter-state writing.",
+      "informationDensity": "One conclusion per section; formula and two semantic diagrams remain visible, exact D0 receipts move to local disclosure.",
+      "visualLanguage": "Narrow editorial column, restrained rules, one continuous reasoning rail, no dashboard grid.",
+      "screenshotRef": "docs/agents/evidence/gated-delta-site-restructure/candidates/candidate-a-vertical-narrative.png",
+      "predictedFailureFamilies": [
+        "mainline-rigor-tax",
+        "jargon-memory-load"
+      ]
+    },
+    {
+      "id": "B",
+      "hypothesis": "A compact side-by-side comparison plus card grid will make the old/new distinction scan faster.",
+      "attentionCenter": "Two equal first-screen cards: historical gate versus current recurrent write.",
+      "informationDensity": "Compresses derivation into paired PASS/FAIL cards and separate beta/g cards.",
+      "visualLanguage": "Two-column card comparison repeated through the page.",
+      "screenshotRef": "docs/agents/evidence/gated-delta-site-restructure/candidates/candidate-b-card-comparison.png",
+      "predictedFailureFamilies": [
+        "attention-tax",
+        "internal-detail-promoted-to-primary-attention",
+        "project-status-as-research-story"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "winnerId": "A",
+      "loserId": "B",
+      "reason": "A preserves one reader task and one causal path; B recreates equal-weight card competition and turns qualification statuses into a dashboard.",
+      "evidence": "Candidate A has one hero claim, one formula block and one vertical reasoning rail. Candidate B places two equal hero panels, four PASS/FAIL cards, and two treatment cards in repeated grids."
+    }
+  ],
+  "selectedVariantId": "A",
+  "hardFamiliesChecked": [
+    "anticipatory-rebuttal",
+    "attention-tax",
+    "compressed-shorthand-heading",
+    "defensive-negation-opening",
+    "engineering-as-science-highlight",
+    "incomplete-scientific-decision-loop",
+    "internal-detail-promoted-to-primary-attention",
+    "mainline-rigor-tax",
+    "meaningless-english-eyebrow",
+    "missing-progressive-disclosure",
+    "numeric-shock-heading",
+    "project-status-as-research-story",
+    "reference-surface-imitation"
+  ],
+  "ownerSawOnlySelectedCandidate": true
+}

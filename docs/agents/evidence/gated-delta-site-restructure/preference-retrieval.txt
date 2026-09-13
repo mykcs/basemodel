@@ -1,0 +1,157 @@
+
+> agent-model-atlas@0.1.0 feedback:retrieve
+> tsx scripts/retrieve-human-feedback-precedents.ts Gated-Delta SD-LoRA 当前机制页 单页单问题 首屏 历史 GDR-v1 candidate admission recurrent state Task Vector 科学推导 视觉负担
+
+# Human Preference Brief
+Query: Gated-Delta SD-LoRA 当前机制页 单页单问题 首屏 历史 GDR-v1 candidate admission recurrent state Task Vector 科学推导 视觉负担
+Precedence: current explicit owner instruction > latest direct feedback case > repeated preference model > generic design guidance > Agent aesthetics.
+
+## Preference Model
+PREF-CONCRETE-MECHANISM-WORDING · 机制文案把具体问题、主体、动作和结果说清 · score 57 · confidence repeated-explicit
+  prefer: 当科研机制或归因实验可以直接说清时，先把正在诊断的具体失败写出来，再写谁训练了什么、谁做了什么判断、下一状态因此怎样；避免用没有近邻 antecedent 的“这个问题 / 这个现象”或“X 与 Y 之间存在落差”让观众自己补前提。
+  evidence: CASE-087
+  do not overlearn: 不是禁止“问题 / 现象 / 它”等代词；近邻 antecedent 已清楚时可以自然使用。关键因果归因不能要求听众跨段猜它指什么。 / 不是禁止抽象关系词；当“关系”本身就是科研对象时可以精确命名。 / 不是删除 GDR / SD-LoRA / LoRA 等专业词；保留真实技术对象，同时把被诊断对象、动作和结果说清。 / 不要把自然语言改成过度口语或牺牲技术因果；问题、主体、动作和状态仍需准确。
+PREF-TECHNICAL-DEPTH-WITHOUT-META · 技术深度由科学论证承担，不用“更硬核”自我表演 · score 42 · confidence page-specific
+  prefer: 机制页可以使用公式、真实参数和定量阈值；标题和旁白直接命名技术对象或指标，不把“这里更硬核 / 更专业”这种作者自评展示给观众。
+  evidence: CASE-082
+  do not overlearn: 不是把公式加到每一页；只有公式、参数或阈值直接承担科研论证时才提高技术密度。 / 不是删除深推导；主演讲保留理解科学判断所需的简式，完整推导可以进入相邻技术页。 / “更硬核”可以是内部设计目标，但不应成为面向老师的自我评价标签。 / 当前 OpenEVO TaskVector briefing 的最新 owner 边界是：主演讲只留 v = θ_after − θ_before、norm、cosine 和一条科学判断；Gram/Frobenius、R14/R27/R49、同范数随机对照与 identifiability 下沉 technical-notes。这个具体配方是 briefing-scoped 例子，不是所有机制页的公式数量上限。
+PREF-DIRECT-FACTS · 事实和主题优先于主持人、叙事隐喻和防御性开场 · score 37 · confidence repeated-explicit
+  prefer: 能直接说做了什么、发生了什么、结果是什么时，不用“怎样读 / 先看 / 分岔 / 这不是”等作者姿态抢第一理解层；作者内部编码、实现参数或基线质量证明也不应为了冲击力抢在真实对象和科学结论之前。
+  evidence: CASE-027, CASE-063, CASE-067, CASE-081, CASE-082, CASE-090
+  do not overlearn: 真实研究问题可以是问句。 / 真正改变科学解释的否定句和 caveat 必须保留，并贴近所约束的 claim。 / 能建立正确心智模型的必要类比不是禁用项。 / LoRA / RL / GDR / TaskVector 等真实技术对象不是禁用项；要删的是不增加信息的英文装饰标签。 / 不是禁止标题出现数字；当数字本身就是主要科研结果且两端对象已经说清时可以前置。像 7<8 这种需要先解释 operands 与 gate 的诊断 shorthand，应先说观众能直接复述的事件，再在正文给精确值。 / 不是禁止模型名出现在标题；如果“7B：结论”只是压缩标签而完整事件句更自然，就优先完整事件句。 / 不是把所有工程/内部信息都后置；如果它本身决定科学有效性、对象身份或因果归因，就必须在相关 claim 附近可见。
+PREF-FIRST-SCREEN-ATTENTION · 一个首屏只承担一个主要理解任务 · score 31 · confidence explicit-project
+  prefer: 字号、加粗、卡片、CTA、导航、空白和内容到达位置都在分配注意力；第一屏应只有一个明显认知中心。参考 Apple 等设计系统时，先转译它怎样帮助人识别、分组、决定和继续，再决定本站自己的视觉实现，不把品牌表面构图当成认知原则。
+  evidence: CASE-068, CASE-069, CASE-086
+  do not overlearn: 不是越少越好；必须默认可见的科学边界、比较双方和当前状态不能为了简洁被藏掉。 / 首屏预算是报警器，不替代真人 cold read。 / 不是禁止留白、大标题、serif、圆角或一屏一页 presentation；当它们服务当前 reader task、分组、阅读节奏或真实 presentation 介质时可以使用，不能因为参考品牌用了就机械复制。
+PREF-SCIENTIFIC-BOUNDARY · 简化表达不能削弱科学边界 · score 31 · confidence repeated-explicit
+  prefer: 结果先行，但 claim → evidence → inference → boundary 必须完整；不能为了好读把不可比、未授权、未证明或未知状态藏掉。
+  evidence: CASE-029, CASE-030, CASE-062, CASE-068, CASE-081
+  do not overlearn: 不是用否定句淹没开场；边界应贴着它真正约束的 claim。 / 训练过程信号、最终评测和外部文献参照必须保持不同证据层。
+PREF-PROGRESSIVE-DISCLOSURE · 按阅读时机分层，不把分层本身做成模板 · score 26 · confidence repeated-explicit
+  prefer: 首层只给开始理解所需的信息；可恢复的背景、provenance 和深层机制后置，但不要机械制造“一句话看懂 / 专业解释”等可见层级。
+  evidence: CASE-062, CASE-068, CASE-071, CASE-082, CASE-086
+  do not overlearn: 不是 minimalism；exactly enough 比“越空越好”更重要。 / 会改变结论含义的 caveat 不能被当成次要背景折叠。 / 工程复现细节可以下沉，但当工程证据改变科学有效性、可识别性或因果归因时，必须回到主叙事保护 claim。
+PREF-CONSISTENT-EXPERIMENT-VISUAL-GRAMMAR · 同类实验图复用同一视觉语法 · score 26 · confidence repeated-explicit
+  prefer: 同一 briefing 内展示多条同类训练线时，Score、loss、candidate/accepted update 应保持稳定的图表位置、线型和标记含义；这也适用于后来新增的实验线，只要它展示的是相同训练证据，观众就不该因为“新实验”而重新学习一套图例。
+  evidence: CASE-088
+  do not overlearn: 不是强迫不同实验使用相同数值范围、单位或 y 轴；真实量纲差异必须保留。 / 不是所有科学对象都必须用同一 chart type；只有测量对象相同时才复用视觉语义。 / 新实验只有在确实拥有同类 per-round Score / loss / update 数据时才继承这套图；不能为了形式一致从摘要数字合成不存在的曲线。 / 视觉一致不能覆盖数据缺失：没有 authoritative loss 的点仍应留空，而不是为了图形对称补值。
+PREF-RESEARCH-JUDGMENT · 科研汇报展示研究判断，不展示项目管理流水账 · score 23 · confidence repeated-explicit
+  prefer: 科研叙事按触发问题 / 观察 → 假设 → 实验 → 结果 → 下一步判断组织；先让听众知道为什么开始查，再讲改了哪个参数或模块。工程 gate 只在决定可解释性、可识别性或因果归因时进入主线。
+  evidence: CASE-082, CASE-084, CASE-090
+  do not overlearn: 不是删除工程证据；当工程事实决定实验是否有效时，它就是科学叙事的一部分。 / 不是要求按逐分钟日志复述历史；“先问题、后 intervention”指因果理解顺序，不是机械时间线。 / 可以有目录/总结页，但当“这些实验如何一步步排除解释”本身就是科研贡献时，不能只用一张等权 checklist 代替主线实验；是否拆页取决于它是否承载因果理解，而不是固定模板。
+PREF-EVENT-FIRST-RESEARCH-HEADINGS · 科研标题先说可直接复述的事件，再给压缩标签 · score 23 · confidence repeated-explicit
+  prefer: briefing 标题优先用一整句自然语言说清“发生了什么 / 我们为什么开始查”。模型名、数字关系、方法名和内部英文如果需要额外解码，就留到副标题、正文或图注。
+  evidence: CASE-090
+  do not overlearn: 不是每个标题都必须写成长句；对象已经建立、短名本身就清楚时可以简短。 / 不是禁止结果数字、模型名或 GDR / SD-LoRA 等技术词；只有当它们在第一注意层要求读者先猜含义时才后置。 / 真正可直接理解的科研发现（例如“44 个候选只有 7 个进入后续模型”）仍可在标题使用数字，因为数字两端对象已经同时说清。
+PREF-BRIEFING-SELF-CONTAINED-METHOD · 阶段汇报先给足以理解后续结果的最小方法背景 · score 19 · confidence explicit-project
+  prefer: 现场观众不应被假定已经读过网站的其他方法页；在结果和机制之前，用一页或同等体量交代 Stage 1 / Stage 2 如何接续、轨迹由谁产生、MiniMax 在哪里回看，以及 OPSD / SD-LoRA / Text Memory / Skill / Agent System 各自扮演什么角色。
+  evidence: CASE-089
+  do not overlearn: 不是把完整方法文档复制进每场汇报；只保留理解紧接着科学结论所必需的心智模型。 / 已有专门方法页仍然有价值，深参数、实现细节和完整流程可以继续 progressive disclosure。 / 若听众已经明确共享方法上下文，可以压缩这层，但不能让后续 claim 依赖未交代的内部对象。
+PREF-INLINE-TERMINOLOGY · 术语在第一次出现的位置就地解释 · score 16 · confidence repeated-explicit
+  prefer: 能不用内部代号就不用；必须保留时先给人类名称，再在当前句附近解释它在这里做什么。
+  evidence: CASE-066, CASE-070, CASE-090
+  do not overlearn: 不是删除专业词；精确术语在需要时必须保留。 / 集中 glossary 可以做参考工具，但不能成为主阅读路径。 / Agent / SD-LoRA / GDR 这类必要技术对象可以保留；像 composed state 这种只起连接作用、中文一句就能说清的内部英文不应要求观众额外解码。
+PREF-DIAGNOSTIC-CLOSURE · 诊断实验要让观察、排除和处理形成闭环 · score 13 · confidence repeated-explicit
+  prefer: 科研汇报里的负向或诊断实验应说明实际观察到了什么、它排除了哪个解释、因此停止继续调什么并转向哪个下一问；长期训练证据要区分优化 loss、训练过程任务表现和冻结终评。
+  evidence: CASE-082, CASE-084
+  do not overlearn: 不是每个负结果都必须声称“问题已经解决”；如果只排除了一个解释，就明确写“解决的是错误诊断”，再说明下一步。 / training loss 下降不等于最终任务能力提高；在线 round score、优化 loss、冻结 final eval 必须保持不同证据层。 / 工程恢复可以解决流程卡死，但不能自动升级成 benchmark gain。
+
+## Gold Pairs · rejected → accepted
+PAIR-087-DIAGNOSTIC-REFERENT · CASE-087
+  REJECTED: 为了判断问题是不是 SD-LoRA 独有
+  ACCEPTED: 成功轨迹已经有了，为什么写进参数后任务能力还是没有明显提升？我们用普通 LoRA 做对照，看这个失败是否只出现在 SD-LoRA。
+  because: owner 直接指出“问题”没有说清指什么。关键归因句先把被诊断的失败写出来，再解释 LoRA / SD-LoRA 对照如何区分原因，听众就不用跨段补 antecedent。
+PAIR-087-CONCRETE-MECHANISM · CASE-087
+  REJECTED: “训练出一个更新”和“让这个更新进入后续模型”之间出现了很大的落差。
+  ACCEPTED: 训练程序有 44 次都把 SD-LoRA 候选训出来了；GDR 又筛了一次，只同意 7 次真的改到下一轮模型，另外 37 次被拒绝。
+  because: owner 明确指出普通人不会用抽象关系句还原这条过程；认可方向把训练、GDR 判断和下一轮状态按自然语序说出来，同时保留真实技术对象。
+PAIR-082-TECHNICAL-WITHOUT-META · CASE-082
+  REJECTED: 这里可以更硬核一点
+  ACCEPTED: 我们采用一个更技术性的指标
+  because: 技术深度应该由公式、指标和数据本身证明，不需要作者在标题里自我评价“更硬核”。
+PAIR-090-COMPOSED-STATE · CASE-090
+  REJECTED: 后来跑到 49.33 的 Ceiling-1.0 7B 已经是 composed state
+  ACCEPTED: 后来那条 7B 长跑里，Text Memory、Skill Bundle、Agent System 和 SD-LoRA 会一起组成下一轮模型状态
+  because: 必要技术对象保留；composed state 只是作者内部英文连接词，中文一句就能把真实更新对象讲清。
+PAIR-068-ATTENTION · CASE-068
+  REJECTED: 研究问题 / 为什么重要 / 从哪里开始 / 什么时候结束 / 现在到哪了
+  ACCEPTED: 7B 持续更新参数，并完成最终测试；旧 3B 因购物接口和动作格式问题停止。
+  because: 五个等权重 orientation 字段让读者自己做取舍；认可版本让一个最重要事实成为第一认知中心。
+PAIR-090-DIAGNOSTIC-ENTRY · CASE-090
+  REJECTED: 为什么后来会去改“15 步”和 Text Memory？因为日志里先暴露了两个很具体的问题
+  ACCEPTED: 分数很低，我们先去看日志，看看是不是哪里出了问题
+  because: owner 要求恢复研究当时的因果顺序：先低分触发排查，再看到具体日志异常，最后才决定改 15→30 和 Text Memory。
+PAIR-088-EXPERIMENT-CHART-GRAMMAR · CASE-088
+  REJECTED: 已有 7B / 1.7B / 3B 用 Score / loss 曲线，新实验却只放摘要数字卡片，或重新发明另一套 Score / loss / update 布局。
+  ACCEPTED: 只要新增实验展示的是同类训练证据，就沿用左侧 WebShop Score、右侧 SD-LoRA loss 和稳定的 candidate / accepted 标记；各实验坐标范围按真实数据调整。
+  because: owner 先要求 7B / 1.7B / 3B 共享图表语法，随后对新增 No-GDR / DirectApply 再次明确“也得和其他实验一样的分数 loss 表”；可复用规则因此是按证据对象继承视觉语义，而不是按实验创建时间重开一套。
+PAIR-090-GATE-HEADING · CASE-090
+  REJECTED: 7 < 8：不是模型没有成功经验，而是一个控制门槛挡住了长期训练
+  ACCEPTED: 训练跑了很久，但参数一次都没有更新
+  because: 7<8 是排查后才理解的 shorthand；标题先说观众能直接理解的异常，再在正文解释 gate 要 8、实际最多 7，因果更自然。
+PAIR-090-MODEL-COLON-HEADING · CASE-090
+  REJECTED: 7B：训练过程明显学起来，但冻结终评仍是 49.33
+  ACCEPTED: 我们做了一次 7B 长跑：训练在变好，冻结终评是 49.33
+  because: 机械“模型名：结论”像标签压缩；完整事件句先建立我们做了什么，再给模型和结果，更像人类口头汇报。
+PAIR-081-BINARY-CONTRAST-SUMMARY · CASE-081
+  REJECTED: 我们不是只跑一次实验，而是一步步换问题去验证
+  ACCEPTED: 我们做过哪些尝试
+  because: 这一页承担的是“列出做过的科学尝试”；直接命名主题比先构造一个读者没有提出的二元对比更自然。否定句本身没有被禁用，真正的科学排除仍应贴着相关 claim 出现。
+PAIR-082-ENGINEERING-DEPTH · CASE-082
+  REJECTED: 固定 GPU 确定性 PASS / SHA / replay hash 单独占主演讲页
+  ACCEPTED: 主演讲说清它改变了什么科学判断；SHA / 重复性证据放技术页或按需证据层
+  because: 工程严谨性是实验可信的前提；只有当它改变可归因性等科学含义时，主线展示科学后果，详细证明下沉。
+PAIR-069-VISUAL-CENTER · CASE-069
+  REJECTED: 先分清两种“新任务”
+  ACCEPTED: 训练范围内未见任务与 SEED 验证任务
+  because: 视觉中心应落在现实对象，而不是作者对读者发出的教学指令。
+
+## Source Cases
+CASE-087 · 机制解释把被诊断的问题和动作链都说清 · score 46
+  rule: 技术机制或归因实验能按具体问题→主体→动作→结果说清时，先把被诊断的失败写出来，再写谁做了什么、下一状态因此怎样；不要用“这个问题 / 存在落差”让观众自己补前提或还原过程。
+  avoid: “训练出一个更新”和“让这个更新进入后续模型”之间出现了很大的落差 / 为了判断问题是不是 SD-LoRA 独有 / 用抽象关系名词代替候选训练、GDR 拒绝、下一轮不变这条实际动作链 / “问题 / 现象 / 它”没有清楚的近邻 antecedent，却承担关键因果归因
+  prefer: 44 次都训练出了 SD-LoRA 候选；GDR 只同意 7 次真正改到下一轮 / 成功轨迹已经有了，为什么写进参数后任务能力还是没有明显提升？ / 保留 GDR / SD-LoRA / LoRA 等真实技术对象，同时把被诊断对象和它们的动作说清
+CASE-068 · 首屏只承担一个主要理解任务 · score 20
+  rule: 首屏不是正确字段库存；只保留完成当前 primary task 必需的对象、结论、边界和下一步。参考 Apple 等产品时先抽 visibility、mental model、grouping 与 progressive disclosure 等认知原则，不把其字体、留白、圆角或 Hero 表面构图当成目标。
+  avoid: 多个同权重 CTA、卡片、导航和 provenance 同时竞争 / 照抄参考产品的大留白、满屏 Hero 或字体皮肤，却没有重新推导本站 reader task
+  prefer: 一个明显认知中心 / 次要深度后置 / 参考设计先解释人的感知/决定/推进，再决定本站 HTML/CSS
+CASE-088 · 同类实验图共享一套视觉语法 · score 14
+  rule: 同一组实验若展示相同证据类型，应复用同一图表位置、线型与更新标记语义；后续新增实验只要也在展示 per-round Score / SD-LoRA loss / update 位置，就继承这套语法，不因“是新实验”重新改成摘要卡片；坐标范围和单位可以因真实技术差异调整。
+  avoid: 7B、1.7B、3B 各自发明不同的 Score / loss / update 视觉编码 / 已有实验用 Score / loss 曲线，新实验只有摘要数字卡片，导致横向比较重新学习表现方式 / 为了视觉整齐强迫不同量纲共用同一数值轴
+  prefer: 左侧训练过程 Score、右侧 SD-LoRA loss、底部 candidate/accepted update 标记保持一致 / 新增 DirectApply / No-GDR 等同类训练线沿用既有 Score + loss 语法 / 轴范围随实验真实数值变化但图表语义不变
+CASE-062 · TL;DR 直接回答实验做了什么 · score 12
+  rule: 首层摘要回答做了什么、现在看到什么、还不能证明什么；不要把背景百科当摘要。
+  avoid: 只写“当前发现”却不交代实验对象和边界
+  prefer: 明确 TL;DR / 做了什么 / 还不能证明什么
+CASE-061 · 首屏先建立对象身份 · score 10
+  rule: 第一次进入先知道对象是什么；架构、数据集和比较对象的身份优先于抽象研究关系。
+  avoid: OpenEvo × SEED：WebShop 研究
+  prefer: OpenEVO (Harness) / WebShop 数据集
+CASE-082 · 科研汇报按问题、诊断和下一问组织 · score 8
+  rule: 阶段汇报按科学问题 → 诊断实验 → 排除解释 → 下一问组织；默认工程正确不等于科研亮点；技术深度由公式和数据本身承担；实现参数不为冲击力抢标题；presentation 的手机与桌面可承担不同布局责任。
+  avoid: 按工程模块或项目状态流水账组织汇报 / 把 SHA / 重复性等默认工程正确性单独做成科研亮点 / 为了极简删掉能够证明机制设计的数学细节 / 用“这里更硬核”替代真实技术指标 / 纯装饰气泡抢占科研内容注意力 / 实现参数数字为了冲击力抢标题 / 手机强制承载桌面固定 16:9 画布
+  prefer: 问题 → 诊断 → 排除 → 下一问 / 主演讲简式 + 技术子页完整推导 / 自然语言标题 + 正文精确参数 / 桌面 capped 16:9 + 手机整张 slide 等比 fit-to-width
+CASE-027 · 中文含义先于无信息英文标签 · score 6
+  rule: 英文只有在它命名真实技术对象、检索身份或独立阅读模式时才保留；删掉不损失信息的英文眉题属于认知噪声。
+  avoid: OpenEVO · SEED × WebShop / AGENDA / RESULTS / QUESTION / MECHANISM
+  prefer: 直接中文标题 / LoRA / RL / GDR / TaskVector 等必要技术对象保留
+CASE-090 · 科研标题先说发生了什么，再给数字缩写和内部标签 · score 6
+  rule: 科研汇报的标题和段落入口先用一句自然语言说明发生了什么、为什么开始查；如果 7<8、7B:、intervention 名或内部英文需要读者先解码，就把它们放到正文、图注或就地解释层。
+  avoid: 7 < 8：不是模型没有成功经验，而是一个控制门槛挡住了长期训练 / 7B：训练过程明显学起来，但冻结终评仍是 49.33 / 为什么后来会去改“15 步”和 Text Memory？ / Ceiling-1.0 7B 已经是 composed state
+  prefer: 训练跑了很久，但参数一次都没有更新 / 分数很低，我们先去看日志，看看是不是哪里出了问题 / 我们做了一次 7B 长跑：训练在变好，冻结终评是 49.33 / 必要的 Agent / SD-LoRA / GDR 技术对象保留并就地解释
+CASE-059 · 数字第一次出现必须带对象和测量含义 · score 4
+  rule: 重要数字不能要求读者猜它在数什么；第一次出现时给对象、单位/分母和必要的测量含义。
+  avoid: 49.33 / 58⁄128 / 44 → 7 但不说 44 和 7 分别是什么
+  prefer: 49.33 / 100 Task Score / 58 / 128 个任务完整成功 / 44 个 SD-LoRA 更新候选中 7 个进入后续模型
+CASE-029 · 结论先于实验账本 · score 2
+  rule: 先给读者当前能下的结论，再展开运行账本、过程记录和 provenance。
+  avoid: 先展示长运行记录再让读者自己找结论
+  prefer: 首层直接出现结果与解释边界
+CASE-030 · 可见推理桥而不是只给标签 · score 2
+  rule: 结论与证据之间要有一条人能读懂的推理桥，不能只丢状态标签或内部字段。
+  avoid: 只给 PASS/FAIL、stage、gate 等标签
+  prefer: 说明观察如何支持当前判断
+CASE-063 · 标题命名对象，不主持阅读 · score 2
+  rule: 普通 H1/H2/H3 优先命名主题；“怎么读 / 怎样连起来 / 先…再…”属于作者主持动作。
+  avoid: 三个研究问题怎样连起来 / 怎么读 / 先分清
+  prefer: 三个研究问题 / 实验结果 / GPU 规格

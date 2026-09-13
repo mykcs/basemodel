@@ -1,14 +1,12 @@
 ---
 import AppLayout from '../../../../../../../layouts/AppLayout.astro';
 import OpenEvoGdrDirectApplyExplainer from '../../../../../../../components/research/OpenEvoGdrDirectApplyExplainer.astro';
-import ResearchRouteContext from '../../../../../../../components/research/ResearchRouteContext.astro';
 const locale = 'en' as const;
 ---
 <AppLayout
-  title="GDR → DirectApply: why 44 learning attempts became 7 updates"
-  description="A research decision record for Qwen3-1.7B Stage 2: GDR-v1, the DirectApply / No-GDR ablation, Round-0 semantic matching, and the scientific meaning of resource handoffs."
+  title="Historical GDR-v1 / DirectApply: the candidate-admission experiment"
+  description="Historical local GDR-v1 / DirectApply experiment record: only 7 of 44 trained SD-LoRA candidates entered later model states, with the 16-task candidate-admission rule, DirectApply contrast, and frozen-final comparability boundary preserved."
   locale={locale}
 >
-  <ResearchRouteContext locale={locale} route="gdr-directapply" experimentId="gdr-v1-1p7b" />
   <OpenEvoGdrDirectApplyExplainer locale={locale} />
 </AppLayout>

@@ -275,7 +275,9 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(gdrSlide).toContain('一次很短的小测，会不会过早拒绝那些短期不够好、但长期可能有用的更新？');
     expect(briefing).toContain('https://arxiv.org/abs/2412.06464');
     expect(technical).toContain('本地规则，并不是论文里的 recurrent Gated Delta Rule');
-    expect(technical).toContain('Task Vector 用来观察 / 比较参数状态移动，不直接设置 β 或 g');
+    expect(technical).toContain('Task Vector 退出 runtime causal path');
+    expect(technical).toContain('第一版 D1 使用冻结 learned β、固定 g=0');
+    expect(technical).toContain('gated-delta-sd-lora');
   });
 
   it('shows the authoritative 1.7B GDR result including frozen exact success', () => {
