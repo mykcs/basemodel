@@ -12,6 +12,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 const capabilityHref = p('/research/seed-openevo/study/capability-exploration/');
 const gdrHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
+const gatedDeltaHref = p('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/');
 const q17Href = p('/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/');
 const mechanismHref = p('/research/seed-openevo/study/capability-exploration/mechanism-1-0/');
 const helps = zh ? [
@@ -166,6 +167,7 @@ const risks = zh ? [
         <h3>{t('下一层问题', 'Next layer')}</h3>
         <nav class="sdlora-next" aria-label={t('相关研究页面', 'Related research pages')}>
           <a href={gdrHref}>{t('状态准入：候选参数为什么会被采用或拒绝（DirectApply / 本地 GDR-v1）', 'State admission: why a candidate is adopted or rejected (DirectApply / local GDR-v1)')}</a>
+          <a href={gatedDeltaHref}>{t('当前机制：learning event 怎样直接写入 recurrent LoRA factor State', 'Current mechanism: how a learning event writes recurrent LoRA factor State')}</a>
           <a href={q17Href}>{t('R127 → R128：同一批题上的 checkpoint 变化', 'R127 → R128: checkpoint change on the same tasks')}</a>
           <a href={mechanismHref}>{t('Mechanism-1.0：进一步做参数因果干预', 'Mechanism-1.0: causal parameter interventions')}</a>
         </nav>

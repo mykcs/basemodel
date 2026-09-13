@@ -15,15 +15,28 @@ export const CAPABILITY_READER_ROUTES = [
   },
   {
     "route": "gdr-directapply",
-    "coverage": "contextualized",
+    "coverage": "self-contained",
     "owner": "OpenEvoGdrDirectApplyExplainer",
     "label": {
-      "zh": "GDR 与 DirectApply 决策反思",
-      "en": "GDR and DirectApply decision record"
+      "zh": "历史 GDR-v1 / DirectApply",
+      "en": "Historical GDR-v1 / DirectApply"
     },
     "purpose": {
-      "zh": "解释本地 GDR-v1 为什么把 44 个 SD-LoRA candidate 过滤成 7 次正式更新，区分它与原始 recurrent Gated Delta Rule，并说明 Task Vector 在当前讨论中是诊断对象而不是运行时 gate 输入。",
-      "en": "Explain why local GDR-v1 filtered 44 SD-LoRA candidates into seven formal updates, distinguish it from the original recurrent Gated Delta Rule, and clarify that Task Vector is currently a diagnostic object rather than a runtime gate input."
+      "zh": "解释历史本地 GDR-v1 怎样把 44 个已训练的 SD-LoRA candidate 过滤成 7 次正式更新，以及 DirectApply 怎样移除这层 16-task candidate-admission veto。",
+      "en": "Explain how historical local GDR-v1 filtered 44 trained SD-LoRA candidates into seven formal updates and how DirectApply removed that 16-task candidate-admission veto."
+    }
+  },
+  {
+    "route": "gated-delta-sd-lora",
+    "coverage": "self-contained",
+    "owner": "OpenEvoGatedDeltaSdLoraExplainer",
+    "label": {
+      "zh": "Gated-Delta SD-LoRA 推导",
+      "en": "Gated-Delta SD-LoRA derivation"
+    },
+    "purpose": {
+      "zh": "解释当前 Gated-Delta SD-LoRA 如何形成 recurrent LoRA-factor write，并记录 Route S 已完成真实 task-bearing 参数写入、完整 paired D1 仍未完成的最新边界。",
+      "en": "Explain the recurrent Gated-Delta SD-LoRA factor-state write, the real task-bearing Route S execution proof, and the still-incomplete full paired D1 boundary."
     }
   },
   {

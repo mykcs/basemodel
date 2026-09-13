@@ -26,6 +26,7 @@ export const bilingualStaticPaths = [
   '/research/seed-openevo/study/results/',
   '/research/seed-openevo/study/capability-exploration/',
   '/research/seed-openevo/study/capability-exploration/gdr-directapply/',
+  '/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/',
   '/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/',
   '/research/seed-openevo/study/capability-exploration/sd-lora-history/',
   '/research/seed-openevo/study/capability-exploration/sd-lora-scaling/',

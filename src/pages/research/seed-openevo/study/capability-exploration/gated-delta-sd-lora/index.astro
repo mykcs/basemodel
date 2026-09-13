@@ -1,0 +1,12 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvoGatedDeltaSdLoraExplainer from '../../../../../../components/research/OpenEvoGatedDeltaSdLoraExplainer.astro';
+const locale = 'zh' as const;
+---
+<AppLayout
+  title="Gated-Delta SD-LoRA：真实执行已证明，完整 paired D1 尚未完成"
+  description="我们为什么不再把历史 GDR-v1 的 candidate admission 当成真正的 Gated Delta Rule；当前机制如何更新 recurrent LoRA-factor State；以及 Route S 已完成真实 WebShop 参数写入、但完整 Vanilla-vs-GDR paired D1 尚未完成的科学边界。"
+  locale={locale}
+>
+  <OpenEvoGatedDeltaSdLoraExplainer locale={locale} />
+</AppLayout>
