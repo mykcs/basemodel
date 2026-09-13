@@ -10,14 +10,14 @@ const arrowUrl = `url(#${arrowId})`;
 <section class="sdlora-slide" data-locale={locale} data-slide-canvas data-ui-audit="contrast layout" aria-labelledby="sdlora-title">
   <header class="sdlora-slide__header">
     <div>
-      <h1 id="sdlora-title">{t('Vanilla SD-LoRA 一轮怎样更新参数', 'One Vanilla SD-LoRA update round')}</h1>
+      <h1 id="sdlora-title">{t('Vanilla SD-LoRA 的一轮参数更新', 'One Vanilla SD-LoRA parameter-update round')}</h1>
       <p>{t(
-        '一轮更新沿着会回到下一轮任务的流程移动：经验先变成训练数据，旧经验从旁路加入，SD-LoRA 产生候选参数，再由另一层状态规则决定下一轮使用什么。',
-        'One update follows a routed loop back into the next task round: experience becomes training data, bounded replay joins from the side, SD-LoRA produces a candidate, and a separate state rule chooses the state used next.'
+        '上一轮选定的累计 LoRA 先做 128 次 WebShop 任务尝试。每题最早一条通过全部检查的成功进入训练，最多 64 条旧经验也会一起训练。SD-LoRA 得到一份候选参数后，再决定下一轮用新参数还是旧参数。',
+        'The cumulative LoRA selected last round runs 128 WebShop attempts. The earliest fully checked success for each task trains together with up to 64 old examples. SD-LoRA then produces candidate parameters, and a separate rule decides whether the next round uses the new or old state.'
       )}</p>
       <p class="sdlora-slide__scope">{t(
-        '范围：图中实线是当前 Vanilla SD-LoRA 主流程；虚线/分支说明 replay 与状态准入。动画只沿已有路线移动，关闭动画后所有方向仍然完整可读。',
-        'Scope: solid routes show the current Vanilla SD-LoRA mainline; side routes show replay and state admission. Motion only traces authored routes; the complete direction remains readable with motion disabled.'
+        '实线是本轮主流程；旁路表示旧经验回放；分支表示训练结束后还要在新旧参数之间做选择。动画只沿这些真实路线移动，关闭动画也不影响理解。',
+        'The solid route is the main round; the side route is old-example replay; the branch chooses whether the next round uses new or old parameters. Motion only traces these routes, and the full meaning remains visible with motion off.'
       )}</p>
     </div>
   </header>
@@ -25,13 +25,13 @@ const arrowUrl = `url(#${arrowId})`;
   <figure class="sdlora-map" data-testid="sdlora-topology-map" aria-labelledby="sdlora-map-caption">
     <figcaption id="sdlora-map-caption" class="sdlora-map__caption">
       {t(
-        '当前累计 adapter 产生 WebShop rollout；clean exact success 进入训练，容量受限 replay 从旁路加入；SD-LoRA 冻结旧方向、学习新方向并重调 α，形成 candidate；DirectApply 或历史 GDR-v1 决定下一轮状态，然后流程回到下一轮 rollout。',
-        'The current cumulative adapter produces WebShop rollouts; clean exact successes train while bounded replay joins from the side; SD-LoRA freezes old directions, learns a new direction, and relearns α to produce a candidate; DirectApply or historical GDR-v1 chooses the next state, then the loop returns to the next rollout.'
+        '上一轮选定的累计 LoRA 先做 128 次任务尝试；每题最早一条通过全部检查的成功进入训练，最多 64 条旧经验从旁路一起训练。SD-LoRA 保留旧方向、学一个新方向，再重新调整每个方向的影响大小，得到候选 LoRA。当前 DirectApply 直接采用通过检查的新候选；历史本地 GDR-v1 会先用 16 个任务小测再选新旧参数。选定后进入下一轮，再回到任务尝试。',
+        'The cumulative LoRA selected last round runs 128 task attempts. The earliest fully checked success per task trains together with up to 64 old examples. SD-LoRA keeps old directions fixed, learns one new direction, and rebalances their influence to produce a candidate LoRA. Current DirectApply adopts a candidate after checks; historical local GDR-v1 first probes 16 tasks before choosing new or old parameters. The selected state then runs the next round.'
       )}
     </figcaption>
 
     <div class="sdlora-map__desktop" data-flow-layout="desktop" aria-hidden="false">
-      <svg class="sdlora-map__edges" viewBox="0 0 1200 520" preserveAspectRatio="none" role="img" aria-label={t('Vanilla SD-LoRA 路由与分支', 'Vanilla SD-LoRA routes and branches')}>
+      <svg class="sdlora-map__edges" viewBox="0 0 1200 520" preserveAspectRatio="none" role="img" aria-label={t('Vanilla SD-LoRA 一轮参数更新流程', 'One Vanilla SD-LoRA parameter-update flow')}>
         <defs>
           <marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" class="sdlora-map__arrowhead" />
@@ -48,130 +48,130 @@ const arrowUrl = `url(#${arrowId})`;
 
         <path data-edge="candidate-directapply" class="sdlora-map__edge sdlora-map__edge--branch" d="M1090 122 V155 H1015 V225" marker-end={arrowUrl} />
         <path data-edge="candidate-gdr" class="sdlora-map__edge sdlora-map__edge--branch" d="M1090 122 V155 H1145 V225" marker-end={arrowUrl} />
-        <text class="sdlora-map__edge-label" x="1036" y="147">{t('状态准入', 'state admission')}</text>
+        <text class="sdlora-map__edge-label" x="1036" y="147">{t('下一轮用哪一版', 'choose next state')}</text>
 
         <path data-edge="directapply-next" class="sdlora-map__edge sdlora-map__edge--branch" d="M1015 320 V348 H1090 V380" marker-end={arrowUrl} />
         <path data-edge="gdr-next" class="sdlora-map__edge sdlora-map__edge--branch" d="M1145 320 V348 H1090 V380" marker-end={arrowUrl} />
 
         <path data-edge="round-return" class="sdlora-map__edge sdlora-map__edge--return" d="M995 430 H950 V492 H315 V126" marker-end={arrowUrl} />
-        <text class="sdlora-map__edge-label sdlora-map__edge-label--return" x="606" y="482">{t('Round t+1：回到下一轮任务尝试', 'Round t+1: return to the next task attempts')}</text>
+        <text class="sdlora-map__edge-label sdlora-map__edge-label--return" x="606" y="482">{t('下一轮：再做 128 次任务尝试', 'Next round: run 128 task attempts again')}</text>
       </svg>
 
       <article class="sdlora-node sdlora-node--prior" data-flow-node="prior" data-ui-audit-item>
-        <small>{t('起点 · 已选定状态', 'Start · selected state')}</small>
-        <strong>{t('当前累计 adapter', 'Current cumulative adapter')}</strong>
-        <p>{t('冻结 base model，加载上一轮选定的累计 LoRA。', 'Frozen base model with the cumulative LoRA selected after the prior round.')}</p>
+        <small>{t('起点 · 上一轮选定', 'Start · selected last round')}</small>
+        <strong>{t('上一轮选定的累计 LoRA', 'Cumulative LoRA selected last round')}</strong>
+        <p>{t('基础模型保持不变，加载上一轮已经采用的累计 LoRA。', 'Keep the base model frozen and load the cumulative LoRA adopted last round.')}</p>
       </article>
 
       <article class="sdlora-node sdlora-node--rollout" data-flow-node="rollout" data-ui-audit-item>
-        <small>01 · rollout</small>
-        <strong>{t('做 128 次任务尝试', 'Run 128 task attempts')}</strong>
+        <small>{t('01 · 任务尝试', '01 · task attempts')}</small>
+        <strong>{t('做 128 次 WebShop 尝试', 'Run 128 WebShop attempts')}</strong>
         <p>{t('16 个任务 × 每题 8 次；动作、输出、分数和错误全部记录。', '16 tasks × 8; actions, outputs, scores, and errors are all recorded.')}</p>
       </article>
 
       <article class="sdlora-node sdlora-node--clean" data-flow-node="clean" data-ui-audit-item>
-        <small>02 · training data</small>
-        <strong>{t('只让 clean exact success 进入监督训练', 'Only clean exact success becomes supervised training')}</strong>
-        <p>{t('每题取最早一条完整成功；失败、partial、repair、invalid 只留作诊断。', 'Keep the earliest fully checked success per task; failures, partials, repairs, and invalids remain diagnostic.')}</p>
+        <small>{t('02 · 训练数据', '02 · training data')}</small>
+        <strong>{t('每题只选一条通过全部检查的成功', 'Use one fully checked success per task')}</strong>
+        <p>{t('取最早一条；失败、部分成功、修复过的输出和无效运行只留作分析。', 'Take the earliest one; failures, partial successes, repaired outputs, and invalid runs stay as diagnostics.')}</p>
       </article>
 
       <aside class="sdlora-node sdlora-node--replay" data-flow-node="replay" data-ui-audit-item>
-        <small>{t('旁路输入 · bounded replay', 'Side input · bounded replay')}</small>
-        <strong>{t('上一版 adapter 带来的旧经验', 'Old experience carried by the prior adapter')}</strong>
-        <p>{t('最多回放 64 条旧经验；它从旁边加入训练，而不是假装成当前 rollout。', 'Replay up to 64 old examples; they join training from the side rather than pretending to be current rollouts.')}</p>
+        <small>{t('旁路 · 旧经验回放', 'Side input · old-example replay')}</small>
+        <strong>{t('最多带回 64 条旧经验', 'Bring back up to 64 old examples')}</strong>
+        <p>{t('它们和本轮成功样本一起训练，但不算本轮任务尝试。', 'They train alongside this round’s successful examples, but they are not current-round attempts.')}</p>
       </aside>
 
       <article class="sdlora-node sdlora-node--update" data-flow-node="update" data-testid="sdlora-direction-magnitude-core" data-ui-audit-item>
-        <small>03 · SD-LoRA update</small>
-        <strong>{t('训练一个新方向，同时重调所有方向的幅度', 'Learn one new direction and rebalance every direction')}</strong>
+        <small>{t('03 · SD-LoRA 更新', '03 · SD-LoRA update')}</small>
+        <strong>{t('旧方向不改；学一个新方向；重新调整所有方向的影响大小', 'Keep old directions fixed, learn one new direction, and rebalance each direction’s influence')}</strong>
         <div class="sdlora-update-grid" aria-label={t('SD-LoRA 参数内部', 'Inside the SD-LoRA update')}>
-          <span><b>W₀</b>{t('冻结', 'frozen')}</span>
-          <span><b>D₁…Dₜ₋₁</b>{t('方向冻结', 'directions frozen')}</span>
-          <span><b>Dₜ ← BₜAₜ</b>{t('本轮学习', 'learn this round')}</span>
-          <span><b>α₁ · α₂ · … · αₜ</b>{t('全部幅度重学', 'All magnitudes relearned')}</span>
+          <span><b>W₀</b>{t('基础模型不动', 'base stays fixed')}</span>
+          <span><b>D₁…Dₜ₋₁</b>{t('旧方向不动', 'old directions stay fixed')}</span>
+          <span><b>Dₜ ← BₜAₜ</b>{t('本轮新学', 'learned this round')}</span>
+          <span><b>α₁ · α₂ · … · αₜ</b>{t('重新调整影响大小', 'rebalance influence')}</span>
         </div>
         <code>Dₜ = BₜAₜ / ‖BₜAₜ‖<sub>F</sub>　→　ΔWₜ = Σ αᵢDᵢ</code>
       </article>
 
       <article class="sdlora-node sdlora-node--candidate" data-flow-node="candidate" data-ui-audit-item>
-        <small>04 · candidate</small>
-        <strong>{t('得到候选累计 adapter', 'Produce a candidate cumulative adapter')}</strong>
-        <p>{t('所有方向折成一份兼容 PEFT 的累计 LoRA。到这里，SD-LoRA 训练结束。', 'All directions fold into one PEFT-compatible cumulative LoRA. SD-LoRA training ends here.')}</p>
+        <small>{t('04 · 候选参数', '04 · candidate parameters')}</small>
+        <strong>{t('得到一份新的累计 LoRA', 'Produce a new cumulative LoRA')}</strong>
+        <p>{t('把所有方向合成一份 LoRA。训练到这里结束，但还没决定下一轮是否使用它。', 'Combine all directions into one LoRA. Training ends here, but the next round has not adopted it yet.')}</p>
       </article>
 
       <article class="sdlora-node sdlora-node--direct" data-flow-node="directapply" data-ui-audit-item>
-        <small>{t('当前主线', 'Current path')}</small>
+        <small>{t('当前做法', 'Current rule')}</small>
         <strong>DirectApply</strong>
-        <p>{t('检查通过后采用新候选。', 'Adopt the new candidate after checks.')}</p>
+        <p>{t('检查通过，下一轮用新参数。', 'After checks, the next round uses the new parameters.')}</p>
       </article>
 
       <article class="sdlora-node sdlora-node--gdr" data-flow-node="gdr" data-ui-audit-item>
-        <small>{t('历史本地规则', 'Historical local rule')}</small>
+        <small>{t('历史本地做法', 'Historical local rule')}</small>
         <strong>GDR-v1</strong>
-        <p>{t('先做 16-task probe，再选新/旧状态。', 'Run a 16-task probe, then choose new or old state.')}</p>
+        <p>{t('先用 16 个任务小测，再选新旧参数。', 'Probe 16 tasks, then choose new or old parameters.')}</p>
       </article>
 
       <article class="sdlora-node sdlora-node--next" data-flow-node="next" data-ui-audit-item>
-        <small>Round t + 1</small>
-        <strong>{t('下一轮使用选定状态', 'The next round uses the selected state')}</strong>
-        <p>{t('新的行为产生新的成功/失败证据，沿回环再次进入 rollout。', 'New behavior produces new success/failure evidence and follows the return route into rollout again.')}</p>
+        <small>{t('下一轮', 'Next round')}</small>
+        <strong>{t('用选定的参数继续跑', 'Continue with the selected parameters')}</strong>
+        <p>{t('再做下一批 128 次任务尝试，循环继续。', 'Run the next 128 task attempts and continue the loop.')}</p>
       </article>
     </div>
 
     <div class="sdlora-map__mobile" data-flow-layout="mobile">
       <article class="sdlora-mobile-node" data-flow-node="prior-mobile">
-        <small>{t('起点', 'Start')}</small><strong>{t('当前累计 adapter', 'Current cumulative adapter')}</strong>
+        <small>{t('起点', 'Start')}</small><strong>{t('上一轮选定的累计 LoRA', 'Cumulative LoRA selected last round')}</strong>
       </article>
-      <svg class="sdlora-mobile-edge" viewBox="0 0 40 44" role="img" aria-label={t('进入 rollout', 'to rollout')}><path data-edge="prior-rollout-mobile" d="M20 2 V32"/><path d="M14 26 L20 34 L26 26"/></svg>
+      <svg class="sdlora-mobile-edge" viewBox="0 0 40 44" role="img" aria-label={t('开始做任务尝试', 'start task attempts')}><path data-edge="prior-rollout-mobile" d="M20 2 V32"/><path d="M14 26 L20 34 L26 26"/></svg>
 
       <article class="sdlora-mobile-node" data-flow-node="rollout-mobile">
-        <small>01 · rollout</small><strong>{t('128 次任务尝试', '128 task attempts')}</strong><p>{t('16 个任务 × 每题 8 次。', '16 tasks × 8.')}</p>
+        <small>{t('01 · 任务尝试', '01 · task attempts')}</small><strong>{t('128 次任务尝试', '128 task attempts')}</strong><p>{t('16 个任务 × 每题 8 次。', '16 tasks × 8.')}</p>
       </article>
-      <svg class="sdlora-mobile-edge" viewBox="0 0 40 44" role="img" aria-label={t('筛选 clean success', 'select clean success')}><path data-edge="rollout-clean-mobile" d="M20 2 V32"/><path d="M14 26 L20 34 L26 26"/></svg>
+      <svg class="sdlora-mobile-edge" viewBox="0 0 40 44" role="img" aria-label={t('选出通过全部检查的成功', 'select fully checked success')}><path data-edge="rollout-clean-mobile" d="M20 2 V32"/><path d="M14 26 L20 34 L26 26"/></svg>
 
       <article class="sdlora-mobile-node" data-flow-node="clean-mobile">
-        <small>02 · training data</small><strong>{t('clean exact success', 'clean exact success')}</strong><p>{t('失败和部分成功保留作诊断，不直接监督训练。', 'Failures and partial successes remain diagnostic rather than directly supervising training.')}</p>
+        <small>{t('02 · 训练数据', '02 · training data')}</small><strong>{t('通过全部检查的成功', 'Fully checked success')}</strong><p>{t('每题取最早一条；其他结果只留作分析。', 'Take the earliest one per task; other results stay for diagnostics.')}</p>
       </article>
 
       <div class="sdlora-mobile-join">
-        <aside class="sdlora-mobile-side" data-flow-node="replay-mobile"><small>replay</small><strong>{t('≤64 条旧经验', '≤64 old examples')}</strong></aside>
-        <svg viewBox="0 0 64 88" role="img" aria-label={t('旧经验从旁路加入训练', 'bounded replay joins training from the side')}><path data-edge="replay-update-mobile" d="M4 28 H36 Q52 28 52 44 V58"/><path d="M46 52 L52 60 L58 52"/></svg>
+        <aside class="sdlora-mobile-side" data-flow-node="replay-mobile"><small>{t('旧经验回放', 'old-example replay')}</small><strong>{t('最多 64 条', 'up to 64')}</strong></aside>
+        <svg viewBox="0 0 64 88" role="img" aria-label={t('旧经验从旁边一起参加训练', 'old examples join training from the side')}><path data-edge="replay-update-mobile" d="M4 28 H36 Q52 28 52 44 V58"/><path d="M46 52 L52 60 L58 52"/></svg>
         <article class="sdlora-mobile-node sdlora-mobile-node--update" data-flow-node="update-mobile">
-          <small>03 · SD-LoRA update</small><strong>{t('旧方向冻结；学 Dₜ；重调全部 α', 'Freeze old directions; learn Dₜ; relearn every α')}</strong><code>ΔWₜ = Σ αᵢDᵢ</code>
+          <small>{t('03 · SD-LoRA 更新', '03 · SD-LoRA update')}</small><strong>{t('旧方向不改；学一个新方向；重调各方向影响大小', 'Keep old directions fixed; learn one new direction; rebalance their influence')}</strong><code>ΔWₜ = Σ αᵢDᵢ</code>
         </article>
       </div>
 
-      <svg class="sdlora-mobile-edge" viewBox="0 0 40 44" role="img" aria-label={t('形成候选 adapter', 'produce candidate adapter')}><path data-edge="update-candidate-mobile" d="M20 2 V32"/><path d="M14 26 L20 34 L26 26"/></svg>
-      <article class="sdlora-mobile-node" data-flow-node="candidate-mobile"><small>04 · candidate</small><strong>{t('候选累计 adapter', 'Candidate cumulative adapter')}</strong><p>{t('训练完成不等于正式采用。', 'Training finished does not mean state adopted.')}</p></article>
+      <svg class="sdlora-mobile-edge" viewBox="0 0 40 44" role="img" aria-label={t('形成候选参数', 'produce candidate parameters')}><path data-edge="update-candidate-mobile" d="M20 2 V32"/><path d="M14 26 L20 34 L26 26"/></svg>
+      <article class="sdlora-mobile-node" data-flow-node="candidate-mobile"><small>{t('04 · 候选参数', '04 · candidate parameters')}</small><strong>{t('新的累计 LoRA', 'New cumulative LoRA')}</strong><p>{t('训练完成，但还没决定下一轮是否使用它。', 'Training is done, but the next round has not adopted it yet.')}</p></article>
 
-      <div class="sdlora-mobile-branch" aria-label={t('状态准入分支', 'state-admission branch')}>
-        <svg class="sdlora-mobile-branch__split" viewBox="0 0 300 54" role="img" aria-label={t('候选状态分成 DirectApply 与 GDR-v1', 'candidate branches to DirectApply and GDR-v1')}>
+      <div class="sdlora-mobile-branch" aria-label={t('下一轮用新参数还是旧参数', 'choose new or old parameters for the next round')}>
+        <svg class="sdlora-mobile-branch__split" viewBox="0 0 300 54" role="img" aria-label={t('两种做法决定下一轮参数', 'two rules choose the next-round parameters')}>
           <path data-edge="candidate-directapply-mobile" d="M150 2 V20 H72 V42"/><path d="M66 36 L72 44 L78 36"/>
           <path data-edge="candidate-gdr-mobile" d="M150 2 V20 H228 V42"/><path d="M222 36 L228 44 L234 36"/>
         </svg>
         <div class="sdlora-mobile-branch__choices">
-          <article><small>{t('当前主线', 'Current')}</small><strong>DirectApply</strong></article>
-          <article><small>{t('历史本地规则', 'Historical')}</small><strong>GDR-v1</strong></article>
+          <article><small>{t('当前做法', 'Current rule')}</small><strong>DirectApply</strong></article>
+          <article><small>{t('历史本地做法', 'Historical local rule')}</small><strong>GDR-v1</strong></article>
         </div>
-        <svg class="sdlora-mobile-branch__join" viewBox="0 0 300 54" role="img" aria-label={t('两个分支汇合为下一轮状态', 'both branches join the next-round state')}>
+        <svg class="sdlora-mobile-branch__join" viewBox="0 0 300 54" role="img" aria-label={t('选定参数后进入下一轮', 'selected parameters enter the next round')}>
           <path data-edge="directapply-next-mobile" d="M72 2 V18 H150 V42"/><path data-edge="gdr-next-mobile" d="M228 2 V18 H150 V42"/><path d="M144 36 L150 44 L156 36"/>
         </svg>
       </div>
 
-      <article class="sdlora-mobile-node" data-flow-node="next-mobile"><small>Round t + 1</small><strong>{t('下一轮使用选定状态', 'Next round uses the selected state')}</strong></article>
-      <svg class="sdlora-mobile-return" viewBox="0 0 320 72" role="img" aria-label={t('下一轮回到任务尝试', 'next round returns to task attempts')}>
+      <article class="sdlora-mobile-node" data-flow-node="next-mobile"><small>{t('下一轮', 'Next round')}</small><strong>{t('用选定的参数继续跑', 'Continue with the selected parameters')}</strong></article>
+      <svg class="sdlora-mobile-return" viewBox="0 0 320 72" role="img" aria-label={t('下一轮继续做任务尝试', 'next round continues with task attempts')}>
         <path data-edge="round-return-mobile" d="M286 10 H64 Q24 10 24 42 H236"/>
         <path d="M228 36 L238 42 L228 48"/>
-        <text x="78" y="64">{t('回到下一轮 128 次任务尝试', 'return to the next 128 attempts')}</text>
+        <text x="78" y="64">{t('再做 128 次任务尝试', 'run 128 task attempts again')}</text>
       </svg>
     </div>
   </figure>
 
   <div class="sdlora-legend" aria-label={t('图例', 'Legend')}>
     <span data-kind="main">{t('主流程', 'main path')}</span>
-    <span data-kind="side">{t('旁路输入', 'side input')}</span>
-    <span data-kind="branch">{t('状态分支', 'state branch')}</span>
-    <span data-kind="return">{t('下一轮回环', 'round return')}</span>
+    <span data-kind="side">{t('旧经验回放', 'old-example replay')}</span>
+    <span data-kind="branch">{t('新旧参数选择', 'new/old parameter choice')}</span>
+    <span data-kind="return">{t('回到下一轮', 'return to next round')}</span>
   </div>
 </section>
 
