@@ -149,6 +149,20 @@ A paper can use multiple models in different roles: actor/policy, teacher, criti
 
 Do not reduce paper adoption to “paper uses model X” when the role changes the methodological meaning.
 
+### Scientific chronology is scientific meaning
+
+When a research page explains a frozen experiment in plain language, the order of events is part of the scientific claim. Do not reorder training, sealing, diagnostics, candidate rejection/adoption, final-panel access, or archival steps merely to improve narrative flow.
+
+Before publishing or approving a simplified research explanation:
+
+1. resolve the canonical experiment authority and write down the event order it actually supports;
+2. compare every summary surface that states the sequence, especially the hero/lede, overview/flow, result interpretation, and captions;
+3. treat contradictions between those surfaces as a research-integrity bug even when every individual sentence is locally plausible;
+4. when the sequence is stable and important, add a focused regression that asserts the required order or rejects the known reversed wording.
+
+A green build, browser suite, or deployment proves the artifact passed those checks; it does not by itself prove that two prose sections tell the same scientific story. Exact-head CI is release evidence, not a substitute for semantic consistency review.
+
+
 ## Presentation order
 
 For research decision pages, prefer this cognitive order:
