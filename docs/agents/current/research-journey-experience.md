@@ -96,4 +96,10 @@ Navigation acceptance must cover both sides of the split: at least one `flow` ro
 
 Do not remove useful local detail merely because two routes mention the same noun. Duplication means the same explanatory object is competing in multiple places. A short contextual summary, metric table, or link is allowed when it serves the current route's distinct job.
 
+### Navigation demotion is not capability deletion
+
+When the owner asks to remove an object or route from a navigation bar, interpret that as removing **navigation promotion** unless they also ask to delete the underlying capability/content. Audit every shared navigation surface that can expose the same direct destination — desktop header/resource menu, mobile menu, local child navigation, and their visible summary/meta copy — so the unwanted entry does not survive in a sibling shell.
+
+At the same time, preserve distinct task actions and contextual discovery unless they were explicitly included in the removal request. A catalog route may disappear from shared navigation while the route itself, search, comparison tools, experiment-specific links, and in-context references remain valid. Acceptance needs both halves: a negative assertion that the unwanted direct destination is absent from all relevant navigation surfaces, and a positive-control assertion that the intended route/task/contextual path still works.
+
 Likewise, do not flatten the two research journeys simply because every route is related to SEED × OpenEvo. The question is not whether routes share a topic; it is whether they serve the same reader task.
