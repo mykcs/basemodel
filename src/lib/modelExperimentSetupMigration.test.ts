@@ -9,6 +9,7 @@ const researchCore = read('src/components/research/SeedOpenEvoResearchPageCore.a
 const hub = read('src/components/research/SeedOpenEvoResearchHub.astro');
 const missionHero = read('src/components/research/SeedOpenEvoMissionHero.astro');
 const nav = read('src/components/research/SeedOpenEvoResearchNav.astro');
+const header = read('src/components/Header.astro');
 const sitemap = read('src/lib/sitemapRoutes.ts');
 
 describe('Qwen2.5-3B-Instruct experiment setup migration', () => {
@@ -22,12 +23,16 @@ describe('Qwen2.5-3B-Instruct experiment setup migration', () => {
     expect(researchCore).not.toContain('model-name-diagram');
   });
 
-  it('routes model discovery and the research flow to the same canonical section', () => {
+  it('keeps model discovery available without promoting it into shared navigation', () => {
     const target = "/models/qwen2-5-3b-instruct/#experiment-setup";
     expect(modelsIndex).toContain(target);
     expect(hub).toContain(target);
     expect(missionHero).toContain(target);
-    expect(nav).toContain(target);
+    expect(nav).not.toContain(target);
+    expect(nav).not.toContain("label: t('模型', 'Model')");
+    expect(header).not.toContain("{ path: '/models/'");
+    expect(header).not.toContain("模型、论文、实验、证据与开发");
+    expect(header).not.toContain("Models, papers, experiments, evidence, and development");
     expect(sitemap).toContain("bilingualCompatibilityPaths");
     expect(sitemap).toContain("'/research/seed-openevo/flow/base-model/'");
     const staticRoutes = sitemap.slice(0, sitemap.indexOf('export const bilingualCompatibilityPaths'));
