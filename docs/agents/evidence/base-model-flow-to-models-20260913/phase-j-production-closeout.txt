@@ -1,0 +1,34 @@
+Base Model Flow -> Models migration / Production closeout
+Date: 2026-09-13
+
+Original release PR
+- PR #658: merged=true, closed=true
+- merged_at: 2026-09-13T00:51:19Z
+- merge commit: 19fc39971874644ecd30ae6ee7bb0f468373f1d9
+- PR head: e3d79ff9aa428b9c843389e93ee09ee6c6f6accb
+- GitHub reviews: 0; unresolved review threads: 0
+
+Vercel Production
+- project: basemodel-preview / prj_UQRbjvnik0lW21LrzotTLPhKkgAK
+- deployment: dpl_FDBZ4sJ4hCftPXBkszdQEdKYkGvD
+- source Git SHA: 19fc39971874644ecd30ae6ee7bb0f468373f1d9
+- target: production
+- state / readyState: READY / READY
+- canonical alias: https://basemodel-preview.vercel.app
+
+Production browser smoke (390x844)
+- /models/: H1=1, scrollWidth=clientWidth=390, experiment-model link present.
+- /en/models/: H1=1, scrollWidth=clientWidth=390.
+- /models/qwen2-5-3b-instruct/: H1=1, #experiment-setup present, no page overflow.
+- /en/models/qwen2-5-3b-instruct/: H1=1, #experiment-setup present, no page overflow.
+- zh legacy URL with and without trailing slash -> /models/qwen2-5-3b-instruct/.
+- en legacy URL with and without trailing slash -> /en/models/qwen2-5-3b-instruct/.
+
+Production SEO/indexing contract on Qwen zh page
+- canonical = https://basemodel-preview.vercel.app/models/qwen2-5-3b-instruct/
+- hreflang zh-CN = same Chinese canonical
+- hreflang en = https://basemodel-preview.vercel.app/en/models/qwen2-5-3b-instruct/
+- hreflang x-default = Chinese canonical
+- robots noindex meta absent, as required for Production.
+
+Release verdict: PASS.
