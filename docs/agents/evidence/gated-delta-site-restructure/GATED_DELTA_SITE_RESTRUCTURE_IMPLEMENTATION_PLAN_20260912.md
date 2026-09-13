@@ -422,11 +422,11 @@ Capability lobby 需要同时让读者看见“历史 GDR-v1 / DirectApply”与
 - [x] H1. 发布前再次刷新 BaseModel `main` 与 upstream Gated-Delta scientific head；若 scientific state 前进，只更新 current snapshot / current-facing copy，不篡改历史页面。
 - [x] H2. rebase / reconcile current `main` 只在语义兼容时进行；遇到 overlapping research-page PR 先 cold-read semantic delta。
 - [x] H3. commit/push final candidate；PR body 写清 Page Expression Brief、route ownership、scientific source head、validation evidence。
-- [ ] H4. ordinary public GitHub Actions PR preflight PASS。
-- [ ] H5. owner 需要视觉复核时先用 review-only Preview；只有 merge-ready candidate 才触发 `ci/vercel-gate-final`。
-- [ ] H6. exact-head Vercel required check PASS，打开托管 current/historical 两个目标 route 做 real-route smoke。
-- [ ] H7. merge 前重新确认 PR head / current main / upstream science freshness；使用 expected-head-safe merge path。
-- [ ] H8. Production READY 后实际打开两个正式 route，确认 canonical/hreflang、核心 copy、历史/current 交叉链接与 200 状态。
+- [x] H4. ordinary public GitHub Actions PR preflight PASS。
+- [x] H5. owner 需要视觉复核时先用 review-only Preview；只有 merge-ready candidate 才触发 `ci/vercel-gate-final`。
+- [x] H6. exact-head Vercel required check PASS，打开托管 current/historical 两个目标 route 做 real-route smoke。
+- [x] H7. merge 前重新确认 PR head / current main / upstream science freshness；使用 expected-head-safe merge path。
+- [x] H8. Production READY 后实际打开两个正式 route，确认 canonical/hreflang、核心 copy、历史/current 交叉链接与 200 状态。
 
 ## 11. 验收标准（Definition of Done）
 
@@ -529,3 +529,16 @@ This is the exact pre-commit tree intended for H3. After H3, any head-changing c
 - Final authority-only refresh changed only `src/data/gatedDeltaSdLoraPublicationSnapshot.ts` (head/check time/evidence URLs); scientific polarity and rendered mechanism copy did not change.
 - After that refresh, `npm run verify:fast` correctly failed closed to the full deterministic repository gate and PASSed; targeted current/history browser regression remained **18/18 PASS**.
 - This receipt commit is plan/documentation-only. H4/H6 must be evaluated against the exact head produced by this receipt commit; earlier provider PASS from `3de51ade…` is not reused.
+
+
+### H4–H8 publication and Production closeout — 2026-09-14
+
+- Accepted product candidate: `19e9616a56b42b5f42b70b7f91623015b5dafb10`, based on `main@69b75125d4fe4b13b22321e1f9f3ea20b02b07d5`; upstream scientific authority was re-read as `mykcs/openevo-experiment@fb43e2176d0b911d5da0c349124d0effe012eb55` / PR #461 before integration.
+- H4: GitHub Actions **Public PR CI run #266** completed `success` on that exact candidate; deterministic gate, all four browser shards, and aggregate `public-ci-gate` passed.
+- H5: no extra owner visual-review request was pending. The persistent final-provider gate was requested only after the candidate was merge-ready; `ci/vercel-gate-base` represented `69b75125…` and `ci/vercel-gate-final` represented exact head `19e9616a…`.
+- H6: exact-head Vercel deployment `dpl_CDTFbMG55hXTaaUx6bEWR9ssQ2pT` reached **READY**, with `githubCommitRef=ci/vercel-gate-final` and `githubCommitSha=19e9616a…`; the GitHub required `Vercel` status was `success`. Provider-hosted browser acceptance exercised the current/history Gated-Delta routes, including zh/en, cross-links, no-JS, dark-theme and layout cases. The protected Preview URL returned SSO redirects to an unauthenticated external fetch, so that redirect was not misreported as a route-200 receipt.
+- H7: immediately before merge, PR #688 still had exact head `19e9616a…`, current base `69b75125…`, no blocking conversation/review threads, and scientific head `fb43e217…`. Merge used GitHub's expected-head guard and produced `bf9563474ec3656ba717817f1cefb32ee74ad3a6`.
+- H8: Production deployment `dpl_FWhudviBqJDiAA8JJVH69huEngfV` reached **READY** for `main@bf956347…` and owns `basemodel-preview.vercel.app`. Production smoke returned HTTP **200** for all four canonical routes: zh/en current `gated-delta-sd-lora/` and zh/en historical `gdr-directapply/`. Each response carried the expected self-canonical plus reciprocal `zh-CN` / `en` / `x-default` hreflang links, and current/history cross-links were present.
+- Production copy preserved the scientific boundary: current page says real recurrent parameter-state execution is proven but full four-round paired D1 is incomplete and no efficacy/final claim is allowed; Task Vector / score / candidate probe remain outside runtime causal control. Historical page remains candidate-admission / DirectApply only and preserves `44 candidates / 7 adopted`, fixed 16-task probe, and the non-comparable-final boundary.
+- Post-smoke freshness check: PR #461 / branch `research/gated-delta-sd-lora-event-write-202609120918` still points to `fb43e217…` (`evidence: seal formal paired D1 Round0`); Round 0 is sealed, but the full four-round paired D1 is still incomplete and the final panel remains closed. No website efficacy claim is promoted.
+- This closeout change is **receipt-only documentation** under `docs/agents/evidence/`; it changes no `src/`, test, build, provider, route, or scientific-projection file. Therefore it records the already accepted product/Production state without creating a new product candidate that would recursively invalidate H4–H8.
