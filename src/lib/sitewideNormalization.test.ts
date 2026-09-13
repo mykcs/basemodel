@@ -56,4 +56,20 @@ describe('sitewide normalization first repair batch', () => {
     expect(alfworldEn).toContain('title="ALFWorld tasks and evaluation"');
     expect(alfworldEn).toContain('text-based embodied-task benchmark');
   });
+
+  it('introduces SEED and OpenEvo as methods before internal mechanism jargon', () => {
+    expect(detail).toContain("title: t('SEED 学习流程与参数更新', 'SEED learning flow and parameter updates')");
+    expect(detail).toContain('SEED 是一种让 Agent 用自己的任务轨迹继续训练 policy 的方法');
+    expect(detail).toContain("title: t('OpenEvo 跨任务演化流程', 'OpenEvo cross-task evolution flow')");
+    expect(detail).toContain('OpenEvo 是一个让 Agent 在任务之间保留并验证学习结果的演化框架');
+
+    const seed = SITE_READER_CONTRACTS.find((row) => row.id === 'flow-seed');
+    const openevo = SITE_READER_CONTRACTS.find((row) => row.id === 'flow-openevo');
+    expect(seed?.firstViewportGoal).toContain('SEED 是用任务轨迹继续训练 policy 的方法');
+    expect(seed?.firstViewportSelector).toBe('.plain-detail__header p');
+    expect(openevo?.firstViewportGoal).toContain('OpenEvo 是跨任务演化框架');
+    expect(openevo?.mustStayVisible).toContain('任务内行为与任务后演化边界');
+    expect(openevo?.firstViewportSelector).toBe('.plain-detail__header p');
+  });
+
 });

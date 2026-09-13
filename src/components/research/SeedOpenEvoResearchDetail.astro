@@ -12,12 +12,12 @@ const hasExplainer = Astro.slots.has('default');
 
 const copy: Record<DetailPage, { title: string; lede: string }> = {
   seed: {
-    title: t('SEED 方法与参数更新', 'SEED method and parameter updates'),
-    lede: t('Stage 1 先由 Qwen policy 通过 SEED / verl-agent 的交互 harness 驱动 Princeton WebShop 环境完成 rollout，轨迹封存后才交给外部 GLM-5.2 生成 hindsight skill 并做 SFT；Stage 2 继续使用同一交互合同，但改由当前 policy 自己复盘，再通过 OPD 与 GRPO 更新参数。', 'Stage 1 first lets the Qwen policy complete rollouts in Princeton WebShop through the SEED / verl-agent interaction harness; only after each trajectory is sealed does external GLM-5.2 generate hindsight skills for SFT. Stage 2 keeps the same interaction contract, moves hindsight analysis to the current policy itself, and then updates parameters with OPD and GRPO.'),
+    title: t('SEED 学习流程与参数更新', 'SEED learning flow and parameter updates'),
+    lede: t('SEED 是一种让 Agent 用自己的任务轨迹继续训练 policy 的方法。在这套 WebShop 复现里，Stage 1 先收集 Qwen 完成的购物轨迹，再由外部 GLM-5.2 生成 hindsight skill 做 SFT；Stage 2 改由当前 policy 自己复盘，并通过 OPD 与 GRPO 更新参数。', 'SEED is a method for training an agent policy from its own task trajectories. In this WebShop reproduction, Stage 1 first collects completed Qwen shopping trajectories, then external GLM-5.2 produces hindsight skills for SFT; Stage 2 moves the reflection into the current policy and updates parameters with OPD and GRPO.'),
   },
   openevo: {
-    title: t('OpenEvo 演化流程', 'OpenEvo evolution flow'),
-    lede: t('OpenEvo 以任务边界封存证据，运行演化方法，并让后续任务加载接受的 artifact、adapter 或 revision。', 'OpenEvo seals evidence at task boundaries, runs evolution methods, and lets later tasks load accepted artifacts, adapters, or revisions.'),
+    title: t('OpenEvo 跨任务演化流程', 'OpenEvo cross-task evolution flow'),
+    lede: t('OpenEvo 是一个让 Agent 在任务之间保留并验证学习结果的演化框架：每次任务结束后先封存真实证据，再运行声明的演化方法；只有通过验证的 artifact、adapter 或 revision 才从后续任务开始生效。', 'OpenEvo is an evolution framework for preserving and validating what an agent learns across tasks: each completed task first seals its evidence, then runs the declared evolution method; only validated artifacts, adapters, or revisions activate on later tasks.'),
   },
   benchmarks: {
     title: t('ALFWorld 与 WebShop', 'ALFWorld and WebShop'),
