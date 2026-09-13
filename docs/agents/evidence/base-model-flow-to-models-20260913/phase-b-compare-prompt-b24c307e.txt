@@ -1,0 +1,41 @@
+
+> agent-model-atlas@0.1.0 feedback:cold-read
+> tsx scripts/generate-human-feedback-cold-read.ts models-index --phase=compare
+
+# Phase B · preference comparison · models-index
+Only run this after Phase A answers have been saved.
+Intended audience: 第一次访问、不了解项目内部代号，但具备普通技术阅读能力的读者
+Primary task: 从模型目录中找到适合继续查看的模型
+First viewport goal: 先知道这是模型目录以及如何筛选
+Must stay visible: 目录对象与筛选含义
+Next step: 开始筛选或选择其他浏览方式
+
+Compare the candidate against these learned preferences:
+- PREF-OBJECT-FIRST 先建立现实对象，再说关系、代号和方法: 零上下文首层先让读者知道对象是什么、比较双方是谁；关系符号、内部路线名和统计方法不能替代对象身份。
+  boundary: 不是禁止关系词；先建立关系两端后，准确关系仍应保留。 / 内部代号在 provenance、复现和审计层仍可精确保留。
+- PREF-DIRECT-FACTS 事实和主题优先于主持人、叙事隐喻和防御性开场: 能直接说做了什么、发生了什么、结果是什么时，不用“怎样读 / 先看 / 分岔 / 这不是”等作者姿态抢第一理解层；作者内部编码、实现参数或基线质量证明也不应为了冲击力抢在真实对象和科学结论之前。
+  boundary: 真实研究问题可以是问句。 / 真正改变科学解释的否定句和 caveat 必须保留，并贴近所约束的 claim。 / 能建立正确心智模型的必要类比不是禁用项。 / LoRA / RL / GDR / TaskVector 等真实技术对象不是禁用项；要删的是不增加信息的英文装饰标签。 / 不是禁止标题出现数字；当数字本身就是主要科研结果且两端对象已经说清时可以前置。像 7<8 这种需要先解释 operands 与 gate 的诊断 shorthand，应先说观众能直接复述的事件，再在正文给精确值。 / 不是禁止模型名出现在标题；如果“7B：结论”只是压缩标签而完整事件句更自然，就优先完整事件句。 / 不是把所有工程/内部信息都后置；如果它本身决定科学有效性、对象身份或因果归因，就必须在相关 claim 附近可见。
+- PREF-FIRST-SCREEN-ATTENTION 一个首屏只承担一个主要理解任务: 字号、加粗、卡片、CTA、导航、空白和内容到达位置都在分配注意力；第一屏应只有一个明显认知中心。参考 Apple 等设计系统时，先转译它怎样帮助人识别、分组、决定和继续，再决定本站自己的视觉实现，不把品牌表面构图当成认知原则。
+  boundary: 不是越少越好；必须默认可见的科学边界、比较双方和当前状态不能为了简洁被藏掉。 / 首屏预算是报警器，不替代真人 cold read。 / 不是禁止留白、大标题、serif、圆角或一屏一页 presentation；当它们服务当前 reader task、分组、阅读节奏或真实 presentation 介质时可以使用，不能因为参考品牌用了就机械复制。
+- PREF-PROGRESSIVE-DISCLOSURE 按阅读时机分层，不把分层本身做成模板: 首层只给开始理解所需的信息；可恢复的背景、provenance 和深层机制后置，但不要机械制造“一句话看懂 / 专业解释”等可见层级。
+  boundary: 不是 minimalism；exactly enough 比“越空越好”更重要。 / 会改变结论含义的 caveat 不能被当成次要背景折叠。 / 工程复现细节可以下沉，但当工程证据改变科学有效性、可识别性或因果归因时，必须回到主叙事保护 claim。
+- PREF-INLINE-TERMINOLOGY 术语在第一次出现的位置就地解释: 能不用内部代号就不用；必须保留时先给人类名称，再在当前句附近解释它在这里做什么。
+  boundary: 不是删除专业词；精确术语在需要时必须保留。 / 集中 glossary 可以做参考工具，但不能成为主阅读路径。 / Agent / SD-LoRA / GDR 这类必要技术对象可以保留；像 composed state 这种只起连接作用、中文一句就能说清的内部英文不应要求观众额外解码。
+
+Pairwise historical preference checks:
+- PAIR-063-HEADING
+  rejected: 三个研究问题怎样连起来
+  accepted: 三个研究问题
+  mechanism: presenter-language, meta-narration
+- PAIR-068-ATTENTION
+  rejected: 研究问题 / 为什么重要 / 从哪里开始 / 什么时候结束 / 现在到哪了
+  accepted: 7B 持续更新参数，并完成最终测试；旧 3B 因购物接口和动作格式问题停止。
+  mechanism: equal-priority-stack, first-screen-attention-competition
+- PAIR-069-VISUAL-CENTER
+  rejected: 先分清两种“新任务”
+  accepted: 训练范围内未见任务与 SEED 验证任务
+  mechanism: instruction-as-heading, attention-misdirection
+
+For every preference, mark pass / intentional-exception / fail with visible evidence.
+For every Gold Pair, mark accepted-like / mixed / rejected-like with visible evidence.
+A PASS cannot hide a claim-changing scientific boundary, contain a failed preference, or look rejected-like against a required Gold Pair.

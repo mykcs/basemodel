@@ -2,7 +2,7 @@
   "schema": "human-preference-candidate-set.v2",
   "contractId": "models-index",
   "task": "move SEED/OpenEVO base-model content into canonical Qwen model record",
-  "exactGitSha": "f425a37f25c6c50b9fa5839104f37ee1a3970c6b",
+  "exactGitSha": "b24c307e56e4a11527474ec34dcec2c46286147f",
   "variants": [
     {
       "id": "A",
@@ -10,7 +10,7 @@
       "attentionCenter": "Model browser title, explanation, and Start filtering models CTA.",
       "informationDensity": "Low first-screen density; experiment-specific context appears one layer later, where a reader looking for model records can discover it without paying an attention tax.",
       "visualLanguage": "Reuse the existing editorial type scale and text-link grammar; no new hero, card wall, badge system, or reference-surface imitation.",
-      "screenshotRef": "docs/agents/evidence/base-model-flow-to-models-20260913/candidate-a-models-index-desktop-current.png",
+      "screenshotRef": "docs/agents/evidence/base-model-flow-to-models-20260913/candidate-a-models-index-desktop-b24c307e.png",
       "predictedFailureFamilies": [
         "attention-tax",
         "internal-detail-promoted-to-primary-attention",
@@ -77,7 +77,6 @@
   ],
   "ownerSawOnlySelectedCandidate": true,
   "notes": [
-    "Selected candidate A was re-rendered from runtime source SHA f425a37f25c6c50b9fa5839104f37ee1a3970c6b after the final first-use terminology correction. The selected screenshot reference is exact-source evidence for the current candidate.",
-    "B/C remain discarded layout witnesses for the earlier pairwise layout comparison; the later edits clarify shared terminology without changing the A/B/C placement hypotheses."
+    "Final candidate A re-rendered on exact product SHA b24c307e56e4a11527474ec34dcec2c46286147f after the current-main refresh and the two migration-scoped layout corrections. B/C remain discarded layout witnesses; selected A still keeps the experiment-model entry below the phone first screen while placing it before catalog-audit detail."
   ]
 }

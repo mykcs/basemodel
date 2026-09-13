@@ -118,7 +118,7 @@ rg "flow/base-model|page === 'base-model'|model-name-diagram" src
 - [x] Research Flow 实测所有 Qwen 模型入口统一指向同一新地址。
 - [x] 旧中文 URL 实测最终落到新模型详情锚点。
 
-最终产品源 SHA `f425a37f25c6c50b9fa5839104f37ee1a3970c6b` 上又执行完整 global-risk Gate：`npm run verify:deploy`、`npm run build`、`npm run ui:overflow-preflight`、`npm run test:ui:all` 全部 PASS；Chromium + WebKit 共 **416/416** PASS，migration-specific ui-safety 在两浏览器均 PASS。摘要保存在 `docs/agents/evidence/base-model-flow-to-models-20260913/final-ui-gate-current.txt`。
+最终产品源 SHA `b24c307e56e4a11527474ec34dcec2c46286147f`（已包含 live `main` `b0eb5d5558e1a43455fa1f65313c2ac18b369447`）上执行最终 global-risk Gate：`npm run verify:deploy`、`npm run build`、`npm run ui:overflow-preflight` 全部 PASS；Playwright 默认端口被另一个已存在的 GDKVM preview 占用，因此没有杀未知/并发进程，而是改用空闲 `PLAYWRIGHT_PORT=62772` 重跑 `npm run test:ui:all`，Chromium + WebKit 共 **416/416** PASS。此前 provider 失败的 phone first-screen Reader Contract 在两浏览器均 PASS。摘要保存在 `docs/agents/evidence/base-model-flow-to-models-20260913/final-ui-gate-current.txt`。
 
 已完成整仓证据：
 
@@ -149,7 +149,7 @@ Strict copy invariant failures: 0
 - [x] 再运行 Phase B compare，把 blind 观察与 Reader Contract / 历史偏好对照。
 - [x] 独立 reviewer 可用；已生成并通过 final preference judge receipt。
 
-> **HPL scope correction（2026-09-13）**：三候选比较的是 `/models/` 上实验模型入口的层级与首屏注意力，因此 candidate/cold-read contract 应为 `models-index`，不是整页 `model-detail`。早期用 `model-detail` 得到的 NEEDS_FIX 不作为放行证据；已在最终产品源 SHA `f425a37f25c6c50b9fa5839104f37ee1a3970c6b` 上重跑 `models-index` blind-first review。独立 Phase B 给出 `MIGRATION_VERDICT: PASS`，final judge receipt PASS。
+> **HPL scope correction（2026-09-13）**：三候选比较的是 `/models/` 上实验模型入口的层级与首屏注意力，因此 candidate/cold-read contract 应为 `models-index`，不是整页 `model-detail`。早期用 `model-detail` 得到的 NEEDS_FIX 不作为放行证据；已在最终产品源 SHA `b24c307e56e4a11527474ec34dcec2c46286147f` 上重跑 `models-index` blind-first review。独立 Phase B 给出 `MIGRATION_VERDICT: PASS`，final judge receipt PASS。
 
 最终 HPL 证据：`docs/agents/evidence/base-model-flow-to-models-20260913/`。
 
@@ -180,14 +180,15 @@ npm run feedback:judge -- /tmp/model-migration-preference-judge.json
 
 ### 当前 durable evidence
 
-- current base: `68f6cc3118bf0515cef7aa4ceaa2fd7f4349f259`
-- current integration head before this evidence update: `627ed4170ca4c0edc9c4065453e1271912d1a984`
+- current base: `b0eb5d5558e1a43455fa1f65313c2ac18b369447`
+- current product/integration head before this evidence update: `b24c307e56e4a11527474ec34dcec2c46286147f`
 - PR: `#658` — `Move SEED/OpenEVO base-model content into Models`
 - current-base ancestry check: `origin/main` is an ancestor of the branch head
 - current-base focused structural tests: 27/27 PASS
 - current-base `npm run check`: 0 errors / 0 warnings; 2 pre-existing deprecation hints
 - latest `origin/main` is an ancestor of the task branch; merge-tree conflict scan is clean
 - the two former remote-only task commits are patch-equivalent (`git cherry` = `-`), then remote task ancestry was merged with an unchanged tree; no unknown concurrent semantics were overwritten
+- latest live `main` `b0eb5d55…` is an ancestor of `b24c307e…`; final 416/416 browser matrix was rerun after that current-main refresh and after the two phone/entry-order corrections
 
 ## 11. Phase I — Vercel final gate
 

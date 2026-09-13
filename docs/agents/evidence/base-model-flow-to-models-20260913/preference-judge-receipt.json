@@ -1,77 +1,77 @@
 {
   "schemaVersion": 1,
   "contractId": "models-index",
-  "exactHead": "f425a37f25c6c50b9fa5839104f37ee1a3970c6b",
-  "candidateUrl": "http://127.0.0.1:4340/models/",
+  "exactHead": "b24c307e56e4a11527474ec34dcec2c46286147f",
+  "candidateUrl": "http://127.0.0.1:4367/models/",
   "reviewer": {
     "kind": "independent-agent",
-    "label": "Codex independent cold reader"
+    "label": "Independent Codex/Sol cold-read review"
   },
   "blindCompletedBeforePreferenceReveal": true,
   "blind": {
-    "about": "这是一个模型目录，帮助读者按厂商、架构和实验需求筛选模型。",
-    "firstAttention": "第一眼落在“模型浏览器”大标题，接着是“开始筛选模型”；首屏大片留白也很抢眼。",
-    "mostImportant": "最重要的下一步是“开始筛选模型”，但首屏看不到筛选项或模型示例，无法预判点进去能得到什么。",
-    "machineLike": "“只有重新核对完整家族后才改旗舰（flagship）、退役和完整在售状态”最像机器写的流程说明：修饰多、术语密。",
-    "terminologyFriction": "“研究适用”有解释但仍偏抽象；“一手代码”“完整家族状态”，以及导航里的 SEED、ALFWorld、OpenEvo 仍需要背景。",
-    "competingCenters": "首屏主标题与按钮主次明确；顶部“流程理解图”和“OpenEVO 购物实验”两个跨页入口仍有一些注意力竞争。",
-    "hiddenBoundary": "“当前／最新”只是带日期的快照这一边界可见，没有被隐藏；模型卡日期含义仍是独立目录页歧义。",
-    "suggestedChange": "独立目录页后续可把长篇更新证据下沉到更新记录，并让模型卡更快体现比较价值；这不属于本迁移阻断。",
-    "readingDesireScore": 3,
-    "readingDesireReason": "筛选用途明确，但目录整体证据说明偏长、模型卡比较信息较少。"
+    "about": "这是一个按系列浏览、筛选和比较大量 AI 模型的目录页。",
+    "firstAttention": "注意力先落在模型目录标题和主按钮，随后被密集模型卡片吸引。",
+    "mostImportant": "核心任务仍是找到适合继续查看的模型；当前页提供筛选入口和模型目录。",
+    "machineLike": "独立 reviewer 认为部分目录级说明偏流程化；这是既有目录体验意见，并非 ownership migration 新增主张。",
+    "terminologyFriction": "型号和部分目录技术标签仍要求普通技术背景；本迁移新增的实验入口没有引入额外未解释内部代号。",
+    "competingCenters": "独立 reviewer 指出完整模型卡片墙会分散注意力；实验模型入口本身仍位于首屏之后，不与主 CTA 同屏竞争。",
+    "hiddenBoundary": "未发现本迁移新增内容隐藏许可、证据或科学边界；目录整体的证据边界由既有 catalog/data-status 机制承载。",
+    "suggestedChange": "目录整体未来可进一步优化卡片层级与渐进披露，但不应扩大本次 canonical-owner migration 的范围。",
+    "readingDesireScore": 2,
+    "readingDesireReason": "目录覆盖完整但整体信息密度仍高；这是独立 models-index 体验改进项。"
   },
   "preferenceJudgments": [
     {
       "preferenceId": "PREF-OBJECT-FIRST",
       "verdict": "pass",
-      "evidence": "“模型浏览器”先建立目录对象，随后直接说明厂商、架构、模型类型等筛选维度；内部实验名没有替代主对象。"
+      "evidence": "当前页面先建立模型目录对象；迁移新增的 Qwen2.5-3B-Instruct 实验入口没有抢占主标题或把内部迁移代号放到第一理解层。"
     },
     {
       "preferenceId": "PREF-DIRECT-FACTS",
-      "verdict": "intentional-exception",
-      "evidence": "独立 reviewer 指出目录更新证据仍偏维护规则而非直接模型事实，但明确归类为现有目录内容层问题，未见由本迁移造成或加重。",
-      "exceptionReason": "本 PR 只迁移 Base Model Flow 的 ownership/入口；扩展为重写整个模型目录证据层会越出本次 canonical-owner migration 范围。"
+      "verdict": "pass",
+      "evidence": "可辨认的主标题和实验模型入口都直接命名对象与用途；Phase B 明确没有识别到 migration-specific presenter-language blocker。"
     },
     {
       "preferenceId": "PREF-FIRST-SCREEN-ATTENTION",
-      "verdict": "pass",
-      "evidence": "首屏认知中心仍是“模型浏览器”标题和“开始筛选模型”按钮；实验模型入口被放在首屏之后，没有形成第二个同权重任务。"
+      "verdict": "intentional-exception",
+      "evidence": "独立 reviewer 对整个模型卡片目录的等权密度仍有意见，但本迁移新增实验入口被明确保持在手机首屏之后，不与主筛选 CTA 竞争。",
+      "exceptionReason": "该剩余问题属于既有 models-index 全目录视觉层级；本 PR 已对新增迁移入口执行首屏隔离，不扩展为整个模型目录重设计。"
     },
     {
       "preferenceId": "PREF-PROGRESSIVE-DISCLOSURE",
       "verdict": "intentional-exception",
-      "evidence": "独立 reviewer 认为目录已有长证据段与筛选控件的到达顺序仍可优化，但没有迁移特异证据；本迁移新增实验入口保持在首屏之后并未抢主任务。",
-      "exceptionReason": "保留既有目录证据层，不借迁移任务重构整个 models-index；新增迁移内容自身遵守渐进披露。"
+      "evidence": "Phase B 认为完整型号列表整体仍可进一步分层，但迁移新增实验模型入口已置于首屏之后、且在目录审计证据之前，满足本迁移的阅读时机要求。",
+      "exceptionReason": "完整模型目录的全局分层属于独立产品改进；本任务只负责 Base Model Flow ownership migration。"
     },
     {
       "preferenceId": "PREF-INLINE-TERMINOLOGY",
       "verdict": "intentional-exception",
-      "evidence": "当前迁移相关文案已把“研究适用”解释为是否满足复现/运行实验要求，并把 LoRA、RL、当前代等关键目录术语进一步具体化；独立 reviewer 剩余意见集中在全站/导航既有术语。",
-      "exceptionReason": "剩余 SEED、ALFWorld、OpenEvo 等导航术语属于全站既有导航，不由本迁移引入；本 PR 已完成与新增 models-index 文案直接相关的最小术语修正。"
+      "evidence": "迁移相关文案已说明 Qwen2.5-3B-Instruct 用于 SEED 基准复现与 OpenEVO 演化实验，并把实验设置作为下一步；剩余型号/目录技术标签是既有目录术语。",
+      "exceptionReason": "不借本迁移重写整个模型目录的型号与技术标签体系；新增迁移文案本身保持对象优先。"
     }
   ],
   "pairJudgments": [
     {
       "pairId": "PAIR-063-HEADING",
       "verdict": "accepted-like",
-      "evidence": "主标题直接命名“模型浏览器”，没有“怎样理解/怎样读”式主持人标题。"
+      "evidence": "模型目录标题直接命名真实对象，没有“怎样读/先分清”式主持人标题。"
     },
     {
       "pairId": "PAIR-068-ATTENTION",
       "verdict": "mixed",
-      "evidence": "首屏主任务明确；跨页导航仍有轻度竞争，但新增实验模型入口被放在首屏之后，没有形成多个同级主任务。"
+      "evidence": "完整目录卡片墙仍有整体密度问题，但本迁移新增实验入口不在手机首屏，与主筛选 CTA 不形成同屏等权重堆叠。"
     },
     {
       "pairId": "PAIR-069-VISUAL-CENTER",
       "verdict": "accepted-like",
-      "evidence": "视觉中心是真实模型目录对象；“开始筛选模型”只承担操作按钮功能，没有用阅读指令替代主题。"
+      "evidence": "新增入口直接命名“本研究使用的实验模型”与 Qwen2.5-3B-Instruct，没有用阅读指令替代对象身份。"
     }
   ],
   "scientificBoundary": {
     "verdict": "pass",
-    "evidence": "页面明确说明“当前/最新”只是带日期的目录快照，且本迁移没有改变模型结构化事实、许可证、证据等级或实验结论；未发现迁移特有的隐藏科学边界。"
+    "evidence": "本迁移只改变信息架构归属和入口位置，不改变模型结构化事实、许可证、证据等级或实验结论；Phase B 未识别到 migration-specific hidden scientific boundary。"
   },
   "unresolvedConcerns": [],
   "finalVerdict": "PASS",
-  "rationale": "独立 blind-first 评审对 models-index 整体体验提出既有优化建议，但 Phase B 明确判定没有证据支持迁移专属偏好失败、迁移专属 rejected-like 或隐藏科学边界；新增实验入口保持首屏之后，ownership migration 可通过。"
+  "rationale": "Blind-first reviewer 对 models-index 整体目录密度仍提出独立优化建议；Phase B 明确没有识别到迁移专属 blocker。最新产品树把实验入口保持在手机首屏之后并置于目录审计证据之前，因此 canonical-owner migration 可放行，目录整体重设计留作独立任务。"
 }
