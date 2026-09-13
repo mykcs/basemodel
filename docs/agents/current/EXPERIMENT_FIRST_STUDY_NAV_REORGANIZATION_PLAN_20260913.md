@@ -93,9 +93,9 @@
 - [x] Reader Contract 定向测试：desktop / phone / briefing 共 3/3 PASS；Study 的 5-entry 首屏预算已与新任务一致。
 - [x] `npm run verify:deploy` 最终 exact tree PASS；证据：候选 `9768ccb39e7f11207493bf0c0cda82702b070f99` 已合入当时最新 `origin/main@57e3db8f4f2e2711334b5026cc01523e5a55ef08`（`MAIN_IS_ANCESTOR=yes`），并在该 exact tree 执行 `npm run verify:deploy` exit 0；Astro check 0 errors / 0 warnings（2 个既有 hints），其余 deterministic audits/tests 全部 PASS。
 - [x] `npm run ui:overflow-preflight` 最终 exact tree PASS。
-- [ ] `npm run test:ui:all` 最终 exact tree 在可用的 Chromium + WebKit runner 上完整 PASS。已有前一 runtime candidate 证据：414 / 414 PASS；首次固定端口被其他项目占用后使用空闲 `PLAYWRIGHT_PORT` 重跑，环境阻断未被写成 PASS。
+- [x] `npm run test:ui:all` 最终 runtime tree 在可用的 Chromium + WebKit runner 上完整 PASS。证据：候选 runtime tree `9768ccb39e7f11207493bf0c0cda82702b070f99`（包含当时最新 `origin/main@57e3db8f4f2e2711334b5026cc01523e5a55ef08`）使用空闲 `PLAYWRIGHT_PORT=58350` 重跑完整矩阵，Chromium + WebKit 共 **426 / 426 PASS**、exit 0；随后 `cda7c98a12ae4f885f9034d6b15e61c6c767f26c` 仅追加本计划的验证记录，不改变 runtime/test tree。
 - [x] 新增/更新实验映射后，为“每个主要实验至少有一个结果/分析子页、所有 href 可解析、无重复 canonical owner”添加结构测试。证据：`openEvoExperimentContext.test.ts` 新增完整映射回归：五个实验都必须至少有一个 `result` 或 `analysis` child；primary / child / evidence href 必须在 zh/en 两侧解析；同一 route 若被多个实验交叉引用，必须在 `OPEN_EVO_CANONICAL_ROUTE_OWNERS` 中声明唯一 canonical owner，且该 owner 必须属于实际引用它的实验上下文之一。
-- [ ] 手机 390px、平板 768px、桌面 1440px均无 root overflow；中英文、light/dark 都可读。
+- [x] 手机 390px、平板 768px、桌面 1440px均无 root overflow；中英文、light/dark 都可读。证据：最终 426-case Chromium + WebKit matrix 中 `reader-journey` 覆盖 zh/en × 390/768/1440 × light/dark，`openevo-two-map` / `results-mobile-overflow` / `ui-safety` 等同时验证手机、平板、桌面与页面级 overflow，全部 PASS。
 
 ## 7. Git / PR / Preview / Production 交付
 
@@ -104,7 +104,7 @@
 - [x] 已推送 `feat/experiment-first-study-nav-20260912`。
 - [x] 已创建聚焦 PR #661；PR body 已写明 Experiment-first IA、五个实验、旧 URL 保留、科学边界与已跑验证。
 - [x] PR #661 当前只包含本任务的 Study IA、Reader Contract、回归测试与本计划；未夹带服务器状态或临时截图。
-- [ ] 普通工作 PR 先通过 GitHub Actions preflight；需要 owner 看页面时使用仓库允许的轻量 review Preview，不把 Preview 当 merge evidence。
+- [x] 普通工作 PR 先通过 GitHub Actions preflight；需要 owner 看页面时使用仓库允许的轻量 review Preview，不把 Preview 当 merge evidence。证据：PR #661 exact head `cda7c98a12ae4f885f9034d6b15e61c6c767f26c` 的 Public PR CI `34740319667` 中 `public-deterministic`、`public-browser-1-of-4`、`2-of-4`、`3-of-4`、`4-of-4` 与 `public-ci-gate` 均为 `SUCCESS`。
 - [ ] 候选真正 merge-ready 后按仓库规则请求 exact-head Vercel final gate；`Vercel` 必须绑定 exact PR head 且真实执行。
 - [ ] exact-head Preview 中实际打开中文和英文 Study 首页，确认五实验目录可见、链接可点、手机无溢出。
 - [ ] 合并后确认 Production successor 来自合并后的 `main`，并打开 `https://basemodel-preview.vercel.app/research/seed-openevo/study/` 做最终可见性检查。
