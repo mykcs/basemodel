@@ -8,6 +8,7 @@ const datasetFigure = read('src/components/research/WebShopDatasetCanonicalFigur
 const smallWorldFigure = read('src/components/research/WebShopSmallWorldFigure.astro');
 const goalGenerationFigure = read('src/components/research/WebShopGoalGenerationFigure.astro');
 const seedSplitFigure = read('src/components/research/WebShopSeedSplitFigure.astro');
+const seedDataUsageFigure = read('src/components/research/WebShopSeedDataUsageFigure.astro');
 const evaluationFigure = read('src/components/research/WebShopEvaluationFigure.astro');
 const compareFigure = read('src/components/research/SeedOpenEvoCanonicalFigure.astro');
 const seedZh = read('src/pages/research/seed-openevo/flow/seed.astro');
@@ -60,6 +61,29 @@ describe('canonical SEED / OpenEvo research figures', () => {
     expect(seedSplitFigure).not.toContain('原始 WebShop 有 train / eval / test，为什么 SEED 这里只剩两块？');
   });
 
+  it('explains SEED WebShop usage as catalog -> goals -> updates -> rollout groups', () => {
+    for (const term of [
+      '1,000',
+      '6,410',
+      '180',
+      '1,440',
+      '150 policy updates',
+      '19,200',
+      '31.3%',
+      '160 epochs/updates',
+      '20,480',
+      '33.0%',
+      'replace=False',
+      'Stage 1 和 Stage 2 会不会撞题？',
+      'goal split',
+      '288,000',
+      '307,200',
+      '数学期望',
+    ]) expect(seedDataUsageFigure).toContain(term);
+    expect(seedDataUsageFigure).toContain('它没有“跑完一轮 WebShop 训练集”');
+    expect(seedDataUsageFigure).toContain('论文 150 updates · 脚本默认 160');
+  });
+
   it('teaches WebShop evaluation as inputs -> evaluator -> two complementary outputs', () => {
     for (const term of ['task_score ∈ [0, 1]', 'EXACT SUCCESS', 'won ∈', 'get_reward(...)', 'Score 看完成程度', '不是某一次实验 run 的测量结果']) {
       expect(evaluationFigure).toContain(term);
@@ -76,6 +100,7 @@ describe('canonical SEED / OpenEvo research figures', () => {
       '<WebShopSmallWorldFigure',
       '<WebShopGoalGenerationFigure',
       '<WebShopSeedSplitFigure',
+      '<WebShopSeedDataUsageFigure',
       '<WebShopEvaluationFigure',
       '<SeedWebShopCanonicalFigure',
     ];
@@ -150,7 +175,7 @@ describe('canonical SEED / OpenEvo research figures', () => {
   });
 
   it('keeps the canonical static figures responsive and readability-audited', () => {
-    for (const figure of [datasetFigure, smallWorldFigure, goalGenerationFigure, seedSplitFigure, evaluationFigure, seedFigure, compareFigure]) {
+    for (const figure of [datasetFigure, smallWorldFigure, goalGenerationFigure, seedSplitFigure, seedDataUsageFigure, evaluationFigure, seedFigure, compareFigure]) {
       expect(figure).toContain('<figcaption');
       expect(figure).toContain('data-ui-audit=');
       expect(figure).not.toContain('client:');
