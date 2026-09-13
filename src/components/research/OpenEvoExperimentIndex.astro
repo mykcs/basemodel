@@ -1,0 +1,92 @@
+---
+import { localePath, type Locale } from '../../i18n';
+import {
+  OPEN_EVO_EXPERIMENTS,
+  OPEN_EVO_SECONDARY_ROUTES,
+  type LocalizedCopy,
+} from '../../data/openEvoExperimentNavigation';
+
+interface Props { locale: Locale }
+
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (copy: LocalizedCopy) => zh ? copy.zh : copy.en;
+const p = (path: string) => localePath(locale, path);
+---
+
+<main class="experiment-index" data-ui-audit="layout" data-testid="experiment-first-study-index">
+  <header class="study-hero">
+    <h1>{zh ? 'OpenEVO × WebShop 实验' : 'OpenEVO × WebShop experiments'}</h1>
+    <p class="study-hero__lede">{zh
+      ? '五次主要实验按研究过程排列。先选一次实验，再看它的结果和由它引出的分析。'
+      : 'Five major experiments are organized by the research sequence. Pick an experiment first, then follow its results and the analyses it produced.'}</p>
+  </header>
+  <ol class="experiment-tree" aria-label={zh ? '主要实验目录' : 'Major experiment index'}>
+    {OPEN_EVO_EXPERIMENTS.map((experiment) => (
+      <li class="experiment-node" data-ui-audit-item>
+        <div class="experiment-node__rail" aria-hidden="true"><span>{experiment.number}</span></div>
+        <article>
+          <a class="experiment-node__main" href={p(experiment.primaryHref)}>
+            <strong>{t(experiment.title)}</strong>
+            <span aria-hidden="true">→</span>
+          </a>
+          <p>{t(experiment.summary)}</p>
+          {experiment.lineageNote && <p class="experiment-node__relation">{t(experiment.lineageNote)}</p>}
+          <ul class="experiment-children">
+            {experiment.childLinks.map((child) => (
+              <li><a href={p(child.href)}>{t(child.label)} <span aria-hidden="true">→</span></a></li>
+            ))}
+          </ul>
+        </article>
+      </li>
+    ))}
+  </ol>
+
+  <aside class="secondary-routes" aria-label={zh ? '跨实验入口' : 'Cross-experiment routes'}>
+    <strong>{zh ? '跨实验入口' : 'Across experiments'}</strong>
+    <nav>
+      {OPEN_EVO_SECONDARY_ROUTES.map((item) => <a href={p(item.href)}>{t(item.label)}</a>)}
+    </nav>
+  </aside>
+</main>
+
+<style>
+  .experiment-index{width:min(960px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--color-text)}
+  .study-hero{padding:2.7rem 0 1.8rem;border-bottom:1px solid var(--color-border)}
+  .study-hero h1{max-width:18ch;margin:0;font-size:clamp(2.5rem,6vw,4.7rem);line-height:1;letter-spacing:-.055em}
+  .study-hero__lede{max-width:44rem;margin:1.2rem 0 0;font-size:clamp(1.05rem,2vw,1.3rem);line-height:1.7;color:var(--color-text-muted)}
+  .experiment-tree{list-style:none;margin:0;padding:0;counter-reset:none}
+  .experiment-node{display:grid;grid-template-columns:4.25rem minmax(0,1fr);gap:1.1rem;padding:2rem 0;border-bottom:1px solid var(--color-border)}
+  .experiment-node__rail{position:relative;display:flex;justify-content:center}
+  .experiment-node__rail::after{content:'';position:absolute;top:2.5rem;bottom:-2rem;width:1px;background:var(--color-border)}
+  .experiment-node:last-child .experiment-node__rail::after{display:none}
+  .experiment-node__rail span{position:relative;z-index:1;display:grid;place-items:center;width:2.7rem;height:2.7rem;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);font:800 .86rem/1 var(--font-mono)}
+  .experiment-node article{min-width:0}
+  .experiment-node__main{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;color:var(--color-text);text-decoration:none}
+  .experiment-node__main strong{font-size:clamp(1.35rem,2.6vw,2rem);line-height:1.2;letter-spacing:-.025em}
+  .experiment-node__main>span{font-size:1.35rem;color:var(--color-text-muted)}
+  .experiment-node p{max-width:48rem;margin:.65rem 0 0;line-height:1.7;color:var(--color-text-muted)}
+  .experiment-node__relation{padding-left:.75rem;border-left:2px solid var(--color-warning);color:var(--color-text)}
+  .experiment-children{list-style:none;margin:1rem 0 0;padding:0 0 0 1.15rem;border-left:1px solid var(--color-border)}
+  .experiment-children li+li{margin-top:.38rem}
+  .experiment-children a{display:inline-block;padding:.2rem 0;color:var(--color-text);text-underline-offset:.22em}
+  .experiment-children a span{color:var(--color-text-muted)}
+  .secondary-routes{display:flex;align-items:flex-start;justify-content:space-between;gap:1.2rem;padding:1.5rem 0;border-bottom:1px solid var(--color-border)}
+  .secondary-routes>strong{font-size:.95rem}
+  .secondary-routes nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.65rem 1.1rem}
+  .secondary-routes a{color:var(--color-text-muted);text-underline-offset:.22em}
+  a:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px}
+  @media(max-width:640px){
+    .experiment-index{width:calc(100% - 1.25rem)}
+    .study-hero{padding:1.7rem 0 1.3rem}
+    .study-hero h1{font-size:2.55rem}
+    .experiment-node{grid-template-columns:2.5rem minmax(0,1fr);gap:.7rem;padding:1.55rem 0}
+    .experiment-node__rail{justify-content:flex-start}
+    .experiment-node__rail span{width:2.3rem;height:2.3rem}
+    .experiment-node__rail::after{left:1.12rem;top:2.2rem;bottom:-1.55rem}
+    .experiment-node__main strong{font-size:1.35rem}
+    .experiment-children{padding-left:.75rem}
+    .secondary-routes{display:block}
+    .secondary-routes nav{justify-content:flex-start;margin-top:.65rem}
+  }
+</style>
