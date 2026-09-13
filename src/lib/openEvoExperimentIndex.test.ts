@@ -19,6 +19,7 @@ describe('experiment-first Study index', () => {
     expect(source).toContain('experiment.childLinks.map');
     expect(source).toContain('data-experiment-primary={experiment.id}');
     expect(source).toContain('.experiment-node p,.experiment-children{display:none}');
+    expect(source).toContain('experiment.childLinks.filter((child) => child.mobileFeatured)');
   });
 
   it('keeps the historical gate-failure experiment attached to its blocked-update analysis and first-run evidence', () => {
@@ -88,6 +89,7 @@ describe('experiment-first Study index', () => {
       expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/' }),
       expect.objectContaining({ role: 'diagnostic', href: '/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/' }),
       expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/sd-lora-scaling/' }),
+      expect.objectContaining({ role: 'analysis', label: expect.objectContaining({ zh: 'SD-LoRA v2：约 2× 加速与 WebShop 验证' }), href: '/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/', mobileFeatured: true }),
       expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/sd-lora-history/' }),
       expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/text-memory/' }),
       expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/#geometry' }),
@@ -151,6 +153,7 @@ describe('experiment-first Study index', () => {
       '1.7B · DirectApply / No-GDR 实验',
     ]);    const allChildren = OPEN_EVO_EXPERIMENTS.flatMap((item) => item.childLinks);
     expect(allChildren.some((child) => child.label.zh === 'SD-LoRA 为什么越来越慢')).toBe(true);
+    expect(allChildren.some((child) => child.href.endsWith('/sd-lora-equivalence/'))).toBe(true);
     expect(allChildren.every((child) => child.role !== undefined)).toBe(true);
     expect(OPEN_EVO_EXPERIMENTS.find((item) => item.id === 'gdr-v1-1p7b')?.lineageNote?.zh)
       .toContain('同时属于上一项 3B + 1.7B 后继实验');

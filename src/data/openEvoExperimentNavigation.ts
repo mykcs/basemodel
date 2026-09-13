@@ -20,6 +20,7 @@ export interface OpenEvoExperimentChildLink {
   role: ExperimentChildRole;
   label: LocalizedCopy;
   href: string;
+  mobileFeatured?: boolean;
 }
 
 export interface OpenEvoExperimentNavigationItem {
@@ -110,6 +111,7 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
       { role: 'analysis', label: { zh: '完整实验分析', en: 'Full experiment analysis' }, href: `${cap}/q17-directapply-analysis/` },
       { role: 'diagnostic', label: { zh: 'R127 / R128 同题诊断', en: 'R127 / R128 same-task diagnostic' }, href: `${cap}/q17-directapply-frontier/` },
       { role: 'analysis', label: { zh: 'SD-LoRA 为什么越来越慢', en: 'Why SD-LoRA gets slower over time' }, href: `${cap}/sd-lora-scaling/` },
+      { role: 'analysis', label: { zh: 'SD-LoRA v2：约 2× 加速与 WebShop 验证', en: 'SD-LoRA v2: ~2× speedup and WebShop qualification' }, href: `${cap}/sd-lora-equivalence/`, mobileFeatured: true },
       { role: 'analysis', label: { zh: 'SD-LoRA 历史专题：已测结果与待验证问题', en: 'SD-LoRA history series: measured results and open questions' }, href: `${cap}/sd-lora-history/` },
       { role: 'analysis', label: { zh: 'Text Memory 在这条线里发生了什么', en: 'What happened to Text Memory in this line' }, href: `${cap}/text-memory/` },
       { role: 'analysis', label: { zh: 'D1 参数几何：更新方向能否低维近似', en: 'D1 geometry: can the update trajectory be approximated in fewer directions?' }, href: `${cap}/q17-directapply-analysis/#geometry` },
