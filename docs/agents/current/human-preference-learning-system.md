@@ -218,6 +218,14 @@ Regression tests should cover both directions: **positive activation** for the i
 
 Scope is part of the same contract. Choose the narrowest honest task scope (`research-copy`, `briefing`, `recovery`, etc.) and let incompatible evidence stay out. A broader scope is not automatically more complete.
 
+### Candidate review contract follows the surface that actually changed
+
+For candidate screening and cold read, choose the Reader Contract from the **user-facing surface whose copy/layout is materially different between candidates**. Do not choose a broader contract merely because the candidate links to that page, migrates content into it, or belongs to the same overall feature.
+
+For multi-route ownership migrations, split the review by material surface when needed. An index-entry/layout candidate is reviewed with the index contract; a destination detail page needs its own HPL review only when its presentation materially changes. Deterministic/source/browser checks may still prove canonical ownership and routing on the other affected routes.
+
+A too-broad review can import unrelated pre-existing page debt and turn an independent improvement into a false blocker. Phase B must therefore classify reviewer findings as: **candidate-introduced or materially worsened**, **existing/independent**, or **already resolved by the current candidate**. Existing debt does not become PASS merely because it is out of scope; keep it visible as separate follow-up evidence, but do not widen a narrow migration solely to make an unrelated page satisfy a borrowed contract.
+
 ## 8. Internal 2–3 candidate screening
 
 Material user-facing work should not expose the Agent's first aesthetic guess to the owner.

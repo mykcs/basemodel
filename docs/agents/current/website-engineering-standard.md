@@ -281,6 +281,10 @@ The [mechanism-route case](../history/2026-09-07-mechanism-ci-route-ownership.md
 
 A PR number, branch name, READY badge or remembered green run is not an acceptance identity.
 
+Before claiming that browser/HPL evidence belongs to a commit SHA, check the candidate worktree state. A dirty working tree means the rendered artifact is `HEAD + local delta`, not the named commit. Treat that run as uncommitted preflight evidence unless you bind it to a distinct content/tree fingerprint. If the dirty files can affect the tested surface, commit the intended delta first and rerun the affected render/review/browser acceptance; do not carry the green result forward and relabel it as exact-head evidence. A later commit does not retroactively change what tree the earlier browser actually rendered.
+
+For manual local browser acceptance, bind the browser to the task-owned server's **actual emitted URL**, not the requested port. Framework auto-increment/fallback means the requested port may belong to another worktree or stale process; verify a route/sentinel from the intended candidate before screenshots or DOM assertions.
+
 Before merge, tie evidence to:
 
 ```text
