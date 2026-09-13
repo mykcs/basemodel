@@ -69,4 +69,19 @@ describe('Q17 DirectApply complete analysis page', () => {
     expect(component).toContain('never entered the formal run');
   });
 
+  it('preserves the conversation-proven ELI5 bridges instead of leaving only professional metrics', () => {
+    for (const token of [
+      'data-eli5-coverage',
+      '这条实验一共做了五件事',
+      'D1 是一次只读诊断',
+      '把 159 次更新想成 159 支箭头',
+      'Geometry PASS 的意思只是',
+      '参数很像，不等于 AI 会做一样的决定',
+      '可以把它理解成一次封卷考试',
+      '这次真正发现的是',
+    ]) expect(component).toContain(token);
+    expect(component).toContain('32 / 32 完全一致');
+    expect(component).toContain('the parameters look compressible');
+  });
+
 });
