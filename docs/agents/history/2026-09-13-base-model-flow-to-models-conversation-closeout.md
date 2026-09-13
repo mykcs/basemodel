@@ -40,11 +40,12 @@ Manual browser acceptance must use the actual URL emitted by the task-owned serv
 A command using Bash process substitution was sent through an execution surface that reported Fish. The parser failed before the intended Git comparison ran. The repository already had the durable shell rule, so repeating it again would not solve the knowledge-system failure.
 
 The missing use-site detail was timing: some execution APIs reveal the interpreter only after they launch the same command. On those surfaces, the first probe must be dialect-neutral; Bash-only syntax belongs only after interpreter readback or inside an explicit standalone Bash/Python script.
+
 ### 6. Progress percentages must come from accepted checklist rows
 
 The owner repeatedly required progress reports to separate what actually happened from what was merely planned, opened, or still running. A scheduled continuation task failing or a PR existing did not make the migration more complete.
 
-When a percentage is requested, use an explicit checklist denominator and count only rows backed by durable evidence. Report the next missing milestone beside the percentage. Automation is orchestration, not acceptance evidence.
+During this closeout, current `main` independently strengthened the existing progress-report owner so the exact ref-qualified canonical checklist is now the counting source for both numerator and denominator. That newer rule already closes the reusable gap, so this closeout does **not** add a second percentage policy. The incident remains useful history: automation and in-flight work are orchestration state, not acceptance evidence.
 
 ### 7. Diverged branch history is a semantic question, not a reason to force-push
 
@@ -60,8 +61,9 @@ Existing concurrent-state and multi-PR rules already cover this behavior, so thi
 | Browser/HPL evidence was temporarily attributed to `HEAD` while product files were still dirty | Repeated exact-tree family | Dirty-tree render is preflight, not exact-SHA evidence | `current/website-engineering-standard.md` | Exact-tree acceptance owner |
 | Browser opened the requested port instead of the server's emitted port | Project-level recurrence class | Bind browser checks to task-owned server stdout + route sentinel | `current/project-agent-operating-principles.md` + scenario trigger | Local execution/browser identity |
 | Bash-only syntax hit Fish before comparison executed | Yes | First shell probe must be dialect-neutral when interpreter is only reported after launch | `current/project-agent-operating-principles.md` | Existing shell owner; fixes the use-site gap |
-| Progress wording counted planning/running state too optimistically | Repeated owner preference | Percentage = durable accepted rows / explicit checklist rows | `current/project-agent-operating-principles.md` | Cross-task progress-report semantics |
+| Progress wording counted planning/running state too optimistically | Repeated owner preference | Recompute numerator and denominator from the exact canonical checklist; count only durable accepted rows | `current/project-agent-operating-principles.md` (already strengthened on concurrent `main`) | Reuse the current progress-report owner; no duplicate rule added here |
 | Diverged local/remote branch looked like a force-push problem | No | Compare semantic/patch equivalence before mutation; preserve unknown ancestry | Existing concurrent-state / multi-PR owners | Already covered; no duplicate rule |
+
 ## Future-Agent test
 
 A new Agent should now be able to answer these before acting:

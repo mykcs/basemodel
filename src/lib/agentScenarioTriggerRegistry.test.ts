@@ -332,7 +332,7 @@ describe('retained correction use-site routing', () => {
     expect(engineering).toContain("task-owned server's **actual emitted URL**");
     expect(principles).toContain('make that first probe dialect-neutral');
     expect(principles).toContain('task-owned server that actually launched');
-    expect(principles).toContain('compute it from an explicit checklist denominator');
+    expect(principles).toContain('recompute **both numerator and denominator from that exact ref-qualified checklist on every report**');
     expect(registry).toContain('Bind HPL review to the surface actually varied');
     expect(registry).toContain('Bind local visual evidence to the actual tree and server');
     expect(modelMigrationCloseoutHistory).toContain('## Coverage ledger');
