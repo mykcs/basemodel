@@ -7,11 +7,12 @@ import WebShopDatasetCanonicalFigure from '../../../../../components/research/We
 import WebShopSmallWorldFigure from '../../../../../components/research/WebShopSmallWorldFigure.astro';
 import WebShopGoalGenerationFigure from '../../../../../components/research/WebShopGoalGenerationFigure.astro';
 import WebShopSeedSplitFigure from '../../../../../components/research/WebShopSeedSplitFigure.astro';
+import WebShopSeedDataUsageFigure from '../../../../../components/research/WebShopSeedDataUsageFigure.astro';
 import WebShopEvaluationFigure from '../../../../../components/research/WebShopEvaluationFigure.astro';
 import SeedWebShopCanonicalFigure from '../../../../../components/research/SeedWebShopCanonicalFigure.astro';
 const locale = 'en' as const;
 ---
-<AppLayout title="WebShop principles, interaction, and evaluation" description="First establish what WebShop is, why it matters, and which setting SEED uses; then step through interaction, the original benchmark, the small product world, goal generation, task splitting, and final evaluation." locale={locale}>
+<AppLayout title="WebShop principles, interaction, and evaluation" description="First establish what WebShop is, why it matters, and which setting SEED uses; then step through interaction, task generation, splitting, training-data usage, and final evaluation." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="webshop">
     <WebShopReaderMap locale={locale} />
     <InteractiveResearchExplainer locale={locale} kind="webshop" client:visible />
@@ -19,6 +20,7 @@ const locale = 'en' as const;
     <WebShopSmallWorldFigure locale={locale} />
     <WebShopGoalGenerationFigure locale={locale} />
     <WebShopSeedSplitFigure locale={locale} />
+    <WebShopSeedDataUsageFigure locale={locale} />
     <WebShopEvaluationFigure locale={locale} />
     <SeedWebShopCanonicalFigure locale={locale} />
   </SeedOpenEvoResearchPage>
