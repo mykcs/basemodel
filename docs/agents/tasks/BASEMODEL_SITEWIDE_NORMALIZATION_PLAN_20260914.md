@@ -195,13 +195,13 @@ P0/P1 修复后继续，不把本任务停在三个页面。
 
 ### 5.1 Flow / benchmark / method 家族
 
-- [ ] `flow-seed`：对象 / 方法身份是否在内部训练机制之前建立；
-- [ ] `flow-openevo`：先说 OpenEvo 是什么和任务边界，再讲 artifact/update mechanics；
-- [ ] `flow-benchmarks`：修复后复核比较维度和入口；
-- [ ] `flow-webshop`：保持正对照，不因“统一”倒退；
-- [ ] `flow-alfworld`：完成 P0 后做中英/主题/视口复核；
-- [ ] `flow-server`：资源事实与科学 authority 必须分开；
-- [ ] `flow-loops`：循环存在不能写成持续提升已经被证明。
+- [x] `flow-seed`：对象 / 方法身份已在内部训练机制之前建立；中英首屏先解释 SEED 是用任务轨迹继续训练 policy 的方法。
+- [x] `flow-openevo`：先说 OpenEvo 是跨任务演化框架和任务边界，再讲 artifact/update mechanics；中英首屏已复核。
+- [x] `flow-benchmarks`：修复后已复核比较维度和两个独立环境入口；01/02/03 顺序保留且无重复 kicker。
+- [x] `flow-webshop`：保持对象优先的正对照；本轮未为统一而改写其目录、证据或评分边界。
+- [x] `flow-alfworld`：P0 后已做中英、390/768/1280/1440 与 light→dark→light 复核，无 root overflow。
+- [x] `flow-server`：资源事实与 authority 保持分层；reader contract 与权限图明确技术能力、项目授权、科学语义不可互相替代。
+- [x] `flow-loops`：只解释更新对象、接口和受控比较；reader contract 明确循环存在不等于已证明持续提升。
 
 ### 5.2 Study / results / capability 家族
 
@@ -367,7 +367,7 @@ current main
 
 ### 11.3 扩展全站审计
 
-- [ ] Flow family 完成。
+- [x] Flow family 完成。
 - [ ] Study / results / capability family 完成。
 - [ ] Catalog / decision / evidence family 完成。
 - [ ] Archive / operational / projected-deck exceptions 完成。
@@ -446,11 +446,13 @@ git log --oneline --decorate -10
 | overlap scan | DONE | #687 Q17 chronology；#671 SD-LoRA flow nav；#669 stale sitewide audit |
 | browser cold read | DONE | WebShop PASS control；ALFWorld FAIL；Benchmarks REVIEW；SD-LoRA history REVIEW；Capability landing PASS/no broad rewrite |
 | plan | ACTIVE | 本文件 |
-| implementation | FIRST BATCH DONE | `87b1fbe5`；focused Vitest 24/24 PASS；`audit:reader-contracts` PASS；Astro/Type check 0 errors |
-| browser acceptance | PARTIAL | 第一批本地 exact-source 冷读：ALFWorld zh/en；Benchmarks zh/en；390/1440 无 root overflow；SD-LoRA overview eyebrow removed，child `04 / 07` preserved；ALFWorld dark-mode smoke PASS |
+| implementation | FLOW FAMILY DONE | first batch `87b1fbe5`; Flow identity repair `9202aa9d`; focused Vitest 26/26 PASS; `audit:reader-contracts` 64/64 PASS |
+| browser acceptance | PARTIAL | Flow family current-head cold read：SEED / OpenEvo / Benchmarks / WebShop / ALFWorld / loops / server 均做 zh/en + 390/1440；SEED/OpenEvo/ALFWorld 另做 768/1280；全部 sampled renders 无 root overflow；ALFWorld light→dark→light PASS |
 | provider acceptance | TODO | 仅 final candidate 后填入 |
 
 第一批实现证据（2026-09-14）：`87b1fbe5bed6fce648ec98c89cf2d3d07123324d`。Focused tests：`sitewideNormalization` 4/4、`interactiveResearchExplainers` 14/14、`siteReaderContracts` 6/6，共 24/24 PASS；`git diff --check`、reader-contract audit、Astro/Type check 均 PASS。浏览器冷读确认 ALFWorld 中英首屏对象优先；Benchmarks 三个重复 kicker 消失且顺序/内容保留；SD-LoRA overview 无重复 eyebrow，skeleton child 仍显示 `04 / 07`。
+
+Flow family evidence（2026-09-14）：`9202aa9d4625ea32b11de111d97438e9e4aeabba` 把 SEED / OpenEvo 首屏改成对象/方法身份优先，并同步 reader contracts 与 regression。当前 head focused tests：`sitewideNormalization` 6/6、`interactiveResearchExplainers` 14/14、`siteReaderContracts` 6/6，共 26/26 PASS；`audit:reader-contracts` 64/64 PASS。真实浏览器冷读覆盖 Flow 七类 route 的 zh/en、390/1440；SEED/OpenEvo/ALFWorld 额外覆盖 768/1280×633；sampled render 均 `scrollWidth == clientWidth`。`flow-server` 的 authority owner 明确“technical capability ≠ authorization scope”；`flow-loops` reader contract 明确循环存在不等于持续提升。
 
 ## 16. Stopping rule
 
