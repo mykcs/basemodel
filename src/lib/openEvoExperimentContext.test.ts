@@ -57,6 +57,17 @@ describe('experiment context hierarchy', () => {
     expect(context).toContain('resolvedExperimentId');
   });
 
+
+  it('keeps archive and legacy bookmarks in the history/evidence tier rather than the focused research map', () => {
+    const lobby = read('../components/research/OpenEvoCapabilityMapLobby.astro');
+    expect(OPEN_EVO_CANONICAL_ROUTE_OWNERS.archive).toBeUndefined();
+    expect(OPEN_EVO_CANONICAL_ROUTE_OWNERS['stage1-previous']).toBeUndefined();
+    expect(lobby).toContain('data-archive-tier="history-evidence"');
+    expect(lobby).toContain("{ href: stage1EvolutionHref, label: t('兼容旧书签：初始经验设计过程'");
+    expect(lobby).not.toContain('data-deep-dive="stage1-evolution"');
+    expect(lobby).toContain('它们用于追溯证据，不是新的主要实验入口');
+  });
+
   it('binds all five canonical experiment entries in both locales', () => {
     for (const [route, experimentId] of canonical) {
       for (const prefix of ['', 'en/']) {

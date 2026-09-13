@@ -163,15 +163,19 @@ export function registerReaderJourneyTests() {
         const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
         expect(response?.status(), path).toBe(200);
         await expect(page.locator('h1'), path).toHaveCount(1);
-        await expect(page.locator('[data-reader-context]'), path).toBeVisible();
-        await expect(page.locator('[data-reader-purpose]').first(), path).toBeVisible();
-        await expect(page.locator('[data-reader-task]').first(), path).toBeVisible();
         if (route.coverage === 'contextualized') {
-          const routeContext = page.locator('[data-reader-route]');
+          const routeContext = page.locator('[data-reader-context][data-reader-route]');
+          await expect(routeContext, path).toBeVisible();
+          await expect(routeContext.locator('[data-reader-purpose]'), path).toBeVisible();
+          await expect(routeContext.locator('[data-reader-task]'), path).toBeVisible();
           await expect(routeContext).toHaveAttribute('data-reader-route', route.route);
           const experimentId = await routeContext.getAttribute('data-experiment-id');
           const expectedRoot = experimentId ? `${prefix}/research/seed-openevo/study/` : `${prefix}${root}`;
           await expect(routeContext.locator('.research-route-context__location a').first()).toHaveAttribute('href', expectedRoot);
+        } else {
+          await expect(page.locator('[data-reader-context]').first(), path).toBeVisible();
+          await expect(page.locator('[data-reader-purpose]').first(), path).toBeVisible();
+          await expect(page.locator('[data-reader-task]').first(), path).toBeVisible();
         }
       }
     });
