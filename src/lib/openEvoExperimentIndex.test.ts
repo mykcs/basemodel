@@ -65,13 +65,15 @@ describe('experiment-first Study index', () => {
       expect.objectContaining({ role: 'result', href: '/research/seed-openevo/study/capability-exploration/openevo-2-0/report/' }),
       expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/gdr-directapply/' }),
       expect.objectContaining({ role: 'mechanism', href: '/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/' }),
-      expect.objectContaining({ role: 'mechanism', href: '/research/seed-openevo/study/capability-exploration/gdr-directapply/#original-gated-delta' }),
+      expect.objectContaining({ role: 'mechanism', href: '/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/' }),
     ]));
 
     const gdrExplainer = readFileSync(new URL('../components/research/OpenEvoGdrDirectApplyExplainer.astro', import.meta.url), 'utf8');
-    expect(gdrExplainer).toContain('44 个 SD-LoRA candidate');
-    expect(gdrExplainer).toContain('id="original-gated-delta"');
-    expect(gdrExplainer).toContain('原始 Gated Delta Rule');
+    expect(gdrExplainer).toContain('历史 GDR-v1 训练了 44 个 candidate，只采用了 7 个');
+    expect(gdrExplainer).not.toContain('id="recurrence"');
+    const currentGatedDelta = readFileSync(new URL('../components/research/OpenEvoGatedDeltaSdLoraExplainer.astro', import.meta.url), 'utf8');
+    expect(currentGatedDelta).toContain('原始 Gated Delta Rule 更新的是 State');
+    expect(currentGatedDelta).toContain('真实 GDR 路径已经跑通');
 
     const frozenResult = readFileSync(new URL('../components/research/OpenEvoSuccessorReport.astro', import.meta.url), 'utf8');
     expect(frozenResult).toContain('1.7B 最终测试 37.60 分');

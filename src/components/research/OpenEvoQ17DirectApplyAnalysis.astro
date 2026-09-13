@@ -32,6 +32,7 @@ const evidence = {
 };
 const sameTaskHref = p('/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/');
 const gdrHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
+const gatedDeltaHref = p('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/');
 const vanillaHref = p('/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/');
 
 const moving = dynamics.score.map((point, index) => {
@@ -260,7 +261,7 @@ const candidates = [
       <div><span>{t('仍待实验', 'Still open')}</span><strong>{t('Text Memory 下一代 teacher / chunk reader 是否真的改善 WebShop。当前 run 只证明 NOOP/KEEP_PRIOR 能让坏 candidate 不再卡死整轮。', 'Whether a next-generation Text Memory teacher / chunk reader improves WebShop. The current run only shows that NOOP/KEEP_PRIOR prevents invalid candidates from deadlocking the round.')}</strong></div>
     </div>
     <p class="q17-analysis__next">{t('因此，D1 更像一个新的研究入口：我们已经知道“参数空间里有冗余”，下一步若要利用它，应把功能保持本身写进新的预注册实验，而不是把这次 D1 失败改写成压缩成功。GDR / DirectApply 的方法比较也需要同一冻结 final panel 才能回答。', 'D1 therefore opens a new research question: we now know the parameter trajectory is redundant, but exploiting that structure requires a new preregistered experiment that treats function preservation as a first-class constraint. The current D1 failure must not be relabeled as a compression success. A GDR / DirectApply method comparison likewise requires the same frozen final panel.')}</p>
-    <nav class="q17-analysis__related" aria-label={t('相关机制与历史诊断', 'Related mechanisms and historical diagnostics')}><a href={vanillaHref}>{t('Vanilla SD-LoRA 一轮怎样更新参数', 'How Vanilla SD-LoRA updates parameters')}</a><a href={gdrHref}>{t('GDR-v1 与 DirectApply 到底差在哪里', 'What differs between GDR-v1 and DirectApply')}</a><a href={sameTaskHref}>{t('R127 / R128 同题重测', 'R127 / R128 same-task diagnostic')}</a></nav>
+    <nav class="q17-analysis__related" aria-label={t('相关机制与历史诊断', 'Related mechanisms and historical diagnostics')}><a href={vanillaHref}>{t('Vanilla SD-LoRA 一轮怎样更新参数', 'How Vanilla SD-LoRA updates parameters')}</a><a href={gdrHref}>{t('GDR-v1 与 DirectApply 到底差在哪里', 'What differs between GDR-v1 and DirectApply')}</a><a href={gatedDeltaHref}>{t('当前 Gated-Delta SD-LoRA 推导', 'Current Gated-Delta SD-LoRA derivation')}</a><a href={sameTaskHref}>{t('R127 / R128 同题重测', 'R127 / R128 same-task diagnostic')}</a></nav>
   </section>
 </article>
 
