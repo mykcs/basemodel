@@ -64,7 +64,17 @@ describe('experiment context hierarchy', () => {
       expect(experiment.title.zh).not.toMatch(forbiddenLead);
       expect(experiment.title.en).not.toMatch(forbiddenLead);
     }
-    expect(OPEN_EVO_EXPERIMENTS[0].title.zh).toBe('训练跑了很久，但参数一直没有更新');
+    expect(OPEN_EVO_EXPERIMENTS.find((item) => item.id === 'gate-no-update')?.title.zh).toBe('训练跑了很久，但参数一直没有更新');
+  });
+
+  it('keeps scientific result numbers in canonical result owners instead of duplicating them into navigation', () => {
+    const navigationOwner = read('../data/openEvoExperimentNavigation.ts');
+    for (const duplicatedMetric of ['49.33', '37.60', '60.72', '58 / 128', '1 / 128', '44 个', '160 轮', '159 次']) {
+      expect(navigationOwner, duplicatedMetric).not.toContain(duplicatedMetric);
+    }
+    expect(read('../components/research/OpenEvoCeilingStrategy.astro')).toContain('49.33 / 100');
+    expect(read('../components/research/OpenEvoSuccessorReport.astro')).toContain('37.60');
+    expect(read('../components/research/OpenEvoQ17DirectApplyAnalysis.astro')).toContain('60.72 / 100');
   });
 
   it('extends the existing research context instead of creating a second navigation system', () => {

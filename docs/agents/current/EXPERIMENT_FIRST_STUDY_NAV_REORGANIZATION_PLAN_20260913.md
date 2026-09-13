@@ -78,7 +78,7 @@
 - [x] 任何新公开 route 都必须先登记 `src/data/siteReaderContracts.ts`，并通过 `audit:reader-contracts`。证据：本重组复用现有公开 routes、没有新建未登记 route；在最新分支树执行 `npm run audit:reader-contracts` PASS，Reader Contract closed inventory 未发现缺失公开入口。
 - [x] 保持一个页面一个 `<h1>`；嵌入组件不得自行制造第二个 H1。证据：最新分支树执行 `npm run build` 后 `audit-static-headings` 对 506 个静态 routes 全部 PASS，每个 route 恰好一个 `<h1>`；Experiment Hub/context 继续使用 aside/details，不引入第二个页面标题。
 - [x] 不新增无意义英文 eyebrow、内部代号优先标题或 `7 < 8` 式需先解码的主标题。证据：五个实验主标题由同一 navigation owner 提供，`openEvoExperimentContext.test.ts` 新增首标题回归，禁止 `7 < 8`、`Stage N`、`Q17`、`Track X`、`GATE` 等内部 shorthand 抢占标题开头，并锁定第一项继续使用“训练跑了很久，但参数一直没有更新”；同时 `npm run audit:copy:strict` PASS。
-- [ ] 不为了目录整齐复制科学数字；数字继续由现有 canonical 页面 / 数据源拥有。
+- [x] 不为了目录整齐复制科学数字；数字继续由现有 canonical 页面 / 数据源拥有。证据：Experiment navigation 已移除 Gate 具体阈值、7B final、GDR 44→7 / final、DirectApply 轮数与 D1 update-count 等结果数字，只保留“发生了什么 / 去哪里看”的目录语义；精确值继续由 `OpenEvoCeilingStrategy`、`OpenEvoSuccessorReport`、`OpenEvoQ17DirectApplyAnalysis` 等 canonical 页面拥有。`openEvoExperimentContext.test.ts` 明确禁止这些已知结果数字重新进入 navigation owner，并确认 canonical owners 仍保留精确值。
 - [ ] 不删除现有深链；若未来迁移 URL，必须显式 compatibility redirect 并更新 sitemap / locale 可用性测试。
 - [ ] 不把历史 GDR-v1、DirectApply 与未来可能的 recurrent Gated Delta Rule successor 混成同一实验。
 
