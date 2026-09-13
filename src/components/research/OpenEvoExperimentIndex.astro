@@ -37,6 +37,9 @@ const p = (path: string) => localePath(locale, path);
               <li><a href={p(child.href)}>{t(child.label)} <span aria-hidden="true">→</span></a></li>
             ))}
           </ul>
+          {experiment.childLinks.filter((child) => child.mobileFeatured).map((child) => (
+            <p class="experiment-mobile-featured"><a href={p(child.href)}>{t(child.label)} <span aria-hidden="true">→</span></a></p>
+          ))}
         </article>
       </li>
     ))}
@@ -71,6 +74,7 @@ const p = (path: string) => localePath(locale, path);
   .experiment-children li+li{margin-top:.38rem}
   .experiment-children a{display:inline-block;padding:.2rem 0;color:var(--color-text);text-underline-offset:.22em}
   .experiment-children a span{color:var(--color-text-muted)}
+  .experiment-mobile-featured{display:none}
   .secondary-routes{display:flex;align-items:flex-start;justify-content:space-between;gap:1.2rem;padding:1.5rem 0;border-bottom:1px solid var(--color-border)}
   .secondary-routes>strong{font-size:.95rem}
   .secondary-routes nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.65rem 1.1rem}
@@ -86,6 +90,8 @@ const p = (path: string) => localePath(locale, path);
     .experiment-node__rail::after{left:1.12rem;top:2.2rem;bottom:-.85rem}
     .experiment-node__main strong{font-size:1.28rem}
     .experiment-node p,.experiment-children{display:none}
+    .experiment-node .experiment-mobile-featured{display:block;margin:.55rem 0 0;font-size:1rem;line-height:1.45;color:var(--color-text)}
+    .experiment-mobile-featured a{color:var(--color-text);text-underline-offset:.2em}
     .experiment-tree{min-height:calc(100svh - 14rem)}
     .secondary-routes{display:block}
     .secondary-routes nav{justify-content:flex-start;margin-top:.65rem}

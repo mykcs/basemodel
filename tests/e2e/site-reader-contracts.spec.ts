@@ -163,6 +163,11 @@ test('Study phone first screen exposes exactly the five experiment parents', asy
   ]);
   const visibleChildren = await page.locator('#main-content .experiment-children a').evaluateAll((links) => links.filter((el) => el.getClientRects().length > 0).length);
   expect(visibleChildren).toBe(0);
+  const featured = page.locator('#main-content .experiment-mobile-featured a');
+  await expect(featured).toHaveCount(1);
+  await expect(featured).toBeVisible();
+  await expect(featured).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/');
+  await expect(featured).toContainText('SD-LoRA v2');
 });
 
 
