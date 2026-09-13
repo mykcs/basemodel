@@ -73,7 +73,7 @@
 ## 5. 页面与代码级实现约束
 
 - [x] 新的实验树关系最终由 `src/data/` 的单一数据 owner 驱动，Study 首页和实验 Hub 从同一来源渲染。证据：`src/data/openEvoExperimentNavigation.ts` 是 `OPEN_EVO_EXPERIMENTS` 的唯一定义位置；`OpenEvoExperimentIndex.astro` 与 `ResearchRouteContext.astro` 都直接从该文件读取同一个 `OPEN_EVO_EXPERIMENTS`，前者用它渲染 Study 实验树，后者用它解析 Experiment Hub/context。新增 `openEvoExperimentContext.test.ts` 回归明确锁定两个组件的同源 import、`map/find` 消费方式与 owner 单一定义；Experiment-first 定向 Vitest 16/16 PASS，`npm run check` 0 errors / 0 warnings（仅 2 个既有 deprecation hints）。
-- [ ] 数据结构至少包含 `id / title / summary / primaryHref / childLinks / lineageNote / status`，子链接至少包含 `role / label / href`。
+- [x] 数据结构至少包含 `id / title / summary / primaryHref / childLinks / lineageNote / status`，子链接至少包含 `role / label / href`。证据：`OpenEvoExperimentNavigationItem` 明确定义上述实验字段，`OpenEvoExperimentChildLink` 明确定义 `role / label / href`；`openEvoExperimentContext.test.ts` 新增结构回归，同时核验五个 runtime experiment 的 id、双语 title/summary、Study 内 primaryHref、status、非空 childLinks 以及每个 child 的 role/双语 label/href。
 - [ ] `role` 只能表达真实语义，例如 `result`、`analysis`、`mechanism`、`diagnostic`、`history`、`evidence`；不要用 `misc` 兜底。
 - [ ] 任何新公开 route 都必须先登记 `src/data/siteReaderContracts.ts`，并通过 `audit:reader-contracts`。
 - [ ] 保持一个页面一个 `<h1>`；嵌入组件不得自行制造第二个 H1。

@@ -27,6 +27,26 @@ describe('experiment context hierarchy', () => {
     expect(context).not.toContain('const experiments =');
   });
 
+  it('locks the experiment navigation data contract used by the Study index and Hubs', () => {
+    const owner = read('../data/openEvoExperimentNavigation.ts');
+    for (const field of ['id:', 'title:', 'summary:', 'primaryHref:', 'childLinks:', 'lineageNote?:', 'status:']) {
+      expect(owner, field).toContain(field);
+    }
+    for (const experiment of OPEN_EVO_EXPERIMENTS) {
+      expect(experiment.id).toBeTruthy();
+      expect(experiment.title.zh && experiment.title.en).toBeTruthy();
+      expect(experiment.summary.zh && experiment.summary.en).toBeTruthy();
+      expect(experiment.primaryHref).toMatch(/^\/research\/seed-openevo\/study\//);
+      expect(['historical', 'completed']).toContain(experiment.status);
+      expect(experiment.childLinks.length).toBeGreaterThan(0);
+      for (const child of experiment.childLinks) {
+        expect(child.role).toBeTruthy();
+        expect(child.label.zh && child.label.en).toBeTruthy();
+        expect(child.href).toMatch(/^\/research\/seed-openevo\/study\//);
+      }
+    }
+  });
+
   it('extends the existing research context instead of creating a second navigation system', () => {
     expect(context).toContain("CAPABILITY_READER_ROUTES");
     expect(context).toContain("OPEN_EVO_EXPERIMENTS");
