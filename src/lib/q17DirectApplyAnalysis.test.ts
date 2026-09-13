@@ -84,4 +84,13 @@ describe('Q17 DirectApply complete analysis page', () => {
     expect(component).toContain('the parameters look compressible');
   });
 
+  it('keeps the sealed chronology as Stage2 seal -> read-only D1 -> one frozen final', () => {
+    const d1 = component.indexOf('先进行了只读 D1 诊断');
+    const final = component.indexOf('随后原始 R159 只打开一次冻结的 128 题终评');
+    expect(d1).toBeGreaterThan(-1);
+    expect(final).toBeGreaterThan(d1);
+    expect(component).not.toContain('随后做的 D1 诊断');
+    expect(component).not.toContain('A post-training D1 diagnostic then found');
+  });
+
 });
