@@ -375,14 +375,14 @@ current main
 ### 11.4 验收与发布
 
 - [x] `audit:reader-contracts` PASS。
-- [ ] `audit:copy:strict` PASS；contextual candidates 被人工分类，不冒充 0 design debt。
-- [ ] `audit:human-feedback` PASS。
+- [x] `audit:copy:strict` PASS；contextual candidates 被人工分类，不冒充 0 design debt。
+- [x] `audit:human-feedback` PASS。
 - [x] Type/Astro `check` PASS。
-- [ ] Production build PASS。
-- [ ] affected browser suite PASS。
-- [ ] 390 / 768 / 1280×633 / 1440 几何验收 PASS。
-- [ ] light → dark → light PASS。
-- [ ] 中文 / 英文 PASS。
+- [x] Production build PASS。
+- [x] affected browser suite PASS。
+- [x] 390 / 768 / 1280×633 / 1440 几何验收 PASS。
+- [x] light → dark → light PASS。
+- [x] 中文 / 英文 PASS。
 - [ ] current-base refresh 后仍无语义冲突。
 - [ ] exact-head final provider gate PASS。
 - [ ] PR 从 Draft 改为 Ready 前完成最后一次 zero-context cold read。
@@ -447,7 +447,7 @@ git log --oneline --decorate -10
 | browser cold read | DONE | WebShop PASS control；ALFWorld FAIL；Benchmarks REVIEW；SD-LoRA history REVIEW；Capability landing PASS/no broad rewrite |
 | plan | ACTIVE | 本文件 |
 | implementation | SHARED FAMILY DONE | first batch `87b1fbe5`; Flow `9202aa9d`; Study fixes `630bd177` / `64815195`; shared explainer typography normalized to the site token |
-| browser acceptance | PARTIAL | Flow + Study + Catalog families 已完成 family cold read；Catalog 11 routes × zh/en × 390/1280 = 44 renders 全部 HTTP 200 且无 root overflow |
+| browser acceptance | LOCAL COMPLETE | family cold read 已完成；`preflight:ui` deterministic/build/overflow 段 PASS；端口 4327 属于独立 gdkvm worktree，未清理他人进程，改用仓库支持的 `PLAYWRIGHT_PORT=4359` 后 cross-browser matrix 446/446 PASS |
 | provider acceptance | TODO | 仅 final candidate 后填入 |
 
 第一批实现证据（2026-09-14）：`87b1fbe5bed6fce648ec98c89cf2d3d07123324d`。Focused tests：`sitewideNormalization` 4/4、`interactiveResearchExplainers` 14/14、`siteReaderContracts` 6/6，共 24/24 PASS；`git diff --check`、reader-contract audit、Astro/Type check 均 PASS。浏览器冷读确认 ALFWorld 中英首屏对象优先；Benchmarks 三个重复 kicker 消失且顺序/内容保留；SD-LoRA overview 无重复 eyebrow，skeleton child 仍显示 `04 / 07`。
@@ -460,6 +460,9 @@ Catalog/decision/evidence family evidence（2026-09-14）：真实浏览器冷�
 
 Special-page exception evidence（2026-09-14）：Archive 冷读发现首层没有直接满足“not current/live state” contract，因此在 `OpenEvoExperimentArchive.astro` 与 `capabilityReaderRoutes.ts` 只补该边界，不改历史事实；focused structural regressions 28/28 PASS。随后 zh/en × 390/1280 复核 Archive 与 `study/run`，全部 `scrollWidth == clientWidth`；run 首层先给 authorization / persistent workspace，并从 Gate 01 开始。Briefing zh/en 在 390/1280 均为 24 slides、首张几何比例 16:9、inner content 保持在 slide bounds 内且无 root overflow。`flow/base-model` 与 `study/design` 的 zh/en compatibility route 均在真实浏览器落到唯一 canonical target（model `#experiment-setup` / Flow `#training-design`），未形成第二内容 owner。
 Shared-component family evidence（2026-09-14）：逐一检查 `ResearchOrientation` 的 6 个 consumer；`focus` 页面把 question / why / start / finish / state 收进默认关闭的 details，而 Mechanism 的 `narrative` layout 因生命周期本身属于科学边界而保留首层字段。`InteractiveResearchExplainer` 的 `30 秒直觉 / 逐步操作 / 技术边界` 分别对应真实 overview、step playback 与 Level-3 技术层，因此不作为 narrator chrome 删除。发现一个跨 consumer 的共享失败：三份 explainer shared CSS 共 45 处绕过全站字体 token 的硬编码 monospace stack；已统一改用 `var(--font-mono)`，影响 WebShop / ALFWorld / SEED / OpenEvo / server 等共同 owner。Focused regression 30/30 PASS，reader-contract audit 64/64 PASS；浏览器抽样覆盖 WebShop、SEED、server 的 zh/en × 390/1280，共 12 renders，全部 HTTP 200、无 root overflow，computed mono family 均解析为全站 token；Capability / First-run focus details 默认关闭，Mechanism narrative lifecycle 保持显式，三者无 root overflow。
+
+
+Final local acceptance evidence（2026-09-14）：`audit:copy:strict` 扫描 588 个 production source files，strict invariant failures=0；917 条 contextual candidates 作为 review queue 保留，并结合本文件已完成的 Flow / Study / Catalog / special-page / shared-component 人工 family cold read 分类，不把它们宣称为 0 design debt。`audit:human-feedback` PASS（26 precedents / 18 preference dimensions / 30 Gold Pairs / 6 reader-contract bindings / 321 public source files）。Production build PASS：508 routes，heading audit 508/508，external brand-link audit 4241 links PASS。UI risk planner 判定 `global`；`verify:deploy`、production build 与 root-overflow preflight 均 PASS。默认 4327 端口被独立 `gdkvm-ponytail-20260912` worktree 占用，因此没有杀掉其他 Agent 的服务，而是使用仓库原生 `PLAYWRIGHT_PORT` 隔离到 4359：`PLAYWRIGHT_REUSE_BUILD=1 npm run test:ui:all` 最终 Chromium + WebKit **446/446 PASS**。矩阵覆盖 zh/en、390/768/1280×633/1440、mobile/tablet/desktop、light/dark、reduced-motion、connector geometry 与 root overflow；`ui-safety` 的主题回归在同一 session 明确执行 light → dark → light 并二次 `auditUi` PASS。
 
 
 ## 16. Stopping rule
