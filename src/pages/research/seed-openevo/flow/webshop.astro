@@ -7,11 +7,12 @@ import WebShopDatasetCanonicalFigure from '../../../../components/research/WebSh
 import WebShopSmallWorldFigure from '../../../../components/research/WebShopSmallWorldFigure.astro';
 import WebShopGoalGenerationFigure from '../../../../components/research/WebShopGoalGenerationFigure.astro';
 import WebShopSeedSplitFigure from '../../../../components/research/WebShopSeedSplitFigure.astro';
+import WebShopSeedDataUsageFigure from '../../../../components/research/WebShopSeedDataUsageFigure.astro';
 import WebShopEvaluationFigure from '../../../../components/research/WebShopEvaluationFigure.astro';
 import SeedWebShopCanonicalFigure from '../../../../components/research/SeedWebShopCanonicalFigure.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="WebShop 原理、交互与评测" description="WebShop 基准、论文影响力、SEED 使用的 WebShop 设置，以及购物交互、任务生成、任务划分与最终评分。" locale={locale}>
+<AppLayout title="WebShop 原理、交互与评测" description="WebShop 基准、论文影响力、SEED 使用的 WebShop 设置，以及购物交互、任务生成、任务划分、训练数据使用量与最终评分。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="webshop">
     <WebShopReaderMap locale={locale} />
     <InteractiveResearchExplainer locale={locale} kind="webshop" client:visible />
@@ -19,6 +20,7 @@ const locale = 'zh' as const;
     <WebShopSmallWorldFigure locale={locale} />
     <WebShopGoalGenerationFigure locale={locale} />
     <WebShopSeedSplitFigure locale={locale} />
+    <WebShopSeedDataUsageFigure locale={locale} />
     <WebShopEvaluationFigure locale={locale} />
     <SeedWebShopCanonicalFigure locale={locale} />
   </SeedOpenEvoResearchPage>
