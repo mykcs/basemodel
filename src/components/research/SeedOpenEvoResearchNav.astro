@@ -1,7 +1,7 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 
-type ResearchPage = 'hub' | 'experiment' | 'design' | 'capability' | 'briefing' | 'server' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'run' | 'results';
+type ResearchPage = 'hub' | 'experiment' | 'design' | 'capability' | 'briefing' | 'server' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'sdlora' | 'run' | 'results';
 type ResearchTrack = 'flow' | 'study';
 
 interface Props {
@@ -27,6 +27,7 @@ const flowPages = [
   { id: 'webshop', label: 'WebShop', href: p('/research/seed-openevo/flow/webshop/') },
   { id: 'alfworld', label: 'ALFWorld', href: p('/research/seed-openevo/flow/alfworld/') },
   { id: 'loops', label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/flow/loops/') },
+  { id: 'sdlora', label: 'SD-LoRA', href: p('/research/seed-openevo/flow/sd-lora/') },
 ] as const;
 
 const studyPages = [
@@ -44,7 +45,7 @@ const identity = currentTrack === 'flow'
   ? {
       index: '01',
       label: t('流程理解图', 'Flow map'),
-      meta: t('服务器 · 方法 · 环境 · 训练设计 · 更新机制', 'server · methods · environments · training design · update loop'),
+      meta: t('服务器 · 方法 · 环境 · 训练设计 · 更新机制 · SD-LoRA', 'server · methods · environments · training design · update loop · SD-LoRA'),
       aria: t('流程理解图子导航', 'Flow map subnavigation'),
     }
   : {

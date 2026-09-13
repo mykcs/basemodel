@@ -3,10 +3,14 @@ import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { CAPABILITY_READER_ROUTES as routes } from '../data/capabilityReaderRoutes';
+import { bilingualCompatibilityPaths } from './sitemapRoutes';
 import { ESCAPED_UI_REGRESSIONS } from '../../scripts/preflight-ui';
 
 const repo = fileURLToPath(new URL('../../', import.meta.url));
 const base = 'research/seed-openevo/study/capability-exploration';
+const compatibilityRouteKeys = new Set(bilingualCompatibilityPaths
+  .filter((path) => path.startsWith(`/${base}/`))
+  .map((path) => path.slice(`/${base}/`.length).replace(/\/$/, '')));
 function astroRoutes(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const path = join(directory, entry.name);
@@ -22,7 +26,9 @@ describe('capability route reader contracts', () => {
     it(`registers every ${locale} public route and mounts its declared reader context`, () => {
       const directory = join(repo, 'src/pages', locale === 'en' ? 'en' : '', base);
       const actual = astroRoutes(directory);
-      expect(actual.map((path) => routeKey(path, directory)).sort()).toEqual(routes.map((row) => row.route).sort());
+      const canonical = actual.filter((path) => !compatibilityRouteKeys.has(routeKey(path, directory)));
+      expect(canonical.map((path) => routeKey(path, directory)).sort()).toEqual(routes.map((row) => row.route).sort());
+      expect(actual.map((path) => routeKey(path, directory))).toContain('vanilla-sd-lora');
       for (const row of routes) {
         const path = actual.find((candidate) => routeKey(candidate, directory) === row.route)!;
         const content = readFileSync(path, 'utf8');

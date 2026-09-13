@@ -1,15 +1,17 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { VANILLA_SD_LORA_MECHANISM as facts } from '../data/vanillaSdLoraMechanism';
-import { CAPABILITY_READER_ROUTES } from '../data/capabilityReaderRoutes';
 import { bilingualStaticPaths } from './sitemapRoutes';
 
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const component = read('../components/research/OpenEvoVanillaSdLoraMechanism.astro');
 const slide = read('../components/research/OpenEvoVanillaSdLoraSlide.astro');
 const projectionSource = `${slide}\n${component}`;
-const zhPage = read('../pages/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/index.astro');
-const enPage = read('../pages/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/index.astro');
+const readerContracts = read('../data/siteReaderContracts.ts');
+const zhPage = read('../pages/research/seed-openevo/flow/sd-lora/index.astro');
+const enPage = read('../pages/en/research/seed-openevo/flow/sd-lora/index.astro');
+const zhCompatibilityPage = read('../pages/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/index.astro');
+const enCompatibilityPage = read('../pages/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/index.astro');
 
 describe('Vanilla SD-LoRA mechanism projection', () => {
   it('pins the Q17 mechanism facts used by the reader-facing diagram', () => {
@@ -45,10 +47,12 @@ describe('Vanilla SD-LoRA mechanism projection', () => {
   });
 
   it('registers bilingual routes and reader ownership', () => {
-    const route = '/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/';
+    const route = '/research/seed-openevo/flow/sd-lora/';
     expect(bilingualStaticPaths).toContain(route);
-    expect(CAPABILITY_READER_ROUTES.some((row) => row.route === 'vanilla-sd-lora' && row.owner === 'OpenEvoVanillaSdLoraMechanism')).toBe(true);
+    expect(readerContracts).toContain("c('flow-sd-lora', '/research/seed-openevo/flow/sd-lora/'");
     expect(zhPage).toContain('<OpenEvoVanillaSdLoraMechanism locale={locale} />');
     expect(enPage).toContain('<OpenEvoVanillaSdLoraMechanism locale={locale} />');
+    expect(zhCompatibilityPage).toContain("const target = '/research/seed-openevo/flow/sd-lora/'");
+    expect(enCompatibilityPage).toContain("const target = '/en/research/seed-openevo/flow/sd-lora/'");
   });
 });
