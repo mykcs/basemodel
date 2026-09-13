@@ -194,13 +194,22 @@ npm run feedback:judge -- /tmp/model-migration-preference-judge.json
 
 仅在最终候选已经稳定后执行，避免浪费 provider build：
 
-- [ ] 运行 `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`。
-- [ ] 确认 `ci/vercel-gate-base` 指向当时 live `main`。
-- [ ] 确认 `ci/vercel-gate-final` 精确指向 PR head SHA。
-- [ ] 等待该 exact SHA 的 Vercel Preview 完成。
-- [ ] Vercel required status 必须为 green；`IGNORED/CANCELED` 不能冒充网站验收。
-- [ ] 若失败，只修具体失败 job 的最窄原因；不得绕过 provider authority。
-- [ ] Preview 中再次人工/浏览器确认 `/models/`、Qwen detail、旧 URL redirect 的真实行为。
+- [x] 运行 `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`。
+- [x] 确认 `ci/vercel-gate-base` 指向当时 live `main`。
+- [x] 确认 `ci/vercel-gate-final` 精确指向 PR head SHA。
+- [x] 等待该 exact SHA 的 Vercel Preview 完成。
+- [x] Vercel required status 必须为 green；`IGNORED/CANCELED` 不能冒充网站验收。
+- [x] 若失败，只修具体失败 job 的最窄原因；不得绕过 provider authority。（本轮未失败，无需修复。）
+- [x] Preview 中再次人工/浏览器确认 `/models/`、Qwen detail、旧 URL redirect 的真实行为。
+
+### Phase I durable evidence
+
+- gate request on PR #658 returned `ALREADY_TARGETED` with `vercel=success` for exact head `f7f1f14e5749e4a72008981d045f1ca4f08274d1`.
+- `ci/vercel-gate-base` = live `main` `b0eb5d5558e1a43455fa1f65313c2ac18b369447`; `ci/vercel-gate-final` = exact PR head `f7f1f14e…`.
+- GitHub commit status `Vercel=success`; Vercel deployment `dpl_HCP5Xxx3ayaMPk52swJE8jdPsRg8` = `READY`.
+- provider Preview browser smoke passed for `/models/`, Chinese/English Qwen detail, Chinese/English legacy redirects, and 390px `/models/` overflow.
+- full receipt: `docs/agents/evidence/base-model-flow-to-models-20260913/phase-i-vercel-final-gate.txt`.
+- because this checklist update itself creates an evidence-only PR-head commit, the gate must be re-armed on that new exact head before merge; this does not reopen product/HPL work.
 
 ## 12. Phase J — 合并与 Production
 
