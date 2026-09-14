@@ -355,6 +355,8 @@ When uncertain, classify upward. Browser verification is cheaper than making the
 
 For normal UI work, `npm run preflight:ui` is the canonical pre-provider wrapper around the deterministic Gate, build, overflow preflight, and the risk-selected browser command above. The table remains the semantic minimum; the wrapper prevents future Agents from silently omitting one of the required layers.
 
+A focused browser run can point at the right server while still serving the wrong static tree. `PLAYWRIGHT_REUSE_BUILD=1`, a manually started static server, or any existing-`dist/` shortcut is rapid preflight unless the Agent can prove that the served artifact was freshly built from the current candidate tree. After a source change that can affect the tested surface, rebuild before treating browser output as exact-head evidence. Never carry a green run from an older `dist/` forward merely because the route and assertions still pass.
+
 ---
 
 ## 7. Completion-report contract

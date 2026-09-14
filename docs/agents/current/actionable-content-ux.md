@@ -37,6 +37,7 @@ It must:
 - retain a clipboard fallback for environments where the modern Clipboard API is unavailable;
 - enhance content added later by non-React DOM updates;
 - **not mutate inside `astro-island`**, because pre-hydration DOM mutation can cause React hydration mismatches.
+- treat automatic `<pre>` / inline `<code>` enhancement as an **actionability feature, not decoration**. Presentational math, formula labels, diagram annotations, or code-styled text that the reader is not expected to reuse should opt out with `data-no-copy="true"`; otherwise the mobile copy affordance can appear to be part of the formula or diagram itself.
 
 React islands must use explicit semantic actions instead. The shared primitives are:
 
