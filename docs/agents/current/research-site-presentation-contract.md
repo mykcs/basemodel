@@ -158,7 +158,7 @@ Navigation expresses conceptual hierarchy, not every object the repository happe
 - Prefer fewer stable navigation choices over a long menu that mirrors internal project taxonomy.
 - A navigation-only grouping label may be broader than any child scientific treatment identity when that grouping helps the reader orient. Present the group as hierarchy, not as a third result/treatment destination; the child routes remain the canonical scientific objects.
 - Sharing a navigation parent does not merge treatments. Metrics, estimands, provenance, evidence links, and claim boundaries stay with the child treatment owners rather than moving onto the parent label.
-- If a grouping label overlaps with a treatment name used elsewhere, make each child treatment's full scientific identity explicit at its first substantive use. Protect the intended hierarchy with source and responsive browser regressions that test physical nesting and breakpoint visibility, not only DOM order.
+- When one navigation group spans multiple independent treatments, prefer a neutral umbrella label that none of the children owns as its formal scientific identity. Do not reuse one child's treatment/version name as the shared parent unless the upstream scientific authority explicitly defines that name as the umbrella for every child. If an exact scientific umbrella genuinely overlaps a treatment name, make each child treatment's full identity explicit at first substantive use. Protect the intended hierarchy with source and responsive browser regressions that test physical nesting and breakpoint visibility, not only DOM order.
 
 A route can expose deep evidence without making that evidence a permanent top-level navigation item.
 
