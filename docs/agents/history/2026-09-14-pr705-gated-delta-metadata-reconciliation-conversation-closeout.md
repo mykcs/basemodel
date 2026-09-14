@@ -41,6 +41,12 @@ A disposable worktree initially lacked installed dependencies, so an ad-hoc `npx
 
 The safe recovery was to reuse the repository's installed dependency context and its supported isolated Playwright port rather than killing an unknown process or treating setup failure as a test failure. These details are retained here as historical friction, not promoted into a new global policy because no durable project gap was found.
 
+### 5. Provider-write noun binding repeated during closeout
+
+After the first closeout PR was merged, the Agent used the write-oriented `create_branch` action several times while trying to confirm an already-existing branch. GitHub rejected those requests with `422 Reference already exists`, so no repository mutation occurred, but the action selection was still wrong.
+
+This is a **repeated use-site activation failure**, not a missing-rule failure. Current root `AGENTS.md` already requires `intended object -> exact action -> exact target` before provider writes and explicitly says a file/ref/branch mutation is not a substitute for a different object/action. The corrective witness for this conversation is: `inspect existing branch -> read/search branch action -> no write dispatch; create new branch -> create_branch once -> exact new branch target; 422 before mutation -> NOT_EXECUTED`. Do not add a second provider-write policy.
+
 ## Coverage ledger
 
 | Feedback / failure | Repeated? | Reusable lesson | Canonical destination | Why there |
@@ -49,6 +55,7 @@ The safe recovery was to reuse the repository's installed dependency context and
 | Live `main` advanced after the initial snapshot | Known moving-main family, correctly caught | owner-provided SHA is not a lock; refresh live base immediately before release mutations | existing `release-closeout-protocol.md` / `deployment-policy.md` | rule already exists; no duplicate authority needed |
 | Protected Preview returned SSO redirect | Known provider-access family, correctly classified | access/auth boundary is not app failure | existing `scenario-trigger-registry.md` / deployment policy | rule already exists and worked here |
 | Disposable worktree lacked dependencies / local port occupied | Local execution friction | classify setup failures separately; use supported isolated runtime/port before destructive cleanup | this historical case only | too environment-specific for a new standing rule |
+| `create_branch` was reused to inspect an already-existing branch | **Yes** | bind intended provider object/action/target before dispatch; read existing state with a read action | existing root `AGENTS.md` provider-write rule | rule already exists and was recently promoted; failure was use-site activation, so record a witness instead of duplicating policy |
 
 ## Future-Agent test
 
@@ -59,6 +66,7 @@ Before publishing a research-state transition, a future Agent should be able to 
 3. Do all those surfaces preserve the same comparison scope, caveats, and final/non-final boundary?
 4. Immediately before final gate or merge, did I re-read live `main` and the exact PR head?
 5. If hosted HTML is protected by SSO, did I classify that as access state and use provider/exact-head evidence rather than weakening protection?
+6. Before any provider write, did I bind the intended object, action, and exact target, and use a read action when I only need to inspect existing state?
 
 If these checks run, the contradiction that motivated this closeout is materially harder to recreate.
 
