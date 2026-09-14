@@ -30,6 +30,19 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 
 ---
 
+## TRIGGER: parallel Agents may own the same reader outcome
+
+**Cues:** multiple Agents, PRs, branches, or worktrees are working near the same research/publication outcome; filenames differ but the reader problem or intended publication result overlaps; an umbrella label makes distinct worklines look interchangeable.
+
+**Automatic response:**
+
+1. Before the first substantial implementation write, search live open PRs, branches, and relevant worktrees by **semantic target and reader problem**, not only file overlap. If an existing workline already owns the same outcome, cold-read and adopt or reconcile it instead of opening a second implementation path.
+2. Resolve scientific identity in the upstream scientific repository and its canonical lineage owner; do not duplicate treatment, estimand, or execution-authority rules here. BaseModel owns the publication workflow, not scientific lineage authority.
+3. Keep publication provenance internally consistent: the declared upstream authority, the code/data source used for the page, and the reader-facing evidence links must point to the same integrated source. Do not claim one index is canonical while linking evidence to a sibling index.
+4. When duplicate integration paths are discovered after work has started, use `multi-pr-semantic-integration-playbook.md` to select one survivor and preserve only genuinely distinct sibling value.
+
+---
+
 ## TRIGGER: first-principles benchmark/environment page / 目录 / “先讲是什么”
 
 **Cues:** the owner asks to reorganize a benchmark/environment page from first principles, asks for a visible `目录 / Contents`, says a zero-context reader should first understand “这是什么 / 为什么重要 / 实验怎么用它”, or explicitly rejects a mechanism-first/card-wall opening.
