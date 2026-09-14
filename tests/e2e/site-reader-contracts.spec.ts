@@ -166,7 +166,7 @@ test('Study phone first screen exposes exactly the five experiment parents', asy
   const featured = page.locator('#main-content .experiment-mobile-featured--group');
   await expect(featured).toHaveCount(1);
   await expect(featured).toBeVisible();
-  await expect(featured.locator(':scope > strong')).toHaveText('SD-LoRA v2');
+  await expect(featured.locator(':scope > strong')).toHaveText('SD-LoRA 加速');
   const branchLinks = featured.locator('a');
   await expect(branchLinks).toHaveCount(2);
   await expect(branchLinks.nth(0)).toHaveText(/Stable Reduction/);
@@ -176,14 +176,15 @@ test('Study phone first screen exposes exactly the five experiment parents', asy
 });
 
 
-test('Study desktop nests the two SD-LoRA v2 branches under one indented directory group', async ({ page }) => {
+test('Study desktop nests the two SD-LoRA acceleration branches under one indented directory group', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   for (const route of ['/research/seed-openevo/study/', '/en/research/seed-openevo/study/']) {
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     const directApply = page.locator('[data-experiment-primary="directapply-1p7b"]').locator('..').locator('..');
-    const group = directApply.locator('.experiment-child-group').filter({ hasText: 'SD-LoRA v2' });
+    const expectedGroupLabel = route.startsWith('/en/') ? 'SD-LoRA acceleration' : 'SD-LoRA 加速';
+    const group = directApply.locator('.experiment-child-group').filter({ hasText: expectedGroupLabel });
     await expect(group).toHaveCount(1);
-    await expect(group.locator(':scope > strong')).toHaveText('SD-LoRA v2');
+    await expect(group.locator(':scope > strong')).toHaveText(expectedGroupLabel);
     const links = group.locator(':scope > ul a');
     await expect(links).toHaveCount(2);
     await expect(links.nth(0)).toContainText('Stable Reduction');
