@@ -553,7 +553,7 @@ Owner follow-up: **“根据说人话进行优化”**. The original restructure
 - [x] P3. Refresh PR #461 authority and publication snapshot to `fdafc4c5f401031c4dc2b244913a7fe203900f7f`; preserve Round-0-only / full-four-round-incomplete / final-closed polarity.
 - [x] P4. Reconcile moving BaseModel main through `cc7685b172549fcecbbffb796b23be3a28b3d1b1`, preserving the new Vanilla SD-LoRA Flow canonical owner and resolving the shared Reader Contract conflict semantically.
 - [x] P5. Run final current-base `verify:deploy`, `build`, overflow and required browser matrix; record only exact combined-tree PASS.
-- [ ] P6. Commit/push the plain-language candidate and open one non-duplicative PR with Page Expression Brief, scientific source head and exact validation evidence.
+- [x] P6. Commit/push the plain-language candidate and open one non-duplicative PR with Page Expression Brief, scientific source head and exact validation evidence.
 - [ ] P7. Require Public PR CI and exact-head Vercel required status on the actual PR head; stale/older green checks do not count.
 - [ ] P8. Before merge, re-read current main + PR head + PR #461; merge with expected-head guard only if still fresh, then Production-smoke zh/en current/history routes and cross-links.
 
@@ -567,3 +567,12 @@ Durable detail for this follow-up lives in `PLAIN_LANGUAGE_REFINEMENT_20260914.m
 - `npm run ui:overflow-preflight`: PASS at 390 / 768 / 1440.
 - Final `PLAYWRIGHT_PORT=55371 npm run test:ui:all`: **446/446 PASS**, Chromium + WebKit, `retries=0`.
 - A prior full-suite run exposed one unrelated WebKit quick-view timing failure; candidate and exact main each PASSed that isolated test, so it was classified as a non-Gated-Delta harness flake and was not used as acceptance. The subsequent clean 446/446 run is the acceptance evidence.
+
+### P6 publication receipt — 2026-09-14 11:01 +08
+
+- Product commit: `b4dedfd725f0202ebf5d653400b13b50b72c2073`.
+- Branch: `research/gated-delta-plain-language-20260914`.
+- PR: BaseModel #696, `research: make Gated-Delta pages plain-language`.
+- PR base at creation: `main@cc7685b172549fcecbbffb796b23be3a28b3d1b1`.
+- PR body records the scientific source `mykcs/openevo-experiment@fdafc4c5f401031c4dc2b244913a7fe203900f7f` and exact combined-tree local acceptance.
+- This P6 receipt update is documentation-only; it changes no rendered page, test logic, scientific projection, route, or provider behavior. P7 must evaluate CI/Vercel on the exact head created by this receipt commit, not on `b4dedfd7…`.
