@@ -2,7 +2,7 @@
 
 Status: **current project-wide research publication and progressive-disclosure contract**
 Decision date: **2026-08-30**
-Last reviewed: **2026-09-12**
+Last reviewed: **2026-09-14**
 
 This document consolidates durable owner preferences for how BaseModel presents scientific research to people who did not personally run every experiment. It is a content-and-presentation contract, not a replacement for the existing visual, evidence, or browser-acceptance policies.
 
@@ -156,6 +156,9 @@ Navigation expresses conceptual hierarchy, not every object the repository happe
 - Do not show nonexistent stages as empty navigation placeholders.
 - When Stage numbers are visible, explain their role where a new reader first encounters them.
 - Prefer fewer stable navigation choices over a long menu that mirrors internal project taxonomy.
+- A navigation-only grouping label may be broader than any child scientific treatment identity when that grouping helps the reader orient. Present the group as hierarchy, not as a third result/treatment destination; the child routes remain the canonical scientific objects.
+- Sharing a navigation parent does not merge treatments. Metrics, estimands, provenance, evidence links, and claim boundaries stay with the child treatment owners rather than moving onto the parent label.
+- If a grouping label overlaps with a treatment name used elsewhere, make each child treatment's full scientific identity explicit at its first substantive use. Protect the intended hierarchy with source and responsive browser regressions that test physical nesting and breakpoint visibility, not only DOM order.
 
 A route can expose deep evidence without making that evidence a permanent top-level navigation item.
 
@@ -267,7 +270,7 @@ Before merge, answer yes to all of the following:
 5. Are commands, scripts, configs, secrets setup, and logs optional depth unless they change interpretation?
 6. Does every disclosure have a meaningful summary and keyboard-visible focus?
 7. Are result, interpretation, and “cannot prove” boundaries separated?
-8. Does navigation reflect conceptual hierarchy rather than internal repository structure?
+8. Does navigation reflect conceptual hierarchy rather than internal repository structure, and do display-only parent groups stay separate from child scientific identity/provenance?
 9. Are real quantitative relationships represented with truthful web-native geometry rather than decorative art?
 10. Has the affected route passed the required light/dark and responsive acceptance matrix?
 

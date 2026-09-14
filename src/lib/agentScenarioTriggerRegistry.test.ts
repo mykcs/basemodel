@@ -22,6 +22,7 @@ const q17ConversationCloseoutHistory = readFileSync(new URL('../../docs/agents/h
 const modelMigrationCloseoutHistory = readFileSync(new URL('../../docs/agents/history/2026-09-13-base-model-flow-to-models-conversation-closeout.md', import.meta.url), 'utf8');
 const modelNavCloseoutHistory = readFileSync(new URL('../../docs/agents/history/2026-09-13-remove-model-navigation-conversation-closeout.md', import.meta.url), 'utf8');
 const researchJourney = readFileSync(new URL('../../docs/agents/current/research-journey-experience.md', import.meta.url), 'utf8');
+const sdLoraParallelCloseoutHistory = readFileSync(new URL('../../docs/agents/history/2026-09-14-sd-lora-parallel-lineage-and-study-grouping-conversation-closeout.md', import.meta.url), 'utf8');
 const conversationCloseoutEntry = readFileSync(new URL('../../docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md', import.meta.url), 'utf8');
 const releaseCloseout = readFileSync(new URL('../../docs/agents/current/release-closeout-protocol.md', import.meta.url), 'utf8');
 
@@ -98,6 +99,14 @@ describe('Agent scenario-trigger discovery', () => {
     expect(readme).toContain('2026-09-13-remove-model-navigation-conversation-closeout.md');
     expect(modelNavCloseoutHistory).toContain('Removing a navigation entry is narrower than deleting the model capability');
     expect(modelNavCloseoutHistory).toContain('A diagnostic interaction state is not the default-page cold read');
+  });
+
+  it('indexes the parallel SD-LoRA lineage closeout without freezing transient state', () => {
+    expect(readme).toContain('2026-09-14-sd-lora-parallel-lineage-and-study-grouping-conversation-closeout.md');
+    expect(sdLoraParallelCloseoutHistory).toContain('Navigation taxonomy is not scientific treatment identity');
+    expect(sdLoraParallelCloseoutHistory).toContain('REPEAT-CORRECTION');
+    expect(sdLoraParallelCloseoutHistory).toContain('Temporary state intentionally not promoted');
+    expect(sdLoraParallelCloseoutHistory).toContain('No account-level long-term ChatGPT memory write is claimed');
   });
 
   it('keeps provider build-budget boundaries explicit', () => {
