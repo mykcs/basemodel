@@ -94,7 +94,6 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
     childLinks: [
       { role: 'result', label: { zh: '这条 1.7B 的冻结结果', en: 'Frozen result for this 1.7B line' }, href: `${cap}/openevo-2-0/report/` },
       { role: 'analysis', label: { zh: 'GDR-v1 为什么拒绝了大多数候选更新', en: 'Why GDR-v1 rejected most candidate updates' }, href: `${cap}/gdr-directapply/` },
-      { role: 'mechanism', label: { zh: 'Vanilla SD-LoRA 一轮怎样产生候选参数', en: 'How one Vanilla SD-LoRA round produces a candidate' }, href: `${cap}/vanilla-sd-lora/` },
       { role: 'mechanism', label: { zh: '当前 Gated-Delta SD-LoRA：从 admission gate 到 recurrent write', en: 'Current Gated-Delta SD-LoRA: from admission gate to recurrent write' }, href: `${cap}/gated-delta-sd-lora/` },
     ],
     evidenceLink: { role: 'evidence', label: { zh: 'GDR-v1 原始运行依据', en: 'GDR-v1 raw run evidence' }, href: `${cap}/gdr-directapply/#technical-evidence` },
@@ -135,7 +134,6 @@ export const OPEN_EVO_CANONICAL_ROUTE_OWNERS: Readonly<Record<string, OpenEvoExp
   'gdr-directapply': 'gdr-v1-1p7b',
   'q17-directapply-analysis': 'directapply-1p7b',
   'q17-directapply-frontier': 'directapply-1p7b',
-  'vanilla-sd-lora': 'directapply-1p7b',
   'sd-lora-scaling': 'directapply-1p7b',
   'sd-lora-history': 'directapply-1p7b',
   'sd-lora-equivalence': 'directapply-1p7b',

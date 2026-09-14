@@ -58,15 +58,19 @@ describe('experiment-first Study index', () => {
     expect(harnessStudy).toContain('正式 Stage 2');
   });
 
-  it('keeps GDR-v1 attached to its frozen result, 44-to-7 analysis, candidate mechanism, and original-rule distinction', () => {
+  it('keeps GDR-v1 attached to its frozen result and current recurrent-rule mechanism without reclaiming Vanilla Flow ownership', () => {
     const gdr = OPEN_EVO_EXPERIMENTS.find((item) => item.id === 'gdr-v1-1p7b');
     expect(gdr?.primaryHref).toBe('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
     expect(gdr?.childLinks).toEqual(expect.arrayContaining([
       expect.objectContaining({ role: 'result', href: '/research/seed-openevo/study/capability-exploration/openevo-2-0/report/' }),
       expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/gdr-directapply/' }),
-      expect.objectContaining({ role: 'mechanism', href: '/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/' }),
       expect.objectContaining({ role: 'mechanism', href: '/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/' }),
     ]));
+    expect(gdr?.childLinks.some((link) => link.href.endsWith('/vanilla-sd-lora/'))).toBe(false);
+    expect(OPEN_EVO_CANONICAL_ROUTE_OWNERS['vanilla-sd-lora']).toBeUndefined();
+    const readerContracts = readFileSync(new URL('../data/siteReaderContracts.ts', import.meta.url), 'utf8');
+    expect(readerContracts).toContain("c('flow-sd-lora', '/research/seed-openevo/flow/sd-lora/'");
+    expect(readerContracts).toContain("redirectsTo: '/research/seed-openevo/flow/sd-lora/'");
 
     const gdrExplainer = readFileSync(new URL('../components/research/OpenEvoGdrDirectApplyExplainer.astro', import.meta.url), 'utf8');
     expect(gdrExplainer).toContain('历史 GDR-v1 训练了 44 个 candidate，只采用了 7 个');
