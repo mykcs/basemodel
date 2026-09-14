@@ -27,15 +27,15 @@ The shared research branch had moved concurrently. Force-restoring the expected 
 
 The durable rule already exists in the multi-PR and shared-state policies: unexpected branch movement is a stop-and-read event, and a non-fast-forward must not be “fixed” by force merely to recover the topology we expected.
 
-### 3. Navigation taxonomy is not scientific treatment identity
+### 3. Navigation taxonomy is not scientific treatment identity — and the umbrella must not steal a child's formal name
 
-The Agent initially over-applied the scientific naming boundary and treated `SD-LoRA v2` as if it could appear only as the Stable Reduction treatment name everywhere. The owner corrected this: on the Study experiment directory, `SD-LoRA v2` should be a parent directory label, with `Stable Reduction` and `Bounded Online Recurrence` visibly indented beneath it.
+An earlier step in this conversation used `SD-LoRA v2` as the Study parent label while visibly nesting `Stable Reduction` and `Bounded Online Recurrence`. That was useful for exposing the taxonomy-versus-treatment distinction: a reader-facing navigation group can be broader than one scientific child without becoming a third treatment or merging the children scientifically.
 
-That correction exposes an important distinction. A reader-facing navigation group may intentionally be broader than any one scientific child. It does not become a third treatment, and it does not merge the children scientifically.
+Later exact-lineage reconciliation exposed the remaining naming bug. The formal `SD-LoRA v2` identity belongs only to `Stable Reduction`; `Bounded Online Recurrence` is an independent lineage. Reusing `SD-LoRA v2` as the shared parent therefore made the sibling look like a v2 treatment even though the child routes, evidence, and estimands stayed separate. The parent was corrected to the neutral umbrella `SD-LoRA 加速` / `SD-LoRA acceleration` while both children retained their own canonical names.
 
-The parent therefore stays non-clickable in this use case; each child keeps its own canonical route, evidence, metric/estimand, lineage, and claim boundary. Browser acceptance must prove the children are visibly nested on desktop and reachable on phone, not merely adjacent in source order.
+The durable rule is narrower and stronger: use a neutral navigation umbrella when several independent treatments are grouped and one child owns the tempting parent label as a formal scientific name. Reuse a treatment/version name as the parent only when upstream scientific authority explicitly defines that name as the umbrella for every child. The parent may remain non-clickable; each child keeps its own route, evidence, metric/estimand, lineage, and claim boundary. Browser acceptance must prove the hierarchy on desktop and phone, not merely source order.
 
-This historical correction is evidence for the **taxonomy-versus-treatment distinction**, not authority to restore the literal parent string forever. Future Agents must read the current navigation owner before changing the label; if current product naming later chooses a neutral parent while preserving the same hierarchy, this history must not be replayed as a stale copy patch.
+This sequence is also a knowledge-system lesson: historical owner corrections remain evidence, not standing copy authority. A future Agent must resolve the current lineage owner and current navigation owner before replaying an old literal label.
 
 ### 4. Do not create a second reconciliation PR when a better current owner already exists
 
@@ -75,7 +75,7 @@ This was another policy-activation/use-site failure, not a missing-rule failure.
 | Feedback / failure | Repeated? | Reusable lesson | Canonical destination | Why there |
 | --- | --- | --- | --- | --- |
 | Two concurrent “SD-LoRA VR” Agents looked similar | New concrete instance of parallel-lineage risk | resolve mechanism + scientific authority + estimand before integration | merged OpenEvo lineage registry + existing BaseModel lineage tests; this history case | scientific identity already has an executable owner; do not create another registry |
-| Owner: show `SD-LoRA v2` as parent, then indent the two branches | **Yes, owner corrected our earlier over-rigid naming interpretation** | navigation grouping may be broader than child treatment identity; parent taxonomy must not merge child science | `research-site-presentation-contract.md` + Study source/browser regressions | this current owner governs research navigation semantics |
+| Parent naming changed from `SD-LoRA v2` to neutral `SD-LoRA 加速` after exact-lineage reconciliation | **Yes; the earlier correction remained reachable as historical guidance** | a navigation umbrella may be broader than its children, but must not borrow a formal name owned by only one child | `research-site-presentation-contract.md` + Study source/browser regressions | current policy now encodes the neutral-umbrella rule while executable tests protect the concrete hierarchy |
 | Shared research branch moved under another Agent | Known concurrency family | preserve first; never force branch topology back to expectation | existing `project-agent-operating-principles.md` + `multi-pr-semantic-integration-playbook.md` | current rules already own shared-state safety |
 | Nearly created a duplicate reconciliation path | Known multi-PR family | one scientific/product decision should converge to one live integration authority | existing `multi-pr-semantic-integration-playbook.md` | duplicate policy would worsen the problem |
 | `main` moved repeatedly during final gates | **Yes** | classify overlap, rebuild current-base candidate, and requalify exact head when required | existing `release-closeout-protocol.md` | release owner already contains the exact rule |
@@ -88,13 +88,14 @@ This was another policy-activation/use-site failure, not a missing-rule failure.
 Before changing a research directory that groups several related methods, a future Agent should be able to answer:
 
 1. Is this label a scientific treatment identity, a reader-facing navigation group, or both in different contexts?
-2. If it is only a group here, is it visually/semantically presented as a group rather than a third result destination?
-3. Do the child treatments keep separate canonical routes, evidence, estimands, provenance, and claim boundaries?
-4. If another Agent is working on a similar line, have I found the exact current lineage/integration owner before creating a competing PR or branch mutation?
-5. If `main` or the shared branch moved, did I classify the semantic overlap before carrying forward acceptance evidence?
-6. Does responsive browser acceptance prove the intended parent/child hierarchy is visible, not merely present in the DOM?
-7. Before compound local shell syntax, did the execution tool actually report Bash as the outer interpreter?
-8. For docs/governance-only closeout, did I still obtain the required exact-head Vercel status before merge while keeping merged-main Production non-deploy-relevant?
+2. If the group spans independent treatments, does the parent use a neutral umbrella rather than a formal treatment/version name owned by only one child?
+3. Is it visually/semantically presented as a group rather than a third result destination?
+4. Do the child treatments keep separate canonical routes, evidence, estimands, provenance, and claim boundaries?
+5. If another Agent is working on a similar line, have I found the exact current lineage/integration owner before creating a competing PR or branch mutation?
+6. If `main` or the shared branch moved, did I classify the semantic overlap before carrying forward acceptance evidence?
+7. Does responsive browser acceptance prove the intended parent/child hierarchy is visible, not merely present in the DOM?
+8. Before compound local shell syntax, did the execution tool actually report Bash as the outer interpreter?
+9. For docs/governance-only closeout, did I still obtain the required exact-head Vercel status before merge while keeping merged-main Production non-deploy-relevant?
 
 If these checks run, the most important failures from this conversation—scientific-line conflation, navigation/treatment identity conflation, duplicate integration authority, and repeated shell misuse—are materially harder to repeat.
 
