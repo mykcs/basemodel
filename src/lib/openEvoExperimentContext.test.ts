@@ -193,13 +193,13 @@ describe('experiment context hierarchy', () => {
 
     const history = read('../components/research/OpenEvoGdrDirectApplyExplainer.astro');
     const current = read('../components/research/OpenEvoGatedDeltaSdLoraExplainer.astro');
-    expect(history).toContain('本地 GDR-v1');
+    expect(history).toContain('旧 GDR-v1');
     expect(history).toContain('DirectApply');
-    expect(history).toContain('candidate admission');
+    expect(history).toContain('训练完，再筛一次');
     expect(history).not.toContain('id=\"recurrence\"');
-    expect(current).toContain('原始 Gated Delta Rule 更新的是 State');
-    expect(current).toContain('真实 GDR 路径已经跑通');
-    expect(current).toContain('完整四轮 Vanilla vs GDR paired D1 仍未完成');
+    expect(current).toContain('Gated Delta 的 State 更新');
+    expect(current).toContain('四轮 Vanilla vs GDR 配对实验已经封存两轮');
+    expect(current).toContain('不是“GDR 已经优于 Vanilla”的结论');
   });
 
   it('keeps Chinese and English on one experiment IA with matching owned routes', () => {
