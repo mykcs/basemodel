@@ -36,6 +36,13 @@ describe('site-wide reader attention contracts', () => {
     }
   });
 
+  it('anchors the SD-LoRA first-screen contract to the actual motivation message rather than the whole tall intro block', () => {
+    const flow = SITE_READER_CONTRACTS.find((contract) => contract.id === 'flow-sd-lora');
+    const compatibility = SITE_READER_CONTRACTS.find((contract) => contract.id === 'capability-vanilla-sd-lora');
+    expect(flow?.firstViewportSelector).toBe('.sdlora-intro__lede');
+    expect(compatibility?.firstViewportSelector).toBe('.sdlora-intro__lede');
+  });
+
   it('keeps the Study phone budget at five experiment parents plus the two SD-LoRA acceleration branches', () => {
     const row = SITE_READER_CONTRACTS.find((contract) => contract.id === 'study');
     expect(row?.firstViewportBudget?.maxInteractive).toBe(7);
