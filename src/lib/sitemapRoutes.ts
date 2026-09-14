@@ -49,6 +49,8 @@ export const bilingualStaticPaths = [
   '/research/seed-openevo/study/results/four-arm-analysis/',
 ] as const;
 
+// These names are retained as route-inventory compatibility for existing planners.
+// Their English page sources are archived under docs/archive/site-en/ and are not active runtime routes.
 export const bilingualCompatibilityPaths = [
   '/research/seed-openevo/flow/base-model/',
   '/research/seed-openevo/study/design/',
@@ -78,9 +80,12 @@ export function toEnglishPath(path: string): string {
 
 export type RouteLocale = 'zh' | 'en';
 
-const bilingualRoutes = new Set<string>([...bilingualStaticPaths, ...bilingualCompatibilityPaths]);
-const zhOnlyRoutes = new Set<string>(zhOnlyStaticPaths);
-const bilingualDynamicRoute = /^\/(?:models|papers)\/[^/]+\/$/;
+const activeStaticRoutes = new Set<string>([
+  ...bilingualStaticPaths,
+  ...bilingualCompatibilityPaths,
+  ...zhOnlyStaticPaths,
+]);
+const activeDynamicRoute = /^\/(?:models|papers)\/[^/]+\/$/;
 
 export function normalizeLocaleRoute(pathname: string): string {
   const withoutQuery = pathname.split(/[?#]/, 1)[0] || '/';
@@ -90,8 +95,7 @@ export function normalizeLocaleRoute(pathname: string): string {
 
 export function availableLocalesForRoute(pathname: string): readonly RouteLocale[] {
   const route = normalizeLocaleRoute(pathname);
-  if (bilingualRoutes.has(route) || bilingualDynamicRoute.test(route)) return ['zh', 'en'];
-  if (zhOnlyRoutes.has(route)) return ['zh'];
+  if (activeStaticRoutes.has(route) || activeDynamicRoute.test(route)) return ['zh'];
   return [];
 }
 
@@ -102,9 +106,9 @@ export function isLocaleRouteAvailable(pathname: string, locale: RouteLocale): b
 export function localizedRoute(pathname: string, locale: RouteLocale): string | null {
   const route = normalizeLocaleRoute(pathname);
   if (!isLocaleRouteAvailable(route, locale)) return null;
-  return locale === 'en' ? toEnglishPath(route) : route;
+  return route;
 }
 
 export function sitemapStaticPaths(): string[] {
-  return [...bilingualStaticPaths, ...zhOnlyStaticPaths, ...bilingualStaticPaths.map(toEnglishPath)];
+  return [...bilingualStaticPaths, ...zhOnlyStaticPaths];
 }
