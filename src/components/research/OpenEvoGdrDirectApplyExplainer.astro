@@ -64,7 +64,7 @@ const gdr = {
     <dl class="gdr-history__metrics">
       <div><dt>{t('训练轮数', 'Rounds')}</dt><dd>{gdr.rounds}</dd></div>
       <div><dt>{t('WebShop 尝试', 'WebShop attempts')}</dt><dd>{gdr.rollouts.toLocaleString('en-US')}</dd></div>
-      <div><dt>SD-LoRA 候选更新</dt><dd>{gdr.candidates}</dd></div>
+      <div><dt>{t('SD-LoRA 候选更新', 'SD-LoRA candidate updates')}</dt><dd>{gdr.candidates}</dd></div>
       <div><dt>{t('正式进入后续模型', 'Adopted updates')}</dt><dd>{gdr.accepted}</dd></div>
       <div><dt>{t('保留比例', 'Kept fraction')}</dt><dd>{gdr.acceptanceRate}</dd></div>
       <div><dt>{t('R49 之后', 'After R49')}</dt><dd>{gdr.post49Candidates} candidates → {gdr.post49Accepted} adopted</dd></div>

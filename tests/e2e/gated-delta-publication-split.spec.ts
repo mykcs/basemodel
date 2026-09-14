@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 const root = '/research/seed-openevo/study/capability-exploration/';
 const routes = {
+  lobby: root,
   current: `${root}gated-delta-sd-lora/`,
   history: `${root}gdr-directapply/`,
 };
@@ -38,6 +39,10 @@ for (const locale of locales) {
       await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '这个结论只属于当前冻结的资格实验' : 'This supports the frozen qualification comparison only');
       await expect(page.getByTestId('gated-delta-recurrence')).toBeVisible();
       await expect(page.getByTestId('gated-delta-runtime-path')).toBeVisible();
+      if (locale.id === 'en') {
+        await expect(page.locator('#task-vector')).toContainText('WebShop score / reward · fixed 16-task candidate check');
+        await expect(page.locator('#task-vector')).not.toContainText('WebShop 分数 / reward · 固定 16 题候选检查');
+      }
       await expect(page.locator('[data-reader-route]')).toHaveCount(0);
       await expectNoPageOverflow(page);
 
@@ -45,6 +50,7 @@ for (const locale of locales) {
       await expect(page.locator('h1')).toContainText(locale.id === 'zh' ? '历史 GDR-v1 / DirectApply' : 'Historical GDR-v1 / DirectApply');
       await expect(page.locator('#what-happened')).toContainText(/44/);
       await expect(page.locator('#what-happened')).toContainText(/7/);
+      if (locale.id === 'en') await expect(page.locator('#what-happened')).toContainText('SD-LoRA candidate updates');
       await expect(page.locator('#admission-rule')).toContainText(/16/);
       await expect(page.locator('#directapply-result')).toContainText(locale.id === 'zh' ? /不是同一批冻结题.*不能直接相减/ : /different frozen task panels.*cannot be subtracted/);
       await expect(page.getByTestId('gated-delta-recurrence')).toHaveCount(0);
@@ -94,5 +100,13 @@ test('core distinction remains readable without JavaScript', async ({ browser })
     await expectNoPageOverflow(page);
   } finally {
     await context.close();
+  }
+});
+
+test('capability lobby reflects the sealed four-round D1 instead of the old interim state', async ({ page }) => {
+  for (const locale of locales) {
+    await page.goto(`${locale.prefix}${routes.lobby}`, { waitUntil: 'domcontentloaded' });
+    const deepLink = page.locator('[data-deep-dive="gated-delta-sd-lora"]');
+    await expect(deepLink).toContainText(locale.id === 'zh' ? '已经封存的四轮 paired D1 资格结果' : 'sealed four-round paired D1 qualification');
   }
 });
