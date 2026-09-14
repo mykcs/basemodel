@@ -128,8 +128,11 @@ Predicted failure:
 Required falsification:
 
 - include representative Chinese and English routes;
+- for a shared bilingual body owner, inspect the **visible H1 / lede / primary controls in both locales**. Localized route metadata such as `<title>`, description, canonical/hreflang, or a localized shell does not prove that shared body copy changed language; language-neutral names/IDs may stay literal, but human-facing prose and headings must resolve through the locale-aware owner;
 - use real long model/paper names rather than placeholder text;
 - verify wrapping and minimum-size behavior at mobile width.
+
+Historical enforcement case: [`../history/2026-09-14-sitewide-normalization-conversation-closeout.md`](../history/2026-09-14-sitewide-normalization-conversation-closeout.md).
 
 ### Scenario E — theme switching leaves stale computed styles
 
