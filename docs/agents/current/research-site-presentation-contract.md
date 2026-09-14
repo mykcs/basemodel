@@ -200,6 +200,7 @@ Never upgrade evidence strength for rhetorical neatness.
 - An invalid measurement is not a scientific zero.
 - An unexecuted experiment is not a negative result.
 - A frozen historical fact record is not silently refreshed with current provider facts.
+- Reader-visible scientific state must stay coherent across the route body and route-level publication metadata. When a result moves from interim/open to sealed/complete (or the reverse), update `<title>`, description, Open Graph/Twitter metadata, and other search/share summaries to the same bounded claim in the same change. Metadata must not lag behind the body or silently strengthen it; preserve the same caveats, comparison scope, and final/non-final boundary.
 
 Unknown remains unknown until first-party evidence or a controlled experiment resolves it.
 
@@ -272,7 +273,8 @@ Before merge, answer yes to all of the following:
 7. Are result, interpretation, and “cannot prove” boundaries separated?
 8. Does navigation reflect conceptual hierarchy rather than internal repository structure, and do display-only parent groups stay separate from child scientific identity/provenance?
 9. Are real quantitative relationships represented with truthful web-native geometry rather than decorative art?
-10. Has the affected route passed the required light/dark and responsive acceptance matrix?
+10. Do the route body, `<title>`, description, Open Graph/Twitter metadata, and other search/share summaries describe the same scientific state with the same claim boundary?
+11. Has the affected route passed the required light/dark and responsive acceptance matrix?
 
 ## Relationship to current policy owners
 
