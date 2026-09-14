@@ -86,8 +86,8 @@ describe('sitewide normalization first repair batch', () => {
   });
 
   it('explains Vanilla SD-LoRA flow directly without narrating the rejected card metaphor', () => {
-    expect(vanillaSdLoraSlide).toContain('一轮更新沿着会回到下一轮任务的流程移动');
-    expect(vanillaSdLoraSlide).toContain('One update follows a routed loop back into the next task round');
+    expect(vanillaSdLoraSlide).toContain('上一轮选定的累计 LoRA 先做 128 次 WebShop 任务尝试');
+    expect(vanillaSdLoraSlide).toContain('The cumulative LoRA selected last round runs 128 WebShop attempts');
     expect(vanillaSdLoraSlide).not.toContain('四张卡片');
     expect(vanillaSdLoraSlide).not.toContain('four cards in a row');
   });

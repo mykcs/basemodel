@@ -16,10 +16,10 @@ const gatedDeltaHref = p('/research/seed-openevo/study/capability-exploration/ga
 const q17Href = p('/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/');
 const mechanismHref = p('/research/seed-openevo/study/capability-exploration/mechanism-1-0/');
 const helps = zh ? [
-  '基础模型不做全参数更新。',
-  '过去学到的方向不会被下一轮直接重写。',
-  '新成功经验仍能增加一个新的参数方向。',
-  '容量受限的旧经验回放让优化器还能看到一部分过去经验。',
+  '基础模型本身保持不动。',
+  '以前学到的参数方向不会被下一轮直接改写。',
+  '新的成功经验还能学出一个新方向。',
+  '每轮还能带回最多 64 条旧经验，避免只看眼前这一轮。',
 ] : [
   'The base model avoids full-parameter updates.',
   'Earlier learned directions are not directly overwritten.',
@@ -27,10 +27,10 @@ const helps = zh ? [
   'Bounded replay keeps some earlier experience visible to the optimizer.',
 ];
 const risks = zh ? [
-  '只从完整成功轨迹直接学习，难题可能长期没有监督信号。',
-  'replay 有容量上限，不等于保存全部历史。',
-  '旧方向虽冻结，α 仍会变化，所以旧方向的实际影响并非固定。',
-  '训练 loss 下降、低秩方向增加，不保证 WebShop 能力单调上升。',
+  '只有完整成功会直接训练参数，所以一直失败的难题可能长期没有训练信号。',
+  '旧经验最多只保留一小部分，不是完整历史。',
+  '旧方向本身不动，但它们的权重 α 还会重调，所以实际影响仍会变化。',
+  '训练损失（loss）下降、学到更多方向，也不保证 WebShop 分数会一直上涨。',
 ] : [
   'Direct supervision comes only from exact success, so hard tasks may remain unseen by the trainer.',
   'Replay is bounded rather than a complete history.',
@@ -44,87 +44,87 @@ const risks = zh ? [
 
   <OpenEvoVanillaSdLoraSlide locale={locale} />
   <section class="sdlora__section" id="round-inputs" aria-labelledby="round-inputs-title">
-    <h2 id="round-inputs-title">{t('一轮开始时，系统手上有什么？', 'What does the system have at the start of a round?')}</h2>
+    <h2 id="round-inputs-title">{t('一轮开始前，模型带着什么？', 'What does the model carry into a round?')}</h2>
     <div class="sdlora-two-col">
       <div data-ui-audit-item>
-        <h3>{t('直接决定任务尝试的状态', 'State that directly shapes each task attempt')}</h3>
+        <h3>{t('会直接影响这 128 次尝试的东西', 'What directly shapes these 128 attempts')}</h3>
         <ul>
-          <li>{t('冻结的 base model。', 'The frozen base model.')}</li>
-          <li>{t('上一轮选定的 cumulative SD-LoRA adapter。', 'The cumulative SD-LoRA adapter selected after the prior round.')}</li>
-          <li>Text Memory / Skill Bundle / Agent System — {t('它们会影响模型看到的上下文或行为，但不是 SD-LoRA optimizer 的直接参数输入。', 'they can shape context or behavior, but are not direct parameter inputs to the SD-LoRA optimizer.')}</li>
+          <li>{t('基础模型参数保持不动。', 'The base-model parameters stay fixed.')}</li>
+          <li>{t('加载上一轮已经选定的累计 SD-LoRA。', 'Load the cumulative SD-LoRA selected after the prior round.')}</li>
+          <li>Text Memory / Skill Bundle / Agent System — {t('它们会改变模型看到的上下文或行为，但 SD-LoRA 训练器不会直接把它们当成参数来更新。', 'they can change the model’s context or behavior, but the SD-LoRA trainer does not update them as model parameters.')}</li>
         </ul>
       </div>
       <div data-ui-audit-item>
-        <h3>{t('本轮任务', 'Tasks for this round')}</h3>
-        <p><strong>{facts.round.taskCount} × {facts.round.rolloutsPerTask} = {facts.round.rolloutCount} {t('次任务尝试', 'task attempts')}</strong></p>
-        <p>{t('每次任务尝试都留下动作轨迹、模型原始输出、最终 task score、是否完整成功以及 parser / repair / engineering-invalid 等诊断字段。代码里把一次完整任务尝试记作 rollout。', 'Every task attempt records the action trajectory, raw model output, final task score, exact-success state, and parser / repair / engineering-invalid diagnostics. The code calls one complete task attempt a rollout.')}</p>
+        <h3>{t('这一轮要做什么', 'What happens this round')}</h3>
+        <p><strong>{t(`一共 ${facts.round.rolloutCount} 次：${facts.round.taskCount} 个任务，每个试 ${facts.round.rolloutsPerTask} 次`, `${facts.round.rolloutCount} attempts total: ${facts.round.taskCount} tasks × ${facts.round.rolloutsPerTask}`)}</strong></p>
+        <p>{t('每次尝试都会留下动作、模型原始输出、最终得分、有没有完整成功，以及解析失败、修复和无效运行等错误信息。代码里把一次完整尝试叫 rollout。', 'Each attempt records the actions, raw model output, final score, whether it fully succeeded, and parser/repair/invalid-run diagnostics. The code calls one complete attempt a rollout.')}</p>
       </div>
     </div>
   </section>
 
   <section class="sdlora__section" id="training-data" aria-labelledby="training-data-title">
-    <h2 id="training-data-title">{t('128 次尝试里，哪些真的进入 SD-LoRA？', 'Which of the 128 attempts actually train SD-LoRA?')}</h2>
+    <h2 id="training-data-title">{t('128 次尝试里，哪些会真的拿来训练参数？', 'Which of the 128 attempts actually train the parameters?')}</h2>
     <div class="sdlora-filter" data-ui-audit="contrast layout">
       <div class="sdlora-filter__all" data-ui-audit-item>
         <small>{facts.round.rolloutCount} {t('次任务尝试', 'task attempts')}</small>
-        <strong>{t('全部保留为评估与诊断记录', 'All remain evaluation and diagnostic evidence')}</strong>
-        <p>{t('失败、部分成功、parser repair、invalid 等仍然能解释 round 为什么涨跌。', 'Failures, partial success, parser repair, and invalid states still help explain round-level movement.')}</p>
+        <strong>{t('全部留下，方便看这一轮发生了什么', 'Keep all of them to understand what happened this round')}</strong>
+        <p>{t('失败、部分成功、修复过的输出和无效运行不会直接训练参数，但能帮助解释这一轮分数为什么变化。', 'Failures, partial successes, repaired outputs, and invalid runs do not directly train the parameters, but they help explain why the round score moved.')}</p>
       </div>
       <div class="sdlora-filter__arrow" aria-hidden="true">→</div>
       <div class="sdlora-filter__train" data-ui-audit-item>
-        <small>{t('监督训练子集', 'Supervised subset')}</small>
-        <strong>{t('每个任务最早一条通过全部检查的完整成功', 'Earliest fully checked success per task')}</strong>
-        <p>{t('要求完整成功、身份与轨迹完整，而且没有解析失败、解析修复、工程无效或运行错误；内部记录把这种样本称为 clean exact success。', 'Requires exact success, valid identity and a complete trace, with no parser failure, parser repair, engineering-invalid state, or runtime error; internal records call this a clean exact success.')}</p>
+        <small>{t('真正拿去训练', 'What actually trains')}</small>
+        <strong>{t('每个任务只取最早一条通过全部检查的成功', 'Use the earliest fully checked success per task')}</strong>
+        <p>{t('它必须完整成功，任务身份和轨迹都完整，而且没有解析失败、修复、工程无效或运行错误。内部记录把这种样本叫 clean exact success。', 'It must fully succeed with a valid task identity and complete trace, and have no parser failure, repair, engineering-invalid state, or runtime error. Internal records call this a clean exact success.')}</p>
       </div>
     </div>
     <p class="sdlora-note">{t(
-      `一个成功任务会保留整条 ${facts.selection.traceStepsMin}–${facts.selection.traceStepsMax} 步轨迹，再拆成逐步的 assistant 训练目标；当前一轮最多 ${facts.selection.maxTraceExamples} 个轨迹样本，配置上限 ${facts.selection.maxRecords}。本轮训练集不把旧轮次的原始任务尝试直接拼回来；跨轮旧例子来自上一版 adapter 自带的容量受限旧经验回放。`,
+      `一个成功任务会把整条 ${facts.selection.traceStepsMin}–${facts.selection.traceStepsMax} 步轨迹留下，再拆成每一步的训练样本；这一轮最多 ${facts.selection.maxTraceExamples} 个轨迹样本，配置上限 ${facts.selection.maxRecords}。过去所有任务尝试不会整批混进来；跨轮只通过上一版累计 LoRA 保存的最多 ${facts.trainer.replayCapacity} 条旧经验回放。`,
       `A successful task keeps its full ${facts.selection.traceStepsMin}–${facts.selection.traceStepsMax}-step trajectory and is then split into step-level assistant targets. The current round is bounded at ${facts.selection.maxTraceExamples} trace examples, below the configured maximum of ${facts.selection.maxRecords}. The round dataset does not concatenate raw rollouts from earlier rounds; cross-round examples enter through bounded replay carried by the prior adapter.`
     )}</p>
   </section>
 
   <section class="sdlora__section" id="inside-update" aria-labelledby="inside-update-title">
-    <h2 id="inside-update-title">{t('训练器内部做了什么？', 'What happens inside the trainer?')}</h2>
+    <h2 id="inside-update-title">{t('SD-LoRA 真正怎么改参数？', 'How does SD-LoRA actually change the parameters?')}</h2>
     <ol class="sdlora-detail-steps">
-      <li data-ui-audit-item><span>1</span><div><strong>{t('准备当前 examples', 'Prepare current examples')}</strong><p>{t('把成功轨迹里的每一步转成 chat/tool training example，只让 assistant 输出位置计算 loss。', 'Turn each successful step into a chat/tool training example and compute loss only on assistant output tokens.')}</p></div></li>
-      <li data-ui-audit-item><span>2</span><div><strong>{t('加入容量受限的旧经验回放', 'Replay a bounded set of old examples')}</strong><p>{t(`上一轮 adapter 自带最多 ${facts.trainer.replayCapacity} 条旧例子的经验池；如果已有历史，训练器从中取旧例子，与本轮样本一起优化。`, `The prior adapter carries a pool capped at ${facts.trainer.replayCapacity} old examples; when history exists, the trainer optimizes sampled old examples alongside the current examples.`)}</p></div></li>
-      <li data-ui-audit-item><span>3</span><div><strong>{t('冻结 base 和旧方向', 'Freeze the base and prior directions')}</strong><p>{t('W₀ 不训练；过去低秩方向的 A/B 也不再求梯度。只有本轮 Aₜ/Bₜ 和所有方向的幅度系数 α 参与优化。', 'W₀ is frozen, and prior low-rank A/B directions do not receive gradients. Only current Aₜ/Bₜ plus the magnitude coefficients α for all directions are optimized.')}</p></div></li>
-      <li data-ui-audit-item><span>4</span><div><strong>{t('同时学习新方向与全部 α', 'Optimize the new direction and every α')}</strong><p>{t(`新方向使用学习率 ${facts.trainer.learningRate}；幅度系数 α 使用独立学习率 ${facts.trainer.coefficientLearningRate}。这意味着旧方向本身不变，但它们在累计 adapter 里的“音量”可以改变。`, `The new direction uses learning rate ${facts.trainer.learningRate}; magnitude coefficients α use a separate ${facts.trainer.coefficientLearningRate}. Old directions stay fixed, but their contribution to the cumulative adapter can change.`)}</p></div></li>
-      <li data-ui-audit-item><span>5</span><div><strong>{t('归一化新方向，再折成一个 adapter', 'Normalize the new direction, then fold everything into one adapter')}</strong><p>{t('训练后把新 BₜAₜ 归一化为单位 Frobenius 方向，原来的大小吸收到 αₜ；随后所有低秩方向被拼成一份兼容 PEFT 的单一累计 LoRA。', 'After training, normalize BₜAₜ to a unit Frobenius direction and absorb its original magnitude into αₜ; all low-rank directions are then folded into one PEFT-compatible cumulative LoRA.')}</p></div></li>
+      <li data-ui-audit-item><span>1</span><div><strong>{t('把本轮成功轨迹拆成训练样本', 'Turn this round’s successful traces into training examples')}</strong><p>{t('把成功轨迹里的每一步转成一个 chat/tool 样本，只对模型应该回答的部分计算训练损失（loss）。', 'Turn each successful step into a chat/tool example and compute training loss only on the model’s answer tokens.')}</p></div></li>
+      <li data-ui-audit-item><span>2</span><div><strong>{t('再加入最多 64 条旧经验', 'Add up to 64 old examples')}</strong><p>{t(`上一轮会保存最多 ${facts.trainer.replayCapacity} 条旧经验；有历史数据时，训练器抽一部分旧经验，和本轮成功样本一起训练。`, `The previous round keeps up to ${facts.trainer.replayCapacity} old examples; when history exists, the trainer samples some of them and trains on them alongside this round’s successful examples.`)}</p></div></li>
+      <li data-ui-audit-item><span>3</span><div><strong>{t('基础模型和旧方向都不动', 'Keep the base model and old directions fixed')}</strong><p>{t('W₀ 不训练，过去方向的 A/B 也不再更新。真正会变的是本轮新方向 Aₜ/Bₜ，以及每个方向有多大影响的系数 α。', 'W₀ and the prior directions’ A/B factors stay fixed. The trainable pieces are this round’s new Aₜ/Bₜ direction and the α coefficients that control how much each direction matters.')}</p></div></li>
+      <li data-ui-audit-item><span>4</span><div><strong>{t('学一个新方向，同时重调每个方向的影响大小', 'Learn one new direction and rebalance how much every direction matters')}</strong><p>{t(`新方向的学习率是 ${facts.trainer.learningRate}；控制各方向影响大小的 α 用独立学习率 ${facts.trainer.coefficientLearningRate}。所以旧方向本身虽然不变，它们在最终 LoRA 里占多大作用仍会变化。`, `The new direction uses learning rate ${facts.trainer.learningRate}; α, which controls each direction’s influence, uses a separate ${facts.trainer.coefficientLearningRate}. Old directions stay fixed, but how much they contribute to the final LoRA can still change.`)}</p></div></li>
+      <li data-ui-audit-item><span>5</span><div><strong>{t('最后把所有方向合成一份累计 LoRA', 'Finally combine all directions into one cumulative LoRA')}</strong><p>{t('训练后先把新方向 BₜAₜ 归一化，原来的大小记进 αₜ；再把所有方向合成一份兼容 PEFT 的累计 LoRA。', 'After training, normalize the new BₜAₜ direction and absorb its original magnitude into αₜ, then combine all directions into one PEFT-compatible cumulative LoRA.')}</p></div></li>
     </ol>
   </section>
 
   <section class="sdlora__section" id="round-boundary" aria-labelledby="round-boundary-title">
-    <h2 id="round-boundary-title">{t('更新完以后，下一轮用哪个参数状态？', 'Which parameter state does the next round use?')}</h2>
+    <h2 id="round-boundary-title">{t('训练结束后，下一轮到底用新参数还是旧参数？', 'After training, does the next round use the new or old parameters?')}</h2>
     <div class="sdlora-boundary" data-ui-audit="contrast layout">
       <div data-ui-audit-item>
-        <small>{t('SD-LoRA 到这里结束', 'SD-LoRA ends here')}</small>
-        <strong>{t('训练出候选累计 LoRA', 'Train a candidate cumulative LoRA')}</strong>
-        <p>{t('这份候选 LoRA 还保存 SD-LoRA 参数状态和有限旧经验，供后续轮次继续累计。', 'This candidate LoRA also carries SD-LoRA parameter state and a bounded set of old examples for later rounds.')}</p>
+        <small>{t('SD-LoRA 训练到这里结束', 'SD-LoRA training ends here')}</small>
+        <strong>{t('先得到一份候选 LoRA', 'First produce a candidate LoRA')}</strong>
+        <p>{t('这份新 LoRA 已经训练出来了，也带着有限旧经验，但它还不一定会被下一轮使用。', 'The new LoRA has been trained and carries a bounded set of old examples, but the next round has not necessarily adopted it yet.')}</p>
       </div>
       <span aria-hidden="true">→</span>
       <div data-ui-audit-item>
-        <small>{t('状态准入 · 另一层机制', 'State admission · separate mechanism')}</small>
-        <strong>{t('当前主线直接采用；历史规则先小测再决定新旧参数', 'Current path adopts directly; historical rule probes before choosing')}</strong>
-        <p>{t('前一种状态选择在当前实验中称 DirectApply：工程/数据检查通过后直接采用新候选。历史本地 GDR-v1 是候选准入规则：再做一次 16-task 小测，然后决定采用新状态还是继续旧状态。', 'The current state rule is called DirectApply: it adopts the new candidate after engineering/data checks pass. Historical local GDR-v1 is a candidate-admission rule: it runs a 16-task probe, then chooses the new or old state.')}</p>
+        <small>{t('接下来才决定要不要用它', 'Then decide whether to use it')}</small>
+        <strong>{t('现在直接采用；历史 GDR-v1 会先小测', 'Current DirectApply adopts directly; historical GDR-v1 probes first')}</strong>
+        <p>{t('当前实验用 DirectApply：工程和数据检查通过后，下一轮直接用新候选。历史本地 GDR-v1 会先用 16 个任务小测，再决定用新参数还是继续旧参数。', 'The current experiment uses DirectApply: after engineering and data checks pass, the next round uses the new candidate. Historical local GDR-v1 first probes 16 tasks, then chooses the new or old parameters.')}</p>
       </div>
       <span aria-hidden="true">→</span>
       <div data-ui-audit-item>
-        <small>Round t + 1</small>
-        <strong>{t('用选定状态继续下一轮任务尝试', 'Run the next round with the selected state')}</strong>
-        <p>{t('新的行为再产生新的成功/失败证据，循环继续。', 'New behavior produces the next round of success/failure evidence and the loop repeats.')}</p>
+        <small>{t('下一轮', 'Next round')}</small>
+        <strong>{t('用选定的参数继续跑', 'Run the next round with the selected parameters')}</strong>
+        <p>{t('再做下一批任务，新的成功和失败又会变成下一轮证据。', 'Run the next batch of tasks; the new successes and failures become evidence for the following round.')}</p>
       </div>
     </div>
-    <p class="sdlora-note">{t('因此“SD-LoRA 候选参数训练完成”和“模型状态正式更新”必须分开计数。历史本地 GDR-v1 一共产生 44 个候选，只让 7 次正式进入下一轮模型，正是这个区别。', '“SD-LoRA candidate training completed” and “model state formally updated” are separate events. Historical local GDR-v1 produced 44 candidates but admitted only 7 into the next model state, exactly this distinction.')}</p>
+    <p class="sdlora-note">{t('所以要分清两件事：LoRA 训练出来了，不等于下一轮真的用了它。历史本地 GDR-v1 一共训练出 44 个候选，最后只有 7 个进入下一轮模型。', 'These are two separate events: training a LoRA candidate does not mean the next round actually uses it. Historical local GDR-v1 trained 44 candidates, but only 7 entered the next-round model state.')}</p>
   </section>
 
   <section class="sdlora__section" id="mechanism-risks" aria-labelledby="mechanism-risks-title">
-    <h2 id="mechanism-risks-title">{t('旧方向不会被直接重写，但能力仍不保证单调提高', 'Old directions are not directly overwritten, but capability need not improve monotonically')}</h2>
+    <h2 id="mechanism-risks-title">{t('旧方向没被重写，也不代表能力会一直变好', 'Keeping old directions fixed does not guarantee capability keeps improving')}</h2>
     <div class="sdlora-two-col sdlora-two-col--evidence">
-      <div data-ui-audit-item><h3>{t('设计想解决什么', 'What the design is trying to do')}</h3><ul>{helps.map((item) => <li>{item}</li>)}</ul></div>
-      <div data-ui-audit-item><h3>{t('机制层面的检查点', 'Mechanism-level failure points')}</h3><ul>{risks.map((item) => <li>{item}</li>)}</ul><p><strong>{t('这些是需要测的风险，不是当前已经证明的故障原因。', 'These are risks to measure, not causes already proven in the current run.')}</strong></p></div>
+      <div data-ui-audit-item><h3>{t('它想保护什么', 'What this design tries to protect')}</h3><ul>{helps.map((item) => <li>{item}</li>)}</ul></div>
+      <div data-ui-audit-item><h3>{t('还可能出什么问题', 'What can still go wrong')}</h3><ul>{risks.map((item) => <li>{item}</li>)}</ul><p><strong>{t('这些是接下来要测的风险，目前还不能说它们就是已经发生的故障原因。', 'These are risks to test next; we cannot yet claim they are the causes of observed failures.')}</strong></p></div>
     </div>
-    <p class="sdlora-caveat">{t('尤其不能把“某一轮分数下降”直接等同于“对应 checkpoint 更新让模型整体退化”：不同 round 抽到的 WebShop 任务不同。2026-09-11 的固定同题诊断显示，task sampling 可以明显放大看起来的单轮回撤。', 'A lower score in one round cannot by itself mean the parameter update globally degraded the model: different rounds sample different WebShop tasks. Current same-task diagnostics already show that task sampling can amplify apparent round-to-round drops.')}</p>
+    <p class="sdlora-caveat">{t('某一轮分数下降，不等于这次参数更新让模型整体变差：不同轮抽到的 WebShop 任务并不一样。2026-09-11 的固定同题诊断已经看到，抽题差异会把单轮回撤看起来放大。', 'A lower score in one round does not by itself mean the parameter update made the model globally worse: different rounds sample different WebShop tasks. The 2026-09-11 same-task diagnostic showed that task sampling can make a one-round drop look larger than it is.')}</p>
   </section>
 
   <details class="sdlora__details">
@@ -166,14 +166,14 @@ const risks = zh ? [
         </ul>
         <h3>{t('下一层问题', 'Next layer')}</h3>
         <nav class="sdlora-next" aria-label={t('相关研究页面', 'Related research pages')}>
-          <a href={gdrHref}>{t('状态准入：候选参数为什么会被采用或拒绝（DirectApply / 本地 GDR-v1）', 'State admission: why a candidate is adopted or rejected (DirectApply / local GDR-v1)')}</a>
-          <a href={gatedDeltaHref}>{t('当前机制：learning event 怎样直接写入 recurrent LoRA factor State', 'Current mechanism: how a learning event writes recurrent LoRA factor State')}</a>
+          <a href={gdrHref}>{t('下一轮为什么会用新参数或旧参数（DirectApply / 本地 GDR-v1）', 'Why the next round uses new or old parameters (DirectApply / local GDR-v1)')}</a>
+          <a href={gatedDeltaHref}>{t('当前 Gated-Delta：学习事件怎样直接写进 LoRA 参数状态', 'Current Gated-Delta: how a learning event writes directly into LoRA parameter state')}</a>
           <a href={q17Href}>{t('R127 → R128：同一批题上的 checkpoint 变化', 'R127 → R128: checkpoint change on the same tasks')}</a>
           <a href={mechanismHref}>{t('Mechanism-1.0：进一步做参数因果干预', 'Mechanism-1.0: causal parameter interventions')}</a>
         </nav>
       </div>
     </div>
-    <footer>{t('边界：这是当前 OpenEvo × WebShop 参数路径的机制解释图，不是 OpenEvo 全系统总览，也不把尚未验证的 interference / forgetting 假设写成结论。', 'Boundary: this explains the current OpenEvo × WebShop parametric path. It is not an OpenEvo system overview and does not promote unverified interference / forgetting hypotheses into conclusions.')}</footer>
+    <footer>{t('这页只解释当前 OpenEvo × WebShop 里 SD-LoRA 这条参数更新路径；它不是整个 OpenEvo 系统图，也不会把尚未验证的干扰或遗忘假设写成已经证明的结论。', 'This page explains only the current SD-LoRA parameter-update path in OpenEvo × WebShop. It is not a map of the whole OpenEvo system, and it does not present unverified interference or forgetting hypotheses as proven conclusions.')}</footer>
   </section>
 </article>
 

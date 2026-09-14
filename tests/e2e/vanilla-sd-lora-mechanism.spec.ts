@@ -11,25 +11,25 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
   await expect(body).toBeVisible();
   await expect(page.locator('h1')).toContainText('Vanilla SD-LoRA');
   await expect(body).toContainText('16 个任务 × 每题 8 次');
-  await expect(body).toContainText('每个任务最早一条通过全部检查的完整成功');
-  await expect(body).toContainText('容量受限的旧经验回放');
+  await expect(body).toContainText('每个任务只取最早一条通过全部检查的成功');
+  await expect(body).toContainText('最多带回 64 条旧经验');
   await expect(body).toContainText('旧方向');
-  await expect(body).toContainText('全部幅度');
+  await expect(body).toContainText('重新调整所有方向的影响大小');
   await expect(body).toContainText('ΔWₜ = Σ αᵢDᵢ');
   await expect(body).toContainText('paper_equivalent=false');
   await expect(body).toContainText('rehearsal_free=false');
-  await expect(body).toContainText('这些是需要测的风险，不是当前已经证明的故障原因');
+  await expect(body).toContainText('这些是接下来要测的风险');
 });
 
 test('English route preserves the mechanism and boundary', async ({ page }) => {
   await page.goto(routes.en, { waitUntil: 'domcontentloaded' });
   const body = page.getByTestId('vanilla-sd-lora-mechanism');
-  await expect(page.locator('h1')).toContainText('One Vanilla SD-LoRA update round');
+  await expect(page.locator('h1')).toContainText('One Vanilla SD-LoRA parameter-update round');
   await expect(body).toContainText('16 tasks × 8');
-  await expect(body).toContainText('Earliest fully checked success per task');
+  await expect(body).toContainText('Use the earliest fully checked success per task');
   await expect(body).toContainText('Old directions');
-  await expect(body).toContainText('All magnitudes');
-  await expect(body).toContainText('risks to measure, not causes already proven');
+  await expect(body).toContainText('rebalance each direction');
+  await expect(body).toContainText('risks to test next');
 });
 
 test('desktop canvas carries real routed topology instead of card adjacency', async ({ page }) => {
