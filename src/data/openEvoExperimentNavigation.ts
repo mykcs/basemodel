@@ -112,6 +112,7 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
       { role: 'analysis', label: { zh: '完整实验分析', en: 'Full experiment analysis' }, href: `${cap}/q17-directapply-analysis/` },
       { role: 'diagnostic', label: { zh: 'R127 / R128 同题诊断', en: 'R127 / R128 same-task diagnostic' }, href: `${cap}/q17-directapply-frontier/` },
       { role: 'analysis', label: { zh: 'SD-LoRA 为什么越来越慢', en: 'Why SD-LoRA gets slower over time' }, href: `${cap}/sd-lora-scaling/` },
+      { role: 'analysis', label: { zh: '两条路线说明', en: 'How the two lines differ' }, href: `${cap}/sd-lora-history/`, mobileFeatured: true, directoryGroup: sdLoraAccelerationDirectoryGroup },
       { role: 'analysis', label: { zh: 'Stable Reduction', en: 'Stable Reduction' }, href: `${cap}/sd-lora-equivalence/`, mobileFeatured: true, directoryGroup: sdLoraAccelerationDirectoryGroup },
       { role: 'analysis', label: { zh: 'Bounded Online Recurrence', en: 'Bounded Online Recurrence' }, href: `${cap}/sd-lora-bounded-state/`, mobileFeatured: true, directoryGroup: sdLoraAccelerationDirectoryGroup },
       { role: 'analysis', label: { zh: 'Text Memory 在这条线里发生了什么', en: 'What happened to Text Memory in this line' }, href: `${cap}/text-memory/` },

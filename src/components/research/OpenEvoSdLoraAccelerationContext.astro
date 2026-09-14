@@ -1,0 +1,153 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+import { SD_LORA_SCALING_POINTS } from '../../data/sdLoraScaling';
+import { SD_LORA_V2_LOCAL, SD_LORA_V2_WEBSHOP } from '../../data/sdLoraV2Outcome';
+import {
+  SD_LORA_BOUNDED_RECURRENCE_RESULT as bounded,
+  SD_LORA_BOUNDED_RECURRENCE_SOURCE as boundedSource,
+  SD_LORA_STABLE_REDUCTION_IDENTITY as stableSource,
+  SD_LORA_VR_LINEAGE_INDEX as lineage,
+} from '../../data/sdLoraVrLineages';
+import { GATED_DELTA_SD_LORA_PUBLICATION as gated } from '../../data/gatedDeltaSdLoraPublicationSnapshot';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const root = '/research/seed-openevo/study/capability-exploration/';
+const scalingStart = SD_LORA_SCALING_POINTS[0];
+const scalingEnd = SD_LORA_SCALING_POINTS.at(-1)!;
+const repoRoot = `https://github.com/${lineage.repository}`;
+const lineageHref = `${repoRoot}/blob/${lineage.commit}/${lineage.path}`;
+const stableHeadHref = `${repoRoot}/commit/${stableSource.commit}`;
+const boundedHeadHref = `${repoRoot}/commit/${boundedSource.commit}`;
+const boundedCloseoutHref = `${repoRoot}/blob/${boundedSource.commit}/${boundedSource.q1CloseoutPath}`;
+const scalingHref = p(`${root}sd-lora-scaling/`);
+const stableHref = p(`${root}sd-lora-equivalence/`);
+const boundedHref = p(`${root}sd-lora-bounded-state/`);
+const gdrHistoryHref = p(`${root}gdr-directapply/`);
+const gatedDeltaHref = p(`${root}gated-delta-sd-lora/`);
+const functionalConfirmHref = `${repoRoot}/blob/${boundedSource.commit}/docs/evidence/q17-fast-sd-lora-functional-confirmatory-20260913/README.md`;
+const perturbHref = `${repoRoot}/blob/${boundedSource.commit}/docs/evidence/q17-sd-lora-perturbation-amplification-20260913/README.md`;
+const rank32Href = `${repoRoot}/blob/${boundedSource.commit}/docs/evidence/q17-sd-lora-bounded-state-longitudinal-20260913/README.md`;
+const rank64Href = `${repoRoot}/blob/${boundedSource.commit}/docs/evidence/q17-sd-lora-bounded-state-capacity-stage-b-20260913/README.md`;
+const rank128Href = `${repoRoot}/blob/${boundedSource.commit}/docs/evidence/q17-sd-lora-bounded-state-rank128-longitudinal-20260913/README.md`;
+---
+
+<section class="accel-context" aria-label={t('SD-LoRA 加速研究上下文', 'SD-LoRA acceleration research context')}>
+  <section class="context-block" aria-labelledby="accel-origin-title">
+    <div class="context-heading"><span>WHY</span><div>
+      <h2 id="accel-origin-title">{t('一个越来越慢的更新，后来变成两条不同研究路线', 'One increasingly slow update became two different research lines')}</h2>
+      <p>{t(`我们先固定同一份 94 步训练负载，只改变历史 LoRA 分量数量。历史从 K=${scalingStart.k} 增到 K=${scalingEnd.k} 时，训练器从 ${scalingStart.trainer.toFixed(2)} 秒增到 ${scalingEnd.trainer.toFixed(2)} 秒，增长主要落在前向与反向传播。这个测量只说明当前 Vanilla SD-LoRA 会随历史变重，并没有预先决定应该用哪种加速。`, `We fixed one 94-step workload and changed only historical component count. As history grew from K=${scalingStart.k} to K=${scalingEnd.k}, trainer time rose from ${scalingStart.trainer.toFixed(2)} s to ${scalingEnd.trainer.toFixed(2)} s, mainly in forward/backward. This establishes the scaling problem in current Vanilla SD-LoRA; it does not choose a replacement in advance.`)}</p>
+    </div></div>
+    <ol class="origin-grid">
+      <li><span>01</span><strong>{t('先确认慢在哪里', 'Locate the slowdown')}</strong><p>{t('固定训练负载下，历史 LoRA 分量越多，前向与反向传播越慢。', 'Under a fixed workload, more historical components make forward/backward slower.')}</p><a href={scalingHref}>{t('查看扩展性测量 →', 'Open scaling evidence →')}</a></li>
+      <li><span>02</span><strong>Stable Reduction</strong><p>{t('历史 LoRA 分量继续逐个保留，只把跨分量的合并方式做得更稳定、更适合分块计算。', 'Historical components remain individually retained; cross-component reduction becomes stable and chunk-friendly.')}</p></li>
+      <li><span>03</span><strong>Bounded Online Recurrence</strong><p>{t('历史表示本身改成固定 rank128；每轮学 rank8 新更新，再折回 rank128。', 'History itself becomes fixed rank128; each round learns rank8 and folds back to rank128.')}</p></li>
+    </ol>
+  </section>
+  <section class="context-block" aria-labelledby="accel-selection-title">
+    <div class="context-heading"><span>PATH</span><div>
+      <h2 id="accel-selection-title">{t('rank128 不是一开始就选中的，是前面更小的状态在纵向测试里先失败了', 'Rank128 was not chosen at the start; smaller states failed first in longitudinal tests')}</h2>
+      <p>{t('这里保留那些真正改变下一步研究设计的负结果。它们不能被最终 PASS 覆盖，也不能事后改阈值。', 'This keeps the negative results that actually changed the next research step. The final PASS does not overwrite them, and thresholds were not changed afterward.')}</p>
+    </div></div>
+    <ol class="selection-timeline">
+      <li><span>01</span><div><strong>{t('先证明“更快但数值不同”的工程路径可以局部保持功能', 'First qualify a faster but numerically different engineering path')}</strong><p>{t('Fast-SD-LoRA 在封存的 128 题历史开发面板通过“功能表现不劣于”的检查；同一张 GPU 上，第149轮训练器从 900.95 秒降到 365.34 秒，约 2.466×。它只获得工程资格，不是逐 bit 的 Vanilla 替代，也不是 Stable Reduction / Bounded Online Recurrence 的最终结论。', 'Fast-SD-LoRA passed functional non-inferiority on the sealed 128-task historical development panel; same-GPU R149 trainer time fell from 900.95 s to 365.34 s, about 2.466×. It earned only an engineering qualification: not a bitwise Vanilla replacement and not the final Stable Reduction or Bounded Online Recurrence claim.')}</p><a href={functionalConfirmHref}><ExternalBrandMark href={functionalConfirmHref} />{t('打开这项封存功能检查 →', 'Sealed functional confirmatory →')}</a></div></li>
+      <li><span>02</span><div><strong>{t('数值扰动分析说明“小差别”会沿 optimizer / 参数轨迹继续放大', 'Perturbation analysis showed small numerical differences can propagate through optimizer and parameter trajectories')}</strong><p>{t('这只支持描述性的放大链，不把不同量纲压成一个因果放大系数，也不声称数值分叉一定降低能力。', 'This supports only a descriptive amplification chain; it does not collapse unlike quantities into one causal amplification factor or claim that numerical divergence necessarily reduces capability.')}</p><a href={perturbHref}><ExternalBrandMark href={perturbHref} />{t('查看扰动分析 →', 'Open perturbation analysis →')}</a></div></li>
+      <li><span>03</span><div><strong>{t('rank32 单点能过，但纵向到第155轮失败', 'Rank32 passed locally but failed longitudinally at R155')}</strong><p>{t('静态行为资格按预注册规则先选最小通过的 rank32；随后第149、152、155、159轮的联合纵向合同要求四点全过，第155轮的得分下界掉到 -0.052115，低于 -0.05 门槛，因此 S3a 保持 FAIL。', 'The preregistered static behavior selector chose the smallest passing rank32. The later R149/R152/R155/R159 longitudinal contract required all four checkpoints to pass; R155 score lower bound reached -0.052115, below the -0.05 margin, so S3a remains FAIL.')}</p><a href={rank32Href}><ExternalBrandMark href={rank32Href} />{t('rank32 纵向封存记录 →', 'rank32 longitudinal closeout →')}</a></div></li>
+      <li><span>04</span><div><strong>{t('rank64 在第155轮也能过，但完整纵向在第149轮失败', 'Rank64 also passed at R155, but failed the full longitudinal test at R149')}</strong><p>{t('容量升级的 Stage A 里，rank64 和 rank128 都通过第155轮，所以仍按“最小通过 rank”选 rank64；Stage B 再测第149、152、155、159轮时，第149轮的得分不劣于检查失败，S3c 保持 FAIL。', 'In capacity-escalation Stage A, both rank64 and rank128 passed R155, so the preregistered smallest-passing-rank rule chose rank64. Stage B then evaluated R149/R152/R155/R159; the R149 score non-inferiority gate failed, so S3c remains FAIL.')}</p><a href={rank64Href}><ExternalBrandMark href={rank64Href} />{t('rank64 纵向封存记录 →', 'rank64 longitudinal closeout →')}</a></div></li>
+      <li><span>05</span><div><strong>{t('rank128 才通过完整四点纵向资格', 'Rank128 was the first tested rank to pass the full four-checkpoint longitudinal qualification')}</strong><p>{t('第149、152、155、159轮四个检查点全部通过行为与安全门槛。到这一步仍只证明固定 rank128 状态足以表示历史，不等于在线循环更新已经成立。', 'R149/R152/R155/R159 all passed behavior and safety gates. At this point the evidence established fixed-rank128 representability only; online recurrence was still not proven.')}</p><a href={rank128Href}><ExternalBrandMark href={rank128Href} />{t('rank128 纵向封存记录 →', 'rank128 longitudinal closeout →')}</a></div></li>
+      <li><span>06</span><div><strong>{t('最后才做真正的在线循环更新：Q0 一轮，再 Q1 连续九轮', 'Only then test real online recurrence: one Q0 transition, then nine Q1 rounds')}</strong><p>{t(`Q0 在第149轮(rank128) → 第150轮(rank128) 的封存训练负载上 PASS，训练器约加速 ${bounded.q0Speedup.toFixed(2)}×，并通过冻结的行为不劣于检查。随后 Q1 才执行第151轮到第159轮；九轮固定门槛全部 PASS，第152、155、159轮的行为检查也全部 PASS，而且没有重置回 Vanilla。`, `Q0 passed on the sealed R149(rank128) → R150(rank128) transition with about ${bounded.q0Speedup.toFixed(2)}× trainer speedup and frozen behavior non-inferiority. Only then did Q1 run R151–R159: all nine hard gates passed, R152/R155/R159 behavior gates passed, and there was no Vanilla reset.`)}</p></div></li>
+    </ol>
+  </section>
+
+  <section class="context-block" aria-labelledby="accel-sealed-title">
+    <div class="context-heading"><span>PASS</span><div>
+      <h2 id="accel-sealed-title">{t('两条线各自封存了什么', 'What each line actually sealed')}</h2>
+      <p>{t('下面两个速度数字来自不同实验处理，也在回答不同问题。它们都是真结果，但不能拼成一条“2× 继续优化到 37×”的曲线。', 'The two speed numbers below come from different treatments and workloads/estimands. Both are real, but they cannot be combined into one “2× improved into 37×” curve.')}</p>
+    </div></div>
+    <div class="sealed-grid">
+      <article data-lineage="stable-reduction">
+        <small>{t('历史继续增长', 'Growing history')}</small>
+        <h3>SD-LoRA v2 · Stable Reduction</h3>
+        <p class="metric"><strong>{SD_LORA_V2_LOCAL.eightStepSpeedup.toFixed(2)}×</strong><span>{t('同一条件下连续 8 次训练', 'matched eight-step trainer')}</span></p>
+        <p>{t(`同一条件下连续 8 次训练，训练器总耗时从 ${SD_LORA_V2_LOCAL.referenceEightStepSeconds.toFixed(2)} 秒降到 ${SD_LORA_V2_LOCAL.v2EightStepSeconds.toFixed(2)} 秒。历史 LoRA 分量仍逐个保留；主要变化是每 ${SD_LORA_V2_LOCAL.chunkSize} 个一组，并在跨分量合并时使用 FP32。`, `On the same eight-step trainer workload, time fell from ${SD_LORA_V2_LOCAL.referenceEightStepSeconds.toFixed(2)} s to ${SD_LORA_V2_LOCAL.v2EightStepSeconds.toFixed(2)} s. Historical components remain individually retained; the main change is chunk ${SD_LORA_V2_LOCAL.chunkSize} with FP32 cross-component reduction.`)}</p>
+        <ul>
+          <li>{t(`WebShop 小面板：${SD_LORA_V2_WEBSHOP.taskCount} 个任务 × ${SD_LORA_V2_WEBSHOP.rolloutsPerTask} rollout，每臂 ${SD_LORA_V2_WEBSHOP.attemptsPerArm} 次尝试；状态 ${SD_LORA_V2_WEBSHOP.status}。`, `Small WebShop panel: ${SD_LORA_V2_WEBSHOP.taskCount} tasks × ${SD_LORA_V2_WEBSHOP.rolloutsPerTask} rollouts, ${SD_LORA_V2_WEBSHOP.attemptsPerArm} attempts per arm; status ${SD_LORA_V2_WEBSHOP.status}.`)}</li>
+          <li>{t('不证明逐 bit Vanilla 等价，也不证明统计显著的能力优越；最终保护测试集没有被打开。', 'It does not prove bitwise Vanilla equivalence or statistically significant capability superiority; the protected final panel was not opened.')}</li>
+        </ul>
+        <a href={stableHref}>{t('打开 Stable Reduction 结果页 →', 'Open Stable Reduction result →')}</a>
+      </article>
+      <article data-lineage="bounded-recurrence">
+        <small>{t('历史状态固定', 'Fixed historical state')}</small>
+        <h3>SD-LoRA · Bounded Online Recurrence</h3>
+        <p class="metric"><strong>{bounded.formalSpeedupMean.toFixed(2)}×</strong><span>{t('第151轮到第159轮，相对同轮 Vanilla 的训练器平均加速', 'mean vs same-round Vanilla trainer, R151–R159')}</span></p>
+        <p>{t(`Q0 先通过，随后第151轮到第159轮连续 ${bounded.recurrentRounds} 轮更新全部通过固定门槛。维护状态始终是 rank${bounded.stateRank}，每轮新更新是 rank${bounded.currentUpdateRank}，中间不重置回完整 checkpoint；相对正式 Vanilla 对照的加速范围是 ${bounded.formalSpeedupMin.toFixed(2)}×–${bounded.formalSpeedupMax.toFixed(2)}×。`, `Q0 passed first, then all ${bounded.recurrentRounds} recurrent updates from R151–R159 passed their hard gates. Maintained state stayed rank${bounded.stateRank}, each new update was rank${bounded.currentUpdateRank}, with no full-checkpoint reset; formal speedup ranged from ${bounded.formalSpeedupMin.toFixed(2)}× to ${bounded.formalSpeedupMax.toFixed(2)}×.`)}</p>
+        <ul>
+          <li>{t(`adapter 大小始终 ${bounded.adapterModelBytes.toLocaleString()} bytes；平均每个 optimizer step 用时 ${bounded.secondsPerOptimizerStepMean.toFixed(3)} 秒。`, `Adapter size stayed ${bounded.adapterModelBytes.toLocaleString()} bytes; mean ${bounded.secondsPerOptimizerStepMean.toFixed(3)} s per optimizer step.`)}</li>
+          <li>{t('第152、155、159轮的行为不劣于检查与安全格式检查全部 PASS；最终保护测试集访问次数为 0。', 'R152 / R155 / R159 behavior non-inferiority and safety-format checks all passed; protected final panel access = 0.')}</li>
+          <li>{t('这个 PASS 只覆盖封存的第150轮到第159轮历史窗口；不证明所有持续学习都能保持固定开销，也不证明逐 bit Vanilla 等价。', 'This PASS covers only the sealed R150–R159 historical window; it is not a proof that all continual learning is O(1), nor bitwise Vanilla equivalence.')}</li>
+        </ul>
+        <a href={boundedHref}>{t('打开 Bounded Online Recurrence 结果页 →', 'Open Bounded Online Recurrence result →')}</a>
+      </article>
+    </div>
+  </section>
+  <section class="context-block" aria-labelledby="accel-name-title">
+    <div class="context-heading"><span>NAME</span><div>
+      <h2 id="accel-name-title">{t('名字也做过一次纠正：共享目录不能借用某个子路线的正式名', 'The naming was corrected too: a shared directory cannot borrow one child treatment’s formal name')}</h2>
+      <p>{t('早期为了让目录一眼看懂，我们曾把两条路线共同挂在“SD-LoRA v2”下面。后来逐一核对分支、封存提交、证据和各自要回答的问题后，统一 lineage 明确：SD-LoRA v2 只属于 Stable Reduction；Bounded Online Recurrence 是独立实验处理。于是共享父级改成中性的“SD-LoRA 加速”。', 'An early directory placed both routes under “SD-LoRA v2”. After branch, commit, evidence, and estimand were reconciled, the canonical lineage made the boundary explicit: SD-LoRA v2 belongs only to Stable Reduction; Bounded Online Recurrence is independent. The shared parent therefore became the neutral “SD-LoRA acceleration”.')}</p>
+    </div></div>
+    <div class="naming-grid">
+      <article><small>{t('正式名称', 'Formal identity')}</small><strong>SD-LoRA v2 · Stable Reduction</strong><p>{t('这个名字绑定 Stable Reduction 自己的独立分支与封存提交。', 'This name is bound to the Stable Reduction branch and sealed head.')}</p></article>
+      <article><small>{t('正式名称', 'Formal identity')}</small><strong>SD-LoRA · Bounded Online Recurrence</strong><p>{t('固定 rank128 的结果保留自己的分支、tag、封存提交和封存记录。', 'The fixed-rank128 result keeps its own branch, tag, commit, and closeout.')}</p></article>
+      <article><small>{t('只作检索简称', 'Search shorthand only')}</small><strong>VR</strong><p>{t('VR 可以帮助在历史讨论里找到工程加速线，但不是正式实验名称，也不能拿来合并两个不同研究问题。', 'VR can help locate the engineering-acceleration discussion, but it is not a treatment identity and cannot merge the two estimands.')}</p></article>
+    </div>
+  </section>
+  <section class="context-block" aria-labelledby="accel-third-title">
+    <div class="context-heading"><span>BOUNDARY</span><div>
+      <h2 id="accel-third-title">{t('候选放行与当前参数写入是第三类问题，不属于前面两个加速分支', 'Candidate admission and current parameter writing form a third question, separate from the two acceleration branches')}</h2>
+      <p>{t('名字都围绕 SD-LoRA，但控制位置不同：旧机制在候选更新训练完成以后决定要不要留下；当前 Gated-Delta 则在新的学习事件发生时，直接研究 LoRA 参数状态该怎样连续写入。', 'The names all sit near SD-LoRA, but the control points differ: the historical mechanism decided whether an already-trained candidate should be kept; current Gated-Delta studies how LoRA parameter state should be written recurrently as new learning happens.')}</p>
+    </div></div>
+    <div class="third-line-grid">
+      <article>
+        <small>{t('历史机制', 'Historical mechanism')}</small>
+        <h3>{t('更新训练完成以后，还会决定它是否进入下一轮', 'After an update is trained, another decision determines whether it enters the next round')}</h3>
+        <p>{t('历史 GDR-v1 运行里共训练出 44 个 SD-LoRA 候选更新，其中只有 7 个真正成为后续模型状态的一部分；它研究的是 candidate admission，不是历史计算加速。', 'Historical GDR-v1 trained 44 SD-LoRA candidate updates; only seven actually became part of later model states. It studied candidate admission, not historical-computation acceleration.')}</p>
+        <a href={gdrHistoryHref}>{t('查看 GDR-v1 / DirectApply 历史 →', 'Open GDR-v1 / DirectApply history →')}</a>
+      </article>
+      <article>
+        <small>{t('当前参数写入机制', 'Current parameter-write mechanism')}</small>
+        <h3>{t('第三条当前机制', 'The current third mechanism')}</h3>
+        <p>{t('这条当前机制研究新学习发生时参数怎样继续更新；它和前面两条降低历史计算成本的路线不是同一个问题。', 'This current mechanism studies how parameters continue to update when new learning occurs; it is a different question from the two routes above that reduce historical-computation cost.')}</p>
+        <p>{t('四轮配对资格实验已经全部封存，每臂 512 次任务尝试。', 'All four paired qualification rounds are sealed, with 512 task attempts per arm.')}</p>
+        <p>{t('汇总 reward：匹配 Vanilla 对照 0.7051，Gated-Delta 0.7407。完整成功：173 / 512 对 248 / 512。这个结论只属于冻结的 D1 资格实验，不是最终保护测试结果，也不能升级成普遍优于 Vanilla。', 'Pooled reward: matched Vanilla control 0.7051, Gated-Delta 0.7407. Exact success: 173 / 512 versus 248 / 512. This claim belongs only to the frozen D1 qualification; it is not a protected-final result and cannot be upgraded into universal superiority over Vanilla.')}</p>
+        <a href={gatedDeltaHref}>{t('查看当前 Gated-Delta 机制与四轮资格结果 →', 'Open current Gated-Delta mechanism and four-round qualification →')}</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="context-block evidence-block" aria-labelledby="accel-evidence-title">
+    <div class="context-heading"><span>SOURCE</span><div>
+      <h2 id="accel-evidence-title">{t('哪份证据负责哪句话', 'Which evidence owns which statement')}</h2>
+      <p>{t('网页不把并发 Agent 的聊天结论当真相源。两条加速路线的身份由 OpenEvo 合并后的统一 lineage 索引登记；每条线继续指向自己的封存提交和封存记录。', 'The website does not treat parallel-agent chat conclusions as an authority. The merged OpenEvo lineage registry owns the two acceleration identities, while each line keeps its own sealed head and closeout.')}</p>
+    </div></div>
+    <dl class="evidence-list">
+      <div><dt>{t('唯一 lineage registry', 'Single lineage registry')}</dt><dd><a href={lineageHref}><ExternalBrandMark href={lineageHref} />OpenEvo · {lineage.commit.slice(0, 12)}</a></dd></div>
+      <div><dt>Stable Reduction</dt><dd><a href={stableHeadHref}><ExternalBrandMark href={stableHeadHref} />{stableSource.commit.slice(0, 12)}</a></dd></div>
+      <div><dt>Bounded Online Recurrence</dt><dd><a href={boundedHeadHref}><ExternalBrandMark href={boundedHeadHref} />{boundedSource.commit.slice(0, 12)}</a></dd></div>
+      <div><dt>Q1 closeout</dt><dd><a href={boundedCloseoutHref}><ExternalBrandMark href={boundedCloseoutHref} />final-closeout.json</a></dd></div>
+      <div><dt>{t('R159 adapter SHA256', 'R159 adapter SHA256')}</dt><dd><code>{boundedSource.finalAdapterSha256}</code></dd></div>
+      <div><dt>{t('Q1 closeout SHA256', 'Q1 closeout SHA256')}</dt><dd><code>{boundedSource.finalCloseoutSha256}</code></dd></div>
+      <div><dt>{t('当前第三条机制', 'Current third mechanism')}</dt><dd><a href={gated.evidence.d1FinalQualification}><ExternalBrandMark href={gated.evidence.d1FinalQualification} />Gated-Delta D1 final qualification</a></dd></div>
+    </dl>
+    <p class="evidence-boundary">{t('这些来源负责实验身份、封存结果和允许得出的结论边界。CI、Preview、端口、PID 和等待状态只属于发布记录，不进入科学结论。', 'These sources own identity, sealed results, and claim boundaries. CI runs, preview deployments, ports, PIDs, and queue states belong only to release receipts, not scientific conclusions.')}</p>
+  </section>
+</section>
+<style>
+.accel-context{width:min(1080px,calc(100% - 2rem));margin:0 auto;padding:1rem 0 2.5rem}.context-block{padding:2.2rem 0;border-top:1px solid var(--line)}.context-heading{display:grid;grid-template-columns:5rem minmax(0,1fr);gap:1rem}.context-heading>span{color:var(--accent-deep);font:800 .9rem/1.2 var(--font-mono);letter-spacing:.08em}.context-heading h2{max-width:24ch;margin:0;font-size:clamp(1.55rem,3vw,2.35rem);line-height:1.12;letter-spacing:-.025em}.context-heading p{max-width:54rem;margin:.75rem 0 0;color:var(--muted);font-size:1rem;line-height:1.68}.origin-grid,.sealed-grid,.naming-grid,.third-line-grid{display:grid;gap:1rem;margin:1.5rem 0 0;padding:0;list-style:none}.origin-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.sealed-grid,.third-line-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.naming-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.origin-grid li,.sealed-grid article,.naming-grid article,.third-line-grid article{min-width:0;padding:1rem;border:1px solid var(--line);border-radius:1rem;background:var(--surface)}.origin-grid span,.sealed-grid small,.naming-grid small,.third-line-grid small{display:block;margin-bottom:.45rem;color:var(--accent-deep);font:750 .86rem/1.3 var(--font-mono)}.origin-grid strong,.sealed-grid h3,.naming-grid strong,.third-line-grid h3{display:block;margin:0;font-size:1.05rem;line-height:1.35}.origin-grid p,.sealed-grid p,.naming-grid p,.third-line-grid p{margin:.55rem 0 0;color:var(--muted);font-size:.98rem;line-height:1.58}.origin-grid a,.sealed-grid a,.third-line-grid a,.evidence-list a{color:var(--accent-deep);font-weight:720;text-underline-offset:.2em}.selection-timeline{margin:1.5rem 0 0;padding:0;list-style:none}.selection-timeline li{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.8rem;padding:1rem 0;border-top:1px solid var(--line)}.selection-timeline>li>span{color:var(--accent-deep);font:800 .9rem/1.3 var(--font-mono)}.selection-timeline strong{display:block;font-size:1.03rem;line-height:1.4}.selection-timeline p{max-width:55rem;margin:.4rem 0 0;color:var(--muted);font-size:.96rem;line-height:1.6}.selection-timeline a{display:inline-block;margin-top:.45rem;color:var(--accent-deep);font-size:.92rem;font-weight:700;text-underline-offset:.2em}.metric{display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap}.metric strong{color:var(--ink);font-size:1.7rem}.metric span{color:var(--muted);font-size:.9rem}.sealed-grid ul{margin:.8rem 0 1rem;padding-left:1.2rem;color:var(--muted);font-size:.94rem;line-height:1.55}.evidence-list{margin:1.5rem 0 0}.evidence-list>div{display:grid;grid-template-columns:minmax(9rem,14rem) minmax(0,1fr);gap:1rem;padding:.8rem 0;border-top:1px solid var(--line)}.evidence-list dt{color:var(--muted);font-weight:650}.evidence-list dd{margin:0;min-width:0}.evidence-list code{display:block;overflow-wrap:anywhere;font-size:.84rem;line-height:1.45}.evidence-boundary{max-width:54rem;margin:1rem 0 0;color:var(--muted);font-size:.95rem;line-height:1.6}
+@media(max-width:800px){.context-heading{grid-template-columns:1fr}.context-heading>span{margin-bottom:-.35rem}.origin-grid,.sealed-grid,.naming-grid,.third-line-grid{grid-template-columns:1fr}.evidence-list>div{grid-template-columns:1fr;gap:.3rem}.accel-context{width:min(100% - 1rem,1080px)}}
+@media(max-width:480px){.selection-timeline li{grid-template-columns:2rem minmax(0,1fr)}.context-block{padding:1.6rem 0}.origin-grid li,.sealed-grid article,.naming-grid article,.third-line-grid article{padding:.9rem}.metric strong{font-size:1.5rem}}
+</style>
