@@ -61,7 +61,7 @@
       "permanent": false
     },
     {
-      "source": "/en/:path*",
+      "source": "/en/:path(.*)",
       "destination": "/:path*",
       "permanent": false
     },
