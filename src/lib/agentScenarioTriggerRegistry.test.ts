@@ -121,6 +121,15 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('A correct outer Bash interpreter does not make nested content quoting safe');
   });
 
+  it('reconciles parallel research lineages before starting duplicate publication work', () => {
+    expect(principles).toContain('semantic target and reader problem');
+    expect(registry).toContain('TRIGGER: parallel research Agents / one umbrella name / overlapping publication work');
+    expect(registry).toContain('research question/treatment semantics');
+    expect(registry).toContain('Search live open PRs/branches/worktrees by **semantic intent**');
+    expect(registry).toContain('choose one current integration path');
+    expect(registry).toContain('A website must not claim index A is canonical while linking claims to sibling index B');
+  });
+
   it('requires stale remembered plans to refresh against current truth', () => {
     expect(registry).toContain('Treat remembered/chat state as a hypothesis');
     expect(registry).toContain('If live/executable truth contradicts a `current/` doc, update or demote that doc');
