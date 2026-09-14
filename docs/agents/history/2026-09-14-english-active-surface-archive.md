@@ -54,3 +54,9 @@ Public PR CI caught one contract that local `test:ui:all` does not own: the dedi
 The correction kept the full active Lab visual matrix rather than weakening it: `/lab/` still runs at 390, 768, and 1440 px in both light and dark, for six active cases. Current deployment/hosting policy and CI logging now call this the **6-case active-Lab gate**. Historical documents that accurately describe the former bilingual 12-case gate remain unchanged.
 
 Reusable lesson: when removing an active route class, inventory auxiliary/provider-owned browser suites as well as `npm run test:ui` / `test:ui:all`; a separately configured tail can retain stale route assumptions even when the canonical matrix is already clean.
+
+## Current-main archive reconciliation
+
+Before merge, `main` advanced and changed one active English Gated-Delta route. A byte-level audit compared all 63 archived files against the then-live English tree on `main@dacd2017bd02229f33b19b3f2c8dfb8247f2419d`: all 63 archived files matched current `main`; only one manifest SHA was stale and was updated.
+
+Reusable lesson: an archive created from an earlier base is not complete merely because the archived files still exist. Before removing an active locale from a moving development branch, compare every archived blob against live `main`, absorb any newer locale edits into the inert archive, and update the manifest authority before merge. Tests for retained English metadata should then read the archive snapshot, not require the retired active route path.

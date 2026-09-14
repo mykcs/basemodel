@@ -9,7 +9,7 @@ const current = read('../components/research/OpenEvoGatedDeltaSdLoraExplainer.as
 const history = read('../components/research/OpenEvoGdrDirectApplyExplainer.astro');
 const lobby = read('../components/research/OpenEvoCapabilityMapLobby.astro');
 const currentZhRoute = read('../pages/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/index.astro');
-const currentEnRoute = read('../pages/en/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/index.astro');
+const archivedEnRoute = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/index.astro.archive');
 
 describe('Gated-Delta SD-LoRA publication split', () => {
   it('keeps runtime control free of Task Vector, score, probe, and future-state leakage', () => {
@@ -74,11 +74,11 @@ describe('Gated-Delta SD-LoRA publication split', () => {
     expect(currentZhRoute).not.toContain('效果比较还没完成');
     expect(currentZhRoute).not.toContain('四轮效果比较还没封存');
 
-    expect(currentEnRoute).toContain('title="Gated-Delta SD-LoRA: four-round qualification sealed"');
-    expect(currentEnRoute).toContain('All four frozen D1 qualification rounds are sealed');
-    expect(currentEnRoute).toContain('without implying universal superiority or a final-panel result');
-    expect(currentEnRoute).not.toContain('efficacy comparison still incomplete');
-    expect(currentEnRoute).not.toContain('comparison is not complete yet');
+    expect(archivedEnRoute).toContain('title="Gated-Delta SD-LoRA: four-round qualification sealed"');
+    expect(archivedEnRoute).toContain('All four frozen D1 qualification rounds are sealed');
+    expect(archivedEnRoute).toContain('without implying universal superiority or a final-panel result');
+    expect(archivedEnRoute).not.toContain('efficacy comparison still incomplete');
+    expect(archivedEnRoute).not.toContain('comparison is not complete yet');
   });
 
   it('keeps the historical page about candidate admission rather than duplicating the current recurrence', () => {

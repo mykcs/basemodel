@@ -2,7 +2,7 @@
 
 This snapshot temporarily removes English pages from BaseModel's active Astro development surface. It does **not** delete the English source.
 
-- Frozen source commit: `9f7333f7e21744f6015dc1bcff1ee20d5acf3d20`
+- Frozen source commit: `dacd2017bd02229f33b19b3f2c8dfb8247f2419d`
 - Original active root: `src/pages/en/`
 - Archived root: `docs/archive/site-en/src/pages/en/`
 - Original tracked files: 63
