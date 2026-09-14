@@ -307,6 +307,8 @@ After automated checks pass:
 
 - confirm Vercel built the exact intended commit;
 - inspect the real protected Preview or generate a temporary share link;
+- before accepting any screenshot/DOM measurement, prove the browser is on the intended application surface with a route-specific sentinel such as the expected H1, `data-testid`, canonical route marker, or equivalent product-owned element;
+- if a protected Preview lands on a Vercel login/SSO/access interstitial, establish the authorized Preview/share session and rerun the check; the authentication page does **not** count as route visual evidence even when it returns HTTP 200 or produces a valid screenshot;
 - review the primary changed routes in both themes;
 - verify the intended visual hierarchy and subjective design quality.
 
