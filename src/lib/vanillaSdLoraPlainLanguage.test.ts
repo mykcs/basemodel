@@ -5,10 +5,29 @@ const slide = readFileSync(new URL('../components/research/OpenEvoVanillaSdLoraS
 const mechanism = readFileSync(new URL('../components/research/OpenEvoVanillaSdLoraMechanism.astro', import.meta.url), 'utf8');
 
 describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
-  it('starts from the mechanism rather than a defensive or presenter-style opening', () => {
+  it('starts the page from motivation and OpenEvo position before the reusable mechanism slide', () => {
+    for (const phrase of [
+      '为什么 OpenEvo 里需要 SD-LoRA？',
+      '成功留在 rollout 日志里，并不会让下一轮模型参数自动改变',
+      'SD-LoRA 只负责其中“改模型参数”这条路',
+      '什么时候发挥作用？',
+      '普通 LoRA',
+      'Scalable Decoupled LoRA',
+      '这里的 “Vanilla SD-LoRA” 不等于普通 LoRA',
+    ]) expect(mechanism).toContain(phrase);
+
+    const motivation = mechanism.indexOf('为什么 OpenEvo 里需要 SD-LoRA？');
+    const comparison = mechanism.indexOf('普通 LoRA');
+    const slideOwner = mechanism.indexOf('<OpenEvoVanillaSdLoraSlide');
+    expect(motivation).toBeGreaterThan(-1);
+    expect(comparison).toBeGreaterThan(motivation);
+    expect(slideOwner).toBeGreaterThan(comparison);
+  });
+
+  it('keeps the reusable slide mechanism-first rather than adding duplicate orientation inside it', () => {
     expect(slide).toContain('Vanilla SD-LoRA 的一轮参数更新');
+    expect(slide).not.toContain('为什么 OpenEvo 里需要 SD-LoRA？');
     expect(slide).not.toContain('不是四张卡片排成一排');
-    expect(slide).not.toContain('一轮怎样更新参数');
   });
 
   it('puts human actions before internal labels', () => {

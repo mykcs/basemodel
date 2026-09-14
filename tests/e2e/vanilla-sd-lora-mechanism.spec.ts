@@ -1,25 +1,28 @@
 import { expect, test } from '@playwright/test';
 
-const routes = {
-  zh: '/research/seed-openevo/flow/sd-lora/',
-  en: '/en/research/seed-openevo/flow/sd-lora/',
-} as const;
+const route = '/research/seed-openevo/flow/sd-lora/';
 
 test('Vanilla SD-LoRA page exposes the real round mechanism and scientific boundary', async ({ page }) => {
-  await page.goto(routes.zh, { waitUntil: 'domcontentloaded' });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
   const body = page.getByTestId('vanilla-sd-lora-mechanism');
   await expect(body).toBeVisible();
   const navigation = page.locator('[data-research-navigation][data-research-track="flow"]');
   await expect(navigation).toBeVisible();
   await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('aria-current', 'page');
-  await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('href', routes.zh);
+  await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('href', route);
   const series = page.locator('[data-sdlora-series-nav]');
-  const vanillaSeries = series.locator(`a[href="${routes.zh}"]`).filter({ hasText: 'Vanilla SD-LoRA 是怎么学习的？' });
+  const vanillaSeries = series.locator(`a[href="${route}"]`).filter({ hasText: 'Vanilla SD-LoRA 是怎么学习的？' });
   await expect(vanillaSeries).toHaveCount(1);
-  await expect(vanillaSeries).toHaveAttribute('href', routes.zh);
+  await expect(vanillaSeries).toHaveAttribute('href', route);
   await expect(vanillaSeries).toHaveAttribute('aria-current', 'page');
   await expect(series.locator('a[href="/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/"]')).toHaveCount(0);
-  await expect(page.locator('h1')).toContainText('Vanilla SD-LoRA');
+  await expect(page.locator('h1')).toContainText('为什么 OpenEvo 里需要 SD-LoRA');
+  await expect(body).toContainText('成功留在 rollout 日志里，并不会让下一轮模型参数自动改变');
+  await expect(body).toContainText('这里才改模型参数');
+  await expect(body).toContainText('一批任务尝试结束、训练数据筛好以后；下一批任务开始以前');
+  await expect(body).toContainText('普通 LoRA');
+  await expect(body).toContainText('Scalable Decoupled LoRA');
+  await expect(body).toContainText('Vanilla SD-LoRA” 不等于普通 LoRA');
   await expect(body).toContainText('16 个任务 × 每题 8 次');
   await expect(body).toContainText('每个任务只取最早一条通过全部检查的成功');
   await expect(body).toContainText('最多带回 64 条旧经验');
@@ -31,38 +34,29 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
   await expect(body).toContainText('这些是接下来要测的风险');
 });
 
-test('English route preserves the mechanism and boundary', async ({ page }) => {
-  await page.goto(routes.en, { waitUntil: 'domcontentloaded' });
-  const body = page.getByTestId('vanilla-sd-lora-mechanism');
-  const navigation = page.locator('[data-research-navigation][data-research-track="flow"]');
-  await expect(navigation).toBeVisible();
-  await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('aria-current', 'page');
-  await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('href', routes.en);
-  const series = page.locator('[data-sdlora-series-nav]');
-  const vanillaSeries = series.locator(`a[href="${routes.en}"]`).filter({ hasText: 'How does Vanilla SD-LoRA learn?' });
-  await expect(vanillaSeries).toHaveCount(1);
-  await expect(vanillaSeries).toHaveAttribute('href', routes.en);
-  await expect(vanillaSeries).toHaveAttribute('aria-current', 'page');
-  await expect(series.locator('a[href="/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/"]')).toHaveCount(0);
-  await expect(page.locator('h1')).toContainText('One Vanilla SD-LoRA parameter-update round');
-  await expect(body).toContainText('16 tasks × 8');
-  await expect(body).toContainText('Use the earliest fully checked success per task');
-  await expect(body).toContainText('Old directions');
-  await expect(body).toContainText('rebalance each direction');
-  await expect(body).toContainText('risks to test next');
-});
-
-
 test('historical capability URL forwards to the Flow map owner', async ({ page }) => {
   await page.goto('/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/', { waitUntil: 'domcontentloaded' });
-  await page.waitForURL((url) => url.pathname === routes.zh);
+  await page.waitForURL((url) => url.pathname === route);
   await expect(page.locator('[data-research-navigation]')).toHaveAttribute('data-research-track', 'flow');
   await expect(page.getByTestId('vanilla-sd-lora-mechanism')).toBeVisible();
 });
 
+test('desktop reading order puts motivation and LoRA comparison before the mechanism canvas', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const positions = await page.locator('.sdlora-intro, #what-is-sd-lora, [data-slide-canvas]').evaluateAll((nodes) => nodes.map((node) => ({
+    id: node.id || node.className,
+    top: node.getBoundingClientRect().top,
+    bottom: node.getBoundingClientRect().bottom,
+  })));
+  expect(positions).toHaveLength(3);
+  expect(positions[0]!.bottom).toBeLessThanOrEqual(positions[1]!.top + 2);
+  expect(positions[1]!.bottom).toBeLessThanOrEqual(positions[2]!.top + 2);
+});
+
 test('desktop canvas carries real routed topology instead of card adjacency', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(routes.zh, { waitUntil: 'domcontentloaded' });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
   const desktop = page.locator('[data-flow-layout="desktop"]');
   await expect(desktop).toBeVisible();
 
@@ -100,7 +94,7 @@ test('desktop canvas carries real routed topology instead of card adjacency', as
 
 test('mobile canvas preserves side-input, branch, join, and return topology', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(routes.zh, { waitUntil: 'domcontentloaded' });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-flow-layout="desktop"]')).toBeHidden();
   const mobile = page.locator('[data-flow-layout="mobile"]');
   await expect(mobile).toBeVisible();
@@ -126,7 +120,7 @@ test('mobile canvas preserves side-input, branch, join, and return topology', as
 test('reduced motion keeps static arrows and disables route animation', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(routes.zh, { waitUntil: 'domcontentloaded' });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
   const edge = page.locator('[data-edge="prior-rollout"]');
   await expect(edge).toHaveAttribute('marker-end', /sdlora-flow-arrow/);
   const animationName = await edge.evaluate((node) => getComputedStyle(node).animationName);
@@ -142,7 +136,7 @@ for (const viewport of [
     test(`${viewport.name} ${theme}: no horizontal overflow and mechanism remains readable`, async ({ page }) => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
-      await page.goto(routes.zh, { waitUntil: 'domcontentloaded' });
+      await page.goto(route, { waitUntil: 'domcontentloaded' });
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
       const geometry = await page.evaluate(() => ({
         scrollWidth: document.documentElement.scrollWidth,
@@ -159,20 +153,18 @@ for (const viewport of [
   }
 }
 
-for (const [locale, route] of Object.entries(routes)) {
-  test(`desktop ${locale} mechanism canvas is 16:9 and can be reused as one slide`, async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(route, { waitUntil: 'domcontentloaded' });
-    const box = await page.locator('[data-slide-canvas]').boundingBox();
-    expect(box).not.toBeNull();
-    const ratio = box!.width / box!.height;
-    expect(Math.abs(ratio - 16 / 9)).toBeLessThan(0.02);
-    expect(box!.height).toBeLessThanOrEqual(650);
-    const slideContainment = await page.locator('[data-slide-canvas]').evaluate((node) => ({
-      scrollWidth: node.scrollWidth, clientWidth: node.clientWidth,
-      scrollHeight: node.scrollHeight, clientHeight: node.clientHeight,
-    }));
-    expect(slideContainment.scrollWidth).toBeLessThanOrEqual(slideContainment.clientWidth + 2);
-    expect(slideContainment.scrollHeight).toBeLessThanOrEqual(slideContainment.clientHeight + 2);
-  });
-}
+test('desktop mechanism canvas is 16:9 and can be reused as one slide', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const box = await page.locator('[data-slide-canvas]').boundingBox();
+  expect(box).not.toBeNull();
+  const ratio = box!.width / box!.height;
+  expect(Math.abs(ratio - 16 / 9)).toBeLessThan(0.02);
+  expect(box!.height).toBeLessThanOrEqual(650);
+  const slideContainment = await page.locator('[data-slide-canvas]').evaluate((node) => ({
+    scrollWidth: node.scrollWidth, clientWidth: node.clientWidth,
+    scrollHeight: node.scrollHeight, clientHeight: node.clientHeight,
+  }));
+  expect(slideContainment.scrollWidth).toBeLessThanOrEqual(slideContainment.clientWidth + 2);
+  expect(slideContainment.scrollHeight).toBeLessThanOrEqual(slideContainment.clientHeight + 2);
+});
