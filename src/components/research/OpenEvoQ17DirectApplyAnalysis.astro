@@ -34,6 +34,8 @@ const sameTaskHref = p('/research/seed-openevo/study/capability-exploration/q17-
 const gdrHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
 const gatedDeltaHref = p('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/');
 const vanillaHref = p('/research/seed-openevo/flow/sd-lora/');
+const historicalWandb17 = 'https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/runs/ceiling1-stage2-qwen3-1p7b-202609041833-4c1bb58e9f';
+const q17WandbAuditHref = '/research/seed-openevo/evidence/q17-wandb-lineage-audit-20260915.json';
 
 const moving = dynamics.score.map((point, index) => {
   const rows = dynamics.score.slice(Math.max(0, index - 11), index + 1);
@@ -96,6 +98,8 @@ const candidates = [
     <p class="q17-analysis__section-index">01 · {t('完整训练轨迹', 'Complete training trajectory')}</p>
     <h2 id="trajectory-title">{t('训练后段恢复了，但训练曲线不能替代最终考试', 'Training recovered late, but the training curve is not the final exam')}</h2>
     <p>{t(`前 20 轮平均 Score 是 41.83，最后 20 轮是 67.07；R159 是 72.90。与此同时，SD-LoRA training loss 从 1.046 降到 ${dynamics.loss.at(-1)?.loss.toFixed(3)}。这说明训练过程确实持续改变参数与任务表现，但每轮抽到的题不同，因此只能把它当成学习轨迹。`, `Mean Score was 41.83 over the first 20 rounds and 67.07 over the last 20; R159 reached 72.90. Meanwhile SD-LoRA training loss fell from 1.046 to ${dynamics.loss.at(-1)?.loss.toFixed(3)}. Training therefore kept changing both parameters and task behavior, but each round sampled different tasks, so this remains trajectory evidence rather than a fixed-panel endpoint.`)}</p>
+    <p class="q17-analysis__interpretation"><strong>{t('W&B 在这里是观测入口，不是这条 Q17 的原始训练记录。', 'W&B is an observability entry here, not the original training record for this Q17 run.')}</strong>{t(' 只读审计没有找到 exact Q17 160 轮 DirectApply 的 live W&B training run；能绑定 Q17 experiment ID 的 3 个 W&B run 都是后来做的 Passport mirror / smoke。所以上面的 Score / loss 继续来自封存的 R0–R159 证据。更早的 1.7B Stage2 确实有 W&B 曲线，可以作为历史观测打开，但不能贴成 Q17。', ' A read-only audit found no live W&B training run for the exact 160-round Q17 DirectApply lineage; the three W&B runs bound to the Q17 experiment ID are later Passport mirror/smoke runs. The Score/loss curves above therefore remain sourced from sealed R0–R159 evidence. An earlier 1.7B Stage2 run does have W&B curves and can be opened as historical observability, but it is not Q17.')}</p>
+    <p class="q17-analysis__related"><a href={historicalWandb17} target="_blank" rel="noreferrer">{t('打开历史 1.7B Stage2 的 W&B 曲线 ↗', 'Open the historical 1.7B Stage2 W&B curves ↗')}</a><a href={q17WandbAuditHref}>{t('查看 Q17 W&B lineage 审计', 'Open the Q17 W&B lineage audit')}</a></p>
     <div class="q17-analysis__charts">
       <figure>
         <figcaption><strong>{t('每轮 WebShop Score', 'WebShop Score by round')}</strong><span>{t('细线=原始轮次 · 粗线=12轮移动平均', 'thin=raw rounds · thick=12-round moving average')}</span></figcaption>
