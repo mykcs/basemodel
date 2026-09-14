@@ -1,0 +1,132 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+import OpenEvoSdLoraHistorySeriesNav from './OpenEvoSdLoraHistorySeriesNav.astro';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import { SD_LORA_V2_LOCAL } from '../../data/sdLoraV2Outcome';
+import {
+  SD_LORA_BOUNDED_RECURRENCE_RESULT as result,
+  SD_LORA_BOUNDED_RECURRENCE_SOURCE as source,
+  SD_LORA_VR_LINEAGE_INDEX as lineage,
+} from '../../data/sdLoraVrLineages';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const root = '/research/seed-openevo/study/capability-exploration/';
+const sourceBase = `https://github.com/mykcs/openevo-experiment/blob/${source.commit}`;
+const planHref = `${sourceBase}/${source.planPath}`;
+const q0Href = `${sourceBase}/${source.q0CloseoutPath}`;
+const q1Href = `${sourceBase}/${source.q1CloseoutPath}`;
+const lineageHref = `https://github.com/${lineage.repository}/blob/${lineage.commit}/${lineage.path}`;
+const stableHref = p(`${root}sd-lora-equivalence/`);
+const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
+---
+<article class="bounded" data-copy-review data-sd-lora-bounded-recurrence>
+  <header class="bounded__hero">
+    <p class="bounded__eyebrow">{t('07 / 07 · 固定 rank128 · R150–R159 连续更新', '07 / 07 · fixed rank128 · recurrent R150–R159')}</p>
+    <h1>{t('历史继续增长，参数状态保持 rank128', 'History keeps growing while the parameter state stays rank128')}</h1>
+    <p class="bounded__lede">
+      {t(
+        `从 R150 到 R159，我们没有再把不断增长的历史 component 全部带进下一轮。历史被维护成一个固定 rank128 状态，每轮只学习一个 rank8 新更新，再折回 rank128；9 轮连续更新全部通过 hard gate。`,
+        `From R150 through R159, the next round no longer carried the full growing component history. History stayed in one fixed rank128 state, each round learned one new rank8 update, then folded back to rank128; all nine recurrent updates passed their hard gates.`,
+      )}
+    </p>
+    <dl class="bounded__metrics" aria-label={t('Bounded recurrence 主要结果', 'Bounded recurrence headline results')}>
+      <div><dt>{t('历史状态', 'Historical state')}</dt><dd>rank{result.stateRank}</dd></div>
+      <div><dt>{t('连续更新', 'Recurrent updates')}</dt><dd>{result.recurrentRounds} / {result.recurrentRounds} PASS</dd></div>
+      <div><dt>{t('同轮 Vanilla 对比', 'Vs same-round Vanilla')}</dt><dd>{result.formalSpeedupMean.toFixed(2)}×</dd></div>
+    </dl>
+    <p class="bounded__boundary">
+      {t(
+        '这项 PASS 只覆盖封存的 R150–R159 历史窗口：它证明旧 component 数 K 不再直接决定这条更新路径的成本，但每轮时间仍取决于样本和 token 数；这不是“所有持续学习都 O(1)”的证明，也没有打开 protected final panel。',
+        'This PASS covers only the sealed R150–R159 historical window. It shows that the old component count K no longer directly controls this update path, while per-round time still depends on examples and tokens. It is not a proof that all continual learning is O(1), and the protected final panel was not opened.',
+      )}
+    </p>
+    <nav class="bounded__links" aria-label={t('本页证据', 'Evidence for this page')}>
+      <a href={q1Href}><ExternalBrandMark href={q1Href} />{t('Q1 最终 closeout', 'Q1 final closeout')}</a>
+      <a href={lineageHref}><ExternalBrandMark href={lineageHref} />{t('两条 SD-LoRA 线索索引', 'Two-line SD-LoRA lineage index')}</a>
+    </nav>
+  </header>
+
+  <section class="bounded__section" aria-labelledby="lineage-title">
+    <h2 id="lineage-title">{t('两条加速路线改的是不同东西', 'The two acceleration lines change different things')}</h2>
+    <p>{t(
+      'Stable Reduction 仍然保留不断增加的历史 component，只把跨 component 的归约规则写得更稳定、更适合并行；Bounded Online Recurrence 则把历史折进固定 rank128 状态。两个结果都有效，但不能把 2× 和 37× 当成同一个实现的两次测速。',
+      'Stable Reduction still retains the growing component history and makes cross-component reduction explicit and parallel-friendly. Bounded Online Recurrence instead folds history into one fixed rank128 state. Both results are valid, but the ~2× and ~37× numbers are not two timings of the same implementation.',
+    )}</p>
+    <div class="bounded__table-wrap">
+      <table class="bounded__table">
+        <thead><tr><th scope="col"></th><th scope="col">SD-LoRA v2 · Stable Reduction</th><th scope="col">SD-LoRA · Bounded Online Recurrence</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">{t('历史怎么保存', 'How history is stored')}</th><td>{t('历史 component 继续逐个保留', 'Historical components remain individually retained')}</td><td>{t('历史折成一个固定 rank128 状态', 'History is folded into one fixed rank128 state')}</td></tr>
+          <tr><th scope="row">{t('每轮主要改动', 'Main per-round change')}</th><td>{t('chunk 16；跨 component 用 FP32 累加', 'chunk 16; FP32 cross-component accumulation')}</td><td>{t('学习 rank8 新更新，再压回 rank128', 'learn a rank8 update, then compress back to rank128')}</td></tr>
+          <tr><th scope="row">{t('代表性 trainer 结果', 'Representative trainer result')}</th><td>{SD_LORA_V2_LOCAL.eightStepSpeedup.toFixed(2)}× {t('（matched 8-step）', '(matched eight-step)')}</td><td>{result.formalSpeedupMean.toFixed(2)}× {t('平均（R151–R159）', 'mean (R151–R159)')}</td></tr>
+          <tr><th scope="row">{t('核心结论', 'Core conclusion')}</th><td>{t('更快的稳定数值 treatment', 'faster stable numerical treatment')}</td><td>{t('固定大小的在线参数状态', 'bounded online parameter state')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="bounded__related"><a href={stableHref}>{t('查看 Stable Reduction 的 2× 结果和 WebShop 小面板 →', 'See the Stable Reduction ~2× result and small WebShop panel →')}</a></p>
+  </section>
+  <section class="bounded__section" aria-labelledby="recurrent-title">
+    <h2 id="recurrent-title">{t('R150 到 R159 没有回到 Vanilla', 'R150 through R159 never reset to Vanilla')}</h2>
+    <figure class="bounded__flow">
+      <div class="bounded__flow-line" role="img" aria-label={t('R150 bounded 状态连续更新到 R159，每轮保持 rank128', 'The bounded R150 state updates continuously through R159 while remaining rank128')}>
+        <span>R150 · r128</span><b>→</b><span>R151</span><b>→</b><span>R152</span><b>→</b><span>…</span><b>→</b><span>R159 · r128</span>
+      </div>
+      <figcaption>{t(
+        `每一轮只把上一轮 bounded 输出当作 prior；新经验仍是 rank${result.currentUpdateRank} update。Q1 的九轮没有从 full Vanilla checkpoint 重置。`,
+        `Every round used only the previous bounded output as its prior; new experience still entered as a rank${result.currentUpdateRank} update. None of the nine Q1 rounds reset from a full Vanilla checkpoint.`,
+      )}</figcaption>
+    </figure>
+    <p>{t(
+      `adapter 文件在九轮里始终是 ${mib(result.adapterModelBytes)} MiB；每个 optimizer step 平均 ${result.secondsPerOptimizerStepMean.toFixed(3)} 秒。logical history 从 150 增长到 159 时，step 时间对历史长度的线性斜率只有 ${result.historySlope.toExponential(2)} 秒 / round。`,
+      `The adapter stayed ${mib(result.adapterModelBytes)} MiB across all nine rounds; each optimizer step averaged ${result.secondsPerOptimizerStepMean.toFixed(3)} seconds. As logical history grew from 150 to 159, the fitted step-time slope was only ${result.historySlope.toExponential(2)} seconds per round.`,
+    )}</p>
+  </section>
+
+  <section class="bounded__section" aria-labelledby="behavior-title">
+    <h2 id="behavior-title">{t('四个行为检查都守住了预先门槛', 'All four behavior checks stayed inside the frozen margins')}</h2>
+    <p>{t(
+      'score 的非劣门槛是 lower bound ≥ -0.05；完整成功率的门槛是 lower bound ≥ -0.0625。R150、R152、R155、R159 都在实验前冻结的规则下 PASS。',
+      'The score non-inferiority rule was lower bound ≥ -0.05; the exact-success rule was lower bound ≥ -0.0625. R150, R152, R155, and R159 all passed under rules frozen before evaluation.',
+    )}</p>
+    <div class="bounded__table-wrap">
+      <table class="bounded__table bounded__table--numbers">
+        <thead><tr><th scope="col">Round</th><th scope="col">Score LB</th><th scope="col">Success LB</th><th scope="col">Status</th></tr></thead>
+        <tbody>
+          {result.behavior.map((row) => (
+            <tr><th scope="row">R{row.round}</th><td>{row.scoreLowerBound.toFixed(4)}</td><td>{row.successLowerBound.toFixed(4)}</td><td><strong>PASS</strong></td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="bounded__section" aria-labelledby="claim-title">
+    <h2 id="claim-title">{t('现在能说什么', 'What this result supports')}</h2>
+    <p class="bounded__claim">{t(
+      '在封存的 R150–R159 历史窗口里，SD-LoRA 的逻辑历史继续增长，但维护的参数状态可以固定在 rank128，旧 component 数 K 不再让这条 history-dependent update path 越来越重。',
+      'Within the sealed R150–R159 historical window, SD-LoRA logical history keeps growing while the maintained parameter state stays rank128, so the old component count K no longer makes this history-dependent update path grow heavier.',
+    )}</p>
+    <p>{t(
+      '边界同样重要：这不是 Vanilla 的逐 bit 数值等价证明，也不是所有任务、所有历史长度或所有 continual-learning 方法都能 O(1) 更新的证明。每轮 wall time 仍受样本和 token 数影响；protected final panel 没有被打开。',
+      'The boundary matters just as much: this is not bitwise numerical equivalence to Vanilla, nor a proof that every task, history length, or continual-learning method admits O(1) updates. Per-round wall time still depends on examples and tokens, and the protected final panel was not opened.',
+    )}</p>
+    <details class="bounded__evidence">
+      <summary>{t('证据与源码', 'Evidence and source')}</summary>
+      <ul>
+        <li><a href={q0Href}><ExternalBrandMark href={q0Href} />Q0 one-step closeout</a> · {result.q0Speedup.toFixed(2)}×</li>
+        <li><a href={q1Href}><ExternalBrandMark href={q1Href} />Q1 R151–R159 final closeout</a> · {result.formalSpeedupMean.toFixed(2)}× mean</li>
+        <li><a href={planHref}><ExternalBrandMark href={planHref} />{t('Bounded-state / recurrence 总计划', 'Bounded-state / recurrence master plan')}</a></li>
+        <li><a href={lineageHref}><ExternalBrandMark href={lineageHref} />{t('SD-LoRA / VR 双线索引', 'SD-LoRA / VR two-line lineage index')}</a></li>
+      </ul>
+    </details>
+  </section>
+
+  <OpenEvoSdLoraHistorySeriesNav locale={locale} />
+</article>
+<style>
+.bounded{width:100%;padding:0 0 4rem}.bounded__hero,.bounded__section{width:min(980px,calc(100% - 2rem));margin:0 auto}.bounded__hero{padding:clamp(2.2rem,6vw,4.8rem) 0 2rem}.bounded__eyebrow{margin:0 0 .65rem;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}.bounded__hero h1{max-width:15ch;margin:0;font-size:clamp(2.2rem,5.7vw,4.8rem);line-height:1.02;letter-spacing:-.045em}.bounded__lede,.bounded__boundary,.bounded__section>p,.bounded__flow figcaption{max-width:48rem;font-size:1.05rem;line-height:1.68}.bounded__lede{margin:1.1rem 0 0;color:var(--ink);font-size:clamp(1.08rem,2vw,1.28rem)}.bounded__boundary{margin:1rem 0 0;color:var(--muted)}.bounded__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.6rem 0 0;border-block:1px solid var(--line)}.bounded__metrics div{padding:1rem 1rem 1rem 0}.bounded__metrics dt{color:var(--muted);font-size:.92rem}.bounded__metrics dd{margin:.25rem 0 0;font-size:1.45rem;font-weight:800}.bounded__links{display:flex;flex-wrap:wrap;gap:.8rem 1.1rem;margin-top:1rem}.bounded__links a,.bounded__related a,.bounded__evidence a{color:var(--accent-deep);text-underline-offset:.2em}.bounded__section{padding-top:2.8rem}.bounded__section h2{max-width:26ch;margin:0;font-size:clamp(1.55rem,3vw,2.25rem);line-height:1.15}.bounded__table-wrap{margin-top:1.2rem;overflow-x:auto}.bounded__table{width:100%;min-width:680px;border-collapse:collapse}.bounded__table th,.bounded__table td{padding:.8rem .7rem;font-size:1rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5}.bounded__table thead th{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}.bounded__table tbody th{width:18%;color:var(--muted);font-weight:650}.bounded__table--numbers{min-width:520px}.bounded__table--numbers td,.bounded__table--numbers th{font-variant-numeric:tabular-nums}.bounded__related{margin-top:1rem}.bounded__flow{margin:1.25rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}.bounded__flow-line{display:flex;align-items:center;gap:.6rem;overflow-x:auto;padding:.2rem 0 .6rem;font:750 1rem/1.2 var(--font-mono)}.bounded__flow-line span{flex:0 0 auto;padding:.5rem .6rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.bounded__flow-line b{color:var(--accent-deep)}.bounded__section>.bounded__claim{font-size:1.16rem;color:var(--ink);font-weight:650}.bounded__evidence{max-width:48rem;margin-top:1rem}.bounded__evidence summary{cursor:pointer;font-weight:700}.bounded__evidence li{margin:.55rem 0;line-height:1.5}@media(max-width:680px){.bounded__hero,.bounded__section{width:min(100% - 1rem,980px)}.bounded__metrics{grid-template-columns:1fr}.bounded__metrics div{border-bottom:1px solid var(--line)}.bounded__metrics div:last-child{border-bottom:0}.bounded__table{min-width:640px}}
+</style>

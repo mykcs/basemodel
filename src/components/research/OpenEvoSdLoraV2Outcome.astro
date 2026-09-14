@@ -10,6 +10,7 @@ import {
   SD_LORA_V2_PUBLICATION_SOURCE,
   SD_LORA_V2_WEBSHOP,
 } from '../../data/sdLoraV2Outcome';
+import { SD_LORA_BOUNDED_RECURRENCE_RESULT } from '../../data/sdLoraVrLineages';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -28,8 +29,8 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
 ---
 <article class="sdlora-v2" data-copy-review data-sd-lora-v2-outcome data-ui-audit="contrast layout evidence">
   <header class="sdlora-v2__hero">
-    <p class="sdlora-v2__chapter">03 / 07</p>
-    <h1>{t('SD-LoRA 的 900 多秒不是非得忍着', 'SD-LoRA does not have to stay stuck near 900 seconds')}</h1>
+    <p class="sdlora-v2__chapter">{t('03 / 07 · Stable Reduction：历史 component 仍逐个保留', '03 / 07 · Stable Reduction: historical components remain individually retained')}</p>
+    <h1>{t('Stable Reduction 保留历史 component，训练约快 2×', 'Stable Reduction keeps the component history and trains about 2× faster')}</h1>
     <p class="sdlora-v2__lede">
       {t(
         '我们已经做出了一个确实能更快训练的 SD-LoRA v2；它不是原算法一模一样的复制品，但目前的小规模真实 WebShop 检查没有发现它因为加速而明显变笨。',
@@ -44,13 +45,14 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
     </div>
     <p class="sdlora-v2__hero-boundary">
       {t(
-        '关键边界也很明确：v2 是新的数值更新规则，不是 Vanilla SD-LoRA 的严格等价替代。',
-        'The boundary is equally important: v2 is a new numerical update rule, not a strict-equivalence replacement for Vanilla SD-LoRA.',
+        '关键边界也很明确：这条 v2 仍然逐个保留历史 component，只改变跨 component 的归约规则；固定 rank128 的 Bounded Online Recurrence 是另一条独立实验线。',
+        'The boundary is equally important: this v2 still retains historical components individually and changes the cross-component reduction rule; fixed-rank128 Bounded Online Recurrence is a separate experimental line.',
       )}
     </p>
     <nav class="sdlora-v2__hero-links" aria-label={t('本页证据', 'Evidence for this page')}>
       <a href={evidenceHref}>{t('公开结果 JSON', 'Public result JSON')}</a>
       <a href={planHref}><ExternalBrandMark href={planHref} />{t('上游实验计划与终态', 'Upstream experiment plan and terminal state')}</a>
+      <a href={p('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/')}>{t('另一条线：Bounded Online Recurrence', 'Other line: Bounded Online Recurrence')}</a>
     </nav>
   </header>
 
@@ -183,25 +185,25 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
 
   <section class="sdlora-v2__section" aria-labelledby="next-title">
     <div class="sdlora-v2__copy">
-      <h2 id="next-title">{t('下一步不是继续死磕 v2，而是把它变成 GDR 的强基线', 'The next step is not more v2 tuning; it is to use v2 as a strong baseline for GDR')}</h2>
+      <h2 id="next-title">{t('另一条并行线已经把增长历史折成固定 rank128', 'A parallel line has already folded growing history into fixed rank128')}</h2>
       <p>{t(
-        '现在再继续换 chunk size、换 accumulator、追一个更漂亮的 v2 数字，反而会开始围着已经看过的结果调方法。更有价值的是把 v2 冻结下来，然后问 GDR 一个更难的问题：它除了“少算一点历史”，有没有真的学到一种更好的历史状态更新方式？',
-        'Continuing to tune chunk sizes, accumulators, or a prettier v2 number would start adapting the method after seeing the result. The more useful move is to freeze v2 and ask GDR a harder question: beyond avoiding repeated historical compute, does it provide a genuinely better way to update learning state?',
+        `Stable Reduction 解决的是“历史还在增长时，怎样把它算得更快”。Bounded Online Recurrence 解决的是另一个问题：不再逐个保留历史 component，而是每轮学一个 rank8 新更新，再折回固定 rank128。它在 R151–R159 的同轮 Vanilla 对比中平均约 ${SD_LORA_BOUNDED_RECURRENCE_RESULT.formalSpeedupMean.toFixed(2)}×。`,
+        `Stable Reduction asks how to compute a still-growing history more efficiently. Bounded Online Recurrence asks a different question: stop retaining historical components individually, learn a rank8 update each round, then fold it back into fixed rank128. Across R151–R159 it averaged about ${SD_LORA_BOUNDED_RECURRENCE_RESULT.formalSpeedupMean.toFixed(2)}× versus same-round Vanilla.`,
       )}</p>
     </div>
     <table class="next-table">
-      <thead><tr><th scope="col">{t('方法', 'Arm')}</th><th scope="col">{t('它回答什么问题', 'What it asks')}</th></tr></thead>
+      <thead><tr><th scope="col">{t('研究线', 'Line')}</th><th scope="col">{t('它真正改变什么', 'What it actually changes')}</th></tr></thead>
       <tbody>
-        <tr><th scope="row">Vanilla SD-LoRA</th><td>{t('原方法 reference：历史 component 全部保留，每次继续一起算。', 'Reference method: retain all historical components and keep computing through them.')}</td></tr>
-        <tr><th scope="row">SD-LoRA v2</th><td>{t('如果只是把 reduction rule 写清楚、并行得更合理，能做到什么？', 'What can we get simply by specifying a stable, more parallel reduction rule?')}</td></tr>
-        <tr><th scope="row">GDR SD-LoRA</th><td>{t('如果把历史变成 recurrent / bounded state，会不会得到额外的科学价值？', 'Does turning history into recurrent / bounded state add scientific value beyond compute engineering?')}</td></tr>
+        <tr><th scope="row">SD-LoRA v2 · Stable Reduction</th><td>{t('历史 component 继续逐个存在；改变跨 component 的 reduction rule。', 'Historical components remain individually present; the cross-component reduction rule changes.')}</td></tr>
+        <tr><th scope="row">SD-LoRA · Bounded Online Recurrence</th><td>{t('历史折成固定 rank128；每轮新 update 是 rank8，再压回 rank128。', 'History is folded into fixed rank128; each new update is rank8 and is recompressed to rank128.')}</td></tr>
+        <tr><th scope="row">GDR</th><td>{t('仍是独立 scientific treatment；不能用上面任一条线的结果替代 GDR 自己的前瞻证据。', 'Remains a separate scientific treatment; neither result above substitutes for prospective GDR evidence.')}</td></tr>
       </tbody>
     </table>
     <p class="next-question">{t(
-      '接下来的总问题可以压成一句：历史 SD-LoRA component 到底需要被全部保留，还是可以被一种稳定的并行 reduction，甚至一个有界 recurrent state 所替代？',
-      'The next question can be stated in one line: must historical SD-LoRA components all be retained, or can they be replaced by a stable parallel reduction—or even by a bounded recurrent state?',
+      '所以 2× 和约 37× 不能并排写成“同一个 v2 的两个测速结果”：它们来自不同 treatment、不同 workload、不同 claim。',
+      'So ~2× and ~37× must not be presented as two timings of one v2 implementation: they come from different treatments, workloads, and claims.',
     )}</p>
-    <p class="next-link"><a href={p('/research/seed-openevo/study/capability-exploration/gdr-directapply/')}>{t('继续看：GDR 这条线到底在研究什么', 'Continue: what the GDR line is actually testing')} →</a></p>
+    <p class="next-link"><a href={p('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/')}>{t('继续看：Bounded Online Recurrence 怎样保持固定 rank128', 'Continue: how Bounded Online Recurrence keeps rank128 fixed')} →</a></p>
   </section>
 
   <details class="sdlora-v2__evidence">

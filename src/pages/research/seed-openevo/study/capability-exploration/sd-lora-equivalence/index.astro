@@ -5,8 +5,8 @@ import ResearchRouteContext from '../../../../../../components/research/Research
 const locale = 'zh' as const;
 ---
 <AppLayout
-  title="SD-LoRA v2：严格等价失败以后，我们怎么把训练加速了约 2×"
-  description="严格等价加速没有找到合格 successor；新的 SD-LoRA v2 在 matched 8-step trainer 中约快 2×，prospective 非-final WebShop 小面板没有观察到 aggregate reward / success 退化。"
+  title="SD-LoRA v2 · Stable Reduction：matched trainer 加速约 2×"
+  description="Stable Reduction 保留不断增长的历史 component，只把跨 component 的归约规则改成明确、稳定、可并行的数值 treatment；matched 8-step trainer 约快 2×。"
   locale={locale}
 >
   <ResearchRouteContext locale={locale} route="sd-lora-equivalence" />
