@@ -68,7 +68,7 @@ Persistent final-gate browser scope is anchored to live `main`, not to the previ
 - build: `npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs`
 - canonical project domain: `https://basemodel-preview.vercel.app`
 
-`vercel-ui-gate.mjs`, the public GHA `ci-ui-gate.mjs`, and the retained manual CircleCI path share `scripts/vercel-ui-plan.ts`; skip/focused/full classification therefore has one owner. Shared/global/unknown changes fail closed to the complete canonical Chromium matrix. Route-owned/content changes may use focused mapped coverage. Lab/server-relevant changes run the dedicated 12-case Lab gate. Assertion thresholds, reader contracts and scientific-content boundaries are provider-independent.
+`vercel-ui-gate.mjs`, the public GHA `ci-ui-gate.mjs`, and the retained manual CircleCI path share `scripts/vercel-ui-plan.ts`; skip/focused/full classification therefore has one owner. Shared/global/unknown changes fail closed to the complete canonical Chromium matrix. Route-owned/content changes may use focused mapped coverage. Lab/server-relevant changes run the dedicated 6-case active-Lab gate. Assertion thresholds, reader contracts and scientific-content boundaries are provider-independent.
 
 HPL-only is a special **control-plane detachment** case, not a generic exemption for `src/lib` or `src/data`. Only the exact paths declared in `scripts/hpl-control-plane.mjs` qualify, and only while no ordinary runtime source imports them. The helper and ignored-build/planner owners themselves are full-risk changes, so this optimization cannot classify its own implementation as harmless.
 

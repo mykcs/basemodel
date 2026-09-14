@@ -46,3 +46,11 @@ The safe archive therefore keeps the file bytes unchanged but adds a trailing `.
 - Restoration: remove `.archive`, restore `src/pages/en/`, locale routing, metadata, and bilingual acceptance, then rerun full deterministic and browser gates.
 
 Do not describe this as deleting English or as a formal product launch. The measured benefit is real for build/route/browser surface, but it does **not** solve the dominant full-project Astro-check cost.
+
+## Hosted-gate follow-up
+
+Public PR CI caught one contract that local `test:ui:all` does not own: the dedicated Lab Playwright config still ran six `/en/lab/` cases after English left the active runtime. The ordinary canonical Chromium shard itself passed; only the auxiliary Lab tail failed with expected 404s.
+
+The correction kept the full active Lab visual matrix rather than weakening it: `/lab/` still runs at 390, 768, and 1440 px in both light and dark, for six active cases. Current deployment/hosting policy and CI logging now call this the **6-case active-Lab gate**. Historical documents that accurately describe the former bilingual 12-case gate remain unchanged.
+
+Reusable lesson: when removing an active route class, inventory auxiliary/provider-owned browser suites as well as `npm run test:ui` / `test:ui:all`; a separately configured tail can retain stale route assumptions even when the canonical matrix is already clean.

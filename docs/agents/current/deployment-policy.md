@@ -19,7 +19,7 @@ final non-draft current-base candidate
 -> npm run verify:deploy
 -> npm run build
 -> risk-based Chromium acceptance
--> 12-case Lab acceptance when relevant
+-> 6-case active-Lab acceptance when relevant
 -> required GitHub status: Vercel on the exact candidate SHA
 -> CircleCI automatic PR/main workflows disabled; API-triggered manual fallback only
 
@@ -134,7 +134,7 @@ shared/global/unknown UI diff
 -> complete canonical Chromium matrix
 
 Lab/server-relevant diff
--> dedicated 12-case Lab gate
+-> dedicated 6-case active-Lab gate
 ```
 
 Changes to the Vercel gate, planner, deployment config, CircleCI manual-fallback config, merge-candidate tooling, or retained Mac fallback environment fail closed to full browser coverage. Never weaken assertions, reader-contract checks, scientific-content boundaries, or unknown-owner handling merely to reduce wall time or credits.
