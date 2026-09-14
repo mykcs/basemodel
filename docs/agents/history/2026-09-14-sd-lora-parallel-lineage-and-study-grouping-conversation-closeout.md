@@ -63,12 +63,19 @@ Several local commands with Bash heredoc/assignment syntax were initially sent t
 
 The failure was at use-site execution, not knowledge absence. Parser failure before mutation remains `NOT_EXECUTED`.
 
-
 ### 8. Docs-only Production detachment does not waive exact-head Vercel merge authority
 
 During this closeout, the Agent incorrectly inferred that a docs/governance/tests-only PR should not request the Vercel final gate. GitHub branch protection rejected the merge because the required `Vercel` status was absent. Re-reading current `deployment-policy.md` showed the precise split: an explicit final-candidate gate still runs exact-head Vercel acceptance (with risk-based browser work allowed to skip when proven non-UI), while a proven docs/governance-only range on `main` must not publish or replace the Production website artifact.
 
 This was another policy-activation/use-site failure, not a missing-rule failure. The durable deployment owner already states the correct behavior. Future closeout must distinguish **merge authority** from **Production deploy relevance** instead of collapsing both into “docs-only does not deploy.”
+
+### 9. Post-merge cleanup must prove reachability, not remote branch existence
+
+After the closeout PR merged, the first temporary-clone cleanup guard tried to verify the remote topic branch. GitHub had already removed that merged branch, so the fetch failed closed. That was a safe failure, but the guard was checking the wrong invariant: a missing remote topic ref after merge does not imply that the work is lost or unmerged.
+
+The correct cleanup proof is repository reachability plus local cleanliness. Re-read the current integration branch, prove the local checkout has no uncommitted work, prove its task-only commits are reachable from the integration branch (or another deliberate preservation ref), and confirm no active worktree/PR still depends on the checkout. Only then is an isolated temporary checkout disposable. If any of those facts are unknown, keep it.
+
+This is now owned by `branch-and-pr-conventions.md`; the historical lesson belongs here only to explain why the stronger invariant exists.
 
 ## Coverage ledger
 
@@ -82,6 +89,7 @@ This was another policy-activation/use-site failure, not a missing-rule failure.
 | Hosted first-screen gate found a real regression | Known gate-integrity family | fix product/contract ownership, not threshold, when the contract is still valid | existing `release-closeout-protocol.md` + Reader Contract/browser tests | executable gate owns acceptance |
 | Bash/heredoc under Fish | **Yes** | verify the outer interpreter before compound syntax; parser failure is NOT_EXECUTED | existing root `AGENTS.md` + project principles + scenario registry | rule is already startup-visible; failure was use-site activation |
 | Docs/governance-only final candidate was treated as exempt from Vercel | New closeout-time activation failure | exact-head Vercel remains required merge authority; only merged-main Production relevance may be ignored | existing `deployment-policy.md` + `release-closeout-protocol.md` | the rule already existed; the failure was conflating merge acceptance with Production publication |
+| Cleanup guard required a merged remote topic branch to still exist | New cleanup-specific gap in a known shared-state family | prove clean local state + commit reachability from current integration authority; remote branch existence is optional after merge | `branch-and-pr-conventions.md` | branch lifecycle policy is the earliest durable owner for this check |
 
 ## Future-Agent test
 
@@ -96,8 +104,9 @@ Before changing a research directory that groups several related methods, a futu
 7. Does responsive browser acceptance prove the intended parent/child hierarchy is visible, not merely present in the DOM?
 8. Before compound local shell syntax, did the execution tool actually report Bash as the outer interpreter?
 9. For docs/governance-only closeout, did I still obtain the required exact-head Vercel status before merge while keeping merged-main Production non-deploy-relevant?
+10. For post-merge local cleanup, did I prove cleanliness and commit reachability instead of assuming the merged remote topic branch still exists?
 
-If these checks run, the most important failures from this conversation—scientific-line conflation, navigation/treatment identity conflation, duplicate integration authority, and repeated shell misuse—are materially harder to repeat.
+If these checks run, the most important failures from this conversation—scientific-line conflation, navigation/treatment identity conflation, duplicate integration authority, repeated shell misuse, and cleanup proof tied to a transient branch ref—are materially harder to repeat.
 
 ## Temporary state intentionally not promoted
 
