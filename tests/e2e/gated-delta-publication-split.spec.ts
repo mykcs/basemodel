@@ -26,9 +26,9 @@ for (const locale of locales) {
       await page.setViewportSize(viewport);
       await page.goto(`${locale.prefix}${routes.current}`, { waitUntil: 'domcontentloaded' });
       await expect(page.locator('h1')).toHaveText('Gated-Delta SD-LoRA');
-      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '真实 GDR 路径已经跑通' : 'The real GDR path now runs');
-      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '完整四轮 Vanilla vs GDR paired D1 仍未完成' : 'full four-round Vanilla-vs-GDR paired D1 is still incomplete');
-      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '不能把 execution proof 写成“GDR 更好”' : 'execution proof is not an efficacy claim');
+      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '这条更新路径能在真实 WebShop 学习里跑起来' : 'this update path can run during real WebShop learning');
+      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '完整四轮 Vanilla vs GDR 配对实验还没有完成' : 'full four-round Vanilla-vs-GDR paired experiment is not complete yet');
+      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '不能说“GDR 效果更好”' : 'not that GDR works better');
       await expect(page.getByTestId('gated-delta-recurrence')).toBeVisible();
       await expect(page.getByTestId('gated-delta-runtime-path')).toBeVisible();
       await expect(page.locator('[data-reader-route]')).toHaveCount(0);
@@ -39,7 +39,7 @@ for (const locale of locales) {
       await expect(page.locator('#what-happened')).toContainText(/44/);
       await expect(page.locator('#what-happened')).toContainText(/7/);
       await expect(page.locator('#admission-rule')).toContainText(/16/);
-      await expect(page.locator('#directapply-result')).toContainText(locale.id === 'zh' ? /不是同一个冻结题集.*不能直接当成/ : /different frozen panels.*not a causal effect/);
+      await expect(page.locator('#directapply-result')).toContainText(locale.id === 'zh' ? /不是同一批冻结题.*不能直接相减/ : /different frozen task panels.*cannot be subtracted/);
       await expect(page.getByTestId('gated-delta-recurrence')).toHaveCount(0);
       const historyHub = page.locator('[data-reader-route="gdr-directapply"]');
       await expect(historyHub).toHaveCount(1);
@@ -78,11 +78,11 @@ test('core distinction remains readable without JavaScript', async ({ browser })
   const page = await context.newPage();
   try {
     await page.goto(routes.current, { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('.gds-hero__state')).toContainText('真实 GDR 路径已经跑通');
-    await expect(page.locator('.gds-hero__state')).toContainText('完整四轮 Vanilla vs GDR paired D1 仍未完成');
+    await expect(page.locator('.gds-hero__state')).toContainText('这条更新路径能在真实 WebShop 学习里跑起来');
+    await expect(page.locator('.gds-hero__state')).toContainText('完整四轮 Vanilla vs GDR 配对实验还没有完成');
     await expect(page.getByTestId('gated-delta-recurrence')).toBeVisible();
     await page.goto(routes.history, { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('#admission-rule')).toContainText('固定 16 题 probe');
+    await expect(page.locator('#admission-rule')).toContainText('固定 16 题');
     await expect(page.locator('#what-happened')).toContainText('44');
     await expectNoPageOverflow(page);
   } finally {

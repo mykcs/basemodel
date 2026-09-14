@@ -35,19 +35,18 @@ describe('Gated-Delta SD-LoRA publication split', () => {
   });
 
   it('keeps the current page about recurrent write rather than replaying the old admission experiment', () => {
-    expect(current).toContain("Task Vector 只做事后分析，不参与在线更新");
+    expect(current).toContain("Task Vector 的角色");
     expect(current).toContain('S<sub>t</sub> = S̃<sub>t−1</sub> + β');
-    expect(current).toContain('真实 GDR 路径已经跑通；方法效果还没有结论');
-    expect(current).toContain('现在证明了“真的跑起来”，还没有证明“效果更好”');
+    expect(current).toContain('还没证明：它比 Vanilla 更好');
     expect(current).toContain('snapshot.routeSExecution.appliedFactorWrites.toLocaleString');
-    expect(current).toContain('完整四轮 Vanilla vs GDR paired D1 仍未完成');
+    expect(current).toContain('完整四轮对照');
     expect(current).not.toContain('20,480 rollouts · 44 candidates · 7 adopted');
     expect(current).not.toContain('16-task probe 比较新旧状态');
   });
 
   it('keeps the historical page about candidate admission rather than duplicating the current recurrence', () => {
-    expect(history).toContain('历史 GDR-v1 训练了 44 个 candidate，只采用了 7 个');
-    expect(history).toContain('固定 16 题 probe 比较新旧状态');
+    expect(history).toContain('44 个候选更新，只有 7 个真正改到了后续模型');
+    expect(history).toContain('用固定 16 题比较更新前后的模型');
     expect(history).toContain('gated-delta-sd-lora');
     expect(history).not.toContain('S̃<sub>t−1</sub> = exp(g');
     expect(history).not.toContain('D0.26');

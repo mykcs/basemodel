@@ -29,65 +29,65 @@ const gdr = {
     <a class="gdr-history__back" href={p('/research/seed-openevo/study/')}>← {t('实验目录', 'Experiment index')}</a>
     <h1>{t('历史 GDR-v1 / DirectApply', 'Historical GDR-v1 / DirectApply')}</h1>
     <p class="gdr-history__lede" data-reader-task data-reader-purpose>{t(
-      '这次历史实验不是 recurrent Gated Delta Rule。SD-LoRA candidate 会先完整训练出来；本地 GDR-v1 再用固定 16 道题做一次短期检查，决定采用新状态还是继续旧状态。160 轮里一共训练出 44 个 candidate，最后只有 7 次真正进入后续模型。',
-      'This historical experiment was not a recurrent Gated Delta Rule. Each SD-LoRA candidate was trained first; local GDR-v1 then used a fixed 16-task short-horizon check to decide whether to adopt the new state or keep the old one. Across 160 rounds it trained 44 candidates, but only seven entered later model states.'
+      '旧 GDR-v1 每轮会训练一个 SD-LoRA 候选更新。训练完成后，固定 16 题再决定这个更新要不要带到下一轮。160 轮里一共训练出 44 个候选更新，最后只有 7 个真正改变了后续模型。',
+      'Old GDR-v1 followed a simple pattern: train an SD-LoRA candidate update first, then use a fixed 16-task check to decide whether it should carry into the next round. Across 160 rounds it trained 44 candidate updates, but only seven actually changed later model states.'
     )}</p>
-    <a class="gdr-history__current" href={currentGatedDeltaHref}>{t('查看现在真正研究的 Gated-Delta SD-LoRA →', 'Open the current Gated-Delta SD-LoRA derivation →')}</a>
+    <a class="gdr-history__current" href={currentGatedDeltaHref}>{t('现在的 Gated Delta 怎样直接更新参数 →', 'How does the current Gated Delta update parameters directly? →')}</a>
   </header>
   <ResearchRouteContext locale={locale} route="gdr-directapply" experimentId="gdr-v1-1p7b" compact />
   <section class="gdr-history__section" id="admission-rule" aria-labelledby="admission-rule-title">
-    <h2 id="admission-rule-title">{t('旧 GDR-v1 做的是 candidate admission', 'Local GDR-v1 was candidate admission')}</h2>
+    <h2 id="admission-rule-title">{t('旧 GDR-v1：训练完，再筛一次', 'Old GDR-v1: train first, then screen the update')}</h2>
     <div class="gdr-history__compare">
       <figure>
-        <figcaption><strong>GDR-v1</strong><span>{t('candidate 训练完以后再筛一次', 'screen again after candidate training')}</span></figcaption>
+        <figcaption><strong>GDR-v1</strong><span>{t('候选更新训练完，再做固定 16 题检查', 'run a fixed 16-task check after training the candidate update')}</span></figcaption>
         <ol>
           <li><b>1</b><span>{t('完成一轮 WebShop rollout', 'complete one WebShop rollout round')}</span></li>
-          <li><b>2</b><span>{t('训练 SD-LoRA candidate', 'train an SD-LoRA candidate')}</span></li>
-          <li><b>3</b><span>{t('固定 16 题 probe 比较新旧状态', 'compare new and old states on a fixed 16-task probe')}</span></li>
-          <li><b>4</b><span>{t('通过才采用；否则 KEEP PRIOR', 'adopt only if it passes; otherwise KEEP PRIOR')}</span></li>
+          <li><b>2</b><span>{t('训练一个 SD-LoRA 候选更新', 'train one SD-LoRA candidate update')}</span></li>
+          <li><b>3</b><span>{t('用固定 16 题比较更新前后的模型', 'compare the model before and after the update on the same 16 tasks')}</span></li>
+          <li><b>4</b><span>{t('新状态更好才保留；否则下一轮继续用旧状态', 'keep the new state only if it is better; otherwise the next round keeps the old state')}</span></li>
         </ol>
       </figure>
       <figure>
-        <figcaption><strong>DirectApply</strong><span>{t('移除 task-score veto', 'remove the task-score veto')}</span></figcaption>
+        <figcaption><strong>DirectApply</strong><span>{t('不再用任务分数否决已训练的更新', 'stop using task score to veto a trained update')}</span></figcaption>
         <ol>
           <li><b>1</b><span>{t('完成相同预算的 WebShop rollout', 'complete the matched WebShop rollout budget')}</span></li>
-          <li><b>2</b><span>{t('训练同类 SD-LoRA candidate', 'train the same kind of SD-LoRA candidate')}</span></li>
-          <li><b>3</b><span>{t('工程 / 数据合同继续 fail-closed', 'engineering / data contracts remain fail-closed')}</span></li>
-          <li><b>4</b><span>{t('通过合同后直接进入下一状态', 'enter the next state directly after those contracts pass')}</span></li>
+          <li><b>2</b><span>{t('训练同样的 SD-LoRA 候选更新', 'train the same kind of SD-LoRA candidate update')}</span></li>
+          <li><b>3</b><span>{t('工程和数据安全检查照常保留', 'keep the engineering and data-safety checks')}</span></li>
+          <li><b>4</b><span>{t('通过这些检查后，更新直接进入下一轮，不再做 16 题分数筛选', 'after those checks, carry the update into the next round without the 16-task score screen')}</span></li>
         </ol>
       </figure>
     </div>
   </section>
 
   <section class="gdr-history__section" id="what-happened" aria-labelledby="what-happened-title">
-    <h2 id="what-happened-title">{t('历史 GDR-v1 训练了 44 个 candidate，只采用了 7 个', 'Historical GDR-v1 trained 44 candidates and adopted seven')}</h2>
+    <h2 id="what-happened-title">{t('44 个候选更新，只有 7 个真正改到了后续模型', 'Only seven of 44 candidate updates changed later models')}</h2>
     <dl class="gdr-history__metrics">
       <div><dt>{t('训练轮数', 'Rounds')}</dt><dd>{gdr.rounds}</dd></div>
       <div><dt>{t('WebShop 尝试', 'WebShop attempts')}</dt><dd>{gdr.rollouts.toLocaleString('en-US')}</dd></div>
-      <div><dt>SD-LoRA candidates</dt><dd>{gdr.candidates}</dd></div>
+      <div><dt>SD-LoRA 候选更新</dt><dd>{gdr.candidates}</dd></div>
       <div><dt>{t('正式进入后续模型', 'Adopted updates')}</dt><dd>{gdr.accepted}</dd></div>
-      <div><dt>{t('采用比例', 'Admission rate')}</dt><dd>{gdr.acceptanceRate}</dd></div>
+      <div><dt>{t('保留比例', 'Kept fraction')}</dt><dd>{gdr.acceptanceRate}</dd></div>
       <div><dt>{t('R49 之后', 'After R49')}</dt><dd>{gdr.post49Candidates} candidates → {gdr.post49Accepted} adopted</dd></div>
     </dl>
-    <p>{t('R49 时累计已经有 28 个 candidate、7 次采用；之后又训练出 16 个 candidate，但采用次数没有再增加。这个事实说明旧 GDR-v1 的第二次筛选对长期学习轨迹影响很强，但它本身不能告诉我们被拒绝的 candidate 最终会不会变好。', 'By R49 there were already 28 candidates and seven admissions. Sixteen more candidates were trained afterward, but the admission count never increased. This shows that the second-stage screen strongly constrained the long-run learning path, but it cannot tell us whether rejected candidates would later have become useful.')}</p>
+    <p>{t('到 R49 为止，已经训练出 28 个候选更新，其中 7 个被保留。后面又训练了 16 个，但一个都没有再进入后续模型。也就是说，这道“训练后再筛一次”的门会很强地改变长期学习路径；但它无法回答那些被拒绝的更新如果继续保留，后来会不会变得有用。', 'By R49, 28 candidate updates had been trained and seven had been kept. Another 16 were trained later, but none entered subsequent model states. This post-training screen therefore strongly changed the long-run learning path, while still leaving open whether a rejected update might have become useful later.')}</p>
   </section>
 
   <section class="gdr-history__section" id="directapply-result" aria-labelledby="directapply-result-title">
-    <h2 id="directapply-result-title">{t('DirectApply 让 candidate 继续学习，但不能和旧 GDR final 直接相减', 'DirectApply let candidates continue, but its final cannot be subtracted from the historical GDR final')}</h2>
-    <p>{t(`DirectApply 后来跑完 ${directApplyFinal.sealedRounds} 轮、${directApplyFinal.formalRollouts.toLocaleString('en-US')} 次 WebShop 尝试，159 次 SD-LoRA candidate 都进入后续状态。训练结束后只打开一次冻结 128 题 final：Task Score ${directApplyFinal.finalScore.toFixed(2)} / 100，完整成功 ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount}。`, `DirectApply later completed ${directApplyFinal.sealedRounds} rounds and ${directApplyFinal.formalRollouts.toLocaleString('en-US')} WebShop attempts, with all 159 SD-LoRA candidates entering later states. After training it opened one frozen 128-task final: Task Score ${directApplyFinal.finalScore.toFixed(2)} / 100 with ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount} exact successes.`)}</p>
-    <p class="gdr-history__boundary">{t('历史 GDR final 与 DirectApply final 不是同一个冻结题集，因此旧 GDR 的 37.60 和 DirectApply 的 60.72 不能直接当成 gate 的因果效果。', 'The historical GDR final and the DirectApply final used different frozen panels, so historical GDR 37.60 versus DirectApply 60.72 is not a causal effect of the gate.')}</p>
+    <h2 id="directapply-result-title">{t('DirectApply 取消了这道筛选，但两次 final 不能直接比', 'DirectApply removed the screen, but the two finals cannot be compared directly')}</h2>
+    <p>{t(`DirectApply 后来跑完 ${directApplyFinal.sealedRounds} 轮、${directApplyFinal.formalRollouts.toLocaleString('en-US')} 次 WebShop 尝试，159 次 SD-LoRA 更新都直接进入后续模型。训练结束后只做了一次冻结 128 题 final：Task Score ${directApplyFinal.finalScore.toFixed(2)} / 100，完整成功 ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount}。`, `DirectApply later completed ${directApplyFinal.sealedRounds} rounds and ${directApplyFinal.formalRollouts.toLocaleString('en-US')} WebShop attempts, with all 159 SD-LoRA updates carrying into later model states. After training it ran one frozen 128-task final: Task Score ${directApplyFinal.finalScore.toFixed(2)} / 100 with ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount} exact successes.`)}</p>
+    <p class="gdr-history__boundary">{t('旧 GDR final 和 DirectApply final 不是同一批冻结题，所以 37.60 和 60.72 不能直接相减，也不能把差值当成“取消筛选”的因果效果。', 'The historical GDR final and the DirectApply final used different frozen task panels, so 37.60 versus 60.72 cannot be subtracted and interpreted as the causal effect of removing the screen.')}</p>
     <p class="gdr-history__links"><a href={directApplyFinalHref}>{t('查看 DirectApply 完整 R0–R159 曲线与 final →', 'Open the complete DirectApply R0–R159 trajectory and final →')}</a></p>
   </section>
   <section class="gdr-history__section" id="diagnostic" aria-labelledby="diagnostic-title">
-    <h2 id="diagnostic-title">{t('同一批题复测说明：单轮大跌不等于同幅度整体遗忘', 'A same-task check showed that a large live-round drop is not the same as equal global forgetting')}</h2>
-    <p>{t('DirectApply 的 R127→R128 在不同训练题上看起来约 76.1→48.9；把两个 checkpoint 放到同一批 32 题上以后，是 63.58→59.41，完整成功 10 题→8 题。抽题差异解释了很大一部分表面波动，同时参数更新确实重新分配了少数任务的成败。', 'R127→R128 looked like roughly 76.1→48.9 on different training-task samples. On the same 32 tasks, the two checkpoints measured 63.58→59.41 with exact successes moving from 10 to 8. Task sampling explains much of the apparent swing, while the parameter update still reallocates success on a small number of tasks.')}</p>
+    <h2 id="diagnostic-title">{t('同一批 32 题复测：R127→R128 没有训练曲线看起来跌得那么多', 'Same-task retest: R127→R128 did not fall as much as the training curve suggested')}</h2>
+    <p>{t('DirectApply 的训练曲线在 R127→R128 看起来从约 76.1 掉到 48.9，但两轮用的不是同一批题。把两个 checkpoint 放回同一批 32 题后，Task Score 是 63.58→59.41，完整成功 10 题→8 题。说明抽题差异解释了很大一部分表面跌幅，但参数更新也确实改变了少数任务的成败。', 'The training curve made R127→R128 look like a drop from about 76.1 to 48.9, but the two rounds used different task samples. Retesting both checkpoints on the same 32 tasks gave 63.58→59.41, with exact successes moving from 10 to 8. Task sampling explains much of the apparent drop, while the parameter update still changed outcomes on a small number of tasks.')}</p>
     <p class="gdr-history__boundary">{t('这项诊断只解释 DirectApply 内部一次 checkpoint 变化，不证明旧 GDR-v1 的 veto 一定错误，也不决定两种方法的最终胜负。', 'This diagnostic explains one checkpoint transition inside DirectApply. It does not prove that the historical GDR-v1 veto was always wrong, and it does not decide the final method comparison.')}</p>
     <p class="gdr-history__links"><a href={q17DiagnosticsHref}>{t('查看 R127 / R128 固定同题诊断 →', 'Open the R127 / R128 same-task diagnostic →')}</a></p>
   </section>
 
   <section class="gdr-history__section" id="why-new-mechanism" aria-labelledby="why-new-mechanism-title">
-    <h2 id="why-new-mechanism-title">{t('这项旧实验留下的是一个机制问题', 'The old experiment left a mechanism question')}</h2>
-    <p>{t('本地 GDR-v1 回答的是“已经训练好的 candidate 要不要放行”，不是“参数 State 应该怎样连续更新”。因此旧实验保留原样；新的 Gated-Delta SD-LoRA 研究另开一页，从 recurrent State update 本身重新推导。', 'Local GDR-v1 answered whether an already-trained candidate should be admitted, not how parameter State should be updated continuously. The old experiment therefore stays intact, while the new Gated-Delta SD-LoRA work gets its own page and re-derives the recurrent State update itself.')}</p>
+    <h2 id="why-new-mechanism-title">{t('旧实验留下的问题：参数本身应该怎么更新？', 'The question left by the old experiment: how should the parameters themselves update?')}</h2>
+    <p>{t('旧 GDR-v1 回答的是“这个已经训练好的更新要不要留下”。现在的 Gated-Delta SD-LoRA 问的是另一件事：一次新的学习发生时，LoRA 参数状态本身应该怎样连续更新。旧实验继续按原样保留，新机制单独研究。', 'Old GDR-v1 answered whether an already-trained update should be kept. Current Gated-Delta SD-LoRA asks a different question: when new learning happens, how should the LoRA parameter state itself update continuously? The historical experiment stays intact while the new mechanism is studied separately.')}</p>
     <a class="gdr-history__current gdr-history__current--end" href={currentGatedDeltaHref}>{t('进入当前 Gated-Delta SD-LoRA 推导 →', 'Open the current Gated-Delta SD-LoRA derivation →')}</a>
   </section>
 

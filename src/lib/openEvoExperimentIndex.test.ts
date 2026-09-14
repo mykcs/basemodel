@@ -73,11 +73,11 @@ describe('experiment-first Study index', () => {
     expect(readerContracts).toContain("redirectsTo: '/research/seed-openevo/flow/sd-lora/'");
 
     const gdrExplainer = readFileSync(new URL('../components/research/OpenEvoGdrDirectApplyExplainer.astro', import.meta.url), 'utf8');
-    expect(gdrExplainer).toContain('历史 GDR-v1 训练了 44 个 candidate，只采用了 7 个');
+    expect(gdrExplainer).toContain('44 个候选更新，只有 7 个真正改到了后续模型');
     expect(gdrExplainer).not.toContain('id="recurrence"');
     const currentGatedDelta = readFileSync(new URL('../components/research/OpenEvoGatedDeltaSdLoraExplainer.astro', import.meta.url), 'utf8');
-    expect(currentGatedDelta).toContain('原始 Gated Delta Rule 更新的是 State');
-    expect(currentGatedDelta).toContain('真实 GDR 路径已经跑通');
+    expect(currentGatedDelta).toContain('Gated Delta 的 State 更新');
+    expect(currentGatedDelta).toContain('还没证明：它比 Vanilla 更好');
 
     const frozenResult = readFileSync(new URL('../components/research/OpenEvoSuccessorReport.astro', import.meta.url), 'utf8');
     expect(frozenResult).toContain('1.7B 最终测试 37.60 分');

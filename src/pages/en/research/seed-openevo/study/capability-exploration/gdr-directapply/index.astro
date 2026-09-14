@@ -4,8 +4,8 @@ import OpenEvoGdrDirectApplyExplainer from '../../../../../../../components/rese
 const locale = 'en' as const;
 ---
 <AppLayout
-  title="Historical GDR-v1 / DirectApply: the candidate-admission experiment"
-  description="Historical local GDR-v1 / DirectApply experiment record: only 7 of 44 trained SD-LoRA candidates entered later model states, with the 16-task candidate-admission rule, DirectApply contrast, and frozen-final comparability boundary preserved."
+  title="Historical GDR-v1 / DirectApply: why only 7 of 44 updates were kept"
+  description="Old GDR-v1 trained an SD-LoRA candidate update and then used a fixed 16-task check to decide whether to keep it; only 7 of 44 candidates changed later model states. DirectApply removed that filter, while the two frozen finals remain non-comparable."
   locale={locale}
 >
   <OpenEvoGdrDirectApplyExplainer locale={locale} />

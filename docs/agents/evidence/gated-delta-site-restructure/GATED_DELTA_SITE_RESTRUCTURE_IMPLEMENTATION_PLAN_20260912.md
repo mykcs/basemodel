@@ -542,3 +542,28 @@ This is the exact pre-commit tree intended for H3. After H3, any head-changing c
 - Production copy preserved the scientific boundary: current page says real recurrent parameter-state execution is proven but full four-round paired D1 is incomplete and no efficacy/final claim is allowed; Task Vector / score / candidate probe remain outside runtime causal control. Historical page remains candidate-admission / DirectApply only and preserves `44 candidates / 7 adopted`, fixed 16-task probe, and the non-comparable-final boundary.
 - Post-smoke freshness check: PR #461 / branch `research/gated-delta-sd-lora-event-write-202609120918` still points to `fb43e217…` (`evidence: seal formal paired D1 Round0`); Round 0 is sealed, but the full four-round paired D1 is still incomplete and the final panel remains closed. No website efficacy claim is promoted.
 - This closeout change is **receipt-only documentation** under `docs/agents/evidence/`; it changes no `src/`, test, build, provider, route, or scientific-projection file. Therefore it records the already accepted product/Production state without creating a new product candidate that would recursively invalidate H4–H8.
+
+
+## 13. Post-DoD plain-language refinement — 2026-09-14
+
+Owner follow-up: **“根据说人话进行优化”**. The original restructure DoD remains closed; this section tracks the later copy/reader refinement as a new release slice rather than rewriting the old closeout.
+
+- [x] P1. Re-read current copy/Reader/HPL contracts and task-time preference retrieval; keep scientific objects while demoting internal shorthand such as `Route S`, `paired D1`, `candidate admission`, and `factor-local` from the first reading layer.
+- [x] P2. Rewrite current + historical zh/en copy, metadata, route purpose, Reader Contract, structural tests and browser assertions around concrete action chains and direct scientific boundaries.
+- [x] P3. Refresh PR #461 authority and publication snapshot to `fdafc4c5f401031c4dc2b244913a7fe203900f7f`; preserve Round-0-only / full-four-round-incomplete / final-closed polarity.
+- [x] P4. Reconcile moving BaseModel main through `cc7685b172549fcecbbffb796b23be3a28b3d1b1`, preserving the new Vanilla SD-LoRA Flow canonical owner and resolving the shared Reader Contract conflict semantically.
+- [x] P5. Run final current-base `verify:deploy`, `build`, overflow and required browser matrix; record only exact combined-tree PASS.
+- [ ] P6. Commit/push the plain-language candidate and open one non-duplicative PR with Page Expression Brief, scientific source head and exact validation evidence.
+- [ ] P7. Require Public PR CI and exact-head Vercel required status on the actual PR head; stale/older green checks do not count.
+- [ ] P8. Before merge, re-read current main + PR head + PR #461; merge with expected-head guard only if still fresh, then Production-smoke zh/en current/history routes and cross-links.
+
+Durable detail for this follow-up lives in `PLAIN_LANGUAGE_REFINEMENT_20260914.md`.
+### P5 exact combined-tree acceptance — 2026-09-14 10:54 +08
+
+- BaseModel base: `cc7685b172549fcecbbffb796b23be3a28b3d1b1`.
+- Scientific authority: `mykcs/openevo-experiment@fdafc4c5f401031c4dc2b244913a7fe203900f7f` / PR #461.
+- `npm run verify:deploy`: PASS.
+- `npm run build`: PASS; 510 static routes; H1 + brand-link audits PASS.
+- `npm run ui:overflow-preflight`: PASS at 390 / 768 / 1440.
+- Final `PLAYWRIGHT_PORT=55371 npm run test:ui:all`: **446/446 PASS**, Chromium + WebKit, `retries=0`.
+- A prior full-suite run exposed one unrelated WebKit quick-view timing failure; candidate and exact main each PASSed that isolated test, so it was classified as a non-Gated-Delta harness flake and was not used as acceptance. The subsequent clean 446/446 run is the acceptance evidence.
