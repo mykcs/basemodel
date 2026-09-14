@@ -107,7 +107,7 @@ const steps = zh ? [
     <div>
       <p class="map-lobby__latest-evidence-meta">2026-09-12 · {t('新专题入口', 'New research series')}</p>
       <strong>{t('SD-LoRA：从不断增长的历史，到固定大小的学习状态', 'SD-LoRA: from growing history to a fixed-size learning state')}</strong>
-      <p>{t('把 Vanilla 机制、计算变慢、严格等价、历史新颖度、当前函数、未来学习与 bounded state 拆成七个连续问题。已完成的页面保留原证据；后续科学页先建立入口，结果按实验逐步填入。', 'Follow seven connected questions: Vanilla mechanics, compute scaling, strict equivalence, history novelty, present function, future learning, and bounded state. Existing evidence stays intact; later scientific pages start as navigable shells and gain results only as experiments close.')}</p>
+      <p>{t('把 Vanilla 机制、计算变慢、严格等价、历史新颖度、当前函数、未来学习与 bounded state 拆成七个连续问题。现在已经有两条不同的加速结果：Stable Reduction 仍保留全部历史 component，约 2×；Bounded Online Recurrence 把历史折成固定 rank128 state，在封存 R150–R159 窗口里平均约 37×。它们不是同一条优化曲线，Gated-Delta 也另算一条。', 'Follow seven connected questions: Vanilla mechanics, compute scaling, strict equivalence, history novelty, present function, future learning, and bounded state. There are now two distinct acceleration results: Stable Reduction keeps the full component history at about 2×, while Bounded Online Recurrence folds history into a fixed rank-128 state and averages about 37× in the sealed R150–R159 window. They are not one optimization curve, and Gated-Delta is separate too.')}</p>
     </div>
     <a href={sdLoraHistoryHref}>{t('进入 SD-LoRA 专题总览 →', 'Open the SD-LoRA series →')}</a>
   </aside>
