@@ -61,6 +61,13 @@ Several local commands with Bash heredoc/assignment syntax were initially sent t
 
 The failure was at use-site execution, not knowledge absence. Parser failure before mutation remains `NOT_EXECUTED`.
 
+
+### 8. Docs-only Production detachment does not waive exact-head Vercel merge authority
+
+During this closeout, the Agent incorrectly inferred that a docs/governance/tests-only PR should not request the Vercel final gate. GitHub branch protection rejected the merge because the required `Vercel` status was absent. Re-reading current `deployment-policy.md` showed the precise split: an explicit final-candidate gate still runs exact-head Vercel acceptance (with risk-based browser work allowed to skip when proven non-UI), while a proven docs/governance-only range on `main` must not publish or replace the Production website artifact.
+
+This was another policy-activation/use-site failure, not a missing-rule failure. The durable deployment owner already states the correct behavior. Future closeout must distinguish **merge authority** from **Production deploy relevance** instead of collapsing both into “docs-only does not deploy.”
+
 ## Coverage ledger
 
 | Feedback / failure | Repeated? | Reusable lesson | Canonical destination | Why there |
@@ -72,6 +79,7 @@ The failure was at use-site execution, not knowledge absence. Parser failure bef
 | `main` moved repeatedly during final gates | **Yes** | classify overlap, rebuild current-base candidate, and requalify exact head when required | existing `release-closeout-protocol.md` | release owner already contains the exact rule |
 | Hosted first-screen gate found a real regression | Known gate-integrity family | fix product/contract ownership, not threshold, when the contract is still valid | existing `release-closeout-protocol.md` + Reader Contract/browser tests | executable gate owns acceptance |
 | Bash/heredoc under Fish | **Yes** | verify the outer interpreter before compound syntax; parser failure is NOT_EXECUTED | existing root `AGENTS.md` + project principles + scenario registry | rule is already startup-visible; failure was use-site activation |
+| Docs/governance-only final candidate was treated as exempt from Vercel | New closeout-time activation failure | exact-head Vercel remains required merge authority; only merged-main Production relevance may be ignored | existing `deployment-policy.md` + `release-closeout-protocol.md` | the rule already existed; the failure was conflating merge acceptance with Production publication |
 
 ## Future-Agent test
 
@@ -84,6 +92,7 @@ Before changing a research directory that groups several related methods, a futu
 5. If `main` or the shared branch moved, did I classify the semantic overlap before carrying forward acceptance evidence?
 6. Does responsive browser acceptance prove the intended parent/child hierarchy is visible, not merely present in the DOM?
 7. Before compound local shell syntax, did the execution tool actually report Bash as the outer interpreter?
+8. For docs/governance-only closeout, did I still obtain the required exact-head Vercel status before merge while keeping merged-main Production non-deploy-relevant?
 
 If these checks run, the most important failures from this conversation—scientific-line conflation, navigation/treatment identity conflation, duplicate integration authority, and repeated shell misuse—are materially harder to repeat.
 

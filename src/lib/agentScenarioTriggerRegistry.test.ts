@@ -105,6 +105,7 @@ describe('Agent scenario-trigger discovery', () => {
     expect(readme).toContain('2026-09-14-sd-lora-parallel-lineage-and-study-grouping-conversation-closeout.md');
     expect(sdLoraParallelCloseoutHistory).toContain('Navigation taxonomy is not scientific treatment identity');
     expect(sdLoraParallelCloseoutHistory).toContain('REPEAT-CORRECTION');
+    expect(sdLoraParallelCloseoutHistory).toContain('Docs-only Production detachment does not waive exact-head Vercel merge authority');
     expect(sdLoraParallelCloseoutHistory).toContain('Temporary state intentionally not promoted');
     expect(sdLoraParallelCloseoutHistory).toContain('No account-level long-term ChatGPT memory write is claimed');
   });
