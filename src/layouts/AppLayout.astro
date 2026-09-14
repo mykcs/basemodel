@@ -14,7 +14,7 @@ import { availableLocalesForRoute, localizedRoute } from '../lib/sitemapRoutes';
 import { readerContractForRoute } from '../data/siteReaderContracts';
 
 interface Props { title: string; description?: string; locale?: Locale }
-type ResearchBridgePage = 'hub' | 'experiment' | 'run' | 'capability' | 'briefing' | 'results' | 'server' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops';
+type ResearchBridgePage = 'hub' | 'experiment' | 'run' | 'capability' | 'briefing' | 'results' | 'server' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'sdlora';
 
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
@@ -44,6 +44,7 @@ const researchBridgePage: ResearchBridgePage | null = exactRoute('/research/seed
   : exactRoute('/research/seed-openevo/flow/webshop') ? 'webshop'
   : exactRoute('/research/seed-openevo/flow/alfworld') ? 'alfworld'
   : exactRoute('/research/seed-openevo/flow/loops') ? 'loops'
+  : exactRoute('/research/seed-openevo/flow/sd-lora') ? 'sdlora'
   : exactRoute('/research/seed-openevo/study') ? 'experiment'
   : exactRoute('/research/seed-openevo/study/run') ? 'run'
   : exactRoute('/research/seed-openevo/study/briefing') ? 'briefing'

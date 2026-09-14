@@ -23,6 +23,7 @@ This is an information-architecture rule, not merely a visual cleanup.
 | WebShop interaction | `/research/seed-openevo/flow/webshop/` | link; keep score/metric summaries where needed |
 | ALFWorld interaction | `/research/seed-openevo/flow/alfworld/` | link; keep success-rate summaries where needed |
 | SEED vs OpenEvo update comparison | `/research/seed-openevo/flow/loops/` | link; do not embed another comparison figure |
+| Vanilla SD-LoRA round mechanism | `/research/seed-openevo/flow/sd-lora/` | link from capability analysis and SD-LoRA research pages |
 | server / Docker authority | `/lab/` | link from execution material |
 
 The dedicated WebShop and ALFWorld pages keep the interactive, scroll-following explainer controls. In particular, the WebShop page remains the canonical place for the persistent previous/next learning interaction the owner selected.
@@ -73,7 +74,7 @@ The two tracks are:
 
 | Primary journey | Child navigation owns |
 | --- | --- |
-| `01 · 流程理解图 / Flow map` | 流程总览, 模型, SEED, OpenEvo, 环境总览, WebShop, ALFWorld, 更新机制 |
+| `01 · 流程理解图 / Flow map` | 流程总览, 模型, SEED, OpenEvo, 环境总览, WebShop, ALFWorld, 更新机制, SD-LoRA |
 | `02 · OpenEvo × WebShop 科学研究 / study` | 实验目录, 运行实验, 研究结果 |
 
 `SeedOpenEvoResearchNav.astro` must choose exactly one of these child sets from the current page ID. Do not restore the old flat row containing both conceptual-learning routes and experiment/result routes together. The old flat row duplicated the top-level journey switch and made the two navigation bars feel unrelated.

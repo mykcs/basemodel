@@ -10,7 +10,7 @@ const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
-const capabilityHref = p('/research/seed-openevo/study/capability-exploration/');
+const flowHref = p('/research/seed-openevo/flow/');
 const gdrHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
 const gatedDeltaHref = p('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/');
 const q17Href = p('/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/');
@@ -40,7 +40,7 @@ const risks = zh ? [
 
 ---
 <article class="sdlora" data-copy-review data-testid="vanilla-sd-lora-mechanism" data-reader-page="research-explainer" data-ui-audit="contrast layout">
-  <a class="sdlora__back" href={capabilityHref}>← {t('OpenEvo 能力探索', 'OpenEvo capability exploration')}</a>
+  <a class="sdlora__back" href={flowHref}>← {t('流程理解图', 'Flow map')}</a>
 
   <OpenEvoVanillaSdLoraSlide locale={locale} />
   <section class="sdlora__section" id="round-inputs" aria-labelledby="round-inputs-title">

@@ -1,14 +1,18 @@
 import { expect, test } from '@playwright/test';
 
 const routes = {
-  zh: '/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/',
-  en: '/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/',
+  zh: '/research/seed-openevo/flow/sd-lora/',
+  en: '/en/research/seed-openevo/flow/sd-lora/',
 } as const;
 
 test('Vanilla SD-LoRA page exposes the real round mechanism and scientific boundary', async ({ page }) => {
   await page.goto(routes.zh, { waitUntil: 'domcontentloaded' });
   const body = page.getByTestId('vanilla-sd-lora-mechanism');
   await expect(body).toBeVisible();
+  const navigation = page.locator('[data-research-navigation][data-research-track="flow"]');
+  await expect(navigation).toBeVisible();
+  await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('href', routes.zh);
   await expect(page.locator('h1')).toContainText('Vanilla SD-LoRA');
   await expect(body).toContainText('16 个任务 × 每题 8 次');
   await expect(body).toContainText('每个任务只取最早一条通过全部检查的成功');
@@ -24,12 +28,24 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
 test('English route preserves the mechanism and boundary', async ({ page }) => {
   await page.goto(routes.en, { waitUntil: 'domcontentloaded' });
   const body = page.getByTestId('vanilla-sd-lora-mechanism');
+  const navigation = page.locator('[data-research-navigation][data-research-track="flow"]');
+  await expect(navigation).toBeVisible();
+  await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('href', routes.en);
   await expect(page.locator('h1')).toContainText('One Vanilla SD-LoRA parameter-update round');
   await expect(body).toContainText('16 tasks × 8');
   await expect(body).toContainText('Use the earliest fully checked success per task');
   await expect(body).toContainText('Old directions');
   await expect(body).toContainText('rebalance each direction');
   await expect(body).toContainText('risks to test next');
+});
+
+
+test('historical capability URL forwards to the Flow map owner', async ({ page }) => {
+  await page.goto('/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/', { waitUntil: 'domcontentloaded' });
+  await page.waitForURL((url) => url.pathname === routes.zh);
+  await expect(page.locator('[data-research-navigation]')).toHaveAttribute('data-research-track', 'flow');
+  await expect(page.getByTestId('vanilla-sd-lora-mechanism')).toBeVisible();
 });
 
 test('desktop canvas carries real routed topology instead of card adjacency', async ({ page }) => {

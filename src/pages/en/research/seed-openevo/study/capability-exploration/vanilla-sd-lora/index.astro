@@ -1,16 +1,14 @@
 ---
 import AppLayout from '../../../../../../../layouts/AppLayout.astro';
-import OpenEvoVanillaSdLoraMechanism from '../../../../../../../components/research/OpenEvoVanillaSdLoraMechanism.astro';
-import OpenEvoSdLoraHistorySeriesNav from '../../../../../../../components/research/OpenEvoSdLoraHistorySeriesNav.astro';
-import ResearchRouteContext from '../../../../../../../components/research/ResearchRouteContext.astro';
-const locale = 'en' as const;
+const target = '/en/research/seed-openevo/flow/sd-lora/';
 ---
-<AppLayout
-  title="How one Vanilla SD-LoRA round updates parameters"
-  description="The actual OpenEvo × WebShop SD-LoRA round: how 128 task attempts become training data, how old directions stay frozen, and how a new direction plus magnitude coefficients form a candidate cumulative LoRA."
-  locale={locale}
->
-  <ResearchRouteContext locale={locale} route="vanilla-sd-lora" />
-  <OpenEvoVanillaSdLoraMechanism locale={locale} />
-  <OpenEvoSdLoraHistorySeriesNav locale={locale} />
+<AppLayout title="Vanilla SD-LoRA" description="The Vanilla SD-LoRA mechanism diagram now lives in the Flow map." locale="en">
+  <section class="moved-sdlora">
+    <h1>Vanilla SD-LoRA</h1>
+    <p><a href={target}>Open the SD-LoRA flow map →</a></p>
+  </section>
+  <script is:inline define:vars={{ target }}>window.location.replace(target);</script>
 </AppLayout>
+<style>
+  .moved-sdlora{width:min(760px,calc(100% - 2rem));margin:4rem auto}.moved-sdlora h1{margin:0}.moved-sdlora p{margin-top:1rem}.moved-sdlora a{font-weight:750}
+</style>

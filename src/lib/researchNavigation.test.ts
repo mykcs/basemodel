@@ -19,6 +19,7 @@ const flowIds = [
   "id: 'webshop'",
   "id: 'alfworld'",
   "id: 'loops'",
+  "id: 'sdlora'",
 ];
 
 const studyIds = [
@@ -57,6 +58,7 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(navigation).not.toContain("label: t('模型', 'Model')");
     expect(navigation).not.toContain("p('/models/qwen2-5-3b-instruct/#experiment-setup')");
     expect(navigation).toContain("{ id: 'openevo', label: 'OpenEVO'");
+    expect(navigation).toContain("{ id: 'sdlora', label: 'SD-LoRA', href: p('/research/seed-openevo/flow/sd-lora/') }");
     expect(navigation).toContain("t('研究结果', 'Research findings')");
     expect(navigation).not.toContain("t('研究导航', 'Research navigation')");
     expect(navigation).not.toContain('const pages = [');
@@ -68,6 +70,7 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(layout).toContain("import SeedOpenEvoResearchNav from '../components/research/SeedOpenEvoResearchNav.astro';");
     expect(layout).toContain("exactRoute('/research/seed-openevo/flow') ? 'hub'");
     expect(layout).toContain("exactRoute('/research/seed-openevo/flow/webshop') ? 'webshop'");
+    expect(layout).toContain("exactRoute('/research/seed-openevo/flow/sd-lora') ? 'sdlora'");
     expect(layout).not.toContain("exactRoute('/research/seed-openevo/flow/base-model') ? 'base-model'");
     expect(layout).toContain("exactRoute('/research/seed-openevo/study') ? 'experiment'");
     expect(layout).toContain("exactRoute('/research/seed-openevo/study/run') ? 'run'");

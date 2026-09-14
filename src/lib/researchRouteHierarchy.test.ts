@@ -16,6 +16,7 @@ const canonicalPages = [
   'src/pages/research/seed-openevo/flow/webshop.astro',
   'src/pages/research/seed-openevo/flow/alfworld.astro',
   'src/pages/research/seed-openevo/flow/loops.astro',
+  'src/pages/research/seed-openevo/flow/sd-lora/index.astro',
   'src/pages/research/seed-openevo/study/index.astro',
   'src/pages/research/seed-openevo/study/run.astro',
   'src/pages/research/seed-openevo/study/results.astro',
@@ -23,6 +24,7 @@ const canonicalPages = [
 
 const compatibilityPages = [
   'src/pages/research/seed-openevo/flow/base-model/index.astro',
+  'src/pages/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/index.astro',
 ];
 
 const legacyPages = [
@@ -41,6 +43,7 @@ describe('research URL hierarchy', () => {
     expect(header).toContain("path: '/research/seed-openevo/flow/'");
     expect(header).toContain("path: '/research/seed-openevo/study/'");
     expect(nav).toContain("p('/research/seed-openevo/flow/webshop/')");
+    expect(nav).toContain("p('/research/seed-openevo/flow/sd-lora/')");
     expect(nav).toContain("p('/research/seed-openevo/study/run/')");
     expect(nav).toContain("p('/research/seed-openevo/study/results/')");
   });
@@ -90,9 +93,11 @@ describe('research URL hierarchy', () => {
 
   it('publishes only canonical grouped URLs in the sitemap', () => {
     expect(sitemap).toContain('/research/seed-openevo/flow/');
+    expect(sitemap).toContain('/research/seed-openevo/flow/sd-lora/');
     expect(sitemap).toContain('/research/seed-openevo/study/results/');
     const staticRoutes = sitemap.slice(0, sitemap.indexOf('export const bilingualCompatibilityPaths'));
     expect(staticRoutes).not.toContain("'/research/seed-openevo/flow/base-model/'");
+    expect(staticRoutes).not.toContain("'/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/'");
     expect(sitemap).not.toContain("'/research/seed-openevo/webshop/'");
     expect(sitemap).not.toContain("'/research/seed-openevo/results/'");
     expect(sitemap).not.toContain("'/guide/openevo-webshop-alfworld/'");

@@ -1,16 +1,14 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
-import OpenEvoVanillaSdLoraMechanism from '../../../../../../components/research/OpenEvoVanillaSdLoraMechanism.astro';
-import OpenEvoSdLoraHistorySeriesNav from '../../../../../../components/research/OpenEvoSdLoraHistorySeriesNav.astro';
-import ResearchRouteContext from '../../../../../../components/research/ResearchRouteContext.astro';
-const locale = 'zh' as const;
+const target = '/research/seed-openevo/flow/sd-lora/';
 ---
-<AppLayout
-  title="Vanilla SD-LoRA 一轮怎样更新参数"
-  description="OpenEvo × WebShop 一轮 SD-LoRA 的真实机制：128 次任务尝试如何筛成训练数据，旧方向如何冻结，新方向和幅度系数如何形成候选累计 LoRA。"
-  locale={locale}
->
-  <ResearchRouteContext locale={locale} route="vanilla-sd-lora" />
-  <OpenEvoVanillaSdLoraMechanism locale={locale} />
-  <OpenEvoSdLoraHistorySeriesNav locale={locale} />
+<AppLayout title="Vanilla SD-LoRA" description="Vanilla SD-LoRA 的流程机制图已移到流程理解图。" locale="zh">
+  <section class="moved-sdlora">
+    <h1>Vanilla SD-LoRA</h1>
+    <p><a href={target}>打开 SD-LoRA 流程理解图 →</a></p>
+  </section>
+  <script is:inline define:vars={{ target }}>window.location.replace(target);</script>
 </AppLayout>
+<style>
+  .moved-sdlora{width:min(760px,calc(100% - 2rem));margin:4rem auto}.moved-sdlora h1{margin:0}.moved-sdlora p{margin-top:1rem}.moved-sdlora a{font-weight:750}
+</style>
