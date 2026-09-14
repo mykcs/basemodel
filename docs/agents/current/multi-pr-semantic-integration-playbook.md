@@ -175,6 +175,20 @@ same briefing surface
 -> one current product authority remains obvious
 ```
 
+### 3.5 Choose merge order to minimize exact-head invalidation
+
+When two or more **independent, accepted, current-base PRs** are merge-ready at the same time, the first merge advances `main` and can invalidate current-base acceptance for every remaining PR. Merge order is therefore part of release scheduling, not an arbitrary race between green badges.
+
+Before merging the first candidate:
+
+1. resolve real dependencies first; a stacked parent still precedes its child;
+2. among independent candidates, classify user-visible correctness / scientific-publication accuracy, semantic urgency, overlap risk, and revalidation cost;
+3. prefer the correctness/authority repair that would leave readers or current publication in a known-wrong state if delayed; a docs/governance-only cleanup normally follows it when the two are independent and separately authorized;
+4. after the first merge, treat every remaining current-base candidate as stale: rebuild it on the new current `main`, prove `main..head` still contains only its intended semantic delta, and rerun the required exact-head/current-base gates;
+5. do not choose order merely because one gate finished first, and do not use this scheduling rule to merge an unsafe, unauthorized, or semantically dependent PR.
+
+A useful special case is **user-visible factual repair + docs/governance closeout**: land the factual repair first when both are accepted and independent, then refresh the cheaper governance candidate. This minimizes wasted exact-head acceptance without weakening either PR's own merge contract.
+
 ### 4. Check conflict classes
 
 Do not stop at conflict markers. Review:
