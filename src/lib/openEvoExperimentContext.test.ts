@@ -198,8 +198,8 @@ describe('experiment context hierarchy', () => {
     expect(history).toContain('训练完，再筛一次');
     expect(history).not.toContain('id=\"recurrence\"');
     expect(current).toContain('Gated Delta 的 State 更新');
-    expect(current).toContain('还没证明：它比 Vanilla 更好');
-    expect(current).toContain('完整四轮对照');
+    expect(current).toContain('四轮 Vanilla vs GDR 配对实验已经封存两轮');
+    expect(current).toContain('不是“GDR 已经优于 Vanilla”的结论');
   });
 
   it('keeps Chinese and English on one experiment IA with matching owned routes', () => {

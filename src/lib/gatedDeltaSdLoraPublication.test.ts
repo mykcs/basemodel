@@ -16,14 +16,19 @@ describe('Gated-Delta SD-LoRA publication split', () => {
     expect(snapshot.runtimeBoundary.futureStateRuntimeInput).toBe(false);
     expect(snapshot.runtimeBoundary.decay).toBe(0);
     expect(snapshot.status.realExecutionProved).toBe(true);
-    expect(snapshot.status.executionProofOnly).toBe(true);
+    expect(snapshot.status.executionProofOnly).toBe(false);
+    expect(snapshot.status.partialPairedSignalOnly).toBe(true);
     expect(snapshot.status.fullPairedD1Complete).toBe(false);
-    expect(snapshot.status.pairedRound0RolloutObserved).toBe(true);
+    expect(snapshot.status.pairedRoundsSealed).toBe(2);
+    expect(snapshot.status.fullPairedD1ProgressPercent).toBe(66);
     expect(snapshot.status.efficacyClaim).toBe(false);
     expect(snapshot.status.finalPanelAccess).toBe(false);
     expect(snapshot.routeSExecution.attemptCount).toBe(128);
     expect(snapshot.routeSExecution.appliedFactorWrites).toBe(7904);
     expect(snapshot.routeSExecution.allGExactZero).toBe(true);
+    expect(snapshot.pairedD1.round1.pairedMeanRewardDelta).toBeCloseTo(0.024652777777777746);
+    expect(snapshot.pairedD1.round1.pairedExactSuccessDelta).toBe(6);
+    expect(snapshot.pairedD1.round1.treatmentAppliedFactorWrites).toBe(6496);
   });
 
   it('gives current mechanism and historical experiment separate canonical owners', () => {
@@ -37,9 +42,10 @@ describe('Gated-Delta SD-LoRA publication split', () => {
   it('keeps the current page about recurrent write rather than replaying the old admission experiment', () => {
     expect(current).toContain("Task Vector 的角色");
     expect(current).toContain('S<sub>t</sub> = S̃<sub>t−1</sub> + β');
-    expect(current).toContain('还没证明：它比 Vanilla 更好');
+    expect(current).toContain('四轮 Vanilla vs GDR 配对实验已经封存两轮');
     expect(current).toContain('snapshot.routeSExecution.appliedFactorWrites.toLocaleString');
-    expect(current).toContain('完整四轮对照');
+    expect(current).toContain('配对实验进度');
+    expect(current).toContain('Round 1 · reward');
     expect(current).not.toContain('20,480 rollouts · 44 candidates · 7 adopted');
     expect(current).not.toContain('16-task probe 比较新旧状态');
   });
