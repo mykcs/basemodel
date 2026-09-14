@@ -13,6 +13,12 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
   await expect(navigation).toBeVisible();
   await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('aria-current', 'page');
   await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('href', routes.zh);
+  const series = page.locator('[data-sdlora-series-nav]');
+  const vanillaSeries = series.locator(`a[href="${routes.zh}"]`).filter({ hasText: 'Vanilla SD-LoRA 是怎么学习的？' });
+  await expect(vanillaSeries).toHaveCount(1);
+  await expect(vanillaSeries).toHaveAttribute('href', routes.zh);
+  await expect(vanillaSeries).toHaveAttribute('aria-current', 'page');
+  await expect(series.locator('a[href="/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/"]')).toHaveCount(0);
   await expect(page.locator('h1')).toContainText('Vanilla SD-LoRA');
   await expect(body).toContainText('16 个任务 × 每题 8 次');
   await expect(body).toContainText('每个任务只取最早一条通过全部检查的成功');
@@ -32,6 +38,12 @@ test('English route preserves the mechanism and boundary', async ({ page }) => {
   await expect(navigation).toBeVisible();
   await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('aria-current', 'page');
   await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('href', routes.en);
+  const series = page.locator('[data-sdlora-series-nav]');
+  const vanillaSeries = series.locator(`a[href="${routes.en}"]`).filter({ hasText: 'How does Vanilla SD-LoRA learn?' });
+  await expect(vanillaSeries).toHaveCount(1);
+  await expect(vanillaSeries).toHaveAttribute('href', routes.en);
+  await expect(vanillaSeries).toHaveAttribute('aria-current', 'page');
+  await expect(series.locator('a[href="/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/"]')).toHaveCount(0);
   await expect(page.locator('h1')).toContainText('One Vanilla SD-LoRA parameter-update round');
   await expect(body).toContainText('16 tasks × 8');
   await expect(body).toContainText('Use the earliest fully checked success per task');
