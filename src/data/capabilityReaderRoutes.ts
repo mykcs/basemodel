@@ -35,8 +35,8 @@ export const CAPABILITY_READER_ROUTES = [
       "en": "Gated-Delta SD-LoRA derivation"
     },
     "purpose": {
-      "zh": "解释当前 Gated-Delta SD-LoRA 怎样在每次学习时直接更新 LoRA 参数，以及四轮 Vanilla-vs-GDR 配对实验已封存两轮后，我们现在能说什么、还不能说什么。",
-      "en": "Explain how current Gated-Delta SD-LoRA updates LoRA parameters during learning, what the first two sealed Vanilla-vs-GDR paired rounds show, and why the four-round result is still incomplete."
+      "zh": "解释当前 Gated-Delta SD-LoRA 怎样在每次学习时直接更新 LoRA 参数，以及四轮 Vanilla-vs-GDR 配对 qualification 全部封存后，结果支持什么、仍不能外推什么。",
+      "en": "Explain how current Gated-Delta SD-LoRA updates LoRA parameters during learning, what the sealed four-round Vanilla-vs-GDR qualification supports, and which claims remain out of scope."
     }
   },
   {
