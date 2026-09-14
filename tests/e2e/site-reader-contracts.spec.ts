@@ -163,11 +163,39 @@ test('Study phone first screen exposes exactly the five experiment parents', asy
   ]);
   const visibleChildren = await page.locator('#main-content .experiment-children a').evaluateAll((links) => links.filter((el) => el.getClientRects().length > 0).length);
   expect(visibleChildren).toBe(0);
-  const featured = page.locator('#main-content .experiment-mobile-featured a');
+  const featured = page.locator('#main-content .experiment-mobile-featured--group');
   await expect(featured).toHaveCount(1);
   await expect(featured).toBeVisible();
-  await expect(featured).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/');
-  await expect(featured).toContainText('SD-LoRA v2');
+  await expect(featured.locator(':scope > strong')).toHaveText('SD-LoRA v2');
+  const branchLinks = featured.locator('a');
+  await expect(branchLinks).toHaveCount(2);
+  await expect(branchLinks.nth(0)).toHaveText(/Stable Reduction/);
+  await expect(branchLinks.nth(0)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/');
+  await expect(branchLinks.nth(1)).toHaveText(/Bounded Online Recurrence/);
+  await expect(branchLinks.nth(1)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/');
+});
+
+
+test('Study desktop nests the two SD-LoRA v2 branches under one indented directory group', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  for (const route of ['/research/seed-openevo/study/', '/en/research/seed-openevo/study/']) {
+    await page.goto(route, { waitUntil: 'domcontentloaded' });
+    const directApply = page.locator('[data-experiment-primary="directapply-1p7b"]').locator('..').locator('..');
+    const group = directApply.locator('.experiment-child-group').filter({ hasText: 'SD-LoRA v2' });
+    await expect(group).toHaveCount(1);
+    await expect(group.locator(':scope > strong')).toHaveText('SD-LoRA v2');
+    const links = group.locator(':scope > ul a');
+    await expect(links).toHaveCount(2);
+    await expect(links.nth(0)).toContainText('Stable Reduction');
+    await expect(links.nth(1)).toContainText('Bounded Online Recurrence');
+    const geometry = await group.evaluate((element) => {
+      const label = element.querySelector(':scope > strong')?.getBoundingClientRect();
+      const branchLinks = [...element.querySelectorAll(':scope > ul a')].map((link) => link.getBoundingClientRect());
+      return label ? { labelX: label.x, branchX: branchLinks.map((box) => box.x) } : null;
+    });
+    expect(geometry).not.toBeNull();
+    expect(geometry!.branchX.every((x) => x >= geometry!.labelX + 8)).toBe(true);
+  }
 });
 
 

@@ -4,6 +4,7 @@ import {
   OPEN_EVO_EXPERIMENTS,
   OPEN_EVO_SECONDARY_ROUTES,
   type LocalizedCopy,
+  type OpenEvoExperimentChildLink,
 } from '../../data/openEvoExperimentNavigation';
 
 interface Props { locale: Locale }
@@ -12,6 +13,27 @@ const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (copy: LocalizedCopy) => zh ? copy.zh : copy.en;
 const p = (path: string) => localePath(locale, path);
+
+type DirectoryRow =
+  | { kind: 'link'; child: OpenEvoExperimentChildLink }
+  | { kind: 'group'; label: LocalizedCopy; children: OpenEvoExperimentChildLink[] };
+
+const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[] => {
+  const rows: DirectoryRow[] = [];
+  for (const child of children) {
+    if (!child.directoryGroup) {
+      rows.push({ kind: 'link', child });
+      continue;
+    }
+    const last = rows.at(-1);
+    if (last?.kind === 'group' && last.label.zh === child.directoryGroup.zh && last.label.en === child.directoryGroup.en) {
+      last.children.push(child);
+    } else {
+      rows.push({ kind: 'group', label: child.directoryGroup, children: [child] });
+    }
+  }
+  return rows;
+};
 ---
 
 <main class="experiment-index" data-ui-audit="layout" data-testid="experiment-first-study-index">
@@ -33,12 +55,28 @@ const p = (path: string) => localePath(locale, path);
           <p>{t(experiment.summary)}</p>
           {experiment.lineageNote && <p class="experiment-node__relation">{t(experiment.lineageNote)}</p>}
           <ul class="experiment-children">
-            {experiment.childLinks.map((child) => (
-              <li><a href={p(child.href)}>{t(child.label)} <span aria-hidden="true">→</span></a></li>
+            {directoryRowsFor(experiment.childLinks).map((row) => row.kind === 'link' ? (
+              <li><a href={p(row.child.href)}>{t(row.child.label)} <span aria-hidden="true">→</span></a></li>
+            ) : (
+              <li class="experiment-child-group">
+                <strong>{t(row.label)}</strong>
+                <ul>
+                  {row.children.map((child) => (
+                    <li><a href={p(child.href)}>{t(child.label)} <span aria-hidden="true">→</span></a></li>
+                  ))}
+                </ul>
+              </li>
             ))}
           </ul>
-          {experiment.childLinks.filter((child) => child.mobileFeatured).map((child) => (
-            <p class="experiment-mobile-featured"><a href={p(child.href)}>{t(child.label)} <span aria-hidden="true">→</span></a></p>
+          {directoryRowsFor(experiment.childLinks.filter((child) => child.mobileFeatured)).map((row) => row.kind === 'link' ? (
+            <p class="experiment-mobile-featured"><a href={p(row.child.href)}>{t(row.child.label)} <span aria-hidden="true">→</span></a></p>
+          ) : (
+            <div class="experiment-mobile-featured experiment-mobile-featured--group">
+              <strong>{t(row.label)}</strong>
+              <div>
+                {row.children.map((child) => <a href={p(child.href)}>{t(child.label)} <span aria-hidden="true">→</span></a>)}
+              </div>
+            </div>
           ))}
         </article>
       </li>
@@ -74,6 +112,9 @@ const p = (path: string) => localePath(locale, path);
   .experiment-children li+li{margin-top:.38rem}
   .experiment-children a{display:inline-block;padding:.2rem 0;color:var(--color-text);text-underline-offset:.22em}
   .experiment-children a span{color:var(--color-text-muted)}
+  .experiment-child-group>strong{display:block;font-size:.9rem;line-height:1.35}
+  .experiment-child-group>ul{list-style:none;margin:.45rem 0 0;padding:0 0 0 1rem;border-left:1px solid var(--color-border)}
+  .experiment-child-group>ul li+li{margin-top:.3rem}
   .experiment-mobile-featured{display:none}
   .secondary-routes{display:flex;align-items:flex-start;justify-content:space-between;gap:1.2rem;padding:1.5rem 0;border-bottom:1px solid var(--color-border)}
   .secondary-routes>strong{font-size:.95rem}
@@ -92,6 +133,10 @@ const p = (path: string) => localePath(locale, path);
     .experiment-node p,.experiment-children{display:none}
     .experiment-node .experiment-mobile-featured{display:block;margin:.55rem 0 0;font-size:1rem;line-height:1.45;color:var(--color-text)}
     .experiment-mobile-featured a{color:var(--color-text);text-underline-offset:.2em}
+    .experiment-mobile-featured--group{padding-left:.65rem;border-left:1px solid var(--color-border)}
+    .experiment-mobile-featured--group>strong{display:block;font-size:.9rem}
+    .experiment-mobile-featured--group>div{display:grid;gap:.12rem;margin-top:.2rem}
+    .experiment-mobile-featured--group a{display:block;padding:.08rem 0}
     .experiment-tree{min-height:calc(100svh - 14rem)}
     .secondary-routes{display:block}
     .secondary-routes nav{justify-content:flex-start;margin-top:.65rem}
