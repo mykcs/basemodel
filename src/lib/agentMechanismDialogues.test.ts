@@ -8,7 +8,7 @@ describe('SEED and OpenEvo architecture comparison', () => {
   const legacyComponent = read('src/components/research/SeedOpenEvoComparisonDiagram.astro');
   const canonicalComponent = read('src/components/research/SeedOpenEvoCanonicalFigure.astro');
   const zhRoute = read('src/pages/research/seed-openevo/flow/loops.astro');
-  const enRoute = read('src/pages/en/research/seed-openevo/flow/loops.astro');
+  const enRoute = read('docs/archive/site-en/src/pages/en/research/seed-openevo/flow/loops.astro.archive');
 
   it('keeps both update mechanisms explicit in the retained static technical reference', () => {
     expect(legacyComponent).toContain('SEED');

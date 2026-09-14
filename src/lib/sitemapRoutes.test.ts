@@ -4,6 +4,7 @@ import {
   bilingualStaticPaths,
   bilingualCompatibilityPaths,
   availableLocalesForRoute,
+  englishRuntimeArchived,
   localizedRoute,
   sitemapStaticPaths,
   toEnglishPath,
@@ -29,6 +30,12 @@ const missionRouteFiles = (directory: string) =>
     .filter((name) => name.endsWith('.astro'))
     .sort();
 
+const archivedRouteFiles = (directory: string) =>
+  readdirSync(new URL(directory, import.meta.url))
+    .filter((name) => name.endsWith('.astro.archive'))
+    .map((name) => name.replace(/\.archive$/, ''))
+    .sort();
+
 const trackRoutePaths = (directory: string, prefix: string) =>
   missionRouteFiles(directory).map((name) =>
     name === 'index.astro' ? `${prefix}/` : `${prefix}/${name.replace(/\.astro$/, '')}/`,
@@ -39,57 +46,61 @@ const missionRoutePaths = [
   ...trackRoutePaths('../pages/research/seed-openevo/study/', '/research/seed-openevo/study'),
 ];
 
-const englishFlowRouteFiles = missionRouteFiles('../pages/en/research/seed-openevo/flow/');
-const englishStudyRouteFiles = missionRouteFiles('../pages/en/research/seed-openevo/study/');
+const archivedEnglishRoot = '../../docs/archive/site-en/src/pages/en/';
 
 describe('sitemap route coverage', () => {
-  it('keeps the shipped GDR → DirectApply page in sitemap and locale discovery', () => {
+  it('keeps the shipped GDR → DirectApply page active in Chinese only', () => {
     const path = '/research/seed-openevo/study/capability-exploration/gdr-directapply/';
+    expect(englishRuntimeArchived).toBe(true);
     expect(bilingualStaticPaths).toContain(path);
     expect(sitemapStaticPaths()).toContain(path);
-    expect(sitemapStaticPaths()).toContain(toEnglishPath(path));
-    expect(availableLocalesForRoute(path)).toEqual(['zh', 'en']);
+    expect(sitemapStaticPaths()).not.toContain(toEnglishPath(path));
+    expect(availableLocalesForRoute(path)).toEqual(['zh']);
+    expect(localizedRoute(path, 'en')).toBeNull();
   });
 
-  it('keeps moved pages as compatibility routes, not sitemap pages', () => {
+  it('keeps moved pages as Chinese compatibility routes, not sitemap pages', () => {
     for (const path of ['/research/seed-openevo/flow/base-model/', '/research/seed-openevo/study/design/']) {
       expect(bilingualCompatibilityPaths).toContain(path);
       expect(bilingualStaticPaths).not.toContain(path);
       expect(sitemapStaticPaths()).not.toContain(path);
       expect(sitemapStaticPaths()).not.toContain(toEnglishPath(path));
-      expect(availableLocalesForRoute(path)).toEqual(['zh', 'en']);
-      expect(localizedRoute(path, 'en')).toBe(toEnglishPath(path));
+      expect(availableLocalesForRoute(path)).toEqual(['zh']);
+      expect(localizedRoute(path, 'en')).toBeNull();
     }
   });
 
-  it('covers the released bilingual product and research routes', () => {
-    for (const path of [
-      '/lab/',
-      ...missionPaths,
-    ]) {
-      expect(bilingualStaticPaths).toContain(path);
-    }
+  it('covers the released Chinese product and research routes', () => {
+    for (const path of ['/lab/', ...missionPaths]) expect(bilingualStaticPaths).toContain(path);
   });
 
-  it('keeps every mission route in the sitemap and preserves bilingual route parity', () => {
+  it('keeps every active mission route in the Chinese sitemap', () => {
     expect(new Set(missionPaths)).toEqual(new Set(missionRoutePaths));
-    expect(englishFlowRouteFiles).toEqual(
-      missionRouteFiles('../pages/research/seed-openevo/flow/'),
-    );
-    expect(englishStudyRouteFiles).toEqual(
-      missionRouteFiles('../pages/research/seed-openevo/study/'),
-    );
     for (const path of missionRoutePaths) {
       expect(bilingualStaticPaths, `${path} is missing from the sitemap`).toContain(path);
+      expect(sitemapStaticPaths()).toContain(path);
+      expect(sitemapStaticPaths()).not.toContain(toEnglishPath(path));
     }
   });
 
-  it('keeps the dated same-day runbook Chinese-only because no English route exists', () => {
+  it('keeps the archived English mission wrappers byte-addressable but inert', () => {
+    expect(existsSync(new URL(archivedEnglishRoot, import.meta.url))).toBe(true);
+    expect(archivedRouteFiles(`${archivedEnglishRoot}research/seed-openevo/flow/`)).toEqual(
+      missionRouteFiles('../pages/research/seed-openevo/flow/'),
+    );
+    expect(archivedRouteFiles(`${archivedEnglishRoot}research/seed-openevo/study/`)).toEqual(
+      missionRouteFiles('../pages/research/seed-openevo/study/'),
+    );
+    expect(existsSync(new URL('../pages/en/', import.meta.url))).toBe(false);
+    expect(existsSync(new URL('../../docs/archive/site-en/MANIFEST.tsv', import.meta.url))).toBe(true);
+  });
+
+  it('keeps the dated same-day runbook Chinese-only', () => {
     expect(zhOnlyStaticPaths).toContain('/guide/today/');
     expect(bilingualStaticPaths).not.toContain('/guide/today/');
   });
 
-  it('generates valid English counterparts without double slashes', () => {
+  it('retains a deterministic English-path mapper for future restoration and redirects', () => {
     expect(toEnglishPath('/')).toBe('/en/');
     expect(toEnglishPath('/lab/')).toBe('/en/lab/');
     for (const path of bilingualStaticPaths) {
@@ -98,30 +109,25 @@ describe('sitemap route coverage', () => {
     }
   });
 
-  it('does not contain duplicate static paths', () => {
+  it('does not contain duplicate active static paths', () => {
     const allPaths = [...bilingualStaticPaths, ...zhOnlyStaticPaths];
     expect(new Set(allPaths).size).toBe(allPaths.length);
   });
 
-  it('derives reciprocal locale targets and excludes unavailable translations', () => {
-    for (const path of bilingualStaticPaths) {
-      expect(availableLocalesForRoute(path)).toEqual(['zh', 'en']);
-      expect(localizedRoute(path, 'zh')).toBe(path);
-      expect(localizedRoute(path, 'en')).toBe(toEnglishPath(path));
-    }
-    for (const path of zhOnlyStaticPaths) {
+  it('exposes only Chinese locale targets while English is archived', () => {
+    for (const path of [...bilingualStaticPaths, ...zhOnlyStaticPaths]) {
       expect(availableLocalesForRoute(path)).toEqual(['zh']);
+      expect(localizedRoute(path, 'zh')).toBe(path);
       expect(localizedRoute(path, 'en')).toBeNull();
     }
   });
 
-  it('maps every declared static locale URL to a real Astro page owner', () => {
+  it('maps every declared static URL to a real active Astro page owner', () => {
     const pageExists = (route: string) => {
       const relative = route === '/' ? 'index' : route.replace(/^\//, '').replace(/\/$/, '');
       return existsSync(new URL(`../pages/${relative}.astro`, import.meta.url))
         || existsSync(new URL(`../pages/${relative}/index.astro`, import.meta.url))
-        || (!relative.startsWith('en/')
-          && relative.startsWith('research/seed-openevo/study/results/')
+        || (relative.startsWith('research/seed-openevo/study/results/')
           && existsSync(new URL('../pages/research/seed-openevo/study/results/[note].astro', import.meta.url)));
     };
     for (const path of sitemapStaticPaths()) expect(pageExists(path), `missing page for ${path}`).toBe(true);

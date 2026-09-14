@@ -178,10 +178,10 @@ test('Study phone first screen exposes exactly the five experiment parents', asy
 
 test('Study desktop nests the two SD-LoRA acceleration branches under one indented directory group', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
-  for (const route of ['/research/seed-openevo/study/', '/en/research/seed-openevo/study/']) {
+  for (const route of ['/research/seed-openevo/study/']) {
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     const directApply = page.locator('[data-experiment-primary="directapply-1p7b"]').locator('..').locator('..');
-    const expectedGroupLabel = route.startsWith('/en/') ? 'SD-LoRA acceleration' : 'SD-LoRA 加速';
+    const expectedGroupLabel = 'SD-LoRA 加速';
     const group = directApply.locator('.experiment-child-group').filter({ hasText: expectedGroupLabel });
     await expect(group).toHaveCount(1);
     await expect(group.locator(':scope > strong')).toHaveText(expectedGroupLabel);

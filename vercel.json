@@ -51,6 +51,21 @@
   ],
   "redirects": [
     {
+      "source": "/en",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/en/",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/en/:path*",
+      "destination": "/:path*",
+      "permanent": false
+    },
+    {
       "source": "/research/seed-openevo",
       "destination": "/research/seed-openevo/flow/",
       "permanent": true
@@ -183,141 +198,6 @@
     {
       "source": "/research/seed-openevo/results/:path*",
       "destination": "/research/seed-openevo/study/results/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo",
-      "destination": "/en/research/seed-openevo/flow/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/",
-      "destination": "/en/research/seed-openevo/flow/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/base-model",
-      "destination": "/en/models/qwen2-5-3b-instruct/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/base-model/",
-      "destination": "/en/models/qwen2-5-3b-instruct/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/flow/base-model",
-      "destination": "/en/models/qwen2-5-3b-instruct/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/flow/base-model/",
-      "destination": "/en/models/qwen2-5-3b-instruct/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora",
-      "destination": "/en/research/seed-openevo/flow/sd-lora/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/",
-      "destination": "/en/research/seed-openevo/flow/sd-lora/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/seed",
-      "destination": "/en/research/seed-openevo/flow/seed/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/seed/",
-      "destination": "/en/research/seed-openevo/flow/seed/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/openevo",
-      "destination": "/en/research/seed-openevo/flow/openevo/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/openevo/",
-      "destination": "/en/research/seed-openevo/flow/openevo/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/benchmarks",
-      "destination": "/en/research/seed-openevo/flow/benchmarks/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/benchmarks/",
-      "destination": "/en/research/seed-openevo/flow/benchmarks/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/webshop",
-      "destination": "/en/research/seed-openevo/flow/webshop/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/webshop/",
-      "destination": "/en/research/seed-openevo/flow/webshop/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/alfworld",
-      "destination": "/en/research/seed-openevo/flow/alfworld/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/alfworld/",
-      "destination": "/en/research/seed-openevo/flow/alfworld/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/loops",
-      "destination": "/en/research/seed-openevo/flow/loops/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/loops/",
-      "destination": "/en/research/seed-openevo/flow/loops/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/experiment",
-      "destination": "/en/research/seed-openevo/study/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/experiment/",
-      "destination": "/en/research/seed-openevo/study/",
-      "permanent": true
-    },
-    {
-      "source": "/en/guide/openevo-webshop-alfworld",
-      "destination": "/en/research/seed-openevo/study/run/",
-      "permanent": true
-    },
-    {
-      "source": "/en/guide/openevo-webshop-alfworld/",
-      "destination": "/en/research/seed-openevo/study/run/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/results",
-      "destination": "/en/research/seed-openevo/study/results/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/results/",
-      "destination": "/en/research/seed-openevo/study/results/",
-      "permanent": true
-    },
-    {
-      "source": "/en/research/seed-openevo/results/:path*",
-      "destination": "/en/research/seed-openevo/study/results/:path*",
       "permanent": true
     }
   ]

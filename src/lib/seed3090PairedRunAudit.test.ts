@@ -6,7 +6,7 @@ const read = (path: string) =>
 
 const component = read('src/components/research/Seed3090PairedRunAudit.astro');
 const zhRoute = read('src/pages/research/seed-openevo/study/results.astro');
-const enRoute = read('src/pages/en/research/seed-openevo/study/results.astro');
+const enRoute = read('docs/archive/site-en/src/pages/en/research/seed-openevo/study/results.astro.archive');
 
 describe('seed3090 paired-run audit archive', () => {
   it('preserves external memory as the sole treatment in the historical shared-runner contract', () => {

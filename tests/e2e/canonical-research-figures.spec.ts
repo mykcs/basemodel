@@ -100,7 +100,7 @@ for (const matrix of matrices) {
 }
 
 test('WebShop keeps one first-reader explainer sequence and drops legacy duplicate sections', async ({ page }) => {
-  for (const path of ['/research/seed-openevo/flow/webshop/', '/en/research/seed-openevo/flow/webshop/']) {
+  for (const path of ['/research/seed-openevo/flow/webshop/']) {
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     for (const selector of [
       '#fig-webshop-dataset',
@@ -118,7 +118,7 @@ test('WebShop keeps one first-reader explainer sequence and drops legacy duplica
 });
 
 test('SEED leaves WebShop scale ownership on the WebShop page', async ({ page }) => {
-  for (const path of ['/research/seed-openevo/flow/seed/', '/en/research/seed-openevo/flow/seed/']) {
+  for (const path of ['/research/seed-openevo/flow/seed/']) {
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#fig-webshop-scale-echo')).toHaveCount(0);
     await expect(page.locator('[data-interactive-research-explainer="seed"]')).toHaveCount(1);
@@ -126,7 +126,7 @@ test('SEED leaves WebShop scale ownership on the WebShop page', async ({ page })
 });
 
 test('loops is one canonical comparison with no duplicate interactive player', async ({ page }) => {
-  for (const path of ['/research/seed-openevo/flow/loops/', '/en/research/seed-openevo/flow/loops/']) {
+  for (const path of ['/research/seed-openevo/flow/loops/']) {
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#fig-seed-openevo-update-target')).toHaveCount(1);
     await expect(page.locator('[data-interactive-research-explainer="compare"]')).toHaveCount(0);
@@ -135,7 +135,7 @@ test('loops is one canonical comparison with no duplicate interactive player', a
   }
 });
 
-test('canonical static figures remain complete without JavaScript in Chinese and English', async ({ browser }) => {
+test('canonical static figures remain complete without JavaScript on active Chinese routes', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
   const page = await context.newPage();
 
@@ -147,13 +147,6 @@ test('canonical static figures remain complete without JavaScript in Chinese and
     ['/research/seed-openevo/flow/webshop/', '#fig-webshop-evaluation', '第五步', false],
     ['/research/seed-openevo/flow/webshop/', '#fig-seed-webshop', '第六步', false],
     ['/research/seed-openevo/flow/loops/', '#fig-seed-openevo-update-target', 'FIGURE C1', true],
-    ['/en/research/seed-openevo/flow/webshop/', '#fig-webshop-dataset', 'STEP 1', false],
-    ['/en/research/seed-openevo/flow/webshop/', '#fig-webshop-small-world', 'STEP 2', false],
-    ['/en/research/seed-openevo/flow/webshop/', '#fig-webshop-goal-generation', 'STEP 3', false],
-    ['/en/research/seed-openevo/flow/webshop/', '#fig-webshop-seed-split', 'STEP 4', false],
-    ['/en/research/seed-openevo/flow/webshop/', '#fig-webshop-evaluation', 'STEP 5', false],
-    ['/en/research/seed-openevo/flow/webshop/', '#fig-seed-webshop', 'STEP 6', false],
-    ['/en/research/seed-openevo/flow/loops/', '#fig-seed-openevo-update-target', 'FIGURE C1', true],
   ] as const;
 
   for (const [path, selector, label, hasMechanismSymbols] of routes) {

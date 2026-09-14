@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const map = read('../components/research/OpenEvoFirstRunMap.astro');
 const zh = read('../pages/research/seed-openevo/study/capability-exploration/first-run/index.astro');
-const en = read('../pages/en/research/seed-openevo/study/capability-exploration/first-run/index.astro');
+const en = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/first-run/index.astro.archive');
 
 describe('OpenEvo first-run historical map', () => {
   it('defaults to 7B while keeping a switchable 3B diagnostic lineage', () => {

@@ -8,7 +8,6 @@ type Anchor = 'left' | 'right' | 'top' | 'bottom';
 
 const routes = [
   { path: '/lab/', locale: 'zh' as Locale },
-  { path: '/en/lab/', locale: 'en' as Locale },
 ];
 
 const matrices = [

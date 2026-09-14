@@ -11,7 +11,6 @@ const routes = [
   { key: 'openevo-zh', path: '/research/seed-openevo/flow/openevo/' },
   { key: 'loops-zh', path: '/research/seed-openevo/flow/loops/' },
   { key: 'results-zh', path: '/research/seed-openevo/study/results/' },
-  { key: 'results-en', path: '/en/research/seed-openevo/study/results/' },
 ] as const;
 
 const matrices = [

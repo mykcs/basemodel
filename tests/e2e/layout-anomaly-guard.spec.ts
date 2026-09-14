@@ -10,8 +10,6 @@ const routes = [
   '/research/seed-openevo/flow/openevo/',
   '/research/seed-openevo/flow/loops/',
   '/research/seed-openevo/study/results/',
-  '/en/research/seed-openevo/flow/webshop/',
-  '/en/research/seed-openevo/study/results/',
 ] as const;
 
 const matrices = [

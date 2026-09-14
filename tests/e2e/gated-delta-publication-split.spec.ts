@@ -8,7 +8,6 @@ const routes = {
 };
 const locales = [
   { id: 'zh', prefix: '' },
-  { id: 'en', prefix: '/en' },
 ] as const;
 const viewports = [
   { id: 'phone', width: 390, height: 844 },
@@ -27,32 +26,25 @@ for (const locale of locales) {
       await page.setViewportSize(viewport);
       await page.goto(`${locale.prefix}${routes.current}`, { waitUntil: 'domcontentloaded' });
       await expect(page.locator('h1')).toHaveText('Gated-Delta SD-LoRA');
-      await expect(page).toHaveTitle(locale.id === 'zh' ? /Gated-Delta SD-LoRA：四轮资格实验已封存/ : /Gated-Delta SD-LoRA: four-round qualification sealed/);
+      await expect(page).toHaveTitle(/Gated-Delta SD-LoRA：四轮资格实验已封存/);
       await expect(page.locator('meta[name="description"]')).toHaveAttribute(
         'content',
-        locale.id === 'zh'
-          ? /四轮冻结 D1 资格实验已全部封存.*不代表普遍优于 Vanilla.*不是 final-panel 结果/
-          : /All four frozen D1 qualification rounds are sealed.*without implying universal superiority or a final-panel result/,
+        /四轮冻结 D1 资格实验已全部封存.*不代表普遍优于 Vanilla.*不是 final-panel 结果/,
       );
-      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '四轮 Vanilla vs GDR 配对资格实验已经全部封存' : 'All four Vanilla-vs-GDR paired qualification rounds are sealed');
-      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? 'GDR 的总平均 reward 和完整成功率都高于匹配的 Vanilla 对照' : 'GDR finished above the matched Vanilla control on pooled mean reward and exact success');
-      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '这个结论只属于当前冻结的资格实验' : 'This supports the frozen qualification comparison only');
+      await expect(page.locator('.gds-hero__state')).toContainText('四轮 Vanilla vs GDR 配对资格实验已经全部封存');
+      await expect(page.locator('.gds-hero__state')).toContainText('GDR 的总平均 reward 和完整成功率都高于匹配的 Vanilla 对照');
+      await expect(page.locator('.gds-hero__state')).toContainText('这个结论只属于当前冻结的资格实验');
       await expect(page.getByTestId('gated-delta-recurrence')).toBeVisible();
       await expect(page.getByTestId('gated-delta-runtime-path')).toBeVisible();
-      if (locale.id === 'en') {
-        await expect(page.locator('#task-vector')).toContainText('WebShop score / reward · fixed 16-task candidate check');
-        await expect(page.locator('#task-vector')).not.toContainText('WebShop 分数 / reward · 固定 16 题候选检查');
-      }
       await expect(page.locator('[data-reader-route]')).toHaveCount(0);
       await expectNoPageOverflow(page);
 
       await page.goto(`${locale.prefix}${routes.history}`, { waitUntil: 'domcontentloaded' });
-      await expect(page.locator('h1')).toContainText(locale.id === 'zh' ? '历史 GDR-v1 / DirectApply' : 'Historical GDR-v1 / DirectApply');
+      await expect(page.locator('h1')).toContainText('历史 GDR-v1 / DirectApply');
       await expect(page.locator('#what-happened')).toContainText(/44/);
       await expect(page.locator('#what-happened')).toContainText(/7/);
-      if (locale.id === 'en') await expect(page.locator('#what-happened')).toContainText('SD-LoRA candidate updates');
       await expect(page.locator('#admission-rule')).toContainText(/16/);
-      await expect(page.locator('#directapply-result')).toContainText(locale.id === 'zh' ? /不是同一批冻结题.*不能直接相减/ : /different frozen task panels.*cannot be subtracted/);
+      await expect(page.locator('#directapply-result')).toContainText(/不是同一批冻结题.*不能直接相减/);
       await expect(page.getByTestId('gated-delta-recurrence')).toHaveCount(0);
       const historyHub = page.locator('[data-reader-route="gdr-directapply"]');
       await expect(historyHub).toHaveCount(1);
@@ -107,6 +99,6 @@ test('capability lobby reflects the sealed four-round D1 instead of the old inte
   for (const locale of locales) {
     await page.goto(`${locale.prefix}${routes.lobby}`, { waitUntil: 'domcontentloaded' });
     const deepLink = page.locator('[data-deep-dive="gated-delta-sd-lora"]');
-    await expect(deepLink).toContainText(locale.id === 'zh' ? '已经封存的四轮 paired D1 资格结果' : 'sealed four-round paired D1 qualification');
+    await expect(deepLink).toContainText('已经封存的四轮 paired D1 资格结果');
   }
 });

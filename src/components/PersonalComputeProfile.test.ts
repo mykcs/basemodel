@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const zhPage = readFileSync(new URL('../pages/lab.astro', import.meta.url), 'utf8');
-const enPage = readFileSync(new URL('../pages/en/lab.astro', import.meta.url), 'utf8');
+const enPage = readFileSync(new URL('../../docs/archive/site-en/src/pages/en/lab.astro.archive', import.meta.url), 'utf8');
 const policy = readFileSync(new URL('../../docs/agents/current/personal-compute-profile-consumer.md', import.meta.url), 'utf8');
 const agents = readFileSync(new URL('../../AGENTS.md', import.meta.url), 'utf8');
 const publicSurface = [zhPage, enPage, policy, agents].join('\n');

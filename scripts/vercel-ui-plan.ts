@@ -41,23 +41,23 @@ interface RouteOwner {
 }
 
 const ROUTE_OWNERS = new Map<string, RouteOwner>([
-  ['src/components/research/explainer/EnvironmentExplainers.tsx', { routes: ['/research/seed-openevo/flow/webshop/', '/en/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/', '/en/research/seed-openevo/flow/alfworld/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
-  ['src/styles/interactive-research-explainer-environments.css', { routes: ['/research/seed-openevo/flow/webshop/', '/en/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/', '/en/research/seed-openevo/flow/alfworld/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
-  ['src/components/research/explainer/MethodExplainers.tsx', { routes: ['/research/seed-openevo/flow/seed/', '/en/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/', '/en/research/seed-openevo/flow/openevo/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
-  ['src/styles/interactive-research-explainer-methods.css', { routes: ['/research/seed-openevo/flow/seed/', '/en/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/', '/en/research/seed-openevo/flow/openevo/', '/lab/', '/en/lab/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
-  ['src/components/research/explainer/ServerExplainer.tsx', { routes: ['/lab/', '/en/lab/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
-  ['src/styles/interactive-research-explainer-server.css', { routes: ['/lab/', '/en/lab/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
-  ['src/components/research/Lyg2171ServerOverview.astro', { routes: ['/research/seed-openevo/flow/server/', '/en/research/seed-openevo/flow/server/'] }],
-  // This page-local owner is imported by exactly the two mechanism pages.
+  ['src/components/research/explainer/EnvironmentExplainers.tsx', { routes: ['/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
+  ['src/styles/interactive-research-explainer-environments.css', { routes: ['/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
+  ['src/components/research/explainer/MethodExplainers.tsx', { routes: ['/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
+  ['src/styles/interactive-research-explainer-methods.css', { routes: ['/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/', '/lab/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
+  ['src/components/research/explainer/ServerExplainer.tsx', { routes: ['/lab/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
+  ['src/styles/interactive-research-explainer-server.css', { routes: ['/lab/'], specs: ['tests/e2e/research-explainer-layout.spec.ts'] }],
+  ['src/components/research/Lyg2171ServerOverview.astro', { routes: ['/research/seed-openevo/flow/server/'] }],
+  // This page-local owner is imported by the active Chinese mechanism page; English is archived.
   // vercelHostedUiGate.test.ts guards both import reachability and CSS isolation.
   ['src/components/research/OpenEvoMechanismMap.astro', {
-    routes: ['/research/seed-openevo/study/capability-exploration/mechanism-1-0/', '/en/research/seed-openevo/study/capability-exploration/mechanism-1-0/'],
+    routes: ['/research/seed-openevo/study/capability-exploration/mechanism-1-0/'],
     specs: ['tests/e2e/openevo-two-map.spec.ts'],
   }],
-  // The briefing component is imported by exactly the Chinese and English briefing pages.
-  // Keep slide-only edits on those two routes instead of paying for the full-site matrix.
+  // The briefing component is imported by the active Chinese briefing page; English is archived.
+  // Keep slide-only edits on that route instead of paying for the full-site matrix.
   ['src/components/research/SeedOpenEvoProgressBriefing.astro', {
-    routes: ['/research/seed-openevo/study/briefing/', '/en/research/seed-openevo/study/briefing/'],
+    routes: ['/research/seed-openevo/study/briefing/'],
     specs: ['tests/e2e/seed-openevo-briefing.spec.ts'],
   }],
 ]);

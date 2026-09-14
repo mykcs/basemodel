@@ -4,7 +4,7 @@ import { classifyUiFile } from '../../scripts/preflight-ui';
 import { directConcretePageConsumers, planFastGate } from '../../scripts/verify-fast';
 
 const leaf = 'src/pages/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/index.astro';
-const leafEn = 'src/pages/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/index.astro';
+const leafEn = 'docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/index.astro.archive';
 
 describe('development-only fast local gate', () => {
   it('admits only concrete leaf page edits to the scoped fast path', () => {
@@ -14,7 +14,7 @@ describe('development-only fast local gate', () => {
     expect(plan.routes).toEqual(['/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/']);
   });
 
-  it('allows a bounded bilingual leaf-page batch plus source-test/docs companions', () => {
+  it('allows one active leaf page plus archived-English/test/docs companions', () => {
     const plan = planFastGate([
       leaf,
       leafEn,
@@ -22,18 +22,17 @@ describe('development-only fast local gate', () => {
       'docs/agents/history/example.md',
     ]);
     expect(plan.mode).toBe('leaf-pages');
-    expect(plan.pages).toHaveLength(2);
+    expect(plan.pages).toHaveLength(1);
   });
   it('admits a shared Astro component only when every runtime importer is a bounded concrete page', () => {
     const component = 'src/components/research/SeedOpenEvoProgressBriefing.astro';
     expect(directConcretePageConsumers(component)).toEqual([
-      'src/pages/en/research/seed-openevo/study/briefing/index.astro',
       'src/pages/research/seed-openevo/study/briefing/index.astro',
     ]);
     const plan = planFastGate([component]);
     expect(plan.mode).toBe('bounded-components');
     expect(plan.components).toEqual([component]);
-    expect(plan.pages).toHaveLength(2);
+    expect(plan.pages).toHaveLength(1);
   });
 
   it('allows docs and source-test companions beside a bounded component without widening runtime scope', () => {
@@ -45,7 +44,7 @@ describe('development-only fast local gate', () => {
     ]);
     expect(plan.mode).toBe('bounded-components');
     expect(plan.components).toEqual([component]);
-    expect(plan.pages).toHaveLength(2);
+    expect(plan.pages).toHaveLength(1);
   });
 
   it('fails closed when a component path no longer exists, covering deletes and renames', () => {

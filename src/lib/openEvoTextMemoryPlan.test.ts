@@ -22,12 +22,12 @@ describe('Text Memory receipt-based research projection', () => {
     expect(component).not.toContain('The current run');
     expect(read('../components/research/OpenEvoTextMemoryResearchLink.astro')).not.toContain('The current run');
   });
-  it('registers real bilingual pages, navigation, sitemap and reader contract', () => {
-    for (const prefix of ['', 'en/']) {
-      const page = read(`../pages/${prefix}research/seed-openevo/study/capability-exploration/text-memory/index.astro`);
-      expect(page).toContain('OpenEvoTextMemoryPlan');
-      expect(readerContractForRoute(`/${prefix}${route.slice(1)}`)?.id).toBe('capability-text-memory');
-    }
+  it('registers the active Chinese page and retains the English page in the source archive', () => {
+    const page = read('../pages/research/seed-openevo/study/capability-exploration/text-memory/index.astro');
+    const archivedEnglish = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/text-memory/index.astro.archive');
+    expect(page).toContain('OpenEvoTextMemoryPlan');
+    expect(archivedEnglish).toContain('OpenEvoTextMemoryPlan');
+    expect(readerContractForRoute(route)?.id).toBe('capability-text-memory');
     expect(read('../data/capabilityReaderRoutes.ts')).toContain('"route": "text-memory"');
     expect(read('./sitemapRoutes.ts')).toContain(`'${route}'`);
   });
@@ -91,13 +91,15 @@ describe('Text Memory receipt-based research projection', () => {
     expect(section).toContain('这份快照中的正式实验保持原规则');
     expect(section).not.toContain('更像真正的方向');
   });
-  it('does not retain the old cause-as-result claim on the study entry points', () => {
-    for (const prefix of ['', 'en/']) {
-      const page = read(`../pages/${prefix}research/seed-openevo/study/index.astro`);
+  it('does not retain the old cause-as-result claim in the active study page or archived English snapshot', () => {
+    for (const page of [
+      read('../pages/research/seed-openevo/study/index.astro'),
+      read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/index.astro.archive'),
+    ]) {
       expect(page).not.toContain('都说明：我们需要');
       expect(page).not.toContain('must be separated');
       expect(page).toContain('OpenEvoExperimentIndex');
-      expect(OPEN_EVO_EXPERIMENTS.some((experiment) => experiment.childLinks.some((child) => child.href.endsWith('/text-memory/')))).toBe(true);
     }
+    expect(OPEN_EVO_EXPERIMENTS.some((experiment) => experiment.childLinks.some((child) => child.href.endsWith('/text-memory/')))).toBe(true);
   });
 });

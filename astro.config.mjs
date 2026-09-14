@@ -20,10 +20,10 @@ export default defineConfig({
   build: {
     format: 'directory',
   },
-  // 中文默认留根路径；英文走 /en/ 前缀。
+  // Development baseline is temporarily Chinese-only; English source is archived under docs/archive/site-en/.
   i18n: {
     defaultLocale: 'zh',
-    locales: ['zh', 'en'],
+    locales: ['zh'],
     routing: {
       prefixDefaultLocale: false,
     },

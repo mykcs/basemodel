@@ -204,7 +204,7 @@ if (plan.mode === 'focused') {
 }
 
 if (labRelevant && primaryShard) {
-  console.log('[ci-ui-gate] Lab-relevant diff detected; running the 12-case Lab gate on shard 1');
+  console.log('[ci-ui-gate] Lab-relevant diff detected; running the 6-case active-Lab gate on shard 1');
   run(
     'npx',
     ['playwright', 'test', '--config', 'tests/e2e/lab-playwright.config.ts'],

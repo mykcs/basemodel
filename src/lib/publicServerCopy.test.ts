@@ -4,10 +4,10 @@ import { describe, expect, it } from 'vitest';
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const serverOverview = read('../components/research/Lyg2171ServerOverview.astro');
 const serverRouteZh = read('../pages/research/seed-openevo/flow/server.astro');
-const serverRouteEn = read('../pages/en/research/seed-openevo/flow/server.astro');
+const serverRouteEn = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/flow/server.astro.archive');
 const guide = read('../components/OpenEvoSeedBenchmarksGuide.astro');
 const labZh = read('../pages/lab.astro');
-const labEn = read('../pages/en/lab.astro');
+const labEn = read('../../docs/archive/site-en/src/pages/en/lab.astro.archive');
 const serverExplainer = read('../components/research/explainer/ServerExplainer.tsx');
 const staticServerDiagram = read('../components/research/ServerAuthorityDiagram.astro');
 

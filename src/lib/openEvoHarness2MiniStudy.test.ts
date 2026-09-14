@@ -10,7 +10,7 @@ const lobby = read('../components/research/OpenEvoCapabilityMapLobby.astro');
 const narrative = read('../data/openEvoSuccessorNarrative.ts');
 const chooser = read('../components/research/OpenEvoStage2StrategyChooser.astro');
 const zhRoute = read('../pages/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0.astro');
-const enRoute = read('../pages/en/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0.astro');
+const enRoute = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0.astro.archive');
 
 describe('OpenEVO Harness 2.0 mini study publication', () => {
   it('publishes the immutable paired qualification facts', () => {

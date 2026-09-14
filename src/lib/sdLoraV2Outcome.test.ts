@@ -9,7 +9,7 @@ import {
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const page = read('../components/research/OpenEvoSdLoraV2Outcome.astro');
 const zhRoute = read('../pages/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/index.astro');
-const enRoute = read('../pages/en/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/index.astro');
+const enRoute = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/index.astro.archive');
 const contracts = read('../data/siteReaderContracts.ts');
 
 describe('SD-LoRA v2 publication', () => {

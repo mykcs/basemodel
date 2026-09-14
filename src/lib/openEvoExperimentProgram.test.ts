@@ -4,7 +4,7 @@ const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta
 const component = read('src/components/research/OpenEvoExperimentProgram.astro');
 const state = read('src/lib/openEvoScientificState.ts');
 const zhRoute = read('src/pages/research/seed-openevo/study/results.astro');
-const enRoute = read('src/pages/en/research/seed-openevo/study/results.astro');
+const enRoute = read('docs/archive/site-en/src/pages/en/research/seed-openevo/study/results.astro.archive');
 const appendix = read('src/components/research/OpenEvoWebShopResultsAppendix.astro');
 
 describe('OpenEvo × WebShop experiment state provenance', () => {

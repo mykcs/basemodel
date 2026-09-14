@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test';
 
 const zhRoute = '/research/seed-openevo/study/results/';
-const enRoute = '/en/research/seed-openevo/study/results/';
 const benchmarkRoutes = [
   '/research/seed-openevo/study/results/benchmark-first/',
   '/research/seed-openevo/study/results/seed-faithful-benchmark/',
@@ -61,55 +60,7 @@ test('Chinese results landing mounts the unified six-module findings page', asyn
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 });
 
-test('English results landing mounts the same unified findings page in English', async ({ page }) => {
-  await page.goto(enRoute);
-  const index = page.getByTestId('openevo-webshop-result-index');
-  await expect(index).toBeVisible();
-  await expect(page.getByTestId('openevo-webshop-program-report')).toHaveCount(0);
-  await expect(index.getByRole('heading', { name: 'OpenEvo × WebShop research findings' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: 'Unseen training-range tasks and SEED validation tasks' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: 'Seven research questions' })).toBeVisible();
-  await expect(index.getByRole('heading', { name: 'Capability retention after the second update' })).toBeVisible();
-  await expect(index.locator('article.question-card')).toHaveCount(6);
-  await expect(index.getByTestId('current-source-faithful-q7')).toHaveCount(1);
-  await expect(index.locator('#q7')).toHaveCount(1);
-  await expect(index.locator('#q7')).toHaveAttribute('data-testid', 'current-source-faithful-q7');
-
-  const measurementEvidence = index.locator('#evidence-g2');
-  await expect(measurementEvidence).not.toHaveAttribute('open', '');
-  await measurementEvidence.locator(':scope > summary').click();
-  await expect(measurementEvidence).toHaveAttribute('open', '');
-  await expect(measurementEvidence.getByText('MEASUREMENT_INVALID', { exact: false }).first()).toBeVisible();
-
-  const transferEvidence = index.locator('#evidence-q4');
-  await expect(transferEvidence).not.toHaveAttribute('open', '');
-  await transferEvidence.locator(':scope > summary').click();
-  await expect(transferEvidence).toHaveAttribute('open', '');
-  await expect(transferEvidence.locator('.forest-row')).toHaveCount(3);
-
-  const ordered = await index.evaluate((node) => {
-    const ids = ['protocol', 'questions', 'g2-ablation', 'next-steps', 'appendix'];
-    const sections = ids.map((id) => node.querySelector(`#${id}`));
-    return sections.every((current, position) => {
-      if (!current) return false;
-      if (position === 0) return true;
-      const previous = sections[position - 1];
-      return Boolean(previous && (previous.compareDocumentPosition(current) & Node.DOCUMENT_POSITION_FOLLOWING));
-    });
-  });
-  expect(ordered).toBe(true);
-
-  const lineage = index.getByTestId('lineage-appendix');
-  const rtx6 = index.getByTestId('rtx6-appendix');
-  await expect(lineage).not.toHaveAttribute('open', '');
-  await expect(rtx6).not.toHaveAttribute('open', '');
-  await lineage.locator(':scope > summary').click();
-  await expect(lineage).toHaveAttribute('open', '');
-  await expect(lineage.locator('.lineage-list > li')).toHaveCount(30);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
-});
-
-test('both results routes remain useful without JavaScript', async ({ browser }) => {
+test('the active results route remains useful without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
   const page = await context.newPage();
   await page.goto(zhRoute);
@@ -138,7 +89,7 @@ for (const theme of ['light', 'dark'] as const) {
       await page.setViewportSize(viewport);
       await page.emulateMedia({ colorScheme: theme });
       await page.addInitScript((selectedTheme) => localStorage.setItem('atlas-theme', selectedTheme), theme);
-      for (const route of [zhRoute, enRoute]) {
+      for (const route of [zhRoute]) {
         await page.goto(route);
         await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
         const index = page.getByTestId('openevo-webshop-result-index');
@@ -179,8 +130,8 @@ for (const theme of ['light', 'dark'] as const) {
   }
 }
 
-test('print mode exposes the current provenance codes on both results routes', async ({ page }) => {
-  for (const route of [zhRoute, enRoute]) {
+test('print mode exposes the current provenance codes on the active results route', async ({ page }) => {
+  for (const route of [zhRoute]) {
     await page.goto(route);
     await page.emulateMedia({ media: 'print', colorScheme: 'light' });
     const index = page.getByTestId('openevo-webshop-result-index');

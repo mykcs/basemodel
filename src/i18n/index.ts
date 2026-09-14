@@ -4,7 +4,7 @@ import { en } from './en';
 export type Locale = 'zh' | 'en';
 export type { Messages };
 
-export const locales: Locale[] = ['zh', 'en'];
+export const locales: Locale[] = ['zh'];
 export const defaultLocale: Locale = 'zh';
 
 const dictionaries: Record<Locale, Messages> = { zh, en };

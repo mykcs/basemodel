@@ -8,7 +8,7 @@ Status: **the former personal-device runtime profile is retired from Base Model 
 
 Base Model may document a reusable research-compute topology, but it must not publish or dynamically load the owner's personal device inventory or private lab profile.
 
-The public `/lab/` and `/en/lab/` routes may explain only generic concepts such as:
+The active public `/lab/` route may explain only generic concepts such as:
 
 - an Internet-connected control workstation;
 - an approved access boundary;

@@ -15,7 +15,7 @@ const briefing = read('../components/research/SeedOpenEvoProgressBriefing.astro'
 const baseModelCompat = read('../pages/research/seed-openevo/flow/base-model/index.astro');
 const studyDesignCompat = read('../pages/research/seed-openevo/study/design/index.astro');
 const alfworldZh = read('../pages/research/seed-openevo/flow/alfworld.astro');
-const alfworldEn = read('../pages/en/research/seed-openevo/flow/alfworld.astro');
+const alfworldEn = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/flow/alfworld.astro.archive');
 const explainerStyles = [
   read('../styles/interactive-research-explainer-core.css'),
   read('../styles/interactive-research-explainer-environments.css'),

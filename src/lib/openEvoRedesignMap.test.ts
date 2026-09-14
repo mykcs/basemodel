@@ -8,9 +8,9 @@ const report = read('../components/research/OpenEvoSuccessorReport.astro');
 const fairness = read('../components/research/OpenEvoHarnessFairnessPanel.astro');
 const narrative = read('../data/openEvoSuccessorNarrative.ts');
 const zh = read('../pages/research/seed-openevo/study/capability-exploration/openevo-2-0/index.astro');
-const en = read('../pages/en/research/seed-openevo/study/capability-exploration/openevo-2-0/index.astro');
+const en = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/openevo-2-0/index.astro.archive');
 const zhExplore = read('../pages/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/index.astro');
-const enReport = read('../pages/en/research/seed-openevo/study/capability-exploration/openevo-2-0/report/index.astro');
+const enReport = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/openevo-2-0/report/index.astro.archive');
 
 describe('OpenEvo 3B + 1.7B successor dual narrative', () => {
   it('makes one successor expose exactly two readings over one shared fact set', () => {

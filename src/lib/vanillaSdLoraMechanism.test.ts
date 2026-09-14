@@ -10,9 +10,9 @@ const seriesNav = read('../components/research/OpenEvoSdLoraHistorySeriesNav.ast
 const projectionSource = `${slide}\n${component}`;
 const readerContracts = read('../data/siteReaderContracts.ts');
 const zhPage = read('../pages/research/seed-openevo/flow/sd-lora/index.astro');
-const enPage = read('../pages/en/research/seed-openevo/flow/sd-lora/index.astro');
+const enPage = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/flow/sd-lora/index.astro.archive');
 const zhCompatibilityPage = read('../pages/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/index.astro');
-const enCompatibilityPage = read('../pages/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/index.astro');
+const enCompatibilityPage = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/index.astro.archive');
 
 describe('Vanilla SD-LoRA mechanism projection', () => {
   it('pins the Q17 mechanism facts used by the reader-facing diagram', () => {

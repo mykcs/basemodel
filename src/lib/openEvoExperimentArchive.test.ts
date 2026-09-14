@@ -9,9 +9,9 @@ const redesign = read('../components/research/OpenEvoRedesignMap.astro');
 const successorExploration = read('../components/research/OpenEvoSuccessorExplorationMap.astro');
 const successorReport = read('../components/research/OpenEvoSuccessorReport.astro');
 const zh = read('../pages/research/seed-openevo/study/capability-exploration/archive/index.astro');
-const en = read('../pages/en/research/seed-openevo/study/capability-exploration/archive/index.astro');
+const en = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/archive/index.astro.archive');
 const zhIndex = read('../pages/research/seed-openevo/study/capability-exploration/index.astro');
-const enIndex = read('../pages/en/research/seed-openevo/study/capability-exploration/index.astro');
+const enIndex = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/index.astro.archive');
 
 describe('OpenEvo experiment archive', () => {
   it('keeps exactly three primary maps and demotes the archive from top-level route choice', () => {
@@ -64,9 +64,9 @@ describe('OpenEvo experiment archive', () => {
       '../pages/research/seed-openevo/study/capability-exploration/stage1-previous/index.astro',
       '../pages/research/seed-openevo/study/capability-exploration/stage2-256-window/index.astro',
       '../pages/research/seed-openevo/study/capability-exploration/stage2-ceiling/index.astro',
-      '../pages/en/research/seed-openevo/study/capability-exploration/stage1-previous/index.astro',
-      '../pages/en/research/seed-openevo/study/capability-exploration/stage2-256-window/index.astro',
-      '../pages/en/research/seed-openevo/study/capability-exploration/stage2-ceiling/index.astro',
+      '../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/stage1-previous/index.astro.archive',
+      '../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/stage2-256-window/index.astro.archive',
+      '../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/stage2-ceiling/index.astro.archive',
     ]) expect(() => read(relative)).not.toThrow();
   });
 

@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 
 const resultsPageZh = read('../pages/research/seed-openevo/study/results.astro');
-const resultsPageEn = read('../pages/en/research/seed-openevo/study/results.astro');
+const resultsPageEn = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/results.astro.archive');
 const experimentPage = read('../pages/research/seed-openevo/study/index.astro');
 const designPage = read('../pages/research/seed-openevo/study/design/index.astro');
 const researchDetail = read('../components/research/SeedOpenEvoResearchDetail.astro');

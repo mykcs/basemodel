@@ -1,7 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import {
   bilingualStaticPaths,
-  toEnglishPath,
   zhOnlyStaticPaths,
 } from '../../src/lib/sitemapRoutes';
 import { partitionRoundRobin } from '../../src/lib/ciRouteSharding';
@@ -26,7 +25,6 @@ const headerStates: HeaderState[] = [
 const staticPublicRoutes = [...new Set([
   ...bilingualStaticPaths,
   ...zhOnlyStaticPaths,
-  ...bilingualStaticPaths.map((path) => toEnglishPath(path)),
 ])];
 
 // Model and paper detail pages are generated from one template per locale, so
@@ -34,9 +32,7 @@ const staticPublicRoutes = [...new Set([
 // the complete static route registry covers every standalone public page.
 const dynamicTemplateRoutes = [
   '/models/qwen2-5-3b-instruct/',
-  '/en/models/qwen2-5-3b-instruct/',
   '/papers/seed/',
-  '/en/papers/seed/',
 ] as const;
 
 const chromiumRoutePaths = [...new Set([
@@ -53,8 +49,6 @@ const webkitRepresentativeRoutes = [
   '/research/seed-openevo/flow/',
   '/research/seed-openevo/study/',
   '/research/seed-openevo/study/results/',
-  '/en/',
-  '/en/research/seed-openevo/study/results/',
 ] as const;
 
 const fallbackRoute = '/__header-gate-404__/';
@@ -213,7 +207,7 @@ test('responsive navigation controls remain operable instead of merely visible',
   await expect(mobileMenu).toHaveAttribute('aria-hidden', 'false');
   await expect(mobileMenu).toBeVisible();
   await expect(mobileMenu.locator('.mobile-journeys a').first()).toBeVisible();
-  await expect(mobileMenu.locator('.lang-switch')).toHaveAttribute('href', '/en/research/seed-openevo/study/results/');
+  await expect(mobileMenu.locator('.lang-switch')).toHaveCount(0);
 
   const mobileGeometry = await mobileMenu.locator('.mobile-menu__inner').evaluate((inner) => {
     const sections = [...inner.querySelectorAll<HTMLElement>('.mobile-menu__section')];

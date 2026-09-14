@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test';
 
 const resultsRoutes = [
   '/research/seed-openevo/study/results/',
-  '/en/research/seed-openevo/study/results/',
 ] as const;
 
 const themes = ['light', 'dark'] as const;

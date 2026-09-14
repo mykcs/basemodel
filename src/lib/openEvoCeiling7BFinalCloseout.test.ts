@@ -7,7 +7,7 @@ const ceiling = read('../components/research/OpenEvoCeilingStrategy.astro');
 const firstRun = read('../components/research/OpenEvoFirstRunMap.astro');
 const archive = read('../components/research/OpenEvoExperimentArchive.astro');
 const zhPage = read('../pages/research/seed-openevo/study/capability-exploration/stage2-ceiling/index.astro');
-const enPage = read('../pages/en/research/seed-openevo/study/capability-exploration/stage2-ceiling/index.astro');
+const enPage = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/stage2-ceiling/index.astro.archive');
 
 describe('Ceiling-1.0 7B final closeout', () => {
   it('keeps the historical 2026-08-31 snapshot and adds a separate final record', () => {

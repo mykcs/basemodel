@@ -11,11 +11,6 @@ const routes = [
   { path: '/research/seed-openevo/flow/seed/', kinds: ['seed'], requiresMainStage: true },
   { path: '/research/seed-openevo/flow/openevo/', kinds: ['openevo'], requiresMainStage: true },
   { path: '/lab/', kinds: ['server'], requiresMainStage: false },
-  { path: '/en/research/seed-openevo/flow/webshop/', kinds: ['webshop'], requiresMainStage: true },
-  { path: '/en/research/seed-openevo/flow/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
-  { path: '/en/research/seed-openevo/flow/seed/', kinds: ['seed'], requiresMainStage: true },
-  { path: '/en/research/seed-openevo/flow/openevo/', kinds: ['openevo'], requiresMainStage: true },
-  { path: '/en/lab/', kinds: ['server'], requiresMainStage: false },
 ] as const;
 
 const hostedRouteFilter = new Set(
@@ -253,10 +248,6 @@ test('interactive transport stays bottom-docked from the initial render', async 
     ['/research/seed-openevo/flow/openevo/', 'openevo'],
     ['/research/seed-openevo/flow/webshop/', 'webshop'],
     ['/research/seed-openevo/flow/alfworld/', 'alfworld'],
-    ['/en/research/seed-openevo/flow/seed/', 'seed'],
-    ['/en/research/seed-openevo/flow/openevo/', 'openevo'],
-    ['/en/research/seed-openevo/flow/webshop/', 'webshop'],
-    ['/en/research/seed-openevo/flow/alfworld/', 'alfworld'],
   ] as const;
 
   for (const [path, kind] of cases.filter(([path]) => routeInScope(path))) {
@@ -276,7 +267,7 @@ test('interactive transport stays bottom-docked from the initial render', async 
 test('iPhone 17 Pro Max WebShop stage fits one screen and product columns do not overlap', async ({ page }) => {
   const viewport = { width: 440, height: 956 };
   await page.setViewportSize(viewport);
-  for (const path of ['/research/seed-openevo/flow/webshop/', '/en/research/seed-openevo/flow/webshop/'].filter((path) => routeInScope(path))) {
+  for (const path of ['/research/seed-openevo/flow/webshop/'].filter((path) => routeInScope(path))) {
     await test.step(path, async () => {
       await page.goto(path, { waitUntil: 'domcontentloaded' });
       await settle(page);
@@ -311,8 +302,6 @@ test('key environment explainers stay inside a narrow tablet viewport', async ({
   const cases = [
     { path: '/research/seed-openevo/flow/webshop/', kind: 'webshop' },
     { path: '/research/seed-openevo/flow/alfworld/', kind: 'alfworld' },
-    { path: '/en/research/seed-openevo/flow/webshop/', kind: 'webshop' },
-    { path: '/en/research/seed-openevo/flow/alfworld/', kind: 'alfworld' },
   ] as const;
   const viewport = { width: 680, height: 900 };
   await page.setViewportSize(viewport);
@@ -326,7 +315,7 @@ test('key environment explainers stay inside a narrow tablet viewport', async ({
 
 test('WebShop product detail columns do not overlap at an intermediate desktop width', async ({ page }) => {
   await page.setViewportSize({ width: 1082, height: 900 });
-  for (const path of ['/research/seed-openevo/flow/webshop/', '/en/research/seed-openevo/flow/webshop/'].filter((path) => routeInScope(path))) {
+  for (const path of ['/research/seed-openevo/flow/webshop/'].filter((path) => routeInScope(path))) {
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     await settle(page);
     const root = page.locator('[data-interactive-research-explainer="webshop"]').first();
@@ -347,7 +336,7 @@ test('WebShop product detail columns do not overlap at an intermediate desktop w
 });
 
 test('resource menu keeps utility labels and descriptions from overlapping', async ({ page }) => {
-  test.skip(!routeInScope('/research/seed-openevo/flow/webshop/', '/en/research/seed-openevo/flow/webshop/'), 'outside hosted focused route scope');
+  test.skip(!routeInScope('/research/seed-openevo/flow/webshop/'), 'outside hosted focused route scope');
   await page.setViewportSize({ width: 1440, height: 738 });
   await page.goto('/research/seed-openevo/flow/webshop/', { waitUntil: 'domcontentloaded' });
   await settle(page);
@@ -416,7 +405,7 @@ test('simplified information architecture keeps the canonical research navigatio
 });
 
 test('SEED visibly separates policy, harness, benchmark environment, and sealed evidence', async ({ page }) => {
-  test.skip(!routeInScope('/research/seed-openevo/flow/seed/', '/en/research/seed-openevo/flow/seed/'), 'outside hosted focused route scope');
+  test.skip(!routeInScope('/research/seed-openevo/flow/seed/'), 'outside hosted focused route scope');
   for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
     await page.setViewportSize(viewport);
     await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
@@ -460,7 +449,7 @@ test('SEED visibly separates policy, harness, benchmark environment, and sealed 
 });
 
 test('research explainers preserve meaning with reduced motion', async ({ page }) => {
-  test.skip(!routeInScope('/research/seed-openevo/flow/seed/', '/en/research/seed-openevo/flow/seed/'), 'outside hosted focused route scope');
+  test.skip(!routeInScope('/research/seed-openevo/flow/seed/'), 'outside hosted focused route scope');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
@@ -472,7 +461,7 @@ test('research explainers preserve meaning with reduced motion', async ({ page }
 });
 
 test('scroll-linked explainer updates do not pull a fast reader back to the stage', async ({ page }) => {
-  test.skip(!routeInScope('/research/seed-openevo/flow/seed/', '/en/research/seed-openevo/flow/seed/'), 'outside hosted focused route scope');
+  test.skip(!routeInScope('/research/seed-openevo/flow/seed/'), 'outside hosted focused route scope');
   await page.setViewportSize({ width: 1440, height: 738 });
   await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
   const root = page.locator('[data-interactive-research-explainer="seed"]');
@@ -490,7 +479,7 @@ test('scroll-linked explainer updates do not pull a fast reader back to the stag
 });
 
 test('research framework opens as a system map and can enter and leave trace mode', async ({ page }) => {
-  test.skip(!routeInScope('/research/seed-openevo/flow/openevo/', '/en/research/seed-openevo/flow/openevo/'), 'outside hosted focused route scope');
+  test.skip(!routeInScope('/research/seed-openevo/flow/openevo/'), 'outside hosted focused route scope');
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/research/seed-openevo/flow/openevo/', { waitUntil: 'domcontentloaded' });
   const root = page.locator('[data-interactive-research-explainer="openevo"]');

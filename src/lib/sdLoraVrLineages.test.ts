@@ -13,7 +13,7 @@ const overview = read('../components/research/OpenEvoSdLoraHistorySkeleton.astro
 const stable = read('../components/research/OpenEvoSdLoraV2Outcome.astro');
 const bounded = read('../components/research/OpenEvoSdLoraBoundedRecurrence.astro');
 const boundedZh = read('../pages/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/index.astro');
-const boundedEn = read('../pages/en/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/index.astro');
+const boundedEn = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/index.astro.archive');
 
 describe('SD-LoRA parallel lineage publication', () => {
   it('uses the merged OpenEvo reconciliation index as the single website lineage source', () => {

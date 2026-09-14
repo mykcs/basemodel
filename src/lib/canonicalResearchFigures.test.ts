@@ -12,11 +12,11 @@ const seedDataUsageFigure = read('src/components/research/WebShopSeedDataUsageFi
 const evaluationFigure = read('src/components/research/WebShopEvaluationFigure.astro');
 const compareFigure = read('src/components/research/SeedOpenEvoCanonicalFigure.astro');
 const seedZh = read('src/pages/research/seed-openevo/flow/seed.astro');
-const seedEn = read('src/pages/en/research/seed-openevo/flow/seed.astro');
+const seedEn = read('docs/archive/site-en/src/pages/en/research/seed-openevo/flow/seed.astro.archive');
 const webshopZh = read('src/pages/research/seed-openevo/flow/webshop.astro');
-const webshopEn = read('src/pages/en/research/seed-openevo/flow/webshop.astro');
+const webshopEn = read('docs/archive/site-en/src/pages/en/research/seed-openevo/flow/webshop.astro.archive');
 const loopsZh = read('src/pages/research/seed-openevo/flow/loops.astro');
-const loopsEn = read('src/pages/en/research/seed-openevo/flow/loops.astro');
+const loopsEn = read('docs/archive/site-en/src/pages/en/research/seed-openevo/flow/loops.astro.archive');
 const results = read('src/components/research/SeedOpenEvoResearchNav.astro');
 const explainerStandard = read('docs/agents/current/research-explainer-page-standard.md');
 

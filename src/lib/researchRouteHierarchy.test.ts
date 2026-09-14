@@ -54,7 +54,7 @@ describe('research URL hierarchy', () => {
     for (const path of legacyPages) expect(existsSync(new URL(`../../${path}`, import.meta.url)), path).toBe(false);
   });
 
-  it('keeps old public URLs as permanent compatibility redirects', () => {
+  it('keeps old Chinese public URLs as permanent compatibility redirects', () => {
     const expected = new Map([
       ['/research/seed-openevo', '/research/seed-openevo/flow/'],
       ['/research/seed-openevo/base-model', '/models/qwen2-5-3b-instruct/'],
@@ -65,11 +65,6 @@ describe('research URL hierarchy', () => {
       ['/guide/openevo-webshop-alfworld', '/research/seed-openevo/study/run/'],
       ['/research/seed-openevo/results', '/research/seed-openevo/study/results/'],
       ['/research/seed-openevo/results/:path*', '/research/seed-openevo/study/results/:path*'],
-      ['/en/research/seed-openevo', '/en/research/seed-openevo/flow/'],
-      ['/en/research/seed-openevo/base-model', '/en/models/qwen2-5-3b-instruct/'],
-      ['/en/research/seed-openevo/flow/base-model', '/en/models/qwen2-5-3b-instruct/'],
-      ['/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora', '/en/research/seed-openevo/flow/sd-lora/'],
-      ['/en/research/seed-openevo/results/:path*', '/en/research/seed-openevo/study/results/:path*'],
     ]);
     for (const [source, destination] of expected) {
       expect(redirectMap.get(source)?.destination, source).toBe(destination);
@@ -77,9 +72,18 @@ describe('research URL hierarchy', () => {
     }
   });
 
-  it('preserves the historical trailing-slash URLs too', () => {
+  it('temporarily sends archived English URLs to their Chinese counterparts without permanent caching', () => {
+    expect(redirectMap.get('/en')?.destination).toBe('/');
+    expect(redirectMap.get('/en')?.permanent).toBe(false);
+    expect(redirectMap.get('/en/')?.destination).toBe('/');
+    expect(redirectMap.get('/en/')?.permanent).toBe(false);
+    expect(redirectMap.get('/en/:path*')?.destination).toBe('/:path*');
+    expect(redirectMap.get('/en/:path*')?.permanent).toBe(false);
+  });
+
+  it('preserves trailing-slash variants for permanent Chinese compatibility redirects', () => {
     for (const item of redirects) {
-      if (item.source.includes(':path*') || item.source.endsWith('/')) continue;
+      if (item.permanent !== true || item.source.includes(':path*') || item.source.endsWith('/')) continue;
       const slashVariant = redirectMap.get(`${item.source}/`);
       expect(slashVariant?.destination, `${item.source}/`).toBe(item.destination);
       expect(slashVariant?.permanent, `${item.source}/`).toBe(true);

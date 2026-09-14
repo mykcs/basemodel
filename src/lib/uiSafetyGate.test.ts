@@ -104,7 +104,6 @@ describe('UI visual acceptance gate contract', () => {
     for (const term of [
       'bilingualStaticPaths',
       'zhOnlyStaticPaths',
-      'toEnglishPath',
       'dynamicTemplateRoutes',
       '[data-site-header]',
       '#main-content.site-main',

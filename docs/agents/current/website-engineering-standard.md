@@ -205,6 +205,12 @@ For ordinary local iteration on a **small, machine-proven route surface**, use `
 
 The boundary is fail-closed: indirect or non-page component consumers, global components, data/content, dynamic routes, deletes/renames, unknown or unscanned references, package/config changes, and any fast-gate/planner owner must fall back to `npm run verify:deploy`. `npm run check:watch` remains useful for shared-code iteration when the component graph cannot be conservatively bounded, but it is not release evidence. `verify:fast` and `check:watch` are development feedback only; public GHA, final-candidate Vercel, merge, and Production keep the full deterministic/build/browser contracts unchanged. Measurement evidence lives in [`../history/2026-09-13-fast-local-gate-experiment.md`](../history/2026-09-13-fast-local-gate-experiment.md) and the bounded-component extension in [`../history/2026-09-13-bounded-component-fast-gate-experiment.md`](../history/2026-09-13-bounded-component-fast-gate-experiment.md).
 
+### Current language surface during high-frequency owner iteration
+
+The current owner-directed development baseline has **Chinese as the only active runtime locale**. Existing English page source is retained byte-for-byte under `docs/archive/site-en/` with inert `.archive` suffixes and a manifest of original paths + Git blob SHAs. Do not recreate `src/pages/en/**`, English hreflang/sitemap entries, or an active language switch unless the owner explicitly asks to restore English. Tests may read archived English as historical/content evidence, but route planners and browser matrices must not treat archive files as deployed pages.
+
+This is not a separate fast-mode flag and it is not a formal-launch statement: `main` may remain the owner's iterative development baseline. Old `/en/**` URLs may use a temporary **non-permanent** fallback to the equivalent Chinese path while English is inactive. A future English restoration must move the archived files back, restore locale/routing/metadata contracts, and rerun full deterministic plus cross-browser acceptance. Measurement and the failed `.astro`-inside-archive approach are recorded in [`../history/2026-09-14-english-active-surface-archive.md`](../history/2026-09-14-english-active-surface-archive.md).
+
 Provider selection is a separate decision. Before adopting a runner/provider, verify live:
 
 ```text

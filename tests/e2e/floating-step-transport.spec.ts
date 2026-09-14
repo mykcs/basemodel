@@ -7,10 +7,6 @@ const ownerRoutes = [
   ['/research/seed-openevo/flow/alfworld/', 'alfworld'],
   ['/research/seed-openevo/flow/seed/', 'seed'],
   ['/research/seed-openevo/flow/openevo/', 'openevo'],
-  ['/en/research/seed-openevo/flow/webshop/', 'webshop'],
-  ['/en/research/seed-openevo/flow/alfworld/', 'alfworld'],
-  ['/en/research/seed-openevo/flow/seed/', 'seed'],
-  ['/en/research/seed-openevo/flow/openevo/', 'openevo'],
 ] as const;
 
 async function settle(page: Page) {
@@ -62,7 +58,7 @@ test('standalone step-by-step owners dock Previous / Next from initial render th
 test('embedded Lab explainer controls do not enter the first screen before the explainer', async ({ page }) => {
   const viewport = { width: 1280, height: 633 };
   await page.setViewportSize(viewport);
-  for (const path of ['/lab/', '/en/lab/']) {
+  for (const path of ['/lab/']) {
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     await settle(page);
     const root = page.locator('[data-interactive-research-explainer="server"]').first();
@@ -93,7 +89,7 @@ test('WebShop floating transport also stays inside a mobile viewport', async ({ 
 });
 
 test('canonical-only comparison routes never expose a floating step transport', async ({ page }) => {
-  for (const path of ['/research/seed-openevo/flow/loops/', '/en/research/seed-openevo/flow/loops/']) {
+  for (const path of ['/research/seed-openevo/flow/loops/']) {
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     await settle(page);
     await expect(page.locator('#fig-seed-openevo-update-target')).toBeVisible();

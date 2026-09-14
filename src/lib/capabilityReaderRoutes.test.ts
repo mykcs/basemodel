@@ -11,43 +11,56 @@ const base = 'research/seed-openevo/study/capability-exploration';
 const compatibilityRouteKeys = new Set(bilingualCompatibilityPaths
   .filter((path) => path.startsWith(`/${base}/`))
   .map((path) => path.slice(`/${base}/`.length).replace(/\/$/, '')));
-function astroRoutes(directory: string): string[] {
+
+function sourceRoutes(directory: string, suffix: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const path = join(directory, entry.name);
-    return entry.isDirectory() ? astroRoutes(path) : path.endsWith('.astro') ? [path] : [];
+    return entry.isDirectory() ? sourceRoutes(path, suffix) : path.endsWith(suffix) ? [path] : [];
   });
 }
-function routeKey(path: string, directory: string) {
-  return relative(directory, path).replaceAll('\\', '/').replace(/(?:^|\/)index\.astro$/, '').replace(/\.astro$/, '');
+function routeKey(path: string, directory: string, suffix: string) {
+  return relative(directory, path).replaceAll('\\', '/')
+    .replace(new RegExp(`(?:^|/)index\\.astro${suffix === '.astro.archive' ? '\\.archive' : ''}$`), '')
+    .replace(new RegExp(`\\.astro${suffix === '.astro.archive' ? '\\.archive' : ''}$`), '');
 }
 
 describe('capability route reader contracts', () => {
-  for (const locale of ['zh', 'en'] as const) {
-    it(`registers every ${locale} public route and mounts its declared reader context`, () => {
-      const directory = join(repo, 'src/pages', locale === 'en' ? 'en' : '', base);
-      const actual = astroRoutes(directory);
-      const canonical = actual.filter((path) => !compatibilityRouteKeys.has(routeKey(path, directory)));
-      expect(canonical.map((path) => routeKey(path, directory)).sort()).toEqual(routes.map((row) => row.route).sort());
-      expect(actual.map((path) => routeKey(path, directory))).toContain('vanilla-sd-lora');
-      for (const row of routes) {
-        const path = actual.find((candidate) => routeKey(candidate, directory) === row.route)!;
-        const content = readFileSync(path, 'utf8');
-        expect(content).toContain(`<${row.owner} locale={locale} />`);
-        expect(row.label[locale].trim().length).toBeGreaterThan(0);
-        expect(row.purpose[locale].trim().length).toBeGreaterThan(0);
-        if (row.coverage === 'contextualized') {
-          expect(content).toContain(`<ResearchRouteContext locale={locale} route="${row.route}"`);
+  it('registers every active Chinese public route and mounts its declared reader context', () => {
+    const directory = join(repo, 'src/pages', base);
+    const actual = sourceRoutes(directory, '.astro');
+    const canonical = actual.filter((path) => !compatibilityRouteKeys.has(routeKey(path, directory, '.astro')));
+    expect(canonical.map((path) => routeKey(path, directory, '.astro')).sort()).toEqual(routes.map((row) => row.route).sort());
+    expect(actual.map((path) => routeKey(path, directory, '.astro'))).toContain('vanilla-sd-lora');
+    for (const row of routes) {
+      const path = actual.find((candidate) => routeKey(candidate, directory, '.astro') === row.route)!;
+      const content = readFileSync(path, 'utf8');
+      expect(content).toContain(`<${row.owner} locale={locale} />`);
+      expect(row.label.zh.trim().length).toBeGreaterThan(0);
+      expect(row.purpose.zh.trim().length).toBeGreaterThan(0);
+      if (row.coverage === 'contextualized') {
+        expect(content).toContain(`<ResearchRouteContext locale={locale} route="${row.route}"`);
+      } else {
+        const owner = readFileSync(join(repo, 'src/components/research', `${row.owner}.astro`), 'utf8');
+        if (row.coverage === 'self-contained') {
+          for (const marker of ['data-reader-context', 'data-reader-task', 'data-reader-purpose']) expect(owner).toContain(marker);
         } else {
-          const owner = readFileSync(join(repo, 'src/components/research', `${row.owner}.astro`), 'utf8');
-          if (row.coverage === 'self-contained') {
-            for (const marker of ['data-reader-context', 'data-reader-task', 'data-reader-purpose']) expect(owner).toContain(marker);
-          } else {
-            expect(owner).toContain('<ResearchTaskContext locale={locale} />');
-          }
+          expect(owner).toContain('<ResearchTaskContext locale={locale} />');
         }
       }
-    });
-  }
+    }
+  });
+
+  it('retains matching English capability wrappers in the inert source archive', () => {
+    const activeDir = join(repo, 'src/pages', base);
+    const archiveDir = join(repo, 'docs/archive/site-en/src/pages/en', base);
+    const active = sourceRoutes(activeDir, '.astro').map((path) => routeKey(path, activeDir, '.astro')).sort();
+    const archived = sourceRoutes(archiveDir, '.astro.archive').map((path) => routeKey(path, archiveDir, '.astro.archive')).sort();
+    expect(archived).toEqual(active);
+    for (const row of routes) {
+      expect(row.label.en.trim().length).toBeGreaterThan(0);
+      expect(row.purpose.en.trim().length).toBeGreaterThan(0);
+    }
+  });
 
   it('keeps reader regression cases in the actual standard browser gate', () => {
     const scripts = JSON.parse(readFileSync(join(repo, 'package.json'), 'utf8')).scripts as Record<string, string>;

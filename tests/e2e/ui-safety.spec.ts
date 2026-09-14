@@ -13,10 +13,6 @@ const routes = [
   { label: 'data-status', path: '/data-status/' },
   { label: 'methodology', path: '/methodology/' },
   { label: 'openevo-guide', path: '/research/seed-openevo/study/run/' },
-  { label: 'english-home', path: '/en/' },
-  { label: 'english-models', path: '/en/models/' },
-  { label: 'english-paper-detail', path: '/en/papers/seed/' },
-  { label: 'english-workspace', path: '/en/workspace/' },
 ] as const;
 
 const matrices = [
@@ -335,8 +331,8 @@ test('SEED / OpenEVO model setup has one canonical model-detail owner', async ({
   await expect(setup).toContainText('prompt / parser');
   await expect(page.locator('html')).toHaveJSProperty('scrollWidth', 390);
 
-  await page.goto('/en/models/qwen2-5-3b-instruct/#experiment-setup', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#experiment-setup')).toContainText('SEED / OpenEVO experiment setup');
+  await page.goto('/models/qwen2-5-3b-instruct/#experiment-setup', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#experiment-setup')).toBeVisible();
 
   await page.goto('/models/kimi-k2-thinking/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#experiment-setup')).toHaveCount(0);

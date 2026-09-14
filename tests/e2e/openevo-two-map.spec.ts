@@ -146,7 +146,7 @@ for (const theme of ['light', 'dark'] as const) {
   }
 }
 
-for (const path of [root, `/en${root}`]) {
+for (const path of [root]) {
   test(`tablet layout keeps ${path} usable`, async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto(path, { waitUntil: 'domcontentloaded' });
@@ -188,26 +188,6 @@ test('reduced motion preserves static map semantics', async ({ page }) => {
   await expect(page.locator('[data-quest="freeze"]')).toBeVisible();
   await page.goto(report, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-paper-step="boundary"]')).toBeVisible();
-});
-
-test('English routes mount the same successor gateway and dual narrative architecture', async ({ page }) => {
-  const enRoot = '/en/research/seed-openevo/study/capability-exploration/';
-  await page.goto(enRoot, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('[data-map-choice]')).toHaveCount(3);
-  await expect(page.locator('[data-map-choice="mechanism-1-0"]')).toBeVisible();
-  await page.goto(`${enRoot}mechanism-1-0/`, { waitUntil: 'domcontentloaded' });
-  const mechanismMap = page.getByTestId('openevo-mechanism-map');
-  await expect(mechanismMap.locator('[data-research-orientation] [data-orientation-field]')).toHaveCount(5);
-  const m1d = mechanismMap.locator('[data-experiment="M1-D"]');
-  await expect(m1d).toContainText('Authorized; no start recorded');
-  await expect(m1d).toContainText('Results unsealed');
-  await page.goto(`${enRoot}openevo-2-0/`, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('[data-successor-mode]')).toHaveCount(2);
-  await page.goto(`${enRoot}openevo-2-0/exploration/`, { waitUntil: 'domcontentloaded' });
-  await expect(page.getByTestId('openevo-successor-exploration-map')).toContainText('4096');
-  await page.goto(`${enRoot}openevo-2-0/report/`, { waitUntil: 'domcontentloaded' });
-  await expect(page.getByTestId('openevo-successor-report')).toContainText('Cannot rule out');
-  await assertNoPageOverflow(page);
 });
 
 test('successor gateway retains the seven experiment design families with pinned technical evidence', async ({ page }) => {

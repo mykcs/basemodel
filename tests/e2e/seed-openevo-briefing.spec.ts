@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test';
 
 const cases = [
   { locale: 'zh', route: '/research/seed-openevo/study/briefing/' },
-  { locale: 'en', route: '/en/research/seed-openevo/study/briefing/' },
 ] as const;
 
 for (const entry of cases) {
