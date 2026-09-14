@@ -77,9 +77,10 @@ For research release receipts, a cold read must therefore check both:
 | --- | --- | --- | --- | --- |
 | `main` moved after the initial cold read | Known recurring shared-state hazard; not repeated as an error here | Re-read exact head + exact current base and inspect semantic overlap before merge | `release-closeout-protocol.md` | Already owns moving-main/exact-head acceptance |
 | Risk of treating a release-time scientific snapshot as current research forever | Same provenance family seen in prior publication work; not committed here | Keep release-time receipt and current scientific authority as separate temporal objects | `release-closeout-protocol.md` research/provenance section | Existing authority already covers scientific freshness/conflict resolution |
-| PR body says “receipt-only” | No error occurred; classification was verified | Prove receipt-only scope from the changed files/diff before relaxing product-level re-release work | This historical case + existing release protocol | Concrete worked example; no need for another current policy owner |
+| PR body says “receipt-only” | No review error occurred; classification was verified | Prove receipt-only scope from the changed files/diff before relaxing product-level re-release work | This historical case + existing release protocol | Concrete worked example; no need for another current policy owner |
 | Interim Round evidence could be read as superiority/final | Known scientific-publication boundary; not violated here | Preserve explicit sealed/interim/no-superiority/no-final wording in both page and receipt | Scientific authority + release protocol | Interpretation belongs to scientific authority; release protocol governs publication handling |
 | Temporary PR/CI/provider state could leak into standing policy | Avoided | Keep one-time SHA/run/deployment state in dated evidence only | This historical record / task evidence | Temporary state is audit evidence, not standing policy |
+| Closeout implementation accidentally created `docs/agents/history/README.tmp` | No; first occurrence in this closeout | Remove accidental helper/temp files before PR and verify the final changed-file list rather than assuming cleanup succeeded | This historical case; existing exact-diff review discipline | One concrete implementation mistake does not justify another mutable policy source |
 
 ## What was intentionally not promoted to standing policy
 
@@ -96,17 +97,19 @@ Those facts belong to Git history, PR history, or dated release evidence. Future
 
 ## Repetition check
 
-No previously known closeout mistake was repeated in this conversation.
+No previously known **release-closeout/scientific-boundary** mistake was repeated in the conversation itself.
 
 In particular:
 
 - old green evidence was **not** blindly carried across a moving base;
 - a docs-only label was **not** accepted without inspecting the patch;
-- later research execution was **not** promoted into the sealed 2/4 release snapshot;
+- later research execution was **not** promoted into the sealed release snapshot;
 - interim numbers were **not** converted into superiority/final claims;
 - the already strong current release protocol was **not** duplicated into another mutable policy file.
 
-The knowledge-system improvement here is therefore a worked historical example, not another bootstrap/current-rule layer.
+During implementation of this closeout, an accidental temporary file was created and then removed before PR creation. That was a new execution mistake, not a repeated owner correction. The final PR must therefore be checked from its actual changed-file list before integration.
+
+The knowledge-system improvement here is a worked historical example, not another bootstrap/current-rule layer.
 
 ## Future-Agent test
 
