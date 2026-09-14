@@ -1,8 +1,8 @@
 export const SD_LORA_VR_LINEAGE_INDEX = {
   repository: 'mykcs/openevo-experiment',
-  branch: 'docs/sd-lora-vr-parallel-lineage-index-20260914',
-  commit: 'a4d33bada8e8cc1bc4f4a24f1470650beca7a493',
-  path: 'docs/experiment-tracking/SD_LORA_VR_PARALLEL_LINEAGE_INDEX_20260914.md',
+  branch: 'main',
+  commit: '7c2190127c111f9623a79795f7575937dd21dfba',
+  path: 'docs/science/webshop/SD_LORA_ACCELERATION_LINES.md',
 } as const;
 
 export const SD_LORA_STABLE_REDUCTION_IDENTITY = {

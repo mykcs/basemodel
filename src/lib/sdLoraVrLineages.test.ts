@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   SD_LORA_BOUNDED_RECURRENCE_RESULT,
+  SD_LORA_VR_LINEAGE_INDEX,
   SD_LORA_BOUNDED_RECURRENCE_SOURCE,
   SD_LORA_STABLE_REDUCTION_IDENTITY,
 } from '../data/sdLoraVrLineages';
@@ -15,6 +16,12 @@ const boundedZh = read('../pages/research/seed-openevo/study/capability-explorat
 const boundedEn = read('../pages/en/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/index.astro');
 
 describe('SD-LoRA parallel lineage publication', () => {
+  it('uses the merged OpenEvo reconciliation index as the single website lineage source', () => {
+    expect(SD_LORA_VR_LINEAGE_INDEX.branch).toBe('main');
+    expect(SD_LORA_VR_LINEAGE_INDEX.commit).toBe('7c2190127c111f9623a79795f7575937dd21dfba');
+    expect(SD_LORA_VR_LINEAGE_INDEX.path).toBe('docs/science/webshop/SD_LORA_ACCELERATION_LINES.md');
+  });
+
   it('keeps Stable Reduction and Bounded Online Recurrence as distinct identities', () => {
     expect(SD_LORA_STABLE_REDUCTION_IDENTITY.branch).toContain('v2-stable-reduction');
     expect(SD_LORA_BOUNDED_RECURRENCE_SOURCE.branch).toContain('bounded-online-recurrence');
