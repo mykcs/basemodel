@@ -23,6 +23,15 @@ describe('SD-LoRA conversation publication', () => {
     expect(context).toContain('VR 可以帮助在历史讨论里找到工程加速线，但不是 treatment 名称');
   });
 
+  it('preserves the prospective rank-selection path instead of showing only the final PASS', () => {
+    expect(context).toContain('Fast-SD-LoRA 在封存的 128 题历史开发面板通过 functional non-inferiority');
+    expect(context).toContain('rank32 单点能过，但纵向到 R155 失败');
+    expect(context).toContain('rank64 在 R155 也能过，但完整纵向在 R149 失败');
+    expect(context).toContain('rank128 才通过完整四点纵向资格');
+    expect(context).toContain('Q0 在 R149(rank128) → R150(rank128)');
+    expect(context).toContain('随后 Q1 才执行 R151–R159');
+  });
+
   it('preserves the bounded recurrence final provenance', () => {
     expect(SD_LORA_BOUNDED_RECURRENCE_SOURCE.finalAdapterSha256).toBe('2b65b71a4c822c8b2a6d4639d31a3289dc2267f9de8f0109c8c69bdd1821ad32');
     expect(SD_LORA_BOUNDED_RECURRENCE_SOURCE.finalCloseoutSha256).toBe('0a4be2489779712886b8c0557d4ca74d6000b2dc1d6b727dd56c355ed182cd79');
@@ -30,7 +39,7 @@ describe('SD-LoRA conversation publication', () => {
   });
 
   it('keeps historical admission and current recurrent writing as a third problem', () => {
-    expect(context).toContain('44 个更新，其中 7 个成为后续模型状态的一部分');
+    expect(context).toContain('44 个 SD-LoRA 候选更新，其中只有 7 个真正成为后续模型状态的一部分');
     expect(context).toContain('四轮配对资格实验已经全部封存，每臂 512 次任务尝试');
     expect(context).toContain('173 / 512 对 248 / 512');
   });

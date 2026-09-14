@@ -22,7 +22,11 @@ test('SD-LoRA overview keeps naming and third-mechanism boundaries visible', asy
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const context = page.locator('.accel-context');
   await expect(context).toContainText('共享父级改成中性的“SD-LoRA 加速”');
-  await expect(context).toContainText('44 个更新，其中 7 个成为后续模型状态的一部分');
+  await expect(context).toContainText('rank32 单点能过，但纵向到 R155 失败');
+  await expect(context).toContainText('rank64 在 R155 也能过，但完整纵向在 R149 失败');
+  await expect(context).toContainText('rank128 才通过完整四点纵向资格');
+  await expect(context).toContainText('Q0 在 R149(rank128) → R150(rank128)');
+  await expect(context).toContainText('44 个 SD-LoRA 候选更新，其中只有 7 个真正成为后续模型状态的一部分');
   await expect(context).toContainText('173 / 512 对 248 / 512');
   await expect(context.locator('.evidence-list')).toContainText('7c2190127c11');
   await expect(context.locator('.evidence-list')).toContainText('3a2128e5fb42');

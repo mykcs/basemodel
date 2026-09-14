@@ -10,6 +10,7 @@ import { SD_LORA_V2_LOCAL } from '../data/sdLoraV2Outcome';
 
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const overview = read('../components/research/OpenEvoSdLoraHistorySkeleton.astro');
+const context = read('../components/research/OpenEvoSdLoraAccelerationContext.astro');
 const stable = read('../components/research/OpenEvoSdLoraV2Outcome.astro');
 const bounded = read('../components/research/OpenEvoSdLoraBoundedRecurrence.astro');
 const boundedZh = read('../pages/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/index.astro');
@@ -51,6 +52,27 @@ describe('SD-LoRA parallel lineage publication', () => {
     expect(stable).toContain('SD-LoRA v2 · Stable Reduction');
     expect(stable).toContain('Bounded Online Recurrence');
     expect(stable).toContain('sd-lora-bounded-state');
+  });
+
+
+  it('publishes the durable conversation context on the canonical overview', () => {
+    expect(overview).toContain('OpenEvoSdLoraAccelerationContext');
+    expect(context).toContain('One increasingly slow update became two different research lines');
+    expect(context).toContain('Stable Reduction');
+    expect(context).toContain('Bounded Online Recurrence');
+    expect(context).toContain('2× improved into 37×');
+    expect(context).toContain('shared directory cannot borrow one child treatment');
+    expect(context).toContain('44 个 SD-LoRA 候选更新');
+    expect(context).toContain('Gated-Delta');
+    expect(context).toContain('512 次任务尝试');
+    expect(context).toContain('CI run、Preview deployment、端口、PID');
+  });
+
+  it('keeps the bounded final artifact and closeout hashes visible in provenance data', () => {
+    expect(SD_LORA_BOUNDED_RECURRENCE_SOURCE.finalAdapterSha256).toBe('2b65b71a4c822c8b2a6d4639d31a3289dc2267f9de8f0109c8c69bdd1821ad32');
+    expect(SD_LORA_BOUNDED_RECURRENCE_SOURCE.finalCloseoutSha256).toBe('0a4be2489779712886b8c0557d4ca74d6000b2dc1d6b727dd56c355ed182cd79');
+    expect(context).toContain('finalAdapterSha256');
+    expect(context).toContain('finalCloseoutSha256');
   });
 
   it('shows the bounded evidence boundary rather than an O(1) universal claim', () => {
