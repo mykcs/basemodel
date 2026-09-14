@@ -35,13 +35,13 @@ const terms = zh ? [
 ];
 const referenceState = mechanismDisplayState(reference, locale);
 const m1dSteps = zh ? [
-  { id: 'qualify', kicker: '开始', title: '先匹配任务、模型和运行环境', summary: '先核对模型身份、购物环境和服务接口；检查全部通过，并获得独立授权后，才能开始采集。', outcome: '检查通过且另获授权后，才允许开始收集购物经验。', state: referenceState.execution },
+  { id: 'qualify', kicker: '开始', title: '任务、模型与运行环境资格', summary: '先核对模型身份、购物环境和服务接口；检查全部通过，并获得独立授权后，才能开始采集。', outcome: '检查通过且另获授权后，才允许开始收集购物经验。', state: referenceState.execution },
   { id: 'collect', kicker: '收集', title: '同一个 3B 模型完成 180 × 8 = 1,440 条', summary: '模型按 SEED 的方法完成规定的购物任务；MiniMax 不在购物过程中指导它。', outcome: '得到一份完整 raw Stage1 corpus。', state: '固定预算' },
   { id: 'seal', kicker: '固定记录', title: '核对并固定保存全部 1,440 次购物记录', summary: '保存完成证明和整批数据的校验值后，才发布完全成功率、平均分和无效尝试比例等结果。', outcome: 'raw 行为语料变成可审计、不可回写的证据。', state: referenceState.result },
   { id: 'analyze', kicker: '事后分析', title: 'MiniMax 对 1,440 / 1,440 做同口径事后分析', summary: '用同一个分析器，比较 SEED 与已有 OpenEvo 初始记录中的成功、错误、重复搜索和多样性。', outcome: '得到初始化教材的结构性差异，而不是 SEED 最终分数。', state: '已预注册' },
   { id: 'stop', kicker: '结束', title: '比较完成后硬停：SEED Stage2 = 0', summary: '比较完成即结束：不生成技能、不做监督微调、不进入 SEED 后续训练，也不使用最终测试题。', outcome: 'M1-D 结束，只回答“最初 1,440 条经验有什么不同”。', state: '硬边界' },
 ] : [
-  { id: 'qualify', kicker: 'START', title: 'Match the task world, model identity, and runtime first', summary: 'Only after identity / world / endpoint qualification can the independent release authorize Stage 1.', outcome: 'Qualification and a separate release permit collection to begin.', state: referenceState.execution },
+  { id: 'qualify', kicker: 'START', title: 'Task world, model identity, and runtime qualification', summary: 'Only after identity / world / endpoint qualification can the independent release authorize Stage 1.', outcome: 'Qualification and a separate release permit collection to begin.', state: referenceState.execution },
   { id: 'collect', kicker: 'COLLECT', title: 'Use the same 3B model for 180 × 8 = 1,440 attempts', summary: 'Collect the frozen task set under SEED Stage-1 semantics; MiniMax does not guide online actions.', outcome: 'Produce one complete raw Stage-1 corpus.', state: 'Fixed budget' },
   { id: 'seal', kicker: 'SEAL', title: 'Seal all 1,440 trajectories and the corpus identity first', summary: 'Exact success, mean score, invalid rate, and related fields stay unpublished until the completion receipt and corpus SHA exist.', outcome: 'Turn raw behavior into auditable evidence that cannot be rewritten.', state: referenceState.result },
   { id: 'analyze', kicker: 'POST-HOC', title: 'Run MiniMax on 1,440 / 1,440 with the same analysis contract', summary: 'Then compare the SEED corpus with existing OpenEvo 3B Stage 1 using the same analyzer for success, errors, loops, and diversity.', outcome: 'Measure structural differences in initialization experience, not SEED final performance.', state: 'Preregistered' },
@@ -63,7 +63,7 @@ const stateItems = experiments.map((row) => ({
     locale={locale}
     layout="narrative"
     title={t("AI 练习购物后，哪些变化真的有用？", "What changes help AI after shopping practice?")}
-    lede={t("我们研究 AI 能不能从自己的尝试中学习：让模型在模拟商店按要求买东西，再用这些经验训练它。前面的实验关注“能做到多好”；本页进一步检查，训练留下的哪些内部变化真的影响了购物表现。下面先用一次购物说明任务，再解释怎样做对照实验。", "AI learns from shopping attempts in a simulated store. This page tests which internal changes affect its behavior. Begin with one shopping task below.")}
+    lede={t("我们研究 AI 能不能从自己的尝试中学习：让模型在模拟商店按要求买东西，再用这些经验训练它。前面的实验关注“能做到多好”；接下来的因果对照检查训练留下的哪些内部变化真的影响购物表现，并把参数变化落到具体购物行为上。", "AI learns from shopping attempts in a simulated store. The causal comparisons test which internal changes from training actually affect shopping behavior and connect parameter changes to concrete actions.")}
     question={t("学习带来的内部变化，真的影响购物能力吗？", "Do changes from learning affect shopping ability?")}
     why={t("只看分数还不知道原因；弄清哪些变化有用，才能为改进学习方法提供依据。", "Scores alone do not explain why. Finding useful changes can inform better learning methods.")}
     start={t("取出学习时保存的不同模型版本，确认变化可检验；核验通过并另获授权后开始。", "Verify distinct saved models and testable changes; start only with a separate release.")}
@@ -73,7 +73,7 @@ const stateItems = experiments.map((row) => ({
     backHref={p('/research/seed-openevo/study/capability-exploration/')}
     backLabel={t('OpenEvo 能力探索', 'OpenEvo capability exploration')}
     actionHref="#shopping-task"
-    actionLabel={t('先看一次购物任务', 'Start with one shopping task')}
+    actionLabel={t('一次购物任务', 'One shopping task')}
     terms={terms}
   />
 
@@ -139,7 +139,7 @@ const stateItems = experiments.map((row) => ({
   <section class="mechanism-map__section" id="initialization-reference" aria-labelledby="mechanism-reference-title">
     <h2 id="mechanism-reference-title">{t('独立参照 M1-D：从哪里开始，在哪里硬停？', 'Independent reference M1-D: where does it start and where does it hard-stop?')}</h2>
     <p>{t('M1-D 只比较初始化阶段收集的购物经验。它不提供 M1-C 的方向信号，也不继续执行 SEED 后续训练。', 'M1-D compares only the shopping experience collected during initialization. It does not supply the M1-C direction signal and does not continue into later SEED training.')}</p>
-    <ResearchJourney locale={locale} title={t('M1-D 的完整生命周期', 'The complete M1-D lifecycle')} intro={t('下面说明约定的执行流程，不是已完成的进度记录。当前：', 'These are the contracted steps, not a record of completed progress. Current state: ') + referenceState.execution + ' · ' + referenceState.result} steps={m1dSteps} compact />
+    <ResearchJourney locale={locale} title={t('M1-D 的完整生命周期', 'The complete M1-D lifecycle')} intro={t('这是约定的执行流程，不是已完成的进度记录。当前：', 'These are the contracted steps, not a record of completed progress. Current state: ') + referenceState.execution + ' · ' + referenceState.result} steps={m1dSteps} compact />
     <ExperimentLifecycle experiment={reference} locale={locale} />
     <OpenEvoM1DResults locale={locale} />
   </section>

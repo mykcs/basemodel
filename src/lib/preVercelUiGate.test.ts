@@ -72,6 +72,7 @@ describe('pre-Vercel UI regression gate', () => {
     expect(uiAcceptancePolicy).toContain('npm run preflight:ui');
     expect(uiAcceptancePolicy).toContain('first provider-triggering ref update');
     expect(uiAcceptancePolicy).toContain('A GitHub/Vercel commit status is not by itself proof');
+    expect(uiAcceptancePolicy).toContain('visible H1 / lede / primary controls in both locales');
   });
 
   it('keeps every escaped browser defect wired into both UI suites', () => {

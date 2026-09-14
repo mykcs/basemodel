@@ -40,8 +40,8 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
   <header class="study-hero">
     <h1>{zh ? 'OpenEVO × WebShop 实验' : 'OpenEVO × WebShop experiments'}</h1>
     <p class="study-hero__lede">{zh
-      ? '五次主要实验按研究过程排列。先选一次实验，再看它的结果和由它引出的分析。'
-      : 'Five major experiments are organized by the research sequence. Pick an experiment first, then follow its results and the analyses it produced.'}</p>
+      ? '五次主要实验按研究过程排列；每次实验都连到自己的结果、分析和历史证据。'
+      : 'Five major experiments are organized by the research sequence, each linked to its own results, analyses, and historical evidence.'}</p>
   </header>
   <ol class="experiment-tree" aria-label={zh ? '主要实验目录' : 'Major experiment index'}>
     {OPEN_EVO_EXPERIMENTS.map((experiment) => (
