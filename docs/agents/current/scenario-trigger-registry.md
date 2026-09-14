@@ -30,6 +30,21 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 
 ---
 
+## TRIGGER: parallel research Agents / one umbrella name / overlapping publication work
+
+**Cues:** two Agents are working in nearby research namespaces; the same umbrella label or acronym appears on different branches; a second lineage/index/router appears; a dirty worktree or open PR seems to own the same reader problem; two speedups/results look related but came from different treatments.
+
+**Automatic response:**
+
+1. Before the first substantial implementation write, resolve each scientific line as a tuple: research question/treatment semantics -> maintained state representation -> frozen branch/head -> plan/evidence root. Treat family shorthand as a search alias, never as treatment identity.
+2. Search live open PRs/branches/worktrees by **semantic intent**, not only file overlap. If an existing workline already owns the same publication outcome, cold-read and adopt/reconcile it; do not create a second PR merely because your local files differ.
+3. If parallel reconciliation/index artifacts already exist, choose one current integration path. Semantically absorb any distinct invariant/regression from siblings, then leave the sibling historical/read-only rather than maintaining two mutable routers.
+4. Keep publication provenance internally consistent: the PR/body/current policy that declares the upstream authority, the code/data source, and the reader-facing evidence link must all name the same integrated source. A website must not claim index A is canonical while linking claims to sibling index B.
+5. If a worktree unexpectedly advances or becomes dirty under another Agent, stop mutation. Do not reset/restore it. Move your own committed delta to a clean worktree from current `main`, then resolve conflicts semantically so current route/owner changes survive.
+6. Preserve exact frozen historical treatment names where scientifically necessary, but do not mint new ordinal revision identities around them. Follow the upstream repository's current naming policy for any new machine artifact or reconciliation document.
+
+---
+
 ## TRIGGER: first-principles benchmark/environment page / 目录 / “先讲是什么”
 
 **Cues:** the owner asks to reorganize a benchmark/environment page from first principles, asks for a visible `目录 / Contents`, says a zero-context reader should first understand “这是什么 / 为什么重要 / 实验怎么用它”, or explicitly rejects a mechanism-first/card-wall opening.
