@@ -77,8 +77,8 @@ describe('experiment-first Study index', () => {
     expect(gdrExplainer).not.toContain('id="recurrence"');
     const currentGatedDelta = readFileSync(new URL('../components/research/OpenEvoGatedDeltaSdLoraExplainer.astro', import.meta.url), 'utf8');
     expect(currentGatedDelta).toContain('Gated Delta 的 State 更新');
-    expect(currentGatedDelta).toContain('四轮 Vanilla vs GDR 配对实验已经封存两轮');
-    expect(currentGatedDelta).toContain('不是“GDR 已经优于 Vanilla”的结论');
+    expect(currentGatedDelta).toContain('四轮 Vanilla vs GDR 配对资格实验已经全部封存');
+    expect(currentGatedDelta).toContain('这个结论只属于当前冻结的资格实验');
 
     const frozenResult = readFileSync(new URL('../components/research/OpenEvoSuccessorReport.astro', import.meta.url), 'utf8');
     expect(frozenResult).toContain('1.7B 最终测试 37.60 分');

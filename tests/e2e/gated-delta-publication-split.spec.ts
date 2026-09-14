@@ -26,9 +26,9 @@ for (const locale of locales) {
       await page.setViewportSize(viewport);
       await page.goto(`${locale.prefix}${routes.current}`, { waitUntil: 'domcontentloaded' });
       await expect(page.locator('h1')).toHaveText('Gated-Delta SD-LoRA');
-      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '四轮 Vanilla vs GDR 配对实验已经封存两轮' : 'Two of four Vanilla-vs-GDR paired rounds are sealed');
-      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? 'GDR 暂时更高；但四轮还没跑完' : 'GDR is currently higher; the four-round study is not finished');
-      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '不是“GDR 已经优于 Vanilla”的结论' : 'not a conclusion that GDR is better than Vanilla');
+      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '四轮 Vanilla vs GDR 配对资格实验已经全部封存' : 'All four Vanilla-vs-GDR paired qualification rounds are sealed');
+      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? 'GDR 的总平均 reward 和完整成功率都高于匹配的 Vanilla 对照' : 'GDR finished above the matched Vanilla control on pooled mean reward and exact success');
+      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '这个结论只属于当前冻结的资格实验' : 'This supports the frozen qualification comparison only');
       await expect(page.getByTestId('gated-delta-recurrence')).toBeVisible();
       await expect(page.getByTestId('gated-delta-runtime-path')).toBeVisible();
       await expect(page.locator('[data-reader-route]')).toHaveCount(0);
@@ -78,8 +78,8 @@ test('core distinction remains readable without JavaScript', async ({ browser })
   const page = await context.newPage();
   try {
     await page.goto(routes.current, { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('.gds-hero__state')).toContainText('四轮 Vanilla vs GDR 配对实验已经封存两轮');
-    await expect(page.locator('.gds-hero__state')).toContainText('不是“GDR 已经优于 Vanilla”的结论');
+    await expect(page.locator('.gds-hero__state')).toContainText('四轮 Vanilla vs GDR 配对资格实验已经全部封存');
+    await expect(page.locator('.gds-hero__state')).toContainText('这个结论只属于当前冻结的资格实验');
     await expect(page.getByTestId('gated-delta-recurrence')).toBeVisible();
     await page.goto(routes.history, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#admission-rule')).toContainText('固定 16 题');
