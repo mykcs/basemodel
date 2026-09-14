@@ -4,8 +4,8 @@ import OpenEvoGatedDeltaSdLoraExplainer from '../../../../../../components/resea
 const locale = 'zh' as const;
 ---
 <AppLayout
-  title="Gated-Delta SD-LoRA：已经能真实更新参数，效果比较还没完成"
-  description="旧 GDR-v1 是训练完再筛候选；现在的 Gated Delta 会在学习时直接更新 LoRA 参数。真实 WebShop 参数写入已经跑通，但完整 Vanilla-vs-GDR 四轮效果比较还没封存。"
+  title="Gated-Delta SD-LoRA：四轮资格实验已封存"
+  description="当前 Gated Delta 会在学习时直接更新 LoRA 参数。四轮冻结 D1 资格实验已全部封存：GDR 的 WebShop 总平均 reward 和完整成功率高于匹配的 Vanilla；这不代表普遍优于 Vanilla，也不是 final-panel 结果。"
   locale={locale}
 >
   <OpenEvoGatedDeltaSdLoraExplainer locale={locale} />

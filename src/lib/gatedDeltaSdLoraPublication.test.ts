@@ -7,6 +7,8 @@ import { bilingualStaticPaths } from './sitemapRoutes';
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const current = read('../components/research/OpenEvoGatedDeltaSdLoraExplainer.astro');
 const history = read('../components/research/OpenEvoGdrDirectApplyExplainer.astro');
+const currentZhRoute = read('../pages/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/index.astro');
+const currentEnRoute = read('../pages/en/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/index.astro');
 
 describe('Gated-Delta SD-LoRA publication split', () => {
   it('keeps runtime control free of Task Vector, score, probe, and future-state leakage', () => {
@@ -55,6 +57,20 @@ describe('Gated-Delta SD-LoRA publication split', () => {
     expect(current).toContain('四轮汇总 · reward');
     expect(current).not.toContain('20,480 rollouts · 44 candidates · 7 adopted');
     expect(current).not.toContain('16-task probe 比较新旧状态');
+  });
+
+  it('keeps route metadata aligned with the sealed four-round qualification', () => {
+    expect(currentZhRoute).toContain('title="Gated-Delta SD-LoRA：四轮资格实验已封存"');
+    expect(currentZhRoute).toContain('四轮冻结 D1 资格实验已全部封存');
+    expect(currentZhRoute).toContain('这不代表普遍优于 Vanilla，也不是 final-panel 结果');
+    expect(currentZhRoute).not.toContain('效果比较还没完成');
+    expect(currentZhRoute).not.toContain('四轮效果比较还没封存');
+
+    expect(currentEnRoute).toContain('title="Gated-Delta SD-LoRA: four-round qualification sealed"');
+    expect(currentEnRoute).toContain('All four frozen D1 qualification rounds are sealed');
+    expect(currentEnRoute).toContain('without implying universal superiority or a final-panel result');
+    expect(currentEnRoute).not.toContain('efficacy comparison still incomplete');
+    expect(currentEnRoute).not.toContain('comparison is not complete yet');
   });
 
   it('keeps the historical page about candidate admission rather than duplicating the current recurrence', () => {
