@@ -20,22 +20,22 @@ describe('SD-LoRA conversation publication', () => {
 
   it('records the naming correction without merging treatment identities', () => {
     expect(context).toContain('共享父级改成中性的“SD-LoRA 加速”');
-    expect(context).toContain('VR 可以帮助在历史讨论里找到工程加速线，但不是 treatment 名称');
+    expect(context).toContain('VR 可以帮助在历史讨论里找到工程加速线，但不是正式实验名称');
   });
 
   it('preserves the prospective rank-selection path instead of showing only the final PASS', () => {
-    expect(context).toContain('Fast-SD-LoRA 在封存的 128 题历史开发面板通过 functional non-inferiority');
-    expect(context).toContain('rank32 单点能过，但纵向到 R155 失败');
-    expect(context).toContain('rank64 在 R155 也能过，但完整纵向在 R149 失败');
+    expect(context).toContain('Fast-SD-LoRA 在封存的 128 题历史开发面板通过“功能表现不劣于”的检查');
+    expect(context).toContain('rank32 单点能过，但纵向到第155轮失败');
+    expect(context).toContain('rank64 在第155轮也能过，但完整纵向在第149轮失败');
     expect(context).toContain('rank128 才通过完整四点纵向资格');
-    expect(context).toContain('Q0 在 R149(rank128) → R150(rank128)');
-    expect(context).toContain('随后 Q1 才执行 R151–R159');
+    expect(context).toContain('Q0 在第149轮(rank128) → 第150轮(rank128)');
+    expect(context).toContain('随后 Q1 才执行第151轮到第159轮');
   });
 
   it('preserves the bounded recurrence final provenance', () => {
     expect(SD_LORA_BOUNDED_RECURRENCE_SOURCE.finalAdapterSha256).toBe('2b65b71a4c822c8b2a6d4639d31a3289dc2267f9de8f0109c8c69bdd1821ad32');
     expect(SD_LORA_BOUNDED_RECURRENCE_SOURCE.finalCloseoutSha256).toBe('0a4be2489779712886b8c0557d4ca74d6000b2dc1d6b727dd56c355ed182cd79');
-    expect(context).toContain('protected final panel access = 0');
+    expect(context).toContain('最终保护测试集访问次数为 0');
   });
 
   it('keeps historical admission and current recurrent writing as a third problem', () => {

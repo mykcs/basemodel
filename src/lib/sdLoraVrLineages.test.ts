@@ -65,7 +65,7 @@ describe('SD-LoRA parallel lineage publication', () => {
     expect(context).toContain('44 个 SD-LoRA 候选更新');
     expect(context).toContain('Gated-Delta');
     expect(context).toContain('512 次任务尝试');
-    expect(context).toContain('CI run、Preview deployment、端口、PID');
+    expect(context).toContain('CI、Preview、端口、PID 和等待状态只属于发布记录');
   });
 
   it('keeps the bounded final artifact and closeout hashes visible in provenance data', () => {

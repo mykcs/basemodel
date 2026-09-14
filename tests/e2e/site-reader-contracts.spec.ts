@@ -168,15 +168,20 @@ test('Study phone first screen exposes exactly the five experiment parents', asy
   await expect(featured).toBeVisible();
   await expect(featured.locator(':scope > strong')).toHaveText('SD-LoRA 加速');
   const branchLinks = featured.locator('a');
-  await expect(branchLinks).toHaveCount(2);
-  await expect(branchLinks.nth(0)).toHaveText(/Stable Reduction/);
-  await expect(branchLinks.nth(0)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/');
-  await expect(branchLinks.nth(1)).toHaveText(/Bounded Online Recurrence/);
-  await expect(branchLinks.nth(1)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/');
+  await expect(branchLinks).toHaveCount(3);
+  await expect(branchLinks.nth(0)).toBeVisible();
+  await expect(branchLinks.nth(0)).toHaveText(/两条路线说明/);
+  await expect(branchLinks.nth(0)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-history/');
+  await expect(branchLinks.nth(1)).toBeVisible();
+  await expect(branchLinks.nth(1)).toHaveText(/Stable Reduction/);
+  await expect(branchLinks.nth(1)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/');
+  await expect(branchLinks.nth(2)).toBeVisible();
+  await expect(branchLinks.nth(2)).toHaveText(/Bounded Online Recurrence/);
+  await expect(branchLinks.nth(2)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/');
 });
 
 
-test('Study desktop nests the two SD-LoRA acceleration branches under one indented directory group', async ({ page }) => {
+test('Study desktop nests the SD-LoRA overview and two treatment branches under one indented directory group', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   for (const route of ['/research/seed-openevo/study/']) {
     await page.goto(route, { waitUntil: 'domcontentloaded' });
@@ -186,9 +191,11 @@ test('Study desktop nests the two SD-LoRA acceleration branches under one indent
     await expect(group).toHaveCount(1);
     await expect(group.locator(':scope > strong')).toHaveText(expectedGroupLabel);
     const links = group.locator(':scope > ul a');
-    await expect(links).toHaveCount(2);
-    await expect(links.nth(0)).toContainText('Stable Reduction');
-    await expect(links.nth(1)).toContainText('Bounded Online Recurrence');
+    await expect(links).toHaveCount(3);
+    await expect(links.nth(0)).toContainText('两条路线说明');
+    await expect(links.nth(0)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-history/');
+    await expect(links.nth(1)).toContainText('Stable Reduction');
+    await expect(links.nth(2)).toContainText('Bounded Online Recurrence');
     const geometry = await group.evaluate((element) => {
       const label = element.querySelector(':scope > strong')?.getBoundingClientRect();
       const branchLinks = [...element.querySelectorAll(':scope > ul a')].map((link) => link.getBoundingClientRect());
