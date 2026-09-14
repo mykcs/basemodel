@@ -51,6 +51,15 @@ describe('research-site presentation contract', () => {
     expect(attentionContract).toContain('src/data/siteReaderContracts.ts');
   });
 
+  it('keeps navigation grouping separate from child scientific treatment identity', () => {
+    const contract = readFileSync(join(repoRoot, 'docs/agents/current/research-site-presentation-contract.md'), 'utf8');
+    expect(contract).toContain('A navigation-only grouping label may be broader than any child scientific treatment identity');
+    expect(contract).toContain('Present the group as hierarchy, not as a third result/treatment destination');
+    expect(contract).toContain('Sharing a navigation parent does not merge treatments');
+    expect(contract).toContain('Metrics, estimands, provenance, evidence links, and claim boundaries stay with the child treatment owners');
+    expect(contract).toContain('physical nesting and breakpoint visibility');
+  });
+
   it('protects longitudinal research figures from silent recent-window cropping', () => {
     const contract = readFileSync(join(repoRoot, 'docs/agents/current/research-site-presentation-contract.md'), 'utf8');
     expect(contract).toContain('preserve the full relevant time axis and the actual earlier trajectory');
