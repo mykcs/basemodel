@@ -59,6 +59,7 @@ describe('research URL hierarchy', () => {
       ['/research/seed-openevo', '/research/seed-openevo/flow/'],
       ['/research/seed-openevo/base-model', '/models/qwen2-5-3b-instruct/'],
       ['/research/seed-openevo/flow/base-model', '/models/qwen2-5-3b-instruct/'],
+      ['/research/seed-openevo/study/capability-exploration/vanilla-sd-lora', '/research/seed-openevo/flow/sd-lora/'],
       ['/research/seed-openevo/webshop', '/research/seed-openevo/flow/webshop/'],
       ['/research/seed-openevo/experiment', '/research/seed-openevo/study/'],
       ['/guide/openevo-webshop-alfworld', '/research/seed-openevo/study/run/'],
@@ -67,6 +68,7 @@ describe('research URL hierarchy', () => {
       ['/en/research/seed-openevo', '/en/research/seed-openevo/flow/'],
       ['/en/research/seed-openevo/base-model', '/en/models/qwen2-5-3b-instruct/'],
       ['/en/research/seed-openevo/flow/base-model', '/en/models/qwen2-5-3b-instruct/'],
+      ['/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora', '/en/research/seed-openevo/flow/sd-lora/'],
       ['/en/research/seed-openevo/results/:path*', '/en/research/seed-openevo/study/results/:path*'],
     ]);
     for (const [source, destination] of expected) {
