@@ -22,8 +22,8 @@ export const CAPABILITY_READER_ROUTES = [
       "en": "Historical GDR-v1 / DirectApply"
     },
     "purpose": {
-      "zh": "解释历史本地 GDR-v1 怎样把 44 个已训练的 SD-LoRA candidate 过滤成 7 次正式更新，以及 DirectApply 怎样移除这层 16-task candidate-admission veto。",
-      "en": "Explain how historical local GDR-v1 filtered 44 trained SD-LoRA candidates into seven formal updates and how DirectApply removed that 16-task candidate-admission veto."
+      "zh": "解释旧 GDR-v1 怎样先训练 44 个 SD-LoRA 候选更新，再用固定 16 题只让其中 7 个真正改到后续模型；同时说明 DirectApply 怎样取消这道训练后筛选。",
+      "en": "Explain how old GDR-v1 trained 44 SD-LoRA candidate updates, then used a fixed 16-task check so only seven actually changed later models, and how DirectApply removed that post-training filter."
     }
   },
   {
@@ -35,8 +35,8 @@ export const CAPABILITY_READER_ROUTES = [
       "en": "Gated-Delta SD-LoRA derivation"
     },
     "purpose": {
-      "zh": "解释当前 Gated-Delta SD-LoRA 如何形成 recurrent LoRA-factor write，并记录 Route S 已完成真实 task-bearing 参数写入、完整 paired D1 仍未完成的最新边界。",
-      "en": "Explain the recurrent Gated-Delta SD-LoRA factor-state write, the real task-bearing Route S execution proof, and the still-incomplete full paired D1 boundary."
+      "zh": "解释当前 Gated-Delta SD-LoRA 怎样在每次学习时直接更新 LoRA 参数，以及四轮 Vanilla-vs-GDR 配对实验已封存两轮后，我们现在能说什么、还不能说什么。",
+      "en": "Explain how current Gated-Delta SD-LoRA updates LoRA parameters during learning, what the first two sealed Vanilla-vs-GDR paired rounds show, and why the four-round result is still incomplete."
     }
   },
   {

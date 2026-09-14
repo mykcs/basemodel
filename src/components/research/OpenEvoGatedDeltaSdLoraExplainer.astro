@@ -10,7 +10,7 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 const historyHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
-const vanillaHref = p('/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/');
+const vanillaHref = p('/research/seed-openevo/flow/sd-lora/');
 const flaHref = 'https://github.com/fla-org/flash-linear-attention/blob/516143e31fce09925e6c39ac37148444bad176c4/fla/ops/gated_delta_rule/naive.py';
 const paperHref = 'https://arxiv.org/abs/2412.06464';
 const evidenceFor = (id: string) => id === 'beta-g'
@@ -25,18 +25,18 @@ const evidenceFor = (id: string) => id === 'beta-g'
     <a class="gds-back" href={p('/research/seed-openevo/study/capability-exploration/')}>← {t('OpenEvo 能力探索', 'OpenEvo capability exploration')}</a>
     <h1>Gated-Delta SD-LoRA</h1>
     <p class="gds-hero__lede" data-reader-task data-reader-purpose>{t(
-      '我们之前做的本地 GDR-v1 放错了层级：SD-LoRA candidate 已经训练完成以后，它才用 16 道题决定“要不要采用”。现在研究的是：一次新的学习证据（learning event）出现时，直接产生连续写入，让 LoRA 参数状态本身按 Gated Delta recurrence 更新。',
-      'Our historical local GDR-v1 operated at the wrong layer: only after an SD-LoRA candidate had already been trained did a 16-task probe decide whether to adopt it. The current research instead starts from a new piece of learning evidence (a learning event) and writes directly into the LoRA parameter state through a Gated Delta recurrence.'
+      '旧 GDR-v1 每轮会训练出一个 SD-LoRA 候选更新，训练完成后再用固定 16 题决定要不要保留。现在的 Gated Delta 不再等训练结束后筛候选，而是在学习发生时直接改 LoRA 的参数状态。',
+      'The old local GDR-v1 first trained an SD-LoRA candidate update, then used a fixed 16-task check to decide whether to keep it. The current Gated Delta no longer filters a finished candidate; it changes LoRA parameter state during each learning event.'
     )}</p>
-    <p class="gds-hero__state"><strong>{t('真实 GDR 路径已经跑通；方法效果还没有结论。', 'The real GDR path now runs; method efficacy is still unresolved.')}</strong> {t('Route S 已在真实 Qwen3-1.7B × WebShop learning opportunity 上执行 Gated-Delta 参数写入，证明这条 recurrent factor-state 路径不是纸面设计。完整四轮 Vanilla vs GDR paired D1 仍未完成，因此不能把 execution proof 写成“GDR 更好”。', 'Route S executed Gated-Delta parameter writes on a real Qwen3-1.7B × WebShop learning opportunity, proving the recurrent factor-state path is real rather than a paper design. The full four-round Vanilla-vs-GDR paired D1 is still incomplete, so execution proof is not an efficacy claim.')}</p>
-    <p class="gds-hero__history"><a href={historyHref}>{t('查看历史 GDR-v1 / DirectApply 实验记录 →', 'Open the historical GDR-v1 / DirectApply experiment record →')}</a></p>
+    <p class="gds-hero__state"><strong>{t('四轮 Vanilla vs GDR 配对实验已经封存两轮。第一轮真正能看到前一次参数更新影响的任务里，GDR 暂时更高；但四轮还没跑完。', 'Two of four Vanilla-vs-GDR paired rounds are sealed. In the first round that can reflect the previous parameter update, GDR is currently higher; the four-round study is not finished.')}</strong> {t('Round 1 的平均 WebShop reward 是 Vanilla 0.7556、GDR 0.7803；完整成功是 53 / 128 对 59 / 128。这个 +0.0247 reward、+6 道完整成功是中途的正向信号，不是“GDR 已经优于 Vanilla”的结论。在线写入仍不会读取 Task Vector、WebShop 分数、固定 16 题检查结果或冻结 final 题集；这些信息只能用于事后分析或评测。', 'In Round 1, mean WebShop reward was 0.7556 for Vanilla and 0.7803 for GDR, while exact success was 53 / 128 versus 59 / 128. The +0.0247 reward and +6 exact successes are an encouraging interim signal, not a conclusion that GDR is better than Vanilla. The online write still cannot read the Task Vector, WebShop score, fixed 16-task check result, or frozen final task set; those signals remain retrospective analysis or evaluation only.')}</p>
+    <p class="gds-hero__history"><a href={historyHref}>{t('旧 GDR-v1 / DirectApply 到底做了什么 →', 'What did the old GDR-v1 / DirectApply experiment actually do? →')}</a></p>
   </header>
 
   <section class="gds-section" id="recurrence" aria-labelledby="recurrence-title">
-    <h2 id="recurrence-title">{t('原始 Gated Delta Rule 更新的是 State', 'The original Gated Delta Rule updates State')}</h2>
+    <h2 id="recurrence-title">{t('Gated Delta 的 State 更新', 'How Gated Delta updates State')}</h2>
     <p>{t(
-      '原始规则没有等一个完整 candidate 训练完再做外部 PASS / FAIL。当前输入先给出 key、value 和 gate；旧 State 被读取，当前 value 与旧读数的差形成 residual，再由 β 控制这次 residual 写回多少。',
-      'The original rule does not wait for a full candidate and then run an external PASS / FAIL. The current input produces a key, value, and gates; the old State is read, the difference between the current value and that readout forms a residual, and β controls how much of that residual is written back.'
+      '一次学习用 key 从旧 State 里读出已有内容，并和当前 value 比较。两者的差就是 residual；β 决定把多少 residual 写回，g 决定写入前旧 State 衰减多少。',
+      'Each learning event uses a key to read what is already in State, then compares that readout with the current value. The difference is the residual; β controls how much of it is written back, while g controls how much the old State decays first.'
     )}</p>
     <figure class="gds-recurrence" data-testid="gated-delta-recurrence">
       <div class="gds-signal"><span>{t('当前学习信号', 'current learning signal')}</span><strong>x<sub>t</sub> → k<sub>t</sub>, v<sub>t</sub>, β<sub>t</sub>, g<sub>t</sub></strong></div>
@@ -54,25 +54,25 @@ const evidenceFor = (id: string) => id === 'beta-g'
         <code>r<sub>t</sub> = v<sub>t</sub> − S̃<sub>t−1</sub> k<sub>t</sub></code>
         <code>S<sub>t</sub> = S̃<sub>t−1</sub> + β<sub>t</sub> k<sub>t</sub> r<sub>t</sub><sup>T</sup></code>
       </div>
-      <figcaption>{t('不同实现可能转置张量方向，但语义不变：先读旧 State，再把没有解释掉的 residual 连续写回。', 'Implementations may transpose tensor orientation, but the semantics stay the same: read the old State, then continuously write back the unexplained residual.')}</figcaption>
+      <figcaption>{t('不同实现可能转置张量方向，但语义不变：读取旧 State 后，把没有解释掉的 residual 连续写回。', 'Implementations may transpose tensor orientation, but the semantics stay the same: read the old State, then continuously write back the unexplained residual.')}</figcaption>
     </figure>
     <p class="gds-sources"><a href={flaHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={flaHref} />Flash Linear Attention reference</a> · <a href={paperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={paperHref} />Gated Delta Networks</a></p>
   </section>
 
   <section class="gds-section" id="task-vector" aria-labelledby="task-vector-title">
-    <h2 id="task-vector-title">{t('Task Vector 只做事后分析，不参与在线更新', 'Task Vector stays diagnostic and does not control online updates')}</h2>
-    <p>{t('Task Vector 仍然有用，但角色变了。它记录一次训练前后参数状态实际移动了多少、朝哪里移动；它帮助我们回看 Vanilla / DirectApply 的几何，也可以做 offline teacher 或事后比较。', 'Task Vector remains useful, but its role changed. It records how far and in what direction parameter state moved across an update; it can describe Vanilla / DirectApply geometry, serve as an offline teacher, or support post-hoc comparison.')}</p>
+    <h2 id="task-vector-title">{t('Task Vector 的角色', 'The role of the Task Vector')}</h2>
+    <p>{t('Task Vector 记录一次训练前后参数移动了多少、朝哪里移动，因此适合做事后几何分析、离线 teacher / label 和训练后的比较。但它不参与当前在线写入：运行时的 K / V / β / g 不能由 Task Vector、WebShop 分数或固定 16 题候选检查来控制。', 'A Task Vector records how far and in what direction the parameters moved across an update, so it remains useful for retrospective geometry, offline teacher / label work, and post-hoc comparison. It does not control the current online write: runtime K / V / β / g cannot be driven by the Task Vector, WebShop score, or a candidate probe.')}</p>
     <div class="gds-tv-boundary">
       <dl>
-        <div><dt>{t('可以用来', 'Allowed')}</dt><dd>{t('retrospective geometry · offline teacher / label · post-hoc evaluation', 'retrospective geometry · offline teacher / label · post-hoc evaluation')}</dd></div>
-        <div><dt>{t('不能进入', 'Forbidden at runtime')}</dt><dd>K / V · β · g · WebShop score / reward · candidate probe</dd></div>
+        <div><dt>{t('可以用来', 'Allowed')}</dt><dd>{t('事后参数几何 · 离线 teacher / label · 训练后评估', 'retrospective geometry · offline teacher / label · post-hoc evaluation')}</dd></div>
+        <div><dt>{t('不能进入', 'Forbidden at runtime')}</dt><dd>K / V · β · g · WebShop 分数 / reward · 固定 16 题候选检查</dd></div>
       </dl>
       <code>Δθ<sub>t</sub> = θ<sub>t</sub> − θ<sub>t−1</sub></code>
     </div>
   </section>
   <section class="gds-section" id="derivation" aria-labelledby="derivation-title">
-    <h2 id="derivation-title">{t('为什么最后把 State 放进 LoRA factors', 'Why State ended up in the LoRA factors')}</h2>
-    <p>{t('每一步证据都会缩小下一步还能合理尝试什么。主线只保留“当时在猜什么、证据怎样改变判断、为什么因此进入下一步”；完整 D0 编号和数值放在相邻证据里。', 'Each result narrows what remains reasonable to try next. The mainline keeps only the hypothesis, what changed our judgment, and why that forced the next step; exact D0 identifiers and metrics remain in local evidence.')}</p>
+    <h2 id="derivation-title">{t('从学习事件到 LoRA 状态', 'From a learning event to LoRA State')}</h2>
+    <p>{t('这条推导主要解决三个问题：当前学习里什么信号真的和参数更新有关，怎样还原 AdamW 最终写进参数的变化，以及持续保存的 State 应该放在哪里。失败实验也保留，因为它们排除了看起来合理、实际不够的方案。', 'The derivation had to answer three questions: which signal from the current learning event really relates to the parameter update, how to reconstruct the change AdamW actually leaves in the parameters, and where the persistent State should live. Failed tests remain because they rule out plausible but insufficient answers.')}</p>
     <ol class="gds-derivation">
       {snapshot.derivation.map((step, index) => (
         <li>
@@ -95,41 +95,44 @@ const evidenceFor = (id: string) => id === 'beta-g'
   </section>
 
   <section class="gds-section" id="factor-state" aria-labelledby="factor-state-title">
-    <h2 id="factor-state-title">{t('参数 State 直接留在 LoRA 的 rank-8 factors 里', 'Parameter State stays directly in the rank-8 LoRA factors')}</h2>
-    <p>{t('这里的 A 和 C 是 LoRA 真正保存的低秩参数因子。我们不再先生成一个完整大矩阵再重新分解：真实学习事件提供局部信号，当前 A / C 与已有 AdamW memory 保存因果历史，再由冻结的 beta policy 决定这次写入多强。', 'A and C are the low-rank LoRA factors that actually persist. Instead of materializing a full matrix and factorizing it again, a real learning event provides local signals, current A / C plus prior AdamW memory carry causal history, and the frozen beta policy sets write strength.')}</p>
+    <h2 id="factor-state-title">{t('LoRA 参数里的 recurrent State', 'Recurrent State inside the LoRA parameters')}</h2>
+    <p>{t('LoRA 实际保存的是低秩参数 A 和 C。新的学习信号到来时，当前 A / C 和 AdamW 的历史状态一起表示“现在已经学到了什么”；冻结的 β policy 再决定改多少。整个过程直接更新低秩参数，不需要拼出一个大矩阵再重新分解。', 'LoRA actually stores low-rank factors A and C. When new learning evidence arrives, the current A / C plus AdamW history represent what has already been learned, and the frozen β policy sets how much to change. The update acts directly on the low-rank factors instead of building a full matrix and factorizing it again.')}</p>
     <figure class="gds-runtime" data-testid="gated-delta-runtime-path">
       <div class="gds-runtime__flow">
-        <div class="gds-node is-event"><small>{t('真实 learning event', 'real learning event')}</small><strong>{t('activation + supervised error', 'activation + supervised error')}</strong></div>
+        <div class="gds-node is-event"><small>{t('当前学习事件', 'real learning event')}</small><strong>{t('activation + supervised error', 'activation + supervised error')}</strong></div>
         <div class="gds-connector" aria-hidden="true"></div>
-        <div class="gds-node is-signal"><small>{t('factor-local causal signal', 'factor-local causal signal')}</small><strong>{t('clipped gradients / token-local geometry', 'clipped gradients / token-local geometry')}</strong></div>
+        <div class="gds-node is-signal"><small>{t('LoRA 局部学习信号', 'local LoRA learning signal')}</small><strong>{t('clipped gradients / token-local geometry', 'clipped gradients / token-local geometry')}</strong></div>
         <div class="gds-connector" aria-hidden="true"></div>
-        <div class="gds-node is-memory"><small>{t('当前状态 + 因果历史', 'current state + causal history')}</small><strong>A · C<sup>T</sup> · AdamW moments</strong></div>
+        <div class="gds-node is-memory"><small>{t('当前参数 + AdamW 历史', 'current parameters + AdamW history')}</small><strong>A · C<sup>T</sup> · AdamW moments</strong></div>
         <div class="gds-connector" aria-hidden="true"></div>
-        <div class="gds-node is-gate"><small>{t('连续写入控制', 'continuous write control')}</small><strong>β<sub>policy</sub> · g = 0</strong></div>
+        <div class="gds-node is-gate"><small>{t('写入强度', 'write strength')}</small><strong>β<sub>policy</sub> · g = 0</strong></div>
         <div class="gds-connector" aria-hidden="true"></div>
-        <div class="gds-node is-next"><small>{t('下一 factor State', 'next factor State')}</small><strong>S<sub>A</sub> = A · S<sub>C</sub> = C<sup>T</sup></strong></div>
+        <div class="gds-node is-next"><small>{t('更新后的 LoRA State', 'updated LoRA State')}</small><strong>S<sub>A</sub> = A · S<sub>C</sub> = C<sup>T</sup></strong></div>
       </div>
-      <figcaption>{t(`第一版 D1 只在 ${snapshot.treatmentScope.gatedModules} 使用这个 treatment；其它 adapted modules 仍保持 Vanilla DirectApply SD-LoRA update。`, `First D1 applies this treatment only to ${snapshot.treatmentScope.gatedModules}; all other adapted modules keep the Vanilla DirectApply SD-LoRA update.`)}</figcaption>
+      <figcaption>{t(`第一版四轮对照只在 ${snapshot.treatmentScope.gatedModules} 使用 Gated Delta；其它 LoRA 模块仍按 Vanilla DirectApply 的方式更新。`, `The first four-round comparison applies Gated Delta only to ${snapshot.treatmentScope.gatedModules}; all other LoRA modules keep the Vanilla DirectApply update.`)}</figcaption>
     </figure>
     <p class="gds-related"><a href={vanillaHref}>{t('对照阅读：Vanilla SD-LoRA 一轮怎样更新 →', 'Compare with one Vanilla SD-LoRA update →')}</a></p>
   </section>
 
   <section class="gds-section gds-d1" id="d1-boundary" aria-labelledby="d1-boundary-title">
-    <h2 id="d1-boundary-title">{t('现在证明了“真的跑起来”，还没有证明“效果更好”', 'We have proved real execution, not better efficacy')}</h2>
-    <p>{t('Route S 已完成一个真实 task-bearing GDR smoke：128 次 WebShop rollout 产生真实学习机会，随后 SD-LoRA update 在冻结的 Gated-Delta treatment 下执行。它证明 GDR 确实进入了 1.7B 的参数更新路径；这不是 fixture、不是离线 Task Vector replay，也不是 candidate admission。', 'Route S completed a real task-bearing GDR smoke: 128 WebShop rollouts produced a genuine learning opportunity, followed by an SD-LoRA update under the frozen Gated-Delta treatment. This proves GDR really entered the 1.7B parameter-update path; it was not a fixture, offline Task-Vector replay, or candidate admission.')}</p>
+    <h2 id="d1-boundary-title">{t('四轮配对实验完成两轮，Round 1 暂时偏向 GDR', 'Two paired rounds are sealed; Round 1 currently favors GDR')}</h2>
+    <p>{t('Round 0 的 WebShop 任务发生在两种更新第一次把模型状态拉开之前，所以 Vanilla 和 GDR 的结果完全相同；它主要证明两组从同一起点进入不同参数更新。Round 1 才是第一轮真正能看到上一轮更新影响的任务：GDR 的平均 reward 和完整成功数都更高。还剩两轮，因此现在只能把它当作值得继续检验的正向信号。', 'Round 0 ran before the two update rules had produced different model states, so Vanilla and GDR had identical WebShop results; its main role was to take the common start through two different parameter updates. Round 1 is the first rollout round that can reflect the previous update, and GDR is higher on both mean reward and exact success. Two rounds remain, so this is an encouraging signal to keep testing, not a superiority result.')}</p>
     <dl class="gds-d1__facts">
-      <div><dt>Route S</dt><dd>{t(`${snapshot.routeSExecution.attemptCount} rollouts · ${snapshot.routeSExecution.semanticTaskIdentityCount} 个任务 · ${snapshot.routeSExecution.cleanExactSuccessCount} 条 clean exact success（覆盖 ${snapshot.routeSExecution.cleanExactSuccessTaskCount} 个任务）`, `${snapshot.routeSExecution.attemptCount} rollouts · ${snapshot.routeSExecution.semanticTaskIdentityCount} tasks · ${snapshot.routeSExecution.cleanExactSuccessCount} clean exact successes across ${snapshot.routeSExecution.cleanExactSuccessTaskCount} tasks`)}</dd></div>
+      <div><dt>{t('真实 WebShop 运行', 'Real WebShop run')}</dt><dd>{t(`${snapshot.routeSExecution.attemptCount} rollouts · ${snapshot.routeSExecution.semanticTaskIdentityCount} 个任务 · ${snapshot.routeSExecution.cleanExactSuccessCount} 条 clean exact success（覆盖 ${snapshot.routeSExecution.cleanExactSuccessTaskCount} 个任务）`, `${snapshot.routeSExecution.attemptCount} rollouts · ${snapshot.routeSExecution.semanticTaskIdentityCount} tasks · ${snapshot.routeSExecution.cleanExactSuccessCount} clean exact successes across ${snapshot.routeSExecution.cleanExactSuccessTaskCount} tasks`)}</dd></div>
       <div><dt>{t('真实参数写入', 'Real parameter write')}</dt><dd>{snapshot.routeSExecution.optimizerSteps} optimizer steps · {snapshot.routeSExecution.appliedFactorWrites.toLocaleString('en-US')} factor writes · {snapshot.routeSExecution.zeroDirectionNoops} zero-direction no-ops</dd></div>
-      <div><dt>β / g</dt><dd>β ∈ [{snapshot.routeSExecution.betaMinObserved.toExponential(2)}, {snapshot.routeSExecution.betaMaxObserved.toFixed(6)}] · <code>g = 0</code> · {t('全部 retention 精确为 1', 'all retention exactly 1')}</dd></div>
-      <div><dt>{t('禁止信号', 'Forbidden signals')}</dt><dd>{t('Task Vector runtime reads = 0 · reward / score controller = false · candidate probe reads = 0 · final panel access = 0', 'Task Vector runtime reads = 0 · reward / score controller = false · candidate probe reads = 0 · final panel access = 0')}</dd></div>
-      <div><dt>{t('完整 paired D1', 'Full paired D1')}</dt><dd>{t('尚未完成。两条 arm 的 matched Round-0 rollout 已发生，但四轮 Vanilla-vs-GDR paired 结果仍未封存。', 'Not complete. Matched Round-0 rollouts have occurred on both arms, but the four-round Vanilla-vs-GDR paired result is not sealed.')}</dd></div>
-      <div><dt>{t('final panel', 'Final panel')}</dt><dd>{t('仍关闭；Route S 与当前 paired recovery 都没有打开它。', 'Still closed; neither Route S nor the current paired recovery opened it.')}</dd></div>
+      <div><dt>β / g</dt><dd>β ∈ [{snapshot.routeSExecution.betaMinObserved.toExponential(2)}, {snapshot.routeSExecution.betaMaxObserved.toFixed(6)}] · <code>g = 0</code> · {t('g=0，因此旧 State 不额外衰减（retention=1）', 'g=0, so the old State gets no extra decay (retention=1)')}</dd></div>
+      <div><dt>{t('在线更新不能看', 'Runtime cannot read')}</dt><dd>{t('Task Vector · WebShop 分数 / reward · 固定 16 题检查结果 · final panel 信息（当前运行均为 0 次读取）', 'Task Vector · WebShop score / reward · fixed 16-task check results · final-panel information (all read counts were zero in this run)')}</dd></div>
+      <div><dt>{t('配对实验进度', 'Paired-study progress')}</dt><dd>{snapshot.pairedD1.roundsSealed} / {snapshot.pairedD1.roundCount} rounds sealed · {snapshot.pairedD1.roundsSealed * snapshot.pairedD1.rolloutsPerRoundPerArm} / {snapshot.pairedD1.rolloutsPerArm} rollouts per arm · {snapshot.pairedD1.fullProgressPercent}% {t('按冻结 checklist 完成', 'by the frozen checklist')}</dd></div>
+      <div><dt>Round 1 · reward</dt><dd>Vanilla {snapshot.pairedD1.round1.controlMeanReward.toFixed(4)} · GDR {snapshot.pairedD1.round1.treatmentMeanReward.toFixed(4)} · Δ {snapshot.pairedD1.round1.pairedMeanRewardDelta > 0 ? '+' : ''}{snapshot.pairedD1.round1.pairedMeanRewardDelta.toFixed(4)}</dd></div>
+      <div><dt>{t('Round 1 · 完整成功', 'Round 1 · exact success')}</dt><dd>Vanilla {snapshot.pairedD1.round1.controlExactSuccessCount} / 128 · GDR {snapshot.pairedD1.round1.treatmentExactSuccessCount} / 128 · Δ +{snapshot.pairedD1.round1.pairedExactSuccessDelta}</dd></div>
+      <div><dt>{t('Round 1 · GDR 参数写入', 'Round 1 · GDR parameter writes')}</dt><dd>{snapshot.pairedD1.round1.treatmentOptimizerSteps} optimizer steps · {snapshot.pairedD1.round1.treatmentAppliedFactorWrites.toLocaleString('en-US')} factor writes · {snapshot.pairedD1.round1.treatmentZeroDirectionNoops} zero-direction no-ops · <code>g = 0</code></dd></div>
+      <div><dt>{t('冻结 final', 'Frozen final')}</dt><dd>{t('仍关闭；真实参数更新和当前第 1 轮配对恢复都没有打开最终题集。', 'Still closed; neither the real parameter-update run nor the current first-round paired recovery opened the final task set.')}</dd></div>
     </dl>
-    <p class="gds-d1__boundary">{t('因此现在能说的是：这条 Gated-Delta SD-LoRA 机制已经在真实 WebShop 学习事件上完成过参数更新。还不能说的是：它比 Vanilla 更好、长期更稳定，或会提高 final。那些问题必须等完整 paired D1。', 'The supported claim is now that Gated-Delta SD-LoRA has performed a real parameter update on a genuine WebShop learning event. We still cannot claim it beats Vanilla, is more stable long-term, or improves final performance; those questions require the full paired D1.')}</p>
+    <p class="gds-d1__boundary">{t('现在比“机制能运行”多了一层证据：在第一轮能观察上一轮更新影响的匹配任务里，GDR 暂时高于 Vanilla。四轮只完成两轮，所以还不能判断这种差异是否稳定、是否来自 Gated-Delta treatment，或最终是否会提高成绩；这些问题必须等剩余冻结轮次全部封存后再分析。', 'The evidence now goes beyond execution alone: on the first matched rollout round that can reflect the previous update, GDR is currently higher than Vanilla. Only two of four rounds are sealed, so we cannot yet tell whether the difference is stable, attributable to the Gated-Delta treatment, or predictive of better final performance. Those questions require the remaining frozen rounds and the preregistered paired analysis.')}</p>
     <nav class="gds-evidence-nav" aria-label={t('当前 Gated-Delta 研究证据', 'Current Gated-Delta research evidence')}>
-      <a href={snapshot.evidence.routeSExecutionSeal} target="_blank" rel="noreferrer"><ExternalBrandMark href={snapshot.evidence.routeSExecutionSeal} />{t('Route S 执行封存（需仓库权限）', 'Route S execution seal (repository access required)')}</a>
-      <a href={snapshot.evidence.pairedPostrolloutRecovery} target="_blank" rel="noreferrer"><ExternalBrandMark href={snapshot.evidence.pairedPostrolloutRecovery} />{t('paired Round-0 recovery（需仓库权限）', 'paired Round-0 recovery (repository access required)')}</a>
-      <a href={snapshot.evidence.d1ExecutionPlan} target="_blank" rel="noreferrer"><ExternalBrandMark href={snapshot.evidence.d1ExecutionPlan} />{t('D1 execution / closeout authority（需仓库权限）', 'D1 execution / closeout authority (repository access required)')}</a>
+      <a href={snapshot.evidence.routeSExecutionSeal} target="_blank" rel="noreferrer"><ExternalBrandMark href={snapshot.evidence.routeSExecutionSeal} />{t('真实参数更新封存（需仓库权限）', 'real parameter-update seal (repository access required)')}</a>
+      <a href={snapshot.evidence.pairedRound1Seal} target="_blank" rel="noreferrer"><ExternalBrandMark href={snapshot.evidence.pairedRound1Seal} />{t('Round 1 配对封存（需仓库权限）', 'Round 1 paired seal (repository access required)')}</a>
+      <a href={snapshot.evidence.d1ExecutionPlan} target="_blank" rel="noreferrer"><ExternalBrandMark href={snapshot.evidence.d1ExecutionPlan} />{t('四轮配对实验执行计划（需仓库权限）', 'four-round paired experiment plan (repository access required)')}</a>
       <a href={snapshot.evidence.upstreamPr} target="_blank" rel="noreferrer"><ExternalBrandMark href={snapshot.evidence.upstreamPr} />PR #461</a>
     </nav>
   </section>
