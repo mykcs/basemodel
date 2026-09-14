@@ -12,6 +12,7 @@ const registry = readFileSync(new URL('../../docs/agents/current/scenario-trigge
 const repositoryMap = readFileSync(new URL('../../docs/agents/current/repository-map.md', import.meta.url), 'utf8');
 const seedWorkflow = readFileSync(new URL('../../docs/agents/current/seed-guided-research-workflow.md', import.meta.url), 'utf8');
 const websiteSpec = readFileSync(new URL('../../docs/agents/current/website-design-spec.md', import.meta.url), 'utf8');
+const uiVisualGate = readFileSync(new URL('../../docs/agents/current/ui-change-visual-acceptance-gate.md', import.meta.url), 'utf8');
 const copyCases = readFileSync(new URL('../../docs/agents/current/website-copy-cases.md', import.meta.url), 'utf8');
 const history = readFileSync(new URL('../../docs/agents/history/2026-08-11-seed-preview-and-agent-workflow-lessons.md', import.meta.url), 'utf8');
 const attentionHistory = readFileSync(new URL('../../docs/agents/history/2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md', import.meta.url), 'utf8');
@@ -231,6 +232,12 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('the current website is publication state, not experiment-inventory authority');
     expect(registry).toContain('engineering validity as a prerequisite rather than an automatic research highlight');
     expect(registry).toContain('`HTML` is an implementation medium, not a visual-style reset');
+  });
+
+  it('requires visible bilingual body parity instead of accepting localized metadata alone', () => {
+    expect(uiVisualGate).toContain('visible H1 / lede / primary controls in both locales');
+    expect(uiVisualGate).toContain('Localized route metadata such as `<title>`, description, canonical/hreflang');
+    expect(readme).toContain('2026-09-14-sitewide-normalization-conversation-closeout.md');
   });
 
   it('turns owner copy feedback into case-cluster generalization and cross-site repair', () => {
