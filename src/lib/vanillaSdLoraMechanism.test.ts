@@ -47,12 +47,20 @@ describe('Vanilla SD-LoRA mechanism projection', () => {
     expect(component).toContain('不是 ICLR 2025 vision protocol 的逐项复刻');
   });
 
-  it('registers bilingual routes and reader ownership', () => {
+  it('registers the live Chinese route, archived English source, and reader ownership', () => {
     const route = '/research/seed-openevo/flow/sd-lora/';
     expect(bilingualStaticPaths).toContain(route);
     expect(readerContracts).toContain("c('flow-sd-lora', '/research/seed-openevo/flow/sd-lora/'");
     expect(zhPage).toContain('<OpenEvoVanillaSdLoraMechanism locale={locale} />');
     expect(enPage).toContain('<OpenEvoVanillaSdLoraMechanism locale={locale} />');
+    expect(enPage).toContain('title="Why does OpenEvo need SD-LoRA?"');
+    for (const phrase of [
+      'Why does OpenEvo need SD-LoRA?',
+      'Merely keeping a successful rollout in a log does not change the next round’s model parameters',
+      'Ordinary LoRA',
+      'Scalable Decoupled LoRA',
+      '“Vanilla SD-LoRA” here is not ordinary LoRA',
+    ]) expect(component).toContain(phrase);
     expect(zhCompatibilityPage).toContain("const target = '/research/seed-openevo/flow/sd-lora/'");
     expect(enCompatibilityPage).toContain("const target = '/en/research/seed-openevo/flow/sd-lora/'");
     expect(seriesNav).toContain("const vanillaCanonical = '/research/seed-openevo/flow/sd-lora'");

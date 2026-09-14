@@ -41,6 +41,7 @@ export const VANILLA_SD_LORA_MECHANISM = {
     wrapper: 'https://github.com/mykcs/openevo-experiment/blob/ac130148ee08b6462d9728e482a858fe5f514047/scripts/openevo_webshop/ceiling1_stage2_sd_lora.py',
     capacity: 'https://github.com/mykcs/openevo-experiment/blob/ac130148ee08b6462d9728e482a858fe5f514047/configs/experiment/designs/openevo-ceiling1-stage2-vnext-qwen3-1p7b-capacity-v1.json',
     upstreamAudit: 'https://github.com/mykcs/openevo-experiment/blob/87938b167222dfecf034e1c5cb6dc358655b415c/docs/science/upstream/OPENEVO_AUDIT_2026-08-14.md',
+    loraPaper: 'https://arxiv.org/abs/2106.09685',
     paper: 'https://openreview.net/forum?id=5U1rlpX68A',
     officialCode: 'https://github.com/WuYichen-97/SD-Lora-CL',
   },

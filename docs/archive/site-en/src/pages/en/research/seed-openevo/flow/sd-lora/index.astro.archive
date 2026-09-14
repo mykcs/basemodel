@@ -5,8 +5,8 @@ import OpenEvoSdLoraHistorySeriesNav from '../../../../../../components/research
 const locale = 'en' as const;
 ---
 <AppLayout
-  title="How one Vanilla SD-LoRA round updates parameters"
-  description="The real OpenEvo × WebShop SD-LoRA mechanism: how 128 task attempts become training data, how prior directions stay frozen, and how a new direction plus magnitude coefficients form a candidate cumulative LoRA."
+  title="Why does OpenEvo need SD-LoRA?"
+  description="Why SD-LoRA appears in OpenEvo, where it acts between task batches, how it differs from ordinary LoRA, and how one real parameter-update round works."
   locale={locale}
 >
   <OpenEvoVanillaSdLoraMechanism locale={locale} />
