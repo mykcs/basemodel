@@ -554,8 +554,8 @@ Owner follow-up: **“根据说人话进行优化”**. The original restructure
 - [x] P4. Reconcile moving BaseModel main through `cc7685b172549fcecbbffb796b23be3a28b3d1b1`, preserving the new Vanilla SD-LoRA Flow canonical owner and resolving the shared Reader Contract conflict semantically.
 - [x] P5. Run final current-base `verify:deploy`, `build`, overflow and required browser matrix; record only exact combined-tree PASS.
 - [x] P6. Commit/push the plain-language candidate and open one non-duplicative PR with Page Expression Brief, scientific source head and exact validation evidence.
-- [ ] P7. Require Public PR CI and exact-head Vercel required status on the actual PR head; stale/older green checks do not count.
-- [ ] P8. Before merge, re-read current main + PR head + PR #461; merge with expected-head guard only if still fresh, then Production-smoke zh/en current/history routes and cross-links.
+- [x] P7. Require Public PR CI and exact-head Vercel required status on the actual PR head; stale/older green checks do not count.
+- [x] P8. Before merge, re-read current main + PR head + PR #461; merge with expected-head guard only if still fresh, then Production-smoke zh/en current/history routes and cross-links.
 
 Durable detail for this follow-up lives in `PLAIN_LANGUAGE_REFINEMENT_20260914.md`.
 ### P5 exact combined-tree acceptance — 2026-09-14 10:54 +08
@@ -576,3 +576,14 @@ Durable detail for this follow-up lives in `PLAIN_LANGUAGE_REFINEMENT_20260914.m
 - PR base at creation: `main@cc7685b172549fcecbbffb796b23be3a28b3d1b1`.
 - PR body records the scientific source `mykcs/openevo-experiment@fdafc4c5f401031c4dc2b244913a7fe203900f7f` and exact combined-tree local acceptance.
 - This P6 receipt update is documentation-only; it changes no rendered page, test logic, scientific projection, route, or provider behavior. P7 must evaluate CI/Vercel on the exact head created by this receipt commit, not on `b4dedfd7…`.
+
+### P7–P8 exact-head provider and Production closeout — 2026-09-14
+
+- Final current-base candidate: BaseModel `main@f0b8b336acdc45c4260033285edf521bfc9ebbed`, PR #696 exact head `6eb34f0f751b05812a759282652786a38506a327`.
+- P7 / GitHub: Public PR CI run `34804021672` (#298) completed **success** on exact head `6eb34f0f…`; deterministic gate and all four hosted browser shards passed.
+- P7 / provider: Vercel exact-head deployment `dpl_DjKrWmtFrMNgiWH8wbUB7YAGVSNv` reached **READY** with `githubCommitRef=ci/vercel-gate-final` and `githubCommitSha=6eb34f0f…`. Provider-hosted Chromium acceptance completed **224/224 PASS** and ended with `[vercel-ui-gate] PASS`.
+- P8 / merge: PR #696 merged without changing the accepted head and produced `main@94a56d4f9445dc78a3785d3e61950f7469c69891`.
+- P8 / Production: deployment `dpl_HcCaYXjVYL61dcMKbvEB4yiSpkAX` reached **READY** for merge commit `94a56d4f…`; the hosted Production Chromium gate also completed **224/224 PASS**. The canonical Production alias is `https://basemodel-preview.vercel.app`.
+- Production smoke returned HTTP **200** for all four canonical pages: zh/en current `gated-delta-sd-lora/` and zh/en historical `gdr-directapply/`. Current pages publish the sealed **2/4** paired-round state and Round-1 interim signal without a superiority claim; historical pages preserve **44 candidates → 7 adopted**, the fixed 16-task screen, the non-comparable-final boundary, and reciprocal current/history links.
+- Release-time scientific authority remained `mykcs/openevo-experiment@496aa03d117edcf13d286ee60add9e4e719cd7f1` / PR #461. Only sealed Round-0/Round-1 evidence is published; unsealed later execution is not promoted to a result, the final panel remains closed, and Task Vector / score / probe / final information remain outside runtime control.
+- This P7–P8 closeout is **receipt-only documentation**. It changes no rendered page, test, route, scientific snapshot, provider configuration, or already-released product bytes, so it does not recursively create a new product release candidate.

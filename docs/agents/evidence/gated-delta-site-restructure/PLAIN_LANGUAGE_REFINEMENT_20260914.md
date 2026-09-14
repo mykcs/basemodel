@@ -1,6 +1,6 @@
 # Gated-Delta pages plain-language refinement — 2026-09-14
 
-Status: **post-DoD reader-language follow-up / release candidate in progress**
+Status: **complete / merged / Production-smoked**
 
 ## Scope
 
@@ -53,12 +53,13 @@ Latest authority read before final local validation:
 - repository: `mykcs/openevo-experiment`;
 - PR: `#461`;
 - branch: `research/gated-delta-sd-lora-event-write-202609120918`;
-- exact head: `fdafc4c5f401031c4dc2b244913a7fe203900f7f`;
-- full four-round paired D1: incomplete; Round 0 complete, Rounds 1–3 and paired analysis still open;
+- exact head at release: `496aa03d117edcf13d286ee60add9e4e719cd7f1`;
+- full four-round paired D1: incomplete; **2 / 4 rounds sealed**, frozen checklist progress **66%**;
+- Round 1 interim paired signal: Vanilla `53/128`, mean reward `0.7556237599`; GDR `59/128`, mean reward `0.7802765377`; this is encouraging but **not** a superiority or final-efficacy claim;
 - final panel: still closed;
-- runtime boundary: Task Vector / score / candidate probe remain forbidden control inputs.
+- runtime boundary: Task Vector / score / candidate probe / final information remain forbidden control inputs.
 
-The website snapshot `checkedAt` was refreshed to `2026-09-14T10:22:04+08:00` after that read.
+The website publication snapshot was refreshed to `2026-09-14T11:24:21+08:00` and intentionally publishes only sealed Round-0/Round-1 evidence; later unsealed execution is not treated as a result.
 
 ## Human-preference review integrity
 
@@ -78,3 +79,13 @@ Before the final moving-main reconciliation, the candidate reached `verify:deplo
 - overflow preflight: PASS.
 - full browser matrix: **446/446 PASS**, Chromium + WebKit, no retries.
 - Reader Contract phone/desktop and Gated-Delta current/history zh/en tests are included in that exact run.
+
+
+## Release closeout
+
+- PR #696, `research: make Gated-Delta pages plain-language`, merged into BaseModel main as `94a56d4f9445dc78a3785d3e61950f7469c69891`.
+- Final PR head `6eb34f0f751b05812a759282652786a38506a327` had Public PR CI run `34804021672` **SUCCESS** and exact-head Vercel deployment `dpl_DjKrWmtFrMNgiWH8wbUB7YAGVSNv` **READY**.
+- Exact-head provider acceptance: **224/224 PASS** on hosted Chromium; local cross-browser acceptance before release remained **446/446 PASS** across Chromium + WebKit with no retries.
+- Production deployment `dpl_HcCaYXjVYL61dcMKbvEB4yiSpkAX` for merge commit `94a56d4f…` reached **READY** and completed its own **224/224 PASS** hosted Chromium gate.
+- `https://basemodel-preview.vercel.app` returned HTTP **200** for zh/en current and zh/en historical pages. Current/history reciprocal links, the current **2/4 sealed** boundary, Round-1 interim numbers, historical **44 → 7** result, fixed 16-task screen, and non-comparable-final boundary were all present in Production responses.
+- No human-only approval or unresolved review thread remained. The website release slice is closed; unfinished Round 2/3 science is a research-state gap, not a website-release gap.
