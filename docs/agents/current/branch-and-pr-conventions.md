@@ -107,6 +107,8 @@ For a deliberately long-running checklist/audit workline, the first PR may be Dr
 - Prefer one coherent task branch and one PR over many probe branches.
 - When a worker PR is superseded by an integration/release head, mark that relationship explicitly and close the superseded PR rather than leaving ambiguous parallel release candidates.
 - After a PR is merged or intentionally superseded and no other branch/PR depends on it, its task branch is normally safe to delete.
+- After merge, the remote task branch may already be absent because repository automation removed it. Do not interpret that missing ref as evidence that the work was lost, and do not require the remote task branch to still exist before cleaning an isolated local checkout.
+- Before removing a temporary local clone/worktree after merge, re-read the current integration branch and prove the local checkout is clean, its task-only commits are reachable from the current integration branch or another deliberate preservation ref, and no active PR/worktree still depends on that checkout. If reachability or cleanliness is uncertain, keep the checkout instead of guessing from branch-name existence.
 - Never delete a branch that is still the only reachable home of required scientific/provenance history without first preserving that history deliberately.
 
 ## Authority
