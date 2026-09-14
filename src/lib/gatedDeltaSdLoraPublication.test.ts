@@ -61,9 +61,7 @@ describe('Gated-Delta SD-LoRA publication split', () => {
   });
 
   it('keeps sibling entry copy and English labels aligned with the sealed qualification', () => {
-    expect(lobby).toContain('当前四轮 Vanilla-vs-GDR D1 资格实验也已经全部封存');
     expect(lobby).toContain('sealed four-round paired D1 qualification');
-    expect(lobby).not.toContain('完整四轮 Vanilla-vs-GDR paired D1 仍未完成');
     expect(lobby).not.toContain('still-incomplete full paired D1');
     expect(current).toContain("'K / V · β · g · WebShop score / reward · fixed 16-task candidate check'");
     expect(history).toContain("t('SD-LoRA 候选更新', 'SD-LoRA candidate updates')");

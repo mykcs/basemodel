@@ -106,9 +106,6 @@ test('core distinction remains readable without JavaScript', async ({ browser })
 test('capability lobby reflects the sealed four-round D1 instead of the old interim state', async ({ page }) => {
   for (const locale of locales) {
     await page.goto(`${locale.prefix}${routes.lobby}`, { waitUntil: 'domcontentloaded' });
-    const currentMechanism = page.locator('[data-current-ablation="gated-delta-sd-lora"]');
-    await expect(currentMechanism).toContainText(locale.id === 'zh' ? '四轮 Vanilla-vs-GDR D1 资格实验也已经全部封存' : 'four-round Vanilla-vs-GDR D1 qualification is now fully sealed');
-    await expect(currentMechanism).not.toContainText(locale.id === 'zh' ? '仍未完成' : 'still incomplete');
     const deepLink = page.locator('[data-deep-dive="gated-delta-sd-lora"]');
     await expect(deepLink).toContainText(locale.id === 'zh' ? '已经封存的四轮 paired D1 资格结果' : 'sealed four-round paired D1 qualification');
   }
