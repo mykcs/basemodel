@@ -6,6 +6,7 @@ import { bilingualStaticPaths } from './sitemapRoutes';
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const component = read('../components/research/OpenEvoVanillaSdLoraMechanism.astro');
 const slide = read('../components/research/OpenEvoVanillaSdLoraSlide.astro');
+const seriesNav = read('../components/research/OpenEvoSdLoraHistorySeriesNav.astro');
 const projectionSource = `${slide}\n${component}`;
 const readerContracts = read('../data/siteReaderContracts.ts');
 const zhPage = read('../pages/research/seed-openevo/flow/sd-lora/index.astro');
@@ -54,5 +55,8 @@ describe('Vanilla SD-LoRA mechanism projection', () => {
     expect(enPage).toContain('<OpenEvoVanillaSdLoraMechanism locale={locale} />');
     expect(zhCompatibilityPage).toContain("const target = '/research/seed-openevo/flow/sd-lora/'");
     expect(enCompatibilityPage).toContain("const target = '/en/research/seed-openevo/flow/sd-lora/'");
+    expect(seriesNav).toContain("const vanillaCanonical = '/research/seed-openevo/flow/sd-lora'");
+    expect(seriesNav).toContain("neutral === vanillaCanonical ? 'vanilla-sd-lora'");
+    expect(seriesNav).toContain("route === 'vanilla-sd-lora' ? `${vanillaCanonical}/`");
   });
 });
