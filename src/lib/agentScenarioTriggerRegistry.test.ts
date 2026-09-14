@@ -25,6 +25,8 @@ const researchJourney = readFileSync(new URL('../../docs/agents/current/research
 const sdLoraParallelCloseoutHistory = readFileSync(new URL('../../docs/agents/history/2026-09-14-sd-lora-parallel-lineage-and-study-grouping-conversation-closeout.md', import.meta.url), 'utf8');
 const conversationCloseoutEntry = readFileSync(new URL('../../docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md', import.meta.url), 'utf8');
 const releaseCloseout = readFileSync(new URL('../../docs/agents/current/release-closeout-protocol.md', import.meta.url), 'utf8');
+const multiPrIntegration = readFileSync(new URL('../../docs/agents/current/multi-pr-semantic-integration-playbook.md', import.meta.url), 'utf8');
+const parallelPrConvergenceHistory = readFileSync(new URL('../../docs/agents/history/2026-09-14-parallel-pr-convergence-and-merge-order-closeout.md', import.meta.url), 'utf8');
 
 describe('Agent scenario-trigger discovery', () => {
   it('routes future non-trivial work through the trigger registry', () => {
@@ -58,6 +60,23 @@ describe('Agent scenario-trigger discovery', () => {
     expect(principles).toContain('open PR -> create_pull_request');
     expect(principles).toContain('stop retrying that mutation surface');
     expect(principles).toContain('`gh pr create` for opening a PR');
+  });
+
+  it('promotes repeated provider-write mismatch to a startup-visible noun-bound dispatch guard', () => {
+    expect(root).toContain('Provider writes are noun-bound at dispatch');
+    expect(root).toContain('open PR -> create_pull_request');
+    expect(root).toContain('file/ref/branch mutation is not an acceptable substitute');
+    expect(parallelPrConvergenceHistory).toContain('REPEAT-CORRECTION');
+    expect(parallelPrConvergenceHistory).toContain('`__noop__`');
+  });
+
+  it('orders independent merge-ready candidates to minimize exact-head invalidation', () => {
+    expect(multiPrIntegration).toContain('Choose merge order to minimize exact-head invalidation');
+    expect(multiPrIntegration).toContain('user-visible correctness / scientific-publication accuracy');
+    expect(multiPrIntegration).toContain('user-visible factual repair + docs/governance closeout');
+    expect(multiPrIntegration).toContain('treat every remaining current-base candidate as stale');
+    expect(readme).toContain('2026-09-14-parallel-pr-convergence-and-merge-order-closeout.md');
+    expect(parallelPrConvergenceHistory).toContain('Temporary state intentionally not promoted');
   });
 
   it('protects the recurring high-cost situations from this project', () => {
