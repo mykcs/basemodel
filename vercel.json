@@ -81,6 +81,16 @@
       "permanent": true
     },
     {
+      "source": "/research/seed-openevo/study/capability-exploration/vanilla-sd-lora",
+      "destination": "/research/seed-openevo/flow/sd-lora/",
+      "permanent": true
+    },
+    {
+      "source": "/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/",
+      "destination": "/research/seed-openevo/flow/sd-lora/",
+      "permanent": true
+    },
+    {
       "source": "/research/seed-openevo/seed",
       "destination": "/research/seed-openevo/flow/seed/",
       "permanent": true
@@ -203,6 +213,16 @@
     {
       "source": "/en/research/seed-openevo/flow/base-model/",
       "destination": "/en/models/qwen2-5-3b-instruct/",
+      "permanent": true
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora",
+      "destination": "/en/research/seed-openevo/flow/sd-lora/",
+      "permanent": true
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/",
+      "destination": "/en/research/seed-openevo/flow/sd-lora/",
       "permanent": true
     },
     {
