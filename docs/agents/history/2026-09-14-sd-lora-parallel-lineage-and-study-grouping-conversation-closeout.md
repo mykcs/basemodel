@@ -35,6 +35,8 @@ That correction exposes an important distinction. A reader-facing navigation gro
 
 The parent therefore stays non-clickable in this use case; each child keeps its own canonical route, evidence, metric/estimand, lineage, and claim boundary. Browser acceptance must prove the children are visibly nested on desktop and reachable on phone, not merely adjacent in source order.
 
+This historical correction is evidence for the **taxonomy-versus-treatment distinction**, not authority to restore the literal parent string forever. Future Agents must read the current navigation owner before changing the label; if current product naming later chooses a neutral parent while preserving the same hierarchy, this history must not be replayed as a stale copy patch.
+
 ### 4. Do not create a second reconciliation PR when a better current owner already exists
 
 During reconciliation, a parallel OpenEvo PR was discovered that already encoded the two canonical line IDs, exact scientific authorities, separate speed estimands, and a third-line Gated-Delta boundary with machine-readable tests. Opening another competing integration path would have recreated the ambiguity the task was supposed to remove.
