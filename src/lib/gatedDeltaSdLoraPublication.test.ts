@@ -7,6 +7,7 @@ import { bilingualStaticPaths } from './sitemapRoutes';
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const current = read('../components/research/OpenEvoGatedDeltaSdLoraExplainer.astro');
 const history = read('../components/research/OpenEvoGdrDirectApplyExplainer.astro');
+const lobby = read('../components/research/OpenEvoCapabilityMapLobby.astro');
 const currentZhRoute = read('../pages/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/index.astro');
 const currentEnRoute = read('../pages/en/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/index.astro');
 
@@ -57,6 +58,15 @@ describe('Gated-Delta SD-LoRA publication split', () => {
     expect(current).toContain('四轮汇总 · reward');
     expect(current).not.toContain('20,480 rollouts · 44 candidates · 7 adopted');
     expect(current).not.toContain('16-task probe 比较新旧状态');
+  });
+
+  it('keeps sibling entry copy and English labels aligned with the sealed qualification', () => {
+    expect(lobby).toContain('当前四轮 Vanilla-vs-GDR D1 资格实验也已经全部封存');
+    expect(lobby).toContain('sealed four-round paired D1 qualification');
+    expect(lobby).not.toContain('完整四轮 Vanilla-vs-GDR paired D1 仍未完成');
+    expect(lobby).not.toContain('still-incomplete full paired D1');
+    expect(current).toContain("'K / V · β · g · WebShop score / reward · fixed 16-task candidate check'");
+    expect(history).toContain("t('SD-LoRA 候选更新', 'SD-LoRA candidate updates')");
   });
 
   it('keeps route metadata aligned with the sealed four-round qualification', () => {
