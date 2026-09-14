@@ -22,6 +22,8 @@ export const SD_LORA_BOUNDED_RECURRENCE_SOURCE = {
   planPath: 'docs/experiment-tracking/SD_LORA_FUNCTIONAL_EQUIVALENCE_AND_BOUNDED_STATE_PLAN_20260913.md',
   q0CloseoutPath: 'docs/evidence/q17-sd-lora-bounded-online-recurrence-q0-20260913/closeout.json',
   q1CloseoutPath: 'docs/evidence/q17-sd-lora-bounded-online-recurrence-q1-20260913/final-closeout.json',
+  finalAdapterSha256: '2b65b71a4c822c8b2a6d4639d31a3289dc2267f9de8f0109c8c69bdd1821ad32',
+  finalCloseoutSha256: '0a4be2489779712886b8c0557d4ca74d6000b2dc1d6b727dd56c355ed182cd79',
 } as const;
 
 export const SD_LORA_BOUNDED_RECURRENCE_RESULT = {

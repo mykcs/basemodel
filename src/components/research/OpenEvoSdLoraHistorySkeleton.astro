@@ -5,6 +5,7 @@ import { SD_LORA_HISTORY_OVERVIEW_ROUTE, SD_LORA_HISTORY_SERIES } from '../../da
 import { SD_LORA_V2_LOCAL } from '../../data/sdLoraV2Outcome';
 import { SD_LORA_BOUNDED_RECURRENCE_RESULT as bounded } from '../../data/sdLoraVrLineages';
 import OpenEvoSdLoraHistorySeriesNav from './OpenEvoSdLoraHistorySeriesNav.astro';
+import OpenEvoSdLoraAccelerationContext from './OpenEvoSdLoraAccelerationContext.astro';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -50,6 +51,8 @@ const summary = overview
           <a href={p(`${root}sd-lora-bounded-state/`)}>{t('看 Bounded Online Recurrence 结果 →', 'See Bounded Online Recurrence →')}</a>
         </div>
       </section>
+
+      <OpenEvoSdLoraAccelerationContext locale={locale} />
 
       <section class="series-page__chapters" aria-labelledby="series-chapters-title">
         <h2 id="series-chapters-title">{t('七个连续问题', 'Seven connected questions')}</h2>
