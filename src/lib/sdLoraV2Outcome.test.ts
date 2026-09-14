@@ -42,13 +42,13 @@ describe('SD-LoRA v2 publication', () => {
     expect(enRoute).toContain('OpenEvoSdLoraV2Outcome');
     expect(zhRoute).not.toContain('OpenEvoSdLoraHistorySkeleton');
     expect(enRoute).not.toContain('OpenEvoSdLoraHistorySkeleton');
-    expect(contracts).toContain('先看到 SD-LoRA v2 确实能更快训练');
-    expect(contracts).toContain("'.sdlora-v2__lede'");
+    expect(contracts).toContain('Stable Reduction 的身份和它仍逐个保留历史 component');
+    expect(contracts).toContain("'.sdlora-v2__chapter'");
   });
 
   it('keeps the owner-facing plain-language conclusion visible', () => {
-    expect(page).toContain('原来的 900 多秒不是非得忍着');
+    expect(page).toContain('Stable Reduction 保留历史 component，训练约快 2×');
     expect(page).toContain('目前的小规模真实 WebShop 检查没有发现它因为加速而明显变笨');
-    expect(page).toContain('下一步不是继续死磕 v2，而是把它变成 GDR 的强基线');
+    expect(page).toContain('另一条并行线已经把增长历史折成固定 rank128');
   });
 });

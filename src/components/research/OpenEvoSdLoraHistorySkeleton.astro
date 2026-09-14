@@ -2,6 +2,8 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import { SD_LORA_HISTORY_OVERVIEW_ROUTE, SD_LORA_HISTORY_SERIES } from '../../data/sdLoraHistorySeries';
+import { SD_LORA_V2_LOCAL } from '../../data/sdLoraV2Outcome';
+import { SD_LORA_BOUNDED_RECURRENCE_RESULT as bounded } from '../../data/sdLoraVrLineages';
 import OpenEvoSdLoraHistorySeriesNav from './OpenEvoSdLoraHistorySeriesNav.astro';
 
 interface Props { locale: Locale }
@@ -16,10 +18,10 @@ const item = SD_LORA_HISTORY_SERIES.find((entry) => entry.route === slug);
 const overview = slug === SD_LORA_HISTORY_OVERVIEW_ROUTE;
 if (!overview && !item) throw new Error(`Unknown SD-LoRA history series route: ${slug}`);
 const title = overview
-  ? t('从不断增长的 SD-LoRA，到固定大小的学习状态', 'From growing SD-LoRA history to a fixed-size learning state')
+  ? t('SD-LoRA 的两条加速路线', 'Two SD-LoRA acceleration lines')
   : item!.title[locale];
 const summary = overview
-  ? t('这个专题把一次工程问题一路追到一个科学问题：参数历史为什么一直增长，这些历史是否都必要，以及未来能不能用一个固定大小的状态保留真正需要的信息。', 'This series follows an engineering problem into a scientific one: why parameter history keeps growing, whether all of it is necessary, and whether a fixed-size state can preserve what future learning really needs.')
+  ? t('同一个“后期越来越慢”的问题，后来形成了两种不同答案：Stable Reduction 让不断增长的历史算得更快；Bounded Online Recurrence 则不再保留不断增长的历史 component 列表。', 'The same late-stage slowdown produced two different answers: Stable Reduction computes the growing history more efficiently, while Bounded Online Recurrence stops retaining an ever-growing component list.')
   : item!.summary[locale];
 ---
 <article class="series-page" data-copy-review data-testid="sd-lora-history-series-page">
@@ -27,34 +29,53 @@ const summary = overview
     {!overview && <p class="series-page__eyebrow">{`${item!.number} / 07`}</p>}
     <h1>{title}</h1>
     <p class="series-page__lede">{summary}</p>
-    <p class="series-page__state">{overview ? t('01–03 已经有封存的机制、扩展性和加速结果；后面的研究问题如果还没有完成，就继续明确留空，不提前写成结论。', 'Chapters 01–03 now contain sealed mechanism, scaling, and acceleration results. Later questions stay explicitly open until their experiments are complete.') : t('当前先建立页面结构和导航。没有完成的科学实验不会提前写成结论。', 'For now this route establishes structure and navigation. Unfinished scientific experiments are not presented as conclusions.')}</p>
+    <p class="series-page__state">{overview ? t('“SD-LoRA v2”在仓库里专指 Stable Reduction；固定 rank128 的另一条线叫 Bounded Online Recurrence。两条线都已封存结果，但回答的科学问题不同。', 'In the repository, “SD-LoRA v2” specifically means Stable Reduction. The fixed-rank128 line is named Bounded Online Recurrence. Both lines now have sealed results, but they answer different scientific questions.') : t('没有完成的科学实验不会提前写成结论；已封存的页面会直接显示结果和证据边界。', 'Unfinished experiments are not presented as conclusions; sealed routes show their results and evidence boundaries directly.')}</p>
   </header>
-
   {overview ? (
-    <section class="series-page__chapters" aria-labelledby="series-chapters-title">
-      <h2 id="series-chapters-title">{t('七个连续问题', 'Seven connected questions')}</h2>
-      <ol>
-        {SD_LORA_HISTORY_SERIES.map((entry) => (
-          <li>
-            <a href={p(`${root}${entry.route}/`)}>
-              <span>{entry.number}</span>
-              <strong>{entry.title[locale]}</strong>
-              <p>{entry.summary[locale]}</p>
-            </a>
-          </li>
-        ))}
-      </ol>
-    </section>
+    <>
+      <section class="series-page__lineages" aria-label={t('两条 SD-LoRA 加速路线对比', 'Comparison of the two SD-LoRA acceleration lines')}>
+        <div class="series-page__table-wrap">
+          <table class="series-page__table">
+            <thead><tr><th scope="col"></th><th scope="col">SD-LoRA v2 · Stable Reduction</th><th scope="col">SD-LoRA · Bounded Online Recurrence</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">{t('历史怎么保存', 'How history is stored')}</th><td>{t('旧 component 继续逐个保留', 'Old components remain individually retained')}</td><td>{t('历史折成固定 rank128 状态', 'History is folded into one fixed rank128 state')}</td></tr>
+              <tr><th scope="row">{t('主要改动', 'Main change')}</th><td>{t('chunk 16；跨 component 用 FP32 稳定归约', 'chunk 16 with stable FP32 cross-component reduction')}</td><td>{t('每轮学 rank8 新更新，再压回 rank128', 'learn a rank8 update, then compress back to rank128')}</td></tr>
+              <tr><th scope="row">{t('代表性 trainer 结果', 'Representative trainer result')}</th><td>{SD_LORA_V2_LOCAL.eightStepSpeedup.toFixed(2)}× {t('matched 8-step', 'matched eight-step')}</td><td>{bounded.formalSpeedupMean.toFixed(2)}× {t('平均，R151–R159', 'mean, R151–R159')}</td></tr>
+              <tr><th scope="row">{t('现在能说什么', 'Supported conclusion')}</th><td>{t('新的稳定数值 treatment 能更快训练', 'a new stable numerical treatment can train faster')}</td><td>{t('连续学习时参数状态可以保持固定 rank128', 'the parameter state can stay fixed at rank128 during continued learning')}</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="series-page__lineage-links">
+          <a href={p(`${root}sd-lora-equivalence/`)}>{t('看 Stable Reduction 结果 →', 'See Stable Reduction →')}</a>
+          <a href={p(`${root}sd-lora-bounded-state/`)}>{t('看 Bounded Online Recurrence 结果 →', 'See Bounded Online Recurrence →')}</a>
+        </div>
+      </section>
+
+      <section class="series-page__chapters" aria-labelledby="series-chapters-title">
+        <h2 id="series-chapters-title">{t('七个连续问题', 'Seven connected questions')}</h2>
+        <ol>
+          {SD_LORA_HISTORY_SERIES.map((entry) => (
+            <li>
+              <a href={p(`${root}${entry.route}/`)}>
+                <span>{entry.number}</span>
+                <strong>{entry.title[locale]}</strong>
+                <p>{entry.summary[locale]}</p>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
+    </>
   ) : (
     <section class="series-page__empty" aria-labelledby="series-empty-title">
-      <h2 id="series-empty-title">{t('这页接下来会放什么', 'What will go on this page')}</h2>
+      <h2 id="series-empty-title">{t('当前研究问题', 'Current research question')}</h2>
       <p>{summary}</p>
-      <p>{t('下一步会从已经封存的实验和新研究计划中填入可追溯证据；在那之前，这里只保留研究问题和导航。', 'The next step is to fill this page with traceable evidence from sealed experiments and the new research plan. Until then it keeps only the research question and navigation.')}</p>
+      <p>{t('这页只有在对应实验封存以后才补结果；在那之前保留问题和导航，不把计划写成结论。', 'Results are added only after the corresponding experiment is sealed. Until then the route keeps the question and navigation without turning plans into conclusions.')}</p>
     </section>
   )}
 
   <OpenEvoSdLoraHistorySeriesNav locale={locale} />
 </article>
 <style>
-.series-page{width:100%;padding:0 0 4rem}.sdlora-series-hero,.series-page__chapters,.series-page__empty{width:min(960px,calc(100% - 2rem));margin:0 auto}.sdlora-series-hero{min-height:calc(100svh - var(--header-height,72px));box-sizing:border-box;padding:clamp(2.2rem,7vw,5rem) 0 1.2rem}.series-page__eyebrow{margin:0 0 .6rem;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}.sdlora-series-hero h1{max-width:15ch;margin:0;font-size:clamp(2.1rem,5.8vw,4.9rem);line-height:1.02;letter-spacing:-.045em}.series-page__lede{max-width:48rem;margin:1.1rem 0 0;color:var(--ink);font-size:clamp(1.08rem,2vw,1.3rem);line-height:1.65}.series-page__state{max-width:48rem;margin:.9rem 0 0;padding-left:.8rem;border-left:2px solid var(--line);color:var(--muted);font-size:1rem;line-height:1.6}.series-page__chapters h2,.series-page__empty h2{font-size:clamp(1.45rem,3vw,2.1rem);line-height:1.2}.series-page__chapters ol{display:grid;gap:.7rem;margin:1.2rem 0 0;padding:0;list-style:none}.series-page__chapters a{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.2rem .8rem;padding:1rem 0;border-top:1px solid var(--line);color:inherit;text-decoration:none}.series-page__chapters a:hover strong,.series-page__chapters a:focus-visible strong{color:var(--accent-deep)}.series-page__chapters a:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}.series-page__chapters span{grid-row:1 / span 2;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}.series-page__chapters strong{font-size:1.1rem;line-height:1.4}.series-page__chapters p,.series-page__empty p{margin:.25rem 0 0;color:var(--muted);font-size:1rem;line-height:1.6}.series-page__empty{padding-top:1rem}.series-page__empty p{max-width:48rem}@media(max-width:680px){.sdlora-series-hero,.series-page__chapters,.series-page__empty{width:min(100% - 1rem,960px)}.sdlora-series-hero{min-height:calc(100svh - var(--header-height,64px));padding-top:2rem}.series-page__chapters a{grid-template-columns:2rem minmax(0,1fr)}}
+.series-page{width:100%;padding:0 0 4rem}.sdlora-series-hero,.series-page__lineages,.series-page__chapters,.series-page__empty{width:min(960px,calc(100% - 2rem));margin:0 auto}.sdlora-series-hero{padding:clamp(2.2rem,7vw,5rem) 0 2rem}.series-page__eyebrow{margin:0 0 .6rem;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}.sdlora-series-hero h1{max-width:15ch;margin:0;font-size:clamp(2.1rem,5.8vw,4.9rem);line-height:1.02;letter-spacing:-.045em}.series-page__lede{max-width:48rem;margin:1.1rem 0 0;color:var(--ink);font-size:clamp(1.08rem,2vw,1.3rem);line-height:1.65}.series-page__state{max-width:48rem;margin:.9rem 0 0;padding-left:.8rem;border-left:2px solid var(--line);color:var(--muted);font-size:1rem;line-height:1.6}.series-page__lineages,.series-page__chapters,.series-page__empty{padding-top:2.4rem}.series-page__chapters h2,.series-page__empty h2{font-size:clamp(1.45rem,3vw,2.1rem);line-height:1.2}.series-page__table-wrap{margin-top:1rem;overflow-x:auto}.series-page__table{width:100%;min-width:680px;border-collapse:collapse}.series-page__table th,.series-page__table td{padding:.78rem .7rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5}.series-page__table thead th{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}.series-page__table tbody th{width:18%;color:var(--muted);font-weight:650}.series-page__lineage-links{display:flex;flex-wrap:wrap;gap:.7rem 1.1rem;margin-top:1rem}.series-page__lineage-links a{color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}.series-page__chapters ol{display:grid;gap:.7rem;margin:1.2rem 0 0;padding:0;list-style:none}.series-page__chapters a{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.2rem .8rem;padding:1rem 0;border-top:1px solid var(--line);color:inherit;text-decoration:none}.series-page__chapters a:hover strong,.series-page__chapters a:focus-visible strong{color:var(--accent-deep)}.series-page__chapters a:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}.series-page__chapters span{grid-row:1 / span 2;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}.series-page__chapters strong{font-size:1.1rem;line-height:1.4}.series-page__chapters p,.series-page__empty p{margin:.25rem 0 0;color:var(--muted);font-size:1rem;line-height:1.6}.series-page__empty p{max-width:48rem}@media(max-width:680px){.sdlora-series-hero,.series-page__lineages,.series-page__chapters,.series-page__empty{width:min(100% - 1rem,960px)}.sdlora-series-hero{padding-top:2rem}.series-page__chapters a{grid-template-columns:2rem minmax(0,1fr)}.series-page__table{min-width:640px}}
 </style>

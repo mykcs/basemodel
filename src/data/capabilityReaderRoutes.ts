@@ -43,20 +43,20 @@ export const CAPABILITY_READER_ROUTES = [
     "route": "sd-lora-history",
     "coverage": "contextualized",
     "owner": "OpenEvoSdLoraHistorySkeleton",
-    "label": { "zh": "SD-LoRA 历史专题", "en": "SD-LoRA history series" },
+    "label": { "zh": "SD-LoRA 两条加速路线", "en": "Two SD-LoRA acceleration lines" },
     "purpose": {
-      "zh": "作为七个连续问题的总入口：从 Vanilla 机制与计算变慢，走到历史新颖度、当前函数、未来学习和固定大小状态。",
-      "en": "Serve as the gateway to seven connected questions, from Vanilla mechanics and compute scaling to history novelty, present function, future learning, and bounded state."
+      "zh": "先区分 SD-LoRA v2 · Stable Reduction 与 SD-LoRA · Bounded Online Recurrence，再沿七个连续问题查看机制、扩展性、历史与固定状态证据。",
+      "en": "Distinguish SD-LoRA v2 · Stable Reduction from SD-LoRA · Bounded Online Recurrence, then follow the seven connected questions through mechanics, scaling, history, and bounded-state evidence."
     }
   },
   {
     "route": "sd-lora-equivalence",
     "coverage": "contextualized",
     "owner": "OpenEvoSdLoraV2Outcome",
-    "label": { "zh": "SD-LoRA v2 加速结果", "en": "SD-LoRA v2 acceleration" },
+    "label": { "zh": "SD-LoRA v2 · Stable Reduction", "en": "SD-LoRA v2 · Stable Reduction" },
     "purpose": {
-      "zh": "解释严格等价加速为什么失败、为什么后来明确做成新的 SD-LoRA v2，以及约 2× trainer 加速与 prospective WebShop 小面板到底支持什么。",
-      "en": "Explain why strict-equivalence acceleration failed, why the successor became an explicit SD-LoRA v2 treatment, and what the ~2× trainer speedup plus prospective WebShop panel actually support."
+      "zh": "解释这条 v2 为什么保留历史 component 列表、只改变跨 component 的稳定归约规则，以及约 2× trainer 加速和 prospective WebShop 小面板支持什么。",
+      "en": "Explain why this v2 keeps the historical component list and changes only the stable cross-component reduction rule, plus what the ~2× trainer speedup and prospective WebShop panel support."
     }
   },
   {
@@ -92,11 +92,11 @@ export const CAPABILITY_READER_ROUTES = [
   {
     "route": "sd-lora-bounded-state",
     "coverage": "contextualized",
-    "owner": "OpenEvoSdLoraHistorySkeleton",
-    "label": { "zh": "固定大小学习状态", "en": "Bounded learning state" },
+    "owner": "OpenEvoSdLoraBoundedRecurrence",
+    "label": { "zh": "SD-LoRA · Bounded Online Recurrence", "en": "SD-LoRA · Bounded Online Recurrence" },
     "purpose": {
-      "zh": "在前面的科学问题有结果以后，再讨论能否用固定大小状态替代不断增长的历史，以及 GDR、WY、chunkwise 在其中分别扮演什么角色。",
-      "en": "Only after the earlier scientific questions are answered, ask whether a fixed-size state can replace growing history and what roles GDR, WY, and chunkwise might play."
+      "zh": "展示 R150–R159 连续在线更新怎样把历史保持在固定 rank128，同时每轮学习 rank8 新更新，并与 Stable Reduction 的 2× 结果明确分开。",
+      "en": "Show how recurrent R150–R159 updates keep history at fixed rank128 while learning a new rank8 update each round, explicitly separate from the Stable Reduction ~2× result."
     }
   },
   {

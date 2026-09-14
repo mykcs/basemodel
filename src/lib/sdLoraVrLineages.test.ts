@@ -1,0 +1,55 @@
+import { readFileSync } from 'node:fs';
+import { describe, expect, it } from 'vitest';
+import {
+  SD_LORA_BOUNDED_RECURRENCE_RESULT,
+  SD_LORA_BOUNDED_RECURRENCE_SOURCE,
+  SD_LORA_STABLE_REDUCTION_IDENTITY,
+} from '../data/sdLoraVrLineages';
+import { SD_LORA_V2_LOCAL } from '../data/sdLoraV2Outcome';
+
+const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
+const overview = read('../components/research/OpenEvoSdLoraHistorySkeleton.astro');
+const stable = read('../components/research/OpenEvoSdLoraV2Outcome.astro');
+const bounded = read('../components/research/OpenEvoSdLoraBoundedRecurrence.astro');
+const boundedZh = read('../pages/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/index.astro');
+const boundedEn = read('../pages/en/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/index.astro');
+
+describe('SD-LoRA parallel lineage publication', () => {
+  it('keeps Stable Reduction and Bounded Online Recurrence as distinct identities', () => {
+    expect(SD_LORA_STABLE_REDUCTION_IDENTITY.branch).toContain('v2-stable-reduction');
+    expect(SD_LORA_BOUNDED_RECURRENCE_SOURCE.branch).toContain('bounded-online-recurrence');
+    expect(SD_LORA_STABLE_REDUCTION_IDENTITY.commit).not.toBe(SD_LORA_BOUNDED_RECURRENCE_SOURCE.commit);
+    expect(SD_LORA_STABLE_REDUCTION_IDENTITY.name).toContain('Stable Reduction');
+    expect(SD_LORA_BOUNDED_RECURRENCE_SOURCE.name).toContain('Bounded Online Recurrence');
+  });
+
+  it('does not present the two speed measurements as one implementation', () => {
+    expect(SD_LORA_V2_LOCAL.eightStepSpeedup).toBeGreaterThan(2);
+    expect(SD_LORA_BOUNDED_RECURRENCE_RESULT.formalSpeedupMean).toBeCloseTo(37.0378238, 5);
+    expect(overview).toContain('SD-LoRA 的两条加速路线');
+    expect(stable).toContain('2× 和约 37× 不能并排写成');
+  });
+
+  it('publishes the bounded recurrence result on both locale routes', () => {
+    expect(SD_LORA_BOUNDED_RECURRENCE_RESULT.recurrentRounds).toBe(9);
+    expect(SD_LORA_BOUNDED_RECURRENCE_RESULT.stateRank).toBe(128);
+    expect(SD_LORA_BOUNDED_RECURRENCE_RESULT.currentUpdateRank).toBe(8);
+    expect(SD_LORA_BOUNDED_RECURRENCE_RESULT.noFullCheckpointReset).toBe(true);
+    expect(SD_LORA_BOUNDED_RECURRENCE_RESULT.protectedFinalPanelAccess).toBe(0);
+    expect(boundedZh).toContain('OpenEvoSdLoraBoundedRecurrence');
+    expect(boundedEn).toContain('OpenEvoSdLoraBoundedRecurrence');
+  });
+
+  it('keeps the Stable Reduction page explicit about the parallel bounded line', () => {
+    expect(stable).toContain('SD-LoRA v2 · Stable Reduction');
+    expect(stable).toContain('Bounded Online Recurrence');
+    expect(stable).toContain('sd-lora-bounded-state');
+  });
+
+  it('shows the bounded evidence boundary rather than an O(1) universal claim', () => {
+    expect(bounded).toContain('R150–R159');
+    expect(bounded).toContain('rank128');
+    expect(bounded).toContain('protected final panel');
+    expect(bounded).toContain('not a proof that all continual learning is O(1)');
+  });
+});

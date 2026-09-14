@@ -22,8 +22,8 @@ export const SD_LORA_HISTORY_SERIES = [
   },
   {
     route: 'sd-lora-equivalence', number: '03',
-    title: { zh: '算快以后，它还是原来的 SD-LoRA 吗？', en: 'After speeding it up, is it still the same SD-LoRA?' },
-    summary: { zh: '严格等价加速没有找到合格 successor；于是我们明确做了新的 SD-LoRA v2，8-step trainer 约快 2×，小规模 WebShop 没看到整体退化。', en: 'Strict-equivalence acceleration found no qualified successor, so we defined SD-LoRA v2 as a new treatment: about 2× faster in the matched eight-step trainer, with no aggregate degradation on the small WebShop panel.' },
+    title: { zh: 'SD-LoRA v2 · Stable Reduction 改了什么？', en: 'What does SD-LoRA v2 · Stable Reduction change?' },
+    summary: { zh: '历史 component 仍然逐个保留；新的 treatment 用 chunk 16 和 FP32 跨 component 归约，把 matched 8-step trainer 加速到约 2×。', en: 'Historical components remain individually retained; the new treatment uses chunk 16 and FP32 cross-component reduction for about 2× speedup in the matched eight-step trainer.' },
   },
   {
     route: 'sd-lora-history-novelty', number: '04',
@@ -42,8 +42,8 @@ export const SD_LORA_HISTORY_SERIES = [
   },
   {
     route: 'sd-lora-bounded-state', number: '07',
-    title: { zh: '能不能把无限历史变成固定大小的学习状态？', en: 'Can unbounded history become a fixed-size learning state?' },
-    summary: { zh: '只有前面的科学问题回答清楚以后，才讨论 bounded state、GDR、WY 和 chunkwise。', en: 'Only after the earlier scientific questions are answered do bounded state, GDR, WY, and chunkwise become method candidates.' },
+    title: { zh: 'Bounded Online Recurrence 把历史固定在 rank128', en: 'Bounded Online Recurrence keeps history at rank128' },
+    summary: { zh: 'R150–R159 连续更新里，历史状态始终 rank128、每轮新更新 rank8；行为 gate 全部 PASS，同轮 Vanilla trainer 对比平均约快 37×。', en: 'Across recurrent R150–R159 updates, the historical state stays rank128 and each new update is rank8; behavior gates pass, with about 37× mean trainer speedup versus same-round Vanilla.' },
   },
 ] as const satisfies readonly {
   route: SdLoraHistorySeriesRoute;

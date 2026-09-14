@@ -1,14 +1,14 @@
 ---
 import AppLayout from '../../../../../../../layouts/AppLayout.astro';
-import OpenEvoSdLoraHistorySkeleton from '../../../../../../../components/research/OpenEvoSdLoraHistorySkeleton.astro';
+import OpenEvoSdLoraBoundedRecurrence from '../../../../../../../components/research/OpenEvoSdLoraBoundedRecurrence.astro';
 import ResearchRouteContext from '../../../../../../../components/research/ResearchRouteContext.astro';
 const locale = 'en' as const;
 ---
 <AppLayout
-  title="From growing history to a fixed-size learning state"
-  description="This route is part of the SD-LoRA growing-history research series. The page structure and navigation are in place; evidence will be added only after the corresponding experiment is complete."
+  title="SD-LoRA · Bounded Online Recurrence: fixed-rank128 updates through R159"
+  description="The maintained state stays rank128, each round learns a new rank8 update and recompresses to rank128; R150–R159 qualified, with about 37× mean trainer speedup versus same-round Vanilla."
   locale={locale}
 >
   <ResearchRouteContext locale={locale} route="sd-lora-bounded-state" />
-  <OpenEvoSdLoraHistorySkeleton locale={locale} />
+  <OpenEvoSdLoraBoundedRecurrence locale={locale} />
 </AppLayout>
