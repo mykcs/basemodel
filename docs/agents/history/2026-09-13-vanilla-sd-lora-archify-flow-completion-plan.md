@@ -1,12 +1,13 @@
 # Vanilla SD-LoRA × Archify Flow — Completion Plan
 
-Status: **COMPLETE**  
+Status: **ARCHIVED / COMPLETE**
+Role: **historical execution evidence; not current Agent authority**
 Repository: `mykcs/basemodel`  
 Initial work branch: `feat/vanilla-sd-lora-archify-flow-20260912`  
 Initial implementation commit: `be37d084`  
 Created from the conversation beginning with: **“《Vanilla SD-LoRA 到底怎么工作》这个网页做好了吗？”**
 
-> Future agents must treat this file as the execution authority for finishing this conversation. Work from the unchecked boxes below, verify the stated evidence, and change `- [ ]` to `- [x]` only after the requirement is actually satisfied in GitHub / CI / Preview / Production. Do not merely report completion in chat.
+> While this task was active, this checklist was its execution authority. The task is now complete and this file is archived as historical evidence. Do **not** resume it as current authority; use the current policies, product source, tests, and live provider state instead.
 
 ## 1. Outcome we are trying to deliver
 

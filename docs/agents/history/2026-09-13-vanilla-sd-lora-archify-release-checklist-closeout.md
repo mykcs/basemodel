@@ -2,7 +2,7 @@
 
 Status: **historical closeout evidence; not current product, release, or scientific authority**
 
-Scope: the accessible completion conversation for `VANILLA_SD_LORA_ARCHIFY_FLOW_COMPLETION_PLAN_20260913.md`, plus current BaseModel governance and release evidence. This file records only the reusable lesson that was not already captured by the earlier Vanilla SD-LoRA HTML-flow closeout.
+Scope: the accessible completion conversation for `2026-09-13-vanilla-sd-lora-archify-flow-completion-plan.md`, plus current BaseModel governance and release evidence. This file records only the reusable lesson that was not already captured by the earlier Vanilla SD-LoRA HTML-flow closeout.
 
 ## Coverage boundary
 
