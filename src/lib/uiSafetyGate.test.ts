@@ -210,6 +210,12 @@ describe('UI visual acceptance gate contract', () => {
     }
   });
 
+  it('rejects protected Preview authentication interstitials as product visual evidence', () => {
+    expect(policy).toContain('route-specific sentinel');
+    expect(policy).toContain('Vercel login/SSO/access interstitial');
+    expect(policy).toContain('does **not** count as route visual evidence');
+  });
+
   it('records the owner-first-discovery anti-pattern and exact commands', () => {
     expect(policy).toContain('the owner became the first real visual tester');
     expect(policy).toContain('npm run test:ui');
