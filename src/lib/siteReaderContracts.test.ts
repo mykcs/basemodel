@@ -36,13 +36,14 @@ describe('site-wide reader attention contracts', () => {
     }
   });
 
-  it('keeps the Study phone budget at five experiment parents plus the two SD-LoRA v2 branches', () => {
+  it('keeps the Study phone budget at five experiment parents plus the two SD-LoRA acceleration branches', () => {
     const row = SITE_READER_CONTRACTS.find((contract) => contract.id === 'study');
     expect(row?.firstViewportBudget?.maxInteractive).toBe(7);
     expect(row?.firstViewportGoal).toContain('五次主要实验');
     expect(row?.firstViewportGoal).toContain('Stable Reduction');
     expect(row?.firstViewportGoal).toContain('Bounded Online Recurrence');
-    expect(row?.mustStayVisible).toContain('SD-LoRA v2');
+    expect(row?.mustStayVisible).toContain('SD-LoRA 加速');
+    expect(row?.mustStayVisible).toContain('SD-LoRA v2 只属于 Stable Reduction');
   });
 
   it('resolves exact pages before dynamic families and shares contracts across locales', () => {
