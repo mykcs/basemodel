@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 const bridge = readFileSync(new URL('./AgentToSeedBridge.astro', import.meta.url), 'utf8');
 const legacyGuide = readFileSync(new URL('./SeedStudentReproductionGuide.astro', import.meta.url), 'utf8');
 const zhPage = readFileSync(new URL('../pages/guide.astro', import.meta.url), 'utf8');
-const enPage = readFileSync(new URL('../pages/en/guide.astro', import.meta.url), 'utf8');
+const enPage = readFileSync(new URL('../../docs/archive/site-en/src/pages/en/guide.astro.archive', import.meta.url), 'utf8');
 const state = readFileSync(new URL('../lib/openEvoScientificState.ts', import.meta.url), 'utf8');
 const preflight = readFileSync(new URL('../../public/guides/seed-4x3090-preflight.sh', import.meta.url), 'utf8');
 const stage1 = readFileSync(new URL('../../public/guides/seed-stage1-check.py', import.meta.url), 'utf8');

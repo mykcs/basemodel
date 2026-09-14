@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 const component = read('src/components/research/Seed3090ParametricProgress.astro');
 const zhRoute = read('src/pages/research/seed-openevo/study/results.astro');
-const enRoute = read('src/pages/en/research/seed-openevo/study/results.astro');
+const enRoute = read('docs/archive/site-en/src/pages/en/research/seed-openevo/study/results.astro.archive');
 const appendix = read('src/components/research/OpenEvoWebShopResultsAppendix.astro');
 
 describe('historical seed3090 parametric evidence', () => {

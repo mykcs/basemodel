@@ -133,7 +133,7 @@ describe('experiment-first Study index', () => {
     expect(source).toContain('data-secondary-route={item.id}');
 
     const resultsZh = readFileSync(new URL('../pages/research/seed-openevo/study/results.astro', import.meta.url), 'utf8');
-    const resultsEn = readFileSync(new URL('../pages/en/research/seed-openevo/study/results.astro', import.meta.url), 'utf8');
+    const resultsEn = readFileSync(new URL('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/results.astro.archive', import.meta.url), 'utf8');
     expect(resultsZh).not.toContain('openEvoExperimentNavigation');
     expect(resultsEn).not.toContain('openEvoExperimentNavigation');
   });

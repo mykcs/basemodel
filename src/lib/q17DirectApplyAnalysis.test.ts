@@ -8,7 +8,7 @@ const routes = read('../data/capabilityReaderRoutes.ts');
 const sitemap = read('./sitemapRoutes.ts');
 const lobby = read('../components/research/OpenEvoCapabilityMapLobby.astro');
 const zhPage = read('../pages/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/index.astro');
-const enPage = read('../pages/en/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/index.astro');
+const enPage = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/index.astro.archive');
 
 describe('Q17 DirectApply complete analysis page', () => {
   it('publishes a bilingual canonical route with reader ownership', () => {

@@ -200,8 +200,8 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
     ['src/components/SeedReproductionPath.astro', 'rent today'],
     ['src/pages/guide.astro', '第二步不要直接跑 150 updates'],
     ['src/pages/guide.astro', '迁移不是“把文件复制过去就开跑”'],
-    ['src/pages/en/guide.astro', 'move straight into the ALFWorld / WebShop experiment on 4×3090'],
-    ['src/pages/en/guide.astro', 'profiling on the four 3090s'],
+    ['docs/archive/site-en/src/pages/en/guide.astro.archive', 'move straight into the ALFWorld / WebShop experiment on 4×3090'],
+    ['docs/archive/site-en/src/pages/en/guide.astro.archive', 'profiling on the four 3090s'],
   ] as const;
   for (const [file, needle] of exactBanned) ban(file, 'COPY-HEADING-002', needle, 'A known negative or conversation-dependent public heading reappeared.');
 
@@ -229,7 +229,7 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   ban(program, 'COPY-STATE-PROVENANCE-003', 'Current experiment allocation: 5× RTX 5090', 'A historical allocation must not return as undated live state.');
 
   const zhGuide = 'src/pages/guide.astro';
-  const enGuide = 'src/pages/en/guide.astro';
+  const enGuide = 'docs/archive/site-en/src/pages/en/guide.astro.archive';
   for (const required of ['RTX6（4×RTX3090）', 'current-campaign.json', '默认分支快照']) requireText(zhGuide, 'COPY-I18N-003', required, 'The Chinese Guide must preserve historical provenance and branch-aware live-state routing.');
   for (const required of ['RTX6 (4×RTX3090)', 'current-campaign.json', 'default-branch snapshot']) requireText(enGuide, 'COPY-I18N-003', required, 'The English Guide must preserve historical provenance and branch-aware live-state routing.');
   ban(zhGuide, 'COPY-STATE-PROVENANCE-004', '当前实验分配为 <strong>5×RTX5090</strong>', 'The Chinese Guide must not freeze a prior GPU allocation as current.');

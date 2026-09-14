@@ -9,7 +9,7 @@ const detail = read('src/components/research/SeedOpenEvoResearchDetail.astro');
 const studyOverview = read('src/components/research/SeedOpenEvoStudyOverview.astro');
 const hero = read('src/components/research/OpenEvoWebShopResultsHero.astro');
 const resultsZh = read('src/pages/research/seed-openevo/study/results.astro');
-const resultsEn = read('src/pages/en/research/seed-openevo/study/results.astro');
+const resultsEn = read('docs/archive/site-en/src/pages/en/research/seed-openevo/study/results.astro.archive');
 
 const flowIds = [
   "id: 'hub'",

@@ -8,7 +8,6 @@ const routes = {
 };
 const locales = [
   { id: 'zh', prefix: '' },
-  { id: 'en', prefix: '/en' },
 ] as const;
 const viewports = [
   { id: 'phone', width: 390, height: 844 },

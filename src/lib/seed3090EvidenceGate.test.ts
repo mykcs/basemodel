@@ -6,7 +6,7 @@ const read = (path: string) =>
 
 const component = read('src/components/research/Seed3090EvidenceGate.astro');
 const zhRoute = read('src/pages/research/seed-openevo/study/results.astro');
-const enRoute = read('src/pages/en/research/seed-openevo/study/results.astro');
+const enRoute = read('docs/archive/site-en/src/pages/en/research/seed-openevo/study/results.astro.archive');
 
 describe('seed3090 evidence gate archive', () => {
   it('keeps the August 12 mechanism, attribution, and efficacy methodology intact', () => {

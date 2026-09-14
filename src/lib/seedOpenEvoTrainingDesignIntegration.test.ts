@@ -20,7 +20,7 @@ const resultsScaffold = read(
 );
 const zhPage = read("src/pages/research/seed-openevo/study/design/index.astro");
 const enPage = read(
-  "src/pages/en/research/seed-openevo/study/design/index.astro",
+  "docs/archive/site-en/src/pages/en/research/seed-openevo/study/design/index.astro.archive",
 );
 
 describe("integrated SEED × OpenEvo training design", () => {

@@ -2,7 +2,7 @@ import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
 import { sitemapStaticPaths } from '../lib/sitemapRoutes';
 
-// Static bilingual sitemap. Preview surfaces stay non-indexable; Vercel Production uses Astro.site.
+// Static Chinese-only sitemap while English page source is archived. Preview surfaces stay non-indexable; Vercel Production uses Astro.site.
 export const GET: APIRoute = async ({ site }) => {
   const isVercelProduction = process.env.VERCEL_ENV === 'production';
   const isVercelPreview = process.env.VERCEL_ENV === 'preview';
@@ -33,11 +33,7 @@ export const GET: APIRoute = async ({ site }) => {
     ...models.map((entry) => `${prefix}/models/${entry.data.id}/`),
     ...papers.map((entry) => `${prefix}/papers/${entry.data.id}/`),
   ];
-  const enUrls = [
-    ...models.map((entry) => `${prefix}/en/models/${entry.data.id}/`),
-    ...papers.map((entry) => `${prefix}/en/papers/${entry.data.id}/`),
-  ];
-  const urls = [...staticUrls, ...zhUrls, ...enUrls];
+  const urls = [...staticUrls, ...zhUrls];
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
     .map((url) => `  <url><loc>${url}</loc></url>`)

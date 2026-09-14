@@ -12,7 +12,7 @@ const compare = read('src/components/research/SeedOpenEvoComparisonDiagram.astro
 const guide = read('src/components/OpenEvoSeedBenchmarksGuide.astro');
 const trajectory = read('src/components/research/AgentEnvironmentTrajectory.astro');
 const labZh = read('src/pages/lab.astro');
-const labEn = read('src/pages/en/lab.astro');
+const labEn = read('docs/archive/site-en/src/pages/en/lab.astro.archive');
 const sourceRules = read('src/AGENTS.md');
 
 describe('research architecture diagrams', () => {

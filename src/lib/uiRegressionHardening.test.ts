@@ -11,7 +11,7 @@ const visualCloseoutBrowserGate = readFileSync(resolve(repoRoot, 'tests/e2e/visu
 const canonicalFigureGate = readFileSync(resolve(repoRoot, 'tests/e2e/canonical-research-figures.spec.ts'), 'utf8');
 const appLayout = readFileSync(resolve(srcRoot, 'layouts/AppLayout.astro'), 'utf8');
 const resultsZh = readFileSync(resolve(srcRoot, 'pages/research/seed-openevo/study/results.astro'), 'utf8');
-const resultsEn = readFileSync(resolve(srcRoot, 'pages/en/research/seed-openevo/study/results.astro'), 'utf8');
+const resultsEn = readFileSync(resolve(repoRoot, 'docs/archive/site-en/src/pages/en/research/seed-openevo/study/results.astro.archive'), 'utf8');
 
 function collectAstroFiles(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -63,11 +63,6 @@ describe('UI regression-class hardening', () => {
       '/research/seed-openevo/flow/seed/',
       '/research/seed-openevo/flow/openevo/',
       '/lab/',
-      '/en/research/seed-openevo/flow/webshop/',
-      '/en/research/seed-openevo/flow/alfworld/',
-      '/en/research/seed-openevo/flow/seed/',
-      '/en/research/seed-openevo/flow/openevo/',
-      '/en/lab/',
     ];
     for (const path of interactiveOwners) {
       expect(ownerMatrix, `research explainer owner matrix missing ${path}`).toContain(path);
@@ -82,7 +77,7 @@ describe('UI regression-class hardening', () => {
       '/lab/',
     ]) expect(stepperMatrix, `visual closeout stepper matrix missing ${path}`).toContain(path);
 
-    for (const canonicalOnly of ['/research/seed-openevo/flow/loops/', '/en/research/seed-openevo/flow/loops/']) {
+    for (const canonicalOnly of ['/research/seed-openevo/flow/loops/']) {
       expect(ownerMatrix, `${canonicalOnly} must not regain a duplicate interactive explainer`).not.toContain(canonicalOnly);
       expect(visualOwnerMatrix, `${canonicalOnly} must not regain a duplicate interactive explainer`).not.toContain(canonicalOnly);
       expect(canonicalFigureGate, `${canonicalOnly} missing canonical figure acceptance`).toContain(canonicalOnly);
@@ -91,8 +86,6 @@ describe('UI regression-class hardening', () => {
     for (const retiredOwner of [
       '/research/seed-openevo/flow/benchmarks/',
       '/research/seed-openevo/study/run/',
-      '/en/research/seed-openevo/flow/benchmarks/',
-      '/en/research/seed-openevo/study/run/',
     ]) {
       expect(ownerMatrix, `research explainer matrix regained retired owner ${retiredOwner}`).not.toContain(retiredOwner);
       expect(visualOwnerMatrix, `visual closeout matrix regained retired owner ${retiredOwner}`).not.toContain(retiredOwner);

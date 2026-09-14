@@ -51,7 +51,7 @@ describe('audience copy audit', () => {
 
   it('keeps the bilingual Guide historical/live-state boundary equivalent', () => {
     const zhGuide = fs.readFileSync(path.join(root, 'src/pages/guide.astro'), 'utf8');
-    const enGuide = fs.readFileSync(path.join(root, 'src/pages/en/guide.astro'), 'utf8');
+    const enGuide = fs.readFileSync(path.join(root, 'docs/archive/site-en/src/pages/en/guide.astro.archive'), 'utf8');
     const state = fs.readFileSync(path.join(root, 'src/lib/openEvoScientificState.ts'), 'utf8');
     expect(zhGuide).toContain('RTX6（4×RTX3090）');
     expect(enGuide).toContain('RTX6 (4×RTX3090)');

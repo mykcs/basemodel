@@ -78,6 +78,8 @@ export function toEnglishPath(path: string): string {
 
 export type RouteLocale = 'zh' | 'en';
 
+export const englishRuntimeArchived = true as const;
+
 const bilingualRoutes = new Set<string>([...bilingualStaticPaths, ...bilingualCompatibilityPaths]);
 const zhOnlyRoutes = new Set<string>(zhOnlyStaticPaths);
 const bilingualDynamicRoute = /^\/(?:models|papers)\/[^/]+\/$/;
@@ -90,8 +92,7 @@ export function normalizeLocaleRoute(pathname: string): string {
 
 export function availableLocalesForRoute(pathname: string): readonly RouteLocale[] {
   const route = normalizeLocaleRoute(pathname);
-  if (bilingualRoutes.has(route) || bilingualDynamicRoute.test(route)) return ['zh', 'en'];
-  if (zhOnlyRoutes.has(route)) return ['zh'];
+  if (bilingualRoutes.has(route) || bilingualDynamicRoute.test(route) || zhOnlyRoutes.has(route)) return ['zh'];
   return [];
 }
 
@@ -106,5 +107,5 @@ export function localizedRoute(pathname: string, locale: RouteLocale): string | 
 }
 
 export function sitemapStaticPaths(): string[] {
-  return [...bilingualStaticPaths, ...zhOnlyStaticPaths, ...bilingualStaticPaths.map(toEnglishPath)];
+  return [...bilingualStaticPaths, ...zhOnlyStaticPaths];
 }

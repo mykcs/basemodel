@@ -17,13 +17,7 @@ const generalRoutes = [
   '/methodology/',
   '/research/seed-openevo/study/run/',
   '/research/seed-openevo/flow/loops/',
-  '/en/research/seed-openevo/flow/loops/',
   '/lab/',
-  '/en/',
-  '/en/models/',
-  '/en/papers/seed/',
-  '/en/workspace/',
-  '/en/lab/',
 ] as const;
 
 const explainerRoutes = [
@@ -32,11 +26,6 @@ const explainerRoutes = [
   { path: '/research/seed-openevo/flow/seed/', kinds: ['seed'], requiresMainStage: true },
   { path: '/research/seed-openevo/flow/openevo/', kinds: ['openevo'], requiresMainStage: true },
   { path: '/lab/', kinds: ['server'], requiresMainStage: false },
-  { path: '/en/research/seed-openevo/flow/webshop/', kinds: ['webshop'], requiresMainStage: true },
-  { path: '/en/research/seed-openevo/flow/alfworld/', kinds: ['alfworld'], requiresMainStage: true },
-  { path: '/en/research/seed-openevo/flow/seed/', kinds: ['seed'], requiresMainStage: true },
-  { path: '/en/research/seed-openevo/flow/openevo/', kinds: ['openevo'], requiresMainStage: true },
-  { path: '/en/lab/', kinds: ['server'], requiresMainStage: false },
 ] as const;
 
 const stepperRoutes = [
@@ -302,7 +291,7 @@ for (const viewport of [
 }
 
 test('landscape catalog stats use a desktop row and mobile column', async ({ page }) => {
-  for (const path of ['/landscape/', '/en/landscape/'] as const) {
+  for (const path of ['/landscape/'] as const) {
     await test.step(`${path} desktop`, async () => {
       await page.setViewportSize({ width: 1280, height: 900 });
       await page.goto(path, { waitUntil: 'domcontentloaded' });

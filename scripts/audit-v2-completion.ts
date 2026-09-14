@@ -22,22 +22,22 @@ const sourceText = ['src'].flatMap(filesUnder).filter((path) => !path.endsWith('
 const pagesText = ['src/pages', 'src/components', 'src/layouts', 'src/i18n'].flatMap(filesUnder).filter((path) => !path.endsWith('.json')).map((path) => readFileSync(path, 'utf8')).join('\n');
 
 const requiredRoutes: Array<[string, string]> = [
-  ['zh workspace', 'src/pages/workspace/index.astro'], ['en workspace', 'src/pages/en/workspace/index.astro'],
-  ['zh models', 'src/pages/models/index.astro'], ['en models', 'src/pages/en/models/index.astro'],
-  ['zh model detail', 'src/pages/models/[id].astro'], ['en model detail', 'src/pages/en/models/[id].astro'],
-  ['zh compare', 'src/pages/compare.astro'], ['en compare', 'src/pages/en/compare.astro'],
-  ['zh papers', 'src/pages/papers/index.astro'], ['en papers', 'src/pages/en/papers/index.astro'],
-  ['zh paper detail', 'src/pages/papers/[id].astro'], ['en paper detail', 'src/pages/en/papers/[id].astro'],
-  ['zh families', 'src/pages/families/index.astro'], ['en families', 'src/pages/en/families/index.astro'],
-  ['zh landscape', 'src/pages/landscape/index.astro'], ['en landscape', 'src/pages/en/landscape/index.astro'],
-  ['zh guide', 'src/pages/guide.astro'], ['en guide', 'src/pages/en/guide.astro'],
-  ['zh methodology', 'src/pages/methodology.astro'], ['en methodology', 'src/pages/en/methodology.astro'],
-  ['zh data status', 'src/pages/data-status.astro'], ['en data status', 'src/pages/en/data-status.astro'],
+  ['zh workspace', 'src/pages/workspace/index.astro'], ['en workspace', 'docs/archive/site-en/src/pages/en/workspace/index.astro.archive'],
+  ['zh models', 'src/pages/models/index.astro'], ['en models', 'docs/archive/site-en/src/pages/en/models/index.astro.archive'],
+  ['zh model detail', 'src/pages/models/[id].astro'], ['en model detail', 'docs/archive/site-en/src/pages/en/models/[id].astro.archive'],
+  ['zh compare', 'src/pages/compare.astro'], ['en compare', 'docs/archive/site-en/src/pages/en/compare.astro.archive'],
+  ['zh papers', 'src/pages/papers/index.astro'], ['en papers', 'docs/archive/site-en/src/pages/en/papers/index.astro.archive'],
+  ['zh paper detail', 'src/pages/papers/[id].astro'], ['en paper detail', 'docs/archive/site-en/src/pages/en/papers/[id].astro.archive'],
+  ['zh families', 'src/pages/families/index.astro'], ['en families', 'docs/archive/site-en/src/pages/en/families/index.astro.archive'],
+  ['zh landscape', 'src/pages/landscape/index.astro'], ['en landscape', 'docs/archive/site-en/src/pages/en/landscape/index.astro.archive'],
+  ['zh guide', 'src/pages/guide.astro'], ['en guide', 'docs/archive/site-en/src/pages/en/guide.astro.archive'],
+  ['zh methodology', 'src/pages/methodology.astro'], ['en methodology', 'docs/archive/site-en/src/pages/en/methodology.astro.archive'],
+  ['zh data status', 'src/pages/data-status.astro'], ['en data status', 'docs/archive/site-en/src/pages/en/data-status.astro.archive'],
 ];
 
 pass('V2-SHELL-001', !sourceText.includes('BaseLayout'), 'no BaseLayout references');
 pass('V2-SHELL-002', !existsSync(join(root, 'src/layouts/BaseLayout.astro')), 'BaseLayout file absent');
-pass('V2-SHELL-003', requiredRoutes.every(([, path]) => existsSync(join(root, path))), 'required bilingual routes exist');
+pass('V2-SHELL-003', requiredRoutes.every(([, path]) => existsSync(join(root, path))), 'active Chinese routes and retained English archive wrappers exist');
 pass('V2-OLD-001', !pagesText.includes('Landscape 双引擎原型') && !pagesText.includes('Open the dual-engine prototype') && !pagesText.includes('MVP') && !pagesText.includes('双引擎原型'), 'obsolete public labels absent');
 pass('V2-STATE-001', !sourceText.includes('?ids=') && !/searchParams\.set\(['"]ids['"]/.test(sourceText), 'canonical compare query is models');
 
@@ -46,7 +46,7 @@ for (const name of ['models', 'papers', 'claims', 'benchmarkRuns', 'guides', 'ch
   pass(`V2-DATA-001-${name}`, new RegExp(`(?:const|export const) ${name}\\s*=`).test(config), `${name} collection declared`);
 }
 pass('V2-WORKSPACE-001', read('src/stores/candidates.ts').includes('persistentAtom') && read('src/stores/compare.ts').includes('persistentAtom') && read('src/stores/snapshots.ts').includes('persistentAtom'), 'workspace state uses persistent atoms');
-pass('V2-WORKSPACE-002', existsSync(join(root, 'src/pages/en/workspace/index.astro')) && read('src/pages/en/workspace/index.astro').includes('ResearchWorkspace'), 'English workspace mounts the workbench');
+pass('V2-WORKSPACE-002', existsSync(join(root, 'docs/archive/site-en/src/pages/en/workspace/index.astro.archive')) && read('docs/archive/site-en/src/pages/en/workspace/index.astro.archive').includes('ResearchWorkspace'), 'archived English workspace snapshot still mounts the workbench');
 pass('V2-WORKSPACE-003', read('src/components/workspace/DecisionMemo.tsx').includes('saveDecisionSnapshot') && read('src/components/workspace/DecisionMemo.tsx').includes('snapshotChanges'), 'snapshot controls are mounted');
 const header = read('src/components/Header.astro');
 pass(
@@ -58,7 +58,7 @@ pass(
 );
 pass('V2-SEARCH-001', existsSync(join(root, 'src/components/navigation/CommandMenu.astro')) && existsSync(join(root, 'src/pages/search-index.json.ts')) && read('src/components/navigation/CommandMenu.astro').includes('ArrowDown'), 'search index and keyboard navigation exist');
 pass('V2-COMPARE-001', read('src/components/workspace/CompareTray.astro').includes('data-compare-base') && read('src/components/workspace/CompareTray.astro').includes('?models='), 'compare tray uses canonical URL');
-pass('V2-DATA-002', read('src/pages/guide.astro').includes("getCollection('guides')") && read('src/pages/en/guide.astro').includes("getCollection('guides')"), 'guide page reads the guides collection');
+pass('V2-DATA-002', read('src/pages/guide.astro').includes("getCollection('guides')") && read('docs/archive/site-en/src/pages/en/guide.astro.archive').includes("getCollection('guides')"), 'guide page reads the guides collection');
 pass('V2-DATA-003', read('src/lib/schemas.ts').includes('not_verified') && read('src/components/common/SemanticStatus.astro').includes('semantic'), 'semantic unknown states are explicit');
 pass('V2-DATA-004', read('src/lib/research/evaluateModel.ts').includes('evidenceQuality') && read('src/lib/research/evaluateModel.ts').includes('license'), 'evidence quality and license constraints are in the engine');
 pass('V2-DATA-005', ['qwen2-5-0-5b', 'qwen2-5-0-5b-instruct', 'qwen2-5-1-5b', 'qwen2-5-1-5b-instruct', 'qwen2-5-3b', 'qwen2-5-3b-instruct', 'qwen2-5-7b', 'qwen2-5-7b-instruct', 'qwen2-5-14b', 'qwen2-5-14b-instruct', 'qwen2-5-32b', 'qwen2-5-32b-instruct', 'qwen2-5-72b', 'qwen2-5-72b-instruct'].every((id) => existsSync(join(root, `src/content/models/${id}.json`))), 'Qwen2.5 canonical size ladder includes base and instruct records for 0.5B, 1.5B, 3B, 7B, 14B, 32B, and 72B');

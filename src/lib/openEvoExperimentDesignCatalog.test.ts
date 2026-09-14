@@ -5,7 +5,7 @@ const read = (relative: string) => readFileSync(new URL(relative, import.meta.ur
 const catalog = read('../components/research/OpenEvoExperimentDesignCatalog.astro');
 const map = read('../components/research/OpenEvoRedesignMap.astro');
 const zh = read('../pages/research/seed-openevo/study/capability-exploration/openevo-2-0/index.astro');
-const en = read('../pages/en/research/seed-openevo/study/capability-exploration/openevo-2-0/index.astro');
+const en = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/openevo-2-0/index.astro.archive');
 
 const familyIds = [
   'stage1-shared-harness-deliberation',

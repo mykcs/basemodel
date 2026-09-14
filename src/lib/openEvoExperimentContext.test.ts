@@ -130,12 +130,15 @@ describe('experiment context hierarchy', () => {
     expect(lobby).toContain('它们用于追溯证据，不是新的主要实验入口');
   });
 
-  it('binds all five canonical experiment entries in both locales without forcing self-contained pages to prepend generic context', () => {
+  it('binds all five canonical experiment entries in active Chinese pages and retained English snapshots', () => {
     for (const [route, experimentId] of canonical) {
       const reader = CAPABILITY_READER_ROUTES.find((item) => item.route === route);
       expect(reader, route).toBeDefined();
-      for (const prefix of ['', 'en/']) {
-        const page = read(`../pages/${prefix}research/seed-openevo/study/capability-exploration/${route}/index.astro`);
+      const pages = [
+        read(`../pages/research/seed-openevo/study/capability-exploration/${route}/index.astro`),
+        read(`../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/${route}/index.astro.archive`),
+      ];
+      for (const page of pages) {
         if (reader?.coverage === 'self-contained') {
           const owner = read(`../components/research/${reader.owner}.astro`);
           expect(page).not.toContain('<ResearchRouteContext');
@@ -168,7 +171,6 @@ describe('experiment context hierarchy', () => {
         experiment.evidenceLink,
       ]) {
         expect(routeSourceExists('', link.href), `missing zh deep link: ${link.href}`).toBe(true);
-        expect(routeSourceExists('en/', link.href), `missing en deep link: ${link.href}`).toBe(true);
         const route = link.href.split('#')[0]?.slice(capabilityPrefix.length).replace(/\/$/, '');
         if (!route) continue;
         const owners = appearances.get(route) ?? new Set<string>();
@@ -202,23 +204,22 @@ describe('experiment context hierarchy', () => {
     expect(current).toContain('这个结论只属于当前冻结的资格实验');
   });
 
-  it('keeps Chinese and English on one experiment IA with matching owned routes', () => {
+  it('keeps the active Chinese experiment IA aligned with the retained English study snapshot', () => {
     const zhStudy = read('../pages/research/seed-openevo/study/index.astro');
-    const enStudy = read('../pages/en/research/seed-openevo/study/index.astro');
+    const enStudy = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/index.astro.archive');
     for (const study of [zhStudy, enStudy]) {
       expect(study).toContain('OpenEvoExperimentIndex');
       expect(study).toContain('<OpenEvoExperimentIndex locale={locale} />');
       expect(study).not.toContain('OPEN_EVO_EXPERIMENTS.map');
     }
 
-    const routeSourceExists = (prefix: string, route: string) => {
-      const directoryRoute = new URL(`../pages/${prefix}research/seed-openevo/study/capability-exploration/${route}/index.astro`, import.meta.url);
-      const fileRoute = new URL(`../pages/${prefix}research/seed-openevo/study/capability-exploration/${route}.astro`, import.meta.url);
+    const routeSourceExists = (route: string) => {
+      const directoryRoute = new URL(`../pages/research/seed-openevo/study/capability-exploration/${route}/index.astro`, import.meta.url);
+      const fileRoute = new URL(`../pages/research/seed-openevo/study/capability-exploration/${route}.astro`, import.meta.url);
       return existsSync(directoryRoute) || existsSync(fileRoute);
     };
     for (const route of Object.keys(OPEN_EVO_CANONICAL_ROUTE_OWNERS)) {
-      expect(routeSourceExists('', route), `missing zh route: ${route}`).toBe(true);
-      expect(routeSourceExists('en/', route), `missing en route: ${route}`).toBe(true);
+      expect(routeSourceExists(route), `missing active zh route: ${route}`).toBe(true);
     }
 
     for (const experiment of OPEN_EVO_EXPERIMENTS) {

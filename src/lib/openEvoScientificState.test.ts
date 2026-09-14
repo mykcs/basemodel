@@ -15,14 +15,14 @@ const currentFacing = [
   'src/components/research/SeedOpenEvoComparisonDiagram.astro',
   'src/pages/_bodies/home-v2.astro',
   'src/pages/guide.astro',
-  'src/pages/en/guide.astro',
+  'docs/archive/site-en/src/pages/en/guide.astro.archive',
   'src/pages/guide/today.astro',
   'src/pages/research/seed-openevo/study/run.astro',
-  'src/pages/en/research/seed-openevo/study/run.astro',
+  'docs/archive/site-en/src/pages/en/research/seed-openevo/study/run.astro.archive',
   'src/pages/research/seed-openevo/study/index.astro',
-  'src/pages/en/research/seed-openevo/study/index.astro',
+  'docs/archive/site-en/src/pages/en/research/seed-openevo/study/index.astro.archive',
   'src/pages/research/seed-openevo/study/results.astro',
-  'src/pages/en/research/seed-openevo/study/results.astro',
+  'docs/archive/site-en/src/pages/en/research/seed-openevo/study/results.astro.archive',
 ].map((path) => ({ path, source: read(path) }));
 const joined = currentFacing.map(({ source }) => source).join('\n');
 

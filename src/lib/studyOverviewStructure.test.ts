@@ -4,9 +4,9 @@ import { OPEN_EVO_EXPERIMENTS } from '../data/openEvoExperimentNavigation';
 
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 const studyZh = read('src/pages/research/seed-openevo/study/index.astro');
-const studyEn = read('src/pages/en/research/seed-openevo/study/index.astro');
+const studyEn = read('docs/archive/site-en/src/pages/en/research/seed-openevo/study/index.astro.archive');
 const designZh = read('src/pages/research/seed-openevo/study/design/index.astro');
-const designEn = read('src/pages/en/research/seed-openevo/study/design/index.astro');
+const designEn = read('docs/archive/site-en/src/pages/en/research/seed-openevo/study/design/index.astro.archive');
 const overview = read('src/components/research/SeedOpenEvoStudyOverview.astro');
 const experimentIndex = read('src/components/research/OpenEvoExperimentIndex.astro');
 const hub = read('src/components/research/SeedOpenEvoResearchHub.astro');

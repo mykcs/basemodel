@@ -65,7 +65,7 @@ async function assertVisibleReaderGeometry(page: Page) {
 export function registerReaderJourneyTests() {
   // The previous six-route check covered orientation components only. Historical
   // bodies and expanded records must be readable in both locales as well.
-  for (const locale of ['zh', 'en'] as const) {
+  for (const locale of ['zh'] as const) {
     for (const width of [390, 1440]) {
       for (const theme of ['light', 'dark']) {
         test(`capability copy ${locale} ${width}px ${theme}: historical prose stays readable when expanded`, async ({ page }) => {
@@ -74,7 +74,7 @@ export function registerReaderJourneyTests() {
           await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
           const routeFailures: string[] = [];
           for (const route of CAPABILITY_READER_ROUTES) {
-            const path = `${locale === 'en' ? '/en' : ''}${root}${route.route ? `${route.route}/` : ''}`;
+            const path = `${root}${route.route ? `${route.route}/` : ''}`;
             await page.goto(path, { waitUntil: 'domcontentloaded' });
             await expect(page.locator('[data-copy-review]'), path).toHaveCount(1);
             for (const expanded of [false, true]) {
@@ -128,8 +128,8 @@ export function registerReaderJourneyTests() {
     }
   }
 
-  for (const locale of ['zh', 'en'] as const) {
-    const prefix = locale === 'en' ? '/en' : '';
+  for (const locale of ['zh'] as const) {
+    const prefix = '';
     test(`reader journey ${locale}: explanation precedes codes and every stop branch has a visible answer`, async ({ page }) => {
       await page.goto(`${prefix}${mechanism}`, { waitUntil: 'domcontentloaded' });
       const orientation = page.locator('[data-research-orientation]');
@@ -346,8 +346,8 @@ export function registerReaderJourneyTests() {
     await expect(page.locator('#m1-c [data-lifecycle="start"]')).toBeVisible();
   });
 
-  for (const locale of ['zh', 'en'] as const) {
-    const prefix = locale === 'en' ? '/en' : '';
+  for (const locale of ['zh'] as const) {
+    const prefix = '';
     test(`reader explanation ${locale}: shopping scene and parameter changes expose different objects`, async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 844 });
       await page.emulateMedia({ reducedMotion: 'reduce' });

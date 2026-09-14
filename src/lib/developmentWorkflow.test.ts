@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 const page = read('src/components/DevelopmentWorkflowPage.astro');
 const zhRoute = read('src/pages/development.astro');
-const enRoute = read('src/pages/en/development.astro');
+const enRoute = read('docs/archive/site-en/src/pages/en/development.astro.archive');
 const header = read('src/components/Header.astro');
 const sitemap = read('src/lib/sitemapRoutes.ts');
 const contracts = read('src/data/siteReaderContracts.ts');
