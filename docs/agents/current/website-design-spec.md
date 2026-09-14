@@ -13,6 +13,22 @@
 
 它不是词汇黑名单，也不是要求把技术内容写浅。它定义的是**信息先后、说话姿势、标题职责和证据层级**。详细的历史原句、改写和来源统一放在案例库；本文件只保留已经稳定下来的规则。
 
+## 0. 规范分工：先找唯一 owner
+
+网站规范已经分成几个互补层；**不要再新建另一份“总规范”复制它们**。遇到问题先按对象找到唯一 owner，再把案例或测试补到 owner 附近：
+
+| 问题 | 唯一 owner | 负责什么 |
+| --- | --- | --- |
+| 文案、标题、术语、说人话 | 本文件 + [`website-copy-cases.md`](website-copy-cases.md) | 信息顺序、标题职责、first-use explanation，以及真实正反案例 |
+| 首屏注意力与读者任务 | [`site-reader-attention-contract.md`](site-reader-attention-contract.md) + `src/data/siteReaderContracts.ts` | 每条公开 route 的 audience、首屏目标、必须可见边界和下一步 |
+| 卡片、层级、形状、间距与视觉气质 | [`ui-design-principles.md`](ui-design-principles.md) | Research Editorial × Experimental Workbench 的共享视觉语法 |
+| 全站知识结构与页面密度 | [`sitewide-visual-knowledge-architecture.md`](sitewide-visual-knowledge-architecture.md) | route role、L0–L3 信息密度和可复用视觉关系 |
+| 科研页面的结论、证据与 provenance | [`research-site-presentation-contract.md`](research-site-presentation-contract.md) | 科学语义、claim boundary、当前/历史证据和发布一致性 |
+| 主题、响应式、overflow 与浏览器验收 | [`ui-change-visual-acceptance-gate.md`](ui-change-visual-acceptance-gate.md) | UI 改动完成前必须怎样 falsify 视觉回归 |
+| 用户偏好、Gold Pair 与冷读 | [`human-preference-learning-system.md`](human-preference-learning-system.md) | 怎样把真实反馈转成可复用偏好，而不是凭 Agent 风格猜 |
+
+`docs/agents/tasks/`、`docs/agents/history/` 和 evidence receipt 负责**某次任务怎么做、为什么做、当时发生了什么**；它们不是新的站点规则来源。若历史记录与 current owner 冲突，以 current owner 和 executable repository truth 为准。
+
 ## 1. 一句话定义
 
 **说人话 = 先说对象和事实，再说结论与原因；让读者直接理解事情本身，而不是先理解网页怎样组织、作者准备怎样解释、内部系统怎样记账。**
