@@ -26,9 +26,10 @@ for (const locale of locales) {
       await page.setViewportSize(viewport);
       await page.goto(`${locale.prefix}${routes.current}`, { waitUntil: 'domcontentloaded' });
       await expect(page.locator('h1')).toHaveText('Gated-Delta SD-LoRA');
-      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '四轮 Vanilla vs GDR 配对实验已经封存两轮' : 'Two of four Vanilla-vs-GDR paired rounds are sealed');
-      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? 'GDR 暂时更高；但四轮还没跑完' : 'GDR is currently higher; the four-round study is not finished');
-      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '不是“GDR 已经优于 Vanilla”的结论' : 'not a conclusion that GDR is better than Vanilla');
+      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '四轮 Vanilla vs GDR 配对实验已经全部封存' : 'All four Vanilla-vs-GDR paired rounds are sealed');
+      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '这是这套 qualification 的结果' : 'this is a qualification result for this schedule');
+      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? '不是“GDR 对所有设置都更好”' : 'not a claim that GDR is universally better');
+      await expect(page.locator('.gds-hero__state')).toContainText(locale.id === 'zh' ? 'final panel 仍未打开' : 'The final panel remains closed');
       await expect(page.getByTestId('gated-delta-recurrence')).toBeVisible();
       await expect(page.getByTestId('gated-delta-runtime-path')).toBeVisible();
       await expect(page.locator('[data-reader-route]')).toHaveCount(0);
@@ -78,8 +79,9 @@ test('core distinction remains readable without JavaScript', async ({ browser })
   const page = await context.newPage();
   try {
     await page.goto(routes.current, { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('.gds-hero__state')).toContainText('四轮 Vanilla vs GDR 配对实验已经封存两轮');
-    await expect(page.locator('.gds-hero__state')).toContainText('不是“GDR 已经优于 Vanilla”的结论');
+    await expect(page.locator('.gds-hero__state')).toContainText('四轮 Vanilla vs GDR 配对实验已经全部封存');
+    await expect(page.locator('.gds-hero__state')).toContainText('不是“GDR 对所有设置都更好”');
+    await expect(page.locator('.gds-hero__state')).toContainText('final panel 仍未打开');
     await expect(page.getByTestId('gated-delta-recurrence')).toBeVisible();
     await page.goto(routes.history, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#admission-rule')).toContainText('固定 16 题');
