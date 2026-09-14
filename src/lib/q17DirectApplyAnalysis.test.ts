@@ -84,6 +84,15 @@ describe('Q17 DirectApply complete analysis page', () => {
     expect(component).toContain('the parameters look compressible');
   });
 
+  it('keeps W&B observability without relabeling the historical 1.7B run as Q17', () => {
+    expect(component).toContain('q17-wandb-lineage-audit-20260915.json');
+    expect(component).toContain('ceiling1-stage2-qwen3-1p7b-202609041833-4c1bb58e9f');
+    expect(component).toContain('不是这条 Q17 的原始训练记录');
+    expect(component).toContain('no live W&B training run for the exact 160-round Q17 DirectApply lineage');
+    expect(component).toContain('Passport mirror / smoke');
+    expect(component).toContain('不能贴成 Q17');
+  });
+
   it('keeps the sealed chronology as Stage2 seal -> read-only D1 -> one frozen final', () => {
     const d1 = component.indexOf('先进行了只读 D1 诊断');
     const final = component.indexOf('随后原始 R159 只打开一次冻结的 128 题终评');
