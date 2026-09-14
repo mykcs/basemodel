@@ -77,8 +77,10 @@ describe('research URL hierarchy', () => {
     expect(redirectMap.get('/en')?.permanent).toBe(false);
     expect(redirectMap.get('/en/')?.destination).toBe('/');
     expect(redirectMap.get('/en/')?.permanent).toBe(false);
-    expect(redirectMap.get('/en/:path*')?.destination).toBe('/:path*');
-    expect(redirectMap.get('/en/:path*')?.permanent).toBe(false);
+    const deepEnglishFallback = redirectMap.get('/en/:path(.*)');
+    expect(deepEnglishFallback?.destination).toBe('/:path*');
+    expect(deepEnglishFallback?.permanent).toBe(false);
+    expect(redirectMap.has('/en/:path*')).toBe(false);
   });
 
   it('preserves trailing-slash variants for permanent Chinese compatibility redirects', () => {
