@@ -5,7 +5,7 @@ import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvo
 import InteractiveResearchExplainer from '../../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'zh' as const;
 ---
-<AppLayout title="OpenEvo 实验：跨任务演化、模型选择与新手问题" description="解释 OpenEvo 怎样跨任务积累经验、为什么以 Qwen2.5-3B 为基线，以及怎样从真实任务轨迹产生可验证的后继版本（successor revision）。" locale={locale}>
+<AppLayout title="OpenEvo 跨任务演化流程" description="OpenEvo 在任务之间封存证据、运行演化方法并验证后继状态；本页解释任务边界、演化载体、successor revision，以及这些变化从何时开始影响后续任务。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="openevo">
     <InteractiveResearchExplainer locale={locale} kind="openevo" client:visible />
   </SeedOpenEvoResearchPage>

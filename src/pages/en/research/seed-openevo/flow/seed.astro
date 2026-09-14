@@ -4,7 +4,7 @@ import SeedOpenEvoResearchPage from '../../../../../components/research/SeedOpen
 import InteractiveResearchExplainer from '../../../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'en' as const;
 ---
-<AppLayout title="SEED framework and experiment loop" description="Explain how SEED uses external GLM-5.2 for Stage-1 hindsight-skill SFT, then switches to current-policy self-analysis with OPD and GRPO in Stage 2, including the training-to-inference boundary." locale={locale}>
+<AppLayout title="SEED learning flow and parameter updates" description="SEED trains an agent policy from its own completed task trajectories; this page explains Stage-1 hindsight-skill SFT, Stage-2 self-reflection, and how OPD and GRPO enter parameter updates in the WebShop reproduction." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="seed">
     <InteractiveResearchExplainer locale={locale} kind="seed" client:visible />
   </SeedOpenEvoResearchPage>

@@ -5,7 +5,7 @@ import SeedOpenEvoResearchPage from '../../../../../components/research/SeedOpen
 import InteractiveResearchExplainer from '../../../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'en' as const;
 ---
-<AppLayout title="OpenEvo experiments: cross-task evolution, model choice, and beginner questions" description="Explain OpenEvo's cross-task evolution loop, why Qwen2.5-3B is the baseline, and how real task trajectories become validated successor revisions." locale={locale}>
+<AppLayout title="OpenEvo cross-task evolution flow" description="OpenEvo seals evidence between tasks, runs declared evolution methods, and validates successor state; this page explains task boundaries, evolution carriers, successor revisions, and when those changes activate." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="openevo">
     <InteractiveResearchExplainer locale={locale} kind="openevo" client:visible />
   </SeedOpenEvoResearchPage>

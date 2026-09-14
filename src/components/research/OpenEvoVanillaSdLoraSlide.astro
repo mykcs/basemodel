@@ -12,8 +12,8 @@ const arrowUrl = `url(#${arrowId})`;
     <div>
       <h1 id="sdlora-title">{t('Vanilla SD-LoRA 一轮怎样更新参数', 'One Vanilla SD-LoRA update round')}</h1>
       <p>{t(
-        '不是四张卡片排成一排：经验先变成训练数据，旧经验从旁路加入，SD-LoRA 产生候选参数，再由另一层状态规则决定下一轮用什么。',
-        'This is a routed loop, not four cards in a row: experience becomes training data, bounded replay joins from the side, SD-LoRA makes a candidate, and a separate state rule decides what the next round uses.'
+        '一轮更新沿着会回到下一轮任务的流程移动：经验先变成训练数据，旧经验从旁路加入，SD-LoRA 产生候选参数，再由另一层状态规则决定下一轮使用什么。',
+        'One update follows a routed loop back into the next task round: experience becomes training data, bounded replay joins from the side, SD-LoRA produces a candidate, and a separate state rule chooses the state used next.'
       )}</p>
       <p class="sdlora-slide__scope">{t(
         '范围：图中实线是当前 Vanilla SD-LoRA 主流程；虚线/分支说明 replay 与状态准入。动画只沿已有路线移动，关闭动画后所有方向仍然完整可读。',

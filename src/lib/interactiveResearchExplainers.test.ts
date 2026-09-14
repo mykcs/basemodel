@@ -116,7 +116,9 @@ describe('interactive research explainers', () => {
     expect(explainer).toContain('ParameterUpdateFlame');
     expect(explainer).toContain('参数更新');
     expect(detailCore).toContain('Qwen → SEED harness ↔ WebShop → GLM-5.2 → SFT');
-    expect(detail).toContain('Stage 1 先由 Qwen policy 通过 SEED / verl-agent 的交互 harness 驱动 Princeton WebShop 环境完成 rollout');
+    expect(detail).toContain('SEED 是一种让 Agent 用自己的任务轨迹继续训练 policy 的方法');
+    expect(detail).toContain('Stage 1 先收集 Qwen 完成的购物轨迹');
+    expect(detail).toContain('Stage 2 改由当前 policy 自己复盘，并通过 OPD 与 GRPO 更新参数');
     expect(detailCore).toContain('WebAgentTextEnv');
     expect(detailCore).toContain('它不采轨迹，也不计算 WebShop reward');
     expect(explainer).toContain('Harness、Princeton WebShop 环境和已经完成的 trajectory 都不会在这个 optimizer step 里被改写');

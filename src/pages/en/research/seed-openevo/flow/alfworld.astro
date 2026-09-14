@@ -4,7 +4,7 @@ import SeedOpenEvoResearchPage from '../../../../../components/research/SeedOpen
 import InteractiveResearchExplainer from '../../../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'en' as const;
 ---
-<AppLayout title="ALFWorld principles, world state, and evaluation" description="Step through ALFWorld text-based embodied tasks, object and receptacle state, action preconditions, task-family success rates, and data splits." locale={locale}>
+<AppLayout title="ALFWorld tasks and evaluation" description="ALFWorld is a text-based embodied-task benchmark where agents complete long-horizon household goals in an executable world; this page separates task success, task-family success rates, the macro-average, world state, action preconditions, and data splits." locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="alfworld">
     <InteractiveResearchExplainer locale={locale} kind="alfworld" client:visible />
   </SeedOpenEvoResearchPage>

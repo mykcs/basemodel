@@ -52,7 +52,7 @@ const p = (path: string) => localePath(locale, path);
 
   {page === 'benchmarks' && <>
     <section class="mission-section" data-explainer-step="1">
-      <div class="mission-section__heading"><span>01</span><div><small>{t('环境', 'Environments')}</small><h2>{t('交互与评测', 'Interaction and evaluation')}</h2></div></div>
+      <div class="mission-section__heading"><span>01</span><div><h2>{t('交互与评测', 'Interaction and evaluation')}</h2></div></div>
       <div class="two-grid"><article><h3>ALFWorld</h3><p>{t('文本化具身任务。核心结果是各任务家族 success rate 与不加权 macro-average；循环、无效动作和状态遗漏单独记录。', 'Text-based embodied tasks. Core outcomes are per-family success rates and an unweighted macro-average; loops, invalid actions, and missed state remain separate diagnostics.')}</p></article><article><h3>WebShop</h3><p>{t('网页购物导航任务。同时报告 normalized task-completion score 与 exact success；query、点击、属性选择和 fallback 单独记录。', 'Web-shopping navigation. Report normalized task-completion score and exact success together; preserve queries, clicks, attribute choices, and fallbacks separately.')}</p></article></div>
       <nav class="benchmark-detail-links" aria-label={t('打开独立环境讲解', 'Open dedicated environment explainers')}>
         <a href={p('/research/seed-openevo/flow/webshop/')}><strong>WebShop</strong><span>{t('打开购物网页交互与评分讲解', 'Open the shopping interaction and scoring explainer')}</span></a>
@@ -61,12 +61,12 @@ const p = (path: string) => localePath(locale, path);
     </section>
 
     <section class="mission-section" data-explainer-step="-1">
-      <div class="mission-section__heading"><span>02</span><div><small>{t('证据', 'Evidence')}</small><h2>{t('结果与轨迹证据', 'Outcome and trajectory evidence')}</h2></div></div>
+      <div class="mission-section__heading"><span>02</span><div><h2>{t('结果与轨迹证据', 'Outcome and trajectory evidence')}</h2></div></div>
       <table class="mission-table"><thead><tr><th>{t('证据', 'Evidence')}</th><th>ALFWorld</th><th>WebShop</th></tr></thead><tbody><tr><td>{t('最终成功', 'Final success')}</td><td>success / failure</td><td>exact success</td></tr><tr><td>{t('部分完成', 'Partial completion')}</td><td>—</td><td>normalized score</td></tr><tr><td>{t('轨迹诊断', 'Trajectory diagnostics')}</td><td>{t('循环、无效动作、状态遗漏', 'loops, invalid actions, missed state')}</td><td>{t('query、click、option、fallback', 'query, click, option, fallback')}</td></tr></tbody></table>
     </section>
 
     <section class="mission-section" data-explainer-step="0">
-      <div class="mission-section__heading"><span>03</span><div><small>{t('对比', 'Comparison')}</small><h2>{t('公平比较协议', 'Fair-comparison protocol')}</h2></div></div>
+      <div class="mission-section__heading"><span>03</span><div><h2>{t('公平比较协议', 'Fair-comparison protocol')}</h2></div></div>
       <ul class="control-list"><li>{t('同一模型 checkpoint / revision', 'Same model checkpoint / revision')}</li><li>{t('同一任务集与 split', 'Same task set and split')}</li><li>{t('同一 prompt、action grammar 与 parser', 'Same prompt, action grammar, and parser')}</li><li>{t('同一步数、rollout 数与 sampling 参数', 'Same step, rollout, and sampling budgets')}</li><li>{t('同一 evaluator 与 score 定义', 'Same evaluator and score definition')}</li><li>{t('同一推理精度与后端，或明确记录替代', 'Same precision and backend, or an explicit substitution')}</li></ul>
     </section>
   </>}

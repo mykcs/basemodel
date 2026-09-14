@@ -313,8 +313,8 @@ export const CAPABILITY_READER_ROUTES = [
       "en": "Technical and historical archive"
     },
     "purpose": {
-      "zh": "查阅原始记录、模型文件和运行修复；技术记录属于证据，不自动成为新的科学分支。",
-      "en": "Inspect original records, model artifacts, and runtime repairs; technical records are evidence, not automatically new scientific branches."
+      "zh": "这是技术与历史档案，不代表当前运行状态；用于查阅原始记录、模型文件和运行修复，技术记录属于证据，不自动成为新的科学分支。",
+      "en": "This is a technical and historical archive, not live run state; use it to inspect original records, model artifacts, and runtime repairs. Technical records are evidence, not automatically new scientific branches."
     }
   }
 ] as const;
