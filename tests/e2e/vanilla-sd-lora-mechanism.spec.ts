@@ -16,13 +16,15 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
   await expect(vanillaSeries).toHaveAttribute('href', route);
   await expect(vanillaSeries).toHaveAttribute('aria-current', 'page');
   await expect(series.locator('a[href="/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/"]')).toHaveCount(0);
-  await expect(page.locator('h1')).toContainText('为什么 OpenEvo 里需要 SD-LoRA');
-  await expect(body).toContainText('成功留在 rollout 日志里，并不会让下一轮模型参数自动改变');
-  await expect(body).toContainText('这里才改模型参数');
-  await expect(body).toContainText('一批任务尝试结束、训练数据筛好以后；下一批任务开始以前');
+  await expect(page.locator('h1')).toContainText('SD-LoRA 把成功经验写进下一轮模型参数');
+  await expect(body).toContainText('一次 WebShop 成功先只是一条轨迹');
+  await expect(body).toContainText('SD-LoRA 才在两批任务之间更新 LoRA 参数');
+  await expect(body.locator('#what-is-sd-lora table')).toBeVisible();
+  await expect(body.locator('#what-is-sd-lora tbody tr')).toHaveCount(3);
+  await expect(body).toContainText('候选训练和下一轮采用是两件事');
   await expect(body).toContainText('普通 LoRA');
   await expect(body).toContainText('Scalable Decoupled LoRA');
-  await expect(body).toContainText('Vanilla SD-LoRA” 不等于普通 LoRA');
+  await expect(body).toContainText('本页把当前基线称为 “Vanilla SD-LoRA”');
   await expect(body).toContainText('16 个任务 × 每题 8 次');
   await expect(body).toContainText('每个任务只取最早一条通过全部检查的成功');
   await expect(body).toContainText('最多带回 64 条旧经验');
@@ -40,6 +42,25 @@ test('historical capability URL forwards to the Flow map owner', async ({ page }
   await expect(page.locator('[data-research-navigation]')).toHaveAttribute('data-research-track', 'flow');
   await expect(page.getByTestId('vanilla-sd-lora-mechanism')).toBeVisible();
 });
+
+for (const viewport of [
+  { name: 'desktop-first-screen', width: 1280, height: 633 },
+  { name: 'phone-first-screen', width: 390, height: 844 },
+] as const) {
+  test(`${viewport.name}: the first viewport stays on one parameter-write task`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.goto(route, { waitUntil: 'domcontentloaded' });
+    const primer = await page.locator('#what-is-sd-lora').boundingBox();
+    expect(primer).not.toBeNull();
+    expect(primer!.y).toBeGreaterThanOrEqual(viewport.height);
+    await expect(page.locator('.sdlora-intro__frame')).toBeVisible();
+    await expect(page.locator('.sdlora-intro__boundary')).toBeVisible();
+    const visibleMainHeadings = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((nodes) => nodes
+      .filter((node) => { const box = node.getBoundingClientRect(); return box.width > 0 && box.height > 0 && box.top < innerHeight && box.bottom > 0; })
+      .map((node) => node.textContent?.trim()));
+    expect(visibleMainHeadings).toEqual(['SD-LoRA 把成功经验写进下一轮模型参数']);
+  });
+}
 
 test('desktop reading order puts motivation and LoRA comparison before the mechanism canvas', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });

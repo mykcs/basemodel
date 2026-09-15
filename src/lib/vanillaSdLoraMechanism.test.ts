@@ -55,11 +55,11 @@ describe('Vanilla SD-LoRA mechanism projection', () => {
     expect(enPage).toContain('<OpenEvoVanillaSdLoraMechanism locale={locale} />');
     expect(enPage).toContain('title="Why does OpenEvo need SD-LoRA?"');
     for (const phrase of [
-      'Why does OpenEvo need SD-LoRA?',
-      'Merely keeping a successful rollout in a log does not change the next round’s model parameters',
+      'SD-LoRA writes successful experience into the next round’s model parameters',
+      'A successful WebShop attempt begins as a trace',
       'Ordinary LoRA',
       'Scalable Decoupled LoRA',
-      '“Vanilla SD-LoRA” here is not ordinary LoRA',
+      'This page calls the current baseline “Vanilla SD-LoRA.”',
     ]) expect(component).toContain(phrase);
     expect(zhCompatibilityPage).toContain("const target = '/research/seed-openevo/flow/sd-lora/'");
     expect(enCompatibilityPage).toContain("const target = '/en/research/seed-openevo/flow/sd-lora/'");

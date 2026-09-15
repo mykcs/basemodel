@@ -174,3 +174,66 @@ Browser evidence:
 The repository-owned blind and preference-comparison cold-read prompts were generated for Reader Contract `flow`. This Agent had already read the preference evidence before implementation, so it does **not** self-certify an independent blind-review receipt. That human/independent-review criterion remains open for the pilot exit gate.
 
 One local browser check for the archived `/en/**` training-design compatibility redirect cannot reproduce Vercel provider redirects through the repository static server. The active Chinese Flow route, dark/reduced-motion behavior and layout checks pass; the provider-owned archived-route redirect remains a release/provider concern and was not weakened or rewritten here.
+
+## 13. SD-LoRA mechanism pilot — pre-write expression brief
+
+Live refresh before the first source write: `main@d3631890f89c0fe62e249c088794b64a0b503f00`, PR #737 `ea36989be565cdb73757c6f7a050b3977861e5ed`, and overlapping PR #734 `b83be37d8e5f1969131ff07e14ae8335d44f90af`. #734 changes the acceleration/history explanation, not the canonical Vanilla mechanism owner, so this pilot may proceed while preserving Stable Reduction / Bounded Online Recurrence as separate treatments.
+
+**Page Expression Brief**
+
+- Reader: first-time technical reader who knows neither the OpenEvo run codes nor the SD-LoRA implementation details.
+- Page role: narrative mechanism page for the parameter-write path inside the broader OpenEvo flow.
+- Starting state: “a rollout succeeded; why does that not automatically change the next model, and where does SD-LoRA act?”
+- Target mental model: selected successful traces become training data; bounded replay joins from the side; SD-LoRA writes a candidate cumulative LoRA; a separate admission rule chooses the state used by the next round; the loop then returns to task attempts.
+- Next action: understand ordinary LoRA versus SD-LoRA on a shared axis, then inspect the real one-round topology and its scientific boundaries.
+- Primary path: task attempts → checked success → SD-LoRA parameter update → candidate LoRA → next-state decision → next round.
+- Secondary depth: exact Q17 parameters, private implementation evidence, paper/protocol differences, and later acceleration/GDR studies.
+- Semantic shape: causal loop with one replay side input and one post-training decision branch; the LoRA-vs-SD-LoRA section is a true aligned comparison.
+- Density plan: first screen = why/when parameter write-back happens; mainline = comparison + one connected mechanism figure; audit/config/history remain later or disclosed.
+- Acceptance: Reader Contract at 1280×633 and 390×844, desktop/mobile topology assertions, light/dark, reduced motion, no horizontal overflow, targeted copy tests, and a cold-read pass that can recover the full path without animation.
+
+**FLOW-WITNESS**
+
+- Main path: prior selected LoRA → 128 task attempts → earliest fully checked success per task → SD-LoRA update → candidate cumulative LoRA → selected next-round state.
+- Side input: up to 64 replay examples join the SD-LoRA update; they are not current-round attempts.
+- Branch: after candidate training, current DirectApply and historical local GDR-v1 are different admission rules; candidate training itself must not be visually merged with that decision.
+- Return: the selected state enters the next round and returns to another 128 task attempts.
+- Connector carrier: semantic figure + SVG paths on desktop; explicit stacked nodes + SVG side/branch/return connectors on narrow screens. Character arrows may decorate prose but do not own topology.
+- Rendered acceptance: required edge identities, node ordering, branch/join, and return edge must exist in the DOM and remain visible in static/reduced-motion state on desktop and phone.
+
+Copy guard from the task-time HPL retrieval: explain the mechanism as concrete subject → action → result; titles name the mechanism object rather than saying “how to read”; retain the factual Vanilla-vs-ordinary-LoRA distinction without making a defensive “不是……而是……” sentence the visual center. The paper-equivalence / rehearsal-free boundary stays adjacent to the SD-LoRA definition because removing it would change the scientific interpretation.
+
+## 14. SD-LoRA mechanism pilot — implementation and validation
+
+The second pilot deliberately uses a different composition from the Flow gateway. Its reader task is causal understanding, so the page now separates three shapes instead of repeating one card grammar:
+
+- the first viewport directly states the parameter-write job: `SD-LoRA 把成功经验写进下一轮模型参数`;
+- a compact definition list keeps **input / timing / action / output** adjacent to that claim, with the candidate-training-versus-next-round-adoption boundary visible in the same layer;
+- ordinary LoRA versus SD-LoRA is a real shared-axis table rather than two independent prose cards;
+- the existing one-round mechanism figure remains the topology owner, with explicit main path, replay side input, DirectApply / historical GDR-v1 branch, join and return edge; decorative shadow/meta explanation was removed without removing topology.
+
+The mobile baseline had pushed the real mechanism canvas to roughly 2429 px because a five-step card wall and a long comparison stack came first. In the revised composition the mechanism canvas begins around 1604 px on the same 390×844 viewport, while the first viewport remains focused on the write-back role and scientific boundary. Desktop mechanism arrival moves from roughly 1402 px to 1242 px. These distances are review evidence, not standing design targets.
+
+Validation on the candidate worktree:
+
+- task-time `feedback:retrieve` executed for Reader Contract `flow-sd-lora` before the material rewrite;
+- `npm run check`: **575 files, 0 errors, 0 warnings** (2 existing deprecation hints);
+- targeted mechanism / plain-language / Reader Contract / visual-language Vitest: **21 / 21 PASS**;
+- SD-LoRA Chromium mechanism suite: **15 / 15 PASS** across first-screen focus, desktop/mobile topology, reduced motion, phone/tablet/desktop light+dark, overflow and reusable 16:9 canvas containment;
+- full site Reader Contract Chromium suite: **5 / 5 PASS** after the rewrite;
+- `npm run build`: **262 pages PASS**, heading audit **262 / 262 PASS**, external-brand-link audit PASS;
+- `npm run audit:human-feedback`: PASS;
+- `git diff --check`: PASS.
+
+As with the Flow pilot, this Agent had already read the preference evidence before rendering the candidate, so no independent blind-review receipt is self-certified. That pilot exit criterion remains open.
+
+## 15. Small reusable composition vocabulary after two pilots
+
+Two semantically different pilots now support a small vocabulary without creating a universal template or component factory:
+
+1. **Fact frame (`dl`)** — use when several short fields belong to one object/state and must stay adjacent to the primary claim.
+2. **Shared-axis comparison (`table`)** — use when the reader must compare the same dimensions across methods/objects; do not force memory-based card-to-card reading.
+3. **Connected mechanism (`figure` / ordered topology)** — use when sequence, side input, branch, join or return is part of the meaning; static topology must survive without animation.
+4. **Editorial explanation** — ordinary prose remains prose unless choice, operation, comparison, status isolation or topology gives a container a semantic job.
+
+This closes the Phase-B “define the smallest reusable composition primitives” item. It does **not** authorize a generic `Card`, `Hero`, or `AppleSection` factory. Shared tokens/components remain pending until another pilot demonstrates a repeated semantic need that local HTML/CSS cannot express cleanly.

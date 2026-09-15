@@ -313,7 +313,7 @@ The percentages below are the reporting authority for the scheduled hourly conti
 
 - [x] Audit current global shell, research nav, headings, spacing, typography, radii, borders, elevation, color semantics and disclosure patterns.
 - [x] Identify which legacy CSS layers still override canonical owners on active routes.
-- [ ] Define the smallest reusable composition primitives needed by the pilots; no generic component factory.
+- [x] Define the smallest reusable composition primitives needed by the pilots; no generic component factory.
 - [ ] Add/adjust shared tokens only when multiple pilots need the same semantic treatment.
 - [ ] Protect the new primitives with structural/unit tests where useful.
 
