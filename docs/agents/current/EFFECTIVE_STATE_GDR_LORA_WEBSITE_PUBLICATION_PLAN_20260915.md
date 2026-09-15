@@ -685,9 +685,9 @@ final panel = locked
 
 - [x] 每次写前刷新 `origin/main`、本 PR remote head、overlapping open PR。
 - [x] 发现 main 前进时先做 semantic overlap classification，不因为 behind 就机械 rebase。
-- [ ] 普通工作 push 只触发 public GitHub Actions preflight；不要每次小改都移动 Vercel final-gate ref。
+- [x] 普通工作 push 只触发 public GitHub Actions preflight；本轮 implementation push `2a99cf7ab9beefcb422d79ba6dc83854220b53cf` 未移动 Vercel final-gate ref。
 - [ ] owner 需要看页面时，优先按当前 policy 用轻量 non-authoritative review Preview。
-- [ ] 页面达到 candidate-ready 后，刷新 current main，形成一个干净 exact-head candidate。
+- [x] 页面达到 candidate-ready 后已再次刷新 current main=`d3631890f89c0fe62e249c088794b64a0b503f00` 与 remote PR head，无 drift 后形成 implementation candidate `2a99cf7ab9beefcb422d79ba6dc83854220b53cf`。
 - [ ] Public PR CI 必须在 exact head green。
 - [ ] 运行 `node scripts/request-vercel-final-gate.mjs 729` 请求唯一 authoritative exact-head Vercel final gate。
 - [ ] Vercel Preview 必须 `READY` 且 commit SHA exact match PR head。
@@ -840,7 +840,7 @@ Next safe item: <first remaining item>
 ### 2026-09-16 05:35 +08
 BaseModel main: `d3631890f89c0fe62e249c088794b64a0b503f00`
 PR head before: `b1ef44ecb673692b344b797ffabef4d120915cfe`
-PR head after: local candidate pending commit/push
+PR head after implementation push: `2a99cf7ab9beefcb422d79ba6dc83854220b53cf`
 OpenEvo #497/#502/#510: `7847d6497ae58b7a82dc37cd1cf71ccfe44aa8df` (closed historical) / `99dd0fdce328682fb0218aa084d3d2b0d0b7ae49` / `5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa`
 Checklist items closed: Phase A snapshot freeze; Phase B route/data/Reader Contract/IA; Phase C pre-result narrative; Phase D semantic/ownership tests; Phase E Chromium+WebKit local acceptance; Phase G local repository validation.
 Files changed: canonical Effective-State data owner/component/route; Reader Contract + Study IA; adjacent Gated-Delta/Bounded links; semantic and browser tests; this checklist.
@@ -848,7 +848,7 @@ Validation: focused Vitest `27/27 PASS`; `audit:reader-contracts` `66/66 PASS`; 
 Browser/provider: local 390/768/1440 + light/dark + keyboard + reduced-motion PASS; consumer READY/dry-run/controller-init/W&B/zero-state hashes fresh-read and matched #502/#510; formal root absent; GPU watcher `WAITING_FOR_GPU_LANE`, no reservation/authority.
 Scientific state: `pending / PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START`; formal rows `0`; final-panel access `0`; formal run launched `false`.
 Human decision needed: none for website implementation; formal experiment launch remains a separate owner authority decision outside this PR.
-Next safe item: commit/push exact candidate to PR #729, then wait for exact-head Public PR CI / review Preview before requesting authoritative Vercel final gate.
+Next safe item: publish this checklist-only evidence commit, then wait for exact-head Public PR CI / review Preview before requesting authoritative Vercel final gate.
 
 ## 24. 创建时的冷读快照
 
