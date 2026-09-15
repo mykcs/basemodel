@@ -1,7 +1,7 @@
 # Shared experiment server artifact governance, publication, and reclaim SOP
 
 Status: **current task orchestrator**  
-Last reviewed: **2026-09-04 (UTC+8)**  
+Last reviewed: **2026-09-15 (UTC+8)**
 Audience: ChatGPT / Codex / other Agents that have authorized access to the experiment server and the relevant GitHub / Hugging Face / container-registry tooling
 
 ## Purpose
@@ -51,14 +51,20 @@ These own account identity, shared Docker/filesystem boundaries, cleanup authori
 
 ### OpenEvo scientific / artifact authority
 
-For OpenEvo outputs, read from `mykcs/openevo-experiment`:
+For OpenEvo outputs, first refresh `mykcs/openevo-experiment` **current `main`** and read:
 
-- `docs/operations/governance/RUN_MANIFEST_CONTRACT.md`
-- `docs/operations/publication/EXPERIMENT_ARTIFACT_PUBLICATION_SOP.md`
-- `docs/infrastructure/server/SERVER_STORAGE_PRESSURE_AND_RECLAIM_SOP.md`
-- the current campaign / result / reconciliation routers referenced by that repository
+- root `AGENTS.md`;
+- `docs/operations/governance/EXPERIMENT_STANDARD.md`;
+- `docs/operations/governance/RUN_MANIFEST_CONTRACT.md`;
+- `docs/experiment-tracking/EXPERIMENT_PASSPORT_REGISTRY_IMPLEMENTATION_PLAN_202609111800.md`;
+- the stable current Experiment Registry router and the Registry / FROZEN Passport / schema / `scripts/oe experiments ...` identities it resolves;
+- `docs/operations/publication/EXPERIMENT_ARTIFACT_PUBLICATION_SOP.md`;
+- `docs/infrastructure/server/SERVER_STORAGE_PRESSURE_AND_RECLAIM_SOP.md`;
+- the current campaign / result / reconciliation routers referenced by that repository.
 
-These own scientific lineage, run provenance, checkpoint/trajectory semantics, publication routing, and current analysis holds.
+These own scientific identity, Run Manifest ↔ Passport binding, run provenance, checkpoint/trajectory semantics, publication routing, current analysis holds, verification, and recovery planning. Do not replace them with a BaseModel-local identity format.
+
+**Authority-resolution rule:** do not hard-code a chat-memory label such as “Passport v2” as if newest-by-date meant canonical. The merged Experiment Passport / Registry on current `main` is the enforceable baseline. If current `main` or an explicit current campaign authority has formally adopted a newer content-addressed DAG, lifecycle projection, or other Passport successor, use that newer canonical authority. An open Draft PR may be inspected for overlap or pending capability, but it does not by itself grant project-wide scientific reuse, deletion, launch, or visibility authority.
 
 ### BaseModel public-page authority
 
@@ -313,9 +319,22 @@ Do not “clean first and reconstruct ownership later.”
 
 ---
 
-## 5. Phase D — give every meaningful run and terminal artifact a passport
+## 5. Phase D — bind the canonical Experiment Passport, Run Manifest, and artifact identities
 
 “Passport / 身份证” means that another Agent can answer **what this is, where it came from, what exact bytes it is, what scientific role it had, where the canonical copy lives, and how to restore/use it** without relying on chat memory or directory names.
+
+### 5.0 Experiment-level identity uses the canonical Experiment Passport / Registry
+
+For OpenEvo, do **not** invent a generic BaseModel-local “artifact passport” to stand in for experiment identity. Resolve the current `openevo-experiment/main` Passport / Registry first.
+
+Current-format formal experiments must preserve the canonical rules from that authority, including:
+
+- `FROZEN` Passport immutability: science-affecting identity changes require a successor experiment rather than in-place editing;
+- exact Run Manifest ↔ Passport cross-link using `experiment_id` + `passport_sha256` where the current contract requires it;
+- append-only successor receipts for permitted engineering/recovery evolution that does not change science identity;
+- `oe experiments passport`, `verify`, and `revive-plan` (or their current-main successors) as the supported inspection/recovery surface rather than chat-memory reconstruction.
+
+Artifact/member manifests may be derived from and linked to the owning Passport, but they are not a second scientific identity authority. If current authority exposes a content-addressed operation DAG/cache, an exact hit is advisory (`REUSE_CANDIDATE` or its current successor state) until the applicable execution/scientific authority approves reuse. Likewise, a lifecycle projection may classify retention/recoverability, but **remote recoverability is not deletion authority** and lifecycle metadata cannot authorize scientific replay.
 
 ### 5.1 Reuse canonical Run Manifests
 
