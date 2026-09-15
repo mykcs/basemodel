@@ -9,6 +9,7 @@ const sitemap = read('./sitemapRoutes.ts');
 const lobby = read('../components/research/OpenEvoCapabilityMapLobby.astro');
 const zhPage = read('../pages/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/index.astro');
 const enPage = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/index.astro.archive');
+const wandbAudit = JSON.parse(read('../../public/research/seed-openevo/evidence/q17-wandb-lineage-audit-20260915.json'));
 
 describe('Q17 DirectApply complete analysis page', () => {
   it('publishes a bilingual canonical route with reader ownership', () => {
@@ -84,13 +85,18 @@ describe('Q17 DirectApply complete analysis page', () => {
     expect(component).toContain('the parameters look compressible');
   });
 
-  it('keeps W&B observability without relabeling the historical 1.7B run as Q17', () => {
-    expect(component).toContain('q17-wandb-lineage-audit-20260915.json');
-    expect(component).toContain('ceiling1-stage2-qwen3-1p7b-202609041833-4c1bb58e9f');
-    expect(component).toContain('不是这条 Q17 的原始训练记录');
-    expect(component).toContain('no live W&B training run for the exact 160-round Q17 DirectApply lineage');
-    expect(component).toContain('Passport mirror / smoke');
-    expect(component).toContain('不能贴成 Q17');
+  it('publishes a Q17 W&B visualization mirror without pretending it was live training telemetry', () => {
+    expect(component).toContain('data-wandb-visualization-mirror');
+    expect(component).toContain('q17directapplyviz159');
+    expect(component).toContain('封存数据的后补镜像');
+    expect(component).toContain('不是原始实时训练记录，也不是科学真相源');
+    expect(component).toContain('历史 1.7B Stage2 W&B（不同实验）');
+    expect(wandbAudit.schema).toBe('basemodel.q17-wandb-lineage-audit.v2');
+    expect(wandbAudit.visualization_mirror.score_points).toBe(160);
+    expect(wandbAudit.visualization_mirror.loss_points).toBe(159);
+    expect(wandbAudit.visualization_mirror.live_training_run).toBe(false);
+    expect(wandbAudit.visualization_mirror.scientific_authority).toBe(false);
+    expect(wandbAudit.visualization_mirror.source_snapshot_sha256).toBe(wandbAudit.sealed_snapshot_sha256);
   });
 
   it('keeps the sealed chronology as Stage2 seal -> read-only D1 -> one frozen final', () => {

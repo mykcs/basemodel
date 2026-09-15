@@ -1,5 +1,5 @@
 {
-  "schema": "basemodel.q17-wandb-lineage-audit.v1",
+  "schema": "basemodel.q17-wandb-lineage-audit.v2",
   "observed_at": "2026-09-15",
   "experiment_id": "202609082022-q17-directapply-no-gdr",
   "twin_design_id": "Q17-DIRECT-APPLY-ONLY-W2-202609082022",
@@ -13,12 +13,40 @@
     "wandb_project": "zju-openevo-wangrui/zju-openevo-experiments"
   },
   "exact_lineage_wandb_runs": [
-    {"id": "pwod7ex0", "name": "passport-online-b627", "job_type": "passport-mirror", "created_at": "2026-09-11T20:07:27Z"},
-    {"id": "3vgr2ikn", "name": "passport-host-forced-offline-b627", "job_type": "passport-mirror", "created_at": "2026-09-11T20:06:30Z"},
-    {"id": "8xpvl10r", "name": "passport-forced-offline-smoke", "job_type": "passport-mirror", "created_at": "2026-09-11T19:01:20Z"}
+    {
+      "id": "pwod7ex0",
+      "name": "passport-online-b627",
+      "job_type": "passport-mirror",
+      "created_at": "2026-09-11T20:07:27Z"
+    },
+    {
+      "id": "3vgr2ikn",
+      "name": "passport-host-forced-offline-b627",
+      "job_type": "passport-mirror",
+      "created_at": "2026-09-11T20:06:30Z"
+    },
+    {
+      "id": "8xpvl10r",
+      "name": "passport-forced-offline-smoke",
+      "job_type": "passport-mirror",
+      "created_at": "2026-09-11T19:01:20Z"
+    }
   ],
   "historical_stage2_wandb_run": "https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/runs/ceiling1-stage2-qwen3-1p7b-202609041833-4c1bb58e9f",
-  "conclusion": "No live W&B training run was found for the exact Q17 160-round DirectApply lineage. The three exact-lineage W&B runs are later Passport mirror/smoke runs, not training telemetry. The older 1.7B Stage2 W&B run is historical observability evidence and must not be relabeled as Q17.",
+  "conclusion": "No original live W&B training run was found for the exact Q17 160-round DirectApply lineage. A non-authoritative visualization mirror was created on 2026-09-15 from the sealed trajectory snapshot; it is not original live telemetry. The older 1.7B Stage2 W&B run remains historical observability for a different experiment.",
   "scientific_authority": false,
-  "safety": "Read-only filesystem and W&B API inspection. No experiment state, final panel, or W&B run was mutated. No credentials are included."
+  "safety": "Formal experiment state and the frozen final panel were not mutated. One W&B publication/visualization mirror was created from already-sealed evidence; no credentials are included.",
+  "visualization_mirror": {
+    "id": "q17directapplyviz159",
+    "url": "https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/runs/q17directapplyviz159",
+    "created_at": "2026-09-15T05:00:33Z",
+    "source_kind": "sealed_trajectory_visualization_backfill",
+    "source_snapshot_sha256": "33285a71e4331f22592c47255b2688e9f172fd174c6b426a8f8e03a97b61889d",
+    "score_points": 160,
+    "loss_points": 159,
+    "provider_state": "finished",
+    "anonymous_http_status": 200,
+    "live_training_run": false,
+    "scientific_authority": false
+  }
 }
