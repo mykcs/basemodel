@@ -31,7 +31,6 @@ const evidenceFor = (id: string) => id === 'beta-g'
     )}</p>
     <p class="gds-hero__state"><strong>{t('四轮 Vanilla vs GDR 配对资格实验已经全部封存。在这份冻结的 D1 schedule 里，GDR 的总平均 reward 和完整成功率都高于匹配的 Vanilla 对照。', 'All four Vanilla-vs-GDR paired qualification rounds are sealed. On this frozen D1 schedule, GDR finished above the matched Vanilla control on pooled mean reward and exact success.')}</strong> {t('512 次/臂汇总后，Vanilla reward 0.7051、GDR 0.7407；完整成功是 173 / 512 对 248 / 512，差 +14.65 个百分点。64 个匹配 task-cluster 的 bootstrap 区间也高于 0。这个结论只属于当前冻结的资格实验，不代表普遍优于 Vanilla，也不是 final-panel 结果。在线写入仍不会读取 Task Vector、WebShop 分数、固定 16 题检查或冻结 final 题集。', 'Across 512 attempts per arm, pooled reward was 0.7051 for Vanilla and 0.7407 for GDR; exact success was 173 / 512 versus 248 / 512, a +14.65 percentage-point difference. The 64 matched task-cluster bootstrap intervals are also above zero. This supports the frozen qualification comparison only; it is not a universal superiority claim or a final-panel result. Runtime still cannot read the Task Vector, WebShop score, fixed 16-task check, or frozen final task set.')}</p>
     <p class="gds-hero__history"><a href={historyHref}>{t('旧 GDR-v1 / DirectApply 到底做了什么 →', 'What did the old GDR-v1 / DirectApply experiment actually do? →')}</a></p>
-    <p class="gds-hero__history"><a href={successorHref}>{t('后继方法：为什么改成 Effective-State GDR →', 'Successor: why move to Effective-State GDR →')}</a></p>
   </header>
 
   <section class="gds-section" id="recurrence" aria-labelledby="recurrence-title">
@@ -59,6 +58,7 @@ const evidenceFor = (id: string) => id === 'beta-g'
       <figcaption>{t('不同实现可能转置张量方向，但语义不变：读取旧 State 后，把没有解释掉的 residual 连续写回。', 'Implementations may transpose tensor orientation, but the semantics stay the same: read the old State, then continuously write back the unexplained residual.')}</figcaption>
     </figure>
     <p class="gds-sources"><a href={flaHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={flaHref} />Flash Linear Attention reference</a> · <a href={paperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={paperHref} />Gated Delta Networks</a></p>
+    <p class="gds-related"><a href={successorHref}>{t('后继方法：为什么改成 Effective-State GDR →', 'Successor: why move to Effective-State GDR →')}</a></p>
   </section>
 
   <section class="gds-section" id="task-vector" aria-labelledby="task-vector-title">

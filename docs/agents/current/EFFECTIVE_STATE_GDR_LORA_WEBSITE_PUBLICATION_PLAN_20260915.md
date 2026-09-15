@@ -872,3 +872,14 @@ Files changed: src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro; 
 Validation: prior exact-head Public PR CI run 35026703716 failed browser shards 1/5/6/8; shards 1/6/8 failed Reader Journey because component-owned prose was below the 15.9px readability floor, and shard 5 failed the phone Reader Contract. Repair keeps prose at 1rem, restores readiness/result table cells to 1rem, and reduces only hero lede top whitespace (22px -> 14px) so the declared first-viewport message fits 1280x633 without shrinking copy. Focused Vitest 28/28 PASS; Reader Journey 390/1440 x light/dark 4/4 PASS; Reader Contract phone+desktop 2/2 PASS; successor/adjacent Chromium checks remained green in the focused run; npm run build PASS; git diff --check PASS.
 Browser/provider: old exact head 870730b... = Public PR CI FAIL; authoritative Vercel final gate NOT_REQUESTED because the Public PR CI prerequisite is not green.
 Scientific state: PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START; formal rows=0; final-panel access=0; formal run launched=false; formal result remains pending.
+
+### 2026-09-16 07:08 +08
+BaseModel main: d3631890f89c0fe62e249c088794b64a0b503f00
+PR head before: 87a9e5c35711fbaac1914cbc5f528e620d8172be
+PR head after: pending this adjacent-page repair push
+OpenEvo #502/#510: 99dd0fdce328682fb0218aa084d3d2b0d0b7ae49 / 5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa
+Checklist items closed: none yet; exact-head Public PR CI remains [ ] until the next exact head is actually green.
+Files changed: src/components/research/OpenEvoGatedDeltaSdLoraExplainer.astro; this execution log.
+Validation: Public PR CI run 35033879004 turned browser shards 1/6/8 green after the readability repair and left only shard 5 failing. The remaining failure was : the new successor cross-link was scientifically useful but sat in the historical Gated-Delta hero. The link is retained but moved below the recurrence/evidence section so the historical page keeps its existing phone first-screen attention budget instead of weakening the Reader Contract. Local focused Chromium: historical Gated-Delta/Bounded successor links 1/1 PASS; phone Site Reader Contract 1/1 PASS; npm run build PASS; git diff --check PASS.
+Browser/provider: run 35033879004 = FAIL due only to the pre-repair shard-5 attention-budget violation; Vercel final gate still NOT_REQUESTED.
+Scientific state: PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START; no treatment/claim/authority change; formal result remains pending.
