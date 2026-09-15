@@ -20,6 +20,12 @@ describe('public server copy', () => {
     expect(serverOverview).toContain('131');
     expect(serverOverview).toContain('1.69 GiB');
     expect(serverOverview).toContain('delete_authorized=false');
+    expect(serverOverview).toContain('例行服务器维护');
+    expect(serverOverview).toContain('这段 Prompt 只负责启动，不固定 Passport 版本');
+    expect(serverOverview).toContain('EXPERIMENT_PASSPORT_REGISTRY_IMPLEMENTATION_PLAN_202609111800.md');
+    expect(serverOverview).toContain('open Draft PR 只能用于发现重叠或待合入能力');
+    expect(serverOverview).toContain('未合并 Draft 不会自己升级成全项目标准');
+    expect(serverOverview).toContain('experiment_id + passport_sha256');
     expect(serverOverview).toContain('服务器健康扫描');
     expect(serverOverview).toContain('实验收尾归档');
     expect(serverOverview).toContain('空间回收提案');

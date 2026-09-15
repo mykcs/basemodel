@@ -16,6 +16,11 @@ const historicalAttribution = [
   { label: t('用户 7', 'User 7'), total: '<0.01 GiB', share: '<0.1%', width: '0%', tone: 7, tiny: true },
 ];
 
+const routinePrompt = t(
+  `请执行一次“例行服务器维护”。这段 Prompt 只负责启动，不固定 Passport 版本。\n\n第一步先刷新并读取 current authority：mykcs/zju-server、mykcs/openevo-experiment、mykcs/basemodel 的 current main 与根 AGENTS.md。对 OpenEvo 必须读取 current main 的 docs/operations/governance/EXPERIMENT_STANDARD.md、docs/operations/governance/RUN_MANIFEST_CONTRACT.md、docs/experiment-tracking/EXPERIMENT_PASSPORT_REGISTRY_IMPLEMENTATION_PLAN_202609111800.md，以及 current Experiment Registry / Passport schema / CLI/router。若 main 或当前 campaign authority 已正式采用更新的 Passport / DAG / lifecycle 标准，以更新 canonical authority 为准；open Draft PR 只能用于发现重叠或待合入能力，不能单独授权科学复用、删除或改变公开可见性。\n\n然后自动按顺序推进：只读健康扫描 → 对已封存/空闲且归属明确的实验按当前标准补齐 Experiment Passport / Run Manifest / member manifest → 按现行发布规则归档或复用远端 → fresh read/download/restore 验证 → 更新 lifecycle → 生成 exact NOT_AUTHORIZED reclaim proposal。例行、可逆且已有 authority 的步骤不要每一步都问我。\n\n只有遇到这些边界才停下来找我：exact 删除清单批准；任何 private→public 或其他 visibility/license 变化（包括 Hugging Face 私有容量不够）；科学语义/实验身份变化；ownership 不清；canonical authority 缺失或冲突。禁止 broad Docker prune；已有可信 producer digest/receipt 时不要为了整理重新 hash 数百 GiB 大文件。最后用 ELI5 中文告诉我：做了什么、服务器现在怎样、归档还欠多少、哪些对象只是 reclaim proposal、需要我决定什么。`,
+  `Run routine server maintenance. This prompt only starts the workflow; it does not pin a Passport version. First refresh current main and root AGENTS.md for mykcs/zju-server, mykcs/openevo-experiment, and mykcs/basemodel. For OpenEvo, read current-main EXPERIMENT_STANDARD.md, RUN_MANIFEST_CONTRACT.md, EXPERIMENT_PASSPORT_REGISTRY_IMPLEMENTATION_PLAN_202609111800.md, and the current Experiment Registry / Passport schema / CLI/router. If main or the current campaign authority has formally adopted a newer Passport/DAG/lifecycle standard, use that newer canonical authority. Open Draft PRs may be inspected for overlap but cannot independently authorize scientific reuse, deletion, or visibility changes. Then continue automatically through read-only health scan, current-standard Passport/Run Manifest/member-manifest closeout for sealed or idle project-owned experiments, remote archive/reuse, fresh read/download/restore verification, lifecycle refresh, and an exact NOT_AUTHORIZED reclaim proposal. Do not stop for routine reversible steps already authorized. Stop only for approval of an exact deletion manifest, any visibility/license change including insufficient private Hugging Face capacity, scientific-identity changes, unresolved ownership, or missing/conflicting canonical authority. Never broad-prune shared Docker, and do not re-hash hundreds of GiB when trustworthy producer digests/receipts already bind the bytes. End with a plain summary of what changed, current server health, remaining archive debt, reclaim proposals, and owner decisions required.`
+);
+
 const healthPrompt = t(
   `请按 BaseModel 的 docs/agents/current/server-storage-pressure-audit-sop.md 做一次“服务器健康扫描”。\n\n只读检查持久文件系统 df / inode、当前活跃进程与容器引用、最近新增的大型科研产物和 Passport / lifecycle 覆盖变化。优先使用已知路径与浅层元数据；不要做全盘 checksum，不要跨用户绕权，不要移动或删除任何文件，不要 broad Docker prune。\n\n最后用 ELI5 中文告诉我：现在最占空间的是什么、哪些是活跃工作集、哪些只是待收尾资产、有没有立即需要处理的风险。`,
   `Run a read-only server health scan using docs/agents/current/server-storage-pressure-audit-sop.md. Check the persistent filesystem df/inodes, live process/container references, newly large research artifacts, and Passport/lifecycle coverage changes. Use bounded metadata first; do not run whole-tree checksums, cross user boundaries, move/delete files, or broad-prune Docker. End with a plain summary of the largest storage owners, hot working set, closeout debt, and immediate risk.`
@@ -45,7 +50,19 @@ const gpuFacts = [
     <p class="server-hero__status">{t('项目工作区所在持久文件系统约有 0.99 TiB 可用。现在真正需要持续管理的是大型实验产物：例如 Q17 的一个 1.7B run 约 320.9 GiB，其中约 304.7 GiB 是 checkpoint。', 'The persistent filesystem backing the project workspace has about 0.99 TiB available. The continuing operational problem is large experiment output: one Q17 1.7B run is about 320.9 GiB, including about 304.7 GiB of checkpoints.')}</p>
     <p class="server-hero__boundary">{t('快照时间：2026-09-15 22:10（UTC+8）。这是静态页面，不是实时监控。远端已经能恢复，也不等于本地可以删除；删除始终需要一份 exact reclaim manifest 和单独批准。', 'Snapshot: 2026-09-15 22:10 (UTC+8). This is a static page, not a live monitor. Remote recoverability does not make a local copy deletable; deletion always requires an exact reclaim manifest and separate approval.')}</p>
 
-    <nav class="operation-switchboard" aria-label={t('服务器资产操作', 'Server artifact operations')}>
+    <div class="routine-entry">
+      <div class="routine-entry__copy">
+        <span>{t('默认入口', 'Default entry')}</span>
+        <strong>{t('例行服务器维护', 'Routine server maintenance')}</strong>
+        <p>{t('自动走完健康扫描 → 实验收尾归档 → 回收提案；只有删除、公开可见性、科学身份、ownership 或 authority 真正需要你决定时才停下。', 'Automatically runs health scan → campaign closeout → reclaim proposal, stopping only when deletion, visibility, scientific identity, ownership, or authority genuinely needs an owner decision.')}</p>
+      </div>
+      <details class="routine-entry__prompt">
+        <summary>{t('复制总入口 Prompt', 'Copy routine-maintenance prompt')}</summary>
+        <pre data-copy-label={t('复制例行服务器维护 Prompt', 'Copy routine-maintenance prompt')}><code>{routinePrompt}</code></pre>
+      </details>
+    </div>
+
+    <nav class="operation-switchboard" aria-label={t('需要只做单一步骤时', 'Single-step server artifact operations')}>
       <a href="#health-scan"><span>01</span><strong>{t('服务器健康扫描', 'Server health scan')}</strong><small>{t('只读看现在有没有压力', 'Read-only current pressure check')}</small></a>
       <a href="#campaign-closeout"><span>02</span><strong>{t('实验收尾归档', 'Campaign closeout')}</strong><small>{t('给科研产物补身份证并验证远端恢复', 'Passport artifacts and verify remote recovery')}</small></a>
       <a href="#reclaim-proposal"><span>03</span><strong>{t('空间回收提案', 'Reclaim proposal')}</strong><small>{t('先列 exact 清单，不自动删除', 'Exact list first; no automatic deletion')}</small></a>
@@ -99,6 +116,11 @@ const gpuFacts = [
       </ol>
       <figcaption id="lifecycle-caption">{t('到这里仍然没有删除权限。收尾流程最多把对象推进到“可以提出回收建议”的状态。', 'There is still no deletion authority at this point. Closeout may only advance an object to the point where reclaim can be proposed.')}</figcaption>
     </figure>
+
+    <aside class="passport-authority-note">
+      <strong>{t('身份证 / Passport 用哪一版？', 'Which Passport standard is used?')}</strong>
+      <p>{t('正式 OpenEvo 实验的身份原件始终来自 openevo-experiment current main 的 canonical Experiment Passport / Registry。FROZEN Passport 不原地改写；current-format Run Manifest 必须与 experiment_id + passport_sha256 精确交叉绑定。member manifest、content-addressed DAG 和 lifecycle projection 都只能是绑定到 Passport 的派生层：cache hit 不能自动授权科学复用，远端可恢复也不能自动授权删除。以后 Passport v2 / DAG / lifecycle 正式合入 main 或被当前 campaign authority 采用后，总入口会先解析新 authority 再执行；未合并 Draft 不会自己升级成全项目标准。', 'The identity original for formal OpenEvo experiments always comes from the canonical Experiment Passport / Registry on openevo-experiment current main. A FROZEN Passport is not edited in place; current-format Run Manifests must exactly cross-link experiment_id + passport_sha256. Member manifests, content-addressed DAGs, and lifecycle projections are derived layers bound to the Passport: a cache hit cannot authorize scientific reuse, and remote recoverability cannot authorize deletion. When a Passport v2/DAG/lifecycle successor is formally merged to main or adopted by current campaign authority, the routine entry resolves that newer authority before acting; an unmerged Draft does not promote itself to project-wide standard.')}</p>
+    </aside>
 
     <article class="q17-case">
       <div class="q17-case__header">
@@ -214,6 +236,10 @@ const gpuFacts = [
   .server-hero__status{max-width:68ch;margin:0;color:var(--ink);font-size:clamp(1.05rem,2vw,1.3rem);font-weight:720;line-height:1.65}
   .server-hero__boundary{max-width:72ch;margin:.75rem 0 0;color:var(--muted);font-size:.82rem;line-height:1.65}
 
+  .routine-entry{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(17rem,.85fr);gap:1rem;align-items:center;margin-top:1.35rem;padding:1rem;border:1px solid color-mix(in srgb,var(--accent-deep) 34%,var(--line));border-radius:var(--radius-feature);background:color-mix(in srgb,var(--accent) 5%,var(--surface))}
+  .routine-entry__copy span,.routine-entry__copy strong{display:block}.routine-entry__copy span{color:var(--accent-deep);font:800 .66rem/1.3 var(--font-mono)}.routine-entry__copy strong{margin-top:.25rem;font-size:1rem}.routine-entry__copy p{max-width:58ch;margin:.35rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.6}
+  .routine-entry__prompt{min-width:0;padding:.75rem .85rem;border-left:2px solid var(--accent-deep)}.routine-entry__prompt summary{cursor:pointer;font-size:.8rem;font-weight:780}.routine-entry__prompt pre{max-height:22rem;overflow:auto;margin:.65rem 0 0;padding:.8rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);white-space:pre-wrap;overflow-wrap:anywhere;font-size:.69rem;line-height:1.6}.routine-entry__prompt code{font:inherit;color:inherit}
+
   .operation-switchboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:1.35rem;border-block:1px solid var(--line)}
   .operation-switchboard a{display:grid;grid-template-columns:auto 1fr;grid-template-areas:'n title' 'n note';gap:.16rem .65rem;min-width:0;padding:1rem .85rem;color:inherit;text-decoration:none;border-right:1px solid var(--line)}
   .operation-switchboard a:last-child{border-right:0}
@@ -257,6 +283,8 @@ const gpuFacts = [
   .lifecycle-flow strong,.lifecycle-flow small{display:block}.lifecycle-flow strong{margin-top:.4rem;font-size:.82rem}.lifecycle-flow small{margin-top:.18rem;color:var(--muted);font-size:.66rem;line-height:1.45}
   .lifecycle-flow figcaption{margin-top:.65rem;color:var(--muted);font-size:.72rem;line-height:1.55}
 
+  .passport-authority-note{max-width:900px;margin:1rem 0 1.5rem;padding:.85rem 1rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.passport-authority-note strong{font-size:.84rem}.passport-authority-note p{margin:.35rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.7}
+
   .q17-case{margin-top:1.5rem;padding:1.15rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}
   .q17-case__header{display:flex;align-items:end;justify-content:space-between;gap:1rem}
   .q17-case__header p{margin:0;color:var(--muted);font-size:.7rem}.q17-case__header h3{margin:.22rem 0 0;font-size:clamp(1.15rem,2.4vw,1.7rem)}
@@ -292,7 +320,7 @@ const gpuFacts = [
     .reclaim-steps{grid-template-columns:1fr 1fr}.reclaim-steps li:nth-child(2n){border-right:0}.reclaim-steps li:nth-child(-n+2){border-bottom:1px solid var(--line)}
   }
   @media(max-width:640px){
-    .server-hero h1{max-width:11ch}.operation-switchboard{grid-template-columns:1fr}.operation-switchboard a{border-right:0;border-bottom:1px solid var(--line)}.operation-switchboard a:last-child{border-bottom:0}
+    .server-hero h1{max-width:11ch}.routine-entry{grid-template-columns:1fr}.routine-entry__prompt{padding:.7rem 0 0;border-left:0;border-top:1px solid var(--line)}.operation-switchboard{grid-template-columns:1fr}.operation-switchboard a{border-right:0;border-bottom:1px solid var(--line)}.operation-switchboard a:last-child{border-bottom:0}
     .snapshot-facts,.gpu-facts,.privacy-grid{grid-template-columns:1fr}.snapshot-facts>div,.gpu-facts>div{border-right:0;border-bottom:1px solid var(--line)}.snapshot-facts>div:last-child,.gpu-facts>div:last-child{border-bottom:0}
     .operation-explainer li{grid-template-columns:5rem 1fr}
     .lifecycle-flow ol{grid-template-columns:1fr}.lifecycle-flow li{border-right:0}.lifecycle-flow li:last-child{border-bottom:0}
