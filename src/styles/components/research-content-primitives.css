@@ -1,5 +1,6 @@
-/* Shared research-content composition proven by the Flow gateway and SD-LoRA pilots.
- * These primitives describe content relationships, not a universal page template. */
+/* Shared research-content composition proven across the Flow gateway, SD-LoRA,
+ * Q17 comparison, and server-operation pilots. These primitives describe content
+ * relationships, not a universal page template. */
 
 .research-fact-band {
   display: grid;

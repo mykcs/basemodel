@@ -7,6 +7,7 @@ const primitives = read('../styles/components/research-content-primitives.css');
 const flowHero = read('../components/research/SeedOpenEvoMissionHero.astro');
 const sdLora = read('../components/research/OpenEvoVanillaSdLoraMechanism.astro');
 const serverOverview = read('../components/research/Lyg2171ServerOverview.astro');
+const q17Diagnostics = read('../components/research/OpenEvoQ17AdvisorDiagnostics.astro');
 
 describe('shared research content primitives', () => {
   it('loads the proven content primitive after the canonical shell owners', () => {
@@ -16,7 +17,7 @@ describe('shared research content primitives', () => {
     expect(research).toBeGreaterThan(header);
   });
 
-  it('uses one semantic fact band across three different pilot families', () => {
+  it('uses one semantic fact band across all four pilot families', () => {
     expect(flowHero).toContain('class="mission-hero__frame research-fact-band"');
     expect(flowHero).toContain('style="--research-fact-columns:5"');
     expect(sdLora).toContain('class="sdlora-intro__frame research-fact-band"');
@@ -25,6 +26,8 @@ describe('shared research content primitives', () => {
     expect(sdLora).toContain('<dl class="sdlora-intro__frame research-fact-band"');
     expect(serverOverview).toContain('class="server-hero__facts research-fact-band"');
     expect(serverOverview).toContain('style="--research-fact-columns:3"');
+    expect(q17Diagnostics).toContain('class="result-hero__facts research-fact-band"');
+    expect(q17Diagnostics).toContain('style="--research-fact-columns:3"');
   });
 
   it('keeps the shared primitive narrow instead of turning it into a page template', () => {

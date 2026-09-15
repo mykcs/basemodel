@@ -333,3 +333,32 @@ Exact local acceptance on the isolated result-pilot worktree:
 - desktop `1280×633` keeps the lede and three aligned facts in the first viewport; phone `390×844` keeps the result + caveat visible without page overflow; light/dark and keyboard focus checks pass.
 
 A repository-owned zero-context cold-read prompt was generated for `capability-q17-frontier`, but this Agent had already read the preference evidence. It therefore does **not** mark the independent cold-read checkbox complete. The four pilots now have implementation + automated evidence; Phase C remains open until an independent phone/desktop cold read (and review Preview when required) satisfies the human exit gate.
+
+## 17. Phase-D consolidation — shared ownership without a universal template
+
+Before this write, current state was refreshed at `main@d3631890f89c0fe62e249c088794b64a0b503f00` and PR #737 `f9324a6f47ba89fd92ae95aec2f0111861d19daf`. Open semantic owners remained separate: #728 owns the Q17 W&B mirror files, #734 owns the SD-LoRA acceleration/history explanation, and #729 owns the Effective-State successor plus its navigation/Reader-Contract files. This consolidation changes none of those paths.
+
+Task-time HPL retrieval again made the governing rule explicit: scientific caveats stay adjacent to the claim they constrain; first-screen hierarchy comes from content grouping rather than decorative surfaces; progressive disclosure may move recoverable detail, not meaning-changing boundaries.
+
+**REPEAT-CORRECTION witness:** content-first pilot surface is being re-touched → current owners are the pilot component plus `research-content-primitives.css` / current Reader Contracts → checked artifacts were all four pilot sources, legacy CSS selectors, current open-PR file ownership, and phone/desktop rendered geometry → allowed next action was narrow ownership consolidation only → any main/PR-head drift, new overlapping owner, or browser/Reader-Contract regression invalidates this receipt.
+
+The resulting implementation is deliberately small:
+
+- `.research-fact-band` is now explicitly protected as a four-pilot relationship primitive: Flow gateway, SD-LoRA mechanism, Q17 comparison and server operations all use the same semantic `dl` grammar without inheriting a shared Hero/Card shell.
+- The legacy mobile decorative enclosure now applies only to `mission-hero:not(.mission-hero--compact)`. The Flow gateway no longer receives the old gradient/border/shadow and then cancels them through a route-specific override; the compact component owns its own surface directly.
+- The non-compact mission hero keeps its historical mobile enclosure unchanged. This is a targeted ownership cleanup, not a sitewide restyle.
+- All four migrated pilot owners and their route shells remain static Astro content: no `client:load`, `client:idle`, `client:visible`, `client:media` or `client:only` hydration was introduced.
+- A dedicated consolidation regression now protects static-first behavior and prevents the removed Flow/server compatibility overrides from returning.
+
+Rendered validation after the selector cleanup:
+
+- compact Flow hero at 390×844 and 1280×633, light and dark: `border=0`, `background-image=none`, `box-shadow=none`, page overflow `0`;
+- non-compact home mission hero at 390×844 still retains its intended `1px` border, gradient and shadow, with page overflow `0`;
+- four pilot routes on desktop + phone each have exactly one active research-nav owner; nav text stays materially quieter than the page H1 (12px versus 56–70px desktop; about 11px versus 34–38px phone); page overflow remains `0`;
+- targeted consolidation / primitive / journey / copy / Reader-Contract Vitest: **28 / 28 PASS**;
+- `npm run check`: **580 files, 0 errors** (2 existing deprecation hints);
+- static build: **262 pages PASS**; heading audit **262 / 262 PASS**; external-brand-link audit **PASS**;
+- human-feedback audit: **PASS**;
+- `git diff --check`: **PASS**.
+
+This closes Phase D at **15 / 15 points**. Phase C remains open because the same Agent cannot self-certify an independent phone/desktop cold read after reading the preference evidence. Phase E broad route-family migration therefore remains blocked; the next safe work should stay within non-human-gated preparation/acceptance or wait for an independent cold-read receipt rather than pretending the pilot exit is complete.

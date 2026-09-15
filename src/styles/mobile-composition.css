@@ -35,7 +35,10 @@
     margin: 10px auto 24px;
   }
 
-  body .site-main .mission-hero__copy {
+  /* Legacy decorative enclosure belongs only to the non-compact mission hero.
+   * The content-first Flow gateway owns its compact composition in the component
+   * itself, so this compatibility layer must not style it and then neutralize it. */
+  body .site-main .mission-hero:not(.mission-hero--compact) .mission-hero__copy {
     padding: 19px 18px 17px;
     border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
     border-radius: var(--mobile-radius-lg);
@@ -47,12 +50,6 @@
         color-mix(in srgb, var(--blue) 3%, var(--surface)) 100%
       );
     box-shadow: 0 10px 26px color-mix(in srgb, var(--ink) 5%, transparent);
-  }
-
-  body[data-reader-contract-id='flow'] .site-main .mission-hero.mission-hero--compact .mission-hero__copy {
-    border: 0;
-    background: transparent;
-    box-shadow: none;
   }
 
   body .site-main .mission-hero__eyebrow {

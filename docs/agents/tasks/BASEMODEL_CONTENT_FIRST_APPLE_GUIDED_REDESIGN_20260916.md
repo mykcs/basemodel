@@ -340,11 +340,13 @@ Pilot exit rule: do not start broad migration until the four pilots show a coher
 
 ### Phase D — Canonical component/CSS consolidation — **15%**
 
-- [ ] Promote only proven pilot patterns into shared components/styles.
-- [ ] Remove touched obsolete compatibility rules when ownership is clear.
-- [ ] Reduce conflicting selector layers for the migrated surface.
-- [ ] Keep static content static; remove unnecessary hydration discovered during migration.
-- [ ] Ensure global navigation stays visually quieter than page content and active-state semantics stay correct.
+- [x] Promote only proven pilot patterns into shared components/styles.
+- [x] Remove touched obsolete compatibility rules when ownership is clear.
+- [x] Reduce conflicting selector layers for the migrated surface.
+- [x] Keep static content static; remove unnecessary hydration discovered during migration.
+- [x] Ensure global navigation stays visually quieter than page content and active-state semantics stay correct.
+
+Phase D is complete: **15 / 15 weighted points**. The consolidation is limited to patterns already proven by the four pilots; it does not authorize Phase E broad migration while the Phase C independent cold-read exit remains open. Current credited total: **35 / 100**.
 
 ### Phase E — Route-family migration — **25%**
 
