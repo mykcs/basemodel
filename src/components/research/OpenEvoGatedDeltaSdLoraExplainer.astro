@@ -142,7 +142,7 @@ const evidenceFor = (id: string) => id === 'beta-g'
   <footer class="gds-provenance">
     <strong>{t('科研状态来源', 'Scientific-state source')}</strong>
     <span>{snapshot.source.repository} · <code>{snapshot.source.branch}</code> · <code>{snapshot.source.head.slice(0, 12)}</code> · {snapshot.checkedAt}</span>
-    <span>{t('这是网站发布快照；正式发布前仍会重新读取上游 scientific head。', 'This is a website publication snapshot; the upstream scientific head will be refreshed again before release.')}</span>
+    <span>{t('这是网站上的研究快照；如果上游科学证据发生变化，会先核对新的证据来源和结论边界，再更新页面。', 'This is a website research snapshot; if the upstream scientific evidence changes, the new source and claim boundary will be rechecked before this page is updated.')}</span>
   </footer>
 </article>
 <style>

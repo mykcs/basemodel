@@ -34,6 +34,8 @@ for (const locale of locales) {
       await expect(page.locator('.gds-hero__state')).toContainText('四轮 Vanilla vs GDR 配对资格实验已经全部封存');
       await expect(page.locator('.gds-hero__state')).toContainText('GDR 的总平均 reward 和完整成功率都高于匹配的 Vanilla 对照');
       await expect(page.locator('.gds-hero__state')).toContainText('这个结论只属于当前冻结的资格实验');
+      await expect(page.locator('.gds-provenance')).toContainText('如果上游科学证据发生变化，会先核对新的证据来源和结论边界，再更新页面');
+      await expect(page.locator('.gds-provenance')).not.toContainText('正式发布前');
       await expect(page.getByTestId('gated-delta-recurrence')).toBeVisible();
       await expect(page.getByTestId('gated-delta-runtime-path')).toBeVisible();
       await expect(page.locator('[data-reader-route]')).toHaveCount(0);
