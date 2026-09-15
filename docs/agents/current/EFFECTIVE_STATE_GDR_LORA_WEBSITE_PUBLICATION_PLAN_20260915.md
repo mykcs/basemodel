@@ -1,0 +1,831 @@
+# Bounded Online Recurrence + Effective-State GDR：BaseModel 网站施工与结果预留计划
+
+状态：**ACTIVE / CHECKLIST AUTHORITY / FORMAL RESULT PENDING**
+创建日期：2026-09-15
+仓库：`mykcs/basemodel`
+科学事实权威：`mykcs/openevo-experiment`
+BaseModel 创建基线：`main@1b6d13714f672345a086cbc09ec7067cb3dae3a7`
+工作分支：`research/effective-state-gdr-site-plan-20260915`
+当前施工 PR：`mykcs/basemodel#729`
+
+> 这是本工作线唯一的长期 checklist authority。后续 ChatGPT / Agent 必须从本文件第一个仍可安全执行的 `[ ]` 项继续，不依赖聊天记忆，也不得为了“看起来有进度”制造第二份平行计划。
+>
+> 本计划的目标不是提前宣布实验结论，而是**在正式实验结果出现以前**，把问题、推导、方法身份、实验设计、证据边界、结果槽位、页面结构和发布门全部预先写清楚。正式结果只允许在上游 sealed evidence 出现后填写。
+
+## 0. 一句话目标
+
+在 BaseModel 新增一条可长期维护的研究页面，完整解释：
+
+`Bounded Online Recurrence 已解决“历史状态不断膨胀” -> first-generation GDR 搬到 LoRA 后暴露 representation-dependent boundary -> 推导出 EFFECTIVE_STATE_GDR_LORA_V1 -> 预注册 160-round matched OFF vs ON 正式实验 -> 正式结果区域现在保持 Pending。`
+
+## 1. 新窗口接手前必须读取
+
+按顺序读取，不能跳过：
+
+- [ ] 根 `AGENTS.md`。
+- [ ] `docs/agents/README.md`、`docs/agents/LATEST.md`。
+- [ ] `docs/agents/current/project-agent-operating-principles.md`。
+- [ ] `docs/agents/current/branch-and-pr-conventions.md`。
+- [ ] `docs/agents/current/website-engineering-standard.md` 与 `scenario-trigger-registry.md`。
+- [ ] `product-and-research-integrity.md`、`scientific-state-provenance.md`、`experiment-result-publication-workflow.md`。
+- [ ] `website-design-spec.md`、`website-copy-cases.md`、`human-preference-learning-system.md`。
+- [ ] `site-reader-attention-contract.md`、`human-thinking-web-expression-contract.md`、`research-site-presentation-contract.md`。
+- [ ] `reader-first-copy-hierarchy.md`、`layered-technical-explainer-copy.md`、`research-editorial-style.md`。
+- [ ] `ui-design-principles.md`、`theme-contrast-contract.md`、`ui-change-visual-acceptance-gate.md`。
+- [ ] 当前 BaseModel `main`、本 PR exact head、所有 overlapping open PR。
+- [ ] `mykcs/openevo-experiment` PR #497、#502，以及本文件列出的 pinned evidence。
+
+读取以后，先在本文件“执行日志”追加当前 `main / PR head / upstream head / checked_at`，再开始改网站源码。
+
+## 2. 当前科学 authority：现在能写什么
+
+截至本计划创建时，Priority-1 科学工作已到 `FORMAL_READY_AWAITING_OWNER_LAUNCH`，正式 160-round experiment **尚未启动**。网站现在可以发布的是“推导 + 方法 + 预注册实验设计 + pre-formal readiness”，不能发布正式 efficacy 结论。
+
+### 2.1 必须绑定的上游身份
+
+- OpenEvo scientific workline：PR #497。
+- #497 receipt-only exact head：`7847d6497ae58b7a82dc37cd1cf71ccfe44aa8df`。
+- formal executable/scientific bytes：`b62ba4b494964e60500883d844e0f0c3ee53ac55`。
+- Control Tower：PR #502 exact head `99dd0fdce328682fb0218aa084d3d2b0d0b7ae49`。
+- Priority-1 pair：`BOUNDED_OFF` vs `EFFECTIVE_STATE_GDR_LORA_V1`。
+- treatment start：**Stage2 Round0 第一条 optimizer update**，不是 Round1。
+- logical treatment start：`S0 = EMPTY_BOUNDED_HISTORY`。
+- READY package SHA256：`94c33dc022dbc073d59ba7f4857217d9d7c7460aa7ef0229d7c511f663b2b09e`。
+- zero-task dry-run SHA256：`09583ea4ff5b85a141e57d866ec4548f11292bf0e47bd65e5d5717e938e54b4f`。
+- receipt-only closeout SHA256：`98157a098e6ce1d9e439f3cecc5882042acb31ec1c36bcc882f2ab78d88de82f`。
+- formal rows consumed：`0`。
+- protected final-panel access：`0`。
+- formal experiment launched：`false`。
+
+### 2.2 现在允许公开的 pre-formal 事实
+
+以下属于方法/资格/readiness 证据，可以现在写；必须明确它们不是正式长期 efficacy result：
+
+- first-generation EMPTY Round0 OFF 可以 exact deterministic materialize 第一个 rank128 `S1`。
+- first-generation ON 在 EMPTY Round0 的 LoRA factor mapping 触发 `beta_C = 1.0523405381256283` 的 factor-domain FAIL。
+- 这个 `1.052` **不是原始 GDR effective beta**；它是从 effective write 映射到 LoRA factor 坐标后的 displacement。
+- mapping-only v2 修正后，旧 raw-factor beta controller 在新的 intervention trajectory 上预测 `beta_eff = 657.8360748437726`，真正超出核心 `(0,1)` effective-beta domain。
+- 这两次 FAIL 都必须保留为 negative scientific evidence，不能被新 successor 的 PASS 覆盖。
+- gauge-invariant 22-feature beta policy 历史 train/validation/heldout qualification PASS。
+- EMPTY Round0 predict-only PASS，65 steps 中 GDR write applied = 0，controller beta 保持 finite 且 `<1`。
+- `EFFECTIVE_STATE_GDR_LORA_V1` Round0 ON 独立两次 exact repeat PASS。
+- `EFFECTIVE_STATE_GDR_LORA_V1` non-empty rank128 recurrent transition 独立两次 exact repeat PASS。
+- preferred 4-GPU zero-formal topology qualification PASS。
+- 16-task × 8-rollout × 2-arm short non-final gate PASS；它只能说明 pre-formal bounded qualification，没有资格升级为 160-round 正式效果结论。
+
+### 2.3 现在绝对不能填的内容
+
+- [ ] 160-round pooled reward OFF / ON。
+- [ ] 160-round exact success OFF / ON。
+- [ ] 正式 matched uncertainty / CI。
+- [ ] 长周期 ON 是否比 OFF 更好、一样或更差。
+- [ ] final-panel 结果。
+- [ ] “Effective-State GDR 优于 Bounded”之类 winner 句子。
+- [ ] 任何来自 in-flight W&B、partial round、单个 checkpoint 的正式总结。
+
+## 3. 页面 ownership 与信息架构
+
+### 3.1 新 canonical route
+
+计划新增：
+
+`/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/`
+
+建议 reader-facing 名称：
+
+**Bounded Online Recurrence + Effective-State GDR**
+
+不要把正式实验 ID `EFFECTIVE_STATE_GDR_LORA_V1` 直接当 H1；精确 ID 放正文第一层 technical identity 或 evidence 区。
+
+### 3.2 为什么必须新建页面，而不是覆盖旧页
+
+- `sd-lora-bounded-state/` 继续拥有 sealed Bounded Online Recurrence 的 rank128 / R150–R159 / ~37× 历史结果。
+- `gated-delta-sd-lora/` 继续拥有 first-generation recurrent Gated-Delta D1 四轮资格结果和当时的 factor-state derivation。
+- 新页面拥有：**从这两条既有证据继续推出来的 successor derivation + 新 matched experiment preregistration + Pending formal result scaffold**。
+- 不得把旧 D1 4/4 的 pooled numbers 当成新 Effective-State experiment 的结果。
+- 不得把 Bounded ~37× engineering result 当成新 experiment 的 efficacy result。
+
+### 3.3 Study IA 归属
+
+当前 `OPEN_EVO_EXPERIMENTS` 一级仍保持五个实验；在正式 160-round 新 experiment seal 以前，**不得为了新页面制造第六个 completed top-level experiment**。
+
+计划先把新页作为 `directapply-1p7b` 的 `analysis` / prospective experiment child，放在 `SD-LoRA 加速` 相关入口附近；等正式结果 seal 后是否升级为独立一级 experiment，由后续 owner 决策，不由本页面自行决定。
+
+### 3.4 英文当前策略
+
+当前 Production 已经是中文 active surface、英文 source 归档的架构。实现时：
+
+- 不得因为新增中文 route 自动恢复 `/en/**` Production route。
+- 若当前 archive policy 要求同步英文源，只更新 `docs/archive/site-en/**` 对应 archive source / manifest。
+- Reader Contract、route inventory、sitemap 必须按当前 active-language policy 验证；不要拿历史双语测试强迫英文重新上线。
+
+## 4. 预期代码 owner：默认方案
+
+除非 cold-read 发现 current main ownership 已移动，否则优先采用下列结构：
+
+```text
+src/data/effectiveStateGdrLoraStudy.ts
+src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro
+src/pages/research/seed-openevo/study/capability-exploration/
+  bounded-effective-state-gdr/index.astro
+
+src/data/siteReaderContracts.ts
+src/data/openEvoExperimentNavigation.ts
+src/data/sdLoraHistorySeries.ts              # 仅当决定把 successor 作为专题第 08 章
+src/components/research/OpenEvoSdLoraHistorySeriesNav.astro
+src/components/research/OpenEvoSdLoraBoundedRecurrence.astro
+src/components/research/OpenEvoGatedDeltaSdLoraExplainer.astro
+
+src/lib/effectiveStateGdrLoraStudy.test.ts
+src/lib/openEvoExperimentIndex.test.ts
+src/lib/siteReaderContracts.test.ts
+tests/e2e/effective-state-gdr-lora.spec.ts
+tests/e2e/site-reader-contracts.spec.ts
+```
+
+不要把新科学事实散写进多个 Astro 文件；**`effectiveStateGdrLoraStudy.ts` 必须成为本页面科学 snapshot 的单一网站 data owner**。
+
+## 5. `effectiveStateGdrLoraStudy.ts` 数据合同
+
+### 5.1 顶层 snapshot 至少包含
+
+```ts
+export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
+  checkedAt,
+  source,
+  identity,
+  derivation,
+  readiness,
+  formalDesign,
+  formalResult,
+  evidence,
+} as const;
+```
+
+其中 `source` 必须同时绑定 #497 receipt head 与 frozen execution SHA，避免 receipt-only commit 被误当成 executable science SHA。
+
+### 5.2 建议的 source identity
+
+```ts
+source: {
+  repository: 'mykcs/openevo-experiment',
+  sciencePr: 497,
+  receiptHead: '7847d6497ae58b7a82dc37cd1cf71ccfe44aa8df',
+  executionGitSha: 'b62ba4b494964e60500883d844e0f0c3ee53ac55',
+  controlTowerPr: 502,
+  controlTowerHead: '99dd0fdce328682fb0218aa084d3d2b0d0b7ae49',
+  status: 'FORMAL_READY_AWAITING_OWNER_LAUNCH',
+}
+```
+
+如果上游正式实验启动/完成，**新增 snapshot 或更新 checkedAt + exact authority**；不能只改一句正文。
+
+### 5.3 正式结果必须使用 discriminated union
+
+必须让 TypeScript 在 `pending` 时禁止结果数字：
+
+```ts
+type FormalResult =
+  | {
+      status: 'pending';
+      pooledReward: null;
+      exactSuccess: null;
+      uncertainty: null;
+      finalPanel: null;
+      conclusion: null;
+    }
+  | {
+      status: 'sealed';
+      pooledReward: { off: number; on: number; delta: number };
+      exactSuccess: { off: number; on: number; delta: number };
+      uncertainty: SealedMatchedUncertainty;
+      finalPanel: SealedFinalPanel | null;
+      conclusion: SealedClaimBoundary;
+    };
+```
+
+- [ ] `formalResult.status` 初始必须为 `pending`。
+- [ ] 所有正式指标初始必须为 `null`，不得使用 `0`、`TBD 0`、临时 W&B 数值或 ETA 代替。
+- [ ] component 在 `pending` 时只渲染预先冻结的 metric labels / methodology，不渲染空图伪装成结果。
+- [ ] `sealed` 分支必须要求 pinned upstream evidence identity；没有 seal receipt 时测试必须拒绝切换。
+
+### 5.4 readiness 与 efficacy 完全分开
+
+`readiness` 可以存：isolated exact PASS、topology PASS、short non-final PASS、READY package、dry-run PASS。
+
+`formalResult` 只能存：160-round matched formal run / authorized final measurement 的 sealed result。
+
+测试必须禁止把 `readiness.shortNonfinal.rewardDelta` 投影成 `formalResult.pooledReward.delta`。
+
+## 6. 页面主叙事：必须按这个科研顺序写
+
+页面不是工程日志，也不是“我们试了 A 不行、再试 B”的流水账。可见正文要把最终推导按科学问题组织成八层。
+
+### 6.1 第一层：为什么 Bounded 后还要 GDR
+
+可见主线先说清：
+
+1. Vanilla SD-LoRA 的历史 component 越积越多，更新越来越慢。
+2. Bounded Online Recurrence 已经把历史压进固定 rank128 state，解决“历史表示无限增长”的工程问题。
+3. 但 Bounded 只回答“怎样保持固定大小 state”，没有回答“新经验应该以多大强度写进这个 state”。
+4. 新实验因此问：**在同一个 Bounded recurrent state 上，Effective-State GDR 能不能改善每次新经验的写入？**
+
+首屏不得先出现 `beta_c`、SHA、D0.26、D1、Carrier、Passport 等内部词。
+
+### 6.2 第二层：原始 GDR 为什么简单
+
+必须给出最小数学直觉：
+
+```text
+old recurrent state
+-> read old content
+-> compare with new value
+-> beta decides how much residual to write
+-> next recurrent state
+```
+
+说明原始 GDR 的 `0 < beta < 1` 有 interpolation / bounded write-strength 的直接意义；不要把这个 beta 和后面的 LoRA factor displacement 混为一个量。
+
+### 6.3 第三层：LoRA 为什么把一个 state 拆成坐标
+
+正文要从 reader 能理解的对象开始：
+
+```text
+真正影响模型的是 effective update
+W = C A^T
+```
+
+而 runtime 实际保存/更新的是低秩 factors、coefficient 与 Adam moments。
+
+必须展示等价缩放：
+
+```text
+C A^T = (C / s) (s A)^T
+```
+
+由此说明：A / C 的绝对大小不是唯一表示；如果“科学 gate 是否合法”会因这种模型完全不变的缩放而改变，那么那个 gate 至少包含 representation-level 约束，不能直接当作模型层 intrinsic quantity。
+
+### 6.4 第四层：`1.052` 到底是什么
+
+必须精确写：
+
+- first-generation EMPTY Round0 得到 `beta_C = 1.0523405381256283`。
+- 旧 runtime 因 factor-beta domain `(0,1)` fail closed。
+- **不能写成“GDR beta = 1.052”。**
+- 它是 effective write magnitude 经过 LoRA factor mapping 后得到的 C-factor displacement。
+- 用等价 `A -> sA, C -> C/s` 可以改变 factor displacement 是否 `<1`，而 effective model update 不变。
+
+这一步的结论是：旧 D0.26 的 `factor beta < 1` 是历史 geometry 上冻结的 factor-state qualification contract，不是已经证明的 universal GDR theorem。
+
+### 6.5 第五层：teacher -> runtime mismatch
+
+必须把这个推导写成“最终发现”，不要写成漫长试错日记。
+
+Teacher decomposition 对一次 Adam transition：
+
+```text
+W0 = C0 A0^T
+Wp = Cp Ap^T
+
+Wp - W0
+= (Cp - C0) A0^T
++ Cp (Ap - A0)^T
+```
+
+因此 teacher 第二笔 A-side write 使用 `||Cp||` 是正确的，因为 teacher 第一笔真的走到了 `Cp`。
+
+但真实 GDR runtime 第一笔只按 controller 决定的 effective write 走到 `C1`，通常 `C1 != Cp`。若第二笔仍除以 `||Cp||`，真实 A-side dense write magnitude 会变成：
+
+```text
+beta_eff_A * ||C1|| / ||Cp||
+```
+
+而不是 controller 想要的 `beta_eff_A`。
+
+页面要把它命名为：**teacher trajectory -> intervention trajectory mismatch**。
+
+### 6.6 第六层：sequential effective-write mapping
+
+展示最终最小一致映射：
+
+```text
+C1 = C0 + (beta_eff_C / ||A0||) * u_C
+A1 = A0 + (beta_eff_A / ||C1||) * u_A
+```
+
+解释：先完成 C 的真实 GDR write，再从实际的新 `C1` 计算 A 的 write；这样两笔 realized dense-write magnitude 分别精确对应两个 predicted effective beta，交叉项自然被 sequential decomposition 吸收。
+
+### 6.7 第七层：为什么 mapping v2 还不够
+
+必须保留第二个 negative result：
+
+- mapping-only v2 让 factor representation 更一致，但旧 beta controller 的输入仍含 raw `||A|| / ||B|| / grad / Adam moment` 等 factor-coordinate features。
+- 在 EMPTY Round0 新 intervention trajectory 上，旧 controller 预测出 `beta_eff = 657.8360748437726`。
+- 这次是**真正的 effective beta domain FAIL**，不能再归因于 factor displacement `<1` 检查。
+- ON2 / 后续 run 当时没有为了“试到 PASS”继续乱跑；这份 FAIL 必须作为 successor 设计动机保留。
+
+### 6.8 第八层：Effective-State GDR-LoRA v1
+
+最终方法页必须把 successor 说成：
+
+> GDR 的科学对象是 effective state / effective write；LoRA A/C 是 representation layer。
+
+新 controller 使用 prospectively frozen 22-feature gauge-invariant causal representation；继续保持：
+
+- `beta_eff in (0,1)`；
+- `g = 0`，retention = 1；
+- Adam shadow direction 不变；
+- reward / score / Task Vector / probe / future state / final panel 不进入 runtime control；
+- sequential C-then-A effective-write mapping；
+- factor displacement 只做 diagnostic，不再冒充核心 GDR beta gate；
+- Bounded Round0 first-state materializer 与 Round1+ rank128-prior + rank8-current recompression 不变。
+
+这里必须明确：这是 prospectively frozen successor treatment，不是悄悄把 first-generation GDR 的 FAIL 改成 PASS。
+
+## 7. 正式 matched experiment：现在就要把设计写死
+
+页面必须在结果出现以前公开实验问题和比较合同：
+
+```text
+OFF = Bounded Online Recurrence
+ON  = Bounded Online Recurrence + EFFECTIVE_STATE_GDR_LORA_V1
+
+common start = EMPTY_BOUNDED_HISTORY
+rounds = 160
+rollouts = 128 / round / arm
+formal rollouts = 20,480 / arm
+horizon = 15
+GDR starts = Round0 first Stage2 optimizer update
+final panel = locked during formal Stage2
+```
+
+### 7.1 matched invariants 可见说明
+
+- [ ] 两臂相同 base model / model revision。
+- [ ] 两臂相同 WebShop schedule、task identity、seed policy、sampling contract。
+- [ ] 两臂相同 Bounded rank128 state semantics 与 rank8 current update。
+- [ ] 两臂相同 replay / dataset selection / optimizer recipe。
+- [ ] 两臂相同 Carrier Contract v2 mechanism；realized carrier bytes 可以因 treatment 后 evidence 分叉而不同。
+- [ ] 唯一科学 treatment difference 是 ON 的 Effective-State GDR write。
+- [ ] reward 不控制 admission、顺序、early stop 或 treatment mutation。
+- [ ] formal runner 使用固定 round barrier：OFF round r -> ON round r -> both sealed -> round r+1。
+
+### 7.2 fail-closed 边界
+
+- [ ] Round0 没有合法 current update 时：页面写明实验 runner 会 `OWNER_DECISION_REQUIRED`，不会制造 synthetic S1。
+- [ ] Round1+ 没有 current update 时：保持现有 rank128 state / replay，两臂等价推进 round/logical-history identity；不制造 GDR event。
+- [ ] Carrier Health FAIL 只在 sealed round 边界暂停，不能自动改变科学 treatment。
+- [ ] final panel 没有独立 authority 时保持 locked。
+
+## 8. 正式结果区域：先搭 scaffold，结果保持空白
+
+页面必须预留完整结果结构，但当前只显示 `Pending / 正式实验尚未启动`，不得显示虚假零值。
+
+### 8.1 预先固定的结果槽位
+
+- [ ] `160-round pooled mean reward`：OFF / ON / delta。
+- [ ] `160-round exact success`：OFF / ON / delta / percentage-point delta。
+- [ ] matched uncertainty / bootstrap / CI：具体方法以正式 preregistration sealed contract 为准，不能网站事后自选。
+- [ ] per-round trajectory：只在全 160 轮/正式 sealed cutoff 可用后画；不把局部近期窗口冒充完整轨迹。
+- [ ] engineering-invalid / invalid-action termination / denominator accounting。
+- [ ] state/update health：每轮是否产生 current update、GDR beta domain、Carrier Health pauses。
+- [ ] final-panel result：只有独立 final authority + sealed result 后才填。
+- [ ] 最终 claim boundary：支持什么、不能证明什么。
+
+### 8.2 Pending UI 合同
+
+Pending 不是灰色空白卡片；它要告诉读者：
+
+> 方法、比较对象和评价槽位已经在结果出现前冻结；正式 160-round matched result 尚未产生，因此数字故意留空。
+
+必须可见：
+
+- `正式实验：尚未启动 / Pending`；
+- `formal rows consumed = 0`（只在该 snapshot 仍然真实时显示）；
+- `final panel = locked`；
+- “这里故意不提前写 winner”。
+
+不得显示 ETA、百分比进度条或 partial W&B 分数替代正式结果。
+
+## 9. Phase A — upstream scientific cold-read / snapshot freeze
+
+- [ ] Re-read `mykcs/openevo-experiment` PR #497 live head; classify whether `7847d649…` is still the latest receipt-only head or historical snapshot.
+- [ ] Re-read PR #502 live head; confirm current Priority-1 identity is still `BOUNDED_OFF` vs `EFFECTIVE_STATE_GDR_LORA_V1`.
+- [ ] Verify `formal_rows_consumed / final_panel_access / formal_run_launched` from current durable receipts; do not infer from chat.
+- [ ] Verify the current READY package, dry-run receipt and receipt-only closeout bytes at pinned upstream commit.
+- [ ] Verify the exact source files for first-generation Round0 beta-domain FAIL, mapping-v2 effective-beta FAIL, policy qualification, predict-only PASS, isolated exact stack, topology PASS and short non-final PASS.
+- [ ] Build/update one BaseModel machine-readable website snapshot only after the above facts agree.
+- [ ] If formal experiment has already started by the time implementation begins, update the page state to the correct **sealed/live snapshot boundary** without exposing outcome-dependent partial conclusions.
+
+Acceptance evidence for Phase A:
+
+```text
+upstream_pr497_head = <sha>
+upstream_pr502_head = <sha>
+scientific_execution_sha = <sha>
+formal_state = <not-started|running|sealed>
+checked_at = <timestamp>
+claim_boundary = <explicit sentence>
+```
+
+## 10. Phase B — route / Reader Contract / data owner
+
+- [ ] 新建 `src/data/effectiveStateGdrLoraStudy.ts`，集中拥有本页面科学 snapshot。
+- [ ] 新建 `OpenEvoEffectiveStateGdrLoraStudy.astro`；不得从旧页面复制并散落 hard-coded facts。
+- [ ] 新建 canonical route `bounded-effective-state-gdr/index.astro`。
+- [ ] route `<title>` / description / OG/Twitter metadata 与正文处于同一科学状态：现在只能写“方法与正式实验设计已冻结 / 正式结果 Pending”。
+- [ ] 在 `siteReaderContracts.ts` 登记 `capability-bounded-effective-state-gdr`。
+- [ ] attention mode 默认 `narrative`；第一任务是“理解为什么从 factor-state GDR 走到 Effective-State GDR，以及新正式实验到底比较什么”。
+- [ ] 首屏必须让新读者看到：研究问题、OFF/ON、当前 `Pending / ready before launch` 边界。
+- [ ] 首屏不得出现 winner、formal delta、最终效果暗示。
+- [ ] 在 `openEvoExperimentNavigation.ts` 给 `directapply-1p7b` 增加新 analysis/prospective experiment child。
+- [ ] 在 `OPEN_EVO_CANONICAL_ROUTE_OWNERS` 声明新 route 唯一 owner；不要造成跨 experiment ambiguity。
+- [ ] 冷读后决定是否把它加入 `SD_LORA_HISTORY_SERIES` 为第 08 章；如果加入，必须把第 07 章 Bounded 保持为前置结果而非被 successor 覆盖。
+
+Phase B 的 Definition of Done：route/data/Reader Contract/IA 四个 owner 对同一 canonical route 达成一致，且没有第二套科学数字 owner。
+
+## 11. Phase C — 主页面视觉/内容结构
+
+建议保持一条纵向 research narrative，不做 equal-weight dashboard card wall。
+
+### C1. Hero：一个问题 + 当前状态
+
+- [ ] H1 只命名主题：`Bounded Online Recurrence + Effective-State GDR`。
+- [ ] lede 用 2–3 句说明：Bounded 已固定历史 state 大小；现在研究如何控制新经验写入；正式 matched experiment 尚未产生结果。
+- [ ] 顶部最多展示 3 个紧凑事实：`rank128 bounded state`、`160 × 128 / arm design`、`Formal result: Pending`。
+- [ ] `FORMAL_READY_AWAITING_OWNER_LAUNCH` 可放 compact status/evidence，不拿内部枚举当主标题。
+
+### C2. Why：为什么 Bounded 后还有这个问题
+
+- [ ] 复用/链接 Bounded ~37× 页面，不复制其完整表格。
+- [ ] 说明“固定 state 大小”与“控制 write strength”是两个不同问题。
+- [ ] 提供到 Vanilla / scaling / Bounded 的上下文链接。
+
+### C3. 原始 GDR vs LoRA representation
+
+- [ ] 用真实 HTML/SVG 画“一个 recurrent state”与“A/C factor representation”的结构对比。
+- [ ] solid connector 表示真正 state/write flow；dashed connector 表示 representation mapping / control boundary。
+- [ ] 不能只用 `A -> B -> C` 文本箭头冒充流程图。
+
+### C4. Derivation：四个决定性台阶
+
+主视觉不需要把所有内部 D0.x 号搬上来；读者要看到四个真正改变理解的台阶：
+
+1. `factor beta_C = 1.052`：旧 factor-state domain FAIL，但不是 original effective beta FAIL。
+2. gauge / representation argument：等价 LoRA 缩放可改变 factor displacement，而不改变 model update。
+3. teacher/runtime mismatch：A-side denominator 应依赖实际 `C1`，不是 hypothetical Adam `Cp`。
+4. mapping 修正后 `beta_eff = 657.836`：证明旧 controller 本身也依赖 factor coordinates，于是需要 gauge-invariant Effective-State controller。
+
+- [ ] 每个台阶用：`观察 -> 支持的结论 -> 仍不能证明什么`。
+- [ ] negative evidence 必须可见，不藏在只有 hash 的技术 appendix。
+- [ ] 公式放在解释旁边，不用“公式墙”抢走自然语言。
+- [ ] exact verdict / SHA / prereg links 放 `<details>` 中做 claim-local provenance。
+
+### C5. Effective-State method
+
+- [ ] 画一张新的 semantic diagram：`effective state -> invariant controller -> beta_eff -> sequential C write -> actual C1 -> A write -> next effective state`。
+- [ ] 图中明确 LoRA factors 是 representation；GDR 目标量是 effective write。
+- [ ] 用一个小侧栏列出 runtime forbidden inputs：reward / score / Task Vector / probe / future state / final panel。
+- [ ] `g = 0` / retention=1 作为冻结 treatment fact，可见但不抢 H2。
+
+### C6. Pre-formal readiness
+
+这里回答“为什么我们相信这个方法已经有资格进入正式实验”，不是“它有没有赢”。
+
+- [ ] 以 checklist / compact evidence table 展示：policy qualification、Round0 predict-only、Round0 exact repeat、non-empty exact repeat、4-GPU topology、short non-final gate、formal dry-run。
+- [ ] short non-final reward delta 可以在 technical readiness 里原样报告，但必须紧邻 `qualification-only / non-final / not efficacy` 标签。
+- [ ] 不把 readiness PASS 聚合成“方法有效”。
+
+### C7. 正式实验设计
+
+- [ ] 用真正的 matched-pair diagram 展示 common EMPTY start、OFF/ON fork、160 个 round barrier 和 locked final。
+- [ ] 明确 GDR 从 Round0 第一条 optimizer update 开始。
+- [ ] 明确 OFF/ON 每轮使用 matched schedule / seeds / training recipe。
+- [ ] 明确只有 treatment write 不同。
+
+### C8. 正式结果 Pending scaffold
+
+- [ ] 使用预先定义的表格/图容器，但当前值显示 `—` / `Pending`，不是 0。
+- [ ] 可见说明“这里故意留空；等 sealed formal evidence 后填写”。
+- [ ] 不画只有 axis 没数据的装饰性空 chart；正式轨迹未 seal 前用结构化 Pending table 更诚实。
+
+### C9. Evidence / provenance
+
+- [ ] 页面末尾提供 upstream PR #497 / #502、execution SHA、READY package、关键 negative/PASS evidence。
+- [ ] 链接优先 exact commit；若 GitHub repo 访问受限，链接文字提前标明“需要仓库权限”，不要让读者点击后才发现。
+
+## 12. 文案标准与明确禁区
+
+### 12.1 说人话要求
+
+- [ ] H2/H3 只命名主题，不写“真正重要的是…”、“我们终于发现…”等编辑部式标题。
+- [ ] 第一层先讲对象和动作，再给内部代号。
+- [ ] `effective state` 首次出现必须解释成“真正影响模型行为的参数更新对象”；之后再使用英文术语。
+- [ ] `gauge / representation` 首次出现用“同一个 LoRA 更新可以有不同 A/C 内部表示”解释。
+- [ ] `teacher/runtime mismatch` 首次出现先说“teacher 计算第二步时假设第一步完整走到 Adam proposal，但 GDR runtime 实际没有”。
+- [ ] 允许保留 `beta_eff`、`C1`、`Cp` 等短公式，但自然语言必须先能独立讲通。
+
+### 12.2 禁止的科学表达
+
+不得写：
+
+- `1.052 证明 GDR beta 爆炸`。
+- `657 证明 GDR 没用`。
+- `Effective-State 修复了所有 GDR 问题`。
+- `short non-final PASS 证明 ON 更好`。
+- `formal ready = formal experiment PASS`。
+- `Bounded ~37× + GDR` 等价于 `37× 且效果更好`。
+- `D1 first-generation 4/4 结果` 等价于 `Effective-State` 正式结果。
+- `final panel` 在没有独立授权/结果时出现任何数字。
+
+### 12.3 必须保留的历史区别
+
+- historical GDR-v1 candidate admission gate；
+- first-generation recurrent Gated-Delta D1；
+- Bounded Online Recurrence；
+- Effective-State GDR-LoRA successor；
+- 新 160-round Bounded OFF vs Effective-State ON formal experiment。
+
+这五个对象不能因为名字都包含 GDR / SD-LoRA 而折叠成一条“版本升级曲线”。
+
+## 13. Phase D — source / semantic tests
+
+### 13.1 新建 `effectiveStateGdrLoraStudy.test.ts`
+
+至少保护：
+
+- [ ] source repository / PR / execution SHA / checkedAt 存在且格式正确。
+- [ ] `formalResult.status === 'pending'` 时所有正式数字为 `null`。
+- [ ] Pending 时 component 不得包含 `formal winner / superiority / final improvement` 文案。
+- [ ] `1.0523405381256283` 被标为 factor displacement，不是 effective beta。
+- [ ] `657.8360748437726` 被标为 effective-beta-domain FAIL。
+- [ ] first-generation FAIL 与 mapping-v2 FAIL 都保留。
+- [ ] Effective-State runtime forbidden inputs 全为 false。
+- [ ] treatment start 明确是 Round0 first optimizer update。
+- [ ] OFF/ON formal budget = 160 × 128 / arm。
+- [ ] final panel locked while pending。
+- [ ] short non-final gate 被标为 qualification-only。
+
+### 13.2 Experiment-first / route ownership tests
+
+- [ ] `openEvoExperimentIndex.test.ts` 确认新 child 属于 `directapply-1p7b`，不是第六个 completed top-level experiment。
+- [ ] canonical route owner 唯一。
+- [ ] 新 href 可解析，旧 Bounded / Gated-Delta route 仍存在。
+- [ ] navigation label 不复用 `SD-LoRA v2` 作为 Effective-State identity。
+
+### 13.3 Reader Contract tests
+
+- [ ] source route 与 sample path 对应新 route。
+- [ ] first viewport 可看到问题、pair identity、Pending boundary。
+- [ ] formal result Pending 不被折叠到 `<details>`；“没有结果”本身是当前关键科学状态。
+
+## 14. Phase E — browser / geometry / accessibility acceptance
+
+新页面至少覆盖 390 / 768 / 1440，light / dark；当前 active-language policy 下以中文 Production route 为主。
+
+### 14.1 新 Playwright suite
+
+`tests/e2e/effective-state-gdr-lora.spec.ts` 至少检查：
+
+- [ ] HTTP/render PASS、单 H1、无 console/page error。
+- [ ] 第一屏出现 `Bounded`、`Effective-State GDR`、`Pending` / 未运行边界。
+- [ ] 第一屏没有正式 reward/success winner 数字。
+- [ ] derivation 四个关键台阶都存在并按顺序出现。
+- [ ] `1.052` 周围文本包含 factor/representation 解释，不出现“original beta 1.052”误读。
+- [ ] `657.836` 周围文本明确是 mapping-v2 后旧 controller 的 effective-beta OOD evidence。
+- [ ] Effective-State diagram 在 desktop 有真实 connector；mobile 转成可读纵向 flow。
+- [ ] result scaffold 在 Pending 下只显示 metric names + Pending，不显示 0 值。
+- [ ] evidence `<details>` 可 keyboard 打开，summary 文案具体。
+- [ ] 页面级 `scrollWidth <= clientWidth`；宽表只能局部横向滚动。
+- [ ] reduced-motion 下所有科学关系仍静态可读。
+
+### 14.2 邻接页面回归
+
+- [ ] `sd-lora-bounded-state/` 仍显示 sealed Bounded result，不被 successor 改名。
+- [ ] `gated-delta-sd-lora/` 仍显示 first-generation D1 4/4 qualification，不被 successor retroactively rewrite。
+- [ ] 两页都提供清楚的新 successor cross-link；但不把新实验结果写回旧页面。
+- [ ] Study 目录手机/桌面 physical nesting 正确。
+
+## 15. Phase F — 正式实验 seal 后的唯一结果填充流程
+
+这一阶段现在故意全部保持 `[ ]`。只有 `openevo-experiment` 出现正式 sealed evidence 后才能执行。
+
+- [ ] Resolve formal run completion marker / paired seal / exact denominator。
+- [ ] Resolve exact formal result object；不要从 W&B 图或聊天抄数。
+- [ ] 验证 160 rounds × 128 rollouts / arm 的 denominator accounting。
+- [ ] 验证 engineering-invalid handling、resume/retry accounting、任何 pause/resolution receipts。
+- [ ] 读取预注册 matched uncertainty 方法及结果，不在网站自行重新选择 bootstrap unit / CI。
+- [ ] 若 final panel 被授权并 seal，单独绑定 final-panel identity；若没有，继续显示 locked/not-run，而不是 Pending forever 或 0。
+- [ ] 将 `FormalResult` 从 `pending` 切到 `sealed`；同一 commit 中更新 route metadata、正文、snapshot evidence 和 tests。
+- [ ] 结果正文按 `直接结果 -> 关键数字 -> 解释 -> boundary -> evidence` 排列。
+- [ ] 如果 ON < OFF，原样发布负结果；不得弱化成“仍有潜力”。
+- [ ] 如果 ON > OFF，也只能写 formal evidence 支持的范围；不得外推其它模型/任务/GDR 版本。
+- [ ] 如果 uncertainty 包含 0，禁止写稳定 superiority。
+- [ ] 如果实验因科学 blocker 没有完成，保留 `blocked / not completed`，不得把 partial denominator 当最终结果。
+
+### 15.1 正式结果更新时必须全仓搜索 stale Pending
+
+至少搜索：
+
+```text
+FORMAL_READY_AWAITING_OWNER_LAUNCH
+Formal result: Pending
+正式实验尚未启动
+formal_rows_consumed = 0
+final panel = locked
+```
+
+然后逐个判断：历史 snapshot 保留，current-facing surface 更新；不要全局盲替换。
+
+## 16. Phase G — repository validation
+
+每个阶段完成后跑最小匹配测试；准备合并时必须跑当前仓库要求的 exact-tree gate。
+
+### 16.1 代码/语义最小验证
+
+- [ ] `npm run feedback:retrieve -- "Effective-State GDR LoRA research derivation pending formal result"`，把 task-time human preference retrieval 结果用于文案 cold-read。
+- [ ] focused Vitest：新 snapshot / experiment navigation / Reader Contract / Gated-Delta / Bounded regressions。
+- [ ] `npm run audit:reader-contracts`。
+- [ ] `npm run audit:copy:strict`。
+- [ ] `npm run check`。
+- [ ] `git diff --check`。
+
+### 16.2 最终本地 acceptance
+
+- [ ] `npm run verify:deploy` PASS。
+- [ ] `npm run build` PASS。
+- [ ] `npm run ui:overflow-preflight` PASS。
+- [ ] 依当前 UI risk planner 跑 focused 或完整 Chromium；若共享 navigation/theme/series owner 变化，fail closed 到更强 coverage。
+- [ ] WebKit 在当前仓库 policy 要求时运行并 PASS。
+
+失败分类必须写回本文件；`NOT_EXECUTED`、provider BUILDING、stale-head green 都不能打勾。
+
+## 17. Phase H — PR / Preview / Production 交付
+
+本 PR 是长期施工 PR，不要再开第二个同主题实现 PR，除非 current policy 明确要求窄 successor。
+
+- [ ] 每次写前刷新 `origin/main`、本 PR remote head、overlapping open PR。
+- [ ] 发现 main 前进时先做 semantic overlap classification，不因为 behind 就机械 rebase。
+- [ ] 普通工作 push 只触发 public GitHub Actions preflight；不要每次小改都移动 Vercel final-gate ref。
+- [ ] owner 需要看页面时，优先按当前 policy 用轻量 non-authoritative review Preview。
+- [ ] 页面达到 candidate-ready 后，刷新 current main，形成一个干净 exact-head candidate。
+- [ ] Public PR CI 必须在 exact head green。
+- [ ] 运行 `node scripts/request-vercel-final-gate.mjs 729` 请求唯一 authoritative exact-head Vercel final gate。
+- [ ] Vercel Preview 必须 `READY` 且 commit SHA exact match PR head。
+- [ ] hosted route 390 / 768 / 1440 cold-read PASS；无 overflow / stale Pending / scientific contradiction。
+- [ ] merge 前再读一次 upstream science：如果 formal state 已从 not-started 变成 running/sealed，分类哪些 website state 必须更新，不能合并明显 stale 的“尚未启动”。
+- [ ] expected-head guard 合并；不要自动 merge 未审阅的 scientific copy。
+- [ ] Production READY 后打开 canonical route 做最终 smoke。
+- [ ] Production body / metadata / Study navigation / adjacent Bounded / Gated-Delta routes 一致后才宣布 website publication complete。
+
+Provider 状态、Preview URL、deployment ID 不写成长期科学事实；只放 PR/release receipt。
+
+## 18. 明确交付标准（Definition of Done）
+
+以下必须全部满足，不能用“页面能打开”代替：
+
+- [ ] 新 canonical route 已存在，并登记 Reader Contract / experiment owner。
+- [ ] 第一次来的读者 10 秒内能回答：为什么 Bounded 后还要 GDR、OFF/ON 比较什么、正式结果是否已经出来。
+- [ ] 页面完整解释 `1.052` 是 factor displacement，不是 original/effective GDR beta。
+- [ ] 页面完整解释 teacher `Cp` 与 runtime actual `C1` mismatch。
+- [ ] 页面保留 mapping-v2 后 `beta_eff=657.836...` 的第二层 negative evidence。
+- [ ] 页面能解释为什么最终 scientific object 变成 effective state / effective write，而 LoRA factors 退回 representation layer。
+- [ ] first-generation Gated-Delta D1、Bounded recurrence、Effective-State successor 三者身份不混。
+- [ ] 当前正式 experiment design 在结果出现以前已经固定展示：160 rounds、128/round/arm、EMPTY start、Round0 treatment start、locked final。
+- [ ] 正式结果 Pending 时所有 formal metric values 在 data owner 中为 `null`；没有 fake zero / partial result / winner 暗示。
+- [ ] pre-formal readiness PASS 与 formal efficacy result 在数据结构和 UI 上完全分开。
+- [ ] short non-final result 明确 qualification-only。
+- [ ] 所有重要 inferential claim 有 claim-local pinned provenance。
+- [ ] 旧 Bounded / Gated-Delta 页面保持各自历史科学 owner，并能 cross-link successor。
+- [ ] Study 目录没有伪造第六个 completed experiment。
+- [ ] active Chinese route responsive / theme / accessibility / no-overflow PASS；不意外恢复英文 Production surface。
+- [ ] focused semantic tests、Reader Contract、copy audit、Astro check、build、overflow、浏览器 acceptance 全 PASS。
+- [ ] exact-head Public PR CI 与 authoritative Vercel final gate PASS。
+- [ ] merge 后 Production canonical route、metadata、navigation、adjacent pages smoke PASS。
+- [ ] 本文件所有与“预结果页面交付”相关的 `[ ]` 已有真实证据改为 `[x]`。
+
+**注意：正式 160-round 结果尚未 seal 时，Phase F 的结果填充 checkbox 保持 `[ ]` 是正确状态，不阻止“预结果页面”这一第一里程碑完成。**
+
+## 19. 两个里程碑，避免“Pending 永远让计划看起来没完成”
+
+### Milestone 1 — PRE_RESULT_PAGE_PUBLISHED
+
+完成 Phase A–E、G–H 和 DoD 中所有预结果页面项；Phase F 保持 Pending。完成时把文件顶部状态改成：
+
+`PRE_RESULT_PAGE_PUBLISHED / FORMAL_RESULT_PENDING`
+
+此时网站应完整拥有推导、方法、实验设计和空结果槽，但绝不能制造 formal conclusion。
+
+### Milestone 2 — FORMAL_RESULT_PUBLISHED
+
+只有上游正式 160-round / final evidence seal 后执行 Phase F，并再次完成 G/H release gate。完成时才改成：
+
+`COMPLETE / FORMAL_RESULT_PUBLISHED`
+
+如果正式实验产生 blocker 或永久 stopped outcome，则根据真实 upstream classification 发布 `BLOCKED / NOT COMPLETED`，也可以关闭 Milestone 2；不要把未完成实验等同负结果。
+
+## 20. 每次自动/人工推进规则
+
+1. 每轮先读取本文件，不依赖上一窗口聊天。
+2. 读取当前 `main`、PR exact head、overlapping PR、上游 #497/#502 current state。
+3. 找到**第一个仍未完成且当前不依赖未来 formal result 的 `[ ]`**。
+4. 真正执行该项；只有真实 file/test/browser/provider evidence 成立后才 `[x]`。
+5. 失败项写：`FAIL / BLOCKED / NOT_EXECUTED + 原因 + 下一动作`，不得为了勾选弱化门槛。
+6. 不因为正式实验在运行就把 partial outcome 发布为结论。
+7. 如果上游正式结果 seal，先停下来完成 Phase A freshness reclassification，再进入 Phase F。
+8. 每轮 ELI5 汇报：完成了什么、Milestone 1/2 各多少、下一项、是否需要 owner 决策。
+9. 临时 PID/port/provider queue/GPU瞬态不写成长期事实。
+10. 达到当前 milestone 后停止制造新事项；下一 milestone 没有科学 evidence 就等待，不猜。
+
+## 21. 上游证据索引：新 Agent 不要重新猜
+
+以下路径以 `mykcs/openevo-experiment` 为科学仓库；实现前仍需用 live PR head 重新确认它们没有被 supersede。
+
+| 科学对象 | 当前关键 authority / evidence |
+|---|---|
+| Priority-1 owner decisions | PR #502 · `docs/science/webshop/GDR_TWO_EXPERIMENT_OWNER_DECISIONS_20260915.md` |
+| C / formal-ready workline | PR #497 · `docs/science/webshop/BOUNDED_RECURRENCE_GDR_EXECUTION_PLAN_20260915.md` |
+| EMPTY logical start | `docs/evidence/bounded-recurrence-gdr-20260915/empty-bounded-history-manifest-20260915T104300.json` |
+| first-generation Round0 beta-domain FAIL | `docs/evidence/bounded-recurrence-gdr-20260915/empty-history-on-first-transition-failure-20260915T110000.json` |
+| gauge-invariant policy prereg | `docs/evidence/bounded-recurrence-gdr-20260915/gauge-invariant-beta-policy-v2-prereg-202609151315.json` |
+| gauge-invariant policy qualification | `docs/evidence/bounded-recurrence-gdr-20260915/gauge-invariant-beta-policy-v2-qualification-202609151330.json` |
+| Effective-State runtime | `scripts/analysis/gated_delta_lora_effective_state_runtime_v1_202609151345.py` |
+| Round0 predict-only | `docs/evidence/bounded-recurrence-gdr-20260915/effective-state-round0-predict-only-receipt-202609151410.json` |
+| isolated exact stack | `docs/evidence/bounded-recurrence-gdr-20260915/effective-state-isolated-202609151445/` |
+| short non-final qualification | `docs/evidence/bounded-recurrence-gdr-20260915/short-nonfinal-effective-state-202609151350/` |
+| formal READY package | `docs/evidence/bounded-recurrence-gdr-20260915/formal-ready-202609151716/FORMAL_READY_PACKAGE.json` |
+| zero-task dry-run | `docs/evidence/bounded-recurrence-gdr-20260915/formal-ready-202609151716/DRY_RUN_PASS.json` |
+| final receipt-only closeout | `docs/evidence/bounded-recurrence-gdr-20260915/formal-ready-202609151716/RECEIPT_ONLY_CLOSEOUT.json` |
+
+不要把目录存在当 PASS；读取 JSON `status`、SHA binding 和 protected counters。
+
+## 22. 新 ChatGPT 窗口直接复制的接管 Prompt
+
+把下面整段原样复制到新对话；只需要把 `729` 替换成这个 PR 的实际编号：
+
+```text
+你现在接手 mykcs/basemodel 的长期施工 PR #729。
+
+唯一 checklist authority：
+docs/agents/current/EFFECTIVE_STATE_GDR_LORA_WEBSITE_PUBLICATION_PLAN_20260915.md
+
+任务：把 Bounded Online Recurrence + Effective-State GDR 的完整科研推导、方法身份、正式 matched experiment 设计和 Pending 正式结果 scaffold 发布到 BaseModel；正式结果只能在 mykcs/openevo-experiment sealed evidence 出现后填写。
+
+开始前：
+1. 读 repo 根 AGENTS.md；
+2. 按该 Markdown 第 1 节完成 mandatory reading；
+3. 刷新 BaseModel current main、本 PR exact head、overlapping open PR；
+4. 刷新 openevo-experiment PR #497 和 #502 live state；
+5. 不依赖这个新对话以外的聊天记忆。
+
+执行规则：
+- 从计划里第一个当前可安全执行的 [ ] 项开始；
+- 真正完成并有 file/test/browser/provider evidence 后才改成 [x]；
+- 继续使用同一个 PR，不另开平行实现；
+- formal result Pending 时不得填 0、partial W&B、ETA 或 winner；
+- first-generation GDR D1、Bounded recurrence、Effective-State successor 必须保持不同科学对象；
+- 如果发现 scientific semantics 需要 owner 决策，停止该科学分支并用 ELI5 + 专业版告诉我；纯工程问题自行解决；
+- 每次推进后把证据写回 Markdown 邻近 checkbox；
+- 每轮用 ELI5 中文汇报：做了什么、Milestone 1/2 进度、下一步、是否需要我判断。
+
+目标 Milestone 1：PRE_RESULT_PAGE_PUBLISHED / FORMAL_RESULT_PENDING。
+目标 Milestone 2：只有上游正式实验 sealed 后，FORMAL_RESULT_PUBLISHED。
+
+现在开始继续推进，不要只复述计划。
+```
+
+## 23. 执行日志格式
+
+每次重要推进在本节末尾追加一条；不要覆盖历史证据。
+
+```text
+### YYYY-MM-DD HH:MM +08
+BaseModel main: <sha>
+PR head before: <sha>
+PR head after: <sha or unchanged>
+OpenEvo #497/#502: <sha>/<sha>
+Checklist items closed: <IDs or section/item text>
+Files changed: <paths>
+Validation: <commands + exact result>
+Browser/provider: <exact state or NOT_EXECUTED>
+Scientific state: <pending/running/sealed>
+Human decision needed: <none or exact question>
+Next safe item: <first remaining item>
+```
+
+进度百分比必须从 checkbox 计算，而不是凭感觉。至少分开：
+
+- `Milestone 1 progress = completed pre-result checkbox / total pre-result checkbox`；
+- `Milestone 2 progress = completed Phase F + final-release checkbox / total`。
+
+## 24. 创建时的冷读快照
+
+- BaseModel `main`: `1b6d13714f672345a086cbc09ec7067cb3dae3a7`。
+- 当前网站存在 Bounded Online Recurrence 页面和 first-generation Gated-Delta D1 页面。
+- BaseModel main 对 `EFFECTIVE_STATE_GDR_LORA_V1` code search：0 matches。
+- BaseModel main 对 `beta_eff` code search：0 matches。
+- 因此本 successor derivation / formal matched experiment 尚未被当前网站独立拥有。
+- overlapping BaseModel open PR search for `Effective-State GDR`：0 results。
+- 本 PR 第一笔只创建计划 authority；没有改 Production source。
+
+如果未来这些事实变化，保留本快照为历史，不把创建时的记录静默改成“当时已经有”。
