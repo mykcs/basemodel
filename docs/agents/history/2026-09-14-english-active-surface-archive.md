@@ -60,3 +60,9 @@ Reusable lesson: when removing an active route class, inventory auxiliary/provid
 Before merge, `main` advanced and changed one active English Gated-Delta route. A byte-level audit compared all 63 archived files against the then-live English tree on `main@dacd2017bd02229f33b19b3f2c8dfb8247f2419d`: all 63 archived files matched current `main`; only one manifest SHA was stale and was updated.
 
 Reusable lesson: an archive created from an earlier base is not complete merely because the archived files still exist. Before removing an active locale from a moving development branch, compare every archived blob against live `main`, absorb any newer locale edits into the inert archive, and update the manifest authority before merge. Tests for retained English metadata should then read the archive snapshot, not require the retired active route path.
+
+## Legacy English redirect follow-up
+
+Production black-box checks later proved that two catch-all attempts did not reliably preserve archived English URLs on this Astro/Vercel site: `/en/:path*` failed for deep paths, while `/en/:path(.*)` failed even for a single segment. Repository tests that only asserted the JSON rule existed were therefore insufficient evidence.
+
+The durable compatibility rule is narrower: derive temporary redirects from the frozen English archive manifest, keep one explicit source for each real retired English page (plus only the necessary one-segment dynamic model/paper routes), and let unknown `/en/...` paths remain 404. Provider HTTP behavior is the acceptance authority for routing semantics; config shape alone is not.

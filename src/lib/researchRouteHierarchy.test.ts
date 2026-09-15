@@ -77,10 +77,10 @@ describe('research URL hierarchy', () => {
     expect(redirectMap.get('/en')?.permanent).toBe(false);
     expect(redirectMap.get('/en/')?.destination).toBe('/');
     expect(redirectMap.get('/en/')?.permanent).toBe(false);
-    const deepEnglishFallback = redirectMap.get('/en/:path(.*)');
-    expect(deepEnglishFallback?.destination).toBe('/:path*');
+    const deepEnglishFallback = redirectMap.get('/en/research/seed-openevo/study/');
+    expect(deepEnglishFallback?.destination).toBe('/research/seed-openevo/study/');
     expect(deepEnglishFallback?.permanent).toBe(false);
-    expect(redirectMap.has('/en/:path*')).toBe(false);
+    expect(redirects.some((item) => item.source.startsWith('/en/') && (item.source.includes(':path') || item.source.includes('(.*)')))).toBe(false);
   });
 
   it('preserves trailing-slash variants for permanent Chinese compatibility redirects', () => {
