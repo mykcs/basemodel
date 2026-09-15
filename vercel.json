@@ -51,6 +51,56 @@
   ],
   "redirects": [
     {
+      "source": "/en/compare",
+      "destination": "/compare/",
+      "permanent": false
+    },
+    {
+      "source": "/en/compare/",
+      "destination": "/compare/",
+      "permanent": false
+    },
+    {
+      "source": "/en/data-status",
+      "destination": "/data-status/",
+      "permanent": false
+    },
+    {
+      "source": "/en/data-status/",
+      "destination": "/data-status/",
+      "permanent": false
+    },
+    {
+      "source": "/en/development",
+      "destination": "/development/",
+      "permanent": false
+    },
+    {
+      "source": "/en/development/",
+      "destination": "/development/",
+      "permanent": false
+    },
+    {
+      "source": "/en/families",
+      "destination": "/families/",
+      "permanent": false
+    },
+    {
+      "source": "/en/families/",
+      "destination": "/families/",
+      "permanent": false
+    },
+    {
+      "source": "/en/guide",
+      "destination": "/guide/",
+      "permanent": false
+    },
+    {
+      "source": "/en/guide/",
+      "destination": "/guide/",
+      "permanent": false
+    },
+    {
       "source": "/en",
       "destination": "/",
       "permanent": false
@@ -61,8 +111,558 @@
       "permanent": false
     },
     {
-      "source": "/en/:path(.*)",
-      "destination": "/:path*",
+      "source": "/en/lab",
+      "destination": "/lab/",
+      "permanent": false
+    },
+    {
+      "source": "/en/lab/",
+      "destination": "/lab/",
+      "permanent": false
+    },
+    {
+      "source": "/en/landscape",
+      "destination": "/landscape/",
+      "permanent": false
+    },
+    {
+      "source": "/en/landscape/",
+      "destination": "/landscape/",
+      "permanent": false
+    },
+    {
+      "source": "/en/landscape/models.json",
+      "destination": "/landscape/models.json",
+      "permanent": false
+    },
+    {
+      "source": "/en/methodology",
+      "destination": "/methodology/",
+      "permanent": false
+    },
+    {
+      "source": "/en/methodology/",
+      "destination": "/methodology/",
+      "permanent": false
+    },
+    {
+      "source": "/en/models/:id",
+      "destination": "/models/:id/",
+      "permanent": false
+    },
+    {
+      "source": "/en/models/:id/",
+      "destination": "/models/:id/",
+      "permanent": false
+    },
+    {
+      "source": "/en/models",
+      "destination": "/models/",
+      "permanent": false
+    },
+    {
+      "source": "/en/models/",
+      "destination": "/models/",
+      "permanent": false
+    },
+    {
+      "source": "/en/papers/:id",
+      "destination": "/papers/:id/",
+      "permanent": false
+    },
+    {
+      "source": "/en/papers/:id/",
+      "destination": "/papers/:id/",
+      "permanent": false
+    },
+    {
+      "source": "/en/papers",
+      "destination": "/papers/",
+      "permanent": false
+    },
+    {
+      "source": "/en/papers/",
+      "destination": "/papers/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/alfworld",
+      "destination": "/research/seed-openevo/flow/alfworld/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/alfworld/",
+      "destination": "/research/seed-openevo/flow/alfworld/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/base-model",
+      "destination": "/research/seed-openevo/flow/base-model/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/base-model/",
+      "destination": "/research/seed-openevo/flow/base-model/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/benchmarks",
+      "destination": "/research/seed-openevo/flow/benchmarks/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/benchmarks/",
+      "destination": "/research/seed-openevo/flow/benchmarks/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow",
+      "destination": "/research/seed-openevo/flow/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/",
+      "destination": "/research/seed-openevo/flow/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/loops",
+      "destination": "/research/seed-openevo/flow/loops/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/loops/",
+      "destination": "/research/seed-openevo/flow/loops/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/openevo",
+      "destination": "/research/seed-openevo/flow/openevo/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/openevo/",
+      "destination": "/research/seed-openevo/flow/openevo/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/sd-lora",
+      "destination": "/research/seed-openevo/flow/sd-lora/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/sd-lora/",
+      "destination": "/research/seed-openevo/flow/sd-lora/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/seed",
+      "destination": "/research/seed-openevo/flow/seed/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/seed/",
+      "destination": "/research/seed-openevo/flow/seed/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/server",
+      "destination": "/research/seed-openevo/flow/server/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/server/",
+      "destination": "/research/seed-openevo/flow/server/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/webshop",
+      "destination": "/research/seed-openevo/flow/webshop/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/flow/webshop/",
+      "destination": "/research/seed-openevo/flow/webshop/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/briefing",
+      "destination": "/research/seed-openevo/study/briefing/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/briefing/",
+      "destination": "/research/seed-openevo/study/briefing/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/briefing/technical-notes",
+      "destination": "/research/seed-openevo/study/briefing/technical-notes/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/briefing/technical-notes/",
+      "destination": "/research/seed-openevo/study/briefing/technical-notes/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/archive",
+      "destination": "/research/seed-openevo/study/capability-exploration/archive/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/archive/",
+      "destination": "/research/seed-openevo/study/capability-exploration/archive/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/first-run",
+      "destination": "/research/seed-openevo/study/capability-exploration/first-run/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/first-run/",
+      "destination": "/research/seed-openevo/study/capability-exploration/first-run/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora",
+      "destination": "/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/",
+      "destination": "/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/gdr-directapply",
+      "destination": "/research/seed-openevo/study/capability-exploration/gdr-directapply/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/gdr-directapply/",
+      "destination": "/research/seed-openevo/study/capability-exploration/gdr-directapply/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration",
+      "destination": "/research/seed-openevo/study/capability-exploration/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/",
+      "destination": "/research/seed-openevo/study/capability-exploration/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/mechanism-1-0",
+      "destination": "/research/seed-openevo/study/capability-exploration/mechanism-1-0/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/mechanism-1-0/",
+      "destination": "/research/seed-openevo/study/capability-exploration/mechanism-1-0/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration",
+      "destination": "/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/",
+      "destination": "/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0",
+      "destination": "/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/",
+      "destination": "/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/openevo-2-0",
+      "destination": "/research/seed-openevo/study/capability-exploration/openevo-2-0/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/openevo-2-0/",
+      "destination": "/research/seed-openevo/study/capability-exploration/openevo-2-0/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/openevo-2-0/report",
+      "destination": "/research/seed-openevo/study/capability-exploration/openevo-2-0/report/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/openevo-2-0/report/",
+      "destination": "/research/seed-openevo/study/capability-exploration/openevo-2-0/report/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/q17-directapply-analysis",
+      "destination": "/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/",
+      "destination": "/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/q17-directapply-frontier",
+      "destination": "/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/",
+      "destination": "/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state",
+      "destination": "/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/",
+      "destination": "/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/sd-lora-equivalence",
+      "destination": "/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/",
+      "destination": "/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/sd-lora-future-learning",
+      "destination": "/research/seed-openevo/study/capability-exploration/sd-lora-future-learning/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/sd-lora-future-learning/",
+      "destination": "/research/seed-openevo/study/capability-exploration/sd-lora-future-learning/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/sd-lora-history-novelty",
+      "destination": "/research/seed-openevo/study/capability-exploration/sd-lora-history-novelty/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/sd-lora-history-novelty/",
+      "destination": "/research/seed-openevo/study/capability-exploration/sd-lora-history-novelty/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/sd-lora-history",
+      "destination": "/research/seed-openevo/study/capability-exploration/sd-lora-history/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/sd-lora-history/",
+      "destination": "/research/seed-openevo/study/capability-exploration/sd-lora-history/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/sd-lora-present-function",
+      "destination": "/research/seed-openevo/study/capability-exploration/sd-lora-present-function/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/sd-lora-present-function/",
+      "destination": "/research/seed-openevo/study/capability-exploration/sd-lora-present-function/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/sd-lora-scaling",
+      "destination": "/research/seed-openevo/study/capability-exploration/sd-lora-scaling/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/sd-lora-scaling/",
+      "destination": "/research/seed-openevo/study/capability-exploration/sd-lora-scaling/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/stage1-evolution",
+      "destination": "/research/seed-openevo/study/capability-exploration/stage1-evolution/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/stage1-evolution/",
+      "destination": "/research/seed-openevo/study/capability-exploration/stage1-evolution/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/stage1-previous",
+      "destination": "/research/seed-openevo/study/capability-exploration/stage1-previous/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/stage1-previous/",
+      "destination": "/research/seed-openevo/study/capability-exploration/stage1-previous/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/stage2-256-window",
+      "destination": "/research/seed-openevo/study/capability-exploration/stage2-256-window/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/stage2-256-window/",
+      "destination": "/research/seed-openevo/study/capability-exploration/stage2-256-window/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/stage2-7b-analysis",
+      "destination": "/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/",
+      "destination": "/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/stage2-ceiling",
+      "destination": "/research/seed-openevo/study/capability-exploration/stage2-ceiling/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/stage2-ceiling/",
+      "destination": "/research/seed-openevo/study/capability-exploration/stage2-ceiling/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/text-memory",
+      "destination": "/research/seed-openevo/study/capability-exploration/text-memory/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/text-memory/",
+      "destination": "/research/seed-openevo/study/capability-exploration/text-memory/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora",
+      "destination": "/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/",
+      "destination": "/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/design",
+      "destination": "/research/seed-openevo/study/design/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/design/",
+      "destination": "/research/seed-openevo/study/design/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study",
+      "destination": "/research/seed-openevo/study/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/",
+      "destination": "/research/seed-openevo/study/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/results",
+      "destination": "/research/seed-openevo/study/results/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/results/",
+      "destination": "/research/seed-openevo/study/results/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/results/3b-minimax-analysis",
+      "destination": "/research/seed-openevo/study/results/3b-minimax-analysis/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/results/3b-minimax-analysis/",
+      "destination": "/research/seed-openevo/study/results/3b-minimax-analysis/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/results/3b-self-analysis",
+      "destination": "/research/seed-openevo/study/results/3b-self-analysis/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/results/3b-self-analysis/",
+      "destination": "/research/seed-openevo/study/results/3b-self-analysis/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/results/7b-minimax-analysis",
+      "destination": "/research/seed-openevo/study/results/7b-minimax-analysis/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/results/7b-minimax-analysis/",
+      "destination": "/research/seed-openevo/study/results/7b-minimax-analysis/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/results/7b-self-analysis",
+      "destination": "/research/seed-openevo/study/results/7b-self-analysis/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/results/7b-self-analysis/",
+      "destination": "/research/seed-openevo/study/results/7b-self-analysis/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/results/four-arm-analysis",
+      "destination": "/research/seed-openevo/study/results/four-arm-analysis/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/results/four-arm-analysis/",
+      "destination": "/research/seed-openevo/study/results/four-arm-analysis/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/run",
+      "destination": "/research/seed-openevo/study/run/",
+      "permanent": false
+    },
+    {
+      "source": "/en/research/seed-openevo/study/run/",
+      "destination": "/research/seed-openevo/study/run/",
+      "permanent": false
+    },
+    {
+      "source": "/en/workspace",
+      "destination": "/workspace/",
+      "permanent": false
+    },
+    {
+      "source": "/en/workspace/",
+      "destination": "/workspace/",
       "permanent": false
     },
     {
