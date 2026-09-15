@@ -95,6 +95,8 @@ describe('Gated-Delta SD-LoRA publication split', () => {
     expect(snapshot.source.branch).toContain('gated-delta-sd-lora-event-write');
     expect(snapshot.source.head).toMatch(/^[0-9a-f]{40}$/);
     expect(snapshot.checkedAt).toMatch(/^2026-09-\d{2}T\d{2}:\d{2}:\d{2}\+08:00$/);
-    expect(current).toContain('这是网站发布快照');
+    expect(current).toContain('这是网站上的研究快照');
+    expect(current).toContain('如果上游科学证据发生变化，会先核对新的证据来源和结论边界，再更新页面');
+    expect(current).not.toContain('正式发布前仍会重新读取上游 scientific head');
   });
 });
