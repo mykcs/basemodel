@@ -45,11 +45,12 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
     </div>
     <p class="sdlora-v2__hero-boundary">
       {t(
-        '关键边界也很明确：这条 v2 仍然逐个保留历史 component，只改变跨 component 的归约规则；固定 rank128 的 Bounded Online Recurrence 是另一条独立实验线。',
+        '关键边界也很明确：这条 v2 仍然逐个保留历史 component，只改变跨 component 的归约规则；固定 rank128 的 Bounded Online Recurrence 是另一条独立实验线。约 37× 不是这个 v2 的结果，它属于另一条 Bounded Online Recurrence 的封存窗口。',
         'The boundary is equally important: this v2 still retains historical components individually and changes the cross-component reduction rule; fixed-rank128 Bounded Online Recurrence is a separate experimental line.',
       )}
     </p>
     <nav class="sdlora-v2__hero-links" aria-label={t('本页证据', 'Evidence for this page')}>
+      <a href={p('/research/seed-openevo/study/capability-exploration/sd-lora-history/')}>{t('先看两条加速路线为什么不同', 'First: why the two acceleration lines differ')}</a>
       <a href={evidenceHref}>{t('公开结果 JSON', 'Public result JSON')}</a>
       <a href={planHref}><ExternalBrandMark href={planHref} />{t('上游实验计划与终态', 'Upstream experiment plan and terminal state')}</a>
       <a href={p('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/')}>{t('另一条线：Bounded Online Recurrence', 'Other line: Bounded Online Recurrence')}</a>
