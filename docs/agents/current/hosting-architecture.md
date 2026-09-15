@@ -14,9 +14,9 @@ GitHub = source of truth
 working PR / development branch
   -> public hosted GitHub Actions preflight
   -> deterministic gate + shared risk planner
-  -> full work uses 4 independent Chromium shards; bounded work uses focused coverage
+  -> full work uses 8 independent Chromium shards; bounded work uses one focused runner; non-UI work uses zero browser runners
   -> no Git-integrated Vercel acceptance Preview while iterating
-  -> when human visual review is needed: local/Agent static build -> prebuilt upload to a dedicated non-Git-connected review Preview
+  -> when human visual review is needed: manual GitHub-hosted Fast Review build -> prebuilt upload to a dedicated non-Git-connected review Preview
   -> review Preview is non-authoritative, non-Production, and never moves `ci/vercel-gate-final`
 
 final non-draft current-base candidate
@@ -45,9 +45,9 @@ Public hosted GitHub Actions is the ordinary **preflight compute** surface, whil
 
 ## Public GitHub Actions preflight
 
-`.github/workflows/public-pr-ci.yml` runs on `pull_request` with `contents: read`, no secrets, immutable-SHA-pinned Actions, exact PR-head binding, and same-PR auto-cancellation. Full/global browser work uses four independent public Linux runners with the repository timing scheduler and one Playwright worker per shard; the browser runtime is the digest-pinned official Playwright 1.62.1 Noble image. The workflow shares `scripts/vercel-ui-plan.ts` and `scripts/ci-ui-gate.mjs`, so it does not own a weaker provider-specific risk taxonomy.
+`.github/workflows/public-pr-ci.yml` runs on `pull_request` with `contents: read`, no secrets, immutable-SHA-pinned Actions, exact PR-head binding, and same-PR auto-cancellation. A dependency-free planning job allocates browser compute before runner start: zero runners for skip, one for focused, and eight independent public Linux runners for full/global work; every browser runner re-evaluates the same plan before npm/browser spend. Full work uses the repository timing scheduler with one Playwright worker per shard; the browser runtime is the digest-pinned official Playwright 1.62.1 Noble image. The workflow shares `scripts/vercel-ui-plan.ts` and `scripts/ci-ui-gate.mjs`, so it does not own a weaker provider-specific risk taxonomy.
 
-Qualification run `34261768688` on exact head `b1551fffefa9061530a688e48343ea21e4ab0670` covered all 204 canonical Chromium identities exactly once as 51/51/52/50 and passed every shard with retries=0. The slowest browser acceptance step was 191 s versus about 402 s for the representative Vercel full-browser tail, a measured critical-path reduction of about 52.5%. The slowest complete browser job including container/setup overhead was 227 s. This evidence authorizes the public GHA lane as automatic early feedback; it does **not** replace the required Vercel final status.
+The 2026-09-15 scheduler qualification refreshed the current canonical suite to 197 Chromium identities and held the acceptance contract fixed while testing 4/6/8 shards. Runs `34986898313`, `34987545968`, and `34988052276` all covered 197/197 identities exactly once with retries=0; their maximum browser-step times were 138 s, 102 s, and 80 s, and workflow wall times were 209 s, 159 s, and 139 s. The frozen selection rule chooses the smallest shard count within 10% of the fastest result, so full/global work uses 8 shards. This evidence authorizes only the public-GHA preflight topology; it does **not** replace the required Vercel final status.
 
 ## Exact-head acceptance ownership
 
@@ -85,7 +85,7 @@ The retained `.github/workflows/self-hosted-ci.yml` remains manual `workflow_dis
 ```text
 repository/UI batch updated
 -> public GHA preflight supplies early deterministic/browser evidence
--> optional fast human-review Preview: local static build -> prebuilt non-Git-connected upload -> owner inspection
+-> optional fast human-review Preview: GitHub-hosted manual build -> prebuilt non-Git-connected upload -> owner inspection
 -> continue edits without touching the final-gate ref
 -> exact PR head/current base receives required Vercel success
 -> inspect the authoritative final Preview route/metadata when the change is user-facing

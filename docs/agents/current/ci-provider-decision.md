@@ -9,7 +9,7 @@ Human-facing projection: [`/development/`](/development/) explains the same arch
 
 ## One-sentence decision
 
-**Use public GitHub Actions as the automatic, read-only, four-shard PR preflight; keep Vercel Pro as the only required final-candidate acceptance and Preview/Production authority; spend zero Vercel compute on ordinary working pushes; keep the Mac, CircleCI, and Cloudflare out of the ordinary critical path.**
+**Use public GitHub Actions as the automatic, read-only, risk-adaptive PR preflight (`0` browser runners for skip, `1` for focused, `8` for full); keep Vercel Pro as the only required final-candidate acceptance and Preview/Production authority; spend zero Vercel compute on ordinary working pushes; keep the Mac, CircleCI, and Cloudflare out of the ordinary critical path.**
 
 The optimization target is not "find the provider with the largest free quota." It is:
 
@@ -22,7 +22,7 @@ ordinary research/fix/docs/feature PR push
   -> public GitHub Actions preflight
        -> deterministic repository gate
        -> risk-based browser planner
-       -> full/global work: 4 independent Chromium shards, 1 worker each
+       -> full/global work: 8 independent Chromium shards, 1 worker each
        -> bounded work: focused mapped coverage
   -> zero ordinary Vercel Preview compute
   -> Mac is optional acceleration/control only, never required CI
@@ -97,7 +97,7 @@ Do not re-enable automatic CircleCI merely because credits refill. Re-enable it 
 
 Making the repository public changed the cost/performance trade-off without changing the deployment trust boundary. Standard public GitHub-hosted runners can now provide parallel PR feedback without consuming the private-repository Actions minute budget, while Vercel still owns the real Preview/Production environment and the required merge status.
 
-The accepted qualification on exact head `b1551fffefa9061530a688e48343ea21e4ab0670` used workflow run `34261768688` with a digest-pinned Playwright 1.62.1 Noble image, read-only repository permission, no secrets, `pull_request` rather than `pull_request_target`, retries=0, and one Playwright worker per runner. The canonical 204 Chromium identities were assigned exactly once across four independent shards as `51 + 51 + 52 + 50`. All four passed. Browser acceptance steps were 114 s, 113 s, 182 s, and 191 s; the slowest complete browser job was 227 s including container/setup overhead. The prior representative Vercel full-browser tail was about 402 s, so the measured browser-step critical path fell by about 52.5%, exceeding the preregistered 35% improvement threshold.
+The current accepted scheduler qualification uses the digest-pinned Playwright 1.62.1 Noble image, read-only repository permission, no secrets, `pull_request` rather than `pull_request_target`, retries=0, and one Playwright worker per runner. On 2026-09-15 the current canonical suite contained 197 Chromium identities. Fresh exact-head runs compared 4 shards (`34986898313`: max browser step 138 s, workflow 209 s), 6 shards (`34987545968`: 102 s, 159 s), and 8 shards (`34988052276`: 80 s, 139 s). Every run covered all 197 identities exactly once with zero missing/duplicate tests. The preregistered rule selects the smallest shard count within 10% of the fastest qualified browser-step time, so 8 shards is the steady-state full/global setting. This is about 58% faster than the earlier ~191 s public-GHA browser tail. Skip/focused work does not pay for those eight runners: the dependency-free planner allocates zero or one before browser runners start.
 
 This does **not** make GitHub Actions a second merge authority. Its job is early, free, parallel evidence:
 
