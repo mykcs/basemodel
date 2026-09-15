@@ -293,3 +293,43 @@ Validation on the task-owned worktree:
 - post-write HPL comparison prompt generated for `flow-server`; this Agent had already seen preference evidence, so it does not claim an independent blind-human comprehension receipt.
 
 No Phase-C generic checkbox is closed from this pilot alone: those rows apply to the complete four-pilot exit. The remaining focus/comparison pilot still depends on reconciling #728, and independent owner/cold-read review remains a separate acceptance layer.
+
+## 15. Focus/comparison pilot — Q17 R127/R128 same-task diagnostic
+
+Live refresh before source write: `main@d3631890f89c0fe62e249c088794b64a0b503f00`, PR #737 `0946e42f403aabfcf1aa7da10e8bfdd6f434acdd`. PR #728 owns `OpenEvoQ17DirectApplyAnalysis.astro` and its W&B publication delta, so the fourth pilot uses the independent active focus owner `/q17-directapply-frontier/` (`OpenEvoQ17AdvisorDiagnostics`) instead of competing for that file.
+
+**Page Expression Brief**
+
+- Reader: a technical reader who has seen the volatile training curve but does not yet know whether R128 actually lost comparable capability.
+- Page role: focused diagnostic result page; it explains one local R127→R128 comparison, not the whole 160-round DirectApply outcome.
+- Starting state: “training score fell 76.1 → 48.9; did the model really lose that much?”
+- Target mental model: the original two rounds used different task samples; on the same frozen 32 tasks the gap is much smaller, and uncertainty still includes no difference.
+- Next action: inspect the aligned same-task measurements, then read the mechanism clues or the completed DirectApply final on its separate owner.
+- Primary path: apparent live-round drop → same-task comparison → inference → claim boundary.
+- Secondary depth: per-metric uncertainty, task transition counts, action-format/entropy clues, exact method, replication and provenance.
+- Semantic shape: focus result plus aligned comparison; use ordinary editorial hierarchy, a compact fact band, and a real table rather than summary cards.
+- Density plan: first screen owns the same-task result and its scientific limit; provenance links move after the primary result instead of competing with the conclusion.
+- Acceptance: 1280×633 and 390×844 first-screen budget, table/shared-axis readability, light/dark, keyboard/focus, no page overflow, current Reader Contract, and targeted diagnostics tests.
+
+Apple first-party guidance is translated here as content priority rather than surface imitation: controls recede behind the result, logically related facts stay grouped, and layout adapts without changing the scientific hierarchy. No Apple typography, glass, marketing hero, or universal card pattern is introduced.
+
+## 16. Q17 focus/comparison pilot — implementation and automated acceptance
+
+The fourth pilot now has a real content-first implementation on the independent `q17-directapply-frontier` owner, with no overlap against PR #728's Q17 W&B files.
+
+- The first conclusion is now the comparable observation: **同题重测只差 4.18 分，远小于训练曲线的掉分**.
+- The first layer aligns `76.1 → 48.9` (different live-round task samples), `63.58 → 59.41` (same 32 tasks), and `10/32 → 8/32` (fully solved) in the existing `research-fact-band` semantic primitive.
+- The `95%` uncertainty boundary remains in the visible lede and still includes no difference; the page does not upgrade this local diagnostic to global forgetting.
+- Provenance links moved below the aligned result instead of competing with the first conclusion.
+- The full comparison table, task transitions, interface/entropy clues, final-panel boundary, method details and independent GPU replication remain available in their original scientific roles.
+
+Exact local acceptance on the isolated result-pilot worktree:
+
+- focused semantic / primitive / Reader Contract Vitest: **17 / 17 PASS**;
+- `npm run check`: **579 files, 0 errors** (2 existing deprecation hints);
+- focused Q17 + full Reader Contract Chromium: **10 / 10 PASS**;
+- `npm run audit:human-feedback`: **PASS**;
+- static build: **262 pages PASS**; heading audit **262 / 262 PASS**; external-brand-link audit **PASS**;
+- desktop `1280×633` keeps the lede and three aligned facts in the first viewport; phone `390×844` keeps the result + caveat visible without page overflow; light/dark and keyboard focus checks pass.
+
+A repository-owned zero-context cold-read prompt was generated for `capability-q17-frontier`, but this Agent had already read the preference evidence. It therefore does **not** mark the independent cold-read checkbox complete. The four pilots now have implementation + automated evidence; Phase C remains open until an independent phone/desktop cold read (and review Preview when required) satisfies the human exit gate.
