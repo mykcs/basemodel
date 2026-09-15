@@ -236,4 +236,22 @@ Two semantically different pilots now support a small vocabulary without creatin
 3. **Connected mechanism (`figure` / ordered topology)** — use when sequence, side input, branch, join or return is part of the meaning; static topology must survive without animation.
 4. **Editorial explanation** — ordinary prose remains prose unless choice, operation, comparison, status isolation or topology gives a container a semantic job.
 
-This closes the Phase-B “define the smallest reusable composition primitives” item. It does **not** authorize a generic `Card`, `Hero`, or `AppleSection` factory. Shared tokens/components remain pending until another pilot demonstrates a repeated semantic need that local HTML/CSS cannot express cleanly.
+This closes the Phase-B “define the smallest reusable composition primitives” item. It does **not** authorize a generic `Card`, `Hero`, or `AppleSection` factory. The fact-frame relationship is now promoted as one shared CSS primitive after both pilots proved the same semantic need. No new global token was added because existing `--line`, `--muted`, and `--ink` already express it; other comparison/topology forms remain local until reuse is independently proved.
+
+## 16. Phase-B shared primitive proof — Flow + SD-LoRA
+
+The second semantically different pilot proved one reusable content relationship without proving a universal page template: both the Flow gateway and SD-LoRA mechanism page need a compact semantic `dl` that keeps a small set of facts on a shared axis. The shared owner is now `src/styles/components/research-content-primitives.css`, using the single class `.research-fact-band`; each page still owns its own H1, copy, topology, comparison form, evidence and route-specific layout.
+
+No new global visual token was added. Both pilots already express the needed treatment with canonical `--line`, `--muted`, and `--ink`; inventing a second spacing/color token set would add vocabulary without adding meaning. This closes the Phase-B token audit by deliberate reuse rather than token proliferation.
+
+The primitive is protected by `src/lib/researchContentPrimitives.test.ts`, which verifies canonical import order, semantic `dl` adoption in both pilot families, different column counts (5 vs 4), and the absence of generic card/hero/background/shadow behavior. Local duplicate fact-band CSS was removed from both pilot components.
+
+Validation after promotion:
+
+- targeted Vitest: **26 / 26 PASS**;
+- `npm run check`: **576 files, 0 errors, 0 warnings** (2 existing deprecation hints);
+- combined Flow + SD-LoRA Chromium suite: **20 / 20 PASS** after a real first-screen regression was caught and repaired;
+- the regression was caused by making mobile fact rows too compact, which let a second H2 enter the phone first screen; the shared primitive now preserves the meaningful row height instead of loosening the Reader Contract;
+- phone/desktop first-screen budgets, light/dark, reduced motion, topology, and page-level horizontal overflow gates all remain green.
+
+Apple-guidance translation remains behavioral rather than cosmetic: “simplicity” means exactly enough context, hierarchy keeps the primary object obvious, and shared UI should support content rather than compete with it. The result is one narrow relationship primitive, not an Apple-looking card system.

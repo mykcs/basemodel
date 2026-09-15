@@ -31,7 +31,7 @@ describe('human-readable product language contract', () => {
 
   it('keeps the first-screen subject concrete in both locales without turning instructions into the H1', () => {
     expect(missionHero).toContain("t('SEED 与 OpenEvo：ALFWorld / WebShop 实验', 'SEED vs OpenEvo: ALFWorld / WebShop experiments')");
-    expect(missionHero).toContain('class="mission-hero__frame"');
+    expect(missionHero).toContain('class="mission-hero__frame research-fact-band"');
     expect(missionHero).toContain("t('比较条件', 'Matched conditions')");
     expect(missionHero).toContain("t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')");
     expect(missionHero).toContain("href={p('/research/seed-openevo/study/briefing/')}");
