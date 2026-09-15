@@ -1,6 +1,6 @@
 # Exact-head release closeout protocol
 
-Last reviewed: **2026-09-12**
+Last reviewed: **2026-09-15**
 
 Status: **current**
 Audience: coding Agents, review Agents, integration Agents, release Agents
@@ -251,6 +251,8 @@ AND the required build path actually executed
 For every gate Preview that is intentionally triggered, `scripts/vercel-ignore-build.mjs` must continue into real acceptance without relying on `VERCEL_GIT_PULL_REQUEST_ID`; that variable was absent at the ignore step in a real open-PR deployment. `[vercel-preview]` is not a build/skip requirement. A PR acceptance claim still requires the required build path to have executed on the exact candidate SHA; a green outer status attached to an ignored/canceled provider object is not equivalent evidence.
 
 Do not add provider exceptions to compensate for a release-topology mistake. Fix the candidate topology so the provider sees the intended product diff and the intended opt-in on the same acceptance identity.
+
+If the exact PR head already has a successful required provider status but GitHub still reports that the required check is `expected` or refuses the merge for that check, do **not** reflexively rerun the provider. Re-read live `main`, `main...head` ancestry, PR mergeability/mergeable-state, and the repository's strict current-base requirement first. A PR that became **behind** can surface as an unsatisfied/expected required check even while the old head status itself is green; refresh the candidate onto current base, then request fresh exact-head acceptance for the new head. Treat the error wording as a symptom until current-base identity is proven.
 
 ### 6.3 Keep one live candidate through independent base drift
 

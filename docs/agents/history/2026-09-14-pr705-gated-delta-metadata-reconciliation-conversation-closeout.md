@@ -139,3 +139,61 @@ Do not freeze the PR head, merge SHA, current `main` SHA, deployment identifiers
 ## Long-term memory boundary
 
 No account-level long-term ChatGPT memory write is claimed by this closeout. The durable project rules already live in the repository's current policy owners and concrete route regression tests; this file adds historical activation evidence and a monitoring use-site witness. Current repository/scientific authority remains stronger than any remembered summary.
+
+## 2026-09-15 final follow-up: lifecycle wording, authority resolution, and false-complete prevention
+
+The final continuation exposed three additional reusable gaps after the 4/4 publication and metadata repair were already green. These are appended here because they belong to the same Gated-Delta publication lifecycle; creating another near-duplicate retrospective would make the next Agent choose between overlapping histories.
+
+### F. “Result correct” was not yet “publication complete”
+
+The page body, route metadata, exact-head acceptance, merge, and Production result were already correct, and the work was reported as 100% complete. A later full-surface cold read found that the provenance footer still said the upstream scientific head would be refreshed “before release”. The page was already in Production, so the sentence was factually stale even though the scientific numbers and claim boundary were correct.
+
+This is a repeated **false-complete family**: completion was inferred from the main result surfaces before every reader-facing lifecycle surface had been checked. The durable fix is now in `experiment-result-publication-workflow.md`: body + metadata + provenance/status wording + active route/locale topology form one publication lifecycle check. The concrete Gated-Delta unit/browser tests already reject the stale pre-release phrase.
+
+### G. PR prose is not the scientific state machine
+
+During the moving D1 execution, the upstream scientific PR body lagged the exact execution plan/receipts. Later, the branch tip also advanced beyond the immutable result-producing evidence because governance/integration commits were added. Reading only the PR body or mechanically following the newest branch SHA would have produced the wrong publication identity.
+
+The durable rule is now explicit in `scientific-state-provenance.md`: resolve exact scientific artifacts on the operative head, then distinguish immutable execution/evidence provenance from later integrated/current authority. PR prose remains coordination metadata.
+
+### H. `required check expected` can be a stale-base symptom
+
+A docs-only closeout head had a real Vercel success status, yet GitHub still refused merge with a message that the required `Vercel` check was expected. The root cause was not a missing provider run: `main` had advanced, the PR had become behind under strict up-to-date protection, and the old head acceptance no longer satisfied the current-base merge boundary.
+
+The reusable diagnostic is now in `release-closeout-protocol.md`: when head status is green but the required check still appears expected, prove current-base ancestry and mergeability **before** retriggering provider work. Refresh the base first when needed; then obtain fresh acceptance for the new exact head.
+
+### I. Parallel publication work must converge by reader outcome
+
+A second Agent produced an overlapping 4/4 Gated-Delta publication branch while this conversation was also preparing the same reader outcome. The safe response was to cold-read the sibling work, preserve the better scientific/provenance structure, and stop the duplicate PR path once the equivalent publication had already merged.
+
+No new policy was added because the current `scenario-trigger-registry.md` already owns this exact semantic-target check: search parallel PRs/branches by reader outcome before substantial implementation, not only by filename overlap. This incident is coverage evidence that the trigger is necessary.
+
+### J. Monitoring after 100% is read-first, not work-generation
+
+After the final provenance correction reached Production, the correct next state became monitoring-only. Repeated “continue” requests must re-read live authority and repair a concrete regression if one exists, but they must not manufacture a new PR merely to move a percentage counter. The existing monitoring witness in this file remains the use-site rule.
+
+## Final follow-up coverage ledger
+
+| Feedback / failure | Repeated? | Reusable lesson | Canonical destination | Why there |
+| --- | --- | --- | --- | --- |
+| Reported 100% while the Production provenance footer still used pre-release tense | **Yes — false-complete family** | publication completion includes lifecycle/status/provenance copy, not only result body + metadata + green deployment | `experiment-result-publication-workflow.md` + existing Gated-Delta regression tests | workflow owns experiment -> website publication; tests protect the concrete reader surface |
+| Upstream PR body lagged exact D1 execution evidence; later branch tip included non-result governance commits | Known authority-drift family, concretely observed here | PR prose is coordination metadata; resolve exact plan/receipts/results and keep immutable evidence identity separate from later integrated authority | `scientific-state-provenance.md` | scientific provenance owner should be reached before copy is updated |
+| GitHub said required `Vercel` check was expected even though the PR head had Vercel success | New concrete release diagnostic | inspect current-base/behind/mergeability before provider retry; strict stale-base can invalidate old head acceptance | `release-closeout-protocol.md` | exact-head/current-base merge acceptance belongs there |
+| Parallel Agent built the same 4/4 reader outcome | Known parallel-work family; correctly converged | search semantic target, cold-read sibling, choose one survivor, preserve only distinct value | existing `scenario-trigger-registry.md` | rule already exists; no second policy needed |
+| Repeated “continue” after release was actually complete | Repeated owner emphasis | live-read first; if contract is satisfied, report 100% and monitor rather than generate work | existing monitoring witness + website stopping rule | avoids status-driven churn |
+
+## Final future-Agent test
+
+Before calling a moving research publication complete, also ask:
+
+1. Does any active reader-facing footer/callout still promise work “before release” or describe a phase that has already ended?
+2. Am I treating a PR body or mutable branch tip as scientific authority when exact machine/sealed evidence says something else?
+3. If a required check says `expected` despite green exact-head status, did I prove the PR is current-base before spending another provider run?
+4. Did I search for another Agent already shipping the same reader outcome before creating a competing publication PR?
+5. If Production is correct, am I stopping instead of inventing another change just to keep “progress” moving?
+
+## Final temporary-state boundary
+
+This follow-up intentionally does **not** preserve PR numbers, exact SHAs, Vercel deployment IDs/URLs, CI run numbers, temporary worktrees, local ports/PIDs, hourly automation timing, or one monitoring pass's provider state as standing knowledge. Those facts remain reconstructible from Git/provider history.
+
+No new account-level long-term ChatGPT memory write is claimed here. The durable lessons were placed in repository policy/use-site tests; transient execution state was intentionally excluded.

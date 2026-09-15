@@ -1,6 +1,6 @@
 # Scientific-state provenance for public research pages
 
-Last reviewed: **2026-09-07**
+Last reviewed: **2026-09-15**
 
 Status: **current**
 Audience: research, content, UI, review, and release Agents
@@ -23,6 +23,8 @@ actual openevo-experiment checkout / branch / SHA used by the scientific work
 ```
 
 An active scientific branch may intentionally be ahead of default `main`. Do not replace a newer active-branch result with an older default-branch status page merely because `main` is easier to fetch.
+
+A PR title/body/comment is coordination metadata, not scientific-result authority. If PR prose disagrees with the exact plan, receipt, machine result, or sealed evidence on the operative scientific head, read the exact artifacts and use their claim boundary. After that evidence is integrated upstream, keep two identities distinct: the immutable execution/evidence revision that supports the historical measurement and the current integrated authority that now carries or indexes it. Do not mechanically retarget every historical evidence link to a later mutable branch tip just because the branch advanced.
 
 ## Scientific lifecycle state is not one boolean
 
