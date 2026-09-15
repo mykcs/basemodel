@@ -3,19 +3,19 @@ import test from 'node:test';
 import { readFileSync } from 'node:fs';
 import { assignByTiming, listCanonicalTests, parseCanonicalList } from '../scripts/ci-ui-test-list.mjs';
 
-const receipt = JSON.parse(readFileSync(new URL('../scripts/ci-ui-test-timings-202609061200.json', import.meta.url), 'utf8'));
+const receipt = JSON.parse(readFileSync(new URL('../scripts/ci-ui-test-timings-202609152256.json', import.meta.url), 'utf8'));
 
 test('baseline timing receipt is exact and self-identifying', () => {
-  assert.equal(receipt.baseline_commit, '799e78bba9e5d528d86c667f2a4fc4289ed14881');
-  assert.equal(receipt.canonical_test_count, 163);
-  assert.equal(Object.keys(receipt.timings_seconds).length, 163);
+  assert.equal(receipt.baseline_commit, '5003b92a398848a1061c0ad061a7994a9d2e8e37');
+  assert.equal(receipt.canonical_test_count, 197);
+  assert.equal(Object.keys(receipt.timings_seconds).length, 197);
   assert.equal(receipt.execution_contract.playwright_workers, 1);
   assert.equal(receipt.execution_contract.retries, 0);
 });
 
 test('canonical Playwright list is fully covered by the baseline timing receipt', () => {
   const tests = listCanonicalTests();
-  assert.equal(tests.length, 163);
+  assert.equal(tests.length, 197);
   assert.deepEqual(tests.filter((name) => !receipt.timings_seconds[name]), []);
 });
 
@@ -23,8 +23,8 @@ test('two timing-balanced shards cover every canonical test exactly once', () =>
   const tests = listCanonicalTests();
   const result = assignByTiming({ tests, shardTotal: 2, primaryReserveSeconds: 30 });
   assert.deepEqual(result.unknownTests, []);
-  assert.equal(result.assignments.flat().length, 163);
-  assert.equal(new Set(result.assignments.flat()).size, 163);
+  assert.equal(result.assignments.flat().length, 197);
+  assert.equal(new Set(result.assignments.flat()).size, 197);
   assert.deepEqual([...result.assignments.flat()].sort(), [...tests].sort());
   assert.ok(Math.max(...result.loads) - Math.min(...result.loads) < 1);
 });

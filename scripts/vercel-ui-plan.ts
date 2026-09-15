@@ -30,6 +30,7 @@ const HOSTED_GATE_OWNERS = new Set([
   'scripts/ci-public-plan.mjs',
   'scripts/ci-ui-test-list.mjs',
   'scripts/ci-ui-test-timings-202609061200.json',
+  'scripts/ci-ui-test-timings-202609152256.json',
   '.github/workflows/self-hosted-ci.yml',
   '.github/workflows/public-pr-ci.yml',
   '.github/workflows/review-preview.yml',
