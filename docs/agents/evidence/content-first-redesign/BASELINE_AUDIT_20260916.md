@@ -19,9 +19,15 @@ This file is execution evidence for `docs/agents/tasks/BASEMODEL_CONTENT_FIRST_A
 
 ## 2. Human-preference evidence activated before writing
 
-The research-surface `AGENTS.md` requires preference retrieval before the first substantial copy/layout edit. The local execution surface was unavailable during this pass, so the repository command itself has **not** yet been claimed as executed. No substantial page-source rewrite is being credited before that requirement is satisfied.
+The research-surface `AGENTS.md` requires preference retrieval before the first substantial copy/layout edit. After the local execution surface became available, the repository-owned command was executed on the Flow Reader Contract before the first material source rewrite:
 
-The underlying current preference data was nevertheless cold-read through repository source. It already contains the exact failure mechanism the owner repeated in this conversation:
+```text
+npm run feedback:retrieve -- --contract=flow "Apple 内容优先 首屏 视觉中心 卡片化 对象关系 说人话"
+```
+
+The returned preference brief activated the exact failure mechanisms relevant to this task: one primary first-screen task, direct facts before presenter choreography, object-first identity, progressive disclosure, and preservation of scientific boundaries. It also surfaced the prior rejected Apple-surface imitation event.
+
+The same current preference data contains the exact failure mechanism the owner repeated in this conversation:
 
 - a structured preference titled **“一个首屏只承担一个主要理解任务”**;
 - a case titled **“标题命名对象，不主持阅读”**;
@@ -95,36 +101,76 @@ A clean Git merge is not enough; each pilot must re-read overlapping semantic ow
 
 ## 7. Before-screenshot and local-execution status
 
-The task requires representative desktop + phone **before** screenshots and the research `AGENTS.md` requires the repository-owned preference retrieval command before a substantial layout rewrite.
+The local browser/worktree surface is now available and bound to the task-owned checkout. Before the first material Flow rewrite, the repository-owned preference retrieval command ran and task-owned baseline renders were captured at the canonical viewports:
 
-During this pass the authorized Remote Desktop Commander endpoint did not respond to a minimal repository-discovery command. That observation means only that the local browser/worktree execution surface is temporarily unavailable; it is **not** a repository or product failure and it does not justify weakening the requirement.
+- desktop: `1280×633`;
+- phone: `390×844`;
+- route: `/research/seed-openevo/flow/`;
+- source branch: `design/content-first-apple-guided-redesign-20260916`.
 
-Pending before the first material pilot rewrite:
-
-1. run the repository-owned `feedback:retrieve` for the selected pilot Reader Contract;
-2. capture task-owned desktop and phone baseline renders for the selected pilot;
-3. bind the render to the exact #737 head / local worktree rather than a stale server;
-4. only then change the pilot source and perform Phase-A blind cold read before Phase-B preference comparison.
+The screenshots remain temporary review evidence outside the repository. They are intentionally not promoted to standing policy or long-term source assets. The baseline showed the H1 and lede pushed down inside a large rounded full-height surface, with large areas of empty space on both desktop and phone.
 
 ## 8. Phase-A evidence status
 
-Four of the five Phase-A checklist rows now have durable evidence:
+All five Phase-A checklist rows now have durable evidence:
 
 - current main / PR head / current authorities refreshed;
 - bounded 2026-09-03 route inventory reused without falsifying its historical cutoff, and current route drift recorded;
 - visual/content smell inventory created for all four planned pilot families;
-- overlapping PRs classified by semantic ownership.
+- overlapping PRs classified by semantic ownership;
+- representative desktop + phone before renders captured from the exact task-owned Flow route.
 
-The fifth Phase-A row — representative desktop + phone before screenshots — remains pending. Phase A must **not** be marked complete until those exact renders exist.
+Phase A is therefore complete: **10 / 10 weighted points**.
 
-## 9. Next safe action
+## 9. Flow gateway pilot — first implementation loop
 
-When the local/browser execution surface is reachable, start with the **Flow gateway** rather than the Q17 result page:
+The first Flow pilot now tests the program’s core content-shape claim instead of adding another visual skin:
 
-1. run preference retrieval for Reader Contract `flow` with cues around `Apple 内容优先 首屏 视觉中心 卡片化 对象关系`; 
-2. capture `/research/seed-openevo/flow/` at the repository’s canonical desktop and phone viewports;
-3. perform zero-context baseline answers before reading the preference comparison output;
-4. rewrite only the minimum gateway composition needed to prove the design language — likely reducing full-height/card chrome, separating **peer objects / true sequence / evidence** into different semantic forms, while retaining the matched-comparison boundary;
-5. validate Reader Contract, overflow, keyboard/focus, mobile geometry, light/dark themes and current CI planner behavior before expanding to another route.
+- the compact hero no longer uses a full-height rounded panel;
+- the first layer names the actual experiment directly: `SEED 与 OpenEvo：ALFWorld / WebShop 实验`;
+- a semantic `dl` keeps model, methods, tasks, matched conditions and scientific record together in the first comprehension layer;
+- the five equal research-object cards are replaced by a grouped relationship map (`模型 / 学习方法 / 任务环境`);
+- the experiment route stays an ordered list with an explicit connected path;
+- evidence becomes a line-separated ledger rather than another equal-weight card set;
+- the Flow-specific mobile override neutralizes the legacy gradient/shadow only for this compact pilot instead of performing a sitewide CSS rewrite.
 
-Do not touch Q17 result composition until #728 has been reconciled, and do not turn the pilot into a sitewide CSS rewrite.
+The first browser Reader Contract run correctly rejected the initial rewrite because the next `研究对象` heading and extra links entered the first screen. The fix did **not** loosen the budget or re-add empty `100svh` spacing. Instead, a meaningful first-layer experiment frame now occupies that space. Fresh geometry shows only the H1 and one disclosure target in the first viewport at both `1280×633` and `390×844`, while the next section begins below the first screen.
+
+This is the intended gate behavior: when a compact layout exposes too much at once, add or regroup useful information only when it belongs to the first task; do not game the proxy with blank space or higher thresholds.
+
+## 10. Phase-B shared-composition audit status
+
+Two Phase-B rows are now complete:
+
+1. the global shell, research nav, heading rhythm, spacing, radii, borders, elevation, color semantics and disclosure behavior have been audited against the active Flow pilot;
+2. the legacy page-wide cascade has been traced through `v2-closeout.css`, `visual-upgrade.css`, `design-refinement.css`, `final-hardening.css`, `actionable-content.css`, `mobile-composition.css` and `visual-closeout.css`, with canonical `components/global-shell.css` and `components/header.css` loading last.
+
+The pilot has produced candidate composition forms — editorial compact hero, fact `dl`, relationship `dl`, connected `ol`, evidence ledger — but they are **not yet promoted as shared components**. A second semantically different pilot must prove which of these are genuinely reusable before Phase B’s shared-primitive checkbox is closed.
+
+## 11. Next safe action
+
+Finish the Flow pilot validation and preserve its exact evidence, then move to the SD-LoRA mechanism pilot. Q17 result composition remains blocked from direct editing until PR #728 is reconciled. The SD-LoRA pilot must refresh PR #734 first, run its own Reader Contract preference retrieval, and preserve the real five-stage causal topology rather than inheriting the gateway layout.
+
+## 12. Flow pilot validation snapshot
+
+Validation was rerun after the first-screen frame fix on the task-owned worktree.
+
+Repository checks:
+
+- `npm run check`: **575 files, 0 errors, 0 warnings** (2 existing deprecation hints);
+- targeted copy / visual-language / human-feedback / Reader Contract Vitest: **35 / 35 PASS**;
+- `npm run audit:human-feedback`: **PASS** — 26 precedents, 18 preference dimensions, 30 Gold Pairs, 6 reader-contract bindings, 262 public source files;
+- `npm run build`: **262 pages PASS**;
+- static-heading audit: **262 / 262 routes PASS**;
+- external-brand-link audit: **PASS**.
+
+Browser evidence:
+
+- full `site-reader-contracts.spec.ts`: **5 / 5 PASS**, including desktop `1280×633` and phone `390×844` first-screen budgets;
+- focused layout / training-design suite: **6 PASS, 1 expected locale-scope skip** across phone, tablet, desktop, large-desktop dark, dark theme and reduced motion;
+- direct Flow geometry check: zero page-level horizontal overflow on desktop light/dark, phone light/dark and tablet light;
+- desktop and phone first screens each expose one H1 and one Flow-content disclosure target before the next H2 enters view.
+
+The repository-owned blind and preference-comparison cold-read prompts were generated for Reader Contract `flow`. This Agent had already read the preference evidence before implementation, so it does **not** self-certify an independent blind-review receipt. That human/independent-review criterion remains open for the pilot exit gate.
+
+One local browser check for the archived `/en/**` training-design compatibility redirect cannot reproduce Vercel provider redirects through the repository static server. The active Chinese Flow route, dark/reduced-motion behavior and layout checks pass; the provider-owned archived-route redirect remains a release/provider concern and was not weakened or rewritten here.

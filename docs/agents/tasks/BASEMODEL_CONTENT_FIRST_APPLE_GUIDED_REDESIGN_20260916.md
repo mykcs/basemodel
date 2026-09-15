@@ -303,16 +303,16 @@ The percentages below are the reporting authority for the scheduled hourly conti
 
 ### Phase A — Baseline audit and conflict map — **10%**
 
-- [ ] Refresh `main`, open PRs, exact route owners and current design/copy authority.
-- [ ] Reuse the existing SEED × OpenEvo route inventory; update only where current route truth has drifted.
-- [ ] Generate a visual/content smell inventory: first-screen overload, detached controls, card misuse, comparison-without-shared-axis, sequence-without-flow, raw provenance too early, copy meta-talk, mobile compression.
-- [ ] Map overlapping open PRs by semantic route owner; classify independent / stack / wait / reconcile.
-- [ ] Record representative before screenshots for desktop + phone on pilot routes without promoting temporary screenshots to standing policy.
+- [x] Refresh `main`, open PRs, exact route owners and current design/copy authority.
+- [x] Reuse the existing SEED × OpenEvo route inventory; update only where current route truth has drifted.
+- [x] Generate a visual/content smell inventory: first-screen overload, detached controls, card misuse, comparison-without-shared-axis, sequence-without-flow, raw provenance too early, copy meta-talk, mobile compression.
+- [x] Map overlapping open PRs by semantic route owner; classify independent / stack / wait / reconcile.
+- [x] Record representative before screenshots for desktop + phone on pilot routes without promoting temporary screenshots to standing policy.
 
 ### Phase B — Shared composition primitives and token audit — **10%**
 
-- [ ] Audit current global shell, research nav, headings, spacing, typography, radii, borders, elevation, color semantics and disclosure patterns.
-- [ ] Identify which legacy CSS layers still override canonical owners on active routes.
+- [x] Audit current global shell, research nav, headings, spacing, typography, radii, borders, elevation, color semantics and disclosure patterns.
+- [x] Identify which legacy CSS layers still override canonical owners on active routes.
 - [ ] Define the smallest reusable composition primitives needed by the pilots; no generic component factory.
 - [ ] Add/adjust shared tokens only when multiple pilots need the same semantic treatment.
 - [ ] Protect the new primitives with structural/unit tests where useful.

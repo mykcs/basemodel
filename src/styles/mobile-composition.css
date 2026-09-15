@@ -49,6 +49,12 @@
     box-shadow: 0 10px 26px color-mix(in srgb, var(--ink) 5%, transparent);
   }
 
+  body[data-reader-contract-id='flow'] .site-main .mission-hero.mission-hero--compact .mission-hero__copy {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
   body .site-main .mission-hero__eyebrow {
     width: fit-content;
     margin: 0;
