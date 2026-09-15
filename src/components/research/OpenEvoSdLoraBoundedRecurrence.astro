@@ -22,6 +22,7 @@ const q0Href = `${sourceBase}/${source.q0CloseoutPath}`;
 const q1Href = `${sourceBase}/${source.q1CloseoutPath}`;
 const lineageHref = `https://github.com/${lineage.repository}/blob/${lineage.commit}/${lineage.path}`;
 const stableHref = p(`${root}sd-lora-equivalence/`);
+const successorHref = p(`${root}bounded-effective-state-gdr/`);
 const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
 ---
 <article class="bounded" data-copy-review data-sd-lora-bounded-recurrence>
@@ -49,6 +50,7 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
       <a href={q1Href}><ExternalBrandMark href={q1Href} />{t('Q1 最终 closeout', 'Q1 final closeout')}</a>
       <a href={lineageHref}><ExternalBrandMark href={lineageHref} />{t('两条 SD-LoRA 线索索引', 'Two-line SD-LoRA lineage index')}</a>
     </nav>
+    <p class="bounded__next-question"><a href={successorHref}>{t('下一问：固定 rank128 以后，怎样控制每次新经验写多强？→', 'Next: after fixing rank128, how strongly should each new experience be written? →')}</a></p>
   </header>
 
   <section class="bounded__section" aria-labelledby="lineage-title">

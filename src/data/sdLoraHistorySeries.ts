@@ -5,7 +5,8 @@ export type SdLoraHistorySeriesRoute =
   | 'sd-lora-history-novelty'
   | 'sd-lora-present-function'
   | 'sd-lora-future-learning'
-  | 'sd-lora-bounded-state';
+  | 'sd-lora-bounded-state'
+  | 'bounded-effective-state-gdr';
 
 export const SD_LORA_HISTORY_OVERVIEW_ROUTE = 'sd-lora-history' as const;
 
@@ -44,6 +45,11 @@ export const SD_LORA_HISTORY_SERIES = [
     route: 'sd-lora-bounded-state', number: '07',
     title: { zh: 'Bounded Online Recurrence 把历史固定在 rank128', en: 'Bounded Online Recurrence keeps history at rank128' },
     summary: { zh: 'R150–R159 连续更新里，历史状态始终 rank128、每轮新更新 rank8；行为 gate 全部 PASS，同轮 Vanilla trainer 对比平均约快 37×。', en: 'Across recurrent R150–R159 updates, the historical state stays rank128 and each new update is rank8; behavior gates pass, with about 37× mean trainer speedup versus same-round Vanilla.' },
+  },
+  {
+    route: 'bounded-effective-state-gdr', number: '08',
+    title: { zh: '固定 rank128 以后，怎样控制新经验写多强？', en: 'After fixing rank128, how strongly should new experience be written?' },
+    summary: { zh: '把 GDR 的控制对象从 LoRA factor 坐标改成 effective state / effective write；160 轮正式配对实验结果仍 Pending。', en: 'Move the GDR control object from LoRA factor coordinates to effective state/write; the formal 160-round matched result remains Pending.' },
   },
 ] as const satisfies readonly {
   route: SdLoraHistorySeriesRoute;
