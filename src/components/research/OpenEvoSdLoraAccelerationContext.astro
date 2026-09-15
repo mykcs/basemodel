@@ -2,7 +2,7 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import { SD_LORA_SCALING_POINTS } from '../../data/sdLoraScaling';
-import { SD_LORA_V2_LOCAL, SD_LORA_V2_WEBSHOP } from '../../data/sdLoraV2Outcome';
+import { SD_LORA_STRICT_ACCELERATION, SD_LORA_V2_LOCAL, SD_LORA_V2_WEBSHOP } from '../../data/sdLoraV2Outcome';
 import {
   SD_LORA_BOUNDED_RECURRENCE_RESULT as bounded,
   SD_LORA_BOUNDED_RECURRENCE_SOURCE as boundedSource,
@@ -47,6 +47,18 @@ const rank128Href = `${repoRoot}/blob/${boundedSource.commit}/docs/evidence/q17-
       <li><span>01</span><strong>{t('先确认慢在哪里', 'Locate the slowdown')}</strong><p>{t('固定训练负载下，历史 LoRA 分量越多，前向与反向传播越慢。', 'Under a fixed workload, more historical components make forward/backward slower.')}</p><a href={scalingHref}>{t('查看扩展性测量 →', 'Open scaling evidence →')}</a></li>
       <li><span>02</span><strong>Stable Reduction</strong><p>{t('历史 LoRA 分量继续逐个保留，只把跨分量的合并方式做得更稳定、更适合分块计算。', 'Historical components remain individually retained; cross-component reduction becomes stable and chunk-friendly.')}</p></li>
       <li><span>03</span><strong>Bounded Online Recurrence</strong><p>{t('历史表示本身改成固定 rank128；每轮学 rank8 新更新，再折回 rank128。', 'History itself becomes fixed rank128; each round learns rank8 and folds back to rank128.')}</p></li>
+    </ol>
+  </section>
+
+  <section class="context-block" aria-labelledby="accel-confusion-title">
+    <div class="context-heading"><span>COMMON</span><div>
+      <h2 id="accel-confusion-title">{t('为什么两个并发 Agent 一开始很容易被认为在做同一件事', 'Why two concurrent Agents initially looked like they were doing the same thing')}</h2>
+      <p>{t('两条工作线都继承了同一个现实问题，名字里也都出现 SD-LoRA 和“加速”；聊天里还把这一大类松散地简称成 VR。只看标题，很容易把其中一条误当成另一条的后续。真正要看的是：改了什么、历史怎样保存、实验合同允许说什么。', 'Both worklines inherited the same practical problem and both used SD-LoRA plus acceleration in their names; the conversation also loosely called the family VR. Labels alone therefore made one line look like the continuation of the other. The real distinction is what changes, how history is represented, and what each experiment contract permits us to claim.')}</p>
+    </div></div>
+    <ol class="selection-timeline">
+      <li><span>01</span><div><strong>{t('共同祖先：我们先试过“算法不变，只把它算快”', 'Shared ancestor: first try to keep the algorithm unchanged and only compute it faster')}</strong><p>{t(`Grouped / batched 版本在同一份 R149 工作量上把 trainer 从 ${SD_LORA_STRICT_ACCELERATION.vanillaSeconds.toFixed(0)} 秒降到 ${SD_LORA_STRICT_ACCELERATION.fastBatchedSeconds.toFixed(0)} 秒，约 ${SD_LORA_STRICT_ACCELERATION.speedup.toFixed(2)}×；但 BF16 backward 的累加顺序改变以后，训练轨迹也改变，因此严格等价 successor 搜索按预注册规则关闭。`, `Grouped / batched execution reduced trainer time on the same R149 workload from ${SD_LORA_STRICT_ACCELERATION.vanillaSeconds.toFixed(0)} s to ${SD_LORA_STRICT_ACCELERATION.fastBatchedSeconds.toFixed(0)} s, about ${SD_LORA_STRICT_ACCELERATION.speedup.toFixed(2)}×. But changing BF16 backward accumulation changed the learning trajectory, so the strict-equivalence successor search closed under its preregistered rules.`)}</p></div></li>
+      <li><span>02</span><div><strong>{t('路线 A 接受“这是新 treatment”，继续保留增长历史', 'Line A accepts a new treatment while retaining the growing history')}</strong><p>{t('Stable Reduction 不再假装逐 bit 复制 Vanilla，而是把新的 reduction semantics 明确写出来；历史 component 仍逐个存在，所以它解决的是“历史继续增长时怎样算得更快”。', 'Stable Reduction stops pretending to be a bitwise copy of Vanilla and specifies new reduction semantics explicitly. Historical components remain individually present, so its question is how to compute a still-growing history more efficiently.')}</p></div></li>
+      <li><span>03</span><div><strong>{t('路线 B 继续追问：历史本身能不能不要一直长', 'Line B asks a larger question: can the history itself stop growing')}</strong><p>{t('Functional-equivalence 资格以后，这条线把问题推进到 bounded state：先证明更小状态哪里失败，再让固定 rank128 状态在线连续学习。它因此已经不是“把路线 A 再优化一点”。', 'After functional-equivalence qualification, this line moved to bounded state: it first established where smaller states failed, then continued learning online with fixed rank128. It is therefore not simply a further optimization of Line A.')}</p></div></li>
     </ol>
   </section>
   <section class="context-block" aria-labelledby="accel-selection-title">
@@ -127,6 +139,19 @@ const rank128Href = `${repoRoot}/blob/${boundedSource.commit}/docs/evidence/q17-
         <a href={gatedDeltaHref}>{t('查看当前 Gated-Delta 机制与四轮资格结果 →', 'Open current Gated-Delta mechanism and four-round qualification →')}</a>
       </article>
     </div>
+  </section>
+
+  <section class="context-block" aria-labelledby="accel-guard-title">
+    <div class="context-heading"><span>GUARD</span><div>
+      <h2 id="accel-guard-title">{t('两个 Agent 并发时，先守住各自结果，再统一解释关系', 'With concurrent Agents, preserve each result before reconciling the relationship')}</h2>
+      <p>{t('最危险的不是少一个链接，而是因为两个 branch 都写着 SD-LoRA 加速，就把一条当成另一条的后续，甚至为了恢复自己预期的状态去覆盖 sibling work。这里把仓库处理原则也公开写清。', 'The dangerous failure mode is not a missing link. It is treating one branch as the continuation of the other merely because both say SD-LoRA acceleration, or overwriting sibling work to restore an expected state. The repository rule is therefore made explicit here too.')}</p>
+    </div></div>
+    <ol class="selection-timeline">
+      <li><span>01</span><div><strong>{t('两条封存研究线都保持自己的 branch、head、计划和证据', 'Each sealed line keeps its own branch, head, plan, and evidence')}</strong><p>{t('共同索引只解释“它们是谁、彼此什么关系”，不接管任何一边的实验合同，也不把一个结果改名成另一个结果。', 'The shared index only explains what each line is and how they relate. It does not take over either scientific contract or rename one result into the other.')}</p></div></li>
+      <li><span>02</span><div><strong>{t('VR 只帮助搜索，正式结论必须写完整 treatment 名', 'VR is a search alias; formal claims use the full treatment identity')}</strong><p>{t('因此不能只写“VR 更快了”或“v2 到了 37×”。先写 Stable Reduction 或 Bounded Online Recurrence，再写属于它自己的速度和行为证据。', 'So we do not write only “VR got faster” or “v2 reached 37×.” We name Stable Reduction or Bounded Online Recurrence first, then quote only that line’s speed and behavior evidence.')}</p></div></li>
+      <li><span>03</span><div><strong>{t('以后如果真要比较 A 和 B，要重新做前瞻性的同条件实验', 'A real A-vs-B comparison requires a new prospective matched experiment')}</strong><p>{t('共同起点、任务、seed、预算、runtime、测量方式和允许得出的 claim 都要在看结果之前冻结。现在的约 2× 和约 37× 来自不同 treatment 与 workload，不能事后拿来排名。', 'Common start, tasks, seeds, budget, runtime, measurements, and claim boundary must be frozen before outcomes are inspected. The current ~2× and ~37× numbers come from different treatments and workloads and cannot be used for a post-hoc ranking.')}</p></div></li>
+      <li><span>04</span><div><strong>{t('GDR / Gated-Delta 继续单独记账', 'GDR / Gated-Delta stays on its own ledger')}</strong><p>{t('有循环状态不等于就是 GDR；有 SD-LoRA 参数更新也不等于就是前面两条加速线。第三条机制有自己的 treatment、资格实验和证据。', 'Having recurrent state does not make something GDR, and having an SD-LoRA parameter update does not make it one of the two acceleration lines. The third mechanism has its own treatment, qualification, and evidence.')}</p></div></li>
+    </ol>
   </section>
 
   <section class="context-block evidence-block" aria-labelledby="accel-evidence-title">
