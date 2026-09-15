@@ -45,29 +45,36 @@ const gpuFacts = [
 ---
 <main class="server-overview" data-locale={locale} data-storage-responsibility-view="artifact-lifecycle-v3">
   <header class="server-hero" data-reader-primary>
-    <p class="server-hero__context">{t('共享科研服务器 · 静态快照', 'Shared research server · static snapshot')}</p>
-    <h1>{t('实验服务器与资产整理', 'Experiment server and artifact lifecycle')}</h1>
-    <p class="server-hero__status">{t('项目工作区所在持久文件系统约有 0.99 TiB 可用。现在真正需要持续管理的是大型实验产物：例如 Q17 的一个 1.7B run 约 320.9 GiB，其中约 304.7 GiB 是 checkpoint。', 'The persistent filesystem backing the project workspace has about 0.99 TiB available. The continuing operational problem is large experiment output: one Q17 1.7B run is about 320.9 GiB, including about 304.7 GiB of checkpoints.')}</p>
-    <p class="server-hero__boundary">{t('快照时间：2026-09-15 22:10（UTC+8）。这是静态页面，不是实时监控。远端已经能恢复，也不等于本地可以删除；删除始终需要一份 exact reclaim manifest 和单独批准。', 'Snapshot: 2026-09-15 22:10 (UTC+8). This is a static page, not a live monitor. Remote recoverability does not make a local copy deletable; deletion always requires an exact reclaim manifest and separate approval.')}</p>
+    <p class="server-hero__context">{t('共享科研服务器 · 2026-09-15 静态快照', 'Shared research server · 2026-09-15 static snapshot')}</p>
+    <h1>{t('服务器快照：约 0.99 TiB 可用', 'Server snapshot: about 0.99 TiB available')}</h1>
+    <p class="server-hero__status">{t('项目工作区所在持久文件系统约有 0.99 TiB 可用。当前快照没有显示紧急扩容需求；持续工作是给大型实验产物补齐身份、归档、恢复验证和回收提案。Q17 的一个 1.7B run 约 320.9 GiB。', 'The persistent filesystem backing the project workspace has about 0.99 TiB available. The current snapshot does not indicate an emergency capacity need. The continuing work is identity, archive, restore verification, and reclaim proposals for large experiment outputs. One Q17 1.7B run is about 320.9 GiB.')}</p>
+
+    <dl class="server-hero__facts research-fact-band" style="--research-fact-columns:3" aria-label={t('当前服务器资产重点', 'Current server artifact facts')}>
+      <div><dt>{t('Q17 案例', 'Q17 example')}</dt><dd>320.9 GiB</dd></div>
+      <div><dt>{t('其中 checkpoint', 'Checkpoints')}</dt><dd>304.7 GiB</dd></div>
+      <div><dt>{t('删除权限', 'Deletion authority')}</dt><dd>NOT_AUTHORIZED</dd></div>
+    </dl>
+
+    <p class="server-hero__boundary">{t('快照时间：2026-09-15 22:10（UTC+8）。这是静态页面，不是实时监控。远端已经能恢复，也不等于本地可以删除；删除始终需要同一版 exact reclaim manifest 的单独批准。', 'Snapshot: 2026-09-15 22:10 (UTC+8). This is a static page, not a live monitor. Remote recoverability does not make a local copy deletable; deletion always requires separate approval of the same exact reclaim manifest.')}</p>
 
     <div class="routine-entry">
       <div class="routine-entry__copy">
-        <span>{t('默认入口', 'Default entry')}</span>
+        <span>{t('默认操作', 'Default operation')}</span>
         <strong>{t('例行服务器维护', 'Routine server maintenance')}</strong>
-        <p>{t('自动走完健康扫描 → 实验收尾归档 → 回收提案；只有删除、公开可见性、科学身份、ownership 或 authority 真正需要你决定时才停下。', 'Automatically runs health scan → campaign closeout → reclaim proposal, stopping only when deletion, visibility, scientific identity, ownership, or authority genuinely needs an owner decision.')}</p>
+        <p>{t('一次推进健康扫描 → 实验收尾归档 → 回收提案；只有删除、公开可见性、科学身份、ownership 或 authority 需要 owner 决定时才停下。', 'Advance health scan → campaign closeout → reclaim proposal in one run, stopping only when deletion, visibility, scientific identity, ownership, or authority needs an owner decision.')}</p>
       </div>
       <details class="routine-entry__prompt">
         <summary>{t('复制总入口 Prompt', 'Copy routine-maintenance prompt')}</summary>
         <pre data-copy-label={t('复制例行服务器维护 Prompt', 'Copy routine-maintenance prompt')}><code>{routinePrompt}</code></pre>
       </details>
     </div>
-
-    <nav class="operation-switchboard" aria-label={t('需要只做单一步骤时', 'Single-step server artifact operations')}>
-      <a href="#health-scan"><span>01</span><strong>{t('服务器健康扫描', 'Server health scan')}</strong><small>{t('只读看现在有没有压力', 'Read-only current pressure check')}</small></a>
-      <a href="#campaign-closeout"><span>02</span><strong>{t('实验收尾归档', 'Campaign closeout')}</strong><small>{t('给科研产物补身份证并验证远端恢复', 'Passport artifacts and verify remote recovery')}</small></a>
-      <a href="#reclaim-proposal"><span>03</span><strong>{t('空间回收提案', 'Reclaim proposal')}</strong><small>{t('先列 exact 清单，不自动删除', 'Exact list first; no automatic deletion')}</small></a>
-    </nav>
   </header>
+
+  <nav class="operation-switchboard" aria-label={t('只做其中一个阶段', 'Run one server-artifact stage only')}>
+    <a href="#health-scan"><span>01</span><strong>{t('服务器健康扫描', 'Server health scan')}</strong><small>{t('只读看现在有没有压力', 'Read-only current pressure check')}</small></a>
+    <a href="#campaign-closeout"><span>02</span><strong>{t('实验收尾归档', 'Campaign closeout')}</strong><small>{t('给科研产物补身份证并验证远端恢复', 'Passport artifacts and verify remote recovery')}</small></a>
+    <a href="#reclaim-proposal"><span>03</span><strong>{t('空间回收提案', 'Reclaim proposal')}</strong><small>{t('先列 exact 清单，不自动删除', 'Exact list first; no automatic deletion')}</small></a>
+  </nav>
 
   <section class="server-section" id="health-scan">
     <div class="section-heading">
@@ -230,17 +237,18 @@ const gpuFacts = [
 
 <style>
   .server-overview{color:var(--ink)}
-  .server-hero{max-width:960px;padding:clamp(1.4rem,4vw,3rem) 0 1.5rem}
-  .server-hero__context{margin:0 0 .6rem;color:var(--muted);font-size:.78rem;font-weight:760}
-  .server-hero h1{max-width:15ch;margin:0 0 .9rem;font-size:clamp(2.2rem,5vw,4.4rem);line-height:.98;letter-spacing:-.055em}
-  .server-hero__status{max-width:68ch;margin:0;color:var(--ink);font-size:clamp(1.05rem,2vw,1.3rem);font-weight:720;line-height:1.65}
-  .server-hero__boundary{max-width:72ch;margin:.75rem 0 0;color:var(--muted);font-size:.82rem;line-height:1.65}
+  .server-hero{max-width:960px;padding:1.15rem 0 1rem}
+  .server-hero__context{margin:0 0 .55rem;color:var(--muted);font-size:.78rem;font-weight:760}
+  .server-hero h1{max-width:18ch;margin:0 0 .72rem;font-size:clamp(2.1rem,4.4vw,3.8rem);line-height:1;letter-spacing:-.05em}
+  .server-hero__status{max-width:74ch;margin:0;color:var(--ink);font-size:clamp(1rem,1.6vw,1.16rem);font-weight:700;line-height:1.58}
+  .server-hero__facts{max-width:860px;margin:.85rem 0 0}
+  .server-hero__boundary{max-width:76ch;margin:.65rem 0 0;color:var(--muted);font-size:.82rem;line-height:1.65}
 
-  .routine-entry{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(17rem,.85fr);gap:1rem;align-items:center;margin-top:1.35rem;padding:1rem;border:1px solid color-mix(in srgb,var(--accent-deep) 34%,var(--line));border-radius:var(--radius-feature);background:color-mix(in srgb,var(--accent) 5%,var(--surface))}
+  .routine-entry{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(17rem,.85fr);gap:1rem;align-items:center;margin-top:.8rem;padding:.8rem 0;border-block:1px solid var(--line)}
   .routine-entry__copy span,.routine-entry__copy strong{display:block}.routine-entry__copy span{color:var(--accent-deep);font:800 .66rem/1.3 var(--font-mono)}.routine-entry__copy strong{margin-top:.25rem;font-size:1rem}.routine-entry__copy p{max-width:58ch;margin:.35rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.6}
   .routine-entry__prompt{min-width:0;padding:.75rem .85rem;border-left:2px solid var(--accent-deep)}.routine-entry__prompt summary{cursor:pointer;font-size:.8rem;font-weight:780}.routine-entry__prompt pre{max-height:22rem;overflow:auto;margin:.65rem 0 0;padding:.8rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);white-space:pre-wrap;overflow-wrap:anywhere;font-size:.69rem;line-height:1.6}.routine-entry__prompt code{font:inherit;color:inherit}
 
-  .operation-switchboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:1.35rem;border-block:1px solid var(--line)}
+  .operation-switchboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0 0 1.1rem;border-block:1px solid var(--line)}
   .operation-switchboard a{display:grid;grid-template-columns:auto 1fr;grid-template-areas:'n title' 'n note';gap:.16rem .65rem;min-width:0;padding:1rem .85rem;color:inherit;text-decoration:none;border-right:1px solid var(--line)}
   .operation-switchboard a:last-child{border-right:0}
   .operation-switchboard a:hover{background:color-mix(in srgb,var(--accent) 6%,transparent)}
@@ -320,7 +328,7 @@ const gpuFacts = [
     .reclaim-steps{grid-template-columns:1fr 1fr}.reclaim-steps li:nth-child(2n){border-right:0}.reclaim-steps li:nth-child(-n+2){border-bottom:1px solid var(--line)}
   }
   @media(max-width:640px){
-    .server-hero h1{max-width:11ch}.routine-entry{grid-template-columns:1fr}.routine-entry__prompt{padding:.7rem 0 0;border-left:0;border-top:1px solid var(--line)}.operation-switchboard{grid-template-columns:1fr}.operation-switchboard a{border-right:0;border-bottom:1px solid var(--line)}.operation-switchboard a:last-child{border-bottom:0}
+    .server-hero h1{max-width:14ch}.routine-entry{grid-template-columns:1fr}.routine-entry__prompt{padding:.7rem 0 0;border-left:0;border-top:1px solid var(--line)}.operation-switchboard{grid-template-columns:1fr}.operation-switchboard a{border-right:0;border-bottom:1px solid var(--line)}.operation-switchboard a:last-child{border-bottom:0}
     .snapshot-facts,.gpu-facts,.privacy-grid{grid-template-columns:1fr}.snapshot-facts>div,.gpu-facts>div{border-right:0;border-bottom:1px solid var(--line)}.snapshot-facts>div:last-child,.gpu-facts>div:last-child{border-bottom:0}
     .operation-explainer li{grid-template-columns:5rem 1fr}
     .lifecycle-flow ol{grid-template-columns:1fr}.lifecycle-flow li{border-right:0}.lifecycle-flow li:last-child{border-bottom:0}

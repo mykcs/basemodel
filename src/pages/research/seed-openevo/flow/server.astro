@@ -3,7 +3,7 @@ import AppLayout from '../../../../layouts/AppLayout.astro';
 import Lyg2171ServerOverview from '../../../../components/research/Lyg2171ServerOverview.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="实验服务器与资产整理" description="2026-09-15 实验服务器与科研资产治理：项目工作区所在持久文件系统约 2.0 TiB、约 0.99 TiB 可用；用 Q17 1.7B 的 320.9 GiB 真实案例说明健康扫描、实验收尾归档与 exact reclaim proposal。" locale={locale}>
+<AppLayout title="服务器快照：约 0.99 TiB 可用" description="2026-09-15 服务器静态快照：项目工作区所在持久文件系统约 0.99 TiB 可用；默认例行维护入口按当前 authority 推进健康扫描、实验收尾归档与 exact reclaim proposal，删除仍需单独批准。" locale={locale}>
   <div class="server-route">
     <Lyg2171ServerOverview locale={locale} />
   </div>

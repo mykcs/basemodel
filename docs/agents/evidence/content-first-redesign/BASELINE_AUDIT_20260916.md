@@ -255,3 +255,41 @@ Validation after promotion:
 - phone/desktop first-screen budgets, light/dark, reduced motion, topology, and page-level horizontal overflow gates all remain green.
 
 Apple-guidance translation remains behavioral rather than cosmetic: “simplicity” means exactly enough context, hierarchy keeps the primary object obvious, and shared UI should support content rather than compete with it. The result is one narrow relationship primitive, not an Apple-looking card system.
+
+## 14. Server operations pilot — pre-write expression brief
+
+Refresh before source write: `main@d3631890f89c0fe62e249c088794b64a0b503f00`; PR #737 `cbb8bc19d6b27dd0db851eef85bd05ecf76d599e`; open semantic owners #728 / #729 / #734 remain independent of the server route. Current route owner is `Lyg2171ServerOverview.astro` + `flow-server` Reader Contract; `visual-closeout.css` still injects the legacy full-height server hero.
+
+Repeated-correction witness: `Apple reference / first-screen redesign -> current owners = ui-design-principles + human-thinking-web-expression-contract + site-reader-attention-contract -> checked artifact = current server render, flow-server contract, current shared primitives, Apple WWDC26 Principles of great design + WWDC25 design-system structure -> allowed next action = make static server state + safety boundary + one default operation the first cognitive owner and retire only the route-specific full-height override -> invalidation cue = main/PR head drift, server authority/data change, or browser evidence that the operational path became less discoverable`.
+
+**Page Expression Brief**
+
+- Reader: project operator who needs to know whether the shared research server is under pressure and what the safe next action is.
+- Page role: operational reference / entry point, not a live monitoring dashboard.
+- Starting state: “Do I need to act now, and what can I safely run?”
+- Target mental model: this is a dated snapshot; space is not currently presented as an emergency; large experiment assets need lifecycle management; remote recoverability never grants deletion authority.
+- Next action: use the single routine-maintenance entry by default; choose health scan / closeout / reclaim only when deliberately doing one stage.
+- Primary path: snapshot state -> deletion/authority boundary -> default routine-maintenance action -> optional single-stage operations.
+- Secondary depth: filesystem breakdown, lifecycle mechanics, Q17 example, exact prompts, hardware, privacy/history.
+- Semantic shape: status + safety boundary + one operation; later stages remain ordered/operational structures.
+- Density plan: first screen contains one state statement, a compact fact band, the safety boundary, and one default operation disclosure; the three single-stage links move below the first-layer owner.
+- Acceptance: no `100svh`/full-height spacer for this route; 1280×633 and 390×844 show one H1 and the declared status owner; no horizontal overflow; default operation remains keyboard reachable; light/dark browser checks stay green.
+
+Apple reasoning applied: WWDC26 defines simplicity as “exactly enough” and hierarchy as order/spacing/contrast around the most important item; WWDC25 treats interface structure as subordinate to content. For this route that means emphasizing the operational state and action, not reproducing Apple surface styling.
+
+## 15. Server operations pilot — implementation and automated acceptance
+
+The operational pilot now uses a dated state as the first visual owner: `服务器快照：约 0.99 TiB 可用`. The first layer keeps the Q17 size example and `NOT_AUTHORIZED` deletion state in one semantic fact band, keeps the static-snapshot / remote-recovery boundary visible, and leaves one justified operation (`例行服务器维护`) as the default action. The three single-stage links now follow the hero instead of competing inside it.
+
+The route-specific legacy `100svh` server-hero rule was removed from `visual-closeout.css`; the independent Lab rule remains unchanged. The server route now owns its natural content height. Browser geometry measured `min-height: 0px`, hero height ≈505px at 1280×633 and ≈703px at 390×844; the routine-maintenance summary remains visible in both, while the optional three-stage switchboard begins below the first viewport. Page-level horizontal overflow is 0 in both captures.
+
+Validation on the task-owned worktree:
+
+- `npm run check`: 578 files, 0 errors (2 existing deprecation hints);
+- targeted structural/copy/Reader Contract Vitest: 17 / 17 PASS;
+- `server-content-first.spec.ts` + full `site-reader-contracts.spec.ts`: 10 / 10 Chromium PASS, including desktop, phone, keyboard-open disclosure, light/dark and overflow assertions;
+- `npm run audit:human-feedback`: PASS;
+- `npm run build`: 262 pages PASS; static-heading 262 / 262 and external-brand-link audit PASS;
+- post-write HPL comparison prompt generated for `flow-server`; this Agent had already seen preference evidence, so it does not claim an independent blind-human comprehension receipt.
+
+No Phase-C generic checkbox is closed from this pilot alone: those rows apply to the complete four-pilot exit. The remaining focus/comparison pilot still depends on reconciling #728, and independent owner/cold-read review remains a separate acceptance layer.
