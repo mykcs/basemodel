@@ -252,6 +252,8 @@ For repeated “continue / where are we?” requests, report the current goal, t
 
 When a task names one canonical checklist and asks for a completion percentage, recompute **both numerator and denominator from that exact ref-qualified checklist on every report**. Count only acceptance items whose stated durable evidence already exists. Never carry a denominator forward from chat memory or change the counting scope silently; if the checklist itself changes, say so and recount from the new checklist before reporting the next percentage.
 
+Owner-facing ELI5 / progress summaries are also user-facing copy. Apply the same plain-language preference already captured by the website copy system: state the concrete fact directly, do not invent visual details or a contrast the owner did not give you, and avoid the stock “不是 X，而是 Y” construction when a direct sentence says the same thing more naturally. Use a contrast only when the contrast itself is the factual point.
+
 Historical case: [`../history/2026-09-13-vanilla-sd-lora-archify-release-checklist-closeout.md`](../history/2026-09-13-vanilla-sd-lora-archify-release-checklist-closeout.md).
 
 For conversation retention, distinguish visible user/tool evidence, independently fetched repository evidence, prior assistant summaries, and unavailable/redacted material. Summaries may locate evidence but cannot fill missing commands, outcomes, or responsibility attribution. A repository write, a personal-context search, and a real long-term-memory write have different receipts.

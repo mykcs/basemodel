@@ -8,7 +8,7 @@ Scope: the accessible completion conversation for `VANILLA_SD_LORA_ARCHIFY_FLOW_
 
 The closeout reviewed the visible user instructions and reports in this conversation, the current completion plan, current BaseModel Agent/release policy, and the earlier `2026-09-12-vanilla-sd-lora-html-flow-conversation-closeout.md`. It does not claim access to hidden reasoning or vanished provider logs.
 
-The earlier closeout already owns the important visual correction: a row of cards is not a recoverable process flow, and branch/join/return topology needs rendered acceptance. This closeout does not duplicate that rule.
+The earlier closeout already owns the important visual correction: the old mechanism presentation did not make the path, branch, rejoin, and return easy enough to follow, and those relationships need rendered acceptance. This closeout does not duplicate that rule.
 
 ## REPEAT-CORRECTION witness
 
@@ -55,12 +55,19 @@ While preparing this closeout, the Agent accidentally created a throwaway branch
 | Evidence-based percentage was requested repeatedly, but the denominator drifted between reports | Yes — the repository already rejected unmeasured percentages, but the use-site counting rule was underspecified | Recompute numerator and denominator from the exact canonical checklist on every report; explain checklist-scope changes | `docs/agents/current/project-agent-operating-principles.md` | It already owns progress-report semantics, so this closes the gap without another policy source |
 | A green callback / skipped provider state must not be treated as release completion | Known rule, not newly escaped here | Keep requiring real exact-head provider execution and Production evidence | existing `release-closeout-protocol.md`, `LATEST.md`, and task plan | already explicit and sufficient; duplicating it would weaken authority clarity |
 | Do not spend recurring runs busy-waiting on a provider | Known rule, not newly escaped here | Read provider state once, do independent work, then resume from durable identity | existing `LATEST.md` / release policy | already explicit; no new rule needed |
-| “Four cards” did not visibly communicate the SD-LoRA flow | Yes, but already closed in the 2026-09-12 Vanilla HTML-flow closeout | Require authored topology plus rendered flow acceptance | existing human-thinking/UI owners and prior closeout | this conversation should not create a second copy of the same lesson |
+| Owner feedback said the HTML mechanism flow still did not make the movement easy to see | Yes — already closed in the 2026-09-12 Vanilla HTML-flow closeout | Require authored topology plus rendered flow acceptance | existing human-thinking/UI owners and prior closeout | preserve the owner’s actual complaint instead of inventing a visual description |
 | Recurring automation should stop after confirmed durable COMPLETE, not merely after a chat claim | Correctly handled in this run | Read back durable completion and then disable the task when the task contract says to | task-specific completion plan + existing exact-state rules | successful application, not a missing global policy |
 | Protected Vercel Preview first rendered an authentication/login surface, which could have been mistaken for the product route | New concrete visual-evidence gap in this conversation | Before counting screenshots/DOM measurements, prove a product-owned route sentinel after authentication; login/SSO/access interstitials are not route evidence | `docs/agents/current/ui-change-visual-acceptance-gate.md` + `src/lib/uiSafetyGate.test.ts` | visual acceptance owns whether the browser is actually showing the product surface being judged |
 | Evidence-only checklist prose changed the already accepted PR head | Repeated release-identity family; now separately codified | Do not mutate the accepted candidate tree merely to record acceptance evidence that belongs to that exact tree | existing `release-closeout-protocol.md` | current release owner already closes the gap; duplicating it here would create policy drift |
 | Bash assignment/heredoc syntax was sent to a Fish outer shell | Yes | Verify the reported outer interpreter before compound syntax; parser failure is `NOT_EXECUTED` | existing root `AGENTS.md` / operating principles | the rule was already startup-visible; the failure was use-site activation, not knowledge absence |
 | A throwaway GitHub branch was created only to probe mutation capability during closeout | Yes — shared-state probe hygiene already existed | Use read/discovery APIs for capability checks; never mutate shared refs merely to test whether a tool works | existing root `AGENTS.md` / project-agent-operating-principles repository-write hygiene | rule already exists and is startup-visible; incident belongs in history, not a second policy source |
+
+
+## Post-closeout recurrence: plain-language rule was not activated in chat
+
+Immediately after this closeout was merged, the owner asked for a summary of what the conversation had required. The reply introduced an unsupported visual detail — “四张卡片排成一排” — and then used the familiar “不是……而是……” correction template. The repository already had CASE-081 (“不要用防御性否定开场”) and current website copy rules covering this exact language pattern.
+
+This was an **activation-scope failure**. The preference data already existed, but the Agent treated “说人话” as a website-copy rule and failed to apply it to an owner-facing ELI5 progress/closeout summary. The current operating-principles owner now makes that bridge explicit. Future summaries should say the concrete observation directly, preserve the owner’s wording when describing a visual defect, and avoid manufacturing a contrast for rhetorical effect.
 
 ## Temporary state intentionally excluded
 
