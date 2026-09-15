@@ -10,7 +10,7 @@ Provider-selection rationale: [`ci-provider-decision.md`](ci-provider-decision.m
 GitHub = canonical source
 
 working PR / development branch
--> public hosted GitHub Actions preflight: deterministic gate + shared risk planner + up to 4 independent Chromium shards
+-> public hosted GitHub Actions preflight: deterministic gate + dependency-free shared risk planner + 0/1/8 browser-runner allocation for skip/focused/full
 -> no ordinary Vercel Preview while iterating
 
 final non-draft current-base candidate
@@ -82,10 +82,10 @@ Repeated visual review while a page, briefing, or slide deck is still being edit
 
 ```text
 edit one coherent UI/copy batch
--> run only the local/focused checks owned by the changed surface
--> complete a fresh static build for the current working tree
--> package that successful build output as a Vercel prebuilt artifact
--> upload it to a dedicated non-Git-connected, non-Production review Preview surface
+-> dispatch the manual Fast Review workflow from trusted `main` for the open PR
+-> its secret-free GitHub-hosted build job checks out the exact PR head and creates a fresh noindex static artifact
+-> a separate trusted deploy job downloads only that artifact; candidate code is not checked out or executed with provider credentials
+-> upload the prebuilt artifact to the dedicated non-Git-connected, non-Production review Preview surface
 -> open the hosted target route / anchor / slide and confirm the specific claimed change is visibly present
 -> only then give the owner the temporary Preview URL
 -> continue editing without moving `ci/vercel-gate-final`
@@ -101,7 +101,7 @@ Use this lane by default when the owner asks to repeatedly see the page after sm
 
 ### Shared risk-aware browser gate: public GHA preflight + Vercel final
 
-Public GHA and Vercel use the same risk taxonomy. Public GHA provides the cheap parallel feedback lane; Vercel proves the exact final candidate in the deployment provider. Full/global public-GHA work is timing-balanced over four independent shards with one worker each; bounded work remains focused; unknown ownership fails closed. Vercel retains the required status and its own risk-based Chromium/Lab acceptance.
+Public GHA and Vercel use the same risk taxonomy. Public GHA provides the cheap parallel feedback lane; Vercel proves the exact final candidate in the deployment provider. The public-GHA planner allocates browser runners before spend: skip=0, focused=1, full/global=8. Full/global work is timing-balanced over eight independent shards with one worker each; every allocated browser runner re-evaluates the plan and any planner drift fails before npm/browser work. Unknown ownership still fails closed. Vercel retains the required status and its own risk-based Chromium/Lab acceptance.
 
 ### Risk-aware browser gate on Vercel Pro
 

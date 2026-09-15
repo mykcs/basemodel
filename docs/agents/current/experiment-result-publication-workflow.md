@@ -1,6 +1,6 @@
 # Experiment result publication workflow
 
-Last reviewed: **2026-08-31**
+Last reviewed: **2026-09-15**
 Status: **current**  
 Audience: research, content, UI, review, and release Agents
 
@@ -340,6 +340,26 @@ Do not publish every intermediate run. The website should move when the scientif
 Record the upstream branch/SHA and checked date together. Preserve old experimental evidence as history instead of rewriting it as though the program had always known the newer interpretation.
 
 If the website needs live-state wording, make clear that it is a snapshot and provide the route for resolving current upstream truth.
+
+#### Publication lifecycle wording is part of the scientific snapshot
+
+A research page can have the right result and still be stale if its reader-facing status/provenance copy describes the wrong release phase. Treat these as one publication surface whenever they encode scientific state:
+
+```text
+visible result/body
++ title / description / OG / Twitter / search-share summary
++ provenance / status footer or callout
++ active route / locale topology
+```
+
+Before declaring a scientific publication complete:
+
+- remove or update pre-release future-tense promises once the promised release step has actually happened; Production must not say that work will happen “before release” after the page is already released;
+- prefer post-release wording that says what happens **if upstream evidence changes**: re-resolve the source and claim boundary before updating the page;
+- verify Production for obsolete `Pending`, `before release`, or equivalent lifecycle wording in addition to the headline result and metadata;
+- keep dated historical evidence immutable. Fix the current-facing projection instead of rewriting an old snapshot so it looks as though it always knew the later lifecycle state.
+
+A green body/metadata test is not by itself proof that status/provenance copy is current. Protect important lifecycle wording at its actual rendered use site when a stale phrase would make the publication state contradictory.
 
 #### Current-facing longitudinal figures
 

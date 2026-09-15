@@ -112,6 +112,15 @@ test('mechanism-copy shard 1 still propagates dependency installation failures',
   assert.equal(readFileSync(state.log, 'utf8'), 'npm\nci\n');
 });
 
+
+test('planner drift fails before spending browser work', (t) => {
+  const state = fixture(t, 'src/styles/budget-check.css');
+  const result = run(state, { CI_EXPECTED_UI_MODE: 'focused' });
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /planner drift/);
+  assert.equal(existsSync(state.log), false);
+});
+
 test('force-full never takes a cheap skip path', (t) => {
   const state = fixture(t);
   const result = run(state, { CI_UI_FORCE_FULL: '1', CI_BROWSER_SHARD_INDEX: '2' });

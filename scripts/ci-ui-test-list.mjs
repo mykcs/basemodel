@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
 const timingReceipt = JSON.parse(
-  readFileSync(new URL('./ci-ui-test-timings-202609061200.json', import.meta.url), 'utf8'),
+  readFileSync(new URL('./ci-ui-test-timings-202609152256.json', import.meta.url), 'utf8'),
 );
 
 export const parseCanonicalList = (stdout) => {

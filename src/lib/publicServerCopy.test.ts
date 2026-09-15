@@ -12,22 +12,39 @@ const serverExplainer = read('../components/research/explainer/ServerExplainer.t
 const staticServerDiagram = read('../components/research/ServerAuthorityDiagram.astro');
 
 describe('public server copy', () => {
-  it('keeps the public server page free of private identifiers while preserving audited capacity facts', () => {
-    expect(serverOverview).not.toContain('User 7');
-    expect(serverOverview).not.toContain('各用户磁盘占用');
-    expect(serverOverview).not.toContain('Disk usage by account');
-    expect(serverOverview).not.toContain('storage-table');
-    expect(serverOverview).toContain('19.0 GiB');
-    expect(serverOverview).toContain('147.7 GiB');
-    expect(serverOverview).toContain('其余用户按可归属容量从大到小');
-    expect(serverOverview).toContain('remaining users are sorted by attributable usage');
+  it('keeps the server lifecycle page public-safe and distinguishes current from historical storage facts', () => {
+    expect(serverOverview).toContain('实验服务器与资产整理');
+    expect(serverOverview).toContain('0.99 TiB');
+    expect(serverOverview).toContain('320.9 GiB');
+    expect(serverOverview).toContain('304.66 GiB');
+    expect(serverOverview).toContain('131');
+    expect(serverOverview).toContain('1.69 GiB');
+    expect(serverOverview).toContain('delete_authorized=false');
+    expect(serverOverview).toContain('例行服务器维护');
+    expect(serverOverview).toContain('这段 Prompt 只负责启动，不固定 Passport 版本');
+    expect(serverOverview).toContain('EXPERIMENT_PASSPORT_REGISTRY_IMPLEMENTATION_PLAN_202609111800.md');
+    expect(serverOverview).toContain('open Draft PR 只能用于发现重叠或待合入能力');
+    expect(serverOverview).toContain('未合并 Draft 不会自己升级成全项目标准');
+    expect(serverOverview).toContain('experiment_id + passport_sha256');
+    expect(serverOverview).toContain('服务器健康扫描');
+    expect(serverOverview).toContain('实验收尾归档');
+    expect(serverOverview).toContain('空间回收提案');
+    expect(serverOverview).toContain('docs/agents/current/server-storage-pressure-audit-sop.md');
+    expect(serverOverview).toContain('docs/agents/current/server-artifact-governance-and-reclaim-sop.md');
+    expect(serverOverview).toContain('Hugging Face 私有空间不足时必须停止并告诉我');
+    expect(serverOverview).toContain('不能为了省空间自动把数据公开');
+    expect(serverOverview).toContain('2026-09-03 01:11');
+    expect(serverOverview).toContain('它不是 2026-09-15 的当前排名');
+    expect(serverOverview).not.toContain('我固定在最前');
+    expect(serverOverview).not.toContain('Me is pinned first');
     expect(serverOverview).not.toContain('我们的账户');
     expect(serverOverview).not.toContain('我们的主目录');
     expect(serverOverview).not.toContain('Our home directory');
     expect(serverOverview).not.toMatch(/\/data\/home\//);
     expect(serverOverview).not.toMatch(/dev-[a-z0-9_-]+/i);
-    expect(serverRouteZh).toContain('2026-09-05 实验服务器容量与硬件快照');
-    expect(serverRouteZh).toContain('16.1 GiB');
+    expect(serverRouteZh).toContain('2026-09-15 实验服务器与科研资产治理');
+    expect(serverRouteZh).toContain('0.99 TiB');
+    // Archived English is historical source evidence and must not be rewritten just to mirror current Chinese runtime state.
     expect(serverRouteEn).toContain('2026-09-05 server capacity and hardware snapshot');
     expect(serverRouteEn).toContain('16.1 GiB');
   });
