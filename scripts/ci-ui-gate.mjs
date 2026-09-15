@@ -83,6 +83,12 @@ if (!['skip', 'focused', 'full'].includes(plan.mode)) {
   process.exit(1);
 }
 
+const expectedMode = process.env.CI_EXPECTED_UI_MODE?.trim();
+if (expectedMode && plan.mode !== expectedMode) {
+  console.error(`[ci-ui-gate] planner drift: allocation expected ${expectedMode}, re-evaluation returned ${plan.mode}`);
+  process.exit(1);
+}
+
 if (forceFull) {
   plan = {
     ...plan,
@@ -131,11 +137,13 @@ run('npx', installArgs);
 
 const ciInfrastructureChanged = plan.changedFiles.some((file) => (
   file === 'scripts/ci-ui-gate.mjs'
+  || file === 'scripts/ci-public-plan.mjs'
   || file === 'scripts/ci-ui-test-list.mjs'
   || file === 'scripts/ci-ui-test-timings-202609061200.json'
   || file === 'scripts/vercel-ui-plan.ts'
   || file === '.github/workflows/self-hosted-ci.yml'
   || file === '.github/workflows/public-pr-ci.yml'
+  || file === '.github/workflows/review-preview.yml'
   || file === '.circleci/config.yml'
   || file === 'scripts/ci-circleci-prepare.sh'
   || file.startsWith('.github/runner/')

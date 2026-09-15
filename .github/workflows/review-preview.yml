@@ -1,0 +1,142 @@
+name: Fast Review Preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Open BaseModel PR number to render for human review'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: basemodel-review-preview-${{ inputs.pr_number }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: review-build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      head_sha: ${{ steps.identity.outputs.head_sha }}
+    steps:
+      - name: Validate open PR targets main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+        run: |
+          set -euo pipefail
+          test -n "$PR_NUMBER"
+          test "$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" --jq .state)" = open
+          test "$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" --jq .base.ref)" = main
+
+      - name: Checkout exact PR head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/pull/${{ inputs.pr_number }}/head
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Bind exact review identity
+        id: identity
+        run: |
+          set -euo pipefail
+          HEAD_SHA="$(git rev-parse HEAD)"
+          test -n "$HEAD_SHA"
+          echo "head_sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+          echo "Review source: $HEAD_SHA" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Setup Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build fresh noindex static review artifact
+        env:
+          PUBLIC_SEARCH_INDEXING: disabled
+          PUBLIC_SITE_URL: https://basemodel-preview.vercel.app
+        run: |
+          set -euo pipefail
+          npm run build
+          node - <<'NODE'
+          const { readFileSync } = require('node:fs');
+          const html = readFileSync('dist/index.html', 'utf8');
+          if (!/<meta\b[^>]*name=["']robots["'][^>]*noindex/i.test(html) && !/<meta\b[^>]*noindex[^>]*name=["']robots["']/i.test(html)) {
+            throw new Error('review build is missing robots noindex');
+          }
+          NODE
+
+      - name: Package static Build Output API artifact
+        run: |
+          set -euo pipefail
+          rm -rf review-artifact
+          mkdir -p review-artifact/.vercel/output/static
+          cp -R dist/. review-artifact/.vercel/output/static/
+          printf '%s\n' '{"version":3}' > review-artifact/.vercel/output/config.json
+          printf '%s\n' "${{ steps.identity.outputs.head_sha }}" > review-artifact/source-sha.txt
+
+      - name: Upload review artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: basemodel-review-${{ github.run_id }}
+          path: review-artifact
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    name: review-deploy
+    needs: build
+    if: needs.build.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Download immutable review artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: basemodel-review-${{ github.run_id }}
+          path: review-artifact
+
+      - name: Setup trusted deploy runtime
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+
+      - name: Bind dedicated review project
+        env:
+          REVIEW_PROJECT_ID: ${{ vars.BASEMODEL_REVIEW_VERCEL_PROJECT_ID }}
+          REVIEW_TEAM_ID: ${{ vars.BASEMODEL_REVIEW_VERCEL_TEAM_ID }}
+        run: |
+          set -euo pipefail
+          test -n "$REVIEW_PROJECT_ID"
+          test -n "$REVIEW_TEAM_ID"
+          mkdir -p review-artifact/.vercel
+          node -e 'const fs=require("fs"); fs.writeFileSync("review-artifact/.vercel/project.json", JSON.stringify({projectId:process.env.REVIEW_PROJECT_ID,orgId:process.env.REVIEW_TEAM_ID})+"\n")'
+
+      - name: Deploy prebuilt review artifact only
+        id: deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.BASEMODEL_REVIEW_VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "$VERCEL_TOKEN"
+          cd review-artifact
+          DEPLOY_LOG="$(mktemp)"
+          npx --yes vercel@59.17.0 deploy --prebuilt --archive=tgz --yes --no-color --token "$VERCEL_TOKEN" 2>&1 | tee "$DEPLOY_LOG"
+          REVIEW_URL="$(grep -Eo 'https://[^[:space:]]+\.vercel\.app' "$DEPLOY_LOG" | tail -n 1)"
+          test -n "$REVIEW_URL"
+          echo "review_url=$REVIEW_URL" >> "$GITHUB_OUTPUT"
+          echo "## Fast Review Preview" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Source: \`${{ needs.build.outputs.head_sha }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- URL: $REVIEW_URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Authority: review-only; not merge or Production evidence" >> "$GITHUB_STEP_SUMMARY"

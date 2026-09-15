@@ -27,10 +27,12 @@ const HOSTED_GATE_OWNERS = new Set([
   'scripts/vercel-lab-browser-gate.mjs',
   'vercel.json',
   'scripts/ci-ui-gate.mjs',
+  'scripts/ci-public-plan.mjs',
   'scripts/ci-ui-test-list.mjs',
   'scripts/ci-ui-test-timings-202609061200.json',
   '.github/workflows/self-hosted-ci.yml',
   '.github/workflows/public-pr-ci.yml',
+  '.github/workflows/review-preview.yml',
   '.circleci/config.yml',
   'scripts/ci-circleci-prepare.sh',
 ]);
