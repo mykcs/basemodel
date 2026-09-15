@@ -223,12 +223,12 @@ const pending = result.status === 'pending';
   .esg { max-width: 1120px; margin: 0 auto; padding: 34px 28px 90px; color: var(--text-primary); }
   .esg__hero { max-width: 980px; margin: 0 auto; padding: 24px 0 44px; }
   .esg__back, .esg a { color: var(--link-color, var(--accent)); text-underline-offset: 3px; }
-  .esg__eyebrow { margin: 24px 0 8px; font: 700 0.78rem/1.2 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--text-secondary); }
+  .esg__eyebrow { margin: 24px 0 8px; font: 700 1rem/1.2 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--text-secondary); }
   .esg h1 { max-width: 930px; margin: 0; font-size: clamp(2rem, 5vw, 4.6rem); line-height: .98; letter-spacing: -.055em; }
-  .esg__lede { max-width: 890px; margin: 22px 0 0; font-size: clamp(1.05rem, 2vw, 1.28rem); line-height: 1.7; color: var(--text-secondary); }
+  .esg__lede { max-width: 890px; margin: 14px 0 0; font-size: clamp(1.05rem, 2vw, 1.28rem); line-height: 1.7; color: var(--text-secondary); }
   .esg__facts { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin: 26px 0 18px; }
   .esg__facts div { padding: 16px; border: 1px solid var(--border-color); border-radius: var(--radius-panel); background: var(--surface-secondary); }
-  .esg__facts span { display:block; font-size:.78rem; color:var(--text-secondary); } .esg__facts strong { display:block; margin-top:6px; font-size:1.08rem; }
+  .esg__facts span { display:block; font-size:1rem; color:var(--text-secondary); } .esg__facts strong { display:block; margin-top:6px; font-size:1.08rem; }
   .esg__status { margin: 0; padding: 14px 16px; border-left: 3px solid var(--accent); background: var(--surface-secondary); line-height: 1.6; }
   .esg__section { max-width: 980px; margin: 0 auto; padding: 46px 0; border-top: 1px solid var(--border-color); }
   .esg__section h2 { margin:0 0 18px; font-size:clamp(1.55rem,3vw,2.35rem); letter-spacing:-.035em; }
@@ -239,7 +239,7 @@ const pending = result.status === 'pending';
   .esg__context-links { display:flex; flex-wrap:wrap; gap:12px 18px; margin-top:20px; }
   .esg__representation { display:grid; grid-template-columns:1fr 1fr; gap:22px; margin:26px 0 14px; }
   .esg__rep-column { min-width:0; display:grid; gap:10px; align-content:start; padding:20px; border:1px solid var(--border-color); border-radius:var(--radius-feature); }
-  .esg__rep-column > span { color:var(--text-secondary); font-size:.84rem; }
+  .esg__rep-column > span { color:var(--text-secondary); font-size:1rem; }
   .esg__factor-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .esg__node { padding:14px 12px; border:1px solid var(--border-color); border-radius:var(--radius-control); text-align:center; font-weight:650; background:var(--surface-secondary); }
   .esg__node.is-state,.esg__node.is-effective { background:var(--surface-tertiary, var(--surface-secondary)); }
@@ -249,35 +249,35 @@ const pending = result.status === 'pending';
   .esg__steps { list-style:none; padding:0; display:grid; gap:14px; counter-reset:step; }
   .esg__steps li { display:grid; grid-template-columns:44px 1fr; gap:6px 14px; padding:18px; border:1px solid var(--border-color); border-radius:var(--radius-panel); }
   .esg__steps li > span { grid-row:1 / 4; font-family:var(--font-mono); color:var(--text-secondary); }
-  .esg__steps p { margin:5px 0 0; color:var(--text-secondary); } .esg__steps .esg__cannot { font-size:.92rem; }
+  .esg__steps p { margin:5px 0 0; color:var(--text-secondary); } .esg__steps .esg__cannot { font-size:1rem; }
   .esg__details { margin-top:14px; padding:12px 14px; border:1px solid var(--border-color); border-radius:var(--radius-panel); }
   .esg__details summary { cursor:pointer; font-weight:650; } .esg__details li { margin:8px 0; overflow-wrap:anywhere; }
   .esg__method-grid { display:grid; grid-template-columns:minmax(0,2fr) minmax(220px,1fr); gap:18px; align-items:start; }
   .esg__flow { display:grid; grid-template-columns:repeat(13,minmax(0,1fr)); align-items:center; gap:5px; margin:12px 0 0; padding:18px; border:1px solid var(--border-color); border-radius:var(--radius-feature); }
-  .esg__flow-node { min-width:0; padding:12px 7px; border:1px solid var(--border-color); border-radius:var(--radius-control); text-align:center; font-size:.78rem; font-weight:650; background:var(--surface-secondary); overflow-wrap:anywhere; }
+  .esg__flow-node { min-width:0; padding:12px 7px; border:1px solid var(--border-color); border-radius:var(--radius-control); text-align:center; font-size:1rem; font-weight:650; background:var(--surface-secondary); overflow-wrap:anywhere; }
   .esg__flow-node.is-actual,.esg__flow-node.is-state { background:var(--surface-tertiary, var(--surface-secondary)); }
   .esg__flow-arrow { height:2px; background:currentColor; opacity:.35; position:relative; }
   .esg__flow-arrow::after { content:'›'; position:absolute; right:-3px; top:-12px; font-size:20px; }
-  .esg__flow figcaption { grid-column:1 / -1; margin-top:8px; color:var(--text-secondary); font-size:.86rem; line-height:1.5; }
+  .esg__flow figcaption { grid-column:1 / -1; margin-top:8px; color:var(--text-secondary); font-size:1rem; line-height:1.5; }
   .esg__forbidden { padding:18px; border:1px dashed var(--border-color); border-radius:var(--radius-panel); background:var(--surface-secondary); }
-  .esg__forbidden h3 { margin-bottom:10px; } .esg__forbidden p { margin:8px 0; font-size:.9rem; color:var(--text-secondary); }
+  .esg__forbidden h3 { margin-bottom:10px; } .esg__forbidden p { margin:8px 0; font-size:1rem; color:var(--text-secondary); }
   .esg__readiness-table-wrap,.esg__result-table-wrap { max-width:100%; overflow-x:auto; } .esg__readiness-table,.esg__result-table { width:100%; border-collapse:collapse; min-width:650px; }
-  .esg__readiness-table th,.esg__readiness-table td,.esg__result-table th,.esg__result-table td { padding:12px; border-bottom:1px solid var(--border-color); text-align:left; vertical-align:top; }
+  .esg__readiness-table th,.esg__readiness-table td,.esg__result-table th,.esg__result-table td { padding:12px; border-bottom:1px solid var(--border-color); text-align:left; vertical-align:top; font-size:1rem; }
   .esg__qualification { padding:14px 16px; border-radius:var(--radius-panel); background:var(--surface-secondary); }
   .esg__pair { margin:24px 0; padding:18px; border:1px solid var(--border-color); border-radius:var(--radius-feature); }
-  .esg__pair-start { display:grid; justify-items:center; gap:4px; } .esg__pair-start span,.esg__pair-arms span { color:var(--text-secondary); font-size:.82rem; }
+  .esg__pair-start { display:grid; justify-items:center; gap:4px; } .esg__pair-start span,.esg__pair-arms span { color:var(--text-secondary); font-size:1rem; }
   .esg__fork { width:50%; height:28px; margin:auto; border-left:2px solid currentColor; border-right:2px solid currentColor; border-top:2px solid currentColor; opacity:.35; transform:translateY(18px); }
   .esg__pair-arms { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px; }
   .esg__pair-arms > div { display:grid; gap:5px; padding:16px; border:1px solid var(--border-color); border-radius:var(--radius-panel); }
-  .esg__barrier { display:flex; align-items:center; gap:8px; margin:18px 0 8px; color:var(--text-secondary); font:600 .82rem/1.4 var(--font-mono); }
+  .esg__barrier { display:flex; align-items:center; gap:8px; margin:18px 0 8px; color:var(--text-secondary); font:600 1rem/1.4 var(--font-mono); }
   .esg__barrier i { flex:1; height:1px; background:currentColor; opacity:.35; }
-  .esg__pair figcaption { color:var(--text-secondary); font-size:.9rem; line-height:1.55; }
+  .esg__pair figcaption { color:var(--text-secondary); font-size:1rem; line-height:1.55; }
   .esg__matched-list { columns:2; padding-left:1.2rem; color:var(--text-secondary); }
   .esg__matched-list li { break-inside:avoid; margin:7px 0; }
   .esg__results { border-top-width:2px; }
   .esg__pending { padding:16px; border-radius:var(--radius-panel); background:var(--surface-secondary); }
   .esg__pending strong { font-size:1.15rem; }
-  .esg__boundary { color:var(--text-secondary); font-size:.92rem; }
+  .esg__boundary { color:var(--text-secondary); font-size:1rem; }
   .esg__history-link { margin-top:22px; }
   code { overflow-wrap:anywhere; }
 
