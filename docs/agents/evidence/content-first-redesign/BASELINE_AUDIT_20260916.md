@@ -122,6 +122,25 @@ All five Phase-A checklist rows now have durable evidence:
 
 Phase A is therefore complete: **10 / 10 weighted points**.
 
+## 9. Flow gateway pilot — expression brief
+
+Refresh for this acceptance pass: `main@d3631890f89c0fe62e249c088794b64a0b503f00`; PR #737 exact remote head `cc9d803888967dcea4b9079d7031896e9d3e64e8`. Current overlapping owners remain separate: #728 owns the Q17 W&B mirror component, #729 owns the Effective-State successor/navigation delta, and #734 owns the SD-LoRA acceleration/history explanation. None owns the Flow gateway source.
+
+**Page Expression Brief**
+
+- Reader: a first-time technical reader who needs the overall OpenEvo / SEED / environment mental model before opening experiment detail.
+- Page role: choice/gateway; it should orient and route, not imitate a marketing landing page or summarize every downstream result.
+- Starting state: “what is being compared here, on which tasks, and where should I go next?”
+- Target mental model: one experiment frame contains model, learning methods, task environments, matched conditions and scientific record; the deeper objects then separate into model / learning method / task-environment groups.
+- Next action: follow the connected experiment path or open one named research object; secondary evidence stays below the first comprehension layer.
+- Primary path: experiment identity → matched facts → grouped research objects → ordered experiment path → evidence ledger.
+- Secondary depth: implementation detail, historical evidence, exact reproduction and downstream result pages.
+- Semantic shape: choice gateway with one fact relationship, one grouped object map, one ordered path and one evidence ledger; these shapes must remain distinct instead of collapsing into equal cards.
+- Density plan: first viewport owns the experiment identity and matched frame; the next H2 must not become a competing center on 1280×633 or 390×844.
+- Acceptance: current `flow` Reader Contract, phone + desktop first-screen budgets, no page-level overflow, light/dark compatibility, keyboard-reachable disclosure, and exact preservation of the scientific-comparison boundary.
+
+Apple first-party translation used in this pass: WWDC25’s design-system guidance says hierarchy should come from layout and grouping rather than unnecessary decoration, related content should stay together as layouts adapt, and controls/navigation should support content rather than steal focus. For this gateway that means preserving the same information relationships across widths without copying Apple materials, typography, glass, or marketing-hero styling.
+
 ## 9. Flow gateway pilot — first implementation loop
 
 The first Flow pilot now tests the program’s core content-shape claim instead of adding another visual skin:
@@ -362,3 +381,18 @@ Rendered validation after the selector cleanup:
 - `git diff --check`: **PASS**.
 
 This closes Phase D at **15 / 15 points**. Phase C remains open because the same Agent cannot self-certify an independent phone/desktop cold read after reading the preference evidence. Phase E broad route-family migration therefore remains blocked; the next safe work should stay within non-human-gated preparation/acceptance or wait for an independent cold-read receipt rather than pretending the pilot exit is complete.
+
+## 18. Phase-C prerequisite closeout — four pilot contracts, independent review still open
+
+This pass closed the remaining documentation/contract prerequisite without claiming the human exit. The Flow gateway now has the same explicit Page Expression Brief shape already recorded for SD-LoRA, Server, and Q17; all four exact route owners are protected as four distinct Reader Contract modes (`choice`, `narrative`, `operational`, `focus`) rather than one visual template.
+
+A new executable Reader Contract regression asserts the exact route, mode, first-viewport selector, and resolver identity for all four pilot owners. That protects the semantic reason the pilots look different and makes a future “universal Hero/Card” normalization fail visibly.
+
+Acceptance on this candidate tree:
+
+- focused pilot/primitive/Reader Contract Vitest: **22 / 22 PASS**;
+- `npm run check`: **580 files, 0 errors** (2 pre-existing deprecation hints);
+- combined Server + site Reader Contract + SD-LoRA Chromium: **25 / 25 PASS**, including 1280×633, 390×844, light/dark, reduced motion, keyboard disclosure, topology and page-level overflow checks;
+- repository-owned Phase-A blind and Phase-B compare prompts were freshly generated for `flow`, `flow-sd-lora`, `flow-server`, and `capability-q17-frontier`.
+
+The prompt generation is preparation, not independent review. This Agent has already seen the preference evidence, so the phone + desktop cold-read row remains open and Phase C still contributes **0 / 20** weighted points. Broad Phase-E migration therefore remains blocked by the existing pilot exit rule.
