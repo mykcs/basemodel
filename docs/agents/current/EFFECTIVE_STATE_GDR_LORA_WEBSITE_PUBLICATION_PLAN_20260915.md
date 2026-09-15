@@ -688,11 +688,11 @@ final panel = locked
 - [x] 普通工作 push 只触发 public GitHub Actions preflight；本轮 implementation push `2a99cf7ab9beefcb422d79ba6dc83854220b53cf` 未移动 Vercel final-gate ref。
 - [ ] owner 需要看页面时，优先按当前 policy 用轻量 non-authoritative review Preview。
 - [x] 页面达到 candidate-ready 后已再次刷新 current main=`d3631890f89c0fe62e249c088794b64a0b503f00` 与 remote PR head，无 drift 后形成 implementation candidate `2a99cf7ab9beefcb422d79ba6dc83854220b53cf`。
-- [ ] Public PR CI 必须在 exact head green。
-- [ ] 运行 `node scripts/request-vercel-final-gate.mjs 729` 请求唯一 authoritative exact-head Vercel final gate。
-- [ ] Vercel Preview 必须 `READY` 且 commit SHA exact match PR head。
-- [ ] hosted route 390 / 768 / 1440 cold-read PASS；无 overflow / stale Pending / scientific contradiction。
-- [ ] merge 前再读一次 upstream science：如果 formal state 已从 not-started 变成 running/sealed，分类哪些 website state 必须更新，不能合并明显 stale 的“尚未启动”。
+- [x] Public PR CI 必须在 exact head green。
+- [x] 运行 `node scripts/request-vercel-final-gate.mjs 729` 请求唯一 authoritative exact-head Vercel final gate。
+- [x] Vercel Preview 必须 `READY` 且 commit SHA exact match PR head。
+- [x] hosted route 390 / 768 / 1440 cold-read PASS；无 overflow / stale Pending / scientific contradiction。
+- [x] merge 前再读一次 upstream science：如果 formal state 已从 not-started 变成 running/sealed，分类哪些 website state 必须更新，不能合并明显 stale 的“尚未启动”。
 - [ ] expected-head guard 合并；不要自动 merge 未审阅的 scientific copy。
 - [ ] Production READY 后打开 canonical route 做最终 smoke。
 - [ ] Production body / metadata / Study navigation / adjacent Bounded / Gated-Delta routes 一致后才宣布 website publication complete。
@@ -719,7 +719,7 @@ Provider 状态、Preview URL、deployment ID 不写成长期科学事实；只�
 - [x] Study 目录没有伪造第六个 completed experiment。
 - [x] active Chinese route responsive / theme / accessibility / no-overflow PASS；不意外恢复英文 Production surface。
 - [x] focused semantic tests、Reader Contract、copy audit、Astro check、build、overflow、浏览器 acceptance 全 PASS。
-- [ ] exact-head Public PR CI 与 authoritative Vercel final gate PASS。
+- [x] exact-head Public PR CI 与 authoritative Vercel final gate PASS。
 - [ ] merge 后 Production canonical route、metadata、navigation、adjacent pages smoke PASS。
 - [ ] 本文件所有与“预结果页面交付”相关的 `[ ]` 已有真实证据改为 `[x]`。
 
@@ -883,3 +883,16 @@ Files changed: src/components/research/OpenEvoGatedDeltaSdLoraExplainer.astro; t
 Validation: Public PR CI run 35033879004 turned browser shards 1/6/8 green after the readability repair and left only shard 5 failing. The remaining failure was : the new successor cross-link was scientifically useful but sat in the historical Gated-Delta hero. The link is retained but moved below the recurrence/evidence section so the historical page keeps its existing phone first-screen attention budget instead of weakening the Reader Contract. Local focused Chromium: historical Gated-Delta/Bounded successor links 1/1 PASS; phone Site Reader Contract 1/1 PASS; npm run build PASS; git diff --check PASS.
 Browser/provider: run 35033879004 = FAIL due only to the pre-repair shard-5 attention-budget violation; Vercel final gate still NOT_REQUESTED.
 Scientific state: PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START; no treatment/claim/authority change; formal result remains pending.
+
+### 2026-09-16 07:27 +08
+BaseModel main: `d3631890f89c0fe62e249c088794b64a0b503f00`
+PR exact head validated before this checklist-closeout commit: `ecd4cf36213578b357e2380abbaf9b843fd5f67e`
+OpenEvo #502/#510: `99dd0fdce328682fb0218aa084d3d2b0d0b7ae49` / `5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa`
+Checklist items closed: Phase H exact-head Public PR CI; authoritative final-gate request; Vercel exact-head deployment READY; hosted 390/768/1440 cold-read; pre-merge upstream science refresh; DoD exact-head Public CI + Vercel gate.
+Files changed: this checklist only.
+Validation: exact candidate `ecd4cf…` Public PR CI run `35034649377` PASS: public-plan, public-deterministic, browser shards 1–8, and public-ci-gate all green. `node scripts/request-vercel-final-gate.mjs 729` returned `ALREADY_TARGETED` with head `ecd4cf…` and `vercel=success`; `origin/ci/vercel-gate-base=d363189…`, `origin/ci/vercel-gate-final=ecd4cf…`.
+Browser/provider: GitHub deployment `6470437058` binds ref/SHA `ecd4cf…`, environment `Preview`, state `success`. Logged-in Vercel hosted canonical route cold-read PASS at 390×844 / 768×1024 / 1440×1000: one H1, no page-level overflow, Pending visible, `1.052` + `657.836` visible, no formal fake-zero, no winner sentence. Anonymous browser is intentionally stopped by Vercel Authentication and was not misclassified as website failure.
+Scientific state: fresh #502/#510 still `PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START`; formal rows=`0`; final-panel access=`0`; formal run launched=`false`; W&B scientific authority=`false`. No website scientific state change required before merge.
+Human decision needed: scientific copy still requires review before expected-head merge; this automation must not self-merge it.
+Next safe item: wait for scientific-copy review/owner acceptance, then expected-head guard merge; after Production READY, run canonical + metadata + Study + adjacent Bounded/Gated-Delta smoke.
+Release-evidence note: provider run/deployment identifiers live here as a release receipt. The checklist-closeout commit that follows must itself rerun exact-head provider gates before merge; no later evidence-only source commit should be added after those gates, because that would invalidate the exact-head proof.
