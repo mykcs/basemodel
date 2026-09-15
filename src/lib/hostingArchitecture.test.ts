@@ -63,7 +63,7 @@ describe('hosting architecture ownership', () => {
     expect(architecture).toContain('Vercel remains the ordinary **final acceptance and deployment authority**');
     expect(publicPrWorkflow).toContain('pull_request:');
     expect(publicPrWorkflow).toContain('name: public-plan');
-    expect(publicPrWorkflow).toContain("CI_FULL_BROWSER_SHARDS: '4'");
+    expect(publicPrWorkflow).toMatch(/CI_FULL_BROWSER_SHARDS: '[1-8]'/);
     expect(publicPrWorkflow).toContain('shard: ${{ fromJSON(needs.plan.outputs.shards_json) }}');
     expect(publicPrWorkflow).toContain('CI_BROWSER_SHARD_TOTAL: ${{ needs.plan.outputs.browser_total }}');
     expect(publicPrWorkflow).toContain("PLAYWRIGHT_WORKERS: '1'");

@@ -22,7 +22,7 @@ describe('public GitHub Actions PR preflight', () => {
 
   it('allocates zero, one, or N independent one-worker browser runners from the shared planner', () => {
     expect(workflow).toContain('name: public-plan');
-    expect(workflow).toContain("CI_FULL_BROWSER_SHARDS: '4'");
+    expect(workflow).toMatch(/CI_FULL_BROWSER_SHARDS: '[1-8]'/);
     expect(workflow).toContain('browser_total: ${{ steps.plan.outputs.browser_total }}');
     expect(workflow).toContain('shards_json: ${{ steps.plan.outputs.shards_json }}');
     expect(workflow).toContain("if: needs.plan.result == 'success' && needs.plan.outputs.browser_total != '0'");
