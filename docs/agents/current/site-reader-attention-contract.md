@@ -85,6 +85,17 @@
 
 这条规则补的是 Gate 的激励边界：**不要为了让自动化数字好看而把内容推远。**
 
+### 5.3 `firstViewportSelector` 绑定主信息，不绑定顺手包住它的高容器
+
+`firstViewportSelector` 的对象是“第一屏必须被看见的主信息 owner”，不是“包含这条信息的最大 section”。H1 已由浏览器 Gate 单独检查；selector 应优先指向仍能独立表达 `firstViewportGoal` 的**最小稳定语义元素**，例如承担核心解释的 lede / status / choice group，而不是为了方便把后续步骤图、次要说明、导航或证据卡一起包进去。
+
+- 如果一个 wrapper 同时包含第一层主信息和第二层内容，默认不要把整个 wrapper 声明为 `firstViewportSelector`；否则 Gate 会合理要求这个完整选中元素都进入第一屏。
+- 也不能把 selector 缩成一个标题词、装饰 span 或不完整句子来“骗过”几何检查；被选中的元素本身必须足以让零上下文读者拿到 `firstViewportGoal`。
+- 当 Gate 因选中元素过高而失败时，先判断失败来自**页面真的把过多同级内容塞进第一屏**，还是来自**selector 误把后续内容算进主信息 owner**。只有后一种情况才应收窄 selector；前一种情况仍要修页面层级。
+- selector 变更后必须继续在桌面和手机真实浏览器中验证：H1、被选中的主信息、横向溢出和 `firstViewportBudget` 都满足当前 contract。
+
+这条粒度规则避免两种相反的假通过：一边是“主信息其实已可见，但高 section 把后续内容也算进几何失败”；另一边是“把 selector 缩到无意义碎片，让过载页面假装第一屏已经清楚”。
+
 ## 6. 新页面的 stopping rule
 
 完成声明必须同时满足：
