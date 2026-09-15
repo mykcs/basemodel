@@ -1,6 +1,6 @@
 # BaseModel CI latency optimization — 2026-09-15
 
-Status: **execution plan + benchmark authority for this workline**  
+Status: **implementation + benchmark qualification complete; release closeout in progress**
 Owner goal: make multi-Agent BaseModel iteration visibly faster without moving ordinary CI onto the owner's MacBook and without weakening exact-head release acceptance.
 
 ## Correction-to-action witness
@@ -64,3 +64,17 @@ deploy job (artifact only; candidate code does NOT execute)
 The deploy token lives only in a GitHub Actions secret. Opaque project/team identifiers live only in repository Actions variables. No token, project ID, team ID, bypass/share URL, or temporary `_vercel_share` value may be committed or written into PR/Issue prose.
 
 Acceptance: one real workflow dispatch must build an exact PR head on GitHub-hosted compute, deploy the prebuilt artifact to the dedicated review project, reach Vercel `READY`, preserve `noindex`, and leave `ci/vercel-gate-final`, Production, and required-status authority untouched.
+
+## Qualification result — 2026-09-15
+
+Fresh current-suite timing evidence covers **197/197** canonical Chromium identities with zero missing or duplicate identities and retries=0. The full-matrix benchmark held the executor, image, test population, assertions, worker count, and timing scheduler fixed; only the configured shard total changed.
+
+| shards | exact head | workflow run | max browser step | max browser job | workflow wall | coverage |
+| ---: | --- | ---: | ---: | ---: | ---: | --- |
+| 4 | `66ddf8b8d6dd3d7453796f333a4c6da60f3bd813` | `34986898313` | 138 s | 190 s | 209 s | 197/197 |
+| 6 | `88ad6b4eba11043f3e451ed79b0278531a96ac19` | `34987545968` | 102 s | 141 s | 159 s | 197/197 |
+| 8 | `9f5ccc18ba0bb685fd12be55fd05a6eb6280dbcf` | `34988052276` | **80 s** | **119 s** | **139 s** | 197/197 |
+
+Selection rule result: **8 shards wins**. Six shards is not within 10% of the fastest 80 s result (threshold 88 s), so there is no smaller qualifying configuration. Relative to the earlier ~191 s public-GHA browser tail, the selected full path reduces the browser critical path by about **58%**.
+
+Treatment A is also qualified inside these runs: the dependency-free planner runs before browser allocation, browser jobs independently re-evaluate the plan, and full CI stayed green under the new topology. Post-merge canaries still verify real skip=0 and focused=1 allocation on ordinary PRs.
