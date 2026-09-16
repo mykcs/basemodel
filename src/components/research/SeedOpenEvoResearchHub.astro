@@ -19,8 +19,8 @@ const objectGroups = [
   {
     label: t('学习方法', 'Learning methods'),
     items: [
-      { title:'SEED', body:t('把任务后的成功经验整理成技能，再通过两种 Stage 2 参数优化步骤（OPD / GRPO）更新模型参数。','Turns successful hindsight experience into skills, then updates model parameters through OPD / GRPO.'), href:p('/research/seed-openevo/flow/seed/') },
-      { title:'OpenEvo', body:t('封存任务证据，把学习产物交给后续任务继续使用。','Seals task evidence and carries learned artifacts into later tasks.'), href:p('/research/seed-openevo/flow/openevo/') },
+      { title:'SEED', body:t('把任务后的成功经验整理成技能，再通过后续策略优化更新模型参数；OPD / GRPO 的具体做法留到 SEED 方法页。','Turns successful hindsight experience into skills, then updates model parameters through later policy optimization; the SEED method page explains the specific OPD / GRPO steps.'), href:p('/research/seed-openevo/flow/seed/') },
+      { title:'OpenEvo', body:t('先封存任务证据；在后续 Stage 2 中，文字记忆、技能、行为规则和 LoRA 参数更新分别经过当前规则检查，被采用的状态才进入下一批任务。','Seals task evidence first; in later Stage 2, text memory, skills, behavior rules, and LoRA parameter updates are checked separately, and adopted state enters the next task batch.'), href:p('/research/seed-openevo/flow/openevo/') },
     ],
   },
   {
@@ -35,18 +35,18 @@ const objectGroups = [
 <div class="mission-page plain-mission-hub">
   <SeedOpenEvoMissionHero locale={locale} compact />
 
-  <section class="mission-section" id="training-design" aria-labelledby="training-design-title">
-    <div class="mission-section__heading"><span>02</span><h2 id="training-design-title">{t('训练设计', 'Training design')}</h2></div>
-    <p class="section-intro">{t('下面用 WebShop 展开两阶段：Stage 1 先让 Qwen 自己完成购物任务，任务结束后外部分析模型才读取已保存的轨迹做复盘，并把轨迹与复盘交给后续训练；Stage 2 再决定如何持续更新。外部分析模型不能在做题过程中替 Qwen 选动作；这六步是 WebShop 的具体例子，不自动代表 ALFWorld 使用同一交互流程。', 'The WebShop example below has two stages. Stage 1 lets Qwen complete the shopping task itself; only after the task ends may an external analysis model review the saved trajectory and hand that evidence to later training. Stage 2 then decides how learning continues. The external model never chooses actions for Qwen during the task, and this six-step WebShop example does not imply that ALFWorld uses the same interaction flow.')}</p>
-    <SeedOpenEvoTrainingDesignOverview locale={locale} />
-  </section>
-
   <section class="mission-section" id="questions">
     <div class="mission-section__heading"><span>01</span><h2>{t('研究对象', 'Research objects')}</h2></div>
     <p class="section-intro">{t('这项研究固定一个模型，对比两种学习方法，并在两个任务环境里测量它们。','This study pins one model, compares two learning methods, and measures them in two task environments.')}</p>
     <dl class="object-map">
       {objectGroups.map((group)=><div class="object-map__row"><dt>{group.label}</dt><dd>{group.items.map((item)=><a href={item.href}><strong>{item.title}</strong><span>{item.body}</span></a>)}</dd></div>)}
     </dl>
+  </section>
+
+  <section class="mission-section" id="training-design" aria-labelledby="training-design-title">
+    <div class="mission-section__heading"><span>02</span><h2 id="training-design-title">{t('训练设计', 'Training design')}</h2></div>
+    <p class="section-intro">{t('下面用 WebShop 展开两阶段：Stage 1 先让 Qwen 自己完成购物任务，任务结束后外部分析模型才读取已保存的轨迹做复盘，并把轨迹与复盘交给后续训练；Stage 2 再决定如何持续更新。外部分析模型不能在做题过程中替 Qwen 选动作；这六步是 WebShop 的具体例子，不自动代表 ALFWorld 使用同一交互流程。', 'The WebShop example below has two stages. Stage 1 lets Qwen complete the shopping task itself; only after the task ends may an external analysis model review the saved trajectory and hand that evidence to later training. Stage 2 then decides how learning continues. The external model never chooses actions for Qwen during the task, and this six-step WebShop example does not imply that ALFWorld uses the same interaction flow.')}</p>
+    <SeedOpenEvoTrainingDesignOverview locale={locale} />
   </section>
 
   <section class="mission-section" id="site-map">

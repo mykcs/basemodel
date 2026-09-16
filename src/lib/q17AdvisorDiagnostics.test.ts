@@ -25,8 +25,8 @@ describe('Q17 advisor diagnostics publication', () => {
 
   it('keeps the result and boundary visible in both language routes', () => {
     const component = read('src/components/research/OpenEvoQ17AdvisorDiagnostics.astro');
-    expect(component).toContain('同做 32 道 WebShop 题，R127 与 R128 平均只差 4.18 分');
-    expect(component).toContain('On the same 32 WebShop tasks, R127 and R128 differed by only 4.18 points on average');
+    expect(component).toContain('相邻两个模型状态同做 32 题：63.58 分与 59.41 分');
+    expect(component).toContain('Two adjacent model states on the same 32 tasks: 63.58 and 59.41');
     expect(component).toContain('平均分差的 95% 统计范围是 −17.13 ～ +8.00');
     expect(component).toContain('候选更新通过工程与数据检查后直接带入下一轮');
     expect(component).toContain('/q17-directapply-analysis/');
@@ -41,5 +41,6 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(component).toContain('The result was rerun on another GPU');
     expect(component).toContain('f6fa4d05b7433685088ac59b1b488eecb42c781e');
     expect(component).not.toContain('任务能力发生了重排');
+    expect(component).not.toContain('平均只差 4.18 分');
   });
 });

@@ -35,6 +35,9 @@ const purpose = isExperimentHub && experiment && !compact ? experiment.motivatio
 const contextExperimentTitle = route === 'q17-directapply-frontier' && compact
   ? (zh ? '1.7B · 直接采用候选更新' : '1.7B · direct candidate adoption')
   : experiment?.title[locale];
+const contextRecordLabel = route === 'q17-directapply-frontier' && compact
+  ? (zh ? '相邻两个模型状态 · 32 题同题诊断' : 'Two adjacent model states · 32-task same-task diagnostic')
+  : record.label[locale];
 const resultLinks = experiment ? experiment.childLinks.filter((link) => link.role === 'result') : [];
 const hubResults = experiment && resultLinks.length === 0
   ? [{ role: 'result' as const, label: { zh: '本实验结果与分析', en: 'Experiment result and analysis' }, href: experiment.primaryHref }]
@@ -53,7 +56,7 @@ const hubEvidence = experiment
         {isExperimentHub ? (
           <strong>{experiment.title[locale]}</strong>
         ) : (
-          <><a href={localePath(locale, experiment.primaryHref)}>{contextExperimentTitle}</a><span aria-hidden="true"> / </span><strong>{record.label[locale]}</strong></>
+          <><a href={localePath(locale, experiment.primaryHref)}>{contextExperimentTitle}</a><span aria-hidden="true"> / </span><strong>{contextRecordLabel}</strong></>
         )}
       </>
     ) : (

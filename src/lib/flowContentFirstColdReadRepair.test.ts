@@ -13,6 +13,7 @@ describe('Flow content-first cold-read repair', () => {
     for (const phrase of [
       'SEED 把任务后的成功经验继续写进模型参数',
       'OpenEvo 先封存任务证据',
+      '文字记忆、技能、行为规则和 LoRA 参数更新',
       'ALFWorld（文本具身任务）',
       'WebShop（网页购物任务）',
       '条件没对齐，分数差异就不能归因于方法',
@@ -25,7 +26,8 @@ describe('Flow content-first cold-read repair', () => {
     expect(hub).toContain('不自动代表 ALFWorld 使用同一交互流程');
     expect(hub).not.toContain('外部 analyzer 才能复盘');
     expect(hub).not.toContain('step loop');
-    expect(hub.indexOf('id="training-design"')).toBeLessThan(hub.indexOf('id="questions"'));
+    expect(hub.indexOf('id="questions"')).toBeLessThan(hub.indexOf('id="training-design"'));
+    expect(hub).toContain('OPD / GRPO 的具体做法留到 SEED 方法页');
   });
 
   it('keeps causal attribution visible without opening a disclosure', () => {
@@ -39,7 +41,7 @@ describe('Flow content-first cold-read repair', () => {
   });
 
   it('connects Stage 1 evidence to the later four-state Stage 2 without rewriting early experiments', () => {
-    for (const term of ['Text Memory 保存文字经验', 'Skill Bundle 提供可复用技能', 'Agent System 给出全局行为规则', 'SD-LoRA 写入参数更新']) {
+    for (const term of ['文字记忆、技能、全局行为规则或 LoRA 参数的候选更新', '当前实验规则检查这些候选是否采用', '只有采用后的状态才装入下一批任务']) {
       expect(design).toContain(term);
     }
     expect(design).toContain('早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态');

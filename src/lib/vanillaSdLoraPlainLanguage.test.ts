@@ -10,7 +10,7 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
       'SD-LoRA：成功轨迹怎样变成候选 LoRA 参数',
       'LoRA 是冻结基础模型、只训练少量低秩适配参数的方法',
       'WebShop（网页购物任务）',
-      '训练出候选参数，不等于下一轮已经用了它',
+      '训练出候选参数，不等于下一轮已经采用它',
       '候选参数不等于能力一定提升',
       '普通 LoRA 与 SD-LoRA 的参数区别',
       'Scalable Decoupled LoRA',
@@ -28,7 +28,7 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
   });
 
   it('keeps the reusable slide mechanism-first rather than adding duplicate orientation inside it', () => {
-    expect(slide).toContain('Vanilla SD-LoRA 的一轮参数更新');
+    expect(slide).toContain('一轮 SD-LoRA 参数更新');
     expect(slide).not.toContain('为什么 OpenEvo 里需要 SD-LoRA？');
     expect(slide).not.toContain('不是四张卡片排成一排');
     expect(mechanism).not.toContain('那 SD-LoRA 到底是什么？');
@@ -49,10 +49,10 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
   it('keeps the long-form reading path human-first while leaving exact fields in the technical layer', () => {
     for (const phrase of [
       '一轮开始前，模型带着什么？',
-      '128 次尝试里，哪些会真的拿来训练参数？',
-      'SD-LoRA 真正怎么改参数？',
+      '128 次尝试里，哪些会进入参数训练？',
+      'SD-LoRA 怎样更新参数？',
       '训练结束后，下一轮到底用新参数还是旧参数？',
-      'LoRA 训练出来了，不等于下一轮真的用了它',
+      'LoRA 训练完成和下一轮采用它是两件事',
       '旧方向没被重写，也不代表能力会一直变好',
     ]) expect(mechanism).toContain(phrase);
     for (const exactBoundary of ['paper_equivalent=false', 'rehearsal_free=false', 'routing_mode=single_cumulative_adapter']) {

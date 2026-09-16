@@ -47,7 +47,7 @@ const gpuFacts = [
   <header class="server-hero" data-reader-primary>
     <p class="server-hero__context">{t('2026-09-15 22:10（UTC+8）· 静态快照，不是实时监控', '2026-09-15 22:10 (UTC+8) · static snapshot, not live monitoring')}</p>
     <h1>{t('项目持久盘还剩约 0.99 TiB', 'About 0.99 TiB remains on the project persistent disk')}</h1>
-    <p class="server-hero__status">{t('当前没有紧急扩容信号。下一步先把大型实验产物归档并验证可以恢复；需要回收空间时，只生成精确清单，不会自动删除。', 'There is no urgent expansion signal. First archive large experiment outputs and verify they can be restored. If space must be reclaimed, generate an exact list only; nothing is deleted automatically.')}</p>
+    <p class="server-hero__status">{t('按这次静态容量快照，目前没有紧急扩容信号；这不代表未来不会增长。先归档大型实验产物并验证可恢复；需要回收空间时，只生成写清对象、字节数和恢复证据的清单，不自动删除。', 'There is no urgent expansion signal. First archive large experiment outputs and verify they can be restored. If space must be reclaimed, generate an exact list only; nothing is deleted automatically.')}</p>
 
     <dl class="server-hero__facts research-fact-band" style="--research-fact-columns:3" aria-label={t('当前文件系统快照', 'Current filesystem snapshot')}>
       <div><dt>{t('总容量', 'Capacity')}</dt><dd>2.0 TiB</dd></div>
@@ -55,13 +55,13 @@ const gpuFacts = [
       <div><dt>{t('可用', 'Available')}</dt><dd>≈ 0.99 TiB</dd></div>
     </dl>
 
-    <p class="server-hero__boundary"><strong>{t('安全边界：', 'Safety boundary: ')}</strong>{t('远端可恢复不等于本地可删；任何删除都要单独批准同一版精确清单。私有归档空间不足也不能自动把数据公开；未合并的草稿规则不能替代正式规则。', 'Remote recoverability does not make a local copy deletable; any deletion needs separate approval of the same exact list. Insufficient private archive capacity also cannot make data public automatically, and an unmerged draft cannot replace the formal authority.')}</p>
+    <p class="server-hero__boundary"><strong>{t('安全边界：', 'Safety boundary: ')}</strong>{t('远端可恢复不等于本地可删；任何删除都要单独批准同一版清单，清单写明对象、字节数和恢复证据。私有归档空间不足也不能自动把数据公开；未合并的草稿规则不能替代正式规则。', 'Remote recoverability does not make a local copy deletable; any deletion needs separate approval of the same exact list. Insufficient private archive capacity also cannot make data public automatically, and an unmerged draft cannot replace the formal authority.')}</p>
 
     <div class="routine-entry">
       <div class="routine-entry__copy">
         <span>{t('默认操作', 'Default operation')}</span>
         <strong>{t('运行一次例行维护', 'Run one routine maintenance pass')}</strong>
-        <p>{t('先只读检查空间，以及哪些文件仍被进程、容器或配置使用；再把已完成实验归档并验证恢复；最后只生成回收清单。只有删除、公开可见性，或实验属于谁、对应哪次正式运行不清楚时才停下来请你决定。', 'First check storage and live references read-only, then archive completed experiments and verify restore; finally generate a reclaim list only. Stop for an owner decision on deletion, visibility, experiment identity, or unresolved ownership.')}</p>
+        <p>{t('先只读检查空间和活跃引用；再归档已完成实验并验证恢复；最后只生成回收清单。删除、公开可见性、实验身份或归属不清时才停下来请你决定。', 'First check storage and live references read-only, then archive completed experiments and verify restore; finally generate a reclaim list only. Stop for an owner decision on deletion, visibility, experiment identity, or unresolved ownership.')}</p>
       </div>
       <details class="routine-entry__prompt">
         <summary>{t('复制维护指令', 'Copy maintenance instructions')}</summary>
@@ -129,7 +129,9 @@ const gpuFacts = [
       <p>{t('正式 OpenEvo 实验的身份原件始终来自 openevo-experiment current main 的 canonical Experiment Passport / Registry。FROZEN Passport 不原地改写；current-format Run Manifest 必须与 experiment_id + passport_sha256 精确交叉绑定。member manifest、content-addressed DAG 和 lifecycle projection 都只能是绑定到 Passport 的派生层：cache hit 不能自动授权科学复用，远端可恢复也不能自动授权删除。以后 Passport v2 / DAG / lifecycle 正式合入 main 或被当前 campaign authority 采用后，总入口会先解析新 authority 再执行；未合并 Draft 不会自己升级成全项目标准。', 'The identity original for formal OpenEvo experiments always comes from the canonical Experiment Passport / Registry on openevo-experiment current main. A FROZEN Passport is not edited in place; current-format Run Manifests must exactly cross-link experiment_id + passport_sha256. Member manifests, content-addressed DAGs, and lifecycle projections are derived layers bound to the Passport: a cache hit cannot authorize scientific reuse, and remote recoverability cannot authorize deletion. When a Passport v2/DAG/lifecycle successor is formally merged to main or adopted by current campaign authority, the routine entry resolves that newer authority before acting; an unmerged Draft does not promote itself to project-wide standard.')}</p>
     </details>
 
-    <article class="q17-case">
+    <details class="q17-case q17-case-depth">
+      <summary>{t('Q17 存储案例：320.9 GiB 里约 304.66 GiB 是 checkpoint', 'Q17 storage example: about 304.66 GiB of 320.9 GiB is checkpoints')}</summary>
+      <article class="q17-case__body">
       <div class="q17-case__header">
         <div>
           <p>{t('真实案例 · Q17 1.7B DirectApply', 'Real case · Q17 1.7B DirectApply')}</p>
@@ -148,17 +150,18 @@ const gpuFacts = [
         <span><i class="legend-other"></i>{t('其他 · 约 9 GiB', 'other · about 9 GiB')}</span>
       </div>
       <dl class="q17-evidence">
-        <div><dt>795</dt><dd>{t('member 记录；backfill 没有重新 hash 304+ GiB 大权重。', 'member records; backfill did not re-hash 304+ GiB of large weights.')}</dd></div>
-        <div><dt>14 / 24 / 28</dt><dd>{t('三个早期 round 已做成员级 exact recovery 验证。', 'three early rounds have member-level exact recovery proof.')}</dd></div>
-        <div><dt>131</dt><dd>{t('个 deferred archive backlog 仍要完成远端收尾；源数据约 307.03 GiB。', 'deferred archive backlogs still need remote closeout; source data is about 307.03 GiB.')}</dd></div>
-        <div><dt>1.69 GiB</dt><dd>{t('第一批 7 个临时/重复文件已经进入 exact reclaim proposal，但 delete_authorized=false。', 'the first 7 temporary/duplicate files are in an exact reclaim proposal, but delete_authorized=false.')}</dd></div>
+        <div><dt>795</dt><dd>{t('795 条产物成员记录；补登记时没有重新计算 304+ GiB 大权重的 hash。', 'member records; backfill did not re-hash 304+ GiB of large weights.')}</dd></div>
+        <div><dt>14 / 24 / 28</dt><dd>{t('第 14 / 24 / 28 轮已逐项验证远端副本能够恢复。', 'three early rounds have member-level exact recovery proof.')}</dd></div>
+        <div><dt>131</dt><dd>{t('批产物仍待完成远端归档；源数据约 307.03 GiB。', 'deferred archive backlogs still need remote closeout; source data is about 307.03 GiB.')}</dd></div>
+        <div><dt>1.69 GiB</dt><dd>{t('第一批 7 个临时/重复文件已列入精确回收提案，但仍未批准删除。', 'the first 7 temporary/duplicate files are in an exact reclaim proposal, but delete_authorized=false.')}</dd></div>
       </dl>
-      <p class="q17-case__note">{t('按早期 bundle 的真实压缩比估算，131 个 backlog 还需要大约 154–184 GiB 的远端传输。这只是容量规划，不是“可以删”的证据。私有 Hugging Face 仍是默认归档目标；如果私有容量不足，流程必须停下来向负责人报告，不能为了省空间自动把数据公开。', 'Based on observed early-bundle compression, the 131 backlogs imply roughly 154–184 GiB of remote transfer. This is capacity planning, not deletion evidence. Private Hugging Face remains the default archive target; if private capacity is insufficient, the workflow must stop and report to the owner rather than making data public automatically.')}</p>
-    </article>
+      <p class="q17-case__note">{t('按早期归档包的真实压缩比估算，131 批待归档产物还需要大约 154–184 GiB 的远端传输。这只是容量规划，不是“可以删”的证据。私有 Hugging Face 仍是默认归档目标；如果私有容量不足，流程必须停下来向负责人报告，不能为了省空间自动把数据公开。', 'Based on observed early-bundle compression, the 131 backlogs imply roughly 154–184 GiB of remote transfer. This is capacity planning, not deletion evidence. Private Hugging Face remains the default archive target; if private capacity is insufficient, the workflow must stop and report to the owner rather than making data public automatically.')}</p>
+      </article>
+    </details>
 
     <details class="operator-detail">
       <summary>{t('复制“实验收尾归档”入口 Prompt', 'Copy campaign-closeout entry prompt')}</summary>
-      <p>{t('这个入口会推进 Passport、远端归档和恢复验证，但不会自动删除本地文件。', 'This entry point advances Passport, remote archive, and restore verification, but never deletes local files automatically.')}</p>
+      <p>{t('这个入口会推进实验身份证（Passport）、远端归档和恢复验证，但不会自动删除本地文件。', 'This entry point advances Passport, remote archive, and restore verification, but never deletes local files automatically.')}</p>
       <pre data-copy-label={t('复制实验收尾 Prompt', 'Copy campaign-closeout prompt')}><code>{closeoutPrompt}</code></pre>
     </details>
   </section>
@@ -229,7 +232,7 @@ const gpuFacts = [
   </section>
 
   <details class="measurement-notes">
-    <summary>{t('数据与 authority', 'Data and authority')}</summary>
+    <summary>{t('数据与规则来源', 'Data and authority')}</summary>
     <p>{t('2026-09-15 22:10（UTC+8）的持久文件系统、CPU、RAM、GPU 库存来自同一次只读服务器检查；Q17 的 320.9 GiB、304.66 GiB checkpoint、795 member、131 backlog 和第一批 1.69 GiB reclaim proposal 来自 openevo-experiment 的 Passport / lifecycle 审计。服务器共享删除安全仍由私有基础设施 authority 决定。这个网页只负责把状态和入口说清楚，不是科学或删除 authority。', 'The 2026-09-15 22:10 (UTC+8) persistent-filesystem, CPU, RAM, and GPU inventory comes from one read-only server check. Q17’s 320.9 GiB run, 304.66 GiB of checkpoints, 795 members, 131 backlogs, and first 1.69 GiB reclaim proposal come from the openevo-experiment Passport/lifecycle audit. Shared-server deletion safety remains owned by private infrastructure authority. This page explains status and entry points; it is neither scientific nor deletion authority.')}</p>
     <p><code>docs/agents/current/server-storage-pressure-audit-sop.md</code><br/><code>docs/agents/current/server-artifact-governance-and-reclaim-sop.md</code></p>
   </details>
@@ -293,7 +296,7 @@ const gpuFacts = [
 
   .passport-authority-note{max-width:900px;margin:1rem 0 1.5rem;padding:.85rem 1rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.passport-authority-note summary{cursor:pointer;font-size:.84rem;font-weight:780}.passport-authority-note p{margin:.35rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.7}
 
-  .q17-case{margin-top:1.5rem;padding:1.15rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}
+  .q17-case{margin-top:1.5rem;padding:1.15rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}.q17-case-depth>summary{cursor:pointer;font-weight:780;line-height:1.45}.q17-case-depth[open]>summary{margin-bottom:1rem}.q17-case__body{margin:0}
   .q17-case__header{display:flex;align-items:end;justify-content:space-between;gap:1rem}
   .q17-case__header p{margin:0;color:var(--muted);font-size:.7rem}.q17-case__header h3{margin:.22rem 0 0;font-size:clamp(1.15rem,2.4vw,1.7rem)}
   .q17-case__header>strong{color:var(--accent-deep);font-size:clamp(1.6rem,3vw,2.5rem);letter-spacing:-.045em;white-space:nowrap}
