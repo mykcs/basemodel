@@ -8,7 +8,7 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
   it('starts from the parameter-write job and keeps the detailed LoRA comparison at optional depth', () => {
     for (const phrase of [
       'SD-LoRA：成功轨迹怎样变成候选 LoRA 参数',
-      'LoRA 是冻结基础模型、只训练一小组适配参数的方法',
+      'LoRA 是冻结基础模型、只训练少量适配参数的方法',
       'WebShop（网页购物任务）',
       '筛选成功轨迹',
       '训练候选参数',

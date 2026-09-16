@@ -17,7 +17,8 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
   await expect(vanillaSeries).toHaveAttribute('aria-current', 'page');
   await expect(series.locator('a[href="/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/"]')).toHaveCount(0);
   await expect(page.locator('h1')).toContainText('SD-LoRA：成功轨迹怎样变成候选 LoRA 参数');
-  await expect(body).toContainText('LoRA 是冻结基础模型、只训练一小组适配参数的方法');
+  await expect(body).toContainText('LoRA 是冻结基础模型、只训练少量适配参数的方法');
+  await expect(body).toContainText('任务结束后还可能分别更新文字记忆、可复用技能和行为规则；本页只追踪参数这一路');
   await expect(body).toContainText('WebShop（网页购物任务）');
   const primer = body.locator('#what-is-sd-lora');
   await expect(primer.locator('summary')).toContainText('普通 LoRA 与 SD-LoRA 的参数区别');

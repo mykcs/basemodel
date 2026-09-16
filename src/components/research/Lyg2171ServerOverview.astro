@@ -55,13 +55,13 @@ const gpuFacts = [
       <div><dt>{t('可用', 'Available')}</dt><dd>≈ 0.99 TiB</dd></div>
     </dl>
 
-    <p class="server-hero__boundary"><strong>{t('安全边界：', 'Safety boundary: ')}</strong>{t('恢复成功不等于已获删除许可：任何删除都要负责人单独批准同一版清单；把私有数据改成公开也必须单独批准。', 'Remote recoverability does not make a local copy deletable; any deletion needs separate approval of the same exact list. Insufficient private archive capacity also cannot make data public automatically, and an unmerged draft cannot replace the formal authority.')}</p>
+    <p class="server-hero__boundary"><strong>{t('归档 = 把科研产物放到可恢复的远端并重新读回验证；回收 = 删除本地副本。', 'Archive means placing research artifacts on a recoverable remote and reading them back again; reclaim means deleting a local copy.')}</strong> {t('恢复成功不等于已获删除许可：任何回收都要负责人单独批准同一版精确清单；把私有数据改成公开也必须单独批准。', 'Successful recovery does not authorize reclaim: any deletion needs separate approval of the same exact list, and making private data public also needs separate approval.')}</p>
 
     <div class="routine-entry">
       <div class="routine-entry__copy">
         <span>{t('建议下一步', 'Suggested next step')}</span>
         <strong>{t('运行一次例行维护', 'Run one routine maintenance pass')}</strong>
-        <p>{t('只读检查空间和活跃引用 → 归档并验证恢复 → 生成回收清单。删除、公开可见性、实验身份或归属不清时才停下来请你决定。', 'First check storage and live references read-only, then archive completed experiments and verify restore; finally generate a reclaim list only. Stop for an owner decision on deletion, visibility, experiment identity, or unresolved ownership.')}</p>
+        <p>{t('只读检查空间，以及仍被进程、容器或配置使用的文件 → 归档并验证恢复 → 生成回收清单。删除、公开可见性、实验身份或归属不清时才停下来请你决定。', 'Read storage and files still referenced by processes, containers, or configuration; then archive and verify restore; finally generate a reclaim list. Stop for an owner decision on deletion, visibility, experiment identity, or unresolved ownership.')}</p>
       </div>
       <details class="routine-entry__prompt">
         <summary>{t('复制维护指令', 'Copy maintenance instructions')}</summary>

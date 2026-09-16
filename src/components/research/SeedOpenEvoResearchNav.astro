@@ -41,6 +41,7 @@ const studyPages = [
 const studyPageIds: ResearchPage[] = ['experiment', 'design', 'run', 'capability', 'briefing', 'results'];
 const currentTrack: ResearchTrack = studyPageIds.includes(page) ? 'study' : 'flow';
 const pages = currentTrack === 'flow' ? flowPages : studyPages;
+const currentItem = pages.find((item) => item.id === page) ?? pages[0];
 const identity = currentTrack === 'flow'
   ? {
       index: '01',
@@ -68,6 +69,14 @@ const identity = currentTrack === 'flow'
       <a href={item.href} aria-current={item.id === page ? 'page' : undefined}>{item.label}</a>
     ))}
   </nav>
+  <details class="research-navigation__mobile">
+    <summary><span>{currentItem.label}</span><small>{t('相关页面', 'Related pages')}</small></summary>
+    <nav aria-label={identity.aria}>
+      {pages.map((item) => (
+        <a href={item.href} aria-current={item.id === page ? 'page' : undefined}>{item.label}</a>
+      ))}
+    </nav>
+  </details>
 </div>
 
 <style>
@@ -134,26 +143,21 @@ const identity = currentTrack === 'flow'
     background:transparent;
     box-shadow:inset 0 -2px var(--accent-deep);
   }
+  .research-navigation__mobile{display:none}
   @media(max-width:720px){
-    .research-navigation{
-      grid-template-columns:minmax(0,auto) minmax(0,1fr);
-      gap:.22rem;
-      margin:0;
-      padding:.18rem 0;
-    }
-    .research-navigation__identity{
-      min-width:0;
-      max-width:8.5rem;
-      gap:.3rem;
-      padding:.12rem .42rem .12rem .28rem;
-    }
-    .research-navigation__identity strong{max-width:6.8rem;font-size:.64rem}
-    .research-navigation__identity div>span{display:none}
-    .research-navigation__links{scrollbar-width:none}
-    .research-navigation__links::-webkit-scrollbar{display:none}
-    .research-navigation__links a{padding:.44rem .56rem;font-size:.69rem}
+    .research-navigation{display:block;margin:0;padding:.18rem 0}
+    .research-navigation__identity,.research-navigation__links{display:none}
+    .research-navigation__mobile{display:block}
+    .research-navigation__mobile>summary{display:flex;min-height:44px;align-items:center;justify-content:space-between;gap:.75rem;padding:.35rem .25rem;cursor:pointer;list-style:none;color:var(--ink)}
+    .research-navigation__mobile>summary::-webkit-details-marker{display:none}
+    .research-navigation__mobile>summary span{font-size:.76rem;font-weight:760}
+    .research-navigation__mobile>summary small{color:var(--muted);font-size:.68rem}
+    .research-navigation__mobile>summary::after{content:'＋';color:var(--accent-deep);font-size:.9rem}
+    .research-navigation__mobile[open]>summary::after{content:'−'}
+    .research-navigation__mobile nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.2rem .5rem;padding:.25rem 0 .6rem;border-top:1px solid var(--line)}
+    .research-navigation__mobile nav a{min-height:44px;padding:.55rem .25rem;color:var(--muted);font-size:.72rem;font-weight:680;text-decoration:none}
+    .research-navigation__mobile nav a[aria-current='page']{color:var(--accent-deep);font-weight:780}
+    .research-navigation__mobile summary:focus-visible,.research-navigation__mobile a:focus-visible{outline:3px solid var(--accent-deep);outline-offset:2px}
   }
-  @media(max-width:430px){
-    .research-navigation__identity div>span{display:none}
-  }
+  @media(max-width:430px){.research-navigation__mobile nav{grid-template-columns:1fr}}
 </style>

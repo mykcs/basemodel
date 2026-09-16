@@ -27,9 +27,13 @@ describe('Q17 advisor diagnostics publication', () => {
     const component = read('src/components/research/OpenEvoQ17AdvisorDiagnostics.astro');
     expect(component).toContain('同一组 32 道 WebShop 题上，两个相邻训练状态平均分 63.58 与 59.41');
     expect(component).toContain('On the same 32 WebShop tasks, two adjacent training states averaged 63.58 and 59.41');
-    expect(component).toContain('这里的“训练状态”指当时加载的基础模型和累计 LoRA 参数');
+    expect(component).toContain('R127 / R128 指进入第 127 / 128 轮时加载的两个相邻训练状态');
+    expect(component).toContain('LoRA（只训练少量适配参数）');
+    expect(component).toContain('这条实验采用 DirectApply：候选参数通过工程和数据检查后，下一轮直接使用');
     expect(component).toContain('95% 统计范围 −17.13 ～ +8.00，包含“没有差别”');
     expect(component).toContain('DirectApply（候选更新检查通过后直接采用）');
+    expect(component).not.toContain('min-height:calc(100svh - 6rem)');
+    expect(component).toContain('border-left:3px solid var(--accent-deep)');
     expect(component).toContain('/q17-directapply-analysis/');
     expect(component).toContain('查看 DirectApply 160 轮完整曲线与冻结 final');
     expect(component).not.toContain('我们现在只敢说到这里');

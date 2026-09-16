@@ -32,7 +32,15 @@ for (const route of routes) {
       await expect(root).toBeVisible();
       await expect(root.locator('h2')).toContainText(/训练设计|Training design/);
       await expect(root.locator('.responsibility-flow > li')).toHaveCount(6);
-      await expect(page.locator('nav').getByRole('link', { name: /训练设计|Training design/ }).first()).toBeVisible();
+      const researchNav = page.locator('[data-research-navigation][data-research-track="flow"]');
+      if (viewport.width <= 720) {
+        const mobileDirectory = researchNav.locator('.research-navigation__mobile');
+        await expect(mobileDirectory.locator('summary')).toBeVisible();
+        await mobileDirectory.locator('summary').click();
+        await expect(mobileDirectory.getByRole('link', { name: /训练设计|Training design/ })).toBeVisible();
+      } else {
+        await expect(researchNav.locator('.research-navigation__links').getByRole('link', { name: /训练设计|Training design/ })).toBeVisible();
+      }
       await expect(page.getByText('SEED × OPENEVO · WEBSHOP')).toHaveCount(0);
       await expect(page.getByText('先分清谁负责什么')).toHaveCount(0);
 

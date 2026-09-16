@@ -61,7 +61,8 @@ for (const theme of ['light', 'dark'] as const) {
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('.server-hero__status')).toBeVisible();
-    await expect(page.locator('.server-hero__boundary')).toContainText('任何删除都要负责人单独批准同一版清单');
+    await expect(page.locator('.server-hero__boundary')).toContainText('归档 = 把科研产物放到可恢复的远端并重新读回验证；回收 = 删除本地副本');
+    await expect(page.locator('.server-hero__boundary')).toContainText('任何回收都要负责人单独批准同一版精确清单');
     await expect(page.locator('#reclaim-proposal')).toContainText('NOT_AUTHORIZED');
     await expect(page.locator('.server-hero__context')).toContainText('非实时数据');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
