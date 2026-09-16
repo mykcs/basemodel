@@ -1,0 +1,59 @@
+/* Shared research-content composition proven across the Flow gateway, SD-LoRA,
+ * Q17 comparison, and server-operation pilots. These primitives describe content
+ * relationships, not a universal page template. */
+
+.research-fact-band {
+  display: grid;
+  grid-template-columns: repeat(var(--research-fact-columns, 4), minmax(0, 1fr));
+  margin: 1.1rem 0 0;
+  border-block: 1px solid var(--line);
+}
+
+.research-fact-band > div {
+  min-width: 0;
+  padding: .75rem .85rem;
+}
+
+.research-fact-band > div + div {
+  border-left: 1px solid var(--line);
+}
+
+.research-fact-band dt {
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 760;
+  line-height: 1.35;
+}
+.research-fact-band dd {
+  margin: .2rem 0 0;
+  color: var(--ink);
+  font-size: .88rem;
+  font-weight: 720;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 620px) {
+  .research-fact-band {
+    grid-template-columns: 1fr;
+  }
+
+  .research-fact-band > div {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: .75rem;
+    align-items: center;
+    min-height: 3.65rem;
+    box-sizing: border-box;
+    padding: .65rem 0;
+  }
+
+  .research-fact-band > div + div {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .research-fact-band dd {
+    margin: 0;
+    font-size: .82rem;
+  }
+}

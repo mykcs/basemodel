@@ -9,12 +9,27 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 
-const objects = [
-  { index:'01', title:'Qwen2.5-3B-Instruct', body:t('实验使用的模型版本（revision）、数值精度和运行设置。','Experiment model revision, numerical precision, and runtime settings.'), href:p('/models/qwen2-5-3b-instruct/#experiment-setup') },
-  { index:'02', title:'SEED', body:t('SEED 怎样把事后成功经验整理成技能，并通过 OPD / GRPO 更新模型参数。','How SEED turns hindsight experience into skills and updates model parameters through OPD / GRPO.'), href:p('/research/seed-openevo/flow/seed/') },
-  { index:'03', title:'OpenEvo', body:t('OpenEvo 怎样封存任务，把学习产物保存成适配器（adapter）或演化产物（artifact），再交给下一版本继续使用。','How OpenEvo seals tasks, stores learned outputs as adapters or artifacts, and passes them to successor revisions.'), href:p('/research/seed-openevo/flow/openevo/') },
-  { index:'04', title:'ALFWorld', body:t('文本形式的具身任务：模型读环境状态、执行动作，并按任务家族统计成功率。','Text-based embodied tasks where the model reads world state, takes actions, and is evaluated by task-family success rates.'), href:p('/research/seed-openevo/flow/alfworld/') },
-  { index:'05', title:'WebShop', body:t('网页购物任务：既看任务完成度（normalized score），也看是否完整成功（exact success）。','Web-shopping tasks evaluated with both normalized task progress and exact success.'), href:p('/research/seed-openevo/flow/webshop/') },
+const objectGroups = [
+  {
+    label: t('模型', 'Model'),
+    items: [
+      { title:'Qwen2.5-3B-Instruct', body:t('固定模型版本、数值精度和运行设置。','Pin the model revision, numerical precision, and runtime settings.'), href:p('/models/qwen2-5-3b-instruct/#experiment-setup') },
+    ],
+  },
+  {
+    label: t('学习方法', 'Learning methods'),
+    items: [
+      { title:'SEED', body:t('把任务后的成功经验整理成技能，再通过 OPD / GRPO 更新模型参数。','Turns successful hindsight experience into skills, then updates model parameters through OPD / GRPO.'), href:p('/research/seed-openevo/flow/seed/') },
+      { title:'OpenEvo', body:t('封存任务证据，把学习产物交给后续任务继续使用。','Seals task evidence and carries learned artifacts into later tasks.'), href:p('/research/seed-openevo/flow/openevo/') },
+    ],
+  },
+  {
+    label: t('任务环境', 'Task environments'),
+    items: [
+      { title:'ALFWorld', body:t('文本形式的具身任务，主要看任务是否完成。','Text-based embodied tasks evaluated primarily by task completion.'), href:p('/research/seed-openevo/flow/alfworld/') },
+      { title:'WebShop', body:t('网页购物任务，同时看完成度分数和是否完整成功。','Web-shopping tasks measured by both progress score and exact success.'), href:p('/research/seed-openevo/flow/webshop/') },
+    ],
+  },
 ];
 ---
 <div class="mission-page plain-mission-hub">
@@ -22,28 +37,30 @@ const objects = [
 
   <section class="mission-section" id="questions">
     <div class="mission-section__heading"><span>01</span><h2>{t('研究对象', 'Research objects')}</h2></div>
-    <p class="section-intro">{t('先知道每个名字在研究里负责什么，再去看公式、实验编号和实现细节。','Start by learning what each named object does in the study, then move into formulas, experiment IDs, and implementation detail.')}</p>
-    <div class="object-grid">{objects.map((item)=><a href={item.href}><span>{item.index}</span><strong>{item.title}</strong><p>{item.body}</p></a>)}</div>
+    <p class="section-intro">{t('这项研究固定一个模型，对比两种学习方法，并在两个任务环境里测量它们。','This study pins one model, compares two learning methods, and measures them in two task environments.')}</p>
+    <dl class="object-map">
+      {objectGroups.map((group)=><div class="object-map__row"><dt>{group.label}</dt><dd>{group.items.map((item)=><a href={item.href}><strong>{item.title}</strong><span>{item.body}</span></a>)}</dd></div>)}
+    </dl>
   </section>
 
   <section class="mission-section" id="training-design" aria-labelledby="training-design-title">
     <div class="mission-section__heading"><span>02</span><h2 id="training-design-title">{t('训练设计', 'Training design')}</h2></div>
-    <p class="section-intro">{t('Stage 1 的关键边界很简单：Qwen 先独立完成 WebShop episode，完整轨迹封存后，外部 analyzer 才能复盘。老师不能进入 step loop 替模型做题。', 'The key Stage-1 boundary is simple: Qwen completes the WebShop episode first; only after the full trajectory is sealed may an external analyzer review it. The teacher must not enter the step loop and act for the model.')}</p>
+    <p class="section-intro">{t('Stage 1 先让 Qwen 自己完成一次 WebShop 购物任务（episode）。任务结束并保存整条交互轨迹后，外部分析模型才做事后复盘；它不能在做题过程中替 Qwen 选择动作。', 'Stage 1 first lets Qwen complete a WebShop shopping task (an episode) by itself. Only after the task ends and the full interaction trajectory is saved may an external analysis model review it; that model cannot choose actions for Qwen while the task is running.')}</p>
     <SeedOpenEvoTrainingDesignOverview locale={locale} />
   </section>
 
   <section class="mission-section" id="site-map">
     <div class="mission-section__heading"><span>03</span><h2>{t('实验路线', 'Experiment route')}</h2></div>
     <ol class="run-step-grid">
-      <li><span>1</span><h3>{t('先对齐 SEED 的实验条件', 'Reproduce SEED conditions')}</h3><p>{t('固定模型、ALFWorld / WebShop 环境和评测条件，避免把“方法差异”和“实验设置差异”混在一起。','Pin the model, ALFWorld / WebShop environments, and evaluation conditions so method differences are not confused with setup differences.')}</p><a href={p('/research/seed-openevo/flow/seed/')}>{t('SEED 方法','SEED method')} →</a></li>
-      <li><span>2</span><h3>{t('再运行 OpenEvo', 'Run OpenEvo')}</h3><p>{t('正式科学状态以 openevo-experiment 为准；旧的 RTX6 路线保留为历史证据，不代表现在的运行状态。','Current formal scientific state is governed by openevo-experiment; the RTX6 path is retained as historical evidence, not live state.')}</p><a href={p('/research/seed-openevo/study/run/')}>{t('实验指南','Experiment guide')} →</a></li>
-      <li><span>3</span><h3>{t('最后比较结果并找原因', 'Compare and diagnose')}</h3><p>{t('比较任务分数、完整成功、交互轨迹和失败模式，再检查模型适配器状态，决定下一轮真正能改变结论的实验。','Compare scores, exact success, trajectories, failure modes, and adapter state before choosing the next experiment that can change the conclusion.')}</p><a href={p('/research/seed-openevo/study/results/')}>{t('研究结果','Research findings')} →</a></li>
+      <li><span>1</span><h3>{t('对齐 SEED 的实验条件', 'Align SEED conditions')}</h3><p>{t('固定模型、ALFWorld / WebShop 环境和评测条件，避免把“方法差异”和“实验设置差异”混在一起。','Pin the model, ALFWorld / WebShop environments, and evaluation conditions so method differences are not confused with setup differences.')}</p><a href={p('/research/seed-openevo/flow/seed/')}>{t('SEED 方法','SEED method')} →</a></li>
+      <li><span>2</span><h3>{t('运行 OpenEvo', 'Run OpenEvo')}</h3><p>{t('正式科学状态以 openevo-experiment 为准；旧的 RTX6 路线保留为历史证据，不代表现在的运行状态。','Current formal scientific state is governed by openevo-experiment; the RTX6 path is retained as historical evidence, not live state.')}</p><a href={p('/research/seed-openevo/study/run/')}>{t('实验指南','Experiment guide')} →</a></li>
+      <li><span>3</span><h3>{t('比较结果与失败原因', 'Compare results and failures')}</h3><p>{t('比较任务分数、完整成功、交互轨迹和失败模式，再检查模型适配器状态，决定下一轮真正能改变结论的实验。','Compare scores, exact success, trajectories, failure modes, and adapter state before choosing the next experiment that can change the conclusion.')}</p><a href={p('/research/seed-openevo/study/results/')}>{t('研究结果','Research findings')} →</a></li>
     </ol>
   </section>
 
   <section class="mission-section" id="evidence">
     <div class="mission-section__heading"><span>04</span><h2>{t('每轮实验要留下什么证据', 'Evidence requirements')}</h2></div>
-    <p class="section-intro">{t('一个实验“跑完了”不等于它的科学结论就可信。下面四类记录分别证明环境真的运行、模型真的更新、任务结果真的发生，以及这一轮实验究竟是哪一轮。','A completed process is not automatically a trustworthy scientific result. These four evidence groups establish that the environment ran, the model changed, the task outcome occurred, and the run identity is traceable.')}</p>
+    <p class="section-intro">{t('实验跑完不代表结论就可信。四类记录分别证明环境真的运行、模型是否更新、任务结果发生了什么，以及这一轮实验到底是哪一轮。','A completed run is not automatically a trustworthy scientific result. Four evidence groups show that the environment ran, whether the model changed, what happened on the tasks, and which run produced the evidence.')}</p>
     <ol class="evidence-grid">
       <li><span>01</span><strong>{t('环境与模型', 'Environment and model')}</strong><p>{t('真实环境重置（reset）、真实 CUDA 计算，以及明确的模型版本（revision）。','Real environment reset, real CUDA execution, and a pinned model revision.')}</p></li>
       <li><span>02</span><strong>{t('更新状态', 'Update state')}</strong><p>{t('参数摘要（digest）、适配器（adapter）、演化产物（artifact）或后继版本（successor revision），用于证明模型究竟有没有被更新。','Parameter digests, adapters, artifacts, or successor revisions that show whether the model was actually updated.')}</p></li>
@@ -54,28 +71,49 @@ const objects = [
 </div>
 
 <style>
-  .mission-page{width:min(1120px,calc(100% - 2rem));margin:1rem auto 4rem}
-  .mission-section{padding:1.6rem 0;border-top:1px solid var(--line)}
-  .mission-section__heading{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.65rem;margin-bottom:.5rem}
+  .mission-page{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem}
+  .mission-section{padding:clamp(1.8rem,4vw,3rem) 0;border-top:1px solid var(--line)}
+  .mission-section__heading{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.65rem;margin-bottom:.55rem}
   .mission-section__heading>span{color:var(--accent-deep);font:800 .72rem/1.4 var(--font-mono)}
   .mission-section__heading h2{margin:0}
-  .section-intro{max-width:72ch;margin:0 0 1rem 3.05rem;color:var(--muted);font-size:.82rem;line-height:1.65}
-  .object-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.55rem}
-  .object-grid a{display:flex;min-height:165px;flex-direction:column;padding:.85rem;border:1px solid var(--line);border-radius:var(--radius-panel);color:inherit;text-decoration:none}
-  .object-grid a>span{color:var(--accent-deep);font:800 .68rem/1 var(--font-mono)}
-  .object-grid strong{margin-top:auto}
-  .object-grid p{margin:.4rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.5}
-  .run-step-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;margin:0;padding:0;list-style:none}
-  .run-step-grid li{display:flex;flex-direction:column;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-feature)}
-  .run-step-grid li>span{display:grid;width:1.8rem;height:1.8rem;place-items:center;border-radius:50%;color:var(--accent-on-fill);background:var(--accent-deep);font-size:.72rem}
-  .run-step-grid h3{margin:.7rem 0 .4rem}
-  .run-step-grid p{margin:0;color:var(--muted);font-size:.76rem;line-height:1.55}
-  .run-step-grid a{margin-top:auto;padding-top:.8rem;font-size:.72rem;font-weight:750}
-  .evidence-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem;margin:0;padding:0;list-style:none}
-  .evidence-grid li{padding:.85rem;border:1px solid var(--line);border-radius:var(--radius-panel)}
+  .section-intro{max-width:72ch;margin:0 0 1.25rem 3.05rem;color:var(--muted);font-size:.9rem;line-height:1.65}
+  .object-map{margin:0;padding:0;border-bottom:1px solid var(--line)}
+  .object-map__row{display:grid;grid-template-columns:minmax(7.5rem,10rem) minmax(0,1fr);gap:1.25rem;padding:1rem 0;border-top:1px solid var(--line)}
+  .object-map__row dt{color:var(--muted);font-size:.76rem;font-weight:760;line-height:1.5}
+  .object-map__row dd{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:0}
+  .object-map__row:first-child dd{grid-template-columns:1fr}
+  .object-map__row a{display:grid;grid-template-columns:minmax(8.5rem,auto) minmax(0,1fr);gap:.9rem;align-items:start;padding:0 1rem;color:inherit;text-decoration:none}
+  .object-map__row a:first-child{padding-left:0}
+  .object-map__row a+a{border-left:1px solid var(--line)}
+  .object-map__row strong{font-size:.95rem;line-height:1.45}
+  .object-map__row a>span{color:var(--muted);font-size:.8rem;line-height:1.55}
+  .object-map__row a:hover strong,.object-map__row a:focus-visible strong{color:var(--accent-deep)}
+  .run-step-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0;padding:0;border-block:1px solid var(--line);list-style:none}
+  .run-step-grid li{position:relative;display:flex;min-width:0;flex-direction:column;padding:1.1rem 1.35rem 1.1rem 0}
+  .run-step-grid li+li{padding-left:1.35rem;border-left:1px solid var(--line)}
+  .run-step-grid li:not(:last-child)::after{content:'→';position:absolute;top:1.05rem;right:-.48rem;z-index:1;padding:0 .2rem;color:var(--muted);background:var(--canvas)}
+  .run-step-grid li>span{color:var(--accent-deep);font:800 .72rem/1.4 var(--font-mono)}
+  .run-step-grid h3{margin:.55rem 0 .4rem;font-size:1rem}
+  .run-step-grid p{margin:0;color:var(--muted);font-size:.8rem;line-height:1.6}
+  .run-step-grid a{margin-top:auto;padding-top:.85rem;font-size:.78rem;font-weight:750}
+  .evidence-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:0;padding:0;border-top:1px solid var(--line);list-style:none}
+  .evidence-grid li{padding:1rem 1.25rem 1rem 0;border-bottom:1px solid var(--line)}
+  .evidence-grid li:nth-child(even){padding-left:1.25rem;border-left:1px solid var(--line)}
   .evidence-grid li>span{color:var(--accent-deep);font:800 .68rem/1 var(--font-mono)}
-  .evidence-grid strong{display:block;margin-top:.65rem}
-  .evidence-grid p{margin:.4rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.5}
-  @media(max-width:900px){.object-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.evidence-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media(max-width:640px){.mission-page{width:min(100% - 1rem,1120px)}.section-intro{margin-left:0}.object-grid,.run-step-grid,.evidence-grid{grid-template-columns:1fr}}
+  .evidence-grid strong{display:block;margin-top:.55rem}
+  .evidence-grid p{margin:.4rem 0 0;color:var(--muted);font-size:.8rem;line-height:1.55}
+  @media(max-width:760px){
+    .mission-page{width:min(100% - 1rem,1120px)}
+    .section-intro{margin-left:0}
+    .object-map__row{grid-template-columns:1fr;gap:.6rem}
+    .object-map__row dd,.object-map__row:first-child dd{grid-template-columns:1fr}
+    .object-map__row a{grid-template-columns:1fr;gap:.25rem;padding:.8rem 0}
+    .object-map__row a+a{border-left:0;border-top:1px solid var(--line)}
+    .run-step-grid{grid-template-columns:1fr}
+    .run-step-grid li,.run-step-grid li+li{padding:1rem 0;border-left:0;border-bottom:1px solid var(--line)}
+    .run-step-grid li:last-child{border-bottom:0}
+    .run-step-grid li:not(:last-child)::after{content:'↓';top:auto;right:auto;bottom:-.55rem;left:.25rem;background:var(--canvas)}
+    .evidence-grid{grid-template-columns:1fr}
+    .evidence-grid li,.evidence-grid li:nth-child(even){padding:1rem 0;border-left:0}
+  }
 </style>

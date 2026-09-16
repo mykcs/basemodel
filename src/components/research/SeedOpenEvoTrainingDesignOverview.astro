@@ -8,12 +8,12 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 
 const stages = [
-  [t('做题模型', 'Actor'), 'Qwen 3B / 7B', t('自己产生 WebShop 动作', 'produces WebShop actions itself')],
-  [t('交互规则', 'Harness'), 'SEED / OpenEvo', t('组织提示、历史和动作解析', 'organizes prompt, history, and action parsing')],
-  [t('环境', 'Environment'), 'Princeton WebShop', t('返回 observation、score 和状态变化', 'returns observations, scores, and transitions')],
-  [t('封存轨迹', 'Sealed trajectory'), t('完整 episode', 'Completed episode'), t('先把整条做题过程保存下来', 'seals the full attempt first')],
-  [t('事后分析', 'Post-hoc analyzer'), 'GLM / Kimi / MiniMax', t('episode 完成后再读一次轨迹', 'reads the trajectory only after completion')],
-  [t('学习产物', 'Learned output'), 'skill / adapter / checkpoint', t('供后续 bootstrap 或 Stage 2 使用', 'feeds later bootstrap or Stage 2')],
+  [t('做题模型', 'Actor'), 'Qwen 3B / 7B', t('自己选择 WebShop 动作', 'chooses WebShop actions itself')],
+  [t('交互规则', 'Harness'), 'SEED / OpenEvo', t('组织提示、历史和动作解析，不提供具体购物答案', 'organizes prompts, history, and action parsing without supplying shopping answers')],
+  [t('任务环境', 'Environment'), 'Princeton WebShop', t('返回页面观察、任务分数和状态变化', 'returns page observations, task scores, and state changes')],
+  [t('保存完整过程', 'Sealed trajectory'), t('一次完整任务', 'One completed task'), t('任务结束后才把整条交互记录固定下来', 'freezes the full interaction record only after the task ends')],
+  [t('任务后复盘', 'Post-task review'), t('外部分析模型', 'External analysis model'), t('只在任务结束后读取已保存的轨迹', 'reads the saved trajectory only after task completion')],
+  [t('学习材料', 'Learned output'), t('技能 / 适配器 / 模型保存点', 'skill / adapter / checkpoint'), t('供后续准备或 Stage 2 学习使用', 'feeds later preparation or Stage-2 learning')],
 ] as const;
 ---
 <div class="training-design-body">
@@ -25,23 +25,22 @@ const stages = [
       </li>
     ))}
   </ol>
-  <div class="design-disclosures">
-    <ResearchTechnicalDisclosure
-      eyebrow={false}
-      summary={t('完整系统比较和 learner 对照有什么区别？', 'How do full-system and learner-only comparisons differ?')}
-    >
-      <div class="detail-grid">
-        <article>
-          <strong>{t('完整系统比较', 'Full-system comparison')}</strong>
-          <p>{t('SEED 和 OpenEvo 可以各用自己的 native harness。结论只能说“哪个完整系统更强”，不能把差异全部归因于 Stage 2 learner。', 'SEED and OpenEvo may use their native harnesses. The conclusion is about the complete systems, not solely the Stage-2 learner.')}</p>
-        </article>
-        <article>
-          <strong>{t('只比较 Stage 2 learner', 'Stage-2 learner only')}</strong>
-          <p>{t('共享 Stage 1 trajectories、analyzer、SFT recipe 和 checkpoint，再从同一点分成 SEED Stage 2 与 OpenEvo Stage 2。', 'Share Stage-1 trajectories, analyzer, SFT recipe, and checkpoint, then fork into SEED Stage 2 and OpenEvo Stage 2 from the same point.')}</p>
-        </article>
-      </div>
-    </ResearchTechnicalDisclosure>
+  <p class="stage2-bridge">{t('这六步只解释 Stage 1 怎样产生可学习证据。后来的完整 Stage 2 长跑里，Text Memory（文字记忆）、Skill Bundle（技能集合）、Agent System（全局行为规则）和 SD-LoRA（参数更新）分别判断是否变化，再一起组成下一轮实际使用的状态；早期 Stage 1 / LoRA-vs-SD-LoRA 对照并没有同时启用这四类状态。', 'These six steps only explain how Stage 1 produces learnable evidence. In the later full Stage-2 long run, Text Memory, Skill Bundle, Agent System, and SD-LoRA parameter updates each decide independently whether to change, then jointly form the state used by the next round. The earlier Stage-1 and LoRA-vs-SD-LoRA comparisons did not enable all four states together.')}</p>
 
+  <section class="comparison-scope" data-learning-comparison-scope aria-labelledby="comparison-scope-title">
+    <h3 id="comparison-scope-title">{t('比较口径决定差异能归因到哪里', 'The comparison scope determines what can explain a difference')}</h3>
+    <div class="comparison-table-wrap">
+      <table>
+        <thead><tr><th scope="col">{t('比较口径', 'Comparison')}</th><th scope="col">{t('哪些条件保持一致', 'What stays aligned')}</th><th scope="col">{t('可以支持什么结论', 'What the result can support')}</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">{t('完整系统比较', 'Full-system comparison')}</th><td>{t('模型、任务、评分和训练预算尽量一致；SEED 与 OpenEvo 可以使用各自的交互规则（native harness）。', 'Keep model, tasks, scoring, and training budget aligned; SEED and OpenEvo may use their own native interaction harnesses.')}</td><td>{t('只能比较两个完整系统的总体表现，不能把全部差异单独归因于 Stage 2 学习器。', 'Supports a comparison of the complete systems, not attribution of the whole difference to the Stage-2 learner alone.')}</td></tr>
+          <tr><th scope="row">{t('只比较 Stage 2 学习器', 'Stage-2 learner only')}</th><td>{t('共享 Stage 1 轨迹、事后分析、SFT 训练配方和同一个起点 checkpoint，再从这里分成 SEED Stage 2 与 OpenEvo Stage 2。', 'Share Stage-1 trajectories, post-task analysis, the SFT recipe, and the same starting checkpoint before forking into SEED Stage 2 and OpenEvo Stage 2.')}</td><td>{t('只有这种共同起点的对照，才允许把后续差异收窄到 Stage 2 学习器。', 'Only this common-start comparison can narrow a later difference to the Stage-2 learner.')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="design-disclosures">
     <ResearchTechnicalDisclosure
       eyebrow={false}
       summary={t('当前 Stage 1 参数协议', 'Current Stage-1 parameter protocol')}
@@ -70,10 +69,17 @@ const stages = [
   .responsibility-flow small{margin-top:.6rem;color:var(--muted);font-size:.65rem}
   .responsibility-flow strong{margin-top:.15rem;font-size:.82rem}
   .responsibility-flow p{margin:.35rem 0 0;color:var(--muted);font-size:.69rem;line-height:1.45}
-  .design-disclosures{display:grid;gap:.35rem;margin-top:.8rem}
-  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:.75rem}
-  .detail-grid article{padding:.7rem;border-left:2px solid var(--line)}
-  .detail-grid p,.parameter-note{margin:.35rem 0 0;color:var(--muted);font-size:.71rem;line-height:1.55}
+  .stage2-bridge{margin:.9rem 0 0;padding:.85rem 0;border-top:1px solid var(--line);color:var(--muted);font-size:.76rem;line-height:1.6}
+  .comparison-scope{margin-top:.45rem;padding:1rem 0;border-top:1px solid var(--line)}
+  .comparison-scope h3{margin:0 0 .65rem;font-size:.9rem}
+  .comparison-table-wrap{max-width:100%;overflow-x:auto}
+  .comparison-scope table{width:100%;min-width:660px;border-collapse:collapse;font-size:.72rem;line-height:1.5}
+  .comparison-scope th,.comparison-scope td{padding:.65rem .7rem;border-top:1px solid var(--line);text-align:left;vertical-align:top}
+  .comparison-scope thead th{color:var(--muted);font-size:.66rem;font-weight:760}
+  .comparison-scope tbody th{width:18%;font-size:.74rem}
+  .comparison-scope tbody td{color:var(--muted)}
+  .design-disclosures{display:grid;gap:.35rem;margin-top:.35rem}
+  .parameter-note{margin:.35rem 0 0;color:var(--muted);font-size:.71rem;line-height:1.55}
   .parameter-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.35rem;padding:.75rem .75rem 0;margin:0}
   .parameter-list div{display:flex;justify-content:space-between;gap:.7rem;padding:.45rem 0;border-bottom:1px solid var(--line)}
   .parameter-list dt{color:var(--muted);font-size:.68rem}
@@ -87,7 +93,7 @@ const stages = [
   }
   @media(max-width:640px){
     .design-next{margin-left:0}
-    .responsibility-flow,.detail-grid{grid-template-columns:1fr}
+    .responsibility-flow{grid-template-columns:1fr}
     .responsibility-flow li:not(:last-child)::after{content:'↓';right:auto;left:50%;top:auto;bottom:-.52rem;transform:translateX(-50%)}
     .parameter-list{grid-template-columns:1fr}
   }

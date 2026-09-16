@@ -40,7 +40,8 @@ const plateauLossPoints = plateauDynamics.loss.map((point) => `${plateauLossX(po
 const plateauCandidateRounds = plateauDynamics.loss.map((point) => point.round);
 ---
 
-<section data-copy-review class="frontier-roadmap" data-reader-frontier aria-labelledby="frontier-title">
+<section class="frontier-roadmap" data-reader-frontier aria-labelledby="frontier-title">
+  <p class="frontier-roadmap__reader-intro">这部分保留当时的历史排查路径，用来解释我们怎样从训练轮掉分走到同题重测；它不是当前同题结论，也不是最终 128 题结果。</p>
   <section class="frontier-hero" aria-labelledby="frontier-title">
     <p class="eyebrow">2026-09-10 · {t('当时的分析计划', 'Earlier analysis plan')}</p>
     <h2 id="frontier-title">{t('同题重测前的排查计划', 'The investigation plan before the same-task test')}</h2>

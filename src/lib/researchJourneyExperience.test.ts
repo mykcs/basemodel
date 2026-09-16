@@ -76,6 +76,12 @@ describe('research journey experience', () => {
     expect(mobileComposition).not.toContain('.mission-chain');
   });
 
+  it('lets the compact Flow hero own its content-first surface without a legacy override round-trip', () => {
+    expect(mobileComposition).toContain('.mission-hero:not(.mission-hero--compact) .mission-hero__copy');
+    expect(mobileComposition).not.toContain("body[data-reader-contract-id='flow'] .site-main .mission-hero.mission-hero--compact .mission-hero__copy");
+    expect(missionHero).toContain('.mission-hero.mission-hero--compact .mission-hero__copy');
+  });
+
   it('keeps the benchmark overview comparative and gives environment links one owner', () => {
     for (const source of [benchmarkZh, benchmarkEn]) {
       expect(source).toContain('page="benchmarks"');

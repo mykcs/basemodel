@@ -41,10 +41,13 @@ describe("integrated SEED × OpenEvo training design", () => {
     for (const term of [
       "Qwen 3B / 7B",
       "Princeton WebShop",
-      "GLM / Kimi / MiniMax",
+      "外部分析模型",
+      "只在任务结束后读取已保存的轨迹",
+      "不提供具体购物答案",
     ]) {
       expect(training).toContain(term);
     }
+    expect(training).not.toContain("GLM / Kimi / MiniMax");
     for (const term of [
       "temperature",
       "0.4",

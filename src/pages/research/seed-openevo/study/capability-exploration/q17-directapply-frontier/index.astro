@@ -7,10 +7,21 @@ const locale = 'zh' as const;
 ---
 <AppLayout
   title="R127 与 R128 同题重测"
-  description="我们让 R127 和 R128 做同样的 32 道 WebShop 题，看看训练曲线的大幅掉分到底有多少来自模型本身。"
+  description="2026-09-11 的局部诊断：把进入第 127 轮和第 128 轮的两个模型状态放到同一组 32 道 WebShop 题上重测；这不是 final，也不能外推整条训练轨迹。"
   locale={locale}
 >
-  <ResearchRouteContext locale={locale} route="q17-directapply-frontier" />
+  <ResearchRouteContext locale={locale} route="q17-directapply-frontier" compact />
   <OpenEvoQ17AdvisorDiagnostics locale={locale} />
-  <OpenEvoQ17FrontierRoadmap locale={locale} />
+  <section class="q17-roadmap-depth" data-copy-review aria-label="历史排查计划">
+    <p class="q17-roadmap-depth__intro">下面保留当时怎样排查 R127 → R128 掉分的历史路径；它不是当前同题重测结论，也不是最终 128 题结果。</p>
+    <details>
+      <summary>历史排查计划（按需展开）</summary>
+      <OpenEvoQ17FrontierRoadmap locale={locale} />
+    </details>
+  </section>
+  <style>
+    .q17-roadmap-depth{width:min(1120px,calc(100% - 2rem));margin:1.6rem auto 4rem;padding:1rem 0;border-block:1px solid var(--line)}
+    .q17-roadmap-depth summary{cursor:pointer;color:var(--accent-deep);font-weight:760}
+    .q17-roadmap-depth__intro{max-width:72ch;margin:.9rem 0 0;color:var(--muted);line-height:1.72}
+  </style>
 </AppLayout>

@@ -25,10 +25,13 @@ describe('Q17 advisor diagnostics publication', () => {
 
   it('keeps the result and boundary visible in both language routes', () => {
     const component = read('src/components/research/OpenEvoQ17AdvisorDiagnostics.astro');
-    expect(component).toContain('R128 比 R127 稍差，但没有训练曲线看起来那么严重');
-    expect(component).toContain('R128 was a little worse than R127—but not nearly as bad as the training curve suggested');
-    expect(component).toContain('这个范围里包含“没有差别”，所以还不能确定整体真的下降');
+    expect(component).toContain('同一组 32 道 WebShop 题上，R128 比 R127 平均低 4.18 分');
+    expect(component).toContain('On the same 32 WebShop tasks, R128 averaged 4.18 points below R127');
+    expect(component).toContain('平均分差的 95% 统计范围是 −17.13 ～ +8.00');
     expect(component).toContain('这次诊断当时没有碰最终测试');
+    expect(component).toContain('research-fact-band');
+    expect(component).toContain('训练轮 · 题不同');
+    expect(component).toContain('同样 32 题');
     expect(component).toContain('final 才单独打开一次');
     expect(component).toContain('另一张 GPU 又跑了一遍');
     expect(component).toContain('The result was rerun on another GPU');
