@@ -27,18 +27,18 @@ export type EffectiveStateFormalResult =
 
 const repo = 'https://github.com/mykcs/openevo-experiment';
 const scienceExecutionGateSha = 'c5e012814bb9509deb0e2cbc8d57a63e2b56889f';
-const formalExecutionCheckout = '80bf263e9bf65fd0382f3c762e2a42b4928514a0';
+const formalExecutionCheckout = '340a057e04c7ace128ba79a2ff5ef28bcf40c4e6';
 const qualificationEvidenceSha = 'b41884ac90d185742dc47f240c4d54a3cfaf6175';
 const evidenceRoot = `${repo}/blob/${qualificationEvidenceSha}/docs/evidence/bounded-recurrence-gdr-20260915`;
 
 export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
-  checkedAt: '2026-09-16T14:09:00+08:00',
+  checkedAt: '2026-09-16T14:52:00+08:00',
   source: {
     repository: 'mykcs/openevo-experiment',
     controlTowerPr: 502,
     controlTowerHead: '99dd0fdce328682fb0218aa084d3d2b0d0b7ae49',
     finalImplementationPr: 510,
-    finalImplementationHead: '52dc699d5bccc1a75adc7a4e7a863ca58148eb93',
+    finalImplementationHead: 'cb17df97af002efac089d201ad44b0e79ff0690f',
     formalExecutionCheckout,
     scientificExecutionSha: formalExecutionCheckout,
     scienceExecutionGateCodeFreeze: scienceExecutionGateSha,
@@ -57,23 +57,30 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     currentMainHandoffCommit: '9f6259be9b961223a5cab7711fe1f297e272d541',
     historicalImplementationPr: 497,
     historicalImplementationHead: '7847d6497ae58b7a82dc37cd1cf71ccfe44aa8df',
-    status: 'FORMAL_RUNNING',
-    currentCampaignClassification: 'FORMAL_RUNNING',
+    status: 'PAUSE_FOR_DIAGNOSTIC',
+    currentCampaignClassification: 'PAUSE_FOR_DIAGNOSTIC',
+    originalRolloutProducerSha: '80bf263e9bf65fd0382f3c762e2a42b4928514a0',
     liveExecutionFrozen: true,
     repositoryCurrentMustNotHotSwapLiveRun: true,
   },
   lifecycle: {
-    status: 'FORMAL_RUNNING',
+    status: 'PAUSE_FOR_DIAGNOSTIC',
     formalRunLaunched: true,
     launchAuthority: true,
+    continuationAuthority: false,
     ownerLaunchReleasePresent: true,
     ownerLaunchReleaseSha256: '8c68c58dd45bc7216829d606eb5d5aaaa0db7855141306dafbec9cf6dcf1140f',
+    repairReleaseSha256: '8d9dc6505a33e66d79578af3915d71a69a18576e33a0b070b77365cc93c6843f',
+    pauseReason: 'REPAIR_IDENTICAL_INVALID',
+    offRound0PostRolloutSealed: true,
+    onRound0PostRolloutStarted: false,
+    pairedRound0BarrierSealed: false,
     formalRowsConsumed: null,
-    formalRowsDisclosure: 'run is active; exact in-flight denominator is not a formal-result authority',
+    formalRowsDisclosure: 'formal rollout rows exist, but no paired Round0 barrier exists; in-flight denominators are not formal-result authority',
     finalPanelAccess: 0,
     formalOutputRootExists: true,
-    formalOutputRoot: '/data/home/wangr/workspace/runs/bounded-effective-state-gdr-formal-80bf263e-20260916',
-    currentReadySha256: 'db3087ec8d8269f99b60cd1ff1511ed825e1a4ad6ffc96388f3c7ca27c70413d',
+    formalOutputRoot: '/data/home/wangr/workspace/runs/bounded-effective-state-gdr-recovery-55f01850-20260916',
+    currentReadySha256: '1c8ef46825482dd2fd081a96e9772a72883300737a44c07eb2eb7edea628db52',
     prelaunchReceiptsAreHistoricalAfterExecutionChange: true,
     prelaunchEvidence: {
       controllerInitOnlySha256: 'adb861f8797c0b75f549e88865bdff651e8ac35230e39b0bc36d0be438150f4e',
@@ -86,7 +93,8 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     physicalGpuIndices: [4, 5, 6, 7] as const,
     workersPerGpu: 2,
     rolloutMode: 'one OFF + one ON worker per physical GPU',
-    postRolloutGpu: 4,
+    postRolloutGpuPreference: { off: [7, 6, 5, 4] as const, on: [4, 5, 6, 7] as const },
+    actualOffRound0PostGpu: 7,
     crossPhaseOverlapAllowed: false,
     resourceSuccessorSha256: 'd272e022bb6dade53dc6165a274872f319de06ae3504ce07ec85d74d8d79907f',
     claimBoundary: 'resource-lane migration only; treatment/tasks/seeds/sampling/common start/Carrier/GDR policy/budget/analysis unchanged',

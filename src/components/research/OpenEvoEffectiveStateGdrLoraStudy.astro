@@ -23,17 +23,17 @@ const pending = result.status === 'pending';
     <p class="esg__eyebrow">{t('08 · 固定状态之后，控制新经验写多强', '08 · Controlling write strength after bounded state')}</p>
     <h1>Bounded Online Recurrence + Effective-State GDR</h1>
     <p class="esg__lede" data-reader-task data-reader-purpose>{t(
-      'Bounded Online Recurrence 已把旧历史固定在 rank128。下一问是：每轮新经验该写多强？第一代 GDR 直接控制 LoRA 的 A/C 坐标，但同一个有效更新能有多种 A/C 表示。Effective-State successor 因此改为控制真正影响模型的有效写入。正式实验比较 Bounded OFF 与 Bounded + Effective-State GDR ON；160 轮正式运行已经启动，正式结果仍未产生。',
-      'Bounded Online Recurrence already keeps old history at rank128. The next question is how strongly each new experience should be written. First-generation GDR controlled LoRA A/C coordinates directly, but the same effective update can have multiple A/C representations. The Effective-State successor therefore controls the effective write itself. The formal Bounded OFF versus Bounded + Effective-State GDR ON run is now active, while the formal result is still unavailable.',
+      'Bounded 已把历史固定在 rank128。第一代 GDR 直接控制 A/C 坐标，但同一个有效更新可以有多种内部表示，所以 Effective-State successor 改为控制 effective write。正式 OFF/ON 实验已启动，目前因 Carrier Health 诊断暂停；正式结果仍 Pending。',
+      'Bounded keeps history at rank128. First-generation GDR controlled A/C coordinates, but one effective update can have multiple internal representations, so the Effective-State successor controls the effective write instead. The formal OFF/ON study has started but is paused for Carrier Health diagnosis; the formal result is still Pending.',
     )}</p>
     <div class="esg__facts" aria-label={t('当前三个关键事实', 'Three current facts')}>
       <div><span>{t('历史状态', 'History state')}</span><strong>rank128</strong></div>
       <div><span>{t('正式设计', 'Formal design')}</span><strong>160 × 128 / arm</strong></div>
       <div><span>{t('正式结果', 'Formal result')}</span><strong>{pending ? t('尚未产生', 'Pending') : 'Sealed'}</strong></div>
     </div>
-    <p class="esg__status"><strong>{t('正式实验正在 GPU4–7 运行，正式结果仍是 Pending。', 'The formal run is active on GPU4–7; the formal result is still Pending.')}</strong> {t(
-      'live execution 固定在 80bf263e…，final panel access=0；不会把中途 round、partial W&B 或单个 checkpoint 当作正式结果。',
-      'The live execution remains frozen at 80bf263e…, final-panel access is 0, and no in-flight round, partial W&B view, or single checkpoint is treated as a formal result.',
+    <p class="esg__status"><strong>{t('正式实验已启动，但当前诊断暂停；正式结果仍是 Pending。', 'The formal study has started but is currently paused for diagnosis; the formal result is still Pending.')}</strong> {t(
+      '当前 recovery execution 固定在 340a057e…，final panel access=0；OFF post-rollout 已封存、ON post-rollout 尚未开始，因此还没有 paired Round0 barrier。不会把中途 round、partial W&B 或单个 checkpoint 当作正式结果。',
+      'The current recovery execution is frozen at 340a057e…, final-panel access is 0, OFF post-rollout is sealed, ON post-rollout has not started, and no paired Round0 barrier exists. No in-flight round, partial W&B view, or single checkpoint is treated as a formal result.',
     )}</p>
   </header>
 
@@ -152,7 +152,7 @@ const pending = result.status === 'pending';
         <tr><td>{t('short non-final qualification', 'short non-final qualification')}</td><td>PASS</td><td>{t('仅资格检查，不是效果结论', 'qualification only, not efficacy')}</td></tr>
         <tr><td>{t('formal matched dry-run', 'formal matched dry-run')}</td><td>PASS</td><td>{study.readiness.finalPrelaunch.dryRunStatus}</td></tr>
         <tr><td>{t('final consumer prelaunch', 'final consumer prelaunch')}</td><td>PASS</td><td>{t('历史预启动证据；owner 随后已授权正式启动', 'historical prelaunch evidence; the owner later authorized formal start')}</td></tr>
-        <tr><td>{t('当前正式 lifecycle', 'Current formal lifecycle')}</td><td>RUNNING</td><td>{t('只公开 lifecycle；不公开中途效果数字', 'lifecycle only; no in-flight efficacy numbers')}</td></tr>
+        <tr><td>{t('当前正式 lifecycle', 'Current formal lifecycle')}</td><td>PAUSED</td><td>{t('Carrier Health 诊断暂停；不是负结果', 'Carrier Health diagnostic pause; not a negative result')}</td></tr>
       </tbody>
     </table></div>
     <p class="esg__qualification"><strong>{t('Short non-final 原样记录：', 'Short non-final, reported as-is:')}</strong> reward Δ={study.readiness.shortNonFinal.rewardDelta.toFixed(4)}；success Δ=0.0000。{t('这是 development-panel qualification-only 结果，不能写成 formal efficacy。', 'This is a development-panel qualification-only result and cannot be presented as formal efficacy.')}</p>
@@ -168,7 +168,7 @@ const pending = result.status === 'pending';
         <div><strong>ON · {study.identity.on}</strong><span>{t('同一训练 + Effective-State GDR write', 'same training + Effective-State GDR write')}</span></div>
       </div>
       <div class="esg__barrier"><span>Round 0</span><i></i><span>Round 1</span><i></i><span>…</span><i></i><span>Round 159</span></div>
-      <figcaption>{t('每轮 OFF/ON rollout 在 GPU4–7 上并发；随后 post-rollout reflector / training / transition 在 GPU4 上按冻结顺序串行完成，两臂都 seal 后才跨过 matched barrier。这个资源迁移不改变 treatment、任务、seed、预算或分析；final panel 在正式 Stage2 期间保持 locked。', 'OFF/ON rollouts run concurrently on GPU4–7; post-rollout reflector, training, and transition then run serially on GPU4 in the frozen order, and both arms must seal before the matched barrier. This resource migration does not change treatment, tasks, seeds, budget, or analysis; the final panel stays locked during formal Stage2.')}</figcaption>
+      <figcaption>{t('每轮 OFF/ON rollout 在 GPU4–7 上并发；post-rollout 仍按 OFF→ON 冻结顺序串行，并使用冻结的 first-idle GPU preference，两臂都 seal 后才跨过 matched barrier。这个资源迁移不改变 treatment、任务、seed、预算或分析；final panel 在正式 Stage2 期间保持 locked。', 'OFF/ON rollouts run concurrently on GPU4–7; post-rollout remains serialized OFF then ON with frozen first-idle GPU preferences, and both arms must seal before the matched barrier. This resource migration does not change treatment, tasks, seeds, budget, or analysis; the final panel stays locked during formal Stage2.')}</figcaption>
     </figure>
     <ul class="esg__matched-list">
       {study.formalDesign.matched.map((item) => <li>{zh ? item.zh : item.en}</li>)}
@@ -181,7 +181,7 @@ const pending = result.status === 'pending';
     <h2 id="formal-result-title">{t('正式结果', 'Formal result')}</h2>
     {pending ? (
       <>
-        <p class="esg__pending"><strong>{t('正式结果尚未产生（Pending）', 'Formal result not yet available (Pending)')}</strong> · {t('这里故意留空。正式 160 轮结果只有在 sealed scientific evidence 出现后才填写。', 'This area is intentionally blank. Formal 160-round values will be filled only from sealed scientific evidence.')}</p>
+        <p class="esg__pending"><strong>{t('正式结果尚未产生（Pending）', 'Formal result not yet available (Pending)')}</strong> · {t('当前实验因 Carrier Health 诊断暂停，且尚无 paired Round0 barrier。这里故意不展示任何中途效果数字；正式 160 轮结果只有在 sealed scientific evidence 出现后才填写。', 'The study is currently paused for Carrier Health diagnosis and has no paired Round0 barrier yet. No in-flight efficacy values are shown here; formal 160-round values will be filled only from sealed scientific evidence.')}</p>
         <div class="esg__result-table-wrap"><table class="esg__result-table">
           <thead><tr><th>{t('预先固定的指标', 'Predefined metric')}</th><th>OFF</th><th>ON</th><th>Δ / uncertainty</th></tr></thead>
           <tbody>
@@ -199,15 +199,16 @@ const pending = result.status === 'pending';
   <section class="esg__section" id="evidence" aria-labelledby="evidence-title">
     <h2 id="evidence-title">{t('证据与当前边界', 'Evidence and current boundary')}</h2>
     <details class="esg__details" open>
-      <summary>{t('当前正式身份与运行状态', 'Current formal identity and running state')}</summary>
+      <summary>{t('当前正式身份与诊断暂停状态', 'Current formal identity and diagnostic pause')}</summary>
       <ul>
         <li><a href={study.evidence.controlTowerPr}><ExternalBrandMark href={study.evidence.controlTowerPr} />PR #502 · Control Tower</a></li>
         <li><a href={study.evidence.finalImplementationPr}><ExternalBrandMark href={study.evidence.finalImplementationPr} />PR #510 · final implementation stack</a></li>
-        <li><code>{study.source.formalExecutionCheckout}</code> · {t('live formal execution checkout（运行中冻结）', 'live formal execution checkout (frozen while running)')}</li>
-        <li><code>{study.source.finalImplementationHead}</code> · {t('repository-current implementation head（不得热切换 live run）', 'repository-current implementation head (must not hot-swap the live run)')}</li>
+        <li><code>{study.source.formalExecutionCheckout}</code> · {t('current recovery execution checkout（诊断暂停）', 'current recovery execution checkout (paused for diagnosis)')}</li>
+        <li><code>{study.source.finalImplementationHead}</code> · {t('repository-current integration/evidence head（不得热切换 execution）', 'repository-current integration/evidence head (must not hot-swap execution)')}</li>
         <li><code>{study.source.scienceExecutionGateCodeFreeze}</code> · {t('science / execution-gate code freeze', 'science / execution-gate code freeze')}</li>
         <li><code>{study.lifecycle.currentReadySha256}</code> · READY SHA256</li>
-        <li><code>{study.lifecycle.ownerLaunchReleaseSha256}</code> · owner launch release SHA256</li>
+        <li><code>{study.lifecycle.ownerLaunchReleaseSha256}</code> · original owner launch release SHA256</li>
+        <li><code>{study.lifecycle.repairReleaseSha256}</code> · repair release SHA256</li>
         <li><code>{study.resourceExecution.resourceSuccessorSha256}</code> · GPU4–7 resource successor SHA256</li>
       </ul>
     </details>

@@ -13,9 +13,9 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.source.repository).toBe('mykcs/openevo-experiment');
     expect(study.source.finalImplementationPr).toBe(510);
     expect(study.source.controlTowerPr).toBe(502);
-    expect(study.source.finalImplementationHead).toBe('52dc699d5bccc1a75adc7a4e7a863ca58148eb93');
-    expect(study.source.formalExecutionCheckout).toBe('80bf263e9bf65fd0382f3c762e2a42b4928514a0');
-    expect(study.source.scientificExecutionSha).toBe('80bf263e9bf65fd0382f3c762e2a42b4928514a0');
+    expect(study.source.finalImplementationHead).toBe('cb17df97af002efac089d201ad44b0e79ff0690f');
+    expect(study.source.formalExecutionCheckout).toBe('340a057e04c7ace128ba79a2ff5ef28bcf40c4e6');
+    expect(study.source.scientificExecutionSha).toBe('340a057e04c7ace128ba79a2ff5ef28bcf40c4e6');
     expect(study.source.scienceExecutionGateCodeFreeze).toBe('c5e012814bb9509deb0e2cbc8d57a63e2b56889f');
     expect(study.source.campaignId).toBe('20260916-0255-bounded-effective-state-gdr');
     expect(study.source.experimentId).toBe('202609160255-bounded-effective-state-gdr');
@@ -25,8 +25,8 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.source.authorityReconciliationRequired).toBe(false);
     expect(study.source.preCampaignValidation.scientificExecutionSha).toBe('b41884ac90d185742dc47f240c4d54a3cfaf6175');
     expect(study.source.preCampaignValidation.implementationHead).toBe('5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa');
-    expect(study.source.status).toBe('FORMAL_RUNNING');
-    expect(study.source.currentCampaignClassification).toBe('FORMAL_RUNNING');
+    expect(study.source.status).toBe('PAUSE_FOR_DIAGNOSTIC');
+    expect(study.source.currentCampaignClassification).toBe('PAUSE_FOR_DIAGNOSTIC');
     expect(study.source.liveExecutionFrozen).toBe(true);
     expect(study.source.repositoryCurrentMustNotHotSwapLiveRun).toBe(true);
     expect(study.source.controlTowerHead).toMatch(sha40);
@@ -38,11 +38,11 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('不会在 seal 前写 winner');
     expect(component).not.toContain('Effective-State GDR 优于 Bounded');
     expect(component).not.toContain('Effective-State GDR beats Bounded');
-    expect(component).toContain('正式实验正在 GPU4–7 运行');
+    expect(component).toContain('正式实验已启动，但当前诊断暂停');
     expect(component).toContain('不会把中途 round、partial W&B 或单个 checkpoint 当作正式结果');
   });
 
-  it('keeps the formal result fail-closed while the formal run is active', () => {
+  it('keeps the formal result fail-closed while the formal study is paused for diagnosis', () => {
     expect(study.formalResult).toEqual({
       status: 'pending',
       sealedEvidence: null,
@@ -52,17 +52,23 @@ describe('Effective-State GDR publication snapshot', () => {
       finalPanel: null,
       conclusion: null,
     } satisfies EffectiveStateFormalResult);
-    expect(study.lifecycle.status).toBe('FORMAL_RUNNING');
+    expect(study.lifecycle.status).toBe('PAUSE_FOR_DIAGNOSTIC');
     expect(study.lifecycle.formalRunLaunched).toBe(true);
     expect(study.lifecycle.launchAuthority).toBe(true);
+    expect(study.lifecycle.continuationAuthority).toBe(false);
     expect(study.lifecycle.ownerLaunchReleasePresent).toBe(true);
     expect(study.lifecycle.ownerLaunchReleaseSha256).toBe('8c68c58dd45bc7216829d606eb5d5aaaa0db7855141306dafbec9cf6dcf1140f');
+    expect(study.lifecycle.repairReleaseSha256).toBe('8d9dc6505a33e66d79578af3915d71a69a18576e33a0b070b77365cc93c6843f');
+    expect(study.lifecycle.pauseReason).toBe('REPAIR_IDENTICAL_INVALID');
+    expect(study.lifecycle.offRound0PostRolloutSealed).toBe(true);
+    expect(study.lifecycle.onRound0PostRolloutStarted).toBe(false);
+    expect(study.lifecycle.pairedRound0BarrierSealed).toBe(false);
     expect(study.lifecycle.formalRowsConsumed).toBeNull();
-    expect(study.lifecycle.formalRowsDisclosure).toContain('not a formal-result authority');
+    expect(study.lifecycle.formalRowsDisclosure).toContain('no paired Round0 barrier');
     expect(study.lifecycle.finalPanelAccess).toBe(0);
     expect(study.lifecycle.formalOutputRootExists).toBe(true);
-    expect(study.lifecycle.formalOutputRoot).toContain('bounded-effective-state-gdr-formal-80bf263e-20260916');
-    expect(study.lifecycle.currentReadySha256).toBe('db3087ec8d8269f99b60cd1ff1511ed825e1a4ad6ffc96388f3c7ca27c70413d');
+    expect(study.lifecycle.formalOutputRoot).toContain('bounded-effective-state-gdr-recovery-55f01850-20260916');
+    expect(study.lifecycle.currentReadySha256).toBe('1c8ef46825482dd2fd081a96e9772a72883300737a44c07eb2eb7edea628db52');
     expect(study.lifecycle.prelaunchReceiptsAreHistoricalAfterExecutionChange).toBe(true);
     expect(study.lifecycle.prelaunchEvidence.controllerInitOnlySha256).toBe('adb861f8797c0b75f549e88865bdff651e8ac35230e39b0bc36d0be438150f4e');
     expect(study.lifecycle.prelaunchEvidence.matchedDryRunSha256).toBe('00f7f3284bc67568e4552906cd95c9e91cbfd14800d828444f221c439e835b52');
@@ -121,7 +127,8 @@ describe('Effective-State GDR publication snapshot', () => {
   it('binds the current GPU4-7 resource lane without changing treatment', () => {
     expect(study.resourceExecution.physicalGpuIndices).toEqual([4, 5, 6, 7]);
     expect(study.resourceExecution.workersPerGpu).toBe(2);
-    expect(study.resourceExecution.postRolloutGpu).toBe(4);
+    expect(study.resourceExecution.postRolloutGpuPreference).toEqual({ off: [7, 6, 5, 4], on: [4, 5, 6, 7] });
+    expect(study.resourceExecution.actualOffRound0PostGpu).toBe(7);
     expect(study.resourceExecution.crossPhaseOverlapAllowed).toBe(false);
     expect(study.resourceExecution.resourceSuccessorSha256).toMatch(sha64);
     expect(study.resourceExecution.claimBoundary).toContain('treatment/tasks/seeds/sampling');

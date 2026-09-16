@@ -39,14 +39,14 @@ BaseModel 创建基线：`main@1b6d13714f672345a086cbc09ec7067cb3dae3a7`
 
 ## 2. 当前科学 authority：现在能写什么
 
-截至 2026-09-16 14:09 +08 live refresh，正式 160-round experiment 已进入 **FORMAL_RUNNING**：owner launch release 已存在，live execution checkout=`80bf263e...`，formal output root 已建立，protected final-panel access 仍为 `0`。#510 repository-current implementation 已前进到 `52dc699d...`，但 Control Tower 明确要求 active run 继续冻结在 `80bf263e...`，不得 hot-swap。正式结果继续 Pending，运行中 round / partial W&B / 单 checkpoint 不得升级成效果结论。
+截至 2026-09-16 14:52 +08 live refresh，Control Tower 已把当前状态明确改为 **PAUSE_FOR_DIAGNOSTIC**，并声明该状态 supersede 之前的 `FORMAL_RUNNING` snapshot。当前 executed recovery=`340a057e...`，#510 integration/evidence head=`cb17df97...`，original rollout producer=`80bf263e...`，protected final-panel access 仍为 `0`。OFF Round0 post-rollout 已 transaction-sealed，但 ON post-rollout 尚未开始，因此还没有 paired Round0 barrier。正式结果继续 Pending；诊断状态、partial W&B、单 checkpoint 或中途 round 不得升级成效果结论。
 
-最新 #510 将 formal resource lane 从 GPU0–3 迁到 **GPU4–7**：每张卡仍是一条 OFF + 一条 ON rollout worker，post-rollout reflector / training / transition 在 GPU4 串行。上游明确冻结：tasks、schedule、generation/step seeds、sampling、treatment、common start、Carrier、GDR policy、160×128 budget 与 analysis 都不因这次资源迁移改变。因此这是 engineering/provenance freshness，不需要新的科学 A/B 决策。#502/#510 mutable PR body 已同步；#502 Git head 继续冻结不动。网站 formal result 继续 Pending。
+当前 formal resource lane 仍是 **GPU4–7**：每张卡一条 OFF + 一条 ON rollout worker；post-rollout 保持 OFF→ON 串行，但使用冻结的 first-idle GPU preference（OFF 7→6→5→4；ON 4→5→6→7），本次 OFF Round0 实际使用 GPU7。上游明确冻结：tasks、schedule、generation/step seeds、sampling、treatment、common start、Carrier、GDR policy、160×128 budget 与 analysis 都不因这次资源迁移改变。因此这是 engineering/provenance freshness，不需要新的科学 A/B 决策。#502/#510 mutable PR body 已同步；#502 Git head 继续冻结不动。网站 formal result 继续 Pending。
 
 ### 2.1 必须绑定的上游身份
-- live implementation / launch workline：PR #510 actual Git head `52dc699d5bccc1a75adc7a4e7a863ca58148eb93`；这是 repository-current implementation，不是 active run checkout。
+- live implementation / recovery workline：PR #510 integration/evidence head `cb17df97af002efac089d201ad44b0e79ff0690f`；这是 repository-current evidence head，不是 executed recovery checkout。
 - current campaign：`20260916-0255-bounded-effective-state-gdr`；experiment=`202609160255-bounded-effective-state-gdr`。
-- live formal execution checkout：`80bf263e9bf65fd0382f3c762e2a42b4928514a0`（active run 冻结 identity）。
+- current executed recovery checkout：`340a057e04c7ace128ba79a2ff5ef28bcf40c4e6`；original rollout producer=`80bf263e9bf65fd0382f3c762e2a42b4928514a0`。
 - science / execution-gate code freeze：`c5e012814bb9509deb0e2cbc8d57a63e2b56889f`。
 - Passport SHA256：`5d9adea0312ea93f4a12fa561fae5fa5fa8bd8f0f5cbff7d86c7db51371b5e42`；Registry SHA256=`9d07b2eff5a8eff6fa3471418bfadb96461aa638d28c118c3d66ae41cf13d999`。
 - Carrier adoption identity：`274123dde66547d5d5ba68b5c8b75c0205a75191ce3c1c471a606d589ac5250b`。
@@ -58,13 +58,13 @@ BaseModel 创建基线：`main@1b6d13714f672345a086cbc09ec7067cb3dae3a7`
 - Priority-1 pair：`BOUNDED_OFF` vs `EFFECTIVE_STATE_GDR_LORA_V1`。
 - treatment start：**Stage2 Round0 第一条 optimizer update**，不是 Round1。
 - logical treatment start：`S0 = EMPTY_BOUNDED_HISTORY`。
-- live execution READY SHA256：`db3087ec8d8269f99b60cd1ff1511ed825e1a4ad6ffc96388f3c7ca27c70413d`。
+- current recovery READY SHA256：`1c8ef46825482dd2fd081a96e9772a72883300737a44c07eb2eb7edea628db52`；repair release=`8d9dc6505a33e66d79578af3915d71a69a18576e33a0b070b77365cc93c6843f`。
 - controller-init-only preflight SHA256：`adb861f8797c0b75f549e88865bdff651e8ac35230e39b0bc36d0be438150f4e`。
 - matched zero-task dry-run SHA256：`00f7f3284bc67568e4552906cd95c9e91cbfd14800d828444f221c439e835b52`。
 - W&B observability admission SHA256：`9a75be897bb518a4bcbbf4e2069e511662f994e1b5f46f8b3126eab38e1b199a`；`scientific_authority=false`。
 - prelaunch zero-state seal SHA256：`7771ad89c0c400adaa23a27762766a043a3c928122f3cbfa8780101f6882ea03`。
-- current status / campaign classification：`FORMAL_RUNNING`。owner launch release SHA256=`8c68c58dd45bc7216829d606eb5d5aaaa0db7855141306dafbec9cf6dcf1140f`；final-panel access=`0`；W&B scientific authority=`false`。
-- owner launch release：present；owner launch 已授权，正式 run 正在运行。
+- current status / campaign classification：`PAUSE_FOR_DIAGNOSTIC`。owner launch 已发生，但 continuation authority 当前为 `false`，等待 common prospective generator-format clarification + sealed KEEP_PRIOR transaction disposition；final-panel access=`0`；W&B scientific authority=`false`。
+- formal study 已启动，但当前不是 continuously running；OFF Round0 post-rollout 已 seal，ON post-rollout 尚未开始，paired Round0 barrier 尚不存在。
 - in-flight formal denominator：不作为公开 formal-result authority；不在结果槽展示中途 row/round 数。
 - protected final-panel access：`0`。
 - formal experiment launched：`true`。
@@ -182,9 +182,9 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
 source: {
   repository: 'mykcs/openevo-experiment',
   finalImplementationPr: 510,
-  finalImplementationHead: '52dc699d5bccc1a75adc7a4e7a863ca58148eb93', // repository-current implementation
-  formalExecutionCheckout: '80bf263e9bf65fd0382f3c762e2a42b4928514a0', // live run frozen checkout
-  scientificExecutionSha: '80bf263e9bf65fd0382f3c762e2a42b4928514a0',
+  finalImplementationHead: 'cb17df97af002efac089d201ad44b0e79ff0690f', // repository-current integration/evidence
+  formalExecutionCheckout: '340a057e04c7ace128ba79a2ff5ef28bcf40c4e6', // current executed recovery
+  scientificExecutionSha: '340a057e04c7ace128ba79a2ff5ef28bcf40c4e6',
   scienceExecutionGateCodeFreeze: 'c5e012814bb9509deb0e2cbc8d57a63e2b56889f',
   campaignId: '20260916-0255-bounded-effective-state-gdr',
   experimentId: '202609160255-bounded-effective-state-gdr',
@@ -198,7 +198,8 @@ source: {
   currentMainHandoffCommit: '9f6259be9b961223a5cab7711fe1f297e272d541',
   historicalImplementationPr: 497,
   historicalImplementationHead: '7847d6497ae58b7a82dc37cd1cf71ccfe44aa8df',
-  status: 'FORMAL_RUNNING',
+  status: 'PAUSE_FOR_DIAGNOSTIC',
+  originalRolloutProducerSha: '80bf263e9bf65fd0382f3c762e2a42b4928514a0',
   liveExecutionFrozen: true,
   repositoryCurrentMustNotHotSwapLiveRun: true,
 }
@@ -405,7 +406,7 @@ final panel = locked during formal Stage2
 
 ## 8. 正式结果区域：先搭 scaffold，结果保持空白
 
-页面必须预留完整结果结构；当前 lifecycle 已是 `FORMAL_RUNNING`，因此显示 `正式实验正在运行 / Formal result Pending`，不得显示虚假零值或任何中途效果数字。
+页面必须预留完整结果结构；当前 lifecycle 是 `PAUSE_FOR_DIAGNOSTIC`，因此显示 `正式实验已启动但诊断暂停 / Formal result Pending`，不得显示虚假零值或任何中途效果数字。
 
 ### 8.1 预先固定的结果槽位
 
@@ -426,7 +427,7 @@ Pending 不是灰色空白卡片；它要告诉读者：
 
 必须可见：
 
-- lifecycle 必须按 authority 显示：当前为 `正式实验正在运行 / Formal result Pending`；
+- lifecycle 必须按 authority 显示：当前为 `正式实验已启动但诊断暂停 / Formal result Pending`；
 - 运行中不展示未 seal 的 live denominator / round score / partial W&B；只有 exact authority 明确给出且不构成 outcome 泄漏的 lifecycle fact 才能显示；
 - `final panel = locked`；
 - “这里故意不提前写 winner”。
@@ -441,7 +442,7 @@ Pending 不是灰色空白卡片；它要告诉读者：
 - [x] Verify current consumer READY package、zero-task dry-run、controller-init receipt、W&B admission 与 prelaunch zero-state seal bytes / SHA on the exact consumer server；全部绑定 science SHA `b41884ac…`。
 - [x] Verify the exact source files for first-generation Round0 beta-domain FAIL, mapping-v2 effective-beta FAIL, policy qualification, predict-only PASS, isolated exact stack, topology PASS and short non-final PASS.
 - [x] Build/update one BaseModel machine-readable website snapshot only after the above facts agree.
-- [x] Initial publication-time lifecycle classification was `PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START` with zero formal rows and no launch; this was correct for the original #729 release snapshot. After owner-authorized launch, the 2026-09-16 14:09 +08 freshness repair supersedes that lifecycle state with `FORMAL_RUNNING` while the formal result remains Pending/null and final-panel access remains `0`.
+- [x] Lifecycle is re-classified on every publication transition: original #729 correctly captured `PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START`; the 14:09 +08 hotfix captured owner-authorized `FORMAL_RUNNING`; the latest owner/Control-Tower authority now supersedes both with `PAUSE_FOR_DIAGNOSTIC`. Formal result remains Pending/null and final-panel access remains `0`.
 
 Acceptance evidence for Phase A:
 
@@ -471,10 +472,10 @@ claim_boundary = <explicit sentence>
 - [x] 新建 `src/data/effectiveStateGdrLoraStudy.ts`，集中拥有本页面科学 snapshot。
 - [x] 新建 `OpenEvoEffectiveStateGdrLoraStudy.astro`；不得从旧页面复制并散落 hard-coded facts。
 - [x] 新建 canonical route `bounded-effective-state-gdr/index.astro`。
-- [x] route `<title>` / description / OG/Twitter metadata 与正文处于同一科学状态：当前写“正式实验正在运行 / 正式结果 Pending”，不写任何中途效果数字。
+- [x] route `<title>` / description / OG/Twitter metadata 与正文处于同一科学状态：当前写“正式实验已启动但诊断暂停 / 正式结果 Pending”，不写任何中途效果数字。
 - [x] 在 `siteReaderContracts.ts` 登记 `capability-bounded-effective-state-gdr`。
 - [x] attention mode 默认 `narrative`；第一任务是“理解为什么从 factor-state GDR 走到 Effective-State GDR，以及新正式实验到底比较什么”。
-- [x] 首屏必须让新读者看到：研究问题、OFF/ON、当前 `FORMAL_RUNNING / Formal result Pending` 边界。
+- [x] 首屏必须让新读者看到：研究问题、OFF/ON、当前 `PAUSE_FOR_DIAGNOSTIC / Formal result Pending` 边界。
 - [x] 首屏不得出现 winner、formal delta、最终效果暗示。
 - [x] 在 `openEvoExperimentNavigation.ts` 给 `directapply-1p7b` 增加新 analysis/prospective experiment child。
 - [x] 在 `OPEN_EVO_CANONICAL_ROUTE_OWNERS` 声明新 route 唯一 owner；不要造成跨 experiment ambiguity。
@@ -626,7 +627,7 @@ Phase B 的 Definition of Done：route/data/Reader Contract/IA 四个 owner 对�
 `tests/e2e/effective-state-gdr-lora.spec.ts` 至少检查：
 
 - [x] HTTP/render PASS、单 H1、无 console/page error。
-- [x] 第一屏出现 `Bounded`、`Effective-State GDR`、`FORMAL_RUNNING` / `Pending` 边界。
+- [x] 第一屏出现 `Bounded`、`Effective-State GDR`、`PAUSE_FOR_DIAGNOSTIC` / `Pending` 边界。
 - [x] 第一屏没有正式 reward/success winner 数字。
 - [x] derivation 四个关键台阶都存在并按顺序出现。
 - [x] `1.052` 周围文本包含 factor/representation 解释，不出现“original beta 1.052”误读。
@@ -1016,3 +1017,13 @@ This is lifecycle/provenance freshness only. Treatment, task order, seeds, sampl
 #729's Production release was correct at its merge-time snapshot but became stale after the owner-authorized launch. A narrow post-merge hotfix is therefore required before Milestone 1 can be closed as a current publication.
 
 Validation update 2026-09-16 14:20 +08: pre-commit #502/#510 readback still matches `FORMAL_RUNNING / live 80bf263e... / implementation 52dc699d... / READY db3087ec... / final-panel access 0`; focused semantic/navigation/Reader Vitest `25/25 PASS`; Astro check `0 errors / 0 warnings` (2 existing hints); static build `263 pages PASS`; heading + external-brand audits PASS; `git diff --check` PASS; sequential Chromium `17/17 PASS`. Formal result stays Pending/null; no in-flight efficacy value is published.
+
+
+### 2026-09-16 14:52 +08 · diagnostic-pause authority refresh
+
+Final pre-merge race-check of #740 found #510 had advanced and, more importantly, the latest #502 owner/Control-Tower comment explicitly declared `PAUSE_FOR_DIAGNOSTIC — supersedes prior FORMAL_RUNNING snapshots`. #502 mutable body was synchronized to that owner decision without moving its Git head.
+
+Current publication facts: executed recovery=`340a057e04c7ace128ba79a2ff5ef28bcf40c4e6`; #510 integration/evidence head=`cb17df97af002efac089d201ad44b0e79ff0690f`; original rollout producer=`80bf263e9bf65fd0382f3c762e2a42b4928514a0`; READY=`1c8ef46825482dd2fd081a96e9772a72883300737a44c07eb2eb7edea628db52`; repair release=`8d9dc6505a33e66d79578af3915d71a69a18576e33a0b070b77365cc93c6843f`; final-panel access=`0`. OFF Round0 post-rollout is sealed; ON post-rollout has not started; no paired Round0 barrier exists.
+
+The blocker is `REPAIR_IDENTICAL_INVALID` in Carrier Health. KEEP_PRIOR protected historical state, while the frozen Health policy correctly paused. A common prospective generator-format clarification plus explicit disposition of the sealed KEEP_PRIOR transaction is an upstream owner/protocol decision before experiment continuation. BaseModel does not make that decision and publishes no partial reward/success/W&B/checkpoint winner. Formal result remains Pending/null.
+Validation update 2026-09-16 15:03 +08: pre-commit #502/#510 readback remains `PAUSE_FOR_DIAGNOSTIC / recovery 340a057e... / evidence cb17df97... / READY 1c8ef468... / final-panel access 0`; semantic/navigation/Reader Vitest `25/25 PASS`; clean Astro check `580 files / 0 errors / 0 warnings / 2 existing hints`; static build `263 pages PASS`; heading + external-brand audits PASS; `git diff --check` PASS; sequential Chromium `17/17 PASS` after shortening the hero copy to keep the declared Reader Contract message fully inside the 1280×633 first screen. Formal result remains Pending/null; no paused-run efficacy value is published.

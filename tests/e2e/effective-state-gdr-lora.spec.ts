@@ -85,9 +85,10 @@ test('Effective-State first screen tells the three-part story before deeper choi
   await expect(lede).toBeVisible();
   await expect(lede).toContainText('rank128');
   await expect(lede).toContainText('第一代 GDR');
-  await expect(lede).toContainText('同一个有效更新能有多种 A/C 表示');
-  await expect(lede).toContainText('160 轮正式运行已经启动');
-  await expect(lede).toContainText('正式结果仍未产生');
+  await expect(lede).toContainText('同一个有效更新可以有多种内部表示');
+  await expect(lede).toContainText('正式 OFF/ON 实验已启动');
+  await expect(lede).toContainText('Carrier Health 诊断暂停');
+  await expect(lede).toContainText('正式结果仍 Pending');
   const ledeBox = await lede.boundingBox();
   expect(ledeBox).not.toBeNull();
   expect(ledeBox!.y).toBeLessThan(844);
