@@ -26,27 +26,36 @@ export type EffectiveStateFormalResult =
     };
 
 const repo = 'https://github.com/mykcs/openevo-experiment';
-const scienceSha = 'b41884ac90d185742dc47f240c4d54a3cfaf6175';
-const evidenceRoot = `${repo}/blob/${scienceSha}/docs/evidence/bounded-recurrence-gdr-20260915`;
+const campaignScienceSha = 'c5e012814bb9509deb0e2cbc8d57a63e2b56889f';
+const qualificationEvidenceSha = 'b41884ac90d185742dc47f240c4d54a3cfaf6175';
+const evidenceRoot = `${repo}/blob/${qualificationEvidenceSha}/docs/evidence/bounded-recurrence-gdr-20260915`;
 
 export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
-  checkedAt: '2026-09-16T09:48:44+08:00',
+  checkedAt: '2026-09-16T10:08:00+08:00',
   source: {
     repository: 'mykcs/openevo-experiment',
     controlTowerPr: 502,
     controlTowerHead: '99dd0fdce328682fb0218aa084d3d2b0d0b7ae49',
     finalImplementationPr: 510,
     finalImplementationHead: 'eb7a2b5c8365e83b7b1133f803ba1add9d81dee5',
-    controlTowerBoundImplementationHead: '5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa',
-    scientificExecutionSha: scienceSha,
-    authorityReconciliationRequired: true,
+    scientificExecutionSha: campaignScienceSha,
+    campaignId: '20260916-0255-bounded-effective-state-gdr',
+    experimentId: '202609160255-bounded-effective-state-gdr',
+    passportSha256: '5d9adea0312ea93f4a12fa561fae5fa5fa8bd8f0f5cbff7d86c7db51371b5e42',
+    campaignPreregParentScienceSha: 'de5b011035cfe907fee34c7b9a8ea961dd1e230d',
+    authorityReconciliationRequired: false,
+    preCampaignValidation: {
+      scientificExecutionSha: qualificationEvidenceSha,
+      implementationHead: '5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa',
+      readySha256: '74233661885a033876b07a62df1a165f98d5109115f100418e2d5b084955aca9',
+    },
     currentMainHandoffCommit: '9f6259be9b961223a5cab7711fe1f297e272d541',
     historicalImplementationPr: 497,
     historicalImplementationHead: '7847d6497ae58b7a82dc37cd1cf71ccfe44aa8df',
-    status: 'PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START',
+    status: 'PRELAUNCH_READY_AWAITING_EXPLICIT_OWNER_START',
   },
   lifecycle: {
-    status: 'PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START',
+    status: 'PRELAUNCH_READY_AWAITING_EXPLICIT_OWNER_START',
     formalRunLaunched: false,
     launchAuthority: false,
     formalRowsConsumed: 0,
@@ -134,7 +143,7 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     rolloutsPerRoundPerArm: 128,
     formalRolloutsPerArm: 20480,
     horizon: 15,
-    roundBarrier: 'OFF round r -> ON round r -> both sealed -> round r+1',
+    roundBarrier: 'OFF+ON rollout concurrent -> OFF post-rollout -> ON post-rollout -> matched barrier -> round r+1',
     matched: [
       { zh: '基础模型与 exact revision', en: 'base model + exact revision' },
       { zh: 'WebShop 任务顺序 / schedule position', en: 'WebShop task order / schedule positions' },
@@ -147,7 +156,7 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
       { zh: '每臂 rollout 与 optimizer-step 预算', en: 'per-arm rollout and optimizer-step budget' },
       { zh: 'WebShop environment / harness contract', en: 'WebShop environment / harness contract' },
       { zh: '冻结的 scientific execution SHA', en: 'frozen scientific execution SHA' },
-      { zh: 'round barrier：OFF r → ON r → 两臂都 seal 后才进 r+1', en: 'round barrier: OFF r -> ON r -> both sealed before r+1' },
+      { zh: 'round barrier：两臂 rollout 并发 → OFF/ON post-rollout 串行 → 两臂 seal 后进 r+1', en: 'round barrier: concurrent OFF/ON rollouts -> serialized post-rollout -> both sealed before r+1' },
     ] as const,
     onlyTreatmentDifference: 'Effective-State GDR write on ON',
     treatmentTiming: {

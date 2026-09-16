@@ -166,7 +166,7 @@ const pending = result.status === 'pending';
         <div><strong>ON · {study.identity.on}</strong><span>{t('同一训练 + Effective-State GDR write', 'same training + Effective-State GDR write')}</span></div>
       </div>
       <div class="esg__barrier"><span>Round 0</span><i></i><span>Round 1</span><i></i><span>…</span><i></i><span>Round 159</span></div>
-      <figcaption>{t('每一轮都先完成 OFF 与 ON，再一起跨过 round barrier 进入下一轮；final panel 在正式 Stage2 期间保持 locked。', 'Each round completes OFF and ON before both cross the round barrier together; the final panel stays locked during formal Stage2.')}</figcaption>
+      <figcaption>{t('每轮 OFF/ON rollout 在四张卡上并发；随后 OFF、ON 的 post-rollout 阶段按冻结顺序串行完成，两臂都 seal 后才跨过 matched barrier。final panel 在正式 Stage2 期间保持 locked。', 'OFF/ON rollouts run concurrently across the four GPUs; OFF then ON post-rollout phases complete in the frozen serial order, and both arms must seal before the matched barrier. The final panel stays locked during formal Stage2.')}</figcaption>
     </figure>
     <ul class="esg__matched-list">
       {study.formalDesign.matched.map((item) => <li>{zh ? item.zh : item.en}</li>)}

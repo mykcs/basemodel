@@ -14,9 +14,13 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.source.finalImplementationPr).toBe(510);
     expect(study.source.controlTowerPr).toBe(502);
     expect(study.source.finalImplementationHead).toBe('eb7a2b5c8365e83b7b1133f803ba1add9d81dee5');
-    expect(study.source.controlTowerBoundImplementationHead).toBe('5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa');
-    expect(study.source.scientificExecutionSha).toBe('b41884ac90d185742dc47f240c4d54a3cfaf6175');
-    expect(study.source.authorityReconciliationRequired).toBe(true);
+    expect(study.source.scientificExecutionSha).toBe('c5e012814bb9509deb0e2cbc8d57a63e2b56889f');
+    expect(study.source.campaignId).toBe('20260916-0255-bounded-effective-state-gdr');
+    expect(study.source.experimentId).toBe('202609160255-bounded-effective-state-gdr');
+    expect(study.source.passportSha256).toMatch(sha64);
+    expect(study.source.authorityReconciliationRequired).toBe(false);
+    expect(study.source.preCampaignValidation.scientificExecutionSha).toBe('b41884ac90d185742dc47f240c4d54a3cfaf6175');
+    expect(study.source.preCampaignValidation.implementationHead).toBe('5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa');
     expect(study.source.controlTowerHead).toMatch(sha40);
     expect(Number.isNaN(Date.parse(study.checkedAt))).toBe(false);
   });
@@ -96,6 +100,8 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.formalDesign.rolloutsPerRoundPerArm).toBe(128);
     expect(study.formalDesign.formalRolloutsPerArm).toBe(20_480);
     expect(study.formalDesign.finalPanel).toContain('locked');
+    expect(study.formalDesign.roundBarrier).toContain('OFF+ON rollout concurrent');
+    expect(study.formalDesign.roundBarrier).toContain('matched barrier');
     expect(study.formalDesign.onlyTreatmentDifference).toContain('Effective-State GDR');
   });
 });
