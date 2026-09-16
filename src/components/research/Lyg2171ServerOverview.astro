@@ -45,26 +45,26 @@ const gpuFacts = [
 ---
 <main class="server-overview" data-locale={locale} data-storage-responsibility-view="artifact-lifecycle-v3">
   <header class="server-hero" data-reader-primary>
-    <p class="server-hero__context">{t('共享科研服务器 · 2026-09-15 静态快照', 'Shared research server · 2026-09-15 static snapshot')}</p>
-    <h1>{t('服务器快照：约 0.99 TiB 可用', 'Server snapshot: about 0.99 TiB available')}</h1>
-    <p class="server-hero__status">{t('项目工作区所在持久文件系统约有 0.99 TiB 可用。当前快照没有显示紧急扩容需求；持续工作是给大型实验产物补齐身份、归档、恢复验证和回收提案。Q17 的一个 1.7B run 约 320.9 GiB。', 'The persistent filesystem backing the project workspace has about 0.99 TiB available. The current snapshot does not indicate an emergency capacity need. The continuing work is identity, archive, restore verification, and reclaim proposals for large experiment outputs. One Q17 1.7B run is about 320.9 GiB.')}</p>
+    <p class="server-hero__context">{t('2026-09-15 22:10（UTC+8）· 静态快照，不是实时监控', '2026-09-15 22:10 (UTC+8) · static snapshot, not live monitoring')}</p>
+    <h1>{t('约 0.99 TiB 可用；当前不用扩容', 'About 0.99 TiB available; no expansion needed now')}</h1>
+    <p class="server-hero__status">{t('下一步不是清盘，而是先把大型实验产物归档并验证可以恢复。需要回收空间时，只先生成精确清单；不会自动删除。', 'The next step is not broad cleanup. First archive large experiment outputs and verify they can be restored. If space must be reclaimed, generate an exact list first; nothing is deleted automatically.')}</p>
 
-    <dl class="server-hero__facts research-fact-band" style="--research-fact-columns:3" aria-label={t('当前服务器资产重点', 'Current server artifact facts')}>
-      <div><dt>{t('Q17 案例', 'Q17 example')}</dt><dd>320.9 GiB</dd></div>
-      <div><dt>{t('其中 checkpoint 文件', 'Checkpoint files')}</dt><dd>304.7 GiB</dd></div>
-      <div><dt>{t('删除权限', 'Deletion authority')}</dt><dd>{t('未授权删除', 'Not authorized')}</dd></div>
+    <dl class="server-hero__facts research-fact-band" style="--research-fact-columns:3" aria-label={t('当前文件系统快照', 'Current filesystem snapshot')}>
+      <div><dt>{t('总容量', 'Capacity')}</dt><dd>2.0 TiB</dd></div>
+      <div><dt>{t('已用', 'Used')}</dt><dd>≈ 1.01 TiB · 51%</dd></div>
+      <div><dt>{t('可用', 'Available')}</dt><dd>≈ 0.99 TiB</dd></div>
     </dl>
 
-    <p class="server-hero__boundary">{t('快照时间：2026-09-15 22:10（UTC+8）。这是静态页面，不是实时监控。远端已经能恢复，也不等于本地可以删除；删除始终需要同一版 exact reclaim manifest 的单独批准。', 'Snapshot: 2026-09-15 22:10 (UTC+8). This is a static page, not a live monitor. Remote recoverability does not make a local copy deletable; deletion always requires separate approval of the same exact reclaim manifest.')}</p>
+    <p class="server-hero__boundary"><strong>{t('安全边界：', 'Safety boundary: ')}</strong>{t('远端可恢复不等于本地可删；任何删除都要单独批准同一版精确清单。私有归档空间不足也不能自动把数据公开；未合并的草稿规则不能替代正式规则。', 'Remote recoverability does not make a local copy deletable; any deletion needs separate approval of the same exact list. Insufficient private archive capacity also cannot make data public automatically, and an unmerged draft cannot replace the formal authority.')}</p>
 
     <div class="routine-entry">
       <div class="routine-entry__copy">
         <span>{t('默认操作', 'Default operation')}</span>
-        <strong>{t('例行服务器维护', 'Routine server maintenance')}</strong>
-        <p>{t('一次推进健康扫描 → 实验收尾归档 → 回收提案；只有删除、公开可见性、科学身份、ownership 或 authority 需要 owner 决定时才停下。', 'Advance health scan → campaign closeout → reclaim proposal in one run, stopping only when deletion, visibility, scientific identity, ownership, or authority needs an owner decision.')}</p>
+        <strong>{t('运行一次例行维护', 'Run one routine maintenance pass')}</strong>
+        <p>{t('先只读检查空间和活跃引用，再把已完成实验归档并验证恢复；最后只生成回收清单。遇到删除、公开可见性、实验身份或归属不清时才停下来请你决定。', 'First check storage and live references read-only, then archive completed experiments and verify restore; finally generate a reclaim list only. Stop for an owner decision on deletion, visibility, experiment identity, or unresolved ownership.')}</p>
       </div>
       <details class="routine-entry__prompt">
-        <summary>{t('复制总入口 Prompt', 'Copy routine-maintenance prompt')}</summary>
+        <summary>{t('复制维护指令', 'Copy maintenance instructions')}</summary>
         <pre data-copy-label={t('复制例行服务器维护 Prompt', 'Copy routine-maintenance prompt')}><code>{routinePrompt}</code></pre>
       </details>
     </div>
@@ -237,7 +237,7 @@ const gpuFacts = [
 
 <style>
   .server-overview{color:var(--ink)}
-  .server-hero{max-width:960px;padding:1.15rem 0 1rem}
+  .server-hero{max-width:960px;padding:1.15rem 0 2.6rem}
   .server-hero__context{margin:0 0 .55rem;color:var(--muted);font-size:.78rem;font-weight:760}
   .server-hero h1{max-width:18ch;margin:0 0 .72rem;font-size:clamp(2.1rem,4.4vw,3.8rem);line-height:1;letter-spacing:-.05em}
   .server-hero__status{max-width:74ch;margin:0;color:var(--ink);font-size:clamp(1rem,1.6vw,1.16rem);font-weight:700;line-height:1.58}

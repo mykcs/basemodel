@@ -13,7 +13,7 @@ const staticServerDiagram = read('../components/research/ServerAuthorityDiagram.
 
 describe('public server copy', () => {
   it('keeps the server lifecycle page public-safe and distinguishes current from historical storage facts', () => {
-    expect(serverOverview).toContain('服务器快照：约 0.99 TiB 可用');
+    expect(serverOverview).toContain('约 0.99 TiB 可用；当前不用扩容');
     expect(serverOverview).toContain('0.99 TiB');
     expect(serverOverview).toContain('320.9 GiB');
     expect(serverOverview).toContain('304.66 GiB');
@@ -45,7 +45,7 @@ describe('public server copy', () => {
     expect(serverOverview).not.toContain('Our home directory');
     expect(serverOverview).not.toMatch(/\/data\/home\//);
     expect(serverOverview).not.toMatch(/dev-[a-z0-9_-]+/i);
-    expect(serverRouteZh).toContain('2026-09-15 服务器静态快照');
+    expect(serverRouteZh).toContain('2026-09-15 22:10（UTC+8）服务器静态快照');
     expect(serverRouteZh).toContain('0.99 TiB');
     // Archived English is historical source evidence and must not be rewritten just to mirror current Chinese runtime state.
     expect(serverRouteEn).toContain('2026-09-05 server capacity and hardware snapshot');

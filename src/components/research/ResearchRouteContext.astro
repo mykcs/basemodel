@@ -28,7 +28,9 @@ const compactPurpose = route === 'first-run'
       ? (zh ? '实验方法、结果与结论边界。' : 'Methods, results, and claim boundaries.')
       : route === 'sd-lora-scaling'
         ? (zh ? 'DirectApply 派生分析：SD-LoRA 计算扩展性。' : 'DirectApply analysis: SD-LoRA compute scaling.')
-        : record.purpose[locale];
+        : route === 'q17-directapply-frontier'
+          ? (zh ? '同一组 32 题重测两个连续训练状态；这里只做局部诊断，不是最终测试。' : 'Retest two consecutive training states on the same 32 tasks; this is a local diagnostic, not the final evaluation.')
+          : record.purpose[locale];
 const purpose = isExperimentHub && experiment && !compact ? experiment.motivation[locale] : (compact ? compactPurpose : record.purpose[locale]);
 const resultLinks = experiment ? experiment.childLinks.filter((link) => link.role === 'result') : [];
 const hubResults = experiment && resultLinks.length === 0

@@ -43,22 +43,22 @@ const risks = zh ? [
   <a class="sdlora__back" href={flowHref}>← {t('流程理解图', 'Flow map')}</a>
 
   <section class="sdlora-intro" data-reader-primary aria-labelledby="sdlora-intro-title">
-    <h1 id="sdlora-intro-title">{t('SD-LoRA 把成功经验写进下一轮模型参数', 'SD-LoRA writes successful experience into the next round’s model parameters')}</h1>
+    <h1 id="sdlora-intro-title">{t('SD-LoRA 用筛选后的成功轨迹训练候选 LoRA 参数', 'SD-LoRA trains candidate LoRA parameters from selected successful traces')}</h1>
     <p class="sdlora-intro__lede">{t(
-      '一次 WebShop 成功先只是一条轨迹。通过检查的成功被选成训练数据后，SD-LoRA 才在两批任务之间更新 LoRA 参数，产出下一轮可以采用的候选参数。',
-      'A successful WebShop attempt begins as a trace. After checked successes are selected as training data, SD-LoRA updates the LoRA parameters between task batches and produces candidate parameters that the next round may adopt.'
+      '一次 WebShop 成功先只是一条任务轨迹。每个任务只取最早一条通过全部检查的成功作为训练数据；SD-LoRA 在本轮任务结束后、下一轮开始前更新 LoRA，得到一份候选参数。',
+      'A successful WebShop attempt begins as a task trace. For each task, only the earliest fully checked success becomes training data; SD-LoRA updates LoRA after the current task batch and before the next one, producing candidate parameters.'
     )}</p>
     <p class="sdlora-intro__scope">{t(
-      'OpenEvo 还会通过 Text Memory、Skill Bundle 和 Agent System 延续经验；它们和 SD-LoRA 是不同的经验载体。SD-LoRA 在这里只负责参数写回。',
-      'OpenEvo also carries experience through Text Memory, Skill Bundle, and Agent System; these are separate carriers from SD-LoRA. Here, SD-LoRA owns only parameter write-back.'
+      '训练完候选参数以后还有一步：当前 DirectApply 是检查通过后直接采用；历史 GDR-v1 则先用固定 16 题小测再决定是否采用。它们是训练后的准入规则，不是 SD-LoRA 本身。',
+      'Candidate training is followed by a separate admission step: current DirectApply adopts a checked candidate directly, while historical GDR-v1 first probes 16 fixed tasks. These are post-training admission rules, not SD-LoRA itself.'
     )}</p>
     <dl class="sdlora-intro__frame research-fact-band" style="--research-fact-columns:4" aria-label={t('SD-LoRA 在一轮中的输入、时机和输出', 'SD-LoRA input, timing, and output within a round')}>
       <div><dt>{t('输入', 'Input')}</dt><dd>{t('通过全部检查的成功轨迹', 'fully checked successful traces')}</dd></div>
       <div><dt>{t('时机', 'Timing')}</dt><dd>{t('本轮任务结束后；下一轮任务开始前', 'after this task batch; before the next')}</dd></div>
       <div><dt>{t('动作', 'Action')}</dt><dd>{t('更新 LoRA 参数', 'update LoRA parameters')}</dd></div>
-      <div><dt>{t('输出', 'Output')}</dt><dd>{t('候选累计 LoRA', 'candidate cumulative LoRA')}</dd></div>
+      <div><dt>{t('输出', 'Output')}</dt><dd>{t('候选 LoRA 参数', 'candidate LoRA parameters')}</dd></div>
     </dl>
-    <p class="sdlora-intro__boundary"><strong>{t('候选训练和下一轮采用是两件事。', 'Candidate training and next-round adoption are separate events.')}</strong> {t('SD-LoRA 先产出候选累计 LoRA；当前 DirectApply 或历史本地 GDR-v1 再决定下一轮加载哪一版参数。', 'SD-LoRA first produces a candidate cumulative LoRA; current DirectApply or historical local GDR-v1 then determines which parameter state the next round loads.')}</p>
+    <p class="sdlora-intro__boundary"><strong>{t('候选参数不等于能力一定提升。', 'Candidate parameters do not imply guaranteed capability gains.')}</strong> {t('本实现每轮最多回放 64 条旧经验，所以不是原论文的 rehearsal-free 协议；旧方向保持不动，也不保证 WebShop 分数会持续上涨。', 'This implementation replays up to 64 old examples per round, so it is not the paper’s rehearsal-free protocol; keeping old directions fixed also does not guarantee that WebShop scores will keep rising.')}</p>
   </section>
 
   <section class="sdlora__section sdlora__section--primer" id="what-is-sd-lora" aria-labelledby="what-is-sd-lora-title">

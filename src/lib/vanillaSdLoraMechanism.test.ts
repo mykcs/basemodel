@@ -55,8 +55,8 @@ describe('Vanilla SD-LoRA mechanism projection', () => {
     expect(enPage).toContain('<OpenEvoVanillaSdLoraMechanism locale={locale} />');
     expect(enPage).toContain('title="Why does OpenEvo need SD-LoRA?"');
     for (const phrase of [
-      'SD-LoRA writes successful experience into the next round’s model parameters',
-      'A successful WebShop attempt begins as a trace',
+      'SD-LoRA trains candidate LoRA parameters from selected successful traces',
+      'A successful WebShop attempt begins as a task trace',
       'Ordinary LoRA',
       'Scalable Decoupled LoRA',
       'This page calls the current baseline “Vanilla SD-LoRA.”',

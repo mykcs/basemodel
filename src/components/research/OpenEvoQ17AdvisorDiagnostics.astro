@@ -22,10 +22,10 @@ const rows = [
 
 <section class="advisor-diagnostics" data-q17-advisor-diagnostics data-reader-primary aria-labelledby="advisor-diagnostics-title">
   <header class="result-hero">
-    <p class="eyebrow">2026-09-11 · {t('同样 32 道题 · R127 / R128', 'Same 32 tasks · R127 / R128')}</p>
-    <h1 id="advisor-diagnostics-title">{t('同样 32 道题上，R127 与 R128 平均分只差 4.18 分', 'On the same 32 tasks, R127 and R128 differed by only 4.18 average-score points')}</h1>
-    <p class="lede">{t('训练轮分数从 76.1 掉到 48.9，但两轮题目不同。固定成同样 32 道题后，平均分是 63.58 → 59.41，完整做对 10 题 → 8 题。原来的大跌不能直接当成同等幅度的能力下降。', 'The live training-round score fell from 76.1 to 48.9, but the rounds used different task samples. On the same 32 tasks, the average score was 63.58 → 59.41 and fully solved tasks went from 10 to 8. The large live-round drop therefore cannot be read as an equally large loss of ability.')}</p>
-    <p class="result-hero__boundary"><strong>{t('统计边界：', 'Statistical boundary: ')}</strong>{t('平均分差的 95% 统计范围是 −17.13 ～ +8.00，包含“没有差别”。这 32 道题还不足以证明 R128 整体能力退步。', 'The 95% uncertainty range for the average-score difference is −17.13 to +8.00 and includes no difference. These 32 tasks are not enough to show that R128 became worse overall.')}</p>
+    <p class="eyebrow">2026-09-11 · {t('连续两个训练状态：进入第 127 轮的模型（R127）/ 进入第 128 轮的模型（R128）', 'Two consecutive training states: model entering round 127 (R127) / model entering round 128 (R128)')}</p>
+    <h1 id="advisor-diagnostics-title">{t('同一组 32 道 WebShop 题上，R128 比 R127 平均低 4.18 分', 'On the same 32 WebShop tasks, R128 averaged 4.18 points below R127')}</h1>
+    <p class="lede">{t('训练过程中，两轮在线分数从 76.1 掉到 48.9，但它们抽到的题不同。把 R127 和 R128 放到同一组 32 道题上重测后，平均分是 63.58 → 59.41，完整做对 10 题 → 8 题。这个局部诊断说明原来的大跌混入了抽题差异，不能直接当成同等幅度的能力下降。', 'During training, the live scores fell from 76.1 to 48.9, but the two rounds sampled different tasks. Retesting R127 and R128 on the same 32 tasks gave 63.58 → 59.41 on average, with fully solved tasks going from 10 to 8. This local diagnostic shows that the large live-round drop mixed in task-sampling differences and cannot be read as an equally large capability loss.')}</p>
+    <p class="result-hero__boundary"><strong>{t('这只是一段训练中的局部诊断，不是最终测试。', 'This is a local training diagnostic, not the final evaluation.')}</strong>{t('这 32 道题来自训练/开发范围、在看结果前就固定，并且与最终锁定的 128 题不重合；平均分差的 95% 统计范围是 −17.13 ～ +8.00，包含“没有差别”。DirectApply 后来完整跑完 160 轮，并另做一次冻结 final，本页结论不能外推到后续训练或最终结果。', 'These 32 tasks came from the train/development range, were frozen before results were inspected, and do not overlap with the locked final 128 tasks. The 95% uncertainty range for the score difference is −17.13 to +8.00 and includes no difference. DirectApply later completed all 160 rounds and ran a separate frozen final; this page cannot extrapolate its local result to later training or the final outcome.')}</p>
     <dl class="result-hero__facts research-fact-band" style="--research-fact-columns:3" aria-label={t('训练曲线与同题重测的三个关键数字', 'Three key numbers from the live curve and same-task retest')}>
       <div><dt>{t('训练轮 · 题不同', 'Live rounds · different tasks')}</dt><dd>76.1 → 48.9</dd></div>
       <div><dt>{t('同样 32 题', 'Same 32 tasks')}</dt><dd>63.58 → 59.41</dd></div>
@@ -58,7 +58,7 @@ const rows = [
   </section>
 
   <section class="result-section reasoning" aria-labelledby="what-it-means">
-    <h2 id="what-it-means">{t('接口没有坏，生成选择反而更集中', 'The interface still worked, and the model’s choices became more concentrated')}</h2>
+    <h2 id="what-it-means">{t('动作接口执行正常；R128 的生成选择更集中', 'The action interface executed normally; R128’s choices were more concentrated')}</h2>
     <div class="reasoning-line">
       <article>
         <h3>{t('购物动作都能正常执行', 'The shopping actions still executed')}</h3>
@@ -94,10 +94,10 @@ const rows = [
 </section>
 <style>
 .advisor-diagnostics{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--ink)}
-.result-hero{padding:1.6rem 0 1.6rem;border-bottom:1px solid var(--line)}
+.result-hero{padding:1.15rem 0 1.25rem;border-bottom:1px solid var(--line)}
 .eyebrow{margin:0 0 .7rem;font:800 .78rem/1.25 var(--font-mono);letter-spacing:.045em;color:var(--accent-deep)}
-.result-hero h1{max-width:980px;margin:0;font-size:clamp(2.35rem,5.5vw,4.8rem);line-height:.98;letter-spacing:-.065em}.result-hero__facts{max-width:900px}
-.lede{max-width:900px;margin:1rem 0 0;color:var(--muted);font-size:1.08rem;line-height:1.62}.result-hero__boundary{max-width:900px;margin:.72rem 0 0;padding-top:.62rem;border-top:1px solid var(--line);color:var(--muted);font-size:.94rem;line-height:1.55}.result-hero__boundary strong{color:var(--ink)}
+.result-hero h1{max-width:980px;margin:0;font-size:clamp(2.35rem,5.5vw,4.8rem);line-height:.98;letter-spacing:-.065em}.result-hero__facts{max-width:900px;margin-top:.8rem}
+.lede{max-width:900px;margin:.72rem 0 0;color:var(--muted);font-size:1.05rem;line-height:1.55}.result-hero__boundary{max-width:900px;margin:.5rem 0 0;padding-top:.45rem;border-top:1px solid var(--line);color:var(--muted);font-size:.94rem;line-height:1.55}.result-hero__boundary strong{color:var(--ink)}
 .evidence-links{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.15rem}.evidence-links a{border-bottom:1px solid var(--line);padding:.35rem 0;color:var(--accent-deep);text-decoration:none;margin-right:1rem}
 .result-section{padding:2.8rem 0;border-bottom:1px solid var(--line)}.result-section h2{max-width:900px;margin:0 0 1rem;font-size:clamp(1.65rem,3.2vw,2.8rem);line-height:1.08;letter-spacing:-.045em}.result-section>p,.reasoning-line p,.claim-boundary p,.method-grid p{max-width:900px;color:var(--muted);line-height:1.65}
 .table-wrap{overflow-x:auto;margin-top:1.5rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:.85rem .7rem;text-align:left;border-bottom:1px solid color-mix(in srgb,var(--line) 75%,transparent);vertical-align:top}thead th{font-size:.8rem;color:var(--muted);letter-spacing:.04em}tbody th{font-weight:700}td:nth-child(2),td:nth-child(3),td:nth-child(4){font-family:var(--font-mono);font-weight:700}

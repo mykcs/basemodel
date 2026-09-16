@@ -7,10 +7,10 @@ const closeout = read('../styles/visual-closeout.css');
 
 describe('content-first server operations pilot', () => {
   it('makes the dated operational state the first subject without hiding deletion authority', () => {
-    expect(server).toContain('服务器快照：约 0.99 TiB 可用');
-    expect(server).toContain('2026-09-15 静态快照');
+    expect(server).toContain('约 0.99 TiB 可用；当前不用扩容');
+    expect(server).toContain('2026-09-15 22:10（UTC+8）· 静态快照，不是实时监控');
     expect(server).toContain('NOT_AUTHORIZED');
-    expect(server).toContain('远端已经能恢复，也不等于本地可以删除');
+    expect(server).toContain('远端可恢复不等于本地可删');
     expect(server).toContain('例行服务器维护');
   });
 

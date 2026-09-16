@@ -5,8 +5,8 @@ import OpenEvoSdLoraHistorySeriesNav from '../../../../../components/research/Op
 const locale = 'zh' as const;
 ---
 <AppLayout
-  title="SD-LoRA 把成功经验写进下一轮模型参数"
-  description="成功轨迹先被筛成训练数据，SD-LoRA 再在两批任务之间写入 LoRA 参数；比较普通 LoRA 与 SD-LoRA 后，沿一轮真实流程查看候选参数怎样进入下一轮。"
+  title="SD-LoRA 用筛选后的成功轨迹训练候选 LoRA 参数"
+  description="每个任务只取最早一条通过检查的成功作为训练数据；SD-LoRA 在两批任务之间训练候选 LoRA 参数，采用与否由后续准入规则决定。"
   locale={locale}
 >
   <OpenEvoVanillaSdLoraMechanism locale={locale} />

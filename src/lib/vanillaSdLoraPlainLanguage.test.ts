@@ -7,16 +7,16 @@ const mechanism = readFileSync(new URL('../components/research/OpenEvoVanillaSdL
 describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
   it('starts the page from motivation and OpenEvo position before the reusable mechanism slide', () => {
     for (const phrase of [
-      'SD-LoRA 把成功经验写进下一轮模型参数',
-      '一次 WebShop 成功先只是一条轨迹',
-      'SD-LoRA 在这里只负责参数写回',
-      'SD-LoRA 才在两批任务之间更新 LoRA 参数',
+      'SD-LoRA 用筛选后的成功轨迹训练候选 LoRA 参数',
+      '一次 WebShop 成功先只是一条任务轨迹',
+      '训练完候选参数以后还有一步',
+      'SD-LoRA 在本轮任务结束后、下一轮开始前更新 LoRA',
       '普通 LoRA',
       'Scalable Decoupled LoRA',
       '本页把当前基线称为 “Vanilla SD-LoRA”',
     ]) expect(mechanism).toContain(phrase);
 
-    const motivation = mechanism.indexOf('SD-LoRA 把成功经验写进下一轮模型参数');
+    const motivation = mechanism.indexOf('SD-LoRA 用筛选后的成功轨迹训练候选 LoRA 参数');
     const comparison = mechanism.indexOf('普通 LoRA');
     const slideOwner = mechanism.indexOf('<OpenEvoVanillaSdLoraSlide');
     expect(motivation).toBeGreaterThan(-1);

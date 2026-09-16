@@ -10,7 +10,7 @@ for (const viewport of [
     await page.setViewportSize(viewport);
     await page.goto(route, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.locator('h1')).toHaveText('服务器快照：约 0.99 TiB 可用');
+    await expect(page.locator('h1')).toHaveText('约 0.99 TiB 可用；当前不用扩容');
     await expect(page.locator('.server-hero__status')).toBeVisible();
     await expect(page.locator('.server-hero__facts')).toBeVisible();
     await expect(page.locator('.server-hero__boundary')).toBeVisible();
@@ -39,7 +39,7 @@ for (const viewport of [
     const visibleHeadings = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((nodes) => nodes
       .filter((node) => { const rect = node.getBoundingClientRect(); return rect.top < innerHeight && rect.bottom > 0; })
       .map((node) => node.textContent?.trim()));
-    expect(visibleHeadings).toEqual(['服务器快照：约 0.99 TiB 可用']);
+    expect(visibleHeadings).toEqual(['约 0.99 TiB 可用；当前不用扩容']);
   });
 }
 
@@ -61,9 +61,9 @@ for (const theme of ['light', 'dark'] as const) {
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('.server-hero__status')).toBeVisible();
-    await expect(page.locator('.server-hero__facts')).toContainText('未授权删除');
+    await expect(page.locator('.server-hero__boundary')).toContainText('任何删除都要单独批准');
     await expect(page.locator('#reclaim-proposal')).toContainText('NOT_AUTHORIZED');
-    await expect(page.locator('.server-hero__boundary')).toContainText('不是实时监控');
+    await expect(page.locator('.server-hero__context')).toContainText('不是实时监控');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(2);
   });

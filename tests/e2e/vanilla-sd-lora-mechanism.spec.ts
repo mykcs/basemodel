@@ -16,12 +16,12 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
   await expect(vanillaSeries).toHaveAttribute('href', route);
   await expect(vanillaSeries).toHaveAttribute('aria-current', 'page');
   await expect(series.locator('a[href="/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/"]')).toHaveCount(0);
-  await expect(page.locator('h1')).toContainText('SD-LoRA 把成功经验写进下一轮模型参数');
-  await expect(body).toContainText('一次 WebShop 成功先只是一条轨迹');
-  await expect(body).toContainText('SD-LoRA 才在两批任务之间更新 LoRA 参数');
+  await expect(page.locator('h1')).toContainText('SD-LoRA 用筛选后的成功轨迹训练候选 LoRA 参数');
+  await expect(body).toContainText('一次 WebShop 成功先只是一条任务轨迹');
+  await expect(body).toContainText('SD-LoRA 在本轮任务结束后、下一轮开始前更新 LoRA');
   await expect(body.locator('#what-is-sd-lora table')).toBeVisible();
   await expect(body.locator('#what-is-sd-lora tbody tr')).toHaveCount(3);
-  await expect(body).toContainText('候选训练和下一轮采用是两件事');
+  await expect(body).toContainText('候选参数不等于能力一定提升');
   await expect(body).toContainText('普通 LoRA');
   await expect(body).toContainText('Scalable Decoupled LoRA');
   await expect(body).toContainText('本页把当前基线称为 “Vanilla SD-LoRA”');
@@ -58,7 +58,7 @@ for (const viewport of [
     const visibleMainHeadings = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((nodes) => nodes
       .filter((node) => { const box = node.getBoundingClientRect(); return box.width > 0 && box.height > 0 && box.top < innerHeight && box.bottom > 0; })
       .map((node) => node.textContent?.trim()));
-    expect(visibleMainHeadings).toEqual(['SD-LoRA 把成功经验写进下一轮模型参数']);
+    expect(visibleMainHeadings).toEqual(['SD-LoRA 用筛选后的成功轨迹训练候选 LoRA 参数']);
   });
 }
 

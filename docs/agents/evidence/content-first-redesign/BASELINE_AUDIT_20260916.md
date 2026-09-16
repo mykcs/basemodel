@@ -431,3 +431,16 @@ The open Phase-C cold-read row now has an executable task-scoped verifier:
 - missing, duplicated, stale-head, wrong-route, wrong-contract, wrong-viewport or FAIL evidence fails closed.
 
 Focused cold-read-gate + canonical HPL tests pass **25 / 25**. A synthetic eight-receipt fixture proves the task gate can PASS structurally, while an intentionally empty receipt directory exits non-zero; neither fixture is admissible review evidence. `npm run check` reports **583 files, 0 errors** with the same two existing Zod deprecation hints, the HPL runtime-importer audit remains empty, the human-feedback audit passes, and `npm run verify:fast` completes the full deterministic repository gate successfully. No independent receipt was fabricated, so the Phase-C checkbox remains open and the weighted total remains **35 / 100**.
+
+## 21. First real independent cold-read — fail closed, then repair the product
+
+The first admissible review attempt used a fresh Codex reviewer context for each pilot/device pair. Phase A saw only the rendered screenshot at the canonical viewport, with no repository, PR, preference model, Gold Pair, or task-plan context. Only after the blind answers were saved did the same reviewer receive the canonical preference / Gold-Pair comparison prompt. Eight receipts were produced for the exact rendered product head `949c7eb1d990f0c94a6cf10e4bfabffd4097a4ea`.
+
+All eight receipts returned **FAIL**. They are therefore negative product evidence, not a reason to weaken the exit gate. The repeated problems were concrete:
+
+- Flow: SEED / OpenEvo identity and Stage-2 context still required too much project knowledge; `openevo-experiment` was too early for first comprehension; the page needed an explicit “design / flow, not result” status.
+- SD-LoRA: “write experience into parameters” compressed too much into a metaphor; DirectApply / GDR-v1 and the replay/paper boundary needed inline explanation; “old directions stay fixed” needed its non-guarantee-of-capability-gain boundary earlier.
+- Server: the capacity number and deletion state competed for first attention; snapshot time / non-live status needed to sit next to the number; Q17 / exact-manifest / Passport language was too early for the default operation.
+- Q17: R127 / R128 were codes without immediate identity; the local 32-task scope, final-panel isolation, later R160/final state and non-extrapolation boundary needed to sit next to the 4.18-point result; the historical roadmap behaved like a second main narrative.
+
+The current repair candidate changes the product rather than the judge: Flow defines the two methods and marks the page as design/flow rather than result; SD-LoRA names the actual candidate-training action and brings replay / capability boundaries into the first layer; Server couples the 0.99-TiB state to its timestamp and makes archive/restore the one default action; Q17 defines R127/R128 inline, keeps final isolation and later final status beside the result, and demotes the historical roadmap to optional depth.
