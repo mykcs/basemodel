@@ -963,3 +963,16 @@ Provider observation: prior final-head `7003f731…` Vercel deployment eventuall
 Human decision needed: none; this refresh changes resource execution/provenance only and does not alter scientific treatment or claim boundary.
 Next safe item: update BaseModel authority snapshot/tests/checklist to the exact GPU4-7 campaign identities, rerun local acceptance, push a new #729 head, then rerun exact-head Public PR CI and Vercel final gate before expected-head merge.
 Validation update 2026-09-16 11:20 +08: push-before-readback confirms #510 remains `c602b50208a247d2563e44874fb1da65593cd13b`. Focused semantic/navigation/Reader Vitest `25/25 PASS`; Astro check `0 errors / 0 warnings` with 2 pre-existing hints; static build `263 pages PASS`; heading and external-brand-link audits PASS; `git diff --check` PASS; clean sequential Chromium `17/17 PASS` including Effective-State phone/tablet/desktop, light/dark, keyboard/reduced-motion, adjacent historical links and full Site Reader Contracts. No formal-result field was populated.
+
+### 2026-09-16 11:35 +08 · exact-head provider receipt
+
+Accepted source candidate: `f37cbae00f49475748baaa81284c36c9c13bde42` on base `d3631890f89c0fe62e249c088794b64a0b503f00`.
+
+- Public PR CI run `35051511299`: `completed / success` on exact head `f37cbae00f49475748baaa81284c36c9c13bde42`.
+- Authoritative Vercel deployment: `dpl_9AbNHmKQ7kPVdR1KzjGyQThp1qsJ`, state=`READY`, `githubCommitRef=ci/vercel-gate-final`, `githubCommitSha=f37cbae00f49475748baaa81284c36c9c13bde42`.
+- Hosted overflow preflight: PASS.
+- Hosted Chromium matrix: `197/197 PASS`; `[vercel-ui-gate] PASS`.
+- Local acceptance on the same source tree: semantic/navigation/Reader `25/25 PASS`; Astro `0 errors / 0 warnings` (2 existing hints); static build `263 pages PASS`; heading/brand audits PASS; focused Chromium `17/17 PASS`; `git diff --check` PASS.
+- Scientific boundary unchanged: owner launch release absent; formal run launched=`false`; formal rows=`0`; final-panel access=`0`; W&B scientific authority=`false`; formal result remains Pending.
+
+This receipt is evidence only. Because writing it changes the PR head, all source-head provider receipts above become historical merge evidence. The resulting checklist-only head must receive fresh exact-head Public PR CI and authoritative Vercel success before any expected-head merge.
