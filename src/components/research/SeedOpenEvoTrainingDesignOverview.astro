@@ -13,11 +13,11 @@ const stages = [
   [t('任务环境', 'Environment'), 'Princeton WebShop', t('返回页面观察、任务分数和状态变化', 'returns page observations, task scores, and state changes')],
   [t('保存完整过程', 'Sealed trajectory'), t('一次完整任务', 'One completed task'), t('任务结束后才把整条交互记录固定下来', 'freezes the full interaction record only after the task ends')],
   [t('任务后复盘', 'Post-task review'), t('外部分析模型', 'External analysis model'), t('只在任务结束后读取已保存的轨迹', 'reads the saved trajectory only after task completion')],
-  [t('交给后续学习', 'Handoff'), t('成功轨迹 + 任务后复盘', 'successful traces + post-task review'), t('作为后续 Stage 2 的可追溯输入；具体经验或参数状态由 Stage 2 决定', 'becomes traceable input to Stage 2; Stage 2 decides the resulting experience or parameter state')],
+  [t('交给后续学习', 'Handoff'), t('成功轨迹 + 任务后复盘', 'successful traces + post-task review'), t('作为后续持续学习阶段（Stage 2）的可追溯输入；具体经验或参数状态由这一阶段决定', 'becomes traceable input to Stage 2; Stage 2 decides the resulting experience or parameter state')],
 ] as const;
 ---
 <div class="training-design-body">
-  <p class="comparison-boundary">{t('完整系统比较只能回答两套系统总体表现有什么差异；如果要把后续差异归因到 Stage 2 学习器，两边还必须共享 Stage 1 轨迹、任务后复盘、训练配方和同一个起点模型。', 'A full-system comparison only answers how the two systems differ overall. To attribute a later difference to the Stage-2 learner, both sides must also share Stage-1 trajectories, post-task review, the training recipe, and the same starting model.')}</p>
+  <p class="comparison-boundary">{t('完整系统比较只能回答两套系统总体表现有什么差异；如果要把后续差异归因到持续学习阶段（Stage 2）的学习器，两边还必须共享 Stage 1 轨迹、任务后复盘、训练配方和同一个起点模型。', 'A full-system comparison only answers how the two systems differ overall. To attribute a later difference to the Stage-2 learner, both sides must also share Stage-1 trajectories, post-task review, the training recipe, and the same starting model.')}</p>
   <ol class="responsibility-flow" aria-label={t('Stage 1 责任边界', 'Stage-1 responsibility flow')}>
     {stages.map((stage, index) => (
       <li>

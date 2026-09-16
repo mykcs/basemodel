@@ -14,7 +14,7 @@ for (const viewport of [
     await expect(page.locator('.server-hero__status')).toBeVisible();
     await expect(page.locator('.server-hero__facts')).toBeVisible();
     await expect(page.locator('.server-hero__boundary')).toBeVisible();
-    await expect(page.locator('.routine-entry summary')).toBeVisible();
+    await expect(page.locator('.routine-entry summary')).toBeAttached();
 
     const geometry = await page.evaluate(() => {
       const box = (selector: string) => {
@@ -23,7 +23,7 @@ for (const viewport of [
       };
       return {
         hero: box('.server-hero'),
-        summary: box('.routine-entry summary'),
+        routine: box('.routine-entry'),
         switchboard: box('.operation-switchboard'),
         minHeight: getComputedStyle(document.querySelector('.server-hero')!).minHeight,
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -32,8 +32,11 @@ for (const viewport of [
 
     expect(geometry.hero.height).toBeLessThan(viewport.height);
     expect(geometry.minHeight).toBe('0px');
-    expect(geometry.summary.bottom).toBeLessThanOrEqual(viewport.height);
-    expect(geometry.switchboard.top).toBeGreaterThanOrEqual(viewport.height - 12);
+    if (viewport.name === 'phone') {
+      expect(geometry.routine.top).toBeGreaterThanOrEqual(geometry.hero.bottom - 1);
+      expect(geometry.routine.top).toBeGreaterThan(viewport.height * 0.72);
+    }
+    expect(geometry.switchboard.top).toBeGreaterThanOrEqual(geometry.routine.bottom - 1);
     expect(geometry.overflow).toBeLessThanOrEqual(2);
 
     const visibleHeadings = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((nodes) => nodes
@@ -61,8 +64,8 @@ for (const theme of ['light', 'dark'] as const) {
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('.server-hero__status')).toBeVisible();
-    await expect(page.locator('.server-hero__boundary')).toContainText('归档 = 把科研产物放到可恢复的远端并重新读回验证；回收 = 删除本地副本');
-    await expect(page.locator('.server-hero__boundary')).toContainText('任何回收都要负责人单独批准同一版精确清单');
+    await expect(page.locator('.server-hero__boundary')).toContainText('先归档：把实验产物复制到远端，再重新读取或下载，确认真的能恢复；这一步不删除本地文件');
+    await expect(page.locator('.server-hero__boundary')).toContainText('任何删除仍要负责人单独批准同一版精确清单');
     await expect(page.locator('#reclaim-proposal')).toContainText('NOT_AUTHORIZED');
     await expect(page.locator('.server-hero__context')).toContainText('非实时数据');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);

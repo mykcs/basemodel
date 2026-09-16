@@ -56,15 +56,9 @@ for (const viewport of [
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('.sdlora-intro__boundary')).toBeVisible();
-    await expect(page.locator('.sdlora-intro__steps > li')).toHaveCount(3);
-    if (viewport.width === 390) {
-      await expect(page.locator('.sdlora-intro__steps')).toBeHidden();
-      await expect(page.locator('.sdlora-intro__mobile-path')).toBeVisible();
-      await expect(page.locator('.sdlora-intro__mobile-path')).toContainText('候选参数（训练好但尚未采用的新 LoRA）');
-    } else {
-      await expect(page.locator('.sdlora-intro__steps')).toBeVisible();
-      await expect(page.locator('.sdlora-intro__mobile-path')).toBeHidden();
-    }
+    await expect(page.locator('.sdlora-intro__path')).toBeVisible();
+    await expect(page.locator('.sdlora-intro__path')).toContainText('候选参数训练好以后不会自动采用');
+    await expect(page.locator('.sdlora-intro__steps')).toHaveCount(0);
     await expect(page.locator('.sdlora-intro__frame')).toHaveCount(0);
     const visibleMainHeadings = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((nodes) => nodes
       .filter((node) => { const box = node.getBoundingClientRect(); return box.width > 0 && box.height > 0 && box.top < innerHeight && box.bottom > 0; })

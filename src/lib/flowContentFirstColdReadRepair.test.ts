@@ -12,7 +12,7 @@ const nav = read('src/components/research/SeedOpenEvoResearchNav.astro');
 describe('Flow content-first cold-read repair', () => {
   it('defines the four named research objects at first use while preserving the fairness boundary', () => {
     for (const phrase of [
-      'SEED 与 OpenEvo：同模型同任务的学习对照实验',
+      '同一个 Qwen 做同样任务：比较 SEED 与 OpenEvo 两种学习方法',
       'SEED 把成功经验写回模型参数',
       'OpenEvo 先保存任务证据',
       'ALFWorld（文本具身任务）',

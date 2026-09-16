@@ -7,7 +7,7 @@ test('focus result keeps the comparable result and scientific boundary in the fi
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('h1')).toContainText('同样 32 道题上，后一版平均分低 4.18，但还不能判定模型退步');
   await expect(page.locator('.result-hero > .eyebrow')).toContainText('局部诊断 · 2026-09-11');
-  await expect(page.locator('.result-hero__method')).toContainText('第一阶段由 Qwen 完成 WebShop 任务，MiniMax 只在任务结束后回看保存的轨迹');
+  await expect(page.locator('.result-hero__method')).toContainText('WebShop 是网页购物任务。第一阶段由 Qwen 自己完成任务，MiniMax 只在任务结束后回看保存的轨迹');
   await expect(page.locator('.result-hero__method')).toContainText('DirectApply 指候选参数通过工程和数据检查后直接进入下一轮');
   await expect(page.locator('.result-hero__method')).toContainText('简称 R127 / R128');
   await expect(page.locator('.result-hero__boundary')).toContainText('95% 统计范围 −17.13 ～ +8.00');

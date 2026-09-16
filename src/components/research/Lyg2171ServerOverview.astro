@@ -55,20 +55,21 @@ const gpuFacts = [
       <div><dt>{t('可用', 'Available')}</dt><dd>≈ 0.99 TiB</dd></div>
     </dl>
 
-    <p class="server-hero__boundary"><strong>{t('归档 = 把科研产物放到可恢复的远端并重新读回验证；回收 = 删除本地副本。', 'Archive means placing research artifacts on a recoverable remote and reading them back again; reclaim means deleting a local copy.')}</strong> {t('恢复成功不等于已获删除许可：任何回收都要负责人单独批准同一版精确清单；把私有数据改成公开也必须单独批准。', 'Successful recovery does not authorize reclaim: any deletion needs separate approval of the same exact list, and making private data public also needs separate approval.')}</p>
+    <p class="server-hero__boundary"><strong>{t('先归档：把实验产物复制到远端，再重新读取或下载，确认真的能恢复；这一步不删除本地文件。', 'Archive first: copy experiment artifacts to a remote, then read or download them again to prove they can be restored; this does not delete the local files.')}</strong> {t('回收才是删除本地副本。即使已经验证能恢复，任何删除仍要负责人单独批准同一版精确清单；把私有数据改成公开也必须单独批准。', 'Reclaim is the separate act of deleting a local copy. Even after restore has been verified, any deletion still needs separate approval of the same exact list, and making private data public also needs separate approval.')}</p>
 
-    <div class="routine-entry">
+  </header>
+
+  <aside class="routine-entry" aria-label={t('例行维护入口', 'Routine maintenance entry')}>
       <div class="routine-entry__copy">
-        <span>{t('建议下一步', 'Suggested next step')}</span>
-        <strong>{t('运行一次例行维护', 'Run one routine maintenance pass')}</strong>
-        <p>{t('只读检查空间，以及仍被进程、容器或配置使用的文件 → 归档并验证恢复 → 生成回收清单。删除、公开可见性、实验身份或归属不清时才停下来请你决定。', 'Read storage and files still referenced by processes, containers, or configuration; then archive and verify restore; finally generate a reclaim list. Stop for an owner decision on deletion, visibility, experiment identity, or unresolved ownership.')}</p>
+        <span>{t('按上面的状态继续', 'Continue from the state above')}</span>
+        <strong>{t('例行维护：只读检查 → 归档并验证恢复 → 生成回收清单', 'Routine maintenance: read-only checks → archive and verify restore → generate a reclaim list')}</strong>
+        <p>{t('只有删除、公开可见性、实验身份变化或归属不清时才停下来请负责人决定。', 'Stop for an owner decision only on deletion, visibility, experiment-identity changes, or unresolved ownership.')}</p>
       </div>
       <details class="routine-entry__prompt">
         <summary>{t('复制维护指令', 'Copy maintenance instructions')}</summary>
         <pre data-copy-label={t('复制例行服务器维护 Prompt', 'Copy routine-maintenance prompt')}><code>{routinePrompt}</code></pre>
       </details>
-    </div>
-  </header>
+  </aside>
 
   <nav class="operation-switchboard" aria-label={t('只做其中一个阶段', 'Run one server-artifact stage only')}>
     <a href="#health-scan"><span>01</span><strong>{t('服务器健康扫描', 'Server health scan')}</strong><small>{t('只读看现在有没有压力', 'Read-only current pressure check')}</small></a>
@@ -191,6 +192,8 @@ const gpuFacts = [
     </details>
   </section>
 
+  <details class="server-reference-depth">
+    <summary>{t('服务器规格与历史归属（按需查看）', 'Server specifications and historical attribution (optional)')}</summary>
   <section class="server-section">
     <div class="section-heading">
       <span>04</span>
@@ -230,6 +233,7 @@ const gpuFacts = [
       <div><strong>{t('不公开', 'Not shown')}</strong><p>{t('用户名、私有路径、容器名/ID、GPU UUID、IP、SSH 别名、token、私有仓库标识和匿名编号到真人的映射。', 'Usernames, private paths, container names/IDs, GPU UUIDs, IPs, SSH aliases, tokens, private-repository identifiers, or mappings from anonymous labels to people.')}</p></div>
     </div>
   </section>
+  </details>
 
   <details class="measurement-notes">
     <summary>{t('数据与规则来源', 'Data and authority')}</summary>
@@ -260,6 +264,7 @@ const gpuFacts = [
   .operation-switchboard small{grid-area:note;color:var(--muted);font-size:.7rem;line-height:1.5}
 
   .server-section{padding:2.7rem 0;border-top:1px solid var(--line);scroll-margin-top:7rem}
+  .server-reference-depth{margin-top:1.2rem;border-top:1px solid var(--line)}.server-reference-depth>summary{min-height:44px;padding:1rem 0;cursor:pointer;color:var(--muted);font-weight:760}.server-reference-depth[open]>summary{color:var(--ink)}
   .section-heading{display:flex;gap:.8rem;align-items:flex-start;margin-bottom:.85rem}
   .section-heading>span{padding-top:.28rem;color:var(--accent-deep);font:800 .68rem/1 var(--font-mono)}
   .section-heading h2{margin:0;font-size:clamp(1.4rem,2.8vw,2.25rem);letter-spacing:-.035em}
@@ -332,7 +337,7 @@ const gpuFacts = [
     .reclaim-steps{grid-template-columns:1fr 1fr}.reclaim-steps li:nth-child(2n){border-right:0}.reclaim-steps li:nth-child(-n+2){border-bottom:1px solid var(--line)}
   }
   @media(max-width:640px){
-    .server-hero{padding-bottom:4.35rem}
+    .server-hero{padding-bottom:1.35rem}
     .server-hero h1{max-width:17ch}.routine-entry{grid-template-columns:1fr}.routine-entry__prompt{padding:.45rem 0 0;border-left:0;border-top:1px solid var(--line)}.operation-switchboard{grid-template-columns:1fr}.operation-switchboard a{border-right:0;border-bottom:1px solid var(--line)}.operation-switchboard a:last-child{border-bottom:0}
     .snapshot-facts,.gpu-facts,.privacy-grid{grid-template-columns:1fr}.snapshot-facts>div,.gpu-facts>div{border-right:0;border-bottom:1px solid var(--line)}.snapshot-facts>div:last-child,.gpu-facts>div:last-child{border-bottom:0}
     .operation-explainer li{grid-template-columns:5rem 1fr}

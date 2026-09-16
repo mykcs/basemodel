@@ -30,7 +30,7 @@ for (const route of routes) {
 
       const root = page.locator('#training-design');
       await expect(root).toBeVisible();
-      await expect(root.locator('h2')).toContainText(/训练设计|Training design/);
+      await expect(root.locator('h2')).toContainText(/WebShop 先做题和复盘，再持续学习|WebShop: act and review first, then continue learning/);
       await expect(root.locator('.responsibility-flow > li')).toHaveCount(6);
       const researchNav = page.locator('[data-research-navigation][data-research-track="flow"]');
       if (viewport.width <= 720) {

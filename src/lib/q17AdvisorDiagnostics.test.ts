@@ -27,7 +27,7 @@ describe('Q17 advisor diagnostics publication', () => {
     const component = read('src/components/research/OpenEvoQ17AdvisorDiagnostics.astro');
     expect(component).toContain('同样 32 道题上，后一版平均分低 4.18，但还不能判定模型退步');
     expect(component).toContain('On the same 32 tasks, the later state averaged 4.18 points lower, but this does not establish a regression');
-    expect(component).toContain('第一阶段由 Qwen 完成 WebShop 任务，MiniMax 只在任务结束后回看保存的轨迹');
+    expect(component).toContain('WebShop 是网页购物任务。第一阶段由 Qwen 自己完成任务，MiniMax 只在任务结束后回看保存的轨迹');
     expect(component).toContain('DirectApply 指候选参数通过工程和数据检查后直接进入下一轮');
     expect(component).toContain('简称 R127 / R128');
     expect(component).toContain('95% 统计范围 −17.13 ～ +8.00，包含“没有差别”');
