@@ -32,9 +32,6 @@ const compactPurpose = route === 'first-run'
           ? (zh ? '同一组 32 题重测两个连续训练状态；这里只做局部诊断，不是最终测试。' : 'Retest two consecutive training states on the same 32 tasks; this is a local diagnostic, not the final evaluation.')
           : record.purpose[locale];
 const purpose = isExperimentHub && experiment && !compact ? experiment.motivation[locale] : (compact ? compactPurpose : record.purpose[locale]);
-const contextExperimentTitle = route === 'q17-directapply-frontier' && compact
-  ? (zh ? '1.7B · 直接采用候选更新' : '1.7B · direct candidate adoption')
-  : experiment?.title[locale];
 const contextRecordLabel = route === 'q17-directapply-frontier' && compact
   ? (zh ? '相邻两个模型状态 · 32 题同题诊断' : 'Two adjacent model states · 32-task same-task diagnostic')
   : record.label[locale];
@@ -56,7 +53,7 @@ const hubEvidence = experiment
         {isExperimentHub ? (
           <strong>{experiment.title[locale]}</strong>
         ) : (
-          <><a href={localePath(locale, experiment.primaryHref)}>{contextExperimentTitle}</a><span aria-hidden="true"> / </span><strong>{contextRecordLabel}</strong></>
+          <><a href={localePath(locale, experiment.primaryHref)}>{experiment.title[locale]}</a><span aria-hidden="true"> / </span><strong>{contextRecordLabel}</strong></>
         )}
       </>
     ) : (

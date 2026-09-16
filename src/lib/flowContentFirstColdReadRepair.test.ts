@@ -28,6 +28,8 @@ describe('Flow content-first cold-read repair', () => {
     expect(hub).not.toContain('step loop');
     expect(hub.indexOf('id="questions"')).toBeLessThan(hub.indexOf('id="training-design"'));
     expect(hub).toContain('OPD / GRPO 的具体做法留到 SEED 方法页');
+    expect(hero).not.toContain('min-height:calc(100svh - 9rem)');
+    expect(hero).toContain('.mission-hero.mission-hero--compact .mission-hero__copy{padding-left:12px;padding-right:12px}');
   });
 
   it('keeps causal attribution visible without opening a disclosure', () => {
