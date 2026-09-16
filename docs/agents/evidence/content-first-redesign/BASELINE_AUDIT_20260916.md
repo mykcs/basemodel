@@ -396,3 +396,21 @@ Acceptance on this candidate tree:
 - repository-owned Phase-A blind and Phase-B compare prompts were freshly generated for `flow`, `flow-sd-lora`, `flow-server`, and `capability-q17-frontier`.
 
 The prompt generation is preparation, not independent review. This Agent has already seen the preference evidence, so the phone + desktop cold-read row remains open and Phase C still contributes **0 / 20** weighted points. Broad Phase-E migration therefore remains blocked by the existing pilot exit rule.
+
+## 19. Phase-C review Preview — exact four-pilot product head inspected
+
+Live refresh before this acceptance pass: `main@d3631890f89c0fe62e249c088794b64a0b503f00`; PR #737 exact product head `949c7eb1d990f0c94a6cf10e4bfabffd4097a4ea`. Open semantic owners #728 / #729 / #734 remain separate from the four pilot surfaces and were not modified.
+
+Apple first-party guidance was re-read before this review pass. WWDC26 defines simplicity as removing unnecessary friction while keeping exactly enough context, and says clear hierarchy uses order, spacing, and contrast to make the most important item obvious. WWDC25's design-foundations session likewise treats structure, navigation, content grouping, progressive disclosure, and adaptivity as one system rather than a surface-style recipe. The review therefore checks whether each pilot's content owner is still obvious, not whether it looks cosmetically Apple-like.
+
+A fresh noindex static build of the exact product head completed with 262 pages, single-H1 audit 262 / 262 PASS, and external-brand-link audit PASS. The canonical GitHub Fast Review workflow had already proven the immutable build stage on this exact head, but its deploy job could not authenticate to the dedicated review project; no credential or repository secret was created or changed in this task. An equivalent review-only Preview was therefore deployed from the same fresh static output using the already-authorized local Vercel CLI session, without touching Production or `ci/vercel-gate-final`.
+
+Hosted target-specific inspection then confirmed all four pilot owners on the review deployment:
+
+- Flow gateway visibly contains `SEED 与 OpenEvo：ALFWorld / WebShop 实验`;
+- SD-LoRA visibly contains `SD-LoRA 把成功经验写进下一轮模型参数`;
+- Server visibly contains `服务器快照：约 0.99 TiB 可用`;
+- Q17 focus/comparison visibly contains `R127 与 R128 平均分只差 4.18 分`;
+- all four hosted pages preserve `robots=noindex,follow` on the review surface.
+
+The Preview is explicitly review-only and is not merge, Vercel-final-gate, Production, scientific-authority, or human-comprehension evidence. The required phone + desktop **human** cold-read remains open, so Phase C still contributes 0 / 20 weighted points and Phase E broad migration remains blocked.

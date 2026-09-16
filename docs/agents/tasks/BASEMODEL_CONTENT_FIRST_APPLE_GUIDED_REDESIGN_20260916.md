@@ -334,11 +334,11 @@ For each pilot:
 - [x] keep evidence/claim boundaries intact;
 - [ ] pass phone + desktop cold-read;
 - [x] pass targeted browser/reader-contract checks;
-- [ ] obtain an inspectable review Preview when the owner needs visual feedback.
+- [x] obtain an inspectable review Preview when the owner needs visual feedback.
 
 Pilot exit rule: do not start broad migration until the four pilots show a coherent system **without forcing them into the same page template**.
 
-The five checked rows above are now evidenced across **all four** pilots. They are implementation/prerequisite evidence only. Phase C remains **0 / 20 weighted points** until the independent phone + desktop cold-read exit is satisfied; the review-Preview row is conditional and remains uncredited unless owner visual review is actually requested. This preserves the existing 35 / 100 weighted total and prevents automated checks from being relabeled as human comprehension.
+The five implementation rows above are evidenced across **all four** pilots. A review-only, noindex Preview for the four-pilot exact product head was also generated and target-checked on all four pilot routes, so the conditional review-Preview row is now complete. These are implementation/review prerequisites only. Phase C remains **0 / 20 weighted points** until the independent phone + desktop cold-read exit is satisfied. This preserves the existing 35 / 100 weighted total and prevents automated checks or Preview inspection from being relabeled as human comprehension.
 
 ### Phase D — Canonical component/CSS consolidation — **15%**
 
