@@ -100,6 +100,16 @@ export const CAPABILITY_READER_ROUTES = [
     }
   },
   {
+    "route": "bounded-effective-state-gdr",
+    "coverage": "self-contained",
+    "owner": "OpenEvoEffectiveStateGdrLoraStudy",
+    "label": { "zh": "Bounded + Effective-State GDR", "en": "Bounded + Effective-State GDR" },
+    "purpose": {
+      "zh": "解释固定 rank128 以后为什么还要控制新经验写入强度，保留两层 negative evidence，并展示正式配对实验的 Pending 结果槽。",
+      "en": "Explain why write-strength control remains after fixing rank128, preserve both negative-evidence layers, and show the Pending result scaffold for the formal matched experiment."
+    }
+  },
+  {
     "route": "mechanism-1-0",
     "coverage": "rebuilt",
     "owner": "OpenEvoMechanismMap",

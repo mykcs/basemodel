@@ -1,0 +1,304 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import { EFFECTIVE_STATE_GDR_LORA_STUDY as study } from '../../data/effectiveStateGdrLoraStudy';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const cap = '/research/seed-openevo/study/capability-exploration';
+const boundedHref = p(`${cap}/sd-lora-bounded-state/`);
+const gatedHref = p(`${cap}/gated-delta-sd-lora/`);
+const vanillaHref = p('/research/seed-openevo/flow/sd-lora/');
+const scalingHref = p(`${cap}/sd-lora-scaling/`);
+const result = study.formalResult;
+const pending = result.status === 'pending';
+---
+
+<article class="esg" data-effective-state-gdr-page data-copy-review data-reader-page="research-explainer">
+  <header class="esg__hero" data-reader-context id="top">
+    <p class="esg__eyebrow">{t('08 · 固定状态之后，控制新经验写多强', '08 · Controlling write strength after bounded state')}</p>
+    <h1>Bounded Online Recurrence + Effective-State GDR</h1>
+    <p class="esg__lede" data-reader-task data-reader-purpose>{t(
+      'Bounded Online Recurrence 已把旧历史固定在 rank128。下一问是：每轮新经验该写多强？第一代 GDR 直接控制 LoRA 的 A/C 坐标，但同一个有效更新能有多种 A/C 表示。Effective-State successor 因此改为控制真正影响模型的有效写入。正式实验比较 Bounded OFF 与 Bounded + Effective-State GDR ON；160 轮尚未启动，正式结果尚未产生。',
+      'Bounded Online Recurrence already keeps old history at rank128. The next question is how strongly each new experience should be written. First-generation GDR controlled LoRA A/C coordinates directly, but the same effective update can have multiple A/C representations. The Effective-State successor therefore controls the effective write itself. The formal comparison is Bounded OFF versus Bounded + Effective-State GDR ON; the 160-round run has not started, so no formal result exists yet.',
+    )}</p>
+    <div class="esg__facts" aria-label={t('当前三个关键事实', 'Three current facts')}>
+      <div><span>{t('历史状态', 'History state')}</span><strong>rank128</strong></div>
+      <div><span>{t('正式设计', 'Formal design')}</span><strong>160 × 128 / arm</strong></div>
+      <div><span>{t('正式结果', 'Formal result')}</span><strong>{pending ? t('尚未产生', 'Pending') : 'Sealed'}</strong></div>
+    </div>
+    <p class="esg__status"><strong>{t('预启动工程已完成，仍需 owner 明确启动。', 'Prelaunch engineering is complete; an explicit owner start is still required.')}</strong> {t(
+      '当前 launch authority=false、formal rows=0、final panel access=0；W&B 只是只读观测，不是科学权威。',
+      'Current launch authority is false, formal rows are 0, and final-panel access is 0; W&B is read-only observability, not scientific authority.',
+    )}</p>
+  </header>
+
+  <section class="esg__section" id="why" aria-labelledby="why-title">
+    <h2 id="why-title">{t('为什么 Bounded 以后还要研究写入强度', 'Why write strength still matters after Bounded')}</h2>
+    <div class="esg__why-grid">
+      <div><strong>{t('Bounded 解决的是', 'Bounded solves')}</strong><p>{t('历史状态大小。旧 component 不再无限累积进下一轮。', 'State size. Old components no longer grow without bound into the next round.')}</p></div>
+      <div><strong>{t('GDR 要解决的是', 'GDR asks')}</strong><p>{t('新经验该写多少。它控制一次更新进入下一状态的强度。', 'How much new experience should be written into the next state.')}</p></div>
+    </div>
+    <p>{t(
+      '所以“固定 state 大小”和“控制 write strength”是两个不同问题。前者已经有封存的 Bounded 结果；本页只负责后者的 successor 推导与新正式实验设计。',
+      'Keeping state size fixed and controlling write strength are two different problems. The former already has a sealed Bounded result; this page owns only the successor derivation and the new formal experiment for the latter.',
+    )}</p>
+    <nav class="esg__context-links" aria-label={t('上下文页面', 'Context pages')}>
+      <a href={vanillaHref}>{t('Vanilla SD-LoRA 一轮怎么工作', 'How one Vanilla SD-LoRA update works')}</a>
+      <a href={scalingHref}>{t('为什么历史越多越慢', 'Why growing history gets slower')}</a>
+      <a href={boundedHref}>{t('Bounded rank128 的封存结果', 'Sealed Bounded rank128 result')}</a>
+    </nav>
+  </section>
+
+  <section class="esg__section" id="representation" aria-labelledby="representation-title">
+    <h2 id="representation-title">{t('为什么 LoRA 的内部表示会让控制变得危险', 'Why LoRA coordinates make control tricky')}</h2>
+    <p>{t(
+      '原始 Gated Delta 只有一个直接被更新的 State。LoRA 却把同一个有效更新写成 A/C 两组 factor；同一个 C A^T，可以对应很多不同的 A/C 数值。也就是说，factor 是表示坐标，不等于真正的模型更新对象。',
+      'Original Gated Delta controls one directly updated State. LoRA represents the same effective update with A/C factor coordinates; the same C A^T can correspond to many A/C values. The factors are therefore representation coordinates, not the behavioral update object itself.',
+    )}</p>
+    <figure class="esg__representation" aria-label={t('State 与 factor representation 对比', 'State versus factor representation')}>
+      <div class="esg__rep-column">
+        <span>{t('直接 state', 'direct state')}</span>
+        <div class="esg__node is-state">State</div>
+        <div class="esg__solid" aria-hidden="true"></div>
+        <div class="esg__node">write × β</div>
+      </div>
+      <div class="esg__rep-column">
+        <span>{t('LoRA 表示层', 'LoRA representation')}</span>
+        <div class="esg__factor-row"><div class="esg__node">A</div><div class="esg__node">C</div></div>
+        <div class="esg__dash" aria-hidden="true"></div>
+        <div class="esg__node is-effective">effective update C A<sup>T</sup></div>
+      </div>
+    </figure>
+    <p class="esg__formula">A → sA，C → C/s；(C/s)(sA)<sup>T</sup> = C A<sup>T</sup>。{t('factor 坐标变了，但有效更新没变。', 'The factor coordinates change, but the effective update does not.')}</p>
+  </section>
+
+  <section class="esg__section" id="derivation" aria-labelledby="derivation-title">
+    <h2 id="derivation-title">{t('四个决定性台阶', 'Four decisive steps')}</h2>
+    <ol class="esg__steps">
+      <li>
+        <span>01</span><h3>{t('第一代 factor write 先撞到表示坐标边界', 'First-generation factor write hits a coordinate-domain boundary')}</h3>
+        <p>{t(`Round0 的 C factor displacement 给出 βC=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}，已经超出 (0,1)；A 侧 βA=${study.derivation.firstGenerationFactorFailure.betaA.toFixed(3)}。这里的 1.052 是 factor displacement gate，不是 original/effective GDR beta。`, `At Round0, the C-factor displacement gives βC=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}, outside (0,1), while βA=${study.derivation.firstGenerationFactorFailure.betaA.toFixed(3)}. The 1.052 value is a factor-displacement gate value, not the original/effective GDR beta.`)}</p>
+        <p class="esg__cannot">{t('支持：第一代 factor-space treatment 在 EMPTY start 上不合法。不能证明：GDR 思想本身失败。', 'Supports: the first-generation factor-space treatment is invalid at the EMPTY start. Does not prove: GDR as an idea fails.')}</p>
+      </li>
+      <li>
+        <span>02</span><h3>{t('只修 mapping 还不够', 'Fixing the mapping alone is not enough')}</h3>
+        <p>{t(`把 write 改成 effective-write mapping 后，旧 controller 在真实 intervention trajectory 上预测 β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}，再次超出 (0,1)。这次失败对象已经不是 factor displacement，而是旧 controller 本身。`, `After switching to an effective-write mapping, the old controller predicts β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)} on the real intervention trajectory, again outside (0,1). This failure is no longer the factor-displacement gate; it is the old controller itself.`)}</p>
+        <p class="esg__cannot">{t('支持：旧 controller 依赖 factor-coordinate 特征，不能直接搬到新的 intervention trajectory。', 'Supports: the old controller depends on factor-coordinate features and cannot simply be transplanted to the new intervention trajectory.')}</p>
+      </li>
+      <li>
+        <span>03</span><h3>{t('teacher 的第二步必须看到 runtime 真正走到的 C1', 'The teacher’s second step must see the runtime’s actual C1')}</h3>
+        <p>{t('teacher 计算第二步时，如果假设第一步完整走到 Adam proposal Cp，而 runtime 实际只写入了受控后的 C1，那么第二步 A write 的输入状态就错了。新的顺序因此固定为：先写 C，得到实际 C1，再基于 C1 计算 A write。', 'If the teacher computes step two assuming step one reached the full Adam proposal Cp, while runtime actually wrote the controlled state C1, then the A-write is conditioned on the wrong state. The successor therefore fixes the order: write C first, obtain the actual C1, then compute the A write from C1.')}</p>
+      </li>
+      <li>
+        <span>04</span><h3>{t('最终控制对象改成 effective state / effective write', 'The final control object becomes effective state / effective write')}</h3>
+        <p>{t('同一个 LoRA 更新可以有不同 A/C 内部表示，所以 successor 的 β policy 只使用 scalar-gauge-invariant 特征，目标量也改成 effective write magnitude。LoRA factors 仍然存在，但只作为实现表示层。', 'Because the same LoRA update can have different A/C representations, the successor beta policy uses only scalar-gauge-invariant features and targets effective write magnitude. LoRA factors still exist, but only as an implementation representation layer.')}</p>
+        <p class="esg__cannot">{t('支持：新的 treatment identity 与 representation choice 解耦。不能证明：正式 WebShop 长周期效果更好。', 'Supports: the new treatment identity is decoupled from representation choice. Does not prove: better long-horizon WebShop efficacy.')}</p>
+      </li>
+    </ol>
+    <details class="esg__details">
+      <summary>{t('查看这两层 negative evidence 的固定证据', 'Pinned evidence for the two negative steps')}</summary>
+      <ul>
+        <li><a href={study.evidence.firstGenerationFactorFailure}><ExternalBrandMark href={study.evidence.firstGenerationFactorFailure} />{study.derivation.firstGenerationFactorFailure.status}</a></li>
+        <li><a href={study.evidence.mappingOnlyControllerFailure}><ExternalBrandMark href={study.evidence.mappingOnlyControllerFailure} />{study.derivation.mappingOnlyControllerFailure.status}</a></li>
+      </ul>
+    </details>
+  </section>
+
+  <section class="esg__section" id="method" aria-labelledby="method-title">
+    <h2 id="method-title">{t('Effective-State GDR-LoRA v1 怎样写一次更新', 'How Effective-State GDR-LoRA v1 writes an update')}</h2>
+    <div class="esg__method-grid">
+      <figure class="esg__flow" aria-label={t('Effective-State GDR 顺序写入流程', 'Effective-State GDR sequential write flow')}>
+        <div class="esg__flow-node">{t('effective state', 'effective state')}</div>
+        <div class="esg__flow-arrow" aria-hidden="true"></div>
+        <div class="esg__flow-node">{t('invariant controller', 'invariant controller')}</div>
+        <div class="esg__flow-arrow" aria-hidden="true"></div>
+        <div class="esg__flow-node">β<sub>eff</sub></div>
+        <div class="esg__flow-arrow" aria-hidden="true"></div>
+        <div class="esg__flow-node">C write</div>
+        <div class="esg__flow-arrow" aria-hidden="true"></div>
+        <div class="esg__flow-node is-actual">actual C1</div>
+        <div class="esg__flow-arrow" aria-hidden="true"></div>
+        <div class="esg__flow-node">A write</div>
+        <div class="esg__flow-arrow" aria-hidden="true"></div>
+        <div class="esg__flow-node is-state">{t('next effective state', 'next effective state')}</div>
+        <figcaption>{t('实线表示真正的 state/write flow；A/C 只是下层 representation。', 'Solid connectors are the real state/write flow; A/C remain a lower-level representation.')}</figcaption>
+      </figure>
+      <aside class="esg__forbidden">
+        <h3>{t('这些信号不会控制在线写入', 'These signals do not control online writes')}</h3>
+        <p>reward · WebShop score · Task Vector · probe · future state · final panel</p>
+        <p><strong>g = {study.derivation.successor.g}</strong> · retention = {study.derivation.successor.retention}</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="esg__section" id="readiness" aria-labelledby="readiness-title">
+    <h2 id="readiness-title">{t('正式实验前已经验证了什么', 'What has been validated before the formal experiment')}</h2>
+    <p>{t('这些是“能不能按冻结机制安全运行”的资格证据，不是“方法是否更好”的效果证据。', 'These are qualification checks for whether the frozen mechanism can run safely, not efficacy evidence that the method is better.')}</p>
+    <div class="esg__readiness-table-wrap"><table class="esg__readiness-table">
+      <thead><tr><th>{t('检查', 'Check')}</th><th>{t('状态', 'Status')}</th><th>{t('边界', 'Boundary')}</th></tr></thead>
+      <tbody>
+        <tr><td>{t('Gauge-invariant β policy', 'Gauge-invariant beta policy')}</td><td>PASS</td><td>Spearman {study.readiness.gaugeInvariantPolicy.heldoutSpearman.toFixed(3)}</td></tr>
+        <tr><td>Round0 predict-only</td><td>PASS</td><td>{study.readiness.round0PredictOnly.optimizerSteps} steps · 0 writes</td></tr>
+        <tr><td>{t('Round0 exact repeat', 'Round0 exact repeat')}</td><td>PASS</td><td>{study.readiness.isolatedExactStack.round0ExactRepeatCount} / {study.readiness.isolatedExactStack.round0ExactRepeatCount}</td></tr>
+        <tr><td>{t('non-empty rank128 recurrent exact repeat', 'non-empty rank128 recurrent exact repeat')}</td><td>PASS</td><td>{study.readiness.isolatedExactStack.nonemptyExactRepeatCount} / {study.readiness.isolatedExactStack.nonemptyExactRepeatCount}</td></tr>
+        <tr><td>{t('4-GPU zero-formal topology', '4-GPU zero-formal topology')}</td><td>PASS</td><td>formal rows = {study.readiness.topology.formalRowsConsumed}</td></tr>
+        <tr><td>{t('当前 formal resource lane', 'Current formal resource lane')}</td><td>GPU4–7</td><td>{t('每卡 1 OFF + 1 ON；只改资源执行', 'one OFF + one ON per GPU; resource execution only')}</td></tr>
+        <tr><td>{t('per-step trace equivalence', 'per-step trace equivalence')}</td><td>PASS</td><td>{study.readiness.stepTrace.round0Steps} + {study.readiness.stepTrace.recurrentSteps} steps</td></tr>
+        <tr><td>{t('short non-final qualification', 'short non-final qualification')}</td><td>PASS</td><td>{t('仅资格检查，不是效果结论', 'qualification only, not efficacy')}</td></tr>
+        <tr><td>{t('formal matched dry-run', 'formal matched dry-run')}</td><td>PASS</td><td>{study.readiness.finalPrelaunch.dryRunStatus}</td></tr>
+        <tr><td>{t('final consumer prelaunch', 'final consumer prelaunch')}</td><td>PASS</td><td>{t('仍需 owner 明确启动', 'explicit owner start still required')}</td></tr>
+      </tbody>
+    </table></div>
+    <p class="esg__qualification"><strong>{t('Short non-final 原样记录：', 'Short non-final, reported as-is:')}</strong> reward Δ={study.readiness.shortNonFinal.rewardDelta.toFixed(4)}；success Δ=0.0000。{t('这是 development-panel qualification-only 结果，不能写成 formal efficacy。', 'This is a development-panel qualification-only result and cannot be presented as formal efficacy.')}</p>
+  </section>
+
+  <section class="esg__section" id="formal-design" aria-labelledby="formal-design-title">
+    <h2 id="formal-design-title">{t('正式实验怎么比较', 'How the formal experiment compares the two arms')}</h2>
+    <figure class="esg__pair" aria-label={t('正式 matched pair 设计', 'Formal matched-pair design')}>
+      <div class="esg__pair-start"><strong>EMPTY_BOUNDED_HISTORY</strong><span>{t('共同起点', 'common start')}</span></div>
+      <div class="esg__fork" aria-hidden="true"></div>
+      <div class="esg__pair-arms">
+        <div><strong>OFF · {study.identity.off}</strong><span>{t('只做 Bounded recurrence', 'Bounded recurrence only')}</span></div>
+        <div><strong>ON · {study.identity.on}</strong><span>{t('同一训练 + Effective-State GDR write', 'same training + Effective-State GDR write')}</span></div>
+      </div>
+      <div class="esg__barrier"><span>Round 0</span><i></i><span>Round 1</span><i></i><span>…</span><i></i><span>Round 159</span></div>
+      <figcaption>{t('每轮 OFF/ON rollout 在 GPU4–7 上并发；随后 post-rollout reflector / training / transition 在 GPU4 上按冻结顺序串行完成，两臂都 seal 后才跨过 matched barrier。这个资源迁移不改变 treatment、任务、seed、预算或分析；final panel 在正式 Stage2 期间保持 locked。', 'OFF/ON rollouts run concurrently on GPU4–7; post-rollout reflector, training, and transition then run serially on GPU4 in the frozen order, and both arms must seal before the matched barrier. This resource migration does not change treatment, tasks, seeds, budget, or analysis; the final panel stays locked during formal Stage2.')}</figcaption>
+    </figure>
+    <ul class="esg__matched-list">
+      {study.formalDesign.matched.map((item) => <li>{zh ? item.zh : item.en}</li>)}
+    </ul>
+    <p><strong>{t('唯一 treatment difference：', 'Only treatment difference:')}</strong> {study.formalDesign.onlyTreatmentDifference}. {t('GDR 从 Round0 第一条 optimizer update 开始；Round0 rollout 本身仍是共同起点下的 pre-treatment behavior。', 'GDR starts at the first optimizer update in Round0; the Round0 rollout itself is still pre-treatment behavior from the common start.')}</p>
+    <p class="esg__boundary">{t('Fail-closed：Round0 没有合法 current update 就要求 owner 决策，不制造 synthetic S1；后续轮缺 update 时保留 prior rank128/replay、两臂匹配推进且不制造 GDR event。Carrier Health FAIL 只在 sealed round 边界暂停，final panel 没有独立 authority 就继续 locked。', 'Fail-closed: if Round0 has no legal current update, the runner requires an owner decision and never fabricates S1; on later rounds a missing update keeps the prior rank128/replay state, advances both arms equivalently, and creates no GDR event. Carrier Health failures pause only at sealed round boundaries, and the final panel stays locked without independent authority.')}</p>
+  </section>
+
+  <section class="esg__section esg__results" id="formal-result" aria-labelledby="formal-result-title">
+    <h2 id="formal-result-title">{t('正式结果', 'Formal result')}</h2>
+    {pending ? (
+      <>
+        <p class="esg__pending"><strong>{t('正式结果尚未产生（Pending）', 'Formal result not yet available (Pending)')}</strong> · {t('这里故意留空。正式 160 轮结果只有在 sealed scientific evidence 出现后才填写。', 'This area is intentionally blank. Formal 160-round values will be filled only from sealed scientific evidence.')}</p>
+        <div class="esg__result-table-wrap"><table class="esg__result-table">
+          <thead><tr><th>{t('预先固定的指标', 'Predefined metric')}</th><th>OFF</th><th>ON</th><th>Δ / uncertainty</th></tr></thead>
+          <tbody>
+            <tr><td>160-round pooled mean reward</td><td>Pending</td><td>Pending</td><td>Pending</td></tr>
+            <tr><td>160-round exact success</td><td>Pending</td><td>Pending</td><td>Pending</td></tr>
+            <tr><td>{study.formalDesign.analysis.uncertainty}</td><td colspan="3">Pending</td></tr>
+            <tr><td>final panel</td><td colspan="3">locked / not run</td></tr>
+          </tbody>
+        </table></div>
+      </>
+    ) : null}
+    <p class="esg__boundary">{t('这里不会用 partial W&B、单个 checkpoint、ETA 或 0 来代替正式结果，也不会在 seal 前写 winner。', 'This section never substitutes partial W&B, a single checkpoint, an ETA, or zero for the formal result, and it never names a winner before sealing.')}</p>
+  </section>
+
+  <section class="esg__section" id="evidence" aria-labelledby="evidence-title">
+    <h2 id="evidence-title">{t('证据与当前边界', 'Evidence and current boundary')}</h2>
+    <details class="esg__details" open>
+      <summary>{t('当前正式身份与预启动状态', 'Current formal identity and prelaunch state')}</summary>
+      <ul>
+        <li><a href={study.evidence.controlTowerPr}><ExternalBrandMark href={study.evidence.controlTowerPr} />PR #502 · Control Tower</a></li>
+        <li><a href={study.evidence.finalImplementationPr}><ExternalBrandMark href={study.evidence.finalImplementationPr} />PR #510 · final implementation stack</a></li>
+        <li><code>{study.source.formalExecutionCheckout}</code> · {t('formal execution checkout', 'formal execution checkout')}</li>
+        <li><code>{study.source.scienceExecutionGateCodeFreeze}</code> · {t('science / execution-gate code freeze', 'science / execution-gate code freeze')}</li>
+        <li><code>{study.lifecycle.currentReadySha256}</code> · READY SHA256</li>
+        <li><code>{study.resourceExecution.resourceSuccessorSha256}</code> · GPU4–7 resource successor SHA256</li>
+      </ul>
+    </details>
+    <details class="esg__details">
+      <summary>{t('资格证据与 step trace', 'Qualification evidence and step trace')}</summary>
+      <ul>
+        <li><a href={study.evidence.gaugeInvariantPolicy}><ExternalBrandMark href={study.evidence.gaugeInvariantPolicy} />gauge-invariant policy qualification</a></li>
+        <li><a href={study.evidence.round0PredictOnly}><ExternalBrandMark href={study.evidence.round0PredictOnly} />Round0 predict-only</a></li>
+        <li><a href={study.evidence.isolatedExactStack}><ExternalBrandMark href={study.evidence.isolatedExactStack} />isolated exact stack</a></li>
+        <li><a href={study.evidence.stepTrace}><ExternalBrandMark href={study.evidence.stepTrace} />exact per-step trace</a></li>
+        <li><a href={study.evidence.shortNonFinal}><ExternalBrandMark href={study.evidence.shortNonFinal} />short non-final qualification</a></li>
+      </ul>
+    </details>
+    <p class="esg__history-link"><a href={gatedHref}>{t('回看第一代 Gated-Delta D1 页面 →', 'Review the first-generation Gated-Delta D1 page →')}</a></p>
+  </section>
+</article>
+
+<style>
+  .esg { max-width: 1120px; margin: 0 auto; padding: 34px 28px 90px; color: var(--text-primary); }
+  .esg__hero { max-width: 980px; margin: 0 auto; padding: 24px 0 44px; }
+  .esg__back, .esg a { color: var(--link-color, var(--accent)); text-underline-offset: 3px; }
+  .esg__eyebrow { margin: 24px 0 8px; font: 700 1rem/1.2 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--text-secondary); }
+  .esg h1 { max-width: 930px; margin: 0; font-size: clamp(2rem, 5vw, 4.6rem); line-height: .98; letter-spacing: -.055em; }
+  .esg__lede { max-width: 890px; margin: 14px 0 0; font-size: clamp(1.05rem, 2vw, 1.28rem); line-height: 1.7; color: var(--text-secondary); }
+  .esg__facts { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin: 26px 0 18px; }
+  .esg__facts div { padding: 16px; border: 1px solid var(--border-color); border-radius: var(--radius-panel); background: var(--surface-secondary); }
+  .esg__facts span { display:block; font-size:1rem; color:var(--text-secondary); } .esg__facts strong { display:block; margin-top:6px; font-size:1.08rem; }
+  .esg__status { margin: 0; padding: 14px 16px; border-left: 3px solid var(--accent); background: var(--surface-secondary); line-height: 1.6; }
+  .esg__section { max-width: 980px; margin: 0 auto; padding: 46px 0; border-top: 1px solid var(--border-color); }
+  .esg__section h2 { margin:0 0 18px; font-size:clamp(1.55rem,3vw,2.35rem); letter-spacing:-.035em; }
+  .esg__section h3 { margin:0; font-size:1.05rem; } .esg__section p { line-height:1.7; }
+  .esg__why-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:18px 0; }
+  .esg__why-grid > div { padding:18px; border:1px solid var(--border-color); border-radius:var(--radius-panel); }
+  .esg__why-grid p { margin:7px 0 0; color:var(--text-secondary); }
+  .esg__context-links { display:flex; flex-wrap:wrap; gap:12px 18px; margin-top:20px; }
+  .esg__representation { display:grid; grid-template-columns:1fr 1fr; gap:22px; margin:26px 0 14px; }
+  .esg__rep-column { min-width:0; display:grid; gap:10px; align-content:start; padding:20px; border:1px solid var(--border-color); border-radius:var(--radius-feature); }
+  .esg__rep-column > span { color:var(--text-secondary); font-size:1rem; }
+  .esg__factor-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .esg__node { padding:14px 12px; border:1px solid var(--border-color); border-radius:var(--radius-control); text-align:center; font-weight:650; background:var(--surface-secondary); }
+  .esg__node.is-state,.esg__node.is-effective { background:var(--surface-tertiary, var(--surface-secondary)); }
+  .esg__solid { width:2px; height:24px; margin:auto; background:currentColor; opacity:.45; }
+  .esg__dash { height:1px; border-top:2px dashed currentColor; opacity:.45; }
+  .esg__formula { font-family:var(--font-mono); color:var(--text-secondary); }
+  .esg__steps { list-style:none; padding:0; display:grid; gap:14px; counter-reset:step; }
+  .esg__steps li { display:grid; grid-template-columns:44px 1fr; gap:6px 14px; padding:18px; border:1px solid var(--border-color); border-radius:var(--radius-panel); }
+  .esg__steps li > span { grid-row:1 / 4; font-family:var(--font-mono); color:var(--text-secondary); }
+  .esg__steps p { margin:5px 0 0; color:var(--text-secondary); } .esg__steps .esg__cannot { font-size:1rem; }
+  .esg__details { margin-top:14px; padding:12px 14px; border:1px solid var(--border-color); border-radius:var(--radius-panel); }
+  .esg__details summary { cursor:pointer; font-weight:650; } .esg__details li { margin:8px 0; overflow-wrap:anywhere; }
+  .esg__method-grid { display:grid; grid-template-columns:minmax(0,2fr) minmax(220px,1fr); gap:18px; align-items:start; }
+  .esg__flow { display:grid; grid-template-columns:repeat(13,minmax(0,1fr)); align-items:center; gap:5px; margin:12px 0 0; padding:18px; border:1px solid var(--border-color); border-radius:var(--radius-feature); }
+  .esg__flow-node { min-width:0; padding:12px 7px; border:1px solid var(--border-color); border-radius:var(--radius-control); text-align:center; font-size:1rem; font-weight:650; background:var(--surface-secondary); overflow-wrap:anywhere; }
+  .esg__flow-node.is-actual,.esg__flow-node.is-state { background:var(--surface-tertiary, var(--surface-secondary)); }
+  .esg__flow-arrow { height:2px; background:currentColor; opacity:.35; position:relative; }
+  .esg__flow-arrow::after { content:'›'; position:absolute; right:-3px; top:-12px; font-size:20px; }
+  .esg__flow figcaption { grid-column:1 / -1; margin-top:8px; color:var(--text-secondary); font-size:1rem; line-height:1.5; }
+  .esg__forbidden { padding:18px; border:1px dashed var(--border-color); border-radius:var(--radius-panel); background:var(--surface-secondary); }
+  .esg__forbidden h3 { margin-bottom:10px; } .esg__forbidden p { margin:8px 0; font-size:1rem; color:var(--text-secondary); }
+  .esg__readiness-table-wrap,.esg__result-table-wrap { max-width:100%; overflow-x:auto; } .esg__readiness-table,.esg__result-table { width:100%; border-collapse:collapse; min-width:650px; }
+  .esg__readiness-table th,.esg__readiness-table td,.esg__result-table th,.esg__result-table td { padding:12px; border-bottom:1px solid var(--border-color); text-align:left; vertical-align:top; font-size:1rem; }
+  .esg__qualification { padding:14px 16px; border-radius:var(--radius-panel); background:var(--surface-secondary); }
+  .esg__pair { margin:24px 0; padding:18px; border:1px solid var(--border-color); border-radius:var(--radius-feature); }
+  .esg__pair-start { display:grid; justify-items:center; gap:4px; } .esg__pair-start span,.esg__pair-arms span { color:var(--text-secondary); font-size:1rem; }
+  .esg__fork { width:50%; height:28px; margin:auto; border-left:2px solid currentColor; border-right:2px solid currentColor; border-top:2px solid currentColor; opacity:.35; transform:translateY(18px); }
+  .esg__pair-arms { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px; }
+  .esg__pair-arms > div { display:grid; gap:5px; padding:16px; border:1px solid var(--border-color); border-radius:var(--radius-panel); }
+  .esg__barrier { display:flex; align-items:center; gap:8px; margin:18px 0 8px; color:var(--text-secondary); font:600 1rem/1.4 var(--font-mono); }
+  .esg__barrier i { flex:1; height:1px; background:currentColor; opacity:.35; }
+  .esg__pair figcaption { color:var(--text-secondary); font-size:1rem; line-height:1.55; }
+  .esg__matched-list { columns:2; padding-left:1.2rem; color:var(--text-secondary); }
+  .esg__matched-list li { break-inside:avoid; margin:7px 0; }
+  .esg__results { border-top-width:2px; }
+  .esg__pending { padding:16px; border-radius:var(--radius-panel); background:var(--surface-secondary); }
+  .esg__pending strong { font-size:1.15rem; }
+  .esg__boundary { color:var(--text-secondary); font-size:1rem; }
+  .esg__history-link { margin-top:22px; }
+  code { overflow-wrap:anywhere; }
+
+  @media (max-width: 760px) {
+    .esg { padding:24px 18px 70px; }
+    .esg__facts,.esg__why-grid,.esg__representation,.esg__pair-arms { grid-template-columns:1fr; }
+    .esg__method-grid { grid-template-columns:1fr; }
+    .esg__flow { grid-template-columns:1fr; }
+    .esg__flow-arrow { width:2px; height:22px; margin:auto; }
+    .esg__flow-arrow::after { content:'⌄'; right:-8px; top:5px; }
+    .esg__steps li { grid-template-columns:34px 1fr; padding:15px; }
+    .esg__fork { width:70%; }
+    .esg__matched-list { columns:1; }
+    .esg__barrier { flex-wrap:wrap; }
+    .esg__barrier i { min-width:18px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .esg *, .esg *::before, .esg *::after { scroll-behavior:auto; transition:none; animation:none; }
+  }
+</style>
