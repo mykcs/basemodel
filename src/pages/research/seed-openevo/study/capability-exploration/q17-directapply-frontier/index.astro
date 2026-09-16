@@ -12,12 +12,16 @@ const locale = 'zh' as const;
 >
   <ResearchRouteContext locale={locale} route="q17-directapply-frontier" compact />
   <OpenEvoQ17AdvisorDiagnostics locale={locale} />
-  <details class="q17-roadmap-depth">
-    <summary>历史排查计划（按需展开）</summary>
-    <OpenEvoQ17FrontierRoadmap locale={locale} />
-  </details>
+  <section class="q17-roadmap-depth" data-copy-review aria-label="历史排查计划">
+    <p class="q17-roadmap-depth__intro">下面保留当时怎样排查 R127 → R128 掉分的历史路径；它不是当前同题重测结论，也不是最终 128 题结果。</p>
+    <details>
+      <summary>历史排查计划（按需展开）</summary>
+      <OpenEvoQ17FrontierRoadmap locale={locale} />
+    </details>
+  </section>
   <style>
     .q17-roadmap-depth{width:min(1120px,calc(100% - 2rem));margin:1.6rem auto 4rem;padding:1rem 0;border-block:1px solid var(--line)}
-    .q17-roadmap-depth>summary{cursor:pointer;color:var(--accent-deep);font-weight:760}
+    .q17-roadmap-depth summary{cursor:pointer;color:var(--accent-deep);font-weight:760}
+    .q17-roadmap-depth__intro{max-width:72ch;margin:.9rem 0 0;color:var(--muted);line-height:1.72}
   </style>
 </AppLayout>
