@@ -38,6 +38,7 @@
     "feedback:retrieve": "tsx scripts/retrieve-human-feedback-precedents.ts",
     "feedback:cold-read": "tsx scripts/generate-human-feedback-cold-read.ts",
     "feedback:judge": "tsx scripts/verify-human-preference-judge-receipt.ts",
+    "redesign:cold-read:gate": "tsx scripts/verify-content-first-redesign-cold-read.ts",
     "test:e2e": "playwright test",
     "test:header": "playwright test tests/e2e/global-header-visibility.spec.ts tests/e2e/global-header-breakpoints.spec.ts --project=chromium",
     "test:header:all": "playwright test tests/e2e/global-header-visibility.spec.ts tests/e2e/global-header-breakpoints.spec.ts",

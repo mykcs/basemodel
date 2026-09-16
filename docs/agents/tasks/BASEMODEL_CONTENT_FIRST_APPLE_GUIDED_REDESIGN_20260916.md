@@ -340,6 +340,14 @@ Pilot exit rule: do not start broad migration until the four pilots show a coher
 
 The five implementation rows above are evidenced across **all four** pilots. A review-only, noindex Preview for the four-pilot exact product head was also generated and target-checked on all four pilot routes, so the conditional review-Preview row is now complete. These are implementation/review prerequisites only. Phase C remains **0 / 20 weighted points** until the independent phone + desktop cold-read exit is satisfied. This preserves the existing 35 / 100 weighted total and prevents automated checks or Preview inspection from being relabeled as human comprehension.
 
+The human exit now has a fail-closed task-scoped verifier rather than relying on a prose claim. A real target reader must complete the existing blind-first `feedback:cold-read` / `feedback:judge` protocol separately on **desktop and phone for each of the four pilots**, saving eight valid receipts under the exact filenames `flow-{desktop,phone}.json`, `sd-lora-{desktop,phone}.json`, `server-{desktop,phone}.json`, and `q17-{desktop,phone}.json`. Then run:
+
+```bash
+npm run redesign:cold-read:gate -- --head=<exact-product-git-sha> --dir=<receipt-dir>
+```
+
+The gate requires all eight receipts to be genuine `reviewer.kind=human`, PASS the existing preference/scientific-boundary validator, match the pilot's exact Reader Contract, and bind the same exact product head. Missing, agent-authored, stale-head, wrong-contract or FAIL receipts fail closed. The command makes the Phase-C exit auditable; it does **not** manufacture the human evidence, so the checkbox above remains open until the command actually returns PASS on real receipts.
+
 ### Phase D — Canonical component/CSS consolidation — **15%**
 
 - [x] Promote only proven pilot patterns into shared components/styles.
