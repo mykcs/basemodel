@@ -69,8 +69,9 @@ test('training design stays legible in dark theme and reduced motion', async ({ 
   test.skip(!routeInScope(route), 'outside hosted focused route scope');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.addInitScript(() => localStorage.setItem('atlas-theme', 'dark'));
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 
   const root = page.locator('#training-design');
   await expect(root).toBeVisible();
