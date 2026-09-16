@@ -27,18 +27,18 @@ export type EffectiveStateFormalResult =
 
 const repo = 'https://github.com/mykcs/openevo-experiment';
 const scienceExecutionGateSha = 'c5e012814bb9509deb0e2cbc8d57a63e2b56889f';
-const formalExecutionCheckout = '25bc89083b6c60b3c6be4a3d80d12778feef4556';
+const formalExecutionCheckout = '80bf263e9bf65fd0382f3c762e2a42b4928514a0';
 const qualificationEvidenceSha = 'b41884ac90d185742dc47f240c4d54a3cfaf6175';
 const evidenceRoot = `${repo}/blob/${qualificationEvidenceSha}/docs/evidence/bounded-recurrence-gdr-20260915`;
 
 export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
-  checkedAt: '2026-09-16T11:52:00+08:00',
+  checkedAt: '2026-09-16T14:09:00+08:00',
   source: {
     repository: 'mykcs/openevo-experiment',
     controlTowerPr: 502,
     controlTowerHead: '99dd0fdce328682fb0218aa084d3d2b0d0b7ae49',
     finalImplementationPr: 510,
-    finalImplementationHead: 'c602b50208a247d2563e44874fb1da65593cd13b',
+    finalImplementationHead: '52dc699d5bccc1a75adc7a4e7a863ca58148eb93',
     formalExecutionCheckout,
     scientificExecutionSha: formalExecutionCheckout,
     scienceExecutionGateCodeFreeze: scienceExecutionGateSha,
@@ -57,21 +57,30 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     currentMainHandoffCommit: '9f6259be9b961223a5cab7711fe1f297e272d541',
     historicalImplementationPr: 497,
     historicalImplementationHead: '7847d6497ae58b7a82dc37cd1cf71ccfe44aa8df',
-    status: 'PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START',
-    currentCampaignClassification: 'PRELAUNCH_READY_AWAITING_EXPLICIT_OWNER_START',
+    status: 'FORMAL_RUNNING',
+    currentCampaignClassification: 'FORMAL_RUNNING',
+    liveExecutionFrozen: true,
+    repositoryCurrentMustNotHotSwapLiveRun: true,
   },
   lifecycle: {
-    status: 'PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START',
-    formalRunLaunched: false,
-    launchAuthority: false,
-    formalRowsConsumed: 0,
+    status: 'FORMAL_RUNNING',
+    formalRunLaunched: true,
+    launchAuthority: true,
+    ownerLaunchReleasePresent: true,
+    ownerLaunchReleaseSha256: '8c68c58dd45bc7216829d606eb5d5aaaa0db7855141306dafbec9cf6dcf1140f',
+    formalRowsConsumed: null,
+    formalRowsDisclosure: 'run is active; exact in-flight denominator is not a formal-result authority',
     finalPanelAccess: 0,
-    formalOutputRootExists: false,
-    currentReadySha256: '4b57164c55ca8e3ed8993aa2291f09971ce91fe25871e4714336fd2df7d26671',
-    controllerInitOnlySha256: 'adb861f8797c0b75f549e88865bdff651e8ac35230e39b0bc36d0be438150f4e',
-    matchedDryRunSha256: '00f7f3284bc67568e4552906cd95c9e91cbfd14800d828444f221c439e835b52',
-    observabilityAdmissionSha256: '9a75be897bb518a4bcbbf4e2069e511662f994e1b5f46f8b3126eab38e1b199a',
-    prelaunchZeroStateSealSha256: '7771ad89c0c400adaa23a27762766a043a3c928122f3cbfa8780101f6882ea03',
+    formalOutputRootExists: true,
+    formalOutputRoot: '/data/home/wangr/workspace/runs/bounded-effective-state-gdr-formal-80bf263e-20260916',
+    currentReadySha256: 'db3087ec8d8269f99b60cd1ff1511ed825e1a4ad6ffc96388f3c7ca27c70413d',
+    prelaunchReceiptsAreHistoricalAfterExecutionChange: true,
+    prelaunchEvidence: {
+      controllerInitOnlySha256: 'adb861f8797c0b75f549e88865bdff651e8ac35230e39b0bc36d0be438150f4e',
+      matchedDryRunSha256: '00f7f3284bc67568e4552906cd95c9e91cbfd14800d828444f221c439e835b52',
+      observabilityAdmissionSha256: '9a75be897bb518a4bcbbf4e2069e511662f994e1b5f46f8b3126eab38e1b199a',
+      prelaunchZeroStateSealSha256: '7771ad89c0c400adaa23a27762766a043a3c928122f3cbfa8780101f6882ea03',
+    },
   },
   resourceExecution: {
     physicalGpuIndices: [4, 5, 6, 7] as const,
@@ -150,7 +159,7 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     },
     topology: { status: 'PASS_PREFERRED_4GPU_ZERO_FORMAL', formalRowsConsumed: 0 },
     finalPrelaunch: {
-      status: 'PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START',
+      status: 'HISTORICAL_PRELAUNCH_PASS_BEFORE_FORMAL_START',
       dryRunStatus: 'DRY_RUN_PASS_NO_FORMAL_TASKS',
       scienceFocusedTests: '47/47 PASS', carrierFocusedTests: '53/53 PASS', wandbFocusedTests: '17/17 PASS',
     },

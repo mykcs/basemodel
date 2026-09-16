@@ -86,7 +86,8 @@ test('Effective-State first screen tells the three-part story before deeper choi
   await expect(lede).toContainText('rank128');
   await expect(lede).toContainText('第一代 GDR');
   await expect(lede).toContainText('同一个有效更新能有多种 A/C 表示');
-  await expect(lede).toContainText('正式结果尚未产生');
+  await expect(lede).toContainText('160 轮正式运行已经启动');
+  await expect(lede).toContainText('正式结果仍未产生');
   const ledeBox = await lede.boundingBox();
   expect(ledeBox).not.toBeNull();
   expect(ledeBox!.y).toBeLessThan(844);

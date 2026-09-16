@@ -23,17 +23,17 @@ const pending = result.status === 'pending';
     <p class="esg__eyebrow">{t('08 · 固定状态之后，控制新经验写多强', '08 · Controlling write strength after bounded state')}</p>
     <h1>Bounded Online Recurrence + Effective-State GDR</h1>
     <p class="esg__lede" data-reader-task data-reader-purpose>{t(
-      'Bounded Online Recurrence 已把旧历史固定在 rank128。下一问是：每轮新经验该写多强？第一代 GDR 直接控制 LoRA 的 A/C 坐标，但同一个有效更新能有多种 A/C 表示。Effective-State successor 因此改为控制真正影响模型的有效写入。正式实验比较 Bounded OFF 与 Bounded + Effective-State GDR ON；160 轮尚未启动，正式结果尚未产生。',
-      'Bounded Online Recurrence already keeps old history at rank128. The next question is how strongly each new experience should be written. First-generation GDR controlled LoRA A/C coordinates directly, but the same effective update can have multiple A/C representations. The Effective-State successor therefore controls the effective write itself. The formal comparison is Bounded OFF versus Bounded + Effective-State GDR ON; the 160-round run has not started, so no formal result exists yet.',
+      'Bounded Online Recurrence 已把旧历史固定在 rank128。下一问是：每轮新经验该写多强？第一代 GDR 直接控制 LoRA 的 A/C 坐标，但同一个有效更新能有多种 A/C 表示。Effective-State successor 因此改为控制真正影响模型的有效写入。正式实验比较 Bounded OFF 与 Bounded + Effective-State GDR ON；160 轮正式运行已经启动，正式结果仍未产生。',
+      'Bounded Online Recurrence already keeps old history at rank128. The next question is how strongly each new experience should be written. First-generation GDR controlled LoRA A/C coordinates directly, but the same effective update can have multiple A/C representations. The Effective-State successor therefore controls the effective write itself. The formal Bounded OFF versus Bounded + Effective-State GDR ON run is now active, while the formal result is still unavailable.',
     )}</p>
     <div class="esg__facts" aria-label={t('当前三个关键事实', 'Three current facts')}>
       <div><span>{t('历史状态', 'History state')}</span><strong>rank128</strong></div>
       <div><span>{t('正式设计', 'Formal design')}</span><strong>160 × 128 / arm</strong></div>
       <div><span>{t('正式结果', 'Formal result')}</span><strong>{pending ? t('尚未产生', 'Pending') : 'Sealed'}</strong></div>
     </div>
-    <p class="esg__status"><strong>{t('预启动工程已完成，仍需 owner 明确启动。', 'Prelaunch engineering is complete; an explicit owner start is still required.')}</strong> {t(
-      '当前 launch authority=false、formal rows=0、final panel access=0；W&B 只是只读观测，不是科学权威。',
-      'Current launch authority is false, formal rows are 0, and final-panel access is 0; W&B is read-only observability, not scientific authority.',
+    <p class="esg__status"><strong>{t('正式实验正在 GPU4–7 运行，正式结果仍是 Pending。', 'The formal run is active on GPU4–7; the formal result is still Pending.')}</strong> {t(
+      'live execution 固定在 80bf263e…，final panel access=0；不会把中途 round、partial W&B 或单个 checkpoint 当作正式结果。',
+      'The live execution remains frozen at 80bf263e…, final-panel access is 0, and no in-flight round, partial W&B view, or single checkpoint is treated as a formal result.',
     )}</p>
   </header>
 
@@ -151,7 +151,8 @@ const pending = result.status === 'pending';
         <tr><td>{t('per-step trace equivalence', 'per-step trace equivalence')}</td><td>PASS</td><td>{study.readiness.stepTrace.round0Steps} + {study.readiness.stepTrace.recurrentSteps} steps</td></tr>
         <tr><td>{t('short non-final qualification', 'short non-final qualification')}</td><td>PASS</td><td>{t('仅资格检查，不是效果结论', 'qualification only, not efficacy')}</td></tr>
         <tr><td>{t('formal matched dry-run', 'formal matched dry-run')}</td><td>PASS</td><td>{study.readiness.finalPrelaunch.dryRunStatus}</td></tr>
-        <tr><td>{t('final consumer prelaunch', 'final consumer prelaunch')}</td><td>PASS</td><td>{t('仍需 owner 明确启动', 'explicit owner start still required')}</td></tr>
+        <tr><td>{t('final consumer prelaunch', 'final consumer prelaunch')}</td><td>PASS</td><td>{t('历史预启动证据；owner 随后已授权正式启动', 'historical prelaunch evidence; the owner later authorized formal start')}</td></tr>
+        <tr><td>{t('当前正式 lifecycle', 'Current formal lifecycle')}</td><td>RUNNING</td><td>{t('只公开 lifecycle；不公开中途效果数字', 'lifecycle only; no in-flight efficacy numbers')}</td></tr>
       </tbody>
     </table></div>
     <p class="esg__qualification"><strong>{t('Short non-final 原样记录：', 'Short non-final, reported as-is:')}</strong> reward Δ={study.readiness.shortNonFinal.rewardDelta.toFixed(4)}；success Δ=0.0000。{t('这是 development-panel qualification-only 结果，不能写成 formal efficacy。', 'This is a development-panel qualification-only result and cannot be presented as formal efficacy.')}</p>
@@ -198,13 +199,15 @@ const pending = result.status === 'pending';
   <section class="esg__section" id="evidence" aria-labelledby="evidence-title">
     <h2 id="evidence-title">{t('证据与当前边界', 'Evidence and current boundary')}</h2>
     <details class="esg__details" open>
-      <summary>{t('当前正式身份与预启动状态', 'Current formal identity and prelaunch state')}</summary>
+      <summary>{t('当前正式身份与运行状态', 'Current formal identity and running state')}</summary>
       <ul>
         <li><a href={study.evidence.controlTowerPr}><ExternalBrandMark href={study.evidence.controlTowerPr} />PR #502 · Control Tower</a></li>
         <li><a href={study.evidence.finalImplementationPr}><ExternalBrandMark href={study.evidence.finalImplementationPr} />PR #510 · final implementation stack</a></li>
-        <li><code>{study.source.formalExecutionCheckout}</code> · {t('formal execution checkout', 'formal execution checkout')}</li>
+        <li><code>{study.source.formalExecutionCheckout}</code> · {t('live formal execution checkout（运行中冻结）', 'live formal execution checkout (frozen while running)')}</li>
+        <li><code>{study.source.finalImplementationHead}</code> · {t('repository-current implementation head（不得热切换 live run）', 'repository-current implementation head (must not hot-swap the live run)')}</li>
         <li><code>{study.source.scienceExecutionGateCodeFreeze}</code> · {t('science / execution-gate code freeze', 'science / execution-gate code freeze')}</li>
         <li><code>{study.lifecycle.currentReadySha256}</code> · READY SHA256</li>
+        <li><code>{study.lifecycle.ownerLaunchReleaseSha256}</code> · owner launch release SHA256</li>
         <li><code>{study.resourceExecution.resourceSuccessorSha256}</code> · GPU4–7 resource successor SHA256</li>
       </ul>
     </details>
