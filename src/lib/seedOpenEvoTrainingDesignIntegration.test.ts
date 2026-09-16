@@ -39,7 +39,7 @@ describe("integrated SEED × OpenEvo training design", () => {
 
   it("keeps the Stage-1 responsibility boundary and parameter protocol visible", () => {
     for (const term of [
-      "Qwen 3B / 7B",
+      "Qwen2.5-3B-Instruct",
       "Princeton WebShop",
       "外部分析模型",
       "只在任务结束后读取已保存的轨迹",

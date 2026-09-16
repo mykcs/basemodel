@@ -8,15 +8,16 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 
 const stages = [
-  [t('做题模型', 'Actor'), 'Qwen 3B / 7B', t('自己选择 WebShop 动作', 'chooses WebShop actions itself')],
-  [t('交互规则', 'Harness'), 'SEED / OpenEvo', t('组织提示、历史和动作解析，不提供具体购物答案', 'organizes prompts, history, and action parsing without supplying shopping answers')],
+  [t('做题模型', 'Actor'), 'Qwen2.5-3B-Instruct', t('当前对照固定同一模型；它自己选择 WebShop 动作', 'the current comparison fixes the same model; it chooses WebShop actions itself')],
+  [t('交互规则', 'Interaction layer'), 'SEED / OpenEvo', t('各自负责提示、历史和动作解析（代码里叫 native harness），但不提供具体购物答案', 'each owns its prompts, history, and action parsing (the code calls this its native harness) without supplying shopping answers')],
   [t('任务环境', 'Environment'), 'Princeton WebShop', t('返回页面观察、任务分数和状态变化', 'returns page observations, task scores, and state changes')],
   [t('保存完整过程', 'Sealed trajectory'), t('一次完整任务', 'One completed task'), t('任务结束后才把整条交互记录固定下来', 'freezes the full interaction record only after the task ends')],
   [t('任务后复盘', 'Post-task review'), t('外部分析模型', 'External analysis model'), t('只在任务结束后读取已保存的轨迹', 'reads the saved trajectory only after task completion')],
-  [t('学习材料', 'Learned output'), t('技能 / 适配器 / 模型保存点', 'skill / adapter / checkpoint'), t('供后续准备或 Stage 2 学习使用', 'feeds later preparation or Stage-2 learning')],
+  [t('交给后续学习', 'Handoff'), t('成功轨迹 + 任务后复盘', 'successful traces + post-task review'), t('作为后续 Stage 2 的可追溯输入；具体经验或参数状态由 Stage 2 决定', 'becomes traceable input to Stage 2; Stage 2 decides the resulting experience or parameter state')],
 ] as const;
 ---
 <div class="training-design-body">
+  <p class="comparison-boundary">{t('完整系统比较只能回答两套系统总体表现有什么差异；如果要把后续差异归因到 Stage 2 学习器，两边还必须共享 Stage 1 轨迹、任务后复盘、训练配方和同一个起点模型。', 'A full-system comparison only answers how the two systems differ overall. To attribute a later difference to the Stage-2 learner, both sides must also share Stage-1 trajectories, post-task review, the training recipe, and the same starting model.')}</p>
   <ol class="responsibility-flow" aria-label={t('Stage 1 责任边界', 'Stage-1 responsibility flow')}>
     {stages.map((stage, index) => (
       <li>
@@ -25,7 +26,7 @@ const stages = [
       </li>
     ))}
   </ol>
-  <p class="stage2-bridge">{t('这六步只解释 Stage 1 怎样产生可学习证据。后来的完整 Stage 2 长跑里，Text Memory（文字记忆）、Skill Bundle（技能集合）、Agent System（全局行为规则）和 SD-LoRA（参数更新）分别判断是否变化，再一起组成下一轮实际使用的状态；早期 Stage 1 / LoRA-vs-SD-LoRA 对照并没有同时启用这四类状态。', 'These six steps only explain how Stage 1 produces learnable evidence. In the later full Stage-2 long run, Text Memory, Skill Bundle, Agent System, and SD-LoRA parameter updates each decide independently whether to change, then jointly form the state used by the next round. The earlier Stage-1 and LoRA-vs-SD-LoRA comparisons did not enable all four states together.')}</p>
+  <p class="stage2-bridge">{t('Stage 1 留下可追溯的成功轨迹和任务后复盘。进入后续 Stage 2 后，Text Memory（文字记忆）、Skill Bundle（技能集合）、Agent System（全局行为规则）和 SD-LoRA（参数更新）各自决定是否更新；通过当前实验规则确认的状态，才会带入下一批任务。早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态。', 'Stage 1 leaves traceable successful trajectories and post-task review. In the later Stage 2, Text Memory, Skill Bundle, Agent System, and SD-LoRA parameter updates each decide whether to change; only the state accepted by the current experiment rules is carried into the next task batch. The earlier Stage-1 and LoRA-vs-SD-LoRA comparisons did not enable all four states together.')}</p>
 
   <section class="comparison-scope" data-learning-comparison-scope aria-labelledby="comparison-scope-title">
     <h3 id="comparison-scope-title">{t('比较口径决定差异能归因到哪里', 'The comparison scope determines what can explain a difference')}</h3>
@@ -33,8 +34,8 @@ const stages = [
       <table>
         <thead><tr><th scope="col">{t('比较口径', 'Comparison')}</th><th scope="col">{t('哪些条件保持一致', 'What stays aligned')}</th><th scope="col">{t('可以支持什么结论', 'What the result can support')}</th></tr></thead>
         <tbody>
-          <tr><th scope="row">{t('完整系统比较', 'Full-system comparison')}</th><td>{t('模型、任务、评分和训练预算尽量一致；SEED 与 OpenEvo 可以使用各自的交互规则（native harness）。', 'Keep model, tasks, scoring, and training budget aligned; SEED and OpenEvo may use their own native interaction harnesses.')}</td><td>{t('只能比较两个完整系统的总体表现，不能把全部差异单独归因于 Stage 2 学习器。', 'Supports a comparison of the complete systems, not attribution of the whole difference to the Stage-2 learner alone.')}</td></tr>
-          <tr><th scope="row">{t('只比较 Stage 2 学习器', 'Stage-2 learner only')}</th><td>{t('共享 Stage 1 轨迹、事后分析、SFT 训练配方和同一个起点 checkpoint，再从这里分成 SEED Stage 2 与 OpenEvo Stage 2。', 'Share Stage-1 trajectories, post-task analysis, the SFT recipe, and the same starting checkpoint before forking into SEED Stage 2 and OpenEvo Stage 2.')}</td><td>{t('只有这种共同起点的对照，才允许把后续差异收窄到 Stage 2 学习器。', 'Only this common-start comparison can narrow a later difference to the Stage-2 learner.')}</td></tr>
+          <tr><th scope="row">{t('完整系统比较', 'Full-system comparison')}</th><td>{t('模型、任务、评分和训练预算尽量一致；SEED 与 OpenEvo 可以使用各自的交互层（native harness：各自负责提示、历史与动作解析）。', 'Keep model, tasks, scoring, and training budget aligned; SEED and OpenEvo may use their own native interaction harnesses.')}</td><td>{t('只能比较两个完整系统的总体表现，不能把全部差异单独归因于 Stage 2 学习器。', 'Supports a comparison of the complete systems, not attribution of the whole difference to the Stage-2 learner alone.')}</td></tr>
+          <tr><th scope="row">{t('只比较 Stage 2 学习器', 'Stage-2 learner only')}</th><td>{t('共享 Stage 1 轨迹、事后分析、监督微调（SFT）训练配方和同一个起点模型保存点（checkpoint），再从这里分成 SEED Stage 2 与 OpenEvo Stage 2。', 'Share Stage-1 trajectories, post-task analysis, the SFT recipe, and the same starting checkpoint before forking into SEED Stage 2 and OpenEvo Stage 2.')}</td><td>{t('只有这种共同起点的对照，才允许把后续差异收窄到 Stage 2 学习器。', 'Only this common-start comparison can narrow a later difference to the Stage-2 learner.')}</td></tr>
         </tbody>
       </table>
     </div>
@@ -61,7 +62,7 @@ const stages = [
 </div>
 
 <style>
-  .responsibility-flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.45rem;margin:0;padding:0;list-style:none}
+  .comparison-boundary{max-width:82ch;margin:0 0 .85rem;padding:0 0 .75rem;border-bottom:1px solid var(--line);color:var(--muted);font-size:.78rem;line-height:1.6}.responsibility-flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.45rem;margin:0;padding:0;list-style:none}
   .responsibility-flow li{position:relative;min-width:0;padding:.8rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface)}
   .responsibility-flow li:not(:last-child)::after{content:'→';position:absolute;z-index:2;right:-.38rem;top:50%;transform:translateY(-50%);padding:.05rem;background:var(--surface);color:var(--muted);font-size:.8rem}
   .responsibility-flow li>span{color:var(--accent-deep);font:800 .64rem/1 var(--font-mono)}

@@ -17,14 +17,14 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
   await expect(vanillaSeries).toHaveAttribute('aria-current', 'page');
   await expect(series.locator('a[href="/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/"]')).toHaveCount(0);
   await expect(page.locator('h1')).toContainText('SD-LoRA 用筛选后的成功轨迹训练候选 LoRA 参数');
-  await expect(body).toContainText('一次 WebShop 成功先只是一条任务轨迹');
+  await expect(body).toContainText('一次 WebShop（网页购物任务）成功先只是一条任务轨迹');
   await expect(body).toContainText('SD-LoRA 在本轮任务结束后、下一轮开始前更新 LoRA');
   await expect(body.locator('#what-is-sd-lora table')).toBeVisible();
   await expect(body.locator('#what-is-sd-lora tbody tr')).toHaveCount(3);
   await expect(body).toContainText('候选参数不等于能力一定提升');
   await expect(body).toContainText('普通 LoRA');
   await expect(body).toContainText('Scalable Decoupled LoRA');
-  await expect(body).toContainText('本页把当前基线称为 “Vanilla SD-LoRA”');
+  await expect(body).toContainText('本页把没有加入后续加速变体的当前基线称为 “Vanilla SD-LoRA”');
   await expect(body).toContainText('16 个任务 × 每题 8 次');
   await expect(body).toContainText('每个任务只取最早一条通过全部检查的成功');
   await expect(body).toContainText('最多带回 64 条旧经验');

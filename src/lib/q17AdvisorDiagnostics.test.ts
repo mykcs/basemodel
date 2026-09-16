@@ -32,7 +32,7 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(component).toContain('research-fact-band');
     expect(component).toContain('训练轮 · 题不同');
     expect(component).toContain('同样 32 题');
-    expect(component).toContain('final 才单独打开一次');
+    expect(component).toContain('冻结的最终测试（final）才单独打开一次');
     expect(component).toContain('另一张 GPU 又跑了一遍');
     expect(component).toContain('The result was rerun on another GPU');
     expect(component).toContain('f6fa4d05b7433685088ac59b1b488eecb42c781e');

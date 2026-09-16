@@ -40,7 +40,10 @@ describe('Flow content-first cold-read repair', () => {
     for (const term of ['Text Memory（文字记忆）', 'Skill Bundle（技能集合）', 'Agent System（全局行为规则）', 'SD-LoRA（参数更新）']) {
       expect(design).toContain(term);
     }
-    expect(design).toContain('早期 Stage 1 / LoRA-vs-SD-LoRA 对照并没有同时启用这四类状态');
+    expect(design).toContain('早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态');
+    expect(design).toContain('完整系统比较只能回答两套系统总体表现有什么差异');
+    expect(design).toContain('监督微调（SFT）训练配方');
+    expect(design).toContain('native harness：各自负责提示、历史与动作解析');
   });
 
   it('uses a shared-axis table for the attribution comparison rather than two equal-weight cards', () => {

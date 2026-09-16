@@ -8,12 +8,13 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
   it('starts the page from motivation and OpenEvo position before the reusable mechanism slide', () => {
     for (const phrase of [
       'SD-LoRA 用筛选后的成功轨迹训练候选 LoRA 参数',
-      '一次 WebShop 成功先只是一条任务轨迹',
-      '训练完候选参数以后还有一步',
+      '一次 WebShop（网页购物任务）成功先只是一条任务轨迹',
+      '候选参数不等于能力一定提升',
+      '训练出候选参数，不等于下一轮已经用了它',
       'SD-LoRA 在本轮任务结束后、下一轮开始前更新 LoRA',
       '普通 LoRA',
       'Scalable Decoupled LoRA',
-      '本页把当前基线称为 “Vanilla SD-LoRA”',
+      '本页把没有加入后续加速变体的当前基线称为 “Vanilla SD-LoRA”',
     ]) expect(mechanism).toContain(phrase);
 
     const motivation = mechanism.indexOf('SD-LoRA 用筛选后的成功轨迹训练候选 LoRA 参数');

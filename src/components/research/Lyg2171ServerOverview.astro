@@ -111,23 +111,23 @@ const gpuFacts = [
       <span>02</span>
       <div><h2>{t('实验收尾归档', 'Campaign closeout')}</h2></div>
     </div>
-    <p class="section-lede">{t('实验跑完以后，不应该只留下一个越来越大的目录。收尾的目标是让另一个 Agent 不看聊天，也能知道每个重要产物是什么、从哪里来、远端哪一份是 canonical copy、怎样恢复。', 'A completed experiment should not remain merely as an ever-growing directory. Closeout should let another Agent identify every meaningful artifact, its origin, canonical remote copy, and restore path without relying on chat history.')}</p>
+    <p class="section-lede">{t('实验跑完以后，不应该只留下一个越来越大的目录。收尾的目标是让另一个 Agent 不看聊天，也能知道每个重要产物是什么、从哪里来、哪一份远端副本是正式归档版本（canonical copy）、怎样恢复。', 'A completed experiment should not remain merely as an ever-growing directory. Closeout should let another Agent identify every meaningful artifact, its origin, canonical remote copy, and restore path without relying on chat history.')}</p>
 
     <figure class="lifecycle-flow" aria-labelledby="lifecycle-caption">
       <ol>
-        <li><span>1</span><strong>Inventory</strong><small>{t('盘点与 ownership', 'inventory and ownership')}</small></li>
-        <li><span>2</span><strong>Passport</strong><small>{t('身份、SHA、科学角色', 'identity, SHA, scientific role')}</small></li>
-        <li><span>3</span><strong>Archive</strong><small>{t('GitHub / HF / GHCR', 'GitHub / HF / GHCR')}</small></li>
-        <li><span>4</span><strong>Readback</strong><small>{t('fresh read / restore 验证', 'fresh read / restore proof')}</small></li>
-        <li><span>5</span><strong>Lifecycle</strong><small>P0 / P1 / P2 / P3 / X</small></li>
+        <li><span>1</span><strong>{t('盘点', 'Inventory')}</strong><small>{t('确认对象和归属', 'identify objects and ownership')}</small></li>
+        <li><span>2</span><strong>{t('实验身份证', 'Passport')}</strong><small>{t('记录身份、SHA 和科学角色（Passport）', 'record identity, SHA, and scientific role')}</small></li>
+        <li><span>3</span><strong>{t('远端归档', 'Archive')}</strong><small>GitHub / HF / GHCR</small></li>
+        <li><span>4</span><strong>{t('恢复验证', 'Readback')}</strong><small>{t('重新读取或恢复，确认远端可用', 'read or restore again to verify the remote copy')}</small></li>
+        <li><span>5</span><strong>{t('生命周期状态', 'Lifecycle')}</strong><small>{t('内部 P0 / P1 / P2 / P3 / X 只用于审计', 'internal P0 / P1 / P2 / P3 / X are audit labels')}</small></li>
       </ol>
       <figcaption id="lifecycle-caption">{t('到这里仍然没有删除权限。收尾流程最多把对象推进到“可以提出回收建议”的状态。', 'There is still no deletion authority at this point. Closeout may only advance an object to the point where reclaim can be proposed.')}</figcaption>
     </figure>
 
-    <aside class="passport-authority-note">
-      <strong>{t('身份证 / Passport 用哪一版？', 'Which Passport standard is used?')}</strong>
+    <details class="passport-authority-note">
+      <summary>{t('为什么实验身份证必须跟正式规则走？', 'Why must the experiment identity follow formal authority?')}</summary>
       <p>{t('正式 OpenEvo 实验的身份原件始终来自 openevo-experiment current main 的 canonical Experiment Passport / Registry。FROZEN Passport 不原地改写；current-format Run Manifest 必须与 experiment_id + passport_sha256 精确交叉绑定。member manifest、content-addressed DAG 和 lifecycle projection 都只能是绑定到 Passport 的派生层：cache hit 不能自动授权科学复用，远端可恢复也不能自动授权删除。以后 Passport v2 / DAG / lifecycle 正式合入 main 或被当前 campaign authority 采用后，总入口会先解析新 authority 再执行；未合并 Draft 不会自己升级成全项目标准。', 'The identity original for formal OpenEvo experiments always comes from the canonical Experiment Passport / Registry on openevo-experiment current main. A FROZEN Passport is not edited in place; current-format Run Manifests must exactly cross-link experiment_id + passport_sha256. Member manifests, content-addressed DAGs, and lifecycle projections are derived layers bound to the Passport: a cache hit cannot authorize scientific reuse, and remote recoverability cannot authorize deletion. When a Passport v2/DAG/lifecycle successor is formally merged to main or adopted by current campaign authority, the routine entry resolves that newer authority before acting; an unmerged Draft does not promote itself to project-wide standard.')}</p>
-    </aside>
+    </details>
 
     <article class="q17-case">
       <div class="q17-case__header">
@@ -171,7 +171,7 @@ const gpuFacts = [
     <p class="section-lede">{t('空间回收和“已经备份”是两件事。只有 exact manifest 里的对象，经过 ownership、活跃引用和恢复证据复查后，才有资格进入人工批准。', 'Space reclaim and “already backed up” are separate facts. Only objects in an exact manifest, after ownership, live-reference, and recovery checks, may reach human approval.')}</p>
 
     <div class="reclaim-boundary">
-      <div><span>{t('当前规则', 'Current rule')}</span><strong>NOT_AUTHORIZED</strong></div>
+      <div><span>{t('当前规则', 'Current rule')}</span><strong>{t('尚未批准删除', 'Deletion not authorized')}</strong><small>NOT_AUTHORIZED</small></div>
       <p>{t('Proposal 可以精确列出“删什么、多少字节、为什么可恢复”，但它本身没有删除权限。owner 批准的必须是同一版 exact manifest；批准后还要在删除前重新检查 liveness。', 'A proposal can list exactly what would be removed, how many bytes, and why it is recoverable, but the proposal itself has no deletion authority. The owner must approve that exact manifest version, followed by a fresh liveness check immediately before deletion.')}</p>
     </div>
 
@@ -291,7 +291,7 @@ const gpuFacts = [
   .lifecycle-flow strong,.lifecycle-flow small{display:block}.lifecycle-flow strong{margin-top:.4rem;font-size:.82rem}.lifecycle-flow small{margin-top:.18rem;color:var(--muted);font-size:.66rem;line-height:1.45}
   .lifecycle-flow figcaption{margin-top:.65rem;color:var(--muted);font-size:.72rem;line-height:1.55}
 
-  .passport-authority-note{max-width:900px;margin:1rem 0 1.5rem;padding:.85rem 1rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.passport-authority-note strong{font-size:.84rem}.passport-authority-note p{margin:.35rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.7}
+  .passport-authority-note{max-width:900px;margin:1rem 0 1.5rem;padding:.85rem 1rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.passport-authority-note summary{cursor:pointer;font-size:.84rem;font-weight:780}.passport-authority-note p{margin:.35rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.7}
 
   .q17-case{margin-top:1.5rem;padding:1.15rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface)}
   .q17-case__header{display:flex;align-items:end;justify-content:space-between;gap:1rem}
@@ -307,7 +307,7 @@ const gpuFacts = [
   .q17-case__note{margin:.85rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.65}
 
   .reclaim-boundary{display:grid;grid-template-columns:minmax(10rem,.34fr) 1fr;gap:1.2rem;align-items:start;padding:1rem 0;border-block:1px solid var(--line)}
-  .reclaim-boundary>div span,.reclaim-boundary>div strong{display:block}.reclaim-boundary>div span{color:var(--muted);font-size:.7rem}.reclaim-boundary>div strong{margin-top:.2rem;color:var(--accent-deep);font:800 1rem/1.4 var(--font-mono)}
+  .reclaim-boundary>div span,.reclaim-boundary>div strong,.reclaim-boundary>div small{display:block}.reclaim-boundary>div span{color:var(--muted);font-size:.7rem}.reclaim-boundary>div strong{margin-top:.2rem;color:var(--accent-deep);font-weight:800;line-height:1.4}.reclaim-boundary>div small{margin-top:.15rem;color:var(--muted);font:700 .64rem/1.3 var(--font-mono)}
   .reclaim-boundary p{margin:0;color:var(--muted);font-size:.78rem;line-height:1.7}
   .reclaim-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));list-style:none;margin:1rem 0 0;padding:0;border-block:1px solid var(--line)}
   .reclaim-steps li{padding:.9rem;border-right:1px solid var(--line)}.reclaim-steps li:last-child{border-right:0}.reclaim-steps strong,.reclaim-steps span{display:block}.reclaim-steps strong{font-size:.78rem}.reclaim-steps span{margin-top:.25rem;color:var(--muted);font-size:.68rem;line-height:1.55}
