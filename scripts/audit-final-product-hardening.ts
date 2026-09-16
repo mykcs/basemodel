@@ -52,7 +52,7 @@ assert(
 );
 assert(
   'HARDEN-HOME-005',
-  missionHero.includes("t('ALFWorld 与 WebShop 研究', 'ALFWorld and WebShop research')")
+  missionHero.includes("t('SEED 与 OpenEvo：ALFWorld / WebShop 实验', 'SEED vs OpenEvo: ALFWorld / WebShop experiments')")
     && missionHero.includes('Qwen2.5-3B-Instruct')
     && missionHero.includes("title:'SEED / OpenEvo'")
     && missionHero.includes("title:'ALFWorld / WebShop'")

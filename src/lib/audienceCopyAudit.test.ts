@@ -72,7 +72,7 @@ describe('audience copy audit', () => {
     const standard = fs.readFileSync(path.join(root, 'docs/agents/current/audience-centered-technical-copy.md'), 'utf8');
     const auditSource = fs.readFileSync(path.join(root, 'scripts/audit-audience-copy.ts'), 'utf8');
 
-    expect(hero).toContain("t('ALFWorld 与 WebShop 研究', 'ALFWorld and WebShop research')");
+    expect(hero).toContain("t('SEED 与 OpenEvo：ALFWorld / WebShop 实验', 'SEED vs OpenEvo: ALFWorld / WebShop experiments')");
     expect(hero).toContain("t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')");
     expect(hero).toContain("href:p('/research/seed-openevo/study/results/')");
     expect(hero).not.toContain('把“曾经成功”“当前准备好”“现在测得结果”分开');

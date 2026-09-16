@@ -212,7 +212,7 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   requireText('src/pages/_bodies/data-status.astro', 'COPY-I18N-002', 'localizedChangeEventNote(event, locale)', 'Data-status change-event notes must be selected by page locale with an explicit fallback.');
 
   const hero = 'src/components/research/SeedOpenEvoMissionHero.astro';
-  requireText(hero, 'COPY-SUBJECT-TITLE-001', "t('ALFWorld 与 WebShop 研究', 'ALFWorld and WebShop research')", 'The first-screen heading must name the durable research subject rather than an editorial instruction.');
+  requireText(hero, 'COPY-SUBJECT-TITLE-001', "t('SEED 与 OpenEvo：ALFWorld / WebShop 实验', 'SEED vs OpenEvo: ALFWorld / WebShop experiments')", 'The first-screen heading must name the durable research subject rather than an editorial instruction.');
   requireText(hero, 'COPY-STATE-PROVENANCE-001', 'openEvoScientificState.defaultBranchSnapshot.phase', 'The research hero must expose a dated default-branch snapshot instead of freezing one live phase.');
   requireText(hero, 'COPY-STATE-PROVENANCE-001', 'working branch → experiment ledger (campaign) → reconciliation', 'The research hero must route readers to branch-aware live state in plain language with technical terms attached.');
   requireText(hero, 'COPY-STATE-PROVENANCE-001', 'openEvoScientificState.defaultBranchSnapshot.gpuAllocationAllowed', 'The research hero must delegate GPU permission to the dated scientific-state owner rather than static inventory copy.');
