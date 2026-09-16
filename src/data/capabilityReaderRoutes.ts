@@ -101,7 +101,7 @@ export const CAPABILITY_READER_ROUTES = [
   },
   {
     "route": "sd-lora-bounded-acceleration",
-    "coverage": "self-contained",
+    "coverage": "contextualized",
     "owner": "OpenEvoSdLoraBoundedAccelerationStudy",
     "label": { "zh": "Bounded 后续加速：主要时间花在训练", "en": "Bounded acceleration: most time is spent in training" },
     "purpose": {
