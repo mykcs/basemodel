@@ -48,7 +48,7 @@ const risks = zh ? [
     <ol class="sdlora-intro__steps" aria-label={t('候选参数进入下一轮前的三步', 'Three steps before candidate parameters enter the next round')}>
       <li><span>1</span><p><strong>{t('筛训练数据', 'Select training data')}</strong>{t('每个任务只取最早一条通过全部检查的完整成功。', 'Keep only the earliest fully checked success for each task.')}</p></li>
       <li><span>2</span><p><strong>{t('训练候选参数', 'Train candidate parameters')}</strong>{t('在两批任务之间训练新的 LoRA；最多再带回 64 条旧经验。', 'Train the new LoRA between task batches, with up to 64 older examples replayed.')}</p></li>
-      <li><span>3</span><p><strong>{t('再决定是否采用', 'Then decide whether to adopt it')}</strong>{t('当前 DirectApply 是检查通过就进入下一轮；历史 GDR-v1 会先用 16 题小测再选新旧参数。', 'Current DirectApply adopts after checks pass; historical GDR-v1 first used a 16-task probe to choose the new or old parameters.')}</p></li>
+      <li><span>3</span><p><strong>{t('再决定是否采用', 'Then decide whether to adopt it')}</strong>{t('当前做法叫 DirectApply：候选通过共同的工程与数据检查后就进入下一轮，不再用 16 题分数小测二次否决；如果这些共同检查不通过，候选不会被采用。历史本地 GDR-v1 则会在合法候选上再跑固定 16 题，在新参数和上一轮参数之间选择。', 'The current rule is DirectApply: once a candidate passes the shared engineering and data checks, it enters the next round without a second 16-task score probe; a candidate that fails those shared checks is not adopted. Historical local GDR-v1 ran that fixed 16-task probe on an otherwise valid candidate to choose between the new and prior parameters.')}</p></li>
     </ol>
     <p class="sdlora-intro__boundary"><strong>{t('候选参数不等于能力一定提升。', 'Candidate parameters do not imply guaranteed capability gains.')}</strong> {t('这里会回放最多 64 条旧经验，因此不是原论文“完全不回放旧经验”的逐项复刻；保留旧方向也不能证明 WebShop 分数会持续上涨。', 'This implementation replays up to 64 old examples, so it is not an item-for-item reproduction of the paper’s rehearsal-free protocol; preserving old directions also does not prove that WebShop scores will keep rising.')}</p>
   </section>
@@ -76,7 +76,7 @@ const risks = zh ? [
   <OpenEvoVanillaSdLoraSlide locale={locale} />
   <section class="sdlora__section" id="round-inputs" aria-labelledby="round-inputs-title">
     <h2 id="round-inputs-title">{t('一轮开始前，模型带着什么？', 'What does the model carry into a round?')}</h2>
-    <p class="sdlora-round-context">{t('这一步属于持续学习阶段。前一阶段先由 Qwen 完成 WebShop 任务，MiniMax 只在任务结束后回看已保存轨迹；持续学习还可能更新文字记忆（Text Memory）、可复用技能（Skill Bundle）和全局行为规则（Agent System）。这些对象会影响下一轮，但本页只继续追踪 SD-LoRA 参数怎样训练和采用。', 'This belongs to the continual-learning stage. Qwen first completes the WebShop task and MiniMax reviews the saved trace only after the task ends. Continual learning may also update written memory (Text Memory), reusable skills (Skill Bundle), and global behavior rules (Agent System). Those states can affect the next round, but this page continues to track only how SD-LoRA parameters are trained and adopted.')}</p>
+    <p class="sdlora-round-context">{t('这一步属于持续学习阶段。前一阶段先由 Qwen 完成 WebShop 任务，MiniMax 只在任务结束后回看已保存轨迹；持续学习还可能更新文字经验（Text Memory）、可复用技能（Skill Bundle）和全局行为规则（Agent System）。这些对象会影响下一轮，但本页只继续追踪 SD-LoRA 参数怎样训练和采用。', 'This belongs to the continual-learning stage. Qwen first completes the WebShop task and MiniMax reviews the saved trace only after the task ends. Continual learning may also update written experience (Text Memory), reusable skills (Skill Bundle), and global behavior rules (Agent System). Those states can affect the next round, but this page continues to track only how SD-LoRA parameters are trained and adopted.')}</p>
     <div class="sdlora-two-col">
       <div data-ui-audit-item>
         <h3>{t('会直接影响这 128 次尝试的东西', 'What directly shapes these 128 attempts')}</h3>
@@ -201,7 +201,7 @@ const risks = zh ? [
         <nav class="sdlora-next" aria-label={t('相关研究页面', 'Related research pages')}>
           <a href={gdrHref}>{t('下一轮为什么会用新参数或旧参数（DirectApply / 本地 GDR-v1）', 'Why the next round uses new or old parameters (DirectApply / local GDR-v1)')}</a>
           <a href={gatedDeltaHref}>{t('当前 Gated-Delta：学习事件怎样直接写进 LoRA 参数状态', 'Current Gated-Delta: how a learning event writes directly into LoRA parameter state')}</a>
-          <a href={q17Href}>{t('R127 → R128：同一批题上的 checkpoint 变化', 'R127 → R128: checkpoint change on the same tasks')}</a>
+          <a href={q17Href}>{t('R127 → R128：同一批题上的模型参数快照（checkpoint）变化', 'R127 → R128: model-parameter snapshot (checkpoint) change on the same tasks')}</a>
           <a href={mechanismHref}>{t('Mechanism-1.0：进一步做参数因果干预', 'Mechanism-1.0: causal parameter interventions')}</a>
         </nav>
       </div>

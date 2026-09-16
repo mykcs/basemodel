@@ -55,21 +55,9 @@ const gpuFacts = [
       <div><dt>{t('可用', 'Available')}</dt><dd>≈ 0.99 TiB</dd></div>
     </dl>
 
-    <p class="server-hero__boundary"><strong>{t('先归档：把实验产物复制到远端，再重新读取或下载，确认真的能恢复；这一步不删除本地文件。', 'Archive first: copy experiment artifacts to a remote, then read or download them again to prove they can be restored; this does not delete the local files.')}</strong> {t('回收才是删除本地副本。即使已经验证能恢复，任何删除仍要负责人单独批准同一版精确清单；把私有数据改成公开也必须单独批准。', 'Reclaim is the separate act of deleting a local copy. Even after restore has been verified, any deletion still needs separate approval of the same exact list, and making private data public also needs separate approval.')}</p>
+    <p class="server-hero__boundary"><strong>{t('先归档，但“上传成功”还不算可恢复：必须记录不可变的远端版本，再重新读取或下载，并核对文件列表、大小和身份 / 摘要；模型或适配器还要做最小重新加载。', 'Archive first, but an upload success is not recovery proof: record an immutable remote revision, then freshly read or download it and verify file lists, sizes, and identity/digests; models or adapters also need a minimum reload.')}</strong> {t('只有这些恢复检查通过后，产物才算“可恢复”；这仍不等于“可删除”。删除必须由对象 / 服务器负责人对同一版精确回收清单明确批准，并在删除前重新检查是否仍被使用；把私有数据改成公开也必须单独批准。', 'Only after those recovery checks pass is the artifact recoverable; recoverable still does not mean deletable. The artifact/server owner must explicitly approve the same exact reclaim manifest, followed by a fresh liveness check before deletion; making private data public also needs separate approval.')}</p>
 
   </header>
-
-  <aside class="routine-entry" aria-label={t('例行维护入口', 'Routine maintenance entry')}>
-      <div class="routine-entry__copy">
-        <span>{t('按上面的状态继续', 'Continue from the state above')}</span>
-        <strong>{t('下一步：例行维护 · 只读检查 → 归档并验证恢复 → 生成回收清单', 'Routine maintenance: read-only checks → archive and verify restore → generate a reclaim list')}</strong>
-        <p>{t('只有删除、公开可见性、实验身份变化或归属不清时才停下来请负责人决定。', 'Stop for an owner decision only on deletion, visibility, experiment-identity changes, or unresolved ownership.')}</p>
-      </div>
-      <details class="routine-entry__prompt">
-        <summary>{t('展开可复制的例行维护指令', 'Copy maintenance instructions')}</summary>
-        <pre data-copy-label={t('复制例行服务器维护 Prompt', 'Copy routine-maintenance prompt')}><code>{routinePrompt}</code></pre>
-      </details>
-  </aside>
 
   <nav class="operation-switchboard" aria-label={t('只做其中一个阶段', 'Run one server-artifact stage only')}>
     <a href="#health-scan"><span>01</span><strong>{t('服务器健康扫描', 'Server health scan')}</strong><small>{t('只读看现在有没有压力', 'Read-only current pressure check')}</small></a>
@@ -95,7 +83,7 @@ const gpuFacts = [
       <h3>{t('一次健康扫描应该留下什么', 'What a health scan should leave behind')}</h3>
       <ol>
         <li><strong>{t('空间', 'Storage')}</strong><span>{t('系统磁盘容量（df）、文件数量容量（inode，文件系统能记录多少个文件）与几个已知大型根目录的变化。', 'Filesystem capacity (df), file-count capacity (inode), and bounded changes in known large roots.')}</span></li>
-        <li><strong>{t('活跃引用', 'Live references')}</strong><span>{t('哪些 run、checkpoint、容器挂载或进程仍在用。', 'Which runs, checkpoints, mounts, or processes are still in use.')}</span></li>
+        <li><strong>{t('活跃引用', 'Live references')}</strong><span>{t('哪些实验运行（run）、模型检查点（checkpoint）、运行时容器挂载或进程仍在用。', 'Which experiment runs, model checkpoints, runtime-container mounts, or processes are still in use.')}</span></li>
         <li><strong>{t('资产变化', 'Artifact changes')}</strong><span>{t('新出现的大型产物、实验身份证（Passport）覆盖缺口和待收尾归档。', 'New large outputs, experiment-Passport coverage gaps and closeout backlog.')}</span></li>
       </ol>
     </div>
@@ -106,6 +94,18 @@ const gpuFacts = [
       <pre data-copy-label={t('复制健康扫描 Prompt', 'Copy health-scan prompt')}><code>{healthPrompt}</code></pre>
     </details>
   </section>
+
+  <aside class="routine-entry" aria-label={t('例行维护入口', 'Routine maintenance entry')}>
+      <div class="routine-entry__copy">
+        <span>{t('按上面的状态继续', 'Continue from the state above')}</span>
+        <strong>{t('下一步：例行维护 · 只读检查 → 归档并验证恢复 → 生成回收清单', 'Routine maintenance: read-only checks → archive and verify restore → generate a reclaim list')}</strong>
+        <p>{t('只有删除、公开可见性、实验身份变化或归属不清时才停下来请负责人决定。', 'Stop for an owner decision only on deletion, visibility, experiment-identity changes, or unresolved ownership.')}</p>
+      </div>
+      <details class="routine-entry__prompt">
+        <summary>{t('展开可复制的例行维护指令', 'Copy maintenance instructions')}</summary>
+        <pre data-copy-label={t('复制例行服务器维护 Prompt', 'Copy routine-maintenance prompt')}><code>{routinePrompt}</code></pre>
+      </details>
+  </aside>
 
   <section class="server-section" id="campaign-closeout">
     <div class="section-heading">
@@ -119,7 +119,7 @@ const gpuFacts = [
         <li><span>1</span><strong>{t('盘点', 'Inventory')}</strong><small>{t('确认对象和归属', 'identify objects and ownership')}</small></li>
         <li><span>2</span><strong>{t('实验身份证（Passport）', 'Experiment Passport')}</strong><small>{t('记录实验身份、文件指纹（SHA）和科学角色', 'record experiment identity, file SHA, and scientific role')}</small></li>
         <li><span>3</span><strong>{t('远端归档', 'Archive')}</strong><small>{t('GitHub / Hugging Face / GitHub 容器镜像仓库', 'GitHub / Hugging Face / GitHub Container Registry')}</small></li>
-        <li><span>4</span><strong>{t('恢复验证', 'Readback')}</strong><small>{t('重新读取或恢复，确认远端可用', 'read or restore again to verify the remote copy')}</small></li>
+        <li><span>4</span><strong>{t('恢复验证', 'Readback')}</strong><small>{t('新鲜读取 / 下载并核对远端身份；模型最小重载也要通过', 'fresh read/download, identity check, and minimum model reload')}</small></li>
         <li><span>5</span><strong>{t('生命周期状态（资产现在走到哪一步）', 'Lifecycle status (where the artifact is in the process)')}</strong><small>{t('内部状态码只用于审计，日常阅读不需要记', 'internal lifecycle codes are audit-only; readers do not need to memorize them')}</small></li>
       </ol>
       <figcaption id="lifecycle-caption">{t('到这里仍然没有删除权限。收尾流程最多把对象推进到“可以提出回收建议”的状态。', 'There is still no deletion authority at this point. Closeout may only advance an object to the point where reclaim can be proposed.')}</figcaption>
@@ -176,7 +176,7 @@ const gpuFacts = [
 
     <div class="reclaim-boundary">
       <div><span>{t('当前规则', 'Current rule')}</span><strong>{t('尚未批准删除', 'Deletion not authorized')}</strong><details class="reclaim-audit-code"><summary>{t('审计状态码', 'Audit status code')}</summary><code>NOT_AUTHORIZED</code></details></div>
-      <p>{t('回收提案可以精确列出“删什么、多少字节、为什么可恢复”，但它本身没有删除权限。负责人批准的必须是同一版精确清单；批准后还要在删除前重新检查对象是否仍被使用。', 'A proposal can list exactly what would be removed, how many bytes, and why it is recoverable, but the proposal itself has no deletion authority. The owner must approve that exact manifest version, followed by a fresh liveness check immediately before deletion.')}</p>
+      <p>{t('回收提案可以精确列出“删什么、多少字节、为什么可恢复”，但它本身没有删除权限。批准人是对象 / 服务器负责人：必须在当前 zju-server 删除安全规则下明确批准同一版精确清单；这个公开网页没有一键批准入口。批准后还要在删除前重新检查对象是否仍被使用。', 'A proposal can list exactly what would be removed, how many bytes, and why it is recoverable, but the proposal itself has no deletion authority. The artifact/server owner must explicitly approve that exact manifest under the current zju-server deletion-safety policy; this public page has no one-click approval control. A fresh liveness check still runs immediately before deletion.')}</p>
     </div>
 
     <ol class="reclaim-steps">
