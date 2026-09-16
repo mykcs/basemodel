@@ -11,11 +11,12 @@ const design = read('src/components/research/SeedOpenEvoTrainingDesignOverview.a
 describe('Flow content-first cold-read repair', () => {
   it('defines the four named research objects at first use while preserving the fairness boundary', () => {
     for (const phrase of [
-      'SEED 是把任务后的成功经验继续写进模型参数的学习方法',
-      'OpenEvo 是先封存任务证据',
+      'SEED 与 OpenEvo：同模型同任务的学习对照实验',
+      'SEED 把任务后的成功经验写回模型参数',
+      'OpenEvo 先保存任务证据',
       'ALFWorld（文本具身任务）',
       'WebShop（网页购物任务）',
-      '条件没对齐，分数差异就不能归因于方法',
+      '完整系统对照只能比较总体表现',
     ]) expect(hero).toContain(phrase);
   });
 

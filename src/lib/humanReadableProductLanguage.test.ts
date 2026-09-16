@@ -30,11 +30,11 @@ describe('human-readable product language contract', () => {
   });
 
   it('keeps the first-screen subject concrete in both locales without turning instructions into the H1', () => {
-    expect(missionHero).toContain("t('SEED 与 OpenEvo 的 ALFWorld / WebShop 对照实验', 'SEED and OpenEvo on matched ALFWorld / WebShop tasks')");
+    expect(missionHero).toContain("t('SEED 与 OpenEvo：同模型同任务的学习对照实验', 'SEED and OpenEvo: a same-model, same-task learning comparison')");
     expect(missionHero).toContain('mission-hero__boundary');
-    expect(missionHero).toContain('本页定义实验怎么比；这里不发布结果');
-    expect(missionHero).toContain('下面用 WebShop 展开两阶段训练');
-    expect(missionHero).toContain('ALFWorld 有自己的交互与评分');
+    expect(missionHero).toContain('这里只定义“怎么比”，不发布结果');
+    expect(missionHero).toContain('ALFWorld 与 WebShop 的分数不能混比');
+    expect(missionHero).toContain('先看研究对象与比较条件');
     expect(missionHero).not.toContain('mission-hero__frame research-fact-band');
     expect(missionHero).toContain("t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')");
     expect(missionHero).toContain("href={p('/research/seed-openevo/study/briefing/')}");

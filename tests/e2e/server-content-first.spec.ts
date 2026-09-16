@@ -10,7 +10,7 @@ for (const viewport of [
     await page.setViewportSize(viewport);
     await page.goto(route, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.locator('h1')).toHaveText('项目持久盘可用空间约 0.99 TiB');
+    await expect(page.locator('h1')).toHaveText('实验文件磁盘：约 0.99 TiB 可用');
     await expect(page.locator('.server-hero__status')).toBeVisible();
     await expect(page.locator('.server-hero__facts')).toBeVisible();
     await expect(page.locator('.server-hero__boundary')).toBeVisible();
@@ -39,7 +39,7 @@ for (const viewport of [
     const visibleHeadings = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((nodes) => nodes
       .filter((node) => { const rect = node.getBoundingClientRect(); return rect.top < innerHeight && rect.bottom > 0; })
       .map((node) => node.textContent?.trim()));
-    expect(visibleHeadings).toEqual(['项目持久盘可用空间约 0.99 TiB']);
+    expect(visibleHeadings).toEqual(['实验文件磁盘：约 0.99 TiB 可用']);
   });
 }
 
