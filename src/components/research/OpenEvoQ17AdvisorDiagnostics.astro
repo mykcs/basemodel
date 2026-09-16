@@ -25,7 +25,7 @@ const rows = [
   <header class="result-hero">
     <p class="eyebrow">{t('局部诊断 · 2026-09-11', 'Local diagnostic · 2026-09-11')}</p>
     <h1 id="advisor-diagnostics-title">{t('同样 32 道题：后一版低 4.18 分，但差异可能为零', 'Same 32 tasks: the later state was 4.18 points lower, but the true difference may be zero')}</h1>
-    <p class="lede">{t('我们把同一套持续学习实验里相邻的两个模型状态固定在同样 32 题上重测：进入第 127 轮前的状态得 63.58，进入第 128 轮前的状态得 59.41。下面简称 R127 / R128。原训练曲线的 76.1 → 48.9 来自不同题，不能直接横比。', 'We retested two adjacent states from the same continual-learning experiment on the same 32 tasks: the state entering round 127 scored 63.58 and the state entering round 128 scored 59.41. They are abbreviated below as R127/R128. The live 76.1 → 48.9 scores came from different tasks and are not directly comparable.')}</p>
+    <p class="lede">{t('我们把同一套持续学习实验里相邻的两个模型状态固定在同样 32 题上重测：第 127 轮模型状态（R127）得 63.58，第 128 轮模型状态（R128）得 59.41。原训练曲线的 76.1 → 48.9 来自不同题，不能直接横比。', 'We retested two adjacent states from the same continual-learning experiment on the same 32 tasks: the round-127 model state (R127) scored 63.58 and the round-128 model state (R128) scored 59.41. The live 76.1 → 48.9 scores came from different tasks and are not directly comparable.')}</p>
     <p class="result-hero__boundary"><strong>{t('95% 统计范围是 −17.13 ～ +8.00，跨过 0，也就是差异可能为零。', 'The 95% interval is −17.13 to +8.00; it crosses zero, so the true difference may be zero.')}</strong>{t('这是局部诊断，不是最终测试：32 题来自训练 / 开发范围、看结果前已固定，与锁定的最终 128 题不重合；不能外推到后续训练或最终结果。', 'This is a local diagnostic, not the final evaluation: the 32 tasks came from the train/development range, were frozen before results were inspected, and do not overlap with the locked final 128 tasks. The result cannot be extrapolated to later training or the final outcome.')}</p>
   </header>
 
@@ -36,7 +36,7 @@ const rows = [
       <div><dt>{t('95% 范围 · 包含无差别', '95% interval · includes no difference')}</dt><dd>−17.13 ～ +8.00</dd></div>
     </dl>
 
-    <p class="result-hero__method">{t('方法背景：第一阶段先让 Qwen 做 WebShop 任务，并在任务结束后复盘保存的交互记录；第二阶段把文字经验、可复用技能、行为规则和少量适配参数滚动带到下一轮。这里没有再用一小组题挑新旧参数：候选参数通过共同的工程与数据检查后，下一轮直接使用。', 'Method context: first, Qwen completes WebShop tasks and the saved interaction traces are reviewed after each task. The next stage rolls written experience, reusable skills, behavior rules, and a small set of adapter parameters into the following round. There is no extra small-task probe choosing old versus new parameters here: after shared engineering/data checks pass, the candidate is used in the next round.')}</p>
+    <p class="result-hero__method">{t('方法背景：第一阶段先让 Qwen 做 WebShop 任务，MiniMax 只在任务结束后回看保存的交互记录；OPSD 是第一阶段唯一改模型参数的初始训练。第二阶段每轮把四类学习结果带到下一轮：Text Memory（文字经验）、Skill（可复用技能）、Agent System（行为规则）和 SD-LoRA（只训练少量适配参数）。这条 DirectApply / No-GDR 线取消旧 GDR-v1 的 16 题新旧参数小测：候选参数通过共同的工程与数据检查后，下一轮直接使用。', 'Method context: first, Qwen completes WebShop tasks; MiniMax only reviews the saved interaction traces after the tasks, and OPSD is the Stage-1 bootstrap that changes model parameters. Each later round carries four learning outputs forward: Text Memory (written experience), Skill (reusable skills), Agent System (behavior rules), and SD-LoRA (a small trainable adapter). This DirectApply / No-GDR line removed the old GDR-v1 16-task old-vs-new probe: after shared engineering/data checks pass, the candidate is used in the next round.')}</p>
 
     <div class="table-wrap" role="region" aria-label={t('R127 与 R128 同题重测结果', 'R127 versus R128 on the same tasks')} tabindex="0">
       <table>

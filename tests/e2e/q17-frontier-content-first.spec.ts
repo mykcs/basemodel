@@ -7,10 +7,10 @@ test('focus result keeps the comparable result and scientific boundary in the fi
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('h1')).toContainText('同样 32 道题：后一版低 4.18 分，但差异可能为零');
   await expect(page.locator('.result-hero > .eyebrow')).toContainText('局部诊断 · 2026-09-11');
-  await expect(page.locator('.result-hero__method')).toContainText('第一阶段先让 Qwen 做 WebShop 任务');
-  await expect(page.locator('.result-hero__method')).toContainText('第二阶段把文字经验、可复用技能、行为规则和少量适配参数滚动带到下一轮');
+  await expect(page.locator('.result-hero__method')).toContainText('第一阶段先让 Qwen 做 WebShop 任务，MiniMax 只在任务结束后回看保存的交互记录');
+  await expect(page.locator('.result-hero__method')).toContainText('第二阶段每轮把四类学习结果带到下一轮');
   await expect(page.locator('.result-hero__method')).toContainText('候选参数通过共同的工程与数据检查后，下一轮直接使用');
-  await expect(page.locator('.result-hero__method')).toContainText('没有再用一小组题挑新旧参数');
+  await expect(page.locator('.result-hero__method')).toContainText('取消旧 GDR-v1 的 16 题新旧参数小测');
   await expect(page.locator('.result-hero__method')).toContainText('文字经验');
   await expect(page.locator('.result-hero__boundary')).toContainText('95% 统计范围是 −17.13 ～ +8.00，跨过 0');
   await expect(page.locator('.same-task-facts > div')).toHaveCount(3);

@@ -27,11 +27,11 @@ describe('Q17 advisor diagnostics publication', () => {
     const component = read('src/components/research/OpenEvoQ17AdvisorDiagnostics.astro');
     expect(component).toContain('同样 32 道题：后一版低 4.18 分，但差异可能为零');
     expect(component).toContain('Same 32 tasks: the later state was 4.18 points lower, but the true difference may be zero');
-    expect(component).toContain('第一阶段先让 Qwen 做 WebShop 任务');
-    expect(component).toContain('第二阶段把文字经验、可复用技能、行为规则和少量适配参数滚动带到下一轮');
+    expect(component).toContain('第一阶段先让 Qwen 做 WebShop 任务，MiniMax 只在任务结束后回看保存的交互记录');
+    expect(component).toContain('第二阶段每轮把四类学习结果带到下一轮');
     expect(component).toContain('候选参数通过共同的工程与数据检查后，下一轮直接使用');
-    expect(component).toContain('没有再用一小组题挑新旧参数');
-    expect(component).toContain('进入第 127 轮前的状态得 63.58，进入第 128 轮前的状态得 59.41。下面简称 R127 / R128');
+    expect(component).toContain('取消旧 GDR-v1 的 16 题新旧参数小测');
+    expect(component).toContain('第 127 轮模型状态（R127）得 63.58，第 128 轮模型状态（R128）得 59.41');
     expect(component).toContain('95% 统计范围是 −17.13 ～ +8.00，跨过 0，也就是差异可能为零');
     expect(component).toContain('DirectApply（候选更新检查通过后直接采用）');
     expect(component).not.toContain('min-height:calc(100svh - 6rem)');
