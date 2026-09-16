@@ -21,13 +21,13 @@ const flowPages = [
   { id: 'hub', label: t('流程总览', 'Flow overview'), href: p('/research/seed-openevo/flow/') },
   { id: 'training-design', label: t('训练设计', 'Training design'), href: p('/research/seed-openevo/flow/#training-design') },
   { id: 'server', label: t('实验服务器', 'Experiment server'), href: p('/research/seed-openevo/flow/server/') },
-  { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/flow/seed/') },
-  { id: 'openevo', label: 'OpenEVO', href: p('/research/seed-openevo/flow/openevo/') },
+  { id: 'seed', label: t('SEED 方法', 'SEED method'), href: p('/research/seed-openevo/flow/seed/') },
+  { id: 'openevo', label: t('OpenEVO 方法', 'OpenEVO method'), href: p('/research/seed-openevo/flow/openevo/') },
   { id: 'benchmarks', label: t('环境总览', 'Environment overview'), href: p('/research/seed-openevo/flow/benchmarks/') },
-  { id: 'webshop', label: 'WebShop', href: p('/research/seed-openevo/flow/webshop/') },
-  { id: 'alfworld', label: 'ALFWorld', href: p('/research/seed-openevo/flow/alfworld/') },
+  { id: 'webshop', label: t('WebShop 环境', 'WebShop environment'), href: p('/research/seed-openevo/flow/webshop/') },
+  { id: 'alfworld', label: t('ALFWorld 环境', 'ALFWorld environment'), href: p('/research/seed-openevo/flow/alfworld/') },
   { id: 'loops', label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/flow/loops/') },
-  { id: 'sdlora', label: 'SD-LoRA', href: p('/research/seed-openevo/flow/sd-lora/') },
+  { id: 'sdlora', label: t('SD-LoRA 参数机制', 'SD-LoRA parameters'), href: p('/research/seed-openevo/flow/sd-lora/') },
 ] as const;
 
 const studyPages = [
@@ -79,12 +79,10 @@ const identity = currentTrack === 'flow'
     grid-template-columns:auto minmax(0,1fr);
     gap:.55rem;
     align-items:center;
-    margin:1rem 0 2rem;
-    padding:.45rem;
-    border:1px solid var(--line);
-    border-radius:var(--radius-feature);
-    background:color-mix(in srgb,var(--surface) 92%,transparent);
-    backdrop-filter:blur(16px);
+    margin:.65rem 0 1.55rem;
+    padding:.28rem 0;
+    border-block:1px solid var(--line);
+    background:color-mix(in srgb,var(--surface) 96%,transparent);
   }
   .research-navigation__identity{
     display:flex;
@@ -144,15 +142,16 @@ const identity = currentTrack === 'flow'
     outline-offset:2px;
   }
   .research-navigation__links a[aria-current='page']{
-    color:var(--accent-on-fill);
-    background:var(--accent-deep);
+    color:var(--accent-deep);
+    background:transparent;
+    box-shadow:inset 0 -2px var(--accent-deep);
   }
   @media(max-width:720px){
     .research-navigation{
       grid-template-columns:minmax(0,auto) minmax(0,1fr);
       gap:.22rem;
       margin:0;
-      padding:.3rem;
+      padding:.18rem 0;
     }
     .research-navigation__identity{
       min-width:0;

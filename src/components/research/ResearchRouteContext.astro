@@ -29,9 +29,12 @@ const compactPurpose = route === 'first-run'
       : route === 'sd-lora-scaling'
         ? (zh ? 'DirectApply 派生分析：SD-LoRA 计算扩展性。' : 'DirectApply analysis: SD-LoRA compute scaling.')
         : route === 'q17-directapply-frontier'
-          ? (zh ? '这条 1.7B 实验线把通过工程与数据检查的候选更新直接带入下一轮，不经过额外 GDR 小测；本页用同一组 32 题重测两个连续训练状态，只做局部诊断，不是最终测试。' : 'This 1.7B line carries candidates that pass engineering and data checks directly into the next round without an extra GDR probe. This page retests two consecutive training states on the same 32 tasks; it is a local diagnostic, not the final evaluation.')
+          ? (zh ? '这条 1.7B 实验线在候选更新通过工程与数据检查后直接带入下一轮（DirectApply，不再做额外 GDR 小测）。本页后来把进入第 127 / 128 轮的两个模型状态拿到同一组 32 题上重测；这是局部诊断，不是最终测试。' : 'This 1.7B line carries candidates that pass engineering and data checks directly into the next round (DirectApply, with no extra GDR probe). This page later retests the model states entering rounds 127 and 128 on the same 32 tasks; it is a local diagnostic, not the final evaluation.')
           : record.purpose[locale];
 const purpose = isExperimentHub && experiment && !compact ? experiment.motivation[locale] : (compact ? compactPurpose : record.purpose[locale]);
+const contextExperimentTitle = route === 'q17-directapply-frontier' && compact
+  ? (zh ? '1.7B · 候选更新检查通过后直接带入下一轮（DirectApply）' : '1.7B · adopt checked candidate updates directly (DirectApply)')
+  : experiment?.title[locale];
 const contextRecordLabel = route === 'q17-directapply-frontier' && compact
   ? (zh ? '相邻两个模型状态 · 32 题同题诊断' : 'Two adjacent model states · 32-task same-task diagnostic')
   : record.label[locale];
@@ -53,7 +56,7 @@ const hubEvidence = experiment
         {isExperimentHub ? (
           <strong>{experiment.title[locale]}</strong>
         ) : (
-          <><a href={localePath(locale, experiment.primaryHref)}>{experiment.title[locale]}</a><span aria-hidden="true"> / </span><strong>{contextRecordLabel}</strong></>
+          <><a href={localePath(locale, experiment.primaryHref)}>{contextExperimentTitle}</a><span aria-hidden="true"> / </span><strong>{contextRecordLabel}</strong></>
         )}
       </>
     ) : (

@@ -11,8 +11,8 @@ const design = read('src/components/research/SeedOpenEvoTrainingDesignOverview.a
 describe('Flow content-first cold-read repair', () => {
   it('defines the four named research objects at first use while preserving the fairness boundary', () => {
     for (const phrase of [
-      'SEED 把任务后的成功经验继续写进模型参数',
-      'OpenEvo 先封存任务证据',
+      'SEED 是把任务后的成功经验继续写进模型参数的学习方法',
+      'OpenEvo 是先封存任务证据',
       'ALFWorld（文本具身任务）',
       'WebShop（网页购物任务）',
       '条件没对齐，分数差异就不能归因于方法',
@@ -21,7 +21,7 @@ describe('Flow content-first cold-read repair', () => {
 
   it('explains Stage 1 in ordinary language instead of requiring analyzer or step-loop jargon', () => {
     expect(hub).toContain('下面用 WebShop 展开两阶段');
-    expect(hub).toContain('外部分析模型才读取已保存的轨迹做复盘');
+    expect(hub).toContain('MiniMax 只回看已经保存的轨迹，不替 Qwen 选动作');
     expect(hub).toContain('不自动代表 ALFWorld 使用同一交互流程');
     expect(hub).not.toContain('外部 analyzer 才能复盘');
     expect(hub).not.toContain('step loop');
@@ -47,7 +47,8 @@ describe('Flow content-first cold-read repair', () => {
     expect(design).toContain('早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态');
     expect(design).toContain('完整系统比较只能回答两套系统总体表现有什么差异');
     expect(design).toContain('监督微调（SFT）训练配方');
-    expect(design).toContain('native harness：各自负责提示、历史与动作解析');
+    expect(design).toContain('各自的提示、历史与动作解析层');
+    expect(design).not.toContain('native harness：');
   });
 
   it('uses a shared-axis table for the attribution comparison rather than two equal-weight cards', () => {

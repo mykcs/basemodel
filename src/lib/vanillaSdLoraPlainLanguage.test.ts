@@ -10,7 +10,7 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
       'SD-LoRA：成功轨迹怎样变成候选 LoRA 参数',
       'LoRA 是冻结基础模型、只训练少量低秩适配参数的方法',
       'WebShop（网页购物任务）',
-      '训练出候选参数，不等于下一轮已经采用它',
+      '训练候选和下一轮采用，是两件事',
       '候选参数不等于能力一定提升',
       '普通 LoRA 与 SD-LoRA 的参数区别',
       'Scalable Decoupled LoRA',

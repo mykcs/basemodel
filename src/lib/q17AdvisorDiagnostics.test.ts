@@ -25,10 +25,10 @@ describe('Q17 advisor diagnostics publication', () => {
 
   it('keeps the result and boundary visible in both language routes', () => {
     const component = read('src/components/research/OpenEvoQ17AdvisorDiagnostics.astro');
-    expect(component).toContain('相邻两个模型状态同做 32 题：63.58 分与 59.41 分');
-    expect(component).toContain('Two adjacent model states on the same 32 tasks: 63.58 and 59.41');
-    expect(component).toContain('平均分差的 95% 统计范围是 −17.13 ～ +8.00');
-    expect(component).toContain('候选更新通过工程与数据检查后直接带入下一轮');
+    expect(component).toContain('同一组 32 题重测两个相邻模型状态：63.58 与 59.41');
+    expect(component).toContain('Same 32-task retest of two adjacent model states: 63.58 and 59.41');
+    expect(component).toContain('95% 统计范围 −17.13 ～ +8.00，包含“没有差别”');
+    expect(component).toContain('DirectApply（候选更新检查通过后直接采用）');
     expect(component).toContain('/q17-directapply-analysis/');
     expect(component).toContain('查看 DirectApply 160 轮完整曲线与冻结 final');
     expect(component).not.toContain('我们现在只敢说到这里');

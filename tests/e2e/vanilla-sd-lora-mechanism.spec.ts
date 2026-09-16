@@ -8,8 +8,8 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
   await expect(body).toBeVisible();
   const navigation = page.locator('[data-research-navigation][data-research-track="flow"]');
   await expect(navigation).toBeVisible();
-  await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('aria-current', 'page');
-  await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('href', route);
+  await expect(navigation.getByRole('link', { name: 'SD-LoRA 参数机制', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(navigation.getByRole('link', { name: 'SD-LoRA 参数机制', exact: true })).toHaveAttribute('href', route);
   const series = page.locator('[data-sdlora-series-nav]');
   const vanillaSeries = series.locator(`a[href="${route}"]`).filter({ hasText: 'Vanilla SD-LoRA 是怎么学习的？' });
   await expect(vanillaSeries).toHaveCount(1);

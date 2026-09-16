@@ -10,7 +10,7 @@ for (const viewport of [
     await page.setViewportSize(viewport);
     await page.goto(route, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.locator('h1')).toHaveText('项目持久盘还剩约 0.99 TiB');
+    await expect(page.locator('h1')).toHaveText('项目持久盘可用空间约 0.99 TiB');
     await expect(page.locator('.server-hero__status')).toBeVisible();
     await expect(page.locator('.server-hero__facts')).toBeVisible();
     await expect(page.locator('.server-hero__boundary')).toBeVisible();
@@ -39,7 +39,7 @@ for (const viewport of [
     const visibleHeadings = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((nodes) => nodes
       .filter((node) => { const rect = node.getBoundingClientRect(); return rect.top < innerHeight && rect.bottom > 0; })
       .map((node) => node.textContent?.trim()));
-    expect(visibleHeadings).toEqual(['项目持久盘还剩约 0.99 TiB']);
+    expect(visibleHeadings).toEqual(['项目持久盘可用空间约 0.99 TiB']);
   });
 }
 
@@ -63,7 +63,7 @@ for (const theme of ['light', 'dark'] as const) {
     await expect(page.locator('.server-hero__status')).toBeVisible();
     await expect(page.locator('.server-hero__boundary')).toContainText('任何删除都要负责人单独批准同一版清单');
     await expect(page.locator('#reclaim-proposal')).toContainText('NOT_AUTHORIZED');
-    await expect(page.locator('.server-hero__context')).toContainText('不是实时监控');
+    await expect(page.locator('.server-hero__context')).toContainText('非实时数据');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(2);
   });

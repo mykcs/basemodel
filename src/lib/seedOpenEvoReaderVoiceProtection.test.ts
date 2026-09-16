@@ -135,7 +135,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     }
     expect(resultsQuestions).toContain('class="supporting-context"');
     expect(nextSteps).toContain('<details class="step-detail">');
-    expect(researchHub).toContain('适配器（adapter）');
+    expect(researchHub).toContain('LoRA 适配器');
     expect(researchHub).toContain('备用动作（fallback）');
     expect(researchHub).toContain('结束原因（termination）');
   });

@@ -45,9 +45,9 @@ const gpuFacts = [
 ---
 <main class="server-overview" data-locale={locale} data-storage-responsibility-view="artifact-lifecycle-v3">
   <header class="server-hero" data-reader-primary>
-    <p class="server-hero__context">{t('2026-09-15 22:10（UTC+8）· 静态快照，不是实时监控', '2026-09-15 22:10 (UTC+8) · static snapshot, not live monitoring')}</p>
-    <h1>{t('项目持久盘还剩约 0.99 TiB', 'About 0.99 TiB remains on the project persistent disk')}</h1>
-    <p class="server-hero__status">{t('按这次静态容量快照，目前没有紧急扩容信号；这不代表未来不会增长。先归档大型实验产物并验证可恢复；需要回收空间时，只生成写清对象、字节数和恢复证据的清单，不自动删除。', 'There is no urgent expansion signal. First archive large experiment outputs and verify they can be restored. If space must be reclaimed, generate an exact list only; nothing is deleted automatically.')}</p>
+    <p class="server-hero__context">{t('容量快照 · 2026-09-15 22:10（UTC+8）· 非实时数据', 'Storage snapshot · 2026-09-15 22:10 (UTC+8) · not live data')}</p>
+    <h1>{t('项目持久盘可用空间约 0.99 TiB', 'About 0.99 TiB is available on the project persistent disk')}</h1>
+    <p class="server-hero__status">{t('这次快照显示总容量 2.0 TiB、已用约 1.01 TiB（51%）；只根据这次容量观测，目前没有紧急扩容信号。下一步先归档大型实验产物并验证可恢复；需要回收空间时，只生成写清对象、字节数和恢复证据的清单，不自动删除。', 'This snapshot shows 2.0 TiB total and about 1.01 TiB used (51%); based on this capacity observation alone, there is no urgent expansion signal. First archive large experiment outputs and verify they can be restored. If space must be reclaimed, generate an exact list only; nothing is deleted automatically.')}</p>
 
     <dl class="server-hero__facts research-fact-band" style="--research-fact-columns:3" aria-label={t('当前文件系统快照', 'Current filesystem snapshot')}>
       <div><dt>{t('总容量', 'Capacity')}</dt><dd>2.0 TiB</dd></div>
@@ -59,7 +59,7 @@ const gpuFacts = [
 
     <div class="routine-entry">
       <div class="routine-entry__copy">
-        <span>{t('默认操作', 'Default operation')}</span>
+        <span>{t('建议下一步', 'Suggested next step')}</span>
         <strong>{t('运行一次例行维护', 'Run one routine maintenance pass')}</strong>
         <p>{t('先只读检查空间和活跃引用；再归档已完成实验并验证恢复；最后只生成回收清单。删除、公开可见性、实验身份或归属不清时才停下来请你决定。', 'First check storage and live references read-only, then archive completed experiments and verify restore; finally generate a reclaim list only. Stop for an owner decision on deletion, visibility, experiment identity, or unresolved ownership.')}</p>
       </div>
@@ -87,7 +87,7 @@ const gpuFacts = [
       <div><dt>{t('持久文件系统', 'Persistent filesystem')}</dt><dd>2.0 TiB</dd><p>{t('项目工作区所在文件系统', 'Filesystem backing the project workspace')}</p></div>
       <div><dt>{t('已用', 'Used')}</dt><dd>≈ 1.01 TiB</dd><p>df · 51%</p></div>
       <div class="snapshot-facts__primary"><dt>{t('可用', 'Available')}</dt><dd>≈ 0.99 TiB</dd><p>1,087,523,598,336 bytes</p></div>
-      <div><dt>inode</dt><dd>41%</dd><p>{t('约 1,049 万可用', 'about 10.49M available')}</p></div>
+      <div><dt>{t('文件数量容量（inode）', 'File-count capacity (inode)')}</dt><dd>41%</dd><p>{t('约 1,049 万可用', 'about 10.49M available')}</p></div>
     </dl>
 
     <div class="operation-explainer">
@@ -240,16 +240,16 @@ const gpuFacts = [
 
 <style>
   .server-overview{color:var(--ink)}
-  .server-hero{max-width:960px;padding:1.15rem 0 2.6rem}
-  .server-hero__context{margin:0 0 .55rem;color:var(--muted);font-size:.78rem;font-weight:760}
+  .server-hero{max-width:960px;padding:1.05rem 0 2.45rem}
+  .server-hero__context{max-width:max-content;margin:0 0 .65rem;padding:.35rem 0;border-bottom:1px solid var(--line);color:var(--ink);font-size:.86rem;font-weight:780}
   .server-hero h1{max-width:18ch;margin:0 0 .72rem;font-size:clamp(2.1rem,4.4vw,3.8rem);line-height:1;letter-spacing:-.05em}
   .server-hero__status{max-width:74ch;margin:0;color:var(--ink);font-size:clamp(1rem,1.6vw,1.16rem);font-weight:700;line-height:1.58}
   .server-hero__facts{max-width:860px;margin:.85rem 0 0}
   .server-hero__boundary{max-width:76ch;margin:.65rem 0 0;color:var(--muted);font-size:.82rem;line-height:1.65}
 
-  .routine-entry{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(17rem,.85fr);gap:1rem;align-items:center;margin-top:.8rem;padding:.8rem 0;border-block:1px solid var(--line)}
-  .routine-entry__copy span,.routine-entry__copy strong{display:block}.routine-entry__copy span{color:var(--accent-deep);font:800 .66rem/1.3 var(--font-mono)}.routine-entry__copy strong{margin-top:.25rem;font-size:1rem}.routine-entry__copy p{max-width:58ch;margin:.35rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.6}
-  .routine-entry__prompt{min-width:0;padding:.75rem .85rem;border-left:2px solid var(--accent-deep)}.routine-entry__prompt summary{cursor:pointer;font-size:.8rem;font-weight:780}.routine-entry__prompt pre{max-height:22rem;overflow:auto;margin:.65rem 0 0;padding:.8rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);white-space:pre-wrap;overflow-wrap:anywhere;font-size:.69rem;line-height:1.6}.routine-entry__prompt code{font:inherit;color:inherit}
+  .routine-entry{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(17rem,.85fr);gap:1rem;align-items:center;margin-top:.7rem;padding:.72rem 0;border-block:1px solid var(--line)}
+  .routine-entry__copy span,.routine-entry__copy strong{display:block}.routine-entry__copy span{color:var(--muted);font:760 .68rem/1.3 var(--font-interface)}.routine-entry__copy strong{margin-top:.25rem;font-size:1rem}.routine-entry__copy p{max-width:58ch;margin:.35rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.6}
+  .routine-entry__prompt{min-width:0;padding:.75rem .85rem;border-left:1px solid var(--line)}.routine-entry__prompt summary{cursor:pointer;font-size:.8rem;font-weight:780}.routine-entry__prompt pre{max-height:22rem;overflow:auto;margin:.65rem 0 0;padding:.8rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);white-space:pre-wrap;overflow-wrap:anywhere;font-size:.69rem;line-height:1.6}.routine-entry__prompt code{font:inherit;color:inherit}
 
   .operation-switchboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0 0 1.1rem;border-block:1px solid var(--line)}
   .operation-switchboard a{display:grid;grid-template-columns:auto 1fr;grid-template-areas:'n title' 'n note';gap:.16rem .65rem;min-width:0;padding:1rem .85rem;color:inherit;text-decoration:none;border-right:1px solid var(--line)}

@@ -5,7 +5,7 @@ const route = '/research/seed-openevo/study/capability-exploration/q17-directapp
 test('focus result keeps the comparable result and scientific boundary in the first screen', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 633 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('h1')).toContainText('相邻两个模型状态同做 32 题：63.58 分与 59.41 分');
+  await expect(page.locator('h1')).toContainText('同一组 32 题重测两个相邻模型状态：63.58 与 59.41');
   await expect(page.locator('.result-hero > .eyebrow')).toContainText('进入第 127 轮（R127）与第 128 轮（R128）的模型状态');
   await expect(page.locator('.result-hero__facts > div')).toHaveCount(3);
   const lede = await page.locator('.result-hero .lede').boundingBox();
@@ -14,7 +14,7 @@ test('focus result keeps the comparable result and scientific boundary in the fi
   expect(facts).not.toBeNull();
   expect(lede!.y + lede!.height).toBeLessThanOrEqual(633);
   expect(facts!.y + facts!.height).toBeLessThanOrEqual(633 + 3);
-  await expect(page.locator('.result-hero__boundary')).toContainText('95% 统计范围是 −17.13 ～ +8.00');
+  await expect(page.locator('.result-hero__boundary')).toContainText('95% 统计范围 −17.13 ～ +8.00');
 });
 
 for (const viewport of [

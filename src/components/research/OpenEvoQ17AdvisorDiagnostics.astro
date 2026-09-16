@@ -24,13 +24,13 @@ const rows = [
 <section class="advisor-diagnostics" data-q17-advisor-diagnostics data-reader-primary aria-labelledby="advisor-diagnostics-title">
   <header class="result-hero">
     <p class="eyebrow">2026-09-11 · {t('进入第 127 轮（R127）与第 128 轮（R128）的模型状态', 'Model states entering round 127 (R127) and round 128 (R128)')}</p>
-    <h1 id="advisor-diagnostics-title">{t('相邻两个模型状态同做 32 题：63.58 分与 59.41 分', 'Two adjacent model states on the same 32 tasks: 63.58 and 59.41')}</h1>
-    <p class="lede">{t('训练曲线当时从 76.1 掉到 48.9，但两轮抽到的题不同。让进入第 127 / 128 轮的两个模型状态（R127 / R128）做同样 32 题后，平均分是 63.58 → 59.41，完整做对 10 题 → 8 题。原来的大跌混入了抽题差异，不能直接当成同等幅度的能力下降。', 'During training, the live scores fell from 76.1 to 48.9, but the two rounds sampled different tasks. Retesting R127 and R128 on the same 32 tasks gave 63.58 → 59.41 on average, with fully solved tasks going from 10 to 8. This local diagnostic shows that the large live-round drop mixed in task-sampling differences and cannot be read as an equally large capability loss.')}</p>
-    <p class="result-hero__boundary"><strong>{t('这只是一段训练中的局部诊断，不是最终测试。', 'This is a local training diagnostic, not the final evaluation.')}</strong>{t('这 32 道题来自训练/开发范围、在看结果前就固定，并且与最终锁定的 128 题不重合；平均分差的 95% 统计范围是 −17.13 ～ +8.00，包含“没有差别”。DirectApply（每轮候选更新通过工程与数据检查后直接带入下一轮）后来完整跑完 160 轮，并另做一次冻结 128 题最终测试（final）；本页结论不能外推到后续训练或最终结果。', 'These 32 tasks came from the train/development range, were frozen before results were inspected, and do not overlap with the locked final 128 tasks. The 95% uncertainty range for the score difference is −17.13 to +8.00 and includes no difference. DirectApply later completed all 160 rounds and ran a separate frozen final; this page cannot extrapolate its local result to later training or the final outcome.')}</p>
+    <h1 id="advisor-diagnostics-title">{t('同一组 32 题重测两个相邻模型状态：63.58 与 59.41', 'Same 32-task retest of two adjacent model states: 63.58 and 59.41')}</h1>
+    <p class="lede">{t('原训练曲线从 76.1 掉到 48.9，但那两轮抽到的题不同，不能直接横比。后来把进入第 127 / 128 轮的两个模型状态（R127 / R128）拿到同一组 32 题上重测，平均分是 63.58 → 59.41，完整做对 10 题 → 8 题。原来的大跌混入了抽题差异，不能直接当成同等幅度的能力下降。', 'During training, the live scores fell from 76.1 to 48.9, but those two rounds sampled different tasks and cannot be compared directly. We later retested the model states entering R127 and R128 on the same 32 tasks: the averages were 63.58 → 59.41 and fully solved tasks went from 10 to 8. This local diagnostic shows that the large live-round drop mixed in task-sampling differences and cannot be read as an equally large capability loss.')}</p>
+    <p class="result-hero__boundary"><strong>{t('点估计 −4.18 分；95% 统计范围 −17.13 ～ +8.00，包含“没有差别”。', 'Point estimate: −4.18; the 95% interval is −17.13 to +8.00 and includes no difference.')}</strong>{t('这是局部诊断，不是最终测试：32 题来自训练/开发范围、看结果前已固定，与锁定的 final 128 题不重合；不能外推到后续训练或最终结果。', 'This is a local diagnostic, not the final evaluation: the 32 tasks came from the train/development range, were frozen before results were inspected, and do not overlap with the locked final 128 tasks. The result cannot be extrapolated to later training or the final outcome.')}</p>
     <dl class="result-hero__facts research-fact-band" style="--research-fact-columns:3" aria-label={t('训练曲线与同题重测的三个关键数字', 'Three key numbers from the live curve and same-task retest')}>
-      <div><dt>{t('训练轮 · 题不同', 'Live rounds · different tasks')}</dt><dd>76.1 → 48.9</dd></div>
+      <div><dt>{t('原训练轮 · 题不同，不能直接比', 'Original live rounds · different tasks')}</dt><dd>76.1 → 48.9</dd></div>
       <div><dt>{t('同样 32 题', 'Same 32 tasks')}</dt><dd>63.58 → 59.41</dd></div>
-      <div><dt>{t('完整做对', 'Fully solved')}</dt><dd>10 / 32 → 8 / 32</dd></div>
+      <div><dt>{t('95% 范围 · 包含无差别', '95% interval · includes no difference')}</dt><dd>−17.13 ～ +8.00</dd></div>
     </dl>
   </header>
 
@@ -97,9 +97,9 @@ const rows = [
 <style>
 .advisor-diagnostics{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--ink)}
 .result-hero{padding:1.15rem 0 1.25rem;border-bottom:1px solid var(--line)}
-.eyebrow{margin:0 0 .55rem;font:800 .78rem/1.25 var(--font-mono);letter-spacing:.045em;color:var(--accent-deep)}
-.result-hero h1{max-width:980px;margin:0;font-size:clamp(2.15rem,4.3vw,3.8rem);line-height:.98;letter-spacing:-.065em}.result-hero__facts{max-width:900px;margin-top:.45rem}
-.lede{max-width:900px;margin:.6rem 0 0;color:var(--muted);font-size:1rem;line-height:1.52}.result-hero__boundary{max-width:900px;margin:.35rem 0 0;padding-top:.35rem;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;line-height:1.52}.result-hero__boundary strong{color:var(--ink)}
+.eyebrow{margin:0 0 .45rem;font:800 .78rem/1.25 var(--font-mono);letter-spacing:.045em;color:var(--accent-deep)}
+.result-hero h1{max-width:980px;margin:0;font-size:clamp(2.05rem,4vw,3.55rem);line-height:.99;letter-spacing:-.055em}.result-hero__facts{max-width:900px;margin-top:.25rem}
+.lede{max-width:900px;margin:.42rem 0 0;color:var(--muted);font-size:.98rem;line-height:1.48}.result-hero__boundary{max-width:900px;margin:.2rem 0 0;padding-top:.2rem;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem;line-height:1.46}.result-hero__boundary strong{color:var(--ink)}
 .evidence-links{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.15rem}.evidence-links a,.q17-complete-link a{border-bottom:1px solid var(--line);padding:.35rem 0;color:var(--accent-deep);text-decoration:none;margin-right:1rem}.q17-complete-link{margin-top:.9rem}
 .result-section{padding:2.8rem 0;border-bottom:1px solid var(--line)}.result-section h2{max-width:900px;margin:0 0 1rem;font-size:clamp(1.65rem,3.2vw,2.8rem);line-height:1.08;letter-spacing:-.045em}.result-section>p,.reasoning-line p,.claim-boundary p,.method-grid p{max-width:900px;color:var(--muted);line-height:1.65}
 .table-wrap{overflow-x:auto;margin-top:1.5rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:.85rem .7rem;text-align:left;border-bottom:1px solid color-mix(in srgb,var(--line) 75%,transparent);vertical-align:top}thead th{font-size:.8rem;color:var(--muted);letter-spacing:.04em}tbody th{font-weight:700}td:nth-child(2),td:nth-child(3),td:nth-child(4){font-family:var(--font-mono);font-weight:700}

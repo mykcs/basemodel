@@ -45,7 +45,7 @@ const objectGroups = [
 
   <section class="mission-section" id="training-design" aria-labelledby="training-design-title">
     <div class="mission-section__heading"><span>02</span><h2 id="training-design-title">{t('训练设计', 'Training design')}</h2></div>
-    <p class="section-intro">{t('下面用 WebShop 展开两阶段：Stage 1（任务执行与事后复盘）先让 Qwen 自己完成购物任务，任务结束后外部分析模型才读取已保存的轨迹做复盘，并把轨迹与复盘交给后续训练；Stage 2（持续学习）再决定如何更新后续状态。外部分析模型不能在做题过程中替 Qwen 选动作；这六步是 WebShop 的具体例子，不自动代表 ALFWorld 使用同一交互流程。', 'The WebShop example below has two stages. Stage 1 (task execution and post-task review) lets Qwen complete the shopping task itself; only after the task ends may an external analysis model review the saved trajectory and hand that evidence to later training. Stage 2 (continual learning) then decides how later state is updated. The external model never chooses actions for Qwen during the task, and this six-step WebShop example does not imply that ALFWorld uses the same interaction flow.')}</p>
+    <p class="section-intro">{t('下面用 WebShop 展开两阶段：Stage 1（任务执行与事后复盘）先让 Qwen 自己完成购物任务；任务结束后，MiniMax 只回看已经保存的轨迹，不替 Qwen 选动作，再把轨迹与复盘交给后续训练。Stage 2（持续学习）再决定如何更新后续状态。外部分析模型不能在做题过程中替 Qwen 选动作；这六步是 WebShop 的具体例子，不自动代表 ALFWorld 使用同一交互流程。', 'The WebShop example below has two stages. Stage 1 (task execution and post-task review) lets Qwen complete the shopping task itself. Only after the task ends does MiniMax review the saved trajectory; it never chooses actions for Qwen. The trajectory and review then feed later training, and Stage 2 (continual learning) decides how later state is updated. The external model never chooses actions for Qwen during the task, and this six-step WebShop example does not imply that ALFWorld uses the same interaction flow.')}</p>
     <SeedOpenEvoTrainingDesignOverview locale={locale} />
   </section>
 
@@ -54,7 +54,7 @@ const objectGroups = [
     <ol class="run-step-grid">
       <li><span>1</span><h3>{t('对齐 SEED 的实验条件', 'Align SEED conditions')}</h3><p>{t('固定模型、ALFWorld / WebShop 环境和评测条件，避免把“方法差异”和“实验设置差异”混在一起。','Pin the model, ALFWorld / WebShop environments, and evaluation conditions so method differences are not confused with setup differences.')}</p><a href={p('/research/seed-openevo/flow/seed/')}>{t('SEED 方法','SEED method')} →</a></li>
       <li><span>2</span><h3>{t('运行 OpenEvo', 'Run OpenEvo')}</h3><p>{t('正式科学状态以 openevo-experiment 为准；旧的 RTX6 路线保留为历史证据，不代表现在的运行状态。','Current formal scientific state is governed by openevo-experiment; the RTX6 path is retained as historical evidence, not live state.')}</p><a href={p('/research/seed-openevo/study/run/')}>{t('实验指南','Experiment guide')} →</a></li>
-      <li><span>3</span><h3>{t('比较结果与失败原因', 'Compare results and failures')}</h3><p>{t('比较任务分数、完整成功、交互轨迹和失败模式，再检查模型适配器状态，决定下一轮真正能改变结论的实验。','Compare scores, exact success, trajectories, failure modes, and adapter state before choosing the next experiment that can change the conclusion.')}</p><a href={p('/research/seed-openevo/study/results/')}>{t('研究结果','Research findings')} →</a></li>
+      <li><span>3</span><h3>{t('比较结果与失败原因', 'Compare results and failures')}</h3><p>{t('比较任务分数、完整成功、交互轨迹和失败模式，再检查 LoRA 等参数更新状态，决定下一轮真正能改变结论的实验。','Compare scores, exact success, trajectories, failure modes, and LoRA and other parameter-update state before choosing the next experiment that can change the conclusion.')}</p><a href={p('/research/seed-openevo/study/results/')}>{t('研究结果','Research findings')} →</a></li>
     </ol>
   </section>
 
@@ -63,7 +63,7 @@ const objectGroups = [
     <p class="section-intro">{t('实验跑完不代表结论就可信。四类记录分别证明环境真的运行、模型是否更新、任务结果发生了什么，以及这一轮实验到底是哪一轮。','A completed run is not automatically a trustworthy scientific result. Four evidence groups show that the environment ran, whether the model changed, what happened on the tasks, and which run produced the evidence.')}</p>
     <ol class="evidence-grid">
       <li><span>01</span><strong>{t('环境与模型', 'Environment and model')}</strong><p>{t('真实环境重置（reset）、真实 CUDA 计算，以及明确的模型版本（revision）。','Real environment reset, real CUDA execution, and a pinned model revision.')}</p></li>
-      <li><span>02</span><strong>{t('更新状态', 'Update state')}</strong><p>{t('参数摘要（digest）、适配器（adapter）、演化产物（artifact）或后继版本（successor revision），用于证明模型究竟有没有被更新。','Parameter digests, adapters, artifacts, or successor revisions that show whether the model was actually updated.')}</p></li>
+      <li><span>02</span><strong>{t('更新状态', 'Update state')}</strong><p>{t('参数摘要（digest）、LoRA 适配器、任务后生成的演化文件或后继模型版本，用于证明模型究竟有没有被更新。','Parameter digests, LoRA adapters, post-task evolution files, or successor model revisions that show whether the model was actually updated.')}</p></li>
       <li><span>03</span><strong>{t('任务结果', 'Task outcomes')}</strong><p>{t('任务分数（score）、是否成功（success）、交互步数（steps）、无法执行时的备用动作（fallback）和结束原因（termination）。','Task score, success, interaction steps, fallback actions when output cannot execute, and termination reason.')}</p></li>
       <li><span>04</span><strong>{t('实验身份', 'Experiment identity')}</strong><p>{t('运行清单（Run Manifest）、代码提交 SHA、配置和任务集合，用于准确重建“到底跑了什么”。','Run Manifest, code commit SHA, configuration, and task set used to reconstruct exactly what was run.')}</p></li>
     </ol>

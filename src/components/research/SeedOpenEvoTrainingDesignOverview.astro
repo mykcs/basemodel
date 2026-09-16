@@ -9,7 +9,7 @@ const p = (path: string) => localePath(locale, path);
 
 const stages = [
   [t('做题模型', 'Actor'), 'Qwen2.5-3B-Instruct', t('当前对照固定同一模型；它自己选择 WebShop 动作', 'the current comparison fixes the same model; it chooses WebShop actions itself')],
-  [t('提示与动作层', 'Prompt and action layer'), 'SEED / OpenEvo', t('各自负责提示、历史和动作解析；代码里把这一整层叫 native harness，但它不提供具体购物答案', 'each owns its prompts, history, and action parsing; the code calls this whole layer the native harness, and it does not supply shopping answers')],
+  [t('提示与动作层', 'Prompt and action layer'), 'SEED / OpenEvo', t('各自负责提示、历史和动作解析；这一交互层不提供具体购物答案', 'each owns its prompts, history, and action parsing; this interaction layer does not supply shopping answers')],
   [t('任务环境', 'Environment'), 'Princeton WebShop', t('返回页面观察、任务分数和状态变化', 'returns page observations, task scores, and state changes')],
   [t('保存完整过程', 'Sealed trajectory'), t('一次完整任务', 'One completed task'), t('任务结束后才把整条交互记录固定下来', 'freezes the full interaction record only after the task ends')],
   [t('任务后复盘', 'Post-task review'), t('外部分析模型', 'External analysis model'), t('只在任务结束后读取已保存的轨迹', 'reads the saved trajectory only after task completion')],
@@ -34,7 +34,7 @@ const stages = [
       <table>
         <thead><tr><th scope="col">{t('比较口径', 'Comparison')}</th><th scope="col">{t('哪些条件保持一致', 'What stays aligned')}</th><th scope="col">{t('可以支持什么结论', 'What the result can support')}</th></tr></thead>
         <tbody>
-          <tr><th scope="row">{t('完整系统比较', 'Full-system comparison')}</th><td>{t('模型、任务、评分和训练预算尽量一致；SEED 与 OpenEvo 可以使用各自的交互层（native harness：各自负责提示、历史与动作解析）。', 'Keep model, tasks, scoring, and training budget aligned; SEED and OpenEvo may use their own native interaction harnesses.')}</td><td>{t('只能比较两个完整系统的总体表现，不能把全部差异单独归因于 Stage 2 学习器。', 'Supports a comparison of the complete systems, not attribution of the whole difference to the Stage-2 learner alone.')}</td></tr>
+          <tr><th scope="row">{t('完整系统比较', 'Full-system comparison')}</th><td>{t('模型、任务、评分和训练预算尽量一致；SEED 与 OpenEvo 可以使用各自的提示、历史与动作解析层。', 'Keep model, tasks, scoring, and training budget aligned; SEED and OpenEvo may use their own prompt, history, and action-parsing layers.')}</td><td>{t('只能比较两个完整系统的总体表现，不能把全部差异单独归因于 Stage 2 学习器。', 'Supports a comparison of the complete systems, not attribution of the whole difference to the Stage-2 learner alone.')}</td></tr>
           <tr><th scope="row">{t('只比较 Stage 2 学习器', 'Stage-2 learner only')}</th><td>{t('共享 Stage 1 轨迹、事后分析、监督微调（SFT）训练配方和同一个起点模型保存点（checkpoint），再从这里分成 SEED Stage 2 与 OpenEvo Stage 2。', 'Share Stage-1 trajectories, post-task analysis, the SFT recipe, and the same starting checkpoint before forking into SEED Stage 2 and OpenEvo Stage 2.')}</td><td>{t('只有这种共同起点的对照，才允许把后续差异收窄到 Stage 2 学习器。', 'Only this common-start comparison can narrow a later difference to the Stage-2 learner.')}</td></tr>
         </tbody>
       </table>

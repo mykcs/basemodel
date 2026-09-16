@@ -80,7 +80,8 @@ describe("integrated SEED × OpenEvo training design", () => {
     }
     expect(training).toContain("var(--font-mono)");
     expect(training).toContain("var(--radius-panel)");
-    expect(nav).toContain("var(--radius-feature)");
+    expect(nav).toContain("var(--radius-panel)");
+    expect(nav).not.toContain("border-radius:var(--radius-feature)");
     expect(disclosure).toContain("var(--radius-control)");
   });
 
