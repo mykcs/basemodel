@@ -24,7 +24,7 @@ describe('shared research content primitives', () => {
     expect(sdLora).toContain('普通 LoRA 与 SD-LoRA 的参数区别');
     expect(serverOverview).toContain('class="server-hero__facts research-fact-band"');
     expect(serverOverview).toContain('style="--research-fact-columns:3"');
-    expect(q17Diagnostics).toContain('class="result-hero__facts research-fact-band"');
+    expect(q17Diagnostics).toContain('class="same-task-facts research-fact-band"');
     expect(q17Diagnostics).toContain('style="--research-fact-columns:3"');
   });
 

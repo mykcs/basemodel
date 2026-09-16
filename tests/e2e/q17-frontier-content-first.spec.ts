@@ -5,16 +5,17 @@ const route = '/research/seed-openevo/study/capability-exploration/q17-directapp
 test('focus result keeps the comparable result and scientific boundary in the first screen', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 633 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('h1')).toContainText('同一组 32 题重测两个相邻模型状态：63.58 与 59.41');
-  await expect(page.locator('.result-hero > .eyebrow')).toContainText('进入第 127 轮（R127）与第 128 轮（R128）的模型状态');
-  await expect(page.locator('.result-hero__facts > div')).toHaveCount(3);
-  const lede = await page.locator('.result-hero .lede').boundingBox();
-  const facts = await page.locator('.result-hero__facts').boundingBox();
-  expect(lede).not.toBeNull();
-  expect(facts).not.toBeNull();
-  expect(lede!.y + lede!.height).toBeLessThanOrEqual(633);
-  expect(facts!.y + facts!.height).toBeLessThanOrEqual(633 + 3);
+  await expect(page.locator('h1')).toContainText('同一组 32 道 WebShop 题上，两个相邻训练状态平均分 63.58 与 59.41');
+  await expect(page.locator('.result-hero > .eyebrow')).toContainText('局部诊断 · 2026-09-11');
+  await expect(page.locator('.result-hero__method')).toContainText('“训练状态”指当时加载的基础模型和累计 LoRA 参数');
   await expect(page.locator('.result-hero__boundary')).toContainText('95% 统计范围 −17.13 ～ +8.00');
+  await expect(page.locator('.same-task-facts > div')).toHaveCount(3);
+  const boundary = await page.locator('.result-hero__boundary').boundingBox();
+  const facts = await page.locator('.same-task-facts').boundingBox();
+  expect(boundary).not.toBeNull();
+  expect(facts).not.toBeNull();
+  expect(boundary!.y + boundary!.height).toBeLessThanOrEqual(633 + 3);
+  expect(facts!.y).toBeGreaterThan(633);
 });
 
 for (const viewport of [

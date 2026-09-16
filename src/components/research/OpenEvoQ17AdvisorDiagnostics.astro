@@ -23,20 +23,22 @@ const rows = [
 
 <section class="advisor-diagnostics" data-q17-advisor-diagnostics data-reader-primary aria-labelledby="advisor-diagnostics-title">
   <header class="result-hero">
-    <p class="eyebrow">2026-09-11 · {t('进入第 127 轮（R127）与第 128 轮（R128）的模型状态', 'Model states entering round 127 (R127) and round 128 (R128)')}</p>
-    <h1 id="advisor-diagnostics-title">{t('同一组 32 题重测两个相邻模型状态：63.58 与 59.41', 'Same 32-task retest of two adjacent model states: 63.58 and 59.41')}</h1>
-    <p class="lede">{t('原训练曲线从 76.1 掉到 48.9，但那两轮抽到的题不同，不能直接横比。后来把进入第 127 / 128 轮的两个模型状态（R127 / R128）拿到同一组 32 题上重测，平均分是 63.58 → 59.41，完整做对 10 题 → 8 题。原来的大跌混入了抽题差异，不能直接当成同等幅度的能力下降。', 'During training, the live scores fell from 76.1 to 48.9, but those two rounds sampled different tasks and cannot be compared directly. We later retested the model states entering R127 and R128 on the same 32 tasks: the averages were 63.58 → 59.41 and fully solved tasks went from 10 to 8. This local diagnostic shows that the large live-round drop mixed in task-sampling differences and cannot be read as an equally large capability loss.')}</p>
-    <p class="result-hero__boundary"><strong>{t('点估计 −4.18 分；95% 统计范围 −17.13 ～ +8.00，包含“没有差别”。', 'Point estimate: −4.18; the 95% interval is −17.13 to +8.00 and includes no difference.')}</strong>{t('这是局部诊断，不是最终测试：32 题来自训练/开发范围、看结果前已固定，与锁定的 final 128 题不重合；不能外推到后续训练或最终结果。', 'This is a local diagnostic, not the final evaluation: the 32 tasks came from the train/development range, were frozen before results were inspected, and do not overlap with the locked final 128 tasks. The result cannot be extrapolated to later training or the final outcome.')}</p>
-    <dl class="result-hero__facts research-fact-band" style="--research-fact-columns:3" aria-label={t('训练曲线与同题重测的三个关键数字', 'Three key numbers from the live curve and same-task retest')}>
-      <div><dt>{t('原训练轮 · 题不同，不能直接比', 'Original live rounds · different tasks')}</dt><dd>76.1 → 48.9</dd></div>
-      <div><dt>{t('同样 32 题', 'Same 32 tasks')}</dt><dd>63.58 → 59.41</dd></div>
-      <div><dt>{t('95% 范围 · 包含无差别', '95% interval · includes no difference')}</dt><dd>−17.13 ～ +8.00</dd></div>
-    </dl>
+    <p class="eyebrow">{t('局部诊断 · 2026-09-11', 'Local diagnostic · 2026-09-11')}</p>
+    <h1 id="advisor-diagnostics-title">{t('同一组 32 道 WebShop 题上，两个相邻训练状态平均分 63.58 与 59.41', 'On the same 32 WebShop tasks, two adjacent training states averaged 63.58 and 59.41')}</h1>
+    <p class="lede">{t('原训练曲线从 76.1 掉到 48.9，但那两轮抽到的题不同，不能直接横比。把进入第 127 / 128 轮的两个状态拿到同一组 32 题上重测后，平均分是 63.58 → 59.41，完整做对 10 题 → 8 题。原来的大跌混入了抽题差异，不能直接当成同等幅度的能力下降。', 'The live training curve fell from 76.1 to 48.9, but those two rounds sampled different tasks and cannot be compared directly. Retesting the states entering rounds 127 and 128 on the same 32 tasks gave averages of 63.58 → 59.41 and fully solved tasks of 10 → 8. The large live-round drop therefore mixed in task-sampling differences and cannot be read as an equally large capability loss.')}</p>
+    <p class="result-hero__method">{t('这里的“训练状态”指当时加载的基础模型和累计 LoRA 参数。每轮候选参数通过工程与数据检查后，会直接成为下一轮使用的参数；本页只比较这两个相邻状态，不评价这条采用规则本身。', 'Here, a “training state” means the base model together with the cumulative LoRA parameters loaded at that point. A candidate that passes engineering and data checks becomes the parameters used in the next round. This page compares only these two adjacent states; it does not judge that adoption rule itself.')}</p>
+    <p class="result-hero__boundary"><strong>{t('点估计 −4.18 分；95% 统计范围 −17.13 ～ +8.00，包含“没有差别”。', 'Point estimate: −4.18; the 95% interval is −17.13 to +8.00 and includes no difference.')}</strong>{t('这是局部诊断，不是最终测试：32 题来自训练/开发范围、看结果前已固定，与锁定的最终 128 题不重合；不能外推到后续训练或最终结果。', 'This is a local diagnostic, not the final evaluation: the 32 tasks came from the train/development range, were frozen before results were inspected, and do not overlap with the locked final 128 tasks. The result cannot be extrapolated to later training or the final outcome.')}</p>
   </header>
 
   <section class="result-section" aria-labelledby="same-task-result">
     <h2 id="same-task-result">{t('相邻两个模型状态的同题结果', 'Same-task results for the two adjacent model states')}</h2>
     <p>{t('训练的每一轮不是同一批题，所以 76.1 → 48.9 混了两种影响：模型本身变了，题目也换了。固定成同样 32 道题后，差距缩小到 63.58 → 59.41。也就是说，原来的大跌不能直接理解成模型一下子丢掉了同样多的能力。', 'Each training round uses a different task sample, so the 76.1 → 48.9 swing mixed two things together: the model changed, and the tasks changed. When we fixed the tasks to the same 32, the gap shrank to 63.58 → 59.41. The large live-round drop therefore cannot be read as an equally large loss of model ability.')}</p>
+
+    <dl class="same-task-facts research-fact-band" style="--research-fact-columns:3" aria-label={t('训练曲线与同题重测的三个关键数字', 'Three key numbers from the live curve and same-task retest')}>
+      <div><dt>{t('训练轮 · 题不同', 'Live rounds · different tasks')}</dt><dd>76.1 → 48.9</dd></div>
+      <div><dt>{t('同样 32 题', 'Same 32 tasks')}</dt><dd>63.58 → 59.41</dd></div>
+      <div><dt>{t('95% 范围 · 包含无差别', '95% interval · includes no difference')}</dt><dd>−17.13 ～ +8.00</dd></div>
+    </dl>
 
     <div class="table-wrap" role="region" aria-label={t('R127 与 R128 同题重测结果', 'R127 versus R128 on the same tasks')} tabindex="0">
       <table>
@@ -96,10 +98,10 @@ const rows = [
 </section>
 <style>
 .advisor-diagnostics{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--ink)}
-.result-hero{padding:1.15rem 0 1.25rem;border-bottom:1px solid var(--line)}
+.result-hero{box-sizing:border-box;min-height:calc(100svh - 6rem);padding:1.15rem 0 1.25rem;border-bottom:1px solid var(--line)}
 .eyebrow{margin:0 0 .45rem;font:800 .78rem/1.25 var(--font-mono);letter-spacing:.045em;color:var(--accent-deep)}
-.result-hero h1{max-width:980px;margin:0;font-size:clamp(2.05rem,4vw,3.55rem);line-height:.99;letter-spacing:-.055em}.result-hero__facts{max-width:900px;margin-top:.25rem}
-.lede{max-width:900px;margin:.42rem 0 0;color:var(--muted);font-size:.98rem;line-height:1.48}.result-hero__boundary{max-width:900px;margin:.2rem 0 0;padding-top:.2rem;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem;line-height:1.46}.result-hero__boundary strong{color:var(--ink)}
+.result-hero h1{max-width:980px;margin:0;font-size:clamp(2.05rem,4vw,3.55rem);line-height:.99;letter-spacing:-.055em}
+.lede{max-width:900px;margin:.5rem 0 0;color:var(--ink);font-size:.98rem;line-height:1.52}.result-hero__method{max-width:860px;margin:.45rem 0 0;color:var(--muted);font-size:.88rem;line-height:1.5}.result-hero__boundary{max-width:900px;margin:.5rem 0 0;padding-top:.45rem;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem;line-height:1.46}.result-hero__boundary strong{color:var(--ink)}
 .evidence-links{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.15rem}.evidence-links a,.q17-complete-link a{border-bottom:1px solid var(--line);padding:.35rem 0;color:var(--accent-deep);text-decoration:none;margin-right:1rem}.q17-complete-link{margin-top:.9rem}
 .result-section{padding:2.8rem 0;border-bottom:1px solid var(--line)}.result-section h2{max-width:900px;margin:0 0 1rem;font-size:clamp(1.65rem,3.2vw,2.8rem);line-height:1.08;letter-spacing:-.045em}.result-section>p,.reasoning-line p,.claim-boundary p,.method-grid p{max-width:900px;color:var(--muted);line-height:1.65}
 .table-wrap{overflow-x:auto;margin-top:1.5rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:.85rem .7rem;text-align:left;border-bottom:1px solid color-mix(in srgb,var(--line) 75%,transparent);vertical-align:top}thead th{font-size:.8rem;color:var(--muted);letter-spacing:.04em}tbody th{font-weight:700}td:nth-child(2),td:nth-child(3),td:nth-child(4){font-family:var(--font-mono);font-weight:700}

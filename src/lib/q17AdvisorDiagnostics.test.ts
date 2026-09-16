@@ -25,8 +25,9 @@ describe('Q17 advisor diagnostics publication', () => {
 
   it('keeps the result and boundary visible in both language routes', () => {
     const component = read('src/components/research/OpenEvoQ17AdvisorDiagnostics.astro');
-    expect(component).toContain('同一组 32 题重测两个相邻模型状态：63.58 与 59.41');
-    expect(component).toContain('Same 32-task retest of two adjacent model states: 63.58 and 59.41');
+    expect(component).toContain('同一组 32 道 WebShop 题上，两个相邻训练状态平均分 63.58 与 59.41');
+    expect(component).toContain('On the same 32 WebShop tasks, two adjacent training states averaged 63.58 and 59.41');
+    expect(component).toContain('这里的“训练状态”指当时加载的基础模型和累计 LoRA 参数');
     expect(component).toContain('95% 统计范围 −17.13 ～ +8.00，包含“没有差别”');
     expect(component).toContain('DirectApply（候选更新检查通过后直接采用）');
     expect(component).toContain('/q17-directapply-analysis/');
