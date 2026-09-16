@@ -100,6 +100,16 @@ export const CAPABILITY_READER_ROUTES = [
     }
   },
   {
+    "route": "sd-lora-bounded-acceleration",
+    "coverage": "self-contained",
+    "owner": "OpenEvoSdLoraBoundedAccelerationStudy",
+    "label": { "zh": "Bounded 后续加速：主要时间花在训练", "en": "Bounded acceleration: most time is spent in training" },
+    "purpose": {
+      "zh": "公开 GPU0–3 工程小实验：四卡分片为何 exact 但不更快、Muon/SVD 实际测到什么、真实 1.7B 训练时间花在哪里，以及为什么朴素 chunkwise AdamW 会改变方法语义。",
+      "en": "Publish the GPU0-3 engineering smokes: why four-way sharding is exact but not faster, what the Muon/SVD tests actually show, where real 1.7B training time goes, and why naive chunkwise AdamW changes method semantics."
+    }
+  },
+  {
     "route": "bounded-effective-state-gdr",
     "coverage": "self-contained",
     "owner": "OpenEvoEffectiveStateGdrLoraStudy",

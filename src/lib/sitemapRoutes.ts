@@ -35,6 +35,7 @@ export const bilingualStaticPaths = [
   '/research/seed-openevo/study/capability-exploration/sd-lora-present-function/',
   '/research/seed-openevo/study/capability-exploration/sd-lora-future-learning/',
   '/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/',
+  '/research/seed-openevo/study/capability-exploration/sd-lora-bounded-acceleration/',
   '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/',
   '/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/',
   '/research/seed-openevo/study/capability-exploration/text-memory/',
