@@ -55,7 +55,7 @@ const gpuFacts = [
       <div><dt>{t('可用', 'Available')}</dt><dd>≈ 0.99 TiB</dd></div>
     </dl>
 
-    <p class="server-hero__boundary"><strong>{t('安全边界：', 'Safety boundary: ')}</strong>{t('远端可恢复不等于本地可删；任何删除都要单独批准同一版清单，清单写明对象、字节数和恢复证据。私有归档空间不足也不能自动把数据公开；未合并的草稿规则不能替代正式规则。', 'Remote recoverability does not make a local copy deletable; any deletion needs separate approval of the same exact list. Insufficient private archive capacity also cannot make data public automatically, and an unmerged draft cannot replace the formal authority.')}</p>
+    <p class="server-hero__boundary"><strong>{t('安全边界：', 'Safety boundary: ')}</strong>{t('恢复验证不等于删除授权：任何删除都要负责人单独批准同一版清单。任何从私有改成公开的可见性变化，也必须单独批准。', 'Remote recoverability does not make a local copy deletable; any deletion needs separate approval of the same exact list. Insufficient private archive capacity also cannot make data public automatically, and an unmerged draft cannot replace the formal authority.')}</p>
 
     <div class="routine-entry">
       <div class="routine-entry__copy">
@@ -95,7 +95,7 @@ const gpuFacts = [
       <ol>
         <li><strong>{t('空间', 'Storage')}</strong><span>{t('df / inode 与几个已知大型根目录的变化。', 'df/inode plus bounded changes in known large roots.')}</span></li>
         <li><strong>{t('活跃引用', 'Live references')}</strong><span>{t('哪些 run、checkpoint、容器挂载或进程仍在用。', 'Which runs, checkpoints, mounts, or processes are still in use.')}</span></li>
-        <li><strong>{t('资产变化', 'Artifact changes')}</strong><span>{t('新出现的大型产物、Passport 覆盖缺口和待收尾 backlog。', 'New large outputs, Passport coverage gaps, and closeout backlog.')}</span></li>
+        <li><strong>{t('资产变化', 'Artifact changes')}</strong><span>{t('新出现的大型产物、实验身份证（Passport）覆盖缺口和待收尾归档。', 'New large outputs, experiment-Passport coverage gaps and closeout backlog.')}</span></li>
       </ol>
     </div>
 
@@ -130,7 +130,7 @@ const gpuFacts = [
     </details>
 
     <details class="q17-case q17-case-depth">
-      <summary>{t('Q17 存储案例：320.9 GiB 里约 304.66 GiB 是 checkpoint', 'Q17 storage example: about 304.66 GiB of 320.9 GiB is checkpoints')}</summary>
+      <summary>{t('实验存储案例：320.9 GiB 里约 304.66 GiB 是 checkpoint', 'Q17 storage example: about 304.66 GiB of 320.9 GiB is checkpoints')}</summary>
       <article class="q17-case__body">
       <div class="q17-case__header">
         <div>

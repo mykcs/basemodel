@@ -26,7 +26,7 @@ const stages = [
       </li>
     ))}
   </ol>
-  <p class="stage2-bridge">{t('Stage 1 留下可追溯的成功轨迹和任务后复盘。Stage 2 用这些输入分别产生文字记忆、技能、全局行为规则或 LoRA 参数的候选更新；当前实验规则检查这些候选是否采用，只有采用后的状态才装入下一批任务。早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态。', 'Stage 1 leaves traceable successful trajectories and post-task review. Stage 2 uses those inputs to propose updates to written memory, reusable skills, global behavior rules, or LoRA parameters. The current experiment rules decide which candidate updates are adopted; only adopted state is loaded into the next task batch. Earlier Stage-1 and LoRA-vs-SD-LoRA comparisons did not enable all four states together.')}</p>
+  <p class="stage2-bridge">{t('Stage 1 留下可追溯的成功轨迹和任务后复盘。Stage 2（持续学习阶段）用这些输入分别产生文字记忆、技能、全局行为规则或 LoRA 参数的新版本；每一类状态都有实验开始前固定的更新条件：满足条件就采用新版本，不满足就沿用上一版。最后采用的版本才装入下一批任务。早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态。', 'Stage 1 leaves traceable successful trajectories and post-task review. Stage 2 (continual learning) uses those inputs to produce new versions of written memory, reusable skills, global behavior rules, or LoRA parameters. Each state type has update conditions frozen before the experiment: if the conditions pass, the new version is adopted; otherwise the prior version remains. Only the adopted versions are loaded into the next task batch. Earlier Stage-1 and LoRA-vs-SD-LoRA comparisons did not enable all four states together.')}</p>
 
   <section class="comparison-scope" data-learning-comparison-scope aria-labelledby="comparison-scope-title">
     <h3 id="comparison-scope-title">{t('比较口径决定差异能归因到哪里', 'The comparison scope determines what can explain a difference')}</h3>

@@ -16,8 +16,8 @@ const chain = [
 <section class:list={['mission-hero',compact&&'mission-hero--compact']} aria-labelledby="mission-title" data-reader-primary>
   <div class="mission-hero__copy">
     <h1 id="mission-title">{t('SEED 与 OpenEvo 的 ALFWorld / WebShop 对照实验', 'SEED and OpenEvo on matched ALFWorld / WebShop tasks')}</h1>
-    <p class="mission-hero__lede">{t('SEED 把任务后的成功经验继续写进模型参数；OpenEvo 先封存任务证据，在后续 Stage 2 中分别检查文字记忆、技能、行为规则和 LoRA 参数更新，只有被当前规则采用的状态才带到下一批任务。这里固定同一个 Qwen2.5-3B-Instruct、同一批 ALFWorld（文本具身任务）与 WebShop（网页购物任务）、同一评分规则和训练预算；条件没对齐，分数差异就不能归因于方法。','SEED writes successful post-task experience back into model parameters. OpenEvo first seals task evidence; in later Stage 2, text memory, reusable skills, behavior rules, and LoRA parameter updates are checked separately, and only the state adopted by the current rules is carried into the next task batch. Here we keep the same Qwen2.5-3B-Instruct, the same ALFWorld (text-based embodied tasks) and WebShop (web-shopping tasks), scoring rules, and training budget aligned; otherwise score differences cannot be attributed to the method.')}</p>
-    {compact && <p class="mission-hero__boundary"><strong>{t('这是实验设计与流程，不是结果。', 'This is the experiment design and flow, not a results page.')}</strong> {t('下面用 WebShop 展开两阶段训练；ALFWorld 有自己的交互与评分，两个环境的分数不能直接混比。完整系统对照只能说明两套系统总体表现；若要把差异归因到 Stage 2 学习器，两边还必须共享 Stage 1 轨迹、任务后复盘、训练配方和同一个起点模型。', 'The two-stage training flow below uses WebShop as the concrete example. ALFWorld has its own interaction and scoring contract, so scores from the two environments are not directly interchangeable. A full-system comparison only supports an overall system comparison; attributing a difference to the Stage-2 learner additionally requires shared Stage-1 traces, post-task review, training recipe, and starting model.')}</p>}
+    <p class="mission-hero__lede">{t('SEED 把任务后的成功经验继续写进模型参数；OpenEvo 先封存任务证据，再把任务后得到的可复用经验和参数候选交给后续学习。这里固定同一个 Qwen2.5-3B-Instruct、同一批 ALFWorld（文本具身任务）与 WebShop（网页购物任务）、同一评分规则和训练预算；条件没对齐，分数差异就不能归因于方法。','SEED writes successful post-task experience back into model parameters. OpenEvo first seals task evidence, then carries reusable post-task experience and parameter candidates into later learning. Here we keep the same Qwen2.5-3B-Instruct, the same ALFWorld (text-based embodied tasks) and WebShop (web-shopping tasks), scoring rules, and training budget aligned; otherwise score differences cannot be attributed to the method.')}</p>
+    {compact && <p class="mission-hero__boundary"><strong>{t('这是实验设计与流程，不是结果。', 'This is the experiment design and flow, not a results page.')}</strong> {t('下面用 WebShop 展开两阶段训练；ALFWorld 有自己的交互与评分，两个环境的分数不能直接混比。完整系统对照只能说明两套系统总体表现；若要只比较后续学习器，两边还必须共享任务轨迹、任务后复盘、训练配方和同一个起点模型。', 'The two-stage training flow below uses WebShop as the concrete example. ALFWorld has its own interaction and scoring contract, so scores from the two environments are not directly interchangeable. A full-system comparison only supports an overall system comparison; isolating the later learner additionally requires shared task traces, post-task review, training recipe, and starting model.')}</p>}
     {!compact && <div class="mission-hero__actions"><a class="button button-primary mission-hero__briefing-cta" href={p('/research/seed-openevo/study/briefing/')}>{t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')}</a><a class="button button-secondary" href={p('/research/seed-openevo/flow/')}>{t('研究总览','Research overview')}</a></div>}
   </div>
 
@@ -56,8 +56,8 @@ const chain = [
     .mission-chain li:not(:last-child)>a::after{right:8px}
   }
   @media(max-width:640px){
-    .mission-hero.mission-hero--compact{margin-bottom:2rem}
-    .mission-hero.mission-hero--compact .mission-hero__copy{padding-left:12px;padding-right:12px}
+    .mission-hero.mission-hero--compact{min-height:calc(100svh - 9rem);margin-bottom:2rem;display:flex;flex-direction:column}
+    .mission-hero.mission-hero--compact .mission-hero__copy{flex:1}
     .mission-chain{padding:14px 0 12px;border:1px solid color-mix(in srgb,var(--line) 86%,transparent);border-radius:var(--mobile-radius-lg);background:color-mix(in srgb,var(--surface) 76%,transparent)}
     .mission-chain figcaption{padding:2px 16px 12px}
     .mission-chain figcaption span{margin-bottom:4px;line-height:1.2;letter-spacing:.035em}
