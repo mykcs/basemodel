@@ -99,6 +99,7 @@ describe('experiment-first Study index', () => {
       expect.objectContaining({ role: 'analysis', label: expect.objectContaining({ zh: '两条路线说明' }), href: '/research/seed-openevo/study/capability-exploration/sd-lora-history/', mobileFeatured: true, directoryGroup: expect.objectContaining({ zh: 'SD-LoRA 加速', en: 'SD-LoRA acceleration' }) }),
       expect.objectContaining({ role: 'analysis', label: expect.objectContaining({ zh: 'Stable Reduction' }), href: '/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/', mobileFeatured: true, directoryGroup: expect.objectContaining({ zh: 'SD-LoRA 加速', en: 'SD-LoRA acceleration' }) }),
       expect.objectContaining({ role: 'analysis', label: expect.objectContaining({ zh: 'Bounded Online Recurrence' }), href: '/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/', mobileFeatured: true, directoryGroup: expect.objectContaining({ zh: 'SD-LoRA 加速', en: 'SD-LoRA acceleration' }) }),
+      expect.objectContaining({ role: 'analysis', label: expect.objectContaining({ zh: 'Effective-State GDR：写入强度' }), href: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/', directoryGroup: expect.objectContaining({ zh: 'SD-LoRA 加速', en: 'SD-LoRA acceleration' }) }),
       expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/text-memory/' }),
       expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/#geometry' }),
       expect.objectContaining({ role: 'diagnostic', href: '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/#function' }),
@@ -113,8 +114,9 @@ describe('experiment-first Study index', () => {
     const historySeries = readFileSync(new URL('../components/research/OpenEvoSdLoraHistorySkeleton.astro', import.meta.url), 'utf8');
     expect(historySeries).toContain('没有完成的科学实验不会提前写成结论');
     const accelerationGroup = directApply?.childLinks.filter((child) => child.directoryGroup?.zh === 'SD-LoRA 加速') ?? [];
-    expect(accelerationGroup.map((child) => child.label.en)).toEqual(['How the two lines differ', 'Stable Reduction', 'Bounded Online Recurrence']);
-    expect(accelerationGroup.every((child) => child.mobileFeatured)).toBe(true);
+    expect(accelerationGroup.map((child) => child.label.en)).toEqual(['How the two lines differ', 'Stable Reduction', 'Bounded Online Recurrence', 'Effective-State GDR: write strength']);
+    expect(accelerationGroup.filter((child) => child.mobileFeatured).map((child) => child.label.en)).toEqual(['How the two lines differ', 'Stable Reduction', 'Bounded Online Recurrence']);
+    expect(OPEN_EVO_CANONICAL_ROUTE_OWNERS['bounded-effective-state-gdr']).toBe('directapply-1p7b');
   });
 
   it('keeps Results as a cross-experiment index rather than a second owner of the five experiment bodies', () => {

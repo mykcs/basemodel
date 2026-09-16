@@ -55,7 +55,12 @@ describe('capability route reader contracts', () => {
     const archiveDir = join(repo, 'docs/archive/site-en/src/pages/en', base);
     const active = sourceRoutes(activeDir, '.astro').map((path) => routeKey(path, activeDir, '.astro')).sort();
     const archived = sourceRoutes(archiveDir, '.astro.archive').map((path) => routeKey(path, archiveDir, '.astro.archive')).sort();
-    expect(archived).toEqual(active);
+    // The English archive is an immutable snapshot of the old active English site,
+    // not a shadow surface that grows whenever Chinese-only research routes are added.
+    // Every archived route must still have an active Chinese counterpart; post-archive
+    // Chinese routes intentionally have no archived English wrapper.
+    expect(archived.every((route) => active.includes(route))).toBe(true);
+    expect(active.filter((route) => !archived.includes(route))).toEqual(['bounded-effective-state-gdr']);
     for (const row of routes) {
       expect(row.label.en.trim().length).toBeGreaterThan(0);
       expect(row.purpose.en.trim().length).toBeGreaterThan(0);
