@@ -13,7 +13,7 @@ const objectGroups = [
   {
     label: t('模型', 'Model'),
     items: [
-      { title:'Qwen2.5-3B-Instruct', body:t('固定模型版本、数值精度和运行设置。','Pin the model revision, numerical precision, and runtime settings.'), href:p('/models/qwen2-5-3b-instruct/#experiment-setup') },
+      { title:'Qwen2.5-3B-Instruct', body:t('固定同一版模型参数（checkpoint，也就是模型参数快照）、数值精度和运行设置。','Pin the same model-parameter snapshot (checkpoint), numerical precision, and runtime settings.'), href:p('/models/qwen2-5-3b-instruct/#experiment-setup') },
     ],
   },
   {
@@ -62,10 +62,10 @@ const objectGroups = [
     <div class="mission-section__heading"><span>04</span><h2>{t('每轮实验要留下什么证据', 'Evidence requirements')}</h2></div>
     <p class="section-intro">{t('实验跑完不代表结论就可信。四类记录分别证明环境真的运行、模型是否更新、任务结果发生了什么，以及这一轮实验到底是哪一轮。','A completed run is not automatically a trustworthy scientific result. Four evidence groups show that the environment ran, whether the model changed, what happened on the tasks, and which run produced the evidence.')}</p>
     <ol class="evidence-grid">
-      <li><span>01</span><strong>{t('环境与模型', 'Environment and model')}</strong><p>{t('真实环境重置（reset）、真实 CUDA 计算，以及明确的模型版本（revision）。','Real environment reset, real CUDA execution, and a pinned model revision.')}</p></li>
-      <li><span>02</span><strong>{t('更新状态', 'Update state')}</strong><p>{t('参数摘要（digest）、LoRA 适配器、任务后生成的演化文件或后继模型版本，用于证明模型究竟有没有被更新。','Parameter digests, LoRA adapters, post-task evolution files, or successor model revisions that show whether the model was actually updated.')}</p></li>
+      <li><span>01</span><strong>{t('环境与模型', 'Environment and model')}</strong><p>{t('真实环境重新开始一题（reset）、真实 CUDA 计算，以及明确的模型版本号（revision）。','A real environment reset, real CUDA execution, and a pinned model revision.')}</p></li>
+      <li><span>02</span><strong>{t('更新状态', 'Update state')}</strong><p>{t('参数指纹（digest，用来核对参数有没有变化）、LoRA 适配器、任务后生成的演化文件或后继模型版本，用于证明模型究竟有没有被更新。','Parameter digests, LoRA adapters, post-task evolution files, or successor model revisions that show whether the model was actually updated.')}</p></li>
       <li><span>03</span><strong>{t('任务结果', 'Task outcomes')}</strong><p>{t('任务分数（score）、是否成功（success）、交互步数（steps）、无法执行时的备用动作（fallback）和结束原因（termination）。','Task score, success, interaction steps, fallback actions when output cannot execute, and termination reason.')}</p></li>
-      <li><span>04</span><strong>{t('实验身份', 'Experiment identity')}</strong><p>{t('运行清单（Run Manifest）、代码提交 SHA、配置和任务集合，用于准确重建“到底跑了什么”。','Run Manifest, code commit SHA, configuration, and task set used to reconstruct exactly what was run.')}</p></li>
+      <li><span>04</span><strong>{t('实验身份', 'Experiment identity')}</strong><p>{t('运行清单（Run Manifest，记录模型、代码、配置和任务集合）与代码提交 SHA，用于准确重建“到底跑了什么”。','The Run Manifest records the model, code, configuration, and task set; together with the code commit SHA it reconstructs exactly what was run.')}</p></li>
     </ol>
   </section>
 </div>
@@ -73,6 +73,7 @@ const objectGroups = [
 <style>
   .mission-page{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem}
   .mission-section{padding:clamp(1.8rem,4vw,3rem) 0;border-top:1px solid var(--line)}
+  .plain-mission-hub>.mission-section:first-of-type{padding-top:1rem}
   .mission-section__heading{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.65rem;margin-bottom:.55rem}
   .mission-section__heading>span{color:var(--accent-deep);font:800 .72rem/1.4 var(--font-mono)}
   .mission-section__heading h2{margin:0}

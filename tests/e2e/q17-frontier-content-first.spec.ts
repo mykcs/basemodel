@@ -5,11 +5,11 @@ const route = '/research/seed-openevo/study/capability-exploration/q17-directapp
 test('focus result keeps the comparable result and scientific boundary in the first screen', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 633 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('h1')).toContainText('同一组 32 道 WebShop 题上，两个相邻训练状态平均分 63.58 与 59.41');
+  await expect(page.locator('h1')).toContainText('同样 32 道题上，后一版平均分低 4.18，但还不能判定模型退步');
   await expect(page.locator('.result-hero > .eyebrow')).toContainText('局部诊断 · 2026-09-11');
-  await expect(page.locator('.result-hero__method')).toContainText('R127 / R128 指进入第 127 / 128 轮时加载的两个相邻训练状态');
-  await expect(page.locator('.result-hero__method')).toContainText('LoRA（只训练少量适配参数）');
-  await expect(page.locator('.result-hero__method')).toContainText('DirectApply：候选参数通过工程和数据检查后，下一轮直接使用');
+  await expect(page.locator('.result-hero__method')).toContainText('第一阶段由 Qwen 完成 WebShop 任务，MiniMax 只在任务结束后回看保存的轨迹');
+  await expect(page.locator('.result-hero__method')).toContainText('DirectApply 指候选参数通过工程和数据检查后直接进入下一轮');
+  await expect(page.locator('.result-hero__method')).toContainText('简称 R127 / R128');
   await expect(page.locator('.result-hero__boundary')).toContainText('95% 统计范围 −17.13 ～ +8.00');
   await expect(page.locator('.same-task-facts > div')).toHaveCount(3);
   const boundary = await page.locator('.result-hero__boundary').boundingBox();
@@ -17,7 +17,7 @@ test('focus result keeps the comparable result and scientific boundary in the fi
   expect(boundary).not.toBeNull();
   expect(facts).not.toBeNull();
   expect(boundary!.y + boundary!.height).toBeLessThanOrEqual(633 + 3);
-  expect(facts!.y).toBeGreaterThan(633);
+  expect(facts!.y - (boundary!.y + boundary!.height)).toBeLessThan(140);
 });
 
 for (const viewport of [

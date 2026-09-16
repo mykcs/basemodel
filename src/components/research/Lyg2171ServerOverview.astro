@@ -85,7 +85,7 @@ const gpuFacts = [
 
     <dl class="snapshot-facts" aria-label={t('2026-09-15 服务器快照', '2026-09-15 server snapshot')}>
       <div><dt>{t('持久文件系统', 'Persistent filesystem')}</dt><dd>2.0 TiB</dd><p>{t('项目工作区所在文件系统', 'Filesystem backing the project workspace')}</p></div>
-      <div><dt>{t('已用', 'Used')}</dt><dd>≈ 1.01 TiB</dd><p>df · 51%</p></div>
+      <div><dt>{t('已用', 'Used')}</dt><dd>≈ 1.01 TiB</dd><p>{t('系统磁盘统计（df）· 51%', 'Filesystem usage (df) · 51%')}</p></div>
       <div class="snapshot-facts__primary"><dt>{t('可用', 'Available')}</dt><dd>≈ 0.99 TiB</dd><p>1,087,523,598,336 bytes</p></div>
       <div><dt>{t('文件数量容量（inode）', 'File-count capacity (inode)')}</dt><dd>41%</dd><p>{t('约 1,049 万可用', 'about 10.49M available')}</p></div>
     </dl>
@@ -93,7 +93,7 @@ const gpuFacts = [
     <div class="operation-explainer">
       <h3>{t('一次健康扫描应该留下什么', 'What a health scan should leave behind')}</h3>
       <ol>
-        <li><strong>{t('空间', 'Storage')}</strong><span>{t('df / inode 与几个已知大型根目录的变化。', 'df/inode plus bounded changes in known large roots.')}</span></li>
+        <li><strong>{t('空间', 'Storage')}</strong><span>{t('系统磁盘容量（df）、文件数量容量（inode）与几个已知大型根目录的变化。', 'Filesystem capacity (df), file-count capacity (inode), and bounded changes in known large roots.')}</span></li>
         <li><strong>{t('活跃引用', 'Live references')}</strong><span>{t('哪些 run、checkpoint、容器挂载或进程仍在用。', 'Which runs, checkpoints, mounts, or processes are still in use.')}</span></li>
         <li><strong>{t('资产变化', 'Artifact changes')}</strong><span>{t('新出现的大型产物、实验身份证（Passport）覆盖缺口和待收尾归档。', 'New large outputs, experiment-Passport coverage gaps and closeout backlog.')}</span></li>
       </ol>
@@ -111,13 +111,13 @@ const gpuFacts = [
       <span>02</span>
       <div><h2>{t('实验收尾归档', 'Campaign closeout')}</h2></div>
     </div>
-    <p class="section-lede">{t('实验跑完以后，不应该只留下一个越来越大的目录。收尾的目标是让另一个 Agent 不看聊天，也能知道每个重要产物是什么、从哪里来、哪一份远端副本是正式归档版本（内部记录叫 canonical copy）、怎样恢复。', 'A completed experiment should not remain merely as an ever-growing directory. Closeout should let another Agent identify every meaningful artifact, its origin, canonical remote copy, and restore path without relying on chat history.')}</p>
+    <p class="section-lede">{t('实验跑完以后，不应该只留下一个越来越大的目录。收尾的目标是让另一个 Agent 不看聊天，也能知道每个重要产物是什么、从哪里来、哪一份远端副本是正式归档版本（canonical copy，也就是恢复时默认认的那一份）、怎样恢复。具体归档对象、负责人、预计释放量和完成状态只来自本次维护的现场扫描；这个静态网页不拿旧快照预填。', 'A completed experiment should not remain merely as an ever-growing directory. Closeout should let another Agent identify every meaningful artifact, its origin, canonical remote copy, and restore path without relying on chat history. Exact archive objects, owner, expected reclaim size, and completion state come only from the fresh maintenance scan; this static page does not prefill them from an old snapshot.')}</p>
 
     <figure class="lifecycle-flow" aria-labelledby="lifecycle-caption">
       <ol>
         <li><span>1</span><strong>{t('盘点', 'Inventory')}</strong><small>{t('确认对象和归属', 'identify objects and ownership')}</small></li>
-        <li><span>2</span><strong>{t('实验身份证', 'Passport')}</strong><small>{t('记录身份、SHA 和科学角色（Passport）', 'record identity, SHA, and scientific role')}</small></li>
-        <li><span>3</span><strong>{t('远端归档', 'Archive')}</strong><small>GitHub / HF / GHCR</small></li>
+        <li><span>2</span><strong>{t('实验身份证（Passport）', 'Experiment Passport')}</strong><small>{t('记录实验身份、文件指纹（SHA）和科学角色', 'record experiment identity, file SHA, and scientific role')}</small></li>
+        <li><span>3</span><strong>{t('远端归档', 'Archive')}</strong><small>{t('GitHub / Hugging Face / GitHub 容器镜像仓库', 'GitHub / Hugging Face / GitHub Container Registry')}</small></li>
         <li><span>4</span><strong>{t('恢复验证', 'Readback')}</strong><small>{t('重新读取或恢复，确认远端可用', 'read or restore again to verify the remote copy')}</small></li>
         <li><span>5</span><strong>{t('生命周期状态', 'Lifecycle')}</strong><small>{t('内部状态码只用于审计，日常阅读不需要记', 'internal lifecycle codes are audit-only; readers do not need to memorize them')}</small></li>
       </ol>

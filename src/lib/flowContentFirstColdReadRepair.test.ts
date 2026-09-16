@@ -39,6 +39,8 @@ describe('Flow content-first cold-read repair', () => {
   it('does not manufacture a full-screen gap and keeps mobile research navigation discoverable without a clipped strip', () => {
     expect(hero).not.toContain('min-height:min(34rem,calc(100svh - 9rem))');
     expect(hero).not.toContain('先看研究对象与比较条件 ↓');
+    expect(hero).not.toContain('margin:1.35rem auto 1.8rem');
+    expect(hero).toContain('实验状态与来源（按需展开）');
     expect(hero).toContain('持续学习中分别更新文字记忆、可复用技能、行为规则和 LoRA（只训练少量适配参数）');
     expect(nav).toContain('research-navigation__mobile');
     expect(nav).toContain("t('相关页面', 'Related pages')");
@@ -63,6 +65,9 @@ describe('Flow content-first cold-read repair', () => {
     expect(design).toContain('早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态');
     expect(design).toContain('完整系统比较只能回答两套系统总体表现有什么差异');
     expect(design).toContain('监督微调（SFT）训练配方');
+    expect(design).toContain('checkpoint，也就是一版固定参数');
+    expect(hub).toContain('参数指纹（digest，用来核对参数有没有变化）');
+    expect(hub).toContain('Run Manifest，记录模型、代码、配置和任务集合');
     expect(design).toContain('各自的提示、历史与动作解析层');
     expect(design).not.toContain('native harness：');
   });

@@ -57,7 +57,7 @@ describe('Vanilla SD-LoRA mechanism projection', () => {
     for (const phrase of [
       'SD-LoRA: how successful traces become a candidate LoRA update',
       'LoRA freezes the base model and trains only a small set of adapter parameters',
-      'keeping only the earliest fully checked success per task',
+      'A candidate is a trained new parameter state, not something automatically adopted for the next round',
       'Ordinary LoRA',
       'Scalable Decoupled LoRA',
       'This page calls the current baseline “Vanilla SD-LoRA.”',

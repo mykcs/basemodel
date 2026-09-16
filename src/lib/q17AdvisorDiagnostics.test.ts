@@ -25,11 +25,11 @@ describe('Q17 advisor diagnostics publication', () => {
 
   it('keeps the result and boundary visible in both language routes', () => {
     const component = read('src/components/research/OpenEvoQ17AdvisorDiagnostics.astro');
-    expect(component).toContain('同一组 32 道 WebShop 题上，两个相邻训练状态平均分 63.58 与 59.41');
-    expect(component).toContain('On the same 32 WebShop tasks, two adjacent training states averaged 63.58 and 59.41');
-    expect(component).toContain('R127 / R128 指进入第 127 / 128 轮时加载的两个相邻训练状态');
-    expect(component).toContain('LoRA（只训练少量适配参数）');
-    expect(component).toContain('这条实验采用 DirectApply：候选参数通过工程和数据检查后，下一轮直接使用');
+    expect(component).toContain('同样 32 道题上，后一版平均分低 4.18，但还不能判定模型退步');
+    expect(component).toContain('On the same 32 tasks, the later state averaged 4.18 points lower, but this does not establish a regression');
+    expect(component).toContain('第一阶段由 Qwen 完成 WebShop 任务，MiniMax 只在任务结束后回看保存的轨迹');
+    expect(component).toContain('DirectApply 指候选参数通过工程和数据检查后直接进入下一轮');
+    expect(component).toContain('简称 R127 / R128');
     expect(component).toContain('95% 统计范围 −17.13 ～ +8.00，包含“没有差别”');
     expect(component).toContain('DirectApply（候选更新检查通过后直接采用）');
     expect(component).not.toContain('min-height:calc(100svh - 6rem)');
@@ -49,5 +49,6 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(component).toContain('f6fa4d05b7433685088ac59b1b488eecb42c781e');
     expect(component).not.toContain('任务能力发生了重排');
     expect(component).not.toContain('平均只差 4.18 分');
+    expect(component).not.toContain('margin-top:5rem');
   });
 });

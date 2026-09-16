@@ -12,6 +12,10 @@ describe('content-first server operations pilot', () => {
     expect(server).toContain('NOT_AUTHORIZED');
     expect(server).toContain('恢复成功不等于已获删除许可');
     expect(server).toContain('例行服务器维护');
+    expect(server).toContain('系统磁盘统计（df）');
+    expect(server).toContain('文件数量容量（inode）');
+    expect(server).toContain('canonical copy，也就是恢复时默认认的那一份');
+    expect(server).toContain('具体归档对象、负责人、预计释放量和完成状态只来自本次维护的现场扫描');
   });
 
   it('keeps optional one-stage navigation after the primary operational owner', () => {
