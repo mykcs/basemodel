@@ -115,6 +115,7 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
       { role: 'analysis', label: { zh: '两条路线说明', en: 'How the two lines differ' }, href: `${cap}/sd-lora-history/`, mobileFeatured: true, directoryGroup: sdLoraAccelerationDirectoryGroup },
       { role: 'analysis', label: { zh: 'Stable Reduction', en: 'Stable Reduction' }, href: `${cap}/sd-lora-equivalence/`, mobileFeatured: true, directoryGroup: sdLoraAccelerationDirectoryGroup },
       { role: 'analysis', label: { zh: 'Bounded Online Recurrence', en: 'Bounded Online Recurrence' }, href: `${cap}/sd-lora-bounded-state/`, mobileFeatured: true, directoryGroup: sdLoraAccelerationDirectoryGroup },
+      { role: 'analysis', label: { zh: 'Effective-State GDR：写入强度', en: 'Effective-State GDR: write strength' }, href: `${cap}/bounded-effective-state-gdr/`, directoryGroup: sdLoraAccelerationDirectoryGroup },
       { role: 'analysis', label: { zh: 'Text Memory 在这条线里发生了什么', en: 'What happened to Text Memory in this line' }, href: `${cap}/text-memory/` },
       { role: 'analysis', label: { zh: 'D1 参数几何：更新方向能否低维近似', en: 'D1 geometry: can the update trajectory be approximated in fewer directions?' }, href: `${cap}/q17-directapply-analysis/#geometry` },
       { role: 'diagnostic', label: { zh: 'D1 行为保持：压缩后还是同一个模型吗', en: 'D1 function preservation: is the compressed model still equivalent?' }, href: `${cap}/q17-directapply-analysis/#function` },
@@ -144,6 +145,7 @@ export const OPEN_EVO_CANONICAL_ROUTE_OWNERS: Readonly<Record<string, OpenEvoExp
   'sd-lora-present-function': 'directapply-1p7b',
   'sd-lora-future-learning': 'directapply-1p7b',
   'sd-lora-bounded-state': 'directapply-1p7b',
+  'bounded-effective-state-gdr': 'directapply-1p7b',
   'text-memory': 'directapply-1p7b',
 };
 

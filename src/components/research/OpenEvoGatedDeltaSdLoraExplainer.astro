@@ -11,6 +11,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
 const historyHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
 const vanillaHref = p('/research/seed-openevo/flow/sd-lora/');
+const successorHref = p('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/');
 const flaHref = 'https://github.com/fla-org/flash-linear-attention/blob/516143e31fce09925e6c39ac37148444bad176c4/fla/ops/gated_delta_rule/naive.py';
 const paperHref = 'https://arxiv.org/abs/2412.06464';
 const evidenceFor = (id: string) => id === 'beta-g'
@@ -57,6 +58,7 @@ const evidenceFor = (id: string) => id === 'beta-g'
       <figcaption>{t('不同实现可能转置张量方向，但语义不变：读取旧 State 后，把没有解释掉的 residual 连续写回。', 'Implementations may transpose tensor orientation, but the semantics stay the same: read the old State, then continuously write back the unexplained residual.')}</figcaption>
     </figure>
     <p class="gds-sources"><a href={flaHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={flaHref} />Flash Linear Attention reference</a> · <a href={paperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={paperHref} />Gated Delta Networks</a></p>
+    <p class="gds-related"><a href={successorHref}>{t('后继方法：为什么改成 Effective-State GDR →', 'Successor: why move to Effective-State GDR →')}</a></p>
   </section>
 
   <section class="gds-section" id="task-vector" aria-labelledby="task-vector-title">

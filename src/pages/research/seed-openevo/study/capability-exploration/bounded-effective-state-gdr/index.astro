@@ -1,0 +1,14 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvoEffectiveStateGdrLoraStudy from '../../../../../../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro';
+import ResearchRouteContext from '../../../../../../components/research/ResearchRouteContext.astro';
+const locale = 'zh' as const;
+---
+<AppLayout
+  title="Bounded Online Recurrence + Effective-State GDR"
+  description="固定大小的历史状态之后，继续研究新经验的写入强度；正式实验设计已冻结，正式结果尚未产生。"
+  locale={locale}
+>
+  <ResearchRouteContext locale={locale} route="bounded-effective-state-gdr" />
+  <OpenEvoEffectiveStateGdrLoraStudy locale={locale} />
+</AppLayout>
