@@ -13,8 +13,10 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.source.repository).toBe('mykcs/openevo-experiment');
     expect(study.source.finalImplementationPr).toBe(510);
     expect(study.source.controlTowerPr).toBe(502);
-    expect(study.source.finalImplementationHead).toMatch(sha40);
-    expect(study.source.scientificExecutionSha).toMatch(sha40);
+    expect(study.source.finalImplementationHead).toBe('eb7a2b5c8365e83b7b1133f803ba1add9d81dee5');
+    expect(study.source.controlTowerBoundImplementationHead).toBe('5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa');
+    expect(study.source.scientificExecutionSha).toBe('b41884ac90d185742dc47f240c4d54a3cfaf6175');
+    expect(study.source.authorityReconciliationRequired).toBe(true);
     expect(study.source.controlTowerHead).toMatch(sha40);
     expect(Number.isNaN(Date.parse(study.checkedAt))).toBe(false);
   });

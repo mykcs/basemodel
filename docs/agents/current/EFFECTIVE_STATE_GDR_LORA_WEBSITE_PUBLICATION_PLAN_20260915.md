@@ -39,12 +39,15 @@ BaseModel 创建基线：`main@1b6d13714f672345a086cbc09ec7067cb3dae3a7`
 
 ## 2. 当前科学 authority：现在能写什么
 
-截至 2026-09-16 当前 refresh，Priority-1 已到 `PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START`：consumer READY、controller-init、zero-task dry-run 与 W&B observability admission 均已完成，但 owner launch release 仍不存在，formal rows 仍为 `0`，正式 160-round experiment **尚未启动**。网站现在可以发布的是“推导 + 方法 + 预注册实验设计 + prelaunch readiness”，不能发布正式 efficacy 结论。
+截至 2026-09-16 09:38 +08 live refresh，正式 160-round experiment **仍未启动**：owner launch release 不存在，formal run launched=`false`，protected final-panel access=`0`。当前发现 authority drift：#510 实际 Git head 已从 #502 绑定的 `5e1b6a2d...` 前进到 `eb7a2b5c...`，并新增 frozen campaign prereg。唯一 owner / Control-Tower #502 仍停留在 `99dd0fdc...`，继续绑定旧 `5e1b6a2d... / b41884ac... / READY 742336...` 身份。
+
+因此在 #502 明确 ratify 或 reject 这个 successor 以前：网站 formal result 继续 Pending；不得把 #510 新 branch head 自动升级成 owner-authorized scientific identity。
 
 ### 2.1 必须绑定的上游身份
-
-- 当前 implementation / launch workline：PR #510 exact head `5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa`。
-- frozen formal scientific bytes：`b41884ac90d185742dc47f240c4d54a3cfaf6175`。
+- live implementation / launch workline：PR #510 actual Git head `eb7a2b5c8365e83b7b1133f803ba1add9d81dee5`。
+- #502 当前仍绑定的 implementation identity：`5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa`。
+- #502 当前仍绑定的 frozen formal scientific bytes：`b41884ac90d185742dc47f240c4d54a3cfaf6175`。
+- #510 live campaign prereg parent science SHA：`de5b011035cfe907fee34c7b9a8ea961dd1e230d`；status=`FROZEN_BEFORE_FORMAL_LAUNCH`；尚未由 #502 ratify 为 replacement authority。
 - Control Tower：PR #502 exact head `99dd0fdce328682fb0218aa084d3d2b0d0b7ae49`。
 - current-main durable handoff：`9f6259be9b961223a5cab7711fe1f297e272d541`（PR #514）。
 - historical #497 receipt-only head：`7847d6497ae58b7a82dc37cd1cf71ccfe44aa8df`；只保留为历史 science/evidence lineage，不再作为当前 launch workline。
@@ -175,8 +178,10 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
 source: {
   repository: 'mykcs/openevo-experiment',
   finalImplementationPr: 510,
-  finalImplementationHead: '5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa',
+  finalImplementationHead: 'eb7a2b5c8365e83b7b1133f803ba1add9d81dee5',
+  controlTowerBoundImplementationHead: '5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa',
   scientificExecutionSha: 'b41884ac90d185742dc47f240c4d54a3cfaf6175',
+  authorityReconciliationRequired: true,
   controlTowerPr: 502,
   controlTowerHead: '99dd0fdce328682fb0218aa084d3d2b0d0b7ae49',
   currentMainHandoffCommit: '9f6259be9b961223a5cab7711fe1f297e272d541',
@@ -439,7 +444,7 @@ claim_boundary = <explicit sentence>
 2026-09-16 fresh evidence：
 
 - #497 = closed historical lineage，head `7847d6497ae58b7a82dc37cd1cf71ccfe44aa8df`。
-- #502 = current Control Tower，head `99dd0fdce328682fb0218aa084d3d2b0d0b7ae49`；#510 = final implementation/launch，head `5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa`。
+- #502 = current Control Tower，head `99dd0fdce328682fb0218aa084d3d2b0d0b7ae49`；它仍绑定 #510=`5e1b6a2d...` / science=`b41884ac...`。#510 actual Git head 已到 `eb7a2b5c8365e83b7b1133f803ba1add9d81dee5`，但该 successor 尚未被 #502 ratify。
 - science execution = `b41884ac90d185742dc47f240c4d54a3cfaf6175`；consumer READY SHA256 = `74233661885a033876b07a62df1a165f98d5109115f100418e2d5b084955aca9`。
 - consumer server fresh-read：READY=`FORMAL_READY_AWAITING_OWNER_LAUNCH`；dry-run=`DRY_RUN_PASS_NO_FORMAL_TASKS`；controller-init=`PASS_CONTROLLER_INIT_ONLY_NO_FORMAL_CONSUMPTION`；zero-state=`PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START`；formal root absent。
 - live GPU watcher = `WAITING_FOR_GPU_LANE`，`reservation_created=false`，`launch_authority=false`；这是 execution-readiness observation，不是 scientific result。
@@ -694,6 +699,7 @@ final panel = locked
 - [x] hosted route 390 / 768 / 1440 cold-read PASS；无 overflow / stale Pending / scientific contradiction。
 - [x] merge 前再读一次 upstream science：如果 formal state 已从 not-started 变成 running/sealed，分类哪些 website state 必须更新，不能合并明显 stale 的“尚未启动”。
 - [ ] expected-head guard 合并；不要自动 merge 未审阅的 scientific copy。
+  - **BLOCKED_AUTHORITY_DRIFT · 2026-09-16 09:38 +08：** merge 前 live refresh 发现 #510 actual head=`eb7a2b5c...` 与 #502 bound head=`5e1b6a2d...` / science=`b41884ac...` 不一致。新 #510 prereg 固定 `parent_science_sha=de5b011...` 与 4-GPU co-resident rollout；formal run 仍未启动、owner release 仍 absent、final panel access=0。此项只允许在 #502 明确 ratify/reject successor 后继续；不得由 BaseModel 自选 authority。
 - [ ] Production READY 后打开 canonical route 做最终 smoke。
 - [ ] Production body / metadata / Study navigation / adjacent Bounded / Gated-Delta routes 一致后才宣布 website publication complete。
 
@@ -896,3 +902,16 @@ Scientific state: fresh #502/#510 still `PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OW
 Human decision needed: scientific copy still requires review before expected-head merge; this automation must not self-merge it.
 Next safe item: wait for scientific-copy review/owner acceptance, then expected-head guard merge; after Production READY, run canonical + metadata + Study + adjacent Bounded/Gated-Delta smoke.
 Release-evidence note: provider run/deployment identifiers live here as a release receipt. The checklist-closeout commit that follows must itself rerun exact-head provider gates before merge; no later evidence-only source commit should be added after those gates, because that would invalidate the exact-head proof.
+
+### 2026-09-16 09:38 +08
+BaseModel main: `d3631890f89c0fe62e249c088794b64a0b503f00`
+PR head before: `4aa6870a3b68eb10ec92881bf5efde113ca3f88f`
+PR head after: pending this freshness/blocker push
+OpenEvo #502/#510: `99dd0fdce328682fb0218aa084d3d2b0d0b7ae49` / actual Git head `eb7a2b5c8365e83b7b1133f803ba1add9d81dee5`
+Checklist items closed: none; expected-head merge is fail-closed on an upstream authority mismatch discovered by the mandatory pre-merge refresh.
+Files changed: `src/data/effectiveStateGdrLoraStudy.ts`; `src/lib/effectiveStateGdrLoraStudy.test.ts`; this checklist.
+Scientific state: formal result remains `pending`; no partial W&B, winner, ETA, or new efficacy claim published. No treatment or claim boundary was changed by BaseModel.
+Human decision needed: #502 must ratify the #510 co-resident successor (`eb7a2b5c...`, parent science `de5b011...`) or reject it and keep `5e1b6a2d... / b41884ac...` as authority.
+Next safe item: run local semantic/type/build validation for this provenance-only freshness patch, push it to #729, then stop before expected-head merge until upstream authority is reconciled.
+Validation update 2026-09-16 09:49 +08: latest #510 head re-refresh=`eb7a2b5c8365e83b7b1133f803ba1add9d81dee5`; focused semantic tests `24/24 PASS`; Astro check `0 errors / 0 warnings` (2 pre-existing deprecation hints); build `263 pages PASS`; heading audit PASS; external-brand audit PASS; `git diff --check` PASS. Live file-overlap recomputation: #737/#734/#728 each have `0` changed-file intersections with #729.
+Provider note: authoritative Public PR CI / Vercel final gate intentionally NOT rerun because expected-head merge remains authority-blocked; doing provider release work now would not resolve the scientific authority mismatch.

@@ -30,14 +30,16 @@ const scienceSha = 'b41884ac90d185742dc47f240c4d54a3cfaf6175';
 const evidenceRoot = `${repo}/blob/${scienceSha}/docs/evidence/bounded-recurrence-gdr-20260915`;
 
 export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
-  checkedAt: '2026-09-16T05:33:22+08:00',
+  checkedAt: '2026-09-16T09:48:44+08:00',
   source: {
     repository: 'mykcs/openevo-experiment',
     controlTowerPr: 502,
     controlTowerHead: '99dd0fdce328682fb0218aa084d3d2b0d0b7ae49',
     finalImplementationPr: 510,
-    finalImplementationHead: '5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa',
+    finalImplementationHead: 'eb7a2b5c8365e83b7b1133f803ba1add9d81dee5',
+    controlTowerBoundImplementationHead: '5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa',
     scientificExecutionSha: scienceSha,
+    authorityReconciliationRequired: true,
     currentMainHandoffCommit: '9f6259be9b961223a5cab7711fe1f297e272d541',
     historicalImplementationPr: 497,
     historicalImplementationHead: '7847d6497ae58b7a82dc37cd1cf71ccfe44aa8df',
