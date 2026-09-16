@@ -7,7 +7,7 @@ const closeout = read('../styles/visual-closeout.css');
 
 describe('content-first server operations pilot', () => {
   it('makes the dated operational state the first subject without hiding deletion authority', () => {
-    expect(server).toContain('约 0.99 TiB 可用；当前不用扩容');
+    expect(server).toContain('项目持久盘还剩约 0.99 TiB');
     expect(server).toContain('2026-09-15 22:10（UTC+8）· 静态快照，不是实时监控');
     expect(server).toContain('NOT_AUTHORIZED');
     expect(server).toContain('远端可恢复不等于本地可删');

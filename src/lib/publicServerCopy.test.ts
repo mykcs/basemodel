@@ -13,7 +13,7 @@ const staticServerDiagram = read('../components/research/ServerAuthorityDiagram.
 
 describe('public server copy', () => {
   it('keeps the server lifecycle page public-safe and distinguishes current from historical storage facts', () => {
-    expect(serverOverview).toContain('约 0.99 TiB 可用；当前不用扩容');
+    expect(serverOverview).toContain('项目持久盘还剩约 0.99 TiB');
     expect(serverOverview).toContain('0.99 TiB');
     expect(serverOverview).toContain('320.9 GiB');
     expect(serverOverview).toContain('304.66 GiB');

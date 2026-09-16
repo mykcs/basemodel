@@ -20,10 +20,12 @@ describe('Flow content-first cold-read repair', () => {
   });
 
   it('explains Stage 1 in ordinary language instead of requiring analyzer or step-loop jargon', () => {
-    expect(hub).toContain('一次 WebShop 购物任务（episode）');
-    expect(hub).toContain('外部分析模型才做事后复盘');
+    expect(hub).toContain('下面用 WebShop 展开两阶段');
+    expect(hub).toContain('外部分析模型才读取已保存的轨迹做复盘');
+    expect(hub).toContain('不自动代表 ALFWorld 使用同一交互流程');
     expect(hub).not.toContain('外部 analyzer 才能复盘');
     expect(hub).not.toContain('step loop');
+    expect(hub.indexOf('id="training-design"')).toBeLessThan(hub.indexOf('id="questions"'));
   });
 
   it('keeps causal attribution visible without opening a disclosure', () => {
@@ -37,7 +39,7 @@ describe('Flow content-first cold-read repair', () => {
   });
 
   it('connects Stage 1 evidence to the later four-state Stage 2 without rewriting early experiments', () => {
-    for (const term of ['Text Memory（文字记忆）', 'Skill Bundle（技能集合）', 'Agent System（全局行为规则）', 'SD-LoRA（参数更新）']) {
+    for (const term of ['Text Memory 保存文字经验', 'Skill Bundle 提供可复用技能', 'Agent System 给出全局行为规则', 'SD-LoRA 写入参数更新']) {
       expect(design).toContain(term);
     }
     expect(design).toContain('早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态');

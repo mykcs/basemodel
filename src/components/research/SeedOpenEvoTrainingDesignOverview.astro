@@ -9,7 +9,7 @@ const p = (path: string) => localePath(locale, path);
 
 const stages = [
   [t('做题模型', 'Actor'), 'Qwen2.5-3B-Instruct', t('当前对照固定同一模型；它自己选择 WebShop 动作', 'the current comparison fixes the same model; it chooses WebShop actions itself')],
-  [t('交互规则', 'Interaction layer'), 'SEED / OpenEvo', t('各自负责提示、历史和动作解析（代码里叫 native harness），但不提供具体购物答案', 'each owns its prompts, history, and action parsing (the code calls this its native harness) without supplying shopping answers')],
+  [t('提示与动作层', 'Prompt and action layer'), 'SEED / OpenEvo', t('各自负责提示、历史和动作解析；代码里把这一整层叫 native harness，但它不提供具体购物答案', 'each owns its prompts, history, and action parsing; the code calls this whole layer the native harness, and it does not supply shopping answers')],
   [t('任务环境', 'Environment'), 'Princeton WebShop', t('返回页面观察、任务分数和状态变化', 'returns page observations, task scores, and state changes')],
   [t('保存完整过程', 'Sealed trajectory'), t('一次完整任务', 'One completed task'), t('任务结束后才把整条交互记录固定下来', 'freezes the full interaction record only after the task ends')],
   [t('任务后复盘', 'Post-task review'), t('外部分析模型', 'External analysis model'), t('只在任务结束后读取已保存的轨迹', 'reads the saved trajectory only after task completion')],
@@ -26,7 +26,7 @@ const stages = [
       </li>
     ))}
   </ol>
-  <p class="stage2-bridge">{t('Stage 1 留下可追溯的成功轨迹和任务后复盘。进入后续 Stage 2 后，Text Memory（文字记忆）、Skill Bundle（技能集合）、Agent System（全局行为规则）和 SD-LoRA（参数更新）各自决定是否更新；通过当前实验规则确认的状态，才会带入下一批任务。早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态。', 'Stage 1 leaves traceable successful trajectories and post-task review. In the later Stage 2, Text Memory, Skill Bundle, Agent System, and SD-LoRA parameter updates each decide whether to change; only the state accepted by the current experiment rules is carried into the next task batch. The earlier Stage-1 and LoRA-vs-SD-LoRA comparisons did not enable all four states together.')}</p>
+  <p class="stage2-bridge">{t('Stage 1 留下可追溯的成功轨迹和任务后复盘。进入 Stage 2 后，Text Memory 保存文字经验，Skill Bundle 提供可复用技能，Agent System 给出全局行为规则，SD-LoRA 写入参数更新；每一类是否更新都由当前实验规则决定，确认后的状态才带入下一批任务。早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态。', 'Stage 1 leaves traceable successful trajectories and post-task review. In Stage 2, Text Memory stores written experience, Skill Bundle provides reusable skills, Agent System supplies global behavior rules, and SD-LoRA writes parameter updates. The current experiment rules decide which of those states change before the accepted state enters the next task batch. Earlier Stage-1 and LoRA-vs-SD-LoRA comparisons did not enable all four states together.')}</p>
 
   <section class="comparison-scope" data-learning-comparison-scope aria-labelledby="comparison-scope-title">
     <h3 id="comparison-scope-title">{t('比较口径决定差异能归因到哪里', 'The comparison scope determines what can explain a difference')}</h3>

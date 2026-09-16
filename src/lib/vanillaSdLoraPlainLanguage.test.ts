@@ -5,20 +5,22 @@ const slide = readFileSync(new URL('../components/research/OpenEvoVanillaSdLoraS
 const mechanism = readFileSync(new URL('../components/research/OpenEvoVanillaSdLoraMechanism.astro', import.meta.url), 'utf8');
 
 describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
-  it('starts the page from motivation and OpenEvo position before the reusable mechanism slide', () => {
+  it('starts from the parameter-write job and keeps the detailed LoRA comparison at optional depth', () => {
     for (const phrase of [
-      'SD-LoRA 用筛选后的成功轨迹训练候选 LoRA 参数',
-      '一次 WebShop（网页购物任务）成功先只是一条任务轨迹',
-      '候选参数不等于能力一定提升',
+      'SD-LoRA：成功轨迹怎样变成候选 LoRA 参数',
+      'LoRA 是冻结基础模型、只训练少量低秩适配参数的方法',
+      'WebShop（网页购物任务）',
       '训练出候选参数，不等于下一轮已经用了它',
-      'SD-LoRA 在本轮任务结束后、下一轮开始前更新 LoRA',
-      '普通 LoRA',
+      '候选参数不等于能力一定提升',
+      '普通 LoRA 与 SD-LoRA 的参数区别',
       'Scalable Decoupled LoRA',
       '本页把没有加入后续加速变体的当前基线称为 “Vanilla SD-LoRA”',
     ]) expect(mechanism).toContain(phrase);
 
-    const motivation = mechanism.indexOf('SD-LoRA 用筛选后的成功轨迹训练候选 LoRA 参数');
-    const comparison = mechanism.indexOf('普通 LoRA');
+    expect(mechanism).toContain('<details class="sdlora__section sdlora__section--primer"');
+    expect(mechanism).not.toContain('sdlora-intro__frame research-fact-band');
+    const motivation = mechanism.indexOf('SD-LoRA：成功轨迹怎样变成候选 LoRA 参数');
+    const comparison = mechanism.indexOf('普通 LoRA 与 SD-LoRA 的参数区别');
     const slideOwner = mechanism.indexOf('<OpenEvoVanillaSdLoraSlide');
     expect(motivation).toBeGreaterThan(-1);
     expect(comparison).toBeGreaterThan(motivation);

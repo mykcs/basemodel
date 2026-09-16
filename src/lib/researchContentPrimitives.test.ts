@@ -17,13 +17,11 @@ describe('shared research content primitives', () => {
     expect(research).toBeGreaterThan(header);
   });
 
-  it('uses one semantic fact band across all four pilot families', () => {
-    expect(flowHero).toContain('class="mission-hero__frame research-fact-band"');
-    expect(flowHero).toContain('style="--research-fact-columns:5"');
-    expect(sdLora).toContain('class="sdlora-intro__frame research-fact-band"');
-    expect(sdLora).toContain('style="--research-fact-columns:3"');
-    expect(flowHero).toContain('<dl class="mission-hero__frame research-fact-band"');
-    expect(sdLora).toContain('<dl class="sdlora-intro__frame research-fact-band"');
+  it('uses the shared fact band only where a shared numeric axis still helps', () => {
+    expect(flowHero).not.toContain('mission-hero__frame research-fact-band');
+    expect(flowHero).toContain('这是实验设计与流程，不是结果');
+    expect(sdLora).not.toContain('sdlora-intro__frame research-fact-band');
+    expect(sdLora).toContain('普通 LoRA 与 SD-LoRA 的参数区别');
     expect(serverOverview).toContain('class="server-hero__facts research-fact-band"');
     expect(serverOverview).toContain('style="--research-fact-columns:3"');
     expect(q17Diagnostics).toContain('class="result-hero__facts research-fact-band"');

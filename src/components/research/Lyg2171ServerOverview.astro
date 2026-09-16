@@ -46,8 +46,8 @@ const gpuFacts = [
 <main class="server-overview" data-locale={locale} data-storage-responsibility-view="artifact-lifecycle-v3">
   <header class="server-hero" data-reader-primary>
     <p class="server-hero__context">{t('2026-09-15 22:10（UTC+8）· 静态快照，不是实时监控', '2026-09-15 22:10 (UTC+8) · static snapshot, not live monitoring')}</p>
-    <h1>{t('约 0.99 TiB 可用；当前不用扩容', 'About 0.99 TiB available; no expansion needed now')}</h1>
-    <p class="server-hero__status">{t('下一步不是清盘，而是先把大型实验产物归档并验证可以恢复。需要回收空间时，只先生成精确清单；不会自动删除。', 'The next step is not broad cleanup. First archive large experiment outputs and verify they can be restored. If space must be reclaimed, generate an exact list first; nothing is deleted automatically.')}</p>
+    <h1>{t('项目持久盘还剩约 0.99 TiB', 'About 0.99 TiB remains on the project persistent disk')}</h1>
+    <p class="server-hero__status">{t('当前没有紧急扩容信号。下一步先把大型实验产物归档并验证可以恢复；需要回收空间时，只生成精确清单，不会自动删除。', 'There is no urgent expansion signal. First archive large experiment outputs and verify they can be restored. If space must be reclaimed, generate an exact list only; nothing is deleted automatically.')}</p>
 
     <dl class="server-hero__facts research-fact-band" style="--research-fact-columns:3" aria-label={t('当前文件系统快照', 'Current filesystem snapshot')}>
       <div><dt>{t('总容量', 'Capacity')}</dt><dd>2.0 TiB</dd></div>
@@ -61,7 +61,7 @@ const gpuFacts = [
       <div class="routine-entry__copy">
         <span>{t('默认操作', 'Default operation')}</span>
         <strong>{t('运行一次例行维护', 'Run one routine maintenance pass')}</strong>
-        <p>{t('先只读检查空间和活跃引用，再把已完成实验归档并验证恢复；最后只生成回收清单。遇到删除、公开可见性、实验身份或归属不清时才停下来请你决定。', 'First check storage and live references read-only, then archive completed experiments and verify restore; finally generate a reclaim list only. Stop for an owner decision on deletion, visibility, experiment identity, or unresolved ownership.')}</p>
+        <p>{t('先只读检查空间，以及哪些文件仍被进程、容器或配置使用；再把已完成实验归档并验证恢复；最后只生成回收清单。只有删除、公开可见性，或实验属于谁、对应哪次正式运行不清楚时才停下来请你决定。', 'First check storage and live references read-only, then archive completed experiments and verify restore; finally generate a reclaim list only. Stop for an owner decision on deletion, visibility, experiment identity, or unresolved ownership.')}</p>
       </div>
       <details class="routine-entry__prompt">
         <summary>{t('复制维护指令', 'Copy maintenance instructions')}</summary>
@@ -119,7 +119,7 @@ const gpuFacts = [
         <li><span>2</span><strong>{t('实验身份证', 'Passport')}</strong><small>{t('记录身份、SHA 和科学角色（Passport）', 'record identity, SHA, and scientific role')}</small></li>
         <li><span>3</span><strong>{t('远端归档', 'Archive')}</strong><small>GitHub / HF / GHCR</small></li>
         <li><span>4</span><strong>{t('恢复验证', 'Readback')}</strong><small>{t('重新读取或恢复，确认远端可用', 'read or restore again to verify the remote copy')}</small></li>
-        <li><span>5</span><strong>{t('生命周期状态', 'Lifecycle')}</strong><small>{t('内部 P0 / P1 / P2 / P3 / X 只用于审计', 'internal P0 / P1 / P2 / P3 / X are audit labels')}</small></li>
+        <li><span>5</span><strong>{t('生命周期状态', 'Lifecycle')}</strong><small>{t('内部状态码只用于审计，日常阅读不需要记', 'internal lifecycle codes are audit-only; readers do not need to memorize them')}</small></li>
       </ol>
       <figcaption id="lifecycle-caption">{t('到这里仍然没有删除权限。收尾流程最多把对象推进到“可以提出回收建议”的状态。', 'There is still no deletion authority at this point. Closeout may only advance an object to the point where reclaim can be proposed.')}</figcaption>
     </figure>
@@ -153,7 +153,7 @@ const gpuFacts = [
         <div><dt>131</dt><dd>{t('个 deferred archive backlog 仍要完成远端收尾；源数据约 307.03 GiB。', 'deferred archive backlogs still need remote closeout; source data is about 307.03 GiB.')}</dd></div>
         <div><dt>1.69 GiB</dt><dd>{t('第一批 7 个临时/重复文件已经进入 exact reclaim proposal，但 delete_authorized=false。', 'the first 7 temporary/duplicate files are in an exact reclaim proposal, but delete_authorized=false.')}</dd></div>
       </dl>
-      <p class="q17-case__note">{t('按早期 bundle 的真实压缩比估算，131 个 backlog 还需要大约 154–184 GiB 的远端传输。这只是容量规划，不是“可以删”的证据。私有 Hugging Face 仍是默认归档目标；如果私有容量不足，流程必须停下来向 owner 报告，不能为了省空间自动把数据公开。', 'Based on observed early-bundle compression, the 131 backlogs imply roughly 154–184 GiB of remote transfer. This is capacity planning, not deletion evidence. Private Hugging Face remains the default archive target; if private capacity is insufficient, the workflow must stop and report to the owner rather than making data public automatically.')}</p>
+      <p class="q17-case__note">{t('按早期 bundle 的真实压缩比估算，131 个 backlog 还需要大约 154–184 GiB 的远端传输。这只是容量规划，不是“可以删”的证据。私有 Hugging Face 仍是默认归档目标；如果私有容量不足，流程必须停下来向负责人报告，不能为了省空间自动把数据公开。', 'Based on observed early-bundle compression, the 131 backlogs imply roughly 154–184 GiB of remote transfer. This is capacity planning, not deletion evidence. Private Hugging Face remains the default archive target; if private capacity is insufficient, the workflow must stop and report to the owner rather than making data public automatically.')}</p>
     </article>
 
     <details class="operator-detail">
@@ -168,17 +168,17 @@ const gpuFacts = [
       <span>03</span>
       <div><h2>{t('空间回收提案', 'Reclaim proposal')}</h2></div>
     </div>
-    <p class="section-lede">{t('空间回收和“已经备份”是两件事。只有 exact manifest 里的对象，经过 ownership、活跃引用和恢复证据复查后，才有资格进入人工批准。', 'Space reclaim and “already backed up” are separate facts. Only objects in an exact manifest, after ownership, live-reference, and recovery checks, may reach human approval.')}</p>
+    <p class="section-lede">{t('空间回收和“已经备份”是两件事。只有精确回收清单里的对象，经过归属、当前是否仍被使用和恢复证据复查后，才有资格进入人工批准。', 'Space reclaim and “already backed up” are separate facts. Only objects in an exact manifest, after ownership, live-reference, and recovery checks, may reach human approval.')}</p>
 
     <div class="reclaim-boundary">
       <div><span>{t('当前规则', 'Current rule')}</span><strong>{t('尚未批准删除', 'Deletion not authorized')}</strong><small>NOT_AUTHORIZED</small></div>
-      <p>{t('Proposal 可以精确列出“删什么、多少字节、为什么可恢复”，但它本身没有删除权限。owner 批准的必须是同一版 exact manifest；批准后还要在删除前重新检查 liveness。', 'A proposal can list exactly what would be removed, how many bytes, and why it is recoverable, but the proposal itself has no deletion authority. The owner must approve that exact manifest version, followed by a fresh liveness check immediately before deletion.')}</p>
+      <p>{t('回收提案可以精确列出“删什么、多少字节、为什么可恢复”，但它本身没有删除权限。负责人批准的必须是同一版精确清单；批准后还要在删除前重新检查对象是否仍被使用。', 'A proposal can list exactly what would be removed, how many bytes, and why it is recoverable, but the proposal itself has no deletion authority. The owner must approve that exact manifest version, followed by a fresh liveness check immediately before deletion.')}</p>
     </div>
 
     <ol class="reclaim-steps">
       <li><strong>{t('精确清单', 'Exact list')}</strong><span>{t('路径/对象、identity、逻辑字节数、remote restore 证据。', 'object identity, logical bytes, and remote restore evidence.')}</span></li>
       <li><strong>{t('人工批准', 'Owner approval')}</strong><span>{t('只批准这一版 manifest，不把批准扩展成 broad cleanup。', 'Approval applies to that manifest only, never to broad cleanup.')}</span></li>
-      <li><strong>{t('删除前复查', 'Point-of-use recheck')}</strong><span>{t('再次看进程、容器、配置和 ownership；任何变化都重新 HOLD。', 'Re-check processes, containers, configs, and ownership; any drift returns the item to HOLD.')}</span></li>
+      <li><strong>{t('删除前复查', 'Point-of-use recheck')}</strong><span>{t('再次看进程、容器、配置和对象归属；任何变化都重新暂停。', 'Re-check processes, containers, configs, and ownership; any drift returns the item to HOLD.')}</span></li>
       <li><strong>{t('精确删除', 'Precise deletion')}</strong><span>{t('只删除批准对象；shared Docker 禁止 broad prune。', 'Delete only approved objects; never broad-prune shared Docker.')}</span></li>
     </ol>
 
@@ -193,7 +193,7 @@ const gpuFacts = [
       <span>04</span>
       <div><h2>{t('服务器规格', 'Server specifications')}</h2></div>
     </div>
-    <p class="section-lede">{t('这些是资源库存，不是 GPU 使用授权。实验具体能用哪些卡、能否启动，仍由当前资源 runbook 和 point-of-use gate 决定。', 'These are inventory facts, not GPU allocation authority. Which cards an experiment may use and whether it may launch remain controlled by the current resource runbook and point-of-use gate.')}</p>
+    <p class="section-lede">{t('这些是资源库存，不是 GPU 使用授权。实验具体能用哪些卡、能否启动，仍由当前资源运行手册和启动前现场授权检查决定。', 'These are inventory facts, not GPU allocation authority. Which cards an experiment may use and whether it may launch remain controlled by the current resource runbook and point-of-use gate.')}</p>
     <dl class="gpu-facts">
       {gpuFacts.map((item) => <div><dt>{item.k}</dt><dd>{item.v}</dd></div>)}
     </dl>
@@ -204,7 +204,7 @@ const gpuFacts = [
       <span>05</span>
       <div><h2>{t('历史归属与隐私', 'Historical attribution and privacy')}</h2></div>
     </div>
-    <p class="section-lede">{t('当前页面不重新跨用户扫描。下面只保留 2026-09-03 01:11（UTC+8）的最近一次完整匿名归属快照，用来说明共享服务器的历史空间结构；它不是 2026-09-15 的当前排名，也不再单独标记站点 owner。', 'This page does not re-scan sibling users. The chart below preserves the most recent complete anonymous attribution snapshot from 2026-09-03 01:11 (UTC+8) only as historical context; it is not a current 2026-09-15 ranking and does not single out the site owner.')}</p>
+    <p class="section-lede">{t('当前页面不重新跨用户扫描。下面只保留 2026-09-03 01:11（UTC+8）的最近一次完整匿名归属快照，用来说明共享服务器的历史空间结构；它不是 2026-09-15 的当前排名，也不再单独标记站点负责人。', 'This page does not re-scan sibling users. The chart below preserves the most recent complete anonymous attribution snapshot from 2026-09-03 01:11 (UTC+8) only as historical context; it is not a current 2026-09-15 ranking and does not single out the site owner.')}</p>
 
     <div class="historical-attribution">
       <div class="storage-bar storage-bar--attribution" role="img" aria-label={t('2026-09-03 完整匿名空间归属：用户 1 107.8 GiB；用户 2 65.8 GiB；用户 3 22.2 GiB；用户 4 15.3 GiB；用户 5 7.81 GiB；用户 6 3.14 GiB；用户 7 小于 0.01 GiB；共享/系统 147.7 GiB；未归属 Docker 19.0 GiB；当时可用 25.1 GiB；文件系统保留/舍入 22.2 GiB。', 'Complete anonymous storage attribution on 2026-09-03: User 1 107.8 GiB; User 2 65.8 GiB; User 3 22.2 GiB; User 4 15.3 GiB; User 5 7.81 GiB; User 6 3.14 GiB; User 7 under 0.01 GiB; shared/system 147.7 GiB; unattributed Docker 19.0 GiB; 25.1 GiB available then; 22.2 GiB filesystem reserve/rounding.')}>
