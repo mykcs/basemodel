@@ -30,12 +30,12 @@ describe('human-readable product language contract', () => {
   });
 
   it('keeps the first-screen subject concrete in both locales without turning instructions into the H1', () => {
-    expect(missionHero).toContain("t('同一个 Qwen 做同样任务：比较 SEED 与 OpenEvo 两种学习方法', 'One Qwen on the same tasks: comparing how SEED and OpenEvo learn')");
+    expect(missionHero).toContain("t('同一个 Qwen 做同样任务：比较两种学习方法', 'One Qwen on the same tasks: comparing two learning methods')");
     expect(missionHero).toContain('mission-hero__boundary');
     expect(missionHero).toContain('本页只说明怎样公平比较，不发布实验结果');
-    expect(missionHero).toContain('ALFWorld 与 WebShop 的分数不能混比');
-    expect(missionHero).toContain('实验固定同一个 Qwen2.5-3B-Instruct');
-    expect(missionHero).toContain('OpenEvo 先保存任务证据');
+    expect(missionHero).toContain('ALFWorld（文本具身任务）与 WebShop（网页购物任务）分开比较，不混比分数');
+    expect(missionHero).toContain('实验固定同一个 Qwen 模型（Qwen2.5-3B-Instruct）');
+    expect(missionHero).toContain('OpenEvo 是先保存任务证据');
     expect(missionHero).not.toContain('先看研究对象与比较条件');
     expect(missionHero).not.toContain('mission-hero__frame research-fact-band');
     expect(missionHero).toContain("t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')");

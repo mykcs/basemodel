@@ -62,11 +62,11 @@ const gpuFacts = [
   <aside class="routine-entry" aria-label={t('例行维护入口', 'Routine maintenance entry')}>
       <div class="routine-entry__copy">
         <span>{t('按上面的状态继续', 'Continue from the state above')}</span>
-        <strong>{t('例行维护：只读检查 → 归档并验证恢复 → 生成回收清单', 'Routine maintenance: read-only checks → archive and verify restore → generate a reclaim list')}</strong>
+        <strong>{t('下一步：例行维护 · 只读检查 → 归档并验证恢复 → 生成回收清单', 'Routine maintenance: read-only checks → archive and verify restore → generate a reclaim list')}</strong>
         <p>{t('只有删除、公开可见性、实验身份变化或归属不清时才停下来请负责人决定。', 'Stop for an owner decision only on deletion, visibility, experiment-identity changes, or unresolved ownership.')}</p>
       </div>
       <details class="routine-entry__prompt">
-        <summary>{t('复制维护指令', 'Copy maintenance instructions')}</summary>
+        <summary>{t('展开可复制的例行维护指令', 'Copy maintenance instructions')}</summary>
         <pre data-copy-label={t('复制例行服务器维护 Prompt', 'Copy routine-maintenance prompt')}><code>{routinePrompt}</code></pre>
       </details>
   </aside>
@@ -74,7 +74,7 @@ const gpuFacts = [
   <nav class="operation-switchboard" aria-label={t('只做其中一个阶段', 'Run one server-artifact stage only')}>
     <a href="#health-scan"><span>01</span><strong>{t('服务器健康扫描', 'Server health scan')}</strong><small>{t('只读看现在有没有压力', 'Read-only current pressure check')}</small></a>
     <a href="#campaign-closeout"><span>02</span><strong>{t('实验收尾归档', 'Campaign closeout')}</strong><small>{t('给科研产物补身份证并验证远端恢复', 'Passport artifacts and verify remote recovery')}</small></a>
-    <a href="#reclaim-proposal"><span>03</span><strong>{t('空间回收提案', 'Reclaim proposal')}</strong><small>{t('先列 exact 清单，不自动删除', 'Exact list first; no automatic deletion')}</small></a>
+    <a href="#reclaim-proposal"><span>03</span><strong>{t('空间回收提案', 'Reclaim proposal')}</strong><small>{t('先列精确清单，不自动删除', 'Exact list first; no automatic deletion')}</small></a>
   </nav>
 
   <section class="server-section" id="health-scan">
@@ -82,19 +82,19 @@ const gpuFacts = [
       <span>01</span>
       <div><h2>{t('服务器健康扫描', 'Server health scan')}</h2></div>
     </div>
-    <p class="section-lede">{t('日常扫描只回答“现在有没有空间或活跃引用风险”。它不做全盘深度 hash，也不因为看到大文件就开始搬家。', 'The routine scan answers whether storage or live references are under pressure now. It does not deep-hash the whole server or start moving files merely because they are large.')}</p>
+    <p class="section-lede">{t('日常扫描只回答“现在有没有空间或活跃引用风险”。它不会给整个磁盘重新计算文件指纹（hash），也不因为看到大文件就开始搬家。', 'The routine scan answers whether storage or live references are under pressure now. It does not deep-hash the whole server or start moving files merely because they are large.')}</p>
 
     <dl class="snapshot-facts" aria-label={t('2026-09-15 服务器快照', '2026-09-15 server snapshot')}>
       <div><dt>{t('持久文件系统', 'Persistent filesystem')}</dt><dd>2.0 TiB</dd><p>{t('项目工作区所在文件系统', 'Filesystem backing the project workspace')}</p></div>
       <div><dt>{t('已用', 'Used')}</dt><dd>≈ 1.01 TiB</dd><p>{t('系统磁盘统计（df）· 51%', 'Filesystem usage (df) · 51%')}</p></div>
       <div class="snapshot-facts__primary"><dt>{t('可用', 'Available')}</dt><dd>≈ 0.99 TiB</dd><p>1,087,523,598,336 bytes</p></div>
-      <div><dt>{t('文件数量容量（inode）', 'File-count capacity (inode)')}</dt><dd>41%</dd><p>{t('约 1,049 万可用', 'about 10.49M available')}</p></div>
+      <div><dt>{t('文件数量容量（inode，文件系统能记录多少个文件）', 'File-count capacity (inode)')}</dt><dd>41%</dd><p>{t('约 1,049 万可用', 'about 10.49M available')}</p></div>
     </dl>
 
     <div class="operation-explainer">
       <h3>{t('一次健康扫描应该留下什么', 'What a health scan should leave behind')}</h3>
       <ol>
-        <li><strong>{t('空间', 'Storage')}</strong><span>{t('系统磁盘容量（df）、文件数量容量（inode）与几个已知大型根目录的变化。', 'Filesystem capacity (df), file-count capacity (inode), and bounded changes in known large roots.')}</span></li>
+        <li><strong>{t('空间', 'Storage')}</strong><span>{t('系统磁盘容量（df）、文件数量容量（inode，文件系统能记录多少个文件）与几个已知大型根目录的变化。', 'Filesystem capacity (df), file-count capacity (inode), and bounded changes in known large roots.')}</span></li>
         <li><strong>{t('活跃引用', 'Live references')}</strong><span>{t('哪些 run、checkpoint、容器挂载或进程仍在用。', 'Which runs, checkpoints, mounts, or processes are still in use.')}</span></li>
         <li><strong>{t('资产变化', 'Artifact changes')}</strong><span>{t('新出现的大型产物、实验身份证（Passport）覆盖缺口和待收尾归档。', 'New large outputs, experiment-Passport coverage gaps and closeout backlog.')}</span></li>
       </ol>
@@ -112,7 +112,7 @@ const gpuFacts = [
       <span>02</span>
       <div><h2>{t('实验收尾归档', 'Campaign closeout')}</h2></div>
     </div>
-    <p class="section-lede">{t('实验跑完以后，不应该只留下一个越来越大的目录。收尾的目标是让另一个 Agent 不看聊天，也能知道每个重要产物是什么、从哪里来、哪一份远端副本是正式归档版本（canonical copy，也就是恢复时默认认的那一份）、怎样恢复。具体归档对象、负责人、预计释放量和完成状态只来自本次维护的现场扫描；这个静态网页不拿旧快照预填。', 'A completed experiment should not remain merely as an ever-growing directory. Closeout should let another Agent identify every meaningful artifact, its origin, canonical remote copy, and restore path without relying on chat history. Exact archive objects, owner, expected reclaim size, and completion state come only from the fresh maintenance scan; this static page does not prefill them from an old snapshot.')}</p>
+    <p class="section-lede">{t('实验跑完以后，不应该只留下一个越来越大的目录。收尾的目标是让另一个自动化助手（Agent）不看聊天，也能知道每个重要产物是什么、从哪里来、哪一份远端副本是正式归档版本（恢复时默认认的那一份）、怎样恢复。具体归档对象、负责人、预计释放量和完成状态只来自本次维护的现场扫描；这个静态网页不拿旧快照预填。', 'A completed experiment should not remain merely as an ever-growing directory. Closeout should let another Agent identify every meaningful artifact, its origin, canonical remote copy, and restore path without relying on chat history. Exact archive objects, owner, expected reclaim size, and completion state come only from the fresh maintenance scan; this static page does not prefill them from an old snapshot.')}</p>
 
     <figure class="lifecycle-flow" aria-labelledby="lifecycle-caption">
       <ol>
@@ -120,7 +120,7 @@ const gpuFacts = [
         <li><span>2</span><strong>{t('实验身份证（Passport）', 'Experiment Passport')}</strong><small>{t('记录实验身份、文件指纹（SHA）和科学角色', 'record experiment identity, file SHA, and scientific role')}</small></li>
         <li><span>3</span><strong>{t('远端归档', 'Archive')}</strong><small>{t('GitHub / Hugging Face / GitHub 容器镜像仓库', 'GitHub / Hugging Face / GitHub Container Registry')}</small></li>
         <li><span>4</span><strong>{t('恢复验证', 'Readback')}</strong><small>{t('重新读取或恢复，确认远端可用', 'read or restore again to verify the remote copy')}</small></li>
-        <li><span>5</span><strong>{t('生命周期状态', 'Lifecycle')}</strong><small>{t('内部状态码只用于审计，日常阅读不需要记', 'internal lifecycle codes are audit-only; readers do not need to memorize them')}</small></li>
+        <li><span>5</span><strong>{t('生命周期状态（资产现在走到哪一步）', 'Lifecycle status (where the artifact is in the process)')}</strong><small>{t('内部状态码只用于审计，日常阅读不需要记', 'internal lifecycle codes are audit-only; readers do not need to memorize them')}</small></li>
       </ol>
       <figcaption id="lifecycle-caption">{t('到这里仍然没有删除权限。收尾流程最多把对象推进到“可以提出回收建议”的状态。', 'There is still no deletion authority at this point. Closeout may only advance an object to the point where reclaim can be proposed.')}</figcaption>
     </figure>
@@ -131,12 +131,12 @@ const gpuFacts = [
     </details>
 
     <details class="q17-case q17-case-depth">
-      <summary>{t('实验存储案例：320.9 GiB 里约 304.66 GiB 是 checkpoint', 'Q17 storage example: about 304.66 GiB of 320.9 GiB is checkpoints')}</summary>
+      <summary>{t('实验存储案例：320.9 GiB 里约 304.66 GiB 是模型检查点（checkpoint）', 'Q17 storage example: about 304.66 GiB of 320.9 GiB is checkpoints')}</summary>
       <article class="q17-case__body">
       <div class="q17-case__header">
         <div>
           <p>{t('真实案例 · Q17 1.7B DirectApply', 'Real case · Q17 1.7B DirectApply')}</p>
-          <h3>{t('320.9 GiB 里，绝大多数是 checkpoint', 'Most of the 320.9 GiB run is checkpoints')}</h3>
+          <h3>{t('320.9 GiB 里，绝大多数是模型检查点（checkpoint）', 'Most of the 320.9 GiB run is checkpoints')}</h3>
         </div>
         <strong>304.66 GiB</strong>
       </div>

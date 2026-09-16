@@ -72,7 +72,7 @@ describe('audience copy audit', () => {
     const standard = fs.readFileSync(path.join(root, 'docs/agents/current/audience-centered-technical-copy.md'), 'utf8');
     const auditSource = fs.readFileSync(path.join(root, 'scripts/audit-audience-copy.ts'), 'utf8');
 
-    expect(hero).toContain("t('同一个 Qwen 做同样任务：比较 SEED 与 OpenEvo 两种学习方法', 'One Qwen on the same tasks: comparing how SEED and OpenEvo learn')");
+    expect(hero).toContain("t('同一个 Qwen 做同样任务：比较两种学习方法', 'One Qwen on the same tasks: comparing two learning methods')");
     expect(hero).toContain("t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')");
     expect(hero).toContain("href:p('/research/seed-openevo/study/results/')");
     expect(hero).not.toContain('把“曾经成功”“当前准备好”“现在测得结果”分开');

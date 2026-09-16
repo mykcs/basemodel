@@ -13,8 +13,8 @@ describe('content-first server operations pilot', () => {
     expect(server).toContain('即使已经验证能恢复，任何删除仍要负责人单独批准同一版精确清单');
     expect(server).toContain('例行服务器维护');
     expect(server).toContain('系统磁盘统计（df）');
-    expect(server).toContain('文件数量容量（inode）');
-    expect(server).toContain('canonical copy，也就是恢复时默认认的那一份');
+    expect(server).toContain('文件数量容量（inode，文件系统能记录多少个文件）');
+    expect(server).toContain('正式归档版本（恢复时默认认的那一份）');
     expect(server).toContain('具体归档对象、负责人、预计释放量和完成状态只来自本次维护的现场扫描');
   });
 

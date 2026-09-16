@@ -16,9 +16,9 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
   await expect(vanillaSeries).toHaveAttribute('href', route);
   await expect(vanillaSeries).toHaveAttribute('aria-current', 'page');
   await expect(series.locator('a[href="/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/"]')).toHaveCount(0);
-  await expect(page.locator('h1')).toContainText('SD-LoRA：成功轨迹怎样变成候选 LoRA 参数');
+  await expect(page.locator('h1')).toContainText('SD-LoRA：把成功轨迹训练成下一轮候选参数');
   await expect(body).toContainText('LoRA 是冻结基础模型、只训练少量适配参数的方法');
-  await expect(body).toContainText('文字记忆、可复用技能和行为规则走另外的更新路径，本页只追踪参数');
+  await expect(body).toContainText('文字记忆（Text Memory）、可复用技能（Skill Bundle）和全局行为规则（Agent System）');
   await expect(body).toContainText('WebShop（网页购物任务）');
   const primer = body.locator('#what-is-sd-lora');
   await expect(primer.locator('summary')).toContainText('普通 LoRA 与 SD-LoRA 的参数区别');
@@ -56,14 +56,16 @@ for (const viewport of [
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('.sdlora-intro__boundary')).toBeVisible();
-    await expect(page.locator('.sdlora-intro__path')).toBeVisible();
-    await expect(page.locator('.sdlora-intro__path')).toContainText('候选参数训练好以后不会自动采用');
-    await expect(page.locator('.sdlora-intro__steps')).toHaveCount(0);
+    await expect(page.locator('.sdlora-intro__path')).toHaveCount(0);
+    await expect(page.locator('.sdlora-intro__steps')).toBeVisible();
+    await expect(page.locator('.sdlora-intro__steps li')).toHaveCount(3);
+    await expect(page.locator('.sdlora-intro__steps')).toContainText('每个任务只取最早一条通过全部检查的完整成功');
+    await expect(page.locator('.sdlora-intro__steps')).toContainText('当前 DirectApply 是检查通过就进入下一轮');
     await expect(page.locator('.sdlora-intro__frame')).toHaveCount(0);
     const visibleMainHeadings = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((nodes) => nodes
       .filter((node) => { const box = node.getBoundingClientRect(); return box.width > 0 && box.height > 0 && box.top < innerHeight && box.bottom > 0; })
       .map((node) => node.textContent?.trim()));
-    expect(visibleMainHeadings).toEqual(['SD-LoRA：成功轨迹怎样变成候选 LoRA 参数']);
+    expect(visibleMainHeadings).toEqual(['SD-LoRA：把成功轨迹训练成下一轮候选参数']);
     const visibleSummaries = await page.locator('#main-content summary').evaluateAll((nodes) => nodes
       .filter((node) => { const box = node.getBoundingClientRect(); return box.width > 0 && box.height > 0 && box.top < innerHeight && box.bottom > 0; })
       .map((node) => node.textContent?.trim()));

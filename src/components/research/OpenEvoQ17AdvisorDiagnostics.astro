@@ -16,8 +16,8 @@ const rows = [
   [t('32 题里完全做对', 'Tasks fully solved'), '10 / 32 (31.25%)', '8 / 32 (25.00%)', t('少 2 题', '2 fewer tasks'), t('用同样的 95% 统计范围看，成功率变化可能在 −18.75 ～ +6.25 个百分点之间；里面同样包含“没有差别”。', 'The same 95% uncertainty range puts the success-rate change between −18.75 and +6.25 percentage points; it also includes “no difference.”')],
   [t('32 题里拿到正奖励（部分完成也可能算）', 'Tasks with a positive reward (partial completion can count)'), '27 / 32 (84.38%)', '25 / 32 (78.13%)', t('少 2 题', '2 fewer tasks'), ''],
   [t('平均每题走几步', 'Average steps per task'), '7.41', '7.53', '+0.13', ''],
-  [t('每一步平均输出长度', 'Average output length per step'), '24.49 token', '24.95 token', '+0.47 token', ''],
-  [t('生成概率分散度（entropy，越低越集中）', 'Next-token probability spread (entropy; lower means more concentrated)'), '0.392', '0.343', '−0.050', t('数值越低，说明模型把概率更集中在少数选择上。', 'Lower means the model put more probability on a smaller set of choices.')],
+  [t('每一步平均生成长度（token，模型生成单元）', 'Average generated length per step (tokens)'), '24.49', '24.95', '+0.47', ''],
+  [t('生成概率有多分散（越低越集中）', 'How spread out next-token probabilities are (lower means more concentrated)'), '0.392', '0.343', '−0.050', t('数值越低，说明模型把概率更集中在少数选择上。', 'Lower means the model put more probability on a smaller set of choices.')],
 ] as const;
 ---
 
@@ -26,7 +26,6 @@ const rows = [
     <p class="eyebrow">{t('局部诊断 · 2026-09-11', 'Local diagnostic · 2026-09-11')}</p>
     <h1 id="advisor-diagnostics-title">{t('同样 32 道题上，后一版平均分低 4.18，但还不能判定模型退步', 'On the same 32 tasks, the later state averaged 4.18 points lower, but this does not establish a regression')}</h1>
     <p class="lede">{t('原训练曲线的 76.1 → 48.9 来自不同题，不能直接横比。固定成同样 32 题后，平均分是 63.58 → 59.41，完整做对 10 题 → 8 题；原来的大跌混入了抽题差异。', 'The live 76.1 → 48.9 scores came from different tasks and are not directly comparable. On the same 32 tasks, the averages were 63.58 → 59.41 and exact solves 10 → 8, showing that task sampling contributed to the larger live-round swing.')}</p>
-    <p class="result-hero__method">{t('方法背景：WebShop 是网页购物任务。第一阶段由 Qwen 自己完成任务，MiniMax 只在任务结束后回看保存的轨迹；持续学习阶段再更新参数。DirectApply 指候选参数通过工程和数据检查后直接进入下一轮。进入第 127 / 128 轮时加载的两个相邻参数状态，下面简称 R127 / R128；本页只比较这两个状态。', 'Method context: Qwen first completes WebShop tasks and MiniMax reviews saved traces only after each task; continual learning then updates parameters. DirectApply means a candidate enters the next round after engineering and data checks pass. Below, R127/R128 name the adjacent parameter states loaded when rounds 127 and 128 began; this page compares only those states.')}</p>
     <p class="result-hero__boundary"><strong>{t('点估计 −4.18 分；95% 统计范围 −17.13 ～ +8.00，包含“没有差别”。', 'Point estimate: −4.18; the 95% interval is −17.13 to +8.00 and includes no difference.')}</strong>{t('这是局部诊断，不是最终测试：32 题来自训练/开发范围、看结果前已固定，与锁定的最终 128 题不重合；不能外推到后续训练或最终结果。', 'This is a local diagnostic, not the final evaluation: the 32 tasks came from the train/development range, were frozen before results were inspected, and do not overlap with the locked final 128 tasks. The result cannot be extrapolated to later training or the final outcome.')}</p>
   </header>
 
@@ -36,6 +35,8 @@ const rows = [
       <div><dt>{t('同样 32 题', 'Same 32 tasks')}</dt><dd>63.58 → 59.41</dd></div>
       <div><dt>{t('95% 范围 · 包含无差别', '95% interval · includes no difference')}</dt><dd>−17.13 ～ +8.00</dd></div>
     </dl>
+
+    <p class="result-hero__method">{t('方法背景：第一阶段（Stage 1，做题与任务后复盘）由 Qwen 完成 WebShop 网页购物任务，MiniMax 只在任务结束后回看轨迹。第二阶段（Stage 2，持续学习）会更新文字记忆、可复用技能、行为规则和 SD-LoRA 参数。DirectApply 表示候选参数检查通过后下一轮直接使用；No-GDR 表示不再先用一小组题筛选新旧参数。下文 R127 / R128 指进入第 127 / 128 轮时加载的两个相邻参数状态。', 'Method context: Stage 1 is task execution and post-task review: Qwen completes WebShop tasks and MiniMax reviews traces only after the task ends. Stage 2 is continual learning, which can update written memory, reusable skills, behavior rules, and SD-LoRA parameters. DirectApply uses a candidate in the next round after checks pass; No-GDR means there is no separate small-task probe choosing between old and new parameters. Below, R127/R128 name the adjacent parameter states loaded when rounds 127 and 128 began.')}</p>
 
     <div class="table-wrap" role="region" aria-label={t('R127 与 R128 同题重测结果', 'R127 versus R128 on the same tasks')} tabindex="0">
       <table>
@@ -66,7 +67,7 @@ const rows = [
       </article>
       <article>
         <h3>{t('模型的生成选择反而更集中', 'The model’s choices became more concentrated')}</h3>
-        <p>{t('我们记录了模型生成下一步时，概率分在多少不同选择上（entropy）。R127 是 0.392，R128 是 0.343。数值变低，表示概率更集中，所以 R128 并不是“更拿不定主意”。它更像是更坚定地偏向了某些选择。', 'We measured how spread out the model’s probabilities were when generating the next step (entropy). R127 was 0.392 and R128 was 0.343. Lower means the probabilities were more concentrated, so R128 was not simply more unsure; it was more strongly favoring some choices.')}</p>
+        <p>{t('我们记录了模型生成下一步时，概率分在多少不同选择上；技术上这个统计量叫 entropy（熵）。R127 是 0.392，R128 是 0.343。数值变低，表示概率更集中，所以 R128 并不是“更拿不定主意”。它更像是更坚定地偏向了某些选择。', 'We measured how spread out the model’s probabilities were when generating the next step (entropy). R127 was 0.392 and R128 was 0.343. Lower means the probabilities were more concentrated, so R128 was not simply more unsure; it was more strongly favoring some choices.')}</p>
       </article>
     </div>
     <aside class="claim-boundary">

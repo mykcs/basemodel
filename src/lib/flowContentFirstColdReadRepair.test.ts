@@ -12,12 +12,12 @@ const nav = read('src/components/research/SeedOpenEvoResearchNav.astro');
 describe('Flow content-first cold-read repair', () => {
   it('defines the four named research objects at first use while preserving the fairness boundary', () => {
     for (const phrase of [
-      '同一个 Qwen 做同样任务：比较 SEED 与 OpenEvo 两种学习方法',
-      'SEED 把成功经验写回模型参数',
-      'OpenEvo 先保存任务证据',
+      '同一个 Qwen 做同样任务：比较两种学习方法',
+      'SEED 是把成功经验继续写回模型参数',
+      'OpenEvo 是先保存任务证据',
       'ALFWorld（文本具身任务）',
       'WebShop（网页购物任务）',
-      '完整系统对照只能比较总体表现',
+      '若要把差异只归因到后续学习器',
     ]) expect(hero).toContain(phrase);
   });
 
@@ -43,7 +43,7 @@ describe('Flow content-first cold-read repair', () => {
     expect(hero).not.toContain('先看研究对象与比较条件 ↓');
     expect(hero).not.toContain('margin:1.35rem auto 1.8rem');
     expect(hero).toContain('实验状态与来源（按需展开）');
-    expect(hero).toContain('持续学习中分别更新文字记忆、可复用技能、行为规则和 LoRA（只训练少量适配参数）');
+    expect(hero).toContain('分别更新文字记忆、可复用技能、行为规则和少量 LoRA 适配参数');
     expect(nav).toContain('research-navigation__mobile');
     expect(nav).toContain("t('相关页面', 'Related pages')");
     expect(nav).toContain('.research-navigation__identity,.research-navigation__links{display:none}');

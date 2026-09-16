@@ -52,7 +52,7 @@ assert(
 );
 assert(
   'HARDEN-HOME-005',
-  missionHero.includes("t('同一个 Qwen 做同样任务：比较 SEED 与 OpenEvo 两种学习方法', 'One Qwen on the same tasks: comparing how SEED and OpenEvo learn')")
+  missionHero.includes("t('同一个 Qwen 做同样任务：比较两种学习方法', 'One Qwen on the same tasks: comparing two learning methods')")
     && missionHero.includes('Qwen2.5-3B-Instruct')
     && missionHero.includes("title:'SEED / OpenEvo'")
     && missionHero.includes("title:'ALFWorld / WebShop'")

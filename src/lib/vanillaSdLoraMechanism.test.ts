@@ -55,9 +55,9 @@ describe('Vanilla SD-LoRA mechanism projection', () => {
     expect(enPage).toContain('<OpenEvoVanillaSdLoraMechanism locale={locale} />');
     expect(enPage).toContain('title="Why does OpenEvo need SD-LoRA?"');
     for (const phrase of [
-      'SD-LoRA: how successful traces become a candidate LoRA update',
+      'SD-LoRA: train successful traces into candidate parameters for the next round',
       'LoRA freezes the base model and trains only a small set of adapter parameters',
-      'A candidate is a trained new parameter state, not something automatically adopted for the next round',
+      'Train the new LoRA between task batches, with up to 64 older examples replayed.',
       'Ordinary LoRA',
       'Scalable Decoupled LoRA',
       'This page calls the current baseline “Vanilla SD-LoRA.”',

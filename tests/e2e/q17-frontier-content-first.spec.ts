@@ -7,9 +7,11 @@ test('focus result keeps the comparable result and scientific boundary in the fi
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('h1')).toContainText('同样 32 道题上，后一版平均分低 4.18，但还不能判定模型退步');
   await expect(page.locator('.result-hero > .eyebrow')).toContainText('局部诊断 · 2026-09-11');
-  await expect(page.locator('.result-hero__method')).toContainText('WebShop 是网页购物任务。第一阶段由 Qwen 自己完成任务，MiniMax 只在任务结束后回看保存的轨迹');
-  await expect(page.locator('.result-hero__method')).toContainText('DirectApply 指候选参数通过工程和数据检查后直接进入下一轮');
-  await expect(page.locator('.result-hero__method')).toContainText('简称 R127 / R128');
+  await expect(page.locator('.result-hero__method')).toContainText('第一阶段（Stage 1，做题与任务后复盘）由 Qwen 完成 WebShop 网页购物任务');
+  await expect(page.locator('.result-hero__method')).toContainText('第二阶段（Stage 2，持续学习）会更新文字记忆、可复用技能、行为规则和 SD-LoRA 参数');
+  await expect(page.locator('.result-hero__method')).toContainText('DirectApply 表示候选参数检查通过后下一轮直接使用');
+  await expect(page.locator('.result-hero__method')).toContainText('No-GDR 表示不再先用一小组题筛选新旧参数');
+  await expect(page.locator('.result-hero__method')).toContainText('R127 / R128 指进入第 127 / 128 轮时加载的两个相邻参数状态');
   await expect(page.locator('.result-hero__boundary')).toContainText('95% 统计范围 −17.13 ～ +8.00');
   await expect(page.locator('.same-task-facts > div')).toHaveCount(3);
   const boundary = await page.locator('.result-hero__boundary').boundingBox();
