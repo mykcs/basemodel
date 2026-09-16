@@ -61,7 +61,8 @@ for (const theme of ['light', 'dark'] as const) {
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('.server-hero__status')).toBeVisible();
-    await expect(page.locator('.server-hero__facts')).toContainText('NOT_AUTHORIZED');
+    await expect(page.locator('.server-hero__facts')).toContainText('未授权删除');
+    await expect(page.locator('#reclaim-proposal')).toContainText('NOT_AUTHORIZED');
     await expect(page.locator('.server-hero__boundary')).toContainText('不是实时监控');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(2);

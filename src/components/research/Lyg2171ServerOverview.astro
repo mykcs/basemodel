@@ -51,8 +51,8 @@ const gpuFacts = [
 
     <dl class="server-hero__facts research-fact-band" style="--research-fact-columns:3" aria-label={t('当前服务器资产重点', 'Current server artifact facts')}>
       <div><dt>{t('Q17 案例', 'Q17 example')}</dt><dd>320.9 GiB</dd></div>
-      <div><dt>{t('其中 checkpoint', 'Checkpoints')}</dt><dd>304.7 GiB</dd></div>
-      <div><dt>{t('删除权限', 'Deletion authority')}</dt><dd>NOT_AUTHORIZED</dd></div>
+      <div><dt>{t('其中 checkpoint 文件', 'Checkpoint files')}</dt><dd>304.7 GiB</dd></div>
+      <div><dt>{t('删除权限', 'Deletion authority')}</dt><dd>{t('未授权删除', 'Not authorized')}</dd></div>
     </dl>
 
     <p class="server-hero__boundary">{t('快照时间：2026-09-15 22:10（UTC+8）。这是静态页面，不是实时监控。远端已经能恢复，也不等于本地可以删除；删除始终需要同一版 exact reclaim manifest 的单独批准。', 'Snapshot: 2026-09-15 22:10 (UTC+8). This is a static page, not a live monitor. Remote recoverability does not make a local copy deletable; deletion always requires separate approval of the same exact reclaim manifest.')}</p>

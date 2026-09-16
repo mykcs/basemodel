@@ -25,9 +25,9 @@ describe('Q17 advisor diagnostics publication', () => {
 
   it('keeps the result and boundary visible in both language routes', () => {
     const component = read('src/components/research/OpenEvoQ17AdvisorDiagnostics.astro');
-    expect(component).toContain('同题重测只差 4.18 分，远小于训练曲线的掉分');
-    expect(component).toContain('On the same tasks, the gap was only 4.18 points—far smaller than the live-curve drop');
-    expect(component).toContain('95% 统计范围仍包含“没有差别”');
+    expect(component).toContain('同样 32 道题上，R127 与 R128 平均分只差 4.18 分');
+    expect(component).toContain('On the same 32 tasks, R127 and R128 differed by only 4.18 average-score points');
+    expect(component).toContain('平均分差的 95% 统计范围是 −17.13 ～ +8.00');
     expect(component).toContain('这次诊断当时没有碰最终测试');
     expect(component).toContain('research-fact-band');
     expect(component).toContain('训练轮 · 题不同');
