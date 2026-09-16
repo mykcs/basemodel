@@ -67,6 +67,7 @@ const objectGroups = [
       <li><span>03</span><strong>{t('任务结果', 'Task outcomes')}</strong><p>{t('任务分数（score）、是否成功（success）、交互步数（steps）、无法执行时的备用动作（fallback）和结束原因（termination）。','Task score, success, interaction steps, fallback actions when output cannot execute, and termination reason.')}</p></li>
       <li><span>04</span><strong>{t('实验身份', 'Experiment identity')}</strong><p>{t('运行清单（Run Manifest，记录模型、代码、配置和任务集合）与代码提交 SHA，用于准确重建“到底跑了什么”。','The Run Manifest records the model, code, configuration, and task set; together with the code commit SHA it reconstructs exactly what was run.')}</p></li>
     </ol>
+    <p class="evidence-model-link"><a href={p('/models/qwen2-5-3b-instruct/#experiment-setup')}>{t('查看固定模型的实验设置', 'View the pinned model setup')} →</a></p>
   </section>
 </div>
 
@@ -104,6 +105,7 @@ const objectGroups = [
   .evidence-grid li>span{color:var(--accent-deep);font:800 .68rem/1 var(--font-mono)}
   .evidence-grid strong{display:block;margin-top:.55rem}
   .evidence-grid p{margin:.4rem 0 0;color:var(--muted);font-size:.8rem;line-height:1.55}
+  .evidence-model-link{margin:.85rem 0 0;font-size:.8rem}.evidence-model-link a{color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}
   @media(max-width:760px){
     .mission-page{width:min(100% - 1rem,1120px)}
     .section-intro{margin-left:0}
