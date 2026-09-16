@@ -13,7 +13,7 @@ const objectGroups = [
   {
     label: t('模型', 'Model'),
     items: [
-      { title:'Qwen2.5-3B-Instruct', body:t('固定同一版模型参数（checkpoint，也就是模型参数快照）、数值精度和运行设置。','Pin the same model-parameter snapshot (checkpoint), numerical precision, and runtime settings.'), href:p('/models/qwen2-5-3b-instruct/#experiment-setup') },
+      { title:'Qwen2.5-3B-Instruct', body:t('固定同一版模型参数（checkpoint，也就是模型参数快照）、数值精度和运行设置。','Pin the same model-parameter snapshot (checkpoint), numerical precision, and runtime settings.') },
     ],
   },
   {
@@ -39,7 +39,7 @@ const objectGroups = [
     <div class="mission-section__heading"><span>01</span><strong id="research-objects-title">{t('研究对象', 'Research objects')}</strong></div>
     <p class="section-intro">{t('这项研究固定一个模型，对比两种学习方法，并在两个任务环境里测量它们。','This study pins one model, compares two learning methods, and measures them in two task environments.')}</p>
     <dl class="object-map">
-      {objectGroups.map((group)=><div class="object-map__row"><dt>{group.label}</dt><dd>{group.items.map((item)=><a href={item.href}><strong>{item.title}</strong><span>{item.body}</span></a>)}</dd></div>)}
+      {objectGroups.map((group)=><div class="object-map__row"><dt>{group.label}</dt><dd>{group.items.map((item)=>'href' in item ? <a href={item.href}><strong>{item.title}</strong><span>{item.body}</span></a> : <div class="object-map__fact"><strong>{item.title}</strong><span>{item.body}</span></div>)}</dd></div>)}
     </dl>
   </section>
 
@@ -84,11 +84,11 @@ const objectGroups = [
   .object-map__row dt{color:var(--muted);font-size:.76rem;font-weight:760;line-height:1.5}
   .object-map__row dd{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:0}
   .object-map__row:first-child dd{grid-template-columns:1fr}
-  .object-map__row a{display:grid;grid-template-columns:minmax(8.5rem,auto) minmax(0,1fr);gap:.9rem;align-items:start;padding:0 1rem;color:inherit;text-decoration:none}
-  .object-map__row a:first-child{padding-left:0}
+  .object-map__row a,.object-map__fact{display:grid;grid-template-columns:minmax(8.5rem,auto) minmax(0,1fr);gap:.9rem;align-items:start;padding:0 1rem;color:inherit;text-decoration:none}
+  .object-map__row a:first-child,.object-map__fact:first-child{padding-left:0}
   .object-map__row a+a{border-left:1px solid var(--line)}
   .object-map__row strong{font-size:.95rem;line-height:1.45}
-  .object-map__row a>span{color:var(--muted);font-size:.8rem;line-height:1.55}
+  .object-map__row a>span,.object-map__fact>span{color:var(--muted);font-size:.8rem;line-height:1.55}
   .object-map__row a:hover strong,.object-map__row a:focus-visible strong{color:var(--accent-deep)}
   .run-step-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0;padding:0;border-block:1px solid var(--line);list-style:none}
   .run-step-grid li{position:relative;display:flex;min-width:0;flex-direction:column;padding:1.1rem 1.35rem 1.1rem 0}
@@ -109,7 +109,7 @@ const objectGroups = [
     .section-intro{margin-left:0}
     .object-map__row{grid-template-columns:1fr;gap:.6rem}
     .object-map__row dd,.object-map__row:first-child dd{grid-template-columns:1fr}
-    .object-map__row a{grid-template-columns:1fr;gap:.25rem;padding:.8rem 0}
+    .object-map__row a,.object-map__fact{grid-template-columns:1fr;gap:.25rem;padding:.8rem 0}
     .object-map__row a+a{border-left:0;border-top:1px solid var(--line)}
     .run-step-grid{grid-template-columns:1fr}
     .run-step-grid li,.run-step-grid li+li{padding:1rem 0;border-left:0;border-bottom:1px solid var(--line)}
