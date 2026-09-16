@@ -45,7 +45,7 @@ const objectGroups = [
 
   <section class="mission-section" id="training-design" aria-labelledby="training-design-title">
     <div class="mission-section__heading"><span>02</span><h2 id="training-design-title">{t('训练设计', 'Training design')}</h2></div>
-    <p class="section-intro">{t('Stage 1 的边界是：Qwen 独立完成 WebShop episode；完整轨迹封存后，外部 analyzer 才能复盘。老师不能进入 step loop 替模型做题。', 'The Stage-1 boundary is: Qwen completes the WebShop episode independently; only after the full trajectory is sealed may an external analyzer review it. The teacher must not enter the step loop and act for the model.')}</p>
+    <p class="section-intro">{t('Stage 1 先让 Qwen 自己完成一次 WebShop 购物任务（episode）。任务结束并保存整条交互轨迹后，外部分析模型才做事后复盘；它不能在做题过程中替 Qwen 选择动作。', 'Stage 1 first lets Qwen complete a WebShop shopping task (an episode) by itself. Only after the task ends and the full interaction trajectory is saved may an external analysis model review it; that model cannot choose actions for Qwen while the task is running.')}</p>
     <SeedOpenEvoTrainingDesignOverview locale={locale} />
   </section>
 

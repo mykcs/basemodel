@@ -16,7 +16,7 @@ const chain = [
 <section class:list={['mission-hero',compact&&'mission-hero--compact']} aria-labelledby="mission-title" data-reader-primary>
   <div class="mission-hero__copy">
     <h1 id="mission-title">{t('SEED 与 OpenEvo：ALFWorld / WebShop 实验', 'SEED vs OpenEvo: ALFWorld / WebShop experiments')}</h1>
-    <p class="mission-hero__lede">{t('我们让 SEED 和 OpenEvo 尽量使用同一模型、同一批任务、同一评分规则和同样的训练预算。条件没对齐，分数差异就不能当作方法差异；证据不够的“提升”，这里不会写成已经成立。','We run SEED and OpenEvo with the same model, task set, scoring rules, and training budget wherever possible. If those conditions do not align, score differences cannot be treated as method differences; a gain without enough evidence is not presented as established.')}</p>
+    <p class="mission-hero__lede">{t('SEED 把任务后的成功经验继续写进模型参数；OpenEvo 先封存任务证据，再把通过验证的学习状态交给后续任务。我们让两者尽量使用同一个 Qwen2.5-3B-Instruct、同一批 ALFWorld（文本具身任务）与 WebShop（网页购物任务）、同一评分规则和训练预算；条件没对齐，分数差异就不能归因于方法，证据不足也不会写成已经提升。','SEED writes successful post-task experience back into model parameters. OpenEvo first seals task evidence, then carries validated learned state into later tasks. We keep Qwen2.5-3B-Instruct, the same ALFWorld (text-based embodied tasks) and WebShop (web-shopping tasks), scoring rules, and training budget aligned wherever possible; otherwise score differences cannot be attributed to the method, and unsupported gains are not presented as established.')}</p>
     {compact && <dl class="mission-hero__frame research-fact-band" style="--research-fact-columns:5" aria-label={t('这项实验比较什么', 'What this study compares')}>
       <div><dt>{t('模型', 'Model')}</dt><dd>Qwen2.5-3B-Instruct</dd></div>
       <div><dt>{t('方法', 'Methods')}</dt><dd>SEED ↔ OpenEvo</dd></div>
