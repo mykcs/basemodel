@@ -932,3 +932,14 @@ Concurrency: refreshed #737=`ffac6efe...`, #734=`b83be37d...`, #728=`84a70254...
 Scientific state: campaign packaged and preregistered; formal run launched=`false`; owner launch release absent; final-panel access=`0`; formal result remains `pending`; W&B remains non-authoritative.
 Human decision needed: none for the corrected campaign identity. The remaining owner-facing release gate is scientific-copy review/acceptance, not a new treatment/resource choice.
 Next safe item: push this correction, wait for exact-head Public PR CI, then request the authoritative Vercel final gate only if that exact head is green.
+
+### 2026-09-16 10:33 +08
+BaseModel main: `d3631890f89c0fe62e249c088794b64a0b503f00`
+PR exact head before final evidence commit: `ae1978242922a4c9732f8a14707388f4822efa88`; PR moved from Draft to Ready only after the owner said `继续` following the explicit release-gate explanation. This is publication-flow acceptance, not formal experiment launch authority.
+OpenEvo #502/#510: `99dd0fdce328682fb0218aa084d3d2b0d0b7ae49` / `eb7a2b5c8365e83b7b1133f803ba1add9d81dee5`; packaged campaign identity remains `c5e012814bb9509deb0e2cbc8d57a63e2b56889f`, formal run launched=`false`, owner launch release absent, final-panel access=`0`.
+Provider prerequisite: exact-head Public PR CI run `35047315990` completed `success` on `ae197824…` against base `d363189…`.
+Authoritative Vercel final gate request returned `REQUESTED` for exact tuple `base=d363189… / head=ae197824…`; deployment `dpl_68FgX6jbAG1DV6t6DF8jo7xN8P68` reached `READY` and Vercel commit status=`success`.
+Vercel metadata pins `githubCommitRef=ci/vercel-gate-final` and `githubCommitSha=ae1978242922a4c9732f8a14707388f4822efa88`; provider overflow preflight PASS and full Chromium UI gate `197/197 PASS` before deploy completion.
+Checklist items closed by this observation: none yet, because this evidence-only checklist commit changes the PR head. The new final head must rerun exact-head Public PR CI and authoritative Vercel final gate before expected-head merge.
+Scientific result boundary unchanged: formal result remains Pending; no partial W&B, winner, ETA, fake zero, or formal efficacy conclusion was published.
+Next safe item: commit/push this final checklist receipt, rerun exact-head Public PR CI; only if green, request Vercel final gate for the new exact head, then refresh main/#729/#502/#510 once more and expected-head merge.
