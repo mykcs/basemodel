@@ -46,31 +46,29 @@ const gpuFacts = [
 <main class="server-overview" data-locale={locale} data-storage-responsibility-view="artifact-lifecycle-v3">
   <header class="server-hero" data-reader-primary>
     <p class="server-hero__context">{t('容量快照 · 2026-09-15 22:10（UTC+8）· 非实时数据', 'Storage snapshot · 2026-09-15 22:10 (UTC+8) · not live data')}</p>
-    <h1>{t('实验文件磁盘：约 0.99 TiB 可用', 'About 0.99 TiB remains on the disk holding project experiment files')}</h1>
+    <h1>{t('实验文件磁盘：约 1.09 TB 可用', 'About 1.09 TB remains on the disk holding project experiment files')}</h1>
     <p class="server-hero__status">{t('这次快照只支持一个判断：按当前容量，目前不需紧急扩容。下一步先归档大型实验产物并验证可恢复；需要回收空间时，只生成写清对象、字节数和恢复证据的清单，不自动删除。', 'This snapshot shows 2.0 TiB total and about 1.01 TiB used (51%); based on this capacity observation alone, there is no urgent expansion signal. First archive large experiment outputs and verify they can be restored. If space must be reclaimed, generate an exact list only; nothing is deleted automatically.')}</p>
 
     <dl class="server-hero__facts research-fact-band" style="--research-fact-columns:3" aria-label={t('当前文件系统快照', 'Current filesystem snapshot')}>
-      <div><dt>{t('总容量', 'Capacity')}</dt><dd>2.0 TiB</dd></div>
+      <div><dt>{t('总容量', 'Capacity')}</dt><dd>2.0 TiB · 约 2.20 TB</dd></div>
       <div><dt>{t('已用', 'Used')}</dt><dd>≈ 1.01 TiB · 51%</dd></div>
-      <div><dt>{t('可用', 'Available')}</dt><dd>≈ 0.99 TiB</dd></div>
+      <div><dt>{t('可用', 'Available')}</dt><dd>≈ 0.99 TiB · 约 1.09 TB</dd></div>
     </dl>
 
-    <p class="server-hero__boundary"><strong>{t('先归档，但“上传成功”还不算可恢复：必须记录不可变的远端版本，再重新读取或下载，并核对文件列表、大小和身份 / 摘要；模型或适配器还要做最小重新加载。', 'Archive first, but an upload success is not recovery proof: record an immutable remote revision, then freshly read or download it and verify file lists, sizes, and identity/digests; models or adapters also need a minimum reload.')}</strong> {t('只有这些恢复检查通过后，产物才算“可恢复”；这仍不等于“可删除”。删除必须由对象 / 服务器负责人对同一版精确回收清单明确批准，并在删除前重新检查是否仍被使用；把私有数据改成公开也必须单独批准。', 'Only after those recovery checks pass is the artifact recoverable; recoverable still does not mean deletable. The artifact/server owner must explicitly approve the same exact reclaim manifest, followed by a fresh liveness check before deletion; making private data public also needs separate approval.')}</p>
+    <ol class="server-hero__boundary server-hero__guardrails" aria-label={t('归档与回收的三个安全边界', 'Three safety boundaries for archive and reclaim')}>
+      <li><strong>{t('上传成功 ≠ 可恢复。', 'Upload success ≠ recoverable.')}</strong><span>{t('先固定远端版本，再重新读取或下载，核对文件、大小和文件指纹；模型或适配器还要做最小重新加载。', 'Pin the remote revision, then freshly read or download it, verify files, sizes, and digests, and minimally reload models or adapters.')}</span></li>
+      <li><strong>{t('可恢复 ≠ 可删除。', 'Recoverable ≠ deletable.')}</strong><span>{t('对象 / 服务器负责人必须批准同一版精确回收清单；删除前还要重新检查是否仍被使用。', 'The artifact/server owner must approve the same exact reclaim manifest, followed by a fresh liveness check before deletion.')}</span></li>
+      <li><strong>{t('草稿 ≠ 正式规则。', 'Draft ≠ authority.')}</strong><span>{t('正式实验身份只认当前已合并或当前实验明确采用的实验身份证与总表；未合并草稿不能替代正式规则。私有数据改成公开也必须单独批准。', 'Formal experiment identity follows only merged or explicitly adopted experiment identity/registry authority; an unmerged draft cannot replace it. Making private data public also needs separate approval.')}</span></li>
+    </ol>
 
   </header>
-
-  <nav class="operation-switchboard" aria-label={t('只做其中一个阶段', 'Run one server-artifact stage only')}>
-    <a href="#health-scan"><span>01</span><strong>{t('服务器健康扫描', 'Server health scan')}</strong><small>{t('只读看现在有没有压力', 'Read-only current pressure check')}</small></a>
-    <a href="#campaign-closeout"><span>02</span><strong>{t('实验收尾归档', 'Campaign closeout')}</strong><small>{t('给科研产物补身份证并验证远端恢复', 'Passport artifacts and verify remote recovery')}</small></a>
-    <a href="#reclaim-proposal"><span>03</span><strong>{t('空间回收提案', 'Reclaim proposal')}</strong><small>{t('先列精确清单，不自动删除', 'Exact list first; no automatic deletion')}</small></a>
-  </nav>
 
   <section class="server-section" id="health-scan">
     <div class="section-heading">
       <span>01</span>
       <div><h2>{t('服务器健康扫描', 'Server health scan')}</h2></div>
     </div>
-    <p class="section-lede">{t('日常扫描只回答“现在有没有空间或活跃引用风险”。它不会给整个磁盘重新计算文件指纹（hash），也不因为看到大文件就开始搬家。', 'The routine scan answers whether storage or live references are under pressure now. It does not deep-hash the whole server or start moving files merely because they are large.')}</p>
+    <p class="section-lede">{t('日常扫描只回答“现在有没有空间或活跃引用风险”。它不会给整个磁盘重新计算文件指纹，也不因为看到大文件就开始搬家。', 'The routine scan answers whether storage or live references are under pressure now. It does not deep-hash the whole server or start moving files merely because they are large.')}</p>
 
     <dl class="snapshot-facts" aria-label={t('2026-09-15 服务器快照', '2026-09-15 server snapshot')}>
       <div><dt>{t('持久文件系统', 'Persistent filesystem')}</dt><dd>2.0 TiB</dd><p>{t('项目工作区所在文件系统', 'Filesystem backing the project workspace')}</p></div>
@@ -83,8 +81,8 @@ const gpuFacts = [
       <h3>{t('一次健康扫描应该留下什么', 'What a health scan should leave behind')}</h3>
       <ol>
         <li><strong>{t('空间', 'Storage')}</strong><span>{t('系统磁盘容量（df）、文件数量容量（inode，文件系统能记录多少个文件）与几个已知大型根目录的变化。', 'Filesystem capacity (df), file-count capacity (inode), and bounded changes in known large roots.')}</span></li>
-        <li><strong>{t('活跃引用', 'Live references')}</strong><span>{t('哪些实验运行（run）、模型检查点（checkpoint）、运行时容器挂载或进程仍在用。', 'Which experiment runs, model checkpoints, runtime-container mounts, or processes are still in use.')}</span></li>
-        <li><strong>{t('资产变化', 'Artifact changes')}</strong><span>{t('新出现的大型产物、实验身份证（Passport）覆盖缺口和待收尾归档。', 'New large outputs, experiment-Passport coverage gaps and closeout backlog.')}</span></li>
+        <li><strong>{t('活跃引用', 'Live references')}</strong><span>{t('哪些实验运行、模型检查点、运行时容器挂载或进程仍在用。', 'Which experiment runs, model checkpoints, runtime-container mounts, or processes are still in use.')}</span></li>
+        <li><strong>{t('资产变化', 'Artifact changes')}</strong><span>{t('新出现的大型产物、实验身份证覆盖缺口和待收尾归档。', 'New large outputs, experiment-Passport coverage gaps and closeout backlog.')}</span></li>
       </ol>
     </div>
 
@@ -94,6 +92,12 @@ const gpuFacts = [
       <pre data-copy-label={t('复制健康扫描 Prompt', 'Copy health-scan prompt')}><code>{healthPrompt}</code></pre>
     </details>
   </section>
+
+  <nav class="operation-switchboard" aria-label={t('接下来查看哪个阶段', 'Choose the next server-artifact stage')}>
+    <a href="#health-scan"><span>01</span><strong>{t('服务器健康扫描', 'Server health scan')}</strong><small>{t('只读看现在有没有压力', 'Read-only current pressure check')}</small></a>
+    <a href="#campaign-closeout"><span>02</span><strong>{t('实验收尾归档', 'Campaign closeout')}</strong><small>{t('给科研产物补实验身份证并验证远端恢复', 'Passport artifacts and verify remote recovery')}</small></a>
+    <a href="#reclaim-proposal"><span>03</span><strong>{t('空间回收提案', 'Reclaim proposal')}</strong><small>{t('先列精确清单，不自动删除', 'Exact list first; no automatic deletion')}</small></a>
+  </nav>
 
   <aside class="routine-entry" aria-label={t('例行维护入口', 'Routine maintenance entry')}>
       <div class="routine-entry__copy">
@@ -338,7 +342,8 @@ const gpuFacts = [
   }
   @media(max-width:640px){
     .server-hero{padding-bottom:1.35rem}
-    .server-hero h1{max-width:17ch}.routine-entry{grid-template-columns:1fr}.routine-entry__prompt{padding:.45rem 0 0;border-left:0;border-top:1px solid var(--line)}.operation-switchboard{grid-template-columns:1fr}.operation-switchboard a{border-right:0;border-bottom:1px solid var(--line)}.operation-switchboard a:last-child{border-bottom:0}
+    .server-hero + .server-section{padding-top:5rem}
+    .server-hero h1{max-width:19ch}.server-hero__guardrails li{grid-template-columns:1fr;gap:.15rem}.routine-entry{grid-template-columns:1fr}.routine-entry__prompt{padding:.45rem 0 0;border-left:0;border-top:1px solid var(--line)}.operation-switchboard{grid-template-columns:1fr}.operation-switchboard a{border-right:0;border-bottom:1px solid var(--line)}.operation-switchboard a:last-child{border-bottom:0}
     .snapshot-facts,.gpu-facts,.privacy-grid{grid-template-columns:1fr}.snapshot-facts>div,.gpu-facts>div{border-right:0;border-bottom:1px solid var(--line)}.snapshot-facts>div:last-child,.gpu-facts>div:last-child{border-bottom:0}
     .operation-explainer li{grid-template-columns:5rem 1fr}
     .lifecycle-flow ol{grid-template-columns:1fr}.lifecycle-flow li{border-right:0}.lifecycle-flow li:last-child{border-bottom:0}

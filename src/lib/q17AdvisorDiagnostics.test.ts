@@ -25,14 +25,14 @@ describe('Q17 advisor diagnostics publication', () => {
 
   it('keeps the result and boundary visible in both language routes', () => {
     const component = read('src/components/research/OpenEvoQ17AdvisorDiagnostics.astro');
-    expect(component).toContain('同样 32 道题上，进入第 128 轮的模型比第 127 轮低 4.18 分，但还不能判定模型退步');
-    expect(component).toContain('On the same 32 tasks, the state entering round 128 averaged 4.18 points below the state entering round 127, but this does not establish a regression');
-    expect(component).toContain('第一阶段（Stage 1）先由 Qwen 做 WebShop 任务');
-    expect(component).toContain('第二阶段（Stage 2）不再运行 OPSD');
-    expect(component).toContain('DirectApply 表示候选参数通过共同的工程与数据检查后下一轮直接使用');
-    expect(component).toContain('No-GDR 表示取消历史上那次 16 题新旧参数小测');
-    expect(component).toContain('进入第 127 / 128 轮时加载的两个相邻模型参数状态简写为 R127 / R128');
-    expect(component).toContain('95% 统计范围 −17.13 ～ +8.00，包含“没有差别”');
+    expect(component).toContain('同样 32 道题：后一版低 4.18 分，但差异可能为零');
+    expect(component).toContain('Same 32 tasks: the later state was 4.18 points lower, but the true difference may be zero');
+    expect(component).toContain('第一阶段先让 Qwen 做 WebShop 任务');
+    expect(component).toContain('第二阶段把文字经验、可复用技能、行为规则和少量适配参数滚动带到下一轮');
+    expect(component).toContain('候选参数通过共同的工程与数据检查后，下一轮直接使用');
+    expect(component).toContain('没有再用一小组题挑新旧参数');
+    expect(component).toContain('进入第 127 轮前的状态得 63.58，进入第 128 轮前的状态得 59.41。下面简称 R127 / R128');
+    expect(component).toContain('95% 统计范围是 −17.13 ～ +8.00，跨过 0，也就是差异可能为零');
     expect(component).toContain('DirectApply（候选更新检查通过后直接采用）');
     expect(component).not.toContain('min-height:calc(100svh - 6rem)');
     expect(component).toContain('border-left:3px solid var(--accent-deep)');

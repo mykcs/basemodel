@@ -7,10 +7,10 @@ const closeout = read('../styles/visual-closeout.css');
 
 describe('content-first server operations pilot', () => {
   it('makes the dated operational state the first subject without hiding deletion authority', () => {
-    expect(server).toContain('实验文件磁盘：约 0.99 TiB 可用');
+    expect(server).toContain('实验文件磁盘：约 1.09 TB 可用');
     expect(server).toContain('容量快照 · 2026-09-15 22:10（UTC+8）· 非实时数据');
     expect(server).toContain('NOT_AUTHORIZED');
-    expect(server).toContain('删除必须由对象 / 服务器负责人对同一版精确回收清单明确批准');
+    expect(server).toContain('对象 / 服务器负责人必须批准同一版精确回收清单');
     expect(server).toContain('例行服务器维护');
     expect(server).toContain('系统磁盘统计（df）');
     expect(server).toContain('文件数量容量（inode，文件系统能记录多少个文件）');
@@ -24,9 +24,10 @@ describe('content-first server operations pilot', () => {
     const health = server.indexOf('<section class="server-section" id="health-scan">');
     expect(heroEnd).toBeGreaterThan(-1);
     expect(switchboard).toBeGreaterThan(heroEnd);
-    expect(health).toBeGreaterThan(switchboard);
+    expect(health).toBeGreaterThan(heroEnd);
+    expect(switchboard).toBeGreaterThan(health);
     const routine = server.indexOf('<aside class="routine-entry"');
-    expect(routine).toBeGreaterThan(health);
+    expect(routine).toBeGreaterThan(switchboard);
   });
 
   it('retires the legacy full-height server hero without changing the lab owner', () => {

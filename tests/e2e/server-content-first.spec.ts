@@ -10,7 +10,7 @@ for (const viewport of [
     await page.setViewportSize(viewport);
     await page.goto(route, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.locator('h1')).toHaveText('实验文件磁盘：约 0.99 TiB 可用');
+    await expect(page.locator('h1')).toHaveText('实验文件磁盘：约 1.09 TB 可用');
     await expect(page.locator('.server-hero__status')).toBeVisible();
     await expect(page.locator('.server-hero__facts')).toBeVisible();
     await expect(page.locator('.server-hero__boundary')).toBeVisible();
@@ -32,15 +32,14 @@ for (const viewport of [
 
     expect(geometry.hero.height).toBeLessThan(viewport.height);
     expect(geometry.minHeight).toBe('0px');
-    expect(geometry.switchboard.top).toBeGreaterThanOrEqual(geometry.hero.bottom - 1);
-    expect(geometry.routine.top).toBeGreaterThan(viewport.height);
+    expect(geometry.switchboard.top).toBeGreaterThan(viewport.height);
     expect(geometry.routine.top).toBeGreaterThan(geometry.switchboard.bottom);
     expect(geometry.overflow).toBeLessThanOrEqual(2);
 
     const visibleHeadings = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((nodes) => nodes
       .filter((node) => { const rect = node.getBoundingClientRect(); return rect.top < innerHeight && rect.bottom > 0; })
       .map((node) => node.textContent?.trim()));
-    expect(visibleHeadings).toEqual(['实验文件磁盘：约 0.99 TiB 可用']);
+    expect(visibleHeadings).toEqual(['实验文件磁盘：约 1.09 TB 可用']);
   });
 }
 
@@ -62,8 +61,8 @@ for (const theme of ['light', 'dark'] as const) {
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('.server-hero__status')).toBeVisible();
-    await expect(page.locator('.server-hero__boundary')).toContainText('先归档，但“上传成功”还不算可恢复');
-    await expect(page.locator('.server-hero__boundary')).toContainText('删除必须由对象 / 服务器负责人对同一版精确回收清单明确批准');
+    await expect(page.locator('.server-hero__boundary')).toContainText('上传成功 ≠ 可恢复');
+    await expect(page.locator('.server-hero__boundary')).toContainText('对象 / 服务器负责人必须批准同一版精确回收清单');
     await expect(page.locator('#reclaim-proposal')).toContainText('NOT_AUTHORIZED');
     await expect(page.locator('.server-hero__context')).toContainText('非实时数据');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
