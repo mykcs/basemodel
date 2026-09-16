@@ -413,9 +413,9 @@ Hosted target-specific inspection then confirmed all four pilot owners on the re
 - Q17 focus/comparison visibly contains `R127 与 R128 平均分只差 4.18 分`;
 - all four hosted pages preserve `robots=noindex,follow` on the review surface.
 
-The Preview is explicitly review-only and is not merge, Vercel-final-gate, Production, scientific-authority, or human-comprehension evidence. The required phone + desktop **human** cold-read remains open, so Phase C still contributes 0 / 20 weighted points and Phase E broad migration remains blocked.
+The Preview is explicitly review-only and is not merge, Vercel-final-gate, Production, scientific-authority, or human-comprehension evidence. The required independent phone + desktop cold-read remains open, so Phase C still contributes 0 / 20 weighted points and Phase E broad migration remains blocked.
 
-## 20. Phase-C human exit — fail-closed receipt gate
+## 20. Phase-C independent exit — fail-closed receipt gate
 
 Before this write, live control state was refreshed again: `main` remained `d3631890f89c0fe62e249c088794b64a0b503f00`; PR #737 remained Draft and mergeable; #728 still owned the Q17 W&B mirror, #729 the Effective-State GDR publication, and #734 the acceleration/history explanation. None of those scientific owners are changed here.
 
@@ -426,8 +426,8 @@ The open Phase-C cold-read row now has an executable task-scoped verifier:
 - four exact pilot Reader Contracts are frozen in one mapping (`flow`, `flow-sd-lora`, `flow-server`, `capability-q17-frontier`);
 - each pilot requires a separate desktop and phone receipt, for eight receipts total;
 - every receipt must already PASS the canonical `HumanPreferenceJudgeReceipt` validator;
-- the reviewer must be a real human for this program exit; an `independent-agent` receipt remains useful preparation but cannot close Phase C;
-- every receipt must bind the same exact product Git SHA and the correct pilot Reader Contract;
-- missing, duplicated, stale-head, wrong-contract, non-human or FAIL evidence fails closed.
+- reviewer identity follows the canonical HPL judge contract: a real human or genuinely independent Agent is valid; self-authored notes remain ineligible for an independent receipt;
+- every receipt must bind the same exact rendered product Git SHA, correct pilot Reader Contract + route, and canonical review viewport (`1280×633` desktop / `390×844` phone);
+- missing, duplicated, stale-head, wrong-route, wrong-contract, wrong-viewport or FAIL evidence fails closed.
 
-Focused validator tests pass **23 / 23**, `npm run check` reports **583 files, 0 errors** with the same two existing Zod deprecation hints, and an intentionally empty receipt directory correctly exits non-zero. No human receipt was fabricated, so the Phase-C checkbox remains open and the weighted total remains **35 / 100**.
+Focused cold-read-gate + canonical HPL tests pass **25 / 25**. A synthetic eight-receipt fixture proves the task gate can PASS structurally, while an intentionally empty receipt directory exits non-zero; neither fixture is admissible review evidence. `npm run check` reports **583 files, 0 errors** with the same two existing Zod deprecation hints, the HPL runtime-importer audit remains empty, the human-feedback audit passes, and `npm run verify:fast` completes the full deterministic repository gate successfully. No independent receipt was fabricated, so the Phase-C checkbox remains open and the weighted total remains **35 / 100**.
