@@ -10,7 +10,7 @@ describe('content-first server operations pilot', () => {
     expect(server).toContain('实验文件磁盘：约 0.99 TiB 可用');
     expect(server).toContain('容量快照 · 2026-09-15 22:10（UTC+8）· 非实时数据');
     expect(server).toContain('NOT_AUTHORIZED');
-    expect(server).toContain('恢复成功不等于已获删除许可');
+    expect(server).toContain('即使已经验证能恢复，任何删除仍要负责人单独批准同一版精确清单');
     expect(server).toContain('例行服务器维护');
     expect(server).toContain('系统磁盘统计（df）');
     expect(server).toContain('文件数量容量（inode）');
