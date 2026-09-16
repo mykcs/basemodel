@@ -26,22 +26,25 @@ export type EffectiveStateFormalResult =
     };
 
 const repo = 'https://github.com/mykcs/openevo-experiment';
-const campaignScienceSha = 'c5e012814bb9509deb0e2cbc8d57a63e2b56889f';
+const scienceExecutionGateSha = 'c5e012814bb9509deb0e2cbc8d57a63e2b56889f';
+const formalExecutionCheckout = '7e4957bd55c770259f3d225b868e466a891ae7f4';
 const qualificationEvidenceSha = 'b41884ac90d185742dc47f240c4d54a3cfaf6175';
 const evidenceRoot = `${repo}/blob/${qualificationEvidenceSha}/docs/evidence/bounded-recurrence-gdr-20260915`;
 
 export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
-  checkedAt: '2026-09-16T10:08:00+08:00',
+  checkedAt: '2026-09-16T11:11:00+08:00',
   source: {
     repository: 'mykcs/openevo-experiment',
     controlTowerPr: 502,
     controlTowerHead: '99dd0fdce328682fb0218aa084d3d2b0d0b7ae49',
     finalImplementationPr: 510,
-    finalImplementationHead: 'eb7a2b5c8365e83b7b1133f803ba1add9d81dee5',
-    scientificExecutionSha: campaignScienceSha,
+    finalImplementationHead: 'c602b50208a247d2563e44874fb1da65593cd13b',
+    formalExecutionCheckout,
+    scientificExecutionSha: scienceExecutionGateSha,
     campaignId: '20260916-0255-bounded-effective-state-gdr',
     experimentId: '202609160255-bounded-effective-state-gdr',
     passportSha256: '5d9adea0312ea93f4a12fa561fae5fa5fa8bd8f0f5cbff7d86c7db51371b5e42',
+    registrySha256: '9d07b2eff5a8eff6fa3471418bfadb96461aa638d28c118c3d66ae41cf13d999',
     campaignPreregParentScienceSha: 'de5b011035cfe907fee34c7b9a8ea961dd1e230d',
     authorityReconciliationRequired: false,
     preCampaignValidation: {
@@ -52,18 +55,30 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     currentMainHandoffCommit: '9f6259be9b961223a5cab7711fe1f297e272d541',
     historicalImplementationPr: 497,
     historicalImplementationHead: '7847d6497ae58b7a82dc37cd1cf71ccfe44aa8df',
-    status: 'PRELAUNCH_READY_AWAITING_EXPLICIT_OWNER_START',
+    status: 'PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START',
+    currentCampaignClassification: 'PRELAUNCH_READY_AWAITING_EXPLICIT_OWNER_START',
   },
   lifecycle: {
-    status: 'PRELAUNCH_READY_AWAITING_EXPLICIT_OWNER_START',
+    status: 'PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START',
     formalRunLaunched: false,
     launchAuthority: false,
     formalRowsConsumed: 0,
     finalPanelAccess: 0,
     formalOutputRootExists: false,
-    currentReadySha256: '74233661885a033876b07a62df1a165f98d5109115f100418e2d5b084955aca9',
-    observabilityAdmissionSha256: 'b8353f39367848c6946efa30f4abaa16e96ebf1b752149e7120c3cc24761ab6b',
-    prelaunchZeroStateSealSha256: 'f2323ee9d5f78612a0d3f513c94fdc17cb7be91300641df192f0c6df88d09c24',
+    currentReadySha256: '2efded716a50ba2c7aac2d5eb07c19730ae8e5bfbdbb60fa89560a5ed0edd624',
+    controllerInitOnlySha256: 'e942c2015ef5bb524b451ea5406bf13c1c73c9a36854b2f2efcbd55a1de0f60b',
+    matchedDryRunSha256: 'cb8eb1b25e8ff6f6fe225685a669248d3c175d369a591f69dde1cfdb624c5ae8',
+    observabilityAdmissionSha256: '968ec210bca4b0e6ce78ba534e7b4e0ae561b2f656890bd7b8c8722c11e40254',
+    prelaunchZeroStateSealSha256: 'f60f51e535461223519ff95f629e37636ddb34838f6bb359a01f58009e1d9f0b',
+  },
+  resourceExecution: {
+    physicalGpuIndices: [4, 5, 6, 7] as const,
+    workersPerGpu: 2,
+    rolloutMode: 'one OFF + one ON worker per physical GPU',
+    postRolloutGpu: 4,
+    crossPhaseOverlapAllowed: false,
+    resourceSuccessorSha256: 'd272e022bb6dade53dc6165a274872f319de06ae3504ce07ec85d74d8d79907f',
+    claimBoundary: 'resource-lane migration only; treatment/tasks/seeds/sampling/common start/Carrier/GDR policy/budget/analysis unchanged',
   },
   identity: {
     off: 'BOUNDED_OFF',

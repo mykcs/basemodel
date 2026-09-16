@@ -147,6 +147,7 @@ const pending = result.status === 'pending';
         <tr><td>{t('Round0 exact repeat', 'Round0 exact repeat')}</td><td>PASS</td><td>{study.readiness.isolatedExactStack.round0ExactRepeatCount} / {study.readiness.isolatedExactStack.round0ExactRepeatCount}</td></tr>
         <tr><td>{t('non-empty rank128 recurrent exact repeat', 'non-empty rank128 recurrent exact repeat')}</td><td>PASS</td><td>{study.readiness.isolatedExactStack.nonemptyExactRepeatCount} / {study.readiness.isolatedExactStack.nonemptyExactRepeatCount}</td></tr>
         <tr><td>{t('4-GPU zero-formal topology', '4-GPU zero-formal topology')}</td><td>PASS</td><td>formal rows = {study.readiness.topology.formalRowsConsumed}</td></tr>
+        <tr><td>{t('当前 formal resource lane', 'Current formal resource lane')}</td><td>GPU4–7</td><td>{t('每卡 1 OFF + 1 ON；只改资源执行', 'one OFF + one ON per GPU; resource execution only')}</td></tr>
         <tr><td>{t('per-step trace equivalence', 'per-step trace equivalence')}</td><td>PASS</td><td>{study.readiness.stepTrace.round0Steps} + {study.readiness.stepTrace.recurrentSteps} steps</td></tr>
         <tr><td>{t('short non-final qualification', 'short non-final qualification')}</td><td>PASS</td><td>{t('仅资格检查，不是效果结论', 'qualification only, not efficacy')}</td></tr>
         <tr><td>{t('formal matched dry-run', 'formal matched dry-run')}</td><td>PASS</td><td>{study.readiness.finalPrelaunch.dryRunStatus}</td></tr>
@@ -166,7 +167,7 @@ const pending = result.status === 'pending';
         <div><strong>ON · {study.identity.on}</strong><span>{t('同一训练 + Effective-State GDR write', 'same training + Effective-State GDR write')}</span></div>
       </div>
       <div class="esg__barrier"><span>Round 0</span><i></i><span>Round 1</span><i></i><span>…</span><i></i><span>Round 159</span></div>
-      <figcaption>{t('每轮 OFF/ON rollout 在四张卡上并发；随后 OFF、ON 的 post-rollout 阶段按冻结顺序串行完成，两臂都 seal 后才跨过 matched barrier。final panel 在正式 Stage2 期间保持 locked。', 'OFF/ON rollouts run concurrently across the four GPUs; OFF then ON post-rollout phases complete in the frozen serial order, and both arms must seal before the matched barrier. The final panel stays locked during formal Stage2.')}</figcaption>
+      <figcaption>{t('每轮 OFF/ON rollout 在 GPU4–7 上并发；随后 post-rollout reflector / training / transition 在 GPU4 上按冻结顺序串行完成，两臂都 seal 后才跨过 matched barrier。这个资源迁移不改变 treatment、任务、seed、预算或分析；final panel 在正式 Stage2 期间保持 locked。', 'OFF/ON rollouts run concurrently on GPU4–7; post-rollout reflector, training, and transition then run serially on GPU4 in the frozen order, and both arms must seal before the matched barrier. This resource migration does not change treatment, tasks, seeds, budget, or analysis; the final panel stays locked during formal Stage2.')}</figcaption>
     </figure>
     <ul class="esg__matched-list">
       {study.formalDesign.matched.map((item) => <li>{zh ? item.zh : item.en}</li>)}
@@ -201,8 +202,10 @@ const pending = result.status === 'pending';
       <ul>
         <li><a href={study.evidence.controlTowerPr}><ExternalBrandMark href={study.evidence.controlTowerPr} />PR #502 · Control Tower</a></li>
         <li><a href={study.evidence.finalImplementationPr}><ExternalBrandMark href={study.evidence.finalImplementationPr} />PR #510 · final implementation stack</a></li>
-        <li><code>{study.source.scientificExecutionSha}</code> · {t('frozen science checkout', 'frozen science checkout')}</li>
+        <li><code>{study.source.formalExecutionCheckout}</code> · {t('formal execution checkout', 'formal execution checkout')}</li>
+        <li><code>{study.source.scientificExecutionSha}</code> · {t('science / execution-gate code freeze', 'science / execution-gate code freeze')}</li>
         <li><code>{study.lifecycle.currentReadySha256}</code> · READY SHA256</li>
+        <li><code>{study.resourceExecution.resourceSuccessorSha256}</code> · GPU4–7 resource successor SHA256</li>
       </ul>
     </details>
     <details class="esg__details">
