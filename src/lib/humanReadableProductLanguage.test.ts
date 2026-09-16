@@ -34,7 +34,9 @@ describe('human-readable product language contract', () => {
     expect(missionHero).toContain('mission-hero__boundary');
     expect(missionHero).toContain('这里只定义“怎么比”，不发布结果');
     expect(missionHero).toContain('ALFWorld 与 WebShop 的分数不能混比');
-    expect(missionHero).toContain('先看研究对象与比较条件');
+    expect(missionHero).toContain('实验固定同一个 Qwen2.5-3B-Instruct');
+    expect(missionHero).toContain('OpenEvo 先保存任务证据');
+    expect(missionHero).not.toContain('先看研究对象与比较条件');
     expect(missionHero).not.toContain('mission-hero__frame research-fact-band');
     expect(missionHero).toContain("t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')");
     expect(missionHero).toContain("href={p('/research/seed-openevo/study/briefing/')}");

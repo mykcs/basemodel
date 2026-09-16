@@ -34,6 +34,8 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(component).toContain('DirectApply（候选更新检查通过后直接采用）');
     expect(component).not.toContain('min-height:calc(100svh - 6rem)');
     expect(component).toContain('border-left:3px solid var(--accent-deep)');
+    expect(component).toContain("aria-label={t('相邻两个模型状态的同题结果', 'Same-task results for the two adjacent model states')}");
+    expect(component).not.toContain('id="same-task-result"');
     expect(component).toContain('/q17-directapply-analysis/');
     expect(component).toContain('查看 DirectApply 160 轮完整曲线与冻结 final');
     expect(component).not.toContain('我们现在只敢说到这里');

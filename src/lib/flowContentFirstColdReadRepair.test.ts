@@ -30,6 +30,9 @@ describe('Flow content-first cold-read repair', () => {
     expect(hub.indexOf('id="questions"')).toBeLessThan(hub.indexOf('id="training-design"'));
     expect(hub).toContain('具体优化方法留到 SEED 方法页');
     expect(hub).not.toContain('OPD / GRPO 的具体做法留到 SEED 方法页');
+     expect(hub).toContain('aria-labelledby="research-objects-title"');
+    expect(hub).toContain('<strong id="research-objects-title">');
+    expect(hub).not.toContain("<h2>{t('研究对象', 'Research objects')}</h2>");
   });
 
 
