@@ -14,12 +14,14 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.source.finalImplementationPr).toBe(510);
     expect(study.source.controlTowerPr).toBe(502);
     expect(study.source.finalImplementationHead).toBe('c602b50208a247d2563e44874fb1da65593cd13b');
-    expect(study.source.formalExecutionCheckout).toBe('7e4957bd55c770259f3d225b868e466a891ae7f4');
-    expect(study.source.scientificExecutionSha).toBe('c5e012814bb9509deb0e2cbc8d57a63e2b56889f');
+    expect(study.source.formalExecutionCheckout).toBe('25bc89083b6c60b3c6be4a3d80d12778feef4556');
+    expect(study.source.scientificExecutionSha).toBe('25bc89083b6c60b3c6be4a3d80d12778feef4556');
+    expect(study.source.scienceExecutionGateCodeFreeze).toBe('c5e012814bb9509deb0e2cbc8d57a63e2b56889f');
     expect(study.source.campaignId).toBe('20260916-0255-bounded-effective-state-gdr');
     expect(study.source.experimentId).toBe('202609160255-bounded-effective-state-gdr');
     expect(study.source.passportSha256).toMatch(sha64);
     expect(study.source.registrySha256).toMatch(sha64);
+    expect(study.source.carrierAdoptionIdentity).toBe('274123dde66547d5d5ba68b5c8b75c0205a75191ce3c1c471a606d589ac5250b');
     expect(study.source.authorityReconciliationRequired).toBe(false);
     expect(study.source.preCampaignValidation.scientificExecutionSha).toBe('b41884ac90d185742dc47f240c4d54a3cfaf6175');
     expect(study.source.preCampaignValidation.implementationHead).toBe('5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa');
@@ -50,7 +52,11 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.lifecycle.formalRunLaunched).toBe(false);
     expect(study.lifecycle.formalRowsConsumed).toBe(0);
     expect(study.lifecycle.finalPanelAccess).toBe(0);
-    expect(study.lifecycle.currentReadySha256).toBe('2efded716a50ba2c7aac2d5eb07c19730ae8e5bfbdbb60fa89560a5ed0edd624');
+    expect(study.lifecycle.currentReadySha256).toBe('4b57164c55ca8e3ed8993aa2291f09971ce91fe25871e4714336fd2df7d26671');
+    expect(study.lifecycle.controllerInitOnlySha256).toBe('adb861f8797c0b75f549e88865bdff651e8ac35230e39b0bc36d0be438150f4e');
+    expect(study.lifecycle.matchedDryRunSha256).toBe('00f7f3284bc67568e4552906cd95c9e91cbfd14800d828444f221c439e835b52');
+    expect(study.lifecycle.observabilityAdmissionSha256).toBe('9a75be897bb518a4bcbbf4e2069e511662f994e1b5f46f8b3126eab38e1b199a');
+    expect(study.lifecycle.prelaunchZeroStateSealSha256).toBe('7771ad89c0c400adaa23a27762766a043a3c928122f3cbfa8780101f6882ea03');
   });
 
   it('requires pinned evidence before the sealed branch can carry formal numbers', () => {

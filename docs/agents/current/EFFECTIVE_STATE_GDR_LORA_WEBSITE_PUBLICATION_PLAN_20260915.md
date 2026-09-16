@@ -39,16 +39,17 @@ BaseModel 创建基线：`main@1b6d13714f672345a086cbc09ec7067cb3dae3a7`
 
 ## 2. 当前科学 authority：现在能写什么
 
-截至 2026-09-16 11:11 +08 live refresh，正式 160-round experiment **仍未启动**：owner launch release 不存在，formal run launched=`false`，protected final-panel access=`0`。当前 formal execution checkout 已冻结为 `7e4957bd...`，而 science / execution-gate code freeze 仍为 `c5e01281...`。
+截至 2026-09-16 11:52 +08 live refresh，正式 160-round experiment **仍未启动**：owner launch release 不存在，formal run launched=`false`，protected final-panel access=`0`。当前 formal execution checkout 已刷新为 `25bc8908...`；较早的 `c5e01281...` 单独保留为 science / execution-gate code freeze witness，不再冒充当前 formal checkout。
 
 最新 #510 将 formal resource lane 从 GPU0–3 迁到 **GPU4–7**：每张卡仍是一条 OFF + 一条 ON rollout worker，post-rollout reflector / training / transition 在 GPU4 串行。上游明确冻结：tasks、schedule、generation/step seeds、sampling、treatment、common start、Carrier、GDR policy、160×128 budget 与 analysis 都不因这次资源迁移改变。因此这是 engineering/provenance freshness，不需要新的科学 A/B 决策。#502/#510 mutable PR body 已同步；#502 Git head 继续冻结不动。网站 formal result 继续 Pending。
 
 ### 2.1 必须绑定的上游身份
 - live implementation / launch workline：PR #510 actual Git head `c602b50208a247d2563e44874fb1da65593cd13b`。
 - current campaign：`20260916-0255-bounded-effective-state-gdr`；experiment=`202609160255-bounded-effective-state-gdr`。
-- formal execution checkout：`7e4957bd55c770259f3d225b868e466a891ae7f4`。
+- formal execution checkout：`25bc89083b6c60b3c6be4a3d80d12778feef4556`。
 - science / execution-gate code freeze：`c5e012814bb9509deb0e2cbc8d57a63e2b56889f`。
 - Passport SHA256：`5d9adea0312ea93f4a12fa561fae5fa5fa8bd8f0f5cbff7d86c7db51371b5e42`；Registry SHA256=`9d07b2eff5a8eff6fa3471418bfadb96461aa638d28c118c3d66ae41cf13d999`。
+- Carrier adoption identity：`274123dde66547d5d5ba68b5c8b75c0205a75191ce3c1c471a606d589ac5250b`。
 - current formal resource lane：GPU4–7；resource successor SHA256=`d272e022bb6dade53dc6165a274872f319de06ae3504ce07ec85d74d8d79907f`。
 - campaign prereg parent science SHA：`de5b011035cfe907fee34c7b9a8ea961dd1e230d`；status=`FROZEN_BEFORE_FORMAL_LAUNCH`。
 - Control Tower：PR #502 exact Git head `99dd0fdce328682fb0218aa084d3d2b0d0b7ae49`；mutable PR body 已同步 packaged campaign，但 Git head 不为状态同步而移动。
@@ -57,11 +58,11 @@ BaseModel 创建基线：`main@1b6d13714f672345a086cbc09ec7067cb3dae3a7`
 - Priority-1 pair：`BOUNDED_OFF` vs `EFFECTIVE_STATE_GDR_LORA_V1`。
 - treatment start：**Stage2 Round0 第一条 optimizer update**，不是 Round1。
 - logical treatment start：`S0 = EMPTY_BOUNDED_HISTORY`。
-- consumer-validated READY package SHA256：`2efded716a50ba2c7aac2d5eb07c19730ae8e5bfbdbb60fa89560a5ed0edd624`。
-- controller-init-only preflight SHA256：`e942c2015ef5bb524b451ea5406bf13c1c73c9a36854b2f2efcbd55a1de0f60b`。
-- matched zero-task dry-run SHA256：`cb8eb1b25e8ff6f6fe225685a669248d3c175d369a591f69dde1cfdb624c5ae8`。
-- W&B observability admission SHA256：`968ec210bca4b0e6ce78ba534e7b4e0ae561b2f656890bd7b8c8722c11e40254`；`scientific_authority=false`。
-- prelaunch zero-state seal SHA256：`f60f51e535461223519ff95f629e37636ddb34838f6bb359a01f58009e1d9f0b`。
+- consumer-validated READY package SHA256：`4b57164c55ca8e3ed8993aa2291f09971ce91fe25871e4714336fd2df7d26671`。
+- controller-init-only preflight SHA256：`adb861f8797c0b75f549e88865bdff651e8ac35230e39b0bc36d0be438150f4e`。
+- matched zero-task dry-run SHA256：`00f7f3284bc67568e4552906cd95c9e91cbfd14800d828444f221c439e835b52`。
+- W&B observability admission SHA256：`9a75be897bb518a4bcbbf4e2069e511662f994e1b5f46f8b3126eab38e1b199a`；`scientific_authority=false`。
+- prelaunch zero-state seal SHA256：`7771ad89c0c400adaa23a27762766a043a3c928122f3cbfa8780101f6882ea03`。
 - current status：`PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START`；current-campaign classification remains `PRELAUNCH_READY_AWAITING_EXPLICIT_OWNER_START`。
 - owner launch release：absent；launch authority：`false`。
 - formal rows consumed：`0`。
@@ -182,12 +183,14 @@ source: {
   repository: 'mykcs/openevo-experiment',
   finalImplementationPr: 510,
   finalImplementationHead: 'c602b50208a247d2563e44874fb1da65593cd13b',
-  formalExecutionCheckout: '7e4957bd55c770259f3d225b868e466a891ae7f4',
-  scientificExecutionSha: 'c5e012814bb9509deb0e2cbc8d57a63e2b56889f',
+  formalExecutionCheckout: '25bc89083b6c60b3c6be4a3d80d12778feef4556',
+  scientificExecutionSha: '25bc89083b6c60b3c6be4a3d80d12778feef4556',
+  scienceExecutionGateCodeFreeze: 'c5e012814bb9509deb0e2cbc8d57a63e2b56889f',
   campaignId: '20260916-0255-bounded-effective-state-gdr',
   experimentId: '202609160255-bounded-effective-state-gdr',
   passportSha256: '5d9adea0312ea93f4a12fa561fae5fa5fa8bd8f0f5cbff7d86c7db51371b5e42',
   registrySha256: '9d07b2eff5a8eff6fa3471418bfadb96461aa638d28c118c3d66ae41cf13d999',
+  carrierAdoptionIdentity: '274123dde66547d5d5ba68b5c8b75c0205a75191ce3c1c471a606d589ac5250b',
   resourceSuccessorSha256: 'd272e022bb6dade53dc6165a274872f319de06ae3504ce07ec85d74d8d79907f',
   authorityReconciliationRequired: false,
   controlTowerPr: 502,
@@ -453,7 +456,7 @@ claim_boundary = <explicit sentence>
 
 - #497 = closed historical lineage，head `7847d6497ae58b7a82dc37cd1cf71ccfe44aa8df`。
 - #502 = current Control Tower，Git head `99dd0fdce328682fb0218aa084d3d2b0d0b7ae49`；mutable body 已同步 GPU4–7 formal lane，不移动 Git head。#510 actual Git head=`c602b50208a247d2563e44874fb1da65593cd13b`。
-- current formal execution checkout=`7e4957bd55c770259f3d225b868e466a891ae7f4`；science/execution-gate code freeze=`c5e012814bb9509deb0e2cbc8d57a63e2b56889f`；Passport SHA256=`5d9adea0312ea93f4a12fa561fae5fa5fa8bd8f0f5cbff7d86c7db51371b5e42`；Registry SHA256=`9d07b2ef...`。pre-campaign qualification evidence remains pinned to `b41884ac... / 5e1b6a2d... / READY 742336...` as historical support only。
+- current formal execution checkout=`25bc89083b6c60b3c6be4a3d80d12778feef4556`；science/execution-gate code freeze witness=`c5e012814bb9509deb0e2cbc8d57a63e2b56889f`；Passport SHA256=`5d9adea0312ea93f4a12fa561fae5fa5fa8bd8f0f5cbff7d86c7db51371b5e42`；Registry SHA256=`9d07b2ef...`；Carrier adoption=`274123dd...`。pre-campaign qualification evidence remains pinned to `b41884ac... / 5e1b6a2d... / READY 742336...` as historical support only。
 - current resource successor=`d272e022...`；formal lane=GPU4–7；资源迁移没有改变 treatment/tasks/seeds/sampling/common start/Carrier/GDR policy/budget/analysis。
 - consumer server fresh-read：READY=`FORMAL_READY_AWAITING_OWNER_LAUNCH`；dry-run=`DRY_RUN_PASS_NO_FORMAL_TASKS`；controller-init=`PASS_CONTROLLER_INIT_ONLY_NO_FORMAL_CONSUMPTION`；zero-state=`PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START`；formal root absent。
 - live GPU watcher = `WAITING_FOR_GPU_LANE`，`reservation_created=false`，`launch_authority=false`；这是 execution-readiness observation，不是 scientific result。
@@ -710,6 +713,7 @@ final panel = locked
 - [ ] expected-head guard 合并；不要自动 merge 未审阅的 scientific copy。
   - **CORRECTED · 2026-09-16 10:10 +08：** 09:38 的 `BLOCKED_AUTHORITY_DRIFT` 是误分类。owner decision 已先行冻结 Effective-State treatment 与 preferred 4-GPU topology；campaign/Registry/Passport/resource contract 随后正式物化同一选择。#502/#510 mutable body 已同步，formal run 仍未启动，故 expected-head merge 的剩余门恢复为 scientific-copy review + current exact-head release gates，不需要 owner 再做 A/B 选择。
   - **FRESHNESS · 2026-09-16 11:11 +08：** mandatory pre-merge refresh found #510 advanced to `c602b502...` and the formal resource lane moved to GPU4–7. This is an engineering-only resource successor; scientific treatment and claim boundary are unchanged. The `7003f731...` CI/Vercel receipts are now historical merge evidence. Expected-head merge remains blocked until BaseModel binds `7e4957bd... / c602b502... / READY 2efded... / resource d272e022...` and fresh exact-head release gates pass.
+  - **FRESHNESS · 2026-09-16 11:52 +08：** a second mandatory pre-merge refresh found #502/#510 mutable authority surfaces repackaged the same GPU4–7 treatment into formal execution checkout `25bc8908...` with Carrier `274123dd...`, READY `4b57164c...`, controller-init `adb861f8...`, dry-run `00f7f328...`, W&B admission `9a75be89...`, and zero-state `7771ad89...`. #502/#510 Git heads did not change; formal run remains unlaunched. This is launch-identity/provenance freshness only, so no new owner science choice is required.
 - [ ] Production READY 后打开 canonical route 做最终 smoke。
 - [ ] Production body / metadata / Study navigation / adjacent Bounded / Gated-Delta routes 一致后才宣布 website publication complete。
 
@@ -976,3 +980,16 @@ Accepted source candidate: `f37cbae00f49475748baaa81284c36c9c13bde42` on base `d
 - Scientific boundary unchanged: owner launch release absent; formal run launched=`false`; formal rows=`0`; final-panel access=`0`; W&B scientific authority=`false`; formal result remains Pending.
 
 This receipt is evidence only. Because writing it changes the PR head, all source-head provider receipts above become historical merge evidence. The resulting checklist-only head must receive fresh exact-head Public PR CI and authoritative Vercel success before any expected-head merge.
+
+
+### 2026-09-16 11:52 +08 · second GPU4–7 launch-identity refresh
+
+BaseModel main remains `d3631890f89c0fe62e249c088794b64a0b503f00`; #729 exact head before this repair=`9bb2a36943aa0b416be1c6d50c33341747b32768`.
+OpenEvo #502 Git head remains `99dd0fdce328682fb0218aa084d3d2b0d0b7ae49`; #510 Git head remains `c602b50208a247d2563e44874fb1da65593cd13b`, but both mutable authority bodies now bind formal execution checkout=`25bc89083b6c60b3c6be4a3d80d12778feef4556`.
+Current launch tuple: Carrier=`274123dde66547d5d5ba68b5c8b75c0205a75191ce3c1c471a606d589ac5250b`; READY=`4b57164c55ca8e3ed8993aa2291f09971ce91fe25871e4714336fd2df7d26671`; controller-init=`adb861f8797c0b75f549e88865bdff651e8ac35230e39b0bc36d0be438150f4e`; dry-run=`00f7f3284bc67568e4552906cd95c9e91cbfd14800d828444f221c439e835b52`; W&B admission=`9a75be897bb518a4bcbbf4e2069e511662f994e1b5f46f8b3126eab38e1b199a`; zero-state=`7771ad89c0c400adaa23a27762766a043a3c928122f3cbfa8780101f6882ea03`.
+Resource successor remains `d272e022bb6dade53dc6165a274872f319de06ae3504ce07ec85d74d8d79907f`; treatment/tasks/seeds/sampling/common-start/Carrier mechanism/GDR policy/budget/analysis are unchanged. The earlier `c5e01281...` remains a science/execution-gate code-freeze witness, while `25bc8908...` is the current formal execution checkout.
+Protected boundary unchanged: owner launch release absent; launch authority=false; formal run launched=false; formal rows=0; final-panel access=0; W&B scientific authority=false; formal result remains Pending.
+The in-flight `9bb2a369...` Vercel gate is historical merge evidence only because this refresh happened before merge, even if that deployment reaches READY.
+Human decision needed: none; no scientific semantics, treatment or claim boundary changed.
+Next safe item: validate this provenance-only repair, push one new exact #729 head, then rerun Public PR CI + authoritative Vercel on that head before the final pre-merge race-check.
+Validation update 2026-09-16 11:55 +08: pre-push #502/#510 readback still matches `25bc8908... / c602b502... / READY 4b57164c...`; focused semantic/navigation/Reader Vitest `25/25 PASS`; Astro `0 errors / 0 warnings` (2 existing hints); static build `263 pages PASS`; heading + external-brand audits PASS; `git diff --check` PASS; clean sequential Chromium `17/17 PASS`. Formal result fields remain Pending/null.

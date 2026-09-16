@@ -27,12 +27,12 @@ export type EffectiveStateFormalResult =
 
 const repo = 'https://github.com/mykcs/openevo-experiment';
 const scienceExecutionGateSha = 'c5e012814bb9509deb0e2cbc8d57a63e2b56889f';
-const formalExecutionCheckout = '7e4957bd55c770259f3d225b868e466a891ae7f4';
+const formalExecutionCheckout = '25bc89083b6c60b3c6be4a3d80d12778feef4556';
 const qualificationEvidenceSha = 'b41884ac90d185742dc47f240c4d54a3cfaf6175';
 const evidenceRoot = `${repo}/blob/${qualificationEvidenceSha}/docs/evidence/bounded-recurrence-gdr-20260915`;
 
 export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
-  checkedAt: '2026-09-16T11:11:00+08:00',
+  checkedAt: '2026-09-16T11:52:00+08:00',
   source: {
     repository: 'mykcs/openevo-experiment',
     controlTowerPr: 502,
@@ -40,11 +40,13 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     finalImplementationPr: 510,
     finalImplementationHead: 'c602b50208a247d2563e44874fb1da65593cd13b',
     formalExecutionCheckout,
-    scientificExecutionSha: scienceExecutionGateSha,
+    scientificExecutionSha: formalExecutionCheckout,
+    scienceExecutionGateCodeFreeze: scienceExecutionGateSha,
     campaignId: '20260916-0255-bounded-effective-state-gdr',
     experimentId: '202609160255-bounded-effective-state-gdr',
     passportSha256: '5d9adea0312ea93f4a12fa561fae5fa5fa8bd8f0f5cbff7d86c7db51371b5e42',
     registrySha256: '9d07b2eff5a8eff6fa3471418bfadb96461aa638d28c118c3d66ae41cf13d999',
+    carrierAdoptionIdentity: '274123dde66547d5d5ba68b5c8b75c0205a75191ce3c1c471a606d589ac5250b',
     campaignPreregParentScienceSha: 'de5b011035cfe907fee34c7b9a8ea961dd1e230d',
     authorityReconciliationRequired: false,
     preCampaignValidation: {
@@ -65,11 +67,11 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     formalRowsConsumed: 0,
     finalPanelAccess: 0,
     formalOutputRootExists: false,
-    currentReadySha256: '2efded716a50ba2c7aac2d5eb07c19730ae8e5bfbdbb60fa89560a5ed0edd624',
-    controllerInitOnlySha256: 'e942c2015ef5bb524b451ea5406bf13c1c73c9a36854b2f2efcbd55a1de0f60b',
-    matchedDryRunSha256: 'cb8eb1b25e8ff6f6fe225685a669248d3c175d369a591f69dde1cfdb624c5ae8',
-    observabilityAdmissionSha256: '968ec210bca4b0e6ce78ba534e7b4e0ae561b2f656890bd7b8c8722c11e40254',
-    prelaunchZeroStateSealSha256: 'f60f51e535461223519ff95f629e37636ddb34838f6bb359a01f58009e1d9f0b',
+    currentReadySha256: '4b57164c55ca8e3ed8993aa2291f09971ce91fe25871e4714336fd2df7d26671',
+    controllerInitOnlySha256: 'adb861f8797c0b75f549e88865bdff651e8ac35230e39b0bc36d0be438150f4e',
+    matchedDryRunSha256: '00f7f3284bc67568e4552906cd95c9e91cbfd14800d828444f221c439e835b52',
+    observabilityAdmissionSha256: '9a75be897bb518a4bcbbf4e2069e511662f994e1b5f46f8b3126eab38e1b199a',
+    prelaunchZeroStateSealSha256: '7771ad89c0c400adaa23a27762766a043a3c928122f3cbfa8780101f6882ea03',
   },
   resourceExecution: {
     physicalGpuIndices: [4, 5, 6, 7] as const,
