@@ -21,6 +21,10 @@ const modelsIndex = read('../pages/_bodies/models-index.astro');
 const modelDetail = read('../pages/_bodies/model-detail.astro');
 const papersIndex = read('../pages/_bodies/papers-index.astro');
 const paperDetail = read('../pages/_bodies/paper-detail.astro');
+const paperLearningGuide = read('../components/papers/PaperLearningGuide.astro');
+const seedPaper = read('../content/papers/seed.json');
+const researchHub = read('../components/research/SeedOpenEvoResearchHub.astro');
+const briefingNotes = read('../components/research/SeedOpenEvoBriefingTechnicalNotes.astro');
 const movedPrimer = read('../components/research/ResearchPrimerMoved.astro');
 const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.astro');
 const resultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
@@ -108,6 +112,22 @@ describe('sitewide normalization first repair batch', () => {
     expect(modelDetail).not.toContain('min-height:min(540px,calc(100svh - 116px))');
     expect(modelDetail).not.toContain('min-height:calc(100svh - 102px)');
     expect(paperDetail).not.toContain("<div class=\"section-kicker\">{locale === 'zh' ? '方法' : 'Method'}</div>");
+  });
+
+  it('keeps public headings on the subject instead of telling the reader how to read them', () => {
+    expect(paperLearningGuide).toContain("isZh ? '复现边界' : 'Reproduction boundaries'");
+    expect(paperLearningGuide).not.toContain("isZh ? '常见误解' : 'Common misunderstandings'");
+    expect(paperLearningGuide).not.toContain("isZh ? '论文学习' : 'Paper learning'");
+    expect(seedPaper).toContain('长程轨迹的稀疏奖励问题');
+    expect(seedPaper).not.toContain('先读问题，不先读公式');
+    expect(seedPaper).not.toContain('Read the problem before the equations');
+
+    expect(researchHub).toContain("t('模型、任务与比较范围', 'Models, tasks, and comparison scope')");
+    expect(researchHub).toContain("t('WebShop 两阶段学习', 'WebShop two-stage learning')");
+    expect(researchHub).toContain("t('实验运行与结果比较', 'Experiment execution and result comparison')");
+    expect(researchHub).not.toContain('下面用 WebShop 展开两阶段');
+
+    expect(briefingNotes).toContain("t('64-component 上限的科研含义', 'Research meaning of the 64-component limit')");
   });
 
   it('keeps long-tail compatibility routes as redirects and historical notes explicitly historical', () => {

@@ -389,12 +389,14 @@ Long-tail compatibility / history migration witness — **2026-09-18**: audited 
 
 ### Phase F — Sitewide plain-language + content-shape sweep — **10%**
 
-- [ ] Find remaining meta-talk / AI-flavored headings and rewrite against canonical cases.
+- [x] Find remaining meta-talk / AI-flavored headings and rewrite against canonical cases.
 - [ ] Find cardified prose that can become ordinary editorial structure.
 - [ ] Find comparisons that still require memory-based cross-reading and give them a shared axis.
 - [ ] Find sequences whose topology is invisible and expose the path.
 - [ ] Find detached provenance/controls and restore semantic adjacency.
 - [ ] Verify terminology consistency across nav, headings, diagrams, captions and evidence.
+
+Phase-F plain-language heading sweep witness — **2026-09-18**: scanned the **263 rendered public pages** after a production build rather than treating every unused source string as a live UI defect. The remaining high-confidence stage-direction / presenter headings on actual routes were rewritten to name the subject directly: the paper learning guide now labels reproduction boundaries instead of “common misunderstandings”; the SEED/OpenEvo research hub names models/tasks/comparison scope, the WebShop two-stage learning object, and experiment/result comparison directly; the technical-note heading names the scientific meaning of the 64-component limit; and the SEED paper learning step names the long-horizon sparse-reward problem instead of telling the reader to “read the problem before the equations.” One rendered Q17 heading containing `先变好` was deliberately retained because it expresses a real temporal scientific result — which capability improved first — rather than author stage direction. No result value, treatment identity, lifecycle state, evidence boundary or scientific caveat changed. The deterministic gate found one stale copy assertion that still required the retired `下面用 WebShop...` sentence; it was updated to assert the same two-stage scientific fact plus the existing MiniMax / ALFWorld boundaries, without weakening the contract. Final pre-provider acceptance on the product tree: strict copy invariants **0 failures**; deterministic repository gate PASS; **263-page** production build plus heading/brand audits PASS; document overflow preflight PASS; full Chromium + WebKit UI matrix **394/394 PASS**. This completes only the first Phase-F row. Phase F has no per-row weights, so the credited total remains **80 / 100** until all six Phase-F rows are complete.
 
 ### Phase G — Cross-device / theme / accessibility / performance acceptance — **5%**
 

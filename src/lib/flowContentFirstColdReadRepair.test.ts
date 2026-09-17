@@ -29,7 +29,8 @@ describe('Flow content-first cold-read repair', () => {
   });
 
   it('explains Stage 1 in ordinary language instead of requiring analyzer or step-loop jargon', () => {
-    expect(hub).toContain('下面用 WebShop 展开两阶段');
+    expect(hub).toContain('WebShop 使用两个阶段');
+    expect(hub).not.toContain('下面用 WebShop 展开两阶段');
     expect(hub).toContain('MiniMax（外部复盘模型，只在任务结束后回看轨迹的分析模型）只回看已保存轨迹，不替 Qwen 选动作');
     expect(hub).toContain('不自动代表 ALFWorld 使用同一交互流程');
     expect(hub).not.toContain('外部 analyzer 才能复盘');

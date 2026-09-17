@@ -36,7 +36,7 @@ const objectGroups = [
   <SeedOpenEvoMissionHero locale={locale} compact />
 
   <section class="mission-section" id="questions" aria-labelledby="research-objects-title">
-    <div class="mission-section__heading"><span>01</span><strong id="research-objects-title">{t('先固定模型和任务，再分清比较的是完整系统还是第二阶段学习器', 'Pin the model and tasks, then distinguish full-system comparison from Stage-2 attribution')}</strong></div>
+    <div class="mission-section__heading"><span>01</span><strong id="research-objects-title">{t('模型、任务与比较范围', 'Models, tasks, and comparison scope')}</strong></div>
     <p class="section-intro">{t('完整系统比较先固定模型、任务和评分；只有要单独归因到第二阶段学习器时，才进一步要求两边共享第一阶段证据与同一个起点。','A full-system comparison first pins the model, tasks, and scoring. Only Stage-2 attribution additionally requires shared Stage-1 evidence and the same starting state.')}</p>
     <dl class="object-map">
       {objectGroups.map((group)=><div class="object-map__row"><dt>{group.label}</dt><dd>{group.items.map((item)=>'href' in item ? <a href={item.href}><strong>{item.title}</strong><span>{item.body}</span></a> : <div class="object-map__fact"><strong>{item.title}</strong><span>{item.body}</span></div>)}</dd></div>)}
@@ -44,13 +44,13 @@ const objectGroups = [
   </section>
 
   <section class="mission-section" id="training-design" aria-labelledby="training-design-title">
-    <div class="mission-section__heading"><span>02</span><h2 id="training-design-title">{t('WebShop 先做题和复盘，再持续学习', 'WebShop: act and review first, then continue learning')}</h2></div>
-    <p class="section-intro">{t('下面用 WebShop 展开两阶段。OpenEvo 的任务先做完，再学习：第一阶段（Stage 1，做题与事后复盘）由 Qwen 自己完成购物任务，任务结束后 MiniMax（外部复盘模型，只在任务结束后回看轨迹的分析模型）只回看已保存轨迹，不替 Qwen 选动作。第二阶段（Stage 2，持续学习）才用这些轨迹和复盘去更新文字经验、可复用策略、行为与恢复规则和少量模型适配参数。外部模型不能在做题过程中替 Qwen 选动作；这六步只说明 WebShop，不自动代表 ALFWorld 使用同一交互流程。', 'The WebShop example has two stages. OpenEvo finishes the task before learning from it: in Stage 1, Qwen completes the shopping task itself, and only after the task ends does MiniMax, an external review model, inspect the saved trace without choosing actions for Qwen. Stage 2 is continual learning, which uses those traces and reviews to update written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter. The external model never chooses actions during the task, and this six-step example describes WebShop only.')}</p>
+    <div class="mission-section__heading"><span>02</span><h2 id="training-design-title">{t('WebShop 两阶段学习', 'WebShop two-stage learning')}</h2></div>
+    <p class="section-intro">{t('WebShop 使用两个阶段。OpenEvo 的任务先做完，再学习：第一阶段（Stage 1，做题与事后复盘）由 Qwen 自己完成购物任务，任务结束后 MiniMax（外部复盘模型，只在任务结束后回看轨迹的分析模型）只回看已保存轨迹，不替 Qwen 选动作。第二阶段（Stage 2，持续学习）才用这些轨迹和复盘去更新文字经验、可复用策略、行为与恢复规则和少量模型适配参数。外部模型不能在做题过程中替 Qwen 选动作；这六步只说明 WebShop，不自动代表 ALFWorld 使用同一交互流程。', 'WebShop uses two stages. OpenEvo finishes the task before learning from it: in Stage 1, Qwen completes the shopping task itself, and only after the task ends does MiniMax, an external review model, inspect the saved trace without choosing actions for Qwen. Stage 2 is continual learning, which uses those traces and reviews to update written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter. The external model never chooses actions during the task, and this six-step example describes WebShop only.')}</p>
     <SeedOpenEvoTrainingDesignOverview locale={locale} />
   </section>
 
   <section class="mission-section" id="site-map">
-    <div class="mission-section__heading"><span>03</span><h2>{t('先对齐条件，再运行，再比较结果', 'Align conditions, run, then compare results')}</h2></div>
+    <div class="mission-section__heading"><span>03</span><h2>{t('实验运行与结果比较', 'Experiment execution and result comparison')}</h2></div>
     <ol class="run-step-grid">
       <li><span>1</span><h3>{t('对齐 SEED 的实验条件', 'Align SEED conditions')}</h3><p>{t('固定模型、ALFWorld / WebShop 环境和评测条件，避免把“方法差异”和“实验设置差异”混在一起。','Pin the model, ALFWorld / WebShop environments, and evaluation conditions so method differences are not confused with setup differences.')}</p><a href={p('/research/seed-openevo/flow/seed/')}>{t('SEED 方法','SEED method')} →</a></li>
       <li><span>2</span><h3>{t('运行 OpenEvo', 'Run OpenEvo')}</h3><p>{t('正式科学状态以 openevo-experiment 为准；旧的 RTX6 路线保留为历史证据，不代表现在的运行状态。','Current formal scientific state is governed by openevo-experiment; the RTX6 path is retained as historical evidence, not live state.')}</p><a href={p('/research/seed-openevo/study/run/')}>{t('实验指南','Experiment guide')} →</a></li>
