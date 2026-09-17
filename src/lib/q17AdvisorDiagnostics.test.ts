@@ -25,18 +25,21 @@ describe('Q17 advisor diagnostics publication', () => {
 
   it('keeps the result and boundary visible in both language routes', () => {
     const component = read('src/components/research/OpenEvoQ17AdvisorDiagnostics.astro');
-    expect(component).toContain('同样 32 道题：后一版低 4.18 分，但差异可能为零');
-    expect(component).toContain('Same 32 tasks: the later state was 4.18 points lower, but the true difference may be zero');
-    expect(component).toContain('第一阶段先让 Qwen 做 WebShop 任务，MiniMax 只在任务结束后回看保存的交互记录');
-    expect(component).toContain('第二阶段每轮把四类学习结果带到下一轮');
-    expect(component).toContain('候选参数通过共同的工程与数据检查后，下一轮直接使用');
-    expect(component).toContain('取消旧 GDR-v1 的 16 题新旧参数小测');
-    expect(component).toContain('第 127 轮模型状态（R127）得 63.58，第 128 轮模型状态（R128）得 59.41');
-    expect(component).toContain('95% 统计范围是 −17.13 ～ +8.00，跨过 0，也就是差异可能为零');
+    expect(component).toContain('同样 32 道题，暂时不能证明 R128 整体变差');
+    expect(component).toContain('On the same 32 tasks, we still cannot show that R128 got worse overall');
+    expect(component).toContain('第一阶段先让 Qwen 自己完成 WebShop 任务');
+    expect(component).toContain('持续学习：文字经验、可复用技能、行为规则和少量 LoRA 适配参数会分别更新并进入下一轮');
+    expect(component).toContain('新的 LoRA 候选通过既定工程与数据检查后，下一轮直接使用');
+    expect(component).toContain('不再先用 16 题小测在新旧参数之间做选择');
+    expect(component).toContain('进入第 127 轮和第 128 轮时加载的两个模型状态');
+    expect(component).toContain('R127 得 63.58，R128 得 59.41');
+    expect(component).toContain('95% 不确定范围是 −17.13 ～ +8.00，包含 0');
     expect(component).toContain('DirectApply（候选更新检查通过后直接采用）');
     expect(component).not.toContain('min-height:calc(100svh - 6rem)');
     expect(component).toContain('border-left:3px solid var(--accent-deep)');
-    expect(component.indexOf('result-hero__boundary')).toBeLessThan(component.indexOf('result-hero__method'));
+    expect(component.indexOf('diagnostic-summary')).toBeLessThan(component.indexOf('same-task-facts'));
+    expect(component.indexOf('method-context')).toBeGreaterThan(component.indexOf('claim-boundary'));
+    expect(component).not.toContain('result-hero__method');
     expect(component).toContain("aria-label={t('相邻两个模型状态的同题结果', 'Same-task results for the two adjacent model states')}");
     expect(component).not.toContain('id="same-task-result"');
     expect(component).toContain('/q17-directapply-analysis/');

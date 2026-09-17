@@ -5,21 +5,21 @@ const route = '/research/seed-openevo/study/capability-exploration/q17-directapp
 test('focus result keeps the comparable result and scientific boundary in the first screen', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 633 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('h1')).toContainText('同样 32 道题：后一版低 4.18 分，但差异可能为零');
+  await expect(page.locator('h1')).toContainText('同样 32 道题，暂时不能证明 R128 整体变差');
   await expect(page.locator('.result-hero > .eyebrow')).toContainText('局部诊断 · 2026-09-11');
-  await expect(page.locator('.result-hero__method')).toContainText('第一阶段先让 Qwen 做 WebShop 任务，MiniMax 只在任务结束后回看保存的交互记录');
-  await expect(page.locator('.result-hero__method')).toContainText('第二阶段每轮把四类学习结果带到下一轮');
-  await expect(page.locator('.result-hero__method')).toContainText('候选参数通过共同的工程与数据检查后，下一轮直接使用');
-  await expect(page.locator('.result-hero__method')).toContainText('取消旧 GDR-v1 的 16 题新旧参数小测');
-  await expect(page.locator('.result-hero__method')).toContainText('文字经验');
-  await expect(page.locator('.result-hero__boundary')).toContainText('95% 统计范围是 −17.13 ～ +8.00，跨过 0');
+  await expect(page.locator('.result-hero__boundary')).toContainText('95% 不确定范围是 −17.13 ～ +8.00，包含 0');
+  await expect(page.locator('.diagnostic-summary')).toContainText('购物动作没有执行错误');
+  await expect(page.locator('.diagnostic-summary')).toContainText('R128 的生成选择更集中');
   await expect(page.locator('.same-task-facts > div')).toHaveCount(3);
   const boundary = await page.locator('.result-hero__boundary').boundingBox();
+  const summary = await page.locator('.diagnostic-summary').boundingBox();
   const facts = await page.locator('.same-task-facts').boundingBox();
   expect(boundary).not.toBeNull();
+  expect(summary).not.toBeNull();
   expect(facts).not.toBeNull();
   expect(boundary!.y + boundary!.height).toBeLessThanOrEqual(633 + 3);
-  expect(facts!.y - (boundary!.y + boundary!.height)).toBeLessThan(140);
+  expect(summary!.y + summary!.height).toBeLessThanOrEqual(633 + 3);
+  expect(facts!.y).toBeGreaterThan(summary!.y + summary!.height - 3);
 });
 
 for (const viewport of [
