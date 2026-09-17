@@ -17,12 +17,12 @@ const chain = [
   <div class="mission-hero__copy">
     <h1 id="mission-title">{t('同一个 Qwen、同一批任务，只比较怎么学习', 'Same Qwen, same tasks: only the learning method changes')}</h1>
     <p class="mission-hero__lede">{t('我们固定 Qwen2.5-3B-Instruct（30 亿级指令模型）和同一批任务，只改变学习方法。ALFWorld 是文本具身任务，WebShop 是网页购物任务；两种环境分开算分。', 'We pin Qwen2.5-3B-Instruct (a roughly 3B-parameter instruction model) and the same task set, changing only how it learns. ALFWorld is a text-based embodied task environment and WebShop is a web-shopping environment; their scores stay separate.')}</p>
-    {compact && <p class="mission-hero__boundary"><strong>{t('这页只讲怎样公平比较，不发布谁更强。', 'This page defines a fair comparison; it does not claim a winner.')}</strong> {t('SEED 把成功经验写回模型参数；OpenEvo 先保存任务证据，再更新文字记忆、技能、行为规则和 LoRA（少量适配参数）。若要把差异归因到后续学习，两边还必须共享任务轨迹、任务后复盘、训练配方和同一个起点模型。', 'SEED writes successful experience back into model parameters; OpenEvo preserves task evidence first, then updates written memory, skills, behavior rules, and LoRA (a small adapter). To attribute a difference to later learning, both sides must also share task traces, post-task review, training recipe, and the same starting model.')}</p>}
+    {compact && <p class="mission-hero__boundary"><strong>{t('只有模型、任务、评分规则、训练预算和起点模型都对齐，后续差异才可以归因到学习方法。', 'Only after model, tasks, scoring, training budget, and starting model are aligned can later differences be attributed to the learning method.')}</strong> {t('SEED 把成功经验写回模型参数；OpenEvo 先保存任务证据，再更新文字经验、可复用策略、行为与恢复规则和少量适配参数。ALFWorld 与 WebShop 分开计分。', 'SEED writes successful experience back into model parameters; OpenEvo preserves task evidence first, then updates written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter. ALFWorld and WebShop are scored separately.')}</p>}
     {!compact && <div class="mission-hero__actions"><a class="button button-primary mission-hero__briefing-cta" href={p('/research/seed-openevo/study/briefing/')}>{t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')}</a><a class="button button-secondary" href={p('/research/seed-openevo/flow/')}>{t('研究总览','Research overview')}</a></div>}
   </div>
 
   <details class="mission-hero__secondary">
-    <summary>{t('实验状态与来源（按需展开）', 'Experiment state and sources (optional)')}</summary>
+    <summary>{t('实验状态与来源', 'Experiment state and sources')}</summary>
     <dl class="mission-status">
       <div><dt>{t('科学事实的总账（source of truth）','Scientific source of truth')}</dt><dd>openevo-experiment</dd></div>
       <div><dt>{t('最近核验的默认分支（main snapshot）','Last checked default branch (main snapshot)')}</dt><dd>{openEvoScientificState.defaultBranchSnapshot.phase} · {openEvoScientificState.checkedAt}</dd></div>

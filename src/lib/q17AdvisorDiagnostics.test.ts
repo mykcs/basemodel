@@ -30,13 +30,12 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(component).toContain('第一阶段先让 Qwen 自己完成 WebShop 任务');
     expect(component).toContain('持续学习：文字经验、可复用技能、行为规则和 LoRA（少量模型适配参数）会分别更新并进入下一轮');
     expect(component).toContain('DirectApply / No-GDR 的含义就是：候选参数通过共同检查后直接进入下一轮');
-    expect(component).toContain('同一条 OpenEVO WebShop（网页购物任务）训练线');
+    expect(component).toContain('OpenEVO 是这条持续学习实验线');
     expect(component).toContain('进入第 127 / 128 轮时加载的两个相邻模型状态（R127 / R128）');
     expect(component).toContain('63.58 → 59.41');
     expect(component).toContain('完整做对');
     expect(component).toContain('10 / 32 → 8 / 32');
-    expect(component).toContain('95% 统计范围 · 包含 0');
-    expect(component).toContain('平均分少 4.18，但这个 95% 统计范围包含“没有差别”');
+        expect(component).toContain('平均分少 4.18，但 95% 统计范围 −17.13 ～ +8.00 包含“没有差别”');
     expect(component).toContain('DirectApply（候选更新检查通过后直接采用）');
     expect(component).not.toContain('min-height:calc(100svh - 6rem)');
     expect(component).not.toContain('border-left:3px solid var(--accent-deep)');

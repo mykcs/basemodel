@@ -123,7 +123,7 @@ const risks = zh ? [
       <li data-ui-audit-item><span>2</span><div><strong>{t('再加入最多 64 条旧经验', 'Add up to 64 old examples')}</strong><p>{t(`上一轮会保存最多 ${facts.trainer.replayCapacity} 条旧经验；有历史数据时，训练器抽一部分旧经验，和本轮成功样本一起训练。`, `The previous round keeps up to ${facts.trainer.replayCapacity} old examples; when history exists, the trainer samples some of them and trains on them alongside this round’s successful examples.`)}</p></div></li>
       <li data-ui-audit-item><span>3</span><div><strong>{t('基础模型和旧方向都不动', 'Keep the base model and old directions fixed')}</strong><p>{t('W₀ 不训练，过去方向的 A/B 也不再更新。会更新的是本轮新方向 Aₜ/Bₜ，以及控制每个方向影响大小的系数 α。', 'W₀ and the prior directions’ A/B factors stay fixed. The trainable pieces are this round’s new Aₜ/Bₜ direction and the α coefficients that control how much each direction matters.')}</p></div></li>
       <li data-ui-audit-item><span>4</span><div><strong>{t('学一个新方向，同时重调每个方向的影响大小', 'Learn one new direction and rebalance how much every direction matters')}</strong><p>{t(`新方向的学习率是 ${facts.trainer.learningRate}；控制各方向影响大小的 α 用独立学习率 ${facts.trainer.coefficientLearningRate}。所以旧方向本身虽然不变，它们在最终 LoRA 里占多大作用仍会变化。`, `The new direction uses learning rate ${facts.trainer.learningRate}; α, which controls each direction’s influence, uses a separate ${facts.trainer.coefficientLearningRate}. Old directions stay fixed, but how much they contribute to the final LoRA can still change.`)}</p></div></li>
-      <li data-ui-audit-item><span>5</span><div><strong>{t('最后把所有方向合成一份累计 LoRA', 'Finally combine all directions into one cumulative LoRA')}</strong><p>{t('训练后先把新方向 BₜAₜ 归一化，原来的大小记进 αₜ；再把所有方向合成一份普通 LoRA 工具能直接加载的累计 LoRA；实现库使用 Hugging Face PEFT（LoRA 训练与加载工具库）。', 'After training, normalize the new BₜAₜ direction and absorb its original magnitude into αₜ, then combine all directions into one cumulative LoRA compatible with Hugging Face PEFT, the LoRA training/loading toolkit.')}</p></div></li>
+      <li data-ui-audit-item><span>5</span><div><strong>{t('最后把所有方向合成一份累计 LoRA', 'Finally combine all directions into one cumulative LoRA')}</strong><p>{t('训练后先把新方向 BₜAₜ 归一化，原来的大小记进 αₜ（缩放系数，用来记录这个方向原本有多强）；再把所有方向合成一份普通 LoRA 工具能直接加载的累计 LoRA；实现库使用 Hugging Face PEFT（LoRA 训练与加载工具库）。', 'After training, normalize the new BₜAₜ direction and absorb its original magnitude into αₜ (the scale coefficient that records how strong the direction originally was), then combine all directions into one cumulative LoRA compatible with Hugging Face PEFT, the LoRA training/loading toolkit.')}</p></div></li>
     </ol>
   </section>
 
@@ -202,7 +202,7 @@ const risks = zh ? [
         <nav class="sdlora-next" aria-label={t('相关研究页面', 'Related research pages')}>
           <a href={gdrHref}>{t('下一轮为什么会用新参数或旧参数（DirectApply / 本地 GDR-v1）', 'Why the next round uses new or old parameters (DirectApply / local GDR-v1)')}</a>
           <a href={gatedDeltaHref}>{t('当前 Gated-Delta：学习事件怎样直接写进 LoRA 参数状态', 'Current Gated-Delta: how a learning event writes directly into LoRA parameter state')}</a>
-          <a href={q17Href}>{t('R127 → R128：同一批题上的模型参数快照（checkpoint）变化', 'R127 → R128: model-parameter snapshot (checkpoint) change on the same tasks')}</a>
+          <a href={q17Href}>{t('R127 → R128：同一批题上的模型参数快照（checkpoint，也就是某一轮保存下来的参数状态）变化', 'R127 → R128: model-parameter snapshot (checkpoint, a saved parameter state from one round) change on the same tasks')}</a>
           <a href={mechanismHref}>{t('Mechanism-1.0：进一步做参数因果干预', 'Mechanism-1.0: causal parameter interventions')}</a>
         </nav>
       </div>

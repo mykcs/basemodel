@@ -32,7 +32,7 @@ describe('human-readable product language contract', () => {
   it('keeps the first-screen subject concrete in both locales without turning instructions into the H1', () => {
     expect(missionHero).toContain("t('同一个 Qwen、同一批任务，只比较怎么学习', 'Same Qwen, same tasks: only the learning method changes')");
     expect(missionHero).toContain('mission-hero__boundary');
-    expect(missionHero).toContain('这页只讲怎样公平比较，不发布谁更强');
+    expect(missionHero).toContain('只有模型、任务、评分规则、训练预算和起点模型都对齐');
     expect(missionHero).toContain('ALFWorld 是文本具身任务，WebShop 是网页购物任务；两种环境分开算分');
     expect(missionHero).toContain('我们固定 Qwen2.5-3B-Instruct（30 亿级指令模型）和同一批任务');
     expect(missionHero).toContain('OpenEvo 先保存任务证据');

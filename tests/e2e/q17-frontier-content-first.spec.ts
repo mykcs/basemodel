@@ -9,8 +9,9 @@ test('focus result keeps the comparable result and scientific boundary in the fi
   await expect(page.locator('.result-hero > .eyebrow')).toContainText('局部诊断 · 2026-09-11');
   await expect(page.locator('.result-hero__numbers')).toContainText('63.58 → 59.41');
   await expect(page.locator('.result-hero__numbers')).toContainText('10 / 32 → 8 / 32');
-  await expect(page.locator('.result-hero__numbers')).toContainText('−17.13 ～ +8.00');
+  await expect(page.locator('.result-hero__numbers')).not.toContainText('−17.13 ～ +8.00');
   await expect(page.locator('.result-hero__boundary')).toContainText('平均分少 4.18');
+  await expect(page.locator('.result-hero__boundary')).toContainText('−17.13 ～ +8.00');
   await expect(page.locator('.diagnostic-summary')).toContainText('购物动作没有执行错误');
   await expect(page.locator('.diagnostic-summary')).toContainText('R128 的选择概率分布更集中');
   await expect(page.locator('.same-task-facts')).toHaveCount(0);

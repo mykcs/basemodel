@@ -21,6 +21,8 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
 
     expect(mechanism).toContain('GDR-v1（固定 16 题小测后再选新旧参数）');
     expect(mechanism).toContain('Hugging Face PEFT（LoRA 训练与加载工具库）');
+    expect(mechanism).toContain('αₜ（缩放系数，用来记录这个方向原本有多强）');
+    expect(mechanism).toContain('checkpoint，也就是某一轮保存下来的参数状态');
     expect(mechanism).not.toContain('下一屏：');
     expect(mechanism).toContain('<details class="sdlora__section sdlora__section--primer"');
     expect(mechanism).not.toContain('sdlora-intro__frame research-fact-band');
