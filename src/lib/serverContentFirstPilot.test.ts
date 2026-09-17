@@ -11,11 +11,10 @@ describe('content-first server operations pilot', () => {
     expect(server).toContain('实验文件磁盘：约 0.99 TiB 可用');
     expect(server).toContain('NOT_AUTHORIZED');
     expect(server).toContain('当前空间充足，不需要紧急扩容；删除仍未授权');
-    expect(server).toContain('开始例行维护 →');
-    expect(server).toContain('例行维护三步');
-    expect(server).toContain('只读检查');
-    expect(server).toContain('归档并验证恢复');
-    expect(server).toContain('回收提案');
+    expect(server).toContain('查看只读健康扫描 →');
+    expect(server).toContain('例行维护顺序：');
+    expect(server).toContain('重新读取或最小加载确认真的能恢复');
+    expect(server).toContain('最后只生成精确回收清单');
     expect(server).toContain('远端已有副本，也不能自动删服务器文件。');
     expect(server).toContain('删服务器文件和把私有归档改成公开，是两件事。');
     expect(server).toContain('必须分别批准');

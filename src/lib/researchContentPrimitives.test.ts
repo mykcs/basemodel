@@ -25,7 +25,7 @@ describe('shared research content primitives', () => {
     expect(serverOverview).not.toContain('server-hero__facts research-fact-band');
     expect(serverOverview).toContain('server-hero__guardrails');
     expect(q17Diagnostics).not.toContain('same-task-facts research-fact-band');
-    expect(q17Diagnostics).toContain('style="--research-fact-columns:4"');
+    expect(q17Diagnostics).not.toContain('--research-fact-columns');
   });
 
   it('keeps the shared primitive narrow instead of turning it into a page template', () => {

@@ -29,7 +29,7 @@ const compactPurpose = route === 'first-run'
       : route === 'sd-lora-scaling'
         ? (zh ? 'DirectApply 派生分析：SD-LoRA 计算扩展性。' : 'DirectApply analysis: SD-LoRA compute scaling.')
         : route === 'q17-directapply-frontier'
-          ? (zh ? 'WebShop 网页购物任务。这条 DirectApply / No-GDR 实验取消旧 GDR-v1 的 16 题新旧参数小测：候选参数通过共同检查后，下一轮直接使用。本页只比较第 127 / 128 轮起点的两个相邻参数状态在同一组 32 题上的局部变化。' : 'WebShop shopping tasks. DirectApply means a candidate update enters the next round after engineering and data checks, without a separate small-task probe to choose between old and new parameters; this page only compares the local change between the model states entering rounds 127 and 128 on the same 32 tasks.')
+          ? (zh ? 'WebShop 网页购物任务。这里的更新规则是：候选参数通过共同检查后，下一轮直接使用，不再做旧 GDR-v1 的 16 题新旧参数小测；正式名称是 DirectApply / No-GDR。本页只比较第 127 / 128 轮起点的两个相邻参数状态在同一组 32 题上的局部变化。' : 'WebShop shopping tasks. Here, a candidate update enters the next round after the shared checks pass, without the old GDR-v1 16-task old-vs-new probe; the formal name is DirectApply / No-GDR. This page only compares the local change between the model states entering rounds 127 and 128 on the same 32 tasks.')
           : record.purpose[locale];
 const purpose = isExperimentHub && experiment && !compact ? experiment.motivation[locale] : (compact ? compactPurpose : record.purpose[locale]);
 const contextExperimentTitle = experiment?.title[locale];

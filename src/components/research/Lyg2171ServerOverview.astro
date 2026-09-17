@@ -49,14 +49,10 @@ const gpuFacts = [
     <h1>{t('实验文件磁盘：约 0.99 TiB 可用', 'About 0.99 TiB remains on the disk holding project experiment files')}</h1>
     <p class="server-hero__status">{t('当前空间充足，不需要紧急扩容；删除仍未授权。', 'Capacity is currently healthy and does not need urgent expansion; deletion is still not authorized.')}</p>
     <div class="server-hero__action">
-      <a class="button button-primary server-hero__next" href="#routine-maintenance">{t('开始例行维护 →', 'Start routine maintenance →')}</a>
-      <span>{t('按下面三步走完整维护链路；不自动删除。', 'Follow the three steps below; deletion is never automatic.')}</span>
+      <a class="server-hero__next" href="#health-scan">{t('查看只读健康扫描 →', 'View the read-only health scan →')}</a>
+      <span>{t('这是页面内入口，不会执行远程操作。', 'This opens the page section; it does not execute a remote operation.')}</span>
     </div>
-    <ol class="server-hero__sequence" aria-label={t('例行维护三步', 'Three routine-maintenance steps')}>
-      <li><b>01</b><span><strong>{t('只读检查', 'Read-only check')}</strong>{t('先确认容量、实验状态和归属，不修改服务器。', 'Confirm capacity, experiment state, and ownership without changing the server.')}</span></li>
-      <li><b>02</b><span><strong>{t('归档并验证恢复', 'Archive and verify restore')}</strong>{t('固定远端版本，再重新读取或最小加载确认真的能恢复。', 'Pin the remote revision, then freshly read or minimally reload it to prove recovery works.')}</span></li>
-      <li><b>03</b><span><strong>{t('回收提案', 'Reclaim proposal')}</strong>{t('只生成精确清单；删除仍需另行批准。', 'Generate only an exact list; deletion still needs separate approval.')}</span></li>
-    </ol>
+    <p class="server-hero__maintenance-order"><strong>{t('例行维护顺序：', 'Routine-maintenance order:')}</strong>{t('先只读确认容量、实验状态和归属 → 再把已封存资产归档到已授权远端，并重新读取或最小加载确认真的能恢复 → 最后只生成精确回收清单；删除仍需另行批准。', 'First inspect capacity, experiment state, and ownership without making changes → then archive sealed assets to an authorized remote and freshly read or minimally reload them to prove recovery works → finally generate only an exact reclaim list; deletion still needs separate approval.')}</p>
     <ul class="server-hero__guardrails" aria-label={t('当前三个安全边界', 'Three current safety boundaries')}>
       <li><strong>{t('远端已有副本，也不能自动删服务器文件。', 'A remote copy does not automatically authorize deleting the server file.')}</strong><span>{t('对象 / 服务器负责人仍要批准同一版精确回收清单，删除前还会再查一次是否仍被使用。', 'The artifact/server owner must still approve the same exact reclaim list, followed by one more liveness check before deletion.')}</span></li>
       <li><strong>{t('删服务器文件和把私有归档改成公开，是两件事。', 'Deleting a server file and making a private archive public are separate decisions.')}</strong><span>{t('两种动作必须分别批准；不能因为要省本地空间，就顺便把私有归档改成公开。', 'Each action needs separate approval; freeing local storage does not authorize making a private archive public.')}</span></li>
@@ -254,11 +250,11 @@ const gpuFacts = [
   .server-hero__context{max-width:max-content;margin:0 0 .45rem;padding:.25rem 0;border-bottom:1px solid var(--line);color:var(--ink);font-size:.86rem;font-weight:780}
   .server-hero h1{max-width:20ch;margin:0 0 .55rem;font-size:clamp(2rem,4vw,3.45rem);line-height:1;letter-spacing:-.05em}
   .server-hero__status{max-width:74ch;margin:0;color:var(--ink);font-size:clamp(1rem,1.6vw,1.16rem);font-weight:700;line-height:1.58}
-  .server-hero__action{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin-top:.7rem}.server-hero__action>span{color:var(--muted);font-size:.76rem;font-weight:650}.server-hero__next{min-height:44px}.server-hero__next:focus-visible{outline:3px solid var(--accent-deep);outline-offset:3px}
-  .server-hero__sequence{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;max-width:900px;margin:.75rem 0 0;padding:0;list-style:none}.server-hero__sequence li{display:grid;grid-template-columns:1.5rem minmax(0,1fr);gap:.45rem;padding:.48rem 0;border-top:1px solid var(--line)}.server-hero__sequence b{color:var(--accent-deep);font:800 .68rem/1.5 var(--font-mono)}.server-hero__sequence span{display:grid;gap:.06rem;color:var(--muted);font-size:.74rem;line-height:1.42}.server-hero__sequence strong{color:var(--ink);font-size:.79rem}
+  .server-hero__action{display:flex;align-items:baseline;gap:.65rem;flex-wrap:wrap;margin-top:.7rem}.server-hero__action>span{color:var(--muted);font-size:.74rem}.server-hero__next{display:inline-flex;min-height:44px;align-items:center;color:var(--accent-deep);font-size:.88rem;font-weight:800;text-decoration-thickness:1px;text-underline-offset:.2em}.server-hero__next:focus-visible{outline:3px solid var(--accent-deep);outline-offset:3px}
+  .server-hero__maintenance-order{max-width:82ch;margin:.55rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.5}.server-hero__maintenance-order strong{color:var(--ink)}
   .server-hero__guardrails{max-width:82ch;margin:.75rem 0 0;padding:.6rem 0 0;list-style:none;border-top:1px solid var(--line);color:var(--muted)}
   .server-hero__guardrails li{display:grid;grid-template-columns:minmax(12rem,.72fr) minmax(0,1.28fr);gap:.6rem;padding:.32rem 0;font-size:.76rem;line-height:1.5}.server-hero__guardrails strong{color:var(--ink)}
-  #health-scan{margin-top:2rem}
+  #health-scan{margin-top:clamp(3rem,8vh,5rem)}
   .server-hero__boundary{max-width:76ch;margin:0 0 .8rem;color:var(--muted);font-size:.82rem;line-height:1.65}
 
   .routine-entry{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(17rem,.85fr);gap:.8rem;align-items:center;margin-top:.5rem;padding:.55rem 0;border-block:1px solid var(--line)}
@@ -348,8 +344,7 @@ const gpuFacts = [
   }
   @media(max-width:640px){
     .server-hero{padding-bottom:1.35rem}
-    #health-scan{margin-top:2rem}
-    .server-hero__sequence{grid-template-columns:1fr;gap:0}.server-hero__sequence li{padding:.34rem 0}
+    #health-scan{margin-top:9.25rem}
     .server-hero h1{max-width:19ch}.server-hero__guardrails li{grid-template-columns:1fr;gap:.08rem;padding:.38rem 0}.routine-entry{grid-template-columns:1fr}.routine-entry__prompt{padding:.45rem 0 0;border-left:0;border-top:1px solid var(--line)}.operation-switchboard{grid-template-columns:1fr}.operation-switchboard a{border-right:0;border-bottom:1px solid var(--line)}.operation-switchboard a:last-child{border-bottom:0}
     .snapshot-facts,.gpu-facts,.privacy-grid{grid-template-columns:1fr}.snapshot-facts>div,.gpu-facts>div{border-right:0;border-bottom:1px solid var(--line)}.snapshot-facts>div:last-child,.gpu-facts>div:last-child{border-bottom:0}
     .operation-explainer li{grid-template-columns:5rem 1fr}

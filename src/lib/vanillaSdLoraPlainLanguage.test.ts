@@ -21,7 +21,7 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
 
     expect(mechanism).toContain('GDR-v1（固定 16 题小测后再选新旧参数）');
     expect(mechanism).toContain('Hugging Face PEFT（LoRA 训练与加载工具库）');
-    expect(mechanism).toContain('下一屏：把这三步展开成完整参数流');
+    expect(mechanism).not.toContain('下一屏：');
     expect(mechanism).toContain('<details class="sdlora__section sdlora__section--primer"');
     expect(mechanism).not.toContain('sdlora-intro__frame research-fact-band');
     const motivation = mechanism.indexOf('SD-LoRA：把成功轨迹训练成下一轮候选参数');
