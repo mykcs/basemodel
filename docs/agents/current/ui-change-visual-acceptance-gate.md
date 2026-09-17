@@ -21,6 +21,8 @@ Ordinary UI/visual acceptance is repository-owned: rendered screenshots, semanti
 
 A cold-read/HPL study and a visual-regression acceptance gate answer different questions. The former can study first-time comprehension or preference; the latter proves that the product renders and behaves correctly under the repository contract. Never silently turn the optional former into a dependency of the mandatory latter.
 
+**The browser is an execution surface, not a reviewer.** Browser automation may load the site, exercise deterministic assertions, and capture screenshots for owner-facing inspection. It must not navigate to Kimi, MiniMax, ChatGPT, Claude, Gemini, or another AI service to obtain a reviewer verdict unless the owner/task explicitly requests an independent reviewer study. A screenshot produced by browser automation is engineering evidence; an AI opinion about that screenshot is a different evidence class and is not part of the ordinary gate.
+
 ---
 
 ## 1. Automatic trigger

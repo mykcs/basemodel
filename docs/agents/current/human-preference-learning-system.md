@@ -59,6 +59,8 @@ Independent cold read is useful when the owner explicitly asks whether a zero-co
 
 Do not start Kimi/MiniMax/other external AI chats, AI CLIs, or local/network vision models solely because a page changed visually. Use an independent reviewer only when current owner/task authority explicitly activates that evidence class. A provider outage, quota, login problem, or file-upload limitation is therefore not an ordinary UI-release blocker.
 
+**Browser automation is a verifier, not a reviewer.** It may run deterministic rendering, geometry, interaction, accessibility, theme, or screenshot-capture checks required by the repository gate. Do not use a browser session to open Kimi, MiniMax, ChatGPT, Claude, Gemini, or another AI service to solicit a visual/comprehension verdict, and do not relabel an AI inspection of screenshots as independent human evidence.
+
 ## 1. Raw cases remain canonical history
 
 `docs/agents/current/website-copy-cases.md` preserves the owner feedback, reason, rejected/accepted examples when known, scope, and boundaries. Do not rewrite history to make a newer abstraction look cleaner.
