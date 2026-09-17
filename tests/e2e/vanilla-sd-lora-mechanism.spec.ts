@@ -73,6 +73,14 @@ for (const viewport of [
       .filter((node) => { const box = node.getBoundingClientRect(); return box.width > 0 && box.height > 0 && box.top < innerHeight && box.bottom > 0; })
       .map((node) => node.textContent?.trim()));
     expect(visibleSummaries.filter(Boolean).length).toBeLessThanOrEqual(1);
+    if (viewport.name === 'phone-first-screen') {
+      const mechanismSurface = await page.locator('[data-slide-canvas]').evaluate((node) => {
+        const style = getComputedStyle(node);
+        return { borderLeftStyle: style.borderLeftStyle, borderRadius: style.borderRadius };
+      });
+      expect(mechanismSurface.borderLeftStyle).toBe('none');
+      expect(mechanismSurface.borderRadius).toBe('0px');
+    }
   });
 }
 

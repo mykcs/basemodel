@@ -10,7 +10,7 @@ for (const viewport of [
     await page.setViewportSize(viewport);
     await page.goto(route, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.locator('h1')).toHaveText('2026-09-15 容量快照：实验文件磁盘约 0.99 TiB 可用');
+    await expect(page.locator('h1')).toHaveText('2026-09-15 的非实时容量快照：实验文件磁盘约 0.99 TiB 可用');
     await expect(page.locator('.server-hero__status')).toBeVisible();
     await expect(page.locator('.server-hero__status')).toContainText('删除仍未授权');
     await expect(page.locator('.server-hero__safety')).toContainText('远端已有副本，也不能自动删服务器文件');
@@ -19,8 +19,8 @@ for (const viewport of [
     await expect(page.locator('.server-hero__next')).toContainText('复制例行维护指令');
     await expect(page.locator('.server-hero__next')).toHaveAttribute('href', '#routine-maintenance');
     await expect(page.locator('.server-hero__sequence')).toHaveCount(0);
-    await expect(page.locator('.server-hero__maintenance-order')).toContainText('重新读取或最小加载确认能恢复');
-    await expect(page.locator('.server-hero__maintenance-order')).toContainText('只生成精确回收清单');
+    await expect(page.locator('.server-hero__maintenance-order')).toContainText('再重新读取或只加载最小必要部分确认备份真的能恢复');
+    await expect(page.locator('.server-hero__maintenance-order')).toContainText('只列出准备释放空间的具体文件（回收清单）');
     await expect(page.locator('.server-safety-depth')).toHaveCount(0);
     await expect(page.locator('.routine-entry summary')).toBeAttached();
 
@@ -50,7 +50,7 @@ for (const viewport of [
         return { text: node.textContent?.trim(), top: rect.top, bottom: rect.bottom, fontSize: Number.parseFloat(getComputedStyle(node).fontSize) };
       })
       .filter((heading) => heading.top < innerHeight && heading.bottom > 0));
-    expect(visibleHeadings[0]?.text).toBe('2026-09-15 容量快照：实验文件磁盘约 0.99 TiB 可用');
+    expect(visibleHeadings[0]?.text).toBe('2026-09-15 的非实时容量快照：实验文件磁盘约 0.99 TiB 可用');
     if (visibleHeadings.length > 1) {
       // The reader-attention contract allows the next chapter to peek naturally at
       // the bottom of a phone viewport; it must not become an equal-weight center.
@@ -85,7 +85,8 @@ for (const theme of ['light', 'dark'] as const) {
     await expect(page.locator('.server-hero__safety')).toContainText('把私有归档改成公开');
     await expect(page.locator('#reclaim-proposal')).toContainText('批准人是对象 / 服务器负责人');
     await expect(page.locator('#reclaim-proposal')).toContainText('NOT_AUTHORIZED');
-    await expect(page.locator('.server-hero__context')).toContainText('非实时数据');
+    await expect(page.locator('h1')).toContainText('非实时容量快照');
+    await expect(page.locator('.server-hero__context')).toContainText('保存时刻');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(2);
   });

@@ -12,17 +12,17 @@ const nav = read('src/components/research/SeedOpenEvoResearchNav.astro');
 describe('Flow content-first cold-read repair', () => {
   it('defines the four named research objects at first use while preserving the fairness boundary', () => {
     for (const phrase of [
-      'SEED 与 OpenEvo：同一个 Qwen、同一批任务',
+      'SEED 与 OpenEvo：固定同一个 Qwen 和任务，比较两套学习系统',
       'ALFWorld 是文本具身任务',
       'WebShop 是网页购物任务',
       'SEED 把成功任务轨迹继续训练回模型参数',
       'OpenEvo 先保存任务证据，再把经验带到后续任务',
-      '只比较第二阶段（持续学习）时，两边必须从同一版模型参数出发',
-      '共享第一阶段（做题与事后复盘）的轨迹、复盘和训练配方',
-      '比较条件只覆盖当前 3B 模型',
+      '只有要把差异归因到第二阶段（Stage 2，持续学习）的学习器时',
+      '共享第一阶段（Stage 1，做题与事后复盘）的轨迹、复盘、训练配方和同一个起点参数',
+      '这个比较范围只覆盖当前 3B 模型',
       'SEED 把成功任务轨迹继续训练回模型参数',
       'OpenEvo 先保存任务证据，再把经验带到后续任务',
-      '这些条件没对齐时，只能比较两个完整系统',
+      '没做到这些，只能说两个完整系统表现不同',
     ]) expect(hero).toContain(phrase);
     expect(hero).not.toContain('这页先讲实验怎么公平比较');
     expect(hero).not.toContain('border-left:3px solid var(--accent-deep)');
@@ -33,7 +33,7 @@ describe('Flow content-first cold-read repair', () => {
     expect(hub).toContain('MiniMax（外部复盘模型，只在任务结束后回看轨迹的分析模型）只回看已保存轨迹，不替 Qwen 选动作');
     expect(hub).toContain('不自动代表 ALFWorld 使用同一交互流程');
     expect(hub).not.toContain('外部 analyzer 才能复盘');
-    expect(hub).toContain('文字经验（Text Memory）、可复用技能（Skill Bundle）、全局行为与恢复规则（Agent System）和少量模型适配参数（SD-LoRA）');
+    expect(hub).toContain('后续第二阶段（Stage 2，持续学习）会分别更新文字经验、可复用技能、全局行为与恢复规则和少量模型适配参数（SD-LoRA，基础模型不动、只训练适配参数的更新方法）');
     expect(hub).not.toContain('step loop');
     expect(hub.indexOf('id="questions"')).toBeLessThan(hub.indexOf('id="training-design"'));
     expect(hub).toContain('具体优化方法留到 SEED 方法页');
@@ -75,7 +75,7 @@ describe('Flow content-first cold-read repair', () => {
   });
 
   it('connects Stage 1 evidence to the later four-state Stage 2 without rewriting early experiments', () => {
-    for (const term of ['第一阶段封存后的初始参数训练（OPSD）', '文字经验（Text Memory）保存可复用经验', '可复用技能（Skill Bundle）保存策略', '行为与恢复规则（Agent System）保存全局规则', '少量模型适配参数（SD-LoRA）更新参数', '只有最终采用的版本才装入下一批任务']) {
+    for (const term of ['第一阶段封存后的初始参数训练（OPSD，内部用于构造第二阶段起点的步骤）', '文字经验保存可复用经验', '可复用技能保存策略', '行为与恢复规则保存全局规则', '少量模型适配参数（SD-LoRA）更新参数', '只有最终采用的版本才装入下一批任务']) {
       expect(design).toContain(term);
     }
     expect(design).toContain('早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态');

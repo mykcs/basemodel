@@ -7,15 +7,18 @@ const closeout = read('../styles/visual-closeout.css');
 
 describe('content-first server operations pilot', () => {
   it('makes the dated operational state the first subject without hiding deletion authority', () => {
-    expect(server).toContain('非实时数据 · 保存于 2026-09-15 22:10（UTC+8）');
-    expect(server).toContain('2026-09-15 容量快照：实验文件磁盘约 0.99 TiB 可用');
+    expect(server).toContain('保存时刻 · 2026-09-15 22:10（UTC+8）');
+    expect(server).toContain('2026-09-15 的非实时容量快照：实验文件磁盘约 0.99 TiB 可用');
     expect(server).toContain('NOT_AUTHORIZED');
-    expect(server).toContain('这个数字只代表上面的保存时刻：当时 2.0 TiB 持久文件系统已用约 51%');
+    expect(server).toContain('2026-09-15 的非实时容量快照：实验文件磁盘约 0.99 TiB 可用');
+    expect(server).toContain('保存时刻，2.0 TiB 持久文件系统已用约 51%');
+    expect(server).toContain('只读健康扫描（只检查，不改文件）');
+    expect(server).toContain('具体文件（回收清单）');
     expect(server).toContain('复制例行维护指令 →');
     expect(server).toContain('href="#routine-maintenance"');
     expect(server).toContain('下一步：');
-    expect(server).toContain('归档已封存资产并重新读取或最小加载确认能恢复');
-    expect(server).toContain('只生成精确回收清单');
+    expect(server).toContain('把已封存资产复制到已授权远端（归档），再重新读取或只加载最小必要部分确认备份真的能恢复');
+    expect(server).toContain('只列出准备释放空间的具体文件（回收清单）');
     expect(server).toContain('远端已有副本，也不能自动删服务器文件');
     expect(server).toContain('删服务器文件和把私有归档改成公开，是两件事');
     expect(server).toContain('必须分别批准');

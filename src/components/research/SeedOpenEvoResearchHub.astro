@@ -20,7 +20,7 @@ const objectGroups = [
     label: t('学习方法', 'Learning methods'),
     items: [
       { title:'SEED', body:t('把任务后的成功经验整理成技能，再通过后续参数优化更新模型；具体优化方法留到 SEED 方法页。','Turns successful hindsight experience into skills, then updates the model through later parameter optimization; the SEED method page explains the specific optimizer.'), href:p('/research/seed-openevo/flow/seed/') },
-      { title:'OpenEvo', body:t('先封存任务证据；后续第二阶段（持续学习）会分别更新文字经验（Text Memory）、可复用技能（Skill Bundle）、全局行为与恢复规则（Agent System）和少量模型适配参数（SD-LoRA），通过既定检查的新版本才进入下一批任务。','Seals task evidence first; the later continual-learning stage separately updates written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter, and only versions that pass the frozen checks enter the next task batch.'), href:p('/research/seed-openevo/flow/openevo/') },
+      { title:'OpenEvo', body:t('先封存任务证据；后续第二阶段（Stage 2，持续学习）会分别更新文字经验、可复用技能、全局行为与恢复规则和少量模型适配参数（SD-LoRA，基础模型不动、只训练适配参数的更新方法），通过既定检查的新版本才进入下一批任务。','Seals task evidence first; the later Stage-2 continual-learning phase separately updates written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter, and only versions that pass the frozen checks enter the next task batch.'), href:p('/research/seed-openevo/flow/openevo/') },
     ],
   },
   {
@@ -36,8 +36,8 @@ const objectGroups = [
   <SeedOpenEvoMissionHero locale={locale} compact />
 
   <section class="mission-section" id="questions" aria-labelledby="research-objects-title">
-    <div class="mission-section__heading"><span>01</span><strong id="research-objects-title">{t('固定一个模型，只改变学习方法', 'Pin one model; change the learning method')}</strong></div>
-    <p class="section-intro">{t('这项研究固定一个模型，对比两种学习方法，并在两个任务环境里测量它们。','This study pins one model, compares two learning methods, and measures them in two task environments.')}</p>
+    <div class="mission-section__heading"><span>01</span><strong id="research-objects-title">{t('先固定模型和任务，再分清比较的是完整系统还是第二阶段学习器', 'Pin the model and tasks, then distinguish full-system comparison from Stage-2 attribution')}</strong></div>
+    <p class="section-intro">{t('完整系统比较先固定模型、任务和评分；只有要单独归因到第二阶段学习器时，才进一步要求两边共享第一阶段证据与同一个起点。','A full-system comparison first pins the model, tasks, and scoring. Only Stage-2 attribution additionally requires shared Stage-1 evidence and the same starting state.')}</p>
     <dl class="object-map">
       {objectGroups.map((group)=><div class="object-map__row"><dt>{group.label}</dt><dd>{group.items.map((item)=>'href' in item ? <a href={item.href}><strong>{item.title}</strong><span>{item.body}</span></a> : <div class="object-map__fact"><strong>{item.title}</strong><span>{item.body}</span></div>)}</dd></div>)}
     </dl>
