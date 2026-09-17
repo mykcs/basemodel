@@ -44,9 +44,16 @@ describe('Flow content-first cold-read repair', () => {
     expect(hero).not.toContain('margin:1.35rem auto 1.8rem');
     expect(hero).toContain('实验状态与来源（按需展开）');
     expect(hero).toContain('OpenEvo 两个阶段：');
-    expect(hero).toContain('OPSD（第一阶段的初始参数训练）');
-    for (const carrier of ['Text Memory（文字经验）', 'Skill Bundle（可复用技能）', 'Agent System（行为规则）', 'SD-LoRA（少量适配参数）']) expect(hero).toContain(carrier);
-    expect(hero).toContain('更新文字记忆、技能、行为规则和 LoRA（少量适配参数）');
+    for (const phrase of [
+      '第一阶段（Stage 1）',
+      'WebShop 网页购物任务',
+      '初始参数训练（OPSD）',
+      '第二阶段（Stage 2，也就是持续学习）',
+      '文字经验（Text Memory）',
+      '可复用技能（Skill Bundle）',
+      '行为规则（Agent System）',
+      '少量模型适配参数（SD-LoRA）',
+    ]) expect(hero).toContain(phrase);
     expect(nav).toContain('research-navigation__mobile');
     expect(nav).toContain("t('相关页面', 'Related pages')");
     expect(nav).toContain('.research-navigation__identity,.research-navigation__links{display:none}');

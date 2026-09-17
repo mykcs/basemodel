@@ -48,12 +48,10 @@ const risks = zh ? [
     <ol class="sdlora-intro__steps" aria-label={t('候选参数进入下一轮前的三步', 'Three steps before candidate parameters enter the next round')}>
       <li><span>1</span><p><strong>{t('筛训练数据', 'Select training data')}</strong>{t('每个任务只取最早一条通过全部检查的完整成功。', 'Keep only the earliest fully checked success for each task.')}</p></li>
       <li><span>2</span><p><strong>{t('训练候选参数', 'Train candidate parameters')}</strong>{t('在两批任务之间训练新的 LoRA；最多再带回 64 条旧经验。', 'Train the new LoRA between task batches, with up to 64 older examples replayed.')}</p></li>
-      <li><span>3</span><p><strong>{t('再决定是否采用', 'Then decide whether to adopt it')}</strong>{t('当前做法叫 DirectApply：候选通过共同的工程与数据检查后就进入下一轮，不再用 16 题分数小测二次否决；如果这些共同检查不通过，候选不会被采用。历史本地 GDR-v1 则会在合法候选上再跑固定 16 题，在新参数和上一轮参数之间选择。', 'The current rule is DirectApply: once a candidate passes the shared engineering and data checks, it enters the next round without a second 16-task score probe; a candidate that fails those shared checks is not adopted. Historical local GDR-v1 ran that fixed 16-task probe on an otherwise valid candidate to choose between the new and prior parameters.')}</p></li>
+      <li><span>3</span><p><strong>{t('再决定是否采用', 'Then decide whether to adopt it')}</strong>{t('当前采用规则叫 DirectApply（候选通过共同的工程与数据检查后直接进入下一轮）：它不再用 16 题分数小测二次否决；共同检查不通过时，候选不会被采用。旧版 16 题筛选规则 GDR-v1（用固定小测在新参数和上一轮参数之间选择）只作为历史对照。', 'The current rule is DirectApply: once a candidate passes the shared engineering and data checks, it enters the next round without a second 16-task score probe; a candidate that fails those shared checks is not adopted. Historical local GDR-v1 ran that fixed 16-task probe on an otherwise valid candidate to choose between the new and prior parameters.')}</p></li>
     </ol>
     <p class="sdlora-intro__boundary"><strong>{t('候选参数不等于能力一定提升。', 'Candidate parameters do not imply guaranteed capability gains.')}</strong> {t('这里会回放最多 64 条旧经验，因此不是原论文“完全不回放旧经验”的逐项复刻；保留旧方向也不能证明 WebShop 分数会持续上涨。', 'This implementation replays up to 64 old examples, so it is not an item-for-item reproduction of the paper’s rehearsal-free protocol; preserving old directions also does not prove that WebShop scores will keep rising.')}</p>
   </section>
-
-  <OpenEvoVanillaSdLoraSlide locale={locale} />
 
   <details class="sdlora__section sdlora__section--primer" id="what-is-sd-lora">
     <summary>{t('普通 LoRA 与 SD-LoRA 的参数区别', 'Parameter difference between ordinary LoRA and SD-LoRA')}</summary>
@@ -74,6 +72,8 @@ const risks = zh ? [
     <p class="sdlora-note"><strong>{t('本页把没有加入后续加速变体的当前基线称为 “Vanilla SD-LoRA”。', 'This page calls the current baseline “Vanilla SD-LoRA.”')}</strong> {t('它仍然使用 SD-LoRA 的方向 / 幅度分解；“Vanilla” 只用来和后续 SD-LoRA 变体区分。', 'It still uses SD-LoRA’s direction/magnitude decomposition; “Vanilla” only distinguishes this baseline from later SD-LoRA variants.')}</p>
     <p class="sdlora-caveat">{t('ICLR 2025 的原始 SD-LoRA 论文研究 class-incremental vision continual learning，并强调 rehearsal-free；我们当前的语言 Agent / WebShop 适配会带回最多 64 条旧经验，因此 paper_equivalent=false、rehearsal_free=false。这里借用核心的方向 / 幅度分解思想，不是逐项复刻论文实验。', 'The original ICLR 2025 SD-LoRA paper studies class-incremental vision continual learning and emphasizes rehearsal-free training. Our language-agent / WebShop adaptation replays up to 64 old examples, so paper_equivalent=false and rehearsal_free=false. We reuse the core direction/magnitude decomposition rather than reproducing the paper protocol item for item.')}</p>
   </details>
+
+  <OpenEvoVanillaSdLoraSlide locale={locale} />
 
   <section class="sdlora__section" id="round-inputs" aria-labelledby="round-inputs-title">
     <h2 id="round-inputs-title">{t('一轮开始前，模型带着什么？', 'What does the model carry into a round?')}</h2>
@@ -123,7 +123,7 @@ const risks = zh ? [
       <li data-ui-audit-item><span>2</span><div><strong>{t('再加入最多 64 条旧经验', 'Add up to 64 old examples')}</strong><p>{t(`上一轮会保存最多 ${facts.trainer.replayCapacity} 条旧经验；有历史数据时，训练器抽一部分旧经验，和本轮成功样本一起训练。`, `The previous round keeps up to ${facts.trainer.replayCapacity} old examples; when history exists, the trainer samples some of them and trains on them alongside this round’s successful examples.`)}</p></div></li>
       <li data-ui-audit-item><span>3</span><div><strong>{t('基础模型和旧方向都不动', 'Keep the base model and old directions fixed')}</strong><p>{t('W₀ 不训练，过去方向的 A/B 也不再更新。会更新的是本轮新方向 Aₜ/Bₜ，以及控制每个方向影响大小的系数 α。', 'W₀ and the prior directions’ A/B factors stay fixed. The trainable pieces are this round’s new Aₜ/Bₜ direction and the α coefficients that control how much each direction matters.')}</p></div></li>
       <li data-ui-audit-item><span>4</span><div><strong>{t('学一个新方向，同时重调每个方向的影响大小', 'Learn one new direction and rebalance how much every direction matters')}</strong><p>{t(`新方向的学习率是 ${facts.trainer.learningRate}；控制各方向影响大小的 α 用独立学习率 ${facts.trainer.coefficientLearningRate}。所以旧方向本身虽然不变，它们在最终 LoRA 里占多大作用仍会变化。`, `The new direction uses learning rate ${facts.trainer.learningRate}; α, which controls each direction’s influence, uses a separate ${facts.trainer.coefficientLearningRate}. Old directions stay fixed, but how much they contribute to the final LoRA can still change.`)}</p></div></li>
-      <li data-ui-audit-item><span>5</span><div><strong>{t('最后把所有方向合成一份累计 LoRA', 'Finally combine all directions into one cumulative LoRA')}</strong><p>{t('训练后先把新方向 BₜAₜ 归一化，原来的大小记进 αₜ；再把所有方向合成一份普通 LoRA 工具能直接加载的累计 LoRA；实现库使用 Hugging Face PEFT。', 'After training, normalize the new BₜAₜ direction and absorb its original magnitude into αₜ, then combine all directions into one PEFT-compatible cumulative LoRA.')}</p></div></li>
+      <li data-ui-audit-item><span>5</span><div><strong>{t('最后把所有方向合成一份累计 LoRA', 'Finally combine all directions into one cumulative LoRA')}</strong><p>{t('训练后先把新方向 BₜAₜ 归一化，原来的大小记进 αₜ；再把所有方向合成一份普通 LoRA 工具能直接加载的累计 LoRA；实现使用 Hugging Face PEFT（负责加载和保存 LoRA 适配器的开源库）。', 'After training, normalize the new BₜAₜ direction and absorb its original magnitude into αₜ, then combine all directions into one PEFT-compatible cumulative LoRA.')}</p></div></li>
     </ol>
   </section>
 

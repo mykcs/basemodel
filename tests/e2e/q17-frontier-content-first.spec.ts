@@ -13,16 +13,16 @@ test('focus result keeps the comparable result and scientific boundary in the fi
   await expect(page.locator('.result-hero__boundary')).toContainText('平均分少 4.18');
   await expect(page.locator('.diagnostic-summary')).toContainText('购物动作没有执行错误');
   await expect(page.locator('.diagnostic-summary')).toContainText('R128 的选择概率分布更集中');
-  await expect(page.locator('.same-task-facts > div')).toHaveCount(3);
+  await expect(page.locator('.same-task-facts')).toHaveCount(0);
   const boundary = await page.locator('.result-hero__boundary').boundingBox();
-  const facts = await page.locator('.same-task-facts').boundingBox();
   expect(boundary).not.toBeNull();
-  expect(facts).not.toBeNull();
   expect(boundary!.y + boundary!.height).toBeLessThanOrEqual(633 + 3);
   const heroNumbers = await page.locator('.result-hero__numbers').boundingBox();
   expect(heroNumbers).not.toBeNull();
   expect(heroNumbers!.y + heroNumbers!.height).toBeLessThanOrEqual(633 + 3);
-  expect(facts!.y).toBeGreaterThan(boundary!.y + boundary!.height - 3);
+  const diagnosticSummary = await page.locator('.diagnostic-summary').boundingBox();
+  expect(diagnosticSummary).not.toBeNull();
+  expect(diagnosticSummary!.y).toBeGreaterThan(boundary!.y + boundary!.height - 3);
 });
 
 for (const viewport of [
