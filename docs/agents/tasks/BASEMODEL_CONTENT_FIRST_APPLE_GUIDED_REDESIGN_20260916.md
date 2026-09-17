@@ -359,7 +359,7 @@ Phase D is complete: **15 / 15 weighted points**. The consolidation is limited t
 Migrate in bounded groups to reduce concurrent-PR conflict:
 
 - [x] Flow/concept routes.
-- [ ] Study gateway and experiment-design routes.
+- [x] Study gateway and experiment-design routes.
 - [ ] Results/comparison routes.
 - [ ] Mechanism/SD-LoRA/history routes.
 - [ ] Operational/run/server routes.
@@ -369,6 +369,8 @@ Migrate in bounded groups to reduce concurrent-PR conflict:
 Each group must preserve current scientific authority and refresh against live upstream evidence before changing “current/running/completed/next” claims.
 
 Flow/concept migration witness — **2026-09-18**: audited the canonical Flow family (`flow/`, `seed`, `openevo`, `benchmarks`, `webshop`, `alfworld`, `loops`, the base-model compatibility redirect, plus the already-migrated `server` / Vanilla `sd-lora` pilots) against current route ownership and concurrent PRs. The shared concept core now expresses ordinary explanation with editorial dividers, sequential relationships, shared-axis tables/lists, and quieter navigation instead of rounding each paragraph into a card; benchmark and loop first-view copy states the actual compared objects directly. Canonical WebShop interactive/figure ownership and the base-model redirect were deliberately preserved rather than cosmetically rewritten. Scientific facts and claim boundaries were unchanged. Focused structural/copy regression: **58/58 PASS** after the new anti-card-wall assertion; browser acceptance: **25/25 PASS** across Flow explainers, phone/tablet/desktop layout, light/dark readability, Reader Contract first-view checks, topology, reduced motion, and overflow. Phase-E route-family credit is recorded only for this completed Flow/concept row; the remaining six Phase-E families stay open.
+
+Study gateway / experiment-design migration witness — **2026-09-18**: refreshed the canonical Study directory, the `/study/design/` compatibility redirect, the successor design owner at `study/capability-exploration/openevo-2-0/`, and concurrent scientific/content ownership before editing. The Study directory remains the five-experiment content-shaped directory rather than being rebuilt into a universal hero/card template. On the successor design surface, the two reading destinations are now editorial rows, the shared Stage-1 starting point is one same-axis comparison instead of separate metric cards, and raw freeze/source identities move to progressive disclosure while the meaning-changing boundary — design/preregistration is not run completion, and the higher 1.7B pre-learning baseline is not a later-learning/general-strength result — remains visible in ordinary reading order. The six scientific design families plus release-control line keep their pinned evidence and statuses unchanged; concurrent navigation/Reader-Contract data owned by other PRs was not rewritten. Regression validation after the readability fix: focused structural/copy checks **58/58 PASS**; successor/reader browser checks **79/79 PASS**; full Chromium UI gate **197/197 PASS**; production build and heading/brand audits PASS; document overflow preflight PASS; exact candidate renders were captured for Study + successor design at phone/desktop in light/dark with route sentinels and zero page overflow. This completes only the Study/experiment-design row. Phase E has no per-row weights, so the credited total remains **55 / 100** until the full 25-point phase is complete.
 
 ### Phase F — Sitewide plain-language + content-shape sweep — **10%**
 

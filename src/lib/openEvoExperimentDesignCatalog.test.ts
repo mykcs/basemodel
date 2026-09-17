@@ -36,14 +36,16 @@ describe('OpenEvo experiment design catalog', () => {
       'GDN D1 Prospective Geometry Confirmation',
       'Ceiling-1.0 End-to-End Autonomous Campaign',
     ]) expect(catalog).toContain(title);
-    expect(catalog).toContain('49 个近期 design / control / diagnostic JSON 不等于 49 个独立实验');
+    expect(catalog).toContain('49 个设计、控制和诊断文件，不等于 49 个独立实验');
+    expect(catalog).toContain('六个科学设计，外加一条放行控制线');
   });
   it('keeps design state distinct from execution results and uses progressive disclosure', () => {
     expect(catalog).toContain('设计目录不是实验结果');
     expect(catalog).toContain('FROZEN / PREREGISTERED');
-    expect(catalog).toContain('<details>');
-    expect(catalog).toContain('technical child designs');
-    expect(catalog).toContain('不把 FROZEN / PREREGISTERED 冒充成运行完成');
+    expect(catalog).toContain('<details class="design-catalog__evidence">');
+    expect(catalog).toContain('technical child designs and pinned sources');
+    expect(catalog).toContain('冻结或预注册都不等于运行完成');
+    expect(catalog).toContain('查看设计目录的原始证据');
   });
 
   it('pins immutable upstream evidence and excludes private infrastructure from public copy', () => {
@@ -57,8 +59,8 @@ describe('OpenEvo experiment design catalog', () => {
 
   it('keeps English design titles while Chinese remains the primary zh explanation', () => {
     expect(catalog).toContain("title: 'Fresh Stage1 202609021800'");
-    expect(catalog).toContain('新一轮 OpenEvo 已经拆成 7 个设计族');
-    expect(catalog).toContain('The new OpenEvo program is split into seven design families');
+    expect(catalog).toContain('六个科学设计，外加一条放行控制线');
+    expect(catalog).toContain('Six scientific designs, plus one release-control line');
     expect(catalog).toContain('运行完成、PASS/FAIL、指标和最终结论');
   });
 });
