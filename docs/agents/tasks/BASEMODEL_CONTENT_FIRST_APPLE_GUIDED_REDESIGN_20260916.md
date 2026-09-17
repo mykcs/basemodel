@@ -348,6 +348,8 @@ npm run redesign:cold-read:gate -- --product-head=<exact-rendered-product-git-sh
 
 The gate requires all eight receipts to PASS the existing preference/scientific-boundary validator, match the exact pilot Reader Contract and route, use the declared viewport, and bind the same rendered product head. Reviewer identity follows the canonical HPL contract: a genuine human or genuinely independent Agent may be recorded, while self-authored notes cannot be relabeled as independent. Missing, duplicated, stale-head, wrong-route, wrong-contract, wrong-viewport or FAIL evidence fails closed. The command makes the Phase-C exit auditable; it does **not** manufacture the independent evidence, so the checkbox above remains open until the command actually returns PASS on real receipts.
 
+Phase-C rework witness — 2026-09-17: repeated independent cold reads still found first-screen comprehension friction. Trigger → Flow/Q17/Server feedback on exact head `61352682dec02352c5e60f701941fd37edf25907`; current owner → this Phase-C pilot exit; checked artifact → fresh exact-head blind packet plus canonical Reader Contracts; allowed next action → simplify the visible first task, explain unavoidable terms in place, surface one truthful next action, and re-run exact-head phone/desktop review; invalidation cue → any new runtime/copy change or head movement invalidates prior receipts. **No weighted credit changes until the 8/8 gate passes.**
+
 ### Phase D — Canonical component/CSS consolidation — **15%**
 
 - [x] Promote only proven pilot patterns into shared components/styles.

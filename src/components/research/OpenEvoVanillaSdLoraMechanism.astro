@@ -53,6 +53,8 @@ const risks = zh ? [
     <p class="sdlora-intro__boundary"><strong>{t('候选参数不等于能力一定提升。', 'Candidate parameters do not imply guaranteed capability gains.')}</strong> {t('这里会回放最多 64 条旧经验，因此不是原论文“完全不回放旧经验”的逐项复刻；保留旧方向也不能证明 WebShop 分数会持续上涨。', 'This implementation replays up to 64 old examples, so it is not an item-for-item reproduction of the paper’s rehearsal-free protocol; preserving old directions also does not prove that WebShop scores will keep rising.')}</p>
   </section>
 
+  <OpenEvoVanillaSdLoraSlide locale={locale} />
+
   <details class="sdlora__section sdlora__section--primer" id="what-is-sd-lora">
     <summary>{t('普通 LoRA 与 SD-LoRA 的参数区别', 'Parameter difference between ordinary LoRA and SD-LoRA')}</summary>
     <p>{t(
@@ -73,7 +75,6 @@ const risks = zh ? [
     <p class="sdlora-caveat">{t('ICLR 2025 的原始 SD-LoRA 论文研究 class-incremental vision continual learning，并强调 rehearsal-free；我们当前的语言 Agent / WebShop 适配会带回最多 64 条旧经验，因此 paper_equivalent=false、rehearsal_free=false。这里借用核心的方向 / 幅度分解思想，不是逐项复刻论文实验。', 'The original ICLR 2025 SD-LoRA paper studies class-incremental vision continual learning and emphasizes rehearsal-free training. Our language-agent / WebShop adaptation replays up to 64 old examples, so paper_equivalent=false and rehearsal_free=false. We reuse the core direction/magnitude decomposition rather than reproducing the paper protocol item for item.')}</p>
   </details>
 
-  <OpenEvoVanillaSdLoraSlide locale={locale} />
   <section class="sdlora__section" id="round-inputs" aria-labelledby="round-inputs-title">
     <h2 id="round-inputs-title">{t('一轮开始前，模型带着什么？', 'What does the model carry into a round?')}</h2>
     <p class="sdlora-round-context">{t('这一步属于持续学习阶段。前一阶段先由 Qwen 完成 WebShop 任务，MiniMax 只在任务结束后回看已保存轨迹；持续学习还可能更新文字经验（Text Memory）、可复用技能（Skill Bundle）和全局行为规则（Agent System）。这些对象会影响下一轮，但本页只继续追踪 SD-LoRA 参数怎样训练和采用。', 'This belongs to the continual-learning stage. Qwen first completes the WebShop task and MiniMax reviews the saved trace only after the task ends. Continual learning may also update written experience (Text Memory), reusable skills (Skill Bundle), and global behavior rules (Agent System). Those states can affect the next round, but this page continues to track only how SD-LoRA parameters are trained and adopted.')}</p>

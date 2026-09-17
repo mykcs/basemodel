@@ -25,8 +25,8 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
     const comparison = mechanism.indexOf('普通 LoRA 与 SD-LoRA 的参数区别');
     const slideOwner = mechanism.indexOf('<OpenEvoVanillaSdLoraSlide');
     expect(motivation).toBeGreaterThan(-1);
-    expect(comparison).toBeGreaterThan(motivation);
-    expect(slideOwner).toBeGreaterThan(comparison);
+    expect(slideOwner).toBeGreaterThan(motivation);
+    expect(comparison).toBeGreaterThan(slideOwner);
   });
 
   it('keeps the reusable slide mechanism-first rather than adding duplicate orientation inside it', () => {

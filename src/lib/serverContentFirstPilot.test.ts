@@ -11,7 +11,8 @@ describe('content-first server operations pilot', () => {
     expect(server).toContain('容量快照 · 2026-09-15 22:10（UTC+8）· 非实时数据');
     expect(server).toContain('NOT_AUTHORIZED');
     expect(server).toContain('当前没有紧急扩容压力，也没有删除授权');
-    expect(server).toContain('下一步：只读健康扫描');
+    expect(server).toContain('只读健康扫描');
+    expect(server).toContain('查看入口 · 只检查，不修改，不删除 →');
     expect(server).toContain("<dt>{t('删除', 'Deletion')}</dt><dd>{t('未授权', 'Not authorized')}</dd>");
     expect(server).toContain('对象 / 服务器负责人必须批准同一版精确回收清单');
     expect(server).toContain('例行服务器维护');

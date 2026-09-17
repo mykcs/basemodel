@@ -55,7 +55,7 @@ const gpuFacts = [
       <div><dt>{t('删除', 'Deletion')}</dt><dd>{t('未授权', 'Not authorized')}</dd></div>
     </dl>
 
-    <a class="server-hero__next" href="#health-scan">{t('下一步：只读健康扫描', 'Next: read-only health scan')}</a>
+    <a class="server-hero__next" href="#health-scan"><strong>{t('只读健康扫描', 'Read-only health scan')}</strong><span>{t('查看入口 · 只检查，不修改，不删除 →', 'Open the entry point · inspect only, no changes or deletion →')}</span></a>
   </header>
 
 
@@ -257,7 +257,7 @@ const gpuFacts = [
   .server-hero h1{max-width:20ch;margin:0 0 .55rem;font-size:clamp(2rem,4vw,3.45rem);line-height:1;letter-spacing:-.05em}
   .server-hero__status{max-width:74ch;margin:0;color:var(--ink);font-size:clamp(1rem,1.6vw,1.16rem);font-weight:700;line-height:1.58}
   .server-hero__facts{max-width:860px;margin:.65rem 0 0}
-  .server-hero__next{display:inline-flex;min-height:44px;align-items:center;margin-top:.65rem;color:var(--accent-deep);font-size:.86rem;font-weight:800;text-decoration-thickness:1px;text-underline-offset:.2em}
+  .server-hero__next{display:inline-grid;min-height:44px;gap:.08rem;align-items:center;margin-top:.65rem;padding:.62rem .78rem;border:1px solid var(--accent-deep);border-radius:var(--radius-control);color:var(--accent-deep);text-decoration:none}.server-hero__next strong{font-size:.88rem}.server-hero__next span{color:var(--muted);font-size:.72rem;font-weight:650;line-height:1.35}.server-hero__next:hover{background:color-mix(in srgb,var(--accent) 6%,transparent)}
   .server-hero__next:focus-visible{outline:3px solid var(--accent-deep);outline-offset:3px}
   .server-safety-depth{max-width:900px;margin:.15rem 0 1.1rem;border-block:1px solid var(--line)}
   .server-safety-depth>summary{min-height:44px;display:flex;align-items:center;cursor:pointer;color:var(--muted);font-size:.8rem;font-weight:760}

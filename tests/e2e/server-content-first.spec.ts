@@ -14,7 +14,8 @@ for (const viewport of [
     await expect(page.locator('.server-hero__status')).toBeVisible();
     await expect(page.locator('.server-hero__facts')).toBeVisible();
     await expect(page.locator('.server-hero__facts')).toContainText('未授权');
-    await expect(page.locator('.server-hero__next')).toHaveText('下一步：只读健康扫描');
+    await expect(page.locator('.server-hero__next')).toContainText('只读健康扫描');
+    await expect(page.locator('.server-hero__next')).toContainText('只检查，不修改，不删除');
     await expect(page.locator('.server-safety-depth summary')).toBeAttached();
     await expect(page.locator('.routine-entry summary')).toBeAttached();
 
