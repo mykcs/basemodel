@@ -118,7 +118,8 @@ describe('research architecture diagrams', () => {
     expect(guide).toContain('<ordinary-account>');
     expect(guide).toContain('<approved-control-account>');
     expect(guide).toContain('<approved-persistent-workspace>');
-    expect(guide).toContain('.gate-copy pre{min-height:0!important;height:auto!important');
+    expect(guide).toContain('.gate-copy :global(.actionable-code-shell){box-sizing:border-box;width:100%;max-width:100%;min-width:0}');
+    expect(guide).toContain('min-height:0!important;height:auto!important');
     for (const forbidden of ['dev-wangr', 'wangr-dev', '/data/home/wangr', 'ssh wangrui_user', 'ssh wangrui_root']) expect(guide).not.toContain(forbidden);
   });
 });

@@ -55,6 +55,12 @@ describe('site-wide reader attention contracts', () => {
     }
   });
 
+  it('binds model detail first-screen acceptance to decision facts instead of a tall identity wrapper', () => {
+    const model = SITE_READER_CONTRACTS.find((contract) => contract.id === 'model-detail');
+    expect(model?.firstViewportSelector).toBe('.model-detail-quickfacts');
+    expect(model?.firstViewportBudget).toEqual({ maxInteractive: 4, maxHeadings: 2, maxTextChars: 720 });
+  });
+
   it('anchors the SD-LoRA first-screen contract to the actual motivation message rather than the whole tall intro block', () => {
     const flow = SITE_READER_CONTRACTS.find((contract) => contract.id === 'flow-sd-lora');
     const compatibility = SITE_READER_CONTRACTS.find((contract) => contract.id === 'capability-vanilla-sd-lora');

@@ -17,6 +17,10 @@ const baseModelCompat = read('../pages/research/seed-openevo/flow/base-model/ind
 const studyDesignCompat = read('../pages/research/seed-openevo/study/design/index.astro');
 const alfworldZh = read('../pages/research/seed-openevo/flow/alfworld.astro');
 const alfworldEn = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/flow/alfworld.astro.archive');
+const modelsIndex = read('../pages/_bodies/models-index.astro');
+const modelDetail = read('../pages/_bodies/model-detail.astro');
+const papersIndex = read('../pages/_bodies/papers-index.astro');
+const paperDetail = read('../pages/_bodies/paper-detail.astro');
 const explainerStyles = [
   read('../styles/interactive-research-explainer-core.css'),
   read('../styles/interactive-research-explainer-environments.css'),
@@ -79,6 +83,26 @@ describe('sitewide normalization first repair batch', () => {
     expect(sdLoraHistoryNav).toContain("a[aria-current='page']{border-bottom-color:var(--accent-deep);color:var(--ink)}");
     expect(sdLoraHistoryNav).not.toContain('border-radius:var(--radius-panel)');
     expect(sdLoraHistoryNav).not.toContain('background:var(--surface-muted)');
+  });
+
+  it('keeps model and paper reference routes content-first instead of hiding useful content behind viewport-height spacers', () => {
+    expect(modelsIndex).toContain('class="models-reading-lenses"');
+    expect(modelsIndex).toContain("'身份' : 'Identity'");
+    expect(modelsIndex).toContain("'证据' : 'Evidence'");
+    expect(modelsIndex).not.toContain('min-height:clamp(420px,62svh,620px)');
+    expect(modelsIndex).not.toContain('min-height:calc(100svh - 96px)');
+
+    expect(papersIndex).toContain('class="papers-reading-path"');
+    expect(papersIndex).toContain("['研究问题', '先确认论文试图解决的具体研究问题，以及它改变了哪个 Agent 环节。']");
+    expect(papersIndex).toContain("['复现资料', '最后核对代码、模型、数据、环境与证据缺口，再决定适合严格复现还是方法复现。']");
+    expect(papersIndex).not.toContain('min-height:calc(100svh - 110px)');
+    expect(papersIndex).not.toContain('min-height:calc(100svh - 96px)');
+
+    expect(modelDetail).toContain('class="model-detail-quickfacts"');
+    expect(modelDetail).toContain("'目录资源档位' : 'Catalog resource tier'");
+    expect(modelDetail).not.toContain('min-height:min(540px,calc(100svh - 116px))');
+    expect(modelDetail).not.toContain('min-height:calc(100svh - 102px)');
+    expect(paperDetail).not.toContain("<div class=\"section-kicker\">{locale === 'zh' ? '方法' : 'Method'}</div>");
   });
 
   it('keeps ALFWorld route metadata object-first in both locales', () => {
