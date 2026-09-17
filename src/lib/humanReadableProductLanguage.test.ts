@@ -30,14 +30,15 @@ describe('human-readable product language contract', () => {
   });
 
   it('keeps the first-screen subject concrete in both locales without turning instructions into the H1', () => {
-    expect(missionHero).toContain("t('同一个 Qwen、同一批任务，只比较怎么学习', 'Same Qwen, same tasks: only the learning method changes')");
+    expect(missionHero).toContain("t('SEED 与 OpenEvo：同一个 Qwen、同一批任务', 'SEED and OpenEvo: the same Qwen and the same tasks')");
     expect(missionHero).toContain('mission-hero__boundary');
-    expect(missionHero).toContain('这页先讲实验怎么公平比较，不是 SEED / OpenEvo 谁更好的结果');
-    expect(missionHero).toContain('只比较第二阶段学习器时，两边必须从同一个模型参数快照（checkpoint，也就是一版固定参数）出发');
-    expect(missionHero).toContain('共享同一批第一阶段轨迹、任务后复盘和训练配方');
-    expect(missionHero).toContain('ALFWorld 是文本具身任务，WebShop 是网页购物任务；两种环境分开算分');
-    expect(missionHero).toContain('我们固定 Qwen2.5-3B-Instruct（30 亿级指令模型）和同一批任务');
-    expect(missionHero).toContain('OpenEvo 是先保存任务证据');
+    expect(missionHero).not.toContain('这页先讲实验怎么公平比较');
+    expect(missionHero).toContain('只比较第二阶段（持续学习）时，两边必须从同一版模型参数出发');
+    expect(missionHero).toContain('共享第一阶段（做题与事后复盘）的轨迹、复盘和训练配方');
+    expect(missionHero).toContain('ALFWorld 是文本具身任务，WebShop 是网页购物任务；两种环境分别计分');
+    expect(missionHero).toContain('这里固定 Qwen2.5-3B-Instruct（约 30 亿参数的指令模型）和同一批任务');
+    expect(missionHero).toContain('OpenEvo 先保存任务证据，再把经验带到后续任务');
+    expect(missionHero).toContain('比较条件只覆盖当前 3B 模型、ALFWorld / WebShop 和当前实现');
     expect(missionHero).not.toContain('mission-hero__method-summary');
     expect(missionHero).toContain('{!compact && <details class="mission-hero__secondary">');
     expect(missionHero).not.toContain('先看研究对象与比较条件');

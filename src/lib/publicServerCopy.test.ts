@@ -13,7 +13,7 @@ const staticServerDiagram = read('../components/research/ServerAuthorityDiagram.
 
 describe('public server copy', () => {
   it('keeps the server lifecycle page public-safe and distinguishes current from historical storage facts', () => {
-    expect(serverOverview).toContain('实验文件磁盘：约 0.99 TiB 可用');
+    expect(serverOverview).toContain('2026-09-15 容量快照：实验文件磁盘约 0.99 TiB 可用');
     expect(serverOverview).toContain('约 1.09 TB；TiB 与 TB 是两种容量单位');
     expect(serverOverview).toContain('0.99 TiB');
     expect(serverOverview).toContain('320.9 GiB');
@@ -23,7 +23,9 @@ describe('public server copy', () => {
     expect(serverOverview).toContain('delete_authorized=false');
     expect(serverOverview).toContain('例行服务器维护');
     expect(serverOverview).not.toContain('class="server-hero__facts research-fact-band"');
-    expect(serverOverview).toContain('server-hero__guardrails');
+    expect(serverOverview).not.toContain('server-hero__guardrails');
+    expect(serverOverview).toContain('server-hero__safety');
+    expect(serverOverview).toContain('三个边界始终不变');
     expect(serverOverview).toContain('复制例行维护指令 →');
     expect(serverOverview).toContain('href="#routine-maintenance"');
     expect(serverOverview).toContain('NOT_AUTHORIZED');

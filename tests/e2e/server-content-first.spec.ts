@@ -10,16 +10,16 @@ for (const viewport of [
     await page.setViewportSize(viewport);
     await page.goto(route, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.locator('h1')).toHaveText('实验文件磁盘：约 0.99 TiB 可用');
+    await expect(page.locator('h1')).toHaveText('2026-09-15 容量快照：实验文件磁盘约 0.99 TiB 可用');
     await expect(page.locator('.server-hero__status')).toBeVisible();
     await expect(page.locator('.server-hero__status')).toContainText('删除仍未授权');
-    await expect(page.locator('.server-hero__guardrails')).toContainText('远端已有副本，也不能自动删服务器文件');
-    await expect(page.locator('.server-hero__guardrails')).toContainText('删服务器文件和把私有归档改成公开，是两件事');
-    await expect(page.locator('.server-hero__guardrails')).toContainText('还没合并的草稿，不能当正式规则');
+    await expect(page.locator('.server-hero__safety')).toContainText('远端已有副本，也不能自动删服务器文件');
+    await expect(page.locator('.server-hero__safety')).toContainText('删服务器文件和把私有归档改成公开，是两件事');
+    await expect(page.locator('.server-hero__safety')).toContainText('还没合并的草稿，不能当正式规则');
     await expect(page.locator('.server-hero__next')).toContainText('复制例行维护指令');
     await expect(page.locator('.server-hero__next')).toHaveAttribute('href', '#routine-maintenance');
     await expect(page.locator('.server-hero__sequence')).toHaveCount(0);
-    await expect(page.locator('.server-hero__maintenance-order')).toContainText('重新读取或最小加载确认真的能恢复');
+    await expect(page.locator('.server-hero__maintenance-order')).toContainText('重新读取或最小加载确认能恢复');
     await expect(page.locator('.server-hero__maintenance-order')).toContainText('只生成精确回收清单');
     await expect(page.locator('.server-safety-depth')).toHaveCount(0);
     await expect(page.locator('.routine-entry summary')).toBeAttached();
@@ -45,9 +45,20 @@ for (const viewport of [
     expect(geometry.overflow).toBeLessThanOrEqual(2);
 
     const visibleHeadings = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((nodes) => nodes
-      .filter((node) => { const rect = node.getBoundingClientRect(); return rect.top < innerHeight && rect.bottom > 0; })
-      .map((node) => node.textContent?.trim()));
-    expect(visibleHeadings).toEqual(['实验文件磁盘：约 0.99 TiB 可用']);
+      .map((node) => {
+        const rect = node.getBoundingClientRect();
+        return { text: node.textContent?.trim(), top: rect.top, bottom: rect.bottom, fontSize: Number.parseFloat(getComputedStyle(node).fontSize) };
+      })
+      .filter((heading) => heading.top < innerHeight && heading.bottom > 0));
+    expect(visibleHeadings[0]?.text).toBe('2026-09-15 容量快照：实验文件磁盘约 0.99 TiB 可用');
+    if (visibleHeadings.length > 1) {
+      // The reader-attention contract allows the next chapter to peek naturally at
+      // the bottom of a phone viewport; it must not become an equal-weight center.
+      expect(visibleHeadings).toHaveLength(2);
+      expect(visibleHeadings[1]?.text).toBe('服务器健康扫描');
+      expect(visibleHeadings[1]!.top).toBeGreaterThanOrEqual(viewport.height * 0.8);
+      expect(visibleHeadings[1]!.fontSize).toBeLessThan(visibleHeadings[0]!.fontSize);
+    }
   });
 }
 
@@ -70,9 +81,9 @@ for (const theme of ['light', 'dark'] as const) {
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('.server-hero__status')).toBeVisible();
     await expect(page.locator('.server-hero__status')).toContainText('删除仍未授权');
-    await expect(page.locator('.server-hero__guardrails')).toContainText('远端已有副本，也不能自动删服务器文件');
-    await expect(page.locator('.server-hero__guardrails')).toContainText('对象 / 服务器负责人仍要批准同一版精确回收清单');
-    await expect(page.locator('.server-hero__guardrails')).toContainText('把私有归档改成公开');
+    await expect(page.locator('.server-hero__safety')).toContainText('远端已有副本，也不能自动删服务器文件');
+    await expect(page.locator('.server-hero__safety')).toContainText('把私有归档改成公开');
+    await expect(page.locator('#reclaim-proposal')).toContainText('批准人是对象 / 服务器负责人');
     await expect(page.locator('#reclaim-proposal')).toContainText('NOT_AUTHORIZED');
     await expect(page.locator('.server-hero__context')).toContainText('非实时数据');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);

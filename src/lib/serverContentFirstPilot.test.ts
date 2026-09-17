@@ -7,21 +7,24 @@ const closeout = read('../styles/visual-closeout.css');
 
 describe('content-first server operations pilot', () => {
   it('makes the dated operational state the first subject without hiding deletion authority', () => {
-    expect(server).toContain('容量快照（某一时刻保存的状态）· 2026-09-15 22:10（UTC+8）· 非实时数据');
-    expect(server).toContain('实验文件磁盘：约 0.99 TiB 可用');
+    expect(server).toContain('非实时数据 · 保存于 2026-09-15 22:10（UTC+8）');
+    expect(server).toContain('2026-09-15 容量快照：实验文件磁盘约 0.99 TiB 可用');
     expect(server).toContain('NOT_AUTHORIZED');
-    expect(server).toContain('2.0 TiB 持久文件系统已用约 51%，还剩约 0.99 TiB');
+    expect(server).toContain('这个数字只代表上面的保存时刻：当时 2.0 TiB 持久文件系统已用约 51%');
     expect(server).toContain('复制例行维护指令 →');
     expect(server).toContain('href="#routine-maintenance"');
-    expect(server).toContain('例行维护顺序：');
-    expect(server).toContain('重新读取或最小加载确认真的能恢复');
-    expect(server).toContain('最后只生成精确回收清单（明确列出准备回收的具体文件）');
-    expect(server).toContain('远端已有副本，也不能自动删服务器文件。');
-    expect(server).toContain('删服务器文件和把私有归档改成公开，是两件事。');
+    expect(server).toContain('下一步：');
+    expect(server).toContain('归档已封存资产并重新读取或最小加载确认能恢复');
+    expect(server).toContain('只生成精确回收清单');
+    expect(server).toContain('远端已有副本，也不能自动删服务器文件');
+    expect(server).toContain('删服务器文件和把私有归档改成公开，是两件事');
     expect(server).toContain('必须分别批准');
-    expect(server).toContain('真正执行时，只认当前已合并或被实验明确采用的正式规则');
+    expect(server).toContain('模型参数保存点（checkpoint）');
+    expect(server).not.toContain('server-hero__guardrails');
+    expect(server).toContain('还没合并的草稿，不能当正式规则');
     expect(server).toContain('归档和“回收清单”都不等于删除；删除仍未授权');
-    expect(server).toContain('对象 / 服务器负责人仍要批准同一版精确回收清单');
+    expect(server).toContain('批准人是对象 / 服务器负责人：必须在当前 zju-server 删除安全规则下明确批准同一版精确清单');
+    expect(server).toContain('删除前还要核对同一版精确回收清单和当前是否仍被使用');
     expect(server).toContain('例行服务器维护');
     expect(server).toContain('df（查看文件系统容量的系统命令）');
     expect(server).toContain('约 1.09 TB；TiB 与 TB 是两种容量单位');

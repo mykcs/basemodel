@@ -96,14 +96,14 @@ const arrowUrl = `url(#${arrowId})`;
       </article>
 
       <article class="sdlora-node sdlora-node--direct" data-flow-node="directapply" data-ui-audit-item>
-        <small>{t('当前做法', 'Current rule')}</small>
-        <strong>{t('检查通过就直接采用（DirectApply）', 'Adopt directly after checks (DirectApply)')}</strong>
+        <small>{t('当前做法 · DirectApply（直接采用）', 'Current rule · DirectApply')}</small>
+        <strong>{t('检查通过就直接采用', 'Adopt directly after checks')}</strong>
         <p>{t('检查通过，下一轮用新参数。', 'After checks, the next round uses the new parameters.')}</p>
       </article>
 
       <article class="sdlora-node sdlora-node--gdr" data-flow-node="gdr" data-ui-audit-item>
-        <small>{t('历史本地做法', 'Historical local rule')}</small>
-        <strong>{t('先用 16 题小测再决定（GDR-v1）', 'Probe 16 tasks before deciding (GDR-v1)')}</strong>
+        <small>{t('历史本地做法 · GDR-v1（16 题筛选）', 'Historical local rule · GDR-v1')}</small>
+        <strong>{t('先用 16 题小测再决定', 'Probe 16 tasks before deciding')}</strong>
         <p>{t('先用 16 个任务小测，再选新旧参数。', 'Probe 16 tasks, then choose new or old parameters.')}</p>
       </article>
 
@@ -146,8 +146,8 @@ const arrowUrl = `url(#${arrowId})`;
           <path data-edge="candidate-gdr-mobile" d="M150 2 V20 H228 V42"/><path d="M222 36 L228 44 L234 36"/>
         </svg>
         <div class="sdlora-mobile-branch__choices">
-          <article><small>{t('当前做法', 'Current rule')}</small><strong>{t('检查通过就直接采用（DirectApply）', 'Adopt directly after checks (DirectApply)')}</strong></article>
-          <article><small>{t('历史本地做法', 'Historical local rule')}</small><strong>{t('先用 16 题小测再决定（GDR-v1）', 'Probe 16 tasks before deciding (GDR-v1)')}</strong></article>
+          <article><small>{t('当前做法 · DirectApply（直接采用）', 'Current rule · DirectApply')}</small><strong>{t('检查通过就直接采用', 'Adopt directly after checks')}</strong></article>
+          <article><small>{t('历史本地做法 · GDR-v1（16 题筛选）', 'Historical local rule · GDR-v1')}</small><strong>{t('先用 16 题小测再决定', 'Probe 16 tasks before deciding')}</strong></article>
         </div>
         <svg class="sdlora-mobile-branch__join" viewBox="0 0 300 54" role="img" aria-label={t('选定参数后进入下一轮', 'selected parameters enter the next round')}>
           <path data-edge="directapply-next-mobile" d="M72 2 V18 H150 V42"/><path data-edge="gdr-next-mobile" d="M228 2 V18 H150 V42"/><path d="M144 36 L150 44 L156 36"/>

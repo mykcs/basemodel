@@ -29,10 +29,13 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(component).toContain('OpenEVO WebShop same-task retest: we still cannot show that the round-128 model state got worse overall');
     expect(component).toContain('第一阶段先让 Qwen 自己完成 WebShop 任务');
     expect(component).toContain('持续学习：文字经验、可复用技能、行为规则和 LoRA（少量模型适配参数）会分别更新并进入下一轮');
-    expect(component).toContain('直接采用规则（DirectApply / No-GDR）的含义就是：候选参数通过共同检查后直接进入下一轮');
+    expect(component).toContain('直接采用规则（DirectApply，也记作 No-GDR，意思是不再使用旧 16 题筛选）的含义就是：候选参数通过共同检查后直接进入下一轮');
     expect(component).toContain('OpenEVO 是这条持续学习实验线');
+    expect(component).toContain('直接采用（DirectApply）训练线：候选参数通过共同检查后，就直接进入下一轮');
     expect(component).toContain('进入第 127 / 128 轮时加载的两个相邻模型状态（R127 / R128）');
     expect(component).toContain('63.58 → 59.41');
+    expect(component).toContain('进入第 127 轮（R127）');
+    expect(component).toContain('进入第 128 轮（R128）');
     expect(component).toContain('完整做对');
     expect(component).toContain('10 / 32 → 8 / 32');
         expect(component).toContain('平均分少 4.18，但 95% 统计范围 −17.13 ～ +8.00 包含“没有差别”');

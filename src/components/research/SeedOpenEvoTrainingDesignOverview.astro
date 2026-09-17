@@ -17,7 +17,7 @@ const stages = [
 ] as const;
 ---
 <div class="training-design-body">
-  <p class="comparison-boundary">{t('完整系统比较只能回答两套系统总体表现有什么差异；如果要把后续差异归因到持续学习阶段（Stage 2）的学习器，两边还必须共享 Stage 1 轨迹、任务后复盘、训练配方和同一个起点模型。', 'A full-system comparison only answers how the two systems differ overall. To attribute a later difference to the Stage-2 learner, both sides must also share Stage-1 trajectories, post-task review, the training recipe, and the same starting model.')}</p>
+  <p class="comparison-boundary">{t('完整系统比较只能回答两套系统总体表现有什么差异；如果要把后续差异归因到持续学习阶段（Stage 2）的学习器，两边还必须共享第一阶段（Stage 1）的轨迹、任务后复盘、训练配方和同一个起点模型。', 'A full-system comparison only answers how the two systems differ overall. To attribute a later difference to the Stage-2 learner, both sides must also share Stage-1 trajectories, post-task review, the training recipe, and the same starting model.')}</p>
   <ol class="responsibility-flow" aria-label={t('Stage 1 责任边界', 'Stage-1 responsibility flow')}>
     {stages.map((stage, index) => (
       <li>
@@ -34,8 +34,8 @@ const stages = [
       <table>
         <thead><tr><th scope="col">{t('比较口径', 'Comparison')}</th><th scope="col">{t('哪些条件保持一致', 'What stays aligned')}</th><th scope="col">{t('可以支持什么结论', 'What the result can support')}</th></tr></thead>
         <tbody>
-          <tr><th scope="row">{t('完整系统比较', 'Full-system comparison')}</th><td>{t('模型、任务、评分和训练预算尽量一致；SEED 与 OpenEvo 可以使用各自的提示、历史与动作解析层。', 'Keep model, tasks, scoring, and training budget aligned; SEED and OpenEvo may use their own prompt, history, and action-parsing layers.')}</td><td>{t('只能比较两个完整系统的总体表现，不能把全部差异单独归因于 Stage 2 学习器。', 'Supports a comparison of the complete systems, not attribution of the whole difference to the Stage-2 learner alone.')}</td></tr>
-          <tr><th scope="row">{t('只比较 Stage 2 学习器', 'Stage-2 learner only')}</th><td>{t('共享 Stage 1 轨迹、事后分析、监督微调（SFT）训练配方和同一个起点模型保存点（checkpoint，也就是一版固定参数），再从这里分成 SEED Stage 2 与 OpenEvo Stage 2。', 'Share Stage-1 trajectories, post-task analysis, the SFT recipe, and the same starting checkpoint — one fixed parameter snapshot — before forking into SEED Stage 2 and OpenEvo Stage 2.')}</td><td>{t('只有这种共同起点的对照，才允许把后续差异收窄到 Stage 2 学习器。', 'Only this common-start comparison can narrow a later difference to the Stage-2 learner.')}</td></tr>
+          <tr><th scope="row">{t('完整系统比较', 'Full-system comparison')}</th><td>{t('模型、任务、评分和训练预算尽量一致；SEED 与 OpenEvo 可以使用各自的提示、历史与动作解析层。', 'Keep model, tasks, scoring, and training budget aligned; SEED and OpenEvo may use their own prompt, history, and action-parsing layers.')}</td><td>{t('只能比较两个完整系统的总体表现，不能把全部差异单独归因于第二阶段（Stage 2）的学习器。', 'Supports a comparison of the complete systems, not attribution of the whole difference to the Stage-2 learner alone.')}</td></tr>
+          <tr><th scope="row">{t('只比较第二阶段（Stage 2）学习器', 'Stage-2 learner only')}</th><td>{t('共享第一阶段（Stage 1）的轨迹、事后分析、监督微调（SFT，也就是用已保存示例继续训练）配方和同一个起点模型保存点（checkpoint，也就是一版固定参数），再从这里分成 SEED 与 OpenEvo 的第二阶段学习。', 'Share Stage-1 trajectories, post-task analysis, the SFT recipe, and the same starting checkpoint — one fixed parameter snapshot — before forking into SEED Stage 2 and OpenEvo Stage 2.')}</td><td>{t('只有这种共同起点的对照，才允许把后续差异收窄到第二阶段（Stage 2）学习器。', 'Only this common-start comparison can narrow a later difference to the Stage-2 learner.')}</td></tr>
         </tbody>
       </table>
     </div>

@@ -12,16 +12,20 @@ const nav = read('src/components/research/SeedOpenEvoResearchNav.astro');
 describe('Flow content-first cold-read repair', () => {
   it('defines the four named research objects at first use while preserving the fairness boundary', () => {
     for (const phrase of [
-      '同一个 Qwen、同一批任务，只比较怎么学习',
+      'SEED 与 OpenEvo：同一个 Qwen、同一批任务',
       'ALFWorld 是文本具身任务',
       'WebShop 是网页购物任务',
-      '这页先讲实验怎么公平比较，不是 SEED / OpenEvo 谁更好的结果',
-      '只比较第二阶段学习器时，两边必须从同一个模型参数快照（checkpoint，也就是一版固定参数）出发',
-      '共享同一批第一阶段轨迹、任务后复盘和训练配方',
-      'SEED 是把成功经验写回模型参数的基线',
-      'OpenEvo 是先保存任务证据、再更新文字经验',
-      '否则只能比较两个完整系统',
+      'SEED 把成功任务轨迹继续训练回模型参数',
+      'OpenEvo 先保存任务证据，再把经验带到后续任务',
+      '只比较第二阶段（持续学习）时，两边必须从同一版模型参数出发',
+      '共享第一阶段（做题与事后复盘）的轨迹、复盘和训练配方',
+      '比较条件只覆盖当前 3B 模型',
+      'SEED 把成功任务轨迹继续训练回模型参数',
+      'OpenEvo 先保存任务证据，再把经验带到后续任务',
+      '这些条件没对齐时，只能比较两个完整系统',
     ]) expect(hero).toContain(phrase);
+    expect(hero).not.toContain('这页先讲实验怎么公平比较');
+    expect(hero).not.toContain('border-left:3px solid var(--accent-deep)');
   });
 
   it('explains Stage 1 in ordinary language instead of requiring analyzer or step-loop jargon', () => {
@@ -65,8 +69,8 @@ describe('Flow content-first cold-read repair', () => {
     const technicalDisclosure = design.indexOf('<ResearchTechnicalDisclosure');
     expect(comparison).toBeGreaterThan(0);
     expect(comparison).toBeLessThan(technicalDisclosure);
-    expect(design).toContain('只能比较两个完整系统的总体表现，不能把全部差异单独归因于 Stage 2 学习器');
-    expect(design).toContain('只有这种共同起点的对照，才允许把后续差异收窄到 Stage 2 学习器');
+    expect(design).toContain('只能比较两个完整系统的总体表现，不能把全部差异单独归因于第二阶段（Stage 2）的学习器');
+    expect(design).toContain('只有这种共同起点的对照，才允许把后续差异收窄到第二阶段（Stage 2）学习器');
     expect(design).not.toContain("summary={t('完整系统比较和 learner 对照有什么区别？'");
   });
 
@@ -76,7 +80,7 @@ describe('Flow content-first cold-read repair', () => {
     }
     expect(design).toContain('早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态');
     expect(design).toContain('完整系统比较只能回答两套系统总体表现有什么差异');
-    expect(design).toContain('监督微调（SFT）训练配方');
+    expect(design).toContain('监督微调（SFT，也就是用已保存示例继续训练）配方');
     expect(design).toContain('checkpoint，也就是一版固定参数');
     expect(design).toContain('任务尝试随机种子（rollout seeds）');
     expect(design).toContain('1,440 次任务尝试（rollout）');

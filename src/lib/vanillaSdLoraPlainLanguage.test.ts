@@ -11,9 +11,8 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
       '在 OpenEvo（这里的持续学习系统）里，这条参数更新方法叫 SD-LoRA（Scalable Decoupled LoRA）',
       '基础模型保持不动、只训练少量适配参数的方法',
       'WebShop（网页购物任务）',
-      '筛出完整成功轨迹',
-      '候选 LoRA（少量模型适配参数）',
-      '只有共同检查通过，下一轮才采用它',
+      '每题最早一条“完整做对且通过全部检查”的轨迹送进参数训练',
+      '最终锁定测试题不参加这里的筛选或训练',
       '候选参数不等于能力一定提升',
       '普通 LoRA 与 SD-LoRA 的参数区别',
       'Scalable Decoupled LoRA',
@@ -28,7 +27,7 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
     expect(mechanism).toContain('<details class="sdlora__section sdlora__section--primer"');
     expect(mechanism).not.toContain('sdlora-intro__frame research-fact-band');
     const intro = mechanism.slice(mechanism.indexOf('<section class="sdlora-intro"'), mechanism.indexOf('</section>') + 10);
-    expect(intro).toContain('sdlora-intro__path');
+    expect(intro).not.toContain('sdlora-intro__path');
     expect(intro).not.toContain('DirectApply');
     expect(intro).not.toContain("<strong>{t('筛出完整成功轨迹'");
     expect(intro).not.toContain('GDR-v1');
@@ -55,8 +54,10 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
       '最多带回 64 条旧经验',
       '旧方向不改；学一个新方向；重新调整所有方向的影响大小',
       '得到一份新的累计 LoRA',
-      '检查通过，下一轮用新参数',
-      '先用 16 个任务小测，再选新旧参数',
+      '检查通过就直接采用',
+      'DirectApply（直接采用）',
+      '先用 16 题小测再决定',
+      'GDR-v1（16 题筛选）',
     ]) expect(slide).toContain(phrase);
   });
 

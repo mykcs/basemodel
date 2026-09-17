@@ -48,7 +48,7 @@ for (const route of routes) {
       await expect(comparisonScope).toBeVisible();
       await expect(comparisonScope.locator('tbody tr')).toHaveCount(2);
       await expect(comparisonScope).toContainText(/完整系统比较|Full-system comparison/);
-      await expect(comparisonScope).toContainText(/Stage 2 学习器|Stage-2 learner/);
+      await expect(comparisonScope).toContainText(/第二阶段（Stage 2）学习器|Stage-2 learner/);
 
       const details = root.locator('details');
       await expect(details).toHaveCount(1);

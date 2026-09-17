@@ -18,7 +18,9 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
   await expect(series.locator('a[href="/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/"]')).toHaveCount(0);
   await expect(page.locator('h1')).toContainText('把做对的网页购物轨迹训练成下一轮候选参数');
   await expect(body).toContainText('这条参数更新方法叫 SD-LoRA（Scalable Decoupled LoRA）');
-  await expect(body).toContainText('文字经验（Text Memory）、可复用技能（Skill Bundle）和全局行为规则（Agent System）');
+  await expect(body).toContainText('文字经验、可复用技能和全局行为规则');
+  await expect(body).toContainText('Text Memory / Skill Bundle / Agent System');
+  await expect(body).toContainText('Text Memory 保存文字经验');
   await expect(body).toContainText('WebShop（网页购物任务）');
   const primer = body.locator('#what-is-sd-lora');
   await expect(primer.locator('summary')).toContainText('普通 LoRA 与 SD-LoRA 的参数区别');
@@ -57,12 +59,9 @@ for (const viewport of [
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('.sdlora-intro__boundary')).toBeVisible();
     await expect(page.locator('.sdlora-intro__steps')).toHaveCount(0);
-    await expect(page.locator('.sdlora-intro__path')).toBeVisible();
-    await expect(page.locator('.sdlora-intro__path li')).toHaveCount(0);
-    await expect(page.locator('.sdlora-intro__path strong')).toHaveCount(0);
-    await expect(page.locator('.sdlora-intro__path')).toContainText('完整成功轨迹');
-    await expect(page.locator('.sdlora-intro__path')).toContainText('候选 LoRA（少量模型适配参数）');
-    await expect(page.locator('.sdlora-intro__path')).toContainText('共同检查通过');
+    await expect(page.locator('.sdlora-intro__path')).toHaveCount(0);
+    await expect(page.locator('.sdlora-intro__lede')).toContainText('每题最早一条“完整做对且通过全部检查”的轨迹送进参数训练');
+    await expect(page.locator('.sdlora-intro__lede')).toContainText('最终锁定测试题不参加这里的筛选或训练');
     await expect(page.locator('.sdlora-intro')).not.toContainText('DirectApply');
     await expect(page.locator('.sdlora-intro')).not.toContainText('GDR-v1');
     await expect(page.locator('.sdlora-intro__frame')).toHaveCount(0);

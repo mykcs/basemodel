@@ -57,9 +57,9 @@ describe('Vanilla SD-LoRA mechanism projection', () => {
     for (const phrase of [
       'Train solved shopping traces into candidate parameters for the next round',
       'This parameter-update method is called SD-LoRA (Scalable Decoupled LoRA)',
-      'the base model stays frozen while a small adapter is trained',
-      'train a candidate LoRA',
-      'the next round adopts it only after shared checks pass',
+      'It builds on LoRA, which freezes the base model and trains only a small adapter',
+      'only the earliest fully solved, fully checked trace for each WebShop training task enters parameter training',
+      'the locked final-evaluation tasks do not participate in this selection or training',
       'Ordinary LoRA',
       'Scalable Decoupled LoRA',
       'This page calls the current baseline “Vanilla SD-LoRA.”',
