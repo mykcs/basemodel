@@ -358,7 +358,7 @@ Phase D is complete: **15 / 15 weighted points**. The consolidation is limited t
 
 Migrate in bounded groups to reduce concurrent-PR conflict:
 
-- [ ] Flow/concept routes.
+- [x] Flow/concept routes.
 - [ ] Study gateway and experiment-design routes.
 - [ ] Results/comparison routes.
 - [ ] Mechanism/SD-LoRA/history routes.
@@ -367,6 +367,8 @@ Migrate in bounded groups to reduce concurrent-PR conflict:
 - [ ] Long-tail compatibility/history routes: preserve redirects/history semantics; do not cosmetically revive deprecated owners.
 
 Each group must preserve current scientific authority and refresh against live upstream evidence before changing “current/running/completed/next” claims.
+
+Flow/concept migration witness — **2026-09-18**: audited the canonical Flow family (`flow/`, `seed`, `openevo`, `benchmarks`, `webshop`, `alfworld`, `loops`, the base-model compatibility redirect, plus the already-migrated `server` / Vanilla `sd-lora` pilots) against current route ownership and concurrent PRs. The shared concept core now expresses ordinary explanation with editorial dividers, sequential relationships, shared-axis tables/lists, and quieter navigation instead of rounding each paragraph into a card; benchmark and loop first-view copy states the actual compared objects directly. Canonical WebShop interactive/figure ownership and the base-model redirect were deliberately preserved rather than cosmetically rewritten. Scientific facts and claim boundaries were unchanged. Focused structural/copy regression: **58/58 PASS** after the new anti-card-wall assertion; browser acceptance: **25/25 PASS** across Flow explainers, phone/tablet/desktop layout, light/dark readability, Reader Contract first-view checks, topology, reduced motion, and overflow. Phase-E route-family credit is recorded only for this completed Flow/concept row; the remaining six Phase-E families stay open.
 
 ### Phase F — Sitewide plain-language + content-shape sweep — **10%**
 

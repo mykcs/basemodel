@@ -41,6 +41,15 @@ describe('sitewide normalization first repair batch', () => {
     expect(detail).toContain("title: t('ALFWorld 与 WebShop', 'ALFWorld and WebShop')");
   });
 
+  it('keeps Flow concept relationships editorial instead of rebuilding a card wall', () => {
+    expect(core).toContain('.two-grid article,.four-grid article,.status-board article{padding:.8rem 0 0;border-top:2px');
+    expect(core).toContain('.step-track li::before,.comparison-route li::before');
+    expect(core).toContain('.control-list li{padding:.72rem 0;border-top:1px solid var(--line)');
+    expect(core).not.toContain('.two-grid article,.four-grid article,.status-board article{padding:.95rem;border:1px solid var(--line);');
+    expect(detail).toContain('ALFWorld 看 Agent 能否完成家务目标');
+    expect(detail).toContain('SEED 把任务轨迹变成下一版 policy 参数');
+  });
+
   it('keeps benchmark section order while removing redundant hierarchy kickers', () => {
     const start = core.indexOf("{page === 'benchmarks'");
     const end = core.indexOf("{page === 'webshop'");
