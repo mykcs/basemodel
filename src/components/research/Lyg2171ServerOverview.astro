@@ -47,22 +47,26 @@ const gpuFacts = [
   <header class="server-hero" data-reader-primary>
     <p class="server-hero__context">{t('容量快照 · 2026-09-15 22:10（UTC+8）· 非实时数据', 'Storage snapshot · 2026-09-15 22:10 (UTC+8) · not live data')}</p>
     <h1>{t('实验文件磁盘：约 1.09 TB 可用', 'About 1.09 TB remains on the disk holding project experiment files')}</h1>
-    <p class="server-hero__status">{t('这次快照只支持一个判断：按当前容量，目前不需紧急扩容。下一步先归档大型实验产物并验证可恢复；需要回收空间时，只生成写清对象、字节数和恢复证据的清单，不自动删除。', 'This snapshot shows 2.0 TiB total and about 1.01 TiB used (51%); based on this capacity observation alone, there is no urgent expansion signal. First archive large experiment outputs and verify they can be restored. If space must be reclaimed, generate an exact list only; nothing is deleted automatically.')}</p>
+    <p class="server-hero__status">{t('当前没有紧急扩容压力，也没有删除授权。下一步只做只读健康扫描；归档完成后仍只能提出精确回收清单，不能自动删除。', 'There is no urgent expansion pressure and no deletion authority. The next step is a read-only health scan. Even after archive verification, the workflow may only propose an exact reclaim list; it cannot delete automatically.')}</p>
 
-    <dl class="server-hero__facts research-fact-band" style="--research-fact-columns:3" aria-label={t('当前文件系统快照', 'Current filesystem snapshot')}>
-      <div><dt>{t('总容量', 'Capacity')}</dt><dd>2.0 TiB · 约 2.20 TB</dd></div>
-      <div><dt>{t('已用', 'Used')}</dt><dd>≈ 1.01 TiB · 51%</dd></div>
-      <div><dt>{t('可用', 'Available')}</dt><dd>≈ 0.99 TiB · 约 1.09 TB</dd></div>
+    <dl class="server-hero__facts research-fact-band" style="--research-fact-columns:3" aria-label={t('当前最需要判断的三件事', 'Three decisions that matter now')}>
+      <div><dt>{t('可用空间', 'Available')}</dt><dd>≈ 0.99 TiB · 约 1.09 TB</dd></div>
+      <div><dt>{t('扩容', 'Expansion')}</dt><dd>{t('暂不需要', 'Not urgent')}</dd></div>
+      <div><dt>{t('删除', 'Deletion')}</dt><dd>{t('未授权', 'Not authorized')}</dd></div>
     </dl>
 
+    <a class="server-hero__next" href="#health-scan">{t('下一步：只读健康扫描', 'Next: read-only health scan')}</a>
+  </header>
+
+
+  <details class="server-safety-depth">
+    <summary>{t('为什么现在还不能直接删文件？', 'Why can’t files be deleted yet?')}</summary>
     <ol class="server-hero__boundary server-hero__guardrails" aria-label={t('归档与回收的三个安全边界', 'Three safety boundaries for archive and reclaim')}>
       <li><strong>{t('上传成功 ≠ 可恢复。', 'Upload success ≠ recoverable.')}</strong><span>{t('先固定远端版本，再重新读取或下载，核对文件、大小和文件指纹；模型或适配器还要做最小重新加载。', 'Pin the remote revision, then freshly read or download it, verify files, sizes, and digests, and minimally reload models or adapters.')}</span></li>
       <li><strong>{t('可恢复 ≠ 可删除。', 'Recoverable ≠ deletable.')}</strong><span>{t('对象 / 服务器负责人必须批准同一版精确回收清单；删除前还要重新检查是否仍被使用。', 'The artifact/server owner must approve the same exact reclaim manifest, followed by a fresh liveness check before deletion.')}</span></li>
       <li><strong>{t('草稿 ≠ 正式规则。', 'Draft ≠ authority.')}</strong><span>{t('正式实验身份只认当前已合并或当前实验明确采用的实验身份证与总表；未合并草稿不能替代正式规则。私有数据改成公开也必须单独批准。', 'Formal experiment identity follows only merged or explicitly adopted experiment identity/registry authority; an unmerged draft cannot replace it. Making private data public also needs separate approval.')}</span></li>
     </ol>
-
-  </header>
-
+  </details>
   <section class="server-section" id="health-scan">
     <div class="section-heading">
       <span>01</span>
@@ -252,8 +256,14 @@ const gpuFacts = [
   .server-hero__context{max-width:max-content;margin:0 0 .45rem;padding:.25rem 0;border-bottom:1px solid var(--line);color:var(--ink);font-size:.86rem;font-weight:780}
   .server-hero h1{max-width:20ch;margin:0 0 .55rem;font-size:clamp(2rem,4vw,3.45rem);line-height:1;letter-spacing:-.05em}
   .server-hero__status{max-width:74ch;margin:0;color:var(--ink);font-size:clamp(1rem,1.6vw,1.16rem);font-weight:700;line-height:1.58}
-  .server-hero__facts{max-width:860px;margin:.6rem 0 0}
-  .server-hero__boundary{max-width:76ch;margin:.45rem 0 0;color:var(--muted);font-size:.82rem;line-height:1.65}
+  .server-hero__facts{max-width:860px;margin:.65rem 0 0}
+  .server-hero__next{display:inline-flex;min-height:44px;align-items:center;margin-top:.65rem;color:var(--accent-deep);font-size:.86rem;font-weight:800;text-decoration-thickness:1px;text-underline-offset:.2em}
+  .server-hero__next:focus-visible{outline:3px solid var(--accent-deep);outline-offset:3px}
+  .server-safety-depth{max-width:900px;margin:.15rem 0 1.1rem;border-block:1px solid var(--line)}
+  .server-safety-depth>summary{min-height:44px;display:flex;align-items:center;cursor:pointer;color:var(--muted);font-size:.8rem;font-weight:760}
+  .server-safety-depth[open]>summary{color:var(--ink)}
+  .server-safety-depth + .server-section{padding-top:3.5rem}
+  .server-hero__boundary{max-width:76ch;margin:0 0 .8rem;color:var(--muted);font-size:.82rem;line-height:1.65}
 
   .routine-entry{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(17rem,.85fr);gap:.8rem;align-items:center;margin-top:.5rem;padding:.55rem 0;border-block:1px solid var(--line)}
   .routine-entry__copy span,.routine-entry__copy strong{display:block}.routine-entry__copy span{color:var(--muted);font:760 .68rem/1.3 var(--font-interface)}.routine-entry__copy strong{margin-top:.18rem;font-size:1rem}.routine-entry__copy p{max-width:58ch;margin:.2rem 0 0;color:var(--muted);font-size:.76rem;line-height:1.6}
@@ -342,7 +352,7 @@ const gpuFacts = [
   }
   @media(max-width:640px){
     .server-hero{padding-bottom:1.35rem}
-    .server-hero + .server-section{padding-top:5rem}
+    .server-safety-depth + .server-section{padding-top:10.5rem}
     .server-hero h1{max-width:19ch}.server-hero__guardrails li{grid-template-columns:1fr;gap:.15rem}.routine-entry{grid-template-columns:1fr}.routine-entry__prompt{padding:.45rem 0 0;border-left:0;border-top:1px solid var(--line)}.operation-switchboard{grid-template-columns:1fr}.operation-switchboard a{border-right:0;border-bottom:1px solid var(--line)}.operation-switchboard a:last-child{border-bottom:0}
     .snapshot-facts,.gpu-facts,.privacy-grid{grid-template-columns:1fr}.snapshot-facts>div,.gpu-facts>div{border-right:0;border-bottom:1px solid var(--line)}.snapshot-facts>div:last-child,.gpu-facts>div:last-child{border-bottom:0}
     .operation-explainer li{grid-template-columns:5rem 1fr}
