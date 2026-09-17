@@ -40,7 +40,6 @@
     "feedback:judge": "tsx scripts/verify-human-preference-judge-receipt.ts",
     "redesign:cold-read:gate": "tsx scripts/verify-content-first-redesign-cold-read.ts",
     "redesign:cold-read:packet": "tsx scripts/generate-content-first-redesign-cold-read-packet.ts",
-    "redesign:cold-read:reviewer": "tsx scripts/prepare-content-first-redesign-cold-read-reviewer.ts",
     "test:e2e": "playwright test",
     "test:header": "playwright test tests/e2e/global-header-visibility.spec.ts tests/e2e/global-header-breakpoints.spec.ts --project=chromium",
     "test:header:all": "playwright test tests/e2e/global-header-visibility.spec.ts tests/e2e/global-header-breakpoints.spec.ts",

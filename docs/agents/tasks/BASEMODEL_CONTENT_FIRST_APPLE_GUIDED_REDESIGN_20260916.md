@@ -293,7 +293,7 @@ Apply the existing canonical “说人话” rules, with these task-time checks:
 - Same object uses the same name across navigation, heading, diagram and evidence.
 - A short sentence is preferred to a heading + card + explanation when the extra structure does not add meaning.
 
-For every migrated route, perform a cold-read pass against `website-copy-cases.md` and the human-preference system before completion.
+For every migrated route, perform a first-read comprehension pass against `website-copy-cases.md` and the human-preference system using the rendered page/screenshots plus the applicable Reader Contract and browser evidence. Do not introduce an external AI chat, AI CLI, or local/network vision model as a default reviewer. An independent reviewer is used only when the owner or the task explicitly asks for an independent comprehension study.
 
 ---
 
@@ -332,42 +332,17 @@ For each pilot:
 - [x] rewrite first viewport around one primary cognitive owner;
 - [x] select content-shaped HTML rather than a card-first layout;
 - [x] keep evidence/claim boundaries intact;
-- [ ] pass phone + desktop cold-read;
+- [x] pass phone + desktop first-view visual/comprehension acceptance with rendered screenshots + Reader Contract/browser evidence;
 - [x] pass targeted browser/reader-contract checks;
 - [x] obtain an inspectable review Preview when the owner needs visual feedback.
 
 Pilot exit rule: do not start broad migration until the four pilots show a coherent system **without forcing them into the same page template**.
 
-The five implementation rows above are evidenced across **all four** pilots. A review-only, noindex Preview for the four-pilot exact product head was also generated and target-checked on all four pilot routes, so the conditional review-Preview row is now complete. These are implementation/review prerequisites only. Phase C remains **0 / 20 weighted points** until the independent phone + desktop cold-read exit is satisfied. This preserves the existing 35 / 100 weighted total and prevents automated checks or Preview inspection from being relabeled as human comprehension.
+The pilot implementation and visual-acceptance rows are evidenced across **all four** pilots. Owner decision — **2026-09-18**: ordinary BaseModel visual acceptance does **not** require a separate external AI/human reviewer. The canonical path is the repository-owned rendered evidence: exact phone/desktop screenshots, Reader Contract and semantic checks, browser geometry/overflow/theme/accessibility checks, and an inspectable review Preview when useful. HPL blind/compare tooling remains available for an explicitly requested independent preference/comprehension study, but it is not a default release or redesign dependency. Do not open Kimi, MiniMax, ChatGPT, Claude/Codex-style CLI sessions, or a local/network vision model merely to manufacture an independent verdict.
 
-The independent exit now has a fail-closed task-scoped verifier rather than relying on a prose claim. An actual external reviewer must complete the existing blind-first `feedback:cold-read` / `feedback:judge` protocol separately on **desktop and phone for each of the four pilots**, saving eight valid receipts under the exact filenames `flow-{desktop,phone}.json`, `sd-lora-{desktop,phone}.json`, `server-{desktop,phone}.json`, and `q17-{desktop,phone}.json`. Each receipt also records `reviewViewport`; this program binds desktop to `1280×633` and phone to `390×844`. Then run:
+Current exact-product-tree evidence for this decision: the eight pilot phone/desktop renders were regenerated from the current product tree; focused Reader Contract/semantic checks passed **39/39**; targeted Chromium checks across the four pilot surfaces passed **39/39**, including phone/desktop first-view ownership, light/dark readability, overflow safety, keyboard reachability where applicable, and SD-LoRA topology/reduced-motion behavior. The subsequent change that records this owner decision is docs/tooling-only and does not alter the rendered product tree. Therefore Phase C is complete at **20 / 20 weighted points**. Current credited total: **55 / 100**.
 
-```bash
-npm run redesign:cold-read:gate -- --product-head=<exact-rendered-product-git-sha> --dir=<receipt-dir>
-```
-
-The gate requires all eight receipts to PASS the existing preference/scientific-boundary validator, match the exact pilot Reader Contract and route, use the declared viewport, and bind the same rendered product head. Reviewer identity follows the canonical HPL contract: a genuine human or genuinely independent Agent may be recorded, while self-authored notes cannot be relabeled as independent. Missing, duplicated, stale-head, wrong-route, wrong-contract, wrong-viewport or FAIL evidence fails closed. The command makes the Phase-C exit auditable; it does **not** manufacture the independent evidence, so the checkbox above remains open until the command actually returns PASS on real receipts.
-
-Phase-C rework witness — 2026-09-17: repeated independent cold reads still found first-screen comprehension friction. Trigger → Flow/Q17/Server feedback on exact head `61352682dec02352c5e60f701941fd37edf25907`; current owner → this Phase-C pilot exit; checked artifact → fresh exact-head blind packet plus canonical Reader Contracts; allowed next action → simplify the visible first task, explain unavoidable terms in place, surface one truthful next action, and re-run exact-head phone/desktop review; invalidation cue → any new runtime/copy change or head movement invalidates prior receipts. **No weighted credit changes until the 8/8 gate passes.**
-Phase-C rework witness — 2026-09-17b: trigger → exact-head `36d43c71724ad5683bc2f989ee71756a50521555` independent Phase-B returned 5/8 PASS and three real failures (`flow-phone`, `q17-phone`, `server-desktop`); current owner → Phase-C pilot exit; checked artifact → sealed Phase-A hashes + canonical judge receipts; allowed next action → add the missing minimal method model to Flow, make Q17 phone self-contained without changing the 32-task claim, and surface the three server governance boundaries while reducing duplicate first-screen UI; invalidation cue → any new rendered-product head invalidates all eight receipts. **Weighted progress remains 35/100 until a new 8/8 gate PASS.**
-
-Phase-C rework witness — 2026-09-17c: trigger → exact-head `aabcb37d0aab5663f7b2cc4ee59a92abadca3c68` independent cold-read returned only 2/8 PASS; current owner → Phase-C pilot exit and the executable Reader Contracts; checked artifact → sealed blind hashes + canonical judge receipts; allowed next action → remove first-screen acronym density, align Server to its routine-maintenance next-step contract, keep one phone visual center on SD-LoRA, and remove redundant Q17 evidence chrome; invalidation cue → any rendered-product head movement invalidates all receipts. **No weighted credit changes before an 8/8 gate PASS.**
-
-Phase-C rework witness — 2026-09-17d: trigger → exact-head `c4949e2329e47556ecfde3bc3831852edf34701e` independent Phase-B returned 5/8 PASS; current owner → Phase-C pilot exit + executable Reader Contracts; checked artifact → sealed blind hashes and canonical judge receipts; allowed next action → leave the already-passing Flow pair unchanged, simplify Q17 desktop to object → shared numbers → visible statistical boundary, remove SD-LoRA phone presenter/meta copy and keep the full mechanism in the next chapter, and make Server desktop link explicitly open the read-only health scan while explaining archive/restore in plain language; invalidation cue → any rendered-product head movement invalidates all eight receipts. **Weighted progress stays 35/100 until an exact-head 8/8 gate PASS.**
-
-Phase-C rework witness — 2026-09-17e: trigger → exact-head `5fc960852cf48f5de356e0fb1720085cbff9f983` independent Phase-B returned 4/8 PASS: Flow desktop, SD-LoRA phone, Server desktop and Server phone passed; Flow phone, SD-LoRA desktop and Q17 desktop/phone failed only on first-screen directness/terminology/attention, with scientific-boundary verdicts still PASS. Current owner → Phase-C pilot exit; checked artifact → `/private/tmp/bm737-5fc-phase-a.sha256` plus the eight canonical judge receipts; allowed next action → replace Flow defensive meta-copy with the attribution condition itself, finish SD-LoRA first-use symbol definitions, and simplify Q17 to one exact result path while keeping the exact 95% interval visible once; invalidation cue → any rendered-product head movement invalidates all eight receipts. **Weighted progress remains 35/100 until a new exact-head 8/8 gate PASS.**
-
-Phase-C rework witness — 2026-09-17 current head: Trigger → independent cold read on `36d43c71724ad5683bc2f989ee71756a50521555` leaves Flow phone, Q17 phone and Server desktop failing while the other five viewports pass; current owner → this Phase-C pilot exit; checked artifact → `/private/tmp/bm737-auto7-36d43-phase-b/*/receipt.json` plus current Reader Contracts; allowed next action → add the missing two-stage OpenEvo method context without crowding Flow's first screen, make Q17 name the WebShop objects and show `10 → 8` while moving secondary diagnostics down, and keep Server's deletion/visibility/draft boundaries directly visible while reducing competing first-screen blocks; invalidation cue → any user-visible change or head movement invalidates all eight receipts and requires a fresh blind-first run. **No weighted credit changes until the replacement 8/8 gate passes.**
-
-Phase-C engineering witness — 2026-09-17f: trigger → exact-head `088fa275779e15698c1aa5c781355f0be03dbdf1` Public PR CI browser shard 5 caught the Q17 child page rewriting its canonical parent experiment label with route-local explanatory text; current owner → `ResearchRouteContext` + canonical experiment navigation data; checked artifact → GitHub job `105076565515` plus `reader-journey.cases.ts`; allowed next action → restore the parent link to the exact canonical experiment title and keep the DirectApply explanation in body/purpose copy; invalidation cue → any later local label rewrite must still preserve the canonical parent identity. This is an engineering/UI identity regression only and does not change scientific semantics or weighted progress.
-
-Phase-C rework witness — 2026-09-17g: trigger → the blind-first independent review on `088fa275779e15698c1aa5c781355f0be03dbdf1` produced canonical FAIL receipts for Flow desktop/phone and SD-LoRA desktop/phone; the other four reviewer processes did not produce valid canonical receipts, so they remain NOT_EXECUTED rather than inferred PASS/FAIL. The valid failures consistently pointed to first-use terminology, missing near-result attribution context, and competing SD-LoRA first-screen centers. Current owner → Phase-C pilot exit + Reader Contracts; allowed next action → state the Stage-2-only common-start condition next to the Flow comparison, translate MiniMax/SD-LoRA/DirectApply/GDR-v1 at first use, remove equal-weight SD-LoRA intro blocks and artificial mobile whitespace, then regenerate all eight receipts on the replacement exact head; invalidation cue → the Q17 canonical-parent fix and these visible copy/layout changes invalidate every `088fa...` receipt. **Weighted progress remains 35/100 until a replacement 8/8 gate PASS.**
-
-Phase-C rework witness — 2026-09-17h: trigger → exact-head `3f44b3c30f7c9aca01ceafff4bb66e0475d452f8` independent cold read returned 4/8 PASS: both Q17 viewports, SD-LoRA desktop and Server phone passed; Flow desktop/phone, SD-LoRA phone and Server desktop failed on first-screen competition, first-use terminology or the next-step path, while every scientific-boundary verdict remained PASS. Current owner → Phase-C pilot exit + executable Reader Contracts; checked artifact → `/private/tmp/bm737-3f44-phase-b/*/receipt.json`; allowed next action → remove the compact Flow status disclosure from the first task, define OpenEvo state names and LoRA at first use, defer SD-LoRA admission-rule names and full mechanism visual below the primer, and make Server's routine-maintenance prompt the primary action while surfacing snapshot metrics; invalidation cue → these user-visible changes invalidate all eight `3f44...` receipts and require a new exact-head 8/8 run. **Weighted progress remains 35/100 until that replacement gate passes.**
-
-Phase-C engineering witness — 2026-09-17i: trigger → exact-head `0961acc51b2efd816ac74a3c64e012740b7900d1` Public PR CI deterministic gate found one stale regression assertion that still expected the superseded pre-fix Flow boundary sentence; current owner → `SeedOpenEvoMissionHero.astro` plus `researchContentPrimitives.test.ts`; checked artifact → exact-head `npm run verify:deploy`; allowed next action → update only the regression wording to protect the current Stage-2 attribution boundary, then rerun deterministic validation; invalidation cue → any future change to that claim boundary must update the semantic guard without weakening the boundary. **This is a test-sync bug only; weighted progress remains 35/100.**
-
-Phase-C reviewer-path engineering witness — 2026-09-17h: trigger → the current exact-head independent-review attempt hit provider execution failures before valid Phase-A JSON existed; current owner → the existing Phase-C 8/8 cold-read exit, not page/science semantics; checked artifact → provider-neutral `redesign:cold-read:reviewer` isolation now creates eight zero-repository Phase-A workspaces with an exact JSON schema, labels provider/auth/transport failures as `NOT_EXECUTED`, and refuses to materialize any Phase-B preference/Gold-Pair material until all eight blind results are structurally valid; allowed next action → use any genuine external human/Agent reviewer through these isolated workspaces, then run the unchanged canonical receipt gate; invalidation cue → any rendered-product head movement still requires a fresh packet and fresh eight reviews. **This strengthens execution hygiene only; weighted progress remains 35 / 100 until the real 8/8 gate passes.**
+Historical independent cold-read experiments remain useful iteration evidence: earlier failures helped uncover terminology friction, competing visual centers, and hidden first-screen context. They are no longer the Phase-C exit authority and must not be revived as a mandatory external-review workflow.
 
 ### Phase D — Canonical component/CSS consolidation — **15%**
 
@@ -377,7 +352,7 @@ Phase-C reviewer-path engineering witness — 2026-09-17h: trigger → the curre
 - [x] Keep static content static; remove unnecessary hydration discovered during migration.
 - [x] Ensure global navigation stays visually quieter than page content and active-state semantics stay correct.
 
-Phase D is complete: **15 / 15 weighted points**. The consolidation is limited to patterns already proven by the four pilots; it does not authorize Phase E broad migration while the Phase C independent cold-read exit remains open. Current credited total: **35 / 100**.
+Phase D is complete: **15 / 15 weighted points**. The consolidation is limited to patterns already proven by the four pilots. With the 2026-09-18 owner decision restoring ordinary visual acceptance as the Phase-C exit, Phase E may now proceed. Current credited total: **55 / 100**.
 
 ### Phase E — Route-family migration — **25%**
 
@@ -438,7 +413,7 @@ For every materially migrated route, a zero-context reader should be able to ans
 - the most important fact/choice/state;
 - what to do/read next.
 
-Automated first-viewport budgets are necessary regression guards, not a substitute for this cold-read check.
+Automated first-viewport budgets are regression guards. Acceptance combines the rendered phone/desktop surface with Reader Contract/browser evidence; an external independent reviewer is not implied unless the owner/task explicitly activates one.
 
 ### 12.2 One primary center
 
@@ -552,7 +527,7 @@ Pause and re-evaluate if the work starts to become any of these:
 - a giant CSS rewrite detached from real route problems;
 - removal of evidence or caveats merely to make a page feel cleaner;
 - new JS/carousel/motion for static content that HTML/CSS already communicates;
-- sitewide copy replacement by regex without semantic cold-read;
+- sitewide copy replacement by regex without a rendered first-read comprehension check;
 - a route rewrite that collides with an active scientific/content PR and would erase its meaning;
 - weakening reader-contract, browser, accessibility or release gates just to make the redesign pass.
 

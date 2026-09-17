@@ -15,6 +15,12 @@ This document is a scenario-based future warning. When an Agent changes UI, it m
 
 The owning contrast rules remain in `theme-contrast-contract.md`. This file adds the broader browser/layout/state acceptance gate.
 
+### Visual acceptance is not an external-AI review requirement
+
+Ordinary UI/visual acceptance is repository-owned: rendered screenshots, semantic/Reader Contract checks, browser geometry and interaction checks, theme/accessibility checks, and exact-head Preview inspection as applicable. **Do not introduce an external AI chat, AI CLI, or local/network vision model as a mandatory reviewer merely to declare a UI change visually valid.** Those systems are optional research aids only when the owner or task explicitly asks for an independent preference/comprehension study. Their outage, quota, login state, or inability to accept a local file must not become a blocker for the ordinary visual-acceptance path.
+
+A cold-read/HPL study and a visual-regression acceptance gate answer different questions. The former can study first-time comprehension or preference; the latter proves that the product renders and behaves correctly under the repository contract. Never silently turn the optional former into a dependency of the mandatory latter.
+
 ---
 
 ## 1. Automatic trigger
