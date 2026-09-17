@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { validateHumanPreferenceJudgeReceipt } from './humanPreferenceJudge';
 import { goldPairIdsForContract, preferenceIdsForContract } from './humanPreferenceLearning';
-import { buildColdReadPacketCases, buildColdReadPacketReadme, normalizeReviewBaseUrl } from '../../scripts/content-first-redesign-cold-read-packet';
+import { buildColdReadPacketCases, buildColdReadPacketReadme, CONTENT_FIRST_PRIMARY_HEADING_SELECTOR, normalizeReviewBaseUrl } from '../../scripts/content-first-redesign-cold-read-packet';
 
 const head = 'd'.repeat(40);
 
@@ -38,6 +38,10 @@ describe('content-first redesign cold-read packet', () => {
       expect(validateHumanPreferenceJudgeReceipt(item.receiptTemplate)).not.toEqual([]);
       expect(item.receiptTemplate).toMatchObject({ blindCompletedBeforePreferenceReveal: false, finalVerdict: 'FAIL' });
     }
+  });
+
+  it('counts only the public main-content heading, not development-tool headings', () => {
+    expect(CONTENT_FIRST_PRIMARY_HEADING_SELECTOR).toBe('#main-content h1');
   });
 
   it('normalizes base URL and rejects non-http review surfaces', () => {

@@ -2,7 +2,7 @@ import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import process from 'node:process';
 import { chromium } from '@playwright/test';
-import { buildColdReadPacketCases, buildColdReadPacketReadme } from './content-first-redesign-cold-read-packet';
+import { buildColdReadPacketCases, buildColdReadPacketReadme, CONTENT_FIRST_PRIMARY_HEADING_SELECTOR } from './content-first-redesign-cold-read-packet';
 
 const args = process.argv.slice(2);
 const getArg = (name: string) => args.find((arg) => arg.startsWith(`--${name}=`))?.slice(name.length + 3);
@@ -36,7 +36,7 @@ try {
     await page.waitForTimeout(100);
     const actualContract = await page.locator('body').getAttribute('data-reader-contract-id');
     if (actualContract !== item.contractId) throw new Error(`${item.key}: expected reader contract ${item.contractId}, got ${actualContract}`);
-    const h1Count = await page.locator('h1').count();
+    const h1Count = await page.locator(CONTENT_FIRST_PRIMARY_HEADING_SELECTOR).count();
     if (h1Count !== 1) throw new Error(`${item.key}: expected exactly one h1, got ${h1Count}`);
     const overflow = await page.evaluate(() => Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth));
     if (overflow > 1) throw new Error(`${item.key}: horizontal overflow ${overflow}px`);

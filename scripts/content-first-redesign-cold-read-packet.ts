@@ -1,6 +1,8 @@
 import { buildBlindColdRead, buildPreferenceCompareRead, preferenceReviewContextForContract } from '../src/lib/humanPreferenceLearning';
 import { CONTENT_FIRST_PILOTS, CONTENT_FIRST_VIEWPORTS, type ContentFirstColdReadDevice, type ContentFirstPilotId } from './content-first-redesign-cold-read-gate';
 
+export const CONTENT_FIRST_PRIMARY_HEADING_SELECTOR = '#main-content h1';
+
 export interface ColdReadPacketCase {
   key: string;
   pilotId: ContentFirstPilotId;
