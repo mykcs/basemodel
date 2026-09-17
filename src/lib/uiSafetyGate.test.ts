@@ -82,7 +82,7 @@ describe('UI visual acceptance gate contract', () => {
     ]) expect(browserGate).toContain(term);
   });
 
-  it('keeps all legacy WebShop primer routes under exact computed-theme browser regression', () => {
+  it('keeps all legacy WebShop primer redirects under exact computed-theme browser regression', () => {
     for (const route of [
       '/research/seed-openevo/study/results/webshop-training/',
       '/research/seed-openevo/study/results/seed-training/',
@@ -92,11 +92,10 @@ describe('UI visual acceptance gate contract', () => {
       "['light', 'dark']",
       "name: 'desktop'",
       "name: 'mobile'",
-      '.moved-primer',
-      'articleSurface',
-      'articleBorder',
+      '.plain-detail',
+      'waitForURL',
       "locator('[data-theme-toggle]').first().click()",
-      'migration page updates its reading surface when theme toggles without reload',
+      'canonical Flow owner updates when theme toggles after a legacy redirect',
     ]) expect(webShopThemeGate).toContain(term);
   });
 

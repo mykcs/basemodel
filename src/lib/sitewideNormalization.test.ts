@@ -21,6 +21,11 @@ const modelsIndex = read('../pages/_bodies/models-index.astro');
 const modelDetail = read('../pages/_bodies/model-detail.astro');
 const papersIndex = read('../pages/_bodies/papers-index.astro');
 const paperDetail = read('../pages/_bodies/paper-detail.astro');
+const movedPrimer = read('../components/research/ResearchPrimerMoved.astro');
+const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.astro');
+const resultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
+const resultNoteRoute = read('../pages/research/seed-openevo/study/results/[note].astro');
+const sitemapRoutes = read('./sitemapRoutes.ts');
 const explainerStyles = [
   read('../styles/interactive-research-explainer-core.css'),
   read('../styles/interactive-research-explainer-environments.css'),
@@ -103,6 +108,19 @@ describe('sitewide normalization first repair batch', () => {
     expect(modelDetail).not.toContain('min-height:min(540px,calc(100svh - 116px))');
     expect(modelDetail).not.toContain('min-height:calc(100svh - 102px)');
     expect(paperDetail).not.toContain("<div class=\"section-kicker\">{locale === 'zh' ? '方法' : 'Method'}</div>");
+  });
+
+  it('keeps long-tail compatibility routes as redirects and historical notes explicitly historical', () => {
+    expect(movedPrimer).toContain('window.location.replace(target)');
+    expect(movedPrimer).not.toContain('class="eyebrow"');
+    expect(movedPrimer).not.toContain('border-radius:18px');
+    expect(sitemapRoutes).toContain('export const zhOnlyCompatibilityPaths');
+    expect(sitemapRoutes).not.toContain("  '/guide/today/',\n  '/research/seed-openevo/study/results/webshop-training/'");
+    expect(benchmarkNote).toContain('历史基准设计');
+    expect(benchmarkNote).toContain('历史设计记录：');
+    expect(benchmarkNote).toContain('/study/capability-exploration/openevo-2-0/');
+    expect(resultNote).toContain('截至 H1.42 的结论与证据边界');
+    expect(resultNoteRoute).toContain('OpenEVO WebShop 历史实验：截至 H1.42 的结论与证据边界');
   });
 
   it('keeps ALFWorld route metadata object-first in both locales', () => {

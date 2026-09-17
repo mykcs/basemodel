@@ -27,4 +27,21 @@ test.describe('static-first core research pages', () => {
     await expect(page.getByRole('main')).toBeVisible();
     expect(await page.getByRole('checkbox').count()).toBeGreaterThan(0);
   });
+
+
+  test('legacy Results primer URLs keep a readable move notice without JavaScript', async ({ page }) => {
+    const cases = [
+      ['/research/seed-openevo/study/results/webshop-training/', '/research/seed-openevo/flow/webshop/'],
+      ['/research/seed-openevo/study/results/seed-training/', '/research/seed-openevo/flow/webshop/#fig-seed-webshop'],
+      ['/research/seed-openevo/study/results/openevo-training/', '/research/seed-openevo/flow/openevo/'],
+    ] as const;
+
+    for (const [route, target] of cases) {
+      await page.goto(route);
+      const notice = page.locator('.moved-primer');
+      await expect(notice.getByRole('heading', { level: 1 })).toBeVisible();
+      await expect(notice.locator(`a[href="${target}"]`).first()).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+    }
+  });
 });

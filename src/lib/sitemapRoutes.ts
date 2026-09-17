@@ -55,11 +55,14 @@ export const bilingualCompatibilityPaths = [
   '/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/',
 ] as const;
 
-export const zhOnlyStaticPaths = [
-  '/guide/today/',
+export const zhOnlyCompatibilityPaths = [
   '/research/seed-openevo/study/results/webshop-training/',
   '/research/seed-openevo/study/results/seed-training/',
   '/research/seed-openevo/study/results/openevo-training/',
+] as const;
+
+export const zhOnlyStaticPaths = [
+  '/guide/today/',
   '/research/seed-openevo/study/results/why-it-kept-failing/',
   '/research/seed-openevo/study/results/first-positive-transfer/',
   '/research/seed-openevo/study/results/independent-replication/',
@@ -81,7 +84,7 @@ export type RouteLocale = 'zh' | 'en';
 export const englishRuntimeArchived = true as const;
 
 const bilingualRoutes = new Set<string>([...bilingualStaticPaths, ...bilingualCompatibilityPaths]);
-const zhOnlyRoutes = new Set<string>(zhOnlyStaticPaths);
+const zhOnlyRoutes = new Set<string>([...zhOnlyStaticPaths, ...zhOnlyCompatibilityPaths]);
 const bilingualDynamicRoute = /^\/(?:models|papers)\/[^/]+\/$/;
 
 export function normalizeLocaleRoute(pathname: string): string {
