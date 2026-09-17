@@ -64,7 +64,7 @@ describe('Flow content-first cold-read repair', () => {
   });
 
   it('connects Stage 1 evidence to the later four-state Stage 2 without rewriting early experiments', () => {
-    for (const term of ['文字记忆、技能、全局行为规则或 LoRA 参数的新版本', '每一类状态都有实验开始前固定的更新条件', '最后采用的版本才装入下一批任务']) {
+    for (const term of ['OPSD（初始参数训练）只在 Stage 1 封存后', 'Text Memory 保存可复用文字经验', 'Skill 保存可复用策略', 'Agent System 保存全局行为和恢复规则', 'SD-LoRA 更新少量模型适配参数', '只有最终采用的版本才装入下一批任务']) {
       expect(design).toContain(term);
     }
     expect(design).toContain('早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态');

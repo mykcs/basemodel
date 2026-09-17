@@ -22,8 +22,8 @@ describe('shared research content primitives', () => {
     expect(flowHero).toContain('这页只讲怎样公平比较，不发布谁更强。');
     expect(sdLora).not.toContain('sdlora-intro__frame research-fact-band');
     expect(sdLora).toContain('普通 LoRA 与 SD-LoRA 的参数区别');
-    expect(serverOverview).not.toContain('class="server-hero__facts research-fact-band"');
-    expect(serverOverview).toContain('server-hero__guardrail-summary');
+    expect(serverOverview).not.toContain('server-hero__facts research-fact-band');
+    expect(serverOverview).toContain('server-hero__guardrails');
     expect(q17Diagnostics).toContain('class="same-task-facts research-fact-band"');
     expect(q17Diagnostics).toContain('style="--research-fact-columns:3"');
   });

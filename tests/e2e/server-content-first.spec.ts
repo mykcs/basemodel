@@ -12,11 +12,13 @@ for (const viewport of [
 
     await expect(page.locator('h1')).toHaveText('实验文件磁盘：约 1.09 TB 可用');
     await expect(page.locator('.server-hero__status')).toBeVisible();
-    await expect(page.locator('.server-hero__status')).toContainText('没有删除授权');
-    await expect(page.locator('.server-hero__guardrail-summary')).toContainText('远端可恢复不等于本地可删除');
-    await expect(page.locator('.server-hero__guardrail-summary')).toContainText('未合并草稿不能替代正式规则');
-    await expect(page.locator('.server-hero__next')).toHaveText('开始只读健康扫描 →');
-    await expect(page.locator('.server-safety-depth summary')).toBeAttached();
+    await expect(page.locator('.server-hero__status')).toContainText('删除仍未授权');
+    await expect(page.locator('.server-hero__guardrails')).toContainText('远端可恢复 ≠ 本地可删除');
+    await expect(page.locator('.server-hero__guardrails')).toContainText('删除 ≠ 改公开可见性');
+    await expect(page.locator('.server-hero__guardrails')).toContainText('草稿 ≠ 正式规则');
+    await expect(page.locator('.server-hero__next')).toContainText('只读健康扫描');
+    await expect(page.locator('.server-hero__action')).toContainText('只检查，不修改，不删除');
+    await expect(page.locator('.server-safety-depth')).toHaveCount(0);
     await expect(page.locator('.routine-entry summary')).toBeAttached();
 
     const geometry = await page.evaluate(() => {
@@ -64,10 +66,10 @@ for (const theme of ['light', 'dark'] as const) {
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('.server-hero__status')).toBeVisible();
-    await expect(page.locator('.server-hero__guardrail-summary')).toContainText('远端可恢复不等于本地可删除');
-    await page.locator('.server-safety-depth summary').click();
-    await expect(page.locator('.server-hero__boundary')).toContainText('上传成功 ≠ 可恢复');
-    await expect(page.locator('.server-hero__boundary')).toContainText('对象 / 服务器负责人必须批准同一版精确回收清单');
+    await expect(page.locator('.server-hero__status')).toContainText('删除仍未授权');
+    await expect(page.locator('.server-hero__guardrails')).toContainText('远端可恢复 ≠ 本地可删除');
+    await expect(page.locator('.server-hero__guardrails')).toContainText('对象 / 服务器负责人仍要批准同一版精确回收清单');
+    await expect(page.locator('.server-hero__guardrails')).toContainText('删除和 private → public 等可见性变化是两项不同决定');
     await expect(page.locator('#reclaim-proposal')).toContainText('NOT_AUTHORIZED');
     await expect(page.locator('.server-hero__context')).toContainText('非实时数据');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);

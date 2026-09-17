@@ -31,14 +31,14 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(component).toContain('持续学习：文字经验、可复用技能、行为规则和少量 LoRA 适配参数会分别更新并进入下一轮');
     expect(component).toContain('新的 LoRA 候选通过既定工程与数据检查后，下一轮直接使用');
     expect(component).toContain('不再先用 16 题小测在新旧参数之间做选择');
+    expect(component).toContain('同一条 OpenEVO WebShop（网页购物任务）训练线');
     expect(component).toContain('进入第 127 / 128 轮时加载的两个相邻模型状态（R127 / R128）');
-    expect(component).toContain('DirectApply 的意思是：新的 LoRA 候选通过既定检查后，下一轮直接使用');
+    expect(component).toContain('DirectApply 指新的 LoRA 候选通过既定工程与数据检查后');
     expect(component).toContain('63.58 → 59.41');
     expect(component).toContain('完整做对');
-    expect(component).toContain('10 → 8');
-    expect(component).toContain('平均分相差');
-    expect(component).toContain('95% 统计范围（不确定性）');
-    expect(component).toContain('这个 95% 统计范围包含 0，也就是也可能没有稳定差别');
+    expect(component).toContain('10 / 32 → 8 / 32');
+    expect(component).toContain('95% 统计范围 · 包含 0');
+    expect(component).toContain('平均分少 4.18，但这个 95% 统计范围包含“没有差别”');
     expect(component).toContain('DirectApply（候选更新检查通过后直接采用）');
     expect(component).not.toContain('min-height:calc(100svh - 6rem)');
     expect(component).toContain('border-left:3px solid var(--accent-deep)');
@@ -48,7 +48,7 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(component).toContain("aria-label={t('相邻两个模型状态的同题结果', 'Same-task results for the two adjacent model states')}");
     expect(component).not.toContain('id="same-task-result"');
     expect(component).toContain('/q17-directapply-analysis/');
-    expect(component).toContain('查看 DirectApply 160 轮完整曲线与冻结的最终 128 题测试');
+    expect(component).toContain('查看 DirectApply 160 轮完整曲线与冻结 final');
     expect(component).not.toContain('我们现在只敢说到这里');
     expect(component).toContain('这次诊断当时没有碰最终测试');
     expect(component).toContain('research-fact-band');
