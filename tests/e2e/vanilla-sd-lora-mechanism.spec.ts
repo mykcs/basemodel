@@ -60,7 +60,7 @@ for (const viewport of [
     await expect(page.locator('.sdlora-intro__steps')).toBeVisible();
     await expect(page.locator('.sdlora-intro__steps li')).toHaveCount(3);
     await expect(page.locator('.sdlora-intro__steps')).toContainText('每个任务只取最早一条通过全部检查的完整成功');
-    await expect(page.locator('.sdlora-intro__steps')).toContainText('DirectApply（候选通过共同的工程与数据检查后直接进入下一轮）');
+    await expect(page.locator('.sdlora-intro__steps')).toContainText('DirectApply（候选通过固定工程与数据检查后，下一轮直接采用）');
     await expect(page.locator('.sdlora-intro__frame')).toHaveCount(0);
     const visibleMainHeadings = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((nodes) => nodes
       .filter((node) => { const box = node.getBoundingClientRect(); return box.width > 0 && box.height > 0 && box.top < innerHeight && box.bottom > 0; })
@@ -73,7 +73,7 @@ for (const viewport of [
   });
 }
 
-test('desktop reading order keeps the optional LoRA definition before the prominent mechanism canvas', async ({ page }) => {
+test('desktop reading order puts the real mechanism before the optional LoRA comparison', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const positions = await page.locator('.sdlora-intro, #what-is-sd-lora, [data-slide-canvas]').evaluateAll((nodes) => nodes.map((node) => ({
@@ -83,8 +83,8 @@ test('desktop reading order keeps the optional LoRA definition before the promin
   })));
   expect(positions).toHaveLength(3);
   expect(String(positions[0]!.id)).toContain('sdlora-intro');
-  expect(String(positions[1]!.id)).toBe('what-is-sd-lora');
-  expect(String(positions[2]!.id)).toContain('sdlora-slide');
+  expect(String(positions[1]!.id)).toContain('sdlora-slide');
+  expect(String(positions[2]!.id)).toBe('what-is-sd-lora');
   expect(positions[0]!.bottom).toBeLessThanOrEqual(positions[1]!.top + 2);
   expect(positions[1]!.bottom).toBeLessThanOrEqual(positions[2]!.top + 2);
 });

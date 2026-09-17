@@ -10,14 +10,16 @@ for (const viewport of [
     await page.setViewportSize(viewport);
     await page.goto(route, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.locator('h1')).toHaveText('实验文件磁盘：约 1.09 TB 可用');
+    await expect(page.locator('h1')).toHaveText('实验文件磁盘：约 0.99 TiB 可用');
     await expect(page.locator('.server-hero__status')).toBeVisible();
     await expect(page.locator('.server-hero__status')).toContainText('删除仍未授权');
     await expect(page.locator('.server-hero__guardrails')).toContainText('远端已有副本，也不能自动删服务器文件');
     await expect(page.locator('.server-hero__guardrails')).toContainText('删服务器文件和把私有归档改成公开，是两件事');
     await expect(page.locator('.server-hero__guardrails')).toContainText('还没合并的草稿，不能当正式规则');
-    await expect(page.locator('.server-hero__next')).toContainText('按例行维护顺序继续');
-    await expect(page.locator('.server-hero__action')).toContainText('先只读检查，再归档并验证恢复');
+    await expect(page.locator('.server-hero__next')).toContainText('开始例行维护');
+    await expect(page.locator('.server-hero__sequence li')).toHaveCount(3);
+    await expect(page.locator('.server-hero__sequence')).toContainText('归档并验证恢复');
+    await expect(page.locator('.server-hero__sequence')).toContainText('只生成精确清单');
     await expect(page.locator('.server-safety-depth')).toHaveCount(0);
     await expect(page.locator('.routine-entry summary')).toBeAttached();
 
@@ -37,14 +39,14 @@ for (const viewport of [
 
     expect(geometry.hero.height).toBeLessThan(viewport.height);
     expect(geometry.minHeight).toBe('0px');
-    expect(geometry.routine.top).toBeGreaterThanOrEqual(geometry.hero.bottom - 2);
-    expect(geometry.switchboard.top).toBeGreaterThanOrEqual(geometry.routine.bottom - 2);
+    expect(geometry.switchboard.top).toBeGreaterThan(viewport.height);
+    expect(geometry.routine.top).toBeGreaterThan(geometry.switchboard.bottom);
     expect(geometry.overflow).toBeLessThanOrEqual(2);
 
     const visibleHeadings = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((nodes) => nodes
       .filter((node) => { const rect = node.getBoundingClientRect(); return rect.top < innerHeight && rect.bottom > 0; })
       .map((node) => node.textContent?.trim()));
-    expect(visibleHeadings).toEqual(['实验文件磁盘：约 1.09 TB 可用']);
+    expect(visibleHeadings).toEqual(['实验文件磁盘：约 0.99 TiB 可用']);
   });
 }
 
@@ -69,8 +71,7 @@ for (const theme of ['light', 'dark'] as const) {
     await expect(page.locator('.server-hero__status')).toContainText('删除仍未授权');
     await expect(page.locator('.server-hero__guardrails')).toContainText('远端已有副本，也不能自动删服务器文件');
     await expect(page.locator('.server-hero__guardrails')).toContainText('对象 / 服务器负责人仍要批准同一版精确回收清单');
-    await expect(page.locator('.server-hero__guardrails')).toContainText('删服务器文件和把私有归档改成公开，是两件事');
-    await expect(page.locator('.server-hero__guardrails')).toContainText('两种动作必须分别批准');
+    await expect(page.locator('.server-hero__guardrails')).toContainText('把私有归档改成公开');
     await expect(page.locator('#reclaim-proposal')).toContainText('NOT_AUTHORIZED');
     await expect(page.locator('.server-hero__context')).toContainText('非实时数据');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);

@@ -12,23 +12,24 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
       'WebShop（网页购物任务）',
       '每个任务只取最早一条通过全部检查的完整成功',
       '在两批任务之间训练新的 LoRA',
-      'DirectApply（候选通过共同的工程与数据检查后直接进入下一轮）',
-      'GDR-v1（用固定小测在新参数和上一轮参数之间选择）',
-      'Hugging Face PEFT（负责加载和保存 LoRA 适配器的开源库）',
+      'DirectApply（候选通过固定工程与数据检查后，下一轮直接采用）',
       '候选参数不等于能力一定提升',
       '普通 LoRA 与 SD-LoRA 的参数区别',
       'Scalable Decoupled LoRA',
       '本页把没有加入后续加速变体的当前基线称为 “Vanilla SD-LoRA”',
     ]) expect(mechanism).toContain(phrase);
 
+    expect(mechanism).toContain('GDR-v1（固定 16 题小测后再选新旧参数）');
+    expect(mechanism).toContain('Hugging Face PEFT（LoRA 训练与加载工具库）');
+    expect(mechanism).toContain('下一屏：把这三步展开成完整参数流');
     expect(mechanism).toContain('<details class="sdlora__section sdlora__section--primer"');
     expect(mechanism).not.toContain('sdlora-intro__frame research-fact-band');
     const motivation = mechanism.indexOf('SD-LoRA：把成功轨迹训练成下一轮候选参数');
     const comparison = mechanism.indexOf('普通 LoRA 与 SD-LoRA 的参数区别');
     const slideOwner = mechanism.indexOf('<OpenEvoVanillaSdLoraSlide');
     expect(motivation).toBeGreaterThan(-1);
-    expect(comparison).toBeGreaterThan(motivation);
-    expect(slideOwner).toBeGreaterThan(comparison);
+    expect(slideOwner).toBeGreaterThan(motivation);
+    expect(comparison).toBeGreaterThan(slideOwner);
   });
 
   it('keeps the reusable slide mechanism-first rather than adding duplicate orientation inside it', () => {

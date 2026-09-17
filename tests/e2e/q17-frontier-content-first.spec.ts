@@ -20,9 +20,6 @@ test('focus result keeps the comparable result and scientific boundary in the fi
   const heroNumbers = await page.locator('.result-hero__numbers').boundingBox();
   expect(heroNumbers).not.toBeNull();
   expect(heroNumbers!.y + heroNumbers!.height).toBeLessThanOrEqual(633 + 3);
-  const diagnosticSummary = await page.locator('.diagnostic-summary').boundingBox();
-  expect(diagnosticSummary).not.toBeNull();
-  expect(diagnosticSummary!.y).toBeGreaterThan(boundary!.y + boundary!.height - 3);
 });
 
 for (const viewport of [

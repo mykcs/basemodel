@@ -44,16 +44,10 @@ describe('Flow content-first cold-read repair', () => {
     expect(hero).not.toContain('margin:1.35rem auto 1.8rem');
     expect(hero).toContain('实验状态与来源（按需展开）');
     expect(hero).toContain('OpenEvo 两个阶段：');
-    for (const phrase of [
-      '第一阶段（Stage 1）',
-      'WebShop 网页购物任务',
-      '初始参数训练（OPSD）',
-      '第二阶段（Stage 2，也就是持续学习）',
-      '文字经验（Text Memory）',
-      '可复用技能（Skill Bundle）',
-      '行为规则（Agent System）',
-      '少量模型适配参数（SD-LoRA）',
-    ]) expect(hero).toContain(phrase);
+    expect(hero).toContain('第二阶段先形成起始参数，再逐轮判断四类状态是否更新');
+    for (const plainRole of ['文字经验', '可复用策略', '行为与恢复规则', '少量模型适配参数']) expect(hero).toContain(plainRole);
+    for (const formalTerm of ['OPSD（', 'Text Memory（', 'Skill Bundle（', 'Agent System（', 'SD-LoRA（']) expect(hero).not.toContain(formalTerm);
+    expect(hero).toContain('ALFWorld 是另一种任务环境，不自动套用这套 WebShop 六步交互流程');
     expect(nav).toContain('research-navigation__mobile');
     expect(nav).toContain("t('相关页面', 'Related pages')");
     expect(nav).toContain('.research-navigation__identity,.research-navigation__links{display:none}');
@@ -71,7 +65,7 @@ describe('Flow content-first cold-read repair', () => {
   });
 
   it('connects Stage 1 evidence to the later four-state Stage 2 without rewriting early experiments', () => {
-    for (const term of ['OPSD（初始参数训练）只在 Stage 1 封存后', 'Text Memory 保存可复用文字经验', 'Skill 保存可复用策略', 'Agent System 保存全局行为和恢复规则', 'SD-LoRA 更新少量模型适配参数', '只有最终采用的版本才装入下一批任务']) {
+    for (const term of ['OPSD（第一阶段封存后的初始参数训练）', 'Text Memory（文字经验）保存可复用经验', 'Skill Bundle（可复用技能）保存策略', 'Agent System（行为与恢复规则）保存全局规则', 'SD-LoRA（少量模型适配参数）更新参数', '只有最终采用的版本才装入下一批任务']) {
       expect(design).toContain(term);
     }
     expect(design).toContain('早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态');

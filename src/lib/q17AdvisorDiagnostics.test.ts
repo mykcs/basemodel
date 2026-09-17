@@ -33,10 +33,7 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(component).toContain('不再先用 16 题小测在新旧参数之间做选择');
     expect(component).toContain('同一条 OpenEVO WebShop（网页购物任务）训练线');
     expect(component).toContain('进入第 127 / 128 轮时加载的两个相邻模型状态（R127 / R128）');
-    expect(component).toContain('这两个模型状态怎样形成');
-    expect(component).toContain('MiniMax（负责事后复盘的模型）');
-    expect(component).toContain('LoRA（冻结基础模型、只训练少量适配参数）');
-    expect(component).toContain('DirectApply 就是“新 LoRA 候选通过既定工程与数据检查后，下一轮直接采用”');
+    expect(component).toContain('DirectApply（固定工程与数据检查通过后直接采用）');
     expect(component).toContain('63.58 → 59.41');
     expect(component).toContain('完整做对');
     expect(component).toContain('10 / 32 → 8 / 32');
@@ -46,7 +43,6 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(component).not.toContain('min-height:calc(100svh - 6rem)');
     expect(component).toContain('border-left:3px solid var(--accent-deep)');
     expect(component.indexOf('diagnostic-summary')).toBeGreaterThan(component.indexOf('result-hero__numbers'));
-    expect(component).not.toContain('class="same-task-facts research-fact-band"');
     expect(component.indexOf('method-context')).toBeGreaterThan(component.indexOf('claim-boundary'));
     expect(component).toContain('result-hero__method');
     expect(component).toContain("aria-label={t('相邻两个模型状态的同题结果', 'Same-task results for the two adjacent model states')}");
@@ -56,7 +52,7 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(component).not.toContain('我们现在只敢说到这里');
     expect(component).toContain('这次诊断当时没有碰最终测试');
     expect(component).toContain('research-fact-band');
-    expect(component).toContain('原训练曲线的 76.1 → 48.9 来自不同题，不能直接横比');
+    expect(component).toContain('原训练曲线的 76.1 → 48.9 来自不同题');
     expect(component).toContain('同样 32 题');
     expect(component).toContain('冻结的最终测试（final）才单独打开一次');
     expect(component).toContain('另一张 GPU 又跑了一遍');

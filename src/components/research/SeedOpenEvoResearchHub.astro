@@ -20,7 +20,7 @@ const objectGroups = [
     label: t('学习方法', 'Learning methods'),
     items: [
       { title:'SEED', body:t('把任务后的成功经验整理成技能，再通过后续参数优化更新模型；具体优化方法留到 SEED 方法页。','Turns successful hindsight experience into skills, then updates the model through later parameter optimization; the SEED method page explains the specific optimizer.'), href:p('/research/seed-openevo/flow/seed/') },
-      { title:'OpenEvo', body:t('先封存任务证据；后续持续学习阶段（Stage 2）会分别更新文字记忆、可复用技能、行为规则和 LoRA（少量适配参数），通过既定检查的新版本才进入下一批任务。','Seals task evidence first; later continual learning (Stage 2) separately updates written memory, reusable skills, behavior rules, and LoRA adapter parameters, and only versions that pass the frozen checks enter the next task batch.'), href:p('/research/seed-openevo/flow/openevo/') },
+      { title:'OpenEvo', body:t('先封存任务证据；后续第二阶段（持续学习）会分别更新文字经验、可复用策略、行为与恢复规则和少量适配参数，通过既定检查的新版本才进入下一批任务。','Seals task evidence first; the later continual-learning stage separately updates written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter, and only versions that pass the frozen checks enter the next task batch.'), href:p('/research/seed-openevo/flow/openevo/') },
     ],
   },
   {
