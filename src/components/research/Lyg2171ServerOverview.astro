@@ -45,15 +45,15 @@ const gpuFacts = [
 ---
 <main class="server-overview" data-locale={locale} data-storage-responsibility-view="artifact-lifecycle-v3">
   <header class="server-hero" data-reader-primary>
-    <p class="server-hero__context">{t('保存时刻 · 2026-09-15 22:10（UTC+8）', 'Saved at · 2026-09-15 22:10 (UTC+8)')}</p>
-    <h1>{t('2026-09-15 的非实时容量快照：实验文件磁盘约 0.99 TiB 可用', 'Non-live storage snapshot from 2026-09-15: about 0.99 TiB remains on the experiment-files disk')}</h1>
-    <p class="server-hero__status">{t('保存时刻，2.0 TiB 持久文件系统已用约 51%，文件数量容量也没有压力，因此当时不需要紧急扩容。远端归档和“回收清单”都不等于删除；删除仍未授权。', 'At the saved time, the 2.0 TiB persistent filesystem was about 51% used and file-count capacity was healthy, so urgent expansion was not needed then. A remote archive and a reclaim list do not equal deletion; deletion remains unauthorized.')}</p>
+    <p class="server-hero__context">{t('非实时快照 · 保存时刻 2026-09-15 22:10（UTC+8）', 'Non-live snapshot · saved at 2026-09-15 22:10 (UTC+8)')}</p>
+    <h1>{t('实验文件磁盘：约 0.99 TiB 可用', 'Experiment-files disk: about 0.99 TiB available')}</h1>
+    <p class="server-hero__status">{t('这份快照里，2.0 TiB 持久文件系统已用约 51%，文件数量容量也没有压力，所以当时不需要紧急扩容。远端归档和“回收清单”都不等于删除；删除仍未授权。', 'In this snapshot, the 2.0 TiB persistent filesystem was about 51% used and file-count capacity was healthy, so urgent expansion was not needed then. A remote archive and a reclaim list do not equal deletion; deletion remains unauthorized.')}</p>
     <div class="server-hero__action">
       <a class="server-hero__next" href="#routine-maintenance">{t('复制例行维护指令 →', 'Copy the routine-maintenance prompt →')}</a>
       <span>{t('这是页面内入口，不会执行远程操作。', 'This opens the page section; it does not execute a remote operation.')}</span>
     </div>
     <p class="server-hero__maintenance-order"><strong>{t('下一步：', 'Next:')}</strong>{t('只读健康扫描（只检查，不改文件） → 把已封存资产复制到已授权远端（归档），再重新读取或只加载最小必要部分确认备份真的能恢复 → 只列出准备释放空间的具体文件（回收清单）。删除仍需另行批准。', 'Run a read-only health scan that changes no files → copy sealed assets to authorized remote storage, then freshly read or minimally load them to prove recovery → list the exact files proposed for reclaim. Deletion still needs separate approval.')}</p>
-    <p class="server-hero__safety">{t('三个边界始终不变：远端已有副本，也不能自动删服务器文件；删服务器文件和把私有归档改成公开，是两件事，必须分别批准；还没合并的草稿，不能当正式规则。删除前还要核对同一版精确回收清单和当前是否仍被使用。', 'Three boundaries remain fixed: a remote copy does not authorize deleting the server file; deleting a server file and making a private archive public are separate decisions that need separate approval; and an unmerged draft is not an active rule. Before deletion, the same exact reclaim list and current liveness must be checked again.')}</p>
+    <p class="server-hero__safety">{t('远端已有副本也不能自动删服务器文件；删除服务器文件和把私有归档改成公开必须分别批准；还没合并的草稿不能当正式规则。删除前还要核对同一版精确回收清单和当前是否仍被使用。', 'A remote copy still does not authorize deleting the server file; deleting a server file and making a private archive public need separate approval; and an unmerged draft is not an active rule. Before deletion, the same exact reclaim list and current liveness must be checked again.')}</p>
   </header>
 
   <section class="server-section" id="health-scan">
@@ -339,7 +339,7 @@ const gpuFacts = [
   @media(max-width:640px){
     .server-hero{padding-bottom:1.35rem}
     #health-scan{margin-top:3rem}
-    .server-hero h1{max-width:23ch;font-size:clamp(1.72rem,8vw,2.2rem);line-height:1.04}.server-hero__status{font-size:.94rem;font-weight:560;line-height:1.52}.server-hero__context{font-size:.78rem;font-weight:700}.server-hero__next{font-size:.74rem;font-weight:650}.server-hero__maintenance-order{font-size:.74rem;line-height:1.48}.routine-entry{grid-template-columns:1fr}.routine-entry__prompt{padding:.45rem 0 0;border-left:0;border-top:1px solid var(--line)}.operation-switchboard{grid-template-columns:1fr}.operation-switchboard a{border-right:0;border-bottom:1px solid var(--line)}.operation-switchboard a:last-child{border-bottom:0}
+    .server-hero h1{max-width:23ch;font-size:clamp(1.72rem,8vw,2.2rem);line-height:1.04}.server-hero__status{font-size:.94rem;font-weight:560;line-height:1.52}.server-hero__context{font-size:.78rem;font-weight:700}.server-hero__action{display:grid;gap:.1rem;align-items:start}.server-hero__next{font-size:.74rem;font-weight:650}.server-hero__maintenance-order{font-size:.74rem;line-height:1.48}.routine-entry{grid-template-columns:1fr}.routine-entry__prompt{padding:.45rem 0 0;border-left:0;border-top:1px solid var(--line)}.operation-switchboard{grid-template-columns:1fr}.operation-switchboard a{border-right:0;border-bottom:1px solid var(--line)}.operation-switchboard a:last-child{border-bottom:0}
     .snapshot-facts,.gpu-facts,.privacy-grid{grid-template-columns:1fr}.snapshot-facts>div,.gpu-facts>div{border-right:0;border-bottom:1px solid var(--line)}.snapshot-facts>div:last-child,.gpu-facts>div:last-child{border-bottom:0}
     .operation-explainer li{grid-template-columns:5rem 1fr}
     .lifecycle-flow ol{grid-template-columns:1fr}.lifecycle-flow li{border-right:0}.lifecycle-flow li:last-child{border-bottom:0}
