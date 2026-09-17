@@ -119,17 +119,14 @@ Task Score + exact Success`}</code></pre>
       <section>
         <p class="section-number" aria-hidden="true">02</p>
         <h2>训练区和正式保留任务必须在实验开始前分开。</h2>
-        <div class="two-column">
-          <div>
-            <small>训练候选池 (TRAIN CANDIDATE POOL)</small>
-            <h3>goal 500–6909</h3>
-            <p>训练、经验采集、内部 validation（验证）与方法选择发生在这个范围。</p>
-          </div>
-          <div>
-            <small>正式保留池 (OFFICIAL HELD-OUT POOL)</small>
-            <h3>goal 0–499</h3>
-            <p>正式比较只从这个范围取任务，而且 OpenEvo 与 SEED 必须使用同一批冻结任务身份。</p>
-          </div>
+        <div class="shared-axis-table" role="region" aria-label="训练候选池与正式保留池对照" tabindex="0">
+          <table>
+            <thead><tr><th scope="col">比较项</th><th scope="col">训练候选池 (TRAIN CANDIDATE POOL)</th><th scope="col">正式保留池 (OFFICIAL HELD-OUT POOL)</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">任务范围</th><td><strong>goal 500–6909</strong></td><td><strong>goal 0–499</strong></td></tr>
+              <tr><th scope="row">用途</th><td>训练、经验采集、内部 validation（验证）与方法选择发生在这个范围。</td><td>正式比较只从这个范围取任务，而且 OpenEvo 与 SEED 必须使用同一批冻结任务身份。</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -201,17 +198,14 @@ Task Score + exact Success`}</code></pre>
       <section>
         <p class="section-number" aria-hidden="true">04</p>
         <h2>稀疏反馈与稠密反馈应该作为单独的消融变量。</h2>
-        <div class="lane-grid">
-          <div class="lane primary">
-            <small>稀疏反馈</small>
-            <h3>训练适应度 = 是否完整成功</h3>
-            <p>只使用成功 / 失败，便于和 SEED 的稀疏训练 reward 语义对齐。</p>
-          </div>
-          <div class="lane">
-            <small>稠密反馈</small>
-            <h3>训练适应度 = 部分任务完成度</h3>
-            <p>利用连续环境反馈，检验 OpenEvo 是否能从未完全成功的轨迹中获得更细粒度信号。</p>
-          </div>
+        <div class="shared-axis-table" role="region" aria-label="稀疏反馈与稠密反馈对照" tabindex="0">
+          <table>
+            <thead><tr><th scope="col">比较项</th><th scope="col">稀疏反馈</th><th scope="col">稠密反馈</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">训练适应度</th><td><strong>是否完整成功</strong></td><td><strong>部分任务完成度</strong></td></tr>
+              <tr><th scope="row">实验问题</th><td>只使用成功 / 失败，便于和 SEED 的稀疏训练 reward 语义对齐。</td><td>利用连续环境反馈，检验 OpenEvo 是否能从未完全成功的轨迹中获得更细粒度信号。</td></tr>
+            </tbody>
+          </table>
         </div>
         <p>如果稠密反馈高于稀疏反馈，结论应是“OpenEvo 能利用分级环境反馈”，而不是把两种监督条件混成一个方法优越性结论。</p>
       </section>
@@ -231,9 +225,9 @@ Task Score + exact Success`}</code></pre>
   .series-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:960px;margin:0 auto 54px;border-block:1px solid var(--color-border)}.series-nav a{display:grid;grid-template-columns:34px 1fr;gap:10px;padding:16px 14px;color:var(--color-text-muted);text-decoration:none;font-size:.82rem;line-height:1.45;border-right:1px solid var(--color-border)}.series-nav a:last-child{border-right:0}.series-nav a span{font:600 .72rem var(--font-mono);color:var(--color-text-muted)}.series-nav a.active{background:var(--color-surface-muted);color:var(--color-text)}
   .note-body{width:min(var(--reading),100%);margin:0 auto}.note-body section{padding:32px 0 38px;border-top:1px solid var(--color-border)}.opening-section{border-top:0!important;padding-top:0!important}.section-number{margin:0 0 10px!important;color:var(--color-accent)!important;font:800 .7rem/1.4 var(--font-mono)!important;letter-spacing:.08em;text-transform:uppercase}.note-body h2{margin:0 0 18px;font-size:clamp(1.55rem,3vw,2.35rem);line-height:1.16;letter-spacing:-.035em}.note-body h3{margin:0 0 8px;font-size:1.08rem;line-height:1.4}.note-body p,.note-body li{color:var(--color-text);font-size:1rem;line-height:1.82}.note-body p{margin:0 0 16px}.note-body a{color:var(--color-accent)}
   .question-card{margin:24px 0;padding:22px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface)}.question-card p{margin:0 0 8px;color:var(--color-text-muted);font:700 .72rem/1.4 var(--font-mono);letter-spacing:.06em}.question-card strong{display:block;font-size:1.22rem;line-height:1.55}
-  .two-column,.lane-grid,.axis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:22px 0}.two-column>div,.lane,.axis-grid>div{padding:20px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface)}.two-column small,.lane small,.axis-grid small{display:block;margin-bottom:9px;color:var(--color-accent);font:800 .68rem/1.4 var(--font-mono);letter-spacing:.06em}.two-column p,.lane p,.axis-grid p{margin-bottom:0;color:var(--color-text-muted);font-size:.91rem;line-height:1.65}.lane.primary{border-color:color-mix(in srgb,var(--color-accent) 55%,var(--color-border))}
+  .lane-grid,.axis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:22px 0}.lane,.axis-grid>div{padding:20px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface)}.lane small,.axis-grid small{display:block;margin-bottom:9px;color:var(--color-accent);font:800 .68rem/1.4 var(--font-mono);letter-spacing:.06em}.lane p,.axis-grid p{margin-bottom:0;color:var(--color-text-muted);font-size:.91rem;line-height:1.65}.lane.primary{border-color:color-mix(in srgb,var(--color-accent) 55%,var(--color-border))}.shared-axis-table{max-width:100%;margin:22px 0;overflow-x:auto;border-block:1px solid var(--color-border)}.shared-axis-table table{width:100%;min-width:660px;border-collapse:collapse}.shared-axis-table th,.shared-axis-table td{padding:13px 14px;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;font-size:.9rem;line-height:1.55}.shared-axis-table thead th{color:var(--color-text-muted);font:750 .72rem/1.5 var(--font-interface)}.shared-axis-table tbody th{width:18%;color:var(--color-text-muted);font-size:.78rem}.shared-axis-table tbody tr:last-child>*{border-bottom:0}
   pre{overflow:auto;margin:22px 0;padding:20px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface-muted);color:var(--color-text);font-size:.84rem;line-height:1.65}code{font-family:var(--font-mono)}
   .protocol-table{margin:22px 0;border:1px solid var(--color-border);border-radius:14px;overflow:hidden}.protocol-table .row{display:grid;grid-template-columns:minmax(150px,.8fr) minmax(0,1.7fr);gap:18px;padding:13px 16px;border-bottom:1px solid var(--color-border);align-items:start}.protocol-table .row:last-child{border-bottom:0}.protocol-table .row.head{background:var(--color-surface-muted);color:var(--color-text-muted);font:700 .72rem/1.5 var(--font-mono);text-transform:uppercase}.protocol-table .row span{font-size:.9rem;line-height:1.55}.protocol-table .row strong{font-size:.92rem;line-height:1.55}
   .next-note{padding-top:28px;border-top:1px solid var(--color-border)}.next-note a{font-weight:700;text-decoration:none}
-  @media(max-width:760px){.benchmark-note{width:min(100% - 1rem,1180px)}.note-hero{padding-top:30px}.note-topline{flex-direction:column;gap:8px}.series-nav{grid-template-columns:1fr}.series-nav a{border-right:0;border-bottom:1px solid var(--color-border)}.series-nav a:last-child{border-bottom:0}.two-column,.lane-grid,.axis-grid{grid-template-columns:1fr}.protocol-table .row{grid-template-columns:1fr;gap:4px}}
+  @media(max-width:760px){.benchmark-note{width:min(100% - 1rem,1180px)}.note-hero{padding-top:30px}.note-topline{flex-direction:column;gap:8px}.series-nav{grid-template-columns:1fr}.series-nav a{border-right:0;border-bottom:1px solid var(--color-border)}.series-nav a:last-child{border-bottom:0}.lane-grid,.axis-grid{grid-template-columns:1fr}.protocol-table .row{grid-template-columns:1fr;gap:4px}}
 </style>

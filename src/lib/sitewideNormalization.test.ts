@@ -30,6 +30,8 @@ const researchHub = read('../components/research/SeedOpenEvoResearchHub.astro');
 const briefingNotes = read('../components/research/SeedOpenEvoBriefingTechnicalNotes.astro');
 const movedPrimer = read('../components/research/ResearchPrimerMoved.astro');
 const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.astro');
+const gdrDirectApply = read('../components/research/OpenEvoGdrDirectApplyExplainer.astro');
+const harness2Study = read('../components/research/OpenEvoHarness2MiniStudy.astro');
 const resultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
 const resultNoteRoute = read('../pages/research/seed-openevo/study/results/[note].astro');
 const sitemapRoutes = read('./sitemapRoutes.ts');
@@ -135,6 +137,25 @@ describe('sitewide normalization first repair batch', () => {
     expect(modelDetail).not.toContain('min-height:min(540px,calc(100svh - 116px))');
     expect(modelDetail).not.toContain('min-height:calc(100svh - 102px)');
     expect(paperDetail).not.toContain("<div class=\"section-kicker\">{locale === 'zh' ? '方法' : 'Method'}</div>");
+  });
+
+  it('aligns direct comparisons on shared axes instead of making readers compare detached cards from memory', () => {
+    expect(benchmarkNote).toContain('class="shared-axis-table"');
+    expect(benchmarkNote).toContain('训练候选池与正式保留池对照');
+    expect(benchmarkNote).toContain('稀疏反馈与稠密反馈对照');
+    expect(benchmarkNote).not.toContain('class="two-column"');
+
+    expect(ceilingStrategy).toContain('两版 Stage 2 更新规则');
+    expect(ceilingStrategy).toContain('<table>');
+    expect(ceilingStrategy).not.toContain('<section class="ceiling__section ceiling__compare">');
+
+    expect(gdrDirectApply).toContain('旧 GDR-v1 与 DirectApply 每一步对照');
+    expect(gdrDirectApply).toContain('<th scope="row">04</th>');
+    expect(gdrDirectApply).not.toContain('<figure>\n        <figcaption><strong>GDR-v1</strong>');
+
+    expect(harness2Study).toContain('128 对尝试的无效动作终止配对矩阵');
+    expect(harness2Study).toContain('仅候选组因无效动作终止');
+    expect(harness2Study).not.toContain('<article class="warn"><span>{q.paired.candidateOnlyInvalid}</span>');
   });
 
   it('keeps public headings on the subject instead of telling the reader how to read them', () => {
