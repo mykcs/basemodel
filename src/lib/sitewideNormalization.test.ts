@@ -6,6 +6,7 @@ const read = (relative: string) => readFileSync(new URL(relative, import.meta.ur
 const detail = read('../components/research/SeedOpenEvoResearchDetail.astro');
 const core = read('../components/research/SeedOpenEvoResearchPageCore.astro');
 const sdLoraHistory = read('../components/research/OpenEvoSdLoraHistorySkeleton.astro');
+const sdLoraHistoryNav = read('../components/research/OpenEvoSdLoraHistorySeriesNav.astro');
 const vanillaSdLoraSlide = read('../components/research/OpenEvoVanillaSdLoraSlide.astro');
 const experimentResults = read('../components/research/OpenEvoExperimentResultsScaffold.astro');
 const archive = read('../components/research/OpenEvoExperimentArchive.astro');
@@ -70,6 +71,14 @@ describe('sitewide normalization first repair batch', () => {
     expect(sdLoraHistory).not.toContain('SD-LoRA SERIES OVERVIEW');
     expect(sdLoraHistory).toContain('!overview && <p class="series-page__eyebrow">');
     expect(sdLoraHistory).toContain('`${item!.number} / 07`');
+  });
+
+  it('keeps the SD-LoRA chapter navigator as quiet editorial links instead of a rounded-card rail', () => {
+    expect(sdLoraHistoryNav).toContain('border-top:1px solid var(--line)');
+    expect(sdLoraHistoryNav).toContain('border-bottom:2px solid transparent');
+    expect(sdLoraHistoryNav).toContain("a[aria-current='page']{border-bottom-color:var(--accent-deep);color:var(--ink)}");
+    expect(sdLoraHistoryNav).not.toContain('border-radius:var(--radius-panel)');
+    expect(sdLoraHistoryNav).not.toContain('background:var(--surface-muted)');
   });
 
   it('keeps ALFWorld route metadata object-first in both locales', () => {
