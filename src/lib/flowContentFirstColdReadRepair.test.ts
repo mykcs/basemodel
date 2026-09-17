@@ -15,8 +15,10 @@ describe('Flow content-first cold-read repair', () => {
       '同一个 Qwen、同一批任务，只比较怎么学习',
       'ALFWorld 是文本具身任务',
       'WebShop 是网页购物任务',
-      '如果只想比较第二阶段的学习器，两边必须共享第一阶段轨迹、任务后复盘、训练配方和同一个起点模型',
-      'SEED 把成功经验写回模型参数；OpenEvo 先保存任务证据',
+      '只比较第二阶段学习器时，两边必须从同一个模型参数快照（checkpoint）出发',
+      '共享同一批第一阶段轨迹、任务后复盘和训练配方',
+      'SEED 是把成功经验写回模型参数的基线',
+      'OpenEvo 是先保存任务证据、再更新文字经验',
       '否则只能比较两个完整系统',
     ]) expect(hero).toContain(phrase);
   });
@@ -42,7 +44,7 @@ describe('Flow content-first cold-read repair', () => {
     expect(hero).not.toContain('min-height:min(34rem,calc(100svh - 9rem))');
     expect(hero).not.toContain('先看研究对象与比较条件 ↓');
     expect(hero).not.toContain('margin:1.35rem auto 1.8rem');
-    expect(hero).toContain('实验记录与当前状态（按需查看）');
+    expect(hero).toContain('实验状态与来源');
     expect(hero).toContain('OpenEvo 分两步：');
     expect(hero).toContain('MiniMax（任务结束后回看轨迹的分析模型）');
     for (const plainRole of ['文字经验', '可复用策略', '行为与恢复规则', '少量模型适配参数']) expect(hero).toContain(plainRole);

@@ -58,9 +58,12 @@ for (const viewport of [
     await expect(page.locator('.sdlora-intro__boundary')).toBeVisible();
     await expect(page.locator('.sdlora-intro__steps')).toHaveCount(0);
     await expect(page.locator('.sdlora-intro__path')).toBeVisible();
-    await expect(page.locator('.sdlora-intro__path li')).toHaveCount(3);
-    await expect(page.locator('.sdlora-intro__path')).toContainText('每个任务取最早一条通过检查的成功');
-    await expect(page.locator('.sdlora-intro__path')).toContainText('当前检查通过就直接采用（DirectApply）');
+    await expect(page.locator('.sdlora-intro__path li')).toHaveCount(0);
+    await expect(page.locator('.sdlora-intro__path')).toContainText('筛出完整成功轨迹');
+    await expect(page.locator('.sdlora-intro__path')).toContainText('训练候选 LoRA');
+    await expect(page.locator('.sdlora-intro__path')).toContainText('共同检查通过后，下一轮采用');
+    await expect(page.locator('.sdlora-intro')).not.toContainText('DirectApply');
+    await expect(page.locator('.sdlora-intro')).not.toContainText('GDR-v1');
     await expect(page.locator('.sdlora-intro__frame')).toHaveCount(0);
     const visibleMainHeadings = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((nodes) => nodes
       .filter((node) => { const box = node.getBoundingClientRect(); return box.width > 0 && box.height > 0 && box.top < innerHeight && box.bottom > 0; })
