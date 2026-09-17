@@ -22,6 +22,9 @@ const modelDetail = read('../pages/_bodies/model-detail.astro');
 const papersIndex = read('../pages/_bodies/papers-index.astro');
 const paperDetail = read('../pages/_bodies/paper-detail.astro');
 const paperLearningGuide = read('../components/papers/PaperLearningGuide.astro');
+const agentToSeedBridge = read('../components/AgentToSeedBridge.astro');
+const q17FrontierRoadmap = read('../components/research/OpenEvoQ17FrontierRoadmap.astro');
+const ceilingStrategy = read('../components/research/OpenEvoCeilingStrategy.astro');
 const seedPaper = read('../content/papers/seed.json');
 const researchHub = read('../components/research/SeedOpenEvoResearchHub.astro');
 const briefingNotes = read('../components/research/SeedOpenEvoBriefingTechnicalNotes.astro');
@@ -92,6 +95,26 @@ describe('sitewide normalization first repair batch', () => {
     expect(sdLoraHistoryNav).toContain("a[aria-current='page']{border-bottom-color:var(--accent-deep);color:var(--ink)}");
     expect(sdLoraHistoryNav).not.toContain('border-radius:var(--radius-panel)');
     expect(sdLoraHistoryNav).not.toContain('background:var(--surface-muted)');
+  });
+
+  it('keeps ordinary explanation in editorial sequences while preserving real choice, status, and evidence cards', () => {
+    expect(agentToSeedBridge).toContain('<ol class="bridge-steps">');
+    expect(agentToSeedBridge).not.toContain('<div class="bridge-grid">');
+    expect(agentToSeedBridge).not.toContain('.bridge-grid article');
+    expect(agentToSeedBridge).toContain('SEED / OpenEvo 更新机制');
+
+    expect(q17FrontierRoadmap).toContain('<ol class="experiment-list">');
+    expect(q17FrontierRoadmap).not.toContain('<div class="experiment-grid">');
+    expect(q17FrontierRoadmap).toContain('class="metric-grid"');
+    expect(q17FrontierRoadmap).toContain('class="blank-grid"');
+    expect(q17FrontierRoadmap).toContain('class="boundary-box"');
+
+    expect(ceilingStrategy).toContain('<ol class="ceiling__learning-list">');
+    expect(ceilingStrategy).not.toContain('<div class="ceiling__cards">');
+    expect(ceilingStrategy).toContain('class="ceiling__budget"');
+    expect(ceilingStrategy).toContain('class="ceiling__rounds"');
+    expect(ceilingStrategy).toContain('class="ceiling__carrier-grid"');
+    expect(ceilingStrategy).toContain('class="ceiling__arm-status"');
   });
 
   it('keeps model and paper reference routes content-first instead of hiding useful content behind viewport-height spacers', () => {
