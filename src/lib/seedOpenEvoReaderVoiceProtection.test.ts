@@ -23,6 +23,7 @@ const nextProtocol = read('../components/research/OpenEvoNextExperimentProtocol.
 const evidenceNoteScope = read('../components/research/OpenEvoEvidenceNoteScope.astro');
 const experimentProgram = read('../components/research/OpenEvoExperimentProgram.astro');
 const experimentGateway = read('../components/research/OpenEvoExperimentGateway.astro');
+const experimentResultsScaffold = read('../components/research/OpenEvoExperimentResultsScaffold.astro');
 const resultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
 const loopsFigure = read('../components/research/SeedOpenEvoCanonicalFigure.astro');
 const webshopDatasetFigure = read('../components/research/WebShopDatasetCanonicalFigure.astro');
@@ -93,6 +94,18 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsQuestions).not.toContain('证据链与代码回溯');
     expect(resultsQuestions).not.toContain("href: '#evidence-q");
     expect(resultsQuestions).not.toContain('查看证据链 →');
+  });
+
+  it('keeps Results questions and protocol comparisons on editorial shared axes instead of card walls', () => {
+    expect(resultsQuestions).toContain('.question-list{border-top:1px solid var(--color-border)}');
+    expect(resultsQuestions).toContain('padding:28px 0;border-bottom:1px solid var(--color-border)');
+    expect(resultsQuestions).not.toContain('.question-list{display:grid;gap:10px}');
+    expect(resultsProtocol).toContain('.task-range-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px;border-block:1px solid var(--color-border)}');
+    expect(resultsProtocol).toContain('.metric-defs{margin-top:28px;padding:20px 0;border-block:1px solid var(--color-border)}');
+    expect(resultsProtocol).toContain('border-left:3px solid var(--color-info)');
+    expect(experimentResultsScaffold).toContain('.exp-scaffold__contrast-grid{display:grid;margin-top:1.3rem;border-top:1px solid var(--color-border)}');
+    expect(experimentResultsScaffold).toContain('grid-template-columns:minmax(220px,.8fr) minmax(170px,.55fr) minmax(0,1.65fr)');
+    expect(experimentResultsScaffold).not.toContain('.exp-scaffold__contrast-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem');
   });
 
   it('keeps dense observations and confidence intervals behind the evidence disclosure', () => {
