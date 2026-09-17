@@ -21,7 +21,9 @@ describe('public server copy', () => {
     expect(serverOverview).toContain('1.69 GiB');
     expect(serverOverview).toContain('delete_authorized=false');
     expect(serverOverview).toContain('例行服务器维护');
-    expect(serverOverview).toContain('class="server-hero__facts research-fact-band"');
+    expect(serverOverview).not.toContain('class="server-hero__facts research-fact-band"');
+    expect(serverOverview).toContain('server-hero__guardrail-summary');
+    expect(serverOverview).toContain('开始只读健康扫描 →');
     expect(serverOverview).toContain('NOT_AUTHORIZED');
     expect(serverOverview.indexOf('</header>')).toBeLessThan(serverOverview.indexOf('<nav class="operation-switchboard"'));
     expect(serverOverview).toContain('这段 Prompt 只负责启动，不固定 Passport 版本');

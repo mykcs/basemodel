@@ -12,10 +12,10 @@ for (const viewport of [
 
     await expect(page.locator('h1')).toHaveText('实验文件磁盘：约 1.09 TB 可用');
     await expect(page.locator('.server-hero__status')).toBeVisible();
-    await expect(page.locator('.server-hero__facts')).toBeVisible();
-    await expect(page.locator('.server-hero__facts')).toContainText('未授权');
-    await expect(page.locator('.server-hero__next')).toContainText('只读健康扫描');
-    await expect(page.locator('.server-hero__next')).toContainText('只检查，不修改，不删除');
+    await expect(page.locator('.server-hero__status')).toContainText('没有删除授权');
+    await expect(page.locator('.server-hero__guardrail-summary')).toContainText('远端可恢复不等于本地可删除');
+    await expect(page.locator('.server-hero__guardrail-summary')).toContainText('未合并草稿不能替代正式规则');
+    await expect(page.locator('.server-hero__next')).toHaveText('开始只读健康扫描 →');
     await expect(page.locator('.server-safety-depth summary')).toBeAttached();
     await expect(page.locator('.routine-entry summary')).toBeAttached();
 
@@ -64,7 +64,7 @@ for (const theme of ['light', 'dark'] as const) {
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('.server-hero__status')).toBeVisible();
-    await expect(page.locator('.server-hero__facts')).toContainText('未授权');
+    await expect(page.locator('.server-hero__guardrail-summary')).toContainText('远端可恢复不等于本地可删除');
     await page.locator('.server-safety-depth summary').click();
     await expect(page.locator('.server-hero__boundary')).toContainText('上传成功 ≠ 可恢复');
     await expect(page.locator('.server-hero__boundary')).toContainText('对象 / 服务器负责人必须批准同一版精确回收清单');

@@ -5,24 +5,28 @@ const route = '/research/seed-openevo/study/capability-exploration/q17-directapp
 test('focus result keeps the comparable result and scientific boundary in the first screen', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 633 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('h1')).toContainText('同样 32 道题，暂时不能证明第 128 轮模型状态整体变差');
+  await expect(page.locator('h1')).toContainText('OpenEVO 的 WebShop 同题复测：暂时不能证明第 128 轮模型状态整体变差');
   await expect(page.locator('.result-hero > .eyebrow')).toContainText('局部诊断 · 2026-09-11');
   await expect(page.locator('.result-hero__numbers')).toContainText('63.58 → 59.41');
+  await expect(page.locator('.result-hero__numbers')).toContainText('10 → 8');
   await expect(page.locator('.result-hero__numbers')).toContainText('−4.18');
   await expect(page.locator('.result-hero__numbers')).toContainText('−17.13 ～ +8.00');
-  await expect(page.locator('.result-hero__boundary')).toContainText('这个范围包含“没有差别”');
-  await expect(page.locator('.diagnostic-summary')).toContainText('购物动作没有执行错误');
-  await expect(page.locator('.diagnostic-summary')).toContainText('R128 的生成选择更集中');
+  await expect(page.locator('.result-hero__boundary')).toContainText('95% 统计范围包含 0');
+  await expect(page.locator('.result-hero__method')).toContainText('DirectApply 的意思是');
+  await expect(page.locator('.result-section .diagnostic-summary')).toContainText('购物动作没有执行错误');
+  await expect(page.locator('.result-section .diagnostic-summary')).toContainText('第二个模型状态的生成选择更集中');
   await expect(page.locator('.same-task-facts > div')).toHaveCount(3);
+  const numbers = await page.locator('.result-hero__numbers').boundingBox();
   const boundary = await page.locator('.result-hero__boundary').boundingBox();
   const summary = await page.locator('.diagnostic-summary').boundingBox();
   const facts = await page.locator('.same-task-facts').boundingBox();
+  expect(numbers).not.toBeNull();
   expect(boundary).not.toBeNull();
   expect(summary).not.toBeNull();
   expect(facts).not.toBeNull();
+  expect(numbers!.y + numbers!.height).toBeLessThanOrEqual(633 + 3);
   expect(boundary!.y + boundary!.height).toBeLessThanOrEqual(633 + 3);
-  expect(summary!.y + summary!.height).toBeLessThanOrEqual(633 + 3);
-  expect(facts!.y).toBeGreaterThan(summary!.y + summary!.height - 3);
+  expect(summary!.y).toBeGreaterThan(facts!.y + facts!.height - 3);
 });
 
 for (const viewport of [

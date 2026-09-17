@@ -11,12 +11,18 @@ describe('content-first server operations pilot', () => {
     expect(server).toContain('容量快照 · 2026-09-15 22:10（UTC+8）· 非实时数据');
     expect(server).toContain('NOT_AUTHORIZED');
     expect(server).toContain('当前没有紧急扩容压力，也没有删除授权');
-    expect(server).toContain('只读健康扫描');
-    expect(server).toContain('查看入口 · 只检查，不修改，不删除 →');
-    expect(server).toContain("<dt>{t('删除', 'Deletion')}</dt><dd>{t('未授权', 'Not authorized')}</dd>");
+    expect(server).toContain('开始只读健康扫描 →');
+    expect(server).toContain('<h2 class="server-section__sr-title" id="health-scan-title">');
+    expect(server).not.toContain('.server-safety-depth + .server-section{padding-top:10.5rem}');
+    expect(server).toContain('远端可恢复不等于本地可删除');
+    expect(server).toContain('删除和把私有数据改成公开需要分别批准');
+    expect(server).toContain('未合并草稿不能替代正式规则');
+    expect(server).toContain('TiB 与 TB 是两种容量单位');
+    expect(server).toContain('df（查看文件系统容量的系统命令）');
+    expect(server).not.toContain('server-hero__facts research-fact-band');
     expect(server).toContain('对象 / 服务器负责人必须批准同一版精确回收清单');
     expect(server).toContain('例行服务器维护');
-    expect(server).toContain('系统磁盘统计（df）');
+    expect(server).toContain('df（查看文件系统容量的系统命令）');
     expect(server).toContain('文件数量容量（inode，文件系统能记录多少个文件）');
     expect(server).toContain('正式归档版本（恢复时默认认的那一份）');
     expect(server).toContain('具体归档对象、负责人、预计释放量和完成状态只来自本次维护的现场扫描');
@@ -25,7 +31,7 @@ describe('content-first server operations pilot', () => {
   it('keeps optional one-stage navigation after the primary operational owner', () => {
     const heroEnd = server.indexOf('</header>');
     const switchboard = server.indexOf('<nav class="operation-switchboard"');
-    const health = server.indexOf('<section class="server-section" id="health-scan">');
+    const health = server.indexOf('id="health-scan"');
     expect(heroEnd).toBeGreaterThan(-1);
     expect(switchboard).toBeGreaterThan(heroEnd);
     expect(health).toBeGreaterThan(heroEnd);

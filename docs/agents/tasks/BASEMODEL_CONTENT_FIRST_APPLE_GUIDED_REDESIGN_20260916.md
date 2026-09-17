@@ -350,6 +350,8 @@ The gate requires all eight receipts to PASS the existing preference/scientific-
 
 Phase-C rework witness — 2026-09-17: repeated independent cold reads still found first-screen comprehension friction. Trigger → Flow/Q17/Server feedback on exact head `61352682dec02352c5e60f701941fd37edf25907`; current owner → this Phase-C pilot exit; checked artifact → fresh exact-head blind packet plus canonical Reader Contracts; allowed next action → simplify the visible first task, explain unavoidable terms in place, surface one truthful next action, and re-run exact-head phone/desktop review; invalidation cue → any new runtime/copy change or head movement invalidates prior receipts. **No weighted credit changes until the 8/8 gate passes.**
 
+Phase-C rework witness — 2026-09-17 current head: Trigger → independent cold read on `36d43c71724ad5683bc2f989ee71756a50521555` leaves Flow phone, Q17 phone and Server desktop failing while the other five viewports pass; current owner → this Phase-C pilot exit; checked artifact → `/private/tmp/bm737-auto7-36d43-phase-b/*/receipt.json` plus current Reader Contracts; allowed next action → add the missing two-stage OpenEvo method context without crowding Flow's first screen, make Q17 name the WebShop objects and show `10 → 8` while moving secondary diagnostics down, and keep Server's deletion/visibility/draft boundaries directly visible while reducing competing first-screen blocks; invalidation cue → any user-visible change or head movement invalidates all eight receipts and requires a fresh blind-first run. **No weighted credit changes until the replacement 8/8 gate passes.**
+
 ### Phase D — Canonical component/CSS consolidation — **15%**
 
 - [x] Promote only proven pilot patterns into shared components/styles.

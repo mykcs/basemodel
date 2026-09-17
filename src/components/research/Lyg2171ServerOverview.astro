@@ -48,14 +48,8 @@ const gpuFacts = [
     <p class="server-hero__context">{t('容量快照 · 2026-09-15 22:10（UTC+8）· 非实时数据', 'Storage snapshot · 2026-09-15 22:10 (UTC+8) · not live data')}</p>
     <h1>{t('实验文件磁盘：约 1.09 TB 可用', 'About 1.09 TB remains on the disk holding project experiment files')}</h1>
     <p class="server-hero__status">{t('当前没有紧急扩容压力，也没有删除授权。下一步只做只读健康扫描；归档完成后仍只能提出精确回收清单，不能自动删除。', 'There is no urgent expansion pressure and no deletion authority. The next step is a read-only health scan. Even after archive verification, the workflow may only propose an exact reclaim list; it cannot delete automatically.')}</p>
-
-    <dl class="server-hero__facts research-fact-band" style="--research-fact-columns:3" aria-label={t('当前最需要判断的三件事', 'Three decisions that matter now')}>
-      <div><dt>{t('可用空间', 'Available')}</dt><dd>≈ 0.99 TiB · 约 1.09 TB</dd></div>
-      <div><dt>{t('扩容', 'Expansion')}</dt><dd>{t('暂不需要', 'Not urgent')}</dd></div>
-      <div><dt>{t('删除', 'Deletion')}</dt><dd>{t('未授权', 'Not authorized')}</dd></div>
-    </dl>
-
-    <a class="server-hero__next" href="#health-scan"><strong>{t('只读健康扫描', 'Read-only health scan')}</strong><span>{t('查看入口 · 只检查，不修改，不删除 →', 'Open the entry point · inspect only, no changes or deletion →')}</span></a>
+    <p class="server-hero__guardrail-summary">{t('三条边界一直有效：远端可恢复不等于本地可删除；删除和把私有数据改成公开需要分别批准；未合并草稿不能替代正式规则。', 'Three boundaries always apply: remote recoverability does not authorize local deletion; deletion and changing private data to public require separate approval; an unmerged draft cannot replace formal authority.')}</p>
+    <a class="server-hero__next" href="#health-scan">{t('开始只读健康扫描 →', 'Start the read-only health scan →')}</a>
   </header>
 
 
@@ -67,17 +61,14 @@ const gpuFacts = [
       <li><strong>{t('草稿 ≠ 正式规则。', 'Draft ≠ authority.')}</strong><span>{t('正式实验身份只认当前已合并或当前实验明确采用的实验身份证与总表；未合并草稿不能替代正式规则。私有数据改成公开也必须单独批准。', 'Formal experiment identity follows only merged or explicitly adopted experiment identity/registry authority; an unmerged draft cannot replace it. Making private data public also needs separate approval.')}</span></li>
     </ol>
   </details>
-  <section class="server-section" id="health-scan">
-    <div class="section-heading">
-      <span>01</span>
-      <div><h2>{t('服务器健康扫描', 'Server health scan')}</h2></div>
-    </div>
+  <section class="server-section" id="health-scan" aria-labelledby="health-scan-title">
+    <h2 class="server-section__sr-title" id="health-scan-title">{t('服务器健康扫描', 'Server health scan')}</h2>
     <p class="section-lede">{t('日常扫描只回答“现在有没有空间或活跃引用风险”。它不会给整个磁盘重新计算文件指纹，也不因为看到大文件就开始搬家。', 'The routine scan answers whether storage or live references are under pressure now. It does not deep-hash the whole server or start moving files merely because they are large.')}</p>
 
     <dl class="snapshot-facts" aria-label={t('2026-09-15 服务器快照', '2026-09-15 server snapshot')}>
       <div><dt>{t('持久文件系统', 'Persistent filesystem')}</dt><dd>2.0 TiB</dd><p>{t('项目工作区所在文件系统', 'Filesystem backing the project workspace')}</p></div>
-      <div><dt>{t('已用', 'Used')}</dt><dd>≈ 1.01 TiB</dd><p>{t('系统磁盘统计（df）· 51%', 'Filesystem usage (df) · 51%')}</p></div>
-      <div class="snapshot-facts__primary"><dt>{t('可用', 'Available')}</dt><dd>≈ 0.99 TiB</dd><p>1,087,523,598,336 bytes</p></div>
+      <div><dt>{t('已用', 'Used')}</dt><dd>≈ 1.01 TiB</dd><p>{t('df（查看文件系统容量的系统命令）· 51%', 'df (the system command that reports filesystem capacity) · 51%')}</p></div>
+      <div class="snapshot-facts__primary"><dt>{t('可用', 'Available')}</dt><dd>≈ 0.99 TiB</dd><p>{t('约 1.09 TB；TiB 与 TB 是两种容量单位', 'about 1.09 TB; TiB and TB are two capacity units')}</p></div>
       <div><dt>{t('文件数量容量（inode，文件系统能记录多少个文件）', 'File-count capacity (inode)')}</dt><dd>41%</dd><p>{t('约 1,049 万可用', 'about 10.49M available')}</p></div>
     </dl>
 
@@ -253,16 +244,16 @@ const gpuFacts = [
 <style>
   .server-overview{color:var(--ink)}
   .server-hero{max-width:960px;padding:.8rem 0 1.75rem}
+  .server-section__sr-title{position:absolute;top:-10000px;left:-10000px;width:1px;height:1px;margin:0;padding:0;overflow:hidden;white-space:nowrap}
   .server-hero__context{max-width:max-content;margin:0 0 .45rem;padding:.25rem 0;border-bottom:1px solid var(--line);color:var(--ink);font-size:.86rem;font-weight:780}
   .server-hero h1{max-width:20ch;margin:0 0 .55rem;font-size:clamp(2rem,4vw,3.45rem);line-height:1;letter-spacing:-.05em}
   .server-hero__status{max-width:74ch;margin:0;color:var(--ink);font-size:clamp(1rem,1.6vw,1.16rem);font-weight:700;line-height:1.58}
-  .server-hero__facts{max-width:860px;margin:.65rem 0 0}
-  .server-hero__next{display:inline-grid;min-height:44px;gap:.08rem;align-items:center;margin-top:.65rem;padding:.62rem .78rem;border:1px solid var(--accent-deep);border-radius:var(--radius-control);color:var(--accent-deep);text-decoration:none}.server-hero__next strong{font-size:.88rem}.server-hero__next span{color:var(--muted);font-size:.72rem;font-weight:650;line-height:1.35}.server-hero__next:hover{background:color-mix(in srgb,var(--accent) 6%,transparent)}
+  .server-hero__guardrail-summary{max-width:78ch;margin:.55rem 0 0;color:var(--muted);font-size:.82rem;line-height:1.5}
+  .server-hero__next{display:inline-flex;min-height:44px;align-items:center;margin-top:.45rem;color:var(--accent-deep);font-size:.86rem;font-weight:800;text-decoration-thickness:1px;text-underline-offset:.2em}
   .server-hero__next:focus-visible{outline:3px solid var(--accent-deep);outline-offset:3px}
   .server-safety-depth{max-width:900px;margin:.15rem 0 1.1rem;border-block:1px solid var(--line)}
   .server-safety-depth>summary{min-height:44px;display:flex;align-items:center;cursor:pointer;color:var(--muted);font-size:.8rem;font-weight:760}
   .server-safety-depth[open]>summary{color:var(--ink)}
-  .server-safety-depth + .server-section{padding-top:3.5rem}
   .server-hero__boundary{max-width:76ch;margin:0 0 .8rem;color:var(--muted);font-size:.82rem;line-height:1.65}
 
   .routine-entry{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(17rem,.85fr);gap:.8rem;align-items:center;margin-top:.5rem;padding:.55rem 0;border-block:1px solid var(--line)}
@@ -352,7 +343,6 @@ const gpuFacts = [
   }
   @media(max-width:640px){
     .server-hero{padding-bottom:1.35rem}
-    .server-safety-depth + .server-section{padding-top:10.5rem}
     .server-hero h1{max-width:19ch}.server-hero__guardrails li{grid-template-columns:1fr;gap:.15rem}.routine-entry{grid-template-columns:1fr}.routine-entry__prompt{padding:.45rem 0 0;border-left:0;border-top:1px solid var(--line)}.operation-switchboard{grid-template-columns:1fr}.operation-switchboard a{border-right:0;border-bottom:1px solid var(--line)}.operation-switchboard a:last-child{border-bottom:0}
     .snapshot-facts,.gpu-facts,.privacy-grid{grid-template-columns:1fr}.snapshot-facts>div,.gpu-facts>div{border-right:0;border-bottom:1px solid var(--line)}.snapshot-facts>div:last-child,.gpu-facts>div:last-child{border-bottom:0}
     .operation-explainer li{grid-template-columns:5rem 1fr}
