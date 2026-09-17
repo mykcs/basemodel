@@ -16,7 +16,8 @@ for (const viewport of [
     await expect(page.locator('.server-hero__guardrails')).toContainText('远端已有副本，也不能自动删服务器文件');
     await expect(page.locator('.server-hero__guardrails')).toContainText('删服务器文件和把私有归档改成公开，是两件事');
     await expect(page.locator('.server-hero__guardrails')).toContainText('还没合并的草稿，不能当正式规则');
-    await expect(page.locator('.server-hero__next')).toContainText('查看只读健康扫描');
+    await expect(page.locator('.server-hero__next')).toContainText('复制例行维护指令');
+    await expect(page.locator('.server-hero__next')).toHaveAttribute('href', '#routine-maintenance');
     await expect(page.locator('.server-hero__sequence')).toHaveCount(0);
     await expect(page.locator('.server-hero__maintenance-order')).toContainText('重新读取或最小加载确认真的能恢复');
     await expect(page.locator('.server-hero__maintenance-order')).toContainText('只生成精确回收清单');

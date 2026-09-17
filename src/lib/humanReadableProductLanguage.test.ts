@@ -37,6 +37,8 @@ describe('human-readable product language contract', () => {
     expect(missionHero).toContain('ALFWorld 是文本具身任务，WebShop 是网页购物任务；两种环境分开算分');
     expect(missionHero).toContain('我们固定 Qwen2.5-3B-Instruct（30 亿级指令模型）和同一批任务');
     expect(missionHero).toContain('OpenEvo 是先保存任务证据');
+    expect(missionHero).toContain('OpenEvo 的任务先做完，再学习：');
+    expect(missionHero).toContain('{!compact && <details class="mission-hero__secondary">');
     expect(missionHero).not.toContain('先看研究对象与比较条件');
     expect(missionHero).not.toContain('mission-hero__frame research-fact-band');
     expect(missionHero).toContain("t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')");

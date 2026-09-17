@@ -45,21 +45,20 @@ const gpuFacts = [
 ---
 <main class="server-overview" data-locale={locale} data-storage-responsibility-view="artifact-lifecycle-v3">
   <header class="server-hero" data-reader-primary>
-    <p class="server-hero__context">{t('容量快照 · 2026-09-15 22:10（UTC+8）· 非实时数据', 'Storage snapshot · 2026-09-15 22:10 (UTC+8) · not live data')}</p>
+    <p class="server-hero__context">{t('容量快照（某一时刻保存的状态）· 2026-09-15 22:10（UTC+8）· 非实时数据', 'Storage snapshot (a saved point-in-time state) · 2026-09-15 22:10 (UTC+8) · not live data')}</p>
     <h1>{t('实验文件磁盘：约 0.99 TiB 可用', 'About 0.99 TiB remains on the disk holding project experiment files')}</h1>
-    <p class="server-hero__status">{t('当前空间充足，不需要紧急扩容；删除仍未授权。', 'Capacity is currently healthy and does not need urgent expansion; deletion is still not authorized.')}</p>
+    <p class="server-hero__status">{t('2.0 TiB 持久文件系统已用约 51%，还剩约 0.99 TiB；文件数量容量也没有压力。当前不需要紧急扩容，删除仍未授权。', 'The 2.0 TiB persistent filesystem is about 51% used with roughly 0.99 TiB free, and file-count capacity is also healthy. No urgent expansion is needed; deletion is still not authorized.')}</p>
     <div class="server-hero__action">
-      <a class="server-hero__next" href="#health-scan">{t('查看只读健康扫描 →', 'View the read-only health scan →')}</a>
+      <a class="server-hero__next" href="#routine-maintenance">{t('复制例行维护指令 →', 'Copy the routine-maintenance prompt →')}</a>
       <span>{t('这是页面内入口，不会执行远程操作。', 'This opens the page section; it does not execute a remote operation.')}</span>
     </div>
-    <p class="server-hero__maintenance-order"><strong>{t('例行维护顺序：', 'Routine-maintenance order:')}</strong>{t('先只读确认容量、实验状态和归属 → 再把已封存资产归档到已授权远端，并重新读取或最小加载确认真的能恢复 → 最后只生成精确回收清单；删除仍需另行批准。', 'First inspect capacity, experiment state, and ownership without making changes → then archive sealed assets to an authorized remote and freshly read or minimally reload them to prove recovery works → finally generate only an exact reclaim list; deletion still needs separate approval.')}</p>
+    <p class="server-hero__maintenance-order"><strong>{t('例行维护顺序：', 'Routine-maintenance order:')}</strong>{t('先只读确认容量、实验状态和归属 → 再把已封存资产归档到已授权远端存储，并重新读取或最小加载确认真的能恢复 → 最后只生成精确回收清单（明确列出准备回收的具体文件）；删除仍需另行批准。', 'First inspect capacity, experiment state, and ownership without making changes → then archive sealed assets to authorized remote storage and freshly read or minimally reload them to prove recovery works → finally generate only an exact reclaim list naming the specific files proposed for recovery; deletion still needs separate approval.')}</p>
     <ul class="server-hero__guardrails" aria-label={t('当前三个安全边界', 'Three current safety boundaries')}>
       <li><strong>{t('远端已有副本，也不能自动删服务器文件。', 'A remote copy does not automatically authorize deleting the server file.')}</strong><span>{t('对象 / 服务器负责人仍要批准同一版精确回收清单，删除前还会再查一次是否仍被使用。', 'The artifact/server owner must still approve the same exact reclaim list, followed by one more liveness check before deletion.')}</span></li>
       <li><strong>{t('删服务器文件和把私有归档改成公开，是两件事。', 'Deleting a server file and making a private archive public are separate decisions.')}</strong><span>{t('两种动作必须分别批准；不能因为要省本地空间，就顺便把私有归档改成公开。', 'Each action needs separate approval; freeing local storage does not authorize making a private archive public.')}</span></li>
       <li><strong>{t('还没合并的草稿，不能当正式规则。', 'An unmerged draft is not an active rule.')}</strong><span>{t('真正执行时，只认当前已合并或被实验明确采用的正式规则。', 'Execution follows only the currently merged or explicitly adopted authority.')}</span></li>
     </ul>
   </header>
-
 
   <section class="server-section" id="health-scan">
     <div class="section-heading">
@@ -93,7 +92,7 @@ const gpuFacts = [
 
   <nav class="operation-switchboard" aria-label={t('接下来查看哪个阶段', 'Choose the next server-artifact stage')}>
     <a href="#health-scan"><span>01</span><strong>{t('服务器健康扫描', 'Server health scan')}</strong><small>{t('只读看现在有没有压力', 'Read-only current pressure check')}</small></a>
-    <a href="#campaign-closeout"><span>02</span><strong>{t('实验收尾归档', 'Campaign closeout')}</strong><small>{t('给科研产物补实验身份证并验证远端恢复', 'Passport artifacts and verify remote recovery')}</small></a>
+    <a href="#campaign-closeout"><span>02</span><strong>{t('实验收尾归档', 'Campaign closeout')}</strong><small>{t('给科研产物补实验身份证（Passport）并验证远端恢复', 'Passport artifacts and verify remote recovery')}</small></a>
     <a href="#reclaim-proposal"><span>03</span><strong>{t('空间回收提案', 'Reclaim proposal')}</strong><small>{t('先列精确清单，不自动删除', 'Exact list first; no automatic deletion')}</small></a>
   </nav>
 

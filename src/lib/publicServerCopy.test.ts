@@ -24,7 +24,8 @@ describe('public server copy', () => {
     expect(serverOverview).toContain('例行服务器维护');
     expect(serverOverview).not.toContain('class="server-hero__facts research-fact-band"');
     expect(serverOverview).toContain('server-hero__guardrails');
-    expect(serverOverview).toContain('只读健康扫描 →');
+    expect(serverOverview).toContain('复制例行维护指令 →');
+    expect(serverOverview).toContain('href="#routine-maintenance"');
     expect(serverOverview).toContain('NOT_AUTHORIZED');
     expect(serverOverview.indexOf('</header>')).toBeLessThan(serverOverview.indexOf('<nav class="operation-switchboard"'));
     expect(serverOverview).toContain('这段 Prompt 只负责启动，不固定 Passport 版本');

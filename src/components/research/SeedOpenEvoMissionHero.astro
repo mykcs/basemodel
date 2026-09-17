@@ -21,9 +21,9 @@ const chain = [
     {!compact && <div class="mission-hero__actions"><a class="button button-primary mission-hero__briefing-cta" href={p('/research/seed-openevo/study/briefing/')}>{t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')}</a><a class="button button-secondary" href={p('/research/seed-openevo/flow/')}>{t('研究总览','Research overview')}</a></div>}
   </div>
 
-  {compact && <p class="mission-hero__method-summary"><strong>{t('OpenEvo 分两步：', 'OpenEvo has two stages:')}</strong>{t('先由 Qwen 完成 WebShop 购物任务，MiniMax（任务结束后回看轨迹的分析模型）只在做完后复盘；再用保存的轨迹逐轮更新文字经验、可复用策略、行为与恢复规则和少量模型适配参数。', 'Qwen first completes WebShop shopping tasks, while MiniMax (an analysis model that reviews saved traces only after the task ends) performs post-task review; the saved evidence is then used round by round to update written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter.')}</p>}
+  {compact && <p class="mission-hero__method-summary"><strong>{t('OpenEvo 的任务先做完，再学习：', 'OpenEvo finishes the task before learning from it:')}</strong>{t('Qwen 先独立完成 WebShop 购物任务；MiniMax（只在任务结束后回看轨迹的分析模型）随后复盘，第二阶段再用这些已保存证据逐轮更新文字经验、可复用策略、行为与恢复规则和少量模型适配参数。', 'Qwen first completes the WebShop shopping task on its own; MiniMax (an analysis model that only reviews the trace after the task ends) then reviews it, and Stage 2 uses the saved evidence round by round to update written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter.')}</p>}
 
-  <details class="mission-hero__secondary">
+  {!compact && <details class="mission-hero__secondary">
     <summary>{t('实验状态与来源', 'Experiment state and sources')}</summary>
     <dl class="mission-status">
       <div><dt>{t('科学事实的总账（source of truth）','Scientific source of truth')}</dt><dd>openevo-experiment</dd></div>
@@ -37,7 +37,7 @@ const chain = [
       <ol>{chain.map((node,index)=><li><a href={node.href}><span>{String(index+1).padStart(2,'0')}</span><small>{node.eyebrow}</small><strong>{node.title}</strong><p>{node.body}</p></a></li>)}</ol>
       <p class="mission-history">{t(`seed3090 与 openevo-webshop 保存历史证据；当前实验总账是 openevo-experiment。本站最近一次核验默认 main 的日期是 ${openEvoScientificState.checkedAt}。如果实际工作分支比 main 更靠前，当前阶段必须从那个分支的实验总表（campaign）和实验对账（reconciliation）重新读取。`,`seed3090 and openevo-webshop preserve historical evidence; openevo-experiment is the current experiment source of truth. This site last checked default main on ${openEvoScientificState.checkedAt}. If the working branch is ahead of main, resolve the current phase again from that branch's experiment ledger (campaign) and reconciliation.`)}</p>
     </figure>
-  </details>
+  </details>}
 </section>
 
 <style>

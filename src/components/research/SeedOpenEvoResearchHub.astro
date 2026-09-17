@@ -20,7 +20,7 @@ const objectGroups = [
     label: t('学习方法', 'Learning methods'),
     items: [
       { title:'SEED', body:t('把任务后的成功经验整理成技能，再通过后续参数优化更新模型；具体优化方法留到 SEED 方法页。','Turns successful hindsight experience into skills, then updates the model through later parameter optimization; the SEED method page explains the specific optimizer.'), href:p('/research/seed-openevo/flow/seed/') },
-      { title:'OpenEvo', body:t('先封存任务证据；后续第二阶段（持续学习）会分别更新文字经验、可复用策略、行为与恢复规则和少量适配参数，通过既定检查的新版本才进入下一批任务。','Seals task evidence first; the later continual-learning stage separately updates written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter, and only versions that pass the frozen checks enter the next task batch.'), href:p('/research/seed-openevo/flow/openevo/') },
+      { title:'OpenEvo', body:t('先封存任务证据；后续第二阶段（持续学习）会分别更新 Text Memory（文字经验）、Skill Bundle（可复用技能）、Agent System（全局行为与恢复规则）和 SD-LoRA（少量模型适配参数），通过既定检查的新版本才进入下一批任务。','Seals task evidence first; the later continual-learning stage separately updates written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter, and only versions that pass the frozen checks enter the next task batch.'), href:p('/research/seed-openevo/flow/openevo/') },
     ],
   },
   {
@@ -54,7 +54,7 @@ const objectGroups = [
     <ol class="run-step-grid">
       <li><span>1</span><h3>{t('对齐 SEED 的实验条件', 'Align SEED conditions')}</h3><p>{t('固定模型、ALFWorld / WebShop 环境和评测条件，避免把“方法差异”和“实验设置差异”混在一起。','Pin the model, ALFWorld / WebShop environments, and evaluation conditions so method differences are not confused with setup differences.')}</p><a href={p('/research/seed-openevo/flow/seed/')}>{t('SEED 方法','SEED method')} →</a></li>
       <li><span>2</span><h3>{t('运行 OpenEvo', 'Run OpenEvo')}</h3><p>{t('正式科学状态以 openevo-experiment 为准；旧的 RTX6 路线保留为历史证据，不代表现在的运行状态。','Current formal scientific state is governed by openevo-experiment; the RTX6 path is retained as historical evidence, not live state.')}</p><a href={p('/research/seed-openevo/study/run/')}>{t('实验指南','Experiment guide')} →</a></li>
-      <li><span>3</span><h3>{t('比较结果与失败原因', 'Compare results and failures')}</h3><p>{t('比较任务分数、完整成功、交互轨迹和失败模式，再检查 LoRA 等参数更新状态，决定下一轮真正能改变结论的实验。','Compare scores, exact success, trajectories, failure modes, and LoRA and other parameter-update state before choosing the next experiment that can change the conclusion.')}</p><a href={p('/research/seed-openevo/study/results/')}>{t('研究结果','Research findings')} →</a></li>
+      <li><span>3</span><h3>{t('比较结果与失败原因', 'Compare results and failures')}</h3><p>{t('比较任务分数、完整成功、交互轨迹和失败模式，再检查 LoRA（只训练少量适配参数的方法）等参数更新状态，决定下一轮真正能改变结论的实验。','Compare scores, exact success, trajectories, failure modes, and LoRA and other parameter-update state before choosing the next experiment that can change the conclusion.')}</p><a href={p('/research/seed-openevo/study/results/')}>{t('研究结果','Research findings')} →</a></li>
     </ol>
   </section>
 
@@ -63,7 +63,7 @@ const objectGroups = [
     <p class="section-intro">{t('实验跑完不代表结论就可信。四类记录分别证明环境真的运行、模型是否更新、任务结果发生了什么，以及这一轮实验到底是哪一轮。','A completed run is not automatically a trustworthy scientific result. Four evidence groups show that the environment ran, whether the model changed, what happened on the tasks, and which run produced the evidence.')}</p>
     <ol class="evidence-grid">
       <li><span>01</span><strong>{t('环境与模型', 'Environment and model')}</strong><p>{t('真实环境重新开始一题（reset）、真实 CUDA 计算，以及明确的模型版本号（revision，也就是本次实验固定的模型版本）。','A real environment reset, real CUDA execution, and a pinned model revision.')}</p></li>
-      <li><span>02</span><strong>{t('更新状态', 'Update state')}</strong><p>{t('参数指纹（digest，用来核对参数有没有变化）、LoRA 适配器、任务后生成的演化文件或后继模型版本，用于证明模型究竟有没有被更新。','Parameter digests, LoRA adapters, post-task evolution files, or successor model revisions that show whether the model was actually updated.')}</p></li>
+      <li><span>02</span><strong>{t('更新状态', 'Update state')}</strong><p>{t('参数指纹（digest，用来核对参数有没有变化）、LoRA（少量参数适配）适配器、任务后生成的演化文件或后继模型版本，用于证明模型究竟有没有被更新。','Parameter digests, LoRA adapters, post-task evolution files, or successor model revisions that show whether the model was actually updated.')}</p></li>
       <li><span>03</span><strong>{t('任务结果', 'Task outcomes')}</strong><p>{t('任务分数（score）、是否成功（success）、交互步数（steps）、无法执行时的备用动作（fallback）和结束原因（termination）。','Task score, success, interaction steps, fallback actions when output cannot execute, and termination reason.')}</p></li>
       <li><span>04</span><strong>{t('实验身份', 'Experiment identity')}</strong><p>{t('运行清单（Run Manifest，记录模型、代码、配置和任务集合）与代码提交 SHA，用于准确重建“到底跑了什么”。','The Run Manifest records the model, code, configuration, and task set; together with the code commit SHA it reconstructs exactly what was run.')}</p></li>
     </ol>

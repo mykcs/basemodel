@@ -76,7 +76,7 @@ for (const viewport of [
   });
 }
 
-test('desktop reading order puts the real mechanism before the optional LoRA comparison', async ({ page }) => {
+test('desktop reading order explains the LoRA distinction before the full mechanism canvas', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const positions = await page.locator('.sdlora-intro, #what-is-sd-lora, [data-slide-canvas]').evaluateAll((nodes) => nodes.map((node) => ({
@@ -86,8 +86,8 @@ test('desktop reading order puts the real mechanism before the optional LoRA com
   })));
   expect(positions).toHaveLength(3);
   expect(String(positions[0]!.id)).toContain('sdlora-intro');
-  expect(String(positions[1]!.id)).toContain('sdlora-slide');
-  expect(String(positions[2]!.id)).toBe('what-is-sd-lora');
+  expect(String(positions[1]!.id)).toBe('what-is-sd-lora');
+  expect(String(positions[2]!.id)).toContain('sdlora-slide');
   expect(positions[0]!.bottom).toBeLessThanOrEqual(positions[1]!.top + 2);
   expect(positions[1]!.bottom).toBeLessThanOrEqual(positions[2]!.top + 2);
 });

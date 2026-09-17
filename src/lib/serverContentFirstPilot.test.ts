@@ -7,14 +7,15 @@ const closeout = read('../styles/visual-closeout.css');
 
 describe('content-first server operations pilot', () => {
   it('makes the dated operational state the first subject without hiding deletion authority', () => {
-    expect(server).toContain('容量快照 · 2026-09-15 22:10（UTC+8）· 非实时数据');
+    expect(server).toContain('容量快照（某一时刻保存的状态）· 2026-09-15 22:10（UTC+8）· 非实时数据');
     expect(server).toContain('实验文件磁盘：约 0.99 TiB 可用');
     expect(server).toContain('NOT_AUTHORIZED');
-    expect(server).toContain('当前空间充足，不需要紧急扩容；删除仍未授权');
-    expect(server).toContain('查看只读健康扫描 →');
+    expect(server).toContain('2.0 TiB 持久文件系统已用约 51%，还剩约 0.99 TiB');
+    expect(server).toContain('复制例行维护指令 →');
+    expect(server).toContain('href="#routine-maintenance"');
     expect(server).toContain('例行维护顺序：');
     expect(server).toContain('重新读取或最小加载确认真的能恢复');
-    expect(server).toContain('最后只生成精确回收清单');
+    expect(server).toContain('最后只生成精确回收清单（明确列出准备回收的具体文件）');
     expect(server).toContain('远端已有副本，也不能自动删服务器文件。');
     expect(server).toContain('删服务器文件和把私有归档改成公开，是两件事。');
     expect(server).toContain('必须分别批准');

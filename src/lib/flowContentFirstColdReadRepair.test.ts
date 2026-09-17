@@ -45,8 +45,10 @@ describe('Flow content-first cold-read repair', () => {
     expect(hero).not.toContain('先看研究对象与比较条件 ↓');
     expect(hero).not.toContain('margin:1.35rem auto 1.8rem');
     expect(hero).toContain('实验状态与来源');
-    expect(hero).toContain('OpenEvo 分两步：');
-    expect(hero).toContain('MiniMax（任务结束后回看轨迹的分析模型）');
+    expect(hero).toContain('{!compact && <details class="mission-hero__secondary">');
+    expect(hero).not.toContain('{compact && <details class="mission-hero__secondary">');
+    expect(hero).toContain('OpenEvo 的任务先做完，再学习：');
+    expect(hero).toContain('MiniMax（只在任务结束后回看轨迹的分析模型）');
     for (const plainRole of ['文字经验', '可复用策略', '行为与恢复规则', '少量模型适配参数']) expect(hero).toContain(plainRole);
     for (const formalTerm of ['OPSD（', 'Text Memory（', 'Skill Bundle（', 'Agent System（', 'SD-LoRA（']) expect(hero).not.toContain(formalTerm);
     expect(nav).toContain('research-navigation__mobile');
