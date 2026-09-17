@@ -15,9 +15,9 @@ describe('Flow content-first cold-read repair', () => {
       '同一个 Qwen、同一批任务，只比较怎么学习',
       'ALFWorld 是文本具身任务',
       'WebShop 是网页购物任务',
-      '只有模型、任务、评分规则、训练预算和起点模型都对齐',
+      '如果只想比较第二阶段的学习器，两边必须共享第一阶段轨迹、任务后复盘、训练配方和同一个起点模型',
       'SEED 把成功经验写回模型参数；OpenEvo 先保存任务证据',
-      '后续差异才可以归因到学习方法',
+      '否则只能比较两个完整系统',
     ]) expect(hero).toContain(phrase);
   });
 
@@ -42,12 +42,11 @@ describe('Flow content-first cold-read repair', () => {
     expect(hero).not.toContain('min-height:min(34rem,calc(100svh - 9rem))');
     expect(hero).not.toContain('先看研究对象与比较条件 ↓');
     expect(hero).not.toContain('margin:1.35rem auto 1.8rem');
-    expect(hero).toContain('实验状态与来源');
-    expect(hero).toContain('OpenEvo 两个阶段：');
-    expect(hero).toContain('第二阶段先形成起始参数，再逐轮判断四类状态是否更新');
+    expect(hero).toContain('实验记录与当前状态（按需查看）');
+    expect(hero).toContain('OpenEvo 分两步：');
+    expect(hero).toContain('MiniMax（任务结束后回看轨迹的分析模型）');
     for (const plainRole of ['文字经验', '可复用策略', '行为与恢复规则', '少量模型适配参数']) expect(hero).toContain(plainRole);
     for (const formalTerm of ['OPSD（', 'Text Memory（', 'Skill Bundle（', 'Agent System（', 'SD-LoRA（']) expect(hero).not.toContain(formalTerm);
-    expect(hero).toContain('ALFWorld 是另一种任务环境，不自动套用这套 WebShop 六步交互流程');
     expect(nav).toContain('research-navigation__mobile');
     expect(nav).toContain("t('相关页面', 'Related pages')");
     expect(nav).toContain('.research-navigation__identity,.research-navigation__links{display:none}');

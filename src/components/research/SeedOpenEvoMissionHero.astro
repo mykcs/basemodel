@@ -17,12 +17,14 @@ const chain = [
   <div class="mission-hero__copy">
     <h1 id="mission-title">{t('同一个 Qwen、同一批任务，只比较怎么学习', 'Same Qwen, same tasks: only the learning method changes')}</h1>
     <p class="mission-hero__lede">{t('我们固定 Qwen2.5-3B-Instruct（30 亿级指令模型）和同一批任务，只改变学习方法。ALFWorld 是文本具身任务，WebShop 是网页购物任务；两种环境分开算分。', 'We pin Qwen2.5-3B-Instruct (a roughly 3B-parameter instruction model) and the same task set, changing only how it learns. ALFWorld is a text-based embodied task environment and WebShop is a web-shopping environment; their scores stay separate.')}</p>
-    {compact && <p class="mission-hero__boundary"><strong>{t('只有模型、任务、评分规则、训练预算和起点模型都对齐，后续差异才可以归因到学习方法。', 'Only after model, tasks, scoring, training budget, and starting model are aligned can later differences be attributed to the learning method.')}</strong> {t('SEED 把成功经验写回模型参数；OpenEvo 先保存任务证据，再更新文字经验、可复用策略、行为与恢复规则和少量适配参数。ALFWorld 与 WebShop 分开计分。', 'SEED writes successful experience back into model parameters; OpenEvo preserves task evidence first, then updates written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter. ALFWorld and WebShop are scored separately.')}</p>}
+    {compact && <p class="mission-hero__boundary"><strong>{t('如果只想比较第二阶段的学习器，两边必须共享第一阶段轨迹、任务后复盘、训练配方和同一个起点模型；否则只能比较两个完整系统。', 'To compare only the second-stage learner, both sides must share the first-stage traces, post-task review, training recipe, and the same starting model; otherwise the result compares two complete systems.')}</strong> {t('SEED 把成功经验写回模型参数；OpenEvo 先保存任务证据，再更新文字经验、可复用策略、行为与恢复规则和少量适配参数。', 'SEED writes successful experience back into model parameters; OpenEvo preserves task evidence first, then updates written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter.')}</p>}
     {!compact && <div class="mission-hero__actions"><a class="button button-primary mission-hero__briefing-cta" href={p('/research/seed-openevo/study/briefing/')}>{t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')}</a><a class="button button-secondary" href={p('/research/seed-openevo/flow/')}>{t('研究总览','Research overview')}</a></div>}
   </div>
 
+  {compact && <p class="mission-hero__method-summary"><strong>{t('OpenEvo 分两步：', 'OpenEvo has two stages:')}</strong>{t('先由 Qwen 完成 WebShop 购物任务，MiniMax（任务结束后回看轨迹的分析模型）只在做完后复盘；再用保存的轨迹逐轮更新文字经验、可复用策略、行为与恢复规则和少量模型适配参数。', 'Qwen first completes WebShop shopping tasks, while MiniMax (an analysis model that reviews saved traces only after the task ends) performs post-task review; the saved evidence is then used round by round to update written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter.')}</p>}
+
   <details class="mission-hero__secondary">
-    <summary>{t('实验状态与来源', 'Experiment state and sources')}</summary>
+    <summary>{t('实验记录与当前状态（按需查看）', 'Experiment record and current state (optional)')}</summary>
     <dl class="mission-status">
       <div><dt>{t('科学事实的总账（source of truth）','Scientific source of truth')}</dt><dd>openevo-experiment</dd></div>
       <div><dt>{t('最近核验的默认分支（main snapshot）','Last checked default branch (main snapshot)')}</dt><dd>{openEvoScientificState.defaultBranchSnapshot.phase} · {openEvoScientificState.checkedAt}</dd></div>
@@ -36,7 +38,6 @@ const chain = [
       <p class="mission-history">{t(`seed3090 与 openevo-webshop 保存历史证据；当前实验总账是 openevo-experiment。本站最近一次核验默认 main 的日期是 ${openEvoScientificState.checkedAt}。如果实际工作分支比 main 更靠前，当前阶段必须从那个分支的实验总表（campaign）和实验对账（reconciliation）重新读取。`,`seed3090 and openevo-webshop preserve historical evidence; openevo-experiment is the current experiment source of truth. This site last checked default main on ${openEvoScientificState.checkedAt}. If the working branch is ahead of main, resolve the current phase again from that branch's experiment ledger (campaign) and reconciliation.`)}</p>
     </figure>
   </details>
-  {compact && <p class="mission-hero__method-summary"><strong>{t('OpenEvo 两个阶段：', 'OpenEvo has two stages:')}</strong>{t('第一阶段由 Qwen 完成 WebShop 购物任务并保存轨迹，MiniMax 只在任务结束后复盘。第二阶段先形成起始参数，再逐轮判断四类状态是否更新：文字经验、可复用策略、行为与恢复规则，以及少量模型适配参数。正式名称和更新条件放在下面的训练设计里解释。ALFWorld 是另一种任务环境，不自动套用这套 WebShop 六步交互流程。', 'First, Qwen completes WebShop shopping tasks and saves the traces while MiniMax reviews only after each task. The second stage establishes the starting adapter and then decides, round by round, whether to update four state types: written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter. Their formal names and update conditions are defined in the training-design section below. ALFWorld is a different task environment and does not automatically use this six-step WebShop interaction flow.')}</p>}
 </section>
 
 <style>
