@@ -19,7 +19,8 @@ describe('shared research content primitives', () => {
 
   it('uses the shared fact band only where a shared numeric axis still helps', () => {
     expect(flowHero).not.toContain('mission-hero__frame research-fact-band');
-    expect(flowHero).toContain('只比较第二阶段（持续学习）时，两边必须从同一版模型参数出发');
+    expect(flowHero).toContain('只有要把差异归因到第二阶段（Stage 2，持续学习）的学习器时');
+    expect(flowHero).toContain('同一个起点参数');
     expect(sdLora).not.toContain('sdlora-intro__frame research-fact-band');
     expect(sdLora).toContain('普通 LoRA 与 SD-LoRA 的参数区别');
     expect(serverOverview).not.toContain('server-hero__facts research-fact-band');
