@@ -8,12 +8,12 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
   it('starts from the parameter-write job and keeps the detailed LoRA comparison at optional depth', () => {
     for (const phrase of [
       '把做对的网页购物轨迹训练成下一轮候选参数',
-      '这条参数更新方法叫 SD-LoRA（Scalable Decoupled LoRA）',
-      '基础模型保持不动，只训练少量适配参数',
+      '在 OpenEvo（这里的持续学习系统）里，这条参数更新方法叫 SD-LoRA（Scalable Decoupled LoRA）',
+      '基础模型保持不动、只训练少量适配参数的方法',
       'WebShop（网页购物任务）',
       '筛出完整成功轨迹',
-      '训练候选 LoRA',
-      '共同检查通过后，下一轮采用',
+      '候选 LoRA（少量模型适配参数）',
+      '只有共同检查通过，下一轮才采用它',
       '候选参数不等于能力一定提升',
       '普通 LoRA 与 SD-LoRA 的参数区别',
       'Scalable Decoupled LoRA',
@@ -30,6 +30,7 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
     const intro = mechanism.slice(mechanism.indexOf('<section class="sdlora-intro"'), mechanism.indexOf('</section>') + 10);
     expect(intro).toContain('sdlora-intro__path');
     expect(intro).not.toContain('DirectApply');
+    expect(intro).not.toContain("<strong>{t('筛出完整成功轨迹'");
     expect(intro).not.toContain('GDR-v1');
     const motivation = mechanism.indexOf('把做对的网页购物轨迹训练成下一轮候选参数');
     const comparison = mechanism.indexOf('普通 LoRA 与 SD-LoRA 的参数区别');

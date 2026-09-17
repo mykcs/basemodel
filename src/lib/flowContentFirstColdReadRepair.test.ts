@@ -15,7 +15,8 @@ describe('Flow content-first cold-read repair', () => {
       '同一个 Qwen、同一批任务，只比较怎么学习',
       'ALFWorld 是文本具身任务',
       'WebShop 是网页购物任务',
-      '只比较第二阶段学习器时，两边必须从同一个模型参数快照（checkpoint）出发',
+      '这页先讲实验怎么公平比较，不是 SEED / OpenEvo 谁更好的结果',
+      '只比较第二阶段学习器时，两边必须从同一个模型参数快照（checkpoint，也就是一版固定参数）出发',
       '共享同一批第一阶段轨迹、任务后复盘和训练配方',
       'SEED 是把成功经验写回模型参数的基线',
       'OpenEvo 是先保存任务证据、再更新文字经验',
@@ -25,9 +26,10 @@ describe('Flow content-first cold-read repair', () => {
 
   it('explains Stage 1 in ordinary language instead of requiring analyzer or step-loop jargon', () => {
     expect(hub).toContain('下面用 WebShop 展开两阶段');
-    expect(hub).toContain('MiniMax（外部复盘模型）只回看已保存轨迹，不替 Qwen 选动作');
+    expect(hub).toContain('MiniMax（外部复盘模型，只在任务结束后回看轨迹的分析模型）只回看已保存轨迹，不替 Qwen 选动作');
     expect(hub).toContain('不自动代表 ALFWorld 使用同一交互流程');
     expect(hub).not.toContain('外部 analyzer 才能复盘');
+    expect(hub).toContain('文字经验（Text Memory）、可复用技能（Skill Bundle）、全局行为与恢复规则（Agent System）和少量模型适配参数（SD-LoRA）');
     expect(hub).not.toContain('step loop');
     expect(hub.indexOf('id="questions"')).toBeLessThan(hub.indexOf('id="training-design"'));
     expect(hub).toContain('具体优化方法留到 SEED 方法页');
@@ -47,9 +49,10 @@ describe('Flow content-first cold-read repair', () => {
     expect(hero).toContain('实验状态与来源');
     expect(hero).toContain('{!compact && <details class="mission-hero__secondary">');
     expect(hero).not.toContain('{compact && <details class="mission-hero__secondary">');
-    expect(hero).toContain('OpenEvo 的任务先做完，再学习：');
-    expect(hero).toContain('MiniMax（只在任务结束后回看轨迹的分析模型）');
-    for (const plainRole of ['文字经验', '可复用策略', '行为与恢复规则', '少量模型适配参数']) expect(hero).toContain(plainRole);
+    expect(hero).not.toContain('mission-hero__method-summary');
+    expect(hub).toContain('OpenEvo 的任务先做完，再学习：');
+    expect(hub).toContain('MiniMax（外部复盘模型，只在任务结束后回看轨迹的分析模型）');
+    for (const plainRole of ['文字经验', '可复用策略', '行为与恢复规则', '少量模型适配参数']) expect(hub).toContain(plainRole);
     for (const formalTerm of ['OPSD（', 'Text Memory（', 'Skill Bundle（', 'Agent System（', 'SD-LoRA（']) expect(hero).not.toContain(formalTerm);
     expect(nav).toContain('research-navigation__mobile');
     expect(nav).toContain("t('相关页面', 'Related pages')");
@@ -68,13 +71,15 @@ describe('Flow content-first cold-read repair', () => {
   });
 
   it('connects Stage 1 evidence to the later four-state Stage 2 without rewriting early experiments', () => {
-    for (const term of ['OPSD（第一阶段封存后的初始参数训练）', 'Text Memory（文字经验）保存可复用经验', 'Skill Bundle（可复用技能）保存策略', 'Agent System（行为与恢复规则）保存全局规则', 'SD-LoRA（少量模型适配参数）更新参数', '只有最终采用的版本才装入下一批任务']) {
+    for (const term of ['第一阶段封存后的初始参数训练（OPSD）', '文字经验（Text Memory）保存可复用经验', '可复用技能（Skill Bundle）保存策略', '行为与恢复规则（Agent System）保存全局规则', '少量模型适配参数（SD-LoRA）更新参数', '只有最终采用的版本才装入下一批任务']) {
       expect(design).toContain(term);
     }
     expect(design).toContain('早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态');
     expect(design).toContain('完整系统比较只能回答两套系统总体表现有什么差异');
     expect(design).toContain('监督微调（SFT）训练配方');
     expect(design).toContain('checkpoint，也就是一版固定参数');
+    expect(design).toContain('任务尝试随机种子（rollout seeds）');
+    expect(design).toContain('1,440 次任务尝试（rollout）');
     expect(hub).toContain('参数指纹（digest，用来核对参数有没有变化）');
     expect(hub).toContain('Run Manifest，记录模型、代码、配置和任务集合');
     expect(design).toContain('各自的提示、历史与动作解析层');

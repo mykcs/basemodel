@@ -29,14 +29,16 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(component).toContain('OpenEVO WebShop same-task retest: we still cannot show that the round-128 model state got worse overall');
     expect(component).toContain('第一阶段先让 Qwen 自己完成 WebShop 任务');
     expect(component).toContain('持续学习：文字经验、可复用技能、行为规则和 LoRA（少量模型适配参数）会分别更新并进入下一轮');
-    expect(component).toContain('DirectApply / No-GDR 的含义就是：候选参数通过共同检查后直接进入下一轮');
+    expect(component).toContain('直接采用规则（DirectApply / No-GDR）的含义就是：候选参数通过共同检查后直接进入下一轮');
     expect(component).toContain('OpenEVO 是这条持续学习实验线');
     expect(component).toContain('进入第 127 / 128 轮时加载的两个相邻模型状态（R127 / R128）');
     expect(component).toContain('63.58 → 59.41');
     expect(component).toContain('完整做对');
     expect(component).toContain('10 / 32 → 8 / 32');
         expect(component).toContain('平均分少 4.18，但 95% 统计范围 −17.13 ～ +8.00 包含“没有差别”');
-    expect(component).toContain('DirectApply（候选更新检查通过后直接采用）');
+    expect(component).toContain('直接采用规则（DirectApply：候选更新检查通过后直接采用）');
+    expect(component).toContain('final：训练结束后才打开一次的固定 128 题');
+    expect(component).toContain('熵（entropy：表示选择概率有多分散）');
     expect(component).not.toContain('min-height:calc(100svh - 6rem)');
     expect(component).not.toContain('border-left:3px solid var(--accent-deep)');
     expect(component).toContain('border-top:1px solid var(--line)');
@@ -46,7 +48,7 @@ describe('Q17 advisor diagnostics publication', () => {
     expect(component).toContain("aria-label={t('相邻两个模型状态的同题结果', 'Same-task results for the two adjacent model states')}");
     expect(component).not.toContain('id="same-task-result"');
     expect(component).toContain('/q17-directapply-analysis/');
-    expect(component).toContain('查看 DirectApply 160 轮完整曲线与冻结 final');
+    expect(component).toContain('查看 DirectApply 160 轮完整曲线与冻结最终测试（final）');
     expect(component).not.toContain('我们现在只敢说到这里');
     expect(component).toContain('这次诊断当时没有碰最终测试');
     expect(component).not.toContain('result-hero__numbers research-fact-band');

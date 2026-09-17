@@ -31,7 +31,7 @@ const rows = [
       <div><dt>{t('完整做对', 'Fully solved')}</dt><dd>10 / 32 → 8 / 32</dd></div>
       <div><dt>{t('平均分相差', 'Score difference')}</dt><dd>−4.18</dd></div>
     </dl>
-    <p class="result-hero__boundary"><strong>{t('平均分少 4.18，但 95% 统计范围 −17.13 ～ +8.00 包含“没有差别”。', 'The mean score is 4.18 points lower, but the 95% interval −17.13 to +8.00 includes “no difference.”')}</strong>{t('这里的 95% 范围表示用这 32 题估计真实差值时还有多大不确定性；包含 0，表示现有样本也支持“没有稳定差别”。这是局部诊断，不是训练结束后才打开的冻结最终测试（final）。32 题来自训练 / 开发范围、看结果前已固定，与锁定的最终 128 题不重合，也不能外推到后续训练。', 'The 95% interval summarizes uncertainty in the underlying score difference estimated from these 32 tasks. Because it includes zero, the current sample is also compatible with no stable difference. This is a local diagnostic, not the frozen final evaluation opened only after training. The 32 tasks came from the train/development range, were frozen before results were inspected, do not overlap with the locked final 128 tasks, and cannot be extrapolated to later training.')}</p>
+    <p class="result-hero__boundary"><strong>{t('平均分少 4.18，但 95% 统计范围 −17.13 ～ +8.00 包含“没有差别”。', 'The mean score is 4.18 points lower, but the 95% interval −17.13 to +8.00 includes “no difference.”')}</strong>{t('这里的 95% 范围表示用这 32 题估计真实差值时还有多大不确定性；包含 0，表示现有样本也支持“没有稳定差别”。这是局部诊断，不是冻结最终测试（final：训练结束后才打开一次的固定 128 题）。32 题来自训练 / 开发范围、看结果前已固定，与锁定的最终 128 题不重合，也不能外推到后续训练。', 'The 95% interval summarizes uncertainty in the underlying score difference estimated from these 32 tasks. Because it includes zero, the current sample is also compatible with no stable difference. This is a local diagnostic, not the frozen final evaluation opened only after training. The 32 tasks came from the train/development range, were frozen before results were inspected, do not overlap with the locked final 128 tasks, and cannot be extrapolated to later training.')}</p>
   </header>
 
   <section class="result-section" aria-label={t('相邻两个模型状态的同题结果', 'Same-task results for the two adjacent model states')}>
@@ -59,7 +59,7 @@ const rows = [
     <h2 id="what-it-means">{t('购物动作没有报错；第二个模型状态的生成概率更集中', 'Shopping actions had no execution errors; the second model state had more concentrated token probabilities')}</h2>
     <ul class="diagnostic-summary" aria-label={t('这组诊断最先排查到的两个现象', 'Two observations this diagnostic checks first')}>
       <li><strong>{t('购物动作没有执行错误', 'Shopping actions did not fail to execute')}</strong><span>{t('两次重测都没有动作格式损坏、修复或规则拦截。', 'Neither retest had broken action formats, repair events, or rule rejections.')}</span></li>
-      <li><strong>{t('R128 的选择概率分布更集中', 'R128 had a more concentrated probability distribution')}</strong><span>{t('技术上用 entropy（熵，表示选择概率有多分散）记录；更集中本身不能证明能力更好或更差。', 'This is recorded with entropy, a measure of how spread out the choice probabilities are; more concentration by itself does not show better or worse capability.')}</span></li>
+      <li><strong>{t('R128 的选择概率分布更集中', 'R128 had a more concentrated probability distribution')}</strong><span>{t('技术上用熵（entropy：表示选择概率有多分散）记录；更集中本身不能证明能力更好或更差。', 'This is recorded with entropy, a measure of how spread out the choice probabilities are; more concentration by itself does not show better or worse capability.')}</span></li>
     </ul>
     <div class="reasoning-line">
       <article>
@@ -68,7 +68,7 @@ const rows = [
       </article>
       <article>
         <h3>{t('模型的生成选择反而更集中', 'The model’s choices became more concentrated')}</h3>
-        <p>{t('我们记录了模型生成下一步时，概率分在多少不同选择上；技术上这个统计量叫 entropy（熵）。R127 是 0.392，R128 是 0.343。数值变低，表示概率更集中，所以 R128 并不是“更拿不定主意”。它更像是更坚定地偏向了某些选择。', 'We measured how spread out the model’s probabilities were when generating the next step (entropy). R127 was 0.392 and R128 was 0.343. Lower means the probabilities were more concentrated, so R128 was not simply more unsure; it was more strongly favoring some choices.')}</p>
+        <p>{t('我们记录了模型生成下一步时，概率分在多少不同选择上；技术上这个统计量叫熵（entropy：选择概率有多分散）。R127 是 0.392，R128 是 0.343。数值变低，表示概率更集中，所以 R128 并不是“更拿不定主意”。它更像是更坚定地偏向了某些选择。', 'We measured how spread out the model’s probabilities were when generating the next step (entropy). R127 was 0.392 and R128 was 0.343. Lower means the probabilities were more concentrated, so R128 was not simply more unsure; it was more strongly favoring some choices.')}</p>
       </article>
     </div>
     <aside class="claim-boundary">
@@ -77,14 +77,14 @@ const rows = [
     </aside>
     <details class="method-context">
       <summary>{t('方法细节：两轮之间哪些状态会更新？', 'Method detail: which states can change between rounds?')}</summary>
-      <p>{t('第一阶段先让 Qwen 自己完成 WebShop 任务；MiniMax（只做任务后复盘的外部模型）只在任务结束后回看保存的交互记录。之后进入持续学习：文字经验、可复用技能、行为规则和 LoRA（少量模型适配参数）会分别更新并进入下一轮。DirectApply / No-GDR 的含义就是：候选参数通过共同检查后直接进入下一轮，不再用旧 GDR-v1 的 16 题小测在新旧参数之间二次选择。', 'First, Qwen completes WebShop tasks itself, while MiniMax (an external model used only for post-task review) reads the saved interaction trace only after the task ends. Continual learning then updates written experience, reusable skills, behavior rules, and LoRA (a small parameter adapter) for the next round. DirectApply / No-GDR means the candidate enters the next round after the shared checks pass, without the old GDR-v1 16-task old-vs-new probe.')}</p>
+      <p>{t('第一阶段先让 Qwen 自己完成 WebShop 任务；MiniMax（只做任务后复盘的外部模型）只在任务结束后回看保存的交互记录。之后进入持续学习：文字经验、可复用技能、行为规则和 LoRA（少量模型适配参数）会分别更新并进入下一轮。直接采用规则（DirectApply / No-GDR）的含义就是：候选参数通过共同检查后直接进入下一轮，不再用旧 GDR-v1 的 16 题小测在新旧参数之间二次选择。', 'First, Qwen completes WebShop tasks itself, while MiniMax (an external model used only for post-task review) reads the saved interaction trace only after the task ends. Continual learning then updates written experience, reusable skills, behavior rules, and LoRA (a small parameter adapter) for the next round. DirectApply / No-GDR means the candidate enters the next round after the shared checks pass, without the old GDR-v1 16-task old-vs-new probe.')}</p>
     </details>
   </section>
 
   <section class="result-section" aria-labelledby="next-question">
     <h2 id="next-question">{t('这组诊断只回答相邻两个模型状态的局部变化', 'This diagnostic only answers the local change between two adjacent model states')}</h2>
-    <p>{t('这组诊断没有改变正式训练规则；DirectApply（候选更新检查通过后直接采用）后来按原先固定的实验规则完整跑完 160 轮，并单独完成了一次冻结 128 题最终测试（final）。这里仍只回答 R127→R128 的局部变化：我们没有在 R159 再跑同一套 32 题，所以不能把这组诊断外推成“后面一直如此”。最终 128 题回答的是整条 DirectApply 线最后表现怎样，不负责定位是哪一次参数更新造成了哪道题的变化。', 'This diagnostic did not change the formal treatment. DirectApply later completed all 160 rounds under the same contract and then ran one separate frozen 128-task final. This page still answers only the local R127→R128 question: we did not rerun these same 32 tasks at R159, so the pattern cannot be extrapolated through the rest of training. The final 128 tasks measure the completed DirectApply endpoint; they do not identify which individual update changed which task.')}</p>
-    <p class="q17-complete-link"><a href={fullRunHref}>{t('查看 DirectApply 160 轮完整曲线与冻结 final →', 'View the full 160-round DirectApply curve and frozen final →')}</a></p>
+    <p>{t('这组诊断没有改变正式训练规则；直接采用规则（DirectApply：候选更新检查通过后直接采用）后来按原先固定的实验规则完整跑完 160 轮，并单独完成了一次冻结 128 题最终测试（final）。这里仍只回答 R127→R128 的局部变化：我们没有在 R159 再跑同一套 32 题，所以不能把这组诊断外推成“后面一直如此”。最终 128 题回答的是整条 DirectApply 线最后表现怎样，不负责定位是哪一次参数更新造成了哪道题的变化。', 'This diagnostic did not change the formal treatment. DirectApply later completed all 160 rounds under the same contract and then ran one separate frozen 128-task final. This page still answers only the local R127→R128 question: we did not rerun these same 32 tasks at R159, so the pattern cannot be extrapolated through the rest of training. The final 128 tasks measure the completed DirectApply endpoint; they do not identify which individual update changed which task.')}</p>
+    <p class="q17-complete-link"><a href={fullRunHref}>{t('查看 DirectApply 160 轮完整曲线与冻结最终测试（final） →', 'View the full 160-round DirectApply curve and frozen final →')}</a></p>
   </section>
 
   <details class="method-depth">

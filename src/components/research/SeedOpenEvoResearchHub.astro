@@ -20,7 +20,7 @@ const objectGroups = [
     label: t('学习方法', 'Learning methods'),
     items: [
       { title:'SEED', body:t('把任务后的成功经验整理成技能，再通过后续参数优化更新模型；具体优化方法留到 SEED 方法页。','Turns successful hindsight experience into skills, then updates the model through later parameter optimization; the SEED method page explains the specific optimizer.'), href:p('/research/seed-openevo/flow/seed/') },
-      { title:'OpenEvo', body:t('先封存任务证据；后续第二阶段（持续学习）会分别更新 Text Memory（文字经验）、Skill Bundle（可复用技能）、Agent System（全局行为与恢复规则）和 SD-LoRA（少量模型适配参数），通过既定检查的新版本才进入下一批任务。','Seals task evidence first; the later continual-learning stage separately updates written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter, and only versions that pass the frozen checks enter the next task batch.'), href:p('/research/seed-openevo/flow/openevo/') },
+      { title:'OpenEvo', body:t('先封存任务证据；后续第二阶段（持续学习）会分别更新文字经验（Text Memory）、可复用技能（Skill Bundle）、全局行为与恢复规则（Agent System）和少量模型适配参数（SD-LoRA），通过既定检查的新版本才进入下一批任务。','Seals task evidence first; the later continual-learning stage separately updates written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter, and only versions that pass the frozen checks enter the next task batch.'), href:p('/research/seed-openevo/flow/openevo/') },
     ],
   },
   {
@@ -45,7 +45,7 @@ const objectGroups = [
 
   <section class="mission-section" id="training-design" aria-labelledby="training-design-title">
     <div class="mission-section__heading"><span>02</span><h2 id="training-design-title">{t('WebShop 先做题和复盘，再持续学习', 'WebShop: act and review first, then continue learning')}</h2></div>
-    <p class="section-intro">{t('下面用 WebShop 展开两阶段。第一阶段（Stage 1，做题与事后复盘）由 Qwen 自己完成购物任务，任务结束后 MiniMax（外部复盘模型）只回看已保存轨迹，不替 Qwen 选动作。第二阶段（Stage 2，持续学习）才用这些轨迹和复盘去更新后续状态。外部模型不能在做题过程中替 Qwen 选动作；这六步只说明 WebShop，不自动代表 ALFWorld 使用同一交互流程。', 'The WebShop example has two stages. Stage 1 is task execution and post-task review: Qwen completes the shopping task itself, and only after the task ends does MiniMax, an external review model, inspect the saved trace without choosing actions for Qwen. Stage 2 is continual learning, which uses those traces and reviews to update later state. The external model never chooses actions during the task, and this six-step example describes WebShop only.')}</p>
+    <p class="section-intro">{t('下面用 WebShop 展开两阶段。OpenEvo 的任务先做完，再学习：第一阶段（Stage 1，做题与事后复盘）由 Qwen 自己完成购物任务，任务结束后 MiniMax（外部复盘模型，只在任务结束后回看轨迹的分析模型）只回看已保存轨迹，不替 Qwen 选动作。第二阶段（Stage 2，持续学习）才用这些轨迹和复盘去更新文字经验、可复用策略、行为与恢复规则和少量模型适配参数。外部模型不能在做题过程中替 Qwen 选动作；这六步只说明 WebShop，不自动代表 ALFWorld 使用同一交互流程。', 'The WebShop example has two stages. OpenEvo finishes the task before learning from it: in Stage 1, Qwen completes the shopping task itself, and only after the task ends does MiniMax, an external review model, inspect the saved trace without choosing actions for Qwen. Stage 2 is continual learning, which uses those traces and reviews to update written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter. The external model never chooses actions during the task, and this six-step example describes WebShop only.')}</p>
     <SeedOpenEvoTrainingDesignOverview locale={locale} />
   </section>
 

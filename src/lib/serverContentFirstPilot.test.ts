@@ -20,7 +20,7 @@ describe('content-first server operations pilot', () => {
     expect(server).toContain('删服务器文件和把私有归档改成公开，是两件事。');
     expect(server).toContain('必须分别批准');
     expect(server).toContain('真正执行时，只认当前已合并或被实验明确采用的正式规则');
-    expect(server).toContain('删除仍未授权');
+    expect(server).toContain('归档和“回收清单”都不等于删除；删除仍未授权');
     expect(server).toContain('对象 / 服务器负责人仍要批准同一版精确回收清单');
     expect(server).toContain('例行服务器维护');
     expect(server).toContain('df（查看文件系统容量的系统命令）');
@@ -28,6 +28,8 @@ describe('content-first server operations pilot', () => {
     expect(server).toContain('文件数量容量（inode，文件系统能记录多少个文件）');
     expect(server).toContain('正式归档版本（恢复时默认认的那一份）');
     expect(server).toContain('具体归档对象、负责人、预计释放量和完成状态只来自本次维护的现场扫描');
+    expect(server).not.toContain('#health-scan{margin-top:9.25rem}');
+    expect(server).toContain('给科研产物补实验身份证，并验证远端确实能恢复');
   });
 
   it('keeps optional one-stage navigation after the primary operational owner', () => {

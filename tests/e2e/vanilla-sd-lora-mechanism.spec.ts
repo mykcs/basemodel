@@ -59,9 +59,10 @@ for (const viewport of [
     await expect(page.locator('.sdlora-intro__steps')).toHaveCount(0);
     await expect(page.locator('.sdlora-intro__path')).toBeVisible();
     await expect(page.locator('.sdlora-intro__path li')).toHaveCount(0);
-    await expect(page.locator('.sdlora-intro__path')).toContainText('筛出完整成功轨迹');
-    await expect(page.locator('.sdlora-intro__path')).toContainText('训练候选 LoRA');
-    await expect(page.locator('.sdlora-intro__path')).toContainText('共同检查通过后，下一轮采用');
+    await expect(page.locator('.sdlora-intro__path strong')).toHaveCount(0);
+    await expect(page.locator('.sdlora-intro__path')).toContainText('完整成功轨迹');
+    await expect(page.locator('.sdlora-intro__path')).toContainText('候选 LoRA（少量模型适配参数）');
+    await expect(page.locator('.sdlora-intro__path')).toContainText('共同检查通过');
     await expect(page.locator('.sdlora-intro')).not.toContainText('DirectApply');
     await expect(page.locator('.sdlora-intro')).not.toContainText('GDR-v1');
     await expect(page.locator('.sdlora-intro__frame')).toHaveCount(0);
