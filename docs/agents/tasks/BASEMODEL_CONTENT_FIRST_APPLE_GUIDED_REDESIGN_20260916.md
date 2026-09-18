@@ -411,14 +411,17 @@ Phase-F terminology-consistency sweep witness — **2026-09-18**: refreshed the 
 
 ### Phase G — Cross-device / theme / accessibility / performance acceptance — **5%**
 
-- [ ] Desktop 1280×633 first-viewport contract.
-- [ ] Phone 390×844 first-viewport contract.
-- [ ] Representative tablet/narrow-laptop composition.
-- [ ] Light + dark theme contrast and semantics.
-- [ ] Keyboard navigation, focus visibility, landmarks, labels and touch targets.
-- [ ] No page-level horizontal overflow.
-- [ ] Reduced-motion fallback for any flow animation.
-- [ ] No unnecessary client-side JS/hydration growth for static presentation.
+- [x] Desktop 1280×633 first-viewport contract.
+- [x] Phone 390×844 first-viewport contract.
+- [x] Representative tablet/narrow-laptop composition.
+- [x] Light + dark theme contrast and semantics.
+- [x] Keyboard navigation, focus visibility, landmarks, labels and touch targets.
+- [x] No page-level horizontal overflow.
+- [x] Reduced-motion fallback for any flow animation.
+- [x] No unnecessary client-side JS/hydration growth for static presentation.
+
+
+Phase-G acceptance witness — **2026-09-18**: ran the repository's global UI preflight classification against the complete redesign diff; it correctly classified the candidate as **global** and therefore required the deterministic gate, production build, document-overflow preflight and full Chromium + WebKit matrix. The exact product tree passed the deterministic deploy gate, **263-page** build with heading/brand audits, and explicit overflow preflight at **390×844**, **768×1024** and **1440×1000** with document width equal to viewport width. The full **394/394** Chromium + WebKit matrix passed, including the Reader Contract first-screen checks at desktop **1280×633** and phone **390×844**, representative tablet/narrow layouts, light/dark direct loads and theme switching, keyboard-operable navigation/disclosures/dialogs/step controls, focus/interaction paths, reduced-motion semantics, and route-wide overflow/geometry checks. A source-diff hydration audit found no new production `client:*` directive introduced by this redesign; the only added `client:` match is a regression assertion forbidding unnecessary hydration in a static content owner. No accessibility threshold, viewport budget, browser assertion or release gate was relaxed to obtain this result. Phase G is therefore complete at **5 / 5 weighted points**, bringing the credited total to **95 / 100**.
 
 ### Phase H — Release, production readback and closeout — **10%**
 
