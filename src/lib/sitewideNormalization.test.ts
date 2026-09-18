@@ -34,6 +34,9 @@ const gdrDirectApply = read('../components/research/OpenEvoGdrDirectApplyExplain
 const harness2Study = read('../components/research/OpenEvoHarness2MiniStudy.astro');
 const resultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
 const resultNoteRoute = read('../pages/research/seed-openevo/study/results/[note].astro');
+const legacyStage2Journey = read('../components/research/OpenEvoLegacyStage2ResearchJourney.astro');
+const trainingDesign = read('../components/research/SeedOpenEvoTrainingDesignOverview.astro');
+const experimentSelector = read('../components/research/OpenEvoExperimentSelector.astro');
 const sitemapRoutes = read('./sitemapRoutes.ts');
 const explainerStyles = [
   read('../styles/interactive-research-explainer-core.css'),
@@ -156,6 +159,28 @@ describe('sitewide normalization first repair batch', () => {
     expect(harness2Study).toContain('128 对尝试的无效动作终止配对矩阵');
     expect(harness2Study).toContain('仅候选组因无效动作终止');
     expect(harness2Study).not.toContain('<article class="warn"><span>{q.paired.candidateOnlyInvalid}</span>');
+  });
+
+
+  it('keeps sequence and branch topology visible when responsive layouts recompose', () => {
+    expect(harness2Study).toContain('data-flow-branch="paired-arms"');
+    expect(harness2Study).toContain(`role="group" aria-label={t('同一起点分成两个配对实验组'`);
+    expect(harness2Study).toContain('.h2study__flow-branches::before');
+    expect(harness2Study).toContain('.h2study__flow-branches>.h2study__flow-node::before');
+    expect(harness2Study).not.toContain('.h2study__flow-node+ .h2study__flow-node{margin-top:.8rem}');
+
+    expect(legacyStage2Journey).toContain('<ol class="legacy-journey__timeline" data-flow-sequence="stage2-genealogy">');
+    expect(legacyStage2Journey).toContain('.legacy-journey__timeline li:not(:last-child)::after');
+    expect(legacyStage2Journey).not.toContain("content:'→'");
+    expect(legacyStage2Journey).not.toContain('grid-template-columns:repeat(2,minmax(0,1fr))}.legacy-journey__timeline');
+
+    expect(trainingDesign).toContain('.responsibility-flow li:not(:last-child)::before');
+    expect(trainingDesign).toContain('@media(max-width:950px)');
+    expect(trainingDesign).toContain('.responsibility-flow{grid-template-columns:1fr;gap:.75rem}');
+    expect(trainingDesign).not.toContain("content:'↓'");
+
+    expect(experimentSelector).toContain('@media(max-width:980px){.experiment-selector__flow{grid-template-columns:1fr}');
+    expect(experimentSelector).not.toContain('.experiment-selector__flow>.experiment-selector__arrow:nth-of-type(2){display:none}');
   });
 
   it('keeps public headings on the subject instead of telling the reader how to read them', () => {

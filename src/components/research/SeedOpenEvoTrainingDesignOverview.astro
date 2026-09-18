@@ -64,7 +64,8 @@ const stages = [
 <style>
   .comparison-boundary{max-width:82ch;margin:0 0 .85rem;padding:0 0 .75rem;border-bottom:1px solid var(--line);color:var(--muted);font-size:.78rem;line-height:1.6}.responsibility-flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.45rem;margin:0;padding:0;list-style:none}
   .responsibility-flow li{position:relative;min-width:0;padding:.8rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface)}
-  .responsibility-flow li:not(:last-child)::after{content:'→';position:absolute;z-index:2;right:-.38rem;top:50%;transform:translateY(-50%);padding:.05rem;background:var(--surface);color:var(--muted);font-size:.8rem}
+  .responsibility-flow li:not(:last-child)::after{content:'';position:absolute;z-index:2;right:-.45rem;top:50%;width:.45rem;border-top:2px solid var(--muted)}
+  .responsibility-flow li:not(:last-child)::before{content:'';position:absolute;z-index:3;right:-.48rem;top:calc(50% - 4px);border-left:7px solid var(--muted);border-top:4px solid transparent;border-bottom:4px solid transparent}
   .responsibility-flow li>span{color:var(--accent-deep);font:800 .64rem/1 var(--font-mono)}
   .responsibility-flow small,.responsibility-flow strong{display:block}
   .responsibility-flow small{margin-top:.6rem;color:var(--muted);font-size:.65rem}
@@ -89,13 +90,12 @@ const stages = [
   .design-next{margin:.8rem 0 0 3.05rem}
   .design-next a{font-size:.74rem;font-weight:750}
   @media(max-width:950px){
-    .responsibility-flow{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .responsibility-flow li:nth-child(3)::after{display:none}
+    .responsibility-flow{grid-template-columns:1fr;gap:.75rem}
+    .responsibility-flow li:not(:last-child)::after{right:auto;left:1.2rem;top:auto;bottom:-.75rem;width:0;height:.75rem;border-top:0;border-left:2px solid var(--muted)}
+    .responsibility-flow li:not(:last-child)::before{right:auto;left:calc(1.2rem - 4px);top:auto;bottom:-.79rem;border-left:4px solid transparent;border-right:4px solid transparent;border-top:7px solid var(--muted);border-bottom:0}
   }
   @media(max-width:640px){
     .design-next{margin-left:0}
-    .responsibility-flow{grid-template-columns:1fr}
-    .responsibility-flow li:not(:last-child)::after{content:'↓';right:auto;left:50%;top:auto;bottom:-.52rem;transform:translateX(-50%)}
     .parameter-list{grid-template-columns:1fr}
   }
 </style>
