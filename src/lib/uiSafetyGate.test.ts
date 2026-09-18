@@ -178,27 +178,28 @@ describe('UI visual acceptance gate contract', () => {
     expect(geometryPolicy).toContain('audited sibling nodes do not overlap by more than 2px');
   });
 
-  it('makes readable research prose and context-aware floating control ownership hard release conditions', () => {
+  it('makes readable research prose and intent-bound control ownership hard release conditions', () => {
     for (const term of ['width: 390', 'width: 768', 'width: 1024', 'width: 1440', 'prose font too small', 'CJK prose is too narrow']) {
       expect(canonicalFigureGate).toContain(term);
     }
-    for (const term of ['prose font too small', 'CJK prose is too narrow', "toHaveCSS('position', 'fixed')", 'bottom-docked from the initial render']) {
+    for (const term of ['prose font too small', 'CJK prose is too narrow', 'interactive transport stays local until explicit reader interaction', 'data-transport-docked']) {
       expect(researchGeometryGate).toContain(term);
     }
     for (const term of [
-      'standalone step-by-step owners dock Previous / Next from initial render through interaction',
+      'standalone step-by-step controls stay local until the reader enters interaction',
       "toHaveCSS('position', 'fixed')",
       'embedded Lab explainer controls do not enter the first screen before the explainer',
       "getComputedStyle(node).position)).not.toBe('fixed')",
-      'WebShop floating transport also stays inside a mobile viewport',
+      'WebShop transport docks only after mobile interaction and stays inside the viewport',
       'canonical-only comparison routes never expose a floating step transport',
-      'SEED transport is bottom-docked before interaction',
+      'SEED transport remains attached before interaction',
     ]) expect(floatingTransportGate).toContain(term);
     expect(researchReadabilityStyles).toContain('.canonical-figure');
     expect(researchReadabilityStyles).toContain('font-size: max(.74rem, 11.8px) !important');
-    expect(interactiveResearchStyles).toContain('position:fixed');
+    expect(interactiveResearchStyles).not.toContain('>.irx-controls>.irx-transport{position:fixed');
     expect(geometryPolicy).toContain('at least **7 CJK characters per rendered line**');
     expect(geometryPolicy).toContain('becomes a bottom `position: fixed` dock');
+    expect(geometryPolicy).toContain('In system-overview state, the transport stays local to the explainer');
     expect(geometryPolicy).toContain('canonical-only');
   });
 

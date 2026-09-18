@@ -161,10 +161,13 @@ describe('interactive research explainers', () => {
     expect(css).toContain('@media(prefers-reduced-motion:reduce)');
   });
 
-  it('bottom-docks standalone transport but leaves embedded Lab controls in document flow', () => {
-    expect(css).toContain('.plain-detail__interactive>astro-island>[data-interactive-research-explainer]>.irx-controls>.irx-transport{position:fixed');
+  it('keeps transport local until real interaction intent docks the owning explainer', () => {
+    expect(explainer).toContain('data-transport-docked={transportDocked}');
+    expect(explainer).toContain('setTransportDocked(true)');
+    expect(explainer).toContain('setTransportDocked(false)');
+    expect(css).toContain('.irx:is([data-transport-docked=true],:focus-within,:hover)>.irx-controls>.irx-transport{position:fixed');
+    expect(css).not.toContain('[data-overview=false]>.irx-controls>.irx-transport{position:fixed');
     expect(css).not.toContain('.irx-split__rail [data-interactive-research-explainer]>.irx-controls>.irx-transport{position:fixed');
-    expect(css).not.toContain(':is([data-overview="false"],:focus-within,:hover)>.irx-controls>.irx-transport');
     expect(css).not.toContain('.canonical-figure>.irx-controls');
     expect(loopsZh).not.toContain('InteractiveResearchExplainer');
     expect(loopsEn).not.toContain('InteractiveResearchExplainer');

@@ -72,13 +72,14 @@
 .irx-controls[data-overview=true]{border-color:color-mix(in srgb,var(--irx-state) 24%,var(--line))}
 .irx-controls[data-overview=true] .irx-progress i{width:0!important}
 
-/* Standalone method/environment pages keep transport controls reachable while
- * the reader studies the long figure. Embedded benchmark stacks stay sticky
- * so two explainers never compete for the same fixed dock. */
-.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport{position:fixed;left:50%;right:auto;bottom:max(.75rem,env(safe-area-inset-bottom,0px));top:auto;z-index:40;width:min(520px,calc(100vw - 1rem));transform:translateX(-50%);justify-content:center;box-shadow:0 10px 28px color-mix(in srgb,var(--ink) 20%,transparent)}
+/* Standalone method/environment pages begin with controls attached to their
+ * explainer. A bottom dock appears only after the reader actually enters the
+ * interaction (step/play), focuses the explainer, or actively hovers it.
+ * Passive scroll-linked state synchronization must never manufacture a dock. */
+.plain-detail__interactive>astro-island>.irx:is([data-transport-docked=true],:focus-within,:hover)>.irx-controls>.irx-transport{position:fixed;left:50%;right:auto;bottom:max(.75rem,env(safe-area-inset-bottom,0px));top:auto;z-index:40;width:min(520px,calc(100vw - 1rem));transform:translateX(-50%);justify-content:center;box-shadow:0 10px 28px color-mix(in srgb,var(--ink) 20%,transparent)}
 .plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport .irx-reset{margin-left:auto}
-body:has(.plain-detail__interactive) .site-footer .footer-inner{padding-bottom:max(6rem,calc(5rem + env(safe-area-inset-bottom,0px)))}
-@media(max-width:760px){.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport{width:calc(100vw - 1rem);padding:.3rem;gap:.25rem}.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport button{min-height:34px;padding:.35rem .55rem}}
+body:has(.plain-detail__interactive .irx[data-transport-docked=true]) .site-footer .footer-inner{padding-bottom:max(6rem,calc(5rem + env(safe-area-inset-bottom,0px)))}
+@media(max-width:760px){.plain-detail__interactive>astro-island>.irx:is([data-transport-docked=true],:focus-within,:hover)>.irx-controls>.irx-transport{width:calc(100vw - 1rem);padding:.3rem;gap:.25rem}.plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport button{min-height:34px;padding:.35rem .55rem}}
 
 /* Stage + node cards — white cards, rounded corners, soft elevation. */
 .irx-stage{position:relative;padding:0}

@@ -32,7 +32,7 @@ function expectInsideViewport(rect: { x: number; y: number; width: number; heigh
   expect(rect.y + rect.height).toBeLessThanOrEqual(height);
 }
 
-test('standalone step-by-step owners dock Previous / Next from initial render through interaction', async ({ page }) => {
+test('standalone step-by-step controls stay local until the reader enters interaction', async ({ page }) => {
   const viewport = { width: 1440, height: 900 };
   await page.setViewportSize(viewport);
 
@@ -43,8 +43,7 @@ test('standalone step-by-step owners dock Previous / Next from initial render th
       await page.mouse.move(4, 4);
       const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
       const transport = root.locator('.irx-transport');
-      await expect(transport).toHaveCSS('position', 'fixed');
-      await expect(transport).toBeInViewport();
+      expect(await transport.evaluate((node) => getComputedStyle(node).position)).not.toBe('fixed');
       await activate(root);
       await expect(transport).toHaveCSS('position', 'fixed');
       expect(await transport.evaluate((node) => Boolean(node.closest('[data-interactive-research-explainer]')))).toBe(true);
@@ -72,15 +71,14 @@ test('embedded Lab explainer controls do not enter the first screen before the e
   }
 });
 
-test('WebShop floating transport also stays inside a mobile viewport', async ({ page }) => {
+test('WebShop transport docks only after mobile interaction and stays inside the viewport', async ({ page }) => {
   const viewport = { width: 390, height: 844 };
   await page.setViewportSize(viewport);
   await page.goto('/research/seed-openevo/flow/webshop/', { waitUntil: 'domcontentloaded' });
   await settle(page);
   const root = page.locator('[data-interactive-research-explainer="webshop"]').first();
   const transport = root.locator('.irx-transport');
-  await expect(transport).toHaveCSS('position', 'fixed');
-  await expect(transport).toBeInViewport();
+  expect(await transport.evaluate((node) => getComputedStyle(node).position)).not.toBe('fixed');
   await activate(root);
   await expect(transport).toHaveCSS('position', 'fixed');
   const rect = await transport.boundingBox();
@@ -98,7 +96,7 @@ test('canonical-only comparison routes never expose a floating step transport', 
   }
 });
 
-test('SEED transport is bottom-docked before interaction', async ({ page }) => {
+test('SEED transport remains attached before interaction', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
   await settle(page);
@@ -106,6 +104,6 @@ test('SEED transport is bottom-docked before interaction', async ({ page }) => {
   await expect(page.locator('#fig-seed-webshop')).toHaveCount(0);
   const root = page.locator('[data-interactive-research-explainer="seed"]').first();
   const transport = root.locator('.irx-transport');
-  await expect(transport).toHaveCSS('position', 'fixed');
-  await expect(transport).toBeInViewport();
+  expect(await transport.evaluate((node) => getComputedStyle(node).position)).not.toBe('fixed');
+  expect(await transport.evaluate((node) => Boolean(node.closest('.irx-controls')))).toBe(true);
 });
