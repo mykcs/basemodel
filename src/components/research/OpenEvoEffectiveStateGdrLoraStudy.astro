@@ -135,7 +135,7 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
     <h2 id="method-title">{t('Effective-State GDR-LoRA v1 怎样写一次更新', 'How Effective-State GDR-LoRA v1 writes an update')}</h2>
     <div class="esg__method-grid">
       <figure class="esg__flow" aria-label={t('Effective-State GDR 顺序写入流程', 'Effective-State GDR sequential write flow')}>
-        <div class="esg__flow-node">{t('effective state', 'effective state')}</div>
+        <div class="esg__flow-node">{t('有效状态', 'effective state')}</div>
         <div class="esg__flow-arrow" aria-hidden="true"></div>
         <div class="esg__flow-node">{t('invariant controller', 'invariant controller')}</div>
         <div class="esg__flow-arrow" aria-hidden="true"></div>
@@ -147,7 +147,7 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
         <div class="esg__flow-arrow" aria-hidden="true"></div>
         <div class="esg__flow-node">A write</div>
         <div class="esg__flow-arrow" aria-hidden="true"></div>
-        <div class="esg__flow-node is-state">{t('next effective state', 'next effective state')}</div>
+        <div class="esg__flow-node is-state">{t('下一步有效状态', 'next effective state')}</div>
         <figcaption>{t('实线表示真正的状态和写入顺序；A/C 只负责底层表示。', 'Solid connectors are the real state/write flow; A/C remain a lower-level representation.')}</figcaption>
       </figure>
       <aside class="esg__forbidden">
