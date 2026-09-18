@@ -84,6 +84,15 @@ for (const theme of ['light', 'dark'] as const) {
 test('Effective-State first screen tells the three-part story before deeper choices', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const context = page.locator('.research-route-context');
+  await expect(context).toContainText('能力探索');
+  await expect(context).toContainText('Bounded + Effective-State GDR');
+  await expect(context).toContainText('OFF 只做 Bounded');
+  await expect(context).toContainText('实验正在运行，正式结果尚未产生');
+  await expect(context).not.toContainText('DirectApply / No-GDR 实验');
+  await expect(context).not.toContainText('negative evidence');
+  await expect(context).not.toContainText('Pending 结果槽');
+
   const h1 = page.locator('#main-content h1');
   await expect(h1).toHaveCount(1);
   const lede = page.locator('.esg__lede');
