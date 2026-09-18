@@ -5,6 +5,7 @@ import { SD_LORA_BOUNDED_RECURRENCE_SOURCE } from '../data/sdLoraVrLineages';
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 const overview = read('../components/research/OpenEvoSdLoraHistorySkeleton.astro');
 const context = read('../components/research/OpenEvoSdLoraAccelerationContext.astro');
+const v2 = read('../components/research/OpenEvoSdLoraV2Outcome.astro');
 
 describe('SD-LoRA conversation publication', () => {
   it('mounts the complete context only from the canonical overview owner', () => {
@@ -30,6 +31,24 @@ describe('SD-LoRA conversation publication', () => {
     expect(context).toContain('rank128 才通过完整四点纵向资格');
     expect(context).toContain('Q0 在第149轮(rank128) → 第150轮(rank128)');
     expect(context).toContain('随后 Q1 才执行第151轮到第159轮');
+  });
+
+  it('publishes the shared strict-equivalence ancestor and why the two Agents looked duplicated', () => {
+    expect(context).toContain('为什么两个并发 Agent 一开始很容易被认为在做同一件事');
+    expect(context).toContain('共同祖先：我们先试过“算法不变，只把它算快”');
+    expect(context).toContain('严格等价 successor 搜索按预注册规则关闭');
+    expect(context).toContain('它因此已经不是“把路线 A 再优化一点”');
+  });
+
+  it('publishes the branch-protection and future matched-comparison rules', () => {
+    expect(context).toContain('两个 Agent 并发时，先守住各自结果，再统一解释关系');
+    expect(context).toContain('共同索引只解释“它们是谁、彼此什么关系”');
+    expect(context).toContain('共同起点、任务、seed、预算、runtime、测量方式和允许得出的 claim');
+  });
+
+  it('says directly on the v2 page that the 37x result belongs to another line', () => {
+    expect(v2).toContain('约 37× 不是这个 v2 的结果');
+    expect(v2).toContain('先看两条加速路线为什么不同');
   });
 
   it('preserves the bounded recurrence final provenance', () => {

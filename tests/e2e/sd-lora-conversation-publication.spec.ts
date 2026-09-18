@@ -12,6 +12,8 @@ test('SD-LoRA overview publishes the full acceleration distinction without overf
     await expect(context.locator('[data-lineage="stable-reduction"]')).toContainText('2.01×');
     await expect(context.locator('[data-lineage="bounded-recurrence"]')).toContainText('37.04×');
     await expect(context).toContainText('不能拼成一条“2× 继续优化到 37×”的曲线');
+    await expect(context).toContainText('为什么两个并发 Agent 一开始很容易被认为在做同一件事');
+    await expect(context).toContainText('共同起点、任务、seed、预算、runtime、测量方式和允许得出的 claim');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
     expect(overflow).toBe(false);
   }
@@ -31,4 +33,15 @@ test('SD-LoRA overview keeps naming and third-mechanism boundaries visible', asy
   await expect(context.locator('.evidence-list')).toContainText('7c2190127c11');
   await expect(context.locator('.evidence-list')).toContainText('3a2128e5fb42');
   await expect(context.locator('.evidence-list')).toContainText('2b65b71a4c822c8b2a6d4639d31a3289dc2267f9de8f0109c8c69bdd1821ad32');
+});
+
+
+test('v2 page states that 37x belongs to the bounded-recurrence line', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/', { waitUntil: 'domcontentloaded' });
+  const boundary = page.locator('.sdlora-v2__hero-boundary');
+  await expect(boundary).toContainText('约 37× 不是这个 v2 的结果');
+  const overview = page.getByRole('link', { name: '先看两条加速路线为什么不同' });
+  await expect(overview).toBeVisible();
+  await expect(overview).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-history/');
 });
