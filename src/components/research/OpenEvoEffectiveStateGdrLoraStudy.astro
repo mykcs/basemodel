@@ -3,6 +3,7 @@ import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
 import { EFFECTIVE_STATE_GDR_LORA_STUDY as study } from '../../data/effectiveStateGdrLoraStudy';
+import type { EffectiveStateFormalResult } from '../../data/effectiveStateGdrLoraStudy';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -14,8 +15,30 @@ const boundedHref = p(`${cap}/sd-lora-bounded-state/`);
 const gatedHref = p(`${cap}/gated-delta-sd-lora/`);
 const vanillaHref = p('/research/seed-openevo/flow/sd-lora/');
 const scalingHref = p(`${cap}/sd-lora-scaling/`);
-const result = study.formalResult;
+const result = study.formalResult as EffectiveStateFormalResult;
 const pending = result.status === 'pending';
+const sealed = result.status === 'sealed' ? result : null;
+
+const scoreChart = { left: 44, right: 716, top: 18, bottom: 238, maxRound: 159, maxScore: 100 };
+const sx = (round: number) => scoreChart.left + (round / scoreChart.maxRound) * (scoreChart.right - scoreChart.left);
+const sy = (score: number) => scoreChart.bottom - (score / scoreChart.maxScore) * (scoreChart.bottom - scoreChart.top);
+const moving = (rows: readonly { round: number; score: number }[]) => rows.map((point, index) => {
+  const window = rows.slice(Math.max(0, index - 11), index + 1);
+  return { round: point.round, score: window.reduce((sum, row) => sum + row.score, 0) / window.length };
+});
+const points = (rows: readonly { round: number; score: number }[]) => rows.map((d) => `${sx(d.round).toFixed(1)},${sy(d.score).toFixed(1)}`).join(' ');
+const offScoreRaw = sealed ? points(sealed.trajectory.off) : '';
+const onScoreRaw = sealed ? points(sealed.trajectory.on) : '';
+const offScoreTrend = sealed ? points(moving(sealed.trajectory.off)) : '';
+const onScoreTrend = sealed ? points(moving(sealed.trajectory.on)) : '';
+const lossRows = sealed ? [...sealed.trajectory.off, ...sealed.trajectory.on].filter((d) => d.loss !== null) : [];
+const maxLoss = Math.max(1, ...lossRows.map((d) => d.loss ?? 0));
+const lossChart = { left: 42, right: 364, top: 18, bottom: 238 };
+const lx = (round: number) => lossChart.left + (round / 159) * (lossChart.right - lossChart.left);
+const ly = (loss: number) => lossChart.bottom - (loss / maxLoss) * (lossChart.bottom - lossChart.top);
+const lossPoints = (rows: readonly { round: number; loss: number | null }[]) => rows.filter((d) => d.loss !== null).map((d) => `${lx(d.round).toFixed(1)},${ly(d.loss ?? 0).toFixed(1)}`).join(' ');
+const offLoss = sealed ? lossPoints(sealed.trajectory.off) : '';
+const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
 ---
 
 <article class="esg" data-effective-state-gdr-page data-copy-review data-reader-page="research-explainer">
@@ -23,28 +46,28 @@ const pending = result.status === 'pending';
     <p class="esg__eyebrow">{t('08 · 固定状态之后，控制新经验写多强', '08 · Controlling write strength after bounded state')}</p>
     <h1>Bounded Online Recurrence + Effective-State GDR</h1>
     <p class="esg__lede" data-reader-task data-reader-purpose>{t(
-      'Bounded Online Recurrence 已把旧历史固定在 rank128。下一问是：每轮新经验该写多强？第一代 GDR 直接控制 LoRA 的 A/C 坐标，但同一个有效更新能有多种 A/C 表示。Effective-State successor 因此改为控制真正影响模型的有效写入。正式实验比较 Bounded OFF 与 Bounded + Effective-State GDR ON；160 轮尚未启动，正式结果尚未产生。',
-      'Bounded Online Recurrence already keeps old history at rank128. The next question is how strongly each new experience should be written. First-generation GDR controlled LoRA A/C coordinates directly, but the same effective update can have multiple A/C representations. The Effective-State successor therefore controls the effective write itself. The formal comparison is Bounded OFF versus Bounded + Effective-State GDR ON; the 160-round run has not started, so no formal result exists yet.',
+      '我们现在想回答一个很简单的问题：历史已经固定在 rank128 以后，新经验是每次都完整写进去，还是让 Effective-State GDR 控制写入强度？同一个 1.7B 模型被分成 OFF / ON 两条 160 轮实验：OFF 只做 Bounded，ON 在同样训练上加入 Effective-State GDR。两条臂已经正式运行；正式结果尚未产生。',
+      'The question is simple: once history is bounded at rank128, should every new update be written in full, or should Effective-State GDR control write strength? The same 1.7B model is split into two 160-round arms: OFF uses Bounded only, while ON adds Effective-State GDR to the same training. Both arms are formally running; the formal result is still Pending.',
     )}</p>
     <div class="esg__facts" aria-label={t('当前三个关键事实', 'Three current facts')}>
       <div><span>{t('历史状态', 'History state')}</span><strong>rank128</strong></div>
       <div><span>{t('正式设计', 'Formal design')}</span><strong>160 × 128 / arm</strong></div>
       <div><span>{t('正式结果', 'Formal result')}</span><strong>{pending ? t('尚未产生', 'Pending') : 'Sealed'}</strong></div>
     </div>
-    <p class="esg__status"><strong>{t('预启动工程已完成，仍需 owner 明确启动。', 'Prelaunch engineering is complete; an explicit owner start is still required.')}</strong> {t(
-      '当前 launch authority=false、formal rows=0、final panel access=0；W&B 只是只读观测，不是科学权威。',
-      'Current launch authority is false, formal rows are 0, and final-panel access is 0; W&B is read-only observability, not scientific authority.',
+    <p class="esg__status"><strong>{t('正式 OFF / ON 实验正在运行，正式结果尚未产生。', 'The formal OFF / ON study is running; the formal result is still Pending.')}</strong> {t(
+      'OFF 与 ON 现在各自沿自己的已封存前一轮继续，不会因为另一边慢一轮就停住；配对编号只用于审计和最终分析。冻结终评题集仍未访问（0 次），W&B 只是观测入口。运行中分数、中途 W&B 或单个 checkpoint 都不是正式结论。',
+      'OFF and ON now continue from their own sealed predecessor without waiting for the peer arm to finish the same round. Pair identities are used for audit and final analysis only. Final-panel access remains 0, and W&B is observability rather than scientific authority. In-flight scores, partial W&B views, and single checkpoints are not formal conclusions.',
     )}</p>
   </header>
 
   <section class="esg__section" id="why" aria-labelledby="why-title">
     <h2 id="why-title">{t('为什么 Bounded 以后还要研究写入强度', 'Why write strength still matters after Bounded')}</h2>
     <div class="esg__why-grid">
-      <div><strong>{t('Bounded 解决的是', 'Bounded solves')}</strong><p>{t('历史状态大小。旧 component 不再无限累积进下一轮。', 'State size. Old components no longer grow without bound into the next round.')}</p></div>
+      <div><strong>{t('Bounded 解决的是', 'Bounded solves')}</strong><p>{t('历史状态大小。旧组件不再无限累积进下一轮。', 'State size. Old components no longer grow without bound into the next round.')}</p></div>
       <div><strong>{t('GDR 要解决的是', 'GDR asks')}</strong><p>{t('新经验该写多少。它控制一次更新进入下一状态的强度。', 'How much new experience should be written into the next state.')}</p></div>
     </div>
     <p>{t(
-      '所以“固定 state 大小”和“控制 write strength”是两个不同问题。前者已经有封存的 Bounded 结果；本页只负责后者的 successor 推导与新正式实验设计。',
+      '所以“固定历史状态大小”和“控制新经验写入强度”是两个不同问题。前者已经有封存的 Bounded 结果；本页只负责后继方法的推导和新的正式实验。',
       'Keeping state size fixed and controlling write strength are two different problems. The former already has a sealed Bounded result; this page owns only the successor derivation and the new formal experiment for the latter.',
     )}</p>
     <nav class="esg__context-links" aria-label={t('上下文页面', 'Context pages')}>
@@ -57,12 +80,12 @@ const pending = result.status === 'pending';
   <section class="esg__section" id="representation" aria-labelledby="representation-title">
     <h2 id="representation-title">{t('为什么 LoRA 的内部表示会让控制变得危险', 'Why LoRA coordinates make control tricky')}</h2>
     <p>{t(
-      '原始 Gated Delta 只有一个直接被更新的 State。LoRA 却把同一个有效更新写成 A/C 两组 factor；同一个 C A^T，可以对应很多不同的 A/C 数值。也就是说，factor 是表示坐标，不等于真正的模型更新对象。',
+      '原始 Gated Delta 只有一个直接更新的状态。LoRA 却把同一个有效更新拆成 A/C 两组因子；同一个 C A^T，可以对应很多不同的 A/C 数值。也就是说，A/C 因子只是内部表示坐标，不等于真正写进模型的更新。',
       'Original Gated Delta controls one directly updated State. LoRA represents the same effective update with A/C factor coordinates; the same C A^T can correspond to many A/C values. The factors are therefore representation coordinates, not the behavioral update object itself.',
     )}</p>
-    <figure class="esg__representation" aria-label={t('State 与 factor representation 对比', 'State versus factor representation')}>
+    <figure class="esg__representation" aria-label={t('直接状态与 LoRA 因子表示对比', 'State versus factor representation')}>
       <div class="esg__rep-column">
-        <span>{t('直接 state', 'direct state')}</span>
+        <span>{t('直接状态', 'direct state')}</span>
         <div class="esg__node is-state">State</div>
         <div class="esg__solid" aria-hidden="true"></div>
         <div class="esg__node">write × β</div>
@@ -74,29 +97,29 @@ const pending = result.status === 'pending';
         <div class="esg__node is-effective">effective update C A<sup>T</sup></div>
       </div>
     </figure>
-    <p class="esg__formula">A → sA，C → C/s；(C/s)(sA)<sup>T</sup> = C A<sup>T</sup>。{t('factor 坐标变了，但有效更新没变。', 'The factor coordinates change, but the effective update does not.')}</p>
+    <p class="esg__formula">A → sA，C → C/s；(C/s)(sA)<sup>T</sup> = C A<sup>T</sup>。{t('A/C 因子坐标变了，但真正的有效更新没变。', 'The factor coordinates change, but the effective update does not.')}</p>
   </section>
 
   <section class="esg__section" id="derivation" aria-labelledby="derivation-title">
     <h2 id="derivation-title">{t('四个决定性台阶', 'Four decisive steps')}</h2>
     <ol class="esg__steps">
       <li>
-        <span>01</span><h3>{t('第一代 factor write 先撞到表示坐标边界', 'First-generation factor write hits a coordinate-domain boundary')}</h3>
-        <p>{t(`Round0 的 C factor displacement 给出 βC=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}，已经超出 (0,1)；A 侧 βA=${study.derivation.firstGenerationFactorFailure.betaA.toFixed(3)}。这里的 1.052 是 factor displacement gate，不是 original/effective GDR beta。`, `At Round0, the C-factor displacement gives βC=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}, outside (0,1), while βA=${study.derivation.firstGenerationFactorFailure.betaA.toFixed(3)}. The 1.052 value is a factor-displacement gate value, not the original/effective GDR beta.`)}</p>
-        <p class="esg__cannot">{t('支持：第一代 factor-space treatment 在 EMPTY start 上不合法。不能证明：GDR 思想本身失败。', 'Supports: the first-generation factor-space treatment is invalid at the EMPTY start. Does not prove: GDR as an idea fails.')}</p>
+        <span>01</span><h3>{t('第一代按 A/C 因子控制写入，先撞到表示坐标边界', 'First-generation factor write hits a coordinate-domain boundary')}</h3>
+        <p>{t(`Round0 的 C 因子位移给出 βC=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}，已经超出 (0,1)；A 侧 βA=${study.derivation.firstGenerationFactorFailure.betaA.toFixed(3)}。这里的 1.052 是因子位移这层检查值，不是原始或有效状态上的 GDR β。`, `At Round0, the C-factor displacement gives βC=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}, outside (0,1), while βA=${study.derivation.firstGenerationFactorFailure.betaA.toFixed(3)}. The 1.052 value is a factor-displacement gate value, not the original/effective GDR beta.`)}</p>
+        <p class="esg__cannot">{t('支持：第一代基于 A/C 因子坐标的写入方式在空历史起点上不合法。不能证明：GDR 思想本身失败。', 'Supports: the first-generation factor-space treatment is invalid at the EMPTY start. Does not prove: GDR as an idea fails.')}</p>
       </li>
       <li>
-        <span>02</span><h3>{t('只修 mapping 还不够', 'Fixing the mapping alone is not enough')}</h3>
-        <p>{t(`把 write 改成 effective-write mapping 后，旧 controller 在真实 intervention trajectory 上预测 β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}，再次超出 (0,1)。这次失败对象已经不是 factor displacement，而是旧 controller 本身。`, `After switching to an effective-write mapping, the old controller predicts β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)} on the real intervention trajectory, again outside (0,1). This failure is no longer the factor-displacement gate; it is the old controller itself.`)}</p>
-        <p class="esg__cannot">{t('支持：旧 controller 依赖 factor-coordinate 特征，不能直接搬到新的 intervention trajectory。', 'Supports: the old controller depends on factor-coordinate features and cannot simply be transplanted to the new intervention trajectory.')}</p>
+        <span>02</span><h3>{t('只改“怎么映射”还不够', 'Fixing the mapping alone is not enough')}</h3>
+        <p>{t(`把控制对象改成真正的有效写入后，旧控制器在真实更新轨迹上预测 β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}，再次超出 (0,1)。这次失败已经不再是 A/C 因子位移的问题，而是旧控制器本身。`, `After switching to an effective-write mapping, the old controller predicts β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)} on the real intervention trajectory, again outside (0,1). This failure is no longer the factor-displacement gate; it is the old controller itself.`)}</p>
+        <p class="esg__cannot">{t('支持：旧控制器依赖 A/C 因子坐标特征，不能直接搬到新的有效写入轨迹。', 'Supports: the old controller depends on factor-coordinate features and cannot simply be transplanted to the new intervention trajectory.')}</p>
       </li>
       <li>
-        <span>03</span><h3>{t('teacher 的第二步必须看到 runtime 真正走到的 C1', 'The teacher’s second step must see the runtime’s actual C1')}</h3>
-        <p>{t('teacher 计算第二步时，如果假设第一步完整走到 Adam proposal Cp，而 runtime 实际只写入了受控后的 C1，那么第二步 A write 的输入状态就错了。新的顺序因此固定为：先写 C，得到实际 C1，再基于 C1 计算 A write。', 'If the teacher computes step two assuming step one reached the full Adam proposal Cp, while runtime actually wrote the controlled state C1, then the A-write is conditioned on the wrong state. The successor therefore fixes the order: write C first, obtain the actual C1, then compute the A write from C1.')}</p>
+        <span>03</span><h3>{t('第二步必须看到第一步实际写出的 C1', 'The teacher’s second step must see the runtime’s actual C1')}</h3>
+        <p>{t('计算第二步时，如果还假设第一步完整走到 Adam 提议的 Cp，但实际运行只写入了受控后的 C1，那么第二步更新 A 时用到的状态就是错的。新的顺序因此固定为：先写 C，得到实际 C1，再基于 C1 更新 A。', 'If the teacher computes step two assuming step one reached the full Adam proposal Cp, while runtime actually wrote the controlled state C1, then the A-write is conditioned on the wrong state. The successor therefore fixes the order: write C first, obtain the actual C1, then compute the A write from C1.')}</p>
       </li>
       <li>
-        <span>04</span><h3>{t('最终控制对象改成 effective state / effective write', 'The final control object becomes effective state / effective write')}</h3>
-        <p>{t('同一个 LoRA 更新可以有不同 A/C 内部表示，所以 successor 的 β policy 只使用 scalar-gauge-invariant 特征，目标量也改成 effective write magnitude。LoRA factors 仍然存在，但只作为实现表示层。', 'Because the same LoRA update can have different A/C representations, the successor beta policy uses only scalar-gauge-invariant features and targets effective write magnitude. LoRA factors still exist, but only as an implementation representation layer.')}</p>
+        <span>04</span><h3>{t('最终改为控制真正影响模型的有效状态和有效写入', 'The final control object becomes effective state / effective write')}</h3>
+        <p>{t('同一个 LoRA 更新可以有不同 A/C 内部表示，所以后继方法的 β 控制规则只使用不受 A/C 等比例缩放影响的特征，目标量也改成有效写入大小。LoRA 的 A/C 因子仍然存在，但只作为内部表示。', 'Because the same LoRA update can have different A/C representations, the successor beta policy uses only scalar-gauge-invariant features and targets effective write magnitude. LoRA factors still exist, but only as an implementation representation layer.')}</p>
         <p class="esg__cannot">{t('支持：新的 treatment identity 与 representation choice 解耦。不能证明：正式 WebShop 长周期效果更好。', 'Supports: the new treatment identity is decoupled from representation choice. Does not prove: better long-horizon WebShop efficacy.')}</p>
       </li>
     </ol>
@@ -113,7 +136,7 @@ const pending = result.status === 'pending';
     <h2 id="method-title">{t('Effective-State GDR-LoRA v1 怎样写一次更新', 'How Effective-State GDR-LoRA v1 writes an update')}</h2>
     <div class="esg__method-grid">
       <figure class="esg__flow" aria-label={t('Effective-State GDR 顺序写入流程', 'Effective-State GDR sequential write flow')}>
-        <div class="esg__flow-node">{t('effective state', 'effective state')}</div>
+        <div class="esg__flow-node">{t('有效状态', 'effective state')}</div>
         <div class="esg__flow-arrow" aria-hidden="true"></div>
         <div class="esg__flow-node">{t('invariant controller', 'invariant controller')}</div>
         <div class="esg__flow-arrow" aria-hidden="true"></div>
@@ -125,8 +148,8 @@ const pending = result.status === 'pending';
         <div class="esg__flow-arrow" aria-hidden="true"></div>
         <div class="esg__flow-node">A write</div>
         <div class="esg__flow-arrow" aria-hidden="true"></div>
-        <div class="esg__flow-node is-state">{t('next effective state', 'next effective state')}</div>
-        <figcaption>{t('实线表示真正的 state/write flow；A/C 只是下层 representation。', 'Solid connectors are the real state/write flow; A/C remain a lower-level representation.')}</figcaption>
+        <div class="esg__flow-node is-state">{t('下一步有效状态', 'next effective state')}</div>
+        <figcaption>{t('实线表示真正的状态和写入顺序；A/C 只负责底层表示。', 'Solid connectors are the real state/write flow; A/C remain a lower-level representation.')}</figcaption>
       </figure>
       <aside class="esg__forbidden">
         <h3>{t('这些信号不会控制在线写入', 'These signals do not control online writes')}</h3>
@@ -137,7 +160,7 @@ const pending = result.status === 'pending';
   </section>
 
   <section class="esg__section" id="readiness" aria-labelledby="readiness-title">
-    <h2 id="readiness-title">{t('正式实验前已经验证了什么', 'What has been validated before the formal experiment')}</h2>
+    <h2 id="readiness-title">{t('启动前我们已经验证了什么', 'What we validated before launch')}</h2>
     <p>{t('这些是“能不能按冻结机制安全运行”的资格证据，不是“方法是否更好”的效果证据。', 'These are qualification checks for whether the frozen mechanism can run safely, not efficacy evidence that the method is better.')}</p>
     <div class="esg__readiness-table-wrap"><table class="esg__readiness-table">
       <thead><tr><th>{t('检查', 'Check')}</th><th>{t('状态', 'Status')}</th><th>{t('边界', 'Boundary')}</th></tr></thead>
@@ -147,65 +170,129 @@ const pending = result.status === 'pending';
         <tr><td>{t('Round0 exact repeat', 'Round0 exact repeat')}</td><td>PASS</td><td>{study.readiness.isolatedExactStack.round0ExactRepeatCount} / {study.readiness.isolatedExactStack.round0ExactRepeatCount}</td></tr>
         <tr><td>{t('non-empty rank128 recurrent exact repeat', 'non-empty rank128 recurrent exact repeat')}</td><td>PASS</td><td>{study.readiness.isolatedExactStack.nonemptyExactRepeatCount} / {study.readiness.isolatedExactStack.nonemptyExactRepeatCount}</td></tr>
         <tr><td>{t('4-GPU zero-formal topology', '4-GPU zero-formal topology')}</td><td>PASS</td><td>formal rows = {study.readiness.topology.formalRowsConsumed}</td></tr>
-        <tr><td>{t('当前 formal resource lane', 'Current formal resource lane')}</td><td>GPU4–7</td><td>{t('每卡 1 OFF + 1 ON；只改资源执行', 'one OFF + one ON per GPU; resource execution only')}</td></tr>
+        <tr><td>{t('当前正式资源通道', 'Current formal resource lane')}</td><td>GPU4–7 {t('共享池', 'shared pool')}</td><td>{t('按容量调度；资源等待不要求两条臂同轮等待', 'capacity-aware scheduling; resource waits do not impose a same-round arm barrier')}</td></tr>
         <tr><td>{t('per-step trace equivalence', 'per-step trace equivalence')}</td><td>PASS</td><td>{study.readiness.stepTrace.round0Steps} + {study.readiness.stepTrace.recurrentSteps} steps</td></tr>
-        <tr><td>{t('short non-final qualification', 'short non-final qualification')}</td><td>PASS</td><td>{t('仅资格检查，不是效果结论', 'qualification only, not efficacy')}</td></tr>
+        <tr><td>{t('短程非终评资格检查', 'short non-final qualification')}</td><td>PASS</td><td>{t('仅资格检查，不是效果结论', 'qualification only, not efficacy')}</td></tr>
         <tr><td>{t('formal matched dry-run', 'formal matched dry-run')}</td><td>PASS</td><td>{study.readiness.finalPrelaunch.dryRunStatus}</td></tr>
-        <tr><td>{t('final consumer prelaunch', 'final consumer prelaunch')}</td><td>PASS</td><td>{t('仍需 owner 明确启动', 'explicit owner start still required')}</td></tr>
+        <tr><td>{t('最终启动前检查', 'final consumer prelaunch')}</td><td>PASS</td><td>{t('历史预启动证据；owner 随后已授权正式启动', 'historical prelaunch evidence; the owner later authorized formal start')}</td></tr>
+        <tr><td>{t('当前正式状态', 'Current formal lifecycle')}</td><td>RUNNING</td><td>{t('两条臂独立推进；配对只做异步审计', 'arms progress independently; pairing is asynchronous audit only')}</td></tr>
       </tbody>
     </table></div>
-    <p class="esg__qualification"><strong>{t('Short non-final 原样记录：', 'Short non-final, reported as-is:')}</strong> reward Δ={study.readiness.shortNonFinal.rewardDelta.toFixed(4)}；success Δ=0.0000。{t('这是 development-panel qualification-only 结果，不能写成 formal efficacy。', 'This is a development-panel qualification-only result and cannot be presented as formal efficacy.')}</p>
+    <p class="esg__qualification"><strong>{t('短程非终评资格结果原样记录：', 'Short non-final, reported as-is:')}</strong> reward Δ={study.readiness.shortNonFinal.rewardDelta.toFixed(4)}；success Δ=0.0000。{t('这是开发题上的资格检查，只说明机制能按冻结规则运行，不能写成正式效果结论。', 'This is a development-panel qualification-only result and cannot be presented as formal efficacy.')}</p>
   </section>
 
   <section class="esg__section" id="formal-design" aria-labelledby="formal-design-title">
     <h2 id="formal-design-title">{t('正式实验怎么比较', 'How the formal experiment compares the two arms')}</h2>
-    <figure class="esg__pair" aria-label={t('正式 matched pair 设计', 'Formal matched-pair design')}>
+    <figure class="esg__pair" aria-label={t('正式配对对照设计', 'Formal matched-pair design')}>
       <div class="esg__pair-start"><strong>EMPTY_BOUNDED_HISTORY</strong><span>{t('共同起点', 'common start')}</span></div>
       <div class="esg__fork" aria-hidden="true"></div>
       <div class="esg__pair-arms">
         <div><strong>OFF · {study.identity.off}</strong><span>{t('只做 Bounded recurrence', 'Bounded recurrence only')}</span></div>
-        <div><strong>ON · {study.identity.on}</strong><span>{t('同一训练 + Effective-State GDR write', 'same training + Effective-State GDR write')}</span></div>
+        <div><strong>ON · {study.identity.on}</strong><span>{t('同一训练 + Effective-State GDR 控制写入', 'same training + Effective-State GDR write')}</span></div>
       </div>
-      <div class="esg__barrier"><span>Round 0</span><i></i><span>Round 1</span><i></i><span>…</span><i></i><span>Round 159</span></div>
-      <figcaption>{t('每轮 OFF/ON rollout 在 GPU4–7 上并发；随后 post-rollout reflector / training / transition 在 GPU4 上按冻结顺序串行完成，两臂都 seal 后才跨过 matched barrier。这个资源迁移不改变 treatment、任务、seed、预算或分析；final panel 在正式 Stage2 期间保持 locked。', 'OFF/ON rollouts run concurrently on GPU4–7; post-rollout reflector, training, and transition then run serially on GPU4 in the frozen order, and both arms must seal before the matched barrier. This resource migration does not change treatment, tasks, seeds, budget, or analysis; the final panel stays locked during formal Stage2.')}</figcaption>
+      <div class="esg__arm-progress">
+        <div><strong>OFF</strong><span>Round 0 → 1 → … → 159</span><span class="esg__arm-note">{t('只依赖 OFF 自己上一轮的封存状态', 'depends only on OFF’s own sealed predecessor')}</span></div>
+        <div><strong>ON</strong><span>Round 0 → 1 → … → 159</span><span class="esg__arm-note">{t('只依赖 ON 自己上一轮的封存状态', 'depends only on ON’s own sealed predecessor')}</span></div>
+      </div>
+      <div class="esg__audit-join"><span>{t('配对编号 / 审计记录', 'pair identity / audit receipt')}</span><strong>{t('两边都完成 160 轮后，重新合到最终配对分析', 'rejoin only after both arms finish all 160 rounds for final paired analysis')}</strong></div>
+      <figcaption>{t('两条臂共享相同任务顺序、seed、预算和共同起点，但运行时不再互相等同一轮。GPU4–7 只是共享资源池；某一边暂时等 GPU，不会变成另一边的科学门槛。每轮的配对记录只用于异步审计，不负责放行下一轮。最终分析仍要求 OFF / ON 都封存 Round 0–159，并且 160 个配对都能核对。', 'The arms still share task order, seeds, budget, and common start, but they no longer wait for each other at the same runtime round. GPU4–7 is a shared resource pool; one arm waiting for GPU capacity does not become a scientific gate for the other. Pair receipts are asynchronous audit evidence, not progression gates. Final analysis still requires both OFF and ON to seal Rounds 0–159 and all 160 pairs to be auditable.')}</figcaption>
     </figure>
     <ul class="esg__matched-list">
       {study.formalDesign.matched.map((item) => <li>{zh ? item.zh : item.en}</li>)}
     </ul>
-    <p><strong>{t('唯一 treatment difference：', 'Only treatment difference:')}</strong> {study.formalDesign.onlyTreatmentDifference}. {t('GDR 从 Round0 第一条 optimizer update 开始；Round0 rollout 本身仍是共同起点下的 pre-treatment behavior。', 'GDR starts at the first optimizer update in Round0; the Round0 rollout itself is still pre-treatment behavior from the common start.')}</p>
-    <p class="esg__boundary">{t('Fail-closed：Round0 没有合法 current update 就要求 owner 决策，不制造 synthetic S1；后续轮缺 update 时保留 prior rank128/replay、两臂匹配推进且不制造 GDR event。Carrier Health FAIL 只在 sealed round 边界暂停，final panel 没有独立 authority 就继续 locked。', 'Fail-closed: if Round0 has no legal current update, the runner requires an owner decision and never fabricates S1; on later rounds a missing update keeps the prior rank128/replay state, advances both arms equivalently, and creates no GDR event. Carrier Health failures pause only at sealed round boundaries, and the final panel stays locked without independent authority.')}</p>
+    <p><strong>{t('唯一处理差异：', 'Only treatment difference:')}</strong> {study.formalDesign.onlyTreatmentDifference}. {t('GDR 从 Round0 的第一条优化器更新开始生效；Round0 的 rollout 本身仍是共同起点下、处理生效前的行为。', 'GDR starts at the first optimizer update in Round0; the Round0 rollout itself is still pre-treatment behavior from the common start.')}</p>
+    <p class="esg__boundary">{t('Completion-First：每个 Carrier 最多一次主调用，再加一次修复调用；如果只是内容不合格、但证据完整，就保留上一版（KEEP PRIOR / CONTENT_REJECTION_NOOP）并继续，不再多调用一次模型。只有身份、完整性或这一轮是否已经改变科学状态不确定时才停止并要求证据。资源占用记录丢失本身也不能当成“这一轮什么都没发生”的证据。', 'Completion-First: each Carrier gets at most one primary call plus one repair. A fully evidenced content rejection keeps the prior bytes and continues as CONTENT_REJECTION_NOOP, with no third model call. Identity, integrity, or uncertain scientific side effects still fail closed. Losing a resource lease is never treated as proof that no scientific side effect occurred.')}</p>
   </section>
 
   <section class="esg__section esg__results" id="formal-result" aria-labelledby="formal-result-title">
     <h2 id="formal-result-title">{t('正式结果', 'Formal result')}</h2>
     {pending ? (
       <>
-        <p class="esg__pending"><strong>{t('正式结果尚未产生（Pending）', 'Formal result not yet available (Pending)')}</strong> · {t('这里故意留空。正式 160 轮结果只有在 sealed scientific evidence 出现后才填写。', 'This area is intentionally blank. Formal 160-round values will be filled only from sealed scientific evidence.')}</p>
+        <p class="esg__pending"><strong>{t('正式结果尚未产生', 'Formal result not yet available (Pending)')}</strong> · {t('实验正在运行，但这里故意不展示任何中途胜负数字。只有 OFF / ON 都完成 160 轮、160 个配对都能核对，并出现封存的科学证据后，才把正式数值填进来。', 'The study is running, but this page intentionally shows no in-flight winner or efficacy number. Formal values are filled only after both OFF and ON complete all 160 rounds, all 160 pairs are auditable, and sealed scientific evidence exists.')}</p>
+        <div class="esg__trajectory-shell" aria-label={t('正式曲线待封存', 'Formal trajectory slots pending seal')}>
+          <figure>
+            <figcaption><strong>{t('每轮 WebShop Score', 'WebShop Score by round')}</strong><span>{t('OFF / ON · 原始轮次 + 12轮移动平均', 'OFF / ON · raw rounds + 12-round moving average')}</span></figcaption>
+            <div class="esg__chart-pending">{t('等 160 轮正式轨迹封存后填入；现在不画中途曲线。', 'Filled only after the formal 160-round trajectory is sealed; no in-flight curve is drawn.')}</div>
+          </figure>
+          <figure>
+            <figcaption><strong>SD-LoRA training loss</strong><span>OFF / ON</span></figcaption>
+            <div class="esg__chart-pending">{t('等封存的每轮训练 loss；缺失点保持缺失，不补假值。', 'Waiting for sealed per-round training loss; missing points remain missing and are never imputed.')}</div>
+          </figure>
+        </div>
         <div class="esg__result-table-wrap"><table class="esg__result-table">
-          <thead><tr><th>{t('预先固定的指标', 'Predefined metric')}</th><th>OFF</th><th>ON</th><th>Δ / uncertainty</th></tr></thead>
+          <thead><tr><th>{t('预先固定的指标', 'Predefined metric')}</th><th>OFF</th><th>ON</th><th>{t('Δ / 不确定性', 'Δ / uncertainty')}</th></tr></thead>
           <tbody>
-            <tr><td>160-round pooled mean reward</td><td>Pending</td><td>Pending</td><td>Pending</td></tr>
-            <tr><td>160-round exact success</td><td>Pending</td><td>Pending</td><td>Pending</td></tr>
+            <tr><td>{t('160 轮平均 WebShop reward', '160-round pooled mean reward')}</td><td>Pending</td><td>Pending</td><td>Pending</td></tr>
+            <tr><td>{t('160 轮完整成功', '160-round exact success')}</td><td>Pending</td><td>Pending</td><td>Pending</td></tr>
             <tr><td>{study.formalDesign.analysis.uncertainty}</td><td colspan="3">Pending</td></tr>
-            <tr><td>final panel</td><td colspan="3">locked / not run</td></tr>
+            <tr><td>{t('冻结终评', 'final panel')}</td><td colspan="3">{t('锁定 / 尚未运行', 'locked / not run')}</td></tr>
           </tbody>
         </table></div>
+        <div class="esg__result-reading">
+          <h3>{t('结果出来后，先看这四件事', 'When results arrive, read these four things first')}</h3>
+          <ol>
+            <li><strong>{t('训练过程', 'Training trajectory')}</strong> · {t('把 OFF / ON 的每轮 WebShop Score 与完整成功率放在同一时间轴上，看长期趋势，不用某一轮的高低代替结论。', 'Plot per-round WebShop Score and exact success for OFF and ON on the same timeline; read the long-run pattern rather than treating one round as the conclusion.')}</li>
+            <li><strong>{t('正式差值', 'Formal contrast')}</strong> · {t('按预注册规则汇总处理生效后的 R1–R159 平均 WebShop reward，并报告配对移动块 bootstrap 区间；完整成功率和全 160 轮汇总是辅助结果。', 'Use the preregistered R1–R159 post-treatment mean reward contrast with the paired moving-block bootstrap interval; exact success and all-160 summaries remain secondary outcomes.')}</li>
+            <li><strong>{t('机制证据', 'Mechanism evidence')}</strong> · {t('再看 ON 的有效写入 β、状态健康与 OFF 的同训练对照，解释“为什么会这样”；这些诊断不能替代任务指标。', 'Then inspect ON effective-write beta/state health against the same-training OFF reference to explain why; these diagnostics do not replace task outcomes.')}</li>
+            <li><strong>{t('数据完整性', 'Data integrity')}</strong> · {t('invalid 记录、工程中断、CONTENT_REJECTION_NOOP 和统计分母一起公开。冻结终评只有获得独立授权并封存后才进入结果。', 'Publish invalids, engineering interruptions, CONTENT_REJECTION_NOOP events, and denominators together. The final panel enters the result only after separate authorization and sealing.')}</li>
+          </ol>
+        </div>
+      </>
+    ) : sealed ? (
+      <>
+        <div class="esg__trajectory-shell">
+          <figure>
+            <figcaption><strong>{t('每轮 WebShop Score', 'WebShop Score by round')}</strong><span>{t('细线=原始轮次 · 粗线=12轮移动平均', 'thin=raw rounds · thick=12-round moving average')}</span></figcaption>
+            <svg viewBox="0 0 760 270" role="img" aria-label={t('OFF 与 ON 的 R0 到 R159 WebShop Score', 'OFF and ON WebShop Score from R0 through R159')}>
+              <line x1="44" y1="238" x2="716" y2="238" class="axis"/><line x1="44" y1="128" x2="716" y2="128" class="grid"/><line x1="44" y1="18" x2="716" y2="18" class="grid"/>
+              <text x="18" y="242">0</text><text x="12" y="132">50</text><text x="12" y="22">100</text><text x="44" y="260">R0</text><text x="365" y="260">R80</text><text x="684" y="260">R159</text>
+              <polyline points={offScoreRaw} class="score-raw off"/><polyline points={onScoreRaw} class="score-raw on"/>
+              <polyline points={offScoreTrend} class="score-trend off"/><polyline points={onScoreTrend} class="score-trend on"/>
+            </svg>
+            <div class="esg__legend"><span><i class="off"></i>OFF</span><span><i class="on"></i>ON</span></div>
+          </figure>
+          <figure>
+            <figcaption><strong>SD-LoRA training loss</strong><span>OFF / ON</span></figcaption>
+            <svg viewBox="0 0 400 270" role="img" aria-label={t('OFF 与 ON 的 R0 到 R159 SD-LoRA training loss', 'OFF and ON SD-LoRA training loss from R0 through R159')}>
+              <line x1="42" y1="238" x2="364" y2="238" class="axis"/><line x1="42" y1="128" x2="364" y2="128" class="grid"/><line x1="42" y1="18" x2="364" y2="18" class="grid"/>
+              <text x="10" y="242">0</text><text x="42" y="260">R0</text><text x="330" y="260">R159</text>
+              <polyline points={offLoss} class="loss-line off"/><polyline points={onLoss} class="loss-line on"/>
+            </svg>
+            <div class="esg__legend"><span><i class="off"></i>OFF</span><span><i class="on"></i>ON</span></div>
+          </figure>
+        </div>
+        <div class="esg__result-table-wrap"><table class="esg__result-table">
+          <thead><tr><th>{t('正式指标', 'Formal metric')}</th><th>OFF</th><th>ON</th><th>{t('Δ / 不确定性', 'Δ / uncertainty')}</th></tr></thead>
+          <tbody>
+            <tr><td>{t('160 轮平均 WebShop reward', '160-round pooled mean reward')}</td><td>{sealed.pooledReward.off}</td><td>{sealed.pooledReward.on}</td><td>{sealed.pooledReward.delta}</td></tr>
+            <tr><td>{t('160 轮完整成功', '160-round exact success')}</td><td>{sealed.exactSuccess.off}</td><td>{sealed.exactSuccess.on}</td><td>{sealed.exactSuccess.delta}</td></tr>
+            <tr><td>{sealed.uncertainty.label}</td><td colspan="2">{sealed.uncertainty.low} → {sealed.uncertainty.high}</td><td>{t('按预注册配对规则', 'preregistered paired analysis')}</td></tr>
+            <tr><td>{t('冻结终评', 'final panel')}</td><td colspan="3">{sealed.finalPanel ? `${sealed.finalPanel.label}: OFF ${sealed.finalPanel.off} / ON ${sealed.finalPanel.on}` : t('没有独立授权/封存结果', 'no separately authorized/sealed result')}</td></tr>
+          </tbody>
+        </table></div>
+        <p class="esg__sealed-conclusion">{sealed.conclusion}</p>
       </>
     ) : null}
-    <p class="esg__boundary">{t('这里不会用 partial W&B、单个 checkpoint、ETA 或 0 来代替正式结果，也不会在 seal 前写 winner。', 'This section never substitutes partial W&B, a single checkpoint, an ETA, or zero for the formal result, and it never names a winner before sealing.')}</p>
+    <p class="esg__boundary">{t('这里不会用中途 W&B、单个 checkpoint、预计完成时间或 0 来代替正式结果，也不会在封存前写“谁更好”。', 'This section never substitutes partial W&B, a single checkpoint, an ETA, or zero for the formal result, and it never names a winner before sealing.')}</p>
   </section>
 
   <section class="esg__section" id="evidence" aria-labelledby="evidence-title">
     <h2 id="evidence-title">{t('证据与当前边界', 'Evidence and current boundary')}</h2>
     <details class="esg__details" open>
-      <summary>{t('当前正式身份与预启动状态', 'Current formal identity and prelaunch state')}</summary>
+      <summary>{t('当前正式身份与运行状态', 'Current formal identity and running state')}</summary>
       <ul>
         <li><a href={study.evidence.controlTowerPr}><ExternalBrandMark href={study.evidence.controlTowerPr} />PR #502 · Control Tower</a></li>
-        <li><a href={study.evidence.finalImplementationPr}><ExternalBrandMark href={study.evidence.finalImplementationPr} />PR #510 · final implementation stack</a></li>
-        <li><code>{study.source.formalExecutionCheckout}</code> · {t('formal execution checkout', 'formal execution checkout')}</li>
+        <li><a href={study.evidence.finalImplementationPr}><ExternalBrandMark href={study.evidence.finalImplementationPr} />PR #523 · async / Completion-First live successor</a></li>
+        <li><code>{study.source.formalExecutionCheckout}</code> · {t('当前正式 execution checkout（运行中，禁止热切换）', 'current formal execution checkout (running; no hot swap)')}</li>
+        <li><code>{study.source.finalImplementationHead}</code> · {t('repository-current integration/evidence head（不得热切换 execution）', 'repository-current integration/evidence head (must not hot-swap execution)')}</li>
         <li><code>{study.source.scienceExecutionGateCodeFreeze}</code> · {t('science / execution-gate code freeze', 'science / execution-gate code freeze')}</li>
         <li><code>{study.lifecycle.currentReadySha256}</code> · READY SHA256</li>
-        <li><code>{study.resourceExecution.resourceSuccessorSha256}</code> · GPU4–7 resource successor SHA256</li>
+        <li><code>{study.lifecycle.ownerLaunchReleaseSha256}</code> · owner launch release SHA256</li>
+        <li><code>{study.lifecycle.sealedRolloutRecoverySha256}</code> · sealed-rollout recovery SHA256</li>
+        <li><code>{study.resourceExecution.liveResourceExecutionSha}</code> · {t('当前仅资源层的 execution SHA；不改变科学语义', 'current resource-only execution SHA; scientific semantics unchanged')}</li>
+        <li><a href={study.evidence.resourceAuthorityPr}><ExternalBrandMark href={study.evidence.resourceAuthorityPr} />PR #525 · {t('当前唯一资源层后继线；仓库候选版本与正式运行版本分开', 'single current resource-only successor; repository candidate stays separate from live execution')}</a></li>
+        <li><code>{study.resourceExecution.resourceRepositoryCandidateSha}</code> · {t('当前 #525 仓库候选版本；没有热迁移到正式实验', 'current #525 repository candidate; not hot-migrated into the formal run')}</li>
+        <li><a href={study.evidence.historicalResourceVerifierPr}><ExternalBrandMark href={study.evidence.historicalResourceVerifierPr} />PR #526 · {t('历史验证线，已收口并吸收到 #525', 'historical verifier, closed and absorbed into #525')}</a></li>
       </ul>
     </details>
     <details class="esg__details">
@@ -272,21 +359,51 @@ const pending = result.status === 'pending';
   .esg__fork { width:50%; height:28px; margin:auto; border-left:2px solid currentColor; border-right:2px solid currentColor; border-top:2px solid currentColor; opacity:.35; transform:translateY(18px); }
   .esg__pair-arms { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px; }
   .esg__pair-arms > div { display:grid; gap:5px; padding:16px; border:1px solid var(--border-color); border-radius:var(--radius-panel); }
-  .esg__barrier { display:flex; align-items:center; gap:8px; margin:18px 0 8px; color:var(--text-secondary); font:600 1rem/1.4 var(--font-mono); }
-  .esg__barrier i { flex:1; height:1px; background:currentColor; opacity:.35; }
+  .esg__arm-progress { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:22px 0 12px; }
+  .esg__arm-progress > div { display:grid; gap:5px; padding:14px; border:1px solid var(--border-color); border-radius:var(--radius-panel); background:var(--surface-secondary); }
+  .esg__arm-progress span { font:600 1rem/1.4 var(--font-mono); }
+  .esg__arm-note { color:var(--text-secondary); font-size:1rem; line-height:1.5; }
+  .esg__audit-join { display:grid; grid-template-columns:minmax(160px,.7fr) minmax(0,1.3fr); gap:10px; align-items:center; padding:14px; border:1px dashed var(--border-color); border-radius:var(--radius-panel); }
+  .esg__audit-join span { color:var(--text-secondary); font:600 1rem/1.4 var(--font-mono); }
   .esg__pair figcaption { color:var(--text-secondary); font-size:1rem; line-height:1.55; }
   .esg__matched-list { columns:2; padding-left:1.2rem; color:var(--text-secondary); }
   .esg__matched-list li { break-inside:avoid; margin:7px 0; }
   .esg__results { border-top-width:2px; }
   .esg__pending { padding:16px; border-radius:var(--radius-panel); background:var(--surface-secondary); }
   .esg__pending strong { font-size:1.15rem; }
+  .esg__trajectory-shell { display:grid; grid-template-columns:minmax(0,1.65fr) minmax(300px,.8fr); gap:14px; margin:18px 0; }
+  .esg__trajectory-shell figure { min-width:0; margin:0; padding:16px; border:1px solid var(--border-color); background:var(--surface-primary, var(--surface)); }
+  .esg__trajectory-shell figcaption { display:flex; justify-content:space-between; gap:14px; align-items:baseline; }
+  .esg__trajectory-shell figcaption span { color:var(--text-secondary); font-size:1rem; }
+  .esg__trajectory-shell svg { display:block; width:100%; height:auto; margin-top:8px; }
+  .esg__trajectory-shell svg text { fill:var(--text-secondary); font:700 10px var(--font-mono); }
+  .esg__chart-pending { display:grid; min-height:220px; place-items:center; margin-top:10px; padding:22px; border:1px dashed var(--border-color); text-align:center; color:var(--text-secondary); line-height:1.6; }
+  .esg__trajectory-shell .axis { stroke:color-mix(in srgb,var(--text-primary) 48%,transparent); stroke-width:1.4; }
+  .esg__trajectory-shell .grid { stroke:color-mix(in srgb,var(--text-primary) 11%,transparent); stroke-width:1; }
+  .esg__trajectory-shell .score-raw,.esg__trajectory-shell .score-trend,.esg__trajectory-shell .loss-line { fill:none; vector-effect:non-scaling-stroke; }
+  .esg__trajectory-shell .score-raw { stroke-width:1.1; opacity:.32; }
+  .esg__trajectory-shell .score-trend { stroke-width:3; }
+  .esg__trajectory-shell .loss-line { stroke-width:2.2; }
+  .esg__trajectory-shell .off { stroke:var(--blue); }
+  .esg__trajectory-shell .on { stroke:var(--warning); }
+  .esg__legend { display:flex; gap:16px; margin-top:6px; color:var(--text-secondary); font-size:1rem; }
+  .esg__legend span { display:inline-flex; align-items:center; gap:6px; }
+  .esg__legend i { width:18px; height:3px; border-radius:var(--radius-control); }
+  .esg__legend i.off { background:var(--blue); }
+  .esg__legend i.on { background:var(--warning); }
+  .esg__sealed-conclusion { margin-top:18px; padding:16px; border-left:3px solid var(--accent); background:var(--surface-secondary); }
+  .esg__result-reading { margin-top:18px; padding:18px; border:1px solid var(--border-color); border-radius:var(--radius-panel); }
+  .esg__result-reading h3 { margin:0 0 10px; }
+  .esg__result-reading ol { margin:0; padding-left:1.35rem; }
+  .esg__result-reading li { margin:10px 0; line-height:1.65; color:var(--text-secondary); }
+  .esg__result-reading strong { color:var(--text-primary); }
   .esg__boundary { color:var(--text-secondary); font-size:1rem; }
   .esg__history-link { margin-top:22px; }
   code { overflow-wrap:anywhere; }
 
   @media (max-width: 760px) {
     .esg { padding:24px 18px 70px; }
-    .esg__facts,.esg__why-grid,.esg__representation,.esg__pair-arms { grid-template-columns:1fr; }
+    .esg__facts,.esg__why-grid,.esg__representation,.esg__pair-arms,.esg__arm-progress,.esg__audit-join,.esg__trajectory-shell { grid-template-columns:1fr; }
     .esg__method-grid { grid-template-columns:1fr; }
     .esg__flow { grid-template-columns:1fr; }
     .esg__flow-arrow { width:2px; height:22px; margin:auto; }
@@ -294,8 +411,6 @@ const pending = result.status === 'pending';
     .esg__steps li { grid-template-columns:34px 1fr; padding:15px; }
     .esg__fork { width:70%; }
     .esg__matched-list { columns:1; }
-    .esg__barrier { flex-wrap:wrap; }
-    .esg__barrier i { min-width:18px; }
   }
 
   @media (prefers-reduced-motion: reduce) {

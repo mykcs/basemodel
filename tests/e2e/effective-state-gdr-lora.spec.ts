@@ -13,7 +13,7 @@ for (const viewport of [
     await expect(page.locator('[data-effective-state-gdr-page]')).toBeVisible();
     await expect(page.locator('.esg__hero')).toContainText('rank128');
     await expect(page.locator('.esg__hero')).toContainText('正式结果尚未产生');
-    await expect(page.locator('.esg__results')).toContainText('160-round pooled mean reward');
+    await expect(page.locator('.esg__results')).toContainText('160 轮平均 WebShop reward');
     await expect(page.locator('.esg__results')).not.toContainText('0.0000');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
     expect(overflow).toBe(false);
@@ -25,11 +25,11 @@ test('Effective-State derivation keeps factor failure, controller failure, and s
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const derivation = page.locator('#derivation');
   await expect(derivation).toContainText('1.052');
-  await expect(derivation).toContainText('factor displacement');
+  await expect(derivation).toContainText('因子位移');
   await expect(derivation).toContainText('657.836');
-  await expect(derivation).toContainText('旧 controller');
+  await expect(derivation).toContainText('旧控制器');
   await expect(derivation).toContainText('C1');
-  await expect(page.locator('#method')).toContainText('effective state');
+  await expect(page.locator('#method')).toContainText('有效状态');
   await expect(page.locator('#method')).toContainText('reward');
   await expect(page.locator('#formal-design')).toContainText('EFFECTIVE_STATE_GDR_LORA_V1');
 });
@@ -42,7 +42,7 @@ test('Effective-State derivation order and connectors remain semantic across des
   expect(steps[0]).toContain('1.052');
   expect(steps[1]).toContain('657.836');
   expect(steps[2]).toContain('C1');
-  expect(steps[3]).toContain('effective state');
+  expect(steps[3]).toContain('有效状态');
   const desktopArrow = await page.locator('.esg__flow-arrow').first().boundingBox();
   expect(desktopArrow).not.toBeNull();
   expect(desktopArrow!.width).toBeGreaterThan(desktopArrow!.height);
@@ -60,7 +60,12 @@ test('historical Gated-Delta and Bounded pages both point forward without rewrit
 
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('.bounded__metrics')).toContainText('37.04');
-  await expect(page.locator('.bounded__next-question').getByRole('link')).toHaveAttribute('href', route);
+  const boundedNext = page.locator('.bounded__next-question');
+  await expect(boundedNext.getByRole('link', { name: /后续加速研究/ })).toHaveAttribute(
+    'href',
+    '/research/seed-openevo/study/capability-exploration/sd-lora-bounded-acceleration/',
+  );
+  await expect(boundedNext.getByRole('link', { name: /另一条后续问题/ })).toHaveAttribute('href', route);
 });
 
 for (const theme of ['light', 'dark'] as const) {
@@ -79,20 +84,45 @@ for (const theme of ['light', 'dark'] as const) {
 test('Effective-State first screen tells the three-part story before deeper choices', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const context = page.locator('.research-route-context');
+  await expect(context).toContainText('能力探索');
+  await expect(context).toContainText('Bounded + Effective-State GDR');
+  await expect(context).toContainText('OFF 只做 Bounded');
+  await expect(context).toContainText('实验正在运行，正式结果尚未产生');
+  await expect(context).not.toContainText('DirectApply / No-GDR 实验');
+  await expect(context).not.toContainText('negative evidence');
+  await expect(context).not.toContainText('Pending 结果槽');
+
   const h1 = page.locator('#main-content h1');
   await expect(h1).toHaveCount(1);
   const lede = page.locator('.esg__lede');
   await expect(lede).toBeVisible();
   await expect(lede).toContainText('rank128');
-  await expect(lede).toContainText('第一代 GDR');
-  await expect(lede).toContainText('同一个有效更新能有多种 A/C 表示');
+  await expect(lede).toContainText('OFF / ON');
+  await expect(lede).toContainText('OFF 只做 Bounded');
+  await expect(lede).toContainText('两条臂已经正式运行');
+  await expect(page.locator('.esg__status')).toContainText('各自沿自己的已封存前一轮继续');
   await expect(lede).toContainText('正式结果尚未产生');
+  await expect(page.locator('#formal-design')).toContainText('配对编号 / 审计记录');
+  await expect(page.locator('#formal-result')).toContainText('结果出来后，先看这四件事');
+  await expect(page.locator('#formal-result')).toContainText('每轮 WebShop Score');
+  await expect(page.locator('#formal-result')).toContainText('SD-LoRA training loss');
+  await expect(page.locator('#formal-result')).toContainText('现在不画中途曲线');
   const ledeBox = await lede.boundingBox();
   expect(ledeBox).not.toBeNull();
   expect(ledeBox!.y).toBeLessThan(844);
   const firstDeepChoice = await page.locator('.esg__context-links').boundingBox();
   expect(firstDeepChoice).not.toBeNull();
   expect(ledeBox!.y).toBeLessThan(firstDeepChoice!.y);
+});
+
+test('Effective-State evidence keeps resource authority single-owner after verifier absorption', async ({ page }) => {
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const evidence = page.locator('#evidence');
+  await expect(evidence).toContainText('PR #525');
+  await expect(evidence).toContainText('当前唯一资源层后继线');
+  await expect(evidence).toContainText('PR #526');
+  await expect(evidence).toContainText('已收口并吸收到 #525');
 });
 
 test('Effective-State page emits no browser errors on the primary route', async ({ page }) => {

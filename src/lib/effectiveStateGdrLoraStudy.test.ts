@@ -11,52 +11,69 @@ const sha64 = /^[0-9a-f]{64}$/;
 describe('Effective-State GDR publication snapshot', () => {
   it('binds the current frozen scientific and control identities', () => {
     expect(study.source.repository).toBe('mykcs/openevo-experiment');
-    expect(study.source.finalImplementationPr).toBe(510);
+    expect(study.source.finalImplementationPr).toBe(523);
     expect(study.source.controlTowerPr).toBe(502);
-    expect(study.source.finalImplementationHead).toBe('c602b50208a247d2563e44874fb1da65593cd13b');
-    expect(study.source.formalExecutionCheckout).toBe('25bc89083b6c60b3c6be4a3d80d12778feef4556');
-    expect(study.source.scientificExecutionSha).toBe('25bc89083b6c60b3c6be4a3d80d12778feef4556');
+    expect(study.source.finalImplementationHead).toBe('fbdb21b2739ffeeca90e17eac83c14adb6087be2');
+    expect(study.source.formalExecutionCheckout).toBe('fbdb21b2739ffeeca90e17eac83c14adb6087be2');
+    expect(study.source.scientificExecutionSha).toBe('fbdb21b2739ffeeca90e17eac83c14adb6087be2');
     expect(study.source.scienceExecutionGateCodeFreeze).toBe('c5e012814bb9509deb0e2cbc8d57a63e2b56889f');
     expect(study.source.campaignId).toBe('20260916-0255-bounded-effective-state-gdr');
     expect(study.source.experimentId).toBe('202609160255-bounded-effective-state-gdr');
     expect(study.source.passportSha256).toMatch(sha64);
     expect(study.source.registrySha256).toMatch(sha64);
-    expect(study.source.carrierAdoptionIdentity).toBe('274123dde66547d5d5ba68b5c8b75c0205a75191ce3c1c471a606d589ac5250b');
+    expect(study.source.carrierAdoptionIdentity).toBe('bdeacdd126f89dffa9ec8c31a12e20b7bbb9ae8367f2ff80b92e9c8e848ad0e4');
     expect(study.source.authorityReconciliationRequired).toBe(false);
     expect(study.source.preCampaignValidation.scientificExecutionSha).toBe('b41884ac90d185742dc47f240c4d54a3cfaf6175');
     expect(study.source.preCampaignValidation.implementationHead).toBe('5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa');
-    expect(study.source.status).toBe('PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START');
-    expect(study.source.currentCampaignClassification).toBe('PRELAUNCH_READY_AWAITING_EXPLICIT_OWNER_START');
+    expect(study.source.status).toBe('FORMAL_RUNNING');
+    expect(study.source.currentCampaignClassification).toBe('FORMAL_RUNNING');
+    expect(study.source.liveExecutionFrozen).toBe(true);
+    expect(study.source.repositoryCurrentMustNotHotSwapLiveRun).toBe(true);
     expect(study.source.controlTowerHead).toMatch(sha40);
     expect(Number.isNaN(Date.parse(study.checkedAt))).toBe(false);
   });
 
   it('keeps Pending component copy non-claiming', () => {
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
-    expect(component).toContain('不会在 seal 前写 winner');
+    expect(component).toContain('不会在封存前写“谁更好”');
     expect(component).not.toContain('Effective-State GDR 优于 Bounded');
     expect(component).not.toContain('Effective-State GDR beats Bounded');
+    expect(component).toContain('正式 OFF / ON 实验正在运行');
+    expect(component).toContain('运行中分数、中途 W&B 或单个 checkpoint 都不是正式结论');
   });
 
-  it('keeps the formal result fail-closed while the run has not launched', () => {
+  it('keeps the formal result fail-closed while the formal study is running', () => {
     expect(study.formalResult).toEqual({
       status: 'pending',
       sealedEvidence: null,
       pooledReward: null,
       exactSuccess: null,
       uncertainty: null,
+      trajectory: null,
       finalPanel: null,
       conclusion: null,
     } satisfies EffectiveStateFormalResult);
-    expect(study.lifecycle.status).toBe('PRELAUNCH_COMPLETE_AWAITING_EXPLICIT_OWNER_START');
-    expect(study.lifecycle.formalRunLaunched).toBe(false);
-    expect(study.lifecycle.formalRowsConsumed).toBe(0);
+    expect(study.lifecycle.status).toBe('FORMAL_RUNNING');
+    expect(study.lifecycle.formalRunLaunched).toBe(true);
+    expect(study.lifecycle.launchAuthority).toBe(true);
+    expect(study.lifecycle.continuationAuthority).toBe(true);
+    expect(study.lifecycle.armProgression).toBe('INDEPENDENT');
+    expect(study.lifecycle.pairingMode).toBe('ASYNC_AUDIT_ONLY');
+    expect(study.lifecycle.pairedReceiptsAdmissionAuthority).toBe(false);
+    expect(study.lifecycle.pairedReceiptsBlockArmProgression).toBe(false);
+    expect(study.lifecycle.sameWallClockCompletionRequired).toBe(false);
+    expect(study.lifecycle.ownerLaunchReleasePresent).toBe(true);
+    expect(study.lifecycle.ownerLaunchReleaseSha256).toBe('7c6484f3629b149c6b4afe21f9dfa8d5c02bc789784386402d9fd04f2017aecb');
+    expect(study.lifecycle.sealedRolloutRecoverySha256).toBe('6e0369b3880e6ae36223f9f5eed826582e73f02a1a72e7ec02d9ae78804c569b');
+    expect(study.lifecycle.formalRowsConsumed).toBeNull();
+    expect(study.lifecycle.formalRowsDisclosure).toContain('all 160 pair audits');
     expect(study.lifecycle.finalPanelAccess).toBe(0);
-    expect(study.lifecycle.currentReadySha256).toBe('4b57164c55ca8e3ed8993aa2291f09971ce91fe25871e4714336fd2df7d26671');
-    expect(study.lifecycle.controllerInitOnlySha256).toBe('adb861f8797c0b75f549e88865bdff651e8ac35230e39b0bc36d0be438150f4e');
-    expect(study.lifecycle.matchedDryRunSha256).toBe('00f7f3284bc67568e4552906cd95c9e91cbfd14800d828444f221c439e835b52');
-    expect(study.lifecycle.observabilityAdmissionSha256).toBe('9a75be897bb518a4bcbbf4e2069e511662f994e1b5f46f8b3126eab38e1b199a');
-    expect(study.lifecycle.prelaunchZeroStateSealSha256).toBe('7771ad89c0c400adaa23a27762766a043a3c928122f3cbfa8780101f6882ea03');
+    expect(study.lifecycle.formalOutputRootExists).toBe(true);
+    expect(study.lifecycle.formalOutputRoot).toContain('bounded-effective-state-gdr-recovery-1e7c4952-20260916');
+    expect(study.lifecycle.currentReadySha256).toBe('3493da01babaf762acc7b6337d685ec86111df352ad7e180d7dfbc9f74576432');
+    expect(study.lifecycle.prelaunchReceiptsAreHistoricalAfterExecutionChange).toBe(true);
+    expect(study.lifecycle.prelaunchEvidence.controllerInitOnlySha256).toBe('adb861f8797c0b75f549e88865bdff651e8ac35230e39b0bc36d0be438150f4e');
+    expect(study.lifecycle.prelaunchEvidence.matchedDryRunSha256).toBe('00f7f3284bc67568e4552906cd95c9e91cbfd14800d828444f221c439e835b52');
   });
 
   it('requires pinned evidence before the sealed branch can carry formal numbers', () => {
@@ -71,6 +88,10 @@ describe('Effective-State GDR publication snapshot', () => {
       pooledReward: { off: 0.1, on: 0.2, delta: 0.1 },
       exactSuccess: { off: 1, on: 2, delta: 1 },
       uncertainty: { label: 'sealed preregistered interval', low: 0, high: 1 },
+      trajectory: {
+        off: [{ round: 0, score: 10, exactSuccessRate: 0.1, loss: 1.0 }],
+        on: [{ round: 0, score: 11, exactSuccessRate: 0.1, loss: 0.9 }],
+      },
       finalPanel: null,
       conclusion: 'example type witness only',
     };
@@ -107,22 +128,25 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.derivation.successor.retention).toBe(1);
   });
 
-  it('binds the current GPU4-7 resource lane without changing treatment', () => {
+  it('binds the current GPU4-7 resource pool without changing treatment', () => {
     expect(study.resourceExecution.physicalGpuIndices).toEqual([4, 5, 6, 7]);
-    expect(study.resourceExecution.workersPerGpu).toBe(2);
-    expect(study.resourceExecution.postRolloutGpu).toBe(4);
-    expect(study.resourceExecution.crossPhaseOverlapAllowed).toBe(false);
-    expect(study.resourceExecution.resourceSuccessorSha256).toMatch(sha64);
+    expect(study.resourceExecution.schedulerMode).toContain('capacity-aware');
+    expect(study.resourceExecution.crossPhaseOverlapAllowed).toBe(true);
+    expect(study.resourceExecution.liveResourceExecutionSha).toMatch(sha40);
+    expect(study.resourceExecution.resourceAuthorityPr).toBe(525);
+    expect(study.resourceExecution.resourceRepositoryCandidateSha).toBe('4305a70fd920caa81fd8f7636a45be2d0a8d3960');
+    expect(study.resourceExecution.historicalVerifierPr).toBe(526);
+    expect(study.resourceExecution.historicalVerifierDisposition).toBe('CLOSED_ABSORBED_INTO_525');
     expect(study.resourceExecution.claimBoundary).toContain('treatment/tasks/seeds/sampling');
   });
 
-  it('freezes the matched formal budget and locked final panel', () => {
+  it('freezes the matched formal budget, independent progression, and locked final panel', () => {
     expect(study.formalDesign.rounds).toBe(160);
     expect(study.formalDesign.rolloutsPerRoundPerArm).toBe(128);
     expect(study.formalDesign.formalRolloutsPerArm).toBe(20_480);
     expect(study.formalDesign.finalPanel).toContain('locked');
-    expect(study.formalDesign.roundBarrier).toContain('OFF+ON rollout concurrent');
-    expect(study.formalDesign.roundBarrier).toContain('matched barrier');
+    expect(study.formalDesign.armProgression).toContain('independent 160-round state machines');
+    expect(study.formalDesign.pairing).toContain('never gate arm progression');
     expect(study.formalDesign.onlyTreatmentDifference).toContain('Effective-State GDR');
   });
 });

@@ -115,8 +115,8 @@ export const CAPABILITY_READER_ROUTES = [
     "owner": "OpenEvoEffectiveStateGdrLoraStudy",
     "label": { "zh": "Bounded + Effective-State GDR", "en": "Bounded + Effective-State GDR" },
     "purpose": {
-      "zh": "解释固定 rank128 以后为什么还要控制新经验写入强度，保留两层 negative evidence，并展示正式配对实验的 Pending 结果槽。",
-      "en": "Explain why write-strength control remains after fixing rank128, preserve both negative-evidence layers, and show the Pending result scaffold for the formal matched experiment."
+      "zh": "同一个 1.7B 从共同起点分成两条正式实验：OFF 只做 Bounded，ON 在同样训练上加入 Effective-State GDR。两条臂各自跑 160 轮，最后再做配对分析；实验正在运行，正式结果尚未产生。",
+      "en": "The same 1.7B model splits from one common start into two formal arms: OFF uses Bounded only, while ON adds Effective-State GDR to the same training. Each arm runs 160 rounds independently before the final paired analysis; the study is running and no formal result is available yet."
     }
   },
   {

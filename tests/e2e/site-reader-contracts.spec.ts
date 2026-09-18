@@ -193,7 +193,7 @@ test('Study phone first screen exposes exactly the five experiment parents', asy
 });
 
 
-test('Study desktop nests the SD-LoRA overview, two acceleration branches, and the Effective-State successor under one indented directory group', async ({ page }) => {
+test('Study desktop keeps the three SD-LoRA acceleration entries grouped and shows Effective-State as a separate formal successor', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   for (const route of ['/research/seed-openevo/study/']) {
     await page.goto(route, { waitUntil: 'domcontentloaded' });
@@ -203,13 +203,17 @@ test('Study desktop nests the SD-LoRA overview, two acceleration branches, and t
     await expect(group).toHaveCount(1);
     await expect(group.locator(':scope > strong')).toHaveText(expectedGroupLabel);
     const links = group.locator(':scope > ul a');
-    await expect(links).toHaveCount(4);
+    await expect(links).toHaveCount(3);
     await expect(links.nth(0)).toContainText('两条路线说明');
     await expect(links.nth(0)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-history/');
     await expect(links.nth(1)).toContainText('Stable Reduction');
     await expect(links.nth(2)).toContainText('Bounded Online Recurrence');
-    await expect(links.nth(3)).toContainText('Effective-State GDR');
-    await expect(links.nth(3)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/');
+
+    const formalSuccessor = directApply.getByRole('link', { name: /后继正式对照：Bounded OFF \/ Effective-State GDR ON/ });
+    await expect(formalSuccessor).toHaveCount(1);
+    await expect(formalSuccessor).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/');
+    expect(await formalSuccessor.evaluate((link) => Boolean(link.closest('.experiment-child-group')))).toBe(false);
+
     const geometry = await group.evaluate((element) => {
       const label = element.querySelector(':scope > strong')?.getBoundingClientRect();
       const branchLinks = [...element.querySelectorAll(':scope > ul a')].map((link) => link.getBoundingClientRect());
