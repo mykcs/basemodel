@@ -3,6 +3,7 @@ import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
 import { EFFECTIVE_STATE_GDR_LORA_STUDY as study } from '../../data/effectiveStateGdrLoraStudy';
+import type { EffectiveStateFormalResult } from '../../data/effectiveStateGdrLoraStudy';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -14,7 +15,7 @@ const boundedHref = p(`${cap}/sd-lora-bounded-state/`);
 const gatedHref = p(`${cap}/gated-delta-sd-lora/`);
 const vanillaHref = p('/research/seed-openevo/flow/sd-lora/');
 const scalingHref = p(`${cap}/sd-lora-scaling/`);
-const result = study.formalResult;
+const result = study.formalResult as EffectiveStateFormalResult;
 const pending = result.status === 'pending';
 const sealed = result.status === 'sealed' ? result : null;
 
