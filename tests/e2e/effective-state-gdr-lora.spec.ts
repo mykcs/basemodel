@@ -7,14 +7,22 @@ for (const viewport of [
   { name: 'tablet', width: 768, height: 1024 },
   { name: 'desktop', width: 1440, height: 1000 },
 ]) {
-  test(`Effective-State GDR page keeps the scientific boundary at ${viewport.name}`, async ({ page }) => {
+  test(`Effective-State GDR page keeps the sealed result boundary at ${viewport.name}`, async ({ page }) => {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('[data-effective-state-gdr-page]')).toBeVisible();
-    await expect(page.locator('.esg__hero')).toContainText('rank128');
-    await expect(page.locator('.esg__hero')).toContainText('正式结果尚未产生');
-    await expect(page.locator('.esg__results')).toContainText('160 轮平均 WebShop reward');
-    await expect(page.locator('.esg__results')).not.toContainText('0.0000');
+    await expect(page.locator('.esg__hero')).toContainText('160 轮已经全部跑完');
+    await expect(page.locator('.esg__hero')).toContainText('60.72');
+    await expect(page.locator('.esg__hero')).toContainText('45.98');
+    await expect(page.locator('.esg__hero')).toContainText('20.77');
+    await expect(page.locator('.esg__hero')).toContainText('COMPLETE');
+    await expect(page.locator('.esg__results')).toContainText('R1–R159 平均 WebShop reward');
+    await expect(page.locator('.esg__results')).toContainText('区间跨 0');
+    await expect(page.locator('#compute')).toContainText('31.09');
+    await expect(page.locator('#compute')).toContainText('2.02');
+    await expect(page.locator('#compute')).toContainText('2.35');
+    await expect(page.locator('#parameters')).toContainText('17,920');
+    await expect(page.locator('#parameters')).toContainText('1.000202');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
     expect(overflow).toBe(false);
   });
@@ -85,29 +93,28 @@ test('Effective-State first screen tells the three-part story before deeper choi
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const context = page.locator('.research-route-context');
-  await expect(context).toContainText('能力探索');
-  await expect(context).toContainText('Bounded + Effective-State GDR');
+  await expect(context).toContainText('实验目录');
+  await expect(context).toContainText('1.7B · Bounded OFF / Effective-State GDR ON');
   await expect(context).toContainText('OFF 只做 Bounded');
-  await expect(context).toContainText('实验正在运行，正式结果尚未产生');
-  await expect(context).not.toContainText('DirectApply / No-GDR 实验');
-  await expect(context).not.toContainText('negative evidence');
+  await expect(context).toContainText('完整 OFF / ON 与冻结终评');
+  await expect(context).toContainText('同一 128 题的 DirectApply 历史基线');
+  await expect(context).not.toContainText('正式结果尚未产生');
   await expect(context).not.toContainText('Pending 结果槽');
 
   const h1 = page.locator('#main-content h1');
   await expect(h1).toHaveCount(1);
   const lede = page.locator('.esg__lede');
   await expect(lede).toBeVisible();
-  await expect(lede).toContainText('rank128');
-  await expect(lede).toContainText('OFF / ON');
-  await expect(lede).toContainText('OFF 只做 Bounded');
-  await expect(lede).toContainText('两条臂已经正式运行');
-  await expect(page.locator('.esg__status')).toContainText('各自沿自己的已封存前一轮继续');
-  await expect(lede).toContainText('正式结果尚未产生');
+  await expect(lede).toContainText('160 轮已经全部跑完');
+  await expect(lede).toContainText('DirectApply 得 60.72');
+  await expect(lede).toContainText('Bounded OFF 得 45.98');
+  await expect(lede).toContainText('GDR ON 得 20.77');
+  await expect(page.locator('.esg__status')).toContainText('正式实验 COMPLETE');
   await expect(page.locator('#formal-design')).toContainText('配对编号 / 审计记录');
-  await expect(page.locator('#formal-result')).toContainText('结果出来后，先看这四件事');
+  await expect(page.locator('#formal-result')).toContainText('三个 1.7B 最终状态');
   await expect(page.locator('#formal-result')).toContainText('每轮 WebShop Score');
   await expect(page.locator('#formal-result')).toContainText('SD-LoRA training loss');
-  await expect(page.locator('#formal-result')).toContainText('现在不画中途曲线');
+  await expect(page.locator('#formal-result')).toContainText('LONG_HORIZON_TRANSIENT_ONLY');
   const ledeBox = await lede.boundingBox();
   expect(ledeBox).not.toBeNull();
   expect(ledeBox!.y).toBeLessThan(844);
@@ -120,7 +127,7 @@ test('Effective-State evidence keeps resource authority single-owner after verif
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const evidence = page.locator('#evidence');
   await expect(evidence).toContainText('PR #525');
-  await expect(evidence).toContainText('当前唯一资源层后继线');
+  await expect(evidence).toContainText('历史资源层后继线');
   await expect(evidence).toContainText('PR #526');
   await expect(evidence).toContainText('已收口并吸收到 #525');
 });
@@ -170,4 +177,21 @@ test('Effective-State page disables nonessential motion when reduced motion is r
   expect(motion).not.toBeNull();
   expect(motion!.animation).toBe('none');
   expect(Number.parseFloat(motion!.transition)).toBeLessThanOrEqual(0.001);
+});
+
+
+test('Results index exposes the same-panel three-way 1.7B comparison', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/research/seed-openevo/study/results/', { waitUntil: 'domcontentloaded' });
+  const latest = page.locator('#latest-1p7b');
+  await expect(latest).toBeVisible();
+  await expect(latest).toContainText('三种最终状态，做同一份 128 题');
+  await expect(latest).toContainText('60.72');
+  await expect(latest).toContainText('45.98');
+  await expect(latest).toContainText('20.77');
+  await expect(latest).toContainText('区间跨过 0');
+  await expect(latest.getByRole('link', { name: /完整 OFF \/ ON/ })).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/');
+  await expect(latest.getByRole('link', { name: /DirectApply 独立实验/ })).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/#final');
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+  expect(overflow).toBe(false);
 });

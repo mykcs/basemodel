@@ -151,7 +151,7 @@ for (const viewport of viewports) {
 }
 
 
-test('Study phone first screen exposes exactly the five experiment parents', async ({ page }) => {
+test('Study phone first screen exposes exactly the six experiment parents', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/research/seed-openevo/study/', { waitUntil: 'domcontentloaded' });
   await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
@@ -172,6 +172,7 @@ test('Study phone first screen exposes exactly the five experiment parents', asy
     'successor-3b-1p7b',
     'gdr-v1-1p7b',
     'directapply-1p7b',
+    'bounded-effective-state-1p7b',
   ]);
   const visibleChildren = await page.locator('#main-content .experiment-children a').evaluateAll((links) => links.filter((el) => el.getClientRects().length > 0).length);
   expect(visibleChildren).toBe(0);
@@ -213,6 +214,11 @@ test('Study desktop keeps the three SD-LoRA acceleration entries grouped and sho
     await expect(formalSuccessor).toHaveCount(1);
     await expect(formalSuccessor).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/');
     expect(await formalSuccessor.evaluate((link) => Boolean(link.closest('.experiment-child-group')))).toBe(false);
+
+    const boundedExperiment = page.locator('[data-experiment-primary="bounded-effective-state-1p7b"]');
+    await expect(boundedExperiment).toHaveCount(1);
+    await expect(boundedExperiment).toBeVisible();
+    await expect(boundedExperiment).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/');
 
     const geometry = await group.evaluate((element) => {
       const label = element.querySelector(':scope > strong')?.getBoundingClientRect();

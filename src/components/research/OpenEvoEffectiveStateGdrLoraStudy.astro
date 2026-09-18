@@ -15,6 +15,7 @@ const boundedHref = p(`${cap}/sd-lora-bounded-state/`);
 const gatedHref = p(`${cap}/gated-delta-sd-lora/`);
 const vanillaHref = p('/research/seed-openevo/flow/sd-lora/');
 const scalingHref = p(`${cap}/sd-lora-scaling/`);
+const directApplyHref = p(`${cap}/q17-directapply-analysis/`);
 const result = study.formalResult as EffectiveStateFormalResult;
 const pending = result.status === 'pending';
 const sealed = result.status === 'sealed' ? result : null;
@@ -46,17 +47,17 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
     <p class="esg__eyebrow">{t('08 · 固定状态之后，控制新经验写多强', '08 · Controlling write strength after bounded state')}</p>
     <h1>Bounded Online Recurrence + Effective-State GDR</h1>
     <p class="esg__lede" data-reader-task data-reader-purpose>{t(
-      '我们现在想回答一个很简单的问题：历史已经固定在 rank128 以后，新经验是每次都完整写进去，还是让 Effective-State GDR 控制写入强度？同一个 1.7B 模型被分成 OFF / ON 两条 160 轮实验：OFF 只做 Bounded，ON 在同样训练上加入 Effective-State GDR。两条臂已经正式运行；正式结果尚未产生。',
-      'The question is simple: once history is bounded at rank128, should every new update be written in full, or should Effective-State GDR control write strength? The same 1.7B model is split into two 160-round arms: OFF uses Bounded only, while ON adds Effective-State GDR to the same training. Both arms are formally running; the formal result is still Pending.',
+      '160 轮已经全部跑完。最直观的结果来自同一份冻结 128 题：历史 DirectApply 得 60.72，Bounded OFF 得 45.98，Bounded + Effective-State GDR ON 得 20.77。下面再把训练期长期统计、计算时间和参数变化分开解释。',
+      'All 160 rounds are complete. The clearest first view comes from the same frozen 128-task final: historical DirectApply scores 60.72, Bounded OFF scores 45.98, and Bounded + Effective-State GDR ON scores 20.77. The rest of the page separates long-horizon training statistics, compute time, and parameter changes.',
     )}</p>
-    <div class="esg__facts" aria-label={t('当前三个关键事实', 'Three current facts')}>
-      <div><span>{t('历史状态', 'History state')}</span><strong>rank128</strong></div>
-      <div><span>{t('正式设计', 'Formal design')}</span><strong>160 × 128 / arm</strong></div>
-      <div><span>{t('正式结果', 'Formal result')}</span><strong>{pending ? t('尚未产生', 'Pending') : 'Sealed'}</strong></div>
+    <div class="esg__facts esg__final-facts" aria-label={t('同一冻结 128 题的三个 Final', 'Three finals on the same frozen 128-task panel')}>
+      <div><span>DirectApply · {t('历史前驱', 'historical predecessor')}</span><strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong><span class="esg__metric-detail">{study.threeWayFinal.directApply.exactCount}/128 exact</span></div>
+      <div><span>Bounded OFF</span><strong>{study.threeWayFinal.off.score.toFixed(2)}</strong><span class="esg__metric-detail">{study.threeWayFinal.off.exactCount}/128 exact</span></div>
+      <div><span>Bounded + GDR ON</span><strong>{study.threeWayFinal.on.score.toFixed(2)}</strong><span class="esg__metric-detail">{study.threeWayFinal.on.exactCount}/128 exact</span></div>
     </div>
-    <p class="esg__status"><strong>{t('正式 OFF / ON 实验正在运行，正式结果尚未产生。', 'The formal OFF / ON study is running; the formal result is still Pending.')}</strong> {t(
-      'OFF 与 ON 现在各自沿自己的已封存前一轮继续，不会因为另一边慢一轮就停住；配对编号只用于审计和最终分析。冻结终评题集仍未访问（0 次），W&B 只是观测入口。运行中分数、中途 W&B 或单个 checkpoint 都不是正式结论。',
-      'OFF and ON now continue from their own sealed predecessor without waiting for the peer arm to finish the same round. Pair identities are used for audit and final analysis only. Final-panel access remains 0, and W&B is observability rather than scientific authority. In-flight scores, partial W&B views, and single checkpoints are not formal conclusions.',
+    <p class="esg__status"><strong>{t('正式实验 COMPLETE · Final 与长期训练统计已经封存。', 'Formal study COMPLETE · final and long-horizon statistics are sealed.')}</strong> {t(
+      '三种最终模型使用完全相同的冻结 128 题，所以 Final 可以直接并排描述；但 DirectApply 是更早的独立实验，不是这次 OFF / ON 预注册对照的第三条 arm。OFF / ON 的因果比较仍只属于两条匹配 arm。',
+      'All three final models use exactly the same frozen 128-task panel, so their final scores can be shown side by side descriptively. DirectApply is an earlier independent experiment, not a third arm of this preregistered OFF/ON comparison; the paired causal contrast remains OFF versus ON only.',
     )}</p>
   </header>
 
@@ -170,12 +171,12 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
         <tr><td>{t('Round0 exact repeat', 'Round0 exact repeat')}</td><td>PASS</td><td>{study.readiness.isolatedExactStack.round0ExactRepeatCount} / {study.readiness.isolatedExactStack.round0ExactRepeatCount}</td></tr>
         <tr><td>{t('non-empty rank128 recurrent exact repeat', 'non-empty rank128 recurrent exact repeat')}</td><td>PASS</td><td>{study.readiness.isolatedExactStack.nonemptyExactRepeatCount} / {study.readiness.isolatedExactStack.nonemptyExactRepeatCount}</td></tr>
         <tr><td>{t('4-GPU zero-formal topology', '4-GPU zero-formal topology')}</td><td>PASS</td><td>formal rows = {study.readiness.topology.formalRowsConsumed}</td></tr>
-        <tr><td>{t('当前正式资源通道', 'Current formal resource lane')}</td><td>GPU4–7 {t('共享池', 'shared pool')}</td><td>{t('按容量调度；资源等待不要求两条臂同轮等待', 'capacity-aware scheduling; resource waits do not impose a same-round arm barrier')}</td></tr>
+        <tr><td>{t('历史正式资源通道', 'Historical formal resource lane')}</td><td>GPU4/5/7 + GPU6→GPU2</td><td>{t('共享池已退场；GPU4/5/7 覆盖全程，第四 lane 在后期迁到 GPU2', 'shared pool retired; GPU4/5/7 covered the run and the fourth lane migrated to GPU2 late in the study')}</td></tr>
         <tr><td>{t('per-step trace equivalence', 'per-step trace equivalence')}</td><td>PASS</td><td>{study.readiness.stepTrace.round0Steps} + {study.readiness.stepTrace.recurrentSteps} steps</td></tr>
         <tr><td>{t('短程非终评资格检查', 'short non-final qualification')}</td><td>PASS</td><td>{t('仅资格检查，不是效果结论', 'qualification only, not efficacy')}</td></tr>
         <tr><td>{t('formal matched dry-run', 'formal matched dry-run')}</td><td>PASS</td><td>{study.readiness.finalPrelaunch.dryRunStatus}</td></tr>
         <tr><td>{t('最终启动前检查', 'final consumer prelaunch')}</td><td>PASS</td><td>{t('历史预启动证据；owner 随后已授权正式启动', 'historical prelaunch evidence; the owner later authorized formal start')}</td></tr>
-        <tr><td>{t('当前正式状态', 'Current formal lifecycle')}</td><td>RUNNING</td><td>{t('两条臂独立推进；配对只做异步审计', 'arms progress independently; pairing is asynchronous audit only')}</td></tr>
+        <tr><td>{t('正式状态', 'Formal lifecycle')}</td><td>COMPLETE</td><td>{t('两条臂 160/160；配对 Stage2 seal PASS；终评已封存', 'both arms 160/160; paired Stage2 seal PASS; final evaluation sealed')}</td></tr>
       </tbody>
     </table></div>
     <p class="esg__qualification"><strong>{t('短程非终评资格结果原样记录：', 'Short non-final, reported as-is:')}</strong> reward Δ={study.readiness.shortNonFinal.rewardDelta.toFixed(4)}；success Δ=0.0000。{t('这是开发题上的资格检查，只说明机制能按冻结规则运行，不能写成正式效果结论。', 'This is a development-panel qualification-only result and cannot be presented as formal efficacy.')}</p>
@@ -240,6 +241,22 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
       </>
     ) : sealed ? (
       <>
+        <div class="esg__compare-block" id="same-panel-final">
+          <div>
+            <p class="esg__mini-label">{t('同一份冻结 128 题', 'Same frozen 128-task panel')}</p>
+            <h3>{t('三个 1.7B 最终状态，放在同一张表里', 'Three 1.7B final states on one test')}</h3>
+            <p>{t('这三次 Final 的 panel content、panel file 和 selected-panel digest 完全相同。DirectApply 是历史前驱，只用于描述性同题参照；OFF / ON 才是这次预注册的配对对照。', 'All three finals share identical panel content, panel file, and selected-panel digests. DirectApply is a historical predecessor used only as a descriptive same-test reference; OFF versus ON is the preregistered paired contrast.')}</p>
+          </div>
+          <div class="esg__result-table-wrap"><table class="esg__result-table">
+            <thead><tr><th>{t('同题 Final', 'Same-panel final')}</th><th>DirectApply</th><th>Bounded OFF</th><th>Bounded + GDR ON</th></tr></thead>
+            <tbody>
+              <tr><td>Task Score / 100</td><td>{study.threeWayFinal.directApply.score.toFixed(2)}</td><td>{study.threeWayFinal.off.score.toFixed(2)}</td><td>{study.threeWayFinal.on.score.toFixed(2)}</td></tr>
+              <tr><td>{t('完整做对', 'Exact success')}</td><td>{study.threeWayFinal.directApply.exactCount}/128</td><td>{study.threeWayFinal.off.exactCount}/128</td><td>{study.threeWayFinal.on.exactCount}/128</td></tr>
+              <tr><td>{t('完整成功率', 'Exact-success rate')}</td><td>{(study.threeWayFinal.directApply.exactRate * 100).toFixed(2)}%</td><td>{(study.threeWayFinal.off.exactRate * 100).toFixed(2)}%</td><td>{(study.threeWayFinal.on.exactRate * 100).toFixed(2)}%</td></tr>
+            </tbody>
+          </table></div>
+          <p class="esg__history-link"><a href={directApplyHref}>{t('回到 DirectApply 独立实验 →', 'Open the standalone DirectApply experiment →')}</a></p>
+        </div>
         <div class="esg__trajectory-shell">
           <figure>
             <figcaption><strong>{t('每轮 WebShop Score', 'WebShop Score by round')}</strong><span>{t('细线=原始轮次 · 粗线=12轮移动平均', 'thin=raw rounds · thick=12-round moving average')}</span></figcaption>
@@ -264,34 +281,75 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
         <div class="esg__result-table-wrap"><table class="esg__result-table">
           <thead><tr><th>{t('正式指标', 'Formal metric')}</th><th>OFF</th><th>ON</th><th>{t('Δ / 不确定性', 'Δ / uncertainty')}</th></tr></thead>
           <tbody>
-            <tr><td>{t('160 轮平均 WebShop reward', '160-round pooled mean reward')}</td><td>{sealed.pooledReward.off}</td><td>{sealed.pooledReward.on}</td><td>{sealed.pooledReward.delta}</td></tr>
-            <tr><td>{t('160 轮完整成功', '160-round exact success')}</td><td>{sealed.exactSuccess.off}</td><td>{sealed.exactSuccess.on}</td><td>{sealed.exactSuccess.delta}</td></tr>
-            <tr><td>{sealed.uncertainty.label}</td><td colspan="2">{sealed.uncertainty.low} → {sealed.uncertainty.high}</td><td>{t('按预注册配对规则', 'preregistered paired analysis')}</td></tr>
-            <tr><td>{t('冻结终评', 'final panel')}</td><td colspan="3">{sealed.finalPanel ? `${sealed.finalPanel.label}: OFF ${sealed.finalPanel.off} / ON ${sealed.finalPanel.on}` : t('没有独立授权/封存结果', 'no separately authorized/sealed result')}</td></tr>
+            <tr><td>{t('R1–R159 平均 WebShop reward', 'R1–R159 mean WebShop reward')}</td><td>{sealed.pooledReward.off.toFixed(4)}</td><td>{sealed.pooledReward.on.toFixed(4)}</td><td>{sealed.pooledReward.delta >= 0 ? '+' : ''}{sealed.pooledReward.delta.toFixed(4)}</td></tr>
+            <tr><td>{t('R1–R159 完整成功率', 'R1–R159 exact-success rate')}</td><td>{(sealed.exactSuccess.off * 100).toFixed(2)}%</td><td>{(sealed.exactSuccess.on * 100).toFixed(2)}%</td><td>{(sealed.exactSuccess.delta * 100).toFixed(2)} pp</td></tr>
+            <tr><td>{sealed.uncertainty.label}</td><td colspan="2">{sealed.uncertainty.low.toFixed(4)} → {sealed.uncertainty.high.toFixed(4)}</td><td>{t('区间跨 0', 'interval crosses 0')}</td></tr>
+            <tr><td>{t('冻结终评 · Task Score / 100', 'Frozen final · Task Score / 100')}</td><td>{sealed.finalPanel?.off.toFixed(2)} · {sealed.finalPanel?.offExactCount}/128 exact</td><td>{sealed.finalPanel?.on.toFixed(2)} · {sealed.finalPanel?.onExactCount}/128 exact</td><td>{sealed.finalPanel ? (sealed.finalPanel.on - sealed.finalPanel.off).toFixed(2) : '—'}</td></tr>
           </tbody>
         </table></div>
-        <p class="esg__sealed-conclusion">{sealed.conclusion}</p>
+        <p class="esg__sealed-conclusion"><strong>{t('长期训练平均与冻结 Final 给出了不同信号。', 'Long-horizon training averages and the frozen final give different signals.')}</strong> {t('R1–R159 平均 reward 是 ON − OFF = +0.0250，但 95% 区间 [-0.0133, +0.0663] 跨 0；完整成功率差值为 -2.21 个百分点。冻结 128 题 Final 则是 OFF 45.98、ON 20.77。预注册分类因此是 LONG_HORIZON_TRANSIENT_ONLY，而不是“ON 稳定更好”。', 'For R1–R159, ON − OFF mean reward is +0.0250, but the 95% interval [-0.0133, +0.0663] crosses zero; exact-success delta is -2.21 percentage points. On the frozen 128-task final, OFF scores 45.98 and ON 20.77. The preregistered disposition is therefore LONG_HORIZON_TRANSIENT_ONLY, not a stable ON win.')}</p>
       </>
     ) : null}
-    <p class="esg__boundary">{t('这里不会用中途 W&B、单个 checkpoint、预计完成时间或 0 来代替正式结果，也不会在封存前写“谁更好”。', 'This section never substitutes partial W&B, a single checkpoint, an ETA, or zero for the formal result, and it never names a winner before sealing.')}</p>
+    <p class="esg__boundary">{t('读法边界：训练期 R1–R159 平均回答“长期轨迹整体怎样”，冻结 Final 回答“最后状态在同一份 128 题上怎样”。两者都要保留，不能用一个覆盖另一个。', 'Reading boundary: the R1–R159 mean describes the long training trajectory, while the frozen final measures the terminal state on the same 128-task test. Both are retained; neither replaces the other.')}</p>
+  </section>
+
+  <section class="esg__section" id="compute" aria-labelledby="compute-title">
+    <h2 id="compute-title">{t('工程效率：Bounded 真正省掉了什么', 'Engineering efficiency: what Bounded actually removed')}</h2>
+    <p>{t('旧 DirectApply 的 159 次 SD-LoRA trainer 累计约 31.09 小时。换成固定 rank128 的 Bounded state 后，参数 transition 累计降到 OFF 2.02 小时、ON 2.35 小时。这个 13–15× 只属于参数更新阶段，不是整个 Stage2 的 13–15×。', 'The 159 DirectApply SD-LoRA trainer updates total about 31.09 hours. With a fixed rank128 Bounded state, cumulative parameter-transition time falls to 2.02 hours for OFF and 2.35 hours for ON. This 13–15× gain applies to the parameter-update stage, not the entire Stage2 run.')}</p>
+    <div class="esg__result-table-wrap"><table class="esg__result-table">
+      <thead><tr><th>{t('时间口径', 'Timing denominator')}</th><th>DirectApply</th><th>Bounded OFF</th><th>Bounded + GDR ON</th></tr></thead>
+      <tbody>
+        <tr><td>{t('参数更新 / trainer 累计', 'parameter update / trainer total')}</td><td>{study.timingComparison.directApply.trainerHours.toFixed(2)} h</td><td>{study.timingComparison.off.transitionHours.toFixed(2)} h</td><td>{study.timingComparison.on.transitionHours.toFixed(2)} h</td></tr>
+        <tr><td>{t('相对 DirectApply', 'relative to DirectApply')}</td><td>1×</td><td>{(study.timingComparison.directApply.trainerHours / study.timingComparison.off.transitionHours).toFixed(1)}× {t('更快', 'faster')}</td><td>{(study.timingComparison.directApply.trainerHours / study.timingComparison.on.transitionHours).toFixed(1)}× {t('更快', 'faster')}</td></tr>
+        <tr><td>{t('Stage2 墙钟跨度', 'Stage2 wall-clock span')}</td><td>{study.timingComparison.directApply.wallClockHours.toFixed(2)} h</td><td>{study.timingComparison.off.wallClockHours.toFixed(2)} h</td><td>{study.timingComparison.on.wallClockHours.toFixed(2)} h</td></tr>
+        <tr><td>{t('rollout GPU-active', 'rollout GPU-active')}</td><td>{study.timingComparison.directApply.rolloutGpuActiveHours.toFixed(2)} GPU-h</td><td>{study.timingComparison.off.rolloutGpuActiveHours.toFixed(2)} GPU-h</td><td>{study.timingComparison.on.rolloutGpuActiveHours.toFixed(2)} GPU-h</td></tr>
+        <tr><td>{t('可测总 GPU-active 下界', 'measured total GPU-active lower bound')}</td><td>{t('旧 run 未按同一资源收据口径封存', 'not sealed under the same accounting contract')}</td><td>{study.timingComparison.off.gpuActiveLowerBoundHours.toFixed(2)} GPU-h</td><td>{study.timingComparison.on.gpuActiveLowerBoundHours.toFixed(2)} GPU-h</td></tr>
+      </tbody>
+    </table></div>
+    <p class="esg__boundary">{t('DirectApply trainer timer 与 Bounded transition timer都覆盖参数更新阶段，但执行实现与资源拓扑并不完全相同，所以这里是工程性能比较，不是科学 treatment 效果估计。', 'The DirectApply trainer timer and Bounded transition timer both cover the parameter-update stage, but implementation and resource topology are not identical. This is an engineering performance comparison, not a scientific treatment-effect estimate.')}</p>
+  </section>
+
+  <section class="esg__section" id="parameters" aria-labelledby="parameters-title">
+    <h2 id="parameters-title">{t('参数体检：OFF 和 ON 到底变得有多大', 'Parameter check: how large did OFF and ON become')}</h2>
+    <p>{t('两边都用 rank128、112 个 q/k/v/o LoRA 模块；只读后分析覆盖 160 轮 × 112 模块 = 每条 arm 17,920 行。下面只展示 R159 的几项最能回答“参数有没有整体爆掉”的指标。', 'Both arms use rank128 over 112 q/k/v/o LoRA modules. The read-only post-hoc covers 160 rounds × 112 modules = 17,920 module-round rows per arm. The table shows the R159 metrics most useful for asking whether the parameter state simply blew up.')}</p>
+    <div class="esg__result-table-wrap"><table class="esg__result-table">
+      <thead><tr><th>{t('R159 参数指标', 'R159 parameter metric')}</th><th>OFF</th><th>ON</th></tr></thead>
+      <tbody>
+        <tr><td>{t('累积状态 Frobenius 范数', 'cumulative-state Frobenius norm')}</td><td>{study.parameterAnalysis.off.finalStateFrobenius.toFixed(3)}</td><td>{study.parameterAnalysis.on.finalStateFrobenius.toFixed(3)}</td></tr>
+        <tr><td>{t('累积状态最大谱范数', 'cumulative-state max spectral norm')}</td><td>{study.parameterAnalysis.off.finalStateMaxSpectral.toFixed(3)}</td><td>{study.parameterAnalysis.on.finalStateMaxSpectral.toFixed(3)}</td></tr>
+        <tr><td>Task Vector Frobenius</td><td>{study.parameterAnalysis.off.finalTaskVectorFrobenius.toFixed(3)}</td><td>{study.parameterAnalysis.on.finalTaskVectorFrobenius.toFixed(3)}</td></tr>
+        <tr><td>{t('Task Vector 最大谱范数', 'Task Vector max spectral norm')}</td><td>{study.parameterAnalysis.off.finalTaskVectorMaxSpectral.toFixed(4)}</td><td>{study.parameterAnalysis.on.finalTaskVectorMaxSpectral.toFixed(4)}</td></tr>
+        <tr><td>{t('参数稳定性 p95', 'parameter-stability p95')}</td><td>{study.parameterAnalysis.off.parameterStabilityP95.toFixed(4)}</td><td>{study.parameterAnalysis.on.parameterStabilityP95.toFixed(4)}</td></tr>
+        <tr><td>{t('完整权重 / base 谱范数比 · 中位数', 'full/base spectral ratio · median')}</td><td>{study.parameterAnalysis.off.fullToBaseSpectralRatioMedian.toFixed(6)}</td><td>{study.parameterAnalysis.on.fullToBaseSpectralRatioMedian.toFixed(6)}</td></tr>
+        <tr><td>{t('参与秩 · 中位数', 'participation rank · median')}</td><td>{study.parameterAnalysis.off.participationRankMedian.toFixed(2)}</td><td>{study.parameterAnalysis.on.participationRankMedian.toFixed(2)}</td></tr>
+        <tr><td>rank95 · {t('中位数', 'median')}</td><td>{study.parameterAnalysis.off.rank95Median}</td><td>{study.parameterAnalysis.on.rank95Median}</td></tr>
+      </tbody>
+    </table></div>
+    <p class="esg__sealed-conclusion">{t('OFF 的累积状态和最后一轮 Task Vector 略大，但把 LoRA 加回基础模型后，两边完整权重的谱范数中位比都非常接近 1.000，参数稳定性 p95 也几乎相同。因此 Final 差异不能简单解释成“谁的参数整体更大”。', 'OFF has a somewhat larger cumulative state and final-round Task Vector, but after adding LoRA back to the base model, both median full/base spectral ratios remain extremely close to 1.000 and parameter-stability p95 is nearly identical. The final-result gap therefore cannot be reduced to “one model simply has larger parameters.”')}</p>
   </section>
 
   <section class="esg__section" id="evidence" aria-labelledby="evidence-title">
     <h2 id="evidence-title">{t('证据与当前边界', 'Evidence and current boundary')}</h2>
     <details class="esg__details" open>
-      <summary>{t('当前正式身份与运行状态', 'Current formal identity and running state')}</summary>
+      <summary>{t('最终封存身份与 closeout', 'Final sealed identity and closeout')}</summary>
       <ul>
         <li><a href={study.evidence.controlTowerPr}><ExternalBrandMark href={study.evidence.controlTowerPr} />PR #502 · Control Tower</a></li>
-        <li><a href={study.evidence.finalImplementationPr}><ExternalBrandMark href={study.evidence.finalImplementationPr} />PR #523 · async / Completion-First live successor</a></li>
-        <li><code>{study.source.formalExecutionCheckout}</code> · {t('当前正式 execution checkout（运行中，禁止热切换）', 'current formal execution checkout (running; no hot swap)')}</li>
-        <li><code>{study.source.finalImplementationHead}</code> · {t('repository-current integration/evidence head（不得热切换 execution）', 'repository-current integration/evidence head (must not hot-swap execution)')}</li>
+        <li><a href={study.evidence.finalCloseout}><ExternalBrandMark href={study.evidence.finalCloseout} />{t('最终 closeout · COMPLETE', 'final closeout · COMPLETE')}</a></li>
+        <li><a href={study.evidence.finalComparison}><ExternalBrandMark href={study.evidence.finalComparison} />{t('OFF / ON 冻结终评与同题对比', 'OFF / ON frozen final and same-panel comparison')}</a></li>
+        <li><a href={study.evidence.longHorizon}><ExternalBrandMark href={study.evidence.longHorizon} />{t('预注册长期分析', 'preregistered long-horizon analysis')}</a></li>
+        <li><a href={study.evidence.resourceAnalysis}><ExternalBrandMark href={study.evidence.resourceAnalysis} />{t('Stage2 GPU 资源分析', 'Stage2 GPU resource analysis')}</a></li>
+        <li><a href={study.evidence.q17Final}><ExternalBrandMark href={study.evidence.q17Final} />{t('DirectApply 同题 Final 依据', 'DirectApply same-panel final evidence')}</a></li>
+        <li><a href={study.evidence.publicSnapshot}>{t('公开机器可读结果快照', 'public machine-readable result snapshot')}</a></li>
+        <li><a href={study.evidence.finalImplementationPr}><ExternalBrandMark href={study.evidence.finalImplementationPr} />PR #523 · async / Completion-First {t('历史执行后继', 'historical execution successor')}</a></li>
+        <li><code>{study.source.formalExecutionCheckout}</code> · {t('最终 Stage2 execution identity（历史，只读）', 'final Stage2 execution identity (historical, read-only)')}</li>
+        <li><code>{study.source.finalCloseoutCommit}</code> · {t('openevo-experiment 最终 closeout 进入 main 的公开证据点', 'openevo-experiment main commit carrying the final closeout')}</li>
         <li><code>{study.source.scienceExecutionGateCodeFreeze}</code> · {t('science / execution-gate code freeze', 'science / execution-gate code freeze')}</li>
         <li><code>{study.lifecycle.currentReadySha256}</code> · READY SHA256</li>
         <li><code>{study.lifecycle.ownerLaunchReleaseSha256}</code> · owner launch release SHA256</li>
         <li><code>{study.lifecycle.sealedRolloutRecoverySha256}</code> · sealed-rollout recovery SHA256</li>
-        <li><code>{study.resourceExecution.liveResourceExecutionSha}</code> · {t('当前仅资源层的 execution SHA；不改变科学语义', 'current resource-only execution SHA; scientific semantics unchanged')}</li>
-        <li><a href={study.evidence.resourceAuthorityPr}><ExternalBrandMark href={study.evidence.resourceAuthorityPr} />PR #525 · {t('当前唯一资源层后继线；仓库候选版本与正式运行版本分开', 'single current resource-only successor; repository candidate stays separate from live execution')}</a></li>
-        <li><code>{study.resourceExecution.resourceRepositoryCandidateSha}</code> · {t('当前 #525 仓库候选版本；没有热迁移到正式实验', 'current #525 repository candidate; not hot-migrated into the formal run')}</li>
+        <li><code>{study.resourceExecution.liveResourceExecutionSha}</code> · {t('历史资源层 execution SHA；不改变科学语义', 'historical resource-only execution SHA; scientific semantics unchanged')}</li>
+        <li><a href={study.evidence.resourceAuthorityPr}><ExternalBrandMark href={study.evidence.resourceAuthorityPr} />PR #525 · {t('历史资源层后继线；当时仓库候选版本与正式运行版本分开', 'historical resource-only successor; repository candidate was kept separate from live execution')}</a></li>
+        <li><code>{study.resourceExecution.resourceRepositoryCandidateSha}</code> · {t('当时 #525 仓库候选版本；没有热迁移到正式实验', 'historical #525 repository candidate; not hot-migrated into the formal run')}</li>
         <li><a href={study.evidence.historicalResourceVerifierPr}><ExternalBrandMark href={study.evidence.historicalResourceVerifierPr} />PR #526 · {t('历史验证线，已收口并吸收到 #525', 'historical verifier, closed and absorbed into #525')}</a></li>
       </ul>
     </details>
@@ -318,7 +376,7 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
   .esg__lede { max-width: 890px; margin: 14px 0 0; font-size: clamp(1.05rem, 2vw, 1.28rem); line-height: 1.7; color: var(--text-secondary); }
   .esg__facts { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin: 26px 0 18px; }
   .esg__facts div { padding: 16px; border: 1px solid var(--border-color); border-radius: var(--radius-panel); background: var(--surface-secondary); }
-  .esg__facts span { display:block; font-size:1rem; color:var(--text-secondary); } .esg__facts strong { display:block; margin-top:6px; font-size:1.08rem; }
+  .esg__facts span { display:block; font-size:1rem; color:var(--text-secondary); } .esg__facts strong { display:block; margin-top:6px; font-size:clamp(1.55rem,3vw,2.4rem); letter-spacing:-.04em; } .esg__metric-detail { display:block; margin-top:4px; font-size:1rem; color:var(--text-secondary); }
   .esg__status { margin: 0; padding: 14px 16px; border-left: 3px solid var(--accent); background: var(--surface-secondary); line-height: 1.6; }
   .esg__section { max-width: 980px; margin: 0 auto; padding: 46px 0; border-top: 1px solid var(--border-color); }
   .esg__section h2 { margin:0 0 18px; font-size:clamp(1.55rem,3vw,2.35rem); letter-spacing:-.035em; }
@@ -392,6 +450,10 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
   .esg__legend i.off { background:var(--blue); }
   .esg__legend i.on { background:var(--warning); }
   .esg__sealed-conclusion { margin-top:18px; padding:16px; border-left:3px solid var(--accent); background:var(--surface-secondary); }
+  .esg__compare-block { display:grid; gap:14px; margin:18px 0 24px; padding:20px; border:1px solid var(--border-color); border-radius:var(--radius-feature); background:var(--surface-secondary); }
+  .esg__compare-block h3 { margin:2px 0 6px; font-size:clamp(1.25rem,2.4vw,1.8rem); }
+  .esg__compare-block p { margin:0; }
+  .esg__mini-label { font:700 1rem/1.4 var(--font-mono); letter-spacing:.04em; color:var(--text-secondary); }
   .esg__result-reading { margin-top:18px; padding:18px; border:1px solid var(--border-color); border-radius:var(--radius-panel); }
   .esg__result-reading h3 { margin:0 0 10px; }
   .esg__result-reading ol { margin:0; padding-left:1.35rem; }

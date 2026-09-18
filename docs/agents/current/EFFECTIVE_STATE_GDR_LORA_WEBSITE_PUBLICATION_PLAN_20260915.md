@@ -1,22 +1,32 @@
 # Bounded Online Recurrence + Effective-State GDR：BaseModel 网站施工与结果预留计划
 
-状态：**ACTIVE / CHECKLIST AUTHORITY / FORMAL RESULT PENDING**
+状态：**CURRENT / CHECKLIST AUTHORITY / FORMAL RESULT SEALED**
 创建日期：2026-09-15
 仓库：`mykcs/basemodel`
 科学事实权威：`mykcs/openevo-experiment`
 BaseModel 创建基线：`main@1b6d13714f672345a086cbc09ec7067cb3dae3a7`
-工作分支：`research/effective-state-gdr-site-plan-20260915`
-当前施工 PR：`mykcs/basemodel#729`
+历史页面施工分支：`research/effective-state-gdr-site-plan-20260915`
+历史施工 PR：`mykcs/basemodel#729`
+当前 sealed-result successor：`research/publish-bounded-final-results-20260918`
 
 > 这是本工作线唯一的长期 checklist authority。后续 ChatGPT / Agent 必须从本文件第一个仍可安全执行的 `[ ]` 项继续，不依赖聊天记忆，也不得为了“看起来有进度”制造第二份平行计划。
 >
-> 本计划的目标不是提前宣布实验结论，而是**在正式实验结果出现以前**，把问题、推导、方法身份、实验设计、证据边界、结果槽位、页面结构和发布门全部预先写清楚。正式结果只允许在上游 sealed evidence 出现后填写。
+> 本计划的目标不是提前宣布实验结论，而是**在正式实验结果出现以前**，把问题、推导、方法身份、实验设计、证据边界、结果槽位、页面结构和发布门全部预先写清楚。正式结果只允许在上游 sealed evidence 出现后填写；该条件已于 2026-09-18 满足，当前页面应展示 sealed 结果。
+
+## 0.1 2026-09-18 · 正式结果已封存
+
+- 上游 `mykcs/openevo-experiment` 已完成 OFF/ON 160 轮、paired Stage2 seal、独立冻结 128 题 Final 与资源 closeout；最终 closeout 已进入 `main@04d6bd8e422103aa71be2b8f2672c2db97d0e351`。
+- BaseModel 现在应发布 sealed 结果，不再显示 `Pending / Running`：同一冻结 128 题上 DirectApply=`60.72 / 50/128`、Bounded OFF=`45.98 / 32/128`、Bounded+Effective-State GDR ON=`20.77 / 10/128`。DirectApply 是历史前驱，不是 OFF/ON 的第三条 preregistered arm。
+- R1–R159 预注册主指标保留为 OFF/ON 配对推断：ON−OFF mean reward=`+0.0250`，95% moving-block bootstrap CI=`[-0.0133,+0.0663]`，区间跨 0；不能把训练期平均与冻结 Final 合并成一个“赢家”口径。
+- 工程比较必须单列 denominator：DirectApply 159 次 trainer 累计 `31.09 h`；Bounded OFF/ON transition 累计 `2.02 / 2.35 h`。这是参数更新阶段约 `15.4× / 13.3×`，不是整个 Stage2 同倍数加速。
+- OFF/ON 参数后分析已对称完成：每臂 `160 × 112 = 17,920` module-round 行，只读、0 formal rollout 增量、0 final-panel 增量。公开网页引用 BaseModel 自己的机器可读 publication snapshot，同时把上游正式 closeout / final / resource evidence 作为科学权威。
+- 本文件下方 2026-09-15/16 关于 `Pending`、prelaunch、running 的段落保留为历史施工日志，不再代表当前科学状态。
 
 ## 0. 一句话目标
 
 在 BaseModel 新增一条可长期维护的研究页面，完整解释：
 
-`Bounded Online Recurrence 已解决“历史状态不断膨胀” -> first-generation GDR 搬到 LoRA 后暴露 representation-dependent boundary -> 推导出 EFFECTIVE_STATE_GDR_LORA_V1 -> 预注册 160-round matched OFF vs ON 正式实验 -> 正式结果区域现在保持 Pending。`
+`Bounded Online Recurrence 已解决“历史状态不断膨胀” -> first-generation GDR 搬到 LoRA 后暴露 representation-dependent boundary -> 推导出 EFFECTIVE_STATE_GDR_LORA_V1 -> 预注册并完成 160-round matched OFF vs ON 正式实验 -> 现在发布封存的长期分析、同题 Final、工程时间与参数诊断。`
 
 ## 1. 新窗口接手前必须读取
 

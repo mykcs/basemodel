@@ -115,8 +115,8 @@ export const CAPABILITY_READER_ROUTES = [
     "owner": "OpenEvoEffectiveStateGdrLoraStudy",
     "label": { "zh": "Bounded + Effective-State GDR", "en": "Bounded + Effective-State GDR" },
     "purpose": {
-      "zh": "同一个 1.7B 从共同起点分成两条正式实验：OFF 只做 Bounded，ON 在同样训练上加入 Effective-State GDR。两条臂各自跑 160 轮，最后再做配对分析；实验正在运行，正式结果尚未产生。",
-      "en": "The same 1.7B model splits from one common start into two formal arms: OFF uses Bounded only, while ON adds Effective-State GDR to the same training. Each arm runs 160 rounds independently before the final paired analysis; the study is running and no formal result is available yet."
+      "zh": "同一个 1.7B 从共同起点完成 160 轮 OFF / ON 正式对照，并在同一冻结 128 题上做终评。页面先给三条 1.7B 路线的同题 Final，再分别解释 OFF/ON 长周期统计、计算成本和参数范数。",
+      "en": "The same 1.7B model completed a 160-round OFF/ON formal comparison and a final evaluation on the same frozen 128-task panel. The page first shows the three 1.7B finals on that shared test, then separates the OFF/ON long-horizon statistics, compute cost, and parameter-norm diagnostics."
     }
   },
   {
