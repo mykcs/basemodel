@@ -49,7 +49,7 @@ export const SD_LORA_HISTORY_SERIES = [
   {
     route: 'bounded-effective-state-gdr', number: '08',
     title: { zh: '固定 rank128 以后，怎样控制新经验写多强？', en: 'After fixing rank128, how strongly should new experience be written?' },
-    summary: { zh: '把 GDR 的控制对象从 LoRA factor 坐标改成 effective state / effective write；160 轮正式配对实验结果仍 Pending。', en: 'Move the GDR control object from LoRA factor coordinates to effective state/write; the formal 160-round matched result remains Pending.' },
+    summary: { zh: '把 GDR 的控制对象从 LoRA factor 坐标改成 effective state / effective write；1.7B 的 160 轮 OFF/ON 正式实验正在运行，两条臂独立推进，正式结果仍 Pending。', en: 'Move the GDR control object from LoRA factor coordinates to effective state/write; the formal 1.7B 160-round OFF/ON study is running with independent arm progression, and the result remains Pending.' },
   },
 ] as const satisfies readonly {
   route: SdLoraHistorySeriesRoute;

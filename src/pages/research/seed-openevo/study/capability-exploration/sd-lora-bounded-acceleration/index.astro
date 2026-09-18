@@ -1,0 +1,14 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvoSdLoraBoundedAccelerationStudy from '../../../../../../components/research/OpenEvoSdLoraBoundedAccelerationStudy.astro';
+import ResearchRouteContext from '../../../../../../components/research/ResearchRouteContext.astro';
+const locale = 'zh' as const;
+---
+<AppLayout
+  title="Bounded 后续加速：主要时间花在训练"
+  description="GPU0–3 工程小实验显示：四卡 rank128 compression 可以逐 tensor exact，但真正的 1.7B steady-state 时间主要花在训练；Muon/Newton–Schulz 不是 truncated-SVD 的等价替代，朴素 chunkwise AdamW 也会改变最终模型。"
+  locale={locale}
+>
+  <ResearchRouteContext locale={locale} route="sd-lora-bounded-acceleration" />
+  <OpenEvoSdLoraBoundedAccelerationStudy locale={locale} />
+</AppLayout>

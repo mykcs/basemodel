@@ -26,7 +26,6 @@ function workspaceHref(track: NonNullable<typeof guide>['tracks'][number]): stri
 {guide && <section class="paper-learning-guide" aria-labelledby="paper-learning-guide-title">
   <header class="learning-guide-hero">
     <div>
-      <span class="section-kicker">{isZh ? '论文学习' : 'Paper learning'}</span>
       <h2 id="paper-learning-guide-title">{isZh ? '论文学习指南' : 'Paper learning guide'}</h2>
       <p>{text(guide.summary)}</p>
     </div>
@@ -62,5 +61,5 @@ function workspaceHref(track: NonNullable<typeof guide>['tracks'][number]): stri
     })}
   </div>
 
-  <aside class="learning-pitfalls" aria-labelledby="learning-pitfalls-title"><h3 id="learning-pitfalls-title">{isZh ? '常见误解' : 'Common misunderstandings'}</h3><ul>{guide.pitfalls.map((pitfall) => <li>{text(pitfall)}</li>)}</ul></aside>
+  <aside class="learning-pitfalls" aria-labelledby="learning-pitfalls-title"><h3 id="learning-pitfalls-title">{isZh ? '复现边界' : 'Reproduction boundaries'}</h3><ul>{guide.pitfalls.map((pitfall) => <li>{text(pitfall)}</li>)}</ul></aside>
 </section>}

@@ -5,8 +5,8 @@ import OpenEvoSdLoraHistorySeriesNav from '../../../../../components/research/Op
 const locale = 'zh' as const;
 ---
 <AppLayout
-  title="为什么 OpenEvo 里需要 SD-LoRA？"
-  description="先看 SD-LoRA 为什么出现在 OpenEvo、它在任务尝试与下一轮之间负责什么，再比较普通 LoRA 与 SD-LoRA，最后进入一轮真实参数更新流程。"
+  title="SD-LoRA 用筛选后的成功轨迹训练候选 LoRA 参数"
+  description="每个任务只取最早一条通过检查的成功作为训练数据；SD-LoRA 在两批任务之间训练候选 LoRA 参数，采用与否由后续准入规则决定。"
   locale={locale}
 >
   <OpenEvoVanillaSdLoraMechanism locale={locale} />

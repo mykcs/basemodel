@@ -23,17 +23,17 @@ const pending = result.status === 'pending';
     <p class="esg__eyebrow">{t('08 · 固定状态之后，控制新经验写多强', '08 · Controlling write strength after bounded state')}</p>
     <h1>Bounded Online Recurrence + Effective-State GDR</h1>
     <p class="esg__lede" data-reader-task data-reader-purpose>{t(
-      'Bounded 已把历史固定在 rank128。第一代 GDR 直接控制 A/C 坐标，但同一个有效更新可以有多种内部表示，所以 Effective-State successor 改为控制 effective write。正式 OFF/ON 实验已启动，目前因 Carrier Health 诊断暂停；正式结果仍 Pending。',
-      'Bounded keeps history at rank128. First-generation GDR controlled A/C coordinates, but one effective update can have multiple internal representations, so the Effective-State successor controls the effective write instead. The formal OFF/ON study has started but is paused for Carrier Health diagnosis; the formal result is still Pending.',
+      '我们现在想回答一个很简单的问题：历史已经固定在 rank128 以后，新经验是每次都完整写进去，还是让 Effective-State GDR 控制写入强度？同一个 1.7B 模型被分成 OFF / ON 两条 160 轮实验：OFF 只做 Bounded，ON 在同样训练上加入 Effective-State GDR。两条臂已经正式运行；正式结果仍 Pending。',
+      'The question is simple: once history is bounded at rank128, should every new update be written in full, or should Effective-State GDR control write strength? The same 1.7B model is split into two 160-round arms: OFF uses Bounded only, while ON adds Effective-State GDR to the same training. Both arms are formally running; the formal result is still Pending.',
     )}</p>
     <div class="esg__facts" aria-label={t('当前三个关键事实', 'Three current facts')}>
       <div><span>{t('历史状态', 'History state')}</span><strong>rank128</strong></div>
       <div><span>{t('正式设计', 'Formal design')}</span><strong>160 × 128 / arm</strong></div>
       <div><span>{t('正式结果', 'Formal result')}</span><strong>{pending ? t('尚未产生', 'Pending') : 'Sealed'}</strong></div>
     </div>
-    <p class="esg__status"><strong>{t('正式实验已启动，但当前诊断暂停；正式结果仍是 Pending。', 'The formal study has started but is currently paused for diagnosis; the formal result is still Pending.')}</strong> {t(
-      '当前 recovery execution 固定在 340a057e…，final panel access=0；OFF post-rollout 已封存、ON post-rollout 尚未开始，因此还没有 paired Round0 barrier。不会把中途 round、partial W&B 或单个 checkpoint 当作正式结果。',
-      'The current recovery execution is frozen at 340a057e…, final-panel access is 0, OFF post-rollout is sealed, ON post-rollout has not started, and no paired Round0 barrier exists. No in-flight round, partial W&B view, or single checkpoint is treated as a formal result.',
+    <p class="esg__status"><strong>{t('正式 OFF / ON 实验正在运行，正式结果仍是 Pending。', 'The formal OFF / ON study is running; the formal result is still Pending.')}</strong> {t(
+      'OFF 与 ON 现在各自沿自己的已封存前一轮继续，不会因为另一边慢一轮就停住；配对编号只用于审计和最终分析。final panel access 仍为 0，W&B 只是观测入口。运行中分数、partial W&B 或单个 checkpoint 都不是正式结论。',
+      'OFF and ON now continue from their own sealed predecessor without waiting for the peer arm to finish the same round. Pair identities are used for audit and final analysis only. Final-panel access remains 0, and W&B is observability rather than scientific authority. In-flight scores, partial W&B views, and single checkpoints are not formal conclusions.',
     )}</p>
   </header>
 
@@ -137,7 +137,7 @@ const pending = result.status === 'pending';
   </section>
 
   <section class="esg__section" id="readiness" aria-labelledby="readiness-title">
-    <h2 id="readiness-title">{t('正式实验前已经验证了什么', 'What has been validated before the formal experiment')}</h2>
+    <h2 id="readiness-title">{t('启动前我们已经验证了什么', 'What we validated before launch')}</h2>
     <p>{t('这些是“能不能按冻结机制安全运行”的资格证据，不是“方法是否更好”的效果证据。', 'These are qualification checks for whether the frozen mechanism can run safely, not efficacy evidence that the method is better.')}</p>
     <div class="esg__readiness-table-wrap"><table class="esg__readiness-table">
       <thead><tr><th>{t('检查', 'Check')}</th><th>{t('状态', 'Status')}</th><th>{t('边界', 'Boundary')}</th></tr></thead>
@@ -147,12 +147,12 @@ const pending = result.status === 'pending';
         <tr><td>{t('Round0 exact repeat', 'Round0 exact repeat')}</td><td>PASS</td><td>{study.readiness.isolatedExactStack.round0ExactRepeatCount} / {study.readiness.isolatedExactStack.round0ExactRepeatCount}</td></tr>
         <tr><td>{t('non-empty rank128 recurrent exact repeat', 'non-empty rank128 recurrent exact repeat')}</td><td>PASS</td><td>{study.readiness.isolatedExactStack.nonemptyExactRepeatCount} / {study.readiness.isolatedExactStack.nonemptyExactRepeatCount}</td></tr>
         <tr><td>{t('4-GPU zero-formal topology', '4-GPU zero-formal topology')}</td><td>PASS</td><td>formal rows = {study.readiness.topology.formalRowsConsumed}</td></tr>
-        <tr><td>{t('当前 formal resource lane', 'Current formal resource lane')}</td><td>GPU4–7</td><td>{t('每卡 1 OFF + 1 ON；只改资源执行', 'one OFF + one ON per GPU; resource execution only')}</td></tr>
+        <tr><td>{t('当前 formal resource lane', 'Current formal resource lane')}</td><td>GPU4–7 {t('共享池', 'shared pool')}</td><td>{t('按容量调度；资源等待不要求两条臂同轮等待', 'capacity-aware scheduling; resource waits do not impose a same-round arm barrier')}</td></tr>
         <tr><td>{t('per-step trace equivalence', 'per-step trace equivalence')}</td><td>PASS</td><td>{study.readiness.stepTrace.round0Steps} + {study.readiness.stepTrace.recurrentSteps} steps</td></tr>
         <tr><td>{t('short non-final qualification', 'short non-final qualification')}</td><td>PASS</td><td>{t('仅资格检查，不是效果结论', 'qualification only, not efficacy')}</td></tr>
         <tr><td>{t('formal matched dry-run', 'formal matched dry-run')}</td><td>PASS</td><td>{study.readiness.finalPrelaunch.dryRunStatus}</td></tr>
         <tr><td>{t('final consumer prelaunch', 'final consumer prelaunch')}</td><td>PASS</td><td>{t('历史预启动证据；owner 随后已授权正式启动', 'historical prelaunch evidence; the owner later authorized formal start')}</td></tr>
-        <tr><td>{t('当前正式 lifecycle', 'Current formal lifecycle')}</td><td>PAUSED</td><td>{t('Carrier Health 诊断暂停；不是负结果', 'Carrier Health diagnostic pause; not a negative result')}</td></tr>
+        <tr><td>{t('当前正式 lifecycle', 'Current formal lifecycle')}</td><td>RUNNING</td><td>{t('两条臂独立推进；配对只做异步审计', 'arms progress independently; pairing is asynchronous audit only')}</td></tr>
       </tbody>
     </table></div>
     <p class="esg__qualification"><strong>{t('Short non-final 原样记录：', 'Short non-final, reported as-is:')}</strong> reward Δ={study.readiness.shortNonFinal.rewardDelta.toFixed(4)}；success Δ=0.0000。{t('这是 development-panel qualification-only 结果，不能写成 formal efficacy。', 'This is a development-panel qualification-only result and cannot be presented as formal efficacy.')}</p>
@@ -167,21 +167,25 @@ const pending = result.status === 'pending';
         <div><strong>OFF · {study.identity.off}</strong><span>{t('只做 Bounded recurrence', 'Bounded recurrence only')}</span></div>
         <div><strong>ON · {study.identity.on}</strong><span>{t('同一训练 + Effective-State GDR write', 'same training + Effective-State GDR write')}</span></div>
       </div>
-      <div class="esg__barrier"><span>Round 0</span><i></i><span>Round 1</span><i></i><span>…</span><i></i><span>Round 159</span></div>
-      <figcaption>{t('每轮 OFF/ON rollout 在 GPU4–7 上并发；post-rollout 仍按 OFF→ON 冻结顺序串行，并使用冻结的 first-idle GPU preference，两臂都 seal 后才跨过 matched barrier。这个资源迁移不改变 treatment、任务、seed、预算或分析；final panel 在正式 Stage2 期间保持 locked。', 'OFF/ON rollouts run concurrently on GPU4–7; post-rollout remains serialized OFF then ON with frozen first-idle GPU preferences, and both arms must seal before the matched barrier. This resource migration does not change treatment, tasks, seeds, budget, or analysis; the final panel stays locked during formal Stage2.')}</figcaption>
+      <div class="esg__arm-progress">
+        <div><strong>OFF</strong><span>Round 0 → 1 → … → 159</span><small>{t('只依赖 OFF 自己上一轮的封存状态', 'depends only on OFF’s own sealed predecessor')}</small></div>
+        <div><strong>ON</strong><span>Round 0 → 1 → … → 159</span><small>{t('只依赖 ON 自己上一轮的封存状态', 'depends only on ON’s own sealed predecessor')}</small></div>
+      </div>
+      <div class="esg__audit-join"><span>{t('配对编号 / audit receipt', 'pair identity / audit receipt')}</span><strong>{t('两边都完成 160 轮后，重新合到最终配对分析', 'rejoin only after both arms finish all 160 rounds for final paired analysis')}</strong></div>
+      <figcaption>{t('两条臂共享相同任务顺序、seed、预算和共同起点，但运行时不再互相等同一轮。GPU4–7 只是共享资源池；某一边暂时等 GPU，不会变成另一边的科学门槛。配对 receipt 是异步审计证据，不负责放行下一轮。最终分析仍要求 OFF / ON 都封存 Round 0–159，并且 160 个配对都可审计。', 'The arms still share task order, seeds, budget, and common start, but they no longer wait for each other at the same runtime round. GPU4–7 is a shared resource pool; one arm waiting for GPU capacity does not become a scientific gate for the other. Pair receipts are asynchronous audit evidence, not progression gates. Final analysis still requires both OFF and ON to seal Rounds 0–159 and all 160 pairs to be auditable.')}</figcaption>
     </figure>
     <ul class="esg__matched-list">
       {study.formalDesign.matched.map((item) => <li>{zh ? item.zh : item.en}</li>)}
     </ul>
     <p><strong>{t('唯一 treatment difference：', 'Only treatment difference:')}</strong> {study.formalDesign.onlyTreatmentDifference}. {t('GDR 从 Round0 第一条 optimizer update 开始；Round0 rollout 本身仍是共同起点下的 pre-treatment behavior。', 'GDR starts at the first optimizer update in Round0; the Round0 rollout itself is still pre-treatment behavior from the common start.')}</p>
-    <p class="esg__boundary">{t('Fail-closed：Round0 没有合法 current update 就要求 owner 决策，不制造 synthetic S1；后续轮缺 update 时保留 prior rank128/replay、两臂匹配推进且不制造 GDR event。Carrier Health FAIL 只在 sealed round 边界暂停，final panel 没有独立 authority 就继续 locked。', 'Fail-closed: if Round0 has no legal current update, the runner requires an owner decision and never fabricates S1; on later rounds a missing update keeps the prior rank128/replay state, advances both arms equivalently, and creates no GDR event. Carrier Health failures pause only at sealed round boundaries, and the final panel stays locked without independent authority.')}</p>
+    <p class="esg__boundary">{t('Completion-First：每个 Carrier 最多一次 primary + 一次 repair；如果只是内容不合格但证据完整，就 KEEP PRIOR / CONTENT_REJECTION_NOOP 后继续，不再多调用一次模型。只有身份、完整性或科学 side effect 不确定时才 fail closed。资源 lease 丢失本身也不能当成“这一轮什么都没发生”的证据。', 'Completion-First: each Carrier gets at most one primary call plus one repair. A fully evidenced content rejection keeps the prior bytes and continues as CONTENT_REJECTION_NOOP, with no third model call. Identity, integrity, or uncertain scientific side effects still fail closed. Losing a resource lease is never treated as proof that no scientific side effect occurred.')}</p>
   </section>
 
   <section class="esg__section esg__results" id="formal-result" aria-labelledby="formal-result-title">
     <h2 id="formal-result-title">{t('正式结果', 'Formal result')}</h2>
     {pending ? (
       <>
-        <p class="esg__pending"><strong>{t('正式结果尚未产生（Pending）', 'Formal result not yet available (Pending)')}</strong> · {t('当前实验因 Carrier Health 诊断暂停，且尚无 paired Round0 barrier。这里故意不展示任何中途效果数字；正式 160 轮结果只有在 sealed scientific evidence 出现后才填写。', 'The study is currently paused for Carrier Health diagnosis and has no paired Round0 barrier yet. No in-flight efficacy values are shown here; formal 160-round values will be filled only from sealed scientific evidence.')}</p>
+        <p class="esg__pending"><strong>{t('正式结果尚未产生（Pending）', 'Formal result not yet available (Pending)')}</strong> · {t('实验正在运行，但这里故意不展示任何中途胜负数字。只有 OFF / ON 都完成 160 轮、160 个配对可审计，并出现 sealed scientific evidence 后，才把正式数值填进来。', 'The study is running, but this page intentionally shows no in-flight winner or efficacy number. Formal values are filled only after both OFF and ON complete all 160 rounds, all 160 pairs are auditable, and sealed scientific evidence exists.')}</p>
         <div class="esg__result-table-wrap"><table class="esg__result-table">
           <thead><tr><th>{t('预先固定的指标', 'Predefined metric')}</th><th>OFF</th><th>ON</th><th>Δ / uncertainty</th></tr></thead>
           <tbody>
@@ -191,6 +195,15 @@ const pending = result.status === 'pending';
             <tr><td>final panel</td><td colspan="3">locked / not run</td></tr>
           </tbody>
         </table></div>
+        <div class="esg__result-reading">
+          <h3>{t('结果出来后，先看这四件事', 'When results arrive, read these four things first')}</h3>
+          <ol>
+            <li><strong>{t('训练过程', 'Training trajectory')}</strong> · {t('把 OFF / ON 的每轮 WebShop Score 与 exact success 放在同一时间轴上，看长期趋势，不用某一轮的高低代替结论。', 'Plot per-round WebShop Score and exact success for OFF and ON on the same timeline; read the long-run pattern rather than treating one round as the conclusion.')}</li>
+            <li><strong>{t('正式差值', 'Formal contrast')}</strong> · {t('按预注册规则汇总 R1–R159 的 post-treatment mean reward，并报告配对移动块 bootstrap 区间；exact success 与 all-160 汇总是辅助结果。', 'Use the preregistered R1–R159 post-treatment mean reward contrast with the paired moving-block bootstrap interval; exact success and all-160 summaries remain secondary outcomes.')}</li>
+            <li><strong>{t('机制证据', 'Mechanism evidence')}</strong> · {t('再看 ON 的 effective-write β / state health 与 OFF 的同训练对照，解释“为什么会这样”；这些诊断不能替代任务指标。', 'Then inspect ON effective-write beta/state health against the same-training OFF reference to explain why; these diagnostics do not replace task outcomes.')}</li>
+            <li><strong>{t('数据完整性', 'Data integrity')}</strong> · {t('invalid、工程中断、CONTENT_REJECTION_NOOP 与 denominator 一起公开。final panel 只有获得独立授权并封存后才进入结果。', 'Publish invalids, engineering interruptions, CONTENT_REJECTION_NOOP events, and denominators together. The final panel enters the result only after separate authorization and sealing.')}</li>
+          </ol>
+        </div>
       </>
     ) : null}
     <p class="esg__boundary">{t('这里不会用 partial W&B、单个 checkpoint、ETA 或 0 来代替正式结果，也不会在 seal 前写 winner。', 'This section never substitutes partial W&B, a single checkpoint, an ETA, or zero for the formal result, and it never names a winner before sealing.')}</p>
@@ -199,17 +212,19 @@ const pending = result.status === 'pending';
   <section class="esg__section" id="evidence" aria-labelledby="evidence-title">
     <h2 id="evidence-title">{t('证据与当前边界', 'Evidence and current boundary')}</h2>
     <details class="esg__details" open>
-      <summary>{t('当前正式身份与诊断暂停状态', 'Current formal identity and diagnostic pause')}</summary>
+      <summary>{t('当前正式身份与运行状态', 'Current formal identity and running state')}</summary>
       <ul>
         <li><a href={study.evidence.controlTowerPr}><ExternalBrandMark href={study.evidence.controlTowerPr} />PR #502 · Control Tower</a></li>
-        <li><a href={study.evidence.finalImplementationPr}><ExternalBrandMark href={study.evidence.finalImplementationPr} />PR #510 · final implementation stack</a></li>
-        <li><code>{study.source.formalExecutionCheckout}</code> · {t('current recovery execution checkout（诊断暂停）', 'current recovery execution checkout (paused for diagnosis)')}</li>
+        <li><a href={study.evidence.finalImplementationPr}><ExternalBrandMark href={study.evidence.finalImplementationPr} />PR #523 · async / Completion-First live successor</a></li>
+        <li><code>{study.source.formalExecutionCheckout}</code> · {t('当前正式 execution checkout（运行中，禁止热切换）', 'current formal execution checkout (running; no hot swap)')}</li>
         <li><code>{study.source.finalImplementationHead}</code> · {t('repository-current integration/evidence head（不得热切换 execution）', 'repository-current integration/evidence head (must not hot-swap execution)')}</li>
         <li><code>{study.source.scienceExecutionGateCodeFreeze}</code> · {t('science / execution-gate code freeze', 'science / execution-gate code freeze')}</li>
         <li><code>{study.lifecycle.currentReadySha256}</code> · READY SHA256</li>
-        <li><code>{study.lifecycle.ownerLaunchReleaseSha256}</code> · original owner launch release SHA256</li>
-        <li><code>{study.lifecycle.repairReleaseSha256}</code> · repair release SHA256</li>
-        <li><code>{study.resourceExecution.resourceSuccessorSha256}</code> · GPU4–7 resource successor SHA256</li>
+        <li><code>{study.lifecycle.ownerLaunchReleaseSha256}</code> · owner launch release SHA256</li>
+        <li><code>{study.lifecycle.sealedRolloutRecoverySha256}</code> · sealed-rollout recovery SHA256</li>
+        <li><code>{study.resourceExecution.liveResourceExecutionSha}</code> · {t('当前 resource-only execution SHA；不改变科学语义', 'current resource-only execution SHA; scientific semantics unchanged')}</li>
+        <li><a href={study.evidence.resourceSuccessorPr}><ExternalBrandMark href={study.evidence.resourceSuccessorPr} />PR #525 · capacity-aware resource successor</a></li>
+        <li><a href={study.evidence.resourceVerifierPr}><ExternalBrandMark href={study.evidence.resourceVerifierPr} />PR #526 · resource verifier / hardening</a></li>
       </ul>
     </details>
     <details class="esg__details">
@@ -276,21 +291,30 @@ const pending = result.status === 'pending';
   .esg__fork { width:50%; height:28px; margin:auto; border-left:2px solid currentColor; border-right:2px solid currentColor; border-top:2px solid currentColor; opacity:.35; transform:translateY(18px); }
   .esg__pair-arms { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px; }
   .esg__pair-arms > div { display:grid; gap:5px; padding:16px; border:1px solid var(--border-color); border-radius:var(--radius-panel); }
-  .esg__barrier { display:flex; align-items:center; gap:8px; margin:18px 0 8px; color:var(--text-secondary); font:600 1rem/1.4 var(--font-mono); }
-  .esg__barrier i { flex:1; height:1px; background:currentColor; opacity:.35; }
+  .esg__arm-progress { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:22px 0 12px; }
+  .esg__arm-progress > div { display:grid; gap:5px; padding:14px; border:1px solid var(--border-color); border-radius:var(--radius-panel); background:var(--surface-secondary); }
+  .esg__arm-progress span { font:600 1rem/1.4 var(--font-mono); }
+  .esg__arm-progress small { color:var(--text-secondary); line-height:1.5; }
+  .esg__audit-join { display:grid; grid-template-columns:minmax(160px,.7fr) minmax(0,1.3fr); gap:10px; align-items:center; padding:14px; border:1px dashed var(--border-color); border-radius:var(--radius-panel); }
+  .esg__audit-join span { color:var(--text-secondary); font:600 1rem/1.4 var(--font-mono); }
   .esg__pair figcaption { color:var(--text-secondary); font-size:1rem; line-height:1.55; }
   .esg__matched-list { columns:2; padding-left:1.2rem; color:var(--text-secondary); }
   .esg__matched-list li { break-inside:avoid; margin:7px 0; }
   .esg__results { border-top-width:2px; }
   .esg__pending { padding:16px; border-radius:var(--radius-panel); background:var(--surface-secondary); }
   .esg__pending strong { font-size:1.15rem; }
+  .esg__result-reading { margin-top:18px; padding:18px; border:1px solid var(--border-color); border-radius:var(--radius-panel); }
+  .esg__result-reading h3 { margin:0 0 10px; }
+  .esg__result-reading ol { margin:0; padding-left:1.35rem; }
+  .esg__result-reading li { margin:10px 0; line-height:1.65; color:var(--text-secondary); }
+  .esg__result-reading strong { color:var(--text-primary); }
   .esg__boundary { color:var(--text-secondary); font-size:1rem; }
   .esg__history-link { margin-top:22px; }
   code { overflow-wrap:anywhere; }
 
   @media (max-width: 760px) {
     .esg { padding:24px 18px 70px; }
-    .esg__facts,.esg__why-grid,.esg__representation,.esg__pair-arms { grid-template-columns:1fr; }
+    .esg__facts,.esg__why-grid,.esg__representation,.esg__pair-arms,.esg__arm-progress,.esg__audit-join { grid-template-columns:1fr; }
     .esg__method-grid { grid-template-columns:1fr; }
     .esg__flow { grid-template-columns:1fr; }
     .esg__flow-arrow { width:2px; height:22px; margin:auto; }
@@ -298,8 +322,6 @@ const pending = result.status === 'pending';
     .esg__steps li { grid-template-columns:34px 1fr; padding:15px; }
     .esg__fork { width:70%; }
     .esg__matched-list { columns:1; }
-    .esg__barrier { flex-wrap:wrap; }
-    .esg__barrier i { min-width:18px; }
   }
 
   @media (prefers-reduced-motion: reduce) {

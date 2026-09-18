@@ -2,7 +2,6 @@
 export type ResearchPrimerMovedId = 'webshop-training' | 'seed-training' | 'openevo-training';
 interface Props { note: ResearchPrimerMovedId }
 const { note } = Astro.props;
-const root = '/research/seed-openevo/study/results';
 const destinations: Record<ResearchPrimerMovedId, { eyebrow: string; title: string; description: string; href: string; target: string; secondary?: { href: string; label: string } }> = {
   'webshop-training': {
     eyebrow: 'WEBSHOP · ENVIRONMENT',
@@ -29,21 +28,19 @@ const destinations: Record<ResearchPrimerMovedId, { eyebrow: string; title: stri
   },
 };
 const current = destinations[note];
+const target = current.href;
 ---
 
 <main class="moved-primer" data-ui-audit="contrast layout overflow">
-  <a class="back" href={`${root}/`}>← 返回研究结果</a>
-  <article>
-    <p class="eyebrow">{current.eyebrow}</p>
-    <h1>{current.title}</h1>
-    <p>{current.description}</p>
-    <div class="actions">
-      <a class="primary" href={current.href}>{current.target}</a>
-      {current.secondary && <a href={current.secondary.href}>{current.secondary.label}</a>}
-    </div>
-  </article>
+  <h1>{current.title.replace('想确认 ', '').replace('？', '')}</h1>
+  <p>这个旧地址已经迁移到现在唯一维护的说明页面；原来的结果页不再保存第二份内容。</p>
+  <p><a class="primary" href={current.href}>{current.target}</a></p>
+  {current.secondary && <p><a href={current.secondary.href}>{current.secondary.label}</a></p>}
 </main>
+<script is:inline define:vars={{ target }}>
+  window.location.replace(target);
+</script>
 
 <style>
-.moved-primer{width:min(880px,calc(100% - 2rem));margin:2rem auto 5rem}.back{display:inline-block;margin-bottom:2rem;color:var(--color-text-muted);font-size:.82rem;text-decoration:none}.moved-primer article{padding:clamp(1.2rem,4vw,2.5rem);border:1px solid var(--color-border);border-radius:18px;background:var(--color-surface)}.eyebrow{margin:0 0 .8rem;color:var(--color-accent);font:750 .7rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.moved-primer h1{margin:0;max-width:760px;font-size:clamp(1.8rem,4vw,3.3rem);line-height:1.08;letter-spacing:-.045em}.moved-primer article>p:not(.eyebrow){max-width:720px;margin:1rem 0 0;color:var(--color-text-muted);font-size:1rem;line-height:1.72}.actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.5rem}.actions a{padding:.62rem .82rem;border:1px solid var(--color-border);border-radius:9px;color:var(--color-text);font-size:.84rem;text-decoration:none}.actions .primary{border-color:var(--color-accent);background:var(--color-accent);color:var(--color-on-accent,#fff)}@media(max-width:600px){.moved-primer{width:min(100% - 1rem,880px);margin-top:1rem}.actions a{width:100%}}
+.moved-primer{width:min(760px,calc(100% - 2rem));margin:4rem auto 5rem}.moved-primer h1{margin:0;font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.12}.moved-primer p{max-width:680px;margin:1rem 0 0;color:var(--color-text-muted);line-height:1.7}.moved-primer a{color:var(--color-accent);font-weight:750;text-underline-offset:.2em}.moved-primer .primary{color:var(--color-text)}
 </style>

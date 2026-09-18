@@ -77,6 +77,12 @@ describe('experiment context hierarchy', () => {
     expect(read('../components/research/OpenEvoQ17DirectApplyAnalysis.astro')).toContain('60.72 / 100');
   });
 
+  it('keeps child-page parent identity canonical while route-specific method explanation stays in body copy', () => {
+    expect(context).toContain('const contextExperimentTitle = experiment?.title[locale];');
+    expect(context).toContain('正式名称是 DirectApply / No-GDR');
+    expect(context).not.toContain('共同检查通过后直接采用；不跑 16 题 GDR 新旧参数小测）');
+  });
+
   it('extends the existing research context instead of creating a second navigation system', () => {
     expect(context).toContain("CAPABILITY_READER_ROUTES");
     expect(context).toContain("OPEN_EVO_EXPERIMENTS");

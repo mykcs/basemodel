@@ -145,11 +145,11 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
   <section id="science-attempts" class="briefing-slide tone-blue" aria-labelledby="science-attempts-title">
     <div class="slide-inner summary-slide science-summary-slide">
       <h2 id="science-attempts-title">{t('我们做过哪些科学尝试', 'Scientific attempts we ran')}</h2>
-      <p class="slide-thesis">{t('7B 结果低以后，我们先确认训练有没有真的发生，再从失败轨迹里找具体问题；每次只改一个关键条件。简单解释逐个排除以后，才继续追 TaskVector、GDR 和 DirectApply。', 'After the low 7B result, we first checked whether training was really happening, then looked for concrete failures in the traces and changed one key condition at a time. Only after simpler explanations were tested did we move on to TaskVector, GDR, and DirectApply.')}</p>
+      <p class="slide-thesis">{t('7B 结果低以后，我们先确认训练有没有真的发生，再从失败轨迹里找具体问题；每次只改一个关键条件。简单解释逐个排除以后，才继续追 Task Vector、GDR 和 DirectApply。', 'After the low 7B result, we first checked whether training was really happening, then looked for concrete failures in the traces and changed one key condition at a time. Only after simpler explanations were tested did we move on to Task Vector, GDR, and DirectApply.')}</p>
       <div class="science-path-list">
         <article><span>{t('先让训练真正发生', 'make learning actually happen')}</span><strong>{t('撤掉旧 Stage 2 更新门槛，解开“最多 64 个参数组件”的代码上限', 'Remove the old Stage 2 update threshold and the code limit of 64 parameter components')}</strong><p>{t('这一步回答：低分前先确认参数有没有机会更新。', 'This answers whether parameters had a real chance to update before judging the low score.')}</p></article>
         <article><span>{t('再排除简单解释', 'rule out simple explanations')}</span><strong>{t('多给时间、扩记忆、修动作接口', 'more time, more memory, repair the action interface')}</strong><p>{t('具体一次只改一件事：把步数从 15 加到 30；把记忆输出上限从 2048 加到 4096；还装不下就拆成 10 + 10；最后再用 3B 单独检查动作接口有没有坏。', 'Each test changes one variable: 15 → 30; 2048 → 4096; then bounded 10 + 10 if saturation remains; the 3B Harness checks the action interface separately.')}</p></article>
-        <article><span>{t('最后追参数机制', 'then inspect parameter mechanics')}</span><strong>{t('TaskVector、GDR、DirectApply / No-GDR', 'TaskVector, GDR, DirectApply / No-GDR')}</strong><p>{t('这一步才开始追更深的问题：参数到底往哪里学，这条筛选规则会不会把长期有用的更新过早挡掉。', 'This turns to the next causal question: where parameters move and whether admission rules cut off useful long-term updates.')}</p></article>
+        <article><span>{t('最后追参数机制', 'then inspect parameter mechanics')}</span><strong>{t('Task Vector、GDR、DirectApply / No-GDR', 'Task Vector, GDR, DirectApply / No-GDR')}</strong><p>{t('这一步才开始追更深的问题：参数到底往哪里学，这条筛选规则会不会把长期有用的更新过早挡掉。', 'This turns to the next causal question: where parameters move and whether admission rules cut off useful long-term updates.')}</p></article>
       </div>
       <p class="slide-number">03 / 24</p>
     </div>
@@ -378,9 +378,9 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
   <section id="mechanism" class="briefing-slide tone-gold" aria-labelledby="mechanism-title">
     <div class="slide-inner taskvector-slide taskvector-method-slide">
       <h2 id="mechanism-title">{t('参数确实在变，但它们到底朝哪里变？', 'The parameters are changing, but which way are they moving?')}</h2>
-      <p class="slide-thesis">{t('TaskVector 可以理解成一支“参数方向箭头”：把一次学习前后的参数相减，就能看参数移动了多少、连续更新是否同向，以及拿掉这段参数变化后行为会不会跟着变。它只负责诊断参数变化，最终 WebShop 成绩仍由冻结终评回答。', 'Think of a TaskVector as a parameter-direction arrow: subtract parameters before and after learning to measure how far they moved, whether successive updates align, and whether behavior changes when that accumulated change is removed. It is a diagnostic; the frozen final still determines WebShop performance.')}</p>
-      <div class="taskvector-equation" aria-label={t('TaskVector 定义', 'TaskVector definition')}>
-        <span>TaskVector</span>
+      <p class="slide-thesis">{t('Task Vector 可以理解成一支“参数方向箭头”：把一次学习前后的参数相减，就能看参数移动了多少、连续更新是否同向，以及拿掉这段参数变化后行为会不会跟着变。它只负责诊断参数变化，最终 WebShop 成绩仍由冻结终评回答。', 'Think of a Task Vector as a parameter-direction arrow: subtract parameters before and after learning to measure how far they moved, whether successive updates align, and whether behavior changes when that accumulated change is removed. It is a diagnostic; the frozen final still determines WebShop performance.')}</p>
+      <div class="taskvector-equation" aria-label={t('Task Vector 定义', 'Task Vector definition')}>
+        <span>Task Vector</span>
         <strong>v = θ<sub>after</sub> − θ<sub>before</sub></strong>
         <p>{t('θ 是模型参数；v 是这一次学习真正走过的参数方向。', 'θ denotes model parameters; v is the parameter direction taken by this learning step.')}</p>
       </div>
@@ -390,7 +390,7 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
         <article><span>03</span><strong>{t('看行为会不会变', 'test behavior')}</strong><p>{t('拿掉累计 SD-LoRA 参数变化后，固定 24 个输入的第一选择全部翻转：24 / 24。说明这段参数变化已经进入决策过程。', 'After removing the accumulated SD-LoRA change, the top choice flipped on all 24 fixed inputs: 24 / 24. The parameter change is already affecting decisions.')}</p></article>
       </div>
       <p class="taskvector-paper"><strong>{t('参考与证据', 'Reference and evidence')}</strong><a href={taskArithmeticHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={taskArithmeticHref} />Task Arithmetic ↗</a><span>{t('论文提供“把微调前后参数差看成方向”的背景；OpenEVO 的 24 / 24 行为干预来自我们自己的参数机制实验。', 'The paper motivates treating before/after parameter differences as directions; the 24 / 24 behavior intervention comes from our own OpenEVO mechanism experiment.')}</span></p>
-      <p class="source-note"><a href={measurementPackHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={measurementPackHref} /> PR #317 · {t('参数行为干预证据', 'parameter behavior intervention')}</a> · <a href={technicalHref}>{t('完整 TaskVector 推导', 'full TaskVector derivation')}</a></p>
+      <p class="source-note"><a href={measurementPackHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={measurementPackHref} /> PR #317 · {t('参数行为干预证据', 'parameter behavior intervention')}</a> · <a href={technicalHref}>{t('完整 Task Vector 推导', 'full Task Vector derivation')}</a></p>
       <p class="slide-number">14 / 24</p>
     </div>
   </section>

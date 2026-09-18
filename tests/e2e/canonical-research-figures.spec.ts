@@ -195,9 +195,9 @@ test('legacy primer URLs stay stable but point readers to canonical ownership', 
 
   for (const [path, target] of cases) {
     await page.goto(path, { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('.moved-primer')).toBeVisible();
-    await expect(page.locator('h1', { hasText: '想确认' })).toBeVisible();
-    await expect(page.locator(`a[href="${target}"]`).first()).toBeVisible();
+    await page.waitForURL(`**${target}`);
+    expect(page.url()).toContain(target);
+    await expect(page.locator('#main-content h1').first()).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
   }
 });

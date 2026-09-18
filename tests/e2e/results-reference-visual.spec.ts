@@ -14,7 +14,7 @@ async function settle(page: Page) {
 }
 
 for (const viewport of viewports) {
-  test(`${viewport.name} keeps the historical question cards and current Q7 as readable blocks`, async ({ page }) => {
+  test(`${viewport.name} keeps the historical research questions and current Q7 as readable blocks`, async ({ page }) => {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto('/research/seed-openevo/study/results/');
     await settle(page);
@@ -71,8 +71,8 @@ for (const viewport of viewports) {
     expect(metrics.titleLines, `questions title wraps too many times: ${JSON.stringify(metrics)}`).toBeLessThanOrEqual(3);
     const minimumReadableCharactersPerLine = Math.min(metrics.titleCharacters, 12);
     expect(metrics.charactersPerLine, `questions title became a narrow text rail: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(minimumReadableCharactersPerLine);
-    expect(metrics.listGap, `question cards are detached from their heading: ${JSON.stringify(metrics)}`).toBeLessThanOrEqual(48);
-    expect(metrics.firstCardWidth, `question cards collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(600);
+    expect(metrics.listGap, `research questions are detached from their heading: ${JSON.stringify(metrics)}`).toBeLessThanOrEqual(48);
+    expect(metrics.firstCardWidth, `research question width collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(600);
     expect(metrics.currentQ7Width, `current Q7 collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(600);
     expect(metrics.listWidth, `question list collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(900);
 

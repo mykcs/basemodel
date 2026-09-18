@@ -30,7 +30,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(enPage).toContain('OpenEVO Summer Research Review');
     expect(zhTechnical).toContain('技术推导与实验严谨性');
     expect(enTechnical).toContain('Technical derivations and experimental rigor');
-    expect(zhFrontierPage).toContain('R127 与 R128 同题重测');
+    expect(zhFrontierPage).toContain('相邻两个模型状态的 32 题同题重测');
     expect(enFrontierPage).toContain('R127 vs R128 on the Same 32 Tasks');
     expect(nav).toContain("id: 'briefing'");
     expect(sitemap).toContain("'/research/seed-openevo/study/briefing/'");
@@ -77,7 +77,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
       '多给时间、扩记忆、修动作接口',
       '具体一次只改一件事：把步数从 15 加到 30；把记忆输出上限从 2048 加到 4096',
       '最后追参数机制',
-      'TaskVector、GDR、DirectApply / No-GDR',
+      'Task Vector、GDR、DirectApply / No-GDR',
     ]) expect(briefing).toContain(attempt);
     const summarySlide = briefing.slice(sectionPosition('science-attempts'), sectionPosition('results'));
     expect(summarySlide).not.toContain('science-attempt-list');
@@ -232,10 +232,10 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(technical).toContain('15,744 次正式环境尝试');
   });
 
-  it('keeps TaskVector as a plain-language parameter diagnostic, not a benchmark score', () => {
+  it('keeps Task Vector as a plain-language parameter diagnostic, not a benchmark score', () => {
     const taskSlide = briefing.slice(sectionPosition('mechanism'), sectionPosition('m1a-identifiability'));
     expect(taskSlide).toContain('参数确实在变，但它们到底朝哪里变？');
-    expect(taskSlide).toContain('TaskVector 可以理解成一支“参数方向箭头”');
+    expect(taskSlide).toContain('Task Vector 可以理解成一支“参数方向箭头”');
     expect(taskSlide).toContain('v = θ<sub>after</sub> − θ<sub>before</sub>');
     expect(taskSlide).toContain('‖v‖ 看参数移动的大小');
     expect(taskSlide).toContain('方向相似度（cosine）看相邻两次更新');

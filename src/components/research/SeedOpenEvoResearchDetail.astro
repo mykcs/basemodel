@@ -21,7 +21,7 @@ const copy: Record<DetailPage, { title: string; lede: string }> = {
   },
   benchmarks: {
     title: t('ALFWorld 与 WebShop', 'ALFWorld and WebShop'),
-    lede: t('两种 benchmark 的任务结构、动作空间和评分方式不同，应分别保存结果和失败模式。', 'The benchmarks use different task structures, action spaces, and scoring, so outcomes and failure modes should be recorded separately.'),
+    lede: t('ALFWorld 看 Agent 能否完成家务目标，主要报告任务家族成功率；WebShop 看 Agent 能否按购物要求完成网页任务，同时报告连续完成度分数和精确成功。两套指标回答的问题不同，不能直接混比。', 'ALFWorld asks whether an agent completes household goals and primarily reports task-family success rates. WebShop asks whether an agent completes a shopping request and reports both continuous completion score and exact success. The metrics answer different questions and should not be mixed directly.'),
   },
   webshop: {
     title: t('WebShop 任务与评测', 'WebShop tasks and evaluation'),
@@ -33,7 +33,7 @@ const copy: Record<DetailPage, { title: string; lede: string }> = {
   },
   loops: {
     title: t('SEED 与 OpenEvo 更新机制', 'SEED and OpenEvo update mechanisms'),
-    lede: t('比较两种方法的经验来源、更新对象、生效边界与下一轮如何继续。', 'Compare experience sources, updated objects, activation boundaries, and how the next round proceeds.'),
+    lede: t('SEED 把任务轨迹变成下一版 policy 参数；OpenEvo 把已完成任务的证据变成后续任务加载的 carrier、adapter 或 successor revision。本页把两条更新路径放在同一条比较轴上。', 'SEED turns task trajectories into the next policy parameters. OpenEvo turns sealed evidence from completed tasks into carriers, adapters, or successor revisions loaded by later tasks. This page puts the two update paths on one comparison axis.'),
   },
   results: {
     title: t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings'),
