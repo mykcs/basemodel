@@ -31,6 +31,11 @@ const briefingNotes = read('../components/research/SeedOpenEvoBriefingTechnicalN
 const movedPrimer = read('../components/research/ResearchPrimerMoved.astro');
 const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.astro');
 const gdrDirectApply = read('../components/research/OpenEvoGdrDirectApplyExplainer.astro');
+const gatedDeltaExplainer = read('../components/research/OpenEvoGatedDeltaSdLoraExplainer.astro');
+const mechanismMap = read('../components/research/OpenEvoMechanismMap.astro');
+const capabilityLobby = read('../components/research/OpenEvoCapabilityMapLobby.astro');
+const briefingTechnicalRoute = read('../pages/research/seed-openevo/study/briefing/technical-notes/index.astro');
+const readerContractsSource = read('../data/siteReaderContracts.ts');
 const harness2Study = read('../components/research/OpenEvoHarness2MiniStudy.astro');
 const resultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
 const resultNoteRoute = read('../pages/research/seed-openevo/study/results/[note].astro');
@@ -197,6 +202,22 @@ describe('sitewide normalization first repair batch', () => {
     expect(researchHub).not.toContain('下面用 WebShop 展开两阶段');
 
     expect(briefingNotes).toContain("t('64-component 上限的科研含义', 'Research meaning of the 64-component limit')");
+  });
+
+  it('uses one reader-facing name for Task Vector while preserving distinct GDR method identities', () => {
+    const taskVectorOwners = [mechanismMap, capabilityLobby, briefing, briefingNotes, briefingTechnicalRoute, readerContractsSource];
+    for (const source of taskVectorOwners) {
+      expect(source).not.toMatch(/TaskVectors?/);
+    }
+    expect(briefing).toContain('Task Vector、GDR、DirectApply / No-GDR');
+    expect(briefingNotes).toContain('4. Task Vector：从 SD-LoRA 更新到真实参数方向');
+    expect(mechanismMap).toContain('作为 Task Vector');
+    expect(capabilityLobby).toContain('Task Vectors and parameter themes');
+
+    expect(gdrDirectApply).toContain('历史 GDR-v1 / DirectApply');
+    expect(gdrDirectApply).toContain('Gated-Delta SD-LoRA');
+    expect(gatedDeltaExplainer).toContain('Gated Delta Rule 简式');
+    expect(gatedDeltaExplainer).toContain('Gated-Delta SD-LoRA');
   });
 
   it('keeps long-tail compatibility routes as redirects and historical notes explicitly historical', () => {

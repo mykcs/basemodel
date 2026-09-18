@@ -79,13 +79,13 @@ const parameterMeasurementPr317 = 'https://github.com/mykcs/openevo-experiment/p
   </section>
 
   <section>
-    <h2>{t('4. TaskVector：从 SD-LoRA 更新到真实参数方向', '4. TaskVector: from SD-LoRA updates to a real parameter direction')}</h2>
+    <h2>{t('4. Task Vector：从 SD-LoRA 更新到真实参数方向', '4. Task Vector: from SD-LoRA updates to a real parameter direction')}</h2>
     <p>{t('每个 SD-LoRA 组件都对应真实权重空间中的一个 ΔW。相邻且不同的状态 R27 与 R49 定义方向：', 'Each SD-LoRA component corresponds to a real ΔW in weight space. Adjacent distinct states R27 and R49 define the direction:')}</p>
     <div class="equation">τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub> = Σ<sub>i</sub> δc<sub>i</sub>B<sub>i</sub>A<sub>i</sub></div>
     <p>{t('为了不把 7 个系数的欧氏距离误当成真实权重距离，我们使用组件之间的 Gram 矩阵 G：', 'To avoid treating Euclidean distance between seven coefficients as the true weight-space distance, we use the component Gram matrix G:')}</p>
     <div class="equation">‖τ‖<sub>F</sub> = √(δcᵀGδc) = 0.6082257746</div>
     <p class="source"><a href={taskVectorPr358} target="_blank" rel="noreferrer"><ExternalBrandMark href={taskVectorPr358} /> PR #358 · R14 / R27 / R49 与 Frobenius 几何证据</a></p>
-    <p>{t('另一条参数分析线把这些方向放进更完整的 measurement pack：精确组件 Gram 重建、TaskVector cross-check、参数谱 / stable rank、principal parameter themes，以及 GPU replay-only causal ablation。它读取已经接受的参数状态，不回放正式训练，也不打开 final panel。', 'A separate parameter-analysis line places these directions in a fuller measurement pack: exact component-Gram reconstruction, TaskVector cross-checks, parameter spectra / stable rank, principal parameter themes, and GPU replay-only causal ablations. It reads accepted parameter states without replaying formal training or opening the final panel.')}</p>
+    <p>{t('另一条参数分析线把这些方向放进更完整的 measurement pack：精确组件 Gram 重建、Task Vector cross-check、参数谱 / stable rank、principal parameter themes，以及 GPU replay-only causal ablation。它读取已经接受的参数状态，不回放正式训练，也不打开 final panel。', 'A separate parameter-analysis line places these directions in a fuller measurement pack: exact component-Gram reconstruction, Task Vector cross-checks, parameter spectra / stable rank, principal parameter themes, and GPU replay-only causal ablations. It reads accepted parameter states without replaying formal training or opening the final panel.')}</p>
     <p class="source"><a href={parameterMeasurementPr317} target="_blank" rel="noreferrer"><ExternalBrandMark href={parameterMeasurementPr317} /> PR #317 · {t('参数 measurement pack 与机制分析', 'parameter measurement pack and mechanism analysis')}</a></p>
     <p>{t('基底包含 7 个 rank-8 SD-LoRA 组件。干预使用 λ∈{−1,0,0.5,1} 的有符号剂量，并加入 3 个与 τ 同 Frobenius 范数的随机方向。这样可以区分“这个方向有用”和“只要参数动得够多就会变”。', 'The basis contains seven rank-8 SD-LoRA components. Interventions use signed doses λ∈{−1,0,0.5,1} and three random directions with the same Frobenius norm as τ. This separates a direction-specific effect from generic parameter movement.')}</p>
     <div class="equation">θ′(λ) = θ<sub>R14</sub> + λτ</div>
