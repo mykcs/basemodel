@@ -26,17 +26,17 @@ const directHref = p('/research/seed-openevo/study/capability-exploration/q17-di
     <article>
       <span>DirectApply</span>
       <strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong>
-      <small>{study.threeWayFinal.directApply.exactCount}/128 exact</small>
+      <span class="same-panel__exact">{study.threeWayFinal.directApply.exactCount}/128 exact</span>
     </article>
     <article>
       <span>Bounded OFF</span>
       <strong>{study.threeWayFinal.off.score.toFixed(2)}</strong>
-      <small>{study.threeWayFinal.off.exactCount}/128 exact</small>
+      <span class="same-panel__exact">{study.threeWayFinal.off.exactCount}/128 exact</span>
     </article>
     <article>
       <span>Bounded + GDR ON</span>
       <strong>{study.threeWayFinal.on.score.toFixed(2)}</strong>
-      <small>{study.threeWayFinal.on.exactCount}/128 exact</small>
+      <span class="same-panel__exact">{study.threeWayFinal.on.exactCount}/128 exact</span>
     </article>
   </div>
 
@@ -68,10 +68,10 @@ const directHref = p('/research/seed-openevo/study/capability-exploration/q17-di
   .same-panel h2{margin:0;font-size:clamp(1.7rem,3.4vw,2.7rem);letter-spacing:-.04em}.same-panel__intro>p:last-child{max-width:76ch;line-height:1.7;color:var(--color-text-muted)}
   .same-panel__cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px}
   .same-panel__cards article{padding:18px;border:1px solid var(--color-border);border-radius:16px;background:var(--color-surface)}
-  .same-panel__cards span,.same-panel__cards small{display:block;color:var(--color-text-muted)}.same-panel__cards strong{display:block;margin:8px 0 2px;font-size:clamp(2rem,4vw,3.2rem);letter-spacing:-.05em}
+  .same-panel__cards span{display:block;color:var(--color-text-muted)}.same-panel__exact{font-size:1rem}.same-panel__cards strong{display:block;margin:8px 0 2px;font-size:clamp(2rem,4vw,3.2rem);letter-spacing:-.05em}
   .same-panel__reading{max-width:880px;margin-top:20px;padding:16px 18px;border-left:3px solid var(--color-accent);background:var(--color-surface-subtle)}
   .same-panel__reading p{margin:6px 0 0;line-height:1.68;color:var(--color-text-muted)}
   .same-panel__actions{display:flex;flex-wrap:wrap;gap:12px 20px;margin-top:18px}.same-panel__actions a,.same-panel__evidence a{color:var(--color-accent);font-weight:760;text-underline-offset:3px}
   .same-panel__evidence{max-width:880px;margin-top:18px;border-top:1px solid var(--color-border);padding-top:10px}.same-panel__evidence summary{cursor:pointer;font-weight:740}.same-panel__evidence p{max-width:78ch;line-height:1.65;color:var(--color-text-muted)}
-  @media(max-width:720px){.same-panel{padding:34px 18px}.same-panel__cards{grid-template-columns:1fr}.same-panel__cards article{display:grid;grid-template-columns:1fr auto;align-items:end}.same-panel__cards small{grid-column:1/-1}}
+  @media(max-width:720px){.same-panel{padding:34px 18px}.same-panel__cards{grid-template-columns:1fr}.same-panel__cards article{display:grid;grid-template-columns:1fr auto;align-items:end}.same-panel__exact{grid-column:1/-1}}
 </style>

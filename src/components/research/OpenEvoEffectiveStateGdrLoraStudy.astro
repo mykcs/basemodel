@@ -51,9 +51,9 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
       'All 160 rounds are complete. The clearest first view comes from the same frozen 128-task final: historical DirectApply scores 60.72, Bounded OFF scores 45.98, and Bounded + Effective-State GDR ON scores 20.77. The rest of the page separates long-horizon training statistics, compute time, and parameter changes.',
     )}</p>
     <div class="esg__facts esg__final-facts" aria-label={t('同一冻结 128 题的三个 Final', 'Three finals on the same frozen 128-task panel')}>
-      <div><span>DirectApply · {t('历史前驱', 'historical predecessor')}</span><strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong><small>{study.threeWayFinal.directApply.exactCount}/128 exact</small></div>
-      <div><span>Bounded OFF</span><strong>{study.threeWayFinal.off.score.toFixed(2)}</strong><small>{study.threeWayFinal.off.exactCount}/128 exact</small></div>
-      <div><span>Bounded + GDR ON</span><strong>{study.threeWayFinal.on.score.toFixed(2)}</strong><small>{study.threeWayFinal.on.exactCount}/128 exact</small></div>
+      <div><span>DirectApply · {t('历史前驱', 'historical predecessor')}</span><strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong><span class="esg__metric-detail">{study.threeWayFinal.directApply.exactCount}/128 exact</span></div>
+      <div><span>Bounded OFF</span><strong>{study.threeWayFinal.off.score.toFixed(2)}</strong><span class="esg__metric-detail">{study.threeWayFinal.off.exactCount}/128 exact</span></div>
+      <div><span>Bounded + GDR ON</span><strong>{study.threeWayFinal.on.score.toFixed(2)}</strong><span class="esg__metric-detail">{study.threeWayFinal.on.exactCount}/128 exact</span></div>
     </div>
     <p class="esg__status"><strong>{t('正式实验 COMPLETE · Final 与长期训练统计已经封存。', 'Formal study COMPLETE · final and long-horizon statistics are sealed.')}</strong> {t(
       '三种最终模型使用完全相同的冻结 128 题，所以 Final 可以直接并排描述；但 DirectApply 是更早的独立实验，不是这次 OFF / ON 预注册对照的第三条 arm。OFF / ON 的因果比较仍只属于两条匹配 arm。',
@@ -376,7 +376,7 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
   .esg__lede { max-width: 890px; margin: 14px 0 0; font-size: clamp(1.05rem, 2vw, 1.28rem); line-height: 1.7; color: var(--text-secondary); }
   .esg__facts { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin: 26px 0 18px; }
   .esg__facts div { padding: 16px; border: 1px solid var(--border-color); border-radius: var(--radius-panel); background: var(--surface-secondary); }
-  .esg__facts span { display:block; font-size:1rem; color:var(--text-secondary); } .esg__facts strong { display:block; margin-top:6px; font-size:clamp(1.55rem,3vw,2.4rem); letter-spacing:-.04em; } .esg__facts small { display:block; margin-top:4px; color:var(--text-secondary); }
+  .esg__facts span { display:block; font-size:1rem; color:var(--text-secondary); } .esg__facts strong { display:block; margin-top:6px; font-size:clamp(1.55rem,3vw,2.4rem); letter-spacing:-.04em; } .esg__metric-detail { display:block; margin-top:4px; font-size:1rem; color:var(--text-secondary); }
   .esg__status { margin: 0; padding: 14px 16px; border-left: 3px solid var(--accent); background: var(--surface-secondary); line-height: 1.6; }
   .esg__section { max-width: 980px; margin: 0 auto; padding: 46px 0; border-top: 1px solid var(--border-color); }
   .esg__section h2 { margin:0 0 18px; font-size:clamp(1.55rem,3vw,2.35rem); letter-spacing:-.035em; }
@@ -453,7 +453,7 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
   .esg__compare-block { display:grid; gap:14px; margin:18px 0 24px; padding:20px; border:1px solid var(--border-color); border-radius:var(--radius-feature); background:var(--surface-secondary); }
   .esg__compare-block h3 { margin:2px 0 6px; font-size:clamp(1.25rem,2.4vw,1.8rem); }
   .esg__compare-block p { margin:0; }
-  .esg__mini-label { font:700 .78rem/1.3 var(--font-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--text-secondary); }
+  .esg__mini-label { font:700 1rem/1.4 var(--font-mono); letter-spacing:.04em; color:var(--text-secondary); }
   .esg__result-reading { margin-top:18px; padding:18px; border:1px solid var(--border-color); border-radius:var(--radius-panel); }
   .esg__result-reading h3 { margin:0 0 10px; }
   .esg__result-reading ol { margin:0; padding-left:1.35rem; }
