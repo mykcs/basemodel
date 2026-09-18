@@ -39,7 +39,7 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).not.toContain('Effective-State GDR 优于 Bounded');
     expect(component).not.toContain('Effective-State GDR beats Bounded');
     expect(component).toContain('正式 OFF / ON 实验正在运行');
-    expect(component).toContain('运行中分数、partial W&B 或单个 checkpoint 都不是正式结论');
+    expect(component).toContain('运行中分数、中途 W&B 或单个 checkpoint 都不是正式结论');
   });
 
   it('keeps the formal result fail-closed while the formal study is running', () => {

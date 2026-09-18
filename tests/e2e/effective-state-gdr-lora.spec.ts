@@ -88,7 +88,7 @@ test('Effective-State first screen tells the three-part story before deeper choi
   await expect(lede).toContainText('同一个有效更新可以有多种内部表示');
   await expect(lede).toContainText('两条臂已经正式运行');
   await expect(page.locator('.esg__status')).toContainText('各自沿自己的已封存前一轮继续');
-  await expect(lede).toContainText('正式结果仍 Pending');
+  await expect(lede).toContainText('正式结果尚未产生');
   await expect(page.locator('#formal-design')).toContainText('配对编号只用于审计');
   await expect(page.locator('#formal-result')).toContainText('结果出来后，先看这四件事');
   await expect(page.locator('#formal-result')).toContainText('每轮 WebShop Score');
