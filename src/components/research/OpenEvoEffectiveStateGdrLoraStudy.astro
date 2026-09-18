@@ -168,8 +168,8 @@ const pending = result.status === 'pending';
         <div><strong>ON · {study.identity.on}</strong><span>{t('同一训练 + Effective-State GDR write', 'same training + Effective-State GDR write')}</span></div>
       </div>
       <div class="esg__arm-progress">
-        <div><strong>OFF</strong><span>Round 0 → 1 → … → 159</span><small>{t('只依赖 OFF 自己上一轮的封存状态', 'depends only on OFF’s own sealed predecessor')}</small></div>
-        <div><strong>ON</strong><span>Round 0 → 1 → … → 159</span><small>{t('只依赖 ON 自己上一轮的封存状态', 'depends only on ON’s own sealed predecessor')}</small></div>
+        <div><strong>OFF</strong><span>Round 0 → 1 → … → 159</span><span class="esg__arm-note">{t('只依赖 OFF 自己上一轮的封存状态', 'depends only on OFF’s own sealed predecessor')}</span></div>
+        <div><strong>ON</strong><span>Round 0 → 1 → … → 159</span><span class="esg__arm-note">{t('只依赖 ON 自己上一轮的封存状态', 'depends only on ON’s own sealed predecessor')}</span></div>
       </div>
       <div class="esg__audit-join"><span>{t('配对编号 / audit receipt', 'pair identity / audit receipt')}</span><strong>{t('两边都完成 160 轮后，重新合到最终配对分析', 'rejoin only after both arms finish all 160 rounds for final paired analysis')}</strong></div>
       <figcaption>{t('两条臂共享相同任务顺序、seed、预算和共同起点，但运行时不再互相等同一轮。GPU4–7 只是共享资源池；某一边暂时等 GPU，不会变成另一边的科学门槛。配对 receipt 是异步审计证据，不负责放行下一轮。最终分析仍要求 OFF / ON 都封存 Round 0–159，并且 160 个配对都可审计。', 'The arms still share task order, seeds, budget, and common start, but they no longer wait for each other at the same runtime round. GPU4–7 is a shared resource pool; one arm waiting for GPU capacity does not become a scientific gate for the other. Pair receipts are asynchronous audit evidence, not progression gates. Final analysis still requires both OFF and ON to seal Rounds 0–159 and all 160 pairs to be auditable.')}</figcaption>
@@ -294,7 +294,7 @@ const pending = result.status === 'pending';
   .esg__arm-progress { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:22px 0 12px; }
   .esg__arm-progress > div { display:grid; gap:5px; padding:14px; border:1px solid var(--border-color); border-radius:var(--radius-panel); background:var(--surface-secondary); }
   .esg__arm-progress span { font:600 1rem/1.4 var(--font-mono); }
-  .esg__arm-progress small { color:var(--text-secondary); line-height:1.5; }
+  .esg__arm-note { color:var(--text-secondary); font-size:1rem; line-height:1.5; }
   .esg__audit-join { display:grid; grid-template-columns:minmax(160px,.7fr) minmax(0,1.3fr); gap:10px; align-items:center; padding:14px; border:1px dashed var(--border-color); border-radius:var(--radius-panel); }
   .esg__audit-join span { color:var(--text-secondary); font:600 1rem/1.4 var(--font-mono); }
   .esg__pair figcaption { color:var(--text-secondary); font-size:1rem; line-height:1.55; }
