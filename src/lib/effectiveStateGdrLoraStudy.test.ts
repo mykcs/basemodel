@@ -143,4 +143,3 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.formalDesign.onlyTreatmentDifference).toContain('Effective-State GDR');
   });
 });
-});
