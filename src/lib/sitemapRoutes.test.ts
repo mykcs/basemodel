@@ -60,6 +60,15 @@ describe('sitemap route coverage', () => {
     expect(localizedRoute(path, 'en')).toBeNull();
   });
 
+  it('publishes the live Effective-State OFF/ON study in the production sitemap', () => {
+    const path = '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/';
+    expect(bilingualStaticPaths).toContain(path);
+    expect(sitemapStaticPaths()).toContain(path);
+    expect(availableLocalesForRoute(path)).toEqual(['zh']);
+    expect(localizedRoute(path, 'zh')).toBe(path);
+    expect(localizedRoute(path, 'en')).toBeNull();
+  });
+
   it('keeps moved pages as Chinese compatibility routes, not sitemap pages', () => {
     for (const path of ['/research/seed-openevo/flow/base-model/', '/research/seed-openevo/study/design/']) {
       expect(bilingualCompatibilityPaths).toContain(path);
