@@ -388,7 +388,7 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
   .esg__trajectory-shell .on { stroke:var(--warning); }
   .esg__legend { display:flex; gap:16px; margin-top:6px; color:var(--text-secondary); font-size:1rem; }
   .esg__legend span { display:inline-flex; align-items:center; gap:6px; }
-  .esg__legend i { width:18px; height:3px; border-radius:99px; }
+  .esg__legend i { width:18px; height:3px; border-radius:var(--radius-control); }
   .esg__legend i.off { background:var(--blue); }
   .esg__legend i.on { background:var(--warning); }
   .esg__sealed-conclusion { margin-top:18px; padding:16px; border-left:3px solid var(--accent); background:var(--surface-secondary); }
