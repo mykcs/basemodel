@@ -8,21 +8,30 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
   await expect(body).toBeVisible();
   const navigation = page.locator('[data-research-navigation][data-research-track="flow"]');
   await expect(navigation).toBeVisible();
-  await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('aria-current', 'page');
-  await expect(navigation.getByRole('link', { name: 'SD-LoRA', exact: true })).toHaveAttribute('href', route);
+  await expect(navigation.getByRole('link', { name: 'SD-LoRA 参数机制', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(navigation.getByRole('link', { name: 'SD-LoRA 参数机制', exact: true })).toHaveAttribute('href', route);
   const series = page.locator('[data-sdlora-series-nav]');
   const vanillaSeries = series.locator(`a[href="${route}"]`).filter({ hasText: 'Vanilla SD-LoRA 是怎么学习的？' });
   await expect(vanillaSeries).toHaveCount(1);
   await expect(vanillaSeries).toHaveAttribute('href', route);
   await expect(vanillaSeries).toHaveAttribute('aria-current', 'page');
   await expect(series.locator('a[href="/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/"]')).toHaveCount(0);
-  await expect(page.locator('h1')).toContainText('为什么 OpenEvo 里需要 SD-LoRA');
-  await expect(body).toContainText('成功留在 rollout 日志里，并不会让下一轮模型参数自动改变');
-  await expect(body).toContainText('这里才改模型参数');
-  await expect(body).toContainText('一批任务尝试结束、训练数据筛好以后；下一批任务开始以前');
+  await expect(page.locator('h1')).toContainText('把做对的网页购物轨迹训练成下一轮候选参数');
+  await expect(body).toContainText('这条参数更新方法叫 SD-LoRA（Scalable Decoupled LoRA）');
+  await expect(body).toContainText('文字经验、可复用技能和全局行为规则');
+  await expect(body).toContainText('Text Memory / Skill Bundle / Agent System');
+  await expect(body).toContainText('Text Memory 保存文字经验');
+  await expect(body).toContainText('WebShop（网页购物任务）');
+  const primer = body.locator('#what-is-sd-lora');
+  await expect(primer.locator('summary')).toContainText('普通 LoRA 与 SD-LoRA 的参数区别');
+  await expect(primer.locator('table')).toBeHidden();
+  await primer.locator('summary').click();
+  await expect(primer.locator('table')).toBeVisible();
+  await expect(primer.locator('tbody tr')).toHaveCount(3);
+  await expect(body).toContainText('候选参数不等于能力一定提升');
   await expect(body).toContainText('普通 LoRA');
   await expect(body).toContainText('Scalable Decoupled LoRA');
-  await expect(body).toContainText('Vanilla SD-LoRA” 不等于普通 LoRA');
+  await expect(body).toContainText('本页把没有加入后续加速变体的当前基线称为 “Vanilla SD-LoRA”');
   await expect(body).toContainText('16 个任务 × 每题 8 次');
   await expect(body).toContainText('每个任务只取最早一条通过全部检查的成功');
   await expect(body).toContainText('最多带回 64 条旧经验');
@@ -41,7 +50,41 @@ test('historical capability URL forwards to the Flow map owner', async ({ page }
   await expect(page.getByTestId('vanilla-sd-lora-mechanism')).toBeVisible();
 });
 
-test('desktop reading order puts motivation and LoRA comparison before the mechanism canvas', async ({ page }) => {
+for (const viewport of [
+  { name: 'desktop-first-screen', width: 1280, height: 633 },
+  { name: 'phone-first-screen', width: 390, height: 844 },
+] as const) {
+  test(`${viewport.name}: the first viewport stays on one parameter-write task`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.goto(route, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('.sdlora-intro__boundary')).toBeVisible();
+    await expect(page.locator('.sdlora-intro__steps')).toHaveCount(0);
+    await expect(page.locator('.sdlora-intro__path')).toHaveCount(0);
+    await expect(page.locator('.sdlora-intro__lede')).toContainText('每题最早一条“完整做对且通过全部检查”的轨迹送进参数训练');
+    await expect(page.locator('.sdlora-intro__lede')).toContainText('最终锁定测试题不参加这里的筛选或训练');
+    await expect(page.locator('.sdlora-intro')).not.toContainText('DirectApply');
+    await expect(page.locator('.sdlora-intro')).not.toContainText('GDR-v1');
+    await expect(page.locator('.sdlora-intro__frame')).toHaveCount(0);
+    const visibleMainHeadings = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((nodes) => nodes
+      .filter((node) => { const box = node.getBoundingClientRect(); return box.width > 0 && box.height > 0 && box.top < innerHeight && box.bottom > 0; })
+      .map((node) => node.textContent?.trim()));
+    expect(visibleMainHeadings).toEqual(['把做对的网页购物轨迹训练成下一轮候选参数']);
+    const visibleSummaries = await page.locator('#main-content summary').evaluateAll((nodes) => nodes
+      .filter((node) => { const box = node.getBoundingClientRect(); return box.width > 0 && box.height > 0 && box.top < innerHeight && box.bottom > 0; })
+      .map((node) => node.textContent?.trim()));
+    expect(visibleSummaries.filter(Boolean).length).toBeLessThanOrEqual(1);
+    if (viewport.name === 'phone-first-screen') {
+      const mechanismSurface = await page.locator('[data-slide-canvas]').evaluate((node) => {
+        const style = getComputedStyle(node);
+        return { borderLeftStyle: style.borderLeftStyle, borderRadius: style.borderRadius };
+      });
+      expect(mechanismSurface.borderLeftStyle).toBe('none');
+      expect(mechanismSurface.borderRadius).toBe('0px');
+    }
+  });
+}
+
+test('desktop reading order explains the LoRA distinction before the full mechanism canvas', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const positions = await page.locator('.sdlora-intro, #what-is-sd-lora, [data-slide-canvas]').evaluateAll((nodes) => nodes.map((node) => ({
@@ -50,6 +93,9 @@ test('desktop reading order puts motivation and LoRA comparison before the mecha
     bottom: node.getBoundingClientRect().bottom,
   })));
   expect(positions).toHaveLength(3);
+  expect(String(positions[0]!.id)).toContain('sdlora-intro');
+  expect(String(positions[1]!.id)).toBe('what-is-sd-lora');
+  expect(String(positions[2]!.id)).toContain('sdlora-slide');
   expect(positions[0]!.bottom).toBeLessThanOrEqual(positions[1]!.top + 2);
   expect(positions[1]!.bottom).toBeLessThanOrEqual(positions[2]!.top + 2);
 });

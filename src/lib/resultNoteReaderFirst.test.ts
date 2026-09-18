@@ -14,7 +14,7 @@ describe('result-note reader-first case-cluster follow-through', () => {
       '新任务迁移的独立复现',
       '第二代连续学习的结果边界',
       '机制比较的测量边界',
-      '当前结论与证据边界',
+      '截至 H1.42 的结论与证据边界',
     ]) expect(note).toContain(`title: '${title}'`);
 
     for (const rejected of [
@@ -42,7 +42,7 @@ describe('result-note reader-first case-cluster follow-through', () => {
       "title: '新任务迁移的独立复现'",
       "title: '第二代连续学习的结果边界'",
       "title: '机制比较的测量边界'",
-      "title: 'OpenEVO WebShop 实验：当前结论与证据边界'",
+      "title: 'OpenEVO WebShop 历史实验：截至 H1.42 的结论与证据边界'",
     ]) expect(route).toContain(title);
     for (const rejected of [
       "title: 'H1.38B：第一次可靠的内部新任务迁移'",

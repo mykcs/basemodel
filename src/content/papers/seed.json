@@ -91,7 +91,7 @@
         "steps": [
           {
             "id": "learn-problem",
-            "title": { "zh": "先读问题，不先读公式", "en": "Read the problem before the equations" },
+            "title": { "zh": "长程轨迹的稀疏奖励问题", "en": "Sparse reward in long-horizon trajectories" },
             "body": { "zh": "长程智能体通常只在整条轨迹结束后得到稀疏奖励；这个奖励无法指出中间哪次观察、动作或工具调用值得强化。", "en": "Long-horizon agents often receive sparse reward only after a trajectory ends, so the reward does not identify which intermediate observations, actions, or tool calls deserve credit." },
             "done_when": { "zh": "你能区分 trajectory-level outcome 与 token-level learning signal。", "en": "You can distinguish a trajectory-level outcome from a token-level learning signal." },
             "source_label": { "zh": "摘要与引言", "en": "Abstract and introduction" },

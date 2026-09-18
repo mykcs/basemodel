@@ -85,7 +85,7 @@ describe('experiment-first Study index', () => {
     expect(frozenResult).toContain('1/128');
 
     const vanilla = readFileSync(new URL('../components/research/OpenEvoVanillaSdLoraMechanism.astro', import.meta.url), 'utf8');
-    expect(vanilla).toContain('LoRA 训练出来了，不等于下一轮真的用了它');
+    expect(vanilla).toContain('LoRA 训练完成和下一轮采用它是两件事');
     expect(vanilla).toContain('44 个候选');
   });
 

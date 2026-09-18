@@ -54,6 +54,7 @@ const expectedAppImports = [
   './visual-closeout.css',
   './components/global-shell.css',
   './components/header.css',
+  './components/research-content-primitives.css',
 ];
 const expectedFoundationImports = [
   './tokens.css',

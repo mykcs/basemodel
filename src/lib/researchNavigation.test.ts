@@ -57,8 +57,8 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(navigation).not.toContain("id: 'model'");
     expect(navigation).not.toContain("label: t('模型', 'Model')");
     expect(navigation).not.toContain("p('/models/qwen2-5-3b-instruct/#experiment-setup')");
-    expect(navigation).toContain("{ id: 'openevo', label: 'OpenEVO'");
-    expect(navigation).toContain("{ id: 'sdlora', label: 'SD-LoRA', href: p('/research/seed-openevo/flow/sd-lora/') }");
+    expect(navigation).toContain("{ id: 'openevo', label: t('OpenEVO 方法', 'OpenEVO method')");
+    expect(navigation).toContain("{ id: 'sdlora', label: t('SD-LoRA 参数机制', 'SD-LoRA parameters'), href: p('/research/seed-openevo/flow/sd-lora/') }");
     expect(navigation).toContain("t('研究结果', 'Research findings')");
     expect(navigation).not.toContain("t('研究导航', 'Research navigation')");
     expect(navigation).not.toContain('const pages = [');

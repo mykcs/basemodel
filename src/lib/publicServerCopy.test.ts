@@ -13,7 +13,8 @@ const staticServerDiagram = read('../components/research/ServerAuthorityDiagram.
 
 describe('public server copy', () => {
   it('keeps the server lifecycle page public-safe and distinguishes current from historical storage facts', () => {
-    expect(serverOverview).toContain('实验服务器与资产整理');
+    expect(serverOverview).toContain('实验文件磁盘：约 0.99 TiB 可用');
+    expect(serverOverview).toContain('约 1.09 TB；TiB 与 TB 是两种容量单位');
     expect(serverOverview).toContain('0.99 TiB');
     expect(serverOverview).toContain('320.9 GiB');
     expect(serverOverview).toContain('304.66 GiB');
@@ -21,6 +22,14 @@ describe('public server copy', () => {
     expect(serverOverview).toContain('1.69 GiB');
     expect(serverOverview).toContain('delete_authorized=false');
     expect(serverOverview).toContain('例行服务器维护');
+    expect(serverOverview).not.toContain('class="server-hero__facts research-fact-band"');
+    expect(serverOverview).not.toContain('server-hero__guardrails');
+    expect(serverOverview).toContain('server-hero__safety');
+    expect(serverOverview).toContain('远端已有副本也不能自动删服务器文件');
+    expect(serverOverview).toContain('复制例行维护指令 →');
+    expect(serverOverview).toContain('href="#routine-maintenance"');
+    expect(serverOverview).toContain('NOT_AUTHORIZED');
+    expect(serverOverview.indexOf('</header>')).toBeLessThan(serverOverview.indexOf('<nav class="operation-switchboard"'));
     expect(serverOverview).toContain('这段 Prompt 只负责启动，不固定 Passport 版本');
     expect(serverOverview).toContain('EXPERIMENT_PASSPORT_REGISTRY_IMPLEMENTATION_PLAN_202609111800.md');
     expect(serverOverview).toContain('open Draft PR 只能用于发现重叠或待合入能力');
@@ -42,7 +51,7 @@ describe('public server copy', () => {
     expect(serverOverview).not.toContain('Our home directory');
     expect(serverOverview).not.toMatch(/\/data\/home\//);
     expect(serverOverview).not.toMatch(/dev-[a-z0-9_-]+/i);
-    expect(serverRouteZh).toContain('2026-09-15 实验服务器与科研资产治理');
+    expect(serverRouteZh).toContain('2026-09-15 22:10（UTC+8）服务器静态快照');
     expect(serverRouteZh).toContain('0.99 TiB');
     // Archived English is historical source evidence and must not be rewritten just to mirror current Chinese runtime state.
     expect(serverRouteEn).toContain('2026-09-05 server capacity and hardware snapshot');

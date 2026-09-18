@@ -108,12 +108,14 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
   const [step, setStep] = useState(0);
   const [overview, setOverview] = useState(true);
   const [playing, setPlaying] = useState(false);
+  const [transportDocked, setTransportDocked] = useState(false);
   const [carrier, setCarrier] = useState<Carrier>('adapter');
   const reducedMotion = useReducedMotion();
   const maxStep = config.steps.length - 1;
   const rootRef = useRef<HTMLElement>(null);
 
   const go = useCallback((next: number) => {
+    setTransportDocked(true);
     setOverview(false);
     setPlaying(false);
     setStep(clamp(next, 0, maxStep));
@@ -121,11 +123,13 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
 
   const showOverview = useCallback(() => {
     setPlaying(false);
+    setTransportDocked(false);
     setOverview(true);
   }, []);
 
   const togglePlay = useCallback(() => {
     if (reducedMotion) return;
+    setTransportDocked(true);
     if (overview) {
       setOverview(false);
       setStep(0);
@@ -187,6 +191,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       className={`irx irx-${kind}`}
       data-interactive-research-explainer={kind}
       data-overview={overview}
+      data-transport-docked={transportDocked}
       data-reduced-motion={reducedMotion}
       data-compact={compact}
       data-ui-audit="contrast layout"
