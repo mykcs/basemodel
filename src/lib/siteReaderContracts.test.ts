@@ -36,6 +36,31 @@ describe('site-wide reader attention contracts', () => {
     }
   });
 
+  it('keeps the four redesign pilots as distinct reader modes with exact route owners', () => {
+    const pilots = [
+      ['flow', '/research/seed-openevo/flow/', 'choice', '.mission-hero__lede'],
+      ['flow-sd-lora', '/research/seed-openevo/flow/sd-lora/', 'narrative', '.sdlora-intro__lede'],
+      ['flow-server', '/research/seed-openevo/flow/server/', 'operational', '.server-hero__status'],
+      ['capability-q17-frontier', '/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/', 'focus', '[data-q17-advisor-diagnostics] .lede'],
+    ] as const;
+
+    expect(new Set(pilots.map(([, , mode]) => mode)).size).toBe(4);
+    for (const [id, route, mode, selector] of pilots) {
+      const row = SITE_READER_CONTRACTS.find((contract) => contract.id === id);
+      expect(row, id).toBeDefined();
+      expect(row?.sourceRoute, id).toBe(route);
+      expect(row?.attentionMode, id).toBe(mode);
+      expect(row?.firstViewportSelector, id).toBe(selector);
+      expect(readerContractForRoute(route)?.id, route).toBe(id);
+    }
+  });
+
+  it('binds model detail first-screen acceptance to decision facts instead of a tall identity wrapper', () => {
+    const model = SITE_READER_CONTRACTS.find((contract) => contract.id === 'model-detail');
+    expect(model?.firstViewportSelector).toBe('.model-detail-quickfacts');
+    expect(model?.firstViewportBudget).toEqual({ maxInteractive: 4, maxHeadings: 2, maxTextChars: 720 });
+  });
+
   it('anchors the SD-LoRA first-screen contract to the actual motivation message rather than the whole tall intro block', () => {
     const flow = SITE_READER_CONTRACTS.find((contract) => contract.id === 'flow-sd-lora');
     const compatibility = SITE_READER_CONTRACTS.find((contract) => contract.id === 'capability-vanilla-sd-lora');

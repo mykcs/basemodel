@@ -2,7 +2,6 @@ import { expect, test, type Page } from '@playwright/test';
 
 const routes = [
   '/research/seed-openevo/flow/',
-  '/en/research/seed-openevo/flow/',
 ] as const;
 
 const hostedRouteFilter = new Set(
@@ -31,14 +30,29 @@ for (const route of routes) {
 
       const root = page.locator('#training-design');
       await expect(root).toBeVisible();
-      await expect(root.locator('h2')).toContainText(/训练设计|Training design/);
+      await expect(root.locator('h2')).toContainText(/WebShop 先做题和复盘，再持续学习|WebShop: act and review first, then continue learning/);
       await expect(root.locator('.responsibility-flow > li')).toHaveCount(6);
-      await expect(page.locator('nav').getByRole('link', { name: /训练设计|Training design/ }).first()).toBeVisible();
+      const researchNav = page.locator('[data-research-navigation][data-research-track="flow"]');
+      if (viewport.width <= 720) {
+        const mobileDirectory = researchNav.locator('.research-navigation__mobile');
+        await expect(mobileDirectory.locator('summary')).toBeVisible();
+        await mobileDirectory.locator('summary').click();
+        await expect(mobileDirectory.getByRole('link', { name: /训练设计|Training design/ })).toBeVisible();
+      } else {
+        await expect(researchNav.locator('.research-navigation__links').getByRole('link', { name: /训练设计|Training design/ })).toBeVisible();
+      }
       await expect(page.getByText('SEED × OPENEVO · WEBSHOP')).toHaveCount(0);
       await expect(page.getByText('先分清谁负责什么')).toHaveCount(0);
 
+      const comparisonScope = root.locator('[data-learning-comparison-scope]');
+      await expect(comparisonScope).toBeVisible();
+      await expect(comparisonScope.locator('tbody tr')).toHaveCount(2);
+      await expect(comparisonScope).toContainText(/完整系统比较|Full-system comparison/);
+      await expect(comparisonScope).toContainText(/第二阶段（Stage 2）学习器|Stage-2 learner/);
+
       const details = root.locator('details');
-      await expect(details).toHaveCount(2);
+      await expect(details).toHaveCount(1);
+      await expect(details.first().locator('summary')).toContainText(/Stage 1 参数协议|Stage-1 parameter protocol/);
       await details.first().locator('summary').click();
       await expect(details.first()).toHaveAttribute('open', '');
 
@@ -52,12 +66,10 @@ for (const route of routes) {
   });
 }
 
-test('legacy training-design URLs redirect to the flow map section', async ({ page }) => {
+test('active Chinese legacy training-design URL redirects to the flow map section', async ({ page }) => {
   await page.goto('/research/seed-openevo/study/design/', { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveURL(/\/research\/seed-openevo\/flow\/#training-design$/);
 
-  await page.goto('/en/research/seed-openevo/study/design/', { waitUntil: 'domcontentloaded' });
-  await expect(page).toHaveURL(/\/en\/research\/seed-openevo\/flow\/#training-design$/);
 });
 
 test('training design stays legible in dark theme and reduced motion', async ({ page }) => {
@@ -65,8 +77,9 @@ test('training design stays legible in dark theme and reduced motion', async ({ 
   test.skip(!routeInScope(route), 'outside hosted focused route scope');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.addInitScript(() => localStorage.setItem('atlas-theme', 'dark'));
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 
   const root = page.locator('#training-design');
   await expect(root).toBeVisible();

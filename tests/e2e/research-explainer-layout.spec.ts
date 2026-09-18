@@ -241,7 +241,7 @@ for (const matrix of matrices) {
   });
 }
 
-test('interactive transport stays bottom-docked from the initial render', async ({ page }) => {
+test('interactive transport stays local until explicit reader interaction', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   const cases = [
     ['/research/seed-openevo/flow/seed/', 'seed'],
@@ -254,12 +254,25 @@ test('interactive transport stays bottom-docked from the initial render', async 
     await test.step(path, async () => {
       await page.goto(path, { waitUntil: 'domcontentloaded' });
       await settle(page);
+      await page.mouse.move(4, 4);
       const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
       await waitForHydratedExplainer(root);
       const transport = root.locator('.irx-transport');
-      await expect(transport).toHaveCSS('position', 'fixed');
+      expect(await transport.evaluate((node) => getComputedStyle(node).position)).not.toBe('fixed');
       expect(await transport.evaluate((node) => Boolean(node.closest('.irx-controls')))).toBe(true);
+
+      const next = root.locator('button[aria-label="下一步"], button[aria-label="Next step"]');
+      await next.click();
+      await expect(root).toHaveAttribute('data-transport-docked', 'true');
+      await expect(transport).toHaveCSS('position', 'fixed');
       await expect(transport).toBeInViewport();
+
+      const reset = root.locator('.irx-reset');
+      await reset.click();
+      await expect(root).toHaveAttribute('data-transport-docked', 'false');
+      await page.locator('[data-site-header] a').first().focus();
+      await page.mouse.move(4, 4);
+      expect(await transport.evaluate((node) => getComputedStyle(node).position)).not.toBe('fixed');
     });
   }
 });
@@ -476,6 +489,8 @@ test('scroll-linked explainer updates do not pull a fast reader back to the stag
   expect(after).toBeGreaterThan(900);
   expect(Math.abs(after - before)).toBeLessThan(12);
   await expect(root).toHaveAttribute('data-overview', 'false');
+  await expect(root).toHaveAttribute('data-transport-docked', 'false');
+  expect(await root.locator('.irx-transport').evaluate((node) => getComputedStyle(node).position)).not.toBe('fixed');
 });
 
 test('research framework opens as a system map and can enter and leave trace mode', async ({ page }) => {

@@ -107,7 +107,19 @@ for (const viewport of viewports) {
           };
 
           const interactive = [...root.querySelectorAll('a,button,input:not([type="hidden"]),select,textarea,summary')].filter(inFirstScreen).length;
-          const headings = [...root.querySelectorAll('h1,h2,h3')].filter(inFirstScreen).length;
+          const primaryHeading = root.querySelector('h1');
+          const primaryHeadingSize = primaryHeading ? Number.parseFloat(getComputedStyle(primaryHeading).fontSize) : 0;
+          const headings = [...root.querySelectorAll('h1,h2,h3')].filter((el) => {
+            if (!inFirstScreen(el)) return false;
+            if (el.tagName === 'H1') return true;
+            const rect = el.getBoundingClientRect();
+            const fontSize = Number.parseFloat(getComputedStyle(el).fontSize);
+            // A later chapter may naturally peek into the bottom of a short phone
+            // viewport. It only competes with the first-screen task when it arrives
+            // before the final fifth or carries equal/greater visual weight than H1.
+            // This preserves the attention budget without incentivizing fake spacer/min-height hacks.
+            return rect.top < innerHeight * 0.8 || fontSize >= primaryHeadingSize;
+          }).length;
           const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
           let textChars = 0;
           while (walker.nextNode()) {

@@ -44,14 +44,22 @@ raw human case
 -> scoped Preference Model
 -> task-time Preference Brief
 -> 2–3 internal candidates + pairwise screening
--> Phase A blind cold read
--> Phase B preference comparison
--> judge receipt / browser + deterministic gates
+-> optional Phase A blind cold read when owner/task activates independent review
+-> optional Phase B preference comparison under the same condition
+-> optional judge receipt when activated / browser + deterministic gates as applicable
 -> owner review
 -> new feedback returns to the loop
 ```
 
 The existing CASE / Gold Pair / Preference Model system remains valid. V2 adds the missing **trajectory, visual, escalation, and pre-generation screening** layers.
+
+### Boundary: preference research is not the default visual-release gate
+
+Independent cold read is useful when the owner explicitly asks whether a zero-context reader understands a surface, or when a task is specifically a preference/comprehension study. It is **not** a universal prerequisite for ordinary UI work. Normal visual acceptance follows `ui-change-visual-acceptance-gate.md`: rendered screenshots, Reader Contract/browser checks, accessibility/theme/geometry checks, and exact-head Preview inspection as applicable.
+
+Do not start Kimi/MiniMax/other external AI chats, AI CLIs, or local/network vision models solely because a page changed visually. Use an independent reviewer only when current owner/task authority explicitly activates that evidence class. A provider outage, quota, login problem, or file-upload limitation is therefore not an ordinary UI-release blocker.
+
+**Browser automation is a verifier, not a reviewer.** It may run deterministic rendering, geometry, interaction, accessibility, theme, or screenshot-capture checks required by the repository gate. Do not use a browser session to open Kimi, MiniMax, ChatGPT, Claude, Gemini, or another AI service to solicit a visual/comprehension verdict, and do not relabel an AI inspection of screenshots as independent human evidence.
 
 ## 1. Raw cases remain canonical history
 
@@ -289,9 +297,9 @@ Candidate selection, screenshots, and judge receipts are evidence for a concrete
 
 A non-semantic mechanical fix may use a narrower revalidation only when the current contract allows it, but the final receipt must still identify the final tree. Never cite screenshots from an earlier candidate as exact-head evidence for a materially changed version.
 
-## 9. Two-phase cold read remains mandatory after generation
+## 9. Two-phase cold read is opt-in, not a universal post-generation gate
 
-Candidate screening uses learned preferences and is therefore not a blind review. A separate blind pass is still required.
+Candidate screening uses learned preferences and is therefore not a blind review. When the owner or task explicitly activates an **independent** comprehension/preference study, use the two-phase protocol below. Otherwise, continue with the applicable Preference Brief/internal screening plus deterministic, browser, visual, accessibility and Preview acceptance; do not create an external reviewer dependency by default.
 
 ### Phase A — blind
 
@@ -313,16 +321,16 @@ npm run feedback:cold-read -- study-briefing --phase=compare
 
 Now reveal the Reader Contract, Preference Model, Gold Pairs, and historical boundaries. Compare rather than guess.
 
-## 10. Judge receipt remains the post-generation gate
+## 10. Judge receipt gates only tasks that activate independent review
 
 ```bash
 npm run feedback:cold-read -- study-briefing --phase=receipt --url=<rendered-url> > /tmp/preference-judge.json
 npm run feedback:judge -- /tmp/preference-judge.json
 ```
 
-A PASS requires exact Git SHA + rendered URL, a real blind-first ordering, complete judgments, scientific-boundary PASS, no failed bound preference, no rejected-like required pair, and zero unresolved concern.
+When independent review is activated, a PASS requires exact Git SHA + rendered URL, a real blind-first ordering, complete judgments, scientific-boundary PASS, no failed bound preference, no rejected-like required pair, and zero unresolved concern.
 
-Browser/structural PASS still does not prove human comprehension.
+Browser/structural PASS does not by itself prove human comprehension, but ordinary visual acceptance does not claim that it does. Keep the two evidence classes separate instead of making one a hidden prerequisite of the other.
 
 ### Reviewer unavailability is not an independent verdict
 
@@ -352,7 +360,7 @@ When the owner gives new direct feedback:
 10. scan sibling surfaces by failure mechanism;
 11. before claiming that a reusable preference is institutionalized, run a small **transfer validation**: inspect at least one sibling surface likely to share the mechanism and one unrelated positive-control or route-role exception. Classify each as `PASS / REVIEW / FAIL` from current source/render evidence. A CASE, Preference Model rule, reader contract, or green audit proves the rule exists; it does not by itself prove semantic transfer. Do not mass-fix lexical hints such as `先…`, eyebrows, cards, or `overflow-x:auto`; preserve legitimate sequence, state, provenance, operational, archive, and presentation-role exceptions;
 12. add deterministic protection only for mechanically detectable invariants;
-13. run Preference Brief → internal candidates → blind cold read → preference compare on the next material task.
+13. on the next material task, run Preference Brief → internal candidates; add blind cold read → preference compare only when current owner/task authority explicitly activates independent review.
 
 ## 12. Anti-overfitting rules
 

@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 const route = '/research/seed-openevo/study/capability-exploration/stage2-256-window/?model=3b&teacher=self';
 
-for (const localeRoute of [route, `/en${route}`]) {
+for (const localeRoute of [route]) { // English runtime is archived; browser coverage follows the active Chinese surface.
   test(`${localeRoute} exposes the design genealogy and matched-prefix diagnosis`, async ({ page }) => {
     await page.goto(localeRoute);
     const journey = page.getByTestId('legacy-stage2-research-journey');

@@ -55,6 +55,12 @@ const positioning = model.checkpoint.specializations.length ? model.checkpoint.s
       <h1 class="detail-title">{model.name}</h1>
       {alternateName && <p class="detail-alias muted">{alternateName}</p>}
       <p class="detail-subtitle">{checkpointLabel(model.checkpoint.type, locale)} · {model.release_date} · <StatusBadge status={model.data_status} locale={locale} /></p>
+      <dl class="model-detail-quickfacts" aria-label={locale === 'zh' ? '模型实验判断摘要' : 'Experiment decision summary'}>
+        <div><dt>{locale === 'zh' ? '获取' : 'Access'}</dt><dd>{m.detail.openWeights}: {displayBoolean(model.openness.weights_available, locale)} · {m.detail.apiStatus}: {statusText(model.access?.api_status)}</dd></div>
+        <div><dt>{locale === 'zh' ? '参数适配' : 'Adaptation'}</dt><dd>LoRA: {displayBoolean(model.research.suitable_for_lora, locale)} · RL: {displayBoolean(model.research.suitable_for_rl, locale)}</dd></div>
+        <div><dt>{locale === 'zh' ? '目录资源档位' : 'Catalog resource tier'}</dt><dd>{m.detail.inference}: {tierLabel(model.hardware.inference_tier, locale)} · LoRA: {tierLabel(model.hardware.lora_tier, locale)}</dd></div>
+        <div><dt>{locale === 'zh' ? '证据状态' : 'Evidence'}</dt><dd><StatusBadge status={model.data_status} locale={locale} /></dd></div>
+      </dl>
       <details class="model-detail-actions">
         <summary>{locale === 'zh' ? '引用、来源与页内导航' : 'Citation, sources, and page navigation'}</summary>
         <ModelDetailTools client:load model={model} locale={locale} />
@@ -159,5 +165,5 @@ const positioning = model.checkpoint.specializations.length ? model.checkpoint.s
 </div>
 
 <style>
-  .model-detail-intro{box-sizing:border-box;min-height:min(540px,calc(100svh - 116px));display:flex;flex-direction:column;justify-content:center}.model-detail-actions{max-width:760px;margin-top:.8rem;border-top:1px solid var(--line)}.model-detail-actions>summary{width:max-content;max-width:100%;padding:.7rem 0;color:var(--muted);font-size:.84rem;font-weight:700;cursor:pointer;list-style:none}.model-detail-actions>summary::-webkit-details-marker{display:none}.model-detail-actions[open]>summary{color:var(--ink)}@media(max-width:720px){.model-detail-intro{min-height:calc(100svh - 102px)}}
+  .model-detail-intro{box-sizing:border-box;padding:clamp(2rem,5vw,3.8rem) 0 1rem}.model-detail-quickfacts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:1rem 0 0;border-block:1px solid var(--line)}.model-detail-quickfacts>div{min-width:0;padding:.8rem .7rem .8rem 0}.model-detail-quickfacts>div+div{padding-left:.7rem;border-left:1px solid var(--line)}.model-detail-quickfacts dt{color:var(--muted);font-size:.72rem}.model-detail-quickfacts dd{margin:.2rem 0 0;font-size:.8rem;font-weight:700;line-height:1.45}.model-detail-actions{max-width:760px;margin-top:.8rem;border-top:1px solid var(--line)}.model-detail-actions>summary{width:max-content;max-width:100%;padding:.7rem 0;color:var(--muted);font-size:.84rem;font-weight:700;cursor:pointer;list-style:none}.model-detail-actions>summary::-webkit-details-marker{display:none}.model-detail-actions[open]>summary{color:var(--ink)}@media(max-width:720px){.model-detail-quickfacts{grid-template-columns:1fr 1fr}.model-detail-quickfacts>div+div{padding-left:0;border-left:0}.model-detail-quickfacts>div:nth-child(even){padding-left:.7rem;border-left:1px solid var(--line)}.model-detail-quickfacts>div:nth-child(n+3){border-top:1px solid var(--line)}}
 </style>

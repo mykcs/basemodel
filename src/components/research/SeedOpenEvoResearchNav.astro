@@ -20,14 +20,14 @@ const p = (path: string) => localePath(locale, path);
 const flowPages = [
   { id: 'hub', label: t('流程总览', 'Flow overview'), href: p('/research/seed-openevo/flow/') },
   { id: 'training-design', label: t('训练设计', 'Training design'), href: p('/research/seed-openevo/flow/#training-design') },
-  { id: 'server', label: 'lyg2171', href: p('/research/seed-openevo/flow/server/') },
-  { id: 'seed', label: 'SEED', href: p('/research/seed-openevo/flow/seed/') },
-  { id: 'openevo', label: 'OpenEVO', href: p('/research/seed-openevo/flow/openevo/') },
+  { id: 'server', label: t('实验服务器', 'Experiment server'), href: p('/research/seed-openevo/flow/server/') },
+  { id: 'seed', label: t('SEED 方法', 'SEED method'), href: p('/research/seed-openevo/flow/seed/') },
+  { id: 'openevo', label: t('OpenEVO 方法', 'OpenEVO method'), href: p('/research/seed-openevo/flow/openevo/') },
   { id: 'benchmarks', label: t('环境总览', 'Environment overview'), href: p('/research/seed-openevo/flow/benchmarks/') },
-  { id: 'webshop', label: 'WebShop', href: p('/research/seed-openevo/flow/webshop/') },
-  { id: 'alfworld', label: 'ALFWorld', href: p('/research/seed-openevo/flow/alfworld/') },
+  { id: 'webshop', label: t('WebShop 环境', 'WebShop environment'), href: p('/research/seed-openevo/flow/webshop/') },
+  { id: 'alfworld', label: t('ALFWorld 环境', 'ALFWorld environment'), href: p('/research/seed-openevo/flow/alfworld/') },
   { id: 'loops', label: t('更新机制', 'Update mechanisms'), href: p('/research/seed-openevo/flow/loops/') },
-  { id: 'sdlora', label: 'SD-LoRA', href: p('/research/seed-openevo/flow/sd-lora/') },
+  { id: 'sdlora', label: t('SD-LoRA 参数机制', 'SD-LoRA parameters'), href: p('/research/seed-openevo/flow/sd-lora/') },
 ] as const;
 
 const studyPages = [
@@ -41,6 +41,7 @@ const studyPages = [
 const studyPageIds: ResearchPage[] = ['experiment', 'design', 'run', 'capability', 'briefing', 'results'];
 const currentTrack: ResearchTrack = studyPageIds.includes(page) ? 'study' : 'flow';
 const pages = currentTrack === 'flow' ? flowPages : studyPages;
+const currentItem = pages.find((item) => item.id === page) ?? pages[0];
 const identity = currentTrack === 'flow'
   ? {
       index: '01',
@@ -68,6 +69,14 @@ const identity = currentTrack === 'flow'
       <a href={item.href} aria-current={item.id === page ? 'page' : undefined}>{item.label}</a>
     ))}
   </nav>
+  <details class="research-navigation__mobile">
+    <summary><span>{currentItem.label}</span><small>{t('相关页面', 'Related pages')}</small></summary>
+    <nav aria-label={identity.aria}>
+      {pages.map((item) => (
+        <a href={item.href} aria-current={item.id === page ? 'page' : undefined}>{item.label}</a>
+      ))}
+    </nav>
+  </details>
 </div>
 
 <style>
@@ -77,44 +86,30 @@ const identity = currentTrack === 'flow'
     top:calc(var(--site-header-height) + .5rem);
     display:grid;
     grid-template-columns:auto minmax(0,1fr);
-    gap:.55rem;
+    gap:.28rem;
     align-items:center;
-    margin:1rem 0 2rem;
-    padding:.45rem;
-    border:1px solid var(--line);
-    border-radius:var(--radius-feature);
-    background:color-mix(in srgb,var(--surface) 92%,transparent);
-    backdrop-filter:blur(16px);
+    margin:.35rem 0 1rem;
+    padding:.14rem 0;
+    border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent);
+    background:color-mix(in srgb,var(--surface) 97%,transparent);
   }
   .research-navigation__identity{
     display:flex;
     min-width:max-content;
     align-items:center;
-    gap:.5rem;
-    padding:.12rem .65rem .12rem .5rem;
-    border-right:1px solid var(--line);
+    padding:.1rem .42rem .1rem .12rem;
   }
-  .research-navigation__index{
-    color:var(--accent-deep);
-    font:800 .58rem/1 var(--font-mono);
-  }
-  .research-navigation__identity strong,
-  .research-navigation__identity div>span{display:block}
+  .research-navigation__index,
+  .research-navigation__identity div>span{display:none}
   .research-navigation__identity strong{
-    max-width:18rem;
+    max-width:11rem;
     overflow:hidden;
-    color:var(--ink);
-    font-size:.68rem;
-    font-weight:800;
+    color:var(--muted);
+    font-size:.62rem;
+    font-weight:720;
     line-height:1.3;
     text-overflow:ellipsis;
     white-space:nowrap;
-  }
-  .research-navigation__identity div>span{
-    margin-top:.08rem;
-    color:var(--muted);
-    font-size:.58rem;
-    line-height:1.35;
   }
   .research-navigation__links{
     display:flex;
@@ -126,47 +121,43 @@ const identity = currentTrack === 'flow'
   }
   .research-navigation__links a{
     flex:0 0 auto;
-    padding:.58rem .76rem;
+    padding:.43rem .55rem;
     border-radius:var(--radius-panel);
     color:var(--muted);
-    font-size:.75rem;
-    font-weight:720;
+    font-size:.72rem;
+    font-weight:680;
     text-decoration:none;
     white-space:nowrap;
   }
   .research-navigation__links a:hover,
   .research-navigation__links a:focus-visible{
     color:var(--ink);
-    background:color-mix(in srgb,var(--accent) 7%,transparent);
+    background:color-mix(in srgb,var(--accent) 5%,transparent);
   }
   .research-navigation__links a:focus-visible{
     outline:3px solid var(--accent-deep);
     outline-offset:2px;
   }
   .research-navigation__links a[aria-current='page']{
-    color:var(--accent-on-fill);
-    background:var(--accent-deep);
+    color:var(--accent-deep);
+    background:transparent;
+    box-shadow:inset 0 -2px var(--accent-deep);
   }
+  .research-navigation__mobile{display:none}
   @media(max-width:720px){
-    .research-navigation{
-      grid-template-columns:minmax(0,auto) minmax(0,1fr);
-      gap:.22rem;
-      margin:0;
-      padding:.3rem;
-    }
-    .research-navigation__identity{
-      min-width:0;
-      max-width:8.5rem;
-      gap:.3rem;
-      padding:.12rem .42rem .12rem .28rem;
-    }
-    .research-navigation__identity strong{max-width:6.8rem;font-size:.64rem}
-    .research-navigation__identity div>span{display:none}
-    .research-navigation__links{scrollbar-width:none}
-    .research-navigation__links::-webkit-scrollbar{display:none}
-    .research-navigation__links a{padding:.44rem .56rem;font-size:.69rem}
+    .research-navigation{display:block;margin:0;padding:.18rem 0}
+    .research-navigation__identity,.research-navigation__links{display:none}
+    .research-navigation__mobile{display:block}
+    .research-navigation__mobile>summary{display:flex;min-height:44px;align-items:center;justify-content:space-between;gap:.75rem;padding:.35rem .25rem;cursor:pointer;list-style:none;color:var(--ink)}
+    .research-navigation__mobile>summary::-webkit-details-marker{display:none}
+    .research-navigation__mobile>summary span{font-size:.76rem;font-weight:760}
+    .research-navigation__mobile>summary small{color:var(--muted);font-size:.68rem}
+    .research-navigation__mobile>summary::after{content:'＋';color:var(--accent-deep);font-size:.9rem}
+    .research-navigation__mobile[open]>summary::after{content:'−'}
+    .research-navigation__mobile nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.2rem .5rem;padding:.25rem 0 .6rem;border-top:1px solid var(--line)}
+    .research-navigation__mobile nav a{min-height:44px;padding:.55rem .25rem;color:var(--muted);font-size:.72rem;font-weight:680;text-decoration:none}
+    .research-navigation__mobile nav a[aria-current='page']{color:var(--accent-deep);font-weight:780}
+    .research-navigation__mobile summary:focus-visible,.research-navigation__mobile a:focus-visible{outline:3px solid var(--accent-deep);outline-offset:2px}
   }
-  @media(max-width:430px){
-    .research-navigation__identity div>span{display:none}
-  }
+  @media(max-width:430px){.research-navigation__mobile nav{grid-template-columns:1fr}}
 </style>

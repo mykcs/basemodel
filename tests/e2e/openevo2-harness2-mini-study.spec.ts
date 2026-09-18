@@ -2,8 +2,7 @@ import { expect, test } from '@playwright/test';
 
 const routes = [
   '/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/',
-  '/en/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/',
-] as const;
+] as const; // English runtime is archived; browser coverage follows the active Chinese surface.
 
 for (const path of routes) {
   test(`${path} publishes the paired Harness 2.0 qualification with its HOLD boundary`, async ({ page }) => {

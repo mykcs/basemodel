@@ -33,7 +33,6 @@ const hasCheckpointLink = typeof paper.checkpoint_url === 'string' && paper.chec
     <p class="detail-subtitle">{paper.published_at} · <StatusBadge status={paper.data_status} locale={locale} /></p>
 
     <section class="detail-section paper-method-summary" aria-labelledby="paper-method-summary-title">
-      <div class="section-kicker">{locale === 'zh' ? '方法' : 'Method'}</div>
       <h2 id="paper-method-summary-title">{locale === 'zh' ? '方法摘要' : 'Method summary'}</h2>
       {methodSummary
         ? <p class="lede">{methodSummary}</p>

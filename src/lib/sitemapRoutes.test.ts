@@ -9,6 +9,7 @@ import {
   sitemapStaticPaths,
   toEnglishPath,
   zhOnlyStaticPaths,
+  zhOnlyCompatibilityPaths,
 } from './sitemapRoutes';
 
 const missionPaths = [
@@ -69,6 +70,17 @@ describe('sitemap route coverage', () => {
       expect(localizedRoute(path, 'en')).toBeNull();
     }
   });
+
+
+  it('keeps moved Results primers addressable as Chinese compatibility routes but out of the sitemap', () => {
+    for (const path of zhOnlyCompatibilityPaths) {
+      expect(zhOnlyStaticPaths).not.toContain(path);
+      expect(sitemapStaticPaths()).not.toContain(path);
+      expect(availableLocalesForRoute(path)).toEqual(['zh']);
+      expect(localizedRoute(path, 'zh')).toBe(path);
+    }
+  });
+
 
   it('covers the released Chinese product and research routes', () => {
     for (const path of ['/lab/', ...missionPaths]) expect(bilingualStaticPaths).toContain(path);

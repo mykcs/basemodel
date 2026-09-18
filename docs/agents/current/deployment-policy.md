@@ -325,6 +325,8 @@ merge to main
 
 One accepted release batch should normally create one Production build. Do not add a second `main` micro-commit merely to adjust release notes or wording that could have been included before merge.
 
+When handing the owner a Production link after release, first verify that the live Vercel alias still resolves to the accepted Production deployment, then share the clean stable canonical URL (`https://basemodel-preview.vercel.app` plus the requested route path). Do not substitute a deployment-specific hostname, protected Preview/share URL, or append unsolicited analytics/tracking query parameters. Add a query string only when it is required for the product behavior the owner explicitly asked to inspect.
+
 ## Repository Gate
 
 Executable truth lives in `package.json`. `npm run verify:deploy` remains provider-neutral and includes the project’s deterministic checks/tests/audits. Do not weaken a valid Gate to get a green deployment.

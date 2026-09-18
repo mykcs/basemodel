@@ -45,6 +45,35 @@ test('public reproduction guide stays public-safe and content-height-driven', as
         const pageWidth = await page.evaluate(() => ({ client: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth }));
         expect(pageWidth.scroll).toBeLessThanOrEqual(pageWidth.client + 2);
 
+        const sequenceAudit = await page.evaluate(() => {
+          const heading = document.querySelector<HTMLElement>('#gates-title');
+          const rows = [...document.querySelectorAll<HTMLElement>('.gate-runbook > li')];
+          const description = rows[0]?.querySelector<HTMLElement>('.gate-description');
+          const code = rows[0]?.querySelector<HTMLElement>('pre');
+          if (!heading || rows.length < 2 || !description || !code) return null;
+          const headingRect = heading.getBoundingClientRect();
+          const first = rows[0]!.getBoundingClientRect();
+          const second = rows[1]!.getBoundingClientRect();
+          const descriptionRect = description.getBoundingClientRect();
+          const codeRect = code.getBoundingClientRect();
+          return {
+            firstGateDistance: first.top - headingRect.bottom,
+            secondStartsAfterFirst: second.top >= first.bottom - 2,
+            firstRadius: getComputedStyle(rows[0]!).borderRadius,
+            descriptionRight: descriptionRect.right,
+            descriptionBottom: descriptionRect.bottom,
+            codeLeft: codeRect.left,
+            codeTop: codeRect.top,
+          };
+        });
+        expect(sequenceAudit).not.toBeNull();
+        if (!sequenceAudit) return;
+        expect(sequenceAudit.firstGateDistance).toBeLessThan(160);
+        expect(sequenceAudit.secondStartsAfterFirst).toBe(true);
+        expect(sequenceAudit.firstRadius).toBe('0px');
+        if (viewport.name === 'desktop') expect(sequenceAudit.codeLeft).toBeGreaterThanOrEqual(sequenceAudit.descriptionRight - 2);
+        else expect(sequenceAudit.codeTop).toBeGreaterThanOrEqual(sequenceAudit.descriptionBottom - 2);
+
         const blockAudit = await page.locator('.gate-runbook pre').evaluateAll((blocks) => blocks.map((block) => {
           const element = block as HTMLElement;
           const rect = element.getBoundingClientRect();

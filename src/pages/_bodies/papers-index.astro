@@ -6,6 +6,19 @@ import { getMessages, isLocale, type Locale } from '../../i18n';
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
 const m = getMessages(locale);
+const paperReadingPath = locale === 'zh' ? [
+  ['研究问题', '先确认论文试图解决的具体研究问题，以及它改变了哪个 Agent 环节。'],
+  ['方法', '再看训练、推理或协作机制实际做了什么，不从论文标题猜机制。'],
+  ['模型角色', '分清哪些模型负责行动、生成经验、分析或评测，避免把角色混成一个系统。'],
+  ['Benchmark', '确认任务、指标和比较对象；论文报告的结果不自动等于本站已经复现。'],
+  ['复现资料', '最后核对代码、模型、数据、环境与证据缺口，再决定适合严格复现还是方法复现。'],
+] : [
+  ['Research question', 'Identify the concrete problem and which part of the agent system the paper changes.'],
+  ['Method', 'Check what the training, inference, or coordination mechanism actually does instead of inferring it from the title.'],
+  ['Model roles', 'Separate the models that act, generate experience, analyze, or evaluate so their roles do not collapse into one system.'],
+  ['Benchmark', 'Confirm the tasks, metrics, and comparison objects; a reported paper result is not automatically a local reproduction.'],
+  ['Reproducibility', 'Check code, model, data, environment, and evidence gaps before choosing strict or method reproduction.'],
+];
 const paperEntries = await getCollection('papers');
 const modelEntries = await getCollection('models');
 const papers = paperEntries.map((entry) => entry.data);
@@ -17,6 +30,10 @@ const matrixPapers = papers.map((paper) => ({ ...paper, models: paper.models.map
     <h1>{m.papersIndex.title}</h1>
     <p class="lede">{m.papersIndex.lede}</p>
     <p><a class="button button-primary" href="#paper-browser">{locale === 'zh' ? '开始查找论文 ↓' : 'Start finding papers ↓'}</a></p>
+    <ol class="papers-reading-path" aria-label={locale === 'zh' ? '阅读论文记录的五个维度' : 'Five dimensions for reading paper records'}>
+      {paperReadingPath.map(([label, explanation]) => <li><strong>{label}</strong><span>{explanation}</span></li>)}
+    </ol>
+    <p class="papers-reading-note">{locale === 'zh' ? '下面的筛选器就按这些维度找论文：先缩小研究问题和模型角色，再核对 benchmark 与复现资料。论文报道与本站复现是两层证据；筛选只负责找到相关案例，不会把“有论文”变成“已经复现”。证据缺口保持“待核验”，不会自动补成肯定或否定。' : 'The filters below follow these dimensions: narrow the research question and model roles first, then check benchmarks and reproduction evidence. A paper report and a local reproduction are separate evidence layers; finding a paper does not mean the result has been reproduced here. Evidence gaps remain pending verification instead of being silently turned into yes or no.'}</p>
   </header>
   <section class="section" id="paper-browser"><PaperExplorer client:load papers={papers} models={models} locale={locale} /></section>
   <details class="paper-matrix-advanced">
@@ -35,5 +52,5 @@ const matrixPapers = papers.map((paper) => ({ ...paper, models: paper.models.map
 </div>
 
 <style>
-  .papers-entry{box-sizing:border-box;min-height:calc(100svh - 110px);display:flex;flex-direction:column;justify-content:center;max-width:860px}.papers-entry .lede{max-width:58ch}@media(max-width:720px){.papers-entry{min-height:calc(100svh - 96px)}}
+  .papers-entry{box-sizing:border-box;max-width:860px;padding:clamp(2.2rem,6vw,4.5rem) 0 1.4rem}.papers-entry .lede{max-width:58ch}.papers-reading-path{margin:1rem 0 0;padding:0;border-top:1px solid var(--line);list-style:none;counter-reset:paper-lens}.papers-reading-path li{display:grid;grid-template-columns:2rem minmax(7rem,.55fr) minmax(0,1.45fr);gap:.7rem;align-items:baseline;padding:.55rem 0;border-bottom:1px solid var(--line);counter-increment:paper-lens}.papers-reading-path li::before{content:counter(paper-lens,decimal-leading-zero);color:var(--accent-deep);font:800 .68rem var(--font-mono)}.papers-reading-path strong{font-size:.78rem}.papers-reading-path span,.papers-reading-note{color:var(--muted);font-size:.76rem;line-height:1.45}.papers-reading-note{max-width:68ch;margin:.8rem 0 0}@media(max-width:720px){.papers-reading-path li{grid-template-columns:1.7rem minmax(0,1fr)}.papers-reading-path span{grid-column:2}}
 </style>

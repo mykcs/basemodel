@@ -30,7 +30,19 @@ describe('human-readable product language contract', () => {
   });
 
   it('keeps the first-screen subject concrete in both locales without turning instructions into the H1', () => {
-    expect(missionHero).toContain("t('ALFWorld 与 WebShop 研究', 'ALFWorld and WebShop research')");
+    expect(missionHero).toContain("t('SEED 与 OpenEvo：固定同一个 Qwen 和任务，比较两套学习系统', 'SEED and OpenEvo: pin the same Qwen and tasks, compare two learning systems')");
+    expect(missionHero).toContain('mission-hero__boundary');
+    expect(missionHero).not.toContain('这页先讲实验怎么公平比较');
+    expect(missionHero).toContain('只有要把差异归因到第二阶段（Stage 2，持续学习）的学习器时');
+    expect(missionHero).toContain('共享第一阶段（Stage 1，做题与事后复盘）的轨迹、复盘、训练配方和同一个起点参数');
+    expect(missionHero).toContain('ALFWorld 是文本具身任务，WebShop 是网页购物任务；两种环境分别计分');
+    expect(missionHero).toContain('这里先固定 Qwen2.5-3B-Instruct（约 30 亿参数的指令模型）和同一批任务');
+    expect(missionHero).toContain('OpenEvo 先保存任务证据，再把经验带到后续任务');
+    expect(missionHero).toContain('这个比较范围只覆盖当前 3B 模型、ALFWorld / WebShop 和当前实现');
+    expect(missionHero).not.toContain('mission-hero__method-summary');
+    expect(missionHero).toContain('{!compact && <details class="mission-hero__secondary">');
+    expect(missionHero).not.toContain('先看研究对象与比较条件');
+    expect(missionHero).not.toContain('mission-hero__frame research-fact-band');
     expect(missionHero).toContain("t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')");
     expect(missionHero).toContain("href={p('/research/seed-openevo/study/briefing/')}");
     expect(missionHero).toContain("t('研究总览','Research overview')");

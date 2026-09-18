@@ -5,29 +5,47 @@ const slide = readFileSync(new URL('../components/research/OpenEvoVanillaSdLoraS
 const mechanism = readFileSync(new URL('../components/research/OpenEvoVanillaSdLoraMechanism.astro', import.meta.url), 'utf8');
 
 describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
-  it('starts the page from motivation and OpenEvo position before the reusable mechanism slide', () => {
+  it('starts from the parameter-write job and keeps the detailed LoRA comparison at optional depth', () => {
     for (const phrase of [
-      '为什么 OpenEvo 里需要 SD-LoRA？',
-      '成功留在 rollout 日志里，并不会让下一轮模型参数自动改变',
-      'SD-LoRA 只负责其中“改模型参数”这条路',
-      '什么时候发挥作用？',
-      '普通 LoRA',
+      '把做对的网页购物轨迹训练成下一轮候选参数',
+      '在 OpenEvo（这里的持续学习系统）里，这条参数更新方法叫 SD-LoRA（Scalable Decoupled LoRA）',
+      '基础模型保持不动、只训练少量适配参数的方法',
+      'WebShop（网页购物任务）',
+      '每题最早一条“完整做对且通过全部检查”的轨迹送进参数训练',
+      '最终锁定测试题不参加这里的筛选或训练',
+      '候选参数不等于能力一定提升',
+      '普通 LoRA 与 SD-LoRA 的参数区别',
       'Scalable Decoupled LoRA',
-      '这里的 “Vanilla SD-LoRA” 不等于普通 LoRA',
+      '本页把没有加入后续加速变体的当前基线称为 “Vanilla SD-LoRA”',
     ]) expect(mechanism).toContain(phrase);
 
-    const motivation = mechanism.indexOf('为什么 OpenEvo 里需要 SD-LoRA？');
-    const comparison = mechanism.indexOf('普通 LoRA');
+    expect(mechanism).toContain('历史本地 GDR-v1 会先用 16 个任务小测');
+    expect(mechanism).toContain('Hugging Face PEFT（LoRA 训练与加载工具库）');
+    expect(mechanism).toContain('αₜ（缩放系数，用来记录这个方向原本有多强）');
+    expect(mechanism).toContain('checkpoint，也就是某一轮保存下来的参数状态');
+    expect(mechanism).not.toContain('下一屏：');
+    expect(mechanism).toContain('<details class="sdlora__section sdlora__section--primer"');
+    expect(mechanism).not.toContain('sdlora-intro__frame research-fact-band');
+    const intro = mechanism.slice(mechanism.indexOf('<section class="sdlora-intro"'), mechanism.indexOf('</section>') + 10);
+    expect(intro).not.toContain('sdlora-intro__path');
+    expect(intro).not.toContain('DirectApply');
+    expect(intro).not.toContain("<strong>{t('筛出完整成功轨迹'");
+    expect(intro).not.toContain('GDR-v1');
+    const motivation = mechanism.indexOf('把做对的网页购物轨迹训练成下一轮候选参数');
+    const comparison = mechanism.indexOf('普通 LoRA 与 SD-LoRA 的参数区别');
     const slideOwner = mechanism.indexOf('<OpenEvoVanillaSdLoraSlide');
     expect(motivation).toBeGreaterThan(-1);
     expect(comparison).toBeGreaterThan(motivation);
     expect(slideOwner).toBeGreaterThan(comparison);
+    expect(mechanism).not.toContain('margin-top:clamp(4rem,10vh,6rem)');
   });
 
   it('keeps the reusable slide mechanism-first rather than adding duplicate orientation inside it', () => {
-    expect(slide).toContain('Vanilla SD-LoRA 的一轮参数更新');
+    expect(slide).toContain('一轮 SD-LoRA 参数更新');
     expect(slide).not.toContain('为什么 OpenEvo 里需要 SD-LoRA？');
     expect(slide).not.toContain('不是四张卡片排成一排');
+    expect(mechanism).not.toContain('那 SD-LoRA 到底是什么？');
+    expect(mechanism).not.toContain('这里的 “Vanilla SD-LoRA” 不等于普通 LoRA');
   });
 
   it('puts human actions before internal labels', () => {
@@ -36,18 +54,20 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
       '最多带回 64 条旧经验',
       '旧方向不改；学一个新方向；重新调整所有方向的影响大小',
       '得到一份新的累计 LoRA',
-      '检查通过，下一轮用新参数',
-      '先用 16 个任务小测，再选新旧参数',
+      '检查通过就直接采用',
+      'DirectApply（直接采用）',
+      '先用 16 题小测再决定',
+      'GDR-v1（16 题筛选）',
     ]) expect(slide).toContain(phrase);
   });
 
   it('keeps the long-form reading path human-first while leaving exact fields in the technical layer', () => {
     for (const phrase of [
       '一轮开始前，模型带着什么？',
-      '128 次尝试里，哪些会真的拿来训练参数？',
-      'SD-LoRA 真正怎么改参数？',
+      '128 次尝试里，哪些会进入参数训练？',
+      'SD-LoRA 怎样更新参数？',
       '训练结束后，下一轮到底用新参数还是旧参数？',
-      'LoRA 训练出来了，不等于下一轮真的用了它',
+      'LoRA 训练完成和下一轮采用它是两件事',
       '旧方向没被重写，也不代表能力会一直变好',
     ]) expect(mechanism).toContain(phrase);
     for (const exactBoundary of ['paper_equivalent=false', 'rehearsal_free=false', 'routing_mode=single_cumulative_adapter']) {
