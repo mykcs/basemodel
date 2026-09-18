@@ -60,7 +60,12 @@ test('historical Gated-Delta and Bounded pages both point forward without rewrit
 
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('.bounded__metrics')).toContainText('37.04');
-  await expect(page.locator('.bounded__next-question').getByRole('link')).toHaveAttribute('href', route);
+  const boundedNext = page.locator('.bounded__next-question');
+  await expect(boundedNext.getByRole('link', { name: /后续加速研究/ })).toHaveAttribute(
+    'href',
+    '/research/seed-openevo/study/capability-exploration/sd-lora-bounded-acceleration/',
+  );
+  await expect(boundedNext.getByRole('link', { name: /另一条后续问题/ })).toHaveAttribute('href', route);
 });
 
 for (const theme of ['light', 'dark'] as const) {
