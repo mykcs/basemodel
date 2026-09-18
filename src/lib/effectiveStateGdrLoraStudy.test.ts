@@ -35,7 +35,7 @@ describe('Effective-State GDR publication snapshot', () => {
 
   it('keeps Pending component copy non-claiming', () => {
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
-    expect(component).toContain('不会在 seal 前写 winner');
+    expect(component).toContain('不会在封存前写“谁更好”');
     expect(component).not.toContain('Effective-State GDR 优于 Bounded');
     expect(component).not.toContain('Effective-State GDR beats Bounded');
     expect(component).toContain('正式 OFF / ON 实验正在运行');
