@@ -5,6 +5,7 @@
 import AppLayout from '../../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
 import OpenEvoWebShopResultsHero from '../../../../components/research/OpenEvoWebShopResultsHero.astro';
+import OpenEvo1p7bSamePanelResults from '../../../../components/research/OpenEvo1p7bSamePanelResults.astro';
 import OpenEvoWebShopResultsProtocol from '../../../../components/research/OpenEvoWebShopResultsProtocol.astro';
 import OpenEvoWebShopResultsQuestions from '../../../../components/research/OpenEvoWebShopResultsQuestions.astro';
 import OpenEvoWebShopCurrentQ7 from '../../../../components/research/OpenEvoWebShopCurrentQ7.astro';
@@ -24,6 +25,7 @@ const locale = 'zh' as const;
   <SeedOpenEvoResearchPage locale={locale} page="results">
     <div data-testid="openevo-webshop-result-index">
       <OpenEvoWebShopResultsHero locale={locale} />
+      <OpenEvo1p7bSamePanelResults locale={locale} />
       <OpenEvoWebShopResultsProtocol locale={locale} />
       <OpenEvoWebShopResultsQuestions locale={locale} />
       <OpenEvoWebShopCurrentQ7 locale={locale} />

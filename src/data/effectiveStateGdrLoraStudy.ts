@@ -1,3 +1,5 @@
+import { BOUNDED_FORMAL_TRAJECTORY } from './boundedFormalTrajectory';
+
 export type EffectiveStateSealedEvidence = {
   repository: 'mykcs/openevo-experiment';
   scientificExecutionSha: string;
@@ -30,21 +32,21 @@ export type EffectiveStateFormalResult =
       exactSuccess: { off: number; on: number; delta: number };
       uncertainty: { label: string; low: number; high: number };
       trajectory: {
-        off: EffectiveStateRoundTrajectory[];
-        on: EffectiveStateRoundTrajectory[];
+        off: readonly EffectiveStateRoundTrajectory[];
+        on: readonly EffectiveStateRoundTrajectory[];
       };
-      finalPanel: { label: string; off: number; on: number } | null;
+      finalPanel: { label: string; off: number; on: number; offExactCount: number; onExactCount: number; offExactRate: number; onExactRate: number; panelDigest: string } | null;
       conclusion: string;
     };
 
 const repo = 'https://github.com/mykcs/openevo-experiment';
 const scienceExecutionGateSha = 'c5e012814bb9509deb0e2cbc8d57a63e2b56889f';
-const formalExecutionCheckout = 'fbdb21b2739ffeeca90e17eac83c14adb6087be2';
+const formalExecutionCheckout = 'a6f67b66e7d0fce0dc445890a68f9f0364da452a';
 const qualificationEvidenceSha = 'b41884ac90d185742dc47f240c4d54a3cfaf6175';
 const evidenceRoot = `${repo}/blob/${qualificationEvidenceSha}/docs/evidence/bounded-recurrence-gdr-20260915`;
 
 export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
-  checkedAt: '2026-09-18T14:02:00+08:00',
+  checkedAt: '2026-09-18T23:10:00+08:00',
   source: {
     repository: 'mykcs/openevo-experiment',
     controlTowerPr: 502,
@@ -69,17 +71,18 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     currentMainHandoffCommit: '9f6259be9b961223a5cab7711fe1f297e272d541',
     historicalImplementationPr: 497,
     historicalImplementationHead: '7847d6497ae58b7a82dc37cd1cf71ccfe44aa8df',
-    status: 'FORMAL_RUNNING',
-    currentCampaignClassification: 'FORMAL_RUNNING',
+    status: 'COMPLETE',
+    currentCampaignClassification: 'COMPLETE',
+    finalCloseoutCommit: '04d6bd8e422103aa71be2b8f2672c2db97d0e351',
     originalRolloutProducerSha: '80bf263e9bf65fd0382f3c762e2a42b4928514a0',
     liveExecutionFrozen: true,
     repositoryCurrentMustNotHotSwapLiveRun: true,
   },
   lifecycle: {
-    status: 'FORMAL_RUNNING',
+    status: 'COMPLETE',
     formalRunLaunched: true,
-    launchAuthority: true,
-    continuationAuthority: true,
+    launchAuthority: false,
+    continuationAuthority: false,
     armProgression: 'INDEPENDENT',
     pairingMode: 'ASYNC_AUDIT_ONLY',
     pairedReceiptsAdmissionAuthority: false,
@@ -89,9 +92,10 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     ownerLaunchReleaseSha256: '7c6484f3629b149c6b4afe21f9dfa8d5c02bc789784386402d9fd04f2017aecb',
     sealedRolloutRecoverySha256: '6e0369b3880e6ae36223f9f5eed826582e73f02a1a72e7ec02d9ae78804c569b',
     carrierAdoptionIdentitySha256: 'bdeacdd126f89dffa9ec8c31a12e20b7bbb9ae8367f2ff80b92e9c8e848ad0e4',
-    formalRowsConsumed: null,
-    formalRowsDisclosure: 'in-flight counts are dynamic and are not formal-result authority; final analysis waits for both arms to seal rounds 0..159 and all 160 pair audits',
-    finalPanelAccess: 0,
+    formalRowsConsumed: 40960,
+    formalRowsDisclosure: 'both arms sealed 160 rounds × 128 rollouts = 20,480 formal rollouts per arm; paired Stage2 seal PASS',
+    finalPanelAccessBeforeFinalEval: 0,
+    finalPanelEvaluationsCompleted: 2,
     formalOutputRootExists: true,
     formalOutputRoot: '/data/home/wangr/workspace/runs/bounded-effective-state-gdr-recovery-1e7c4952-20260916',
     currentReadySha256: '3493da01babaf762acc7b6337d685ec86111df352ad7e180d7dfbc9f74576432',
@@ -104,9 +108,9 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     },
   },
   resourceExecution: {
-    physicalGpuIndices: [4, 5, 6, 7] as const,
-    schedulerMode: 'capacity-aware shared Ray pool',
-    rolloutMode: 'OFF and ON request resources independently; scientifically ready work may co-reside when the frozen resource envelope and live headroom permit',
+    physicalGpuIndices: [2, 4, 5, 6, 7] as const,
+    schedulerMode: 'historical capacity-aware shared Ray pool; campaign released after closeout',
+    rolloutMode: 'GPU4/GPU5/GPU7 covered all 160 rounds; the fourth rollout lane migrated GPU6→GPU2 at OFF R150 and ON R155',
     crossPhaseOverlapAllowed: true,
     liveResourceExecutionSha: '2133611ce751d04ba8f009b9d410fce4bc0cd3d6',
     resourceAuthorityPr: 525,
@@ -267,16 +271,79 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     finalImplementationPr: `${repo}/pull/523`,
     resourceAuthorityPr: `${repo}/pull/525`,
     historicalResourceVerifierPr: `${repo}/pull/526`,
+    finalCloseout: `${repo}/blob/04d6bd8e422103aa71be2b8f2672c2db97d0e351/docs/evidence/bounded-effective-state-final-closeout-20260918/FINAL_CLOSEOUT.json`,
+    finalComparison: `${repo}/blob/04d6bd8e422103aa71be2b8f2672c2db97d0e351/docs/evidence/bounded-effective-state-final-closeout-20260918/FINAL_COMPARISON.json`,
+    longHorizon: `${repo}/blob/04d6bd8e422103aa71be2b8f2672c2db97d0e351/docs/evidence/bounded-effective-state-final-closeout-20260918/LONG_HORIZON_ANALYSIS.json`,
+    resourceAnalysis: `${repo}/blob/04d6bd8e422103aa71be2b8f2672c2db97d0e351/docs/evidence/bounded-effective-state-final-closeout-20260918/STAGE2_GPU_RESOURCE_ANALYSIS.json`,
+    q17Final: `${repo}/blob/04d6bd8e422103aa71be2b8f2672c2db97d0e351/docs/evidence/q17-final-closeout-20260912/FINAL_EVAL_VERIFICATION.json`,
+    publicSnapshot: '/research/seed-openevo/evidence/bounded-effective-state-final-snapshot-20260918.json',
     currentMainPrelaunchHandoff: `${repo}/blob/9f6259be9b961223a5cab7711fe1f297e272d541/docs/agent-handoffs/BOUNDED_GDR_WANDB_PRELAUNCH_HANDOFF_2026-09-15.md`,
   },
+  threeWayFinal: {
+    sameFrozenPanel: true,
+    panelContentSha256: '3529b94f97491434da01f9b2adc2faf1d0571545603a788d367561ae2b529d48',
+    panelFileSha256: 'aea97afdd5b176126cf67f7ed315189c95fbf37b07263c84b947903cca69aa4d',
+    panelDigest: 'cd531caff21d13d72df5c6fb013fadc10457393134d8bc3bcdc63fadf76bc453',
+    directApply: { score: 60.71597673160174, exactCount: 50, exactRate: 0.390625 },
+    off: { score: 45.984865395021635, exactCount: 32, exactRate: 0.25 },
+    on: { score: 20.769142316017317, exactCount: 10, exactRate: 0.078125 },
+    boundary: 'DirectApply is a historical predecessor on the same frozen 128-task panel, not a third arm of the preregistered OFF-vs-ON treatment contrast',
+  },
+  timingComparison: {
+    directApply: { trainerHours: 31.087279689253773, wallClockHours: 74.77710828602314, rolloutGpuActiveHours: 76.65479753295581 },
+    off: { transitionHours: 2.024057791739987, wallClockHours: 56.24978798992104, rolloutGpuActiveHours: 82.53728786057896, gpuActiveLowerBoundHours: 84.56134565231895 },
+    on: { transitionHours: 2.345676467124269, wallClockHours: 54.96929190225072, rolloutGpuActiveHours: 78.300783249206, gpuActiveLowerBoundHours: 80.64645971633028 },
+    boundary: 'trainer/transition speedup is not whole-Stage2 wall-clock speedup',
+  },
+  parameterAnalysis: {
+    off: {
+      finalStateFrobenius: 21.050718206060306,
+      finalStateMaxSpectral: 2.136322021484375,
+      finalTaskVectorFrobenius: 0.599323675851958,
+      finalTaskVectorMaxSpectral: 0.058013759553432465,
+      parameterStabilityP95: 11.053011603233955,
+      fullToBaseSpectralRatioMedian: 1.000201829722446,
+      participationRankMedian: 5.1554897382096145,
+      rank95Median: 8,
+    },
+    on: {
+      finalStateFrobenius: 17.92532067595396,
+      finalStateMaxSpectral: 1.9457811117172241,
+      finalTaskVectorFrobenius: 0.5325478794098215,
+      finalTaskVectorMaxSpectral: 0.05551622435450554,
+      parameterStabilityP95: 11.051993361363486,
+      fullToBaseSpectralRatioMedian: 1.0001246314969383,
+      participationRankMedian: 4.880467418793721,
+      rank95Median: 7,
+    },
+    coverage: '160 rounds × 112 q/k/v/o LoRA modules = 17,920 module-round rows per arm; read-only post-hoc',
+  },
   formalResult: {
-    status: 'pending',
-    sealedEvidence: null,
-    pooledReward: null,
-    exactSuccess: null,
-    uncertainty: null,
-    trajectory: null,
-    finalPanel: null,
-    conclusion: null,
+    status: 'sealed',
+    sealedEvidence: {
+      repository: 'mykcs/openevo-experiment',
+      scientificExecutionSha: 'a6f67b66e7d0fce0dc445890a68f9f0364da452a',
+      sealReceiptPath: 'docs/evidence/bounded-effective-state-final-closeout-20260918/FORMAL_MATCHED_STAGE2_SEALED_ASYNC.json',
+      sealReceiptSha256: 'e3486f1a2a31d02c88e02ce8380c9ab679ffa65afcbaeb021f208bce03e284ef',
+    },
+    pooledReward: { off: 0.47774638937669595, on: 0.5027534893451019, delta: 0.025007099968405926 },
+    exactSuccess: { off: 0.19467374213836477, on: 0.172562893081761, delta: -0.022110849056603772 },
+    uncertainty: {
+      label: 'R1–R159 reward Δ · 95% moving-block bootstrap CI',
+      low: -0.01331300583840575,
+      high: 0.06634168469000419,
+    },
+    trajectory: BOUNDED_FORMAL_TRAJECTORY,
+    finalPanel: {
+      label: 'same frozen 128-task final · Task Score / 100',
+      off: 45.984865395021635,
+      on: 20.769142316017317,
+      offExactCount: 32,
+      onExactCount: 10,
+      offExactRate: 0.25,
+      onExactRate: 0.078125,
+      panelDigest: 'cd531caff21d13d72df5c6fb013fadc10457393134d8bc3bcdc63fadf76bc453',
+    },
+    conclusion: 'LONG_HORIZON_TRANSIENT_ONLY',
   } satisfies EffectiveStateFormalResult,
 } as const;

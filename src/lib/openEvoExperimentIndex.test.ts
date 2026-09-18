@@ -12,8 +12,8 @@ const source = readFileSync(new URL('../components/research/OpenEvoExperimentInd
 
 describe('experiment-first Study index', () => {
   it('renders from one machine-readable experiment navigation owner', () => {
-    expect(OPEN_EVO_EXPERIMENTS).toHaveLength(5);
-    expect(new Set(OPEN_EVO_EXPERIMENTS.map((item) => item.id)).size).toBe(5);
+    expect(OPEN_EVO_EXPERIMENTS).toHaveLength(6);
+    expect(new Set(OPEN_EVO_EXPERIMENTS.map((item) => item.id)).size).toBe(6);
     expect(source).toContain("from '../../data/openEvoExperimentNavigation'");
     expect(source).toContain('OPEN_EVO_EXPERIMENTS.map');
     expect(source).toContain('directoryRowsFor(experiment.childLinks)');
@@ -116,10 +116,10 @@ describe('experiment-first Study index', () => {
     const accelerationGroup = directApply?.childLinks.filter((child) => child.directoryGroup?.zh === 'SD-LoRA 加速') ?? [];
     expect(accelerationGroup.map((child) => child.label.en)).toEqual(['How the two lines differ', 'Stable Reduction', 'Bounded Online Recurrence']);
     expect(accelerationGroup.filter((child) => child.mobileFeatured).map((child) => child.label.en)).toEqual(['How the two lines differ', 'Stable Reduction', 'Bounded Online Recurrence']);
-    expect(OPEN_EVO_CANONICAL_ROUTE_OWNERS['bounded-effective-state-gdr']).toBeUndefined();
+    expect(OPEN_EVO_CANONICAL_ROUTE_OWNERS['bounded-effective-state-gdr']).toBe('bounded-effective-state-1p7b');
   });
 
-  it('keeps Results as a cross-experiment index rather than a second owner of the five experiment bodies', () => {
+  it('keeps Results as a cross-experiment index rather than a second owner of the six experiment bodies', () => {
     const experimentOwnedHrefs = OPEN_EVO_EXPERIMENTS.flatMap((experiment) => [
       experiment.primaryHref,
       experiment.evidenceLink.href,
@@ -156,7 +156,7 @@ describe('experiment-first Study index', () => {
     expect(contextSource).toContain('OPEN_EVO_METHOD_BACKGROUND_ROUTE');
   });
 
-  it('keeps the five experiment parents and key lineage/analysis children', () => {
+  it('keeps the six experiment parents and key lineage/analysis children', () => {
     const titles = OPEN_EVO_EXPERIMENTS.map((item) => item.title.zh);
     expect(titles).toEqual([
       '训练跑了很久，但参数一直没有更新',
@@ -164,6 +164,7 @@ describe('experiment-first Study index', () => {
       '3B + 1.7B 后继实验',
       '1.7B · GDR-v1 实验',
       '1.7B · DirectApply / No-GDR 实验',
+      '1.7B · Bounded OFF / Effective-State GDR ON',
     ]);    const allChildren = OPEN_EVO_EXPERIMENTS.flatMap((item) => item.childLinks);
     expect(allChildren.some((child) => child.label.zh === 'SD-LoRA 为什么越来越慢')).toBe(true);
     expect(allChildren.some((child) => child.href.endsWith('/sd-lora-equivalence/'))).toBe(true);

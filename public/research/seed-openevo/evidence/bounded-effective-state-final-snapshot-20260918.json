@@ -1,0 +1,186 @@
+{
+  "authority": {
+    "final_closeout_path": "docs/evidence/bounded-effective-state-final-closeout-20260918/FINAL_CLOSEOUT.json",
+    "final_closeout_sha256": "19d0abb4a8884a6f8379b2bd279b05546c6de5f83b8221c84a01fd6733e04b36",
+    "main_commit": "04d6bd8e422103aa71be2b8f2672c2db97d0e351",
+    "q17_final_path": "docs/evidence/q17-final-closeout-20260912/FINAL_EVAL_VERIFICATION.json",
+    "repository": "mykcs/openevo-experiment"
+  },
+  "paired_long_horizon": {
+    "disposition": "LONG_HORIZON_TRANSIENT_ONLY",
+    "exact_success_rate_delta": -0.022110849056603772,
+    "off_exact_success_rate": 0.19467374213836477,
+    "off_mean_reward": 0.47774638937669595,
+    "on_exact_success_rate": 0.172562893081761,
+    "on_mean_reward": 0.5027534893451019,
+    "reward_delta": 0.025007099968405926,
+    "reward_delta_ci95": [
+      -0.01331300583840575,
+      0.06634168469000419
+    ],
+    "rounds": [
+      1,
+      159
+    ]
+  },
+  "parameter_analysis": {
+    "final_panel_access_delta": 0,
+    "method": "read-only exact low-rank spectrum plus full-weight power-iteration diagnostics",
+    "off": {
+      "analysis_sha256": "3fbaf846cde8b8308ee53b7c7e44034c3cc18f017c6549f2142aca97c82d57be",
+      "coverage": {
+        "final_panel_access": 0,
+        "formal_rollout_delta": 0,
+        "module_round_rows": 17920,
+        "modules_per_round": 112,
+        "rounds": 160,
+        "training_mutation": false
+      },
+      "final_adapter_sha256": "1bc2f7f62c1bde68cd4fd34e86c25af7f9663153a9ded631759dda52c87a21a5",
+      "final_round": {
+        "cumulative_state_global_frobenius": 21.050718206060306,
+        "cumulative_state_max_spectral": 2.136322021484375,
+        "full_to_base_spectral_ratio_max": 1.0309771212807681,
+        "full_to_base_spectral_ratio_median": 1.000201829722446,
+        "state_participation_rank_median": 5.1554897382096145,
+        "state_rank95_median": 8.0,
+        "su_parameter_stability_p95": 11.053011603233955,
+        "su_update_stability_p95": 0.05316083044216266,
+        "task_participation_rank_median": 5.228161005449802,
+        "task_rank95_median": 8.0,
+        "task_vector_global_adjacent_cosine": -0.8172413512944097,
+        "task_vector_global_cumulative_alignment": 0.878787412258713,
+        "task_vector_global_frobenius": 0.599323675851958,
+        "task_vector_max_spectral": 0.058013759553432465
+      },
+      "global": {
+        "adjacent_cosine_negative_fraction": 0.4528301886792453,
+        "su_parameter_stability_p95": {
+          "count": 160,
+          "max": 11.053110923891605,
+          "mean": 11.052585977697184,
+          "median": 11.052551499029292,
+          "min": 11.05199224965088,
+          "p95": 11.053015683334614
+        },
+        "su_update_stability_p95": {
+          "count": 160,
+          "max": 0.19643214362483793,
+          "mean": 0.04921498759957999,
+          "median": 0.04121304494335628,
+          "min": 1.1937897711917786e-08,
+          "p95": 0.11909566909567229
+        },
+        "task_vector_frobenius": {
+          "count": 160,
+          "max": 2.1384313376055633,
+          "mean": 0.5659069014541849,
+          "median": 0.49200701381905576,
+          "min": 9.143151969700614e-08,
+          "p95": 1.2722144622482146
+        }
+      }
+    },
+    "on": {
+      "analysis_sha256": "9a011b36dd019310acc14ffe85f2f4dc64ff1fe7962a38673a15114e7730c359",
+      "coverage": {
+        "final_panel_access": 0,
+        "formal_rollout_delta": 0,
+        "module_round_rows": 17920,
+        "modules_per_round": 112,
+        "rounds": 160,
+        "training_mutation": false
+      },
+      "final_adapter_sha256": "1f789d86ff1a3ba96211eb950f78763f99ed6fb2f0545f11c869ec8e6de3da6c",
+      "final_round": {
+        "cumulative_state_global_frobenius": 17.92532067595396,
+        "cumulative_state_max_spectral": 1.9457811117172241,
+        "full_to_base_spectral_ratio_max": 1.0390376958966692,
+        "full_to_base_spectral_ratio_median": 1.0001246314969383,
+        "state_participation_rank_median": 4.880467418793721,
+        "state_rank95_median": 7.0,
+        "su_parameter_stability_p95": 11.051993361363486,
+        "su_update_stability_p95": 0.0471044013331997,
+        "task_participation_rank_median": 4.873056668063216,
+        "task_rank95_median": 7.0,
+        "task_vector_global_adjacent_cosine": -0.25425316207976595,
+        "task_vector_global_cumulative_alignment": -0.9267272573759813,
+        "task_vector_global_frobenius": 0.5325478794098215,
+        "task_vector_max_spectral": 0.05551622435450554
+      },
+      "global": {
+        "adjacent_cosine_negative_fraction": 0.4528301886792453,
+        "su_parameter_stability_p95": {
+          "count": 160,
+          "max": 11.052351300273003,
+          "mean": 11.052111930321868,
+          "median": 11.052111311651107,
+          "min": 11.051958295667191,
+          "p95": 11.052319479716568
+        },
+        "su_update_stability_p95": {
+          "count": 160,
+          "max": 0.1961822275645653,
+          "mean": 0.04740228771023511,
+          "median": 0.04070427563047633,
+          "min": 3.173104377420763e-08,
+          "p95": 0.10464597671370357
+        },
+        "task_vector_frobenius": {
+          "count": 160,
+          "max": 2.1427730509240916,
+          "mean": 0.5414798514576825,
+          "median": 0.48414705667820535,
+          "min": 2.224304335984921e-07,
+          "p95": 1.1787638544021743
+        }
+      }
+    },
+    "scientific_mutation": false
+  },
+  "publication_boundary": "DirectApply is a historical predecessor, not a third randomized arm of the preregistered OFF-vs-ON treatment contrast. Same-panel finals are directly comparable descriptively; long-horizon paired inference belongs only to OFF vs ON.",
+  "same_frozen_final_panel": {
+    "panel_content_sha256": "3529b94f97491434da01f9b2adc2faf1d0571545603a788d367561ae2b529d48",
+    "panel_file_sha256": "aea97afdd5b176126cf67f7ed315189c95fbf37b07263c84b947903cca69aa4d",
+    "same_panel": true,
+    "selected_panel_digest": "cd531caff21d13d72df5c6fb013fadc10457393134d8bc3bcdc63fadf76bc453"
+  },
+  "schema": "basemodel.bounded-effective-state-final-public-snapshot.20260918",
+  "three_way_final": {
+    "bounded_gdr_on": {
+      "exact_success_count": 10,
+      "exact_success_rate": 0.078125,
+      "task_score": 0.20769142316017317
+    },
+    "bounded_off": {
+      "exact_success_count": 32,
+      "exact_success_rate": 0.25,
+      "task_score": 0.45984865395021635
+    },
+    "directapply": {
+      "exact_success_count": 50,
+      "exact_success_rate": 0.390625,
+      "task_score": 0.6071597673160174
+    }
+  },
+  "timing": {
+    "boundary": "trainer/transition speedup is not whole-Stage2 wall-clock speedup",
+    "bounded_gdr_on": {
+      "measured_gpu_active_lower_bound_hours": 80.64645971633028,
+      "rollout_gpu_active_hours": 78.300783249206,
+      "transition_hours": 2.345676467124269,
+      "wall_clock_hours": 54.96929190225072
+    },
+    "bounded_off": {
+      "measured_gpu_active_lower_bound_hours": 84.56134565231895,
+      "rollout_gpu_active_hours": 82.53728786057896,
+      "transition_hours": 2.024057791739987,
+      "wall_clock_hours": 56.24978798992104
+    },
+    "directapply": {
+      "rollout_gpu_active_hours": 76.65479753295581,
+      "trainer_hours": 31.087279689253773,
+      "wall_clock_hours": 74.77710828602314
+    }
+  }
+}

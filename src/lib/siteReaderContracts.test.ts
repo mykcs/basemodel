@@ -68,13 +68,14 @@ describe('site-wide reader attention contracts', () => {
     expect(compatibility?.firstViewportSelector).toBe('.sdlora-intro__lede');
   });
 
-  it('keeps the Study phone budget at five experiment parents plus one SD-LoRA overview and two treatment branches', () => {
+  it('keeps the Study phone budget at six experiment parents plus one SD-LoRA overview and two treatment branches', () => {
     const row = SITE_READER_CONTRACTS.find((contract) => contract.id === 'study');
-    expect(row?.firstViewportBudget?.maxInteractive).toBe(8);
-    expect(row?.firstViewportGoal).toContain('五次主要实验');
+    expect(row?.firstViewportBudget?.maxInteractive).toBe(9);
+    expect(row?.firstViewportGoal).toContain('六次主要实验');
     expect(row?.firstViewportGoal).toContain('两条路线说明');
     expect(row?.firstViewportGoal).toContain('Stable Reduction');
     expect(row?.firstViewportGoal).toContain('Bounded Online Recurrence');
+    expect(row?.mustStayVisible).toContain('六个主实验父项');
     expect(row?.mustStayVisible).toContain('SD-LoRA 加速');
     expect(row?.mustStayVisible).toContain('解释入口而不是第三个 treatment');
     expect(row?.mustStayVisible).toContain('SD-LoRA v2 只属于 Stable Reduction');

@@ -14,7 +14,8 @@ export type OpenEvoExperimentId =
   | '7b-long-run'
   | 'successor-3b-1p7b'
   | 'gdr-v1-1p7b'
-  | 'directapply-1p7b';
+  | 'directapply-1p7b'
+  | 'bounded-effective-state-1p7b';
 
 export interface OpenEvoExperimentChildLink {
   role: ExperimentChildRole;
@@ -122,6 +123,23 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
     ],
     evidenceLink: { role: 'evidence', label: { zh: '冻结 final 与原始依据', en: 'Frozen final and raw evidence' }, href: `${cap}/q17-directapply-analysis/#final` },
   },
+  {
+    id: 'bounded-effective-state-1p7b',
+    number: '06',
+    title: { zh: '1.7B · Bounded OFF / Effective-State GDR ON', en: '1.7B · Bounded OFF / Effective-State GDR ON' },
+    summary: { zh: '固定 rank128 历史状态以后，我们用相同任务、seed 和训练预算完成 OFF / ON 正式对照；两条臂和冻结终评都已封存。', en: 'After fixing the historical state at rank128, we completed a formal OFF/ON comparison with matched tasks, seeds, and training budget; both arms and the frozen final are sealed.' },
+    motivation: { zh: '把“历史状态固定大小”和“新经验写入强度”拆开：OFF 只做 Bounded recurrence，ON 在同样训练上加入 Effective-State GDR。', en: 'Separate bounded history size from write strength: OFF uses Bounded recurrence only, while ON adds Effective-State GDR to the same training.' },
+    primaryHref: `${cap}/bounded-effective-state-gdr/`,
+    status: 'completed',
+    lineageNote: { zh: '它是 DirectApply 之后的新正式实验，不是 DirectApply 的第三条 arm；三种最终模型后来恰好使用了同一份冻结 128 题，因此 Final 可以做描述性同题比较。', en: 'This is a new formal study after DirectApply, not a third DirectApply arm. The three final models later used the same frozen 128-task panel, so their final scores can be compared descriptively on the same test.' },
+    childLinks: [
+      { role: 'result', label: { zh: '完整 OFF / ON 与冻结终评', en: 'Complete OFF/ON and frozen final' }, href: `${cap}/bounded-effective-state-gdr/` },
+      { role: 'analysis', label: { zh: 'Bounded Online Recurrence 如何固定 rank128', en: 'How Bounded Online Recurrence fixes rank128' }, href: `${cap}/sd-lora-bounded-state/` },
+      { role: 'analysis', label: { zh: '同一 128 题的 DirectApply 历史基线', en: 'Historical DirectApply baseline on the same 128 tasks' }, href: `${cap}/q17-directapply-analysis/#final` },
+      { role: 'mechanism', label: { zh: 'Effective-State GDR 怎样写一次更新', en: 'How Effective-State GDR writes one update' }, href: `${cap}/bounded-effective-state-gdr/#method` },
+    ],
+    evidenceLink: { role: 'evidence', label: { zh: '最终 closeout 与公开证据', en: 'Final closeout and public evidence' }, href: `${cap}/bounded-effective-state-gdr/#evidence` },
+  },
 ];
 
 
@@ -136,6 +154,7 @@ export const OPEN_EVO_CANONICAL_ROUTE_OWNERS: Readonly<Record<string, OpenEvoExp
   'openevo-2-0/harness-2-0': 'successor-3b-1p7b',
   'stage1-evolution': 'successor-3b-1p7b',
   'gdr-directapply': 'gdr-v1-1p7b',
+  'bounded-effective-state-gdr': 'bounded-effective-state-1p7b',
   'q17-directapply-analysis': 'directapply-1p7b',
   'q17-directapply-frontier': 'directapply-1p7b',
   'sd-lora-scaling': 'directapply-1p7b',
