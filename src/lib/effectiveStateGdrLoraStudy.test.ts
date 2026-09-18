@@ -49,6 +49,7 @@ describe('Effective-State GDR publication snapshot', () => {
       pooledReward: null,
       exactSuccess: null,
       uncertainty: null,
+      trajectory: null,
       finalPanel: null,
       conclusion: null,
     } satisfies EffectiveStateFormalResult);
@@ -87,6 +88,10 @@ describe('Effective-State GDR publication snapshot', () => {
       pooledReward: { off: 0.1, on: 0.2, delta: 0.1 },
       exactSuccess: { off: 1, on: 2, delta: 1 },
       uncertainty: { label: 'sealed preregistered interval', low: 0, high: 1 },
+      trajectory: {
+        off: [{ round: 0, score: 10, exactSuccessRate: 0.1, loss: 1.0 }],
+        on: [{ round: 0, score: 11, exactSuccessRate: 0.1, loss: 0.9 }],
+      },
       finalPanel: null,
       conclusion: 'example type witness only',
     };
@@ -128,8 +133,10 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.resourceExecution.schedulerMode).toContain('capacity-aware');
     expect(study.resourceExecution.crossPhaseOverlapAllowed).toBe(true);
     expect(study.resourceExecution.liveResourceExecutionSha).toMatch(sha40);
-    expect(study.resourceExecution.resourceSuccessorPr).toBe(525);
-    expect(study.resourceExecution.resourceVerifierPr).toBe(526);
+    expect(study.resourceExecution.resourceAuthorityPr).toBe(525);
+    expect(study.resourceExecution.resourceRepositoryCandidateSha).toBe('4305a70fd920caa81fd8f7636a45be2d0a8d3960');
+    expect(study.resourceExecution.historicalVerifierPr).toBe(526);
+    expect(study.resourceExecution.historicalVerifierDisposition).toBe('CLOSED_ABSORBED_INTO_525');
     expect(study.resourceExecution.claimBoundary).toContain('treatment/tasks/seeds/sampling');
   });
 

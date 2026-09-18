@@ -91,12 +91,24 @@ test('Effective-State first screen tells the three-part story before deeper choi
   await expect(lede).toContainText('正式结果仍 Pending');
   await expect(page.locator('#formal-design')).toContainText('配对编号只用于审计');
   await expect(page.locator('#formal-result')).toContainText('结果出来后，先看这四件事');
+  await expect(page.locator('#formal-result')).toContainText('每轮 WebShop Score');
+  await expect(page.locator('#formal-result')).toContainText('SD-LoRA training loss');
+  await expect(page.locator('#formal-result')).toContainText('现在不画中途曲线');
   const ledeBox = await lede.boundingBox();
   expect(ledeBox).not.toBeNull();
   expect(ledeBox!.y).toBeLessThan(844);
   const firstDeepChoice = await page.locator('.esg__context-links').boundingBox();
   expect(firstDeepChoice).not.toBeNull();
   expect(ledeBox!.y).toBeLessThan(firstDeepChoice!.y);
+});
+
+test('Effective-State evidence keeps resource authority single-owner after verifier absorption', async ({ page }) => {
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const evidence = page.locator('#evidence');
+  await expect(evidence).toContainText('PR #525');
+  await expect(evidence).toContainText('当前唯一 resource-only successor');
+  await expect(evidence).toContainText('PR #526');
+  await expect(evidence).toContainText('已收口并吸收到 #525');
 });
 
 test('Effective-State page emits no browser errors on the primary route', async ({ page }) => {

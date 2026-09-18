@@ -5,6 +5,13 @@ export type EffectiveStateSealedEvidence = {
   sealReceiptSha256: string;
 };
 
+export type EffectiveStateRoundTrajectory = {
+  round: number;
+  score: number;
+  exactSuccessRate: number;
+  loss: number | null;
+};
+
 export type EffectiveStateFormalResult =
   | {
       status: 'pending';
@@ -12,6 +19,7 @@ export type EffectiveStateFormalResult =
       pooledReward: null;
       exactSuccess: null;
       uncertainty: null;
+      trajectory: null;
       finalPanel: null;
       conclusion: null;
     }
@@ -21,6 +29,10 @@ export type EffectiveStateFormalResult =
       pooledReward: { off: number; on: number; delta: number };
       exactSuccess: { off: number; on: number; delta: number };
       uncertainty: { label: string; low: number; high: number };
+      trajectory: {
+        off: EffectiveStateRoundTrajectory[];
+        on: EffectiveStateRoundTrajectory[];
+      };
       finalPanel: { label: string; off: number; on: number } | null;
       conclusion: string;
     };
@@ -97,8 +109,10 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     rolloutMode: 'OFF and ON request resources independently; scientifically ready work may co-reside when the frozen resource envelope and live headroom permit',
     crossPhaseOverlapAllowed: true,
     liveResourceExecutionSha: '2133611ce751d04ba8f009b9d410fce4bc0cd3d6',
-    resourceSuccessorPr: 525,
-    resourceVerifierPr: 526,
+    resourceAuthorityPr: 525,
+    resourceRepositoryCandidateSha: '4305a70fd920caa81fd8f7636a45be2d0a8d3960',
+    historicalVerifierPr: 526,
+    historicalVerifierDisposition: 'CLOSED_ABSORBED_INTO_525',
     claimBoundary: 'resource scheduling only; treatment/tasks/seeds/sampling/common start/Carrier/GDR policy/budget/analysis unchanged',
   },
   identity: {
@@ -222,7 +236,7 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
       '160-round pooled mean reward: OFF / ON / delta',
       '160-round exact success: OFF / ON / delta / percentage-point delta',
       'preregistered matched uncertainty / bootstrap / CI',
-      'full 160-round per-round trajectory after sealed cutoff',
+      'full 160-round OFF/ON score, exact-success and SD-LoRA loss trajectories after sealed cutoff',
       'engineering-invalid / invalid-action termination / denominator accounting',
       'state/update health: current update, GDR beta domain, content-rejection NOOP / integrity-pause accounting',
       'final-panel result only with independent authority and sealed evidence',
@@ -251,8 +265,8 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     historicalTopologyCloseout: `${repo}/blob/5e1b6a2d6737be540ac9ae69dedcfb8b63a51baa/docs/evidence/bounded-recurrence-gdr-20260915/preferred-topology-closeout-202609150718.json`,
     controlTowerPr: `${repo}/pull/502`,
     finalImplementationPr: `${repo}/pull/523`,
-    resourceSuccessorPr: `${repo}/pull/525`,
-    resourceVerifierPr: `${repo}/pull/526`,
+    resourceAuthorityPr: `${repo}/pull/525`,
+    historicalResourceVerifierPr: `${repo}/pull/526`,
     currentMainPrelaunchHandoff: `${repo}/blob/9f6259be9b961223a5cab7711fe1f297e272d541/docs/agent-handoffs/BOUNDED_GDR_WANDB_PRELAUNCH_HANDOFF_2026-09-15.md`,
   },
   formalResult: {
@@ -261,6 +275,7 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     pooledReward: null,
     exactSuccess: null,
     uncertainty: null,
+    trajectory: null,
     finalPanel: null,
     conclusion: null,
   } satisfies EffectiveStateFormalResult,
