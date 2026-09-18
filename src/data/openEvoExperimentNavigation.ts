@@ -145,6 +145,7 @@ export const OPEN_EVO_CANONICAL_ROUTE_OWNERS: Readonly<Record<string, OpenEvoExp
   'sd-lora-present-function': 'directapply-1p7b',
   'sd-lora-future-learning': 'directapply-1p7b',
   'sd-lora-bounded-state': 'directapply-1p7b',
+  'sd-lora-bounded-acceleration': 'directapply-1p7b',
   'bounded-effective-state-gdr': 'directapply-1p7b',
   'text-memory': 'directapply-1p7b',
 };

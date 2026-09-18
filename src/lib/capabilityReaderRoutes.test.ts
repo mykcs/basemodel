@@ -60,7 +60,7 @@ describe('capability route reader contracts', () => {
     // Every archived route must still have an active Chinese counterpart; post-archive
     // Chinese routes intentionally have no archived English wrapper.
     expect(archived.every((route) => active.includes(route))).toBe(true);
-    expect(active.filter((route) => !archived.includes(route))).toEqual(['bounded-effective-state-gdr']);
+    expect(active.filter((route) => !archived.includes(route))).toEqual(['bounded-effective-state-gdr', 'sd-lora-bounded-acceleration']);
     for (const row of routes) {
       expect(row.label.en.trim().length).toBeGreaterThan(0);
       expect(row.purpose.en.trim().length).toBeGreaterThan(0);

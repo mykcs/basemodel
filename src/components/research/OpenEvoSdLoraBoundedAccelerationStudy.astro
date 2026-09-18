@@ -1,0 +1,265 @@
+---
+import type { Locale } from '../../i18n';
+import { localePath } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import {
+  SD_LORA_BOUNDED_ACCELERATION_RESULT as result,
+  SD_LORA_BOUNDED_ACCELERATION_SOURCE as source,
+} from '../../data/sdLoraBoundedAccelerationStudy';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
+const root = '/research/seed-openevo/study/capability-exploration/';
+const sourceBase = `https://github.com/${source.repository}/blob/${source.commit}`;
+const evidenceHref = `${sourceBase}/${source.trainingOrderPath}`;
+const deviceHref = `${sourceBase}/${source.deviceSmokePath}`;
+const muonHref = `${sourceBase}/${source.muonPath}`;
+const flaHref = `${sourceBase}/${source.flaWyPath}`;
+const planHref = `${sourceBase}/${source.planPath}`;
+const boundedHref = p(`${root}sd-lora-bounded-state/`);
+const scalingHref = p(`${root}sd-lora-scaling/`);
+const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
+---
+<article class="ba-accel" data-copy-review data-ui-audit data-sd-lora-bounded-acceleration>
+  <header class="ba-accel__hero">
+    <p class="ba-accel__context">{t('Bounded Online Recurrence · 后续加速研究', 'Bounded Online Recurrence · follow-up acceleration study')}</p>
+    <h1>{t('Bounded 的主要时间花在训练', 'Most Bounded update time is spent in training')}</h1>
+    <p class="ba-accel__lede">
+      {t(
+        `我们把 Bounded 的 rank128 压缩拆到四张 GPU，又试了 Muon / Newton–Schulz，也把 112 个小 SVD 一次批量计算。四卡结果可以逐 tensor 对上，但 warm 单卡压完 112 个 module 只要约 ${result.deviceSmoke.serialWarm112Seconds.toFixed(2)} 秒；真实 1.7B steady-state 的 10 个 AdamW step 要 ${result.steadyTraining.trainLoopSeconds.toFixed(2)} 秒，compression 只有 ${result.steadyTraining.compressionSeconds.toFixed(2)} 秒。`,
+        `We sharded Bounded rank128 compression across four GPUs, tested Muon / Newton–Schulz, and also batched the 112 small SVDs into one call. The four-way result can match tensor-for-tensor, yet one warm GPU compresses all 112 modules in about ${result.deviceSmoke.serialWarm112Seconds.toFixed(2)} s; in a real 1.7B steady-state path, ten AdamW steps take ${result.steadyTraining.trainLoopSeconds.toFixed(2)} s while compression takes only ${result.steadyTraining.compressionSeconds.toFixed(2)} s.`,
+      )}
+    </p>
+    <dl class="ba-accel__metrics" aria-label={t('决定研究方向的三个测量', 'Three measurements that changed the research direction')}>
+      <div><dt>{t('steady-state 训练', 'Steady-state training')}</dt><dd>{result.steadyTraining.trainLoopSeconds.toFixed(2)} s</dd></div>
+      <div><dt>{t('同轮 compression', 'Same-round compression')}</dt><dd>{result.steadyTraining.compressionSeconds.toFixed(2)} s</dd></div>
+      <div><dt>{t('只换 AdamW 顺序', 'Reverse AdamW order')}</dt><dd>{result.orderDependence.changedModules}/{result.targetModules} {t('模块改变', 'modules changed')}</dd></div>
+    </dl>
+    <p class="ba-accel__boundary">
+      {t(
+        '这些数字来自 GPU0–3 的工程小实验，不是正式 B2 / B3，也没有跑 WebShop formal rows 或 protected final panel。它们足以决定下一步工程注意力放哪里，但不能冒充正式效果实验。',
+        'These numbers come from GPU0–3 engineering smokes, not formal B2 / B3. They consumed no formal WebShop rows and never opened the protected final panel. They are enough to redirect engineering attention, not to stand in for a formal efficacy experiment.',
+      )}
+    </p>
+  </header>
+
+  <section class="ba-accel__section" aria-labelledby="shard-title">
+    <h2 id="shard-title">{t('四张卡算得一模一样，但没有更快', 'Four GPUs matched exactly, but did not run faster')}</h2>
+    <p>{t(
+      'Bounded 的 shared training 结束后，112 个 module 的 rank128 压缩可以彼此独立。我们先验证这件事，而不是直接假设“四卡一定更快”。GPU0 reference 对 GPU0/1/2/3 分片、以及 GPU3 reference 对镜像 GPU3/2/1/0，两次 assembly 都得到同一个 adapter SHA，所有 tensor 都逐元素相等。',
+      'After Bounded shared training finishes, the 112 rank128 module-compression units are independent. We tested that fact before assuming four GPUs would be faster. GPU0 reference vs GPU0/1/2/3 shards, and GPU3 reference vs mirrored GPU3/2/1/0 shards, both assembled to the same adapter SHA with elementwise tensor equality.',
+    )}</p>
+    <div class="ba-accel__table-wrap">
+      <table class="ba-accel__table">
+        <thead><tr><th>{t('测法', 'Measurement')}</th><th>{t('结果', 'Result')}</th><th>{t('说明', 'Meaning')}</th></tr></thead>
+        <tbody>
+          <tr>
+            <th scope="row">{t('两次物理映射', 'Two physical mappings')}</th>
+            <td><strong>{t('byte / tensor exact', 'byte / tensor exact')}</strong></td>
+            <td>{t('GPU 编号没有改变 compression 的结果', 'Physical GPU identity did not change the compression result')}</td>
+          </tr>
+          <tr>
+            <th scope="row">{t('单 GPU warm · 112 modules', 'One warm GPU · 112 modules')}</th>
+            <td>{result.deviceSmoke.singleGpuWarm112Seconds.toFixed(3)} s</td>
+            <td>{t('整个 suffix 已经是亚秒级', 'The whole suffix is already sub-second')}</td>
+          </tr>
+          <tr>
+            <th scope="row">{t('四个 cold 容器', 'Four cold containers')}</th>
+            <td>{result.deviceSmoke.fourColdContainerSeconds[0].toFixed(2)}–{result.deviceSmoke.fourColdContainerSeconds[1].toFixed(2)} s</td>
+            <td>{t('启动 Python / CUDA / Docker 的成本盖过了并行收益', 'Python / CUDA / Docker startup overwhelms the parallel work')}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>{t(
+      '把每个 shard 的输入从完整 prior 预切成自己的 28 个 module 以后，四卡仍没有变快；换成单容器四 GPU 也只把冷启动缩短了一部分。问题不在“205 MB 输入读了四遍”这一件事上。',
+      'Pre-splitting each shard down to its own 28 modules did not make the four-way path faster, and one multi-GPU container only removed part of the cold-start cost. Re-reading the full 205 MB prior was not the main explanation.',
+    )}</p>
+  </section>
+  <section class="ba-accel__section" aria-labelledby="svd-title">
+    <h2 id="svd-title">{t('Muon 给了方向感，但 SVD 不是主瓶颈', 'Muon suggested a direction, but SVD is not the main bottleneck')}</h2>
+    <p>{t(
+      `steady-state Bounded 会把 rank${result.stateRank} prior 和 rank${result.currentRank} current 合成一个 ${result.spectralCore}×${result.spectralCore} 的小 core，再通过 SVD 保留最大的 rank${result.stateRank} 方向。我们想到 Muon，是因为它用少量 Newton–Schulz 迭代把昂贵的谱运算改写成 GPU 擅长的矩阵乘。`,
+      `Steady-state Bounded combines a rank${result.stateRank} prior and rank${result.currentRank} current update into a small ${result.spectralCore}×${result.spectralCore} core, then uses SVD to keep the largest rank${result.stateRank} directions. Muon was relevant because it replaces a spectral operation with a few GPU-friendly Newton–Schulz matrix iterations.`,
+    )}</p>
+    <p>{t(
+      `但 Muon 原始默认的 ${result.muonNs.originalMuonDefaultSteps} 次 Newton–Schulz 主要近似 orthogonalization / polar factor，不会自动选择 top-${result.stateRank} singular directions。我们把迭代跑到 ${result.muonNs.comparisonSteps[1]} 次，结果仍是 rank${result.muonNs.nsRankAfter12}；被 Bounded 真正丢掉的 8 个方向没有变成 0。`,
+      `But Muon's original ${result.muonNs.originalMuonDefaultSteps}-step Newton–Schulz primarily approximates orthogonalization / a polar-like factor; it does not select the top-${result.stateRank} singular directions. Even at ${result.muonNs.comparisonSteps[1]} steps the witness remained rank${result.muonNs.nsRankAfter12}; the eight directions Bounded must actually discard did not become zero.`,
+    )}</p>
+    <figure class="ba-accel__equation" aria-label={t('rank128 prior 和 rank8 current 形成 136 维 core，再截断回 rank128', 'rank128 prior and rank8 current form a 136-dimensional core, then truncate back to rank128')}>
+      <span>rank128 prior</span><b>+</b><span>rank8 current</span><b>→</b><span>136 × 136 core</span><b>→</b><span>top-128 SVD</span>
+    </figure>
+    <div class="ba-accel__table-wrap">
+      <table class="ba-accel__table ba-accel__table--numbers">
+        <thead><tr><th>{t('GPU0 warm 路径', 'GPU0 warm path')}</th><th>{t('时间', 'Time')}</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">{t('原始 serial compression · 112 modules', 'Original serial compression · 112 modules')}</th><td>{result.batchedSvd.serialWarm112Seconds.toFixed(3)} s</td></tr>
+          <tr><th scope="row">{t('batched QR / core 构造', 'Batched QR / core construction')}</th><td>{result.batchedSvd.qrCoreBuildSeconds.toFixed(3)} s</td></tr>
+          <tr><th scope="row">112 × 136 × 136 batched SVD</th><td>{result.batchedSvd.svd112x136x136Seconds.toFixed(3)} s</td></tr>
+          <tr><th scope="row">{t('重建并拷回 CPU', 'Reconstruction and CPU copy')}</th><td>{result.batchedSvd.reconstructSeconds.toFixed(3)} s</td></tr>
+          <tr><th scope="row">{t('batched exact 总计', 'Batched exact total')}</th><td><strong>{result.batchedSvd.totalSeconds.toFixed(3)} s</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>{t(
+      `batched 版本最后所有 tensor 仍然 exact，最大绝对差是 ${result.batchedSvd.maxAbsDifference}；但总时间 ${result.batchedSvd.totalSeconds.toFixed(3)} 秒，没有打败原来的 ${result.batchedSvd.serialWarm112Seconds.toFixed(3)} 秒。真正的 batched SVD 本身只有 ${result.batchedSvd.svd112x136x136Seconds.toFixed(3)} 秒。继续把主要精力放在 SVD、Muon 或 Polar 类近似上，解决不了这条训练路径的大头。`,
+      `The batched version stayed tensor-exact with max absolute difference ${result.batchedSvd.maxAbsDifference}, but its ${result.batchedSvd.totalSeconds.toFixed(3)} s total did not beat the original ${result.batchedSvd.serialWarm112Seconds.toFixed(3)} s. The batched SVD itself took only ${result.batchedSvd.svd112x136x136Seconds.toFixed(3)} s. Spending the main effort on SVD, Muon, or polar-like approximations would not attack the dominant training cost.`,
+    )}</p>
+  </section>
+  <section class="ba-accel__section" aria-labelledby="training-title">
+    <h2 id="training-title">{t('真实 1.7B 路径里，时间花在训练', 'On the real 1.7B path, time goes into training')}</h2>
+    <p>{t(
+      '前面的 compression smoke 只回答了后处理有多重。为了确认真正一轮 Bounded 更新把时间花在哪里，我们又用冻结的 Qwen3-1.7B、同一 dataset、seed 1993、AdamW 和原来的 rank8 → rank128 路径跑了两次小训练。',
+      'The compression smokes only measured the suffix. To see where a real Bounded update spends time, we ran two small training smokes with the frozen Qwen3-1.7B model, the same dataset, seed 1993, AdamW, and the original rank8 → rank128 path.',
+    )}</p>
+    <div class="ba-accel__table-wrap">
+      <table class="ba-accel__table ba-accel__table--numbers">
+        <thead><tr><th>{t('路径', 'Path')}</th><th>{t('model load', 'model load')}</th><th>{t('训练', 'training')}</th><th>compression</th><th>{t('engine 总计', 'engine total')}</th></tr></thead>
+        <tbody>
+          <tr>
+            <th scope="row">{t('Round0 · 5 current · 5 steps', 'Round0 · 5 current · 5 steps')}</th>
+            <td>{result.round0Training.modelLoadSeconds.toFixed(2)} s</td><td>{result.round0Training.trainLoopSeconds.toFixed(2)} s</td><td>{result.round0Training.compressionSeconds.toFixed(2)} s</td><td>{result.round0Training.engineTotalSeconds.toFixed(2)} s</td>
+          </tr>
+          <tr>
+            <th scope="row">{t('steady-state · 5 current + 5 replay · 10 steps', 'steady state · 5 current + 5 replay · 10 steps')}</th>
+            <td>{result.steadyTraining.modelLoadSeconds.toFixed(2)} s</td><td><strong>{result.steadyTraining.trainLoopSeconds.toFixed(2)} s</strong></td><td>{result.steadyTraining.compressionSeconds.toFixed(2)} s</td><td>{result.steadyTraining.engineTotalSeconds.toFixed(2)} s</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ba-accel__result-line">{t(
+      `steady-state 的训练 loop 是 compression 的 ${result.steadyTraining.trainToCompressionRatio.toFixed(1)}×；compression 只占 engine 时间的 ${pct(result.steadyTraining.compressionFractionOfEngineTotal)}。`,
+      `The steady-state training loop is ${result.steadyTraining.trainToCompressionRatio.toFixed(1)}× the compression time; compression is only ${pct(result.steadyTraining.compressionFractionOfEngineTotal)} of engine time.`,
+    )}</p>
+    <p>{t(
+      '这一步改变了研究方向：Bounded 已经把“历史越长、component 越多”的旧问题压掉了，但下一层顺序瓶颈仍然在 full-model forward / backward、global gradient clipping、AdamW moments 和 learned coefficient 的更新轨迹里。',
+      'This changed the research direction. Bounded removed the old cost of carrying an ever-growing component history, but the remaining sequential bottleneck sits in full-model forward / backward, global gradient clipping, AdamW moments, and the learned-coefficient trajectory.',
+    )}</p>
+  </section>
+  <section class="ba-accel__section" aria-labelledby="order-title">
+    <h2 id="order-title">{t('同样五个训练样本，只把顺序倒过来，模型就变了', 'The same five training examples produce a different model when their order is reversed')}</h2>
+    <p>{t(
+      '如果 AdamW 的这些 step 可以像普通矩阵块一样独立计算，再把 chunk 合起来，那么仅仅交换执行顺序不应该把最终函数改得这么大。我们因此做了一个最小反例：dataset、五个 training example 对象、seed、模型初始化、AdamW、学习率、replay 和 compression 全部不变，只把 optimizer loop 的遍历顺序从 1→2→3→4→5 改成 5→4→3→2→1。',
+      'If these AdamW steps could be computed as independent matrix chunks and merged later, merely reversing their execution order should not change the final function this much. We therefore ran a minimal counterexample: dataset, the five training-example objects, seed, model initialization, AdamW, learning rates, replay, and compression stayed fixed; only the optimizer traversal changed from 1→2→3→4→5 to 5→4→3→2→1.',
+    )}</p>
+    <figure class="ba-accel__order" aria-label={t('同样五个训练样本的正序和反序 AdamW 轨迹', 'Forward and reversed AdamW trajectories over the same five training examples')}>
+      <div><strong>{t('原顺序', 'Original order')}</strong><span>1 → 2 → 3 → 4 → 5</span></div>
+      <div><strong>{t('只改顺序', 'Order only')}</strong><span>5 → 4 → 3 → 2 → 1</span></div>
+    </figure>
+    <dl class="ba-accel__findings">
+      <div><dt>{t('有效更新改变', 'Effective updates changed')}</dt><dd><strong>{result.orderDependence.changedModules}/{result.targetModules}</strong> modules</dd></div>
+      <div><dt>{t('整体 dense update 差异', 'Aggregate dense-update difference')}</dt><dd><strong>{(result.orderDependence.aggregateDenseRelativeL2Difference * 100).toFixed(2)}%</strong> relative L2</dd></div>
+      <div><dt>{t('learned coefficient', 'Learned coefficient')}</dt><dd>{result.orderDependence.originalCurrentCoefficient.toFixed(6)} → {result.orderDependence.reversedCurrentCoefficient.toFixed(6)}</dd></div>
+    </dl>
+    <p>{t(
+      '我们没有停在 adapter 文件 SHA 不同，因为低秩因子和 SVD 可能存在等价表示。进一步比较每个 module 真正作用到权重上的 dense update B·A 后，112 个 module 全部不同；整体相对 L2 差约 59.36%。这说明有效权重更新本身变了，不只是低秩因子的表示或序列化。',
+      'We did not stop at different adapter file hashes because low-rank factors and SVD may admit equivalent representations. Comparing the effective dense update B·A for every module showed that all 112 modules changed; the aggregate relative L2 difference was about 59.36%. The effective weight update itself changed, not merely the low-rank representation or serialization.',
+    )}</p>
+    <p class="ba-accel__boundary ba-accel__boundary--inline">{t(
+      '这项反例排除了“把现有 AdamW step 独立分块、重排后再 merge”这种朴素 A。它没有证明所有可能的 exact chunk transfer 都不存在；如果 exact A 存在，它必须保留完整的状态依赖。',
+      'This counterexample rules out naive A that independently chunks or reorders the existing AdamW steps and merges them later. It does not prove that every possible exact chunk transfer is impossible; any exact A would have to preserve the full state dependence.',
+    )}</p>
+  </section>
+  <section class="ba-accel__section" aria-labelledby="fla-title">
+    <h2 id="fla-title">{t('FLA / WY 真正提醒我们：先证明状态可以组合', 'The real FLA / WY lesson: prove the state transition composes first')}</h2>
+    <p>{t(
+      'DeltaNet 的 chunkwise 做法成立，是因为它的 hidden-state recurrence 可以写成 generalized Householder transformations，再用 compact WY / UT 把一段顺序更新表示成可组合的矩阵对象。关键不是“WY 很快”，而是它先有一个可以 exact composition 的递推结构。',
+      'DeltaNet chunkwise execution works because its hidden-state recurrence can be written as generalized Householder transformations, then represented with compact WY / UT as composable matrix objects. The key is not simply that WY is fast; the recurrence first admits exact composition.',
+    )}</p>
+    <div class="ba-accel__table-wrap">
+      <table class="ba-accel__table">
+        <thead><tr><th>{t('对象', 'Object')}</th><th>{t('能否直接 composition', 'Directly composable?')}</th><th>{t('原因', 'Why')}</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">DeltaNet / FLA</th><td><strong>{t('可以', 'Yes')}</strong></td><td>{t('recurrence 能改写成可组合的 Householder / WY 表示', 'the recurrence admits a composable Householder / WY representation')}</td></tr>
+          <tr><th scope="row">{t('去掉训练与压缩的简化 Bounded', 'Simplified Bounded without training/compression')}</th><td><strong>{t('可以', 'Yes')}</strong></td><td><code>M′ = aM + B</code> {t('本身就是 affine transfer', 'is already an affine transfer')}</td></tr>
+          <tr><th scope="row">{t('现在的真实 Bounded', 'Current real Bounded')}</th><td><strong>{t('还没有', 'Not yet')}</strong></td><td>{t('下一步 gradient、AdamW moments、global clip、coefficient 和 GDR write 都依赖 incoming state', 'the next gradient, AdamW moments, global clipping, coefficient, and GDR write all depend on the incoming state')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>{t(
+      '因此 exact A 的研究问题不是“怎样把 SVD 再切一刀”，而是能不能找到一个 chunk object，把模型/LoRA 状态、AdamW 一二阶 moments、learned coefficient、global clipping / order 依赖、compression boundary，以及 GDR 开启时的 write-control 一起概括，并且按原顺序 exact composition。',
+      'So the exact-A question is not how to split SVD one more time. It is whether a chunk object can summarize the model/LoRA state, AdamW first and second moments, learned coefficient, global-clipping/order dependence, compression boundary, and the GDR write-control state when enabled, then compose exactly in the original order.',
+    )}</p>
+    <p class="ba-accel__formula"><code>T_chunk(full state in) → full state out</code></p>
+    <p>{t(
+      '如果找不到这样的 transfer，A 就不能再叫“原 Bounded 的纯工程加速”。那时可以继续研究 parallel / approximate optimizer，但必须给它新的 method identity，再做前瞻性的科学资格实验。',
+      'If no such transfer exists, A can no longer be called a pure engineering acceleration of the original Bounded method. A parallel or approximate optimizer may still be worth studying, but it needs a new method identity and prospective scientific qualification.',
+    )}</p>
+  </section>
+
+  <section class="ba-accel__section" aria-labelledby="decision-title">
+    <h2 id="decision-title">{t('现在的研究路线已经收窄', 'The research path is now much narrower')}</h2>
+    <div class="ba-accel__decision-list">
+      <div><strong>{t('B · 四卡 compression suffix', 'B · four-GPU compression suffix')}</strong><p>{t('正确性有希望：GPU0–3 两种物理映射都 exact。性能上当前是负收益；正式 GPU4–7 B2/B3 仍未关闭。', 'Correctness looks promising: two GPU0–3 physical mappings were exact. Performance is currently negative; formal GPU4–7 B2/B3 remain open.')}</p></div>
+      <div><strong>{t('Muon / SVD 优化', 'Muon / SVD optimization')}</strong><p>{t('降级。Muon 不是 truncated-SVD drop-in replacement，exact batched SVD 也没有打败原 serial suffix。', 'Deprioritized. Muon is not a truncated-SVD drop-in replacement, and exact batched SVD did not beat the original serial suffix.')}</p></div>
+      <div><strong>{t('naive A · 独立 chunk AdamW step', 'Naive A · independent AdamW-step chunks')}</strong><p>{t('排除为纯工程 successor。只改五个 step 的顺序，112/112 个 module 的有效更新都改变。', 'Ruled out as a pure engineering successor. Reordering only five steps changed the effective update in all 112 modules.')}</p></div>
+      <div><strong>{t('exact A · full-state transfer', 'Exact A · full-state transfer')}</strong><p>{t('仍然开放。只有推导出能保留完整 optimizer / model state 依赖并可 exact composition 的 transfer，才继续叫工程等价加速。', 'Still open. It remains an engineering-equivalent acceleration only if a transfer can preserve the full optimizer/model-state dependence and compose exactly.')}</p></div>
+    </div>
+    <p class="ba-accel__boundary ba-accel__boundary--inline">{t(
+      '这里没有把 GPU0–3 smoke 升级成正式 B2/B3，也没有宣布“所有 exact A 都不可能”。当前最合理的下一步是 A0/A1 数学推导；如果必须改变 optimizer 语义才能并行，再单独决定是否开一个新的科学方法。',
+      'Nothing here upgrades the GPU0–3 smokes into formal B2/B3, and nothing claims that every exact A is impossible. The next step is the A0/A1 derivation; if parallelism requires changing optimizer semantics, that becomes a separate decision about a new scientific method.',
+    )}</p>
+    <nav class="ba-accel__next" aria-label={t('相关研究', 'Related research')}>
+      <a href={boundedHref}>{t('回看 Bounded Online Recurrence 的封存结果', 'Review the sealed Bounded Online Recurrence result')}</a>
+      <a href={scalingHref}>{t('回看 Vanilla SD-LoRA 为什么随历史越来越慢', 'Review why Vanilla SD-LoRA slows as history grows')}</a>
+    </nav>
+  </section>
+  <details class="ba-accel__evidence">
+    <summary>{t('证据与复现边界', 'Evidence and reproduction boundary')}</summary>
+    <div class="ba-accel__evidence-grid">
+      <div><strong>{t('四卡 compression smoke', 'Four-GPU compression smoke')}</strong><p>{t('GPU0–3 两种物理映射、冷/热启动、single-container 与 batched-SVD 数据。', 'GPU0–3 two physical mappings, cold/warm startup, single-container, and batched-SVD measurements.')}</p><a href={deviceHref}><ExternalBrandMark href={deviceHref} />{t('打开公开证据', 'Open public evidence')}</a></div>
+      <div><strong>{t('真实训练与顺序反例', 'Real training and order counterexample')}</strong><p>{t('Qwen3-1.7B Round0 / steady-state profile，以及五个 AdamW step 反序后的 dense-update 比较。', 'Qwen3-1.7B Round0 / steady-state profiles and the dense-update comparison after reversing five AdamW steps.')}</p><a href={evidenceHref}><ExternalBrandMark href={evidenceHref} />{t('打开公开证据', 'Open public evidence')}</a></div>
+      <div><strong>{t('Muon / Newton–Schulz 判别', 'Muon / Newton–Schulz applicability')}</strong><p>{t('5 次与 12 次 NS 都仍为 rank136；它近似 orthogonalization / polar-like transform，不承担 top-128 选择。', 'Both 5- and 12-step NS remain rank136; the method approximates orthogonalization / a polar-like transform rather than top-128 selection.')}</p><a href={muonHref}><ExternalBrandMark href={muonHref} />{t('打开判别记录', 'Open applicability note')}</a></div>
+      <div><strong>{t('FLA / WY composability witness', 'FLA / WY composability witness')}</strong><p>{t('无 compression 的 affine recurrence 可以 exact compose；逐步 rank projection 的朴素 chunk-boundary 版本存在反例。', 'The affine recurrence without compression composes exactly; naive chunk-boundary projection has a counterexample when per-step rank projection is restored.')}</p><a href={flaHref}><ExternalBrandMark href={flaHref} />{t('打开组合性记录', 'Open composability note')}</a></div>
+    </div>
+    <p class="ba-accel__evidence-plan"><a href={planHref}><ExternalBrandMark href={planHref} />{t('BA / Bounded 后续加速完整计划与未关闭 checklist', 'Full BA / Bounded acceleration plan and still-open checklist')}</a></p>
+    <p class="ba-accel__provenance">{t(`网页事实固定到 openevo-experiment@${source.commit.slice(0, 12)}。这些 maintenance smoke 没有消耗新的 WebShop formal rows，也没有访问 protected final panel。`, `The page facts are pinned to openevo-experiment@${source.commit.slice(0, 12)}. These maintenance smokes consumed no new formal WebShop rows and never accessed the protected final panel.`)}</p>
+  </details>
+</article>
+<style>
+.ba-accel{width:min(1080px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--ink)}
+.ba-accel__hero{padding:clamp(1.5rem,3vw,2.75rem) 0 2.4rem;border-bottom:1px solid var(--line)}
+.ba-accel__context{margin:0 0 .7rem;color:var(--muted);font-size:1rem;font-weight:650}
+.ba-accel__hero h1{max-width:17ch;margin:0;font-family:var(--font-editorial);font-size:clamp(2.35rem,5.2vw,4.5rem);line-height:.98;letter-spacing:-.045em}
+.ba-accel__lede{max-width:52rem;margin:1.2rem 0 0;font-size:clamp(1.08rem,2vw,1.3rem);line-height:1.68}
+.ba-accel__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.8rem 0 0;border-block:1px solid var(--line)}
+.ba-accel__metrics div{padding:1rem 1rem 1rem 0}.ba-accel__metrics dt{color:var(--muted);font-size:1rem;line-height:1.4}.ba-accel__metrics dd{margin:.3rem 0 0;font-size:clamp(1.22rem,2.4vw,1.65rem);font-weight:800;line-height:1.2}
+.ba-accel__boundary{max-width:52rem;margin:1rem 0 0;padding-left:.9rem;border-left:2px solid var(--accent-deep);color:var(--muted);font-size:1rem;line-height:1.65}
+.ba-accel__section{padding:clamp(2.7rem,6vw,4.8rem) 0;border-bottom:1px solid var(--line)}
+.ba-accel__section h2{max-width:24ch;margin:0;font-size:clamp(1.65rem,3.4vw,2.55rem);line-height:1.12;letter-spacing:-.025em}
+.ba-accel__section>p{max-width:52rem;margin:1rem 0 0;font-size:1.04rem;line-height:1.72}
+.ba-accel__section>.ba-accel__result-line{font-size:clamp(1.12rem,2.1vw,1.28rem);font-weight:720}
+.ba-accel__table-wrap{margin-top:1.35rem;overflow-x:auto}
+.ba-accel__table{width:100%;min-width:680px;border-collapse:collapse}
+.ba-accel__table th,.ba-accel__table td{padding:.78rem .72rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:1rem;line-height:1.5}
+.ba-accel__table thead th{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink);font-weight:760}.ba-accel__table tbody th{font-weight:680}.ba-accel__table--numbers td{font-variant-numeric:tabular-nums}
+.ba-accel__equation{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;margin:1.4rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}
+.ba-accel__equation span{font-weight:720}.ba-accel__equation b{color:var(--accent-deep)}
+.ba-accel__order{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin:1.4rem 0 0;background:var(--line);border:1px solid var(--line)}
+.ba-accel__order div{display:grid;gap:.35rem;padding:1rem;background:var(--surface)}.ba-accel__order strong{font-size:1rem;color:var(--muted)}.ba-accel__order span{font:700 1.08rem/1.5 var(--font-mono)}
+.ba-accel__findings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:1.4rem 0 0;border-block:1px solid var(--line)}
+.ba-accel__findings div{padding:1rem 1rem 1rem 0}.ba-accel__findings dt{color:var(--muted);font-size:1rem}.ba-accel__findings dd{margin:.28rem 0 0;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.ba-accel__section>.ba-accel__boundary--inline{margin-top:1.25rem}
+.ba-accel__section>.ba-accel__formula{padding:.8rem 1rem;background:var(--surface-muted);border-left:3px solid var(--accent-deep);font-size:1rem}.ba-accel__formula code{white-space:normal}
+.ba-accel__decision-list{margin-top:1.35rem;border-top:1px solid var(--line)}
+.ba-accel__decision-list>div{display:grid;grid-template-columns:minmax(190px,.8fr) minmax(0,1.8fr);gap:1rem;padding:1rem 0;border-bottom:1px solid var(--line)}
+.ba-accel__decision-list strong{font-size:1.02rem}.ba-accel__decision-list p{margin:0;color:var(--ink);line-height:1.62}
+.ba-accel__next{display:flex;flex-wrap:wrap;gap:.7rem 1.2rem;margin-top:1.2rem}.ba-accel__next a,.ba-accel__evidence a{color:var(--accent-deep);font-weight:700;text-underline-offset:.2em}
+.ba-accel__evidence{margin:2.8rem 0 0;border-block:1px solid var(--line);padding:.9rem 0}.ba-accel__evidence summary{cursor:pointer;font-weight:780;line-height:1.5}
+.ba-accel__evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 1.4rem;margin-top:1rem}.ba-accel__evidence-grid>div{padding:1rem 0;border-top:1px solid var(--line)}
+.ba-accel__evidence-grid p{margin:.35rem 0 .55rem;color:var(--muted);font-size:1rem;line-height:1.58}.ba-accel__evidence-plan{margin:1rem 0 0}.ba-accel__provenance{max-width:52rem;margin:.8rem 0 0;color:var(--muted);font-size:1rem;line-height:1.6}
+@media(max-width:760px){
+  .ba-accel{width:min(100% - 1rem,1080px)}
+  .ba-accel__hero{padding-top:2rem}
+  .ba-accel__metrics,.ba-accel__findings{grid-template-columns:1fr}
+  .ba-accel__metrics div,.ba-accel__findings div{padding:.85rem 0;border-bottom:1px solid var(--line)}
+  .ba-accel__metrics div:last-child,.ba-accel__findings div:last-child{border-bottom:0}
+  .ba-accel__order{grid-template-columns:1fr}
+  .ba-accel__decision-list>div{grid-template-columns:1fr;gap:.35rem}
+  .ba-accel__evidence-grid{grid-template-columns:1fr}
+  .ba-accel__table{min-width:640px}
+}
+</style>
