@@ -328,6 +328,81 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
     <p class="esg__sealed-conclusion">{t('OFF 的累积状态和最后一轮 Task Vector 略大，但把 LoRA 加回基础模型后，两边完整权重的谱范数中位比都非常接近 1.000，参数稳定性 p95 也几乎相同。因此 Final 差异不能简单解释成“谁的参数整体更大”。', 'OFF has a somewhat larger cumulative state and final-round Task Vector, but after adding LoRA back to the base model, both median full/base spectral ratios remain extremely close to 1.000 and parameter-stability p95 is nearly identical. The final-result gap therefore cannot be reduced to “one model simply has larger parameters.”')}</p>
   </section>
 
+  <section class="esg__section" id="posthoc" aria-labelledby="posthoc-title">
+    <h2 id="posthoc-title">{t('参数和行为告诉了我们什么', 'What the parameters and behavior tell us')}</h2>
+    <p>{t(
+      '正式实验封存以后，我们只读分析了已经保存的参数和 rollout，没有重跑 WebShop、没有改模型。这组结果先排除了一个简单解释：不能用某一个 norm 越大或越小，直接解释 WebShop 分数。',
+      'After the formal study was sealed, we analyzed only the saved parameters and rollouts. No WebShop task was rerun and no model state was changed. The analysis rules out a simple explanation first: WebShop score cannot be explained directly by one norm being larger or smaller.',
+    )}</p>
+
+    <div class="esg__posthoc-stack">
+      <article>
+        <h3>{t('Task Vector 和范数目前不能直接解释分数变化', 'Task Vector and norms do not directly explain score changes')}</h3>
+        <p>{t(
+          `普通 OpenEVO 里，直接算相关性时，参数状态 Frobenius 范数与 Task Score 的 Spearman ρ=${study.posthocAnalysis.parameterScore.stateFroSpearmanRaw.toFixed(2)}，Task Vector Frobenius 也有 ρ=${study.posthocAnalysis.parameterScore.taskVectorSpearmanRaw.toFixed(2)}。但把 20 轮窗口里的共同训练趋势去掉以后，两项 Pearson 相关分别只剩 ${study.posthocAnalysis.parameterScore.stateFroWithin20Pearson.toFixed(3)} 和 +${study.posthocAnalysis.parameterScore.taskVectorWithin20Pearson.toFixed(3)}。`,
+          `In ordinary OpenEVO, raw correlations look substantial: state Frobenius vs Task Score has Spearman ρ=${study.posthocAnalysis.parameterScore.stateFroSpearmanRaw.toFixed(2)}, and Task Vector Frobenius reaches ρ=${study.posthocAnalysis.parameterScore.taskVectorSpearmanRaw.toFixed(2)}. After removing the shared within-20-round training trend, the two Pearson correlations shrink to ${study.posthocAnalysis.parameterScore.stateFroWithin20Pearson.toFixed(3)} and +${study.posthocAnalysis.parameterScore.taskVectorWithin20Pearson.toFixed(3)}.`,
+        )}</p>
+        <p class="esg__boundary">{t(
+          `用当前 Task Vector 预测后 5 轮分数时，95% block-bootstrap 区间 ${study.posthocAnalysis.parameterScore.taskVectorFuture5Ci95[0].toFixed(3)} → +${study.posthocAnalysis.parameterScore.taskVectorFuture5Ci95[1].toFixed(3)} 仍跨过 0。现在没有证据支持“Task Vector / norm 越大，WebShop 就越好”。`,
+          `For a five-round-ahead prediction from the current Task Vector, the 95% block-bootstrap interval ${study.posthocAnalysis.parameterScore.taskVectorFuture5Ci95[0].toFixed(3)} → +${study.posthocAnalysis.parameterScore.taskVectorFuture5Ci95[1].toFixed(3)} still crosses zero. We do not have evidence that a larger Task Vector or norm is intrinsically better for WebShop.`,
+        )}</p>
+      </article>
+
+      <article>
+        <h3>{t('线性参数约束后期不只是“压小”，更新方向也分开了', 'The late constraint changes direction, not just magnitude')}</h3>
+        <p>{t(
+          `R159 时，ON 这一轮更新的大小约为 OFF 的 ${(study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff * 100).toFixed(1)}%，但两边更新方向的 cosine 是 ${study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}。第 19–27 层的平均 cosine 进一步降到 ${study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}。`,
+          `At R159, the ON update is about ${(study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff * 100).toFixed(1)}% the size of OFF, but their update-direction cosine is ${study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}. Across layers 19–27, the mean cosine falls further to ${study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}.`,
+        )}</p>
+        <p>{t(
+          `所以当前更像是：约束不仅改变了“走多远”，长期累计后也把模型带到了不同的更新方向。状态大小比与后续 5 轮分数差变化有 ρ=${study.posthocAnalysis.exploratoryAssociation.stateNormRatioFuture5GapSpearman.toFixed(2)} 的趋势，但只有 ${study.posthocAnalysis.exploratoryAssociation.anchorCount} 个锚点，exact permutation p=${study.posthocAnalysis.exploratoryAssociation.exactPermutationP.toFixed(3)}，还不能写成因果结论。`,
+          `The current picture is therefore not only “how far the update moves”: over time the constraint also leads to a different update direction. State-size ratio has an exploratory ρ=${study.posthocAnalysis.exploratoryAssociation.stateNormRatioFuture5GapSpearman.toFixed(2)} association with the next-five-round score-gap change, but there are only ${study.posthocAnalysis.exploratoryAssociation.anchorCount} anchors and exact permutation p=${study.posthocAnalysis.exploratoryAssociation.exactPermutationP.toFixed(3)}. This is not causal proof.`,
+        )}</p>
+      </article>
+
+      <article>
+        <h3>{t('掉分时，每一步没有变长，但任务路径又变长了', 'When score falls, each step stays short but the task path gets longer')}</h3>
+        <p>{t(
+          `三条线整体都会越训越短。普通 OpenEVO 每步平均输出从 ${study.posthocAnalysis.outputLength.ordinary.earlyStepTokens.toFixed(1)} 降到 ${study.posthocAnalysis.outputLength.ordinary.lateStepTokens.toFixed(1)} tokens，平均步骤从 ${study.posthocAnalysis.outputLength.ordinary.earlySteps.toFixed(2)} 降到 ${study.posthocAnalysis.outputLength.ordinary.lateSteps.toFixed(2)}；Bounded 也从 ${study.posthocAnalysis.outputLength.bounded.earlyStepTokens.toFixed(1)} 降到 ${study.posthocAnalysis.outputLength.bounded.lateStepTokens.toFixed(1)} tokens。`,
+          `All three lines become shorter overall. Ordinary OpenEVO falls from ${study.posthocAnalysis.outputLength.ordinary.earlyStepTokens.toFixed(1)} to ${study.posthocAnalysis.outputLength.ordinary.lateStepTokens.toFixed(1)} tokens per step, while mean steps fall from ${study.posthocAnalysis.outputLength.ordinary.earlySteps.toFixed(2)} to ${study.posthocAnalysis.outputLength.ordinary.lateSteps.toFixed(2)}. Bounded likewise falls from ${study.posthocAnalysis.outputLength.bounded.earlyStepTokens.toFixed(1)} to ${study.posthocAnalysis.outputLength.bounded.lateStepTokens.toFixed(1)} tokens per step.`,
+        )}</p>
+        <p>{t(
+          `线性参数约束在 R96–127 → R128–159 时，每步输出 ${study.posthocAnalysis.outputLength.linearConstraint.midStepTokens.toFixed(1)} → ${study.posthocAnalysis.outputLength.linearConstraint.lateStepTokens.toFixed(1)} tokens，并没有变啰嗦；但平均步骤 ${study.posthocAnalysis.outputLength.linearConstraint.midSteps.toFixed(2)} → ${study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)}，Task Score ${study.posthocAnalysis.outputLength.linearConstraint.midScore.toFixed(3)} → ${study.posthocAnalysis.outputLength.linearConstraint.lateScore.toFixed(3)}。这说明后期掉分不是因为单步输出变长；更直接的行为变化是平均步骤数增加。`,
+          `For the constrained line from R96–127 to R128–159, output per step changes from ${study.posthocAnalysis.outputLength.linearConstraint.midStepTokens.toFixed(1)} to ${study.posthocAnalysis.outputLength.linearConstraint.lateStepTokens.toFixed(1)} tokens, so it does not become more verbose. But mean steps rise from ${study.posthocAnalysis.outputLength.linearConstraint.midSteps.toFixed(2)} to ${study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)}, while Task Score falls from ${study.posthocAnalysis.outputLength.linearConstraint.midScore.toFixed(3)} to ${study.posthocAnalysis.outputLength.linearConstraint.lateScore.toFixed(3)}. The late score drop is therefore not explained by longer per-step output; the direct behavioral change is that more steps are needed on average.`,
+        )}</p>
+        <p class="esg__boundary">{t('三条 160 轮正式 rollout 当时没有保存逐 token logits / logprobs，所以不能只凭文本事后回算真正的 token entropy。历史 Q17 有局部 checkpoint entropy 诊断，但它不是三条线的长期 entropy 对照。', 'The 160-round formal rollouts did not persist per-token logits/logprobs, so true token entropy cannot be reconstructed from text alone. A local Q17 checkpoint entropy diagnostic exists historically, but it is not a long-horizon three-way entropy comparison.')}</p>
+      </article>
+
+      <article>
+        <h3>{t('当前 GDR 已经会自适应，但它只看局部优化状态', 'Current GDR is adaptive, but only to local optimization state')}</h3>
+        <p>{t(
+          `当前 β 不是固定常数。一个冻结的小网络读取 ${study.posthocAnalysis.gdr.betaControllerFeatures} 个局部特征，包括 LoRA 因子、梯度、coefficient、Adam 一二阶动量、rank 位置和训练进度，再决定这一小步写多强。reward、Task Score 和 Task Vector 都不会进入这个 controller。`,
+          `Beta is not a fixed constant. A frozen small network reads ${study.posthocAnalysis.gdr.betaControllerFeatures} local features—including LoRA factors, gradients, coefficient, Adam moments, rank position, and training progress—to decide how strongly to write each small update. Reward, Task Score, and Task Vector do not enter the controller.`,
+        )}</p>
+        <div class="esg__posthoc-formulas" aria-label={t('Gated Delta 与 Bounded 的简化公式', 'Simplified Gated Delta and Bounded formulas')}>
+          <p><span>原始 Gated Delta</span><code>Sₜ = αₜSₜ₋₁(I − βₜkₜkₜᵀ) + βₜvₜkₜᵀ</code></p>
+          <p><span>Bounded OFF</span><code>Sₜ = Compress(Sₜ₋₁ + Δₜ)</code></p>
+          <p><span>Bounded + GDR</span><code>Sₜ = Compress(Sₜ₋₁ + GDRβₜ(Δₜ))</code></p>
+        </div>
+        <p class="esg__boundary">{t('上面第一行是原始 Gated Delta 的状态更新公式；下面两行只是把它对应到本实验的 Bounded 写入位置。实际 ON runtime 控制的是 LoRA 的有效写入，不是直接执行第一行矩阵公式。', 'The first line is the original Gated Delta state-update equation. The next two lines only locate that idea in this experiment’s Bounded write path. The ON runtime controls effective LoRA writes rather than directly executing the first matrix equation.')}</p>
+        <p>{t('因此“再 adaptive 一点”不是从固定系数改成动态系数，而是研究这个动态 β 还应该知道什么。现在最值得前瞻验证的是 layer / round / 历史更新方向等信息能否帮助它区分“该压的噪声”和“应该保留的有效更新”；这必须作为新的预注册实验，不能用已经看到的 reward 或 final 去回头调当前实验。', 'So making the rule “more adaptive” does not mean replacing a fixed coefficient with a dynamic one; beta is already dynamic. The next prospective question is whether layer, round, or historical update-direction information helps distinguish noise from useful updates. That requires a new preregistered experiment and cannot tune this completed study using observed reward or final results.')}</p>
+      </article>
+
+      <article>
+        <h3>{t('Stage 1 的参数起点用 OPSD，不是 SEED 的 hindsight-skill SFT', 'Stage 1 uses OPSD rather than SEED hindsight-skill SFT')}</h3>
+        <p>{t(
+          `SEED 的 Stage 1 会把 hindsight skill 作为监督目标做 SFT。我们这批 1.7B 则是 1,440 条轨迹经 MiniMax 回看后进入 OPSD 参数 bootstrap；Qwen3-1.7B 这一步实际完成 ${study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString('en-US')} 个 optimizer steps，随后 merge 成 Stage 2 起点。`,
+          `SEED Stage 1 uses hindsight skills as supervised SFT targets. This 1.7B OpenEVO line instead sends the 1,440 trajectories through MiniMax post-hoc analysis and then an OPSD parameter bootstrap; the Qwen3-1.7B bootstrap completed ${study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString('en-US')} optimizer steps before being merged into the Stage-2 origin.`,
+        )}</p>
+        <p class="esg__boundary">{t('当前三条 Stage 2 实验不能回答“SFT warm-start 和 OPSD warm-start 谁更好”。如果要回答，需要单独做一个起点匹配的 SFT → OpenEVO Stage 2 对照。', 'These three Stage-2 runs do not answer whether an SFT warm start is better than an OPSD warm start. That requires a separate matched SFT → OpenEVO Stage-2 comparison.')}</p>
+      </article>
+    </div>
+
+    <p class="esg__history-link"><a href={study.posthocAnalysis.wandbWorkspace}><ExternalBrandMark href={study.posthocAnalysis.wandbWorkspace} />{t('打开 W&B 原生参数 / 方向 / 输出长度曲线 →', 'Open the native W&B parameter, direction, and output-length plots →')}</a></p>
+    <p class="esg__history-link"><a href={study.posthocAnalysis.snapshot}>{t('查看这轮只读后分析的机器可读快照 →', 'Open the machine-readable post-hoc snapshot →')}</a></p>
+    <p class="esg__history-link"><a href={study.posthocAnalysis.stage1.qwen3OneP7bOpsdRelease}><ExternalBrandMark href={study.posthocAnalysis.stage1.qwen3OneP7bOpsdRelease} />{t('查看 1.7B Stage 1 OPSD 封存记录 →', 'Open the sealed 1.7B Stage-1 OPSD record →')}</a></p>
+  </section>
+
   <section class="esg__section" id="evidence" aria-labelledby="evidence-title">
     <h2 id="evidence-title">{t('证据与当前边界', 'Evidence and current boundary')}</h2>
     <details class="esg__details" open>
@@ -461,6 +536,15 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
   .esg__result-reading strong { color:var(--text-primary); }
   .esg__boundary { color:var(--text-secondary); font-size:1rem; }
   .esg__history-link { margin-top:22px; }
+  .esg__posthoc-stack { display:grid; gap:0; margin-top:18px; }
+  .esg__posthoc-stack article { padding:22px 0; border-top:1px solid var(--border-color); }
+  .esg__posthoc-stack article:first-child { border-top-width:2px; }
+  .esg__posthoc-stack h3 { margin:0 0 10px; font-size:clamp(1.15rem,2vw,1.45rem); }
+  .esg__posthoc-stack p { margin:9px 0; }
+  .esg__posthoc-formulas { display:grid; gap:8px; margin:15px 0; padding:14px 16px; border-left:3px solid var(--accent); background:var(--surface-secondary); }
+  .esg__posthoc-formulas p { display:grid; grid-template-columns:minmax(110px,.32fr) minmax(0,1fr); gap:12px; margin:0; align-items:baseline; }
+  .esg__posthoc-formulas span { color:var(--text-secondary); font:700 .9rem/1.4 var(--font-mono); }
+  .esg__posthoc-formulas code { font-size:.95rem; }
   code { overflow-wrap:anywhere; }
 
   @media (max-width: 760px) {
@@ -473,6 +557,7 @@ const onLoss = sealed ? lossPoints(sealed.trajectory.on) : '';
     .esg__steps li { grid-template-columns:34px 1fr; padding:15px; }
     .esg__fork { width:70%; }
     .esg__matched-list { columns:1; }
+    .esg__posthoc-formulas p { grid-template-columns:1fr; gap:3px; }
   }
 
   @media (prefers-reduced-motion: reduce) {

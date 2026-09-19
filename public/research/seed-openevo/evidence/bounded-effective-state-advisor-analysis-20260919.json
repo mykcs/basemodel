@@ -1,0 +1,47 @@
+{
+  "schema": "basemodel.bounded-effective-state-advisor-analysis.v1",
+  "checked_at": "2026-09-19T21:30:00+08:00",
+  "status": "EXPLORATORY_READ_ONLY_POSTHOC",
+  "scientific_authority": false,
+  "gpu_used": false,
+  "wandb": {
+    "run_id": "f587a9687171dadb",
+    "workspace": "https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments?nw=aq3kg4ro7rf"
+  },
+  "source_artifact_sha256": {
+    "parameter_score_association": "ff9155e4710b474b5dfa9dd98aac930162f861ec988b01c5f76399f93598638c",
+    "direction_magnitude": "572be4e1fd0161ea893ae6a9d26e857178c3775dbaea1e56e452031dcf1df48b",
+    "output_length": "e14f94c54da766e5564395693c730acd0e08741b343b6e1be6f22f041126d006"
+  },
+  "parameter_score": {
+    "ordinary_state_fro_spearman_raw": 0.7203187040892476,
+    "ordinary_state_fro_pearson_within20_centered": -0.005192910826452355,
+    "ordinary_task_vector_spearman_raw": 0.5973866166647135,
+    "ordinary_task_vector_pearson_within20_centered": 0.044898299319663375,
+    "ordinary_task_vector_future5_beta": -0.15540785205401592,
+    "ordinary_task_vector_future5_block8_ci95": [-0.2779314881545027, 0.043872949567619224]
+  },
+  "direction_magnitude_r159": {
+    "update_cosine_on_off": -0.2869049545428405,
+    "update_norm_ratio_on_off": 0.8885967054679342,
+    "state_cosine_on_off": 0.35726423308613736,
+    "state_norm_ratio_on_off": 0.8515301302462014,
+    "late_layers_19_27_update_cosine_mean": -0.37233185811086655
+  },
+  "exploratory_association": {
+    "state_norm_ratio_vs_future5_gap_change_spearman": -0.6190476190476191,
+    "anchor_count": 8,
+    "exact_permutation_p": 0.11498015873015872
+  },
+  "output_length_windows": {
+    "ordinary": {"r0_31_step_tokens": 43.33998502988982, "r128_159_step_tokens": 26.349412672288654, "r0_31_steps": 9.803955078125, "r128_159_steps": 6.926025390625},
+    "bounded": {"r0_31_step_tokens": 50.86332454641171, "r128_159_step_tokens": 28.413994410808378, "r0_31_steps": 9.166259765625, "r128_159_steps": 7.544921875},
+    "linear_constraint": {"r96_127_step_tokens": 29.50113782295178, "r128_159_step_tokens": 28.393542405944757, "r96_127_steps": 7.907958984375, "r128_159_steps": 8.60205078125, "r96_127_score": 0.6011636744467552, "r128_159_score": 0.5681677827380951}
+  },
+  "entropy_boundary": {
+    "token_predictive_entropy_available": false,
+    "reason": "Formal rollout artifacts did not persist per-token logits or logprobs; token entropy cannot be reconstructed from text alone.",
+    "action_family_entropy_is_behavioral_only": true
+  },
+  "claim_boundary": "These diagnostics explain candidate mechanisms and behavior changes. They do not establish that any single norm, spectral statistic, update direction, output length, or entropy proxy causally determines WebShop score."
+}

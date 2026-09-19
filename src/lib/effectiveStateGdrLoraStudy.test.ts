@@ -149,6 +149,28 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.parameterAnalysis.on.fullToBaseSpectralRatioMedian).toBeCloseTo(1.0001246314969383, 10);
   });
 
+  it('publishes the read-only advisor diagnostics without upgrading them into causal evidence', () => {
+    expect(study.posthocAnalysis.status).toBe('EXPLORATORY_READ_ONLY_POSTHOC');
+    expect(study.posthocAnalysis.scientificAuthority).toBe(false);
+    expect(study.posthocAnalysis.parameterScore.stateFroSpearmanRaw).toBeCloseTo(0.7203187041, 9);
+    expect(study.posthocAnalysis.parameterScore.stateFroWithin20Pearson).toBeCloseTo(-0.0051929108, 9);
+    expect(study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff).toBeCloseTo(-0.2869049545, 9);
+    expect(study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff).toBeCloseTo(0.8885967055, 9);
+    expect(study.posthocAnalysis.exploratoryAssociation.exactPermutationP).toBeGreaterThan(0.05);
+    expect(study.posthocAnalysis.outputLength.linearConstraint.lateSteps).toBeGreaterThan(study.posthocAnalysis.outputLength.linearConstraint.midSteps);
+    expect(study.posthocAnalysis.entropy.fullThreeWayTokenEntropyAvailable).toBe(false);
+    expect(study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps).toBe(11_198);
+    expect(study.posthocAnalysis.gdr.betaControllerFeatures).toBe(22);
+    expect(study.posthocAnalysis.gdr.controllerUsesTaskVector).toBe(false);
+
+    const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
+    expect(component).toContain('Task Vector 和范数目前不能直接解释分数变化');
+    expect(component).toContain('不能只凭文本事后回算真正的 token entropy');
+    expect(component).toContain('当前 GDR 已经会自适应');
+    expect(component).toContain('Stage 1 的参数起点用 OPSD');
+    expect(component).toContain('不能写成因果结论');
+  });
+
   it('freezes the matched formal budget, independent progression, and locked final panel', () => {
     expect(study.formalDesign.rounds).toBe(160);
     expect(study.formalDesign.rolloutsPerRoundPerArm).toBe(128);

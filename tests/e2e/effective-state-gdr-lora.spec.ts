@@ -28,6 +28,23 @@ for (const viewport of [
   });
 }
 
+test('Effective-State post-hoc section keeps facts, inference, and entropy boundary separate', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const posthoc = page.locator('#posthoc');
+  await expect(posthoc).toBeVisible();
+  await expect(posthoc).toContainText('Task Vector 和范数目前不能直接解释分数变化');
+  await expect(posthoc).toContainText('0.72');
+  await expect(posthoc).toContainText('-0.287');
+  await expect(posthoc).toContainText('29.5 → 28.4');
+  await expect(posthoc).toContainText('不能只凭文本事后回算真正的 token entropy');
+  await expect(posthoc).toContainText('当前 GDR 已经会自适应');
+  await expect(posthoc).toContainText('11,198');
+  await expect(posthoc.getByRole('link', { name: /W&B 原生参数/ })).toHaveAttribute('href', /wandb\.ai/);
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+  expect(overflow).toBe(false);
+});
+
 test('Effective-State derivation keeps factor failure, controller failure, and successor identity separate', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
