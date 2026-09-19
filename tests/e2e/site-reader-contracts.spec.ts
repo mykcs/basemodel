@@ -210,7 +210,7 @@ test('Study desktop keeps the three SD-LoRA acceleration entries grouped and sho
     await expect(links.nth(1)).toContainText('Stable Reduction');
     await expect(links.nth(2)).toContainText('Bounded Online Recurrence');
 
-    const formalSuccessor = directApply.getByRole('link', { name: /后继正式对照：Bounded OFF \/ Effective-State GDR ON/ });
+    const formalSuccessor = directApply.getByRole('link', { name: /后继三组对比：普通 \/ Bounded Online Recurrence \/ \+ GDR/ });
     await expect(formalSuccessor).toHaveCount(1);
     await expect(formalSuccessor).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/');
     expect(await formalSuccessor.evaluate((link) => Boolean(link.closest('.experiment-child-group')))).toBe(false);

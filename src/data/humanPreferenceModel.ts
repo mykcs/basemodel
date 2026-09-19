@@ -328,6 +328,23 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     ],
   },
 
+
+  {
+    id: 'PREF-ABLATION-PAPER-NARRATIVE',
+    title: '消融实验先统一方法身份，再按科学论文的因果顺序展开',
+    statement: '当一个页面比较的是逐项增加机制的一组实验时，先用统一实验名和消融表回答“哪几组、各自加了什么、结果怎样”；随后按动机→方法→数学映射→实验→结果→分析组织主线。OFF/ON、DirectApply、Effective-State 等内部 run/arm 身份留在证据层，不应要求零上下文读者先做名称翻译。',
+    scopes: ['research-ui', 'research-copy', 'results', 'capability'],
+    confidence: 'explicit-project',
+    priority: 5,
+    retrievalTags: ['消融', 'ablation', '论文', 'ICLR', '方法对比', '命名一致', '对勾', 'Bounded Online Recurrence', 'Bounded State', 'GDR', '数学映射', 'Task Vector', 'entropy'],
+    supportingCaseIds: ['CASE-082', 'CASE-088', 'CASE-089', 'CASE-092'],
+    antiOvergeneralization: [
+      '不是所有研究页都要模仿论文版式；只有同一方法族的逐项消融才默认用这种入口。',
+      '统一公共实验名不能删除审计身份；run ID、OFF/ON、Effective-State 等仍在 provenance / evidence 精确保留。',
+      '不是公式越多越好；公式只在它解释方法为什么成立、变量怎样映射或结果为什么可解释时进入主线。',
+      '消融表可以描述同一冻结 final 上的三组结果，但若其中一组不是预注册同 campaign arm，必须就地保留这个因果比较边界。',
+    ],
+  },
 ];
 
 export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [
@@ -659,6 +676,19 @@ export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [
     accepted: 'SD-LoRA 的 900 多秒不是非得忍着。我们已经做出了一个确实能更快训练的 SD-LoRA v2；它不是原算法一模一样的复制品，但目前的小规模真实 WebShop 检查没有发现它因为加速而明显变笨。',
     reason: 'owner 明确说当前对话回复直接放网页已经不错；网页施工应保留这套自然表达，只在事实、边界、结构和证据层做必要编辑。',
     failureMechanisms: ['webification-language-regression', 'approved-prose-rewritten-into-jargon'],
+    ownerStatus: 'accepted',
+  },
+
+
+  {
+    id: 'PAIR-092-ABLATION-PAPER-NARRATIVE',
+    caseId: 'CASE-092',
+    preferenceIds: ['PREF-ABLATION-PAPER-NARRATIVE', 'PREF-OBJECT-FIRST', 'PREF-RESEARCH-JUDGMENT'],
+    scopes: ['research-ui', 'research-copy', 'results', 'capability'],
+    rejected: 'H1 用“Bounded Online Recurrence + Effective-State GDR”，结果区再列“DirectApply / Bounded OFF / Bounded + GDR ON”，并按 readiness / lifecycle / post-hoc 分节。',
+    accepted: '首层直接列三组：普通 OpenEVO / OpenEVO + Bounded Online Recurrence / OpenEVO + Bounded Online Recurrence + GDR；用 Bounded Online Recurrence、GDR 两列打勾，并给同一冻结 128 题 Final。正文按动机 → 方法与公式 → 实验 → 结果 → Analysis / Discussion 展开。',
+    reason: 'owner 明确指出旧页面需要读者自己把多套名称对齐，而且内部工作流结构打断科学叙事；论文式消融入口让陌生读者先建立统一实验身份，再理解方法为什么产生、怎样验证。',
+    failureMechanisms: ['inconsistent-experiment-identity', 'missing-ablation-overview', 'implementation-taxonomy-as-research-story', 'formula-without-mapping-bridge'],
     ownerStatus: 'accepted',
   },
 

@@ -34,12 +34,20 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(Number.isNaN(Date.parse(study.checkedAt))).toBe(false);
   });
 
-  it('publishes the sealed result without rewriting it as a universal winner claim', () => {
+  it('publishes the three experiments as one consistent ablation family without strengthening the causal claim', () => {
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
-    expect(component).toContain('60.72');
-    expect(component).toContain('45.98');
-    expect(component).toContain('20.77');
-    expect(component).toContain('区间跨 0');
+    expect(component).toContain('三个 OpenEVO 实验');
+    expect(component).toContain('paper-table--ablation');
+    expect(component).toContain('普通 OpenEVO');
+    expect(component).toContain('OpenEVO + Bounded Online Recurrence');
+    expect(component).toContain('OpenEVO + Bounded Online Recurrence + GDR');
+    expect(study.threeWayFinal.directApply.score).toBeCloseTo(60.71597673160174, 10);
+    expect(study.threeWayFinal.off.score).toBeCloseTo(45.984865395021635, 10);
+    expect(study.threeWayFinal.on.score).toBeCloseTo(20.769142316017317, 10);
+    expect(component).toContain('study.threeWayFinal.directApply.score.toFixed(2)');
+    expect(component).toContain('study.threeWayFinal.off.score.toFixed(2)');
+    expect(component).toContain('study.threeWayFinal.on.score.toFixed(2)');
+    expect(component).toContain('跨 0');
     expect(component).not.toContain('Effective-State GDR 优于 Bounded');
     expect(component).not.toContain('Effective-State GDR beats Bounded');
   });
@@ -147,6 +155,38 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.parameterAnalysis.coverage).toContain('17,920');
     expect(study.parameterAnalysis.off.fullToBaseSpectralRatioMedian).toBeCloseTo(1.000201829722446, 10);
     expect(study.parameterAnalysis.on.fullToBaseSpectralRatioMedian).toBeCloseTo(1.0001246314969383, 10);
+  });
+
+  it('publishes the read-only advisor diagnostics without upgrading them into causal evidence', () => {
+    expect(study.posthocAnalysis.status).toBe('EXPLORATORY_READ_ONLY_POSTHOC');
+    expect(study.posthocAnalysis.scientificAuthority).toBe(false);
+    expect(study.posthocAnalysis.parameterScore.stateFroSpearmanRaw).toBeCloseTo(0.7203187041, 9);
+    expect(study.posthocAnalysis.parameterScore.stateFroWithin20Pearson).toBeCloseTo(-0.0051929108, 9);
+    expect(study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff).toBeCloseTo(-0.2869049545, 9);
+    expect(study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff).toBeCloseTo(0.8885967055, 9);
+    expect(study.posthocAnalysis.exploratoryAssociation.exactPermutationP).toBeGreaterThan(0.05);
+    expect(study.posthocAnalysis.outputLength.linearConstraint.lateSteps).toBeGreaterThan(study.posthocAnalysis.outputLength.linearConstraint.midSteps);
+    expect(study.posthocAnalysis.entropy.fullThreeWayTokenEntropyAvailable).toBe(false);
+    expect(study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps).toBe(11_198);
+    expect(study.posthocAnalysis.gdr.betaControllerFeatures).toBe(22);
+    expect(study.posthocAnalysis.gdr.controllerUsesTaskVector).toBe(false);
+
+    expect(study.posthocAnalysis.behaviorEntropy.ordinaryEarly).toBeCloseTo(0.4895, 4);
+    expect(study.posthocAnalysis.behaviorEntropy.gdrLate).toBeCloseTo(0.3705, 4);
+    expect(study.posthocAnalysis.behaviorEntropy.validActionRate).toBe(1);
+
+    const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
+    expect(component).toContain('动机：SD-LoRA 越训练越慢');
+    expect(component).toContain('S<sub>t</sub> = Compress<sub>128</sub>');
+    expect(component).toContain('S<sub>t</sub> = α<sub>t</sub>S<sub>t−1</sub>(I − β<sub>t</sub>k<sub>t</sub>k<sub>t</sub><sup>T</sup>)');
+    expect(component).toContain('β<sub>t</sub>r<sub>t</sub>k<sub>t</sub><sup>T</sup>');
+    expect(component).not.toContain('β<sub>t</sub>k<sub>t</sub>r<sub>t</sub><sup>T</sup>');
+    expect(component).toContain('A → sA');
+    expect(component).toContain('Task Vector、范数和谱');
+    expect(component).toContain('不能补造 token entropy');
+    expect(component).toContain('约束要不要更 adaptive');
+    expect(component).toContain('study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString');
+    expect(component).toContain('不能说“Task Vector / norm 越大，WebShop 就越好”');
   });
 
   it('freezes the matched formal budget, independent progression, and locked final panel', () => {
