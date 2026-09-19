@@ -178,7 +178,9 @@ describe('Effective-State GDR publication snapshot', () => {
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
     expect(component).toContain('动机：SD-LoRA 越训练越慢');
     expect(component).toContain('S<sub>t</sub> = Compress<sub>128</sub>');
-    expect(component).toContain('α<sub>t</sub> = exp(g<sub>t</sub>)');
+    expect(component).toContain('S<sub>t</sub> = α<sub>t</sub>S<sub>t−1</sub>(I − β<sub>t</sub>k<sub>t</sub>k<sub>t</sub><sup>T</sup>)');
+    expect(component).toContain('β<sub>t</sub>r<sub>t</sub>k<sub>t</sub><sup>T</sup>');
+    expect(component).not.toContain('β<sub>t</sub>k<sub>t</sub>r<sub>t</sub><sup>T</sup>');
     expect(component).toContain('A → sA');
     expect(component).toContain('Task Vector、范数和谱');
     expect(component).toContain('不能补造 token entropy');

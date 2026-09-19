@@ -17,7 +17,7 @@ const directHref = p('/research/seed-openevo/study/capability-exploration/q17-di
     <p class="same-panel__eyebrow">{t('最新封存 · 1.7B', 'Latest sealed · 1.7B')}</p>
     <h2 id="latest-1p7b-title">{t('三组实验，做同一份 128 题', 'Three experiments on the same 128 tasks')}</h2>
     <p>{t(
-      '普通 OpenEVO、OpenEVO + Bounded State 和 OpenEVO + Bounded State + GDR 最后都用了完全相同的冻结题集。因此这三个 Final 可以直接并排看；但普通 OpenEVO 是更早的独立实验，不是后两组预注册匹配对照的第三条 arm。',
+      '普通 OpenEVO、OpenEVO + Bounded State 和 OpenEVO + Bounded State + GDR 最后都用了完全相同的冻结题集。因此这三次冻结终评可以直接并排看；但普通 OpenEVO 是更早的独立实验，不是后两组预注册正式对照的第三组。',
       'ordinary OpenEVO, OpenEVO + Bounded State, and OpenEVO + Bounded State + GDR all used exactly the same frozen final panel. Their final scores can therefore be shown side by side, but ordinary OpenEVO is an earlier independent experiment rather than a third arm of the preregistered matched contrast.',
     )}</p>
   </div>
@@ -43,7 +43,7 @@ const directHref = p('/research/seed-openevo/study/capability-exploration/q17-di
   <div class="same-panel__reading">
     <strong>{t('训练过程和最终考试给出的信号不一样。', 'Training trajectory and final exam give different signals.')}</strong>
     <p>{t(
-      '在 R1–R159 的训练期平均里，ON 的 reward 比 OFF 高约 0.025，但 95% 区间跨过 0，完整成功率反而低约 2.21 个百分点；到了冻结 Final，OFF 为 45.98，ON 为 20.77。两种测量回答不同问题，所以这里同时保留。',
+      '在 R1–R159 的训练期平均里，加 GDR 的组 reward 比只用 Bounded State 的组高约 0.025，但 95% 区间跨过 0，完整成功率反而低约 2.21 个百分点；到了冻结终评，Bounded State 为 45.98，Bounded State + GDR 为 20.77。两种测量回答不同问题，所以这里同时保留。',
       'Across R1–R159, ON mean reward is about 0.025 above OFF, but the 95% interval crosses zero and exact success is about 2.21 percentage points lower. On the frozen final, OFF scores 45.98 and ON 20.77. These measurements answer different questions, so both are retained.',
     )}</p>
   </div>
@@ -56,7 +56,7 @@ const directHref = p('/research/seed-openevo/study/capability-exploration/q17-di
   <details class="same-panel__evidence">
     <summary>{t('展开实验依据', 'Open experiment evidence')}</summary>
     <p>{t(
-      '三次终评的 panel content SHA、panel file SHA 与 selected-panel digest 完全一致。OFF / ON 的长期分析按预注册 moving-block bootstrap 计算；分类为 LONG_HORIZON_TRANSIENT_ONLY。',
+      '三次终评的题集内容 SHA、题集文件 SHA 与选题摘要完全一致。后两组的长期分析按预注册 moving-block bootstrap 计算；内部分类码为 LONG_HORIZON_TRANSIENT_ONLY。',
       'All three finals share identical panel-content SHA, panel-file SHA, and selected-panel digest. The OFF/ON long-horizon analysis uses the preregistered moving-block bootstrap and is classified LONG_HORIZON_TRANSIENT_ONLY.',
     )}</p>
     <a href={study.evidence.publicSnapshot}>{t('公开机器可读快照', 'Public machine-readable snapshot')}</a>

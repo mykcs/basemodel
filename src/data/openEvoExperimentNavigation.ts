@@ -138,7 +138,7 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
       { role: 'analysis', label: { zh: '普通 OpenEVO 的独立实验', en: 'Standalone ordinary OpenEVO experiment' }, href: `${cap}/q17-directapply-analysis/#final` },
       { role: 'mechanism', label: { zh: 'GDR 怎样控制一次参数写入', en: 'How GDR controls one parameter write' }, href: `${cap}/bounded-effective-state-gdr/#method` },
     ],
-    evidenceLink: { role: 'evidence', label: { zh: '最终 closeout 与公开证据', en: 'Final closeout and public evidence' }, href: `${cap}/bounded-effective-state-gdr/#evidence` },
+    evidenceLink: { role: 'evidence', label: { zh: '最终收口与公开证据', en: 'Final closeout and public evidence' }, href: `${cap}/bounded-effective-state-gdr/#evidence` },
   },
 ];
 

@@ -87,7 +87,7 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
       'Ordinary OpenEVO exposes a growing SD-LoRA history and increasingly expensive parameter updates. Bounded State fixes the history size, and GDR then controls new writes. All three final models use the same frozen 128-task panel.',
     )}</p>
     <p class="paper__boundary">{t(
-      '三次 Final 的冻结题集完全相同，所以可以并排描述。后两组是同一正式 campaign 的匹配对照；普通 OpenEVO 是更早独立完成的一条线，因此它不是后两组预注册匹配实验的第三个 arm。',
+      '三次冻结终评使用完全相同的 128 题，所以可以并排看。真正属于同一次预注册正式对照的是后两组；普通 OpenEVO 是更早独立完成的实验，不能把三行都当成同一次三组对照。',
       'The three finals use the exact same frozen panel and can be shown side by side descriptively. The last two rows form the matched formal campaign; ordinary OpenEVO is an earlier independent run, not a third arm of the preregistered matched contrast between the latter two rows.',
     )}</p>
   </header>
@@ -133,12 +133,20 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
       'Gated Delta Rule 的核心不是“线性 attention 更快”这件事，而是它怎样更新一个持续存在的 State：先保留或衰减旧 State，再读出已有内容，最后只把没有解释掉的 residual 按 β 写回。',
       'The useful idea from the Gated Delta Rule is not simply that linear attention is fast. It is the recurrent state update: retain or decay the old state, read what is already stored, then write back only the unexplained residual with strength β.',
     )}</p>
-    <div class="paper__equations">
-      <code>S̃<sub>t−1</sub> = α<sub>t</sub>S<sub>t−1</sub>, &nbsp; α<sub>t</sub> = exp(g<sub>t</sub>)</code>
-      <code>r<sub>t</sub> = v<sub>t</sub> − S̃<sub>t−1</sub>k<sub>t</sub></code>
-      <code>S<sub>t</sub> = S̃<sub>t−1</sub> + β<sub>t</sub>k<sub>t</sub>r<sub>t</sub><sup>T</sup></code>
+    <div class="paper__equation paper__equation--main">
+      <code>S<sub>t</sub> = α<sub>t</sub>S<sub>t−1</sub>(I − β<sub>t</sub>k<sub>t</sub>k<sub>t</sub><sup>T</sup>) + β<sub>t</sub>v<sub>t</sub>k<sub>t</sub><sup>T</sup></code>
+      <span>{t('论文原式：α 控制旧 State 的保留 / 衰减，β 控制 delta write 的强度。', 'Paper form: α controls retention / decay of the old State, while β controls delta-write strength.')}</span>
     </div>
-    <p class="paper__links"><a href={gdrPaperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={gdrPaperHref} />Gated Delta Networks</a> · <a href={gatedHref}>{t('我们前一版 Gated-Delta 推导 →', 'Our earlier Gated-Delta derivation →')}</a></p>
+    <p>{t(
+      '把论文原式按 residual 展开，会得到下面完全等价、也更容易和我们的参数写入过程对照的形式。这里 State 的约定是 dᵥ × dₖ，所以 residual 必须放在左边：rₜkₜᵀ，而不是 kₜrₜᵀ。',
+      'Rewriting the paper equation in residual form gives the exactly equivalent expression below, which is easier to compare with our parameter-write process. Under the paper’s d_v × d_k State convention, the residual is on the left: r_t k_t^T, not k_t r_t^T.',
+    )}</p>
+    <div class="paper__equations">
+      <code>S̃<sub>t−1</sub> = α<sub>t</sub>S<sub>t−1</sub></code>
+      <code>r<sub>t</sub> = v<sub>t</sub> − S̃<sub>t−1</sub>k<sub>t</sub></code>
+      <code>S<sub>t</sub> = S̃<sub>t−1</sub> + β<sub>t</sub>r<sub>t</sub>k<sub>t</sub><sup>T</sup></code>
+    </div>
+    <p class="paper__links"><a href={gdrPaperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={gdrPaperHref} />Gated Delta Networks · ICLR 2025</a> · <a href={gatedHref}>{t('我们前一版 Gated-Delta 推导 →', 'Our earlier Gated-Delta derivation →')}</a></p>
 
     <h3>2.3 {t('从 sequence State 映射到 OpenEVO 的参数 State', 'Mapping sequence State to OpenEVO parameter State')}</h3>
     <p>{t(
@@ -151,12 +159,17 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
         <tbody>
           <tr><td>State S</td><td>{t('固定 rank128 的长期参数状态', 'fixed-rank128 long-term parameter state')}</td><td>{t('跨轮保留', 'persistent across rounds')}</td></tr>
           <tr><td>residual write</td><td>{t('当前训练真正想写进 LoRA 的有效更新', 'effective LoRA write proposed by current training')}</td><td>{t('由 AdamW / LoRA 当前更新产生', 'from the current AdamW / LoRA update')}</td></tr>
-          <tr><td>β</td><td>{t('这一小步允许写多强', 'how strongly this step may write')}</td><td>{t('动态预测', 'predicted dynamically')}</td></tr>
-          <tr><td>α = exp(g)</td><td>{t('旧参数状态保留多少', 'how much prior state is retained')}</td><td><code>g = 0 → α = 1</code></td></tr>
+          <tr><td>β</td><td>{t('这一小步允许写多强', 'how strongly this step may write')}</td><td>{t('本实验真正启用的动态控制量', 'the dynamic control actually enabled in this study')}</td></tr>
+          <tr><td>α / g</td><td>{t('旧参数状态保留多少', 'how much prior state is retained')}</td><td>{t('本实验固定 g = 0，因此 α = 1：不额外衰减旧 State', 'this study fixes g = 0, hence α = 1: no extra decay of the prior State')}</td></tr>
           <tr><td>k / v</td><td>{t('保留“读旧状态 / 写 residual”的语义', 'retain the read-state / residual-write semantics')}</td><td>{t('不把 sequence 张量逐字映射成参数张量', 'not a literal tensor-to-tensor mapping')}</td></tr>
         </tbody>
       </table>
     </div>
+
+    <p>{t(
+      '因此，我们并不是把完整的 Gated DeltaNet 原封不动搬到参数空间。第一版正式实验保留“长期 State + residual write + 动态 β”这三件事，但把 α 固定为 1；这让实验只回答“控制新经验写入强度有没有帮助”，而不同时引入“主动遗忘旧参数状态”这个第二变量。',
+      'We therefore do not transplant the full Gated DeltaNet into parameter space. The first formal study keeps persistent State, residual write, and dynamic β, while fixing α=1. This isolates the question of controlling new-write strength without simultaneously introducing active forgetting of the old parameter State.',
+    )}</p>
 
     <h3>2.4 {t('为什么不能直接在 LoRA 的 A / C 因子上做约束', 'Why the gate cannot operate directly on raw LoRA factors')}</h3>
     <p>{t(
@@ -168,7 +181,7 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
       <code>A → sA, &nbsp; C → C/s &nbsp; ⇒ &nbsp; ΔW {t('不变', 'unchanged')}</code>
     </div>
     <p>{t(
-      `这也是为什么第一版 factor-space 映射会失败：空历史起点的 C 侧检查给出 β=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}，已经跑出合法区间；只修映射但继续沿用旧 controller 时，真实轨迹上甚至得到 β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}。所以最后的 treatment 改为控制 gauge-invariant 的 effective write，而不是 raw A/C 位移。`,
+      `这也是为什么第一版“直接控制 LoRA 因子”的映射会失败：空历史起点的 C 侧检查给出 β=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}，已经跑出合法区间；只修映射但继续沿用旧 β 控制器时，真实轨迹上甚至得到 β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}。所以最终方法控制的是不受 LoRA 因子缩放方式影响的有效参数写入 ΔW，而不是 A / C 因子本身的位移。`,
       `This is why the first factor-space mapping failed: at the empty-history start, the C-side check produced β=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}, outside the legal range; after fixing only the mapping but keeping the old controller, the real trajectory produced β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}. The final treatment therefore controls a gauge-invariant effective write rather than raw A/C displacement.`,
     )}</p>
     <div class="paper__equation paper__equation--main">
@@ -191,13 +204,13 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
     <dl class="paper__setup">
       <div><dt>{t('模型', 'Model')}</dt><dd>Qwen3-1.7B</dd></div>
       <div><dt>{t('环境', 'Environment')}</dt><dd>WebShop</dd></div>
-      <div><dt>Stage 2</dt><dd>160 × 128 = 20,480 rollouts / arm</dd></div>
+      <div><dt>Stage 2</dt><dd>160 × 128 = 每组 20,480 次任务尝试</dd></div>
       <div><dt>{t('历史状态', 'History state')}</dt><dd>rank128 Bounded State</dd></div>
       <div><dt>{t('当前参数更新', 'Current update')}</dt><dd>rank8 SD-LoRA</dd></div>
       <div><dt>{t('冻结终评', 'Frozen final')}</dt><dd>128 tasks</dd></div>
     </dl>
     <p>{t(
-      `这批 1.7B OpenEVO 的 Stage 2 起点来自 Stage 1 的 OPSD 参数 bootstrap；Qwen3-1.7B 的 Stage 1 OPSD 实际记录为 ${study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString('en-US')} 个 optimizer steps。它不是 SEED 的 hindsight-skill SFT，所以这三组实验本身不能回答“SFT warm-start 和 OPSD warm-start 谁更好”。`,
+      `这批 1.7B OpenEVO 的 Stage 2 起点来自 Stage 1 的 OPSD 参数学习；Qwen3-1.7B 的 Stage 1 OPSD 实际记录为 ${study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString('en-US')} 个优化器更新步。它不是 SEED 的 hindsight-skill SFT，所以这三组实验本身不能回答“SFT 起点和 OPSD 起点谁更好”。`,
       `The Stage-2 origin for this 1.7B OpenEVO lineage comes from the Stage-1 OPSD parameter bootstrap, which records ${study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString('en-US')} optimizer steps for Qwen3-1.7B. This is not SEED hindsight-skill SFT, so these three runs do not answer whether SFT or OPSD is the better warm start.`,
     )}</p>
   </section>
@@ -238,7 +251,7 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
           </table>
         </div>
         <p class="paper__boundary">{t(
-          '所以训练期平均 reward 的 +0.025 只能说明中间有过正向信号；置信区间跨 0，完整成功率还更低。预注册分类是 LONG_HORIZON_TRANSIENT_ONLY，不能写成“GDR 长期更好”。',
+          '所以训练期平均 reward 的 +0.025 只能说明中间出现过一段正向信号；置信区间跨 0，完整成功率还更低。按预注册规则，这只能算“短暂信号，没有形成长期稳定优势”（内部分类码：LONG_HORIZON_TRANSIENT_ONLY）。',
           'The +0.025 mean-reward difference shows a transient positive signal only; the interval crosses zero and exact success is lower. The preregistered classification is LONG_HORIZON_TRANSIENT_ONLY, not a stable long-horizon GDR win.',
         )}</p>
       </>
@@ -340,13 +353,13 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
     <p class="paper__section-number">6</p>
     <h2 id="evidence-title">{t('证据与复现身份', 'Evidence and reproducibility identity')}</h2>
     <p>{t(
-      '正文统一使用“普通 OpenEVO / Bounded State / Bounded State + GDR”这三个公共名称。为了审计，底层正式身份仍原样保留：普通 OpenEVO 对应历史 DirectApply / No-GDR；后两条正式 arm 分别是 BOUNDED_OFF 与 EFFECTIVE_STATE_GDR_LORA_V1。',
+      '正文统一使用“普通 OpenEVO / Bounded State / Bounded State + GDR”这三个公共名称。为了审计，底层正式身份仍原样保留：普通 OpenEVO 对应历史 DirectApply / No-GDR；后两组的正式实验标识分别是 BOUNDED_OFF 与 EFFECTIVE_STATE_GDR_LORA_V1。',
       'The main text uses one public naming system: ordinary OpenEVO, Bounded State, and Bounded State + GDR. For auditability, the underlying formal identities remain unchanged: ordinary OpenEVO maps to the historical DirectApply / No-GDR run, and the matched arms are BOUNDED_OFF and EFFECTIVE_STATE_GDR_LORA_V1.',
     )}</p>
     <details class="paper__details" open>
       <summary>{t('正式结果与同题 Final', 'Formal results and same-panel final')}</summary>
       <ul>
-        <li><a href={study.evidence.finalComparison}><ExternalBrandMark href={study.evidence.finalComparison} />{t('三组同题 Final / OFF-ON 正式比较', 'three-way same-panel final / formal OFF-ON comparison')}</a></li>
+        <li><a href={study.evidence.finalComparison}><ExternalBrandMark href={study.evidence.finalComparison} />{t('三组同题冻结终评 / Bounded 与 +GDR 正式比较', 'three-way same-panel final / formal Bounded vs +GDR comparison')}</a></li>
         <li><a href={study.evidence.longHorizon}><ExternalBrandMark href={study.evidence.longHorizon} />{t('长期统计与 bootstrap', 'long-horizon statistics and bootstrap')}</a></li>
         <li><a href={study.evidence.publicSnapshot}>{t('公开机器可读结果快照', 'public machine-readable snapshot')}</a></li>
         <li><a href={study.posthocAnalysis.snapshot}>{t('只读后分析快照', 'read-only post-hoc snapshot')}</a></li>
@@ -357,7 +370,7 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
       <ul>
         <li><a href={study.evidence.gaugeInvariantPolicy}><ExternalBrandMark href={study.evidence.gaugeInvariantPolicy} />gauge-invariant β policy</a></li>
         <li><a href={study.evidence.stepTrace}><ExternalBrandMark href={study.evidence.stepTrace} />exact per-step trace</a></li>
-        <li><a href={study.evidence.finalCloseout}><ExternalBrandMark href={study.evidence.finalCloseout} />final closeout</a></li>
+        <li><a href={study.evidence.finalCloseout}><ExternalBrandMark href={study.evidence.finalCloseout} />{t('最终收口记录', 'final closeout')}</a></li>
         <li><a href={directApplyHref}>{t('普通 OpenEVO 独立实验页', 'ordinary OpenEVO experiment')}</a></li>
         <li><a href={boundedHref}>{t('Bounded State 早期研究页', 'Bounded State research page')}</a></li>
       </ul>
