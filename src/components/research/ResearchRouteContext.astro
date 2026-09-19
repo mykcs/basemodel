@@ -30,9 +30,14 @@ const compactPurpose = route === 'first-run'
         ? (zh ? 'DirectApply 派生分析：SD-LoRA 计算扩展性。' : 'DirectApply analysis: SD-LoRA compute scaling.')
         : route === 'q17-directapply-frontier'
           ? (zh ? 'WebShop 网页购物任务。这里的更新规则是：候选参数通过共同检查后，下一轮直接使用，不再做旧 GDR-v1 的 16 题新旧参数小测；正式名称是 DirectApply / No-GDR。本页只比较第 127 / 128 轮起点的两个相邻参数状态在同一组 32 题上的局部变化。' : 'WebShop shopping tasks. Here, a candidate update enters the next round after the shared checks pass, without the old GDR-v1 16-task old-vs-new probe; the formal name is DirectApply / No-GDR. This page only compares the local change between the model states entering rounds 127 and 128 on the same 32 tasks.')
-          : record.purpose[locale];
+          : route === 'bounded-effective-state-gdr'
+            ? (zh ? '三组 1.7B：普通 OpenEVO / Bounded Online Recurrence / + GDR；160 轮，同一冻结 128 题。' : 'Three 1.7B experiments: ordinary OpenEVO / Bounded Online Recurrence / + GDR; 160 rounds and the same frozen 128-task final.')
+            : record.purpose[locale];
 const purpose = isExperimentHub && experiment && !compact ? experiment.motivation[locale] : (compact ? compactPurpose : record.purpose[locale]);
 const contextExperimentTitle = experiment?.title[locale];
+const contextExperimentHubTitle = route === 'bounded-effective-state-gdr'
+  ? (zh ? '1.7B · 三组实验' : '1.7B · three experiments')
+  : experiment?.title[locale];
 const contextRecordLabel = route === 'q17-directapply-frontier' && compact
   ? (zh ? '相邻两个模型状态 · 32 题同题诊断' : 'Two adjacent model states · 32-task same-task diagnostic')
   : record.label[locale];
@@ -52,7 +57,7 @@ const hubEvidence = experiment
       <>
         <a href={studyRoot}>{zh ? '实验目录' : 'Experiment index'}</a><span aria-hidden="true"> / </span>
         {isExperimentHub ? (
-          <strong>{experiment.title[locale]}</strong>
+          <strong>{contextExperimentHubTitle}</strong>
         ) : (
           <><a href={localePath(locale, experiment.primaryHref)}>{contextExperimentTitle}</a><span aria-hidden="true"> / </span><strong>{contextRecordLabel}</strong></>
         )}
@@ -78,6 +83,5 @@ const hubEvidence = experiment
 </aside>
 <style>
 .research-route-context{width:min(1120px,calc(100% - 2rem));margin:.75rem auto 0;padding:0 0 .55rem;border-bottom:1px solid var(--line);font-size:.95rem;color:var(--ink)}.research-route-context p{max-width:60rem;line-height:1.52;margin:.22rem 0}.research-route-context__location{font-size:.85rem;line-height:1.4}.research-route-context a{color:var(--accent-deep);text-underline-offset:.2em}.research-route-context a:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}.research-route-context[data-compact="true"]{display:grid;grid-template-columns:max-content minmax(0,1.25fr) minmax(0,1fr);gap:.25rem .9rem;align-items:baseline;margin-top:.55rem;padding-bottom:.4rem;font-size:.82rem}.research-route-context[data-compact="true"] p{max-width:none;margin:0;color:var(--muted);line-height:1.35}.research-route-context[data-compact="true"] .research-route-context__location{color:var(--ink);font-size:.8rem}@media(max-width:900px){.research-route-context[data-compact="true"]{grid-template-columns:1fr;gap:.12rem;margin-top:.45rem}.research-route-context[data-compact="true"] p{font-size:.78rem}.research-route-context[data-reader-route="q17-directapply-frontier"][data-compact="true"] [data-reader-task],.research-route-context[data-reader-route="q17-directapply-frontier"][data-compact="true"] [data-reader-purpose]{display:none}}
-.research-route-context[data-reader-route="bounded-effective-state-gdr"][data-compact="true"] [data-reader-task],.research-route-context[data-reader-route="bounded-effective-state-gdr"][data-compact="true"] [data-reader-purpose],.research-route-context[data-reader-route="bounded-effective-state-gdr"][data-compact="true"] .research-route-context__hub{display:none}
 .research-route-context__hub{grid-column:1/-1;margin:.35rem 0 0;padding-top:.25rem;border-top:1px solid var(--line)}.research-route-context__hub summary{width:max-content;max-width:100%;min-height:36px;cursor:pointer;color:var(--accent-deep);font-weight:750}.research-route-context__hub [data-hub-motivation]{max-width:60rem;margin:.45rem 0;color:var(--ink);line-height:1.5}.research-route-context__hub dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin:.5rem 0 0}.research-route-context__hub dl>div{min-width:0}.research-route-context__hub dt{font-weight:800;color:var(--ink)}.research-route-context__hub dd{display:grid;gap:.25rem;margin:.18rem 0 0}.research-route-context__hub dd a{overflow-wrap:anywhere}.research-route-context__method{max-width:60rem;margin:.6rem 0 0;color:var(--muted);line-height:1.5}.research-route-context__method strong{color:var(--ink)}.research-route-context__hub summary:focus-visible{outline:2px solid var(--accent-deep);outline-offset:3px}.research-route-context[data-compact="true"][data-experiment-hub-context="true"]{grid-template-columns:max-content minmax(0,1.1fr) minmax(0,1fr) max-content}.research-route-context[data-compact="true"][data-experiment-hub-context="true"] .research-route-context__hub{grid-column:auto;margin:0;padding:0;border:0;align-self:baseline;min-width:0}.research-route-context[data-compact="true"][data-experiment-hub-context="true"] .research-route-context__hub[open]{grid-column:1/-1;margin:.35rem 0 0;padding-top:.25rem;border-top:1px solid var(--line)}.research-route-context[data-compact="true"][data-experiment-hub-context="true"] .research-route-context__hub summary{min-height:0;white-space:nowrap}@media(max-width:900px){.research-route-context[data-compact="true"][data-experiment-hub-context="true"]{grid-template-columns:1fr}.research-route-context[data-compact="true"][data-experiment-hub-context="true"] .research-route-context__hub{grid-column:1;margin:.25rem 0 0;padding-top:.25rem;border-top:1px solid var(--line)}}@media(max-width:680px){.research-route-context__hub dl{grid-template-columns:1fr}}
 </style>

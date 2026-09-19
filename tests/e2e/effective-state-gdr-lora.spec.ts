@@ -123,7 +123,8 @@ test('phone first screen establishes the three experiments before deep method de
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const context = page.locator('.research-route-context');
   await expect(context).toHaveAttribute('data-compact', 'true');
-  await expect(context).toContainText('1.7B · 普通 OpenEVO / Bounded Online Recurrence / + GDR');
+  await expect(context).toContainText('1.7B · 三组实验');
+  await expect(context).toContainText('三组 1.7B：普通 OpenEVO / Bounded Online Recurrence / + GDR');
   const h1 = page.getByRole('heading', { level: 1 });
   await expect(h1).toContainText('三个 OpenEVO 实验');
   const ablation = page.locator('.paper-table-wrap--hero');
