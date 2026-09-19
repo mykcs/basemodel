@@ -1164,3 +1164,31 @@ owner 在 SD-LoRA v2 结果已经能用自然语言讲清以后明确说：`你�
 规律：**“从聊天搬到网页”首先是信息结构转换，不自动等于文体升级。owner 已明确认可的自然语言是正向证据；除非事实/边界需要纠正，否则不要为了显得正式而把它重新学术化、项目管理化或名词化。** 这不是要求逐字复制整段聊天：临时进度、PR/Preview 状态、重复寒暄和过期数字仍应删除，科学事实仍要对照当前 authority。
 
 这是对 2026-09-11 `但是你创造的这个网页里的语言，请说人话` 的同类复发；因此 `webification-language-regression / approved-prose-rewritten-into-jargon` 作为 repeated-explicit failure family 进入 HPL 的 task-time retrieval，而不是只留在 Markdown。
+
+<a id="case-092-消融实验先统一实验身份再按论文顺序讲"></a>
+### CASE-092 — 消融实验先统一实验身份，再按论文顺序讲
+**PREFERENCE · RESEARCH COPY + UI · 2026-09-20 · direct owner feedback on BaseModel PR #748**
+
+owner 明确说明每一次真人反馈都很昂贵，要求把本轮反馈作为高价值训练案例，而不是只修当前页面。被点名的页面是 `bounded-effective-state-gdr`：旧 H1 用 `Bounded Online Recurrence + Effective-State GDR`，首层结果又使用 `DirectApply / Bounded OFF / Bounded + Effective-State GDR ON`。对没有参与实验的人来说，同一组实验在标题、结果和正文里换了几套名字，必须先自己猜“哪个对应哪个”。
+
+owner 要求第一层直接说清：**我们做了三组 OpenEVO 实验**。三行分别是普通 OpenEVO、加入 Bounded State / Bounded Online Recurrence、再加入 GDR；用论文消融表的方式，把 `Bounded State`、`GDR` 做成列，有就打勾，最后直接放同一冻结 128 题的 Task Score / exact success。第一屏先让读者建立三组实验身份和差异，不从内部 treatment 名、ON/OFF 状态或研发代号开始。
+
+结构上，owner 进一步要求把整页当成一篇 ICLR 风格的方法论文，而不是内部研究记录：**动机 → 方法 → 数学推理/映射 → 实验 → 结果 → 分析 → 下一问**。动机从真实问题开始：普通 SD-LoRA 历史 component 越积越多，后期参数更新越来越慢；Bounded State 因此把长期历史压成固定 rank 的状态。方法部分要分别讲 Bounded State 和 GDR，并给必要公式；GDR 不能只贴原始 linear-attention 公式，还要解释我们如何把原来的 State、α / g、β、write residual 一步一步映射到 OpenEVO 的参数 State / LoRA effective write，以及为什么 raw A/C factor 坐标不能直接当控制对象。实验部分再用统一的 `Qwen3-1.7B / WebShop / 160 rounds / frozen 128-task final` 语言交代设置和结果。最后把 Task Vector、范数、更新方向、输出长度、步数、entropy 边界和 adaptive GDR 放进 Analysis / Discussion，而不是散落在页面各处。
+
+反面机制：
+- H1 用一个方法内部名，结果表又用另一套 run / arm 名，逼读者自己做实体对齐；
+- 同一组三组方法用独立卡片或状态标签表达，而不是一张能立即看出“加了什么”的消融表；
+- 页面按 readiness / lifecycle / implementation / post-hoc 等内部工作流分节，让科研问题被工程结构切碎；
+- 只贴 GDR 公式，却不解释 linear-attention state 为什么以及怎样映射成这里的参数 state；
+- 为了“专业”堆 Effective-State、OFF/ON、DirectApply 等 provenance 名，牺牲公共实验身份的一致性。
+
+认可方向：
+- 顶部三行消融表：统一实验名 + `Bounded State` / `GDR` 对勾 + frozen Final；
+- 一个公开实验在标题、表格、图例和正文只用一套主名称，内部 run / arm 名留到证据层；
+- 论文式科学顺序：真实问题先产生方法，再给公式和映射，再讲实验与分析；
+- 数学不是装饰：每个符号都要说明在原方法里是什么、迁到 OpenEVO 后对应什么，以及哪一步因实验/表示不变性而被修改；
+- Task Vector、norm、步数和 entropy 等学长关心的问题集中放在 Analysis / Discussion，先给测到什么，再给当前能下什么判断。
+
+规律：**对一组方法消融，第一任务不是展示内部实验管理状态，而是让零上下文读者立即建立“哪三组、每组多了什么、最后怎样”。建立统一身份以后，再按论文的科学因果顺序解释为什么设计这些方法、数学上如何成立、实验怎样验证、结果还留下什么问题。**
+
+边界：这不是要求所有科研网页都模仿论文排版，也不是每个页面都必须有消融表。只有当页面本身就是一组可逐项增加机制的实验家族时，消融表和统一命名才是最自然的第一层。深层 run ID、OFF/ON、Effective-State 等精确身份仍需在 provenance / evidence 中保留；简化公共命名不能改写科学比较边界。

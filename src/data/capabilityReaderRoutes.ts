@@ -113,7 +113,7 @@ export const CAPABILITY_READER_ROUTES = [
     "route": "bounded-effective-state-gdr",
     "coverage": "self-contained",
     "owner": "OpenEvoEffectiveStateGdrLoraStudy",
-    "label": { "zh": "Bounded + Effective-State GDR", "en": "Bounded + Effective-State GDR" },
+    "label": { "zh": "三个 1.7B OpenEVO 实验", "en": "Three 1.7B OpenEVO experiments" },
     "purpose": {
       "zh": "同一个 1.7B 从共同起点完成 160 轮 OFF / ON 正式对照，并在同一冻结 128 题上做终评。页面先给三条 1.7B 路线的同题 Final，再分别解释 OFF/ON 长周期统计、计算成本和参数范数。",
       "en": "The same 1.7B model completed a 160-round OFF/ON formal comparison and a final evaluation on the same frozen 128-task panel. The page first shows the three 1.7B finals on that shared test, then separates the OFF/ON long-horizon statistics, compute cost, and parameter-norm diagnostics."

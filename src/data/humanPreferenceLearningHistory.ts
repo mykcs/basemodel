@@ -707,6 +707,27 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     evidence: { repository: 'mykcs/basemodel', route: '/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/' },
   },
 
+
+  {
+    id: 'EVENT-20260920-BOUNDED-ABLATION-PAPER-NARRATIVE',
+    date: '2026-09-20',
+    caseIds: ['CASE-092'],
+    scopes: ['research-ui', 'research-copy', 'results', 'visual'],
+    artifact: 'BaseModel · three 1.7B OpenEVO / Bounded / GDR experiment page',
+    variantId: 'bounded-effective-state-internal-taxonomy-f5b368f9',
+    verdict: 'rejected',
+    ownerSignal: '标题应该直接说我们做了三组实验；像论文消融表一样用对勾说明每组加了什么，而且标题、DirectApply、Bounded、GDR 的名字必须统一。整页应该像一篇 ICLR 论文，按动机、方法、数学映射、实验、分析来讲。每一次反馈都很昂贵，要当成珍贵的真实案例写进反馈库。',
+    reasons: ['同一组三个实验使用多套公共名字，陌生读者无法快速对应', '缺少三行消融表，读者不能一眼看出每组增加了什么机制', 'readiness/lifecycle/implementation/post-hoc 的内部工程结构打断研究因果链', 'GDR 公式没有完整解释 linear-attention state/alpha/beta 到参数 state/effective write 的映射', 'Task Vector、步数、entropy 等后分析没有形成论文式 Analysis / Discussion'],
+    failureMechanisms: ['inconsistent-experiment-identity', 'missing-ablation-overview', 'implementation-taxonomy-as-research-story', 'formula-without-mapping-bridge'],
+    requestedSuccessorVariantId: 'bounded-three-arm-paper-narrative',
+    evidence: {
+      repository: 'mykcs/basemodel',
+      route: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',
+      pullRequest: 748,
+      gitSha: 'f5b368f948616d544f5b61f9b45f576aa9915538',
+    },
+  },
+
 ];
 
 export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [

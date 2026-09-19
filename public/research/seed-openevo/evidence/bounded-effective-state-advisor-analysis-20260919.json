@@ -19,7 +19,10 @@
     "ordinary_task_vector_spearman_raw": 0.5973866166647135,
     "ordinary_task_vector_pearson_within20_centered": 0.044898299319663375,
     "ordinary_task_vector_future5_beta": -0.15540785205401592,
-    "ordinary_task_vector_future5_block8_ci95": [-0.2779314881545027, 0.043872949567619224]
+    "ordinary_task_vector_future5_block8_ci95": [
+      -0.2779314881545027,
+      0.043872949567619224
+    ]
   },
   "direction_magnitude_r159": {
     "update_cosine_on_off": -0.2869049545428405,
@@ -34,14 +37,48 @@
     "exact_permutation_p": 0.11498015873015872
   },
   "output_length_windows": {
-    "ordinary": {"r0_31_step_tokens": 43.33998502988982, "r128_159_step_tokens": 26.349412672288654, "r0_31_steps": 9.803955078125, "r128_159_steps": 6.926025390625},
-    "bounded": {"r0_31_step_tokens": 50.86332454641171, "r128_159_step_tokens": 28.413994410808378, "r0_31_steps": 9.166259765625, "r128_159_steps": 7.544921875},
-    "linear_constraint": {"r96_127_step_tokens": 29.50113782295178, "r128_159_step_tokens": 28.393542405944757, "r96_127_steps": 7.907958984375, "r128_159_steps": 8.60205078125, "r96_127_score": 0.6011636744467552, "r128_159_score": 0.5681677827380951}
+    "ordinary": {
+      "r0_31_step_tokens": 43.33998502988982,
+      "r128_159_step_tokens": 26.349412672288654,
+      "r0_31_steps": 9.803955078125,
+      "r128_159_steps": 6.926025390625
+    },
+    "bounded": {
+      "r0_31_step_tokens": 50.86332454641171,
+      "r128_159_step_tokens": 28.413994410808378,
+      "r0_31_steps": 9.166259765625,
+      "r128_159_steps": 7.544921875
+    },
+    "linear_constraint": {
+      "r96_127_step_tokens": 29.50113782295178,
+      "r128_159_step_tokens": 28.393542405944757,
+      "r96_127_steps": 7.907958984375,
+      "r128_159_steps": 8.60205078125,
+      "r96_127_score": 0.6011636744467552,
+      "r128_159_score": 0.5681677827380951
+    }
   },
   "entropy_boundary": {
     "token_predictive_entropy_available": false,
     "reason": "Formal rollout artifacts did not persist per-token logits or logprobs; token entropy cannot be reconstructed from text alone.",
     "action_family_entropy_is_behavioral_only": true
   },
-  "claim_boundary": "These diagnostics explain candidate mechanisms and behavior changes. They do not establish that any single norm, spectral statistic, update direction, output length, or entropy proxy causally determines WebShop score."
+  "claim_boundary": "These diagnostics explain candidate mechanisms and behavior changes. They do not establish that any single norm, spectral statistic, update direction, output length, or entropy proxy causally determines WebShop score.",
+  "behavior_entropy": {
+    "definition": "Shannon entropy over observed WebShop action families (search/click), averaged by round in each 32-round window; not token predictive entropy",
+    "ordinary": {
+      "r0_31": 0.4895,
+      "r128_159": 0.4239
+    },
+    "bounded_state": {
+      "r0_31": 0.5073,
+      "r128_159": 0.4214
+    },
+    "bounded_state_gdr": {
+      "r0_31": 0.5826,
+      "r128_159": 0.3705
+    },
+    "action_valid_rate": 1.0,
+    "precision": "window means rounded to 4 decimals from sealed rollout reconstruction"
+  }
 }

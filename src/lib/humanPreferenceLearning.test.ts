@@ -141,6 +141,21 @@ describe('human preference learning loop', () => {
     expect(preference?.antiOvergeneralization.join(' ')).toContain('最新 authority');
   });
 
+  it('retrieves CASE-092 for method-ablation pages instead of internal run taxonomy', () => {
+    const result = retrieveHumanPreferenceContext(
+      '三个方法逐项加 Bounded State 和 GDR，做 ICLR 风格 ablation，对勾表，统一名称，再解释 linear attention 的 state beta alpha 怎么映射到参数 state，并分析 Task Vector 和 entropy',
+      undefined,
+      16,
+      'research-copy',
+    );
+    expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-ABLATION-PAPER-NARRATIVE');
+    expect(result.cases.map(({ precedent }) => precedent.id)).toContain('CASE-092');
+    expect(result.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-092-ABLATION-PAPER-NARRATIVE');
+    const preference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-ABLATION-PAPER-NARRATIVE');
+    expect(preference?.antiOvergeneralization.join(' ')).toContain('provenance');
+    expect(preference?.antiOvergeneralization.join(' ')).toContain('不是所有研究页');
+  });
+
   it('keeps workflow-learning feedback separate from surface aesthetics', () => {
     const result = retrieveHumanPreferenceContext('案例库 触类旁通 preference learning Gold Pair cold read judge');
     expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-FEEDBACK-LEARNING-LOOP');

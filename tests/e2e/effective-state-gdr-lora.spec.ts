@@ -7,165 +7,168 @@ for (const viewport of [
   { name: 'tablet', width: 768, height: 1024 },
   { name: 'desktop', width: 1440, height: 1000 },
 ]) {
-  test(`Effective-State GDR page keeps the sealed result boundary at ${viewport.name}`, async ({ page }) => {
+  test(`three-experiment paper view keeps the ablation result readable at ${viewport.name}`, async ({ page }) => {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('[data-effective-state-gdr-page]')).toBeVisible();
-    await expect(page.locator('.esg__hero')).toContainText('160 轮已经全部跑完');
-    await expect(page.locator('.esg__hero')).toContainText('60.72');
-    await expect(page.locator('.esg__hero')).toContainText('45.98');
-    await expect(page.locator('.esg__hero')).toContainText('20.77');
-    await expect(page.locator('.esg__hero')).toContainText('COMPLETE');
-    await expect(page.locator('.esg__results')).toContainText('R1–R159 平均 WebShop reward');
-    await expect(page.locator('.esg__results')).toContainText('区间跨 0');
-    await expect(page.locator('#compute')).toContainText('31.09');
-    await expect(page.locator('#compute')).toContainText('2.02');
-    await expect(page.locator('#compute')).toContainText('2.35');
-    await expect(page.locator('#parameters')).toContainText('17,920');
-    await expect(page.locator('#parameters')).toContainText('1.000202');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('三个 OpenEVO 实验');
+    const ablation = page.locator('.paper-table--ablation');
+    await expect(ablation).toContainText('普通 OpenEVO');
+    await expect(ablation).toContainText('OpenEVO + Bounded State');
+    await expect(ablation).toContainText('OpenEVO + Bounded State + GDR');
+    await expect(ablation).toContainText('60.72');
+    await expect(ablation).toContainText('45.98');
+    await expect(ablation).toContainText('20.77');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
     expect(overflow).toBe(false);
   });
 }
 
-test('Effective-State post-hoc section keeps facts, inference, and entropy boundary separate', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(route, { waitUntil: 'domcontentloaded' });
-  const posthoc = page.locator('#posthoc');
-  await expect(posthoc).toBeVisible();
-  await expect(posthoc).toContainText('Task Vector 和范数目前不能直接解释分数变化');
-  await expect(posthoc).toContainText('0.72');
-  await expect(posthoc).toContainText('-0.287');
-  await expect(posthoc).toContainText('29.5 → 28.4');
-  await expect(posthoc).toContainText('不能只凭文本事后回算真正的 token entropy');
-  await expect(posthoc).toContainText('当前 GDR 已经会自适应');
-  await expect(posthoc).toContainText('11,198');
-  await expect(posthoc.getByRole('link', { name: /W&B 原生参数/ })).toHaveAttribute('href', /wandb\.ai/);
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
-  expect(overflow).toBe(false);
-});
-
-test('Effective-State derivation keeps factor failure, controller failure, and successor identity separate', async ({ page }) => {
+test('ablation table makes the three mechanism combinations explicit with checkmarks', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  const derivation = page.locator('#derivation');
-  await expect(derivation).toContainText('1.052');
-  await expect(derivation).toContainText('因子位移');
-  await expect(derivation).toContainText('657.836');
-  await expect(derivation).toContainText('旧控制器');
-  await expect(derivation).toContainText('C1');
-  await expect(page.locator('#method')).toContainText('有效状态');
-  await expect(page.locator('#method')).toContainText('reward');
-  await expect(page.locator('#formal-design')).toContainText('EFFECTIVE_STATE_GDR_LORA_V1');
+  const rows = page.locator('.paper-table--ablation tbody tr');
+  await expect(rows).toHaveCount(3);
+  await expect(rows.nth(0)).toContainText('普通 OpenEVO');
+  await expect(rows.nth(0).getByText('✓')).toHaveCount(0);
+  await expect(rows.nth(1)).toContainText('OpenEVO + Bounded State');
+  await expect(rows.nth(1).getByText('✓')).toHaveCount(1);
+  await expect(rows.nth(2)).toContainText('OpenEVO + Bounded State + GDR');
+  await expect(rows.nth(2).getByText('✓')).toHaveCount(2);
 });
 
-test('Effective-State derivation order and connectors remain semantic across desktop and mobile', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 1000 });
+test('paper narrative follows motivation, method, mapping, experiment, result, and analysis', async ({ page }) => {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  const steps = await page.locator('.esg__steps > li').allTextContents();
-  expect(steps).toHaveLength(4);
-  expect(steps[0]).toContain('1.052');
-  expect(steps[1]).toContain('657.836');
-  expect(steps[2]).toContain('C1');
-  expect(steps[3]).toContain('有效状态');
-  const desktopArrow = await page.locator('.esg__flow-arrow').first().boundingBox();
-  expect(desktopArrow).not.toBeNull();
-  expect(desktopArrow!.width).toBeGreaterThan(desktopArrow!.height);
-
-  await page.setViewportSize({ width: 390, height: 844 });
-  const mobileArrow = await page.locator('.esg__flow-arrow').first().boundingBox();
-  expect(mobileArrow).not.toBeNull();
-  expect(mobileArrow!.height).toBeGreaterThan(mobileArrow!.width);
+  const h2s = await page.locator('.paper__section > h2').allTextContents();
+  expect(h2s.slice(0, 5)).toEqual([
+    '动机：SD-LoRA 越训练越慢',
+    '方法：Bounded State 与 GDR',
+    '实验设置：Qwen3-1.7B × WebShop',
+    '结果：Bounded 把参数训练变快了，但最终分数下降；再加 GDR 下降更多',
+    'Analysis：为什么 GDR 后期会掉下来？',
+  ]);
 });
 
-test('historical Gated-Delta and Bounded pages both point forward without rewriting their sealed results', async ({ page }) => {
-  await page.goto('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('.gds-hero')).toContainText('四轮 Vanilla vs GDR 配对资格实验已经全部封存');
-  await expect(page.getByRole('link', { name: /后继方法.*Effective-State GDR/ })).toHaveAttribute('href', route);
+test('method section explains Bounded State and the GDR-to-parameter-state mapping', async ({ page }) => {
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const method = page.locator('#method');
+  await expect(method).toContainText('Compress');
+  await expect(method).toContainText('Gated Delta Rule');
+  await expect(method).toContainText('α');
+  await expect(method).toContainText('β');
+  await expect(method).toContainText('从 sequence State 映射到 OpenEVO 的参数 State');
+  await expect(method).toContainText('A → sA');
+  await expect(method).toContainText('1.052');
+  await expect(method).toContainText('657.836');
+  await expect(method).toContainText('22');
+  await expect(method).toContainText('reward、Task Score、Task Vector');
+});
 
-  await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('.bounded__metrics')).toContainText('37.04');
-  const boundedNext = page.locator('.bounded__next-question');
-  await expect(boundedNext.getByRole('link', { name: /后续加速研究/ })).toHaveAttribute(
-    'href',
-    '/research/seed-openevo/study/capability-exploration/sd-lora-bounded-acceleration/',
-  );
-  await expect(boundedNext.getByRole('link', { name: /另一条后续问题/ })).toHaveAttribute('href', route);
+test('experiment setup names Qwen3-1.7B, WebShop, budget, and OPSD boundary', async ({ page }) => {
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const setup = page.locator('#formal-design');
+  await expect(setup).toContainText('Qwen3-1.7B');
+  await expect(setup).toContainText('WebShop');
+  await expect(setup).toContainText('20,480');
+  await expect(setup).toContainText('rank128');
+  await expect(setup).toContainText('rank8 SD-LoRA');
+  await expect(setup).toContainText('11,198');
+  await expect(setup).toContainText('不是 SEED 的 hindsight-skill SFT');
+});
+
+test('formal result preserves the matched-arm statistical boundary under public names', async ({ page }) => {
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const result = page.locator('#formal-result');
+  await expect(result).toContainText('普通 OpenEVO');
+  await expect(result).toContainText('OpenEVO + Bounded State');
+  await expect(result).toContainText('OpenEVO + Bounded State + GDR');
+  await expect(result).toContainText('R1–R159 mean reward');
+  await expect(result).toContainText('跨 0');
+  await expect(result).toContainText('LONG_HORIZON_TRANSIENT_ONLY');
+  await expect(page.locator('#compute')).toContainText('31.09');
+  await expect(page.locator('#compute')).toContainText('2.02');
+  await expect(page.locator('#compute')).toContainText('2.35');
+  await expect(page.locator('#compute')).toContainText('13–15×');
+});
+
+test('analysis answers Task Vector, direction, steps, entropy, and adaptive questions', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const analysis = page.locator('#analysis');
+  await expect(analysis).toContainText('Task Vector、范数和谱');
+  await expect(analysis).toContainText('0.72');
+  await expect(analysis).toContainText('-0.287');
+  await expect(analysis).toContainText('7.91');
+  await expect(analysis).toContainText('8.60');
+  await expect(analysis).toContainText('不能补造 token entropy');
+  await expect(analysis).toContainText('0.489');
+  await expect(analysis).toContainText('0.370');
+  await expect(analysis).toContainText('约束要不要更 adaptive');
+  await expect(analysis.getByRole('link', { name: /W&B/ })).toHaveAttribute('href', /wandb\.ai/);
 });
 
 for (const theme of ['light', 'dark'] as const) {
-  test(`Effective-State GDR page supports ${theme} theme without overflow`, async ({ page }) => {
+  test(`paper view supports ${theme} theme without page overflow`, async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
-    await expect(page.locator('[data-effective-state-gdr-page]')).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
     expect(overflow).toBe(false);
   });
 }
 
-
-test('Effective-State first screen tells the three-part story before deeper choices', async ({ page }) => {
+test('phone first screen establishes the three experiments before deep method detail', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const context = page.locator('.research-route-context');
-  await expect(context).toContainText('实验目录');
-  await expect(context).toContainText('1.7B · Bounded OFF / Effective-State GDR ON');
-  await expect(context).toContainText('OFF 只做 Bounded');
-  await expect(context).toContainText('完整 OFF / ON 与冻结终评');
-  await expect(context).toContainText('同一 128 题的 DirectApply 历史基线');
-  await expect(context).not.toContainText('正式结果尚未产生');
-  await expect(context).not.toContainText('Pending 结果槽');
-
-  const h1 = page.locator('#main-content h1');
-  await expect(h1).toHaveCount(1);
-  const lede = page.locator('.esg__lede');
-  await expect(lede).toBeVisible();
-  await expect(lede).toContainText('160 轮已经全部跑完');
-  await expect(lede).toContainText('DirectApply 得 60.72');
-  await expect(lede).toContainText('Bounded OFF 得 45.98');
-  await expect(lede).toContainText('GDR ON 得 20.77');
-  await expect(page.locator('.esg__status')).toContainText('正式实验 COMPLETE');
-  await expect(page.locator('#formal-design')).toContainText('配对编号 / 审计记录');
-  await expect(page.locator('#formal-result')).toContainText('三个 1.7B 最终状态');
-  await expect(page.locator('#formal-result')).toContainText('每轮 WebShop Score');
-  await expect(page.locator('#formal-result')).toContainText('SD-LoRA training loss');
-  await expect(page.locator('#formal-result')).toContainText('LONG_HORIZON_TRANSIENT_ONLY');
-  const ledeBox = await lede.boundingBox();
-  expect(ledeBox).not.toBeNull();
-  expect(ledeBox!.y).toBeLessThan(844);
-  const firstDeepChoice = await page.locator('.esg__context-links').boundingBox();
-  expect(firstDeepChoice).not.toBeNull();
-  expect(ledeBox!.y).toBeLessThan(firstDeepChoice!.y);
+  await expect(context).toHaveAttribute('data-compact', 'true');
+  await expect(context).toContainText('1.7B · 普通 OpenEVO / Bounded State / + GDR');
+  const h1 = page.getByRole('heading', { level: 1 });
+  await expect(h1).toContainText('三个 OpenEVO 实验');
+  const ablation = page.locator('.paper-table-wrap--hero');
+  await expect(ablation).toBeVisible();
+  const h1Box = await h1.boundingBox();
+  const tableBox = await ablation.boundingBox();
+  expect(h1Box).not.toBeNull();
+  expect(tableBox).not.toBeNull();
+  expect(h1Box!.y).toBeLessThan(tableBox!.y);
+  expect(tableBox!.y).toBeLessThan(844);
+  expect(tableBox!.x).toBeGreaterThanOrEqual(0);
+  expect(tableBox!.x + tableBox!.width).toBeLessThanOrEqual(390);
 });
 
-test('Effective-State evidence keeps resource authority single-owner after verifier absorption', async ({ page }) => {
+test('evidence keeps public names separate from exact internal experiment identities', async ({ page }) => {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const evidence = page.locator('#evidence');
-  await expect(evidence).toContainText('PR #525');
-  await expect(evidence).toContainText('历史资源层后继线');
-  await expect(evidence).toContainText('PR #526');
-  await expect(evidence).toContainText('已收口并吸收到 #525');
+  await expect(evidence).toContainText('普通 OpenEVO / Bounded State / Bounded State + GDR');
+  await expect(evidence).toContainText('DirectApply / No-GDR');
+  await expect(evidence).toContainText('BOUNDED_OFF');
+  await expect(evidence).toContainText('EFFECTIVE_STATE_GDR_LORA_V1');
 });
 
-test('Effective-State page emits no browser errors on the primary route', async ({ page }) => {
+test('historical Gated-Delta and Bounded pages still point to the successor study', async ({ page }) => {
+  await page.goto('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByRole('link', { name: /后继方法.*Effective-State GDR/ })).toHaveAttribute('href', route);
+  await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.bounded__next-question').getByRole('link', { name: /另一条后续问题/ })).toHaveAttribute('href', route);
+});
+
+test('paper page emits no browser errors', async ({ page }) => {
   const errors: string[] = [];
   page.on('console', (message) => {
     if (message.type() === 'error') errors.push(`console:${message.text()}`);
   });
   page.on('pageerror', (error) => errors.push(`pageerror:${error.message}`));
-  await page.setViewportSize({ width: 1440, height: 1000 });
   const response = await page.goto(route, { waitUntil: 'networkidle' });
   expect(response?.status()).toBeLessThan(400);
-  await expect(page.locator('[data-effective-state-gdr-page]')).toBeVisible();
   expect(errors).toEqual([]);
 });
 
-test('Effective-State keyboard path reaches native controls and toggles evidence details', async ({ page }) => {
+test('evidence disclosures stay keyboard-operable', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  const summary = page.locator('.esg__details summary').first();
+  const summary = page.locator('.paper__details summary').first();
   await summary.focus();
   await expect(summary).toBeFocused();
   const details = summary.locator('..');
@@ -173,42 +176,25 @@ test('Effective-State keyboard path reaches native controls and toggles evidence
   await page.keyboard.press('Enter');
   const isOpen = await details.getAttribute('open');
   expect(isOpen === null).not.toBe(wasOpen === null);
-  const contextLink = page.locator('.esg__context-links a').first();
-  await contextLink.focus();
-  await expect(contextLink).toBeFocused();
-  await page.keyboard.press('Tab');
-  const activeTag = await page.evaluate(() => document.activeElement?.tagName ?? '');
-  expect(activeTag).not.toBe('BODY');
 });
 
-test('Effective-State page disables nonessential motion when reduced motion is requested', async ({ page }) => {
+test('reduced motion keeps the paper content static', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.setViewportSize({ width: 768, height: 1024 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  const motion = await page.locator('[data-effective-state-gdr-page]').evaluate((root) => {
-    const sample = root.querySelector('.esg__flow-arrow');
-    if (!sample) return null;
-    const style = getComputedStyle(sample);
-    return { animation: style.animationName, transition: style.transitionDuration };
-  });
-  expect(motion).not.toBeNull();
-  expect(motion!.animation).toBe('none');
-  expect(Number.parseFloat(motion!.transition)).toBeLessThanOrEqual(0.001);
+  const transition = await page.locator('.paper__equation').first().evaluate((node) => getComputedStyle(node).transitionDuration);
+  expect(Number.parseFloat(transition)).toBeLessThanOrEqual(0.001);
 });
 
-
-test('Results index exposes the same-panel three-way 1.7B comparison', async ({ page }) => {
+test('results index uses the same public names as the experiment page', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/research/seed-openevo/study/results/', { waitUntil: 'domcontentloaded' });
   const latest = page.locator('#latest-1p7b');
-  await expect(latest).toBeVisible();
-  await expect(latest).toContainText('三种最终状态，做同一份 128 题');
+  await expect(latest).toContainText('普通 OpenEVO');
+  await expect(latest).toContainText('OpenEVO + Bounded State');
+  await expect(latest).toContainText('OpenEVO + Bounded State + GDR');
   await expect(latest).toContainText('60.72');
   await expect(latest).toContainText('45.98');
   await expect(latest).toContainText('20.77');
-  await expect(latest).toContainText('区间跨过 0');
-  await expect(latest.getByRole('link', { name: /完整 OFF \/ ON/ })).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/');
-  await expect(latest.getByRole('link', { name: /DirectApply 独立实验/ })).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/#final');
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
-  expect(overflow).toBe(false);
+  await expect(latest.getByRole('link', { name: /三组实验、方法与完整分析/ })).toHaveAttribute('href', route);
+  await expect(latest.getByRole('link', { name: /普通 OpenEVO 独立实验/ })).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/#final');
 });

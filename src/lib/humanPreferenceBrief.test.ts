@@ -158,6 +158,17 @@ describe('human preference learning v2', () => {
     ]));
   });
 
+  it('retrieves the paper-style ablation and naming correction for a three-method research page', () => {
+    const brief = buildHumanPreferenceBrief({
+      scope: 'research-copy',
+      query: 'OpenEVO 三组消融实验网页：普通、Bounded State、再加 GDR。我要论文里的对勾 ablation 表，名字从标题到图例统一，然后按动机、公式映射、Qwen3-1.7B WebShop 实验、Task Vector、步数和 entropy 分析来写。',
+    });
+    expect(brief.learnedPreferences.map(({ preference }) => preference.id)).toContain('PREF-ABLATION-PAPER-NARRATIVE');
+    expect(brief.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-092-ABLATION-PAPER-NARRATIVE');
+    expect(brief.events.map((event) => event.id)).toContain('EVENT-20260920-BOUNDED-ABLATION-PAPER-NARRATIVE');
+    expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('不是所有研究页') && boundary.includes('论文'))).toBe(true);
+  });
+
   it('retrieves repeated sibling-experiment chart grammar and target-verified fast Preview for a new model line', () => {
     const brief = buildHumanPreferenceBrief({
       contractId: 'study-briefing',

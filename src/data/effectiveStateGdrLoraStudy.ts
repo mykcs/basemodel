@@ -354,6 +354,17 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
       reason: 'formal rollout history did not persist per-token logits/logprobs',
       q17LocalDiagnosticOnly: true,
     },
+    behaviorEntropy: {
+      definition: 'Shannon entropy over observed WebShop action families (search/click), averaged by round within each 32-round window; not token predictive entropy',
+      ordinaryEarly: 0.4895,
+      ordinaryLate: 0.4239,
+      boundedEarly: 0.5073,
+      boundedLate: 0.4214,
+      gdrEarly: 0.5826,
+      gdrLate: 0.3705,
+      validActionRate: 1.0,
+      precision: 'window means rounded to 4 decimals from sealed rollout reconstruction',
+    },
     stage1: {
       seedUsesHindsightSkillSft: true,
       openEvoUsesOpsdBootstrap: true,

@@ -15,26 +15,26 @@ const directHref = p('/research/seed-openevo/study/capability-exploration/q17-di
 <section id="latest-1p7b" class="same-panel" aria-labelledby="latest-1p7b-title">
   <div class="same-panel__intro">
     <p class="same-panel__eyebrow">{t('最新封存 · 1.7B', 'Latest sealed · 1.7B')}</p>
-    <h2 id="latest-1p7b-title">{t('三种最终状态，做同一份 128 题', 'Three final states on the same 128 tasks')}</h2>
+    <h2 id="latest-1p7b-title">{t('三组实验，做同一份 128 题', 'Three experiments on the same 128 tasks')}</h2>
     <p>{t(
-      'DirectApply、Bounded OFF 和 Bounded + Effective-State GDR ON 最后都用了完全相同的冻结题集。因此这三个 Final 可以直接并排看；但 DirectApply 是更早的独立实验，不是 OFF / ON 预注册对照的第三条 arm。',
-      'DirectApply, Bounded OFF, and Bounded + Effective-State GDR ON all used exactly the same frozen final panel. Their final scores can therefore be shown side by side, but DirectApply is an earlier independent experiment rather than a third arm of the preregistered OFF/ON contrast.',
+      '普通 OpenEVO、OpenEVO + Bounded State 和 OpenEVO + Bounded State + GDR 最后都用了完全相同的冻结题集。因此这三个 Final 可以直接并排看；但普通 OpenEVO 是更早的独立实验，不是后两组预注册匹配对照的第三条 arm。',
+      'ordinary OpenEVO, OpenEVO + Bounded State, and OpenEVO + Bounded State + GDR all used exactly the same frozen final panel. Their final scores can therefore be shown side by side, but ordinary OpenEVO is an earlier independent experiment rather than a third arm of the preregistered matched contrast.',
     )}</p>
   </div>
 
   <div class="same-panel__cards" aria-label={t('三个 1.7B 同题 Final', 'Three 1.7B same-panel finals')}>
     <article>
-      <span>DirectApply</span>
+      <span>普通 OpenEVO</span>
       <strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong>
       <span class="same-panel__exact">{study.threeWayFinal.directApply.exactCount}/128 exact</span>
     </article>
     <article>
-      <span>Bounded OFF</span>
+      <span>OpenEVO + Bounded State</span>
       <strong>{study.threeWayFinal.off.score.toFixed(2)}</strong>
       <span class="same-panel__exact">{study.threeWayFinal.off.exactCount}/128 exact</span>
     </article>
     <article>
-      <span>Bounded + GDR ON</span>
+      <span>OpenEVO + Bounded State + GDR</span>
       <strong>{study.threeWayFinal.on.score.toFixed(2)}</strong>
       <span class="same-panel__exact">{study.threeWayFinal.on.exactCount}/128 exact</span>
     </article>
@@ -49,8 +49,8 @@ const directHref = p('/research/seed-openevo/study/capability-exploration/q17-di
   </div>
 
   <div class="same-panel__actions">
-    <a href={boundedHref}>{t('看完整 OFF / ON、计算时间与参数分析 →', 'Open full OFF/ON, compute, and parameter analysis →')}</a>
-    <a href={directHref}>{t('看 DirectApply 独立实验 →', 'Open the DirectApply experiment →')}</a>
+    <a href={boundedHref}>{t('看三组实验、方法与完整分析 →', 'Open the three experiments, methods, and full analysis →')}</a>
+    <a href={directHref}>{t('看普通 OpenEVO 独立实验 →', 'Open the ordinary OpenEVO experiment →')}</a>
   </div>
 
   <details class="same-panel__evidence">
