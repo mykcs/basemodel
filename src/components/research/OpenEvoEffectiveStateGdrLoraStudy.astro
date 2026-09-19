@@ -22,8 +22,8 @@ const finalResult = result.status === 'sealed' ? result : null;
 
 const names = {
   baseline: t('普通 OpenEVO', 'OpenEVO'),
-  bounded: t('OpenEVO + Bounded State', 'OpenEVO + Bounded State'),
-  gdr: t('OpenEVO + Bounded State + GDR', 'OpenEVO + Bounded State + GDR'),
+  bounded: t('OpenEVO + Bounded Online Recurrence', 'OpenEVO + Bounded Online Recurrence'),
+  gdr: t('OpenEVO + Bounded Online Recurrence + GDR', 'OpenEVO + Bounded Online Recurrence + GDR'),
 };
 
 const scoreChart = { left: 44, right: 716, top: 18, bottom: 238, maxRound: 159, maxScore: 100 };
@@ -51,7 +51,7 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
         <thead>
           <tr>
             <th>{t('实验', 'Experiment')}</th>
-            <th>Bounded State</th>
+            <th>Bounded Online Recurrence</th>
             <th>GDR</th>
             <th>Task Score</th>
             <th>{t('完整做对', 'Exact success')}</th>
@@ -83,8 +83,8 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
       </table>
     </div>
     <p class="paper__lede esg__lede" data-reader-task data-reader-purpose>{t(
-      '普通 OpenEVO 暴露出 SD-LoRA 历史越积越多、参数更新越来越慢的问题；Bounded State 把历史大小固定下来，GDR 再控制新经验写入。三组最终模型都做了同一份冻结 128 题。',
-      'Ordinary OpenEVO exposes a growing SD-LoRA history and increasingly expensive parameter updates. Bounded State fixes the history size, and GDR then controls new writes. All three final models use the same frozen 128-task panel.',
+      '普通 OpenEVO 暴露出 SD-LoRA 历史越积越多、参数更新越来越慢的问题；Bounded Online Recurrence 把历史压成固定大小的参数 State，GDR 再控制新经验写入。三组最终模型都做了同一份冻结 128 题。',
+      'Ordinary OpenEVO exposes a growing SD-LoRA history and increasingly expensive parameter updates. Bounded Online Recurrence compresses the history into a fixed-size parameter State, and GDR then controls new writes. All three final models use the same frozen 128-task panel.',
     )}</p>
     <p class="paper__boundary">{t(
       '三次冻结终评使用完全相同的 128 题，所以可以并排看。真正属于同一次预注册正式对照的是后两组；普通 OpenEVO 是更早独立完成的实验，不能把三行都当成同一次三组对照。',
@@ -112,9 +112,9 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
 
   <section class="paper__section" id="method" aria-labelledby="method-title">
     <p class="paper__section-number">2</p>
-    <h2 id="method-title">{t('方法：Bounded State 与 GDR', 'Method: Bounded State and GDR')}</h2>
+    <h2 id="method-title">{t('方法：Bounded Online Recurrence 与 GDR', 'Method: Bounded Online Recurrence and GDR')}</h2>
 
-    <h3>2.1 {t('Bounded State：把无限增长的历史压成固定 rank128', 'Bounded State: compress growing history into fixed rank128')}</h3>
+    <h3>2.1 {t('Bounded Online Recurrence：把无限增长的历史压成固定 rank128 State', 'Bounded Online Recurrence: compress growing history into a fixed rank128 State')}</h3>
     <p>{t(
       '每一轮仍然先得到一个 rank8 的当前更新 Δt，但不再把所有旧 component 永久并排保存。我们把“上一轮的 rank128 状态 + 当前更新”重新压回 rank128，作为下一轮唯一的参数历史。',
       'Each round still produces a rank-8 current update Δt, but old components are no longer kept side by side forever. The previous rank-128 state plus the current update is compressed back to rank128 and becomes the only parameter history for the next round.',
@@ -124,8 +124,8 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
       <span>S<sub>t−1</sub> = {t('历史参数状态', 'historical parameter state')} · Δ<sub>t</sub> = {t('当前轮 rank8 更新', 'current rank-8 update')}</span>
     </div>
     <p>{t(
-      `这样，参数历史的物理 rank 不再随轮数增长。工程上，Bounded State 的参数 transition 累计约 ${study.timingComparison.off.transitionHours.toFixed(2)} 小时，而普通 OpenEVO 的 trainer 累计约 ${study.timingComparison.directApply.trainerHours.toFixed(2)} 小时。`,
-      `The physical rank of parameter history no longer grows with rounds. In this implementation, Bounded State totals about ${study.timingComparison.off.transitionHours.toFixed(2)} hours of parameter transition time, versus ${study.timingComparison.directApply.trainerHours.toFixed(2)} trainer hours for ordinary OpenEVO.`,
+      `这样，参数历史的物理 rank 不再随轮数增长。工程上，Bounded Online Recurrence 的参数 transition 累计约 ${study.timingComparison.off.transitionHours.toFixed(2)} 小时，而普通 OpenEVO 的 trainer 累计约 ${study.timingComparison.directApply.trainerHours.toFixed(2)} 小时。`,
+      `The physical rank of parameter history no longer grows with rounds. In this implementation, Bounded Online Recurrence totals about ${study.timingComparison.off.transitionHours.toFixed(2)} hours of parameter transition time, versus ${study.timingComparison.directApply.trainerHours.toFixed(2)} trainer hours for ordinary OpenEVO.`,
     )}</p>
 
     <h3>2.2 {t('GDR：从 linear attention 的“记忆写入”借一个规则', 'GDR: borrow a memory-write rule from linear attention')}</h3>
@@ -198,8 +198,8 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
     <p class="paper__section-number">3</p>
     <h2 id="experiment-title">{t('实验设置：Qwen3-1.7B × WebShop', 'Experiments: Qwen3-1.7B × WebShop')}</h2>
     <p>{t(
-      '三条线都属于这批 Qwen3-1.7B OpenEVO 实验。Stage 2 都跑 160 轮；Bounded State 与 Bounded State + GDR 是正式匹配对照，每轮 128 个 rollout，任务、seed、sampling、horizon、replay 和 optimizer recipe 对齐。',
-      'All three lines belong to this Qwen3-1.7B OpenEVO study family. Stage 2 runs for 160 rounds. Bounded State and Bounded State + GDR form the formal matched pair with 128 rollouts per round and matched tasks, seeds, sampling, horizon, replay, and optimizer recipe.',
+      '三条线都属于这批 Qwen3-1.7B OpenEVO 实验。Stage 2 都跑 160 轮；Bounded Online Recurrence 与 Bounded Online Recurrence + GDR 是正式匹配对照，每轮 128 个 rollout，任务、seed、sampling、horizon、replay 和 optimizer recipe 对齐。',
+      'All three lines belong to this Qwen3-1.7B OpenEVO study family. Stage 2 runs for 160 rounds. Bounded Online Recurrence and Bounded Online Recurrence + GDR form the formal matched pair with 128 rollouts per round and matched tasks, seeds, sampling, horizon, replay, and optimizer recipe.',
     )}</p>
     <dl class="paper__setup">
       <div><dt>{t('模型', 'Model')}</dt><dd>Qwen3-1.7B</dd></div>
@@ -221,8 +221,8 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
 
     <h3>4.1 {t('同一冻结 128 题的最终结果', 'Final results on the same frozen 128 tasks')}</h3>
     <p>{t(
-      `普通 OpenEVO 是 ${study.threeWayFinal.directApply.score.toFixed(2)} / 100，Bounded State 是 ${study.threeWayFinal.off.score.toFixed(2)}，Bounded State + GDR 是 ${study.threeWayFinal.on.score.toFixed(2)}。完整做对分别是 ${study.threeWayFinal.directApply.exactCount}、${study.threeWayFinal.off.exactCount}、${study.threeWayFinal.on.exactCount} / 128。`,
-      `Ordinary OpenEVO scores ${study.threeWayFinal.directApply.score.toFixed(2)} / 100, Bounded State ${study.threeWayFinal.off.score.toFixed(2)}, and Bounded State + GDR ${study.threeWayFinal.on.score.toFixed(2)}. Exact successes are ${study.threeWayFinal.directApply.exactCount}, ${study.threeWayFinal.off.exactCount}, and ${study.threeWayFinal.on.exactCount} / 128.`,
+      `普通 OpenEVO 是 ${study.threeWayFinal.directApply.score.toFixed(2)} / 100，Bounded Online Recurrence 是 ${study.threeWayFinal.off.score.toFixed(2)}，Bounded Online Recurrence + GDR 是 ${study.threeWayFinal.on.score.toFixed(2)}。完整做对分别是 ${study.threeWayFinal.directApply.exactCount}、${study.threeWayFinal.off.exactCount}、${study.threeWayFinal.on.exactCount} / 128。`,
+      `Ordinary OpenEVO scores ${study.threeWayFinal.directApply.score.toFixed(2)} / 100, Bounded Online Recurrence ${study.threeWayFinal.off.score.toFixed(2)}, and Bounded Online Recurrence + GDR ${study.threeWayFinal.on.score.toFixed(2)}. Exact successes are ${study.threeWayFinal.directApply.exactCount}, ${study.threeWayFinal.off.exactCount}, and ${study.threeWayFinal.on.exactCount} / 128.`,
     )}</p>
 
     {finalResult ? (
@@ -231,7 +231,7 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
         <div class="paper__trajectory">
           <figure>
             <figcaption><strong>{t('每轮 WebShop Score', 'WebShop Score by round')}</strong><span>{t('细线=原始轮次 · 粗线=12轮移动平均', 'thin=raw · thick=12-round moving average')}</span></figcaption>
-            <svg viewBox="0 0 760 270" role="img" aria-label={t('Bounded State 与 Bounded State + GDR 的 R0 到 R159 WebShop Score', 'Bounded State and Bounded State + GDR WebShop Score from R0 to R159')}>
+            <svg viewBox="0 0 760 270" role="img" aria-label={t('Bounded Online Recurrence 与 +GDR 的 R0 到 R159 WebShop Score', 'Bounded Online Recurrence and +GDR WebShop Score from R0 to R159')}>
               <line x1="44" y1="238" x2="716" y2="238" class="axis"/><line x1="44" y1="128" x2="716" y2="128" class="grid"/><line x1="44" y1="18" x2="716" y2="18" class="grid"/>
               <text x="18" y="242">0</text><text x="12" y="132">50</text><text x="12" y="22">100</text><text x="44" y="260">R0</text><text x="365" y="260">R80</text><text x="684" y="260">R159</text>
               <polyline points={offScoreRaw} class="score-raw bounded"/><polyline points={onScoreRaw} class="score-raw gdr"/>
@@ -292,8 +292,8 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
     <div id="posthoc">
       <h3>5.2 {t('后期差异不只是“更新被压小”，更新方向也变了', 'The late difference is not only smaller updates; direction changes too')}</h3>
       <p>{t(
-        `R159 时，Bounded State + GDR 的这轮更新大小约为 Bounded State 的 ${(study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff * 100).toFixed(1)}%，只小约 11%；但两边更新方向的 cosine 已经是 ${study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}。第 19–27 层平均 cosine 进一步到 ${study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}。`,
-        `At R159, the GDR update is about ${(study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff * 100).toFixed(1)}% the size of Bounded State, only about 11% smaller, while the update-direction cosine is already ${study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}. Across layers 19–27, the mean cosine falls further to ${study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}.`,
+        `R159 时，Bounded Online Recurrence + GDR 的这轮更新大小约为不加 GDR 的 Bounded Online Recurrence 的 ${(study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff * 100).toFixed(1)}%，只小约 11%；但两边更新方向的 cosine 已经是 ${study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}。第 19–27 层平均 cosine 进一步到 ${study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}。`,
+        `At R159, the GDR update is about ${(study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff * 100).toFixed(1)}% the size of Bounded Online Recurrence without GDR, only about 11% smaller, while the update-direction cosine is already ${study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}. Across layers 19–27, the mean cosine falls further to ${study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}.`,
       )}</p>
       <p class="paper__boundary">{t(
         `这说明 GDR 后期不是简单把同一个更新缩短；两条线在往不同方向走。不过方向差异本身还没有被证明是掉分原因：目前只有 ${study.posthocAnalysis.exploratoryAssociation.anchorCount} 个锚点，最强的状态大小比趋势 exact permutation p=${study.posthocAnalysis.exploratoryAssociation.exactPermutationP.toFixed(3)}，仍未显著。`,
@@ -353,13 +353,13 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
     <p class="paper__section-number">6</p>
     <h2 id="evidence-title">{t('证据与复现身份', 'Evidence and reproducibility identity')}</h2>
     <p>{t(
-      '正文统一使用“普通 OpenEVO / Bounded State / Bounded State + GDR”这三个公共名称。为了审计，底层正式身份仍原样保留：普通 OpenEVO 对应历史 DirectApply / No-GDR；后两组的正式实验标识分别是 BOUNDED_OFF 与 EFFECTIVE_STATE_GDR_LORA_V1。',
-      'The main text uses one public naming system: ordinary OpenEVO, Bounded State, and Bounded State + GDR. For auditability, the underlying formal identities remain unchanged: ordinary OpenEVO maps to the historical DirectApply / No-GDR run, and the matched arms are BOUNDED_OFF and EFFECTIVE_STATE_GDR_LORA_V1.',
+      '正文统一使用“普通 OpenEVO / Bounded Online Recurrence / Bounded Online Recurrence + GDR”这三个公共名称。为了审计，底层正式身份仍原样保留：普通 OpenEVO 对应历史 DirectApply / No-GDR；后两组的正式实验标识分别是 BOUNDED_OFF 与 EFFECTIVE_STATE_GDR_LORA_V1。',
+      'The main text uses one public naming system: ordinary OpenEVO, Bounded Online Recurrence, and Bounded Online Recurrence + GDR. For auditability, the underlying formal identities remain unchanged: ordinary OpenEVO maps to the historical DirectApply / No-GDR run, and the matched arms are BOUNDED_OFF and EFFECTIVE_STATE_GDR_LORA_V1.',
     )}</p>
     <details class="paper__details" open>
       <summary>{t('正式结果与同题 Final', 'Formal results and same-panel final')}</summary>
       <ul>
-        <li><a href={study.evidence.finalComparison}><ExternalBrandMark href={study.evidence.finalComparison} />{t('三组同题冻结终评 / Bounded 与 +GDR 正式比较', 'three-way same-panel final / formal Bounded vs +GDR comparison')}</a></li>
+        <li><a href={study.evidence.finalComparison}><ExternalBrandMark href={study.evidence.finalComparison} />{t('三组同题冻结终评 / Bounded Online Recurrence 与 +GDR 正式比较', 'three-way same-panel final / formal Bounded Online Recurrence vs +GDR comparison')}</a></li>
         <li><a href={study.evidence.longHorizon}><ExternalBrandMark href={study.evidence.longHorizon} />{t('长期统计与 bootstrap', 'long-horizon statistics and bootstrap')}</a></li>
         <li><a href={study.evidence.publicSnapshot}>{t('公开机器可读结果快照', 'public machine-readable snapshot')}</a></li>
         <li><a href={study.posthocAnalysis.snapshot}>{t('只读后分析快照', 'read-only post-hoc snapshot')}</a></li>
@@ -398,11 +398,11 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
   .paper-table tbody tr:last-child td{border-bottom:2px solid var(--text-primary)}
   .paper-table td.paper-table__mark{text-align:center;font-size:1.2rem;font-weight:800}
   .paper-table--ablation{min-width:0;table-layout:fixed}
-  .paper-table--ablation th:first-child,.paper-table--ablation td:first-child{width:38%}
-  .paper-table--ablation th:nth-child(2),.paper-table--ablation td:nth-child(2){width:15%}
+  .paper-table--ablation th:first-child,.paper-table--ablation td:first-child{width:32%}
+  .paper-table--ablation th:nth-child(2),.paper-table--ablation td:nth-child(2){width:23%}
   .paper-table--ablation th:nth-child(3),.paper-table--ablation td:nth-child(3){width:9%}
   .paper-table--ablation th:nth-child(4),.paper-table--ablation td:nth-child(4){width:18%}
-  .paper-table--ablation th:nth-child(5),.paper-table--ablation td:nth-child(5){width:20%}
+  .paper-table--ablation th:nth-child(5),.paper-table--ablation td:nth-child(5){width:18%}
   .paper-table--ablation td:nth-child(n+2),.paper-table--ablation th:nth-child(n+2){text-align:center}
   .paper-table-wrap--hero{margin-top:16px;overflow-x:visible}
   .paper__equation,.paper__equations{max-width:880px;margin:18px 0;padding:14px 16px;border-left:3px solid var(--accent);background:var(--surface-secondary)}

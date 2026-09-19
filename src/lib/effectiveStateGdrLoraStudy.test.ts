@@ -39,8 +39,8 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('三个 OpenEVO 实验');
     expect(component).toContain('paper-table--ablation');
     expect(component).toContain('普通 OpenEVO');
-    expect(component).toContain('OpenEVO + Bounded State');
-    expect(component).toContain('OpenEVO + Bounded State + GDR');
+    expect(component).toContain('OpenEVO + Bounded Online Recurrence');
+    expect(component).toContain('OpenEVO + Bounded Online Recurrence + GDR');
     expect(study.threeWayFinal.directApply.score).toBeCloseTo(60.71597673160174, 10);
     expect(study.threeWayFinal.off.score).toBeCloseTo(45.984865395021635, 10);
     expect(study.threeWayFinal.on.score).toBeCloseTo(20.769142316017317, 10);

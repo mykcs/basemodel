@@ -115,8 +115,8 @@ export const CAPABILITY_READER_ROUTES = [
     "owner": "OpenEvoEffectiveStateGdrLoraStudy",
     "label": { "zh": "三个 1.7B OpenEVO 实验", "en": "Three 1.7B OpenEVO experiments" },
     "purpose": {
-      "zh": "Qwen3-1.7B 的三组 OpenEVO 实验都跑到 160 轮，最终模型使用同一份冻结 128 题。页面先给三组消融结果，再解释 Bounded State、GDR、长期训练差异、计算成本和参数分析。",
-      "en": "Three Qwen3-1.7B OpenEVO experiments run for 160 rounds and use the same frozen 128-task final panel. The page starts with the three-way ablation, then explains Bounded State, GDR, long-horizon training differences, compute cost, and parameter analysis."
+      "zh": "Qwen3-1.7B 的三组 OpenEVO 实验都跑到 160 轮，最终模型使用同一份冻结 128 题。页面先给三组消融结果，再解释 Bounded Online Recurrence、GDR、长期训练差异、计算成本和参数分析。",
+      "en": "Three Qwen3-1.7B OpenEVO experiments run for 160 rounds and use the same frozen 128-task final panel. The page starts with the three-way ablation, then explains Bounded Online Recurrence, GDR, long-horizon training differences, compute cost, and parameter analysis."
     }
   },
   {

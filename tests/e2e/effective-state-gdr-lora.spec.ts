@@ -14,8 +14,8 @@ for (const viewport of [
     await expect(page.getByRole('heading', { level: 1 })).toContainText('三个 OpenEVO 实验');
     const ablation = page.locator('.paper-table--ablation');
     await expect(ablation).toContainText('普通 OpenEVO');
-    await expect(ablation).toContainText('OpenEVO + Bounded State');
-    await expect(ablation).toContainText('OpenEVO + Bounded State + GDR');
+    await expect(ablation).toContainText('OpenEVO + Bounded Online Recurrence');
+    await expect(ablation).toContainText('OpenEVO + Bounded Online Recurrence + GDR');
     await expect(ablation).toContainText('60.72');
     await expect(ablation).toContainText('45.98');
     await expect(ablation).toContainText('20.77');
@@ -31,9 +31,9 @@ test('ablation table makes the three mechanism combinations explicit with checkm
   await expect(rows).toHaveCount(3);
   await expect(rows.nth(0)).toContainText('普通 OpenEVO');
   await expect(rows.nth(0).getByText('✓')).toHaveCount(0);
-  await expect(rows.nth(1)).toContainText('OpenEVO + Bounded State');
+  await expect(rows.nth(1)).toContainText('OpenEVO + Bounded Online Recurrence');
   await expect(rows.nth(1).getByText('✓')).toHaveCount(1);
-  await expect(rows.nth(2)).toContainText('OpenEVO + Bounded State + GDR');
+  await expect(rows.nth(2)).toContainText('OpenEVO + Bounded Online Recurrence + GDR');
   await expect(rows.nth(2).getByText('✓')).toHaveCount(2);
 });
 
@@ -42,14 +42,14 @@ test('paper narrative follows motivation, method, mapping, experiment, result, a
   const h2s = await page.locator('.paper__section > h2').allTextContents();
   expect(h2s.slice(0, 5)).toEqual([
     '动机：SD-LoRA 越训练越慢',
-    '方法：Bounded State 与 GDR',
+    '方法：Bounded Online Recurrence 与 GDR',
     '实验设置：Qwen3-1.7B × WebShop',
     '结果：Bounded 把参数训练变快了，但最终分数下降；再加 GDR 下降更多',
     'Analysis：为什么 GDR 后期会掉下来？',
   ]);
 });
 
-test('method section explains Bounded State and the GDR-to-parameter-state mapping', async ({ page }) => {
+test('method section explains Bounded Online Recurrence and the GDR-to-parameter-state mapping', async ({ page }) => {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const method = page.locator('#method');
   await expect(method).toContainText('Compress');
@@ -80,8 +80,8 @@ test('formal result preserves the matched-arm statistical boundary under public 
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const result = page.locator('#formal-result');
   await expect(result).toContainText('普通 OpenEVO');
-  await expect(result).toContainText('OpenEVO + Bounded State');
-  await expect(result).toContainText('OpenEVO + Bounded State + GDR');
+  await expect(result).toContainText('OpenEVO + Bounded Online Recurrence');
+  await expect(result).toContainText('OpenEVO + Bounded Online Recurrence + GDR');
   await expect(result).toContainText('R1–R159 mean reward');
   await expect(result).toContainText('跨 0');
   await expect(result).toContainText('LONG_HORIZON_TRANSIENT_ONLY');
@@ -123,7 +123,7 @@ test('phone first screen establishes the three experiments before deep method de
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const context = page.locator('.research-route-context');
   await expect(context).toHaveAttribute('data-compact', 'true');
-  await expect(context).toContainText('1.7B · 普通 OpenEVO / Bounded State / + GDR');
+  await expect(context).toContainText('1.7B · 普通 OpenEVO / Bounded Online Recurrence / + GDR');
   const h1 = page.getByRole('heading', { level: 1 });
   await expect(h1).toContainText('三个 OpenEVO 实验');
   const ablation = page.locator('.paper-table-wrap--hero');
@@ -141,7 +141,7 @@ test('phone first screen establishes the three experiments before deep method de
 test('evidence keeps public names separate from exact internal experiment identities', async ({ page }) => {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const evidence = page.locator('#evidence');
-  await expect(evidence).toContainText('普通 OpenEVO / Bounded State / Bounded State + GDR');
+  await expect(evidence).toContainText('普通 OpenEVO / Bounded Online Recurrence / Bounded Online Recurrence + GDR');
   await expect(evidence).toContainText('DirectApply / No-GDR');
   await expect(evidence).toContainText('BOUNDED_OFF');
   await expect(evidence).toContainText('EFFECTIVE_STATE_GDR_LORA_V1');
@@ -190,8 +190,8 @@ test('results index uses the same public names as the experiment page', async ({
   await page.goto('/research/seed-openevo/study/results/', { waitUntil: 'domcontentloaded' });
   const latest = page.locator('#latest-1p7b');
   await expect(latest).toContainText('普通 OpenEVO');
-  await expect(latest).toContainText('OpenEVO + Bounded State');
-  await expect(latest).toContainText('OpenEVO + Bounded State + GDR');
+  await expect(latest).toContainText('OpenEVO + Bounded Online Recurrence');
+  await expect(latest).toContainText('OpenEVO + Bounded Online Recurrence + GDR');
   await expect(latest).toContainText('60.72');
   await expect(latest).toContainText('45.98');
   await expect(latest).toContainText('20.77');
