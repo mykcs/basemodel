@@ -44,7 +44,7 @@ test('paper narrative follows motivation, method, mapping, experiment, result, a
     '动机：SD-LoRA 越训练越慢',
     '方法：Bounded Online Recurrence 与 GDR',
     '实验设置：Qwen3-1.7B × WebShop',
-    '结果：Bounded 把参数训练变快了，但最终分数下降；再加 GDR 下降更多',
+    '结果：Bounded Online Recurrence 把参数训练变快了，但最终分数下降；再加 GDR 下降更多',
     'Analysis：为什么 GDR 后期会掉下来？',
   ]);
 });
