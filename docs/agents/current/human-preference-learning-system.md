@@ -61,6 +61,10 @@ Do not start Kimi/MiniMax/other external AI chats, AI CLIs, or local/network vis
 
 **Browser automation is a verifier, not a reviewer.** It may run deterministic rendering, geometry, interaction, accessibility, theme, or screenshot-capture checks required by the repository gate. Do not use a browser session to open Kimi, MiniMax, ChatGPT, Claude, Gemini, or another AI service to solicit a visual/comprehension verdict, and do not relabel an AI inspection of screenshots as independent human evidence.
 
+**Reviewer identity is not created by a fresh browser profile.** Do not launch guest/incognito/new Chrome profiles, reuse the owner's cookies/profile, or navigate to AI-provider/account/login/sync pages in order to manufacture an `independent-agent` or human reviewer. If a verification/review attempt lands on an account/login/sync surface, classify that reviewer attempt as `NOT_EXECUTED`, close the automation session, and switch to an explicitly eligible reviewer route. Do not keep retrying the same path with more profiles.
+
+If the receipt requires `reviewer.kind=human`, only a real human can satisfy it. If the contract permits an independent Agent, use a separately invoked reviewer mechanism whose identity and evidence class are explicit; browser rendering/capture remains artifact transport, not reviewer identity.
+
 ## 1. Raw cases remain canonical history
 
 `docs/agents/current/website-copy-cases.md` preserves the owner feedback, reason, rejected/accepted examples when known, scope, and boundaries. Do not rewrite history to make a newer abstraction look cleaner.
