@@ -311,6 +311,23 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     ],
   },
   {
+    id: 'PREF-ROUTED-FLOW-TOPOLOGY',
+    title: '非线性流程先让关系可见，再装节点内容',
+    statement: '机制包含 branch、side input、join 或 feedback loop 时，main path、支路 attachment 和 return edge 必须在最终静态渲染里直接可见；不要用并列卡片、弱小箭头或第二张补充图让读者自己重建拓扑。',
+    scopes: ['all-public-ui', 'research-ui', 'briefing', 'capability'],
+    confidence: 'repeated-explicit',
+    priority: 5,
+    retrievalTags: ['流程图', 'flow', 'routing', 'edge', '箭头', '闭环', 'feedback loop', 'branch', 'join', 'side input', 'replay', 'Archify', '机制图', '流动'],
+    supportingCaseIds: ['CASE-097'],
+    antiOvergeneralization: [
+      '简单线性步骤可以继续使用有序列表；不是所有过程都需要 SVG 或复杂图。',
+      '不是把箭头做得越粗越好；connector 必须对应真实顺序、依赖、分支、汇入或回环。',
+      '动画只能强化已经完整的静态拓扑；reduced-motion 或截图状态仍必须能读懂。',
+      '这条偏好不批准任何具体 routed-flow 截图为未来模板；视觉 skin 仍按当前页面任务设计。',
+      'Archify/diagram validator 证明语义和几何约束，不替代最终 BaseModel render 的浏览器拓扑验收。',
+    ],
+  },
+  {
     id: 'PREF-VISUAL-ACCEPTANCE-EVIDENCE-CLASS',
     title: '普通视觉验收与独立 reviewer 分开',
     statement: '普通 UI、文案和布局交付默认依赖仓库自己的确定性工程证据：真实渲染、截图、Reader Contract、布局/溢出、主题、可访问性和交互检查。不要自动启动 Kimi、MiniMax、其他 AI 对话/CLI 或本地/网络视觉模型给 verdict；独立 reviewer 只在 owner 或当前任务明确要求独立理解/偏好研究时启用。',

@@ -26,11 +26,14 @@ This conversation does **not** need another new design rule. The missing enforce
 
 The failure was therefore mostly **activation / use-site enforcement**, not absence of prose guidance.
 
+The 2026-09-20 closeout refresh found one remaining knowledge-system gap: the correction existed in prose policy/history, but not in task-time HPL retrieval. This refresh therefore adds `CASE-097`, `PREF-ROUTED-FLOW-TOPOLOGY`, one rejected feedback event, and one Rejected visual reference for the card-adjacency artifact. It deliberately adds **no Gold Pair and no Silver/Golden successor**, because the owner rejected the old visual but never authorized a specific later screenshot as a reusable template.
+
 ## Coverage ledger
 
 | Feedback / failure | Repeated? | Reusable lesson | Canonical destination | Closeout action |
 | --- | --- | --- | --- | --- |
 | “用了 Archify，但完全看不出流程流动” | Yes | Tool/method adoption is not product acceptance; branch/side-input/return semantics must be visible in the final render | human-thinking expression contract + UI acceptance gate | already encoded and regression-protected; no duplicate rule added |
+| The same correction was absent from task-time Preference Brief retrieval | Yes — knowledge-system gap | Persist the rejection as scoped HPL evidence so future mechanism/flow tasks retrieve it before drafting and during preference review | case library + Preference Model + HPL event / rejected visual | added `CASE-097` + `PREF-ROUTED-FLOW-TOPOLOGY`; no fabricated accepted successor |
 | A row of cards plus small arrows was called a flow | Yes | Non-linear flow needs real routed connectors; card adjacency and step text are insufficient | same owners | already encoded as `FLOW-WITNESS` / Scenario H |
 | Desktop looked correct while phone moved failure/replay branches to the bottom | Yes within this work | Responsive acceptance must preserve causal attachment, not only avoid overflow | UI acceptance gate | already encoded and covered by mobile topology E2E |
 | Material copy/layout changes were made after an HPL/cold-read receipt | Yes | Re-render and re-run review; old screenshot/receipt cannot represent the new exact head | HPL system | existing exact-artifact rule was sufficient; later work followed it |

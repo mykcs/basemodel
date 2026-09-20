@@ -194,6 +194,22 @@ describe('human preference learning loop', () => {
     expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.id === 'EVENT-20260920-WANDB-CHART-LOCAL-EXPLANATION')).toBe(true);
   });
 
+  it('retrieves routed-flow topology learning for non-linear mechanism diagrams', () => {
+    const result = retrieveHumanPreferenceContext(
+      'Vanilla SD-LoRA 机制图要有明显流程流动：replay 从侧面汇入，状态选择分支再 join，Round t+1 真实回环；不要并列卡片加小箭头冒充 flow，参考 Archify routing',
+      'capability-vanilla-sd-lora',
+      16,
+      'research-ui',
+    );
+    expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-ROUTED-FLOW-TOPOLOGY');
+    expect(result.cases.map(({ precedent }) => precedent.id)).toContain('CASE-097');
+    expect(preferenceIdsForContract('capability-vanilla-sd-lora')).toContain('PREF-ROUTED-FLOW-TOPOLOGY');
+    expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.id === 'EVENT-20260912-VANILLA-SDLORA-FLOW-NOT-VISIBLE' && event.verdict === 'rejected')).toBe(true);
+    const preference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-ROUTED-FLOW-TOPOLOGY');
+    expect(preference?.antiOvergeneralization.join(' ')).toContain('简单线性步骤');
+    expect(preference?.antiOvergeneralization.join(' ')).toContain('不批准任何具体 routed-flow 截图');
+  });
+
   it('keeps workflow-learning feedback separate from surface aesthetics', () => {
     const result = retrieveHumanPreferenceContext('案例库 触类旁通 preference learning Gold Pair cold read judge');
     expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-FEEDBACK-LEARNING-LOOP');
