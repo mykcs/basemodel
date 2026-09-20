@@ -744,7 +744,53 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     evidence: { repository: 'mykcs/basemodel', route: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/', pullRequest: 748, gitSha: '7efa203a6a5aedc1b0748a2598050d33080b0864' },
   },
 
+  {
+    id: 'EVENT-20260916-REDESIGN-INDEPENDENT-COLDREAD-REQUIRED',
+    date: '2026-09-16',
+    caseIds: ['CASE-094'],
+    scopes: ['workflow'],
+    artifact: 'BaseModel PR #737 Phase-C acceptance workflow',
+    variantId: 'independent-cold-read-mandatory-gate',
+    verdict: 'accepted',
+    ownerSignal: 'Phase C 当时要求四个 pilot 的 phone + desktop 都有真实独立 cold-read；自动化浏览器/截图只能算 machine evidence，不能冒充独立人类或独立 Agent。',
+    reasons: ['当时任务明确把独立理解证据设为 Phase-C 退出条件', '证据身份必须真实，不能把自动化检查改名为独立评审'],
+    failureMechanisms: [],
+    evidence: { repository: 'mykcs/basemodel', pullRequest: 737, ledgerId: 'FB-CF02-INDEPENDENT-COLDREAD-REQUIRED' },
+  },
+  {
+    id: 'EVENT-20260920-VISUAL-REVIEWER-DEFAULT-REJECTED',
+    date: '2026-09-20',
+    caseIds: ['CASE-094'],
+    scopes: ['workflow'],
+    artifact: 'BaseModel PR #737 visual-acceptance workflow',
+    variantId: 'external-ai-reviewer-default-gate',
+    comparedToVariantId: 'independent-cold-read-mandatory-gate',
+    verdict: 'rejected',
+    ownerSignal: '之前做视觉验证从来没有要求调用本地视觉模型、网络 AI 对话或各种 AI CLI；为什么今天的工作流一定要这样？',
+    reasons: ['把普通视觉验收和独立理解研究绑成一件事，制造了不必要的工具依赖', '外部 reviewer 的额度、登录和文件上传问题开始反过来阻塞页面工程验收'],
+    failureMechanisms: ['reviewer-evidence-class-conflation', 'external-reviewer-default-dependency'],
+    evidence: { repository: 'mykcs/basemodel', pullRequest: 737, ledgerId: 'FB-CF08-WHY-EXTERNAL-REVIEWER-REQUIRED' },
+  },
+  {
+    id: 'EVENT-20260920-VISUAL-ACCEPTANCE-DEFAULT-CANONICAL',
+    date: '2026-09-20',
+    caseIds: ['CASE-094'],
+    scopes: ['workflow'],
+    artifact: 'BaseModel ordinary visual-acceptance default',
+    variantId: 'deterministic-visual-acceptance-default',
+    comparedToVariantId: 'external-ai-reviewer-default-gate',
+    verdict: 'canonical',
+    ownerSignal: '不希望再调用浏览器里的 AI、Kimi 或 MiniMax 做 reviewer；把这个默认 reviewer 路径砍掉，并把决定写进相应 Docs。',
+    reasons: ['普通 UI 验收回到仓库自有的确定性工程证据', '独立 reviewer 只在 owner / task 明确要求独立理解或偏好研究时启用'],
+    failureMechanisms: ['reviewer-evidence-class-conflation', 'external-reviewer-default-dependency'],
+    repeatSignal: 'explicit',
+    supersedesEventIds: ['EVENT-20260916-REDESIGN-INDEPENDENT-COLDREAD-REQUIRED'],
+    evidence: { repository: 'mykcs/basemodel', pullRequest: 737, ledgerId: 'FB-CF09-CUT-EXTERNAL-REVIEWER-DEFAULT' },
+  },
 ];
+
+
+
 
 export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
   {
@@ -958,6 +1004,21 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
       },
     ],
     note: '这是“被拒绝的具体视觉状态 → 明确要求的 successor 方向”的 trajectory。successor direction 尚未作为一个 owner-reviewed concrete visual 出现，因此没有 accepted/canonicalVariantId，也不创建 Silver/Golden/current-candidate 视觉引用。',
+  },
+  {
+    id: 'TRAJECTORY-VISUAL-ACCEPTANCE-EVIDENCE-CLASS-20260920',
+    scopes: ['workflow'],
+    variantIds: ['independent-cold-read-mandatory-gate', 'external-ai-reviewer-default-gate', 'deterministic-visual-acceptance-default'],
+    comparisons: [
+      {
+        betterVariantId: 'deterministic-visual-acceptance-default',
+        worseVariantId: 'external-ai-reviewer-default-gate',
+        reason: 'owner 明确把普通视觉验收从外部 AI reviewer 依赖中拆出来：工程 verifier 负责可重复的页面正确性，独立 reviewer 只在明确要求理解/偏好研究时增加。',
+        failureMechanisms: ['reviewer-evidence-class-conflation', 'external-reviewer-default-dependency'],
+      },
+    ],
+    canonicalVariantId: 'deterministic-visual-acceptance-default',
+    note: '早期 #737 的 8/8 独立 cold-read 要求保留为历史事件，不被改写；2026-09-20 owner 明确 supersede 了“普通视觉验收默认必须独立 reviewer”的工作流。canonical 只适用于 BaseModel 普通 UI/copy/layout acceptance workflow，不取消 owner/task 明确激活的独立理解研究。',
   },
 
 ];
@@ -1174,6 +1235,18 @@ export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
     route: '/',
     ownerEvidence: 'owner 直接说“这个是因为我之前让 agent 模仿 Apple 开发者设计的思路，看来只模仿其形未模仿其神”，并要求继续修改全站审计出的同类问题。',
     note: 'Rejected 的是跨页面视觉机制，不是否定该 SHA 的每个像素：普通 Home / Models / Papers / Landscape / Guide / Workspace / Lab / Study 等入口把满屏居中、大块无语义留白、模板驱动字体或实现细节优先误当 attention-first。没有稳定截图进入仓库；可用 repo + exact SHA + 对应 routes + 1280×633 / 390×844 重建。此次 closeout 前没有 owner-reviewed successor，因此不升级 Silver / Golden / current-candidate。',
+  },
+  {
+    id: 'VISUAL-CONTENT-FIRST-737-CURRENT-CANDIDATE',
+    tier: 'current-candidate',
+    scopes: ['all-public-ui', 'research-ui', 'visual'],
+    artifact: 'BaseModel PR #737 content-first / Apple-guided redesign final product candidate',
+    repository: 'mykcs/basemodel',
+    gitSha: '7655567d6e4d2ea531193c0c753ac2f20a0b4217',
+    pullRequest: 737,
+    route: '/research/seed-openevo/',
+    ownerEvidence: 'owner 说“现在这轮网页修改已经基本结束”并启动 Human Preference Learning closeout；没有对这个 exact visual 说 accepted、以后按这版或作为模板。',
+    note: 'CURRENT-CANDIDATE，只证明这是 #737 稳定收口时的可重建产品状态；不能因 PR 已合并、CI/Production 通过或 closeout 开始就升级为 Silver/Golden。可用 repo + exact SHA + route + 390×844 / 1280×633 重建代表性视觉。',
   },
 
 ];

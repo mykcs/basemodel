@@ -42,6 +42,16 @@ export const tokenizeHumanPreferenceQuery = (value: string) => {
 
 const containsAny = (haystack: string, tokens: string[]) => tokens.some((token) => haystack.includes(token));
 
+export function humanPreferenceWorkflowCues(value: string) {
+  const normalized = value.toLowerCase();
+  const explicit = containsAny(normalized, [
+    '反馈', '案例', '学习', 'judge', 'cold read', 'cold-read', '冷读', 'gold pair', 'preference model',
+    'reviewer', '评审', '独立评审', '视觉验收', '视觉验证', '验收证据',
+  ]);
+  const preview = containsAny(normalized, ['preview', '预览', 'build', '构建', 'vercel', '网页草稿', '审阅', '迭代', '快速', '等待']);
+  return { explicit, preview, any: explicit || preview };
+}
+
 export interface HumanPreferenceRetrievalResult {
   query: string;
   contractId?: string;
@@ -61,11 +71,9 @@ export function retrieveHumanPreferenceContext(
   const boundCases = new Set<HumanFeedbackCaseId>(
     (contractId ? READER_CONTRACT_PRECEDENTS[contractId] : []) as HumanFeedbackCaseId[],
   );
-  const explicitWorkflowCue = containsAny(normalized, ['反馈', '案例', '学习', 'judge', 'cold read', 'gold pair', 'preference model']);
-  const previewWorkflowCue = containsAny(normalized, ['preview', '预览', 'build', '构建', 'vercel', '网页草稿', '审阅', '迭代', '快速', '等待']);
+  const { explicit: explicitWorkflowCue, preview: previewWorkflowCue, any: workflowCue } = humanPreferenceWorkflowCues(query);
   const recoveryCue = containsAny(normalized, ['恢复', '急救', '自救', '故障', '救援', '失忆', '运行手册', 'runbook', 'reconnect', '连不上']);
   const approvedProseCue = containsAny(normalized, ['聊天', '对话', '照抄', '原话', '原句', '网页化', '直接放到网页', '论文腔']);
-  const workflowCue = explicitWorkflowCue || previewWorkflowCue;
 
   const cases = HUMAN_FEEDBACK_PRECEDENTS.map((precedent) => {
     const fields = [precedent.title, precedent.principle, ...precedent.tags, ...precedent.antiPatterns, ...precedent.positiveSignals];

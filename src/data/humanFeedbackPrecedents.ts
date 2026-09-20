@@ -239,6 +239,15 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     antiPatterns: ['用 HTML sub/sup 手拼论文公式', 'W&B 做了大量图但网页只给一个泛化链接', '私有 W&B Report iframe 实际显示登录墙仍声称可交互', '为了 embed 未经确认把源项目改 public'],
     positiveSignals: ['KaTeX / MathJax 真正数学排版', '关键 W&B 曲线正文可见并可点回原生 panel', 'Report / Workspace / panel 多层回链', '私有来源用确定性静态图降级并保留 authority 边界'],
   },
+  {
+    id: 'CASE-094',
+    title: '普通视觉验收与独立评审是两类证据',
+    tags: ['视觉验收', 'reviewer', '冷读', '浏览器', 'Kimi', 'MiniMax', 'workflow', '证据类型'],
+    principle: '普通 UI / copy / layout 交付默认用仓库自己的确定性工程证据证明页面是否正确；独立人类或独立 Agent 的理解/偏好评审只在 owner 或当前任务明确要求该研究证据时启用，不能因为页面有视觉改动就自动把外部 AI reviewer 变成发布依赖。',
+    antiPatterns: ['页面一改视觉就必须打开 Kimi / MiniMax / 其他 AI 对话或本地视觉模型给 verdict', '把浏览器截图、Playwright 或 Agent 自己看截图冒充独立真人/独立 Agent 证据', '可选 reviewer 因额度、登录、上传失败而阻塞普通 UI 验收'],
+    positiveSignals: ['浏览器/截图/Reader Contract/可访问性/主题/几何负责确定性工程验收', '只有明确要求独立理解/偏好研究时才增加独立 reviewer，并保持证据身份真实'],
+  },
+
 ];
 
 export const READER_CONTRACT_PRECEDENTS: Record<string, HumanFeedbackCaseId[]> = {

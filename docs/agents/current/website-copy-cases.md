@@ -1218,3 +1218,26 @@ owner 指出两处明显不够“论文”的地方。第一，方法页里的�
 规律：**科研网页的“论文感”不靠标题像论文，而靠证据载体本身像论文：公式应该是公式，曲线应该能看到，原生实验系统应该一键回得去。若第三方交互层有权限边界，就诚实降级为确定性静态视图，而不是牺牲隐私或伪装交互。**
 
 边界：不是所有行内变量都必须变成大块公式，也不是所有 W&B panel 都要塞进一页。主线公式和直接支撑论点的 3–6 张关键图优先进入正文，其余留在 Report / Workspace；公开镜像只应包含已经决定对外展示的数据。
+
+<a id="case-094-普通视觉验收与独立评审是两类证据"></a>
+### CASE-094 — 普通视觉验收与独立评审是两类证据
+**PREFERENCE · WORKFLOW / VISUAL ACCEPTANCE · 2026-09-20 · repeated direct owner feedback**
+
+这轮 BaseModel content-first 改版在 Phase C 一度把“普通视觉验收”和“独立理解评审”绑成同一条强制路径：为了拿到独立 cold-read，Agent 先后尝试 Codex / Claude / Gemini CLI、本地视觉模型、MiniMax Desktop、Kimi 网页，并开始被额度、登录、图片上传和跨应用自动化问题阻塞。owner 随后直接追问：“之前做视觉验证的时候，也从来没有说调用某些本地视觉模型、网络 AI 对话或者各种 AI CLI 去做。我们今天的这个工作流为什么是一定要这样的？”
+
+owner 随后明确改写未来默认：“我也不希望再去调用浏览器或者是 Kimi 或 Minimax 做这个 reviewer，直接把这个东西砍掉，然后并且在相应的 Docs 里写出我们的决定。” 后面又两次要求核对这条决定是否真的写进仓库并执行，说明这不是一次临时抱怨。
+
+反面：页面一发生视觉变化，就默认要求再找一个外部 AI / 本地视觉模型给 verdict；第三方 reviewer 的额度、登录、上传或客户端自动化失败，反过来成为普通 UI 交付的 blocker。
+
+认可方向：**普通 UI / copy / layout 验收默认使用仓库自己的确定性工程证据**——真实渲染、手机/桌面截图、Reader Contract、布局/溢出、主题、可访问性和交互检查。只有 owner 或当前任务明确要求“独立理解 / 偏好研究”时，才额外启动独立 human / Agent reviewer。
+
+这条纠正也保留一条重要的历史边界：#737 早期的 8/8 cold-read 当时确实是任务要求，不能事后假装它从未存在；而且**一旦某个任务真的要求独立证据，Playwright、浏览器截图、作者自评或同一个 Agent 看图，都不能冒充独立人类 / 独立 Agent 证据。** 被 supersede 的只是“普通视觉验收默认必须独立 reviewer”，不是证据身份真实性。
+
+规律：**先判断需要证明哪一类事实，再选择证据。** 工程 verifier 回答“页面是否按合同正确渲染和工作”；独立 reviewer 回答“陌生读者是否理解 / 更喜欢某个表达”。两类证据可以同时存在，但不能默认互相替代，也不能让可选 reviewer 服务的可用性控制普通 release path。
+
+边界：
+- 不是禁止浏览器；浏览器仍是布局、交互、主题、可访问性、截图等确定性验收工具。
+- 不是禁止 Kimi、MiniMax 或其他 AI；如果 owner / task 明确要求独立理解研究，它们可以作为真实独立 reviewer，前提是证据身份如实记录。
+- 新建访客/无痕/browser profile 不会自动产生独立 reviewer 身份；自动化若落到 AI/account/login/sync 页面，应记为错误 surface / NOT_EXECUTED 并关闭，不继续用 owner cookies/profile 或更多新 profile 重试。
+- 不是降低 UI Gate；真正的 Reader Contract、浏览器、可访问性或发布 Gate 失败仍然必须修。
+- 不是把“无需独立 reviewer”推广到已经明确要求人类研究、用户测试、盲评或独立 judge 的任务。
