@@ -221,6 +221,24 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     positiveSignals: ['保留 owner 已认可的自然句序与对象', '标题/分段/证据层做最小结构化', '临时状态与过期数字仍删除并重新校验'],
   },
 
+
+  {
+    id: 'CASE-092',
+    title: '消融实验先统一实验身份，再按论文顺序讲',
+    tags: ['科研网页', '消融实验', '论文结构', 'ICLR', '命名一致', 'Bounded Online Recurrence', 'Bounded State', 'GDR', '公式', 'Task Vector', 'entropy'],
+    principle: '一组逐项增加机制的实验，首层先用统一实验名和消融表说明“哪三组、每组多了什么、最后怎样”，再按动机→方法→数学映射→实验→结果→分析组织；内部 run/arm 名只留在证据层。',
+    antiPatterns: ['H1 用 Bounded Online Recurrence + Effective-State GDR，结果区却换成 DirectApply / Bounded OFF / ON', '按 readiness / lifecycle / implementation / post-hoc 内部工作流切碎科研故事', '只贴 GDR 公式，不解释 linear-attention State/β/g 怎样映射到参数 State / effective write'],
+    positiveSignals: ['三行消融表：普通 OpenEVO / + Bounded Online Recurrence / + GDR，并用对勾显示机制', '一个实验在标题、表格、图例和正文使用同一公共名称', '真实 SD-LoRA 扩展性问题先产生 Bounded Online Recurrence，再给公式和实验', 'Task Vector / norm / 步数 / entropy 集中放在 Analysis / Discussion'],
+  },
+
+  {
+    id: 'CASE-093',
+    title: '科研公式用真正 LaTeX；实验图直接进入正文',
+    tags: ['科研网页', 'LaTeX', 'KaTeX', 'MathJax', 'W&B', '交互图', '证据可见', '隐私边界'],
+    principle: '主线数学必须由真实 LaTeX renderer 排版；关键实验图直接进入正文并保留原生 W&B 回链。第三方交互若受权限限制，公开页应诚实使用确定性静态快照，而不是嵌登录墙或擅自扩大可见性。',
+    antiPatterns: ['用 HTML sub/sup 手拼论文公式', 'W&B 做了大量图但网页只给一个泛化链接', '私有 W&B Report iframe 实际显示登录墙仍声称可交互', '为了 embed 未经确认把源项目改 public'],
+    positiveSignals: ['KaTeX / MathJax 真正数学排版', '关键 W&B 曲线正文可见并可点回原生 panel', 'Report / Workspace / panel 多层回链', '私有来源用确定性静态图降级并保留 authority 边界'],
+  },
 ];
 
 export const READER_CONTRACT_PRECEDENTS: Record<string, HumanFeedbackCaseId[]> = {

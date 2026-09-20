@@ -99,7 +99,7 @@ describe('experiment-first Study index', () => {
       expect.objectContaining({ role: 'analysis', label: expect.objectContaining({ zh: '两条路线说明' }), href: '/research/seed-openevo/study/capability-exploration/sd-lora-history/', mobileFeatured: true, directoryGroup: expect.objectContaining({ zh: 'SD-LoRA 加速', en: 'SD-LoRA acceleration' }) }),
       expect.objectContaining({ role: 'analysis', label: expect.objectContaining({ zh: 'Stable Reduction' }), href: '/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/', mobileFeatured: true, directoryGroup: expect.objectContaining({ zh: 'SD-LoRA 加速', en: 'SD-LoRA acceleration' }) }),
       expect.objectContaining({ role: 'analysis', label: expect.objectContaining({ zh: 'Bounded Online Recurrence' }), href: '/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/', mobileFeatured: true, directoryGroup: expect.objectContaining({ zh: 'SD-LoRA 加速', en: 'SD-LoRA acceleration' }) }),
-      expect.objectContaining({ role: 'analysis', label: expect.objectContaining({ zh: '后继正式对照：Bounded OFF / Effective-State GDR ON' }), href: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/' }),
+      expect.objectContaining({ role: 'analysis', label: expect.objectContaining({ zh: '后继三组对比：普通 / Bounded Online Recurrence / + GDR' }), href: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/' }),
       expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/text-memory/' }),
       expect.objectContaining({ role: 'analysis', href: '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/#geometry' }),
       expect.objectContaining({ role: 'diagnostic', href: '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/#function' }),
@@ -164,7 +164,7 @@ describe('experiment-first Study index', () => {
       '3B + 1.7B 后继实验',
       '1.7B · GDR-v1 实验',
       '1.7B · DirectApply / No-GDR 实验',
-      '1.7B · Bounded OFF / Effective-State GDR ON',
+      '1.7B · 普通 OpenEVO / Bounded Online Recurrence / + GDR',
     ]);    const allChildren = OPEN_EVO_EXPERIMENTS.flatMap((item) => item.childLinks);
     expect(allChildren.some((child) => child.label.zh === 'SD-LoRA 为什么越来越慢')).toBe(true);
     expect(allChildren.some((child) => child.href.endsWith('/sd-lora-equivalence/'))).toBe(true);

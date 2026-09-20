@@ -1,0 +1,51 @@
+---
+import ExternalBrandMark from '../common/ExternalBrandMark';
+interface LinkItem { label: string; href: string }
+interface SnapshotItem { title: string; src: string; href: string; alt: string }
+interface Props {
+  reportUrl: string;
+  workspaceUrl: string;
+  panelLinks: LinkItem[];
+  snapshots: SnapshotItem[];
+}
+const { reportUrl, workspaceUrl, panelLinks, snapshots } = Astro.props;
+---
+
+<div class="wandb-evidence" data-wandb-evidence>
+  <div class="wandb-evidence__primary-links">
+    <a href={reportUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={reportUrl} />打开交互 W&B Report（需要 W&B 权限） ↗</a>
+    <a href={workspaceUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={workspaceUrl} />打开完整 W&B Workspace ↗</a>
+  </div>
+
+  <div class="wandb-evidence__snapshots">
+    {snapshots.map((item) => (
+      <figure>
+        <a href={item.href} target="_blank" rel="noreferrer" aria-label={`${item.title} · 打开 W&B 原生 panel`}>
+          <img src={item.src} alt={item.alt} loading="lazy" width="1200" height="675" />
+        </a>
+        <figcaption><strong>{item.title}</strong><span>W&B scalar history 静态预览 · 点击打开原生 panel</span></figcaption>
+      </figure>
+    ))}
+  </div>
+
+  <div class="wandb-evidence__panel-links" aria-label="W&B 原生 panel 链接">
+    {panelLinks.map((panel) => <a href={panel.href} target="_blank" rel="noreferrer">{panel.label} ↗</a>)}
+  </div>
+
+  <p class="wandb-evidence__boundary">W&B 官方只允许 public Report 直接嵌进公开网页。当前原项目对未登录访客仍是受限状态，所以这里不嵌一个只能看到登录墙的 iframe；静态图来自同一批 W&B scalar history，原生交互仍保留在 Report / Workspace 中。</p>
+</div>
+
+<style>
+  .wandb-evidence{margin:1.2rem 0 1.7rem}
+  .wandb-evidence__primary-links,.wandb-evidence__panel-links{display:flex;flex-wrap:wrap;gap:.65rem 1.1rem;margin:.8rem 0 1rem}
+  .wandb-evidence__primary-links a,.wandb-evidence__panel-links a{font-weight:700}
+  .wandb-evidence__snapshots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:1.1rem 0}
+  .wandb-evidence__snapshots figure{margin:0;min-width:0}
+  .wandb-evidence__snapshots figure:first-child,.wandb-evidence__snapshots figure:last-child{grid-column:1/-1}
+  .wandb-evidence__snapshots a{display:block;border:1px solid var(--border-color);border-radius:var(--radius-panel);overflow:hidden;background:#fff;box-shadow:0 10px 28px color-mix(in srgb,var(--text-primary) 7%,transparent)}
+  .wandb-evidence__snapshots img{display:block;width:100%;height:auto}
+  .wandb-evidence__snapshots figcaption{display:grid;gap:3px;margin-top:8px;line-height:1.45}
+  .wandb-evidence__snapshots figcaption span,.wandb-evidence__boundary{color:var(--text-secondary)}
+  .wandb-evidence__boundary{max-width:880px;font-size:1rem;line-height:1.65}
+  @media(max-width:760px){.wandb-evidence__snapshots{grid-template-columns:1fr}.wandb-evidence__snapshots figure:first-child,.wandb-evidence__snapshots figure:last-child{grid-column:auto}}
+</style>

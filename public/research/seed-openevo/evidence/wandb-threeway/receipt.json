@@ -1,0 +1,60 @@
+{
+  "schema": "basemodel.wandb-threeway-evidence.v1",
+  "checked_at": "2026-09-20T10:05:00+08:00",
+  "source": {
+    "entity": "zju-openevo-wangrui",
+    "project": "zju-openevo-experiments",
+    "three_way_run_id": "f587a9687171dadb",
+    "final_run_ids": {
+      "ordinary_openevo": "1a42cc6ba0a6acb4",
+      "bounded_online_recurrence": "6719cd74e621b2c9",
+      "bounded_online_recurrence_gdr": "2cc145cce9ab9bcf"
+    },
+    "action_entropy_analysis_sha256": "60eda60d00f600420ab48b8de39618ded0f36e041e6d1d9286ff13d6a8fe1e6f"
+  },
+  "workspace": "https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments?nw=aq3kg4ro7rf",
+  "report": "https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/reports/OpenEVO-1.7B-%C2%B7-%E4%B8%89%E7%BB%84%E5%AE%9E%E9%AA%8C%E5%88%86%E6%9E%90--VmlldzoxNzk2ODUyMg==",
+  "report_contents": [
+    "three-way final summary",
+    "interactive final-run comparer",
+    "160-round task score",
+    "task-vector and state Frobenius",
+    "GDR direction and magnitude",
+    "output length and steps",
+    "160-round action-family entropy"
+  ],
+  "public_embed": {
+    "enabled": false,
+    "reason": "Anonymous browser verification returned W&B's locked-or-empty page. No project or report visibility was changed.",
+    "safe_successor": "Use a separately approved sanitized public W&B mirror containing only already-public curves if public iframe interaction is required."
+  },
+  "static_previews": [
+    {
+      "path": "/research/seed-openevo/evidence/wandb-threeway/task-score.svg",
+      "source": "sealed three-way rollout score history"
+    },
+    {
+      "path": "/research/seed-openevo/evidence/wandb-threeway/task-vector-frobenius.svg",
+      "source": "read-only parameter geometry analysis mirrored to W&B"
+    },
+    {
+      "path": "/research/seed-openevo/evidence/wandb-threeway/steps-per-episode.svg",
+      "source": "sealed rollout output-length / step-count reconstruction mirrored to W&B"
+    },
+    {
+      "path": "/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.svg",
+      "source": "sealed rollout action-family entropy reconstruction, mirrored to W&B"
+    }
+  ],
+  "authority_boundary": "The static previews and W&B report are reading/observability surfaces. Sealed result receipts and machine-readable scientific evidence remain authoritative.",
+  "derived_artifacts": {
+    "output_length": {
+      "path": "/research/seed-openevo/evidence/wandb-threeway/output-length-analysis.json",
+      "sha256": "e14f94c54da766e5564395693c730acd0e08741b343b6e1be6f22f041126d006"
+    },
+    "action_family_entropy": {
+      "path": "/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.json",
+      "sha256": "60eda60d00f600420ab48b8de39618ded0f36e041e6d1d9286ff13d6a8fe1e6f"
+    }
+  }
+}

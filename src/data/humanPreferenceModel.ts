@@ -328,6 +328,40 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     ],
   },
 
+
+  {
+    id: 'PREF-ABLATION-PAPER-NARRATIVE',
+    title: '消融实验先统一方法身份，再按科学论文的因果顺序展开',
+    statement: '当一个页面比较的是逐项增加机制的一组实验时，先用统一实验名和消融表回答“哪几组、各自加了什么、结果怎样”；随后按动机→方法→数学映射→实验→结果→分析组织主线。OFF/ON、DirectApply、Effective-State 等内部 run/arm 身份留在证据层，不应要求零上下文读者先做名称翻译。',
+    scopes: ['research-ui', 'research-copy', 'results', 'capability'],
+    confidence: 'explicit-project',
+    priority: 5,
+    retrievalTags: ['消融', 'ablation', '论文', 'ICLR', '方法对比', '命名一致', '对勾', 'Bounded Online Recurrence', 'Bounded State', 'GDR', '数学映射', 'Task Vector', 'entropy'],
+    supportingCaseIds: ['CASE-082', 'CASE-088', 'CASE-089', 'CASE-092'],
+    antiOvergeneralization: [
+      '不是所有研究页都要模仿论文版式；只有同一方法族的逐项消融才默认用这种入口。',
+      '统一公共实验名不能删除审计身份；run ID、OFF/ON、Effective-State 等仍在 provenance / evidence 精确保留。',
+      '不是公式越多越好；公式只在它解释方法为什么成立、变量怎样映射或结果为什么可解释时进入主线。',
+      '消融表可以描述同一冻结 final 上的三组结果，但若其中一组不是预注册同 campaign arm，必须就地保留这个因果比较边界。',
+    ],
+  },
+
+  {
+    id: 'PREF-RESEARCH-MATH-VISUAL-EVIDENCE',
+    title: '科研公式真实排版，关键实验图直接可见并回链原生系统',
+    statement: '科研主线公式使用真实 LaTeX renderer；直接支撑论点的 W&B 曲线应在正文可见，同时保留 Report / Workspace / panel 原生链接。若第三方交互受权限限制，使用同源确定性静态快照并明确边界，不嵌登录墙、不擅自改公开。',
+    scopes: ['research-ui', 'research-copy', 'results', 'capability'],
+    confidence: 'explicit-project',
+    priority: 5,
+    retrievalTags: ['LaTeX', 'KaTeX', 'MathJax', '公式', 'W&B', 'wandb', '曲线', 'report', 'panel', '交互表格', '截图'],
+    supportingCaseIds: ['CASE-093'],
+    antiOvergeneralization: [
+      '不是每个行内符号都需要独立公式块；只把承担推导或论证的公式提升为数学块。',
+      '不是所有 W&B panel 都塞进正文；正文只保留最能支撑结论的关键图，其余留在 Report / Workspace。',
+      '静态快照是阅读层，不替代 run、receipt 或封存 JSON 的科学 authority。',
+      'public iframe 需要真正 public 的 Report / panel；不得为方便 embed 自动改变原 W&B project 可见性。',
+    ],
+  },
 ];
 
 export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [
@@ -659,6 +693,32 @@ export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [
     accepted: 'SD-LoRA 的 900 多秒不是非得忍着。我们已经做出了一个确实能更快训练的 SD-LoRA v2；它不是原算法一模一样的复制品，但目前的小规模真实 WebShop 检查没有发现它因为加速而明显变笨。',
     reason: 'owner 明确说当前对话回复直接放网页已经不错；网页施工应保留这套自然表达，只在事实、边界、结构和证据层做必要编辑。',
     failureMechanisms: ['webification-language-regression', 'approved-prose-rewritten-into-jargon'],
+    ownerStatus: 'accepted',
+  },
+
+
+  {
+    id: 'PAIR-092-ABLATION-PAPER-NARRATIVE',
+    caseId: 'CASE-092',
+    preferenceIds: ['PREF-ABLATION-PAPER-NARRATIVE', 'PREF-OBJECT-FIRST', 'PREF-RESEARCH-JUDGMENT'],
+    scopes: ['research-ui', 'research-copy', 'results', 'capability'],
+    rejected: 'H1 用“Bounded Online Recurrence + Effective-State GDR”，结果区再列“DirectApply / Bounded OFF / Bounded + GDR ON”，并按 readiness / lifecycle / post-hoc 分节。',
+    accepted: '首层直接列三组：普通 OpenEVO / OpenEVO + Bounded Online Recurrence / OpenEVO + Bounded Online Recurrence + GDR；用 Bounded Online Recurrence、GDR 两列打勾，并给同一冻结 128 题 Final。正文按动机 → 方法与公式 → 实验 → 结果 → Analysis / Discussion 展开。',
+    reason: 'owner 明确指出旧页面需要读者自己把多套名称对齐，而且内部工作流结构打断科学叙事；论文式消融入口让陌生读者先建立统一实验身份，再理解方法为什么产生、怎样验证。',
+    failureMechanisms: ['inconsistent-experiment-identity', 'missing-ablation-overview', 'implementation-taxonomy-as-research-story', 'formula-without-mapping-bridge'],
+    ownerStatus: 'accepted',
+  },
+
+
+  {
+    id: 'PAIR-093-LATEX-WANDB-EVIDENCE',
+    caseId: 'CASE-093',
+    preferenceIds: ['PREF-RESEARCH-MATH-VISUAL-EVIDENCE', 'PREF-RESEARCH-JUDGMENT'],
+    scopes: ['research-ui', 'research-copy', 'results', 'capability'],
+    rejected: '用 HTML 上下标拼公式；Analysis 末尾只留“打开 W&B →”，或把受限 Report iframe 嵌成登录墙。',
+    accepted: '主线公式以 KaTeX/MathJax 的 LaTeX 形式渲染；Task Score、Task Vector、任务步数等关键曲线直接出现在正文，并保留 Report、Workspace 与原生 panel 链接；W&B 源项目受限时使用同源静态快照而不改变可见性。',
+    reason: 'owner 要求科研网页拥有论文式公式和真实实验图，而不是“像公式的文本”与“看不到图的链接”；同时公开展示不能牺牲既有 W&B 权限边界。',
+    failureMechanisms: ['fake-math-typesetting', 'evidence-hidden-behind-link', 'locked-iframe-presented-as-interactive', 'visibility-boundary-erasure'],
     ownerStatus: 'accepted',
   },
 
