@@ -1,5 +1,6 @@
 ---
 import ExternalBrandMark from '../common/ExternalBrandMark';
+import MathFormula from '../common/MathFormula.astro';
 import { type Locale } from '../../i18n';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -55,7 +56,7 @@ const rewardUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/web_agen
       <section class="eval-output" aria-label={t('WebShop 评估输出','WebShop evaluation outputs')}>
         <article class="score-output" data-ui-audit-item>
           <small>NORMALIZED TASK SCORE</small>
-          <strong>task_score ∈ [0, 1]</strong>
+          <strong><MathFormula latex={String.raw`\mathrm{task\_score}\in[0,1]`} display={false} label={t('task score 取值范围', 'task score range')} /></strong>
           <div class="score-scale" role="img" aria-label={t('task score 从 0 到 1：0 表示没有满足任务要求，介于 0 和 1 之间表示部分满足，1 表示完全满足','task score ranges from 0 to 1: 0 means the task requirements are not satisfied, intermediate values mean partial completion, and 1 means full completion')}>
             <div class="score-track"><span></span></div>
             <div class="score-ticks"><b>0.0</b><b>0.5</b><b>1.0</b></div>
@@ -65,7 +66,7 @@ const rewardUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/web_agen
 
         <article class="exact-output" data-ui-audit-item>
           <small>EXACT SUCCESS</small>
-          <strong>won ∈ {`{false, true}`}</strong>
+          <strong><MathFormula latex={String.raw`\mathrm{won}\in\{\mathrm{false},\mathrm{true}\}`} display={false} label={t('exact success 布尔取值', 'exact success boolean range')} /></strong>
           <div class="exact-symbols" aria-hidden="true"><span>✕</span><span>✓</span></div>
           <p>{t('回答“终局是否完整满足任务要求”。','Answers: “Was the terminal task fully satisfied?”')}</p>
         </article>

@@ -76,8 +76,11 @@ describe('Vanilla SD-LoRA first-screen plain-language contract', () => {
   });
 
   it('keeps the scientific mechanism and boundaries visible', () => {
-    for (const phrase of ['Dₜ ← BₜAₜ', 'α₁ · α₂ · … · αₜ', 'ΔWₜ = Σ αᵢDᵢ', 'DirectApply', 'GDR-v1']) {
+    for (const phrase of ['Dₜ ← BₜAₜ', 'α₁ · α₂ · … · αₜ', 'DirectApply', 'GDR-v1']) {
       expect(slide).toContain(phrase);
     }
+    expect(slide).toContain('MathFormula');
+    expect(slide).toContain('\\Delta W_t');
+    expect(slide).toContain('\\sum_i\\alpha_iD_i');
   });
 });

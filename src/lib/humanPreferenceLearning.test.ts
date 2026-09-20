@@ -159,7 +159,7 @@ describe('human preference learning loop', () => {
 
   it('retrieves CASE-093 for LaTeX formulas and W&B visual evidence without erasing privacy boundaries', () => {
     const result = retrieveHumanPreferenceContext(
-      '科研论文网页的公式用 LaTeX KaTeX MathJax，W&B wandb report 和 panel 图直接放正文，最好有交互表格；如果源 project 私有就不要自动改 public，静态快照也要能点回原生 panel',
+      '科研论文网页的公式用 LaTeX KaTeX MathJax；如果一页暴露 raw math、HTML sub/sup、code 假公式或 serif 假公式，要做整个网站和 sibling route 的公式覆盖审计，但 shell API 配置和伪代码继续保持 code。W&B wandb report 和 panel 图直接放正文；如果源 project 私有就不要自动改 public。',
       undefined,
       16,
       'research-copy',
@@ -170,6 +170,8 @@ describe('human preference learning loop', () => {
     const preference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-RESEARCH-MATH-VISUAL-EVIDENCE');
     expect(preference?.antiOvergeneralization.join(' ')).toContain('public iframe');
     expect(preference?.antiOvergeneralization.join(' ')).toContain('W&B project');
+    expect(preference?.antiOvergeneralization.join(' ')).toContain('伪代码');
+    expect(preference?.statement).toContain('审计 sibling routes 与共享组件的公式覆盖');
   });
 
   it('retrieves benchmark-context and native-W&B reuse rules for research result pages', () => {

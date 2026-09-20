@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '../../i18n';
 import ResearchDiagramLegend from './ResearchDiagramLegend.astro';
+import MathFormula from '../common/MathFormula.astro';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
@@ -34,7 +35,7 @@ const t = (cn:string,en:string) => zh ? cn : en;
   <figure class="seed-scene" role="img" aria-label={t('SEED Stage 2：当前 policy 产生 on-policy trajectory，trajectory 同时进入 hindsight analyzer 和 reward 分支；普通上下文与 skill 上下文对同一动作 token 重新打分形成 OPD，reward 形成 GRPO，两个训练信号合并更新下一版 policy','SEED Stage 2: the current policy produces an on-policy trajectory; the trajectory feeds both hindsight analysis and reward branches; plain and skill contexts re-score the same action tokens to form OPD, reward forms GRPO, and both signals update the next policy')}>
     <figcaption><span>STAGE 2</span><strong>Self-evolving OPD + GRPO</strong><small>{t('同一个 policy 在一轮里同时是 actor 与 analyzer','the same policy serves as actor and analyzer in the same iteration')}</small></figcaption>
 
-    <article class="node policy"><span class="node-role">CURRENT POLICY</span><strong>policy θ<sub>t</sub></strong><small>{t('行动者 + 同步 analyzer 来源','actor + synchronized analyzer source')}</small></article>
+    <article class="node policy"><span class="node-role">CURRENT POLICY</span><strong><MathFormula latex={String.raw`\mathrm{policy}\;\theta_t`} display={false} label={t('当前 policy 参数', 'Current policy parameters')} /></strong><small>{t('行动者 + 同步 analyzer 来源','actor + synchronized analyzer source')}</small></article>
     <article class="node rollout"><span class="node-role">ON-POLICY</span><strong>{t('环境 rollout','environment rollout')}</strong><small>observation · sampled actions · reward</small></article>
     <article class="node trajectory"><span class="node-role">EPISODE EVIDENCE</span><strong>{t('完整 on-policy trajectory','completed on-policy trajectory')}</strong><small>{t('动作已经采样完成，后面不重新“换一条动作轨迹”','actions are already sampled; later branches do not replace them with a new trajectory')}</small></article>
 
@@ -45,7 +46,7 @@ const t = (cn:string,en:string) => zh ? cn : en;
     <article class="node opd"><span class="node-role">DENSE DISTILLATION SIGNAL</span><strong>OPD</strong><small>{t('比较同一动作在两种上下文下的概率变化','compare the probability shift of the same action under the two contexts')}</small></article>
     <article class="node grpo"><span class="node-role">OUTCOME RL SIGNAL</span><strong>GRPO</strong><small>{t('来自环境 reward / relative outcome','comes from environment reward / relative outcome')}</small></article>
     <article class="node joint"><span class="node-role">JOINT OBJECTIVE</span><strong>GRPO + OPD</strong><small>{t('稀疏结果信号 + 稠密 hindsight 信号','sparse outcome signal + dense hindsight signal')}</small></article>
-    <article class="node next"><span class="node-role">OPTIMIZER UPDATE</span><strong>policy θ<sub>t+1</sub></strong><small>{t('下一轮直接用更新后的 checkpoint','the next round directly uses the updated checkpoint')}</small></article>
+    <article class="node next"><span class="node-role">OPTIMIZER UPDATE</span><strong><MathFormula latex={String.raw`\mathrm{policy}\;\theta_{t+1}`} display={false} label={t('更新后的 policy 参数', 'Updated policy parameters')} /></strong><small>{t('下一轮直接用更新后的 checkpoint','the next round directly uses the updated checkpoint')}</small></article>
 
     <svg class="seed-wires" viewBox="0 0 1200 720" preserveAspectRatio="none" aria-hidden="true">
       <defs>
@@ -72,7 +73,7 @@ const t = (cn:string,en:string) => zh ? cn : en;
     </svg>
     <span class="wire-label same-checkpoint">{t('同一 checkpoint','same checkpoint')}</span>
     <span class="wire-label same-actions">{t('关键：两边重打分的是同一批 sampled action tokens','key: both branches re-score the same sampled action tokens')}</span>
-    <span class="wire-label next-round">θ<sub>t+1</sub> {t('进入下一轮','feeds the next round')}</span>
+    <span class="wire-label next-round"><MathFormula latex={String.raw`\theta_{t+1}`} display={false} label={t('下一轮 policy 参数', 'Next-round policy parameters')} /> {t('进入下一轮','feeds the next round')}</span>
   </figure>
 
   <div class="mental-model">

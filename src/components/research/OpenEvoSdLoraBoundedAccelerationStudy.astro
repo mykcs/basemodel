@@ -2,6 +2,7 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
+import MathFormula from '../common/MathFormula.astro';
 import {
   SD_LORA_BOUNDED_ACCELERATION_RESULT as result,
   SD_LORA_BOUNDED_ACCELERATION_SOURCE as source,
@@ -174,7 +175,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
         <thead><tr><th>{t('对象', 'Object')}</th><th>{t('能否直接 composition', 'Directly composable?')}</th><th>{t('原因', 'Why')}</th></tr></thead>
         <tbody>
           <tr><th scope="row">DeltaNet / FLA</th><td><strong>{t('可以', 'Yes')}</strong></td><td>{t('recurrence 能改写成可组合的 Householder / WY 表示', 'the recurrence admits a composable Householder / WY representation')}</td></tr>
-          <tr><th scope="row">{t('去掉训练与压缩的简化 Bounded', 'Simplified Bounded without training/compression')}</th><td><strong>{t('可以', 'Yes')}</strong></td><td><code>M′ = aM + B</code> {t('本身就是 affine transfer', 'is already an affine transfer')}</td></tr>
+          <tr><th scope="row">{t('去掉训练与压缩的简化 Bounded', 'Simplified Bounded without training/compression')}</th><td><strong>{t('可以', 'Yes')}</strong></td><td><MathFormula latex={String.raw`M' = aM + B`} display={false} label={t('简化 Bounded 的 affine transfer', 'Affine transfer of simplified Bounded')} /> {t('本身就是 affine transfer', 'is already an affine transfer')}</td></tr>
           <tr><th scope="row">{t('现在的真实 Bounded', 'Current real Bounded')}</th><td><strong>{t('还没有', 'Not yet')}</strong></td><td>{t('下一步 gradient、AdamW moments、global clip、coefficient 和 GDR write 都依赖 incoming state', 'the next gradient, AdamW moments, global clipping, coefficient, and GDR write all depend on the incoming state')}</td></tr>
         </tbody>
       </table>

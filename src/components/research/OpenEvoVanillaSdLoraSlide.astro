@@ -1,5 +1,6 @@
 ---
 import type { Locale } from '../../i18n';
+import MathFormula from '../common/MathFormula.astro';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
@@ -86,7 +87,7 @@ const arrowUrl = `url(#${arrowId})`;
           <span><b>Dₜ ← BₜAₜ</b>{t('本轮新学', 'learned this round')}</span>
           <span><b>α₁ · α₂ · … · αₜ</b>{t('重新调整影响大小', 'rebalance influence')}</span>
         </div>
-        <code>Dₜ = BₜAₜ / ‖BₜAₜ‖<sub>F</sub>　→　ΔWₜ = Σ αᵢDᵢ</code>
+        <MathFormula latex={String.raw`D_t = \frac{B_tA_t}{\lVert B_tA_t\rVert_F}\quad\Longrightarrow\quad\Delta W_t=\sum_i\alpha_iD_i`} display={false} label={t('SD-LoRA 方向归一化与累计更新', 'SD-LoRA direction normalization and accumulated update')} />
       </article>
 
       <article class="sdlora-node sdlora-node--candidate" data-flow-node="candidate" data-ui-audit-item>
@@ -133,7 +134,7 @@ const arrowUrl = `url(#${arrowId})`;
         <aside class="sdlora-mobile-side" data-flow-node="replay-mobile"><small>{t('旧经验回放', 'old-example replay')}</small><strong>{t('最多 64 条', 'up to 64')}</strong></aside>
         <svg viewBox="0 0 64 88" role="img" aria-label={t('旧经验从旁边一起参加训练', 'old examples join training from the side')}><path data-edge="replay-update-mobile" d="M4 28 H36 Q52 28 52 44 V58"/><path d="M46 52 L52 60 L58 52"/></svg>
         <article class="sdlora-mobile-node sdlora-mobile-node--update" data-flow-node="update-mobile">
-          <small>{t('03 · SD-LoRA 更新', '03 · SD-LoRA update')}</small><strong>{t('旧方向不改；学一个新方向；重调各方向影响大小', 'Keep old directions fixed; learn one new direction; rebalance their influence')}</strong><code>ΔWₜ = Σ αᵢDᵢ</code>
+          <small>{t('03 · SD-LoRA 更新', '03 · SD-LoRA update')}</small><strong>{t('旧方向不改；学一个新方向；重调各方向影响大小', 'Keep old directions fixed; learn one new direction; rebalance their influence')}</strong><MathFormula latex={String.raw`\Delta W_t=\sum_i\alpha_iD_i`} display={false} label={t('SD-LoRA 累计参数更新', 'SD-LoRA accumulated parameter update')} />
         </article>
       </div>
 

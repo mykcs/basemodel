@@ -1,11 +1,19 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
+import MathFormula from '../common/MathFormula.astro';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
+const taskVectorLatex = String.raw`\tau = \Delta W_{R49} - \Delta W_{R27} = \sum_i \delta c_i B_i A_i`;
+const taskVectorNormLatex = String.raw`\lVert \tau \rVert_F = \sqrt{\delta c^{\top} G \delta c} = 0.6082257746`;
+const interventionLatex = String.raw`\theta'(\lambda) = \theta_{R14} + \lambda \tau`;
+const admissionLatex = t(
+  String.raw`\theta_{t+1}=\begin{cases}\theta_t+\Delta_t,&\text{接受}\\\theta_t,&\text{拒绝}\end{cases}`,
+  String.raw`\theta_{t+1}=\begin{cases}\theta_t+\Delta_t,&\text{accept}\\\theta_t,&\text{reject}\end{cases}`,
+);
 const briefingHref = p('/research/seed-openevo/study/briefing/');
 const gatedDeltaPageHref = p('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/');
 const h17 = 'https://github.com/mykcs/openevo-experiment/blob/b3091ed70f060742147e931b8533784c8dfe1745/docs/science/webshop/runs/2026-08-15/h1.17-horizon-interface-diagnostic.md';
@@ -81,24 +89,24 @@ const parameterMeasurementPr317 = 'https://github.com/mykcs/openevo-experiment/p
   <section>
     <h2>{t('4. Task Vector：从 SD-LoRA 更新到真实参数方向', '4. Task Vector: from SD-LoRA updates to a real parameter direction')}</h2>
     <p>{t('每个 SD-LoRA 组件都对应真实权重空间中的一个 ΔW。相邻且不同的状态 R27 与 R49 定义方向：', 'Each SD-LoRA component corresponds to a real ΔW in weight space. Adjacent distinct states R27 and R49 define the direction:')}</p>
-    <div class="equation">τ = ΔW<sub>R49</sub> − ΔW<sub>R27</sub> = Σ<sub>i</sub> δc<sub>i</sub>B<sub>i</sub>A<sub>i</sub></div>
+    <MathFormula latex={taskVectorLatex} label={t('Task Vector 参数方向定义', 'Task Vector parameter-direction definition')} />
     <p>{t('为了不把 7 个系数的欧氏距离误当成真实权重距离，我们使用组件之间的 Gram 矩阵 G：', 'To avoid treating Euclidean distance between seven coefficients as the true weight-space distance, we use the component Gram matrix G:')}</p>
-    <div class="equation">‖τ‖<sub>F</sub> = √(δcᵀGδc) = 0.6082257746</div>
+    <MathFormula latex={taskVectorNormLatex} label={t('Task Vector Frobenius 范数', 'Task Vector Frobenius norm')} />
     <p class="source"><a href={taskVectorPr358} target="_blank" rel="noreferrer"><ExternalBrandMark href={taskVectorPr358} /> PR #358 · R14 / R27 / R49 与 Frobenius 几何证据</a></p>
     <p>{t('另一条参数分析线把这些方向放进更完整的 measurement pack：精确组件 Gram 重建、Task Vector cross-check、参数谱 / stable rank、principal parameter themes，以及 GPU replay-only causal ablation。它读取已经接受的参数状态，不回放正式训练，也不打开 final panel。', 'A separate parameter-analysis line places these directions in a fuller measurement pack: exact component-Gram reconstruction, Task Vector cross-checks, parameter spectra / stable rank, principal parameter themes, and GPU replay-only causal ablations. It reads accepted parameter states without replaying formal training or opening the final panel.')}</p>
     <p class="source"><a href={parameterMeasurementPr317} target="_blank" rel="noreferrer"><ExternalBrandMark href={parameterMeasurementPr317} /> PR #317 · {t('参数 measurement pack 与机制分析', 'parameter measurement pack and mechanism analysis')}</a></p>
-    <p>{t('基底包含 7 个 rank-8 SD-LoRA 组件。干预使用 λ∈{−1,0,0.5,1} 的有符号剂量，并加入 3 个与 τ 同 Frobenius 范数的随机方向。这样可以区分“这个方向有用”和“只要参数动得够多就会变”。', 'The basis contains seven rank-8 SD-LoRA components. Interventions use signed doses λ∈{−1,0,0.5,1} and three random directions with the same Frobenius norm as τ. This separates a direction-specific effect from generic parameter movement.')}</p>
-    <div class="equation">θ′(λ) = θ<sub>R14</sub> + λτ</div>
-    <p>{t('最多 9 组条件 × 64 个配对任务 = 576 条闭环轨迹。只有 +1.0τ 比三个同范数随机对照的中位数至少高 1.0 Task Score，同时完整成功不下降，才进入后续 1,536 条轨迹实验。', 'The cap is 9 conditions × 64 paired tasks = 576 closed-loop episodes. The follow-up 1,536-rollout experiment unlocks only if +1.0τ beats the median of the three norm-matched random controls by at least 1.0 Task Score without degrading exact success.')}</p>
-    <aside><strong>{t('为什么曾经得到 τ=0？', 'Why did τ once equal zero?')}</strong><p>{t('早期把 75% 和 100% 当作两个锚点，但它们实际上都落到 R49。我们把这判为“不可识别”；“因果效果为零”不能从这里推出。随后改成真实不同的 R14 / R27 / R49。', 'The early 75% and 100% anchors both resolved to R49. We classified this as unidentifiable; a causal-null conclusion cannot be drawn from it. We then rebuilt the design around genuinely distinct R14 / R27 / R49 states.')}</p></aside>
+    <p>{t('基底包含 7 个 rank-8 SD-LoRA 组件。干预使用有符号剂量', 'The basis contains seven rank-8 SD-LoRA components. Interventions use signed doses')} <MathFormula latex={String.raw`\lambda\in\{-1,0,0.5,1\}`} display={false} label={t('Task Vector 干预剂量集合', 'Task Vector intervention dose set')} />，{t('并加入 3 个与 τ 同 Frobenius 范数的随机方向。这样可以区分“这个方向有用”和“只要参数动得够多就会变”。', 'plus three random directions with the same Frobenius norm as τ. This separates a direction-specific effect from generic parameter movement.')}</p>
+    <MathFormula latex={interventionLatex} label={t('Task Vector 有符号参数干预', 'Signed Task Vector parameter intervention')} />
+    <p><MathFormula latex={String.raw`9\times64=576`} display={false} label={t('Task Vector 闭环轨迹预算', 'Task Vector closed-loop episode budget')} /> {t('条闭环轨迹是这一阶段的上限。只有 +1.0τ 比三个同范数随机对照的中位数至少高 1.0 Task Score，同时完整成功不下降，才进入后续 1,536 条轨迹实验。', 'closed-loop episodes is the cap for this stage. The follow-up 1,536-rollout experiment unlocks only if +1.0τ beats the median of the three norm-matched random controls by at least 1.0 Task Score without degrading exact success.')}</p>
+    <aside><strong>{t('为什么曾经得到零向量？', 'Why did the Task Vector once become zero?')}</strong><p>{t('早期把 75% 和 100% 当作两个锚点，但它们实际上都落到 R49。我们把这判为“不可识别”；“因果效果为零”不能从这里推出。随后改成真实不同的 R14 / R27 / R49。', 'The early 75% and 100% anchors both resolved to R49. We classified this as unidentifiable; a causal-null conclusion cannot be drawn from it. We then rebuilt the design around genuinely distinct R14 / R27 / R49 states.')}</p></aside>
   </section>
 
   <section>
     <h2>{t('5. 本地 GDR-v1、DirectApply 与原始 Gated Delta Rule 的关系', '5. Local GDR-v1, DirectApply, and the original Gated Delta Rule')}</h2>
     <p>{t('历史上的 GDR-v1 与 DirectApply 都会先训练出同类 SD-LoRA 候选 Δt。我们当时称为 GDR-v1 的本地规则，并不是论文里的 recurrent Gated Delta Rule：它是在 candidate 已经训练完成后，再跑固定 16-task probe，由 task-score acceptance 决定接受还是继续 prior state。DirectApply 去掉的正是这层 candidate admission gate。', 'Historical GDR-v1 and DirectApply both first train the same kind of SD-LoRA candidate Δt. The local rule we called GDR-v1 was not the recurrent Gated Delta Rule from the paper: after a candidate had already been trained, a fixed 16-task probe used task-score acceptance to decide whether to adopt it or keep the prior state. DirectApply removes exactly this candidate-admission gate.')}</p>
-    <p>{t('原始 Gated Delta Rule 处在更内层：当前输入产生 key / value 与 gate，旧 State 先被读取，再形成 residual 并连续写回。后续 Gated-Delta SD-LoRA 推导已经进一步收敛：Task Vector 退出 runtime causal path；State 直接放在 coefficient-folded rank-8 LoRA factors；causal optimizer-aware state 可以形成 factor-local write；第一版 D1 使用冻结 learned β、固定 g=0，并且只在最后一层 q/k/v/o 四个模块启用 treatment。这里不重复完整推导，统一交给当前机制页。', 'The original Gated Delta Rule lives at a deeper level: the current input provides key/value signals and gates, the old State is read, and a residual is written back continuously. The later Gated-Delta SD-LoRA derivation has now narrowed further: Task Vector is outside the runtime causal path; State lives directly in coefficient-folded rank-8 LoRA factors; causal optimizer-aware state yields factor-local writes; first D1 uses a frozen learned β, fixes g=0, and gates only the final-layer q/k/v/o modules. The full derivation is owned by the current mechanism page rather than repeated here.')}</p>
+    <p>{t('原始 Gated Delta Rule 处在更内层：当前输入产生 key / value 与 gate，旧 State 先被读取，再形成 residual 并连续写回。后续 Gated-Delta SD-LoRA 推导已经进一步收敛：Task Vector 退出 runtime causal path；State 直接放在 coefficient-folded rank-8 LoRA factors；causal optimizer-aware state 可以形成 factor-local write；第一版 D1 使用冻结 learned β，并固定', 'The original Gated Delta Rule lives at a deeper level: the current input provides key/value signals and gates, the old State is read, and a residual is written back continuously. The later Gated-Delta SD-LoRA derivation has now narrowed further: Task Vector is outside the runtime causal path; State lives directly in coefficient-folded rank-8 LoRA factors; causal optimizer-aware state yields factor-local writes; first D1 uses a frozen learned β and fixes')} <MathFormula latex={String.raw`g=0`} display={false} label={t('D1 固定衰减门', 'D1 fixed decay gate')} />，{t('并且只在最后一层 q/k/v/o 四个模块启用 treatment。这里不重复完整推导，统一交给当前机制页。', 'while gating only the final-layer q/k/v/o modules. The full derivation is owned by the current mechanism page rather than repeated here.')}</p>
     <p class="source"><a href={gatedDeltaPageHref}>{t('当前 Gated-Delta SD-LoRA 推导 →', 'Current Gated-Delta SD-LoRA derivation →')}</a></p>
-    <div class="equation piecewise">θ<sub>t+1</sub> = θ<sub>t</sub> + Δ<sub>t</sub> &nbsp; {t('若接受', 'if accepted')}<br />θ<sub>t+1</sub> = θ<sub>t</sub> &nbsp; {t('若拒绝', 'if rejected')}</div>
+    <MathFormula latex={admissionLatex} label={t('历史 GDR-v1 候选更新接受规则', 'Historical GDR-v1 candidate-admission rule')} />
     <p>{t('DirectApply 保留共同的数据合同、工程安全、determinism 与 SD-LoRA 训练条件；候选通过这些共同合同后直接进入后续模型，16-task task-score probe 不再拥有接受 / 拒绝决定权。1.7B 的 44 个候选中只有 7 个被 GDR 接受，因此这个准入差异可能改变长期学习轨迹。', 'DirectApply keeps the shared data contracts, engineering safety, determinism, and SD-LoRA training conditions. Once a candidate passes those shared contracts, it enters the next state directly; the 16-task task-score probe no longer has accept/reject authority. GDR admitted only 7 of 44 candidates in the 1.7B run, so this admission difference can change the long-term learning trajectory.')}</p>
     <p class="source"><a href={q17} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17} /> GDR / DirectApply diagnostic lineage</a></p>
   </section>
@@ -133,8 +141,6 @@ const parameterMeasurementPr317 = 'https://github.com/mykcs/openevo-experiment/p
   h2{margin:0 0 18px;font-size:30px;line-height:1.2;letter-spacing:-.025em}
   section h3{margin:30px 0 10px;font-size:20px;line-height:1.3;letter-spacing:-.015em}
   section>p{max-width:820px;margin:12px 0;color:var(--muted);font-size:16px;line-height:1.75}
-  .equation{margin:18px 0;padding:18px 22px;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface);font:650 24px/1.45 Georgia,'Times New Roman',serif;overflow-x:auto}
-  .piecewise{line-height:1.8}
   .evidence-row{display:grid;grid-template-columns:auto 1fr auto 1fr auto 1fr;gap:10px;align-items:center;margin:22px 0;padding:18px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
   .evidence-row span{color:var(--muted);font-size:13px}.evidence-row strong{font:760 22px var(--font-mono)}
   .capacity-chain{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:12px;align-items:stretch;margin:24px 0}

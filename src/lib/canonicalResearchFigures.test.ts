@@ -84,7 +84,7 @@ describe('canonical SEED / OpenEvo research figures', () => {
   });
 
   it('teaches WebShop evaluation as inputs -> evaluator -> two complementary outputs', () => {
-    for (const term of ['task_score ∈ [0, 1]', 'EXACT SUCCESS', 'won ∈', 'get_reward(...)', 'Score 看完成程度', '不是某一次实验 run 的测量结果']) {
+    for (const term of ['MathFormula', '\\mathrm{task\\_score}\\in[0,1]', '\\mathrm{won}\\in', 'EXACT SUCCESS', 'get_reward(...)', 'Score 看完成程度', '不是某一次实验 run 的测量结果']) {
       expect(evaluationFigure).toContain(term);
     }
     expect(evaluationFigure).toContain('INPUT · GOAL');
@@ -141,7 +141,9 @@ describe('canonical SEED / OpenEvo research figures', () => {
   it('keeps C1 as one reusable comparison instead of repeating the same conclusion', () => {
     expect(compareFigure).toContain('fig-seed-openevo-update-target');
     expect(compareFigure).toContain('SHARED EXPERIENCE');
-    expect(compareFigure).toContain('MODEL PARAMETERS · θ → θ′');
+    expect(compareFigure).toContain("{t('模型参数', 'MODEL PARAMETERS')}");
+    expect(compareFigure).toContain("\\theta\\rightarrow\\theta'");
+    expect(compareFigure).toContain('MathFormula');
     expect(compareFigure).toContain('memory · skill · instructions · adapter');
     expect(compareFigure).toContain('VALIDATED SUCCESSOR CARRIER / STATE');
     expect(compareFigure).toContain('non-weight');

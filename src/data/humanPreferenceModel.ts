@@ -367,14 +367,14 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
   {
     id: 'PREF-RESEARCH-MATH-VISUAL-EVIDENCE',
     title: '科研公式真实排版，关键实验图直接可见并回链原生系统',
-    statement: '科研主线公式使用真实 LaTeX renderer；直接支撑论点的 W&B 曲线应在正文可见，同时保留 Report / Workspace / panel 原生链接。每张图的指标解释与 claim boundary 应直接贴在对应图下面，避免把解释抽离成一张集中指标表。W&B 已有同一指标原生图时，网页优先解释并复用原生证据；指标未写进 W&B 但封存 run / receipt 有真实数据时，用带来源哈希、明确 scientific_authority=false 的 publication mirror 补可视化，而不是改写封存 run 或在网页另造一套事实源。',
+    statement: '科研主线公式使用真实 LaTeX renderer；一旦一处暴露 raw math，就应审计 sibling routes 与共享组件的公式覆盖，并用可执行门阻止 HTML sub/sup、Unicode、<code> 或 serif 假公式重新出现。代码、配置和伪代码仍保持 code，不为了统一外观强行数学化。直接支撑论点的 W&B 曲线应在正文可见，同时保留 Report / Workspace / panel 原生链接。每张图的指标解释与 claim boundary 应直接贴在对应图下面。',
     scopes: ['research-ui', 'research-copy', 'results', 'capability'],
     confidence: 'explicit-project',
     priority: 5,
-    retrievalTags: ['LaTeX', 'KaTeX', 'MathJax', '公式', 'W&B', 'wandb', '曲线', 'report', 'panel', '交互表格', '截图', 'training loss', 'rollout', 'publication mirror', '缺失指标', 'sealed receipt'],
+    retrievalTags: ['LaTeX', 'KaTeX', 'MathJax', '公式', 'raw math', 'sub/sup', 'serif 假公式', '公式覆盖审计', 'sitewide math audit', 'W&B', 'wandb', '曲线', 'report', 'panel', '交互表格', '截图', 'training loss', 'rollout', 'publication mirror', '缺失指标', 'sealed receipt'],
     supportingCaseIds: ['CASE-093', 'CASE-096'],
     antiOvergeneralization: [
-      '不是每个行内符号都需要独立公式块；只把承担推导或论证的公式提升为数学块。',
+      '不是每个行内符号都需要独立公式块；短数学关系可以用 inline KaTeX。代码条件、shell、API 字段和明确的算法伪代码仍应保持 code，而不是为了“全站 LaTeX”强行转换。',
       '不是所有 W&B panel 都塞进正文；正文只保留最能支撑结论的关键图，其余留在 Report / Workspace。',
       '静态快照是阅读层，不替代 run、receipt 或封存 JSON 的科学 authority。',
       'public iframe 需要真正 public 的 Report / panel；不得为方便 embed 自动改变原 W&B project 可见性。',

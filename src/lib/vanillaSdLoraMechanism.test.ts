@@ -31,10 +31,12 @@ describe('Vanilla SD-LoRA mechanism projection', () => {
       '最多带回 64 条旧经验',
       'Dₜ ← BₜAₜ',
       'α₁ · α₂ · … · αₜ',
-      'ΔWₜ = Σ αᵢDᵢ',
       '先得到一份候选 LoRA',
       'SD-LoRA 训练到这里结束',
     ]) expect(projectionSource).toContain(phrase);
+    expect(projectionSource).toContain('MathFormula');
+    expect(projectionSource).toContain('\\Delta W_t');
+    expect(projectionSource).toContain('\\sum_i\\alpha_iD_i');
     expect(component).toContain('过去所有任务尝试不会整批混进来');
     expect(component).toContain('这些是接下来要测的风险，目前还不能说它们就是已经发生的故障原因');
   });
