@@ -258,7 +258,8 @@ describe('human preference learning v2', () => {
     expect(brief.events.map((event) => event.id)).toContain('EVENT-20260909-SITEWIDE-APPLE-SURFACE-REPEAT');
     expect(brief.learnedPreferences.map(({ preference }) => preference.id)).toContain('PREF-FIRST-SCREEN-ATTENTION');
     expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-SITEWIDE-APPLE-SURFACE-REJECTED' && reference.tier === 'rejected')).toBe(true);
-    expect(brief.visualReferences.some((reference) => reference.tier === 'silver' || reference.tier === 'golden' || reference.tier === 'current-candidate')).toBe(false);
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-CONTENT-FIRST-737-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.tier === 'silver' || reference.tier === 'golden')).toBe(false);
     expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('参考品牌') && boundary.includes('机械复制'))).toBe(true);
   });
 
@@ -325,4 +326,17 @@ describe('human preference learning v2', () => {
       }
     }
   });
+  it('uses the same reviewer/acceptance workflow cue in low-level retrieval and the compiled brief', () => {
+    const query = '新的科研网站入口已经做完第一版，现在做视觉验收：普通浏览器验证做到哪里，什么时候才需要独立 reviewer 或冷读？';
+    const brief = buildHumanPreferenceBrief({ scope: 'all-public-ui', query });
+    expect(brief.learnedPreferences.map(({ preference }) => preference.id)).toContain('PREF-VISUAL-ACCEPTANCE-EVIDENCE-CLASS');
+    expect(brief.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-094-VISUAL-ACCEPTANCE-EVIDENCE-CLASS');
+    expect(brief.events.map((event) => event.id)).toContain('EVENT-20260920-VISUAL-ACCEPTANCE-DEFAULT-CANONICAL');
+    expect(brief.hardFailureFamilies).toContain('reviewer-evidence-class-conflation');
+    expect(brief.generationRules.join('\n')).toContain('Ordinary UI/copy/layout acceptance uses the repository deterministic evidence path');
+    expect(brief.generationRules.join('\n')).toContain('only when the owner or current task explicitly activates an independent comprehension/preference study');
+    expect(brief.visualReferences.some((reference) => reference.id === 'VISUAL-CONTENT-FIRST-737-CURRENT-CANDIDATE' && reference.tier === 'current-candidate')).toBe(true);
+    expect(brief.visualReferences.some((reference) => reference.tier === 'golden')).toBe(false);
+  });
+
 });

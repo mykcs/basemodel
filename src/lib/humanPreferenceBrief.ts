@@ -11,6 +11,7 @@ import {
 } from '../data/humanPreferenceLearningHistory';
 import type { HumanPreferenceScope } from '../data/humanPreferenceModel';
 import {
+  humanPreferenceWorkflowCues,
   retrieveHumanPreferenceContext,
   preferenceReviewContextForContract,
   tokenizeHumanPreferenceQuery,
@@ -53,7 +54,7 @@ function inferredScope(contractId?: string): HumanPreferenceScopeV2 | undefined 
 
 export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): HumanPreferenceBrief {
   const scope = input.scope ?? inferredScope(input.contractId);
-  const workflowCue = /preview|预览|build|构建|vercel|网页草稿|审阅|迭代|快速|等待/i.test(input.query);
+  const workflowCue = humanPreferenceWorkflowCues(input.query).any;
   const retrievalScope: HumanPreferenceScope | undefined =
     scope === 'briefing-mobile' || scope === 'briefing-desktop' ? 'briefing' :
     scope === 'visual' ? undefined : scope;
@@ -148,7 +149,7 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
   const hard = hardFailureFamilies().filter((family) =>
     HUMAN_FEEDBACK_EVENTS.some((event) =>
       event.failureMechanisms.includes(family) &&
-      (!scope || event.scopes.includes(scope) || event.scopes.includes('all-public-ui')),
+      (!scope || event.scopes.includes(scope) || event.scopes.includes('all-public-ui') || (event.scopes.includes('workflow') && workflowCue)),
     ),
   );
   const repeated = [...new Set(events.flatMap((event) => event.failureMechanisms))]
@@ -174,7 +175,7 @@ export function buildHumanPreferenceBrief(input: HumanPreferenceBriefInput): Hum
       : 'No current-candidate visual is active for this scope.',
     'For material user-facing work, internally produce 2–3 candidates, rank them pairwise against this brief, and show the owner only the selected candidate.',
     'For visual work, every internal candidate needs a screenshot reference before pairwise ranking.',
-    'After generation, run the existing blind cold read before revealing preference evidence, then run the preference comparison/judge.',
+    'Ordinary UI/copy/layout acceptance uses the repository deterministic evidence path. Run blind cold-read / independent reviewer evidence only when the owner or current task explicitly activates an independent comprehension/preference study; never relabel browser automation or self-review as independent evidence.',
   ];
 
   return {

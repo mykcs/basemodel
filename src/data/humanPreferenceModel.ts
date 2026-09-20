@@ -311,6 +311,24 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     ],
   },
   {
+    id: 'PREF-VISUAL-ACCEPTANCE-EVIDENCE-CLASS',
+    title: '普通视觉验收与独立 reviewer 分开',
+    statement: '普通 UI、文案和布局交付默认依赖仓库自己的确定性工程证据：真实渲染、截图、Reader Contract、布局/溢出、主题、可访问性和交互检查。不要自动启动 Kimi、MiniMax、其他 AI 对话/CLI 或本地/网络视觉模型给 verdict；独立 reviewer 只在 owner 或当前任务明确要求独立理解/偏好研究时启用。',
+    scopes: ['workflow'],
+    confidence: 'repeated-explicit',
+    priority: 5,
+    retrievalTags: ['视觉验收', '视觉验证', 'reviewer', '评审', '独立评审', '冷读', 'cold read', '浏览器', 'guest', 'incognito', 'profile', 'login', 'account', 'sync', 'Kimi', 'MiniMax', 'Playwright', '确定性证据', 'evidence class'],
+    supportingCaseIds: ['CASE-094'],
+    activation: 'explicit-cues',
+    antiOvergeneralization: [
+      '不是禁止独立人类或独立 Agent 评审；当 owner / task 明确要求理解或偏好研究时，它仍是有效且独立的一类证据。',
+      '不是降低普通 UI Gate：浏览器渲染、截图、Reader Contract、可访问性、主题、交互与几何检查仍按当前仓库要求执行。',
+      '如果当前任务明确要求独立证据，自动化截图、Playwright、作者自评或同一 Agent 的截图判断不能冒充独立 reviewer。',
+      '新建 guest/incognito/browser profile 不能制造 reviewer 独立性；若自动化落到 AI/account/login/sync surface，应记 NOT_EXECUTED 并关闭该路径，不能继续借 owner profile/cookies 或更多新 profile 重试。',
+      '可选 reviewer 的额度、登录、上传或第三方服务故障不是普通 UI 验收的 release blocker；真正的仓库 Gate 失败仍必须修复。',
+    ],
+  },
+  {
     id: 'PREF-FAST-REVIEW-PREVIEW',
     title: '迭代审阅走快速 Preview，最终验收只在 merge-ready 时运行',
     statement: '用户还在反复看 UI/copy/slide 时，默认本地构建并上传非权威 prebuilt review Preview；把链接发给 owner 前，打开这次要审的目标 route / slide，确认声称的可见改动确实出现在该 Preview；只有候选真正准备 merge/release 时才触发 exact-head Vercel final gate。',
@@ -362,9 +380,20 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
       'public iframe 需要真正 public 的 Report / panel；不得为方便 embed 自动改变原 W&B project 可见性。',
     ],
   },
+
 ];
 
-export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [
+export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [  {
+    id: 'PAIR-094-VISUAL-ACCEPTANCE-EVIDENCE-CLASS',
+    caseId: 'CASE-094',
+    preferenceIds: ['PREF-VISUAL-ACCEPTANCE-EVIDENCE-CLASS'],
+    scopes: ['workflow'],
+    rejected: '页面有视觉改动 → 必须找 Kimi / MiniMax / 其他 AI 对话、AI CLI 或本地视觉模型做独立 verdict；这些通道不可用就阻塞普通视觉验收。',
+    accepted: '普通视觉验收用仓库自己的真实渲染、截图、Reader Contract、布局/主题/可访问性/交互等确定性证据；只有 owner 或任务明确要求独立理解/偏好研究时，才额外启用独立 reviewer。',
+    reason: 'owner 明确追问为什么过去的视觉验证不需要外部 AI、这次却被做成必须项，随后要求把浏览器/Kimi/MiniMax reviewer 直接砍掉并写进长期 Docs；核心不是禁某个工具，而是分清工程 verifier 与独立理解研究这两类证据。',
+    failureMechanisms: ['reviewer-evidence-class-conflation', 'external-reviewer-default-dependency'],
+    ownerStatus: 'accepted',
+  },
   {
     id: 'PAIR-061-IDENTITY',
     caseId: 'CASE-061',

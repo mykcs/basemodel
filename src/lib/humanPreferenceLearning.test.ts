@@ -253,6 +253,21 @@ describe('human preference learning loop', () => {
     expect(devicePair?.accepted).toContain('无横向滚动');
   });
 
+  it('retrieves the visual-acceptance evidence-class boundary from Chinese reviewer cues', () => {
+    const result = retrieveHumanPreferenceContext(
+      '新的科研网页第一版做完后要做视觉验收；请区分普通浏览器工程验证和真正的独立 reviewer / 冷读，别把第三方 AI 评审通道变成默认发布依赖。',
+      undefined,
+      16,
+      'all-public-ui',
+    );
+    expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-VISUAL-ACCEPTANCE-EVIDENCE-CLASS');
+    expect(result.cases.map(({ precedent }) => precedent.id)).toContain('CASE-094');
+    expect(result.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-094-VISUAL-ACCEPTANCE-EVIDENCE-CLASS');
+    const preference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-VISUAL-ACCEPTANCE-EVIDENCE-CLASS');
+    expect(preference?.antiOvergeneralization.join(' ')).toContain('不是禁止独立人类或独立 Agent 评审');
+    expect(preference?.antiOvergeneralization.join(' ')).toContain('不能冒充独立 reviewer');
+  });
+
 });
 
 function validReceipt(contractId: string): HumanPreferenceJudgeReceipt {

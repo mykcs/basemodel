@@ -17,7 +17,7 @@ import {
   candidateReceiptTemplate,
   verifyCandidateReceipt,
 } from './humanPreferenceBrief';
-import { goldPairIdsForContract, preferenceIdsForContract } from './humanPreferenceLearning';
+import { goldPairIdsForContract, humanPreferenceWorkflowCues, preferenceIdsForContract, retrieveHumanPreferenceContext } from './humanPreferenceLearning';
 import {
   validateHumanPreferenceJudgeReceipt,
   type HumanPreferenceJudgeReceipt,
@@ -76,8 +76,17 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
   const pr619AcceptedEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260911-BRIEFING-619-ACCEPTED');
   const pr619AcceptedVisual = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-619-ACCEPTED-SILVER');
   const priorNogdrCurveVisual = HUMAN_VISUAL_REFERENCE_SET.find((reference) => reference.id === 'VISUAL-BRIEFING-NOGDR-CURVES-CURRENT-CANDIDATE');
+  const visualAcceptanceCanonicalEvent = HUMAN_FEEDBACK_EVENTS.find((event) => event.id === 'EVENT-20260920-VISUAL-ACCEPTANCE-DEFAULT-CANONICAL');
+  const visualAcceptanceTrajectory = HUMAN_PREFERENCE_TRAJECTORIES.find((item) => item.id === 'TRAJECTORY-VISUAL-ACCEPTANCE-EVIDENCE-CLASS-20260920');
   const candidateHead = record.sourceWindow.finalOwnerVisibleHead;
   const candidateScope = record.preferenceBrief?.scope;
+  const lowLevelScope = candidateScope === 'briefing-mobile' || candidateScope === 'briefing-desktop'
+    ? 'briefing'
+    : candidateScope === 'visual' ? undefined : candidateScope;
+  const lowLevelRetrieval = retrieveHumanPreferenceContext(record.futureTaskQuery, record.preferenceBrief?.contractId, 16, lowLevelScope);
+  const lowLevelPreferenceIds = new Set(lowLevelRetrieval.preferences.map(({ preference }) => preference.id));
+  const lowLevelPairIds = new Set(lowLevelRetrieval.goldPairs.map(({ pair }) => pair.id));
+  const workflowCues = humanPreferenceWorkflowCues(record.futureTaskQuery);
   // Historical closeout receipts bind the visual that was current for that exact source head,
   // even after a later accepted successor removes it from today's active Preference Brief.
   const candidateVisual = candidateHead
@@ -272,6 +281,22 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
       pr619AcceptedVisual?.tier === 'silver' &&
       record.sourceWindow.finalVerdict === 'accepted' &&
       record.sourceWindow.finalAcceptedHead === pr619AcceptedVisual.gitSha,
+    'visual-acceptance-evidence-class-canonical':
+      preferences.has('PREF-VISUAL-ACCEPTANCE-EVIDENCE-CLASS') &&
+      pairs.has('PAIR-094-VISUAL-ACCEPTANCE-EVIDENCE-CLASS') &&
+      events.has('EVENT-20260920-VISUAL-ACCEPTANCE-DEFAULT-CANONICAL') &&
+      visualAcceptanceCanonicalEvent?.verdict === 'canonical' &&
+      visualAcceptanceTrajectory?.canonicalVariantId === 'deterministic-visual-acceptance-default',
+    'reviewer-evidence-class-hard':
+      brief.hardFailureFamilies.includes('reviewer-evidence-class-conflation') &&
+      failureFamilySeverity('reviewer-evidence-class-conflation') === 'hard' &&
+      pairs.has('PAIR-094-VISUAL-ACCEPTANCE-EVIDENCE-CLASS'),
+    'reviewer-workflow-cue-parity':
+      workflowCues.explicit &&
+      preferences.has('PREF-VISUAL-ACCEPTANCE-EVIDENCE-CLASS') &&
+      pairs.has('PAIR-094-VISUAL-ACCEPTANCE-EVIDENCE-CLASS') &&
+      lowLevelPreferenceIds.has('PREF-VISUAL-ACCEPTANCE-EVIDENCE-CLASS') &&
+      lowLevelPairIds.has('PAIR-094-VISUAL-ACCEPTANCE-EVIDENCE-CLASS'),
     'prior-nogdr-candidate-superseded-by-pr619':
       priorNogdrCurveVisual?.tier === 'current-candidate' &&
       priorNogdrCurveVisual.supersededByReferenceId === 'VISUAL-BRIEFING-619-ACCEPTED-SILVER' &&
