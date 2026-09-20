@@ -51,8 +51,11 @@ describe('Gated-Delta SD-LoRA publication split', () => {
 
   it('keeps the current page derivation-first without replaying the old admission experiment', () => {
     expect(current).toContain("Task Vector 的角色");
+    expect(current).toContain("import MathFormula from '../common/MathFormula.astro'");
     expect(current).toContain('residual: String.raw');
     expect(current).toContain('S_t&=\\widetilde S_{t-1}+\\beta_t r_t k_t^{\\top}');
+    expect(current).not.toContain('<sub>');
+    expect(current).not.toContain('<sup>');
     expect(current).toContain('四轮配对资格实验已完成并封存');
     expect(current).toContain('snapshot.routeSExecution.appliedFactorWrites.toLocaleString');
     expect(current).toContain('配对实验进度');

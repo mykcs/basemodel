@@ -2,7 +2,7 @@
 
 Status: **current project-wide research publication and progressive-disclosure contract**
 Decision date: **2026-08-30**
-Last reviewed: **2026-09-14**
+Last reviewed: **2026-09-20**
 
 This document consolidates durable owner preferences for how BaseModel presents scientific research to people who did not personally run every experiment. It is a content-and-presentation contract, not a replacement for the existing visual, evidence, or browser-acceptance policies.
 
@@ -114,6 +114,23 @@ Collapse code when it is primarily **execution machinery**, for example:
 - complete launch scripts or long configuration blocks.
 
 The test is simple: if removing the exact syntax leaves the scientific argument intact, the exact syntax is optional depth.
+
+### 3.1 Mathematical notation uses real web typesetting
+
+When mathematics carries scientific meaning, render it as mathematics rather than imitating mathematics with ordinary HTML or code styling.
+
+For research routes:
+
+- use the repository's existing `MathFormula.astro` / KaTeX + MathML path for equations, matrix shapes, derivation steps, norms, objectives, and update rules that a reader must parse mathematically;
+- do **not** use hand-built `<sub>` / `<sup>`, a `<code>` block, Unicode spacing, or CSS typography as a substitute for a real equation when the expression is doing mathematical work;
+- short identifiers inside ordinary prose or diagram labels may remain plain text when typesetting them would make the sentence harder to read; this rule targets mathematical expressions, not every occurrence of a Greek letter or indexed symbol;
+- keep the minimum equation needed for the main scientific argument on the parent / overview route, and move full derivations to the dedicated technical child route when they would interrupt the primary reading path;
+- when importing mathematics from another field, separate **exact mathematical equivalence inside the source formulation** from **role-level or semantic mapping into this project**. Never call a cross-domain mapping “1:1 equivalent” unless the tensor/object-level equality is actually established;
+- on narrow screens, long display math may scroll inside its own formula container, but it must not create document-level horizontal overflow.
+
+A material math-heavy page must have executable acceptance evidence that the rendered equation path exists (for example a KaTeX / MathML assertion) and that representative desktop/mobile widths do not overflow. Source-text presence alone is not enough.
+
+Historical enforcement case: `CASE-097 — 数学等价与跨领域映射要分层讲` in `website-copy-cases.md`.
 
 ## 4. Secret and credential presentation
 
