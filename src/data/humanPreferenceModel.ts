@@ -367,11 +367,11 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
   {
     id: 'PREF-RESEARCH-MATH-VISUAL-EVIDENCE',
     title: '科研公式真实排版，关键实验图直接可见并回链原生系统',
-    statement: '科研主线公式使用真实 LaTeX renderer；直接支撑论点的 W&B 曲线应在正文可见，同时保留 Report / Workspace / panel 原生链接。W&B 已有同一指标原生图时，网页优先解释并复用原生证据，不再手画一张没有新增科学含义的重复曲线。若第三方交互受权限限制，使用同源确定性静态快照并明确边界，不嵌登录墙、不擅自改公开。',
+    statement: '科研主线公式使用真实 LaTeX renderer；直接支撑论点的 W&B 曲线应在正文可见，同时保留 Report / Workspace / panel 原生链接。W&B 已有同一指标原生图时，网页优先解释并复用原生证据；指标未写进 W&B 但封存 run / receipt 有真实数据时，用带来源哈希、明确 scientific_authority=false 的 publication mirror 补可视化，而不是改写封存 run 或在网页另造一套事实源。若第三方交互受权限限制，使用同源确定性静态快照并明确边界，不嵌登录墙、不擅自改公开。',
     scopes: ['research-ui', 'research-copy', 'results', 'capability'],
     confidence: 'explicit-project',
     priority: 5,
-    retrievalTags: ['LaTeX', 'KaTeX', 'MathJax', '公式', 'W&B', 'wandb', '曲线', 'report', 'panel', '交互表格', '截图'],
+    retrievalTags: ['LaTeX', 'KaTeX', 'MathJax', '公式', 'W&B', 'wandb', '曲线', 'report', 'panel', '交互表格', '截图', 'training loss', 'rollout', 'publication mirror', '缺失指标', 'sealed receipt'],
     supportingCaseIds: ['CASE-093', 'CASE-096'],
     antiOvergeneralization: [
       '不是每个行内符号都需要独立公式块；只把承担推导或论证的公式提升为数学块。',
@@ -379,6 +379,7 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
       '静态快照是阅读层，不替代 run、receipt 或封存 JSON 的科学 authority。',
       'public iframe 需要真正 public 的 Report / panel；不得为方便 embed 自动改变原 W&B project 可见性。',
       '不是禁止网页自己画图；只有当页面图表达 W&B 原生 panel 没有的新分析、变换或解释时才值得新增，且要清楚标明它与原始数据的关系。',
+      'publication mirror 只承担展示和后分析：缺失点保持缺失、不插值，不继承 scientific authority，也不能把 training loss 下降改写成 Task Score 或 final 提升。',
     ],
   },
   {
@@ -784,8 +785,8 @@ export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [  {
     preferenceIds: ['PREF-RESEARCH-MATH-VISUAL-EVIDENCE'],
     scopes: ['research-ui', 'research-copy', 'results', 'capability'],
     rejected: 'W&B 已经有 Task Score 等原生曲线，网页又手画一张同类训练曲线 / moving average，同时图旁不解释各指标到底在测什么。',
-    accepted: '网页先解释 Task Score、Task Vector、update-direction cosine、steps、output tokens、action-family entropy 的测量含义与边界，再直接展示或回链已有 W&B-derived snapshot / 原生 panel；只有需要表达原生 panel 没有的新分析时才另画页面图。',
-    reason: 'owner 明确说已经做了 W&B 图，网页没有必要再增加手画曲线，并要求 W&B 表格和指标有可读解释；可复用规则是“原生证据优先 + 指标解释”，不是“网页永远不能画图”。',
+    accepted: '网页先解释各指标的测量含义与边界，再直接展示或回链已有 W&B-derived snapshot / 原生 panel；如果 loss 等需要的历史指标没有写进 W&B，但封存 receipt 有真实数据，就从封存证据生成带来源哈希的 publication mirror（scientific_authority=false），在 W&B 原生 Report 里作图，并让网页复用同一 mirror 的静态阅读层；缺失更新轮不插值。',
+    reason: 'owner 先明确说已经做了 W&B 图时网页不要重复手画，并要求指标有可读解释；随后又要求把当时漏收进 W&B 的 rollout→loss 从真实实验资产补到三实验原生视图，并同步到 BaseModel。可复用规则是“原生证据优先 + 可追溯 publication mirror + 同源网页阅读层”，不是“网页永远不能画图”。',
     failureMechanisms: ['redundant-page-native-chart', 'metric-without-reader-context', 'multiple-visual-sources-of-truth'],
     ownerStatus: 'accepted',
   },

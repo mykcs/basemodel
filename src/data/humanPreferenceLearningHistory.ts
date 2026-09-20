@@ -776,6 +776,29 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
   },
 
   {
+    id: 'EVENT-20260920-BOUNDED-LOSS-ROLLOUT-WANDB-MIRROR',
+    date: '2026-09-20',
+    caseIds: ['CASE-096'],
+    scopes: ['research-ui', 'research-copy', 'results', 'visual'],
+    artifact: 'BaseModel · three 1.7B OpenEVO / Bounded / GDR experiment page and W&B report',
+    variantId: 'bounded-loss-rollout-native-wandb-mirror-request',
+    verdict: 'promising',
+    ownerSignal: '“实验应该要有一个随着 rollout 变化、loss 下降的图，好像当时 W&B 里面没有收集到。然后在 W&B 网站里，就是三个实验一起的那个视图网页里，把这个图做了。另外，加上我们的 BaseModel 介绍这一组实验的网页，也做了。”',
+    reasons: [
+      '缺失的是原生实验可视化层，不应通过网页手画一条脱离 W&B 的第二事实源来补',
+      '如果 sealed run / receipt 仍有真实 loss，就应以可追溯 publication mirror 恢复到三实验 W&B 视图，再让 BaseModel 复用同源快照',
+      'loss 与 Task Score / fixed final 是不同证据层，缺失更新轮不能为了图连续而插值',
+    ],
+    failureMechanisms: [],
+    requestedSuccessorVariantId: 'bounded-loss-rollout-publication-mirror-shared-evidence',
+    evidence: {
+      repository: 'mykcs/basemodel',
+      route: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',
+      pullRequest: 753,
+    },
+  },
+
+  {
     id: 'EVENT-20260916-REDESIGN-INDEPENDENT-COLDREAD-REQUIRED',
     date: '2026-09-16',
     caseIds: ['CASE-094'],

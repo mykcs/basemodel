@@ -173,7 +173,7 @@ describe('human preference learning loop', () => {
 
   it('retrieves benchmark-context and native-W&B reuse rules for research result pages', () => {
     const result = retrieveHumanPreferenceContext(
-      '科研网页要解释 Task Score 怎么算、固定128题怎么选、三组是不是同题、最后20轮平均和固定 final 有什么区别；W&B 已有原生图就不要网页再手画重复曲线，还要解释 Task Vector cosine steps entropy 指标。',
+      '科研网页要解释 Task Score 怎么算、固定128题怎么选、三组是不是同题、最后20轮平均和固定 final 有什么区别；W&B 已有原生图就不要网页再手画重复曲线。training loss 如果当时没写进 W&B 但 sealed receipt 里有，就用 publication mirror 按累计 rollout 补到原生 W&B，并让网页复用同源证据；缺失更新点不要插值。',
       undefined,
       20,
       'research-copy',
@@ -188,6 +188,7 @@ describe('human preference learning loop', () => {
     expect(benchmarkPreference?.antiOvergeneralization.join(' ')).toContain('轨迹证据');
     const wandbPreference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-RESEARCH-MATH-VISUAL-EVIDENCE');
     expect(wandbPreference?.antiOvergeneralization.join(' ')).toContain('不是禁止网页自己画图');
+    expect(wandbPreference?.antiOvergeneralization.join(' ')).toContain('publication mirror');
   });
 
   it('keeps workflow-learning feedback separate from surface aesthetics', () => {

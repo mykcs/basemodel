@@ -7,6 +7,7 @@ import WandbEvidencePanel from './WandbEvidencePanel.astro';
 import { EFFECTIVE_STATE_GDR_LORA_STUDY as study } from '../../data/effectiveStateGdrLoraStudy';
 import type { EffectiveStateFormalResult } from '../../data/effectiveStateGdrLoraStudy';
 import { OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS as directApplyDynamics } from '../../data/openEvoDirectApplyLiveDynamics';
+import { OPEN_EVO_EXPERIMENTS } from '../../data/openEvoExperimentNavigation';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -28,6 +29,7 @@ const panelHref = (panelDisplayName: string, panelSectionName: string) => {
 };
 const wandbPanels = [
   { label: t('Task Score 原生曲线', 'Native Task Score panel'), href: panelHref('Task Score', '01 Overview · 三条路线') },
+  { label: t('SD-LoRA loss · 累计 rollout', 'SD-LoRA loss · cumulative rollout'), href: wandbReportUrl },
   { label: t('Task Vector · Frobenius', 'Task Vector · Frobenius'), href: panelHref('Task Vector · Frobenius', '01 Overview · 三条路线') },
   { label: t('ON/OFF 更新方向 cosine', 'ON/OFF update-direction cosine'), href: panelHref('ON/OFF 更新方向 cosine', '05 方向与幅度') },
   { label: t('每一步输出长度', 'Output tokens per step'), href: panelHref('每一步输出长度', '06 输出长度与任务路径') },
@@ -35,6 +37,7 @@ const wandbPanels = [
 ];
 const wandbSnapshots = [
   { title: t('Task Score · 160轮', 'Task Score · 160 rounds'), src: '/research/seed-openevo/evidence/wandb-threeway/task-score.svg', href: panelHref('Task Score', '01 Overview · 三条路线'), alt: t('三组 OpenEVO 的 160 轮 WebShop Task Score 静态曲线', 'Static 160-round WebShop Task Score curves for the three OpenEVO methods') },
+  { title: t('SD-LoRA training loss · 累计 rollout', 'SD-LoRA training loss · cumulative rollout'), src: '/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.svg', href: wandbReportUrl, alt: t('三组 OpenEVO 的 SD-LoRA training loss 随累计 rollout 变化的静态曲线', 'Static SD-LoRA training-loss curves against cumulative rollouts for the three OpenEVO methods') },
   { title: 'Task Vector · Frobenius', src: '/research/seed-openevo/evidence/wandb-threeway/task-vector-frobenius.svg', href: panelHref('Task Vector · Frobenius', '01 Overview · 三条路线'), alt: t('三组实验的 Task Vector Frobenius norm 静态曲线', 'Static Task Vector Frobenius norm curves for the three experiments') },
   { title: t('平均任务步数', 'Steps per episode'), src: '/research/seed-openevo/evidence/wandb-threeway/steps-per-episode.svg', href: panelHref('每个 Episode 的步骤数', '06 输出长度与任务路径'), alt: t('三组实验每个 episode 的平均任务步数静态曲线', 'Static steps-per-episode curves for the three experiments') },
   { title: t('行为 entropy · 160轮', 'Action-family entropy · 160 rounds'), src: '/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.svg', href: panelHref('Action-family entropy', '06 输出长度与任务路径'), alt: t('三组实验 160 轮 action-family Shannon entropy 静态曲线', 'Static 160-round action-family Shannon entropy curves for the three experiments') },
@@ -58,6 +61,13 @@ const names = {
   gdr: t('OpenEVO + Bounded Online Recurrence + GDR', 'OpenEVO + Bounded Online Recurrence + GDR'),
 };
 
+const experiment = OPEN_EVO_EXPERIMENTS.find((item) => item.id === 'bounded-effective-state-1p7b');
+if (!experiment) throw new Error('Missing bounded-effective-state-1p7b experiment navigation');
+const hubResults = experiment.childLinks.filter((link) => link.role === 'result');
+const hubAnalyses = experiment.childLinks.filter((link) => ['analysis', 'mechanism', 'diagnostic'].includes(link.role));
+const hubEvidence = [...experiment.childLinks.filter((link) => ['history', 'evidence'].includes(link.role)), experiment.evidenceLink]
+  .filter((link, index, links) => links.findIndex((candidate) => candidate.href === link.href) === index);
+
 const meanScore = (rows: readonly { score: number }[]) =>
   rows.reduce((sum, row) => sum + row.score, 0) / rows.length;
 const directApplyLast20Score = meanScore(directApplyDynamics.score.slice(-20));
@@ -65,7 +75,7 @@ const boundedLast20Score = finalResult ? meanScore(finalResult.trajectory.off.sl
 const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-20)) : null;
 ---
 
-<article class="paper" data-effective-state-gdr-page data-copy-review data-reader-page="research-explainer">
+<article class="paper" data-effective-state-gdr-page data-copy-review data-reader-page="research-explainer" data-experiment-id={experiment.id}>
   <header class="paper__hero esg__hero" data-reader-context id="top">
     <h1>{t('三个 OpenEVO 实验', 'Three OpenEVO experiments')}</h1>
 
@@ -442,6 +452,11 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
             <td>{t('不是固定 128 题终评，也不是模型的全面能力分数。', 'It is not the fixed 128-task final and not a comprehensive capability score.')}</td>
           </tr>
           <tr>
+            <td><strong>SD-LoRA training loss</strong></td>
+            <td>{t('每轮 128 个 rollout 之后，若这一轮实际执行了 SD-LoRA 参数更新，就记录该次 trainer 的平均 loss；横轴用累计 rollout，所以第 160 轮对应 20,480。', 'After each 128-rollout round, the mean trainer loss is recorded when that round actually performs an SD-LoRA parameter update. The x-axis is cumulative rollouts, so round 160 ends at 20,480.')}</td>
+            <td>{t('loss 下降说明优化器越来越能拟合当前训练记录；它不等于 WebShop Task Score 上升，也不能代替固定 128 题终评。没有发生更新的轮次保持缺失，不做插值。', 'Falling loss shows that the optimizer increasingly fits the current training records; it does not imply a higher WebShop Task Score and does not replace the fixed 128-task final. Rounds without an update stay missing rather than being interpolated.')}</td>
+          </tr>
+          <tr>
             <td><strong>Task Vector · Frobenius</strong></td>
             <td>{t('参数更新向量的 Frobenius 范数，描述这一轮参数变化有多大。', 'Frobenius norm of the parameter-update vector, describing update magnitude.')}</td>
             <td>{t('变化更大不等于任务表现更好。', 'A larger update does not mean better task performance.')}</td>
@@ -470,8 +485,8 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
       </table>
     </div>
     <p>{t(
-      '公开页保留四张最有用的 W&B 静态快照，完整 Report / Workspace 里还有原生 run 表和更多 panel。网页里的静态图只是方便阅读；封存的 run、receipt 和 JSON 仍然是科学证据。',
-      'The public page keeps four useful W&B-derived snapshots; the full Report and Workspace retain native run tables and additional panels. The snapshots are a reading layer only; sealed runs, receipts, and JSON remain the scientific evidence.',
+      '公开页保留五张最有用的 W&B 静态快照，其中 loss 图来自刚补齐的 publication mirror；完整 Report / Workspace 里还有原生 run 表和更多 panel。网页里的静态图只是方便阅读；封存的 run、receipt 和 JSON 仍然是科学证据。',
+      'The public page keeps five useful W&B-derived snapshots, including the newly completed loss publication mirror; the full Report and Workspace retain native run tables and additional panels. The snapshots are a reading layer only; sealed runs, receipts, and JSON remain the scientific evidence.',
     )}</p>
     <WandbEvidencePanel reportUrl={wandbReportUrl} workspaceUrl={wandbWorkspaceUrl} panelLinks={wandbPanels} snapshots={wandbSnapshots} />
     <p class="paper__boundary">{t('当前 W&B 原项目没有对未登录访客开放，所以公开网页不能诚实地把 Report 伪装成可交互 iframe。静态图与链接不改变封存科学结论；如果以后单独发布只含这些公开曲线的 W&B mirror，再把这一层换成 iframe 即可。', 'The current W&B source project is not open to logged-out visitors, so this public page does not pretend that the Report is an embeddable interactive iframe. Static snapshots and links do not change the sealed scientific conclusions; a separate public mirror could replace this layer with an iframe later.')}</p>
@@ -484,6 +499,24 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
       '正文统一使用“普通 OpenEVO / Bounded Online Recurrence / Bounded Online Recurrence + GDR”这三个公共名称。为了审计，底层正式身份仍原样保留：普通 OpenEVO 对应历史 DirectApply / No-GDR；后两组的正式实验标识分别是 BOUNDED_OFF 与 EFFECTIVE_STATE_GDR_LORA_V1。',
       'The main text uses one public naming system: ordinary OpenEVO, Bounded Online Recurrence, and Bounded Online Recurrence + GDR. For auditability, the underlying formal identities remain unchanged: ordinary OpenEVO maps to the historical DirectApply / No-GDR run, and the matched arms are BOUNDED_OFF and EFFECTIVE_STATE_GDR_LORA_V1.',
     )}</p>
+    <details class="paper__details paper__experiment-hub" data-experiment-hub>
+      <summary>{t('本实验的结果、分析与证据', 'Results, analysis, and evidence for this experiment')}</summary>
+      <p data-hub-motivation><strong>{t('为什么做：', 'Why this experiment: ')}</strong>{experiment.motivation[locale]}</p>
+      <div class="paper__hub-grid">
+        <div data-hub-group="result">
+          <h3>{t('结果', 'Result')}</h3>
+          <ul>{hubResults.map((link) => <li><a href={p(link.href)}>{link.label[locale]}</a></li>)}</ul>
+        </div>
+        <div data-hub-group="analysis">
+          <h3>{t('分析', 'Analysis')}</h3>
+          <ul>{hubAnalyses.map((link) => <li><a href={p(link.href)}>{link.label[locale]}</a></li>)}</ul>
+        </div>
+        <div data-hub-group="evidence">
+          <h3>{t('证据 / 历史', 'Evidence / history')}</h3>
+          <ul>{hubEvidence.map((link) => <li><a href={p(link.href)}>{link.label[locale]}</a></li>)}</ul>
+        </div>
+      </div>
+    </details>
     <details class="paper__details" open>
       <summary>{t('正式结果与同题 Final', 'Formal results and same-panel final')}</summary>
       <ul>
@@ -544,10 +577,15 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
   .paper__setup dt{color:var(--text-secondary);font-size:.95rem}.paper__setup dd{margin:5px 0 0;font-weight:700}
   .paper__details{max-width:900px;margin:14px 0;border-top:1px solid var(--border-color);padding-top:10px}
   .paper__details summary{cursor:pointer;font-weight:750}.paper__details ul{line-height:1.7}
+  .paper__experiment-hub [data-hub-motivation]{max-width:820px}
+  .paper__hub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+  .paper__hub-grid h3{margin:12px 0 4px;font-size:1rem;letter-spacing:0}
+  .paper__hub-grid ul{margin:4px 0;padding-left:20px}
   code{overflow-wrap:anywhere}
   @media(max-width:760px){
     .paper{padding:24px 18px 72px}.paper__section{padding:36px 0}
     .paper__setup{grid-template-columns:1fr}
+    .paper__hub-grid{grid-template-columns:1fr}
     .paper-table{min-width:640px}
     .paper-table--ablation{min-width:820px}
     .paper-table--ablation th,.paper-table--ablation td{padding:8px 7px;overflow-wrap:anywhere}

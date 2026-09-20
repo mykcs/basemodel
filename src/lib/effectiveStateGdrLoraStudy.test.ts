@@ -190,6 +190,15 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('不能说“Task Vector / norm 越大，WebShop 就越好”');
     expect(component).toContain("import WandbEvidencePanel from './WandbEvidencePanel.astro'");
     expect(component).toContain('OpenEVO-1.7B-%C2%B7-%E4%B8%89%E7%BB%84%E5%AE%9E%E9%AA%8C%E5%88%86%E6%9E%90');
+    expect(component).toContain('SD-LoRA training loss · 累计 rollout');
+    expect(component).toContain('/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.svg');
+    expect(component).toContain('没有发生更新的轮次保持缺失，不做插值');
+    const lossEvidence = JSON.parse(readFileSync(new URL('../../public/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.json', import.meta.url), 'utf8'));
+    expect(lossEvidence.rounds).toBe(160);
+    expect(lossEvidence.rollouts_per_round).toBe(128);
+    expect(lossEvidence.rows).toHaveLength(160);
+    expect(lossEvidence.rows.at(-1)?.cumulative_rollouts).toBe(20_480);
+    expect(lossEvidence.missing_loss_points).toEqual({ ordinary_openevo: 1, bounded: 2, bounded_gdr: 6 });
   });
 
   it('freezes the matched formal budget, independent progression, and locked final panel', () => {

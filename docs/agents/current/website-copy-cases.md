@@ -1275,6 +1275,8 @@ owner 随后明确改写未来默认：“我也不希望再去调用浏览器�
 
 认可方向：
 - W&B 已经有同一指标时，优先直接展示 W&B-derived snapshot 或回链原生 panel；
+- 如果需要的指标当时没有写进 W&B，但 sealed run / receipt 里有真实数据，建立明确标注 publication-mirror、scientific_authority=false 且保存来源哈希的可视化 run，再把它加入原生 W&B Report；不要改封存科学 run；
+- 缺失更新轮保持缺失，不为了让曲线连续而插值；training loss 下降只说明当前训练记录更易拟合，不自动等于 Task Score / fixed final 上升；
 - 图的附近解释指标：Task Score、Task Vector Frobenius、ON/OFF update-direction cosine、output tokens、episode steps、action-family entropy 分别在测什么，又不能证明什么；
 - 网页自己新增图必须有独立的信息价值，例如 W&B 原生 panel 没有的新分析变换或特定解释，而不是为了“页面也有一张曲线”；
 - 公开静态快照是阅读层；Report / Workspace / panel 提供原生回链，run / receipt / sealed JSON 继续承担科学 authority。
@@ -1285,6 +1287,6 @@ owner 随后明确改写未来默认：“我也不希望再去调用浏览器�
 - 页面自己画的移动平均和 W&B 原始曲线形成两套视觉事实源，但没有解释两者关系；
 - 误把“不要重复手画”推广成“网页永远不允许自己做任何数据可视化”。
 
-规律：**原生实验系统已经表达清楚的证据，网页的价值主要是解释、筛选和组织，而不是复制一份新的图表事实源。**
+规律：**原生实验系统已经表达清楚的证据，网页的价值主要是解释、筛选和组织，而不是复制一份新的图表事实源；原生系统漏记展示指标时，先从封存科学证据建立可审计的 publication mirror，再让 W&B 和网页共同消费它。**
 
 边界：页面仍然可以做新图；条件是它承担 W&B 原生 panel 没有的分析任务，并清楚标出数据来源、变换和 claim boundary。

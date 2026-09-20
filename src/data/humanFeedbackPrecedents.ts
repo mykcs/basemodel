@@ -251,9 +251,9 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     id: 'CASE-096',
     title: '已有 W&B 原生实验图时先解释并复用，不在网页重复手画同一曲线',
     tags: ['科研网页', 'W&B', 'wandb', '原生曲线', '指标解释', '重复图', 'Task Score', 'Task Vector', 'entropy', '可视化'],
-    principle: 'W&B 已经有同一指标的原生图时，网页优先解释指标、展示或回链原生证据；只有网页要表达 W&B 图没有的新分析时才另画图，不能为了“页面里也有一张图”重复制造第二套曲线。',
+    principle: 'W&B 已经有同一指标的原生图时，网页优先解释指标、展示或回链原生证据；如果需要的指标当时没有写进 W&B、但封存 run / receipt 里有真实数据，则从封存证据建立带来源哈希的 publication mirror，再让 W&B 与网页共用这一份衍生证据；不能为了“页面里也有一张图”重复制造第二套事实源。',
     antiPatterns: ['W&B 已有 Task Score 曲线，网页又手画同一训练曲线或移动平均版本却没有新增科学问题', '图放进网页但不解释 Task Vector、cosine、steps、entropy 各自测什么', '网页自制图和 W&B 原生图形成两套视觉事实源'],
-    positiveSignals: ['复用 W&B-derived snapshot / panel，并在附近解释指标定义和 claim boundary', '网页只新增能承担独立分析语义的图，不复制已有原生曲线', '静态公开阅读层继续回链 Report / Workspace / panel，科学 authority 留在 run / receipt / sealed JSON'],
+    positiveSignals: ['复用 W&B-derived snapshot / panel，并在附近解释指标定义和 claim boundary', '缺失 W&B 指标但封存证据可恢复时，新建明确标注 publication-mirror / scientific_authority=false 的可视化 run，并保存来源哈希；不改封存科学 run', '缺失更新轮保持缺失，不为了图连续而插值', '网页只新增能承担独立分析语义的图，不复制已有原生曲线', '静态公开阅读层继续回链 Report / Workspace / panel，科学 authority 留在 run / receipt / sealed JSON'],
   },
   {
     id: 'CASE-094',
