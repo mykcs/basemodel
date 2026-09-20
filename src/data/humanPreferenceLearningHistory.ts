@@ -776,6 +776,27 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
   },
 
   {
+    id: 'EVENT-20260920-WANDB-CHART-LOCAL-EXPLANATION',
+    date: '2026-09-20',
+    caseIds: ['CASE-096'],
+    scopes: ['research-ui', 'research-copy', 'results', 'visual'],
+    artifact: 'BaseModel · three OpenEVO experiment W&B evidence section',
+    variantId: 'wandb-metric-guide-detached-from-charts',
+    verdict: 'rejected',
+    ownerSignal: '“W&B 的表格的一些指标的解释都列到了一个汇总的表里，不要这样写。一个 W&B 的原生的这个图表下面就附上这个解释。”',
+    reasons: [
+      '集中说明表迫使读者在图和定义之间来回寻找对应关系',
+      '图的解释属于图本身的阅读上下文，应与图保持空间邻近',
+    ],
+    failureMechanisms: ['detached-chart-explanation'],
+    requestedSuccessorVariantId: 'wandb-chart-local-explanation',
+    evidence: {
+      repository: 'mykcs/basemodel',
+      route: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',
+    },
+  },
+
+  {
     id: 'EVENT-20260920-BOUNDED-LOSS-ROLLOUT-WANDB-MIRROR',
     date: '2026-09-20',
     caseIds: ['CASE-096'],

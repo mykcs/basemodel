@@ -367,7 +367,7 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
   {
     id: 'PREF-RESEARCH-MATH-VISUAL-EVIDENCE',
     title: '科研公式真实排版，关键实验图直接可见并回链原生系统',
-    statement: '科研主线公式使用真实 LaTeX renderer；直接支撑论点的 W&B 曲线应在正文可见，同时保留 Report / Workspace / panel 原生链接。W&B 已有同一指标原生图时，网页优先解释并复用原生证据；指标未写进 W&B 但封存 run / receipt 有真实数据时，用带来源哈希、明确 scientific_authority=false 的 publication mirror 补可视化，而不是改写封存 run 或在网页另造一套事实源。若第三方交互受权限限制，使用同源确定性静态快照并明确边界，不嵌登录墙、不擅自改公开。',
+    statement: '科研主线公式使用真实 LaTeX renderer；直接支撑论点的 W&B 曲线应在正文可见，同时保留 Report / Workspace / panel 原生链接。每张图的指标解释与 claim boundary 应直接贴在对应图下面，避免把解释抽离成一张集中指标表。W&B 已有同一指标原生图时，网页优先解释并复用原生证据；指标未写进 W&B 但封存 run / receipt 有真实数据时，用带来源哈希、明确 scientific_authority=false 的 publication mirror 补可视化，而不是改写封存 run 或在网页另造一套事实源。',
     scopes: ['research-ui', 'research-copy', 'results', 'capability'],
     confidence: 'explicit-project',
     priority: 5,
@@ -785,7 +785,7 @@ export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [  {
     preferenceIds: ['PREF-RESEARCH-MATH-VISUAL-EVIDENCE'],
     scopes: ['research-ui', 'research-copy', 'results', 'capability'],
     rejected: 'W&B 已经有 Task Score 等原生曲线，网页又手画一张同类训练曲线 / moving average，同时图旁不解释各指标到底在测什么。',
-    accepted: '网页先解释各指标的测量含义与边界，再直接展示或回链已有 W&B-derived snapshot / 原生 panel；如果 loss 等需要的历史指标没有写进 W&B，但封存 receipt 有真实数据，就从封存证据生成带来源哈希的 publication mirror（scientific_authority=false），在 W&B 原生 Report 里作图，并让网页复用同一 mirror 的静态阅读层；缺失更新轮不插值。',
+    accepted: '每张 W&B 图自己的解释直接放在图下面：先说这张图测什么，再说怎样解读和不能直接推出什么，并在同一图块回链原生 panel；不要把所有指标解释集中到一张总表。如果 loss 等历史指标没有写进 W&B，但封存 receipt 有真实数据，就从封存证据生成带来源哈希的 publication mirror（scientific_authority=false），再让网页复用同一 mirror。',
     reason: 'owner 先明确说已经做了 W&B 图时网页不要重复手画，并要求指标有可读解释；随后又要求把当时漏收进 W&B 的 rollout→loss 从真实实验资产补到三实验原生视图，并同步到 BaseModel。可复用规则是“原生证据优先 + 可追溯 publication mirror + 同源网页阅读层”，不是“网页永远不能画图”。',
     failureMechanisms: ['redundant-page-native-chart', 'metric-without-reader-context', 'multiple-visual-sources-of-truth'],
     ownerStatus: 'accepted',

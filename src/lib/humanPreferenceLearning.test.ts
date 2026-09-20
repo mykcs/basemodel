@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { HUMAN_FEEDBACK_GOLD_PAIRS, HUMAN_PREFERENCE_MODEL } from '../data/humanPreferenceModel';
+import { HUMAN_FEEDBACK_EVENTS } from '../data/humanPreferenceLearningHistory';
 import {
   buildBlindColdRead,
   buildPreferenceCompareRead,
@@ -189,6 +190,8 @@ describe('human preference learning loop', () => {
     const wandbPreference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-RESEARCH-MATH-VISUAL-EVIDENCE');
     expect(wandbPreference?.antiOvergeneralization.join(' ')).toContain('不是禁止网页自己画图');
     expect(wandbPreference?.antiOvergeneralization.join(' ')).toContain('publication mirror');
+    expect(wandbPreference?.statement).toContain('对应图下面');
+    expect(HUMAN_FEEDBACK_EVENTS.some((event) => event.id === 'EVENT-20260920-WANDB-CHART-LOCAL-EXPLANATION')).toBe(true);
   });
 
   it('keeps workflow-learning feedback separate from surface aesthetics', () => {
