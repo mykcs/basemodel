@@ -1302,6 +1302,18 @@ export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
     ownerEvidence: 'owner 说“现在这轮网页修改已经基本结束”并启动 Human Preference Learning closeout；没有对这个 exact visual 说 accepted、以后按这版或作为模板。',
     note: 'CURRENT-CANDIDATE，只证明这是 #737 稳定收口时的可重建产品状态；不能因 PR 已合并、CI/Production 通过或 closeout 开始就升级为 Silver/Golden。可用 repo + exact SHA + route + 390×844 / 1280×633 重建代表性视觉。',
   },
+  {
+    id: 'VISUAL-BOUNDED-GDR-753-CURRENT-CANDIDATE',
+    tier: 'current-candidate',
+    scopes: ['results', 'research-ui', 'research-copy', 'visual'],
+    artifact: 'BaseModel PR #753 · three OpenEVO experiment result page with native W&B loss mirror',
+    repository: 'mykcs/basemodel',
+    gitSha: '35b4bfd4246ba4a0fb35dd0780fc4469dbc189dc',
+    pullRequest: 753,
+    route: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',
+    ownerEvidence: 'owner 要求把剩余工作做完：在三实验 W&B 视图补 rollout→loss，并同步到 BaseModel 实验介绍页；35b4bfd… 是落实这些要求后的 exact current candidate。owner 尚未对这个 exact visual 给出 accepted / canonical 语言。',
+    note: 'CURRENT-CANDIDATE，只证明 #753 当前候选已经可由 repo + exact SHA + route 重建；W&B loss 来自 scientific_authority=false 的 publication mirror，不能把 PR/CI/Agent 自检升级成 owner acceptance。',
+  },
 
 ];
 export function failureFamilySeverity(failureMechanism: string): FailureFamilySeverity {

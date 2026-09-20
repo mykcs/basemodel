@@ -297,6 +297,19 @@ function signalStatus(record: HumanFeedbackIngestionCloseoutRecord) {
       pairs.has('PAIR-094-VISUAL-ACCEPTANCE-EVIDENCE-CLASS') &&
       lowLevelPreferenceIds.has('PREF-VISUAL-ACCEPTANCE-EVIDENCE-CLASS') &&
       lowLevelPairIds.has('PAIR-094-VISUAL-ACCEPTANCE-EVIDENCE-CLASS'),
+    'benchmark-metric-context-retrievable':
+      preferences.has('PREF-BENCHMARK-METRIC-CONTEXT') &&
+      pairs.has('PAIR-095-BENCHMARK-METRIC-CONTEXT') &&
+      events.has('EVENT-20260920-BOUNDED-METRIC-CONTEXT-NATIVE-WANDB'),
+    'native-wandb-reuse-retrievable':
+      preferences.has('PREF-RESEARCH-MATH-VISUAL-EVIDENCE') &&
+      pairs.has('PAIR-096-NATIVE-WANDB-NO-DUPLICATE') &&
+      events.has('EVENT-20260920-BOUNDED-METRIC-CONTEXT-NATIVE-WANDB'),
+    'loss-publication-mirror-retrievable':
+      preferences.has('PREF-RESEARCH-MATH-VISUAL-EVIDENCE') &&
+      pairs.has('PAIR-096-NATIVE-WANDB-NO-DUPLICATE') &&
+      events.has('EVENT-20260920-BOUNDED-LOSS-ROLLOUT-WANDB-MIRROR') &&
+      brief.antiOvergeneralization.some((boundary) => boundary.includes('publication mirror') && boundary.includes('不插值')),
     'prior-nogdr-candidate-superseded-by-pr619':
       priorNogdrCurveVisual?.tier === 'current-candidate' &&
       priorNogdrCurveVisual.supersededByReferenceId === 'VISUAL-BRIEFING-619-ACCEPTED-SILVER' &&
