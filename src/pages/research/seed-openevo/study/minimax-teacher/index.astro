@@ -14,14 +14,13 @@ const repo = 'https://github.com/mykcs/openevo-experiment/blob/a9100d67ca436532a
   <main class="teacher-audit" data-testid="minimax-teacher-intelligence-cost">
     <nav class="backline" aria-label="返回实验系列">
       <a href="/research/seed-openevo/study/capability-exploration/">← OpenEvo 基础能力探索实验</a>
-      <span>FROZEN FACTS · LIVING ANALYSIS</span>
+      <span>冻结事实 · 持续分析</span>
     </nav>
 
     <header class="hero">
-      <p class="eyebrow">MINIMAX-M3 × SEED-STYLE HINDSIGHT · H1.46</p>
       <h1>MiniMax 当外部教师，<br />到底够不够聪明？又花了多少？</h1>
       <div class="hero-answer">
-        <strong>先回答最重要的科学问题：</strong>
+        <strong>核心科学问题：</strong>
         <p>
           现在还不能只看公开排行榜，就说 MiniMax-M3 比 SEED 使用的 GLM-5.2、Kimi K3 或 GPT 更聪明。
           对这项实验，最合适的 benchmark 是让它们<strong>读同一批冻结 WebShop 轨迹、用同一套 SEED hindsight prompt、输出同一 schema</strong>，
@@ -32,7 +31,7 @@ const repo = 'https://github.com/mykcs/openevo-experiment/blob/a9100d67ca436532a
 
     <section class="answer-grid" aria-labelledby="benchmark-answer-title">
       <article class="answer-main">
-        <span class="section-no">01 · WHAT TO BENCHMARK</span>
+        <span class="section-no">01 · 比较什么</span>
         <h2 id="benchmark-answer-title">最适合这里的 benchmark，不是 GPQA，也不是 SWE-bench</h2>
         <p>
           MiniMax 在 H1.46 里<strong>不负责点击商品、不负责搜索</strong>。它的工作发生在 episode 已经结束以后：读完整轨迹，判断哪里做对、哪里做错，
@@ -40,7 +39,7 @@ const repo = 'https://github.com/mykcs/openevo-experiment/blob/a9100d67ca436532a
         </p>
         <div class="benchmark-callout">
           <div>
-            <small>PRIMARY BENCHMARK</small>
+            <small>主要比较方式</small>
             <strong>WHTB · WebShop Hindsight Teacher Bench</strong>
           </div>
           <ol>
@@ -82,9 +81,9 @@ const repo = 'https://github.com/mykcs/openevo-experiment/blob/a9100d67ca436532a
 
     <section class="comparison" aria-labelledby="comparison-title">
       <div class="section-heading">
-        <span class="section-no">02 · GLM / MINIMAX / KIMI / GPT</span>
+        <span class="section-no">02 · 候选教师比较</span>
         <div>
-          <h2 id="comparison-title">先把“谁更聪明”改成一个可以真正测出来的问题</h2>
+          <h2 id="comparison-title">教师能力需要在同一轨迹上直接比较</h2>
           <p>公开 benchmark 只能做背景；这一页不从记忆或营销图表里填一个看似精确的排名。</p>
         </div>
       </div>

@@ -67,15 +67,15 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
     openevo: {
       eyebrow: '',
       title: zh ? 'OpenEvo 如何把一次 WebShop 经验变成下一版 Agent' : 'How OpenEvo turns one WebShop experience into the next agent revision',
-      lede: zh ? '先完成 WebShop Task N 并封存 evidence；演化只在 task boundary 之后发生。当前参数化路径把经验写入 SD-LoRA adapter，通过 validation 后才形成 Task N+1 使用的 successor revision。' : 'Finish WebShop Task N and seal its evidence first; evolution happens only after the task boundary. The current parametric path writes experience into an SD-LoRA adapter, which becomes the Task N+1 successor revision only after validation.',
+      lede: zh ? '先完成 WebShop 任务 N 并封存证据；演化只在任务完成边界之后发生。当前参数路线把经验写入 SD-LoRA adapter，通过验证后才形成任务 N+1 使用的新版本。' : 'Finish WebShop Task N and seal its evidence first; evolution happens only after the task boundary. The current parametric path writes experience into an SD-LoRA adapter, which becomes the Task N+1 successor revision only after validation.',
       steps: [
         { label: 'Task N', narration: zh ? '当前 Project Head 在环境里完成任务。' : 'The current Project Head completes the task in the environment.' },
         { label: zh ? '封存' : 'Seal', narration: zh ? '任务完成边界把 trajectory/outcome/metadata 封存。' : 'The task-completion boundary seals trajectory/outcome/metadata.' },
-        { label: 'Evolve', narration: zh ? 'Evolution method 读取已封存 evidence。' : 'The evolution method reads sealed evidence.' },
+        { label: 'Evolve', narration: zh ? '演化方法读取已封存证据。' : 'The evolution method reads sealed evidence.' },
         { label: 'Adapter', narration: zh ? '当前 WebShop 主路径把经验写入 parametric adapter（SD-LoRA）。' : 'The current WebShop main path writes experience into a parametric adapter (SD-LoRA).' },
-        { label: 'Validate', narration: zh ? '只有通过 validation gate 的 adapter 状态才能进入 successor revision。' : 'Only adapter state that passes the validation gate can enter the successor revision.' },
-        { label: 'Revision', narration: zh ? '接受的状态组成 successor revision。' : 'Accepted state forms the successor revision.' },
-        { label: 'Task N+1', narration: zh ? '下一任务从 successor revision 开始，并形成下一轮 evidence。' : 'The next task starts from the successor revision and produces the next evidence.' },
+        { label: 'Validate', narration: zh ? '只有通过验证门的 adapter 状态才能进入下一版本。' : 'Only adapter state that passes the validation gate can enter the successor revision.' },
+        { label: 'Revision', narration: zh ? '接受的状态组成下一版本。' : 'Accepted state forms the successor revision.' },
+        { label: 'Task N+1', narration: zh ? '下一任务从新版本开始，并形成下一轮证据。' : 'The next task starts from the successor revision and produces the next evidence.' },
       ],
     },
     compare: {
@@ -85,7 +85,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       steps: [
         { label: zh ? '共同经验' : 'Shared', narration: zh ? '两种方法都从真实 task / observations / sampled actions / outcome 开始。' : 'Both methods start from a real task / observations / sampled actions / outcome.' },
         { label: zh ? '分别处理' : 'Separate', narration: zh ? '同一 experience 分别进入 SEED 与 OpenEvo 的更新机制。' : 'The same experience enters the SEED and OpenEvo update mechanisms separately.' },
-        { label: zh ? '更新' : 'Update', narration: zh ? 'SEED 产生训练信号；OpenEvo 跨过 task boundary 运行 evolution method。' : 'SEED creates learning signal; OpenEvo crosses the task boundary and runs an evolution method.' },
+        { label: zh ? '更新' : 'Update', narration: zh ? 'SEED 产生训练信号；OpenEvo 在任务完成后运行演化方法。' : 'SEED creates learning signal; OpenEvo crosses the task boundary and runs an evolution method.' },
         { label: zh ? '保存' : 'Persist', narration: zh ? 'SEED 保存 θt+1 参数；OpenEvo 保存 validated evolved state。' : 'SEED persists θt+1 parameters; OpenEvo persists validated evolved state.' },
         { label: zh ? '生效' : 'Activate', narration: zh ? '两者都改变后续行为，但生效合同与 carrier 不同。' : 'Both can change later behavior, but their activation contract and carriers differ.' },
       ],

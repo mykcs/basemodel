@@ -5,9 +5,9 @@
     <rect width="130" height="130" rx="32" fill="#d7653b"/>
     <path d="M38 92 92 38 M54 38h38v38" fill="none" stroke="#fffdf9" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
-  <text x="262" y="318" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="64" font-weight="700" fill="#16130e">智能体基础模型图谱</text>
-  <text x="264" y="376" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="30" font-weight="600" fill="#d7653b">Agent Foundation Model Atlas</text>
-  <text x="264" y="438" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="27" fill="#4a443a">面向 AI 研究者的基础模型选择与论文采用地图 · 数据优先，证据先行</text>
+  <text x="262" y="318" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="64" font-weight="700" fill="#16130e">Base Model · SEED × OpenEvo</text>
+  <text x="264" y="376" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="30" font-weight="600" fill="#d7653b">同一模型、同一任务，比较两套学习系统</text>
+  <text x="264" y="438" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="27" fill="#4a443a">WebShop / ALFWorld · 轨迹、分数、失败与可复现实验证据</text>
   <rect x="88" y="540" width="1024" height="2" fill="#d9d4c8"/>
   <text x="88" y="586" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="23" fill="#8a8378">basemodel-preview.vercel.app</text>
 </svg>

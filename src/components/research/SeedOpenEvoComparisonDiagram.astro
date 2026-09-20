@@ -17,20 +17,20 @@ const t = (cn:string,en:string) => zh ? cn : en;
     <article><span class="node-role">SHARED EXPERIENCE</span><strong>task + observations + sampled actions + outcome</strong><small>{t('这里还没有决定“怎么进化”','at this point, the evolution mechanism has not yet been chosen')}</small></article>
   </div>
 
-  <figure class="fork-scene" role="img" aria-label={t('同一任务经验向左进入 SEED：hindsight、OPD+GRPO、policy parameter update；向右进入 OpenEvo：sealed evidence、evolution method、memory/artifact/adapter、successor revision','The same task experience forks left into SEED through hindsight, OPD+GRPO, and policy parameter update, and right into OpenEvo through sealed evidence, evolution method, memory/artifact/adapter, and successor revision')}>
+  <figure class="fork-scene" role="img" aria-label={t('同一任务经验向左进入 SEED：任务后复盘（hindsight）、OPD+GRPO、策略参数更新；向右进入 OpenEvo：已封存证据、演化方法、文字记忆/Agent 产物/参数适配器、下一版本','The same task experience forks left into SEED through hindsight, OPD+GRPO, and policy parameter update, and right into OpenEvo through sealed evidence, evolution method, memory/artifact/adapter, and successor revision')}>
     <article class="method-head seed-head"><span>SEED</span><strong>{t('把更好的决策倾向写进 policy 参数','write better decision tendencies into policy parameters')}</strong></article>
-    <article class="method-head evo-head"><span>OpenEvo</span><strong>{t('把经验变成可继承 carrier，再组装 successor revision','turn experience into an inheritable carrier, then assemble the successor revision')}</strong></article>
+    <article class="method-head evo-head"><span>OpenEvo</span><strong>{t('把经验写入可继承载体，再组成下一版本','turn experience into an inheritable carrier, then assemble the successor revision')}</strong></article>
 
     <article class="node seed-hindsight"><span class="node-role">HINDSIGHT</span><strong>hindsight skill</strong><small>{t('同一 policy 回看完整 trajectory','the same policy reviews the completed trajectory')}</small></article>
     <article class="node seed-signal"><span class="node-role">TRAINING SIGNAL</span><strong>OPD + GRPO</strong><small>{t('稠密概率变化 + outcome RL','dense probability shift + outcome RL')}</small></article>
     <article class="node seed-state"><span class="node-role">PERSISTENT CHANGE</span><strong>policy θ<sub>t+1</sub></strong><small>{t('经验主要内化进模型参数','experience is primarily internalized into model parameters')}</small></article>
 
-    <article class="node evo-evidence"><span class="node-role">BOUNDARY</span><strong>sealed evidence</strong><small>{t('任务先完整结束，再演化','finish the task first, evolve second')}</small></article>
-    <article class="node evo-method"><span class="node-role">EVOLUTION METHOD</span><strong>reflection / extraction / parametric update</strong><small>{t('方法决定经验如何被编码','the method determines how experience is encoded')}</small></article>
+    <article class="node evo-evidence"><span class="node-role">{t('任务边界','BOUNDARY')}</span><strong>{t('已封存证据','sealed evidence')}</strong><small>{t('任务先完整结束，再演化','finish the task first, evolve second')}</small></article>
+    <article class="node evo-method"><span class="node-role">{t('演化方法','EVOLUTION METHOD')}</span><strong>{t('反思 / 提炼 / 参数更新','reflection / extraction / parametric update')}</strong><small>{t('方法决定经验如何被编码','the method determines how experience is encoded')}</small></article>
     <article class="node evo-carrier"><span class="node-role">PERSISTENT CHANGE</span><strong>memory / artifact / adapter</strong><small>{t('可在模型外，也可以参数化','may be external to the model or parametric')}</small></article>
 
     <article class="destination seed-destination"><small>{t('下一轮需要什么','What the next round needs')}</small><strong>{t('更新后的 policy checkpoint','the updated policy checkpoint')}</strong><span>{t('推理时不需要 hindsight skill bank','no hindsight skill bank is required at inference')}</span></article>
-    <article class="destination evo-destination"><small>{t('下一轮需要什么','What the next round needs')}</small><strong>{t('验证通过的 successor revision','the validated successor revision')}</strong><span>{t('具体依赖取决于 carrier 类型','the exact dependency depends on the carrier type')}</span></article>
+    <article class="destination evo-destination"><small>{t('下一轮需要什么','What the next round needs')}</small><strong>{t('验证通过的下一版本','the validated successor revision')}</strong><span>{t('具体依赖取决于 carrier 类型','the exact dependency depends on the carrier type')}</span></article>
 
     <svg class="fork-wires" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
       <defs>

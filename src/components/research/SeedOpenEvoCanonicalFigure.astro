@@ -50,7 +50,7 @@ const p = (path: string) => localePath(locale, path);
           <i aria-hidden="true">↓</i>
           <div class="change-node parameter-change">
             <span class="paper-symbol" aria-hidden="true">🔥</span>
-            <div><small>WHAT CHANGES?</small><strong>MODEL PARAMETERS · θ → θ′</strong></div>
+            <div><small>{t('改变什么？','WHAT CHANGES?')}</small><strong>{t('模型参数 · θ → θ′','MODEL PARAMETERS · θ → θ′')}</strong></div>
           </div>
         </div>
 
@@ -79,13 +79,13 @@ const p = (path: string) => localePath(locale, path);
         </div>
 
         <div class="column-flow">
-          <div class="flow-node"><small>TASK BOUNDARY</small><strong>📄 sealed evidence</strong></div>
+          <div class="flow-node"><small>{t('任务完成边界','TASK BOUNDARY')}</small><strong>{t('📄 已封存证据','📄 sealed evidence')}</strong></div>
           <i aria-hidden="true">↓</i>
-          <div class="flow-node experience"><small>EVOLUTION METHOD</small><strong>reflect / extract / parametric update</strong></div>
+          <div class="flow-node experience"><small>{t('演化方法','EVOLUTION METHOD')}</small><strong>{t('反思 / 提炼 / 参数更新','reflect / extract / parametric update')}</strong></div>
           <i aria-hidden="true">↓</i>
           <div class="change-node carrier-change">
             <span aria-hidden="true">✓</span>
-            <div><small>WHAT CHANGES?</small><strong>VALIDATED SUCCESSOR CARRIER / STATE</strong></div>
+            <div><small>{t('改变什么？','WHAT CHANGES?')}</small><strong>{t('验证通过的下一版载体 / 状态','VALIDATED SUCCESSOR CARRIER / STATE')}</strong></div>
           </div>
         </div>
 

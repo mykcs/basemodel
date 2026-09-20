@@ -67,7 +67,7 @@ describe('public server copy', () => {
   });
 
   it('uses neutral laboratory naming and explains the 436 GiB provenance before the conclusion', () => {
-    expect(labZh).toContain('实验室 GPU Server');
+    expect(labZh).toContain('实验室 GPU 服务器');
     expect(labZh).toContain('同一个容器里报告出来的三个入口');
     expect(labZh).toContain('不同 backing device 的容量');
     expect(labZh).not.toContain('OWNED vs VISIBLE');
