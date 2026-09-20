@@ -8,7 +8,7 @@ const t = (cn:string,en:string) => zh ? cn : en;
 ---
 <section class="openevo-framework" aria-labelledby="openevo-framework-title" data-explainer="openevo-core">
   <header class="diagram-head">
-    <span>OPENEVO · CORE PRINCIPLE</span>
+    <span>{t('OpenEvo · 核心原则','OPENEVO · CORE PRINCIPLE')}</span>
     <h2 id="openevo-framework-title">{t('OpenEvo 跨任务演化机制','OpenEvo cross-task evolution mechanism')}</h2>
     <p>{t('OpenEvo 最核心的不是某一个 optimizer。它定义的是一个跨任务演化边界：任务先完整结束并封存证据，之后再运行 evolution method；产物可以是 memory、agent-system artifact，也可以是 adapter。验证通过的产物被组装进 successor revision，并从下一任务开始生效。','OpenEvo’s core idea is not a particular optimizer. It defines a cross-task evolution boundary: finish the task and seal evidence first, then run an evolution method. The carrier may be memory, an agent-system artifact, or an adapter. Validated carriers are assembled into a successor revision that activates on the next task.')}</p>
   </header>
@@ -19,22 +19,22 @@ const t = (cn:string,en:string) => zh ? cn : en;
     <article><small>{t('为什么下一任务会不同','Why is the next task different?')}</small><strong>{t('因为 successor revision 继承了通过验证的新状态','because the successor revision inherits validated new state')}</strong></article>
   </div>
 
-  <figure class="evo-scene" role="img" aria-label={t('OpenEvo：Project Head 在环境中完成 Task N 并产生 sealed evidence；任务结束后 evidence 进入 evolution method，并分叉为 memory、artifact 或 adapter；验证通过后合并为 successor revision，用于 Task N+1','OpenEvo: a Project Head completes Task N in an environment and produces sealed evidence; after task completion the evidence enters an evolution method and branches into memory, artifact, or adapter carriers; validated state merges into a successor revision for Task N+1')}>
-    <figcaption><span>{t('跨任务演化边界','Cross-task evolution boundary')}</span><strong>TASK N → EVOLVE → TASK N+1</strong><small>{t('“完成任务”与“改变 agent”是两个明确分开的阶段','completing the task and changing the agent are explicitly separate phases')}</small></figcaption>
+  <figure class="evo-scene" role="img" aria-label={t('OpenEvo：当前智能体版本在环境中完成任务 N 并产生已封存证据；任务结束后证据进入演化方法，并写入文字记忆、Agent 产物或参数适配器；验证通过后组成下一版本，用于任务 N+1','OpenEvo: a Project Head completes Task N in an environment and produces sealed evidence; after task completion the evidence enters an evolution method and branches into memory, artifact, or adapter carriers; validated state merges into a successor revision for Task N+1')}>
+    <figcaption><span>{t('跨任务演化边界','Cross-task evolution boundary')}</span><strong>{t('任务 N → 演化 → 任务 N+1','TASK N → EVOLVE → TASK N+1')}</strong><small>{t('“完成任务”与“改变 agent”是两个明确分开的阶段','completing the task and changing the agent are explicitly separate phases')}</small></figcaption>
 
-    <article class="node head"><span class="node-role">PROJECT HEAD</span><strong>{t('当前 agent revision','current agent revision')}</strong><small>Qwen2.5-3B-Instruct + current carrier state</small></article>
-    <article class="node environment"><span class="node-role">TASK N · ENVIRONMENT</span><strong>WebShop / ALFWorld</strong><small>observation · action · reward</small></article>
-    <article class="node evidence"><span class="node-role">SEALED EVIDENCE</span><strong>trajectory + outcome + metadata</strong><small>{t('任务完成后冻结，先保留“发生了什么”','frozen after task completion so the evidence of what happened is preserved first')}</small></article>
+    <article class="node head"><span class="node-role">{t('当前智能体版本','PROJECT HEAD')}</span><strong>{t('当前 agent revision','current agent revision')}</strong><small>Qwen2.5-3B-Instruct + current carrier state</small></article>
+    <article class="node environment"><span class="node-role">{t('任务 N · 环境','TASK N · ENVIRONMENT')}</span><strong>WebShop / ALFWorld</strong><small>observation · action · reward</small></article>
+    <article class="node evidence"><span class="node-role">{t('已封存证据','SEALED EVIDENCE')}</span><strong>trajectory + outcome + metadata</strong><small>{t('任务完成后冻结，先保留“发生了什么”','frozen after task completion so the evidence of what happened is preserved first')}</small></article>
 
-    <article class="node engine"><span class="node-role">EVOLUTION METHOD</span><strong>{t('反思 / 提炼 / 参数演变','reflection / extraction / parametric evolution')}</strong><small>{t('方法读取已经封存的 evidence，不改变刚完成的 Task N','the method reads sealed evidence; it does not retroactively change Task N')}</small></article>
+    <article class="node engine"><span class="node-role">{t('演化方法','EVOLUTION METHOD')}</span><strong>{t('反思 / 提炼 / 参数演变','reflection / extraction / parametric evolution')}</strong><small>{t('方法读取已经封存的 evidence，不改变刚完成的 Task N','the method reads sealed evidence; it does not retroactively change Task N')}</small></article>
 
-    <article class="carrier memory"><span class="node-role">CARRIER A</span><strong>MEMORY</strong><small>{t('把经验留在模型外部，后续任务检索 / 注入','experience stays outside the model and is retrieved/injected later')}</small></article>
-    <article class="carrier artifact"><span class="node-role">CARRIER B</span><strong>AGENT ARTIFACT</strong><small>{t('工具、技能、策略文件或 agent-system 状态','tools, skills, policy files, or agent-system state')}</small></article>
-    <article class="carrier adapter active"><span class="node-role">CARRIER C · CURRENT WEBSHOP PATH</span><strong>PARAMETRIC ADAPTER</strong><small>SD-LoRA / LoRA · {t('参数化经验','parametric experience')}</small></article>
+    <article class="carrier memory"><span class="node-role">{t('载体 A','CARRIER A')}</span><strong>{t('文字记忆（Memory）','MEMORY')}</strong><small>{t('把经验留在模型外部，后续任务检索 / 注入','experience stays outside the model and is retrieved/injected later')}</small></article>
+    <article class="carrier artifact"><span class="node-role">{t('载体 B','CARRIER B')}</span><strong>{t('Agent 产物','AGENT ARTIFACT')}</strong><small>{t('工具、技能、策略文件或 agent-system 状态','tools, skills, policy files, or agent-system state')}</small></article>
+    <article class="carrier adapter active"><span class="node-role">{t('载体 C · 当前 WebShop 路线','CARRIER C · CURRENT WEBSHOP PATH')}</span><strong>{t('参数适配器','PARAMETRIC ADAPTER')}</strong><small>SD-LoRA / LoRA · {t('参数化经验','parametric experience')}</small></article>
 
-    <article class="node validation"><span class="node-role">VALIDATION GATE</span><strong>{t('identity · digest · reload · behavior probe','identity · digest · reload · behavior probe')}</strong><small>{t('只有可追溯且真正生效的状态才被接受','only traceable state that actually activates is accepted')}</small></article>
-    <article class="node successor"><span class="node-role">SUCCESSOR REVISION</span><strong>{t('下一版 agent 状态','next agent state')}</strong><small>{t('可以同时包含代码 identity、memory、artifact、adapter','may combine code identity, memory, artifacts, and adapters')}</small></article>
-    <article class="node next"><span class="node-role">TASK N+1</span><strong>{t('下一任务从 successor revision 开始','the next task starts from the successor revision')}</strong><small>{t('继续产生新 evidence，形成下一轮演化','new evidence starts the next evolution cycle')}</small></article>
+    <article class="node validation"><span class="node-role">{t('验证门','VALIDATION GATE')}</span><strong>{t('identity · digest · reload · behavior probe','identity · digest · reload · behavior probe')}</strong><small>{t('只有可追溯且真正生效的状态才被接受','only traceable state that actually activates is accepted')}</small></article>
+    <article class="node successor"><span class="node-role">{t('下一版本','SUCCESSOR REVISION')}</span><strong>{t('下一版 agent 状态','next agent state')}</strong><small>{t('可以同时包含代码 identity、memory、artifact、adapter','may combine code identity, memory, artifacts, and adapters')}</small></article>
+    <article class="node next"><span class="node-role">{t('任务 N+1','TASK N+1')}</span><strong>{t('下一任务从 successor revision 开始','the next task starts from the successor revision')}</strong><small>{t('继续产生新 evidence，形成下一轮演化','new evidence starts the next evolution cycle')}</small></article>
 
     <svg class="evo-wires" viewBox="0 0 1200 720" preserveAspectRatio="none" aria-hidden="true">
       <defs>
@@ -58,21 +58,21 @@ const t = (cn:string,en:string) => zh ? cn : en;
     </svg>
     <span class="wire-label completion-boundary">{t('任务完成边界：先封存，再演化','completion boundary: seal first, evolve second')}</span>
     <span class="wire-label fanout-label">{t('同一 evidence 可以进入不同 evolution carrier','the same evidence can feed different evolution carriers')}</span>
-    <span class="wire-label validated-label">{t('只有 PASS 状态进入 successor revision','only PASS state enters the successor revision')}</span>
+    <span class="wire-label validated-label">{t('只有验证通过（PASS）的状态进入下一版本','only PASS state enters the successor revision')}</span>
   </figure>
 
   <section class="webshop-path" aria-labelledby="webshop-path-title">
-    <header><span>{t('当前具体实现','Current concrete implementation')}</span><h3 id="webshop-path-title">OpenEvo × WebShop · SD-LoRA parametric path</h3></header>
+    <header><span>{t('当前具体实现','Current concrete implementation')}</span><h3 id="webshop-path-title">{t('OpenEvo × WebShop · SD-LoRA 参数路线','OpenEvo × WebShop · SD-LoRA parametric path')}</h3></header>
     <div class="path-canvas">
-      <article><small>01 · EXPERIENCE</small><strong>real WebShop trajectory</strong></article>
+      <article><small>{t('01 · 经验','01 · EXPERIENCE')}</small><strong>{t('真实 WebShop 轨迹','real WebShop trajectory')}</strong></article>
       <i aria-hidden="true"></i>
-      <article><small>02 · ADAPT</small><strong>parametric dataset adapter</strong></article>
+      <article><small>{t('02 · 整理','02 · ADAPT')}</small><strong>{t('参数训练数据适配器','parametric dataset adapter')}</strong></article>
       <i aria-hidden="true"></i>
-      <article><small>03 · UPDATE</small><strong>official OpenEvo SD-LoRA</strong></article>
+      <article><small>{t('03 · 更新','03 · UPDATE')}</small><strong>{t('OpenEvo 官方 SD-LoRA','official OpenEvo SD-LoRA')}</strong></article>
       <i aria-hidden="true"></i>
-      <article><small>04 · PERSIST</small><strong>adapter + logical state digest</strong></article>
+      <article><small>{t('04 · 保存','04 · PERSIST')}</small><strong>{t('adapter + 状态摘要（digest）','adapter + logical state digest')}</strong></article>
       <i aria-hidden="true"></i>
-      <article><small>05 · VERIFY</small><strong>fresh reload + real rollout</strong></article>
+      <article><small>{t('05 · 验证','05 · VERIFY')}</small><strong>{t('重新加载 + 真实 rollout','fresh reload + real rollout')}</strong></article>
     </div>
     <p>{t('这条 adapter 路线是当前 WebShop 实验正在用的 carrier，但它只是 OpenEvo 框架允许的一种演化载体；不能反过来把 OpenEvo 定义成“SD-LoRA 框架”。','This adapter route is the carrier used by the current WebShop experiment, but it is only one carrier allowed by OpenEvo; OpenEvo should not be reduced to “the SD-LoRA framework.”')}</p>
   </section>
