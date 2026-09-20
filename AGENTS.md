@@ -61,6 +61,8 @@ When account-level shared Agent conventions are available, they supplement this 
 
 When a task involves lab connectivity, remote compute, SSH/SFTP/rsync, or hardware disclosure, read [`docs/agents/current/personal-compute-profile-consumer.md`](docs/agents/current/personal-compute-profile-consumer.md). Base Model stores only a generic public topology: never add the owner's personal device inventory, private profile feed, IP/hostname/username, VPN endpoint, access token or other identifying infrastructure detail. Publish only the minimum aggregate hardware facts required for a reproducible experiment.
 
+**LYG2171 public ownership has moved to fuhuo.** Current public compute-resource/server facts live at `https://fuhuo-20260419.vercel.app/docs/machines`; server onboarding, maintenance, research-asset archive/restore, and reclaim prompts live at `https://fuhuo-20260419.vercel.app/docs/server-governance`. BaseModel's historical `/lab/` and `/research/seed-openevo/flow/server/` source remain compatibility/history surfaces only and must not receive new live LYG2171 facts.
+
 ## Knowledge precedence
 
 ```text
