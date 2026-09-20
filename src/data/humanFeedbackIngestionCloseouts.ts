@@ -1578,7 +1578,7 @@ export const BOUNDED_GDR_RESULTS_753_INGESTION_20260920: HumanFeedbackIngestionC
     end: '2026-09-20 · owner asks to finish the remaining work, restore loss-vs-rollout in the three-experiment W&B view, and add it to the BaseModel experiment page',
     route: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',
     pullRequest: 753,
-    finalOwnerVisibleHead: '35b4bfd4246ba4a0fb35dd0780fc4469dbc189dc',
+    finalOwnerVisibleHead: '42325e88b4d5453ef74404ea9a65a357074f1f66',
     mainAtCloseout: '041b4a25a170faa25a2f045e71ca45cc0f9f707b',
     finalVerdict: 'current-candidate',
   },
