@@ -240,6 +240,22 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     positiveSignals: ['KaTeX / MathJax 真正数学排版', '关键 W&B 曲线正文可见并可点回原生 panel', 'Report / Workspace / panel 多层回链', '私有来源用确定性静态图降级并保留 authority 边界'],
   },
   {
+    id: 'CASE-095',
+    title: 'Benchmark 分数先交代怎么测、测了哪批题、不能代表什么',
+    tags: ['科研网页', 'Task Score', 'WebShop', '固定 128 题', '最后20轮', '终评', '题集来源', '同题比较', '指标解释', '能力边界'],
+    principle: '科研页第一次展示 benchmark 分数时，要同时说明分数怎么算、任务集怎样选、不同实验是否使用同一批题，以及这个数字不能代表什么；训练末段窗口均值与固定题终评是不同证据层，应该并列但不能混为一个“能力分数”。',
+    antiPatterns: ['只写 60.72 / 45.98 / 20.77，不解释 Task Score 的 0–1 raw score ×100 与 exact success 的区别', '只说“随机 128 题”却不交代冻结前选择规则、是否同题和 reward-blind 边界', '把一套固定 128 题的单次终评包装成全面能力', '把最后 20 轮不同抽样任务的平均和固定题 final 当成同一种考试'],
+    positiveSignals: ['Task Score 第一次出现就说明平均 terminal task_score ×100、允许部分得分，并单列 exact success', '说明 128 题在训练前从 held-out pool 以固定、reward-blind 规则选出并冻结，三组使用同一 ordered panel', '把最后 20 轮均值标成训练轨迹，把固定 128 题标成同题终评，各自解释局限'],
+  },
+  {
+    id: 'CASE-096',
+    title: '已有 W&B 原生实验图时先解释并复用，不在网页重复手画同一曲线',
+    tags: ['科研网页', 'W&B', 'wandb', '原生曲线', '指标解释', '重复图', 'Task Score', 'Task Vector', 'entropy', '可视化'],
+    principle: 'W&B 已经有同一指标的原生图时，网页优先解释指标、展示或回链原生证据；如果需要的指标当时没有写进 W&B、但封存 run / receipt 里有真实数据，则从封存证据建立带来源哈希的 publication mirror，再让 W&B 与网页共用这一份衍生证据；不能为了“页面里也有一张图”重复制造第二套事实源。',
+    antiPatterns: ['W&B 已有 Task Score 曲线，网页又手画同一训练曲线或移动平均版本却没有新增科学问题', '图放进网页但不解释 Task Vector、cosine、steps、entropy 各自测什么', '网页自制图和 W&B 原生图形成两套视觉事实源'],
+    positiveSignals: ['复用 W&B-derived snapshot / panel，并在附近解释指标定义和 claim boundary', '缺失 W&B 指标但封存证据可恢复时，新建明确标注 publication-mirror / scientific_authority=false 的可视化 run，并保存来源哈希；不改封存科学 run', '缺失更新轮保持缺失，不为了图连续而插值', '网页只新增能承担独立分析语义的图，不复制已有原生曲线', '静态公开阅读层继续回链 Report / Workspace / panel，科学 authority 留在 run / receipt / sealed JSON'],
+  },
+  {
     id: 'CASE-094',
     title: '普通视觉验收与独立评审是两类证据',
     tags: ['视觉验收', 'reviewer', '冷读', '浏览器', 'Kimi', 'MiniMax', 'workflow', '证据类型'],
@@ -252,7 +268,7 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
 
 export const READER_CONTRACT_PRECEDENTS: Record<string, HumanFeedbackCaseId[]> = {
   study: ['CASE-061', 'CASE-062', 'CASE-063', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
-  'study-results': ['CASE-029', 'CASE-030', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
+  'study-results': ['CASE-029', 'CASE-030', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070', 'CASE-095', 'CASE-096'],
   'study-run': ['CASE-064', 'CASE-068', 'CASE-070', 'CASE-081'],
   'study-briefing': ['CASE-027', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-070', 'CASE-081', 'CASE-082', 'CASE-084', 'CASE-087', 'CASE-088', 'CASE-089', 'CASE-090'],
   'capability-home': ['CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],

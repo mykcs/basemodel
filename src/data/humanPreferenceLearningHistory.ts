@@ -745,6 +745,60 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
   },
 
   {
+    id: 'EVENT-20260920-BOUNDED-METRIC-CONTEXT-NATIVE-WANDB',
+    date: '2026-09-20',
+    caseIds: ['CASE-027', 'CASE-059', 'CASE-095', 'CASE-096'],
+    scopes: ['research-ui', 'research-copy', 'results', 'visual'],
+    artifact: 'BaseModel · three 1.7B OpenEVO / Bounded / GDR experiment page',
+    variantId: 'bounded-three-arm-metric-context-main-57388268',
+    verdict: 'rejected',
+    ownerSignal: '“Qwen3-1.7B · WebShop · 160 轮”这种无意义页眉要去掉；三组实验表要解释各自是什么、最后分数怎么算、固定 128 题怎么选、是否同题以及这个分数为什么片面。更看最后 20 轮平均；W&B 指标也要解释。已经做了 W&B 图，网页没有必要再手画重复曲线。',
+    reasons: [
+      '装饰性眉题没有增加 H1 之外的新信息，而且 owner 明确指出这是重复纠正',
+      '首屏 final 数字没有在第一次出现时交代 Task Score / exact success 的测量语义',
+      '同一固定 128 题的选择、同题性和有限覆盖范围没有被讲清，容易把 panel 分数过读成全面能力',
+      '训练末 20 轮轨迹与固定题 final 没有分层，导致单次终评占据过高注意力',
+      'W&B 已有原生实验图时网页仍维护第二条手画 Task Score 曲线，且多个 W&B 指标缺少就地解释',
+    ],
+    failureMechanisms: [
+      'meaningless-english-eyebrow',
+      'benchmark-number-without-measurement-context',
+      'fixed-panel-overread',
+      'trajectory-final-evidence-conflation',
+      'redundant-page-native-chart',
+      'metric-without-reader-context',
+    ],
+    requestedSuccessorVariantId: 'bounded-three-arm-reader-context-native-wandb',
+    evidence: {
+      repository: 'mykcs/basemodel',
+      route: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',
+    },
+  },
+
+  {
+    id: 'EVENT-20260920-BOUNDED-LOSS-ROLLOUT-WANDB-MIRROR',
+    date: '2026-09-20',
+    caseIds: ['CASE-096'],
+    scopes: ['research-ui', 'research-copy', 'results', 'visual'],
+    artifact: 'BaseModel · three 1.7B OpenEVO / Bounded / GDR experiment page and W&B report',
+    variantId: 'bounded-loss-rollout-native-wandb-mirror-request',
+    verdict: 'promising',
+    ownerSignal: '“实验应该要有一个随着 rollout 变化、loss 下降的图，好像当时 W&B 里面没有收集到。然后在 W&B 网站里，就是三个实验一起的那个视图网页里，把这个图做了。另外，加上我们的 BaseModel 介绍这一组实验的网页，也做了。”',
+    reasons: [
+      '缺失的是原生实验可视化层，不应通过网页手画一条脱离 W&B 的第二事实源来补',
+      '如果 sealed run / receipt 仍有真实 loss，就应以可追溯 publication mirror 恢复到三实验 W&B 视图，再让 BaseModel 复用同源快照',
+      'loss 与 Task Score / fixed final 是不同证据层，缺失更新轮不能为了图连续而插值',
+    ],
+    failureMechanisms: [],
+    requestedSuccessorVariantId: 'bounded-loss-rollout-publication-mirror-shared-evidence',
+    evidence: {
+      repository: 'mykcs/basemodel',
+      route: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',
+      pullRequest: 753,
+    },
+  },
+
+  {
     id: 'EVENT-20260916-REDESIGN-INDEPENDENT-COLDREAD-REQUIRED',
     date: '2026-09-16',
     caseIds: ['CASE-094'],
@@ -1247,6 +1301,18 @@ export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
     route: '/research/seed-openevo/',
     ownerEvidence: 'owner 说“现在这轮网页修改已经基本结束”并启动 Human Preference Learning closeout；没有对这个 exact visual 说 accepted、以后按这版或作为模板。',
     note: 'CURRENT-CANDIDATE，只证明这是 #737 稳定收口时的可重建产品状态；不能因 PR 已合并、CI/Production 通过或 closeout 开始就升级为 Silver/Golden。可用 repo + exact SHA + route + 390×844 / 1280×633 重建代表性视觉。',
+  },
+  {
+    id: 'VISUAL-BOUNDED-GDR-753-CURRENT-CANDIDATE',
+    tier: 'current-candidate',
+    scopes: ['results', 'research-ui', 'research-copy', 'visual'],
+    artifact: 'BaseModel PR #753 · three OpenEVO experiment result page with native W&B loss mirror',
+    repository: 'mykcs/basemodel',
+    gitSha: '42325e88b4d5453ef74404ea9a65a357074f1f66',
+    pullRequest: 753,
+    route: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',
+    ownerEvidence: 'owner 要求把剩余工作做完：在三实验 W&B 视图补 rollout→loss，并同步到 BaseModel 实验介绍页；42325e88… 是落实这些要求并通过 Vercel 首屏几何修复后的 exact current candidate。owner 尚未对这个 exact visual 给出 accepted / canonical 语言。',
+    note: 'CURRENT-CANDIDATE，只证明 #753 当前候选已经可由 repo + exact SHA + route 重建；W&B loss 来自 scientific_authority=false 的 publication mirror，不能把 PR/CI/Agent 自检升级成 owner acceptance。',
   },
 
 ];

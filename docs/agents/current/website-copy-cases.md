@@ -1241,3 +1241,52 @@ owner 随后明确改写未来默认：“我也不希望再去调用浏览器�
 - 新建访客/无痕/browser profile 不会自动产生独立 reviewer 身份；自动化若落到 AI/account/login/sync 页面，应记为错误 surface / NOT_EXECUTED 并关闭，不继续用 owner cookies/profile 或更多新 profile 重试。
 - 不是降低 UI Gate；真正的 Reader Contract、浏览器、可访问性或发布 Gate 失败仍然必须修。
 - 不是把“无需独立 reviewer”推广到已经明确要求人类研究、用户测试、盲评或独立 judge 的任务。
+
+<a id="case-095-benchmark-分数先交代怎么测测了哪批题不能代表什么"></a>
+### CASE-095 — Benchmark 分数先交代怎么测、测了哪批题、不能代表什么
+**PREFERENCE · RESEARCH COPY / RESULTS · 2026-09-20 · repeated direct owner feedback**
+
+在“三个 OpenEVO 实验”页里，首屏一度直接列出 60.72、45.98、20.77 和 50/128、32/128、10/128，却没有在这些数字第一次出现时告诉读者：Task Score 到底怎么算、128 题怎么来的、三组是否做同一套题，以及这套题能代表多少能力。owner 明确要求把这些基础说明补上，并指出最终 128 题只是固定的一套题，不能拿一个分数概括模型全面能力；相比只盯单次终评，更希望同时看到最后 20 轮平均 Task Score。
+
+本次核对后的事实口径是：WebShop 的 Task Score 来自每个任务结束时 0–1 的连续 terminal task_score，页面把任务平均值乘 100；部分满足条件可以得到部分分。Exact success 是另一项更严格的指标，要求任务真正成功且 task_score = 1.0。固定终评的 128 题在训练开始前从 WebShop held-out goal_idx 0–499 中，先排除上一套 final 的 128 题，再按固定 SHA256 规则排序取前 128；选择过程不读取 reward 或 success。三组最终模型使用完全相同、顺序也相同的这一套 128 题，Stage 2 训练期间不能看到题单。
+
+认可方向：
+- 数字第一次出现时，就把对象、单位 / 分母和计算口径说清；
+- 固定题 final 明确叫“同一固定 128 题终评”，并说明题集怎么产生、是否同题、是否 reward-blind；
+- 把最后 20 轮平均标成训练轨迹证据：它能降低单轮抽样抖动，但每轮任务会变化，不是同题考试；
+- 把固定 128 题标成同题比较证据：它能控制题目差异，但仍然只是一套有限 panel，不能被包装成全面能力；
+- 当两种证据同时存在时，读者应能清楚看到它们回答的是不同问题，而不是被迫挑一个“唯一主分数”。
+
+反面：
+- 裸写 60.72 / 45.98 / 20.77，让读者猜是 reward、准确率还是成功率；
+- 只写“随机 128 题”，不说它是在训练前按固定规则从哪个 pool 选、是否排除了旧 final、是否读取结果；
+- 因为三组使用同一 final panel，就把这个 panel 的单次结果升级成模型整体能力；
+- 因为更关注最后 20 轮均值，就把它错误改写成固定题测试或泛化能力评估。
+
+规律：**科研网页不是只负责“报一个数”，还要给读者足够的信息判断这个数到底在测什么、控制了什么、又遗漏了什么。**
+
+边界：不是每个实验都必须同时展示“最后 20 轮 + fixed final”。只有当训练轨迹与固定题终评都存在、且它们回答不同问题时才并列；具体窗口长度和 panel 选择规则必须跟当前实验 authority 走，不能把本页的 20 轮 / 128 题机械推广到别的研究。
+
+<a id="case-096-已有-wandb-原生实验图时先解释并复用不重复手画"></a>
+### CASE-096 — 已有 W&B 原生实验图时先解释并复用，不重复手画
+**PREFERENCE · RESEARCH UI / VISUAL EVIDENCE · 2026-09-20 · direct owner feedback**
+
+同一页面已经有 W&B 里的 Task Score、Task Vector、任务步数、行为 entropy 等图，网页却又额外维护了一张自己用 SVG 手画的 R0–R159 Task Score / moving-average 曲线。owner 直接指出：W&B 图已经做过，网页里如果没有必要就不要再加这种手画曲线；同时 W&B 表格和指标本身也必须解释，让读者知道每条曲线在测什么。
+
+认可方向：
+- W&B 已经有同一指标时，优先直接展示 W&B-derived snapshot 或回链原生 panel；
+- 如果需要的指标当时没有写进 W&B，但 sealed run / receipt 里有真实数据，建立明确标注 publication-mirror、scientific_authority=false 且保存来源哈希的可视化 run，再把它加入原生 W&B Report；不要改封存科学 run；
+- 缺失更新轮保持缺失，不为了让曲线连续而插值；training loss 下降只说明当前训练记录更易拟合，不自动等于 Task Score / fixed final 上升；
+- 图的附近解释指标：Task Score、Task Vector Frobenius、ON/OFF update-direction cosine、output tokens、episode steps、action-family entropy 分别在测什么，又不能证明什么；
+- 网页自己新增图必须有独立的信息价值，例如 W&B 原生 panel 没有的新分析变换或特定解释，而不是为了“页面也有一张曲线”；
+- 公开静态快照是阅读层；Report / Workspace / panel 提供原生回链，run / receipt / sealed JSON 继续承担科学 authority。
+
+反面：
+- 同一 Task Score 在 W&B 已经有原生图，网页又手画一份相同事实源；
+- 页面放了一排 W&B 图，却默认陌生读者知道 Frobenius、cosine、entropy 的含义；
+- 页面自己画的移动平均和 W&B 原始曲线形成两套视觉事实源，但没有解释两者关系；
+- 误把“不要重复手画”推广成“网页永远不允许自己做任何数据可视化”。
+
+规律：**原生实验系统已经表达清楚的证据，网页的价值主要是解释、筛选和组织，而不是复制一份新的图表事实源；原生系统漏记展示指标时，先从封存科学证据建立可审计的 publication mirror，再让 W&B 和网页共同消费它。**
+
+边界：页面仍然可以做新图；条件是它承担 W&B 原生 panel 没有的分析任务，并清楚标出数据来源、变换和 claim boundary。

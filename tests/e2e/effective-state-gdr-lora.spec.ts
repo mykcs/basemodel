@@ -44,7 +44,7 @@ test('paper narrative follows motivation, method, mapping, experiment, result, a
     '动机：SD-LoRA 越训练越慢',
     '方法：Bounded Online Recurrence 与 GDR',
     '实验设置：Qwen3-1.7B × WebShop',
-    '结果：Bounded Online Recurrence 把参数训练变快了，但最终分数下降；再加 GDR 下降更多',
+    '结果：训练后期与固定 128 题终评',
     'Analysis：为什么 GDR 后期会掉下来？',
   ]);
 });
@@ -86,7 +86,7 @@ test('formal result preserves the matched-arm statistical boundary under public 
   await expect(result).toContainText('OpenEVO + Bounded Online Recurrence + GDR');
   await expect(result).toContainText('R1–R159 mean reward');
   await expect(result).toContainText('跨 0');
-  await expect(result).toContainText('LONG_HORIZON_TRANSIENT_ONLY');
+  await expect(result).toContainText('短暂正向信号没有形成稳定优势');
   await expect(page.locator('#compute')).toContainText('31.09');
   await expect(page.locator('#compute')).toContainText('2.02');
   await expect(page.locator('#compute')).toContainText('2.35');
@@ -123,14 +123,19 @@ test('W&B section shows static W&B-history previews and keeps native links witho
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const wandb = page.locator('#wandb');
-  await expect(wandb).toContainText('W&B：把曲线直接放进网页里');
+  await expect(wandb).toContainText('W&B 指标与原生曲线');
   await expect(wandb.getByRole('link', { name: /交互 W&B Report/ })).toHaveAttribute('href', /wandb\.ai/);
   await expect(wandb.getByRole('link', { name: /完整 W&B Workspace/ })).toHaveAttribute('href', /wandb\.ai/);
   await expect(wandb.getByRole('link', { name: /Task Score 原生曲线/ })).toHaveAttribute('href', /panelDisplayName=/);
-  await expect(wandb.locator('img')).toHaveCount(4);
+  await expect(wandb.locator('img')).toHaveCount(5);
   await expect(wandb.locator('img').first()).toHaveAttribute('src', /wandb-threeway\/task-score\.svg/);
+  await expect(wandb).toContainText('SD-LoRA training loss');
+  await expect(wandb).toContainText('20,480');
+  await expect(wandb).toContainText('不做插值');
+  await expect(wandb.getByRole('link', { name: /SD-LoRA loss · 累计 rollout/ })).toHaveAttribute('href', /wandb\.ai/);
+  await expect(wandb.locator('img').nth(1)).toHaveAttribute('src', /wandb-threeway\/loss-vs-rollout\.svg/);
   await expect(wandb.getByRole('link', { name: /Action-family entropy · 160轮/ })).toHaveAttribute('href', /panelDisplayName=/);
-  await expect(wandb.locator('img').nth(3)).toHaveAttribute('src', /wandb-threeway\/action-family-entropy\.svg/);
+  await expect(wandb.locator('img').nth(4)).toHaveAttribute('src', /wandb-threeway\/action-family-entropy\.svg/);
   await expect(wandb.locator('iframe')).toHaveCount(0);
   await expect(wandb).toContainText('当前 W&B 原项目没有对未登录访客开放');
 });
@@ -149,10 +154,8 @@ for (const theme of ['light', 'dark'] as const) {
 test('phone first screen establishes the three experiments before deep method detail', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  const context = page.locator('.research-route-context');
-  await expect(context).toHaveAttribute('data-compact', 'true');
-  await expect(context).toContainText('1.7B · 三组实验');
-  await expect(context).toContainText('三组 1.7B：普通 OpenEVO / Bounded Online Recurrence / + GDR');
+  await expect(page.locator('.research-route-context')).toHaveCount(0);
+  await expect(page.locator('.paper__kicker')).toHaveCount(0);
   const h1 = page.getByRole('heading', { level: 1 });
   await expect(h1).toContainText('三个 OpenEVO 实验');
   const ablation = page.locator('.paper-table-wrap--hero');
