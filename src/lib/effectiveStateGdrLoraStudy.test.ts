@@ -177,16 +177,19 @@ describe('Effective-State GDR publication snapshot', () => {
 
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
     expect(component).toContain('动机：SD-LoRA 越训练越慢');
-    expect(component).toContain('S<sub>t</sub> = Compress<sub>128</sub>');
-    expect(component).toContain('S<sub>t</sub> = α<sub>t</sub>S<sub>t−1</sub>(I − β<sub>t</sub>k<sub>t</sub>k<sub>t</sub><sup>T</sup>)');
-    expect(component).toContain('β<sub>t</sub>r<sub>t</sub>k<sub>t</sub><sup>T</sup>');
-    expect(component).not.toContain('β<sub>t</sub>k<sub>t</sub>r<sub>t</sub><sup>T</sup>');
-    expect(component).toContain('A → sA');
+    expect(component).toContain("import MathFormula from '../common/MathFormula.astro'");
+    expect(component).toContain('\\operatorname{Compress}_{128}');
+    expect(component).toContain('\\alpha_t S_{t-1}\\left(I-\\beta_t k_t k_t^{\\top}\\right)');
+    expect(component).toContain('\\beta_t r_t k_t^{\\top}');
+    expect(component).not.toContain('\\beta_t k_t r_t^{\\top}');
+    expect(component).toContain('A\\mapsto sA');
     expect(component).toContain('Task Vector、范数和谱');
     expect(component).toContain('不能补造 token entropy');
     expect(component).toContain('约束要不要更 adaptive');
     expect(component).toContain('study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString');
     expect(component).toContain('不能说“Task Vector / norm 越大，WebShop 就越好”');
+    expect(component).toContain("import WandbEvidencePanel from './WandbEvidencePanel.astro'");
+    expect(component).toContain('OpenEVO-1.7B-%C2%B7-%E4%B8%89%E7%BB%84%E5%AE%9E%E9%AA%8C%E5%88%86%E6%9E%90');
   });
 
   it('freezes the matched formal budget, independent progression, and locked final panel', () => {

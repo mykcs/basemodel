@@ -2,6 +2,8 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
+import MathFormula from '../common/MathFormula.astro';
+import WandbEvidencePanel from './WandbEvidencePanel.astro';
 import { EFFECTIVE_STATE_GDR_LORA_STUDY as study } from '../../data/effectiveStateGdrLoraStudy';
 import type { EffectiveStateFormalResult } from '../../data/effectiveStateGdrLoraStudy';
 
@@ -16,6 +18,33 @@ const boundedHref = p(`${cap}/sd-lora-bounded-state/`);
 const gatedHref = p(`${cap}/gated-delta-sd-lora/`);
 const scalingHref = p(`${cap}/sd-lora-scaling/`);
 const gdrPaperHref = 'https://arxiv.org/abs/2412.06464';
+
+const wandbReportUrl = 'https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/reports/OpenEVO-1.7B-%C2%B7-%E4%B8%89%E7%BB%84%E5%AE%9E%E9%AA%8C%E5%88%86%E6%9E%90--VmlldzoxNzk2ODUyMg==';
+const wandbWorkspaceUrl = study.posthocAnalysis.wandbWorkspace;
+const panelHref = (panelDisplayName: string, panelSectionName: string) => {
+  const join = wandbWorkspaceUrl.includes('?') ? '&' : '?';
+  return `${wandbWorkspaceUrl}${join}panelDisplayName=${encodeURIComponent(panelDisplayName)}&panelSectionName=${encodeURIComponent(panelSectionName)}`;
+};
+const wandbPanels = [
+  { label: t('Task Score 原生曲线', 'Native Task Score panel'), href: panelHref('Task Score', '01 Overview · 三条路线') },
+  { label: t('Task Vector · Frobenius', 'Task Vector · Frobenius'), href: panelHref('Task Vector · Frobenius', '01 Overview · 三条路线') },
+  { label: t('ON/OFF 更新方向 cosine', 'ON/OFF update-direction cosine'), href: panelHref('ON/OFF 更新方向 cosine', '05 方向与幅度') },
+  { label: t('每一步输出长度', 'Output tokens per step'), href: panelHref('每一步输出长度', '06 输出长度与任务路径') },
+];
+const wandbSnapshots = [
+  { title: t('Task Score · 160轮', 'Task Score · 160 rounds'), src: '/research/seed-openevo/evidence/wandb-threeway/task-score.svg', href: panelHref('Task Score', '01 Overview · 三条路线'), alt: t('三组 OpenEVO 的 160 轮 WebShop Task Score 静态曲线', 'Static 160-round WebShop Task Score curves for the three OpenEVO methods') },
+  { title: 'Task Vector · Frobenius', src: '/research/seed-openevo/evidence/wandb-threeway/task-vector-frobenius.svg', href: panelHref('Task Vector · Frobenius', '01 Overview · 三条路线'), alt: t('三组实验的 Task Vector Frobenius norm 静态曲线', 'Static Task Vector Frobenius norm curves for the three experiments') },
+  { title: t('平均任务步数', 'Steps per episode'), src: '/research/seed-openevo/evidence/wandb-threeway/steps-per-episode.svg', href: panelHref('每个 Episode 的步骤数', '06 输出长度与任务路径'), alt: t('三组实验每个 episode 的平均任务步数静态曲线', 'Static steps-per-episode curves for the three experiments') },
+];
+const math = {
+  history: String.raw`W_t = W_0 + \sum_{i=1}^{t} \Delta W_i`,
+  bounded: String.raw`S_t = \operatorname{Compress}_{128}\!\left(S_{t-1}+\Delta_t\right)`,
+  gdr: String.raw`S_t = \alpha_t S_{t-1}\left(I-\beta_t k_t k_t^{\top}\right)+\beta_t v_t k_t^{\top}`,
+  residual: String.raw`\begin{aligned}\widetilde S_{t-1} &= \alpha_t S_{t-1} \\ r_t &= v_t-\widetilde S_{t-1}k_t \\ S_t &= \widetilde S_{t-1}+\beta_t r_t k_t^{\top}\end{aligned}`,
+  gauge: String.raw`\Delta W = C A^{\top},\qquad A\mapsto sA,\quad C\mapsto C/s\quad\Longrightarrow\quad \Delta W\;\text{unchanged}`,
+  beta: String.raw`\beta_t=f_{\theta}(x_t),\qquad x_t\in\mathbb{R}^{${study.posthocAnalysis.gdr.betaControllerFeatures}}`,
+  effective: String.raw`S_t^{\mathrm{GDR}}=\operatorname{Compress}_{128}\!\left(S_{t-1}+\operatorname{Gate}_{\beta_t}(\Delta_t)\right)`,
+};
 
 const result = study.formalResult as EffectiveStateFormalResult;
 const finalResult = result.status === 'sealed' ? result : null;
@@ -99,10 +128,8 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
       '普通 OpenEVO 的参数通道会把过去每一轮的 SD-LoRA component 留在后续模型里。这样做保留了历史，但 component 数量会跟轮数一起增长；到了后期，每一轮训练都要反复经过越来越多的低秩路径。',
       'Ordinary OpenEVO carries each historical SD-LoRA component into later model states. This preserves history, but the number of components grows with rounds, so late training repeatedly traverses more low-rank paths.',
     )}</p>
-    <div class="paper__equation">
-      <code>W<sub>t</sub> = W<sub>0</sub> + Σ<sub>i=1…t</sub> ΔW<sub>i</sub></code>
-      <span>{t('历史 component 随 t 增长', 'historical components grow with t')}</span>
-    </div>
+    <MathFormula latex={math.history} label={t('普通 OpenEVO 的累计参数历史', 'Accumulating parameter history in ordinary OpenEVO')} />
+    <p class="paper__math-caption">{t('历史 component 随 t 增长。', 'Historical components grow with t.')}</p>
     <p>{t(
       `这不是一个小的实现常数：普通 OpenEVO 的 159 次 SD-LoRA trainer 累计约 ${study.timingComparison.directApply.trainerHours.toFixed(2)} 小时。我们因此先问一个更基础的问题：能不能把“越来越长的历史”折成一个固定大小的参数状态，同时继续学习下一轮？`,
       `This is not a small implementation constant: the 159 SD-LoRA trainer updates in ordinary OpenEVO total about ${study.timingComparison.directApply.trainerHours.toFixed(2)} hours. We therefore ask a more basic question: can the growing history be folded into a fixed-size parameter state while learning continues?`,
@@ -119,10 +146,8 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
       '每一轮仍然先得到一个 rank8 的当前更新 Δt，但不再把所有旧 component 永久并排保存。我们把“上一轮的 rank128 状态 + 当前更新”重新压回 rank128，作为下一轮唯一的参数历史。',
       'Each round still produces a rank-8 current update Δt, but old components are no longer kept side by side forever. The previous rank-128 state plus the current update is compressed back to rank128 and becomes the only parameter history for the next round.',
     )}</p>
-    <div class="paper__equation paper__equation--main">
-      <code>S<sub>t</sub> = Compress<sub>128</sub>(S<sub>t−1</sub> + Δ<sub>t</sub>)</code>
-      <span>S<sub>t−1</sub> = {t('历史参数状态', 'historical parameter state')} · Δ<sub>t</sub> = {t('当前轮 rank8 更新', 'current rank-8 update')}</span>
-    </div>
+    <MathFormula latex={math.bounded} label={t('Bounded Online Recurrence 的状态更新', 'Bounded Online Recurrence state update')} />
+    <p class="paper__math-caption"><span class="paper__math-symbol">Sₜ₋₁</span> = {t('历史参数 State', 'historical parameter State')} · <span class="paper__math-symbol">Δₜ</span> = {t('当前轮 rank8 更新', 'current rank-8 update')}</p>
     <p>{t(
       `这样，参数历史的物理 rank 不再随轮数增长。工程上，Bounded Online Recurrence 的参数 transition 累计约 ${study.timingComparison.off.transitionHours.toFixed(2)} 小时，而普通 OpenEVO 的 trainer 累计约 ${study.timingComparison.directApply.trainerHours.toFixed(2)} 小时。`,
       `The physical rank of parameter history no longer grows with rounds. In this implementation, Bounded Online Recurrence totals about ${study.timingComparison.off.transitionHours.toFixed(2)} hours of parameter transition time, versus ${study.timingComparison.directApply.trainerHours.toFixed(2)} trainer hours for ordinary OpenEVO.`,
@@ -133,19 +158,13 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
       'Gated Delta Rule 的核心不是“线性 attention 更快”这件事，而是它怎样更新一个持续存在的 State：先保留或衰减旧 State，再读出已有内容，最后只把没有解释掉的 residual 按 β 写回。',
       'The useful idea from the Gated Delta Rule is not simply that linear attention is fast. It is the recurrent state update: retain or decay the old state, read what is already stored, then write back only the unexplained residual with strength β.',
     )}</p>
-    <div class="paper__equation paper__equation--main">
-      <code>S<sub>t</sub> = α<sub>t</sub>S<sub>t−1</sub>(I − β<sub>t</sub>k<sub>t</sub>k<sub>t</sub><sup>T</sup>) + β<sub>t</sub>v<sub>t</sub>k<sub>t</sub><sup>T</sup></code>
-      <span>{t('论文原式：α 控制旧 State 的保留 / 衰减，β 控制 delta write 的强度。', 'Paper form: α controls retention / decay of the old State, while β controls delta-write strength.')}</span>
-    </div>
+    <MathFormula latex={math.gdr} label={t('Gated Delta Rule 原始状态更新公式', 'Original Gated Delta Rule state update')} />
+    <p class="paper__math-caption">{t('论文原式：α 控制旧 State 的保留 / 衰减，β 控制 delta write 的强度。', 'Paper form: α controls retention / decay of the old State, while β controls delta-write strength.')}</p>
     <p>{t(
       '把论文原式按 residual 展开，会得到下面完全等价、也更容易和我们的参数写入过程对照的形式。这里 State 的约定是 dᵥ × dₖ，所以 residual 必须放在左边：rₜkₜᵀ，而不是 kₜrₜᵀ。',
       'Rewriting the paper equation in residual form gives the exactly equivalent expression below, which is easier to compare with our parameter-write process. Under the paper’s d_v × d_k State convention, the residual is on the left: r_t k_t^T, not k_t r_t^T.',
     )}</p>
-    <div class="paper__equations">
-      <code>S̃<sub>t−1</sub> = α<sub>t</sub>S<sub>t−1</sub></code>
-      <code>r<sub>t</sub> = v<sub>t</sub> − S̃<sub>t−1</sub>k<sub>t</sub></code>
-      <code>S<sub>t</sub> = S̃<sub>t−1</sub> + β<sub>t</sub>r<sub>t</sub>k<sub>t</sub><sup>T</sup></code>
-    </div>
+    <MathFormula latex={math.residual} label={t('Gated Delta Rule 的等价 residual 形式', 'Equivalent residual form of the Gated Delta Rule')} />
     <p class="paper__links"><a href={gdrPaperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={gdrPaperHref} />Gated Delta Networks · ICLR 2025</a> · <a href={gatedHref}>{t('我们前一版 Gated-Delta 推导 →', 'Our earlier Gated-Delta derivation →')}</a></p>
 
     <h3>2.3 {t('从 sequence State 映射到 OpenEVO 的参数 State', 'Mapping sequence State to OpenEVO parameter State')}</h3>
@@ -176,22 +195,15 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
       '同一个 LoRA 有效更新可以用很多组 A / C 数值表示。只要 A 乘 s、C 除以 s，真正加到模型上的矩阵完全不变。也就是说，A / C 的数值大小带着“坐标选择”，不是我们真正想控制的学习量。',
       'The same effective LoRA update can be represented by many A/C factor values. Multiplying A by s and dividing C by s leaves the actual matrix update unchanged, so raw factor magnitudes contain coordinate choice rather than only learning content.',
     )}</p>
-    <div class="paper__equations">
-      <code>ΔW = C A<sup>T</sup></code>
-      <code>A → sA, &nbsp; C → C/s &nbsp; ⇒ &nbsp; ΔW {t('不变', 'unchanged')}</code>
-    </div>
+    <MathFormula latex={math.gauge} label={t('LoRA 因子缩放不改变有效更新', 'LoRA factor rescaling leaves the effective update unchanged')} />
     <p>{t(
       `这也是为什么第一版“直接控制 LoRA 因子”的映射会失败：空历史起点的 C 侧检查给出 β=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}，已经跑出合法区间；只修映射但继续沿用旧 β 控制器时，真实轨迹上甚至得到 β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}。所以最终方法控制的是不受 LoRA 因子缩放方式影响的有效参数写入 ΔW，而不是 A / C 因子本身的位移。`,
       `This is why the first factor-space mapping failed: at the empty-history start, the C-side check produced β=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}, outside the legal range; after fixing only the mapping but keeping the old controller, the real trajectory produced β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}. The final treatment therefore controls a gauge-invariant effective write rather than raw A/C displacement.`,
     )}</p>
-    <div class="paper__equation paper__equation--main">
-      <code>β<sub>t</sub> = f<sub>θ</sub>(x<sub>t</sub>), &nbsp; x<sub>t</sub> ∈ ℝ<sup>{study.posthocAnalysis.gdr.betaControllerFeatures}</sup></code>
-      <span>{t('冻结 controller · 只看局部参数 / 梯度 / Adam 状态，不看 reward、Task Score、Task Vector', 'frozen controller · local parameter / gradient / Adam state only; no reward, Task Score, or Task Vector')}</span>
-    </div>
-    <div class="paper__equation">
-      <code>S<sub>t</sub><sup>GDR</sup> = Compress<sub>128</sub>(S<sub>t−1</sub> + Gate<sub>βt</sub>(Δ<sub>t</sub>))</code>
-      <span>{t('这是参数空间里的概念式；实际 runtime 先写 C 得到真实 C1，再基于 C1 写 A。', 'Conceptual parameter-space form; runtime writes C first to obtain the actual C1, then writes A conditioned on C1.')}</span>
-    </div>
+    <MathFormula latex={math.beta} label={t('动态 beta 控制器', 'Dynamic beta controller')} compact />
+    <p class="paper__math-caption">{t('冻结 controller · 只看局部参数 / 梯度 / Adam 状态，不看 reward、Task Score、Task Vector。', 'Frozen controller · local parameter / gradient / Adam state only; no reward, Task Score, or Task Vector.')}</p>
+    <MathFormula latex={math.effective} label={t('GDR 映射到参数 State 后的概念式', 'Conceptual GDR update after mapping to parameter State')} compact />
+    <p class="paper__math-caption">{t('这是参数空间里的概念式；实际 runtime 先写 C 得到真实 C1，再基于 C1 写 A。', 'Conceptual parameter-space form; runtime writes C first to obtain the actual C1, then writes A conditioned on C1.')}</p>
   </section>
 
   <section class="paper__section" id="formal-design" aria-labelledby="experiment-title">
@@ -346,11 +358,18 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
       )}</p>
     </div>
 
-    <p class="paper__links"><a href={study.posthocAnalysis.wandbWorkspace}><ExternalBrandMark href={study.posthocAnalysis.wandbWorkspace} />{t('W&B：参数、方向、输出长度与步数曲线 →', 'W&B: parameter, direction, output-length, and step curves →')}</a></p>
+  </section>
+
+  <section class="paper__section" id="wandb" aria-labelledby="wandb-title">
+    <p class="paper__section-number">6</p>
+    <h2 id="wandb-title">{t('W&B：把曲线直接放进网页里', 'W&B: interactive curves inside the page')}</h2>
+    <p>{t('这次不再只放一个 W&B 链接。网页先直接展示三张关键曲线；点击任意图可以回到 W&B 原生 panel。完整 Report 里还保留了原生曲线、run 表和比较器。', 'This page no longer exposes only one W&B link. Three key curves are visible directly here; each image links back to its native W&B panel. The full Report also keeps native curves, the run table, and the comparer.')}</p>
+    <WandbEvidencePanel reportUrl={wandbReportUrl} workspaceUrl={wandbWorkspaceUrl} panelLinks={wandbPanels} snapshots={wandbSnapshots} />
+    <p class="paper__boundary">{t('当前 W&B 原项目没有对未登录访客开放，所以公开网页不能诚实地把 Report 伪装成可交互 iframe。静态图与链接不改变封存科学结论；如果以后单独发布只含这些公开曲线的 W&B mirror，再把这一层换成 iframe 即可。', 'The current W&B source project is not open to logged-out visitors, so this public page does not pretend that the Report is an embeddable interactive iframe. Static snapshots and links do not change the sealed scientific conclusions; a separate public mirror could replace this layer with an iframe later.')}</p>
   </section>
 
   <section class="paper__section" id="evidence" aria-labelledby="evidence-title">
-    <p class="paper__section-number">6</p>
+    <p class="paper__section-number">7</p>
     <h2 id="evidence-title">{t('证据与复现身份', 'Evidence and reproducibility identity')}</h2>
     <p>{t(
       '正文统一使用“普通 OpenEVO / Bounded Online Recurrence / Bounded Online Recurrence + GDR”这三个公共名称。为了审计，底层正式身份仍原样保留：普通 OpenEVO 对应历史 DirectApply / No-GDR；后两组的正式实验标识分别是 BOUNDED_OFF 与 EFFECTIVE_STATE_GDR_LORA_V1。',
@@ -405,11 +424,8 @@ const onScoreTrend = finalResult ? points(moving(finalResult.trajectory.on)) : '
   .paper-table--ablation th:nth-child(5),.paper-table--ablation td:nth-child(5){width:18%}
   .paper-table--ablation td:nth-child(n+2),.paper-table--ablation th:nth-child(n+2){text-align:center}
   .paper-table-wrap--hero{margin-top:16px;overflow-x:visible}
-  .paper__equation,.paper__equations{max-width:880px;margin:18px 0;padding:14px 16px;border-left:3px solid var(--accent);background:var(--surface-secondary)}
-  .paper__equation{display:grid;gap:7px}.paper__equation code,.paper__equations code{font-size:1rem;line-height:1.65;white-space:normal}
-  .paper__equation span{color:var(--text-secondary);line-height:1.55}
-  .paper__equation--main code{font-size:1.08rem;font-weight:700}
-  .paper__equations{display:grid;gap:8px}
+  .paper__math-caption{max-width:880px;margin:-.45rem 0 1rem;color:var(--text-secondary);font-size:1rem;line-height:1.6}
+  .paper__math-symbol{font-family:serif;font-style:italic}
   .paper__setup{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:18px 0 22px;border-top:2px solid var(--text-primary);border-bottom:2px solid var(--text-primary)}
   .paper__setup>div{padding:14px 16px;border-bottom:1px solid var(--border-color)}
   .paper__setup dt{color:var(--text-secondary);font-size:.95rem}.paper__setup dd{margin:5px 0 0;font-weight:700}

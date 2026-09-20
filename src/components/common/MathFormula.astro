@@ -1,0 +1,61 @@
+---
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
+
+interface Props {
+  latex: string;
+  display?: boolean;
+  label?: string;
+  compact?: boolean;
+}
+
+const { latex, display = true, label, compact = false } = Astro.props;
+const html = katex.renderToString(latex, {
+  displayMode: display,
+  throwOnError: false,
+  strict: 'warn',
+  trust: false,
+  output: 'htmlAndMathml',
+});
+---
+
+{display ? (
+  <div class:list={['math-formula', compact && 'math-formula--compact']} data-math-formula aria-label={label}>
+    <div class="math-formula__scroll" set:html={html} />
+  </div>
+) : (
+  <span class="math-formula-inline" data-math-formula-inline set:html={html} />
+)}
+
+<style>
+  .math-formula {
+    max-width: 100%;
+    margin: 1rem 0 1.15rem;
+    padding: .95rem 1rem;
+    border-left: 3px solid var(--accent);
+    background: var(--surface-secondary);
+    font-size: clamp(1rem, 1.8vw, 1.08rem);
+  }
+  .math-formula--compact { padding-block: .72rem; }
+  .math-formula__scroll {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .math-formula :global(.katex-display) {
+    margin: 0;
+    min-width: max-content;
+    text-align: center;
+  }
+  .math-formula :global(.katex) { line-height: 1.4; }
+  .math-formula-inline :global(.katex) { font-size: 1em; }
+  @media (max-width: 520px) {
+    .math-formula {
+      margin-block: .85rem 1rem;
+      padding: .78rem .7rem;
+      font-size: 1rem;
+    }
+  }
+</style>

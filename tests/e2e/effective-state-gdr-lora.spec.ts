@@ -52,12 +52,14 @@ test('paper narrative follows motivation, method, mapping, experiment, result, a
 test('method section explains Bounded Online Recurrence and the GDR-to-parameter-state mapping', async ({ page }) => {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const method = page.locator('#method');
+  await expect(method.locator('[data-math-formula]')).toHaveCount(6);
+  await expect(method.locator('.katex').first()).toBeVisible();
   await expect(method).toContainText('Compress');
   await expect(method).toContainText('Gated Delta Rule');
   await expect(method).toContainText('α');
   await expect(method).toContainText('β');
   await expect(method).toContainText('从 sequence State 映射到 OpenEVO 的参数 State');
-  await expect(method).toContainText('A → sA');
+  await expect(method).toContainText('A↦sA');
   await expect(method).toContainText('1.052');
   await expect(method).toContainText('657.836');
   await expect(method).toContainText('22');
@@ -104,7 +106,20 @@ test('analysis answers Task Vector, direction, steps, entropy, and adaptive ques
   await expect(analysis).toContainText('0.489');
   await expect(analysis).toContainText('0.370');
   await expect(analysis).toContainText('约束要不要更 adaptive');
-  await expect(analysis.getByRole('link', { name: /W&B/ })).toHaveAttribute('href', /wandb\.ai/);
+});
+
+test('W&B section shows static W&B-history previews and keeps native links without a locked iframe', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const wandb = page.locator('#wandb');
+  await expect(wandb).toContainText('W&B：把曲线直接放进网页里');
+  await expect(wandb.getByRole('link', { name: /交互 W&B Report/ })).toHaveAttribute('href', /wandb\.ai/);
+  await expect(wandb.getByRole('link', { name: /完整 W&B Workspace/ })).toHaveAttribute('href', /wandb\.ai/);
+  await expect(wandb.getByRole('link', { name: /Task Score 原生曲线/ })).toHaveAttribute('href', /panelDisplayName=/);
+  await expect(wandb.locator('img')).toHaveCount(3);
+  await expect(wandb.locator('img').first()).toHaveAttribute('src', /wandb-threeway\/task-score\.svg/);
+  await expect(wandb.locator('iframe')).toHaveCount(0);
+  await expect(wandb).toContainText('当前 W&B 原项目没有对未登录访客开放');
 });
 
 for (const theme of ['light', 'dark'] as const) {
@@ -182,7 +197,7 @@ test('evidence disclosures stay keyboard-operable', async ({ page }) => {
 test('reduced motion keeps the paper content static', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  const transition = await page.locator('.paper__equation').first().evaluate((node) => getComputedStyle(node).transitionDuration);
+  const transition = await page.locator('[data-math-formula]').first().evaluate((node) => getComputedStyle(node).transitionDuration);
   expect(Number.parseFloat(transition)).toBeLessThanOrEqual(0.001);
 });
 

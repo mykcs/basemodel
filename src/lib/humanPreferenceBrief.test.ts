@@ -161,12 +161,23 @@ describe('human preference learning v2', () => {
   it('retrieves the paper-style ablation and naming correction for a three-method research page', () => {
     const brief = buildHumanPreferenceBrief({
       scope: 'research-copy',
-      query: 'OpenEVO 三组消融实验网页：普通、Bounded State、再加 GDR。我要论文里的对勾 ablation 表，名字从标题到图例统一，然后按动机、公式映射、Qwen3-1.7B WebShop 实验、Task Vector、步数和 entropy 分析来写。',
+      query: 'OpenEVO 三组消融实验网页：普通、Bounded Online Recurrence、再加 GDR。我要论文里的对勾 ablation 表，名字从标题到图例统一，然后按动机、公式映射、Qwen3-1.7B WebShop 实验、Task Vector、步数和 entropy 分析来写。',
     });
     expect(brief.learnedPreferences.map(({ preference }) => preference.id)).toContain('PREF-ABLATION-PAPER-NARRATIVE');
     expect(brief.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-092-ABLATION-PAPER-NARRATIVE');
     expect(brief.events.map((event) => event.id)).toContain('EVENT-20260920-BOUNDED-ABLATION-PAPER-NARRATIVE');
     expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('不是所有研究页') && boundary.includes('论文'))).toBe(true);
+  });
+
+  it('retrieves LaTeX and visible W&B evidence rules for scientific pages', () => {
+    const brief = buildHumanPreferenceBrief({
+      scope: 'research-copy',
+      query: '科研网页公式要用 LaTeX / KaTeX 或 MathJax，参考苏剑林博客；W&B wandb report panel 的 Task Score、Task Vector 和步数曲线要直接放正文，Report 和交互表格也要有链接，但私有项目不要为了 iframe 自动改 public。',
+    });
+    expect(brief.learnedPreferences.map(({ preference }) => preference.id)).toContain('PREF-RESEARCH-MATH-VISUAL-EVIDENCE');
+    expect(brief.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-093-LATEX-WANDB-EVIDENCE');
+    expect(brief.events.map((event) => event.id)).toContain('EVENT-20260920-LATEX-WANDB-EVIDENCE');
+    expect(brief.antiOvergeneralization.some((boundary) => boundary.includes('public iframe') && boundary.includes('W&B'))).toBe(true);
   });
 
   it('retrieves repeated sibling-experiment chart grammar and target-verified fast Preview for a new model line', () => {

@@ -728,6 +728,22 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     },
   },
 
+
+  {
+    id: 'EVENT-20260920-LATEX-WANDB-EVIDENCE',
+    date: '2026-09-20',
+    caseIds: ['CASE-093'],
+    scopes: ['research-ui', 'research-copy', 'results', 'visual'],
+    artifact: 'BaseModel · three-way 1.7B experiment formulas and W&B evidence layer',
+    variantId: 'html-formula-single-wandb-link-7efa203a',
+    verdict: 'rejected',
+    ownerSignal: '公式要有 LaTeX 的效果，参考现代技术方案或苏剑林博客；之前做了很多 W&B 图，链接至少要有，最好网页直接看到，看看能否达到 W&B Report 里可交互图和表格的效果。',
+    reasons: ['HTML sub/sup 不是论文级数学排版', '已经存在的 W&B 证据没有进入正文视觉层', '需要同时区分公开网页阅读层与 W&B 原项目权限边界'],
+    failureMechanisms: ['fake-math-typesetting', 'evidence-hidden-behind-link', 'locked-iframe-presented-as-interactive'],
+    requestedSuccessorVariantId: 'katex-visible-wandb-evidence',
+    evidence: { repository: 'mykcs/basemodel', route: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/', pullRequest: 748, gitSha: '7efa203a6a5aedc1b0748a2598050d33080b0864' },
+  },
+
 ];
 
 export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
