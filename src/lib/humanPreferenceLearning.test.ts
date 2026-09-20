@@ -171,6 +171,25 @@ describe('human preference learning loop', () => {
     expect(preference?.antiOvergeneralization.join(' ')).toContain('W&B project');
   });
 
+  it('retrieves benchmark-context and native-W&B reuse rules for research result pages', () => {
+    const result = retrieveHumanPreferenceContext(
+      '科研网页要解释 Task Score 怎么算、固定128题怎么选、三组是不是同题、最后20轮平均和固定 final 有什么区别；W&B 已有原生图就不要网页再手画重复曲线，还要解释 Task Vector cosine steps entropy 指标。',
+      undefined,
+      20,
+      'research-copy',
+    );
+    expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-BENCHMARK-METRIC-CONTEXT');
+    expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-RESEARCH-MATH-VISUAL-EVIDENCE');
+    expect(result.cases.map(({ precedent }) => precedent.id)).toContain('CASE-095');
+    expect(result.cases.map(({ precedent }) => precedent.id)).toContain('CASE-096');
+    expect(result.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-095-BENCHMARK-METRIC-CONTEXT');
+    expect(result.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-096-NATIVE-WANDB-NO-DUPLICATE');
+    const benchmarkPreference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-BENCHMARK-METRIC-CONTEXT');
+    expect(benchmarkPreference?.antiOvergeneralization.join(' ')).toContain('轨迹证据');
+    const wandbPreference = HUMAN_PREFERENCE_MODEL.find((item) => item.id === 'PREF-RESEARCH-MATH-VISUAL-EVIDENCE');
+    expect(wandbPreference?.antiOvergeneralization.join(' ')).toContain('不是禁止网页自己画图');
+  });
+
   it('keeps workflow-learning feedback separate from surface aesthetics', () => {
     const result = retrieveHumanPreferenceContext('案例库 触类旁通 preference learning Gold Pair cold read judge');
     expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-FEEDBACK-LEARNING-LOOP');

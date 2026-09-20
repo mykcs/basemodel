@@ -165,7 +165,7 @@ describe('experiment context hierarchy', () => {
     const reader = CAPABILITY_READER_ROUTES.find((item) => item.route === 'bounded-effective-state-gdr');
     expect(reader?.coverage).toBe('self-contained');
     const routePage = read('../pages/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/index.astro');
-    expect(routePage).toContain('<ResearchRouteContext locale={locale} route="bounded-effective-state-gdr" compact={true} />');
+    expect(routePage).not.toContain('<ResearchRouteContext');
     expect(routePage).toContain('<OpenEvoEffectiveStateGdrLoraStudy locale={locale} />');
     expect(OPEN_EVO_CANONICAL_ROUTE_OWNERS['bounded-effective-state-gdr']).toBe('bounded-effective-state-1p7b');
   });

@@ -745,6 +745,37 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
   },
 
   {
+    id: 'EVENT-20260920-BOUNDED-METRIC-CONTEXT-NATIVE-WANDB',
+    date: '2026-09-20',
+    caseIds: ['CASE-027', 'CASE-059', 'CASE-095', 'CASE-096'],
+    scopes: ['research-ui', 'research-copy', 'results', 'visual'],
+    artifact: 'BaseModel · three 1.7B OpenEVO / Bounded / GDR experiment page',
+    variantId: 'bounded-three-arm-metric-context-main-57388268',
+    verdict: 'rejected',
+    ownerSignal: '“Qwen3-1.7B · WebShop · 160 轮”这种无意义页眉要去掉；三组实验表要解释各自是什么、最后分数怎么算、固定 128 题怎么选、是否同题以及这个分数为什么片面。更看最后 20 轮平均；W&B 指标也要解释。已经做了 W&B 图，网页没有必要再手画重复曲线。',
+    reasons: [
+      '装饰性眉题没有增加 H1 之外的新信息，而且 owner 明确指出这是重复纠正',
+      '首屏 final 数字没有在第一次出现时交代 Task Score / exact success 的测量语义',
+      '同一固定 128 题的选择、同题性和有限覆盖范围没有被讲清，容易把 panel 分数过读成全面能力',
+      '训练末 20 轮轨迹与固定题 final 没有分层，导致单次终评占据过高注意力',
+      'W&B 已有原生实验图时网页仍维护第二条手画 Task Score 曲线，且多个 W&B 指标缺少就地解释',
+    ],
+    failureMechanisms: [
+      'meaningless-english-eyebrow',
+      'benchmark-number-without-measurement-context',
+      'fixed-panel-overread',
+      'trajectory-final-evidence-conflation',
+      'redundant-page-native-chart',
+      'metric-without-reader-context',
+    ],
+    requestedSuccessorVariantId: 'bounded-three-arm-reader-context-native-wandb',
+    evidence: {
+      repository: 'mykcs/basemodel',
+      route: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',
+    },
+  },
+
+  {
     id: 'EVENT-20260916-REDESIGN-INDEPENDENT-COLDREAD-REQUIRED',
     date: '2026-09-16',
     caseIds: ['CASE-094'],
