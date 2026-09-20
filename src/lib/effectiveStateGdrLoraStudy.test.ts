@@ -192,6 +192,8 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('OpenEVO-1.7B-%C2%B7-%E4%B8%89%E7%BB%84%E5%AE%9E%E9%AA%8C%E5%88%86%E6%9E%90');
     expect(component).toContain('SD-LoRA training loss · 累计 rollout');
     expect(component).toContain('/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.svg');
+    expect(component).not.toContain('paper-table--metric-guide');
+    expect(component).toContain('每张图自己的解释和边界就放在图下面');
     expect(component).toContain('没有发生更新的轮次保持缺失，不做插值');
     const lossEvidence = JSON.parse(readFileSync(new URL('../../public/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.json', import.meta.url), 'utf8'));
     expect(lossEvidence.rounds).toBe(160);

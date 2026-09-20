@@ -36,12 +36,47 @@ const wandbPanels = [
   { label: t('Action-family entropy · 160轮', 'Action-family entropy · 160 rounds'), href: panelHref('Action-family entropy', '06 输出长度与任务路径') },
 ];
 const wandbSnapshots = [
-  { title: t('Task Score · 160轮', 'Task Score · 160 rounds'), src: '/research/seed-openevo/evidence/wandb-threeway/task-score.svg', href: panelHref('Task Score', '01 Overview · 三条路线'), alt: t('三组 OpenEVO 的 160 轮 WebShop Task Score 静态曲线', 'Static 160-round WebShop Task Score curves for the three OpenEVO methods') },
-  { title: t('SD-LoRA training loss · 累计 rollout', 'SD-LoRA training loss · cumulative rollout'), src: '/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.svg', href: wandbReportUrl, alt: t('三组 OpenEVO 的 SD-LoRA training loss 随累计 rollout 变化的静态曲线', 'Static SD-LoRA training-loss curves against cumulative rollouts for the three OpenEVO methods') },
-  { title: 'Task Vector · Frobenius', src: '/research/seed-openevo/evidence/wandb-threeway/task-vector-frobenius.svg', href: panelHref('Task Vector · Frobenius', '01 Overview · 三条路线'), alt: t('三组实验的 Task Vector Frobenius norm 静态曲线', 'Static Task Vector Frobenius norm curves for the three experiments') },
-  { title: t('平均任务步数', 'Steps per episode'), src: '/research/seed-openevo/evidence/wandb-threeway/steps-per-episode.svg', href: panelHref('每个 Episode 的步骤数', '06 输出长度与任务路径'), alt: t('三组实验每个 episode 的平均任务步数静态曲线', 'Static steps-per-episode curves for the three experiments') },
-  { title: t('行为 entropy · 160轮', 'Action-family entropy · 160 rounds'), src: '/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.svg', href: panelHref('Action-family entropy', '06 输出长度与任务路径'), alt: t('三组实验 160 轮 action-family Shannon entropy 静态曲线', 'Static 160-round action-family Shannon entropy curves for the three experiments') },
-];
+  {
+    title: t('Task Score · 160轮', 'Task Score · 160 rounds'),
+    src: '/research/seed-openevo/evidence/wandb-threeway/task-score.svg',
+    href: panelHref('Task Score', '01 Overview · 三条路线'),
+    alt: t('三组 OpenEVO 的 160 轮 WebShop Task Score 静态曲线', 'Static 160-round WebShop Task Score curves for the three OpenEVO methods'),
+    explanation: t('这张图看每一轮抽样 WebShop 任务的 terminal task_score 平均值 × 100；允许部分得分。它适合看训练过程里分数怎样波动、后期大致处在什么水平。', 'This chart shows the mean terminal task_score × 100 over the WebShop tasks sampled in each round; partial credit is possible. It is useful for reading training-time fluctuation and the typical late-training level.'),
+    boundary: t('它不是固定 128 题终评，也不是模型的全面能力分数。每轮抽到的任务会变化。', 'It is not the fixed 128-task final and not a comprehensive capability score. The sampled tasks vary by round.'),
+  },
+  {
+    title: t('SD-LoRA training loss · 累计 rollout', 'SD-LoRA training loss · cumulative rollout'),
+    src: '/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.svg',
+    href: wandbReportUrl,
+    alt: t('三组 OpenEVO 的 SD-LoRA training loss 随累计 rollout 变化的静态曲线', 'Static SD-LoRA training-loss curves against cumulative rollouts for the three OpenEVO methods'),
+    explanation: t('每轮 128 个 rollout 之后，如果这一轮实际执行了 SD-LoRA 参数更新，就记录 trainer 的平均 loss；横轴用累计 rollout，所以第 160 轮对应 20,480。', 'After each 128-rollout round, the chart records mean trainer loss when that round actually performs an SD-LoRA parameter update. The x-axis is cumulative rollouts, so round 160 ends at 20,480.'),
+    boundary: t('loss 下降说明优化器越来越能拟合当前训练记录，不等于 WebShop Task Score 上升，也不能代替固定 128 题终评。没有发生更新的轮次保持缺失，不做插值。', 'Falling loss shows that the optimizer increasingly fits the current training records; it does not imply a higher WebShop Task Score and does not replace the fixed 128-task final. Rounds without an update stay missing rather than being interpolated.'),
+  },
+  {
+    title: 'Task Vector · Frobenius',
+    src: '/research/seed-openevo/evidence/wandb-threeway/task-vector-frobenius.svg',
+    href: panelHref('Task Vector · Frobenius', '01 Overview · 三条路线'),
+    alt: t('三组实验的 Task Vector Frobenius norm 静态曲线', 'Static Task Vector Frobenius norm curves for the three experiments'),
+    explanation: t('这张图看每轮参数更新向量的 Frobenius 范数，也就是这一轮参数到底改了多大。它能帮助比较三条方法的更新幅度和后期变化。', 'This chart shows the Frobenius norm of each round’s parameter-update vector—how large the parameter change is. It helps compare update magnitude and late-training behavior across the three methods.'),
+    boundary: t('参数变化更大或更小，都不能单独推出 WebShop 表现更好。它是参数层诊断，不是任务效果指标。', 'A larger or smaller parameter change does not by itself imply better WebShop performance. This is a parameter-level diagnostic, not a task-outcome metric.'),
+  },
+  {
+    title: t('平均任务步数', 'Steps per episode'),
+    src: '/research/seed-openevo/evidence/wandb-threeway/steps-per-episode.svg',
+    href: panelHref('每个 Episode 的步骤数', '06 输出长度与任务路径'),
+    alt: t('三组实验每个 episode 的平均任务步数静态曲线', 'Static steps-per-episode curves for the three experiments'),
+    explanation: t('这张图看一条购物任务从开始到结束实际走了多少个动作步骤，用来观察策略路径是否变得更短、更长或更稳定。', 'This chart shows how many action steps each shopping episode takes from start to finish, helping reveal whether policy trajectories become shorter, longer, or more stable.'),
+    boundary: t('路径更短可能更高效，但短并不等于做对；必须和 Task Score、exact success 一起看。', 'A shorter path may be more efficient, but shorter does not mean correct; it must be read together with Task Score and exact success.'),
+  },
+  {
+    title: t('行为 entropy · 160轮', 'Action-family entropy · 160 rounds'),
+    src: '/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.svg',
+    href: panelHref('Action-family entropy', '06 输出长度与任务路径'),
+    alt: t('三组实验 160 轮 action-family Shannon entropy 静态曲线', 'Static 160-round action-family Shannon entropy curves for the three experiments'),
+    explanation: t('这张图统计 search / click 等有效动作类型的 Shannon entropy；越低表示策略越来越集中在少数几类动作上。', 'This chart shows Shannon entropy over valid action families such as search and click; lower values mean the policy is concentrating on fewer action types.'),
+    boundary: t('它不是模型的 token entropy。entropy 下降和后期掉分同时出现，只能说明相关现象，不能单独证明因果。', 'It is not model token entropy. Lower entropy co-occurring with a late score drop is an association, not causal proof.'),
+  },
+]
 const math = {
   history: String.raw`W_t = W_0 + \sum_{i=1}^{t} \Delta W_i`,
   bounded: String.raw`S_t = \operatorname{Compress}_{128}\!\left(S_{t-1}+\Delta_t\right)`,
@@ -439,51 +474,9 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
     <p class="paper__section-number">6</p>
     <h2 id="wandb-title">{t('W&B 指标与原生曲线', 'W&B metrics and native curves')}</h2>
     <p>{t(
-      '下面直接复用已经做好的 W&B 图，不再在网页里另外手画一条重复的 Task Score 曲线。先把几个常见指标说清楚，再看原生图；点击任意图都可以回到对应的 W&B panel。',
-      'The page reuses the W&B evidence that already exists instead of drawing a second, redundant Task Score chart locally. The metric meanings come first; each snapshot then links back to its native W&B panel.',
+      '下面直接复用已经做好的 W&B 图，不再在网页里另外手画一条重复曲线。每张图自己的解释和边界就放在图下面，不再做一张需要来回对应的指标汇总表。',
+      'The page reuses the W&B evidence that already exists instead of drawing a redundant local chart. Each chart now carries its own explanation and boundary directly underneath it instead of sending readers back and forth to a separate metric guide.',
     )}</p>
-    <div class="paper-table-wrap">
-      <table class="paper-table paper-table--metric-guide">
-        <thead><tr><th>{t('指标', 'Metric')}</th><th>{t('它在测什么', 'What it measures')}</th><th>{t('不能直接说明什么', 'What it does not prove by itself')}</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><strong>Task Score</strong></td>
-            <td>{t('每轮抽样 WebShop 任务的 terminal task_score 平均值 × 100；允许部分得分。', 'Mean terminal task_score × 100 over the WebShop tasks sampled in that round; partial credit is possible.')}</td>
-            <td>{t('不是固定 128 题终评，也不是模型的全面能力分数。', 'It is not the fixed 128-task final and not a comprehensive capability score.')}</td>
-          </tr>
-          <tr>
-            <td><strong>SD-LoRA training loss</strong></td>
-            <td>{t('每轮 128 个 rollout 之后，若这一轮实际执行了 SD-LoRA 参数更新，就记录该次 trainer 的平均 loss；横轴用累计 rollout，所以第 160 轮对应 20,480。', 'After each 128-rollout round, the mean trainer loss is recorded when that round actually performs an SD-LoRA parameter update. The x-axis is cumulative rollouts, so round 160 ends at 20,480.')}</td>
-            <td>{t('loss 下降说明优化器越来越能拟合当前训练记录；它不等于 WebShop Task Score 上升，也不能代替固定 128 题终评。没有发生更新的轮次保持缺失，不做插值。', 'Falling loss shows that the optimizer increasingly fits the current training records; it does not imply a higher WebShop Task Score and does not replace the fixed 128-task final. Rounds without an update stay missing rather than being interpolated.')}</td>
-          </tr>
-          <tr>
-            <td><strong>Task Vector · Frobenius</strong></td>
-            <td>{t('参数更新向量的 Frobenius 范数，描述这一轮参数变化有多大。', 'Frobenius norm of the parameter-update vector, describing update magnitude.')}</td>
-            <td>{t('变化更大不等于任务表现更好。', 'A larger update does not mean better task performance.')}</td>
-          </tr>
-          <tr>
-            <td><strong>{t('ON/OFF 更新方向 cosine', 'ON/OFF update-direction cosine')}</strong></td>
-            <td>{t('比较 Bounded 与 +GDR 两组更新方向；1 越接近同方向，0 近似正交，负值表示相反方向。', 'Compares update direction between Bounded and +GDR; 1 is aligned, 0 is roughly orthogonal, and negative values point in opposing directions.')}</td>
-            <td>{t('方向不同本身不能证明它导致了分数变化。', 'Direction difference alone does not prove that it caused a score change.')}</td>
-          </tr>
-          <tr>
-            <td><strong>{t('每步输出 token', 'Output tokens per step')}</strong></td>
-            <td>{t('每个 WebShop action step 的模型 completion 长度。', 'Length of the model completion for each WebShop action step.')}</td>
-            <td>{t('输出更短不自动等于策略更好。', 'Shorter output does not automatically mean a better policy.')}</td>
-          </tr>
-          <tr>
-            <td><strong>{t('Episode 步数', 'Steps per episode')}</strong></td>
-            <td>{t('一条购物任务从开始到结束实际走了多少个动作步骤。', 'Number of action steps taken from the start to the end of a shopping episode.')}</td>
-            <td>{t('路径更短可能更高效，但仍要和任务得分一起看。', 'A shorter path may be more efficient, but must still be read together with task outcome.')}</td>
-          </tr>
-          <tr>
-            <td><strong>{t('Action-family entropy', 'Action-family entropy')}</strong></td>
-            <td>{t('search / click 等有效动作类型的 Shannon entropy；越低表示动作类型越集中。', 'Shannon entropy over valid action families such as search and click; lower means a more concentrated action mix.')}</td>
-            <td>{t('它不是模型的 token entropy，也不能单独解释为什么得分升降。', 'It is not model token entropy and cannot by itself explain score changes.')}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
     <p>{t(
       '公开页保留五张最有用的 W&B 静态快照，其中 loss 图来自刚补齐的 publication mirror；完整 Report / Workspace 里还有原生 run 表和更多 panel。网页里的静态图只是方便阅读；封存的 run、receipt 和 JSON 仍然是科学证据。',
       'The public page keeps five useful W&B-derived snapshots, including the newly completed loss publication mirror; the full Report and Workspace retain native run tables and additional panels. The snapshots are a reading layer only; sealed runs, receipts, and JSON remain the scientific evidence.',
@@ -570,7 +563,6 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
   .paper-table--ablation th:nth-child(5),.paper-table--ablation td:nth-child(5){width:26%}
   .paper-table--ablation td:nth-child(n+2),.paper-table--ablation th:nth-child(n+2){text-align:center}
   .paper-table-wrap--hero{margin-top:16px;overflow-x:auto}
-  .paper-table--metric-guide td:first-child{white-space:nowrap}
   .paper__math-caption{max-width:880px;margin:-.45rem 0 1rem;color:var(--text-secondary);font-size:1rem;line-height:1.6}
   .paper__math-symbol{font-family:serif;font-style:italic}
   .paper__setup{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:18px 0 22px;border-top:2px solid var(--text-primary);border-bottom:2px solid var(--text-primary)}

@@ -128,6 +128,13 @@ test('W&B section shows static W&B-history previews and keeps native links witho
   await expect(wandb.getByRole('link', { name: /完整 W&B Workspace/ })).toHaveAttribute('href', /wandb\.ai/);
   await expect(wandb.getByRole('link', { name: /Task Score 原生曲线/ })).toHaveAttribute('href', /panelDisplayName=/);
   await expect(wandb.locator('img')).toHaveCount(5);
+  await expect(wandb.locator('.paper-table--metric-guide')).toHaveCount(0);
+  const figures = wandb.locator('.wandb-evidence__snapshots figure');
+  await expect(figures).toHaveCount(5);
+  for (let index = 0; index < 5; index += 1) {
+    await expect(figures.nth(index).locator('figcaption p')).toHaveCount(2);
+    await expect(figures.nth(index).locator('.wandb-evidence__native-link')).toHaveAttribute('href', /wandb\.ai/);
+  }
   await expect(wandb.locator('img').first()).toHaveAttribute('src', /wandb-threeway\/task-score\.svg/);
   await expect(wandb).toContainText('SD-LoRA training loss');
   await expect(wandb).toContainText('20,480');
