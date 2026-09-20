@@ -100,11 +100,22 @@ test('analysis answers Task Vector, direction, steps, entropy, and adaptive ques
   await expect(analysis).toContainText('Task Vector、范数和谱');
   await expect(analysis).toContainText('0.72');
   await expect(analysis).toContainText('-0.287');
+  await expect(analysis).toContainText('397.0');
+  await expect(analysis).toContainText('171.8');
+  await expect(analysis).toContainText('449.9');
+  await expect(analysis).toContainText('200.3');
+  await expect(analysis).toContainText('503.6');
+  await expect(analysis).toContainText('216.8');
+  await expect(analysis).toContainText('229.1');
   await expect(analysis).toContainText('7.91');
   await expect(analysis).toContainText('8.60');
-  await expect(analysis).toContainText('不能补造 token entropy');
-  await expect(analysis).toContainText('0.489');
-  await expect(analysis).toContainText('0.370');
+  await expect(analysis).toContainText('真正的 predictive token entropy 仍然不能从文本补出来');
+  await expect(analysis).toContainText('0.4895');
+  await expect(analysis).toContainText('0.4239');
+  await expect(analysis).toContainText('0.5826');
+  await expect(analysis).toContainText('0.3705');
+  await expect(analysis).toContainText('1158');
+  await expect(analysis).toContainText('100%');
   await expect(analysis).toContainText('约束要不要更 adaptive');
 });
 
@@ -116,8 +127,10 @@ test('W&B section shows static W&B-history previews and keeps native links witho
   await expect(wandb.getByRole('link', { name: /交互 W&B Report/ })).toHaveAttribute('href', /wandb\.ai/);
   await expect(wandb.getByRole('link', { name: /完整 W&B Workspace/ })).toHaveAttribute('href', /wandb\.ai/);
   await expect(wandb.getByRole('link', { name: /Task Score 原生曲线/ })).toHaveAttribute('href', /panelDisplayName=/);
-  await expect(wandb.locator('img')).toHaveCount(3);
+  await expect(wandb.locator('img')).toHaveCount(4);
   await expect(wandb.locator('img').first()).toHaveAttribute('src', /wandb-threeway\/task-score\.svg/);
+  await expect(wandb.getByRole('link', { name: /Action-family entropy · 160轮/ })).toHaveAttribute('href', /panelDisplayName=/);
+  await expect(wandb.locator('img').nth(3)).toHaveAttribute('src', /wandb-threeway\/action-family-entropy\.svg/);
   await expect(wandb.locator('iframe')).toHaveCount(0);
   await expect(wandb).toContainText('当前 W&B 原项目没有对未登录访客开放');
 });

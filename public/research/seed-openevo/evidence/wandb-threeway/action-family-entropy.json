@@ -1,0 +1,5292 @@
+{
+  "schema": "openevo.action-family-entropy.v1",
+  "definition": "Shannon entropy over observed WebShop action families; natural log; not token predictive entropy",
+  "methods": {
+    "ordinary": [
+      {
+        "round": 0,
+        "entropy": 0.6588585216536026,
+        "total_actions": 1206,
+        "valid_actions": 1206,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 446,
+          "click": 760
+        }
+      },
+      {
+        "round": 1,
+        "entropy": 0.6567367185727581,
+        "total_actions": 1085,
+        "valid_actions": 1085,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 397,
+          "click": 688
+        }
+      },
+      {
+        "round": 2,
+        "entropy": 0.6531776265726574,
+        "total_actions": 1054,
+        "valid_actions": 1054,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 379,
+          "click": 675
+        }
+      },
+      {
+        "round": 3,
+        "entropy": 0.6449111307447046,
+        "total_actions": 1003,
+        "valid_actions": 1003,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 347,
+          "click": 656
+        }
+      },
+      {
+        "round": 4,
+        "entropy": 0.6473838335458721,
+        "total_actions": 986,
+        "valid_actions": 986,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 345,
+          "click": 641
+        }
+      },
+      {
+        "round": 5,
+        "entropy": 0.647831081973697,
+        "total_actions": 964,
+        "valid_actions": 964,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 338,
+          "click": 626
+        }
+      },
+      {
+        "round": 6,
+        "entropy": 0.6384946663986999,
+        "total_actions": 809,
+        "valid_actions": 809,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 272,
+          "click": 537
+        }
+      },
+      {
+        "round": 7,
+        "entropy": 0.6136250896120427,
+        "total_actions": 821,
+        "valid_actions": 821,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 249,
+          "click": 572
+        }
+      },
+      {
+        "round": 8,
+        "entropy": 0.6041000654403342,
+        "total_actions": 1037,
+        "valid_actions": 1037,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 303,
+          "click": 734
+        }
+      },
+      {
+        "round": 9,
+        "entropy": 0.6209714566583924,
+        "total_actions": 858,
+        "valid_actions": 858,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 268,
+          "click": 590
+        }
+      },
+      {
+        "round": 10,
+        "entropy": 0.5955184751652385,
+        "total_actions": 1199,
+        "valid_actions": 1199,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 339,
+          "click": 860
+        }
+      },
+      {
+        "round": 11,
+        "entropy": 0.5565060973976221,
+        "total_actions": 1193,
+        "valid_actions": 1193,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 292,
+          "click": 901
+        }
+      },
+      {
+        "round": 12,
+        "entropy": 0.5055155168759506,
+        "total_actions": 1183,
+        "valid_actions": 1183,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 241,
+          "click": 942
+        }
+      },
+      {
+        "round": 13,
+        "entropy": 0.5181796582854592,
+        "total_actions": 1196,
+        "valid_actions": 1196,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 255,
+          "click": 941
+        }
+      },
+      {
+        "round": 14,
+        "entropy": 0.5591135216901322,
+        "total_actions": 1202,
+        "valid_actions": 1202,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 297,
+          "click": 905
+        }
+      },
+      {
+        "round": 15,
+        "entropy": 0.46087079998828107,
+        "total_actions": 1513,
+        "valid_actions": 1513,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 262,
+          "click": 1251
+        }
+      },
+      {
+        "round": 16,
+        "entropy": 0.48155506538951837,
+        "total_actions": 1167,
+        "valid_actions": 1167,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 218,
+          "click": 949
+        }
+      },
+      {
+        "round": 17,
+        "entropy": 0.45456763514869425,
+        "total_actions": 1265,
+        "valid_actions": 1265,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 214,
+          "click": 1051
+        }
+      },
+      {
+        "round": 18,
+        "entropy": 0.4138625700038001,
+        "total_actions": 1428,
+        "valid_actions": 1428,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 207,
+          "click": 1221
+        }
+      },
+      {
+        "round": 19,
+        "entropy": 0.38877848614356775,
+        "total_actions": 1577,
+        "valid_actions": 1577,
+        "valid_rate": 1.0,
+        "counts": {
+          "click": 1370,
+          "search": 207
+        }
+      },
+      {
+        "round": 20,
+        "entropy": 0.40266474312788203,
+        "total_actions": 1283,
+        "valid_actions": 1283,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 178,
+          "click": 1105
+        }
+      },
+      {
+        "round": 21,
+        "entropy": 0.3659657248857858,
+        "total_actions": 1414,
+        "valid_actions": 1414,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 169,
+          "click": 1245
+        }
+      },
+      {
+        "round": 22,
+        "entropy": 0.34883209584303193,
+        "total_actions": 1395,
+        "valid_actions": 1395,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 155,
+          "click": 1240
+        }
+      },
+      {
+        "round": 23,
+        "entropy": 0.3637006601592722,
+        "total_actions": 1588,
+        "valid_actions": 1588,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 188,
+          "click": 1400
+        }
+      },
+      {
+        "round": 24,
+        "entropy": 0.378448901005449,
+        "total_actions": 1446,
+        "valid_actions": 1446,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 182,
+          "click": 1264
+        }
+      },
+      {
+        "round": 25,
+        "entropy": 0.36471949406544496,
+        "total_actions": 1413,
+        "valid_actions": 1413,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 168,
+          "click": 1245
+        }
+      },
+      {
+        "round": 26,
+        "entropy": 0.3390083915590071,
+        "total_actions": 1475,
+        "valid_actions": 1475,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 157,
+          "click": 1318
+        }
+      },
+      {
+        "round": 27,
+        "entropy": 0.35205458235303944,
+        "total_actions": 1500,
+        "valid_actions": 1500,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 169,
+          "click": 1331
+        }
+      },
+      {
+        "round": 28,
+        "entropy": 0.3591694331424526,
+        "total_actions": 1369,
+        "valid_actions": 1369,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 159,
+          "click": 1210
+        }
+      },
+      {
+        "round": 29,
+        "entropy": 0.3805534056342702,
+        "total_actions": 1536,
+        "valid_actions": 1536,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 195,
+          "click": 1341
+        }
+      },
+      {
+        "round": 30,
+        "entropy": 0.33869193915746965,
+        "total_actions": 1637,
+        "valid_actions": 1637,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 174,
+          "click": 1463
+        }
+      },
+      {
+        "round": 31,
+        "entropy": 0.3495136153026956,
+        "total_actions": 1355,
+        "valid_actions": 1355,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 151,
+          "click": 1204
+        }
+      },
+      {
+        "round": 32,
+        "entropy": 0.3470659406223712,
+        "total_actions": 1442,
+        "valid_actions": 1442,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 159,
+          "click": 1283
+        }
+      },
+      {
+        "round": 33,
+        "entropy": 0.3345571219070883,
+        "total_actions": 1514,
+        "valid_actions": 1514,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 158,
+          "click": 1356
+        }
+      },
+      {
+        "round": 34,
+        "entropy": 0.3403438331851176,
+        "total_actions": 1457,
+        "valid_actions": 1457,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 156,
+          "click": 1301
+        }
+      },
+      {
+        "round": 35,
+        "entropy": 0.3860980946617727,
+        "total_actions": 1186,
+        "valid_actions": 1186,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 154,
+          "click": 1032
+        }
+      },
+      {
+        "round": 36,
+        "entropy": 0.3654017734361822,
+        "total_actions": 1258,
+        "valid_actions": 1258,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 150,
+          "click": 1108
+        }
+      },
+      {
+        "round": 37,
+        "entropy": 0.3342015401834221,
+        "total_actions": 1526,
+        "valid_actions": 1526,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 159,
+          "click": 1367
+        }
+      },
+      {
+        "round": 38,
+        "entropy": 0.34434702066370165,
+        "total_actions": 1450,
+        "valid_actions": 1450,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 158,
+          "click": 1292
+        }
+      },
+      {
+        "round": 39,
+        "entropy": 0.37456381035611314,
+        "total_actions": 1437,
+        "valid_actions": 1437,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 178,
+          "click": 1259
+        }
+      },
+      {
+        "round": 40,
+        "entropy": 0.37026176253001775,
+        "total_actions": 1356,
+        "valid_actions": 1356,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 165,
+          "click": 1191
+        }
+      },
+      {
+        "round": 41,
+        "entropy": 0.4120609664001612,
+        "total_actions": 1313,
+        "valid_actions": 1313,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 189,
+          "click": 1124
+        }
+      },
+      {
+        "round": 42,
+        "entropy": 0.37856801891321373,
+        "total_actions": 1350,
+        "valid_actions": 1350,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 170,
+          "click": 1180
+        }
+      },
+      {
+        "round": 43,
+        "entropy": 0.3967835591770815,
+        "total_actions": 1269,
+        "valid_actions": 1269,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 172,
+          "click": 1097
+        }
+      },
+      {
+        "round": 44,
+        "entropy": 0.4582205974761996,
+        "total_actions": 1178,
+        "valid_actions": 1178,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 202,
+          "click": 976
+        }
+      },
+      {
+        "round": 45,
+        "entropy": 0.438159320026818,
+        "total_actions": 1144,
+        "valid_actions": 1144,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 182,
+          "click": 962
+        }
+      },
+      {
+        "round": 46,
+        "entropy": 0.4809770468094636,
+        "total_actions": 1148,
+        "valid_actions": 1148,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 214,
+          "click": 934
+        }
+      },
+      {
+        "round": 47,
+        "entropy": 0.4655875017429211,
+        "total_actions": 1101,
+        "valid_actions": 1101,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 194,
+          "click": 907
+        }
+      },
+      {
+        "round": 48,
+        "entropy": 0.45215118825734946,
+        "total_actions": 1515,
+        "valid_actions": 1515,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 254,
+          "click": 1261
+        }
+      },
+      {
+        "round": 49,
+        "entropy": 0.4908589407453102,
+        "total_actions": 1475,
+        "valid_actions": 1475,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 285,
+          "click": 1190
+        }
+      },
+      {
+        "round": 50,
+        "entropy": 0.4716869193366488,
+        "total_actions": 1343,
+        "valid_actions": 1343,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 242,
+          "click": 1101
+        }
+      },
+      {
+        "round": 51,
+        "entropy": 0.42501493446906347,
+        "total_actions": 1500,
+        "valid_actions": 1500,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 227,
+          "click": 1273
+        }
+      },
+      {
+        "round": 52,
+        "entropy": 0.49613657257344984,
+        "total_actions": 1178,
+        "valid_actions": 1178,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 232,
+          "click": 946
+        }
+      },
+      {
+        "round": 53,
+        "entropy": 0.42470583470014023,
+        "total_actions": 1343,
+        "valid_actions": 1343,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 203,
+          "click": 1140
+        }
+      },
+      {
+        "round": 54,
+        "entropy": 0.4355338270509379,
+        "total_actions": 1403,
+        "valid_actions": 1403,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 221,
+          "click": 1182
+        }
+      },
+      {
+        "round": 55,
+        "entropy": 0.43896357629736715,
+        "total_actions": 1316,
+        "valid_actions": 1316,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 210,
+          "click": 1106
+        }
+      },
+      {
+        "round": 56,
+        "entropy": 0.4331165177704856,
+        "total_actions": 1307,
+        "valid_actions": 1307,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 204,
+          "click": 1103
+        }
+      },
+      {
+        "round": 57,
+        "entropy": 0.4881936663289169,
+        "total_actions": 1181,
+        "valid_actions": 1181,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 226,
+          "click": 955
+        }
+      },
+      {
+        "round": 58,
+        "entropy": 0.4139130867265843,
+        "total_actions": 1476,
+        "valid_actions": 1476,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 214,
+          "click": 1262
+        }
+      },
+      {
+        "round": 59,
+        "entropy": 0.43753933975256504,
+        "total_actions": 1405,
+        "valid_actions": 1405,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 223,
+          "click": 1182
+        }
+      },
+      {
+        "round": 60,
+        "entropy": 0.5078787451490492,
+        "total_actions": 1392,
+        "valid_actions": 1392,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 286,
+          "click": 1106
+        }
+      },
+      {
+        "round": 61,
+        "entropy": 0.5034790259576862,
+        "total_actions": 1345,
+        "valid_actions": 1345,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 272,
+          "click": 1073
+        }
+      },
+      {
+        "round": 62,
+        "entropy": 0.5748214011714263,
+        "total_actions": 1582,
+        "valid_actions": 1582,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 414,
+          "click": 1168
+        }
+      },
+      {
+        "round": 63,
+        "entropy": 0.5262687785029347,
+        "total_actions": 1467,
+        "valid_actions": 1467,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 322,
+          "click": 1145
+        }
+      },
+      {
+        "round": 64,
+        "entropy": 0.5401436037049129,
+        "total_actions": 1530,
+        "valid_actions": 1530,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 353,
+          "click": 1177
+        }
+      },
+      {
+        "round": 65,
+        "entropy": 0.622754665861548,
+        "total_actions": 1497,
+        "valid_actions": 1497,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 471,
+          "click": 1026
+        }
+      },
+      {
+        "round": 66,
+        "entropy": 0.6195388453440932,
+        "total_actions": 1185,
+        "valid_actions": 1185,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 368,
+          "click": 817
+        }
+      },
+      {
+        "round": 67,
+        "entropy": 0.5810991962324294,
+        "total_actions": 1079,
+        "valid_actions": 1079,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 289,
+          "click": 790
+        }
+      },
+      {
+        "round": 68,
+        "entropy": 0.5503996800589221,
+        "total_actions": 1086,
+        "valid_actions": 1086,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 260,
+          "click": 826
+        }
+      },
+      {
+        "round": 69,
+        "entropy": 0.5362128437176382,
+        "total_actions": 1099,
+        "valid_actions": 1099,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 250,
+          "click": 849
+        }
+      },
+      {
+        "round": 70,
+        "entropy": 0.5428505914212176,
+        "total_actions": 940,
+        "valid_actions": 940,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 219,
+          "click": 721
+        }
+      },
+      {
+        "round": 71,
+        "entropy": 0.48494935225035374,
+        "total_actions": 1232,
+        "valid_actions": 1232,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 233,
+          "click": 999
+        }
+      },
+      {
+        "round": 72,
+        "entropy": 0.5320772187519347,
+        "total_actions": 1169,
+        "valid_actions": 1169,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 262,
+          "click": 907
+        }
+      },
+      {
+        "round": 73,
+        "entropy": 0.5278419760339821,
+        "total_actions": 974,
+        "valid_actions": 974,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 215,
+          "click": 759
+        }
+      },
+      {
+        "round": 74,
+        "entropy": 0.4924525773581282,
+        "total_actions": 1307,
+        "valid_actions": 1307,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 254,
+          "click": 1053
+        }
+      },
+      {
+        "round": 75,
+        "entropy": 0.5110014143571328,
+        "total_actions": 1131,
+        "valid_actions": 1131,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 235,
+          "click": 896
+        }
+      },
+      {
+        "round": 76,
+        "entropy": 0.5574128056131158,
+        "total_actions": 1128,
+        "valid_actions": 1128,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 277,
+          "click": 851
+        }
+      },
+      {
+        "round": 77,
+        "entropy": 0.557484282307444,
+        "total_actions": 1030,
+        "valid_actions": 1030,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 253,
+          "click": 777
+        }
+      },
+      {
+        "round": 78,
+        "entropy": 0.5141636166460134,
+        "total_actions": 1280,
+        "valid_actions": 1280,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 269,
+          "click": 1011
+        }
+      },
+      {
+        "round": 79,
+        "entropy": 0.5212249405148501,
+        "total_actions": 1350,
+        "valid_actions": 1350,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 291,
+          "click": 1059
+        }
+      },
+      {
+        "round": 80,
+        "entropy": 0.4912609635043221,
+        "total_actions": 1385,
+        "valid_actions": 1385,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 268,
+          "click": 1117
+        }
+      },
+      {
+        "round": 81,
+        "entropy": 0.5163424596824205,
+        "total_actions": 1355,
+        "valid_actions": 1355,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 287,
+          "click": 1068
+        }
+      },
+      {
+        "round": 82,
+        "entropy": 0.5325077178657648,
+        "total_actions": 1038,
+        "valid_actions": 1038,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 233,
+          "click": 805
+        }
+      },
+      {
+        "round": 83,
+        "entropy": 0.5567853293745597,
+        "total_actions": 1102,
+        "valid_actions": 1102,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 270,
+          "click": 832
+        }
+      },
+      {
+        "round": 84,
+        "entropy": 0.5450687745560168,
+        "total_actions": 1320,
+        "valid_actions": 1320,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 310,
+          "click": 1010
+        }
+      },
+      {
+        "round": 85,
+        "entropy": 0.5717487620652469,
+        "total_actions": 1171,
+        "valid_actions": 1171,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 303,
+          "click": 868
+        }
+      },
+      {
+        "round": 86,
+        "entropy": 0.5078800716077674,
+        "total_actions": 1465,
+        "valid_actions": 1465,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 301,
+          "click": 1164
+        }
+      },
+      {
+        "round": 87,
+        "entropy": 0.5526361717306738,
+        "total_actions": 1388,
+        "valid_actions": 1388,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 335,
+          "click": 1053
+        }
+      },
+      {
+        "round": 88,
+        "entropy": 0.5501707435161888,
+        "total_actions": 1321,
+        "valid_actions": 1321,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 316,
+          "click": 1005
+        }
+      },
+      {
+        "round": 89,
+        "entropy": 0.5870395599316713,
+        "total_actions": 1227,
+        "valid_actions": 1227,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 336,
+          "click": 891
+        }
+      },
+      {
+        "round": 90,
+        "entropy": 0.5588960797670105,
+        "total_actions": 1207,
+        "valid_actions": 1207,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 298,
+          "click": 909
+        }
+      },
+      {
+        "round": 91,
+        "entropy": 0.5666393397004059,
+        "total_actions": 1264,
+        "valid_actions": 1264,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 321,
+          "click": 943
+        }
+      },
+      {
+        "round": 92,
+        "entropy": 0.5051528161695273,
+        "total_actions": 1332,
+        "valid_actions": 1332,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 271,
+          "click": 1061
+        }
+      },
+      {
+        "round": 93,
+        "entropy": 0.5157897389202933,
+        "total_actions": 1405,
+        "valid_actions": 1405,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 297,
+          "click": 1108
+        }
+      },
+      {
+        "round": 94,
+        "entropy": 0.45246398097484064,
+        "total_actions": 1406,
+        "valid_actions": 1406,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 236,
+          "click": 1170
+        }
+      },
+      {
+        "round": 95,
+        "entropy": 0.4809227659104498,
+        "total_actions": 1277,
+        "valid_actions": 1277,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 238,
+          "click": 1039
+        }
+      },
+      {
+        "round": 96,
+        "entropy": 0.5313911763606195,
+        "total_actions": 1400,
+        "valid_actions": 1400,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 313,
+          "click": 1087
+        }
+      },
+      {
+        "round": 97,
+        "entropy": 0.4404030833739047,
+        "total_actions": 1446,
+        "valid_actions": 1446,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 232,
+          "click": 1214
+        }
+      },
+      {
+        "round": 98,
+        "entropy": 0.4060060499481462,
+        "total_actions": 1252,
+        "valid_actions": 1252,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 176,
+          "click": 1076
+        }
+      },
+      {
+        "round": 99,
+        "entropy": 0.38685998054227844,
+        "total_actions": 1405,
+        "valid_actions": 1405,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 183,
+          "click": 1222
+        }
+      },
+      {
+        "round": 100,
+        "entropy": 0.40064896962095137,
+        "total_actions": 1286,
+        "valid_actions": 1286,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 177,
+          "click": 1109
+        }
+      },
+      {
+        "round": 101,
+        "entropy": 0.3887288188118627,
+        "total_actions": 1303,
+        "valid_actions": 1303,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 171,
+          "click": 1132
+        }
+      },
+      {
+        "round": 102,
+        "entropy": 0.39145657502980324,
+        "total_actions": 1334,
+        "valid_actions": 1334,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 177,
+          "click": 1157
+        }
+      },
+      {
+        "round": 103,
+        "entropy": 0.3980427709722879,
+        "total_actions": 1270,
+        "valid_actions": 1270,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 173,
+          "click": 1097
+        }
+      },
+      {
+        "round": 104,
+        "entropy": 0.4145048644490292,
+        "total_actions": 1218,
+        "valid_actions": 1218,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 177,
+          "click": 1041
+        }
+      },
+      {
+        "round": 105,
+        "entropy": 0.4437922953464478,
+        "total_actions": 960,
+        "valid_actions": 960,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 156,
+          "click": 804
+        }
+      },
+      {
+        "round": 106,
+        "entropy": 0.46426783965927276,
+        "total_actions": 787,
+        "valid_actions": 787,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 138,
+          "click": 649
+        }
+      },
+      {
+        "round": 107,
+        "entropy": 0.4032521685500094,
+        "total_actions": 978,
+        "valid_actions": 978,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 136,
+          "click": 842
+        }
+      },
+      {
+        "round": 108,
+        "entropy": 0.4327138330137824,
+        "total_actions": 847,
+        "valid_actions": 847,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 715
+        }
+      },
+      {
+        "round": 109,
+        "entropy": 0.4194133249216557,
+        "total_actions": 925,
+        "valid_actions": 925,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 137,
+          "click": 788
+        }
+      },
+      {
+        "round": 110,
+        "entropy": 0.4299172689182328,
+        "total_actions": 882,
+        "valid_actions": 882,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 136,
+          "click": 746
+        }
+      },
+      {
+        "round": 111,
+        "entropy": 0.47585365862267504,
+        "total_actions": 716,
+        "valid_actions": 716,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 585
+        }
+      },
+      {
+        "round": 112,
+        "entropy": 0.4267607885541811,
+        "total_actions": 873,
+        "valid_actions": 873,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 133,
+          "click": 740
+        }
+      },
+      {
+        "round": 113,
+        "entropy": 0.42840808814931874,
+        "total_actions": 861,
+        "valid_actions": 861,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 729
+        }
+      },
+      {
+        "round": 114,
+        "entropy": 0.4237880103986822,
+        "total_actions": 883,
+        "valid_actions": 883,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 133,
+          "click": 750
+        }
+      },
+      {
+        "round": 115,
+        "entropy": 0.39189623211777735,
+        "total_actions": 963,
+        "valid_actions": 963,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 128,
+          "click": 835
+        }
+      },
+      {
+        "round": 116,
+        "entropy": 0.39924871780095567,
+        "total_actions": 979,
+        "valid_actions": 979,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 134,
+          "click": 845
+        }
+      },
+      {
+        "round": 117,
+        "entropy": 0.3341427913871891,
+        "total_actions": 1248,
+        "valid_actions": 1248,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 1118
+        }
+      },
+      {
+        "round": 118,
+        "entropy": 0.3830092865711555,
+        "total_actions": 1006,
+        "valid_actions": 1006,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 877
+        }
+      },
+      {
+        "round": 119,
+        "entropy": 0.4229093358792035,
+        "total_actions": 866,
+        "valid_actions": 866,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 736
+        }
+      },
+      {
+        "round": 120,
+        "entropy": 0.38629019952741045,
+        "total_actions": 985,
+        "valid_actions": 985,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 128,
+          "click": 857
+        }
+      },
+      {
+        "round": 121,
+        "entropy": 0.40288679877401334,
+        "total_actions": 929,
+        "valid_actions": 929,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 800
+        }
+      },
+      {
+        "round": 122,
+        "entropy": 0.3695472696246928,
+        "total_actions": 1121,
+        "valid_actions": 1121,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 136,
+          "click": 985
+        }
+      },
+      {
+        "round": 123,
+        "entropy": 0.38109959420506867,
+        "total_actions": 1006,
+        "valid_actions": 1006,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 128,
+          "click": 878
+        }
+      },
+      {
+        "round": 124,
+        "entropy": 0.45090805276095436,
+        "total_actions": 773,
+        "valid_actions": 773,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 644
+        }
+      },
+      {
+        "round": 125,
+        "entropy": 0.4233151125451097,
+        "total_actions": 858,
+        "valid_actions": 858,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 729
+        }
+      },
+      {
+        "round": 126,
+        "entropy": 0.4430131077243451,
+        "total_actions": 790,
+        "valid_actions": 790,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 128,
+          "click": 662
+        }
+      },
+      {
+        "round": 127,
+        "entropy": 0.4516115928053867,
+        "total_actions": 765,
+        "valid_actions": 765,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 128,
+          "click": 637
+        }
+      },
+      {
+        "round": 128,
+        "entropy": 0.4224136390624016,
+        "total_actions": 881,
+        "valid_actions": 881,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 749
+        }
+      },
+      {
+        "round": 129,
+        "entropy": 0.3520485741968136,
+        "total_actions": 1145,
+        "valid_actions": 1145,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 1016
+        }
+      },
+      {
+        "round": 130,
+        "entropy": 0.361240583499971,
+        "total_actions": 1101,
+        "valid_actions": 1101,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 972
+        }
+      },
+      {
+        "round": 131,
+        "entropy": 0.4465048255637538,
+        "total_actions": 798,
+        "valid_actions": 798,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 667
+        }
+      },
+      {
+        "round": 132,
+        "entropy": 0.40928707696650796,
+        "total_actions": 927,
+        "valid_actions": 927,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 795
+        }
+      },
+      {
+        "round": 133,
+        "entropy": 0.3875411897685347,
+        "total_actions": 1003,
+        "valid_actions": 1003,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 872
+        }
+      },
+      {
+        "round": 134,
+        "entropy": 0.39488050990023704,
+        "total_actions": 959,
+        "valid_actions": 959,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 830
+        }
+      },
+      {
+        "round": 135,
+        "entropy": 0.4478483632212192,
+        "total_actions": 794,
+        "valid_actions": 794,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 663
+        }
+      },
+      {
+        "round": 136,
+        "entropy": 0.3976967761775686,
+        "total_actions": 963,
+        "valid_actions": 963,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 832
+        }
+      },
+      {
+        "round": 137,
+        "entropy": 0.3936558495599971,
+        "total_actions": 1016,
+        "valid_actions": 1016,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 136,
+          "click": 880
+        }
+      },
+      {
+        "round": 138,
+        "entropy": 0.367905164093025,
+        "total_actions": 1137,
+        "valid_actions": 1137,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 137,
+          "click": 1000
+        }
+      },
+      {
+        "round": 139,
+        "entropy": 0.3837437605585521,
+        "total_actions": 1003,
+        "valid_actions": 1003,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 874
+        }
+      },
+      {
+        "round": 140,
+        "entropy": 0.3765483710119123,
+        "total_actions": 1097,
+        "valid_actions": 1097,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 137,
+          "click": 960
+        }
+      },
+      {
+        "round": 141,
+        "entropy": 0.42211863346805206,
+        "total_actions": 882,
+        "valid_actions": 882,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 750
+        }
+      },
+      {
+        "round": 142,
+        "entropy": 0.43554498351048865,
+        "total_actions": 857,
+        "valid_actions": 857,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 135,
+          "click": 722
+        }
+      },
+      {
+        "round": 143,
+        "entropy": 0.4577936911656048,
+        "total_actions": 771,
+        "valid_actions": 771,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 639
+        }
+      },
+      {
+        "round": 144,
+        "entropy": 0.46258135342645,
+        "total_actions": 746,
+        "valid_actions": 746,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 616
+        }
+      },
+      {
+        "round": 145,
+        "entropy": 0.45226137024397123,
+        "total_actions": 787,
+        "valid_actions": 787,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 655
+        }
+      },
+      {
+        "round": 146,
+        "entropy": 0.46168017232849556,
+        "total_actions": 760,
+        "valid_actions": 760,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 628
+        }
+      },
+      {
+        "round": 147,
+        "entropy": 0.36087324954365624,
+        "total_actions": 1154,
+        "valid_actions": 1154,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 135,
+          "click": 1019
+        }
+      },
+      {
+        "round": 148,
+        "entropy": 0.4123120214961715,
+        "total_actions": 930,
+        "valid_actions": 930,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 134,
+          "click": 796
+        }
+      },
+      {
+        "round": 149,
+        "entropy": 0.48601275000717276,
+        "total_actions": 690,
+        "valid_actions": 690,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 559
+        }
+      },
+      {
+        "round": 150,
+        "entropy": 0.453631251726206,
+        "total_actions": 783,
+        "valid_actions": 783,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 651
+        }
+      },
+      {
+        "round": 151,
+        "entropy": 0.4175732119168012,
+        "total_actions": 918,
+        "valid_actions": 918,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 135,
+          "click": 783
+        }
+      },
+      {
+        "round": 152,
+        "entropy": 0.4154949836830054,
+        "total_actions": 898,
+        "valid_actions": 898,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 767
+        }
+      },
+      {
+        "round": 153,
+        "entropy": 0.47510492861893505,
+        "total_actions": 707,
+        "valid_actions": 707,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 578
+        }
+      },
+      {
+        "round": 154,
+        "entropy": 0.48019193419499645,
+        "total_actions": 694,
+        "valid_actions": 694,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 565
+        }
+      },
+      {
+        "round": 155,
+        "entropy": 0.4735618802359377,
+        "total_actions": 711,
+        "valid_actions": 711,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 582
+        }
+      },
+      {
+        "round": 156,
+        "entropy": 0.45158748051758657,
+        "total_actions": 783,
+        "valid_actions": 783,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 652
+        }
+      },
+      {
+        "round": 157,
+        "entropy": 0.421412422428133,
+        "total_actions": 871,
+        "valid_actions": 871,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 741
+        }
+      },
+      {
+        "round": 158,
+        "entropy": 0.4260654609757426,
+        "total_actions": 849,
+        "valid_actions": 849,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 720
+        }
+      },
+      {
+        "round": 159,
+        "entropy": 0.4576064512335441,
+        "total_actions": 754,
+        "valid_actions": 754,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 625
+        }
+      }
+    ],
+    "bounded": [
+      {
+        "round": 0,
+        "entropy": 0.6588585216536026,
+        "total_actions": 1206,
+        "valid_actions": 1206,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 446,
+          "click": 760
+        }
+      },
+      {
+        "round": 1,
+        "entropy": 0.6602590242284831,
+        "total_actions": 1039,
+        "valid_actions": 1039,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 387,
+          "click": 652
+        }
+      },
+      {
+        "round": 2,
+        "entropy": 0.6655425955368062,
+        "total_actions": 1039,
+        "valid_actions": 1039,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 398,
+          "click": 641
+        }
+      },
+      {
+        "round": 3,
+        "entropy": 0.6496016799468628,
+        "total_actions": 1007,
+        "valid_actions": 1007,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 356,
+          "click": 651
+        }
+      },
+      {
+        "round": 4,
+        "entropy": 0.6585770320685314,
+        "total_actions": 1029,
+        "valid_actions": 1029,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 380,
+          "click": 649
+        }
+      },
+      {
+        "round": 5,
+        "entropy": 0.6518920258152835,
+        "total_actions": 929,
+        "valid_actions": 929,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 332,
+          "click": 597
+        }
+      },
+      {
+        "round": 6,
+        "entropy": 0.6390692697526056,
+        "total_actions": 804,
+        "valid_actions": 804,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 271,
+          "click": 533
+        }
+      },
+      {
+        "round": 7,
+        "entropy": 0.6346497543514713,
+        "total_actions": 750,
+        "valid_actions": 750,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 248,
+          "click": 502
+        }
+      },
+      {
+        "round": 8,
+        "entropy": 0.6354411312289047,
+        "total_actions": 1082,
+        "valid_actions": 1082,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 359,
+          "click": 723
+        }
+      },
+      {
+        "round": 9,
+        "entropy": 0.6269778663797276,
+        "total_actions": 1112,
+        "valid_actions": 1112,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 356,
+          "click": 756
+        }
+      },
+      {
+        "round": 10,
+        "entropy": 0.58125594611434,
+        "total_actions": 1153,
+        "valid_actions": 1153,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 309,
+          "click": 844
+        }
+      },
+      {
+        "round": 11,
+        "entropy": 0.5833046698832918,
+        "total_actions": 1085,
+        "valid_actions": 1085,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 293,
+          "click": 792
+        }
+      },
+      {
+        "round": 12,
+        "entropy": 0.5534563993649346,
+        "total_actions": 946,
+        "valid_actions": 946,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 229,
+          "click": 717
+        }
+      },
+      {
+        "round": 13,
+        "entropy": 0.5769853361947306,
+        "total_actions": 997,
+        "valid_actions": 997,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 263,
+          "click": 734
+        }
+      },
+      {
+        "round": 14,
+        "entropy": 0.5262258055288063,
+        "total_actions": 966,
+        "valid_actions": 966,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 212,
+          "click": 754
+        }
+      },
+      {
+        "round": 15,
+        "entropy": 0.5029880827403537,
+        "total_actions": 961,
+        "valid_actions": 961,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 194,
+          "click": 767
+        }
+      },
+      {
+        "round": 16,
+        "entropy": 0.4639050341160457,
+        "total_actions": 1085,
+        "valid_actions": 1085,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 190,
+          "click": 895
+        }
+      },
+      {
+        "round": 17,
+        "entropy": 0.41591030845255544,
+        "total_actions": 1184,
+        "valid_actions": 1184,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 173,
+          "click": 1011
+        }
+      },
+      {
+        "round": 18,
+        "entropy": 0.4757857327395216,
+        "total_actions": 1077,
+        "valid_actions": 1077,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 197,
+          "click": 880
+        }
+      },
+      {
+        "round": 19,
+        "entropy": 0.38155368698500114,
+        "total_actions": 1365,
+        "valid_actions": 1365,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 174,
+          "click": 1191
+        }
+      },
+      {
+        "round": 20,
+        "entropy": 0.40874513146992497,
+        "total_actions": 1309,
+        "valid_actions": 1309,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 186,
+          "click": 1123
+        }
+      },
+      {
+        "round": 21,
+        "entropy": 0.390874984104354,
+        "total_actions": 1390,
+        "valid_actions": 1390,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 184,
+          "click": 1206
+        }
+      },
+      {
+        "round": 22,
+        "entropy": 0.3418579367999624,
+        "total_actions": 1503,
+        "valid_actions": 1503,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 162,
+          "click": 1341
+        }
+      },
+      {
+        "round": 23,
+        "entropy": 0.3925114209332817,
+        "total_actions": 1531,
+        "valid_actions": 1531,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 204,
+          "click": 1327
+        }
+      },
+      {
+        "round": 24,
+        "entropy": 0.399037295554858,
+        "total_actions": 1148,
+        "valid_actions": 1148,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 157,
+          "click": 991
+        }
+      },
+      {
+        "round": 25,
+        "entropy": 0.38995715343407933,
+        "total_actions": 1198,
+        "valid_actions": 1198,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 158,
+          "click": 1040
+        }
+      },
+      {
+        "round": 26,
+        "entropy": 0.37885577389966485,
+        "total_actions": 1396,
+        "valid_actions": 1396,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 176,
+          "click": 1220
+        }
+      },
+      {
+        "round": 27,
+        "entropy": 0.43228471178376804,
+        "total_actions": 1279,
+        "valid_actions": 1279,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 199,
+          "click": 1080
+        }
+      },
+      {
+        "round": 28,
+        "entropy": 0.3985810281561668,
+        "total_actions": 1531,
+        "valid_actions": 1531,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 209,
+          "click": 1322
+        }
+      },
+      {
+        "round": 29,
+        "entropy": 0.3741126823525256,
+        "total_actions": 1561,
+        "valid_actions": 1561,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 193,
+          "click": 1368
+        }
+      },
+      {
+        "round": 30,
+        "entropy": 0.3925956302337541,
+        "total_actions": 1583,
+        "valid_actions": 1583,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 211,
+          "click": 1372
+        }
+      },
+      {
+        "round": 31,
+        "entropy": 0.39219423331813297,
+        "total_actions": 1300,
+        "valid_actions": 1300,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 173,
+          "click": 1127
+        }
+      },
+      {
+        "round": 32,
+        "entropy": 0.4016335906604653,
+        "total_actions": 1281,
+        "valid_actions": 1281,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 177,
+          "click": 1104
+        }
+      },
+      {
+        "round": 33,
+        "entropy": 0.41145679889323583,
+        "total_actions": 1525,
+        "valid_actions": 1525,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 219,
+          "click": 1306
+        }
+      },
+      {
+        "round": 34,
+        "entropy": 0.38826059272842717,
+        "total_actions": 1336,
+        "valid_actions": 1336,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 175,
+          "click": 1161
+        }
+      },
+      {
+        "round": 35,
+        "entropy": 0.3670267633448375,
+        "total_actions": 1566,
+        "valid_actions": 1566,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 188,
+          "click": 1378
+        }
+      },
+      {
+        "round": 36,
+        "entropy": 0.3224276215128391,
+        "total_actions": 1660,
+        "valid_actions": 1660,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 164,
+          "click": 1496
+        }
+      },
+      {
+        "round": 37,
+        "entropy": 0.2779165624644201,
+        "total_actions": 1720,
+        "valid_actions": 1720,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 137,
+          "click": 1583
+        }
+      },
+      {
+        "round": 38,
+        "entropy": 0.32559484529573757,
+        "total_actions": 1716,
+        "valid_actions": 1716,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 172,
+          "click": 1544
+        }
+      },
+      {
+        "round": 39,
+        "entropy": 0.38426355836418224,
+        "total_actions": 1544,
+        "valid_actions": 1544,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 199,
+          "click": 1345
+        }
+      },
+      {
+        "round": 40,
+        "entropy": 0.38955392293026697,
+        "total_actions": 1405,
+        "valid_actions": 1405,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 185,
+          "click": 1220
+        }
+      },
+      {
+        "round": 41,
+        "entropy": 0.338114424486786,
+        "total_actions": 1528,
+        "valid_actions": 1528,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 162,
+          "click": 1366
+        }
+      },
+      {
+        "round": 42,
+        "entropy": 0.3201604112696022,
+        "total_actions": 1616,
+        "valid_actions": 1616,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 158,
+          "click": 1458
+        }
+      },
+      {
+        "round": 43,
+        "entropy": 0.33235063699629985,
+        "total_actions": 1529,
+        "valid_actions": 1529,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 158,
+          "click": 1371
+        }
+      },
+      {
+        "round": 44,
+        "entropy": 0.3396481078360224,
+        "total_actions": 1424,
+        "valid_actions": 1424,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 152,
+          "click": 1272
+        }
+      },
+      {
+        "round": 45,
+        "entropy": 0.3280516099684242,
+        "total_actions": 1549,
+        "valid_actions": 1549,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 157,
+          "click": 1392
+        }
+      },
+      {
+        "round": 46,
+        "entropy": 0.33383180308413896,
+        "total_actions": 1442,
+        "valid_actions": 1442,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 150,
+          "click": 1292
+        }
+      },
+      {
+        "round": 47,
+        "entropy": 0.3544774189195012,
+        "total_actions": 1423,
+        "valid_actions": 1423,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 162,
+          "click": 1261
+        }
+      },
+      {
+        "round": 48,
+        "entropy": 0.34837970555092795,
+        "total_actions": 1533,
+        "valid_actions": 1533,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 170,
+          "click": 1363
+        }
+      },
+      {
+        "round": 49,
+        "entropy": 0.3531433695794008,
+        "total_actions": 1493,
+        "valid_actions": 1493,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 169,
+          "click": 1324
+        }
+      },
+      {
+        "round": 50,
+        "entropy": 0.34485564838061866,
+        "total_actions": 1401,
+        "valid_actions": 1401,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 153,
+          "click": 1248
+        }
+      },
+      {
+        "round": 51,
+        "entropy": 0.3356229642499794,
+        "total_actions": 1421,
+        "valid_actions": 1421,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 149,
+          "click": 1272
+        }
+      },
+      {
+        "round": 52,
+        "entropy": 0.4002649259496823,
+        "total_actions": 1026,
+        "valid_actions": 1026,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 141,
+          "click": 885
+        }
+      },
+      {
+        "round": 53,
+        "entropy": 0.34615262700725147,
+        "total_actions": 1384,
+        "valid_actions": 1384,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 152,
+          "click": 1232
+        }
+      },
+      {
+        "round": 54,
+        "entropy": 0.30919605664445055,
+        "total_actions": 1507,
+        "valid_actions": 1507,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 140,
+          "click": 1367
+        }
+      },
+      {
+        "round": 55,
+        "entropy": 0.3323773769289264,
+        "total_actions": 1374,
+        "valid_actions": 1374,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 142,
+          "click": 1232
+        }
+      },
+      {
+        "round": 56,
+        "entropy": 0.3707268489465302,
+        "total_actions": 1419,
+        "valid_actions": 1419,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 173,
+          "click": 1246
+        }
+      },
+      {
+        "round": 57,
+        "entropy": 0.35256597389297173,
+        "total_actions": 1417,
+        "valid_actions": 1417,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 160,
+          "click": 1257
+        }
+      },
+      {
+        "round": 58,
+        "entropy": 0.4070252427319581,
+        "total_actions": 1247,
+        "valid_actions": 1247,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 176,
+          "click": 1071
+        }
+      },
+      {
+        "round": 59,
+        "entropy": 0.34294708321705003,
+        "total_actions": 1265,
+        "valid_actions": 1265,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 137,
+          "click": 1128
+        }
+      },
+      {
+        "round": 60,
+        "entropy": 0.3760434383597893,
+        "total_actions": 1340,
+        "valid_actions": 1340,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 167,
+          "click": 1173
+        }
+      },
+      {
+        "round": 61,
+        "entropy": 0.39225373716105993,
+        "total_actions": 1187,
+        "valid_actions": 1187,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 158,
+          "click": 1029
+        }
+      },
+      {
+        "round": 62,
+        "entropy": 0.372592967627407,
+        "total_actions": 1229,
+        "valid_actions": 1229,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 151,
+          "click": 1078
+        }
+      },
+      {
+        "round": 63,
+        "entropy": 0.3712001500423095,
+        "total_actions": 1187,
+        "valid_actions": 1187,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 145,
+          "click": 1042
+        }
+      },
+      {
+        "round": 64,
+        "entropy": 0.34936048516783014,
+        "total_actions": 1311,
+        "valid_actions": 1311,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 146,
+          "click": 1165
+        }
+      },
+      {
+        "round": 65,
+        "entropy": 0.3748443772608028,
+        "total_actions": 1266,
+        "valid_actions": 1266,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 157,
+          "click": 1109
+        }
+      },
+      {
+        "round": 66,
+        "entropy": 0.3628179330340834,
+        "total_actions": 1365,
+        "valid_actions": 1365,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 161,
+          "click": 1204
+        }
+      },
+      {
+        "round": 67,
+        "entropy": 0.3578477829681814,
+        "total_actions": 1420,
+        "valid_actions": 1420,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 164,
+          "click": 1256
+        }
+      },
+      {
+        "round": 68,
+        "entropy": 0.325229528030082,
+        "total_actions": 1499,
+        "valid_actions": 1499,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 150,
+          "click": 1349
+        }
+      },
+      {
+        "round": 69,
+        "entropy": 0.37556624547731493,
+        "total_actions": 1214,
+        "valid_actions": 1214,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 151,
+          "click": 1063
+        }
+      },
+      {
+        "round": 70,
+        "entropy": 0.4198391678207508,
+        "total_actions": 1092,
+        "valid_actions": 1092,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 162,
+          "click": 930
+        }
+      },
+      {
+        "round": 71,
+        "entropy": 0.4049269216477861,
+        "total_actions": 993,
+        "valid_actions": 993,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 139,
+          "click": 854
+        }
+      },
+      {
+        "round": 72,
+        "entropy": 0.41729007001943813,
+        "total_actions": 1096,
+        "valid_actions": 1096,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 161,
+          "click": 935
+        }
+      },
+      {
+        "round": 73,
+        "entropy": 0.3280526155438506,
+        "total_actions": 1401,
+        "valid_actions": 1401,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 142,
+          "click": 1259
+        }
+      },
+      {
+        "round": 74,
+        "entropy": 0.3253781989505954,
+        "total_actions": 1488,
+        "valid_actions": 1488,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 149,
+          "click": 1339
+        }
+      },
+      {
+        "round": 75,
+        "entropy": 0.3803214190850216,
+        "total_actions": 1364,
+        "valid_actions": 1364,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 173,
+          "click": 1191
+        }
+      },
+      {
+        "round": 76,
+        "entropy": 0.32724995568675463,
+        "total_actions": 1416,
+        "valid_actions": 1416,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 143,
+          "click": 1273
+        }
+      },
+      {
+        "round": 77,
+        "entropy": 0.34668167655554744,
+        "total_actions": 1508,
+        "valid_actions": 1508,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 166,
+          "click": 1342
+        }
+      },
+      {
+        "round": 78,
+        "entropy": 0.34932656117644756,
+        "total_actions": 1401,
+        "valid_actions": 1401,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 156,
+          "click": 1245
+        }
+      },
+      {
+        "round": 79,
+        "entropy": 0.3497799097792963,
+        "total_actions": 1461,
+        "valid_actions": 1461,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 163,
+          "click": 1298
+        }
+      },
+      {
+        "round": 80,
+        "entropy": 0.3231655608979127,
+        "total_actions": 1493,
+        "valid_actions": 1493,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 148,
+          "click": 1345
+        }
+      },
+      {
+        "round": 81,
+        "entropy": 0.3621130757087553,
+        "total_actions": 1216,
+        "valid_actions": 1216,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 143,
+          "click": 1073
+        }
+      },
+      {
+        "round": 82,
+        "entropy": 0.3801399322545205,
+        "total_actions": 1294,
+        "valid_actions": 1294,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 164,
+          "click": 1130
+        }
+      },
+      {
+        "round": 83,
+        "entropy": 0.36585174216824656,
+        "total_actions": 1264,
+        "valid_actions": 1264,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 151,
+          "click": 1113
+        }
+      },
+      {
+        "round": 84,
+        "entropy": 0.3694638862606446,
+        "total_actions": 1377,
+        "valid_actions": 1377,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 167,
+          "click": 1210
+        }
+      },
+      {
+        "round": 85,
+        "entropy": 0.3780649135630588,
+        "total_actions": 1313,
+        "valid_actions": 1313,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 165,
+          "click": 1148
+        }
+      },
+      {
+        "round": 86,
+        "entropy": 0.362210557135449,
+        "total_actions": 1462,
+        "valid_actions": 1462,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 172,
+          "click": 1290
+        }
+      },
+      {
+        "round": 87,
+        "entropy": 0.39823471623638973,
+        "total_actions": 1159,
+        "valid_actions": 1159,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 158,
+          "click": 1001
+        }
+      },
+      {
+        "round": 88,
+        "entropy": 0.37044510679823783,
+        "total_actions": 1240,
+        "valid_actions": 1240,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 151,
+          "click": 1089
+        }
+      },
+      {
+        "round": 89,
+        "entropy": 0.39046261569601615,
+        "total_actions": 1188,
+        "valid_actions": 1188,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 157,
+          "click": 1031
+        }
+      },
+      {
+        "round": 90,
+        "entropy": 0.3611133799717218,
+        "total_actions": 1298,
+        "valid_actions": 1298,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 152,
+          "click": 1146
+        }
+      },
+      {
+        "round": 91,
+        "entropy": 0.4349521865871665,
+        "total_actions": 948,
+        "valid_actions": 948,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 149,
+          "click": 799
+        }
+      },
+      {
+        "round": 92,
+        "entropy": 0.39880834492384126,
+        "total_actions": 1171,
+        "valid_actions": 1171,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 160,
+          "click": 1011
+        }
+      },
+      {
+        "round": 93,
+        "entropy": 0.36372735747240487,
+        "total_actions": 1326,
+        "valid_actions": 1326,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 157,
+          "click": 1169
+        }
+      },
+      {
+        "round": 94,
+        "entropy": 0.43429819458883023,
+        "total_actions": 995,
+        "valid_actions": 995,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 156,
+          "click": 839
+        }
+      },
+      {
+        "round": 95,
+        "entropy": 0.46203690946645704,
+        "total_actions": 943,
+        "valid_actions": 943,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 164,
+          "click": 779
+        }
+      },
+      {
+        "round": 96,
+        "entropy": 0.42827621718309394,
+        "total_actions": 1129,
+        "valid_actions": 1129,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 173,
+          "click": 956
+        }
+      },
+      {
+        "round": 97,
+        "entropy": 0.4468012983397404,
+        "total_actions": 1004,
+        "valid_actions": 1004,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 165,
+          "click": 839
+        }
+      },
+      {
+        "round": 98,
+        "entropy": 0.4108796528800217,
+        "total_actions": 1005,
+        "valid_actions": 1005,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 144,
+          "click": 861
+        }
+      },
+      {
+        "round": 99,
+        "entropy": 0.4337090054910536,
+        "total_actions": 1189,
+        "valid_actions": 1189,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 186,
+          "click": 1003
+        }
+      },
+      {
+        "round": 100,
+        "entropy": 0.49500662542639307,
+        "total_actions": 933,
+        "valid_actions": 933,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 183,
+          "click": 750
+        }
+      },
+      {
+        "round": 101,
+        "entropy": 0.48114073044205835,
+        "total_actions": 831,
+        "valid_actions": 831,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 155,
+          "click": 676
+        }
+      },
+      {
+        "round": 102,
+        "entropy": 0.45556015239722614,
+        "total_actions": 1119,
+        "valid_actions": 1119,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 190,
+          "click": 929
+        }
+      },
+      {
+        "round": 103,
+        "entropy": 0.45911092284604993,
+        "total_actions": 1116,
+        "valid_actions": 1116,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 192,
+          "click": 924
+        }
+      },
+      {
+        "round": 104,
+        "entropy": 0.4117857428745675,
+        "total_actions": 1071,
+        "valid_actions": 1071,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 154,
+          "click": 917
+        }
+      },
+      {
+        "round": 105,
+        "entropy": 0.44619446425250253,
+        "total_actions": 927,
+        "valid_actions": 927,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 152,
+          "click": 775
+        }
+      },
+      {
+        "round": 106,
+        "entropy": 0.40966541613367113,
+        "total_actions": 1136,
+        "valid_actions": 1136,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 162,
+          "click": 974
+        }
+      },
+      {
+        "round": 107,
+        "entropy": 0.4158639299453475,
+        "total_actions": 1061,
+        "valid_actions": 1061,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 155,
+          "click": 906
+        }
+      },
+      {
+        "round": 108,
+        "entropy": 0.42347584322678344,
+        "total_actions": 1017,
+        "valid_actions": 1017,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 153,
+          "click": 864
+        }
+      },
+      {
+        "round": 109,
+        "entropy": 0.4450124505548236,
+        "total_actions": 1023,
+        "valid_actions": 1023,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 167,
+          "click": 856
+        }
+      },
+      {
+        "round": 110,
+        "entropy": 0.4079774708103113,
+        "total_actions": 1200,
+        "valid_actions": 1200,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 170,
+          "click": 1030
+        }
+      },
+      {
+        "round": 111,
+        "entropy": 0.47442524655583507,
+        "total_actions": 956,
+        "valid_actions": 956,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 174,
+          "click": 782
+        }
+      },
+      {
+        "round": 112,
+        "entropy": 0.42745216981742507,
+        "total_actions": 1054,
+        "valid_actions": 1054,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 161,
+          "click": 893
+        }
+      },
+      {
+        "round": 113,
+        "entropy": 0.41429018200987733,
+        "total_actions": 1281,
+        "valid_actions": 1281,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 186,
+          "click": 1095
+        }
+      },
+      {
+        "round": 114,
+        "entropy": 0.39352973306430905,
+        "total_actions": 1166,
+        "valid_actions": 1166,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 156,
+          "click": 1010
+        }
+      },
+      {
+        "round": 115,
+        "entropy": 0.44109709793069174,
+        "total_actions": 1206,
+        "valid_actions": 1206,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 194,
+          "click": 1012
+        }
+      },
+      {
+        "round": 116,
+        "entropy": 0.4167354095116753,
+        "total_actions": 1112,
+        "valid_actions": 1112,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 163,
+          "click": 949
+        }
+      },
+      {
+        "round": 117,
+        "entropy": 0.3903940451139745,
+        "total_actions": 1317,
+        "valid_actions": 1317,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 174,
+          "click": 1143
+        }
+      },
+      {
+        "round": 118,
+        "entropy": 0.38659865415265093,
+        "total_actions": 1345,
+        "valid_actions": 1345,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 175,
+          "click": 1170
+        }
+      },
+      {
+        "round": 119,
+        "entropy": 0.386269861570003,
+        "total_actions": 1139,
+        "valid_actions": 1139,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 148,
+          "click": 991
+        }
+      },
+      {
+        "round": 120,
+        "entropy": 0.4187271172927099,
+        "total_actions": 1029,
+        "valid_actions": 1029,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 152,
+          "click": 877
+        }
+      },
+      {
+        "round": 121,
+        "entropy": 0.4173878568439907,
+        "total_actions": 1116,
+        "valid_actions": 1116,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 164,
+          "click": 952
+        }
+      },
+      {
+        "round": 122,
+        "entropy": 0.420439876836144,
+        "total_actions": 1150,
+        "valid_actions": 1150,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 171,
+          "click": 979
+        }
+      },
+      {
+        "round": 123,
+        "entropy": 0.38483754177297547,
+        "total_actions": 1254,
+        "valid_actions": 1254,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 162,
+          "click": 1092
+        }
+      },
+      {
+        "round": 124,
+        "entropy": 0.4183164079931453,
+        "total_actions": 1112,
+        "valid_actions": 1112,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 164,
+          "click": 948
+        }
+      },
+      {
+        "round": 125,
+        "entropy": 0.38435377973893303,
+        "total_actions": 1303,
+        "valid_actions": 1303,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 168,
+          "click": 1135
+        }
+      },
+      {
+        "round": 126,
+        "entropy": 0.43497097770451265,
+        "total_actions": 1037,
+        "valid_actions": 1037,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 163,
+          "click": 874
+        }
+      },
+      {
+        "round": 127,
+        "entropy": 0.426985090626129,
+        "total_actions": 1069,
+        "valid_actions": 1069,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 163,
+          "click": 906
+        }
+      },
+      {
+        "round": 128,
+        "entropy": 0.4205654056848511,
+        "total_actions": 1136,
+        "valid_actions": 1136,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 169,
+          "click": 967
+        }
+      },
+      {
+        "round": 129,
+        "entropy": 0.3568430183883457,
+        "total_actions": 1200,
+        "valid_actions": 1200,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 138,
+          "click": 1062
+        }
+      },
+      {
+        "round": 130,
+        "entropy": 0.4053474874835371,
+        "total_actions": 1134,
+        "valid_actions": 1134,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 159,
+          "click": 975
+        }
+      },
+      {
+        "round": 131,
+        "entropy": 0.4267199499700301,
+        "total_actions": 1011,
+        "valid_actions": 1011,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 154,
+          "click": 857
+        }
+      },
+      {
+        "round": 132,
+        "entropy": 0.44097488691054254,
+        "total_actions": 964,
+        "valid_actions": 964,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 155,
+          "click": 809
+        }
+      },
+      {
+        "round": 133,
+        "entropy": 0.42467923195452406,
+        "total_actions": 966,
+        "valid_actions": 966,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 146,
+          "click": 820
+        }
+      },
+      {
+        "round": 134,
+        "entropy": 0.38613975394283734,
+        "total_actions": 1001,
+        "valid_actions": 1001,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 871
+        }
+      },
+      {
+        "round": 135,
+        "entropy": 0.4098589821939884,
+        "total_actions": 995,
+        "valid_actions": 995,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 142,
+          "click": 853
+        }
+      },
+      {
+        "round": 136,
+        "entropy": 0.4405505040837663,
+        "total_actions": 978,
+        "valid_actions": 978,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 157,
+          "click": 821
+        }
+      },
+      {
+        "round": 137,
+        "entropy": 0.42188044164483995,
+        "total_actions": 943,
+        "valid_actions": 943,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 141,
+          "click": 802
+        }
+      },
+      {
+        "round": 138,
+        "entropy": 0.4277983546281938,
+        "total_actions": 948,
+        "valid_actions": 948,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 145,
+          "click": 803
+        }
+      },
+      {
+        "round": 139,
+        "entropy": 0.421307661764634,
+        "total_actions": 992,
+        "valid_actions": 992,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 148,
+          "click": 844
+        }
+      },
+      {
+        "round": 140,
+        "entropy": 0.39754086090842666,
+        "total_actions": 1096,
+        "valid_actions": 1096,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 149,
+          "click": 947
+        }
+      },
+      {
+        "round": 141,
+        "entropy": 0.4430557728246337,
+        "total_actions": 975,
+        "valid_actions": 975,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 158,
+          "click": 817
+        }
+      },
+      {
+        "round": 142,
+        "entropy": 0.45919902030042425,
+        "total_actions": 767,
+        "valid_actions": 767,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 635
+        }
+      },
+      {
+        "round": 143,
+        "entropy": 0.47135504743464274,
+        "total_actions": 789,
+        "valid_actions": 789,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 142,
+          "click": 647
+        }
+      },
+      {
+        "round": 144,
+        "entropy": 0.44753461747137313,
+        "total_actions": 801,
+        "valid_actions": 801,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 669
+        }
+      },
+      {
+        "round": 145,
+        "entropy": 0.410116318288409,
+        "total_actions": 931,
+        "valid_actions": 931,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 133,
+          "click": 798
+        }
+      },
+      {
+        "round": 146,
+        "entropy": 0.45089018677158943,
+        "total_actions": 815,
+        "valid_actions": 815,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 136,
+          "click": 679
+        }
+      },
+      {
+        "round": 147,
+        "entropy": 0.41283519437564553,
+        "total_actions": 1032,
+        "valid_actions": 1032,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 149,
+          "click": 883
+        }
+      },
+      {
+        "round": 148,
+        "entropy": 0.42384360881989125,
+        "total_actions": 916,
+        "valid_actions": 916,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 138,
+          "click": 778
+        }
+      },
+      {
+        "round": 149,
+        "entropy": 0.38788607063782865,
+        "total_actions": 1101,
+        "valid_actions": 1101,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 144,
+          "click": 957
+        }
+      },
+      {
+        "round": 150,
+        "entropy": 0.4155709945222521,
+        "total_actions": 932,
+        "valid_actions": 932,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 136,
+          "click": 796
+        }
+      },
+      {
+        "round": 151,
+        "entropy": 0.37381897421653915,
+        "total_actions": 1158,
+        "valid_actions": 1158,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 143,
+          "click": 1015
+        }
+      },
+      {
+        "round": 152,
+        "entropy": 0.42397526264952246,
+        "total_actions": 889,
+        "valid_actions": 889,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 134,
+          "click": 755
+        }
+      },
+      {
+        "round": 153,
+        "entropy": 0.4378384941702209,
+        "total_actions": 944,
+        "valid_actions": 944,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 150,
+          "click": 794
+        }
+      },
+      {
+        "round": 154,
+        "entropy": 0.4663471520977096,
+        "total_actions": 781,
+        "valid_actions": 781,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 138,
+          "click": 643
+        }
+      },
+      {
+        "round": 155,
+        "entropy": 0.4411445587898901,
+        "total_actions": 808,
+        "valid_actions": 808,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 678
+        }
+      },
+      {
+        "round": 156,
+        "entropy": 0.4339878952593067,
+        "total_actions": 894,
+        "valid_actions": 894,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 140,
+          "click": 754
+        }
+      },
+      {
+        "round": 157,
+        "entropy": 0.39685052969275647,
+        "total_actions": 981,
+        "valid_actions": 981,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 133,
+          "click": 848
+        }
+      },
+      {
+        "round": 158,
+        "entropy": 0.4344307835427204,
+        "total_actions": 867,
+        "valid_actions": 867,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 136,
+          "click": 731
+        }
+      },
+      {
+        "round": 159,
+        "entropy": 0.37361010967641367,
+        "total_actions": 1159,
+        "valid_actions": 1159,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 143,
+          "click": 1016
+        }
+      }
+    ],
+    "gdr": [
+      {
+        "round": 0,
+        "entropy": 0.6588585216536026,
+        "total_actions": 1206,
+        "valid_actions": 1206,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 446,
+          "click": 760
+        }
+      },
+      {
+        "round": 1,
+        "entropy": 0.6638825212531887,
+        "total_actions": 1080,
+        "valid_actions": 1080,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 410,
+          "click": 670
+        }
+      },
+      {
+        "round": 2,
+        "entropy": 0.6762852909851831,
+        "total_actions": 1185,
+        "valid_actions": 1185,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 484,
+          "click": 701
+        }
+      },
+      {
+        "round": 3,
+        "entropy": 0.6662455646972021,
+        "total_actions": 1100,
+        "valid_actions": 1100,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 423,
+          "click": 677
+        }
+      },
+      {
+        "round": 4,
+        "entropy": 0.6585198715322411,
+        "total_actions": 1311,
+        "valid_actions": 1311,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 484,
+          "click": 827
+        }
+      },
+      {
+        "round": 5,
+        "entropy": 0.6626207014746825,
+        "total_actions": 1257,
+        "valid_actions": 1257,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 474,
+          "click": 783
+        }
+      },
+      {
+        "round": 6,
+        "entropy": 0.6705261502063693,
+        "total_actions": 1076,
+        "valid_actions": 1076,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 424,
+          "click": 652
+        }
+      },
+      {
+        "round": 7,
+        "entropy": 0.6716804579311719,
+        "total_actions": 867,
+        "valid_actions": 867,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 344,
+          "click": 523
+        }
+      },
+      {
+        "round": 8,
+        "entropy": 0.6761463508067342,
+        "total_actions": 1240,
+        "valid_actions": 1240,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 506,
+          "click": 734
+        }
+      },
+      {
+        "round": 9,
+        "entropy": 0.6428883897824831,
+        "total_actions": 773,
+        "valid_actions": 773,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 265,
+          "click": 508
+        }
+      },
+      {
+        "round": 10,
+        "entropy": 0.6367824920376033,
+        "total_actions": 860,
+        "valid_actions": 860,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 287,
+          "click": 573
+        }
+      },
+      {
+        "round": 11,
+        "entropy": 0.6427171347324161,
+        "total_actions": 1048,
+        "valid_actions": 1048,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 359,
+          "click": 689
+        }
+      },
+      {
+        "round": 12,
+        "entropy": 0.6376948747167046,
+        "total_actions": 973,
+        "valid_actions": 973,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 326,
+          "click": 647
+        }
+      },
+      {
+        "round": 13,
+        "entropy": 0.6157812938781906,
+        "total_actions": 1288,
+        "valid_actions": 1288,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 394,
+          "click": 894
+        }
+      },
+      {
+        "round": 14,
+        "entropy": 0.6138881981173783,
+        "total_actions": 1054,
+        "valid_actions": 1054,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 320,
+          "click": 734
+        }
+      },
+      {
+        "round": 15,
+        "entropy": 0.5979387174475848,
+        "total_actions": 1188,
+        "valid_actions": 1188,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 339,
+          "click": 849
+        }
+      },
+      {
+        "round": 16,
+        "entropy": 0.598002512879698,
+        "total_actions": 981,
+        "valid_actions": 981,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 280,
+          "click": 701
+        }
+      },
+      {
+        "round": 17,
+        "entropy": 0.5756298544557151,
+        "total_actions": 1002,
+        "valid_actions": 1002,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 263,
+          "click": 739
+        }
+      },
+      {
+        "round": 18,
+        "entropy": 0.5701660028496126,
+        "total_actions": 1275,
+        "valid_actions": 1275,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 328,
+          "click": 947
+        }
+      },
+      {
+        "round": 19,
+        "entropy": 0.5234725007026723,
+        "total_actions": 1468,
+        "valid_actions": 1468,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 319,
+          "click": 1149
+        }
+      },
+      {
+        "round": 20,
+        "entropy": 0.525444603215839,
+        "total_actions": 1613,
+        "valid_actions": 1613,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 353,
+          "click": 1260
+        }
+      },
+      {
+        "round": 21,
+        "entropy": 0.5386682756341026,
+        "total_actions": 1512,
+        "valid_actions": 1512,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 347,
+          "click": 1165
+        }
+      },
+      {
+        "round": 22,
+        "entropy": 0.5092836468084114,
+        "total_actions": 1569,
+        "valid_actions": 1569,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 324,
+          "click": 1245
+        }
+      },
+      {
+        "round": 23,
+        "entropy": 0.5306101619012731,
+        "total_actions": 1691,
+        "valid_actions": 1691,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 377,
+          "click": 1314
+        }
+      },
+      {
+        "round": 24,
+        "entropy": 0.5357315022054211,
+        "total_actions": 1462,
+        "valid_actions": 1462,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 332,
+          "click": 1130
+        }
+      },
+      {
+        "round": 25,
+        "entropy": 0.45235697871908603,
+        "total_actions": 1490,
+        "valid_actions": 1490,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 250,
+          "click": 1240
+        }
+      },
+      {
+        "round": 26,
+        "entropy": 0.458729108248352,
+        "total_actions": 1461,
+        "valid_actions": 1461,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 251,
+          "click": 1210
+        }
+      },
+      {
+        "round": 27,
+        "entropy": 0.43431163285630664,
+        "total_actions": 1384,
+        "valid_actions": 1384,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 217,
+          "click": 1167
+        }
+      },
+      {
+        "round": 28,
+        "entropy": 0.4922383470588993,
+        "total_actions": 1514,
+        "valid_actions": 1514,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 294,
+          "click": 1220
+        }
+      },
+      {
+        "round": 29,
+        "entropy": 0.48896291331629327,
+        "total_actions": 1407,
+        "valid_actions": 1407,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 270,
+          "click": 1137
+        }
+      },
+      {
+        "round": 30,
+        "entropy": 0.4967749323560559,
+        "total_actions": 1307,
+        "valid_actions": 1307,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 258,
+          "click": 1049
+        }
+      },
+      {
+        "round": 31,
+        "entropy": 0.5214756556667441,
+        "total_actions": 927,
+        "valid_actions": 927,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 200,
+          "click": 727
+        }
+      },
+      {
+        "round": 32,
+        "entropy": 0.5326339858293033,
+        "total_actions": 993,
+        "valid_actions": 993,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 223,
+          "click": 770
+        }
+      },
+      {
+        "round": 33,
+        "entropy": 0.5068988276325186,
+        "total_actions": 1309,
+        "valid_actions": 1309,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 268,
+          "click": 1041
+        }
+      },
+      {
+        "round": 34,
+        "entropy": 0.5375760627868094,
+        "total_actions": 1098,
+        "valid_actions": 1098,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 251,
+          "click": 847
+        }
+      },
+      {
+        "round": 35,
+        "entropy": 0.5423212305164185,
+        "total_actions": 1002,
+        "valid_actions": 1002,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 233,
+          "click": 769
+        }
+      },
+      {
+        "round": 36,
+        "entropy": 0.4674358499010467,
+        "total_actions": 1133,
+        "valid_actions": 1133,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 201,
+          "click": 932
+        }
+      },
+      {
+        "round": 37,
+        "entropy": 0.4745708287169257,
+        "total_actions": 950,
+        "valid_actions": 950,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 173,
+          "click": 777
+        }
+      },
+      {
+        "round": 38,
+        "entropy": 0.49279470795495334,
+        "total_actions": 1033,
+        "valid_actions": 1033,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 201,
+          "click": 832
+        }
+      },
+      {
+        "round": 39,
+        "entropy": 0.4671622152339884,
+        "total_actions": 1089,
+        "valid_actions": 1089,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 193,
+          "click": 896
+        }
+      },
+      {
+        "round": 40,
+        "entropy": 0.47823921055907487,
+        "total_actions": 1127,
+        "valid_actions": 1127,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 208,
+          "click": 919
+        }
+      },
+      {
+        "round": 41,
+        "entropy": 0.5157063477866325,
+        "total_actions": 989,
+        "valid_actions": 989,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 209,
+          "click": 780
+        }
+      },
+      {
+        "round": 42,
+        "entropy": 0.4691322886106085,
+        "total_actions": 1238,
+        "valid_actions": 1238,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 221,
+          "click": 1017
+        }
+      },
+      {
+        "round": 43,
+        "entropy": 0.43554951599610886,
+        "total_actions": 1295,
+        "valid_actions": 1295,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 204,
+          "click": 1091
+        }
+      },
+      {
+        "round": 44,
+        "entropy": 0.4145637862392946,
+        "total_actions": 1259,
+        "valid_actions": 1259,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 183,
+          "click": 1076
+        }
+      },
+      {
+        "round": 45,
+        "entropy": 0.4437922953464478,
+        "total_actions": 1040,
+        "valid_actions": 1040,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 169,
+          "click": 871
+        }
+      },
+      {
+        "round": 46,
+        "entropy": 0.4046160369095393,
+        "total_actions": 1359,
+        "valid_actions": 1359,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 190,
+          "click": 1169
+        }
+      },
+      {
+        "round": 47,
+        "entropy": 0.40968661103217885,
+        "total_actions": 1192,
+        "valid_actions": 1192,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 170,
+          "click": 1022
+        }
+      },
+      {
+        "round": 48,
+        "entropy": 0.38913792430629923,
+        "total_actions": 1453,
+        "valid_actions": 1453,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 191,
+          "click": 1262
+        }
+      },
+      {
+        "round": 49,
+        "entropy": 0.4317508340865417,
+        "total_actions": 1346,
+        "valid_actions": 1346,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 209,
+          "click": 1137
+        }
+      },
+      {
+        "round": 50,
+        "entropy": 0.3464381808457916,
+        "total_actions": 1355,
+        "valid_actions": 1355,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 149,
+          "click": 1206
+        }
+      },
+      {
+        "round": 51,
+        "entropy": 0.39277657121812676,
+        "total_actions": 1222,
+        "valid_actions": 1222,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 163,
+          "click": 1059
+        }
+      },
+      {
+        "round": 52,
+        "entropy": 0.38061317843558684,
+        "total_actions": 1197,
+        "valid_actions": 1197,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 152,
+          "click": 1045
+        }
+      },
+      {
+        "round": 53,
+        "entropy": 0.3715939981433104,
+        "total_actions": 1324,
+        "valid_actions": 1324,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 162,
+          "click": 1162
+        }
+      },
+      {
+        "round": 54,
+        "entropy": 0.3591097094517372,
+        "total_actions": 1266,
+        "valid_actions": 1266,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 147,
+          "click": 1119
+        }
+      },
+      {
+        "round": 55,
+        "entropy": 0.4137176239160478,
+        "total_actions": 1132,
+        "valid_actions": 1132,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 164,
+          "click": 968
+        }
+      },
+      {
+        "round": 56,
+        "entropy": 0.36264963039704334,
+        "total_actions": 1349,
+        "valid_actions": 1349,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 159,
+          "click": 1190
+        }
+      },
+      {
+        "round": 57,
+        "entropy": 0.3569743044243071,
+        "total_actions": 1321,
+        "valid_actions": 1321,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 152,
+          "click": 1169
+        }
+      },
+      {
+        "round": 58,
+        "entropy": 0.33672247998789206,
+        "total_actions": 1490,
+        "valid_actions": 1490,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 157,
+          "click": 1333
+        }
+      },
+      {
+        "round": 59,
+        "entropy": 0.36502313423558724,
+        "total_actions": 1260,
+        "valid_actions": 1260,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 150,
+          "click": 1110
+        }
+      },
+      {
+        "round": 60,
+        "entropy": 0.36434823947951334,
+        "total_actions": 1272,
+        "valid_actions": 1272,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 151,
+          "click": 1121
+        }
+      },
+      {
+        "round": 61,
+        "entropy": 0.3784998344794621,
+        "total_actions": 1263,
+        "valid_actions": 1263,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 159,
+          "click": 1104
+        }
+      },
+      {
+        "round": 62,
+        "entropy": 0.3843850802818021,
+        "total_actions": 1171,
+        "valid_actions": 1171,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 151,
+          "click": 1020
+        }
+      },
+      {
+        "round": 63,
+        "entropy": 0.35029193266861014,
+        "total_actions": 1422,
+        "valid_actions": 1422,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 159,
+          "click": 1263
+        }
+      },
+      {
+        "round": 64,
+        "entropy": 0.34883209584303193,
+        "total_actions": 1368,
+        "valid_actions": 1368,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 152,
+          "click": 1216
+        }
+      },
+      {
+        "round": 65,
+        "entropy": 0.3736196599911816,
+        "total_actions": 1240,
+        "valid_actions": 1240,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 153,
+          "click": 1087
+        }
+      },
+      {
+        "round": 66,
+        "entropy": 0.40068445183164303,
+        "total_actions": 1126,
+        "valid_actions": 1126,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 155,
+          "click": 971
+        }
+      },
+      {
+        "round": 67,
+        "entropy": 0.40118986218700575,
+        "total_actions": 1073,
+        "valid_actions": 1073,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 148,
+          "click": 925
+        }
+      },
+      {
+        "round": 68,
+        "entropy": 0.3969706352084882,
+        "total_actions": 1069,
+        "valid_actions": 1069,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 145,
+          "click": 924
+        }
+      },
+      {
+        "round": 69,
+        "entropy": 0.38980388693641793,
+        "total_actions": 1047,
+        "valid_actions": 1047,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 138,
+          "click": 909
+        }
+      },
+      {
+        "round": 70,
+        "entropy": 0.4083222656650164,
+        "total_actions": 1001,
+        "valid_actions": 1001,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 142,
+          "click": 859
+        }
+      },
+      {
+        "round": 71,
+        "entropy": 0.38736083329374726,
+        "total_actions": 1111,
+        "valid_actions": 1111,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 145,
+          "click": 966
+        }
+      },
+      {
+        "round": 72,
+        "entropy": 0.3508768188919561,
+        "total_actions": 1240,
+        "valid_actions": 1240,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 139,
+          "click": 1101
+        }
+      },
+      {
+        "round": 73,
+        "entropy": 0.3501788794509698,
+        "total_actions": 1199,
+        "valid_actions": 1199,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 134,
+          "click": 1065
+        }
+      },
+      {
+        "round": 74,
+        "entropy": 0.34072849014103024,
+        "total_actions": 1324,
+        "valid_actions": 1324,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 142,
+          "click": 1182
+        }
+      },
+      {
+        "round": 75,
+        "entropy": 0.3368448722575575,
+        "total_actions": 1290,
+        "valid_actions": 1290,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 136,
+          "click": 1154
+        }
+      },
+      {
+        "round": 76,
+        "entropy": 0.37224876675811724,
+        "total_actions": 1190,
+        "valid_actions": 1190,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 146,
+          "click": 1044
+        }
+      },
+      {
+        "round": 77,
+        "entropy": 0.37585815160027536,
+        "total_actions": 1068,
+        "valid_actions": 1068,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 133,
+          "click": 935
+        }
+      },
+      {
+        "round": 78,
+        "entropy": 0.38781953638639305,
+        "total_actions": 1086,
+        "valid_actions": 1086,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 142,
+          "click": 944
+        }
+      },
+      {
+        "round": 79,
+        "entropy": 0.3082226797851625,
+        "total_actions": 1395,
+        "valid_actions": 1395,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 1266
+        }
+      },
+      {
+        "round": 80,
+        "entropy": 0.42330131854012054,
+        "total_actions": 878,
+        "valid_actions": 878,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 746
+        }
+      },
+      {
+        "round": 81,
+        "entropy": 0.39370127303233926,
+        "total_actions": 971,
+        "valid_actions": 971,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 841
+        }
+      },
+      {
+        "round": 82,
+        "entropy": 0.35123834437048,
+        "total_actions": 1149,
+        "valid_actions": 1149,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 1020
+        }
+      },
+      {
+        "round": 83,
+        "entropy": 0.4078963131128829,
+        "total_actions": 925,
+        "valid_actions": 925,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 794
+        }
+      },
+      {
+        "round": 84,
+        "entropy": 0.36393571491282245,
+        "total_actions": 1097,
+        "valid_actions": 1097,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 967
+        }
+      },
+      {
+        "round": 85,
+        "entropy": 0.42182407007591227,
+        "total_actions": 883,
+        "valid_actions": 883,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 751
+        }
+      },
+      {
+        "round": 86,
+        "entropy": 0.37677016125643675,
+        "total_actions": 1096,
+        "valid_actions": 1096,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 137,
+          "click": 959
+        }
+      },
+      {
+        "round": 87,
+        "entropy": 0.4024206693353749,
+        "total_actions": 974,
+        "valid_actions": 974,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 135,
+          "click": 839
+        }
+      },
+      {
+        "round": 88,
+        "entropy": 0.34883209584303193,
+        "total_actions": 1197,
+        "valid_actions": 1197,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 133,
+          "click": 1064
+        }
+      },
+      {
+        "round": 89,
+        "entropy": 0.3924263060850798,
+        "total_actions": 1006,
+        "valid_actions": 1006,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 134,
+          "click": 872
+        }
+      },
+      {
+        "round": 90,
+        "entropy": 0.3735991238853802,
+        "total_actions": 1078,
+        "valid_actions": 1078,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 133,
+          "click": 945
+        }
+      },
+      {
+        "round": 91,
+        "entropy": 0.384601804765394,
+        "total_actions": 1046,
+        "valid_actions": 1046,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 135,
+          "click": 911
+        }
+      },
+      {
+        "round": 92,
+        "entropy": 0.35948518486803827,
+        "total_actions": 1178,
+        "valid_actions": 1178,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 137,
+          "click": 1041
+        }
+      },
+      {
+        "round": 93,
+        "entropy": 0.33310864306989796,
+        "total_actions": 1302,
+        "valid_actions": 1302,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 135,
+          "click": 1167
+        }
+      },
+      {
+        "round": 94,
+        "entropy": 0.3632544453321779,
+        "total_actions": 1134,
+        "valid_actions": 1134,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 134,
+          "click": 1000
+        }
+      },
+      {
+        "round": 95,
+        "entropy": 0.39787750210165584,
+        "total_actions": 977,
+        "valid_actions": 977,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 133,
+          "click": 844
+        }
+      },
+      {
+        "round": 96,
+        "entropy": 0.35680746540734887,
+        "total_actions": 1148,
+        "valid_actions": 1148,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 1016
+        }
+      },
+      {
+        "round": 97,
+        "entropy": 0.36706779348112395,
+        "total_actions": 1116,
+        "valid_actions": 1116,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 134,
+          "click": 982
+        }
+      },
+      {
+        "round": 98,
+        "entropy": 0.35957079376877366,
+        "total_actions": 1126,
+        "valid_actions": 1126,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 995
+        }
+      },
+      {
+        "round": 99,
+        "entropy": 0.3643618962709577,
+        "total_actions": 1154,
+        "valid_actions": 1154,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 137,
+          "click": 1017
+        }
+      },
+      {
+        "round": 100,
+        "entropy": 0.4106588188219696,
+        "total_actions": 943,
+        "valid_actions": 943,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 135,
+          "click": 808
+        }
+      },
+      {
+        "round": 101,
+        "entropy": 0.4230892942549268,
+        "total_actions": 912,
+        "valid_actions": 912,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 137,
+          "click": 775
+        }
+      },
+      {
+        "round": 102,
+        "entropy": 0.353622624053708,
+        "total_actions": 1199,
+        "valid_actions": 1199,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 136,
+          "click": 1063
+        }
+      },
+      {
+        "round": 103,
+        "entropy": 0.362210557135449,
+        "total_actions": 1156,
+        "valid_actions": 1156,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 136,
+          "click": 1020
+        }
+      },
+      {
+        "round": 104,
+        "entropy": 0.3388491222288151,
+        "total_actions": 1241,
+        "valid_actions": 1241,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 1109
+        }
+      },
+      {
+        "round": 105,
+        "entropy": 0.34611207033517355,
+        "total_actions": 1193,
+        "valid_actions": 1193,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 1062
+        }
+      },
+      {
+        "round": 106,
+        "entropy": 0.36611771124291786,
+        "total_actions": 1087,
+        "valid_actions": 1087,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 957
+        }
+      },
+      {
+        "round": 107,
+        "entropy": 0.4146356174617202,
+        "total_actions": 901,
+        "valid_actions": 901,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 770
+        }
+      },
+      {
+        "round": 108,
+        "entropy": 0.3986594851113173,
+        "total_actions": 952,
+        "valid_actions": 952,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 822
+        }
+      },
+      {
+        "round": 109,
+        "entropy": 0.4095793362269551,
+        "total_actions": 954,
+        "valid_actions": 954,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 136,
+          "click": 818
+        }
+      },
+      {
+        "round": 110,
+        "entropy": 0.3847768440244965,
+        "total_actions": 1053,
+        "valid_actions": 1053,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 136,
+          "click": 917
+        }
+      },
+      {
+        "round": 111,
+        "entropy": 0.4053940644277461,
+        "total_actions": 927,
+        "valid_actions": 927,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 797
+        }
+      },
+      {
+        "round": 112,
+        "entropy": 0.37332353673675334,
+        "total_actions": 1063,
+        "valid_actions": 1063,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 932
+        }
+      },
+      {
+        "round": 113,
+        "entropy": 0.39077933371062923,
+        "total_actions": 990,
+        "valid_actions": 990,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 859
+        }
+      },
+      {
+        "round": 114,
+        "entropy": 0.40758220375475407,
+        "total_actions": 912,
+        "valid_actions": 912,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 783
+        }
+      },
+      {
+        "round": 115,
+        "entropy": 0.38729452177824464,
+        "total_actions": 1004,
+        "valid_actions": 1004,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 873
+        }
+      },
+      {
+        "round": 116,
+        "entropy": 0.38571747989454797,
+        "total_actions": 995,
+        "valid_actions": 995,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 866
+        }
+      },
+      {
+        "round": 117,
+        "entropy": 0.3776801669928357,
+        "total_actions": 1068,
+        "valid_actions": 1068,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 134,
+          "click": 934
+        }
+      },
+      {
+        "round": 118,
+        "entropy": 0.3935795825637406,
+        "total_actions": 964,
+        "valid_actions": 964,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 835
+        }
+      },
+      {
+        "round": 119,
+        "entropy": 0.43116548642007435,
+        "total_actions": 852,
+        "valid_actions": 852,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 720
+        }
+      },
+      {
+        "round": 120,
+        "entropy": 0.37964440601995264,
+        "total_actions": 1012,
+        "valid_actions": 1012,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 128,
+          "click": 884
+        }
+      },
+      {
+        "round": 121,
+        "entropy": 0.40037451993983764,
+        "total_actions": 931,
+        "valid_actions": 931,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 128,
+          "click": 803
+        }
+      },
+      {
+        "round": 122,
+        "entropy": 0.3671424886304307,
+        "total_actions": 1099,
+        "valid_actions": 1099,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 967
+        }
+      },
+      {
+        "round": 123,
+        "entropy": 0.42102804118431253,
+        "total_actions": 879,
+        "valid_actions": 879,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 748
+        }
+      },
+      {
+        "round": 124,
+        "entropy": 0.4123799843881748,
+        "total_actions": 902,
+        "valid_actions": 902,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 772
+        }
+      },
+      {
+        "round": 125,
+        "entropy": 0.40901146800869004,
+        "total_actions": 928,
+        "valid_actions": 928,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 796
+        }
+      },
+      {
+        "round": 126,
+        "entropy": 0.39848596777854506,
+        "total_actions": 938,
+        "valid_actions": 938,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 128,
+          "click": 810
+        }
+      },
+      {
+        "round": 127,
+        "entropy": 0.4423401531350533,
+        "total_actions": 792,
+        "valid_actions": 792,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 128,
+          "click": 664
+        }
+      },
+      {
+        "round": 128,
+        "entropy": 0.44391213999057494,
+        "total_actions": 855,
+        "valid_actions": 855,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 139,
+          "click": 716
+        }
+      },
+      {
+        "round": 129,
+        "entropy": 0.4123626022631339,
+        "total_actions": 909,
+        "valid_actions": 909,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 778
+        }
+      },
+      {
+        "round": 130,
+        "entropy": 0.44849189758051655,
+        "total_actions": 780,
+        "valid_actions": 780,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 651
+        }
+      },
+      {
+        "round": 131,
+        "entropy": 0.3829123341532369,
+        "total_actions": 1022,
+        "valid_actions": 1022,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 891
+        }
+      },
+      {
+        "round": 132,
+        "entropy": 0.38705186994648805,
+        "total_actions": 1028,
+        "valid_actions": 1028,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 134,
+          "click": 894
+        }
+      },
+      {
+        "round": 133,
+        "entropy": 0.38109959420506867,
+        "total_actions": 1006,
+        "valid_actions": 1006,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 128,
+          "click": 878
+        }
+      },
+      {
+        "round": 134,
+        "entropy": 0.38267204884437406,
+        "total_actions": 1023,
+        "valid_actions": 1023,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 892
+        }
+      },
+      {
+        "round": 135,
+        "entropy": 0.37309621338850457,
+        "total_actions": 1064,
+        "valid_actions": 1064,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 933
+        }
+      },
+      {
+        "round": 136,
+        "entropy": 0.3961366268099237,
+        "total_actions": 969,
+        "valid_actions": 969,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 838
+        }
+      },
+      {
+        "round": 137,
+        "entropy": 0.392178486123334,
+        "total_actions": 1007,
+        "valid_actions": 1007,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 134,
+          "click": 873
+        }
+      },
+      {
+        "round": 138,
+        "entropy": 0.3812372249742575,
+        "total_actions": 1029,
+        "valid_actions": 1029,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 898
+        }
+      },
+      {
+        "round": 139,
+        "entropy": 0.40481405034633045,
+        "total_actions": 972,
+        "valid_actions": 972,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 136,
+          "click": 836
+        }
+      },
+      {
+        "round": 140,
+        "entropy": 0.38603952788622303,
+        "total_actions": 986,
+        "valid_actions": 986,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 128,
+          "click": 858
+        }
+      },
+      {
+        "round": 141,
+        "entropy": 0.3772422003811881,
+        "total_actions": 1030,
+        "valid_actions": 1030,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 901
+        }
+      },
+      {
+        "round": 142,
+        "entropy": 0.36041090884523613,
+        "total_actions": 1122,
+        "valid_actions": 1122,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 991
+        }
+      },
+      {
+        "round": 143,
+        "entropy": 0.3970791241188556,
+        "total_actions": 958,
+        "valid_actions": 958,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 828
+        }
+      },
+      {
+        "round": 144,
+        "entropy": 0.3486347410636368,
+        "total_actions": 1171,
+        "valid_actions": 1171,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 1041
+        }
+      },
+      {
+        "round": 145,
+        "entropy": 0.3659847453291633,
+        "total_actions": 1188,
+        "valid_actions": 1188,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 142,
+          "click": 1046
+        }
+      },
+      {
+        "round": 146,
+        "entropy": 0.3954689845614695,
+        "total_actions": 979,
+        "valid_actions": 979,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 847
+        }
+      },
+      {
+        "round": 147,
+        "entropy": 0.3600791950029785,
+        "total_actions": 1115,
+        "valid_actions": 1115,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 985
+        }
+      },
+      {
+        "round": 148,
+        "entropy": 0.33604389687346636,
+        "total_actions": 1247,
+        "valid_actions": 1247,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 131,
+          "click": 1116
+        }
+      },
+      {
+        "round": 149,
+        "entropy": 0.36369612435514675,
+        "total_actions": 1115,
+        "valid_actions": 1115,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 983
+        }
+      },
+      {
+        "round": 150,
+        "entropy": 0.39419340249943036,
+        "total_actions": 984,
+        "valid_actions": 984,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 852
+        }
+      },
+      {
+        "round": 151,
+        "entropy": 0.32149282621003716,
+        "total_actions": 1352,
+        "valid_actions": 1352,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 133,
+          "click": 1219
+        }
+      },
+      {
+        "round": 152,
+        "entropy": 0.32961222365600296,
+        "total_actions": 1303,
+        "valid_actions": 1303,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 133,
+          "click": 1170
+        }
+      },
+      {
+        "round": 153,
+        "entropy": 0.3412563494325962,
+        "total_actions": 1200,
+        "valid_actions": 1200,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 1071
+        }
+      },
+      {
+        "round": 154,
+        "entropy": 0.3714869237320373,
+        "total_actions": 1251,
+        "valid_actions": 1251,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 153,
+          "click": 1098
+        }
+      },
+      {
+        "round": 155,
+        "entropy": 0.31372082050487066,
+        "total_actions": 1391,
+        "valid_actions": 1391,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 132,
+          "click": 1259
+        }
+      },
+      {
+        "round": 156,
+        "entropy": 0.324428544975748,
+        "total_actions": 1344,
+        "valid_actions": 1344,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 134,
+          "click": 1210
+        }
+      },
+      {
+        "round": 157,
+        "entropy": 0.3279846230494239,
+        "total_actions": 1283,
+        "valid_actions": 1283,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 130,
+          "click": 1153
+        }
+      },
+      {
+        "round": 158,
+        "entropy": 0.3295792166239296,
+        "total_actions": 1264,
+        "valid_actions": 1264,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 1135
+        }
+      },
+      {
+        "round": 159,
+        "entropy": 0.32559484529573757,
+        "total_actions": 1287,
+        "valid_actions": 1287,
+        "valid_rate": 1.0,
+        "counts": {
+          "search": 129,
+          "click": 1158
+        }
+      }
+    ]
+  }
+}

@@ -11,7 +11,8 @@
   "source_artifact_sha256": {
     "parameter_score_association": "ff9155e4710b474b5dfa9dd98aac930162f861ec988b01c5f76399f93598638c",
     "direction_magnitude": "572be4e1fd0161ea893ae6a9d26e857178c3775dbaea1e56e452031dcf1df48b",
-    "output_length": "e14f94c54da766e5564395693c730acd0e08741b343b6e1be6f22f041126d006"
+    "output_length": "e14f94c54da766e5564395693c730acd0e08741b343b6e1be6f22f041126d006",
+    "action_entropy": "60eda60d00f600420ab48b8de39618ded0f36e041e6d1d9286ff13d6a8fe1e6f"
   },
   "parameter_score": {
     "ordinary_state_fro_spearman_raw": 0.7203187040892476,
@@ -38,24 +39,59 @@
   },
   "output_length_windows": {
     "ordinary": {
-      "r0_31_step_tokens": 43.33998502988982,
-      "r128_159_step_tokens": 26.349412672288654,
-      "r0_31_steps": 9.803955078125,
-      "r128_159_steps": 6.926025390625
+      "r0_31": {
+        "step_tokens": 43.33998502988982,
+        "episode_tokens": 397.020751953125,
+        "action_tokens": 136.87060546875,
+        "steps": 9.803955078125,
+        "score": 0.3769213937646555
+      },
+      "r128_159": {
+        "step_tokens": 26.349412672288654,
+        "episode_tokens": 171.8232421875,
+        "action_tokens": 81.0673828125,
+        "steps": 6.926025390625,
+        "score": 0.6409534078931051
+      }
     },
-    "bounded": {
-      "r0_31_step_tokens": 50.86332454641171,
-      "r128_159_step_tokens": 28.413994410808378,
-      "r0_31_steps": 9.166259765625,
-      "r128_159_steps": 7.544921875
+    "bounded_online_recurrence": {
+      "r0_31": {
+        "step_tokens": 50.86332454641171,
+        "episode_tokens": 449.89501953125,
+        "action_tokens": 139.676513671875,
+        "steps": 9.166259765625,
+        "score": 0.3875196457459641
+      },
+      "r128_159": {
+        "step_tokens": 28.413994410808378,
+        "episode_tokens": 200.279296875,
+        "action_tokens": 86.14892578125,
+        "steps": 7.544921875,
+        "score": 0.6264911919135553
+      }
     },
-    "linear_constraint": {
-      "r96_127_step_tokens": 29.50113782295178,
-      "r128_159_step_tokens": 28.393542405944757,
-      "r96_127_steps": 7.907958984375,
-      "r128_159_steps": 8.60205078125,
-      "r96_127_score": 0.6011636744467552,
-      "r128_159_score": 0.5681677827380951
+    "bounded_online_recurrence_gdr": {
+      "r0_31": {
+        "step_tokens": 53.50944609792875,
+        "episode_tokens": 503.572998046875,
+        "action_tokens": 167.562744140625,
+        "steps": 9.660400390625,
+        "score": 0.3599745774922778
+      },
+      "r96_127": {
+        "step_tokens": 29.50113782295178,
+        "episode_tokens": 216.805908203125,
+        "action_tokens": 88.899658203125,
+        "steps": 7.907958984375,
+        "score": 0.6011636744467552
+      },
+      "r128_159": {
+        "step_tokens": 28.393542405944757,
+        "episode_tokens": 229.072021484375,
+        "action_tokens": 93.079833984375,
+        "steps": 8.60205078125,
+        "score": 0.5681677827380951
+      }
     }
   },
   "entropy_boundary": {
@@ -65,20 +101,38 @@
   },
   "claim_boundary": "These diagnostics explain candidate mechanisms and behavior changes. They do not establish that any single norm, spectral statistic, update direction, output length, or entropy proxy causally determines WebShop score.",
   "behavior_entropy": {
-    "definition": "Shannon entropy over observed WebShop action families (search/click), averaged by round in each 32-round window; not token predictive entropy",
+    "definition": "Shannon entropy over observed valid WebShop action families; natural log; not token predictive entropy",
     "ordinary": {
-      "r0_31": 0.4895,
-      "r128_159": 0.4239
+      "r0_31_mean": 0.4894962813592759,
+      "r128_159_mean": 0.42389759107192027,
+      "r159": {
+        "entropy": 0.4576064512335441,
+        "search": 129,
+        "click": 625,
+        "total": 754
+      }
     },
-    "bounded_state": {
-      "r0_31": 0.5073,
-      "r128_159": 0.4214
+    "bounded_online_recurrence": {
+      "r0_31_mean": 0.5073077464100729,
+      "r128_159_mean": 0.4213905353468839,
+      "r159": {
+        "entropy": 0.37361010967641367,
+        "search": 143,
+        "click": 1016,
+        "total": 1159
+      }
     },
-    "bounded_state_gdr": {
-      "r0_31": 0.5826,
-      "r128_159": 0.3705
+    "bounded_online_recurrence_gdr": {
+      "r0_31_mean": 0.5826348487539756,
+      "r128_159_mean": 0.3704998222819664,
+      "r159": {
+        "entropy": 0.32559484529573757,
+        "search": 129,
+        "click": 1158,
+        "total": 1287
+      }
     },
     "action_valid_rate": 1.0,
-    "precision": "window means rounded to 4 decimals from sealed rollout reconstruction"
+    "claim_boundary": "behavioral concentration only; not causal evidence and not token predictive entropy"
   }
 }

@@ -345,9 +345,19 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
       exactPermutationP: 0.11498015873015872,
     },
     outputLength: {
-      ordinary: { earlyStepTokens: 43.33998502988982, lateStepTokens: 26.349412672288654, earlySteps: 9.803955078125, lateSteps: 6.926025390625 },
-      bounded: { earlyStepTokens: 50.86332454641171, lateStepTokens: 28.413994410808378, earlySteps: 9.166259765625, lateSteps: 7.544921875 },
-      linearConstraint: { midStepTokens: 29.50113782295178, lateStepTokens: 28.393542405944757, midSteps: 7.907958984375, lateSteps: 8.60205078125, midScore: 0.6011636744467552, lateScore: 0.5681677827380951 },
+      ordinary: {
+        earlyStepTokens: 43.33998502988982, earlyEpisodeTokens: 397.020751953125, earlyActionTokens: 136.87060546875, earlySteps: 9.803955078125, earlyScore: 0.3769213937646555,
+        lateStepTokens: 26.349412672288654, lateEpisodeTokens: 171.8232421875, lateActionTokens: 81.0673828125, lateSteps: 6.926025390625, lateScore: 0.6409534078931051,
+      },
+      bounded: {
+        earlyStepTokens: 50.86332454641171, earlyEpisodeTokens: 449.89501953125, earlyActionTokens: 139.676513671875, earlySteps: 9.166259765625, earlyScore: 0.3875196457459641,
+        lateStepTokens: 28.413994410808378, lateEpisodeTokens: 200.279296875, lateActionTokens: 86.14892578125, lateSteps: 7.544921875, lateScore: 0.6264911919135553,
+      },
+      linearConstraint: {
+        earlyStepTokens: 53.50944609792875, earlyEpisodeTokens: 503.572998046875, earlyActionTokens: 167.562744140625, earlySteps: 9.660400390625, earlyScore: 0.3599745774922778,
+        midStepTokens: 29.50113782295178, midEpisodeTokens: 216.805908203125, midActionTokens: 88.899658203125, midSteps: 7.907958984375, midScore: 0.6011636744467552,
+        lateStepTokens: 28.393542405944757, lateEpisodeTokens: 229.072021484375, lateActionTokens: 93.079833984375, lateSteps: 8.60205078125, lateScore: 0.5681677827380951,
+      },
     },
     entropy: {
       fullThreeWayTokenEntropyAvailable: false,
@@ -355,15 +365,20 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
       q17LocalDiagnosticOnly: true,
     },
     behaviorEntropy: {
-      definition: 'Shannon entropy over observed WebShop action families (search/click), averaged by round within each 32-round window; not token predictive entropy',
-      ordinaryEarly: 0.4895,
-      ordinaryLate: 0.4239,
-      boundedEarly: 0.5073,
-      boundedLate: 0.4214,
-      gdrEarly: 0.5826,
-      gdrLate: 0.3705,
+      definition: 'Shannon entropy over observed WebShop action families (search/click), natural log, averaged by round within each 32-round window; not token predictive entropy',
+      ordinaryEarly: 0.4894962813592759,
+      ordinaryLate: 0.42389759107192027,
+      boundedEarly: 0.5073077464100729,
+      boundedLate: 0.4213905353468839,
+      gdrEarly: 0.5826348487539756,
+      gdrLate: 0.3704998222819664,
+      r159: {
+        ordinary: { entropy: 0.4576064512335441, search: 129, click: 625, total: 754 },
+        bounded: { entropy: 0.37361010967641367, search: 143, click: 1016, total: 1159 },
+        gdr: { entropy: 0.32559484529573757, search: 129, click: 1158, total: 1287 },
+      },
       validActionRate: 1.0,
-      precision: 'window means rounded to 4 decimals from sealed rollout reconstruction',
+      precision: 'window means rounded to 4 decimals; R159 values exact from sealed rollout reconstruction',
     },
     stage1: {
       seedUsesHindsightSkillSft: true,

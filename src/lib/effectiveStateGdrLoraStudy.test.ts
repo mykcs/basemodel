@@ -184,7 +184,7 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).not.toContain('\\beta_t k_t r_t^{\\top}');
     expect(component).toContain('A\\mapsto sA');
     expect(component).toContain('Task Vector、范数和谱');
-    expect(component).toContain('不能补造 token entropy');
+    expect(component).toContain('真正的 predictive token entropy 仍然不能从文本补出来');
     expect(component).toContain('约束要不要更 adaptive');
     expect(component).toContain('study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString');
     expect(component).toContain('不能说“Task Vector / norm 越大，WebShop 就越好”');
