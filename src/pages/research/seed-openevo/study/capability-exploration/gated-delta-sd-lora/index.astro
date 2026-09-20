@@ -4,8 +4,8 @@ import OpenEvoGatedDeltaSdLoraExplainer from '../../../../../../components/resea
 const locale = 'zh' as const;
 ---
 <AppLayout
-  title="Gated-Delta SD-LoRA：四轮资格实验已封存"
-  description="当前 Gated Delta 会在学习时直接更新 LoRA 参数。四轮冻结 D1 资格实验已全部封存：GDR 的 WebShop 总平均 reward 和完整成功率高于匹配的 Vanilla；这不代表普遍优于 Vanilla，也不是 final-panel 结果。"
+  title="Gated Delta：从序列 State 到 OpenEVO 参数 State"
+  description="从 online regression 推出 Delta residual write，再说明 Gated Delta 的 α / β 怎样按数学角色映射到 OpenEVO 参数 State。论文公式到 residual 形式是严格代数等价；跨到 LoRA 参数空间是逐角色映射。页面后半保留四轮冻结 D1 资格实验及其有限结论边界。"
   locale={locale}
 >
   <OpenEvoGatedDeltaSdLoraExplainer locale={locale} />

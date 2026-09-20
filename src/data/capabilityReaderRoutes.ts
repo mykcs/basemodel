@@ -31,12 +31,12 @@ export const CAPABILITY_READER_ROUTES = [
     "coverage": "self-contained",
     "owner": "OpenEvoGatedDeltaSdLoraExplainer",
     "label": {
-      "zh": "Gated-Delta SD-LoRA 推导",
-      "en": "Gated-Delta SD-LoRA derivation"
+      "zh": "Gated Delta：从序列 State 到参数 State",
+      "en": "Gated Delta: from sequence State to parameter State"
     },
     "purpose": {
-      "zh": "解释当前 Gated-Delta SD-LoRA 怎样在每次学习时直接更新 LoRA 参数，以及四轮 Vanilla-vs-GDR 配对资格实验全部封存后，我们现在能说什么、还不能说什么。",
-      "en": "Explain how current Gated-Delta SD-LoRA updates LoRA parameters during learning, what the sealed four-round Vanilla-vs-GDR qualification supports, and why that result remains bounded to the frozen D1 schedule."
+      "zh": "从 online regression 一步步推出 Delta residual write，解释论文内部的严格代数等价，并把持续 State、residual write、β / α 的数学角色映射到 OpenEVO 参数 State；早期四轮资格实验作为映射验证证据留在后半页。",
+      "en": "Derive the Delta residual write step by step from online regression, separate exact algebraic equivalence inside the sequence formulation from the role-level mapping into OpenEVO parameter State, and keep the earlier four-round qualification as mapping evidence later on the page."
     }
   },
   {

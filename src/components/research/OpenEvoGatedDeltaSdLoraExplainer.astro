@@ -2,6 +2,7 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
+import MathFormula from '../common/MathFormula.astro';
 import { GATED_DELTA_SD_LORA_PUBLICATION as snapshot } from '../../data/gatedDeltaSdLoraPublicationSnapshot';
 
 interface Props { locale: Locale }
@@ -19,46 +20,111 @@ const evidenceFor = (id: string) => id === 'beta-g'
   : id === 'optimizer-factor'
     ? [snapshot.evidence.eventWriteDesign, snapshot.evidence.treatmentDecision]
     : [snapshot.evidence.eventWriteDesign];
+
+const math = {
+  stateShape: String.raw`S_t\in\mathbb{R}^{d_v\times d_k}`,
+  linearWrite: String.raw`S_t = S_{t-1} + v_t k_t^{\top}`,
+  objective: String.raw`\mathcal{L}_t(S)=\frac{1}{2}\left\lVert S k_t-v_t\right\rVert_2^2`,
+  gradient: String.raw`\nabla_S\mathcal{L}_t=(S k_t-v_t)k_t^{\top}`,
+  delta: String.raw`S_t=S_{t-1}-\beta_t\nabla_S\mathcal{L}_t
+= S_{t-1}+\beta_t\left(v_t-S_{t-1}k_t\right)k_t^{\top}`,
+  gated: String.raw`S_t=\alpha_t S_{t-1}\left(I-\beta_t k_t k_t^{\top}\right)+\beta_t v_t k_t^{\top}`,
+  residual: String.raw`\begin{aligned}
+\widetilde S_{t-1}&=\alpha_t S_{t-1}\\
+r_t&=v_t-\widetilde S_{t-1}k_t\\
+S_t&=\widetilde S_{t-1}+\beta_t r_t k_t^{\top}
+\end{aligned}`,
+  taskVector: String.raw`\Delta\theta_t=\theta_t-\theta_{t-1}`,
+  gauge: String.raw`\Delta W = C A^{\top},\qquad A\mapsto sA,\quad C\mapsto C/s
+\quad\Longrightarrow\quad \Delta W\text{ unchanged}`,
+  parameterMap: String.raw`S_t^{\mathrm{GDR}}=\operatorname{Compress}_{128}\!\left(S_{t-1}+\operatorname{Gate}_{\beta_t}(\Delta_t)\right)`,
+  factors: String.raw`S_A=A,\qquad S_C=C^{\top},\qquad g=0\;(\alpha=1)`,
+  stateSymbol: String.raw`S_t`,
+  residualWriteSymbol: String.raw`r_t k_t^{\top}`,
+  betaSymbol: String.raw`\beta_t`,
+  retentionSymbol: String.raw`\alpha_t\;/\;g_t`,
+  kvSymbol: String.raw`k_t\;/\;v_t`,
+  qualificationGate: String.raw`\beta\in[${snapshot.routeSExecution.betaMinObserved.toExponential(2)},\;${snapshot.routeSExecution.betaMaxObserved.toFixed(6)}],\qquad g=0`,
+};
 ---
 
 <article class="gds-page" data-testid="gated-delta-sd-lora-page" data-copy-review data-reader-page="research-explainer">
   <header class="gds-hero" data-reader-context id="top">
     <a class="gds-back" href={p('/research/seed-openevo/study/capability-exploration/')}>← {t('OpenEvo 能力探索', 'OpenEvo capability exploration')}</a>
-    <h1>Gated-Delta SD-LoRA</h1>
+    <h1>{t('Gated Delta：从序列 State 到参数 State', 'Gated Delta: from sequence State to parameter State')}</h1>
     <p class="gds-hero__lede" data-reader-task data-reader-purpose>{t(
-      '旧 GDR-v1 每轮会训练出一个 SD-LoRA 候选更新，训练完成后再用固定 16 题决定要不要保留。现在的 Gated Delta 不再等训练结束后筛候选，而是在学习发生时直接改 LoRA 的参数状态。',
-      'The old local GDR-v1 first trained an SD-LoRA candidate update, then used a fixed 16-task check to decide whether to keep it. The current Gated Delta no longer filters a finished candidate; it changes LoRA parameter state during each learning event.'
+      'Gated Delta 最初是序列建模里的一个持续 State 更新规则。这页从它的 online regression 目标开始，把梯度一步一步推成 residual write，再说明我们怎样把“长期 State、残差写入、动态写入强度”这些角色对应到 OpenEVO 的 LoRA 参数更新。',
+      'Gated Delta starts as a recurrent State update rule for sequence modeling. This page begins from its online-regression objective, derives the residual write step by step, then shows how the roles of persistent State, residual write, and adaptive write strength map onto OpenEVO LoRA updates.'
     )}</p>
-    <p class="gds-hero__state"><strong>{t('四轮 Vanilla vs GDR 配对资格实验已经全部封存。在这份冻结的 D1 schedule 里，GDR 的总平均 reward 和完整成功率都高于匹配的 Vanilla 对照。', 'All four Vanilla-vs-GDR paired qualification rounds are sealed. On this frozen D1 schedule, GDR finished above the matched Vanilla control on pooled mean reward and exact success.')}</strong> {t('512 次/臂汇总后，Vanilla reward 0.7051、GDR 0.7407；完整成功是 173 / 512 对 248 / 512，差 +14.65 个百分点。64 个匹配 task-cluster 的 bootstrap 区间也高于 0。这个结论只属于当前冻结的资格实验，不代表普遍优于 Vanilla，也不是 final-panel 结果。在线写入仍不会读取 Task Vector、WebShop 分数、固定 16 题检查或冻结 final 题集。', 'Across 512 attempts per arm, pooled reward was 0.7051 for Vanilla and 0.7407 for GDR; exact success was 173 / 512 versus 248 / 512, a +14.65 percentage-point difference. The 64 matched task-cluster bootstrap intervals are also above zero. This supports the frozen qualification comparison only; it is not a universal superiority claim or a final-panel result. Runtime still cannot read the Task Vector, WebShop score, fixed 16-task check, or frozen final task set.')}</p>
+    <p class="gds-hero__boundary">{t(
+      '论文公式到 residual 形式是严格代数等价；从 sequence State 到 OpenEVO parameter State 是逐角色映射，不把 k / v 张量逐字当成 LoRA 张量。',
+      'The paper equation and residual form are algebraically identical. Moving from sequence State to OpenEVO parameter State is a role-level mapping rather than a literal k/v-to-LoRA tensor identity.'
+    )}</p>
     <p class="gds-hero__history"><a href={historyHref}>{t('旧 GDR-v1 / DirectApply 到底做了什么 →', 'What did the old GDR-v1 / DirectApply experiment actually do? →')}</a></p>
   </header>
 
   <section class="gds-section" id="recurrence" aria-labelledby="recurrence-title">
-    <h2 id="recurrence-title">{t('Gated Delta 的 State 更新', 'How Gated Delta updates State')}</h2>
+    <h2 id="recurrence-title">{t('从 sequence State 推到 residual write', 'From sequence State to a residual write')}</h2>
     <p>{t(
-      '一次学习用 key 从旧 State 里读出已有内容，并和当前 value 比较。两者的差就是 residual；β 决定把多少 residual 写回，g 决定写入前旧 State 衰减多少。',
-      'Each learning event uses a key to read what is already in State, then compares that readout with the current value. The difference is the residual; β controls how much of it is written back, while g controls how much the old State decays first.'
+      '先只看论文里的序列状态。Gated Delta Networks 把 State 写成一个 value 维 × key 维的矩阵：给一个 key，State 的矩阵乘法会读出当前已经记住的 value。最简单的线性注意力会把新的 value-key 外积直接累加进 State。',
+      'Start with the sequence-model state used in the paper. Gated Delta Networks writes State as a value-dimension by key-dimension matrix: multiplying it by a key reads the value currently stored for that key. Plain linear attention simply accumulates a new value-key outer product into State.'
     )}</p>
-    <figure class="gds-recurrence" data-testid="gated-delta-recurrence">
-      <div class="gds-signal"><span>{t('当前学习信号', 'current learning signal')}</span><strong>x<sub>t</sub> → k<sub>t</sub>, v<sub>t</sub>, β<sub>t</sub>, g<sub>t</sub></strong></div>
-      <div class="gds-flow" aria-label={t('Gated Delta recurrent state flow', 'Gated Delta recurrent state flow')}>
-        <div class="gds-node is-state"><small>{t('旧状态', 'prior State')}</small><strong>S<sub>t−1</sub></strong></div>
-        <div class="gds-connector" aria-hidden="true"></div>
-        <div class="gds-node is-read"><small>{t('衰减并读取', 'decay + read')}</small><strong>S̃ = exp(g)S<br />read = S̃k</strong></div>
-        <div class="gds-connector" aria-hidden="true"></div>
-        <div class="gds-node is-write"><small>{t('算差值并写回', 'residual + write')}</small><strong>r = v − read<br />β · r</strong></div>
-        <div class="gds-connector" aria-hidden="true"></div>
-        <div class="gds-node is-next"><small>{t('新状态', 'next State')}</small><strong>S<sub>t</sub></strong></div>
-      </div>
-      <div class="gds-equation" aria-label={t('Gated Delta Rule 简式', 'Simplified Gated Delta Rule')}>
-        <code>S̃<sub>t−1</sub> = exp(g<sub>t</sub>) S<sub>t−1</sub></code>
-        <code>r<sub>t</sub> = v<sub>t</sub> − S̃<sub>t−1</sub> k<sub>t</sub></code>
-        <code>S<sub>t</sub> = S̃<sub>t−1</sub> + β<sub>t</sub> k<sub>t</sub> r<sub>t</sub><sup>T</sup></code>
-      </div>
-      <figcaption>{t('不同实现可能转置张量方向，但语义不变：读取旧 State 后，把没有解释掉的 residual 连续写回。', 'Implementations may transpose tensor orientation, but the semantics stay the same: read the old State, then continuously write back the unexplained residual.')}</figcaption>
-    </figure>
-    <p class="gds-sources"><a href={flaHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={flaHref} />Flash Linear Attention reference</a> · <a href={paperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={paperHref} />Gated Delta Networks</a></p>
-    <p class="gds-related"><a href={successorHref}>{t('后继方法：为什么改成 Effective-State GDR →', 'Successor: why move to Effective-State GDR →')}</a></p>
+    <MathFormula latex={math.stateShape} label={t('论文采用的 State 形状', 'State shape used by the paper')} compact />
+    <MathFormula latex={math.linearWrite} label={t('线性注意力的外积写入', 'Outer-product write in linear attention')} />
+
+    <h3>{t('Delta Rule 可以从 online regression 直接推出来', 'The Delta Rule follows directly from online regression')}</h3>
+    <p>{t(
+      '把 State 看成一个“用 key 预测 value”的快速权重矩阵。当前样本希望 State 对这个 key 的读出接近目标 value，因此可以写出一个最普通的平方误差。',
+      'Treat State as a fast-weight matrix that predicts a value from a key. The current sample wants the State readout for that key to match the target value, so the objective is an ordinary squared error.'
+    )}</p>
+    <MathFormula latex={math.objective} label={t('当前 key-value 对的在线回归目标', 'Online-regression objective for the current key-value pair')} />
+    <p>{t(
+      '对 S 求梯度，得到“当前读出的内容 − 目标 value”乘上 key 的外积。',
+      'Differentiating with respect to S gives the outer product of the prediction error and the key.'
+    )}</p>
+    <MathFormula latex={math.gradient} label={t('online regression 对 State 的梯度', 'Gradient of the online-regression objective with respect to State')} compact />
+    <p>{t(
+      '做一步梯度下降以后，减去 prediction error 就等价于把“目标 value − 旧 State 对 key 的读出”这个 residual 写回。这里没有类比：这是同一个目标函数的一步 SGD 展开。',
+      'One gradient-descent step subtracts the prediction error, which is exactly the same as writing back the residual “target value minus the prior-State readout for the key.” This is algebra, not an analogy: it is one SGD step on the same objective.'
+    )}</p>
+    <MathFormula latex={math.delta} label={t('Delta Rule 的 SGD 与 residual 两种等价写法', 'Equivalent SGD and residual forms of the Delta Rule')} />
+
+    <h3>{t('Gated Delta 再加一件事：旧 State 可以先衰减', 'Gated Delta adds one more operation: decay the prior State first')}</h3>
+    <p>{t(
+      'Gated Delta 在 Delta Rule 前面加入 retention α_t。论文写法如下；α_t 决定旧 State 留多少，β_t 决定这次 residual 写多强。',
+      'Gated Delta adds a retention factor alpha_t before the Delta Rule. In the paper form below, alpha_t controls how much prior State remains, while beta_t controls the strength of the residual write.'
+    )}</p>
+    <MathFormula latex={math.gated} label={t('Gated Delta Networks 的状态更新公式', 'State update in Gated Delta Networks')} />
+    <p>{t(
+      '先把“保留后的旧 State”单独记下来，再把括号展开，就得到下面的 residual 形式。按照论文的矩阵形状，residual 必须在外积左侧、key 在右侧；准确方向由下方 LaTeX 公式给出。',
+      'Name the retained prior State first, then expand the brackets to obtain the residual form below. Under the paper’s matrix shape, the residual must be on the left side of the outer product and the key on the right; the exact orientation is shown in the LaTeX equation below.'
+    )}</p>
+    <MathFormula latex={math.residual} label={t('Gated Delta 的严格等价 residual 形式', 'Algebraically equivalent residual form of Gated Delta')} />
+    <p class="gds-callout">{t(
+      '严格等价到这里为止：论文公式、SGD 形式和 residual 形式都描述同一个 sequence State 更新。下一步进入 OpenEVO 时，我们保留这些数学角色，但不会声称 k / v 与某两个 LoRA 张量存在逐元素 1:1 等式。',
+      'Exact equivalence ends here: the paper equation, SGD form, and residual form describe the same sequence-State update. When we move into OpenEVO, we preserve these mathematical roles without claiming an elementwise identity between k/v and two LoRA tensors.'
+    )}</p>
+
+    <h3>{t('映射到 OpenEVO：对应的是角色，不是张量名字', 'Mapping into OpenEVO: match the roles, not the tensor names')}</h3>
+    <div class="gds-map-wrap">
+      <table class="gds-map">
+        <thead><tr><th>{t('序列 Gated Delta', 'Sequence Gated Delta')}</th><th>{t('数学角色', 'Role')}</th><th>{t('OpenEVO 里的对应物', 'OpenEVO counterpart')}</th></tr></thead>
+        <tbody>
+          <tr><td><MathFormula latex={math.stateSymbol} display={false} /></td><td>{t('跨时间持续保存的 State', 'State persisted across time')}</td><td>{t('固定 rank128 的长期参数 State', 'fixed-rank128 long-term parameter State')}</td></tr>
+          <tr><td><MathFormula latex={math.residualWriteSymbol} display={false} /></td><td>{t('旧 State 没解释掉的新信息', 'new information not explained by prior State')}</td><td>{t('当前训练真正留下的有效 LoRA 参数写入 ΔW', 'the effective LoRA parameter write ΔW left by current training')}</td></tr>
+          <tr><td><MathFormula latex={math.betaSymbol} display={false} /></td><td>{t('这一步写多强', 'write strength for this step')}</td><td>{t('冻结 controller 根据局部参数 / 梯度 / Adam 状态动态给出 β', 'a frozen controller chooses β from local parameter, gradient, and Adam state')}</td></tr>
+          <tr><td><MathFormula latex={math.retentionSymbol} display={false} /></td><td>{t('旧 State 保留多少', 'retention of prior State')}</td><td>{t('第一版正式实验固定 g = 0，因此 α = 1', 'the first formal study fixes g=0, hence alpha=1')}</td></tr>
+          <tr><td><MathFormula latex={math.kvSymbol} display={false} /></td><td>{t('读取旧 State / 指定当前目标', 'read prior State / specify the current target')}</td><td>{t('只保留这层读写语义；不逐字映射成 LoRA 的 A / C', 'the read/write semantics are preserved; k/v are not literally renamed as LoRA A/C')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <MathFormula latex={math.parameterMap} label={t('映射到参数 State 后的概念式', 'Conceptual update after mapping into parameter State')} />
+    <p>{t(
+      '这个概念式还多了一个 OpenEVO 自己的机制：Compress_128 把历史重新压回固定 rank128。它来自我们的 Bounded Online Recurrence，不是 Gated DeltaNet 论文里的操作。实际 runtime 还会先更新 C 得到真实 C1，再基于 C1 更新 A。',
+      'This conceptual equation contains an OpenEVO-specific mechanism as well: Compress_128 folds history back to fixed rank128. That operation comes from Bounded Online Recurrence rather than the Gated DeltaNet paper. The actual runtime also writes C first to obtain the realized C1, then writes A conditioned on C1.'
+    )}</p>
+    <p class="gds-sources"><a href={flaHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={flaHref} />Flash Linear Attention reference</a> · <a href={paperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={paperHref} />Gated Delta Networks · ICLR 2025</a></p>
+    <p class="gds-related"><a href={successorHref}>{t('回到三组 1.7B 实验：这个映射最后怎样进入 Bounded + GDR →', 'Back to the three 1.7B experiments: how this mapping becomes Bounded + GDR →')}</a></p>
   </section>
 
   <section class="gds-section" id="task-vector" aria-labelledby="task-vector-title">
@@ -69,12 +135,12 @@ const evidenceFor = (id: string) => id === 'beta-g'
         <div><dt>{t('可以用来', 'Allowed')}</dt><dd>{t('事后参数几何 · 离线 teacher / label · 训练后评估', 'retrospective geometry · offline teacher / label · post-hoc evaluation')}</dd></div>
         <div><dt>{t('不能进入', 'Forbidden at runtime')}</dt><dd>{t('K / V · β · g · WebShop 分数 / reward · 固定 16 题候选检查', 'K / V · β · g · WebShop score / reward · fixed 16-task candidate check')}</dd></div>
       </dl>
-      <code>Δθ<sub>t</sub> = θ<sub>t</sub> − θ<sub>t−1</sub></code>
+      <MathFormula latex={math.taskVector} display={false} label={t('Task Vector 定义', 'Task Vector definition')} />
     </div>
   </section>
   <section class="gds-section" id="derivation" aria-labelledby="derivation-title">
-    <h2 id="derivation-title">{t('从学习事件到 LoRA 状态', 'From a learning event to LoRA State')}</h2>
-    <p>{t('这条推导主要解决三个问题：当前学习里什么信号真的和参数更新有关，怎样还原 AdamW 最终写进参数的变化，以及持续保存的 State 应该放在哪里。失败实验也保留，因为它们排除了看起来合理、实际不够的方案。', 'The derivation had to answer three questions: which signal from the current learning event really relates to the parameter update, how to reconstruct the change AdamW actually leaves in the parameters, and where the persistent State should live. Failed tests remain because they rule out plausible but insufficient answers.')}</p>
+    <h2 id="derivation-title">{t('我们怎样排除错误的参数映射', 'How we ruled out incorrect parameter mappings')}</h2>
+    <p>{t('上面的数学只规定“State 怎样读、residual 怎样写”。真正落到 LoRA 时，还要找到什么信号能代表当前写入、AdamW 历史怎样进入，以及 State 放在哪里。下面四步保留我们当时排除错误方案的证据。', 'The mathematics above specifies how State is read and how a residual is written. Mapping that rule into LoRA still requires identifying the signal that represents the current write, incorporating AdamW history, and choosing where State lives. The four steps below preserve the evidence that ruled out incorrect mappings.')}</p>
     <ol class="gds-derivation">
       {snapshot.derivation.map((step, index) => (
         <li>
@@ -97,21 +163,32 @@ const evidenceFor = (id: string) => id === 'beta-g'
   </section>
 
   <section class="gds-section" id="factor-state" aria-labelledby="factor-state-title">
-    <h2 id="factor-state-title">{t('LoRA 参数里的 recurrent State', 'Recurrent State inside the LoRA parameters')}</h2>
-    <p>{t('LoRA 实际保存的是低秩参数 A 和 C。新的学习信号到来时，当前 A / C 和 AdamW 的历史状态一起表示“现在已经学到了什么”；冻结的 β policy 再决定改多少。整个过程直接更新低秩参数，不需要拼出一个大矩阵再重新分解。', 'LoRA actually stores low-rank factors A and C. When new learning evidence arrives, the current A / C plus AdamW history represent what has already been learned, and the frozen β policy sets how much to change. The update acts directly on the low-rank factors instead of building a full matrix and factorizing it again.')}</p>
+    <h2 id="factor-state-title">{t('早期资格实验：State 怎样落到 LoRA A / C', 'Earlier qualification: placing State in LoRA A/C')}</h2>
+    <p>{t(
+      '这里记录的是前一版 event-write 资格实验，不是后面三组 160 轮实验的 rank128 Bounded State。它解决的是另一个具体问题：如果直接在 LoRA 的低秩因子上写，怎样避免因子坐标本身影响 β。',
+      'This section records the earlier event-write qualification, not the rank-128 Bounded State used in the later three 160-round experiments. It addresses a different question: how to avoid making beta depend on arbitrary LoRA-factor coordinates when writing directly into low-rank factors.'
+    )}</p>
+    <p>{t(
+      '同一个有效更新 ΔW 可以由很多组 A / C 表示。A 乘一个常数、C 除以同一个常数，真正加到模型上的矩阵不变，所以 raw factor 的大小不能直接当作“学习了多少”。',
+      'The same effective update ΔW can be represented by many A/C pairs. Scaling A up and C down by the same factor leaves the matrix applied to the model unchanged, so raw factor magnitude cannot directly mean “how much was learned.”'
+    )}</p>
+    <MathFormula latex={math.gauge} label={t('LoRA 因子缩放不改变有效参数更新', 'LoRA factor rescaling leaves the effective parameter update unchanged')} />
+    <p>{t(
+      '因此资格实验先在不受这种缩放选择影响的有效写入上决定强度，再把写入落回 A / C。那一版把两个持续状态放在 A 与 C 的转置上，并固定 g = 0。',
+      'The qualification therefore chose write strength on the gauge-invariant effective write before applying it back to A/C. That version stored the two persistent states in A and the transpose of C, while fixing g=0.'
+    )}</p>
+    <MathFormula latex={math.factors} label={t('早期 event-write 资格实验里的 LoRA State 放置', 'LoRA State placement in the earlier event-write qualification')} />
     <figure class="gds-runtime" data-testid="gated-delta-runtime-path">
       <div class="gds-runtime__flow">
-        <div class="gds-node is-event"><small>{t('当前学习事件', 'real learning event')}</small><strong>{t('activation + supervised error', 'activation + supervised error')}</strong></div>
+        <div class="gds-node is-event"><small>{t('当前学习事件', 'learning event')}</small><strong>{t('activation + supervised error', 'activation + supervised error')}</strong></div>
         <div class="gds-connector" aria-hidden="true"></div>
-        <div class="gds-node is-signal"><small>{t('LoRA 局部学习信号', 'local LoRA learning signal')}</small><strong>{t('clipped gradients / token-local geometry', 'clipped gradients / token-local geometry')}</strong></div>
+        <div class="gds-node is-signal"><small>{t('真实写入信号', 'realized write signal')}</small><strong>{t('梯度 + AdamW 历史', 'gradient + AdamW history')}</strong></div>
         <div class="gds-connector" aria-hidden="true"></div>
-        <div class="gds-node is-memory"><small>{t('当前参数 + AdamW 历史', 'current parameters + AdamW history')}</small><strong>A · C<sup>T</sup> · AdamW moments</strong></div>
+        <div class="gds-node is-gate"><small>{t('动态写入强度', 'adaptive write strength')}</small><strong>{t('冻结 β controller；g 固定为 0', 'frozen beta controller; g fixed at 0')}</strong></div>
         <div class="gds-connector" aria-hidden="true"></div>
-        <div class="gds-node is-gate"><small>{t('写入强度', 'write strength')}</small><strong>β<sub>policy</sub> · g = 0</strong></div>
-        <div class="gds-connector" aria-hidden="true"></div>
-        <div class="gds-node is-next"><small>{t('更新后的 LoRA State', 'updated LoRA State')}</small><strong>S<sub>A</sub> = A · S<sub>C</sub> = C<sup>T</sup></strong></div>
+        <div class="gds-node is-next"><small>{t('写回 LoRA', 'write back into LoRA')}</small><strong>{t('先得到真实 C1，再据此更新 A', 'obtain realized C1 first, then update A conditioned on it')}</strong></div>
       </div>
-      <figcaption>{t(`第一版四轮对照只在 ${snapshot.treatmentScope.gatedModules} 使用 Gated Delta；其它 LoRA 模块仍按 Vanilla DirectApply 的方式更新。`, `The first four-round comparison applies Gated Delta only to ${snapshot.treatmentScope.gatedModules}; all other LoRA modules keep the Vanilla DirectApply update.`)}</figcaption>
+      <figcaption>{t(`第一版四轮对照只在 ${snapshot.treatmentScope.gatedModules} 使用 Gated Delta；其它 LoRA 模块仍按 Vanilla DirectApply 更新。它的作用是验证 event-write 映射能真实运行，不代表后续 rank128 Bounded + GDR 的全部实现。`, `The first four-round comparison applies Gated Delta only to ${snapshot.treatmentScope.gatedModules}; the other LoRA modules keep Vanilla DirectApply. Its role is to verify that event-write mapping works in a real run, not to define the full later rank-128 Bounded + GDR implementation.`)}</figcaption>
     </figure>
     <p class="gds-related"><a href={vanillaHref}>{t('对照阅读：Vanilla SD-LoRA 一轮怎样更新 →', 'Compare with one Vanilla SD-LoRA update →')}</a></p>
   </section>
@@ -122,7 +199,7 @@ const evidenceFor = (id: string) => id === 'beta-g'
     <dl class="gds-d1__facts">
       <div><dt>{t('真实 WebShop 运行', 'Real WebShop run')}</dt><dd>{t(`${snapshot.routeSExecution.attemptCount} rollouts · ${snapshot.routeSExecution.semanticTaskIdentityCount} 个任务 · ${snapshot.routeSExecution.cleanExactSuccessCount} 条 clean exact success（覆盖 ${snapshot.routeSExecution.cleanExactSuccessTaskCount} 个任务）`, `${snapshot.routeSExecution.attemptCount} rollouts · ${snapshot.routeSExecution.semanticTaskIdentityCount} tasks · ${snapshot.routeSExecution.cleanExactSuccessCount} clean exact successes across ${snapshot.routeSExecution.cleanExactSuccessTaskCount} tasks`)}</dd></div>
       <div><dt>{t('真实参数写入', 'Real parameter write')}</dt><dd>{snapshot.routeSExecution.optimizerSteps} optimizer steps · {snapshot.routeSExecution.appliedFactorWrites.toLocaleString('en-US')} factor writes · {snapshot.routeSExecution.zeroDirectionNoops} zero-direction no-ops</dd></div>
-      <div><dt>β / g</dt><dd>β ∈ [{snapshot.routeSExecution.betaMinObserved.toExponential(2)}, {snapshot.routeSExecution.betaMaxObserved.toFixed(6)}] · <code>g = 0</code> · {t('g=0，因此旧 State 不额外衰减（retention=1）', 'g=0, so the old State gets no extra decay (retention=1)')}</dd></div>
+      <div><dt>{t('写入 / 保留 gate', 'Write / retention gate')}</dt><dd><MathFormula latex={math.qualificationGate} display={false} /> · {t('g=0，因此旧 State 不额外衰减（retention=1）', 'g=0, so the old State gets no extra decay (retention=1)')}</dd></div>
       <div><dt>{t('在线更新不能看', 'Runtime cannot read')}</dt><dd>{t('Task Vector · WebShop 分数 / reward · 固定 16 题检查结果 · final panel 信息（当前运行均为 0 次读取）', 'Task Vector · WebShop score / reward · fixed 16-task check results · final-panel information (all read counts were zero in this run)')}</dd></div>
       <div><dt>{t('配对实验进度', 'Paired-study progress')}</dt><dd>{zh ? `${snapshot.pairedD1.roundsSealed} / ${snapshot.pairedD1.roundCount} 轮已封存 · 每组 ${snapshot.pairedD1.roundsSealed * snapshot.pairedD1.rolloutsPerRoundPerArm} / ${snapshot.pairedD1.rolloutsPerArm} 次任务尝试 · ${snapshot.pairedD1.fullProgressPercent}% 按冻结清单完成` : `${snapshot.pairedD1.roundsSealed} / ${snapshot.pairedD1.roundCount} rounds sealed · ${snapshot.pairedD1.roundsSealed * snapshot.pairedD1.rolloutsPerRoundPerArm} / ${snapshot.pairedD1.rolloutsPerArm} rollouts per arm · ${snapshot.pairedD1.fullProgressPercent}% by the frozen checklist`}</dd></div>
       <div><dt>{t('四轮汇总 · reward', 'Pooled reward')}</dt><dd>Vanilla {snapshot.pairedD1.pooled.controlMeanReward.toFixed(4)} · GDR {snapshot.pairedD1.pooled.treatmentMeanReward.toFixed(4)} · Δ +{snapshot.pairedD1.pooled.pairedMeanRewardDelta.toFixed(4)}</dd></div>
@@ -149,12 +226,12 @@ const evidenceFor = (id: string) => id === 'beta-g'
 </article>
 <style>
 .gds-page{width:min(1060px,calc(100% - 2rem));margin:0 auto;padding:2.4rem 0 5rem;color:var(--text)}
-.gds-hero{padding:1rem 0 2.2rem;border-bottom:1px solid var(--line)}.gds-back,.gds-hero__history a,.gds-related a,.gds-sources a,.gds-evidence-nav a,.gds-evidence-links a{color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}.gds-hero h1{margin:.9rem 0 .8rem;font-size:clamp(2.7rem,7vw,5.4rem);line-height:1;letter-spacing:-.045em}.gds-hero__lede{max-width:54rem;margin:0;font-size:clamp(1.25rem,2.6vw,1.65rem);line-height:1.62}.gds-hero__state{max-width:50rem;margin:1.1rem 0 .5rem;padding:.8rem 0 .8rem 1rem;border-left:3px solid var(--accent-deep);font-size:1rem;line-height:1.6}.gds-hero__state strong{display:block;margin-bottom:.15rem}.gds-hero__history{margin:.75rem 0 .1rem;font-size:1rem}
-.gds-section{padding:2.8rem 0;border-bottom:1px solid var(--line)}.gds-section>h2{max-width:48rem;margin:0 0 .8rem;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.13;letter-spacing:-.025em}.gds-section>p{max-width:50rem;margin:.7rem 0;font-size:1.08rem;line-height:1.72}.gds-section>p.gds-sources,.gds-section>p.gds-related{font-size:1rem;color:var(--muted)}
-.gds-recurrence{margin:1.6rem 0 0}.gds-signal{width:min(31rem,100%);margin:0 auto 1.25rem;padding:.8rem 1rem;text-align:center;border-bottom:2px solid var(--accent);background:var(--surface-muted)}.gds-signal span{display:block;color:var(--muted);font-size:1rem}.gds-signal strong{display:block;margin-top:.25rem}.gds-flow,.gds-runtime__flow{display:grid;grid-template-columns:minmax(0,1fr) 2.5rem minmax(0,1fr) 2.5rem minmax(0,1fr) 2.5rem minmax(0,1fr);align-items:stretch}.gds-node{min-width:0;padding:1rem;border:1px solid var(--line);background:var(--surface)}.gds-node small{display:block;color:var(--muted);font-size:1rem;line-height:1.4}.gds-node strong{display:block;margin-top:.35rem;line-height:1.45}.gds-node.is-state,.gds-node.is-memory{border-color:#75639b}.gds-node.is-read,.gds-node.is-signal{border-color:#b98235}.gds-node.is-write,.gds-node.is-gate{border-color:#a15448}.gds-node.is-next{border-color:#4f7c66}.gds-node.is-event{border-color:#527b9d}.gds-connector{position:relative;min-height:3rem}.gds-connector:before{content:"";position:absolute;left:0;right:.45rem;top:50%;height:1px;background:var(--muted)}.gds-connector:after{content:"";position:absolute;right:.15rem;top:calc(50% - .28rem);border-left:.5rem solid var(--muted);border-block:.28rem solid transparent}.gds-equation{display:grid;gap:.35rem;margin:1rem 0;padding:1.05rem 1.2rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted);font-size:1rem}.gds-recurrence figcaption,.gds-runtime figcaption{color:var(--muted);font-size:1rem;line-height:1.62}
-.gds-tv-boundary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.5rem;align-items:center;margin-top:1.4rem;padding-block:1rem;border-block:1px solid var(--line)}.gds-tv-boundary dl{margin:0}.gds-tv-boundary dl>div{display:grid;grid-template-columns:8rem 1fr;gap:1rem;padding:.45rem 0}.gds-tv-boundary dt{font-weight:800}.gds-tv-boundary dd{margin:0;line-height:1.55}.gds-tv-boundary>code{font-size:1.05rem;white-space:nowrap}
+.gds-hero{padding:1rem 0 2.2rem;border-bottom:1px solid var(--line)}.gds-back,.gds-hero__history a,.gds-related a,.gds-sources a,.gds-evidence-nav a,.gds-evidence-links a{color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}.gds-hero h1{max-width:58rem;margin:.9rem 0 .8rem;font-size:clamp(2.5rem,6.2vw,5rem);line-height:1.03;letter-spacing:-.045em}.gds-hero__lede{max-width:54rem;margin:0;font-size:clamp(1.22rem,2.4vw,1.55rem);line-height:1.62}.gds-hero__boundary{max-width:52rem;margin:1.1rem 0 .5rem;padding:.8rem 0 .8rem 1rem;border-left:3px solid var(--accent-deep);color:var(--muted);font-size:1rem;line-height:1.65}.gds-hero__history{margin:.75rem 0 .1rem;font-size:1rem}
+.gds-section{padding:2.8rem 0;border-bottom:1px solid var(--line)}.gds-section>h2{max-width:50rem;margin:0 0 .8rem;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.13;letter-spacing:-.025em}.gds-section>h3{max-width:50rem;margin:2.25rem 0 .65rem;font-size:clamp(1.25rem,2.4vw,1.55rem);line-height:1.35}.gds-section>p{max-width:50rem;margin:.7rem 0;font-size:1.08rem;line-height:1.72}.gds-section>p.gds-sources,.gds-section>p.gds-related{font-size:1rem;color:var(--muted)}.gds-callout{padding:.85rem 0 .85rem 1rem;border-left:3px solid var(--line);color:var(--muted)}.gds-map-wrap{max-width:62rem;overflow-x:auto;margin:1.2rem 0 1.5rem}.gds-map{width:100%;min-width:760px;border-collapse:collapse}.gds-map th,.gds-map td{padding:.75rem .8rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.55}.gds-map thead th{border-top:2px solid var(--text);border-bottom:1.5px solid var(--text);font-weight:800}.gds-map tbody tr:last-child td{border-bottom:2px solid var(--text)}
+.gds-runtime__flow{display:grid;align-items:stretch}.gds-node{min-width:0;padding:1rem;border:1px solid var(--line);background:var(--surface)}.gds-node small{display:block;color:var(--muted);font-size:1rem;line-height:1.4}.gds-node strong{display:block;margin-top:.35rem;line-height:1.45}.gds-node.is-signal{border-color:#b98235}.gds-node.is-gate{border-color:#a15448}.gds-node.is-next{border-color:#4f7c66}.gds-node.is-event{border-color:#527b9d}.gds-connector{position:relative;min-height:3rem}.gds-connector:before{content:"";position:absolute;left:0;right:.45rem;top:50%;height:1px;background:var(--muted)}.gds-connector:after{content:"";position:absolute;right:.15rem;top:calc(50% - .28rem);border-left:.5rem solid var(--muted);border-block:.28rem solid transparent}.gds-runtime figcaption{color:var(--muted);font-size:1rem;line-height:1.62}
+.gds-tv-boundary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.5rem;align-items:center;margin-top:1.4rem;padding-block:1rem;border-block:1px solid var(--line)}.gds-tv-boundary dl{margin:0}.gds-tv-boundary dl>div{display:grid;grid-template-columns:8rem 1fr;gap:1rem;padding:.45rem 0}.gds-tv-boundary dt{font-weight:800}.gds-tv-boundary dd{margin:0;line-height:1.55}.gds-tv-boundary :global([data-math-formula-inline]){font-size:1.05rem;white-space:nowrap}
 .gds-derivation{list-style:none;margin:1.6rem 0 0;padding:0}.gds-derivation>li{display:grid;grid-template-columns:4rem minmax(0,1fr);gap:1rem;padding:1.6rem 0;border-top:1px solid var(--line)}.gds-derivation__index{font:800 1rem/1.2 var(--font-mono);color:var(--accent-deep)}.gds-derivation__body small{color:var(--muted);font:700 1rem/1.4 var(--font-mono);overflow-wrap:anywhere}.gds-derivation__body h3{margin:.35rem 0 .45rem;font-size:1.45rem;line-height:1.3}.gds-derivation__body p{max-width:48rem;margin:0;font-size:1.04rem;line-height:1.68}.gds-derivation details{margin-top:.75rem}.gds-derivation summary{cursor:pointer;color:var(--accent-deep);font-weight:750}.gds-evidence-status{margin:.7rem 0 .2rem;color:var(--muted);font-size:1rem}.gds-evidence-links,.gds-evidence-nav{display:flex;flex-wrap:wrap;gap:.6rem 1rem;margin-top:.7rem}.gds-evidence-links a,.gds-evidence-nav a{font-size:1rem}
-.gds-runtime{margin:1.5rem 0 0}.gds-runtime__flow{grid-template-columns:minmax(0,1fr) 2rem minmax(0,1fr) 2rem minmax(0,1fr) 2rem minmax(0,1fr) 2rem minmax(0,1fr)}.gds-d1{border-left:3px solid var(--accent-deep);padding-left:1.25rem}.gds-d1__facts{margin:1.25rem 0}.gds-d1__facts>div{display:grid;grid-template-columns:8rem 1fr;gap:1rem;padding:.65rem 0;border-top:1px solid var(--line)}.gds-d1__facts dt{font-weight:800}.gds-d1__facts dd{margin:0;line-height:1.55}.gds-d1__boundary{font-weight:650}.gds-provenance{display:grid;gap:.35rem;padding-top:1.6rem;color:var(--muted);font-size:1rem;line-height:1.55}.gds-provenance strong{color:var(--text)}.gds-provenance code{overflow-wrap:anywhere}
-@media(max-width:820px){.gds-page{width:min(100% - 1rem,1060px);padding-top:1.3rem}.gds-flow,.gds-runtime__flow{grid-template-columns:1fr}.gds-connector{min-height:2.3rem}.gds-connector:before{left:50%;right:auto;top:.2rem;bottom:.45rem;width:1px;height:auto}.gds-connector:after{right:auto;left:calc(50% - .28rem);top:auto;bottom:.1rem;border-top:.5rem solid var(--muted);border-inline:.28rem solid transparent;border-left-color:transparent}.gds-tv-boundary{grid-template-columns:1fr}.gds-tv-boundary dl>div,.gds-d1__facts>div{grid-template-columns:1fr;gap:.25rem}.gds-tv-boundary>code{white-space:normal}.gds-derivation>li{grid-template-columns:2.5rem minmax(0,1fr)}}
+.gds-runtime{margin:1.5rem 0 0}.gds-runtime__flow{grid-template-columns:minmax(0,1fr) 2rem minmax(0,1fr) 2rem minmax(0,1fr) 2rem minmax(0,1fr)}.gds-d1{border-left:3px solid var(--accent-deep);padding-left:1.25rem}.gds-d1__facts{margin:1.25rem 0}.gds-d1__facts>div{display:grid;grid-template-columns:8rem 1fr;gap:1rem;padding:.65rem 0;border-top:1px solid var(--line)}.gds-d1__facts dt{font-weight:800}.gds-d1__facts dd{margin:0;line-height:1.55}.gds-d1__boundary{font-weight:650}.gds-provenance{display:grid;gap:.35rem;padding-top:1.6rem;color:var(--muted);font-size:1rem;line-height:1.55}.gds-provenance strong{color:var(--text)}.gds-provenance code{overflow-wrap:anywhere}
+@media(max-width:820px){.gds-page{width:min(100% - 1rem,1060px);padding-top:1.3rem}.gds-runtime__flow{grid-template-columns:1fr}.gds-connector{min-height:2.3rem}.gds-connector:before{left:50%;right:auto;top:.2rem;bottom:.45rem;width:1px;height:auto}.gds-connector:after{right:auto;left:calc(50% - .28rem);top:auto;bottom:.1rem;border-top:.5rem solid var(--muted);border-inline:.28rem solid transparent;border-left-color:transparent}.gds-tv-boundary{grid-template-columns:1fr}.gds-tv-boundary dl>div,.gds-d1__facts>div{grid-template-columns:1fr;gap:.25rem}.gds-tv-boundary :global([data-math-formula-inline]){white-space:normal}.gds-derivation>li{grid-template-columns:2.5rem minmax(0,1fr)}}
 @media(prefers-reduced-motion:reduce){.gds-page{scroll-behavior:auto}.gds-page *{animation:none;transition:none}}
 </style>
