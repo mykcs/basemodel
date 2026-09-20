@@ -23,6 +23,8 @@ A cold-read/HPL study and a visual-regression acceptance gate answer different q
 
 **The browser is an execution surface, not a reviewer.** Browser automation may load the site, exercise deterministic assertions, and capture screenshots for owner-facing inspection. It must not navigate to Kimi, MiniMax, ChatGPT, Claude, Gemini, or another AI service to obtain a reviewer verdict unless the owner/task explicitly requests an independent reviewer study. A screenshot produced by browser automation is engineering evidence; an AI opinion about that screenshot is a different evidence class and is not part of the ordinary gate.
 
+If browser automation reaches an AI-provider, account-login, browser-sync, or similar authentication surface instead of the target product, treat that as wrong-surface / not-product evidence. Close that automation session. Do not sign in, reuse the owner's browser profile/cookies, or create additional guest/new profiles to keep trying to source a reviewer.
+
 ---
 
 ## 1. Automatic trigger
