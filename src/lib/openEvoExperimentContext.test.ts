@@ -223,9 +223,9 @@ describe('experiment context hierarchy', () => {
     expect(history).toContain('DirectApply');
     expect(history).toContain('训练完，再筛一次');
     expect(history).not.toContain('id=\"recurrence\"');
-    expect(current).toContain('Gated Delta 的 State 更新');
-    expect(current).toContain('四轮 Vanilla vs GDR 配对资格实验已经全部封存');
-    expect(current).toContain('这个结论只属于当前冻结的资格实验');
+    expect(current).toContain('从 sequence State 推到 residual write');
+    expect(current).toContain('四轮配对资格实验已完成并封存');
+    expect(current).toContain('边界仍然很窄');
   });
 
   it('keeps the active Chinese experiment IA aligned with the retained English study snapshot', () => {
