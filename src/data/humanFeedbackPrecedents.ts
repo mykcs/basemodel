@@ -235,9 +235,9 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     id: 'CASE-093',
     title: '科研公式用真正 LaTeX；实验图直接进入正文',
     tags: ['科研网页', 'LaTeX', 'KaTeX', 'MathJax', 'W&B', '交互图', '证据可见', '隐私边界'],
-    principle: '主线数学必须由真实 LaTeX renderer 排版；关键实验图直接进入正文并保留原生 W&B 回链。第三方交互若受权限限制，公开页应诚实使用确定性静态快照，而不是嵌登录墙或擅自扩大可见性。',
-    antiPatterns: ['用 HTML sub/sup 手拼论文公式', 'W&B 做了大量图但网页只给一个泛化链接', '私有 W&B Report iframe 实际显示登录墙仍声称可交互', '为了 embed 未经确认把源项目改 public'],
-    positiveSignals: ['KaTeX / MathJax 真正数学排版', '关键 W&B 曲线正文可见并可点回原生 panel', 'Report / Workspace / panel 多层回链', '私有来源用确定性静态图降级并保留 authority 边界'],
+    principle: '主线数学必须由真实 LaTeX renderer 排版，而且不能只修 owner 点名的单页：一旦发现公式仍由 HTML sub/sup、Unicode、代码块或 serif 字体伪装，就要触发全站同类审计并建立可执行覆盖门。关键实验图直接进入正文并保留原生 W&B 回链。第三方交互若受权限限制，公开页应诚实使用确定性静态快照，而不是嵌登录墙或擅自扩大可见性。',
+    antiPatterns: ['用 HTML sub/sup、Unicode、<code> 或 Georgia/Times 字体手拼论文公式', 'owner 指出一页公式问题后只修这一页，不搜索 sibling routes 和共享组件里的同类表达', 'W&B 做了大量图但网页只给一个泛化链接', '私有 W&B Report iframe 实际显示登录墙仍声称可交互', '为了 embed 未经确认把源项目改 public'],
+    positiveSignals: ['KaTeX / MathJax 真正数学排版', '发现一处 raw math 后运行全站公式覆盖审计，并把 code / pseudocode 与真正数学式分开判断', 'CI 能拒绝公式塞进 <code>、手写 sub/sup 和 serif 假公式，同时允许 shell / API / 状态字段继续保持代码样式', '关键 W&B 曲线正文可见并可点回原生 panel', 'Report / Workspace / panel 多层回链', '私有来源用确定性静态图降级并保留 authority 边界'],
   },
   {
     id: 'CASE-095',

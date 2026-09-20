@@ -1,5 +1,6 @@
 ---
 import type { Locale } from '../i18n';
+import MathFormula from './common/MathFormula.astro';
 import { aiGalaxySeedSnapshot as market } from '../data/aiGalaxySeedSnapshot';
 
 interface Props { locale: Locale }
@@ -30,6 +31,19 @@ const exampleRlHours = exampleMedianUpdateMin * updates / 60;
 const exampleFixedHours = 7;
 const exampleRawHours = exampleRlHours + exampleFixedHours;
 const exampleReserveHours = exampleRawHours * 1.15;
+const latexCount = (value: number) => value.toLocaleString('en-US').replace(/,/g, '{,}');
+const workloadMath = {
+  rl: String.raw`\frac{2400\ \mathrm{prompts}}{16}=150\ \mathrm{updates}`,
+  episodes: String.raw`150\times(16\times8)=19{,}200\ \mathrm{episodes}`,
+  alf: String.raw`19{,}200\times30=${latexCount(alfMaxInteractions)}\ \mathrm{max\ interactions}`,
+  web: String.raw`19{,}200\times15=${latexCount(webMaxInteractions)}\ \mathrm{max\ interactions}`,
+  sft: String.raw`180\times8=${latexCount(sftTrajectories)}\ \mathrm{trajectories}`,
+};
+const calibrationMath = [
+  String.raw`T_{\mathrm{RL}} \approx \operatorname{median}(u_2,\ldots,u_6)\times\frac{150}{60}`,
+  String.raw`T_{\mathrm{total}} \approx T_{\mathrm{prepare/SFT}}+T_{\mathrm{RL}}+T_{\mathrm{eval}}`,
+  String.raw`T_{\mathrm{reserve}} \approx 1.15\,T_{\mathrm{total}}`,
+];
 ---
 
 <section id="seed-compute-hours" class="seed-time-budget" aria-labelledby="seed-compute-hours-title">
@@ -57,12 +71,12 @@ const exampleReserveHours = exampleRawHours * 1.15;
       <span class="section-kicker">{t('先计算论文明确给出的工作量', 'Calculate the paper-specified workload first')}</span>
       <h3 id="workload-derivation-title">{t('为什么 ALFWorld 通常要比 WebShop 预留更多时间', 'Why ALFWorld usually deserves a larger time budget than WebShop')}</h3>
     </div>
-    <div class="equations">
-      <p><strong>RL:</strong> 2,400 prompts ÷ batch 16 = <b>150 updates</b></p>
-      <p><strong>{t('每个环境', 'Per environment')}:</strong> 150 × (16 prompts × 8 rollouts) = <b>19,200 episodes</b></p>
-      <p><strong>ALFWorld:</strong> 19,200 × max 30 interactions = <b>{alfMaxInteractions.toLocaleString()} {t('次交互上限', 'max interactions')}</b></p>
-      <p><strong>WebShop:</strong> 19,200 × max 15 interactions = <b>{webMaxInteractions.toLocaleString()} {t('次交互上限', 'max interactions')}</b></p>
-      <p><strong>SFT:</strong> 180 tasks × 8 rollouts = <b>{sftTrajectories.toLocaleString()} trajectories</b>, {t('官方仓库默认训练 3 epochs', 'with 3 training epochs in the official repository defaults')}</p>
+    <div class="equations" data-math-workload>
+      <div><strong>RL</strong><MathFormula latex={workloadMath.rl} display={false} label="RL update count" /></div>
+      <div><strong>{t('每个环境', 'Per environment')}</strong><MathFormula latex={workloadMath.episodes} display={false} label={t('每个环境的 episode 数', 'Episodes per environment')} /></div>
+      <div><strong>ALFWorld</strong><MathFormula latex={workloadMath.alf} display={false} label={t('ALFWorld 最大交互次数', 'ALFWorld maximum interactions')} /></div>
+      <div><strong>WebShop</strong><MathFormula latex={workloadMath.web} display={false} label={t('WebShop 最大交互次数', 'WebShop maximum interactions')} /></div>
+      <div><strong>SFT</strong><MathFormula latex={workloadMath.sft} display={false} label={t('SFT 轨迹数量', 'SFT trajectory count')} /><span>{t('官方仓库默认训练 3 epochs', 'official repository default: 3 epochs')}</span></div>
     </div>
     <p class="boundary-note">{t('注意：交互数是“最多”，不是实际平均 episode 长度；response 512 也是上限，不代表每一步都会生成 512 token。因此这些数字能解释工作量规模，但仍不能单独推出真实小时数。SEED 还要做 hindsight-skill 分析、普通/skill-augmented 重打分和策略更新，wall-clock 必须由真机 profiling 校准。', 'Interaction counts are maxima, not average episode lengths; response length 512 is also a cap, not a promise that every turn emits 512 tokens. These values explain workload scale but cannot by themselves produce a true wall-clock runtime. SEED also performs hindsight-skill analysis, ordinary/skill-augmented rescoring, and policy updates, so real wall-clock time must be calibrated on the rented machine.')}</p>
   </section>
@@ -110,10 +124,8 @@ const exampleReserveHours = exampleRawHours * 1.15;
   <section class="calibration" aria-labelledby="calibration-title">
     <span class="section-kicker">{t('开机后用实测校准', 'Calibrate with measurements after startup')}</span>
     <h3 id="calibration-title">{t('跑 5 个稳定 update，把网页估算换成你这台机器的数字', 'Run five stable updates and replace this webpage estimate with your machine’s numbers')}</h3>
-    <div class="formula-box">
-      <code>T_RL ≈ median(update_2..6) × 150 ÷ 60</code>
-      <code>T_total ≈ T_prepare/SFT + T_RL + T_eval</code>
-      <code>T_reserve ≈ T_total × 1.15</code>
+    <div class="formula-box" data-math-calibration>
+      {calibrationMath.map((latex, index) => <MathFormula latex={latex} compact label={t(`实测校准公式 ${index + 1}`, `Calibration formula ${index + 1}`)} />)}
     </div>
     <p>{t('为什么用中位数：第一次 update 常包含编译、cache warm-up、模型加载等一次性开销；单步也可能被环境卡顿或网络抖动拉长。跳过 warm-up 后取 5 个 update 的中位数，比拿某一个“看起来很快”的 step 外推 150 次可靠。最后的 ×1.15 是首次复现的工程缓冲，不是统计置信区间。', 'Why the median: the first update often contains compilation, cache warm-up, and model-loading overhead, while an individual step can be stretched by environment or network stalls. Skip warm-up and use the median of five updates; it is safer than extrapolating 150 updates from one unusually fast step. The final ×1.15 is an engineering buffer for a first reproduction, not a statistical confidence interval.')}</p>
     <div class="worked-example">
@@ -165,7 +177,7 @@ const exampleReserveHours = exampleRawHours * 1.15;
   .claim { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); font-size: .86rem; font-weight: 700; }
   .billing-note { padding: 10px 12px; border-radius: 10px; background: var(--surface-muted); font-size: .83rem; }
   .formula-box { display: grid; gap: 7px; margin: 12px 0; }
-  .formula-box code { display: block; padding: 10px 12px; border-radius: 9px; background: var(--surface-muted); overflow-x: auto; }
+  .formula-box :global(.math-formula){margin:0}
   .worked-example { margin-top: 16px; padding: 14px; border-left: 3px solid var(--accent, currentColor); background: var(--surface-muted); }
   .worked-example p { margin: 5px 0 0; }
   .cost-control { margin: 20px 0; padding: 17px 19px; border: 1px solid var(--line); border-radius: 13px; background: var(--surface-muted); }

@@ -75,7 +75,8 @@ describe('research architecture diagrams', () => {
   });
 
   it('makes the SEED core idea visually explicit', () => {
-    for (const term of ['on-policy trajectory','same sampled action tokens','plain-context re-score','skill-context re-score','log p<sub>plain</sub>','log p<sub>skill</sub>','OPD','GRPO','policy θ<sub>t+1</sub>','same checkpoint']) expect(seed).toContain(term);
+    for (const term of ['on-policy trajectory','same sampled action tokens','plain-context re-score','skill-context re-score','log p<sub>plain</sub>','log p<sub>skill</sub>','OPD','GRPO','MathFormula','same checkpoint']) expect(seed).toContain(term);
+    expect(seed).toContain('\\theta_{t+1}');
     expect(seed).toContain('The next round’s actor and analyzer');
     expect(seed).toContain('prefers-reduced-motion:reduce');
   });

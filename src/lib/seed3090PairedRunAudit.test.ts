@@ -30,7 +30,8 @@ describe('seed3090 paired-run audit archive', () => {
 
   it('preserves the fail-closed promotion decision without making the Chinese results landing page its archive host', () => {
     expect(component).toContain('GPU_WORKLOAD_LAUNCHED=0');
-    expect(component).toContain('8 episodes / 4 pairs');
+    expect(component).toContain('MathFormula');
+    expect(component).toContain('8\\,\\mathrm{episodes}=4\\,\\mathrm{pairs}');
     expect(component).toContain('PROMOTION_PASS');
     expect(component).toContain('NOT_ELIGIBLE');
     expect(component).toContain('QUALIFICATION_INVALID');

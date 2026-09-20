@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '../../i18n';
 import ResearchDiagramLegend from './ResearchDiagramLegend.astro';
+import MathFormula from '../common/MathFormula.astro';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
@@ -23,7 +24,7 @@ const t = (cn:string,en:string) => zh ? cn : en;
 
     <article class="node seed-hindsight"><span class="node-role">HINDSIGHT</span><strong>hindsight skill</strong><small>{t('同一 policy 回看完整 trajectory','the same policy reviews the completed trajectory')}</small></article>
     <article class="node seed-signal"><span class="node-role">TRAINING SIGNAL</span><strong>OPD + GRPO</strong><small>{t('稠密概率变化 + outcome RL','dense probability shift + outcome RL')}</small></article>
-    <article class="node seed-state"><span class="node-role">PERSISTENT CHANGE</span><strong>policy θ<sub>t+1</sub></strong><small>{t('经验主要内化进模型参数','experience is primarily internalized into model parameters')}</small></article>
+    <article class="node seed-state"><span class="node-role">PERSISTENT CHANGE</span><strong><MathFormula latex={String.raw`\mathrm{policy}\;\theta_{t+1}`} display={false} label={t('SEED 更新后的 policy 参数', 'SEED updated policy parameters')} /></strong><small>{t('经验主要内化进模型参数','experience is primarily internalized into model parameters')}</small></article>
 
     <article class="node evo-evidence"><span class="node-role">{t('任务边界','BOUNDARY')}</span><strong>{t('已封存证据','sealed evidence')}</strong><small>{t('任务先完整结束，再演化','finish the task first, evolve second')}</small></article>
     <article class="node evo-method"><span class="node-role">{t('演化方法','EVOLUTION METHOD')}</span><strong>{t('反思 / 提炼 / 参数更新','reflection / extraction / parametric update')}</strong><small>{t('方法决定经验如何被编码','the method determines how experience is encoded')}</small></article>
