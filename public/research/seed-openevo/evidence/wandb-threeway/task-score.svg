@@ -1,19 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="WebShop Task Score · 160 rounds">
 <rect width="1200" height="675" rx="18" fill="#ffffff"/>
 <text x="56" y="52" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="26" font-weight="700" fill="#111827">WebShop Task Score · 160 rounds</text>
-<text x="56" y="77" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14" fill="#6B7280">W&amp;B scalar-history static preview · Task Score</text>
+<text x="56" y="77" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14" fill="#6B7280">Publication view · Task Score / 100 · W&amp;B source scalar × 100</text>
 <line x1="90" y1="585.0" x2="1140" y2="585.0" stroke="#E5E7EB" stroke-width="1"/>
-<text x="76" y="590.0" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">0.00</text>
+<text x="76" y="590.0" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">0</text>
 <line x1="90" y1="486.0" x2="1140" y2="486.0" stroke="#E5E7EB" stroke-width="1"/>
-<text x="76" y="491.0" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">0.20</text>
+<text x="76" y="491.0" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">20</text>
 <line x1="90" y1="387.0" x2="1140" y2="387.0" stroke="#E5E7EB" stroke-width="1"/>
-<text x="76" y="392.0" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">0.40</text>
+<text x="76" y="392.0" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">40</text>
 <line x1="90" y1="288.0" x2="1140" y2="288.0" stroke="#E5E7EB" stroke-width="1"/>
-<text x="76" y="293.0" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">0.60</text>
+<text x="76" y="293.0" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">60</text>
 <line x1="90" y1="189.0" x2="1140" y2="189.0" stroke="#E5E7EB" stroke-width="1"/>
-<text x="76" y="194.0" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">0.80</text>
+<text x="76" y="194.0" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">80</text>
 <line x1="90" y1="90.0" x2="1140" y2="90.0" stroke="#E5E7EB" stroke-width="1"/>
-<text x="76" y="95.0" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">1.00</text>
+<text x="76" y="95.0" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">100</text>
 <line x1="90.0" y1="90" x2="90.0" y2="585" stroke="#F3F4F6" stroke-width="1"/>
 <text x="90.0" y="615" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">R0</text>
 <line x1="354.2" y1="90" x2="354.2" y2="585" stroke="#F3F4F6" stroke-width="1"/>
