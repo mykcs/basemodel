@@ -3,6 +3,20 @@
 Status: **current**
 Audience: coding, writing, design, review, and release Agents
 
+
+## 2026-09-22 central-learning boundary
+
+Direct human website feedback is now captured first in the central .codex website-learning system:
+
+- RAW / shared / site-specific learning: https://github.com/mykcs/.codex/tree/main/website-learning
+- canonical website conversation closeout: https://github.com/mykcs/.codex/blob/main/website-learning/CONVERSATION_CLOSEOUT.md
+
+This BaseModel document now owns the local executable adapter: task-time preference compilation, BaseModel Reader Contract integration, candidate screening, and regression behavior that still runs in this repository.
+
+Do not add a new direct owner case only here and call the learning complete. Preserve new owner wording as central RAW first; then update BaseModel local data/tests only when the executable adapter needs the derived preference.
+
+The migration-time BaseModel HPL corpus and implementation snapshot is preserved centrally under website-learning/legacy/basemodel-hpl/.
+
 This file owns how direct human feedback becomes reusable project behavior. It does **not** claim model-weight fine-tuning or account-level memory. The learning loop is repository-level: structured preference evidence, task-time compilation, internal candidate screening, blind review, and executable verification.
 
 ## The success criterion
@@ -65,11 +79,13 @@ Do not start Kimi/MiniMax/other external AI chats, AI CLIs, or local/network vis
 
 If the receipt requires `reviewer.kind=human`, only a real human can satisfy it. If the contract permits an independent Agent, use a separately invoked reviewer mechanism whose identity and evidence class are explicit; browser rendering/capture remains artifact transport, not reviewer identity.
 
-## 1. Raw cases remain canonical history
+## 1. Central RAW owns new direct human feedback
 
-`docs/agents/current/website-copy-cases.md` preserves the owner feedback, reason, rejected/accepted examples when known, scope, and boundaries. Do not rewrite history to make a newer abstraction look cleaner.
+From 2026-09-22 onward, .codex/website-learning/raw/ is the canonical evidence layer for new direct owner website feedback.
 
-Raw cases answer: **What did the owner actually say?**
+docs/agents/current/website-copy-cases.md remains a valuable legacy BaseModel case corpus and local compatibility input. Do not rewrite that historical corpus to make a newer abstraction look cleaner, but do not treat it as the central intake path for new cross-site feedback.
+
+Central RAW answers: **What did the owner actually say?** BaseModel local case/model data answers: **What does the current BaseModel executable adapter need to retrieve or reject?**
 
 ## 2. Human Feedback Events preserve intermediate verdicts
 
@@ -220,7 +236,7 @@ npx tsx scripts/generate-human-preference-brief.ts \
 
 `scope` is an anti-overgeneralization gate, not a display label. Scoped Preference Briefs keep that scope plus genuinely `all-public-ui` evidence; briefing-only / research-only history must not leak into a recovery task merely because it has high global priority. Explicit workflow cues such as Preview/build/review may still retrieve workflow evidence across a page scope because they describe the delivery loop rather than the page's visual grammar.
 
-Cross-repository feedback remains valid training evidence when provenance is explicit: preserve the source repository, route, PR/SHA when available, and keep the learned rule in this BaseModel HPL authority. Do not copy the source product itself into BaseModel or pretend the source artifact was a BaseModel route.
+Cross-repository feedback remains valid learning evidence when provenance is explicit. Preserve the source repository, route, PR/SHA when available, but keep shared/site-specific learned experience in the central .codex/website-learning authority. BaseModel should import only the derived signals its local executable adapter actually needs; do not copy another product into BaseModel or pretend its artifact was a BaseModel route.
 
 ### Activation cues are one end-to-end contract
 

@@ -1,5 +1,18 @@
 # Basemodel 「说人话 / 去 AI 味」文案案例库
 
+
+## 2026-09-22 migration note
+
+This file is now the legacy BaseModel case corpus / local compatibility evidence, not the central intake point for new direct human website feedback.
+
+New clear owner feedback must be preserved first as RAW in:
+
+https://github.com/mykcs/.codex/tree/main/website-learning/raw
+
+Shared and site-specific learned experience belongs under the matching .codex/website-learning/shared/ or sites/basemodel/ area. Add/update BaseModel-local cases only when this repository's executable HPL adapter or regression coverage needs the derived signal.
+
+A frozen migration-time copy of this corpus is preserved in .codex/website-learning/legacy/basemodel-hpl/.
+
 状态：**CURRENT COMPANION**
 主规范：[`website-design-spec.md`](website-design-spec.md)
 历史审计基线：`origin/main@e11d443`，2026-08-30。
