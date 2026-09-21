@@ -689,6 +689,26 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
   },
 
   {
+    id: 'EVENT-20260912-VANILLA-SDLORA-FLOW-NOT-VISIBLE',
+    date: '2026-09-12',
+    caseIds: ['CASE-101'],
+    scopes: ['research-ui', 'visual'],
+    artifact: 'Vanilla SD-LoRA mechanism page / reusable slide · card-adjacency version',
+    variantId: 'vanilla-sdlora-card-adjacency-flow-f5373214',
+    verdict: 'rejected',
+    ownerSignal: '但是完全没法看出来流程流动，是我的指令不对吗？',
+    reasons: [
+      'owner 已经要求参考 Archify 并强调流程/因果，但最终首屏仍以并列步骤块为主，关系需要读者自行还原',
+      '真正的 side input、state admission 和 Round t+1 return 没有在第一视觉层成为可追踪的 routed topology',
+      '此前规则已经要求流程表达真实关系，因此这是 use-site enforcement 的重复失败，不是 prompt 缺失',
+    ],
+    failureMechanisms: ['card-adjacency-masquerading-as-flow', 'relationship-not-first-class', 'tool-validation-substituted-for-product-acceptance'],
+    repeatSignal: 'explicit',
+    requestedSuccessorVariantId: 'vanilla-sdlora-routed-loop-successor',
+    evidence: { repository: 'mykcs/basemodel', route: '/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/', pullRequest: 646, gitSha: 'f53732142ec18a4b93f11ff294918ba7456e2766', ledgerId: 'FB-VSDL-01-FLOW-NOT-VISIBLE' },
+  },
+
+  {
     id: 'EVENT-20260913-SDLORA-V2-WEB-COPY-REGRESSION',
     date: '2026-09-13',
     caseIds: ['CASE-090', 'CASE-091'],
@@ -1150,6 +1170,18 @@ export const HUMAN_PREFERENCE_TRAJECTORIES: PreferenceTrajectory[] = [
 
 ];
 export const HUMAN_VISUAL_REFERENCE_SET: HumanVisualReference[] = [
+  {
+    id: 'VISUAL-VANILLA-SDLORA-CARD-FLOW-REJECTED',
+    tier: 'rejected',
+    scopes: ['research-ui', 'visual'],
+    artifact: 'Vanilla SD-LoRA mechanism · merged card-adjacency / weak-flow first canvas',
+    repository: 'mykcs/basemodel',
+    gitSha: 'f53732142ec18a4b93f11ff294918ba7456e2766',
+    pullRequest: 646,
+    route: '/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/',
+    ownerEvidence: 'owner 在该已合并视觉之后明确说“完全没法看出来流程流动”，并追问是否是自己的指令有问题。',
+    note: 'Rejected 的是非线性流程的视觉语法：卡片/步骤块强于 edge/routing。科学事实、页面所有文案与每个局部像素并未被逐项否定。后继 routed-flow 没有得到“以后按这版”的模板授权，因此这里不虚构 Silver/Golden successor。',
+  },
   {
     id: 'VISUAL-BRIEFING-DENSE-REJECTED',
     tier: 'rejected',
