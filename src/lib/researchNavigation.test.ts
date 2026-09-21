@@ -10,6 +10,7 @@ const studyOverview = read('src/components/research/SeedOpenEvoStudyOverview.ast
 const hero = read('src/components/research/OpenEvoWebShopResultsHero.astro');
 const resultsZh = read('src/pages/research/seed-openevo/study/results.astro');
 const resultsEn = read('docs/archive/site-en/src/pages/en/research/seed-openevo/study/results.astro.archive');
+const journeyPolicy = read('docs/agents/current/research-journey-experience.md');
 
 const flowIds = [
   "id: 'hub'",
@@ -85,6 +86,14 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(detail).not.toContain('navIds');
     expect(detail).not.toContain('plain-detail__track-switch');
     expect(detail).not.toContain('独立方法框架');
+  });
+
+  it('treats canonical route migration as a navigation-state migration, not a redirect-only change', () => {
+    expect(journeyPolicy).toContain('migrate **navigation-state resolution** together with the links');
+    expect(journeyPolicy).toContain('direct canonical `href`');
+    expect(journeyPolicy).toContain('aria-current="page"');
+    expect(journeyPolicy).toContain('normal internal navigation contains no compatibility URL');
+    expect(journeyPolicy).toContain('compatibility URL separately as redirect-only');
   });
 
   it('keeps the canonical research navigation visibly sticky across flow, study, results, and briefing surfaces', () => {
