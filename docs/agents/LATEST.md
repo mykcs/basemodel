@@ -2,7 +2,7 @@
 
 Last updated: **2026-08-28** (research-state snapshot)
 
-CI architecture last verified: **2026-09-09**
+CI architecture last verified: **2026-09-21**
 
 Status: **The SEED × OpenEvo Results route is aligned to the closed Track A paired measurement and the adopted WB1 Gen28 state-v28 boundary. Track A remains `measurement-not-proven-stable-improvement`; WB1 is `GEN28_STATE_V28_BARRIER_PASS_ADOPTED` at 3,584/20,640 counted episodes with 17,056 remaining, while Gen29/GPU/formal-task/final authority remains locked.**
 
@@ -20,11 +20,13 @@ Production                        -> https://basemodel-preview.vercel.app
 mykcs/openevo-experiment         = scientific experiment/result authority
 ```
 
-**Live CI control plane (verified 2026-09-08):** protected `main` requires the GitHub status **`Vercel` only**. The Vercel-first cutover is complete; CircleCI has no merge authority.
+**Live CI control plane (verified 2026-09-21 at `main@d747a658008566e8ba82df50d5dc35fb87e53534`):** protected `main` keeps strict current-base semantics and requires **both** `public-ci-gate` (GitHub Actions app 15368) and `Vercel` (app 8329). CircleCI has no ordinary merge authority.
 
 Ordinary working refs are not Vercel deployment-enabled. They receive automatic **Public PR CI**: read-only exact-head deterministic validation plus the shared risk-based browser planner; non-UI work allocates zero browser runners, bounded UI work allocates one, and full/global browser work is timing-balanced over eight independent Chromium shards with one worker each and retries=0. `public-ci-gate` is required merge evidence. Hosted Vercel acceptance is requested only after that exact-head check is green through `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`, which pins `ci/vercel-gate-base` to live `main` and moves persistent `ci/vercel-gate-final` to the exact PR head. Vercel then performs the static production build and proves provider deployability on that same SHA instead of rerunning the deterministic/browser suite. Proven docs/governance-only `main` changes remain ignored so they cannot replace Production. **Merge readiness therefore requires both `public-ci-gate` and `Vercel`.** CircleCI automatic PR/main workflows remain disabled; the self-hosted GitHub Actions workflow remains manual recovery only.
 
 Provider-selection rationale is `current/ci-provider-decision.md`; current hosting authority is `current/hosting-architecture.md`; release/deployment authority is `current/deployment-policy.md`. Historical Cloudflare deployment paths remain rollback/provider-specific tooling, while `cloudflare/production-smoke/` is the active monitoring-only exception and never deploys the site.
+
+The 2026-09-21 de-duplication qualification measured the same provider phase before/after: exact-head Vercel BUILDING→READY fell from **507.7 s to 14.170 s** (97.209% reduction, 35.83× faster), and merged Production fell from **633.3 s to 16.608 s** (97.378% reduction, 38.13× faster). No test population, retries, assertion threshold, or build-machine tier changed.
 
 Browser-heavy acceptance now runs once, in required Public PR CI, before any final-candidate Vercel spend. Public PR CI and the retained manual fallbacks share `vercel-ui-plan.ts`; first/unknown comparisons fail closed to complete Chromium coverage, and the 6-case active-Lab gate remains relevant where owned. The 2026-09-15 latency qualification refreshed the suite to 197 Chromium identities and selected 8 independent full-matrix shards after 4/6/8 comparison. Vercel is no longer a second browser executor: the exact-head gate proves the static provider build/deploy, and Production builds the already-accepted merge tree. Cloudflare production-smoke independently checks the real Production origin every 30 minutes for HTTP, canonical, robots, sitemap and redirect health.
 

@@ -1,6 +1,6 @@
 # BaseModel CI provider decision — fast, cheap, exact-head
 
-Last reviewed: **2026-09-09**
+Last reviewed: **2026-09-21**
 
 Status: **current provider-selection rationale for `mykcs/basemodel`**.  
 Executable authority remains `vercel.json`, repository scripts/tests, the live GitHub ruleset, [`hosting-architecture.md`](hosting-architecture.md), and [`deployment-policy.md`](deployment-policy.md). If this rationale disagrees with executable or live control-plane state, executable/live state wins and this document must be corrected in the same closeout.
@@ -69,6 +69,8 @@ What changed is ownership. Public PR CI already runs the repository-wide determi
 - `Vercel` = provider static build/deploy acceptance on that same head;
 - Production = static provider build of the already-accepted merge tree;
 - Cloudflare smoke = independent post-deploy observation.
+
+The 2026-09-21 qualification made the causal result concrete: with the same Standard Vercel build machine and unchanged repository/browser acceptance, exact-head provider time fell **507.7 s → 14.170 s** and Production fell **633.3 s → 16.608 s**. This is why the split is retained rather than merely preferred in theory.
 
 Ordinary PR branches remain disabled by `vercel.json -> git.deploymentEnabled`; one persistent `ci/vercel-gate-final` ref requests provider acceptance only for a final candidate. `scripts/request-vercel-final-gate.mjs` refuses to move that ref until exact-head `public-ci-gate` is already completed/success, so Vercel cannot become a shortcut around red repository/browser CI.
 
