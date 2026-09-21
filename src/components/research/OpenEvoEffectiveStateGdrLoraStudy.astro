@@ -123,11 +123,12 @@ const rolloutSeedBase = 148000000;
   <header class="paper__hero esg__hero" data-reader-context id="top">
     <h1>{t('三组已完成 OpenEVO 实验，以及一个还没做的位置', 'Three completed OpenEVO experiments, plus one unrun slot')}</h1>
 
-    <div class="paper-table-wrap paper-table-wrap--hero" aria-label={t('三组已完成实验与一个未做实验位置', 'Three completed experiments and one unrun experiment slot')}>
-      <table class="paper-table paper-table--ablation">
-        <thead>
-          <tr>
-            <th>{t('实验与区别', 'Experiment and change')}</th>
+    <figure class="paper-table-figure paper-table-figure--hero">
+      <div class="paper-table-wrap paper-table-wrap--hero" aria-label={t('三组已完成实验与一个未做实验位置', 'Three completed experiments and one unrun experiment slot')}>
+        <table class="paper-table paper-table--ablation" aria-describedby="ablation-table-caption">
+          <thead>
+            <tr>
+              <th>{t('实验', 'Experiment')}</th>
             <th>Bounded</th>
             <th>{t('动态 β', 'Dynamic β')}</th>
             <th>{t('动态 α', 'Dynamic α')}</th>
@@ -138,13 +139,7 @@ const rolloutSeedBase = 148000000;
         </thead>
         <tbody>
           <tr>
-            <td>
-              <strong>{names.baseline}</strong>
-              <span class="paper-table__experiment-note">{t(
-                '原始 DirectApply：每轮 rank8 SD-LoRA 更新继续累积，历史会随训练越来越长。',
-                'Original DirectApply: each rank-8 SD-LoRA update remains in the history, so the history grows with training.',
-              )}</span>
-            </td>
+            <td><strong>{names.baseline}</strong></td>
             <td class="paper-table__mark">—</td>
             <td class="paper-table__mark">—</td>
             <td class="paper-table__mark">—</td>
@@ -153,13 +148,7 @@ const rolloutSeedBase = 148000000;
             <td><strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{study.threeWayFinal.directApply.exactCount}/128 {t('完整做对', 'exact')}</span></td>
           </tr>
           <tr>
-            <td>
-              <strong>{names.bounded}</strong>
-              <span class="paper-table__experiment-note">{t(
-                '把累计参数历史压回固定 rank128 State，主要解决后期参数更新越来越慢。',
-                'Compresses the accumulated parameter history back into a fixed rank-128 State, targeting the late-training update slowdown.',
-              )}</span>
-            </td>
+            <td><strong>{names.bounded}</strong></td>
             <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
             <td class="paper-table__mark">—</td>
             <td class="paper-table__mark">—</td>
@@ -168,13 +157,7 @@ const rolloutSeedBase = 148000000;
             <td><strong>{study.threeWayFinal.off.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{study.threeWayFinal.off.exactCount}/128 {t('完整做对', 'exact')}</span></td>
           </tr>
           <tr>
-            <td>
-              <strong>{names.gdr}</strong>
-              <span class="paper-table__experiment-note">{t(
-                '在 Bounded 上再用动态 β 控制新经验写进长期参数 State 的强度。',
-                'Adds a dynamic β on top of Bounded to control how strongly new experience is written into the long-term parameter State.',
-              )}</span>
-            </td>
+            <td><strong>{names.gdr}</strong></td>
             <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
             <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
             <td class="paper-table__mark">—</td>
@@ -183,13 +166,7 @@ const rolloutSeedBase = 148000000;
             <td><strong>{study.threeWayFinal.on.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{study.threeWayFinal.on.exactCount}/128 {t('完整做对', 'exact')}</span></td>
           </tr>
           <tr>
-            <td>
-              <strong>{names.dynamicAlphaBeta}</strong>
-              <span class="paper-table__experiment-note">{t(
-                '未来实验位置：让动态 α 与动态 β 同时进入参数 State 更新。尚未运行，不填任何结果。',
-                'Future experiment slot: dynamic α and dynamic β would both participate in the parameter-State update. It has not been run, so no result is filled in.',
-              )}</span>
-            </td>
+            <td><strong>{names.dynamicAlphaBeta}</strong></td>
             <td class="paper-table__mark">✓</td>
             <td class="paper-table__mark">✓</td>
             <td class="paper-table__mark">✓</td>
@@ -197,18 +174,17 @@ const rolloutSeedBase = 148000000;
             <td>—</td>
             <td>—</td>
           </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <p class="paper__boundary">{t(
-      '第四行不是第四个已完成实验，也不参与下面任何统计比较；它只是把“动态 α + 动态 β”这个尚未运行的问题留出位置，结果保持为空。',
-      'The fourth row is not a fourth completed experiment and is excluded from every statistical comparison below. It only reserves a place for the unrun dynamic-α + dynamic-β question, with results intentionally left blank.',
-    )}</p>
-    <p class="paper__boundary">{t(
-      'Seed 列报告 rollout / generation RNG 的 seed base：三条已完成实验都使用 148,000,000，并按 schedule position 生成 rollout seed；逐步 generation seed 使用 injective-v1。这里不是 optimizer 的 training seed。',
-      'The Seed column reports the rollout / generation RNG seed base: all three completed experiments use 148,000,000, with rollout seeds derived by schedule position and per-step generation seeds using injective-v1. This is not the optimizer training seed.',
-    )}</p>
+          </tbody>
+        </table>
+      </div>
+      <figcaption id="ablation-table-caption" class="paper-table__caption">
+        <strong>{t('表 1.', 'Table 1.')}</strong>{' '}
+        {t(
+          '消融设置与结果。普通 OpenEVO 是原始 DirectApply：每轮 rank8 SD-LoRA 更新继续累积；+ Bounded 把累计参数历史压回固定 rank128 State；+ β-gating（α=1）在 Bounded 上再用动态 β 控制新经验写入长期参数 State 的强度；动态 α + 动态 β 是尚未运行的未来实验位置，因此结果保持为空且不参与统计比较。Seed base 报告 rollout / generation RNG：三条已完成实验均为 148,000,000，rollout seed 按 schedule position 派生，逐步 generation seed 使用 injective-v1；它不是 optimizer training seed。',
+          'Ablation settings and results. OpenEVO is the original DirectApply, where each rank-8 SD-LoRA update continues to accumulate; + Bounded compresses accumulated parameter history back to a fixed rank-128 State; + β-gating (α=1) adds dynamic β on top of Bounded to control how strongly new experience is written into the long-term parameter State; dynamic α + dynamic β is an unrun future slot, so its results remain blank and it is excluded from statistical comparisons. Seed base reports rollout / generation RNG: all three completed experiments use 148,000,000, rollout seeds are derived by schedule position, and per-step generation seeds use injective-v1; this is not the optimizer training seed.',
+        )}
+      </figcaption>
+    </figure>
 
     <div class="paper__metric-context">
       <p class="paper__lede esg__lede" data-reader-task data-reader-purpose>{t(
@@ -614,8 +590,11 @@ const rolloutSeedBase = 148000000;
   .paper__lede{max-width:830px;margin:18px 0 14px;font-size:clamp(1.08rem,2vw,1.28rem);line-height:1.7}
   .paper__metric-context{max-width:900px;margin-top:18px}
   .paper__metric-context p{margin:10px 0}
-  .paper-table__experiment-note{display:block;margin-top:5px;color:var(--text-secondary);font-size:1rem;font-weight:450;line-height:1.45}
   .paper-table__metric-detail{color:var(--text-secondary);font-size:1rem}
+  .paper-table-figure{margin:18px 0 12px}
+  .paper-table-figure .paper-table-wrap{margin:0}
+  .paper-table__caption{max-width:1040px;margin:8px 0 0;color:var(--text-secondary);font-size:.875rem;line-height:1.5;text-align:left}
+  .paper-table__caption strong{color:var(--text-primary);font-weight:750}
   .paper__boundary{max-width:880px;color:var(--text-secondary);font-size:1rem;line-height:1.65}
   .paper__section{padding:44px 0;border-top:1px solid var(--border-color)}
   .paper__section-number{margin:0 0 5px;color:var(--text-secondary);font:700 1rem/1.3 var(--font-mono)}
@@ -639,7 +618,7 @@ const rolloutSeedBase = 148000000;
   .paper-table--ablation th:nth-child(6),.paper-table--ablation td:nth-child(6){width:17%}
   .paper-table--ablation th:nth-child(7),.paper-table--ablation td:nth-child(7){width:21%}
   .paper-table--ablation td:nth-child(n+2),.paper-table--ablation th:nth-child(n+2){text-align:center}
-  .paper-table-wrap--hero{margin-top:16px;overflow-x:auto}
+  .paper-table-wrap--hero{overflow-x:auto}
   .paper__math-caption{max-width:880px;margin:-.45rem 0 1rem;color:var(--text-secondary);font-size:1rem;line-height:1.6}
   .paper__math-boundary{max-width:880px;margin:1rem 0;padding:.85rem 0 .85rem 1rem;border-left:3px solid var(--border-color);color:var(--text-secondary);font-size:1rem;line-height:1.65}
   .paper__math-symbol{font-family:serif;font-style:italic}
