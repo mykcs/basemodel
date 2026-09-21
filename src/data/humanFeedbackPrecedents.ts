@@ -228,7 +228,7 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     tags: ['科研网页', '消融实验', '论文结构', 'ICLR', '命名一致', 'Bounded Online Recurrence', 'Bounded State', 'GDR', '公式', 'Task Vector', 'entropy'],
     principle: '一组逐项增加机制的实验，首层先用统一实验名和消融表说明“哪三组、每组多了什么、最后怎样”，再按动机→方法→数学映射→实验→结果→分析组织；内部 run/arm 名只留在证据层。',
     antiPatterns: ['H1 用 Bounded Online Recurrence + Effective-State GDR，结果区却换成 DirectApply / Bounded OFF / ON', '按 readiness / lifecycle / implementation / post-hoc 内部工作流切碎科研故事', '只贴 GDR 公式，不解释 linear-attention State/β/g 怎样映射到参数 State / effective write'],
-    positiveSignals: ['首层消融表用真实机制列区分 Bounded / 动态 β / 动态 α；α=1 的已完成 treatment 不简称完整 GDR，未运行 α+β 留空', '一个实验在标题、表格、图例和正文使用同一公共名称', '真实 SD-LoRA 扩展性问题先产生 Bounded Online Recurrence，再给公式和实验', 'Task Vector / norm / 步数 / entropy 集中放在 Analysis / Discussion'],
+    positiveSignals: ['首层消融表用真实机制列区分 Bounded / 动态 β / 动态 α；α 固定为 1 的已完成 treatment 不简称完整 GDR，未运行 α+β 留空', '一个实验在标题、表格、图例和正文使用同一公共名称', '真实 SD-LoRA 扩展性问题先产生 Bounded Online Recurrence，再给公式和实验', 'Task Vector / norm / 步数 / entropy 集中放在 Analysis / Discussion'],
   },
 
   {
@@ -270,8 +270,8 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     title: '方法名不能把未运行的机制写成已验证',
     tags: ['科研网页', '实验命名', 'GDR', 'alpha', 'beta', '消融', '未做实验', '科学边界'],
     principle: '公开方法名必须精确到本次实验真正启用的机制。若完整方法含多个控制量、而正式实验只启用其中一部分，就在名称和消融表直接写出固定项；未运行的完整版本可以留空位，但结果必须保持为空。',
-    antiPatterns: ['把 α=1、只动态控制 β 的实验简称成“+ GDR”，让读者误以为完整 α+β 都已测试', '给尚未运行的 dynamic α+β 补分数、趋势或结论', '为了公共命名简洁而改写底层封存 experiment ID'],
-    positiveSignals: ['已完成第三组统一写成 β-gating（α=1）', '消融表拆开动态 β / 动态 α，让已完成组显示 β ✓、α —', 'dynamic α + dynamic β 只保留“未做”空位，所有结果列为 —', '底层 EFFECTIVE_STATE_GDR_LORA_V1 等审计身份原样保留'],
+    antiPatterns: ['把 α 固定为 1、只动态控制 β 的实验简称成“+ GDR”，让读者误以为完整 α+β 都已测试', '给尚未运行的 dynamic α+β 补分数、趋势或结论', '为了公共命名简洁而改写底层封存 experiment ID'],
+    positiveSignals: ['已完成第三组统一写成 β-gating（α 固定为 1）', '消融表拆开动态 β / 动态 α，让已完成组显示 β ✓、α —', 'dynamic α + dynamic β 只保留“未做”空位，所有结果列为 —', '底层 EFFECTIVE_STATE_GDR_LORA_V1 等审计身份原样保留'],
   },
 
   {

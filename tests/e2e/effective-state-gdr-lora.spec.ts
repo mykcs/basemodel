@@ -15,7 +15,7 @@ for (const viewport of [
     const ablation = page.locator('.paper-table--ablation');
     await expect(ablation).toContainText('普通 OpenEVO');
     await expect(ablation).toContainText('OpenEVO + Bounded Online Recurrence');
-    await expect(ablation).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α=1）');
+    await expect(ablation).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）');
     await expect(ablation).toContainText('60.72');
     await expect(ablation).toContainText('45.98');
     await expect(ablation).toContainText('20.77');
@@ -58,7 +58,7 @@ test('ablation table separates three completed mechanisms from the unrun dynamic
   await expect(rows.nth(0).getByText('✓')).toHaveCount(0);
   await expect(rows.nth(1)).toContainText('OpenEVO + Bounded Online Recurrence');
   await expect(rows.nth(1).getByText('✓')).toHaveCount(1);
-  await expect(rows.nth(2)).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α=1）');
+  await expect(rows.nth(2)).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）');
   await expect(rows.nth(2).getByText('✓')).toHaveCount(2);
   await expect(rows.nth(3)).toContainText('动态 α + 动态 β（未做）');
   await expect(rows.nth(3).getByText('✓')).toHaveCount(3);
@@ -70,7 +70,7 @@ test('paper narrative follows motivation, method, mapping, experiment, result, a
   const h2s = await page.locator('.paper__section > h2').allTextContents();
   expect(h2s.slice(0, 5)).toEqual([
     '动机：SD-LoRA 越训练越慢',
-    '方法：Bounded Online Recurrence、Gated Delta 来源与本实验 β-gating（α=1）',
+    '方法：Bounded Online Recurrence、Gated Delta 来源与本实验 β-gating（α 固定为 1）',
     '实验设置：Qwen3-1.7B × WebShop',
     '结果：训练后期与固定 128 题终评',
     '指标分析：从 loss 一直看到行为 entropy',
@@ -113,7 +113,7 @@ test('formal result preserves the matched-arm statistical boundary under public 
   const result = page.locator('#formal-result');
   await expect(result).toContainText('普通 OpenEVO');
   await expect(result).toContainText('OpenEVO + Bounded Online Recurrence');
-  await expect(result).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α=1）');
+  await expect(result).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）');
   await expect(result).toContainText('R1–R159 mean reward');
   await expect(result).toContainText('跨 0');
   await expect(result).toContainText('短暂正向信号没有形成稳定优势');
@@ -231,7 +231,7 @@ test('phone first screen establishes the three experiments before deep method de
 test('evidence keeps public names separate from exact internal experiment identities', async ({ page }) => {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const evidence = page.locator('#evidence');
-  await expect(evidence).toContainText('Bounded Online Recurrence + β-gating（α=1）');
+  await expect(evidence).toContainText('Bounded Online Recurrence + β-gating（α 固定为 1）');
   await expect(evidence).toContainText('动态 α + 动态 β');
   await expect(evidence).toContainText('DirectApply / No-GDR');
   await expect(evidence).toContainText('BOUNDED_OFF');
@@ -282,7 +282,7 @@ test('results index uses the same public names as the experiment page', async ({
   const latest = page.locator('#latest-1p7b');
   await expect(latest).toContainText('普通 OpenEVO');
   await expect(latest).toContainText('OpenEVO + Bounded Online Recurrence');
-  await expect(latest).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α=1）');
+  await expect(latest).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）');
   await expect(latest).toContainText('60.72');
   await expect(latest).toContainText('45.98');
   await expect(latest).toContainText('20.77');

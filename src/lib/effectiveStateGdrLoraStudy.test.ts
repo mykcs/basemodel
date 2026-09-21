@@ -40,7 +40,7 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('paper-table--ablation');
     expect(component).toContain('普通 OpenEVO');
     expect(component).toContain('OpenEVO + Bounded Online Recurrence');
-    expect(component).toContain('OpenEVO + Bounded Online Recurrence + β-gating（α=1）');
+    expect(component).toContain('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）');
         expect(component).toContain('动态 α + 动态 β（未做）');
         expect(component).toContain("<th>{t('动态 β', 'Dynamic β')}</th>");
         expect(component).toContain("<th>{t('动态 α', 'Dynamic α')}</th>");
