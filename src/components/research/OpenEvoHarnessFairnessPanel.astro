@@ -10,9 +10,9 @@ const t = (cn: string, en: string) => zh ? cn : en;
 ---
 <section class:list={['harness-fairness', compact && 'harness-fairness--compact']} data-testid="openevo-harness-fairness" aria-labelledby="harness-fairness-title">
   <header>
-    <p>HARNESS FAIRNESS · CLAIM BOUNDARY</p>
+    <p>{t('共享购物接口 · 公平性边界', 'HARNESS FAIRNESS · CLAIM BOUNDARY')}</p>
     <h2 id="harness-fairness-title">{t('Harness 只铺环境，不替模型做题', 'The harness sets the interface; it does not solve the task')}</h2>
-    <strong>{t('准确说法：strategy-neutral bootstrap harness。不是“零脚手架裸跑”。', 'Precise claim: strategy-neutral bootstrap harness. Not “zero-scaffolding raw model.”')}</strong>
+    <strong>{t('共享接口只约束合法动作与通用短推理，不提供具体购物策略。', 'The shared harness constrains legal actions and generic brief deliberation without providing a task-solving strategy.')}</strong>
     <span>{t(
       '公平性来自两边使用同一套接口与预算语义，并把 task-solving strategy、learned carriers、外部老师行动和 final-panel 信息挡在 raw Stage 1 之外；同时我们把 hard action envelope 和通用短推理明确列作实验条件。',
       'Fairness comes from one interface and one budget semantics across both arms, while task-solving strategy, learned carriers, external teacher actions, and final-panel information stay outside raw Stage 1. The hard action envelope and generic brief deliberation are disclosed as experimental conditions.'

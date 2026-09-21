@@ -4,7 +4,6 @@ import { localePath } from '../../i18n';
 import ResearchOrientation from './ResearchOrientation.astro';
 import ResearchJourney from './ResearchJourney.astro';
 import ResearchDepth from './ResearchDepth.astro';
-import ResearchGlossary from './ResearchGlossary.astro';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -58,12 +57,9 @@ const summarySteps = zh ? [
     actionHref="#first-run-summary"
     actionLabel={t("看两种模型各自发生了什么", "See what happened to each model")}
     terms={terms}
-    showGlossary={false}
   />
 
   <div id="first-run-summary"><ResearchJourney locale={locale} title={t("3B 和 7B 的实验过程", "3B and 7B experiment sequence")} intro={t("7B 继续学习并完成测试；旧 3B 停止，购物接口随后重做。", "7B continued into final evaluation; the old 3B run stopped and the shopping interface was redesigned.")} steps={summarySteps} /></div>
-
-  <ResearchGlossary locale={locale} terms={terms} />
 
   <div id="first-run-lineages"><ResearchDepth locale={locale} kind="history" summary={t("7B 与 3B 的历史过程和证据", "Historical 7B and 3B runs and evidence")} intro={t("每个节点记录当时的规则、结果和修订。旧 3B 已停止，后来的实验使用新记录。", "Each node records the rules, results, and amendments at that time. The old 3B run stopped; the successor uses new records.")} >
   <aside class="first-run__prelude" aria-label={t('更早的 Stage 2 经验', 'Earlier Stage-2 evidence')}>

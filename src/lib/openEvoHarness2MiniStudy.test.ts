@@ -64,7 +64,8 @@ describe('OpenEVO Harness 2.0 mini study publication', () => {
     expect(narrative).toContain("id: '202609030400'");
     expect(gateway).toContain('设计与排查过程');
     expect(gateway).toContain('实验报告');
-    expect(exploration).toContain('FREEZE_ONE_SHARED_STAGE1_HARNESS');
+    expect(exploration).toContain('05 · 冻结共享 Stage 1 接口');
+    expect(exploration).toContain('OPEN_EVO_STAGE1_FREEZE.id');
     expect(exploration).toContain('paired');
     expect(chooser).toContain('第三次转折 · 从 Stage 1 重开');
     expect(chooser).toContain('Harness201.1 后重新采 Stage 1');

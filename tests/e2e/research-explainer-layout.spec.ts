@@ -429,14 +429,15 @@ test('SEED visibly separates policy, harness, benchmark environment, and sealed 
     const stage1Harness = root.locator('.irx-seed-runtime-boundary .irx-seed-role-harness');
     const stage1Environment = root.locator('.irx-seed-benchmark');
     await expect(stage1Model).toContainText('Qwen2.5-3B-Instruct');
-    await expect(stage1Harness).toContainText('SEED / verl-agent HARNESS');
+    await expect(stage1Harness).toContainText('SEED / verl-agent 交互层');
+    await expect(stage1Harness).toContainText('组装 observation → 解析 action');
     await expect(stage1Environment).toContainText('WebAgentTextEnv');
     await expect(root.locator('.irx-seed-offline-pipeline')).toContainText('GLM-5.2');
 
     const stage2Contract = root.locator('.irx-seed-interaction-contract');
     const stage2Harness = stage2Contract.locator('[data-flow-id="seed-harness"]');
     const stage2Environment = stage2Contract.locator('[data-flow-id="seed-environment"]');
-    await expect(stage2Contract).toContainText('FIXED BENCHMARK INTERACTION CONTRACT');
+    await expect(stage2Contract).toContainText('固定的基准交互合同');
     await expect(stage2Harness).toContainText('SEED / verl-agent');
     await expect(stage2Environment).toContainText('Princeton WebShop');
     await expect(root.locator('[data-flow-id="seed-trajectory"]')).toContainText(/SEALED EPISODE|完整 on-policy trajectory/);
@@ -500,7 +501,8 @@ test('research framework opens as a system map and can enter and leave trace mod
   const root = page.locator('[data-interactive-research-explainer="openevo"]');
   await waitForHydratedExplainer(root);
   await expect(root).toHaveAttribute('data-overview', 'true');
-  await expect(root.locator('.irx-paper-caption')).toContainText('SYSTEM MAP');
+  await expect(root.locator('.irx-paper-caption')).toContainText('系统结构');
+  await expect(root.locator('.irx-paper-caption')).not.toContainText('FIGURE · SYSTEM MAP');
   await root.getByRole('button', { name: '开始追踪' }).click();
   await expect(root).toHaveAttribute('data-overview', 'false');
   await root.getByRole('button', { name: '重置' }).click();

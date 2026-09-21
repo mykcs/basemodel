@@ -325,6 +325,15 @@ merge to main
 
 One accepted release batch should normally create one Production build. Do not add a second `main` micro-commit merely to adjust release notes or wording that could have been included before merge.
 
+**Missing post-merge Production object is actionable release topology.** For a deploy-relevant merge, first read live Vercel deployments/status by the exact current `main` SHA. If the normal Git integration does not create any Production deployment object for that SHA after the ordinary observation window:
+
+1. prove that the stable Production alias still points at the prior release and that no Production object exists for the exact current `main` SHA;
+2. do **not** add a no-op `main` commit, do **not** describe the prior Production artifact as current, and do **not** promote the accepted Preview—the Preview proves the candidate head, while `promote` does not rebuild the merged `main` tree or prove the Production gate;
+3. trigger at most one fallback **Git-source Production build** from the repository's exact current `main` ref/SHA with `target=production` (provider deduplication may be bypassed only to force this exact Git build); preserve Git metadata so Vercel sees `githubCommitRef=main` / the exact merge SHA and therefore executes the normal Production build command plus hosted Chromium/Lab gates;
+4. close release only after provider metadata binds the deployment to exact `main`, the Production deployment is `READY`, and the stable alias plus representative routes/metadata resolve to that deployment.
+
+If an exact-main Git-source Production fallback cannot be created or its Git identity cannot be proven, stop and report the release blocker. A source-upload deploy with ambiguous branch identity is not a substitute for the normal Production gate.
+
 When handing the owner a Production link after release, first verify that the live Vercel alias still resolves to the accepted Production deployment, then share the clean stable canonical URL (`https://basemodel-preview.vercel.app` plus the requested route path). Do not substitute a deployment-specific hostname, protected Preview/share URL, or append unsolicited analytics/tracking query parameters. Add a query string only when it is required for the product behavior the owner explicitly asked to inspect.
 
 ## Repository Gate

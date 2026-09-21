@@ -23,7 +23,7 @@ const p = (path: string) => localePath(locale, path);
 
   <figure class="comparison-body">
     <div class="shared-experience" data-ui-audit-item>
-      <small>SHARED EXPERIENCE</small>
+      <small>{t('共同任务经验','SHARED EXPERIENCE')}</small>
       <strong>task + observations + sampled actions + outcome</strong>
       <span data-ui-prose>{t('同一次任务结束后，两种框架都先拿到这份 completed experience。','After the same task ends, both frameworks first receive this completed experience.')}</span>
     </div>
@@ -39,15 +39,15 @@ const p = (path: string) => localePath(locale, path);
           <div class="wrapper-name">SEED</div>
           <div class="agent-inner trainable-agent">
             <span class="paper-symbol" aria-hidden="true">🔥</span>
-            <div><small>AGENT / POLICY</small><strong><MathFormula latex={String.raw`\pi_\theta`} display={false} label={t('SEED 当前策略', 'SEED current policy')} /></strong></div>
+            <div><small>{t('Agent / 策略','AGENT / POLICY')}</small><strong><MathFormula latex={String.raw`\pi_\theta`} display={false} label={t('SEED 当前策略', 'SEED current policy')} /></strong></div>
           </div>
           <p data-ui-prose>{t('训练阶段，optimizer 真正更新的是 policy 参数。','During training, the optimizer updates the policy parameters.')}</p>
         </div>
 
         <div class="column-flow">
-          <div class="flow-node"><small>LOOK BACK</small><strong>📄 hindsight skill</strong></div>
+          <div class="flow-node"><small>{t('任务后复盘','LOOK BACK')}</small><strong>📄 hindsight skill</strong></div>
           <i aria-hidden="true">↓</i>
-          <div class="flow-node signal"><small>LEARNING SIGNAL</small><strong>OPD + RL</strong></div>
+          <div class="flow-node signal"><small>{t('学习信号','LEARNING SIGNAL')}</small><strong>OPD + RL</strong></div>
           <i aria-hidden="true">↓</i>
           <div class="change-node parameter-change">
             <span class="paper-symbol" aria-hidden="true">🔥</span>
@@ -56,7 +56,7 @@ const p = (path: string) => localePath(locale, path);
         </div>
 
         <section class="next-task seed-next">
-          <small>NEXT ROUND / INFERENCE</small>
+          <small>{t('下一轮 / 推理','NEXT ROUND / INFERENCE')}</small>
           <div class="next-agent"><strong>Agent <MathFormula latex={String.raw`\theta'`} display={false} label={t('更新后的 Agent 参数', 'updated Agent parameters')} /></strong><span data-ui-prose>{t('经验已经内化进模型本身','experience is internalized in the model')}</span></div>
           <i aria-hidden="true">↓</i>
           <b>new task</b>
@@ -73,9 +73,9 @@ const p = (path: string) => localePath(locale, path);
         <div class="framework-wrapper evo-wrapper">
           <div class="wrapper-name">OpenEvo</div>
           <div class="agent-inner">
-            <small>AGENT</small><strong>{t('base / current Agent','base / current Agent')}</strong>
+            <small>{t('Agent','AGENT')}</small><strong>{t('base / current Agent','base / current Agent')}</strong>
           </div>
-          <div class="carrier-slot"><small>EVOLUTION CARRIER</small><span>memory · skill · instructions · adapter</span></div>
+          <div class="carrier-slot"><small>{t('演化载体','EVOLUTION CARRIER')}</small><span>memory · skill · instructions · adapter</span></div>
           <p data-ui-prose>{t('OpenEvo 规定任务边界、evidence、evolution 与 successor 的合同；具体 carrier 决定经验最后以什么形式保存。','OpenEvo defines the task-boundary, evidence, evolution, and successor contract; the carrier determines the form in which experience persists.')}</p>
         </div>
 
@@ -96,7 +96,7 @@ const p = (path: string) => localePath(locale, path);
         </div>
 
         <section class="next-task evo-next">
-          <small>NEXT TASK</small>
+          <small>{t('下一任务','NEXT TASK')}</small>
           <div class="successor-package"><strong>OpenEvo</strong><div class="next-agent"><span>Agent</span><b>+</b><span>{t('accepted carrier','accepted carrier')}</span></div></div>
           <i aria-hidden="true">↓</i>
           <b>new task</b>

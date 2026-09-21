@@ -26,7 +26,8 @@ for (const viewport of [
       await expect(details).not.toHaveAttribute('open', '');
       await expect(summary).toBeVisible();
       await expect(command).toBeHidden();
-      await expect(summary).toContainText('REPRODUCTION · SECRET PROVISIONING');
+      await expect(summary).toContainText('复现 · 密钥配置');
+      await expect(summary).not.toContainText('REPRODUCTION · SECRET PROVISIONING');
       await expect(summary).toContainText(summaryText);
 
       await summary.focus();

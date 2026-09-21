@@ -41,7 +41,7 @@ export function registerOpenEvoResearchDeepDiveTests() {
     await expect(gateway.locator('[data-principle]')).toContainText(principle);
     await expect(gateway.locator('[data-arm="qwen25-3b"]')).toContainText('22 / 1440');
     await expect(gateway.locator('[data-arm="qwen3-1p7b"]')).toContainText('50 / 1440');
-    await expect(gateway.getByTestId('openevo-harness-fairness')).toContainText('strategy-neutral bootstrap harness');
+    await expect(gateway.getByTestId('openevo-harness-fairness')).toContainText('共享接口只约束合法动作与通用短推理，不提供具体购物策略');
   });
 
   test('exploration view preserves real detours, backtracking, engineering fixes, and the shared freeze', async ({ page }) => {

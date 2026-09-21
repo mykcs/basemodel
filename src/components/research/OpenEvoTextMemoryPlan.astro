@@ -55,7 +55,7 @@ const hypotheses = [
   </section>
 
   <section class="tm-section" aria-labelledby="tm-rounds-title">
-    <h2 id="tm-rounds-title">{t('R104 两次重复；R122 先写满，再重复', 'R104 duplicated twice; R122 saturated, then duplicated')}</h2>
+    <h2 id="tm-rounds-title">{t('Text Memory 的两种失败模式：重复旧笔记与输出饱和', 'Two Text Memory failure modes: prior-note duplication and output saturation')}</h2>
     <div class="tm-table-wrap" tabindex="0" aria-label={t('R104 与 R122 对照', 'R104 and R122 comparison')}><table><thead><tr><th>{t('比较项', 'Comparison')}</th><th>R104</th><th>R122</th></tr></thead><tbody>
       <tr><th scope="row">{t('第一次输出', 'First output')}</th><td>{t('117 token；旧笔记重复两遍；不合法', '117 tokens; prior note twice; invalid')}</td><td>{t('1024 token；写满上限；不合法', '1,024 tokens; saturated; invalid')}</td></tr>
       <tr><th scope="row">{t('唯一一次修复', 'Single repair')}</th><td>{t('117 token；仍是旧笔记重复两遍', '117 tokens; prior note twice again')}</td><td>{t('117 token；旧笔记重复两遍', '117 tokens; prior note twice')}</td></tr>

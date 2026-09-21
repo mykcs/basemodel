@@ -61,6 +61,12 @@ describe('UI visual acceptance gate contract', () => {
     expect(policy).toContain('cascade-preserving CSS composition refactor');
   });
 
+  it('keeps ordinary visual acceptance repository-owned and does not require an external AI reviewer', () => {
+    expect(policy).toContain('Do not introduce an external AI chat, AI CLI, or local/network vision model as a mandatory reviewer');
+    expect(policy).toContain('The browser is an execution surface, not a reviewer.');
+    expect(policy).toContain('Their outage, quota, login state, or inability to accept a local file must not become a blocker');
+  });
+
   it('retains evidence when browser verification fails', () => {
     expect(playwrightConfig).toContain("trace: 'retain-on-failure'");
     expect(playwrightConfig).toContain("screenshot: 'only-on-failure'");

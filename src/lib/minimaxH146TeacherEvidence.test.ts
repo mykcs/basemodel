@@ -49,8 +49,8 @@ describe('H1.46 MiniMax teacher evidence boundary', () => {
   });
 
   it('makes the user-facing page answer the benchmark question before the cost accounting', () => {
-    const benchmark = page.indexOf('最适合这里的 benchmark');
-    const resources = page.indexOf('WHAT WE ACTUALLY SPENT');
+    const benchmark = page.indexOf('教师能力需要在同一轨迹上直接比较');
+    const resources = page.indexOf('04 · 实际消耗');
     expect(benchmark).toBeGreaterThanOrEqual(0);
     expect(resources).toBeGreaterThan(benchmark);
     expect(page).toContain('WHTB · WebShop Hindsight Teacher Bench');
