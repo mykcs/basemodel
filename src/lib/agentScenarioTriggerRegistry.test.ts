@@ -183,6 +183,8 @@ describe('Agent scenario-trigger discovery', () => {
     expect(releaseCloseout).toContain('evidence-only commit to the same release branch is still a **new head**');
     expect(releaseCloseout).toContain('separate docs/governance-only closeout PR from current main');
     expect(releaseCloseout).toContain('Post-merge Production watch is exact-merge-SHA-bound');
+    expect(releaseCloseout).toContain('successor check must become required **before that candidate is merged**');
+    expect(releaseCloseout).toContain('use a safe overlap window where both predecessor and successor are required');
     expect(releaseCloseout).toContain('Earlier Preview failures on a different SHA are background evidence only');
     expect(releaseCloseout).toContain('exact merge SHA -> status context -> provider object/state');
     expect(releaseCloseout).toContain('Stop the watcher after a terminal result is reported');

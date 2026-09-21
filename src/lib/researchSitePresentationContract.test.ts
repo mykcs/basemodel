@@ -67,6 +67,16 @@ describe('research-site presentation contract', () => {
     expect(contract).toContain('say that scope in the title/caption');
   });
 
+  it('makes complete experiment-analysis pages establish performance before diagnostics', () => {
+    const contract = readFileSync(join(repoRoot, 'docs/agents/current/research-site-presentation-contract.md'), 'utf8');
+    expect(contract).toContain('Complete experiment-analysis pages: establish the phenomenon before the diagnostic ladder');
+    expect(contract).toContain('full primary performance trajectory and the minimum useful aggregation');
+    expect(contract).toContain('show the native/full time series before a windowed, smoothed, detrended, or otherwise derived view');
+    expect(contract).toContain('never upgrades an observation into causality');
+    expect(contract).toContain("The exact diagnostic sequence is route-specific and remains owned by that route's Reader Contract / HPL evidence");
+    expect(contract).toContain('mathematical derivation, mechanism explainer, or causal intervention history');
+  });
+
   it('keeps copy-paste operational commands behind explicit technical disclosure', () => {
     const findings: string[] = [];
 
