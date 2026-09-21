@@ -635,6 +635,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
   .paper__metric-context{max-width:900px;margin-top:18px}
   .paper__metric-context p{margin:10px 0}
   .paper-table__experiment-note{display:block;margin-top:5px;color:var(--text-secondary);font-size:1rem;font-weight:450;line-height:1.45}
+  .paper-table--ablation .paper-table__experiment-note{display:none}
   .paper-table__metric-detail{color:var(--text-secondary);font-size:1rem}
   .paper__boundary{max-width:880px;color:var(--text-secondary);font-size:1rem;line-height:1.65}
   .paper__section{padding:44px 0;border-top:1px solid var(--border-color)}
@@ -684,7 +685,6 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
     .paper-table{min-width:640px}
     .paper-table--ablation{min-width:900px}
     .paper-table--ablation th,.paper-table--ablation td{padding:7px 7px;overflow-wrap:anywhere}
-    .paper-table--ablation .paper-table__experiment-note{display:none}
   }
   @media(prefers-reduced-motion:reduce){.paper *,.paper *::before,.paper *::after{scroll-behavior:auto;transition:none;animation:none}}
 </style>
