@@ -51,6 +51,27 @@ test('ablation table keeps all seven columns on one explicit 100-percent grid', 
   expect(Math.abs(last.left + last.width - geometry.width)).toBeLessThan(1.5);
 });
 
+test('ablation row explanations live in a CVPR-style caption instead of table cells', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const table = page.locator('.paper-table--ablation');
+  const caption = page.locator('#ablation-table-caption');
+
+  await expect(table.locator('.paper-table__experiment-note')).toHaveCount(0);
+  await expect(caption).toContainText('表 1.');
+  await expect(caption).toContainText('原始 DirectApply');
+  await expect(caption).toContainText('固定 rank128 State');
+  await expect(caption).toContainText('β-gating（α=1）');
+  await expect(caption).toContainText('动态 α + 动态 β');
+  await expect(caption).toContainText('148,000,000');
+
+  const tableBox = await table.boundingBox();
+  const captionBox = await caption.boundingBox();
+  expect(tableBox).not.toBeNull();
+  expect(captionBox).not.toBeNull();
+  expect(captionBox!.y).toBeGreaterThan(tableBox!.y + tableBox!.height - 1);
+});
+
 test('ablation table separates three completed mechanisms from the unrun dynamic-alpha slot', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
