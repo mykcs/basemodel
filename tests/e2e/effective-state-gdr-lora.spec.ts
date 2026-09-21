@@ -55,7 +55,7 @@ test('paper narrative follows motivation, method, mapping, experiment, result, a
 test('method section explains Bounded Online Recurrence and the GDR-to-parameter-state mapping', async ({ page }) => {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const method = page.locator('#method');
-  await expect(method.locator('[data-math-formula]')).toHaveCount(6);
+  await expect(method.locator('[data-math-formula]')).toHaveCount(7);
   await expect(method.locator('.katex').first()).toBeVisible();
   await expect(method).toContainText('Compress');
   await expect(method).toContainText('Gated Delta Rule');
@@ -122,7 +122,8 @@ test('analysis answers Task Vector, direction, steps, entropy, and adaptive ques
   await expect(analysis).toContainText('0.3705');
   await expect(analysis).toContainText('1158');
   await expect(analysis).toContainText('100%');
-  await expect(analysis).toContainText('约束要不要更 adaptive');
+  await expect(analysis).toContainText('下一问分成两层：先补动态 α，再研究 β 还该看什么');
+  await expect(analysis).toContainText('“动态 α + 动态 β”尚未做，结果暂时留空');
 });
 
 test('W&B section shows static W&B-history previews and keeps native links without a locked iframe', async ({ page }) => {
