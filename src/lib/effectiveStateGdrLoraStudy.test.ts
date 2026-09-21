@@ -36,7 +36,7 @@ describe('Effective-State GDR publication snapshot', () => {
 
   it('publishes the three experiments as one consistent ablation family without strengthening the causal claim', () => {
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
-    expect(component).toContain('三组已完成 OpenEVO 实验');
+    expect(component).toContain('三个 OpenEVO 实验');
     expect(component).toContain('paper-table--ablation');
     expect(component).toContain('普通 OpenEVO');
     expect(component).toContain('OpenEVO + Bounded Online Recurrence');
@@ -51,6 +51,12 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('study.threeWayFinal.directApply.score.toFixed(2)');
     expect(component).toContain('study.threeWayFinal.off.score.toFixed(2)');
     expect(component).toContain('study.threeWayFinal.on.score.toFixed(2)');
+    expect(component).toContain('const seedPaperWebShopScore = 87.1');
+    expect(component).toContain('const seedPaperWebShopSuccess = 77.3');
+    expect(component).toContain('id="ablation-table-caption"');
+    expect(component).toContain('SEED（论文，Qwen3-1.7B）');
+    expect(component).toContain('不是我们三条 OpenEVO 最终模型共用的同一冻结 128 题');
+    expect(component).not.toContain('paper-table__experiment-note');
     expect(component).toContain('跨 0');
     expect(component).not.toContain('Effective-State GDR 优于 Bounded');
     expect(component).not.toContain('Effective-State GDR beats Bounded');

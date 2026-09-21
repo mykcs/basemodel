@@ -282,6 +282,15 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     antiPatterns: ['把 Task Vector、范数、方向、长度、entropy 混在一个 Analysis 段落里', '先报复杂相关系数，再回头解释 loss 是什么', '把所有 W&B 图单独堆成图集，迫使读者在图和正文之间来回对应', '一节只有结果数字，没有先解释指标或最后的解释边界'],
     positiveSignals: ['loss → Task Vector → 参数范数/谱/方向 → 输出长度/任务步数 → action-family entropy', '每节都有“① 指标是什么 → ② 这次实验的结果 → ③ 分析”', '对应 W&B 图直接跟在该指标的小节里', '越复杂的指标越晚出现，并明确它比前一层多回答了什么'],
   },
+
+  {
+    id: 'CASE-100',
+    title: 'SEED 论文参考与消融表说明要放对位置',
+    tags: ['科研网页', '消融表', 'SEED', '论文参考', 'caption', 'CVPR', 'ICLR', 'benchmark', '可比性边界'],
+    principle: '论文式消融表的 cell 只承担实验名、机制标记和指标；行定义与可比性边界放统一 caption。SEED 作为论文专名要明确写成外部参考，不得误解为 RNG seed，也不得把不同题集的论文分数伪装成 same-panel arm。',
+    antiPatterns: ['把 SEED 理解成随机种子并新增 seed-base 数字', 'SEED 参考行不说明与本地 frozen 128 panel 不同', '把方法解释塞进每个 table cell', '把外部论文参考行当成 Bounded / beta / alpha 消融 arm'],
+    positiveSignals: ['SEED（论文，Qwen3-1.7B）外部参考行', 'Score 87.1 / Success 77.3% 与题集差异同时说明', '表格主体只保留实验名、机制标记和结果', 'Table 1 caption 集中解释行定义和 strict-vs-contextual comparison boundary'],
+  },
 ];
 
 export const READER_CONTRACT_PRECEDENTS: Record<string, HumanFeedbackCaseId[]> = {

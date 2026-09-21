@@ -11,7 +11,7 @@ for (const viewport of [
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('[data-effective-state-gdr-page]')).toBeVisible();
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('三组已完成 OpenEVO 实验');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('三个 OpenEVO 实验');
     const ablation = page.locator('.paper-table--ablation');
     await expect(ablation).toContainText('普通 OpenEVO');
     await expect(ablation).toContainText('OpenEVO + Bounded Online Recurrence');
@@ -19,6 +19,9 @@ for (const viewport of [
     await expect(ablation).toContainText('60.72');
     await expect(ablation).toContainText('45.98');
     await expect(ablation).toContainText('20.77');
+    await expect(ablation).toContainText('SEED');
+    await expect(ablation).toContainText('87.1');
+    await expect(ablation).toContainText('77.3%');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
     expect(overflow).toBe(false);
   });
@@ -41,7 +44,7 @@ test('ablation table keeps all six columns on one explicit 100-percent grid', as
   });
 
   expect(geometry.cells).toHaveLength(6);
-  const expectedShares = [0.30, 0.08, 0.08, 0.08, 0.20, 0.26];
+  const expectedShares = [0.31, 0.08, 0.08, 0.08, 0.20, 0.25];
   expectedShares.forEach((expected, index) => {
     expect(Math.abs(geometry.cells[index]!.share - expected)).toBeLessThan(0.012);
   });
@@ -49,20 +52,48 @@ test('ablation table keeps all six columns on one explicit 100-percent grid', as
   expect(Math.abs(last.left + last.width - geometry.width)).toBeLessThan(1.5);
 });
 
+test('ablation row explanations live in a CVPR-style caption instead of table cells', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const table = page.locator('.paper-table--ablation');
+  const caption = page.locator('#ablation-table-caption');
+
+  await expect(table.locator('.paper-table__experiment-note')).toHaveCount(0);
+  await expect(caption).toContainText('表 1.');
+  await expect(caption).toContainText('原始 DirectApply');
+  await expect(caption).toContainText('固定 rank128 State');
+  await expect(caption).toContainText('β-gating（α 固定为 1）');
+  await expect(caption).toContainText('动态 α + 动态 β');
+  await expect(caption).toContainText('SEED（论文，Qwen3-1.7B）');
+  await expect(caption).toContainText('Score 87.1');
+  await expect(caption).toContainText('Success 77.3%');
+  await expect(caption).toContainText('不是我们三条 OpenEVO 最终模型共用的同一冻结 128 题');
+
+  const tableBox = await table.boundingBox();
+  const captionBox = await caption.boundingBox();
+  expect(tableBox).not.toBeNull();
+  expect(captionBox).not.toBeNull();
+  expect(captionBox!.y).toBeGreaterThan(tableBox!.y + tableBox!.height - 1);
+});
+
 test('ablation table separates three completed mechanisms from the unrun dynamic-alpha slot', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const rows = page.locator('.paper-table--ablation tbody tr');
-  await expect(rows).toHaveCount(4);
-  await expect(rows.nth(0)).toContainText('普通 OpenEVO');
+  await expect(rows).toHaveCount(5);
+  await expect(rows.nth(0)).toContainText('SEED');
+  await expect(rows.nth(0)).toContainText('87.1');
+  await expect(rows.nth(0)).toContainText('77.3%');
   await expect(rows.nth(0).getByText('✓')).toHaveCount(0);
-  await expect(rows.nth(1)).toContainText('OpenEVO + Bounded Online Recurrence');
-  await expect(rows.nth(1).getByText('✓')).toHaveCount(1);
-  await expect(rows.nth(2)).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）');
-  await expect(rows.nth(2).getByText('✓')).toHaveCount(2);
-  await expect(rows.nth(3)).toContainText('动态 α + 动态 β（未做）');
-  await expect(rows.nth(3).getByText('✓')).toHaveCount(3);
-  await expect(rows.nth(3)).toContainText('—');
+  await expect(rows.nth(1)).toContainText('普通 OpenEVO');
+  await expect(rows.nth(1).getByText('✓')).toHaveCount(0);
+  await expect(rows.nth(2)).toContainText('OpenEVO + Bounded Online Recurrence');
+  await expect(rows.nth(2).getByText('✓')).toHaveCount(1);
+  await expect(rows.nth(3)).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）');
+  await expect(rows.nth(3).getByText('✓')).toHaveCount(2);
+  await expect(rows.nth(4)).toContainText('动态 α + 动态 β（未做）');
+  await expect(rows.nth(4).getByText('✓')).toHaveCount(3);
+  await expect(rows.nth(4)).toContainText('—');
 });
 
 test('paper narrative follows motivation, method, mapping, experiment, result, and analysis', async ({ page }) => {
@@ -215,7 +246,7 @@ test('phone first screen establishes the three experiments before deep method de
   await expect(page.locator('.research-route-context')).toHaveCount(0);
   await expect(page.locator('.paper__kicker')).toHaveCount(0);
   const h1 = page.getByRole('heading', { level: 1 });
-  await expect(h1).toContainText('三组已完成 OpenEVO 实验');
+  await expect(h1).toContainText('三个 OpenEVO 实验');
   const ablation = page.locator('.paper-table-wrap--hero');
   await expect(ablation).toBeVisible();
   const h1Box = await h1.boundingBox();

@@ -355,7 +355,7 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     confidence: 'explicit-project',
     priority: 5,
     retrievalTags: ['消融', 'ablation', '论文', 'ICLR', '方法对比', '命名一致', '对勾', 'Bounded Online Recurrence', 'Bounded State', 'GDR', '数学映射', 'Task Vector', 'entropy'],
-    supportingCaseIds: ['CASE-082', 'CASE-088', 'CASE-089', 'CASE-092', 'CASE-098'],
+    supportingCaseIds: ['CASE-082', 'CASE-088', 'CASE-089', 'CASE-092', 'CASE-098', 'CASE-100'],
     antiOvergeneralization: [
       '不是所有研究页都要模仿论文版式；只有同一方法族的逐项消融才默认用这种入口。',
       '统一公共实验名不能删除审计身份；run ID、OFF/ON、Effective-State 等仍在 provenance / evidence 精确保留。',
@@ -829,6 +829,19 @@ export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [  {
     accepted: '正式结果之后按 loss → Task Vector → 参数范数/谱/方向 → 输出长度/任务步数 → action-family entropy 递进；每一节都先解释指标、再给本实验数字/图、最后写分析与边界，对应 W&B 图就放在该小节。',
     reason: 'owner 直接指出当前实验页“写得太差”，要求从基本指标 loss 开始，逐步进入 Task Vector、谱/范数、长度、entropy，并规定每个小 subsection 的固定阅读顺序是“指标是什么 → 结果 → 分析”。',
     failureMechanisms: ['metric-order-by-research-process', 'mixed-diagnostic-subsection', 'detached-chart-gallery', 'result-before-metric-definition'],
+    ownerStatus: 'accepted',
+  },
+
+
+  {
+    id: 'PAIR-100-SEED-CAPTION',
+    caseId: 'CASE-100',
+    preferenceIds: ['PREF-ABLATION-PAPER-NARRATIVE', 'PREF-BENCHMARK-METRIC-CONTEXT', 'PREF-SCIENTIFIC-BOUNDARY'],
+    scopes: ['research-ui', 'research-copy', 'results', 'capability'],
+    rejected: '把 owner 说的 seed 当成 RNG seed，在消融表新增 seed base；同时每个实验名下面塞一段方法说明，让表格主体承担解释性散文。',
+    accepted: '加入 SEED（论文，Qwen3-1.7B）外部参考行，展示 Score 87.1 / Success 77.3%；表格主体只保留实验名、机制列和指标，所有行定义与“SEED 题集不同、不是 same-panel arm”的边界放进统一 Table 1 caption。',
+    reason: 'owner 两次直接纠正表格：SEED 指论文结果而非随机种子；各行说明应像 CVPR 论文一样放 caption。两条反馈共同指向同一原则：表格负责紧凑比较，caption 负责解释和可比性边界。',
+    failureMechanisms: ['named-benchmark-misread-as-rng-seed', 'prose-inside-ablation-cell', 'external-reference-presented-as-matched-arm'],
     ownerStatus: 'accepted',
   },
 
