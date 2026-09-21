@@ -68,6 +68,10 @@ describe('hosting architecture ownership', () => {
     expect(publicPrWorkflow).toContain('CI_BROWSER_SHARD_TOTAL: ${{ needs.plan.outputs.browser_total }}');
     expect(publicPrWorkflow).toContain("PLAYWRIGHT_WORKERS: '1'");
     expect(reviewPreviewWorkflow).toContain('name: Fast Review Preview');
+    expect(reviewPreviewWorkflow).toContain('name: review-preflight');
+    expect(reviewPreviewWorkflow).toContain('BASEMODEL_REVIEW_VERCEL_TOKEN');
+    expect(reviewPreviewWorkflow).toContain('needs: preflight');
+    expect(reviewPreviewWorkflow).toContain("needs.preflight.result == 'success'");
     expect(reviewPreviewWorkflow).toContain('include-hidden-files: true');
     expect(reviewPreviewWorkflow).toContain('test -f review-artifact/.vercel/output/config.json');
     expect(reviewPreviewWorkflow).toContain('test -f review-artifact/.vercel/output/static/index.html');
