@@ -336,7 +336,7 @@ predecessor role after cutover (shadow/fallback/retired)
 post-merge Production/main execution state
 ```
 
-A green replacement Preview while GitHub still requires the predecessor is qualification evidence, not a completed cutover. Conversely, if a concurrent operator already changed the ruleset or merged the PR, stop the planned mutation, read the durable state, and continue from the new boundary; do not replay the same write or report that you performed an action you did not perform.
+A green replacement Preview while GitHub still requires the predecessor is qualification evidence, not a completed cutover. If the candidate itself removes or weakens acceptance work that the predecessor required check used to own, the successor check must become required **before that candidate is merged**; use a safe overlap window where both predecessor and successor are required, read that state back, then merge. Do not schedule the required-check switch for “after Production” when merging first would create a window in which the now-weaker predecessor is the only blocking check. Conversely, if a concurrent operator already changed the ruleset or merged the PR, stop the planned mutation, read the durable state, and continue from the new boundary; do not replay the same write or report that you performed an action you did not perform.
 
 ### 7.0 Use one atomic merge-window witness
 

@@ -34,6 +34,23 @@ scientific question
 
 Do not invert this order by making setup, code, run IDs, CI, hashes, or terminal instructions the reader's first job.
 
+### Complete experiment-analysis pages: establish the phenomenon before the diagnostic ladder
+
+When one route contains both **primary task-performance evidence** and **post-hoc diagnostics**, readers should not have to reconstruct the experiment by jumping between a Results block, a separate Analysis block, and a detached chart gallery. Establish the performance phenomenon first, then deepen the explanation:
+
+```text
+experiment identity / what was run
+-> full primary performance trajectory and the minimum useful aggregation
+-> endpoint / fixed-panel / exact-success evidence when those answer a different question
+-> compute cost when it is part of the research question
+-> diagnostics from simpler signals toward parameter structure and behavior
+-> explicit “what this explains / what remains unproven”
+```
+
+For the **same metric**, prefer the least-transformed evidence first: show the native/full time series before a windowed, smoothed, detrended, or otherwise derived view. A derived figure is valuable when it answers a new question, but its transformation and evidence boundary must be stated where the reader sees it. Co-occurrence, correlation, later placement, or a more sophisticated metric never upgrades an observation into causality.
+
+The exact diagnostic sequence is route-specific and remains owned by that route's Reader Contract / HPL evidence. Do **not** turn one experiment's metric ladder into a site-wide template. A mathematical derivation, mechanism explainer, or causal intervention history may legitimately follow mathematical or decision order instead of Task Score-first order.
+
 When the research contribution is an iterative diagnosis rather than one final benchmark, the visible story may instead use the scientist's decision sequence:
 
 ```text
