@@ -3,7 +3,8 @@ import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
 import MathFormula from '../common/MathFormula.astro';
-import WandbEvidencePanel from './WandbEvidencePanel.astro';
+import MetricEvidenceFigure from './MetricEvidenceFigure.astro';
+import { readFileSync } from 'node:fs';
 import { EFFECTIVE_STATE_GDR_LORA_STUDY as study } from '../../data/effectiveStateGdrLoraStudy';
 import type { EffectiveStateFormalResult } from '../../data/effectiveStateGdrLoraStudy';
 import { OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS as directApplyDynamics } from '../../data/openEvoDirectApplyLiveDynamics';
@@ -27,56 +28,45 @@ const panelHref = (panelDisplayName: string, panelSectionName: string) => {
   const join = wandbWorkspaceUrl.includes('?') ? '&' : '?';
   return `${wandbWorkspaceUrl}${join}panelDisplayName=${encodeURIComponent(panelDisplayName)}&panelSectionName=${encodeURIComponent(panelSectionName)}`;
 };
-const wandbPanels = [
-  { label: t('Task Score 原生曲线', 'Native Task Score panel'), href: panelHref('Task Score', '01 Overview · 三条路线') },
-  { label: t('SD-LoRA loss · 累计 rollout', 'SD-LoRA loss · cumulative rollout'), href: wandbReportUrl },
-  { label: t('Task Vector · Frobenius', 'Task Vector · Frobenius'), href: panelHref('Task Vector · Frobenius', '01 Overview · 三条路线') },
-  { label: t('ON/OFF 更新方向 cosine', 'ON/OFF update-direction cosine'), href: panelHref('ON/OFF 更新方向 cosine', '05 方向与幅度') },
-  { label: t('每一步输出长度', 'Output tokens per step'), href: panelHref('每一步输出长度', '06 输出长度与任务路径') },
-  { label: t('Action-family entropy · 160轮', 'Action-family entropy · 160 rounds'), href: panelHref('Action-family entropy', '06 输出长度与任务路径') },
-];
-const wandbSnapshots = [
-  {
-    title: t('Task Score · 160轮', 'Task Score · 160 rounds'),
-    src: '/research/seed-openevo/evidence/wandb-threeway/task-score.svg',
-    href: panelHref('Task Score', '01 Overview · 三条路线'),
-    alt: t('三组 OpenEVO 的 160 轮 WebShop Task Score 静态曲线', 'Static 160-round WebShop Task Score curves for the three OpenEVO methods'),
-    explanation: t('这张图看每一轮抽样 WebShop 任务的 terminal task_score 平均值 × 100；允许部分得分。它适合看训练过程里分数怎样波动、后期大致处在什么水平。', 'This chart shows the mean terminal task_score × 100 over the WebShop tasks sampled in each round; partial credit is possible. It is useful for reading training-time fluctuation and the typical late-training level.'),
-    boundary: t('它不是固定 128 题终评，也不是模型的全面能力分数。每轮抽到的任务会变化。', 'It is not the fixed 128-task final and not a comprehensive capability score. The sampled tasks vary by round.'),
-  },
-  {
+const metricCharts = {
+  loss: {
     title: t('SD-LoRA training loss · 累计 rollout', 'SD-LoRA training loss · cumulative rollout'),
     src: '/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.svg',
     href: wandbReportUrl,
     alt: t('三组 OpenEVO 的 SD-LoRA training loss 随累计 rollout 变化的静态曲线', 'Static SD-LoRA training-loss curves against cumulative rollouts for the three OpenEVO methods'),
-    explanation: t('每轮 128 个 rollout 之后，如果这一轮实际执行了 SD-LoRA 参数更新，就记录 trainer 的平均 loss；横轴用累计 rollout，所以第 160 轮对应 20,480。', 'After each 128-rollout round, the chart records mean trainer loss when that round actually performs an SD-LoRA parameter update. The x-axis is cumulative rollouts, so round 160 ends at 20,480.'),
-    boundary: t('loss 下降说明优化器越来越能拟合当前训练记录，不等于 WebShop Task Score 上升，也不能代替固定 128 题终评。没有发生更新的轮次保持缺失，不做插值。', 'Falling loss shows that the optimizer increasingly fits the current training records; it does not imply a higher WebShop Task Score and does not replace the fixed 128-task final. Rounds without an update stay missing rather than being interpolated.'),
   },
-  {
+  taskVector: {
     title: 'Task Vector · Frobenius',
     src: '/research/seed-openevo/evidence/wandb-threeway/task-vector-frobenius.svg',
     href: panelHref('Task Vector · Frobenius', '01 Overview · 三条路线'),
     alt: t('三组实验的 Task Vector Frobenius norm 静态曲线', 'Static Task Vector Frobenius norm curves for the three experiments'),
-    explanation: t('这张图看每轮参数更新向量的 Frobenius 范数，也就是这一轮参数到底改了多大。它能帮助比较三条方法的更新幅度和后期变化。', 'This chart shows the Frobenius norm of each round’s parameter-update vector—how large the parameter change is. It helps compare update magnitude and late-training behavior across the three methods.'),
-    boundary: t('参数变化更大或更小，都不能单独推出 WebShop 表现更好。它是参数层诊断，不是任务效果指标。', 'A larger or smaller parameter change does not by itself imply better WebShop performance. This is a parameter-level diagnostic, not a task-outcome metric.'),
   },
-  {
+  steps: {
     title: t('平均任务步数', 'Steps per episode'),
     src: '/research/seed-openevo/evidence/wandb-threeway/steps-per-episode.svg',
     href: panelHref('每个 Episode 的步骤数', '06 输出长度与任务路径'),
     alt: t('三组实验每个 episode 的平均任务步数静态曲线', 'Static steps-per-episode curves for the three experiments'),
-    explanation: t('这张图看一条购物任务从开始到结束实际走了多少个动作步骤，用来观察策略路径是否变得更短、更长或更稳定。', 'This chart shows how many action steps each shopping episode takes from start to finish, helping reveal whether policy trajectories become shorter, longer, or more stable.'),
-    boundary: t('路径更短可能更高效，但短并不等于做对；必须和 Task Score、exact success 一起看。', 'A shorter path may be more efficient, but shorter does not mean correct; it must be read together with Task Score and exact success.'),
   },
-  {
+  entropy: {
     title: t('行为 entropy · 160轮', 'Action-family entropy · 160 rounds'),
     src: '/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.svg',
     href: panelHref('Action-family entropy', '06 输出长度与任务路径'),
     alt: t('三组实验 160 轮 action-family Shannon entropy 静态曲线', 'Static 160-round action-family Shannon entropy curves for the three experiments'),
-    explanation: t('这张图统计 search / click 等有效动作类型的 Shannon entropy；越低表示策略越来越集中在少数几类动作上。', 'This chart shows Shannon entropy over valid action families such as search and click; lower values mean the policy is concentrating on fewer action types.'),
-    boundary: t('它不是模型的 token entropy。entropy 下降和后期掉分同时出现，只能说明相关现象，不能单独证明因果。', 'It is not model token entropy. Lower entropy co-occurring with a late score drop is an association, not causal proof.'),
   },
-]
+};
+
+type LossRow = {
+  round: number;
+  ordinary_openevo_loss: number | null;
+  bounded_loss: number | null;
+  bounded_gdr_loss: number | null;
+};
+const lossEvidence = JSON.parse(
+  readFileSync(new URL('../../../public/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.json', import.meta.url), 'utf8'),
+) as { rows: LossRow[]; missing_loss_points: { ordinary_openevo: number; bounded: number; bounded_gdr: number } };
+const lossFirst = lossEvidence.rows[0];
+const lossLast = lossEvidence.rows.at(-1)!;
+
 const math = {
   history: String.raw`W_t = W_0 + \sum_{i=1}^{t} \Delta W_i`,
   bounded: String.raw`S_t = \operatorname{Compress}_{128}\!\left(S_{t-1}+\Delta_t\right)`,
