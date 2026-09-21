@@ -175,7 +175,7 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
   await expect(page.locator('#entropy')).toContainText('100%');
 
   const next = page.locator('#next-question');
-  await expect(next).toContainText('下一步：先补动态 α，再研究 β 还该知道什么');
+  await expect(next).toContainText('动态 α + 动态 β：尚未运行');
   await expect(next).toContainText('动态 α + 动态 β');
 });
 

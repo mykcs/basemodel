@@ -569,7 +569,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
 
   <section class="paper__section" id="next-question" aria-labelledby="next-question-title">
     <p class="paper__section-number">6</p>
-    <h2 id="next-question-title">{t('下一步：先补动态 α，再研究 β 还该知道什么', 'Next: test dynamic α first, then ask what β should observe')}</h2>
+    <h2 id="next-question-title">{t('动态 α + 动态 β：尚未运行', 'Dynamic α + dynamic β: not run yet')}</h2>
     <p>{t(
       '这条指标链给出的顺序很清楚：loss 说明优化过程不是简单坏掉；Task Vector 和参数谱说明参数轨迹确实发生了几何变化；长度、步数和 entropy 才开始看到更接近任务行为的变化。但这些后分析都不能补上一个根本缺口：这次正式实验始终固定 α=1。',
       'The diagnostic ladder gives a clear sequence: loss says optimization did not simply fail; Task Vector and parameter spectrum show real geometric divergence; length, steps, and entropy reveal changes closer to task behavior. None of these post-hoc analyses fill the basic missing experiment: α remained fixed at 1 throughout this formal study.',

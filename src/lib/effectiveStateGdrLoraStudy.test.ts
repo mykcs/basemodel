@@ -197,7 +197,7 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('① 指标是什么');
     expect(component).toContain('② 这次实验的结果');
     expect(component).toContain('③ 分析');
-    expect(component).toContain('下一步：先补动态 α，再研究 β 还该知道什么');
+    expect(component).toContain('动态 α + 动态 β：尚未运行');
     expect(component).toContain('study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString');
     expect(component).toContain("import MetricEvidenceFigure from './MetricEvidenceFigure.astro'");
     expect(component).not.toContain("import WandbEvidencePanel from './WandbEvidencePanel.astro'");
