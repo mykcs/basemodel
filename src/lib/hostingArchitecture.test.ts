@@ -71,6 +71,8 @@ describe('hosting architecture ownership', () => {
     expect(reviewPreviewWorkflow).toContain('include-hidden-files: true');
     expect(reviewPreviewWorkflow).toContain('test -f review-artifact/.vercel/output/config.json');
     expect(reviewPreviewWorkflow).toContain('test -f review-artifact/.vercel/output/static/index.html');
+    expect(reviewPreviewWorkflow).toContain('cat review-artifact/source-sha.txt');
+    expect(reviewPreviewWorkflow).toContain('needs.build.outputs.head_sha');
     expect(reviewPreviewWorkflow).toContain('vercel@59.17.0 deploy --prebuilt');
     expect(architecture).toContain(productionUrl);
     expect(latest).toContain(productionUrl);
