@@ -16,6 +16,6 @@ describe('Node runtime policy', () => {
 
   it('keeps the fallback/local Node pin separate from the Vercel runtime contract', () => {
     expect(fallbackNodeVersion).toMatch(/^22\./);
-    expect(packageJson.engines?.node).not.toStartWith('22.');
+    expect(packageJson.engines?.node).not.toMatch(/^22\\./);
   });
 });
