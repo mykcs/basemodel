@@ -15,26 +15,85 @@ for (const viewport of [
     const ablation = page.locator('.paper-table--ablation');
     await expect(ablation).toContainText('普通 OpenEVO');
     await expect(ablation).toContainText('OpenEVO + Bounded Online Recurrence');
-    await expect(ablation).toContainText('OpenEVO + Bounded Online Recurrence + GDR');
+    await expect(ablation).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）');
     await expect(ablation).toContainText('60.72');
     await expect(ablation).toContainText('45.98');
     await expect(ablation).toContainText('20.77');
+    await expect(ablation).toContainText('SEED');
+    await expect(ablation).toContainText('87.1');
+    await expect(ablation).toContainText('77.3%');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
     expect(overflow).toBe(false);
   });
 }
 
-test('ablation table makes the three mechanism combinations explicit with checkmarks', async ({ page }) => {
+test('ablation table keeps all six columns on one explicit 100-percent grid', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const geometry = await page.locator('.paper-table--ablation').evaluate((table) => {
+    const tableRect = table.getBoundingClientRect();
+    const cells = Array.from(table.querySelectorAll('thead th')).map((cell) => {
+      const rect = cell.getBoundingClientRect();
+      return {
+        left: rect.left - tableRect.left,
+        width: rect.width,
+        share: rect.width / tableRect.width,
+      };
+    });
+    return { width: tableRect.width, cells };
+  });
+
+  expect(geometry.cells).toHaveLength(6);
+  const expectedShares = [0.31, 0.08, 0.08, 0.08, 0.20, 0.25];
+  expectedShares.forEach((expected, index) => {
+    expect(Math.abs(geometry.cells[index]!.share - expected)).toBeLessThan(0.012);
+  });
+  const last = geometry.cells.at(-1)!;
+  expect(Math.abs(last.left + last.width - geometry.width)).toBeLessThan(1.5);
+});
+
+test('ablation row explanations live in a CVPR-style caption instead of table cells', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const table = page.locator('.paper-table--ablation');
+  const caption = page.locator('#ablation-table-caption');
+
+  await expect(table.locator('.paper-table__experiment-note')).toHaveCount(0);
+  await expect(caption).toContainText('表 1.');
+  await expect(caption).toContainText('原始 DirectApply');
+  await expect(caption).toContainText('固定 rank128 State');
+  await expect(caption).toContainText('β-gating（α 固定为 1）');
+  await expect(caption).toContainText('动态 α + 动态 β');
+  await expect(caption).toContainText('SEED（论文，Qwen3-1.7B）');
+  await expect(caption).toContainText('Score 87.1');
+  await expect(caption).toContainText('Success 77.3%');
+  await expect(caption).toContainText('不是我们三条 OpenEVO 最终模型共用的同一冻结 128 题');
+
+  const tableBox = await table.boundingBox();
+  const captionBox = await caption.boundingBox();
+  expect(tableBox).not.toBeNull();
+  expect(captionBox).not.toBeNull();
+  expect(captionBox!.y).toBeGreaterThan(tableBox!.y + tableBox!.height - 1);
+});
+
+test('ablation table separates three completed mechanisms from the unrun dynamic-alpha slot', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const rows = page.locator('.paper-table--ablation tbody tr');
-  await expect(rows).toHaveCount(3);
-  await expect(rows.nth(0)).toContainText('普通 OpenEVO');
+  await expect(rows).toHaveCount(5);
+  await expect(rows.nth(0)).toContainText('SEED');
+  await expect(rows.nth(0)).toContainText('87.1');
+  await expect(rows.nth(0)).toContainText('77.3%');
   await expect(rows.nth(0).getByText('✓')).toHaveCount(0);
-  await expect(rows.nth(1)).toContainText('OpenEVO + Bounded Online Recurrence');
-  await expect(rows.nth(1).getByText('✓')).toHaveCount(1);
-  await expect(rows.nth(2)).toContainText('OpenEVO + Bounded Online Recurrence + GDR');
-  await expect(rows.nth(2).getByText('✓')).toHaveCount(2);
+  await expect(rows.nth(1)).toContainText('普通 OpenEVO');
+  await expect(rows.nth(1).getByText('✓')).toHaveCount(0);
+  await expect(rows.nth(2)).toContainText('OpenEVO + Bounded Online Recurrence');
+  await expect(rows.nth(2).getByText('✓')).toHaveCount(1);
+  await expect(rows.nth(3)).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）');
+  await expect(rows.nth(3).getByText('✓')).toHaveCount(2);
+  await expect(rows.nth(4)).toContainText('动态 α + 动态 β（未做）');
+  await expect(rows.nth(4).getByText('✓')).toHaveCount(3);
+  await expect(rows.nth(4)).toContainText('—');
 });
 
 test('paper narrative follows motivation, method, mapping, experiment, result, and analysis', async ({ page }) => {
@@ -42,20 +101,20 @@ test('paper narrative follows motivation, method, mapping, experiment, result, a
   const h2s = await page.locator('.paper__section > h2').allTextContents();
   expect(h2s.slice(0, 5)).toEqual([
     '动机：SD-LoRA 越训练越慢',
-    '方法：Bounded Online Recurrence 与 GDR',
+    '方法：Bounded Online Recurrence、Gated Delta 来源与本实验 β-gating（α 固定为 1）',
     '实验设置：Qwen3-1.7B × WebShop',
     '结果：训练后期与固定 128 题终评',
-    'Analysis：为什么 GDR 后期会掉下来？',
+    '指标分析：从 loss 一直看到行为 entropy',
   ]);
 });
 
-test('method section explains Bounded Online Recurrence and the GDR-to-parameter-state mapping', async ({ page }) => {
+test('method section explains source Gated Delta and the beta-gating alpha-one parameter mapping', async ({ page }) => {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const method = page.locator('#method');
-  await expect(method.locator('[data-math-formula]')).toHaveCount(6);
+  await expect(method.locator('[data-math-formula]')).toHaveCount(7);
   await expect(method.locator('.katex').first()).toBeVisible();
   await expect(method).toContainText('Compress');
-  await expect(method).toContainText('Gated Delta Rule');
+  await expect(method).toContainText('Gated Delta 再给旧 State 加一个 retention α');
   await expect(method).toContainText('α');
   await expect(method).toContainText('β');
   await expect(method).toContainText('从 sequence State 映射到 OpenEVO 的参数 State');
@@ -64,6 +123,8 @@ test('method section explains Bounded Online Recurrence and the GDR-to-parameter
   await expect(method).toContainText('657.836');
   await expect(method).toContainText('22');
   await expect(method).toContainText('reward、Task Score、Task Vector');
+  await expect(method).toContainText('本实验真正启用的动态控制量');
+  await expect(method).toContainText('α=1');
 });
 
 test('experiment setup names Qwen3-1.7B, WebShop, budget, and OPSD boundary', async ({ page }) => {
@@ -83,68 +144,89 @@ test('formal result preserves the matched-arm statistical boundary under public 
   const result = page.locator('#formal-result');
   await expect(result).toContainText('普通 OpenEVO');
   await expect(result).toContainText('OpenEVO + Bounded Online Recurrence');
-  await expect(result).toContainText('OpenEVO + Bounded Online Recurrence + GDR');
+  await expect(result).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）');
   await expect(result).toContainText('R1–R159 mean reward');
   await expect(result).toContainText('跨 0');
   await expect(result).toContainText('短暂正向信号没有形成稳定优势');
+  await expect(result).toContainText('动态 α + 动态 β（未做）');
   await expect(page.locator('#compute')).toContainText('31.09');
   await expect(page.locator('#compute')).toContainText('2.02');
   await expect(page.locator('#compute')).toContainText('2.35');
   await expect(page.locator('#compute')).toContainText('13–15×');
 });
 
-test('analysis answers Task Vector, direction, steps, entropy, and adaptive questions', async ({ page }) => {
+test('analysis follows a simple-to-complex metric ladder with definition result and analysis in every subsection', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const analysis = page.locator('#analysis');
-  await expect(analysis).toContainText('Task Vector、范数和谱');
-  await expect(analysis).toContainText('0.72');
-  await expect(analysis).toContainText('-0.287');
-  await expect(analysis).toContainText('397.0');
-  await expect(analysis).toContainText('171.8');
-  await expect(analysis).toContainText('449.9');
-  await expect(analysis).toContainText('200.3');
-  await expect(analysis).toContainText('503.6');
-  await expect(analysis).toContainText('216.8');
-  await expect(analysis).toContainText('229.1');
-  await expect(analysis).toContainText('7.91');
-  await expect(analysis).toContainText('8.60');
-  await expect(analysis).toContainText('真正的 predictive token entropy 仍然不能从文本补出来');
-  await expect(analysis).toContainText('0.4895');
-  await expect(analysis).toContainText('0.4239');
-  await expect(analysis).toContainText('0.5826');
-  await expect(analysis).toContainText('0.3705');
-  await expect(analysis).toContainText('1158');
-  await expect(analysis).toContainText('100%');
-  await expect(analysis).toContainText('约束要不要更 adaptive');
+  await expect(analysis.getByRole('heading', { level: 2 })).toContainText('指标分析：从 loss 一直看到行为 entropy');
+
+  const metricSteps = analysis.locator('.paper__metric-step');
+  await expect(metricSteps).toHaveCount(5);
+  const headings = await metricSteps.getByRole('heading', { level: 3 }).allTextContents();
+  expect(headings).toEqual([
+    '5.1 loss：最基本的问题——训练有没有真的在拟合',
+    '5.2 Task Vector：一轮训练到底把参数推了多远',
+    '5.3 参数范数、谱与方向：再往里看“状态长什么样”',
+    '5.4 输出长度与任务步数：从参数走到实际做题路径',
+    '5.5 Entropy：最后看策略行为是不是越来越集中',
+  ]);
+  for (let index = 0; index < 5; index += 1) {
+    const labels = metricSteps.nth(index).locator('.paper__metric-label');
+    await expect(labels).toHaveCount(3);
+    await expect(labels.nth(0)).toContainText('① 指标是什么');
+    await expect(labels.nth(1)).toContainText('② 这次实验的结果');
+    await expect(labels.nth(2)).toContainText('③ 分析');
+  }
+
+  await expect(page.locator('#loss')).toContainText('1.046');
+  await expect(page.locator('#loss')).toContainText('0.102');
+  await expect(page.locator('#loss')).toContainText('0.065');
+  await expect(page.locator('#loss')).toContainText('0.069');
+
+  await expect(page.locator('#task-vector')).toContainText('0.597');
+  await expect(page.locator('#task-vector')).toContainText('0.045');
+  await expect(page.locator('#task-vector')).toContainText('-0.278');
+  await expect(page.locator('#task-vector')).toContainText('+0.044');
+
+  await expect(page.locator('#parameter-geometry')).toContainText('21.051');
+  await expect(page.locator('#parameter-geometry')).toContainText('17.925');
+  await expect(page.locator('#parameter-geometry')).toContainText('2.136');
+  await expect(page.locator('#parameter-geometry')).toContainText('1.946');
+  await expect(page.locator('#parameter-geometry')).toContainText('-0.287');
+
+  await expect(page.locator('#length')).toContainText('216.8');
+  await expect(page.locator('#length')).toContainText('229.1');
+  await expect(page.locator('#length')).toContainText('7.91');
+  await expect(page.locator('#length')).toContainText('8.60');
+
+  await expect(page.locator('#entropy')).toContainText('0.5826');
+  await expect(page.locator('#entropy')).toContainText('0.3705');
+  await expect(page.locator('#entropy')).toContainText('1158');
+  await expect(page.locator('#entropy')).toContainText('100%');
+
+  const next = page.locator('#next-question');
+  await expect(next).toContainText('动态 α + 动态 β：尚未运行');
+  await expect(next).toContainText('动态 α + 动态 β');
 });
 
-test('W&B section shows static W&B-history previews and keeps native links without a locked iframe', async ({ page }) => {
+test('W&B evidence is embedded beside the relevant metric instead of collected in a separate gallery', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  const wandb = page.locator('#wandb');
-  await expect(wandb).toContainText('W&B 指标与原生曲线');
-  await expect(wandb.getByRole('link', { name: /交互 W&B Report/ })).toHaveAttribute('href', /wandb\.ai/);
-  await expect(wandb.getByRole('link', { name: /完整 W&B Workspace/ })).toHaveAttribute('href', /wandb\.ai/);
-  await expect(wandb.getByRole('link', { name: /Task Score 原生曲线/ })).toHaveAttribute('href', /panelDisplayName=/);
-  await expect(wandb.locator('img')).toHaveCount(5);
-  await expect(wandb.locator('.paper-table--metric-guide')).toHaveCount(0);
-  const figures = wandb.locator('.wandb-evidence__snapshots figure');
-  await expect(figures).toHaveCount(5);
-  for (let index = 0; index < 5; index += 1) {
-    await expect(figures.nth(index).locator('figcaption p')).toHaveCount(2);
-    await expect(figures.nth(index).locator('.wandb-evidence__native-link')).toHaveAttribute('href', /wandb\.ai/);
+  const analysis = page.locator('#analysis');
+  await expect(page.locator('#wandb')).toHaveCount(0);
+  await expect(analysis.getByRole('link', { name: /W&B Report/ })).toHaveAttribute('href', /wandb\.ai/);
+  await expect(analysis.getByRole('link', { name: /完整 W&B Workspace/ })).toHaveAttribute('href', /wandb\.ai/);
+
+  const figures = analysis.locator('.metric-evidence');
+  await expect(figures).toHaveCount(4);
+  await expect(page.locator('#loss img')).toHaveAttribute('src', /wandb-threeway\/loss-vs-rollout\.svg/);
+  await expect(page.locator('#task-vector img')).toHaveAttribute('src', /wandb-threeway\/task-vector-frobenius\.svg/);
+  await expect(page.locator('#length img')).toHaveAttribute('src', /wandb-threeway\/steps-per-episode\.svg/);
+  await expect(page.locator('#entropy img')).toHaveAttribute('src', /wandb-threeway\/action-family-entropy\.svg/);
+  for (let index = 0; index < 4; index += 1) {
+    await expect(figures.nth(index).getByRole('link', { name: /打开 W&B 原生 panel/ }).last()).toHaveAttribute('href', /wandb\.ai/);
   }
-  await expect(wandb.locator('img').first()).toHaveAttribute('src', /wandb-threeway\/task-score\.svg/);
-  await expect(wandb).toContainText('SD-LoRA training loss');
-  await expect(wandb).toContainText('20,480');
-  await expect(wandb).toContainText('不做插值');
-  await expect(wandb.getByRole('link', { name: /SD-LoRA loss · 累计 rollout/ })).toHaveAttribute('href', /wandb\.ai/);
-  await expect(wandb.locator('img').nth(1)).toHaveAttribute('src', /wandb-threeway\/loss-vs-rollout\.svg/);
-  await expect(wandb.getByRole('link', { name: /Action-family entropy · 160轮/ })).toHaveAttribute('href', /panelDisplayName=/);
-  await expect(wandb.locator('img').nth(4)).toHaveAttribute('src', /wandb-threeway\/action-family-entropy\.svg/);
-  await expect(wandb.locator('iframe')).toHaveCount(0);
-  await expect(wandb).toContainText('当前 W&B 原项目没有对未登录访客开放');
 });
 
 for (const theme of ['light', 'dark'] as const) {
@@ -180,7 +262,8 @@ test('phone first screen establishes the three experiments before deep method de
 test('evidence keeps public names separate from exact internal experiment identities', async ({ page }) => {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const evidence = page.locator('#evidence');
-  await expect(evidence).toContainText('普通 OpenEVO / Bounded Online Recurrence / Bounded Online Recurrence + GDR');
+  await expect(evidence).toContainText('Bounded Online Recurrence + β-gating（α 固定为 1）');
+  await expect(evidence).toContainText('动态 α + 动态 β');
   await expect(evidence).toContainText('DirectApply / No-GDR');
   await expect(evidence).toContainText('BOUNDED_OFF');
   await expect(evidence).toContainText('EFFECTIVE_STATE_GDR_LORA_V1');
@@ -188,7 +271,7 @@ test('evidence keeps public names separate from exact internal experiment identi
 
 test('historical Gated-Delta and Bounded pages still point to the successor study', async ({ page }) => {
   await page.goto('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByRole('link', { name: /后继方法.*Effective-State GDR/ })).toHaveAttribute('href', route);
+  await expect(page.getByRole('link', { name: /回到三组 1\.7B 已完成实验.*β-gating/ })).toHaveAttribute('href', route);
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('.bounded__next-question').getByRole('link', { name: /另一条后续问题/ })).toHaveAttribute('href', route);
 });
@@ -230,10 +313,11 @@ test('results index uses the same public names as the experiment page', async ({
   const latest = page.locator('#latest-1p7b');
   await expect(latest).toContainText('普通 OpenEVO');
   await expect(latest).toContainText('OpenEVO + Bounded Online Recurrence');
-  await expect(latest).toContainText('OpenEVO + Bounded Online Recurrence + GDR');
+  await expect(latest).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）');
   await expect(latest).toContainText('60.72');
   await expect(latest).toContainText('45.98');
   await expect(latest).toContainText('20.77');
+  await expect(latest).toContainText('动态 α + 动态 β（未做）');
   await expect(latest.getByRole('link', { name: /三组实验、方法与完整分析/ })).toHaveAttribute('href', route);
   await expect(latest.getByRole('link', { name: /普通 OpenEVO 独立实验/ })).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/#final');
 });

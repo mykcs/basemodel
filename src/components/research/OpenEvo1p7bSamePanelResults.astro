@@ -15,14 +15,14 @@ const directHref = p('/research/seed-openevo/study/capability-exploration/q17-di
 <section id="latest-1p7b" class="same-panel" aria-labelledby="latest-1p7b-title">
   <div class="same-panel__intro">
     <p class="same-panel__eyebrow">{t('最新封存 · 1.7B', 'Latest sealed · 1.7B')}</p>
-    <h2 id="latest-1p7b-title">{t('三组实验，做同一份 128 题', 'Three experiments on the same 128 tasks')}</h2>
+    <h2 id="latest-1p7b-title">{t('三组已完成实验做同一份 128 题；动态 α+β 还没做', 'Three completed experiments share the same 128 tasks; dynamic α+β is unrun')}</h2>
     <p>{t(
-      '普通 OpenEVO、OpenEVO + Bounded Online Recurrence 和 OpenEVO + Bounded Online Recurrence + GDR 最后都用了完全相同的冻结题集。因此这三次冻结终评可以直接并排看；但普通 OpenEVO 是更早的独立实验，不是后两组预注册正式对照的第三组。',
-      'ordinary OpenEVO, OpenEVO + Bounded Online Recurrence, and OpenEVO + Bounded Online Recurrence + GDR all used exactly the same frozen final panel. Their final scores can therefore be shown side by side, but ordinary OpenEVO is an earlier independent experiment rather than a third arm of the preregistered matched contrast.',
+      '普通 OpenEVO、OpenEVO + Bounded Online Recurrence 和 OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）最后都用了完全相同的冻结题集。因此这三次冻结终评可以直接并排看；但普通 OpenEVO 是更早的独立实验，不是后两组预注册正式对照的第三组。动态 α + 动态 β 尚未运行，所以它的结果保持为空。',
+      'Ordinary OpenEVO, OpenEVO + Bounded Online Recurrence, and OpenEVO + Bounded Online Recurrence + β-gating (α fixed at 1) all used exactly the same frozen final panel. Their final scores can therefore be shown side by side, but ordinary OpenEVO is an earlier independent experiment rather than a third arm of the preregistered matched contrast. Dynamic α + dynamic β has not been run, so its results remain blank.',
     )}</p>
   </div>
 
-  <div class="same-panel__cards" aria-label={t('三个 1.7B 同题 Final', 'Three 1.7B same-panel finals')}>
+  <div class="same-panel__cards" aria-label={t('三个已完成 1.7B 同题 Final 与一个未做空位', 'Three completed 1.7B same-panel finals and one unrun slot')}>
     <article>
       <span>普通 OpenEVO</span>
       <strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong>
@@ -34,17 +34,22 @@ const directHref = p('/research/seed-openevo/study/capability-exploration/q17-di
       <span class="same-panel__exact">{study.threeWayFinal.off.exactCount}/128 exact</span>
     </article>
     <article>
-      <span>OpenEVO + Bounded Online Recurrence + GDR</span>
+      <span>{t('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）', 'OpenEVO + Bounded Online Recurrence + β-gating (α fixed at 1)')}</span>
       <strong>{study.threeWayFinal.on.score.toFixed(2)}</strong>
       <span class="same-panel__exact">{study.threeWayFinal.on.exactCount}/128 exact</span>
+    </article>
+    <article class="same-panel__unrun">
+      <span>{t('OpenEVO + Bounded Online Recurrence + 动态 α + 动态 β（未做）', 'OpenEVO + Bounded Online Recurrence + dynamic α + dynamic β (not run)')}</span>
+      <strong>—</strong>
+      <span class="same-panel__exact">—</span>
     </article>
   </div>
 
   <div class="same-panel__reading">
     <strong>{t('训练过程和最终考试给出的信号不一样。', 'Training trajectory and final exam give different signals.')}</strong>
     <p>{t(
-      '在 R1–R159 的训练期平均里，加 GDR 的组 reward 比只用 Bounded Online Recurrence 的组高约 0.025，但 95% 区间跨过 0，完整成功率反而低约 2.21 个百分点；到了冻结终评，Bounded Online Recurrence 为 45.98，Bounded Online Recurrence + GDR 为 20.77。两种测量回答不同问题，所以这里同时保留。',
-      'Across R1–R159, ON mean reward is about 0.025 above OFF, but the 95% interval crosses zero and exact success is about 2.21 percentage points lower. On the frozen final, OFF scores 45.98 and ON 20.77. These measurements answer different questions, so both are retained.',
+      '在 R1–R159 的训练期平均里，β-gating（α 固定为 1）组 reward 比只用 Bounded Online Recurrence 的组高约 0.025，但 95% 区间跨过 0，完整成功率反而低约 2.21 个百分点；到了冻结终评，Bounded Online Recurrence 为 45.98，β-gating（α 固定为 1）组为 20.77。两种测量回答不同问题，所以这里同时保留；动态 α + 动态 β 没有数据。',
+      'Across R1–R159, β-gating (α fixed at 1) mean reward is about 0.025 above Bounded Online Recurrence, but the 95% interval crosses zero and exact success is about 2.21 percentage points lower. On the frozen final, Bounded Online Recurrence scores 45.98 and β-gating (α fixed at 1) scores 20.77. These measurements answer different questions, so both are retained; dynamic α + dynamic β has no data.',
     )}</p>
   </div>
 
@@ -57,7 +62,7 @@ const directHref = p('/research/seed-openevo/study/capability-exploration/q17-di
     <summary>{t('展开实验依据', 'Open experiment evidence')}</summary>
     <p>{t(
       '三次终评的题集内容 SHA、题集文件 SHA 与选题摘要完全一致。后两组的长期分析按预注册 moving-block bootstrap 计算；内部分类码为 LONG_HORIZON_TRANSIENT_ONLY。',
-      'All three finals share identical panel-content SHA, panel-file SHA, and selected-panel digest. The Bounded Online Recurrence vs +GDR long-horizon analysis uses the preregistered moving-block bootstrap and is classified LONG_HORIZON_TRANSIENT_ONLY.',
+      'All three completed finals share identical panel-content SHA, panel-file SHA, and selected-panel digest. The Bounded Online Recurrence vs β-gating (α fixed at 1) long-horizon analysis uses the preregistered moving-block bootstrap and is classified LONG_HORIZON_TRANSIENT_ONLY. Dynamic α + dynamic β has no run or final evidence yet.',
     )}</p>
     <a href={study.evidence.publicSnapshot}>{t('公开机器可读快照', 'Public machine-readable snapshot')}</a>
   </details>
@@ -66,8 +71,8 @@ const directHref = p('/research/seed-openevo/study/capability-exploration/q17-di
   .same-panel{max-width:1160px;margin:0 auto;padding:42px 24px;border-top:1px solid var(--color-border)}
   .same-panel__intro{max-width:820px}.same-panel__eyebrow{margin:0 0 8px;color:var(--color-accent);font-size:.76rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
   .same-panel h2{margin:0;font-size:clamp(1.7rem,3.4vw,2.7rem);letter-spacing:-.04em}.same-panel__intro>p:last-child{max-width:76ch;line-height:1.7;color:var(--color-text-muted)}
-  .same-panel__cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px}
-  .same-panel__cards article{padding:18px;border:1px solid var(--color-border);border-radius:16px;background:var(--color-surface)}
+  .same-panel__cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:22px}
+  .same-panel__cards article{padding:18px;border:1px solid var(--color-border);border-radius:16px;background:var(--color-surface)}.same-panel__cards article.same-panel__unrun{border-style:dashed}
   .same-panel__cards span{display:block;color:var(--color-text-muted)}.same-panel__exact{font-size:1rem}.same-panel__cards strong{display:block;margin:8px 0 2px;font-size:clamp(2rem,4vw,3.2rem);letter-spacing:-.05em}
   .same-panel__reading{max-width:880px;margin-top:20px;padding:16px 18px;border-left:3px solid var(--color-accent);background:var(--color-surface-subtle)}
   .same-panel__reading p{margin:6px 0 0;line-height:1.68;color:var(--color-text-muted)}

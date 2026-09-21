@@ -157,6 +157,18 @@ describe('human preference learning loop', () => {
     expect(preference?.antiOvergeneralization.join(' ')).toContain('不是所有研究页');
   });
 
+  it('retrieves CASE-100 for SEED paper references and CVPR-style ablation captions', () => {
+    const result = retrieveHumanPreferenceContext(
+      '消融表里加 SEED 论文 Qwen3-1.7B 的 87.1 / 77.3 参考，不是 random seed；每行解释不要塞 cell，放 Table 1 caption，并说明 SEED 的 128 validation tasks 和本地 frozen 128 不是同一批题',
+      undefined,
+      16,
+      'research-copy',
+    );
+    expect(result.preferences.map(({ preference }) => preference.id)).toContain('PREF-ABLATION-PAPER-NARRATIVE');
+    expect(result.cases.map(({ precedent }) => precedent.id)).toContain('CASE-100');
+    expect(result.goldPairs.map(({ pair }) => pair.id)).toContain('PAIR-100-SEED-CAPTION');
+  });
+
   it('retrieves CASE-093 for LaTeX formulas and W&B visual evidence without erasing privacy boundaries', () => {
     const result = retrieveHumanPreferenceContext(
       '科研论文网页的公式用 LaTeX KaTeX MathJax；如果一页暴露 raw math、HTML sub/sup、code 假公式或 serif 假公式，要做整个网站和 sibling route 的公式覆盖审计，但 shell API 配置和伪代码继续保持 code。W&B wandb report 和 panel 图直接放正文；如果源 project 私有就不要自动改 public。',

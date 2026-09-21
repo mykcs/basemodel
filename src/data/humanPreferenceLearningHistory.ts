@@ -885,6 +885,21 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     supersedesEventIds: ['EVENT-20260916-REDESIGN-INDEPENDENT-COLDREAD-REQUIRED'],
     evidence: { repository: 'mykcs/basemodel', pullRequest: 737, ledgerId: 'FB-CF09-CUT-EXTERNAL-REVIEWER-DEFAULT' },
   },
+
+  {
+    id: 'EVENT-20260921-SEED-CAPTION',
+    date: '2026-09-21',
+    caseIds: ['CASE-100'],
+    scopes: ['research-ui', 'research-copy', 'results'],
+    artifact: 'Bounded Online Recurrence ablation table · SEED reference + caption layout',
+    variantId: 'rng-seed-and-cell-prose-ablation',
+    verdict: 'rejected',
+    ownerSignal: 'seed 不是随机种子，是论文 SEED 得分；表格注释要像 CVPR 论文一样放 caption，不要塞在表格里面。',
+    reasons: ['把专名 SEED 误解成 RNG seed，改变了表格语义', 'row prose 进入 cell，降低论文式横向比较效率', '外部 SEED 参考与本地 frozen-panel 结果需要就地声明可比性边界'],
+    failureMechanisms: ['named-benchmark-misread-as-rng-seed', 'prose-inside-ablation-cell', 'external-reference-presented-as-matched-arm'],
+    requestedSuccessorVariantId: 'seed-paper-reference-cvpr-caption',
+    evidence: { repository: 'mykcs/basemodel', pullRequest: 761, route: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/' },
+  },
 ];
 
 

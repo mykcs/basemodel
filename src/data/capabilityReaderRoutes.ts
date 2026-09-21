@@ -113,10 +113,10 @@ export const CAPABILITY_READER_ROUTES = [
     "route": "bounded-effective-state-gdr",
     "coverage": "self-contained",
     "owner": "OpenEvoEffectiveStateGdrLoraStudy",
-    "label": { "zh": "三个 1.7B OpenEVO 实验", "en": "Three 1.7B OpenEVO experiments" },
+    "label": { "zh": "三个已完成 1.7B OpenEVO 实验 + 一个未做空位", "en": "Three completed 1.7B OpenEVO experiments + one unrun slot" },
     "purpose": {
-      "zh": "Qwen3-1.7B 的三组 OpenEVO 实验都跑到 160 轮，最终模型使用同一份冻结 128 题。页面先给三组消融结果，再解释 Bounded Online Recurrence、GDR、长期训练差异、计算成本和参数分析。",
-      "en": "Three Qwen3-1.7B OpenEVO experiments run for 160 rounds and use the same frozen 128-task final panel. The page starts with the three-way ablation, then explains Bounded Online Recurrence, GDR, long-horizon training differences, compute cost, and parameter analysis."
+      "zh": "Qwen3-1.7B 的三组已完成 OpenEVO 实验都跑到 160 轮，最终模型使用同一份冻结 128 题；动态 α + 动态 β 尚未运行。页面先把 Bounded / 动态 β / 动态 α 拆开，再解释 Bounded Online Recurrence、β-gating（α 固定为 1）、Gated Delta 理论来源、长期训练差异、计算成本和参数分析。",
+      "en": "Three completed Qwen3-1.7B OpenEVO experiments run for 160 rounds and use the same frozen 128-task final panel; dynamic α + dynamic β has not been run. The page separates Bounded / dynamic β / dynamic α first, then explains Bounded Online Recurrence, β-gating (α fixed at 1), the Gated Delta theory source, long-horizon training differences, compute cost, and parameter analysis."
     }
   },
   {

@@ -355,7 +355,7 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     confidence: 'explicit-project',
     priority: 5,
     retrievalTags: ['消融', 'ablation', '论文', 'ICLR', '方法对比', '命名一致', '对勾', 'Bounded Online Recurrence', 'Bounded State', 'GDR', '数学映射', 'Task Vector', 'entropy'],
-    supportingCaseIds: ['CASE-082', 'CASE-088', 'CASE-089', 'CASE-092'],
+    supportingCaseIds: ['CASE-082', 'CASE-088', 'CASE-089', 'CASE-092', 'CASE-098', 'CASE-100'],
     antiOvergeneralization: [
       '不是所有研究页都要模仿论文版式；只有同一方法族的逐项消融才默认用这种入口。',
       '统一公共实验名不能删除审计身份；run ID、OFF/ON、Effective-State 等仍在 provenance / evidence 精确保留。',
@@ -382,6 +382,23 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
       'publication mirror 只承担展示和后分析：缺失点保持缺失、不插值，不继承 scientific authority，也不能把 training loss 下降改写成 Task Score 或 final 提升。',
     ],
   },
+  {
+    id: 'PREF-METRIC-LADDER-NARRATIVE',
+    title: '实验指标从基础训练信号递进到参数几何与行为信号',
+    statement: '科研实验页的诊断指标按读者理解成本排序，而不是按研究过程或数据来源排序：先用 loss 检查优化，再用 Task Vector 与参数范数/谱/方向解释参数变化，最后进入长度、步数、entropy 等行为指标。每个 subsection 固定“指标是什么 → 这次实验的结果 → 分析”，对应图留在该指标旁边。',
+    scopes: ['research-ui', 'research-copy', 'results', 'capability'],
+    confidence: 'explicit-project',
+    priority: 5,
+    retrievalTags: ['实验指标', 'loss', 'Task Vector', 'Frobenius', 'spectral norm', '谱', '范数', 'cosine', '长度', 'steps', 'entropy', 'W&B', '指标解释', '结果分析'],
+    supportingCaseIds: ['CASE-099'],
+    antiOvergeneralization: [
+      '不是所有实验必须拥有同一套指标；顺序只约束当前实际存在的诊断指标。',
+      '正式主结果仍可先于诊断链展示；这里规范的是后分析怎样组织。',
+      '复杂指标不能因为排在后面就被写成更强证据；每节仍需保留相关性/因果边界。',
+      '图不需要全部来自 W&B；规则是图和对应指标共置，而不是图的来源必须统一。',
+    ],
+  },
+
   {
     id: 'PREF-BENCHMARK-METRIC-CONTEXT',
     title: 'Benchmark 数字出现时同时交代计算口径、题集身份和能力边界',
@@ -750,7 +767,7 @@ export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [  {
     preferenceIds: ['PREF-ABLATION-PAPER-NARRATIVE', 'PREF-OBJECT-FIRST', 'PREF-RESEARCH-JUDGMENT'],
     scopes: ['research-ui', 'research-copy', 'results', 'capability'],
     rejected: 'H1 用“Bounded Online Recurrence + Effective-State GDR”，结果区再列“DirectApply / Bounded OFF / Bounded + GDR ON”，并按 readiness / lifecycle / post-hoc 分节。',
-    accepted: '首层直接列三组：普通 OpenEVO / OpenEVO + Bounded Online Recurrence / OpenEVO + Bounded Online Recurrence + GDR；用 Bounded Online Recurrence、GDR 两列打勾，并给同一冻结 128 题 Final。正文按动机 → 方法与公式 → 实验 → 结果 → Analysis / Discussion 展开。',
+    accepted: '首层先列三组已完成实验，并按真实机制拆列；当前第三组明确为 OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1），动态 α + 动态 β 只留未做空位、结果为 —。正文按动机 → 方法与公式 → 实验 → 结果 → Analysis / Discussion 展开。',
     reason: 'owner 明确指出旧页面需要读者自己把多套名称对齐，而且内部工作流结构打断科学叙事；论文式消融入口让陌生读者先建立统一实验身份，再理解方法为什么产生、怎样验证。',
     failureMechanisms: ['inconsistent-experiment-identity', 'missing-ablation-overview', 'implementation-taxonomy-as-research-story', 'formula-without-mapping-bridge'],
     ownerStatus: 'accepted',
@@ -788,6 +805,43 @@ export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [  {
     accepted: '每张 W&B 图自己的解释直接放在图下面：先说这张图测什么，再说怎样解读和不能直接推出什么，并在同一图块回链原生 panel；不要把所有指标解释集中到一张总表。如果 loss 等历史指标没有写进 W&B，但封存 receipt 有真实数据，就从封存证据生成带来源哈希的 publication mirror（scientific_authority=false），再让网页复用同一 mirror。',
     reason: 'owner 先明确说已经做了 W&B 图时网页不要重复手画，并要求指标有可读解释；随后又要求把当时漏收进 W&B 的 rollout→loss 从真实实验资产补到三实验原生视图，并同步到 BaseModel。可复用规则是“原生证据优先 + 可追溯 publication mirror + 同源网页阅读层”，不是“网页永远不能画图”。',
     failureMechanisms: ['redundant-page-native-chart', 'metric-without-reader-context', 'multiple-visual-sources-of-truth'],
+    ownerStatus: 'accepted',
+  },
+
+  {
+    id: 'PAIR-098-PARTIAL-GDR-NAMING',
+    caseId: 'CASE-098',
+    preferenceIds: ['PREF-ABLATION-PAPER-NARRATIVE', 'PREF-SCIENTIFIC-BOUNDARY'],
+    scopes: ['research-ui', 'research-copy', 'results', 'capability'],
+    rejected: '把已完成第三组统一简称“Bounded + GDR”，并用单一 GDR 对勾暗示完整 α+β 机制已经实验。',
+    accepted: '已完成第三组明确写“Bounded Online Recurrence + β-gating（α 固定为 1）”；消融表拆成动态 β / 动态 α，两列分别表示真正启用的机制；dynamic α + dynamic β 只保留“未做”空位，结果全部留空。',
+    reason: 'owner 追问本次 GDR 实验是否使用 α 后，明确要求把网页所有相关表述纠正，并让没做的实验暂时空着。公共名称因此必须区分“Gated Delta 来源理论”和“实际 α 固定为 1 的 β-gating treatment”，同时不能改写封存内部身份。',
+    failureMechanisms: ['partial-treatment-presented-as-full-method', 'unrun-experiment-result-invention', 'public-name-audit-identity-conflation'],
+    ownerStatus: 'accepted',
+  },
+
+  {
+    id: 'PAIR-099-METRIC-LADDER',
+    caseId: 'CASE-099',
+    preferenceIds: ['PREF-METRIC-LADDER-NARRATIVE', 'PREF-RESEARCH-MATH-VISUAL-EVIDENCE', 'PREF-SCIENTIFIC-BOUNDARY'],
+    scopes: ['research-ui', 'research-copy', 'results', 'capability'],
+    rejected: 'Analysis 先混讲 Task Vector / norm / direction，再讲长度和 entropy；另开一个 W&B 图集，把 loss、Task Vector、steps、entropy 全堆在页面后面。',
+    accepted: '正式结果之后按 loss → Task Vector → 参数范数/谱/方向 → 输出长度/任务步数 → action-family entropy 递进；每一节都先解释指标、再给本实验数字/图、最后写分析与边界，对应 W&B 图就放在该小节。',
+    reason: 'owner 直接指出当前实验页“写得太差”，要求从基本指标 loss 开始，逐步进入 Task Vector、谱/范数、长度、entropy，并规定每个小 subsection 的固定阅读顺序是“指标是什么 → 结果 → 分析”。',
+    failureMechanisms: ['metric-order-by-research-process', 'mixed-diagnostic-subsection', 'detached-chart-gallery', 'result-before-metric-definition'],
+    ownerStatus: 'accepted',
+  },
+
+
+  {
+    id: 'PAIR-100-SEED-CAPTION',
+    caseId: 'CASE-100',
+    preferenceIds: ['PREF-ABLATION-PAPER-NARRATIVE', 'PREF-BENCHMARK-METRIC-CONTEXT', 'PREF-SCIENTIFIC-BOUNDARY'],
+    scopes: ['research-ui', 'research-copy', 'results', 'capability'],
+    rejected: '把 owner 说的 seed 当成 RNG seed，在消融表新增 seed base；同时每个实验名下面塞一段方法说明，让表格主体承担解释性散文。',
+    accepted: '加入 SEED（论文，Qwen3-1.7B）外部参考行，展示 Score 87.1 / Success 77.3%；表格主体只保留实验名、机制列和指标，所有行定义与“SEED 题集不同、不是 same-panel arm”的边界放进统一 Table 1 caption。',
+    reason: 'owner 两次直接纠正表格：SEED 指论文结果而非随机种子；各行说明应像 CVPR 论文一样放 caption。两条反馈共同指向同一原则：表格负责紧凑比较，caption 负责解释和可比性边界。',
+    failureMechanisms: ['named-benchmark-misread-as-rng-seed', 'prose-inside-ablation-cell', 'external-reference-presented-as-matched-arm'],
     ownerStatus: 'accepted',
   },
 
