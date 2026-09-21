@@ -49,7 +49,7 @@ experiment identity / what was run
 
 For the **same metric**, prefer the least-transformed evidence first: show the native/full time series before a windowed, smoothed, detrended, or otherwise derived view. A derived figure is valuable when it answers a new question, but its transformation and evidence boundary must be stated where the reader sees it. Co-occurrence, correlation, later placement, or a more sophisticated metric never upgrades an observation into causality.
 
-The exact diagnostic sequence is route-specific and remains owned by that route's Reader Contract / HPL evidence. Do **not** turn one experiment's metric ladder into a site-wide template. A mathematical derivation, mechanism explainer, or causal intervention history may legitimately follow mathematical or decision order instead of Task Score-first order.
+The exact diagnostic sequence is route-specific and remains owned by that route's Reader Contract plus current central/BaseModel learned evidence. Do **not** turn one experiment's metric ladder into a site-wide template. A mathematical derivation, mechanism explainer, or causal intervention history may legitimately follow mathematical or decision order instead of Task Score-first order.
 
 When the research contribution is an iterative diagnosis rather than one final benchmark, the visible story may instead use the scientist's decision sequence:
 
@@ -147,7 +147,7 @@ For research routes:
 
 A material math-heavy page must have executable acceptance evidence that the rendered equation path exists (for example a KaTeX / MathML assertion) and that representative desktop/mobile widths do not overflow. Source-text presence alone is not enough.
 
-Historical enforcement case: `CASE-097 — 数学等价与跨领域映射要分层讲` in `website-copy-cases.md`.
+Historical enforcement case: `CASE-097 — 数学等价与跨领域映射要分层讲` in [legacy BaseModel HPL case archive](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md).
 
 ## 4. Secret and credential presentation
 

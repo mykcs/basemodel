@@ -74,7 +74,6 @@ A replacement provider `ERROR` must also be localized by **execution phase** bef
 - `[vercel-preview]` is only a historical/review marker and never opens the spend gate;
 - a docs/governance-only final candidate still requires exact-head `public-ci-gate`; its explicit Vercel gate runs the static provider build, while docs-only `main` remains non-deploy-relevant;
 - a docs/governance-only change on `main` remains non-deploy-relevant and **must not publish a Production build**. This preserves the rule that changing `AGENTS.md` or `docs/agents/**` cannot replace the website Production artifact.
-- a proven HPL control-plane-only final candidate still requires exact-head Public PR CI, including HPL/Reader audits; its Vercel gate runs only the static provider build. After merge, the same detached HPL-only range is non-deploy-relevant on `main`, so it does not publish an identical Production artifact. Any runtime importer or gate-owner change fails closed to the normal Public PR CI browser path.
 
 ### Fast human-review Preview lane
 
@@ -118,10 +117,6 @@ non-UI / governance-only diff
 -> Public PR CI deterministic acceptance; browser allocation may be zero
 -> exact-head Vercel gate -> static provider build
 
-detached HPL control-plane-only diff
--> Public PR CI deterministic + HPL/Reader audits
--> exact-head Vercel gate -> static provider build
--> merged main range may still be ignored when proven non-deploy-relevant
 
 bounded route-owned UI diff
 -> Public PR CI deterministic + focused mapped Chromium coverage

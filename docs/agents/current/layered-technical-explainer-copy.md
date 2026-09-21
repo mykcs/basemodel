@@ -4,7 +4,7 @@ Last reviewed: **2026-08-26**
 Status: **current**
 Applies to: Chinese research explainers, benchmark pages, results pages, and technical overview surfaces in Basemodel.
 
-This contract defines **information depth**, not a mandatory visible UI template: explain context before detail, write for an intelligent reader who lacks local project context, preserve technical accuracy, and let readers reach exact evidence without forcing them through internal jargon. `website-design-spec.md` and newer live-human PREFERENCE cases in `website-copy-cases.md` own the public voice and visual expression when an older example here conflicts with them.
+This contract defines **information depth**, not a mandatory visible UI template: explain context before detail, write for an intelligent reader who lacks local project context, preserve technical accuracy, and let readers reach exact evidence without forcing them through internal jargon. `website-design-spec.md` plus the current central `.codex/website-learning` learned evidence own the public voice and visual expression when an older example here conflicts with them.
 
 ## 1. Default reader
 
@@ -26,7 +26,7 @@ These are **authoring depths, not required visible headings or cards**. Depth 1 
 
 Depth 3 is usually local progressive disclosure such as `实验依据`, `数据来源`, or `技术回溯`. The main claim and any claim-changing boundary must remain visible; exact provenance may be expandable.
 
-All depths must describe the same fact. Do not make the plain-language statement more confident than the precise interpretation, and do not hide a claim-changing caveat only in evidence. See CASE-067–069 in `website-copy-cases.md`.
+All depths must describe the same fact. Do not make the plain-language statement more confident than the precise interpretation, and do not hide a claim-changing caveat only in evidence. See CASE-067–069 in [legacy BaseModel HPL case archive](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md).
 
 
 ### 2.1 Conversation-proven plain-language explanations are part of publication coverage

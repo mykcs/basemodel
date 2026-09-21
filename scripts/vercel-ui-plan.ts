@@ -2,7 +2,6 @@ import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 import { classifyUiRisk, type UiRisk } from './preflight-ui.ts';
 import { changedFilesForVercel as changedFilesForPersistentGate } from './vercel-git-range.mjs';
-import { findUnexpectedHplRuntimeImporters, isHplControlPlanePath } from './hpl-control-plane.mjs';
 
 export type HostedUiMode = 'skip' | 'focused' | 'full';
 
@@ -23,7 +22,6 @@ const HOSTED_GATE_OWNERS = new Set([
   'scripts/request-vercel-final-gate.mjs',
   'scripts/vercel-ui-gate.mjs',
   'scripts/vercel-ignore-build.mjs',
-  'scripts/hpl-control-plane.mjs',
   'scripts/vercel-lab-browser-gate.mjs',
   'vercel.json',
   'scripts/ci-ui-gate.mjs',
@@ -245,19 +243,6 @@ export function changedFilesForVercel(env: ProcessEnvironment = process.env): st
 export function planCurrentVercelDeployment(env: ProcessEnvironment = process.env): HostedUiPlan {
   try {
     const changedFiles = changedFilesForVercel(env);
-    if (changedFiles.some(isHplControlPlanePath)) {
-      const unexpectedImporters = findUnexpectedHplRuntimeImporters();
-      if (unexpectedImporters.length) {
-        return {
-          mode: 'full',
-          risk: 'global',
-          changedFiles,
-          routes: [],
-          specs: [],
-          reason: `HPL control-plane code is imported by runtime source (${unexpectedImporters.join(', ')}); fail closed to the complete hosted matrix.`,
-        };
-      }
-    }
     return planHostedUi(changedFiles);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

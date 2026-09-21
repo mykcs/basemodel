@@ -9,7 +9,7 @@ Audience: Agents editing Basemodel pages, especially research results, experimen
 
 The reader should learn the thing itself before being told how to read the page. A decisive fact must not be visually quieter than the background prose that surrounds it.
 
-A “conclusion first” rule still needs a usable referent. If the first sentence says something is `shared`, `still`, `continuing`, `later`, or `the second version`, provide the minimum object/sequence that makes that relationship intelligible first. Do not make the reader reconstruct the experiment topology from a relational status sentence. See `website-copy-cases.md` CASE-060.
+A “conclusion first” rule still needs a usable referent. If the first sentence says something is `shared`, `still`, `continuing`, `later`, or `the second version`, provide the minimum object/sequence that makes that relationship intelligible first. Do not make the reader reconstruct the experiment topology from a relational status sentence. See [legacy BaseModel HPL case archive](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md) CASE-060.
 
 ## 1. Enter the subject directly
 

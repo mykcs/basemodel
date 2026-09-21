@@ -251,7 +251,6 @@ export async function main(): Promise<void> {
       { label: 'CSS architecture audit', command: 'npm', args: ['run', 'audit:css'] },
       { label: 'strict copy audit', command: 'npm', args: ['run', 'audit:copy:strict'] },
       { label: 'reader-contract audit', command: 'npm', args: ['run', 'audit:reader-contracts'] },
-      { label: 'human-feedback audit', command: 'npm', args: ['run', 'audit:human-feedback'] },
     ]);
   } finally {
     if (existsSync(config)) rmSync(config);

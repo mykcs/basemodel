@@ -5,14 +5,13 @@ const root = readFileSync(new URL('../../AGENTS.md', import.meta.url), 'utf8');
 const readme = readFileSync(new URL('../../docs/agents/README.md', import.meta.url), 'utf8');
 const principles = readFileSync(new URL('../../docs/agents/current/project-agent-operating-principles.md', import.meta.url), 'utf8');
 const engineering = readFileSync(new URL('../../docs/agents/current/website-engineering-standard.md', import.meta.url), 'utf8');
-const hpl = readFileSync(new URL('../../docs/agents/current/human-preference-learning-system.md', import.meta.url), 'utf8');
-const ingestion = readFileSync(new URL('../../docs/agents/current/human-feedback-ingestion-closeout.md', import.meta.url), 'utf8');
+const retiredHpl = readFileSync(new URL('../../docs/agents/current/human-preference-learning-system.md', import.meta.url), 'utf8');
+const retiredIngestion = readFileSync(new URL('../../docs/agents/current/human-feedback-ingestion-closeout.md', import.meta.url), 'utf8');
 const layeredExplainer = readFileSync(new URL('../../docs/agents/current/layered-technical-explainer-copy.md', import.meta.url), 'utf8');
 const registry = readFileSync(new URL('../../docs/agents/current/scenario-trigger-registry.md', import.meta.url), 'utf8');
 const repositoryMap = readFileSync(new URL('../../docs/agents/current/repository-map.md', import.meta.url), 'utf8');
 const seedWorkflow = readFileSync(new URL('../../docs/agents/current/seed-guided-research-workflow.md', import.meta.url), 'utf8');
 const websiteSpec = readFileSync(new URL('../../docs/agents/current/website-design-spec.md', import.meta.url), 'utf8');
-const copyCases = readFileSync(new URL('../../docs/agents/current/website-copy-cases.md', import.meta.url), 'utf8');
 const history = readFileSync(new URL('../../docs/agents/history/2026-08-11-seed-preview-and-agent-workflow-lessons.md', import.meta.url), 'utf8');
 const attentionHistory = readFileSync(new URL('../../docs/agents/history/2026-09-07-reader-attention-contract-and-apple-cognition-retrospective.md', import.meta.url), 'utf8');
 const briefingPreviewHistory = readFileSync(new URL('../../docs/agents/history/2026-09-10-briefing-fast-preview-pr-workline-and-hpl-closeout-retrospective.md', import.meta.url), 'utf8');
@@ -125,8 +124,8 @@ describe('Agent scenario-trigger discovery', () => {
     expect(researchJourney).toContain('Navigation demotion is not capability deletion');
     expect(researchJourney).toContain('desktop header/resource menu, mobile menu, local child navigation');
     expect(researchJourney).toContain('positive-control assertion');
-    expect(hpl).toContain('Phase A starts from the real default rendered state');
-    expect(hpl).toContain('manually expanded diagnostic screenshot');
+    expect(registry).toContain('Blind cold read starts from the true default state');
+    expect(registry).toContain('Do not open menus/details/filters/dialogs or scroll merely to expose the changed control');
     expect(registry).toContain('Treat navigation-entry removal as a shared-shell scan, not capability deletion');
     expect(registry).toContain('Blind cold read starts from the true default state');
     expect(readme).toContain('2026-09-13-remove-model-navigation-conversation-closeout.md');
@@ -247,29 +246,23 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('`gh pr create` for opening a PR');
   });
 
-  it('keeps HPL and conversation-lessons closeout from double-counting the same feedback', () => {
-    expect(registry).toContain('Do not double-ingest a conversation that already ran Human Preference Learning closeout');
-    expect(registry).toContain('machine-readable HPL ledger/events/trajectory as predecessor evidence');
-    expect(ingestion).toContain('If the source window has **no real product PR**');
-    expect(ingestion).toContain('Never invent a PR number');
+  it('routes website feedback closeout to central RAW and keeps the local HPL control plane retired', () => {
+    expect(registry).toContain('Repeated closeout is delta-only');
+    expect(retiredHpl).toContain('retired 2026-09-22');
+    expect(retiredHpl).toContain('mykcs/.codex');
+    expect(retiredIngestion).toContain('retired 2026-09-22');
+    expect(retiredIngestion).toContain('CONVERSATION_CLOSEOUT.md');
   });
 
-  it('requires HPL closeout bootstrap and end-to-end activation-cue parity', () => {
-    expect(ingestion).toContain('Before the first local/RDC/terminal command');
-    expect(ingestion).toContain('set the outer shell/interpreter explicitly (for example `/bin/bash`)');
-    expect(ingestion).toContain('activation-cue parity');
-    expect(ingestion).toContain('scope as a semantic contract, not a knob for making the receipt pass');
-    expect(ingestion).toContain('a green focused unit-test subset is not a substitute');
-    expect(hpl).toContain('Activation cues are one end-to-end contract');
-    expect(hpl).toContain('positive activation');
-    expect(hpl).toContain('negative activation');
-    expect(registry).toContain('HPL / feedback-learning retrieval parity');
-    expect(registry).toContain('Do not require unrelated `Preview/build` words');
+  it('keeps central learned evidence in the user-visible copy trigger without a local preference retrieval engine', () => {
+    expect(registry).toContain('central learned evidence');
+    expect(registry).toContain('do not run a local Preference Brief / Gold Pair retrieval step');
+    expect(registry).toContain('Central learning traceability');
+    expect(retiredHpl).toContain('Do not restore `feedback:retrieve`');
   });
 
   it('turns named visual references into cognition witnesses and protects scroll intent', () => {
-    expect(hpl).toContain('Named design references need a cognition-translation witness');
-    expect(hpl).toContain('reference-surface-imitation');
+    expect(registry).toContain('human-thinking-web-expression-contract.md');
     expect(engineering).toContain('Initial visibility is not scroll intent');
     expect(engineering).toContain('initial load preserves the declared starting state');
     expect(engineering).toContain('Protect the semantic behavior, not an incidental CSS token');
@@ -282,15 +275,17 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('`HTML` is an implementation medium, not a visual-style reset');
   });
 
-  it('turns owner copy feedback into case-cluster generalization and cross-site repair', () => {
-    for (const token of ['case cluster', 'at least two nearby cases', 'high-confidence same-family', 'semantic positions']) expect(registry).toContain(token);
-    for (const token of ['案例簇', '至少包含当前最接近案例 + 2 个同类/相邻案例', '高置信同类', 'sibling routes']) expect(websiteSpec).toContain(token);
+  it('turns owner copy feedback into central learning plus BaseModel sibling repair', () => {
+    expect(registry).toContain('central learned evidence');
+    expect(registry).toContain('high-confidence same-family');
+    expect(registry).toContain('semantic positions');
+    expect(registry).toContain('sibling routes');
     expect(registry).toContain('site-reader-attention-contract.md');
     expect(registry).toContain('product/repository work');
     expect(registry).toContain('Repository persistence and long-term memory are separate receipts');
-    expect(copyCases).toContain('案例簇总结：CASE-061–071');
-    expect(copyCases).toContain('当前最接近案例 + 至少 2 个同类/相邻案例');
-    expect(copyCases).toContain('案例不是墓碑，而是训练样本');
+    expect(websiteSpec).toContain('中央共享的人类表达偏好');
+    expect(websiteSpec).toContain('中央 closeout 保存 RAW');
+    expect(websiteSpec).toContain('不要新建平行 preference system');
   });
 
   it('keeps the attention-contract retrospective discoverable without confusing repository persistence with memory', () => {
@@ -393,16 +388,14 @@ describe('retained correction use-site routing', () => {
     expect(registry).toContain('stop sending inline compound Bash payloads');
   });
 
-  it('binds HPL, browser evidence, shell probes, and progress to the artifact actually under review', () => {
+  it('binds browser/review evidence, shell probes, and progress to the artifact actually under review', () => {
     expect(readme).toContain('2026-09-13-base-model-flow-to-models-conversation-closeout.md');
-    expect(hpl).toContain('### Candidate review contract follows the surface that actually changed');
-    expect(hpl).toContain('candidate-introduced or materially worsened');
     expect(engineering).toContain('A dirty working tree means the rendered artifact is `HEAD + local delta`');
     expect(engineering).toContain("task-owned server's **actual emitted URL**");
     expect(principles).toContain('make that first probe dialect-neutral');
     expect(principles).toContain('task-owned server that actually launched');
     expect(principles).toContain('recompute **both numerator and denominator from that exact ref-qualified checklist on every report**');
-    expect(registry).toContain('Bind HPL review to the surface actually varied');
+    expect(registry).toContain('Bind independent review to the surface actually varied');
     expect(registry).toContain('Bind local visual evidence to the actual tree and server');
     expect(modelMigrationCloseoutHistory).toContain('## Coverage ledger');
     expect(modelMigrationCloseoutHistory).toContain('## Temporary state intentionally not promoted');
