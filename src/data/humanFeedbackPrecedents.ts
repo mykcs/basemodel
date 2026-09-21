@@ -264,6 +264,15 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     positiveSignals: ['浏览器/截图/Reader Contract/可访问性/主题/几何负责确定性工程验收', '只有明确要求独立理解/偏好研究时才增加独立 reviewer，并保持证据身份真实'],
   },
 
+
+  {
+    id: 'CASE-098',
+    title: '方法名不能把未运行的机制写成已验证',
+    tags: ['科研网页', '实验命名', 'GDR', 'alpha', 'beta', '消融', '未做实验', '科学边界'],
+    principle: '公开方法名必须精确到本次实验真正启用的机制。若完整方法含多个控制量、而正式实验只启用其中一部分，就在名称和消融表直接写出固定项；未运行的完整版本可以留空位，但结果必须保持为空。',
+    antiPatterns: ['把 α=1、只动态控制 β 的实验简称成“+ GDR”，让读者误以为完整 α+β 都已测试', '给尚未运行的 dynamic α+β 补分数、趋势或结论', '为了公共命名简洁而改写底层封存 experiment ID'],
+    positiveSignals: ['已完成第三组统一写成 β-gating（α=1）', '消融表拆开动态 β / 动态 α，让已完成组显示 β ✓、α —', 'dynamic α + dynamic β 只保留“未做”空位，所有结果列为 —', '底层 EFFECTIVE_STATE_GDR_LORA_V1 等审计身份原样保留'],
+  },
 ];
 
 export const READER_CONTRACT_PRECEDENTS: Record<string, HumanFeedbackCaseId[]> = {
