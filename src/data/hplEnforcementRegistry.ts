@@ -6,6 +6,18 @@ export type HplEnforcementRecord = {
 };
 
 export const HPL_ENFORCEMENT_REGISTRY: HplEnforcementRecord[] = [
+  { family: 'card-adjacency-masquerading-as-flow', guards: [
+    { kind: 'policy-test', path: 'src/lib/humanThinkingWebExpressionContract.test.ts', note: 'requires FLOW-WITNESS and rejects card adjacency as proof of non-linear flow' },
+    { kind: 'browser-gate', path: 'tests/e2e/vanilla-sd-lora-mechanism.spec.ts', note: 'checks real replay, branch/join, and round-return topology on desktop and mobile' },
+  ]},
+  { family: 'relationship-not-first-class', guards: [
+    { kind: 'policy-test', path: 'src/lib/humanThinkingWebExpressionContract.test.ts', note: 'requires connectors and endpoint relationships to carry branch and feedback semantics' },
+    { kind: 'browser-gate', path: 'tests/e2e/vanilla-sd-lora-mechanism.spec.ts', note: 'asserts visible semantic edges instead of only node labels or card presence' },
+  ]},
+  { family: 'tool-validation-substituted-for-product-acceptance', guards: [
+    { kind: 'policy-test', path: 'src/lib/humanThinkingWebExpressionContract.test.ts', note: 'requires rendered topology acceptance in addition to authored diagram semantics' },
+    { kind: 'browser-gate', path: 'tests/e2e/vanilla-sd-lora-mechanism.spec.ts', note: 'proves the final BaseModel render preserves routed topology across responsive layouts' },
+  ]},
   { family: 'anticipatory-rebuttal', guards: [
     { kind: 'rendered-audit', path: 'scripts/audit-rendered-hpl.mjs', note: 'blocks defensive/negation-first section openings' },
     { kind: 'source-audit', path: 'scripts/audit-audience-copy.ts', note: 'flags negative-first public copy for review' },
