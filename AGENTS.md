@@ -20,6 +20,20 @@ Before any user-facing product, copy, navigation, information-architecture, page
 
 `docs/wish/` is the high-level product-intent owner. Existing current policies such as `product-and-research-integrity.md`, the SEED × OpenEvo research mission, HPL, reader contracts, and UI/engineering standards keep their narrower responsibilities. Do not copy the wish text into those files or back into this root bootstrap.
 
+## Central website learning
+
+For every user-facing website copy task, read the central learned human-expression preferences before the first substantial draft:
+
+- https://github.com/mykcs/.codex/blob/main/website-learning/shared/content/HUMAN_EXPRESSION.md
+
+For material design or website-engineering decisions, also load the matching central shared file and BaseModel site experience when relevant:
+
+- https://github.com/mykcs/.codex/blob/main/website-learning/shared/design/LEARNED_PREFERENCES.md
+- https://github.com/mykcs/.codex/blob/main/website-learning/shared/engineering/LEARNED_PRACTICES.md
+- https://github.com/mykcs/.codex/tree/main/website-learning/sites/basemodel
+
+Direct owner feedback and conversation closeout are now centralized in .codex/website-learning. BaseModel still owns its current Wish, scientific/product authority, Reader Contracts, tests, source, and local executable HPL adapter. Central preference evidence never overrides scientific/factual/security truth.
+
 ## Fast start
 
 You are already reading the repository bootstrap. After this file, read in this order:

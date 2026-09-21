@@ -1,17 +1,18 @@
 # Conversation lessons closeout — BaseModel entrypoint
 
-Status: **navigation-only compatibility entrypoint**
-Local repository: `mykcs/basemodel`
-Canonical protocol: `mykcs/openevo-experiment/docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md`
+Status: navigation-only compatibility entrypoint
+Local repository: mykcs/basemodel
+Canonical website-learning protocol: mykcs/.codex/website-learning/CONVERSATION_CLOSEOUT.md
 
-This file intentionally does **not** copy the protocol body. The mutable closeout rules have one authority only: the current `main` version in `mykcs/openevo-experiment`.
+This file intentionally does not copy the protocol body.
 
-When a BaseModel conversation invokes this path:
+When a BaseModel website conversation invokes this path:
 
-1. fetch and read the canonical protocol from `mykcs/openevo-experiment` at current `main`;
-2. then use BaseModel root `AGENTS.md`, `docs/agents/README.md`, the scenario registry, and the task-owning current policy to choose BaseModel destinations;
-3. update existing BaseModel owners/tests/history instead of creating duplicate rule sources;
-4. keep temporary PR heads, Preview URLs, PIDs, ports, worktree paths, live provider state, and experiment progress out of standing policy;
-5. report repository state literally: branch/commit/PR/`main` are different completion states.
+1. read https://github.com/mykcs/.codex/blob/main/website-learning/CONVERSATION_CLOSEOUT.md;
+2. preserve clear owner wording as central RAW;
+3. classify content / design / engineering and shared / BaseModel-specific experience in .codex;
+4. use BaseModel root AGENTS.md, current Wish, scientific/product authority, Reader Contracts and tests to choose any necessary project writeback;
+5. keep temporary PR heads, Preview URLs, PIDs, ports, live provider state and experiment progress out of learned preference;
+6. never let preference evidence rewrite sealed scientific results or factual authority.
 
-This entrypoint does not authorize merge, deployment, experiment mutation, cleanup, deletion, or any other action forbidden by the canonical closeout protocol.
+The general OpenEVO experiment/server closeout protocol remains separate in mykcs/openevo-experiment; this entrypoint is specifically for BaseModel website work.
