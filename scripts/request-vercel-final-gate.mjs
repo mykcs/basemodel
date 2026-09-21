@@ -54,8 +54,21 @@ function assertHeadContainsMain(mainSha, headSha) {
   }
 }
 
+function assertGitHubMappedAuthor(sha) {
+  const commit = json(['api', `repos/${REPO}/commits/${sha}`]);
+  const email = commit.commit?.author?.email;
+  const login = commit.author?.login;
+  if (!email || !login) {
+    throw new Error(
+      `Vercel final gate requires the PR head commit author email to map to a GitHub account: head=${sha} author_email=${email ?? 'missing'}. Fix Git user.email to a GitHub-associated address and create a real follow-up commit before retrying.`,
+    );
+  }
+  return { email, login };
+}
+
 const currentMain = json(['api', `repos/${REPO}/commits/main`]).sha;
 assertHeadContainsMain(currentMain, pr.headRefOid);
+assertGitHubMappedAuthor(pr.headRefOid);
 
 const currentFinal = refSha(VERCEL_FINAL_GATE_REF);
 if (!currentFinal) {
