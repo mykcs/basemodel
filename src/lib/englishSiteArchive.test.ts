@@ -83,19 +83,26 @@ describe('English site archive', () => {
     }
   });
 
-  it('keeps every real archived English URL on an explicit temporary Chinese redirect', () => {
+  it('keeps archived English URLs explicit, with only declared cross-site migrations permanent', () => {
     const expected = new Map(rows.flatMap((row) => legacyRedirectPairs(row.original)).map((item) => [item.source, item.destination]));
+    const migrated = new Map([
+      ['/en/lab', 'https://fuhuo-20260419.vercel.app/docs/machines'],
+      ['/en/lab/', 'https://fuhuo-20260419.vercel.app/docs/machines'],
+      ['/en/research/seed-openevo/flow/server', 'https://fuhuo-20260419.vercel.app/docs/server-governance'],
+      ['/en/research/seed-openevo/flow/server/', 'https://fuhuo-20260419.vercel.app/docs/server-governance'],
+    ]);
     const actual = (vercel.redirects ?? []).filter((item) => item.source === '/en' || item.source.startsWith('/en/'));
 
     expect(actual).toHaveLength(expected.size);
     expect(actual.some((item) => item.source.includes(':path') || item.source.includes('(.*)'))).toBe(false);
     for (const item of actual) {
-      expect(item.permanent, item.source).toBe(false);
-      expect(item.destination, item.source).toBe(expected.get(item.source));
+      const migratedDestination = migrated.get(item.source);
+      expect(item.permanent, item.source).toBe(Boolean(migratedDestination));
+      expect(item.destination, item.source).toBe(migratedDestination ?? expected.get(item.source));
     }
     for (const [source, destination] of expected) {
       const redirect = actual.find((item) => item.source === source);
-      expect(redirect?.destination, source).toBe(destination);
+      expect(redirect?.destination, source).toBe(migrated.get(source) ?? destination);
     }
   });
 });

@@ -2,6 +2,7 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
+import MathFormula from '../common/MathFormula.astro';
 import { VANILLA_SD_LORA_MECHANISM as facts } from '../../data/vanillaSdLoraMechanism';
 import OpenEvoVanillaSdLoraSlide from './OpenEvoVanillaSdLoraSlide.astro';
 
@@ -58,7 +59,7 @@ const risks = zh ? [
       <table class="sdlora-compare-table">
         <thead><tr><th scope="col">{t('维度', 'Dimension')}</th><th scope="col">{t('普通 LoRA', 'Ordinary LoRA')}</th><th scope="col">SD-LoRA</th></tr></thead>
         <tbody>
-          <tr><th scope="row">{t('参数形式', 'Parameter form')}</th><td><code>ΔW = BA</code></td><td><code>ΔWₜ = Σ αᵢDᵢ</code></td></tr>
+          <tr><th scope="row">{t('参数形式', 'Parameter form')}</th><td><MathFormula latex={String.raw`\Delta W = BA`} display={false} label={t('普通 LoRA 参数更新', 'Ordinary LoRA parameter update')} /></td><td><MathFormula latex={String.raw`\Delta W_t = \sum_i \alpha_i D_i`} display={false} label={t('SD-LoRA 累计参数更新', 'SD-LoRA accumulated parameter update')} /></td></tr>
           <tr><th scope="row">{t('旧方向', 'Earlier directions')}</th><td>{t('没有把旧方向单独冻结成历史角色', 'not preserved as separate frozen historical directions')}</td><td>{t('旧 D 保持不动', 'earlier D stay fixed')}</td></tr>
           <tr><th scope="row">{t('新一轮学习', 'New-round learning')}</th><td>{t('学习新的低秩 A / B', 'learn new low-rank A / B')}</td><td>{t('学一个新 Dₜ，并重调所有 α', 'learn one new Dₜ and rebalance all α')}</td></tr>
         </tbody>

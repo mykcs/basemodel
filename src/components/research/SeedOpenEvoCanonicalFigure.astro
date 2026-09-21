@@ -1,6 +1,7 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 import ResearchDiagramLegend from './ResearchDiagramLegend.astro';
+import MathFormula from '../common/MathFormula.astro';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -38,7 +39,7 @@ const p = (path: string) => localePath(locale, path);
           <div class="wrapper-name">SEED</div>
           <div class="agent-inner trainable-agent">
             <span class="paper-symbol" aria-hidden="true">🔥</span>
-            <div><small>AGENT / POLICY</small><strong>π<sub>θ</sub></strong></div>
+            <div><small>AGENT / POLICY</small><strong><MathFormula latex={String.raw`\pi_\theta`} display={false} label={t('SEED 当前策略', 'SEED current policy')} /></strong></div>
           </div>
           <p data-ui-prose>{t('训练阶段，optimizer 真正更新的是 policy 参数。','During training, the optimizer updates the policy parameters.')}</p>
         </div>
@@ -50,13 +51,13 @@ const p = (path: string) => localePath(locale, path);
           <i aria-hidden="true">↓</i>
           <div class="change-node parameter-change">
             <span class="paper-symbol" aria-hidden="true">🔥</span>
-            <div><small>{t('改变什么？','WHAT CHANGES?')}</small><strong>{t('模型参数 · θ → θ′','MODEL PARAMETERS · θ → θ′')}</strong></div>
+            <div><small>{t('改变什么？','WHAT CHANGES?')}</small><strong>{t('模型参数', 'MODEL PARAMETERS')} · <MathFormula latex={String.raw`\theta\rightarrow\theta'`} display={false} label={t('参数从旧状态更新到新状态', 'parameters update from old to new state')} /></strong></div>
           </div>
         </div>
 
         <section class="next-task seed-next">
           <small>NEXT ROUND / INFERENCE</small>
-          <div class="next-agent"><strong>Agent θ′</strong><span data-ui-prose>{t('经验已经内化进模型本身','experience is internalized in the model')}</span></div>
+          <div class="next-agent"><strong>Agent <MathFormula latex={String.raw`\theta'`} display={false} label={t('更新后的 Agent 参数', 'updated Agent parameters')} /></strong><span data-ui-prose>{t('经验已经内化进模型本身','experience is internalized in the model')}</span></div>
           <i aria-hidden="true">↓</i>
           <b>new task</b>
           <p data-ui-prose>{t('推理时不需要永久携带 hindsight analyzer 或 skill prompt。','Inference does not require permanently carrying the hindsight analyzer or skill prompt.')}</p>

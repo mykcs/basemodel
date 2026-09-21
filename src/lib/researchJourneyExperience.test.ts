@@ -66,7 +66,7 @@ describe('research journey experience', () => {
     for (const route of ['/research/seed-openevo/flow/seed/', '/research/seed-openevo/flow/openevo/', '/research/seed-openevo/flow/webshop/', '/research/seed-openevo/flow/alfworld/', '/research/seed-openevo/flow/loops/']) {
       expect(conceptIndex).toContain(route);
     }
-    expect(conceptIndex).toContain('/lab/');
+    expect(conceptIndex).toContain('https://fuhuo-20260419.vercel.app/docs/machines');
   });
 
   it('keeps the mission-chain visual system with its component owner', () => {

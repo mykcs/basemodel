@@ -426,6 +426,32 @@ Preview acceptance is not Production acceptance.
 
 A generated deployment URL identifies that deployment; it does not become the latest website when a later commit ships. Verify the stable Production alias and its backing deployment/SHA before sending the owner a “latest site” link. Preserve old URLs as historical references only. Temporary protected-Preview share credentials stay in the ephemeral review surface, never in Git or a retrospective.
 
+### 9.0 Post-merge Production watch is exact-merge-SHA-bound
+
+A request such as “PR is merged; the Vercel status on the merge commit is still pending; notify me when it changes” is a **post-merge release watch**, not a continuation of the pre-merge PR-head watch. Bind the watch to:
+
+```text
+merged PR number
+exact merge commit SHA on main
+named GitHub status context
+provider deployment object bound to that SHA
+terminal notification condition
+mutation boundary
+```
+
+Rules:
+
+1. **Live-read before installing the watch.** Re-read the merged PR, exact merge SHA, current GitHub status context, and provider object first. If the requested condition is already terminal, report it immediately and do not create a redundant watcher.
+2. **Earlier Preview failures on a different SHA are background evidence only.** They may explain why the owner is cautious, but they cannot be used to classify the current merge commit as failed, unhealthy, or likely to fail.
+3. **While pending, watch the exact merge SHA only.** If `main` advances later, do not silently retarget the watch to the newer commit. The watched release may still reach a terminal provider state on its original merge SHA; the newer `main` commit is a separate release identity.
+4. **At the terminal transition, read back both layers before speaking.** Re-read the GitHub status context and the Vercel deployment object bound to the exact merge SHA. A user-facing success/failure claim must be traceable as `exact merge SHA -> status context -> provider object/state`; do not let a remembered chat result substitute for this readback.
+5. **Name the boundary of the conclusion.** A successful exact-SHA Vercel status proves that release gate only when the provider object is the intended real execution and reached the required success state. Full Production acceptance still requires the stable alias / representative route checks in Section 9 when the task asks for them.
+6. **Failure diagnosis stays exact-object-scoped.** Summarize logs/errors from the deployment bound to the watched merge SHA. Do not mix older Preview failures into the root-cause summary unless the same cause is independently reproduced on the watched deployment.
+7. **Stop the watcher after a terminal result is reported.** Disable the recurring/condition watch so a completed release cannot keep producing stale notifications. Do not modify code or trigger a redeploy unless the task separately authorizes that mutation.
+
+This rule exists because a correct terminal conclusion can still be weakly evidenced if the Agent reports the outcome before showing the exact merge-SHA/provider chain. The durable fix is not “be more confident”; it is to make the terminal readback explicit and object-bound.
+
+
 
 
 ### 9.1 Keep three release identities separate

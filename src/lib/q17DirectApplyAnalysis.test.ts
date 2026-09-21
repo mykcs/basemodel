@@ -63,7 +63,7 @@ describe('Q17 DirectApply complete analysis page', () => {
   });
 
   it('includes the measured SD-LoRA component-count latency mechanism and rejected speedups', () => {
-    for (const token of ['919.48', '241.55', '677.74', 'T(K)=38.07+6.148K', 'R²=0.9979', '26.89', '36×', '1.76×', 'CUDA OOM']) {
+    for (const token of ['919.48', '241.55', '677.74', 'latencyFitLatex', '38.07+6.148K', 'R^2=0.9979', '26.89', '36×', '1.76×', 'CUDA OOM']) {
       expect(component).toContain(token);
     }
     expect(component).toContain('not a capability defect');

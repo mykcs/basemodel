@@ -2,6 +2,7 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
+import MathFormula from '../common/MathFormula.astro';
 import { OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS } from '../../data/openEvoDirectApplyLiveDynamics';
 
 interface Props { locale: Locale }
@@ -9,6 +10,7 @@ const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
+const latencyFitLatex = String.raw`T_{\mathrm{trainer}}(K)=38.07+6.148K\;\mathrm{s},\qquad R^2=0.9979`;
 const dynamics = OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS;
 
 const upstreamSha = 'ce942086ffce8a925ff0b54f71c15c0ae7eb95c3';
@@ -185,7 +187,9 @@ const candidates = [
       <div role="row"><b role="cell">K=128</b><span role="cell">803.88 s</span><span role="cell">F 203.26</span><span role="cell">B 559.02</span></div>
       <div role="row"><b role="cell">K=148</b><span role="cell">969.17 s</span><span role="cell">F 241.55</span><span role="cell">B 677.74</span></div>
     </div>
-    <p>{t('固定同一批 47 current + 47 replay、94 steps 后，trainer time 拟合为 T(K)=38.07+6.148K 秒，R²=0.9979。GPU5 对 K=128 的独立复现只差 0.086%。同工作量的普通 rank-8 LoRA training loop 只有 26.89 秒，约比 K=148 的 SD-LoRA 快 36 倍。这个结果说明后期慢是 component-count 机制问题，但它不证明 SD-LoRA 的能力质量有缺陷，也没有授权在这条正式 Q17 treatment 中换算法。', 'With the same 47 current + 47 replay examples and 94 steps held fixed, trainer time fits T(K)=38.07+6.148K seconds with R²=0.9979. An independent GPU5 K=128 replicate differed by only 0.086%. A matched plain rank-8 LoRA training loop took 26.89 s, about 36× faster than K=148 SD-LoRA. This establishes a component-count mechanism for late-run latency, not a capability defect, and it did not authorize changing the formal Q17 treatment.')}</p>
+    <p>{t('固定同一批 47 current + 47 replay、94 steps 后，trainer time 的线性拟合是：', 'With the same 47 current + 47 replay examples and 94 steps held fixed, trainer time follows this linear fit:')}</p>
+    <MathFormula latex={latencyFitLatex} label={t('Q17 SD-LoRA trainer 时间与历史 component 数的线性拟合', 'Q17 SD-LoRA trainer-time fit versus prior component count')} compact />
+    <p>{t('GPU5 对 K=128 的独立复现只差 0.086%。同工作量的普通 rank-8 LoRA training loop 只有 26.89 秒，约比 K=148 的 SD-LoRA 快 36 倍。这个结果说明后期慢是 component-count 机制问题，但它不证明 SD-LoRA 的能力质量有缺陷，也没有授权在这条正式 Q17 treatment 中换算法。', 'An independent GPU5 K=128 replicate differed by only 0.086%. A matched plain rank-8 LoRA training loop took 26.89 s, about 36× faster than K=148 SD-LoRA. This establishes a component-count mechanism for late-run latency, not a capability defect, and it did not authorize changing the formal Q17 treatment.')}</p>
     <div class="q17-analysis__candidate-notes">
       <p><strong>{t('实际试过但拒绝：关闭 gradient checkpointing。', 'Tried and rejected: disabling gradient checkpointing.')}</strong>{t(' 小规模训练约快 1.16×，但高 component 直接 CUDA OOM，因此没有进入正式 run。', ' It was about 1.16× faster at small scale but CUDA-OOMed at high component count, so it never entered the formal run.')}</p>
       <p><strong>{t('实际试过但没部署：并行 prior copy。', 'Tried but not deployed: parallel prior copying.')}</strong>{t(' 两 worker copy 约快 1.76×，但每次 update 只省约 1.75 秒；真正的大头是数百秒的 forward/backward。', ' Two-worker copying was about 1.76× faster but saved only about 1.75 seconds per update; the dominant cost remained hundreds of seconds of forward/backward.')}</p>
@@ -215,7 +219,7 @@ const candidates = [
     <p class="q17-analysis__section-index">07 · D1 · {t('参数方向压缩', 'Parameter-direction compression')}</p>
     <h2 id="geometry-title">{t('159 次更新在参数几何上存在明显冗余', 'The 159 updates contain substantial geometric redundancy')}</h2>
     <p class="q17-analysis__plain-bridge"><strong>{t('把 159 次更新想成 159 支箭头：', 'Think of the 159 updates as 159 arrows:')}</strong>{t('结果发现很多箭头其实朝着相近的主要方向。78 个方向就能解释 95% 的更新变化；只用 64 个方向重建最终参数时，误差约 4.15%，低于预注册的 10% 门槛。后 40 次更新里，“旧方向解释不了的那部分”中位残差能量是 0.203，也低于 0.25 门槛。所以 Geometry PASS 的意思只是“参数很可能可以被更少方向近似”，还不是“压缩模型已经可以安全替代原模型”。', 'many of those arrows point along similar major directions. Seventy-eight directions explain 95% of the update variation, and a 64-direction reconstruction ends only about 4.15% away from the final parameters, below the preregistered 10% threshold. Over the last 40 updates, the median residual energy left outside the existing directions was 0.203, also below the 0.25 threshold. Geometry PASS therefore means “the parameters look compressible,” not “the compressed model is already a safe replacement.”')}</p>
-    <p>{t('每次 SD-LoRA 更新都可以写成一支参数箭头 vₜ = θₜ − θₜ₋₁。D1 先问：后面的箭头是不是越来越能被前面已有的方向解释？如果只保留少量主要方向，最终参数位置还能不能近似回来？', 'Each SD-LoRA update can be written as a parameter vector vₜ = θₜ − θₜ₋₁. D1 first asks whether later vectors increasingly lie inside the span of earlier directions, and whether a smaller basis can reconstruct the final parameter state.')}</p>
+    <p>{t('每次 SD-LoRA 更新都可以写成一支参数箭头：', 'Each SD-LoRA update can be written as a parameter vector:')} <MathFormula latex={String.raw`v_t=\theta_t-\theta_{t-1}`} display={false} label={t('单次 SD-LoRA 参数更新向量', 'Single SD-LoRA parameter-update vector')} />。{t('D1 先问：后面的箭头是不是越来越能被前面已有的方向解释？如果只保留少量主要方向，最终参数位置还能不能近似回来？', 'D1 first asks whether later vectors increasingly lie inside the span of earlier directions, and whether a smaller basis can reconstruct the final parameter state.')}</p>
     <div class="q17-analysis__geometry-flow" role="img" aria-label={t('159 次更新的参数方向压缩关系', 'Geometric compression of 159 parameter updates')}>
       <div><b>159</b><span>{t('真实参数更新', 'real updates')}</span></div><i>→</i><div><b>78</b><span>{t('方向解释 95% 变化', 'directions explain 95% variation')}</span></div><i>→</i><div><b>K64</b><span>{t('最终参数误差 4.15%', 'final-parameter error 4.15%')}</span></div>
     </div>

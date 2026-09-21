@@ -39,7 +39,9 @@ describe('SD-LoRA component-count scaling publication', () => {
       expect(page).toContain(text);
     }
     expect(page).toContain('forward / backward');
-    expect(page).toContain('T(K)=38.07+6.15K');
+    expect(page).toContain('scalingLatex');
+    expect(page).toContain('T_{\\mathrm{update}}(K)');
+    expect(page).toContain('38.07 + 6.15K');
   });
 
   it('registers bilingual routes and a capability-lobby entry', () => {

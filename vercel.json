@@ -112,13 +112,23 @@
     },
     {
       "source": "/en/lab",
-      "destination": "/lab/",
-      "permanent": false
+      "destination": "https://fuhuo-20260419.vercel.app/docs/machines",
+      "permanent": true
     },
     {
       "source": "/en/lab/",
-      "destination": "/lab/",
-      "permanent": false
+      "destination": "https://fuhuo-20260419.vercel.app/docs/machines",
+      "permanent": true
+    },
+    {
+      "source": "/lab",
+      "destination": "https://fuhuo-20260419.vercel.app/docs/machines",
+      "permanent": true
+    },
+    {
+      "source": "/lab/",
+      "destination": "https://fuhuo-20260419.vercel.app/docs/machines",
+      "permanent": true
     },
     {
       "source": "/en/landscape",
@@ -267,13 +277,23 @@
     },
     {
       "source": "/en/research/seed-openevo/flow/server",
-      "destination": "/research/seed-openevo/flow/server/",
-      "permanent": false
+      "destination": "https://fuhuo-20260419.vercel.app/docs/server-governance",
+      "permanent": true
     },
     {
       "source": "/en/research/seed-openevo/flow/server/",
-      "destination": "/research/seed-openevo/flow/server/",
-      "permanent": false
+      "destination": "https://fuhuo-20260419.vercel.app/docs/server-governance",
+      "permanent": true
+    },
+    {
+      "source": "/research/seed-openevo/flow/server",
+      "destination": "https://fuhuo-20260419.vercel.app/docs/server-governance",
+      "permanent": true
+    },
+    {
+      "source": "/research/seed-openevo/flow/server/",
+      "destination": "https://fuhuo-20260419.vercel.app/docs/server-governance",
+      "permanent": true
     },
     {
       "source": "/en/research/seed-openevo/flow/webshop",

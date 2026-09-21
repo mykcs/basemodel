@@ -4,7 +4,7 @@ import type { Locale } from '../i18n';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
-const labHref = zh ? '/lab/' : '/en/lab/';
+const labHref = 'https://fuhuo-20260419.vercel.app/docs/machines';
 ---
 
 <aside class="legacy-runbook-notice" aria-labelledby="legacy-runbook-notice-title">
@@ -16,8 +16,8 @@ const labHref = zh ? '/lab/' : '/en/lab/';
     </h2>
     <p>
       {zh
-        ? '它保留为可选实验室拓扑，不代表当前设备清单。当前公开设备事实由复活仓库统一维护：MacBook Pro M4、iPhone、iPad，以及只能通过物理网线访问的 4×RTX 3090 服务器。没有第二台旧 Mac 时，直接让 M4 MacBook 同时保留 Wi‑Fi（互联网）和 Ethernet（实验室私网），再通过 SSH / SFTP / rsync 进入服务器。'
-        : 'It is preserved as an optional lab topology, not as the current device inventory. Current public device facts are owned by the fuhuo repository: a MacBook Pro M4, iPhone, iPad, and a 4×RTX 3090 server reachable only through physical Ethernet. Without a second older Mac, keep Wi-Fi for Internet and Ethernet for the private lab network on the M4 MacBook, then use SSH / SFTP / rsync.'}
+        ? '它保留为可选实验室拓扑，不代表当前设备清单。当前公开计算资源、设备与服务器事实已经统一迁移到复活网站；这里不再复制具体设备型号或服务器参数。'
+        : 'It is preserved as an optional lab topology, not as the current device inventory. Current public compute-resource, device, and server facts are now owned by fuhuo; this page no longer duplicates model names or server specifications.'}
     </p>
     <a href={labHref}>{zh ? '先查看当前设备与连接拓扑 →' : 'Review the current devices and connection topology →'}</a>
   </div>

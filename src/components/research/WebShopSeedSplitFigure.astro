@@ -1,5 +1,6 @@
 ---
 import ExternalBrandMark from '../common/ExternalBrandMark';
+import MathFormula from '../common/MathFormula.astro';
 import { type Locale } from '../../i18n';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -155,7 +156,7 @@ else:
         </article>
         <article>
           <small>{t('本图的计算','DERIVATION IN THIS FIGURE')}</small>
-          <code>6910 - 500 = 6410</code>
+          <MathFormula latex={String.raw`6910-500=6410`} display={false} label={t('训练候选 goal 数量计算', 'Training-candidate goal-count calculation')} />
           <p>{t('6,410 由 active range 与 6,910-goal small 环境直接计算；goal ID 只是列表索引。','6,410 is directly derived from the active range and the 6,910-goal small environment; a goal ID is only a list index.')}</p>
         </article>
       </div>

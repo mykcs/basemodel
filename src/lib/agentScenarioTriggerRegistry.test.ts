@@ -169,6 +169,10 @@ describe('Agent scenario-trigger discovery', () => {
     expect(releaseCloseout).toContain('Do not make the accepted head document its own acceptance');
     expect(releaseCloseout).toContain('evidence-only commit to the same release branch is still a **new head**');
     expect(releaseCloseout).toContain('separate docs/governance-only closeout PR from current main');
+    expect(releaseCloseout).toContain('Post-merge Production watch is exact-merge-SHA-bound');
+    expect(releaseCloseout).toContain('Earlier Preview failures on a different SHA are background evidence only');
+    expect(releaseCloseout).toContain('exact merge SHA -> status context -> provider object/state');
+    expect(releaseCloseout).toContain('Stop the watcher after a terminal result is reported');
     expect(websiteSpec).toContain('ELI5 要扫完整个可见表面，不只扫正文');
   });
 

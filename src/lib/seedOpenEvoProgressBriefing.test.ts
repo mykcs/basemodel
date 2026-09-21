@@ -236,8 +236,11 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     const taskSlide = briefing.slice(sectionPosition('mechanism'), sectionPosition('m1a-identifiability'));
     expect(taskSlide).toContain('参数确实在变，但它们到底朝哪里变？');
     expect(taskSlide).toContain('Task Vector 可以理解成一支“参数方向箭头”');
-    expect(taskSlide).toContain('v = θ<sub>after</sub> − θ<sub>before</sub>');
-    expect(taskSlide).toContain('‖v‖ 看参数移动的大小');
+    expect(taskSlide).toContain('taskVectorDefinitionLatex');
+    expect(taskSlide).toContain('<MathFormula');
+    expect(briefing).toContain('\\theta_{\\mathrm{after}}-\\theta_{\\mathrm{before}}');
+    expect(taskSlide).toContain('\\lVert v\\rVert');
+    expect(taskSlide).toContain('看参数移动的大小。');
     expect(taskSlide).toContain('方向相似度（cosine）看相邻两次更新');
     expect(taskSlide).toContain('固定 24 个输入的第一选择全部翻转：24 / 24');
     expect(taskSlide).toContain('最终 WebShop 成绩仍由冻结终评回答');
@@ -251,16 +254,19 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(m1aSlide).toContain('75% 和 100% 其实是同一个模型状态');
     expect(m1aSlide).toContain('R27 / R49 / R49 / R49');
     expect(m1aSlide).toContain('75% = 100% = R49');
-    expect(m1aSlide).toContain('θ₁₀₀% − θ₇₅% = 0');
+    expect(m1aSlide).toContain('m1aZeroLatex');
+    expect(briefing).toContain('\\theta_{100\\%}-\\theta_{75\\%}=0');
     expect(m1aSlide).toContain('最后一段方向根本量不出来');
     expect(m1aSlide).toContain('R14 → R27 → R49');
-    expect(m1aSlide).toContain('0.6082257746');
+    expect(briefing).toContain('0.6082257746');
     expect(m1aSlide).toContain('只修复“能不能量”的问题');
     expect(m1aSlide).toContain('href={m1aPr350Href}');
     expect(m1aSlide).toContain('href={m1aPr358Href}');
     expect(briefing).toContain("const m1aPr350Href = 'https://github.com/mykcs/openevo-experiment/pull/350'");
     expect(briefing).toContain("const m1aPr358Href = 'https://github.com/mykcs/openevo-experiment/pull/358'");
-    expect(technical).toContain('√(δcᵀGδc) = 0.6082257746');
+    expect(technical).toContain('taskVectorNormLatex');
+    expect(technical).toContain('0.6082257746');
+    expect(technical).toContain('\\sqrt{\\delta c');
     expect(technical).toContain('PR #358 · R14 / R27 / R49 与 Frobenius 几何证据');
   });
 
@@ -276,7 +282,8 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('https://arxiv.org/abs/2412.06464');
     expect(technical).toContain('本地规则，并不是论文里的 recurrent Gated Delta Rule');
     expect(technical).toContain('Task Vector 退出 runtime causal path');
-    expect(technical).toContain('第一版 D1 使用冻结 learned β、固定 g=0');
+    expect(technical).toContain('第一版 D1 使用冻结 learned β，并固定');
+    expect(technical).toContain('String.raw`g=0`');
     expect(technical).toContain('gated-delta-sd-lora');
   });
 
@@ -362,7 +369,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
       '58.35 → 55.36 → 50.83',
       '94 / 98 轮',
       '8.25 / 16 道题进入训练',
-      'cos ≈ −0.046',
+      '\\cos \\approx -0.046',
       '影子 GDR 打标签，只有 3 / 10 会被标成“通过”',
       'SD-LoRA · 97',
       'Text Memory · 2',

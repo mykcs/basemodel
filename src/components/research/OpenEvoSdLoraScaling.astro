@@ -3,6 +3,7 @@ import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
 import ResearchTaskContext from './ResearchTaskContext.astro';
+import MathFormula from '../common/MathFormula.astro';
 import {
   SD_LORA_FIXED_WORKLOAD,
   SD_LORA_K128_REPLICATION,
@@ -17,6 +18,7 @@ const { locale, variant = 'chart-first' } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
+const scalingLatex = String.raw`T_{\mathrm{update}}(K) \approx 38.07 + 6.15K\;\mathrm{s},\qquad R^2=${SD_LORA_SCALING_FITS.trainer.r2.toFixed(4)}`;
 
 const evidenceHref = '/research/seed-openevo/evidence/q17-sd-lora-component-scaling-20260912.json';
 const sourceCommitHref = `https://github.com/${SD_LORA_SCALING_SOURCE.repository}/commit/${SD_LORA_SCALING_SOURCE.commit}`;
@@ -63,11 +65,11 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
         'A component is one rank-8 parameter increment retained by SD-LoRA from an earlier update. With the training data and all 94 optimizer steps fixed, increasing prior components from 1 to 148 raises one update from 44.05 seconds to 969.17 seconds.',
       )}
     </p>
-    <div class="scaling-hero__equation" aria-label={t('更新时间与历史 component 数近似线性增长', 'Update time grows approximately linearly with prior component count')}>
-      <strong>{t('更新时间', 'Update time')}</strong>
-      <span>≈ 38.07 + 6.15 × K {t('秒', 's')}</span>
-      <small>R² = {SD_LORA_SCALING_FITS.trainer.r2.toFixed(4)}</small>
-    </div>
+    <MathFormula
+      latex={scalingLatex}
+      label={t('更新时间与历史 component 数近似线性增长', 'Update time grows approximately linearly with prior component count')}
+      compact
+    />
     <p class="scaling-hero__boundary">
       {t(
         '这是一组固定 R149 训练工作量下的机制诊断，只解释当前 Vanilla SD-LoRA 为什么会越训越慢；它不是所有 LoRA 的通则，还没有证明哪种替代算法最好，也不能单独证明模型发生了持续学习遗忘。',
@@ -103,8 +105,8 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
         <text class="axis-label" transform="translate(18 172) rotate(-90)" text-anchor="middle">{t('单次 trainer 时间（秒）', 'Trainer time per update (s)')}</text>
       </svg>
       <figcaption id="component-scaling-caption">{t(
-        `线性拟合为 T(K)=38.07+6.15K 秒，R²=${SD_LORA_SCALING_FITS.trainer.r2.toFixed(4)}。K=128 又在另一张同型号 GPU 上独立复现，trainer 时间只相差 ${round2(SD_LORA_K128_REPLICATION.deltaPercent)}%。`,
-        `The linear fit is T(K)=38.07+6.15K seconds with R²=${SD_LORA_SCALING_FITS.trainer.r2.toFixed(4)}. K=128 was independently repeated on another GPU of the same model, with only ${round2(SD_LORA_K128_REPLICATION.deltaPercent)}% trainer-time difference.`,
+        `上面的线性拟合概括了 K 与 trainer 时间的关系；K=128 又在另一张同型号 GPU 上独立复现，trainer 时间只相差 ${round2(SD_LORA_K128_REPLICATION.deltaPercent)}%。`,
+        `The fitted equation above summarizes the relation between K and trainer time. K=128 was independently repeated on another GPU of the same model, with only ${round2(SD_LORA_K128_REPLICATION.deltaPercent)}% trainer-time difference.`,
       )}</figcaption>
     </figure>
     <div class="scaling-table-wrap">
