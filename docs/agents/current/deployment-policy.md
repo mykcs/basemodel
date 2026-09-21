@@ -296,6 +296,16 @@ Rationale:
 - when the intended deployed major is Node 24, `24.x` preserves patch/minor movement within that major without silently crossing to Node 25+;
 - any future major upgrade must be an explicit source change accompanied by deterministic repository validation and exact-head Preview/Production evidence.
 
+This Vercel contract is intentionally **not the same object** as the repository's fallback/local runtime pin. Keep the current split explicit:
+
+```text
+Vercel + ordinary Public PR CI  -> Node 24
+Cloudflare fallback/local tools -> .node-version = Node 22 line
+TypeScript Node API model       -> @types/node follows the .node-version major
+```
+
+Public PR CI selects Node 24 explicitly with `actions/setup-node`; it does not derive that provider runtime from `.node-version`. Conversely, `.node-version` remains the concrete Cloudflare-fallback/local-tooling pin protected by `runtimeContract.test.ts`. Do not "synchronize" these files merely to remove a local `EBADENGINE` warning: changing the fallback/local major is a separate runtime migration and must update `.node-version`, `@types/node`, its lockfile entry, and the corresponding runtime-contract evidence together.
+
 When investigating a runtime-version warning, inspect together:
 
 ```text
