@@ -11,11 +11,11 @@ for (const viewport of [
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('[data-effective-state-gdr-page]')).toBeVisible();
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('三个 OpenEVO 实验');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('三组已完成 OpenEVO 实验');
     const ablation = page.locator('.paper-table--ablation');
     await expect(ablation).toContainText('普通 OpenEVO');
     await expect(ablation).toContainText('OpenEVO + Bounded Online Recurrence');
-    await expect(ablation).toContainText('OpenEVO + Bounded Online Recurrence + GDR');
+    await expect(ablation).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α=1）');
     await expect(ablation).toContainText('60.72');
     await expect(ablation).toContainText('45.98');
     await expect(ablation).toContainText('20.77');
@@ -28,13 +28,16 @@ test('ablation table makes the three mechanism combinations explicit with checkm
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const rows = page.locator('.paper-table--ablation tbody tr');
-  await expect(rows).toHaveCount(3);
+  await expect(rows).toHaveCount(4);
   await expect(rows.nth(0)).toContainText('普通 OpenEVO');
   await expect(rows.nth(0).getByText('✓')).toHaveCount(0);
   await expect(rows.nth(1)).toContainText('OpenEVO + Bounded Online Recurrence');
   await expect(rows.nth(1).getByText('✓')).toHaveCount(1);
-  await expect(rows.nth(2)).toContainText('OpenEVO + Bounded Online Recurrence + GDR');
+  await expect(rows.nth(2)).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α=1）');
   await expect(rows.nth(2).getByText('✓')).toHaveCount(2);
+  await expect(rows.nth(3)).toContainText('动态 α + 动态 β（未做）');
+  await expect(rows.nth(3).getByText('✓')).toHaveCount(3);
+  await expect(rows.nth(3)).toContainText('—');
 });
 
 test('paper narrative follows motivation, method, mapping, experiment, result, and analysis', async ({ page }) => {
@@ -42,10 +45,10 @@ test('paper narrative follows motivation, method, mapping, experiment, result, a
   const h2s = await page.locator('.paper__section > h2').allTextContents();
   expect(h2s.slice(0, 5)).toEqual([
     '动机：SD-LoRA 越训练越慢',
-    '方法：Bounded Online Recurrence 与 GDR',
+    '方法：Bounded Online Recurrence、Gated Delta 来源与本实验 β-gating（α=1）',
     '实验设置：Qwen3-1.7B × WebShop',
     '结果：训练后期与固定 128 题终评',
-    'Analysis：为什么 GDR 后期会掉下来？',
+    'Analysis：为什么 β-gating（α=1）这一组后期会掉下来？',
   ]);
 });
 
@@ -64,6 +67,8 @@ test('method section explains Bounded Online Recurrence and the GDR-to-parameter
   await expect(method).toContainText('657.836');
   await expect(method).toContainText('22');
   await expect(method).toContainText('reward、Task Score、Task Vector');
+  await expect(method).toContainText('本实验真正启用的动态控制量');
+  await expect(method).toContainText('α=1');
 });
 
 test('experiment setup names Qwen3-1.7B, WebShop, budget, and OPSD boundary', async ({ page }) => {
@@ -83,10 +88,11 @@ test('formal result preserves the matched-arm statistical boundary under public 
   const result = page.locator('#formal-result');
   await expect(result).toContainText('普通 OpenEVO');
   await expect(result).toContainText('OpenEVO + Bounded Online Recurrence');
-  await expect(result).toContainText('OpenEVO + Bounded Online Recurrence + GDR');
+  await expect(result).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α=1）');
   await expect(result).toContainText('R1–R159 mean reward');
   await expect(result).toContainText('跨 0');
   await expect(result).toContainText('短暂正向信号没有形成稳定优势');
+  await expect(result).toContainText('动态 α + 动态 β（未做）');
   await expect(page.locator('#compute')).toContainText('31.09');
   await expect(page.locator('#compute')).toContainText('2.02');
   await expect(page.locator('#compute')).toContainText('2.35');
@@ -164,7 +170,7 @@ test('phone first screen establishes the three experiments before deep method de
   await expect(page.locator('.research-route-context')).toHaveCount(0);
   await expect(page.locator('.paper__kicker')).toHaveCount(0);
   const h1 = page.getByRole('heading', { level: 1 });
-  await expect(h1).toContainText('三个 OpenEVO 实验');
+  await expect(h1).toContainText('三组已完成 OpenEVO 实验');
   const ablation = page.locator('.paper-table-wrap--hero');
   await expect(ablation).toBeVisible();
   const h1Box = await h1.boundingBox();
@@ -180,7 +186,8 @@ test('phone first screen establishes the three experiments before deep method de
 test('evidence keeps public names separate from exact internal experiment identities', async ({ page }) => {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const evidence = page.locator('#evidence');
-  await expect(evidence).toContainText('普通 OpenEVO / Bounded Online Recurrence / Bounded Online Recurrence + GDR');
+  await expect(evidence).toContainText('Bounded Online Recurrence + β-gating（α=1）');
+  await expect(evidence).toContainText('动态 α + 动态 β');
   await expect(evidence).toContainText('DirectApply / No-GDR');
   await expect(evidence).toContainText('BOUNDED_OFF');
   await expect(evidence).toContainText('EFFECTIVE_STATE_GDR_LORA_V1');
@@ -188,7 +195,7 @@ test('evidence keeps public names separate from exact internal experiment identi
 
 test('historical Gated-Delta and Bounded pages still point to the successor study', async ({ page }) => {
   await page.goto('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByRole('link', { name: /后继方法.*Effective-State GDR/ })).toHaveAttribute('href', route);
+  await expect(page.getByRole('link', { name: /回到三组 1\.7B 已完成实验.*β-gating/ })).toHaveAttribute('href', route);
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('.bounded__next-question').getByRole('link', { name: /另一条后续问题/ })).toHaveAttribute('href', route);
 });
@@ -230,10 +237,11 @@ test('results index uses the same public names as the experiment page', async ({
   const latest = page.locator('#latest-1p7b');
   await expect(latest).toContainText('普通 OpenEVO');
   await expect(latest).toContainText('OpenEVO + Bounded Online Recurrence');
-  await expect(latest).toContainText('OpenEVO + Bounded Online Recurrence + GDR');
+  await expect(latest).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α=1）');
   await expect(latest).toContainText('60.72');
   await expect(latest).toContainText('45.98');
   await expect(latest).toContainText('20.77');
+  await expect(latest).toContainText('动态 α + 动态 β（未做）');
   await expect(latest.getByRole('link', { name: /三组实验、方法与完整分析/ })).toHaveAttribute('href', route);
   await expect(latest.getByRole('link', { name: /普通 OpenEVO 独立实验/ })).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/#final');
 });
