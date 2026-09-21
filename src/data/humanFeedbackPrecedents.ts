@@ -284,6 +284,14 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
   },
 
   {
+    id: 'CASE-101',
+    title: '非线性流程的主角是关系，不是步骤卡片',
+    tags: ['流程图', '流程流动', 'flow', 'routing', 'edge', '箭头', '闭环', 'branch', 'replay', 'Archify', '机制图', 'SD-LoRA'],
+    principle: '当机制包含 side input、branch/join 或 feedback loop 时，先让 main path、支路 attachment 和真实 return edge 在静态渲染里成立；节点卡片只负责命名站点，不能靠并列卡片和小箭头让读者自己还原关系。',
+    antiPatterns: ['并列步骤卡片之间只有很小的箭头', '把真正流程放在首屏摘要图下面形成第二个主视觉', '用“循环继续”或字符 ↺ 代替真实 return edge', '手机把 failure / replay 支路挪到流程末尾', 'Archify / build / CI 通过就直接声称最终页面的流动关系已经可见'],
+    positiveSignals: ['不读段落也能沿一条明显 main path 走完', 'failure / replay 从真实离开或汇入节点连接', 'Round t+1 有真实 connector 回到下一轮', 'desktop 与 mobile 保留同一因果拓扑', '动画关闭后静态路径仍完整'],
+  },
+  {
     id: 'CASE-100',
     title: 'SEED 论文参考与消融表说明要放对位置',
     tags: ['科研网页', '消融表', 'SEED', '论文参考', 'caption', 'CVPR', 'ICLR', 'benchmark', '可比性边界'],
@@ -299,6 +307,7 @@ export const READER_CONTRACT_PRECEDENTS: Record<string, HumanFeedbackCaseId[]> =
   'study-run': ['CASE-064', 'CASE-068', 'CASE-070', 'CASE-081'],
   'study-briefing': ['CASE-027', 'CASE-059', 'CASE-064', 'CASE-068', 'CASE-070', 'CASE-081', 'CASE-082', 'CASE-084', 'CASE-087', 'CASE-088', 'CASE-089', 'CASE-090'],
   'capability-home': ['CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
+  'capability-vanilla-sd-lora': ['CASE-064', 'CASE-068', 'CASE-069', 'CASE-070', 'CASE-101'],
   'capability-first-run': ['CASE-029', 'CASE-030', 'CASE-064', 'CASE-068', 'CASE-069', 'CASE-070'],
 };
 
