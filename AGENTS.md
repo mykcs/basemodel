@@ -9,6 +9,17 @@ executable repository truth, or live provider state.
 
 This repository is frequently maintained by coding Agents through GitHub. This root `AGENTS.md` is the **unique repository-root Agent bootstrap authority** and the first repository file an Agent reads. Detailed topic policy belongs under `docs/agents/current/`; `docs/agents/README.md` is navigation-only and must not become a second mutable copy of Agent rules.
 
+## Product wish authority
+
+Before any user-facing product, copy, navigation, information-architecture, page-role, or major interaction decision, read [`docs/wish/LATEST.md`](docs/wish/LATEST.md).
+
+- For homepage, navigation, information architecture, major route-role, interaction, or product-direction changes, also read [`docs/wish/DESIGN.md`](docs/wish/DESIGN.md).
+- Do **not** read [`docs/wish/ARCHIVE.md`](docs/wish/ARCHIVE.md) by default. Use it only to trace why an older product intent differed or when the owner explicitly asks about historical intent.
+- [`docs/wish/README.md`](docs/wish/README.md) owns the wish-system lifecycle and update protocol.
+- Current owner instructions, scientific/factual authority, research-integrity rules, security boundaries, tests, and live provider truth outrank the wish. The wish decides what the product should become; it never rewrites sealed results or evidence.
+
+`docs/wish/` is the high-level product-intent owner. Existing current policies such as `product-and-research-integrity.md`, the SEED × OpenEvo research mission, HPL, reader contracts, and UI/engineering standards keep their narrower responsibilities. Do not copy the wish text into those files or back into this root bootstrap.
+
 ## Fast start
 
 You are already reading the repository bootstrap. After this file, read in this order:
