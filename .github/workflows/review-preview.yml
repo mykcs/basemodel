@@ -17,9 +17,32 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  preflight:
+    name: review-preflight
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Require dedicated review provider configuration
+        env:
+          VERCEL_TOKEN: ${{ secrets.BASEMODEL_REVIEW_VERCEL_TOKEN }}
+          REVIEW_PROJECT_ID: ${{ vars.BASEMODEL_REVIEW_VERCEL_PROJECT_ID }}
+          REVIEW_TEAM_ID: ${{ vars.BASEMODEL_REVIEW_VERCEL_TEAM_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::error::BASEMODEL_REVIEW_VERCEL_TOKEN is not configured for this repository"
+            exit 1
+          fi
+          if [ -z "$REVIEW_PROJECT_ID" ] || [ -z "$REVIEW_TEAM_ID" ]; then
+            echo "::error::Dedicated Fast Review Vercel project/team variables are not configured"
+            exit 1
+          fi
+
   build:
     name: review-build
-    if: github.ref == 'refs/heads/main'
+    needs: preflight
+    if: github.ref == 'refs/heads/main' && needs.preflight.result == 'success'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     outputs:
