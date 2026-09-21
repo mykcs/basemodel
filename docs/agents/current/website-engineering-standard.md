@@ -417,6 +417,7 @@ Rules:
 - Browser tests remain required where the promise includes geometry, theme, focus, hover, responsive behavior, accessibility state, or interaction; they complement rather than replace the static set-level audit.
 - If a rule depends on a URL/provider identity, parse URL/protocol/hostname semantics rather than using loose substring matching; include lookalike-host regression cases.
 - Do not claim “site-wide complete” until the complete inventory/audit is green or every exemption is named and justified.
+- **Temporary exemptions are leases, not permanent blind spots.** When a concurrent owner/PR makes an exemption temporarily necessary, record the exact route/component, failure class, current owner or PR/workline, and a repository-observable removal trigger (for example: “remove when the owning PR rebases/merges and the shared audit can cover this route”). The owning integration/closeout path must remove the exemption when that trigger becomes true or report an explicit blocker/follow-up; an anonymous or open-ended exemption cannot support a site-wide-complete claim.
 
 Historical case: [`../history/2026-09-02-official-external-brand-links-retrospective.md`](../history/2026-09-02-official-external-brand-links-retrospective.md). The brand-link feature initially passed representative visual checks while many dynamic/shared-renderer links remained unwired; a generated-output audit exposed the gap and then became executable protection.
 
