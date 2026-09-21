@@ -194,12 +194,19 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('\\beta_t r_t k_t^{\\top}');
     expect(component).not.toContain('\\beta_t k_t r_t^{\\top}');
     expect(component).toContain('A\\mapsto sA');
-    expect(component).toContain('指标分析：从 loss 一直看到行为 entropy');
+    expect(component).toContain('实验结果：Task Score、成功率与计算代价');
+    expect(component).toContain('训练过程中发生了什么？从 loss 到行为变化');
+    expect(component).toContain('4.1');
+    expect(component).toContain('每 20 轮平均');
     expect(component).toContain('5.1 loss');
-    expect(component).toContain('5.2 Task Vector');
-    expect(component).toContain('参数范数、谱与方向');
+    expect(component).toContain('5.2');
+    expect(component).toContain('范数：长期 State 和本轮更新到底有多大');
+    expect(component).toContain('5.3 Task Vector');
+    expect(component).toContain('谱与方向');
     expect(component).toContain('输出长度与任务步数');
-    expect(component).toContain('5.5 Entropy');
+    expect(component).toContain('5.6 Entropy');
+    expect(component).toContain('5.7');
+    expect(component).toContain('我们现在能解释到哪里？');
     expect(component).toContain('① 指标是什么');
     expect(component).toContain('② 这次实验的结果');
     expect(component).toContain('③ 分析');
@@ -207,12 +214,24 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString');
     expect(component).toContain("import MetricEvidenceFigure from './MetricEvidenceFigure.astro'");
     expect(component).not.toContain("import WandbEvidencePanel from './WandbEvidencePanel.astro'");
+    expect(component).toContain('/research/seed-openevo/evidence/wandb-threeway/task-score.svg');
+    expect(component).toContain('/research/seed-openevo/evidence/wandb-threeway/task-score-20-round-mean.svg');
     expect(component).toContain('SD-LoRA training loss · 累计 rollout');
     expect(component).toContain('/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.svg');
     expect(component).toContain('/research/seed-openevo/evidence/wandb-threeway/task-vector-frobenius.svg');
+    expect(component).toContain('/research/seed-openevo/evidence/wandb-threeway/tokens-per-step.svg');
     expect(component).toContain('/research/seed-openevo/evidence/wandb-threeway/steps-per-episode.svg');
     expect(component).toContain('/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.svg');
     expect(component).not.toContain('id="wandb"');
+
+    const scoreWindows = JSON.parse(readFileSync(new URL('../../public/research/seed-openevo/evidence/wandb-threeway/task-score-20-round-mean.json', import.meta.url), 'utf8'));
+    expect(scoreWindows.rows).toHaveLength(8);
+    expect(scoreWindows.rows[0].window).toBe('R0–19');
+    expect(scoreWindows.rows.at(-1)?.window).toBe('R140–159');
+    expect(scoreWindows.rows.at(-1)?.ordinary).toBeCloseTo(67.07, 2);
+    expect(scoreWindows.rows.at(-1)?.bounded).toBeCloseTo(64.33, 2);
+    expect(scoreWindows.rows.at(-1)?.beta).toBeCloseTo(54.28, 2);
+
     const lossEvidence = JSON.parse(readFileSync(new URL('../../public/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.json', import.meta.url), 'utf8'));
     expect(lossEvidence.rounds).toBe(160);
     expect(lossEvidence.rollouts_per_round).toBe(128);

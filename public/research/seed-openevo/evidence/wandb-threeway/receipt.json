@@ -49,6 +49,10 @@
     {
       "path": "/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.svg",
       "source": "sealed per-round SD-LoRA training loss mirrored to W&B against cumulative rollout"
+    },
+    {
+      "path": "/research/seed-openevo/evidence/wandb-threeway/tokens-per-step.svg",
+      "source": "sealed rollout output-length reconstruction mirrored to W&B as tokens per step"
     }
   ],
   "authority_boundary": "The static previews and W&B report are reading/observability surfaces. Sealed result receipts and machine-readable scientific evidence remain authoritative.",
@@ -65,6 +69,11 @@
       "path": "/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.json",
       "sha256": "d0c0079fc8878f60da9085af525ef80ec2e93aabbb0471e6bd663fcc52071608",
       "wandb_run_id": "openevo1p7bloss20260920"
+    },
+    "task_score_20_round_mean": {
+      "path": "/research/seed-openevo/evidence/wandb-threeway/task-score-20-round-mean.json",
+      "sha256": "f3edc302ab64ed50b378e23f112941bc26f79f2dd245d3a2615a27003297da93",
+      "window_size_rounds": 20
     }
   }
 }

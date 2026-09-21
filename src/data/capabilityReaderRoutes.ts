@@ -115,8 +115,8 @@ export const CAPABILITY_READER_ROUTES = [
     "owner": "OpenEvoEffectiveStateGdrLoraStudy",
     "label": { "zh": "三个已完成 1.7B OpenEVO 实验 + 一个未做空位", "en": "Three completed 1.7B OpenEVO experiments + one unrun slot" },
     "purpose": {
-      "zh": "Qwen3-1.7B 的三组已完成 OpenEVO 实验都跑到 160 轮，最终模型使用同一份冻结 128 题；动态 α + 动态 β 尚未运行。页面先把 Bounded / 动态 β / 动态 α 拆开，再解释 Bounded Online Recurrence、β-gating（α 固定为 1）、Gated Delta 理论来源、长期训练差异、计算成本和参数分析。",
-      "en": "Three completed Qwen3-1.7B OpenEVO experiments run for 160 rounds and use the same frozen 128-task final panel; dynamic α + dynamic β has not been run. The page separates Bounded / dynamic β / dynamic α first, then explains Bounded Online Recurrence, β-gating (α fixed at 1), the Gated Delta theory source, long-horizon training differences, compute cost, and parameter analysis."
+      "zh": "Qwen3-1.7B 的三组已完成 OpenEVO 实验都跑到 160 轮，最终模型使用同一份冻结 128 题；后两组同设置正式对照是 Bounded 与 β-gating（α 固定为 1），动态 α + 动态 β 尚未运行。页面先说明做了哪些实验，再按 Task Score 完整曲线 → 每 20 轮平均 → 后 20 轮与同题终评 → 同设置对照成功率建立结果事实，随后才按 loss → 范数 → Task Vector → 谱与方向 → 输出长度与步数 → 行为 entropy 解释训练变化。",
+      "en": "Three completed Qwen3-1.7B OpenEVO experiments run for 160 rounds and use the same frozen 128-task final panel; the latter two matched runs are Bounded and β-gating (α fixed at 1), while dynamic α + dynamic β has not been run. The page first establishes what was run, then the results in the order full Task Score trajectory → 20-round means → last-20 and same-panel final → matched success statistics, before moving through loss → norms → Task Vector → spectrum and direction → output length and steps → behavioral entropy."
     }
   },
   {

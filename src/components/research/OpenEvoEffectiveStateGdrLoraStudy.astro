@@ -29,6 +29,12 @@ const panelHref = (panelDisplayName: string, panelSectionName: string) => {
   return `${wandbWorkspaceUrl}${join}panelDisplayName=${encodeURIComponent(panelDisplayName)}&panelSectionName=${encodeURIComponent(panelSectionName)}`;
 };
 const metricCharts = {
+  taskScore: {
+    title: t('WebShop Task Score · 160轮', 'WebShop Task Score · 160 rounds'),
+    src: '/research/seed-openevo/evidence/wandb-threeway/task-score.svg',
+    href: wandbReportUrl,
+    alt: t('三组 OpenEVO 的 WebShop Task Score 160 轮静态曲线', 'Static 160-round WebShop Task Score curves for the three OpenEVO methods'),
+  },
   loss: {
     title: t('SD-LoRA training loss · 累计 rollout', 'SD-LoRA training loss · cumulative rollout'),
     src: '/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.svg',
@@ -40,6 +46,12 @@ const metricCharts = {
     src: '/research/seed-openevo/evidence/wandb-threeway/task-vector-frobenius.svg',
     href: panelHref('Task Vector · Frobenius', '01 Overview · 三条路线'),
     alt: t('三组实验的 Task Vector Frobenius norm 静态曲线', 'Static Task Vector Frobenius norm curves for the three experiments'),
+  },
+  outputLength: {
+    title: t('每一步输出长度 · 160轮', 'Tokens per step · 160 rounds'),
+    src: '/research/seed-openevo/evidence/wandb-threeway/tokens-per-step.svg',
+    href: panelHref('每一步输出长度', '06 输出长度与任务路径'),
+    alt: t('三组实验每一步 raw-completion token 数的 160 轮静态曲线', 'Static 160-round raw-completion tokens-per-step curves for the three experiments'),
   },
   steps: {
     title: t('平均任务步数', 'Steps per episode'),
@@ -109,6 +121,18 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
 const seedPaperWebShopScore = 87.1;
 const seedPaperWebShopSuccess = 77.3;
 const seedPaperHref = 'https://arxiv.org/abs/2607.14777';
+const twentyRoundScoreWindows = finalResult
+  ? Array.from({ length: 8 }, (_, index) => {
+      const start = index * 20;
+      const end = start + 20;
+      return {
+        label: `R${start}–${end - 1}`,
+        baseline: meanScore(directApplyDynamics.score.slice(start, end)),
+        bounded: meanScore(finalResult.trajectory.off.slice(start, end)),
+        gdr: meanScore(finalResult.trajectory.on.slice(start, end)),
+      };
+    })
+  : [];
 ---
 
 <article class="paper" data-effective-state-gdr-page data-copy-review data-reader-page="research-explainer" data-experiment-id={experiment.id}>
@@ -336,229 +360,325 @@ const seedPaperHref = 'https://arxiv.org/abs/2607.14777';
   </section>
 
   <section class="paper__section esg__results" id="formal-result" aria-labelledby="result-title">
-    <p class="paper__section-number">4</p>
-    <h2 id="result-title">{t('结果：训练后期与固定 128 题终评', 'Results: late-training behavior and the fixed 128-task final')}</h2>
+  <p class="paper__section-number">4</p>
+  <h2 id="result-title">{t('实验结果：Task Score、成功率与计算代价', 'Results: Task Score, success, and compute')}</h2>
+  <p class="paper__lede">{t(
+    '先把“模型做题表现怎样”讲清楚，再进入 loss、参数几何和行为诊断。这里依次看 160 轮原始 Task Score、每 20 轮平均、最后 20 轮平均、固定 128 题终评，以及后两组正式匹配对照的训练期成功率。',
+    'We first establish task performance before moving into loss, parameter geometry, and behavior diagnostics. The sequence is the raw 160-round Task Score, non-overlapping 20-round means, the last-20 mean, the fixed 128-task final, and the matched training-period success statistics for the latter two runs.',
+  )}</p>
 
-    <h3>4.1 {t('最后 20 轮平均：更接近训练后期的典型水平', 'Last-20-round mean: a view of typical late-training behavior')}</h3>
+  <h3>4.1 {t('Task Score：先看 160 轮完整过程', 'Task Score: start with the full 160-round trajectory')}</h3>
+  <p>{t(
+    'Task Score 是 WebShop 每轮任务结束后的连续得分平均值 × 100；部分完成也可能拿到部分分。下面先看完整 160 轮，而不是先挑某个末尾窗口。完整成功率是另一项更严格的指标：只有 task_score = 1.0 才算完整做对。',
+    'Task Score is the mean terminal WebShop task score multiplied by 100; partial completion can receive partial credit. We start with all 160 rounds instead of selecting a late window first. Exact success is a stricter metric and counts only task_score = 1.0.',
+  )}</p>
+  <MetricEvidenceFigure item={metricCharts.taskScore} />
+  <p class="paper__boundary">{t(
+    '单轮曲线抖动很大，因为每轮抽到的 WebShop 任务会变化。它适合看完整训练形状，但不适合只凭某一个峰值判断哪条路线更好；所以下一步把同一条轨迹按每 20 轮聚合。',
+    'Single-round values are noisy because the sampled WebShop tasks vary by round. The curve is useful for the full training shape, not for declaring a result from one peak, so the next view aggregates the same trajectories into 20-round windows.',
+  )}</p>
+
+  <h3>4.2 {t('每 20 轮平均：把抖动压低，再看上升和回落发生在哪里', 'Every 20 rounds: reduce noise and locate rises or reversals')}</h3>
+  <figure class="paper__derived-figure" data-ui-audit="contrast layout">
+    <img
+      src="/research/seed-openevo/evidence/wandb-threeway/task-score-20-round-mean.svg"
+      alt={t('三组实验每个非重叠 20 轮窗口的平均 Task Score', 'Mean Task Score in every non-overlapping 20-round window for the three experiments')}
+      loading="lazy"
+      width="1200"
+      height="675"
+    />
+    <figcaption>
+      <strong>{t('每 20 轮平均 Task Score', 'Mean Task Score per 20-round window')}</strong>
+      <span>{t('由同一份封存 160 轮轨迹聚合，不是新实验，也不是固定题终评。', 'Derived from the same sealed 160-round trajectories; this is neither a new run nor a fixed-panel final.')}</span>
+      <a href="/research/seed-openevo/evidence/wandb-threeway/task-score-20-round-mean.json">{t('机器可读数据 →', 'Machine-readable data →')}</a>
+    </figcaption>
+  </figure>
+  <div class="paper-table-wrap">
+    <table class="paper-table paper-table--score-windows">
+      <thead>
+        <tr>
+          <th>{t('20 轮窗口', '20-round window')}</th>
+          <th>{names.baseline}</th>
+          <th>{names.bounded}</th>
+          <th>{names.gdr}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {twentyRoundScoreWindows.map((row) => (
+          <tr>
+            <td>{row.label}</td>
+            <td>{row.baseline.toFixed(2)}</td>
+            <td>{row.bounded.toFixed(2)}</td>
+            <td>{row.gdr.toFixed(2)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="paper__boundary">{t(
+    '这个视角把一个重要转折直接暴露出来：普通 OpenEVO 和 Bounded 的最高 20 轮均值都出现在 R140–R159；β-gating（α 固定为 1）则在 R120–R139 达到更高窗口，随后在最后 20 轮回落。这里只是在描述训练轨迹，不把这个转折直接解释成某个参数指标造成的。',
+    'This view exposes an important turn: ordinary OpenEVO and Bounded reach their highest 20-round means in R140–R159, while β-gating (α fixed at 1) reaches a higher window in R120–R139 and then declines in the final 20 rounds. This describes the trajectory; it does not assign that turn to any parameter diagnostic.',
+  )}</p>
+
+  <h3>4.3 {t('最后 20 轮平均与固定 128 题终评：两个问题，放在一起看但不混为一谈', 'Last-20 mean and fixed 128-task final: two questions, shown together but kept distinct')}</h3>
+  <div class="paper-table-wrap">
+    <table class="paper-table">
+      <thead><tr><th>{t('实验', 'Experiment')}</th><th>{t('最后 20 轮平均 Task Score', 'Mean Task Score, last 20 rounds')}</th><th>{t('这列在测什么', 'What this measures')}</th></tr></thead>
+      <tbody>
+        <tr><td>{names.baseline}</td><td><strong>{directApplyLast20Score.toFixed(2)}</strong></td><td>{t('R140–R159 每轮不同抽样任务的平均', 'mean over R140–R159 with different sampled tasks each round')}</td></tr>
+        <tr><td>{names.bounded}</td><td><strong>{boundedLast20Score?.toFixed(2) ?? '—'}</strong></td><td>{t('R140–R159 每轮不同抽样任务的平均', 'mean over R140–R159 with different sampled tasks each round')}</td></tr>
+        <tr><td>{names.gdr}</td><td><strong>{gdrLast20Score?.toFixed(2) ?? '—'}</strong></td><td>{t('R140–R159 每轮不同抽样任务的平均', 'mean over R140–R159 with different sampled tasks each round')}</td></tr>
+        <tr><td>{names.dynamicAlphaBeta}</td><td>—</td><td>{t('未做，暂无训练轨迹', 'not run; no training trajectory')}</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>{t(
+    '最后 20 轮平均更接近“训练后期通常处在什么水平”，但它不是同题考试。下面的固定终评则让三组最终模型做完全相同、顺序相同的 128 题，同时给连续 Task Score 和完整做对数量。',
+    'The last-20 mean is closer to typical late-training behavior, but it is not a same-task exam. The fixed final below evaluates all three final models on exactly the same ordered 128 tasks and reports both continuous Task Score and exact-success count.',
+  )}</p>
+  <div class="paper-table-wrap">
+    <table class="paper-table">
+      <thead><tr><th>{t('实验', 'Experiment')}</th><th>Task Score / 100</th><th>{t('完整做对', 'Exact success')}</th></tr></thead>
+      <tbody>
+        <tr><td>{names.baseline}</td><td><strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong></td><td>{study.threeWayFinal.directApply.exactCount}/128</td></tr>
+        <tr><td>{names.bounded}</td><td><strong>{study.threeWayFinal.off.score.toFixed(2)}</strong></td><td>{study.threeWayFinal.off.exactCount}/128</td></tr>
+        <tr><td>{names.gdr}</td><td><strong>{study.threeWayFinal.on.score.toFixed(2)}</strong></td><td>{study.threeWayFinal.on.exactCount}/128</td></tr>
+        <tr><td>{names.dynamicAlphaBeta}</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="paper__boundary">{t(
+    '固定终评适合回答“在这一套冻结题上谁完成得更多”，但仍只是一套 128 题，不能读成全面能力分数。普通 OpenEVO 还是更早的独立前序实验；它不是后两组预注册同设置正式对照里的第三条实验。',
+    'The fixed final answers who completes more of this frozen panel, but it is still one set of 128 tasks rather than a comprehensive capability score. Ordinary OpenEVO remains an earlier predecessor run, not a third formal arm in the preregistered matched campaign below.',
+  )}</p>
+
+  {finalResult ? (
+    <>
+      <h3>4.4 {t('训练期成功率：只比较同设置正式对照的 Bounded 与 β-gating（α 固定为 1）', 'Training-period success: only the truly matched Bounded and β-gating (α fixed at 1) runs')}</h3>
+      <div class="paper-table-wrap">
+        <table class="paper-table">
+          <thead><tr><th>{t('正式指标', 'Formal metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th><th>{t('差值', 'Delta')}</th></tr></thead>
+          <tbody>
+            <tr><td>R1–R159 mean reward</td><td>{finalResult.pooledReward.off.toFixed(4)}</td><td>{finalResult.pooledReward.on.toFixed(4)}</td><td>+{finalResult.pooledReward.delta.toFixed(4)}</td></tr>
+            <tr><td>R1–R159 exact success</td><td>{(finalResult.exactSuccess.off * 100).toFixed(2)}%</td><td>{(finalResult.exactSuccess.on * 100).toFixed(2)}%</td><td>{(finalResult.exactSuccess.delta * 100).toFixed(2)} pp</td></tr>
+            <tr><td>95% moving-block bootstrap CI</td><td colspan="2">{finalResult.uncertainty.low.toFixed(4)} → +{finalResult.uncertainty.high.toFixed(4)}</td><td>{t('跨 0', 'crosses 0')}</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="paper__boundary">{t(
+        '训练期平均 reward 出现过正差值，但置信区间跨 0，而且 exact success 没有改善。因此这里只能说出现过短暂正向信号，不能写成稳定长期提升；更不能用这两组结果替代尚未运行的动态 α + 动态 β。',
+        'Mean training reward shows a positive difference, but the interval crosses zero and exact success does not improve. This supports only a transient positive signal, not a stable long-horizon gain, and it cannot stand in for the unrun dynamic-α + dynamic-β experiment.',
+      )}</p>
+    </>
+  ) : <p>{t('正式结果尚未封存。', 'Formal result is not sealed.')}</p>}
+
+  <div id="compute">
+    <h3>4.5 {t('计算代价：真正的大幅加速发生在参数更新阶段', 'Compute: the large speedup is in parameter updates')}</h3>
     <div class="paper-table-wrap">
       <table class="paper-table">
-        <thead><tr><th>{t('实验', 'Experiment')}</th><th>{t('最后 20 轮平均 Task Score', 'Mean Task Score, last 20 rounds')}</th><th>{t('这列在测什么', 'What this measures')}</th></tr></thead>
+        <thead><tr><th>{t('时间口径', 'Timing')}</th><th>{names.baseline}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
         <tbody>
-          <tr><td>{names.baseline}</td><td><strong>{directApplyLast20Score.toFixed(2)}</strong></td><td>{t('R140–R159 每轮不同抽样任务的平均', 'mean over R140–R159, with different sampled tasks each round')}</td></tr>
-          <tr><td>{names.bounded}</td><td><strong>{boundedLast20Score?.toFixed(2) ?? '—'}</strong></td><td>{t('R140–R159 每轮不同抽样任务的平均', 'mean over R140–R159, with different sampled tasks each round')}</td></tr>
-          <tr><td>{names.gdr}</td><td><strong>{gdrLast20Score?.toFixed(2) ?? '—'}</strong></td><td>{t('R140–R159 每轮不同抽样任务的平均', 'mean over R140–R159, with different sampled tasks each round')}</td></tr>
-          <tr><td>{names.dynamicAlphaBeta}</td><td>—</td><td>{t('未做，暂无训练轨迹', 'not run; no training trajectory')}</td></tr>
+          <tr><td>{t('参数 trainer / transition 累计', 'parameter trainer / transition total')}</td><td>{study.timingComparison.directApply.trainerHours.toFixed(2)} h</td><td>{study.timingComparison.off.transitionHours.toFixed(2)} h</td><td>{study.timingComparison.on.transitionHours.toFixed(2)} h</td></tr>
+          <tr><td>{t('相对普通 OpenEVO', 'relative to ordinary OpenEVO')}</td><td>1×</td><td>{(study.timingComparison.directApply.trainerHours / study.timingComparison.off.transitionHours).toFixed(1)}×</td><td>{(study.timingComparison.directApply.trainerHours / study.timingComparison.on.transitionHours).toFixed(1)}×</td></tr>
+          <tr><td>Stage2 wall clock</td><td>{study.timingComparison.directApply.wallClockHours.toFixed(2)} h</td><td>{study.timingComparison.off.wallClockHours.toFixed(2)} h</td><td>{study.timingComparison.on.wallClockHours.toFixed(2)} h</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="paper__boundary">{t(
-      '这个均值能把某一轮刚好抽到偏难或偏易任务造成的抖动压低一些，所以我们把它放在结果区最前面。但它不是同题考试，也不是泛化能力的完整估计：20 轮里的题会变化，而且仍然只是在 WebShop 这一种环境里。',
-      'This mean reduces some of the noise from any one round drawing an unusually hard or easy batch, so we put it first in the results section. It is not a same-task exam or a complete estimate of generalization: the tasks vary across the 20 rounds, and all measurements remain within WebShop.',
-    )}</p>
+    <p class="paper__boundary">{t('13–15× 是参数更新阶段的工程加速，不是整个 Stage2 同倍数加速。', 'The 13–15× figure is an engineering speedup for parameter updates, not the whole Stage2 run.')}</p>
+  </div>
+</section>
 
-    <h3>4.2 {t('固定 128 题终评：三组同题，但它只是一套题', 'Fixed 128-task final: same tasks for all three, but still only one panel')}</h3>
-    <div class="paper-table-wrap">
-      <table class="paper-table">
-        <thead><tr><th>{t('实验', 'Experiment')}</th><th>Task Score / 100</th><th>{t('完整做对', 'Exact success')}</th></tr></thead>
-        <tbody>
-          <tr><td>{names.baseline}</td><td><strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong></td><td>{study.threeWayFinal.directApply.exactCount}/128</td></tr>
-          <tr><td>{names.bounded}</td><td><strong>{study.threeWayFinal.off.score.toFixed(2)}</strong></td><td>{study.threeWayFinal.off.exactCount}/128</td></tr>
-          <tr><td>{names.gdr}</td><td><strong>{study.threeWayFinal.on.score.toFixed(2)}</strong></td><td>{study.threeWayFinal.on.exactCount}/128</td></tr>
-          <tr><td>{names.dynamicAlphaBeta}</td><td>—</td><td>—</td></tr>
-        </tbody>
-      </table>
-    </div>
+<section class="paper__section" id="analysis" aria-labelledby="analysis-title">
+  <p class="paper__section-number">5</p>
+  <h2 id="analysis-title">{t('训练过程中发生了什么？从 loss 到行为变化', 'What changed during training? From loss to behavior')}</h2>
+  <p class="paper__lede">{t(
+    '分数现象已经在上一节先摆出来。这里再按“优化 → 参数大小 → Task Vector → 谱与方向 → 输出路径 → 行为分布”逐层往里看。每个指标都先解释它是什么，再放证据，最后才说它能解释到哪里。',
+    'The score pattern is established first in the previous section. We now move inward in a fixed order: optimization → parameter magnitude → Task Vector → spectrum and direction → output path → behavior distribution. Each metric is defined before its evidence and interpretation.',
+  )}</p>
+  <p class="paper__links">
+    <a href={wandbReportUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={wandbReportUrl} />{t('W&B Report（需要权限）', 'W&B Report (access required)')}</a>
+    <a href={wandbWorkspaceUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={wandbWorkspaceUrl} />{t('完整 W&B Workspace', 'Full W&B Workspace')}</a>
+  </p>
+
+  <div class="paper__metric-step" id="loss">
+    <h3>5.1 loss：{t('训练有没有真的在拟合', 'did optimization actually fit the training records?')}</h3>
+    <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
     <p>{t(
-      '这三次终评使用完全相同的固定 128 题，因此适合做“在这一套题上”的并排比较；但不能把 60.72、45.98 或 20.77 读成模型的全面能力。题集选择和 Task Score 的计算口径已经在页首说明。',
-      'All three finals use exactly the same fixed 128 tasks, so they support a side-by-side comparison on this panel. The scores 60.72, 45.98, and 20.77 should not be read as comprehensive model capability. The panel-selection and Task Score definitions are stated at the top of the page.',
+      '这里的 loss 是 SD-LoRA trainer 在发生参数更新的轮次里记录的平均训练损失。它最适合回答“优化器有没有把当前训练记录拟合下去”，但它不直接等于 WebShop 做题能力。',
+      'This loss is the mean SD-LoRA trainer loss on rounds that actually perform a parameter update. It answers whether the optimizer is fitting the current training records, not whether WebShop task performance is improving.',
     )}</p>
-
-    {finalResult ? (
-      <>
-        <h3>4.3 {t('后两组的正式长期对照：β-gating（α 固定为 1）的短暂正向信号没有形成稳定优势', 'Formal long-horizon contrast between the latter two: the transient β-gating (α fixed at 1) signal does not become a stable advantage')}</h3>
-        <div class="paper-table-wrap">
-          <table class="paper-table">
-            <thead><tr><th>{t('正式指标', 'Formal metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th><th>{t('差值', 'Delta')}</th></tr></thead>
-            <tbody>
-              <tr><td>R1–R159 mean reward</td><td>{finalResult.pooledReward.off.toFixed(4)}</td><td>{finalResult.pooledReward.on.toFixed(4)}</td><td>+{finalResult.pooledReward.delta.toFixed(4)}</td></tr>
-              <tr><td>R1–R159 exact success</td><td>{(finalResult.exactSuccess.off * 100).toFixed(2)}%</td><td>{(finalResult.exactSuccess.on * 100).toFixed(2)}%</td><td>{(finalResult.exactSuccess.delta * 100).toFixed(2)} pp</td></tr>
-              <tr><td>95% moving-block bootstrap CI</td><td colspan="2">{finalResult.uncertainty.low.toFixed(4)} → +{finalResult.uncertainty.high.toFixed(4)}</td><td>{t('跨 0', 'crosses 0')}</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="paper__boundary">{t(
-          '这一张表只属于 Bounded 与 β-gating（α 固定为 1）这两个同一预注册 campaign 的正式长期对照。训练期平均 reward 的正差值只是短暂信号；置信区间跨 0，完整成功率也没有改善，因此不能把它写成稳定长期提升；它也不能回答动态 α + 动态 β 会怎样。',
-          'This table belongs only to the preregistered long-horizon contrast between Bounded and β-gating (α fixed at 1). The positive mean-reward difference is a transient signal; the interval crosses zero and exact success does not improve, so it cannot be described as a stable long-horizon gain. It also does not answer what dynamic α + dynamic β would do.',
-        )}</p>
-      </>
-    ) : <p>{t('正式结果尚未封存。', 'Formal result is not sealed.')}</p>}
-
-    <div id="compute">
-      <h3>4.4 {t('计算代价：真正的大幅加速发生在参数更新阶段', 'Compute: the large speedup is in parameter updates')}</h3>
-      <div class="paper-table-wrap">
-        <table class="paper-table">
-          <thead><tr><th>{t('时间口径', 'Timing')}</th><th>{names.baseline}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
-          <tbody>
-            <tr><td>{t('参数 trainer / transition 累计', 'parameter trainer / transition total')}</td><td>{study.timingComparison.directApply.trainerHours.toFixed(2)} h</td><td>{study.timingComparison.off.transitionHours.toFixed(2)} h</td><td>{study.timingComparison.on.transitionHours.toFixed(2)} h</td></tr>
-            <tr><td>{t('相对普通 OpenEVO', 'relative to ordinary OpenEVO')}</td><td>1×</td><td>{(study.timingComparison.directApply.trainerHours / study.timingComparison.off.transitionHours).toFixed(1)}×</td><td>{(study.timingComparison.directApply.trainerHours / study.timingComparison.on.transitionHours).toFixed(1)}×</td></tr>
-            <tr><td>Stage2 wall clock</td><td>{study.timingComparison.directApply.wallClockHours.toFixed(2)} h</td><td>{study.timingComparison.off.wallClockHours.toFixed(2)} h</td><td>{study.timingComparison.on.wallClockHours.toFixed(2)} h</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="paper__boundary">{t('13–15× 是参数更新阶段的工程加速，不是整个 Stage2 同倍数加速。', 'The 13–15× figure is an engineering speedup for parameter updates, not the whole Stage2 run.')}</p>
+    <MetricEvidenceFigure item={metricCharts.loss} />
+    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <div class="paper-table-wrap">
+      <table class="paper-table">
+        <thead><tr><th>{t('实验', 'Experiment')}</th><th>R0 loss</th><th>R159 loss</th><th>{t('缺失更新轮', 'missing update rounds')}</th></tr></thead>
+        <tbody>
+          <tr><td>{names.baseline}</td><td>{lossFirst.ordinary_openevo_loss?.toFixed(3)}</td><td><strong>{lossLast.ordinary_openevo_loss?.toFixed(3)}</strong></td><td>{lossEvidence.missing_loss_points.ordinary_openevo}</td></tr>
+          <tr><td>{names.bounded}</td><td>{lossFirst.bounded_loss?.toFixed(3)}</td><td><strong>{lossLast.bounded_loss?.toFixed(3)}</strong></td><td>{lossEvidence.missing_loss_points.bounded}</td></tr>
+          <tr><td>{names.gdr}</td><td>{lossFirst.bounded_gdr_loss?.toFixed(3)}</td><td><strong>{lossLast.bounded_gdr_loss?.toFixed(3)}</strong></td><td>{lossEvidence.missing_loss_points.bounded_gdr}</td></tr>
+        </tbody>
+      </table>
     </div>
-  </section>
-
-
-  <section class="paper__section" id="analysis" aria-labelledby="analysis-title">
-    <p class="paper__section-number">5</p>
-    <h2 id="analysis-title">{t('指标分析：从 loss 一直看到行为 entropy', 'Metric analysis: from loss to behavioral entropy')}</h2>
-    <p class="paper__lede">{t(
-      '这里不再把 Task Vector、范数、长度和 entropy 混成一段。我们按指标复杂度往下走：先看训练有没有正常优化，再看参数怎么变，最后才看行为分布怎么变。每一节都固定回答三件事：这个指标是什么、这次实验测到了什么、我们能怎么解释。',
-      'Instead of mixing Task Vector, norms, length, and entropy together, we move from simpler to richer diagnostics: optimization first, then parameter change, then behavior. Every subsection answers the same three questions: what the metric is, what this experiment measured, and how far the interpretation can go.',
+    <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
+    <p class="paper__boundary">{t(
+      '三条线的 loss 都从大约 1.05 降到 0.05–0.10 量级，说明训练过程本身没有“完全没学进去”。Bounded / β-gating 的末轮 loss 还低于普通 OpenEVO，但固定 128 题终评并没有因此更高。所以 loss 能排除明显的优化失败，却不能解释最终能力差异。',
+      'All three losses fall from about 1.05 to the 0.05–0.10 range, so the runs did not simply fail to optimize. Bounded and β-gating even finish with lower loss than ordinary OpenEVO, yet their fixed-panel finals are not higher. Loss rules out an obvious optimization failure but does not explain the capability gap.',
     )}</p>
-    <p class="paper__links">
-      <a href={wandbReportUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={wandbReportUrl} />{t('W&B Report（需要权限）', 'W&B Report (access required)')}</a>
-      <a href={wandbWorkspaceUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={wandbWorkspaceUrl} />{t('完整 W&B Workspace', 'Full W&B Workspace')}</a>
-    </p>
+  </div>
 
-    <div class="paper__metric-step" id="loss">
-      <h3>5.1 loss：{t('最基本的问题——训练有没有真的在拟合', 'the first question—did optimization actually fit the training records?')}</h3>
-      <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
-      <p>{t(
-        '这里的 loss 是 SD-LoRA trainer 在发生参数更新的轮次里记录的平均训练损失。它最适合回答“优化器有没有把当前训练记录拟合下去”，但它不直接等于 WebShop 做题能力。',
-        'This loss is the mean SD-LoRA trainer loss on rounds that actually perform a parameter update. It answers whether the optimizer is fitting the current training records, not whether WebShop task performance is improving.',
-      )}</p>
-      <MetricEvidenceFigure item={metricCharts.loss} />
-      <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
-      <div class="paper-table-wrap">
-        <table class="paper-table">
-          <thead><tr><th>{t('实验', 'Experiment')}</th><th>R0 loss</th><th>R159 loss</th><th>{t('缺失更新轮', 'missing update rounds')}</th></tr></thead>
-          <tbody>
-            <tr><td>{names.baseline}</td><td>{lossFirst.ordinary_openevo_loss?.toFixed(3)}</td><td><strong>{lossLast.ordinary_openevo_loss?.toFixed(3)}</strong></td><td>{lossEvidence.missing_loss_points.ordinary_openevo}</td></tr>
-            <tr><td>{names.bounded}</td><td>{lossFirst.bounded_loss?.toFixed(3)}</td><td><strong>{lossLast.bounded_loss?.toFixed(3)}</strong></td><td>{lossEvidence.missing_loss_points.bounded}</td></tr>
-            <tr><td>{names.gdr}</td><td>{lossFirst.bounded_gdr_loss?.toFixed(3)}</td><td><strong>{lossLast.bounded_gdr_loss?.toFixed(3)}</strong></td><td>{lossEvidence.missing_loss_points.bounded_gdr}</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
-      <p class="paper__boundary">{t(
-        '三条线的 loss 都从大约 1.05 降到 0.05–0.10 量级，说明训练过程本身没有“完全没学进去”。而且 Bounded / β-gating 的末轮 loss 还低于普通 OpenEVO，但它们的固定 128 题终评并没有因此更高。所以 loss 能排除明显的优化失败，却不能解释最终任务能力差异。',
-        'All three losses fall from about 1.05 to the 0.05–0.10 range, so the runs did not simply fail to optimize. Bounded and β-gating even finish with lower loss than ordinary OpenEVO, yet their fixed-panel finals are not higher. Loss can rule out an obvious optimization failure, but it does not explain the capability gap.',
-      )}</p>
+  <div class="paper__metric-step" id="norms">
+    <h3>5.2 {t('范数：长期 State 和本轮更新到底有多大', 'Norms: how large are the long-term State and the current update?')}</h3>
+    <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
+    <p>{t(
+      'Frobenius norm 可以把一个参数矩阵的总体大小压成一个数。这里先只问最简单的“有多大”：长期 State 多大、本轮 Task Vector 多大；先不讨论方向。',
+      'The Frobenius norm compresses the overall magnitude of a parameter matrix into one number. We first ask only the simplest question—how large is the long-term State and how large is the current Task Vector—without yet discussing direction.',
+    )}</p>
+    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <div class="paper-table-wrap">
+      <table class="paper-table">
+        <thead><tr><th>{t('Frobenius 指标', 'Frobenius metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
+        <tbody>
+          <tr><td>Final State · Frobenius</td><td>{study.parameterAnalysis.off.finalStateFrobenius.toFixed(3)}</td><td><strong>{study.parameterAnalysis.on.finalStateFrobenius.toFixed(3)}</strong></td></tr>
+          <tr><td>Final Task Vector · Frobenius</td><td>{study.parameterAnalysis.off.finalTaskVectorFrobenius.toFixed(3)}</td><td>{study.parameterAnalysis.on.finalTaskVectorFrobenius.toFixed(3)}</td></tr>
+          <tr><td>{t('R159 update norm · β-gating / Bounded', 'R159 update norm · β-gating / Bounded')}</td><td>1.000×</td><td><strong>{study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff.toFixed(3)}×</strong></td></tr>
+        </tbody>
+      </table>
     </div>
+    <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
+    <p class="paper__boundary">{t(
+      'β-gating 得到更小的长期 State，R159 的本轮更新大小也只有 Bounded 的约 88.9%。但“更小”没有自动换来更高分，所以仅靠 norm 不能解释最后的 Task Score。',
+      'β-gating produces a smaller long-term State, and its R159 update is about 88.9% the size of Bounded. But smaller does not automatically produce a higher score, so norm alone does not explain the final Task Score.',
+    )}</p>
+  </div>
 
-    <div class="paper__metric-step" id="task-vector">
-      <h3>5.2 Task Vector：{t('一轮训练到底把参数推了多远', 'how far did one round move the parameters?')}</h3>
-      <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
-      <p>{t(
-        'Task Vector 就是一轮训练前后的参数差。它的 Frobenius norm 可以把“这一轮总共改了多大”压成一个数；方向则能告诉我们两种方法是不是还在往相似的参数方向走。',
-        'A Task Vector is the parameter difference across one training round. Its Frobenius norm compresses the overall update magnitude into one number, while direction tells us whether two methods still move through parameter space in similar ways.',
-      )}</p>
-      <MetricEvidenceFigure item={metricCharts.taskVector} />
-      <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
-      <div class="paper-table-wrap">
-        <table class="paper-table">
-          <thead><tr><th>{t('Task Vector 诊断', 'Task Vector diagnostic')}</th><th>{t('结果', 'Result')}</th></tr></thead>
-          <tbody>
-            <tr><td>{t('普通 OpenEVO：Task Vector Frobenius vs Task Score · raw Spearman', 'Ordinary OpenEVO: Task Vector Frobenius vs Task Score · raw Spearman')}</td><td><strong>{study.posthocAnalysis.parameterScore.taskVectorSpearmanRaw.toFixed(3)}</strong></td></tr>
-            <tr><td>{t('去掉 20 轮窗口共同训练趋势后的 Pearson', 'Within-20 Pearson after removing the shared training trend')}</td><td><strong>{study.posthocAnalysis.parameterScore.taskVectorWithin20Pearson.toFixed(3)}</strong></td></tr>
-            <tr><td>{t('当前 Task Vector 预测后 5 轮分数 · 95% 区间', 'Current Task Vector predicting score five rounds ahead · 95% interval')}</td><td><strong>{study.posthocAnalysis.parameterScore.taskVectorFuture5Ci95[0].toFixed(3)} → +{study.posthocAnalysis.parameterScore.taskVectorFuture5Ci95[1].toFixed(3)}</strong></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
-      <p class="paper__boundary">
-        {t('raw 相关看起来不小，但去掉“训练越往后”这个共同趋势后几乎消失；预测后 5 轮的区间也跨 0。Task Vector 很适合描述参数在动，但目前不能把“动得大”直接解释成“WebShop 会更好”。', 'The raw correlation looks substantial, but it nearly disappears after removing the shared late-training trend, and the five-round-ahead interval crosses zero. Task Vector is useful for describing parameter movement, but larger movement is not evidence of better WebShop performance here.')}
-      </p>
+  <div class="paper__metric-step" id="task-vector">
+    <h3>5.3 Task Vector：{t('参数更新大小和分数真的一起变吗', 'does update magnitude really move with score?')}</h3>
+    <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
+    <p>{t(
+      'Task Vector 是一轮训练前后的参数差。W&B 曲线先展示 160 轮 Frobenius 大小；随后再问这个大小和 Task Score 的相关关系是不是在去掉共同训练趋势以后仍然存在。',
+      'A Task Vector is the parameter difference across one training round. The W&B curve first shows its 160-round Frobenius magnitude; we then ask whether its relationship with Task Score survives after removing the shared training trend.',
+    )}</p>
+    <MetricEvidenceFigure item={metricCharts.taskVector} />
+    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <div class="paper-table-wrap">
+      <table class="paper-table">
+        <thead><tr><th>{t('Task Vector 诊断', 'Task Vector diagnostic')}</th><th>{t('结果', 'Result')}</th></tr></thead>
+        <tbody>
+          <tr><td>{t('普通 OpenEVO：Task Vector Frobenius vs Task Score · raw Spearman', 'Ordinary OpenEVO: Task Vector Frobenius vs Task Score · raw Spearman')}</td><td><strong>{study.posthocAnalysis.parameterScore.taskVectorSpearmanRaw.toFixed(3)}</strong></td></tr>
+          <tr><td>{t('去掉 20 轮窗口共同训练趋势后的 Pearson', 'Within-20 Pearson after removing the shared training trend')}</td><td><strong>{study.posthocAnalysis.parameterScore.taskVectorWithin20Pearson.toFixed(3)}</strong></td></tr>
+          <tr><td>{t('当前 Task Vector 预测后 5 轮分数 · 95% 区间', 'Current Task Vector predicting score five rounds ahead · 95% interval')}</td><td><strong>{study.posthocAnalysis.parameterScore.taskVectorFuture5Ci95[0].toFixed(3)} → +{study.posthocAnalysis.parameterScore.taskVectorFuture5Ci95[1].toFixed(3)}</strong></td></tr>
+        </tbody>
+      </table>
     </div>
+    <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
+    <p class="paper__boundary">{t(
+      'raw 相关看起来不小，但去掉“训练越往后”这个共同趋势后几乎消失；预测后 5 轮的区间也跨 0。Task Vector 很适合描述参数在动，却不能把“动得大”直接翻译成“WebShop 会更好”。',
+      'The raw correlation looks substantial, but it nearly disappears after removing the shared late-training trend, and the five-round-ahead interval crosses zero. Task Vector describes parameter movement well, but larger movement does not translate directly into better WebShop performance here.',
+    )}</p>
+  </div>
 
-    <div class="paper__metric-step" id="parameter-geometry">
-      <h3>5.3 {t('参数范数、谱与方向：再往里看“状态长什么样”', 'Parameter norms, spectrum, and direction: what does the state geometry look like?')}</h3>
-      <p class="paper__metric-label">{t('① 指标是什么', '① What are the metrics?')}</p>
-      <p>{t(
-        'Frobenius norm 看整个参数 State 的总体大小；最大 spectral norm 看最强的单一奇异方向；rank95 看要保留多少个主方向才能覆盖大部分能量。它们比单个 Task Vector 更像是在看“长期参数状态的几何形状”。',
-        'Frobenius norm measures the overall size of the parameter State; the maximum spectral norm measures the strongest singular direction; rank95 asks how many dominant directions are needed to capture most of the energy. These describe the geometry of the long-lived parameter state rather than one update alone.',
-      )}</p>
-      <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
-      <div class="paper-table-wrap">
-        <table class="paper-table paper-table--dense-results">
-          <thead><tr><th>{t('参数几何指标', 'Parameter-geometry metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
-          <tbody>
-            <tr><td>Final State · Frobenius</td><td>{study.parameterAnalysis.off.finalStateFrobenius.toFixed(3)}</td><td><strong>{study.parameterAnalysis.on.finalStateFrobenius.toFixed(3)}</strong></td></tr>
-            <tr><td>Final State · max spectral norm</td><td>{study.parameterAnalysis.off.finalStateMaxSpectral.toFixed(3)}</td><td><strong>{study.parameterAnalysis.on.finalStateMaxSpectral.toFixed(3)}</strong></td></tr>
-            <tr><td>Final Task Vector · Frobenius</td><td>{study.parameterAnalysis.off.finalTaskVectorFrobenius.toFixed(3)}</td><td>{study.parameterAnalysis.on.finalTaskVectorFrobenius.toFixed(3)}</td></tr>
-            <tr><td>Final Task Vector · max spectral norm</td><td>{study.parameterAnalysis.off.finalTaskVectorMaxSpectral.toFixed(4)}</td><td>{study.parameterAnalysis.on.finalTaskVectorMaxSpectral.toFixed(4)}</td></tr>
-            <tr><td>full/base spectral ratio · median</td><td>{study.parameterAnalysis.off.fullToBaseSpectralRatioMedian.toFixed(6)}</td><td>{study.parameterAnalysis.on.fullToBaseSpectralRatioMedian.toFixed(6)}</td></tr>
-            <tr><td>rank95 · median</td><td>{study.parameterAnalysis.off.rank95Median}</td><td>{study.parameterAnalysis.on.rank95Median}</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>{t('R159 的更新 norm 比例（β-gating / Bounded）', 'R159 update-norm ratio (β-gating / Bounded)')}: <strong>{(study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff * 100).toFixed(1)}%</strong> · cosine: <strong>{study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}</strong> · {t('第 19–27 层平均 cosine', 'mean cosine over layers 19–27')}: <strong>{study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}</strong></p>
-      <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
-      <p class="paper__boundary">{t(
-        'β-gating 确实得到一个更小、稍低 rank 的长期 State，但“更小”没有自动换来更高分。更值得注意的是方向已经明显分开：它不是简单把同一个更新乘一个小系数。不过锚点仍然很少，所以还不能说这种几何分开就是掉分原因。',
-        'β-gating does produce a smaller, slightly lower-rank long-term State, but smaller does not automatically mean better. More importantly, the update direction itself diverges; this is not merely the same update multiplied by a smaller scalar. The anchor count is still small, so the geometric divergence is not yet a demonstrated cause of the score drop.',
-      )}</p>
+  <div class="paper__metric-step" id="parameter-geometry">
+    <h3>5.4 {t('谱与方向：不仅写了多少，还要看往哪里写', 'Spectrum and direction: not only how much changed, but where it moved')}</h3>
+    <p class="paper__metric-label">{t('① 指标是什么', '① What are the metrics?')}</p>
+    <p>{t(
+      '最大 spectral norm 看最强的单一奇异方向，rank95 看保留多少个主方向才能覆盖大部分能量，cosine 则直接比较两种方法这一轮参数更新是不是还朝着相似方向。',
+      'The maximum spectral norm tracks the strongest singular direction, rank95 asks how many dominant directions capture most of the energy, and cosine directly compares whether the two methods still move in similar update directions.',
+    )}</p>
+    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <div class="paper-table-wrap">
+      <table class="paper-table paper-table--dense-results">
+        <thead><tr><th>{t('参数几何指标', 'Parameter-geometry metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
+        <tbody>
+          <tr><td>Final State · max spectral norm</td><td>{study.parameterAnalysis.off.finalStateMaxSpectral.toFixed(3)}</td><td><strong>{study.parameterAnalysis.on.finalStateMaxSpectral.toFixed(3)}</strong></td></tr>
+          <tr><td>Final Task Vector · max spectral norm</td><td>{study.parameterAnalysis.off.finalTaskVectorMaxSpectral.toFixed(4)}</td><td>{study.parameterAnalysis.on.finalTaskVectorMaxSpectral.toFixed(4)}</td></tr>
+          <tr><td>full/base spectral ratio · median</td><td>{study.parameterAnalysis.off.fullToBaseSpectralRatioMedian.toFixed(6)}</td><td>{study.parameterAnalysis.on.fullToBaseSpectralRatioMedian.toFixed(6)}</td></tr>
+          <tr><td>rank95 · median</td><td>{study.parameterAnalysis.off.rank95Median}</td><td>{study.parameterAnalysis.on.rank95Median}</td></tr>
+        </tbody>
+      </table>
     </div>
+    <p>{t('R159 更新方向 cosine（β-gating vs Bounded）', 'R159 update-direction cosine (β-gating vs Bounded)')}: <strong>{study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}</strong> · {t('第 19–27 层平均 cosine', 'mean cosine over layers 19–27')}: <strong>{study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}</strong></p>
+    <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
+    <p class="paper__boundary">{t(
+      '这里比 norm 多了一层信息：两条线不是简单沿着同一个方向一条短一点、一条长一点，更新方向本身已经明显分开。不过锚点数量仍然有限，因此现在只能说“几何轨迹分开与掉分同时出现”，不能把方向分开写成掉分原因。',
+      'This adds information beyond norm: the two runs are not simply shorter and longer versions of the same direction; their update directions visibly diverge. The anchor count is still limited, so geometric divergence can be reported as co-occurring with the score change, not as its demonstrated cause.',
+    )}</p>
+  </div>
 
-    <div class="paper__metric-step" id="length">
-      <h3>5.4 {t('输出长度与任务步数：从参数走到实际做题路径', 'Output length and task steps: moving from parameters to behavior')}</h3>
-      <p class="paper__metric-label">{t('① 指标是什么', '① What are the metrics?')}</p>
-      <p>{t(
-        '这里看三层：每一步输出多少 token、整个 episode 一共输出多少 token、完成一题用了多少个动作步骤。前两个看回答长度，最后一个更接近“模型走了多长的购物路径”。',
-        'We use three levels: tokens per step, total tokens per episode, and action steps per task. The first two measure response length; the last is closer to the length of the shopping trajectory the model actually takes.',
-      )}</p>
-      <MetricEvidenceFigure item={metricCharts.steps} />
-      <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
-      <div class="paper-table-wrap">
-        <table class="paper-table paper-table--dense-results">
-          <thead><tr><th>{t('方法 / 窗口', 'Method / window')}</th><th>{t('每步输出', 'tokens / step')}</th><th>{t('Episode 总输出', 'episode tokens')}</th><th>{t('平均步骤', 'steps')}</th><th>Task Score</th></tr></thead>
-          <tbody>
-            <tr><td>{names.baseline} · R0–31</td><td>{study.posthocAnalysis.outputLength.ordinary.earlyStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.earlyEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.earlySteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.ordinary.earlyScore.toFixed(3)}</td></tr>
-            <tr><td>{names.baseline} · R128–159</td><td>{study.posthocAnalysis.outputLength.ordinary.lateStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.lateEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.lateSteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.ordinary.lateScore.toFixed(3)}</td></tr>
-            <tr><td>{names.bounded} · R0–31</td><td>{study.posthocAnalysis.outputLength.bounded.earlyStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.earlyEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.earlySteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.bounded.earlyScore.toFixed(3)}</td></tr>
-            <tr><td>{names.bounded} · R128–159</td><td>{study.posthocAnalysis.outputLength.bounded.lateStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.lateEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.lateSteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.bounded.lateScore.toFixed(3)}</td></tr>
-            <tr><td>{names.gdr} · R0–31</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlyStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlyEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlySteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlyScore.toFixed(3)}</td></tr>
-            <tr><td>{names.gdr} · R128–159</td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateStepTokens.toFixed(1)}</strong></td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateEpisodeTokens.toFixed(1)}</strong></td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)}</strong></td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateScore.toFixed(3)}</strong></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>{t('β-gating（α 固定为 1）在 R96–127 → R128–159：', 'β-gating (α fixed at 1), R96–127 → R128–159:')} {t('每步 tokens', 'tokens/step')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midStepTokens.toFixed(1)} → {study.posthocAnalysis.outputLength.linearConstraint.lateStepTokens.toFixed(1)}</strong> · {t('episode tokens', 'episode tokens')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midEpisodeTokens.toFixed(1)} → {study.posthocAnalysis.outputLength.linearConstraint.lateEpisodeTokens.toFixed(1)}</strong> · {t('平均步骤', 'mean steps')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midSteps.toFixed(2)} → {study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)}</strong> · Task Score <strong>{study.posthocAnalysis.outputLength.linearConstraint.midScore.toFixed(3)} → {study.posthocAnalysis.outputLength.linearConstraint.lateScore.toFixed(3)}</strong></p>
-      <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
-      <p class="paper__boundary">{t(
-        '所以后期掉分不是“每一步突然更啰嗦”。更直接的行为变化是：每一步长度差不多，但要走更多步才能结束任务，整条路径又变长了。这比单看参数 norm 更接近实际任务行为。',
-        'The late drop is therefore not “each step suddenly becomes more verbose.” The clearer behavioral change is that individual steps stay similar in length while the task requires more steps, making the overall trajectory longer. This sits closer to actual task behavior than parameter norm alone.',
-      )}</p>
-      <p class="paper__links"><a href="/research/seed-openevo/evidence/wandb-threeway/output-length-analysis.json">{t('160 轮完整长度 / 步数 JSON →', 'Full 160-round length / step JSON →')}</a></p>
+  <div class="paper__metric-step" id="length">
+    <h3>5.5 {t('输出长度与任务步数：单步输出和完整任务路径', 'Output length and task steps: per-step output and full task path')}</h3>
+    <p class="paper__metric-label">{t('① 指标是什么', '① What are the metrics?')}</p>
+    <p>{t(
+      '这里分三层：每一步输出多少 raw-completion tokens、整个 episode 一共输出多少、完成一题用了多少动作步骤。按你在 W&B 里看到数据的顺序，先放 160 轮“每一步输出长度”原生曲线，再看窗口化的路径分析。',
+      'We separate three levels: raw-completion tokens per step, total output per episode, and action steps per task. Following the W&B reading order, the 160-round tokens-per-step curve comes first, followed by the windowed path analysis.',
+    )}</p>
+    <MetricEvidenceFigure item={metricCharts.outputLength} />
+    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <div class="paper-table-wrap">
+      <table class="paper-table paper-table--dense-results">
+        <thead><tr><th>{t('方法 / 窗口', 'Method / window')}</th><th>{t('每步输出', 'tokens / step')}</th><th>{t('Episode 总输出', 'episode tokens')}</th><th>{t('平均步骤', 'steps')}</th><th>Task Score</th></tr></thead>
+        <tbody>
+          <tr><td>{names.baseline} · R0–31</td><td>{study.posthocAnalysis.outputLength.ordinary.earlyStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.earlyEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.earlySteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.ordinary.earlyScore.toFixed(3)}</td></tr>
+          <tr><td>{names.baseline} · R128–159</td><td>{study.posthocAnalysis.outputLength.ordinary.lateStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.lateEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.lateSteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.ordinary.lateScore.toFixed(3)}</td></tr>
+          <tr><td>{names.bounded} · R0–31</td><td>{study.posthocAnalysis.outputLength.bounded.earlyStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.earlyEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.earlySteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.bounded.earlyScore.toFixed(3)}</td></tr>
+          <tr><td>{names.bounded} · R128–159</td><td>{study.posthocAnalysis.outputLength.bounded.lateStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.lateEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.lateSteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.bounded.lateScore.toFixed(3)}</td></tr>
+          <tr><td>{names.gdr} · R0–31</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlyStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlyEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlySteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlyScore.toFixed(3)}</td></tr>
+          <tr><td>{names.gdr} · R128–159</td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateStepTokens.toFixed(1)}</strong></td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateEpisodeTokens.toFixed(1)}</strong></td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)}</strong></td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateScore.toFixed(3)}</strong></td></tr>
+        </tbody>
+      </table>
     </div>
+    <MetricEvidenceFigure item={metricCharts.steps} />
+    <p>{t('β-gating（α 固定为 1）在 R96–127 → R128–159：', 'β-gating (α fixed at 1), R96–127 → R128–159:')} {t('每步 tokens', 'tokens/step')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midStepTokens.toFixed(1)} → {study.posthocAnalysis.outputLength.linearConstraint.lateStepTokens.toFixed(1)}</strong> · {t('episode tokens', 'episode tokens')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midEpisodeTokens.toFixed(1)} → {study.posthocAnalysis.outputLength.linearConstraint.lateEpisodeTokens.toFixed(1)}</strong> · {t('平均步骤', 'mean steps')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midSteps.toFixed(2)} → {study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)}</strong> · Task Score <strong>{study.posthocAnalysis.outputLength.linearConstraint.midScore.toFixed(3)} → {study.posthocAnalysis.outputLength.linearConstraint.lateScore.toFixed(3)}</strong></p>
+    <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
+    <p class="paper__boundary">{t(
+      '所以后期掉分不是“每一步突然更啰嗦”。更直接的行为变化是：每一步长度差不多，但需要走更多步，整条 episode 输出又变长。也就是说，变化更像任务路径重新变长，而不是单步回答膨胀。',
+      'The late drop is therefore not “each step suddenly becomes more verbose.” The clearer behavioral change is that individual steps stay similar in length while more steps are needed and total episode output grows again. The task path lengthens rather than individual responses simply inflating.',
+    )}</p>
+    <p class="paper__links"><a href="/research/seed-openevo/evidence/wandb-threeway/output-length-analysis.json">{t('160 轮完整长度 / 步数 JSON →', 'Full 160-round length / step JSON →')}</a></p>
+  </div>
 
-    <div class="paper__metric-step" id="entropy">
-      <h3>5.5 Entropy：{t('最后看策略行为是不是越来越集中', 'finally, is policy behavior becoming more concentrated?')}</h3>
-      <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
-      <p>{t(
-        '这里能可靠重建的是 action-family Shannon entropy：把 search、click 等有效动作类型的分布压成一个数。entropy 越低，表示策略越来越集中在少数几类动作上。它不是语言模型的 token entropy，因为正式 rollout 没有保存逐 token logits / logprobs。',
-        'What can be reconstructed reliably is action-family Shannon entropy over valid action types such as search and click. Lower entropy means the policy is concentrating on fewer action families. This is not language-model token entropy because the formal rollouts did not persist per-token logits/logprobs.',
-      )}</p>
-      <MetricEvidenceFigure item={metricCharts.entropy} />
-      <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
-      <div class="paper-table-wrap">
-        <table class="paper-table paper-table--dense-results">
-          <thead><tr><th>{t('方法', 'Method')}</th><th>R0–31 mean H</th><th>R128–159 mean H</th><th>R159 H</th><th>R159 search</th><th>R159 click</th></tr></thead>
-          <tbody>
-            <tr><td>{names.baseline}</td><td>{study.posthocAnalysis.behaviorEntropy.ordinaryEarly.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.ordinaryLate.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.ordinary.entropy.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.ordinary.search}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.ordinary.click}</td></tr>
-            <tr><td>{names.bounded}</td><td>{study.posthocAnalysis.behaviorEntropy.boundedEarly.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.boundedLate.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.bounded.entropy.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.bounded.search}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.bounded.click}</td></tr>
-            <tr><td>{names.gdr}</td><td><strong>{study.posthocAnalysis.behaviorEntropy.gdrEarly.toFixed(4)}</strong></td><td><strong>{study.posthocAnalysis.behaviorEntropy.gdrLate.toFixed(4)}</strong></td><td><strong>{study.posthocAnalysis.behaviorEntropy.r159.gdr.entropy.toFixed(4)}</strong></td><td>{study.posthocAnalysis.behaviorEntropy.r159.gdr.search}</td><td><strong>{study.posthocAnalysis.behaviorEntropy.r159.gdr.click}</strong></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
-      <p class="paper__boundary">{t('β-gating（α 固定为 1）的行为 entropy 明显下降，而且 R159 的有效动作更集中在 click；三组 valid action rate 都是 100%。这说明变化来自有效策略行为本身越来越集中，不是 parser 错误。但它和掉分只是同时出现，目前不能写成“低 entropy 导致掉分”。', 'For β-gating (α fixed at 1), action entropy falls substantially and R159 valid actions are more concentrated on click; valid-action rate is 100% for all three methods. The policy itself is becoming more concentrated rather than failing parsing, but this remains a co-occurrence rather than evidence that low entropy causes the score drop.')}</p>
-      <p class="paper__links"><a href="/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.json">{t('160 轮完整行为 entropy JSON →', 'Full 160-round action-entropy JSON →')}</a></p>
+  <div class="paper__metric-step" id="entropy">
+    <h3>5.6 Entropy：{t('最后看策略行为是不是越来越集中', 'finally, is policy behavior becoming more concentrated?')}</h3>
+    <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
+    <p>{t(
+      '这里能可靠重建的是 action-family Shannon entropy：把 search、click 等有效动作类型的分布压成一个数。entropy 越低，表示策略越来越集中在少数几类动作上。它不是语言模型 token entropy，因为正式 rollout 没有保存逐 token logits / logprobs。',
+      'What can be reconstructed reliably is action-family Shannon entropy over valid action types such as search and click. Lower entropy means the policy is concentrating on fewer action families. This is not language-model token entropy because the formal rollouts did not persist per-token logits/logprobs.',
+    )}</p>
+    <MetricEvidenceFigure item={metricCharts.entropy} />
+    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <div class="paper-table-wrap">
+      <table class="paper-table paper-table--dense-results">
+        <thead><tr><th>{t('方法', 'Method')}</th><th>R0–31 mean H</th><th>R128–159 mean H</th><th>R159 H</th><th>R159 search</th><th>R159 click</th></tr></thead>
+        <tbody>
+          <tr><td>{names.baseline}</td><td>{study.posthocAnalysis.behaviorEntropy.ordinaryEarly.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.ordinaryLate.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.ordinary.entropy.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.ordinary.search}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.ordinary.click}</td></tr>
+          <tr><td>{names.bounded}</td><td>{study.posthocAnalysis.behaviorEntropy.boundedEarly.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.boundedLate.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.bounded.entropy.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.bounded.search}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.bounded.click}</td></tr>
+          <tr><td>{names.gdr}</td><td><strong>{study.posthocAnalysis.behaviorEntropy.gdrEarly.toFixed(4)}</strong></td><td><strong>{study.posthocAnalysis.behaviorEntropy.gdrLate.toFixed(4)}</strong></td><td><strong>{study.posthocAnalysis.behaviorEntropy.r159.gdr.entropy.toFixed(4)}</strong></td><td>{study.posthocAnalysis.behaviorEntropy.r159.gdr.search}</td><td><strong>{study.posthocAnalysis.behaviorEntropy.r159.gdr.click}</strong></td></tr>
+        </tbody>
+      </table>
     </div>
-  </section>
+    <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
+    <p class="paper__boundary">{t(
+      'β-gating（α 固定为 1）的行为 entropy 明显下降，而且 R159 的有效动作更集中在 click；三组 valid action rate 都是 100%。这说明变化来自有效策略行为本身越来越集中，不是 parser 错误。但它和掉分只是同时出现，目前不能写成“低 entropy 导致掉分”。',
+      'For β-gating (α fixed at 1), action entropy falls substantially and R159 valid actions are more concentrated on click; valid-action rate is 100% for all three methods. The policy itself is becoming more concentrated rather than failing parsing, but this remains co-occurrence rather than evidence that low entropy causes the score drop.',
+    )}</p>
+    <p class="paper__links"><a href="/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.json">{t('160 轮完整行为 entropy JSON →', 'Full 160-round action-entropy JSON →')}</a></p>
+  </div>
 
-  <section class="paper__section" id="next-question" aria-labelledby="next-question-title">
+  <div class="paper__analysis-summary" id="analysis-boundary">
+    <h3>5.7 {t('我们现在能解释到哪里？', 'How far can the evidence explain the late change?')}</h3>
+    <p><strong>{t('确定看到的：', 'Observed: ')}</strong>{t(
+      'β-gating 后期 Task Score 回落、任务路径重新变长、更新方向与 Bounded 明显分开，同时 action-family entropy 更集中。',
+      'late β-gating Task Score declines, task paths lengthen again, update direction separates from Bounded, and action-family entropy becomes more concentrated.',
+    )}</p>
+    <p><strong>{t('已经排除的简单解释：', 'Simple explanations ruled out: ')}</strong>{t(
+      '不是 trainer 完全没优化进去，不是单纯把同一方向更新缩小一点，也不是每一步输出突然变得更长，更不是非法动作增加。',
+      'the trainer did not simply fail to optimize; the change is not just a slightly smaller update in the same direction; individual steps do not suddenly become longer; and invalid actions do not increase.',
+    )}</p>
+    <p class="paper__boundary"><strong>{t('还不能证明的：', 'Not demonstrated: ')}</strong>{t(
+      '目前没有证据把 Task Vector、norm、cosine、谱或 entropy 中任何一个单独指标认定为掉分的直接原因。它们现在是解释候选和后续实验线索，不是因果结论。',
+      'no single Task Vector, norm, cosine, spectral, or entropy metric is established as the direct cause of the score decline. They are diagnostic candidates and leads for follow-up experiments, not causal conclusions.',
+    )}</p>
+  </div>
+</section>\n\n  <section class="paper__section" id="next-question" aria-labelledby="next-question-title">
     <p class="paper__section-number">6</p>
     <h2 id="next-question-title">{t('动态 α + 动态 β：尚未运行', 'Dynamic α + dynamic β: not run yet')}</h2>
     <p>{t(
@@ -632,6 +752,14 @@ const seedPaperHref = 'https://arxiv.org/abs/2607.14777';
   .paper__metric-step:last-child{border-bottom:0;padding-bottom:0}
   .paper__metric-label{width:max-content;max-width:100%;margin:18px 0 6px;padding:4px 9px;border-radius:999px;background:var(--surface-muted);color:var(--text-secondary);font-size:1rem;font-weight:800;letter-spacing:.01em}
   .paper__metric-step .paper-table-wrap{margin-top:10px}
+  .paper__derived-figure{max-width:940px;margin:1rem 0 1.35rem;min-width:0}
+  .paper__derived-figure>img{display:block;width:100%;height:auto;border:1px solid var(--border-color);border-radius:var(--radius-panel);background:#fff;box-shadow:0 10px 28px color-mix(in srgb,var(--text-primary) 7%,transparent)}
+  .paper__derived-figure figcaption{display:flex;flex-wrap:wrap;gap:.35rem 1rem;margin-top:.6rem;line-height:1.5}
+  .paper__derived-figure figcaption span{color:var(--text-secondary)}
+  .paper__analysis-summary{max-width:900px;margin:34px 0 0;padding:22px 24px;border:1px solid var(--border-color);border-radius:var(--radius-panel);background:var(--surface-muted)}
+  .paper__analysis-summary h3{margin-top:0}
+  .paper__analysis-summary p:last-child{margin-bottom:0}
+  .paper-table--score-windows th:not(:first-child),.paper-table--score-windows td:not(:first-child){text-align:right}
 
   .paper__section-number{margin:0 0 5px;color:var(--text-secondary);font:700 1rem/1.3 var(--font-mono)}
   .paper h2{max-width:900px;margin:0 0 20px;font-size:clamp(1.7rem,3vw,2.55rem);line-height:1.15;letter-spacing:-.035em}

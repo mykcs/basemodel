@@ -1,0 +1,76 @@
+{
+  "schema": "basemodel.task-score-20-round-mean.v1",
+  "definition": "mean WebShop Task Score over each non-overlapping 20-round window; tasks differ by round; not a same-panel final",
+  "sources": {
+    "ordinary": "src/data/openEvoDirectApplyLiveDynamics.ts sealed R0-R159 score history",
+    "bounded": "src/data/boundedFormalTrajectory.ts sealed off trajectory",
+    "beta_gating_alpha_1": "src/data/boundedFormalTrajectory.ts sealed on trajectory"
+  },
+  "window_size_rounds": 20,
+  "rows": [
+    {
+      "window": "R0–19",
+      "start_round": 0,
+      "end_round": 19,
+      "ordinary": 41.830030699999995,
+      "bounded": 43.74396616838023,
+      "beta": 40.24646168718435
+    },
+    {
+      "window": "R20–39",
+      "start_round": 20,
+      "end_round": 39,
+      "ordinary": 33.431030650000004,
+      "bounded": 28.951826016865077,
+      "beta": 38.26285032242063
+    },
+    {
+      "window": "R40–59",
+      "start_round": 40,
+      "end_round": 59,
+      "ordinary": 47.553182299999996,
+      "bounded": 33.40304171739719,
+      "beta": 42.89884334415583
+    },
+    {
+      "window": "R60–79",
+      "start_round": 60,
+      "end_round": 79,
+      "ordinary": 55.1421866,
+      "bounded": 44.92216613681457,
+      "beta": 46.302961816829
+    },
+    {
+      "window": "R80–99",
+      "start_round": 80,
+      "end_round": 99,
+      "ordinary": 52.629495899999995,
+      "bounded": 49.728133596004675,
+      "beta": 57.66334748151153
+    },
+    {
+      "window": "R100–119",
+      "start_round": 100,
+      "end_round": 119,
+      "ordinary": 60.48230579999999,
+      "bounded": 58.24848527123917,
+      "beta": 60.13146940949673
+    },
+    {
+      "window": "R120–139",
+      "start_round": 120,
+      "end_round": 139,
+      "ordinary": 60.9729602,
+      "bounded": 58.15997037901334,
+      "beta": 61.581195182855325
+    },
+    {
+      "window": "R140–159",
+      "start_round": 140,
+      "end_round": 159,
+      "ordinary": 67.06920995,
+      "bounded": 64.33283166486292,
+      "beta": 54.28393618100648
+    }
+  ]
+}
