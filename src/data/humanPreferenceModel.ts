@@ -750,7 +750,7 @@ export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [  {
     preferenceIds: ['PREF-ABLATION-PAPER-NARRATIVE', 'PREF-OBJECT-FIRST', 'PREF-RESEARCH-JUDGMENT'],
     scopes: ['research-ui', 'research-copy', 'results', 'capability'],
     rejected: 'H1 用“Bounded Online Recurrence + Effective-State GDR”，结果区再列“DirectApply / Bounded OFF / Bounded + GDR ON”，并按 readiness / lifecycle / post-hoc 分节。',
-    accepted: '首层直接列三组：普通 OpenEVO / OpenEVO + Bounded Online Recurrence / OpenEVO + Bounded Online Recurrence + GDR；用 Bounded Online Recurrence、GDR 两列打勾，并给同一冻结 128 题 Final。正文按动机 → 方法与公式 → 实验 → 结果 → Analysis / Discussion 展开。',
+    accepted: '首层先列三组已完成实验，并按真实机制拆列；当前第三组明确为 OpenEVO + Bounded Online Recurrence + β-gating（α=1），动态 α + 动态 β 只留未做空位、结果为 —。正文按动机 → 方法与公式 → 实验 → 结果 → Analysis / Discussion 展开。',
     reason: 'owner 明确指出旧页面需要读者自己把多套名称对齐，而且内部工作流结构打断科学叙事；论文式消融入口让陌生读者先建立统一实验身份，再理解方法为什么产生、怎样验证。',
     failureMechanisms: ['inconsistent-experiment-identity', 'missing-ablation-overview', 'implementation-taxonomy-as-research-story', 'formula-without-mapping-bridge'],
     ownerStatus: 'accepted',
