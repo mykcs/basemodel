@@ -103,8 +103,8 @@ test('paper narrative follows motivation, method, mapping, experiment, result, a
     '动机：SD-LoRA 越训练越慢',
     '方法：Bounded Online Recurrence、Gated Delta 来源与本实验 β-gating（α 固定为 1）',
     '实验设置：Qwen3-1.7B × WebShop',
-    '结果：训练后期与固定 128 题终评',
-    '指标分析：从 loss 一直看到行为 entropy',
+    '实验结果：Task Score、成功率与计算代价',
+    '训练过程中发生了什么？从 loss 到行为变化',
   ]);
 });
 
@@ -145,9 +145,15 @@ test('formal result preserves the matched-arm statistical boundary under public 
   await expect(result).toContainText('普通 OpenEVO');
   await expect(result).toContainText('OpenEVO + Bounded Online Recurrence');
   await expect(result).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）');
+  await expect(result).toContainText('WebShop Task Score · 160轮');
+  await expect(result).toContainText('R0–19');
+  await expect(result).toContainText('R140–159');
+  await expect(result).toContainText('67.07');
+  await expect(result).toContainText('64.33');
+  await expect(result).toContainText('54.28');
   await expect(result).toContainText('R1–R159 mean reward');
+  await expect(result).toContainText('R1–R159 exact success');
   await expect(result).toContainText('跨 0');
-  await expect(result).toContainText('短暂正向信号没有形成稳定优势');
   await expect(result).toContainText('动态 α + 动态 β（未做）');
   await expect(page.locator('#compute')).toContainText('31.09');
   await expect(page.locator('#compute')).toContainText('2.02');
@@ -159,19 +165,20 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const analysis = page.locator('#analysis');
-  await expect(analysis.getByRole('heading', { level: 2 })).toContainText('指标分析：从 loss 一直看到行为 entropy');
+  await expect(analysis.getByRole('heading', { level: 2 })).toContainText('训练过程中发生了什么？从 loss 到行为变化');
 
   const metricSteps = analysis.locator('.paper__metric-step');
-  await expect(metricSteps).toHaveCount(5);
+  await expect(metricSteps).toHaveCount(6);
   const headings = await metricSteps.getByRole('heading', { level: 3 }).allTextContents();
   expect(headings).toEqual([
-    '5.1 loss：最基本的问题——训练有没有真的在拟合',
-    '5.2 Task Vector：一轮训练到底把参数推了多远',
-    '5.3 参数范数、谱与方向：再往里看“状态长什么样”',
-    '5.4 输出长度与任务步数：从参数走到实际做题路径',
-    '5.5 Entropy：最后看策略行为是不是越来越集中',
+    '5.1 loss：训练有没有真的在拟合',
+    '5.2 范数：长期 State 和本轮更新到底有多大',
+    '5.3 Task Vector：参数更新大小和分数真的一起变吗',
+    '5.4 谱与方向：不仅写了多少，还要看往哪里写',
+    '5.5 输出长度与任务步数：单步输出和完整任务路径',
+    '5.6 Entropy：最后看策略行为是不是越来越集中',
   ]);
-  for (let index = 0; index < 5; index += 1) {
+  for (let index = 0; index < 6; index += 1) {
     const labels = metricSteps.nth(index).locator('.paper__metric-label');
     await expect(labels).toHaveCount(3);
     await expect(labels.nth(0)).toContainText('① 指标是什么');
@@ -184,13 +191,15 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
   await expect(page.locator('#loss')).toContainText('0.065');
   await expect(page.locator('#loss')).toContainText('0.069');
 
+  await expect(page.locator('#norms')).toContainText('21.051');
+  await expect(page.locator('#norms')).toContainText('17.925');
+  await expect(page.locator('#norms')).toContainText('0.889');
+
   await expect(page.locator('#task-vector')).toContainText('0.597');
   await expect(page.locator('#task-vector')).toContainText('0.045');
   await expect(page.locator('#task-vector')).toContainText('-0.278');
   await expect(page.locator('#task-vector')).toContainText('+0.044');
 
-  await expect(page.locator('#parameter-geometry')).toContainText('21.051');
-  await expect(page.locator('#parameter-geometry')).toContainText('17.925');
   await expect(page.locator('#parameter-geometry')).toContainText('2.136');
   await expect(page.locator('#parameter-geometry')).toContainText('1.946');
   await expect(page.locator('#parameter-geometry')).toContainText('-0.287');
@@ -204,6 +213,8 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
   await expect(page.locator('#entropy')).toContainText('0.3705');
   await expect(page.locator('#entropy')).toContainText('1158');
   await expect(page.locator('#entropy')).toContainText('100%');
+  await expect(page.locator('#analysis-boundary')).toContainText('我们现在能解释到哪里？');
+  await expect(page.locator('#analysis-boundary')).toContainText('还不能证明的');
 
   const next = page.locator('#next-question');
   await expect(next).toContainText('动态 α + 动态 β：尚未运行');
@@ -218,13 +229,19 @@ test('W&B evidence is embedded beside the relevant metric instead of collected i
   await expect(analysis.getByRole('link', { name: /W&B Report/ })).toHaveAttribute('href', /wandb\.ai/);
   await expect(analysis.getByRole('link', { name: /完整 W&B Workspace/ })).toHaveAttribute('href', /wandb\.ai/);
 
+  const result = page.locator('#formal-result');
+  await expect(result.locator('.metric-evidence')).toHaveCount(1);
+  await expect(result.locator('.metric-evidence img')).toHaveAttribute('src', /wandb-threeway\/task-score\.svg/);
+  await expect(result.locator('.paper__derived-figure img')).toHaveAttribute('src', /wandb-threeway\/task-score-20-round-mean\.svg/);
+
   const figures = analysis.locator('.metric-evidence');
-  await expect(figures).toHaveCount(4);
+  await expect(figures).toHaveCount(5);
   await expect(page.locator('#loss img')).toHaveAttribute('src', /wandb-threeway\/loss-vs-rollout\.svg/);
   await expect(page.locator('#task-vector img')).toHaveAttribute('src', /wandb-threeway\/task-vector-frobenius\.svg/);
-  await expect(page.locator('#length img')).toHaveAttribute('src', /wandb-threeway\/steps-per-episode\.svg/);
+  await expect(page.locator('#length img').first()).toHaveAttribute('src', /wandb-threeway\/tokens-per-step\.svg/);
+  await expect(page.locator('#length img').nth(1)).toHaveAttribute('src', /wandb-threeway\/steps-per-episode\.svg/);
   await expect(page.locator('#entropy img')).toHaveAttribute('src', /wandb-threeway\/action-family-entropy\.svg/);
-  for (let index = 0; index < 4; index += 1) {
+  for (let index = 0; index < 5; index += 1) {
     await expect(figures.nth(index).getByRole('link', { name: /打开 W&B 原生 panel/ }).last()).toHaveAttribute('href', /wandb\.ai/);
   }
 });
