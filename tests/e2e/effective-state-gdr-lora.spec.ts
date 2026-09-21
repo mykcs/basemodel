@@ -24,7 +24,7 @@ for (const viewport of [
   });
 }
 
-test('ablation table makes the three mechanism combinations explicit with checkmarks', async ({ page }) => {
+test('ablation table separates three completed mechanisms from the unrun dynamic-alpha slot', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const rows = page.locator('.paper-table--ablation tbody tr');
@@ -52,13 +52,13 @@ test('paper narrative follows motivation, method, mapping, experiment, result, a
   ]);
 });
 
-test('method section explains Bounded Online Recurrence and the GDR-to-parameter-state mapping', async ({ page }) => {
+test('method section explains source Gated Delta and the beta-gating alpha-one parameter mapping', async ({ page }) => {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const method = page.locator('#method');
   await expect(method.locator('[data-math-formula]')).toHaveCount(7);
   await expect(method.locator('.katex').first()).toBeVisible();
   await expect(method).toContainText('Compress');
-  await expect(method).toContainText('Gated Delta Rule');
+  await expect(method).toContainText('Gated Delta 再给旧 State 加一个 retention α');
   await expect(method).toContainText('α');
   await expect(method).toContainText('β');
   await expect(method).toContainText('从 sequence State 映射到 OpenEVO 的参数 State');
