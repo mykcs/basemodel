@@ -22,11 +22,14 @@ describe('human-facing development workflow', () => {
   });
 
   it('keeps the current BaseModel CI authority and fallbacks honest', () => {
-    expect(page).toContain('final-candidate CI + Preview');
+    expect(page).toContain('repository + browser acceptance');
+    expect(page).toContain('real provider build');
     expect(page).toContain('ci/vercel-gate-final');
+    expect(page).toContain('public-ci-gate');
     expect(page).toContain('Cloudflare is not the ordinary BaseModel deployment provider');
-    expect(page).toContain('CircleCI and GitHub Actions are manual recovery paths only');
+    expect(page).toContain('Mac/OrbStack remains manual recovery only');
     expect(page).not.toContain('heavy acceptance runs in CircleCI');
+    expect(page).not.toContain('final-candidate CI + Preview');
   });
 
   it('is discoverable through navigation, sitemap, locale switch, and reader contract', () => {

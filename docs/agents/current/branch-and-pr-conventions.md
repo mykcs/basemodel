@@ -53,9 +53,9 @@ The spend rule is now:
 
 1. **Ordinary working branch:** no Vercel deployment while iterating.
 2. **Final candidate:** run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>` so the non-deploy base ref is pinned first and the already-existing `ci/vercel-gate-final` ref moves to the exact same commit SHA; do not add a commit or rebuild the candidate on the gate ref. Creating a brand-new alias at an already-known SHA is not a valid trigger because the Git integration may emit no build event.
-3. **Any triggered gate Preview:** automatic real acceptance. The Ignored Build Step does not trust `VERCEL_GIT_PULL_REQUEST_ID`; once provider compute is intentionally requested, it fails open into the real Gate.
+3. **Any triggered gate Preview:** automatic real provider-build acceptance. The helper first requires exact-head `public-ci-gate=success`; the Ignored Build Step then fails open into the static Vercel build rather than rerunning repository/browser acceptance.
 4. **`[vercel-preview]`:** optional historical/review marker only; it does not control spend.
-5. **Docs/governance-only final candidate:** the explicit gate still runs `verify:deploy`; the risk planner may skip Chromium if UI risk is proven absent.
+5. **Docs/governance-only final candidate:** required Public PR CI still owns repository acceptance; the explicit Vercel gate runs the static provider build, while docs-only `main` remains non-deploy-relevant.
 6. **Docs/governance-only `main`:** remains non-deploy-relevant and must not replace the Production website.
 7. If this document disagrees with `vercel.json` / `scripts/vercel-ignore-build.mjs`, executable configuration wins and this document must be corrected.
 

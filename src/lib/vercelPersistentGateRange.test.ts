@@ -47,5 +47,14 @@ describe('persistent Vercel final-gate range', () => {
     expect(request).not.toContain('pr.baseRefOid !== currentMain');
     expect(request).toContain('assertHeadContainsMain(currentMain, prAfterBase.headRefOid)');
     expect(request).toContain('must already exist; do not create a fresh final alias');
+    expect(request).toContain('assertGitHubMappedAuthor(pr.headRefOid)');
+    expect(request).toContain('author email to map to a GitHub account');
+    expect(request).toContain("const PUBLIC_CI_GATE_NAME = 'public-ci-gate'");
+    expect(request).toContain('const GITHUB_ACTIONS_APP_ID = 15368');
+    expect(request).toContain('assertPublicCiGate(pr.headRefOid)');
+    expect(request).toContain('wait for Public PR CI before spending Vercel');
+    expect(request.indexOf('assertGitHubMappedAuthor(pr.headRefOid)')).toBeLessThan(request.indexOf('assertPublicCiGate(pr.headRefOid)'));
+    expect(request.indexOf('assertPublicCiGate(pr.headRefOid)')).toBeLessThan(request.indexOf('updateRef(VERCEL_FINAL_BASE_REF'));
+    expect(request).toContain('public_ci_check_id: publicCi.id');
   });
 });

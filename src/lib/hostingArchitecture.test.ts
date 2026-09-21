@@ -32,7 +32,7 @@ const productionUrl = 'https://basemodel-preview.vercel.app';
 
 describe('hosting architecture ownership', () => {
   it('makes Vercel the exact-head acceptance provider while keeping CircleCI manual-only', () => {
-    expect(vercel.buildCommand).toBe('npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs');
+    expect(vercel.buildCommand).toBe('npm run build');
     expect(vercel.git?.deploymentEnabled?.main).not.toBe(false);
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
@@ -58,9 +58,9 @@ describe('hosting architecture ownership', () => {
     expect(ciUiGate).toContain('tests/e2e/lab-playwright.config.ts');
     expect(labPlaywrightConfig).toContain('process.env.PLAYWRIGHT_PORT ?? 4327');
     expect(labPlaywrightConfig).toContain('url: baseURL');
-    expect(architecture).toContain('public GHA preflight + Vercel Pro authority + manual fallbacks');
-    expect(architecture).toContain('Public hosted GitHub Actions is the ordinary **preflight compute** surface');
-    expect(architecture).toContain('Vercel remains the ordinary **final acceptance and deployment authority**');
+    expect(architecture).toContain('required Public PR CI + Vercel provider gate + manual fallbacks');
+    expect(architecture).toContain('Public PR CI owns required **repository/browser acceptance**');
+    expect(architecture).toContain('Vercel owns required **provider build/deploy acceptance**');
     expect(publicPrWorkflow).toContain('pull_request:');
     expect(publicPrWorkflow).toContain('name: public-plan');
     expect(publicPrWorkflow).toMatch(/CI_FULL_BROWSER_SHARDS: '[1-8]'/);
@@ -78,8 +78,8 @@ describe('hosting architecture ownership', () => {
     expect(architecture).toContain('Legacy hosting — not ordinary workflow');
     expect(architecture).toContain('production-smoke');
     expect(latest).toContain('Cloudflare production-smoke');
-    expect(latest).toContain('Public GitHub Actions is the ordinary PR preflight compute lane');
-    expect(latest).toContain('Vercel remains the required final-candidate CI and deployment authority');
+    expect(latest).toContain('`public-ci-gate` is required merge evidence');
+    expect(latest).toContain('Merge readiness therefore requires both `public-ci-gate` and `Vercel`');
   });
 
   it('uses a tiny scheduled Cloudflare Worker for real Production smoke only', () => {

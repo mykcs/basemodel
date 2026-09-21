@@ -128,8 +128,8 @@ describe('Vercel build-budget contract', () => {
   it('makes ordinary deployment reporting Vercel-first', () => {
     expect(root).toContain('Vercel is the only ordinary deployment provider');
     expect(root).toContain('Ordinary completion reports are **Vercel-first**');
-    expect(latest).toContain('Public GitHub Actions is the ordinary PR preflight compute lane');
-    expect(latest).toContain('Vercel remains the required final-candidate CI and deployment authority');
+    expect(latest).toContain('`public-ci-gate` is required merge evidence');
+    expect(latest).toContain('Merge readiness therefore requires both `public-ci-gate` and `Vercel`');
     expect(deploymentPolicy).toContain('Vercel-first completion report');
     expect(deploymentPolicy).toContain('Do not include Cloudflare in an ordinary completion report');
     expect(vercelWorkflow).toContain('Historical providers are not ordinary report dimensions');
@@ -139,7 +139,7 @@ describe('Vercel build-budget contract', () => {
     expect(shouldBuildForFiles(['README.md', 'docs/agents/current/example.md', 'AGENTS.md'])).toBe(false);
     expect(ignoreBuildScript).toContain('mustRunAcceptanceBuild');
     expect(ignoreBuildScript).not.toContain('VERCEL_GIT_PULL_REQUEST_ID');
-    expect(ignoreBuildScript).toContain('Preview acceptance still runs verify:deploy');
+    expect(ignoreBuildScript).toContain('repository/browser acceptance is owned by the required public-ci-gate');
     expect(ignoreBuildScript).toContain('VERCEL_ENV');
     expect(deploymentPolicy).toContain('docs/governance-only final candidate');
     expect(deploymentPolicy).toContain('must not publish a Production build');

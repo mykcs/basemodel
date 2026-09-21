@@ -3,6 +3,8 @@ import { execFileSync } from 'node:child_process';
 import { VERCEL_FINAL_BASE_REF, VERCEL_FINAL_GATE_REF } from './vercel-git-range.mjs';
 
 const REPO = 'mykcs/basemodel';
+const PUBLIC_CI_GATE_NAME = 'public-ci-gate';
+const GITHUB_ACTIONS_APP_ID = 15368;
 const prNumber = process.argv[2];
 if (!/^\d+$/.test(prNumber ?? '')) {
   console.error('usage: node scripts/request-vercel-final-gate.mjs <PR_NUMBER>');
@@ -44,6 +46,25 @@ const pr = json(['pr', 'view', prNumber, '--repo', REPO, '--json', 'state,isDraf
 if (pr.state !== 'OPEN' || pr.isDraft) throw new Error('final gate requires an open non-draft PR');
 if (pr.baseRefName !== 'main') throw new Error(`final gate requires direct base main, got ${pr.baseRefName}`);
 
+function assertPublicCiGate(headSha) {
+  const payload = json([
+    'api',
+    `repos/${REPO}/commits/${headSha}/check-runs?check_name=${encodeURIComponent(PUBLIC_CI_GATE_NAME)}&filter=latest&per_page=100`,
+  ]);
+  const check = (payload.check_runs ?? []).find((item) => (
+    item.name === PUBLIC_CI_GATE_NAME
+    && item.head_sha === headSha
+    && item.app?.id === GITHUB_ACTIONS_APP_ID
+  ));
+  if (!check) {
+    throw new Error(`${PUBLIC_CI_GATE_NAME} is missing on exact head ${headSha}; wait for Public PR CI before spending Vercel`);
+  }
+  if (check.status !== 'completed' || check.conclusion !== 'success') {
+    throw new Error(`${PUBLIC_CI_GATE_NAME} must be completed/success on exact head ${headSha}; got status=${check.status ?? 'unknown'} conclusion=${check.conclusion ?? 'unknown'}`);
+  }
+  return { id: check.id, detailsUrl: check.details_url ?? null };
+}
+
 function assertHeadContainsMain(mainSha, headSha) {
   const comparison = json(['api', `repos/${REPO}/compare/${mainSha}...${headSha}`]);
   const mergeBase = comparison.merge_base_commit?.sha;
@@ -69,6 +90,7 @@ function assertGitHubMappedAuthor(sha) {
 const currentMain = json(['api', `repos/${REPO}/commits/main`]).sha;
 assertHeadContainsMain(currentMain, pr.headRefOid);
 assertGitHubMappedAuthor(pr.headRefOid);
+const publicCi = assertPublicCiGate(pr.headRefOid);
 
 const currentFinal = refSha(VERCEL_FINAL_GATE_REF);
 if (!currentFinal) {
@@ -103,6 +125,10 @@ if (
   throw new Error('PR/main identity moved while arming the non-deploy gate-base ref; retry from fresh identities');
 }
 assertHeadContainsMain(currentMain, prAfterBase.headRefOid);
+const publicCiAfterBase = assertPublicCiGate(prAfterBase.headRefOid);
+if (publicCiAfterBase.id !== publicCi.id) {
+  throw new Error(`${PUBLIC_CI_GATE_NAME} identity moved while arming the gate; retry from fresh provider state`);
+}
 
 updateRef(VERCEL_FINAL_GATE_REF, pr.headRefOid);
 console.log(JSON.stringify({
@@ -113,4 +139,7 @@ console.log(JSON.stringify({
   head: pr.headRefOid,
   gate_base_ref: VERCEL_FINAL_BASE_REF,
   gate_final_ref: VERCEL_FINAL_GATE_REF,
+  public_ci_check: PUBLIC_CI_GATE_NAME,
+  public_ci_check_id: publicCi.id,
+  public_ci_details_url: publicCi.detailsUrl,
 }));
