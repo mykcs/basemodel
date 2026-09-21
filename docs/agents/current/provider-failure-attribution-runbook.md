@@ -251,3 +251,8 @@ Before changing anything after a red provider event:
 [ ] preserve merge/review boundary
 [ ] save only A/B rules; leave C state historical
 ```
+
+## Related historical cases
+
+- [`../history/2026-09-09-briefing-vercel-failure-attribution-retrospective.md`](../history/2026-09-09-briefing-vercel-failure-attribution-retrospective.md) — repository-owned lint/CSS failures executed inside Vercel.
+- [`../history/2026-09-21-vercel-github-author-identity-mismatch-case.md`](../history/2026-09-21-vercel-github-author-identity-mismatch-case.md) — GitHub author mapping failure caused by repository-local Git identity overriding a valid global identity; includes config-origin diagnosis and the pre-provider final-gate guard.
