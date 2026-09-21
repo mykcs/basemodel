@@ -19,14 +19,15 @@ for (const viewport of [
     await expect(ablation).toContainText('60.72');
     await expect(ablation).toContainText('45.98');
     await expect(ablation).toContainText('20.77');
-    await expect(ablation).toContainText('Seed base');
-    await expect(ablation).toContainText('148,000,000');
+    await expect(ablation).toContainText('SEED');
+    await expect(ablation).toContainText('87.1');
+    await expect(ablation).toContainText('77.3%');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
     expect(overflow).toBe(false);
   });
 }
 
-test('ablation table keeps all seven columns on one explicit 100-percent grid', async ({ page }) => {
+test('ablation table keeps all six columns on one explicit 100-percent grid', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const geometry = await page.locator('.paper-table--ablation').evaluate((table) => {
@@ -42,8 +43,8 @@ test('ablation table keeps all seven columns on one explicit 100-percent grid', 
     return { width: tableRect.width, cells };
   });
 
-  expect(geometry.cells).toHaveLength(7);
-  const expectedShares = [0.27, 0.07, 0.07, 0.07, 0.14, 0.17, 0.21];
+  expect(geometry.cells).toHaveLength(6);
+  const expectedShares = [0.31, 0.08, 0.08, 0.08, 0.20, 0.25];
   expectedShares.forEach((expected, index) => {
     expect(Math.abs(geometry.cells[index].share - expected)).toBeLessThan(0.012);
   });
@@ -63,7 +64,10 @@ test('ablation row explanations live in a CVPR-style caption instead of table ce
   await expect(caption).toContainText('固定 rank128 State');
   await expect(caption).toContainText('β-gating（α=1）');
   await expect(caption).toContainText('动态 α + 动态 β');
-  await expect(caption).toContainText('148,000,000');
+  await expect(caption).toContainText('SEED（论文，Qwen3-1.7B）');
+  await expect(caption).toContainText('Score 87.1');
+  await expect(caption).toContainText('Success 77.3%');
+  await expect(caption).toContainText('不是我们三条 OpenEVO 最终模型共用的同一冻结 128 题');
 
   const tableBox = await table.boundingBox();
   const captionBox = await caption.boundingBox();
@@ -76,19 +80,21 @@ test('ablation table separates three completed mechanisms from the unrun dynamic
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const rows = page.locator('.paper-table--ablation tbody tr');
-  await expect(rows).toHaveCount(4);
-  await expect(rows.nth(0)).toContainText('普通 OpenEVO');
+
+  await expect(rows).toHaveCount(5);
+  await expect(rows.nth(0)).toContainText('SEED');
+  await expect(rows.nth(0)).toContainText('87.1');
+  await expect(rows.nth(0)).toContainText('77.3%');
   await expect(rows.nth(0).getByText('✓')).toHaveCount(0);
-  await expect(rows.nth(1)).toContainText('OpenEVO + Bounded Online Recurrence');
-  await expect(rows.nth(1).getByText('✓')).toHaveCount(1);
-  await expect(rows.nth(2)).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α=1）');
-  await expect(rows.nth(2).getByText('✓')).toHaveCount(2);
-  await expect(rows.nth(0)).toContainText('148,000,000');
-  await expect(rows.nth(1)).toContainText('148,000,000');
-  await expect(rows.nth(2)).toContainText('148,000,000');
-  await expect(rows.nth(3)).toContainText('动态 α + 动态 β（未做）');
-  await expect(rows.nth(3).getByText('✓')).toHaveCount(3);
-  await expect(rows.nth(3)).toContainText('—');
+  await expect(rows.nth(1)).toContainText('普通 OpenEVO');
+  await expect(rows.nth(1).getByText('✓')).toHaveCount(0);
+  await expect(rows.nth(2)).toContainText('OpenEVO + Bounded Online Recurrence');
+  await expect(rows.nth(2).getByText('✓')).toHaveCount(1);
+  await expect(rows.nth(3)).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α=1）');
+  await expect(rows.nth(3).getByText('✓')).toHaveCount(2);
+  await expect(rows.nth(4)).toContainText('动态 α + 动态 β（未做）');
+  await expect(rows.nth(4).getByText('✓')).toHaveCount(3);
+  await expect(rows.nth(4)).toContainText('—');
 });
 
 test('paper narrative follows motivation, method, mapping, experiment, result, and analysis', async ({ page }) => {
