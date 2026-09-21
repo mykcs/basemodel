@@ -1,6 +1,6 @@
 # Hosting architecture — required Public PR CI + Vercel provider gate + manual fallbacks
 
-Last reviewed: **2026-09-09**
+Last reviewed: **2026-09-21**
 
 Status: **current release architecture. Public GitHub Actions owns required exact-head deterministic/browser acceptance on independent hosted runners; Vercel Pro owns required exact-head provider build/deploy acceptance plus Preview/Production deployment; CircleCI and Mac/OrbStack are manual fallback only; Cloudflare supplies post-deploy smoke.**
 
@@ -38,7 +38,7 @@ manual CI recovery only
   -> Mac/OrbStack `basemodel-ci` fallback runner
 ```
 
-Public PR CI owns required **repository/browser acceptance**, while Vercel owns required **provider build/deploy acceptance**. The stable Production identity remains `https://basemodel-preview.vercel.app`. CircleCI and the self-hosted Mac workflow remain explicit recovery paths and never own ordinary merge readiness.
+Public PR CI owns required **repository/browser acceptance**, while Vercel owns required **provider build/deploy acceptance**. The live cutover was verified on 2026-09-21: exact-head Vercel provider time was **14.170 s** versus the **507.7 s** control, and Production was **16.608 s** versus **633.3 s**, with the build-machine tier unchanged. The stable Production identity remains `https://basemodel-preview.vercel.app`. CircleCI and the self-hosted Mac workflow remain explicit recovery paths and never own ordinary merge readiness.
 
 ## Public GitHub Actions preflight
 

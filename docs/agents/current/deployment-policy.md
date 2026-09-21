@@ -1,6 +1,6 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-09-11**
+Last reviewed: **2026-09-21**
 
 ## Authority
 
@@ -32,7 +32,9 @@ manual recovery only
 -> repository-scoped Mac/OrbStack runner
 ```
 
-**Cutover state: transition target.** Repository acceptance is owned by required `public-ci-gate`; provider build/deploy acceptance is owned by required `Vercel`. Strict current-base semantics remain enabled. CircleCI contexts are not required checks and automatic CircleCI PR/main workflows remain disabled.
+**Cutover state: complete.** Live branch protection was read back after the 2026-09-21 transition at `main@d747a658008566e8ba82df50d5dc35fb87e53534`: `strict=true`, required checks are `public-ci-gate` (GitHub Actions app 15368) plus `Vercel` (app 8329). CircleCI contexts are not required checks and automatic CircleCI PR/main workflows remain disabled.
+
+Qualification evidence: PR #766 kept the full-risk Public PR CI green and reduced exact-head Vercel BUILDING→READY from **507.7 s to 14.170 s**; the following Production build reduced from **633.3 s to 16.608 s**. The Standard 4 vCPU / 8 GB build tier was unchanged.
 
 **Required acceptance is intentionally split instead of duplicated.** Public GitHub-hosted Actions owns deterministic and browser acceptance on the exact PR head. Vercel remains the required provider build/deploy authority on that same SHA and for Production. CircleCI remains explicit API-triggered fallback, the Mac/OrbStack workflow remains self-hosted manual fallback, and Cloudflare remains post-deploy observation rather than a second deployment authority.
 
