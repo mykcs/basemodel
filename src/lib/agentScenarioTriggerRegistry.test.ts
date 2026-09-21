@@ -44,8 +44,9 @@ describe('Agent scenario-trigger discovery', () => {
   it('keeps the reusable conversation-closeout trigger resolvable without duplicating protocol authority', () => {
     expect(registry).toContain('../../operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md');
     expect(conversationCloseoutEntry).toContain('navigation-only compatibility entrypoint');
-    expect(conversationCloseoutEntry).toContain('mykcs/openevo-experiment/docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md');
-    expect(conversationCloseoutEntry).toContain('does **not** copy the protocol body');
+    expect(conversationCloseoutEntry).toContain('mykcs/.codex/website-learning/CONVERSATION_CLOSEOUT.md');
+    expect(conversationCloseoutEntry).toContain('intentionally does not copy the protocol body');
+    expect(conversationCloseoutEntry).toContain('mykcs/openevo-experiment');
   });
 
   it('makes temporary site-wide exemptions owner-bound and self-expiring', () => {
