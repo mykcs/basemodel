@@ -357,6 +357,81 @@ const twentyRoundScoreWindows = finalResult
       `这批 1.7B OpenEVO 的 Stage 2 起点来自 Stage 1 的 OPSD 参数学习；Qwen3-1.7B 的 Stage 1 OPSD 实际记录为 ${study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString('en-US')} 个优化器更新步。它不是 SEED 的 hindsight-skill SFT，所以这三组实验本身不能回答“SFT 起点和 OPSD 起点谁更好”。`,
       `The Stage-2 origin for this 1.7B OpenEVO lineage comes from the Stage-1 OPSD parameter bootstrap, which records ${study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString('en-US')} optimizer steps for Qwen3-1.7B. This is not SEED hindsight-skill SFT, so these three runs do not answer whether SFT or OPSD is the better warm start.`,
     )}</p>
+
+    <div id="carrier-ledger">
+      <h3>3.1 {t('参数几乎每轮都在变；Text Memory、Skill 和 Agent System 只少量改动', 'Parameters change almost every round; Text Memory, Skill, and Agent System change only sparsely')}</h3>
+      <p>{t(
+        'OpenEVO 带到下一轮的状态不只有参数。除了 SD-LoRA / Bounded 参数 State，它还会携带 Text Memory、Skill Bundle 和 Agent System。下面的 UPDATE 表示这一轮最终接受了新状态并带入下一轮；NOOP 表示保留上一轮状态。',
+        'The state carried into the next OpenEVO round is not only parametric. Alongside the SD-LoRA / Bounded parameter state, OpenEVO can carry Text Memory, Skill Bundle, and Agent System. UPDATE below means a new terminal state was accepted and carried forward; NOOP means the prior state was retained.',
+      )}</p>
+
+      <figure class="paper-table-figure">
+        <div class="paper-table-wrap" aria-label={t('三组 OpenEVO 160 轮四条状态通道的 UPDATE 和 NOOP 次数', 'UPDATE and NOOP counts for four state channels across 160 rounds in the three OpenEVO runs')}>
+          <table class="paper-table paper-table--carrier-ledger" aria-describedby="carrier-ledger-caption">
+            <thead>
+              <tr>
+                <th>{t('状态通道', 'State channel')}</th>
+                <th>{names.baseline}</th>
+                <th>+ Bounded</th>
+                <th>+ β-gating（{t('α 固定为 1', 'α fixed at 1')}）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>{t('参数 State', 'Parameter state')}</strong></td>
+                <td><strong>{study.carrierAnalysis.ordinary.parameterState.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.parameterState.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.bounded.parameterState.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.parameterState.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.betaGating.parameterState.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.parameterState.noops} NOOP</span></td>
+              </tr>
+              <tr>
+                <td><strong>Text Memory</strong></td>
+                <td><strong>{study.carrierAnalysis.ordinary.textMemory.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.textMemory.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.bounded.textMemory.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.textMemory.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.betaGating.textMemory.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.textMemory.noops} NOOP</span></td>
+              </tr>
+              <tr>
+                <td><strong>Skill Bundle</strong></td>
+                <td><strong>{study.carrierAnalysis.ordinary.skillBundle.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.skillBundle.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.bounded.skillBundle.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.skillBundle.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.betaGating.skillBundle.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.skillBundle.noops} NOOP</span></td>
+              </tr>
+              <tr>
+                <td><strong>Agent System</strong></td>
+                <td><strong>{study.carrierAnalysis.ordinary.agentSystem.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.agentSystem.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.bounded.agentSystem.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.agentSystem.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.betaGating.agentSystem.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.agentSystem.noops} NOOP</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="carrier-ledger-caption" class="paper-table__caption">
+          <strong>{t('表 2.', 'Table 2.')}</strong>{' '}
+          {t(
+            '160 轮终态更新账本。普通 OpenEVO 的参数行统计 Parametric SD-LoRA terminal receipt；后两组的参数行统计 Bounded parameter transition terminal receipt。普通 OpenEVO 的四条计数来自 160 份封存 ROUND_COMPLETE 收据的历史对账；后两组来自正式实验封存的 Stage 2 资源分析。',
+            'Terminal update ledger across 160 rounds. The parameter row for ordinary OpenEVO counts Parametric SD-LoRA terminal receipts; the latter two parameter rows count Bounded parameter-transition terminal receipts. The ordinary OpenEVO counts come from a historical reconciliation of all 160 sealed ROUND_COMPLETE receipts; the latter two come from the sealed Stage-2 resource analysis of the formal study.',
+          )}
+          {' '}<a href={study.evidence.q17CarrierAudit} target="_blank" rel="noreferrer"><ExternalBrandMark href={study.evidence.q17CarrierAudit} />{t('普通 OpenEVO 载体对账', 'OpenEVO carrier audit')}</a>
+          {' · '}<a href={study.evidence.resourceAnalysis} target="_blank" rel="noreferrer"><ExternalBrandMark href={study.evidence.resourceAnalysis} />{t('Bounded / β-gating 封存收据', 'Bounded / β-gating sealed receipt')}</a>
+        </figcaption>
+      </figure>
+
+      <p class="paper__lede">{t(
+        '按终态 UPDATE 频率看，这批 160 轮实验持续变化最频繁的是参数通道；Text Memory、Skill Bundle 和 Agent System 的终态变化都很稀疏。这只描述“状态多久改一次”，不等于参数通道对最终能力贡献最大。',
+        'By terminal UPDATE frequency, the parameter channel is the most continuously changing path in these 160-round runs; terminal changes to Text Memory, Skill Bundle, and Agent System are sparse. This describes how often state changes, not which channel contributes most to final capability.',
+      )}</p>
+      <p>{t(
+        `NOOP 不等于“没有参与”。普通 OpenEVO 里，Skill Bundle 虽然只在 R0 更新 1 次，但在 ${study.carrierAnalysis.ordinary.runtimeReadback.recordedEnvironmentSteps.toLocaleString('en-US')} 个已记录环境 step 中仍被运行时选中 ${study.carrierAnalysis.ordinary.runtimeReadback.skillBundle.selected.toLocaleString('en-US')} 次；Text Memory 被选中 ${study.carrierAnalysis.ordinary.runtimeReadback.textMemory.selected.toLocaleString('en-US')} 次，Agent System 被选中 ${study.carrierAnalysis.ordinary.runtimeReadback.agentSystem.selected.toLocaleString('en-US')} 次。也就是说，“内容没变”和“没有进入模型上下文”是两件不同的事。`,
+        `NOOP does not mean “unused.” In ordinary OpenEVO, Skill Bundle updated only once at R0, yet it was still selected at runtime for ${study.carrierAnalysis.ordinary.runtimeReadback.skillBundle.selected.toLocaleString('en-US')} of ${study.carrierAnalysis.ordinary.runtimeReadback.recordedEnvironmentSteps.toLocaleString('en-US')} recorded environment steps; Text Memory was selected ${study.carrierAnalysis.ordinary.runtimeReadback.textMemory.selected.toLocaleString('en-US')} times and Agent System ${study.carrierAnalysis.ordinary.runtimeReadback.agentSystem.selected.toLocaleString('en-US')} times. “The content did not change” and “the carrier was not in the model context” are different claims.`,
+      )}</p>
+      <p>{t(
+        `后两组也不是简单把这三类非参数状态关掉：封存收据记录到 Bounded 组的 Text Memory / Skill / Agent producer 分别消耗 ${study.carrierAnalysis.bounded.producerModelCalls.textMemory} / ${study.carrierAnalysis.bounded.producerModelCalls.skillBundle} / ${study.carrierAnalysis.bounded.producerModelCalls.agentSystem} 次模型调用，β-gating 组分别是 ${study.carrierAnalysis.betaGating.producerModelCalls.textMemory} / ${study.carrierAnalysis.betaGating.producerModelCalls.skillBundle} / ${study.carrierAnalysis.betaGating.producerModelCalls.agentSystem} 次。这是“生成 / 修复端调用次数”，不是 Q17 的 runtime selected step，两个口径不直接横比。`,
+        `The latter two runs did not simply disable the external carriers either. Sealed receipts record ${study.carrierAnalysis.bounded.producerModelCalls.textMemory} / ${study.carrierAnalysis.bounded.producerModelCalls.skillBundle} / ${study.carrierAnalysis.bounded.producerModelCalls.agentSystem} Text Memory / Skill / Agent producer model calls for Bounded, and ${study.carrierAnalysis.betaGating.producerModelCalls.textMemory} / ${study.carrierAnalysis.betaGating.producerModelCalls.skillBundle} / ${study.carrierAnalysis.betaGating.producerModelCalls.agentSystem} for β-gating. These are producer generation/repair calls, not Q17 runtime-selected steps, so the two denominators are not compared directly.`,
+      )}</p>
+      <p class="paper__boundary">{t(
+        'Bounded 与 β-gating 两组使用同一套外部状态生成、校验和修复规则（Completion-First Carrier Contract v2）；实际 Memory / Skill / Agent 内容是否更新，是 treatment 之后自然产生的下游状态。不能为了“控制变量”强行让两组更新次数相同，也不能只凭这张 UPDATE 表把最终分数差归因给某一个载体。',
+        'Bounded and β-gating use the same external-carrier generation, validation, and repair rules (Completion-First Carrier Contract v2); whether Memory / Skill / Agent content actually changes is a downstream state that can naturally diverge after treatment. We should neither force equal update counts as a “control” nor attribute the final score gap to one carrier from this UPDATE table alone.',
+      )}</p>
+    </div>
   </section>
 
   <section class="paper__section esg__results" id="formal-result" aria-labelledby="result-title">

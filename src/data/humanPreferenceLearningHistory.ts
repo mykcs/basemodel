@@ -900,6 +900,20 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
     requestedSuccessorVariantId: 'seed-paper-reference-cvpr-caption',
     evidence: { repository: 'mykcs/basemodel', pullRequest: 761, route: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/' },
   },
+  {
+    id: 'EVENT-20260921-RESULTS-CARRIER-LIFECYCLE-MISSING',
+    date: '2026-09-21',
+    caseIds: ['CASE-089'],
+    scopes: ['research-copy', 'results'],
+    artifact: 'Bounded / β-gating three-experiment results page · carrier lifecycle context',
+    variantId: 'three-way-results-parameter-only-lifecycle-ff94a094',
+    verdict: 'rejected',
+    ownerSignal: 'OpenEVO 里面不只有参数更新，还有 skill、text memory、agent system；这些在 160 轮里更新过吗？网页从来没有回答这个问题。',
+    reasons: ['三组实验结果页把参数更新和参数诊断讲得很细，却没有交代其它会进入下一轮状态的载体实际 UPDATE 过多少次', '只报 UPDATE 次数还可能把 NOOP 错读成模块没有进入运行时上下文'],
+    failureMechanisms: ['parameter-only-learning-narrative', 'carrier-lifecycle-context-omitted', 'noop-conflated-with-runtime-nonuse'],
+    requestedSuccessorVariantId: 'three-way-results-carrier-ledger-20260921',
+    evidence: { repository: 'mykcs/basemodel', gitSha: 'ff94a0943962955b236a7c176816918cdc16a4f3', route: '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/' },
+  },
 ];
 
 

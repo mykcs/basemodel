@@ -154,6 +154,39 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.threeWayFinal.boundary).toContain('not a third arm');
   });
 
+  it('publishes the 160-round carrier lifecycle without equating UPDATE frequency with runtime use', () => {
+    const carriers = study.carrierAnalysis;
+    expect(carriers.ordinary.parameterState).toMatchObject({ updates: 159, noops: 1 });
+    expect(carriers.ordinary.textMemory).toMatchObject({ updates: 2, noops: 158, updateRounds: [7, 95] });
+    expect(carriers.ordinary.skillBundle).toMatchObject({ updates: 1, noops: 159, updateRounds: [0] });
+    expect(carriers.ordinary.agentSystem).toMatchObject({ updates: 3, noops: 157, updateRounds: [41, 115, 148] });
+    expect(carriers.ordinary.runtimeReadback.recordedEnvironmentSteps).toBe(184_478);
+    expect(carriers.ordinary.runtimeReadback.skillBundle.selected).toBe(42_270);
+    expect(carriers.ordinary.runtimeReadback.textMemory.selected).toBe(142_208);
+    expect(carriers.ordinary.runtimeReadback.agentSystem.selected).toBe(175_820);
+
+    expect(carriers.bounded.parameterState).toMatchObject({ updates: 158, noops: 2 });
+    expect(carriers.bounded.textMemory).toMatchObject({ updates: 3, noops: 157 });
+    expect(carriers.bounded.skillBundle).toMatchObject({ updates: 0, noops: 160 });
+    expect(carriers.bounded.agentSystem).toMatchObject({ updates: 0, noops: 160 });
+    expect(carriers.bounded.producerModelCalls).toEqual({ textMemory: 72, skillBundle: 320, agentSystem: 320 });
+
+    expect(carriers.betaGating.parameterState).toMatchObject({ updates: 154, noops: 6 });
+    expect(carriers.betaGating.textMemory).toMatchObject({ updates: 2, noops: 158 });
+    expect(carriers.betaGating.skillBundle).toMatchObject({ updates: 0, noops: 160 });
+    expect(carriers.betaGating.agentSystem).toMatchObject({ updates: 0, noops: 160 });
+    expect(carriers.betaGating.producerModelCalls).toEqual({ textMemory: 22, skillBundle: 320, agentSystem: 320 });
+    expect(carriers.boundary).toContain('not runtime-use');
+    expect(study.evidence.q17CarrierAudit).toContain('240c479bead0450def3feaaa2a169d9a2bc3934c');
+
+    const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
+    expect(component).toContain('参数几乎每轮都在变；Text Memory、Skill 和 Agent System 只少量改动');
+    expect(component).toContain('NOOP 不等于“没有参与”');
+    expect(component).toContain('不等于参数通道对最终能力贡献最大');
+    expect(component).toContain('Completion-First Carrier Contract v2');
+    expect(component).toContain('study.evidence.q17CarrierAudit');
+  });
+
   it('keeps trainer/transition speedup separate from whole-Stage2 wall-clock time', () => {
     expect(study.timingComparison.directApply.trainerHours).toBeCloseTo(31.087279689253773, 10);
     expect(study.timingComparison.off.transitionHours).toBeCloseTo(2.024057791739987, 10);

@@ -250,12 +250,12 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
   },
   {
     id: 'PREF-BRIEFING-SELF-CONTAINED-METHOD',
-    title: '阶段汇报先给足以理解后续结果的最小方法背景',
-    statement: '现场观众不应被假定已经读过网站的其他方法页；在结果和机制之前，用一页或同等体量交代 Stage 1 / Stage 2 如何接续、轨迹由谁产生、MiniMax 在哪里回看，以及 OPSD / SD-LoRA / Text Memory / Skill / Agent System 各自扮演什么角色。',
-    scopes: ['research-copy', 'briefing'],
+    title: '结果页和阶段汇报先给足以理解结论的最小方法背景',
+    statement: '读者不应被假定已经读过网站的其他方法页；在结果和机制之前，交代 Stage 1 / Stage 2 如何接续，以及 OPSD / SD-LoRA / Text Memory / Skill / Agent System 各自扮演什么角色。若比较的是多轮 OpenEVO 实验，还要把这些状态在本次实验里的实际 UPDATE / NOOP 讲清，并把“状态没变”和“运行时没使用”分开。',
+    scopes: ['research-copy', 'briefing', 'results'],
     confidence: 'explicit-project',
     priority: 5,
-    retrievalTags: ['Stage 1', 'Stage 2', 'MiniMax', 'OPSD', 'SD-LoRA', 'Text Memory', 'Skill', 'Agent System', '方法', '背景', '现场观众'],
+    retrievalTags: ['Stage 1', 'Stage 2', 'MiniMax', 'OPSD', 'SD-LoRA', 'Text Memory', 'Skill', 'Agent System', 'UPDATE', 'NOOP', 'carrier', '方法', '背景', '结果页', '现场观众'],
     supportingCaseIds: ['CASE-089'],
     antiOvergeneralization: [
       '不是把完整方法文档复制进每场汇报；只保留理解紧接着科学结论所必需的心智模型。',
