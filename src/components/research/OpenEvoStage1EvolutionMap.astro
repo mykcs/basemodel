@@ -67,7 +67,7 @@ const evidence = [
 
     <div class="spine">
       <article class="node node--main">
-        <span>01 · HISTORICAL STAGE 1</span>
+        <span>{t('01 · 历史起点', '01 · HISTORICAL STAGE 1')}</span>
         <h3>{t('先按旧 Harness 收集 1,440 条轨迹', 'Collect 1,440 trajectories with the historical harness')}</h3>
         <p>{t(
           '基本任务预算从来没有变：180 个 WebShop 任务，每个任务 8 次 rollout，总共 1,440 条。问题不是“有没有数据”，而是 3B 的 exact success 太稀少，同时 invalid action / parser 行为让我们无法确定失败到底来自模型还是接口。',
@@ -78,7 +78,7 @@ const evidence = [
       <span class="connector"></span>
 
       <article class="node node--blocked">
-        <span>02 · DIAGNOSIS</span>
+        <span>{t('02 · 问题诊断', '02 · DIAGNOSIS')}</span>
         <h3>{t('发现真正的大问题：Harness 改动也在改变模型会不会“合法行动”', 'The harness itself was changing whether the model could act legally')}</h3>
         <p>{t(
           '我们一度把主要注意力放在 temperature / top-k，但交叉对照以后，最强的因果线索变成：升级 Harness 时把短小的模型自我推理一起删掉了，同时 action serialization 也不稳定。于是“模型不会做题”和“接口让动作失效”被混在了一起。',
@@ -88,8 +88,8 @@ const evidence = [
       <span class="connector"></span>
 
       <article class="node node--amend">
-        <span>03 · PAIRED MINI EXPERIMENTS</span>
-        <h3>{t('不直接重跑 1,440：先让 3B 和 1.7B 在同一套候选 Harness 上做成对小实验', 'Do paired 3B/1.7B diagnostics before another full 1,440 run')}</h3>
+        <span>{t('03 · 成对小实验', '03 · PAIRED MINI EXPERIMENTS')}</span>
+        <h3>{t('先用成对小实验筛选共享接口，再决定是否重跑 1,440', 'Use paired diagnostics to qualify the shared interface before another full 1,440 run')}</h3>
         <p>{t(
           '候选方案保留模型自己写出的 pre-action deliberation，同时由接口硬性保证 Allowed Actions 与 action opener。重点不是帮模型“作弊”，而是把机械格式错误从能力评估里拿掉。最终候选先通过 paired 64 + 64 的跨模型确认，再允许进入正式重采。',
           'The candidate keeps model-authored pre-action deliberation while the interface guarantees Allowed Actions and the action opener. The point is not to solve the task for the model, but to remove mechanical serialization failure from capability measurement. The final candidate passed paired 64 + 64 diagnostics before formal recollection.'
@@ -98,7 +98,7 @@ const evidence = [
       <span class="connector"></span>
 
       <article class="node node--main node--current">
-        <span>04 · FREEZE_ONE_SHARED_STAGE1_HARNESS</span>
+        <span>{t('04 · 冻结共享 Stage 1 接口', '04 · FREEZE SHARED STAGE-1 HARNESS')}</span>
         <h3>{t('冻结一套真正跨模型共享的 Stage 1', 'Freeze one genuinely shared Stage-1 harness')}</h3>
         <p>{t(
           'Freeze ID 是 202609030400。3B 与 1.7B 不允许按 model ID 偷偷走不同策略；只允许模型 ID、revision、dtype、chat-template thinking 开关和 run name 这些模型本身的差异。',
@@ -115,12 +115,12 @@ const evidence = [
 
       <div class="patch-lane" aria-label={t('正式启动前的工程修复', 'Engineering fixes before formal launch')}>
         <article>
-          <span>PATCH A · RESOLVED</span>
+          <span>{t('工程修复 A · 已解决', 'PATCH A · RESOLVED')}</span>
           <strong>{t('采样 readback 修复', 'Sampling readback fix')}</strong>
           <p>{t('外层 nominally 设成 T=1.0，但正式执行路径曾读到另一个还停在 0.4 的 module alias。修复的是实际 read path，不是重新改科学采样合同。', 'The outer wrapper nominally set T=1.0 while the real execution path read another module alias still at 0.4. The fix binds the actual read path without changing the qualified scientific sampling contract.')}</p>
         </article>
         <article>
-          <span>PATCH B · RESOLVED</span>
+          <span>{t('工程修复 B · 已解决', 'PATCH B · RESOLVED')}</span>
           <strong>{t('3B 模型路径修复', 'Stable 3B model-path fix')}</strong>
           <p>{t('旧 launcher 指向可被回收的 run-local snapshot；正式运行改绑稳定 canonical model path，并核对 hash。模型身份没有变。', 'The old launcher referenced a reclaimable run-local snapshot. Formal execution now binds the stable canonical model path and verifies hashes; model identity does not change.')}</p>
         </article>
@@ -128,8 +128,8 @@ const evidence = [
 
       <span class="connector"></span>
       <article class="node node--gate">
-        <span>05 · RAW CORPUS PASS GATE</span>
-        <h3>{t('Stage 1 的 PASS 不看“分数够不够高”，先看这批数据是不是科学上可用', 'Stage-1 PASS validates the corpus before asking whether the score is high')}</h3>
+        <span>{t('05 · 原始数据资格检查', '05 · RAW CORPUS QUALIFICATION')}</span>
+        <h3>{t('Stage 1 先检查数据是否科学可用，再讨论任务分数', 'Stage 1 qualifies scientific usability before interpreting task score')}</h3>
         <p>{t(
           '每个模型都必须独立做到 1,440 / 1,440 schedule coverage、180 × 8、所有 worker 正常退出、0 engineering invalid、0 invalid action termination、0 parser repair、0 constraint escape，并且每一步都有非空 pre-action deliberation 与真实 sampling readback。任务成功率不是 raw corpus 的 PASS gate。',
           'Each arm independently needs 1,440 / 1,440 schedule coverage, 180 × 8 tasks, clean worker exits, zero engineering invalids, zero invalid action termination, zero parser repair, zero constraint escape, non-empty pre-action deliberation receipts, and real sampling readback. Reward is not the raw-corpus PASS gate.'
@@ -138,8 +138,8 @@ const evidence = [
       <span class="connector"></span>
 
       <article class="node node--main">
-        <span>06 · AFTER RAW STAGE 1</span>
-        <h3>{t('1,440 条封存以后，还不能直接跳进 Stage 2', 'Sealing 1,440 trajectories is not permission to jump straight into Stage 2')}</h3>
+        <span>{t('06 · 初始经验完成后', '06 · AFTER RAW STAGE 1')}</span>
+        <h3>{t('封存 1,440 条轨迹后，先完成审计与学习材料构建', 'After 1,440 trajectories are sealed, complete audit and learning-material construction')}</h3>
         <p>{t(
           '下一步是 trajectory / provenance / behavior audit；通过后才让 MiniMax-M3 对 1,440 / 1,440 做任务后分析，形成 Frozen Teacher Evidence，再构造 OPSD、Text Memory、Skill Bundle、Agent System。只有这一整条链封口后才叫 STAGE1_SEALED。',
           'Next comes a trajectory / provenance / behavior audit. Only after it passes does MiniMax-M3 analyze all 1,440 completed trajectories to create Frozen Teacher Evidence, followed by OPSD, Text Memory, Skill Bundle, and Agent System construction. Only then is STAGE1_SEALED.'

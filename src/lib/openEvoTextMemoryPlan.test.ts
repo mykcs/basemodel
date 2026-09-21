@@ -33,7 +33,8 @@ describe('Text Memory receipt-based research projection', () => {
   });
   it('keeps five cases and both stages distinct', () => {
     for (const label of ['Stage1 · 2048', 'Stage1 · 2048 → 4096', 'Stage1 · 20 → 10+10', 'Stage2 · R104', 'Stage2 · R122']) expect(component).toContain(label);
-    expect(component).toContain('R104 两次重复；R122 先写满，再重复');
+    expect(component).toContain('第一次和唯一一次修复，都把旧笔记重复写了两遍');
+    expect(component).toContain('第一次写满 1024 上限且不合法；第二次没有写满，但重复旧笔记');
     expect(evidence.r104.primary.exact_prior_double).toBe(true);
     expect(evidence.r104.repair.exact_prior_double).toBe(true);
     expect(evidence.r122.primary.exact_prior_double).toBe(false);

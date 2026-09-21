@@ -39,7 +39,7 @@ const summarySteps = zh ? [
   { id: 'falsify', kicker: '检查解释', title: '检查几种解释：步数、随机性和历史信息单独都不够', summary: '同一批配对任务从 15 步改为 30 步，成绩差值为 0；把动作随机性的温度设为 1.0，或使用 SEED 的历史呈现方式，都改变了行为，但单独调整仍不足以解释表现恢复。', detail: '这些小实验没有白跑：它们把搜索范围从“给模型更多机会”缩到 prompt / deliberation / action channel。', outcome: '研究从宽泛调参转向接口语义。', state: '单独不足以解释恢复' },
   { id: 'interface', kicker: '更强线索', title: '动作前的思考与动作格式成为关键线索', summary: '恢复模型自己写的动作前短思考，并区分动作格式造成的失败与模型购物决策造成的失败。', detail: 'Harness 可以拥有 action opener 和合法动作 envelope，但不能替模型从合法动作里挑答案。', outcome: '形成减少动作格式错误、不提供具体购物解法的候选接口。', state: '候选形成' },
   { id: 'freeze', kicker: '配对验证', title: '两种模型都通过接口检查，才固定初始采集规则', summary: `每种模型按相同规则尝试 ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} 次；动作随机性的温度为 ${OPEN_EVO_STAGE1_FREEZE.temperature}，每次最多 ${OPEN_EVO_STAGE1_FREEZE.maxSteps} 步。`, detail: '不能为 3B 单独加“更会做题”的 Harness；模型差异允许存在，model-ID-specific strategy 不允许。', outcome: '从诊断阶段进入真正可比较的 canonical Stage1。', state: '已冻结' },
-  { id: 'after-seal', kicker: '封存以后', title: '先记录初始表现，再分析经验并准备学习材料', summary: `${arm3.model} 完全成功 ${arm3.exact}/${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} 次；${arm17.model} 完全成功 ${arm17.exact}/${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} 次。购物结束后由 MiniMax 分析已保存记录。按预定容量规则，只有同一组 20 条输入的初次整理和同输入重试都达到容量上限后，才固定拆分为前 10 条与后 10 条；这一处理不增加购物尝试。准备检查通过后，这段设计历史结束；正式学习仍需独立授权。`, detail: 'PRE_STAGE2_READY 只说明下游材料可加载；Stage2 仍需独立 activation。', outcome: '学习材料准备完成；后续训练仍需独立授权。', state: '初始记录已固定' },
+  { id: 'after-seal', kicker: '封存以后', title: '先记录初始表现，再分析经验并准备学习材料', summary: `${arm3.model} 完全成功 ${arm3.exact}/${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} 次；${arm17.model} 完全成功 ${arm17.exact}/${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} 次。购物结束后由 MiniMax 分析已保存记录。按预定容量规则，只有同一组 20 条输入的初次整理和同输入重试都达到容量上限后，才固定拆分为前 10 条与后 10 条；这一处理不增加购物尝试。准备检查通过后，这段设计历史结束；正式学习仍需独立授权。`, detail: '准备检查只说明下游学习材料可加载；Stage 2 仍需独立授权。', outcome: '学习材料准备完成；后续训练仍需独立授权。', state: '初始记录已固定' },
 ] : [
   { id: 'symptom', kicker: 'PROBLEM', title: '3B trajectories were weak, but “the model is small” was not enough', summary: 'Exact success was sparse while invalid / serialization behavior was common.', detail: 'The research question became whether this was a capability ceiling or a harness that corrupted measurement.', outcome: 'Separate model inability from interface-induced failure.', state: 'Starting point' },
   { id: 'falsify', kicker: 'TESTING EXPLANATIONS', title: 'Test simple explanations: more steps, sampling, and history are not enough', summary: 'The 30-step paired delta was zero; T=1.0 and SEED-native history changed behavior but did not explain recovery alone.', detail: 'These diagnostics narrowed the search from generic tuning toward prompt, deliberation, and the action channel.', outcome: 'Move from broad tuning to interface semantics.', state: 'Insufficient alone' },
@@ -151,7 +151,7 @@ const summarySteps = zh ? [
     <span class="rail"></span>
 
     <article class="quest quest--amend" data-quest="action-channel">
-      <span>03 · ACTION CHANNEL REDESIGN</span>
+      <span>{t('03 · 动作通道重设计','03 · ACTION CHANNEL REDESIGN')}</span>
       <h2>{t('动作格式与动作选择', 'Separate “right intent, broken serialization” from capability')}</h2>
       <p>{t('一些记录里的动作指向了真实按钮，但外层格式写错，商店无法接收。新接口负责动作的开头格式，并限制输出为当前页面允许的动作；模型仍需自己选择哪个动作。', 'Malformed wrappers often still revealed intent to choose a real admissible action. The interface therefore owns the action opener and constrains the action token prefix to current Allowed actions, while parser repair and unconstrained fallback remain disabled.')}</p>
       <strong>{t('接口减少动作格式造成的失败；购物选择仍由模型负责。', 'The interface reduces failures caused by action formatting; the model remains responsible for its shopping choices.')}</strong>
@@ -159,7 +159,7 @@ const summarySteps = zh ? [
 
     <div class="patch-lane" aria-label={t('不改变科学合同的工程绕路', 'Engineering detours that do not change the scientific contract')}>
       <article data-fix="sampling-readback"><span>PATCH · RUNTIME READBACK</span><strong>{t('配置写 T=1.0 不等于真正执行读到了 T=1.0', 'Writing T=1.0 in config does not prove runtime read T=1.0')}</strong><p>{t('曾发现 wrapper intent 是 1.0，但实际 module alias 仍读 0.4。修复 read path 并加 runtime receipt；这是 provenance 修复，不重新定义 sampling hypothesis。', 'A wrapper intended 1.0 while the execution module still read 0.4. The read path and runtime receipt were fixed; this is provenance repair, not a new sampling hypothesis.')}</p></article>
-      <article data-fix="model-path"><span>PATCH · MODEL PATH</span><strong>{t('run-local snapshot 会被回收', 'Run-local snapshots can be reclaimed')}</strong><p>{t('正式 launcher 改绑 stable canonical model path 并核对 revision/hash。模型身份不变，因此这是 engineering fix。', 'Formal launchers bind a stable canonical model path and verify revision/hash. Model identity is unchanged, so this remains an engineering fix.')}</p></article>
+      <article data-fix="model-path"><span>{t('工程修复 · 模型路径','PATCH · MODEL PATH')}</span><strong>{t('run-local snapshot 会被回收', 'Run-local snapshots can be reclaimed')}</strong><p>{t('正式 launcher 改绑 stable canonical model path 并核对 revision/hash。模型身份不变，因此这是 engineering fix。', 'Formal launchers bind a stable canonical model path and verify revision/hash. Model identity is unchanged, so this remains an engineering fix.')}</p></article>
     </div>
     <span class="rail"></span>
 
@@ -172,7 +172,7 @@ const summarySteps = zh ? [
     <span class="rail"></span>
 
     <article class="quest quest--freeze quest--current" data-quest="freeze">
-      <span>05 · FREEZE_ONE_SHARED_STAGE1_HARNESS · {OPEN_EVO_STAGE1_FREEZE.id}</span>
+      <span>{t('05 · 冻结共享 Stage 1 接口', '05 · FREEZE SHARED STAGE-1 HARNESS')} · {OPEN_EVO_STAGE1_FREEZE.id}</span>
       <h2>{t('正式采集规则', 'Only now freeze the formal shared Stage 1')}</h2>
       <p>{t(`两边都固定完成 ${OPEN_EVO_STAGE1_FREEZE.tasks} 道任务，每题 ${OPEN_EVO_STAGE1_FREEZE.rolloutsPerTask} 次尝试，共 ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm} 次，每次最多 ${OPEN_EVO_STAGE1_FREEZE.maxSteps} 步。采样温度固定为 ${OPEN_EVO_STAGE1_FREEZE.temperature}。记录验收检查任务覆盖、动作过程与来源，不用得分高低决定是否保留。`, `Both arms are frozen to ${OPEN_EVO_STAGE1_FREEZE.tasks} tasks × ${OPEN_EVO_STAGE1_FREEZE.rolloutsPerTask} rollouts = ${OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm}, max_steps=${OPEN_EVO_STAGE1_FREEZE.maxSteps}, T=${OPEN_EVO_STAGE1_FREEZE.temperature}. Reward is not the raw-corpus PASS gate; schedule, mechanics, and provenance come first.`)}</p>
       <a href={OPEN_EVO_EVIDENCE_LINKS.sharedStage1Pr} target="_blank" rel="noreferrer"><ExternalBrandMark href={OPEN_EVO_EVIDENCE_LINKS.sharedStage1Pr} />PR #270 · authority</a>
@@ -180,7 +180,7 @@ const summarySteps = zh ? [
     <span class="rail"></span>
 
     <article class="quest quest--evidence" data-quest="raw-results">
-      <span>06 · CANONICAL RAW STAGE 1</span>
+      <span>{t('06 · 正式原始 Stage 1','06 · CANONICAL RAW STAGE 1')}</span>
       <h2>{t('共同规则下的初始差异', 'A shared harness does not make the two models behave the same')}</h2>
       <div class="result-pair">
         <div><b>{arm3.model}</b><strong>{arm3.exact}/{OPEN_EVO_STAGE1_FREEZE.trajectoriesPerArm}</strong><span>{arm3.exactRate} exact · {arm3.positive} positive</span></div>
@@ -191,7 +191,7 @@ const summarySteps = zh ? [
     <span class="rail"></span>
 
     <article class="quest quest--main" data-quest="minimax">
-      <span>07 · AFTER RAW SEAL</span>
+      <span>{t('07 · 原始数据封存后','07 · AFTER RAW SEAL')}</span>
       <h2>{t('购物结束后的经验分析', 'Only after sealing raw trajectories does MiniMax enter: review, not action-taking')}</h2>
       <p>{t('两边都先固定保存 1,440 次购物尝试，再让 MiniMax 阅读已有记录并反馈。分析不产生新的购物动作，初始成绩保持不变。', 'Both READY_FOR_MINIMAX receipts bind 1,440 source trajectories and record new_webshop_calls=0. MiniMax produces post-hoc evidence and cannot reach backward to change raw Stage 1.')}</p>
     </article>
@@ -220,7 +220,7 @@ const summarySteps = zh ? [
     <span class="rail"></span>
 
     <article class="quest quest--boundary" data-quest="prestage2">
-      <span>09 · PRE_STAGE2_READY</span>
+      <span>{t('09 · 学习材料准备检查', '09 · PRE-STAGE-2 READINESS')}</span>
       <h2>{t('当时的初始准备结束', 'Stage-1 downstream readiness still does not automatically start Stage 2')}</h2>
       <p>{t('当时，两种模型的参数增量、文本记忆、技能和系统指令都通过了加载与来源检查。准备检查完成后，后续学习仍需另一份独立授权。', 'Both PRE_STAGE2_READY receipts bind adapter, Memory, Skill, Agent, and provenance with status=PASS, while also stating stage2_authorized=false and requiring a separate activation.')}</p>
       <details><summary>{t('当时的准备记录', 'Readiness record at that time')}</summary><p><code>stage2_authorized=false</code> · <code>requires separate activation</code></p></details>

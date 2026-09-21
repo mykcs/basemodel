@@ -28,7 +28,7 @@ describe('OpenEvo experiment design catalog', () => {
   it('groups recent config objects into seven reader-facing design families', () => {
     for (const id of familyIds) expect(catalog).toContain(id);
     for (const title of [
-      'Shared Stage1 Harness and Deliberation',
+      '共享 Stage 1 的购物接口与思考条件',
       'Fresh Stage1 202609021800',
       'Stage1 MiniMax Post-Hoc Analysis',
       'OPSD v2 Parametric Bootstrap',

@@ -133,7 +133,7 @@ const repo = 'https://github.com/mykcs/openevo-experiment/blob/a9100d67ca436532a
     </section>
 
     <section class="same-budget" aria-labelledby="same-budget-title">
-      <span class="section-no">03 · SAME TOKENS?</span>
+      <span class="section-no">03 · 同样 token 数公平吗？</span>
       <h2 id="same-budget-title">“同样 Token 数，Kimi 会不会更聪明？”——这个问题要换一种控制方式</h2>
       <div class="budget-flow">
         <article>
@@ -158,7 +158,7 @@ const repo = 'https://github.com/mykcs/openevo-experiment/blob/a9100d67ca436532a
 
     <section class="resources" aria-labelledby="resource-title">
       <div class="section-heading">
-        <span class="section-no">04 · WHAT WE ACTUALLY SPENT</span>
+        <span class="section-no">04 · 实际消耗</span>
         <div>
           <h2 id="resource-title">MiniMax-M3 最终 primary pass：3B 和 7B 已经可以完全拆开</h2>
           <p>以下来自 H1.46 最终 `thinking=adaptive` 两个 summary，不是从控制台总数反推。</p>
@@ -206,7 +206,7 @@ const repo = 'https://github.com/mykcs/openevo-experiment/blob/a9100d67ca436532a
 
     <section class="account-window" aria-labelledby="account-title">
       <div class="account-copy">
-        <span class="section-no">05 · WHY THE CONSOLE SAID 27.66M</span>
+        <span class="section-no">05 · 控制台数字为什么不同</span>
         <h2 id="account-title">控制台没有错：当天其实还跑过一次完整的更早分析</h2>
         <p>
           最终科学 treatment 只应该报告 14.01M。MiniMax 账户窗口则还包含更早的一次 13.17M full pass、qualification / pairing / retry 等活动。
@@ -231,7 +231,7 @@ const repo = 'https://github.com/mykcs/openevo-experiment/blob/a9100d67ca436532a
     </section>
 
     <section class="next-test" aria-labelledby="next-title">
-      <span class="section-no">06 · NEXT SCIENTIFIC MOVE</span>
+      <span class="section-no">06 · 下一步科学比较</span>
       <h2 id="next-title">下一笔 Token，应该花在 128 条同轨迹 head-to-head，而不是重跑 MiniMax 2,880 条</h2>
       <ol class="protocol">
         <li><b>冻结 128 条 trajectory</b><span>64 条来自 3B、64 条来自 7B；预注册 success/failure 与长度分层。</span></li>
@@ -244,7 +244,7 @@ const repo = 'https://github.com/mykcs/openevo-experiment/blob/a9100d67ca436532a
         <div class="axis-y">teacher quality ↑</div>
         <div class="axis-x">cost / fixed workload →</div>
         <span class="point minimax" style="left:36%;bottom:28%"><i></i><b>MiniMax-M3</b><small>cost measured · quality pending</small></span>
-        <span class="point glm" style="left:55%;bottom:58%"><i></i><b>GLM-5.2</b><small>SEED reference · pending WHTB</small></span>
+        <span class="point glm" style="left:55%;bottom:58%"><i></i><b>GLM-5.2</b><small>SEED 参考点 · WHTB 待实测</small></span>
         <span class="point kimi" style="left:72%;bottom:66%"><i></i><b>Kimi K3</b><small>pending source + WHTB</small></span>
         <span class="point gpt" style="left:78%;bottom:78%"><i></i><b>GPT</b><small>pending exact model + WHTB</small></span>
         <p>虚线点只表示“待测候选”，纵向位置不是能力排名。</p>

@@ -48,6 +48,19 @@ describe('Agent scenario-trigger discovery', () => {
     expect(conversationCloseoutEntry).toContain('does **not** copy the protocol body');
   });
 
+  it('makes temporary site-wide exemptions owner-bound and self-expiring', () => {
+    expect(engineering).toContain('Temporary exemptions are leases, not permanent blind spots');
+    expect(engineering).toContain('current owner or PR/workline');
+    expect(engineering).toContain('repository-observable removal trigger');
+    expect(engineering).toContain('anonymous or open-ended exemption cannot support a site-wide-complete claim');
+  });
+
+  it('routes missing post-merge Production objects to an exact-main Git-source fallback', () => {
+    expect(releaseCloseout).toContain('deploy-relevant `main` merge produces no Production deployment object');
+    expect(releaseCloseout).toContain('Git-source Production fallback');
+    expect(releaseCloseout).toContain('Do not promote the accepted Preview');
+  });
+
   it('routes advisor briefings through live experiment authority and presentation-role checks', () => {
     expect(registry).toContain('Advisor briefing / slides / projected-deck specialization');
     expect(registry).toContain('the current website is publication state, not experiment-inventory authority');

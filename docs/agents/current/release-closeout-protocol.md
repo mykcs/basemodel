@@ -552,6 +552,8 @@ is the GitHub status callback describing a real deployment or only provider stat
 
 A non-PR Preview intentionally skipped by deployment policy is a **policy outcome**, not a provider outage. An open PR is expected to produce an automatic Vercel acceptance path; absence of that path is therefore an actionable integration/policy defect, not something to paper over with a no-op commit.
 
+The same fail-closed rule applies **after merge**. If a deploy-relevant `main` merge produces no Production deployment object for the exact merge SHA, an accepted Preview and an older READY Production deployment are not a complete release. Follow `deployment-policy.md`'s exact-main **Git-source Production fallback**: preserve `main` Git identity, rebuild as `target=production`, run the normal Production gates, and verify the stable alias after `READY`. Do not promote the accepted Preview, because promotion does not rebuild the merged `main` tree or prove the Production gate.
+
 Do not create no-op commits/ref mutations merely to probe whether Git integration will “wake up”. Shared repository state is not a provider-discovery scratchpad; use provider/repository reads first.
 
 ## 13. Escaped regressions must be permanently wired, not merely tested once

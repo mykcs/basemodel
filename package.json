@@ -50,7 +50,7 @@
     "audit:v2:adversarial": "tsx scripts/audit-v2-adversarial.ts",
     "verify:deploy": "npm run lint && npm run verify:gates:negative && npm run check && npm run audit:css && npm run validate && npm run audit:semantic && npm run audit:claims && npm run audit:freshness && npm test && npm run audit:v2 && npm run audit:v2:adversarial && npm run audit:hardening && npm run audit:copy:strict && npm run audit:reader-contracts && npm run audit:human-feedback",
     "verify:v2": "npm run check && npm run audit:css && npm run validate && npm run audit && npm test && npm run build && npm run test:e2e && npm run audit:v2 && npm run audit:v2:adversarial && npm run audit:hardening",
-    "build": "astro build && npm run audit:headings && npm run audit:brand-links && npm run audit:math:rendered",
+    "build": "astro build && npm run audit:headings && npm run audit:brand-links && npm run audit:math:rendered && npm run audit:hpl:rendered",
     "verify:payload": "node scripts/assert-payload-budget.mjs",
     "build:cloudflare": "node scripts/build-cloudflare.mjs",
     "build:workers:shadow": "node scripts/build-workers-shadow.mjs",
@@ -70,6 +70,7 @@
     "audit:human-feedback": "tsx scripts/audit-human-feedback-precedents.ts",
     "audit:math": "tsx scripts/audit-public-math-rendering.ts",
     "audit:math:rendered": "node scripts/audit-rendered-public-math.mjs",
+    "audit:hpl:rendered": "node scripts/audit-rendered-hpl.mjs",
     "feedback:ingestion-closeout": "tsx scripts/verify-human-feedback-ingestion-closeout.ts"
   },
   "dependencies": {

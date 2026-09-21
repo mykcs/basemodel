@@ -28,7 +28,8 @@ describe('OpenEvo 3B + 1.7B successor dual narrative', () => {
     expect(exploration).not.toContain('ROGUELIKE RESEARCH MAP · EXPLORATION');
     expect(exploration).toContain('步数上限：15 步与 30 步');
     expect(exploration).toContain('30 → 15');
-    expect(exploration).toContain('FREEZE_ONE_SHARED_STAGE1_HARNESS');
+    expect(exploration).toContain('05 · 冻结共享 Stage 1 接口');
+    expect(exploration).toContain('OPEN_EVO_STAGE1_FREEZE.id');
     expect(exploration).toContain('PATCH · MODEL PATH');
     expect(exploration).toContain('4096 失败 → bounded A2');
     expect(exploration).toContain('PRE_STAGE2_READY');
@@ -61,8 +62,8 @@ describe('OpenEvo 3B + 1.7B successor dual narrative', () => {
   });
 
   it('preserves the scientific fairness boundary instead of claiming zero scaffolding', () => {
-    expect(fairness).toContain('strategy-neutral bootstrap harness');
-    expect(fairness).toContain('不是“零脚手架裸跑”');
+    expect(fairness).toContain('共享接口只约束合法动作与通用短推理，不提供具体购物策略');
+    expect(fairness).toContain('公平性来自两边使用同一套接口与预算语义');
     expect(fairness).toContain('task-solving strategy');
     expect(fairness).toContain('hard action envelope');
     expect(fairness).toContain('external teacher actions');

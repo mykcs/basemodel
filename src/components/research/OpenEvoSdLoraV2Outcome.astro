@@ -75,7 +75,7 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
       <b aria-hidden="true">→</b>
       <div><strong>{t('训练轨迹变了', 'Trajectory changed')}</strong><span>BF16 backward</span></div>
       <b aria-hidden="true">→</b>
-      <div class="strict-flow__stop"><strong>{t('严格等价路线停止', 'Strict-equivalence route stopped')}</strong><span>NO_STRICT_SUCCESSOR</span></div>
+      <div class="strict-flow__stop"><strong>{t('严格等价路线停止', 'Strict-equivalence route stopped')}</strong><span>{t('候选没有保持严格等价', 'No strict-equivalence successor')}</span></div>
     </div>
     <p class="sdlora-v2__plain-result">{t(
       '所以这里失败的不是“加速 SD-LoRA”。失败的是更苛刻的目标：既明显更快，又完全沿着旧 Vanilla 的有效 BF16 训练语义走。Candidate A v3 最后在第一道严格门槛就失败，而 untouched control 能逐 bit 复现 reference，于是我们按预注册规则停了，没有继续用后面的漂亮速度数字来“救”它。',
@@ -214,7 +214,7 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
       <div><strong>{t('WebShop paired 检查', 'Paired WebShop check')}</strong><p>{t('16 个预先冻结的非-final train-namespace tasks × 8 rollouts；两臂各 128 条 task-bearing attempts，engineering-invalid 都是 0。', 'Sixteen preregistered non-final train-namespace tasks × eight rollouts; each arm completed 128 task-bearing attempts with zero engineering-invalid attempts.')}</p><a href={v3EvidenceHref}><ExternalBrandMark href={v3EvidenceHref} />V3_CLOSEOUT_RECEIPT.json</a></div>
       <div><strong>{t('一次无效执行没有被混进科学结果', 'One invalid execution was kept out of the science result')}</strong><p>{t('第一次 V3 runner 因采样接口不兼容，256/256 都是 engineering-invalid，task-bearing=0。它被单独封存；修完接口以后才按同一批 identity 重跑。', 'The first V3 runner had a sampling-interface mismatch: 256/256 attempts were engineering-invalid and task-bearing=0. That attempt was sealed separately; the exact same identities were rerun only after the interface was repaired.')}</p></div>
     </div>
-    <p class="evidence-links"><a href={evidenceHref}>{t('公开结果 JSON', 'Public result JSON')}</a><a href={planHref}><ExternalBrandMark href={planHref} />{t('完整计划与 claim boundary', 'Full plan and claim boundary')}</a></p>
+    <p class="evidence-links"><a href={evidenceHref}>{t('公开结果 JSON', 'Public result JSON')}</a><a href={planHref}><ExternalBrandMark href={planHref} />{t('完整计划与结论边界', 'Full plan and claim boundary')}</a></p>
   </details>
 
   <OpenEvoSdLoraHistorySeriesNav locale={locale} />
