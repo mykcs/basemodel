@@ -80,9 +80,16 @@ const wandbSnapshots = [
 const math = {
   history: String.raw`W_t = W_0 + \sum_{i=1}^{t} \Delta W_i`,
   bounded: String.raw`S_t = \operatorname{Compress}_{128}\!\left(S_{t-1}+\Delta_t\right)`,
+  deltaFromRegression: String.raw`\mathcal{L}_t(S)=\frac12\lVert S k_t-v_t\rVert_2^2
+  \quad\Longrightarrow\quad
+  S_t=S_{t-1}+\beta_t\left(v_t-S_{t-1}k_t\right)k_t^{\top}`,
   gdr: String.raw`S_t = \alpha_t S_{t-1}\left(I-\beta_t k_t k_t^{\top}\right)+\beta_t v_t k_t^{\top}`,
   residual: String.raw`\begin{aligned}\widetilde S_{t-1} &= \alpha_t S_{t-1} \\ r_t &= v_t-\widetilde S_{t-1}k_t \\ S_t &= \widetilde S_{t-1}+\beta_t r_t k_t^{\top}\end{aligned}`,
   gauge: String.raw`\Delta W = C A^{\top},\qquad A\mapsto sA,\quad C\mapsto C/s\quad\Longrightarrow\quad \Delta W\;\text{unchanged}`,
+  gZero: String.raw`g=0`,
+  alphaOne: String.raw`\alpha=1`,
+  factorFailureBeta: String.raw`\beta=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}`,
+  mappingFailureBeta: String.raw`\beta_{\mathrm{eff}}=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}`,
   beta: String.raw`\beta_t=f_{\theta}(x_t),\qquad x_t\in\mathbb{R}^{${study.posthocAnalysis.gdr.betaControllerFeatures}}`,
   effective: String.raw`S_t^{\mathrm{GDR}}=\operatorname{Compress}_{128}\!\left(S_{t-1}+\operatorname{Gate}_{\beta_t}(\Delta_t)\right)`,
 };
@@ -223,8 +230,13 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
 
     <h3>2.2 {t('GDR：从 linear attention 的“记忆写入”借一个规则', 'GDR: borrow a memory-write rule from linear attention')}</h3>
     <p>{t(
-      'Gated Delta Rule 的核心不是“线性 attention 更快”这件事，而是它怎样更新一个持续存在的 State：先保留或衰减旧 State，再读出已有内容，最后只把没有解释掉的 residual 按 β 写回。',
-      'The useful idea from the Gated Delta Rule is not simply that linear attention is fast. It is the recurrent state update: retain or decay the old state, read what is already stored, then write back only the unexplained residual with strength β.',
+      '在序列建模里，可以把 State 看成一个“用 key 预测 value”的快速权重矩阵。对最普通的平方误差做一步 SGD，就会得到 Delta Rule：先用旧 State 读出已有内容，再把没有解释掉的 residual 写回。',
+      'In sequence modeling, State can be viewed as a fast-weight matrix that predicts a value from a key. One SGD step on an ordinary squared-error objective gives the Delta Rule: read what prior State already explains, then write back the remaining residual.',
+    )}</p>
+    <MathFormula latex={math.deltaFromRegression} label={t('从 online regression 一步推到 Delta residual write', 'One-step derivation from online regression to the Delta residual write')} />
+    <p>{t(
+      'Gated Delta 再给旧 State 加一个 retention α：α 决定先保留多少历史，β 决定这次 residual 写多强。',
+      'Gated Delta then adds a retention factor alpha to the prior State: alpha controls how much history is kept, while beta controls the strength of the residual write.',
     )}</p>
     <MathFormula latex={math.gdr} label={t('Gated Delta Rule 原始状态更新公式', 'Original Gated Delta Rule state update')} />
     <p class="paper__math-caption">{t('论文原式：α 控制旧 State 的保留 / 衰减，β 控制 delta write 的强度。', 'Paper form: α controls retention / decay of the old State, while β controls delta-write strength.')}</p>
@@ -233,7 +245,11 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
       'Rewriting the paper equation in residual form gives the exactly equivalent expression below, which is easier to compare with our parameter-write process. Under the paper’s d_v × d_k State convention, the residual is on the left: r_t k_t^T, not k_t r_t^T.',
     )}</p>
     <MathFormula latex={math.residual} label={t('Gated Delta Rule 的等价 residual 形式', 'Equivalent residual form of the Gated Delta Rule')} />
-    <p class="paper__links"><a href={gdrPaperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={gdrPaperHref} />Gated Delta Networks · ICLR 2025</a> · <a href={gatedHref}>{t('我们前一版 Gated-Delta 推导 →', 'Our earlier Gated-Delta derivation →')}</a></p>
+    <p class="paper__math-boundary">{t(
+      '严格等价到这里为止：online regression、论文原式和 residual 形式描述的是同一个 sequence State 更新。下一节把这些数学角色迁到 OpenEVO 参数 State；那是逐角色对应，不是 k / v 与 LoRA 张量的逐元素 1:1 等式。',
+      'Exact equivalence ends here: the online-regression view, paper equation, and residual form describe the same sequence-State update. The next section maps those mathematical roles into OpenEVO parameter State; that is a role-level correspondence, not an elementwise k/v-to-LoRA tensor identity.',
+    )}</p>
+    <p class="paper__links"><a href={gdrPaperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={gdrPaperHref} />Gated Delta Networks · ICLR 2025</a> · <a href={gatedHref}>{t('完整推导：从 sequence State 到 OpenEVO 参数写入 →', 'Full derivation: from sequence State to OpenEVO parameter writes →')}</a></p>
 
     <h3>2.3 {t('从 sequence State 映射到 OpenEVO 的参数 State', 'Mapping sequence State to OpenEVO parameter State')}</h3>
     <p>{t(
@@ -247,16 +263,23 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
           <tr><td>State S</td><td>{t('固定 rank128 的长期参数状态', 'fixed-rank128 long-term parameter state')}</td><td>{t('跨轮保留', 'persistent across rounds')}</td></tr>
           <tr><td>residual write</td><td>{t('当前训练真正想写进 LoRA 的有效更新', 'effective LoRA write proposed by current training')}</td><td>{t('由 AdamW / LoRA 当前更新产生', 'from the current AdamW / LoRA update')}</td></tr>
           <tr><td>β</td><td>{t('这一小步允许写多强', 'how strongly this step may write')}</td><td>{t('本实验真正启用的动态控制量', 'the dynamic control actually enabled in this study')}</td></tr>
-          <tr><td>α / g</td><td>{t('旧参数状态保留多少', 'how much prior state is retained')}</td><td>{t('本实验固定 g = 0，因此 α = 1：不额外衰减旧 State', 'this study fixes g = 0, hence α = 1: no extra decay of the prior State')}</td></tr>
+          <tr><td>α / g</td><td>{t('旧参数状态保留多少', 'how much prior state is retained')}</td><td>{t('本实验固定', 'this study fixes')} <MathFormula latex={math.gZero} display={false} />{t('，因此', ', hence')} <MathFormula latex={math.alphaOne} display={false} />{t('：不额外衰减旧 State', ': no extra decay of the prior State')}</td></tr>
           <tr><td>k / v</td><td>{t('保留“读旧状态 / 写 residual”的语义', 'retain the read-state / residual-write semantics')}</td><td>{t('不把 sequence 张量逐字映射成参数张量', 'not a literal tensor-to-tensor mapping')}</td></tr>
         </tbody>
       </table>
     </div>
 
-    <p>{t(
-      '因此，我们并不是把完整的 Gated DeltaNet 原封不动搬到参数空间。第一版正式实验保留“长期 State + residual write + 动态 β”这三件事，但把 α 固定为 1；这让实验只回答“控制新经验写入强度有没有帮助”，而不同时引入“主动遗忘旧参数状态”这个第二变量。',
-      'We therefore do not transplant the full Gated DeltaNet into parameter space. The first formal study keeps persistent State, residual write, and dynamic β, while fixing α=1. This isolates the question of controlling new-write strength without simultaneously introducing active forgetting of the old parameter State.',
-    )}</p>
+    <p>
+      {t(
+        '因此，我们并不是把完整的 Gated DeltaNet 原封不动搬到参数空间。第一版正式实验保留“长期 State + residual write + 动态 β”这三件事，但把',
+        'We therefore do not transplant the full Gated DeltaNet into parameter space. The first formal study keeps persistent State, residual write, and dynamic β, while fixing',
+      )}{' '}
+      <MathFormula latex={math.alphaOne} display={false} />
+      {t(
+        '；这让实验只回答“控制新经验写入强度有没有帮助”，而不同时引入“主动遗忘旧参数状态”这个第二变量。',
+        '. This isolates the question of controlling new-write strength without simultaneously introducing active forgetting of the old parameter State.',
+      )}
+    </p>
 
     <h3>2.4 {t('为什么不能直接在 LoRA 的 A / C 因子上做约束', 'Why the gate cannot operate directly on raw LoRA factors')}</h3>
     <p>{t(
@@ -264,10 +287,22 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
       'The same effective LoRA update can be represented by many A/C factor values. Multiplying A by s and dividing C by s leaves the actual matrix update unchanged, so raw factor magnitudes contain coordinate choice rather than only learning content.',
     )}</p>
     <MathFormula latex={math.gauge} label={t('LoRA 因子缩放不改变有效更新', 'LoRA factor rescaling leaves the effective update unchanged')} />
-    <p>{t(
-      `这也是为什么第一版“直接控制 LoRA 因子”的映射会失败：空历史起点的 C 侧检查给出 β=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}，已经跑出合法区间；只修映射但继续沿用旧 β 控制器时，真实轨迹上甚至得到 β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}。所以最终方法控制的是不受 LoRA 因子缩放方式影响的有效参数写入 ΔW，而不是 A / C 因子本身的位移。`,
-      `This is why the first factor-space mapping failed: at the empty-history start, the C-side check produced β=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}, outside the legal range; after fixing only the mapping but keeping the old controller, the real trajectory produced β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}. The final treatment therefore controls a gauge-invariant effective write rather than raw A/C displacement.`,
-    )}</p>
+    <p>
+      {t(
+        '这也是为什么第一版“直接控制 LoRA 因子”的映射会失败：空历史起点的 C 侧检查给出',
+        'This is why the first factor-space mapping failed: at the empty-history start, the C-side check produced',
+      )}{' '}
+      <MathFormula latex={math.factorFailureBeta} display={false} />
+      {t(
+        '，已经跑出合法区间；只修映射但继续沿用旧 β 控制器时，真实轨迹上甚至得到',
+        ', outside the legal range; after fixing only the mapping but keeping the old controller, the real trajectory produced',
+      )}{' '}
+      <MathFormula latex={math.mappingFailureBeta} display={false} />
+      {t(
+        '。所以最终方法控制的是不受 LoRA 因子缩放方式影响的有效参数写入 ΔW，而不是 A / C 因子本身的位移。',
+        '. The final treatment therefore controls a gauge-invariant effective write rather than raw A/C displacement.',
+      )}
+    </p>
     <MathFormula latex={math.beta} label={t('动态 beta 控制器', 'Dynamic beta controller')} compact />
     <p class="paper__math-caption">{t('冻结 controller · 只看局部参数 / 梯度 / Adam 状态，不看 reward、Task Score、Task Vector。', 'Frozen controller · local parameter / gradient / Adam state only; no reward, Task Score, or Task Vector.')}</p>
     <MathFormula latex={math.effective} label={t('GDR 映射到参数 State 后的概念式', 'Conceptual GDR update after mapping to parameter State')} compact />
@@ -564,6 +599,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
   .paper-table--ablation td:nth-child(n+2),.paper-table--ablation th:nth-child(n+2){text-align:center}
   .paper-table-wrap--hero{margin-top:16px;overflow-x:auto}
   .paper__math-caption{max-width:880px;margin:-.45rem 0 1rem;color:var(--text-secondary);font-size:1rem;line-height:1.6}
+  .paper__math-boundary{max-width:880px;margin:1rem 0;padding:.85rem 0 .85rem 1rem;border-left:3px solid var(--border-color);color:var(--text-secondary);font-size:1rem;line-height:1.65}
   .paper__math-symbol{font-family:serif;font-style:italic}
   .paper__setup{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:18px 0 22px;border-top:2px solid var(--text-primary);border-bottom:2px solid var(--text-primary)}
   .paper__setup>div{padding:14px 16px;border-bottom:1px solid var(--border-color)}

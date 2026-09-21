@@ -91,6 +91,10 @@ export const HPL_ENFORCEMENT_REGISTRY: HplEnforcementRecord[] = [
     { kind: 'source-audit', path: 'scripts/audit-audience-copy.ts', note: 'blocks known abstract packaging and legacy webification phrases' },
     { kind: 'policy-test', path: 'src/lib/humanPreferenceLearning.test.ts', note: 'keeps approved natural prose as the learned preference' },
   ]},
+  { family: 'formula-without-mapping-bridge', guards: [
+    { kind: 'policy-test', path: 'src/lib/gatedDeltaSdLoraPublication.test.ts', note: 'requires the Gated Delta derivation to preserve the sequence-state equivalence boundary before the OpenEVO mapping' },
+    { kind: 'policy-test', path: 'src/lib/effectiveStateGdrLoraStudy.test.ts', note: 'checks the parameter-state alpha/beta mapping, gauge boundary, and residual orientation used by the experiment page' },
+  ]},
   { family: 'fake-math-typesetting', guards: [
     { kind: 'source-audit', path: 'scripts/audit-public-math-rendering.ts', note: 'blocks code, handmade sub/sup, raw TeX, and serif fake formula renderers' },
     { kind: 'rendered-audit', path: 'scripts/audit-rendered-public-math.mjs', note: 'checks built public HTML for fake-math patterns' },

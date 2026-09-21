@@ -12,7 +12,6 @@ export type MathRenderingFinding = {
 const PUBLIC_ROOTS = ['src/components', 'src/pages'];
 const EXTENSIONS = new Set(['.astro', '.tsx', '.ts', '.md', '.mdx']);
 const EXCLUDED = new Set([
-  'src/components/research/OpenEvoGatedDeltaSdLoraExplainer.astro',
   'src/components/common/MathFormula.astro',
 ]);
 

@@ -49,10 +49,14 @@ describe('Gated-Delta SD-LoRA publication split', () => {
     expect(bilingualStaticPaths).toContain('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/');
   });
 
-  it('keeps the current page about recurrent write rather than replaying the old admission experiment', () => {
+  it('keeps the current page derivation-first without replaying the old admission experiment', () => {
     expect(current).toContain("Task Vector 的角色");
-    expect(current).toContain('S<sub>t</sub> = S̃<sub>t−1</sub> + β');
-    expect(current).toContain('四轮 Vanilla vs GDR 配对资格实验已经全部封存');
+    expect(current).toContain("import MathFormula from '../common/MathFormula.astro'");
+    expect(current).toContain('residual: String.raw');
+    expect(current).toContain('S_t&=\\widetilde S_{t-1}+\\beta_t r_t k_t^{\\top}');
+    expect(current).not.toContain('<sub>');
+    expect(current).not.toContain('<sup>');
+    expect(current).toContain('四轮配对资格实验已完成并封存');
     expect(current).toContain('snapshot.routeSExecution.appliedFactorWrites.toLocaleString');
     expect(current).toContain('配对实验进度');
     expect(current).toContain('四轮汇总 · reward');
@@ -67,10 +71,10 @@ describe('Gated-Delta SD-LoRA publication split', () => {
     expect(history).toContain("t('SD-LoRA 候选更新', 'SD-LoRA candidate updates')");
   });
 
-  it('keeps route metadata aligned with the sealed four-round qualification', () => {
-    expect(currentZhRoute).toContain('title="Gated-Delta SD-LoRA：四轮资格实验已封存"');
-    expect(currentZhRoute).toContain('四轮冻结 D1 资格实验已全部封存');
-    expect(currentZhRoute).toContain('这不代表普遍优于 Vanilla，也不是 final-panel 结果');
+  it('keeps route metadata aligned with the derivation-first page and bounded qualification', () => {
+    expect(currentZhRoute).toContain('title="Gated Delta：从序列 State 到 OpenEVO 参数 State"');
+    expect(currentZhRoute).toContain('论文公式到 residual 形式是严格代数等价');
+    expect(currentZhRoute).toContain('页面后半保留四轮冻结 D1 资格实验及其有限结论边界');
     expect(currentZhRoute).not.toContain('效果比较还没完成');
     expect(currentZhRoute).not.toContain('四轮效果比较还没封存');
 

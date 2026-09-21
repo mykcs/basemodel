@@ -1,12 +1,16 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { scanPublicMathRendering, strictPublicMathFailures } from './publicMathRenderingAudit';
+import { publicMathSources, scanPublicMathRendering, strictPublicMathFailures } from './publicMathRenderingAudit';
 
 const read = (relative: string) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 
 describe('public math rendering audit', () => {
-  it('has no strict fake-math renderer failures outside the concurrent Gated-Delta owner', () => {
+  it('has no strict fake-math renderer failures', () => {
     expect(strictPublicMathFailures()).toEqual([]);
+  });
+
+  it('keeps the Gated-Delta owner inside the sitewide source audit', () => {
+    expect(publicMathSources()).toContain('src/components/research/OpenEvoGatedDeltaSdLoraExplainer.astro');
   });
 
   it('keeps known scientific formula owners on the shared MathFormula renderer', () => {
@@ -19,6 +23,8 @@ describe('public math rendering audit', () => {
       '../components/research/OpenEvoVanillaSdLoraMechanism.astro',
       '../components/research/OpenEvoVanillaSdLoraSlide.astro',
       '../components/research/WebShopEvaluationFigure.astro',
+      '../components/research/OpenEvoGatedDeltaSdLoraExplainer.astro',
+      '../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro',
     ];
     for (const owner of owners) expect(read(owner)).toContain('MathFormula');
   });

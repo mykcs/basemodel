@@ -25,18 +25,19 @@ for (const locale of locales) {
     test(`${locale.id} current/history stay single-purpose at ${viewport.id}`, async ({ page }) => {
       await page.setViewportSize(viewport);
       await page.goto(`${locale.prefix}${routes.current}`, { waitUntil: 'domcontentloaded' });
-      await expect(page.locator('h1')).toHaveText('Gated-Delta SD-LoRA');
-      await expect(page).toHaveTitle(/Gated-Delta SD-LoRA：四轮资格实验已封存/);
+      await expect(page.locator('h1')).toHaveText('Gated Delta：从序列 State 到参数 State');
+      await expect(page).toHaveTitle(/Gated Delta：从序列 State 到 OpenEVO 参数 State/);
       await expect(page.locator('meta[name="description"]')).toHaveAttribute(
         'content',
-        /四轮冻结 D1 资格实验已全部封存.*不代表普遍优于 Vanilla.*不是 final-panel 结果/,
+        /online regression.*严格代数等价.*逐角色映射.*四轮冻结 D1 资格实验/,
       );
-      await expect(page.locator('.gds-hero__state')).toContainText('四轮 Vanilla vs GDR 配对资格实验已经全部封存');
-      await expect(page.locator('.gds-hero__state')).toContainText('GDR 的总平均 reward 和完整成功率都高于匹配的 Vanilla 对照');
-      await expect(page.locator('.gds-hero__state')).toContainText('这个结论只属于当前冻结的资格实验');
+      await expect(page.locator('.gds-hero__boundary')).toContainText('论文公式到 residual 形式是严格代数等价');
+      await expect(page.locator('.gds-hero__boundary')).toContainText('逐角色映射');
+      await expect(page.locator('#d1-boundary')).toContainText('四轮配对资格实验已完成并封存');
       await expect(page.locator('.gds-provenance')).toContainText('如果上游科学证据发生变化，会先核对新的证据来源和结论边界，再更新页面');
       await expect(page.locator('.gds-provenance')).not.toContainText('正式发布前');
-      await expect(page.getByTestId('gated-delta-recurrence')).toBeVisible();
+      await expect(page.locator('#recurrence')).toBeVisible();
+      await expect(page.locator('#recurrence .katex').first()).toBeVisible();
       await expect(page.getByTestId('gated-delta-runtime-path')).toBeVisible();
       await expect(page.locator('[data-reader-route]')).toHaveCount(0);
       await expectNoPageOverflow(page);
@@ -47,7 +48,7 @@ for (const locale of locales) {
       await expect(page.locator('#what-happened')).toContainText(/7/);
       await expect(page.locator('#admission-rule')).toContainText(/16/);
       await expect(page.locator('#directapply-result')).toContainText(/不是同一批冻结题.*不能直接相减/);
-      await expect(page.getByTestId('gated-delta-recurrence')).toHaveCount(0);
+      await expect(page.locator('#recurrence')).toHaveCount(0);
       const historyHub = page.locator('[data-reader-route="gdr-directapply"]');
       await expect(historyHub).toHaveCount(1);
       await expect(historyHub).toHaveAttribute('data-compact', 'true');
@@ -85,9 +86,10 @@ test('core distinction remains readable without JavaScript', async ({ browser })
   const page = await context.newPage();
   try {
     await page.goto(routes.current, { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('.gds-hero__state')).toContainText('四轮 Vanilla vs GDR 配对资格实验已经全部封存');
-    await expect(page.locator('.gds-hero__state')).toContainText('这个结论只属于当前冻结的资格实验');
-    await expect(page.getByTestId('gated-delta-recurrence')).toBeVisible();
+    await expect(page.locator('.gds-hero__boundary')).toContainText('论文公式到 residual 形式是严格代数等价');
+    await expect(page.locator('.gds-hero__boundary')).toContainText('逐角色映射');
+    await expect(page.locator('#recurrence')).toBeVisible();
+    await expect(page.locator('#d1-boundary')).toContainText('四轮配对资格实验已完成并封存');
     await page.goto(routes.history, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#admission-rule')).toContainText('固定 16 题');
     await expect(page.locator('#what-happened')).toContainText('44');

@@ -50,6 +50,7 @@ const html = katex.renderToString(latex, {
     text-align: center;
   }
   .math-formula :global(.katex) { line-height: 1.4; }
+  .math-formula-inline { position: relative; }
   .math-formula-inline :global(.katex) { font-size: 1em; }
   @media (max-width: 520px) {
     .math-formula {

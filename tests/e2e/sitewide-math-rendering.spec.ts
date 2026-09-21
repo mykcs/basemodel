@@ -11,6 +11,8 @@ const routes = [
   ['/research/seed-openevo/flow/webshop/', 3],
   ['/research/seed-openevo/flow/loops/', 1],
   ['/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/', 2],
+  ['/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/', 1],
+  ['/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/', 1],
 ] as const;
 
 for (const [route, minimum] of routes) {
@@ -49,16 +51,9 @@ test('every built public route is free of rendered fake-math patterns', async ({
     .map((file) => file === 'index.html' ? '/' : file.endsWith('/index.html') ? `/${file.slice(0, -'index.html'.length)}` : `/${file}`)
     .filter((route, index, items) => items.indexOf(route) === index);
 
-  // Concurrent PR #756 owns both the Gated-Delta route and its shared Effective-State derivation owner.
-  // Remove both exemptions once #756 lands so the gate becomes fully sitewide again.
-  const concurrentExemptions = new Set([
-    '/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/',
-    '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',
-  ]);
   const findings: Array<{ route: string; kind: string; detail: string }> = [];
 
   for (const route of routes) {
-    if (concurrentExemptions.has(route)) continue;
     const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
     if (!response?.ok()) {
       findings.push({ route, kind: 'http', detail: String(response?.status() ?? 'no response') });

@@ -745,6 +745,29 @@ export const HUMAN_FEEDBACK_EVENTS: HumanFeedbackEvent[] = [
   },
 
   {
+    id: 'EVENT-20260920-GATED-DELTA-DERIVATION-LAYERING',
+    date: '2026-09-20',
+    caseIds: ['CASE-092', 'CASE-093', 'CASE-097'],
+    scopes: ['research-ui', 'research-copy', 'visual'],
+    artifact: 'BaseModel · bounded three-experiment page + Gated-Delta derivation child page',
+    variantId: 'mixed-gated-delta-history-and-fake-math-c7f9696e',
+    verdict: 'rejected',
+    ownerSignal: '三组实验页只需要简单讲公式怎么从序列建模推过来、哪些是严格等价或对应；完整推导放到 Gated-Delta 子页。HPL 已经要求网页 LaTeX，但旧子页还没有同步。',
+    reasons: [
+      '总览与技术子页没有清楚分工，旧资格实验、历史实现和数学推导混在同一阅读层',
+      '论文公式到 residual 形式的严格代数等价，与 sequence State 到 OpenEVO 参数 State 的角色映射没有明确分界',
+      '旧 Gated-Delta 子页仍用 HTML sub/sup 与 code 文本手拼关键公式，违反已存在的真实 LaTeX 规则',
+    ],
+    failureMechanisms: ['technical-detail-wrong-layer', 'fake-math-typesetting', 'formula-without-mapping-bridge'],
+    requestedSuccessorVariantId: 'gated-delta-layered-derivation-katex',
+    evidence: {
+      repository: 'mykcs/basemodel',
+      route: '/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/',
+      gitSha: 'c7f9696e2bb656b5168b758cb5f20cf99f8281d8',
+    },
+  },
+
+  {
     id: 'EVENT-20260920-BOUNDED-METRIC-CONTEXT-NATIVE-WANDB',
     date: '2026-09-20',
     caseIds: ['CASE-027', 'CASE-059', 'CASE-095', 'CASE-096'],
