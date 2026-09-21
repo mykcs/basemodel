@@ -355,7 +355,7 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     confidence: 'explicit-project',
     priority: 5,
     retrievalTags: ['消融', 'ablation', '论文', 'ICLR', '方法对比', '命名一致', '对勾', 'Bounded Online Recurrence', 'Bounded State', 'GDR', '数学映射', 'Task Vector', 'entropy'],
-    supportingCaseIds: ['CASE-082', 'CASE-088', 'CASE-089', 'CASE-092'],
+    supportingCaseIds: ['CASE-082', 'CASE-088', 'CASE-089', 'CASE-092', 'CASE-098'],
     antiOvergeneralization: [
       '不是所有研究页都要模仿论文版式；只有同一方法族的逐项消融才默认用这种入口。',
       '统一公共实验名不能删除审计身份；run ID、OFF/ON、Effective-State 等仍在 provenance / evidence 精确保留。',
@@ -788,6 +788,18 @@ export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [  {
     accepted: '每张 W&B 图自己的解释直接放在图下面：先说这张图测什么，再说怎样解读和不能直接推出什么，并在同一图块回链原生 panel；不要把所有指标解释集中到一张总表。如果 loss 等历史指标没有写进 W&B，但封存 receipt 有真实数据，就从封存证据生成带来源哈希的 publication mirror（scientific_authority=false），再让网页复用同一 mirror。',
     reason: 'owner 先明确说已经做了 W&B 图时网页不要重复手画，并要求指标有可读解释；随后又要求把当时漏收进 W&B 的 rollout→loss 从真实实验资产补到三实验原生视图，并同步到 BaseModel。可复用规则是“原生证据优先 + 可追溯 publication mirror + 同源网页阅读层”，不是“网页永远不能画图”。',
     failureMechanisms: ['redundant-page-native-chart', 'metric-without-reader-context', 'multiple-visual-sources-of-truth'],
+    ownerStatus: 'accepted',
+  },
+
+  {
+    id: 'PAIR-098-PARTIAL-GDR-NAMING',
+    caseId: 'CASE-098',
+    preferenceIds: ['PREF-ABLATION-PAPER-NARRATIVE', 'PREF-SCIENTIFIC-BOUNDARY'],
+    scopes: ['research-ui', 'research-copy', 'results', 'capability'],
+    rejected: '把已完成第三组统一简称“Bounded + GDR”，并用单一 GDR 对勾暗示完整 α+β 机制已经实验。',
+    accepted: '已完成第三组明确写“Bounded Online Recurrence + β-gating（α=1）”；消融表拆成动态 β / 动态 α，两列分别表示真正启用的机制；dynamic α + dynamic β 只保留“未做”空位，结果全部留空。',
+    reason: 'owner 追问本次 GDR 实验是否使用 α 后，明确要求把网页所有相关表述纠正，并让没做的实验暂时空着。公共名称因此必须区分“Gated Delta 来源理论”和“实际 α=1 的 β-gating treatment”，同时不能改写封存内部身份。',
+    failureMechanisms: ['partial-treatment-presented-as-full-method', 'unrun-experiment-result-invention', 'public-name-audit-identity-conflation'],
     ownerStatus: 'accepted',
   },
 
