@@ -8,6 +8,7 @@ const read = (file: string) => fs.readFileSync(path.join(root, file), 'utf8');
 const sourceRules = read('src/AGENTS.md');
 const claudeAdapter = read('src/CLAUDE.md');
 const standard = read('docs/agents/current/audience-centered-technical-copy.md');
+const operatingPrinciples = read('docs/agents/current/project-agent-operating-principles.md');
 const missionHero = read('src/components/research/SeedOpenEvoMissionHero.astro');
 const header = read('src/components/Header.astro');
 const methodology = read('src/pages/methodology.astro');
@@ -80,6 +81,13 @@ describe('human-readable product language contract', () => {
     expect(workspacePage).toContain('<h1>实验工作台</h1>');
     expect(workspacePage).toContain('先定义研究目标、模型角色和资源限制');
     expect(workspacePage).toContain('开始填写实验条件');
+  });
+
+  it('applies the same plain-language discipline to owner-facing ELI5 and progress summaries', () => {
+    expect(operatingPrinciples).toContain('Owner-facing ELI5 / progress summaries are also user-facing copy');
+    expect(operatingPrinciples).toContain('state the concrete fact directly');
+    expect(operatingPrinciples).toContain('do not invent visual details');
+    expect(operatingPrinciples).toContain('avoid the stock “不是 X，而是 Y” construction');
   });
 
   it('keeps the durable standard and scanner aligned with the subject-heading rule', () => {
