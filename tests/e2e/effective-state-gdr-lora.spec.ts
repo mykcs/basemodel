@@ -139,6 +139,32 @@ test('experiment setup names Qwen3-1.7B, WebShop, budget, and OPSD boundary', as
   await expect(setup).toContainText('不是 SEED 的 hindsight-skill SFT');
 });
 
+test('experiment setup exposes the four carrier update ledgers and the NOOP/runtime-use boundary', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const ledger = page.locator('#carrier-ledger');
+  await expect(ledger.getByRole('heading', { level: 3 })).toContainText('参数几乎每轮都在变');
+  const rows = ledger.locator('.paper-table--carrier-ledger tbody tr');
+  await expect(rows).toHaveCount(4);
+  await expect(rows.nth(0)).toContainText('159 UPDATE');
+  await expect(rows.nth(0)).toContainText('158 UPDATE');
+  await expect(rows.nth(0)).toContainText('154 UPDATE');
+  await expect(rows.nth(1)).toContainText('2 UPDATE');
+  await expect(rows.nth(1)).toContainText('3 UPDATE');
+  await expect(rows.nth(2)).toContainText('1 UPDATE');
+  await expect(rows.nth(2)).toContainText('0 UPDATE');
+  await expect(rows.nth(3)).toContainText('3 UPDATE');
+  await expect(rows.nth(3)).toContainText('0 UPDATE');
+  await expect(ledger).toContainText('NOOP 不等于“没有参与”');
+  await expect(ledger).toContainText('42,270');
+  await expect(ledger).toContainText('142,208');
+  await expect(ledger).toContainText('175,820');
+  await expect(ledger).toContainText('72 / 320 / 320');
+  await expect(ledger).toContainText('22 / 320 / 320');
+  await expect(ledger).toContainText('不能只凭这张 UPDATE 表把最终分数差归因给某一个载体');
+  await expect(ledger.getByRole('link', { name: '普通 OpenEVO 载体对账' })).toHaveAttribute('href', /240c479bead0450def3feaaa2a169d9a2bc3934c/);
+});
+
 test('formal result preserves the matched-arm statistical boundary under public names', async ({ page }) => {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const result = page.locator('#formal-result');

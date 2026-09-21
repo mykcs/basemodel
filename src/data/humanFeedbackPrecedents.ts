@@ -199,9 +199,9 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     id: 'CASE-089',
     title: '阶段汇报要自带理解后续结论所需的最小方法背景',
     tags: ['briefing', '科研汇报', 'Stage 1', 'Stage 2', 'MiniMax', 'OPSD', 'Agent System', 'Text Memory', '自包含'],
-    principle: '即使网站已有完整方法页，现场汇报仍要在结果之前给听众一份最小方法心智模型：阶段怎么接、谁产生轨迹、谁做回看、哪些状态会训练或更新。',
-    antiPatterns: ['直接从 7B / 1.7B / 3B 结果开始，默认观众已经读过网站其他方法页', '为了自包含把完整实现手册和所有参数重复搬进主演讲'],
-    positiveSignals: ['一页交代 Stage 1 轨迹采集 + MiniMax 回看 + 学习载体，再交代 Stage 2 自生成 round 与更新', '只保留理解后续科学判断必需的方法背景，深实现继续留技术页'],
+    principle: '即使网站已有完整方法页，阶段汇报和结果页仍要给读者足以理解后续结论的最小方法心智模型：阶段怎么接、哪些状态会训练或更新；若结果来自多载体 OpenEVO，还要交代参数 / Text Memory / Skill / Agent 在本次实验里的实际 UPDATE / NOOP，并把“状态没变”和“运行时没使用”分开。',
+    antiPatterns: ['直接从 7B / 1.7B / 3B 结果开始，默认观众已经读过网站其他方法页', '三组实验页只分析参数变化，却不回答 Text Memory / Skill / Agent 在同一 160 轮里实际是否更新', '为了自包含把完整实现手册和所有参数重复搬进主演讲'],
+    positiveSignals: ['一页交代 Stage 1 轨迹采集 + MiniMax 回看 + 学习载体，再交代 Stage 2 自生成 round 与更新', '多载体结果页在实验设置附近给四条状态通道的终态 UPDATE / NOOP 账本，并明确 NOOP 不等于没有进入运行时上下文', '只保留理解后续科学判断必需的方法背景，深实现继续留技术页'],
   },
   {
     id: 'CASE-090',
