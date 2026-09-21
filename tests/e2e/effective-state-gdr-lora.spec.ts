@@ -19,12 +19,14 @@ for (const viewport of [
     await expect(ablation).toContainText('60.72');
     await expect(ablation).toContainText('45.98');
     await expect(ablation).toContainText('20.77');
+    await expect(ablation).toContainText('Seed base');
+    await expect(ablation).toContainText('148,000,000');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
     expect(overflow).toBe(false);
   });
 }
 
-test('ablation table keeps all six columns on one explicit 100-percent grid', async ({ page }) => {
+test('ablation table keeps all seven columns on one explicit 100-percent grid', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const geometry = await page.locator('.paper-table--ablation').evaluate((table) => {
@@ -40,8 +42,8 @@ test('ablation table keeps all six columns on one explicit 100-percent grid', as
     return { width: tableRect.width, cells };
   });
 
-  expect(geometry.cells).toHaveLength(6);
-  const expectedShares = [0.30, 0.08, 0.08, 0.08, 0.20, 0.26];
+  expect(geometry.cells).toHaveLength(7);
+  const expectedShares = [0.27, 0.07, 0.07, 0.07, 0.14, 0.17, 0.21];
   expectedShares.forEach((expected, index) => {
     expect(Math.abs(geometry.cells[index].share - expected)).toBeLessThan(0.012);
   });
@@ -60,6 +62,9 @@ test('ablation table separates three completed mechanisms from the unrun dynamic
   await expect(rows.nth(1).getByText('✓')).toHaveCount(1);
   await expect(rows.nth(2)).toContainText('OpenEVO + Bounded Online Recurrence + β-gating（α=1）');
   await expect(rows.nth(2).getByText('✓')).toHaveCount(2);
+  await expect(rows.nth(0)).toContainText('148,000,000');
+  await expect(rows.nth(1)).toContainText('148,000,000');
+  await expect(rows.nth(2)).toContainText('148,000,000');
   await expect(rows.nth(3)).toContainText('动态 α + 动态 β（未做）');
   await expect(rows.nth(3).getByText('✓')).toHaveCount(3);
   await expect(rows.nth(3)).toContainText('—');
