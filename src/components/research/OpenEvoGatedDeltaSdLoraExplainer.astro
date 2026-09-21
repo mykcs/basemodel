@@ -37,7 +37,7 @@ S_t&=\widetilde S_{t-1}+\beta_t r_t k_t^{\top}
   taskVector: String.raw`\Delta\theta_t=\theta_t-\theta_{t-1}`,
   gauge: String.raw`\Delta W = C A^{\top},\qquad A\mapsto sA,\quad C\mapsto C/s
 \quad\Longrightarrow\quad \Delta W\text{ unchanged}`,
-  parameterMap: String.raw`S_t^{\mathrm{GDR}}=\operatorname{Compress}_{128}\!\left(S_{t-1}+\operatorname{Gate}_{\beta_t}(\Delta_t)\right)`,
+  parameterMap: String.raw`S_t^{(\alpha=1,\,\beta\text{-gate})}=\operatorname{Compress}_{128}\!\left(S_{t-1}+\operatorname{Gate}_{\beta_t}(\Delta_t)\right)`,
   factors: String.raw`S_A=A,\qquad S_C=C^{\top},\qquad g=0\;(\alpha=1)`,
   stateSymbol: String.raw`S_t`,
   residualWriteSymbol: String.raw`r_t k_t^{\top}`,
@@ -126,7 +126,7 @@ S_t&=\widetilde S_{t-1}+\beta_t r_t k_t^{\top}
       'This conceptual equation contains an OpenEVO-specific mechanism as well: Compress_128 folds history back to fixed rank128. That operation comes from Bounded Online Recurrence rather than the Gated DeltaNet paper. The actual runtime also writes C first to obtain the realized C1, then writes A conditioned on C1.'
     )}</p>
     <p class="gds-sources"><a href={flaHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={flaHref} />Flash Linear Attention reference</a> · <a href={paperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={paperHref} />Gated Delta Networks · ICLR 2025</a></p>
-    <p class="gds-related"><a href={successorHref}>{t('回到三组 1.7B 实验：这个映射最后怎样进入 Bounded + GDR →', 'Back to the three 1.7B experiments: how this mapping becomes Bounded + GDR →')}</a></p>
+    <p class="gds-related"><a href={successorHref}>{t('回到三组 1.7B 已完成实验：这个映射最后怎样进入 β-gating（α=1）→', 'Back to the three completed 1.7B experiments: how this mapping becomes β-gating (α=1) →')}</a></p>
   </section>
 
   <section class="gds-section" id="task-vector" aria-labelledby="task-vector-title">
@@ -190,7 +190,7 @@ S_t&=\widetilde S_{t-1}+\beta_t r_t k_t^{\top}
         <div class="gds-connector" aria-hidden="true"></div>
         <div class="gds-node is-next"><small>{t('写回 LoRA', 'write back into LoRA')}</small><strong>{t('先得到真实 C1，再据此更新 A', 'obtain realized C1 first, then update A conditioned on it')}</strong></div>
       </div>
-      <figcaption>{t(`第一版四轮对照只在 ${snapshot.treatmentScope.gatedModules} 使用 Gated Delta；其它 LoRA 模块仍按 Vanilla DirectApply 更新。它的作用是验证 event-write 映射能真实运行，不代表后续 rank128 Bounded + GDR 的全部实现。`, `The first four-round comparison applies Gated Delta only to ${snapshot.treatmentScope.gatedModules}; the other LoRA modules keep Vanilla DirectApply. Its role is to verify that event-write mapping works in a real run, not to define the full later rank-128 Bounded + GDR implementation.`)}</figcaption>
+      <figcaption>{t(`第一版四轮对照只在 ${snapshot.treatmentScope.gatedModules} 使用 Gated Delta；其它 LoRA 模块仍按 Vanilla DirectApply 更新。它的作用是验证 event-write 映射能真实运行，不代表后续 rank128 Bounded + β-gating（α=1）的全部实现；动态 α + 动态 β 尚未运行。`, `The first four-round comparison applies Gated Delta only to ${snapshot.treatmentScope.gatedModules}; the other LoRA modules keep Vanilla DirectApply. Its role is to verify that event-write mapping works in a real run, not to define the full later rank-128 Bounded + β-gating (α=1) implementation; dynamic α + dynamic β has not been run.`)}</figcaption>
     </figure>
     <p class="gds-related"><a href={vanillaHref}>{t('对照阅读：Vanilla SD-LoRA 一轮怎样更新 →', 'Compare with one Vanilla SD-LoRA update →')}</a></p>
   </section>
