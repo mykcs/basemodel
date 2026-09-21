@@ -73,7 +73,7 @@ test('paper narrative follows motivation, method, mapping, experiment, result, a
     '方法：Bounded Online Recurrence、Gated Delta 来源与本实验 β-gating（α=1）',
     '实验设置：Qwen3-1.7B × WebShop',
     '结果：训练后期与固定 128 题终评',
-    'Analysis：为什么 β-gating（α=1）这一组后期会掉下来？',
+    '指标分析：从 loss 一直看到行为 entropy',
   ]);
 });
 
@@ -124,59 +124,78 @@ test('formal result preserves the matched-arm statistical boundary under public 
   await expect(page.locator('#compute')).toContainText('13–15×');
 });
 
-test('analysis answers Task Vector, direction, steps, entropy, and adaptive questions', async ({ page }) => {
+test('analysis follows a simple-to-complex metric ladder with definition result and analysis in every subsection', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const analysis = page.locator('#analysis');
-  await expect(analysis).toContainText('Task Vector、范数和谱');
-  await expect(analysis).toContainText('0.72');
-  await expect(analysis).toContainText('-0.287');
-  await expect(analysis).toContainText('397.0');
-  await expect(analysis).toContainText('171.8');
-  await expect(analysis).toContainText('449.9');
-  await expect(analysis).toContainText('200.3');
-  await expect(analysis).toContainText('503.6');
-  await expect(analysis).toContainText('216.8');
-  await expect(analysis).toContainText('229.1');
-  await expect(analysis).toContainText('7.91');
-  await expect(analysis).toContainText('8.60');
-  await expect(analysis).toContainText('真正的 predictive token entropy 仍然不能从文本补出来');
-  await expect(analysis).toContainText('0.4895');
-  await expect(analysis).toContainText('0.4239');
-  await expect(analysis).toContainText('0.5826');
-  await expect(analysis).toContainText('0.3705');
-  await expect(analysis).toContainText('1158');
-  await expect(analysis).toContainText('100%');
-  await expect(analysis).toContainText('下一问分成两层：先补动态 α，再研究 β 还该看什么');
-  await expect(analysis).toContainText('“动态 α + 动态 β”尚未做，结果暂时留空');
+  await expect(analysis.getByRole('heading', { level: 2 })).toContainText('指标分析：从 loss 一直看到行为 entropy');
+
+  const metricSteps = analysis.locator('.paper__metric-step');
+  await expect(metricSteps).toHaveCount(5);
+  const headings = await metricSteps.getByRole('heading', { level: 3 }).allTextContents();
+  expect(headings).toEqual([
+    '5.1 loss：最基本的问题——训练有没有真的在拟合',
+    '5.2 Task Vector：一轮训练到底把参数推了多远',
+    '5.3 参数范数、谱与方向：再往里看“状态长什么样”',
+    '5.4 输出长度与任务步数：从参数走到实际做题路径',
+    '5.5 Entropy：最后看策略行为是不是越来越集中',
+  ]);
+  for (let index = 0; index < 5; index += 1) {
+    const labels = metricSteps.nth(index).locator('.paper__metric-label');
+    await expect(labels).toHaveCount(3);
+    await expect(labels.nth(0)).toContainText('① 指标是什么');
+    await expect(labels.nth(1)).toContainText('② 这次实验的结果');
+    await expect(labels.nth(2)).toContainText('③ 分析');
+  }
+
+  await expect(page.locator('#loss')).toContainText('1.046');
+  await expect(page.locator('#loss')).toContainText('0.102');
+  await expect(page.locator('#loss')).toContainText('0.065');
+  await expect(page.locator('#loss')).toContainText('0.069');
+
+  await expect(page.locator('#task-vector')).toContainText('0.597');
+  await expect(page.locator('#task-vector')).toContainText('0.045');
+  await expect(page.locator('#task-vector')).toContainText('-0.278');
+  await expect(page.locator('#task-vector')).toContainText('+0.044');
+
+  await expect(page.locator('#parameter-geometry')).toContainText('21.051');
+  await expect(page.locator('#parameter-geometry')).toContainText('17.925');
+  await expect(page.locator('#parameter-geometry')).toContainText('2.136');
+  await expect(page.locator('#parameter-geometry')).toContainText('1.946');
+  await expect(page.locator('#parameter-geometry')).toContainText('-0.287');
+
+  await expect(page.locator('#length')).toContainText('216.8');
+  await expect(page.locator('#length')).toContainText('229.1');
+  await expect(page.locator('#length')).toContainText('7.91');
+  await expect(page.locator('#length')).toContainText('8.60');
+
+  await expect(page.locator('#entropy')).toContainText('0.5826');
+  await expect(page.locator('#entropy')).toContainText('0.3705');
+  await expect(page.locator('#entropy')).toContainText('1158');
+  await expect(page.locator('#entropy')).toContainText('100%');
+
+  const next = page.locator('#next-question');
+  await expect(next).toContainText('下一步：先补动态 α，再研究 β 还该知道什么');
+  await expect(next).toContainText('动态 α + 动态 β');
 });
 
-test('W&B section shows static W&B-history previews and keeps native links without a locked iframe', async ({ page }) => {
+test('W&B evidence is embedded beside the relevant metric instead of collected in a separate gallery', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
-  const wandb = page.locator('#wandb');
-  await expect(wandb).toContainText('W&B 指标与原生曲线');
-  await expect(wandb.getByRole('link', { name: /交互 W&B Report/ })).toHaveAttribute('href', /wandb\.ai/);
-  await expect(wandb.getByRole('link', { name: /完整 W&B Workspace/ })).toHaveAttribute('href', /wandb\.ai/);
-  await expect(wandb.getByRole('link', { name: /Task Score 原生曲线/ })).toHaveAttribute('href', /panelDisplayName=/);
-  await expect(wandb.locator('img')).toHaveCount(5);
-  await expect(wandb.locator('.paper-table--metric-guide')).toHaveCount(0);
-  const figures = wandb.locator('.wandb-evidence__snapshots figure');
-  await expect(figures).toHaveCount(5);
-  for (let index = 0; index < 5; index += 1) {
-    await expect(figures.nth(index).locator('figcaption p')).toHaveCount(2);
-    await expect(figures.nth(index).locator('.wandb-evidence__native-link')).toHaveAttribute('href', /wandb\.ai/);
+  const analysis = page.locator('#analysis');
+  await expect(page.locator('#wandb')).toHaveCount(0);
+  await expect(analysis.getByRole('link', { name: /W&B Report/ })).toHaveAttribute('href', /wandb\.ai/);
+  await expect(analysis.getByRole('link', { name: /完整 W&B Workspace/ })).toHaveAttribute('href', /wandb\.ai/);
+
+  const figures = analysis.locator('.metric-evidence');
+  await expect(figures).toHaveCount(4);
+  await expect(page.locator('#loss img')).toHaveAttribute('src', /wandb-threeway\/loss-vs-rollout\.svg/);
+  await expect(page.locator('#task-vector img')).toHaveAttribute('src', /wandb-threeway\/task-vector-frobenius\.svg/);
+  await expect(page.locator('#length img')).toHaveAttribute('src', /wandb-threeway\/steps-per-episode\.svg/);
+  await expect(page.locator('#entropy img')).toHaveAttribute('src', /wandb-threeway\/action-family-entropy\.svg/);
+  for (let index = 0; index < 4; index += 1) {
+    await expect(figures.nth(index).getByRole('link', { name: /打开 W&B 原生 panel/ }).last()).toHaveAttribute('href', /wandb\.ai/);
   }
-  await expect(wandb.locator('img').first()).toHaveAttribute('src', /wandb-threeway\/task-score\.svg/);
-  await expect(wandb).toContainText('SD-LoRA training loss');
-  await expect(wandb).toContainText('20,480');
-  await expect(wandb).toContainText('不做插值');
-  await expect(wandb.getByRole('link', { name: /SD-LoRA loss · 累计 rollout/ })).toHaveAttribute('href', /wandb\.ai/);
-  await expect(wandb.locator('img').nth(1)).toHaveAttribute('src', /wandb-threeway\/loss-vs-rollout\.svg/);
-  await expect(wandb.getByRole('link', { name: /Action-family entropy · 160轮/ })).toHaveAttribute('href', /panelDisplayName=/);
-  await expect(wandb.locator('img').nth(4)).toHaveAttribute('src', /wandb-threeway\/action-family-entropy\.svg/);
-  await expect(wandb.locator('iframe')).toHaveCount(0);
-  await expect(wandb).toContainText('当前 W&B 原项目没有对未登录访客开放');
 });
 
 for (const theme of ['light', 'dark'] as const) {
