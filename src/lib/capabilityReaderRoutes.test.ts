@@ -67,6 +67,16 @@ describe('capability route reader contracts', () => {
     }
   });
 
+  it('keeps the bounded study reader summary explicit about beta-gating and the unrun alpha-plus-beta slot', () => {
+    const row = routes.find((candidate) => candidate.route === 'bounded-effective-state-gdr');
+    expect(row?.label.zh).toContain('已完成');
+    expect(row?.label.en).toContain('completed');
+    expect(row?.purpose.zh).toContain('β-gating（α 固定为 1）');
+    expect(row?.purpose.zh).toContain('动态 α + 动态 β 尚未运行');
+    expect(row?.purpose.en).toContain('β-gating (α fixed at 1)');
+    expect(row?.purpose.en).toContain('dynamic α + dynamic β has not been run');
+  });
+
   it('keeps reader regression cases in the actual standard browser gate', () => {
     const scripts = JSON.parse(readFileSync(join(repo, 'package.json'), 'utf8')).scripts as Record<string, string>;
     for (const gate of ['test:ui', 'test:ui:all']) expect(scripts[gate]).toContain('tests/e2e/openevo-two-map.spec.ts');
