@@ -4,18 +4,21 @@ interface MetricChart {
   src: string;
   href: string;
   alt: string;
+  linkText?: string;
 }
 interface Props { item: MetricChart }
 const { item } = Astro.props;
+const linkText = item.linkText ?? '打开 W&B 原生 panel ↗';
+const ariaAction = linkText.replace(/\s*↗$/, '');
 ---
 
 <figure class="metric-evidence">
-  <a href={item.href} target="_blank" rel="noreferrer" aria-label={`${item.title} · 打开 W&B 原生 panel`}>
+  <a href={item.href} target="_blank" rel="noreferrer" aria-label={`${item.title} · ${ariaAction}`}>
     <img src={item.src} alt={item.alt} loading="lazy" width="1200" height="675" />
   </a>
   <figcaption>
     <strong>{item.title}</strong>
-    <a href={item.href} target="_blank" rel="noreferrer">打开 W&B 原生 panel ↗</a>
+    <a href={item.href} target="_blank" rel="noreferrer">{linkText}</a>
   </figcaption>
 </figure>
 
