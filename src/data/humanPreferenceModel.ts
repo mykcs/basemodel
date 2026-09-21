@@ -383,6 +383,23 @@ export const HUMAN_PREFERENCE_MODEL: HumanPreferenceDimension[] = [
     ],
   },
   {
+    id: 'PREF-METRIC-LADDER-NARRATIVE',
+    title: '实验指标从基础训练信号递进到参数几何与行为信号',
+    statement: '科研实验页的诊断指标按读者理解成本排序，而不是按研究过程或数据来源排序：先用 loss 检查优化，再用 Task Vector 与参数范数/谱/方向解释参数变化，最后进入长度、步数、entropy 等行为指标。每个 subsection 固定“指标是什么 → 这次实验的结果 → 分析”，对应图留在该指标旁边。',
+    scopes: ['research-ui', 'research-copy', 'results', 'capability'],
+    confidence: 'explicit-project',
+    priority: 5,
+    retrievalTags: ['实验指标', 'loss', 'Task Vector', 'Frobenius', 'spectral norm', '谱', '范数', 'cosine', '长度', 'steps', 'entropy', 'W&B', '指标解释', '结果分析'],
+    supportingCaseIds: ['CASE-099'],
+    antiOvergeneralization: [
+      '不是所有实验必须拥有同一套指标；顺序只约束当前实际存在的诊断指标。',
+      '正式主结果仍可先于诊断链展示；这里规范的是后分析怎样组织。',
+      '复杂指标不能因为排在后面就被写成更强证据；每节仍需保留相关性/因果边界。',
+      '图不需要全部来自 W&B；规则是图和对应指标共置，而不是图的来源必须统一。',
+    ],
+  },
+
+  {
     id: 'PREF-BENCHMARK-METRIC-CONTEXT',
     title: 'Benchmark 数字出现时同时交代计算口径、题集身份和能力边界',
     statement: '科研结果页第一次给出 Task Score、success rate 或固定终评时，不让读者猜数字在数什么：说明计算方式、分母/单位、任务怎样抽样或冻结、各实验是否同题，以及这个 panel 能和不能代表什么。训练末段窗口均值与固定 final 分开呈现，因为前者描述训练后期轨迹，后者提供同题比较。',
@@ -800,6 +817,18 @@ export const HUMAN_FEEDBACK_GOLD_PAIRS: HumanFeedbackGoldPair[] = [  {
     accepted: '已完成第三组明确写“Bounded Online Recurrence + β-gating（α=1）”；消融表拆成动态 β / 动态 α，两列分别表示真正启用的机制；dynamic α + dynamic β 只保留“未做”空位，结果全部留空。',
     reason: 'owner 追问本次 GDR 实验是否使用 α 后，明确要求把网页所有相关表述纠正，并让没做的实验暂时空着。公共名称因此必须区分“Gated Delta 来源理论”和“实际 α=1 的 β-gating treatment”，同时不能改写封存内部身份。',
     failureMechanisms: ['partial-treatment-presented-as-full-method', 'unrun-experiment-result-invention', 'public-name-audit-identity-conflation'],
+    ownerStatus: 'accepted',
+  },
+
+  {
+    id: 'PAIR-099-METRIC-LADDER',
+    caseId: 'CASE-099',
+    preferenceIds: ['PREF-METRIC-LADDER-NARRATIVE', 'PREF-RESEARCH-MATH-VISUAL-EVIDENCE', 'PREF-SCIENTIFIC-BOUNDARY'],
+    scopes: ['research-ui', 'research-copy', 'results', 'capability'],
+    rejected: 'Analysis 先混讲 Task Vector / norm / direction，再讲长度和 entropy；另开一个 W&B 图集，把 loss、Task Vector、steps、entropy 全堆在页面后面。',
+    accepted: '正式结果之后按 loss → Task Vector → 参数范数/谱/方向 → 输出长度/任务步数 → action-family entropy 递进；每一节都先解释指标、再给本实验数字/图、最后写分析与边界，对应 W&B 图就放在该小节。',
+    reason: 'owner 直接指出当前实验页“写得太差”，要求从基本指标 loss 开始，逐步进入 Task Vector、谱/范数、长度、entropy，并规定每个小 subsection 的固定阅读顺序是“指标是什么 → 结果 → 分析”。',
+    failureMechanisms: ['metric-order-by-research-process', 'mixed-diagnostic-subsection', 'detached-chart-gallery', 'result-before-metric-definition'],
     ownerStatus: 'accepted',
   },
 
