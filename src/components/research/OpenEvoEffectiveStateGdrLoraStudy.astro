@@ -554,8 +554,8 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
     <p class="paper__section-number">7</p>
     <h2 id="evidence-title">{t('证据与复现身份', 'Evidence and reproducibility identity')}</h2>
     <p>{t(
-      '正文把已完成的第三组明确写成“Bounded Online Recurrence + β-gating（α=1）”，不再简称“+ GDR”。“动态 α + 动态 β”只作为未做实验位置保留。为了审计，底层正式身份仍原样保留：普通 OpenEVO 对应历史 DirectApply / No-GDR；后两组正式实验标识仍是 BOUNDED_OFF 与 EFFECTIVE_STATE_GDR_LORA_V1。',
-      'The completed third line is named explicitly as “Bounded Online Recurrence + β-gating (α=1)” rather than abbreviated as “+ GDR”. Dynamic α + dynamic β is kept only as an unrun slot. For auditability, the underlying formal identities remain unchanged: ordinary OpenEVO maps to the historical DirectApply / No-GDR run, and the matched formal identities remain BOUNDED_OFF and EFFECTIVE_STATE_GDR_LORA_V1.',
+      '正文把已完成的第三组明确写成“Bounded Online Recurrence + β-gating（α=1）”，不再把它当作完整 GDR。“动态 α + 动态 β”只作为未做实验位置保留。为了审计，底层正式身份仍原样保留：普通 OpenEVO 对应历史 DirectApply / No-GDR；后两组正式实验标识仍是 BOUNDED_OFF 与 EFFECTIVE_STATE_GDR_LORA_V1。',
+      'The completed third line is named explicitly as “Bounded Online Recurrence + β-gating (α=1)” rather than presented as full GDR. Dynamic α + dynamic β is kept only as an unrun slot. For auditability, the underlying formal identities remain unchanged: ordinary OpenEVO maps to the historical DirectApply / No-GDR run, and the matched formal identities remain BOUNDED_OFF and EFFECTIVE_STATE_GDR_LORA_V1.',
     )}</p>
     <details class="paper__details paper__experiment-hub" data-experiment-hub>
       <summary>{t('本实验的结果、分析与证据', 'Results, analysis, and evidence for this experiment')}</summary>
