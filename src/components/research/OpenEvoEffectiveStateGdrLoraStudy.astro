@@ -86,6 +86,10 @@ const math = {
   gdr: String.raw`S_t = \alpha_t S_{t-1}\left(I-\beta_t k_t k_t^{\top}\right)+\beta_t v_t k_t^{\top}`,
   residual: String.raw`\begin{aligned}\widetilde S_{t-1} &= \alpha_t S_{t-1} \\ r_t &= v_t-\widetilde S_{t-1}k_t \\ S_t &= \widetilde S_{t-1}+\beta_t r_t k_t^{\top}\end{aligned}`,
   gauge: String.raw`\Delta W = C A^{\top},\qquad A\mapsto sA,\quad C\mapsto C/s\quad\Longrightarrow\quad \Delta W\;\text{unchanged}`,
+  gZero: String.raw`g=0`,
+  alphaOne: String.raw`\alpha=1`,
+  factorFailureBeta: String.raw`\beta=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}`,
+  mappingFailureBeta: String.raw`\beta_{\mathrm{eff}}=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}`,
   beta: String.raw`\beta_t=f_{\theta}(x_t),\qquad x_t\in\mathbb{R}^{${study.posthocAnalysis.gdr.betaControllerFeatures}}`,
   effective: String.raw`S_t^{\mathrm{GDR}}=\operatorname{Compress}_{128}\!\left(S_{t-1}+\operatorname{Gate}_{\beta_t}(\Delta_t)\right)`,
 };
@@ -259,16 +263,23 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
           <tr><td>State S</td><td>{t('固定 rank128 的长期参数状态', 'fixed-rank128 long-term parameter state')}</td><td>{t('跨轮保留', 'persistent across rounds')}</td></tr>
           <tr><td>residual write</td><td>{t('当前训练真正想写进 LoRA 的有效更新', 'effective LoRA write proposed by current training')}</td><td>{t('由 AdamW / LoRA 当前更新产生', 'from the current AdamW / LoRA update')}</td></tr>
           <tr><td>β</td><td>{t('这一小步允许写多强', 'how strongly this step may write')}</td><td>{t('本实验真正启用的动态控制量', 'the dynamic control actually enabled in this study')}</td></tr>
-          <tr><td>α / g</td><td>{t('旧参数状态保留多少', 'how much prior state is retained')}</td><td>{t('本实验固定 g = 0，因此 α = 1：不额外衰减旧 State', 'this study fixes g = 0, hence α = 1: no extra decay of the prior State')}</td></tr>
+          <tr><td>α / g</td><td>{t('旧参数状态保留多少', 'how much prior state is retained')}</td><td>{t('本实验固定', 'this study fixes')} <MathFormula latex={math.gZero} display={false} />{t('，因此', ', hence')} <MathFormula latex={math.alphaOne} display={false} />{t('：不额外衰减旧 State', ': no extra decay of the prior State')}</td></tr>
           <tr><td>k / v</td><td>{t('保留“读旧状态 / 写 residual”的语义', 'retain the read-state / residual-write semantics')}</td><td>{t('不把 sequence 张量逐字映射成参数张量', 'not a literal tensor-to-tensor mapping')}</td></tr>
         </tbody>
       </table>
     </div>
 
-    <p>{t(
-      '因此，我们并不是把完整的 Gated DeltaNet 原封不动搬到参数空间。第一版正式实验保留“长期 State + residual write + 动态 β”这三件事，但把 α 固定为 1；这让实验只回答“控制新经验写入强度有没有帮助”，而不同时引入“主动遗忘旧参数状态”这个第二变量。',
-      'We therefore do not transplant the full Gated DeltaNet into parameter space. The first formal study keeps persistent State, residual write, and dynamic β, while fixing α=1. This isolates the question of controlling new-write strength without simultaneously introducing active forgetting of the old parameter State.',
-    )}</p>
+    <p>
+      {t(
+        '因此，我们并不是把完整的 Gated DeltaNet 原封不动搬到参数空间。第一版正式实验保留“长期 State + residual write + 动态 β”这三件事，但把',
+        'We therefore do not transplant the full Gated DeltaNet into parameter space. The first formal study keeps persistent State, residual write, and dynamic β, while fixing',
+      )}{' '}
+      <MathFormula latex={math.alphaOne} display={false} />
+      {t(
+        '；这让实验只回答“控制新经验写入强度有没有帮助”，而不同时引入“主动遗忘旧参数状态”这个第二变量。',
+        '. This isolates the question of controlling new-write strength without simultaneously introducing active forgetting of the old parameter State.',
+      )}
+    </p>
 
     <h3>2.4 {t('为什么不能直接在 LoRA 的 A / C 因子上做约束', 'Why the gate cannot operate directly on raw LoRA factors')}</h3>
     <p>{t(
@@ -276,10 +287,22 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
       'The same effective LoRA update can be represented by many A/C factor values. Multiplying A by s and dividing C by s leaves the actual matrix update unchanged, so raw factor magnitudes contain coordinate choice rather than only learning content.',
     )}</p>
     <MathFormula latex={math.gauge} label={t('LoRA 因子缩放不改变有效更新', 'LoRA factor rescaling leaves the effective update unchanged')} />
-    <p>{t(
-      `这也是为什么第一版“直接控制 LoRA 因子”的映射会失败：空历史起点的 C 侧检查给出 β=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}，已经跑出合法区间；只修映射但继续沿用旧 β 控制器时，真实轨迹上甚至得到 β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}。所以最终方法控制的是不受 LoRA 因子缩放方式影响的有效参数写入 ΔW，而不是 A / C 因子本身的位移。`,
-      `This is why the first factor-space mapping failed: at the empty-history start, the C-side check produced β=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}, outside the legal range; after fixing only the mapping but keeping the old controller, the real trajectory produced β_eff=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}. The final treatment therefore controls a gauge-invariant effective write rather than raw A/C displacement.`,
-    )}</p>
+    <p>
+      {t(
+        '这也是为什么第一版“直接控制 LoRA 因子”的映射会失败：空历史起点的 C 侧检查给出',
+        'This is why the first factor-space mapping failed: at the empty-history start, the C-side check produced',
+      )}{' '}
+      <MathFormula latex={math.factorFailureBeta} display={false} />
+      {t(
+        '，已经跑出合法区间；只修映射但继续沿用旧 β 控制器时，真实轨迹上甚至得到',
+        ', outside the legal range; after fixing only the mapping but keeping the old controller, the real trajectory produced',
+      )}{' '}
+      <MathFormula latex={math.mappingFailureBeta} display={false} />
+      {t(
+        '。所以最终方法控制的是不受 LoRA 因子缩放方式影响的有效参数写入 ΔW，而不是 A / C 因子本身的位移。',
+        '. The final treatment therefore controls a gauge-invariant effective write rather than raw A/C displacement.',
+      )}
+    </p>
     <MathFormula latex={math.beta} label={t('动态 beta 控制器', 'Dynamic beta controller')} compact />
     <p class="paper__math-caption">{t('冻结 controller · 只看局部参数 / 梯度 / Adam 状态，不看 reward、Task Score、Task Vector。', 'Frozen controller · local parameter / gradient / Adam state only; no reward, Task Score, or Task Vector.')}</p>
     <MathFormula latex={math.effective} label={t('GDR 映射到参数 State 后的概念式', 'Conceptual GDR update after mapping to parameter State')} compact />

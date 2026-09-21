@@ -43,6 +43,8 @@ S_t&=\widetilde S_{t-1}+\beta_t r_t k_t^{\top}
   residualWriteSymbol: String.raw`r_t k_t^{\top}`,
   betaSymbol: String.raw`\beta_t`,
   retentionSymbol: String.raw`\alpha_t\;/\;g_t`,
+  gZero: String.raw`g=0`,
+  alphaOne: String.raw`\alpha=1`,
   kvSymbol: String.raw`k_t\;/\;v_t`,
   qualificationGate: String.raw`\beta\in[${snapshot.routeSExecution.betaMinObserved.toExponential(2)},\;${snapshot.routeSExecution.betaMaxObserved.toFixed(6)}],\qquad g=0`,
 };
@@ -113,7 +115,7 @@ S_t&=\widetilde S_{t-1}+\beta_t r_t k_t^{\top}
           <tr><td><MathFormula latex={math.stateSymbol} display={false} /></td><td>{t('跨时间持续保存的 State', 'State persisted across time')}</td><td>{t('固定 rank128 的长期参数 State', 'fixed-rank128 long-term parameter State')}</td></tr>
           <tr><td><MathFormula latex={math.residualWriteSymbol} display={false} /></td><td>{t('旧 State 没解释掉的新信息', 'new information not explained by prior State')}</td><td>{t('当前训练真正留下的有效 LoRA 参数写入 ΔW', 'the effective LoRA parameter write ΔW left by current training')}</td></tr>
           <tr><td><MathFormula latex={math.betaSymbol} display={false} /></td><td>{t('这一步写多强', 'write strength for this step')}</td><td>{t('冻结 controller 根据局部参数 / 梯度 / Adam 状态动态给出 β', 'a frozen controller chooses β from local parameter, gradient, and Adam state')}</td></tr>
-          <tr><td><MathFormula latex={math.retentionSymbol} display={false} /></td><td>{t('旧 State 保留多少', 'retention of prior State')}</td><td>{t('第一版正式实验固定 g = 0，因此 α = 1', 'the first formal study fixes g=0, hence alpha=1')}</td></tr>
+          <tr><td><MathFormula latex={math.retentionSymbol} display={false} /></td><td>{t('旧 State 保留多少', 'retention of prior State')}</td><td>{t('第一版正式实验固定', 'the first formal study fixes')} <MathFormula latex={math.gZero} display={false} />{t('，因此', ', hence')} <MathFormula latex={math.alphaOne} display={false} /></td></tr>
           <tr><td><MathFormula latex={math.kvSymbol} display={false} /></td><td>{t('读取旧 State / 指定当前目标', 'read prior State / specify the current target')}</td><td>{t('只保留这层读写语义；不逐字映射成 LoRA 的 A / C', 'the read/write semantics are preserved; k/v are not literally renamed as LoRA A/C')}</td></tr>
         </tbody>
       </table>

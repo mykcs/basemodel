@@ -2,16 +2,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = path.resolve('dist');
-const concurrentExemptions = new Map([
-  [
-    'research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/index.html',
-    'Concurrent PR #756 owns the Gated-Delta LaTeX migration; remove this exemption after #756 lands.',
-  ],
-  [
-    'research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/index.html',
-    'Concurrent PR #756 also owns the shared Effective-State/Gated-Delta derivation component; remove this exemption after #756 lands.',
-  ],
-]);
 
 function walk(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -25,7 +15,6 @@ const findings = [];
 
 for (const file of htmlFiles) {
   const relative = path.relative(root, file).split(path.sep).join('/');
-  if (concurrentExemptions.has(relative)) continue;
   const source = fs.readFileSync(file, 'utf8');
 
   for (const match of source.matchAll(/<code\b[^>]*>[^<]{0,220}(?:ΔW|θ|τ|λ|β|Σ|√|‖|≈|∈)[^<]{0,220}<\/code>/g)) {
@@ -41,9 +30,6 @@ for (const file of htmlFiles) {
 }
 
 console.log(`Rendered public math audit scanned ${htmlFiles.length} HTML files.`);
-for (const [file, reason] of concurrentExemptions) {
-  console.log(`EXEMPT ${file}: ${reason}`);
-}
 for (const finding of findings) {
   console.log(`FAIL ${finding.file} [${finding.rule}] ${finding.snippet}`);
 }
