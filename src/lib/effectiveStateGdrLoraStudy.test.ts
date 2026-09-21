@@ -36,11 +36,15 @@ describe('Effective-State GDR publication snapshot', () => {
 
   it('publishes the three experiments as one consistent ablation family without strengthening the causal claim', () => {
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
-    expect(component).toContain('三个 OpenEVO 实验');
+    expect(component).toContain('三组已完成 OpenEVO 实验');
     expect(component).toContain('paper-table--ablation');
     expect(component).toContain('普通 OpenEVO');
     expect(component).toContain('OpenEVO + Bounded Online Recurrence');
-    expect(component).toContain('OpenEVO + Bounded Online Recurrence + GDR');
+    expect(component).toContain('OpenEVO + Bounded Online Recurrence + β-gating（α=1）');
+        expect(component).toContain('动态 α + 动态 β（未做）');
+        expect(component).toContain("<th>{t('动态 β', 'Dynamic β')}</th>");
+        expect(component).toContain("<th>{t('动态 α', 'Dynamic α')}</th>");
+        expect(component).not.toContain("gdr: t('OpenEVO + Bounded Online Recurrence + GDR'");
     expect(study.threeWayFinal.directApply.score).toBeCloseTo(60.71597673160174, 10);
     expect(study.threeWayFinal.off.score).toBeCloseTo(45.984865395021635, 10);
     expect(study.threeWayFinal.on.score).toBeCloseTo(20.769142316017317, 10);
@@ -180,6 +184,7 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain("import MathFormula from '../common/MathFormula.astro'");
     expect(component).toContain('\\operatorname{Compress}_{128}');
     expect(component).toContain('\\alpha_t S_{t-1}\\left(I-\\beta_t k_t k_t^{\\top}\\right)');
+    expect(component).toContain('S_t^{(\\alpha=1,\\,\\beta\\text{-gate})}');
     expect(component).toContain('\\beta_t r_t k_t^{\\top}');
     expect(component).not.toContain('\\beta_t k_t r_t^{\\top}');
     expect(component).toContain('A\\mapsto sA');
