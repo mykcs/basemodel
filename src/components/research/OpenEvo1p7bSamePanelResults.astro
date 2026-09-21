@@ -49,7 +49,7 @@ const directHref = p('/research/seed-openevo/study/capability-exploration/q17-di
     <strong>{t('训练过程和最终考试给出的信号不一样。', 'Training trajectory and final exam give different signals.')}</strong>
     <p>{t(
       '在 R1–R159 的训练期平均里，β-gating（α 固定为 1）组 reward 比只用 Bounded Online Recurrence 的组高约 0.025，但 95% 区间跨过 0，完整成功率反而低约 2.21 个百分点；到了冻结终评，Bounded Online Recurrence 为 45.98，β-gating（α 固定为 1）组为 20.77。两种测量回答不同问题，所以这里同时保留；动态 α + 动态 β 没有数据。',
-      'Across R1–R159, ON mean reward is about 0.025 above OFF, but the 95% interval crosses zero and exact success is about 2.21 percentage points lower. On the frozen final, OFF scores 45.98 and ON 20.77. These measurements answer different questions, so both are retained.',
+      'Across R1–R159, β-gating (α fixed at 1) mean reward is about 0.025 above Bounded Online Recurrence, but the 95% interval crosses zero and exact success is about 2.21 percentage points lower. On the frozen final, Bounded Online Recurrence scores 45.98 and β-gating (α fixed at 1) scores 20.77. These measurements answer different questions, so both are retained; dynamic α + dynamic β has no data.',
     )}</p>
   </div>
 
