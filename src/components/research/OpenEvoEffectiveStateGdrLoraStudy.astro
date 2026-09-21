@@ -91,7 +91,7 @@ const math = {
   factorFailureBeta: String.raw`\beta=${study.derivation.firstGenerationFactorFailure.betaC.toFixed(3)}`,
   mappingFailureBeta: String.raw`\beta_{\mathrm{eff}}=${study.derivation.mappingOnlyControllerFailure.betaEffective.toFixed(3)}`,
   beta: String.raw`\beta_t=f_{\theta}(x_t),\qquad x_t\in\mathbb{R}^{${study.posthocAnalysis.gdr.betaControllerFeatures}}`,
-  effective: String.raw`S_t^{\mathrm{GDR}}=\operatorname{Compress}_{128}\!\left(S_{t-1}+\operatorname{Gate}_{\beta_t}(\Delta_t)\right)`,
+  effective: String.raw`S_t^{(\alpha=1,\,\beta\text{-gate})}=\operatorname{Compress}_{128}\!\left(S_{t-1}+\operatorname{Gate}_{\beta_t}(\Delta_t)\right)`,
 };
 
 const result = study.formalResult as EffectiveStateFormalResult;
@@ -100,7 +100,8 @@ const finalResult = result.status === 'sealed' ? result : null;
 const names = {
   baseline: t('普通 OpenEVO', 'OpenEVO'),
   bounded: t('OpenEVO + Bounded Online Recurrence', 'OpenEVO + Bounded Online Recurrence'),
-  gdr: t('OpenEVO + Bounded Online Recurrence + GDR', 'OpenEVO + Bounded Online Recurrence + GDR'),
+  gdr: t('OpenEVO + Bounded Online Recurrence + β-gating（α=1）', 'OpenEVO + Bounded Online Recurrence + β-gating (α=1)'),
+  dynamicAlphaBeta: t('OpenEVO + Bounded Online Recurrence + 动态 α + 动态 β（未做）', 'OpenEVO + Bounded Online Recurrence + dynamic α + dynamic β (not run)'),
 };
 
 const experiment = OPEN_EVO_EXPERIMENTS.find((item) => item.id === 'bounded-effective-state-1p7b');
@@ -119,15 +120,16 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
 
 <article class="paper" data-effective-state-gdr-page data-copy-review data-reader-page="research-explainer" data-experiment-id={experiment.id}>
   <header class="paper__hero esg__hero" data-reader-context id="top">
-    <h1>{t('三个 OpenEVO 实验', 'Three OpenEVO experiments')}</h1>
+    <h1>{t('三组已完成 OpenEVO 实验，以及一个还没做的位置', 'Three completed OpenEVO experiments, plus one unrun slot')}</h1>
 
-    <div class="paper-table-wrap paper-table-wrap--hero" aria-label={t('三组实验消融表', 'Three-experiment ablation table')}>
+    <div class="paper-table-wrap paper-table-wrap--hero" aria-label={t('三组已完成实验与一个未做实验位置', 'Three completed experiments and one unrun experiment slot')}>
       <table class="paper-table paper-table--ablation">
         <thead>
           <tr>
             <th>{t('实验与区别', 'Experiment and change')}</th>
             <th>Bounded</th>
-            <th>GDR</th>
+            <th>{t('动态 β', 'Dynamic β')}</th>
+            <th>{t('动态 α', 'Dynamic α')}</th>
             <th>{t('最后 20 轮平均 Task Score', 'Mean Task Score over the last 20 rounds')}</th>
             <th>{t('同一固定 128 题终评', 'Final on the same fixed 128 tasks')}</th>
           </tr>
@@ -143,6 +145,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
             </td>
             <td class="paper-table__mark">—</td>
             <td class="paper-table__mark">—</td>
+            <td class="paper-table__mark">—</td>
             <td><strong>{directApplyLast20Score.toFixed(2)}</strong></td>
             <td><strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{study.threeWayFinal.directApply.exactCount}/128 {t('完整做对', 'exact')}</span></td>
           </tr>
@@ -155,6 +158,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
               )}</span>
             </td>
             <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
+            <td class="paper-table__mark">—</td>
             <td class="paper-table__mark">—</td>
             <td><strong>{boundedLast20Score?.toFixed(2) ?? '—'}</strong></td>
             <td><strong>{study.threeWayFinal.off.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{study.threeWayFinal.off.exactCount}/128 {t('完整做对', 'exact')}</span></td>
@@ -169,12 +173,32 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
             </td>
             <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
             <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
+            <td class="paper-table__mark">—</td>
             <td><strong>{gdrLast20Score?.toFixed(2) ?? '—'}</strong></td>
             <td><strong>{study.threeWayFinal.on.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{study.threeWayFinal.on.exactCount}/128 {t('完整做对', 'exact')}</span></td>
+          </tr>
+          <tr>
+            <td>
+              <strong>{names.dynamicAlphaBeta}</strong>
+              <span class="paper-table__experiment-note">{t(
+                '未来实验位置：让动态 α 与动态 β 同时进入参数 State 更新。尚未运行，不填任何结果。',
+                'Future experiment slot: dynamic α and dynamic β would both participate in the parameter-State update. It has not been run, so no result is filled in.',
+              )}</span>
+            </td>
+            <td class="paper-table__mark">✓</td>
+            <td class="paper-table__mark">✓</td>
+            <td class="paper-table__mark">✓</td>
+            <td>—</td>
+            <td>—</td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <p class="paper__boundary">{t(
+      '第四行不是第四个已完成实验，也不参与下面任何统计比较；它只是把“动态 α + 动态 β”这个尚未运行的问题留出位置，结果保持为空。',
+      'The fourth row is not a fourth completed experiment and is excluded from every statistical comparison below. It only reserves a place for the unrun dynamic-α + dynamic-β question, with results intentionally left blank.',
+    )}</p>
 
     <div class="paper__metric-context">
       <p class="paper__lede esg__lede" data-reader-task data-reader-purpose>{t(
@@ -214,7 +238,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
 
   <section class="paper__section" id="method" aria-labelledby="method-title">
     <p class="paper__section-number">2</p>
-    <h2 id="method-title">{t('方法：Bounded Online Recurrence 与 GDR', 'Method: Bounded Online Recurrence and GDR')}</h2>
+    <h2 id="method-title">{t('方法：Bounded Online Recurrence、Gated Delta 来源与本实验 β-gating（α=1）', 'Method: Bounded Online Recurrence, the Gated Delta source, and this β-gating (α=1) study')}</h2>
 
     <h3>2.1 {t('Bounded Online Recurrence：把无限增长的历史压成固定 rank128 State', 'Bounded Online Recurrence: compress growing history into a fixed rank128 State')}</h3>
     <p>{t(
@@ -305,7 +329,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
     </p>
     <MathFormula latex={math.beta} label={t('动态 beta 控制器', 'Dynamic beta controller')} compact />
     <p class="paper__math-caption">{t('冻结 controller · 只看局部参数 / 梯度 / Adam 状态，不看 reward、Task Score、Task Vector。', 'Frozen controller · local parameter / gradient / Adam state only; no reward, Task Score, or Task Vector.')}</p>
-    <MathFormula latex={math.effective} label={t('GDR 映射到参数 State 后的概念式', 'Conceptual GDR update after mapping to parameter State')} compact />
+    <MathFormula latex={math.effective} label={t('本实验 β-gating（α=1）映射到参数 State 后的概念式', 'Conceptual parameter-State update for this β-gating (α=1) study')} compact />
     <p class="paper__math-caption">{t('这是参数空间里的概念式；实际 runtime 先写 C 得到真实 C1，再基于 C1 写 A。', 'Conceptual parameter-space form; runtime writes C first to obtain the actual C1, then writes A conditioned on C1.')}</p>
   </section>
 
@@ -313,8 +337,8 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
     <p class="paper__section-number">3</p>
     <h2 id="experiment-title">{t('实验设置：Qwen3-1.7B × WebShop', 'Experiments: Qwen3-1.7B × WebShop')}</h2>
     <p>{t(
-      '三条线都属于这批 Qwen3-1.7B OpenEVO 实验。Stage 2 都跑 160 轮；Bounded Online Recurrence 与 Bounded Online Recurrence + GDR 是正式匹配对照，每轮 128 个 rollout，任务、seed、sampling、horizon、replay 和 optimizer recipe 对齐。',
-      'All three lines belong to this Qwen3-1.7B OpenEVO study family. Stage 2 runs for 160 rounds. Bounded Online Recurrence and Bounded Online Recurrence + GDR form the formal matched pair with 128 rollouts per round and matched tasks, seeds, sampling, horizon, replay, and optimizer recipe.',
+      '三条已完成的线都属于这批 Qwen3-1.7B OpenEVO 实验。Stage 2 都跑 160 轮；Bounded Online Recurrence 与 Bounded Online Recurrence + β-gating（α=1）才是正式匹配对照，每轮 128 个 rollout，任务、seed、sampling、horizon、replay 和 optimizer recipe 对齐。动态 α + 动态 β 还没有运行，不属于这个正式对照。',
+      'All three completed lines belong to this Qwen3-1.7B OpenEVO study family. Stage 2 runs for 160 rounds. Bounded Online Recurrence and Bounded Online Recurrence + β-gating (α=1) form the formal matched pair with 128 rollouts per round and matched tasks, seeds, sampling, horizon, replay, and optimizer recipe. Dynamic α + dynamic β has not been run and is not part of this formal contrast.',
     )}</p>
     <dl class="paper__setup">
       <div><dt>{t('模型', 'Model')}</dt><dd>Qwen3-1.7B</dd></div>
@@ -342,6 +366,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
           <tr><td>{names.baseline}</td><td><strong>{directApplyLast20Score.toFixed(2)}</strong></td><td>{t('R140–R159 每轮不同抽样任务的平均', 'mean over R140–R159, with different sampled tasks each round')}</td></tr>
           <tr><td>{names.bounded}</td><td><strong>{boundedLast20Score?.toFixed(2) ?? '—'}</strong></td><td>{t('R140–R159 每轮不同抽样任务的平均', 'mean over R140–R159, with different sampled tasks each round')}</td></tr>
           <tr><td>{names.gdr}</td><td><strong>{gdrLast20Score?.toFixed(2) ?? '—'}</strong></td><td>{t('R140–R159 每轮不同抽样任务的平均', 'mean over R140–R159, with different sampled tasks each round')}</td></tr>
+          <tr><td>{names.dynamicAlphaBeta}</td><td>—</td><td>{t('未做，暂无训练轨迹', 'not run; no training trajectory')}</td></tr>
         </tbody>
       </table>
     </div>
@@ -358,6 +383,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
           <tr><td>{names.baseline}</td><td><strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong></td><td>{study.threeWayFinal.directApply.exactCount}/128</td></tr>
           <tr><td>{names.bounded}</td><td><strong>{study.threeWayFinal.off.score.toFixed(2)}</strong></td><td>{study.threeWayFinal.off.exactCount}/128</td></tr>
           <tr><td>{names.gdr}</td><td><strong>{study.threeWayFinal.on.score.toFixed(2)}</strong></td><td>{study.threeWayFinal.on.exactCount}/128</td></tr>
+          <tr><td>{names.dynamicAlphaBeta}</td><td>—</td><td>—</td></tr>
         </tbody>
       </table>
     </div>
@@ -368,7 +394,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
 
     {finalResult ? (
       <>
-        <h3>4.3 {t('后两组的正式长期对照：GDR 的短暂正向信号没有形成稳定优势', 'Formal long-horizon contrast between the latter two: GDR’s transient positive signal does not become a stable advantage')}</h3>
+        <h3>4.3 {t('后两组的正式长期对照：β-gating（α=1）的短暂正向信号没有形成稳定优势', 'Formal long-horizon contrast between the latter two: the transient β-gating (α=1) signal does not become a stable advantage')}</h3>
         <div class="paper-table-wrap">
           <table class="paper-table">
             <thead><tr><th>{t('正式指标', 'Formal metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th><th>{t('差值', 'Delta')}</th></tr></thead>
@@ -380,8 +406,8 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
           </table>
         </div>
         <p class="paper__boundary">{t(
-          '这一张表只属于 Bounded 与 Bounded + GDR 这两个同一预注册 campaign 的正式长期对照。训练期平均 reward 的正差值只是短暂信号；置信区间跨 0，完整成功率也没有改善，因此不能把它写成稳定长期提升。',
-          'This table belongs only to the preregistered long-horizon contrast between Bounded and Bounded + GDR. The positive mean-reward difference is a transient signal; the interval crosses zero and exact success does not improve, so it cannot be described as a stable long-horizon gain.',
+          '这一张表只属于 Bounded 与 β-gating（α=1）这两个同一预注册 campaign 的正式长期对照。训练期平均 reward 的正差值只是短暂信号；置信区间跨 0，完整成功率也没有改善，因此不能把它写成稳定长期提升；它也不能回答动态 α + 动态 β 会怎样。',
+          'This table belongs only to the preregistered long-horizon contrast between Bounded and β-gating (α=1). The positive mean-reward difference is a transient signal; the interval crosses zero and exact success does not improve, so it cannot be described as a stable long-horizon gain. It also does not answer what dynamic α + dynamic β would do.',
         )}</p>
       </>
     ) : <p>{t('正式结果尚未封存。', 'Formal result is not sealed.')}</p>}
@@ -404,7 +430,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
 
   <section class="paper__section" id="analysis" aria-labelledby="analysis-title">
     <p class="paper__section-number">5</p>
-    <h2 id="analysis-title">{t('Analysis：为什么 GDR 后期会掉下来？', 'Analysis: why does the GDR line fall late?')}</h2>
+    <h2 id="analysis-title">{t('Analysis：为什么 β-gating（α=1）这一组后期会掉下来？', 'Analysis: why does the β-gating (α=1) line fall late?')}</h2>
 
     <div id="parameters">
       <h3>5.1 {t('Task Vector、范数和谱：没有一个指标能直接解释分数', 'Task Vector, norms, and spectra: no single metric directly explains score')}</h3>
@@ -421,18 +447,18 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
     <div id="posthoc">
       <h3>5.2 {t('后期差异不只是“更新被压小”，更新方向也变了', 'The late difference is not only smaller updates; direction changes too')}</h3>
       <p>{t(
-        `R159 时，Bounded Online Recurrence + GDR 的这轮更新大小约为不加 GDR 的 Bounded Online Recurrence 的 ${(study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff * 100).toFixed(1)}%，只小约 11%；但两边更新方向的 cosine 已经是 ${study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}。第 19–27 层平均 cosine 进一步到 ${study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}。`,
-        `At R159, the GDR update is about ${(study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff * 100).toFixed(1)}% the size of Bounded Online Recurrence without GDR, only about 11% smaller, while the update-direction cosine is already ${study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}. Across layers 19–27, the mean cosine falls further to ${study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}.`,
+        `R159 时，β-gating（α=1）这一组的本轮更新大小约为纯 Bounded Online Recurrence 的 ${(study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff * 100).toFixed(1)}%，只小约 11%；但两边更新方向的 cosine 已经是 ${study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}。第 19–27 层平均 cosine 进一步到 ${study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}。`,
+        `At R159, the β-gating (α=1) update is about ${(study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff * 100).toFixed(1)}% the size of plain Bounded Online Recurrence, only about 11% smaller, while the update-direction cosine is already ${study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}. Across layers 19–27, the mean cosine falls further to ${study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}.`,
       )}</p>
       <p class="paper__boundary">{t(
-        `这说明 GDR 后期不是简单把同一个更新缩短；两条线在往不同方向走。不过方向差异本身还没有被证明是掉分原因：目前只有 ${study.posthocAnalysis.exploratoryAssociation.anchorCount} 个锚点，最强的状态大小比趋势 exact permutation p=${study.posthocAnalysis.exploratoryAssociation.exactPermutationP.toFixed(3)}，仍未显著。`,
-        `This shows that late GDR is not simply shortening the same update; the two lines move in different directions. But direction divergence itself is not yet proven to cause the score drop: there are only ${study.posthocAnalysis.exploratoryAssociation.anchorCount} anchors, and the strongest state-size-ratio trend has exact permutation p=${study.posthocAnalysis.exploratoryAssociation.exactPermutationP.toFixed(3)}.`,
+        `这说明 β-gating（α=1）后期不是简单把同一个更新缩短；两条线在往不同方向走。不过方向差异本身还没有被证明是掉分原因：目前只有 ${study.posthocAnalysis.exploratoryAssociation.anchorCount} 个锚点，最强的状态大小比趋势 exact permutation p=${study.posthocAnalysis.exploratoryAssociation.exactPermutationP.toFixed(3)}，仍未显著。`,
+        `This shows that late β-gating (α=1) is not simply shortening the same update; the two lines move in different directions. But direction divergence itself is not yet proven to cause the score drop: there are only ${study.posthocAnalysis.exploratoryAssociation.anchorCount} anchors, and the strongest state-size-ratio trend has exact permutation p=${study.posthocAnalysis.exploratoryAssociation.exactPermutationP.toFixed(3)}.`,
       )}</p>
 
-      <h3>5.3 {t('输出长度和步数：三条线都变短，但 GDR 后期路径重新变长', 'Output length and steps: all three get shorter, but the GDR path lengthens again late')}</h3>
+      <h3>5.3 {t('输出长度和步数：三条线都变短，但 β-gating（α=1）后期路径重新变长', 'Output length and steps: all three get shorter, but the β-gating (α=1) path lengthens again late')}</h3>
       <p>{t(
-        '这里的 token 数来自保存下来的 raw completion，用 Qwen3-1.7B tokenizer 重新计算；每个窗口都是 32 轮的均值。先看 R0–31 和 R128–159：三条线的单步输出和整条 episode 总输出都明显变短，但 GDR 线的步数下降得最少。',
-        'Token counts are recomputed from saved raw completions with the Qwen3-1.7B tokenizer; each window is a 32-round mean. Comparing R0–31 with R128–159, all three lines become much shorter per step and per episode, but the GDR line reduces its step count the least.',
+        '这里的 token 数来自保存下来的 raw completion，用 Qwen3-1.7B tokenizer 重新计算；每个窗口都是 32 轮的均值。先看 R0–31 和 R128–159：三条线的单步输出和整条 episode 总输出都明显变短，但 β-gating（α=1）这一组的步数下降得最少。',
+        'Token counts are recomputed from saved raw completions with the Qwen3-1.7B tokenizer; each window is a 32-round mean. Comparing R0–31 with R128–159, all three lines become much shorter per step and per episode, but the β-gating (α=1) line reduces its step count the least.',
       )}</p>
       <div class="paper-table-wrap">
         <table class="paper-table paper-table--dense-results">
@@ -448,11 +474,11 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
         </table>
       </div>
       <p>{t(
-        `普通 OpenEVO 从每步 ${study.posthocAnalysis.outputLength.ordinary.earlyStepTokens.toFixed(1)} → ${study.posthocAnalysis.outputLength.ordinary.lateStepTokens.toFixed(1)} tokens，整条 episode 从 ${study.posthocAnalysis.outputLength.ordinary.earlyEpisodeTokens.toFixed(1)} → ${study.posthocAnalysis.outputLength.ordinary.lateEpisodeTokens.toFixed(1)} tokens，步骤 ${study.posthocAnalysis.outputLength.ordinary.earlySteps.toFixed(2)} → ${study.posthocAnalysis.outputLength.ordinary.lateSteps.toFixed(2)}，同时 Task Score ${study.posthocAnalysis.outputLength.ordinary.earlyScore.toFixed(3)} → ${study.posthocAnalysis.outputLength.ordinary.lateScore.toFixed(3)}。Bounded Online Recurrence 也呈现同样方向。GDR 虽然单步同样变短，但后期平均仍要 ${study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)} 步。`,
-        `Ordinary OpenEVO falls from ${study.posthocAnalysis.outputLength.ordinary.earlyStepTokens.toFixed(1)} to ${study.posthocAnalysis.outputLength.ordinary.lateStepTokens.toFixed(1)} tokens per step, from ${study.posthocAnalysis.outputLength.ordinary.earlyEpisodeTokens.toFixed(1)} to ${study.posthocAnalysis.outputLength.ordinary.lateEpisodeTokens.toFixed(1)} tokens per episode, and from ${study.posthocAnalysis.outputLength.ordinary.earlySteps.toFixed(2)} to ${study.posthocAnalysis.outputLength.ordinary.lateSteps.toFixed(2)} steps, while Task Score rises from ${study.posthocAnalysis.outputLength.ordinary.earlyScore.toFixed(3)} to ${study.posthocAnalysis.outputLength.ordinary.lateScore.toFixed(3)}. Bounded Online Recurrence shows the same direction. GDR also gets shorter per step, but still needs ${study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)} steps late.`,
+        `普通 OpenEVO 从每步 ${study.posthocAnalysis.outputLength.ordinary.earlyStepTokens.toFixed(1)} → ${study.posthocAnalysis.outputLength.ordinary.lateStepTokens.toFixed(1)} tokens，整条 episode 从 ${study.posthocAnalysis.outputLength.ordinary.earlyEpisodeTokens.toFixed(1)} → ${study.posthocAnalysis.outputLength.ordinary.lateEpisodeTokens.toFixed(1)} tokens，步骤 ${study.posthocAnalysis.outputLength.ordinary.earlySteps.toFixed(2)} → ${study.posthocAnalysis.outputLength.ordinary.lateSteps.toFixed(2)}，同时 Task Score ${study.posthocAnalysis.outputLength.ordinary.earlyScore.toFixed(3)} → ${study.posthocAnalysis.outputLength.ordinary.lateScore.toFixed(3)}。Bounded Online Recurrence 也呈现同样方向。β-gating（α=1）这一组虽然单步同样变短，但后期平均仍要 ${study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)} 步。`,
+        `Ordinary OpenEVO falls from ${study.posthocAnalysis.outputLength.ordinary.earlyStepTokens.toFixed(1)} to ${study.posthocAnalysis.outputLength.ordinary.lateStepTokens.toFixed(1)} tokens per step, from ${study.posthocAnalysis.outputLength.ordinary.earlyEpisodeTokens.toFixed(1)} to ${study.posthocAnalysis.outputLength.ordinary.lateEpisodeTokens.toFixed(1)} tokens per episode, and from ${study.posthocAnalysis.outputLength.ordinary.earlySteps.toFixed(2)} to ${study.posthocAnalysis.outputLength.ordinary.lateSteps.toFixed(2)} steps, while Task Score rises from ${study.posthocAnalysis.outputLength.ordinary.earlyScore.toFixed(3)} to ${study.posthocAnalysis.outputLength.ordinary.lateScore.toFixed(3)}. Bounded Online Recurrence shows the same direction. The β-gating (α=1) line also gets shorter per step, but still needs ${study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)} steps late.`,
       )}</p>
 
-      <h4>{t('GDR 最后 64 轮的转折', 'The GDR turn in the final 64 rounds')}</h4>
+      <h4>{t('β-gating（α=1）最后 64 轮的转折', 'The β-gating (α=1) turn in the final 64 rounds')}</h4>
       <div class="paper-table-wrap">
         <table class="paper-table paper-table--dense-results">
           <thead><tr><th>{t('窗口', 'Window')}</th><th>{t('每步输出', 'tokens / step')}</th><th>{t('Episode 总输出', 'episode tokens')}</th><th>{t('Action tokens', 'action tokens')}</th><th>{t('平均步骤', 'steps')}</th><th>Task Score</th></tr></thead>
@@ -467,7 +493,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
         `The key point is that tokens per step stay nearly flat (${study.posthocAnalysis.outputLength.linearConstraint.midStepTokens.toFixed(1)} → ${study.posthocAnalysis.outputLength.linearConstraint.lateStepTokens.toFixed(1)}), while episode output rises from ${study.posthocAnalysis.outputLength.linearConstraint.midEpisodeTokens.toFixed(1)} to ${study.posthocAnalysis.outputLength.linearConstraint.lateEpisodeTokens.toFixed(1)}, mean steps rise from ${study.posthocAnalysis.outputLength.linearConstraint.midSteps.toFixed(2)} to ${study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)}, and Task Score falls from ${study.posthocAnalysis.outputLength.linearConstraint.midScore.toFixed(3)} to ${study.posthocAnalysis.outputLength.linearConstraint.lateScore.toFixed(3)}. The late drop is therefore not explained by more verbose individual steps; the task path itself becomes longer.`,
       )}</p>
 
-      <h3>5.4 Entropy：{t('行为分布越来越集中，GDR 最明显；但这不是 token entropy', 'Action distribution becomes more concentrated, especially with GDR; this is not token entropy')}</h3>
+      <h3>5.4 Entropy：{t('行为分布越来越集中，β-gating（α=1）这一组最明显；但这不是 token entropy', 'Action distribution becomes more concentrated, especially with β-gating (α=1); this is not token entropy')}</h3>
       <p>{t(
         '这里能可靠重建的是 action-family entropy：把每一轮所有有效动作按 search / click 等类型统计，计算 Shannon entropy（自然对数），再在 32 轮窗口内取平均。数值越低，表示动作类型越集中。三条正式 rollout 没有保存逐 token logits / logprobs，所以真正的 predictive token entropy 仍然不能从文本补出来。',
         'What can be reconstructed reliably is action-family entropy: count valid actions such as search and click in each round, compute Shannon entropy with natural log, then average within 32-round windows. Lower values mean a more concentrated action-type distribution. The formal rollouts did not persist per-token logits/logprobs, so predictive token entropy still cannot be reconstructed from text.',
@@ -485,21 +511,25 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
         </div>
       ) : null}
       <p>{t(
-        `窗口均值上，普通 OpenEVO 的行为 entropy ${study.posthocAnalysis.behaviorEntropy.ordinaryEarly.toFixed(4)} → ${study.posthocAnalysis.behaviorEntropy.ordinaryLate.toFixed(4)}，Bounded Online Recurrence ${study.posthocAnalysis.behaviorEntropy.boundedEarly.toFixed(4)} → ${study.posthocAnalysis.behaviorEntropy.boundedLate.toFixed(4)}，GDR ${study.posthocAnalysis.behaviorEntropy.gdrEarly.toFixed(4)} → ${study.posthocAnalysis.behaviorEntropy.gdrLate.toFixed(4)}。到 R159，GDR 只有 ${study.posthocAnalysis.behaviorEntropy.r159.gdr.search} 次 search，却有 ${study.posthocAnalysis.behaviorEntropy.r159.gdr.click} 次 click，H=${study.posthocAnalysis.behaviorEntropy.r159.gdr.entropy.toFixed(4)}；而且三条线 action valid rate 都是 100%。所以这个变化不是 parser / 非法动作造成的，而是有效策略行为本身更集中。`,
-        `Window means fall from ${study.posthocAnalysis.behaviorEntropy.ordinaryEarly.toFixed(4)} to ${study.posthocAnalysis.behaviorEntropy.ordinaryLate.toFixed(4)} for ordinary OpenEVO, ${study.posthocAnalysis.behaviorEntropy.boundedEarly.toFixed(4)} to ${study.posthocAnalysis.behaviorEntropy.boundedLate.toFixed(4)} for Bounded Online Recurrence, and ${study.posthocAnalysis.behaviorEntropy.gdrEarly.toFixed(4)} to ${study.posthocAnalysis.behaviorEntropy.gdrLate.toFixed(4)} with GDR. At R159, GDR has ${study.posthocAnalysis.behaviorEntropy.r159.gdr.search} search actions but ${study.posthocAnalysis.behaviorEntropy.r159.gdr.click} clicks, with H=${study.posthocAnalysis.behaviorEntropy.r159.gdr.entropy.toFixed(4)}. All three lines have a 100% action-valid rate, so this concentration is not a parser or invalid-action artifact.`,
+        `窗口均值上，普通 OpenEVO 的行为 entropy ${study.posthocAnalysis.behaviorEntropy.ordinaryEarly.toFixed(4)} → ${study.posthocAnalysis.behaviorEntropy.ordinaryLate.toFixed(4)}，Bounded Online Recurrence ${study.posthocAnalysis.behaviorEntropy.boundedEarly.toFixed(4)} → ${study.posthocAnalysis.behaviorEntropy.boundedLate.toFixed(4)}，β-gating（α=1）组 ${study.posthocAnalysis.behaviorEntropy.gdrEarly.toFixed(4)} → ${study.posthocAnalysis.behaviorEntropy.gdrLate.toFixed(4)}。到 R159，这一组只有 ${study.posthocAnalysis.behaviorEntropy.r159.gdr.search} 次 search，却有 ${study.posthocAnalysis.behaviorEntropy.r159.gdr.click} 次 click，H=${study.posthocAnalysis.behaviorEntropy.r159.gdr.entropy.toFixed(4)}；而且三条线 action valid rate 都是 100%。所以这个变化不是 parser / 非法动作造成的，而是有效策略行为本身更集中。`,
+        `Window means fall from ${study.posthocAnalysis.behaviorEntropy.ordinaryEarly.toFixed(4)} to ${study.posthocAnalysis.behaviorEntropy.ordinaryLate.toFixed(4)} for ordinary OpenEVO, ${study.posthocAnalysis.behaviorEntropy.boundedEarly.toFixed(4)} to ${study.posthocAnalysis.behaviorEntropy.boundedLate.toFixed(4)} for Bounded Online Recurrence, and ${study.posthocAnalysis.behaviorEntropy.gdrEarly.toFixed(4)} to ${study.posthocAnalysis.behaviorEntropy.gdrLate.toFixed(4)} for β-gating (α=1). At R159, this line has ${study.posthocAnalysis.behaviorEntropy.r159.gdr.search} search actions but ${study.posthocAnalysis.behaviorEntropy.r159.gdr.click} clicks, with H=${study.posthocAnalysis.behaviorEntropy.r159.gdr.entropy.toFixed(4)}. All three lines have a 100% action-valid rate, so this concentration is not a parser or invalid-action artifact.`,
       )}</p>
       <p class="paper__boundary">{t('行为 entropy 下降与后期掉分同时出现，但它仍然只是行为层相关现象。不能据此说“低 entropy 导致掉分”，更不能把它当成模型 token entropy。', 'Lower action entropy co-occurs with the late score change, but it remains a behavioral association. It does not establish that low entropy causes the score drop, and it is not model token entropy.')}</p>
 
       <p class="paper__links"><a href="/research/seed-openevo/evidence/wandb-threeway/output-length-analysis.json">{t('查看 160 轮完整输出长度 / 步数 JSON →', 'Open full 160-round output-length / step JSON →')}</a><a href="/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.json">{t('查看 160 轮完整行为 entropy JSON →', 'Open full 160-round action-entropy JSON →')}</a></p>
 
-      <h3>5.5 {t('学长提出的下一问：约束要不要更 adaptive？', 'Next question: should the constraint become more adaptive?')}</h3>
+      <h3>5.5 {t('下一问分成两层：先补动态 α，再研究 β 还该看什么', 'Two next questions: first test dynamic α, then ask what β should observe')}</h3>
       <p>{t(
         `现在的 β 已经不是固定系数：冻结 controller 每一步读取 ${study.posthocAnalysis.gdr.betaControllerFeatures} 个局部特征，再决定写多强。但它只知道局部参数、梯度和 Adam 状态，不知道 WebShop reward、Task Score 或 Task Vector。`,
         `Beta is already dynamic rather than fixed: the frozen controller reads ${study.posthocAnalysis.gdr.betaControllerFeatures} local features at each step and chooses write strength. But it only knows local parameters, gradients, and Adam state; it does not see WebShop reward, Task Score, or Task Vector.`,
       )}</p>
       <p>{t(
-        '所以下一步真正的问题不是“固定 β 还是动态 β”，而是“动态 β 还应该知道什么”。一个干净的下一实验可以前瞻加入 layer / round / 历史更新方向等信息，看它能不能区分该压的噪声和应该保留的有效更新；不能拿已经看到的 Final 回头调当前实验。',
-        'The real next question is not fixed versus dynamic beta, but what information the dynamic beta should know. A clean prospective experiment could add layer, round, or historical update-direction information and test whether it better separates noise from useful updates; the completed final cannot be used to tune this finished study retrospectively.',
+        '第一层缺口更基础：这次正式实验把 α 固定为 1，所以“动态 α + 动态 β”尚未做，结果暂时留空。只有完成一条新的前瞻实验，才能回答主动保留 / 遗忘旧 State 是否改变结论。',
+        'The first gap is more basic: this formal study fixes α at 1, so dynamic α + dynamic β has not been run and its result is intentionally blank. Only a new prospective experiment can test whether active retention / forgetting of prior State changes the conclusion.',
+      )}</p>
+      <p>{t(
+        '第二层才是 β controller 的信息问题：可以在新的前瞻实验里加入 layer / round / 历史更新方向等信息，看它能不能区分该压的噪声和应该保留的有效更新；不能拿已经看到的 Final 回头调当前实验。',
+        'The second question concerns controller information: a new prospective study could add layer, round, or historical update-direction features and test whether β better separates noise from useful updates. The completed final cannot be used to tune the finished study retrospectively.',
       )}</p>
     </div>
 
@@ -524,8 +554,8 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
     <p class="paper__section-number">7</p>
     <h2 id="evidence-title">{t('证据与复现身份', 'Evidence and reproducibility identity')}</h2>
     <p>{t(
-      '正文统一使用“普通 OpenEVO / Bounded Online Recurrence / Bounded Online Recurrence + GDR”这三个公共名称。为了审计，底层正式身份仍原样保留：普通 OpenEVO 对应历史 DirectApply / No-GDR；后两组的正式实验标识分别是 BOUNDED_OFF 与 EFFECTIVE_STATE_GDR_LORA_V1。',
-      'The main text uses one public naming system: ordinary OpenEVO, Bounded Online Recurrence, and Bounded Online Recurrence + GDR. For auditability, the underlying formal identities remain unchanged: ordinary OpenEVO maps to the historical DirectApply / No-GDR run, and the matched arms are BOUNDED_OFF and EFFECTIVE_STATE_GDR_LORA_V1.',
+      '正文把已完成的第三组明确写成“Bounded Online Recurrence + β-gating（α=1）”，不再简称“+ GDR”。“动态 α + 动态 β”只作为未做实验位置保留。为了审计，底层正式身份仍原样保留：普通 OpenEVO 对应历史 DirectApply / No-GDR；后两组正式实验标识仍是 BOUNDED_OFF 与 EFFECTIVE_STATE_GDR_LORA_V1。',
+      'The completed third line is named explicitly as “Bounded Online Recurrence + β-gating (α=1)” rather than abbreviated as “+ GDR”. Dynamic α + dynamic β is kept only as an unrun slot. For auditability, the underlying formal identities remain unchanged: ordinary OpenEVO maps to the historical DirectApply / No-GDR run, and the matched formal identities remain BOUNDED_OFF and EFFECTIVE_STATE_GDR_LORA_V1.',
     )}</p>
     <details class="paper__details paper__experiment-hub" data-experiment-hub>
       <summary>{t('本实验的结果、分析与证据', 'Results, analysis, and evidence for this experiment')}</summary>
@@ -548,7 +578,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
     <details class="paper__details" open>
       <summary>{t('正式结果与同题 Final', 'Formal results and same-panel final')}</summary>
       <ul>
-        <li><a href={study.evidence.finalComparison}><ExternalBrandMark href={study.evidence.finalComparison} />{t('三组同题冻结终评 / Bounded Online Recurrence 与 +GDR 正式比较', 'three-way same-panel final / formal Bounded Online Recurrence vs +GDR comparison')}</a></li>
+        <li><a href={study.evidence.finalComparison}><ExternalBrandMark href={study.evidence.finalComparison} />{t('三组同题冻结终评 / Bounded Online Recurrence 与 β-gating（α=1）正式比较', 'three-way same-panel final / formal Bounded Online Recurrence vs β-gating (α=1) comparison')}</a></li>
         <li><a href={study.evidence.longHorizon}><ExternalBrandMark href={study.evidence.longHorizon} />{t('长期统计与 bootstrap', 'long-horizon statistics and bootstrap')}</a></li>
         <li><a href={study.evidence.publicSnapshot}>{t('公开机器可读结果快照', 'public machine-readable snapshot')}</a></li>
         <li><a href={study.posthocAnalysis.snapshot}>{t('只读后分析快照', 'read-only post-hoc snapshot')}</a></li>
