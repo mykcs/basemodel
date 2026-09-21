@@ -24,6 +24,31 @@ for (const viewport of [
   });
 }
 
+test('ablation table keeps all six columns on one explicit 100-percent grid', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const geometry = await page.locator('.paper-table--ablation').evaluate((table) => {
+    const tableRect = table.getBoundingClientRect();
+    const cells = Array.from(table.querySelectorAll('thead th')).map((cell) => {
+      const rect = cell.getBoundingClientRect();
+      return {
+        left: rect.left - tableRect.left,
+        width: rect.width,
+        share: rect.width / tableRect.width,
+      };
+    });
+    return { width: tableRect.width, cells };
+  });
+
+  expect(geometry.cells).toHaveLength(6);
+  const expectedShares = [0.30, 0.08, 0.08, 0.08, 0.20, 0.26];
+  expectedShares.forEach((expected, index) => {
+    expect(Math.abs(geometry.cells[index].share - expected)).toBeLessThan(0.012);
+  });
+  const last = geometry.cells.at(-1)!;
+  expect(Math.abs(last.left + last.width - geometry.width)).toBeLessThan(1.5);
+});
+
 test('ablation table separates three completed mechanisms from the unrun dynamic-alpha slot', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
