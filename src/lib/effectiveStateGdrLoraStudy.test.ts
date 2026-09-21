@@ -190,7 +190,8 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('A\\mapsto sA');
     expect(component).toContain('Task Vector、范数和谱');
     expect(component).toContain('真正的 predictive token entropy 仍然不能从文本补出来');
-    expect(component).toContain('约束要不要更 adaptive');
+    expect(component).toContain('下一问分成两层：先补动态 α，再研究 β 还该看什么');
+    expect(component).toContain('“动态 α + 动态 β”尚未做，结果暂时留空');
     expect(component).toContain('study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString');
     expect(component).toContain('不能说“Task Vector / norm 越大，WebShop 就越好”');
     expect(component).toContain("import WandbEvidencePanel from './WandbEvidencePanel.astro'");
