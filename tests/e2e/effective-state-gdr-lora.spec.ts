@@ -43,7 +43,7 @@ test('ablation table keeps all six columns on one explicit 100-percent grid', as
   expect(geometry.cells).toHaveLength(6);
   const expectedShares = [0.30, 0.08, 0.08, 0.08, 0.20, 0.26];
   expectedShares.forEach((expected, index) => {
-    expect(Math.abs(geometry.cells[index].share - expected)).toBeLessThan(0.012);
+    expect(Math.abs(geometry.cells[index]!.share - expected)).toBeLessThan(0.012);
   });
   const last = geometry.cells.at(-1)!;
   expect(Math.abs(last.left + last.width - geometry.width)).toBeLessThan(1.5);
