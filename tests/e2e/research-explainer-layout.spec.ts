@@ -384,7 +384,7 @@ test('simplified information architecture keeps the canonical research navigatio
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     await settle(page);
     await expect(page.locator('.research-mainline')).toHaveCount(0);
-    await expect(page.locator('.desktop-nav .journey-link')).toHaveCount(2);
+    await expect(page.locator('.desktop-nav .journey-link')).toHaveCount(3);
     const localNavigation = page.locator('[data-research-navigation]').first();
     await expect(localNavigation).toBeVisible();
     await expect(page.locator('details').filter({ has: localNavigation })).toHaveCount(0);

@@ -44,19 +44,22 @@ const scienceState = read('src/lib/openEvoScientificState.ts');
 assert(
   'HARDEN-HOME-001',
   home.includes('SeedOpenEvoMissionHero')
-    && home.includes('primaryIntents')
+    && home.includes('currentAnswers')
+    && home.includes('OPEN_EVO_EXPERIMENTS.map')
+    && home.includes('nextActions')
     && home.includes("'/research/seed-openevo/flow/'")
     && home.includes("'/research/seed-openevo/study/run/'")
     && home.includes("'/research/seed-openevo/study/results/'"),
-  'home starts from the explicit SEED × OpenEvo experiment and offers overview / experiment-state / reproduction entry paths',
+  'home starts from the research question, then current evidence, experiment progression, and explicit continue paths',
 );
 assert(
   'HARDEN-HOME-005',
-  missionHero.includes("t('SEED 与 OpenEvo：固定同一个 Qwen 和任务，比较两套学习系统', 'SEED and OpenEvo: pin the same Qwen and tasks, compare two learning systems')")
+  missionHero.includes('同一个 Base Model，换一种自我改进方法，真的会学得更好吗？')
+    && missionHero.includes("t('看目前发现 →','See current findings →')")
+    && missionHero.includes("t('先理解这项研究','Understand the study first')")
     && missionHero.includes('Qwen2.5-3B-Instruct')
     && missionHero.includes("title:'SEED / OpenEvo'")
     && missionHero.includes("title:'ALFWorld / WebShop'")
-    && missionHero.includes("t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')")
     && missionHero.includes("href:p('/research/seed-openevo/study/results/')")
     && missionHero.includes('openEvoScientificState.defaultBranchSnapshot.phase')
     && missionHero.includes('working branch → experiment ledger (campaign) → reconciliation')
@@ -66,11 +69,17 @@ assert(
     && scienceState.includes('gpuAllocationAllowed: false')
     && !missionHero.includes('当前实验分配')
     && !missionHero.includes('Current allocation'),
-  'the first screen names the research subject and routes moving scientific state through the latest dated provenance instead of freezing one phase/allocation',
+  'the first screen asks the concrete research question while moving scientific state stays behind dated provenance instead of being frozen into the homepage claim',
 );
 assert('HARDEN-HOME-002', !home.includes('<strong>18</strong>') && !home.includes('<strong>5</strong>') && !home.includes('<strong>3</strong>'), 'home no longer contains hard-coded demo counts');
-const intentIndex = home.indexOf('intent-grid');
-assert('HARDEN-HOME-003', intentIndex >= 0 && !home.includes('<SeedUseCaseStrip'), 'home keeps the experiment entry choice without repeating the global SEED use-case navigation strip');
+const answerIndex = home.indexOf('home-answer');
+const journeyIndex = home.indexOf('home-journey');
+const nextIndex = home.indexOf('home-next');
+assert(
+  'HARDEN-HOME-003',
+  answerIndex >= 0 && journeyIndex > answerIndex && nextIndex > journeyIndex && !home.includes('<SeedUseCaseStrip'),
+  'home preserves answer → experiment progression → next action order without repeating the global SEED use-case navigation strip',
+);
 
 const paperIndex = read('src/pages/_bodies/papers-index.astro');
 assert('HARDEN-PAPERS-INDEX', paperIndex.includes('paper-matrix-advanced') && paperIndex.includes('<details'), 'paper-model relation matrix is an advanced secondary view');
