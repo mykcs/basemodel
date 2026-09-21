@@ -212,6 +212,7 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
     await expect(labels.nth(2)).toContainText('③ 分析');
   }
 
+  await expect(page.locator('#formal-result')).toContainText('W&B 原始 scalar 是 0–1');
   await expect(page.locator('#loss')).toContainText('1.046');
   await expect(page.locator('#loss')).toContainText('0.102');
   await expect(page.locator('#loss')).toContainText('0.065');
@@ -221,11 +222,17 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
   await expect(page.locator('#norms')).toContainText('17.925');
   await expect(page.locator('#norms')).toContainText('0.889');
 
+  await expect(page.locator('#task-vector')).toContainText('每条 160 个点');
+  await expect(page.locator('#task-vector')).toContainText('横轴密度和 y 轴量程完全一致');
+  await expect(page.locator('#task-vector')).toContainText('相关性统计只针对普通 OpenEVO');
+  await expect(page.locator('body')).not.toContainText('\\n\\n');
   await expect(page.locator('#task-vector')).toContainText('0.597');
   await expect(page.locator('#task-vector')).toContainText('0.045');
   await expect(page.locator('#task-vector')).toContainText('-0.278');
   await expect(page.locator('#task-vector')).toContainText('+0.044');
 
+  await expect(page.locator('#parameter-geometry')).toContainText('full/base spectral ratio');
+  await expect(page.locator('#parameter-geometry')).toContainText('接近 1 表示最强谱尺度变化很小');
   await expect(page.locator('#parameter-geometry')).toContainText('2.136');
   await expect(page.locator('#parameter-geometry')).toContainText('1.946');
   await expect(page.locator('#parameter-geometry')).toContainText('-0.287');
@@ -234,10 +241,16 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
   await expect(page.locator('#length')).toContainText('229.1');
   await expect(page.locator('#length')).toContainText('7.91');
   await expect(page.locator('#length')).toContainText('8.60');
+  await expect(page.locator('#length')).toContainText('Task Score / 100');
+  await expect(page.locator('#length')).toContainText('60.12');
+  await expect(page.locator('#length')).toContainText('56.82');
 
   await expect(page.locator('#entropy')).toContainText('0.5826');
   await expect(page.locator('#entropy')).toContainText('0.3705');
-  await expect(page.locator('#entropy')).toContainText('1158');
+  await expect(page.locator('#entropy')).toContainText('R159 click 占比');
+  await expect(page.locator('#entropy')).toContainText('82.9%');
+  await expect(page.locator('#entropy')).toContainText('87.7%');
+  await expect(page.locator('#entropy')).toContainText('90.0%');
   await expect(page.locator('#entropy')).toContainText('100%');
   await expect(page.locator('#analysis-boundary')).toContainText('我们现在能解释到哪里？');
   await expect(page.locator('#analysis-boundary')).toContainText('还不能证明的');
@@ -245,6 +258,7 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
   const next = page.locator('#next-question');
   await expect(next).toContainText('动态 α + 动态 β：尚未运行');
   await expect(next).toContainText('动态 α + 动态 β');
+  await expect(next).toContainText('Frobenius norm');
 });
 
 test('W&B evidence is embedded beside the relevant metric instead of collected in a separate gallery', async ({ page }) => {

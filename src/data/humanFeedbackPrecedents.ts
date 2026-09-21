@@ -280,7 +280,7 @@ export const HUMAN_FEEDBACK_PRECEDENTS: HumanFeedbackPrecedent[] = [
     tags: ['科研网页', '实验分析', 'loss', 'Task Vector', '范数', '谱', '长度', 'entropy', '指标解释', 'W&B'],
     principle: '一组实验的后分析不要按研究者想到问题的时间顺序堆指标，而要按读者理解成本从基础训练指标走到参数几何、再走到行为指标；每个 subsection 固定先解释指标是什么，再给本实验结果，最后给分析与边界。',
     antiPatterns: ['把 Task Vector、范数、方向、长度、entropy 混在一个 Analysis 段落里', '先报复杂相关系数，再回头解释 loss 是什么', '把所有 W&B 图单独堆成图集，迫使读者在图和正文之间来回对应', '一节只有结果数字，没有先解释指标或最后的解释边界'],
-    positiveSignals: ['loss → Task Vector → 参数范数/谱/方向 → 输出长度/任务步数 → action-family entropy', '每节都有“① 指标是什么 → ② 这次实验的结果 → ③ 分析”', '对应 W&B 图直接跟在该指标的小节里', '越复杂的指标越晚出现，并明确它比前一层多回答了什么'],
+    positiveSignals: ['loss → Frobenius 范数 → Task Vector 相关性 → 谱/方向 → 输出长度/任务步数 → action-family entropy', '每节都有“① 指标是什么 → ② 这次实验的结果 → ③ 分析”', '对应 W&B 图直接跟在该指标的小节里', '越复杂的指标越晚出现，并明确它比前一层多回答了什么'],
   },
 
   {

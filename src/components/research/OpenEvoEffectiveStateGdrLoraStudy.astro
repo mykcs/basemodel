@@ -448,6 +448,10 @@ const twentyRoundScoreWindows = finalResult
     'Task Score is the mean terminal WebShop task score multiplied by 100; partial completion can receive partial credit. We start with all 160 rounds instead of selecting a late window first. Exact success is a stricter metric and counts only task_score = 1.0.',
   )}</p>
   <MetricEvidenceFigure item={metricCharts.taskScore} />
+  <p class="paper__chart-note">{t(
+    '口径：本页统一使用 Task Score / 100。W&B 原始 scalar 是 0–1；这里的发布图只做 ×100 的线性换算，因此曲线形状、轮次位置和相对关系都不变。W&B 链接仍指向原始观测入口。',
+    'Scale: this page consistently reports Task Score / 100. The native W&B scalar is 0–1; this publication figure only multiplies it by 100, so the curve shape, round positions, and relative relationships are unchanged. The W&B link still points to the original observability surface.',
+  )}</p>
   <p class="paper__boundary">{t(
     '单轮曲线抖动很大，因为每轮抽到的 WebShop 任务会变化。它适合看完整训练形状，但不适合只凭某一个峰值判断哪条路线更好；所以下一步把同一条轨迹按每 20 轮聚合。',
     'Single-round values are noisy because the sampled WebShop tasks vary by round. The curve is useful for the full training shape, not for declaring a result from one peak, so the next view aggregates the same trajectories into 20-round windows.',
@@ -608,6 +612,10 @@ const twentyRoundScoreWindows = finalResult
       'Frobenius norm 可以把一个参数矩阵的总体大小压成一个数。这里先只问最简单的“有多大”：长期 State 多大、本轮 Task Vector 多大；先不讨论方向。',
       'The Frobenius norm compresses the overall magnitude of a parameter matrix into one number. We first ask only the simplest question—how large is the long-term State and how large is the current Task Vector—without yet discussing direction.',
     )}</p>
+    <p class="paper__chart-note">{t(
+      '这里的 State / Final Task Vector 几何表只来自后两组同设置正式对照；普通 OpenEVO 是更早的前序实验，不在这份成对参数 State 快照里。下一节会用它自己的逐轮 Task Vector 数据做趋势与相关性诊断。',
+      'This State / Final Task Vector geometry table comes only from the latter two matched formal runs. Ordinary OpenEVO is an earlier predecessor run and is not part of this paired parameter-State snapshot; the next section uses its own per-round Task Vector history for trend and association diagnostics.',
+    )}</p>
     <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
     <div class="paper-table-wrap">
       <table class="paper-table">
@@ -634,14 +642,18 @@ const twentyRoundScoreWindows = finalResult
       'A Task Vector is the parameter difference across one training round. The W&B curve first shows its 160-round Frobenius magnitude; we then ask whether its relationship with Task Score survives after removing the shared training trend.',
     )}</p>
     <MetricEvidenceFigure item={metricCharts.taskVector} />
+    <p class="paper__chart-note">{t(
+      '采样口径：三条曲线都使用 R0–R159 的逐轮 Task Vector Frobenius，每条 160 个点，横轴密度和 y 轴量程完全一致。网页发布图按封存逐轮数据统一采样；W&B 链接保留原始观测入口。下面的相关性统计只针对普通 OpenEVO 的 160 轮配对数据；另外两条曲线在这里用于比较逐轮更新幅度。',
+      'Sampling: all three curves use per-round Task Vector Frobenius over R0–R159, with 160 points per curve and a shared x-density and y-scale. The publication figure normalizes sampling from sealed per-round evidence, while the W&B link preserves the original observability surface. The association statistics below use only the 160 paired rounds from ordinary OpenEVO; the other two curves are shown here for per-round update-magnitude comparison.',
+    )}</p>
     <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
     <div class="paper-table-wrap">
       <table class="paper-table">
         <thead><tr><th>{t('Task Vector 诊断', 'Task Vector diagnostic')}</th><th>{t('结果', 'Result')}</th></tr></thead>
         <tbody>
           <tr><td>{t('普通 OpenEVO：Task Vector Frobenius vs Task Score · raw Spearman', 'Ordinary OpenEVO: Task Vector Frobenius vs Task Score · raw Spearman')}</td><td><strong>{study.posthocAnalysis.parameterScore.taskVectorSpearmanRaw.toFixed(3)}</strong></td></tr>
-          <tr><td>{t('去掉 20 轮窗口共同训练趋势后的 Pearson', 'Within-20 Pearson after removing the shared training trend')}</td><td><strong>{study.posthocAnalysis.parameterScore.taskVectorWithin20Pearson.toFixed(3)}</strong></td></tr>
-          <tr><td>{t('当前 Task Vector 预测后 5 轮分数 · 95% 区间', 'Current Task Vector predicting score five rounds ahead · 95% interval')}</td><td><strong>{study.posthocAnalysis.parameterScore.taskVectorFuture5Ci95[0].toFixed(3)} → +{study.posthocAnalysis.parameterScore.taskVectorFuture5Ci95[1].toFixed(3)}</strong></td></tr>
+          <tr><td>{t('普通 OpenEVO：去掉 20 轮窗口共同训练趋势后的 Pearson', 'Ordinary OpenEVO: within-20 Pearson after removing the shared training trend')}</td><td><strong>{study.posthocAnalysis.parameterScore.taskVectorWithin20Pearson.toFixed(3)}</strong></td></tr>
+          <tr><td>{t('普通 OpenEVO：当前 Task Vector 预测后 5 轮分数 · 95% 区间', 'Ordinary OpenEVO: current Task Vector predicting score five rounds ahead · 95% interval')}</td><td><strong>{study.posthocAnalysis.parameterScore.taskVectorFuture5Ci95[0].toFixed(3)} → +{study.posthocAnalysis.parameterScore.taskVectorFuture5Ci95[1].toFixed(3)}</strong></td></tr>
         </tbody>
       </table>
     </div>
@@ -656,8 +668,8 @@ const twentyRoundScoreWindows = finalResult
     <h3>5.4 {t('谱与方向：不仅写了多少，还要看往哪里写', 'Spectrum and direction: not only how much changed, but where it moved')}</h3>
     <p class="paper__metric-label">{t('① 指标是什么', '① What are the metrics?')}</p>
     <p>{t(
-      '最大 spectral norm 看最强的单一奇异方向，rank95 看保留多少个主方向才能覆盖大部分能量，cosine 则直接比较两种方法这一轮参数更新是不是还朝着相似方向。',
-      'The maximum spectral norm tracks the strongest singular direction, rank95 asks how many dominant directions capture most of the energy, and cosine directly compares whether the two methods still move in similar update directions.',
+      '最大 spectral norm 看最强的单一奇异方向；full/base spectral ratio 把更新后完整权重的最大 spectral norm 除以 base 权重的对应值，接近 1 表示最强谱尺度变化很小；rank95 看保留多少个主方向才能覆盖大部分能量；cosine 则直接比较两种方法这一轮参数更新是不是还朝着相似方向。',
+      'The maximum spectral norm tracks the strongest singular direction. The full/base spectral ratio divides the updated full weight’s maximum spectral norm by the corresponding base-weight value, so values near 1 mean the strongest spectral scale changes little. Rank95 asks how many dominant directions capture most of the energy, while cosine compares whether the two methods still move in similar update directions.',
     )}</p>
     <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
     <div class="paper-table-wrap">
@@ -690,19 +702,19 @@ const twentyRoundScoreWindows = finalResult
     <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
     <div class="paper-table-wrap">
       <table class="paper-table paper-table--dense-results">
-        <thead><tr><th>{t('方法 / 窗口', 'Method / window')}</th><th>{t('每步输出', 'tokens / step')}</th><th>{t('Episode 总输出', 'episode tokens')}</th><th>{t('平均步骤', 'steps')}</th><th>Task Score</th></tr></thead>
+        <thead><tr><th>{t('方法 / 窗口', 'Method / window')}</th><th>{t('每步输出', 'tokens / step')}</th><th>{t('Episode 总输出', 'episode tokens')}</th><th>{t('平均步骤', 'steps')}</th><th>Task Score / 100</th></tr></thead>
         <tbody>
-          <tr><td>{names.baseline} · R0–31</td><td>{study.posthocAnalysis.outputLength.ordinary.earlyStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.earlyEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.earlySteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.ordinary.earlyScore.toFixed(3)}</td></tr>
-          <tr><td>{names.baseline} · R128–159</td><td>{study.posthocAnalysis.outputLength.ordinary.lateStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.lateEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.lateSteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.ordinary.lateScore.toFixed(3)}</td></tr>
-          <tr><td>{names.bounded} · R0–31</td><td>{study.posthocAnalysis.outputLength.bounded.earlyStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.earlyEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.earlySteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.bounded.earlyScore.toFixed(3)}</td></tr>
-          <tr><td>{names.bounded} · R128–159</td><td>{study.posthocAnalysis.outputLength.bounded.lateStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.lateEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.lateSteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.bounded.lateScore.toFixed(3)}</td></tr>
-          <tr><td>{names.gdr} · R0–31</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlyStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlyEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlySteps.toFixed(2)}</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlyScore.toFixed(3)}</td></tr>
-          <tr><td>{names.gdr} · R128–159</td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateStepTokens.toFixed(1)}</strong></td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateEpisodeTokens.toFixed(1)}</strong></td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)}</strong></td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateScore.toFixed(3)}</strong></td></tr>
+          <tr><td>{names.baseline} · R0–31</td><td>{study.posthocAnalysis.outputLength.ordinary.earlyStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.earlyEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.earlySteps.toFixed(2)}</td><td>{(study.posthocAnalysis.outputLength.ordinary.earlyScore * 100).toFixed(2)}</td></tr>
+          <tr><td>{names.baseline} · R128–159</td><td>{study.posthocAnalysis.outputLength.ordinary.lateStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.lateEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.lateSteps.toFixed(2)}</td><td>{(study.posthocAnalysis.outputLength.ordinary.lateScore * 100).toFixed(2)}</td></tr>
+          <tr><td>{names.bounded} · R0–31</td><td>{study.posthocAnalysis.outputLength.bounded.earlyStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.earlyEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.earlySteps.toFixed(2)}</td><td>{(study.posthocAnalysis.outputLength.bounded.earlyScore * 100).toFixed(2)}</td></tr>
+          <tr><td>{names.bounded} · R128–159</td><td>{study.posthocAnalysis.outputLength.bounded.lateStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.lateEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.bounded.lateSteps.toFixed(2)}</td><td>{(study.posthocAnalysis.outputLength.bounded.lateScore * 100).toFixed(2)}</td></tr>
+          <tr><td>{names.gdr} · R0–31</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlyStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlyEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlySteps.toFixed(2)}</td><td>{(study.posthocAnalysis.outputLength.linearConstraint.earlyScore * 100).toFixed(2)}</td></tr>
+          <tr><td>{names.gdr} · R128–159</td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateStepTokens.toFixed(1)}</strong></td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateEpisodeTokens.toFixed(1)}</strong></td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)}</strong></td><td><strong>{(study.posthocAnalysis.outputLength.linearConstraint.lateScore * 100).toFixed(2)}</strong></td></tr>
         </tbody>
       </table>
     </div>
     <MetricEvidenceFigure item={metricCharts.steps} />
-    <p>{t('β-gating（α 固定为 1）在 R96–127 → R128–159：', 'β-gating (α fixed at 1), R96–127 → R128–159:')} {t('每步 tokens', 'tokens/step')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midStepTokens.toFixed(1)} → {study.posthocAnalysis.outputLength.linearConstraint.lateStepTokens.toFixed(1)}</strong> · {t('episode tokens', 'episode tokens')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midEpisodeTokens.toFixed(1)} → {study.posthocAnalysis.outputLength.linearConstraint.lateEpisodeTokens.toFixed(1)}</strong> · {t('平均步骤', 'mean steps')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midSteps.toFixed(2)} → {study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)}</strong> · Task Score <strong>{study.posthocAnalysis.outputLength.linearConstraint.midScore.toFixed(3)} → {study.posthocAnalysis.outputLength.linearConstraint.lateScore.toFixed(3)}</strong></p>
+    <p>{t('β-gating（α 固定为 1）在 R96–127 → R128–159：', 'β-gating (α fixed at 1), R96–127 → R128–159:')} {t('每步 tokens', 'tokens/step')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midStepTokens.toFixed(1)} → {study.posthocAnalysis.outputLength.linearConstraint.lateStepTokens.toFixed(1)}</strong> · {t('episode tokens', 'episode tokens')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midEpisodeTokens.toFixed(1)} → {study.posthocAnalysis.outputLength.linearConstraint.lateEpisodeTokens.toFixed(1)}</strong> · {t('平均步骤', 'mean steps')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midSteps.toFixed(2)} → {study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)}</strong> · Task Score / 100 <strong>{(study.posthocAnalysis.outputLength.linearConstraint.midScore * 100).toFixed(2)} → {(study.posthocAnalysis.outputLength.linearConstraint.lateScore * 100).toFixed(2)}</strong></p>
     <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
     <p class="paper__boundary">{t(
       '所以后期掉分不是“每一步突然更啰嗦”。更直接的行为变化是：每一步长度差不多，但需要走更多步，整条 episode 输出又变长。也就是说，变化更像任务路径重新变长，而不是单步回答膨胀。',
@@ -720,13 +732,17 @@ const twentyRoundScoreWindows = finalResult
     )}</p>
     <MetricEvidenceFigure item={metricCharts.entropy} />
     <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <p class="paper__chart-note">{t(
+      'R159 的 search / click 用有效动作占比表示，而不是直接比较原始计数；三组这一轮的总动作数不同，原始计数不能横向当作策略偏好强弱。',
+      'R159 search / click are shown as shares of valid actions rather than raw counts. The three methods have different total action counts in that round, so raw counts are not directly comparable as policy preference.',
+    )}</p>
     <div class="paper-table-wrap">
       <table class="paper-table paper-table--dense-results">
-        <thead><tr><th>{t('方法', 'Method')}</th><th>R0–31 mean H</th><th>R128–159 mean H</th><th>R159 H</th><th>R159 search</th><th>R159 click</th></tr></thead>
+        <thead><tr><th>{t('方法', 'Method')}</th><th>R0–31 mean H</th><th>R128–159 mean H</th><th>R159 H</th><th>{t('R159 search 占比', 'R159 search share')}</th><th>{t('R159 click 占比', 'R159 click share')}</th></tr></thead>
         <tbody>
-          <tr><td>{names.baseline}</td><td>{study.posthocAnalysis.behaviorEntropy.ordinaryEarly.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.ordinaryLate.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.ordinary.entropy.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.ordinary.search}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.ordinary.click}</td></tr>
-          <tr><td>{names.bounded}</td><td>{study.posthocAnalysis.behaviorEntropy.boundedEarly.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.boundedLate.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.bounded.entropy.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.bounded.search}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.bounded.click}</td></tr>
-          <tr><td>{names.gdr}</td><td><strong>{study.posthocAnalysis.behaviorEntropy.gdrEarly.toFixed(4)}</strong></td><td><strong>{study.posthocAnalysis.behaviorEntropy.gdrLate.toFixed(4)}</strong></td><td><strong>{study.posthocAnalysis.behaviorEntropy.r159.gdr.entropy.toFixed(4)}</strong></td><td>{study.posthocAnalysis.behaviorEntropy.r159.gdr.search}</td><td><strong>{study.posthocAnalysis.behaviorEntropy.r159.gdr.click}</strong></td></tr>
+          <tr><td>{names.baseline}</td><td>{study.posthocAnalysis.behaviorEntropy.ordinaryEarly.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.ordinaryLate.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.ordinary.entropy.toFixed(4)}</td><td>{(study.posthocAnalysis.behaviorEntropy.r159.ordinary.search / study.posthocAnalysis.behaviorEntropy.r159.ordinary.total * 100).toFixed(1)}%</td><td>{(study.posthocAnalysis.behaviorEntropy.r159.ordinary.click / study.posthocAnalysis.behaviorEntropy.r159.ordinary.total * 100).toFixed(1)}%</td></tr>
+          <tr><td>{names.bounded}</td><td>{study.posthocAnalysis.behaviorEntropy.boundedEarly.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.boundedLate.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.bounded.entropy.toFixed(4)}</td><td>{(study.posthocAnalysis.behaviorEntropy.r159.bounded.search / study.posthocAnalysis.behaviorEntropy.r159.bounded.total * 100).toFixed(1)}%</td><td>{(study.posthocAnalysis.behaviorEntropy.r159.bounded.click / study.posthocAnalysis.behaviorEntropy.r159.bounded.total * 100).toFixed(1)}%</td></tr>
+          <tr><td>{names.gdr}</td><td><strong>{study.posthocAnalysis.behaviorEntropy.gdrEarly.toFixed(4)}</strong></td><td><strong>{study.posthocAnalysis.behaviorEntropy.gdrLate.toFixed(4)}</strong></td><td><strong>{study.posthocAnalysis.behaviorEntropy.r159.gdr.entropy.toFixed(4)}</strong></td><td>{(study.posthocAnalysis.behaviorEntropy.r159.gdr.search / study.posthocAnalysis.behaviorEntropy.r159.gdr.total * 100).toFixed(1)}%</td><td><strong>{(study.posthocAnalysis.behaviorEntropy.r159.gdr.click / study.posthocAnalysis.behaviorEntropy.r159.gdr.total * 100).toFixed(1)}%</strong></td></tr>
         </tbody>
       </table>
     </div>
@@ -753,12 +769,14 @@ const twentyRoundScoreWindows = finalResult
       'no single Task Vector, norm, cosine, spectral, or entropy metric is established as the direct cause of the score decline. They are diagnostic candidates and leads for follow-up experiments, not causal conclusions.',
     )}</p>
   </div>
-</section>\n\n  <section class="paper__section" id="next-question" aria-labelledby="next-question-title">
+</section>
+
+  <section class="paper__section" id="next-question" aria-labelledby="next-question-title">
     <p class="paper__section-number">6</p>
     <h2 id="next-question-title">{t('动态 α + 动态 β：尚未运行', 'Dynamic α + dynamic β: not run yet')}</h2>
     <p>{t(
-      '这条指标链给出的顺序很清楚：loss 说明优化过程不是简单坏掉；Task Vector 和参数谱说明参数轨迹确实发生了几何变化；长度、步数和 entropy 才开始看到更接近任务行为的变化。但这些后分析都不能补上一个根本缺口：这次正式实验始终把 α 固定为 1。',
-      'The diagnostic ladder gives a clear sequence: loss says optimization did not simply fail; Task Vector and parameter spectrum show real geometric divergence; length, steps, and entropy reveal changes closer to task behavior. None of these post-hoc analyses fill the basic missing experiment: α remained fixed at 1 throughout this formal study.',
+      '这条指标链给出的顺序很清楚：loss 先说明优化过程不是简单坏掉；Frobenius norm 再看参数变化有多大；Task Vector 的相关性与谱 / 方向继续追问“大小是否对应分数、更新往哪里走”；最后才用长度、步数和 entropy 看更接近任务行为的变化。但这些后分析都不能补上一个根本缺口：这次正式实验始终把 α 固定为 1。',
+      'The diagnostic ladder is explicit: loss first checks that optimization did not simply fail; Frobenius norm asks how large the parameter changes are; Task Vector association plus spectrum/direction asks whether magnitude tracks score and where updates move; length, steps, and entropy then examine behavior closer to the task. None of these post-hoc analyses fill the basic missing experiment: α remained fixed at 1 throughout this formal study.',
     )}</p>
     <p>{t(
       '所以第一条新实验应该是动态 α + 动态 β；它现在仍然是空位。第二条问题才是 β controller 还应该知道什么，例如 layer、round 或历史更新方向。已经看过的 Final 不能反过来用来调当前封存实验。',
@@ -822,6 +840,7 @@ const twentyRoundScoreWindows = finalResult
   .paper__metric-context p{margin:10px 0}
   .paper-table__metric-detail{color:var(--text-secondary);font-size:1rem}
   .paper__boundary{max-width:880px;color:var(--text-secondary);font-size:1rem;line-height:1.65}
+  .paper__chart-note{max-width:880px;margin:.65rem 0 1rem;color:var(--text-secondary);font-size:1rem;line-height:1.65}
   .paper__section{padding:44px 0;border-top:1px solid var(--border-color)}
   .paper__metric-step{max-width:940px;margin:34px 0 0;padding:0 0 28px;border-bottom:1px solid var(--border-color)}
   .paper__metric-step:last-child{border-bottom:0;padding-bottom:0}

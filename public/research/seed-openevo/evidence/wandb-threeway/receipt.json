@@ -32,11 +32,13 @@
   "static_previews": [
     {
       "path": "/research/seed-openevo/evidence/wandb-threeway/task-score.svg",
-      "source": "sealed three-way rollout score history"
+      "source": "sealed three-way rollout score history; publication y-axis is Task Score /100 (W&B source scalar multiplied by 100)"
     },
     {
       "path": "/research/seed-openevo/evidence/wandb-threeway/task-vector-frobenius.svg",
-      "source": "read-only parameter geometry analysis mirrored to W&B"
+      "source": "read-only parameter geometry analysis; all three curves use R0-R159 per-round data (160 points each) on one shared 0–2.5 scale",
+      "bounded_beta_source": "mykcs/openevo-experiment@e145256844677ed08884c94640cccebc436f96b1:docs/evidence/bounded-effective-state-final-closeout-20260918/gpu-parameter-posthoc/round_metrics_v2.csv",
+      "bounded_beta_source_sha256": "344d2bb0ef921a5ee1c2f5a1b9636fc9be03ed98b8edc13ca6b028ebd331ceb1"
     },
     {
       "path": "/research/seed-openevo/evidence/wandb-threeway/steps-per-episode.svg",
@@ -74,6 +76,21 @@
       "path": "/research/seed-openevo/evidence/wandb-threeway/task-score-20-round-mean.json",
       "sha256": "f3edc302ab64ed50b378e23f112941bc26f79f2dd245d3a2615a27003297da93",
       "window_size_rounds": 20
+    },
+    "task_vector_frobenius_preview": {
+      "path": "/research/seed-openevo/evidence/wandb-threeway/task-vector-frobenius.svg",
+      "sampling": "R0-R159, one point per round, 160 points per curve",
+      "y_scale": "shared 0-2.5 Frobenius norm",
+      "bounded_beta_source_sha256": "344d2bb0ef921a5ee1c2f5a1b9636fc9be03ed98b8edc13ca6b028ebd331ceb1",
+      "sha256": "6164fa34e237f09b835dab3a9c6aefe7bd662a23f25c6d444a1691e501d6e68d",
+      "ordinary_source": "existing sealed 160-point ordinary OpenEVO scalar-history preview from W&B mirror run f587a9687171dadb"
+    },
+    "task_score_160_round_preview": {
+      "path": "/research/seed-openevo/evidence/wandb-threeway/task-score.svg",
+      "display_scale": "Task Score /100",
+      "source_scale": "W&B scalar 0-1",
+      "transform": "display = source * 100",
+      "sha256": "cce099686fbd82fd824897623134a44742b7d92c531da65f3fa0b4752740872d"
     }
   }
 }
