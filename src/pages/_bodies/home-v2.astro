@@ -1,126 +1,205 @@
 ---
 import ExternalBrandMark from '../../components/common/ExternalBrandMark';
-import { getMessages, isLocale, localePath, type Locale } from '../../i18n';
-import { encodeResearchTask } from '../../lib/researchTaskCodec';
-import { emptyTask, type ResearchTask } from '../../stores/researchTask';
+import { isLocale, localePath, type Locale } from '../../i18n';
 import SeedOpenEvoMissionHero from '../../components/research/SeedOpenEvoMissionHero.astro';
+import { OPEN_EVO_EXPERIMENTS } from '../../data/openEvoExperimentNavigation';
 
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
-const m = getMessages(locale);
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const p = (path: string) => localePath(locale, path);
 
-function workspaceHref(task: Partial<ResearchTask>): string {
-  const params = encodeResearchTask({ ...emptyTask, ...task });
-  return `${localePath(locale, '/workspace/')}?${params.toString()}`;
-}
+const currentAnswers = [
+  {
+    state: t('已测量', 'Measured'),
+    title: t('7B 同题测量还没有证明可靠优势', 'The 7B same-task measurement does not yet show a reliable advantage'),
+    body: t(
+      '基础模型和加载 OpenEvo 学习结果后的模型各完成 128 个相同 WebShop 任务。OpenEvo 的平均任务完成度方向更高，但完整成功数相同，统计范围仍然包含“没有差异”。',
+      'The base model and the model after loading the OpenEvo learning result each completed the same 128 WebShop tasks. OpenEvo trends higher on mean task completion, but full-success counts are the same and the statistical range still includes no difference.',
+    ),
+    href: p('/research/seed-openevo/study/results/'),
+  },
+  {
+    state: t('已完成', 'Completed'),
+    title: t('三组 1.7B 最终模型已经能在同一冻结题集上并排看', 'Three 1.7B final models can now be viewed on the same frozen task panel'),
+    body: t(
+      '普通 OpenEVO、Bounded Online Recurrence 和 β-gating（α 固定为 1）都完成了同一冻结 128 题。动态 α + 动态 β 还没有运行。',
+      'Ordinary OpenEVO, Bounded Online Recurrence, and β-gating with α fixed at 1 all completed the same frozen 128-task panel. Dynamic α + dynamic β has not been run.',
+    ),
+    href: p('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/'),
+  },
+  {
+    state: t('仍未知', 'Still unknown'),
+    title: t('SEED 与 OpenEvo 的方法对方法公平比较还没有完成', 'A method-to-method fair comparison between SEED and OpenEvo is not complete'),
+    body: t(
+      '现有实验已经回答了一批参数更新、长期状态和测量问题，但还不能把这些局部证据升级成“哪套完整方法整体胜出”。',
+      'The existing experiments answer several questions about parameter updates, long-term state, and measurement, but those local findings do not yet establish which complete method is better overall.',
+    ),
+    href: p('/research/seed-openevo/study/results/#next'),
+  },
+] as const;
 
-const primaryIntents = [
-  { label: locale === 'zh' ? 'SEED 原实验' : 'Original SEED experiment', lede: locale === 'zh' ? '固定同一份 Qwen2.5-3B-Instruct，让它在 ALFWorld / WebShop 做题，并看 SEED 怎样从做题轨迹继续训练模型参数。' : 'Hold Qwen2.5-3B-Instruct fixed, run it in ALFWorld / WebShop, and see how SEED uses those trajectories to keep training model parameters.', href: localePath(locale, '/research/seed-openevo/flow/') },
-  { label: locale === 'zh' ? 'OpenEvo × WebShop' : 'OpenEvo × WebShop', lede: locale === 'zh' ? '历史结果、带日期的默认 main 快照，以及当前实验总表（campaign）和实验对账（reconciliation）。' : 'Historical results, a dated default-main snapshot, and the experiment ledger (campaign) plus reconciliation used to resolve the current state.', href: localePath(locale, '/research/seed-openevo/study/results/') },
-  { label: locale === 'zh' ? '复现实验' : 'Reproduction guide', lede: locale === 'zh' ? '复现一个实验需要哪份代码、哪套任务规则（task contract）、哪次运行记录和哪份证据。' : 'The code, task rules (task contract), run record, and evidence needed to reproduce an experiment.', href: localePath(locale, '/research/seed-openevo/study/run/') },
-];
-const researchPaths = [
-  { title: m.v2.home.pathStrict, body: m.v2.home.pathStrictBody, tag: m.v2.home.pathStrictTag },
-  { title: m.v2.home.pathMethod, body: m.v2.home.pathMethodBody, tag: m.v2.home.pathMethodTag },
-  { title: m.v2.home.pathModern, body: m.v2.home.pathModernBody, tag: m.v2.home.pathModernTag },
-];
-const scenarioCards = [
-  { label: m.v2.home.scenarioLora, lede: m.v2.home.scenarioLoraLede, href: workspaceHref({ mode: 'new', update: 'lora', gpuVramGb: 24, openWeight: true }) },
-  { label: m.v2.home.scenarioRl, lede: m.v2.home.scenarioRlLede, href: workspaceHref({ mode: 'modern', update: 'rl', gpuCount: 4, openWeight: true }) },
-  { label: m.v2.home.scenarioOpenWeight, lede: m.v2.home.scenarioOpenWeightLede, href: workspaceHref({ mode: 'new', update: 'none', openWeight: true }) },
-  { label: m.v2.home.scenarioQwen, lede: m.v2.home.scenarioQwenLede, href: workspaceHref({ mode: 'strict', update: 'none', priorities: ['chinese'] }) },
-  { label: m.v2.home.scenarioReplace, lede: m.v2.home.scenarioReplaceLede, href: workspaceHref({ mode: 'modern', update: 'none', priorities: ['current'] }) },
-  { label: m.v2.home.scenarioApi, lede: m.v2.home.scenarioApiLede, href: workspaceHref({ mode: 'new', update: 'none', priorities: ['low_cost'] }) },
-];
+const nextActions = [
+  {
+    title: t('理解研究', 'Understand the study'),
+    body: t('先弄清 Base Model、SEED、OpenEvo、WebShop / ALFWorld 分别是什么，以及经验到底被写到哪里。', 'Understand the base model, SEED, OpenEvo, WebShop / ALFWorld, and where experience is actually written.'),
+    href: p('/research/seed-openevo/flow/'),
+  },
+  {
+    title: t('实验与结果', 'Experiments and results'),
+    body: t('沿六次主要实验继续，看上一轮结果怎样改变下一问，再进入对应的冻结结果和分析。', 'Follow the six major experiments, see how one result changed the next question, then open the corresponding frozen results and analyses.'),
+    href: p('/research/seed-openevo/study/'),
+  },
+  {
+    title: t('复现实验', 'Reproduce an experiment'),
+    body: t('查看代码、任务规则、运行记录和证据怎样组成一份可复现的实验身份。', 'See how code, task rules, run records, and evidence form a reproducible experiment identity.'),
+    href: p('/research/seed-openevo/study/run/'),
+  },
+  {
+    title: t('设计下一组实验', 'Design the next experiment'),
+    body: t('把研究目标、模型角色和资源限制放进工作台，再检查候选模型和比较条件。', 'Put the research goal, model role, and resource limits into the workspace, then inspect candidate models and comparison conditions.'),
+    href: p('/workspace/'),
+  },
+] as const;
 ---
 
 <SeedOpenEvoMissionHero locale={locale} />
 
-<div class="shell">
-  <section class="section section-first" aria-labelledby="intent-title">
-    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '研究入口' : 'Research entry'}</div><h2 id="intent-title">{locale === 'zh' ? 'SEED × OpenEvo 实验' : 'SEED × OpenEvo experiments'}</h2></div></div>
-    <div class="intent-grid">{primaryIntents.map((intent) => <a class="intent-row" href={intent.href}><div><h3>{intent.label}</h3><p>{intent.lede}</p></div><span aria-hidden="true">→</span></a>)}</div>
+<div class="shell home-research">
+  <section class="home-section home-answer" aria-labelledby="answer-title">
+    <div class="home-section__heading">
+      <span>{t('目前答案', 'Current answer')}</span>
+      <div>
+        <h2 id="answer-title">{t('目前我们能说到哪里', 'What the evidence currently supports')}</h2>
+        <p>{t('先看结论；每一条都继续连回拥有完整证据和边界的研究页面。', 'Start with the conclusion; each item links back to the research page that owns the full evidence and boundary.')}</p>
+      </div>
+    </div>
+
+    <div class="answer-list">
+      {currentAnswers.map((item) => (
+        <article class="answer-row">
+          <span class="answer-state">{item.state}</span>
+          <div>
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+            <a href={item.href}>{t('查看证据', 'Open evidence')} <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+      ))}
+    </div>
   </section>
 
-  <section class="section" aria-labelledby="paths-title">
-    <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '研究方式' : 'Research modes'}</div><h2 id="paths-title">{locale === 'zh' ? '复现范围' : 'Reproduction scope'}</h2></div></div>
-    <div class="research-path-list">{researchPaths.map((path) => <div class="research-path-row"><span class="path-tag">{path.tag}</span><div><h3>{path.title}</h3><p>{path.body}</p></div></div>)}</div>
+  <section class="home-section home-journey" aria-labelledby="journey-title">
+    <div class="home-section__heading">
+      <span>{t('研究路径', 'Research path')}</span>
+      <div>
+        <h2 id="journey-title">{t('我们做过哪些尝试', 'What we tried')}</h2>
+        <p>{t('这六次实验不是六个独立项目。每一次都在回答上一轮留下的问题。', 'These six experiments are not six independent projects. Each one answers a question left by the previous round.')}</p>
+      </div>
+    </div>
+
+    <ol class="journey-list">
+      {OPEN_EVO_EXPERIMENTS.map((experiment) => (
+        <li>
+          <a href={p(experiment.primaryHref)}>
+            <span class="journey-number">{experiment.number}</span>
+            <div>
+              <h3>{zh ? experiment.title.zh : experiment.title.en}</h3>
+              <p>{zh ? experiment.motivation.zh : experiment.motivation.en}</p>
+            </div>
+            <span class="journey-open" aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+
+    <p class="home-section__after"><a href={p('/research/seed-openevo/study/')}>{t('打开完整实验目录', 'Open the full experiment index')} →</a></p>
   </section>
 
-  <details class="home-scenarios-advanced">
-    <summary>{locale === 'zh' ? '其他模型与训练场景' : 'Other model and training scenarios'}</summary>
-    <p class="muted">{m.v2.home.scenariosNote}</p>
-    <div class="scenario-grid">{scenarioCards.map((card) => <a class="scenario-card" href={card.href}><h3>{card.label}</h3><p>{card.lede}</p><span class="scenario-action">{m.v2.home.scenarioAction} →</span></a>)}</div>
-  </details>
+  <section class="home-section home-next" aria-labelledby="next-title">
+    <div class="home-section__heading">
+      <span>{t('继续', 'Continue')}</span>
+      <div>
+        <h2 id="next-title">{t('现在想继续哪一步', 'Where do you want to continue?')}</h2>
+        <p>{t('按研究任务进入；论文、比较工具和数据状态仍保留在“资料”菜单里。', 'Enter by research task; papers, comparison tools, and data status remain available from Resources.')}</p>
+      </div>
+    </div>
 
-  <nav class="home-maintenance-shortcuts" aria-label={locale === 'zh' ? '站点维护入口' : 'Site maintenance'}>
-    <span>{locale === 'zh' ? '维护' : 'Maintenance'}</span>
-    <a href="https://github.com/mykcs/basemodel" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/mykcs/basemodel" />{locale === 'zh' ? 'GitHub 仓库' : 'GitHub repository'} ↗</a>
+    <nav class="next-list" aria-label={t('研究任务入口', 'Research task entry points')}>
+      {nextActions.map((action, index) => (
+        <a href={action.href}>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <div>
+            <strong>{action.title}</strong>
+            <p>{action.body}</p>
+          </div>
+          <i aria-hidden="true">→</i>
+        </a>
+      ))}
+    </nav>
+  </section>
+
+  <nav class="home-maintenance-shortcuts" aria-label={t('站点维护入口', 'Site maintenance')}>
+    <span>{t('维护', 'Maintenance')}</span>
+    <a href="https://github.com/mykcs/basemodel" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/mykcs/basemodel" />{t('GitHub 仓库', 'GitHub repository')} ↗</a>
   </nav>
 </div>
 
 <style>
-  .home-maintenance-shortcuts {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.15rem;
-    margin: 2.5rem 0 0.5rem;
-    font-size: 0.75rem;
+  .home-research { max-width: 1040px; }
+  .home-section { padding: 3.2rem 0; border-top: 1px solid var(--line); }
+  .home-section:first-child { border-top: 0; }
+  .home-section__heading { display: grid; grid-template-columns: minmax(90px, .32fr) minmax(0, 1fr); gap: clamp(1rem, 4vw, 3.4rem); margin-bottom: 1.5rem; }
+  .home-section__heading > span { padding-top: .35rem; color: var(--accent-deep); font-size: .72rem; font-weight: 800; letter-spacing: .04em; }
+  .home-section__heading h2 { margin: 0; font-size: clamp(1.75rem, 3.6vw, 2.8rem); line-height: 1.05; letter-spacing: -.035em; }
+  .home-section__heading p { max-width: 58ch; margin: .65rem 0 0; color: var(--muted); line-height: 1.65; }
+
+  .answer-list { border-top: 1px solid var(--line); }
+  .answer-row { display: grid; grid-template-columns: minmax(88px, .28fr) minmax(0, 1fr); gap: clamp(1rem, 4vw, 3.4rem); padding: 1.45rem 0; border-bottom: 1px solid var(--line); }
+  .answer-state { width: fit-content; height: fit-content; padding: .28rem .5rem; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: .7rem; font-weight: 800; }
+  .answer-row h3 { margin: 0; font-size: clamp(1.08rem, 2vw, 1.38rem); line-height: 1.32; }
+  .answer-row p { max-width: 66ch; margin: .55rem 0 0; color: var(--muted); line-height: 1.65; }
+  .answer-row a { display: inline-block; margin-top: .7rem; font-size: .82rem; font-weight: 750; text-underline-offset: .22em; }
+
+  .journey-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .journey-list li { border-bottom: 1px solid var(--line); }
+  .journey-list a { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 1rem; align-items: start; padding: 1.2rem 0; color: inherit; text-decoration: none; }
+  .journey-list a:hover h3, .journey-list a:focus-visible h3 { color: var(--accent-deep); }
+  .journey-number { padding-top: .2rem; color: var(--accent-deep); font: 800 .72rem/1 var(--font-mono); }
+  .journey-list h3 { margin: 0; font-size: 1.05rem; line-height: 1.4; transition: color 140ms ease; }
+  .journey-list p { max-width: 68ch; margin: .38rem 0 0; color: var(--muted); font-size: .88rem; line-height: 1.6; }
+  .journey-open { color: var(--muted); }
+  .home-section__after { margin: 1rem 0 0; text-align: right; }
+  .home-section__after a { font-size: .84rem; font-weight: 750; }
+
+  .next-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .next-list a { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: .8rem; align-items: start; min-width: 0; padding: 1.15rem 1rem 1.15rem 0; border-bottom: 1px solid var(--line); color: inherit; text-decoration: none; }
+  .next-list a:nth-child(odd) { margin-right: 1rem; }
+  .next-list a:nth-child(even) { padding-left: 1rem; border-left: 1px solid var(--line); }
+  .next-list > a > span { padding-top: .18rem; color: var(--accent-deep); font: 800 .68rem/1 var(--font-mono); }
+  .next-list strong { font-size: .98rem; }
+  .next-list p { margin: .38rem 0 0; color: var(--muted); font-size: .8rem; line-height: 1.55; }
+  .next-list i { color: var(--muted); font-style: normal; }
+
+  .home-maintenance-shortcuts { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: .15rem; margin: 2.5rem 0 .5rem; font-size: .75rem; }
+  .home-maintenance-shortcuts span { color: var(--muted); }
+  .home-maintenance-shortcuts a { color: var(--accent-deep); padding: .35rem .45rem; text-underline-offset: .2em; transition: color 140ms ease; }
+  .home-maintenance-shortcuts a:hover, .home-maintenance-shortcuts a:focus-visible { color: var(--ink); }
+
+  @media (max-width: 700px) {
+    .home-section { padding: 2.35rem 0; }
+    .home-section__heading, .answer-row { grid-template-columns: 1fr; gap: .55rem; }
+    .home-section__heading { margin-bottom: 1rem; }
+    .home-section__heading > span { padding-top: 0; }
+    .answer-row { padding: 1.15rem 0; }
+    .journey-list a { grid-template-columns: 36px minmax(0, 1fr) auto; gap: .65rem; }
+    .journey-list p { font-size: .82rem; }
+    .next-list { grid-template-columns: 1fr; }
+    .next-list a, .next-list a:nth-child(odd), .next-list a:nth-child(even) { margin: 0; padding: 1rem 0; border-left: 0; }
   }
 
-  .home-maintenance-shortcuts span {
-    color: var(--muted);
-  }
-
-  .home-maintenance-shortcuts a {
-    color: var(--accent-deep);
-    padding: 0.35rem 0.45rem;
-    text-underline-offset: 0.2em;
-    transition: color 140ms ease;
-  }
-
-  .home-maintenance-shortcuts a:hover,
-  .home-maintenance-shortcuts a:focus-visible {
-    color: var(--ink);
-  }
-
-
-  .intent-row > span[aria-hidden='true'] {
-    position: relative;
-    display: block;
-    width: 28px;
-    height: 14px;
-    overflow: hidden;
-    color: transparent;
-    font-size: 0;
-  }
-  .intent-row > span[aria-hidden='true']::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 22px;
-    height: 1.5px;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--accent) 58%, var(--line));
-    transform: translateY(-50%);
-  }
-  .intent-row > span[aria-hidden='true']::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    right: 0;
-    width: 6px;
-    height: 6px;
-    border: 1.5px solid var(--accent);
-    border-radius: 50%;
-    background: var(--surface);
-    transform: translateY(-50%);
-  }
-
-  @media (max-width: 640px) {
-    .intent-row > span[aria-hidden='true'] { font-size: 1.08rem; }
+  @media (prefers-reduced-motion: reduce) {
+    .journey-list h3, .home-maintenance-shortcuts a { transition: none; }
   }
 </style>

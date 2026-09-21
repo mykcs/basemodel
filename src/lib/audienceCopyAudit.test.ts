@@ -73,7 +73,8 @@ describe('audience copy audit', () => {
     const auditSource = fs.readFileSync(path.join(root, 'scripts/audit-audience-copy.ts'), 'utf8');
 
     expect(hero).toContain("t('SEED 与 OpenEvo：固定同一个 Qwen 和任务，比较两套学习系统', 'SEED and OpenEvo: pin the same Qwen and tasks, compare two learning systems')");
-    expect(hero).toContain("t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')");
+    expect(hero).toContain("t('看目前发现 →','See current findings →')");
+    expect(hero).toContain("t('先理解这项研究','Understand the study first')");
     expect(hero).toContain("href:p('/research/seed-openevo/study/results/')");
     expect(hero).not.toContain('把“曾经成功”“当前准备好”“现在测得结果”分开');
     expect(standard).toContain('Headings name the subject');

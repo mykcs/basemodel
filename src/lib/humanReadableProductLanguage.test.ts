@@ -44,9 +44,10 @@ describe('human-readable product language contract', () => {
     expect(missionHero).toContain('{!compact && <details class="mission-hero__secondary">');
     expect(missionHero).not.toContain('先看研究对象与比较条件');
     expect(missionHero).not.toContain('mission-hero__frame research-fact-band');
-    expect(missionHero).toContain("t('OpenEVO 阶段汇报 →','OpenEVO progress briefing →')");
-    expect(missionHero).toContain("href={p('/research/seed-openevo/study/briefing/')}");
-    expect(missionHero).toContain("t('研究总览','Research overview')");
+    expect(missionHero).toContain("t('看目前发现 →','See current findings →')");
+    expect(missionHero).toContain("href={p('/research/seed-openevo/study/results/')}");
+    expect(missionHero).toContain("t('先理解这项研究','Understand the study first')");
+    expect(missionHero).toContain("同一个 Base Model，换一种自我改进方法，真的会学得更好吗？");
     expect(missionHero).toContain("href:p('/research/seed-openevo/study/results/')");
     expect(missionHero).not.toContain("t('研究结果','Research findings')");
     expect(missionHero).not.toContain('用 SEED 的两个 Agent 基准，检验并改进 OpenEvo');
@@ -64,8 +65,9 @@ describe('human-readable product language contract', () => {
   });
 
   it('keeps high-traffic navigation and tools concrete', () => {
-    expect(header).toContain("t('流程理解图', 'Flow map')");
-    expect(header).toContain("t('实验目录', 'Experiment index')");
+    expect(header).toContain("t('理解研究', 'Understand')");
+    expect(header).toContain("t('实验与结果', 'Experiments')");
+    expect(header).toContain("t('复现实验', 'Reproduce')");
     expect(header).toContain("t('实验工作台', 'Experiment workspace')");
     expect(header).toContain("t('资料', 'Resources')");
     expect(header).not.toContain("t('研究总览', 'Research map')");

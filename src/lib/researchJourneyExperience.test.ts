@@ -27,9 +27,12 @@ const labZh = read('src/pages/lab.astro');
 const labEn = read('docs/archive/site-en/src/pages/en/lab.astro.archive');
 
 describe('research journey experience', () => {
-  it('keeps the global navigation focused on the research journey', () => {
-    expect(header).toContain("t('流程理解图', 'Flow map')");
-    expect(header).toContain("t('实验目录', 'Experiment index')");
+  it('keeps the global navigation focused on reader research tasks', () => {
+    expect(header).toContain("t('理解研究', 'Understand')");
+    expect(header).toContain("t('实验与结果', 'Experiments')");
+    expect(header).toContain("t('复现实验', 'Reproduce')");
+    expect(header).not.toContain("t('流程理解图', 'Flow map')");
+    expect(header).not.toContain("t('实验目录', 'Experiment index')");
   });
 
   it('gives each true step-by-step explainer one canonical bilingual route', () => {

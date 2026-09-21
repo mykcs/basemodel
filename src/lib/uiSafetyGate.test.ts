@@ -167,8 +167,11 @@ describe('UI visual acceptance gate contract', () => {
     expect(headerOwnerImport).toBeGreaterThan(shellOwnerImport);
   });
 
-  it('keeps the two-path header copy accurate and restores focus when More closes', () => {
-    expect(header).toContain("t('两条研究主线', 'Two primary research paths')");
+  it('keeps the three-task header copy accurate and restores focus when Resources closes', () => {
+    expect(header).toContain("t('三个研究入口', 'Three research entry points')");
+    expect(header).toContain("t('理解研究', 'Understand')");
+    expect(header).toContain("t('实验与结果', 'Experiments')");
+    expect(header).toContain("t('复现实验', 'Reproduce')");
     expect(header).not.toContain('你可以做的三件事');
     expect(header).not.toContain('Three things you can do');
     expect(header).toContain('const focusWasInside = resourceMenu.contains(document.activeElement)');

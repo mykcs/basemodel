@@ -10,8 +10,8 @@ const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const otherLocale: Locale = zh ? 'en' : 'zh';
 
-// Keep the global header focused on two research surfaces plus a small set of
-// genuinely top-level resources. Research subpages live inside their local nav.
+// Keep the global header focused on three reader tasks. Research subpages and
+// lower-frequency resources stay in local navigation or the Resources menu.
 const { pathNoBase } = parsePath(Astro.url.pathname);
 const starts = (path: string) => pathNoBase === path || pathNoBase.startsWith(path.endsWith('/') ? path : `${path}/`);
 
@@ -19,16 +19,23 @@ const journeyLinks = [
   {
     id: 'flow',
     path: '/research/seed-openevo/flow/',
-    label: t('流程理解图', 'Flow map'),
-    meta: t('研究方法 · 论文 · 购物 / 交互任务', 'research method · paper · shopping / interaction tasks'),
+    label: t('理解研究', 'Understand'),
+    meta: t('Base Model · SEED · OpenEvo · 任务环境', 'base model · SEED · OpenEvo · task environments'),
     active: starts('/research/seed-openevo/flow/'),
   },
   {
     id: 'study',
     path: '/research/seed-openevo/study/',
-    label: t('实验目录', 'Experiment index'),
-    meta: t('实验 · 复现 · 结论 · 下一步', 'experiments · reproduce · findings · next'),
-    active: starts('/research/seed-openevo/study/'),
+    label: t('实验与结果', 'Experiments'),
+    meta: t('实验演进 · 冻结终评 · 证据边界', 'experiment progression · frozen finals · evidence boundaries'),
+    active: starts('/research/seed-openevo/study/') && !starts('/research/seed-openevo/study/run/'),
+  },
+  {
+    id: 'run',
+    path: '/research/seed-openevo/study/run/',
+    label: t('复现实验', 'Reproduce'),
+    meta: t('代码 · task contract · 运行记录 · 证据', 'code · task contract · run record · evidence'),
+    active: starts('/research/seed-openevo/study/run/'),
   },
 ].map((link) => ({
   ...link,
@@ -69,7 +76,7 @@ const commandMenuLabels = {
       <span class="brand-mark" aria-hidden="true">BM</span>
       <span>
         <strong>{m.site.name}</strong>
-        <small>{t('查看 Agent 实验里的模型、论文和复现步骤', 'Models, papers, and reproduction steps for agent experiments')}</small>
+        <small>{t('研究问题、实验与证据', 'Research questions, experiments, and evidence')}</small>
       </span>
     </a>
 
@@ -117,8 +124,8 @@ const commandMenuLabels = {
     <div class="shell mobile-menu__inner">
       <section class="mobile-menu__section" aria-labelledby="mobile-journeys-title">
         <div class="mobile-menu__heading">
-          <span id="mobile-journeys-title">{t('两条研究主线', 'Two primary research paths')}</span>
-          <small>{t('先选你现在要完成的事', 'Start with what you need to accomplish')}</small>
+          <span id="mobile-journeys-title">{t('三个研究入口', 'Three research entry points')}</span>
+          <small>{t('按你现在要做的事进入', 'Enter by what you need to do now')}</small>
         </div>
         <nav class="mobile-journeys" aria-label={t('主要操作', 'Main actions')}>
           {journeyLinks.map((link, index) => (
@@ -236,7 +243,7 @@ const commandMenuLabels = {
 
   .journey-nav {
     display: grid;
-    grid-template-columns: repeat(2, minmax(150px, 1fr));
+    grid-template-columns: repeat(3, minmax(118px, 1fr));
     gap: .32rem;
     min-width: 0;
   }
@@ -442,14 +449,14 @@ const commandMenuLabels = {
   :global(html.mobile-nav-open) { overflow: hidden; }
 
   @media (max-width: 1220px) {
-    .journey-nav { grid-template-columns: repeat(2, minmax(128px, 1fr)); }
+    .journey-nav { grid-template-columns: repeat(3, minmax(104px, 1fr)); }
     .journey-link { padding-inline: .42rem; }
     .journey-link__copy small { display: none; }
   }
 
   @media (max-width: 1080px) {
     .brand { flex: 0 0 auto; }
-    .journey-nav { grid-template-columns: repeat(2, minmax(112px, 1fr)); }
+    .journey-nav { grid-template-columns: repeat(3, minmax(92px, 1fr)); }
     .journey-link__index { display: none; }
     .journey-link { grid-template-columns: minmax(0, 1fr); text-align: center; }
     .resource-menu summary > span { display: none; }
