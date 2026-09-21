@@ -17,7 +17,7 @@ const BUILD_RELEVANT_CONFIG = [
 ];
 
 export function mustRunAcceptanceBuild(env) {
-  // Required Preview acceptance fails open here because PR identity is not reliable at the Ignored Build Step boundary.
+  // Final-gate Preview provider builds fail open here because PR identity is not reliable at the Ignored Build Step boundary.
   return env.VERCEL_ENV === 'preview';
 }
 
@@ -59,7 +59,7 @@ export function main(env = process.env) {
     const previewAcceptance = mustRunAcceptanceBuild(env);
     if (previewAcceptance) {
       console.log(
-        '[vercel-ignore-build] Preview acceptance cannot be safely skipped before PR identity is proven; running verify:deploy.',
+        '[vercel-ignore-build] Final-gate Preview provider build cannot be safely skipped before PR identity is proven; running the static production build.',
       );
     }
 
@@ -78,7 +78,7 @@ export function main(env = process.env) {
     if (relevantFiles.length === 0) {
       if (previewAcceptance) {
         console.log(
-          '[vercel-ignore-build] Preview acceptance still runs verify:deploy for a docs/governance-only diff; this produces acceptance evidence but never changes Production.',
+          '[vercel-ignore-build] Final-gate Preview still runs the static production build for a docs/governance-only diff; repository/browser acceptance is owned by the required public-ci-gate.',
         );
         process.exitCode = 1;
         return;

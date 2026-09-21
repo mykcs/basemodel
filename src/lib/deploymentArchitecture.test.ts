@@ -183,10 +183,15 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerDockerfile).toContain('sha256sum -c -');
   });
 
-  it('runs provider-owned deterministic and browser acceptance inside the Vercel build command', () => {
-    expect(vercelConfig.buildCommand).toBe('npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs');
-    expect(vercelConfig.buildCommand).toContain('vercel-ui-gate');
-    expect(vercelConfig.buildCommand).toContain('vercel-lab-browser-gate');
+  it('keeps repository and browser acceptance in required Public PR CI while Vercel owns provider build/deploy', () => {
+    expect(vercelConfig.buildCommand).toBe('npm run build');
+    expect(vercelConfig.buildCommand).not.toContain('verify:deploy');
+    expect(vercelConfig.buildCommand).not.toContain('vercel-ui-gate');
+    expect(vercelConfig.buildCommand).not.toContain('vercel-lab-browser-gate');
+    const publicWorkflow = readText('../../.github/workflows/public-pr-ci.yml');
+    expect(publicWorkflow).toContain('run: npm run verify:deploy');
+    expect(publicWorkflow).toContain('name: public-ci-gate');
+    expect(readText('../../scripts/request-vercel-final-gate.mjs')).toContain("const PUBLIC_CI_GATE_NAME = 'public-ci-gate'");
     expect(readText('../../scripts/ci-ui-gate.mjs')).toContain('const ciInfrastructureChanged');
     expect(readText('../../scripts/ci-ui-gate.mjs')).toContain("file.startsWith('.github/runner/')");
   });

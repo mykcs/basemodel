@@ -9,7 +9,7 @@ Human-facing projection: [`/development/`](/development/) explains the same arch
 
 ## One-sentence decision
 
-**Use public GitHub Actions as the automatic, read-only, risk-adaptive PR preflight (`0` browser runners for skip, `1` for focused, `8` for full); keep Vercel Pro as the only required final-candidate acceptance and Preview/Production authority; spend zero Vercel compute on ordinary working pushes; keep the Mac, CircleCI, and Cloudflare out of the ordinary critical path.**
+**Use public GitHub Actions as the required, read-only, risk-adaptive repository/browser acceptance (`0` browser runners for skip, `1` for focused, `8` for full); keep Vercel Pro as the separately required exact-head provider build/deploy authority; spend zero Vercel compute on ordinary working pushes; keep the Mac, CircleCI, and Cloudflare out of the ordinary critical path.**
 
 The optimization target is not "find the provider with the largest free quota." It is:
 
@@ -28,20 +28,18 @@ ordinary research/fix/docs/feature PR push
   -> Mac is optional acceleration/control only, never required CI
 
 final non-draft candidate, current with main
+  -> public-ci-gate must already be success on the exact PR head
   -> node scripts/request-vercel-final-gate.mjs <PR_NUMBER>
-  -> ci/vercel-gate-base = exact live main (non-deploy ref)
+  -> helper re-verifies the GitHub Actions check, then pins ci/vercel-gate-base = exact live main
   -> ci/vercel-gate-final = exact PR head (persistent deploy ref)
   -> Vercel Preview
-       -> verify:deploy
-       -> static build
-       -> risk-based Chromium acceptance
-       -> Lab browser gate when relevant
-  -> required GitHub status: Vercel on that exact SHA
+       -> static production build only
+  -> required GitHub statuses: public-ci-gate + Vercel on that exact SHA
   -> merge only while still current with main
 
 main
   -> Vercel Production
-  -> same repository acceptance contract
+  -> static production build of the already-accepted merge tree
   -> Cloudflare production-smoke observes the released origin
 
 manual recovery only
@@ -55,30 +53,24 @@ manual recovery only
 We choose a CI architecture by these criteria, in this order:
 
 1. **Trustworthy merge evidence.** The result must belong to the exact PR head and current base, not an older green SHA or a provider badge detached from the candidate.
-2. **No duplicate expensive work.** If the deployment provider already has to build the exact site, do not automatically run the same heavy site/browser work on another hosted CI provider.
+2. **No duplicate expensive work.** Run deterministic/browser acceptance once on required Public PR CI, then let Vercel answer only the provider-specific build/deploy question for the same exact SHA.
 3. **Final candidates are the billing unit.** Development commits are cheap Git history; hosted acceptance is reserved for a candidate that is actually ready to merge.
 4. **Risk controls test scope, never correctness.** Non-UI work may skip browser execution; bounded UI work may use focused coverage; shared/global/unknown UI changes fail closed to the full browser matrix.
 5. **Personal machines and research GPUs are not ordinary CI infrastructure.** They remain fallbacks; CI must not compete with experiments or require a laptop to stay online.
 6. **Provider changes must earn their complexity.** A nominally free provider is not cheaper if it adds a second build contract, duplicated browser environment, status-binding adapter, or frequent migration/debug work.
 
-## Why Vercel is the ordinary BaseModel path
+## Why Vercel remains required but no longer reruns CI
 
-BaseModel is an Astro website and Vercel is already the Production host. The Pro plan is already paid for, so using the same provider for the final Preview gate lets one hosted execution do two jobs:
+BaseModel is an Astro website and Vercel is the Production host. The exact-head Vercel gate therefore remains valuable: it proves that the accepted tree can build and deploy through the real provider, and the same provider publishes `main` to Production.
 
-- test the exact website candidate in the environment that will build the site; and
-- produce the Preview/Production artifact.
+What changed is ownership. Public PR CI already runs the repository-wide deterministic gate plus the risk-aware Chromium/Lab acceptance. Repeating those suites inside Vercel added 8–10 minutes without adding a distinct correctness question. The accepted architecture therefore separates concerns:
 
-That is cheaper than automatically paying two providers to validate the same site.
+- `public-ci-gate` = repository + browser acceptance on the exact PR head;
+- `Vercel` = provider static build/deploy acceptance on that same head;
+- Production = static provider build of the already-accepted merge tree;
+- Cloudflare smoke = independent post-deploy observation.
 
-The important cost-control change is **not** "make Vercel tests weaker." It is "run Vercel much less often":
-
-- ordinary PR branches are disabled by `vercel.json -> git.deploymentEnabled`;
-- one persistent `ci/vercel-gate-final` ref requests hosted acceptance only for the final candidate;
-- `ci/vercel-gate-base` records the exact live base so browser scope is computed against `main`, not against an unrelated prior PR;
-- strict GitHub required-status freshness forces a new exact-head result after base/head drift;
-- `scripts/vercel-ui-plan.ts` reduces browser work only when the changed surface is mechanically bounded.
-
-This preserves the existing reader, browser, build, and scientific-content gates while moving the main saving to **fewer provider-triggering executions**.
+Ordinary PR branches remain disabled by `vercel.json -> git.deploymentEnabled`; one persistent `ci/vercel-gate-final` ref requests provider acceptance only for a final candidate. `scripts/request-vercel-final-gate.mjs` refuses to move that ref until exact-head `public-ci-gate` is already completed/success, so Vercel cannot become a shortcut around red repository/browser CI.
 
 ## Why CircleCI is not ordinary CI
 
@@ -93,25 +85,25 @@ Therefore:
 
 Do not re-enable automatic CircleCI merely because credits refill. Re-enable it only if there is a measured reliability or correctness gap that Vercel cannot cover efficiently.
 
-## Why public GitHub Actions is the ordinary preflight, not merge authority
+## Why public GitHub Actions is required merge authority
 
-Making the repository public changed the cost/performance trade-off without changing the deployment trust boundary. Standard public GitHub-hosted runners can now provide parallel PR feedback without consuming the private-repository Actions minute budget, while Vercel still owns the real Preview/Production environment and the required merge status.
+Making the repository public changed the cost/performance trade-off. Standard public GitHub-hosted runners can provide parallel exact-head deterministic and browser acceptance without consuming the former private-repository minute budget. The workflow is read-only, secret-free, uses `pull_request` rather than `pull_request_target`, pins its runner image/actions, keeps retries=0, and uses one Playwright worker per independent browser runner.
 
-The current accepted scheduler qualification uses the digest-pinned Playwright 1.62.1 Noble image, read-only repository permission, no secrets, `pull_request` rather than `pull_request_target`, retries=0, and one Playwright worker per runner. On 2026-09-15 the current canonical suite contained 197 Chromium identities. Fresh exact-head runs compared 4 shards (`34986898313`: max browser step 138 s, workflow 209 s), 6 shards (`34987545968`: 102 s, 159 s), and 8 shards (`34988052276`: 80 s, 139 s). Every run covered all 197 identities exactly once with zero missing/duplicate tests. The preregistered rule selects the smallest shard count within 10% of the fastest qualified browser-step time, so 8 shards is the steady-state full/global setting. This is about 58% faster than the earlier ~191 s public-GHA browser tail. Skip/focused work does not pay for those eight runners: the dependency-free planner allocates zero or one before browser runners start.
-
-This does **not** make GitHub Actions a second merge authority. Its job is early, free, parallel evidence:
+The 2026-09-15 scheduler qualification compared 4/6/8 shards on an unchanged 197-test Chromium population and selected 8 shards. That makes Public PR CI the cheapest place to own the expensive browser matrix. After the 2026-09-21 de-duplication, `public-ci-gate` is therefore a required check rather than merely early evidence.
 
 ```text
 working PR push
--> public GHA preflight catches deterministic/browser regressions quickly
--> no Vercel spend
+-> Public PR CI runs deterministic + risk-based browser acceptance
+-> public-ci-gate must be success
+-> no Vercel spend yet
 
 final candidate
--> Vercel exact-head Preview proves the deployment environment
--> Vercel remains the required GitHub status
+-> request helper re-verifies public-ci-gate on the exact SHA/current base
+-> Vercel exact-head Preview proves provider build/deploy
+-> both checks are required
 ```
 
-A red public preflight must be investigated; it is not ignored merely because it is non-required. But provider availability or a public-runner anomaly does not silently replace the Vercel final gate. The self-hosted Mac workflow remains manual fallback and is deliberately separate from the public hosted preflight.
+Provider availability or a public-runner anomaly does not silently weaken the contract: if either required check is missing/red, the PR is not merge-ready. The self-hosted Mac workflow and CircleCI remain explicit manual fallbacks rather than alternate automatic authorities.
 
 ## Why Cloudflare Pages / Workers are not ordinary BaseModel CI
 
@@ -165,7 +157,7 @@ many working PR pushes
   cost: public standard GHA preflight; zero ordinary Vercel compute
 
 one final gate request
-  cost: one real Vercel acceptance build
+  cost: one real Vercel static provider-build acceptance
 
 at most one evidence-driven corrective gate
   cost: one additional Vercel acceptance build when a real gate finding justifies it
@@ -183,10 +175,10 @@ Do not push typo-by-typo to the final gate. Do not create empty commits to obtai
 For a normal BaseModel PR:
 
 1. Work on the semantic branch (`research/*`, `fix/*`, `docs/*`, etc.). Ordinary pushes start the public GHA preflight but must not start Vercel.
-2. Use the public GHA result as early evidence. Investigate any real deterministic/browser regression; do not rerun Vercel merely to duplicate a green preflight. Local/RDC checks are optional accelerators when they shorten the loop.
+2. Require `public-ci-gate=SUCCESS` on the exact head. Investigate any real deterministic/browser regression; Vercel must not be used to bypass or duplicate a red/missing Public PR CI result. Local/RDC checks are optional accelerators when they shorten the loop.
 3. Refresh `main`; ensure the PR is non-draft, mergeable, and current-base.
 4. Run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>` from a current checkout. Do not manually create a new gate alias.
-5. Require `Vercel=SUCCESS` on the exact current PR head.
+5. Require both `public-ci-gate=SUCCESS` and `Vercel=SUCCESS` on the exact current PR head.
 6. If the change is user-facing, inspect the real Preview/routes and preserve the reader/scientific boundaries.
 7. Immediately before merge, re-check head SHA, base freshness, required status, public-preflight state, and review threads.
 8. Merge the accepted exact head.
@@ -199,7 +191,7 @@ For provider control-plane changes, prefer connector/CLI/API operations. Browser
 Do not:
 
 - re-enable CI on every push because a provider has unused free quota;
-- move tests from Vercel to another provider without proving exact-head/status/browser equivalence;
+- remove or weaken required Public PR CI/browser coverage merely because Vercel deployment is green;
 - call a green deployment badge "CI PASS" when the real acceptance command did not run;
 - weaken browser/readability/scientific assertions to fit a cheaper provider;
 - make the MacBook or RTX research server an always-on CI dependency;
@@ -212,11 +204,11 @@ Re-open provider selection when **measured** evidence shows one of these conditi
 
 - Vercel acceptance/Production usage repeatedly exceeds the intended monthly budget despite final-candidate-only triggering;
 - final-gate queue or wall time becomes a material development bottleneck;
-- Vercel can no longer run the required browser/build contract reliably;
+- required Public PR CI can no longer run the browser/deterministic contract reliably, or Vercel can no longer prove provider build/deploy on exact heads;
 - an alternative provider proves the same trust and browser semantics on exact candidates at materially lower total cost;
 - the site stops using Vercel as Production host, removing the "one build does CI + deployment" advantage.
 
-A migration is complete only after a qualification candidate passes on the replacement, the live GitHub required-status authority is switched atomically, the predecessor is retired to fallback, current docs are updated, and a real merge/Production closeout succeeds.
+A control-plane migration is complete only after a qualification candidate passes, live GitHub required-status authority matches the repository contract, current docs are updated, and a real merge/Production closeout succeeds.
 
 ## Do not copy this decision blindly to OpenEVO Experiment
 

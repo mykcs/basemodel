@@ -10,22 +10,20 @@ Provider-selection rationale: [`ci-provider-decision.md`](ci-provider-decision.m
 GitHub = canonical source
 
 working PR / development branch
--> public hosted GitHub Actions preflight: deterministic gate + dependency-free shared risk planner + 0/1/8 browser-runner allocation for skip/focused/full
+-> required Public PR CI: deterministic gate + dependency-free shared risk planner + 0/1/8 browser-runner allocation for skip/focused/full
+-> public-ci-gate must succeed on the exact PR head
 -> no ordinary Vercel Preview while iterating
 
 final non-draft current-base candidate
--> run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`; it records live `main` in non-deploy `ci/vercel-gate-base` before moving persistent `ci/vercel-gate-final` to the exact PR head SHA
+-> run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`; it first proves exact-head public-ci-gate success, then records live `main` in non-deploy `ci/vercel-gate-base` before moving persistent `ci/vercel-gate-final` to the exact PR head SHA
 -> Vercel Pro Preview on that exact SHA
--> npm run verify:deploy
 -> npm run build
--> risk-based Chromium acceptance
--> 6-case active-Lab acceptance when relevant
--> required GitHub status: Vercel on the exact candidate SHA
+-> required GitHub statuses: public-ci-gate + Vercel on the exact candidate SHA
 -> CircleCI automatic PR/main workflows disabled; API-triggered manual fallback only
 
 main
 -> Vercel Production
--> the same deterministic + risk-based browser contract
+-> static production build of the already-accepted merge tree
 -> https://basemodel-preview.vercel.app
 -> Cloudflare production-smoke observes the released origin
 
@@ -34,17 +32,17 @@ manual recovery only
 -> repository-scoped Mac/OrbStack runner
 ```
 
-**Cutover state: complete.** Live `main` branch protection was verified on **2026-09-08** at `main@f64f742807e269885970eb2c5e7499b7af3639d2`: the only required GitHub status is **`Vercel`**. CircleCI contexts are not required checks and do not own merge readiness. Automatic CircleCI PR/main workflows are disabled.
+**Cutover state: transition target.** Repository acceptance is owned by required `public-ci-gate`; provider build/deploy acceptance is owned by required `Vercel`. Strict current-base semantics remain enabled. CircleCI contexts are not required checks and automatic CircleCI PR/main workflows remain disabled.
 
-**Vercel remains the required final-candidate CI and deployment authority.** Public GitHub-hosted Actions is now the ordinary non-required PR preflight compute lane; it runs automatically because the public repository can use standard hosted runners without consuming the former private-repository minute budget. CircleCI remains explicit API-triggered fallback, and the Mac/OrbStack workflow remains self-hosted manual fallback. Cloudflare remains post-deploy observation plus dormant fallback assets, not a second deployment authority.
+**Required acceptance is intentionally split instead of duplicated.** Public GitHub-hosted Actions owns deterministic and browser acceptance on the exact PR head. Vercel remains the required provider build/deploy authority on that same SHA and for Production. CircleCI remains explicit API-triggered fallback, the Mac/OrbStack workflow remains self-hosted manual fallback, and Cloudflare remains post-deploy observation rather than a second deployment authority.
 
 ### Exact-head and current-base acceptance
 
-`main` branch protection must keep strict up-to-date semantics and require the `Vercel` status. Ordinary working refs do not spend Vercel compute. When a PR is ready for merge, run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`; it first pins non-deploy `ci/vercel-gate-base` to live `main`, then moves the **already-existing persistent** `ci/vercel-gate-final` ref to the **same exact commit SHA** as the current PR head; the gate ref must not add, cherry-pick, rebuild, or otherwise change content. Do not rely on creating a new ref at an already-known SHA: live Vercel qualification showed ref creation produced no provider event, while an existing-ref update did. GitHub status is accepted only for that exact candidate SHA. If `main` moves, strict protection makes the PR stale and forces a current-base update plus a fresh gate ref / Vercel result before merge; a historical Preview is never current merge evidence.
+`main` branch protection must keep strict up-to-date semantics and require both `public-ci-gate` (GitHub Actions) and `Vercel`. Ordinary working refs do not spend Vercel compute. When a PR is ready for merge, run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`; it first proves the exact PR head already has successful `public-ci-gate` from the expected GitHub Actions App, pins non-deploy `ci/vercel-gate-base` to live `main`, then moves the **already-existing persistent** `ci/vercel-gate-final` ref to the **same exact commit SHA** as the current PR head; the gate ref must not add, cherry-pick, rebuild, or otherwise change content. Do not rely on creating a new ref at an already-known SHA: live Vercel qualification showed ref creation produced no provider event, while an existing-ref update did. Both required statuses are accepted only for that exact candidate SHA. If `main` moves, strict protection makes the PR stale and forces a current-base update plus a fresh gate ref / Vercel result before merge; a historical Preview is never current merge evidence.
 
 **Current-base proof is a live ancestry relation, not a cached PR base-SHA field.** A PR API may continue to report the base commit recorded when the PR was opened even after the head has absorbed newer `main`. Before arming the final gate, require the PR to still target `main`, compare live `main...head`, and accept current-base identity only when the live merge base equals live `main`, `behind_by = 0`, and the comparison is `ahead` or `identical`. Re-run that proof after pinning `ci/vercel-gate-base`; any missing, moved, or contradictory identity fails closed. Do not replace this with raw `baseRefOid == currentMain` equality.
 
-For the persistent final-gate Preview, `scripts/request-vercel-final-gate.mjs` first pins non-deploy `ci/vercel-gate-base` to the exact live `main`, then moves `ci/vercel-gate-final` to the candidate. `scripts/vercel-git-range.mjs` independently checks that the remote base ref still equals live `main` and compares that base tree directly with the exact candidate. It deliberately does **not** use `VERCEL_GIT_PREVIOUS_SHA` for the persistent gate, because that SHA can belong to an unrelated prior PR and would cause expensive false-full browser runs. Missing/stale base identity fails closed to the complete Chromium matrix.
+For the persistent final-gate Preview, `scripts/request-vercel-final-gate.mjs` first proves exact-head `public-ci-gate=success`, pins non-deploy `ci/vercel-gate-base` to exact live `main`, then moves `ci/vercel-gate-final` to the candidate. The base ref is retained as an auditable current-base/fallback range identity for provider diagnostics; ordinary Vercel builds no longer use it to select browser work because browser acceptance already ran in required Public PR CI.
 
 ### Provider cutover is a repository + live-control-plane transaction
 
@@ -72,9 +70,9 @@ A replacement provider `ERROR` must also be localized by **execution phase** bef
 - every triggered `VERCEL_ENV=preview` execution is a real acceptance build. The Ignored Build Step intentionally does **not** rely on `VERCEL_GIT_PULL_REQUEST_ID`, because real provider evidence showed that variable can be absent at the pre-build boundary;
 - `ci/vercel-gate-final` is one persistent execution alias, not a new candidate: update that existing ref byte-for-byte to the exact PR head commit SHA;
 - `[vercel-preview]` is only a historical/review marker and never opens the spend gate;
-- a docs/governance-only final candidate still runs `verify:deploy` when its explicit gate ref is created, but the browser planner may skip Chromium when the diff is proven non-UI;
+- a docs/governance-only final candidate still requires exact-head `public-ci-gate`; its explicit Vercel gate runs the static provider build, while docs-only `main` remains non-deploy-relevant;
 - a docs/governance-only change on `main` remains non-deploy-relevant and **must not publish a Production build**. This preserves the rule that changing `AGENTS.md` or `docs/agents/**` cannot replace the website Production artifact.
-- a proven HPL control-plane-only final candidate still runs `verify:deploy` + static build on the explicit gate Preview, but skips Chromium when `scripts/hpl-control-plane.mjs` proves the changed HPL modules remain detached from ordinary runtime source; after merge, the same detached HPL-only range is non-deploy-relevant on `main`, so it does not publish an identical Production artifact. Any runtime importer or gate-owner change fails closed and restores the normal build/browser path.
+- a proven HPL control-plane-only final candidate still requires exact-head Public PR CI, including HPL/Reader audits; its Vercel gate runs only the static provider build. After merge, the same detached HPL-only range is non-deploy-relevant on `main`, so it does not publish an identical Production artifact. Any runtime importer or gate-owner change fails closed to the normal Public PR CI browser path.
 
 ### Fast human-review Preview lane
 
@@ -99,47 +97,44 @@ The review Preview may omit `verify:deploy`, the canonical Chromium matrix, and 
 
 Use this lane by default when the owner asks to repeatedly see the page after small UI/copy/slide revisions. The moment the question changes from “does this look right?” to “can this merge/release?”, stop using review-Preview success as evidence and run the ordinary exact-current-base sequence: public GHA preflight, `request-vercel-final-gate.mjs`, required exact-head Vercel acceptance, then merge.
 
-### Shared risk-aware browser gate: public GHA preflight + Vercel final
+### Required Public PR CI + provider-only Vercel gate
 
-Public GHA and Vercel use the same risk taxonomy. Public GHA provides the cheap parallel feedback lane; Vercel proves the exact final candidate in the deployment provider. The public-GHA planner allocates browser runners before spend: skip=0, focused=1, full/global=8. Full/global work is timing-balanced over eight independent shards with one worker each; every allocated browser runner re-evaluates the plan and any planner drift fails before npm/browser work. Unknown ownership still fails closed. Vercel retains the required status and its own risk-based Chromium/Lab acceptance.
+Public PR CI and Vercel have different owners so they no longer repeat the same expensive work. Public PR CI owns deterministic repository validation and the risk-aware browser matrix. Its planner allocates browser runners before spend: skip=0, focused=1, full/global=8. Full/global work is timing-balanced over eight independent shards with one worker each; every allocated runner re-evaluates the plan, unknown ownership fails closed, and Lab/server-relevant diffs run the 6-case active-Lab gate on shard 1.
 
-### Risk-aware browser gate on Vercel Pro
+`public-ci-gate` is required merge evidence. `scripts/request-vercel-final-gate.mjs` refuses to spend Vercel compute unless that exact-head check is already completed/success from the expected GitHub Actions App. The Vercel final gate then answers a different question: can this exact accepted tree build and deploy through the real Production provider?
 
-The Vercel build command is:
+The Vercel build command is deliberately small:
 
 ```bash
-npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs
+npm run build
 ```
 
-`vercel-ui-gate.mjs` and `ci-ui-gate.mjs` share `scripts/vercel-ui-plan.ts`; there is one risk taxonomy, not a provider-specific weaker copy. The public GHA full path preserves canonical identities, retries=0, and one worker per independent shard.
+`npm run verify:deploy` remains provider-neutral and unchanged; it runs in Public PR CI, local/full validation, Cloudflare fallback, and manual recovery. `scripts/vercel-ui-gate.mjs` and `scripts/vercel-lab-browser-gate.mjs` remain repository utilities/history-compatible fallback code, but they are not part of the ordinary Vercel build command after this cutover.
 
 ```text
 non-UI / governance-only diff
--> verify:deploy + static build
--> hosted browser layer may skip
+-> Public PR CI deterministic acceptance; browser allocation may be zero
+-> exact-head Vercel gate -> static provider build
 
 detached HPL control-plane-only diff
--> public GHA deterministic + HPL/Reader audits still run
--> exact-head Vercel Preview runs verify:deploy + static build
--> hosted Chromium skips when detachment invariant passes
--> merged main range is ignored as non-deploy-relevant (no duplicate Production rebuild)
--> any runtime HPL importer or gate-owner change fails closed
+-> Public PR CI deterministic + HPL/Reader audits
+-> exact-head Vercel gate -> static provider build
+-> merged main range may still be ignored when proven non-deploy-relevant
 
 bounded route-owned UI diff
--> verify:deploy + build
--> focused mapped Chromium specs / changed-route smoke
+-> Public PR CI deterministic + focused mapped Chromium coverage
+-> exact-head Vercel gate -> static provider build
 
 shared/global/unknown UI diff
--> verify:deploy + build
--> complete canonical Chromium matrix
+-> Public PR CI deterministic + complete canonical Chromium matrix
+-> exact-head Vercel gate -> static provider build
 
 Lab/server-relevant diff
--> dedicated 6-case active-Lab gate
+-> Public PR CI includes the dedicated 6-case active-Lab gate
+-> Vercel does not rerun that browser suite
 ```
 
-Changes to the Vercel gate, planner, deployment config, CircleCI manual-fallback config, merge-candidate tooling, or retained Mac fallback environment fail closed to full browser coverage. Never weaken assertions, reader-contract checks, scientific-content boundaries, or unknown-owner handling merely to reduce wall time or credits.
-
-The canonical Chromium suite remains `npm run test:ui`. Vercel chooses Playwright workers from visible build CPUs with the existing half-CPU rule capped at four; provider evidence, not a hard-coded Pro assumption, decides the actual worker count. CircleCI's two-shard implementation and static timing receipt remain available only inside the manual API fallback and do not own merge readiness.
+Changes to Public PR CI, planner, Vercel gate tooling, deployment config, CircleCI manual-fallback config, merge-candidate tooling, or retained Mac fallback environment fail closed to full browser coverage in Public PR CI. Never weaken assertions, reader-contract checks, scientific-content boundaries, or unknown-owner handling merely to reduce wall time or credits.
 
 ### Budget-first execution
 
@@ -183,13 +178,15 @@ The accepted cloud browser design uses **independent shards with one Playwright 
 
 Project `basemodel-preview` owns both deployment environments. Every deployable Preview/Production build uses:
 
-`npm run verify:deploy && npm run build && node scripts/vercel-ui-gate.mjs && node scripts/vercel-lab-browser-gate.mjs`
+`npm run build`
+
+Public PR CI owns the repository-wide deterministic and browser acceptance that formerly ran again inside Vercel.
 
 Do not disable Vercel Git deployment on `main`.
 
-Preview acceptance requires exact-head provider success plus real route/metadata inspection. Preview is automatically `noindex` when `VERCEL_ENV=preview`; canonical/hreflang continue to point to the stable Production project domain.
+Preview release acceptance requires exact-head `public-ci-gate` success, exact-head Vercel provider success, plus real route/metadata inspection when the change is user-facing. Preview is automatically `noindex` when `VERCEL_ENV=preview`; canonical/hreflang continue to point to the stable Production project domain.
 
-Every Preview that reaches Vercel through an enabled `ci/vercel-gate-final` ref is real acceptance and cannot be skipped by omitting a commit token. `[vercel-preview]` is not an executable pre-build gate. Ordinary working refs are excluded earlier by `git.deploymentEnabled`; Production is never gated by this token. A proven docs/governance-only `main` range is still ignored so governance edits cannot replace Production.
+Every Preview that reaches Vercel through an enabled `ci/vercel-gate-final` ref is real provider acceptance and cannot be skipped by omitting a commit token. `[vercel-preview]` is not an executable pre-build gate. Ordinary working refs are excluded earlier by `git.deploymentEnabled`; Production is never gated by this token. A proven docs/governance-only `main` range is still ignored so governance edits cannot replace Production.
 
 ### Cloudflare post-deploy smoke
 
@@ -202,7 +199,7 @@ Do not move repository compilation, npm installation, Vitest, the full Playwrigh
 - Optimize test selection and sharding before buying larger runners or moving the same inefficient gate to another provider.
 - Re-check CircleCI/Cloudflare/GitHub/Vercel quota and billing semantics live; dated free-tier numbers are historical evidence, not repository authority.
 - Vercel project build-machine selection remains fixed Standard unless a measured same-workload cost reason justifies a change.
-- Parallel Chromium preflight belongs on public GitHub-hosted runners; exact final Preview/Chromium/Lab acceptance and merge authority remain on Vercel Pro. CircleCI may run the retained contract only when explicitly triggered through the manual API fallback; it must not duplicate ordinary merge authority.
+- Deterministic/Chromium/Lab merge acceptance belongs on required Public PR CI; exact final Preview and Production provider build/deploy acceptance remain on Vercel Pro. CircleCI may run the retained contract only when explicitly triggered through the manual API fallback; it must not duplicate ordinary merge authority.
 - CircleCI fork PR builds and fork-secret passing remain disabled; SSH reruns remain disabled; redundant branch workflows remain auto-cancelled.
 - A provider scheduler is not the compute surface. Keep source hosting, CI control plane, CI compute, deployment, and post-deploy monitoring conceptually separate.
 
@@ -232,7 +229,7 @@ Rules:
 6. When several already-accepted PRs belong to one release window, one explicit integration/release head plus one merge to `main` may be used if authorship, review, rollback and ownership remain clear. Do not combine unrelated or unaccepted work only to reduce build count.
 7. Batch evidence-driven Gate fixes. The normal budget is one final gate Preview plus at most one corrective gate Preview; ordinary development pushes are not Vercel events. Additional gate runs require a concrete reason such as a newly discovered Gate failure, exact-head synchronization conflict or real browser finding.
 8. Avoid direct micro-commits to `main`. Every deploy-relevant `main` update can become a Production build.
-9. Docs/Agent-only changes should remain outside deploy-relevant paths. They consume no Vercel while iterating; if they are a final candidate, the explicit gate ref still runs `verify:deploy`, while the hosted browser layer may skip when UI risk is proven absent. On `main`/Production, a proven docs-only range may be ignored entirely. Do not touch `src/`, `public/`, `scripts/`, tests or deployment config merely to manufacture a Preview badge.
+9. Docs/Agent-only changes should remain outside deploy-relevant paths. They consume no Vercel while iterating; if they are a final candidate, required Public PR CI owns repository acceptance and the explicit gate ref runs only the static provider build. On `main`/Production, a proven docs-only range may be ignored entirely. Do not touch `src/`, `public/`, `scripts/`, tests or deployment config merely to manufacture a Preview badge.
 10. Vercel same-branch auto-cancellation limits wasted execution when a newer push supersedes a running job, but a canceled/ignored deployment is not a substitute for batching pushes.
 11. When usage matters, report deployment triggers separately as `READY`, `ERROR`, `CANCELED` and ignored/skipped when provider evidence is available. Do not report only successful builds.
 
@@ -270,11 +267,11 @@ latest intended base
 - `github.autoJobCancelation: true` keeps the newest same-branch job authoritative;
 - `ignoreCommand: node scripts/vercel-ignore-build.mjs` decides whether a build is needed.
 
-The ignored-build step still uses `VERCEL_GIT_PREVIOUS_SHA` for ordinary `main`/Production build relevance, but persistent final-gate browser selection does not. For `ci/vercel-gate-final`, `scripts/vercel-git-range.mjs` compares the exact candidate against remote `ci/vercel-gate-base`, after verifying that base ref still equals live `main`. An enabled gate Preview therefore always runs `verify:deploy` and the static build, while a proven docs/Agent-only candidate can skip Chromium/Lab. Missing/stale base identity, invalid Git range, or any uncertainty **fails closed to full browser acceptance**, not to a cheaper assumption.
+The ignored-build step still uses `VERCEL_GIT_PREVIOUS_SHA` for ordinary `main`/Production build relevance. For `ci/vercel-gate-final`, `request-vercel-final-gate.mjs` first proves exact-head `public-ci-gate=success`, then `scripts/vercel-git-range.mjs` compares the exact candidate against remote `ci/vercel-gate-base` after verifying that base ref still equals live `main`. An enabled gate Preview therefore always runs the static provider build; browser acceptance has already failed closed in required Public PR CI.
 
 The path classifier and policy are protected by `src/lib/vercelBuildBudget.test.ts`.
 
-`vercel.json -> git.deploymentEnabled` deliberately blocks ordinary working refs and enables only `main` plus `ci/vercel-gate-final`. Final acceptance is requested by updating the existing persistent gate ref to the exact PR head SHA; `scripts/vercel-ignore-build.mjs` then fails open for that Preview so the required `Vercel` status cannot be satisfied by an ignored deployment. Spend control therefore starts before provider compute, with the risk planner providing a second layer of runtime optimization. If the exact candidate SHA lacks a green Vercel status, it is not merge-ready.
+`vercel.json -> git.deploymentEnabled` deliberately blocks ordinary working refs and enables only `main` plus `ci/vercel-gate-final`. Final acceptance is requested by updating the existing persistent gate ref to the exact PR head SHA; `scripts/vercel-ignore-build.mjs` then fails open for that Preview so the required `Vercel` status cannot be satisfied by an ignored deployment. Spend control therefore starts before provider compute, with the risk planner providing a second layer of runtime optimization. If the exact candidate SHA lacks either green `public-ci-gate` or green `Vercel`, it is not merge-ready.
 
 ## Node runtime major contract
 
@@ -329,7 +326,7 @@ One accepted release batch should normally create one Production build. Do not a
 
 1. prove that the stable Production alias still points at the prior release and that no Production object exists for the exact current `main` SHA;
 2. do **not** add a no-op `main` commit, do **not** describe the prior Production artifact as current, and do **not** promote the accepted Preview—the Preview proves the candidate head, while `promote` does not rebuild the merged `main` tree or prove the Production gate;
-3. trigger at most one fallback **Git-source Production build** from the repository's exact current `main` ref/SHA with `target=production` (provider deduplication may be bypassed only to force this exact Git build); preserve Git metadata so Vercel sees `githubCommitRef=main` / the exact merge SHA and therefore executes the normal Production build command plus hosted Chromium/Lab gates;
+3. trigger at most one fallback **Git-source Production build** from the repository's exact current `main` ref/SHA with `target=production` (provider deduplication may be bypassed only to force this exact Git build); preserve Git metadata so Vercel sees `githubCommitRef=main` / the exact merge SHA and therefore executes the normal static Production build command;
 4. close release only after provider metadata binds the deployment to exact `main`, the Production deployment is `READY`, and the stable alias plus representative routes/metadata resolve to that deployment.
 
 If an exact-main Git-source Production fallback cannot be created or its Git identity cannot be proven, stop and report the release blocker. A source-upload deploy with ambiguous branch identity is not a substitute for the normal Production gate.
