@@ -30,23 +30,23 @@ const seedRoot = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8
     </section>
 
     <section class="evidence-grid" aria-label={t('公平比较的证据层','Evidence layers for a fair comparison')}>
-      <article class="evidence-card paper" data-ui-audit-item><small>CODE + PAPER</small><strong>128</strong><p>{t('公开 WebShop 启动脚本把每次验证固定为 128 个任务；论文也以 128 个测试样本报告 WebShop 结果。','The released WebShop launcher uses validation batch size 128, and the paper reports WebShop results over 128 test samples.')}</p></article>
-      <article class="evidence-card code" data-ui-audit-item><small>RELEASED-CODE DEFAULT</small><strong>1,000</strong><p>{t('small WebShop products；公开脚本默认启用 use_small。','small WebShop products; released scripts default to use_small.')}</p></article>
-      <article class="evidence-card boundary" data-ui-audit-item><small>PAPER BOUNDARY</small><strong>{t('具体 128 未知','Exact 128 unknown')}</strong><p>{t('论文没有公开最终 89.7 / 78.1% 对应的 validation 次序、checkpoint 与具体 128 个任务身份。','The paper does not publish the validation ordinal, checkpoint, or exact 128 task identities behind 89.7 / 78.1%.')}</p></article>
+      <article class="evidence-card paper" data-ui-audit-item><small>{t('代码 + 论文','CODE + PAPER')}</small><strong>128</strong><p>{t('公开 WebShop 启动脚本把每次验证固定为 128 个任务；论文也以 128 个测试样本报告 WebShop 结果。','The released WebShop launcher uses validation batch size 128, and the paper reports WebShop results over 128 test samples.')}</p></article>
+      <article class="evidence-card code" data-ui-audit-item><small>{t('发布代码默认值','RELEASED-CODE DEFAULT')}</small><strong>1,000</strong><p>{t('small WebShop products；公开脚本默认启用 use_small。','small WebShop products; released scripts default to use_small.')}</p></article>
+      <article class="evidence-card boundary" data-ui-audit-item><small>{t('论文证据边界','PAPER BOUNDARY')}</small><strong>{t('具体 128 未知','Exact 128 unknown')}</strong><p>{t('论文没有公开最终 89.7 / 78.1% 对应的 validation 次序、checkpoint 与具体 128 个任务身份。','The paper does not publish the validation ordinal, checkpoint, or exact 128 task identities behind 89.7 / 78.1%.')}</p></article>
     </section>
 
     <section class="contract-world" aria-label={t('同一 WebShop 任务合同','Same WebShop task contract')}>
-      <header><small>RELEASED-CODE TASK SETTING</small><strong>{t('1,000-product small WebShop · 6,910 goals','1,000-product small WebShop · 6,910 goals')}</strong></header>
+      <header><small>{t('发布代码的任务设定','RELEASED-CODE TASK SETTING')}</small><strong>{t('1,000-product small WebShop · 6,910 goals','1,000-product small WebShop · 6,910 goals')}</strong></header>
       <div class="pools">
-        <article data-ui-audit-item><small>TRAIN CANDIDATE POOL</small><strong>goal 500–6909</strong><span>6,410 {t('goals','goals')}</span><p>{t('公开代码默认从 goal 500 开始取训练候选任务。','Released code defaults to training candidates beginning at goal 500.')}</p></article>
-        <article data-ui-audit-item><small>HELD-OUT CANDIDATE POOL</small><strong>goal 0–499</strong><span>500 {t('保留候选槽位','held-out candidate slots')}</span><p>{t('验证时从 0–499 抽任务，与训练候选池分离；但“来自正确范围”不等于“已经知道论文最终那 128 题”。','Validation draws from 0–499, separate from the training candidate pool; being in the correct range does not identify the paper’s final 128 tasks.')}</p></article>
-        <article class="manifest" data-ui-audit-item><small>EXACT 128-GOAL MANIFEST</small><strong>{t('论文未公开','Not published')}</strong><p>{t('公开材料没有把最终表格结果绑定到某一次 validation + checkpoint，因此论文最终数字的 exact 128-goal manifest 不能由公开信息唯一恢复。','Public materials do not bind the final table result to one validation call + checkpoint, so the paper’s exact 128-goal manifest is not uniquely recoverable.')}</p></article>
+        <article data-ui-audit-item><small>{t('训练候选池','TRAIN CANDIDATE POOL')}</small><strong>goal 500–6909</strong><span>6,410 {t('goals','goals')}</span><p>{t('公开代码默认从 goal 500 开始取训练候选任务。','Released code defaults to training candidates beginning at goal 500.')}</p></article>
+        <article data-ui-audit-item><small>{t('保留候选池','HELD-OUT CANDIDATE POOL')}</small><strong>goal 0–499</strong><span>500 {t('保留候选槽位','held-out candidate slots')}</span><p>{t('验证时从 0–499 抽任务，与训练候选池分离；但“来自正确范围”不等于“已经知道论文最终那 128 题”。','Validation draws from 0–499, separate from the training candidate pool; being in the correct range does not identify the paper’s final 128 tasks.')}</p></article>
+        <article class="manifest" data-ui-audit-item><small>{t('精确 128 题清单','EXACT 128-GOAL MANIFEST')}</small><strong>{t('论文未公开','Not published')}</strong><p>{t('公开材料没有把最终表格结果绑定到某一次 validation + checkpoint，因此论文最终数字的 exact 128-goal manifest 不能由公开信息唯一恢复。','Public materials do not bind the final table result to one validation call + checkpoint, so the paper’s exact 128-goal manifest is not uniquely recoverable.')}</p></article>
       </div>
     </section>
 
     <section class="knowledge-boundary" aria-labelledby="knowledge-boundary-title">
       <header>
-        <small>WHAT CAN WE KNOW?</small>
+        <small>{t('我们能确定什么？','WHAT CAN WE KNOW?')}</small>
         <h3 id="knowledge-boundary-title">{t('关于“128 个任务”，公开信息能确定到哪一层？','How much can public information tell us about the 128 tasks?')}</h3>
       </header>
       <div class="knowledge-rows">
@@ -71,7 +71,7 @@ const seedRoot = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8
     </aside>
 
     <section class="same-rules" aria-label={t('同一比赛规则','Same competition rules')} data-layout-anomaly-ignore>
-      <strong>SAME RULES</strong><span>{t('同一个商品世界','same product world')}</span><span>{t('同一批可学习任务','same learning-task pool')}</span><span>{t('同一批最终考试题','same final test')}</span><span>{t('同一种 Score / Success 评分','same Score / Success scoring')}</span>
+      <strong>{t('相同规则','SAME RULES')}</strong><span>{t('同一个商品世界','same product world')}</span><span>{t('同一批可学习任务','same learning-task pool')}</span><span>{t('同一批最终考试题','same final test')}</span><span>{t('同一种 Score / Success 评分','same Score / Success scoring')}</span>
     </section>
     <figcaption><strong>{t('同一个世界、同一批任务、同一场考试、同一种评分；学习方法可以不同。','Same world, same tasks, same test, same scoring; learning methods may differ.')}</strong> {t('1,000 商品、训练起点和 6,910 goals 来自当前 released code 与 WebShop small environment；“每次 validation 128 个任务”也可由公开 launcher 恢复。真正未知的是论文最终 89.7 / 78.1% 对应的具体 validation realization 与 checkpoint，因此这里不把任何可重建的 128 任务集合冒充成论文最终分母。','The 1,000 products, training start, and 6,910 goals come from the released code and WebShop small environment; the 128-task validation size is also recoverable from the public launcher. What remains unknown is the concrete validation realization and checkpoint behind the paper’s final 89.7 / 78.1%, so no reconstructable 128-task set is presented here as the paper’s final denominator.')}</figcaption>
   </figure>

@@ -3,13 +3,13 @@ import { expect, test } from '@playwright/test';
 const study = '/research/seed-openevo/study/';
 const design = '/research/seed-openevo/study/capability-exploration/openevo-2-0/';
 
-test('Study keeps the five real experiments as the primary directory', async ({ page }) => {
+test('Study keeps the six real experiments as the primary directory', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto(study, { waitUntil: 'domcontentloaded' });
 
   await expect(page.locator('h1')).toHaveText('OpenEVO × WebShop 实验');
-  await expect(page.locator('[data-experiment-primary]')).toHaveCount(5);
-  await expect(page.locator('.experiment-node')).toHaveCount(5);
+  await expect(page.locator('[data-experiment-primary]')).toHaveCount(6);
+  await expect(page.locator('.experiment-node')).toHaveCount(6);
   await expect(page.locator('.experiment-node').first()).toHaveCSS('border-radius', '0px');
   await expect(page.locator('.secondary-routes')).toContainText('跨实验入口');
 });

@@ -20,7 +20,7 @@ const readmeUrl = 'https://github.com/princeton-nlp/WebShop#webpage-environment-
   <figure class="generation-story" aria-labelledby="webshop-goal-generation-title">
     <div class="macro-flow" aria-label={t('1,000 商品生成 6,910 goals','1,000 products generate 6,910 goals')}>
       <article class="macro-node products" data-ui-audit-item>
-        <small>SMALL WEBSHOP</small>
+        <small>{t('small WebShop','SMALL WEBSHOP')}</small>
         <strong>1,000</strong>
         <span>{t('商品（products）','products')}</span>
       </article>
@@ -28,7 +28,7 @@ const readmeUrl = 'https://github.com/princeton-nlp/WebShop#webpage-environment-
       <section class="generator" aria-label={t('WebShop 合成购物任务生成器','WebShop synthetic goal generator')}>
         <div class="generator-arrow" aria-hidden="true"></div>
         <div class="generator-card">
-          <small>GENERATE · {t('生成','GENERATE')}</small>
+          <small>{t('生成','GENERATE')}</small>
           <strong>{t('合成购物任务生成','Synthetic goal generation')}</strong>
           <code>get_synthetic_goals(...)</code>
           <span>{t('对商品的 option 组合使用 itertools.product(...)','Enumerates option combinations with itertools.product(...)')}</span>
@@ -37,7 +37,7 @@ const readmeUrl = 'https://github.com/princeton-nlp/WebShop#webpage-environment-
       </section>
 
       <article class="macro-node goals" data-ui-audit-item>
-        <small>SMALL ENV OUTPUT</small>
+        <small>{t('small 环境输出','SMALL ENV OUTPUT')}</small>
         <strong>6,910</strong>
         <span>{t('synthetic goals（可执行购物任务）','synthetic executable goals')}</span>
       </article>
@@ -96,19 +96,19 @@ const readmeUrl = 'https://github.com/princeton-nlp/WebShop#webpage-environment-
       <summary>{t('查看代码证据','Show code evidence')}</summary>
       <div class="evidence-grid">
         <article>
-          <small>goal.py · RELEASED CODE</small>
+          <small>{t('goal.py · 发布代码','goal.py · RELEASED CODE')}</small>
           <code>combinations = list(itertools.product(...))</code>
           <p>{t('WebShop 会枚举一个商品不同 option 的组合，并为组合构造 goal。','WebShop enumerates a product’s option combinations and constructs goals from those combinations.')}</p>
           <a href={goalCodeUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={goalCodeUrl} />{t('打开官方 goal.py ↗','Open official goal.py ↗')}</a>
         </article>
         <article>
-          <small>web_agent_text_env.py · RELEASED CODE</small>
+          <small>{t('web_agent_text_env.py · 发布代码','web_agent_text_env.py · RELEASED CODE')}</small>
           <code>human_goals=0 → get_goals(...)</code>
           <p>{t('默认 SimServer 使用 synthetic goals；随后固定 seed 233 打乱 goal 顺序。','The default SimServer uses synthetic goals, then shuffles goal order with fixed seed 233.')}</p>
           <a href={envCodeUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={envCodeUrl} />{t('打开官方环境代码 ↗','Open official environment code ↗')}</a>
         </article>
         <article>
-          <small>WebShop README · OFFICIAL RUN OUTPUT</small>
+          <small>{t('WebShop README · 官方运行输出','WebShop README · OFFICIAL RUN OUTPUT')}</small>
           <code>Loaded 6910 goals.</code>
           <p>{t('官方 README 的 small WebShop 示例运行输出明确打印 6,910 goals。','The official README’s small-WebShop example run explicitly prints 6,910 loaded goals.')}</p>
           <a href={readmeUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={readmeUrl} />{t('打开官方 README ↗','Open official README ↗')}</a>

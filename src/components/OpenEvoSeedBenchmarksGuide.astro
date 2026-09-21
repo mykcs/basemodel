@@ -52,9 +52,9 @@ const gates = [
       <header><h2 id="repo-map-title">{t('四层仓库结构','Four repository layers')}</h2></header>
       <ol class="repo-flow">
         <li class="infra" data-ui-audit-item><small>01 · MACHINE</small><strong>{t('实验室私有基础设施','Private lab infrastructure')}</strong><p>{t('SSH 角色、Docker 权限、GPU / 存储与授权事实','SSH roles, Docker authority, GPU/storage and authorization facts')}</p></li>
-        <li class="env" data-ui-audit-item><small>02 · PORTABLE ENV</small><strong>wangrui-server-environment</strong><p>{t('环境定义、恢复与可重建配置','environment definitions and recovery')}</p></li>
+        <li class="env" data-ui-audit-item><small>{t('02 · 可移植环境','02 · PORTABLE ENV')}</small><strong>wangrui-server-environment</strong><p>{t('环境定义、恢复与可重建配置','environment definitions and recovery')}</p></li>
         <li class="exp" data-ui-audit-item><small>03 · EXPERIMENT</small><strong>openevo-experiment</strong><p>{t('campaign、manifest、preregistration、结果','campaigns, manifests, preregistration, results')}</p></li>
-        <li class="core" data-ui-audit-item><small>04 · UPSTREAM CORE</small><strong>{t('OpenEvo 官方上游','Official OpenEvo upstream')}</strong><p>{t('固定 SHA 的 Core / trainer','pinned Core / trainer')}</p></li>
+        <li class="core" data-ui-audit-item><small>{t('04 · 上游核心代码','04 · UPSTREAM CORE')}</small><strong>{t('OpenEvo 官方上游','Official OpenEvo upstream')}</strong><p>{t('固定 SHA 的 Core / trainer','pinned Core / trainer')}</p></li>
       </ol>
       <aside>{t('seed3090 与 openevo-webshop 是历史迁移来源，不是新的实验入口。实时科学状态必须从实际 branch → current-campaign → reconciliation/result 重新解析。','seed3090 and openevo-webshop are historical migration sources, not new experiment entry points. Resolve live scientific state again from actual branch → current-campaign → reconciliation/result.')}</aside>
       <p class="context-source"><a href={openEvoScientificState.currentCampaignUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={openEvoScientificState.currentCampaignUrl} />{t('查看 default-main current-campaign 来源 ↗','Open the default-main current-campaign source ↗')}</a></p>

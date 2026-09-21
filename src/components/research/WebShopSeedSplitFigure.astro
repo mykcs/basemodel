@@ -20,7 +20,7 @@ const originalEnvUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/bas
   <figure class="split-story" aria-labelledby="webshop-seed-split-title">
     <aside class="reference-strip" role="note">
       <div>
-        <small>{t('原始 BENCHMARK','ORIGINAL BENCHMARK')}</small>
+        <small>{t('原始基准数据','ORIGINAL BENCHMARK')}</small>
         <strong>{t('human instructions','human instructions')}</strong>
         <span>Train · Dev · Test</span>
         <a href="#fig-webshop-dataset">{t('见第一步的原始数据图 ↑','See the original dataset figure ↑')}</a>
@@ -36,14 +36,14 @@ const originalEnvUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/bas
     <section class="before-after" aria-label={t('原始 WebShop 与 SEED wrapper 划分对照','Original WebShop versus SEED wrapper split')}>
       <article class="wrapper original-wrapper" data-ui-audit-item>
         <header>
-          <small>{t('原始 WEBSHOP BASELINE WRAPPER','ORIGINAL WEBSHOP BASELINE WRAPPER')}</small>
+          <small>{t('原始 WebShop 基准包装层','ORIGINAL WEBSHOP BASELINE WRAPPER')}</small>
           <strong>{t('三段式 goal-index split','Three-way goal-index split')}</strong>
           <span>{t('原始 baseline env.py 的 full/default 路径（args.num is None）','Full/default path in the original baseline env.py (args.num is None)')}</span>
         </header>
         <div class="original-bar" role="img" aria-label={t('原始 wrapper: test 0 到 499, eval 500 到 1499, train 1500 到最后','Original wrapper: test 0–499, eval 500–1499, train 1500 onward')}>
-          <div class="orig-test"><b>TEST</b><span>0–499</span></div>
-          <div class="orig-eval"><b>EVAL</b><span>500–1499</span></div>
-          <div class="orig-train"><b>TRAIN</b><span>1500–…</span></div>
+          <div class="orig-test"><b>{t('测试','TEST')}</b><span>0–499</span></div>
+          <div class="orig-eval"><b>{t('验证','EVAL')}</b><span>500–1499</span></div>
+          <div class="orig-train"><b>{t('训练','TRAIN')}</b><span>1500–…</span></div>
         </div>
         <div class="code-lines">
           <code>test → range(500)</code>
@@ -55,19 +55,19 @@ const originalEnvUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/bas
 
       <div class="rewrite" role="note">
         <span class="rewrite-arrow" aria-hidden="true">→</span>
-        <strong>{t('WRAPPER 规则改变','WRAPPER RULE CHANGES')}</strong>
+        <strong>{t('包装规则改变','WRAPPER RULE CHANGES')}</strong>
         <p>{t('SEED 源文件保留了原三段代码作为注释，真正执行的是右侧两段式 if / else。','The SEED source keeps the original three-way block as comments; the active path is the two-way if / else on the right.')}</p>
       </div>
 
       <article class="wrapper seed-wrapper" data-ui-audit-item>
         <header>
-          <small>{t('SEED RELEASED CODE','SEED RELEASED CODE')}</small>
+          <small>{t('SEED 发布代码','SEED RELEASED CODE')}</small>
           <strong>{t('两段式：non-train / train','Two-way: non-train / train')}</strong>
           <span>{t('原始 eval bucket 不再单独存在','The original eval bucket is no longer separate')}</span>
         </header>
         <div class="seed-bar" role="img" aria-label={t('SEED wrapper: non-train 0 到 499, train 从 500 到最后','SEED wrapper: non-train 0–499, train from 500 onward')}>
-          <div class="seed-heldout"><b>NON-TRAIN</b><span>0–499</span></div>
-          <div class="seed-train"><b>TRAIN</b><span>500–…</span></div>
+          <div class="seed-heldout"><b>{t('非训练','NON-TRAIN')}</b><span>0–499</span></div>
+          <div class="seed-train"><b>{t('训练','TRAIN')}</b><span>500–…</span></div>
         </div>
         <div class="code-lines">
           <code>not is_train → range(500)</code>
@@ -82,7 +82,7 @@ const originalEnvUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/bas
     </section>
 
     <section class="total" aria-label={t('SEED small WebShop 的全部 goals','All goals in SEED small WebShop')}>
-      <small>{t('应用到 SMALL WEBSHOP','APPLIED TO SMALL WEBSHOP')}</small>
+      <small>{t('应用到 small WebShop','APPLIED TO SMALL WEBSHOP')}</small>
       <strong>6,910 goals</strong>
       <span>{t('goal ID 0–6909','goal IDs 0–6909')}</span>
     </section>
@@ -95,8 +95,8 @@ const originalEnvUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/bas
       </div>
 
       <div class="ruler" role="img" aria-label={t('goal 0 到 499 是 500 个 held-out goals；goal 500 到 6909 是 6410 个 training candidate goals','goals 0 through 499 are 500 held-out goals; goals 500 through 6909 are 6,410 training candidate goals')}>
-        <div class="segment heldout"><span>HELD-OUT</span></div>
-        <div class="segment train"><span>TRAIN CANDIDATE POOL</span></div>
+        <div class="segment heldout"><span>{t('保留候选池','HELD-OUT')}</span></div>
+        <div class="segment train"><span>{t('训练候选池','TRAIN CANDIDATE POOL')}</span></div>
         <div class="boundary-line" aria-hidden="true"></div>
       </div>
 
@@ -109,13 +109,13 @@ const originalEnvUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/bas
 
     <section class="pool-cards" aria-label={t('两个 goal pool','Two goal pools')}>
       <article class="pool heldout-card" data-ui-audit-item>
-        <small>RELEASED-CODE EXPLICIT</small>
+        <small>{t('发布代码明确规定','RELEASED-CODE EXPLICIT')}</small>
         <strong>goal 0–499</strong>
         <span>500 goals</span>
         <p>{t('is_train = false → range(500)','is_train = false → range(500)')}</p>
       </article>
       <article class="pool train-card" data-ui-audit-item>
-        <small>RELEASED-CODE EXPLICIT</small>
+        <small>{t('发布代码明确规定','RELEASED-CODE EXPLICIT')}</small>
         <strong>goal 500–6909</strong>
         <span>6,410 goals</span>
         <p>{t('is_train = true → range(500, len(goals))','is_train = true → range(500, len(goals))')}</p>
@@ -134,7 +134,7 @@ const originalEnvUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/bas
       <summary>{t('查看原始 WebShop 与 SEED 的代码对照','Compare original WebShop and SEED code')}</summary>
       <div class="evidence-grid">
         <article>
-          <small>WebShop baseline env.py · OFFICIAL</small>
+          <small>{t('WebShop baseline env.py · 官方来源','WebShop baseline env.py · OFFICIAL')}</small>
           <pre><code>if split == 'test':
     goal_idxs = range(500)
 elif split == 'eval':

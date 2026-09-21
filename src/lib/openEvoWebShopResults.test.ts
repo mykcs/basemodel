@@ -187,7 +187,8 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(questions).toContain('不能写成“模型已经在这项测试上迁移失败”');
     expect(questions).toContain('预留的新任务测试因为前面的能力检查没有通过而没有启动');
     expect(evidenceNoteScope).toContain('H1.42 发生在 H1.41 之后');
-    expect(questions).toContain('不能反过来改写 H1.41 的机制结论');
+    expect(questions).toContain('后续测量校准记录不能反过来改写先前已经成立的机制结论');
+    expect(questions).toContain('历史记录编号 H1.41 / H1.42 保留在证据链接里');
   });
 
   it('keeps historical repaired-primary evidence while current Q7 owns completed Track A', () => {
@@ -338,7 +339,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(nextSteps).toContain('两轮比较回答不同问题');
     expect(nextSteps).toContain('只有后一个实验才能直接回答 OpenEvo 与 SEED 的公平比较');
     expect(nextSteps).toContain('<details class="step-detail">');
-    expect(nextSteps).toContain('下一步实验 · NEXT STEPS');
+    expect(nextSteps).toContain("t('下一步实验', 'NEXT STEPS')");
     expect(nextSteps).toContain('/research/seed-openevo/study/');
   });
 

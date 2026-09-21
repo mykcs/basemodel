@@ -60,7 +60,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
           </div>
           {step === 0 && (
             <div className="irx-shop-welcome">
-              <span>GOAL</span><b>{zh ? '黑色 · M 码 · 运动衫 · ≤ $50' : 'Black · M · sweatshirt · ≤ $50'}</b>
+              <span>{zh ? "购物目标" : "GOAL"}</span><b>{zh ? '黑色 · M 码 · 运动衫 · ≤ $50' : 'Black · M · sweatshirt · ≤ $50'}</b>
               <p>{zh ? 'WebShop 不是问答题。Agent 必须通过一连串页面状态变化完成任务。' : 'WebShop is not a question-answer task. The agent must complete a sequence of page-state transitions.'}</p>
             </div>
           )}
@@ -176,7 +176,7 @@ export function ALFWorldExplainer({ locale, step }: { locale: Locale; step: numb
   return (
     <div className="irx-alf-layout" data-ui-audit="contrast layout">
       <section className="irx-world" aria-label={zh ? 'ALFWorld 厨房世界状态' : 'ALFWorld kitchen world state'}>
-        <header><span>HOUSEHOLD WORLD STATE</span><strong>{zh ? '任务：加热 apple，并把它放回 counter' : 'Task: heat the apple and place it on the counter'}</strong></header>
+        <header><span>{zh ? "家庭环境状态" : "HOUSEHOLD WORLD STATE"}</span><strong>{zh ? '任务：加热 apple，并把它放回 counter' : 'Task: heat the apple and place it on the counter'}</strong></header>
         <div className="irx-world-canvas" ref={worldRef}>
           <div className="irx-zone irx-zone-counter" data-flow-id="counter" data-ui-audit-item><small>COUNTER</small></div>
           <div className="irx-zone irx-zone-microwave" data-flow-id="microwave" data-open={current.open} data-failed={step === 3} data-ui-audit-item>
@@ -187,7 +187,7 @@ export function ALFWorldExplainer({ locale, step }: { locale: Locale; step: numb
             <small>FRIDGE</small>
             <Lock open={false} label={zh ? 'fridge 关闭' : 'fridge closed'} />
           </div>
-          <div className="irx-zone irx-zone-inventory" data-flow-id="inventory" data-ui-audit-item><small>AGENT INVENTORY</small></div>
+          <div className="irx-zone irx-zone-inventory" data-flow-id="inventory" data-ui-audit-item><small>{zh ? "Agent 当前携带物品" : "AGENT INVENTORY"}</small></div>
           <span ref={appleRef} className="irx-apple" data-heated={current.heated} style={{ visibility: 'hidden' }} aria-label={current.heated ? 'heated apple' : 'apple'}>
             <i aria-hidden="true"></i><b>APPLE</b>{current.heated && <small>HEATED</small>}
           </span>
@@ -199,7 +199,7 @@ export function ALFWorldExplainer({ locale, step }: { locale: Locale; step: numb
         <strong>{current.action}</strong><p>{current.result}</p>
         {step === 3 && <div className="irx-failure"><b>PRECONDITION FAILED</b><span>{zh ? '动作不是“文字上合理”就能执行；世界状态必须满足前置条件。' : 'An action is not executable just because it sounds plausible; world-state preconditions must hold.'}</span></div>}
         {step === 8 && <div className="irx-success"><b>GOAL SATISFIED</b><span>{zh ? '长期计划成功来自连续状态转换，而不是单次问答。' : 'Long-horizon success comes from a sequence of state transitions, not one answer.'}</span></div>}
-        <div className="irx-action-set"><small>AVAILABLE ACTION FAMILY</small><code>goto · pick · open · put · heat · cool · clean · examine</code></div>
+        <div className="irx-action-set"><small>{zh ? "当前可用动作类型" : "AVAILABLE ACTION FAMILY"}</small><code>goto · pick · open · put · heat · cool · clean · examine</code></div>
       </aside>
     </div>
   );

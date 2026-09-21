@@ -61,7 +61,7 @@ const notes = [
   {
     id: 'current-conclusion',
     index: '09',
-    title: '截至 H1.42 的结论与证据边界',
+    title: '历史机制实验的结论与证据边界',
     description: '这是历史实验 H1.41/H1.42 的证据截止点：把已经支持、明确失败、测量无效和仍未知四类状态分开；当前结论请回到 Results 主页面。',
   },
 ] as const;
@@ -252,7 +252,7 @@ const current = notes.find((item) => item.id === note)!;
         <div class="claim-grid">
           <div><small>已有支持</small><h3>单代的新任务迁移</h3><p>第一次正结果已经在另一批独立新任务上复现。</p></div>
           <div><small>未通过</small><h3>第二代三项上游门槛</h3><p>连续写入没有同时满足新知识获取、旧能力保持和已有收益保持；这是明确的门槛未通过，不等于实验没运行。</p></div>
-          <div><small>测量无效</small><h3>H1.41 / H1.42 机制比较</h3><p>修正测量器后仍有数据无效的任务簇，因此不能把实验组之间的差异解释成可靠机制效应。</p></div>
+          <div><small>测量无效</small><h3>机制比较的测量边界</h3><p>修正测量器后仍有数据无效的任务簇，因此不能把实验组之间的差异解释成可靠机制效应。</p></div>
           <div><small>仍未知</small><h3>稳定连续写入仍待验证</h3><p>参数幅度、经验回放和多个参数组成项之间的干扰仍是待验证假设，而不是定论。</p></div>
         </div>
       </section>
@@ -266,21 +266,6 @@ const current = notes.find((item) => item.id === note)!;
     </main>
   )}
 
-  <details class="note-glossary">
-    <summary>术语参考（可选）</summary>
-    <div class="note-glossary__body">
-      <p>这些词在正文第一次出现时会直接解释；这里仅用于回查旧日志中的同义词和状态。</p>
-    <dl>
-      <div><dt>任务尝试（attempt）</dt><dd>模型从拿到一个 WebShop 任务开始，到成功、失败或达到步数上限的一整次做题；不是一次参数训练。</dd></div>
-      <div><dt>评测单元（cell）</dt><dd>实验设计里一个固定的“实验组 × 任务 × 随机种子”等评测格子。多个任务尝试会组成一个评测单元，所以 cell 数不能直接当任务成功数。</dd></div>
-      <div><dt>可用于训练的完整成功轨迹</dt><dd>任务真正完成、轨迹完整且动作解析有效的成功记录；旧日志里也叫 qualified positive。</dd></div>
-      <div><dt>达标任务身份</dt><dd>数的是“不同任务”，不是成功轨迹条数；旧日志里的 qualifying identity 指满足对应重复成功条件的一个任务。</dd></div>
-      <div><dt>未参与训练的新任务（fresh task）</dt><dd>训练经验里没出现过的评测任务，用来检查学到的东西能不能迁移，而不是只记住训练题。</dd></div>
-      <div><dt>未通过 vs 测量无效</dt><dd>“未通过”表示实验有效运行但目标门槛没有达到；“测量无效”表示当前数据不足以可靠比较。两者都不等于实验没跑，也不等于所有分数都是 0。</dd></div>
-      <div><dt>T2</dt><dd>预留的第二代新任务迁移评测。只有上游门槛全部通过才会启动；“T2 没打开”表示没有进行这项正式评测，不能写成“T2 评测失败”。</dd></div>
-    </dl>
-    </div>
-  </details>
 </article>
 
 <style>
@@ -288,7 +273,6 @@ const current = notes.find((item) => item.id === note)!;
   .note-hero{padding:18px 0 42px;border-bottom:1px solid var(--color-border)}
   .note-topline{display:flex;justify-content:space-between;gap:20px;margin-bottom:36px;color:var(--color-text-muted);font-size:.76rem;font-weight:700;letter-spacing:.08em}.note-topline a{color:var(--color-accent);text-decoration:none}.note-topline a:hover{text-decoration:underline}
   .note-hero h1{margin:0;max-width:880px;font-size:clamp(2.15rem,5vw,4.35rem);line-height:1.04;letter-spacing:-.05em}.dek{max-width:760px;margin:22px 0 0;color:var(--color-text-muted);font-size:1.05rem;line-height:1.75}
-  .note-glossary{margin:52px 0 0;padding:14px 0;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)}.note-glossary>summary{cursor:pointer;color:var(--color-text);font-size:.82rem;font-weight:720}.note-glossary__body{padding:12px 0 4px}.note-glossary__body>p{margin:0 0 10px;color:var(--color-text-muted);font-size:.75rem;line-height:1.6}.note-glossary dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;margin:0}.note-glossary dl>div{padding:10px 0;border-top:1px solid var(--color-border)}.note-glossary dt{font-size:.76rem;font-weight:800}.note-glossary dd{margin:5px 0 0;color:var(--color-text-muted);font-size:.73rem;line-height:1.55}
   .series-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:20px 0 52px}.series-nav a{display:flex;gap:8px;align-items:flex-start;padding:12px;border:1px solid var(--color-border);border-radius:10px;color:var(--color-text-muted);font-size:.73rem;line-height:1.35;text-decoration:none}.series-nav a span{font:600 .7rem ui-monospace,SFMono-Regular,Menlo,monospace}.series-nav a.active{background:var(--color-surface);border-color:var(--color-accent);color:var(--color-text)}
   .note-body{max-width:800px;margin:0 auto}.note-body section{margin:0 0 46px}.note-body h2{margin:0 0 16px;font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.2;letter-spacing:-.03em}.note-body p{margin:0 0 16px;color:var(--color-text-muted);font-size:1rem;line-height:1.82}.note-body strong{color:var(--color-text)}.note-body code{font-size:.9em}
   .metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:24px 0}.metric-grid div{padding:18px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface)}.metric-grid span{display:block;color:var(--color-text);font:700 1.28rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.03em}.metric-grid small{display:block;margin-top:8px;color:var(--color-text-muted);font-size:.72rem;line-height:1.35}
@@ -296,6 +280,6 @@ const current = notes.find((item) => item.id === note)!;
   .takeaway{margin:34px 0;padding:22px;border-left:3px solid var(--color-accent);background:var(--color-surface)}.takeaway strong{display:block;margin-bottom:8px}.takeaway p{margin:0!important}
   .claim-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:22px}.claim-grid>div{padding:18px;border:1px solid var(--color-border);border-radius:12px}.claim-grid small{color:var(--color-accent);font-size:.7rem;font-weight:800;letter-spacing:.1em}.claim-grid h3{margin:8px 0 8px;font-size:1rem}.claim-grid p{margin:0;font-size:.9rem;line-height:1.6}
   .evidence-line{margin-top:44px!important;padding-top:18px;border-top:1px solid var(--color-border);font-size:.86rem!important}.evidence-line a{color:var(--color-accent);text-decoration:none}.evidence-line a:hover{text-decoration:underline}
-  @media(max-width:820px){.note-glossary dl{grid-template-columns:1fr}.series-nav{grid-template-columns:1fr}.metric-grid,.claim-grid{grid-template-columns:1fr 1fr}.metric-table .row{grid-template-columns:1fr}.metric-table .head{display:none}.note-topline{flex-direction:column}.result-note{padding-inline:18px}}
+  @media(max-width:820px){.series-nav{grid-template-columns:1fr}.metric-grid,.claim-grid{grid-template-columns:1fr 1fr}.metric-table .row{grid-template-columns:1fr}.metric-table .head{display:none}.note-topline{flex-direction:column}.result-note{padding-inline:18px}}
   @media(max-width:520px){.metric-grid,.claim-grid{grid-template-columns:1fr}}
 </style>

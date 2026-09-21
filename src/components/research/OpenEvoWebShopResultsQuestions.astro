@@ -202,7 +202,7 @@ const questions: Question[] = [
       { label: t('推理后端', 'Inference backend'), value: t('Transformers backend 在 model.generate 后只切新 token、tokenizer decode 并直接返回，没有 < → [ 的 bracket rewrite。', 'After model.generate the Transformers backend slices generated tokens, decodes them, and returns the text; there is no < → [ bracket rewrite.'), sources: [{ kind: 'code', label: t('generate → decode → return', 'generate → decode → return'), href: `${rawEpisodeRoot}/vendor/openevo-webshop/src/openevo_webshop/inference.py#L227-L232` }] },
       { label: t('历史测量战役覆盖', 'Historical measurement coverage'), value: t('512 个 PRIMARY / DIAGNOSTIC 回合 + 256 个修复后主评测回合 = 768 个回合；六个实验单元均 128/128，对账 ok=true。', '512 PRIMARY/DIAGNOSTIC + 256 repaired-PRIMARY = 768 episodes; all six cells are 128/128 and reconciliation reports ok=true.'), sources: [primaryV2Reconciliation] },
       { label: t('统一兼容后复测', 'Same-contract compatibility rerun'), value: t('只修复动作 wrapper 识别并对 BASE / SD-LoRA 使用同一合同后，BASE 4.1 / 0.0%，SD-LoRA 7.3 / 2.3%；配对平均差 +3.15，自助法（bootstrap）95% CI [-0.65, +7.19]，区间仍跨 0。', 'After changing only wrapper recognition under the same contract for BASE / SD-LoRA, BASE = 4.1 / 0.0% and SD-LoRA = 7.3 / 2.3%; paired mean delta = +3.15 with bootstrap 95% CI [-0.65, +7.19], which still crosses zero.'), sources: [primaryV2Analysis, primaryV2Reconciliation] },
-      { label: 'H1.41 / H1.42', value: t('机制结论只使用 H1.41 时已经通过有效性检查的科学分母；H1.42 是之后的测量校准记录，不能反过来改写 H1.41 的机制结论。', 'Mechanism conclusions use the scientifically valid denominator available at H1.41; H1.42 is a later measurement-calibration record and cannot be blended backward.'), sources: [{ kind: 'machine-result', label: t('H1.41 机制筛选对账', 'H1.41 mechanism reconciliation'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.41/H141_RECONCILIATION_V5.md` }, { kind: 'historical-record', label: t('H1.42 Stage B 收口', 'H1.42 Stage B closeout'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/H142_STAGE_B_CLOSEOUT.md` } ] },
+      { label: t('机制结论与后续测量校准', 'Mechanism conclusion and later measurement calibration'), value: t('机制结论只使用当时已经通过有效性检查的科学分母；后续测量校准记录不能反过来改写先前已经成立的机制结论。历史记录编号 H1.41 / H1.42 保留在证据链接里。', 'Mechanism conclusions use the scientifically valid denominator available at the time; a later measurement-calibration record cannot be blended backward into an earlier conclusion. Historical H1.41 / H1.42 identities remain in the evidence links.'), sources: [{ kind: 'machine-result', label: t('H1.41 机制筛选对账', 'H1.41 mechanism reconciliation'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.41/H141_RECONCILIATION_V5.md` }, { kind: 'historical-record', label: t('H1.42 Stage B 收口', 'H1.42 Stage B closeout'), href: `${h142Root}/docs/evidence/remote-runs/2026-08-21/h1.42-mv/H142_STAGE_B_CLOSEOUT.md` } ] },
     ],
     boundary: t('问题不在 SEED 的动作读取代码违反了自己的规则，也不是提示词要求模型输出 [action]。实际情况是：模型会偶尔把外层标签写错，而我们在正式评测前没有拿真实模型输出检查“评测器能不能正确读懂”。因此责任在实验集成这一层。更深的代码和运行记录放在下面的实验依据里。', 'The SEED action reader was following its own rule, and the prompt did not ask the model to output [action]. The model could occasionally write the outer label incorrectly, and we failed to test real model outputs through the evaluator before the formal run. The integration layer therefore owns this failure. Deeper code and run records are kept in the evidence below.'),
     links: [
@@ -219,9 +219,9 @@ const questions: Question[] = [
 ];
 
 const transferRows = [
-  { label: 'H1.38B · SD-LoRA − BASE', value: '+0.124', ci: '[0.0326, 0.2194]', left: '20.7%', width: '46.7%', point: '43.5%' },
-  { label: 'H1.39 · ordinary-LoRA − BASE', value: '+0.164', ci: '[0.0781, 0.2519]', left: '32.0%', width: '43.5%', point: '53.4%' },
-  { label: 'H1.39 · SD-LoRA − BASE', value: '+0.249', ci: '[0.1642, 0.3365]', left: '53.6%', width: '43.0%', point: '74.7%' },
+  { label: t('第一次迁移 · SD-LoRA − BASE', 'First transfer · SD-LoRA − BASE'), value: '+0.124', ci: '[0.0326, 0.2194]', left: '20.7%', width: '46.7%', point: '43.5%' },
+  { label: t('独立复现 · ordinary-LoRA − BASE', 'Independent replication · ordinary-LoRA − BASE'), value: '+0.164', ci: '[0.0781, 0.2519]', left: '32.0%', width: '43.5%', point: '53.4%' },
+  { label: t('独立复现 · SD-LoRA − BASE', 'Independent replication · SD-LoRA − BASE'), value: '+0.249', ci: '[0.1642, 0.3365]', left: '53.6%', width: '43.0%', point: '74.7%' },
 ] as const;
 ---
 

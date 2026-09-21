@@ -211,7 +211,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
           {kind === 'server' && <ServerExplainer locale={locale} step={step} onStep={go} />}
         </div>
         <figcaption className="irx-paper-caption">
-          <div><span>FIGURE · {overview ? 'SYSTEM MAP' : `TRACE ${String(step + 1).padStart(2, '0')}`}</span><strong>{overview ? (zh ? '先读全局结构，再追踪一次运算' : 'Read the whole structure, then trace one computation') : activeStep.label}</strong><p>{overview ? overviewCopy : activeStep.narration}</p></div>
+          <div><span>{overview ? (zh ? '系统结构' : 'FIGURE · SYSTEM MAP') : (zh ? `运算追踪 ${String(step + 1).padStart(2, '0')}` : `TRACE ${String(step + 1).padStart(2, '0')}`)}</span><strong>{overview ? (zh ? '全局结构与一次运算追踪' : 'System structure and one computation trace') : activeStep.label}</strong><p>{overview ? overviewCopy : activeStep.narration}</p></div>
           <ul className="irx-visual-key" aria-label={zh ? '框架图视觉图例' : 'Framework figure visual key'}>
             <li data-tone="env">{zh ? '环境 / 输入' : 'Environment / input'}</li>
             <li data-tone="experience">{zh ? '经验 / 证据' : 'Experience / evidence'}</li>

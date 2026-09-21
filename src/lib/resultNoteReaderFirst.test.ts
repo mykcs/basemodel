@@ -14,7 +14,7 @@ describe('result-note reader-first case-cluster follow-through', () => {
       '新任务迁移的独立复现',
       '第二代连续学习的结果边界',
       '机制比较的测量边界',
-      '截至 H1.42 的结论与证据边界',
+      '历史机制实验的结论与证据边界',
     ]) expect(note).toContain(`title: '${title}'`);
 
     for (const rejected of [
@@ -27,12 +27,11 @@ describe('result-note reader-first case-cluster follow-through', () => {
     ]) expect(note).not.toContain(rejected);
   });
 
-  it('moves the centralized glossary behind the primary note body', () => {
-    expect(note).toContain('<details class="note-glossary">');
-    expect(note).toContain('<summary>术语参考（可选）</summary>');
-    expect(note).toContain('正文第一次出现时会直接解释');
-    expect(note.indexOf('<details class="note-glossary">')).toBeGreaterThan(note.indexOf("{note === 'current-conclusion'"));
-    expect(note).not.toContain('<aside class="note-glossary"');
+  it('explains terms in the reading flow instead of requiring a centralized glossary', () => {
+    expect(note).not.toContain('note-glossary');
+    expect(note).not.toContain('术语参考（可选）');
+    expect(note).toContain('这些成功来自 33 个不同任务，而不是 132 个不同任务');
+    expect(note).toContain('这表示当前比较不能支持机制结论，不表示实验没有运行');
     expect(note).not.toContain('这组页面先统一 7 个词');
   });
 
@@ -42,7 +41,7 @@ describe('result-note reader-first case-cluster follow-through', () => {
       "title: '新任务迁移的独立复现'",
       "title: '第二代连续学习的结果边界'",
       "title: '机制比较的测量边界'",
-      "title: 'OpenEVO WebShop 历史实验：截至 H1.42 的结论与证据边界'",
+      "title: 'OpenEVO WebShop 历史机制实验的结论与证据边界'",
     ]) expect(route).toContain(title);
     for (const rejected of [
       "title: 'H1.38B：第一次可靠的内部新任务迁移'",
