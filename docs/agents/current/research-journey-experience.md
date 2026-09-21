@@ -81,6 +81,8 @@ The two tracks are:
 
 Route ownership is now encoded in the URL hierarchy as well as the navigation. Canonical concept routes live under `/research/seed-openevo/flow/`; canonical experiment, execution, and findings routes live under `/research/seed-openevo/study/`. The old flat URLs remain compatibility entry points only and must permanently redirect to their canonical grouped routes. Internal links, sitemap entries, canonical URLs, and hreflang targets must use the grouped routes directly rather than relying on redirects.
 
+When an existing route moves into the canonical hierarchy, migrate **navigation-state resolution** together with the links. Shared series, pager, and navigation owners must resolve the canonical pathname to the same semantic page ID. Acceptance must prove a direct canonical `href`, the correct active state (for example `aria-current="page"`), and that normal internal navigation contains no compatibility URL. Test the compatibility URL separately as redirect-only; a link that reaches the right page only through a redirect is still an incomplete migration.
+
 The local navigation should expose its resolved track (`flow` or `study`) in a machine-readable way so source/UI acceptance can verify track membership, active state, and accidental cross-track leakage.
 
 The Results label remains `研究结果 / Research findings`. Do not rename it to `实验结果 / Experiment results` merely to make the three study children sound parallel; the repository already treats the Results surface as a broader research-findings publication, and tests intentionally protect that wording.
