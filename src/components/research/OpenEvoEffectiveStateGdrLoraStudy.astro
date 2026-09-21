@@ -116,6 +116,7 @@ const meanScore = (rows: readonly { score: number }[]) =>
 const directApplyLast20Score = meanScore(directApplyDynamics.score.slice(-20));
 const boundedLast20Score = finalResult ? meanScore(finalResult.trajectory.off.slice(-20)) : null;
 const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-20)) : null;
+const rolloutSeedBase = 148000000;
 ---
 
 <article class="paper" data-effective-state-gdr-page data-copy-review data-reader-page="research-explainer" data-experiment-id={experiment.id}>
@@ -130,6 +131,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
             <th>Bounded</th>
             <th>{t('动态 β', 'Dynamic β')}</th>
             <th>{t('动态 α', 'Dynamic α')}</th>
+            <th>{t('Seed base', 'Seed base')}</th>
             <th>{t('最后 20 轮平均 Task Score', 'Mean Task Score over the last 20 rounds')}</th>
             <th>{t('同一固定 128 题终评', 'Final on the same fixed 128 tasks')}</th>
           </tr>
@@ -146,6 +148,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
             <td class="paper-table__mark">—</td>
             <td class="paper-table__mark">—</td>
             <td class="paper-table__mark">—</td>
+            <td><strong>{rolloutSeedBase.toLocaleString('en-US')}</strong></td>
             <td><strong>{directApplyLast20Score.toFixed(2)}</strong></td>
             <td><strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{study.threeWayFinal.directApply.exactCount}/128 {t('完整做对', 'exact')}</span></td>
           </tr>
@@ -160,6 +163,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
             <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
             <td class="paper-table__mark">—</td>
             <td class="paper-table__mark">—</td>
+            <td><strong>{rolloutSeedBase.toLocaleString('en-US')}</strong></td>
             <td><strong>{boundedLast20Score?.toFixed(2) ?? '—'}</strong></td>
             <td><strong>{study.threeWayFinal.off.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{study.threeWayFinal.off.exactCount}/128 {t('完整做对', 'exact')}</span></td>
           </tr>
@@ -174,6 +178,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
             <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
             <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
             <td class="paper-table__mark">—</td>
+            <td><strong>{rolloutSeedBase.toLocaleString('en-US')}</strong></td>
             <td><strong>{gdrLast20Score?.toFixed(2) ?? '—'}</strong></td>
             <td><strong>{study.threeWayFinal.on.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{study.threeWayFinal.on.exactCount}/128 {t('完整做对', 'exact')}</span></td>
           </tr>
@@ -190,6 +195,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
             <td class="paper-table__mark">✓</td>
             <td>—</td>
             <td>—</td>
+            <td>—</td>
           </tr>
         </tbody>
       </table>
@@ -198,6 +204,10 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
     <p class="paper__boundary">{t(
       '第四行不是第四个已完成实验，也不参与下面任何统计比较；它只是把“动态 α + 动态 β”这个尚未运行的问题留出位置，结果保持为空。',
       'The fourth row is not a fourth completed experiment and is excluded from every statistical comparison below. It only reserves a place for the unrun dynamic-α + dynamic-β question, with results intentionally left blank.',
+    )}</p>
+    <p class="paper__boundary">{t(
+      'Seed 列报告 rollout / generation RNG 的 seed base：三条已完成实验都使用 148,000,000，并按 schedule position 生成 rollout seed；逐步 generation seed 使用 injective-v1。这里不是 optimizer 的 training seed。',
+      'The Seed column reports the rollout / generation RNG seed base: all three completed experiments use 148,000,000, with rollout seeds derived by schedule position and per-step generation seeds using injective-v1. This is not the optimizer training seed.',
     )}</p>
 
     <div class="paper__metric-context">
@@ -619,14 +629,15 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
   .paper-table thead th{border-top:2px solid var(--text-primary);border-bottom:1.5px solid var(--text-primary);font-weight:750}
   .paper-table tbody tr:last-child td{border-bottom:2px solid var(--text-primary)}
   .paper-table td.paper-table__mark{text-align:center;font-size:1.2rem;font-weight:800}
-  .paper-table--ablation{min-width:960px;table-layout:fixed}
+  .paper-table--ablation{min-width:1040px;table-layout:fixed}
   .paper-table--ablation th,.paper-table--ablation td{padding-block:10px}
-  .paper-table--ablation th:first-child,.paper-table--ablation td:first-child{width:30%}
-  .paper-table--ablation th:nth-child(2),.paper-table--ablation td:nth-child(2){width:8%}
-  .paper-table--ablation th:nth-child(3),.paper-table--ablation td:nth-child(3){width:8%}
-  .paper-table--ablation th:nth-child(4),.paper-table--ablation td:nth-child(4){width:8%}
-  .paper-table--ablation th:nth-child(5),.paper-table--ablation td:nth-child(5){width:20%}
-  .paper-table--ablation th:nth-child(6),.paper-table--ablation td:nth-child(6){width:26%}
+  .paper-table--ablation th:first-child,.paper-table--ablation td:first-child{width:27%}
+  .paper-table--ablation th:nth-child(2),.paper-table--ablation td:nth-child(2){width:7%}
+  .paper-table--ablation th:nth-child(3),.paper-table--ablation td:nth-child(3){width:7%}
+  .paper-table--ablation th:nth-child(4),.paper-table--ablation td:nth-child(4){width:7%}
+  .paper-table--ablation th:nth-child(5),.paper-table--ablation td:nth-child(5){width:14%}
+  .paper-table--ablation th:nth-child(6),.paper-table--ablation td:nth-child(6){width:17%}
+  .paper-table--ablation th:nth-child(7),.paper-table--ablation td:nth-child(7){width:21%}
   .paper-table--ablation td:nth-child(n+2),.paper-table--ablation th:nth-child(n+2){text-align:center}
   .paper-table-wrap--hero{margin-top:16px;overflow-x:auto}
   .paper__math-caption{max-width:880px;margin:-.45rem 0 1rem;color:var(--text-secondary);font-size:1rem;line-height:1.6}
@@ -647,7 +658,7 @@ const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-
     .paper__setup{grid-template-columns:1fr}
     .paper__hub-grid{grid-template-columns:1fr}
     .paper-table{min-width:640px}
-    .paper-table--ablation{min-width:900px}
+    .paper-table--ablation{min-width:980px}
     .paper-table--ablation th,.paper-table--ablation td{padding:8px 7px;overflow-wrap:anywhere}
   }
   @media(prefers-reduced-motion:reduce){.paper *,.paper *::before,.paper *::after{scroll-behavior:auto;transition:none;animation:none}}
