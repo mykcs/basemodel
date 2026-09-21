@@ -89,6 +89,7 @@ jobs:
         with:
           name: basemodel-review-${{ github.run_id }}
           path: review-artifact
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 1
 
@@ -106,6 +107,13 @@ jobs:
         with:
           name: basemodel-review-${{ github.run_id }}
           path: review-artifact
+
+      - name: Verify immutable Build Output artifact
+        run: |
+          set -euo pipefail
+          test -f review-artifact/.vercel/output/config.json
+          test -f review-artifact/.vercel/output/static/index.html
+          test "$(cat review-artifact/source-sha.txt)" = "${{ needs.build.outputs.head_sha }}"
 
       - name: Setup trusted deploy runtime
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
