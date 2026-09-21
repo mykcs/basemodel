@@ -249,6 +249,7 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain("import MetricEvidenceFigure from './MetricEvidenceFigure.astro'");
     expect(component).not.toContain("import WandbEvidencePanel from './WandbEvidencePanel.astro'");
     expect(component).toContain('/research/seed-openevo/evidence/wandb-threeway/task-score.svg');
+    expect(component).toContain("linkText: t('打开 W&B Report ↗', 'Open W&B Report ↗')");
     expect(component).toContain('本页统一使用 Task Score / 100');
     const taskScoreSvg = readFileSync(new URL('../../public/research/seed-openevo/evidence/wandb-threeway/task-score.svg', import.meta.url), 'utf8');
     expect(taskScoreSvg).toContain('>0</text>');

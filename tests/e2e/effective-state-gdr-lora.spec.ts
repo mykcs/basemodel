@@ -266,22 +266,24 @@ test('W&B evidence is embedded beside the relevant metric instead of collected i
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const analysis = page.locator('#analysis');
   await expect(page.locator('#wandb')).toHaveCount(0);
-  await expect(analysis.getByRole('link', { name: /W&B Report/ })).toHaveAttribute('href', /wandb\.ai/);
+  await expect(analysis.getByRole('link', { name: 'W&B Report（需要权限）', exact: true })).toHaveAttribute('href', /wandb\.ai/);
   await expect(analysis.getByRole('link', { name: /完整 W&B Workspace/ })).toHaveAttribute('href', /wandb\.ai/);
 
   const result = page.locator('#formal-result');
   await expect(result.locator('.metric-evidence')).toHaveCount(1);
   await expect(result.locator('.metric-evidence img')).toHaveAttribute('src', /wandb-threeway\/task-score\.svg/);
+  await expect(result.locator('.metric-evidence').getByRole('link', { name: /打开 W&B Report/ }).last()).toHaveAttribute('href', /wandb\.ai\/.*reports/);
   await expect(result.locator('.paper__derived-figure img')).toHaveAttribute('src', /wandb-threeway\/task-score-20-round-mean\.svg/);
 
   const figures = analysis.locator('.metric-evidence');
   await expect(figures).toHaveCount(5);
   await expect(page.locator('#loss img')).toHaveAttribute('src', /wandb-threeway\/loss-vs-rollout\.svg/);
+  await expect(page.locator('#loss').getByRole('link', { name: /打开 W&B Report/ }).last()).toHaveAttribute('href', /wandb\.ai\/.*reports/);
   await expect(page.locator('#task-vector img')).toHaveAttribute('src', /wandb-threeway\/task-vector-frobenius\.svg/);
   await expect(page.locator('#length img').first()).toHaveAttribute('src', /wandb-threeway\/tokens-per-step\.svg/);
   await expect(page.locator('#length img').nth(1)).toHaveAttribute('src', /wandb-threeway\/steps-per-episode\.svg/);
   await expect(page.locator('#entropy img')).toHaveAttribute('src', /wandb-threeway\/action-family-entropy\.svg/);
-  for (let index = 0; index < 5; index += 1) {
+  for (let index = 1; index < 5; index += 1) {
     await expect(figures.nth(index).getByRole('link', { name: /打开 W&B 原生 panel/ }).last()).toHaveAttribute('href', /wandb\.ai/);
   }
 });
