@@ -141,7 +141,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsQuestions).toContain('七个研究问题');
     expect(resultsQuestions).toContain('动作读取与任务身份');
     expect(resultsQuestions).not.toContain('WHY THIS TOOK TIME');
-    expect(nextSteps).toContain('下一步实验 · NEXT STEPS');
+    expect(nextSteps).toContain("t('下一步实验', 'NEXT STEPS')");
     for (const source of [resultsHero, resultsProtocol, resultsQuestions, currentQ7, nextSteps]) {
       expect(source).not.toContain('专业解释：');
       expect(source).not.toContain('Technical detail:');

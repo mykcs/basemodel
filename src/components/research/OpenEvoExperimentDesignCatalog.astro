@@ -21,7 +21,7 @@ const sourceHref = (member: Member) => `https://github.com/mykcs/openevo-experim
 const families: Family[] = [
   {
     id: 'stage1-shared-harness-deliberation', index: '01', kind: 'amendment',
-    title: 'Shared Stage1 Harness and Deliberation', state: t('冻结 / 预注册', 'FROZEN / PREREGISTERED'),
+    title: t('共享 Stage 1 的购物接口与思考条件', 'Shared Stage 1 interface and deliberation contract'), state: t('冻结 / 预注册', 'FROZEN / PREREGISTERED'),
     summary: t('先把两个小模型共用的行动接口定死，再分别验证短自我推理、format-light 与 seed-native successor。它改变的是接口，不是 WebShop 策略。', 'Freeze one action interface for both small models, then test short self-deliberation, format-light prompting, and seed-native successors. The interface changes; WebShop strategy does not.'),
     question: t('能否用同一套 strategy-neutral Harness，让 Qwen2.5-3B 保住能力，同时让 Qwen3-1.7B 恢复可用轨迹？', 'Can one strategy-neutral harness preserve Qwen2.5-3B while recovering usable Qwen3-1.7B trajectories?'),
     fixed: t('不注入旧 Memory / Skill / Agent / SD adapter；qualification 不算正式 1,440 条。', 'No old Memory / Skill / Agent / SD adapter is injected; qualification rows do not count toward the formal 1,440.'),

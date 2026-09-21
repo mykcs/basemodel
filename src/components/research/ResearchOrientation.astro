@@ -1,6 +1,5 @@
 ---
 import type { Locale } from '../../i18n';
-import ResearchGlossary from './ResearchGlossary.astro';
 
 interface Term { term: string; meaning: string }
 interface Props {
@@ -19,7 +18,6 @@ interface Props {
   actionHref?: string;
   actionLabel?: string;
   terms?: Term[];
-  showGlossary?: boolean;
   layout?: 'compact' | 'narrative' | 'focus';
 }
 const props = Astro.props;
@@ -28,7 +26,6 @@ const labels = zh
   ? { question: '研究问题', why: '为什么重要', start: '从哪里开始', finish: '什么时候结束', state: '现在到哪了', details: '实验信息' }
   : { question: 'Question', why: 'Why it matters', start: 'Starts from', finish: 'Finishes when', state: 'Current state', details: 'Experiment details' };
 const layout = props.layout ?? 'compact';
-const showGlossary = props.showGlossary ?? true;
 ---
 <header class="research-orientation" data-research-orientation data-layout={layout} data-ui-audit="contrast layout" data-locale={props.locale} data-state-tone={props.stateTone ?? 'planned'}>
   {(props.backHref || props.eyebrow) && (
@@ -69,7 +66,6 @@ const showGlossary = props.showGlossary ?? true;
     <a class="research-orientation__action" href={props.actionHref}>{props.actionLabel} →</a>
   )}
 </header>
-{showGlossary && <ResearchGlossary locale={props.locale} terms={props.terms ?? []} />}
 <style>
 .research-orientation{width:min(1120px,calc(100% - 2rem));margin:0 auto;padding:1rem 0;border-bottom:1px solid var(--line)}
 .research-orientation__meta{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:.7rem;color:var(--muted);font:780 .875rem/1.3 var(--font-mono);letter-spacing:.06em}

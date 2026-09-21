@@ -69,7 +69,7 @@ const candidates = [
 
 <article class="q17-analysis" data-copy-review data-q17-directapply-analysis>
   <header class="q17-analysis__hero">
-    <p class="q17-analysis__eyebrow">Q17 · DirectApply / No-GDR · 2026-09-12</p>
+    <p class="q17-analysis__eyebrow">{t('DirectApply · 160 轮完整分析 · 2026-09-12', 'DirectApply · 160-round analysis · 2026-09-12')}</p>
     <h1>{t('DirectApply 完整实验分析', 'DirectApply: complete experiment analysis')}</h1>
     <dl class="q17-analysis__headline-metrics">
       <div><dt>{t('训练', 'Training')}</dt><dd>160 {t('轮', 'rounds')}</dd><span>20,480 {t('次任务尝试', 'attempts')}</span></div>
@@ -252,8 +252,8 @@ const candidates = [
       <p><strong>K64：</strong>{t('最终参数只差 4.15%，但 4 / 32 行动作发生变化，而且新增 2 行 parse-invalid；JS、logit 误差和 ΔNLL 也都越过阈值。', 'The final parameters differ by only 4.15%, yet 4 / 32 rows change action and two new rows become parse-invalid; JS, logit error, and ΔNLL also exceed thresholds.')}</p>
       <p><strong>K96：</strong>{t('参数误差进一步降到 2.22%，动作只剩 1 / 32 行不同，但预注册要求是 32 / 32 完全一致；top-1 token、JS 和 ΔNLL 也没有通过。', 'Parameter error falls to 2.22% and only 1 / 32 actions changes, but the preregistered criterion was exact 32 / 32 agreement; top-1 token, JS, and ΔNLL also fail.')}</p>
     </div>
-    <p class="q17-analysis__d1-verdict"><strong>D1_FAIL_FUNCTION_NOT_PRESERVED</strong><span>{t('几何上能压缩，不等于功能上能无损压缩。D1 没有修改 R159，也没有获得把压缩 candidate 写回正式 lineage 的权限。', 'Geometric compressibility is not lossless functional compressibility. D1 did not modify R159 and had no authority to write a compressed candidate back into the formal lineage.')}</span></p>
-    <details class="q17-analysis__evidence"><summary>{t('展开 D1 行为保持与 closeout', 'Open D1 function-preservation and closeout evidence')}</summary><div><a href={evidence.d1Function} target="_blank" rel="noreferrer"><ExternalBrandMark href={evidence.d1Function}/>D1_FUNCTION_PRESERVATION.json</a><a href={evidence.d1Closeout} target="_blank" rel="noreferrer"><ExternalBrandMark href={evidence.d1Closeout}/>D1_CLOSEOUT.json</a></div></details>
+    <p class="q17-analysis__d1-verdict"><strong>{t('功能保持检查未通过', 'Function-preservation check failed')}</strong><span>{t('几何上能压缩，不等于功能上能无损压缩。D1 没有修改 R159，也没有获得把压缩 candidate 写回正式 lineage 的权限。', 'Geometric compressibility is not lossless functional compressibility. D1 did not modify R159 and had no authority to write a compressed candidate back into the formal lineage.')}</span></p>
+    <details class="q17-analysis__evidence"><summary>{t('展开 D1 行为保持与 closeout', 'Open D1 function-preservation and closeout evidence')}</summary><div><code>D1_FAIL_FUNCTION_NOT_PRESERVED</code><a href={evidence.d1Function} target="_blank" rel="noreferrer"><ExternalBrandMark href={evidence.d1Function}/>D1_FUNCTION_PRESERVATION.json</a><a href={evidence.d1Closeout} target="_blank" rel="noreferrer"><ExternalBrandMark href={evidence.d1Closeout}/>D1_CLOSEOUT.json</a></div></details>
   </section>
 
   <section class="q17-analysis__section" id="meaning" aria-labelledby="meaning-title">

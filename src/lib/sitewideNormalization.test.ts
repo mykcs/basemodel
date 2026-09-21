@@ -229,8 +229,8 @@ describe('sitewide normalization first repair batch', () => {
     expect(benchmarkNote).toContain('历史基准设计');
     expect(benchmarkNote).toContain('历史设计记录：');
     expect(benchmarkNote).toContain('/study/capability-exploration/openevo-2-0/');
-    expect(resultNote).toContain('截至 H1.42 的结论与证据边界');
-    expect(resultNoteRoute).toContain('OpenEVO WebShop 历史实验：截至 H1.42 的结论与证据边界');
+    expect(resultNote).toContain('历史机制实验的结论与证据边界');
+    expect(resultNoteRoute).toContain('OpenEVO WebShop 历史机制实验的结论与证据边界');
   });
 
   it('keeps ALFWorld route metadata object-first in both locales', () => {

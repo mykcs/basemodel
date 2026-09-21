@@ -7,7 +7,7 @@ const nextSteps = read('../components/research/OpenEvoWebShopNextSteps.astro');
 
 describe('current Track A wrapper audit and adopted WB1 state', () => {
   it('keeps the formal wrapper audit inside the collapsed technical trace', () => {
-    expect(wrapper).toContain('Track A 正式审计');
+    expect(wrapper).toContain('已发布 256 个正式回合的完整审计');
     expect(wrapper).toContain('3,672');
     expect(wrapper).toContain('300 步严格 <action>');
     expect(wrapper).toContain('3,253 步');

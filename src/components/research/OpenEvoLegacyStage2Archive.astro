@@ -22,7 +22,7 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
 <main data-copy-review class="legacy" data-testid="legacy-stage2-archive">
   <header class="legacy__hero">
     <div>
-      <p>SUPERSEDED METHOD-CONTROL · 2026-08-30</p>
+      <p>{t('历史方法控制实验 · 已由后继设计取代 · 2026-08-30', 'SUPERSEDED METHOD-CONTROL · 2026-08-30')}</p>
       <h1>{t("旧批次门槛：有成功经验，参数仍然没有更新", "Old batch gate: successful experience existed, but parameters still did not update")}</h1>
       <span data-budget-boundary>{t("这个历史 Stage 2 给每组最多 20,480 次 WebShop 任务尝试。3B/self、7B/self 和 7B/MiniMax 完成全部预算；3B/MiniMax 提前停止，完整记录与未完成批次分别保留。7B/self 收集到 797 条可以用于训练的完整成功轨迹，7B/MiniMax 也有 592 条，但两组都没有发生任何 Stage-2 参数更新。原因不是没有成功数据，而是当时把每 256 次尝试单独检查：同一批里至少要有 8 个不同任务各自成功 2 次才允许更新；最好的一批只有 7 个。", "This historical Stage 2 allowed at most 20,480 WebShop attempts per arm. 3B/self, 7B/self, and 7B/MiniMax completed that budget; 3B/MiniMax stopped early, with complete records and the unfinished batch retained separately. 7B/self collected 797 trainable exact-success trajectories and 7B/MiniMax collected 592, yet neither arm made a Stage-2 parameter update. The issue was not a lack of successful data: every 256 attempts were judged separately, and an update required at least eight distinct tasks each succeeding twice in that batch; the best batch reached seven.")}</span>
     </div>
@@ -116,7 +116,7 @@ const checkpointHref = (arm: (typeof legacyStage2Arms)[number]) =>
     </div>
     <div class="legacy__links">
       <a href={hfArchive}><ExternalBrandMark href={hfArchive} /><span>HF · immutable archive revision</span><strong>superseded-stage2-archive ↗</strong><small>{archiveRevision}</small></a>
-      <a href={hfArchiveHead}><ExternalBrandMark href={hfArchiveHead} /><span>HF · reader warning / current README</span><strong>{t('查看“已取代实验”说明 ↗', 'Read the superseded-experiment warning ↗')}</strong><small>{t('README 可更新；历史二进制仍由固定 revision 锚定', 'README may evolve; historical bytes stay pinned by revision')}</small></a>
+      <a href={hfArchiveHead}><ExternalBrandMark href={hfArchiveHead} /><span>{t('Hugging Face · 当前 README 提示','HF · reader warning / current README')}</span><strong>{t('查看“已取代实验”说明 ↗', 'Read the superseded-experiment warning ↗')}</strong><small>{t('README 可更新；历史二进制仍由固定 revision 锚定', 'README may evolve; historical bytes stay pinned by revision')}</small></a>
       <a href={hfAdapters}><ExternalBrandMark href={hfAdapters} /><span>HF · historical model states</span><strong>Stage-1 / bootstrap adapters ↗</strong><small>{adapterRevision}</small></a>
       <a href={ghcr}><ExternalBrandMark href={ghcr} /><span>GHCR · exact runtime</span><strong>h144-runtime-live-d0f879601089 ↗</strong><small>sha256:d0f879…88e2850</small></a>
     </div>

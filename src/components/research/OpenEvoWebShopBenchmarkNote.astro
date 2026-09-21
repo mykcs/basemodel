@@ -75,7 +75,7 @@ const current = notes.find((item) => item.id === note)!;
         <h2>最终效果和作用机制需要分别回答。</h2>
         <div class="lane-grid">
           <div class="lane primary">
-            <small>基准比较（BENCHMARK）</small>
+            <small>基准比较</small>
             <h3>在同一套规则下，OpenEvo 最终有没有更强？</h3>
             <p>比较 frozen agent（冻结后的智能体）在同一批 SEED 官方保留任务上的 Task Score 与 exact Success。</p>
           </div>
@@ -121,7 +121,7 @@ Task Score + exact Success`}</code></pre>
         <h2>训练区和正式保留任务必须在实验开始前分开。</h2>
         <div class="shared-axis-table" role="region" aria-label="训练候选池与正式保留池对照" tabindex="0">
           <table>
-            <thead><tr><th scope="col">比较项</th><th scope="col">训练候选池 (TRAIN CANDIDATE POOL)</th><th scope="col">正式保留池 (OFFICIAL HELD-OUT POOL)</th></tr></thead>
+            <thead><tr><th scope="col">比较项</th><th scope="col">训练候选池</th><th scope="col">正式保留池</th></tr></thead>
             <tbody>
               <tr><th scope="row">任务范围</th><td><strong>goal 500–6909</strong></td><td><strong>goal 0–499</strong></td></tr>
               <tr><th scope="row">用途</th><td>训练、经验采集、内部 validation（验证）与方法选择发生在这个范围。</td><td>正式比较只从这个范围取任务，而且 OpenEvo 与 SEED 必须使用同一批冻结任务身份。</td></tr>

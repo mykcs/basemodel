@@ -185,7 +185,7 @@ export function SeedExplainer({
       >
         <header className="irx-seed-stage__head">
           <div>
-            <span>STAGE 1 · HINDSIGHT-SKILL SFT</span>
+            <span>{zh ? "阶段 1 · hindsight-skill SFT" : "STAGE 1 · HINDSIGHT-SKILL SFT"}</span>
             <strong id="seed-stage1-title">
               {zh
                 ? "先用 SEED 的交互层驱动 Qwen 做题，再让 GLM-5.2 离线复盘"
@@ -219,7 +219,7 @@ export function SeedExplainer({
             data-ui-audit="contrast layout"
           >
             <header>
-              <small>AGENT RUNTIME</small>
+              <small>{zh ? "Agent 运行时" : "AGENT RUNTIME"}</small>
               <strong>SEED / verl-agent</strong>
               <span>
                 {zh ? "模型侧交互合同" : "model-facing interaction contract"}
@@ -229,7 +229,7 @@ export function SeedExplainer({
               className="irx-seed-role irx-seed-role-model"
               data-ui-audit-item
             >
-              <small>POLICY MODEL</small>
+              <small>{zh ? "策略模型" : "POLICY MODEL"}</small>
               <strong>Qwen2.5-3B-Instruct</strong>
               <span>
                 {zh
@@ -245,7 +245,7 @@ export function SeedExplainer({
               className="irx-seed-role irx-seed-role-harness"
               data-ui-audit-item
             >
-              <small>SEED / verl-agent HARNESS</small>
+              <small>{zh ? "SEED / verl-agent 交互层" : "SEED / verl-agent HARNESS"}</small>
               <strong>
                 {zh
                   ? "组装 observation → 解析 action"
@@ -279,7 +279,7 @@ export function SeedExplainer({
           </div>
 
           <section className="irx-seed-benchmark" data-ui-audit-item>
-            <small>PRINCETON WEBSHOP ENVIRONMENT</small>
+            <small>{zh ? "Princeton WebShop 环境" : "PRINCETON WEBSHOP ENVIRONMENT"}</small>
             <strong>WebAgentTextEnv</strong>
             <span>
               {zh
@@ -308,7 +308,7 @@ export function SeedExplainer({
           }
         >
           <li className="irx-seed-trajectory-source" data-ui-audit-item>
-            <small>COMPLETED EPISODES</small>
+            <small>{zh ? "已完成回合" : "COMPLETED EPISODES"}</small>
             <b>180 tasks × 8 rollouts</b>
             <span>
               {zh
@@ -321,7 +321,7 @@ export function SeedExplainer({
               <img src={GLM_OFFICIAL_LOGO} alt="" width="30" height="30" />
             </span>
             <div>
-              <small>EXTERNAL OFFLINE ANALYZER</small>
+              <small>{zh ? "外部离线分析器" : "EXTERNAL OFFLINE ANALYZER"}</small>
               <b>GLM-5.2</b>
               <span>
                 {zh
@@ -331,7 +331,7 @@ export function SeedExplainer({
             </div>
           </li>
           <li data-ui-audit-item>
-            <small>ANNOTATION</small>
+            <small>{zh ? "复盘标注" : "ANNOTATION"}</small>
             <b>trajectory → hindsight skill</b>
             <span>
               {zh
@@ -340,7 +340,7 @@ export function SeedExplainer({
             </span>
           </li>
           <li data-ui-audit-item>
-            <small>SUPERVISED UPDATE</small>
+            <small>{zh ? "监督更新" : "SUPERVISED UPDATE"}</small>
             <b>3-epoch SFT</b>
             <span>
               {zh
@@ -349,7 +349,7 @@ export function SeedExplainer({
             </span>
           </li>
           <li data-ui-audit-item>
-            <small>STAGE-2 INITIAL STATE</small>
+            <small>{zh ? "阶段 2 初始状态" : "STAGE-2 INITIAL STATE"}</small>
             <b>policy θ0</b>
             <span>
               {zh
@@ -362,7 +362,7 @@ export function SeedExplainer({
 
       <div className="irx-seed-stage-divider" data-ui-audit="contrast layout">
         <div>
-          <span>STAGE 2 · SELF-EVOLVING OPD + GRPO</span>
+          <span>{zh ? "阶段 2 · 自进化 OPD + GRPO" : "STAGE 2 · SELF-EVOLVING OPD + GRPO"}</span>
           <strong>
             {zh
               ? "交互合同保持不变：Stage 2 的 policy 仍通过同一套 harness 进入 Princeton WebShop；变化的是 analyzer 来源与被更新的参数"
@@ -383,23 +383,23 @@ export function SeedExplainer({
         }
       >
         <span data-kind="model">
-          <b>MODEL</b>
+          <b>{zh ? "模型" : "MODEL"}</b>
           {zh
             ? "产生 completion / 被训练"
             : "generates completion / is trained"}
         </span>
         <span data-kind="harness">
-          <b>HARNESS</b>
+          <b>{zh ? "交互层" : "HARNESS"}</b>
           {zh ? "组装上下文 / 解析动作" : "builds context / projects action"}
         </span>
         <span data-kind="environment">
-          <b>ENVIRONMENT</b>
+          <b>{zh ? "环境" : "ENVIRONMENT"}</b>
           {zh
             ? "执行动作 / 返回 observation 与 score"
             : "executes actions / returns observation and score"}
         </span>
         <span data-kind="evidence">
-          <b>EVIDENCE</b>
+          <b>{zh ? "证据" : "EVIDENCE"}</b>
           {zh ? "episode 完成后固定" : "fixed after episode completion"}
         </span>
       </div>
@@ -411,7 +411,7 @@ export function SeedExplainer({
       >
         <FlowNode
           id="seed-policy"
-          role="CURRENT POLICY · MODEL"
+          role={zh ? "当前策略模型" : "CURRENT POLICY · MODEL"}
           title="policy θt"
           detail={
             zh
@@ -447,7 +447,7 @@ export function SeedExplainer({
           }
         >
           <header>
-            <span>FIXED BENCHMARK INTERACTION CONTRACT</span>
+            <span>{zh ? "固定的基准交互合同" : "FIXED BENCHMARK INTERACTION CONTRACT"}</span>
             <strong>
               {zh
                 ? "SEED / verl-agent harness ↔ Princeton WebShop"
@@ -462,7 +462,7 @@ export function SeedExplainer({
               data-active={step === 0}
               data-complete={step > 0}
             >
-              <small>AGENT HARNESS</small>
+              <small>{zh ? "Agent 交互层" : "AGENT HARNESS"}</small>
               <strong>SEED / verl-agent</strong>
               <span>
                 prompt · history · available actions · &lt;action&gt; projection
@@ -492,7 +492,7 @@ export function SeedExplainer({
               data-active={step === 0}
               data-complete={step > 0}
             >
-              <small>BENCHMARK ENVIRONMENT</small>
+              <small>{zh ? "基准环境" : "BENCHMARK ENVIRONMENT"}</small>
               <strong>Princeton WebShop · WebAgentTextEnv</strong>
               <span>
                 {zh
@@ -505,7 +505,7 @@ export function SeedExplainer({
 
         <FlowNode
           id="seed-trajectory"
-          role="SEALED EPISODE · EVIDENCE"
+          role={zh ? "已封存回合证据" : "SEALED EPISODE · EVIDENCE"}
           title={
             zh ? "完整 on-policy trajectory" : "completed on-policy trajectory"
           }
@@ -535,7 +535,7 @@ export function SeedExplainer({
 
         <FlowNode
           id="seed-hindsight"
-          role="ANALYZER · SAME MODEL"
+          role={zh ? "同一模型 · 复盘分析" : "ANALYZER · SAME MODEL"}
           title="hindsight skill"
           detail={
             zh
@@ -555,7 +555,7 @@ export function SeedExplainer({
         />
         <FlowNode
           id="seed-plain"
-          role="RE-SCORE · CONTEXT A"
+          role={zh ? "重新打分 · 普通上下文" : "RE-SCORE · CONTEXT A"}
           title="plain context"
           detail={`${sameAction} · P_plain`}
           moreLabel={moreLabel}
@@ -578,7 +578,7 @@ export function SeedExplainer({
         </FlowNode>
         <FlowNode
           id="seed-skill"
-          role="RE-SCORE · CONTEXT B"
+          role={zh ? "重新打分 · 技能上下文" : "RE-SCORE · CONTEXT B"}
           title="skill-augmented context"
           detail={`${sameAction} · P_skill`}
           moreLabel={moreLabel}
@@ -601,7 +601,7 @@ export function SeedExplainer({
         </FlowNode>
         <FlowNode
           id="seed-opd"
-          role="DENSE LEARNING SIGNAL"
+          role={zh ? "稠密学习信号" : "DENSE LEARNING SIGNAL"}
           title="OPD"
           detail={
             zh
@@ -621,7 +621,7 @@ export function SeedExplainer({
         />
         <FlowNode
           id="seed-grpo"
-          role="OUTCOME RL SIGNAL"
+          role={zh ? "结果强化学习信号" : "OUTCOME RL SIGNAL"}
           title="GRPO"
           detail={
             zh
@@ -641,7 +641,7 @@ export function SeedExplainer({
         />
         <FlowNode
           id="seed-optimizer"
-          role="TRAINING UPDATE"
+          role={zh ? "训练更新" : "TRAINING UPDATE"}
           title="GRPO + OPD"
           detail={
             zh
@@ -661,7 +661,7 @@ export function SeedExplainer({
         />
         <FlowNode
           id="seed-next"
-          role="PERSISTED MODEL STATE"
+          role={zh ? "保存后的模型状态" : "PERSISTED MODEL STATE"}
           title="policy θt+1"
           detail={
             zh
@@ -755,7 +755,7 @@ export function SeedExplainer({
           </strong>
         </div>
         <div>
-          <small>TEST / INFERENCE</small>
+          <small>{zh ? "测试 / 推理" : "TEST / INFERENCE"}</small>
           <strong>
             {zh
               ? "更新后的 policy → serving / benchmark harness → WebShop；GLM-5.2 与 hindsight skill 不进入部署路径"
@@ -807,7 +807,7 @@ export function OpenEvoExplainer({ locale, step, carrier, setCarrier, onStep }: 
           {/* R1 → R2: the successor revision sits on top of the previous one. */}
           <span className="irx-revision-stack" data-active={step >= 5} aria-hidden="true"><i className="irx-revision-r1">R1</i><i className="irx-revision-r2">R2</i></span>
         </FlowNode>
-        <FlowNode id="evo-next" role="TASK N+1" title={zh ? '下一任务加载已验证的新版本' : 'next task loads the successor revision'} detail={zh ? '新的任务从“已经进化过的状态”开始，而不是改写已经结束的 Task N' : 'the new task starts from an evolved state rather than rewriting the completed Task N'} moreLabel={moreLabel} more={zh ? 'Task N+1 从 successor revision 启动，并产生下一轮可以再次封存的新 evidence。' : 'Task N+1 starts from the successor revision and produces fresh evidence that can be sealed again.'} tone="env" active={step === 6} className="evo-next" />
+        <FlowNode id="evo-next" role={zh ? "任务 N+1" : "TASK N+1"} title={zh ? '下一任务加载已验证的新版本' : 'next task loads the successor revision'} detail={zh ? '新的任务从“已经进化过的状态”开始，而不是改写已经结束的 Task N' : 'the new task starts from an evolved state rather than rewriting the completed Task N'} moreLabel={moreLabel} more={zh ? 'Task N+1 从 successor revision 启动，并产生下一轮可以再次封存的新 evidence。' : 'Task N+1 starts from the successor revision and produces fresh evidence that can be sealed again.'} tone="env" active={step === 6} className="evo-next" />
         <ConnectorLayer containerRef={sceneRef} edges={edges} ariaLabel={zh ? 'OpenEvo 在任务完成后封存证据，经当前 WebShop 的参数化 adapter 路径和 validation 形成 successor revision，再进入 Task N+1' : 'OpenEvo seals evidence after task completion, follows the current WebShop parametric-adapter path through validation into a successor revision, then enters Task N+1'} />
       </div>
       <details className="irx-carrier-details">
@@ -842,7 +842,7 @@ export function CompareExplainer({ locale, step }: { locale: Locale; step: numbe
   const evoSteps = zh ? ['已封存证据', '演化方法', '载体 + 验证', '下一版本'] : ['sealed evidence', 'evolution method', 'carrier + validation', 'successor revision'];
   return (
     <div className="irx-diagram irx-compare-scene" ref={sceneRef} data-ui-audit="contrast layout">
-      <FlowNode id="cmp-shared" role="SHARED EXPERIENCE" title="task · observations · sampled actions · outcome" detail={zh ? '两种方法从同样的一次已完成经验开始比较' : 'compare both methods from the same completed experience'} moreLabel={zh ? '展开细节' : 'Expand detail'} more={zh ? '比较的前提是同一 completed experience：同一任务、同一批 sampled actions、同一 outcome；只有更新机制不同。' : 'The comparison starts from one completed experience: same task, same sampled actions, same outcome; only the update mechanism differs.'} tone="experience" active={step === 0} complete={step > 0} className="cmp-shared">
+      <FlowNode id="cmp-shared" role={zh ? "共同任务经验" : "SHARED EXPERIENCE"} title="task · observations · sampled actions · outcome" detail={zh ? '两种方法从同样的一次已完成经验开始比较' : 'compare both methods from the same completed experience'} moreLabel={zh ? '展开细节' : 'Expand detail'} more={zh ? '比较的前提是同一 completed experience：同一任务、同一批 sampled actions、同一 outcome；只有更新机制不同。' : 'The comparison starts from one completed experience: same task, same sampled actions, same outcome; only the update mechanism differs.'} tone="experience" active={step === 0} complete={step > 0} className="cmp-shared">
         {/* One shared experience object — the same chip shape is then tracked
             through both lanes so the two mechanisms stay visually comparable. */}
         <ChipSequence label="shared experience" tone="experience" tokens={['task', 'obs', 'act', 'outcome']} />

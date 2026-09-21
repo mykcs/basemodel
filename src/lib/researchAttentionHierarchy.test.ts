@@ -17,8 +17,9 @@ describe('first-reader attention hierarchy', () => {
     expect(firstRun).toContain('7B 持续更新参数，并完成最终测试；旧 3B 因购物接口和动作格式问题停止。');
     expect(orientation).toContain("layout?: 'compact' | 'narrative' | 'focus'");
     expect(orientation).toContain('class="research-orientation__details"');
-    expect(firstRun).toContain('showGlossary={false}');
-    expect(firstRun.indexOf('<ResearchGlossary')).toBeGreaterThan(firstRun.indexOf('id="first-run-summary"'));
+    expect(orientation).not.toContain('ResearchGlossary');
+    expect(firstRun).not.toContain('ResearchGlossary');
+    expect(firstRun).not.toContain('showGlossary');
     expect(orientation).toContain("details: '实验信息'");
     expect(orientation).not.toContain('.research-orientation[data-layout="focus"] .research-orientation__fields{display:none');
   });

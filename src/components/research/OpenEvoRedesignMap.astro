@@ -5,7 +5,6 @@ import OpenEvoExperimentDesignCatalog from './OpenEvoExperimentDesignCatalog.ast
 import OpenEvoHarnessFairnessPanel from './OpenEvoHarnessFairnessPanel.astro';
 import ResearchOrientation from './ResearchOrientation.astro';
 import ResearchDepth from './ResearchDepth.astro';
-import ResearchGlossary from './ResearchGlossary.astro';
 import { OPEN_EVO_CEILING_PRINCIPLE, OPEN_EVO_STAGE1_FREEZE, OPEN_EVO_STAGE1_METRICS } from '../../data/openEvoSuccessorNarrative';
 
 interface Props { locale: Locale }
@@ -47,7 +46,6 @@ const terms = zh ? [
     actionHref={links.report}
     actionLabel={t("查看实验报告", "Open the experiment report")}
     terms={terms}
-    showGlossary={false}
   />
 
   <blockquote class="successor-gateway__principle" data-principle>
@@ -76,8 +74,6 @@ const terms = zh ? [
       <b>{t("打开设计过程 →", "Open design history →")}</b>
     </a>
   </nav>
-
-  <ResearchGlossary locale={locale} terms={terms} />
 
   <section class="successor-gateway__snapshot" aria-labelledby="successor-snapshot-title">
     <header>

@@ -133,7 +133,8 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(redesign).toContain('3B 与 1.7B 的学习实验');
     expect(redesign).toContain('OPEN_EVO_STAGE1_FREEZE.id');
     expect(successorNarrative).toContain("id: '202609030400'");
-    expect(successorExploration).toContain('FREEZE_ONE_SHARED_STAGE1_HARNESS');
+    expect(successorExploration).toContain('05 · 冻结共享 Stage 1 接口');
+    expect(successorExploration).toContain('OPEN_EVO_STAGE1_FREEZE.id');
     expect(successorExploration).toContain('4096 失败 → bounded A2');
     expect(successorReport).toContain('共享购物规则');
     expect(successorReport).toContain('MiniMax 对已完成 trajectory 做 task-after analysis');
@@ -206,14 +207,11 @@ describe('OpenEvo capability-exploration result language', () => {
   });
 
   it('explains legacy result counts and negative states instead of exposing log shorthand', () => {
-    // CASE-067/reader-first: glossary is optional end-of-note reference, never a prerequisite before the result body.
-    expect(legacyResultNote).toContain('术语参考（可选）');
-    expect(legacyResultNote).toContain('正文第一次出现时会直接解释');
-    expect(legacyResultNote).toContain('cell 数不能直接当任务成功数');
-    expect(legacyResultNote).toContain('“未通过”表示实验有效运行但目标门槛没有达到');
-    expect(legacyResultNote).toContain('“测量无效”表示当前数据不足以可靠比较');
-    expect(legacyResultNote).toContain('不能写成“T2 评测失败”');
+    // HPL reader-first: explain terms at first use and do not require a centralized glossary.
+    expect(legacyResultNote).not.toContain('术语参考（可选）');
+    expect(legacyResultNote).not.toContain('note-glossary');
     expect(legacyResultNote).toContain('这些成功来自 33 个不同任务，而不是 132 个不同任务');
+    expect(legacyResultNote).toContain('这里没有一个可以被称为“T2 迁移失败”的正式结果');
     expect(legacyResultNote).toContain('这表示当前比较不能支持机制结论，不表示实验没有运行');
 
     expect(program).toContain('这里的“0”是有效负结果，不是实验没运行');

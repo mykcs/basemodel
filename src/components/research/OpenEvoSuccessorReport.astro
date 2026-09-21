@@ -5,7 +5,6 @@ import ExternalBrandMark from '../common/ExternalBrandMark';
 import OpenEvoHarnessFairnessPanel from './OpenEvoHarnessFairnessPanel.astro';
 import ResearchOrientation from './ResearchOrientation.astro';
 import ResearchDepth from './ResearchDepth.astro';
-import ResearchGlossary from './ResearchGlossary.astro';
 import { OPEN_EVO_EVIDENCE_LINKS, OPEN_EVO_Q17_FINAL, OPEN_EVO_STAGE1_FREEZE, OPEN_EVO_STAGE1_METRICS } from '../../data/openEvoSuccessorNarrative';
 
 interface Props { locale: Locale }
@@ -50,7 +49,6 @@ const terms = zh ? [
     actionHref="#report-mainline"
     actionLabel={t("查看实验方法", "View the study methods")}
     terms={terms}
-    showGlossary={false}
   />
 
   <nav class="report-map__switch" aria-label={t('切换叙事版本', 'Switch narrative view')}>
@@ -66,8 +64,6 @@ const terms = zh ? [
     <tr><th>{t('最终测试', 'Final evaluation')}</th><td>{t('固定最终模型，完成预定的 128 道测试任务', 'Freeze the final model and evaluate on the predefined 128 tasks')}</td><td>{t('核对有效记录后发布分数；测试期间不继续学习', 'Publish scores after validating the records; no learning continues during evaluation')}</td></tr>
     </tbody></table>
   </section>
-
-  <ResearchGlossary locale={locale} terms={terms} />
 
   <section class="report-hero" aria-labelledby="report-result-title">
     <div class="report-hero__question">
@@ -111,7 +107,7 @@ const terms = zh ? [
 
   <section id="report-mainline" class="paper-spine" data-research-journey aria-label={t('论文式线性实验主线', 'Linear paper-style experiment mainline')}>
     <article data-paper-step="harness" data-research-step="harness">
-      <div class="paper-step__index"><span>01</span><b>HARNESS</b></div>
+      <div class="paper-step__index"><span>01</span><b>{t('共享购物接口','HARNESS')}</b></div>
       <div class="paper-step__body">
         <h2>{t('共享购物规则', 'Shared shopping rules')}</h2>
         <p class="paper-step__meaning">{t("两种模型都能看到购物要求、当前页面、最近的动作和现在可点击的按钮。接口负责把动作按规定格式送到商店，模型自己决定买什么、怎样找。", "Both models see the request, current page, recent actions, and available buttons. The interface sends actions to the shop in the required format; the model decides what to buy and how to find it.")}</p>
@@ -123,7 +119,7 @@ const terms = zh ? [
     <span class="paper-connector"></span>
 
     <article data-paper-step="raw-stage1" data-research-step="raw-stage1">
-      <div class="paper-step__index"><span>02</span><b>RAW STAGE 1</b></div>
+      <div class="paper-step__index"><span>02</span><b>{t('原始 Stage 1','RAW STAGE 1')}</b></div>
       <div class="paper-step__body">
         <h2>{t('独立收集购物经验', 'Independent experience collection')}</h2>
         <p class="paper-step__meaning">{t("每种模型分别做 180 道任务，每道尝试 8 次，一共 1,440 次。一次尝试从收到购物要求开始，到购买、步数用尽或触发终止条件结束。", "Each model makes eight attempts on each of 180 tasks, for 1,440 attempts. An attempt starts with a request and ends at purchase, the step limit, or another termination condition.")}</p>
@@ -134,7 +130,7 @@ const terms = zh ? [
     <span class="paper-connector"></span>
 
     <article data-paper-step="behavior" data-research-step="behavior">
-      <div class="paper-step__index"><span>03</span><b>BOOTSTRAP SIGNAL</b></div>
+      <div class="paper-step__index"><span>03</span><b>{t('启动学习信号','BOOTSTRAP SIGNAL')}</b></div>
       <div class="paper-step__body">
         <h2>{t('本实验学习前的能力', 'Ability before learning in this experiment')}</h2>
         <p class="paper-step__meaning">{t("我们先数本实验学习前已经能完整做对的尝试，也记录只满足部分要求的尝试。上方的初始结果对应这一阶段。", "We count attempts that already meet every requirement before learning in this experiment, alongside attempts that meet only some. The initialization results above describe this stage.")}</p>
@@ -145,7 +141,7 @@ const terms = zh ? [
     <span class="paper-connector"></span>
 
     <article data-paper-step="minimax" data-research-step="minimax">
-      <div class="paper-step__index"><span>04</span><b>POST-HOC ANALYSIS</b></div>
+      <div class="paper-step__index"><span>04</span><b>{t('任务后分析','POST-HOC ANALYSIS')}</b></div>
       <div class="paper-step__body">
         <h2>{t('购物后的分析', 'Analysis after shopping')}</h2>
         <p class="paper-step__meaning">{t("记录固定之后，MiniMax 才阅读已经结束的购物过程，分析哪里出错、哪些行为值得保留。它提供事后反馈，不替购物模型选择在线动作。", "After the records are frozen, MiniMax reviews completed attempts to analyze errors and useful behavior. It supplies feedback afterwards, without choosing actions for the shopping model.")}</p>
@@ -156,7 +152,7 @@ const terms = zh ? [
     <span class="paper-connector"></span>
 
     <article data-paper-step="carriers" data-research-step="carriers">
-      <div class="paper-step__index"><span>05</span><b>BOUNDED CARRIERS</b></div>
+      <div class="paper-step__index"><span>05</span><b>{t('有界学习载体','BOUNDED CARRIERS')}</b></div>
       <div class="paper-step__body">
         <h2>{t('后续学习的材料', 'Materials for later learning')}</h2>
         <p class="paper-step__meaning">{t("分别把两种模型各自的经验整理成四类材料：可加载的参数增量、文本记忆、技能集合和系统指令。它们分别让经验进入参数或后续上下文。", "Each model’s experience is separately organized into four materials: a loadable parameter update, text memory, a skill collection, and system instructions. These carry experience into parameters or later context.")}</p>
@@ -168,7 +164,7 @@ const terms = zh ? [
     <span class="paper-connector"></span>
 
     <article data-paper-step="boundary" data-research-step="boundary" class="paper-step--boundary">
-      <div class="paper-step__index"><span>06</span><b>PRE_STAGE2_READY</b></div>
+      <div class="paper-step__index"><span>06</span><b>{t('学习材料准备检查','PRE-STAGE-2 READINESS')}</b></div>
       <div class="paper-step__body">
         <h2>{t('当时的准备检查', 'The preparation check at that time')}</h2>
         <p class="paper-step__meaning">{t("当时的检查确认两边的材料能够加载，并记录它们来自哪个模型和哪批经验。这一步结束了初始准备，只证明材料已准备好。", "The check at that time confirmed that both sets of materials could be loaded and recorded their model and experience origins. It completed initial preparation and established readiness only.")}</p>
@@ -181,7 +177,7 @@ const terms = zh ? [
   <ResearchDepth locale={locale} kind="method" summary={t('共享 Harness 的公平性与污染边界', 'Shared-harness fairness and contamination boundaries')} intro={t("共同接口允许统一的动作格式与思考提示，但不能提供具体购物策略。", "The shared interface allows a common action format and reasoning prompt, but cannot supply a task-specific shopping strategy.")}><OpenEvoHarnessFairnessPanel locale={locale} /></ResearchDepth>
 
   <section class="report-boundaries" aria-labelledby="report-boundary-title">
-    <p>WHAT THIS RESULT DOES / DOES NOT CLAIM</p>
+    <p>{t('这项结果支持什么、不能推出什么','WHAT THIS RESULT DOES / DOES NOT CLAIM')}</p>
     <h2 id="report-boundary-title">{t('结论的适用范围', 'Scope of the conclusions')}</h2>
     <div><article><strong>{t('支持', 'Supported')}</strong><p>{t('两种模型共用不教具体解法的接口。初始尝试没有使用后来学到的材料、外部模型代选动作或最终测试题。1.7B 的后续学习已封存，并在预先固定的 128 道任务上独立测试；事后分析与模型购物分开进行。', 'One shared strategy-neutral interface; no learned-carrier / teacher-action / final-panel leakage in raw Stage 1; the 1.7B Stage 2 is sealed with an independent fixed 128-task final evaluation; post-hoc analysis remains separate from online acting.')}</p></article><article><strong>{t('不支持', 'Not supported')}</strong><p>{t('“完全没有接口辅助”；“基座模型预训练从未见过 WebShop”；“1.7B 普遍强于 3B”；“后续学习已经证明能稳定提升”。', '“No scaffolding at all”; “the base models never saw WebShop in pretraining”; “1.7B is generally stronger than 3B”; or “Stage 2 has already proven stable improvement.”')}</p></article></div>
   </section>

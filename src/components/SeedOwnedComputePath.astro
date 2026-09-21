@@ -48,7 +48,7 @@ const money = (value: number) => `¥${value.toFixed(1)}`;
 
     <article class="owned-card">
       <small>{t('如果想完整跑 150 updates', 'If you want all 150 updates locally')}</small>
-      <h3>4×RTX 3090 24GB</h3>
+      <h3>{t('四卡 RTX 3090 的完整训练预算', 'Full-training budget on four RTX 3090 GPUs')}</h3>
       <div class="metric">{t('极粗排期：72–144 小时 / 两环境', 'Very rough schedule: 72–144 hours / both environments')}</div>
       <div class="price">{t('用于安排可用窗口，不是性能保证', 'For availability planning, not a performance guarantee')}</div>
       <p>{t('这个区间只做一阶预算：以 8×A100 当前 32–60h 的两环境预算为锚，卡数减半先近似乘 2 → 64–120h；再为 24GB/卡、PCIe/P2P 拓扑、额外切分/offload 留约 10–20% 不确定性，得到约 70–144h，取整为 72–144h。实际值可能落在区间外，所以前 5 个稳定 update 一出来就应该废弃这个估算。', 'This is only a first-order planning model: start from the current 32–60h budget for both environments on 8×A100, approximately double for half the GPU count → 64–120h, then allow roughly 10–20% uncertainty for 24GB/GPU, PCIe/P2P topology, and extra sharding/offload, giving about 70–144h and rounded to 72–144h. Reality can fall outside this range, so discard this estimate as soon as five stable updates are measured.')}</p>
