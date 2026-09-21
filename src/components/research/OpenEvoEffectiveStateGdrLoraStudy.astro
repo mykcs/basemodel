@@ -116,7 +116,9 @@ const meanScore = (rows: readonly { score: number }[]) =>
 const directApplyLast20Score = meanScore(directApplyDynamics.score.slice(-20));
 const boundedLast20Score = finalResult ? meanScore(finalResult.trajectory.off.slice(-20)) : null;
 const gdrLast20Score = finalResult ? meanScore(finalResult.trajectory.on.slice(-20)) : null;
-const rolloutSeedBase = 148000000;
+const seedPaperWebShopScore = 87.1;
+const seedPaperWebShopSuccess = 77.3;
+const seedPaperHref = 'https://arxiv.org/abs/2607.14777';
 ---
 
 <article class="paper" data-effective-state-gdr-page data-copy-review data-reader-page="research-explainer" data-experiment-id={experiment.id}>
@@ -132,45 +134,48 @@ const rolloutSeedBase = 148000000;
             <th>Bounded</th>
             <th>{t('动态 β', 'Dynamic β')}</th>
             <th>{t('动态 α', 'Dynamic α')}</th>
-            <th>{t('Seed base', 'Seed base')}</th>
             <th>{t('最后 20 轮平均 Task Score', 'Mean Task Score over the last 20 rounds')}</th>
-            <th>{t('同一固定 128 题终评', 'Final on the same fixed 128 tasks')}</th>
+            <th>{t('WebShop 评测', 'WebShop evaluation')}</th>
           </tr>
         </thead>
         <tbody>
+          <tr class="paper-table__reference-row">
+            <td><strong><a href={seedPaperHref}><ExternalBrandMark href={seedPaperHref} />SEED {t('（论文，Qwen3-1.7B）', '(paper, Qwen3-1.7B)')}</a></strong></td>
+            <td class="paper-table__mark">—</td>
+            <td class="paper-table__mark">—</td>
+            <td class="paper-table__mark">—</td>
+            <td>—</td>
+            <td><strong>{seedPaperWebShopScore.toFixed(1)}</strong> / 100<br/><span class="paper-table__metric-detail">{seedPaperWebShopSuccess.toFixed(1)}% Succ.</span></td>
+          </tr>
           <tr>
             <td><strong>{names.baseline}</strong></td>
             <td class="paper-table__mark">—</td>
             <td class="paper-table__mark">—</td>
             <td class="paper-table__mark">—</td>
-            <td><strong>{rolloutSeedBase.toLocaleString('en-US')}</strong></td>
             <td><strong>{directApplyLast20Score.toFixed(2)}</strong></td>
-            <td><strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{study.threeWayFinal.directApply.exactCount}/128 {t('完整做对', 'exact')}</span></td>
+            <td><strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{t('同题 ', 'same-panel ')}{study.threeWayFinal.directApply.exactCount}/128 {t('完整做对', 'exact')}</span></td>
           </tr>
           <tr>
             <td><strong>{names.bounded}</strong></td>
             <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
             <td class="paper-table__mark">—</td>
             <td class="paper-table__mark">—</td>
-            <td><strong>{rolloutSeedBase.toLocaleString('en-US')}</strong></td>
             <td><strong>{boundedLast20Score?.toFixed(2) ?? '—'}</strong></td>
-            <td><strong>{study.threeWayFinal.off.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{study.threeWayFinal.off.exactCount}/128 {t('完整做对', 'exact')}</span></td>
+            <td><strong>{study.threeWayFinal.off.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{t('同题 ', 'same-panel ')}{study.threeWayFinal.off.exactCount}/128 {t('完整做对', 'exact')}</span></td>
           </tr>
           <tr>
             <td><strong>{names.gdr}</strong></td>
             <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
             <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
             <td class="paper-table__mark">—</td>
-            <td><strong>{rolloutSeedBase.toLocaleString('en-US')}</strong></td>
             <td><strong>{gdrLast20Score?.toFixed(2) ?? '—'}</strong></td>
-            <td><strong>{study.threeWayFinal.on.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{study.threeWayFinal.on.exactCount}/128 {t('完整做对', 'exact')}</span></td>
+            <td><strong>{study.threeWayFinal.on.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{t('同题 ', 'same-panel ')}{study.threeWayFinal.on.exactCount}/128 {t('完整做对', 'exact')}</span></td>
           </tr>
           <tr>
             <td><strong>{names.dynamicAlphaBeta}</strong></td>
             <td class="paper-table__mark">✓</td>
             <td class="paper-table__mark">✓</td>
             <td class="paper-table__mark">✓</td>
-            <td>—</td>
             <td>—</td>
             <td>—</td>
           </tr>
@@ -180,8 +185,8 @@ const rolloutSeedBase = 148000000;
       <figcaption id="ablation-table-caption" class="paper-table__caption">
         <strong>{t('表 1.', 'Table 1.')}</strong>{' '}
         {t(
-          '消融设置与结果。普通 OpenEVO 是原始 DirectApply：每轮 rank8 SD-LoRA 更新继续累积；+ Bounded 把累计参数历史压回固定 rank128 State；+ β-gating（α=1）在 Bounded 上再用动态 β 控制新经验写入长期参数 State 的强度；动态 α + 动态 β 是尚未运行的未来实验位置，因此结果保持为空且不参与统计比较。Seed base 报告 rollout / generation RNG：三条已完成实验均为 148,000,000，rollout seed 按 schedule position 派生，逐步 generation seed 使用 injective-v1；它不是 optimizer training seed。',
-          'Ablation settings and results. OpenEVO is the original DirectApply, where each rank-8 SD-LoRA update continues to accumulate; + Bounded compresses accumulated parameter history back to a fixed rank-128 State; + β-gating (α=1) adds dynamic β on top of Bounded to control how strongly new experience is written into the long-term parameter State; dynamic α + dynamic β is an unrun future slot, so its results remain blank and it is excluded from statistical comparisons. Seed base reports rollout / generation RNG: all three completed experiments use 148,000,000, rollout seeds are derived by schedule position, and per-step generation seeds use injective-v1; this is not the optimizer training seed.',
+          '消融设置与结果。SEED（论文，Qwen3-1.7B）是外部参考行：原论文 Table 1 在 WebShop 上报告 Score 87.1、Success 77.3%。它使用论文自己的 128 个 validation tasks，不是我们三条 OpenEVO 最终模型共用的同一冻结 128 题，因此只能作为论文参考，不能把数值差直接解释成严格同题消融收益。普通 OpenEVO 是原始 DirectApply：每轮 rank8 SD-LoRA 更新继续累积；+ Bounded 把累计参数历史压回固定 rank128 State；+ β-gating（α=1）在 Bounded 上再用动态 β 控制新经验写入长期参数 State 的强度；动态 α + 动态 β 是尚未运行的未来实验位置，因此结果保持为空且不参与统计比较。',
+          'Ablation settings and results. SEED (paper, Qwen3-1.7B) is an external reference row: Table 1 of the paper reports WebShop Score 87.1 and Success 77.3%. It uses the paper’s own 128 validation tasks rather than the same frozen 128-task panel shared by our three OpenEVO final models, so it is a paper reference rather than a strict same-panel ablation. OpenEVO is the original DirectApply, where each rank-8 SD-LoRA update continues to accumulate; + Bounded compresses accumulated parameter history back to a fixed rank-128 State; + β-gating (α=1) adds dynamic β on top of Bounded to control how strongly new experience is written into the long-term parameter State; dynamic α + dynamic β is an unrun future slot, so its results remain blank and it is excluded from statistical comparisons.',
         )}
       </figcaption>
     </figure>
@@ -608,16 +613,16 @@ const rolloutSeedBase = 148000000;
   .paper-table thead th{border-top:2px solid var(--text-primary);border-bottom:1.5px solid var(--text-primary);font-weight:750}
   .paper-table tbody tr:last-child td{border-bottom:2px solid var(--text-primary)}
   .paper-table td.paper-table__mark{text-align:center;font-size:1.2rem;font-weight:800}
-  .paper-table--ablation{min-width:1040px;table-layout:fixed}
+  .paper-table--ablation{min-width:960px;table-layout:fixed}
   .paper-table--ablation th,.paper-table--ablation td{padding-block:10px}
-  .paper-table--ablation th:first-child,.paper-table--ablation td:first-child{width:27%}
-  .paper-table--ablation th:nth-child(2),.paper-table--ablation td:nth-child(2){width:7%}
-  .paper-table--ablation th:nth-child(3),.paper-table--ablation td:nth-child(3){width:7%}
-  .paper-table--ablation th:nth-child(4),.paper-table--ablation td:nth-child(4){width:7%}
-  .paper-table--ablation th:nth-child(5),.paper-table--ablation td:nth-child(5){width:14%}
-  .paper-table--ablation th:nth-child(6),.paper-table--ablation td:nth-child(6){width:17%}
-  .paper-table--ablation th:nth-child(7),.paper-table--ablation td:nth-child(7){width:21%}
+  .paper-table--ablation th:first-child,.paper-table--ablation td:first-child{width:31%}
+  .paper-table--ablation th:nth-child(2),.paper-table--ablation td:nth-child(2){width:8%}
+  .paper-table--ablation th:nth-child(3),.paper-table--ablation td:nth-child(3){width:8%}
+  .paper-table--ablation th:nth-child(4),.paper-table--ablation td:nth-child(4){width:8%}
+  .paper-table--ablation th:nth-child(5),.paper-table--ablation td:nth-child(5){width:20%}
+  .paper-table--ablation th:nth-child(6),.paper-table--ablation td:nth-child(6){width:25%}
   .paper-table--ablation td:nth-child(n+2),.paper-table--ablation th:nth-child(n+2){text-align:center}
+  .paper-table__reference-row td{border-top:1.5px solid var(--text-primary)}
   .paper-table-wrap--hero{overflow-x:auto}
   .paper__math-caption{max-width:880px;margin:-.45rem 0 1rem;color:var(--text-secondary);font-size:1rem;line-height:1.6}
   .paper__math-boundary{max-width:880px;margin:1rem 0;padding:.85rem 0 .85rem 1rem;border-left:3px solid var(--border-color);color:var(--text-secondary);font-size:1rem;line-height:1.65}
@@ -637,7 +642,7 @@ const rolloutSeedBase = 148000000;
     .paper__setup{grid-template-columns:1fr}
     .paper__hub-grid{grid-template-columns:1fr}
     .paper-table{min-width:640px}
-    .paper-table--ablation{min-width:980px}
+    .paper-table--ablation{min-width:900px}
     .paper-table--ablation th,.paper-table--ablation td{padding:8px 7px;overflow-wrap:anywhere}
   }
   @media(prefers-reduced-motion:reduce){.paper *,.paper *::before,.paper *::after{scroll-behavior:auto;transition:none;animation:none}}
