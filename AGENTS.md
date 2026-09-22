@@ -30,9 +30,16 @@ When prior owner feedback or failure-family evidence matters, also read:
 
 - https://github.com/mykcs/.codex/blob/main/website-learning/shared/content/HUMAN_EXPRESSION.md
 
-For material design or website-engineering decisions, also load the matching central shared file and BaseModel site experience when relevant:
+For material design decisions, load the shared learned design evidence when relevant:
 
 - https://github.com/mykcs/.codex/blob/main/website-learning/shared/design/LEARNED_PREFERENCES.md
+
+For material website-engineering work, read the current shared Engineering Standard first:
+
+- https://github.com/mykcs/.codex/blob/main/website-governance/ENGINEERING_STANDARD.md
+
+When prior engineering failures/evidence matter, also read:
+
 - https://github.com/mykcs/.codex/blob/main/website-learning/shared/engineering/LEARNED_PRACTICES.md
 - https://github.com/mykcs/.codex/tree/main/website-learning/sites/basemodel
 
@@ -47,7 +54,7 @@ You are already reading the repository bootstrap. After this file, read in this 
 1. [`docs/agents/README.md`](docs/agents/README.md) — navigation-only Agent documentation map and topic router.
 2. [`docs/agents/LATEST.md`](docs/agents/LATEST.md) — fixed-path current handoff and deployment state.
 3. [`docs/agents/current/project-agent-operating-principles.md`](docs/agents/current/project-agent-operating-principles.md) — project-wide standards for autonomous problem solving, clean workflow design, and selective deposition of reusable experience.
-4. [`docs/agents/current/website-engineering-standard.md`](docs/agents/current/website-engineering-standard.md) — cross-cutting website engineering defaults: accepted stack, semantic ownership, static-first/hydration discipline, browser runner boundaries, exact-tree release evidence, build-budget discipline, temporary-harness cleanup, and the stopping rule against unrequested optimization churn.
+4. [`docs/agents/current/website-engineering-standard.md`](docs/agents/current/website-engineering-standard.md) — BaseModel-specific engineering overlay: Astro/React/static-first constraints, Public PR CI + Vercel final-gate topology, local browser evidence binding, CI evidence preflight, and project-specific acceptance witnesses. Shared engineering defaults come from the central `.codex` Engineering Standard.
 5. [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) — scan this against the current task and automatically load/execute the matched scenario guidance without waiting for the owner to repeat it.
 6. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md) — product north star and false-complete rules.
 7. [`docs/agents/current/human-thinking-web-expression-contract.md`](docs/agents/current/human-thinking-web-expression-contract.md) — **mandatory for every user-facing page**, section, copy, navigation, comparison, explanation, or feature change. Before writing or substantially rearranging public-page HTML, also read [`docs/agents/current/site-reader-attention-contract.md`](docs/agents/current/site-reader-attention-contract.md) and register/update the route's executable reader contract. For research publication work, also read [`docs/agents/current/research-site-presentation-contract.md`](docs/agents/current/research-site-presentation-contract.md): keep results and interpretation visible, and place copy/paste implementation depth behind progressive disclosure.
@@ -281,7 +288,7 @@ Prefer autonomous end-to-end execution using connected repository/provider evide
 
 For the durable project-level standard on expanding the solution space, keeping ownership/tooling clean, and deciding whether/where experience deserves persistence, follow [`docs/agents/current/project-agent-operating-principles.md`](docs/agents/current/project-agent-operating-principles.md) rather than creating a second governance layer.
 
-For the cross-cutting website implementation standard, follow [`docs/agents/current/website-engineering-standard.md`](docs/agents/current/website-engineering-standard.md). It summarizes the accepted technical baseline and stopping rules, while detailed CSS/rendering/browser/deployment contracts remain with their existing owners.
+For cross-site website engineering rules, follow https://github.com/mykcs/.codex/blob/main/website-governance/ENGINEERING_STANDARD.md. Then apply [`docs/agents/current/website-engineering-standard.md`](docs/agents/current/website-engineering-standard.md) as the BaseModel-specific stack/provider/CI overlay; detailed CSS/rendering/browser/deployment contracts remain with their existing owners.
 
 For recurring situations that should trigger without a fresh reminder from the owner, scan [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) and follow the matched route. Keep detailed truth in the owning policy/runbook/test; the registry is a trigger router, not a duplicate knowledge store.
 

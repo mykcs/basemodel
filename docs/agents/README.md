@@ -16,7 +16,7 @@ After root `AGENTS.md`, for any non-trivial task:
 2. read [`LATEST.md`](LATEST.md) for short-lived current state;
 3. read [`current/project-agent-operating-principles.md`](current/project-agent-operating-principles.md) for autonomy, tool boundaries, write hygiene, and durable-knowledge rules;
 4. read [`current/branch-and-pr-conventions.md`](current/branch-and-pr-conventions.md) before choosing a branch/PR path;
-5. read [`current/website-engineering-standard.md`](current/website-engineering-standard.md) for cross-cutting implementation and stopping rules;
+5. read the central Engineering Standard at https://github.com/mykcs/.codex/blob/main/website-governance/ENGINEERING_STANDARD.md, then [`current/website-engineering-standard.md`](current/website-engineering-standard.md) for BaseModel-specific stack/provider/CI implementation;
 6. scan [`current/scenario-trigger-registry.md`](current/scenario-trigger-registry.md) and load the matched bundle below;
 7. inspect executable source/config/tests/manifests and live provider/experiment truth for the surface you will actually change.
 
