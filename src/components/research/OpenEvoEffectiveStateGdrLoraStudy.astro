@@ -231,8 +231,8 @@ const twentyRoundScoreWindows = finalResult
     <p class="paper__section-number">1</p>
     <h2 id="motivation-title">{t('动机：SD-LoRA 越训练越慢', 'Motivation: SD-LoRA gets slower as history grows')}</h2>
     <p>{t(
-      '普通 OpenEVO 的参数通道会把过去每一轮的 SD-LoRA component 留在后续模型里。这样做保留了历史，但 component 数量会跟轮数一起增长；到了后期，每一轮训练都要反复经过越来越多的低秩路径。',
-      'Ordinary OpenEVO carries each historical SD-LoRA component into later model states. This preserves history, but the number of components grows with rounds, so late training repeatedly traverses more low-rank paths.',
+      '普通 OpenEVO 的参数更新方式是：每轮训练得到一个新的 SD-LoRA component，并把过去的 component 一起保留到后续模型。这样参数历史会随轮数持续变长；到了后期，每一轮训练都要经过越来越多的低秩路径，所以参数更新越来越慢。',
+      'Ordinary OpenEVO updates parameters by producing a new SD-LoRA component each round and retaining the earlier components in later model states. The parameter history therefore grows with round count, so late training must traverse more and more low-rank paths and parameter updates become slower.',
     )}</p>
     <MathFormula latex={math.history} label={t('普通 OpenEVO 的累计参数历史', 'Accumulating parameter history in ordinary OpenEVO')} />
     <p class="paper__math-caption">{t('历史 component 随 t 增长。', 'Historical components grow with t.')}</p>
@@ -247,7 +247,7 @@ const twentyRoundScoreWindows = finalResult
     <p class="paper__section-number">2</p>
     <h2 id="method-title">{t('方法：Bounded Online Recurrence、Gated Delta 来源与本实验 β-gating（α 固定为 1）', 'Method: Bounded Online Recurrence, the Gated Delta source, and this β-gating (α fixed at 1) study')}</h2>
 
-    <h3>2.1 {t('Bounded Online Recurrence：把无限增长的历史压成固定 rank128 State', 'Bounded Online Recurrence: compress growing history into a fixed rank128 State')}</h3>
+    <h3>2.1 {t('Bounded Online Recurrence 是什么：用固定 rank128 保存参数历史', 'What is Bounded Online Recurrence? Keep parameter history in a fixed rank128 state')}</h3>
     <p>{t(
       '每一轮仍然先得到一个 rank8 的当前更新 Δt，但不再把所有旧 component 永久并排保存。我们把“上一轮的 rank128 状态 + 当前更新”重新压回 rank128，作为下一轮唯一的参数历史。',
       'Each round still produces a rank-8 current update Δt, but old components are no longer kept side by side forever. The previous rank-128 state plus the current update is compressed back to rank128 and becomes the only parameter history for the next round.',
@@ -259,15 +259,15 @@ const twentyRoundScoreWindows = finalResult
       `The physical rank of parameter history no longer grows with rounds. In this implementation, Bounded Online Recurrence totals about ${study.timingComparison.off.transitionHours.toFixed(2)} hours of parameter transition time, versus ${study.timingComparison.directApply.trainerHours.toFixed(2)} trainer hours for ordinary OpenEVO.`,
     )}</p>
 
-    <h3>2.2 {t('GDR：从 linear attention 的“记忆写入”借一个规则', 'GDR: borrow a memory-write rule from linear attention')}</h3>
+    <h3>2.2 {t('Gated Delta 是什么：根据 residual 控制一次新状态写入', 'What is Gated Delta? Control each new state update from the residual')}</h3>
     <p>{t(
-      '在序列建模里，可以把 State 看成一个“用 key 预测 value”的快速权重矩阵。对最普通的平方误差做一步 SGD，就会得到 Delta Rule：先用旧 State 读出已有内容，再把没有解释掉的 residual 写回。',
-      'In sequence modeling, State can be viewed as a fast-weight matrix that predicts a value from a key. One SGD step on an ordinary squared-error objective gives the Delta Rule: read what prior State already explains, then write back the remaining residual.',
+      'Gated Delta 原本用于持续更新一个 State。给定当前 key，旧 State 会先产生一个预测；目标 value 与这个预测之间的差就是 residual。Delta Rule 只把这部分 residual 写回 State，而不是不区分已有内容、把完整目标再次写一遍。',
+      'Gated Delta was originally defined for continually updating a State. Given the current key, the prior State first produces a prediction; the difference between the target value and that prediction is the residual. The Delta Rule writes only that residual back into State instead of writing the full target again without accounting for what the State already represents.',
     )}</p>
     <MathFormula latex={math.deltaFromRegression} label={t('从 online regression 一步推到 Delta residual write', 'One-step derivation from online regression to the Delta residual write')} />
     <p>{t(
-      'Gated Delta 再给旧 State 加一个 retention α：α 决定先保留多少历史，β 决定这次 residual 写多强。',
-      'Gated Delta then adds a retention factor alpha to the prior State: alpha controls how much history is kept, while beta controls the strength of the residual write.',
+      'Gated Delta 在这个更新上再加入两个控制量：α 决定旧 State 保留多少，β 决定当前 residual 实际写入多强。本实验只让 β 动态变化，α 固定为 1，所以不会额外衰减旧 State。',
+      'Gated Delta adds two controls to this update: alpha determines how much of the prior State is retained, while beta determines the strength of the current residual write. This study varies beta dynamically while fixing alpha to 1, so it adds no extra decay to the prior State.',
     )}</p>
     <MathFormula latex={math.gdr} label={t('Gated Delta Rule 原始状态更新公式', 'Original Gated Delta Rule state update')} />
     <p class="paper__math-caption">{t('论文原式：α 控制旧 State 的保留 / 衰减，β 控制 delta write 的强度。', 'Paper form: α controls retention / decay of the old State, while β controls delta-write strength.')}</p>
@@ -282,10 +282,10 @@ const twentyRoundScoreWindows = finalResult
     )}</p>
     <p class="paper__links"><a href={gdrPaperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={gdrPaperHref} />Gated Delta Networks · ICLR 2025</a> · <a href={gatedHref}>{t('完整推导：从 sequence State 到 OpenEVO 参数写入 →', 'Full derivation: from sequence State to OpenEVO parameter writes →')}</a></p>
 
-    <h3>2.3 {t('从 sequence State 映射到 OpenEVO 的参数 State', 'Mapping sequence State to OpenEVO parameter State')}</h3>
+    <h3>2.3 {t('这里的“映射”是什么：把更新规则对应到 OpenEVO 参数 State', 'What does the mapping mean? Apply the update roles to OpenEVO parameter state')}</h3>
     <p>{t(
-      '我们没有把 linear attention 的 k、v 张量硬塞进 LoRA。保留的是“持续状态 + residual write + 自适应写入强度”这层数学角色，再逐个决定 OpenEVO 里谁来承担这些角色。',
-      'We do not literally insert linear-attention k and v tensors into LoRA. We preserve the mathematical roles—persistent state, residual write, and adaptive write strength—and then identify which OpenEVO objects play those roles.',
+      '这里的“映射”不是把 linear attention 的 k、v 张量直接复制成 LoRA 张量，而是把更新规则中的角色对应过去：长期 State 对应跨轮保留的参数状态，当前训练更新对应要写入的新变化，β 对应这次新变化实际写入多少。',
+      'Here, “mapping” does not mean copying linear-attention k and v tensors into LoRA tensors. It means mapping the roles in the update rule: the persistent State becomes the parameter state kept across rounds, the current training update becomes the proposed new change, and beta controls how much of that new change is actually written.',
     )}</p>
     <div class="paper-table-wrap">
       <table class="paper-table paper-table--mapping">
@@ -312,10 +312,10 @@ const twentyRoundScoreWindows = finalResult
       )}
     </p>
 
-    <h3>2.4 {t('为什么不能直接在 LoRA 的 A / C 因子上做约束', 'Why the gate cannot operate directly on raw LoRA factors')}</h3>
+    <h3>2.4 {t('为什么控制的是有效参数更新 ΔW，而不是 LoRA 的 A / C 数值', 'Why control the effective update ΔW instead of raw LoRA A/C values')}</h3>
     <p>{t(
-      '同一个 LoRA 有效更新可以用很多组 A / C 数值表示。只要 A 乘 s、C 除以 s，真正加到模型上的矩阵完全不变。也就是说，A / C 的数值大小带着“坐标选择”，不是我们真正想控制的学习量。',
-      'The same effective LoRA update can be represented by many A/C factor values. Multiplying A by s and dividing C by s leaves the actual matrix update unchanged, so raw factor magnitudes contain coordinate choice rather than only learning content.',
+      'LoRA 真正改变模型的是 A 与 C 合成后的有效参数更新 ΔW，而不是 A 或 C 单独的数值。同一个 ΔW 可以由很多组 A / C 表示：A 乘 s、C 除以 s，最终加到模型上的 ΔW 不变。因此如果直接根据 A / C 的大小做 gating，控制量会受到表示方式影响，而不是只反映真正的参数变化。',
+      'What actually changes the model in LoRA is the effective parameter update ΔW formed from A and C, not either factor alone. The same ΔW can be represented by many A/C pairs: multiplying A by s and dividing C by s leaves the final model update unchanged. A gate based directly on A/C magnitude would therefore depend on representation choice rather than only on the real parameter change.',
     )}</p>
     <MathFormula latex={math.gauge} label={t('LoRA 因子缩放不改变有效更新', 'LoRA factor rescaling leaves the effective update unchanged')} />
     <p>
@@ -344,8 +344,8 @@ const twentyRoundScoreWindows = finalResult
     <p class="paper__section-number">3</p>
     <h2 id="experiment-title">{t('实验设置：Qwen3-1.7B × WebShop', 'Experiments: Qwen3-1.7B × WebShop')}</h2>
     <p>{t(
-      '三条已完成的线都属于这批 Qwen3-1.7B OpenEVO 实验。Stage 2 都跑 160 轮；Bounded Online Recurrence 与 Bounded Online Recurrence + β-gating（α 固定为 1）才是正式匹配对照，每轮 128 个 rollout，任务、seed、sampling、horizon、replay 和 optimizer recipe 对齐。动态 α + 动态 β 还没有运行，不属于这个正式对照。',
-      'All three completed lines belong to this Qwen3-1.7B OpenEVO study family. Stage 2 runs for 160 rounds. Bounded Online Recurrence and Bounded Online Recurrence + β-gating (α fixed at 1) form the formal matched pair with 128 rollouts per round and matched tasks, seeds, sampling, horizon, replay, and optimizer recipe. Dynamic α + dynamic β has not been run and is not part of this formal contrast.',
+      '这一节先说明三条实验各自改了什么、哪些条件保持相同。三条已完成实验都使用 Qwen3-1.7B 和 WebShop，Stage 2 都跑 160 轮。真正的正式匹配对照只有 Bounded Online Recurrence 与 Bounded Online Recurrence + β-gating（α 固定为 1）：它们每轮 128 个 rollout，并对齐任务、seed、sampling、horizon、replay 和 optimizer recipe。普通 OpenEVO 是更早完成的前序实验；动态 α + 动态 β 还没有运行。',
+      'This section first states what each run changes and which conditions are held fixed. All three completed experiments use Qwen3-1.7B and WebShop and run Stage 2 for 160 rounds. The formal matched pair is Bounded Online Recurrence versus Bounded Online Recurrence + β-gating (α fixed at 1): both use 128 rollouts per round with matched tasks, seeds, sampling, horizon, replay, and optimizer recipe. Ordinary OpenEVO is an earlier predecessor run; dynamic α + dynamic β has not been run.',
     )}</p>
     <dl class="paper__setup">
       <div><dt>{t('模型', 'Model')}</dt><dd>Qwen3-1.7B</dd></div>
@@ -464,7 +464,7 @@ const twentyRoundScoreWindows = finalResult
     'We first establish task performance before moving into loss, parameter geometry, and behavior diagnostics. The sequence is the raw 160-round Task Score, non-overlapping 20-round means, the last-20 mean, the fixed 128-task final, and the matched training-period success statistics for the latter two runs.',
   )}</p>
 
-  <h3>4.1 {t('Task Score：先看 160 轮完整过程', 'Task Score: start with the full 160-round trajectory')}</h3>
+  <h3>4.1 {t('Task Score 是什么：每轮任务完成程度的连续得分', 'What is Task Score? A continuous measure of task completion each round')}</h3>
   <p>{t(
     'Task Score 是 WebShop 每轮任务结束后的连续得分平均值 × 100；部分完成也可能拿到部分分。下面先看完整 160 轮，而不是先挑某个末尾窗口。完整成功率是另一项更严格的指标：只有 task_score = 1.0 才算完整做对。',
     'Task Score is the mean terminal WebShop task score multiplied by 100; partial completion can receive partial credit. We start with all 160 rounds instead of selecting a late window first. Exact success is a stricter metric and counts only task_score = 1.0.',
@@ -479,7 +479,11 @@ const twentyRoundScoreWindows = finalResult
     'Single-round values are noisy because the sampled WebShop tasks vary by round. The curve is useful for the full training shape, not for declaring a result from one peak, so the next view aggregates the same trajectories into 20-round windows.',
   )}</p>
 
-  <h3>4.2 {t('每 20 轮平均：把抖动压低，再看上升和回落发生在哪里', 'Every 20 rounds: reduce noise and locate rises or reversals')}</h3>
+  <h3>4.2 {t('每 20 轮平均是什么：把连续 20 轮的 Task Score 合成一个均值', 'What is the 20-round mean? Average each consecutive block of 20 Task Scores')}</h3>
+  <p>{t(
+    '单轮 Task Score 会受到这一轮具体抽到哪些 WebShop 任务影响。这里不改变原始数据，只把 R0–R19、R20–R39 这样的连续 20 轮分别求平均，用来更清楚地看训练水平在哪些阶段上升、持平或回落。',
+    'A single-round Task Score depends partly on which WebShop tasks are sampled in that round. This view does not change the underlying data: it averages consecutive windows such as R0–R19 and R20–R39 so rises, plateaus, and declines across training are easier to see.',
+  )}</p>
   <figure class="paper__derived-figure" data-ui-audit="contrast layout">
     <img
       src="/research/seed-openevo/evidence/wandb-threeway/task-score-20-round-mean.svg"
@@ -521,7 +525,11 @@ const twentyRoundScoreWindows = finalResult
     'This view exposes an important turn: ordinary OpenEVO and Bounded reach their highest 20-round means in R140–R159, while β-gating (α fixed at 1) reaches a higher window in R120–R139 and then declines in the final 20 rounds. This describes the trajectory; it does not assign that turn to any parameter diagnostic.',
   )}</p>
 
-  <h3>4.3 {t('最后 20 轮平均与固定 128 题终评：两个问题，放在一起看但不混为一谈', 'Last-20 mean and fixed 128-task final: two questions, shown together but kept distinct')}</h3>
+  <h3>4.3 {t('最后 20 轮平均和固定终评分别是什么', 'What are the last-20 mean and the fixed final?')}</h3>
+  <p>{t(
+    '最后 20 轮平均使用 R140–R159 实际训练时每轮抽到的不同任务，回答“训练结束前通常处在什么水平”。固定终评则在训练结束后，让三组最终模型做同一套、同一顺序的 128 题，回答“在完全相同题目上最终表现怎样”。两者都重要，但测的不是同一件事。',
+    'The last-20 mean uses the different tasks actually sampled during R140–R159 and asks what level the model typically occupies near the end of training. The fixed final is run after training and gives all three final models the same 128 tasks in the same order, asking how they perform on an identical panel. Both matter, but they measure different things.',
+  )}</p>
   <div class="paper-table-wrap">
     <table class="paper-table">
       <thead><tr><th>{t('实验', 'Experiment')}</th><th>{t('最后 20 轮平均 Task Score', 'Mean Task Score, last 20 rounds')}</th><th>{t('这列在测什么', 'What this measures')}</th></tr></thead>
@@ -555,7 +563,11 @@ const twentyRoundScoreWindows = finalResult
 
   {finalResult ? (
     <>
-      <h3>4.4 {t('训练期成功率：只比较同设置正式对照的 Bounded 与 β-gating（α 固定为 1）', 'Training-period success: only the truly matched Bounded and β-gating (α fixed at 1) runs')}</h3>
+      <h3>4.4 {t('训练期正式对照是什么：在同一实验设置下比较 Bounded 与 β-gating', 'What is the formal training-period comparison? Compare Bounded and β-gating under the same setup')}</h3>
+      <p>{t(
+        '这里不再把普通 OpenEVO 放进正式统计比较，因为它不是同一次匹配实验。我们只比较后两组在 R1–R159 的平均 reward、完整成功率，以及 reward 差值的不确定区间。平均 reward 看整体完成程度，exact success 只算完全做对；95% 区间用来判断观测到的 reward 差值是否稳定到足以排除 0。',
+        'Ordinary OpenEVO is not included in this formal statistical comparison because it is not part of the same matched campaign. We compare only the latter two runs over R1–R159 using mean reward, exact-success rate, and an uncertainty interval for the reward difference. Mean reward measures overall degree of completion, exact success counts only fully solved tasks, and the 95% interval asks whether the observed reward difference is stable enough to exclude zero.',
+      )}</p>
       <div class="paper-table-wrap">
         <table class="paper-table">
           <thead><tr><th>{t('正式指标', 'Formal metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th><th>{t('差值', 'Delta')}</th></tr></thead>
@@ -574,7 +586,11 @@ const twentyRoundScoreWindows = finalResult
   ) : <p>{t('正式结果尚未封存。', 'Formal result is not sealed.')}</p>}
 
   <div id="compute">
-    <h3>4.5 {t('计算代价：真正的大幅加速发生在参数更新阶段', 'Compute: the large speedup is in parameter updates')}</h3>
+    <h3>4.5 {t('计算代价是什么：区分参数更新耗时和整个 Stage 2 耗时', 'What compute cost is measured? Separate parameter-update time from full Stage-2 time')}</h3>
+    <p>{t(
+      '这里有两个不同时间口径。参数 trainer / transition 累计时间只统计参数更新这一步用了多久；Stage 2 wall clock 则包含 rollout、非参数状态处理、调度和其他阶段。只有先把这两个口径分开，才能正确理解 13–15× 加速到底发生在哪里。',
+      'There are two different timing scopes here. Parameter trainer / transition time counts only the parameter-update stage, while Stage-2 wall-clock time also includes rollouts, non-parametric state processing, scheduling, and other phases. Separating the two is necessary to interpret where the 13–15× speedup actually occurs.',
+    )}</p>
     <div class="paper-table-wrap">
       <table class="paper-table">
         <thead><tr><th>{t('时间口径', 'Timing')}</th><th>{names.baseline}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
@@ -605,8 +621,8 @@ const twentyRoundScoreWindows = finalResult
     <h3>5.1 loss：{t('训练有没有真的在拟合', 'did optimization actually fit the training records?')}</h3>
     <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
     <p>{t(
-      '这里的 loss 是 SD-LoRA trainer 在发生参数更新的轮次里记录的平均训练损失。它最适合回答“优化器有没有把当前训练记录拟合下去”，但它不直接等于 WebShop 做题能力。',
-      'This loss is the mean SD-LoRA trainer loss on rounds that actually perform a parameter update. It answers whether the optimizer is fitting the current training records, not whether WebShop task performance is improving.',
+      '这里的 loss 是发生参数更新时，trainer 对当前训练记录计算的平均训练误差。loss 下降，表示模型越来越能拟合这些训练记录；但它只描述训练目标拟合得怎样，不直接表示 WebShop 做题分数会更高。',
+      'This loss is the mean training error computed by the trainer on rounds that actually update parameters. A lower loss means the model fits those training records better, but it measures fit to the training objective rather than directly measuring WebShop task performance.',
     )}</p>
     <MetricEvidenceFigure item={metricCharts.loss} />
     <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
@@ -631,8 +647,8 @@ const twentyRoundScoreWindows = finalResult
     <h3>5.2 {t('范数：长期 State 和本轮更新到底有多大', 'Norms: how large are the long-term State and the current update?')}</h3>
     <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
     <p>{t(
-      'Frobenius norm 可以把一个参数矩阵的总体大小压成一个数。这里先只问最简单的“有多大”：长期 State 多大、本轮 Task Vector 多大；先不讨论方向。',
-      'The Frobenius norm compresses the overall magnitude of a parameter matrix into one number. We first ask only the simplest question—how large is the long-term State and how large is the current Task Vector—without yet discussing direction.',
+      'Frobenius norm 是参数矩阵所有元素整体变化大小的一个汇总数。这里用它分别衡量长期参数 State 有多大、当前一轮 Task Vector 有多大；它只回答“变化量有多大”，不回答“往哪个方向变”。',
+      'The Frobenius norm summarizes the overall magnitude of all entries in a parameter matrix. Here it measures the size of the long-term parameter State and the current-round Task Vector. It answers how large the change is, not which direction it points.',
     )}</p>
     <p class="paper__chart-note">{t(
       '这里的 State / Final Task Vector 几何表只来自后两组同设置正式对照；普通 OpenEVO 是更早的前序实验，不在这份成对参数 State 快照里。下一节会用它自己的逐轮 Task Vector 数据做趋势与相关性诊断。',
@@ -660,8 +676,8 @@ const twentyRoundScoreWindows = finalResult
     <h3>5.3 Task Vector：{t('参数更新大小和分数真的一起变吗', 'does update magnitude really move with score?')}</h3>
     <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
     <p>{t(
-      'Task Vector 是一轮训练前后的参数差。W&B 曲线先展示 160 轮 Frobenius 大小；随后再问这个大小和 Task Score 的相关关系是不是在去掉共同训练趋势以后仍然存在。',
-      'A Task Vector is the parameter difference across one training round. The W&B curve first shows its 160-round Frobenius magnitude; we then ask whether its relationship with Task Score survives after removing the shared training trend.',
+      'Task Vector 就是一轮参数更新前后模型参数的差值。它告诉我们这一轮参数改了多少、往哪里改。这里先用 Frobenius norm 看 160 轮每轮更新有多大，再检查“更新更大时 Task Score 是否也更高”，并去掉两者都随训练轮次变化造成的共同趋势。',
+      'A Task Vector is the difference between model parameters before and after one round of updating. It tells us how much the parameters changed and, when direction is retained, where they moved. We first track the Frobenius magnitude across all 160 rounds, then test whether larger updates are actually associated with higher Task Score after removing the shared trend with training round.',
     )}</p>
     <MetricEvidenceFigure item={metricCharts.taskVector} />
     <p class="paper__chart-note">{t(
@@ -690,8 +706,8 @@ const twentyRoundScoreWindows = finalResult
     <h3>5.4 {t('谱与方向：不仅写了多少，还要看往哪里写', 'Spectrum and direction: not only how much changed, but where it moved')}</h3>
     <p class="paper__metric-label">{t('① 指标是什么', '① What are the metrics?')}</p>
     <p>{t(
-      '最大 spectral norm 看最强的单一奇异方向；full/base spectral ratio 把更新后完整权重的最大 spectral norm 除以 base 权重的对应值，接近 1 表示最强谱尺度变化很小；rank95 看保留多少个主方向才能覆盖大部分能量；cosine 则直接比较两种方法这一轮参数更新是不是还朝着相似方向。',
-      'The maximum spectral norm tracks the strongest singular direction. The full/base spectral ratio divides the updated full weight’s maximum spectral norm by the corresponding base-weight value, so values near 1 mean the strongest spectral scale changes little. Rank95 asks how many dominant directions capture most of the energy, while cosine compares whether the two methods still move in similar update directions.',
+      '这一节不只看更新大小，还看更新的结构和方向。max spectral norm 表示矩阵最强变化方向的尺度；full/base spectral ratio 比较更新后权重与 base 权重的这个尺度，接近 1 表示最强尺度变化很小；rank95 表示需要多少个主要方向才能覆盖 95% 的变化能量；cosine 直接比较两种方法的参数更新方向是否相似。',
+      'This section looks beyond update size to the structure and direction of parameter change. Max spectral norm measures the scale of the matrix’s strongest change direction; the full/base spectral ratio compares that scale after updating with the base weight, so values near 1 mean little change in the strongest scale. Rank95 counts how many dominant directions are needed to cover 95% of the change energy, while cosine directly compares whether two methods move parameters in similar directions.',
     )}</p>
     <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
     <div class="paper-table-wrap">
@@ -717,8 +733,8 @@ const twentyRoundScoreWindows = finalResult
     <h3>5.5 {t('输出长度与任务步数：单步输出和完整任务路径', 'Output length and task steps: per-step output and full task path')}</h3>
     <p class="paper__metric-label">{t('① 指标是什么', '① What are the metrics?')}</p>
     <p>{t(
-      '这里分三层：每一步输出多少 raw-completion tokens、整个 episode 一共输出多少、完成一题用了多少动作步骤。按你在 W&B 里看到数据的顺序，先放 160 轮“每一步输出长度”原生曲线，再看窗口化的路径分析。',
-      'We separate three levels: raw-completion tokens per step, total output per episode, and action steps per task. Following the W&B reading order, the 160-round tokens-per-step curve comes first, followed by the windowed path analysis.',
+      '这里把一次 WebShop 任务拆成三个长度指标：模型每个动作前生成多少 tokens、整道题累计生成多少 tokens、以及从开始到结束执行了多少个环境动作。这样可以区分“单次输出变长”和“完成一题需要更多步骤”这两种不同变化。',
+      'We use three length measures for one WebShop task: tokens generated before each action, total generated tokens across the full episode, and the number of environment actions from start to finish. This separates longer individual outputs from a task simply requiring more steps.',
     )}</p>
     <MetricEvidenceFigure item={metricCharts.outputLength} />
     <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
@@ -749,8 +765,8 @@ const twentyRoundScoreWindows = finalResult
     <h3>5.6 Entropy：{t('最后看策略行为是不是越来越集中', 'finally, is policy behavior becoming more concentrated?')}</h3>
     <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
     <p>{t(
-      '这里能可靠重建的是 action-family Shannon entropy：把 search、click 等有效动作类型的分布压成一个数。entropy 越低，表示策略越来越集中在少数几类动作上。它不是语言模型 token entropy，因为正式 rollout 没有保存逐 token logits / logprobs。',
-      'What can be reconstructed reliably is action-family Shannon entropy over valid action types such as search and click. Lower entropy means the policy is concentrating on fewer action families. This is not language-model token entropy because the formal rollouts did not persist per-token logits/logprobs.',
+      '这里的 entropy 衡量模型使用不同有效动作类型时有多分散，例如 search 和 click 各占多少。Shannon entropy 越高，动作类型分布越分散；越低，说明行为更集中在少数动作类型。这里算的是 action-family entropy，不是语言模型 token entropy，因为正式 rollout 没有保存逐 token logits / logprobs。',
+      'Here entropy measures how spread out the model is across valid action families such as search and click. Higher Shannon entropy means the action distribution is more spread out; lower entropy means behavior is concentrated on fewer action types. This is action-family entropy, not language-model token entropy, because the formal rollouts did not persist per-token logits/logprobs.',
     )}</p>
     <MetricEvidenceFigure item={metricCharts.entropy} />
     <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
@@ -777,7 +793,7 @@ const twentyRoundScoreWindows = finalResult
   </div>
 
   <div class="paper__analysis-summary" id="analysis-boundary">
-    <h3>5.7 {t('我们现在能解释到哪里？', 'How far can the evidence explain the late change?')}</h3>
+    <h3>5.7 {t('把这些指标合起来后，我们能确定什么、还不能确定什么', 'After combining these metrics, what is established and what remains uncertain?')}</h3>
     <p><strong>{t('确定看到的：', 'Observed: ')}</strong>{t(
       'β-gating 后期 Task Score 回落、任务路径重新变长、更新方向与 Bounded 明显分开，同时 action-family entropy 更集中。',
       'late β-gating Task Score declines, task paths lengthen again, update direction separates from Bounded, and action-family entropy becomes more concentrated.',
