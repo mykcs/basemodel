@@ -193,6 +193,32 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('study.evidence.q17CarrierAudit');
   });
 
+  it('keeps the public study definition-first before results and interpretation', () => {
+    const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
+
+    expect(component).toContain('Bounded Online Recurrence 是什么：用固定 rank128 保存参数历史');
+    expect(component).toContain('Gated Delta 是什么：根据 residual 控制一次新状态写入');
+    expect(component).toContain('这里的“映射”是什么：把更新规则对应到 OpenEVO 参数 State');
+    expect(component).toContain('为什么控制的是有效参数更新 ΔW，而不是 LoRA 的 A / C 数值');
+
+    expect(component).toContain('Task Score 是什么：每轮任务完成程度的连续得分');
+    expect(component).toContain('每 20 轮平均是什么：把连续 20 轮的 Task Score 合成一个均值');
+    expect(component).toContain('最后 20 轮平均和固定终评分别是什么');
+    expect(component).toContain('训练期正式对照是什么：在同一实验设置下比较 Bounded 与 β-gating');
+    expect(component).toContain('计算代价是什么：区分参数更新耗时和整个 Stage 2 耗时');
+
+    const lossWhat = component.indexOf("① 指标是什么");
+    const lossResult = component.indexOf("② 这次实验的结果");
+    const lossAnalysis = component.indexOf("③ 分析");
+    expect(lossWhat).toBeGreaterThan(-1);
+    expect(lossResult).toBeGreaterThan(lossWhat);
+    expect(lossAnalysis).toBeGreaterThan(lossResult);
+
+    expect(component).toContain('Task Vector 就是一轮参数更新前后模型参数的差值');
+    expect(component).toContain('这里的 entropy 衡量模型使用不同有效动作类型时有多分散');
+    expect(component).not.toContain('从 linear attention 的“记忆写入”借一个规则');
+  });
+
   it('keeps trainer/transition speedup separate from whole-Stage2 wall-clock time', () => {
     expect(study.timingComparison.directApply.trainerHours).toBeCloseTo(31.087279689253773, 10);
     expect(study.timingComparison.off.transitionHours).toBeCloseTo(2.024057791739987, 10);
