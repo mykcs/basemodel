@@ -180,11 +180,49 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.evidence.q17CarrierAudit).toContain('240c479bead0450def3feaaa2a169d9a2bc3934c');
 
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
-    expect(component).toContain('参数几乎每轮都在变；Text Memory、Skill 和 Agent System 只少量改动');
-    expect(component).toContain('NOOP 不等于“没有参与”');
-    expect(component).toContain('不等于参数通道对最终能力贡献最大');
+    expect(component).toContain('随着 rollout 积累，参数和非参数状态都会在满足条件时更新');
+    expect(component).toContain('参数 State 是真正写进模型权重、跨轮保留的参数变化');
+    expect(component).toContain('Text Memory 是从 rollout 轨迹中总结出的文字经验');
+    expect(component).toContain('Skill Bundle 是被多个任务支持、可以重复使用的做法');
+    expect(component).toContain('Agent System 是适用范围更广的行为规则');
+    expect(component).toContain('参数什么时候变：');
+    expect(component).toContain('Text Memory 什么时候变：');
+    expect(component).toContain('Skill Bundle 什么时候变：');
+    expect(component).toContain('Agent System 什么时候变：');
+    expect(component).toContain('至少得到 2 个不同任务的证据支持');
+    expect(component).toContain('至少需要 3 个不同任务共同支持');
+    expect(component).toContain('selected=true，可以直接理解成');
+    expect(component).toContain('不能据此说参数一定比非参数状态更重要');
     expect(component).toContain('Completion-First Carrier Contract v2');
     expect(component).toContain('study.evidence.q17CarrierAudit');
+  });
+
+  it('keeps the public study definition-first before results and interpretation', () => {
+    const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
+
+    expect(component).toContain('Bounded Online Recurrence 是什么：用固定 rank128 保存参数历史');
+    expect(component).toContain('Gated Delta 是什么：根据 residual 控制一次新状态写入');
+    expect(component).toContain('这里的“映射”是什么：把更新规则对应到 OpenEVO 参数 State');
+    expect(component).toContain('为什么控制的是有效参数更新 ΔW，而不是 LoRA 的 A / C 数值');
+
+    expect(component).toContain('Task Score 是什么：每轮任务完成程度的连续得分');
+    expect(component).toContain('每 20 轮平均是什么：把连续 20 轮的 Task Score 合成一个均值');
+    expect(component).toContain('最后 20 轮平均和固定终评分别是什么');
+    expect(component).toContain('训练期正式对照是什么：在同一实验设置下比较 Bounded 与 β-gating');
+    expect(component).toContain('计算代价是什么：区分参数更新耗时和整个 Stage 2 耗时');
+    expect(component).toContain('下一步实验是什么：动态 α + 动态 β');
+    expect(component).toContain('证据与复现身份：如何确认这些结果来自哪一组实验');
+
+    const lossWhat = component.indexOf("① 指标是什么");
+    const lossResult = component.indexOf("② 实验结果");
+    const lossAnalysis = component.indexOf("③ 分析");
+    expect(lossWhat).toBeGreaterThan(-1);
+    expect(lossResult).toBeGreaterThan(lossWhat);
+    expect(lossAnalysis).toBeGreaterThan(lossResult);
+
+    expect(component).toContain('Task Vector 就是一轮参数更新前后模型参数的差值');
+    expect(component).toContain('这里的 entropy 衡量模型使用不同有效动作类型时有多分散');
+    expect(component).not.toContain('从 linear attention 的“记忆写入”借一个规则');
   });
 
   it('keeps trainer/transition speedup separate from whole-Stage2 wall-clock time', () => {
@@ -236,15 +274,15 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('范数：长期 State 和本轮更新到底有多大');
     expect(component).toContain('5.3 Task Vector');
     expect(component).toContain('谱与方向');
-    expect(component).toContain('full/base spectral ratio 把更新后完整权重的最大 spectral norm 除以 base 权重的对应值');
+    expect(component).toContain('full/base spectral ratio 比较更新后权重与 base 权重的这个尺度');
     expect(component).toContain('输出长度与任务步数');
     expect(component).toContain('5.6 Entropy');
     expect(component).toContain('5.7');
-    expect(component).toContain('我们现在能解释到哪里？');
+    expect(component).toContain('把这些指标合起来后，我们能确定什么、还不能确定什么');
     expect(component).toContain('① 指标是什么');
-    expect(component).toContain('② 这次实验的结果');
+    expect(component).toContain('② 实验结果');
     expect(component).toContain('③ 分析');
-    expect(component).toContain('动态 α + 动态 β：尚未运行');
+    expect(component).toContain('下一步实验是什么：动态 α + 动态 β');
     expect(component).toContain('study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString');
     expect(component).toContain("import MetricEvidenceFigure from './MetricEvidenceFigure.astro'");
     expect(component).not.toContain("import WandbEvidencePanel from './WandbEvidencePanel.astro'");

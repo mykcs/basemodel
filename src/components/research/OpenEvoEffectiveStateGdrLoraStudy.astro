@@ -231,8 +231,8 @@ const twentyRoundScoreWindows = finalResult
     <p class="paper__section-number">1</p>
     <h2 id="motivation-title">{t('动机：SD-LoRA 越训练越慢', 'Motivation: SD-LoRA gets slower as history grows')}</h2>
     <p>{t(
-      '普通 OpenEVO 的参数通道会把过去每一轮的 SD-LoRA component 留在后续模型里。这样做保留了历史，但 component 数量会跟轮数一起增长；到了后期，每一轮训练都要反复经过越来越多的低秩路径。',
-      'Ordinary OpenEVO carries each historical SD-LoRA component into later model states. This preserves history, but the number of components grows with rounds, so late training repeatedly traverses more low-rank paths.',
+      '普通 OpenEVO 的参数更新方式是：每轮训练得到一个新的 SD-LoRA component，并把过去的 component 一起保留到后续模型。这样参数历史会随轮数持续变长；到了后期，每一轮训练都要经过越来越多的低秩路径，所以参数更新越来越慢。',
+      'Ordinary OpenEVO updates parameters by producing a new SD-LoRA component each round and retaining the earlier components in later model states. The parameter history therefore grows with round count, so late training must traverse more and more low-rank paths and parameter updates become slower.',
     )}</p>
     <MathFormula latex={math.history} label={t('普通 OpenEVO 的累计参数历史', 'Accumulating parameter history in ordinary OpenEVO')} />
     <p class="paper__math-caption">{t('历史 component 随 t 增长。', 'Historical components grow with t.')}</p>
@@ -247,7 +247,7 @@ const twentyRoundScoreWindows = finalResult
     <p class="paper__section-number">2</p>
     <h2 id="method-title">{t('方法：Bounded Online Recurrence、Gated Delta 来源与本实验 β-gating（α 固定为 1）', 'Method: Bounded Online Recurrence, the Gated Delta source, and this β-gating (α fixed at 1) study')}</h2>
 
-    <h3>2.1 {t('Bounded Online Recurrence：把无限增长的历史压成固定 rank128 State', 'Bounded Online Recurrence: compress growing history into a fixed rank128 State')}</h3>
+    <h3>2.1 {t('Bounded Online Recurrence 是什么：用固定 rank128 保存参数历史', 'What is Bounded Online Recurrence? Keep parameter history in a fixed rank128 state')}</h3>
     <p>{t(
       '每一轮仍然先得到一个 rank8 的当前更新 Δt，但不再把所有旧 component 永久并排保存。我们把“上一轮的 rank128 状态 + 当前更新”重新压回 rank128，作为下一轮唯一的参数历史。',
       'Each round still produces a rank-8 current update Δt, but old components are no longer kept side by side forever. The previous rank-128 state plus the current update is compressed back to rank128 and becomes the only parameter history for the next round.',
@@ -259,15 +259,15 @@ const twentyRoundScoreWindows = finalResult
       `The physical rank of parameter history no longer grows with rounds. In this implementation, Bounded Online Recurrence totals about ${study.timingComparison.off.transitionHours.toFixed(2)} hours of parameter transition time, versus ${study.timingComparison.directApply.trainerHours.toFixed(2)} trainer hours for ordinary OpenEVO.`,
     )}</p>
 
-    <h3>2.2 {t('GDR：从 linear attention 的“记忆写入”借一个规则', 'GDR: borrow a memory-write rule from linear attention')}</h3>
+    <h3>2.2 {t('Gated Delta 是什么：根据 residual 控制一次新状态写入', 'What is Gated Delta? Control each new state update from the residual')}</h3>
     <p>{t(
-      '在序列建模里，可以把 State 看成一个“用 key 预测 value”的快速权重矩阵。对最普通的平方误差做一步 SGD，就会得到 Delta Rule：先用旧 State 读出已有内容，再把没有解释掉的 residual 写回。',
-      'In sequence modeling, State can be viewed as a fast-weight matrix that predicts a value from a key. One SGD step on an ordinary squared-error objective gives the Delta Rule: read what prior State already explains, then write back the remaining residual.',
+      'Gated Delta 原本用于持续更新一个 State。给定当前 key，旧 State 会先产生一个预测；目标 value 与这个预测之间的差就是 residual。Delta Rule 只把这部分 residual 写回 State，而不是不区分已有内容、把完整目标再次写一遍。',
+      'Gated Delta was originally defined for continually updating a State. Given the current key, the prior State first produces a prediction; the difference between the target value and that prediction is the residual. The Delta Rule writes only that residual back into State instead of writing the full target again without accounting for what the State already represents.',
     )}</p>
     <MathFormula latex={math.deltaFromRegression} label={t('从 online regression 一步推到 Delta residual write', 'One-step derivation from online regression to the Delta residual write')} />
     <p>{t(
-      'Gated Delta 再给旧 State 加一个 retention α：α 决定先保留多少历史，β 决定这次 residual 写多强。',
-      'Gated Delta then adds a retention factor alpha to the prior State: alpha controls how much history is kept, while beta controls the strength of the residual write.',
+      'Gated Delta 在这个更新上再加入两个控制量：α 决定旧 State 保留多少，β 决定当前 residual 实际写入多强。本实验只让 β 动态变化，α 固定为 1，所以不会额外衰减旧 State。',
+      'Gated Delta adds two controls to this update: alpha determines how much of the prior State is retained, while beta determines the strength of the current residual write. This study varies beta dynamically while fixing alpha to 1, so it adds no extra decay to the prior State.',
     )}</p>
     <MathFormula latex={math.gdr} label={t('Gated Delta Rule 原始状态更新公式', 'Original Gated Delta Rule state update')} />
     <p class="paper__math-caption">{t('论文原式：α 控制旧 State 的保留 / 衰减，β 控制 delta write 的强度。', 'Paper form: α controls retention / decay of the old State, while β controls delta-write strength.')}</p>
@@ -282,10 +282,10 @@ const twentyRoundScoreWindows = finalResult
     )}</p>
     <p class="paper__links"><a href={gdrPaperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={gdrPaperHref} />Gated Delta Networks · ICLR 2025</a> · <a href={gatedHref}>{t('完整推导：从 sequence State 到 OpenEVO 参数写入 →', 'Full derivation: from sequence State to OpenEVO parameter writes →')}</a></p>
 
-    <h3>2.3 {t('从 sequence State 映射到 OpenEVO 的参数 State', 'Mapping sequence State to OpenEVO parameter State')}</h3>
+    <h3>2.3 {t('这里的“映射”是什么：把更新规则对应到 OpenEVO 参数 State', 'What does the mapping mean? Apply the update roles to OpenEVO parameter state')}</h3>
     <p>{t(
-      '我们没有把 linear attention 的 k、v 张量硬塞进 LoRA。保留的是“持续状态 + residual write + 自适应写入强度”这层数学角色，再逐个决定 OpenEVO 里谁来承担这些角色。',
-      'We do not literally insert linear-attention k and v tensors into LoRA. We preserve the mathematical roles—persistent state, residual write, and adaptive write strength—and then identify which OpenEVO objects play those roles.',
+      '这里的“映射”不是把 linear attention 的 k、v 张量直接复制成 LoRA 张量，而是把更新规则中的角色对应过去：长期 State 对应跨轮保留的参数状态，当前训练更新对应要写入的新变化，β 对应当前新变化实际写入多少。',
+      'Here, “mapping” does not mean copying linear-attention k and v tensors into LoRA tensors. It means mapping the roles in the update rule: the persistent State becomes the parameter state kept across rounds, the current training update becomes the proposed new change, and beta controls how much of that new change is actually written.',
     )}</p>
     <div class="paper-table-wrap">
       <table class="paper-table paper-table--mapping">
@@ -312,10 +312,10 @@ const twentyRoundScoreWindows = finalResult
       )}
     </p>
 
-    <h3>2.4 {t('为什么不能直接在 LoRA 的 A / C 因子上做约束', 'Why the gate cannot operate directly on raw LoRA factors')}</h3>
+    <h3>2.4 {t('为什么控制的是有效参数更新 ΔW，而不是 LoRA 的 A / C 数值', 'Why control the effective update ΔW instead of raw LoRA A/C values')}</h3>
     <p>{t(
-      '同一个 LoRA 有效更新可以用很多组 A / C 数值表示。只要 A 乘 s、C 除以 s，真正加到模型上的矩阵完全不变。也就是说，A / C 的数值大小带着“坐标选择”，不是我们真正想控制的学习量。',
-      'The same effective LoRA update can be represented by many A/C factor values. Multiplying A by s and dividing C by s leaves the actual matrix update unchanged, so raw factor magnitudes contain coordinate choice rather than only learning content.',
+      'LoRA 真正改变模型的是 A 与 C 合成后的有效参数更新 ΔW，而不是 A 或 C 单独的数值。同一个 ΔW 可以由很多组 A / C 表示：A 乘 s、C 除以 s，最终加到模型上的 ΔW 不变。因此如果直接根据 A / C 的大小做 gating，控制量会受到表示方式影响，而不是只反映真正的参数变化。',
+      'What actually changes the model in LoRA is the effective parameter update ΔW formed from A and C, not either factor alone. The same ΔW can be represented by many A/C pairs: multiplying A by s and dividing C by s leaves the final model update unchanged. A gate based directly on A/C magnitude would therefore depend on representation choice rather than only on the real parameter change.',
     )}</p>
     <MathFormula latex={math.gauge} label={t('LoRA 因子缩放不改变有效更新', 'LoRA factor rescaling leaves the effective update unchanged')} />
     <p>
@@ -344,8 +344,8 @@ const twentyRoundScoreWindows = finalResult
     <p class="paper__section-number">3</p>
     <h2 id="experiment-title">{t('实验设置：Qwen3-1.7B × WebShop', 'Experiments: Qwen3-1.7B × WebShop')}</h2>
     <p>{t(
-      '三条已完成的线都属于这批 Qwen3-1.7B OpenEVO 实验。Stage 2 都跑 160 轮；Bounded Online Recurrence 与 Bounded Online Recurrence + β-gating（α 固定为 1）才是正式匹配对照，每轮 128 个 rollout，任务、seed、sampling、horizon、replay 和 optimizer recipe 对齐。动态 α + 动态 β 还没有运行，不属于这个正式对照。',
-      'All three completed lines belong to this Qwen3-1.7B OpenEVO study family. Stage 2 runs for 160 rounds. Bounded Online Recurrence and Bounded Online Recurrence + β-gating (α fixed at 1) form the formal matched pair with 128 rollouts per round and matched tasks, seeds, sampling, horizon, replay, and optimizer recipe. Dynamic α + dynamic β has not been run and is not part of this formal contrast.',
+      '这一节先说明三条实验各自改了什么、哪些条件保持相同。三条已完成实验都使用 Qwen3-1.7B 和 WebShop，Stage 2 都跑 160 轮。真正的正式匹配对照只有 Bounded Online Recurrence 与 Bounded Online Recurrence + β-gating（α 固定为 1）：它们每轮 128 个 rollout，并对齐任务、seed、sampling、horizon、replay 和 optimizer recipe。普通 OpenEVO 是更早完成的前序实验；动态 α + 动态 β 还没有运行。',
+      'This section first states what each run changes and which conditions are held fixed. All three completed experiments use Qwen3-1.7B and WebShop and run Stage 2 for 160 rounds. The formal matched pair is Bounded Online Recurrence versus Bounded Online Recurrence + β-gating (α fixed at 1): both use 128 rollouts per round with matched tasks, seeds, sampling, horizon, replay, and optimizer recipe. Ordinary OpenEVO is an earlier predecessor run; dynamic α + dynamic β has not been run.',
     )}</p>
     <dl class="paper__setup">
       <div><dt>{t('模型', 'Model')}</dt><dd>Qwen3-1.7B</dd></div>
@@ -361,14 +361,38 @@ const twentyRoundScoreWindows = finalResult
     )}</p>
 
     <div id="carrier-ledger">
-      <h3>3.1 {t('参数几乎每轮都在变；Text Memory、Skill 和 Agent System 只少量改动', 'Parameters change almost every round; Text Memory, Skill, and Agent System change only sparsely')}</h3>
+      <h3>3.1 {t('随着 rollout 积累，参数和非参数状态都会在满足条件时更新', 'As rollouts accumulate, both parametric and non-parametric state can update when their conditions are met')}</h3>
+      <p class="paper__lede">{t(
+        '每一轮先完成 128 个 rollout。Rollout 结束后，OpenEVO 会同时检查两类东西：模型参数要不要继续学习，以及 Text Memory、Skill Bundle、Agent System 这些非参数经验要不要改。四条通道都有机会把新状态带到下一轮，但更新条件不同；条件不满足，就继续沿用上一轮。',
+        'Each round first completes 128 rollouts. OpenEVO then checks two kinds of state in parallel: whether the model parameters should keep learning from this round, and whether the non-parametric Text Memory, Skill Bundle, or Agent System should change. All four channels can carry a new state into the next round, but each has its own update condition; otherwise the previous state is retained.',
+      )}</p>
       <p>{t(
-        'OpenEVO 带到下一轮的状态不只有参数。除了 SD-LoRA / Bounded 参数 State，它还会携带 Text Memory、Skill Bundle 和 Agent System。下面的 UPDATE 表示这一轮最终接受了新状态并带入下一轮；NOOP 表示保留上一轮状态。',
-        'The state carried into the next OpenEVO round is not only parametric. Alongside the SD-LoRA / Bounded parameter state, OpenEVO can carry Text Memory, Skill Bundle, and Agent System. UPDATE below means a new terminal state was accepted and carried forward; NOOP means the prior state was retained.',
+        '这里的四种状态含义不同：参数 State 是真正写进模型权重、跨轮保留的参数变化；Text Memory 是从 rollout 轨迹中总结出的文字经验；Skill Bundle 是被多个任务支持、可以重复使用的做法；Agent System 是适用范围更广的行为规则。后三者叫“非参数状态”，只是因为它们不写进模型权重；后续做题时，系统仍可以把已有内容放进模型上下文。',
+        'The four state types play different roles. Parameter State is the parameter change written into model weights and carried across rounds. Text Memory is textual experience summarized from rollout trajectories. Skill Bundle stores reusable procedures supported by multiple tasks. Agent System stores broader behavioral rules. The latter three are called non-parametric only because they are not written into model weights; their existing content can still be placed into model context during later tasks.',
+      )}</p>
+      <p>{t(
+        '一轮可以直接理解成：rollout 产生轨迹 → 从轨迹里提取可验证证据 → 四条状态通道分别检查自己的更新门槛 → 满足条件就写入新状态，不满足就沿用旧状态。仓库原始收据把这两种结果记作 UPDATE 和 NOOP。',
+        'A round can be read as: rollouts produce trajectories → verifiable evidence is extracted → each of the four state channels checks its own update gate → a new state is written when the condition is met, otherwise the previous state is retained. The raw repository receipts call these two outcomes UPDATE and NOOP.',
+      )}</p>
+      <p><strong>{t('参数什么时候变：', 'Parameter update:')}</strong>{t(
+        '本轮至少出现 1 条“干净的完整成功”轨迹：任务真正完成，而且没有解析失败、回退路径、修复或无效记录等工程异常。普通 OpenEVO 用这些成功轨迹产生新的 rank8 SD-LoRA 更新；后两组再把当前参数更新写进固定 rank128 State。',
+        'At least one clean exact-success trajectory must appear in the round: the task is truly completed without parser, fallback, repair, invalid, or other engineering failures. Ordinary OpenEVO uses these successes to produce a new rank-8 SD-LoRA update; the latter two runs then write the current parameter update into the fixed-rank128 State.',
+      )}</p>
+      <p><strong>{t('Text Memory 什么时候变：', 'Text Memory update:')}</strong>{t(
+        '出现能由轨迹验证、值得总结的新经验，例如干净成功、同一任务不同 rollout 的分数对照，或可验证的重复失败模式；生成的新 Memory 还要通过格式与内容检查。否则继续用上一版。',
+        'There must be new trajectory-verifiable experience worth summarizing, such as a clean success, a within-task score contrast across rollouts, or a verifiable repeated failure pattern; the generated Memory must also pass format and content checks. Otherwise the previous version is retained.',
+      )}</p>
+      <p><strong>{t('Skill Bundle 什么时候变：', 'Skill Bundle update:')}</strong>{t(
+        '同一种可复用做法或错误模式至少得到 2 个不同任务的证据支持，而且当前轮仍有对应证据；生成的新 Skill 还要通过合同检查。否则继续用上一版。',
+        'The same reusable procedure or failure pattern must be supported by at least two distinct tasks, with corresponding evidence still present in the current round; the generated Skill must also pass its contract. Otherwise the previous version is retained.',
+      )}</p>
+      <p><strong>{t('Agent System 什么时候变：', 'Agent System update:')}</strong>{t(
+        '更全局的行为规则至少需要 3 个不同任务共同支持，而且当前轮仍有对应证据；生成的新 Agent System 还要通过合同检查。否则继续用上一版。',
+        'A more global behavioral rule must be supported by at least three distinct tasks, with corresponding evidence still present in the current round; the generated Agent System must also pass its contract. Otherwise the previous version is retained.',
       )}</p>
 
       <figure class="paper-table-figure">
-        <div class="paper-table-wrap" aria-label={t('三组 OpenEVO 160 轮四条状态通道的 UPDATE 和 NOOP 次数', 'UPDATE and NOOP counts for four state channels across 160 rounds in the three OpenEVO runs')}>
+        <div class="paper-table-wrap" aria-label={t('三组 OpenEVO 160 轮四条状态通道的更新和沿用次数', 'Update and retained-state counts for four state channels across 160 rounds in the three OpenEVO runs')}>
           <table class="paper-table paper-table--carrier-ledger" aria-describedby="carrier-ledger-caption">
             <thead>
               <tr>
@@ -381,27 +405,27 @@ const twentyRoundScoreWindows = finalResult
             <tbody>
               <tr>
                 <td><strong>{t('参数 State', 'Parameter state')}</strong></td>
-                <td><strong>{study.carrierAnalysis.ordinary.parameterState.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.parameterState.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.bounded.parameterState.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.parameterState.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.betaGating.parameterState.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.parameterState.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.ordinary.parameterState.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.parameterState.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.bounded.parameterState.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.parameterState.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.betaGating.parameterState.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.parameterState.noops} {t('次沿用', 'retained')}</span></td>
               </tr>
               <tr>
                 <td><strong>Text Memory</strong></td>
-                <td><strong>{study.carrierAnalysis.ordinary.textMemory.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.textMemory.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.bounded.textMemory.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.textMemory.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.betaGating.textMemory.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.textMemory.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.ordinary.textMemory.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.textMemory.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.bounded.textMemory.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.textMemory.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.betaGating.textMemory.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.textMemory.noops} {t('次沿用', 'retained')}</span></td>
               </tr>
               <tr>
                 <td><strong>Skill Bundle</strong></td>
-                <td><strong>{study.carrierAnalysis.ordinary.skillBundle.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.skillBundle.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.bounded.skillBundle.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.skillBundle.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.betaGating.skillBundle.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.skillBundle.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.ordinary.skillBundle.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.skillBundle.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.bounded.skillBundle.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.skillBundle.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.betaGating.skillBundle.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.skillBundle.noops} {t('次沿用', 'retained')}</span></td>
               </tr>
               <tr>
                 <td><strong>Agent System</strong></td>
-                <td><strong>{study.carrierAnalysis.ordinary.agentSystem.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.agentSystem.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.bounded.agentSystem.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.agentSystem.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.betaGating.agentSystem.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.agentSystem.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.ordinary.agentSystem.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.agentSystem.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.bounded.agentSystem.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.agentSystem.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.betaGating.agentSystem.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.agentSystem.noops} {t('次沿用', 'retained')}</span></td>
               </tr>
             </tbody>
           </table>
@@ -409,8 +433,8 @@ const twentyRoundScoreWindows = finalResult
         <figcaption id="carrier-ledger-caption" class="paper-table__caption">
           <strong>{t('表 2.', 'Table 2.')}</strong>{' '}
           {t(
-            '160 轮终态更新账本。普通 OpenEVO 的参数行统计 Parametric SD-LoRA terminal receipt；后两组的参数行统计 Bounded parameter transition terminal receipt。普通 OpenEVO 的四条计数来自 160 份封存 ROUND_COMPLETE 收据的历史对账；后两组来自正式实验封存的 Stage 2 资源分析。',
-            'Terminal update ledger across 160 rounds. The parameter row for ordinary OpenEVO counts Parametric SD-LoRA terminal receipts; the latter two parameter rows count Bounded parameter-transition terminal receipts. The ordinary OpenEVO counts come from a historical reconciliation of all 160 sealed ROUND_COMPLETE receipts; the latter two come from the sealed Stage-2 resource analysis of the formal study.',
+            '160 轮最终状态账本。中文表格把原始收据里的 UPDATE 写成“更新”，把 NOOP 写成“沿用”。普通 OpenEVO 的参数行统计 Parametric SD-LoRA terminal receipt；后两组的参数行统计 Bounded parameter transition terminal receipt。普通 OpenEVO 的四条计数来自 160 份封存 ROUND_COMPLETE 收据的历史对账；后两组来自正式实验封存的 Stage 2 资源分析。',
+            'Final-state ledger across 160 rounds. The table renders raw receipt UPDATE as “update” and NOOP as “retained.” The parameter row for ordinary OpenEVO counts Parametric SD-LoRA terminal receipts; the latter two parameter rows count Bounded parameter-transition terminal receipts. The ordinary OpenEVO counts come from a historical reconciliation of all 160 sealed ROUND_COMPLETE receipts; the latter two come from the sealed Stage-2 resource analysis of the formal study.',
           )}
           {' '}<a href={study.evidence.q17CarrierAudit} target="_blank" rel="noreferrer"><ExternalBrandMark href={study.evidence.q17CarrierAudit} />{t('普通 OpenEVO 载体对账', 'OpenEVO carrier audit')}</a>
           {' · '}<a href={study.evidence.resourceAnalysis} target="_blank" rel="noreferrer"><ExternalBrandMark href={study.evidence.resourceAnalysis} />{t('Bounded / β-gating 封存收据', 'Bounded / β-gating sealed receipt')}</a>
@@ -418,20 +442,20 @@ const twentyRoundScoreWindows = finalResult
       </figure>
 
       <p class="paper__lede">{t(
-        '按终态 UPDATE 频率看，这批 160 轮实验持续变化最频繁的是参数通道；Text Memory、Skill Bundle 和 Agent System 的终态变化都很稀疏。这只描述“状态多久改一次”，不等于参数通道对最终能力贡献最大。',
-        'By terminal UPDATE frequency, the parameter channel is the most continuously changing path in these 160-round runs; terminal changes to Text Memory, Skill Bundle, and Agent System are sparse. This describes how often state changes, not which channel contributes most to final capability.',
+        '把上面的门槛和 160 轮账本放在一起看，结果就很直观：参数通道几乎每轮都会产生新状态，而 Text Memory、Skill Bundle 和 Agent System 只有在证据达到各自门槛时才改写，所以次数少得多。这里统计的是“内容多久改一次”，不能据此说参数一定比非参数状态更重要。',
+        'Putting the update gates next to the 160-round ledger makes the pattern straightforward: the parameter channel produces a new state in almost every round, while Text Memory, Skill Bundle, and Agent System are rewritten only when evidence reaches their respective gates. This measures how often content changes, not which channel contributes most to final capability.',
       )}</p>
       <p>{t(
-        `NOOP 不等于“没有参与”。普通 OpenEVO 里，Skill Bundle 虽然只在 R0 更新 1 次，但在 ${study.carrierAnalysis.ordinary.runtimeReadback.recordedEnvironmentSteps.toLocaleString('en-US')} 个已记录环境 step 中仍被运行时选中 ${study.carrierAnalysis.ordinary.runtimeReadback.skillBundle.selected.toLocaleString('en-US')} 次；Text Memory 被选中 ${study.carrierAnalysis.ordinary.runtimeReadback.textMemory.selected.toLocaleString('en-US')} 次，Agent System 被选中 ${study.carrierAnalysis.ordinary.runtimeReadback.agentSystem.selected.toLocaleString('en-US')} 次。也就是说，“内容没变”和“没有进入模型上下文”是两件不同的事。`,
-        `NOOP does not mean “unused.” In ordinary OpenEVO, Skill Bundle updated only once at R0, yet it was still selected at runtime for ${study.carrierAnalysis.ordinary.runtimeReadback.skillBundle.selected.toLocaleString('en-US')} of ${study.carrierAnalysis.ordinary.runtimeReadback.recordedEnvironmentSteps.toLocaleString('en-US')} recorded environment steps; Text Memory was selected ${study.carrierAnalysis.ordinary.runtimeReadback.textMemory.selected.toLocaleString('en-US')} times and Agent System ${study.carrierAnalysis.ordinary.runtimeReadback.agentSystem.selected.toLocaleString('en-US')} times. “The content did not change” and “the carrier was not in the model context” are different claims.`,
+        `“沿用上一轮”不等于“后续做题时不用它”。原始运行日志里的 selected=true，可以直接理解成“这一环境 step 把这份已有内容放进模型上下文”。普通 OpenEVO 里，Skill Bundle 虽然只在 R0 更新 1 次，但在 ${study.carrierAnalysis.ordinary.runtimeReadback.recordedEnvironmentSteps.toLocaleString('en-US')} 个已记录环境 step 中实际放进模型上下文 ${study.carrierAnalysis.ordinary.runtimeReadback.skillBundle.selected.toLocaleString('en-US')} 次；Text Memory 放进上下文 ${study.carrierAnalysis.ordinary.runtimeReadback.textMemory.selected.toLocaleString('en-US')} 次，Agent System 放进上下文 ${study.carrierAnalysis.ordinary.runtimeReadback.agentSystem.selected.toLocaleString('en-US')} 次。所以，“这一轮没有改内容”和“后续 rollout 没有用这份内容”是两件完全不同的事。`,
+        `“Retained from the previous round” does not mean “unused later.” In the raw runtime log, selected=true simply means that, for this environment step, the existing carrier content was placed into the model context. In ordinary OpenEVO, Skill Bundle updated only once at R0, yet it entered the model context for ${study.carrierAnalysis.ordinary.runtimeReadback.skillBundle.selected.toLocaleString('en-US')} of ${study.carrierAnalysis.ordinary.runtimeReadback.recordedEnvironmentSteps.toLocaleString('en-US')} recorded environment steps; Text Memory was selected ${study.carrierAnalysis.ordinary.runtimeReadback.textMemory.selected.toLocaleString('en-US')} times and Agent System ${study.carrierAnalysis.ordinary.runtimeReadback.agentSystem.selected.toLocaleString('en-US')} times. So “the content did not change this round” and “later rollouts did not use it” are different claims.`,
       )}</p>
       <p>{t(
-        `后两组也不是简单把这三类非参数状态关掉：封存收据记录到 Bounded 组的 Text Memory / Skill / Agent producer 分别消耗 ${study.carrierAnalysis.bounded.producerModelCalls.textMemory} / ${study.carrierAnalysis.bounded.producerModelCalls.skillBundle} / ${study.carrierAnalysis.bounded.producerModelCalls.agentSystem} 次模型调用，β-gating 组分别是 ${study.carrierAnalysis.betaGating.producerModelCalls.textMemory} / ${study.carrierAnalysis.betaGating.producerModelCalls.skillBundle} / ${study.carrierAnalysis.betaGating.producerModelCalls.agentSystem} 次。这是“生成 / 修复端调用次数”，不是 Q17 的 runtime selected step，两个口径不直接横比。`,
-        `The latter two runs did not simply disable the external carriers either. Sealed receipts record ${study.carrierAnalysis.bounded.producerModelCalls.textMemory} / ${study.carrierAnalysis.bounded.producerModelCalls.skillBundle} / ${study.carrierAnalysis.bounded.producerModelCalls.agentSystem} Text Memory / Skill / Agent producer model calls for Bounded, and ${study.carrierAnalysis.betaGating.producerModelCalls.textMemory} / ${study.carrierAnalysis.betaGating.producerModelCalls.skillBundle} / ${study.carrierAnalysis.betaGating.producerModelCalls.agentSystem} for β-gating. These are producer generation/repair calls, not Q17 runtime-selected steps, so the two denominators are not compared directly.`,
+        `后两组也没有把这三类非参数状态关掉。即使某一轮最后沿用了旧内容，系统仍可能运行生成 / 修复流程，检查有没有新的合格候选。封存收据记录到 Bounded 组的 Text Memory / Skill / Agent 分别消耗 ${study.carrierAnalysis.bounded.producerModelCalls.textMemory} / ${study.carrierAnalysis.bounded.producerModelCalls.skillBundle} / ${study.carrierAnalysis.bounded.producerModelCalls.agentSystem} 次模型调用，β-gating 组分别是 ${study.carrierAnalysis.betaGating.producerModelCalls.textMemory} / ${study.carrierAnalysis.betaGating.producerModelCalls.skillBundle} / ${study.carrierAnalysis.betaGating.producerModelCalls.agentSystem} 次。这个数字是在数“为了检查和生成候选用了多少次模型调用”，不是在数“多少个环境 step 把内容放进模型上下文”，所以不能和上面的 step 数直接比较。`,
+        `The latter two runs did not disable these non-parametric states either. Even when a round retains the old content, generation or repair may still run to check whether a new valid candidate exists. Sealed receipts record ${study.carrierAnalysis.bounded.producerModelCalls.textMemory} / ${study.carrierAnalysis.bounded.producerModelCalls.skillBundle} / ${study.carrierAnalysis.bounded.producerModelCalls.agentSystem} Text Memory / Skill / Agent producer model calls for Bounded, and ${study.carrierAnalysis.betaGating.producerModelCalls.textMemory} / ${study.carrierAnalysis.betaGating.producerModelCalls.skillBundle} / ${study.carrierAnalysis.betaGating.producerModelCalls.agentSystem} for β-gating. These count model calls used to inspect and generate candidates, not environment steps where the content entered the model context, so the denominators are not compared directly.`,
       )}</p>
       <p class="paper__boundary">{t(
-        'Bounded 与 β-gating 两组使用同一套外部状态生成、校验和修复规则（Completion-First Carrier Contract v2）；实际 Memory / Skill / Agent 内容是否更新，是 treatment 之后自然产生的下游状态。不能为了“控制变量”强行让两组更新次数相同，也不能只凭这张 UPDATE 表把最终分数差归因给某一个载体。',
-        'Bounded and β-gating use the same external-carrier generation, validation, and repair rules (Completion-First Carrier Contract v2); whether Memory / Skill / Agent content actually changes is a downstream state that can naturally diverge after treatment. We should neither force equal update counts as a “control” nor attribute the final score gap to one carrier from this UPDATE table alone.',
+        'Bounded 与 β-gating 两组使用同一套外部状态生成、校验和修复规则（Completion-First Carrier Contract v2）；两组的参数方法不同以后，后续 rollout 也会不同，因此 Memory / Skill / Agent 在第几轮满足更新条件，是自然产生的下游结果。不能为了“控制变量”强行让两组更新次数相同，也不能只凭这张 UPDATE 表把最终分数差归因给某一个载体。',
+        'Bounded and β-gating use the same external-carrier generation, validation, and repair rules (Completion-First Carrier Contract v2); once the parameter methods differ, later rollouts can also differ, so the rounds in which Memory / Skill / Agent meet their update conditions are downstream outcomes that can naturally diverge. We should neither force equal update counts as a “control” nor attribute the final score gap to one carrier from this UPDATE table alone.',
       )}</p>
     </div>
   </section>
@@ -444,7 +468,7 @@ const twentyRoundScoreWindows = finalResult
     'We first establish task performance before moving into loss, parameter geometry, and behavior diagnostics. The sequence is the raw 160-round Task Score, non-overlapping 20-round means, the last-20 mean, the fixed 128-task final, and the matched training-period success statistics for the latter two runs.',
   )}</p>
 
-  <h3>4.1 {t('Task Score：先看 160 轮完整过程', 'Task Score: start with the full 160-round trajectory')}</h3>
+  <h3>4.1 {t('Task Score 是什么：每轮任务完成程度的连续得分', 'What is Task Score? A continuous measure of task completion each round')}</h3>
   <p>{t(
     'Task Score 是 WebShop 每轮任务结束后的连续得分平均值 × 100；部分完成也可能拿到部分分。下面先看完整 160 轮，而不是先挑某个末尾窗口。完整成功率是另一项更严格的指标：只有 task_score = 1.0 才算完整做对。',
     'Task Score is the mean terminal WebShop task score multiplied by 100; partial completion can receive partial credit. We start with all 160 rounds instead of selecting a late window first. Exact success is a stricter metric and counts only task_score = 1.0.',
@@ -459,7 +483,11 @@ const twentyRoundScoreWindows = finalResult
     'Single-round values are noisy because the sampled WebShop tasks vary by round. The curve is useful for the full training shape, not for declaring a result from one peak, so the next view aggregates the same trajectories into 20-round windows.',
   )}</p>
 
-  <h3>4.2 {t('每 20 轮平均：把抖动压低，再看上升和回落发生在哪里', 'Every 20 rounds: reduce noise and locate rises or reversals')}</h3>
+  <h3>4.2 {t('每 20 轮平均是什么：把连续 20 轮的 Task Score 合成一个均值', 'What is the 20-round mean? Average each consecutive block of 20 Task Scores')}</h3>
+  <p>{t(
+    '单轮 Task Score 会受到这一轮具体抽到哪些 WebShop 任务影响。这里不改变原始数据，只把 R0–R19、R20–R39 这样的连续 20 轮分别求平均，用来更清楚地看训练水平在哪些阶段上升、持平或回落。',
+    'A single-round Task Score depends partly on which WebShop tasks are sampled in that round. This view does not change the underlying data: it averages consecutive windows such as R0–R19 and R20–R39 so rises, plateaus, and declines across training are easier to see.',
+  )}</p>
   <figure class="paper__derived-figure" data-ui-audit="contrast layout">
     <img
       src="/research/seed-openevo/evidence/wandb-threeway/task-score-20-round-mean.svg"
@@ -501,7 +529,11 @@ const twentyRoundScoreWindows = finalResult
     'This view exposes an important turn: ordinary OpenEVO and Bounded reach their highest 20-round means in R140–R159, while β-gating (α fixed at 1) reaches a higher window in R120–R139 and then declines in the final 20 rounds. This describes the trajectory; it does not assign that turn to any parameter diagnostic.',
   )}</p>
 
-  <h3>4.3 {t('最后 20 轮平均与固定 128 题终评：两个问题，放在一起看但不混为一谈', 'Last-20 mean and fixed 128-task final: two questions, shown together but kept distinct')}</h3>
+  <h3>4.3 {t('最后 20 轮平均和固定终评分别是什么', 'What are the last-20 mean and the fixed final?')}</h3>
+  <p>{t(
+    '最后 20 轮平均使用 R140–R159 实际训练时每轮抽到的不同任务，回答“训练结束前通常处在什么水平”。固定终评则在训练结束后，让三组最终模型做同一套、同一顺序的 128 题，回答“在完全相同题目上最终表现怎样”。两者都重要，但测的不是同一件事。',
+    'The last-20 mean uses the different tasks actually sampled during R140–R159 and asks what level the model typically occupies near the end of training. The fixed final is run after training and gives all three final models the same 128 tasks in the same order, asking how they perform on an identical panel. Both matter, but they measure different things.',
+  )}</p>
   <div class="paper-table-wrap">
     <table class="paper-table">
       <thead><tr><th>{t('实验', 'Experiment')}</th><th>{t('最后 20 轮平均 Task Score', 'Mean Task Score, last 20 rounds')}</th><th>{t('这列在测什么', 'What this measures')}</th></tr></thead>
@@ -535,7 +567,11 @@ const twentyRoundScoreWindows = finalResult
 
   {finalResult ? (
     <>
-      <h3>4.4 {t('训练期成功率：只比较同设置正式对照的 Bounded 与 β-gating（α 固定为 1）', 'Training-period success: only the truly matched Bounded and β-gating (α fixed at 1) runs')}</h3>
+      <h3>4.4 {t('训练期正式对照是什么：在同一实验设置下比较 Bounded 与 β-gating', 'What is the formal training-period comparison? Compare Bounded and β-gating under the same setup')}</h3>
+      <p>{t(
+        '这里不再把普通 OpenEVO 放进正式统计比较，因为它不是同一次匹配实验。我们只比较后两组在 R1–R159 的平均 reward、完整成功率，以及 reward 差值的不确定区间。平均 reward 看整体完成程度，exact success 只算完全做对；95% 区间用来判断观测到的 reward 差值是否稳定到足以排除 0。',
+        'Ordinary OpenEVO is not included in this formal statistical comparison because it is not part of the same matched campaign. We compare only the latter two runs over R1–R159 using mean reward, exact-success rate, and an uncertainty interval for the reward difference. Mean reward measures overall degree of completion, exact success counts only fully solved tasks, and the 95% interval asks whether the observed reward difference is stable enough to exclude zero.',
+      )}</p>
       <div class="paper-table-wrap">
         <table class="paper-table">
           <thead><tr><th>{t('正式指标', 'Formal metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th><th>{t('差值', 'Delta')}</th></tr></thead>
@@ -554,7 +590,11 @@ const twentyRoundScoreWindows = finalResult
   ) : <p>{t('正式结果尚未封存。', 'Formal result is not sealed.')}</p>}
 
   <div id="compute">
-    <h3>4.5 {t('计算代价：真正的大幅加速发生在参数更新阶段', 'Compute: the large speedup is in parameter updates')}</h3>
+    <h3>4.5 {t('计算代价是什么：区分参数更新耗时和整个 Stage 2 耗时', 'What compute cost is measured? Separate parameter-update time from full Stage-2 time')}</h3>
+    <p>{t(
+      '这里有两个不同时间口径。参数 trainer / transition 累计时间只统计参数更新这一步用了多久；Stage 2 wall clock 则包含 rollout、非参数状态处理、调度和其他阶段。只有先把这两个口径分开，才能正确理解 13–15× 加速到底发生在哪里。',
+      'There are two different timing scopes here. Parameter trainer / transition time counts only the parameter-update stage, while Stage-2 wall-clock time also includes rollouts, non-parametric state processing, scheduling, and other phases. Separating the two is necessary to interpret where the 13–15× speedup actually occurs.',
+    )}</p>
     <div class="paper-table-wrap">
       <table class="paper-table">
         <thead><tr><th>{t('时间口径', 'Timing')}</th><th>{names.baseline}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
@@ -585,11 +625,11 @@ const twentyRoundScoreWindows = finalResult
     <h3>5.1 loss：{t('训练有没有真的在拟合', 'did optimization actually fit the training records?')}</h3>
     <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
     <p>{t(
-      '这里的 loss 是 SD-LoRA trainer 在发生参数更新的轮次里记录的平均训练损失。它最适合回答“优化器有没有把当前训练记录拟合下去”，但它不直接等于 WebShop 做题能力。',
-      'This loss is the mean SD-LoRA trainer loss on rounds that actually perform a parameter update. It answers whether the optimizer is fitting the current training records, not whether WebShop task performance is improving.',
+      '这里的 loss 是发生参数更新时，trainer 对当前训练记录计算的平均训练误差。loss 下降，表示模型越来越能拟合这些训练记录；但它只描述训练目标拟合得怎样，不直接表示 WebShop 做题分数会更高。',
+      'This loss is the mean training error computed by the trainer on rounds that actually update parameters. A lower loss means the model fits those training records better, but it measures fit to the training objective rather than directly measuring WebShop task performance.',
     )}</p>
     <MetricEvidenceFigure item={metricCharts.loss} />
-    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
       <table class="paper-table">
         <thead><tr><th>{t('实验', 'Experiment')}</th><th>R0 loss</th><th>R159 loss</th><th>{t('缺失更新轮', 'missing update rounds')}</th></tr></thead>
@@ -611,14 +651,14 @@ const twentyRoundScoreWindows = finalResult
     <h3>5.2 {t('范数：长期 State 和本轮更新到底有多大', 'Norms: how large are the long-term State and the current update?')}</h3>
     <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
     <p>{t(
-      'Frobenius norm 可以把一个参数矩阵的总体大小压成一个数。这里先只问最简单的“有多大”：长期 State 多大、本轮 Task Vector 多大；先不讨论方向。',
-      'The Frobenius norm compresses the overall magnitude of a parameter matrix into one number. We first ask only the simplest question—how large is the long-term State and how large is the current Task Vector—without yet discussing direction.',
+      'Frobenius norm 是参数矩阵所有元素整体变化大小的一个汇总数。这里用它分别衡量长期参数 State 有多大、当前一轮 Task Vector 有多大；它只回答“变化量有多大”，不回答“往哪个方向变”。',
+      'The Frobenius norm summarizes the overall magnitude of all entries in a parameter matrix. Here it measures the size of the long-term parameter State and the current-round Task Vector. It answers how large the change is, not which direction it points.',
     )}</p>
     <p class="paper__chart-note">{t(
       '这里的 State / Final Task Vector 几何表只来自后两组同设置正式对照；普通 OpenEVO 是更早的前序实验，不在这份成对参数 State 快照里。下一节会用它自己的逐轮 Task Vector 数据做趋势与相关性诊断。',
       'This State / Final Task Vector geometry table comes only from the latter two matched formal runs. Ordinary OpenEVO is an earlier predecessor run and is not part of this paired parameter-State snapshot; the next section uses its own per-round Task Vector history for trend and association diagnostics.',
     )}</p>
-    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
       <table class="paper-table">
         <thead><tr><th>{t('Frobenius 指标', 'Frobenius metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
@@ -640,15 +680,15 @@ const twentyRoundScoreWindows = finalResult
     <h3>5.3 Task Vector：{t('参数更新大小和分数真的一起变吗', 'does update magnitude really move with score?')}</h3>
     <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
     <p>{t(
-      'Task Vector 是一轮训练前后的参数差。W&B 曲线先展示 160 轮 Frobenius 大小；随后再问这个大小和 Task Score 的相关关系是不是在去掉共同训练趋势以后仍然存在。',
-      'A Task Vector is the parameter difference across one training round. The W&B curve first shows its 160-round Frobenius magnitude; we then ask whether its relationship with Task Score survives after removing the shared training trend.',
+      'Task Vector 就是一轮参数更新前后模型参数的差值。它告诉我们这一轮参数改了多少、往哪里改。这里先用 Frobenius norm 看 160 轮每轮更新有多大，再检查“更新更大时 Task Score 是否也更高”，并去掉两者都随训练轮次变化造成的共同趋势。',
+      'A Task Vector is the difference between model parameters before and after one round of updating. It tells us how much the parameters changed and, when direction is retained, where they moved. We first track the Frobenius magnitude across all 160 rounds, then test whether larger updates are actually associated with higher Task Score after removing the shared trend with training round.',
     )}</p>
     <MetricEvidenceFigure item={metricCharts.taskVector} />
     <p class="paper__chart-note">{t(
       '采样口径：三条曲线都使用 R0–R159 的逐轮 Task Vector Frobenius，每条 160 个点，横轴密度和 y 轴量程完全一致。网页发布图按封存逐轮数据统一采样；W&B 链接保留原始观测入口。下面的相关性统计只针对普通 OpenEVO 的 160 轮配对数据；另外两条曲线在这里用于比较逐轮更新幅度。',
       'Sampling: all three curves use per-round Task Vector Frobenius over R0–R159, with 160 points per curve and a shared x-density and y-scale. The publication figure normalizes sampling from sealed per-round evidence, while the W&B link preserves the original observability surface. The association statistics below use only the 160 paired rounds from ordinary OpenEVO; the other two curves are shown here for per-round update-magnitude comparison.',
     )}</p>
-    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
       <table class="paper-table">
         <thead><tr><th>{t('Task Vector 诊断', 'Task Vector diagnostic')}</th><th>{t('结果', 'Result')}</th></tr></thead>
@@ -670,10 +710,10 @@ const twentyRoundScoreWindows = finalResult
     <h3>5.4 {t('谱与方向：不仅写了多少，还要看往哪里写', 'Spectrum and direction: not only how much changed, but where it moved')}</h3>
     <p class="paper__metric-label">{t('① 指标是什么', '① What are the metrics?')}</p>
     <p>{t(
-      '最大 spectral norm 看最强的单一奇异方向；full/base spectral ratio 把更新后完整权重的最大 spectral norm 除以 base 权重的对应值，接近 1 表示最强谱尺度变化很小；rank95 看保留多少个主方向才能覆盖大部分能量；cosine 则直接比较两种方法这一轮参数更新是不是还朝着相似方向。',
-      'The maximum spectral norm tracks the strongest singular direction. The full/base spectral ratio divides the updated full weight’s maximum spectral norm by the corresponding base-weight value, so values near 1 mean the strongest spectral scale changes little. Rank95 asks how many dominant directions capture most of the energy, while cosine compares whether the two methods still move in similar update directions.',
+      '这一节不只看更新大小，还看更新的结构和方向。max spectral norm 表示矩阵最强变化方向的尺度；full/base spectral ratio 比较更新后权重与 base 权重的这个尺度，接近 1 表示最强尺度变化很小；rank95 表示需要多少个主要方向才能覆盖 95% 的变化能量；cosine 直接比较两种方法的参数更新方向是否相似。',
+      'This section looks beyond update size to the structure and direction of parameter change. Max spectral norm measures the scale of the matrix’s strongest change direction; the full/base spectral ratio compares that scale after updating with the base weight, so values near 1 mean little change in the strongest scale. Rank95 counts how many dominant directions are needed to cover 95% of the change energy, while cosine directly compares whether two methods move parameters in similar directions.',
     )}</p>
-    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
       <table class="paper-table paper-table--dense-results">
         <thead><tr><th>{t('参数几何指标', 'Parameter-geometry metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
@@ -697,11 +737,11 @@ const twentyRoundScoreWindows = finalResult
     <h3>5.5 {t('输出长度与任务步数：单步输出和完整任务路径', 'Output length and task steps: per-step output and full task path')}</h3>
     <p class="paper__metric-label">{t('① 指标是什么', '① What are the metrics?')}</p>
     <p>{t(
-      '这里分三层：每一步输出多少 raw-completion tokens、整个 episode 一共输出多少、完成一题用了多少动作步骤。按你在 W&B 里看到数据的顺序，先放 160 轮“每一步输出长度”原生曲线，再看窗口化的路径分析。',
-      'We separate three levels: raw-completion tokens per step, total output per episode, and action steps per task. Following the W&B reading order, the 160-round tokens-per-step curve comes first, followed by the windowed path analysis.',
+      '这里把一次 WebShop 任务拆成三个长度指标：模型每个动作前生成多少 tokens、整道题累计生成多少 tokens、以及从开始到结束执行了多少个环境动作。这样可以区分“单次输出变长”和“完成一题需要更多步骤”这两种不同变化。',
+      'We use three length measures for one WebShop task: tokens generated before each action, total generated tokens across the full episode, and the number of environment actions from start to finish. This separates longer individual outputs from a task simply requiring more steps.',
     )}</p>
     <MetricEvidenceFigure item={metricCharts.outputLength} />
-    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
       <table class="paper-table paper-table--dense-results">
         <thead><tr><th>{t('方法 / 窗口', 'Method / window')}</th><th>{t('每步输出', 'tokens / step')}</th><th>{t('Episode 总输出', 'episode tokens')}</th><th>{t('平均步骤', 'steps')}</th><th>Task Score / 100</th></tr></thead>
@@ -729,11 +769,11 @@ const twentyRoundScoreWindows = finalResult
     <h3>5.6 Entropy：{t('最后看策略行为是不是越来越集中', 'finally, is policy behavior becoming more concentrated?')}</h3>
     <p class="paper__metric-label">{t('① 指标是什么', '① What is the metric?')}</p>
     <p>{t(
-      '这里能可靠重建的是 action-family Shannon entropy：把 search、click 等有效动作类型的分布压成一个数。entropy 越低，表示策略越来越集中在少数几类动作上。它不是语言模型 token entropy，因为正式 rollout 没有保存逐 token logits / logprobs。',
-      'What can be reconstructed reliably is action-family Shannon entropy over valid action types such as search and click. Lower entropy means the policy is concentrating on fewer action families. This is not language-model token entropy because the formal rollouts did not persist per-token logits/logprobs.',
+      '这里的 entropy 衡量模型使用不同有效动作类型时有多分散，例如 search 和 click 各占多少。Shannon entropy 越高，动作类型分布越分散；越低，说明行为更集中在少数动作类型。这里算的是 action-family entropy，不是语言模型 token entropy，因为正式 rollout 没有保存逐 token logits / logprobs。',
+      'Here entropy measures how spread out the model is across valid action families such as search and click. Higher Shannon entropy means the action distribution is more spread out; lower entropy means behavior is concentrated on fewer action types. This is action-family entropy, not language-model token entropy, because the formal rollouts did not persist per-token logits/logprobs.',
     )}</p>
     <MetricEvidenceFigure item={metricCharts.entropy} />
-    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <p class="paper__chart-note">{t(
       'R159 的 search / click 用有效动作占比表示，而不是直接比较原始计数；三组这一轮的总动作数不同，原始计数不能横向当作策略偏好强弱。',
       'R159 search / click are shown as shares of valid actions rather than raw counts. The three methods have different total action counts in that round, so raw counts are not directly comparable as policy preference.',
@@ -757,7 +797,7 @@ const twentyRoundScoreWindows = finalResult
   </div>
 
   <div class="paper__analysis-summary" id="analysis-boundary">
-    <h3>5.7 {t('我们现在能解释到哪里？', 'How far can the evidence explain the late change?')}</h3>
+    <h3>5.7 {t('把这些指标合起来后，我们能确定什么、还不能确定什么', 'After combining these metrics, what is established and what remains uncertain?')}</h3>
     <p><strong>{t('确定看到的：', 'Observed: ')}</strong>{t(
       'β-gating 后期 Task Score 回落、任务路径重新变长、更新方向与 Bounded 明显分开，同时 action-family entropy 更集中。',
       'late β-gating Task Score declines, task paths lengthen again, update direction separates from Bounded, and action-family entropy becomes more concentrated.',
@@ -775,10 +815,14 @@ const twentyRoundScoreWindows = finalResult
 
   <section class="paper__section" id="next-question" aria-labelledby="next-question-title">
     <p class="paper__section-number">6</p>
-    <h2 id="next-question-title">{t('动态 α + 动态 β：尚未运行', 'Dynamic α + dynamic β: not run yet')}</h2>
+    <h2 id="next-question-title">{t('下一步实验是什么：动态 α + 动态 β', 'What is the next experiment? Dynamic α + dynamic β')}</h2>
     <p>{t(
-      '这条指标链给出的顺序很清楚：loss 先说明优化过程不是简单坏掉；Frobenius norm 再看参数变化有多大；Task Vector 的相关性与谱 / 方向继续追问“大小是否对应分数、更新往哪里走”；最后才用长度、步数和 entropy 看更接近任务行为的变化。但这些后分析都不能补上一个根本缺口：这次正式实验始终把 α 固定为 1。',
-      'The diagnostic ladder is explicit: loss first checks that optimization did not simply fail; Frobenius norm asks how large the parameter changes are; Task Vector association plus spectrum/direction asks whether magnitude tracks score and where updates move; length, steps, and entropy then examine behavior closer to the task. None of these post-hoc analyses fill the basic missing experiment: α remained fixed at 1 throughout this formal study.',
+      '在完整的 Gated Delta 里，α 控制旧参数 State 保留多少，β 控制当前新更新写入多少。已完成的正式实验只让 β 动态变化，并把 α 一直固定为 1；因此我们还没有测试“同时动态控制旧状态保留和新状态写入”会发生什么。动态 α + 动态 β 指的就是补上这个缺失的实验，目前尚未运行。',
+      'In full Gated Delta, alpha controls how much of the prior parameter State is retained, while beta controls how much of the current new update is written. This formal study varies beta dynamically but keeps alpha fixed at 1 throughout, so it has not tested what happens when both prior-state retention and new-update strength are controlled dynamically. Dynamic alpha + dynamic beta is that missing experiment, and it has not yet been run.',
+    )}</p>
+    <p>{t(
+      '前面的指标链告诉我们应该为什么继续做这个实验：loss 说明优化过程不是简单坏掉；Frobenius norm、Task Vector、谱和方向显示参数变化方式发生了差异；长度、步数和 entropy 又显示后期行为也发生了变化。但这些后分析都不能替代真正运行动态 α + 动态 β。',
+      'The earlier diagnostics explain why this experiment is worth running: loss shows that optimization did not simply fail; Frobenius norm, Task Vector, spectrum, and direction show differences in how parameters change; length, steps, and entropy show late behavioral changes as well. None of those post-hoc analyses can substitute for actually running dynamic alpha + dynamic beta.',
     )}</p>
     <p>{t(
       '所以第一条新实验应该是动态 α + 动态 β；它现在仍然是空位。第二条问题才是 β controller 还应该知道什么，例如 layer、round 或历史更新方向。已经看过的 Final 不能反过来用来调当前封存实验。',
@@ -788,10 +832,14 @@ const twentyRoundScoreWindows = finalResult
 
   <section class="paper__section" id="evidence" aria-labelledby="evidence-title">
     <p class="paper__section-number">7</p>
-    <h2 id="evidence-title">{t('证据与复现身份', 'Evidence and reproducibility identity')}</h2>
+    <h2 id="evidence-title">{t('证据与复现身份：如何确认这些结果来自哪一组实验', 'Evidence and reproducibility identity: how to identify the exact experiments behind these results')}</h2>
     <p>{t(
-      '正文把已完成的第三组明确写成“Bounded Online Recurrence + β-gating（α 固定为 1）”，不再把它当作完整 GDR。“动态 α + 动态 β”只作为未做实验位置保留。为了审计，底层正式身份仍原样保留：普通 OpenEVO 对应历史 DirectApply / No-GDR；后两组正式实验标识仍是 BOUNDED_OFF 与 EFFECTIVE_STATE_GDR_LORA_V1。',
-      'The completed third line is named explicitly as “Bounded Online Recurrence + β-gating (α fixed at 1)” rather than presented as full GDR. Dynamic α + dynamic β is kept only as an unrun slot. For auditability, the underlying formal identities remain unchanged: ordinary OpenEVO maps to the historical DirectApply / No-GDR run, and the matched formal identities remain BOUNDED_OFF and EFFECTIVE_STATE_GDR_LORA_V1.',
+      '这一节不再解释实验结果，而是回答复现和审计问题：每条曲线、表格和结论究竟对应哪一个正式实验身份，应该去哪里查原始证据。网页上的易读名称可以调整，但底层实验 ID、封存结果和证据入口必须保持不变。',
+      'This section no longer interprets results. It answers the reproducibility and audit question: which exact formal experiment identity each curve, table, and conclusion belongs to, and where the underlying evidence can be checked. Reader-facing names may improve, but the underlying experiment IDs, sealed results, and evidence entry points must remain unchanged.',
+    )}</p>
+    <p>{t(
+      '因此，正文把已完成的第三组明确写成“Bounded Online Recurrence + β-gating（α 固定为 1）”，不再把它当作完整 GDR；“动态 α + 动态 β”只保留为未做实验。底层正式身份仍原样保留：普通 OpenEVO 对应历史 DirectApply / No-GDR；后两组正式实验标识仍是 BOUNDED_OFF 与 EFFECTIVE_STATE_GDR_LORA_V1。',
+      'Accordingly, the completed third run is named explicitly as “Bounded Online Recurrence + β-gating (α fixed at 1)” rather than presented as full GDR, while dynamic α + dynamic β remains only an unrun slot. The underlying formal identities remain unchanged: ordinary OpenEVO maps to the historical DirectApply / No-GDR run, and the matched formal identities remain BOUNDED_OFF and EFFECTIVE_STATE_GDR_LORA_V1.',
     )}</p>
     <details class="paper__details paper__experiment-hub" data-experiment-hub>
       <summary>{t('本实验的结果、分析与证据', 'Results, analysis, and evidence for this experiment')}</summary>
