@@ -210,7 +210,7 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('证据与复现身份：如何确认这些结果来自哪一组实验');
 
     const lossWhat = component.indexOf("① 指标是什么");
-    const lossResult = component.indexOf("② 这次实验的结果");
+    const lossResult = component.indexOf("② 实验结果");
     const lossAnalysis = component.indexOf("③ 分析");
     expect(lossWhat).toBeGreaterThan(-1);
     expect(lossResult).toBeGreaterThan(lossWhat);
@@ -276,7 +276,7 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('5.7');
     expect(component).toContain('把这些指标合起来后，我们能确定什么、还不能确定什么');
     expect(component).toContain('① 指标是什么');
-    expect(component).toContain('② 这次实验的结果');
+    expect(component).toContain('② 实验结果');
     expect(component).toContain('③ 分析');
     expect(component).toContain('下一步实验是什么：动态 α + 动态 β');
     expect(component).toContain('study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString');
