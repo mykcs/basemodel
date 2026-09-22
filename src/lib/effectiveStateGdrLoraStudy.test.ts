@@ -206,6 +206,8 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('最后 20 轮平均和固定终评分别是什么');
     expect(component).toContain('训练期正式对照是什么：在同一实验设置下比较 Bounded 与 β-gating');
     expect(component).toContain('计算代价是什么：区分参数更新耗时和整个 Stage 2 耗时');
+    expect(component).toContain('下一步实验是什么：动态 α + 动态 β');
+    expect(component).toContain('证据与复现身份：如何确认这些结果来自哪一组实验');
 
     const lossWhat = component.indexOf("① 指标是什么");
     const lossResult = component.indexOf("② 这次实验的结果");
