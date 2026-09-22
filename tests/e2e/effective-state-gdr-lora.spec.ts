@@ -11,7 +11,7 @@ for (const viewport of [
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('[data-effective-state-gdr-page]')).toBeVisible();
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('三个 OpenEVO 实验');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('OpenEVO 参数演变：Bounded State 与 β 组件');
     const ablation = page.locator('.paper-table--ablation');
     await expect(ablation).toContainText('普通 OpenEVO');
     await expect(ablation).toContainText('OpenEVO + Bounded Online Recurrence');
@@ -100,8 +100,8 @@ test('paper narrative follows motivation, method, mapping, experiment, result, a
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const h2s = await page.locator('.paper__section > h2').allTextContents();
   expect(h2s.slice(0, 5)).toEqual([
-    '动机：SD-LoRA 越训练越慢',
-    '方法：Bounded Online Recurrence、Gated Delta 来源与本实验 β-gating（α 固定为 1）',
+    '我们先解决 SD-LoRA 越训练越慢',
+    'Bounded State 与 β 组件：固定容量与写入强度控制',
     '实验设置：Qwen3-1.7B × WebShop',
     '实验结果：Task Score、成功率与计算代价',
     '训练过程中发生了什么？从 loss 到行为变化',
@@ -114,17 +114,24 @@ test('method section explains source Gated Delta and the beta-gating alpha-one p
   await expect(method.locator('[data-math-formula]')).toHaveCount(7);
   await expect(method.locator('.katex').first()).toBeVisible();
   await expect(method).toContainText('Compress');
-  await expect(method).toContainText('Gated Delta 再给旧 State 加一个 retention α');
+  await expect(method).toContainText('rank128 不是理论最优值');
+  await expect(method).toContainText('78 个方向');
+  await expect(method).toContainText('rank95 · median');
+  await expect(method).toContainText('8');
+  await expect(method).toContainText('7');
+  await expect(method).toContainText('Gated Delta 在这个更新上再加入两个控制量');
   await expect(method).toContainText('α');
   await expect(method).toContainText('β');
-  await expect(method).toContainText('从 sequence State 映射到 OpenEVO 的参数 State');
+  await expect(method).toContainText('我们把更新规则映射到 OpenEVO 参数 State');
   await expect(method).toContainText('A↦sA');
   await expect(method).toContainText('1.052');
   await expect(method).toContainText('657.836');
-  await expect(method).toContainText('22');
+  await expect(method).toContainText('22 维不是把整个 rank128 State 压成 22 个数字');
   await expect(method).toContainText('reward、Task Score、Task Vector');
   await expect(method).toContainText('本实验真正启用的动态控制量');
   await expect(method).toContainText('α=1');
+  await expect(method).toContainText('β 控制器训练代码');
+  await expect(method).toContainText('正式实验 β runtime');
 });
 
 test('experiment setup names Qwen3-1.7B, WebShop, budget, and OPSD boundary', async ({ page }) => {
@@ -143,19 +150,19 @@ test('experiment setup exposes the four carrier update ledgers and the NOOP/runt
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const ledger = page.locator('#carrier-ledger');
-  await expect(ledger.getByRole('heading', { level: 3 })).toContainText('参数几乎每轮都在变');
+  await expect(ledger.getByRole('heading', { level: 3 })).toContainText('随着 rollout 积累，参数和非参数状态都会在满足条件时更新');
   const rows = ledger.locator('.paper-table--carrier-ledger tbody tr');
   await expect(rows).toHaveCount(4);
-  await expect(rows.nth(0)).toContainText('159 UPDATE');
-  await expect(rows.nth(0)).toContainText('158 UPDATE');
-  await expect(rows.nth(0)).toContainText('154 UPDATE');
-  await expect(rows.nth(1)).toContainText('2 UPDATE');
-  await expect(rows.nth(1)).toContainText('3 UPDATE');
-  await expect(rows.nth(2)).toContainText('1 UPDATE');
-  await expect(rows.nth(2)).toContainText('0 UPDATE');
-  await expect(rows.nth(3)).toContainText('3 UPDATE');
-  await expect(rows.nth(3)).toContainText('0 UPDATE');
-  await expect(ledger).toContainText('NOOP 不等于“没有参与”');
+  await expect(rows.nth(0)).toContainText('159 次更新');
+  await expect(rows.nth(0)).toContainText('158 次更新');
+  await expect(rows.nth(0)).toContainText('154 次更新');
+  await expect(rows.nth(1)).toContainText('2 次更新');
+  await expect(rows.nth(1)).toContainText('3 次更新');
+  await expect(rows.nth(2)).toContainText('1 次更新');
+  await expect(rows.nth(2)).toContainText('0 次更新');
+  await expect(rows.nth(3)).toContainText('3 次更新');
+  await expect(rows.nth(3)).toContainText('0 次更新');
+  await expect(ledger).toContainText('“沿用上一轮”不等于“后续做题时不用它”');
   await expect(ledger).toContainText('42,270');
   await expect(ledger).toContainText('142,208');
   await expect(ledger).toContainText('175,820');
@@ -184,7 +191,8 @@ test('formal result preserves the matched-arm statistical boundary under public 
   await expect(page.locator('#compute')).toContainText('31.09');
   await expect(page.locator('#compute')).toContainText('2.02');
   await expect(page.locator('#compute')).toContainText('2.35');
-  await expect(page.locator('#compute')).toContainText('13–15×');
+  await expect(page.locator('#compute')).toContainText('15.36×');
+  await expect(page.locator('#compute')).toContainText('1.33×');
 });
 
 test('analysis follows a simple-to-complex metric ladder with definition result and analysis in every subsection', async ({ page }) => {
@@ -208,7 +216,7 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
     const labels = metricSteps.nth(index).locator('.paper__metric-label');
     await expect(labels).toHaveCount(3);
     await expect(labels.nth(0)).toContainText('① 指标是什么');
-    await expect(labels.nth(1)).toContainText('② 这次实验的结果');
+    await expect(labels.nth(1)).toContainText('② 实验结果');
     await expect(labels.nth(2)).toContainText('③ 分析');
   }
 
@@ -232,7 +240,7 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
   await expect(page.locator('#task-vector')).toContainText('+0.044');
 
   await expect(page.locator('#parameter-geometry')).toContainText('full/base spectral ratio');
-  await expect(page.locator('#parameter-geometry')).toContainText('接近 1 表示最强谱尺度变化很小');
+  await expect(page.locator('#parameter-geometry')).toContainText('最强尺度变化很小');
   await expect(page.locator('#parameter-geometry')).toContainText('2.136');
   await expect(page.locator('#parameter-geometry')).toContainText('1.946');
   await expect(page.locator('#parameter-geometry')).toContainText('-0.287');
@@ -252,13 +260,16 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
   await expect(page.locator('#entropy')).toContainText('87.7%');
   await expect(page.locator('#entropy')).toContainText('90.0%');
   await expect(page.locator('#entropy')).toContainText('100%');
-  await expect(page.locator('#analysis-boundary')).toContainText('我们现在能解释到哪里？');
+  await expect(page.locator('#analysis-boundary')).toContainText('把这些指标合起来后，我们能确定什么、还不能确定什么');
   await expect(page.locator('#analysis-boundary')).toContainText('还不能证明的');
 
   const next = page.locator('#next-question');
-  await expect(next).toContainText('动态 α + 动态 β：尚未运行');
-  await expect(next).toContainText('动态 α + 动态 β');
-  await expect(next).toContainText('Frobenius norm');
+  await expect(next).toContainText('现在真正卡在哪里，以及下一步先做什么');
+  await expect(next).toContainText('第一优先：补普通 SFT、普通 OPSD 与 SEED 1.7B 参照');
+  await expect(next).toContainText('第二优先：直接做 rank 8 / 16 / 32 / 64 / 128 容量消融');
+  await expect(next).toContainText('第三优先：先做最简单的 β scaling baseline');
+  await expect(next).toContainText('160 轮不应该只由 training loss 决定');
+  await expect(next).toContainText('动态 α + 动态 β 仍然保留，但不是当前第一优先');
 });
 
 test('W&B evidence is embedded beside the relevant metric instead of collected in a separate gallery', async ({ page }) => {
@@ -305,7 +316,7 @@ test('phone first screen establishes the three experiments before deep method de
   await expect(page.locator('.research-route-context')).toHaveCount(0);
   await expect(page.locator('.paper__kicker')).toHaveCount(0);
   const h1 = page.getByRole('heading', { level: 1 });
-  await expect(h1).toContainText('三个 OpenEVO 实验');
+  await expect(h1).toContainText('OpenEVO 参数演变：Bounded State 与 β 组件');
   const ablation = page.locator('.paper-table-wrap--hero');
   await expect(ablation).toBeVisible();
   const h1Box = await h1.boundingBox();

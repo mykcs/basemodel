@@ -36,7 +36,7 @@ describe('Effective-State GDR publication snapshot', () => {
 
   it('publishes the three experiments as one consistent ablation family without strengthening the causal claim', () => {
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
-    expect(component).toContain('三个 OpenEVO 实验');
+    expect(component).toContain('OpenEVO 参数演变：Bounded State 与 β 组件');
     expect(component).toContain('paper-table--ablation');
     expect(component).toContain('普通 OpenEVO');
     expect(component).toContain('OpenEVO + Bounded Online Recurrence');
@@ -200,17 +200,17 @@ describe('Effective-State GDR publication snapshot', () => {
   it('keeps the public study definition-first before results and interpretation', () => {
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
 
-    expect(component).toContain('Bounded Online Recurrence 是什么：用固定 rank128 保存参数历史');
-    expect(component).toContain('Gated Delta 是什么：根据 residual 控制一次新状态写入');
-    expect(component).toContain('这里的“映射”是什么：把更新规则对应到 OpenEVO 参数 State');
-    expect(component).toContain('为什么控制的是有效参数更新 ΔW，而不是 LoRA 的 A / C 数值');
+    expect(component).toContain('我们把长期参数历史固定在 rank128');
+    expect(component).toContain('继续加入 β 组件：先说明 Gated Delta 的原始更新规则');
+    expect(component).toContain('我们把更新规则映射到 OpenEVO 参数 State');
+    expect(component).toContain('最终控制有效参数更新 ΔW，而不是 LoRA 因子的表面数值');
 
     expect(component).toContain('Task Score 是什么：每轮任务完成程度的连续得分');
     expect(component).toContain('每 20 轮平均是什么：把连续 20 轮的 Task Score 合成一个均值');
     expect(component).toContain('最后 20 轮平均和固定终评分别是什么');
     expect(component).toContain('训练期正式对照是什么：在同一实验设置下比较 Bounded 与 β-gating');
     expect(component).toContain('计算代价是什么：区分参数更新耗时和整个 Stage 2 耗时');
-    expect(component).toContain('下一步实验是什么：动态 α + 动态 β');
+    expect(component).toContain('现在真正卡在哪里，以及下一步先做什么');
     expect(component).toContain('证据与复现身份：如何确认这些结果来自哪一组实验');
 
     const lossWhat = component.indexOf("① 指标是什么");
@@ -232,10 +232,19 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.timingComparison.boundary).toContain('not whole-Stage2 wall-clock');
   });
 
-  it('publishes symmetric 160-round parameter diagnostics without treating norm size as efficacy', () => {
+  it('publishes symmetric 160-round parameter diagnostics without treating geometry as efficacy', () => {
     expect(study.parameterAnalysis.coverage).toContain('17,920');
     expect(study.parameterAnalysis.off.fullToBaseSpectralRatioMedian).toBeCloseTo(1.000201829722446, 10);
     expect(study.parameterAnalysis.on.fullToBaseSpectralRatioMedian).toBeCloseTo(1.0001246314969383, 10);
+    expect(study.parameterAnalysis.off.rank95Median).toBe(8);
+    expect(study.parameterAnalysis.on.rank95Median).toBe(7);
+
+    const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
+    expect(component).toContain('rank128 不是理论最优值，而是第一版的保守容量上限');
+    expect(component).toContain('覆盖约 95% 参数变化能量大约需要 78 个方向');
+    expect(component).toContain('后验 rank95 中位数只有 8 / 7');
+    expect(component).toContain('不能把“rank95≈8”直接写成“长期状态 rank8 已经够用”');
+    expect(component).toContain('rank 8 / 16 / 32 / 64 / 128');
   });
 
   it('publishes the read-only advisor diagnostics without upgrading them into causal evidence', () => {
@@ -257,7 +266,7 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.posthocAnalysis.behaviorEntropy.validActionRate).toBe(1);
 
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
-    expect(component).toContain('动机：SD-LoRA 越训练越慢');
+    expect(component).toContain('我们先解决 SD-LoRA 越训练越慢');
     expect(component).toContain("import MathFormula from '../common/MathFormula.astro'");
     expect(component).toContain('\\operatorname{Compress}_{128}');
     expect(component).toContain('\\alpha_t S_{t-1}\\left(I-\\beta_t k_t k_t^{\\top}\\right)');
@@ -282,7 +291,15 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('① 指标是什么');
     expect(component).toContain('② 实验结果');
     expect(component).toContain('③ 分析');
-    expect(component).toContain('下一步实验是什么：动态 α + 动态 β');
+    expect(component).toContain('现在真正卡在哪里，以及下一步先做什么');
+    expect(component).toContain('这里的 22 维不是把整个 rank128 State 压成 22 个数字');
+    expect(component).toContain('torch.nn.Linear(22, 64)');
+    expect(component).toContain('请参考 GitHub：');
+    expect(component).toContain('第一优先：补普通 SFT、普通 OPSD 与 SEED 1.7B 参照');
+    expect(component).toContain('第二优先：直接做 rank 8 / 16 / 32 / 64 / 128 容量消融');
+    expect(component).toContain('第三优先：先做最简单的 β scaling baseline');
+    expect(component).toContain('动态 α + 动态 β 仍然保留，但不是当前第一优先');
+    expect(component).toContain('动作大类本来就很少');
     expect(component).toContain('study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString');
     expect(component).toContain("import MetricEvidenceFigure from './MetricEvidenceFigure.astro'");
     expect(component).not.toContain("import WandbEvidencePanel from './WandbEvidencePanel.astro'");
