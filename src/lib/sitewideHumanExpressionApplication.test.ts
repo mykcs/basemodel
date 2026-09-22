@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 const read = (relative: string) =>
   readFileSync(new URL(relative, import.meta.url), 'utf8');
 
-describe('sitewide HPL content application', () => {
+describe('sitewide human-expression content application', () => {
   it('removes presenter-first headings from representative public surfaces', () => {
     const landscape = read('../components/landscape/LandscapePrototype.tsx');
     const q17 = read('../components/research/OpenEvoQ17DirectApplyAnalysis.astro');

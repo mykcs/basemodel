@@ -123,4 +123,4 @@ reader contract 已登记
 - 不允许因为某个交互组件位于页面下方，就让它的 `position: fixed` 控件从初始加载开始占据第一屏；浮动控件的出现必须与读者已经进入该交互任务相匹配；
 - 不允许把“预算 PASS”冒充成人类理解已经 PASS；预算只负责拦截明显的注意力过载。
 
-当真人反馈指出新的注意力失败机制时，继续写入 `website-copy-cases.md`，再判断是否需要扩充这里的 mode、字段或 Gate；不要把个案词语升级成禁词表。
+当真人反馈指出新的注意力失败机制时，先按中央 website-learning closeout 保存 RAW / 更新 derived learning，再判断是否需要扩充这里的 mode、字段或 Gate；不要把个案词语升级成禁词表。

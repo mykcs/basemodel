@@ -149,7 +149,7 @@ Before opening a successor PR for the same surface, prove at least one real boun
 
 - the old branch cannot be safely continued because its base/authority topology is obsolete or contaminated;
 - the intended scientific/product semantics changed enough that the predecessor must remain a historical rejected/superseded line;
-- the new work has a genuinely different merge/authorization boundary, such as an HPL/control-plane closeout that deliberately contains no product files;
+- the new work has a genuinely different merge/authorization boundary, such as a website-learning/docs closeout that deliberately contains no product files;
 - or an integration head is required to absorb several independent accepted worklines.
 
 If none applies, update the existing survivor. If a successor is necessary, immediately record `absorbed / superseded / rejected / deferred` for the predecessor and leave only one live release authority for that product decision.
@@ -171,7 +171,7 @@ Preferred:
 ```text
 same briefing surface
 -> one survivor product PR accumulates accepted corrections
--> separate HPL/docs closeout only when its file/authorization boundary is truly different
+-> separate website-learning/docs closeout only when its file/authorization boundary is truly different
 -> one current product authority remains obvious
 ```
 

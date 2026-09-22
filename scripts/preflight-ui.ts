@@ -1,7 +1,6 @@
 import { execFileSync, spawnSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
-import { isHplControlPlanePath } from './hpl-control-plane.mjs';
 
 export type UiRisk = 'none' | 'content' | 'local' | 'shared' | 'global';
 export type RegressionStage = 'deterministic' | 'preflight' | 'browser';
@@ -129,7 +128,6 @@ const normalizePath = (file: string) => file.replaceAll('\\', '/').replace(/^\.\
 export function classifyUiFile(file: string): UiRisk {
   const path = normalizePath(file);
 
-  if (isHplControlPlanePath(path)) return 'none';
   if (/^src\/.*\.(?:test|spec)\.[cm]?[jt]sx?$/.test(path)) return 'none';
 
   if (

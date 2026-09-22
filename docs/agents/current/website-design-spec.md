@@ -2,7 +2,7 @@
 
 状态：**CURRENT / CANONICAL**
 适用范围：`basemodel` 的所有公开页面、导航、标题、说明文字、按钮、图表注释、状态提示和中英文文案。
-案例库：[`website-copy-cases.md`](website-copy-cases.md)
+案例库：[[legacy BaseModel HPL case archive](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md)](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md)
 实验谱系 / 肉鸽地图视觉语义：[`experiment-lineage-map-visual-standard.md`](experiment-lineage-map-visual-standard.md)
 实现与推理复盘：[`../history/2026-08-31-human-copy-preference-mining-and-governance-retrospective.md`](../history/2026-08-31-human-copy-preference-mining-and-governance-retrospective.md)
 历史审计基线：`origin/main@e11d443`，2026-08-30；从首个 commit `dd9b04b` 起对 901 个主线 commits 做全量历史检索，并交叉检索 274 个已合并 PR 与 349 个可见 PR 的元数据（当前最大 PR 编号为 #350）。
@@ -19,13 +19,13 @@
 
 | 问题 | 唯一 owner | 负责什么 |
 | --- | --- | --- |
-| 文案、标题、术语、说人话 | 本文件 + [`website-copy-cases.md`](website-copy-cases.md) | 信息顺序、标题职责、first-use explanation，以及真实正反案例 |
+| 文案、标题、术语、BaseModel 说人话规则 | 本文件 | BaseModel 当前信息顺序、标题职责、first-use explanation 与科学表达边界 |
 | 首屏注意力与读者任务 | [`site-reader-attention-contract.md`](site-reader-attention-contract.md) + `src/data/siteReaderContracts.ts` | 每条公开 route 的 audience、首屏目标、必须可见边界和下一步 |
 | 卡片、层级、形状、间距与视觉气质 | [`ui-design-principles.md`](ui-design-principles.md) | Research Editorial × Experimental Workbench 的共享视觉语法 |
 | 全站知识结构与页面密度 | [`sitewide-visual-knowledge-architecture.md`](sitewide-visual-knowledge-architecture.md) | route role、L0–L3 信息密度和可复用视觉关系 |
 | 科研页面的结论、证据与 provenance | [`research-site-presentation-contract.md`](research-site-presentation-contract.md) | 科学语义、claim boundary、当前/历史证据和发布一致性 |
 | 主题、响应式、overflow 与浏览器验收 | [`ui-change-visual-acceptance-gate.md`](ui-change-visual-acceptance-gate.md) | UI 改动完成前必须怎样 falsify 视觉回归 |
-| 用户偏好、Gold Pair 与冷读 | [`human-preference-learning-system.md`](human-preference-learning-system.md) | 怎样把真实反馈转成可复用偏好，而不是凭 Agent 风格猜 |
+| 真人反馈与跨站偏好学习 | [`.codex/website-learning`](https://github.com/mykcs/.codex/tree/main/website-learning) | RAW 原话、共享偏好与 BaseModel 专有 learned experience；本仓不再维护第二套动态 preference model |
 
 `docs/agents/tasks/`、`docs/agents/history/` 和 evidence receipt 负责**某次任务怎么做、为什么做、当时发生了什么**；它们不是新的站点规则来源。若历史记录与 current owner 冲突，以 current owner 和 executable repository truth 为准。
 
@@ -55,13 +55,13 @@
 
 如果 H1 已经命名实验对象，紧接着的 lede 就优先承担结果 / 当前状态，不再重复 H1。通用的五问 orientation、术语、参数、历史和方法细节只有在它们会改变第一层判断时才继续占据首屏；否则放到下一段或原生 progressive disclosure。不要用更多卡片、口号或装饰来“强调重点”，因为那会制造新的竞争中心。
 
-这不是 minimalism。会改变结论含义的 caveat、核心比较双方、必要状态和下一步仍须默认可见。目标是 **exactly enough**：一个首屏只有一个明显的认知中心，但完整科学语义仍能沿正常阅读路径恢复。见 [CASE-068](website-copy-cases.md#case-068-首屏不是把所有正确的信息同时摆出来)。
+这不是 minimalism。会改变结论含义的 caveat、核心比较双方、必要状态和下一步仍须默认可见。目标是 **exactly enough**：一个首屏只有一个明显的认知中心，但完整科学语义仍能沿正常阅读路径恢复。见 [CASE-068](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-068-首屏不是把所有正确的信息同时摆出来)。
 
 这条原则现在不是自觉性建议。每个公开 page source 必须先登记 [`site-reader-attention-contract.md`](site-reader-attention-contract.md) 定义的全站 Reader Attention Contract；可执行注册表位于 `src/data/siteReaderContracts.ts`。新增页面没有 `audience / primaryTask / firstViewportGoal / mustStayVisible / nextStep / attentionMode` 时，CI 应直接失败。统一的是认知责任，不是页面模板。
 
-例如服务器页应该先写 `lyg2171 服务器简介` 和硬件事实，而不是先问“这台服务器能做什么，以及哪里最容易先用满”。见 [CASE-041](website-copy-cases.md#case-041-服务器标题直接命名对象)。
+例如服务器页应该先写 `lyg2171 服务器简介` 和硬件事实，而不是先问“这台服务器能做什么，以及哪里最容易先用满”。见 [CASE-041](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-041-服务器标题直接命名对象)。
 
-研究结果也一样：先说观察和结论，再解释实验机制，最后让读者展开证据。见 [CASE-029](website-copy-cases.md#case-029-结论先于实验账本) 与 [CASE-030](website-copy-cases.md#case-030-可见推理桥而不是只给标签)。
+研究结果也一样：先说观察和结论，再解释实验机制，最后让读者展开证据。见 [CASE-029](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-029-结论先于实验账本) 与 [CASE-030](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-030-可见推理桥而不是只给标签)。
 
 ### 2.2 关系性结论需要先给最小参照物
 
@@ -77,7 +77,7 @@
 
 > 接下来的训练分成 Stage 1 和 Stage 2。Stage 1 先收集并整理经验，Stage 2 再用这些经验继续训练；Ceiling-1.0 和 OpenEVO 2.0 都沿用同一份 corrected Stage 1，因此从这里分成两条 Stage-2 路线。
 
-同样，`仍然是 8 张 GPU` 应写成 `并行规模保持 8 张 GPU`：把参照对象直接写进句子，不要求读者回忆上一段。详见 [CASE-060](website-copy-cases.md#case-060-关系状态前先给参照物)。
+同样，`仍然是 8 张 GPU` 应写成 `并行规模保持 8 张 GPU`：把参照对象直接写进句子，不要求读者回忆上一段。详见 [CASE-060](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-060-关系状态前先给参照物)。
 
 ### 2.3 “AI 味”在本项目里通常是哪几种结构
 
@@ -120,15 +120,15 @@
 - `先用一段话看懂……`
 - `这篇文章不是……`
 
-这些标题共同的问题不是“太长”，而是**把作者的讲解动作放在主题前面**。`“第几代”和“多少核”怎么读` 改成 `GPU 规格` 后，正文仍然可以解释代际、CUDA 核和多卡含义。见 [CASE-043](website-copy-cases.md#case-043-怎么读改成-gpu-规格)。
+这些标题共同的问题不是“太长”，而是**把作者的讲解动作放在主题前面**。`“第几代”和“多少核”怎么读` 改成 `GPU 规格` 后，正文仍然可以解释代际、CUDA 核和多卡含义。见 [CASE-043](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-043-怎么读改成-gpu-规格)。
 
-同理，`先分清两种“新任务”` 的问题不只是 `先` 字，而是把作者的教学动作做成全区视觉中心。标题、加粗和大字号会强迫读者优先处理这句话，所以它们必须指向真实主题本身，例如 `训练范围内未见任务与 SEED 验证任务`。**视觉中心就是注意力分配，不是装饰。** 见 [CASE-069](website-copy-cases.md#case-069-视觉中心必须给真实主题)。
+同理，`先分清两种“新任务”` 的问题不只是 `先` 字，而是把作者的教学动作做成全区视觉中心。标题、加粗和大字号会强迫读者优先处理这句话，所以它们必须指向真实主题本身，例如 `训练范围内未见任务与 SEED 验证任务`。**视觉中心就是注意力分配，不是装饰。** 见 [CASE-069](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-069-视觉中心必须给真实主题)。
 
 ### 3.3 什么时候标题可以是问句或动作句
 
 问句只在它本身就是读者正在做的真实判断时使用，例如 `这个模型符合已填写的实验条件吗？`。按钮和操作步骤则应该直接使用动词，例如 `比较模型`、`查看实验步骤`、`保存实验记录`。
 
-不要把 2026-08-12 早期“标题尽量含动作”的规则机械推广到所有 H1/H2。历史演进表明：**导航和操作要可执行，普通章节标题要先命名对象。** 见 [CASE-010](website-copy-cases.md#case-010-从抽象研究标签改到具体操作) 与 [CASE-041](website-copy-cases.md#case-041-服务器标题直接命名对象)。
+不要把 2026-08-12 早期“标题尽量含动作”的规则机械推广到所有 H1/H2。历史演进表明：**导航和操作要可执行，普通章节标题要先命名对象。** 见 [CASE-010](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-010-从抽象研究标签改到具体操作) 与 [CASE-041](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-041-服务器标题直接命名对象)。
 
 ## 4. 正文：直接进入事情，不解释文章自己
 
@@ -143,7 +143,7 @@
 - `完整流程图只保留在……`
 - `这篇笔记已经并入……`
 
-这些信息通常属于作者、CMS、路由或编辑过程，不是读者要理解的研究对象。能删除就直接删除；真的有迁移事实需要保留时，只写新的位置或事实。见 [CASE-019](website-copy-cases.md#case-019-删除已并入的编辑说明) 到 [CASE-024](website-copy-cases.md#case-024-本节只建立改成直接陈述关系)。
+这些信息通常属于作者、CMS、路由或编辑过程，不是读者要理解的研究对象。能删除就直接删除；真的有迁移事实需要保留时，只写新的位置或事实。见 [CASE-019](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-019-删除已并入的编辑说明) 到 [CASE-024](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-024-本节只建立改成直接陈述关系)。
 ### 4.1 已经说清楚的人话，先保真再网页化
 
 如果 owner 明确说当前对话里的某段解释“已经不错”“可以直接放到网页”或近似意思，把这段表达视为当前任务的 **accepted copy baseline**。网页化默认只做标题分段、必要去重、证据分层和事实校验；不要为了让它“更像网页 / 更像论文”把自然句重新翻译成抽象名词、项目管理口吻、统计黑话或内部代号。
@@ -152,7 +152,7 @@
 
 ## 5. 否定句不是禁词；先让读者知道在否定什么
 
-`不 / 不是 / 不要 / 不能` 不属于禁用词。历史上专门修过 copy audit，防止把正文里的科学对照 `X 不是 Y，而是 Z` 误判成坏文案。见 [CASE-032](website-copy-cases.md#case-032-否定句不是一刀切禁用)。
+`不 / 不是 / 不要 / 不能` 不属于禁用词。历史上专门修过 copy audit，防止把正文里的科学对照 `X 不是 Y，而是 Z` 误判成坏文案。见 [CASE-032](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-032-否定句不是一刀切禁用)。
 
 真正需要避免的是：
 
@@ -168,7 +168,7 @@
 
 > 不能归给 SD-LoRA，也不是 SEED parser 的 bug，更不能说……
 
-触发原因和责任归属可以不同：模型可能触发边界情况，实验 harness 仍然负责让已知边界情况破坏正式测量。见 [CASE-036](website-copy-cases.md#case-036-责任先直接点名负责层)。
+触发原因和责任归属可以不同：模型可能触发边界情况，实验 harness 仍然负责让已知边界情况破坏正式测量。见 [CASE-036](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-036-责任先直接点名负责层)。
 
 ## 6. 技术语言：聪明读者不等于拥有项目上下文
 
@@ -183,21 +183,21 @@
 3. **解释它在这里具体做什么。** 不能把一个陌生词换成另一个陌生词就算解释完成。
 4. **解释放在术语第一次出现的局部上下文。** 读者不应该离开当前段落去查一个集中术语表，再回来恢复刚才的阅读位置。
 
-**集中术语表只能是参考工具，不是主阅读路径。** 如果一个页面只有先查表才能读懂正文，说明正文还没有完成 first-use explanation。定义列表或附录可以保留给复查和精确检索，但不能承担“读者自己去找解释”的责任。见 [CASE-070](website-copy-cases.md#case-070-术语和代号必须就地解释)。
+**集中术语表只能是参考工具，不是主阅读路径。** 如果一个页面只有先查表才能读懂正文，说明正文还没有完成 first-use explanation。定义列表或附录可以保留给复查和精确检索，但不能承担“读者自己去找解释”的责任。见 [CASE-070](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-070-术语和代号必须就地解释)。
 
 ### 6.2 “一句话看懂 / 专业解释”是作者的深度模型，不是必须显示的 UI
 
 有浅层观察、精确机制和证据三种深度是有价值的；把它们机械显示成重复的 `一句话看懂：`、`专业解释：`、`展开实验依据` 三块却可能制造新的注意力切换。能在相邻两句自然完成解释时，直接写成普通正文；只有真正需要可选深度时才使用 `<details>`。
 
-因此：**分层是信息深度，不是视觉标签模板。** 任何 `专业解释` 小标题、虚线分隔、额外卡片或加粗前缀都必须证明它让读者更容易理解，而不是只让页面“看起来像有层级”。见 [CASE-071](website-copy-cases.md#case-071-解释深度不是可见-ui-模板)。
+因此：**分层是信息深度，不是视觉标签模板。** 任何 `专业解释` 小标题、虚线分隔、额外卡片或加粗前缀都必须证明它让读者更容易理解，而不是只让页面“看起来像有层级”。见 [CASE-071](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-071-解释深度不是可见-ui-模板)。
 
 推荐顺序：
 
 > 模型真正要执行的是 `search[...] / click[...]` 命令；`<action>...</action>` 是包住命令、让解析器定位动作的外层标签（wrapper）。
 
-然后再讨论 parser、projection、compatibility preflight。见 [CASE-034](website-copy-cases.md#case-034-命令与-wrapper-先于-parser-术语)。
+然后再讨论 parser、projection、compatibility preflight。见 [CASE-034](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-034-命令与-wrapper-先于-parser-术语)。
 
-中文页面优先中文含义，必要时保留英文检索名：`训练候选池 (TRAIN CANDIDATE POOL)`、`原始任务分数 (task_score)`。不要要求读者先解码项目英语才能继续。见 [CASE-027](website-copy-cases.md#case-027-中文含义先于项目英文标签)。
+中文页面优先中文含义，必要时保留英文检索名：`训练候选池 (TRAIN CANDIDATE POOL)`、`原始任务分数 (task_score)`。不要要求读者先解码项目英语才能继续。见 [CASE-027](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-027-中文含义先于项目英文标签)。
 ## 7. 数字和机器字段：证据层精确，正文层自然
 
 机器记录里的表达不一定适合直接成为人类句子。
@@ -210,7 +210,7 @@
 
 > 0 个 OpenEvo adapter 训练步即可看到 `[action]`。
 
-`0`、`adapter_loaded=false`、optimizer step 上限等仍然应该保留，但放在证据或技术层。读者不应该先把数据库式表达翻译回正常语言，才能知道发生了什么。见 [CASE-035](website-copy-cases.md#case-035-机器计数改成人类句子)。
+`0`、`adapter_loaded=false`、optimizer step 上限等仍然应该保留，但放在证据或技术层。读者不应该先把数据库式表达翻译回正常语言，才能知道发生了什么。见 [CASE-035](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-035-机器计数改成人类句子)。
 
 同理，`80/80 block 没有参数更新`、`identity 最大 7，gate 需要 8` 这类状态如果公开给不了解实验的人，必须先解释 block、identity、gate 分别代表什么，以及 7 < 8 为什么导致没有更新；不能只把内部计数原样搬上网页。
 
@@ -232,7 +232,7 @@
 
 > Stage 2 完成了 20,480 次 WebShop 任务尝试，其中 797 次是完整成功、且轨迹质量足以进入训练候选池。这个历史实验把每 256 次尝试单独检查：只有同一批里至少有 8 个不同任务都能重复完整成功，才允许更新参数。实际最好的一批只有 7 个，因此这次运行的 80 批数据都没有触发参数更新。这里的 8 是当时实验采用的方法控制门槛，不是 OpenEVO 长期 Stage 2 的固定规则。
 
-规则不是“所有术语都删掉”，而是**先给人类含义，再保留术语作精确索引**。详细正反面对照见 [CASE-051](website-copy-cases.md#case-051-内部计数不能代替解释)、[CASE-052](website-copy-cases.md#case-052-数字因果链要把规则说完整) 与 [CASE-053](website-copy-cases.md#case-053-历史规则不能伪装成长期算法)。
+规则不是“所有术语都删掉”，而是**先给人类含义，再保留术语作精确索引**。详细正反面对照见 [CASE-051](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-051-内部计数不能代替解释)、[CASE-052](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-052-数字因果链要把规则说完整) 与 [CASE-053](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-053-历史规则不能伪装成长期算法)。
 
 ### 7.2 ELI5 不是“删掉术语”，而是“翻译成现实对象”
 
@@ -250,7 +250,7 @@ ELI5 的第一层必须保留 **对象 + 发生了什么**。不能为了变短�
 
 同样，`7B 继续跑 / 工程修复 / 当前结果 / 以后可能压缩` 这类短句如果脱离作者上下文仍需猜对象，也应改成 `继续 7B 训练 / 修复训练运行问题 / 7B 当前进度 / 以后可能压缩已积累的参数更新` 这类保留现实对象的写法。
 
-规则：**ELI5 优先减少“解码项目术语”的成本，不以最短字数为目标。** 详见 [CASE-059](website-copy-cases.md#case-059-eli5-不能删掉对象只留下数字或空泛动词)。
+规则：**ELI5 优先减少“解码项目术语”的成本，不以最短字数为目标。** 详见 [CASE-059](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-059-eli5-不能删掉对象只留下数字或空泛动词)。
 
 **ELI5 要扫完整个可见表面，不只扫正文。** 在交给 owner 前，把标题、眉题、卡片标题、数字条、图例、状态标签、按钮、脚注和正文一起检查一遍。像 `NOOP`、`accepted rollout`、`pass / reject`、`authority loss` 这类词，即使正文已经说人话，只要还留在高注意力标签里，读者仍然需要解码项目内部语言。真正需要保留的技术名词继续保留，但要在第一次出现处给人类含义。
 
@@ -258,7 +258,7 @@ ELI5 的第一层必须保留 **对象 + 发生了什么**。不能为了变短�
 
 公开结果页要严格区分：**没有运行、运行后得 0、运行后没有参数更新、测量无效**。它们不是同一种“失败”，也不能都压成 `0 / failed / pending`。
 
-同时做一次 first-time-reader completeness 检查：假设读者懂机器学习，但没有看过项目聊天、运行日志和内部编号。仅靠当前页面，他仍应能回答“发生了什么、数字数什么、为什么这样、能推出什么、不能推出什么”。详见 [CASE-057–058](website-copy-cases.md#case-057-没有发生不能写成效果差)。
+同时做一次 first-time-reader completeness 检查：假设读者懂机器学习，但没有看过项目聊天、运行日志和内部编号。仅靠当前页面，他仍应能回答“发生了什么、数字数什么、为什么这样、能推出什么、不能推出什么”。详见 [CASE-057–058](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-057-没有发生不能写成效果差)。
 
 ## 8. 比喻：只在它真的减少理解成本时使用
 
@@ -268,17 +268,17 @@ ELI5 的第一层必须保留 **对象 + 发生了什么**。不能为了变短�
 
 > `lyg2171` 配置为 2 × Intel Xeon Platinum 8380、1.0 TiB 内存和 8 × RTX 5090；当前主文件系统剩余约 55 G。
 
-比写“把它想成一张给科学训练用的大工作台”更合适。见 [CASE-042](website-copy-cases.md#case-042-能直说就不强行比喻)。
+比写“把它想成一张给科学训练用的大工作台”更合适。见 [CASE-042](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-042-能直说就不强行比喻)。
 
 复杂机制仍然可以类比，但必须满足两个条件：类比建立正确心智模型；随后能自然回到真实技术对象。不要用类比替代精确定义。
 
-同样，不要把普通实验关系包装成故事性的“分岔 / 分叉 / fork”。如果事实只是“分别用 7B 和 3B 做了实验”，就直接这么写；如果确实从同一个 checkpoint 建立两个 treatment arm，优先写“从同一 checkpoint 分成两组”。关系词只有在关系本身影响科学解释时才值得占用读者注意力。见 [CASE-067](website-copy-cases.md#case-067-直接说实验事实不要制造分岔故事)。
+同样，不要把普通实验关系包装成故事性的“分岔 / 分叉 / fork”。如果事实只是“分别用 7B 和 3B 做了实验”，就直接这么写；如果确实从同一个 checkpoint 建立两个 treatment arm，优先写“从同一 checkpoint 分成两组”。关系词只有在关系本身影响科学解释时才值得占用读者注意力。见 [CASE-067](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-067-直接说实验事实不要制造分岔故事)。
 
 ## 9. 不制造“洞察感”
 
 以下常见 AI 包装默认删除或改成事实：`值得注意的是`、`一个常见误解`、`关键洞察`、`真正重要的是`、`如果只记住一句话`、`总的来说`、`我们不妨`、`让我们先`。
 
-不是因为这些词永远不能出现，而是它们经常没有增加信息，只是在替一句普通事实加主持人口吻。见 [CASE-044](website-copy-cases.md#case-044-常见误解改成事实栏目)。
+不是因为这些词永远不能出现，而是它们经常没有增加信息，只是在替一句普通事实加主持人口吻。见 [CASE-044](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-044-常见误解改成事实栏目)。
 ## 10. 不重复同一个意思来制造“设计层级”
 
 视觉层级不能靠把同一个词写三遍。
@@ -290,9 +290,9 @@ ELI5 的第一层必须保留 **对象 + 发生了什么**。不能为了变短�
 - 与 H2 相同的 section kicker；
 - 同一卡片里两个 `加入对比` 入口。
 
-如果 kicker、标题、正文第一句表达的是同一件事，通常保留信息最强的一层。见 [CASE-001](website-copy-cases.md#case-001-删除重复-evidence-标签)、[CASE-004](website-copy-cases.md#case-004-删除重复-section-label) 和 [CASE-006](website-copy-cases.md#case-006-一个动作只保留一个主要入口)。
+如果 kicker、标题、正文第一句表达的是同一件事，通常保留信息最强的一层。见 [CASE-001](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-001-删除重复-evidence-标签)、[CASE-004](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-004-删除重复-section-label) 和 [CASE-006](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-006-一个动作只保留一个主要入口)。
 
-**Eyebrow / kicker 不是必填字段。** 它只有在补充阶段、日期、状态、类别或 provenance 时才保留。中文页面不能为了视觉装饰在 H1 上方塞一行没有中文含义、也没有新增事实的全英文大写短语；这类空层级直接删除。见 [CASE-067](website-copy-cases.md#case-067-直接说实验事实不要制造分岔故事)。
+**Eyebrow / kicker 不是必填字段。** 它只有在补充阶段、日期、状态、类别或 provenance 时才保留。中文页面不能为了视觉装饰在 H1 上方塞一行没有中文含义、也没有新增事实的全英文大写短语；这类空层级直接删除。见 [CASE-067](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-067-直接说实验事实不要制造分岔故事)。
 
 ## 11. 内部代号是 provenance，不是叙事骨架
 
@@ -302,22 +302,22 @@ ELI5 的第一层必须保留 **对象 + 发生了什么**。不能为了变短�
 
 > 发生了什么 → 我们观察到什么 → 这个观察支持什么 → 还不能证明什么。
 
-内部 ID 放在证据链接、表格、括注或 `<details>` 中。除非页面本身就是运行日志或谱系审计，否则不要让 H-number 充当读者理解研究的第一层目录。见 [CASE-029](website-copy-cases.md#case-029-结论先于实验账本)。
+内部 ID 放在证据链接、表格、括注或 `<details>` 中。除非页面本身就是运行日志或谱系审计，否则不要让 H-number 充当读者理解研究的第一层目录。见 [CASE-029](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-029-结论先于实验账本)。
 
 ## 12. “说人话”不能牺牲科学精度
 
 自然语言仍然必须保持证据边界。
 
-典型例子：已经提前固定比较问题和槽位，只能写 `comparison pre-specification`，不能为了显得正式升级成 `preregistration`。见 [CASE-039](website-copy-cases.md#case-039-pre-specification-不能升级成-preregistration)。
+典型例子：已经提前固定比较问题和槽位，只能写 `comparison pre-specification`，不能为了显得正式升级成 `preregistration`。见 [CASE-039](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-039-pre-specification-不能升级成-preregistration)。
 
 同样：
 
 - measurement-invalid 不能写成模型能力为 0；
 - `frozen` 如果可能被理解成模型来源，应写成“评测期间参数不再更新”；
 - unknown 不能为了完整感补成 `false / 0 / no`；
-- 一个丢失的 `不` 能把结论完全反转，必须有极性保护。见 [CASE-031](website-copy-cases.md#case-031-一个不字也属于科学正确性)。
+- 一个丢失的 `不` 能把结论完全反转，必须有极性保护。见 [CASE-031](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-031-一个不字也属于科学正确性)。
 
-公开示例还要保留隐私边界：路径、命令和配置如果只需要表达“当前实验账号的 home / secret 目录”，就写 `$HOME/...` 这类通用形式，不把真实 Unix 用户名、home path、主机名或私有账号标识写进公开页面。见 [CASE-050](website-copy-cases.md#case-050-公开示例使用通用路径而不暴露账号身份)。
+公开示例还要保留隐私边界：路径、命令和配置如果只需要表达“当前实验账号的 home / secret 目录”，就写 `$HOME/...` 这类通用形式，不把真实 Unix 用户名、home path、主机名或私有账号标识写进公开页面。见 [CASE-050](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-050-公开示例使用通用路径而不暴露账号身份)。
 
 **自然 ≠ 模糊；简洁 ≠ 降低证据标准。**
 ## 13. 页面各位置的具体写法
@@ -384,9 +384,9 @@ ELI5 的第一层必须保留 **对象 + 发生了什么**。不能为了变短�
 任何新增或修改公开文案的任务：
 
 1. 先读本规范。
-2. **每个公开 copy/design 任务都同时读 [`website-copy-cases.md`](website-copy-cases.md) 中最接近的近期 PREFERENCE 判例。** 不再等用户再次说 `说人话 / 去 AI 味 / 自然一点` 才加载；真人已经纠正过的模式必须主动避开。
-3. 用户给出真人网页反馈、指出重复理解问题，或再次纠正同一类阅读困难时，不只找一个相似句子：读取一个**案例簇**，至少包含当前最接近案例 + 2 个同类/相邻案例；新反馈优先于较老案例。 **同时按 [`human-preference-learning-system.md`](human-preference-learning-system.md) 更新/检索 scoped Preference Model 与 Rejected→Accepted Gold Pairs；案例库存储不是学习闭环本身。**
-4. 先把案例簇总结成一句可复用规则，并同时写清“这条规则不意味着什么”。例如 CASE-061–071 的共同规则不是“删除英文、禁止关系词、把页面做空或不要技术深度”，而是“零上下文首层先展示真实对象、双方和一个最重要事实；一个首屏只承担一个主要理解任务；视觉中心服从真实主题；术语就地解释；内部代号、方法学术语、重复 orientation 和非必要叙事包装后置；信息深度不机械变成 UI 模板”。
+2. **每个公开 copy/design 任务都读中央共享的人类表达偏好**：https://github.com/mykcs/.codex/blob/main/website-learning/shared/content/HUMAN_EXPRESSION.md；需要 BaseModel 专有经验时再读 https://github.com/mykcs/.codex/tree/main/website-learning/sites/basemodel。不要等用户再次说 `说人话 / 去 AI 味 / 自然一点` 才加载。
+3. 用户给出真人网页反馈、指出重复理解问题，或再次纠正同一类阅读困难时，以当前原话为最高偏好证据；结束对话时按中央 closeout 保存 RAW 并更新 derived learning。旧 [legacy BaseModel HPL case archive](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md) 只作为历史判例查询，不再驱动本地 Preference Model / Gold Pair。
+4. 先把相关证据总结成一句可复用规则，并同时写清“这条规则不意味着什么”。例如 CASE-061–071 的共同规则不是“删除英文、禁止关系词、把页面做空或不要技术深度”，而是“零上下文首层先展示真实对象、双方和一个最重要事实；一个首屏只承担一个主要理解任务；视觉中心服从真实主题；术语就地解释；内部代号、方法学术语、重复 orientation 和非必要叙事包装后置；信息深度不机械变成 UI 模板”。
 5. 根据页面职责加载专门规范，例如 Results 加载 reader-first / research-editorial，技术解释页加载 layered explainer。
 6. 先核实事实，再改口吻；不要让文案优化改变证据边界。
 7. 通读当前页面所有受影响的 H1/H2/H3、lede、nav、table subject、result card、button、callout、empty/error/status 和图注，而不是只改用户点名的一句。
@@ -394,7 +394,7 @@ ELI5 的第一层必须保留 **对象 + 发生了什么**。不能为了变短�
 9. 运行 `npm run audit:copy`，把结果与案例驱动的扫描结果一起当 review queue；不要把正则命中当作语义结论。
 10. 能机械检测的规律要进入现有 audit/test，优先保护“失败家族”而不是只 ban 一句原话；不能可靠机械检测的规律保留为案例与 Agent 审查步骤。
 11. 运行 `npm run audit:copy:strict` 与仓库对应验证；UI 改动继续走 browser gate，真实桌面/移动 viewport 验收仍不能被字符串测试替代。
-12. 如果用户反馈形成新的、跨页面可复用偏好，更新本规范或案例库并记录本轮传播到哪些 sibling/surface；不要新建第六套平行 style guide。
+12. 如果用户反馈形成新的、跨页面可复用偏好，先按中央 closeout 写入 `.codex` RAW/derived；BaseModel 只更新确实需要的当前规范或 executable guard，并记录传播到哪些 sibling/surface。不要新建平行 preference system。
 
 ## 17. 专门规范的职责
 
@@ -416,40 +416,40 @@ ELI5 的第一层必须保留 **对象 + 发生了什么**。不能为了变短�
 
 抽象规则不足以表达这个用户的偏好。历史案例不是附录装饰，而是解释规则含义的判例。
 
-未来 Agent 如果只收到一句 `说人话，不要 AI 味`，必须把本规范与 [`website-copy-cases.md`](website-copy-cases.md) 一起当作解释该指令的仓库上下文；遇到边界冲突时，以**更接近当前页面、时间更晚、且明确来自用户反馈**的案例为优先参考。
+未来 Agent 如果只收到一句 `说人话，不要 AI 味`，必须把本规范与中央 `.codex/website-learning` 的共享/站点偏好一起使用；遇到边界冲突时，以**当前明确 owner 指令 > 当前项目事实/科学边界 > BaseModel 当前规范 > 中央 learned experience > 历史案例**为顺序。
 ## 19. 一句话偏好索引
 
 未来 Agent 可以先用下面这张表定位，再去案例库看原句：
 
 | 用户偏好 | 历史判例 |
 |---|---|
-| 标题先命名对象，不先教读者“怎么看” | [CASE-041](website-copy-cases.md#case-041-服务器标题直接命名对象), [CASE-043](website-copy-cases.md#case-043-怎么读改成-gpu-规格), [CASE-047](website-copy-cases.md#case-047-这些数字怎么测出来改成数据来源) |
-| 视觉中心只强调真实主题、结论和决定性数字，不强调“先怎么读” | [CASE-069](website-copy-cases.md#case-069-视觉中心必须给真实主题) |
-| 专业名词和内部代号在第一次出现处就地解释，不能要求读者来回查表 | [CASE-070](website-copy-cases.md#case-070-术语和代号必须就地解释) |
-| 信息深度不等于固定的“一句话 / 专业解释 / 证据”可见 UI 模板 | [CASE-071](website-copy-cases.md#case-071-解释深度不是可见-ui-模板) |
-| 事情先于文章；不要解释页面怎样组织 | [CASE-013–024](website-copy-cases.md#case-013-这篇文章不是开头被删除) |
-| 一个意思只出现一次，不用重复标签制造层级 | [CASE-001–006](website-copy-cases.md#case-001-删除重复-evidence-标签) |
-| 能说实验、模型、GPU、数据，就少用“研究主线/决策对象” | [CASE-007–012](website-copy-cases.md#case-007-研究总览改成实验总览) |
-| 第一屏先给结论和决定性数字，run ID 后置 | [CASE-029](website-copy-cases.md#case-029-结论先于实验账本) |
-| 推理要可见，但写成“观察→支持→边界”，不是内部标签 | [CASE-030](website-copy-cases.md#case-030-可见推理桥而不是只给标签) |
-| 机器状态翻译成人类句子；raw field 留证据层 | [CASE-035](website-copy-cases.md#case-035-机器计数改成人类句子) |
-| `block / identity / gate / no-update` 先翻译成人类对象和因果，再保留术语 | [CASE-051–053](website-copy-cases.md#case-051-内部计数不能代替解释) |
-| ELI5 保留“对象 + 发生了什么”；不能删到只剩数字、限制或空泛动词 | [CASE-059](website-copy-cases.md#case-059-eli5-不能删掉对象只留下数字或空泛动词) |
-| 连续几版实验都出问题时，分别写清每一版“现实里坏了什么”，不要统一叫“Stage 2 失败” | [CASE-054–056](website-copy-cases.md#case-054-阶段二失败不能写成一个标签) |
-| “没运行”与“结果为 0”严格分开；页面脱离聊天仍能自解释 | [CASE-057–058](website-copy-cases.md#case-057-没有发生不能写成效果差) |
-| `共同 / 继续 / 仍然 / 后续` 先给关系两端和最小结构，再写状态 | [CASE-060](website-copy-cases.md#case-060-关系状态前先给参照物) |
-| 项目术语先解释它在这里干什么，再给英文/内部名 | [CASE-025–028](website-copy-cases.md#case-025-先解释-webshop-任务再讲内部对象), [CASE-034](website-copy-cases.md#case-034-命令与-wrapper-先于-parser-术语) |
-| 责任已知时直接点名负责层，不先清嫌疑人 | [CASE-036](website-copy-cases.md#case-036-责任先直接点名负责层) |
-| 否定句可以用；不要把 negative-first 当机械禁词 | [CASE-031–032](website-copy-cases.md#case-031-一个不字也属于科学正确性) |
-| 能直说就不强行比喻，不为了“好懂”表演教学 | [CASE-042](website-copy-cases.md#case-042-能直说就不强行比喻) |
-| `常见误解 / 值得注意 / 如果只记一句话` 没增加信息就删 | [CASE-015](website-copy-cases.md#case-015-如果只带走一句话被删除), [CASE-044](website-copy-cases.md#case-044-常见误解改成事实栏目) |
-| 问句只有在它真的是用户正在做的判断时才有价值 | [CASE-046](website-copy-cases.md#case-046-为什么看起来不像改成原因) 与 [CASE-010](website-copy-cases.md#case-010-从抽象研究标签改到具体操作) 的演进对照 |
-| 中文先给含义，英文术语保留作精确检索 | [CASE-027](website-copy-cases.md#case-027-中文含义先于项目英文标签) |
-| 自然语言不能夸大 claim、补 unknown、丢否定或混淆术语 | [CASE-031](website-copy-cases.md#case-031-一个不字也属于科学正确性), [CASE-033](website-copy-cases.md#case-033-frozen-改成评测期间参数不更新), [CASE-039–040](website-copy-cases.md#case-039-pre-specification-不能升级成-preregistration) |
-| Results 主线先给科学问题、结果和边界；命令、配置、日志后置 | [CASE-048](website-copy-cases.md#case-048-结果页不是命令手册) |
-| 交互 affordance 不能反过来违背句子语义 | [CASE-049](website-copy-cases.md#case-049-不要-cat-就不能提供复制-cat) |
-| 公开命令和路径只暴露复现所需信息，不暴露真实账号/主机身份 | [CASE-050](website-copy-cases.md#case-050-公开示例使用通用路径而不暴露账号身份) |
-| 页面结构表达真实关系，不把一堆同权重卡片当“设计” | [`human-thinking-web-expression-contract.md`](human-thinking-web-expression-contract.md) + [CASE-001–006](website-copy-cases.md#case-001-删除重复-evidence-标签) |
+| 标题先命名对象，不先教读者“怎么看” | [CASE-041](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-041-服务器标题直接命名对象), [CASE-043](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-043-怎么读改成-gpu-规格), [CASE-047](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-047-这些数字怎么测出来改成数据来源) |
+| 视觉中心只强调真实主题、结论和决定性数字，不强调“先怎么读” | [CASE-069](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-069-视觉中心必须给真实主题) |
+| 专业名词和内部代号在第一次出现处就地解释，不能要求读者来回查表 | [CASE-070](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-070-术语和代号必须就地解释) |
+| 信息深度不等于固定的“一句话 / 专业解释 / 证据”可见 UI 模板 | [CASE-071](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-071-解释深度不是可见-ui-模板) |
+| 事情先于文章；不要解释页面怎样组织 | [CASE-013–024](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-013-这篇文章不是开头被删除) |
+| 一个意思只出现一次，不用重复标签制造层级 | [CASE-001–006](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-001-删除重复-evidence-标签) |
+| 能说实验、模型、GPU、数据，就少用“研究主线/决策对象” | [CASE-007–012](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-007-研究总览改成实验总览) |
+| 第一屏先给结论和决定性数字，run ID 后置 | [CASE-029](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-029-结论先于实验账本) |
+| 推理要可见，但写成“观察→支持→边界”，不是内部标签 | [CASE-030](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-030-可见推理桥而不是只给标签) |
+| 机器状态翻译成人类句子；raw field 留证据层 | [CASE-035](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-035-机器计数改成人类句子) |
+| `block / identity / gate / no-update` 先翻译成人类对象和因果，再保留术语 | [CASE-051–053](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-051-内部计数不能代替解释) |
+| ELI5 保留“对象 + 发生了什么”；不能删到只剩数字、限制或空泛动词 | [CASE-059](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-059-eli5-不能删掉对象只留下数字或空泛动词) |
+| 连续几版实验都出问题时，分别写清每一版“现实里坏了什么”，不要统一叫“Stage 2 失败” | [CASE-054–056](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-054-阶段二失败不能写成一个标签) |
+| “没运行”与“结果为 0”严格分开；页面脱离聊天仍能自解释 | [CASE-057–058](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-057-没有发生不能写成效果差) |
+| `共同 / 继续 / 仍然 / 后续` 先给关系两端和最小结构，再写状态 | [CASE-060](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-060-关系状态前先给参照物) |
+| 项目术语先解释它在这里干什么，再给英文/内部名 | [CASE-025–028](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-025-先解释-webshop-任务再讲内部对象), [CASE-034](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-034-命令与-wrapper-先于-parser-术语) |
+| 责任已知时直接点名负责层，不先清嫌疑人 | [CASE-036](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-036-责任先直接点名负责层) |
+| 否定句可以用；不要把 negative-first 当机械禁词 | [CASE-031–032](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-031-一个不字也属于科学正确性) |
+| 能直说就不强行比喻，不为了“好懂”表演教学 | [CASE-042](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-042-能直说就不强行比喻) |
+| `常见误解 / 值得注意 / 如果只记一句话` 没增加信息就删 | [CASE-015](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-015-如果只带走一句话被删除), [CASE-044](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-044-常见误解改成事实栏目) |
+| 问句只有在它真的是用户正在做的判断时才有价值 | [CASE-046](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-046-为什么看起来不像改成原因) 与 [CASE-010](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-010-从抽象研究标签改到具体操作) 的演进对照 |
+| 中文先给含义，英文术语保留作精确检索 | [CASE-027](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-027-中文含义先于项目英文标签) |
+| 自然语言不能夸大 claim、补 unknown、丢否定或混淆术语 | [CASE-031](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-031-一个不字也属于科学正确性), [CASE-033](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-033-frozen-改成评测期间参数不更新), [CASE-039–040](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-039-pre-specification-不能升级成-preregistration) |
+| Results 主线先给科学问题、结果和边界；命令、配置、日志后置 | [CASE-048](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-048-结果页不是命令手册) |
+| 交互 affordance 不能反过来违背句子语义 | [CASE-049](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-049-不要-cat-就不能提供复制-cat) |
+| 公开命令和路径只暴露复现所需信息，不暴露真实账号/主机身份 | [CASE-050](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-050-公开示例使用通用路径而不暴露账号身份) |
+| 页面结构表达真实关系，不把一堆同权重卡片当“设计” | [`human-thinking-web-expression-contract.md`](human-thinking-web-expression-contract.md) + [CASE-001–006](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md#case-001-删除重复-evidence-标签) |
 
 如果只记一个判断：**先把作者、网页、阅读动作和内部账本从句子里拿掉，看剩下的事实是否已经足够清楚。**
 

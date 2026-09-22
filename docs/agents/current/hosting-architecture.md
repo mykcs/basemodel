@@ -54,7 +54,6 @@ Branch protection keeps strict current-base semantics and requires both `public-
 - `[vercel-preview]`: optional historical/review marker only, not an executable skip/build gate;
 - docs/governance-only final candidate: still requires exact-head Public PR CI; its Vercel gate runs only the static provider build;
 - docs/governance-only `main`: ignored as non-deploy-relevant, so an `AGENTS.md`/`docs/agents/**`-only merge cannot publish a new Production website.
-- detached HPL control-plane-only candidate: Public PR CI still runs deterministic/HPL/Reader validation; the Vercel gate runs only the static provider build. On `main`, the ignored-build step skips the duplicate Production rebuild. `scripts/hpl-control-plane.mjs` owns the narrow allowlist and scans all non-test runtime `src` modules for forbidden imports; any importer restores fail-closed Public PR CI browser behavior.
 
 Persistent final-gate identity is anchored to live `main`, not to the previous gate deployment. Before moving `ci/vercel-gate-final`, the request helper proves exact-head `public-ci-gate=success` and pins `ci/vercel-gate-base` to current `main`. Strict branch protection still handles base drift: an out-of-date PR must refresh and obtain fresh exact-head Public PR CI and Vercel results before merge.
 
@@ -67,7 +66,6 @@ Persistent final-gate identity is anchored to live `main`, not to the previous g
 
 Public GHA `ci-ui-gate.mjs` and the retained manual fallback paths share `scripts/vercel-ui-plan.ts`; skip/focused/full classification therefore has one owner. Shared/global/unknown changes fail closed to the complete canonical Chromium matrix. Route-owned/content changes may use focused mapped coverage. Lab/server-relevant changes run the dedicated 6-case active-Lab gate in Public PR CI. `vercel-ui-gate.mjs` remains available as fallback/history-compatible tooling but is not part of the ordinary Vercel build command.
 
-HPL-only is a special **control-plane detachment** case, not a generic exemption for `src/lib` or `src/data`. Only the exact paths declared in `scripts/hpl-control-plane.mjs` qualify, and only while no ordinary runtime source imports them. The helper and ignored-build/planner owners themselves are full-risk changes, so this optimization cannot classify its own implementation as harmless.
 
 Vercel Preview is automatically non-indexable through `VERCEL_ENV=preview`; Production uses the stable project domain/canonical. `vercel.json` must not disable `main`.
 

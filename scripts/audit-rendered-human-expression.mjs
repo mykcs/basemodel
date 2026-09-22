@@ -40,11 +40,11 @@ for (const file of htmlFiles) {
   for (const match of source.matchAll(/<h([1-3])\b[^>]*>([\s\S]*?)<\/h\1>/gi)) {
     const heading = textOnly(match[2]);
     for (const [rule, pattern] of [
-      ['HPL-INTERNAL-ID-HEADING', internalHeading],
-      ['HPL-COMPRESSED-SHORTHAND-HEADING', compressedHeading],
-      ['HPL-ENGINEERING-AS-HEADLINE', engineeringHeading],
-      ['HPL-PROJECT-STATUS-AS-STORY', projectStatusHeading],
-      ['HPL-PRESENTER-HEADING', presenterHeading],
+      ['HUMAN-EXPRESSION-INTERNAL-ID-HEADING', internalHeading],
+      ['HUMAN-EXPRESSION-COMPRESSED-SHORTHAND-HEADING', compressedHeading],
+      ['HUMAN-EXPRESSION-ENGINEERING-AS-HEADLINE', engineeringHeading],
+      ['HUMAN-EXPRESSION-PROJECT-STATUS-AS-STORY', projectStatusHeading],
+      ['HUMAN-EXPRESSION-PRESENTER-HEADING', presenterHeading],
     ]) {
       if (pattern.test(heading)) findings.push({ file: relative, rule, detail: heading });
     }
@@ -55,12 +55,12 @@ for (const file of htmlFiles) {
     if (!paragraph) continue;
     const opening = textOnly(paragraph[1]);
     if (negativeOpening.test(opening)) {
-      findings.push({ file: relative, rule: 'HPL-DEFENSIVE-NEGATION-OPENING', detail: opening.slice(0, 220) });
+      findings.push({ file: relative, rule: 'HUMAN-EXPRESSION-DEFENSIVE-NEGATION-OPENING', detail: opening.slice(0, 220) });
     }
   }
 
   if (/data-research-glossary|class=["'][^"']*(?:research-glossary|note-glossary)[^"']*["']/i.test(source)) {
-    findings.push({ file: relative, rule: 'HPL-CENTRALIZED-GLOSSARY', detail: 'centralized glossary rendered on the public reading path' });
+    findings.push({ file: relative, rule: 'HUMAN-EXPRESSION-CENTRALIZED-GLOSSARY', detail: 'centralized glossary rendered on the public reading path' });
   }
 
   const defaultReadingLayer = source
@@ -70,12 +70,12 @@ for (const file of htmlFiles) {
   const defaultText = textOnly(defaultReadingLayer);
   const internalMarker = defaultText.match(internalVisibleMarker);
   if (internalMarker) {
-    findings.push({ file: relative, rule: 'HPL-INTERNAL-MARKER-IN-DEFAULT-LAYER', detail: internalMarker[0] });
+    findings.push({ file: relative, rule: 'HUMAN-EXPRESSION-INTERNAL-MARKER-IN-DEFAULT-LAYER', detail: internalMarker[0] });
   }
 
   if (relative.startsWith('research/seed-openevo/')) {
     if (/<iframe\b/i.test(source) && !/<iframe\b[^>]*data-public-embed-authorized/i.test(source)) {
-      findings.push({ file: relative, rule: 'HPL-LOCKED-IFRAME-RISK', detail: 'research iframe requires explicit public-embed authorization' });
+      findings.push({ file: relative, rule: 'HUMAN-EXPRESSION-LOCKED-IFRAME-RISK', detail: 'research iframe requires explicit public-embed authorization' });
     }
 
     for (const match of defaultReadingLayer.matchAll(/<(?:small|span|b)\b[^>]*>([\s\S]*?)<\/(?:small|span|b)>/gi)) {
@@ -85,18 +85,18 @@ for (const file of htmlFiles) {
       if (!letters || !englishUiWord.test(label)) continue;
       const uppercaseShare = [...letters].filter((char) => char === char.toUpperCase()).length / letters.length;
       if (uppercaseShare >= 0.72) {
-        findings.push({ file: relative, rule: 'HPL-UNLOCALIZED-ALLCAPS-UI-LABEL', detail: label });
+        findings.push({ file: relative, rule: 'HUMAN-EXPRESSION-UNLOCALIZED-ALLCAPS-UI-LABEL', detail: label });
       }
     }
   }
 }
 
-console.log(`Rendered HPL audit scanned ${htmlFiles.length} HTML files.`);
+console.log(`Rendered human-expression audit scanned ${htmlFiles.length} HTML files.`);
 for (const finding of findings) {
   console.log(`FAIL ${finding.file} [${finding.rule}] ${finding.detail}`);
 }
 if (findings.length) {
-  console.error(`Rendered HPL failures: ${findings.length}`);
+  console.error(`Rendered human-expression failures: ${findings.length}`);
   process.exit(1);
 }
-console.log('Rendered HPL audit PASS.');
+console.log('Rendered human-expression audit PASS.');

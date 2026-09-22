@@ -73,7 +73,7 @@ describe('research-site presentation contract', () => {
     expect(contract).toContain('full primary performance trajectory and the minimum useful aggregation');
     expect(contract).toContain('show the native/full time series before a windowed, smoothed, detrended, or otherwise derived view');
     expect(contract).toContain('never upgrades an observation into causality');
-    expect(contract).toContain("The exact diagnostic sequence is route-specific and remains owned by that route's Reader Contract / HPL evidence");
+    expect(contract).toContain("The exact diagnostic sequence is route-specific and remains owned by that route's Reader Contract plus current central/BaseModel learned evidence");
     expect(contract).toContain('mathematical derivation, mechanism explainer, or causal intervention history');
   });
 

@@ -38,7 +38,7 @@ BaseModel 创建基线：`main@1b6d13714f672345a086cbc09ec7067cb3dae3a7`
 - [x] `docs/agents/current/branch-and-pr-conventions.md`。
 - [x] `docs/agents/current/website-engineering-standard.md` 与 `scenario-trigger-registry.md`。
 - [x] `product-and-research-integrity.md`、`scientific-state-provenance.md`、`experiment-result-publication-workflow.md`。
-- [x] `website-design-spec.md`、`website-copy-cases.md`、`human-preference-learning-system.md`。
+- [x] `website-design-spec.md`、[legacy BaseModel HPL case archive](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md)、`human-preference-learning-system.md`。
 - [x] `site-reader-attention-contract.md`、`human-thinking-web-expression-contract.md`、`research-site-presentation-contract.md`。
 - [x] `reader-first-copy-hierarchy.md`、`layered-technical-explainer-copy.md`、`research-editorial-style.md`。
 - [x] `ui-design-principles.md`、`theme-contrast-contract.md`、`ui-change-visual-acceptance-gate.md`。
@@ -689,7 +689,7 @@ final panel = locked
 
 ### 16.1 代码/语义最小验证
 
-- [x] `npm run feedback:retrieve -- "Effective-State GDR LoRA research derivation pending formal result"`，把 task-time human preference retrieval 结果用于文案 cold-read。
+- [x] 历史上曾运行 BaseModel-local `feedback:retrieve` 做文案 cold-read；该本地 HPL 工具已于 2026-09-22 退休，当前偏好证据由 `.codex/website-learning` 提供。
 - [x] focused Vitest：新 snapshot / experiment navigation / Reader Contract / Gated-Delta / Bounded regressions。
 - [x] `npm run audit:reader-contracts`。
 - [x] `npm run audit:copy:strict`。

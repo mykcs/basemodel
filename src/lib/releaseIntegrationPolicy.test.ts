@@ -34,7 +34,7 @@ describe('semantic release integration policy', () => {
   it('keeps one live product workline while the owner iterates one surface', () => {
     expect(integrationPlaybook).toContain('one designated survivor product PR');
     expect(integrationPlaybook).toContain('do not turn every owner correction on one active surface into another parallel product PR');
-    expect(integrationPlaybook).toContain('HPL/control-plane closeout');
+    expect(integrationPlaybook).toContain('website-learning/docs closeout');
     expect(integrationPlaybook).toContain('absorbed / superseded / rejected / deferred');
   });
 

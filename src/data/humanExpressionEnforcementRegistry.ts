@@ -1,11 +1,11 @@
-export type HplEnforcementKind = 'rendered-audit' | 'source-audit' | 'reader-contract' | 'browser-gate' | 'policy-test';
+export type HumanExpressionEnforcementKind = 'rendered-audit' | 'source-audit' | 'reader-contract' | 'browser-gate' | 'policy-test';
 
-export type HplEnforcementRecord = {
+export type HumanExpressionEnforcementRecord = {
   family: string;
-  guards: Array<{ kind: HplEnforcementKind; path: string; note: string }>;
+  guards: Array<{ kind: HumanExpressionEnforcementKind; path: string; note: string }>;
 };
 
-export const HPL_ENFORCEMENT_REGISTRY: HplEnforcementRecord[] = [
+export const HUMAN_EXPRESSION_ENFORCEMENT_REGISTRY: HumanExpressionEnforcementRecord[] = [
   { family: 'card-adjacency-masquerading-as-flow', guards: [
     { kind: 'policy-test', path: 'src/lib/humanThinkingWebExpressionContract.test.ts', note: 'requires FLOW-WITNESS and rejects card adjacency as proof of non-linear flow' },
     { kind: 'browser-gate', path: 'tests/e2e/vanilla-sd-lora-mechanism.spec.ts', note: 'checks real replay, branch/join, and round-return topology on desktop and mobile' },
@@ -19,29 +19,28 @@ export const HPL_ENFORCEMENT_REGISTRY: HplEnforcementRecord[] = [
     { kind: 'browser-gate', path: 'tests/e2e/vanilla-sd-lora-mechanism.spec.ts', note: 'proves the final BaseModel render preserves routed topology across responsive layouts' },
   ]},
   { family: 'anticipatory-rebuttal', guards: [
-    { kind: 'rendered-audit', path: 'scripts/audit-rendered-hpl.mjs', note: 'blocks defensive/negation-first section openings' },
+    { kind: 'rendered-audit', path: 'scripts/audit-rendered-human-expression.mjs', note: 'blocks defensive/negation-first section openings' },
     { kind: 'source-audit', path: 'scripts/audit-audience-copy.ts', note: 'flags negative-first public copy for review' },
   ]},
   { family: 'approved-prose-rewritten-into-jargon', guards: [
     { kind: 'source-audit', path: 'scripts/audit-audience-copy.ts', note: 'flags project shorthand and abstract packaging' },
-    { kind: 'policy-test', path: 'src/lib/humanPreferenceLearning.test.ts', note: 'keeps accepted human-language preference retrievable' },
   ]},
   { family: 'attention-tax', guards: [
     { kind: 'reader-contract', path: 'tests/e2e/site-reader-contracts.spec.ts', note: 'enforces first-screen text and interaction budgets' },
     { kind: 'source-audit', path: 'scripts/audit-reader-contracts.ts', note: 'requires first-viewport goals for focus pages' },
   ]},
   { family: 'compressed-shorthand-heading', guards: [
-    { kind: 'rendered-audit', path: 'scripts/audit-rendered-hpl.mjs', note: 'blocks numeric/internal shorthand in h1-h3' },
+    { kind: 'rendered-audit', path: 'scripts/audit-rendered-human-expression.mjs', note: 'blocks numeric/internal shorthand in h1-h3' },
   ]},
   { family: 'cross-experiment-legend-relearning', guards: [
     { kind: 'browser-gate', path: 'tests/e2e/seed-openevo-briefing.spec.ts', note: 'keeps repeated experiment evidence using shared Score/loss grammar' },
     { kind: 'browser-gate', path: 'tests/e2e/effective-state-gdr-lora.spec.ts', note: 'keeps new experiment evidence aligned with native W&B semantics' },
   ]},
   { family: 'defensive-negation-opening', guards: [
-    { kind: 'rendered-audit', path: 'scripts/audit-rendered-hpl.mjs', note: 'blocks section openings that begin by rebutting an unasked claim' },
+    { kind: 'rendered-audit', path: 'scripts/audit-rendered-human-expression.mjs', note: 'blocks section openings that begin by rebutting an unasked claim' },
   ]},
   { family: 'engineering-as-science-highlight', guards: [
-    { kind: 'rendered-audit', path: 'scripts/audit-rendered-hpl.mjs', note: 'blocks SHA/receipt/determinism headlines' },
+    { kind: 'rendered-audit', path: 'scripts/audit-rendered-human-expression.mjs', note: 'blocks SHA/receipt/determinism headlines' },
     { kind: 'browser-gate', path: 'tests/e2e/content-first-study-design.spec.ts', note: 'keeps evidence details behind progressive disclosure' },
   ]},
   { family: 'external-reviewer-default-dependency', guards: [
@@ -49,22 +48,21 @@ export const HPL_ENFORCEMENT_REGISTRY: HplEnforcementRecord[] = [
   ]},
   { family: 'incomplete-scientific-decision-loop', guards: [
     { kind: 'browser-gate', path: 'tests/e2e/stage2-256-research-journey.spec.ts', note: 'preserves design genealogy and diagnostic consequence on the negative-experiment path' },
-    { kind: 'policy-test', path: 'src/lib/humanPreferenceBrief.test.ts', note: 'retrieves the full why/evidence/decision/next-step preference' },
   ]},
   { family: 'inconsistent-experiment-chart-grammar', guards: [
     { kind: 'browser-gate', path: 'tests/e2e/seed-openevo-briefing.spec.ts', note: 'checks shared experiment Score/loss chart grammar' },
     { kind: 'browser-gate', path: 'tests/e2e/effective-state-gdr-lora.spec.ts', note: 'checks the newer experiment result surface uses the same evidence semantics' },
   ]},
   { family: 'internal-detail-promoted-to-primary-attention', guards: [
-    { kind: 'rendered-audit', path: 'scripts/audit-rendered-hpl.mjs', note: 'blocks internal experiment IDs and engineering receipts in headings' },
+    { kind: 'rendered-audit', path: 'scripts/audit-rendered-human-expression.mjs', note: 'blocks internal experiment IDs and engineering receipts in headings' },
     { kind: 'reader-contract', path: 'tests/e2e/site-reader-contracts.spec.ts', note: 'protects first-screen semantic priority' },
   ]},
   { family: 'jargon-memory-load', guards: [
-    { kind: 'rendered-audit', path: 'scripts/audit-rendered-hpl.mjs', note: 'blocks centralized glossary surfaces and internal-ID headings' },
+    { kind: 'rendered-audit', path: 'scripts/audit-rendered-human-expression.mjs', note: 'blocks centralized glossary surfaces and internal-ID headings' },
     { kind: 'source-audit', path: 'scripts/audit-audience-copy.ts', note: 'flags project terms that need local explanation' },
   ]},
   { family: 'mainline-rigor-tax', guards: [
-    { kind: 'rendered-audit', path: 'scripts/audit-rendered-hpl.mjs', note: 'keeps SHA/hash/receipt/determinism out of public headings' },
+    { kind: 'rendered-audit', path: 'scripts/audit-rendered-human-expression.mjs', note: 'keeps SHA/hash/receipt/determinism out of public headings' },
     { kind: 'browser-gate', path: 'tests/e2e/content-first-study-design.spec.ts', note: 'keeps detailed rigor evidence in expandable evidence layers' },
   ]},
   { family: 'meaningless-english-eyebrow', guards: [
@@ -79,18 +77,18 @@ export const HPL_ENFORCEMENT_REGISTRY: HplEnforcementRecord[] = [
     { kind: 'browser-gate', path: 'tests/e2e/ui-safety.spec.ts', note: 'blocks horizontal overflow and clipping' },
   ]},
   { family: 'numeric-shock-heading', guards: [
-    { kind: 'rendered-audit', path: 'scripts/audit-rendered-hpl.mjs', note: 'blocks number-first shorthand headings such as 7<8 and model-label colon headings' },
+    { kind: 'rendered-audit', path: 'scripts/audit-rendered-human-expression.mjs', note: 'blocks number-first shorthand headings such as 7<8 and model-label colon headings' },
   ]},
   { family: 'presenter-language', guards: [
-    { kind: 'rendered-audit', path: 'scripts/audit-rendered-hpl.mjs', note: 'blocks presenter-style reading instructions in h1-h3' },
+    { kind: 'rendered-audit', path: 'scripts/audit-rendered-human-expression.mjs', note: 'blocks presenter-style reading instructions in h1-h3' },
     { kind: 'source-audit', path: 'scripts/audit-audience-copy.ts', note: 'flags known presenter-heading patterns before build' },
   ]},
   { family: 'project-status-as-research-story', guards: [
-    { kind: 'rendered-audit', path: 'scripts/audit-rendered-hpl.mjs', note: 'blocks status-management language in research headings' },
+    { kind: 'rendered-audit', path: 'scripts/audit-rendered-human-expression.mjs', note: 'blocks status-management language in research headings' },
   ]},
   { family: 'reference-surface-imitation', guards: [
     { kind: 'policy-test', path: 'src/lib/humanThinkingWebExpressionContract.test.ts', note: 'keeps cognition-first expression contract distinct from surface imitation' },
-    { kind: 'policy-test', path: 'src/lib/agentScenarioTriggerRegistry.test.ts', note: 'requires the hard family in HPL redesign triggers' },
+    { kind: 'policy-test', path: 'src/lib/agentScenarioTriggerRegistry.test.ts', note: 'requires the hard family in current human-expression redesign triggers' },
   ]},
   { family: 'reviewer-evidence-class-conflation', guards: [
     { kind: 'policy-test', path: 'src/lib/uiSafetyGate.test.ts', note: 'asserts browser verification and independent reviewer evidence are different classes' },
@@ -101,7 +99,6 @@ export const HPL_ENFORCEMENT_REGISTRY: HplEnforcementRecord[] = [
   ]},
   { family: 'webification-language-regression', guards: [
     { kind: 'source-audit', path: 'scripts/audit-audience-copy.ts', note: 'blocks known abstract packaging and legacy webification phrases' },
-    { kind: 'policy-test', path: 'src/lib/humanPreferenceLearning.test.ts', note: 'keeps approved natural prose as the learned preference' },
   ]},
   { family: 'formula-without-mapping-bridge', guards: [
     { kind: 'policy-test', path: 'src/lib/gatedDeltaSdLoraPublication.test.ts', note: 'requires the Gated Delta derivation to preserve the sequence-state equivalence boundary before the OpenEVO mapping' },
@@ -113,7 +110,7 @@ export const HPL_ENFORCEMENT_REGISTRY: HplEnforcementRecord[] = [
     { kind: 'browser-gate', path: 'tests/e2e/sitewide-math-rendering.spec.ts', note: 'requires real KaTeX plus MathML on representative scientific pages' },
   ]},
   { family: 'locked-iframe-presented-as-interactive', guards: [
-    { kind: 'rendered-audit', path: 'scripts/audit-rendered-hpl.mjs', note: 'rejects research iframes without explicit public-embed authorization' },
+    { kind: 'rendered-audit', path: 'scripts/audit-rendered-human-expression.mjs', note: 'rejects research iframes without explicit public-embed authorization' },
   ]},
   { family: 'detached-chart-explanation', guards: [
     { kind: 'browser-gate', path: 'tests/e2e/effective-state-gdr-lora.spec.ts', note: 'requires each native W&B snapshot to carry its own nearby explanation and boundary' },

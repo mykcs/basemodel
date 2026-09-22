@@ -19,7 +19,7 @@ const analysisPlan = read('../components/research/OpenEvoExperimentAnalysisPlan.
 const resultsScaffold = read('../components/research/OpenEvoExperimentResultsScaffold.astro');
 const benchmarkNote = read('../components/research/OpenEvoWebShopBenchmarkNote.astro');
 
-describe('2026-09-07 human-feedback visual language protection', () => {
+describe('2026-09-07 human-expression visual language protection', () => {
   it('does not regenerate generic eyebrow labels above self-explanatory headings', () => {
     for (const phrase of ['实验模型', '实验环境', "eyebrow: t('方法'", "eyebrow: t('比较'"]) {
       expect(detail).not.toContain(phrase);
