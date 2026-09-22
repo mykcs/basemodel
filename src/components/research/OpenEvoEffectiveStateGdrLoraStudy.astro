@@ -21,6 +21,10 @@ const boundedHref = p(`${cap}/sd-lora-bounded-state/`);
 const gatedHref = p(`${cap}/gated-delta-sd-lora/`);
 const scalingHref = p(`${cap}/sd-lora-scaling/`);
 const gdrPaperHref = 'https://arxiv.org/abs/2412.06464';
+const q17GeometryHref = 'https://github.com/mykcs/openevo-experiment/blob/main/docs/evidence/q17-final-closeout-20260912/D1_GEOMETRY.json';
+const boundedManifestHref = 'https://github.com/mykcs/openevo-experiment/blob/c5e012814bb9509deb0e2cbc8d57a63e2b56889f/docs/evidence/bounded-recurrence-gdr-20260915/treatment-manifest-202609150100.json';
+const betaControllerSourceHref = 'https://github.com/mykcs/openevo-experiment/blob/c5e012814bb9509deb0e2cbc8d57a63e2b56889f/scripts/analysis/gated_delta_gauge_invariant_beta_policy_v2_202609151320.py';
+const betaRuntimeSourceHref = 'https://github.com/mykcs/openevo-experiment/blob/c5e012814bb9509deb0e2cbc8d57a63e2b56889f/scripts/analysis/gated_delta_lora_effective_state_runtime_v1_202609151345.py';
 
 const wandbReportUrl = 'https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/reports/OpenEVO-1.7B-%C2%B7-%E4%B8%89%E7%BB%84%E5%AE%9E%E9%AA%8C%E5%88%86%E6%9E%90--VmlldzoxNzk2ODUyMg==';
 const wandbWorkspaceUrl = study.posthocAnalysis.wandbWorkspace;
@@ -139,7 +143,7 @@ const twentyRoundScoreWindows = finalResult
 
 <article class="paper" data-effective-state-gdr-page data-copy-review data-reader-page="research-explainer" data-experiment-id={experiment.id}>
   <header class="paper__hero esg__hero" data-reader-context id="top">
-    <h1>{t('三个 OpenEVO 实验', 'Three OpenEVO experiments')}</h1>
+    <h1>{t('OpenEVO 参数演变：Bounded State 与 β 组件', 'OpenEVO parameter evolution: Bounded State and the β component')}</h1>
 
     <figure class="paper-table-figure paper-table-figure--hero">
       <div class="paper-table-wrap paper-table-wrap--hero" aria-label={t('三组已完成实验、一个未做实验位置，以及 SEED 论文参考', 'Three completed experiments, one unrun slot, and a SEED paper reference')}>
@@ -201,16 +205,16 @@ const twentyRoundScoreWindows = finalResult
       <figcaption id="ablation-table-caption" class="paper-table__caption">
         <strong>{t('表 1.', 'Table 1.')}</strong>{' '}
         {t(
-          '消融设置与结果。SEED（论文，Qwen3-1.7B）是外部参考：原论文 Table 1 在 WebShop 上报告 Score 87.1、Success 77.3%。它使用论文自己的 128 个 validation tasks，不是我们三条 OpenEVO 最终模型共用的同一冻结 128 题，因此只能作为论文参考，不能把数值差直接解释成严格同题消融收益。普通 OpenEVO 是原始 DirectApply：每轮 rank8 SD-LoRA 更新继续累积；+ Bounded 把累计参数历史压回固定 rank128 State；+ β-gating（α 固定为 1）在 Bounded 上再用动态 β 控制新经验写入长期参数 State 的强度；动态 α + 动态 β 是尚未运行的未来实验位置，因此结果保持为空且不参与统计比较。',
-          'Ablation settings and results. SEED (paper, Qwen3-1.7B) is an external reference: Table 1 of the paper reports WebShop Score 87.1 and Success 77.3%. It uses the paper’s own 128 validation tasks rather than the same frozen 128-task panel shared by our three OpenEVO final models, so it is a paper reference rather than a strict same-panel ablation. OpenEVO is the original DirectApply, where each rank-8 SD-LoRA update continues to accumulate; + Bounded compresses accumulated parameter history back to a fixed rank-128 State; + β-gating (α fixed at 1) adds dynamic β on top of Bounded to control how strongly new experience is written into the long-term parameter State; dynamic α + dynamic β is an unrun future slot, so its results remain blank and it is excluded from statistical comparisons.',
+          '消融设置与结果。SEED（论文，Qwen3-1.7B）是外部参考：原论文 Table 1 在 WebShop 上报告 Score 87.1、Success 77.3%。它使用论文自己的 128 个 validation tasks，不是我们三条 OpenEVO 最终模型共用的同一冻结 128 题，因此只能作为论文参考，不能把数值差直接解释成严格同题消融收益。普通 OpenEVO 是原始 DirectApply：每轮 rank8 SD-LoRA 更新继续累积；+ Bounded 把累计参数历史压回固定 rank128 State；+ β-gating（α 固定为 1）在 Bounded 上再用动态 β 控制新经验写入长期参数 State 的强度；动态 α + 动态 β 是尚未运行的方法空间空位，因此结果保持为空且不参与统计比较，但它不代表当前下一实验的第一优先级。',
+          'Ablation settings and results. SEED (paper, Qwen3-1.7B) is an external reference: Table 1 of the paper reports WebShop Score 87.1 and Success 77.3%. It uses the paper’s own 128 validation tasks rather than the same frozen 128-task panel shared by our three OpenEVO final models, so it is a paper reference rather than a strict same-panel ablation. OpenEVO is the original DirectApply, where each rank-8 SD-LoRA update continues to accumulate; + Bounded compresses accumulated parameter history back to a fixed rank-128 State; + β-gating (α fixed at 1) adds dynamic β on top of Bounded to control how strongly new experience is written into the long-term parameter State; dynamic α + dynamic β remains an unrun method-space slot, so its results remain blank and it is excluded from statistical comparisons, but it is not presented as the current first-priority next experiment.',
         )}
       </figcaption>
     </figure>
 
     <div class="paper__metric-context">
       <p class="paper__lede esg__lede" data-reader-task data-reader-purpose>{t(
-        '这里把“训练后期通常表现怎样”和“同一套题最后考一次”分开看。我们更关注最后 20 轮平均 Task Score，因为单个终评更容易受这一套固定题影响；但两者回答的问题不同，不能互相替代。',
-        'We separate “how the model usually behaves late in training” from “how it scores once on the same fixed exam.” We emphasize the mean Task Score over the last 20 rounds because a single final is more sensitive to one fixed task set, but the two measurements answer different questions and do not replace each other.',
+        '三条已完成路线现在形成了一个很清楚的结果：Bounded 把参数更新累计耗时从 31.09 小时降到 2.02 小时，但同题终评从 60.72 降到 45.98；继续加入 β 组件后，终评进一步降到 20.77。接下来的核心问题是：固定容量到底应该多大、Bounded 为什么没有完全保持能力，以及 β 为什么后期掉分。',
+        'The three completed lines now form a clear result: Bounded reduces cumulative parameter-update time from 31.09 hours to 2.02 hours, but the same-panel final drops from 60.72 to 45.98; adding the β component lowers it further to 20.77. The central open questions are the required fixed-state capacity, why Bounded does not fully preserve capability, and why β-gating degrades late.',
       )}</p>
       <p>{t(
         'Task Score 是 WebShop 每个任务结束时给出的 0–1 连续分数的平均值 × 100。商品属性只完成一部分时也可能得到部分分；“完整做对”则要求任务真正成功且 task_score = 1.0。因此 60.72 / 100 和 50/128 不是同一个指标。',
@@ -229,7 +233,7 @@ const twentyRoundScoreWindows = finalResult
 
   <section class="paper__section" id="motivation" aria-labelledby="motivation-title">
     <p class="paper__section-number">1</p>
-    <h2 id="motivation-title">{t('动机：SD-LoRA 越训练越慢', 'Motivation: SD-LoRA gets slower as history grows')}</h2>
+    <h2 id="motivation-title">{t('我们先解决 SD-LoRA 越训练越慢', 'We first address SD-LoRA slowing down as history grows')}</h2>
     <p>{t(
       '普通 OpenEVO 的参数更新方式是：每轮训练得到一个新的 SD-LoRA component，并把过去的 component 一起保留到后续模型。这样参数历史会随轮数持续变长；到了后期，每一轮训练都要经过越来越多的低秩路径，所以参数更新越来越慢。',
       'Ordinary OpenEVO updates parameters by producing a new SD-LoRA component each round and retaining the earlier components in later model states. The parameter history therefore grows with round count, so late training must traverse more and more low-rank paths and parameter updates become slower.',
@@ -245,9 +249,9 @@ const twentyRoundScoreWindows = finalResult
 
   <section class="paper__section" id="method" aria-labelledby="method-title">
     <p class="paper__section-number">2</p>
-    <h2 id="method-title">{t('方法：Bounded Online Recurrence、Gated Delta 来源与本实验 β-gating（α 固定为 1）', 'Method: Bounded Online Recurrence, the Gated Delta source, and this β-gating (α fixed at 1) study')}</h2>
+    <h2 id="method-title">{t('Bounded State 与 β 组件：固定容量与写入强度控制', 'Bounded State and the β component: fixed capacity and write-strength control')}</h2>
 
-    <h3>2.1 {t('Bounded Online Recurrence 是什么：用固定 rank128 保存参数历史', 'What is Bounded Online Recurrence? Keep parameter history in a fixed rank128 state')}</h3>
+    <h3>2.1 {t('我们把长期参数历史固定在 rank128', 'We keep the long-term parameter history at rank128')}</h3>
     <p>{t(
       '每一轮仍然先得到一个 rank8 的当前更新 Δt，但不再把所有旧 component 永久并排保存。我们把“上一轮的 rank128 状态 + 当前更新”重新压回 rank128，作为下一轮唯一的参数历史。',
       'Each round still produces a rank-8 current update Δt, but old components are no longer kept side by side forever. The previous rank-128 state plus the current update is compressed back to rank128 and becomes the only parameter history for the next round.',
@@ -255,11 +259,32 @@ const twentyRoundScoreWindows = finalResult
     <MathFormula latex={math.bounded} label={t('Bounded Online Recurrence 的状态更新', 'Bounded Online Recurrence state update')} />
     <p class="paper__math-caption"><span class="paper__math-symbol">Sₜ₋₁</span> = {t('历史参数 State', 'historical parameter State')} · <span class="paper__math-symbol">Δₜ</span> = {t('当前轮 rank8 更新', 'current rank-8 update')}</p>
     <p>{t(
-      `这样，参数历史的物理 rank 不再随轮数增长。工程上，Bounded Online Recurrence 的参数 transition 累计约 ${study.timingComparison.off.transitionHours.toFixed(2)} 小时，而普通 OpenEVO 的 trainer 累计约 ${study.timingComparison.directApply.trainerHours.toFixed(2)} 小时。`,
-      `The physical rank of parameter history no longer grows with rounds. In this implementation, Bounded Online Recurrence totals about ${study.timingComparison.off.transitionHours.toFixed(2)} hours of parameter transition time, versus ${study.timingComparison.directApply.trainerHours.toFixed(2)} trainer hours for ordinary OpenEVO.`,
+      `这样，参数历史的物理 rank 不再随轮数增长。工程上，Bounded Online Recurrence 的参数 transition 累计约 ${study.timingComparison.off.transitionHours.toFixed(2)} 小时，而普通 OpenEVO 的 trainer 累计约 ${study.timingComparison.directApply.trainerHours.toFixed(2)} 小时，只看参数更新部分约快 ${(study.timingComparison.directApply.trainerHours / study.timingComparison.off.transitionHours).toFixed(2)}×。`,
+      `The physical rank of parameter history no longer grows with rounds. In this implementation, Bounded Online Recurrence totals about ${study.timingComparison.off.transitionHours.toFixed(2)} hours of parameter transition time, versus ${study.timingComparison.directApply.trainerHours.toFixed(2)} trainer hours for ordinary OpenEVO, a ${(study.timingComparison.directApply.trainerHours / study.timingComparison.off.transitionHours).toFixed(2)}× speedup for the parameter-update component.`,
+    )}</p>
+    <p>{t(
+      'rank128 不是理论最优值，而是第一版的保守容量上限。当时先要回答的是“能不能把无限增长变成固定容量”，同时尽量不要因为压得太狠丢掉有效参数方向。此前 Q17 的全局 Task Vector 几何已经显示：覆盖约 95% 参数变化能量大约需要 78 个方向，所以第一版先留到 128，优先解决增长问题，再用后续实验判断还能压到多小。',
+      'Rank128 is not a theoretically optimal value; it was a conservative first capacity cap. The first question was whether unbounded history could be turned into fixed capacity without aggressively discarding useful parameter directions. Earlier global Q17 Task Vector geometry showed that roughly 78 directions covered about 95% of the change energy, so the first version kept 128 as headroom and postponed the minimum-capacity question to follow-up experiments.',
+    )}</p>
+    <p class="paper__links">{t('请参考 GitHub：', 'GitHub reference: ')}<a href={q17GeometryHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={q17GeometryHref} />{t('Q17 参数几何结果', 'Q17 parameter-geometry result')}</a>{' · '}<a href={boundedManifestHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={boundedManifestHref} />{t('Bounded 实验定义与更新顺序', 'Bounded treatment definition and update order')}</a></p>
+
+    <h3>2.2 {t('做完以后，后验 rank95 中位数只有 8 / 7', 'After training, the posterior median rank95 is only 8 / 7')}</h3>
+    <p>{t(
+      '正式实验做完以后，我们再看每个 LoRA 模块的参数变化谱。这里的 rank95 表示：从最大的变化方向开始累加，需要多少个方向才能覆盖约 95% 的变化能量。Bounded 的中位数是 8，继续加入 β 组件后是 7。',
+      'After the formal runs, we inspect the parameter-change spectrum of each LoRA module. Rank95 asks how many dominant directions are needed to explain about 95% of the change energy. Its median is 8 for Bounded and 7 after adding the β component.',
+    )}</p>
+    <div class="paper-table-wrap">
+      <table class="paper-table">
+        <thead><tr><th>{t('后验参数几何', 'Posterior parameter geometry')}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
+        <tbody><tr><td>rank95 · median</td><td><strong>{study.parameterAnalysis.off.rank95Median}</strong></td><td><strong>{study.parameterAnalysis.on.rank95Median}</strong></td></tr></tbody>
+      </table>
+    </div>
+    <p class="paper__boundary">{t(
+      '这说明 rank128 很可能留了大量余量，但不能把“rank95≈8”直接写成“长期状态 rank8 已经够用”。rank95 是几何诊断，不是任务性能；而且“每轮当前更新本来就是 rank8”和“跨轮长期状态只保留 rank8”是两个不同问题。下一步仍需要 rank 8 / 16 / 32 / 64 / 128 的同口径任务性能与计算成本消融。',
+      'This suggests rank128 likely contains substantial headroom, but “rank95≈8” does not prove that a rank8 long-term state is sufficient. Rank95 is a geometric diagnostic, not task performance, and a rank8 per-round update is not the same question as keeping only rank8 across rounds. A matched rank 8 / 16 / 32 / 64 / 128 capability-and-cost ablation is still required.',
     )}</p>
 
-    <h3>2.2 {t('Gated Delta 是什么：根据 residual 控制一次新状态写入', 'What is Gated Delta? Control each new state update from the residual')}</h3>
+    <h3>2.3 {t('继续加入 β 组件：先说明 Gated Delta 的原始更新规则', 'Adding the β component: first establish the original Gated Delta update rule')}</h3>
     <p>{t(
       'Gated Delta 原本用于持续更新一个 State。给定当前 key，旧 State 会先产生一个预测；目标 value 与这个预测之间的差就是 residual。Delta Rule 只把这部分 residual 写回 State，而不是不区分已有内容、把完整目标再次写一遍。',
       'Gated Delta was originally defined for continually updating a State. Given the current key, the prior State first produces a prediction; the difference between the target value and that prediction is the residual. The Delta Rule writes only that residual back into State instead of writing the full target again without accounting for what the State already represents.',
@@ -282,7 +307,7 @@ const twentyRoundScoreWindows = finalResult
     )}</p>
     <p class="paper__links"><a href={gdrPaperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={gdrPaperHref} />Gated Delta Networks · ICLR 2025</a> · <a href={gatedHref}>{t('完整推导：从 sequence State 到 OpenEVO 参数写入 →', 'Full derivation: from sequence State to OpenEVO parameter writes →')}</a></p>
 
-    <h3>2.3 {t('这里的“映射”是什么：把更新规则对应到 OpenEVO 参数 State', 'What does the mapping mean? Apply the update roles to OpenEVO parameter state')}</h3>
+    <h3>2.4 {t('我们把更新规则映射到 OpenEVO 参数 State', 'We map the update roles into OpenEVO parameter state')}</h3>
     <p>{t(
       '这里的“映射”不是把 linear attention 的 k、v 张量直接复制成 LoRA 张量，而是把更新规则中的角色对应过去：长期 State 对应跨轮保留的参数状态，当前训练更新对应要写入的新变化，β 对应当前新变化实际写入多少。',
       'Here, “mapping” does not mean copying linear-attention k and v tensors into LoRA tensors. It means mapping the roles in the update rule: the persistent State becomes the parameter state kept across rounds, the current training update becomes the proposed new change, and beta controls how much of that new change is actually written.',
@@ -312,7 +337,7 @@ const twentyRoundScoreWindows = finalResult
       )}
     </p>
 
-    <h3>2.4 {t('为什么控制的是有效参数更新 ΔW，而不是 LoRA 的 A / C 数值', 'Why control the effective update ΔW instead of raw LoRA A/C values')}</h3>
+    <h3>2.5 {t('最终控制有效参数更新 ΔW，而不是 LoRA 因子的表面数值', 'The final gate controls effective update ΔW, not raw LoRA-factor coordinates')}</h3>
     <p>{t(
       'LoRA 真正改变模型的是 A 与 C 合成后的有效参数更新 ΔW，而不是 A 或 C 单独的数值。同一个 ΔW 可以由很多组 A / C 表示：A 乘 s、C 除以 s，最终加到模型上的 ΔW 不变。因此如果直接根据 A / C 的大小做 gating，控制量会受到表示方式影响，而不是只反映真正的参数变化。',
       'What actually changes the model in LoRA is the effective parameter update ΔW formed from A and C, not either factor alone. The same ΔW can be represented by many A/C pairs: multiplying A by s and dividing C by s leaves the final model update unchanged. A gate based directly on A/C magnitude would therefore depend on representation choice rather than only on the real parameter change.',
@@ -336,6 +361,25 @@ const twentyRoundScoreWindows = finalResult
     </p>
     <MathFormula latex={math.beta} label={t('动态 beta 控制器', 'Dynamic beta controller')} compact />
     <p class="paper__math-caption">{t('冻结 controller · 只看局部参数 / 梯度 / Adam 状态，不看 reward、Task Score、Task Vector。', 'Frozen controller · local parameter / gradient / Adam state only; no reward, Task Score, or Task Vector.')}</p>
+    <p>{t(
+      '这里的 22 维不是把整个 rank128 State 压成 22 个数字。controller 每次只看当前这一小步附近的信息：这一轮走到哪个 optimizer step、当前是 q/k/v/o 哪个模块、rank8 里的哪个位置和写入类型，以及 LoRA factor / coefficient、gradient、Adam 一阶二阶统计和方向关系。把这些局部特征展开后正好是 22 项。',
+      'The 22 dimensions are not a compression of the entire rank128 State. At each optimizer step, the controller only sees local information around the current write: step position, q/k/v/o module identity, rank position and write kind, plus LoRA factor/coefficient values, gradients, Adam first/second moments, and directional relations. Those local features expand to 22 values.',
+    )}</p>
+    <pre class="paper__code"><code>{`class MLP(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.net = torch.nn.Sequential(
+            torch.nn.Linear(22, 64),
+            torch.nn.GELU(),
+            torch.nn.Linear(64, 64),
+            torch.nn.GELU(),
+            torch.nn.Linear(64, 1),
+        )`}</code></pre>
+    <p>{t(
+      '这个 MLP 先用历史参数轨迹离线训练；正式 160 轮开始后 controller 参数已经冻结。每一步输入状态不同，所以 β 会随 step / module / rank 改变，但 controller 本身不继续学习。这也意味着它不是根据当前 WebShop reward 或 Task Score 在线调门。',
+      'The MLP is trained offline on historical parameter trajectories and frozen before the formal 160-round study. The input state changes across steps, modules, and ranks, so β changes dynamically, but the controller itself no longer learns. It therefore does not tune the gate online from current WebShop reward or Task Score.',
+    )}</p>
+    <p class="paper__links">{t('请参考 GitHub：', 'GitHub reference: ')}<a href={betaControllerSourceHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={betaControllerSourceHref} />{t('β 控制器训练代码', 'β-controller training code')}</a>{' · '}<a href={betaRuntimeSourceHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={betaRuntimeSourceHref} />{t('正式实验 β runtime', 'formal β runtime')}</a></p>
     <MathFormula latex={math.effective} label={t('本实验 β-gating（α 固定为 1）映射到参数 State 后的概念式', 'Conceptual parameter-State update for this β-gating (α fixed at 1) study')} compact />
     <p class="paper__math-caption">{t('这是参数空间里的概念式；实际 runtime 先写 C 得到真实 C1，再基于 C1 写 A。', 'Conceptual parameter-space form; runtime writes C first to obtain the actual C1, then writes A conditioned on C1.')}</p>
   </section>
@@ -592,20 +636,21 @@ const twentyRoundScoreWindows = finalResult
   <div id="compute">
     <h3>4.5 {t('计算代价是什么：区分参数更新耗时和整个 Stage 2 耗时', 'What compute cost is measured? Separate parameter-update time from full Stage-2 time')}</h3>
     <p>{t(
-      '这里有两个不同时间口径。参数 trainer / transition 累计时间只统计参数更新这一步用了多久；Stage 2 wall clock 则包含 rollout、非参数状态处理、调度和其他阶段。只有先把这两个口径分开，才能正确理解 13–15× 加速到底发生在哪里。',
-      'There are two different timing scopes here. Parameter trainer / transition time counts only the parameter-update stage, while Stage-2 wall-clock time also includes rollouts, non-parametric state processing, scheduling, and other phases. Separating the two is necessary to interpret where the 13–15× speedup actually occurs.',
+      `这里有两个不同时间口径。参数 trainer / transition 累计时间只统计参数更新这一步用了多久；Stage 2 wall clock 则包含 rollout、非参数状态处理、调度和其他阶段。Bounded 的参数更新部分是 ${study.timingComparison.directApply.trainerHours.toFixed(2)} h → ${study.timingComparison.off.transitionHours.toFixed(2)} h，也就是约 ${(study.timingComparison.directApply.trainerHours / study.timingComparison.off.transitionHours).toFixed(2)}×；但整个 Stage 2 只从 ${study.timingComparison.directApply.wallClockHours.toFixed(2)} h → ${study.timingComparison.off.wallClockHours.toFixed(2)} h，约 ${(study.timingComparison.directApply.wallClockHours / study.timingComparison.off.wallClockHours).toFixed(2)}×。`,
+      `There are two timing scopes. Parameter trainer / transition time covers only parameter updates, while Stage-2 wall-clock also includes rollouts, non-parametric state processing, scheduling, and other phases. For Bounded, parameter-update time changes from ${study.timingComparison.directApply.trainerHours.toFixed(2)} h to ${study.timingComparison.off.transitionHours.toFixed(2)} h, about ${(study.timingComparison.directApply.trainerHours / study.timingComparison.off.transitionHours).toFixed(2)}×; full Stage-2 wall-clock changes only from ${study.timingComparison.directApply.wallClockHours.toFixed(2)} h to ${study.timingComparison.off.wallClockHours.toFixed(2)} h, about ${(study.timingComparison.directApply.wallClockHours / study.timingComparison.off.wallClockHours).toFixed(2)}×.`,
     )}</p>
     <div class="paper-table-wrap">
       <table class="paper-table">
         <thead><tr><th>{t('时间口径', 'Timing')}</th><th>{names.baseline}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
         <tbody>
           <tr><td>{t('参数 trainer / transition 累计', 'parameter trainer / transition total')}</td><td>{study.timingComparison.directApply.trainerHours.toFixed(2)} h</td><td>{study.timingComparison.off.transitionHours.toFixed(2)} h</td><td>{study.timingComparison.on.transitionHours.toFixed(2)} h</td></tr>
-          <tr><td>{t('相对普通 OpenEVO', 'relative to ordinary OpenEVO')}</td><td>1×</td><td>{(study.timingComparison.directApply.trainerHours / study.timingComparison.off.transitionHours).toFixed(1)}×</td><td>{(study.timingComparison.directApply.trainerHours / study.timingComparison.on.transitionHours).toFixed(1)}×</td></tr>
+          <tr><td>{t('参数更新相对普通 OpenEVO', 'parameter-update speedup vs ordinary OpenEVO')}</td><td>1×</td><td>{(study.timingComparison.directApply.trainerHours / study.timingComparison.off.transitionHours).toFixed(2)}×</td><td>{(study.timingComparison.directApply.trainerHours / study.timingComparison.on.transitionHours).toFixed(2)}×</td></tr>
+          <tr><td>{t('整个 Stage 2 相对普通 OpenEVO', 'full Stage-2 speedup vs ordinary OpenEVO')}</td><td>1×</td><td>{(study.timingComparison.directApply.wallClockHours / study.timingComparison.off.wallClockHours).toFixed(2)}×</td><td>{(study.timingComparison.directApply.wallClockHours / study.timingComparison.on.wallClockHours).toFixed(2)}×</td></tr>
           <tr><td>Stage2 wall clock</td><td>{study.timingComparison.directApply.wallClockHours.toFixed(2)} h</td><td>{study.timingComparison.off.wallClockHours.toFixed(2)} h</td><td>{study.timingComparison.on.wallClockHours.toFixed(2)} h</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="paper__boundary">{t('13–15× 是参数更新阶段的工程加速，不是整个 Stage2 同倍数加速。', 'The 13–15× figure is an engineering speedup for parameter updates, not the whole Stage2 run.')}</p>
+    <p class="paper__boundary">{t('参数更新阶段的十几倍加速不能直接写成整个 Stage 2 的十几倍加速；rollout 等其他阶段仍然占据大部分总时间。', 'The order-of-magnitude parameter-update speedup must not be reported as an order-of-magnitude full Stage-2 speedup; rollouts and other phases still dominate much of the total time.')}</p>
   </div>
 </section>
 
@@ -725,6 +770,10 @@ const twentyRoundScoreWindows = finalResult
         </tbody>
       </table>
     </div>
+    <p>{t(
+      `这里的 rank95 中位数正是前面 rank128 设计留下的关键新问题：Bounded 是 ${study.parameterAnalysis.off.rank95Median}，继续加入 β 组件后是 ${study.parameterAnalysis.on.rank95Median}。这说明实际变化在单模块内高度低维，因此 rank 容量消融比继续直接叠复杂门控更值得优先做；但它仍然不能证明 rank8 长期 State 不会掉任务性能。`,
+      `These posterior rank95 medians are the main new question created by the earlier rank128 design: ${study.parameterAnalysis.off.rank95Median} for Bounded and ${study.parameterAnalysis.on.rank95Median} after adding β. The change is highly low-dimensional within each module, making a capacity ablation more urgent than immediately stacking a more complex gate; however, it still does not prove that a rank8 long-term State preserves task performance.`,
+    )}</p>
     <p>{t('R159 更新方向 cosine（β-gating vs Bounded）', 'R159 update-direction cosine (β-gating vs Bounded)')}: <strong>{study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}</strong> · {t('第 19–27 层平均 cosine', 'mean cosine over layers 19–27')}: <strong>{study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}</strong></p>
     <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
     <p class="paper__boundary">{t(
@@ -793,6 +842,10 @@ const twentyRoundScoreWindows = finalResult
       'β-gating（α 固定为 1）的行为 entropy 明显下降，而且 R159 的有效动作更集中在 click；三组 valid action rate 都是 100%。这说明变化来自有效策略行为本身越来越集中，不是 parser 错误。但它和掉分只是同时出现，目前不能写成“低 entropy 导致掉分”。',
       'For β-gating (α fixed at 1), action entropy falls substantially and R159 valid actions are more concentrated on click; valid-action rate is 100% for all three methods. The policy itself is becoming more concentrated rather than failing parsing, but this remains co-occurrence rather than evidence that low entropy causes the score drop.',
     )}</p>
+    <p>{t(
+      '这个指标本身也有明显上限：WebShop 的动作大类本来就很少，主要是 search / click，所以 action-family entropy 只能告诉我们“动作大类是否更集中”，很难回答“到底点了哪个候选、搜索了什么词、正确候选和其他候选差多少”。正式 rollout 又没有保存逐 token logits / logprobs，因此下一轮如果继续研究行为不确定性，应该把 click/search 参数、候选概率和 token-level entropy 一起纳入，而不是继续只压榨这个粗粒度指标。',
+      'The metric also has a clear ceiling: WebShop has only a few action families, dominated by search and click, so action-family entropy only tells us whether broad action types are becoming more concentrated. It cannot answer which candidate was clicked, what query was issued, or how far the correct candidate is from alternatives. The formal rollouts did not preserve per-token logits/logprobs, so a future behavioral-uncertainty study should capture click/search arguments, candidate probabilities, and token-level entropy instead of over-interpreting this coarse metric.',
+    )}</p>
     <p class="paper__links"><a href="/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.json">{t('160 轮完整行为 entropy JSON →', 'Full 160-round action-entropy JSON →')}</a></p>
   </div>
 
@@ -815,18 +868,48 @@ const twentyRoundScoreWindows = finalResult
 
   <section class="paper__section" id="next-question" aria-labelledby="next-question-title">
     <p class="paper__section-number">6</p>
-    <h2 id="next-question-title">{t('下一步实验是什么：动态 α + 动态 β', 'What is the next experiment? Dynamic α + dynamic β')}</h2>
+    <h2 id="next-question-title">{t('现在真正卡在哪里，以及下一步先做什么', 'What is actually blocked now, and what should come next')}</h2>
     <p>{t(
-      '在完整的 Gated Delta 里，α 控制旧参数 State 保留多少，β 控制当前新更新写入多少。已完成的正式实验只让 β 动态变化，并把 α 一直固定为 1；因此我们还没有测试“同时动态控制旧状态保留和新状态写入”会发生什么。动态 α + 动态 β 指的就是补上这个缺失的实验，目前尚未运行。',
-      'In full Gated Delta, alpha controls how much of the prior parameter State is retained, while beta controls how much of the current new update is written. This formal study varies beta dynamically but keeps alpha fixed at 1 throughout, so it has not tested what happens when both prior-state retention and new-update strength are controlled dynamically. Dynamic alpha + dynamic beta is that missing experiment, and it has not yet been run.',
+      '现在最重要的研究判断已经变了：问题不是“还能给 Gated Delta 再加什么机制”，而是先把几个更基础的变量拆开。Bounded 已经证明固定容量有明确工程价值，但能力保持还不够；后验 rank95 又提示 128 可能远大于实际活跃维度；β 组的负结果则说明更复杂的 controller 不能默认带来更好任务表现。',
+      'The main research judgment has changed: the question is no longer what extra mechanism can be added to Gated Delta, but how to separate more basic variables first. Bounded has clear engineering value but does not yet fully preserve capability; posterior rank95 suggests 128 may be far above the active dimensionality; and the negative β result shows that a more complex controller cannot be assumed to improve task performance.',
     )}</p>
+
+    <h3>6.1 {t('第一优先：补普通 SFT、普通 OPSD 与 SEED 1.7B 参照', 'Priority 1: add ordinary SFT, ordinary OPSD, and a SEED 1.7B reference')}</h3>
     <p>{t(
-      '前面的指标链告诉我们应该为什么继续做这个实验：loss 说明优化过程不是简单坏掉；Frobenius norm、Task Vector、谱和方向显示参数变化方式发生了差异；长度、步数和 entropy 又显示后期行为也发生了变化。但这些后分析都不能替代真正运行动态 α + 动态 β。',
-      'The earlier diagnostics explain why this experiment is worth running: loss shows that optimization did not simply fail; Frobenius norm, Task Vector, spectrum, and direction show differences in how parameters change; length, steps, and entropy show late behavioral changes as well. None of those post-hoc analyses can substitute for actually running dynamic alpha + dynamic beta.',
+      '当前三条实验都建立在 OpenEVO 的 SD-LoRA 参数记忆路径上，但还没有同口径回答一个最基础的问题：如果直接把轨迹做普通 SFT，或者用 OPSD 直接更新一套参数，不保留逐轮 SD-LoRA 历史，会做到什么水平？SEED 的 1.7B 原始训练逻辑也需要本地复现，才能知道差距到底来自训练方式、长期记忆形式还是别的变量。',
+      'All three current runs live inside the OpenEVO SD-LoRA parameter-memory path, but we still lack the most basic matched answer: what happens if the trajectories are trained with ordinary SFT, or if OPSD directly updates one parameter set without carrying round-by-round SD-LoRA history? A local SEED 1.7B reproduction is also needed to separate training-method effects from long-term-memory design and other variables.',
     )}</p>
+    <p class="paper__boundary">{t(
+      '这组基线不是为了“补表格”，而是决定后续复杂参数记忆机制到底在解决一个真实缺口，还是在一个更简单方法已经能解决的问题上继续加结构。',
+      'These baselines are not table-filling exercises; they determine whether complex parameter memory addresses a real missing capability or merely adds structure to a problem a simpler training method already solves.',
+    )}</p>
+
+    <h3>6.2 {t('第二优先：直接做 rank 8 / 16 / 32 / 64 / 128 容量消融', 'Priority 2: directly ablate rank 8 / 16 / 32 / 64 / 128')}</h3>
     <p>{t(
-      '所以第一条新实验应该是动态 α + 动态 β；它现在仍然是空位。第二条问题才是 β controller 还应该知道什么，例如 layer、round 或历史更新方向。已经看过的 Final 不能反过来用来调当前封存实验。',
-      'The first new experiment should therefore be dynamic α + dynamic β, which remains an empty slot. Only after that comes the question of what additional information the β controller should observe, such as layer, round, or historical update direction. The completed Final cannot be used retrospectively to tune this sealed experiment.',
+      '这组实验现在有了很明确的理由：第一版 128 是为了保守地切断无限增长；正式实验后又看到 rank95 中位数只有 8 / 7。下一步应该把容量、参数更新成本和任务能力放在同一个对照里，而不是继续从几何指标猜“8 会不会已经够”。',
+      'This experiment now has a concrete motivation: 128 was initially chosen conservatively to stop unbounded growth, while the completed runs show median rank95 values of only 8 / 7. The next step is to measure capacity, parameter-update cost, and task capability together rather than guessing from geometry whether 8 is already enough.',
+    )}</p>
+
+    <h3>6.3 {t('第三优先：先做最简单的 β scaling baseline', 'Priority 3: test a simple β-scaling baseline first')}</h3>
+    <p>{t(
+      '当前 β controller 会根据 22 项局部状态，为不同 step / module / rank 预测不同写入强度。下一步先退回一个更简单的控制：把当前更新归一化，再统一乘一个固定 scalar β。这样可以把“控制写入幅度本身有没有价值”和“22 项特征 + MLP controller 设计得好不好”拆成两个问题。',
+      'The current β controller predicts different write strengths from 22 local features across steps, modules, and ranks. A cleaner next control is to normalize the current update and multiply it by one fixed scalar β. That separates whether write-magnitude control itself is useful from whether the 22-feature MLP controller is well designed.',
+    )}</p>
+
+    <h3>6.4 {t('训练轮数也要重新验证：160 轮不应该只由 training loss 决定', 'The training horizon must also be revalidated: training loss alone should not justify 160 rounds')}</h3>
+    <p>{t(
+      'training loss 继续下降只说明训练目标还能被进一步拟合，不能证明 WebShop validation 还在继续变好。后续实验应该预先冻结 validation 指标和 stopping rule，再判断 120 轮甚至更早是否已经足够。',
+      'Continued training-loss reduction only shows that the training objective can still be fit; it does not prove that WebShop validation keeps improving. Future studies should freeze a validation metric and stopping rule prospectively, then test whether 120 rounds or an earlier point is already sufficient.',
+    )}</p>
+
+    <h3>6.5 {t('动态 α + 动态 β 仍然保留，但不是当前第一优先', 'Dynamic α + dynamic β remains in the method space, but is not the current first priority')}</h3>
+    <p>{t(
+      '完整 Gated Delta 里，α 控制旧参数 State 保留多少，β 控制当前新更新写入多少。这个动态 α + 动态 β 组合目前确实还没有运行，所以表 1 继续保留这个空位；但在 SFT / OPSD 基线、rank 容量和简单 β 都还没弄清楚之前，直接加动态 α 会同时增加第二个自由度，让负结果更难解释。',
+      'In full Gated Delta, alpha controls prior-state retention and beta controls current-write strength. The dynamic α + dynamic β combination genuinely remains unrun, so Table 1 keeps the slot visible; however, adding dynamic alpha before SFT/OPSD baselines, rank capacity, and simple β are understood introduces another degree of freedom and makes negative results harder to interpret.',
+    )}</p>
+    <p class="paper__boundary">{t(
+      '已经看过的 Final 只用于形成下一轮研究问题，不能反过来修改或重新解释当前封存实验。任何新 α / β 设计都必须作为新的 prospective experiment 冻结。',
+      'The completed Final may motivate the next research question, but it cannot be used retroactively to tune or reinterpret the sealed study. Any new α/β design must be frozen prospectively as a new experiment.',
     )}</p>
   </section>
 
@@ -934,6 +1017,8 @@ const twentyRoundScoreWindows = finalResult
   .paper__math-caption{max-width:880px;margin:-.45rem 0 1rem;color:var(--text-secondary);font-size:1rem;line-height:1.6}
   .paper__math-boundary{max-width:880px;margin:1rem 0;padding:.85rem 0 .85rem 1rem;border-left:3px solid var(--border-color);color:var(--text-secondary);font-size:1rem;line-height:1.65}
   .paper__math-symbol{font-family:serif;font-style:italic}
+  .paper__code{max-width:880px;overflow-x:auto;margin:14px 0 18px;padding:14px 16px;border:1px solid var(--border-color);border-radius:var(--radius-panel);background:var(--surface-muted)}
+  .paper__code code{display:block;min-width:max-content;white-space:pre;overflow-wrap:normal;font-family:var(--font-mono);font-size:.94rem;line-height:1.6}
   .paper__setup{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:18px 0 22px;border-top:2px solid var(--text-primary);border-bottom:2px solid var(--text-primary)}
   .paper__setup>div{padding:14px 16px;border-bottom:1px solid var(--border-color)}
   .paper__setup dt{color:var(--text-secondary);font-size:.95rem}.paper__setup dd{margin:5px 0 0;font-weight:700}
