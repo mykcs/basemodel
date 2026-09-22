@@ -367,6 +367,10 @@ const twentyRoundScoreWindows = finalResult
         'Each round first completes 128 rollouts. OpenEVO then checks two kinds of state in parallel: whether the model parameters should keep learning from this round, and whether the non-parametric Text Memory, Skill Bundle, or Agent System should change. All four channels can carry a new state into the next round, but each has its own update condition; otherwise the previous state is retained.',
       )}</p>
       <p>{t(
+        '这里的四种状态含义不同：参数 State 是真正写进模型权重、跨轮保留的参数变化；Text Memory 是从 rollout 轨迹中总结出的文字经验；Skill Bundle 是被多个任务支持、可以重复使用的做法；Agent System 是适用范围更广的行为规则。后三者叫“非参数状态”，只是因为它们不写进模型权重；后续做题时，系统仍可以把已有内容放进模型上下文。',
+        'The four state types play different roles. Parameter State is the parameter change written into model weights and carried across rounds. Text Memory is textual experience summarized from rollout trajectories. Skill Bundle stores reusable procedures supported by multiple tasks. Agent System stores broader behavioral rules. The latter three are called non-parametric only because they are not written into model weights; their existing content can still be placed into model context during later tasks.',
+      )}</p>
+      <p>{t(
         '一轮可以直接理解成：rollout 产生轨迹 → 从轨迹里提取可验证证据 → 四条状态通道分别检查自己的更新门槛 → 满足条件就写入新状态，不满足就沿用旧状态。仓库原始收据把这两种结果记作 UPDATE 和 NOOP。',
         'A round can be read as: rollouts produce trajectories → verifiable evidence is extracted → each of the four state channels checks its own update gate → a new state is written when the condition is met, otherwise the previous state is retained. The raw repository receipts call these two outcomes UPDATE and NOOP.',
       )}</p>
