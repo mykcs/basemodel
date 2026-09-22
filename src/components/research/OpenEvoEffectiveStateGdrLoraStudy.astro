@@ -811,10 +811,14 @@ const twentyRoundScoreWindows = finalResult
 
   <section class="paper__section" id="next-question" aria-labelledby="next-question-title">
     <p class="paper__section-number">6</p>
-    <h2 id="next-question-title">{t('动态 α + 动态 β：尚未运行', 'Dynamic α + dynamic β: not run yet')}</h2>
+    <h2 id="next-question-title">{t('下一步实验是什么：动态 α + 动态 β', 'What is the next experiment? Dynamic α + dynamic β')}</h2>
     <p>{t(
-      '这条指标链给出的顺序很清楚：loss 先说明优化过程不是简单坏掉；Frobenius norm 再看参数变化有多大；Task Vector 的相关性与谱 / 方向继续追问“大小是否对应分数、更新往哪里走”；最后才用长度、步数和 entropy 看更接近任务行为的变化。但这些后分析都不能补上一个根本缺口：这次正式实验始终把 α 固定为 1。',
-      'The diagnostic ladder is explicit: loss first checks that optimization did not simply fail; Frobenius norm asks how large the parameter changes are; Task Vector association plus spectrum/direction asks whether magnitude tracks score and where updates move; length, steps, and entropy then examine behavior closer to the task. None of these post-hoc analyses fill the basic missing experiment: α remained fixed at 1 throughout this formal study.',
+      '在完整的 Gated Delta 里，α 控制旧参数 State 保留多少，β 控制当前新更新写入多少。这次正式实验只让 β 动态变化，并把 α 一直固定为 1；因此我们还没有测试“同时动态控制旧状态保留和新状态写入”会发生什么。动态 α + 动态 β 指的就是补上这个缺失的实验，目前尚未运行。',
+      'In full Gated Delta, alpha controls how much of the prior parameter State is retained, while beta controls how much of the current new update is written. This formal study varies beta dynamically but keeps alpha fixed at 1 throughout, so it has not tested what happens when both prior-state retention and new-update strength are controlled dynamically. Dynamic alpha + dynamic beta is that missing experiment, and it has not yet been run.',
+    )}</p>
+    <p>{t(
+      '前面的指标链告诉我们应该为什么继续做这个实验：loss 说明优化过程不是简单坏掉；Frobenius norm、Task Vector、谱和方向显示参数变化方式发生了差异；长度、步数和 entropy 又显示后期行为也发生了变化。但这些后分析都不能替代真正运行动态 α + 动态 β。',
+      'The earlier diagnostics explain why this experiment is worth running: loss shows that optimization did not simply fail; Frobenius norm, Task Vector, spectrum, and direction show differences in how parameters change; length, steps, and entropy show late behavioral changes as well. None of those post-hoc analyses can substitute for actually running dynamic alpha + dynamic beta.',
     )}</p>
     <p>{t(
       '所以第一条新实验应该是动态 α + 动态 β；它现在仍然是空位。第二条问题才是 β controller 还应该知道什么，例如 layer、round 或历史更新方向。已经看过的 Final 不能反过来用来调当前封存实验。',
@@ -824,10 +828,14 @@ const twentyRoundScoreWindows = finalResult
 
   <section class="paper__section" id="evidence" aria-labelledby="evidence-title">
     <p class="paper__section-number">7</p>
-    <h2 id="evidence-title">{t('证据与复现身份', 'Evidence and reproducibility identity')}</h2>
+    <h2 id="evidence-title">{t('证据与复现身份：如何确认这些结果来自哪一组实验', 'Evidence and reproducibility identity: how to identify the exact experiments behind these results')}</h2>
     <p>{t(
-      '正文把已完成的第三组明确写成“Bounded Online Recurrence + β-gating（α 固定为 1）”，不再把它当作完整 GDR。“动态 α + 动态 β”只作为未做实验位置保留。为了审计，底层正式身份仍原样保留：普通 OpenEVO 对应历史 DirectApply / No-GDR；后两组正式实验标识仍是 BOUNDED_OFF 与 EFFECTIVE_STATE_GDR_LORA_V1。',
-      'The completed third line is named explicitly as “Bounded Online Recurrence + β-gating (α fixed at 1)” rather than presented as full GDR. Dynamic α + dynamic β is kept only as an unrun slot. For auditability, the underlying formal identities remain unchanged: ordinary OpenEVO maps to the historical DirectApply / No-GDR run, and the matched formal identities remain BOUNDED_OFF and EFFECTIVE_STATE_GDR_LORA_V1.',
+      '这一节不再解释实验结果，而是回答复现和审计问题：每条曲线、表格和结论究竟对应哪一个正式实验身份，应该去哪里查原始证据。网页上的易读名称可以调整，但底层实验 ID、封存结果和证据入口必须保持不变。',
+      'This section no longer interprets results. It answers the reproducibility and audit question: which exact formal experiment identity each curve, table, and conclusion belongs to, and where the underlying evidence can be checked. Reader-facing names may improve, but the underlying experiment IDs, sealed results, and evidence entry points must remain unchanged.',
+    )}</p>
+    <p>{t(
+      '因此，正文把已完成的第三组明确写成“Bounded Online Recurrence + β-gating（α 固定为 1）”，不再把它当作完整 GDR；“动态 α + 动态 β”只保留为未做实验。底层正式身份仍原样保留：普通 OpenEVO 对应历史 DirectApply / No-GDR；后两组正式实验标识仍是 BOUNDED_OFF 与 EFFECTIVE_STATE_GDR_LORA_V1。',
+      'Accordingly, the completed third run is named explicitly as “Bounded Online Recurrence + β-gating (α fixed at 1)” rather than presented as full GDR, while dynamic α + dynamic β remains only an unrun slot. The underlying formal identities remain unchanged: ordinary OpenEVO maps to the historical DirectApply / No-GDR run, and the matched formal identities remain BOUNDED_OFF and EFFECTIVE_STATE_GDR_LORA_V1.',
     )}</p>
     <details class="paper__details paper__experiment-hub" data-experiment-hub>
       <summary>{t('本实验的结果、分析与证据', 'Results, analysis, and evidence for this experiment')}</summary>
