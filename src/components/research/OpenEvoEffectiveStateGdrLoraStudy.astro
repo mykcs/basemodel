@@ -361,10 +361,30 @@ const twentyRoundScoreWindows = finalResult
     )}</p>
 
     <div id="carrier-ledger">
-      <h3>3.1 {t('参数几乎每轮都在变；Text Memory、Skill 和 Agent System 只少量改动', 'Parameters change almost every round; Text Memory, Skill, and Agent System change only sparsely')}</h3>
+      <h3>3.1 {t('随着 rollout 积累，参数和非参数状态都会在满足条件时更新', 'As rollouts accumulate, both parametric and non-parametric state can update when their conditions are met')}</h3>
+      <p class="paper__lede">{t(
+        '每一轮先完成 128 个 rollout。Rollout 结束后，OpenEVO 会同时检查两类东西：模型参数要不要继续学习，以及 Text Memory、Skill Bundle、Agent System 这些非参数经验要不要改。四条通道都有机会把新状态带到下一轮，但更新条件不同；条件不满足，就继续沿用上一轮。',
+        'Each round first completes 128 rollouts. OpenEVO then checks two kinds of state in parallel: whether the model parameters should keep learning from this round, and whether the non-parametric Text Memory, Skill Bundle, or Agent System should change. All four channels can carry a new state into the next round, but each has its own update condition; otherwise the previous state is retained.',
+      )}</p>
       <p>{t(
-        'OpenEVO 带到下一轮的状态不只有参数。除了 SD-LoRA / Bounded 参数 State，它还会携带 Text Memory、Skill Bundle 和 Agent System。下面的 UPDATE 表示这一轮最终接受了新状态并带入下一轮；NOOP 表示保留上一轮状态。',
-        'The state carried into the next OpenEVO round is not only parametric. Alongside the SD-LoRA / Bounded parameter state, OpenEVO can carry Text Memory, Skill Bundle, and Agent System. UPDATE below means a new terminal state was accepted and carried forward; NOOP means the prior state was retained.',
+        '一轮可以直接理解成：rollout 产生轨迹 → 从轨迹里提取可验证证据 → 四条状态通道分别检查自己的更新门槛 → 满足条件就写入新状态，不满足就沿用旧状态。仓库原始收据把这两种结果记作 UPDATE 和 NOOP。',
+        'A round can be read as: rollouts produce trajectories → verifiable evidence is extracted → each of the four state channels checks its own update gate → a new state is written when the condition is met, otherwise the previous state is retained. The raw repository receipts call these two outcomes UPDATE and NOOP.',
+      )}</p>
+      <p><strong>{t('参数什么时候变：', 'Parameter update:')}</strong>{t(
+        '本轮至少出现 1 条“干净的完整成功”轨迹：任务真正完成，而且没有 parser、fallback、repair、invalid 等工程异常。普通 OpenEVO 用这些成功轨迹产生新的 rank8 SD-LoRA 更新；后两组再把当前参数更新写进固定 rank128 State。',
+        'At least one clean exact-success trajectory must appear in the round: the task is truly completed without parser, fallback, repair, invalid, or other engineering failures. Ordinary OpenEVO uses these successes to produce a new rank-8 SD-LoRA update; the latter two runs then write the current parameter update into the fixed-rank128 State.',
+      )}</p>
+      <p><strong>{t('Text Memory 什么时候变：', 'Text Memory update:')}</strong>{t(
+        '出现能由轨迹验证、值得总结的新经验，例如干净成功、同一任务不同 rollout 的分数对照，或可验证的重复失败模式；生成的新 Memory 还要通过格式与内容检查。否则继续用上一版。',
+        'There must be new trajectory-verifiable experience worth summarizing, such as a clean success, a within-task score contrast across rollouts, or a verifiable repeated failure pattern; the generated Memory must also pass format and content checks. Otherwise the previous version is retained.',
+      )}</p>
+      <p><strong>{t('Skill Bundle 什么时候变：', 'Skill Bundle update:')}</strong>{t(
+        '同一种可复用做法或错误模式至少得到 2 个不同任务的证据支持，而且当前轮仍有对应证据；生成的新 Skill 还要通过合同检查。否则继续用上一版。',
+        'The same reusable procedure or failure pattern must be supported by at least two distinct tasks, with corresponding evidence still present in the current round; the generated Skill must also pass its contract. Otherwise the previous version is retained.',
+      )}</p>
+      <p><strong>{t('Agent System 什么时候变：', 'Agent System update:')}</strong>{t(
+        '更全局的行为规则至少需要 3 个不同任务共同支持，而且当前轮仍有对应证据；生成的新 Agent System 还要通过合同检查。否则继续用上一版。',
+        'A more global behavioral rule must be supported by at least three distinct tasks, with corresponding evidence still present in the current round; the generated Agent System must also pass its contract. Otherwise the previous version is retained.',
       )}</p>
 
       <figure class="paper-table-figure">
@@ -418,20 +438,20 @@ const twentyRoundScoreWindows = finalResult
       </figure>
 
       <p class="paper__lede">{t(
-        '按终态 UPDATE 频率看，这批 160 轮实验持续变化最频繁的是参数通道；Text Memory、Skill Bundle 和 Agent System 的终态变化都很稀疏。这只描述“状态多久改一次”，不等于参数通道对最终能力贡献最大。',
-        'By terminal UPDATE frequency, the parameter channel is the most continuously changing path in these 160-round runs; terminal changes to Text Memory, Skill Bundle, and Agent System are sparse. This describes how often state changes, not which channel contributes most to final capability.',
+        '把上面的门槛和 160 轮账本放在一起看，结果就很直观：参数通道几乎每轮都会产生新状态，而 Text Memory、Skill Bundle 和 Agent System 只有在证据达到各自门槛时才改写，所以次数少得多。这里统计的是“内容多久改一次”，不能据此说参数一定比非参数状态更重要。',
+        'Putting the update gates next to the 160-round ledger makes the pattern straightforward: the parameter channel produces a new state in almost every round, while Text Memory, Skill Bundle, and Agent System are rewritten only when evidence reaches their respective gates. This measures how often content changes, not which channel contributes most to final capability.',
       )}</p>
       <p>{t(
-        `NOOP 不等于“没有参与”。普通 OpenEVO 里，Skill Bundle 虽然只在 R0 更新 1 次，但在 ${study.carrierAnalysis.ordinary.runtimeReadback.recordedEnvironmentSteps.toLocaleString('en-US')} 个已记录环境 step 中仍被运行时选中 ${study.carrierAnalysis.ordinary.runtimeReadback.skillBundle.selected.toLocaleString('en-US')} 次；Text Memory 被选中 ${study.carrierAnalysis.ordinary.runtimeReadback.textMemory.selected.toLocaleString('en-US')} 次，Agent System 被选中 ${study.carrierAnalysis.ordinary.runtimeReadback.agentSystem.selected.toLocaleString('en-US')} 次。也就是说，“内容没变”和“没有进入模型上下文”是两件不同的事。`,
-        `NOOP does not mean “unused.” In ordinary OpenEVO, Skill Bundle updated only once at R0, yet it was still selected at runtime for ${study.carrierAnalysis.ordinary.runtimeReadback.skillBundle.selected.toLocaleString('en-US')} of ${study.carrierAnalysis.ordinary.runtimeReadback.recordedEnvironmentSteps.toLocaleString('en-US')} recorded environment steps; Text Memory was selected ${study.carrierAnalysis.ordinary.runtimeReadback.textMemory.selected.toLocaleString('en-US')} times and Agent System ${study.carrierAnalysis.ordinary.runtimeReadback.agentSystem.selected.toLocaleString('en-US')} times. “The content did not change” and “the carrier was not in the model context” are different claims.`,
+        `“沿用上一轮”不等于“后续做题时不用它”。原始运行日志里的 selected=true，可以直接理解成“这一环境 step 把这份已有内容放进模型上下文”。普通 OpenEVO 里，Skill Bundle 虽然只在 R0 更新 1 次，但在 ${study.carrierAnalysis.ordinary.runtimeReadback.recordedEnvironmentSteps.toLocaleString('en-US')} 个已记录环境 step 中实际放进模型上下文 ${study.carrierAnalysis.ordinary.runtimeReadback.skillBundle.selected.toLocaleString('en-US')} 次；Text Memory 放进上下文 ${study.carrierAnalysis.ordinary.runtimeReadback.textMemory.selected.toLocaleString('en-US')} 次，Agent System 放进上下文 ${study.carrierAnalysis.ordinary.runtimeReadback.agentSystem.selected.toLocaleString('en-US')} 次。所以，“这一轮没有改内容”和“后续 rollout 没有用这份内容”是两件完全不同的事。`,
+        `“Retained from the previous round” does not mean “unused later.” In the raw runtime log, selected=true simply means that, for this environment step, the existing carrier content was placed into the model context. In ordinary OpenEVO, Skill Bundle updated only once at R0, yet it entered the model context for ${study.carrierAnalysis.ordinary.runtimeReadback.skillBundle.selected.toLocaleString('en-US')} of ${study.carrierAnalysis.ordinary.runtimeReadback.recordedEnvironmentSteps.toLocaleString('en-US')} recorded environment steps; Text Memory was selected ${study.carrierAnalysis.ordinary.runtimeReadback.textMemory.selected.toLocaleString('en-US')} times and Agent System ${study.carrierAnalysis.ordinary.runtimeReadback.agentSystem.selected.toLocaleString('en-US')} times. So “the content did not change this round” and “later rollouts did not use it” are different claims.`,
       )}</p>
       <p>{t(
-        `后两组也不是简单把这三类非参数状态关掉：封存收据记录到 Bounded 组的 Text Memory / Skill / Agent producer 分别消耗 ${study.carrierAnalysis.bounded.producerModelCalls.textMemory} / ${study.carrierAnalysis.bounded.producerModelCalls.skillBundle} / ${study.carrierAnalysis.bounded.producerModelCalls.agentSystem} 次模型调用，β-gating 组分别是 ${study.carrierAnalysis.betaGating.producerModelCalls.textMemory} / ${study.carrierAnalysis.betaGating.producerModelCalls.skillBundle} / ${study.carrierAnalysis.betaGating.producerModelCalls.agentSystem} 次。这是“生成 / 修复端调用次数”，不是 Q17 的 runtime selected step，两个口径不直接横比。`,
-        `The latter two runs did not simply disable the external carriers either. Sealed receipts record ${study.carrierAnalysis.bounded.producerModelCalls.textMemory} / ${study.carrierAnalysis.bounded.producerModelCalls.skillBundle} / ${study.carrierAnalysis.bounded.producerModelCalls.agentSystem} Text Memory / Skill / Agent producer model calls for Bounded, and ${study.carrierAnalysis.betaGating.producerModelCalls.textMemory} / ${study.carrierAnalysis.betaGating.producerModelCalls.skillBundle} / ${study.carrierAnalysis.betaGating.producerModelCalls.agentSystem} for β-gating. These are producer generation/repair calls, not Q17 runtime-selected steps, so the two denominators are not compared directly.`,
+        `后两组也没有把这三类非参数状态关掉。即使某一轮最后沿用了旧内容，系统仍可能运行生成 / 修复流程，检查有没有新的合格候选。封存收据记录到 Bounded 组的 Text Memory / Skill / Agent 分别消耗 ${study.carrierAnalysis.bounded.producerModelCalls.textMemory} / ${study.carrierAnalysis.bounded.producerModelCalls.skillBundle} / ${study.carrierAnalysis.bounded.producerModelCalls.agentSystem} 次模型调用，β-gating 组分别是 ${study.carrierAnalysis.betaGating.producerModelCalls.textMemory} / ${study.carrierAnalysis.betaGating.producerModelCalls.skillBundle} / ${study.carrierAnalysis.betaGating.producerModelCalls.agentSystem} 次。这个数字是在数“为了检查和生成候选用了多少次模型调用”，不是在数“多少个环境 step 把内容放进模型上下文”，所以不能和上面的 step 数直接比较。`,
+        `The latter two runs did not disable these non-parametric states either. Even when a round retains the old content, generation or repair may still run to check whether a new valid candidate exists. Sealed receipts record ${study.carrierAnalysis.bounded.producerModelCalls.textMemory} / ${study.carrierAnalysis.bounded.producerModelCalls.skillBundle} / ${study.carrierAnalysis.bounded.producerModelCalls.agentSystem} Text Memory / Skill / Agent producer model calls for Bounded, and ${study.carrierAnalysis.betaGating.producerModelCalls.textMemory} / ${study.carrierAnalysis.betaGating.producerModelCalls.skillBundle} / ${study.carrierAnalysis.betaGating.producerModelCalls.agentSystem} for β-gating. These count model calls used to inspect and generate candidates, not environment steps where the content entered the model context, so the denominators are not compared directly.`,
       )}</p>
       <p class="paper__boundary">{t(
-        'Bounded 与 β-gating 两组使用同一套外部状态生成、校验和修复规则（Completion-First Carrier Contract v2）；实际 Memory / Skill / Agent 内容是否更新，是 treatment 之后自然产生的下游状态。不能为了“控制变量”强行让两组更新次数相同，也不能只凭这张 UPDATE 表把最终分数差归因给某一个载体。',
-        'Bounded and β-gating use the same external-carrier generation, validation, and repair rules (Completion-First Carrier Contract v2); whether Memory / Skill / Agent content actually changes is a downstream state that can naturally diverge after treatment. We should neither force equal update counts as a “control” nor attribute the final score gap to one carrier from this UPDATE table alone.',
+        'Bounded 与 β-gating 两组使用同一套外部状态生成、校验和修复规则（Completion-First Carrier Contract v2）；两组的参数方法不同以后，后续 rollout 也会不同，因此 Memory / Skill / Agent 在第几轮满足更新条件，是自然产生的下游结果。不能为了“控制变量”强行让两组更新次数相同，也不能只凭这张 UPDATE 表把最终分数差归因给某一个载体。',
+        'Bounded and β-gating use the same external-carrier generation, validation, and repair rules (Completion-First Carrier Contract v2); once the parameter methods differ, later rollouts can also differ, so the rounds in which Memory / Skill / Agent meet their update conditions are downstream outcomes that can naturally diverge. We should neither force equal update counts as a “control” nor attribute the final score gap to one carrier from this UPDATE table alone.',
       )}</p>
     </div>
   </section>
