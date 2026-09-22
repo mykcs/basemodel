@@ -15,14 +15,18 @@ Before any user-facing product, copy, navigation, information-architecture, page
 
 - For homepage, navigation, information architecture, major route-role, interaction, or product-direction changes, also read [`docs/wish/DESIGN.md`](docs/wish/DESIGN.md).
 - Do **not** read [`docs/wish/ARCHIVE.md`](docs/wish/ARCHIVE.md) by default. Use it only to trace why an older product intent differed or when the owner explicitly asks about historical intent.
-- [`docs/wish/README.md`](docs/wish/README.md) owns the wish-system lifecycle and update protocol.
+- Shared Wish lifecycle/update rules are owned by https://github.com/mykcs/.codex/blob/main/website-governance/WISH_PROTOCOL.md; [`docs/wish/README.md`](docs/wish/README.md) is a local navigation entrypoint only.
 - Current owner instructions, scientific/factual authority, research-integrity rules, security boundaries, tests, and live provider truth outrank the wish. The wish decides what the product should become; it never rewrites sealed results or evidence.
 
 `docs/wish/` is the high-level product-intent owner. Existing current policies such as `product-and-research-integrity.md`, the SEED × OpenEvo research mission, reader contracts, and UI/engineering standards keep their narrower responsibilities. Do not copy the wish text into those files or back into this root bootstrap.
 
 ## Central website learning
 
-For every user-facing website copy task, read the central learned human-expression preferences before the first substantial draft:
+For every user-facing website copy task, read the current shared human-expression standard before the first substantial draft:
+
+- https://github.com/mykcs/.codex/blob/main/website-governance/HUMAN_EXPRESSION_STANDARD.md
+
+When prior owner feedback or failure-family evidence matters, also read:
 
 - https://github.com/mykcs/.codex/blob/main/website-learning/shared/content/HUMAN_EXPRESSION.md
 

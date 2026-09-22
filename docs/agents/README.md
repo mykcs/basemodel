@@ -29,7 +29,7 @@ Root [`/AGENTS.md`](../../AGENTS.md) is the unique bootstrap/invariant layer. [`
 Always load the relevant combination of:
 
 - [`current/product-and-research-integrity.md`](current/product-and-research-integrity.md) — product/research truth and false-complete boundaries;
-- [`current/website-design-spec.md`](current/website-design-spec.md) — canonical website-level design/copy preference: what “说人话 / 去 AI 味” means, information order, heading voice, and conflict resolution;
+- [`current/website-design-spec.md`](current/website-design-spec.md) — BaseModel-specific public-expression overlay: scientific presentation, Reader Contract binding, ELI5 coverage and site-local execution boundaries;
 - [`current/site-reader-attention-contract.md`](current/site-reader-attention-contract.md) — executable per-route audience/task/first-viewport/boundary/next-step contract; register or update it before public-page HTML is substantially written or rearranged;
 - [`current/human-thinking-web-expression-contract.md`](current/human-thinking-web-expression-contract.md) — semantic HTML/visual expression and information-density contract;
 - [`current/audience-centered-technical-copy.md`](current/audience-centered-technical-copy.md) — site-wide technical-copy baseline;
@@ -42,7 +42,8 @@ These files are complementary owners, not competing style guides:
 
 | Owner | Load when | Owns |
 |---|---|---|
-| [`website-design-spec.md`](current/website-design-spec.md) | every public page/copy task | canonical user preference for natural human wording, anti-AI rhetorical patterns, heading/lede/CTA defaults, and rule precedence |
+| [central Human Expression Standard](https://github.com/mykcs/.codex/blob/main/website-governance/HUMAN_EXPRESSION_STANDARD.md) | every public page/copy task | cross-site natural language / zero-context / terminology / information-order standard |
+| [`website-design-spec.md`](current/website-design-spec.md) | BaseModel public research surfaces | BaseModel-specific scientific presentation, Reader Contract, ELI5 and local execution overlay |
 | [`site-reader-attention-contract.md`](current/site-reader-attention-contract.md) | any new public page or substantial public-page structure/attention change | per-route audience, primary task, first-viewport goal, non-hideable boundary, next step, attention mode, and executable fail-closed coverage |
 | [`audience-centered-technical-copy.md`](current/audience-centered-technical-copy.md) | any public technical copy | headings name subjects, concrete language, context, terminology, audience baseline |
 | [`reader-first-copy-hierarchy.md`](current/reader-first-copy-hierarchy.md) | public explanation/result/incident copy | facts before stage directions, conclusion/numbers before long explanation, visual weight follows semantic weight |
@@ -53,7 +54,7 @@ These files are complementary owners, not competing style guides:
 
 For user-facing research work, `reader-first-copy-hierarchy.md` and `research-editorial-style.md` are mandatory through `src/components/research/AGENTS.md`. Add `layered-technical-explainer-copy.md` when the Chinese page teaches a technical mechanism. A narrower task-specific contract refines the general rule; it does not erase scientific or product truth.
 
-If the owner says `说人话`, `不要 AI 味`, `自然一点`, or equivalent, read the central learned expression preferences at https://github.com/mykcs/.codex/blob/main/website-learning/shared/content/HUMAN_EXPRESSION.md plus `current/website-design-spec.md`. Site-specific learned experience is under https://github.com/mykcs/.codex/tree/main/website-learning/sites/basemodel. The retired local case corpus is historical evidence only; there is no local `feedback:retrieve` step.
+If the owner says `说人话`, `不要 AI 味`, `自然一点`, or equivalent, read the current shared standard at https://github.com/mykcs/.codex/blob/main/website-governance/HUMAN_EXPRESSION_STANDARD.md first. Load learned evidence from https://github.com/mykcs/.codex/blob/main/website-learning/shared/content/HUMAN_EXPRESSION.md and BaseModel-specific learned experience only when prior feedback matters. Then apply `current/website-design-spec.md` as the BaseModel-specific overlay. The retired local case corpus is historical evidence only; there is no local `feedback:retrieve` step.
 
 For UI/layout/theme/CSS work also read:
 
