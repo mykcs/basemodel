@@ -270,15 +270,15 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('范数：长期 State 和本轮更新到底有多大');
     expect(component).toContain('5.3 Task Vector');
     expect(component).toContain('谱与方向');
-    expect(component).toContain('full/base spectral ratio 把更新后完整权重的最大 spectral norm 除以 base 权重的对应值');
+    expect(component).toContain('full/base spectral ratio 比较更新后权重与 base 权重的这个尺度');
     expect(component).toContain('输出长度与任务步数');
     expect(component).toContain('5.6 Entropy');
     expect(component).toContain('5.7');
-    expect(component).toContain('我们现在能解释到哪里？');
+    expect(component).toContain('把这些指标合起来后，我们能确定什么、还不能确定什么');
     expect(component).toContain('① 指标是什么');
     expect(component).toContain('② 这次实验的结果');
     expect(component).toContain('③ 分析');
-    expect(component).toContain('动态 α + 动态 β：尚未运行');
+    expect(component).toContain('下一步实验是什么：动态 α + 动态 β');
     expect(component).toContain('study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString');
     expect(component).toContain("import MetricEvidenceFigure from './MetricEvidenceFigure.astro'");
     expect(component).not.toContain("import WandbEvidencePanel from './WandbEvidencePanel.astro'");
