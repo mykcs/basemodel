@@ -180,9 +180,15 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.evidence.q17CarrierAudit).toContain('240c479bead0450def3feaaa2a169d9a2bc3934c');
 
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
-    expect(component).toContain('参数几乎每轮都在变；Text Memory、Skill 和 Agent System 只少量改动');
-    expect(component).toContain('NOOP 不等于“没有参与”');
-    expect(component).toContain('不等于参数通道对最终能力贡献最大');
+    expect(component).toContain('随着 rollout 积累，参数和非参数状态都会在满足条件时更新');
+    expect(component).toContain('参数什么时候变：');
+    expect(component).toContain('Text Memory 什么时候变：');
+    expect(component).toContain('Skill Bundle 什么时候变：');
+    expect(component).toContain('Agent System 什么时候变：');
+    expect(component).toContain('至少得到 2 个不同任务的证据支持');
+    expect(component).toContain('至少需要 3 个不同任务共同支持');
+    expect(component).toContain('selected=true，可以直接理解成');
+    expect(component).toContain('不能据此说参数一定比非参数状态更重要');
     expect(component).toContain('Completion-First Carrier Contract v2');
     expect(component).toContain('study.evidence.q17CarrierAudit');
   });
