@@ -133,6 +133,32 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(study.derivation.successor.retention).toBe(1);
   });
 
+  it('publishes the frozen beta-controller provenance and runtime range', () => {
+    const gdr = study.posthocAnalysis.gdr;
+    expect(gdr.betaControllerFeatures).toBe(22);
+    expect(gdr.controllerTraining.trainedOffline).toBe(true);
+    expect(gdr.controllerTraining.frozenDuringFormalRun).toBe(true);
+    expect(gdr.controllerTraining.trainRounds).toEqual([0, 24, 46, 91]);
+    expect(gdr.controllerTraining.validationRound).toBe(114);
+    expect(gdr.controllerTraining.heldoutRound).toBe(136);
+    expect(gdr.controllerTraining.target).toContain('canonical effective-write beta');
+    expect(gdr.controllerTraining.architecture).toEqual([22, 64, 64, 1]);
+    expect(gdr.controllerTraining.bestEpoch).toBe(48);
+    expect(gdr.controllerTraining.heldoutSpearman).toBeCloseTo(0.9783382381899217, 12);
+    expect(gdr.controllerTraining.heldoutMedianAbsLog10Error).toBeCloseTo(0.07353067398071289, 12);
+    expect(gdr.controllerTraining.predictedBetaMin).toBeCloseTo(5.580113736532166e-13, 20);
+    expect(gdr.controllerTraining.predictedBetaMax).toBeCloseTo(0.004016951657831669, 15);
+    expect(gdr.formalObserved.betaMin).toBeCloseTo(1.9415535428662754e-20, 28);
+    expect(gdr.formalObserved.betaMax).toBeCloseTo(0.004396725833379047, 15);
+    expect(gdr.formalObserved.optimizerEvents).toBe(16_537);
+    expect(gdr.formalObserved.appliedWrites).toBe(1_053_394);
+    expect(gdr.formalObserved.zeroDirectionNoops).toBe(4_974);
+    expect(gdr.formalObserved.scope).toContain('q_proj/k_proj/v_proj/o_proj');
+    expect(study.evidence.betaControllerPreregistration).toContain('gauge-invariant-beta-policy-v2-prereg');
+    expect(study.evidence.betaControllerTrainingSource).toContain('gated_delta_gauge_invariant_beta_policy');
+    expect(study.evidence.betaRuntimeSource).toContain('gated_delta_lora_effective_state_runtime');
+  });
+
   it('preserves the completed hardware exposure without treating it as live ownership', () => {
     expect(study.resourceExecution.physicalGpuIndices).toEqual([2, 4, 5, 6, 7]);
     expect(study.resourceExecution.schedulerMode).toContain('campaign released');
@@ -292,14 +318,33 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('② 实验结果');
     expect(component).toContain('③ 分析');
     expect(component).toContain('现在真正卡在哪里，以及下一步先做什么');
+    expect(component).toContain('参数化长期记忆');
+    expect(component).toContain('这里最容易产生的误解是把论文里的 S·k');
+    expect(component).toContain('并没有构造这样的 k / v 张量');
     expect(component).toContain('这里的 22 维不是把整个 rank128 State 压成 22 个数字');
     expect(component).toContain('torch.nn.Linear(22, 64)');
+    expect(component).toContain('不是“在 LoRA 前面放一个可学习 scalar，然后跟着 160 轮一起学”');
+    expect(component).toContain('trainRounds.join');
+    expect(component).toContain('model.eval() + torch.no_grad()');
+    expect(component).toContain('没有一个“最后学出来的 β”');
+    expect(component).toContain('delta_c = (beta_eff_c / a_norm)');
     expect(component).toContain('请参考 GitHub：');
     expect(component).toContain('第一优先：补普通 SFT、普通 OPSD 与 SEED 1.7B 参照');
     expect(component).toContain('第二优先：直接做 rank 8 / 16 / 32 / 64 / 128 容量消融');
     expect(component).toContain('第三优先：先做最简单的 β scaling baseline');
     expect(component).toContain('动态 α + 动态 β 仍然保留，但不是当前第一优先');
     expect(component).toContain('动作大类本来就很少');
+    expect(component).toContain('Task Score 不包含“成功率 + 合法性”');
+    expect(component).toContain('20 轮对应 2,560 次 rollout');
+    expect(component).toContain('不是 continual-learning retention test');
+    expect(component).toContain('这里不是“让 LM 自己决定要不要更新”');
+    expect(component).toContain('deterministic eligibility gate');
+    expect(component).toContain('“2 个任务 / 3 个任务”描述的是这次冻结 evidence builder 实际采用的门槛');
+    expect(component).toContain('不应该读成 OpenEVO 的理论常数');
+    expect(study.evidence.carrierEvidenceGateSource).toContain('ceiling1_stage2_vnext_evidence.py');
+    expect(component).toContain('上升 → 平台 → 掉分');
+    expect(component).toContain('这个分析目前还没有完成');
+    expect(component).toContain('Stage 1 OPSD 参数学习 → OPSD bootstrap');
     expect(component).toContain('study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString');
     expect(component).toContain("import MetricEvidenceFigure from './MetricEvidenceFigure.astro'");
     expect(component).not.toContain("import WandbEvidencePanel from './WandbEvidencePanel.astro'");

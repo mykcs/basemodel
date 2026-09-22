@@ -238,6 +238,10 @@ const twentyRoundScoreWindows = finalResult
       '普通 OpenEVO 的参数更新方式是：每轮训练得到一个新的 SD-LoRA component，并把过去的 component 一起保留到后续模型。这样参数历史会随轮数持续变长；到了后期，每一轮训练都要经过越来越多的低秩路径，所以参数更新越来越慢。',
       'Ordinary OpenEVO updates parameters by producing a new SD-LoRA component each round and retaining the earlier components in later model states. The parameter history therefore grows with round count, so late training must traverse more and more low-rank paths and parameter updates become slower.',
     )}</p>
+    <p>{t(
+      '从 OpenEVO 的整体设计看，这条 SD-LoRA 线也可以理解成一种“参数化长期记忆”：Text Memory、Skill Bundle、Agent System 把经验保存在 prompt 可见的文字状态里，参数 State 则把更慢、更持久的变化写进模型参数。当前这页先把问题收窄到 WebShop：一套参数 / 一个长期 LoRA State 能不能持续吸收经验、保持能力，同时不让历史无限增长。更大的 continual learning、meta-learning 或多种 Memory 协同问题先不混进来。',
+      'Within OpenEVO, this SD-LoRA line can also be viewed as parameterized long-term memory. Text Memory, Skill Bundle, and Agent System keep experience in prompt-visible textual state, while parameter State writes slower, persistent change into model parameters. This page keeps the near-term question narrow: on WebShop, can one parameter set / one long-term LoRA State keep absorbing experience and preserving capability without unbounded history? Broader continual-learning, meta-learning, and multi-memory questions remain outside this first step.',
+    )}</p>
     <MathFormula latex={math.history} label={t('普通 OpenEVO 的累计参数历史', 'Accumulating parameter history in ordinary OpenEVO')} />
     <p class="paper__math-caption">{t('历史 component 随 t 增长。', 'Historical components grow with t.')}</p>
     <p>{t(
@@ -325,6 +329,24 @@ const twentyRoundScoreWindows = finalResult
       </table>
     </div>
 
+    <div class="paper__math-boundary">
+      <p>{t(
+        '这里最容易产生的误解是把论文里的 S·k 当成“OpenEVO 参数 × 当前 WebShop observation → action”的字面计算。正式实现里并没有构造这样的 k / v 张量，也没有让 rank128 adapter 直接乘环境观察去生成 action。',
+        'The easiest mistake here is to read the paper’s S·k literally as “OpenEVO parameters × current WebShop observation → action.” The formal runtime constructs no such k/v tensors and never multiplies the rank128 adapter directly by an environment observation to produce an action.',
+      )}</p>
+      <pre class="paper__code paper__code--compact"><code>{`论文层：State S + k / v + residual
+                 ↓ 只保留更新角色
+实现层：LoRA A/C + coefficient + gradient / Adam
+                 ↓ frozen beta controller
+        缩放当前 AdamW proposal 的有效写入
+                 ↓
+        Compress128 → 下一轮参数 State`}</code></pre>
+      <p>{t(
+        '所以 k / v 在这里是帮助理解“读旧状态、写新残差”的数学角色，不是正式代码里的 WebShop observation / ground-truth action。真正进入 β controller 的，是 LoRA factor、coefficient、gradient 和 Adam optimizer state。',
+        'So k/v preserve the mathematical roles of reading prior state and writing a residual; they are not WebShop observation / ground-truth-action tensors in the formal code. The actual β controller receives LoRA factors, coefficients, gradients, and Adam optimizer state.',
+      )}</p>
+    </div>
+
     <p>
       {t(
         '因此，我们并不是把完整的 Gated DeltaNet 原封不动搬到参数空间。第一版正式实验保留“长期 State + residual write + 动态 β”这三件事，但把',
@@ -359,6 +381,7 @@ const twentyRoundScoreWindows = finalResult
         '. The final treatment therefore controls a gauge-invariant effective write rather than raw A/C displacement.',
       )}
     </p>
+    <h3>2.6 {t('β 来自离线训练、正式运行时冻结的 controller', 'β comes from an offline-trained controller frozen during the formal run')}</h3>
     <MathFormula latex={math.beta} label={t('动态 beta 控制器', 'Dynamic beta controller')} compact />
     <p class="paper__math-caption">{t('冻结 controller · 只看局部参数 / 梯度 / Adam 状态，不看 reward、Task Score、Task Vector。', 'Frozen controller · local parameter / gradient / Adam state only; no reward, Task Score, or Task Vector.')}</p>
     <p>{t(
@@ -375,11 +398,80 @@ const twentyRoundScoreWindows = finalResult
             torch.nn.GELU(),
             torch.nn.Linear(64, 1),
         )`}</code></pre>
+
     <p>{t(
-      '这个 MLP 先用历史参数轨迹离线训练；正式 160 轮开始后 controller 参数已经冻结。每一步输入状态不同，所以 β 会随 step / module / rank 改变，但 controller 本身不继续学习。这也意味着它不是根据当前 WebShop reward 或 Task Score 在线调门。',
-      'The MLP is trained offline on historical parameter trajectories and frozen before the formal 160-round study. The input state changes across steps, modules, and ranks, so β changes dynamically, but the controller itself no longer learns. It therefore does not tune the gate online from current WebShop reward or Task Score.',
+      '它也不是“在 LoRA 前面放一个可学习 scalar，然后跟着 160 轮一起学”。正式实验前，我们先从历史 optimizer trajectory 里构造监督数据：输入是上面的 22 项局部几何，target 是同一历史更新里实际有效写入大小对应的 canonical effective-write β，并在 log10 空间拟合。',
+      'It is also not “a learnable scalar placed in front of LoRA and trained throughout the 160 rounds.” Before the formal experiment, supervised rows are built from historical optimizer trajectories: the input is the 22-feature local geometry above, and the target is the canonical effective-write β reconstructed from the effective write in the same historical update, fit in log10 space.',
     )}</p>
-    <p class="paper__links">{t('请参考 GitHub：', 'GitHub reference: ')}<a href={betaControllerSourceHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={betaControllerSourceHref} />{t('β 控制器训练代码', 'β-controller training code')}</a>{' · '}<a href={betaRuntimeSourceHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={betaRuntimeSourceHref} />{t('正式实验 β runtime', 'formal β runtime')}</a></p>
+    <div class="paper-table-wrap">
+      <table class="paper-table">
+        <thead><tr><th>{t('β controller 离线训练', 'Offline β-controller training')}</th><th>{t('冻结设置', 'Frozen setting')}</th></tr></thead>
+        <tbody>
+          <tr><td>{t('训练轮', 'train rounds')}</td><td>R{study.posthocAnalysis.gdr.controllerTraining.trainRounds.join(' / R')}</td></tr>
+          <tr><td>{t('验证轮', 'validation round')}</td><td>R{study.posthocAnalysis.gdr.controllerTraining.validationRound}</td></tr>
+          <tr><td>{t('最终 held-out 检查', 'held-out check')}</td><td>R{study.posthocAnalysis.gdr.controllerTraining.heldoutRound}</td></tr>
+          <tr><td>target</td><td><code>{study.posthocAnalysis.gdr.controllerTraining.target}</code></td></tr>
+          <tr><td>{t('网络', 'network')}</td><td>22 → 64 → 64 → 1 · GELU</td></tr>
+          <tr><td>{t('优化', 'optimization')}</td><td>AdamW · lr {study.posthocAnalysis.gdr.controllerTraining.learningRate} · batch {study.posthocAnalysis.gdr.controllerTraining.batchSize}</td></tr>
+          <tr><td>{t('最佳 epoch', 'best epoch')}</td><td>{study.posthocAnalysis.gdr.controllerTraining.bestEpoch}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <pre class="paper__code"><code>{`# frozen implementation: build the supervised target
+for kind, (key, write) in enumerate(((a[ri], left1[:, ri]), (da[ri], left2[:, ri]))):
+    f = base.copy()
+    f[5] = 1.0 if kind == 0 else 0.0
+    f[6] = 1.0 if kind == 1 else 0.0
+    feats.append(f)
+    ys.append(math.log10(norm(key) * norm(write) + EPS))
+
+X = torch.cat(xs)
+Y = torch.cat(ys)
+Xn = (X - xm) / xsdev
+Zn = (Y - ym) / ysdev
+
+model = MLP()
+opt = torch.optim.AdamW(
+    model.parameters(),
+    lr=cfg["learning_rate"],
+    weight_decay=cfg["weight_decay"],
+)
+loss = torch.nn.functional.mse_loss(model(Xn[ix]), Zn[ix])
+loss.backward()
+opt.step()`}</code></pre>
+    <p>{t(
+      `训练 / 验证冻结后，held-out R${study.posthocAnalysis.gdr.controllerTraining.heldoutRound} 才打开检查；Spearman = ${study.posthocAnalysis.gdr.controllerTraining.heldoutSpearman.toFixed(3)}，log10 β 的中位绝对误差 = ${study.posthocAnalysis.gdr.controllerTraining.heldoutMedianAbsLog10Error.toFixed(4)}。这个检查只说明 controller 能复现冻结 target，不等于它会让 WebShop 分数更高。`,
+      `After training and validation are frozen, held-out R${study.posthocAnalysis.gdr.controllerTraining.heldoutRound} is opened for checking; Spearman = ${study.posthocAnalysis.gdr.controllerTraining.heldoutSpearman.toFixed(3)} and median absolute log10-β error = ${study.posthocAnalysis.gdr.controllerTraining.heldoutMedianAbsLog10Error.toFixed(4)}. This only shows that the controller reproduces its frozen target; it does not show that the controller improves WebShop score.`,
+    )}</p>
+    <p class="paper__links">{t('请参考 GitHub：', 'GitHub reference: ')}<a href={study.evidence.betaControllerPreregistration} target="_blank" rel="noreferrer"><ExternalBrandMark href={study.evidence.betaControllerPreregistration} />{t('β controller 预注册', 'β-controller preregistration')}</a>{' · '}<a href={betaControllerSourceHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={betaControllerSourceHref} />{t('β 控制器训练代码', 'β-controller training code')}</a>{' · '}<a href={study.evidence.gaugeInvariantPolicy} target="_blank" rel="noreferrer"><ExternalBrandMark href={study.evidence.gaugeInvariantPolicy} />{t('资格验证结果', 'qualification result')}</a></p>
+
+    <h3>2.7 {t('正式运行时，β 只预测当前写入强度', 'During the formal run, β predicts only the current write strength')}</h3>
+    <p>{t(
+      '正式 160 轮加载的是上面冻结好的 checkpoint：model.eval() + torch.no_grad()。每个 optimizer step 都重新读取当前局部状态并预测 β，所以 β 会变化；但 controller 权重不会继续训练。',
+      'The formal 160-round run loads the frozen checkpoint above with model.eval() + torch.no_grad(). Every optimizer step reads the current local state and predicts a fresh β, so β varies while the controller weights themselves do not keep training.',
+    )}</p>
+    <pre class="paper__code"><code>{`# runtime prediction
+with torch.no_grad():
+    standardized = model(x.unsqueeze(0)).squeeze().item()
+log10_beta = standardized * target_std + target_mean
+beta = 10.0 ** log10_beta
+
+# keep the AdamW proposal direction; beta sets the effective step length
+delta_c = (beta_eff_c / a_norm) * (dc / dc_norm)
+delta_a = (beta_eff_a / c1_norm) * (da / da_norm)`}</code></pre>
+    <p>{t(
+      '因此单个 local write 上，β 不负责“选方向”，而是沿 AdamW 已经提出的方向控制写多远。它改变当前参数以后，后面的 gradient / Adam moment 也会跟着改变，所以长期 Task Vector 方向仍然可能和 Bounded 分开；这不等于 β 在当前一步主动把 proposal 旋转到了相反方向。',
+      'For one local write, β does not choose a direction; it controls how far to move along the AdamW proposal direction. Once that write changes the parameters, later gradients and Adam moments change as well, so the long-horizon Task Vector can still diverge from Bounded. That is not the same as β actively rotating the current proposal in the opposite direction.',
+    )}</p>
+    <p>{t(
+      `这套方法也没有一个“最后学出来的 β”。离线资格检查里的预测范围大约是 ${study.posthocAnalysis.gdr.controllerTraining.predictedBetaMin.toExponential(2)} ～ ${study.posthocAnalysis.gdr.controllerTraining.predictedBetaMax.toExponential(2)}；正式 160 轮真正观测到的 effective β 范围是 ${study.posthocAnalysis.gdr.formalObserved.betaMin.toExponential(2)} ～ ${study.posthocAnalysis.gdr.formalObserved.betaMax.toExponential(2)}。正式 run 一共记录 ${study.posthocAnalysis.gdr.formalObserved.optimizerEvents.toLocaleString('en-US')} 个 optimizer events、${study.posthocAnalysis.gdr.formalObserved.appliedWrites.toLocaleString('en-US')} 次 applied writes，而且 treatment 只作用在最后一个 Transformer layer 的 q/k/v/o projection。`,
+      `There is also no single “final learned β.” The offline qualification predicts roughly ${study.posthocAnalysis.gdr.controllerTraining.predictedBetaMin.toExponential(2)} to ${study.posthocAnalysis.gdr.controllerTraining.predictedBetaMax.toExponential(2)}, while the formal 160-round run observes effective β values from ${study.posthocAnalysis.gdr.formalObserved.betaMin.toExponential(2)} to ${study.posthocAnalysis.gdr.formalObserved.betaMax.toExponential(2)}. The formal run records ${study.posthocAnalysis.gdr.formalObserved.optimizerEvents.toLocaleString('en-US')} optimizer events and ${study.posthocAnalysis.gdr.formalObserved.appliedWrites.toLocaleString('en-US')} applied writes, and the treatment is scoped only to q/k/v/o projections in the final Transformer layer.`,
+    )}</p>
+    <p class="paper__boundary">{t(
+      '最大 effective β 只有约 0.0044，因此“很多写入是不是被压得过弱”是一个合理的后续假设；但不能仅凭 β 数值小就把它写成掉分原因。β 会在大量 step / module / rank write 上重复作用，真正需要的是分阶段的 β、gradient、Adam 与行为联合分析。',
+      'The maximum effective β is only about 0.0044, so “are many writes being suppressed too strongly?” is a reasonable follow-up hypothesis. But small β values alone do not establish the cause of the score decline: β acts repeatedly across many step/module/rank writes, so a phase-conditioned joint analysis of β, gradients, Adam state, and behavior is required.',
+    )}</p>
+    <p class="paper__links">{t('请参考 GitHub：', 'GitHub reference: ')}<a href={betaRuntimeSourceHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={betaRuntimeSourceHref} />{t('正式实验 β runtime', 'formal β runtime')}</a>{' · '}<a href={study.evidence.resourceAnalysis} target="_blank" rel="noreferrer"><ExternalBrandMark href={study.evidence.resourceAnalysis} />{t('160 轮 β 观测统计', '160-round β observations')}</a></p>
     <MathFormula latex={math.effective} label={t('本实验 β-gating（α 固定为 1）映射到参数 State 后的概念式', 'Conceptual parameter-State update for this β-gating (α fixed at 1) study')} compact />
     <p class="paper__math-caption">{t('这是参数空间里的概念式；实际 runtime 先写 C 得到真实 C1，再基于 C1 写 A。', 'Conceptual parameter-space form; runtime writes C first to obtain the actual C1, then writes A conditioned on C1.')}</p>
   </section>
@@ -403,6 +495,12 @@ const twentyRoundScoreWindows = finalResult
       `这批 1.7B OpenEVO 的 Stage 2 起点来自 Stage 1 的 OPSD 参数学习；Qwen3-1.7B 的 Stage 1 OPSD 实际记录为 ${study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString('en-US')} 个优化器更新步。它不是 SEED 的 hindsight-skill SFT，所以这三组实验本身不能回答“SFT 起点和 OPSD 起点谁更好”。`,
       `The Stage-2 origin for this 1.7B OpenEVO lineage comes from the Stage-1 OPSD parameter bootstrap, which records ${study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString('en-US')} optimizer steps for Qwen3-1.7B. This is not SEED hindsight-skill SFT, so these three runs do not answer whether SFT or OPSD is the better warm start.`,
     )}</p>
+    <pre class="paper__code paper__code--compact"><code>{`SEED 论文路线：trajectory → hindsight skill → SFT
+本页 OpenEVO：Stage 1 OPSD 参数学习 → OPSD bootstrap → Stage 2 SD-LoRA / Bounded`}</code></pre>
+    <p class="paper__boundary">{t(
+      '因此后面把普通 SFT、普通 OPSD 和 SEED 1.7B 复现列为第一优先 baseline，不是重复已有实验：它们是在补当前三条 SD-LoRA 路线共同缺失的训练方法参照。',
+      'That is why ordinary SFT, ordinary OPSD, and a SEED 1.7B reproduction are first-priority baselines rather than duplicates of an existing run: they supply the training-method references that all three current SD-LoRA lines lack.',
+    )}</p>
 
     <div id="carrier-ledger">
       <h3>3.1 {t('随着 rollout 积累，参数和非参数状态都会在满足条件时更新', 'As rollouts accumulate, both parametric and non-parametric state can update when their conditions are met')}</h3>
@@ -418,6 +516,20 @@ const twentyRoundScoreWindows = finalResult
         '一轮可以直接理解成：rollout 产生轨迹 → 从轨迹里提取可验证证据 → 四条状态通道分别检查自己的更新门槛 → 满足条件就写入新状态，不满足就沿用旧状态。仓库原始收据把这两种结果记作 UPDATE 和 NOOP。',
         'A round can be read as: rollouts produce trajectories → verifiable evidence is extracted → each of the four state channels checks its own update gate → a new state is written when the condition is met, otherwise the previous state is retained. The raw repository receipts call these two outcomes UPDATE and NOOP.',
       )}</p>
+      <p>{t(
+        '这里不是“让 LM 自己决定要不要更新”。是否有资格产生新候选，先由代码根据当前轮的 grounded evidence 做确定性 gate；只有 eligible=true，reflector 模型才看到一个经过裁剪的证据投影并生成候选。候选随后还要通过结构 / 内容 validator；如果只是格式或输出截断问题，最多做一次同证据 repair。最后通过才 UPDATE，否则保留上一版。',
+        'This is not “let the LM decide whether to update.” Eligibility is first determined in code from grounded evidence. Only when eligible=true does the reflector model receive a bounded evidence projection and generate a candidate. The candidate must then pass structural/content validation; a single same-evidence repair is allowed for mechanical or truncation failures. Only an accepted candidate becomes UPDATE; otherwise the prior state is retained.',
+      )}</p>
+      <pre class="paper__code paper__code--compact"><code>{`grounded rollout evidence
+        ↓
+deterministic eligibility gate
+        ↓ eligible
+LM generates candidate from bounded evidence
+        ↓
+validator
+        ↓ mechanical failure only → one repair
+accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
+      <p class="paper__links">{t('请参考 GitHub：', 'GitHub reference: ')}<a href={study.evidence.carrierReflectorSource} target="_blank" rel="noreferrer"><ExternalBrandMark href={study.evidence.carrierReflectorSource} />{t('Carrier reflector / validator 流程', 'Carrier reflector / validator flow')}</a></p>
       <p><strong>{t('参数什么时候变：', 'Parameter update:')}</strong>{t(
         '本轮至少出现 1 条“干净的完整成功”轨迹：任务真正完成，而且没有解析失败、回退路径、修复或无效记录等工程异常。普通 OpenEVO 用这些成功轨迹产生新的 rank8 SD-LoRA 更新；后两组再把当前参数更新写进固定 rank128 State。',
         'At least one clean exact-success trajectory must appear in the round: the task is truly completed without parser, fallback, repair, invalid, or other engineering failures. Ordinary OpenEVO uses these successes to produce a new rank-8 SD-LoRA update; the latter two runs then write the current parameter update into the fixed-rank128 State.',
@@ -434,6 +546,11 @@ const twentyRoundScoreWindows = finalResult
         '更全局的行为规则至少需要 3 个不同任务共同支持，而且当前轮仍有对应证据；生成的新 Agent System 还要通过合同检查。否则继续用上一版。',
         'A more global behavioral rule must be supported by at least three distinct tasks, with corresponding evidence still present in the current round; the generated Agent System must also pass its contract. Otherwise the previous version is retained.',
       )}</p>
+      <p class="paper__boundary">{t(
+        '这里的“2 个任务 / 3 个任务”描述的是这次冻结 evidence builder 实际采用的门槛，不应该读成 OpenEVO 的理论常数。当前实现先在 evidence builder 里形成 eligible / supporting_patterns，再交给 reflector；未来如果要研究不同更新频率，可以把门槛本身作为新的实验变量，但不能在这次封存结果上事后改。',
+        'The “2-task / 3-task” thresholds describe the gates used by this frozen evidence builder, not theoretical constants of OpenEVO. The current implementation first constructs eligible / supporting_patterns in the evidence builder and only then invokes the reflector. Future work may treat those thresholds as experimental variables, but they cannot be changed retrospectively for this sealed result.',
+      )}</p>
+      <p class="paper__links">{t('请参考 GitHub：', 'GitHub reference: ')}<a href={study.evidence.carrierEvidenceGateSource} target="_blank" rel="noreferrer"><ExternalBrandMark href={study.evidence.carrierEvidenceGateSource} />{t('Carrier evidence gate', 'Carrier evidence gate')}</a></p>
 
       <figure class="paper-table-figure">
         <div class="paper-table-wrap" aria-label={t('三组 OpenEVO 160 轮四条状态通道的更新和沿用次数', 'Update and retained-state counts for four state channels across 160 rounds in the three OpenEVO runs')}>
@@ -514,9 +631,24 @@ const twentyRoundScoreWindows = finalResult
 
   <h3>4.1 {t('Task Score 是什么：每轮任务完成程度的连续得分', 'What is Task Score? A continuous measure of task completion each round')}</h3>
   <p>{t(
-    'Task Score 是 WebShop 每轮任务结束后的连续得分平均值 × 100；部分完成也可能拿到部分分。下面先看完整 160 轮，而不是先挑某个末尾窗口。完整成功率是另一项更严格的指标：只有 task_score = 1.0 才算完整做对。',
-    'Task Score is the mean terminal WebShop task score multiplied by 100; partial completion can receive partial credit. We start with all 160 rounds instead of selecting a late window first. Exact success is a stricter metric and counts only task_score = 1.0.',
+    'Task Score 是 WebShop 每轮任务结束后的连续得分平均值 × 100；部分完成也可能拿到部分分。下面先看完整 160 轮，而不是先挑某个末尾窗口。完整成功率是另一项更严格的指标：只有任务真正 won 且 task_score = 1.0 才算完整做对。',
+    'Task Score is the mean terminal WebShop task score multiplied by 100; partial completion can receive partial credit. We start with all 160 rounds instead of selecting a late window first. Exact success is a stricter metric and requires the task to be won with task_score = 1.0.',
   )}</p>
+  <div class="paper-table-wrap">
+    <table class="paper-table">
+      <thead><tr><th>{t('指标', 'Metric')}</th><th>{t('它回答什么', 'What it answers')}</th><th>{t('是否属于 Task Score', 'Part of Task Score?')}</th></tr></thead>
+      <tbody>
+        <tr><td>Task Score</td><td>{t('任务完成到什么程度；0–1 连续 reward，本页 ×100', 'degree of task completion; continuous 0–1 reward, ×100 on this page')}</td><td>{t('本身就是这个指标', 'this is the metric itself')}</td></tr>
+        <tr><td>{t('完整成功（Exact Success）', 'Exact Success')}</td><td>{t('是否完整完成任务：won=true 且 task_score=1.0', 'whether the task is fully completed: won=true and task_score=1.0')}</td><td>{t('否，单独统计', 'No; reported separately')}</td></tr>
+        <tr><td>{t('动作 / 解析合法性', 'Action / parser validity')}</td><td>{t('动作是否能被环境正确解析、是否有工程 invalid', 'whether actions parse correctly and avoid engineering-invalid outcomes')}</td><td>{t('否，属于工程有效性', 'No; engineering validity')}</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="paper__boundary">{t(
+    '所以 Task Score 不包含“成功率 + 合法性”这两个子项。后面看到 valid-action rate = 100% 时，那是在排除 parser / action 失败这个简单解释，不是在给 Task Score 加分。',
+    'Task Score therefore does not contain success rate plus legality as subcomponents. When a later diagnostic reports valid-action rate = 100%, it is ruling out parser/action failure as a simple explanation, not contributing points to Task Score.',
+  )}</p>
+  <p class="paper__links">{t('请参考 GitHub：', 'GitHub reference: ')}<a href={study.evidence.webshopEvaluatorSource} target="_blank" rel="noreferrer"><ExternalBrandMark href={study.evidence.webshopEvaluatorSource} />{t('WebShop evaluator 定义', 'WebShop evaluator definition')}</a></p>
   <MetricEvidenceFigure item={metricCharts.taskScore} />
   <p class="paper__chart-note">{t(
     '口径：本页统一使用 Task Score / 100。W&B 原始 scalar 是 0–1；这里的发布图只做 ×100 的线性换算，因此曲线形状、轮次位置和相对关系都不变。W&B 链接仍指向原始观测入口。',
@@ -577,6 +709,10 @@ const twentyRoundScoreWindows = finalResult
   <p>{t(
     '最后 20 轮平均使用 R140–R159 实际训练时每轮抽到的不同任务，回答“训练结束前通常处在什么水平”。固定终评则在训练结束后，让三组最终模型做同一套、同一顺序的 128 题，回答“在完全相同题目上最终表现怎样”。两者都重要，但测的不是同一件事。',
     'The last-20 mean uses the different tasks actually sampled during R140–R159 and asks what level the model typically occupies near the end of training. The fixed final is run after training and gives all three final models the same 128 tasks in the same order, asking how they perform on an identical panel. Both matter, but they measure different things.',
+  )}</p>
+  <p>{t(
+    '这里的“最后 20 轮”也不是“最后做 20 道题”。每轮是 128 次任务尝试，因此 20 轮对应 2,560 次 rollout；表里的数字是 20 个 round-level Task Score 的平均。不过这 2,560 次任务不是固定同一套题，所以它仍然不能证明模型“还记得前面所有任务”，也不是 continual-learning retention test。',
+    '“Last 20 rounds” does not mean “20 tasks.” Each round contains 128 task attempts, so 20 rounds correspond to 2,560 rollouts; the reported value averages 20 round-level Task Scores. But those 2,560 attempts do not use one fixed task panel, so this still does not prove that the model remembers all earlier tasks and is not a continual-learning retention test.',
   )}</p>
   <div class="paper-table-wrap">
     <table class="paper-table">
@@ -775,6 +911,14 @@ const twentyRoundScoreWindows = finalResult
       `These posterior rank95 medians are the main new question created by the earlier rank128 design: ${study.parameterAnalysis.off.rank95Median} for Bounded and ${study.parameterAnalysis.on.rank95Median} after adding β. The change is highly low-dimensional within each module, making a capacity ablation more urgent than immediately stacking a more complex gate; however, it still does not prove that a rank8 long-term State preserves task performance.`,
     )}</p>
     <p>{t('R159 更新方向 cosine（β-gating vs Bounded）', 'R159 update-direction cosine (β-gating vs Bounded)')}: <strong>{study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}</strong> · {t('第 19–27 层平均 cosine', 'mean cosine over layers 19–27')}: <strong>{study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}</strong></p>
+    <p>{t(
+      '但这还没有回答另一个更关键的问题：β 组“分数上升的时候”和“后期掉分的时候”，它自己的 LoRA / Task Vector 到底有什么差别？R159 的 cross-arm cosine 只告诉我们最后一轮 β 与 Bounded 已经走向不同方向，并不能说明 β 组内部从上升 → 平台 → 掉分发生了什么变化。',
+      'This still does not answer a more important within-run question: how do LoRA / Task Vectors differ between periods when the β run is improving and periods when its score declines? The R159 cross-arm cosine only shows that β and Bounded end up moving in different directions; it does not explain the β run’s own transition from rise to plateau to late decline.',
+    )}</p>
+    <p class="paper__boundary">{t(
+      '要回答这个问题，下一轮只读分析应该按训练阶段切开，例如上升期、R120–139 高点、R140–159 回落期，联合比较 β 分布、gradient / Adam moment、update cosine / norm，以及 click/search 的具体参数与任务路径。这个分析目前还没有完成，因此网页不把 R159 的方向差当成“掉分机制”。',
+      'To answer it, a follow-up read-only analysis should segment the trajectory into phases—for example the rising phase, the R120–139 high window, and the R140–159 decline—and jointly compare β distributions, gradients / Adam moments, update cosine / norm, click/search arguments, and task paths. That analysis has not yet been completed, so this page does not treat the R159 direction gap as the mechanism of the score decline.',
+    )}</p>
     <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
     <p class="paper__boundary">{t(
       '这里比 norm 多了一层信息：两条线不是简单沿着同一个方向一条短一点、一条长一点，更新方向本身已经明显分开。不过锚点数量仍然有限，因此现在只能说“几何轨迹分开与掉分同时出现”，不能把方向分开写成掉分原因。',
