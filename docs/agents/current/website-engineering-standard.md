@@ -43,7 +43,7 @@ CircleCI and the Mac/OrbStack runner are manual recovery/fallback surfaces, not 
 
 Before claiming browser/review evidence belongs to a commit SHA, check the candidate worktree state. **A dirty working tree means the rendered artifact is `HEAD + local delta`**, not the named commit. Dirty-tree evidence is preflight only unless explicitly fingerprinted.
 
-For manual local browser acceptance, bind the browser to the **task-owned server's actual emitted URL**, not the requested port. Framework port fallback can otherwise attach the test to another worktree or stale server.
+For manual local browser acceptance, bind the browser to the task-owned server's **actual emitted URL**, not the requested port. Framework port fallback can otherwise attach the test to another worktree or stale server.
 
 Verify a task-specific route/sentinel before screenshots or DOM assertions.
 
