@@ -1,8 +1,8 @@
 # PR C Plan — 建立统一的 Research Result Contract，并迁移关键实验分析页
 
-日期：2026-09-22  
-状态：Draft plan only  
-依赖：PR B 应先完成并稳定 Study 研究演进。  
+日期：2026-09-22
+状态：Draft plan only
+依赖：PR B 应先完成并稳定 Study 研究演进。
 执行顺序：B → C → D。
 
 ## 1. 为什么要做
@@ -201,7 +201,7 @@ Frobenius / update magnitude
 - Reader Contract browser gate
 - public static/no-JS where relevant
 
-如果 #780 已合并，使用 central website-learning；不要恢复本地 HPL machinery。
+PR #780 已于 2026-09-22 合并。实施时使用 central `.codex/website-learning`，并继续由 BaseModel 本地 Wish、Reader Contracts、scientific authority 与 browser/source tests 承担项目侧约束；不要恢复本地 HPL machinery。
 
 ## 10. 验收标准
 
