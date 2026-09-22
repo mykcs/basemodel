@@ -284,7 +284,7 @@ const twentyRoundScoreWindows = finalResult
 
     <h3>2.3 {t('这里的“映射”是什么：把更新规则对应到 OpenEVO 参数 State', 'What does the mapping mean? Apply the update roles to OpenEVO parameter state')}</h3>
     <p>{t(
-      '这里的“映射”不是把 linear attention 的 k、v 张量直接复制成 LoRA 张量，而是把更新规则中的角色对应过去：长期 State 对应跨轮保留的参数状态，当前训练更新对应要写入的新变化，β 对应这次新变化实际写入多少。',
+      '这里的“映射”不是把 linear attention 的 k、v 张量直接复制成 LoRA 张量，而是把更新规则中的角色对应过去：长期 State 对应跨轮保留的参数状态，当前训练更新对应要写入的新变化，β 对应当前新变化实际写入多少。',
       'Here, “mapping” does not mean copying linear-attention k and v tensors into LoRA tensors. It means mapping the roles in the update rule: the persistent State becomes the parameter state kept across rounds, the current training update becomes the proposed new change, and beta controls how much of that new change is actually written.',
     )}</p>
     <div class="paper-table-wrap">
@@ -371,7 +371,7 @@ const twentyRoundScoreWindows = finalResult
         'A round can be read as: rollouts produce trajectories → verifiable evidence is extracted → each of the four state channels checks its own update gate → a new state is written when the condition is met, otherwise the previous state is retained. The raw repository receipts call these two outcomes UPDATE and NOOP.',
       )}</p>
       <p><strong>{t('参数什么时候变：', 'Parameter update:')}</strong>{t(
-        '本轮至少出现 1 条“干净的完整成功”轨迹：任务真正完成，而且没有 parser、fallback、repair、invalid 等工程异常。普通 OpenEVO 用这些成功轨迹产生新的 rank8 SD-LoRA 更新；后两组再把当前参数更新写进固定 rank128 State。',
+        '本轮至少出现 1 条“干净的完整成功”轨迹：任务真正完成，而且没有解析失败、回退路径、修复或无效记录等工程异常。普通 OpenEVO 用这些成功轨迹产生新的 rank8 SD-LoRA 更新；后两组再把当前参数更新写进固定 rank128 State。',
         'At least one clean exact-success trajectory must appear in the round: the task is truly completed without parser, fallback, repair, invalid, or other engineering failures. Ordinary OpenEVO uses these successes to produce a new rank-8 SD-LoRA update; the latter two runs then write the current parameter update into the fixed-rank128 State.',
       )}</p>
       <p><strong>{t('Text Memory 什么时候变：', 'Text Memory update:')}</strong>{t(
@@ -388,7 +388,7 @@ const twentyRoundScoreWindows = finalResult
       )}</p>
 
       <figure class="paper-table-figure">
-        <div class="paper-table-wrap" aria-label={t('三组 OpenEVO 160 轮四条状态通道的 UPDATE 和 NOOP 次数', 'UPDATE and NOOP counts for four state channels across 160 rounds in the three OpenEVO runs')}>
+        <div class="paper-table-wrap" aria-label={t('三组 OpenEVO 160 轮四条状态通道的更新和沿用次数', 'Update and retained-state counts for four state channels across 160 rounds in the three OpenEVO runs')}>
           <table class="paper-table paper-table--carrier-ledger" aria-describedby="carrier-ledger-caption">
             <thead>
               <tr>
@@ -401,27 +401,27 @@ const twentyRoundScoreWindows = finalResult
             <tbody>
               <tr>
                 <td><strong>{t('参数 State', 'Parameter state')}</strong></td>
-                <td><strong>{study.carrierAnalysis.ordinary.parameterState.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.parameterState.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.bounded.parameterState.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.parameterState.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.betaGating.parameterState.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.parameterState.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.ordinary.parameterState.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.parameterState.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.bounded.parameterState.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.parameterState.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.betaGating.parameterState.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.parameterState.noops} {t('次沿用', 'retained')}</span></td>
               </tr>
               <tr>
                 <td><strong>Text Memory</strong></td>
-                <td><strong>{study.carrierAnalysis.ordinary.textMemory.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.textMemory.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.bounded.textMemory.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.textMemory.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.betaGating.textMemory.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.textMemory.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.ordinary.textMemory.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.textMemory.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.bounded.textMemory.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.textMemory.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.betaGating.textMemory.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.textMemory.noops} {t('次沿用', 'retained')}</span></td>
               </tr>
               <tr>
                 <td><strong>Skill Bundle</strong></td>
-                <td><strong>{study.carrierAnalysis.ordinary.skillBundle.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.skillBundle.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.bounded.skillBundle.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.skillBundle.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.betaGating.skillBundle.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.skillBundle.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.ordinary.skillBundle.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.skillBundle.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.bounded.skillBundle.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.skillBundle.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.betaGating.skillBundle.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.skillBundle.noops} {t('次沿用', 'retained')}</span></td>
               </tr>
               <tr>
                 <td><strong>Agent System</strong></td>
-                <td><strong>{study.carrierAnalysis.ordinary.agentSystem.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.agentSystem.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.bounded.agentSystem.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.agentSystem.noops} NOOP</span></td>
-                <td><strong>{study.carrierAnalysis.betaGating.agentSystem.updates}</strong> UPDATE<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.agentSystem.noops} NOOP</span></td>
+                <td><strong>{study.carrierAnalysis.ordinary.agentSystem.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.ordinary.agentSystem.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.bounded.agentSystem.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.bounded.agentSystem.noops} {t('次沿用', 'retained')}</span></td>
+                <td><strong>{study.carrierAnalysis.betaGating.agentSystem.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.agentSystem.noops} {t('次沿用', 'retained')}</span></td>
               </tr>
             </tbody>
           </table>
@@ -429,8 +429,8 @@ const twentyRoundScoreWindows = finalResult
         <figcaption id="carrier-ledger-caption" class="paper-table__caption">
           <strong>{t('表 2.', 'Table 2.')}</strong>{' '}
           {t(
-            '160 轮终态更新账本。普通 OpenEVO 的参数行统计 Parametric SD-LoRA terminal receipt；后两组的参数行统计 Bounded parameter transition terminal receipt。普通 OpenEVO 的四条计数来自 160 份封存 ROUND_COMPLETE 收据的历史对账；后两组来自正式实验封存的 Stage 2 资源分析。',
-            'Terminal update ledger across 160 rounds. The parameter row for ordinary OpenEVO counts Parametric SD-LoRA terminal receipts; the latter two parameter rows count Bounded parameter-transition terminal receipts. The ordinary OpenEVO counts come from a historical reconciliation of all 160 sealed ROUND_COMPLETE receipts; the latter two come from the sealed Stage-2 resource analysis of the formal study.',
+            '160 轮最终状态账本。中文表格把原始收据里的 UPDATE 写成“更新”，把 NOOP 写成“沿用”。普通 OpenEVO 的参数行统计 Parametric SD-LoRA terminal receipt；后两组的参数行统计 Bounded parameter transition terminal receipt。普通 OpenEVO 的四条计数来自 160 份封存 ROUND_COMPLETE 收据的历史对账；后两组来自正式实验封存的 Stage 2 资源分析。',
+            'Final-state ledger across 160 rounds. The table renders raw receipt UPDATE as “update” and NOOP as “retained.” The parameter row for ordinary OpenEVO counts Parametric SD-LoRA terminal receipts; the latter two parameter rows count Bounded parameter-transition terminal receipts. The ordinary OpenEVO counts come from a historical reconciliation of all 160 sealed ROUND_COMPLETE receipts; the latter two come from the sealed Stage-2 resource analysis of the formal study.',
           )}
           {' '}<a href={study.evidence.q17CarrierAudit} target="_blank" rel="noreferrer"><ExternalBrandMark href={study.evidence.q17CarrierAudit} />{t('普通 OpenEVO 载体对账', 'OpenEVO carrier audit')}</a>
           {' · '}<a href={study.evidence.resourceAnalysis} target="_blank" rel="noreferrer"><ExternalBrandMark href={study.evidence.resourceAnalysis} />{t('Bounded / β-gating 封存收据', 'Bounded / β-gating sealed receipt')}</a>
@@ -625,7 +625,7 @@ const twentyRoundScoreWindows = finalResult
       'This loss is the mean training error computed by the trainer on rounds that actually update parameters. A lower loss means the model fits those training records better, but it measures fit to the training objective rather than directly measuring WebShop task performance.',
     )}</p>
     <MetricEvidenceFigure item={metricCharts.loss} />
-    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
       <table class="paper-table">
         <thead><tr><th>{t('实验', 'Experiment')}</th><th>R0 loss</th><th>R159 loss</th><th>{t('缺失更新轮', 'missing update rounds')}</th></tr></thead>
@@ -654,7 +654,7 @@ const twentyRoundScoreWindows = finalResult
       '这里的 State / Final Task Vector 几何表只来自后两组同设置正式对照；普通 OpenEVO 是更早的前序实验，不在这份成对参数 State 快照里。下一节会用它自己的逐轮 Task Vector 数据做趋势与相关性诊断。',
       'This State / Final Task Vector geometry table comes only from the latter two matched formal runs. Ordinary OpenEVO is an earlier predecessor run and is not part of this paired parameter-State snapshot; the next section uses its own per-round Task Vector history for trend and association diagnostics.',
     )}</p>
-    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
       <table class="paper-table">
         <thead><tr><th>{t('Frobenius 指标', 'Frobenius metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
@@ -684,7 +684,7 @@ const twentyRoundScoreWindows = finalResult
       '采样口径：三条曲线都使用 R0–R159 的逐轮 Task Vector Frobenius，每条 160 个点，横轴密度和 y 轴量程完全一致。网页发布图按封存逐轮数据统一采样；W&B 链接保留原始观测入口。下面的相关性统计只针对普通 OpenEVO 的 160 轮配对数据；另外两条曲线在这里用于比较逐轮更新幅度。',
       'Sampling: all three curves use per-round Task Vector Frobenius over R0–R159, with 160 points per curve and a shared x-density and y-scale. The publication figure normalizes sampling from sealed per-round evidence, while the W&B link preserves the original observability surface. The association statistics below use only the 160 paired rounds from ordinary OpenEVO; the other two curves are shown here for per-round update-magnitude comparison.',
     )}</p>
-    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
       <table class="paper-table">
         <thead><tr><th>{t('Task Vector 诊断', 'Task Vector diagnostic')}</th><th>{t('结果', 'Result')}</th></tr></thead>
@@ -709,7 +709,7 @@ const twentyRoundScoreWindows = finalResult
       '这一节不只看更新大小，还看更新的结构和方向。max spectral norm 表示矩阵最强变化方向的尺度；full/base spectral ratio 比较更新后权重与 base 权重的这个尺度，接近 1 表示最强尺度变化很小；rank95 表示需要多少个主要方向才能覆盖 95% 的变化能量；cosine 直接比较两种方法的参数更新方向是否相似。',
       'This section looks beyond update size to the structure and direction of parameter change. Max spectral norm measures the scale of the matrix’s strongest change direction; the full/base spectral ratio compares that scale after updating with the base weight, so values near 1 mean little change in the strongest scale. Rank95 counts how many dominant directions are needed to cover 95% of the change energy, while cosine directly compares whether two methods move parameters in similar directions.',
     )}</p>
-    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
       <table class="paper-table paper-table--dense-results">
         <thead><tr><th>{t('参数几何指标', 'Parameter-geometry metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
@@ -737,7 +737,7 @@ const twentyRoundScoreWindows = finalResult
       'We use three length measures for one WebShop task: tokens generated before each action, total generated tokens across the full episode, and the number of environment actions from start to finish. This separates longer individual outputs from a task simply requiring more steps.',
     )}</p>
     <MetricEvidenceFigure item={metricCharts.outputLength} />
-    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
       <table class="paper-table paper-table--dense-results">
         <thead><tr><th>{t('方法 / 窗口', 'Method / window')}</th><th>{t('每步输出', 'tokens / step')}</th><th>{t('Episode 总输出', 'episode tokens')}</th><th>{t('平均步骤', 'steps')}</th><th>Task Score / 100</th></tr></thead>
@@ -769,7 +769,7 @@ const twentyRoundScoreWindows = finalResult
       'Here entropy measures how spread out the model is across valid action families such as search and click. Higher Shannon entropy means the action distribution is more spread out; lower entropy means behavior is concentrated on fewer action types. This is action-family entropy, not language-model token entropy, because the formal rollouts did not persist per-token logits/logprobs.',
     )}</p>
     <MetricEvidenceFigure item={metricCharts.entropy} />
-    <p class="paper__metric-label">{t('② 这次实验的结果', '② Result in this experiment')}</p>
+    <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <p class="paper__chart-note">{t(
       'R159 的 search / click 用有效动作占比表示，而不是直接比较原始计数；三组这一轮的总动作数不同，原始计数不能横向当作策略偏好强弱。',
       'R159 search / click are shown as shares of valid actions rather than raw counts. The three methods have different total action counts in that round, so raw counts are not directly comparable as policy preference.',
@@ -813,7 +813,7 @@ const twentyRoundScoreWindows = finalResult
     <p class="paper__section-number">6</p>
     <h2 id="next-question-title">{t('下一步实验是什么：动态 α + 动态 β', 'What is the next experiment? Dynamic α + dynamic β')}</h2>
     <p>{t(
-      '在完整的 Gated Delta 里，α 控制旧参数 State 保留多少，β 控制当前新更新写入多少。这次正式实验只让 β 动态变化，并把 α 一直固定为 1；因此我们还没有测试“同时动态控制旧状态保留和新状态写入”会发生什么。动态 α + 动态 β 指的就是补上这个缺失的实验，目前尚未运行。',
+      '在完整的 Gated Delta 里，α 控制旧参数 State 保留多少，β 控制当前新更新写入多少。已完成的正式实验只让 β 动态变化，并把 α 一直固定为 1；因此我们还没有测试“同时动态控制旧状态保留和新状态写入”会发生什么。动态 α + 动态 β 指的就是补上这个缺失的实验，目前尚未运行。',
       'In full Gated Delta, alpha controls how much of the prior parameter State is retained, while beta controls how much of the current new update is written. This formal study varies beta dynamically but keeps alpha fixed at 1 throughout, so it has not tested what happens when both prior-state retention and new-update strength are controlled dynamically. Dynamic alpha + dynamic beta is that missing experiment, and it has not yet been run.',
     )}</p>
     <p>{t(
