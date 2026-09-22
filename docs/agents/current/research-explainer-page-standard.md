@@ -53,6 +53,32 @@ On a **results / decision page**, genuine reader questions are appropriate and o
 
 The distinction is simple: do not invent rhetorical questions for an operation diagram, but do use real scientific questions to organize results when the page exists to answer them.
 
+### 1.1 Introduce the operation before its rationale or implementation parameter
+
+For a mechanism/report page, do not make the reader answer an author-internal question before the page has introduced the underlying action.
+
+Bad for a first-time reader:
+
+> 为什么先研究 SD-LoRA 的增长问题？
+
+Preferred:
+
+> 我们先把不断增长的 SD-LoRA 历史压回固定容量，因为后期训练会越来越慢。
+
+The same rule applies to implementation numbers and dimensions. A heading such as `22 维输入来自……` is still missing its prerequisite if the reader has not yet been told **what controller is taking inputs and what decision those inputs support**. Introduce the semantic object first, then state that the chosen feature set happens to contain 22 values.
+
+Use this authoring order when teaching a mechanism:
+
+```text
+what we did / what object exists
+-> the minimum context needed to understand it
+-> why we did it or what question it answers
+-> parameter / number / acronym / exact implementation
+```
+
+A genuine scientific results question may still lead a section when a first-time reader would naturally ask it from the visible context.
+
+
 ---
 
 ## 2. Headings reveal the scientific story, not the website's filing system
@@ -137,6 +163,8 @@ boundary note:
 ```
 
 Do not create a separate full section titled “这些数字之间，不是同一种缩小关系” after the page has already taught the correct operations individually.
+
+The same locality rule applies to implementation corrections. If later code inspection reveals that a method was described incorrectly or too vaguely, repair the method **where it is first introduced**. Do not append a “会后技术答疑”, “补充说明”, or similar patch section that forces the reader to learn the wrong/simple story first and then unlearn it at the bottom. A separate Q&A is appropriate only when the page itself is a meeting record, FAQ, incident, or troubleshooting surface with an independent question-answer role.
 
 Use negative/corrective headings only when the page itself is a warning, incident, or troubleshooting surface.
 
@@ -264,6 +292,10 @@ Evidence status language should remain explicit where relevant:
 
 Unknown mappings must stay visually unknown. Do not draw a solid sampling arrow merely because the endpoints are known.
 
+For reader-facing reports and explainers, exact machine identifiers should normally live in the **link target or evidence depth**, not become a manual reading/copying task. If an exact commit is needed to pin source code, link directly to that revision without printing the full SHA in the narrative. Dedicated provenance/audit surfaces may display SHAs when the identifier itself is the object being verified.
+
+If an existing W&B/chart preview is central to understanding the claim, render a static preview beside the claim and link the full report/workspace for interaction. Do not make the reader leave the page merely to discover the curve that the paragraph is interpreting.
+
 ---
 
 ## 8. Scoring must be taught as input -> evaluator -> outputs
@@ -313,6 +345,8 @@ Then verify that each rendered major section owns exactly one arrow in that stor
 
 If a section cannot be assigned a unique arrow, it is probably a duplicate, appendix, or local callout rather than a major section.
 
+Background depth is also a page-sequence decision. Explain only enough prerequisite material for the reader to understand the **next** mechanism/result/question; do not turn a lab-facing report into a textbook chapter merely because the terms are technical. Necessary depth stays available locally through a short precise paragraph, code/evidence link, or progressive disclosure.
+
 ---
 
 ## 10. First-time-reader copy: talk about the research, not about page management
@@ -354,6 +388,8 @@ H1.42 发生在 H1.41 之后，因此不能改变 H1.41 时点的结论。
 
 Links to another route are fine, but their copy should answer **what the reader will learn there**, not explain why the author chose to place the content there.
 
+When a report exists partly to request a decision, review, advisor direction, or scheduling/assessment arrangement, the TL;DR should include that ask. A summary that only recaps results while hiding the actual requested decision until the last section does not represent the document's real purpose.
+
 ---
 
 ## 11. Acceptance checklist for a research explainer / results page
@@ -377,6 +413,12 @@ Before handing a Preview to the owner, verify:
 15. Public copy contains no editor-facing “this page omits/moves/organizes content” narration.
 16. The route still works as static HTML and remains legible in light/dark and narrow/wide layouts.
 17. The exact-head Vercel Preview is inspected after repository validation.
+18. Does every mechanism heading introduce an operation/object the reader already has enough context to understand, rather than asking “why X” before X exists in the reader's model?
+19. Does every prominent number/dimension/acronym name its semantic object before the reader is asked to interpret the number?
+20. If implementation understanding changed during review, was the correction integrated at first use instead of appended as a repair FAQ?
+21. If the document requests an advisor/reviewer decision or arrangement, does the TL;DR state that ask?
+22. Are source-code links clearly labelled as source code, with raw commit hashes kept out of the main reading path unless provenance verification itself is the task?
+23. If an existing W&B/chart is central evidence for a claim, is a useful preview visible locally rather than hidden behind a link?
 
 ---
 
