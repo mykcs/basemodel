@@ -181,6 +181,10 @@ describe('Effective-State GDR publication snapshot', () => {
 
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
     expect(component).toContain('随着 rollout 积累，参数和非参数状态都会在满足条件时更新');
+    expect(component).toContain('参数 State 是真正写进模型权重、跨轮保留的参数变化');
+    expect(component).toContain('Text Memory 是从 rollout 轨迹中总结出的文字经验');
+    expect(component).toContain('Skill Bundle 是被多个任务支持、可以重复使用的做法');
+    expect(component).toContain('Agent System 是适用范围更广的行为规则');
     expect(component).toContain('参数什么时候变：');
     expect(component).toContain('Text Memory 什么时候变：');
     expect(component).toContain('Skill Bundle 什么时候变：');
