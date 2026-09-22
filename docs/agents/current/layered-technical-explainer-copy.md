@@ -142,6 +142,10 @@ claim
 
 Evidence link types on Chinese routes should be Chinese-first, such as `机器结果（Machine result）`, `任务清单（Manifest）`, `源代码（Code）`, and `实验配置（Config）`.
 
+When source code is linked inline from explanatory prose, prefer explicit wording such as **`源代码请参考：<link>`** so the reader knows what kind of evidence they are opening. Do not apply that label to configs, machine results, reports, or provenance records; label each link by its real evidence role.
+
+In the reader-facing mainline, do not print a full commit SHA merely to prove the link is pinned. Put the exact revision in the URL/evidence metadata. Showing the SHA itself is appropriate on a provenance/audit surface where verifying that identifier is the reader's task.
+
 ## 8. Density budget
 
 Use these defaults:
@@ -151,7 +155,9 @@ Use these defaults:
 - experiment IDs are supporting identity, not the subject of first-screen prose;
 - exact attempt counts and confidence intervals stay out of L1 unless the number itself is the conclusion;
 - do not stack several untranslated English phrases before the Chinese verb;
-- prefer one accurate technical term after a Chinese explanation over several near-synonyms.
+- prefer one accurate technical term after a Chinese explanation over several near-synonyms;
+- calibrate background to the next reader question: explain enough to make the next sentence meaningful, but do not re-teach the whole field when a lab reader only needs the local prerequisite;
+- when one correction exposes a missing-prerequisite pattern (for example an unexplained number or “why X” before X is introduced), audit nearby headings and first-use sentences for the same mechanism instead of patching only the literal phrase.
 
 ## 9. Analogies
 
@@ -182,3 +188,6 @@ Before publishing a Chinese technical research page, verify:
 9. Is the page explaining the research rather than the website’s content-management decisions?
 10. Are old scientific boundaries and provenance constraints still preserved?
 11. If the working conversation established a useful ELI5 / plain-language explanation for a major technical section, does an equivalent Depth-1 meaning survive on the canonical page rather than only the professional metric/table?
+12. Does the section introduce the object/action before its rationale, dimension count, acronym, or implementation parameter?
+13. Are implementation corrections placed where the method is first explained rather than deferred to a repair appendix?
+14. When actual source code is linked inline on a Chinese research page, is the link explicitly identified as source code (for example `源代码请参考：`) without mislabelling configs/results as code?
