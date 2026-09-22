@@ -1,8 +1,8 @@
 # PR D Plan — 把 Models / Papers / Compare / Workspace 接回当前研究主线
 
-日期：2026-09-22  
-状态：Draft plan only  
-依赖：PR B + PR C 完成后执行。  
+日期：2026-09-22
+状态：Draft plan only
+依赖：PR B + PR C 完成后执行。
 执行顺序：B → C → D。
 
 ## 1. 为什么要做
@@ -211,10 +211,7 @@ OpenEVO 是现在的主要研究任务，不应成为 Models/Papers 的数据结
 - scientific/evidence audit
 - no invented relations
 
-如果 #780 合并：
-- 使用 central `.codex/website-learning`；
-- 适配新的 human-expression audit 命名；
-- 不恢复已退休 HPL control plane。
+PR #780 已于 2026-09-22 合并。实施时直接使用 central `.codex/website-learning` 与新的 human-expression audit 命名；BaseModel 本地继续负责 Wish、Reader Contracts、scientific/data authority 与 route regressions；不恢复已退休 HPL control plane。
 
 ## 12. 验收标准
 
