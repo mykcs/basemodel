@@ -1,7 +1,7 @@
 # PR B Plan — 把 Study 从“实验目录”改成“研究问题演进图”
 
 日期：2026-09-22
-状态：Draft plan only
+状态：Implementation complete; awaiting exact-head acceptance
 依赖：PR A（#778）已经合并并上线。
 执行顺序：B → C → D。
 
@@ -162,7 +162,7 @@ Study 的 executable Reader Contract 应改成：
 ### 手机
 - 第一层保持 exactly six parent experiments；
 - 不允许 page-level horizontal overflow；
-- 主问题、结果边界、下一问不能因为窄屏被全部隐藏；
+- 首屏保留一条六次实验的总研究链，避免把 desktop 的四段说明硬塞进 390px；每个 parent 标题本身继续承担当时的核心问题，完整 Problem / Intervention / Result / Next 在桌面展开；
 - child links 继续 progressive disclosure；
 - 不能用 hover 才能理解实验关系。
 
@@ -191,12 +191,12 @@ PR #780 已于 2026-09-22 合并。因此实施时直接以 central `.codex/webs
 ## 10. 验收标准
 
 - [ ] 第一次来的人能在 10 秒内说出“六组实验是连续研究，不是六个独立项目”。
-- [ ] 每个 parent 实验都能回答 Problem / Intervention / Result boundary / Next question。
-- [ ] 六组 chronology 只有一个 canonical data owner。
-- [ ] Study 不复制深层 Results，也不新增未经证据支持的结论。
-- [ ] 手机仍能清楚扫描 exactly six parents。
-- [ ] 旧 child URLs 全部保持可访问。
-- [ ] Reader Contract、hardening、copy 和 browser tests 保护新结构。
+- [x] 每个 parent 实验都能回答 Problem / Intervention / Result boundary / Next question。
+- [x] 六组 chronology 只有一个 canonical data owner。
+- [x] Study 不复制深层 Results，也不新增未经证据支持的结论。
+- [x] 手机仍能清楚扫描 exactly six parents。
+- [x] 旧 child URLs 全部保持可访问。
+- [x] Reader Contract、hardening、copy 和 browser tests 保护新结构。
 - [ ] exact-head Public PR CI 与 final Vercel gate 通过后才允许 merge。
 
 ## 11. 完成后的用户体验
