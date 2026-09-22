@@ -7,8 +7,13 @@ test('Study keeps the six real experiments as the primary directory', async ({ p
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto(study, { waitUntil: 'domcontentloaded' });
 
-  await expect(page.locator('h1')).toHaveText('OpenEVO × WebShop 实验');
+  await expect(page.locator('h1')).toContainText('六次实验的研究演进');
   await expect(page.locator('[data-experiment-primary]')).toHaveCount(6);
+  await expect(page.locator('[data-research-progression]')).toHaveCount(6);
+  const firstProgression = page.locator('[data-research-progression]').first();
+  await expect(firstProgression).toContainText('当时的问题');
+  await expect(firstProgression).toContainText('结果边界');
+  await expect(firstProgression).toContainText('留下的下一问');
   await expect(page.locator('.experiment-node')).toHaveCount(6);
   await expect(page.locator('.experiment-node').first()).toHaveCSS('border-radius', '0px');
   await expect(page.locator('.secondary-routes')).toContainText('跨实验入口');

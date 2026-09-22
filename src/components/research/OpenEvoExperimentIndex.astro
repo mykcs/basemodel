@@ -38,10 +38,13 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
 
 <main class="experiment-index" data-ui-audit="layout" data-testid="experiment-first-study-index">
   <header class="study-hero">
-    <h1>{zh ? 'OpenEVO × WebShop 实验' : 'OpenEVO × WebShop experiments'}</h1>
+    <h1>{zh ? 'OpenEVO × WebShop：六次实验的研究演进' : 'OpenEVO × WebShop: six experiments in one research progression'}</h1>
     <p class="study-hero__lede">{zh
-      ? '六次主要实验按研究过程排列；每次实验都连到自己的结果、分析和历史证据。'
-      : 'Six major experiments are organized by the research sequence, each linked to its own results, analyses, and historical evidence.'}</p>
+      ? '六次实验不是六个平行项目。上一轮留下的问题，决定下一轮为什么发生。'
+      : 'These are not six parallel projects. The question left by one experiment determines why the next one happens.'}</p>
+    <p class="study-hero__mobile-thread" aria-label={zh ? '六次实验的研究演进' : 'Research progression across six experiments'}>{zh
+      ? '参数没更新 → 长周期更新 → 小模型接口 → 候选准入 → 参数历史 → 固定 State / β'
+      : 'blocked updates → long run → smaller-model interface → candidate admission → parameter history → fixed State / β'}</p>
   </header>
   <ol class="experiment-tree" aria-label={zh ? '主要实验目录' : 'Major experiment index'}>
     {OPEN_EVO_EXPERIMENTS.map((experiment) => (
@@ -52,7 +55,12 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
             <strong>{t(experiment.title)}</strong>
             <span aria-hidden="true">→</span>
           </a>
-          <p>{t(experiment.summary)}</p>
+          <div class="experiment-node__progression" data-research-progression={experiment.id}>
+            <p data-progression-step="question"><strong>{zh ? '当时的问题' : 'Question'}</strong><span>{t(experiment.researchQuestion)}</span></p>
+            <p data-progression-step="intervention"><strong>{zh ? '这次改了什么' : 'Intervention'}</strong><span>{t(experiment.intervention)}</span></p>
+            <p data-progression-step="result"><strong>{zh ? '结果边界' : 'Result boundary'}</strong><span>{t(experiment.resultBoundary)}</span></p>
+            <p data-progression-step="next"><strong>{zh ? '留下的下一问' : 'Next question'}</strong><span>{t(experiment.nextQuestion)}</span></p>
+          </div>
           {experiment.lineageNote && <p class="experiment-node__relation">{t(experiment.lineageNote)}</p>}
           <ul class="experiment-children">
             {directoryRowsFor(experiment.childLinks).map((row) => row.kind === 'link' ? (
@@ -94,8 +102,9 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
 <style>
   .experiment-index{width:min(960px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--color-text)}
   .study-hero{padding:2.7rem 0 1.8rem;border-bottom:1px solid var(--color-border)}
-  .study-hero h1{max-width:18ch;margin:0;font-size:clamp(2.5rem,6vw,4.7rem);line-height:1;letter-spacing:-.055em}
+  .study-hero h1{max-width:20ch;margin:0;font-size:clamp(2.35rem,5.4vw,4.25rem);line-height:1.02;letter-spacing:-.05em}
   .study-hero__lede{max-width:44rem;margin:1.2rem 0 0;font-size:clamp(1.05rem,2vw,1.3rem);line-height:1.7;color:var(--color-text-muted)}
+  .study-hero__mobile-thread{display:none}
   .experiment-tree{list-style:none;margin:0;padding:0;counter-reset:none}
   .experiment-node{display:grid;grid-template-columns:4.25rem minmax(0,1fr);gap:1.1rem;padding:2rem 0;border-bottom:1px solid var(--color-border)}
   .experiment-node__rail{position:relative;display:flex;justify-content:center}
@@ -107,6 +116,11 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
   .experiment-node__main strong{font-size:clamp(1.35rem,2.6vw,2rem);line-height:1.2;letter-spacing:-.025em}
   .experiment-node__main>span{font-size:1.35rem;color:var(--color-text-muted)}
   .experiment-node p{max-width:48rem;margin:.65rem 0 0;line-height:1.7;color:var(--color-text-muted)}
+  .experiment-node__progression{max-width:50rem;margin:.9rem 0 0;border-top:1px solid var(--color-border)}
+  .experiment-node__progression p{display:grid;grid-template-columns:7.2rem minmax(0,1fr);gap:.85rem;margin:0;padding:.58rem 0;border-bottom:1px solid var(--color-border);line-height:1.6}
+  .experiment-node__progression strong{font-size:.84rem;line-height:1.45;color:var(--color-text);letter-spacing:.01em}
+  .experiment-node__progression span{color:var(--color-text-muted)}
+  .experiment-node__progression [data-progression-step="next"] span{color:var(--color-text);font-weight:650}
   .experiment-node__relation{padding-left:.75rem;border-left:2px solid var(--color-warning);color:var(--color-text)}
   .experiment-children{list-style:none;margin:1rem 0 0;padding:0 0 0 1.15rem;border-left:1px solid var(--color-border)}
   .experiment-children li+li{margin-top:.38rem}
@@ -123,14 +137,16 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
   a:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px}
   @media(max-width:640px){
     .experiment-index{width:calc(100% - 1.25rem)}
-    .study-hero{padding:1.7rem 0 1.3rem}
-    .study-hero h1{font-size:2.55rem}
-    .experiment-node{grid-template-columns:2.5rem minmax(0,1fr);gap:.7rem;padding:.85rem 0}
+    .study-hero{padding:1.25rem 0 .85rem}
+    .study-hero h1{font-size:2.15rem;line-height:1.02}
+    .study-hero__lede{margin-top:.7rem;font-size:.96rem;line-height:1.45}
+    .study-hero__mobile-thread{display:block;margin:.5rem 0 0;font-size:.72rem;line-height:1.35;color:var(--color-text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .experiment-node{grid-template-columns:2.35rem minmax(0,1fr);gap:.6rem;padding:.62rem 0}
     .experiment-node__rail{justify-content:flex-start}
-    .experiment-node__rail span{width:2.3rem;height:2.3rem}
-    .experiment-node__rail::after{left:1.12rem;top:2.2rem;bottom:-.85rem}
-    .experiment-node__main strong{font-size:1.28rem}
-    .experiment-node p,.experiment-children{display:none}
+    .experiment-node__rail span{width:2.15rem;height:2.15rem}
+    .experiment-node__rail::after{left:1.05rem;top:2.05rem;bottom:-.62rem}
+    .experiment-node__main strong{font-size:1.12rem;line-height:1.15}
+    .experiment-node__progression,.experiment-node__relation,.experiment-children{display:none}
     .experiment-node .experiment-mobile-featured{display:block;margin:.55rem 0 0;font-size:1rem;line-height:1.45;color:var(--color-text)}
     .experiment-mobile-featured a{color:var(--color-text);text-underline-offset:.2em}
     .experiment-mobile-featured--group{padding-left:.65rem;border-left:1px solid var(--color-border)}

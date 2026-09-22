@@ -98,6 +98,10 @@ describe('experiment context hierarchy', () => {
     for (const experiment of OPEN_EVO_EXPERIMENTS) {
       expect(experiment.motivation.zh.length).toBeGreaterThan(10);
       expect(experiment.motivation.en.length).toBeGreaterThan(10);
+      expect(experiment.researchQuestion.zh.length).toBeGreaterThan(10);
+      expect(experiment.intervention.zh.length).toBeGreaterThan(10);
+      expect(experiment.resultBoundary.zh.length).toBeGreaterThan(10);
+      expect(experiment.nextQuestion.zh.length).toBeGreaterThan(10);
       expect(experiment.childLinks.some((link) => ['analysis', 'mechanism', 'diagnostic'].includes(link.role))).toBe(true);
       expect(['evidence', 'history']).toContain(experiment.evidenceLink.role);
       expect(experiment.evidenceLink.href.startsWith('/research/seed-openevo/study/')).toBe(true);

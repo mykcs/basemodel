@@ -18,7 +18,13 @@ describe('experiment-first Study index', () => {
     expect(source).toContain('OPEN_EVO_EXPERIMENTS.map');
     expect(source).toContain('directoryRowsFor(experiment.childLinks)');
     expect(source).toContain('data-experiment-primary={experiment.id}');
-    expect(source).toContain('.experiment-node p,.experiment-children{display:none}');
+    expect(source).toContain('data-research-progression={experiment.id}');
+    expect(source).toContain('data-progression-step="question"');
+    expect(source).toContain('data-progression-step="result"');
+    expect(source).toContain('data-progression-step="next"');
+    expect(source).toContain('.experiment-node__progression,.experiment-node__relation,.experiment-children{display:none}');
+    expect(source).toContain('study-hero__mobile-thread');
+    expect(source).toContain('参数没更新 → 长周期更新 → 小模型接口 → 候选准入 → 参数历史 → 固定 State / β');
     expect(source).toContain('directoryRowsFor(experiment.childLinks.filter((child) => child.mobileFeatured))');
   });
 
@@ -172,5 +178,17 @@ describe('experiment-first Study index', () => {
     expect(OPEN_EVO_EXPERIMENTS.find((item) => item.id === 'gdr-v1-1p7b')?.lineageNote?.zh)
       .toContain('同时属于上一项 3B + 1.7B 后继实验');
     expect(OPEN_EVO_SECONDARY_ROUTES).toHaveLength(3);
+  });
+
+  it('makes the research progression explicit in the canonical experiment owner', () => {
+    for (const experiment of OPEN_EVO_EXPERIMENTS) {
+      for (const field of ['researchQuestion', 'intervention', 'resultBoundary', 'nextQuestion'] as const) {
+        expect(experiment[field].zh.length, `${experiment.id}.${field}.zh`).toBeGreaterThan(12);
+        expect(experiment[field].en.length, `${experiment.id}.${field}.en`).toBeGreaterThan(20);
+      }
+    }
+    expect(OPEN_EVO_EXPERIMENTS[0]?.nextQuestion.zh).toContain('长周期');
+    expect(OPEN_EVO_EXPERIMENTS[3]?.nextQuestion.zh).toContain('取消短期否决');
+    expect(OPEN_EVO_EXPERIMENTS[5]?.resultBoundary.zh).toContain('动态 α + 动态 β 仍未运行');
   });
 });
