@@ -120,6 +120,19 @@ export const CAPABILITY_READER_ROUTES = [
     }
   },
   {
+    "route": "stage1-learning-objectives",
+    "coverage": "self-contained",
+    "owner": "OpenEvoStage1LearningObjectives",
+    "label": {
+      "zh": "Stage1 学习方式消融",
+      "en": "Stage-1 learning-objective ablation"
+    },
+    "purpose": {
+      "zh": "把 Stage1 一次性 bootstrap 与 Stage2 SD-LoRA 持续参数演变拆开，在同一 1.7B 与固定经验下比较 SFT、OPSD 与 hindsight-skill SFT 应该怎样产生 Stage2 起始参数。",
+      "en": "Separate the one-shot Stage-1 bootstrap from Stage-2 SD-LoRA continual evolution, comparing SFT, OPSD, and hindsight-skill SFT as ways to produce Stage-2 starting parameters from the same 1.7B model and fixed experience."
+    }
+  },
+  {
     "route": "mechanism-1-0",
     "coverage": "rebuilt",
     "owner": "OpenEvoMechanismMap",

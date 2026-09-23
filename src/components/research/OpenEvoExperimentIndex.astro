@@ -38,13 +38,13 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
 
 <main class="experiment-index" data-ui-audit="layout" data-testid="experiment-first-study-index">
   <header class="study-hero">
-    <h1>{zh ? 'OpenEVO × WebShop：六次实验的研究演进' : 'OpenEVO × WebShop: six experiments in one research progression'}</h1>
+    <h1>{zh ? 'OpenEVO × WebShop：七次实验的研究演进' : 'OpenEVO × WebShop: seven experiments in one research progression'}</h1>
     <p class="study-hero__lede">{zh
-      ? '六次实验不是六个平行项目。上一轮留下的问题，决定下一轮为什么发生。'
-      : 'These are not six parallel projects. The question left by one experiment determines why the next one happens.'}</p>
-    <p class="study-hero__mobile-thread" aria-label={zh ? '六次实验的研究演进' : 'Research progression across six experiments'}>{zh
-      ? '参数没更新 → 长周期更新 → 小模型接口 → 候选准入 → 参数历史 → 固定 State / β'
-      : 'blocked updates → long run → smaller-model interface → candidate admission → parameter history → fixed State / β'}</p>
+      ? '七次实验不是七个平行项目。上一轮留下的问题，决定下一轮为什么发生；第 07 项回到上游，重新检查 Stage1 到底该怎么学。'
+      : 'These are not seven parallel projects. One experiment leaves the question for the next; Experiment 07 moves upstream to re-check how Stage 1 should learn.'}</p>
+    <p class="study-hero__mobile-thread" aria-label={zh ? '七次实验的研究演进' : 'Research progression across seven experiments'}>{zh
+      ? '参数没更新 → 长周期更新 → 小模型接口 → 候选准入 → 参数历史 → 固定 State / β → Stage1 学习方式'
+      : 'blocked updates → long run → smaller-model interface → candidate admission → parameter history → fixed State / β → Stage-1 learning'}</p>
   </header>
   <ol class="experiment-tree" aria-label={zh ? '主要实验目录' : 'Major experiment index'}>
     {OPEN_EVO_EXPERIMENTS.map((experiment) => (

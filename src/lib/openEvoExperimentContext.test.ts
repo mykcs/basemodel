@@ -37,7 +37,7 @@ describe('experiment context hierarchy', () => {
       expect(experiment.title.zh && experiment.title.en).toBeTruthy();
       expect(experiment.summary.zh && experiment.summary.en).toBeTruthy();
       expect(experiment.primaryHref).toMatch(/^\/research\/seed-openevo\/study\//);
-      expect(['historical', 'completed']).toContain(experiment.status);
+      expect(['historical', 'completed', 'in-progress']).toContain(experiment.status);
       expect(experiment.childLinks.length).toBeGreaterThan(0);
       for (const child of experiment.childLinks) {
         expect(child.role).toBeTruthy();

@@ -1,0 +1,12 @@
+---
+import AppLayout from '../../../../../../layouts/AppLayout.astro';
+import OpenEvoStage1LearningObjectives from '../../../../../../components/research/OpenEvoStage1LearningObjectives.astro';
+const locale = 'zh' as const;
+---
+<AppLayout
+  title="实验 07 · Stage1 学习方式消融：SFT、OPSD 与 hindsight-skill"
+  description="把 Stage1 bootstrap 与 Stage2 SD-LoRA 持续参数演变拆开：同一 Qwen3-1.7B、同一批 WebShop 经验下比较 SFT、OPSD 与 SEED-style hindsight-skill SFT，并用固定 development panel 判断 Stage2 起点。"
+  locale={locale}
+>
+  <OpenEvoStage1LearningObjectives locale={locale} />
+</AppLayout>

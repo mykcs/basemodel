@@ -1,0 +1,221 @@
+---
+import type { Locale } from '../../i18n';
+import ResearchRouteContext from './ResearchRouteContext.astro';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+
+const objectiveRows = [
+  {
+    method: 'OPSD',
+    learning: t('privileged episode_skill + generalized JSD', 'privileged episode_skill + generalized JSD'),
+    budget: '11,198',
+    score: '36.01',
+    exact: '0 / 32',
+    note: t('当前 Stage1 正式 bootstrap；训练后 LoRA 被 merge 进 Stage2 base。', 'Current formal Stage-1 bootstrap; its LoRA is merged into the Stage-2 base.'),
+  },
+  {
+    method: 'SFT · 1 pass',
+    learning: t('原始 assistant completion 的交叉熵', 'cross-entropy on the original assistant completion'),
+    budget: '11,198',
+    score: '34.96',
+    exact: '3 / 32',
+    note: t('同数据、同 rank8、同 optimizer-step 预算的第一组 objective ablation。', 'The first objective ablation with the same data, rank-8 LoRA, and optimizer-step budget.'),
+  },
+];
+
+const sftCurve = [
+  { step: '4,096', score: '44.72', exact: '1 / 32' },
+  { step: '8,192', score: '42.74', exact: '1 / 32' },
+  { step: '10,240', score: '32.01', exact: '1 / 32' },
+  { step: '11,198 · final', score: '34.96', exact: '3 / 32' },
+];
+
+const nextArms = [
+  {
+    name: 'SFT · 3 epochs',
+    state: t('运行中 / 未封存', 'Running / not sealed'),
+    purpose: t('区分“一轮 SFT 不够”与“SFT objective 本身不合适”。', 'Separate “one SFT pass is not enough” from “the SFT objective itself is unsuitable”.'),
+  },
+  {
+    name: 'SEED-style hindsight-skill SFT',
+    state: t('数据已准备 / 未训练', 'Data prepared / not trained'),
+    purpose: t('把完整 trajectory 分析成 episode_summary + episode_skill，再训练一套 Stage1 参数；MiniMax 标签，不冒充 SEED 论文 exact reproduction。', 'Train one Stage-1 parameter set from trajectory analysis targets episode_summary + episode_skill; uses MiniMax labels and is not claimed as an exact SEED-paper reproduction.'),
+  },
+];
+---
+
+<ResearchRouteContext locale={locale} route="stage1-learning-objectives" experimentId="stage1-learning-objectives" />
+
+<main
+  class="stage1-study"
+  data-copy-review
+  data-reader-page="stage1-learning-objectives"
+  data-ui-audit="contrast layout"
+  data-testid="stage1-learning-objectives"
+>
+  <header class="hero" data-reader-context>
+    <p class="eyebrow">{t('实验 07 · Stage1 参数学习', 'Experiment 07 · Stage-1 parameter learning')}</p>
+    <p class="reader-task" data-reader-task>{t('任务：用固定的 WebShop Stage1 经验，训练出进入 Stage2 前的一套起始参数。', 'Task: use fixed WebShop Stage-1 experience to learn one parameter set before Stage 2 begins.')}</p>
+    <p class="reader-purpose" data-reader-purpose>{t('目的：只比较 Stage1 的学习方式，不把 Stage2 的 SD-LoRA 持续参数演变混进来。', 'Purpose: compare Stage-1 learning rules without mixing in Stage-2 SD-LoRA continual parameter evolution.')}</p>
+    <h1>{t('Stage1 到底该怎么学？', 'How should Stage 1 learn?')}</h1>
+    <p class="lede">{t(
+      '这组实验不研究 SD-LoRA 怎么持续累积。它先把问题变简单：给同一个 Qwen3-1.7B、同一批 1,440 条 WebShop 经验，SFT、OPSD，或 hindsight-skill SFT，哪一种更适合先训练出“一套起始参数”？',
+      'This experiment does not study how SD-LoRA accumulates over time. It first makes the problem simpler: given the same Qwen3-1.7B and the same 1,440 WebShop trajectories, should one Stage-1 parameter set be learned with SFT, OPSD, or hindsight-skill SFT?'
+    )}</p>
+    <p class="boundary">{t(
+      '先把 Stage1 的学习方式选清楚，再进入 Stage2 的 SD-LoRA / DirectApply / Bounded / GDR。两层不能混在一起比较。',
+      'Choose the Stage-1 learning rule first; only then move into Stage-2 SD-LoRA / DirectApply / Bounded / GDR. These two layers must not be conflated.'
+    )}</p>
+  </header>
+
+  <section class="section" id="stage1-stage2">
+    <div class="section-heading">
+      <span>01</span>
+      <div>
+        <h2>{t('先把 Stage1 和 Stage2 拆开', 'Separate Stage 1 from Stage 2 first')}</h2>
+        <p>{t('我们之前最容易混淆的地方，是把“怎么先学出一套参数”和“之后怎么持续演变参数”说成同一件事。代码里它们其实完全分开。', 'The main confusion was treating “how to learn one initial parameter set” and “how parameters keep evolving later” as the same problem. The code keeps them separate.')}</p>
+      </div>
+    </div>
+
+    <div class="stage-grid">
+      <article>
+        <small>Stage 1 · bootstrap</small>
+        <strong>{t('固定经验 → 一套起始参数', 'Fixed experience → one initial parameter set')}</strong>
+        <p>{t('当前正式实现用 OPSD：MiniMax 的 episode_skill 只进入 teacher view，student 用 rank8 LoRA；训练结束后把这一个 LoRA merge 进 base，得到 Stage2 的起点。', 'The current formal implementation uses OPSD: MiniMax episode_skill enters only the teacher view, the student uses one rank-8 LoRA, and that LoRA is merged into the base to create the Stage-2 starting point.')}</p>
+        <code>base + Stage1 adapter → Stage2 base</code>
+      </article>
+      <article>
+        <small>Stage 2 · continual evolution</small>
+        <strong>{t('持续 rollout → SD-LoRA 参数记忆', 'Repeated rollout → SD-LoRA parametric memory')}</strong>
+        <p>{t('Stage2 不再跑 OPSD teacher/student JSD。它把当前轨迹与 replay 转成 assistant-token loss，每轮训练新的 rank8 component，再由 DirectApply / Bounded / GDR 决定长期参数状态怎么继续。', 'Stage 2 no longer runs an OPSD teacher/student JSD objective. Current trajectories plus replay are trained with assistant-token loss into a new rank-8 component each round, while DirectApply / Bounded / GDR determine how the long-run parameter state continues.')}</p>
+        <code>Stage2 base → 第 0 轮参数更新 → 第 1 轮参数更新 → …</code>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="result">
+    <div class="section-heading">
+      <span>02</span>
+      <div>
+        <h2>{t('第一组问题：SFT 还是 OPSD？', 'First question: SFT or OPSD?')}</h2>
+        <p>{t('先做最干净的一次对照：同一个原始 1.7B、同一个 11,198 action-step 数据集、同样 rank8 LoRA 和 optimizer-step 预算，只换 learning objective。', 'Start with the cleanest contrast: same original 1.7B model, same 11,198 action-step dataset, same rank-8 LoRA and optimizer-step budget; change only the learning objective.')}</p>
+      </div>
+    </div>
+
+    <div class="result-callout" data-result-status>
+      <strong>{t('当前答案：还没有赢家。', 'Current answer: there is no winner yet.')}</strong>
+      <p>{t(
+        'OPSD 的平均 Task Score 略高；SFT 1-pass 的平均分略低，但出现了 3 / 32 个完整成功，而 OPSD 是 0 / 32。32 题上的平均分差很小，bootstrap 95% 区间跨过 0，因此现在不能宣布 SFT 或 OPSD 整体更好。',
+        'OPSD has a slightly higher mean Task Score; SFT 1-pass is slightly lower on mean score but produces 3 / 32 exact successes versus 0 / 32 for OPSD. The mean-score difference on 32 tasks is small and the bootstrap 95% interval crosses zero, so neither objective can yet be declared better overall.'
+      )}</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{t('Stage1 方法', 'Stage-1 method')}</th>
+            <th>{t('学习信号', 'Learning signal')}</th>
+            <th>{t('训练步数', 'Optimizer steps')}</th>
+            <th>{t('Dev Task Score', 'Dev Task Score')}</th>
+            <th>{t('Exact Success', 'Exact Success')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {objectiveRows.map((row) => (
+            <tr>
+              <th scope="row"><strong>{row.method}</strong><small>{row.note}</small></th>
+              <td>{row.learning}</td>
+              <td>{row.budget}</td>
+              <td>{row.score} / 100</td>
+              <td>{row.exact}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">{t('同一固定 32 题 development panel；final panel 未访问。SFT − OPSD 的平均分差为 −1.05 / 100，bootstrap 95% CI 为 [−16.64, +14.57] / 100。', 'Same fixed 32-task development panel; the final panel is untouched. Mean score difference SFT − OPSD is −1.05 / 100 with bootstrap 95% CI [−16.64, +14.57] / 100.')}</p>
+  </section>
+
+  <section class="section" id="validation">
+    <div class="section-heading">
+      <span>03</span>
+      <div>
+        <h2>{t('第二个发现：SFT 不是训到最后就最好', 'Second finding: the final SFT checkpoint is not automatically the best')}</h2>
+        <p>{t('这也是为什么现在必须把 validation 放进训练过程。只看 train loss，会错过中间 checkpoint 在 development panel 上更高的事实。', 'This is why validation has to be part of training. Training loss alone misses that an intermediate checkpoint can score higher on the development panel.')}</p>
+      </div>
+    </div>
+
+    <div class="curve-list">
+      {sftCurve.map((row) => (
+        <div>
+          <span>{row.step}</span>
+          <strong>{row.score} / 100</strong>
+          <em>{row.exact} exact</em>
+        </div>
+      ))}
+    </div>
+    <p class="interpretation">{t(
+      '4096 step 的平均 Task Score 目前最高，但 final 的 exact success 更多。因此“什么时候收敛”不能只由一个指标决定：如果我们优化平均完成度和完整成功率，停止规则要提前预注册。',
+      'The 4,096-step checkpoint currently has the highest mean Task Score, while the final checkpoint has more exact successes. “When has training converged?” therefore cannot be answered by one metric alone; stopping rules must be preregistered when both mean completion and exact success matter.'
+    )}</p>
+  </section>
+
+  <section class="section" id="next">
+    <div class="section-heading">
+      <span>04</span>
+      <div>
+        <h2>{t('接下来仍属于实验 07 的两条臂', 'Two remaining arms still belong to Experiment 07')}</h2>
+        <p>{t('它们回答两个不同问题：SFT 是不是只是没训够，以及真正的 hindsight-skill 学习信号是不是比 action imitation 更合适。', 'They answer two different questions: whether SFT was simply under-trained, and whether hindsight-skill supervision is better suited than action imitation.')}</p>
+      </div>
+    </div>
+    <div class="next-grid">
+      {nextArms.map((arm) => (
+        <article>
+          <small>{arm.state}</small>
+          <strong>{arm.name}</strong>
+          <p>{arm.purpose}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section" id="decision">
+    <div class="section-heading">
+      <span>05</span>
+      <div>
+        <h2>{t('这组实验最后要决定什么？', 'What decision should this experiment make?')}</h2>
+      </div>
+    </div>
+    <div class="decision">
+      <p><strong>{t('先选 Stage1。', 'Choose Stage 1 first.')}</strong> {t('SFT / OPSD / hindsight-skill 哪条在固定 development contract 下形成更好的 Stage2 起点。', 'Determine which of SFT / OPSD / hindsight-skill produces the better Stage-2 starting point under a fixed development contract.')}</p>
+      <p><strong>{t('再研究 Stage2。', 'Then study Stage 2.')}</strong> {t('把选出的更强 bootstrap 接进 DirectApply / Simple Bounded，再去回答长期参数记忆、容量与 GDR 问题。', 'Feed the stronger bootstrap into DirectApply / Simple Bounded before returning to long-run parametric memory, capacity, and GDR questions.')}</p>
+      <p><strong>{t('不使用 final panel 调参。', 'Do not tune on the final panel.')}</strong> {t('当前所有选择都只使用冻结 development panel；最终测试继续保持锁定。', 'All current choices use the frozen development panel only; the final test remains locked.')}</p>
+    </div>
+  </section>
+
+  <section class="section evidence" id="evidence">
+    <div class="section-heading">
+      <span>06</span>
+      <div>
+        <h2>{t('代码与实验依据', 'Code and experiment evidence')}</h2>
+        <p>{t('这里把“Stage1 用 OPSD、Stage2 用 SD-LoRA”落到代码文件，而不是只靠会议记忆。', 'These links ground “Stage 1 uses OPSD, Stage 2 uses SD-LoRA” in code rather than meeting recollection.')}</p>
+      </div>
+    </div>
+    <ul>
+      <li><a href="https://github.com/mykcs/openevo-experiment/blob/main/configs/experiment/openevo-ceiling-1.0-opsd-formal-v1.json" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/blob/main/configs/experiment/openevo-ceiling-1.0-opsd-formal-v1.json" />Stage1 OPSD recipe ↗</a></li>
+      <li><a href="https://github.com/mykcs/openevo-experiment/blob/main/scripts/openevo_webshop/train_ceiling1_opsd.py" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/blob/main/scripts/openevo_webshop/train_ceiling1_opsd.py" />Stage1 OPSD trainer ↗</a></li>
+      <li><a href="https://github.com/mykcs/openevo-experiment/blob/main/scripts/openevo_webshop/ceiling1_stage2_sd_lora.py" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/blob/main/scripts/openevo_webshop/ceiling1_stage2_sd_lora.py" />Stage2 SD-LoRA launcher / method wiring ↗</a></li>
+      <li><a href="https://github.com/mykcs/openevo-experiment/blob/experiment/q17-sft-baseline-20260923/docs/experiment-tracking/Q17_SFT_BASELINE_20260923.md" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/blob/experiment/q17-sft-baseline-20260923/docs/experiment-tracking/Q17_SFT_BASELINE_20260923.md" />SFT objective-ablation plan ↗</a></li>
+    </ul>
+    <p>{t('当前页只写已经核对过的代码语义和封存的 32 题 development 结果。3-epoch SFT 与 SEED-style SFT 未封存前，不写成方法胜负。', 'This page reports only code semantics that have been checked and sealed 32-task development results. SFT 3-epoch and SEED-style SFT are not treated as winners or losers before they are sealed.')}</p>
+  </section>
+</main>
+
+<style>
+.stage1-study{width:min(1040px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--ink)}.hero{padding:3.1rem 0 2rem;border-bottom:1px solid var(--line)}.eyebrow{margin:0 0 .75rem;color:var(--accent-deep);font:800 1rem/1.25 var(--font-mono);letter-spacing:.06em}.hero h1{max-width:18ch;margin:0;font-size:clamp(2.5rem,6vw,4.8rem);line-height:.98;letter-spacing:-.055em}.lede{max-width:50rem;margin:1.25rem 0 0;font-size:clamp(1.08rem,2vw,1.3rem);line-height:1.7}.boundary{max-width:50rem;margin:.9rem 0 0;color:var(--muted);line-height:1.65}.reader-task,.reader-purpose{max-width:50rem;margin:.45rem 0 0;color:var(--muted);line-height:1.55}.reader-task{margin-top:1rem;color:var(--ink);font-weight:650}.section{padding:2.5rem 0;border-bottom:1px solid var(--line)}.section-heading{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:1rem;margin-bottom:1.35rem}.section-heading>span{color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono)}.section-heading h2{margin:0;font-size:clamp(1.65rem,3.2vw,2.55rem);line-height:1.08;letter-spacing:-.035em}.section-heading p{max-width:54rem;margin:.65rem 0 0;color:var(--muted);line-height:1.65}.stage-grid,.next-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}.stage-grid article,.next-grid article{padding:1.25rem;background:var(--surface)}.stage-grid small,.next-grid small{display:block;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.04em}.stage-grid strong,.next-grid strong{display:block;margin:.35rem 0;font-size:1.15rem;line-height:1.35}.stage-grid p,.next-grid p{margin:.45rem 0 0;color:var(--muted);line-height:1.62}.stage-grid code{display:block;margin-top:.85rem;padding:.55rem .7rem;background:var(--surface-muted);border-left:2px solid var(--accent-deep);overflow-wrap:anywhere}.result-callout{padding:1.1rem 1.2rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.result-callout strong{font-size:1.18rem}.result-callout p{max-width:58rem;margin:.45rem 0 0;line-height:1.65}.table-wrap{margin-top:1.2rem;overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:1rem}th,td{padding:.8rem .75rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}thead th{font-size:.78rem;color:var(--muted);white-space:nowrap}tbody th{min-width:13rem}tbody th,tbody td,tbody th strong{font-size:16px}tbody th small{display:block;margin-top:.25rem;color:var(--muted);font-size:1rem;font-weight:500;line-height:1.45}.caption{margin:.65rem 0 0;color:var(--muted);font-size:1rem;line-height:1.55}.curve-list{display:grid;border-top:1px solid var(--line)}.curve-list>div{display:grid;grid-template-columns:minmax(9rem,.7fr) minmax(8rem,.7fr) 1fr;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--line);align-items:baseline}.curve-list span{font:700 1rem/1.3 var(--font-mono)}.curve-list strong{font-size:1.2rem}.curve-list em{color:var(--muted);font-style:normal}.interpretation{max-width:58rem;margin:1rem 0 0;line-height:1.68}.decision{display:grid;gap:.7rem;max-width:58rem}.decision p{margin:0;padding:.9rem 0;border-bottom:1px solid var(--line);line-height:1.65}.evidence ul{display:grid;gap:.45rem;margin:0;padding-left:1.2rem}.evidence a{color:var(--accent-deep);text-underline-offset:.2em}.evidence>p{max-width:58rem;color:var(--muted);line-height:1.65}@media(max-width:700px){.stage1-study{width:calc(100% - 1.2rem)}.hero{padding:1.8rem 0 1.3rem}.hero h1{font-size:2.45rem}.section{padding:1.8rem 0}.section-heading{grid-template-columns:2rem minmax(0,1fr);gap:.55rem}.stage-grid,.next-grid{grid-template-columns:1fr}.curve-list>div{grid-template-columns:1fr auto;gap:.2rem .8rem}.curve-list em{grid-column:1/-1}.table-wrap{margin-inline:-.1rem}}
+</style>
