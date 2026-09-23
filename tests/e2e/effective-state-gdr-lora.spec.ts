@@ -130,6 +130,21 @@ test('method section explains source Gated Delta and the beta-gating alpha-one p
   await expect(method).toContainText('reward、Task Score、Task Vector');
   await expect(method).toContainText('本实验真正启用的动态控制量');
   await expect(method).toContainText('α=1');
+  await expect(method).toContainText('并没有构造这样的 k / v 张量');
+  await expect(method).toContainText('β 来自离线训练、正式运行时冻结的 controller');
+  await expect(method).toContainText('R0 / R24 / R46 / R91');
+  await expect(method).toContainText('R114');
+  await expect(method).toContainText('R136');
+  await expect(method).toContainText('22 → 64 → 64 → 1');
+  await expect(method).toContainText('最佳 epoch');
+  await expect(method).toContainText('48');
+  await expect(method).toContainText('Spearman = 0.978');
+  await expect(method).toContainText('model.eval() + torch.no_grad()');
+  await expect(method).toContainText('没有一个“最后学出来的 β”');
+  await expect(method).toContainText('1.94e-20');
+  await expect(method).toContainText('4.40e-3');
+  await expect(method).toContainText('16,537');
+  await expect(method).toContainText('1,053,394');
   await expect(method).toContainText('β 控制器训练代码');
   await expect(method).toContainText('正式实验 β runtime');
 });
@@ -144,6 +159,8 @@ test('experiment setup names Qwen3-1.7B, WebShop, budget, and OPSD boundary', as
   await expect(setup).toContainText('rank8 SD-LoRA');
   await expect(setup).toContainText('11,198');
   await expect(setup).toContainText('不是 SEED 的 hindsight-skill SFT');
+  await expect(setup).toContainText('SEED 论文路线：trajectory → hindsight skill → SFT');
+  await expect(setup).toContainText('Stage 1 OPSD 参数学习 → OPSD bootstrap');
 });
 
 test('experiment setup exposes the four carrier update ledgers and the NOOP/runtime-use boundary', async ({ page }) => {
@@ -162,6 +179,13 @@ test('experiment setup exposes the four carrier update ledgers and the NOOP/runt
   await expect(rows.nth(2)).toContainText('0 次更新');
   await expect(rows.nth(3)).toContainText('3 次更新');
   await expect(rows.nth(3)).toContainText('0 次更新');
+  await expect(ledger).toContainText('这里不是“让 LM 自己决定要不要更新”');
+  await expect(ledger).toContainText('deterministic eligibility gate');
+  await expect(ledger).toContainText('validator');
+  await expect(ledger).toContainText('one repair');
+  await expect(ledger).toContainText('“2 个任务 / 3 个任务”描述的是这次冻结 evidence builder 实际采用的门槛');
+  await expect(ledger).toContainText('不应该读成 OpenEVO 的理论常数');
+  await expect(ledger.getByRole('link', { name: 'Carrier evidence gate' })).toHaveAttribute('href', /ceiling1_stage2_vnext_evidence\.py/);
   await expect(ledger).toContainText('“沿用上一轮”不等于“后续做题时不用它”');
   await expect(ledger).toContainText('42,270');
   await expect(ledger).toContainText('142,208');
@@ -188,6 +212,12 @@ test('formal result preserves the matched-arm statistical boundary under public 
   await expect(result).toContainText('R1–R159 exact success');
   await expect(result).toContainText('跨 0');
   await expect(result).toContainText('动态 α + 动态 β（未做）');
+  await expect(result).toContainText('Task Score 不包含“成功率 + 合法性”');
+  await expect(result).toContainText('won=true 且 task_score=1.0');
+  await expect(result).toContainText('动作 / 解析合法性');
+  await expect(result).toContainText('20 轮对应 2,560 次 rollout');
+  await expect(result).toContainText('不是 continual-learning retention test');
+  await expect(result.getByRole('link', { name: 'WebShop evaluator 定义' })).toHaveAttribute('href', /webshop_task_manifest\.py/);
   await expect(page.locator('#compute')).toContainText('31.09');
   await expect(page.locator('#compute')).toContainText('2.02');
   await expect(page.locator('#compute')).toContainText('2.35');
@@ -244,6 +274,10 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
   await expect(page.locator('#parameter-geometry')).toContainText('2.136');
   await expect(page.locator('#parameter-geometry')).toContainText('1.946');
   await expect(page.locator('#parameter-geometry')).toContainText('-0.287');
+  await expect(page.locator('#parameter-geometry')).toContainText('分数上升的时候');
+  await expect(page.locator('#parameter-geometry')).toContainText('R120–139 高点');
+  await expect(page.locator('#parameter-geometry')).toContainText('R140–159 回落期');
+  await expect(page.locator('#parameter-geometry')).toContainText('这个分析目前还没有完成');
 
   await expect(page.locator('#length')).toContainText('216.8');
   await expect(page.locator('#length')).toContainText('229.1');
