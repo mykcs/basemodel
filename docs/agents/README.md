@@ -50,6 +50,7 @@ These files are complementary owners, not competing style guides:
 | [`layered-technical-explainer-copy.md`](current/layered-technical-explainer-copy.md) | Chinese technical/research explainers | L1 plain meaning → L2 mechanism → L3 evidence; Chinese-first terminology and scientific boundaries |
 | [`research-editorial-style.md`](current/research-editorial-style.md) | research results, benchmark reports, scientific interpretation | research narrative, claim → evidence → inference → boundary, run IDs as provenance |
 | [`research-site-presentation-contract.md`](current/research-site-presentation-contract.md) | research publication/result routes | result-first publication order, visible scientific caveats, and progressive disclosure for commands/configs/logs |
+| [`research-result-reading-contract.md`](current/research-result-reading-contract.md) | canonical experiment-result / long-form analysis pages | direct task result before deep diagnostics; metric meaning → result → boundary; synthesis / limits / next question |
 | [`seed-student-reproduction-writing.md`](current/seed-student-reproduction-writing.md) | SEED student/onboarding execution guidance | lab-mentor sequencing, observable PASS criteria, hardware/evidence language |
 
 For user-facing research work, `reader-first-copy-hierarchy.md` and `research-editorial-style.md` are mandatory through `src/components/research/AGENTS.md`. Add `layered-technical-explainer-copy.md` when the Chinese page teaches a technical mechanism. A narrower task-specific contract refines the general rule; it does not erase scientific or product truth.
@@ -77,6 +78,7 @@ Before a non-trivial Results change, read:
 - [`current/reader-first-copy-hierarchy.md`](current/reader-first-copy-hierarchy.md)
 - [`current/research-editorial-style.md`](current/research-editorial-style.md)
 - [`current/research-site-presentation-contract.md`](current/research-site-presentation-contract.md)
+- [`current/research-result-reading-contract.md`](current/research-result-reading-contract.md) for canonical experiment-result / long-form analysis pages
 - [`current/layered-technical-explainer-copy.md`](current/layered-technical-explainer-copy.md) for Chinese explainers
 
 Then resolve the live scientific authority in `mykcs/openevo-experiment`. An old website sentence, chat recap, dated snapshot, or `current/` filename is not evidence that upstream state has not moved.

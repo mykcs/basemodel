@@ -5,10 +5,11 @@ For any user-facing research result, experiment narrative, benchmark interpretat
 - `../../../docs/agents/current/reader-first-copy-hierarchy.md`
 - `../../../docs/agents/current/research-editorial-style.md`
 - `../../../docs/agents/current/research-site-presentation-contract.md`
+- `../../../docs/agents/current/research-result-reading-contract.md`
 - `../../../docs/agents/current/human-thinking-web-expression-contract.md`
 - `../../../docs/agents/current/site-reader-attention-contract.md`
 
-The reader-first hierarchy, research editorial style, research-site presentation contract, and site reader-attention contract are mandatory. Before substantially writing or rearranging a public research page, resolve its entry in `src/data/siteReaderContracts.ts`; do not start from a visual template and retrofit the reader task afterward.
+The reader-first hierarchy, research editorial style, research-site presentation contract, research-result reading contract (for canonical result/analysis pages), and site reader-attention contract are mandatory. Before substantially writing or rearranging a public research page, resolve its entry in `src/data/siteReaderContracts.ts`; do not start from a visual template and retrofit the reader task afterward.
 
 ## Human-feedback precedent retrieval is a pre-write step
 

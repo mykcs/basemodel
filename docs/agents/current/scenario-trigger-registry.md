@@ -81,7 +81,7 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 
 **Automatic response:**
 
-1. Read `research-journey-experience.md`, `research-site-presentation-contract.md`, `scientific-state-provenance.md`, and `experiment-result-publication-workflow.md`; resolve the current experiment-side authority before choosing page content.
+1. Read `research-journey-experience.md`, `research-site-presentation-contract.md`, `research-result-reading-contract.md`, `scientific-state-provenance.md`, and `experiment-result-publication-workflow.md`; resolve the current experiment-side authority before choosing page content.
 2. Decide whether the evidence belongs to one scientific object. When full trajectory, formal/frozen final, historical diagnostics, and post-run parameter/mechanism analysis describe the same experiment lineage, create or use one canonical long-form analysis route. Briefing/result-summary/mechanism routes summarize or link; do not keep adding detail to the briefing until the reader must reconstruct the experiment across many pages.
 3. It is valid to publish authoritative later-stage sections before the earlier narrative is fully reconstructed. Mark missing earlier analysis explicitly; never invent chronology or weaken finished later evidence just to make the page look complete.
 4. Make the first viewport identify the experiment and expose the decisive final metric plus the main interpretation/boundary. Keep training-process score vs frozen final, historical panel vs current final, and parameter-geometry similarity vs behavioral equivalence visibly distinct.
