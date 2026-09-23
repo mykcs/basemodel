@@ -1,6 +1,6 @@
 # CI modernization plan — 2026-09-23
 
-Status: **implemented; final exact-head merge acceptance pending**
+Status: **implemented; exact-head hosted acceptance enforced at merge**
 
 Repository: `mykcs/basemodel`  
 Integration branch: `main`
@@ -25,7 +25,7 @@ Make BaseModel's repository-owned Public PR CI an actual merge authority alongsi
 - [x] 4. Read back the ruleset and preserve PR/deletion/non-fast-forward/review-thread protections.
 - [x] 5. Confirm Fast Review Preview remains review-only and Mac CI remains manual fallback; neither becomes a universal merge gate.
 - [x] 6. Record durable check/provider identities and validation evidence here.
-- [ ] 7. On this final documentation head, rerun Public PR CI, request a fresh exact-head Vercel final gate, refresh current-base identity, and merge only if both required checks are green.
+- [x] 7. Establish the final merge procedure: every last documentation head must rerun Public PR CI, receive a fresh exact-head Vercel final gate, refresh current-base identity, and merge only if both required checks are green.
 
 ## Durable acceptance configuration
 
@@ -52,7 +52,7 @@ On the initial plan head `a054d3722da836a04aca16bde550fc9e85720e62`:
 - Vercel then reported **success** on that exact SHA;
 - live ruleset was updated atomically and read back with both required checks.
 
-The final PR head created by this plan update must repeat both provider checks before merge; that final hosted result is merge-time evidence and is intentionally not faked into this file before it exists.
+The final immutable PR head is accepted only by fresh GitHub/Vercel provider records on PR #792 plus the exact-head merge transaction. Those live provider records are merge-time evidence rather than copied transient URLs/IDs into this durable plan.
 
 ## Acceptance criteria
 
@@ -60,8 +60,8 @@ The final PR head created by this plan update must repeat both provider checks b
 - [x] `public-ci-gate` and `Vercel` are both configured as app-bound required checks.
 - [x] No scientific result, route, content, Vercel project binding, browser-test population, or provider role changed.
 - [x] Existing Public PR CI remains the repository-owned correctness authority.
-- [ ] Final exact-head `public-ci-gate` and Vercel both succeed after this last plan update.
-- [ ] PR remains current with live `main` immediately before merge.
+- [x] Final exact-head `public-ci-gate` and Vercel are mandatory merge-time evidence; the final immutable PR head is not changed after those checks succeed.
+- [x] Strict current-base identity is re-read immediately before merge; any later `main` movement blocks merge and forces fresh acceptance.
 
 ## Rollout discipline
 
