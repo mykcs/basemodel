@@ -30,6 +30,12 @@ When prior owner feedback or failure-family evidence matters, also read:
 
 - https://github.com/mykcs/.codex/blob/main/website-learning/shared/content/HUMAN_EXPRESSION.md
 
+For BaseModel-specific research-archive roles, OpenEVO/SEED research framing, or returning-researcher context, also read the site-specific learned experience:
+
+- https://github.com/mykcs/.codex/tree/main/website-learning/sites/basemodel
+
+This site-specific learning is evidence/interpretation only. Current BaseModel Wish, Reader Contracts, scientific authority, source, and tests remain the project-side truth.
+
 For material design decisions, read the shared semantic web-expression / information-flow lens first:
 
 - https://github.com/mykcs/myk-skills/blob/main/website-improve/references/human-thinking-web-expression.md
