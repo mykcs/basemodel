@@ -247,7 +247,22 @@ const contrasts = [
     </section>
   )}
 
-  <section class="exp-scaffold__section exp-scaffold__counting" aria-labelledby="counting-title">
+  {mode === 'cross-arm' && (
+    <section class="exp-scaffold__section" data-result-stage="direct-result" aria-labelledby="matrix-title">
+        <h2 id="matrix-title">{t('四组结果矩阵', 'Four-arm result matrix')}</h2>
+        <p class="exp-scaffold__section-intro">{t('现在 3B/self、7B/self、7B/MiniMax 都已有同一套封存 128 任务的真实最终数字；3B/MiniMax 因旧方法在 74.58% 时主动停止而没有 final eval，明确写“未运行”而不是 0。任何后续补测都必须清楚标注是否仍是同一套正式 panel。', '3B/self, 7B/self, and 7B/MiniMax now carry real final numbers from the same sealed 128-task panel. 3B/MiniMax has no final evaluation because the old-method run was explicitly stopped at 74.58%, so it is marked Not run rather than zero. Any later diagnostic must state whether it uses the same formal panel.')}</p>
+        <div class="exp-scaffold__table-wrap">
+          <table>
+            <thead><tr><th>{t('指标', 'Metric')}</th><th>3B / self</th><th>7B / self</th><th>3B / MiniMax</th><th>7B / MiniMax</th></tr></thead>
+            <tbody>
+              {matrixRows.map((row) => <tr><th scope="row">{row.label}</th>{[row.a,row.b,row.c,row.d].map((v) => <td class:list={{pending:v === PENDING}}>{v}</td>)}</tr>)}
+            </tbody>
+          </table>
+        </div>
+    </section>
+  )}
+
+  <section class="exp-scaffold__section exp-scaffold__counting" data-result-stage="mechanism" aria-labelledby="counting-title">
     <h2 id="counting-title">{t('20,480 次任务尝试为什么没有带来参数更新', 'Why 20,480 task attempts produced no parameter update')}</h2>
     <p class="exp-scaffold__section-intro">{t('这个结果需要把三件事分开：模型做了多少次任务、其中有多少次完整成功并且可以用于训练、程序最后有没有真的改动模型参数。旧 Stage 2 前两件事都发生了，第三件事没有发生。', 'Three quantities must be separated: how many tasks the model attempted, how many attempts were exact successes clean enough for training, and whether the program actually changed model parameters. The old Stage 2 produced the first two, but not the third.')}</p>
     <dl class="exp-scaffold__term-list">
@@ -333,20 +348,8 @@ const contrasts = [
 
   {mode === 'cross-arm' && (
     <>
-      <section class="exp-scaffold__section" aria-labelledby="matrix-title">
-        <h2 id="matrix-title">{t('四组结果矩阵', 'Four-arm result matrix')}</h2>
-        <p class="exp-scaffold__section-intro">{t('现在 3B/self、7B/self、7B/MiniMax 都已有同一套封存 128 任务的真实最终数字；3B/MiniMax 因旧方法在 74.58% 时主动停止而没有 final eval，明确写“未运行”而不是 0。任何后续补测都必须清楚标注是否仍是同一套正式 panel。', '3B/self, 7B/self, and 7B/MiniMax now carry real final numbers from the same sealed 128-task panel. 3B/MiniMax has no final evaluation because the old-method run was explicitly stopped at 74.58%, so it is marked Not run rather than zero. Any later diagnostic must state whether it uses the same formal panel.')}</p>
-        <div class="exp-scaffold__table-wrap">
-          <table>
-            <thead><tr><th>{t('指标', 'Metric')}</th><th>3B / self</th><th>7B / self</th><th>3B / MiniMax</th><th>7B / MiniMax</th></tr></thead>
-            <tbody>
-              {matrixRows.map((row) => <tr><th scope="row">{row.label}</th>{[row.a,row.b,row.c,row.d].map((v) => <td class:list={{pending:v === PENDING}}>{v}</td>)}</tr>)}
-            </tbody>
-          </table>
-        </div>
-      </section>
 
-      <section class="exp-scaffold__section" aria-labelledby="contrast-title">
+      <section class="exp-scaffold__section" data-result-stage="diagnostic-comparison" aria-labelledby="contrast-title">
         <h2 id="contrast-title">{t('六个预先固定的组间比较槽位', 'Six prespecified cross-arm comparison slots')}</h2>
         <div class="exp-scaffold__contrast-grid">
           {contrasts.map((row) => <article>
@@ -359,7 +362,7 @@ const contrasts = [
         </div>
       </section>
 
-      <section class="exp-scaffold__section exp-scaffold__guardrail" aria-labelledby="guardrail-title">
+      <section class="exp-scaffold__section exp-scaffold__guardrail" data-result-stage="limits" aria-labelledby="guardrail-title">
         <h2 id="guardrail-title">{t('服务器跑完后，也不能直接把四组最终分数做简单减法', 'Even after completion, do not just subtract four headline scores')}</h2>
         <ul>
           <li>{t('同一模型规模内比较 MiniMax 与 self，才回答“MiniMax 的任务后回看监督 + 启动训练这一整套处理是否有帮助”。', 'Compare MiniMax vs self within the same model size to ask whether the external-hindsight bundle helps.')}</li>

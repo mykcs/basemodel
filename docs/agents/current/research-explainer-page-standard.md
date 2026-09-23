@@ -14,6 +14,7 @@ This file is a specialization, not a competing design system.
 - `experiment-lineage-map-visual-standard.md` owns node/edge hierarchy for experiment-lineage and roguelike research maps: mainline, branch, scientific amendment, engineering fix, evidence, blocker state, and future preview semantics.
 - research/data/evidence policies own scientific truth and claim boundaries.
 - this file owns the **first-time-reader narrative shape of research explainer pages**: what each section is allowed to do, how sections advance, how corrective material is placed, how evidence is attached to claims, and how diagrams encode meaning.
+- research-result-reading-contract.md further specializes canonical result and analysis pages: direct task result before deep diagnostics, metric interpretation order, and synthesis / limits / next-question sequencing.
 
 When two rules overlap, apply the stricter current rule. Do not duplicate this file into page-local instructions.
 
