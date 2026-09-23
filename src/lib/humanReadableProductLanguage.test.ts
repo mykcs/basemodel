@@ -81,7 +81,7 @@ describe('human-readable product language contract', () => {
     expect(methodology).not.toContain('这些数字从哪里来，缺数据时怎么看');
     expect(paperDetail).not.toContain('这些模型在论文里分别负责什么');
     expect(workspacePage).toContain('<h1>实验工作台</h1>');
-    expect(workspacePage).toContain('先定义研究目标、模型角色和资源限制');
+    expect(workspacePage).toContain('实验工作台根据研究目标、模型角色和资源限制');
     expect(workspacePage).toContain('开始填写实验条件');
   });
 

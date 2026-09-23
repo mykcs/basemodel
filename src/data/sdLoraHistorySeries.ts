@@ -33,12 +33,12 @@ export const SD_LORA_HISTORY_SERIES = [
   },
   {
     route: 'sd-lora-present-function', number: '05',
-    title: { zh: '如果压缩历史，今天的模型还一样吗？', en: 'If history is compressed, is the model still the same today?' },
+    title: { zh: '如果压缩历史，当前模型行为还能保持吗？', en: 'If history is compressed, does the current model behavior stay the same?' },
     summary: { zh: '研究哪些历史可以删、合并或投影，同时保留当前行为。', en: 'Study which history can be removed, merged, or projected while preserving current behavior.' },
   },
   {
     route: 'sd-lora-future-learning', number: '06',
-    title: { zh: '今天一样，明天继续学习还会一样吗？', en: 'If models match today, will they keep learning the same way tomorrow?' },
+    title: { zh: '当前行为一样，后续继续学习还会一样吗？', en: 'If current behavior matches, will later learning still match?' },
     summary: { zh: '让完整历史和压缩状态接受完全相同的未来经验，比较后续学习轨迹。', en: 'Give full-history and compressed states the same future experience and compare their later learning trajectories.' },
   },
   {

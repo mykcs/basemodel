@@ -137,7 +137,7 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
         <li data-ui-audit-item><span>01</span><strong>我是谁、在哪一层？</strong><p><code>id</code> + <code>pwd</code>。先确认身份、目录，以及你是不是在容器里。</p></li>
         <li data-ui-audit-item><span>02</span><strong>GPU 现在什么状态？</strong><p><code>nvidia-smi</code>。先看型号、数量、占用；空闲不代表已获授权。</p></li>
         <li data-ui-audit-item><span>03</span><strong>内存还够吗？</strong><p><code>free -h</code>。available 是瞬时余量，不是你的个人配额。</p></li>
-        <li data-ui-audit-item><span>04</span><strong>磁盘还剩多少？</strong><p><code>df -hT</code>。先确认 mount 是否共享，再谈“我还有多少空间”。</p></li>
+        <li data-ui-audit-item><span>04</span><strong>磁盘还剩多少？</strong><p><code>df -hT</code> 显示的是 mount 容量；共享 mount 的剩余空间不是某一个人的个人剩余空间。</p></li>
         <li data-ui-audit-item><span>05</span><strong>数据会不会随容器消失？</strong><p><code>findmnt</code>。把 overlay 和 persistent bind 分清，再决定模型、数据和 run 输出放哪里。</p></li>
       </ol>
       <aside class="lab-warning"><strong>以下事项需要管理员确认：</strong>8 张 GPU 的正式分配/调度、个人 quota、备份/快照/保留政策、canonical workspace、长期任务运行方式，以及 physical-host root 权限边界。</aside>
@@ -162,11 +162,11 @@ EXECUTIVE SUMMARY → BEGINNER EXPLANATION → HARDWARE → ACCESS & PERMISSIONS
 
     <section class="lab-section" aria-labelledby="history-server-title" data-explainer-step="3">
       <header class="lab-section__heading"><span>EXPERIMENT CONTEXT</span><h2 id="history-server-title">当前与历史实验硬件</h2></header>
-      <p>本页首先描述“这台服务器是什么”，实验分配是另一层事实：服务器实时可见 8×RTX5090，但正式 GPU allocation policy 本次无法安全验证。此前实验记录曾使用 5×RTX5090；RTX6 的 4×RTX3090 则属于迁移前的历史实验平台。</p>
+      <p>本页描述服务器本身与实验分配两层事实：当前只读核验看到服务器有 8×RTX5090，但这不等于个人可用配额；正式 GPU allocation policy 本次无法安全验证。历史 OpenEvo 实验记录曾分配 5×RTX5090；RTX6 的 4×RTX3090 是迁移前的历史实验平台。</p>
       <ol class="lab-lineage" data-ui-audit="contrast layout">
-        <li data-ui-audit-item><span>01</span><strong>Lab server · live</strong><p>8×RTX5090 visible · allocation policy unknown</p></li>
-        <li data-ui-audit-item><span>02</span><strong>OpenEvo campaign</strong><p>历史记录：5×RTX5090 allocation；以实验仓库最新 run contract 为准</p></li>
-        <li data-ui-audit-item><span>03</span><strong>RTX6 · historical</strong><p>4×RTX3090 · 早期 WebShop / ALFWorld 与迁移证据</p></li>
+        <li data-ui-audit-item><span>01</span><strong>当前服务器</strong><p>只读核验可见 8×RTX5090；个人分配仍未知</p></li>
+        <li data-ui-audit-item><span>02</span><strong>OpenEvo 历史实验分配</strong><p>历史记录曾分配 5×RTX5090；当前分配以实验仓库最新运行合同为准</p></li>
+        <li data-ui-audit-item><span>03</span><strong>旧 RTX6 平台（历史）</strong><p>4×RTX3090；用于早期 WebShop / ALFWorld 与迁移证据</p></li>
       </ol>
     </section>
 

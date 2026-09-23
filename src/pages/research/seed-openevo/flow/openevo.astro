@@ -5,7 +5,7 @@ import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvo
 import InteractiveResearchExplainer from '../../../../components/research/InteractiveResearchExplainer.tsx';
 const locale = 'zh' as const;
 ---
-<AppLayout title="OpenEvo 跨任务演化流程" description="OpenEvo 在任务之间封存证据、运行演化方法并验证后继状态；本页解释任务边界、演化载体、successor revision，以及这些变化从何时开始影响后续任务。" locale={locale}>
+<AppLayout title="OpenEvo 跨任务演化流程" description="OpenEvo 在任务之间封存证据、运行演化方法并验证后继状态；本页解释任务边界、演化载体、下一版本（successor revision），以及这些变化从何时开始影响后续任务。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="openevo">
     <InteractiveResearchExplainer locale={locale} kind="openevo" client:visible />
   </SeedOpenEvoResearchPage>

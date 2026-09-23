@@ -61,9 +61,9 @@ describe('sitewide editorial heading policy', () => {
   });
 
   it('makes historical hardware, live lab visibility, and branch-aware experiment state explicit', () => {
-    expect(joined).toContain('RTX6（4×RTX3090）');
-    expect(joined).toContain('8×RTX5090 visible · allocation policy unknown');
-    expect(joined).toContain('历史记录：5×RTX5090 allocation');
+    expect(joined).toContain('历史 RTX6 平台（4×RTX3090）');
+    expect(joined).toContain('只读核验可见 8×RTX5090；个人分配仍未知');
+    expect(joined).toContain('历史记录曾分配 5×RTX5090；当前分配以实验仓库最新运行合同为准');
     expect(joined).toContain('Phase G');
     expect(state).toContain("phase: 'WB1-TRACKB-CONTINUATION'");
     expect(state).toContain("checkedAt: '2026-08-28'");

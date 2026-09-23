@@ -44,6 +44,27 @@ describe('sitewide human-expression content application', () => {
     expect(result).toContain('重新测量仍无效（REMEASUREMENT_INVALID）');
   });
 
+  it('keeps current public entry copy human-first across non-research route families', () => {
+    const papers = read('../pages/_bodies/papers-index.astro');
+    const workspace = read('../pages/workspace/index.astro');
+    const lab = read('../pages/lab.astro');
+    const guide = read('../pages/guide.astro');
+    const loops = read('../pages/research/seed-openevo/flow/loops.astro');
+    const openevo = read('../pages/research/seed-openevo/flow/openevo.astro');
+    const english = read('../i18n/en.ts');
+
+    expect(papers).not.toContain('先缩小研究问题和模型角色，再核对 benchmark 与复现资料');
+    expect(workspace).not.toContain('先定义研究目标、模型角色和资源限制');
+    expect(lab).not.toContain('Lab server · live');
+    expect(lab).not.toContain('先确认 mount 是否共享');
+    expect(guide).toContain('旧 RTX6 四卡平台与历史仓库');
+    expect(loops).toContain('下一版本（successor revision）');
+    expect(openevo).toContain('下一版本（successor revision）');
+    expect(english).not.toContain('Agent Foundation Model Atlas');
+    expect(english).not.toContain("levelUnknown: 'Pending'");
+    expect(english).not.toContain("unknown: 'Pending verification'");
+  });
+
   it('preserves legitimate research questions and removes obsolete site positioning', () => {
     const resultsQuestion = read('../components/research/OpenEvoWebShopBenchmarkNote.astro');
     const og = read('../../public/og-cover.svg');

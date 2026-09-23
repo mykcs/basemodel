@@ -33,7 +33,7 @@ const labelFor = (path: string) => {
   if (fieldCatalog[path]) return fieldLabel(path, locale);
   const leaf = path.split('.').at(-1) ?? path;
   const readable = leaf.replaceAll('_', ' ');
-  return locale === 'zh' ? `待核验：${readable}` : `Pending: ${readable}`;
+  return locale === 'zh' ? `待核验：${readable}` : `Needs verification: ${readable}`;
 };
 const impactFor = (path: string) => {
   const entry = fieldCatalog[path];

@@ -5,9 +5,9 @@ import type { Messages } from './zh';
 export const en: Messages = {
   site: {
     name: 'Model Atlas',
-    fullName: 'Agent Foundation Model Atlas',
+    fullName: 'Base Model Research Workbench',
     tagline: 'An OpenEvo research workbench on SEED benchmarks',
-    titleSuffix: 'Agent Foundation Model Atlas · SEED × OpenEvo Research Workbench',
+    titleSuffix: 'Base Model Research Workbench · SEED × OpenEvo',
     defaultDescription: 'Understand base models, reproduce ALFWorld and WebShop experiments from SEED, evaluate OpenEvo, and turn trajectory, score, and failure evidence into improvements.',
     skipLink: 'Skip to main content',
     backHome: 'Back to home',
@@ -41,7 +41,7 @@ export const en: Messages = {
     commandHint: 'Esc to close · Cmd/Ctrl + K to open',
   },
   footer: {
-    identity: 'Agent Foundation Model Atlas',
+    identity: 'Base Model Research Workbench',
     motto: 'Data first, evidence first.',
   },
   guide: {
@@ -411,7 +411,7 @@ export const en: Messages = {
     levelHigh: 'High',
     levelMedium: 'Medium',
     levelLow: 'Low',
-    levelUnknown: 'Pending',
+    levelUnknown: 'Needs verification',
     taskFitLabel: 'Current task fit',
     taskFitPrompt: 'Set a research task to see fit',
     fitHigh: 'High fit',
@@ -712,7 +712,7 @@ export const en: Messages = {
     },
   },
   format: {
-    unknown: 'Pending verification',
+    unknown: 'Not yet verified',
     yes: 'Yes',
     no: 'No',
     semanticStatus: {
@@ -728,13 +728,13 @@ export const en: Messages = {
       verified: 'Verified',
       partial: 'Partially verified',
       demo: 'Archived example',
-      unknown: 'Pending verification',
+      unknown: 'Not yet verified',
     },
     lifecycle: {
       active: 'Active',
       legacy: 'Legacy',
       preview: 'Preview',
-      unknown: 'Pending verification',
+      unknown: 'Not yet verified',
     },
     sourceType: {
       official_model_card: 'Official model card',
@@ -830,7 +830,7 @@ export const en: Messages = {
       '80gb': '80GB GPU',
       multi_gpu: 'Multi-GPU',
       api_only: 'API only',
-      unknown: 'Pending verification',
+      unknown: 'Not yet verified',
     },
   },
 };

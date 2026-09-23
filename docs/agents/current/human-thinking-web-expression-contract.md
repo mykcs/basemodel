@@ -38,6 +38,23 @@ Load and apply this contract whenever a task changes what a reader can see, unde
 
 Do not wait for the owner to say “make this visual,” “use HTML,” “keep the page coherent,” or “consider information density.” Those are default requirements.
 
+### 1.1 One owner-reported page defect is a search seed, not the acceptance boundary
+
+When the owner points to one route that has already been heavily corrected, treat the accepted behavior as a **quality witness for the same failure family**, not as a one-page exception.
+
+Before closing the task:
+
+1. name the failure mechanism the correction exposed;
+2. search sibling routes and shared owners for the same mechanism;
+3. repair every high-confidence same-family instance whose page role has the same requirement;
+4. prefer the shared owner when the defect is generated centrally;
+5. add or extend an executable guard when the family is machine-detectable;
+6. keep explicit page-role exceptions instead of forcing one visual template everywhere.
+
+The owner-reported specimen is where the problem was noticed. It is not where the audit stops.
+
+For current research-result work, `bounded-effective-state-gdr` is an accepted quality witness for **result-first order, local metric explanation, evidence adjacency, comparison-boundary clarity, and visible unknown/unrun states**. Other routes inherit those semantic standards only where their page role actually contains comparable result evidence; they do not inherit its exact table/CSS/paper layout.
+
 ---
 
 ## 2. Form a Page Expression Brief before implementation

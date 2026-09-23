@@ -65,7 +65,7 @@ const recentEvents = [
   </section>
 
   <section class="section" aria-labelledby="generation-title">
-    <div class="section-heading"><div><h2 id="generation-title">{locale === 'zh' ? '最近一次完整核验的家族记录' : 'Last fully checked family records'}</h2><p class="muted">{locale === 'zh' ? '表里的“托管 / API”和“开放权重”只代表各家族在核验日期当时的记录。超过厂商刷新周期后，数据健康检查会把这一行标成“来源过期”；它不会继续冒充今天的实时目录。' : 'Hosted/API and open-weight entries below describe each family at its recorded check date. Once that date exceeds the vendor refresh window, data health marks the family as a stale source instead of treating it as a live catalog.'}</p></div></div>
+    <div class="section-heading"><div><h2 id="generation-title">{locale === 'zh' ? '最近一次完整核验的家族记录' : 'Last fully checked family records'}</h2><p class="muted">{locale === 'zh' ? '表里的“托管 / API”和“开放权重”只代表各家族在核验日期当时的记录。超过厂商刷新周期后，数据健康检查会把这一行标成“来源过期”；它不会继续冒充当前实时目录。' : 'Hosted/API and open-weight entries below describe each family at its recorded check date. Once that date exceeds the vendor refresh window, data health marks the family as a stale source instead of treating it as a live catalog.'}</p></div></div>
     <div class="comparison-table-wrap"><table>
       <thead><tr><th>{m.dataStatus.vendor}</th><th>{locale === 'zh' ? '核验时的代际' : 'Generation at check date'}</th><th>{locale === 'zh' ? '核验时的托管 / API 模型' : 'Hosted / API at check date'}</th><th>{locale === 'zh' ? '核验时的开放权重模型' : 'Open weight at check date'}</th><th>{m.dataStatus.catalogChecked}</th><th>{m.dataStatus.unresolved}</th><th>{m.dataStatus.catalogSource}</th></tr></thead>
       <tbody>{health.familyCoverage.map(({ family, modelCount, openWeightPresent, unresolvedCount, catalogSourceUrl }) => {

@@ -29,7 +29,7 @@ const statusText = (value: string | undefined) => {
   if (value in m.format.semanticStatus) return semanticStatusLabel(value, locale);
   const labels: Record<string, string> = locale === 'zh'
     ? { released: '已发布', announced: '已宣布', unavailable: '不可用', withdrawn: '已撤回', available: '可用', preview: '预览', deprecated: '已弃用', unknown: '待核验' }
-    : { released: 'Released', announced: 'Announced', unavailable: 'Unavailable', withdrawn: 'Withdrawn', available: 'Available', preview: 'Preview', deprecated: 'Deprecated', unknown: 'Pending verification' };
+    : { released: 'Released', announced: 'Announced', unavailable: 'Unavailable', withdrawn: 'Withdrawn', available: 'Available', preview: 'Preview', deprecated: 'Deprecated', unknown: 'Not yet verified' };
   return labels[value] ?? m.format.unknown;
 };
 const enumText = (value: string | undefined) => {
@@ -37,7 +37,7 @@ const enumText = (value: string | undefined) => {
   if (value in m.format.semanticStatus) return semanticStatusLabel(value, locale);
   const labels: Record<string, string> = locale === 'zh'
     ? { open_source: '开放源代码', open_weight: '开放权重', source_available: '源代码可用', proprietary: '专有', unknown: '待核验', allowed: '允许', conditional: '有条件', prohibited: '禁止' }
-    : { open_source: 'Open source', open_weight: 'Open weight', source_available: 'Source available', proprietary: 'Proprietary', unknown: 'Pending verification', allowed: 'Allowed', conditional: 'Conditional', prohibited: 'Prohibited' };
+    : { open_source: 'Open source', open_weight: 'Open weight', source_available: 'Source available', proprietary: 'Proprietary', unknown: 'Not yet verified', allowed: 'Allowed', conditional: 'Conditional', prohibited: 'Prohibited' };
   return labels[value] ?? m.format.unknown;
 };
 const evidenceText = (value: string) => {
