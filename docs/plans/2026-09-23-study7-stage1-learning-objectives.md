@@ -33,7 +33,8 @@ Primary arms:
 - [x] Add dedicated Stage1 learning-objectives page.
 - [x] Update Study and Home copy from six to seven experiments.
 - [x] Run lint/build/reader-navigation checks.
-- [ ] Open PR and verify CI / preview.
+- [x] Open PR.
+- [ ] Verify hosted CI / Vercel preview.
 
 ## Claim boundary
 
