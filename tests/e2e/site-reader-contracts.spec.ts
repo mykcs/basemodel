@@ -151,7 +151,7 @@ for (const viewport of viewports) {
 }
 
 
-test('Study phone first screen exposes exactly the six experiment parents', async ({ page }) => {
+test('Study phone first screen exposes exactly the seven experiment parents', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/research/seed-openevo/study/', { waitUntil: 'domcontentloaded' });
   await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
@@ -173,6 +173,7 @@ test('Study phone first screen exposes exactly the six experiment parents', asyn
     'gdr-v1-1p7b',
     'directapply-1p7b',
     'bounded-effective-state-1p7b',
+    'stage1-learning-objectives',
   ]);
   const visibleChildren = await page.locator('#main-content .experiment-children a').evaluateAll((links) => links.filter((el) => el.getClientRects().length > 0).length);
   expect(visibleChildren).toBe(0);

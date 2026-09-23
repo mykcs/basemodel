@@ -8,14 +8,15 @@ export type ExperimentChildRole =
   | 'history'
   | 'evidence';
 
-export type ExperimentStatus = 'historical' | 'completed';
+export type ExperimentStatus = 'historical' | 'completed' | 'in-progress';
 export type OpenEvoExperimentId =
   | 'gate-no-update'
   | '7b-long-run'
   | 'successor-3b-1p7b'
   | 'gdr-v1-1p7b'
   | 'directapply-1p7b'
-  | 'bounded-effective-state-1p7b';
+  | 'bounded-effective-state-1p7b'
+  | 'stage1-learning-objectives';
 
 export interface OpenEvoExperimentChildLink {
   role: ExperimentChildRole;
@@ -168,6 +169,27 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
     ],
     evidenceLink: { role: 'evidence', label: { zh: '最终收口与公开证据', en: 'Final closeout and public evidence' }, href: `${cap}/bounded-effective-state-gdr/#evidence` },
   },
+  {
+    id: 'stage1-learning-objectives',
+    number: '07',
+    title: { zh: '起始参数怎么学：SFT / OPSD / hindsight-skill', en: 'Learning the starting parameters: SFT / OPSD / hindsight-skill' },
+    summary: { zh: '这组实验把 Stage1 bootstrap 与 Stage2 SD-LoRA 持续演变拆开：先固定同一个 Qwen3-1.7B 和同一批 WebShop 经验，只比较怎样训练出“一套 Stage2 起始参数”。', en: 'This study separates the Stage-1 bootstrap from Stage-2 SD-LoRA continual evolution: it fixes the same Qwen3-1.7B and WebShop experience and compares how to learn one Stage-2 starting parameter set.' },
+    motivation: { zh: '当前 Stage1 正式流程使用 OPSD，但 Stage2 真正的持续参数演变机制是 SD-LoRA。为了避免把两层混在一起，先单独比较 SFT、OPSD 与 hindsight-skill SFT 谁更适合作为 Stage2 起点。', en: 'The current formal Stage 1 uses OPSD, while Stage 2 uses SD-LoRA for continual parameter evolution. To avoid conflating the two layers, compare SFT, OPSD, and hindsight-skill SFT as alternative ways to create the Stage-2 starting point.' },
+    researchQuestion: { zh: '给同一个 1.7B、同一批 Stage1 经验，SFT、OPSD 还是 hindsight-skill SFT 更适合先学出一套 Stage2 起始参数？', en: 'Given the same 1.7B model and Stage-1 experience, should the Stage-2 starting parameters be learned with SFT, OPSD, or hindsight-skill SFT?' },
+    intervention: { zh: '先保持模型、数据、rank8 LoRA 和训练预算尽量一致，只替换 Stage1 learning objective；再单独补训练预算和 hindsight-skill 两个后续臂。', en: 'Hold model, data, rank-8 LoRA, and training budget as constant as possible while changing only the Stage-1 learning objective, then add separate training-budget and hindsight-skill arms.' },
+    resultBoundary: { zh: '当前 32 题 development 对照还没有赢家：OPSD 平均分 36.01 / 100、0 / 32 exact；SFT 1-pass 平均分 34.96 / 100、3 / 32 exact。SFT 3-epoch 与 SEED-style hindsight-skill 尚未封存，final panel 未访问。', en: 'The current 32-task development comparison has no winner yet: OPSD scores 36.01 / 100 with 0 / 32 exact successes; SFT 1-pass scores 34.96 / 100 with 3 / 32 exact successes. SFT 3-epoch and SEED-style hindsight-skill are not yet sealed, and the final panel is untouched.' },
+    nextQuestion: { zh: 'Stage1 winner 选出来以后，把它接回 Stage2，DirectApply / Bounded 的长期参数演变上限会不会随起点变强？', en: 'After choosing a Stage-1 winner, does feeding it into Stage 2 raise the long-run DirectApply / Bounded parametric-evolution ceiling?' },
+    primaryHref: `${cap}/stage1-learning-objectives/`,
+    status: 'in-progress',
+    lineageNote: { zh: '这不是第 06 项 Bounded/GDR 的后继机制。它回到更上游的 Stage1，专门解决“Stage2 开始前先怎样学出一套参数”的问题。', en: 'This is not a successor mechanism to Experiment 06 Bounded/GDR. It moves upstream to Stage 1 and isolates how one parameter set should be learned before Stage 2 starts.' },
+    childLinks: [
+      { role: 'result', label: { zh: 'OPSD vs SFT 1-pass 当前对照', en: 'Current OPSD vs SFT 1-pass comparison' }, href: `${cap}/stage1-learning-objectives/#result` },
+      { role: 'analysis', label: { zh: 'Stage1 与 Stage2 到底分别做什么', en: 'What Stage 1 and Stage 2 each do' }, href: `${cap}/stage1-learning-objectives/#stage1-stage2` },
+      { role: 'analysis', label: { zh: 'SFT validation：为什么 final 不是平均分最高', en: 'SFT validation: why the final is not the highest mean score' }, href: `${cap}/stage1-learning-objectives/#validation` },
+      { role: 'evidence', label: { zh: '代码、配方与实验依据', en: 'Code, recipes, and experiment evidence' }, href: `${cap}/stage1-learning-objectives/#evidence` },
+    ],
+    evidenceLink: { role: 'evidence', label: { zh: 'Stage1 代码与当前实验依据', en: 'Stage-1 code and current experiment evidence' }, href: `${cap}/stage1-learning-objectives/#evidence` },
+  },
 ];
 
 
@@ -183,6 +205,7 @@ export const OPEN_EVO_CANONICAL_ROUTE_OWNERS: Readonly<Record<string, OpenEvoExp
   'stage1-evolution': 'successor-3b-1p7b',
   'gdr-directapply': 'gdr-v1-1p7b',
   'bounded-effective-state-gdr': 'bounded-effective-state-1p7b',
+  'stage1-learning-objectives': 'stage1-learning-objectives',
   'q17-directapply-analysis': 'directapply-1p7b',
   'q17-directapply-frontier': 'directapply-1p7b',
   'sd-lora-scaling': 'directapply-1p7b',
