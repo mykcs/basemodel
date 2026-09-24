@@ -15,8 +15,9 @@ const taskVectorDefinitionLatex = String.raw`v=\theta_{\mathrm{after}}-\theta_{\
 const m1aZeroLatex = String.raw`\theta_{100\%}-\theta_{75\%}=0`;
 const m1aNormLatex = String.raw`\lVert\theta_{R49}-\theta_{R27}\rVert=0.6082257746`;
 
-const flowHref = p('/research/seed-openevo/flow/');
 const technicalHref = p('/research/seed-openevo/study/briefing/technical-notes/');
+const postAdvisorPrHref = 'https://github.com/mykcs/openevo-experiment/pull/590';
+const q17LearningSignalPrHref = 'https://github.com/mykcs/openevo-experiment/pull/588';
 const webShopPaperHref = 'https://arxiv.org/abs/2207.01206';
 const seedPaperHref = 'https://arxiv.org/abs/2607.14777';
 const loraPaperHref = 'https://arxiv.org/abs/2106.09685';
@@ -569,20 +570,20 @@ const lastLossDirectApply = dynamicsDirectApply.loss.at(-1)?.loss ?? 0;
   </section>
   <section id="next" class="briefing-slide briefing-final" aria-labelledby="next-title">
     <div class="slide-inner">
-      <h2 id="next-title">{t('DirectApply 的 160 轮和冻结终评都已完成；下一条实验再单独改学习材料选择', 'DirectApply has completed all 160 rounds and its frozen final; change learning-material selection only in a successor')}</h2>
-      <p class="slide-thesis">{t('DirectApply 已经按原合同完整跑完，中途没有改抽题方式、奖励或更新规则；因此 R0–R159 和 final 属于同一个 treatment。下一条实验如果要改变“哪些题得到更多尝试机会”，应建立独立 successor，继续一次只回答一个问题。', 'DirectApply completed under one unchanged treatment: task sampling, reward, and update rules were not changed mid-run. R0–R159 and the frozen final therefore belong to one treatment. Any change to which tasks receive more attempts should be a separate successor so each experiment still answers one question.')}</p>
+      <h2 id="next-title">{t('参数学习问题已经收口；下一步拆成学习信号和参数容量两个问题', 'Q17 parametric-learning closure is complete; the next step splits into learning-signal and parameter-capacity questions')}</h2>
+      <p class="slide-thesis">{t('held-out checkpoint 结果把最早平台期定在 120 次参数更新后；普通 SFT 再加训练预算并没有继续变好。现在不再重复“多训普通 SFT”或 DirectApply-vs-rank128-Bounded，而是分别测试 SEED-style 1.7B 学习信号和 Bounded rank32 容量。', 'Held-out checkpoints place the earliest practical plateau after 120 parameter updates, while extra ordinary-SFT budget did not keep improving. The program therefore stops repeating “train ordinary SFT longer” or DirectApply-vs-rank128-Bounded, and instead separates SEED-style 1.7B learning signal from Bounded rank32 capacity.')}</p>
       <div class="choice-grid">
-        <div class="choice current-line"><span>{t('已完成', 'COMPLETED')}</span><h3>{t('DirectApply：160 轮训练 + 一次冻结终评', 'DirectApply: 160 training rounds + one frozen final')}</h3><p>{t(`训练过程完整封口；正式 final 只测了一次，得到 ${dynamicsDirectApply.finalScore.toFixed(2)} / 100 和 ${dynamicsDirectApply.finalExactSuccessCount} / ${dynamicsDirectApply.finalValidCount} 道题完整成功。训练曲线保留为过程证据，不冒充 final。`, `The full training trajectory is sealed. The formal final was measured exactly once, yielding ${dynamicsDirectApply.finalScore.toFixed(2)} / 100 and ${dynamicsDirectApply.finalExactSuccessCount} / ${dynamicsDirectApply.finalValidCount} exact successes. Training-round curves remain process evidence and are not treated as the final.`)}</p></div>
-        <div class="choice successor-line"><span>{t('下一条实验', 'NEXT EXPERIMENT')}</span><h3>{t('把更多探索机会给“差一点就会”的难题', 'Give more exploration to hard tasks that are close to success')}</h3><p>{t('保持每轮 128 次任务尝试的总预算不变，只改变哪些题更容易拿到新的尝试机会：优先那些已经接近成功、但还没完全做对的难题。若仍然平台，再把“让部分得分参与学习”和“用偏好反馈学习”分别做成新的单变量实验。', 'Keep the same budget of 128 task attempts per round and change only which tasks receive more attempts, prioritizing hard tasks that are close to success. If the plateau remains, test learning from partial scores and learning from preference feedback as separate experiments.')}</p></div>
+        <div class="choice current-line"><span>{t('已收口', 'CLOSED')}</span><h3>{t('先回答“是不是普通训练还不够久”', 'Q17: first answer whether ordinary training was simply too short')}</h3><p>{t('DirectApply held-out refinement 支持最早在 120 updates 后进入平台；一遍 SFT 与 OPSD 的平均 Task Score 没有可靠赢家；三遍 SFT 的稀疏曲线 0.355 → 0.283 → 0.241，说明继续增加普通 SFT 预算不是当前默认方向。', 'DirectApply held-out refinement supports an earliest plateau after 120 updates. One-pass SFT and OPSD do not yield a reliable mean Task Score winner, and the sparse three-epoch SFT curve falls 0.355 → 0.283 → 0.241, so adding ordinary-SFT budget is no longer the default direction.')}</p></div>
+        <div class="choice successor-line"><span>{t('进行中 · 资源暂停', 'IN PROGRESS · RESOURCE PAUSED')}</span><h3>{t('A：SEED-style 1.7B；B：Bounded rank32', 'A: SEED-style 1.7B; B: Bounded rank32')}</h3><p>{t('B 已从 sealed R151-after 压成 rank32，并通过 64 题 immediate-shock gate：Task Score 0.6256 → 0.6396，exact success 23/64 → 22/64，因此获准继续 R152–R159，但尚未启动。A 的数据和科学配方已冻结，当前在做 RTX 5090 兼容的执行环境适配，正式 2-GPU one-step FSDP qualification 尚未运行。', 'B has been compressed from sealed R151-after to rank32 and passed the 64-task immediate-shock gate: Task Score 0.6256 → 0.6396 and exact success 23/64 → 22/64. It is therefore cleared for R152–R159, but that continuation has not started. A has frozen data and scientific recipe; execution-runtime adaptation for RTX 5090 is in progress, while formal 2-GPU one-step FSDP qualification has not run.')}</p></div>
       </div>
-      <div class="final-order" aria-label={t('下一步执行顺序', 'Execution order')}>
-        <span><b>01</b>{t('DirectApply 已原样完成 160 轮', 'DirectApply completed all 160 rounds unchanged')}</span>
+      <div class="final-order" aria-label={t('当前执行顺序', 'Current execution order')}>
+        <span><b>01</b>{t('Q17 learning-signal closure 已完成', 'Q17 learning-signal closure complete')}</span>
         <i aria-hidden="true">→</i>
-        <span><b>02</b>{t('冻结终评已按授权只打开一次', 'The frozen final was opened exactly once after authorization')}</span>
+        <span><b>02</b>{t('B immediate-shock PASS；A runtime 适配中', 'B immediate-shock PASS; A runtime adaptation in progress')}</span>
         <i aria-hidden="true">→</i>
-        <span><b>03</b>{t('再经单独预注册和授权，启动下一条单变量实验', 'Then preregister and separately authorize the next one-variable experiment')}</span>
+        <span><b>03</b>{t('2026-09-24 15:15 SGT 起 GPU6/7 已按 owner 指令暂停并释放；恢复后先重新过 live gate，再继续 A qualification / B R152', 'GPU6/7 were paused and released by owner instruction from 2026-09-24 15:15 SGT; after reauthorization, rerun the live gate before A qualification or B R152')}</span>
       </div>
-      <p class="final-source"><a href={flowHref}>{t('实验流程', 'Experiment flow')}</a> · <a href={technicalHref}>{t('技术推导与实验严谨性', 'Technical derivations and rigor')}</a></p>
+      <p class="final-source"><a href={q17LearningSignalPrHref}><ExternalBrandMark href={q17LearningSignalPrHref} />{t('Q17 参数学习收口 · PR #588', 'Q17 learning-signal closure · PR #588')}</a> · <a href={postAdvisorPrHref}><ExternalBrandMark href={postAdvisorPrHref} />{t('会后方向与当前状态 · PR #590', 'Post-advisor directions and current status · PR #590')}</a> · <a href={frontierPlanHref}>{t('历史 Q17 路线图', 'Historical Q17 roadmap')}</a></p>
     </div>
   </section>
 </article>
