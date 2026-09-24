@@ -42,8 +42,8 @@ describe('public GitHub Actions PR preflight', () => {
     expect(reviewWorkflow).toContain("if: github.ref == 'refs/heads/main'");
     expect(reviewWorkflow).toContain('persist-credentials: false');
     expect(reviewWorkflow).toContain('PUBLIC_SEARCH_INDEXING: disabled');
-    expect(reviewWorkflow).toContain('actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02');
-    expect(reviewWorkflow).toContain('actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093');
+    expect(reviewWorkflow).toContain('actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a');
+    expect(reviewWorkflow).toContain('actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131');
     expect(reviewWorkflow).toContain('BASEMODEL_REVIEW_VERCEL_TOKEN');
     expect(reviewWorkflow).toContain('BASEMODEL_REVIEW_VERCEL_PROJECT_ID');
     expect(reviewWorkflow).toContain('BASEMODEL_REVIEW_VERCEL_TEAM_ID');
