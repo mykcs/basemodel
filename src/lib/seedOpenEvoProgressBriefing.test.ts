@@ -480,19 +480,23 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(technical).toContain('post-hoc checkpoint replay');
   });
 
-  it('ends with the frozen current treatment and a one-variable successor rather than abstract direction labels', () => {
+  it('ends with the current post-advisor goal state rather than the superseded Frontier Curriculum default', () => {
     const finalSlide = briefing.slice(sectionPosition('next'));
-    expect(finalSlide).toContain('DirectApply 的 160 轮和冻结终评都已完成；下一条实验再单独改学习材料选择');
-    expect(finalSlide).toContain('中途没有改抽题方式、奖励或更新规则');
-    expect(finalSlide).toContain('DirectApply：160 轮训练 + 一次冻结终评');
-    expect(finalSlide).toContain('保持每轮 128 次任务尝试的总预算不变');
-    expect(finalSlide).toContain('优先那些已经接近成功、但还没完全做对的难题');
-    expect(finalSlide).toContain('让部分得分参与学习');
-    expect(finalSlide).toContain('DirectApply 已原样完成 160 轮');
-    expect(finalSlide).toContain('冻结终评已按授权只打开一次');
-    expect(finalSlide).not.toContain('DirectApply 原样跑到 R160');
-    expect(finalSlide).not.toContain('R160 正式封口并获得终评授权后，只打开一次冻结终评');
-    expect(finalSlide).toContain('再经单独预注册和授权，启动下一条单变量实验');
+    expect(finalSlide).toContain('Q17 参数学习已经收口；下一步拆成学习信号和参数容量两个问题');
+    expect(finalSlide).toContain('最早在 120 updates 后进入平台');
+    expect(finalSlide).toContain('0.355 → 0.283 → 0.241');
+    expect(finalSlide).toContain('A：SEED-style 1.7B；B：Bounded rank32');
+    expect(finalSlide).toContain('Task Score 0.6256 → 0.6396');
+    expect(finalSlide).toContain('exact success 23/64 → 22/64');
+    expect(finalSlide).toContain('获准继续 R152–R159，但尚未启动');
+    expect(finalSlide).toContain('RTX 5090 兼容的执行环境适配');
+    expect(finalSlide).toContain('正式 2-GPU one-step FSDP qualification 尚未运行');
+    expect(finalSlide).toContain('2026-09-24 15:15 SGT 起 GPU6/7 已按 owner 指令暂停并释放');
+    expect(finalSlide).toContain('Q17 参数学习收口 · PR #588');
+    expect(finalSlide).toContain('会后方向与当前状态 · PR #590');
+    expect(finalSlide).toContain('历史 Q17 路线图');
+    expect(finalSlide).not.toContain('把更多探索机会给“差一点就会”的难题');
+    expect(finalSlide).not.toContain('再经单独预注册和授权，启动下一条单变量实验');
     expect(finalSlide).not.toContain('向北');
     expect(finalSlide).not.toContain('向南');
     expect(finalSlide).not.toContain('想请老师和学长判断优先级');
