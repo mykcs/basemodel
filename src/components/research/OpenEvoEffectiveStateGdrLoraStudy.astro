@@ -145,7 +145,7 @@ const twentyRoundScoreWindows = finalResult
   <header class="paper__hero esg__hero" data-reader-context id="top">
     <h1>{t('OpenEVO 参数演变：Bounded State 与 β 组件', 'OpenEVO parameter evolution: Bounded State and the β component')}</h1>
 
-    <figure class="paper-table-figure paper-table-figure--hero">
+    <figure class="paper-table-figure paper-table-figure--hero" data-result-stage="direct-result">
       <div class="paper-table-wrap paper-table-wrap--hero" aria-label={t('三组已完成实验、一个未做实验位置，以及 SEED 论文参考', 'Three completed experiments, one unrun slot, and a SEED paper reference')}>
         <table class="paper-table paper-table--ablation" aria-describedby="ablation-table-caption">
           <thead>
@@ -476,7 +476,7 @@ delta_a = (beta_eff_a / c1_norm) * (da / da_norm)`}</code></pre>
     <p class="paper__math-caption">{t('这是参数空间里的概念式；实际 runtime 先写 C 得到真实 C1，再基于 C1 写 A。', 'Conceptual parameter-space form; runtime writes C first to obtain the actual C1, then writes A conditioned on C1.')}</p>
   </section>
 
-  <section class="paper__section" id="formal-design" aria-labelledby="experiment-title">
+  <section class="paper__section" id="formal-design" data-result-stage="setup" aria-labelledby="experiment-title">
     <p class="paper__section-number">3</p>
     <h2 id="experiment-title">{t('实验设置：Qwen3-1.7B × WebShop', 'Experiments: Qwen3-1.7B × WebShop')}</h2>
     <p>{t(
@@ -621,7 +621,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     </div>
   </section>
 
-  <section class="paper__section esg__results" id="formal-result" aria-labelledby="result-title">
+  <section class="paper__section esg__results" id="formal-result" data-result-stage="task-result-detail" aria-labelledby="result-title">
   <p class="paper__section-number">4</p>
   <h2 id="result-title">{t('实验结果：Task Score、成功率与计算代价', 'Results: Task Score, success, and compute')}</h2>
   <p class="paper__lede">{t(
@@ -790,7 +790,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   </div>
 </section>
 
-<section class="paper__section" id="analysis" aria-labelledby="analysis-title">
+<section class="paper__section" id="analysis" data-result-stage="diagnostics" aria-labelledby="analysis-title">
   <p class="paper__section-number">5</p>
   <h2 id="analysis-title">{t('训练过程中发生了什么？从 loss 到行为变化', 'What changed during training? From loss to behavior')}</h2>
   <p class="paper__lede">{t(
@@ -993,7 +993,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     <p class="paper__links"><a href="/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.json">{t('160 轮完整行为 entropy JSON →', 'Full 160-round action-entropy JSON →')}</a></p>
   </div>
 
-  <div class="paper__analysis-summary" id="analysis-boundary">
+  <div class="paper__analysis-summary" id="analysis-boundary" data-result-stage="synthesis">
     <h3>5.7 {t('把这些指标合起来后，我们能确定什么、还不能确定什么', 'After combining these metrics, what is established and what remains uncertain?')}</h3>
     <p><strong>{t('确定看到的：', 'Observed: ')}</strong>{t(
       'β-gating 后期 Task Score 回落、任务路径重新变长、更新方向与 Bounded 明显分开，同时 action-family entropy 更集中。',
@@ -1010,7 +1010,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   </div>
 </section>
 
-  <section class="paper__section" id="next-question" aria-labelledby="next-question-title">
+  <section class="paper__section" id="next-question" data-result-stage="next-question" aria-labelledby="next-question-title">
     <p class="paper__section-number">6</p>
     <h2 id="next-question-title">{t('现在真正卡在哪里，以及下一步先做什么', 'What is actually blocked now, and what should come next')}</h2>
     <p>{t(
@@ -1057,7 +1057,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     )}</p>
   </section>
 
-  <section class="paper__section" id="evidence" aria-labelledby="evidence-title">
+  <section class="paper__section" id="evidence" data-result-stage="evidence" aria-labelledby="evidence-title">
     <p class="paper__section-number">7</p>
     <h2 id="evidence-title">{t('证据与复现身份：如何确认这些结果来自哪一组实验', 'Evidence and reproducibility identity: how to identify the exact experiments behind these results')}</h2>
     <p>{t(

@@ -152,4 +152,20 @@ export const HUMAN_EXPRESSION_ENFORCEMENT_REGISTRY: HumanExpressionEnforcementRe
   { family: 'review-preview-not-visually-verified', guards: [
     { kind: 'policy-test', path: 'src/lib/vercelHostedUiGate.test.ts', note: 'keeps hosted review and final release verification as explicit, separate workflows' },
   ]},
+  { family: 'named-specimen-not-propagated-sitewide', guards: [
+    { kind: 'policy-test', path: 'src/lib/humanThinkingWebExpressionContract.test.ts', note: 'treats one owner-reported page as a same-family search seed rather than the complete acceptance boundary' },
+    { kind: 'source-audit', path: 'scripts/audit-audience-copy.ts', note: 'hardens known same-family public-copy regressions after site-wide propagation' },
+  ]},
+  { family: 'reader-prerequisite-inversion', guards: [
+    { kind: 'source-audit', path: 'scripts/audit-audience-copy.ts', note: 'blocks known presenter-first and unexplained project-term regressions at public entry surfaces' },
+    { kind: 'reader-contract', path: 'tests/e2e/site-reader-contracts.spec.ts', note: 'keeps first-screen reader goals and attention budgets explicit for public page roles' },
+  ]},
+  { family: 'research-metric-ladder-missing', guards: [
+    { kind: 'policy-test', path: 'src/lib/researchResultReadingContract.test.ts', note: 'requires canonical multi-metric result owners to place direct task results before deeper diagnostics' },
+    { kind: 'browser-gate', path: 'tests/e2e/effective-state-gdr-lora.spec.ts', note: 'keeps the accepted Bounded/GDR metric ladder and local evidence semantics rendered correctly' },
+  ]},
+  { family: 'validation-final-role-conflation', guards: [
+    { kind: 'policy-test', path: 'src/lib/researchResultReadingContract.test.ts', note: 'documents and protects train, development/validation, and locked-final roles on canonical result pages' },
+    { kind: 'policy-test', path: 'src/lib/q17DirectApplyAnalysis.test.ts', note: 'keeps training trajectory, frozen final, and diagnostic evidence as separate scientific layers' },
+  ]},
 ];

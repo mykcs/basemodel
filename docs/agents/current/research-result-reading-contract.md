@@ -65,15 +65,48 @@ The ending distinguishes supported findings, local or post-hoc diagnostics, miss
 
 Unknown stays unknown. Not run never becomes zero.
 
+For BaseModel's research-archive role, a returning reader should be able to recover this chain without reconstructing chat or logs:
+
+~~~text
+why this experiment exists
+→ what was changed
+→ current result
+→ evidence
+→ what is still unknown
+→ next experiment / decision
+~~~
+
+The blocks do not need these literal labels. The information must simply remain recoverable in the visible reading path.
+
+## Validation, checkpoint selection, and final evaluation
+
+When intermediate checkpoints exist, keep three roles distinct:
+
+- **train trajectory** — optimization history;
+- **development / validation panel** — checkpoint, round-budget, or hyperparameter selection when its selection rule was fixed before reading outcomes;
+- **locked final panel** — final reporting, not a hidden tuning surface.
+
+Do not call a low training loss "converged" without validation evidence. Do not promote the best-looking checkpoint after inspection into a preregistered stopping rule. If a development curve is noisy, report the noise instead of pretending it selects one exact round with certainty.
+
 ## Setup versus analysis
 
 Keep enough identity in the first screen to know model, task, treatment, budget or panel, and final-evaluation boundary. Full runtime and configuration detail belongs in progressive evidence unless it is itself the research variable.
 
-## Reference implementation and first migration set
+## Reference implementation and canonical owners
 
-bounded-effective-state-gdr is the current reference for the result-first diagnostic ladder and should not be rewritten just to satisfy this contract.
+`bounded-effective-state-gdr` is the accepted reference witness for the result-first diagnostic ladder and should not be rewritten merely to make other pages look similar.
 
-The first explicit migrations are q17-directapply-analysis, stage2-7b-analysis, and results/four-arm-analysis. These pages keep their own visual grammar; the shared contract is semantic order, not a shared card template.
+The current canonical multi-metric owners are:
+
+- `bounded-effective-state-gdr`;
+- `q17-directapply-analysis`;
+- `stage2-7b-analysis`;
+- `results/four-arm-analysis`;
+- `stage1-learning-objectives`.
+
+These pages keep their own visual grammar. The shared contract is semantic order, metric locality, evidence boundary, and next-question recovery — not a shared card/table skin.
+
+A mechanism page, runbook, catalog, archive, or operational page must keep its own role rather than pretending to be a result paper.
 
 ## Acceptance
 

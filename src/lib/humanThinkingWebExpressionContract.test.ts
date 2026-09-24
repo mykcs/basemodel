@@ -17,6 +17,14 @@ describe('human-thinking web expression contract', () => {
     expect(agentIndex).toContain('human-thinking-web-expression-contract.md');
   });
 
+  it('treats an owner-named defect as a site-wide same-family search seed', () => {
+    expect(expressionContract).toContain('search seed, not the acceptance boundary');
+    expect(expressionContract).toContain('search sibling routes and shared owners');
+    expect(expressionContract).toContain('repair every high-confidence same-family instance');
+    expect(expressionContract).toContain('bounded-effective-state-gdr');
+    expect(expressionContract).toContain('do not inherit its exact table/CSS/paper layout');
+  });
+
   it('turns the preference into a default project invariant rather than a chat-only memory', () => {
     expect(operatingPrinciples).toContain('User-facing work must externalize human thinking');
     expect(operatingPrinciples).toContain('Even a request such as “add one item to this page”');

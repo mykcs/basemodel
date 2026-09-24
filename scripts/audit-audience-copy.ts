@@ -205,6 +205,26 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   ] as const;
   for (const [file, needle] of exactBanned) ban(file, 'COPY-HEADING-002', needle, 'A known negative or conversation-dependent public heading reappeared.');
 
+  const propagatedHplBans = [
+    ['src/pages/_bodies/papers-index.astro', '先缩小研究问题和模型角色，再核对 benchmark 与复现资料。'],
+    ['src/pages/workspace/index.astro', '先定义研究目标、模型角色和资源限制'],
+    ['src/pages/lab.astro', 'Lab server · live'],
+    ['src/pages/lab.astro', '先确认 mount 是否共享'],
+    ['src/pages/_bodies/landscape.astro', '今天的完整模型总数'],
+    ['src/pages/_bodies/data-status.astro', '今天的实时目录'],
+    ['src/i18n/en.ts', 'Agent Foundation Model Atlas'],
+    ['src/i18n/en.ts', "levelUnknown: 'Pending'"],
+    ['src/i18n/en.ts', "unknown: 'Pending verification'"],
+    ['src/components/models/detail/UnresolvedFieldList.astro', 'Pending: ${readable}'],
+  ] as const;
+  for (const [file, forbidden] of propagatedHplBans) {
+    ban(file, 'COPY-HPL-PROPAGATION-001', forbidden, 'A high-confidence human-expression regression already rejected during site-wide HPL propagation must not return.');
+  }
+  requireText('src/pages/research/seed-openevo/flow/openevo.astro', 'COPY-FIRST-USE-PROJECT-TERM-001', '下一版本（successor revision）', 'The first-use route description must give the human meaning before the exact project term.');
+  requireText('src/pages/research/seed-openevo/flow/loops.astro', 'COPY-FIRST-USE-PROJECT-TERM-001', '下一版本（successor revision）', 'The first-use route description must give the human meaning before the exact project term.');
+  requireText('src/pages/guide.astro', 'COPY-HARDWARE-CONTEXT-001', '历史 RTX6 平台（4×RTX3090）的工程经验', 'Historical shared hardware quantities must identify their historical role instead of appearing as a generic current requirement.');
+  requireText('src/pages/lab.astro', 'COPY-HARDWARE-CONTEXT-001', '只读核验可见 8×RTX5090；个人分配仍未知', 'Live-visible hardware and personal allocation must remain visibly distinct.');
+
   const requiredOwners = ['src/layouts/AppLayout.astro','src/content/benchmarkRuns/agentbench-reported.json','src/content/claims/claude-2-access.json','src/lib/fieldCatalog.ts','src/lib/modelFilters.ts','src/pages/_bodies/not-found.astro','public/guides/seed-4x3090-preflight.sh','public/guides/seed-stage1-check.py','public/og-cover.svg'];
   const discovered = new Set(discoveredFiles);
   for (const file of requiredOwners) if (!discovered.has(file)) failures.push({ file, line: 1, ruleId: 'COPY-OWNER-001', snippet: file, reason: 'A known production copy owner must remain in scanner discovery.', strict: true });
@@ -230,7 +250,7 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
 
   const zhGuide = 'src/pages/guide.astro';
   const enGuide = 'docs/archive/site-en/src/pages/en/guide.astro.archive';
-  for (const required of ['RTX6（4×RTX3090）', 'current-campaign.json', '默认分支快照']) requireText(zhGuide, 'COPY-I18N-003', required, 'The Chinese Guide must preserve historical provenance and branch-aware live-state routing.');
+  for (const required of ['历史 RTX6 平台（4×RTX3090）', 'current-campaign.json', '默认分支快照']) requireText(zhGuide, 'COPY-I18N-003', required, 'The Chinese Guide must preserve historical provenance and branch-aware live-state routing.');
   for (const required of ['RTX6 (4×RTX3090)', 'current-campaign.json', 'default-branch snapshot']) requireText(enGuide, 'COPY-I18N-003', required, 'The English Guide must preserve historical provenance and branch-aware live-state routing.');
   ban(zhGuide, 'COPY-STATE-PROVENANCE-004', '当前实验分配为 <strong>5×RTX5090</strong>', 'The Chinese Guide must not freeze a prior GPU allocation as current.');
   ban(enGuide, 'COPY-STATE-PROVENANCE-004', 'current allocation of <strong>5×RTX5090</strong>', 'The English Guide must not freeze a prior GPU allocation as current.');

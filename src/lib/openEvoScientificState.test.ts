@@ -72,8 +72,8 @@ describe('OpenEvo scientific-state provenance', () => {
     expect(state).toContain('live-idle check');
     expect(state).toContain('gpuAllocationAllowed: false');
     const lab = read('src/pages/lab.astro');
-    expect(lab).toContain('8×RTX5090 visible · allocation policy unknown');
-    expect(lab).toContain('历史记录：5×RTX5090 allocation');
+    expect(lab).toContain('只读核验可见 8×RTX5090；个人分配仍未知');
+    expect(lab).toContain('历史记录曾分配 5×RTX5090；当前分配以实验仓库最新运行合同为准');
   });
 
   it('keeps the durable Agent copy contract aligned with the runtime pages', () => {

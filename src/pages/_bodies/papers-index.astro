@@ -33,7 +33,7 @@ const matrixPapers = papers.map((paper) => ({ ...paper, models: paper.models.map
     <ol class="papers-reading-path" aria-label={locale === 'zh' ? '阅读论文记录的五个维度' : 'Five dimensions for reading paper records'}>
       {paperReadingPath.map(([label, explanation]) => <li><strong>{label}</strong><span>{explanation}</span></li>)}
     </ol>
-    <p class="papers-reading-note">{locale === 'zh' ? '下面的筛选器就按这些维度找论文：先缩小研究问题和模型角色，再核对 benchmark 与复现资料。论文报道与本站复现是两层证据；筛选只负责找到相关案例，不会把“有论文”变成“已经复现”。证据缺口保持“待核验”，不会自动补成肯定或否定。' : 'The filters below follow these dimensions: narrow the research question and model roles first, then check benchmarks and reproduction evidence. A paper report and a local reproduction are separate evidence layers; finding a paper does not mean the result has been reproduced here. Evidence gaps remain pending verification instead of being silently turned into yes or no.'}</p>
+    <p class="papers-reading-note">{locale === 'zh' ? '下面的筛选器按研究问题、方法、模型角色、Benchmark 与复现资料组织论文。论文报道与本站复现是两层证据；筛选只负责找到相关案例，不会把“有论文”变成“已经复现”。证据缺口保持“待核验”，不会自动补成肯定或否定。' : 'The filters below follow these dimensions: narrow the research question and model roles first, then check benchmarks and reproduction evidence. A paper report and a local reproduction are separate evidence layers; finding a paper does not mean the result has been reproduced here. Evidence gaps remain pending verification instead of being silently turned into yes or no.'}</p>
   </header>
   <section class="section" id="paper-browser"><PaperExplorer client:load papers={papers} models={models} locale={locale} /></section>
   <details class="paper-matrix-advanced">

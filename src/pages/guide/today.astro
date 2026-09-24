@@ -6,16 +6,16 @@ import { openEvoScientificState } from '../../lib/openEvoScientificState';
 const seedRepo = 'https://github.com/mykcs/seed3090';
 const currentRepo = 'https://github.com/mykcs/openevo-experiment';
 ---
-<AppLayout title="历史 RTX 3090 四卡复现记录（历史）" description="2026-08-12 的 RTX6 / 4×RTX3090 复现运行手册已转为历史记录；实时 OpenEvo 状态由 openevo-experiment 实际工作分支的 current-campaign 与最新 reconciliation/result 决定。" locale="zh">
+<AppLayout title="历史四卡 RTX 3090 复现记录" description="2026-08-12 的 RTX6 / 4×RTX3090 复现运行手册已转为历史记录；实时 OpenEvo 状态由 openevo-experiment 实际工作分支的 current-campaign 与最新 reconciliation/result 决定。" locale="zh">
   <div class="shell editorial-page historical-runbook">
     <header class="page-header">
       <span class="section-kicker">历史运行手册 · 2026-08-12</span>
       <h1>历史 RTX 3090 四卡复现记录</h1>
-      <p class="lede">这条路线记录了旧 RTX6（4×RTX3090）时期的 SEED / OpenEvo 环境准备与小规模验证。它仍有复现和迁移价值，但不再代表当前实验环境。</p>
+      <p class="lede">这条路线记录了 2026-08-12 历史 RTX6 平台（4×RTX3090）的 SEED / OpenEvo 环境准备与小规模验证。它仍有复现和迁移价值，但不再代表当前实验环境。</p>
     </header>
 
     <section class="section" aria-labelledby="historical-platform-title">
-      <div class="section-heading"><div><span class="section-kicker">历史平台</span><h2 id="historical-platform-title">RTX6 · 4×RTX3090</h2></div></div>
+      <div class="section-heading"><div><span class="section-kicker">历史平台</span><h2 id="historical-platform-title">RTX6 四卡 RTX 3090 平台</h2></div></div>
       <dl class="runbook-facts"><div><dt>用途</dt><dd>WebShop / ALFWorld bring-up、离线依赖、早期参数实验</dd></div><div><dt>仓库</dt><dd><code>seed3090</code></dd></div><div><dt>保留证据</dt><dd>日志、失败轨迹、preflight、Stage-1 检查器</dd></div><div><dt>状态</dt><dd>历史，不再启动新实验</dd></div></dl>
       <div class="links"><a class="button button-secondary" href={seedRepo} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedRepo} />seed3090 ↗</a><a class="button button-secondary" href="/guides/seed-4x3090-preflight.sh">历史 preflight</a><a class="button button-secondary" href="/guides/seed-stage1-check.py">Stage-1 检查器</a></div>
     </section>

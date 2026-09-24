@@ -5,7 +5,7 @@ import { ResearchWorkspace } from '../../components/workspace/ResearchWorkspace.
 <AppLayout title="实验工作台" description="填写模型、GPU、网络、权重和训练条件，筛掉跑不起来的方案，并保存候选、来源和比较结果。" locale="zh">
   <section class="shell page-header workspace-primary" data-workspace-static-fallback data-reader-primary>
     <h1>实验工作台</h1>
-    <p class="lede">先定义研究目标、模型角色和资源限制，再让工作台筛掉不合适的方案；候选、比较和证据会继续保留在同一个任务里。</p>
+    <p class="lede">实验工作台根据研究目标、模型角色和资源限制筛掉不合适的方案，并把候选、比较和证据保留在同一个研究任务里。</p>
     <p><a class="button button-primary" href="?v=2&mode=modern">开始填写实验条件</a></p>
   </section>
   <ResearchWorkspace client:load locale="zh" />
