@@ -482,7 +482,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
 
   it('ends with the current post-advisor goal state rather than the superseded Frontier Curriculum default', () => {
     const finalSlide = briefing.slice(sectionPosition('next'));
-    expect(finalSlide).toContain('Q17 参数学习已经收口；下一步拆成学习信号和参数容量两个问题');
+    expect(finalSlide).toContain('参数学习问题已经收口；下一步拆成学习信号和参数容量两个问题');
     expect(finalSlide).toContain('最早在 120 updates 后进入平台');
     expect(finalSlide).toContain('0.355 → 0.283 → 0.241');
     expect(finalSlide).toContain('A：SEED-style 1.7B；B：Bounded rank32');
