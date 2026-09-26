@@ -20,6 +20,10 @@ Before any user-facing product, copy, navigation, information-architecture, page
 
 `docs/wish/` is the high-level product-intent owner. Existing current policies such as `product-and-research-integrity.md`, the SEED × OpenEvo research mission, reader contracts, and UI/engineering standards keep their narrower responsibilities. Do not copy the wish text into those files or back into this root bootstrap.
 
+## Current development direction
+
+For implementation, read [`docs/dev/LATEST.md`](docs/dev/LATEST.md). For CI, hosting, runner, or release changes, also read [`docs/dev/DESIGN.md`](docs/dev/DESIGN.md), then the existing current owners routed by [`docs/dev/README.md`](docs/dev/README.md), executable configuration, and live provider state. Consult [`docs/dev/ARCHIVE.md`](docs/dev/ARCHIVE.md) only for a replaced direction. The shared lifecycle is owned by https://github.com/mykcs/.codex/blob/main/engineering/DEV_PROTOCOL.md; Dev explains choices without replacing `docs/agents/current/` or the required checks.
+
 ## Central website learning
 
 For every user-facing website copy task, read the current shared human-expression standard before the first substantial draft:
