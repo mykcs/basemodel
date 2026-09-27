@@ -249,7 +249,7 @@ describe('Agent scenario-trigger discovery', () => {
   it('routes website feedback closeout to central RAW and keeps the local HPL control plane retired', () => {
     expect(registry).toContain('Repeated closeout is delta-only');
     expect(retiredHpl).toContain('retired 2026-09-22');
-    expect(retiredHpl).toContain('mykcs/.codex');
+    expect(retiredHpl).toContain('mykcs/.agents');
     expect(retiredIngestion).toContain('retired 2026-09-22');
     expect(retiredIngestion).toContain('CONVERSATION_CLOSEOUT.md');
   });
