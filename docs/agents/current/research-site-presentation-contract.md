@@ -147,7 +147,7 @@ For research routes:
 
 A material math-heavy page must have executable acceptance evidence that the rendered equation path exists (for example a KaTeX / MathML assertion) and that representative desktop/mobile widths do not overflow. Source-text presence alone is not enough.
 
-Historical enforcement case: `CASE-097 — 数学等价与跨领域映射要分层讲` in [legacy BaseModel HPL case archive](https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md).
+Historical enforcement case: `CASE-097 — 数学等价与跨领域映射要分层讲` in [legacy BaseModel HPL case archive](https://github.com/mykcs/.agents/blob/main/docs/learning/legacy/basemodel-hpl/full-2026-09-22/docs/agents/current/website-copy-cases.md).
 
 ## 4. Secret and credential presentation
 

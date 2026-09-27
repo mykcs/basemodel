@@ -32,11 +32,11 @@ For every user-facing website copy task, read the current shared human-expressio
 
 When prior owner feedback or failure-family evidence matters, also read:
 
-- https://github.com/mykcs/.codex/blob/main/website-learning/shared/content/HUMAN_EXPRESSION.md
+- https://github.com/mykcs/.agents/blob/main/docs/learning/shared/content/HUMAN_EXPRESSION.md
 
 For BaseModel-specific research-archive roles, OpenEVO/SEED research framing, or returning-researcher context, also read the site-specific learned experience:
 
-- https://github.com/mykcs/.codex/tree/main/website-learning/sites/basemodel
+- https://github.com/mykcs/.agents/tree/main/docs/learning/projects/basemodel
 
 This site-specific learning is evidence/interpretation only. Current BaseModel Wish, Reader Contracts, scientific authority, source, and tests remain the project-side truth.
 
@@ -46,7 +46,7 @@ For material design decisions, read the shared semantic web-expression / informa
 
 When prior owner feedback or design failure evidence matters, also read:
 
-- https://github.com/mykcs/.codex/blob/main/website-learning/shared/design/LEARNED_PREFERENCES.md
+- https://github.com/mykcs/.agents/blob/main/docs/learning/shared/design/LEARNED_PREFERENCES.md
 
 For material website-engineering work, read the current shared Engineering Standard first:
 
@@ -54,10 +54,10 @@ For material website-engineering work, read the current shared Engineering Stand
 
 When prior engineering failures/evidence matter, also read:
 
-- https://github.com/mykcs/.codex/blob/main/website-learning/shared/engineering/LEARNED_PRACTICES.md
-- https://github.com/mykcs/.codex/tree/main/website-learning/sites/basemodel
+- https://github.com/mykcs/.agents/blob/main/docs/learning/shared/engineering/LEARNED_PRACTICES.md
+- https://github.com/mykcs/.agents/tree/main/docs/learning/projects/basemodel
 
-Direct owner feedback and conversation closeout are centralized in `.codex/website-learning`. BaseModel owns its current Wish, scientific/product authority, Reader Contracts, source audits, browser tests, and route-specific guards. It no longer owns a second dynamic preference model/retrieval engine. Central preference evidence never overrides scientific/factual/security truth.
+Direct owner feedback and conversation closeout are centralized in `.agents/docs/learning`. BaseModel owns its current Wish, scientific/product authority, Reader Contracts, source audits, browser tests, and route-specific guards. It no longer owns a second dynamic preference model/retrieval engine. Central preference evidence never overrides scientific/factual/security truth.
 
 ## Fast start
 
@@ -72,7 +72,7 @@ You are already reading the repository bootstrap. After this file, read in this 
 5. [`docs/agents/current/scenario-trigger-registry.md`](docs/agents/current/scenario-trigger-registry.md) — scan this against the current task and automatically load/execute the matched scenario guidance without waiting for the owner to repeat it.
 6. [`docs/agents/current/product-and-research-integrity.md`](docs/agents/current/product-and-research-integrity.md) — product north star and false-complete rules.
 7. [`docs/agents/current/human-thinking-web-expression-contract.md`](docs/agents/current/human-thinking-web-expression-contract.md) — **mandatory for every user-facing page**, section, copy, navigation, comparison, explanation, or feature change. Before writing or substantially rearranging public-page HTML, also read [`docs/agents/current/site-reader-attention-contract.md`](docs/agents/current/site-reader-attention-contract.md) and register/update the route's executable reader contract. For research publication work, also read [`docs/agents/current/research-site-presentation-contract.md`](docs/agents/current/research-site-presentation-contract.md): keep results and interpretation visible, and place copy/paste implementation depth behind progressive disclosure. For canonical experiment-result or long-form analysis pages, also read [`docs/agents/current/research-result-reading-contract.md`](docs/agents/current/research-result-reading-contract.md): expose the strongest task-level result before deep diagnostics, then preserve metric → interpretation → boundary order.
-8. [`docs/agents/current/website-design-spec.md`](docs/agents/current/website-design-spec.md) — BaseModel-specific public-copy rules and scientific presentation boundaries. Cross-site `说人话 / 去 AI 味` learning comes from the central `.codex/website-learning` sources above; do not load the retired local HPL control plane.
+8. [`docs/agents/current/website-design-spec.md`](docs/agents/current/website-design-spec.md) — BaseModel-specific public-copy rules and scientific presentation boundaries. Cross-site `说人话 / 去 AI 味` learning comes from the central `.agents/docs/learning` sources above; do not load the retired local HPL control plane.
 9. [`docs/agents/current/ui-design-principles.md`](docs/agents/current/ui-design-principles.md) and [`docs/agents/current/sitewide-visual-knowledge-architecture.md`](docs/agents/current/sitewide-visual-knowledge-architecture.md) — learning-first responsive UI and the whole-site knowledge journey.
 10. [`docs/agents/current/ui-change-visual-acceptance-gate.md`](docs/agents/current/ui-change-visual-acceptance-gate.md) and [`docs/agents/current/theme-contrast-contract.md`](docs/agents/current/theme-contrast-contract.md) — required browser/theme/layout acceptance for UI work.
 11. [`docs/agents/current/seed-openevo-research-mission-first-principles.md`](docs/agents/current/seed-openevo-research-mission-first-principles.md), [`docs/agents/current/reproduction-guide-design-principles.md`](docs/agents/current/reproduction-guide-design-principles.md), and [`docs/agents/current/audience-centered-technical-copy.md`](docs/agents/current/audience-centered-technical-copy.md) when changing the current SEED × OpenEvo mission, reproduction flow, or technical copy.

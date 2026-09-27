@@ -366,7 +366,7 @@ Never publish hostnames, usernames, VPN endpoints, tokens, or unnecessary person
 Treat explicit live-page feedback as product/repository work when the owner asked for the page to be fixed; do not substitute an account-memory update for implementation, case deposition, sibling audit, or regression protection. Repository persistence and long-term memory are separate receipts.
 
 1. Load the writing stack from `docs/agents/README.md` by responsibility, not by filename count.
-2. Read `website-design-spec.md` plus the central learned evidence before every user-facing copy/design task: https://github.com/mykcs/.codex/blob/main/website-learning/shared/content/HUMAN_EXPRESSION.md and, when relevant, https://github.com/mykcs/.codex/tree/main/website-learning/sites/basemodel. Current explicit owner feedback outranks both. The retired local case corpus may be consulted only as historical evidence; do not run a local Preference Brief / Gold Pair retrieval step.
+2. Read `website-design-spec.md` plus the central learned evidence before every user-facing copy/design task: https://github.com/mykcs/.agents/blob/main/docs/learning/shared/content/HUMAN_EXPRESSION.md and, when relevant, https://github.com/mykcs/.agents/tree/main/docs/learning/projects/basemodel. Current explicit owner feedback outranks both. The retired local case corpus may be consulted only as historical evidence; do not run a local Preference Brief / Gold Pair retrieval step.
 3. For any public technical copy read `audience-centered-technical-copy.md`.
 4. For research/result copy also read `reader-first-copy-hierarchy.md` and `research-editorial-style.md`.
 5. For Chinese technical explainers add `layered-technical-explainer-copy.md`, but treat its layers as information-depth guidance rather than mandatory visible labels/blocks. The canonical website spec and newer live-human PREFERENCE cases outrank an older rigid display template.
@@ -451,7 +451,7 @@ previous retrospective did not prevent recurrence.
 
 **Automatic response:**
 
-1. read [`../../operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md`](../../operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md); it is BaseModel's navigation-only entrypoint to the canonical website-learning protocol in `mykcs/.codex`; never duplicate the protocol body here;
+1. read [`../../operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md`](../../operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md); it is BaseModel's navigation-only entrypoint to the canonical conversation-learning protocol in `mykcs/.codex`; never duplicate the protocol body here;
 2. read the root Agent router, current Agent principles, documentation index,
    scenario registry, and the task's current scientific/engineering owner;
 3. search existing current policies and history before creating a new file;
@@ -468,7 +468,7 @@ previous retrospective did not prevent recurrence.
 11. **Tool/connector capability discovery must stay read-only.** Use schema/list/search/fetch/read operations to confirm an available action or current state; never call `create` / `update` / `delete` merely to prove a connector works. If an accidental probe write occurs, clean only that exact object immediately, verify the cleanup, and record the recurrence instead of hiding it.
 12. **Before any permitted closeout mutation, bind the target noun to the exact action.** Record a compact `REPEAT-CORRECTION` witness such as `open PR -> create_pull_request`; if the chosen tool/action names a different object (`create_branch`, `update_ref`, `create_file`, etc.), stop before dispatch. A nearby write capability is not an acceptable substitute for the intended mutation.
 13. **Escalate repeated action-selection mismatch by changing execution surface.** If a provider write still targets the wrong object after an explicit target→action witness, stop using that ambiguous mutation surface for this task. Clean and verify the accidental object, then switch to a programmatic path whose intended object/action is visible in one explicit command or schema (for example `gh pr create` for opening a PR). Do not keep retrying the same connector mutation until it happens to hit the right action.
-14. **Repeated closeout is delta-only.** If the central website-learning closeout already preserved this conversation through a known boundary, add only feedback and project writeback after that boundary. Do not recreate local cases or duplicate the same owner correction.
+14. **Repeated closeout is delta-only.** If the central conversation-learning closeout already preserved this conversation through a known boundary, add only feedback and project writeback after that boundary. Do not recreate local cases or duplicate the same owner correction.
 
 **Refresh cue:** current refs, provider behavior, deployment policy, model/runtime
 behavior, and live resource state must be re-checked when the next task begins.

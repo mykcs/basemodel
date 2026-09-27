@@ -13,11 +13,11 @@ The reader-first hierarchy, research editorial style, research-site presentation
 
 ## Human-feedback precedent retrieval is a pre-write step
 
-Before the first substantial copy/layout edit, read the central human-expression preferences at https://github.com/mykcs/.codex/blob/main/website-learning/shared/content/HUMAN_EXPRESSION.md and the BaseModel-specific learned experience at https://github.com/mykcs/.codex/tree/main/website-learning/sites/basemodel. Then apply the current Reader Contract and BaseModel research presentation rules. Do not run the retired local Preference Brief / Gold Pair retrieval engine.
+Before the first substantial copy/layout edit, read the central human-expression preferences at https://github.com/mykcs/.agents/blob/main/docs/learning/shared/content/HUMAN_EXPRESSION.md and the BaseModel-specific learned experience at https://github.com/mykcs/.agents/tree/main/docs/learning/projects/basemodel. Then apply the current Reader Contract and BaseModel research presentation rules. Do not run the retired local Preference Brief / Gold Pair retrieval engine.
 
 For routes already listed in `READER_CONTRACT_PRECEDENTS`, those cases are part of the page's design contract. A later generic preference such as “reduce first-screen links” does not authorize deleting a bound human-feedback requirement such as architecture identity, an explicit TL;DR, or a source affordance. Reconcile the semantic reasons instead of counting elements mechanically.
 
-After one direct owner correction, scan sibling research surfaces for the same failure mechanism before declaring the fix complete. Preserve the owner wording through the central website-learning closeout when the conversation ends. For material copy/layout work, run the normal Reader Contract, rendered/source audits, accessibility/layout checks and browser acceptance that apply. If the owner explicitly asks for an independent comprehension study, review the actual changed surface directly; do not route it through the retired local HPL judge/cold-read machinery.
+After one direct owner correction, scan sibling research surfaces for the same failure mechanism before declaring the fix complete. Preserve the owner wording through the central conversation-learning closeout when the conversation ends. For material copy/layout work, run the normal Reader Contract, rendered/source audits, accessibility/layout checks and browser acceptance that apply. If the owner explicitly asks for an independent comprehension study, review the actual changed surface directly; do not route it through the retired local HPL judge/cold-read machinery.
 
 For visible research copy:
 

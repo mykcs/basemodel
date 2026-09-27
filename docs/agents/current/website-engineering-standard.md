@@ -8,11 +8,11 @@ https://github.com/mykcs/.codex/blob/main/website-governance/ENGINEERING_STANDAR
 
 Prior engineering feedback/evidence lives at:
 
-https://github.com/mykcs/.codex/blob/main/website-learning/shared/engineering/LEARNED_PRACTICES.md
+https://github.com/mykcs/.agents/blob/main/docs/learning/shared/engineering/LEARNED_PRACTICES.md
 
 This file keeps only BaseModel-specific stack, provider, CI, browser-evidence and use-site guard details. The pre-split full standard is frozen at:
 
-https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-engineering-spec/website-engineering-standard-2026-09-22.md
+https://github.com/mykcs/.agents/blob/main/docs/learning/legacy/basemodel-engineering-spec/website-engineering-standard-2026-09-22.md
 
 ## 1. BaseModel stack and rendering boundary
 
