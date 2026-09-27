@@ -1,6 +1,6 @@
 # BaseModel Dev
 
-This folder explains BaseModel's current development direction and why its CI and hosting roles fit the research site. The shared lifecycle is owned by the [Dev protocol](https://github.com/mykcs/.codex/blob/main/engineering/DEV_PROTOCOL.md).
+This folder explains BaseModel's current development direction and why its CI and hosting roles fit the research site. The shared lifecycle is owned by the [Dev protocol](https://github.com/mykcs/.agents/blob/main/docs/agents/DEV_PROTOCOL.md).
 
 - [LATEST.md](LATEST.md) — short current direction; read for ordinary implementation.
 - [DESIGN.md](DESIGN.md) — repository-specific CI/provider reasoning; read before changing CI, hosting, or release behavior.
