@@ -15,14 +15,14 @@ Before any user-facing product, copy, navigation, information-architecture, page
 
 - For homepage, navigation, information architecture, major route-role, interaction, or product-direction changes, also read [`docs/wish/DESIGN.md`](docs/wish/DESIGN.md).
 - Do **not** read [`docs/wish/ARCHIVE.md`](docs/wish/ARCHIVE.md) by default. Use it only to trace why an older product intent differed or when the owner explicitly asks about historical intent.
-- Shared Wish lifecycle/update rules are owned by https://github.com/mykcs/.codex/blob/main/website-governance/WISH_PROTOCOL.md; [`docs/wish/README.md`](docs/wish/README.md) is a local navigation entrypoint only.
+- Shared Wish lifecycle/update rules are owned by https://github.com/mykcs/.agents/blob/main/docs/agents/WISH_PROTOCOL.md; [`docs/wish/README.md`](docs/wish/README.md) is a local navigation entrypoint only.
 - Current owner instructions, scientific/factual authority, research-integrity rules, security boundaries, tests, and live provider truth outrank the wish. The wish decides what the product should become; it never rewrites sealed results or evidence.
 
 `docs/wish/` is the high-level product-intent owner. Existing current policies such as `product-and-research-integrity.md`, the SEED × OpenEvo research mission, reader contracts, and UI/engineering standards keep their narrower responsibilities. Do not copy the wish text into those files or back into this root bootstrap.
 
 ## Current development direction
 
-For implementation, read [`docs/dev/LATEST.md`](docs/dev/LATEST.md). For CI, hosting, runner, or release changes, also read [`docs/dev/DESIGN.md`](docs/dev/DESIGN.md), then the existing current owners routed by [`docs/dev/README.md`](docs/dev/README.md), executable configuration, and live provider state. Consult [`docs/dev/ARCHIVE.md`](docs/dev/ARCHIVE.md) only for a replaced direction. The shared lifecycle is owned by https://github.com/mykcs/.codex/blob/main/engineering/DEV_PROTOCOL.md; Dev explains choices without replacing `docs/agents/current/` or the required checks.
+For implementation, read [`docs/dev/LATEST.md`](docs/dev/LATEST.md). For CI, hosting, runner, or release changes, also read [`docs/dev/DESIGN.md`](docs/dev/DESIGN.md), then the existing current owners routed by [`docs/dev/README.md`](docs/dev/README.md), executable configuration, and live provider state. Consult [`docs/dev/ARCHIVE.md`](docs/dev/ARCHIVE.md) only for a replaced direction. The shared lifecycle is owned by https://github.com/mykcs/.agents/blob/main/docs/agents/DEV_PROTOCOL.md; Dev explains choices without replacing `docs/agents/current/` or the required checks.
 
 ## Central website learning
 
