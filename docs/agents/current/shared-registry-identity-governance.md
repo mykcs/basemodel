@@ -31,7 +31,7 @@ PR heads, temporary ports, current PIDs, current provider status, GPU occupancy,
 
 ## BaseModel use-site
 
-The legacy BaseModel copy-case corpus remains historical compatibility evidence. New RAW/derived learning is centralized in `mykcs/.codex/website-learning`; do not allocate new CASE IDs as the primary learning path.
+The legacy BaseModel copy-case corpus remains historical compatibility evidence. New RAW/derived learning is centralized in `mykcs/.agents/docs/learning`; do not allocate new CASE IDs as the primary learning path.
 
 When that test reports a duplicate, resolve identity on the integrated candidate tree first; do not weaken the test or restore an older branch-local numbering plan.
 

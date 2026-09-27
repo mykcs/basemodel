@@ -2,13 +2,13 @@
 
 Status: navigation-only compatibility entrypoint
 Local repository: mykcs/basemodel
-Canonical website-learning protocol: mykcs/.codex/website-learning/CONVERSATION_CLOSEOUT.md
+Canonical conversation-learning protocol: mykcs/.agents/docs/learning/CONVERSATION_CLOSEOUT.md
 
 This file intentionally does not copy the protocol body.
 
 When a BaseModel website conversation invokes this path:
 
-1. read https://github.com/mykcs/.codex/blob/main/website-learning/CONVERSATION_CLOSEOUT.md;
+1. read https://github.com/mykcs/.agents/blob/main/docs/learning/CONVERSATION_CLOSEOUT.md;
 2. preserve clear owner wording as central RAW;
 3. classify content / design / engineering and shared / BaseModel-specific experience in .codex;
 4. use BaseModel root AGENTS.md, current Wish, scientific/product authority, Reader Contracts and tests to choose any necessary project writeback;

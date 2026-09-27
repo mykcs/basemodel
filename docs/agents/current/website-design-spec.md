@@ -8,15 +8,15 @@ https://github.com/mykcs/.codex/blob/main/website-governance/HUMAN_EXPRESSION_ST
 
 真人 RAW、共享偏好和 BaseModel 专有 learned experience 分别位于：
 
-- https://github.com/mykcs/.codex/tree/main/website-learning/raw
-- https://github.com/mykcs/.codex/blob/main/website-learning/shared/content/HUMAN_EXPRESSION.md
-- https://github.com/mykcs/.codex/tree/main/website-learning/sites/basemodel
+- https://github.com/mykcs/.agents/tree/main/docs/learning/raw
+- https://github.com/mykcs/.agents/blob/main/docs/learning/shared/content/HUMAN_EXPRESSION.md
+- https://github.com/mykcs/.agents/tree/main/docs/learning/projects/basemodel
 
 本文件只保留 **BaseModel 专有的科研表达、页面职责与执行边界**。它不再复制跨网站通用的人类表达规范。
 
 拆分前的完整历史规范已冻结于：
 
-https://github.com/mykcs/.codex/blob/main/website-learning/legacy/basemodel-expression-spec/website-design-spec-2026-09-22.md
+https://github.com/mykcs/.agents/blob/main/docs/learning/legacy/basemodel-expression-spec/website-design-spec-2026-09-22.md
 
 ## 0. Authority 顺序
 
@@ -157,7 +157,7 @@ Task Score、success rate、last-N 平均或 fixed-panel final 第一次出现�
 | 问题 | 当前 owner |
 | --- | --- |
 | 跨站说人话 / 去 AI 味 | `.codex/website-governance/HUMAN_EXPRESSION_STANDARD.md` |
-| 真人 RAW / learned experience | `.codex/website-learning/` |
+| 真人 RAW / learned experience | `.agents/docs/learning/` |
 | BaseModel 当前产品愿望 | `docs/wish/LATEST.md` + `DESIGN.md` |
 | 首屏任务与预算 | `site-reader-attention-contract.md` + `siteReaderContracts.ts` |
 | 科研结果表达 | `research-site-presentation-contract.md` |
