@@ -42,8 +42,12 @@ describe('Agent scenario-trigger discovery', () => {
 
   it('keeps the reusable conversation-closeout trigger resolvable without duplicating protocol authority', () => {
     expect(registry).toContain('../../operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md');
+    expect(registry).toContain('canonical conversation-learning protocol in `mykcs/.agents`');
+    expect(registry).not.toContain('canonical conversation-learning protocol in `mykcs/.codex`');
     expect(conversationCloseoutEntry).toContain('navigation-only compatibility entrypoint');
     expect(conversationCloseoutEntry).toContain('mykcs/.agents/docs/learning/CONVERSATION_CLOSEOUT.md');
+    expect(conversationCloseoutEntry).toContain('shared / BaseModel-specific learned experience in .agents');
+    expect(conversationCloseoutEntry).not.toContain('shared / BaseModel-specific experience in .codex');
     expect(conversationCloseoutEntry).toContain('intentionally does not copy the protocol body');
     expect(conversationCloseoutEntry).toContain('mykcs/openevo-experiment');
   });
