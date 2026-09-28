@@ -321,6 +321,38 @@ test('successor gateway exposes exactly two reading modes and shared Stage1 fact
   await assertNoPageOverflow(page);
 });
 
+for (const viewport of [
+  { width: 390, height: 844, theme: 'light' as const },
+  { width: 390, height: 844, theme: 'dark' as const },
+  { width: 768, height: 1024, theme: 'light' as const },
+  { width: 768, height: 1024, theme: 'dark' as const },
+  { width: 1440, height: 1000, theme: 'light' as const },
+  { width: 1440, height: 1000, theme: 'dark' as const },
+]) {
+  test(`successor result and comparison boundary lead at ${viewport.width}px ${viewport.theme}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), viewport.theme);
+    const response = await page.goto(successor, { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+
+    const orientation = page.locator('[data-research-orientation]');
+    const answer = orientation.locator('[data-reader-purpose]');
+    await expect(orientation.locator('h1')).toHaveText('3B 与 1.7B 的学习实验');
+    await expect(answer).toContainText('1.7B 已完成学习和最终测试');
+    await expect(answer).toContainText('3B 还没有同口径最终结果');
+    await expect(answer).toContainText('两种模型使用同一套购物规则');
+
+    const geometry = await answer.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    await assertNoPageOverflow(page);
+  });
+}
+
 for (const path of [root, firstRun, successor, exploration, report, mechanism, archive, `${root}stage1-previous/`, `${root}stage2-256-window/`, `${root}stage2-ceiling/`, `${successor}harness-2-0/`, `${root}stage1-evolution/`]) {
   test(`desktop route ${path} is healthy`, async ({ page }) => {
     const errors: string[] = [];
