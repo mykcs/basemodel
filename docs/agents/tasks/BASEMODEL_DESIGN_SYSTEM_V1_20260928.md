@@ -377,6 +377,14 @@ For each completed batch add the base/source commit or tree, exact checks actual
 - **Provider / acceptance:** local route and generic contract tests pass; this batch awaits commit/push and exact-head Public PR CI. Mechanically complete = pending exact-head CI; Design-reference candidate = yes; owner-accepted reference = no. PR #806 remains Draft; Vercel Preview remains Phase 8 work.
 - **Exact next action:** finish the generic Reader Contract rerun; commit/push this route's concise result summary, contract selector, route guards, and checkpoint on existing PR #806; verify exact-head CI; continue with `/research/seed-openevo/study/capability-exploration/openevo-2-0/`.
 
+### Phase 4 follow-up — repair exact-head rendered-math gate
+
+- **Evidence:** exact-head run `36493015238` for `256d3daedc552bf00b91a887ac1bdf2c35235a8d` passed the deterministic repository gate, static build, and seven browser shards. Browser shard 6 found the raw inline equation `α=1` in the new Effective-State GDR first-view summary; the aggregate gate correctly failed.
+- **Repair:** preserve the same scientific constraint in reader prose as “保留因子固定为 1” / “retention fixed at one.” No result, method, interpretation, or assertion was changed. The existing rendered-math gate remains intact.
+- **Local verification:** `npm run build` passed all 265 routes and the heading, branded-link, rendered-math, and human-expression audits. The repository-wide Chromium browser audit passed. The combined local Playwright invocation also attempted WebKit, but its configured executable is absent from this machine's cache; CI's owner workflow supplies and executes Chromium. `git diff --check` passed.
+- **Provider / acceptance:** repaired source is not yet pushed; exact-head CI must run again. PR #806 remains Draft; no preview acceptance is claimed. Mechanically complete for this route remains pending exact-head CI; Design-reference candidate = yes; owner-accepted reference = no.
+- **Exact next action:** commit and push this wording repair plus this checkpoint to the existing PR #806, confirm every allocated exact-head CI job passes, then continue the `openevo-2-0` route under its current capability contract.
+
 ## 9. Stop conditions
 
 Follow `docs/design/CODEX_LUNA_RUNBOOK.md`.
