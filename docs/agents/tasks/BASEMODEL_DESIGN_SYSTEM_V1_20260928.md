@@ -69,7 +69,7 @@ This task does not authorize:
 
 ### Implementation
 - [x] Phase 0 inventory, baseline screenshots, and shared UI preflight (checkpoint recorded below);
-- [ ] Stage1 reference-page redesign;
+- [x] Stage1 reference-page redesign (mechanically complete; Design-reference candidate at `94ec441d`; owner acceptance pending);
 - [ ] Bounded reference-page redesign;
 - [ ] Progress briefing responsive redesign;
 - [ ] extract only proven shared patterns/components;
@@ -103,7 +103,7 @@ Keep #806 targeting `main`; no prerequisite merge or parallel redesign PR is aut
 
 - Main observed at `f2d272bf697b5d121e233ceaf8b5af79c7b0cd3d`; #806 at `ee5067942b33b588f451dd91c4995a5209bf1015`, OPEN/Draft, before this revision.
 - #805 was OPEN at `43fa2cbb3998824333826e8542cebf8265842f17`. Upstream `mykcs/openevo-experiment#597` was OPEN at `9aa6293e0fd409d9043d2f0ac62d72e27699ec7a`; its final scientific summary and #805's mirror agreed on the checked A/B results. These are inspection snapshots, not permanent current-state authority.
-- No page in this rollout has yet received mechanical completion, Design-reference candidate or owner-accepted status. Existing references accepted under other contracts keep their original, narrower scope.
+- Stage1 is now mechanically complete and marked a Design-reference candidate at `94ec441d`; it has not been reviewed and accepted by the owner. Bounded and briefing retain their own upcoming evaluation; existing references accepted under other contracts keep their original, narrower scope.
 - The observed #806 bootstrap `public-ci-gate` passed; browser execution was skipped for docs-only scope. This is documentation CI evidence, not website Design acceptance.
 
 The Design program may change hierarchy, narrative entry, semantic HTML and responsive composition. The current owner request authorizes updating the associated editorial Reader Contracts and presentation assertions in the same batch: Bounded may lead with the new capacity question while preserving original rank128 recurrence; Briefing may present current answers first and use phone vertical reading while preserving its full historical explanation. Scientific chronology, values, panels, claim limits, accessibility and functional checks remain protected. See `REFERENCE_PAGES.md` for exact owners, known test conflicts and the byte-unit correction to make during implementation.
@@ -197,7 +197,17 @@ Phase 0 must add the finite route/family inventory here following `IMPLEMENTATIO
 
 For each completed batch add the base/source commit or tree, exact checks actually run, fresh build/browser evidence, concrete review findings/resolution and the three separate acceptance fields from `DELIVERY.md`. Record any blocked owner and dependency explicitly. Keep the next action below current so another session can continue without rebuilding the plan.
 
-**Next execution action:** refresh current main, PR #805 and upstream scientific source status, then implement the Stage1 reference page. Phase 0 is mechanically complete at candidate `e28bcac3`; Phases 2–8 remain open.
+### Phase 1 checkpoint — Stage1 reference page
+
+- **Source/base:** code batch `94ec441d0e1d447fb7237eb9e105f869939ce381`, based on the locally integrated PR #805 publication head; `main` remained `f2d272bf697b5d121e233ceaf8b5af79c7b0cd3d`, PR #805 remained OPEN at `43fa2cbb3998824333826e8542cebf8265842f17`, and PR #806 remains one Draft candidate branch. No science or experiment state changed.
+- **Reader task and order:** understand whether Stage1 supervision fit improved WebShop; first viewport now presents separate Train loss and fixed-64-task Task Score evidence with panel and Stage2/final boundaries. Full 64-task checkpoint table and method follow, then Stage1/Stage2 distinction, historical 32-task SFT/OPSD comparison, ordinary-SFT checkpoints, synthesis and evidence. Historical anchors and data remain.
+- **Changed owners:** `OpenEvoStage1LearningObjectives.astro`, compact Stage1 context wording in `ResearchRouteContext.astro`, Stage1 record in `siteReaderContracts.ts`, scientific-order structural test and Stage1 browser reading-contract cases. No shared pattern/token was extracted before comparing all three references.
+- **Scientific safeguards:** the new arm is explicitly historical MiniMax targets with full-parameter FSDP, 1,296 train / 144 validation examples, 3 epochs / 486 steps, LR `5e−6`, global batch 8. Its train loss, non-monotonic validation loss, fixed-64 Task Score, positive reward, exact success, paired CI, untouched final, and untested full Stage2 remain distinct from the old rank-8 LoRA, 11,198-step 32-task SFT/OPSD comparison.
+- **Verification:** `npm run build` passed (265 pages and all four rendered audits); focused structural tests passed (15); `site-reader-contracts.spec.ts` passed all 24 Chromium/WebKit tests, including 390 / 768 / 1440 light/dark first viewports, existing 1280×633 and 390×844 checks, 200% text reflow and keyboard focus; `npm run check` reported 0 errors / 0 warnings / 2 existing hints; lint, CSS architecture audit and strict copy invariant audit passed. Browser screenshots and geometry are saved at `/Users/myk/Documents/Codex/2026-09-28/basemodel-mykcs-basemodel-pr-806-docs/work/design-v1-stage1-candidate/`: 390×844 figure y=367–701; 768×1024 y=411–618; 1440×1000 y=415–630; all six light/dark views had no horizontal overflow. I visually reviewed phone-light, phone-dark, tablet-light and desktop-dark. These checks establish mechanical completion and candidate status, not owner acceptance.
+- **Design debt:** the duplicated long hero task/purpose copy and second separator were removed from this page. No cross-route legacy CSS debt has been retired or common component extracted in this batch.
+- **Acceptance:** mechanically complete = yes; Design-reference candidate = yes; owner-accepted reference = no (owner has not reviewed the render).
+
+**Next execution action:** refresh main, PR #805 and upstream scientific source status and inspect Bounded's current capacity / rank32 claims, then redesign only the Bounded reference page. Phase 0 and Stage1 are mechanically complete; remaining phases stay open.
 
 ## 9. Stop conditions
 
