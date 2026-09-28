@@ -1,6 +1,5 @@
 ---
 import type { Locale } from '../../i18n';
-import { localePath } from '../../i18n';
 import OpenEvoEvidenceRefs from './OpenEvoEvidenceRefs.astro';
 import type { EvidenceRef } from '../../lib/researchEvidence';
 
@@ -15,9 +14,10 @@ const trackACloseout: EvidenceRef = { kind: 'machine-result', label: t('路线 A
 const trackASemanticValidation: EvidenceRef = { kind: 'runtime-receipt', label: t('128/128 任务语义核对通过', '128/128 runtime semantic validation · PASS'), href: `${trackARoot}/configs/experiment/receipts/webshop-seed-source-faithful-reproduction-v1-semantic-validation.json` };
 const trackAManifest: EvidenceRef = { kind: 'manifest', label: t('纠错后 128 个任务槽位清单', 'Corrected 128-slot task manifest'), href: `${trackARoot}/configs/experiment/manifests/webshop-seed-source-faithful-reproduction-v1-panel-v1.json` };
 const trackAEvidenceManifest: EvidenceRef = { kind: 'audit', label: t('256 个任务回合逐文件核对证据清单', '256-episode byte-for-byte evidence manifest'), href: `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/EVIDENCE_MANIFEST.json` };
-const wb1LiveCheckedAt = '2026-09-01';
-const wb1LiveCheckedSha = 'd471341e518ed4568fc84f4f732784d091613b03';
-const wb1LiveCampaign: EvidenceRef = { kind: 'config', label: t(`WB1 live router · main（${wb1LiveCheckedAt} 核验 · ${wb1LiveCheckedSha.slice(0, 8)}…）`, `WB1 live router · main (checked ${wb1LiveCheckedAt} · ${wb1LiveCheckedSha.slice(0, 8)}…)`), href: 'https://github.com/mykcs/openevo-experiment/blob/main/configs/experiment/current-campaign.json' };
+const postAdvisorRoot = 'https://github.com/mykcs/openevo-experiment/blob/836fc465f94619ecf81fe24aa1465015a6d8cc66';
+const postAdvisorCampaign: EvidenceRef = { kind: 'config', label: t('后续研究当前 router 快照 · 2026-09-28', 'Follow-on workline router snapshot · 2026-09-28'), href: `${postAdvisorRoot}/configs/experiment/current-campaign.json` };
+const postAdvisorActivation: EvidenceRef = { kind: 'runtime-receipt', label: t('正式执行 activation 状态 · PENDING_ZERO_FORMAL_PREFLIGHT', 'Formal activation status · PENDING_ZERO_FORMAL_PREFLIGHT'), href: `${postAdvisorRoot}/configs/experiment/activations/post-advisor-unanswered-202609282338.json` };
+const postAdvisorPlan: EvidenceRef = { kind: 'preregistration', label: t('2026-09-28 五项后续研究预注册计划', 'Five-work-package preregistration · 2026-09-28'), href: `${postAdvisorRoot}/docs/science/webshop/program/POST_ADVISOR_UNANSWERED_EXPERIMENTS_202609282338.md` };
 const wb1AdoptedStateSnapshot: EvidenceRef = { kind: 'machine-result', label: t('state-v28 采纳时的不可变 campaign 快照', 'Immutable campaign snapshot at state-v28 adoption'), href: `${wb1Root}/configs/experiment/current-campaign.json` };
 const wb1StateV28Reconciliation: EvidenceRef = { kind: 'audit', label: t('第 28 代 state-v28 状态门对账 · 通过', 'Gen28 state-v28 barrier reconciliation · PASS'), href: `${wb1Root}/docs/evidence/wb1/phase-2/amendment006-gen28-state-v28/RECONCILIATION.json` };
 
@@ -32,10 +32,10 @@ const steps: Step[] = [
   },
   {
     index: 'N2',
-    title: t('方法对方法比较等待继续授权', 'The method-versus-method comparison is waiting for resumption approval'),
-    plain: t('SEED 和 OpenEvo 的方法级比较使用同一个冻结环境、同样的任务、同一评测程序和匹配预算。上一轮 128 个任务已经完成，原本漏存的训练状态也已经在不重跑 WebShop、不使用 GPU 的前提下补齐并核对通过。现在剩下的是决定能不能开始下一轮正式任务。', 'The method-level SEED and OpenEvo comparison uses one frozen environment, the same tasks, the same evaluator, and matched budgets. The previous 128-task round is complete, and the missing retained training state has been reconstructed and reconciled without rerunning WebShop or using GPUs. The remaining decision is whether the next formal round may start.'),
-    detail: t('内部记录把补齐后的状态记为 GEN28_STATE_V28_BARRIER_PASS_ADOPTED。匹配经验预算已经使用 3,584 / 20,640 个任务回合，还剩 17,056；当前记录仍明确禁止继续消耗正式任务和分配 GPU，最终测试也保持锁定。恢复执行前必须重新读取最新的运行授权。', 'The internal record classifies the repaired state as GEN28_STATE_V28_BARRIER_PASS_ADOPTED. Matched experience accounting is 3,584 / 20,640 episodes with 17,056 remaining; formal task consumption and GPU allocation are still disallowed and the final test remains locked. The latest execution authority must be reread before resuming.'),
-    sources: [wb1LiveCampaign, wb1AdoptedStateSnapshot, wb1StateV28Reconciliation],
+    title: t('五项后续研究已预注册；正式执行尚未激活', 'Five follow-on studies are preregistered; formal execution is not activated'),
+    plain: t('当前计划覆盖更新幅度、行为与点击选择不确定性、状态容量、Task Vector 因果干预，以及完整 SEED-style Stage2。这些问题仍需实验回答，但计划本身不是结果；正式任务消费仍锁定。', 'The current plan covers update magnitude, behavior and click-choice uncertainty, state capacity, a causal Task Vector intervention, and full SEED-style Stage 2. These questions still need evidence; the plan is not a result and formal task consumption remains locked.'),
+    detail: t('PR #609 的 router 状态为 owner-authorized-plan-frozen-formal-locked；activation 记录仍是 PENDING_ZERO_FORMAL_PREFLIGHT。下一道门需解析可复用状态身份、核对历史 beta 语义，并通过不消耗正式任务的 runtime、GPU、存储和 launcher 检查，再提交绑定 exact SHA 的 activation receipt。前序 WB1 的 state-v28 已在 3,584 / 20,640 处采纳；它是历史前驱状态，不是这五项工作已经取得的进度。', 'PR #609 records owner-authorized-plan-frozen-formal-locked, while its activation receipt remains PENDING_ZERO_FORMAL_PREFLIGHT. The next gate resolves reusable state identities and historical beta semantics, passes zero-formal runtime, GPU, storage, and launcher checks, then publishes an activation receipt bound to the exact SHA. The predecessor WB1 state-v28 was adopted at 3,584 / 20,640; that is historical context, not progress on these five studies.'),
+    sources: [postAdvisorCampaign, postAdvisorActivation, postAdvisorPlan, wb1AdoptedStateSnapshot, wb1StateV28Reconciliation],
   },
   {
     index: 'N3',
@@ -50,8 +50,8 @@ const steps: Step[] = [
   <header class="section-heading">
     <p>{t('下一步实验', 'NEXT STEPS')}</p>
     <div>
-      <h2 id="next-steps-title">{t('下一轮 OpenEvo 与 SEED 公平比较', 'The next fair OpenEvo-versus-SEED comparison')}</h2>
-      <p class="plain-intro">{t('同一 128 个任务分别给基础模型和加载 OpenEvo 学习结果后的模型做完以后，我们得到了一轮有效测量，但还没有证明稳定优势。下一步不再是继续解释这 128 题，而是让 SEED 和 OpenEvo 在同一环境、同一任务、同一评测程序和匹配预算下继续方法对方法的比较。上一轮训练状态已经补齐，但新一轮正式任务目前仍未获授权。', 'Running the same 128 tasks with the base model and the same model plus the OpenEvo learning result produced a valid measurement, but not a proven stable advantage. The next step is no longer to reinterpret that panel; it is to continue a method-versus-method SEED and OpenEvo comparison under the same environment, tasks, evaluator, and matched budget. The previous retained training state has been repaired, but a new round of formal task consumption is not yet authorized.')}</p>
+      <h2 id="next-steps-title">{t('后续研究计划与执行门', 'Follow-on studies and their execution gate')}</h2>
+      <p class="plain-intro">{t('最新 128 题配对测量没有证明稳定优势。2026-09-28 冻结的后续计划把五个未回答问题分开检验；正式任务消费仍锁定，计划不能被写成新实验结果。', 'The latest paired 128-task measurement does not establish a stable advantage. A plan frozen on 2026-09-28 separates five unanswered questions; formal task consumption remains locked, so the plan cannot be presented as a new result.')}</p>
     </div>
   </header>
 
@@ -72,8 +72,8 @@ const steps: Step[] = [
   </ol>
 
   <aside class="min-gap">
-    <strong>{t('两轮比较回答不同问题', 'The two comparisons answer different questions')}</strong>
-    <p>{t('已经完成的 128 题测量比较的是“同一个 7B 基础模型，加载 OpenEvo 学习结果前后有什么差异”；它已经测完，但没有证明稳定提升。下一轮要回答的是更重要的方法级问题：在同一个冻结环境、同一批任务、同一评测程序和匹配预算下，重新运行 SEED 和 OpenEvo，谁表现更好？只有后一个实验才能直接回答 OpenEvo 与 SEED 的公平比较，而不是把我们的数字和论文 89.7 / 78.1% 直接相减。', 'The completed 128-task measurement compares the same 7B base model before and after loading the OpenEvo learning result; it is complete but does not establish a stable improvement. The next comparison asks the more important method-level question: under one frozen environment, the same tasks, the same evaluator, and matched budgets, which performs better when SEED and OpenEvo are rerun? Only that experiment directly answers the fair OpenEvo-versus-SEED comparison instead of subtracting our result from the paper’s 89.7 / 78.1%.')} <a href={localePath(locale, '/research/seed-openevo/study/')}>{t('查看实验设定 ↗', 'See the experiment setup ↗')}</a></p>
+    <strong>{t('已完成测量、历史状态与待执行计划', 'Completed measurement, historical state, and pending plan')}</strong>
+    <p>{t('Track A 的 128 题 source-faithful 评估已完成，但没有证明稳定优势。前序 WB1 state-v28 是独立匹配比较线的历史状态；PR #609 是更新的五项研究计划，仍待 activation 门通过。三者使用不同问题和状态，不能拼成排行榜，也不能把计划说成结果。', 'Track A’s source-faithful 128-task evaluation is complete but does not establish a stable advantage. The predecessor WB1 state-v28 belongs to a separate matched-comparison line; PR #609 is the newer five-study plan and still awaits its activation gate. These are different questions and states, not a leaderboard or a new result.')}</p>
   </aside>
 </section>
 

@@ -22,10 +22,11 @@ describe('case-cluster reader follow-through', () => {
     expect(protocol).not.toContain('专业解释：');
   });
 
-  it('puts the remaining method comparison before internal route names', () => {
-    expect(q7).toContain('还缺的方法级对照');
-    expect(q7).toContain('同一 128 个 WebShop 任务已经分别给基础模型');
-    expect(q7).toContain('真正还缺的是让 SEED 和 OpenEvo 在同一环境');
+  it('keeps the paired-measurement boundary separate from the inactive follow-on plan', () => {
+    expect(q7).toContain('一轮有效测量仍未证明稳定优势');
+    expect(q7).toContain('同一 128 个 WebShop 任务已分别交给基础模型');
+    expect(q7).toContain('计划不是结果，也没有完成 OpenEvo 与 SEED 的同条件方法比较');
+    expect(q7).toContain('PENDING_ZERO_FORMAL_PREFLIGHT');
     expect(q7).not.toContain('最后还缺哪一个关键实验？');
     expect(q7).not.toContain('源码忠实任务测量路线（Track A）已经完成，不再是“待验证”');
     expect(q7).not.toContain('真正还缺的是方法对方法的公平比较路线（Track B）');
@@ -35,10 +36,10 @@ describe('case-cluster reader follow-through', () => {
   it('keeps next-step titles about experiments and moves internal state into optional records', () => {
     for (const phrase of [
       '同一 128 个任务的两模型测量已完成',
-      '方法对方法比较等待继续授权',
+      '五项后续研究已预注册；正式执行尚未激活',
       'WebShop 稳定后再做 ALFWorld 复现',
-      '下一轮 OpenEvo 与 SEED 公平比较',
-      '两轮比较回答不同问题',
+      '后续研究计划与执行门',
+      '已完成测量、历史状态与待执行计划',
     ]) expect(next).toContain(phrase);
     expect(next).toContain('<details class="step-detail">');
     expect(next).not.toContain('专业解释：');

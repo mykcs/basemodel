@@ -5,8 +5,6 @@ interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
-// Legacy source-test marker only; not rendered: 如果你知道实验室正在比较 OpenEvo、SEED 和 WebShop
-
 const navItems = [
   { href: '#protocol', label: t('实验边界', 'Protocol') },
   { href: '#questions', label: t('七个问题', 'Seven questions') },
@@ -20,21 +18,24 @@ const navItems = [
   <div class="results-first-screen">
   <h1>{t('OpenEvo × WebShop 研究结果', 'OpenEvo × WebShop research findings')}</h1>
   <p class="lede">{t(
-    '我们在同一套 WebShop 任务上比较基础 Qwen2.5-7B-Instruct 与加载 OpenEvo 学习结果后的同一模型。现在最重要的是先判断：同一 128 个任务跑完两边以后，OpenEvo 是否已经显示出可靠优势。',
-    'We compare base Qwen2.5-7B-Instruct with the same model after loading the OpenEvo learning result on the same WebShop tasks. The first question is whether the completed matched 128-task evaluation already shows a reliable advantage.',
+    '这组结果分别回答单次更新后的内部迁移、多代持续整合与正式基准比较；三者不能互相替代。',
+    'These results separate transfer after one update, multi-generation integration, and benchmark comparison; none can stand in for another.',
   )}</p>
 
-  <section class="results-primary" aria-label={t('当前最重要结论', 'Current primary finding')}>
-    <strong>{t('当前结论', 'Current finding')}</strong>
-    <p class="primary-result">{t(
-      '两边各完成 128 个任务，共 256 个有效任务回合。OpenEvo 的平均任务完成度方向更高，但完整成功数与基础模型相同，统计范围也仍然包含“没有差异”。',
-      'Each side completed the same 128 tasks, for 256 valid episodes. Mean task progress is directionally higher with OpenEvo, but exact successes are tied with the base model and the uncertainty range still includes no difference.',
-    )}</p>
-    <p class="primary-boundary">{t(
-      '因此这轮结果还不能写成“OpenEvo 已稳定优于基础模型”。下一步仍是 OpenEvo 与 SEED 的同协议比较；恢复训练状态本身也不等于获准继续消耗正式任务。',
-      'So this result does not establish that OpenEvo is reliably better than the base model. The next scientific step remains a same-protocol OpenEvo-versus-SEED comparison, and restoring training state does not itself authorize more formal task consumption.',
-    )}</p>
-    <a class="primary-evidence" href="#evidence-q7">{t('看这轮 128 题评测证据 ↓', 'Open the 128-task evaluation evidence ↓')}</a>
+  <section class="results-primary" aria-label={t('已知结果、最新评估与当前下一步', 'What is known, the latest evaluation, and the current next step')} data-testid="results-first-screen-answers">
+    <p class="primary-answer" data-result-answer="learned"><strong>{t('已经学到', 'What we know')}</strong><span>{t(
+      '两次独立的一步更新实验都观察到内部未见任务迁移，支持一次更新后可以迁移；这不证明多代持续提升，也不是官方保留任务上的方法比较。',
+      'Two independent one-update experiments observed transfer to unseen internal tasks. This supports transfer after one update, not stable multi-generation gains or a method comparison on the official held-out tasks.',
+    )}</span></p>
+    <p class="primary-answer" data-result-answer="latest"><strong>{t('最新配对测量', 'Latest paired measurement')}</strong><span>{t(
+      '纠错后的源代码忠实 128 题配对测量已完成，两臂任务都有效，但完整成功数相同，任务分差值的 95% 范围仍包含零；稳定优势尚未建立。',
+      'The corrected source-faithful paired 128-task measurement is complete and both arms are valid, but exact successes are tied and the 95% range for the score difference still includes zero; a stable advantage is not established.',
+    )}</span></p>
+    <p class="primary-answer" data-result-answer="next"><strong>{t('当前下一步', 'Current next step')}</strong><span>{t(
+      '后续五项研究已预注册并获执行目标授权；精确状态、运行与资源核验及 activation receipt 仍待完成。正式任务尚未解锁，当前没有新结果。',
+      'Five follow-on studies are preregistered and their scientific goal is owner-authorized; exact identities, zero-formal runtime/resource checks, and an activation receipt remain pending. Formal tasks are still locked, so there is no new result yet.',
+    )}</span></p>
+    <a class="primary-evidence" href="#evidence-q7">{t('查看配对测量与当前计划依据 ↓', 'Open measurement evidence and the current plan ↓')}</a>
   </section>
   </div>
 
@@ -75,12 +76,12 @@ const navItems = [
         <span class="abstract-label bottleneck">{t('接下来', 'What remains')}</span>
         <div class="abstract-copy">
           <p class="plain">{t(
-            '下一步是继续 OpenEvo 与 SEED 的方法对方法比较。上一轮 128 个任务已经完成，原本漏存的训练状态也已经用封存输入补齐并核对通过；但“状态补齐”不等于“下一轮训练已获授权”，所以现在仍不能直接继续消耗正式任务。',
-            'The next step is to continue the method-versus-method OpenEvo and SEED comparison. The previous 128-task round is complete and the missing retained training state has been reconstructed from sealed inputs and reconciled, but restoring that state does not authorize another round of formal task consumption.',
+            '2026-09-28 冻结了五项后续研究计划，覆盖 β 更新幅度、行为与点击选择不确定性、状态容量、Task Vector 因果干预和完整 SEED-style Stage2。它们回答尚未解决的问题，但计划不等于已经执行。',
+            'On 2026-09-28, five follow-on studies were frozen: update magnitude, behavior and click-choice uncertainty, state capacity, causal Task Vector intervention, and full SEED-style Stage 2. They target unanswered questions; the plan is not evidence that the work ran.',
           )}</p>
           <p class="detail">{t(
-            '方法对方法比较的匹配经验预算目前已经使用 3,584 / 20,640 个任务回合，还剩 17,056。当前规则明确写着：不能继续消耗正式任务、不能为这一步分配 GPU，最终测试也仍然锁定。因此下一步是先单独确认是否允许恢复执行，而不是直接开始下一轮训练。',
-            'The matched experience budget for the method-versus-method comparison has used 3,584 of 20,640 task episodes, leaving 17,056. Current rules say formal task consumption and GPU allocation are not authorized and the final test remains locked. The next step is therefore a separate resumption decision, not immediately starting another training round.',
+            '执行门仍为 PENDING_ZERO_FORMAL_PREFLIGHT：先核实可复用状态身份和 β 语义，再完成不消耗正式任务的 runtime、GPU、存储及 launcher 核验，并提交绑定 exact SHA 的 activation receipt。没有 receipt 前不得写成“运行中”；final panel 继续锁定。',
+            'The execution gate remains PENDING_ZERO_FORMAL_PREFLIGHT: resolve reusable state identities and beta semantics, then pass zero-formal runtime, GPU, storage, and launcher checks before publishing an activation receipt bound to an exact SHA. Do not call the work running before that receipt; the final panel remains locked.',
           )}</p>
           <a class="abstract-evidence" href="#next-n2">{t('查看当前执行状态与来源 ↓', 'Open the current execution state and sources ↓')}</a>
         </div>
@@ -91,8 +92,8 @@ const navItems = [
   <div class="cutoff-note">
     <strong>{t('证据时间边界', 'Evidence cutoff')}</strong>
     <span>{t(
-      '机制结论以 8 月 21 日完成的 H1.41 实验为截止点。8 月 25 日的动作读取修复、8 月 26 日的任务构建复查，以及之后完成的“同一 128 个任务分别给两个模型做”的测量，都属于更晚证据，不会倒回去改写早期机制结论。',
-      'Mechanism conclusions are cut off at the H1.41 experiment completed on August 21. The action-reading repair on August 25, the task-construction check on August 26, and the later same-128-tasks/two-model measurement are newer evidence and are not blended backward into the earlier mechanism conclusion.',
+      '机制结论以 8 月 21 日完成的 H1.41 实验为截止点。8 月 25 日的动作读取修复、8 月 26 日的任务构建复查和后续配对测量属于更晚证据；9 月 28 日冻结的后续计划尚未执行，不会倒回去改写早期机制结论。',
+      'Mechanism conclusions are cut off at H1.41, completed on August 21. The August 25 action-reading repair, August 26 task-construction audit, and later paired measurement are newer evidence; the September 28 follow-on plan has not run and does not rewrite the earlier mechanism conclusion.',
     )}</span>
   </div>
 
@@ -102,16 +103,15 @@ const navItems = [
 </header>
 
 <style>
-  .results-hero{max-width:1160px;margin:0 auto;padding:36px 24px 12px;color:var(--color-text)}
-  .results-first-screen{min-height:calc(100svh - 7rem)}
-  .results-hero h1{margin:0;max-width:940px;font-size:clamp(2.35rem,5vw,4.35rem);line-height:1.04;letter-spacing:-.05em}
-  .lede{max-width:800px;margin:22px 0 0;color:var(--color-text);font-size:1.02rem;line-height:1.75}
-  .results-primary{max-width:820px;margin-top:24px;padding:18px 0;border-block:2px solid var(--color-text)}
-  .results-primary>strong{display:block;color:var(--color-accent);font-size:.76rem;letter-spacing:.03em}
-  .results-primary p{max-width:76ch;margin:8px 0 0;line-height:1.68}
-  .primary-result{font-size:1rem;color:var(--color-text)}
-  .primary-boundary{font-size:.86rem;color:var(--color-text-muted)}
-  .primary-evidence{display:inline-block;margin-top:12px;color:var(--color-accent);font-size:.78rem;font-weight:780;text-decoration:none}.primary-evidence:hover,.primary-evidence:focus-visible{text-decoration:underline;text-underline-offset:3px}
+  .results-hero{max-width:1160px;margin:0 auto;padding:28px 24px 12px;color:var(--color-text)}
+  .results-hero h1{margin:0;max-width:940px;font-size:clamp(2.2rem,4.6vw,3.8rem);line-height:1.04;letter-spacing:-.045em}
+  .lede{max-width:800px;margin:12px 0 0;color:var(--color-text-muted);font-size:1rem;line-height:1.5}
+  .results-primary{max-width:820px;margin-top:14px;padding:10px 0;border-block:2px solid var(--color-text)}
+  .primary-answer{display:grid;grid-template-columns:132px minmax(0,1fr);gap:14px;align-items:baseline;margin:0;padding:9px 0;font-size:1rem;line-height:1.5}
+  .primary-answer+.primary-answer{border-top:1px solid var(--color-border)}
+  .primary-answer strong{font-size:1rem;font-weight:760;color:var(--color-accent)}
+  .primary-answer span{color:var(--color-text)}
+  .primary-evidence{display:inline-block;margin-top:8px;color:var(--color-accent);font-size:.9rem;font-weight:780;text-decoration:none}.primary-evidence:hover,.primary-evidence:focus-visible{text-decoration:underline;text-underline-offset:3px}
   .progress-detail{max-width:960px;margin-top:20px;border-bottom:1px solid var(--color-border)}
   .progress-detail>summary{padding:12px 0;cursor:pointer;color:var(--color-text-muted);font-size:.8rem;font-weight:720}
   .abstract-box{max-width:960px;margin-top:4px;border-block:1px solid var(--color-border)}
@@ -133,7 +133,9 @@ const navItems = [
   .paper-nav a{color:var(--color-text-muted);font-size:.78rem;font-weight:720;text-decoration:none;text-underline-offset:.2em}
   .paper-nav a:hover,.paper-nav a:focus-visible{color:var(--color-text);text-decoration:underline}
   @media(max-width:720px){
-    .results-hero{padding:24px 18px 8px}
+    .results-hero{padding:18px 18px 8px}
+    .results-hero h1{font-size:clamp(2rem,8vw,2.5rem)}
+    .primary-answer{grid-template-columns:1fr;gap:3px;padding:7px 0}
     .abstract-row{grid-template-columns:1fr;gap:6px}
   }
 </style>

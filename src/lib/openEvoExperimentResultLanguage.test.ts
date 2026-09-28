@@ -263,7 +263,7 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(protocol).not.toContain('goal_idx');
 
     expect(hero).toContain('同一 128 个任务已经先给基础模型做一遍，再给加载 OpenEvo 学习结果后的模型做一遍，共 256 个任务回合');
-    expect(hero).toContain('不能继续消耗正式任务、不能为这一步分配 GPU，最终测试也仍然锁定');
+    expect(hero).toContain('正式任务尚未解锁，当前没有新结果');
     expect(hero).not.toContain('formal_task_consumption_allowed=false');
     expect(hero).not.toContain('gpu_allocation_allowed=false');
     expect(hero).not.toContain('final_test_status=locked');
@@ -281,9 +281,9 @@ describe('OpenEvo capability-exploration result language', () => {
     expect(benchmarkNote).toContain('不是“模型得 0 分”');
     expect(planIndex).toContain('3B/self、7B/self、7B/MiniMax 的 final 已封存');
     expect(planIndex).toContain('3B/MiniMax 的 final 明确未运行');
-    expect(nextSteps).toContain('匹配经验预算已经使用 3,584 / 20,640 个任务回合，还剩 17,056');
+    expect(nextSteps).toContain('前序 WB1 的 state-v28 已在 3,584 / 20,640 处采纳');
     expect(currentQ7).toContain('128/128 表示全部任务都通过运行时语义核对');
-    expect(currentQ7).toContain('95% 置信区间 [-3.21, +6.31] 仍包含“没有差异（0）”');
+    expect(currentQ7).toContain('平均差 +1.57 的 95% 置信区间 [-3.21, +6.31] 包含 0');
   });
 
   it('does not regress the homepage to raw project-state shorthand', () => {

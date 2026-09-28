@@ -44,7 +44,9 @@ describe('reader-first public copy hierarchy', () => {
 
   it('keeps the Results hero inside the scientific subject instead of describing how to read the page', () => {
     const hero = readFileSync(join(srcRoot, 'components/research/OpenEvoWebShopResultsHero.astro'), 'utf8');
-    expect(hero).toContain('我们在同一套 WebShop 任务上比较基础 Qwen2.5-7B-Instruct');
+    expect(hero).toContain('两次独立的一步更新实验都观察到内部未见任务迁移');
+    expect(hero).toContain('纠错后的源代码忠实 128 题配对测量已完成');
+    expect(hero).toContain('后续五项研究已预注册并获执行目标授权');
     expect(hero).not.toContain("<p class=\"lede\">{t(\n    '如果你知道实验室正在比较 OpenEvo、SEED 和 WebShop");
   });
 

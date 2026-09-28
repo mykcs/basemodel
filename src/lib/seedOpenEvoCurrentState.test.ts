@@ -40,14 +40,13 @@ describe('SEED × OpenEvo current Track A closeout and Track B continuation stat
   });
 
   it('keeps the Hero human-readable while retaining exact continuation state in the evidence layer', () => {
-    expect(hero).toContain('这 128 个任务先按 SEED 公开代码逐题核对，128/128 都确认一致');
-    expect(hero).toContain('下一步是继续 OpenEvo 与 SEED 的方法对方法比较');
+    expect(hero).toContain('纠错后的源代码忠实 128 题配对测量已完成');
+    expect(hero).toContain('后续五项研究已预注册并获执行目标授权');
     expect(hero).not.toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
     expect(hero).not.toContain('final_test_status=locked');
     expect(nextSteps).toContain('同一 128 个任务的两模型测量已完成');
-    expect(nextSteps).toContain('方法对方法比较等待继续授权');
-    expect(nextSteps).toContain('原本漏存的训练状态也已经在不重跑 WebShop、不使用 GPU 的前提下补齐并核对通过');
-    expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
+    expect(nextSteps).toContain('五项后续研究已预注册；正式执行尚未激活');
+    expect(nextSteps).toContain('PENDING_ZERO_FORMAL_PREFLIGHT');
     expect(nextSteps).toContain('c2791000a3af97190c264ba5ea39f0c4e5f65823');
   });
 

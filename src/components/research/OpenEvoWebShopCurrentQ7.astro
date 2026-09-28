@@ -17,6 +17,9 @@ const trackAReconciliation: EvidenceRef = { kind: 'machine-result', label: t('�
 const trackACloseout: EvidenceRef = { kind: 'machine-result', label: t('路线 A 机器可读收尾', 'Track A machine-readable closeout'), href: `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/CLOSEOUT.json` };
 const trackAEvidenceManifest: EvidenceRef = { kind: 'audit', label: t('逐文件 SHA-256 证据清单', 'Per-file SHA-256 evidence manifest'), href: `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/EVIDENCE_MANIFEST.json` };
 const trackAGovernance: EvidenceRef = { kind: 'audit', label: t('执行授权顺序治理例外', 'Execution-authority ordering exception'), href: `${trackARoot}/docs/evidence/seed-webshop-public-code-reproduction-v1/GOVERNANCE_EXCEPTION.json` };
+const postAdvisorRoot = 'https://github.com/mykcs/openevo-experiment/blob/836fc465f94619ecf81fe24aa1465015a6d8cc66';
+const postAdvisorActivation: EvidenceRef = { kind: 'runtime-receipt', label: t('后续计划 activation 状态', 'Follow-on workline activation status'), href: `${postAdvisorRoot}/configs/experiment/activations/post-advisor-unanswered-202609282338.json` };
+const postAdvisorCampaign: EvidenceRef = { kind: 'config', label: t('后续计划 current-campaign 快照', 'Follow-on workline current-campaign snapshot'), href: `${postAdvisorRoot}/configs/experiment/current-campaign.json` };
 const frozenPanelHref = trackAManifest.href;
 ---
 
@@ -27,10 +30,10 @@ const frozenPanelHref = trackAManifest.href;
       <div class="question-meta">
         <span class="status-badge"><i aria-hidden="true"></i>{t('已完成 · 未证明稳定提升', 'Complete · no stable improvement established')}</span>
       </div>
-      <h3 id="current-q7-title">{t('还缺的方法级对照', 'The remaining method-level comparison')}</h3>
+      <h3 id="current-q7-title">{t('一轮有效测量仍未证明稳定优势', 'A valid measurement still does not establish a stable advantage')}</h3>
       <p class="conclusion">{t(
-        '同一 128 个 WebShop 任务已经分别给基础模型和加载冻结 OpenEvo 学习结果后的模型做完，而且 256 个任务回合全部有效。基础模型的平均任务完成度为 7.17 / 100、完整成功率 3.9%；OpenEvo 模型为 8.74 / 100、3.9%。平均完成度高了 1.57 分，但 95% 置信区间 [-3.21, +6.31] 仍包含“没有差异（0）”，所以这轮测量有效，却还不能证明 OpenEvo 稳定更好。真正还缺的是让 SEED 和 OpenEvo 在同一环境、同一任务、同一评测程序和匹配预算下重新训练并做最终比较。',
-        'The same 128 WebShop tasks have now been run once with the base model and once with the same model plus the frozen OpenEvo learning result, producing 256 valid episodes. The base model scored 7.17/100 mean task progress with 3.9% exact success; the OpenEvo model scored 8.74/100 and 3.9%. The mean progress difference is +1.57, but the 95% interval [-3.21, +6.31] still includes no difference. The measurement is valid, but it does not establish a stable OpenEvo advantage. The remaining method-level test is to rerun SEED and OpenEvo under the same environment, tasks, evaluator, and matched budget.',
+        '同一 128 个 WebShop 任务已分别交给基础模型和加载冻结 OpenEvo 学习结果的模型评估，256 个回合全部有效。基础模型的平均任务完成度为 7.17 / 100、完整成功率 5/128；OpenEvo 模型为 8.74 / 100、5/128。平均差 +1.57 的 95% 置信区间 [-3.21, +6.31] 包含 0，所以测量有效，但稳定优势尚未建立。9 月 28 日冻结的五项后续研究计划仍处于正式执行锁定状态；计划不是结果，也没有完成 OpenEvo 与 SEED 的同条件方法比较。',
+        'The same 128 WebShop tasks were evaluated with the base model and with the same model plus the frozen OpenEvo learning result; all 256 episodes were valid. The base model scored 7.17/100 mean task progress and 5/128 exact successes; OpenEvo scored 8.74/100 and 5/128. The +1.57 mean difference has a 95% interval of [-3.21, +6.31], which includes zero. The measurement is valid but does not establish a stable advantage. Five follow-on studies frozen on September 28 remain formally locked; a plan is not a result and a matched OpenEvo-versus-SEED outcome is still unavailable.',
       )}</p>
 
       <div class="manifest-callout" data-testid="frozen-128-task-manifest">
@@ -74,6 +77,10 @@ const frozenPanelHref = trackAManifest.href;
               <tr>
                 <th scope="row">{t('治理边界', 'Governance boundary')}</th>
                 <td><span>{t('科学合同与运行准备先冻结，但 main / 分支授权顺序没有先于第一个正式回合；历史不能倒写。', 'The scientific contract/readiness was frozen first, but main/branch authority did not precede the first formal episode; history is not rewritten.')}</span><OpenEvoEvidenceRefs locale={locale} sources={[trackAGovernance]} compact /></td>
+              </tr>
+              <tr>
+                <th scope="row">{t('后续计划状态', 'Follow-on plan state')}</th>
+                <td><span>{t('PR #609 已冻结五项研究计划并获研究目标授权；activation 仍为 PENDING_ZERO_FORMAL_PREFLIGHT，正式任务尚未解锁。', 'PR #609 freezes five studies and authorizes their research goal; activation remains PENDING_ZERO_FORMAL_PREFLIGHT and formal tasks remain locked.')}</span><OpenEvoEvidenceRefs locale={locale} sources={[postAdvisorCampaign, postAdvisorActivation]} compact /></td>
               </tr>
             </tbody>
           </table>

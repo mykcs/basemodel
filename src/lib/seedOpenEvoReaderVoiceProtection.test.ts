@@ -85,7 +85,8 @@ describe('SEED × OpenEvo reader-voice protection', () => {
       expect(resultsQuestions).toContain(question);
     }
     expect(resultsQuestions).not.toContain("id: 'q7'");
-    expect(currentQ7).toContain('还缺的方法级对照');
+    expect(currentQ7).toContain('一轮有效测量仍未证明稳定优势');
+    expect(currentQ7).toContain('PENDING_ZERO_FORMAL_PREFLIGHT');
     expect(currentQ7).toContain('id="q7"');
     expect(resultsQuestions).toContain('<details class="evidence-details"');
     expect(currentQ7).toContain('<details class="evidence-details" id="evidence-q7">');
@@ -126,7 +127,9 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsReaderContract).toContain('Density budget');
     expect(resultsReaderContract).toContain('展开实验依据');
     expect(resultsReaderContract).toContain('源码忠实任务语义（source-faithful task semantics）');
-    expect(resultsHero).toContain('如果你知道实验室正在比较 OpenEvo、SEED 和 WebShop');
+    expect(resultsHero).toContain('data-result-answer="learned"');
+    expect(resultsHero).toContain('data-result-answer="latest"');
+    expect(resultsHero).toContain('data-result-answer="next"');
     expect(resultsProtocol).toContain('训练范围内未见任务与 SEED 验证任务');
     expect(resultsProtocol).toContain('任务 500–6909');
     expect(resultsProtocol).toContain('任务 0–499');
@@ -185,8 +188,8 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(currentQ7).toContain('SD-LoRA 8.74 / 3.9%');
     expect(currentQ7).toContain('PUBLISHED_AND_VERIFIED');
     expect(nextSteps).toContain('同一 128 个任务的两模型测量已完成');
-    expect(nextSteps).toContain('两轮比较回答不同问题');
-    expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
+    expect(nextSteps).toContain('已完成测量、历史状态与待执行计划');
+    expect(nextSteps).toContain('state-v28');
   });
 
   it('does not regress to stale held-out planning states', () => {

@@ -91,6 +91,6 @@ describe('SEED WebShop reproduction and measurement boundaries', () => {
     expect(seedFigure).toContain('把 SEED 方法本身也重新放到同一套冻结任务');
     expect(seedFigure).toContain('才能把方法差异与评测口径差异分开');
     expect(seedFigure).not.toContain('最干净的做法');
-    expect(nextSteps).toContain('只有后一个实验才能直接回答 OpenEvo 与 SEED 的公平比较');
+    expect(nextSteps).toContain('计划不能被写成新实验结果');
   });
 });
