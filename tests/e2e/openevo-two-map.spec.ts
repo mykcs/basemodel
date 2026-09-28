@@ -51,6 +51,71 @@ for (const viewport of [
   });
 }
 
+for (const viewport of [
+  { width: 390, height: 844, theme: 'light' as const },
+  { width: 390, height: 844, theme: 'dark' as const },
+  { width: 768, height: 1024, theme: 'light' as const },
+  { width: 768, height: 1024, theme: 'dark' as const },
+  { width: 1440, height: 1000, theme: 'light' as const },
+  { width: 1440, height: 1000, theme: 'dark' as const },
+]) {
+  test(`legacy Stage-1 identity and sampling boundary lead archived assets at ${viewport.width}px ${viewport.theme}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), viewport.theme);
+    const previous = `${root}stage1-previous/`;
+    const response = await page.goto(previous, { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+
+    const archive = page.getByTestId('legacy-stage1-archive');
+    const hero = archive.locator('.legacy-s1__hero');
+    await expect(archive.locator('h1')).toHaveText('历史初始经验与模型文件');
+    await expect(hero).toContainText('随机种子与实际采样设置不同，因此不能视为逐条相同的数据');
+    await expect(hero.locator('aside')).toContainText('不能改名当作后续实验重新采集的数据');
+    await expect(archive.locator('.legacy-s1__artifacts a')).toHaveCount(3);
+
+    const geometry = await hero.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    await assertNoPageOverflow(page);
+  });
+}
+
+for (const viewport of [
+  { width: 390, height: 844, theme: 'light' as const },
+  { width: 390, height: 844, theme: 'dark' as const },
+  { width: 768, height: 1024, theme: 'light' as const },
+  { width: 768, height: 1024, theme: 'dark' as const },
+  { width: 1440, height: 1000, theme: 'light' as const },
+  { width: 1440, height: 1000, theme: 'dark' as const },
+]) {
+  test(`Stage-1 exploration answers the interface question first at ${viewport.width}px ${viewport.theme}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), viewport.theme);
+    const explorationHistory = `${root}stage1-evolution/`;
+    const response = await page.goto(explorationHistory, { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+
+    const orientation = page.locator('[data-research-orientation]');
+    const answer = orientation.locator('[data-reader-purpose]');
+    await expect(orientation.locator('h1')).toHaveText('购物接口的探索与修订');
+    await expect(answer).toContainText('形成两种模型共用的购物规则');
+    await expect(answer).toContainText('旧记录保留原身份');
+
+    const geometry = await answer.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    await assertNoPageOverflow(page);
+  });
+}
+
 registerOpenEvoResearchDeepDiveTests();
 registerReaderJourneyTests();
 
