@@ -150,6 +150,67 @@ for (const viewport of viewports) {
   });
 }
 
+for (const width of [390, 768, 1440]) {
+  for (const theme of ['light', 'dark']) {
+    test(`Stage1 first viewport keeps optimization and capability distinct at ${width}px ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 844 });
+      await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/', { waitUntil: 'domcontentloaded' });
+      await page.evaluate(() => document.fonts.ready);
+
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      const h1 = page.locator('#main-content h1');
+      const result = page.locator('#main-content [data-stage1-result]');
+      await expect(h1).toContainText('WebShop');
+      await expect(result).toBeVisible();
+      await expect(result).toContainText('2.713 → 0.830');
+      await expect(result).toContainText('0.0369 → 0.0352 → 0 → 0');
+      await expect(result).toContainText('final panel');
+      await expect(result).toContainText('完整 Stage2 未测试');
+
+      const geometry = await result.evaluate((node) => {
+        const rect = node.getBoundingClientRect();
+        return { top: rect.top, bottom: rect.bottom, viewport: innerHeight };
+      });
+      expect(geometry.top).toBeGreaterThanOrEqual(0);
+      expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewport + 2);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+    });
+  }
+}
+
+test('Stage1 route controls stay keyboard-visible at 200% text size', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/', { waitUntil: 'domcontentloaded' });
+  await page.addStyleTag({ content: 'html { font-size: 200% !important; }' });
+
+  const scaled = await page.evaluate(() => ({
+    rootFontSize: getComputedStyle(document.documentElement).fontSize,
+    viewportWidth: document.documentElement.clientWidth,
+    documentWidth: document.documentElement.scrollWidth,
+  }));
+  expect(scaled.rootFontSize).toBe('32px');
+  expect(scaled.documentWidth).toBeLessThanOrEqual(scaled.viewportWidth + 2);
+
+  for (let index = 0; index < 4; index++) {
+    await page.keyboard.press('Tab');
+    await page.waitForFunction(() => {
+      const rect = document.activeElement?.getBoundingClientRect();
+      return Boolean(rect && rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < innerHeight);
+    }, undefined, { timeout: 1_500 });
+    const focus = await page.evaluate(() => {
+      const element = document.activeElement;
+      const rect = element?.getBoundingClientRect();
+      return {
+        visible: Boolean(element && rect && rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < innerHeight),
+        focusVisible: Boolean(element?.matches(':focus-visible')),
+      };
+    });
+    expect(focus.visible, `keyboard stop ${index + 1} is visible`).toBe(true);
+    expect(focus.focusVisible, `keyboard stop ${index + 1} exposes focus`).toBe(true);
+  }
+});
+
 
 test('Study phone first screen exposes exactly the seven experiment parents', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });

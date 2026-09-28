@@ -55,7 +55,7 @@ const seedStyleCurve = [
 ];
 ---
 
-<ResearchRouteContext locale={locale} route="stage1-learning-objectives" experimentId="stage1-learning-objectives" />
+<ResearchRouteContext locale={locale} route="stage1-learning-objectives" experimentId="stage1-learning-objectives" compact />
 
 <main
   class="stage1-study"
@@ -64,24 +64,81 @@ const seedStyleCurve = [
   data-ui-audit="contrast layout"
   data-testid="stage1-learning-objectives"
 >
-  <header class="hero" data-reader-context>
+  <header class="hero" data-reader-context data-reader-task>
     <p class="eyebrow">{t('实验 07 · Stage1 参数学习', 'Experiment 07 · Stage-1 parameter learning')}</p>
-    <p class="reader-task" data-reader-task>{t('任务：用固定的 WebShop Stage1 经验，训练出进入 Stage2 前的一套起始参数。', 'Task: use fixed WebShop Stage-1 experience to learn one parameter set before Stage 2 begins.')}</p>
-    <p class="reader-purpose" data-reader-purpose>{t('目的：只比较 Stage1 的学习方式，不把 Stage2 的 SD-LoRA 持续参数演变混进来。', 'Purpose: compare Stage-1 learning rules without mixing in Stage-2 SD-LoRA continual parameter evolution.')}</p>
-    <h1>{t('Stage1 到底该怎么学？', 'How should Stage 1 learn?')}</h1>
-    <p class="boundary hero-result">{t(
-      '结果先说：SEED-style Stage1 的监督 loss 明显下降，但固定 64 题 WebShop capability 没有提高；完整 SEED Stage2 self-evolving / OPD / RL 没有在这里测试。',
-      'Result first: SEED-style Stage 1 clearly lowers supervised loss, but capability on the fixed 64-task WebShop panel does not improve; full SEED Stage-2 self-evolving / OPD / RL was not tested here.'
-    )}</p>
-    <p class="lede">{t(
-      '这组实验不研究 SD-LoRA 怎么持续累积。它先把问题变简单：给同一个 Qwen3-1.7B、同一批 1,440 条 WebShop 经验，SFT、OPSD，或 hindsight-skill SFT，哪一种更适合先训练出“一套起始参数”？',
-      'This experiment does not study how SD-LoRA accumulates over time. It first makes the problem simpler: given the same Qwen3-1.7B and the same 1,440 WebShop trajectories, should one Stage-1 parameter set be learned with SFT, OPSD, or hindsight-skill SFT?'
-    )}</p>
+    <h1>{t('监督目标学得更好，WebShop 却没有改善', 'The training target improved; WebShop did not')}</h1>
+    <figure class="stage1-contrast" data-stage1-result data-reader-purpose aria-labelledby="stage1-contrast-caption">
+      <div class="stage1-measures">
+        <section class="stage1-measure" aria-label={t('监督目标拟合', 'Supervised-target fit')}>
+          <p class="measure-label">{t('监督目标拟合', 'Supervised-target fit')}</p>
+          <p class="measure-value"><span>Train loss</span><strong>2.713 → 0.830</strong></p>
+          <p class="measure-note">{t('Validation loss（step 162 / 324 / 486）：1.161 → 1.091 → 1.093，不是逐轮单调下降。', 'Validation loss (steps 162 / 324 / 486): 1.161 → 1.091 → 1.093; it does not decrease monotonically.')}</p>
+        </section>
+        <section class="stage1-measure" aria-label={t('固定 64 题 WebShop 能力', 'Fixed 64-task WebShop capability')}>
+          <p class="measure-label">{t('固定 64 题 WebShop capability', 'Fixed 64-task WebShop capability')}</p>
+          <p class="measure-value"><span>Task Score</span><strong>0.0369 → 0.0352 → 0 → 0</strong></p>
+          <p class="measure-note">{t('Initial / epoch1 / epoch2 / epoch3；正奖励 6/64 → 3/64 → 0 → 0；Exact Success 全程 0/64。', 'Initial / epochs 1–3; positive reward 6/64 → 3/64 → 0 → 0; exact success stays 0/64.')}</p>
+        </section>
+      </div>
+      <figcaption id="stage1-contrast-caption">
+        {t('64 题 Task Score 的 epoch1 差异范围包含 0，epoch2/3 低于 initial。两组指标分开使用各自单位，不共用刻度；完整 Stage2 未测试，final panel 未访问。', 'The epoch1 Task Score interval on the 64-task panel includes zero; epochs 2 and 3 are below initial. The measures keep separate units and scales; full Stage 2 was not tested and the final panel was untouched.')}
+      </figcaption>
+    </figure>
   </header>
+
+  <section class="section" id="next" data-result-stage="direct-result">
+    <div class="section-heading">
+      <span>01</span>
+      <div>
+        <h2>{t('更多 Stage1 训练没有带来 WebShop capability 提升', 'More Stage 1 training did not improve WebShop capability')}</h2>
+        <p>{t('这里必须把 optimization 和 capability 分开看：loss 下降只能说明模型更会完成监督目标，不能自动等价成更会做 WebShop。', 'Optimization and capability must stay separate here: lower loss means the model fits the supervised target better, not automatically that it solves WebShop better.')}</p>
+      </div>
+    </div>
+    <div class="next-grid">
+      {nextArms.map((arm) => (
+        <article>
+          <small>{arm.state}</small>
+          <strong>{arm.name}</strong>
+          <p>{arm.purpose}</p>
+        </article>
+      ))}
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{t('SEED-style Stage1 状态', 'SEED-style Stage-1 state')}</th>
+            <th>64-task Task Score</th>
+            <th>{t('正奖励', 'Positive reward')}</th>
+            <th>Exact Success</th>
+          </tr>
+        </thead>
+        <tbody>
+          {seedStyleCurve.map((row) => (
+            <tr>
+              <th scope="row">{row.state}</th>
+              <td>{row.score}</td>
+              <td>{row.positive}</td>
+              <td>{row.exact}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">{t(
+      '固定 64 题 outcome-blind development / primary-validation panel。epoch1 − initial 的平均 Task Score 差为 −0.00164，95% CI 跨 0；epoch2 / epoch3 相对 initial 都是 −0.03689，95% CI 均低于 0。final panel 仍未访问。',
+      'Fixed 64-task outcome-blind development / primary-validation panel. Mean Task Score difference epoch1 − initial is −0.00164 with a 95% CI crossing zero; epoch2 / epoch3 are both −0.03689 versus initial, with 95% CIs below zero. The final panel remains untouched.'
+    )}</p>
+    <p class="method-note">{t('该臂使用历史 MiniMax analysis targets 与 full-parameter FSDP：1,296 条训练、144 条验证、3 epochs / 486 steps，learning rate 5e−6、global batch 8。它与早期 rank8 LoRA 的 11,198-step SFT / OPSD 对照是不同实验。', 'This arm used historical MiniMax analysis targets with full-parameter FSDP: 1,296 training and 144 validation examples, 3 epochs / 486 steps, learning rate 5e−6, global batch 8. It is a different experiment from the earlier rank-8 LoRA, 11,198-step SFT / OPSD comparison.')}</p>
+    <p class="interpretation">{t(
+      'ELI5：模型越来越会完成我们给它的监督训练目标，但没有因此更会逛 WebShop。第一轮基本没变，继续训练后反而更差。这个结果只否定“这套 Stage1 hindsight-skill SFT 单独就能解决 capability ceiling”的简单解释；完整 SEED Stage2 self-evolving / OPD / RL 没有在这里测试。',
+      'ELI5: the model gets better at the supervised target we gave it, but not better at WebShop. The first epoch is effectively unchanged, and further training becomes worse. This only argues against the simple claim that this Stage-1 hindsight-skill SFT alone removes the capability ceiling; full SEED Stage-2 self-evolving / OPD / RL was not tested here.'
+    )}</p>
+  </section>
 
   <section class="section" id="stage1-stage2" data-result-stage="setup">
     <div class="section-heading">
-      <span>01</span>
+      <span>02</span>
       <div>
         <h2>{t('先把 Stage1 和 Stage2 拆开', 'Separate Stage 1 from Stage 2 first')}</h2>
         <p>{t('我们之前最容易混淆的地方，是把“怎么先学出一套参数”和“之后怎么持续演变参数”说成同一件事。代码里它们其实完全分开。', 'The main confusion was treating “how to learn one initial parameter set” and “how parameters keep evolving later” as the same problem. The code keeps them separate.')}</p>
@@ -106,7 +163,7 @@ const seedStyleCurve = [
 
   <section class="section" id="result" data-result-stage="direct-result">
     <div class="section-heading">
-      <span>02</span>
+      <span>03</span>
       <div>
         <h2>{t('第一组问题：SFT 还是 OPSD？', 'First question: SFT or OPSD?')}</h2>
         <p>{t('先做最干净的一次对照：同一个原始 1.7B、同一个 11,198 action-step 数据集、同样 rank8 LoRA 和 optimizer-step 预算，只换 learning objective。', 'Start with the cleanest contrast: same original 1.7B model, same 11,198 action-step dataset, same rank-8 LoRA and optimizer-step budget; change only the learning objective.')}</p>
@@ -150,7 +207,7 @@ const seedStyleCurve = [
 
   <section class="section" id="validation" data-result-stage="optimization">
     <div class="section-heading">
-      <span>03</span>
+      <span>04</span>
       <div>
         <h2>{t('第二个发现：SFT 不是训到最后就最好', 'Second finding: the final SFT checkpoint is not automatically the best')}</h2>
         <p>{t('这也是为什么现在必须把 validation 放进训练过程。只看 train loss，会错过中间 checkpoint 在 development panel 上更高的事实。', 'This is why validation has to be part of training. Training loss alone misses that an intermediate checkpoint can score higher on the development panel.')}</p>
@@ -172,54 +229,7 @@ const seedStyleCurve = [
     )}</p>
   </section>
 
-  <section class="section" id="next" data-result-stage="direct-result">
-    <div class="section-heading">
-      <span>04</span>
-      <div>
-        <h2>{t('后续两条臂已经封存：多训普通 SFT 没有救回来，Stage1 hindsight-skill 也没有抬高 WebShop capability', 'Both follow-up arms are sealed: more ordinary SFT did not recover capability, and Stage-1 hindsight-skill did not raise WebShop capability')}</h2>
-        <p>{t('这里必须把 optimization 和 capability 分开看：loss 下降只能说明模型更会完成监督目标，不能自动等价成更会做 WebShop。', 'Optimization and capability must stay separate here: lower loss means the model fits the supervised target better, not automatically that it solves WebShop better.')}</p>
-      </div>
-    </div>
-    <div class="next-grid">
-      {nextArms.map((arm) => (
-        <article>
-          <small>{arm.state}</small>
-          <strong>{arm.name}</strong>
-          <p>{arm.purpose}</p>
-        </article>
-      ))}
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>{t('SEED-style Stage1 状态', 'SEED-style Stage-1 state')}</th>
-            <th>64-task Task Score</th>
-            <th>{t('正奖励', 'Positive reward')}</th>
-            <th>Exact Success</th>
-          </tr>
-        </thead>
-        <tbody>
-          {seedStyleCurve.map((row) => (
-            <tr>
-              <th scope="row">{row.state}</th>
-              <td>{row.score}</td>
-              <td>{row.positive}</td>
-              <td>{row.exact}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    <p class="caption">{t(
-      '固定 64 题 outcome-blind development / primary-validation panel。epoch1 − initial 的平均 Task Score 差为 −0.00164，95% CI 跨 0；epoch2 / epoch3 相对 initial 都是 −0.03689，95% CI 均低于 0。final panel 仍未访问。',
-      'Fixed 64-task outcome-blind development / primary-validation panel. Mean Task Score difference epoch1 − initial is −0.00164 with a 95% CI crossing zero; epoch2 / epoch3 are both −0.03689 versus initial, with 95% CIs below zero. The final panel remains untouched.'
-    )}</p>
-    <p class="interpretation">{t(
-      'ELI5：模型越来越会完成我们给它的监督训练目标，但没有因此更会逛 WebShop。第一轮基本没变，继续训练后反而更差。这个结果只否定“这套 Stage1 hindsight-skill SFT 单独就能解决 capability ceiling”的简单解释；完整 SEED Stage2 self-evolving / OPD / RL 没有在这里测试。',
-      'ELI5: the model gets better at the supervised target we gave it, but not better at WebShop. The first epoch is effectively unchanged, and further training becomes worse. This only argues against the simple claim that this Stage-1 hindsight-skill SFT alone removes the capability ceiling; full SEED Stage-2 self-evolving / OPD / RL was not tested here.'
-    )}</p>
-  </section>
+
 
   <section class="section" id="decision" data-result-stage="synthesis">
     <div class="section-heading">
@@ -256,5 +266,261 @@ const seedStyleCurve = [
 </main>
 
 <style>
-.stage1-study{width:min(1040px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--ink)}.hero{padding:3.1rem 0 2rem;border-bottom:1px solid var(--line)}.eyebrow{margin:0 0 .75rem;color:var(--accent-deep);font:800 1rem/1.25 var(--font-mono);letter-spacing:.06em}.hero h1{max-width:18ch;margin:0;font-size:clamp(2.5rem,6vw,4.8rem);line-height:.98;letter-spacing:-.055em}.lede{max-width:50rem;margin:1.25rem 0 0;font-size:clamp(1.08rem,2vw,1.3rem);line-height:1.7}.boundary{max-width:50rem;margin:.9rem 0 0;color:var(--muted);line-height:1.65}.hero-result{padding:.8rem 1rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted);color:var(--ink);font-weight:650}.reader-task,.reader-purpose{max-width:50rem;margin:.45rem 0 0;color:var(--muted);line-height:1.55}.reader-task{margin-top:1rem;color:var(--ink);font-weight:650}.section{padding:2.5rem 0;border-bottom:1px solid var(--line)}.section-heading{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:1rem;margin-bottom:1.35rem}.section-heading>span{color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono)}.section-heading h2{margin:0;font-size:clamp(1.65rem,3.2vw,2.55rem);line-height:1.08;letter-spacing:-.035em}.section-heading p{max-width:54rem;margin:.65rem 0 0;color:var(--muted);line-height:1.65}.stage-grid,.next-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}.stage-grid article,.next-grid article{padding:1.25rem;background:var(--surface)}.stage-grid small,.next-grid small{display:block;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.04em}.stage-grid strong,.next-grid strong{display:block;margin:.35rem 0;font-size:1.15rem;line-height:1.35}.stage-grid p,.next-grid p{margin:.45rem 0 0;color:var(--muted);line-height:1.62}.stage-grid code{display:block;margin-top:.85rem;padding:.55rem .7rem;background:var(--surface-muted);border-left:2px solid var(--accent-deep);overflow-wrap:anywhere}.result-callout{padding:1.1rem 1.2rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.result-callout strong{font-size:1.18rem}.result-callout p{max-width:58rem;margin:.45rem 0 0;line-height:1.65}.table-wrap{margin-top:1.2rem;overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:1rem}th,td{padding:.8rem .75rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}thead th{font-size:.78rem;color:var(--muted);white-space:nowrap}tbody th{min-width:13rem}tbody th,tbody td,tbody th strong{font-size:16px}tbody th small{display:block;margin-top:.25rem;color:var(--muted);font-size:1rem;font-weight:500;line-height:1.45}.caption{margin:.65rem 0 0;color:var(--muted);font-size:1rem;line-height:1.55}.curve-list{display:grid;border-top:1px solid var(--line)}.curve-list>div{display:grid;grid-template-columns:minmax(9rem,.7fr) minmax(8rem,.7fr) 1fr;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--line);align-items:baseline}.curve-list span{font:700 1rem/1.3 var(--font-mono)}.curve-list strong{font-size:1.2rem}.curve-list em{color:var(--muted);font-style:normal}.interpretation{max-width:58rem;margin:1rem 0 0;line-height:1.68}.decision{display:grid;gap:.7rem;max-width:58rem}.decision p{margin:0;padding:.9rem 0;border-bottom:1px solid var(--line);line-height:1.65}.evidence ul{display:grid;gap:.45rem;margin:0;padding-left:1.2rem}.evidence a{color:var(--accent-deep);text-underline-offset:.2em}.evidence>p{max-width:58rem;color:var(--muted);line-height:1.65}@media(max-width:700px){.stage1-study{width:calc(100% - 1.2rem)}.hero{padding:1.8rem 0 1.3rem}.hero h1{font-size:2.45rem}.section{padding:1.8rem 0}.section-heading{grid-template-columns:2rem minmax(0,1fr);gap:.55rem}.stage-grid,.next-grid{grid-template-columns:1fr}.curve-list>div{grid-template-columns:1fr auto;gap:.2rem .8rem}.curve-list em{grid-column:1/-1}.table-wrap{margin-inline:-.1rem}}
+.stage1-study {
+  width: min(1040px, calc(100% - 2rem));
+  margin: 0 auto 5rem;
+  color: var(--ink);
+}
+.hero {
+  padding: 3.1rem 0 2rem;
+}
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: var(--accent-deep);
+  font: 800 1rem/1.25 var(--font-mono);
+  letter-spacing: .06em;
+}
+.hero h1 {
+  max-width: 24ch;
+  margin: 0;
+  font-size: clamp(2.5rem, 6vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: -.045em;
+}
+.section {
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.section-heading {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.35rem;
+}
+.section-heading > span {
+  color: var(--accent-deep);
+  font: 800 1rem/1.3 var(--font-mono);
+}
+.section-heading h2 {
+  margin: 0;
+  font-size: clamp(1.65rem, 3.2vw, 2.55rem);
+  line-height: 1.08;
+  letter-spacing: -.035em;
+}
+.section-heading p {
+  max-width: 54rem;
+  margin: .65rem 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.stage1-contrast {
+  margin: 1rem 0 0;
+  padding: .8rem 0 .7rem;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.stage1-measures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+.stage1-measure { min-width: 0; }
+.measure-label {
+  margin: 0 0 .5rem;
+  color: var(--accent-deep);
+  font: 750 .9rem/1.35 var(--font-mono);
+}
+.measure-value {
+  display: grid;
+  gap: .25rem;
+  margin: 0;
+}
+.measure-value span { color: var(--muted); font-size: .9rem; }
+.measure-value strong {
+  font: 750 clamp(1.2rem, 2.2vw, 1.65rem)/1.2 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.measure-note {
+  max-width: 38rem;
+  margin: .4rem 0 0;
+  color: var(--muted);
+  font-size: .94rem;
+  line-height: 1.45;
+}
+.stage1-contrast figcaption {
+  max-width: 72rem;
+  margin-top: .65rem;
+  color: var(--muted);
+  font-size: .94rem;
+  line-height: 1.45;
+}
+.stage-grid,
+.next-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+.stage-grid article,
+.next-grid article {
+  padding: 1.25rem;
+  background: var(--surface);
+}
+.stage-grid small,
+.next-grid small {
+  display: block;
+  color: var(--accent-deep);
+  font: 800 1rem/1.3 var(--font-mono);
+  letter-spacing: .04em;
+}
+.stage-grid strong,
+.next-grid strong {
+  display: block;
+  margin: .35rem 0;
+  font-size: 1.15rem;
+  line-height: 1.35;
+}
+.stage-grid p,
+.next-grid p {
+  margin: .45rem 0 0;
+  color: var(--muted);
+  line-height: 1.62;
+}
+.stage-grid code {
+  display: block;
+  margin-top: .85rem;
+  padding: .55rem .7rem;
+  border-left: 2px solid var(--accent-deep);
+  background: var(--surface-muted);
+  overflow-wrap: anywhere;
+}
+.result-callout {
+  padding: 1.1rem 1.2rem;
+  border-left: 3px solid var(--accent-deep);
+  background: var(--surface-muted);
+}
+.result-callout strong { font-size: 1.18rem; }
+.result-callout p {
+  max-width: 58rem;
+  margin: .45rem 0 0;
+  line-height: 1.65;
+}
+.table-wrap {
+  margin-top: 1.2rem;
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+th,
+td {
+  padding: .8rem .75rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+thead th {
+  color: var(--muted);
+  font-size: .78rem;
+  white-space: nowrap;
+}
+tbody th { min-width: 13rem; }
+tbody th,
+tbody td,
+tbody th strong { font-size: 16px; }
+tbody th small {
+  display: block;
+  margin-top: .25rem;
+  color: var(--muted);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.caption {
+  margin: .65rem 0 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+.method-note {
+  max-width: 58rem;
+  margin: .7rem 0 0;
+  color: var(--muted);
+  font-size: .95rem;
+  line-height: 1.55;
+}
+.curve-list {
+  display: grid;
+  border-top: 1px solid var(--line);
+}
+.curve-list > div {
+  display: grid;
+  grid-template-columns: minmax(9rem, .7fr) minmax(8rem, .7fr) 1fr;
+  gap: 1rem;
+  padding: .8rem 0;
+  border-bottom: 1px solid var(--line);
+  align-items: baseline;
+}
+.curve-list span { font: 700 1rem/1.3 var(--font-mono); }
+.curve-list strong { font-size: 1.2rem; }
+.curve-list em { color: var(--muted); font-style: normal; }
+.interpretation {
+  max-width: 58rem;
+  margin: 1rem 0 0;
+  line-height: 1.68;
+}
+.decision {
+  display: grid;
+  gap: .7rem;
+  max-width: 58rem;
+}
+.decision p {
+  margin: 0;
+  padding: .9rem 0;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.65;
+}
+.evidence ul {
+  display: grid;
+  gap: .45rem;
+  margin: 0;
+  padding-left: 1.2rem;
+}
+.evidence a {
+  color: var(--accent-deep);
+  text-underline-offset: .2em;
+}
+.evidence > p {
+  max-width: 58rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+@media (max-width: 700px) {
+  .stage1-study { width: calc(100% - 1.2rem); }
+  .hero { padding: 1.15rem 0 .9rem; }
+  .hero h1 { font-size: 2.3rem; line-height: 1.04; }
+  .stage1-contrast { margin-top: .65rem; padding: .55rem 0; }
+  .stage1-measures { grid-template-columns: 1fr; gap: .55rem; }
+  .measure-label { margin-bottom: .25rem; }
+  .measure-value strong { font-size: 1.15rem; }
+  .measure-note,
+  .stage1-contrast figcaption { font-size: .9rem; line-height: 1.38; }
+  .stage-grid,
+  .next-grid { grid-template-columns: 1fr; }
+  .section { padding: 1.8rem 0; }
+  .section-heading {
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: .55rem;
+  }
+  .curve-list > div {
+    grid-template-columns: 1fr auto;
+    gap: .2rem .8rem;
+  }
+  .curve-list em { grid-column: 1 / -1; }
+  .table-wrap { margin-inline: -.1rem; }
+}
 </style>
