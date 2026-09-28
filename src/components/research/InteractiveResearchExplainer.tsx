@@ -54,7 +54,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
     seed: {
       eyebrow: '',
       title: zh ? 'SEED 的两阶段 WebShop 学习循环' : 'SEED’s two-stage WebShop learning loop',
-      lede: zh ? 'Stage 1 先由 Qwen 通过 SEED / verl-agent harness 与 Princeton WebShop 环境交互采轨迹，再由外部 GLM-5.2 离线生成 hindsight skill 并做 SFT；Stage 2 保持同一 interaction contract，改由当前 policy 自己复盘，并把 OPD 与 GRPO 写回下一版参数。' : 'Stage 1 first collects Qwen trajectories through the SEED / verl-agent harness over the Princeton WebShop environment, then uses external GLM-5.2 offline for hindsight-skill SFT; Stage 2 keeps the same interaction contract, moves analysis to the current policy, and writes OPD plus GRPO into the next parameter state.',
+      lede: zh ? 'Stage 1 用 GLM-5.2 离线分析已完成轨迹并生成 hindsight skill，再做 SFT；Stage 2 改由当前 policy 自己复盘，并以 OPD + GRPO 更新参数。两个阶段共享同一 WebShop 交互合同。' : 'Stage 1 uses offline GLM-5.2 analysis to produce hindsight skills for SFT; Stage 2 moves reflection into the current policy and updates parameters with OPD plus GRPO. Both stages share the same WebShop interaction contract.',
       steps: [
         { label: 'rollout', narration: zh ? 'Stage 2：当前 policy → SEED / verl-agent harness ↔ Princeton WebShop，做真实 on-policy interaction。' : 'Stage 2: current policy → SEED / verl-agent harness ↔ Princeton WebShop for real on-policy interaction.' },
         { label: 'trajectory', narration: zh ? '完整 episode 被封存，原 action 不再改写。' : 'The completed episode is preserved and its sampled actions are no longer rewritten.' },
@@ -236,8 +236,8 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       onKeyDown={onKeyDown}
       aria-label={config.title}
     >
-      <ExplainerHeader id={`irx-${kind}-title`} locale={locale} title={config.title} lede={config.lede} eyebrow={config.eyebrow} hideDepth={kind === 'openevo'} />
-      <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} overview={overview} compactSteps={kind === 'openevo'} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={togglePlay} onOverview={showOverview} />
+      <ExplainerHeader id={`irx-${kind}-title`} locale={locale} title={config.title} lede={config.lede} eyebrow={config.eyebrow} hideDepth={kind === 'openevo' || kind === 'seed'} />
+      <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} overview={overview} compactSteps={kind === 'openevo' || kind === 'seed'} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={togglePlay} onOverview={showOverview} />
       {figure}
     </section>
   );

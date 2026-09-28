@@ -85,9 +85,10 @@ body:has(.plain-detail__interactive .irx[data-transport-docked=true]) .site-foot
 @media(max-width:760px){
   .plain-detail__interactive>astro-island>.irx:is([data-transport-docked=true],:focus-within,:hover)>.irx-controls>.irx-transport{width:calc(100vw - 1rem);padding:.3rem;gap:.25rem}
   .plain-detail__interactive>astro-island>.irx>.irx-controls>.irx-transport button{min-height:34px;padding:.35rem .55rem}
-  .irx-openevo .irx-controls{gap:.45rem;padding:.65rem}
-  .irx-openevo .irx-transport{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
-  .irx-openevo .irx-controls[data-overview=true] .irx-transport .irx-reset{display:none}
+  :is(.irx-openevo,.irx-seed) .irx-controls{gap:.45rem;padding:.65rem}
+  :is(.irx-openevo,.irx-seed) .irx-transport{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}
+  :is(.irx-openevo,.irx-seed) .irx-controls[data-overview=true] .irx-transport .irx-reset{display:none}
+  :is(.irx-openevo,.irx-seed) .irx-controls[data-overview=true] .irx-live{display:none}
 }
 
 /* Stage + node cards — white cards, rounded corners, soft elevation. */
