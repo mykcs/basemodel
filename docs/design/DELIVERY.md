@@ -20,6 +20,10 @@ The owner has actually reviewed the real rendered page and accepted it as a refe
 
 Never promote B to C without a real owner signal.
 
+Track these as separate evidence fields per route, not one label for the whole PR. Record the reviewed commit/rendered artifact, scope and owner's actual response for C. Approval of this plan, silence, CI green and an Agent's review do not establish C. A material later change to the accepted composition needs renewed acceptance; retain the previous acceptance as historical evidence.
+
+Absence of C does not block A, B or subsequent authorized batches. B requires an explicit review pass of the real render and resolved checklist findings, not an unsupported statement that it looks good. Automated checks and Agent inspection do not establish measured human comprehension.
+
 ## 2. Page-level Definition of Done
 
 A migrated reader-facing page must satisfy all of the following.
@@ -69,6 +73,7 @@ A migrated reader-facing page must satisfy all of the following.
 - [ ] keyboard/focus behavior is correct for interaction;
 - [ ] reduced-motion behavior is respected where motion exists;
 - [ ] no meaning depends on color alone.
+- [ ] affected text/reading layouts survive 200% text enlargement and a 320 CSS-pixel reflow check; essential two-dimensional tables/figures may scroll locally with accessible labels, while the document itself stays within the viewport.
 
 ### Evidence depth
 - [ ] exact provenance remains reachable;
@@ -83,7 +88,7 @@ Design v1 is complete only when:
 2. the three reference pages are Design-reference candidates;
 3. the owner-accepted subset is recorded honestly;
 4. stable repeated patterns have been extracted only where justified;
-5. active research-journey pages have been migrated by route family;
+5. every in-scope Phase 4 and Phase 5 route in the frozen inventory has been migrated or verified already conformant, with no unresolved blocking item;
 6. shared/global CSS changes have browser coverage;
 7. stale visual layers are reduced only after dependency/regression proof;
 8. Design-specific automated guards exist where objective failure can be detected;
@@ -101,14 +106,20 @@ npm run verify:deploy
 npm run build
 ```
 
+Use the existing `npm run preflight:ui:plan` / `npm run preflight:ui` wrapper and current risk classification from `ui-change-visual-acceptance-gate.md`. Do not repeat an equivalent full suite merely because several docs name it; preserve evidence for the actual scope/tree tested. Docs-only planning revisions need documentation/link/diff checks and the required repository CI, not fabricated browser or Preview acceptance.
+
 Also run focused tests for touched contracts/components.
 
 For shared/global/theme/layout/responsive changes, use the existing UI/browser policy and strongest applicable matrix, including `npm run test:ui:all` when the current engineering owner requires it.
 
 For each reference page, collect real-browser evidence at:
 - 390 x 844;
-- 768-class width;
-- 1440 x 1000 or equivalent desktop.
+- 768 x 1024;
+- 1440 x 1000.
+
+Use all three in both light/dark themes for each reference and migrated route/template witness; additionally retain the existing 1280 x 633 Reader Contract gate. Inspect breakpoint transitions when composition changes. These design widths supplement, rather than replace, existing browser matrices and required WebKit coverage. Record actual locales and states tested; do not infer a full matrix from one screenshot. Include first viewport, the decisive evidence/boundary region and expanded audit or interaction state where applicable.
+
+Bind evidence to the source tree, fresh build, browser/version, route, viewport/theme/state, command/result and accessible artifact location. A screenshot from old `dist/` is not current-head proof. Final evidence separately names the exact-head public CI run, Vercel deployment SHA/state and real Preview route sentinels. Login/interstitial screenshots do not count; temporary share credentials stay out of committed records.
 
 The screenshot itself is not acceptance. Review it against the checklist above.
 
@@ -137,3 +148,10 @@ Do not ship a design change that:
 - replaces a usable mobile page with a scaled desktop composition;
 - weakens an assertion/test merely to make the redesign pass;
 - requires the owner to be the first dark-mode/phone/overflow tester.
+
+## 7. Supporting rationale
+
+These external references inform technique; they do not replace repository authority:
+
+- [GOV.UK contribution criteria](https://design-system.service.gov.uk/community/contribution-criteria/) support proving usefulness, usability and reuse before promoting a pattern. BaseModel's three-reference/two-consumer rule is a local implementation choice.
+- [W3C Reflow](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html) and [Resize Text](https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html) explain why named device widths alone do not cover enlarged-text reading. The checks above are targeted design checks, not a claim of a full accessibility audit.

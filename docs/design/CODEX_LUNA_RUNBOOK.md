@@ -15,6 +15,8 @@ Before mutation:
 6. inspect worktree/branch/dirty state;
 7. resolve scientific authority before touching research copy.
 
+On first execution, read the full authority chain. On resume, read the latest task checkpoint, refresh changed authorities and verify the actual branch/tree before continuing the first unfinished item. Do not restart completed phases or rebuild the authority system. The frozen Phase 0 inventory defines scope; `DELIVERY.md` defines exit criteria.
+
 ## 2. Non-negotiable boundaries
 
 Do not:
@@ -38,10 +40,11 @@ select smallest coherent route batch
 -> resolve authority + Reader Contract
 -> state the page's one-sentence reader task
 -> state first-viewport answer
+-> identify the specific reader/checklist failure this batch will fix
 -> choose semantic pattern(s)
 -> implement content + HTML + visual composition together
 -> run focused deterministic tests
--> run real browser at phone + desktop (and intermediate width when layout changes)
+-> run real browser at 390/768/1440 in light + dark, plus the existing required matrix
 -> inspect screenshots and DOM overflow
 -> fix hierarchy, not just CSS symptoms
 -> update task checklist / evidence
@@ -50,6 +53,8 @@ select smallest coherent route batch
 ```
 
 Default batch size: one reference page or up to three closely related sibling routes.
+
+Reuse existing tokens/components where suitable; keep new composition local until all three references have been compared. Before each changed presentation contract, distinguish immutable scientific/functional invariants from editorial DOM/order assumptions. Update only the latter with an explicit before/after reader rationale and equivalent or stronger checks.
 
 ## 4. Checkpoints
 
@@ -69,13 +74,17 @@ A checkpoint records:
 - regressions found/fixed;
 - remaining phase items.
 
+Use the existing rollout task as the durable ledger. Each checkpoint also binds base/head (or pre-commit tree fingerprint), route/template/locale scope, scientific source revision, build/browser artifacts, actual pass/fail/not-run results, acceptance level and the exact next action. After committing, reference the source commit from the next checkpoint or PR record; do not chase a self-referential commit hash with endless evidence-only commits. Final required CI and Preview still bind to the latest PR head under current provider policy.
+
+Keep a single current resume pointer and compact completed evidence. Runtime/context exhaustion is an interrupted run, not completion or a scientific blocker: save the checkpoint and resume at the unfinished action on the next execution. Do not promise work will continue after the session ends unless the user has separately requested a scheduler.
+
 Do not fill permanent design docs with transient run IDs. Use the task document / PR body for execution evidence.
 
 ## 5. Decision rules
 
-### If the page is ugly but tests pass
+### If tests pass but the Design review identifies a concrete defect
 
-Keep working. Mechanical green is not a design conclusion.
+Keep working on that defect. Mechanical green is not a design conclusion.
 
 Diagnose:
 - wrong first visual owner?
@@ -85,6 +94,8 @@ Diagnose:
 - result too late?
 - density not staged?
 - mobile merely collapsed?
+
+Record the observed defect, smallest corrective hypothesis and a before/after check. Once the checklist findings are resolved and candidate criteria pass, advance to the next batch. An undefined wish to make it prettier is not an endless retry requirement or grounds for a new visual direction. An unresolved subjective preference remains an owner-review item without a false acceptance claim.
 
 ### If a test fails because it protects real semantics
 
@@ -98,10 +109,11 @@ Prove the intended user-facing contract first, then narrowly update the test. Ne
 
 Stop writing that owner, inspect the other PR, then choose one:
 - wait for/absorb its semantic delta;
-- stack intentionally;
 - move to a non-overlapping batch.
 
 Never overwrite unknown concurrent work.
+
+Apply the task's PR #805 integration rule to all three references and their dependencies. Prefer a reviewed integration into the same #806 branch; keep #806 based on `main`. Do not create a parallel redesign PR, force-push over a moving head, or merge the prerequisite PR without separate authorization. An overlapping filename alone is not a blocker; unresolved semantic ownership is.
 
 ### If main moves
 
@@ -125,6 +137,10 @@ Do **not** stop merely because:
 
 Try safe alternate paths and continue.
 
+If only one route is blocked, record its exact owner conflict and continue genuinely independent authorized work. Before declaring no route remains, consult the [shared Engineering Completion Protocol](https://github.com/mykcs/.agents/blob/main/docs/dev/ENGINEERING_COMPLETION_PROTOCOL.md) and the project operating principles. A failed connector or unsupported local browser binary is a route failure until authorized alternatives are checked.
+
+Provider work still running is `pending`, not `PASS` or a failure. Follow the current provider wait policy: use bounded state reads, perform independent work, and leave a resume checkpoint if nothing else remains. Do not use no-op commits or repeated final-gate triggers to manufacture progress.
+
 ## 7. Human-taste boundary
 
 The Agent should autonomously complete all mechanical and evidence-driven work.
@@ -145,6 +161,8 @@ Lack of immediate owner review is not permission to stop the implementation prog
 - Reuse the PR for corrections.
 - Request exact-head provider gate only at final acceptance according to current Dev/hosting authority.
 - Do not merge unless the execution prompt explicitly authorizes merge.
+
+Use lightweight review-only Preview when a render is useful during iteration; it cannot substitute for final acceptance. At closeout verify the actual public CI execution, the same-head Vercel deployment and protected product routes. Mark Ready only after Phase 8 passes. This task grants no merge or Production-release authorization.
 
 ## 9. Final report
 

@@ -12,6 +12,8 @@ The current design direction is:
 deep read   -> recover boundaries, methods, exact metrics and provenance
 ```
 
+These times are attention-design heuristics, not measured comprehension guarantees. Validate visible hierarchy and scientific interpretation through the delivery review; record human feedback only when it actually occurs.
+
 ## Current priorities
 
 1. **Meaning before chrome.** Start from the reader's question, not from components, cards or a famous-site visual style.

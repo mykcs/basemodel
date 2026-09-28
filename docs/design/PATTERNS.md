@@ -136,8 +136,12 @@ The goal is publication-quality reading, not marketing pacing on every paragraph
 ## Extraction rule
 
 Before creating a shared component:
-1. prove the pattern on at least two real uses or one strategically central reference page;
+1. finish and compare all three Phase 2 reference candidates, then identify at least two real uses with the same semantic responsibility;
 2. compare semantic differences;
 3. extract only the stable structure;
 4. keep route-specific copy/data outside the component;
 5. add visual/browser regression if the component becomes shared infrastructure.
+
+Reuse existing components and semantic tokens from the start where they fit. A new single-page structure remains local until reuse is demonstrated; centrality alone is not evidence of reuse. Two copies of one block on the same page do not prove cross-route reuse.
+
+The catalog above is a set of hypotheses, not an extraction quota. Phase 3 may conclude that no new component is justified. New shared tokens follow the same evidence rule and extend the existing token owner rather than starting a second palette or spacing system. Record consumers, invariant meaning, allowed variation and validation in the rollout task; propagate candidates provisionally and retain their acceptance status.

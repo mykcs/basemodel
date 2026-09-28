@@ -2,10 +2,15 @@
 
 These three pages are the proving ground for the system. They should become examples future Agents can inspect instead of relying on abstract prose.
 
+All numbers below are orientation examples. Before implementation, refresh the source revisions in the rollout task's scientific integration checkpoint. Scientific evidence, publication integration and owner design acceptance are separate states.
+
 ## 1. Stage1 learning objectives
 
 Route:
 `/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/`
+
+Content owner: `src/components/research/OpenEvoStage1LearningObjectives.astro`.
+Reader Contract: `capability-stage1-learning-objectives` in `src/data/siteReaderContracts.ts`.
 
 ### Reader question
 
@@ -20,6 +25,8 @@ Suggested visual grammar:
 - `train loss 2.713 -> 0.830`;
 - `WebShop Task Score 0.0369 -> 0.0352 -> 0 -> 0`;
 - restrained annotation showing the directions do not imply the same capability improvement.
+
+Explain WebShop and what Task Score measures before expecting a low-context reader to interpret the contrast. Loss and Task Score use different units: keep labeled scales, not a shared numeric axis or a causal arrow. Preserve validation panel size, checkpoint order and zero versus not-run distinctions.
 
 ### Must remain visible
 
@@ -42,6 +49,9 @@ Then show:
 Route:
 `/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/`
 
+Content owner: `src/components/research/OpenEvoSdLoraBoundedRecurrence.astro`.
+Reader Contract: `capability-sd-lora-bounded-state` in `src/data/siteReaderContracts.ts`.
+
 ### Reader question
 
 Was rank128 carrying substantially more persistent capacity than this continuation needed?
@@ -59,6 +69,10 @@ Suggested visual grammar:
 - one visible boundary line;
 - next: `rank16 / 32 / 64 / 128` sweep.
 
+This route remains the canonical owner of original rank128 bounded recurrence and its later rank32 capacity fork. The new entry must identify that relationship; preserve the original R150–R159 experiment, result and boundary in the visible reading path. Update the existing Reader Contract's old-result-first ordering alongside the composition, rather than treating Design prose as permission to bypass it.
+
+The capacity graphic represents persistent adapter payload only. Derive displayed units from authoritative bytes: `51,410,296 B` is approximately `51.4 MB` or `49.0 MiB`; `205,551,528 B` is `205.6 MB` or `196.0 MiB`. Do not copy the `51.4 MiB` typo found in PR #805. Keep the roughly 75% payload reduction separate from task capability, total model memory and runtime speed. Show the measured Task Score decrease and uncertainty beside the retained-behavior interpretation; exact success counts do not prove superiority.
+
 ### Must not imply
 
 - rank32 == rank128;
@@ -74,6 +88,11 @@ Then show:
 - provenance and exact payload definition.
 
 ## 3. Progress briefing
+
+Route: `/research/seed-openevo/study/briefing/`.
+Content owner: `src/components/research/SeedOpenEvoProgressBriefing.astro`.
+Reader Contract: `study-briefing` in `src/data/siteReaderContracts.ts`.
+Technical depth: `/research/seed-openevo/study/briefing/technical-notes/`.
 
 Reader task:
 answer the advisor's current questions quickly without turning the page into a run log.
@@ -93,6 +112,8 @@ Do not:
 
 ### Final-state composition
 
+Use this for the latest-answer entry and closing summary, while retaining the complete research-history path and stable section anchors. PR #805 updates the ending `#next`; it does not replace the whole briefing. Preserve chronology inside the historical explanation even when current answers are introduced first.
+
 ```text
 Question A
 -> answer
@@ -108,6 +129,10 @@ Next
 -> learning-signal conclusion
 -> capacity sweep
 ```
+
+During the mobile migration, inspect the fixed-slide/section-count assumptions in `src/lib/seedOpenEvoProgressBriefing.test.ts`, `tests/e2e/seed-openevo-briefing.spec.ts`, `tests/e2e/site-reader-contracts.spec.ts` and `tests/e2e/text-memory-research.spec.ts`. Replace obsolete geometry assumptions with vertical-reading, complete-content, anchor/navigation and no-overflow checks. Keep scientific/evidence assertions and useful desktop keyboard/presentation behavior. Do not retain hidden duplicate page bodies merely to satisfy retired selectors.
+
+The proposed capacity sweep and learning-signal work are links/next research questions, not authorization to execute experiments.
 
 ## Reference-page acceptance
 
