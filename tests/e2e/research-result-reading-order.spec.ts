@@ -39,6 +39,10 @@ for (const width of [390, 768, 1440]) {
       await expect(direct).toBeVisible();
       await expect(later).toBeVisible();
       await expect(direct).toContainText(route.directText);
+      if (route.id === 'four-arm') {
+        const firstResultTop = await direct.evaluate((element) => element.getBoundingClientRect().top);
+        expect(firstResultTop, 'four-arm result matrix must start in the first viewport').toBeLessThan(width === 390 ? 844 : 1000);
+      }
       await expect(page.locator('body')).toContainText(route.boundaryText);
 
       const order = await page.evaluate(({ directSelector, laterSelector }) => {

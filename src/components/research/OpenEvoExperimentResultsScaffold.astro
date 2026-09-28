@@ -206,6 +206,20 @@ const contrasts = [
       <small>{mode === '7b-self' ? t('训练保存点补测完成：2026-08-29', 'Checkpoint sweep completed: 2026-08-29') : mode === 'cross-arm' ? t('缺失 endpoint 保持缺失，不补成 0', 'Missing endpoint stays missing; it is not backfilled as zero') : t('历史实验记录', 'Historical run record')}</small>
     </div>
   </header>
+  {mode === 'cross-arm' && (
+    <section class="exp-scaffold__section" data-result-stage="direct-result" aria-labelledby="matrix-title">
+      <h2 id="matrix-title">{t('四组结果矩阵', 'Four-arm result matrix')}</h2>
+      <p class="exp-scaffold__section-intro">{t('现在 3B/self、7B/self、7B/MiniMax 都已有同一套封存 128 任务的真实最终数字；3B/MiniMax 因旧方法在 74.58% 时主动停止而没有 final eval，明确写“未运行”而不是 0。任何后续补测都必须清楚标注是否仍是同一套正式 panel。', '3B/self, 7B/self, and 7B/MiniMax now carry real final numbers from the same sealed 128-task panel. 3B/MiniMax has no final evaluation because the old-method run was explicitly stopped at 74.58%, so it is marked Not run rather than zero. Any later diagnostic must state whether it uses the same formal panel.')}</p>
+      <div class="exp-scaffold__table-wrap">
+        <table>
+          <thead><tr><th>{t('指标', 'Metric')}</th><th>3B / self</th><th>7B / self</th><th>3B / MiniMax</th><th>7B / MiniMax</th></tr></thead>
+          <tbody>
+            {matrixRows.map((row) => <tr><th scope="row">{row.label}</th>{[row.a,row.b,row.c,row.d].map((v) => <td class:list={{pending:v === PENDING}}>{v}</td>)}</tr>)}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )}
   <OpenEvoStage2StrategyChooser locale={locale} active="legacy" />
   <aside class="exp-scaffold__legacy-warning" data-testid="legacy-stage2-warning">
     <strong>{t('旧 Stage 2 规则 · 已取代', 'OLD STAGE-2 RULE · SUPERSEDED')}</strong>
@@ -244,21 +258,6 @@ const contrasts = [
         </div>
       </dl>
       <p class="exp-scaffold__resource-note">{t('这些时间来自已保存实验产物的时间戳，只计算 Stage 1 和旧 Stage 2 主实验本身。之后的固定 128 任务最终评测不在这 36 小时 44 分里；单独补测 8 个训练保存点另外用了约 80.2 分钟。', 'These times come from timestamps in the saved experiment artifacts and cover only Stage 1 plus the old Stage 2 main run. The later fixed-128 final evaluation is excluded; the separate checkpoint evaluation took about 80.2 additional minutes.')}</p>
-    </section>
-  )}
-
-  {mode === 'cross-arm' && (
-    <section class="exp-scaffold__section" data-result-stage="direct-result" aria-labelledby="matrix-title">
-        <h2 id="matrix-title">{t('四组结果矩阵', 'Four-arm result matrix')}</h2>
-        <p class="exp-scaffold__section-intro">{t('现在 3B/self、7B/self、7B/MiniMax 都已有同一套封存 128 任务的真实最终数字；3B/MiniMax 因旧方法在 74.58% 时主动停止而没有 final eval，明确写“未运行”而不是 0。任何后续补测都必须清楚标注是否仍是同一套正式 panel。', '3B/self, 7B/self, and 7B/MiniMax now carry real final numbers from the same sealed 128-task panel. 3B/MiniMax has no final evaluation because the old-method run was explicitly stopped at 74.58%, so it is marked Not run rather than zero. Any later diagnostic must state whether it uses the same formal panel.')}</p>
-        <div class="exp-scaffold__table-wrap">
-          <table>
-            <thead><tr><th>{t('指标', 'Metric')}</th><th>3B / self</th><th>7B / self</th><th>3B / MiniMax</th><th>7B / MiniMax</th></tr></thead>
-            <tbody>
-              {matrixRows.map((row) => <tr><th scope="row">{row.label}</th>{[row.a,row.b,row.c,row.d].map((v) => <td class:list={{pending:v === PENDING}}>{v}</td>)}</tr>)}
-            </tbody>
-          </table>
-        </div>
     </section>
   )}
 
