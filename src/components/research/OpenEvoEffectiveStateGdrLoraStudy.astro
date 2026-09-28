@@ -145,6 +145,14 @@ const twentyRoundScoreWindows = finalResult
   <header class="paper__hero esg__hero" data-reader-context id="top">
     <h1>{t('OpenEVO 参数演变：Bounded State 与 β 组件', 'OpenEVO parameter evolution: Bounded State and the β component')}</h1>
 
+    <p class="paper__lede esg__lede" data-reader-task data-reader-purpose>{finalResult ? t(
+      `正式匹配仅比较 Bounded 与 β-gating（α=1）。R1–R159 reward Δ ${finalResult.pooledReward.delta >= 0 ? '+' : ''}${finalResult.pooledReward.delta.toFixed(4)}（95% moving-block CI ${finalResult.uncertainty.low.toFixed(4)} 至 ${finalResult.uncertainty.high >= 0 ? '+' : ''}${finalResult.uncertainty.high.toFixed(4)}，跨 0）；Exact Success Δ ${(finalResult.exactSuccess.delta * 100).toFixed(2)} pp。同题冻结 Final（128 题）Task Score：${finalResult.finalPanel?.off.toFixed(2) ?? '—'}/100（${finalResult.finalPanel?.offExactCount ?? '—'}/128）与 ${finalResult.finalPanel?.on.toFixed(2) ?? '—'}/100（${finalResult.finalPanel?.onExactCount ?? '—'}/128）。训练期未确立稳定提升。`,
+      `The formal match compares only Bounded and β-gating (α=1). R1–R159 reward Δ is ${finalResult.pooledReward.delta >= 0 ? '+' : ''}${finalResult.pooledReward.delta.toFixed(4)} (95% moving-block CI ${finalResult.uncertainty.low.toFixed(4)} to ${finalResult.uncertainty.high >= 0 ? '+' : ''}${finalResult.uncertainty.high.toFixed(4)}, crossing zero); Exact Success Δ is ${(finalResult.exactSuccess.delta * 100).toFixed(2)} pp. On the same frozen 128-task final, Task Scores are ${finalResult.finalPanel?.off.toFixed(2) ?? '—'}/100 (${finalResult.finalPanel?.offExactCount ?? '—'}/128) and ${finalResult.finalPanel?.on.toFixed(2) ?? '—'}/100 (${finalResult.finalPanel?.onExactCount ?? '—'}/128). Training does not establish stable improvement.`
+    ) : t(
+      '本页分别记录 Bounded 与 β-gating 的正式匹配对照、历史 OpenEVO 前序实验和 SEED 论文参考；封存结果可用后再报告匹配结论。',
+      'This page separates the formal Bounded-versus-β-gating comparison from the historical OpenEVO predecessor and the SEED paper reference; matched conclusions will be reported when sealed results are available.'
+    )}</p>
+
     <figure class="paper-table-figure paper-table-figure--hero" data-result-stage="direct-result">
       <div class="paper-table-wrap paper-table-wrap--hero" aria-label={t('三组已完成实验、一个未做实验位置，以及 SEED 论文参考', 'Three completed experiments, one unrun slot, and a SEED paper reference')}>
         <table class="paper-table paper-table--ablation" aria-describedby="ablation-table-caption">
@@ -212,10 +220,6 @@ const twentyRoundScoreWindows = finalResult
     </figure>
 
     <div class="paper__metric-context">
-      <p class="paper__lede esg__lede" data-reader-task data-reader-purpose>{t(
-        '三条已完成路线现在形成了一个很清楚的结果：Bounded 把参数更新累计耗时从 31.09 小时降到 2.02 小时，但同题终评从 60.72 降到 45.98；继续加入 β 组件后，终评进一步降到 20.77。接下来的核心问题是：固定容量到底应该多大、Bounded 为什么没有完全保持能力，以及 β 为什么后期掉分。',
-        'The three completed lines now form a clear result: Bounded reduces cumulative parameter-update time from 31.09 hours to 2.02 hours, but the same-panel final drops from 60.72 to 45.98; adding the β component lowers it further to 20.77. The central open questions are the required fixed-state capacity, why Bounded does not fully preserve capability, and why β-gating degrades late.',
-      )}</p>
       <p>{t(
         'Task Score 是 WebShop 每个任务结束时给出的 0–1 连续分数的平均值 × 100。商品属性只完成一部分时也可能得到部分分；“完整做对”则要求任务真正成功且 task_score = 1.0。因此 60.72 / 100 和 50/128 不是同一个指标。',
         'Task Score is the mean terminal WebShop task_score in [0,1], multiplied by 100. Partial satisfaction can receive partial credit; “exact success” requires the task to be completed successfully with task_score = 1.0. So 60.72/100 and 50/128 are different metrics.',
