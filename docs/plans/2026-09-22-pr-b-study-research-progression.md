@@ -186,7 +186,7 @@ Study 的 executable Reader Contract 应改成：
 - keyboard focus for child navigation
 - no horizontal overflow
 
-PR #780 已于 2026-09-22 合并。因此实施时直接以 central `.codex/website-learning` 为偏好学习入口；BaseModel 本地继续保留 Wish、Reader Contracts、source/copy/browser tests 和科学 authority，不恢复已退休的本地 HPL 控制层。
+PR #780 已于 2026-09-22 合并。因此实施时直接以 central `.agents/docs/learning` 为偏好学习入口；BaseModel 本地继续保留 Wish、Reader Contracts、source/copy/browser tests 和科学 authority，不恢复已退休的本地 HPL 控制层。
 
 ## 10. 验收标准
 
