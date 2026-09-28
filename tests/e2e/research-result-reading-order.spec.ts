@@ -30,6 +30,8 @@ const routes = [
 const historicalArms = [
   { id: '3b-self', path: '/research/seed-openevo/study/results/3b-self-analysis/', answer: '1.71', boundary: '与 3B base 逐项一致' },
   { id: '7b-self', path: '/research/seed-openevo/study/results/7b-self-analysis/', answer: '13.33 升到 25.66', boundary: '只从 3 个增到 4 个' },
+  { id: '3b-minimax', path: '/research/seed-openevo/study/results/3b-minimax-analysis/', answer: '74.58% 时停止', boundary: 'final eval 未运行' },
+  { id: '7b-minimax', path: '/research/seed-openevo/study/results/7b-minimax-analysis/', answer: '16.94、0/128、116/128', boundary: '任务结束后分析轨迹' },
 ] as const;
 
 for (const width of [390, 768, 1440]) {
