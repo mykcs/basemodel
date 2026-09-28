@@ -1,0 +1,130 @@
+{
+  "schema": "basemodel.post-advisor-ab-final-results.20260928",
+  "status": "PASS",
+  "source": {
+    "repository": "mykcs/openevo-experiment",
+    "pull_request": 597,
+    "authority_path": "docs/science/webshop/program/POST_ADVISOR_SEED_RANK32_8GPU_WINDOW_AUTHORITY_20260928.md",
+    "final_summary_path": "docs/evidence/post-advisor-ab-20260928/FINAL_SCIENTIFIC_SUMMARY.json"
+  },
+  "claim_boundaries": {
+    "A": "SEED-style Qwen3-1.7B under frozen OpenEVO Stage1 trajectories and historical MiniMax analyses; Stage1 episode-skill SFT only; not an exact SEED-paper reproduction and not a claim about full SEED Stage2 self-evolving OPD/RL.",
+    "B": "Matched development/prospective R152-R159 evidence against the sealed historical rank128 continuation; not final-panel evidence and not a proof of strict non-inferiority."
+  },
+  "A": {
+    "train": {
+      "epochs": 3,
+      "optimizer_steps": 486,
+      "learning_rate": 0.000005,
+      "global_batch": 8,
+      "train_loss_first": 2.713,
+      "train_loss_last": 0.83,
+      "sft_val_loss": {
+        "step162": 1.161,
+        "step324": 1.091,
+        "step486": 1.093
+      }
+    },
+    "primary_validation": {
+      "panel_size": 64,
+      "panel_sha256": "4033523c01697576b7f9ce8cddc3a63cf6c1514ef5554e01a8c82b59ee62d478",
+      "states": {
+        "initial": {
+          "mean_task_score": 0.036886160714285715,
+          "exact_success_count": 0,
+          "positive_reward_count": 6
+        },
+        "epoch1": {
+          "step": 162,
+          "mean_task_score": 0.035243055555555555,
+          "exact_success_count": 0,
+          "positive_reward_count": 3
+        },
+        "epoch2": {
+          "step": 324,
+          "mean_task_score": 0,
+          "exact_success_count": 0,
+          "positive_reward_count": 0
+        },
+        "epoch3": {
+          "step": 486,
+          "mean_task_score": 0,
+          "exact_success_count": 0,
+          "positive_reward_count": 0
+        }
+      },
+      "paired_vs_initial": {
+        "epoch1": {
+          "mean_task_score_diff": -0.0016431051587301594,
+          "bootstrap95": [
+            -0.05169270833333334,
+            0.052343749999999994
+          ]
+        },
+        "epoch2": {
+          "mean_task_score_diff": -0.036886160714285715,
+          "bootstrap95": [
+            -0.073828125,
+            -0.009151785714285715
+          ]
+        },
+        "epoch3": {
+          "mean_task_score_diff": -0.036886160714285715,
+          "bootstrap95": [
+            -0.07343749999999999,
+            -0.008928571428571428
+          ]
+        }
+      }
+    },
+    "interpretation": "The Stage1 SEED-style supervised objective was learned, but held-out WebShop capability did not improve. Epoch1 was indistinguishable from the initial model; epochs2 and 3 were worse and had zero positive-reward tasks. This does not establish a failure of the full SEED Stage2 self-evolving method."
+  },
+  "B": {
+    "paired_attempts": 1024,
+    "rounds": [
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159
+    ],
+    "rank128": {
+      "mean_task_score": 0.6297621936440276,
+      "exact_success_count": 341,
+      "final_adapter_bytes": 205551528
+    },
+    "rank32": {
+      "mean_task_score": 0.6118559549174762,
+      "exact_success_count": 350,
+      "final_adapter_bytes": 51410296
+    },
+    "rank32_minus_rank128": {
+      "mean_task_score": -0.01790623872655121,
+      "mean_task_score_bootstrap95": [
+        -0.03681200960497834,
+        0.0011839869115259744
+      ],
+      "exact_success_rate": 0.0087890625,
+      "exact_success_rate_bootstrap95": [
+        -0.013671875,
+        0.03125
+      ]
+    },
+    "adapter_size_ratio_rank32_to_rank128": 0.25010904321762084,
+    "interpretation": "Rank32 uses about one quarter of the persistent adapter payload while retaining most observed behavior over the matched continuation. It is not proven lossless or strictly non-inferior because mean Task Score is lower. Continue a rank-capacity sweep before more complex alpha/beta mechanisms; do not infer rank8 is sufficient."
+  },
+  "boundaries": {
+    "new_teacher_calls": 0,
+    "final_panel_access": 0,
+    "historical_rank128_rerun": false,
+    "B_R152_rollout_replay": false
+  },
+  "publication": {
+    "primary_stage1_route": "/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/",
+    "primary_bounded_route": "/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/",
+    "briefing_route": "/research/seed-openevo/study/briefing/"
+  }
+}
