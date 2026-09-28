@@ -27,6 +27,11 @@ const routes = [
   },
 ] as const;
 
+const historicalArms = [
+  { id: '3b-self', path: '/research/seed-openevo/study/results/3b-self-analysis/', answer: '1.71', boundary: '与 3B base 逐项一致' },
+  { id: '7b-self', path: '/research/seed-openevo/study/results/7b-self-analysis/', answer: '13.33 升到 25.66', boundary: '只从 3 个增到 4 个' },
+] as const;
+
 for (const width of [390, 768, 1440]) {
   for (const route of routes) {
     test(`${route.id} keeps result-first order and page containment at ${width}px`, async ({ page }) => {
@@ -55,6 +60,23 @@ for (const width of [390, 768, 1440]) {
 
       const overflow = await page.evaluate(() =>
         document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+      expect(overflow, `${route.id}: page-level horizontal overflow at ${width}px`).toBe(false);
+    });
+  }
+}
+
+for (const width of [390, 768, 1440]) {
+  for (const route of historicalArms) {
+    test(`${route.id} leads with the sealed result at ${width}px`, async ({ page }) => {
+      const height = width === 390 ? 844 : 1000;
+      await page.setViewportSize({ width, height });
+      await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+      const lead = page.locator('.exp-scaffold__lead');
+      await expect(lead).toContainText(route.answer);
+      await expect(lead).toContainText(route.boundary);
+      const box = await lead.boundingBox();
+      expect(box && box.y + box.height, `${route.id}: direct answer must fit in the first viewport`).toBeLessThanOrEqual(height);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
       expect(overflow, `${route.id}: page-level horizontal overflow at ${width}px`).toBe(false);
     });
   }
