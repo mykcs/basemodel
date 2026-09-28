@@ -236,7 +236,16 @@ For each completed batch add the base/source commit or tree, exact checks actual
 - **Decision:** no shared component or new token is justified. The existing `claim → evidence → boundary` entry in `PATTERNS.md` captures the stable reader responsibility; a common DOM/component would erase meaningful differences. Keep each reference composition route-specific and reuse existing tokens only where they fit.
 - **Status:** Phase 3 mechanically complete; shared component/token extraction = none. Candidate styling remains provisional because the owner has not accepted any rendered reference.
 
-**Next execution action:** continue Phase 4 at the research gateway `/research/seed-openevo/study/`; resolve its Reader Contract and route authorities, then inspect its first viewport before selecting a pattern. The latest exact-head CI exposed a shared historical-prose readability gate failure on Stage1/Bounded typography; fix and rerun that gate as part of the same reference-owner follow-up before treating hosted acceptance as clear.
+**Next execution action:** verify the Stage1/Bounded 16px readability correction on exact head `de29031f` and continue the Study gateway browser gate on its pushed head. Then move to current research result routes, preserving each route's own reader task.
+
+### Phase 4 batch checkpoint — Study research gateway
+
+- **Reader task:** show why the seven OpenEVO × WebShop experiments form one research progression, then let readers choose an experiment or cross-experiment result route. The existing ordered experiment tree remains the right desktop structure; this is a chronology/progression task, not another result-reveal page.
+- **First viewport decision:** keep the experiment question in the title and lede, then show the complete seven-step research chain on phones before the seven parent entries. The prior CSS forced that chain into one tiny, ellipsized line; it now wraps at readable 16px text. Phone layouts continue to hide the child-link tree while preserving the seven parent experiments and the contract-selected featured routes.
+- **Changed owners and guard:** `OpenEvoExperimentIndex.astro` and `site-reader-contracts.spec.ts`. New browser coverage checks all seven transitions, 320px/390px light/dark readability, no chain clipping or page overflow, and no mobile child-link wall.
+- **Science and route scope:** the batch changes no experiment copy, result values, route identities, links, or publication state. The Study Reader Contract remains the governing content contract.
+- **Verification state:** local Astro build passed (265 pages); Vitest passed (124 structural files / 809 tests and 7 behavior files / 37 tests); ESLint passed. Chromium Reader Contract passed 22/22, including the Study chain at 320px/390px, Stage1 and Bounded references at 390px/768px/1440px in light/dark, and the 1280×633 desktop plus 390×844 phone contract walks. The Study phone gate confirms all seven parent routes remain visible alongside the complete, readable progression chain. WebKit is not installed in this local checkout and is recorded as not run. `git diff --check` passed. The exact-head hosted CI run is pending after this batch is pushed.
+- **Acceptance:** in progress; no route completion or owner acceptance claimed.
 
 ## 9. Stop conditions
 

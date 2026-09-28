@@ -211,6 +211,42 @@ for (const width of [390, 768, 1440]) {
   }
 }
 
+for (const width of [320, 390]) {
+  for (const theme of ['light', 'dark']) {
+    test(`Study mobile research chain stays complete and readable at ${width}px ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 844 });
+      await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/research/seed-openevo/study/', { waitUntil: 'domcontentloaded' });
+      await page.evaluate(() => document.fonts.ready);
+
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      const thread = page.locator('[data-testid="experiment-first-study-index"] .study-hero__mobile-thread');
+      await expect(thread).toBeVisible();
+      for (const step of ['参数没更新', '长周期更新', '小模型接口', '候选准入', '参数历史', '固定 State / β', 'Stage1 学习方式']) {
+        await expect(thread).toContainText(step);
+      }
+
+      const geometry = await thread.evaluate((node) => {
+        const rect = node.getBoundingClientRect();
+        return {
+          top: rect.top,
+          bottom: rect.bottom,
+          fontSize: Number.parseFloat(getComputedStyle(node).fontSize),
+          clientWidth: node.clientWidth,
+          scrollWidth: node.scrollWidth,
+        };
+      });
+      expect(geometry.top).toBeGreaterThanOrEqual(0);
+      expect(geometry.bottom).toBeLessThanOrEqual(844);
+      expect(geometry.fontSize).toBeGreaterThanOrEqual(16);
+      expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 2);
+      await expect(page.locator('.experiment-children:visible')).toHaveCount(0);
+      await expect(page.locator('.experiment-node__main')).toHaveCount(7);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+    });
+  }
+}
+
 test('Stage1 route controls stay keyboard-visible at 200% text size', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/', { waitUntil: 'domcontentloaded' });
