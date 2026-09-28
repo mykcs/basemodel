@@ -451,7 +451,7 @@ previous retrospective did not prevent recurrence.
 
 **Automatic response:**
 
-1. read [`../../operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md`](../../operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md); it is BaseModel's navigation-only entrypoint to the canonical conversation-learning protocol in `mykcs/.codex`; never duplicate the protocol body here;
+1. read [`../../operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md`](../../operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md); it is BaseModel's navigation-only entrypoint to the canonical conversation-learning protocol in `mykcs/.agents`; never duplicate the protocol body here;
 2. read the root Agent router, current Agent principles, documentation index,
    scenario registry, and the task's current scientific/engineering owner;
 3. search existing current policies and history before creating a new file;
