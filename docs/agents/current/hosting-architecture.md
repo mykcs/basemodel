@@ -1,8 +1,8 @@
 # Hosting architecture — required Public PR CI + Vercel provider gate + manual fallbacks
 
-Last reviewed: **2026-09-21**
+Last reviewed: **2026-09-28**
 
-Status: **current release architecture. Public GitHub Actions owns required exact-head deterministic/browser acceptance on independent hosted runners; Vercel Pro owns required exact-head provider build/deploy acceptance plus Preview/Production deployment; CircleCI and Mac/OrbStack are manual fallback only; Cloudflare supplies post-deploy smoke.**
+Status: **current release architecture. Public GitHub Actions owns required exact-head deterministic/browser acceptance on independent hosted runners; Vercel Pro owns required exact-head provider build/deploy acceptance plus access-protected Preview/Production deployment; CircleCI and Mac/OrbStack are manual fallback only; no anonymous external Production monitor is active.**
 
 Provider-selection rationale and rejected alternatives: [`ci-provider-decision.md`](ci-provider-decision.md). This file owns current topology; the rationale file explains why this topology is preferred.
 
@@ -30,7 +30,7 @@ main
   -> Vercel Production
   -> static production build of the already-accepted merge tree
   -> deploy accepted static artifact
-  -> Cloudflare production-smoke observes the real origin
+  -> access-protected Production; verify deployment identity/state through Vercel and use authenticated page access only when needed
 
 manual CI recovery only
   -> CircleCI `manual_cloud_ci` via explicit API trigger
@@ -67,7 +67,7 @@ Persistent final-gate identity is anchored to live `main`, not to the previous g
 Public GHA `ci-ui-gate.mjs` and the retained manual fallback paths share `scripts/vercel-ui-plan.ts`; skip/focused/full classification therefore has one owner. Shared/global/unknown changes fail closed to the complete canonical Chromium matrix. Route-owned/content changes may use focused mapped coverage. Lab/server-relevant changes run the dedicated 6-case active-Lab gate in Public PR CI. `vercel-ui-gate.mjs` remains available as fallback/history-compatible tooling but is not part of the ordinary Vercel build command.
 
 
-Vercel Preview is automatically non-indexable through `VERCEL_ENV=preview`; Production uses the stable project domain/canonical. `vercel.json` must not disable `main`.
+Vercel Preview is automatically non-indexable through `VERCEL_ENV=preview`. Production is intentionally access-protected and is also emitted as `noindex`; it still uses the stable project domain/canonical. `vercel.json` must not disable `main`.
 
 ## Manual fallback surfaces
 
@@ -87,8 +87,8 @@ repository/UI batch updated
 -> inspect the authoritative final Preview route/metadata when the change is user-facing
 -> merge accepted release to main
 -> Vercel Production runs the static production build of the already-accepted merge tree
--> verify Production HTTP/routes/canonical/hreflang/robots/sitemap
--> Cloudflare scheduled smoke continues independent observation
+-> verify the Production deployment SHA/status through Vercel
+-> when page-level confirmation is needed, use authenticated access; do not treat an anonymous login page as product evidence
 ```
 
 The fast human-review Preview is a viewing convenience only. It may prove that the built page is inspectable, but it cannot prove merge readiness, exact-head acceptance, current-base freshness, or Production behavior. A READY historical/review Preview is not current merge evidence. A green historical CircleCI run is not current merge evidence.
@@ -99,7 +99,7 @@ Provider authentication, bearer tokens, share/access query parameters, account I
 
 ## Legacy hosting — not ordinary workflow
 
-Historical Cloudflare deployment snapshots, Pages helpers and Workers shadow-build paths remain migration/fallback residue and are not ordinary deployment authority. The one active exception is `cloudflare/production-smoke/`, which monitors the Vercel Production origin and never publishes the site itself.
+Historical Cloudflare deployment snapshots, Pages helpers, Workers shadow-build paths, and the retired Production-smoke implementation remain migration/fallback/history residue and are not ordinary deployment authority. No Cloudflare surface actively monitors private Production.
 
 Only load or mention legacy hosting when:
 

@@ -2,17 +2,16 @@ import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
 import { sitemapStaticPaths } from '../lib/sitemapRoutes';
 
-// Static Chinese-only sitemap while English page source is archived. Preview surfaces stay non-indexable; Vercel Production uses Astro.site.
+// Static Chinese-only sitemap while English page source is archived. Protected Production and Preview surfaces stay non-indexable.
 export const GET: APIRoute = async ({ site }) => {
-  const isVercelProduction = process.env.VERCEL_ENV === 'production';
+  const isPrivateProduction = process.env.VERCEL_ENV === 'production';
   const isVercelPreview = process.env.VERCEL_ENV === 'preview';
   const isCloudflarePreview =
     process.env.CF_PAGES === '1' &&
     Boolean(process.env.CF_PAGES_BRANCH) &&
     process.env.CF_PAGES_BRANCH !== 'main';
-  const explicitNoIndex =
-    process.env.PUBLIC_SEARCH_INDEXING === 'disabled' && !isVercelProduction;
-  const shouldNoIndex = explicitNoIndex || isVercelPreview || isCloudflarePreview;
+  const explicitNoIndex = process.env.PUBLIC_SEARCH_INDEXING === 'disabled';
+  const shouldNoIndex = isPrivateProduction || explicitNoIndex || isVercelPreview || isCloudflarePreview;
 
   if (shouldNoIndex) {
     return new Response(

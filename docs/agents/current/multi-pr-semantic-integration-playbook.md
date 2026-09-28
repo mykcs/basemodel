@@ -294,7 +294,7 @@ After exact-head acceptance:
 merge integration PR once
 -> one main update
 -> one Vercel Production deployment
--> separate public Production verification
+-> separate authenticated Production verification
 ```
 
 Verify the stable domain, indexability, canonical/hreflang, robots/sitemap, representative routes and the key user path. Do not treat Preview acceptance as Production acceptance.

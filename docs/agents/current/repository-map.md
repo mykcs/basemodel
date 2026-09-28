@@ -73,16 +73,16 @@ The historical-looking CSS filenames are **live migration debt**, not documentat
 ## Deployment map
 
 ```text
-GitHub PR / release candidate          -> automatic Vercel Pro acceptance Preview
-GitHub non-main Preview ref               -> Vercel Preview real acceptance (token-independent)
-GitHub main                              -> Vercel Production with the same acceptance contract
+GitHub working PR                       -> required Public PR CI; no ordinary Vercel deployment
+GitHub ci/vercel-gate-final              -> exact-head Vercel provider acceptance Preview
+GitHub main                              -> access-protected Vercel Production
 Production identity                     -> https://basemodel-preview.vercel.app
 CircleCI                                -> automatic PR/main disabled; explicit API fallback only
-Cloudflare production-smoke Worker       -> post-deploy monitoring only
+Production access                        -> Vercel Authentication; no unauthenticated external monitor
 Cloudflare Pages/Direct Upload/shadow     -> rollback or provider-specific fallback only
 ```
 
-Vercel Pro is the ordinary CI and deployment authority. CircleCI automatic PR/main workflows are disabled and only explicit API-triggered fallback is retained; GitHub Actions is retained only for explicit `workflow_dispatch` to the repository-scoped Mac/OrbStack fallback runner. GitHub-hosted runners and GitHub Pages are not part of the ordinary architecture. `cloudflare/production-smoke/` is the one active monitoring-only Cloudflare exception; other Cloudflare deployment helpers remain fallback/history surfaces.
+Public GitHub-hosted Actions owns ordinary exact-head repository/browser acceptance, and Vercel Pro owns exact-head provider build/deploy acceptance plus Production. CircleCI automatic PR/main workflows are disabled and only explicit API-triggered fallback is retained; the repository-scoped Mac/OrbStack workflow is `workflow_dispatch` recovery only. GitHub Pages is not part of the ordinary architecture. Cloudflare deployment/monitoring helpers are fallback/history surfaces only; private Production has no unauthenticated external monitor.
 
 ## Change-to-check guidance
 

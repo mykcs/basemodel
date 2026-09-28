@@ -162,7 +162,7 @@ main
   -> Vercel project `basemodel-preview` Production
   -> static production build only; repository/browser acceptance was already required on the merge candidate
   -> https://basemodel-preview.vercel.app
-  -> Cloudflare production-smoke observes the real origin
+  -> access-protected; verify deployment identity through Vercel and use authenticated access for page inspection
 
 manual CI recovery only
   -> GitHub Actions workflow_dispatch

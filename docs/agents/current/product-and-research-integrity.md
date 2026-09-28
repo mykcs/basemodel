@@ -264,14 +264,14 @@ Do not perform a destructive “database redesign” merely because this directi
 
 The current Astro + React architecture is not the limiting factor for the present product.
 
-Keep the current static-first shape while the product is mainly public research knowledge plus a client-side workbench:
+Keep the current static-first shape while the product is mainly access-protected research knowledge plus a client-side workbench:
 
-- Astro for public/static pages and SEO;
+- Astro for static pages, canonical metadata, and private-site rendering;
 - React for dense interactive workbench surfaces;
 - Zod/Content Collections for reviewed repository data;
 - Nano Stores/persistent stores for client task/candidate/compare state;
 - ECharts/D3 only where visualization adds decision value;
-- Cloudflare Pages for build/Preview/Production/hosting.
+- Vercel for provider build, Preview, access-protected Production, and hosting.
 
 Do not migrate to Next.js or a server-first framework merely because the UI is becoming richer.
 
@@ -291,7 +291,7 @@ At that point an Astro server/hybrid deployment is a valid option; a framework m
 
 The current static implementation can honestly provide:
 
-- public knowledge pages;
+- access-protected knowledge pages;
 - bilingual routes;
 - model/paper filtering;
 - URL-shareable research tasks/compare state;
@@ -364,7 +364,7 @@ Important invariant coverage includes:
 - source identity stays deterministic;
 - completion checklists cannot be satisfied by dead/unwired components.
 
-Risk-based Playwright acceptance runs in Vercel Pro before merge and again on Vercel Production. CircleCI automatic PR/main workflows are disabled and only explicit API-triggered fallback is retained, and the repository-scoped Mac/OrbStack runner is manual fallback only. Deterministic source/data/unit/V2 audits remain deployment blockers; Cloudflare production-smoke only observes the deployed Vercel origin.
+Risk-based Playwright acceptance runs once in required Public PR CI; Vercel then proves provider build/deploy on the exact accepted head and publishes access-protected Production. CircleCI automatic PR/main workflows are disabled with only explicit API-triggered fallback retained, and the repository-scoped Mac/OrbStack runner is manual fallback only. Deterministic source/data/unit/V2 audits remain deployment blockers; Cloudflare is not an active Production monitor.
 
 ## How future agents should continue
 
@@ -376,8 +376,8 @@ Before proposing a broad redesign:
 4. Preserve evidence/unknown semantics and stable IDs.
 5. Prefer changing the smallest coherent product slice that closes a real research workflow.
 6. Add a regression that proves the behavior is wired into the real path.
-7. Use branch -> PR -> automatic exact-head Vercel Pro deterministic + risk-based browser acceptance -> merge for deployment-sensitive work; treat CircleCI only as explicit API-triggered manual fallback; do not restore automatic PR/main CircleCI workflows.
-8. Keep GitHub Actions limited to explicit `workflow_dispatch` for the repository-scoped Mac/OrbStack fallback; do not reintroduce automatic Mac CI, GitHub-hosted runners, or GitHub Pages.
+7. Use branch -> required Public PR CI on the exact head -> explicit Vercel final provider gate -> merge for deployment-sensitive work; treat CircleCI only as explicit API-triggered manual fallback; do not restore automatic PR/main CircleCI workflows.
+8. Keep public GitHub-hosted Actions as the ordinary read-only PR acceptance lane; keep the repository-scoped Mac/OrbStack workflow manual-only and do not reintroduce GitHub Pages as Production.
 9. Do not ask the owner to relay logs/content between tools when connected tools can retrieve them.
 10. Keep external-service and unavailable-fact boundaries explicit rather than faking completion.
 
