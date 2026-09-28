@@ -4,7 +4,7 @@ Status: **PLANNED / AUTHORITY BOOTSTRAP**
 Date: 2026-09-28
 Repository: `mykcs/basemodel`
 Branch: `design/basemodel-design-system-v1-20260928`
-PR: to be filled after creation
+PR: #806
 
 ## 1. Owner request
 
