@@ -32,12 +32,14 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
   await expect(body).toContainText('普通 LoRA');
   await expect(body).toContainText('Scalable Decoupled LoRA');
   await expect(body).toContainText('本页把没有加入后续加速变体的当前基线称为 “Vanilla SD-LoRA”');
+  const cumulativeUpdate = primer.locator('annotation[encoding="application/x-tex"]').nth(1);
+  await expect(cumulativeUpdate).toHaveText(String.raw`\Delta W_t = \sum_i \alpha_i D_i`);
+  await expect(primer.locator('.katex-html').nth(1)).toBeVisible();
   await expect(body).toContainText('16 个任务 × 每题 8 次');
   await expect(body).toContainText('每个任务只取最早一条通过全部检查的成功');
   await expect(body).toContainText('最多带回 64 条旧经验');
   await expect(body).toContainText('旧方向');
   await expect(body).toContainText('重新调整所有方向的影响大小');
-  await expect(body).toContainText('ΔWₜ = Σ αᵢDᵢ');
   await expect(body).toContainText('paper_equivalent=false');
   await expect(body).toContainText('rehearsal_free=false');
   await expect(body).toContainText('这些是接下来要测的风险');
