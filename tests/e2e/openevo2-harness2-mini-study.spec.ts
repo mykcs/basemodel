@@ -38,6 +38,18 @@ for (const theme of ['light', 'dark'] as const) {
       const response = await page.goto(routes[0], { waitUntil: 'domcontentloaded' });
       expect(response?.status()).toBe(200);
 
+      const primaryAnswer = page.locator('.h2study__hero>div>strong');
+      await expect(primaryAnswer).toBeVisible();
+      await expect(primaryAnswer).toContainText(/预设接口检查按既定阈值通过|preset interface check passed its defined thresholds/);
+      await expect(primaryAnswer).toContainText(/更多购物尝试因无效动作提前结束|more candidate attempts ended early on invalid actions/);
+      await expect(primaryAnswer).toContainText(/没有获准进入正式 Stage 2|formal Stage 2 was not authorized/);
+      const answerBox = await primaryAnswer.boundingBox();
+      expect(answerBox).not.toBeNull();
+      expect(answerBox!.y).toBeGreaterThanOrEqual(0);
+      expect(answerBox!.y + answerBox!.height).toBeLessThanOrEqual(viewport.height + 2);
+      await expect(page.locator('.h2study__hero aside')).toContainText(/接口检查通过|Interface checks passed/);
+      await expect(page.locator('.h2study__hero aside')).toContainText(/尚未授权正式训练|formal authorization were still pending/);
+
       const geometry = await page.evaluate(() => ({
         scrollWidth: document.documentElement.scrollWidth,
         clientWidth: document.documentElement.clientWidth,
@@ -52,3 +64,26 @@ for (const theme of ['light', 'dark'] as const) {
   }
 }
 
+for (const theme of ['light', 'dark'] as const) {
+  for (const scenario of [
+    { name: '320px-reflow', width: 320, height: 844, enlargeText: false },
+    { name: '200-percent-text', width: 390, height: 844, enlargeText: true },
+  ] as const) {
+    test(`${scenario.name}-${theme} keeps the Harness 2.0 answer readable without page overflow`, async ({ page }) => {
+      await page.addInitScript((nextTheme) => localStorage.setItem('atlas-theme', nextTheme), theme);
+      await page.setViewportSize({ width: scenario.width, height: scenario.height });
+      await page.goto(routes[0], { waitUntil: 'domcontentloaded' });
+      if (scenario.enlargeText) await page.addStyleTag({ content: 'html { font-size: 200% !important; }' });
+
+      const primaryAnswer = page.locator('.h2study__hero>div>strong');
+      await expect(primaryAnswer).toBeVisible();
+      const geometry = await page.evaluate(() => ({
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+        answerRight: document.querySelector('.h2study__hero>div>strong')?.getBoundingClientRect().right ?? Infinity,
+      }));
+      expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 2);
+      expect(geometry.answerRight).toBeLessThanOrEqual(geometry.clientWidth + 2);
+    });
+  }
+}
