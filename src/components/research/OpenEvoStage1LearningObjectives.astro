@@ -69,13 +69,13 @@ const seedStyleCurve = [
     <p class="reader-task" data-reader-task>{t('任务：用固定的 WebShop Stage1 经验，训练出进入 Stage2 前的一套起始参数。', 'Task: use fixed WebShop Stage-1 experience to learn one parameter set before Stage 2 begins.')}</p>
     <p class="reader-purpose" data-reader-purpose>{t('目的：只比较 Stage1 的学习方式，不把 Stage2 的 SD-LoRA 持续参数演变混进来。', 'Purpose: compare Stage-1 learning rules without mixing in Stage-2 SD-LoRA continual parameter evolution.')}</p>
     <h1>{t('Stage1 到底该怎么学？', 'How should Stage 1 learn?')}</h1>
-    <p class="lede">{t(
-      '这组实验不研究 SD-LoRA 怎么持续累积。它先把问题变简单：给同一个 Qwen3-1.7B、同一批 1,440 条 WebShop 经验，SFT、OPSD，或 hindsight-skill SFT，哪一种更适合先训练出“一套起始参数”？',
-      'This experiment does not study how SD-LoRA accumulates over time. It first makes the problem simpler: given the same Qwen3-1.7B and the same 1,440 WebShop trajectories, should one Stage-1 parameter set be learned with SFT, OPSD, or hindsight-skill SFT?'
-    )}</p>
     <p class="boundary hero-result">{t(
       '结果先说：SEED-style Stage1 的监督 loss 明显下降，但固定 64 题 WebShop capability 没有提高；完整 SEED Stage2 self-evolving / OPD / RL 没有在这里测试。',
       'Result first: SEED-style Stage 1 clearly lowers supervised loss, but capability on the fixed 64-task WebShop panel does not improve; full SEED Stage-2 self-evolving / OPD / RL was not tested here.'
+    )}</p>
+    <p class="lede">{t(
+      '这组实验不研究 SD-LoRA 怎么持续累积。它先把问题变简单：给同一个 Qwen3-1.7B、同一批 1,440 条 WebShop 经验，SFT、OPSD，或 hindsight-skill SFT，哪一种更适合先训练出“一套起始参数”？',
+      'This experiment does not study how SD-LoRA accumulates over time. It first makes the problem simpler: given the same Qwen3-1.7B and the same 1,440 WebShop trajectories, should one Stage-1 parameter set be learned with SFT, OPSD, or hindsight-skill SFT?'
     )}</p>
   </header>
 
