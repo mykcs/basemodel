@@ -38,6 +38,9 @@ const resultNotes = [
   { id: 'why-it-kept-failing', answer: '接近 0' },
   { id: 'first-positive-transfer', answer: '+0.124' },
   { id: 'independent-replication', answer: '740 次科学有效' },
+  { id: 'second-generation', answer: '132 条轨迹' },
+  { id: 'measurement-boundary', answer: 'MV4：测量已验证' },
+  { id: 'current-conclusion', answer: '可复现收益' },
 ] as const;
 
 for (const width of [390, 768, 1440]) {
