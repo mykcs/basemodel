@@ -37,14 +37,21 @@ const sftCurve = [
 const nextArms = [
   {
     name: 'SFT · 3 epochs',
-    state: t('运行中 / 未封存', 'Running / not sealed'),
-    purpose: t('区分“一轮 SFT 不够”与“SFT objective 本身不合适”。', 'Separate “one SFT pass is not enough” from “the SFT objective itself is unsuitable”.'),
+    state: t('已完成', 'Completed'),
+    purpose: t('三轮普通 SFT 的 development Task Score 依次为 0.3553 → 0.2830 → 0.2410；继续增加普通 SFT 预算没有改善。', 'Across three ordinary-SFT epochs, development Task Score falls 0.3553 → 0.2830 → 0.2410; adding more ordinary-SFT budget did not improve the result.'),
   },
   {
     name: 'SEED-style hindsight-skill SFT',
-    state: t('数据已准备 / 未训练', 'Data prepared / not trained'),
-    purpose: t('把完整 trajectory 分析成 episode_summary + episode_skill，再训练一套 Stage1 参数；MiniMax 标签，不冒充 SEED 论文 exact reproduction。', 'Train one Stage-1 parameter set from trajectory analysis targets episode_summary + episode_skill; uses MiniMax labels and is not claimed as an exact SEED-paper reproduction.'),
+    state: t('已完成 · Stage1 only', 'Completed · Stage 1 only'),
+    purpose: t('3 epoch / 486 step 的监督目标学得更好，但固定 64 题 WebShop capability 没有提升；这不是完整 SEED Stage2 的结论。', 'The supervised objective improves over 3 epochs / 486 steps, but capability on the fixed 64-task WebShop panel does not; this is not a conclusion about full SEED Stage 2.'),
   },
+];
+
+const seedStyleCurve = [
+  { state: 'initial', score: '0.0369', positive: '6 / 64', exact: '0 / 64' },
+  { state: 'epoch1 · step162', score: '0.0352', positive: '3 / 64', exact: '0 / 64' },
+  { state: 'epoch2 · step324', score: '0.0000', positive: '0 / 64', exact: '0 / 64' },
+  { state: 'epoch3 · step486', score: '0.0000', positive: '0 / 64', exact: '0 / 64' },
 ];
 ---
 
@@ -62,13 +69,13 @@ const nextArms = [
     <p class="reader-task" data-reader-task>{t('任务：用固定的 WebShop Stage1 经验，训练出进入 Stage2 前的一套起始参数。', 'Task: use fixed WebShop Stage-1 experience to learn one parameter set before Stage 2 begins.')}</p>
     <p class="reader-purpose" data-reader-purpose>{t('目的：只比较 Stage1 的学习方式，不把 Stage2 的 SD-LoRA 持续参数演变混进来。', 'Purpose: compare Stage-1 learning rules without mixing in Stage-2 SD-LoRA continual parameter evolution.')}</p>
     <h1>{t('Stage1 到底该怎么学？', 'How should Stage 1 learn?')}</h1>
+    <p class="boundary hero-result">{t(
+      '结果先说：SEED-style Stage1 的监督 loss 明显下降，但固定 64 题 WebShop capability 没有提高；完整 SEED Stage2 self-evolving / OPD / RL 没有在这里测试。',
+      'Result first: SEED-style Stage 1 clearly lowers supervised loss, but capability on the fixed 64-task WebShop panel does not improve; full SEED Stage-2 self-evolving / OPD / RL was not tested here.'
+    )}</p>
     <p class="lede">{t(
       '这组实验不研究 SD-LoRA 怎么持续累积。它先把问题变简单：给同一个 Qwen3-1.7B、同一批 1,440 条 WebShop 经验，SFT、OPSD，或 hindsight-skill SFT，哪一种更适合先训练出“一套起始参数”？',
       'This experiment does not study how SD-LoRA accumulates over time. It first makes the problem simpler: given the same Qwen3-1.7B and the same 1,440 WebShop trajectories, should one Stage-1 parameter set be learned with SFT, OPSD, or hindsight-skill SFT?'
-    )}</p>
-    <p class="boundary">{t(
-      '先把 Stage1 的学习方式选清楚，再进入 Stage2 的 SD-LoRA / DirectApply / Bounded / GDR。两层不能混在一起比较。',
-      'Choose the Stage-1 learning rule first; only then move into Stage-2 SD-LoRA / DirectApply / Bounded / GDR. These two layers must not be conflated.'
     )}</p>
   </header>
 
@@ -165,12 +172,12 @@ const nextArms = [
     )}</p>
   </section>
 
-  <section class="section" id="next" data-result-stage="unsealed-arms">
+  <section class="section" id="next" data-result-stage="direct-result">
     <div class="section-heading">
       <span>04</span>
       <div>
-        <h2>{t('接下来仍属于实验 07 的两条臂', 'Two remaining arms still belong to Experiment 07')}</h2>
-        <p>{t('它们回答两个不同问题：SFT 是不是只是没训够，以及真正的 hindsight-skill 学习信号是不是比 action imitation 更合适。', 'They answer two different questions: whether SFT was simply under-trained, and whether hindsight-skill supervision is better suited than action imitation.')}</p>
+        <h2>{t('后续两条臂已经封存：多训普通 SFT 没有救回来，Stage1 hindsight-skill 也没有抬高 WebShop capability', 'Both follow-up arms are sealed: more ordinary SFT did not recover capability, and Stage-1 hindsight-skill did not raise WebShop capability')}</h2>
+        <p>{t('这里必须把 optimization 和 capability 分开看：loss 下降只能说明模型更会完成监督目标，不能自动等价成更会做 WebShop。', 'Optimization and capability must stay separate here: lower loss means the model fits the supervised target better, not automatically that it solves WebShop better.')}</p>
       </div>
     </div>
     <div class="next-grid">
@@ -182,6 +189,36 @@ const nextArms = [
         </article>
       ))}
     </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{t('SEED-style Stage1 状态', 'SEED-style Stage-1 state')}</th>
+            <th>64-task Task Score</th>
+            <th>{t('正奖励', 'Positive reward')}</th>
+            <th>Exact Success</th>
+          </tr>
+        </thead>
+        <tbody>
+          {seedStyleCurve.map((row) => (
+            <tr>
+              <th scope="row">{row.state}</th>
+              <td>{row.score}</td>
+              <td>{row.positive}</td>
+              <td>{row.exact}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">{t(
+      '固定 64 题 outcome-blind development / primary-validation panel。epoch1 − initial 的平均 Task Score 差为 −0.00164，95% CI 跨 0；epoch2 / epoch3 相对 initial 都是 −0.03689，95% CI 均低于 0。final panel 仍未访问。',
+      'Fixed 64-task outcome-blind development / primary-validation panel. Mean Task Score difference epoch1 − initial is −0.00164 with a 95% CI crossing zero; epoch2 / epoch3 are both −0.03689 versus initial, with 95% CIs below zero. The final panel remains untouched.'
+    )}</p>
+    <p class="interpretation">{t(
+      'ELI5：模型越来越会完成我们给它的监督训练目标，但没有因此更会逛 WebShop。第一轮基本没变，继续训练后反而更差。这个结果只否定“这套 Stage1 hindsight-skill SFT 单独就能解决 capability ceiling”的简单解释；完整 SEED Stage2 self-evolving / OPD / RL 没有在这里测试。',
+      'ELI5: the model gets better at the supervised target we gave it, but not better at WebShop. The first epoch is effectively unchanged, and further training becomes worse. This only argues against the simple claim that this Stage-1 hindsight-skill SFT alone removes the capability ceiling; full SEED Stage-2 self-evolving / OPD / RL was not tested here.'
+    )}</p>
   </section>
 
   <section class="section" id="decision" data-result-stage="synthesis">
@@ -192,8 +229,8 @@ const nextArms = [
       </div>
     </div>
     <div class="decision">
-      <p><strong>{t('先选 Stage1。', 'Choose Stage 1 first.')}</strong> {t('SFT / OPSD / hindsight-skill 哪条在固定 development contract 下形成更好的 Stage2 起点。', 'Determine which of SFT / OPSD / hindsight-skill produces the better Stage-2 starting point under a fixed development contract.')}</p>
-      <p><strong>{t('再研究 Stage2。', 'Then study Stage 2.')}</strong> {t('把选出的更强 bootstrap 接进 DirectApply / Simple Bounded，再去回答长期参数记忆、容量与 GDR 问题。', 'Feed the stronger bootstrap into DirectApply / Simple Bounded before returning to long-run parametric memory, capacity, and GDR questions.')}</p>
+      <p><strong>{t('Stage1 的简单答案已经排除。', 'The simple Stage-1 answer is now ruled out.')}</strong> {t('继续堆普通 SFT budget 没有改善；这套 Stage1 SEED-style hindsight-skill 也没有提高固定 64 题 WebShop capability。不同 panel 的绝对分数不能拿来强行排一个跨方法赢家。', 'More ordinary-SFT budget did not help, and this Stage-1 SEED-style hindsight-skill route did not raise capability on the fixed 64-task WebShop panel. Absolute scores from different panels must not be forced into a cross-method winner.')}</p>
+      <p><strong>{t('下一步看真正的 credit assignment / self-evolving。', 'Next test the actual credit-assignment / self-evolving mechanism.')}</strong> {t('如果继续 SEED 路线，应该测试这里尚未运行的 Stage2 self-evolving / OPD / RL，而不是继续增加 Stage1 epoch；长期状态容量则交给独立的 rank32 / capacity sweep。', 'If the SEED line continues, test the unrun Stage-2 self-evolving / OPD / RL mechanism rather than adding more Stage-1 epochs; long-term state capacity is handled separately by the rank32 / capacity sweep.')}</p>
       <p><strong>{t('不使用 final panel 调参。', 'Do not tune on the final panel.')}</strong> {t('当前所有选择都只使用冻结 development panel；最终测试继续保持锁定。', 'All current choices use the frozen development panel only; the final test remains locked.')}</p>
     </div>
   </section>
@@ -211,11 +248,13 @@ const nextArms = [
       <li><a href="https://github.com/mykcs/openevo-experiment/blob/main/scripts/openevo_webshop/train_ceiling1_opsd.py" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/blob/main/scripts/openevo_webshop/train_ceiling1_opsd.py" />Stage1 OPSD trainer ↗</a></li>
       <li><a href="https://github.com/mykcs/openevo-experiment/blob/main/scripts/openevo_webshop/ceiling1_stage2_sd_lora.py" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/blob/main/scripts/openevo_webshop/ceiling1_stage2_sd_lora.py" />Stage2 SD-LoRA launcher / method wiring ↗</a></li>
       <li><a href="https://github.com/mykcs/openevo-experiment/blob/experiment/q17-sft-baseline-20260923/docs/experiment-tracking/Q17_SFT_BASELINE_20260923.md" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/blob/experiment/q17-sft-baseline-20260923/docs/experiment-tracking/Q17_SFT_BASELINE_20260923.md" />SFT objective-ablation plan ↗</a></li>
+      <li><a href="https://github.com/mykcs/openevo-experiment/pull/597" target="_blank" rel="noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/597" />{t('Post-advisor A/B 最终收口 · PR #597 ↗', 'Post-advisor A/B final closeout · PR #597 ↗')}</a></li>
+      <li><a href="/research/seed-openevo/evidence/post-advisor-ab-final-20260928.json" target="_blank" rel="noreferrer">{t('BaseModel 本地证据镜像 ↗', 'BaseModel local evidence mirror ↗')}</a></li>
     </ul>
-    <p>{t('当前页只写已经核对过的代码语义和封存的 32 题 development 结果。3-epoch SFT 与 SEED-style SFT 未封存前，不写成方法胜负。', 'This page reports only code semantics that have been checked and sealed 32-task development results. SFT 3-epoch and SEED-style SFT are not treated as winners or losers before they are sealed.')}</p>
+    <p>{t('当前页同时保留早期 32 题 SFT / OPSD development 证据与新封存的 64 题 SEED-style primary-validation 证据；两个 panel 不能混成同一个跨方法排行榜。完整 SEED Stage2 尚未运行。', 'This page keeps the earlier 32-task SFT / OPSD development evidence alongside the newly sealed 64-task SEED-style primary-validation evidence; the two panels must not be merged into one cross-method ranking. Full SEED Stage 2 remains unrun.')}</p>
   </section>
 </main>
 
 <style>
-.stage1-study{width:min(1040px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--ink)}.hero{padding:3.1rem 0 2rem;border-bottom:1px solid var(--line)}.eyebrow{margin:0 0 .75rem;color:var(--accent-deep);font:800 1rem/1.25 var(--font-mono);letter-spacing:.06em}.hero h1{max-width:18ch;margin:0;font-size:clamp(2.5rem,6vw,4.8rem);line-height:.98;letter-spacing:-.055em}.lede{max-width:50rem;margin:1.25rem 0 0;font-size:clamp(1.08rem,2vw,1.3rem);line-height:1.7}.boundary{max-width:50rem;margin:.9rem 0 0;color:var(--muted);line-height:1.65}.reader-task,.reader-purpose{max-width:50rem;margin:.45rem 0 0;color:var(--muted);line-height:1.55}.reader-task{margin-top:1rem;color:var(--ink);font-weight:650}.section{padding:2.5rem 0;border-bottom:1px solid var(--line)}.section-heading{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:1rem;margin-bottom:1.35rem}.section-heading>span{color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono)}.section-heading h2{margin:0;font-size:clamp(1.65rem,3.2vw,2.55rem);line-height:1.08;letter-spacing:-.035em}.section-heading p{max-width:54rem;margin:.65rem 0 0;color:var(--muted);line-height:1.65}.stage-grid,.next-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}.stage-grid article,.next-grid article{padding:1.25rem;background:var(--surface)}.stage-grid small,.next-grid small{display:block;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.04em}.stage-grid strong,.next-grid strong{display:block;margin:.35rem 0;font-size:1.15rem;line-height:1.35}.stage-grid p,.next-grid p{margin:.45rem 0 0;color:var(--muted);line-height:1.62}.stage-grid code{display:block;margin-top:.85rem;padding:.55rem .7rem;background:var(--surface-muted);border-left:2px solid var(--accent-deep);overflow-wrap:anywhere}.result-callout{padding:1.1rem 1.2rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.result-callout strong{font-size:1.18rem}.result-callout p{max-width:58rem;margin:.45rem 0 0;line-height:1.65}.table-wrap{margin-top:1.2rem;overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:1rem}th,td{padding:.8rem .75rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}thead th{font-size:.78rem;color:var(--muted);white-space:nowrap}tbody th{min-width:13rem}tbody th,tbody td,tbody th strong{font-size:16px}tbody th small{display:block;margin-top:.25rem;color:var(--muted);font-size:1rem;font-weight:500;line-height:1.45}.caption{margin:.65rem 0 0;color:var(--muted);font-size:1rem;line-height:1.55}.curve-list{display:grid;border-top:1px solid var(--line)}.curve-list>div{display:grid;grid-template-columns:minmax(9rem,.7fr) minmax(8rem,.7fr) 1fr;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--line);align-items:baseline}.curve-list span{font:700 1rem/1.3 var(--font-mono)}.curve-list strong{font-size:1.2rem}.curve-list em{color:var(--muted);font-style:normal}.interpretation{max-width:58rem;margin:1rem 0 0;line-height:1.68}.decision{display:grid;gap:.7rem;max-width:58rem}.decision p{margin:0;padding:.9rem 0;border-bottom:1px solid var(--line);line-height:1.65}.evidence ul{display:grid;gap:.45rem;margin:0;padding-left:1.2rem}.evidence a{color:var(--accent-deep);text-underline-offset:.2em}.evidence>p{max-width:58rem;color:var(--muted);line-height:1.65}@media(max-width:700px){.stage1-study{width:calc(100% - 1.2rem)}.hero{padding:1.8rem 0 1.3rem}.hero h1{font-size:2.45rem}.section{padding:1.8rem 0}.section-heading{grid-template-columns:2rem minmax(0,1fr);gap:.55rem}.stage-grid,.next-grid{grid-template-columns:1fr}.curve-list>div{grid-template-columns:1fr auto;gap:.2rem .8rem}.curve-list em{grid-column:1/-1}.table-wrap{margin-inline:-.1rem}}
+.stage1-study{width:min(1040px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--ink)}.hero{padding:3.1rem 0 2rem;border-bottom:1px solid var(--line)}.eyebrow{margin:0 0 .75rem;color:var(--accent-deep);font:800 1rem/1.25 var(--font-mono);letter-spacing:.06em}.hero h1{max-width:18ch;margin:0;font-size:clamp(2.5rem,6vw,4.8rem);line-height:.98;letter-spacing:-.055em}.lede{max-width:50rem;margin:1.25rem 0 0;font-size:clamp(1.08rem,2vw,1.3rem);line-height:1.7}.boundary{max-width:50rem;margin:.9rem 0 0;color:var(--muted);line-height:1.65}.hero-result{padding:.8rem 1rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted);color:var(--ink);font-weight:650}.reader-task,.reader-purpose{max-width:50rem;margin:.45rem 0 0;color:var(--muted);line-height:1.55}.reader-task{margin-top:1rem;color:var(--ink);font-weight:650}.section{padding:2.5rem 0;border-bottom:1px solid var(--line)}.section-heading{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:1rem;margin-bottom:1.35rem}.section-heading>span{color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono)}.section-heading h2{margin:0;font-size:clamp(1.65rem,3.2vw,2.55rem);line-height:1.08;letter-spacing:-.035em}.section-heading p{max-width:54rem;margin:.65rem 0 0;color:var(--muted);line-height:1.65}.stage-grid,.next-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}.stage-grid article,.next-grid article{padding:1.25rem;background:var(--surface)}.stage-grid small,.next-grid small{display:block;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.04em}.stage-grid strong,.next-grid strong{display:block;margin:.35rem 0;font-size:1.15rem;line-height:1.35}.stage-grid p,.next-grid p{margin:.45rem 0 0;color:var(--muted);line-height:1.62}.stage-grid code{display:block;margin-top:.85rem;padding:.55rem .7rem;background:var(--surface-muted);border-left:2px solid var(--accent-deep);overflow-wrap:anywhere}.result-callout{padding:1.1rem 1.2rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.result-callout strong{font-size:1.18rem}.result-callout p{max-width:58rem;margin:.45rem 0 0;line-height:1.65}.table-wrap{margin-top:1.2rem;overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:1rem}th,td{padding:.8rem .75rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}thead th{font-size:.78rem;color:var(--muted);white-space:nowrap}tbody th{min-width:13rem}tbody th,tbody td,tbody th strong{font-size:16px}tbody th small{display:block;margin-top:.25rem;color:var(--muted);font-size:1rem;font-weight:500;line-height:1.45}.caption{margin:.65rem 0 0;color:var(--muted);font-size:1rem;line-height:1.55}.curve-list{display:grid;border-top:1px solid var(--line)}.curve-list>div{display:grid;grid-template-columns:minmax(9rem,.7fr) minmax(8rem,.7fr) 1fr;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--line);align-items:baseline}.curve-list span{font:700 1rem/1.3 var(--font-mono)}.curve-list strong{font-size:1.2rem}.curve-list em{color:var(--muted);font-style:normal}.interpretation{max-width:58rem;margin:1rem 0 0;line-height:1.68}.decision{display:grid;gap:.7rem;max-width:58rem}.decision p{margin:0;padding:.9rem 0;border-bottom:1px solid var(--line);line-height:1.65}.evidence ul{display:grid;gap:.45rem;margin:0;padding-left:1.2rem}.evidence a{color:var(--accent-deep);text-underline-offset:.2em}.evidence>p{max-width:58rem;color:var(--muted);line-height:1.65}@media(max-width:700px){.stage1-study{width:calc(100% - 1.2rem)}.hero{padding:1.8rem 0 1.3rem}.hero h1{font-size:2.45rem}.section{padding:1.8rem 0}.section-heading{grid-template-columns:2rem minmax(0,1fr);gap:.55rem}.stage-grid,.next-grid{grid-template-columns:1fr}.curve-list>div{grid-template-columns:1fr auto;gap:.2rem .8rem}.curve-list em{grid-column:1/-1}.table-wrap{margin-inline:-.1rem}}
 </style>
