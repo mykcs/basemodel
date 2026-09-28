@@ -325,51 +325,34 @@ test('Study desktop keeps the three SD-LoRA acceleration entries grouped and sho
 });
 
 
-test('briefing scales the whole 16:9 slide to iPhone width without horizontal scrolling and caps desktop at 1280×720', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/research/seed-openevo/study/briefing/#capacity-diagnostic', { waitUntil: 'networkidle' });
-  const phone = await page.evaluate(() => {
-    const slide = document.querySelector('#capacity-diagnostic');
-    const deck = document.querySelector('[data-testid="progress-briefing"]');
-    const inner = slide?.querySelector('.slide-inner');
-    if (!slide || !deck || !inner) return null;
-    const box = slide.getBoundingClientRect();
-    const innerBox = inner.getBoundingClientRect();
-    const innerStyle = getComputedStyle(inner);
-    const matrix = new DOMMatrixReadOnly(innerStyle.transform);
-    return {
-      viewport: innerWidth,
-      documentWidth: document.documentElement.scrollWidth,
-      slideWidth: box.width,
-      slideHeight: box.height,
-      scale: Number.parseFloat(getComputedStyle(deck).getPropertyValue('--deck-scale')),
-      internalCssWidth: Number.parseFloat(innerStyle.width),
-      internalCssHeight: Number.parseFloat(innerStyle.height),
-      internalRenderedWidth: innerBox.width,
-      internalRenderedHeight: innerBox.height,
-      internalTransformScaleX: matrix.a,
-      internalTransformScaleY: matrix.d,
-    };
-  });
-  expect(phone).not.toBeNull();
-  expect(phone!.documentWidth).toBeLessThanOrEqual(phone!.viewport + 2);
-  expect(phone!.slideWidth).toBeCloseTo(phone!.viewport, 0);
-  expect(phone!.slideHeight / phone!.slideWidth).toBeCloseTo(9 / 16, 3);
-  expect(phone!.scale).toBeCloseTo(390 / 1280, 4);
-  // Guard the exact failure the owner caught: an outer 390px box is not enough if
-  // the inner desktop slide reflows/squeezes. The internal coordinate system must
-  // remain literal 1280×720 and only its rendered transform may scale down.
-  expect(phone!.internalCssWidth).toBeCloseTo(1280, 1);
-  expect(phone!.internalCssHeight).toBeCloseTo(720, 1);
-  expect(phone!.internalRenderedWidth).toBeCloseTo(phone!.slideWidth, 1);
-  expect(phone!.internalRenderedHeight).toBeCloseTo(phone!.slideHeight, 1);
-  expect(phone!.internalTransformScaleX).toBeCloseTo(390 / 1280, 4);
-  expect(phone!.internalTransformScaleY).toBeCloseTo(390 / 1280, 4);
-
-  await page.setViewportSize({ width: 2560, height: 1440 });
-  await page.goto('/research/seed-openevo/study/briefing/#capacity-diagnostic', { waitUntil: 'networkidle' });
-  const desktop = await page.locator('#capacity-diagnostic').boundingBox();
-  expect(desktop).not.toBeNull();
-  expect(desktop!.width).toBe(1280);
-  expect(desktop!.height).toBe(720);
+test('briefing presents current answers in natural reading flow at phone, tablet and desktop widths', async ({ page }) => {
+  for (const viewport of [{ width: 390, height: 844 }, { width: 768, height: 1024 }, { width: 1440, height: 1000 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/research/seed-openevo/study/briefing/#briefing-top', { waitUntil: 'networkidle' });
+    const result = await page.evaluate(() => {
+      const cover = document.querySelector('#briefing-top');
+      const answers = document.querySelector('[data-briefing-current-answers]');
+      const coverBox = cover?.getBoundingClientRect();
+      const answerBox = answers?.getBoundingClientRect();
+      return {
+        viewport: innerWidth,
+        viewportHeight: innerHeight,
+        documentWidth: document.documentElement.scrollWidth,
+        coverWidth: coverBox?.width ?? 0,
+        coverHeight: coverBox?.height ?? 0,
+        answerWidth: answerBox?.width ?? 0,
+        answerBottom: answerBox?.bottom ?? 0,
+        coverBottom: coverBox?.bottom ?? 0,
+        scale: getComputedStyle(document.querySelector('[data-testid="progress-briefing"]')!).getPropertyValue('--deck-scale'),
+      };
+    });
+    expect(result.documentWidth).toBeLessThanOrEqual(result.viewport + 2);
+    expect(result.coverWidth).toBeLessThanOrEqual(result.viewport + 2);
+    expect(result.coverHeight).toBeGreaterThan(0);
+    expect(result.answerWidth).toBeGreaterThan(0);
+    expect(result.answerBottom).toBeLessThanOrEqual(result.viewportHeight + 1);
+    expect(result.scale.trim()).toBe('');
+    await expect(page.locator('[data-briefing-current-answers] .current-answer')).toHaveCount(2);
+    await expect(page.locator('#next')).toHaveCount(1);
+  }
 });

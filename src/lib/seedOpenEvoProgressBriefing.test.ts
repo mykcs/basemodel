@@ -38,29 +38,42 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(sitemap).toContain("'/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/'");
   });
 
-  it('keeps a twenty-four-slide deck with page numbers only on inner slides', () => {
+  it('keeps all 24 research sections addressable with their existing stable anchors', () => {
     expect((briefing.match(/<section /g) ?? []).length).toBe(24);
-    for (let page = 2; page <= 23; page += 1) expect(briefing).toContain(`${String(page).padStart(2, '0')} / 24`);
-    expect(briefing).not.toContain('01 / 24');
-    expect(briefing).not.toContain('<p class="slide-number">24 / 24</p>');
-    expect(briefing).not.toContain('class="slide-next"');
-    expect(briefing).not.toContain('返回顶部');
+    for (const id of ['briefing-top','contents','science-attempts','results','openevo-method','stage2-gate','component-cap','seven-b','diagnostic-entry','horizon-diagnostic','prompt-diagnostic','capacity-diagnostic','training-dynamics','mechanism','m1a-identifiability','gdr','one-seven-b','directapply','directapply-progress','directapply-plateau','frontier-roadmap','text-memory-redesign','technical-work-summary','next']) {
+      expect(sectionPosition(id)).toBeGreaterThanOrEqual(0);
+    }
   });
 
-  it('keeps the literal 1280×720 composition and scales the whole slide on phone', () => {
-    expect(briefing).toContain('--deck-w:1280px;--deck-h:720px;--deck-scale:1;--scaled-deck-w:1280px;--scaled-deck-h:720px');
-    expect(briefing).toContain('.briefing-slide{position:relative;width:var(--scaled-deck-w);height:var(--scaled-deck-h)');
-    expect(briefing).toContain('width:var(--deck-w);height:var(--deck-h)');
-    expect(briefing).toContain('transform:scale(var(--deck-scale));transform-origin:top left');
-    expect(briefing).toContain('overflow-x:hidden');
-    expect(briefing).toContain('const scale = availableWidth / 1280');
-    expect(briefing).toContain("deck.style.setProperty('--scaled-deck-h', `${720 * scale}px`)");
-    expect(briefing).not.toContain('zoom:var(--deck-scale)');
-    expect(briefing).not.toContain('width:calc(100vw - 20px);height:auto');
+  it('uses responsive document reading instead of scaling a fixed slide canvas', () => {
+    expect(briefing).toContain('.briefing-slide{position:relative;width:min(1280px,calc(100% - 2rem));height:auto');
+    expect(briefing).toContain('.slide-inner{position:relative;z-index:1;width:100%;height:auto');
+    expect(briefing).not.toContain('--deck-scale');
+    expect(briefing).not.toContain('transform:scale(');
+    expect(briefing).not.toContain('const scale = availableWidth / 1280');
+    expect(briefing).not.toContain('width:var(--deck-w);height:var(--deck-h)');
   });
 
-  it('uses a normal cover/agenda and a science-story overview without checklist overload', () => {
-    expect(briefing).toContain('OpenEVO 在 WebShop 上到底学到了什么？');
+  it('opens with the current answers and preserves the chronological science story', () => {
+    const currentEntry = briefing.slice(sectionPosition('briefing-top'), sectionPosition('contents'));
+    expect(briefing).toContain('学习信号与状态容量：目前证据');
+    expect(briefing).toContain('data-briefing-current-answers');
+    expect(currentEntry).toContain('SEED-style Stage1');
+    expect(currentEntry).toContain('initial→epoch1→epoch2→epoch3');
+    expect(currentEntry).toContain('2.713 → 0.830');
+    expect(currentEntry).toContain('0.0369 → 0.0352 → 0 → 0');
+    expect(currentEntry).toContain('Exact 0 / 64');
+    expect(currentEntry).toContain('protected final');
+    expect(currentEntry).toContain('完整 SEED Stage2（self-evolving / OPD / RL）未测试');
+    expect(currentEntry).toContain('rank32 payload 约为 rank128 的 ¼');
+    expect(currentEntry).toContain('0.6298 → 0.6119');
+    expect(currentEntry).toContain('−0.0179 [paired 95% CI −0.0368, 0.0012]');
+    expect(currentEntry).toContain('341 → 350 / 1,024');
+    expect(currentEntry).toContain('1,024 paired rollouts');
+    expect(currentEntry).toContain('严格无损 / non-inferiority 未证明，protected final 未访问');
+    expect(currentEntry).toContain('仅比较 adapter payload');
+    expect(currentEntry).toContain('href={stage1Href}');
+    expect(currentEntry).toContain('href={boundedStateHref}');
     expect(briefing).toContain("{t('目录', 'Agenda')}");
     expect(briefing).toContain('参数往哪改、哪些改动最后被用上');
     for (const staleReaderJargon of ['参数方向与更新准入', 'accepted rollout', 'W&B 可核验', 'authority 的 loss']) {
@@ -480,21 +493,13 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(technical).toContain('post-hoc checkpoint replay');
   });
 
-  it('ends with the sealed post-advisor answers and their claim boundaries', () => {
+  it('ends with the next research questions while keeping sealed answers at the current entry', () => {
     const finalSlide = briefing.slice(sectionPosition('next'));
-    expect(finalSlide).toContain('学长问的两个问题都跑完了');
-    expect(finalSlide).toContain('0.0369');
-    expect(finalSlide).toContain('0.0352');
-    expect(finalSlide).toContain('epoch2/3');
-    expect(finalSlide).toContain('完整 SEED Stage2 self-evolving / OPD / RL 还没有测试');
-    expect(finalSlide).toContain('rank32');
-    expect(finalSlide).toContain('0.6119');
-    expect(finalSlide).toContain('0.6298');
-    expect(finalSlide).toContain('约 25%');
-    expect(finalSlide).toContain('不能宣布严格 non-inferior');
+    expect(finalSlide).toContain('下一步：测试经验怎样变成能力');
     expect(finalSlide).toContain('rank16 / 32 / 64 / 128');
-    expect(finalSlide).toContain('Post-advisor A/B 最终收口 · PR #597');
-    expect(finalSlide).toContain('BaseModel 本地证据镜像');
+    expect(finalSlide).toContain('能力线 · 下一问');
+    expect(finalSlide).not.toContain('rank128 likely over-provisioned');
+    expect(finalSlide).not.toContain('rank128 过度配置');
     expect(finalSlide).not.toContain('A/B in progress');
     expect(finalSlide).not.toContain('resource paused');
     expect(finalSlide).not.toContain('获准继续 R152–R159，但尚未启动');
@@ -506,6 +511,10 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(finalSlide).not.toContain('向南');
     expect(finalSlide).not.toContain('想请老师和学长判断优先级');
     expect(finalSlide).not.toContain('composed state');
+    expect(finalSlide).toContain('postAdvisorPrHref');
+    expect(finalSlide).toContain('post-advisor-ab-final-20260928.json');
+    expect(finalSlide).toContain('q17LearningSignalPrHref');
+    expect(finalSlide).toContain('directApplyAnalysisHref');
   });
 
   it('keeps hard/repeated HPL failure patterns out of the main deck', () => {
@@ -556,7 +565,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
 
   it('binds both public routes into Reader Contracts', () => {
     expect(contracts).toContain("c('study-briefing'");
-    expect(contracts).toContain('先看到当前结果和 evaluation protocol 边界，再回到最早 7B');
+    expect(contracts).toContain('首屏给出 SEED-style Stage1 固定 64 题 development 结果');
     expect(contracts).toContain("c('study-briefing-technical'");
     expect(contracts).toContain("'.technical-intro'");
   });
