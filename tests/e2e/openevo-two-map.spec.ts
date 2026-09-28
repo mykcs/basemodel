@@ -18,6 +18,39 @@ async function assertNoPageOverflow(page: Page) {
   expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 2);
 }
 
+for (const viewport of [
+  { width: 390, height: 844, theme: 'light' as const },
+  { width: 390, height: 844, theme: 'dark' as const },
+  { width: 768, height: 1024, theme: 'light' as const },
+  { width: 768, height: 1024, theme: 'dark' as const },
+  { width: 1440, height: 1000, theme: 'light' as const },
+  { width: 1440, height: 1000, theme: 'dark' as const },
+]) {
+  test(`archive identity and current-state boundary lead categories at ${viewport.width}px ${viewport.theme}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.evaluate((theme) => localStorage.setItem('atlas-theme', theme), viewport.theme);
+    const response = await page.goto(archive, { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+
+    const archivePage = page.getByTestId('openevo-experiment-archive');
+    const heading = archivePage.locator('.archive__head');
+    await expect(archivePage.locator('h1')).toHaveText('实验档案');
+    await expect(heading).toContainText('不是当前运行状态页');
+    await expect(heading).toContainText('核对数字和实验来源');
+    await expect(archivePage.locator('.archive__jump a')).toHaveCount(4);
+
+    const geometry = await heading.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    await assertNoPageOverflow(page);
+  });
+}
+
 registerOpenEvoResearchDeepDiveTests();
 registerReaderJourneyTests();
 
