@@ -405,6 +405,16 @@ For each completed batch add the base/source commit or tree, exact checks actual
 - **Provider / acceptance:** report gate and this checkpoint are local and await commit/push plus exact-head CI. Mechanically complete for existing report behavior = yes; Design-reference candidate = yes; owner-accepted reference = no. PR #806 remains Draft; Vercel final-gate Preview remains Phase 8 work.
 - **Exact next action:** commit/push the report first-viewport Design Gate and checkpoint on PR #806, verify exact-head CI, then continue the `openevo-2-0/exploration` narrative route from its current contract and latest authority.
 
+### Phase 4 route checkpoint — OpenEVO successor diagnostic history
+
+- **Authority and reader task:** continued after the successor report batch. The route's `capability-successor-exploration` contract asks the reader to understand how shopping-interface hypotheses were checked and revised, with each node retaining its contemporaneous evidence. The route owner `OpenEvoSuccessorExplorationMap.astro` identifies weak 3B behavior as a question, then separates paired step/sampling/history diagnostics, action-channel evidence, common freeze, and later preparation. BaseModel main and PR #805 remain at the refs recorded in the preceding checkpoint; the active upstream PR #609 is still formal-locked and does not rewrite this dated diagnostic sequence.
+- **Design decision:** existing H1 and reader-purpose summary already name the failure question, common shopping rules, and preservation of old record identity. Keep the interactive five-step narrative and evidence detours; no scientific copy, chronology, or result changed.
+- **Changed owner and Design Gate:** added a six-case first-view guard in `tests/e2e/openevo-two-map.spec.ts` for 390/768/1440 light/dark. It checks the diagnostic question, common-rule outcome, historical-identity boundary, viewport containment, and no root overflow.
+- **Browser evidence:** the real local Preview's accessibility tree confirmed the expected H1 and reader-purpose message render before the five-step sequence. The new first-view Chromium gate passed 6/6. The full 127-test Chromium suite is in progress; the report's full 121-test suite passed, and its six-case result gate passed.
+- **Pattern / debt decision:** retain the route's interactive narrative and its own evidence detours. Report, gateway, and exploration pages share a reading family but answer different tasks; this evidence does not justify forcing them into one template or extracting another component/token. No CSS debt removal is justified.
+- **Provider / acceptance:** the exploration gate and checkpoint are local and await commit/push plus exact-head CI. Mechanically complete for existing route behavior = yes; Design-reference candidate = yes; owner-accepted reference = no. PR #806 remains Draft; Vercel final-gate Preview remains Phase 8 work.
+- **Exact next action:** finish the 127-test Chromium suite and the preceding report batch's exact-head CI; commit/push this exploration gate and checkpoint on PR #806; verify exact-head CI; continue with the current `openevo-2-0/harness-2-0` reference route.
+
 ## 9. Stop conditions
 
 Follow `docs/design/CODEX_LUNA_RUNBOOK.md`.
