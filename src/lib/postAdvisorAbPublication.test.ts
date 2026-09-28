@@ -23,7 +23,12 @@ describe('post-advisor A/B BaseModel publication', () => {
     expect(page).toContain('0.6298');
     expect(page).toContain('51,410,296 B');
     expect(page).toContain('205,551,528 B');
-    expect(page).toContain('不能说它完全无损');
+    expect(page).toContain('尚未证明严格无损或 non-inferior');
+    expect(page).not.toContain('51.4 MiB');
+    expect(page).toContain('49.0 MiB');
+    expect(page).toContain('data-bounded-capacity-result');
+    expect(page).toContain('data-bounded-capacity-boundary');
+    expect(page).toContain('different experiment and evidence panel');
     expect(page).toContain('rank16 / 32 / 64 / 128');
     expect(page).toContain('不能因为后验 rank95≈8');
   });
@@ -37,6 +42,24 @@ describe('post-advisor A/B BaseModel publication', () => {
     expect(evidence.boundaries.B_R152_rollout_replay).toBe(false);
     expect(evidence.A.primary_validation.states.epoch3.mean_task_score).toBe(0);
     expect(evidence.B.adapter_size_ratio_rank32_to_rank128).toBeCloseTo(0.2501090432, 9);
+    expect(evidence.B.paired_attempts).toBe(1024);
+    expect(evidence.B.rounds).toEqual([152, 153, 154, 155, 156, 157, 158, 159]);
+    expect(evidence.B.rank128.mean_task_score).toBeCloseTo(0.6297621936, 9);
+    expect(evidence.B.rank32.mean_task_score).toBeCloseTo(0.6118559549, 9);
+    expect(evidence.B.rank128.exact_success_count).toBe(341);
+    expect(evidence.B.rank32.exact_success_count).toBe(350);
+    expect(evidence.B.rank128.final_adapter_bytes).toBe(205551528);
+    expect(evidence.B.rank32.final_adapter_bytes).toBe(51410296);
+    expect(evidence.B.rank32_minus_rank128.mean_task_score).toBeCloseTo(-0.0179062387, 9);
+    expect(evidence.B.rank32_minus_rank128.mean_task_score_bootstrap95).toEqual([
+      expect.closeTo(-0.03681200960497834, 9),
+      expect.closeTo(0.0011839869115259744, 9),
+    ]);
+    expect(evidence.B.rank32_minus_rank128.exact_success_rate_bootstrap95).toEqual([
+      expect.closeTo(-0.013671875, 9),
+      expect.closeTo(0.03125, 9),
+    ]);
+    expect(evidence.B.interpretation).toContain('not proven lossless or strictly non-inferior');
   });
 
   it('marks Experiment 07 complete and points the next question at credit assignment rather than more Stage1 epochs', () => {

@@ -179,6 +179,38 @@ for (const width of [390, 768, 1440]) {
   }
 }
 
+for (const width of [390, 768, 1440]) {
+  for (const theme of ['light', 'dark']) {
+    test(`Bounded capacity answer and historical boundary fit at ${width}px ${theme}`, async ({ page }) => {
+      const height = width === 768 ? 1024 : width === 1440 ? 1000 : 844;
+      await page.setViewportSize({ width, height });
+      await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/', { waitUntil: 'domcontentloaded' });
+      await page.evaluate(() => document.fonts.ready);
+
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      await expect(page.locator('#main-content h1')).toContainText('固定状态需要多大容量');
+      const result = page.locator('#main-content [data-bounded-capacity-result]');
+      const boundary = page.locator('#main-content [data-bounded-capacity-boundary]');
+      await expect(result).toContainText('205,551,528 B');
+      await expect(result).toContainText('51,410,296 B');
+      await expect(result).toContainText('0.6298 → 0.6119');
+      await expect(result).toContainText('341 / 1024 → 350 / 1024');
+      await expect(boundary).toContainText('protected final panel 未访问');
+
+      for (const locator of [result, boundary]) {
+        const geometry = await locator.evaluate((node) => {
+          const rect = node.getBoundingClientRect();
+          return { top: rect.top, bottom: rect.bottom, viewport: innerHeight };
+        });
+        expect(geometry.top).toBeGreaterThanOrEqual(0);
+        expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewport + 2);
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+    });
+  }
+}
+
 test('Stage1 route controls stay keyboard-visible at 200% text size', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/', { waitUntil: 'domcontentloaded' });

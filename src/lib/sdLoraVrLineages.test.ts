@@ -79,6 +79,6 @@ describe('SD-LoRA parallel lineage publication', () => {
     expect(bounded).toContain('R150–R159');
     expect(bounded).toContain('rank128');
     expect(bounded).toContain('protected final panel');
-    expect(bounded).toContain('not a proof that all continual learning is O(1)');
+    expect(bounded).toContain('nor a proof that every task, history length, or continual-learning method admits O(1) updates');
   });
 });

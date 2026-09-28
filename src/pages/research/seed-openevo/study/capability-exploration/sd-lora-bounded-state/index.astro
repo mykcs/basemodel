@@ -5,10 +5,10 @@ import ResearchRouteContext from '../../../../../../components/research/Research
 const locale = 'zh' as const;
 ---
 <AppLayout
-  title="SD-LoRA · Bounded Online Recurrence：固定 rank128 连续更新到 R159"
-  description="历史状态固定为 rank128，每轮学习 rank8 新更新后重新压回 rank128；R150–R159 连续资格通过，同轮 Vanilla trainer 对比平均约 37×。"
+  title="SD-LoRA · Bounded state 与 rank32 容量筛查"
+  description="rank32 使用约四分之一的持久参数 payload，在匹配续训中保留大部分已观测行为；严格无损或 non-inferiority 尚未证明。"
   locale={locale}
 >
-  <ResearchRouteContext locale={locale} route="sd-lora-bounded-state" />
+  <ResearchRouteContext locale={locale} route="sd-lora-bounded-state" compact />
   <OpenEvoSdLoraBoundedRecurrence locale={locale} />
 </AppLayout>
