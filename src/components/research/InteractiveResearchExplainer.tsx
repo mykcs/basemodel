@@ -185,22 +185,8 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
     ? '总览模式保留完整拓扑。颜色区分角色，形状区分数据类型，实线表示数据流，虚线表示控制或回环。'
     : 'Overview mode preserves the complete topology. Color separates roles, shape separates data types, solid lines carry data, and dashed lines show control or feedback.';
 
-  return (
-    <section
-      ref={rootRef}
-      className={`irx irx-${kind}`}
-      data-interactive-research-explainer={kind}
-      data-overview={overview}
-      data-transport-docked={transportDocked}
-      data-reduced-motion={reducedMotion}
-      data-compact={compact}
-      data-ui-audit="contrast layout"
-      tabIndex={0}
-      onKeyDown={onKeyDown}
-      aria-label={config.title}
-    >
-      <ExplainerHeader id={`irx-${kind}-title`} locale={locale} title={config.title} lede={config.lede} eyebrow={config.eyebrow} />
-      <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} overview={overview} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={togglePlay} onOverview={showOverview} />
+  const figure = (
+    <>
       <figure className="irx-paper-figure" data-overview={overview}>
         <div className="irx-stage" data-step={step}>
           {kind === 'webshop' && <WebShopExplainer locale={locale} step={step} />}
@@ -233,6 +219,35 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
         <summary><span>Level 3</span>{zh ? '技术边界与复现提示' : 'Technical boundary and reproduction notes'}</summary>
         <p>{technicalCopy(kind, locale)}</p>
       </details>
+    </>
+  );
+
+  return (
+    <section
+      ref={rootRef}
+      className={`irx irx-${kind}`}
+      data-interactive-research-explainer={kind}
+      data-overview={overview}
+      data-transport-docked={transportDocked}
+      data-reduced-motion={reducedMotion}
+      data-compact={compact}
+      data-ui-audit="contrast layout"
+      tabIndex={0}
+      onKeyDown={onKeyDown}
+      aria-label={config.title}
+    >
+      <ExplainerHeader id={`irx-${kind}-title`} locale={locale} title={config.title} lede={config.lede} eyebrow={config.eyebrow} />
+      {kind === 'openevo' ? (
+        <>
+          {figure}
+          <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} overview={overview} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={togglePlay} onOverview={showOverview} />
+        </>
+      ) : (
+        <>
+          <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} overview={overview} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={togglePlay} onOverview={showOverview} />
+          {figure}
+        </>
+      )}
     </section>
   );
 }

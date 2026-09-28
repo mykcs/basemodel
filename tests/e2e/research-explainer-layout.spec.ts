@@ -508,3 +508,30 @@ test('research framework opens as a system map and can enter and leave trace mod
   await root.getByRole('button', { name: '重置' }).click();
   await expect(root).toHaveAttribute('data-overview', 'true');
 });
+
+for (const matrix of matrices) {
+  test(`OpenEvo shows the system map before trace controls at ${matrix.name}`, async ({ page }) => {
+    test.skip(!routeInScope('/research/seed-openevo/flow/openevo/'), 'outside hosted focused route scope');
+    await page.setViewportSize(matrix.viewport);
+    await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+    await page.goto('/research/seed-openevo/flow/openevo/', { waitUntil: 'domcontentloaded' });
+    const root = page.locator('[data-interactive-research-explainer="openevo"]');
+    await waitForHydratedExplainer(root);
+    const geometry = await root.evaluate((element) => {
+      const figure = element.querySelector('.irx-paper-figure')!.getBoundingClientRect();
+      const controls = element.querySelector('.irx-controls')!.getBoundingClientRect();
+      return {
+        figureTop: figure.top,
+        controlsTop: controls.top,
+        viewportHeight: window.innerHeight,
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+      };
+    });
+    expect(geometry.figureTop).toBeLessThan(geometry.controlsTop);
+    expect(geometry.figureTop).toBeLessThan(geometry.viewportHeight);
+    expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 2);
+    await expect(root).toHaveAttribute('data-overview', 'true');
+    await expect(root.locator('.irx-paper-caption')).toContainText('系统结构');
+  });
+}
