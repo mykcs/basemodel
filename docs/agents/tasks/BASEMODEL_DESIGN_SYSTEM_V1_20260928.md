@@ -65,7 +65,7 @@ This task does not authorize:
 - [x] define site-wide implementation phases;
 - [x] define Codex Luna autonomous runbook;
 - [x] define first reference pages;
-- [ ] route Design from root `AGENTS.md`.
+- [x] route Design from root `AGENTS.md`.
 
 ### Implementation
 - [ ] Phase 0 inventory and baseline screenshots;
