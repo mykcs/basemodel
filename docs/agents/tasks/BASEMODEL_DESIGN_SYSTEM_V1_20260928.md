@@ -72,7 +72,7 @@ This task does not authorize:
 - [x] Stage1 reference-page redesign (mechanically complete; Design-reference candidate at `94ec441d`; owner acceptance pending);
 - [x] Bounded reference-page redesign (mechanically complete; Design-reference candidate at `b0dcf772`; owner acceptance pending);
 - [x] Progress briefing responsive redesign (mechanically complete; Design-reference candidate for this batch; owner acceptance pending);
-- [ ] extract only proven shared patterns/components;
+- [x] compare the three reference candidates; retain only the already documented shared semantic pattern, with no new component/token (Phase 3 checkpoint below);
 - [ ] migrate active research journey;
 - [ ] migrate broader route families;
 - [ ] reduce proven-dead legacy visual layers;
@@ -229,7 +229,14 @@ For each completed batch add the base/source commit or tree, exact checks actual
 - **Design debt and extraction:** the obsolete fixed-slide sizing/scaling CSS and runtime script are removed. This batch adds no shared component or token; compare Stage1, Bounded, and Briefing before extracting repeated patterns. Other route-family legacy CSS work remains open.
 - **Acceptance:** mechanically complete = yes; Design-reference candidate = yes; owner-accepted reference = no (the owner has not reviewed the rendered candidate). Hosted exact-head CI and provider Preview remain final-gate work.
 
-**Next execution action:** compare the three reference candidates against `SYSTEM.md`, `PATTERNS.md`, and their Reader Contracts; extract only patterns repeated with the same reader purpose and semantics. Then continue the active research-journey route family. Phase 0 and all three reference-page batches are mechanically complete as candidates; shared extraction, route families, global debt retirement, and final gates remain open.
+### Phase 3 checkpoint — reference comparison and extraction decision
+
+- **Compared:** Stage1 (`comparison`), Bounded/rank32 (`focus`), and Progress Briefing (`narrative`) against `SYSTEM.md`, `PATTERNS.md`, their three Reader Contracts, and the corresponding focused browser guards.
+- **Finding:** all three keep each claim beside the evidence and boundary needed to interpret it. The actual semantic tasks differ: opposing learning/capability signals; one capacity result with two independent behaviors; and two separate research answers followed by chronology.
+- **Decision:** no shared component or new token is justified. The existing `claim → evidence → boundary` entry in `PATTERNS.md` captures the stable reader responsibility; a common DOM/component would erase meaningful differences. Keep each reference composition route-specific and reuse existing tokens only where they fit.
+- **Status:** Phase 3 mechanically complete; shared component/token extraction = none. Candidate styling remains provisional because the owner has not accepted any rendered reference.
+
+**Next execution action:** continue Phase 4 at the research gateway `/research/seed-openevo/study/`; resolve its Reader Contract and route authorities, then inspect its first viewport before selecting a pattern. The latest exact-head CI exposed a shared historical-prose readability gate failure on Stage1/Bounded typography; fix and rerun that gate as part of the same reference-owner follow-up before treating hosted acceptance as clear.
 
 ## 9. Stop conditions
 
