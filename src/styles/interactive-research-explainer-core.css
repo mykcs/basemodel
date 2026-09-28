@@ -74,6 +74,7 @@
 .irx-live>span{color:var(--line)}
 .irx-controls[data-overview=true]{border-color:color-mix(in srgb,var(--irx-state) 24%,var(--line))}
 .irx-controls[data-overview=true] .irx-progress i{width:0!important}
+.irx-alfworld .irx-controls[data-overview=true] .irx-live{display:none}
 
 /* Standalone method/environment pages begin with controls attached to their
  * explainer. A bottom dock appears only after the reader actually enters the

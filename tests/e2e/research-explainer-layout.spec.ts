@@ -52,7 +52,6 @@ test('WebShop benchmark identity and evidence lead its page contents directory',
       const summary = page.locator('.benchmark-summary');
       const facts = summary.locator('.benchmark-facts');
       const contents = page.locator('.webshop-entry > .page-contents');
-      const setting = page.locator('.seed-setting');
       await expect(summary.getByRole('heading', { name: 'WebShop 基准' })).toBeVisible();
       await expect(facts.locator('a[href="https://arxiv.org/abs/2207.01206"]')).toBeVisible();
       await expect(facts).toContainText('NeurIPS 2022');
@@ -556,6 +555,7 @@ test('research framework opens as a system map and can enter and leave trace mod
 const compactMapRoutes = [
   { kind: 'openevo', path: '/research/seed-openevo/flow/openevo/', label: 'OpenEvo' },
   { kind: 'seed', path: '/research/seed-openevo/flow/seed/', label: 'SEED' },
+  { kind: 'alfworld', path: '/research/seed-openevo/flow/alfworld/', label: 'ALFWorld' },
 ] as const;
 
 for (const matrix of matrices) {
@@ -590,6 +590,13 @@ for (const matrix of matrices) {
       await expect(stepSelection.locator('.irx-stepper button').first()).toBeHidden();
       await stepSelection.locator('summary').click();
       await expect(stepSelection.locator('.irx-stepper button').first()).toBeVisible();
+      if (route.kind === 'alfworld') {
+        await expect(root.locator('.irx-paper-caption')).toContainText('总览模式保留完整拓扑');
+        await expect(root.locator('.irx-live')).toBeHidden();
+        await root.getByRole('button', { name: '下一步' }).click();
+        await expect(root).toHaveAttribute('data-overview', 'false');
+        await expect(root.locator('.irx-live')).toBeVisible();
+      }
     });
   }
 }

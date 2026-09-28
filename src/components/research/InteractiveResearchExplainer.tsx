@@ -237,7 +237,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       aria-label={config.title}
     >
       <ExplainerHeader id={`irx-${kind}-title`} locale={locale} title={config.title} lede={config.lede} eyebrow={config.eyebrow} hideDepth={kind === 'openevo' || kind === 'seed'} />
-      <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} overview={overview} compactSteps={kind === 'openevo' || kind === 'seed'} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={togglePlay} onOverview={showOverview} />
+      <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} overview={overview} compactSteps={kind === 'openevo' || kind === 'seed' || kind === 'alfworld'} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={togglePlay} onOverview={showOverview} />
       {figure}
     </section>
   );
