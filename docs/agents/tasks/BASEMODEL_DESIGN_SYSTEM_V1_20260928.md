@@ -395,6 +395,16 @@ For each completed batch add the base/source commit or tree, exact checks actual
 - **Provider / acceptance:** new gate is local and awaits commit/push plus exact-head CI. Mechanically complete for the existing page behavior = yes; Design-reference candidate = yes; owner-accepted reference = no. PR #806 remains Draft and Vercel final-gate Preview remains Phase 8 work.
 - **Exact next action:** commit/push the successor first-viewport Design Gate and checkpoint on the existing PR #806, verify exact-head CI, then inspect `/research/seed-openevo/study/capability-exploration/openevo-2-0/report/` as the next result page with refreshed scientific authority before any content change.
 
+### Phase 4 route checkpoint — OpenEVO successor results report
+
+- **Authority refresh:** BaseModel `main` remains `f2d272bf697b5d121e233ceaf8b5af79c7b0cd3d`; PR #805 remains OPEN/non-Draft at `43fa2cbb3998824333826e8542cebf8265842f17` and does not change this report owner. OpenEVO PR #348, the report's Qwen3-1.7B final-closeout authority, is MERGED at `86d541bc3845a4b33b97dcebd7a68d81b56cee6d`. New OpenEVO PR #609 is OPEN at `3066f17495662b5d81bd29e31be7889a417fd308`; its `current-campaign.json` says the post-advisor unanswered plan is formal-locked, and its plan keeps final-panel access at zero. That later workline does not invalidate the sealed historical PR #348 result or authorize treating PR #609 as a completed outcome.
+- **Reader task and decision:** state the 1.7B fixed-final result, the lack of a matched 3B final, and the SEED reference boundary before the methods. The existing `capability-successor-report` contract and `OpenEvoSuccessorReport.astro` already do this; preserve the chronology, initial results, final test, and explicit limit that completion does not prove stable improvement. No report copy, scientific value, or result state changed.
+- **Changed owner and Design Gate:** added a six-case first-viewport gate in `tests/e2e/openevo-two-map.spec.ts` for 390/768/1440 light/dark. It checks 37.60/100, 1/128 exact success, the missing matched 3B result, the external-SEED boundary, first-screen containment, and root overflow.
+- **Browser evidence:** the real local Preview's accessibility tree confirmed the report H1, result summary, and SEED boundary render in the primary reading path. The new Chromium first-view/overflow gate passed 6/6; the existing successor gateway six-case gate passed 6/6. Existing result route and contract coverage remain in place.
+- **Pattern / debt decision:** retain this report's result-first `focus` composition with the report-local timeline and technical evidence below it. It does not justify a shared component/token or CSS removal.
+- **Provider / acceptance:** report gate and this checkpoint are local and await commit/push plus exact-head CI. Mechanically complete for existing report behavior = yes; Design-reference candidate = yes; owner-accepted reference = no. PR #806 remains Draft; Vercel final-gate Preview remains Phase 8 work.
+- **Exact next action:** commit/push the report first-viewport Design Gate and checkpoint on PR #806, verify exact-head CI, then continue the `openevo-2-0/exploration` narrative route from its current contract and latest authority.
+
 ## 9. Stop conditions
 
 Follow `docs/design/CODEX_LUNA_RUNBOOK.md`.
