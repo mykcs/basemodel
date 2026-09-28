@@ -66,8 +66,8 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
     },
     openevo: {
       eyebrow: '',
-      title: zh ? 'OpenEvo 如何把一次 WebShop 经验变成下一版 Agent' : 'How OpenEvo turns one WebShop experience into the next agent revision',
-      lede: zh ? '先完成 WebShop 任务 N 并封存证据；演化只在任务完成边界之后发生。当前参数路线把经验写入 SD-LoRA adapter，通过验证后才形成任务 N+1 使用的新版本。' : 'Finish WebShop Task N and seal its evidence first; evolution happens only after the task boundary. The current parametric path writes experience into an SD-LoRA adapter, which becomes the Task N+1 successor revision only after validation.',
+      title: zh ? '一次 WebShop 经验怎样进入后续任务' : 'How one WebShop experience reaches a later task',
+      lede: zh ? '任务 N 完成并封存证据后，演化方法才生成候选 adapter；通过验证的 SD-LoRA 状态从任务 N+1 开始生效。' : 'Only after Task N is complete and its evidence is sealed does an evolution method produce a candidate adapter; validated SD-LoRA state activates from Task N+1.',
       steps: [
         { label: 'Task N', narration: zh ? '当前 Project Head 在环境里完成任务。' : 'The current Project Head completes the task in the environment.' },
         { label: zh ? '封存' : 'Seal', narration: zh ? '任务完成边界把 trajectory/outcome/metadata 封存。' : 'The task-completion boundary seals trajectory/outcome/metadata.' },
@@ -236,18 +236,9 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
       onKeyDown={onKeyDown}
       aria-label={config.title}
     >
-      <ExplainerHeader id={`irx-${kind}-title`} locale={locale} title={config.title} lede={config.lede} eyebrow={config.eyebrow} />
-      {kind === 'openevo' ? (
-        <>
-          {figure}
-          <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} overview={overview} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={togglePlay} onOverview={showOverview} />
-        </>
-      ) : (
-        <>
-          <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} overview={overview} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={togglePlay} onOverview={showOverview} />
-          {figure}
-        </>
-      )}
+      <ExplainerHeader id={`irx-${kind}-title`} locale={locale} title={config.title} lede={config.lede} eyebrow={config.eyebrow} hideDepth={kind === 'openevo'} />
+      <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} overview={overview} compactSteps={kind === 'openevo'} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={togglePlay} onOverview={showOverview} />
+      {figure}
     </section>
   );
 }

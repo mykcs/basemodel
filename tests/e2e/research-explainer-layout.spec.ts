@@ -510,7 +510,7 @@ test('research framework opens as a system map and can enter and leave trace mod
 });
 
 for (const matrix of matrices) {
-  test(`OpenEvo shows the system map before trace controls at ${matrix.name}`, async ({ page }) => {
+  test(`OpenEvo keeps trace controls before the map and brings the map into first view at ${matrix.name}`, async ({ page }) => {
     test.skip(!routeInScope('/research/seed-openevo/flow/openevo/'), 'outside hosted focused route scope');
     await page.setViewportSize(matrix.viewport);
     await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
@@ -528,10 +528,17 @@ for (const matrix of matrices) {
         clientWidth: document.documentElement.clientWidth,
       };
     });
-    expect(geometry.figureTop).toBeLessThan(geometry.controlsTop);
+    expect(geometry.controlsTop).toBeLessThan(geometry.figureTop);
     expect(geometry.figureTop).toBeLessThan(geometry.viewportHeight);
     expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 2);
     await expect(root).toHaveAttribute('data-overview', 'true');
     await expect(root.locator('.irx-paper-caption')).toContainText('系统结构');
+    const stepSelection = root.locator('.irx-step-selection');
+    await expect(stepSelection.locator('summary')).toContainText('选择追踪步骤');
+    const stepCount = Number(await root.locator('.irx-progress').getAttribute('aria-valuemax'));
+    await expect(stepSelection.locator('.irx-stepper button')).toHaveCount(stepCount);
+    await expect(stepSelection.locator('.irx-stepper button').first()).toBeHidden();
+    await stepSelection.locator('summary').click();
+    await expect(stepSelection.locator('.irx-stepper button').first()).toBeVisible();
   });
 }
