@@ -40,7 +40,7 @@ final non-draft candidate, current with main
 main
   -> Vercel Production
   -> static production build of the already-accepted merge tree
-  -> Cloudflare production-smoke observes the released origin
+  -> access-protected Production; Vercel deployment identity/state is the post-merge authority
 
 manual recovery only
   -> CircleCI explicit API trigger
@@ -68,7 +68,7 @@ What changed is ownership. Public PR CI already runs the repository-wide determi
 - `public-ci-gate` = repository + browser acceptance on the exact PR head;
 - `Vercel` = provider static build/deploy acceptance on that same head;
 - Production = static provider build of the already-accepted merge tree;
-- Cloudflare smoke = independent post-deploy observation.
+- Production verification = Vercel deployment identity/state plus authenticated page inspection when needed.
 
 The 2026-09-21 qualification made the causal result concrete: with the same Standard Vercel build machine and unchanged repository/browser acceptance, exact-head provider time fell **507.7 s → 14.170 s** and Production fell **633.3 s → 16.608 s**. This is why the split is retained rather than merely preferred in theory.
 
@@ -135,20 +135,22 @@ Before Workers Builds could replace Vercel acceptance it would have to prove, on
 - acceptable timeout/concurrency behavior;
 - lower measured total cost/latency after counting migration and maintenance work.
 
-Until those conditions are demonstrated, Cloudflare is more valuable as **independent Production smoke/observation** than as a duplicate primary gate.
+Until those conditions are demonstrated, Cloudflare remains **legacy/rollback/provider-specific tooling**, not a duplicate primary gate or an anonymous Production monitor.
 
 Provider quotas and prices are mutable external facts. Do not hard-code a historical monthly number into future architecture decisions; re-check the provider before a migration.
 
-## Why Cloudflare smoke is still useful
+## Why anonymous external Production smoke is retired
 
-`cloudflare/production-smoke/` is intentionally different from duplicate CI. It observes the real released Vercel origin after deployment and checks externally visible behavior such as HTTP/discovery/metadata health.
+Production is intentionally protected by Vercel Authentication. An unauthenticated HTTP monitor therefore measures the provider login surface, not the BaseModel product. Keeping such a monitor active produces false failures and can also make performance tools benchmark the login page.
 
-That gives us provider diversity where diversity is useful:
+The post-merge contract is now:
 
 - Vercel proves the candidate and deploys it;
-- Cloudflare independently observes the released result.
+- the deployment SHA/state is verified through the Vercel control plane;
+- page-level checks use authenticated access when they are actually needed;
+- Cloudflare monitoring/deployment helpers stay historical, rollback, or provider-specific only.
 
-We do **not** pay the complexity cost of making both providers full pre-merge authorities.
+If Production becomes public again, external black-box monitoring is a new architecture decision and must be re-qualified rather than silently reactivating an old worker.
 
 ## Cost model we actually optimize
 

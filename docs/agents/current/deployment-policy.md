@@ -25,7 +25,7 @@ main
 -> Vercel Production
 -> static production build of the already-accepted merge tree
 -> https://basemodel-preview.vercel.app
--> Cloudflare production-smoke observes the released origin
+-> access-protected Production; verify through Vercel control plane and authenticated access
 
 manual recovery only
 -> GitHub Actions workflow_dispatch
@@ -36,7 +36,7 @@ manual recovery only
 
 Qualification evidence: PR #766 kept the full-risk Public PR CI green and reduced exact-head Vercel BUILDING→READY from **507.7 s to 14.170 s**; the following Production build reduced from **633.3 s to 16.608 s**. The Standard 4 vCPU / 8 GB build tier was unchanged.
 
-**Required acceptance is intentionally split instead of duplicated.** Public GitHub-hosted Actions owns deterministic and browser acceptance on the exact PR head. Vercel remains the required provider build/deploy authority on that same SHA and for Production. CircleCI remains explicit API-triggered fallback, the Mac/OrbStack workflow remains self-hosted manual fallback, and Cloudflare remains post-deploy observation rather than a second deployment authority.
+**Required acceptance is intentionally split instead of duplicated.** Public GitHub-hosted Actions owns deterministic and browser acceptance on the exact PR head. Vercel remains the required provider build/deploy authority on that same SHA and for access-protected Production. CircleCI remains explicit API-triggered fallback, the Mac/OrbStack workflow remains self-hosted manual fallback, and Cloudflare is legacy/rollback/provider-specific tooling rather than a second deployment or monitoring authority.
 
 ### Exact-head and current-base acceptance
 
@@ -185,11 +185,11 @@ Preview release acceptance requires exact-head `public-ci-gate` success, exact-h
 
 Every Preview that reaches Vercel through an enabled `ci/vercel-gate-final` ref is real provider acceptance and cannot be skipped by omitting a commit token. `[vercel-preview]` is not an executable pre-build gate. Ordinary working refs are excluded earlier by `git.deploymentEnabled`; Production is never gated by this token. A proven docs/governance-only `main` range is still ignored so governance edits cannot replace Production.
 
-### Cloudflare post-deploy smoke
+### Protected Production verification
 
-Cloudflare is not a second deployment authority. `cloudflare/production-smoke/` owns a small Worker that independently checks the real Vercel Production origin: critical HTTP 200s, canonical identity, Production indexability, `robots.txt`, `sitemap.xml`, and the legacy Results redirect. A scheduled check runs every 30 minutes. The deployed health endpoint is `https://basemodel-production-smoke.mykcs01.workers.dev/healthz`.
+Production is intentionally protected by Vercel Authentication. Do not use an anonymous external HTTP/Lighthouse/WebKit probe as release evidence: it can be redirected to the Vercel login surface and still finish with HTTP 200.
 
-Do not move repository compilation, npm installation, Vitest, the full Playwright matrix, or screenshot baselines into this Worker. Its job is post-deploy observation, not CI replacement.
+Post-merge verification therefore checks the deployed `main` SHA and READY state through the Vercel control plane. When a user-facing page must be inspected, use authorized Vercel access and verify the actual BaseModel DOM. Production output is `noindex` / crawler-disallowed while this private-access policy is active. The former scheduled Cloudflare Production-smoke Worker is retired rather than given a bypass secret.
 
 ### Cost and provider guardrails
 

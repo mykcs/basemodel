@@ -10,7 +10,7 @@ GitHub Actions supplies independent Linux compute for repository and browser acc
 
 The required Vercel candidate is requested only when a PR is ready for final acceptance. Repository-only changes still receive required merge checks, while Production build relevance is decided by the [Vercel ignore script](../../scripts/vercel-ignore-build.mjs). This keeps documentation or Agent-policy edits from publishing a new website. [The provider decision](../agents/current/ci-provider-decision.md) records the measured alternatives and current provider rationale; live plan limits and provider settings must be rechecked before a migration.
 
-Cloudflare's active role is [Production smoke observation](../../cloudflare/production-smoke/), not ordinary site publication. The [manual Mac workflow](../../.github/workflows/self-hosted-ci.yml) and CircleCI configuration are recovery paths, not routine PR or Production compute. Research/GPU machines do not become CI capacity. Source, workflow, ruleset, and provider settings remain authoritative over this explanation.
+Production is access-protected, so anonymous external smoke checks are not valid release evidence. Cloudflare helpers are legacy/fallback surfaces only. The [manual Mac workflow](../../.github/workflows/self-hosted-ci.yml) and CircleCI configuration are recovery paths, not routine PR or Production compute. Research/GPU machines do not become CI capacity. Source, workflow, ruleset, and provider settings remain authoritative over this explanation.
 
 ## Change and recovery rule
 

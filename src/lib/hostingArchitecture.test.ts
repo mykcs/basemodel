@@ -20,10 +20,6 @@ const publicPrWorkflow = read('.github/workflows/public-pr-ci.yml');
 const reviewPreviewWorkflow = read('.github/workflows/review-preview.yml');
 const macFallbackWorkflow = read('.github/workflows/self-hosted-ci.yml');
 const circleCiConfig = read('.circleci/config.yml');
-const productionSmoke = read('cloudflare/production-smoke/src/index.js');
-const productionSmokeConfig = JSON.parse(read('cloudflare/production-smoke/wrangler.jsonc')) as {
-  name?: string; triggers?: { crons?: string[] };
-};
 const staticHeaders = read('public/_headers');
 const architecture = read('docs/agents/current/hosting-architecture.md');
 const latest = read('docs/agents/LATEST.md');
@@ -83,23 +79,12 @@ describe('hosting architecture ownership', () => {
     expect(latest).toContain('current/hosting-architecture.md');
   });
 
-  it('keeps Cloudflare deployment fallback separate from active smoke monitoring', () => {
+  it('keeps Cloudflare fallback surfaces outside the ordinary release path', () => {
     expect(architecture).toContain('Legacy hosting — not ordinary workflow');
-    expect(architecture).toContain('production-smoke');
-    expect(latest).toContain('Cloudflare production-smoke');
+    expect(architecture).toContain('no anonymous external Production monitor');
+    expect(latest).not.toContain('production-smoke');
     expect(latest).toContain('`public-ci-gate` is required merge evidence');
     expect(latest).toContain('Merge readiness therefore requires both `public-ci-gate` and `Vercel`');
-  });
-
-  it('uses a tiny scheduled Cloudflare Worker for real Production smoke only', () => {
-    expect(productionSmokeConfig.name).toBe('basemodel-production-smoke');
-    expect(productionSmokeConfig.triggers?.crons).toEqual(['*/30 * * * *']);
-    expect(productionSmoke).toContain(`const ORIGIN = '${productionUrl}'`);
-    expect(productionSmoke).toContain("'/robots.txt'");
-    expect(productionSmoke).toContain("'/sitemap.xml'");
-    expect(productionSmoke).toContain("url.pathname !== '/check'");
-    expect(productionSmoke).not.toContain('playwright');
-    expect(productionSmoke).not.toContain('npm run');
   });
 
   it('retains a static-only non-production Workers shadow option', () => {

@@ -205,11 +205,11 @@ describe('Vercel production deployment architecture', () => {
     expect(playwright).toContain('baseURL: previewURL');
   });
 
-  it('keeps Vercel Production indexable even if an old Preview-only noindex variable survives', () => {
+  it('keeps access-protected Vercel Production out of cooperative crawler indexes', () => {
     for (const source of [appLayout, robots, sitemap]) {
-      expect(source).toContain("process.env.VERCEL_ENV === 'production'");
-      expect(source).toContain("process.env.PUBLIC_SEARCH_INDEXING === 'disabled' && !isVercelProduction");
-      expect(source).toContain("process.env.VERCEL_ENV === 'preview'");
+      expect(source).toContain("const isPrivateProduction = process.env.VERCEL_ENV === 'production'");
+      expect(source).toContain("process.env.PUBLIC_SEARCH_INDEXING === 'disabled'");
+      expect(source).toContain('isPrivateProduction || explicitNoIndex || isVercelPreview || isCloudflarePreview');
     }
   });
 
@@ -253,7 +253,7 @@ describe('Vercel production deployment architecture', () => {
     expect(dependabot).toContain('version-update:semver-major');
   });
 
-  it('keeps public branding on the Vercel Production identity', () => {
+  it('keeps canonical branding on the Vercel Production identity', () => {
     expect(ogCover).toContain('basemodel-preview.vercel.app');
     expect(ogCover).not.toContain('basemodel.pages.dev');
   });

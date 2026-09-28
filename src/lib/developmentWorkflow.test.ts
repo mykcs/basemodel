@@ -26,7 +26,7 @@ describe('human-facing development workflow', () => {
     expect(page).toContain('real provider build');
     expect(page).toContain('ci/vercel-gate-final');
     expect(page).toContain('public-ci-gate');
-    expect(page).toContain('Cloudflare is not the ordinary BaseModel deployment provider');
+    expect(page).toContain('Cloudflare is not part of ordinary BaseModel deployment or live monitoring');
     expect(page).toContain('Mac/OrbStack remains manual recovery only');
     expect(page).not.toContain('heavy acceptance runs in CircleCI');
     expect(page).not.toContain('final-candidate CI + Preview');
