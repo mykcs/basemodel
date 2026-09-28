@@ -38,6 +38,50 @@ async function settle(page: Page) {
   await page.waitForTimeout(80);
 }
 
+test('WebShop benchmark identity and evidence lead its page contents directory', async ({ page }) => {
+  test.skip(!routeInScope('/research/seed-openevo/flow/webshop/'), 'outside hosted focused route scope');
+
+  for (const matrix of matrices) {
+    await test.step(matrix.name, async () => {
+      await page.setViewportSize(matrix.viewport);
+      await page.goto('/research/seed-openevo/flow/webshop/', { waitUntil: 'domcontentloaded' });
+      await page.evaluate((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await settle(page);
+
+      const summary = page.locator('.benchmark-summary');
+      const facts = summary.locator('.benchmark-facts');
+      const contents = page.locator('.webshop-entry > .page-contents');
+      const setting = page.locator('.seed-setting');
+      await expect(summary.getByRole('heading', { name: 'WebShop 基准' })).toBeVisible();
+      await expect(facts.locator('a[href="https://arxiv.org/abs/2207.01206"]')).toBeVisible();
+      await expect(facts).toContainText('NeurIPS 2022');
+      await expect(facts).toContainText('1.18M');
+      await expect(facts).toContainText('12,087');
+      await expect(facts.locator('#webshop-impact')).toContainText('386 Scopus citations');
+      await expect(facts.locator('#webshop-impact')).toContainText('截至 2026-09-12');
+      await expect(contents).toBeVisible();
+
+      const firstViewportEvidence = await facts.evaluate((element) => {
+        const summary = element.closest('.benchmark-summary');
+        const contents = document.querySelector('.webshop-entry > .page-contents');
+        return {
+          factsBottom: element.getBoundingClientRect().bottom,
+          viewportHeight: window.innerHeight,
+          contentsFollowsSummary: Boolean(summary && contents
+            && summary.compareDocumentPosition(contents) & Node.DOCUMENT_POSITION_FOLLOWING),
+          contentsPrecedesSetting: Boolean(contents && document.querySelector('.seed-setting')
+            && contents.compareDocumentPosition(document.querySelector('.seed-setting')!) & Node.DOCUMENT_POSITION_FOLLOWING),
+        };
+      });
+      expect(firstViewportEvidence.contentsFollowsSummary).toBe(true);
+      expect(firstViewportEvidence.contentsPrecedesSetting).toBe(true);
+      expect(firstViewportEvidence.factsBottom).toBeLessThanOrEqual(firstViewportEvidence.viewportHeight);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+    });
+  }
+});
+
 async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage: boolean) {
   return root.evaluate((element, context) => {
     const { width, requiresMainStage } = context;
