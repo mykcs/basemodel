@@ -34,6 +34,12 @@ const historicalArms = [
   { id: '7b-minimax', path: '/research/seed-openevo/study/results/7b-minimax-analysis/', answer: '16.94、0/128、116/128', boundary: '任务结束后分析轨迹' },
 ] as const;
 
+const resultNotes = [
+  { id: 'why-it-kept-failing', answer: '接近 0' },
+  { id: 'first-positive-transfer', answer: '+0.124' },
+  { id: 'independent-replication', answer: '740 次科学有效' },
+] as const;
+
 for (const width of [390, 768, 1440]) {
   for (const route of routes) {
     test(`${route.id} keeps result-first order and page containment at ${width}px`, async ({ page }) => {
@@ -63,6 +69,31 @@ for (const width of [390, 768, 1440]) {
       const overflow = await page.evaluate(() =>
         document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
       expect(overflow, `${route.id}: page-level horizontal overflow at ${width}px`).toBe(false);
+    });
+  }
+}
+
+for (const width of [390, 768, 1440]) {
+  for (const note of resultNotes) {
+    test(`${note.id} starts with result evidence before series navigation at ${width}px`, async ({ page }) => {
+      const height = width === 390 ? 844 : 1000;
+      await page.setViewportSize({ width, height });
+      await page.goto(`/research/seed-openevo/study/results/${note.id}/`, { waitUntil: 'domcontentloaded' });
+      const summary = page.locator('.note-hero .dek');
+      await expect(summary).toBeVisible();
+      const summaryBox = await summary.boundingBox();
+      expect(summaryBox && summaryBox.y + summaryBox.height, `${note.id}: direct answer must fit in the first viewport`).toBeLessThanOrEqual(height);
+      const firstSection = page.locator('.note-body section').first();
+      await expect(firstSection).toContainText(note.answer);
+      const sectionTop = await firstSection.evaluate((element) => element.getBoundingClientRect().top);
+      expect(sectionTop, `${note.id}: direct result must precede the series navigation`).toBeLessThan(height);
+      const navOrder = await page.locator('.note-body').evaluate((body, selector) => {
+        const nav = document.querySelector(selector as string);
+        return Boolean(nav && body.compareDocumentPosition(nav) & Node.DOCUMENT_POSITION_FOLLOWING);
+      }, '.series-nav');
+      expect(navOrder, `${note.id}: navigation must follow the result content`).toBe(true);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+      expect(overflow, `${note.id}: page-level horizontal overflow at ${width}px`).toBe(false);
     });
   }
 }

@@ -78,18 +78,6 @@ const current = notes.find((item) => item.id === note)!;
     <h1>{current.title}</h1>
     <p class="dek">{current.description}</p>
   </header>
-
-
-
-
-  <nav class="series-nav" aria-label="OpenEvo WebShop 实验笔记">
-    {notes.map((item) => (
-      <a class:list={[{ active: item.id === note }]} href={`${root}/${item.id}/`}>
-        <span>{item.index}</span>{item.title}
-      </a>
-    ))}
-  </nav>
-
   {note === 'why-it-kept-failing' && (
     <main class="note-body">
       <section>
@@ -266,6 +254,13 @@ const current = notes.find((item) => item.id === note)!;
     </main>
   )}
 
+  <nav class="series-nav" aria-label="OpenEvo WebShop 实验笔记">
+    {notes.map((item) => (
+      <a class:list={[{ active: item.id === note }]} href={`${root}/${item.id}/`}>
+        <span>{item.index}</span>{item.title}
+      </a>
+    ))}
+  </nav>
 </article>
 
 <style>
