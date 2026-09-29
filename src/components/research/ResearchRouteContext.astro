@@ -35,7 +35,7 @@ const compactPurpose = route === 'stage1-learning-objectives'
         : route === 'bounded-effective-state-gdr'
             ? (zh ? '三组已完成 1.7B：普通 OpenEVO / Bounded Online Recurrence / β-gating（α 固定为 1）；动态 α+β 尚未运行。' : 'Three completed 1.7B experiments: ordinary OpenEVO / Bounded Online Recurrence / β-gating (α fixed at 1); dynamic α+β has not been run.')
             : route === 'sd-lora-bounded-state'
-              ? (zh ? 'rank32 约用四分之一持久 payload；严格无损与 non-inferiority 尚未证明。' : 'rank32 uses about one quarter of persistent payload; strict losslessness and non-inferiority remain unproven.')
+              ? (zh ? 'rank32 容量筛查；详细结果与边界见下方。' : 'rank32 capacity screen; results and limits follow below.')
             : record.purpose[locale];
 const purpose = isExperimentHub && experiment && !compact ? experiment.motivation[locale] : (compact ? compactPurpose : record.purpose[locale]);
 const contextExperimentTitle = experiment?.title[locale];

@@ -76,6 +76,15 @@ describe('site-wide reader attention contracts', () => {
     expect(loops?.mustStayVisible).toContain('不等于已经证明持续提升');
   });
 
+  it('anchors the MiniMax teacher question to its fair-comparison answer and scientific limits', () => {
+    const teacher = SITE_READER_CONTRACTS.find((contract) => contract.id === 'minimax-teacher');
+    expect(teacher?.sourceRoute).toBe('/research/seed-openevo/study/minimax-teacher/');
+    expect(teacher?.firstViewportSelector).toBe('.hero-answer');
+    expect(teacher?.firstViewportGoal).toContain('同一批冻结轨迹');
+    expect(teacher?.mustStayVisible).toContain('不生成 WebShop actor action');
+    expect(teacher?.mustStayVisible).toContain('不等于教师质量');
+  });
+
   it('keeps the Study phone budget at seven experiment parents plus one SD-LoRA overview and two treatment branches', () => {
     const row = SITE_READER_CONTRACTS.find((contract) => contract.id === 'study');
     expect(row?.firstViewportBudget?.maxInteractive).toBe(10);
