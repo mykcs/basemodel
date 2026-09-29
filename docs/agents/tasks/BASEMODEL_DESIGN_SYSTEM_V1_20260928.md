@@ -77,14 +77,14 @@ This task does not authorize:
 - [x] migrate broader route families (including already-conformant routes verified in browser);
 - [x] reduce proven-dead legacy visual rules owner-by-owner; no remaining whole compatibility layer is safe to delete;
 - [x] add objective Design guards where useful (selected Compare first-viewport gate; existing guards audited for duplication);
-- [ ] full exact-head CI/browser/Preview acceptance.
+- [x] full exact-head CI/browser/Preview acceptance (final candidate evidence recorded in Phase 8 closeout below; final ledger head is rechecked before handoff).
 
 ### Closeout
-- [ ] update this checklist with evidence;
-- [ ] classify mechanically complete vs Design-reference candidate vs owner-accepted;
-- [ ] refresh current main/open PRs before final gate;
-- [ ] make PR Ready only after exact-head acceptance;
-- [ ] do not merge unless separately authorized.
+- [x] update this checklist with evidence;
+- [x] classify mechanically complete vs Design-reference candidate vs owner-accepted;
+- [x] refresh current main/open PRs before final gate;
+- [x] make PR Ready after browser and Preview inspection so the repository's final-gate runner can execute;
+- [x] leave PR unmerged; merge was not separately authorized.
 
 ## 6. Scientific integration prerequisite for all three references
 
@@ -568,6 +568,14 @@ For each completed batch add the base/source commit or tree, exact checks actual
 - **Debt repair:** removed the shadowed 15px radius from `ModelDecisionCard.css`; the rendered cascade already resolved model decision cards to the existing 10px panel token. In `PaperExplorer.css`, replaced its 12px toolbar/card radii with `--radius-panel`, replaced 8px fact cells with `--radius-control`, and made the card's no-shadow rule part of its component owner. Removed the two-declaration `!important` `.paper-case-card` override from `final-hardening.css`. Updated the radius and important-debt ceilings. No filter state, route, catalog data, scientific claim, or paper evidence changed.
 - **Verification:** `/models/` and `/papers/` passed 24 route × viewport × theme combinations across Chromium/WebKit at 390/768/1440, with HTTP 200, no console/page errors or overflow. Computed model cards remain 10px; paper toolbar and cards are 10px, fact cells 6px, and case-card shadow none. The no-JavaScript model fallback passed all three widths in both browser engines (6/6), remains visible, and keeps 10px cards. The 265-page build, lint, `audit:css`, H1, brand-link, rendered-math, and human-expression audits pass. Remaining audit counts are 340/387 noncanonical radii and 208/215 important declarations.
 - **Status and next action:** this retires four radius debt declarations and two `!important` declarations from the catalog surfaces; one previously shadowed component radius is deleted. No shared component or token was introduced. Frozen CSS layers still contain required site-wide behavior and were not deleted. Continue the remaining property-owner audit without batch rewriting, commit/push this work and its checkpoint to #806, verify the exact new head's Public CI, then perform the final Vercel gate after Phase 6/7 closeout.
+
+### Phase 8 closeout — exact candidate, browser and Preview acceptance
+
+- **Fresh authority state:** `main` is `bcd9b6c06c31df2fe46b6473a4ebd01831548f2c`; PR #805 remains OPEN/non-Draft at `43fa2cbb3998824333826e8542cebf8265842f17`; PR #806 is OPEN/Ready and targets `main`. The final implementation candidate before this evidence-only closeout was `86698d4a8740ad7d9ab46556a6ded79b7a8801c2`. No experiment ran and no scientific authority, result, evidence, or claim changed.
+- **Exact-head acceptance:** Public PR CI run `36512349216` passed deterministic build, all eight browser shards and `public-ci-gate` on `86698d4a8740ad7d9ab46556a6ded79b7a8801c2`. The repository final-gate script then bound `ci/vercel-gate-base` to current `main` and `ci/vercel-gate-final` to the same candidate. The authoritative Vercel context returned success; Vercel deployment `8MqE3JPzJy19iGkMS6EsieCyp2dJ` is `Ready`, Preview environment, and identifies source commit `86698d4a8740ad7d9ab46556a6ded79b7a8801c2`.
+- **Hosted route acceptance:** opened the provider Preview while authenticated and inspected Stage1, Bounded, Progress briefing, selected Compare, Models, SEED paper, Papers index, Development, and Research Results. All loaded with one H1, `noindex,follow`, and no horizontal overflow at the 1264px browser viewport; the Stage1 first screen visibly leads with the optimization/capability distinction and measured evidence. Browser console had 0 errors. The separate Fast Review Preview build/deploy also passed and was bound to the same PR head. Local real-browser matrices in Chromium/WebKit cover 390/768/1440 and light/dark for the affected reference, Compare, model, paper, and broader route witnesses; their case counts and screenshots are in the preceding checkpoints.
+- **Phase disposition:** Phases 0–8 are mechanically complete for the frozen v1 route inventory. Stage1, Bounded/rank32 and Progress briefing are Design-reference candidates; none is owner-accepted. The audited Phase 4/5 routes are mechanically complete, either migrated or verified already conformant. One objective Compare first-viewport Design Gate was added. Ten Compare rules moved from the frozen `v2-closeout.css` layer into `ModelComparison.css`; seven radius declarations were normalized/removed across the model and paper surfaces (one was shadowed); two paper-card `!important` overrides were removed. No whole legacy stylesheet was deleted because each retained layer still owns required behavior. Residual CSS audit debt is 340/387 noncanonical radii and 208/215 `!important` declarations; it remains frozen and may only decrease.
+- **Handoff state:** PR #806 is Ready for review and remains unmerged. A documentation-only closeout commit follows this checkpoint; rerun the exact-head Public CI and same-head Vercel gate on that resulting head before reporting final current status. Owner acceptance still requires the owner to inspect and accept the three reference candidates.
 
 ## 9. Stop conditions
 
