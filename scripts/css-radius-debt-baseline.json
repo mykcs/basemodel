@@ -6,7 +6,7 @@
     "16",
     "999"
   ],
-  "baseline_total": 394,
+  "baseline_total": 393,
   "debt": {
     "src/components/AgentToSeedBridge.astro": {
       "8": 1,
@@ -357,7 +357,6 @@
     },
     "src/styles/final-hardening.css": {
       "9": 2,
-      "11": 1,
       "12": 4,
       "13": 1,
       "14": 5,

@@ -45,7 +45,7 @@
 }
 .decision-section-heading h2 { margin: 0; font-size: 1.35rem; }
 .decision-section-heading p { margin: 0; color: var(--muted); font-size: .9rem; }
-.model-card { box-shadow: none; border-radius: 11px; }
+.model-card { box-shadow: none; border-radius: var(--radius-panel); }
 
 /* Home: three intents first; secondary scenarios are progressively disclosed. */
 .novice-entry { margin: 18px 0 0; color: var(--muted); }
