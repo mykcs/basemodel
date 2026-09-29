@@ -104,7 +104,7 @@ fieldset.landscape-controls:disabled :is(button, input, select) { opacity: .58; 
 .learning-guide-facts strong { line-height: 1.35; }
 .learning-guide-facts a, .learning-source { color: var(--accent-deep); font-size: .75rem; font-weight: 650; }
 .learning-track-nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 24px 0 30px; }
-.learning-track-nav a { display: grid; gap: 5px; min-height: 106px; padding: 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); text-decoration: none; }
+.learning-track-nav a { display: grid; gap: 5px; min-height: 106px; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius-panel); background: var(--surface); text-decoration: none; }
 .learning-track-nav a:hover, .learning-track-nav a:focus-visible { border-color: var(--accent); transform: translateY(-2px); }
 .learning-track-nav span { color: var(--accent-deep); font-size: .7rem; font-weight: 750; text-transform: uppercase; letter-spacing: .06em; }
 .learning-track-nav small { color: var(--positive); font-weight: 700; }
@@ -118,7 +118,7 @@ fieldset.landscape-controls:disabled :is(button, input, select) { opacity: .58; 
 .learning-step-list h4 { margin: 3px 0 6px; font-size: 1rem; }
 .learning-step-list p { margin: 0 0 8px; }
 .learning-done { color: var(--muted); font-size: .84rem; }
-.learning-pitfalls { margin-top: 22px; padding: 18px 20px; border: 1px solid color-mix(in srgb, var(--warning) 45%, var(--line)); border-radius: 11px; background: color-mix(in srgb, var(--warning) 8%, var(--surface)); }
+.learning-pitfalls { margin-top: 22px; padding: 18px 20px; border: 1px solid color-mix(in srgb, var(--warning) 45%, var(--line)); border-radius: var(--radius-panel); background: color-mix(in srgb, var(--warning) 8%, var(--surface)); }
 .learning-pitfalls h3 { margin: 0 0 10px; font-size: 1.05rem; }
 .learning-pitfalls ul { margin: 0; padding-left: 1.2rem; }
 .learning-pitfalls li + li { margin-top: 6px; }

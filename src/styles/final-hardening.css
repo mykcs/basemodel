@@ -118,8 +118,6 @@
 .paper-case-facts { gap: 9px; }
 .paper-case-facts dt { color: var(--muted); }
 .paper-case-facts dd { line-height: 1.5; }
-.paper-case-card { box-shadow: none !important; border-radius: 10px !important; }
-
 /* Landscape learning mode is the default low-cognitive-load path. */
 .landscape-learning-card { box-shadow: none !important; border-radius: 10px !important; }
 .accessible-landscape { margin-top: 20px; }

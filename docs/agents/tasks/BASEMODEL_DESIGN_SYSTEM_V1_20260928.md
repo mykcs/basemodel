@@ -73,10 +73,10 @@ This task does not authorize:
 - [x] Bounded reference-page redesign (mechanically complete; Design-reference candidate at `b0dcf772`; owner acceptance pending);
 - [x] Progress briefing responsive redesign (mechanically complete; Design-reference candidate for this batch; owner acceptance pending);
 - [x] compare the three reference candidates; retain only the already documented shared semantic pattern, with no new component/token (Phase 3 checkpoint below);
-- [ ] migrate active research journey;
-- [ ] migrate broader route families;
-- [ ] reduce proven-dead legacy visual layers;
-- [ ] add objective Design guards where useful;
+- [x] migrate active research journey (route inventory reconciled; witnesses and checkpoints recorded below);
+- [x] migrate broader route families (including already-conformant routes verified in browser);
+- [x] reduce proven-dead legacy visual rules owner-by-owner; no remaining whole compatibility layer is safe to delete;
+- [x] add objective Design guards where useful (selected Compare first-viewport gate; existing guards audited for duplication);
 - [ ] full exact-head CI/browser/Preview acceptance.
 
 ### Closeout
@@ -555,6 +555,19 @@ For each completed batch add the base/source commit or tree, exact checks actual
 - **Change and route task:** `.model-card` in `src/styles/final-hardening.css` used a one-off 11px radius. Replaced it with existing `var(--radius-panel)` (10px) and reduced that source/value allowance in `scripts/css-radius-debt-baseline.json`. This keeps the existing card shape and semantic owner while retiring one noncanonical declaration; no page or scientific content changed.
 - **Browser/build evidence:** models, Families, and Landscape passed 36 Chromium/WebKit route × 390/768/1440 × light/dark checks with HTTP 200, no console/page errors or root overflow; the computed `.model-card` radius is 10px. The no-JavaScript model catalog passed the same three viewport widths in both engines (6/6); every visible fallback card remained at 10px with no overflow. Reviewed `/tmp/model-card-radius-nojs-visible.png`. The current tree builds all 265 pages and passes the heading, brand-link, rendered-math, and human-expression audits; lint and CSS architecture audit pass. CSS radius audit now reports 346/393; `!important` remains 210/216. Reader Contract coverage remains 68/68.
 - **Status and next action:** this is one property-owner Phase 6 cleanup; no old layer was empty or safe to remove wholesale. Phase 6 remains incremental. No component or token was added and no scientific result changed. Commit/push this cleanup and checkpoint to PR #806, verify exact-head Public CI, then finish the Phase 7 gate gap audit and final Phase 8 same-head Vercel Preview acceptance.
+
+### Phase 6 batch checkpoint — canonical SEED learning-guide radii
+
+- **Source and route task:** continued from #806 head `8b6b7ad21fbc36fb0bc2755349272fd3156c8363`, after reusing the same CSS architecture and radius-token authority. `PaperLearningGuide`'s only current content instance is `/papers/seed/`; its learning-path links and reproduction-boundary panel carry optional explanation and fair-reproduction constraints.
+- **Change and evidence:** replaced the two 11px radii for `.learning-track-nav a` and `.learning-pitfalls` in `src/styles/site.css` with existing `var(--radius-panel)` and reduced the corresponding baseline allowances. `/papers/seed/` passed 12/12 browser cases across Chromium/WebKit, 390/768/1440, and light/dark. Both learning-path links and the boundary panel compute to 10px; all pages returned 200 with zero console/page errors and no document overflow. The fresh 265-page build, lint and CSS architecture audit pass; radius debt is now 344/391 and `!important` remains 210/216. No paper claim or evidence content changed.
+- **Status and next action:** this removes two more noncanonical declarations using a current token; no compatibility layer became empty. Phase 6 remains incremental. Commit/push this property-owner cleanup and checkpoint, then verify exact-head Public PR CI. Phase 7's audit confirms the new Compare gate complements the existing 68-route Reader Contract, 265-page H1, root-overflow, responsive/theme and UI gates without duplicating them; proceed to final exact-head CI and same-head Vercel Preview once all code batches are stable.
+
+### Phase 6 batch checkpoint — model and paper explorer ownership
+
+- **Source and reader task:** continued from #806 `8b6b7ad21fbc36fb0bc2755349272fd3156c8363`. Scope is the broader catalog decision surfaces `/models/` and `/papers/`, plus the model index's no-JavaScript fallback. The interactive model decision cards, paper filters, paper records, and evidence facets retain their separate tasks.
+- **Debt repair:** removed the shadowed 15px radius from `ModelDecisionCard.css`; the rendered cascade already resolved model decision cards to the existing 10px panel token. In `PaperExplorer.css`, replaced its 12px toolbar/card radii with `--radius-panel`, replaced 8px fact cells with `--radius-control`, and made the card's no-shadow rule part of its component owner. Removed the two-declaration `!important` `.paper-case-card` override from `final-hardening.css`. Updated the radius and important-debt ceilings. No filter state, route, catalog data, scientific claim, or paper evidence changed.
+- **Verification:** `/models/` and `/papers/` passed 24 route × viewport × theme combinations across Chromium/WebKit at 390/768/1440, with HTTP 200, no console/page errors or overflow. Computed model cards remain 10px; paper toolbar and cards are 10px, fact cells 6px, and case-card shadow none. The no-JavaScript model fallback passed all three widths in both browser engines (6/6), remains visible, and keeps 10px cards. The 265-page build, lint, `audit:css`, H1, brand-link, rendered-math, and human-expression audits pass. Remaining audit counts are 340/387 noncanonical radii and 208/215 important declarations.
+- **Status and next action:** this retires four radius debt declarations and two `!important` declarations from the catalog surfaces; one previously shadowed component radius is deleted. No shared component or token was introduced. Frozen CSS layers still contain required site-wide behavior and were not deleted. Continue the remaining property-owner audit without batch rewriting, commit/push this work and its checkpoint to #806, verify the exact new head's Public CI, then perform the final Vercel gate after Phase 6/7 closeout.
 
 ## 9. Stop conditions
 

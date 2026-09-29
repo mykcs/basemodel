@@ -1,6 +1,6 @@
 {
   "schema": "basemodel.css-important-debt.v1",
-  "baseline_total": 216,
+  "baseline_total": 215,
   "debt": {
     "src/components/OpenEvoSeedBenchmarksGuide.astro": 2,
     "src/components/SeedReproductionPath.astro": 1,
@@ -25,7 +25,7 @@
     "src/styles/components/header.css": 4,
     "src/styles/design-refinement.css": 1,
     "src/styles/editorial-hierarchy.css": 13,
-    "src/styles/final-hardening.css": 21,
+    "src/styles/final-hardening.css": 20,
     "src/styles/interactive-research-explainer-core.css": 1,
     "src/styles/interactive-research-explainer-methods.css": 17,
     "src/styles/interactive-research-explainer.css": 49,
