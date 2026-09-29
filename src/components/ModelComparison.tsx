@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import './ModelComparison.css';
 import { architectureLabel, checkpointLabel, displayBoolean, displayUnknown, licenseLabel, modalityLabel, roleLabel, specializationLabel, statusLabel, tierLabel } from '../lib/format';
 import { comparisonToCsv, comparisonToMarkdown, type CompareExportRow } from '../lib/research/compareExport';
 import type { CompareImpactCode } from '../lib/research/compareImpact';
