@@ -152,6 +152,36 @@ for (const viewport of viewports) {
 
 for (const width of [390, 768, 1440]) {
   for (const theme of ['light', 'dark']) {
+    test(`selected model comparison starts with both models and a decision field at ${width}px ${theme}`, async ({ page }) => {
+      const height = width === 390 ? 844 : width === 768 ? 1024 : 1000;
+      await page.setViewportSize({ width, height });
+      await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/compare/?models=qwen3-8b%2Cgpt-oss-20b', { waitUntil: 'domcontentloaded' });
+      await page.evaluate(() => document.fonts.ready);
+
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      await expect(page.locator('.comparison-result-heading')).toContainText('Qwen3-8B');
+      await expect(page.locator('.comparison-result-heading')).toContainText('gpt-oss-20b');
+      await expect(page.locator('.comparison-result-heading a[href="#compare-selection"]')).toBeVisible();
+
+      const firstDecisionValues = width <= 720
+        ? page.locator('.comparison-mobile-field').first().locator('.comparison-mobile-value')
+        : page.locator('.comparison-table tbody tr:not(.comparison-group)').first();
+      if (width <= 720) await expect(firstDecisionValues).toHaveCount(2);
+      else await expect(firstDecisionValues).toBeVisible();
+      for (const firstDecisionValue of await firstDecisionValues.all()) {
+        const bounds = await firstDecisionValue.boundingBox();
+        expect(bounds).not.toBeNull();
+        expect(bounds!.y).toBeGreaterThanOrEqual(0);
+        expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(height + 2);
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+    });
+  }
+}
+
+for (const width of [390, 768, 1440]) {
+  for (const theme of ['light', 'dark']) {
     test(`Stage1 first viewport keeps optimization and capability distinct at ${width}px ${theme}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 844 });
       await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);

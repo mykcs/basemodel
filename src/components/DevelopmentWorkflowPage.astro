@@ -5,6 +5,18 @@ interface Props { locale: 'zh' | 'en'; }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
+const developmentStages = [
+  { role: 'control', label: 'ChatGPT', detail: t('说清目标、审阅结果', 'set the goal, review the result') },
+  { role: 'source', label: 'GitHub', detail: t('源码、分支、PR、main', 'source, branches, PRs, main') },
+  { role: 'accept', label: 'GitHub Actions', detail: t('代码 + 浏览器验收', 'repository + browser acceptance') },
+  { role: 'provider', label: 'Vercel Preview', detail: t('真实供应商构建', 'real provider build') },
+  { role: 'ship', label: 'Vercel Production', detail: t('main 上线', 'ship main') },
+  { role: 'observe', label: t('授权核验', 'Authorized verification'), detail: t('只通过受保护访问检查 Production', 'inspect Production through protected access only') },
+] as const;
+const releaseBoundary = t(
+  '普通 push 只跑公开 GitHub Actions，不启动 Vercel。最终候选才让 Vercel 构建与部署；Cloudflare 不负责 BaseModel 的日常部署。',
+  'Ordinary pushes use public GitHub Actions without starting Vercel. Vercel builds and deploys only a final candidate; Cloudflare does not handle ordinary BaseModel deployment.',
+);
 ---
 
 <AppLayout
@@ -24,24 +36,17 @@ const t = (cn: string, en: string) => zh ? cn : en;
           'We start and review work in ChatGPT and keep the code in GitHub; GitHub Actions owns repository and browser acceptance, while Vercel owns the real provider build and access-protected Production.',
         )}
       </p>
+      <ol class="development-flow-preview" aria-label={t('BaseModel 开发与上线主线', 'BaseModel development and release path')}>
+        {developmentStages.map((stage) => <li>{stage.label}</li>)}
+      </ol>
+      <p class="development-flow-boundary">{releaseBoundary}</p>
     </header>
 
     <section class="development-system" aria-labelledby="development-system-title">
       <h2 id="development-system-title">{t('一条主线', 'The main path')}</h2>
       <ol class="development-flow" aria-label={t('BaseModel 开发与上线流程', 'BaseModel development and release flow')}>
-        <li data-role="control"><span>01</span><div><strong>ChatGPT</strong><small>{t('说清目标、审阅结果', 'set the goal, review the result')}</small></div></li>
-        <li data-role="source"><span>02</span><div><strong>GitHub</strong><small>{t('源码、分支、PR、main', 'source, branches, PRs, main')}</small></div></li>
-        <li data-role="accept"><span>03</span><div><strong>GitHub Actions</strong><small>{t('代码 + 浏览器验收', 'repository + browser acceptance')}</small></div></li>
-        <li data-role="provider"><span>04</span><div><strong>Vercel Preview</strong><small>{t('真实供应商构建', 'real provider build')}</small></div></li>
-        <li data-role="ship"><span>05</span><div><strong>Vercel Production</strong><small>{t('main 上线', 'ship main')}</small></div></li>
-        <li data-role="observe"><span>06</span><div><strong>{t('授权核验', 'Authorized verification')}</strong><small>{t('只通过受保护访问检查 Production', 'inspect Production through protected access only')}</small></div></li>
+        {developmentStages.map((stage, index) => <li data-role={stage.role}><span>{String(index + 1).padStart(2, '0')}</span><div><strong>{stage.label}</strong><small>{stage.detail}</small></div></li>)}
       </ol>
-      <p class="system-boundary">
-        {t(
-          '普通 push 只跑公开 GitHub Actions，不会启动 Vercel。真正准备合并时，才在代码与浏览器验收已经通过后再花一次 Vercel 供应商构建。',
-          'Ordinary pushes use public GitHub Actions without starting Vercel. Only a merge-ready candidate that already passed repository and browser acceptance spends one Vercel provider build.',
-        )}
-      </p>
     </section>
 
     <section aria-labelledby="tool-roles-title">
@@ -106,6 +111,10 @@ const t = (cn: string, en: string) => zh ? cn : en;
   .development-hero { display: grid; align-content: center; min-height: calc(100svh - 80px); max-width: 860px; margin-bottom: clamp(3rem, 7vw, 6rem); }
   .development-hero h1 { max-width: 14ch; margin: 0; font-size: clamp(2.35rem, 6vw, 5.5rem); line-height: .98; letter-spacing: -.045em; }
   .development-hero .lede { max-width: 760px; margin: 1.35rem 0 0; color: var(--text); font-size: clamp(1.08rem, 2vw, 1.35rem); line-height: 1.65; }
+  .development-flow-preview { display: flex; flex-wrap: wrap; gap: .45rem .7rem; margin: 1.15rem 0 0; padding: 0; list-style: none; }
+  .development-flow-preview li { color: var(--accent-deep); font-size: .76rem; font-weight: 800; }
+  .development-flow-preview li + li::before { content: '→'; margin-right: .7rem; color: var(--muted); font-weight: 500; }
+  .development-flow-boundary { max-width: 760px; margin: .65rem 0 0; color: var(--muted); font-size: .78rem; line-height: 1.55; }
   section { margin-block: clamp(3.5rem, 8vw, 7rem); }
   section > h2 { max-width: 760px; margin-bottom: 1.5rem; font-size: clamp(1.65rem, 3.3vw, 2.5rem); letter-spacing: -.025em; }
   .development-system { margin-top: 0; }
