@@ -68,6 +68,14 @@ describe('site-wide reader attention contracts', () => {
     expect(compatibility?.firstViewportSelector).toBe('.sdlora-intro__lede');
   });
 
+  it('anchors the SEED vs OpenEvo loop comparison to its reader-facing first-screen message', () => {
+    const loops = SITE_READER_CONTRACTS.find((contract) => contract.id === 'flow-loops');
+    expect(loops?.sourceRoute).toBe('/research/seed-openevo/flow/loops/');
+    expect(loops?.firstViewportSelector).toBe('.plain-detail__header p');
+    expect(loops?.firstViewportGoal).toContain('真实输入输出');
+    expect(loops?.mustStayVisible).toContain('不等于已经证明持续提升');
+  });
+
   it('keeps the Study phone budget at seven experiment parents plus one SD-LoRA overview and two treatment branches', () => {
     const row = SITE_READER_CONTRACTS.find((contract) => contract.id === 'study');
     expect(row?.firstViewportBudget?.maxInteractive).toBe(10);
