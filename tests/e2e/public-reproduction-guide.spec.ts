@@ -2,9 +2,11 @@ import { expect, test, type Page } from '@playwright/test';
 
 const routes = ['/research/seed-openevo/study/run/'] as const;
 const viewports = [
-  { name: 'desktop', width: 1280, height: 900 },
   { name: 'mobile', width: 390, height: 844 },
+  { name: 'tablet', width: 768, height: 1024 },
+  { name: 'desktop', width: 1440, height: 1000 },
 ] as const;
+const themes = ['light', 'dark'] as const;
 const forbidden = [
   'dev-wangr',
   'wangr-dev',
@@ -22,12 +24,22 @@ async function settle(page: Page) {
 
 test('public reproduction guide stays public-safe and content-height-driven', async ({ page }) => {
   for (const viewport of viewports) {
-    await page.setViewportSize(viewport);
-    for (const path of routes) {
-      await test.step(`${viewport.name} ${path}`, async () => {
+    for (const theme of themes) {
+      await page.setViewportSize(viewport);
+      await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+      for (const path of routes) {
+        await test.step(`${viewport.name} ${theme} ${path}`, async () => {
         const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
         expect(response?.ok(), `${path} returned ${response?.status()}`).toBe(true);
         await settle(page);
+        await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+
+        const primary = page.locator('.run-primary');
+        await expect(primary).toBeVisible();
+        const primaryBox = await primary.boundingBox();
+        expect(primaryBox).not.toBeNull();
+        expect(primaryBox!.y).toBeGreaterThanOrEqual(0);
+        expect(primaryBox!.y + primaryBox!.height).toBeLessThanOrEqual(viewport.height + 2);
 
         const bodyText = await page.locator('body').innerText();
         for (const value of forbidden) expect(bodyText).not.toContain(value);
@@ -92,7 +104,8 @@ test('public reproduction guide stays public-safe and content-height-driven', as
           expect(entry.minHeight).toBe('0px');
           expect(entry.right).toBeLessThanOrEqual(entry.parentRight + 2);
         }
-      });
+        });
+      }
     }
   }
 });
