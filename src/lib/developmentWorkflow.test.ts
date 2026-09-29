@@ -36,6 +36,7 @@ describe('human-facing development workflow', () => {
     expect(header).toContain("path: '/development/'");
     expect(sitemap).toContain("'/development/'");
     expect(contracts).toContain("c('development'");
-    expect(contracts).toContain("'.development-hero .lede'");
+    expect(contracts).toContain("'.development-flow-preview'");
+    expect(page).toContain('Cloudflare does not handle ordinary BaseModel deployment');
   });
 });
