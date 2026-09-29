@@ -34,3 +34,9 @@ test('workflow plans before browser runner allocation and gates skipped browser 
   assert.match(workflow, /if \[ "\$BROWSER_TOTAL" = 0 \]; then/);
   assert.match(workflow, /test "\$BROWSER_RESULT" = skipped/);
 });
+
+test('workflow binds exact event base without fetching every branch history', () => {
+  const workflow = read('.github/workflows/public-pr-ci.yml');
+  assert.equal((workflow.match(/fetch-depth: 1/g) ?? []).length, 3);
+  assert.equal((workflow.match(/git fetch --no-tags --depth=1 origin "\$CI_BASE_SHA"/g) ?? []).length, 3);
+});

@@ -1,5 +1,7 @@
 # Why BaseModel develops this way
 
+Cross-project CI rules live in the shared [`.agents` CI Standard](https://github.com/mykcs/.agents/blob/main/docs/agents/CI_STANDARD.md). Apply that contract before this document and the local workflow/provider owners below, which define BaseModel's workload-specific CI and hosting choices.
+
 ## Workload and acceptance
 
 The site combines static publishing, research explanation, executable audits, and browser behavior. A green static build alone cannot prove its reader contracts or interactions. Local checks and repository-owned scripts catch source mistakes before spending hosted resources; [the engineering standard](../agents/current/website-engineering-standard.md) defines which checks apply. The [Public PR workflow](../../.github/workflows/public-pr-ci.yml) plans browser coverage from the changed surface, so a non-UI change need not allocate the full browser matrix while shared or uncertain UI work retains broad acceptance.
