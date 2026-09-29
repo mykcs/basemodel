@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/head
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
 
       - name: Setup Node 24
@@ -44,6 +44,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$CI_HEAD_SHA"
+          git fetch --no-tags --depth=1 origin "$CI_BASE_SHA"
           git cat-file -e "$CI_BASE_SHA^{commit}"
 
       - name: Plan browser allocation before runner spend
@@ -62,7 +63,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/head
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
 
       - name: Setup Node 24
@@ -78,6 +79,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$CI_HEAD_SHA"
+          git fetch --no-tags --depth=1 origin "$CI_BASE_SHA"
           git cat-file -e "$CI_BASE_SHA^{commit}"
 
       - name: Validate CI contracts
@@ -120,7 +122,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/head
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
 
       - name: Setup Node 24
@@ -135,6 +137,7 @@ jobs:
           set -euo pipefail
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           test "$(git rev-parse HEAD)" = "$CI_HEAD_SHA"
+          git fetch --no-tags --depth=1 origin "$CI_BASE_SHA"
           git cat-file -e "$CI_BASE_SHA^{commit}"
 
       - name: Risk-based browser acceptance shard
