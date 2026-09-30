@@ -4,6 +4,8 @@ Last updated: **2026-08-28** (research-state snapshot)
 
 CI architecture last verified: **2026-09-21**
 
+Agent bootstrap last refreshed: **2026-10-01** — root `AGENTS.md` was reduced to a routing/invariant layer; detailed policy ownership and scientific/provider authority did not move.
+
 Status: **The SEED × OpenEvo Results route is aligned to the closed Track A paired measurement and the adopted WB1 Gen28 state-v28 boundary. Track A remains `measurement-not-proven-stable-improvement`; WB1 is `GEN28_STATE_V28_BARRIER_PASS_ADOPTED` at 3,584/20,640 counted episodes with 17,056 remaining, while Gen29/GPU/formal-task/final authority remains locked.**
 
 This file is a short current-state router. Detailed policy belongs under `docs/agents/current/`; historical rationale belongs under `docs/agents/history/`.
