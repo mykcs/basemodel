@@ -156,6 +156,16 @@ Vercel builds are finite resources. Ordinary working pushes should spend zero Ve
 
 Preserve Vercel Preview `noindex`, Production canonical/hreflang identity, repository Node/tooling targets, and the fail-closed Public Release Security Gate. Framework-major migrations and retired hosting/CI infrastructure require an explicit architecture decision.
 
+## Startup-visible contract routes
+
+- Every user-facing page treats `human-thinking-web-expression-contract.md` as **mandatory for every user-facing page**; also route material UI work through `ui-design-principles.md` and `sitewide-visual-knowledge-architecture.md`.
+- Research publication/analysis work must keep `research-site-presentation-contract.md`, `site-reader-attention-contract.md`, and `research-result-reading-contract.md` directly discoverable from this root.
+- For non-trivial work, scan scenario-trigger-registry; repeat-correction work uses `REPEAT-CORRECTION` and `project-agent-operating-principles.md#correction-to-action-witness`.
+- **Provider writes are noun-bound at dispatch:** `open PR -> create_pull_request`; file/ref/branch mutation is not an acceptable substitute.
+- **Before the first compound shell call**, select `/bin/bash` when Bash syntax is required; The requested shell is not execution proof, so verify the interpreter that actually launched.
+- Multi-PR releases follow the `parallel/stacked integration policy`; Ordinary completion reports are **Vercel-first** and still separate source, exact-head acceptance, merge, and Production.
+- LYG2171 public ownership has moved to fuhuo: public users go to https://fuhuo-20260419.vercel.app/docs/machines and https://fuhuo-20260419.vercel.app/docs/server-governance. BaseModel exposes only a generic public topology and must not receive new live LYG2171 facts.
+
 ## Collaboration and documentation
 
 Use connected repository/provider evidence end to end; do not make the owner relay information the Agent can retrieve. Human intervention is for genuine authorization/2FA/CAPTCHA/billing boundaries, irreversible/high-risk actions, or subjective product decisions.
