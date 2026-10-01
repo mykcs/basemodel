@@ -251,8 +251,10 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).not.toContain('从 linear attention 的“记忆写入”借一个规则');
   });
 
-  it('publishes the sealed R200 training continuation without upgrading it into a new final', () => {
+  it('publishes the sealed R200 continuation, round-level trajectory, and zero-replay control-plane boundary', () => {
     const evidence = JSON.parse(readFileSync(new URL('../../public/research/seed-openevo/evidence/bounded-beta-r200-analysis-20261001.json', import.meta.url), 'utf8'));
+    const series = JSON.parse(readFileSync(new URL('../../public/research/seed-openevo/evidence/bounded-beta-r200-round-series-20261001.json', import.meta.url), 'utf8'));
+    const control = JSON.parse(readFileSync(new URL('../../public/research/seed-openevo/evidence/bounded-beta-r200-control-plane-20261001.json', import.meta.url), 'utf8'));
     expect(evidence.seal.status).toBe('PASS');
     expect(evidence.seal.next_round).toBe(200);
     expect(evidence.seal.rollouts_consumed).toBe(25_600);
@@ -268,9 +270,36 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(evidence.state_endpoints.R199.frobenius).toBeCloseTo(21.9302027168, 9);
     expect(evidence.state_endpoints.R199.rank95_median).toBe(7);
 
+    expect(series.scope).toEqual({ first_round: 96, last_round: 199, rows: 104 });
+    expect(series.rows).toHaveLength(104);
+    expect(series.rows[0].round).toBe(96);
+    expect(series.rows.at(-1)?.round).toBe(199);
+    expect(series.identity.final_panel_access_count).toBe(0);
+    expect(series.identity.external_teacher_calls).toBe(0);
+
+    expect(control.sealed_accounting.new_frontiers).toBe(40);
+    expect(control.sealed_accounting.new_formal_rollouts).toBe(5_120);
+    expect(control.sealed_accounting.parameter_updates).toBe(40);
+    expect(control.sealed_accounting.parameter_noops).toBe(0);
+    expect(control.sealed_accounting.historical_parent_rerun).toBe(false);
+    expect(control.recovery_boundaries.r160_zero_replay.formal_rollout_replay).toBe(0);
+    expect(control.recovery_boundaries.r160_zero_replay.scientific_contract_changed).toBe(false);
+    expect(control.recovery_boundaries.r164_planned_handoff.scientific_state_mutated).toBe(false);
+    expect(control.recovery_boundaries.completion_first_from_r165.formal_rollout_replay).toBe(0);
+    expect(control.recovery_boundaries.completion_first_from_r165.additional_model_calls_for_disposition).toBe(0);
+    expect(control.recovery_boundaries.completion_first_from_r165.beta_policy_unchanged).toBe(true);
+    expect(control.recovery_boundaries.completion_first_from_r165.gdr_policy_unchanged).toBe(true);
+    expect(control.recovery_boundaries.r199_effective_boundary.integrity_failures).toEqual([]);
+
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
     expect(component).toContain('继续到 200 轮以后发生了什么');
-    expect(component).toContain('R200 公开分析 evidence');
+    expect(component).toContain('r200Control.sealed_accounting.parameter_updates');
+    expect(component).toContain('r200Control.sealed_accounting.parameter_noops');
+    expect(component).toContain('R160 zero-replay');
+    expect(component).toContain('R164 → R165 handoff');
+    expect(component).toContain('R165–R199 Completion-First');
+    expect(component).toContain('R96–R199 逐轮 evidence');
+    expect(component).toContain('R200 recovery / seal evidence');
     expect(component).toContain('final panel（access=');
     expect(component).toContain('不能证明 R120、R160 或 R200 哪个是最优 stopping point');
   });

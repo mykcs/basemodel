@@ -228,12 +228,20 @@ test('formal result preserves the matched-arm statistical boundary under public 
   await expect(r200Extension).toContainText('R160–R199');
   await expect(r200Extension).toContainText('5,120');
   await expect(r200Extension).toContainText('25,600');
+  await expect(r200Extension).toContainText('40 UPDATE / 0 NOOP');
   await expect(r200Extension).toContainText('54.28');
   await expect(r200Extension).toContainText('59.51');
   await expect(r200Extension).toContainText('60.39');
-  await expect(r200Extension).toContainText('access=0');
-  await expect(r200Extension).toContainText('外部 teacher call（0）');
-  await expect(r200Extension.getByRole('link', { name: 'R200 公开分析 evidence →' })).toHaveAttribute('href', /bounded-beta-r200-analysis-20261001\.json/);
+  await expect(r200Extension).toContainText('R160 zero-replay');
+  await expect(r200Extension).toContainText('R164 → R165 handoff');
+  await expect(r200Extension).toContainText('R165–R199 Completion-First');
+  await expect(r200Extension).toContainText('0 integrity failures');
+  await expect(r200Extension).toContainText('final panel');
+  await expect(r200Extension).toContainText('Final 0 · teacher 0');
+  await expect(r200Extension.getByRole('img', { name: /R96 到 R199/ })).toBeVisible();
+  await expect(r200Extension.getByRole('link', { name: 'R200 窗口分析 evidence →' })).toHaveAttribute('href', /bounded-beta-r200-analysis-20261001\.json/);
+  await expect(r200Extension.getByRole('link', { name: 'R96–R199 逐轮 evidence →' })).toHaveAttribute('href', /bounded-beta-r200-round-series-20261001\.json/);
+  await expect(r200Extension.getByRole('link', { name: 'R200 recovery \/ seal evidence →' })).toHaveAttribute('href', /bounded-beta-r200-control-plane-20261001\.json/);
 });
 
 test('analysis follows a simple-to-complex metric ladder with definition result and analysis in every subsection', async ({ page }) => {
@@ -334,9 +342,12 @@ test('W&B evidence is embedded beside the relevant metric instead of collected i
   await expect(analysis.getByRole('link', { name: /完整 W&B Workspace/ })).toHaveAttribute('href', /wandb\.ai/);
 
   const result = page.locator('#formal-result');
-  await expect(result.locator('.metric-evidence')).toHaveCount(1);
-  await expect(result.locator('.metric-evidence img')).toHaveAttribute('src', /wandb-threeway\/task-score\.svg/);
-  await expect(result.locator('.metric-evidence').getByRole('link', { name: /打开 W&B Report/ }).last()).toHaveAttribute('href', /wandb\.ai\/.*reports/);
+  const resultEvidence = result.locator('.metric-evidence');
+  await expect(resultEvidence).toHaveCount(2);
+  await expect(resultEvidence.nth(0).locator('img')).toHaveAttribute('src', /wandb-threeway\/task-score\.svg/);
+  await expect(resultEvidence.nth(0).getByRole('link', { name: /打开 W&B Report/ }).last()).toHaveAttribute('href', /wandb\.ai\/.*reports/);
+  await expect(resultEvidence.nth(1).locator('img')).toHaveAttribute('src', /bounded-beta-r200-task-score-r96-r199\.svg/);
+  await expect(resultEvidence.nth(1).getByRole('link', { name: /打开 104 轮逐轮 evidence/ }).last()).toHaveAttribute('href', /bounded-beta-r200-round-series-20261001\.json/);
   await expect(result.locator('.paper__derived-figure img')).toHaveAttribute('src', /wandb-threeway\/task-score-20-round-mean\.svg/);
 
   const figures = analysis.locator('.metric-evidence');
