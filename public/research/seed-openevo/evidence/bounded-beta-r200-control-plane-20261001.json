@@ -1,0 +1,126 @@
+{
+  "checked_at": "2026-10-01",
+  "interpretation": {
+    "failed_predecessor_boundary": "The earlier predecessor attempt is retained as engineering evidence but is not counted as an additional completed scientific trajectory.",
+    "not_a_new_treatment": "The predecessor failure, zero-replay continuation, planned handoff, Completion-First content rejection, and final seal audit are not additional experimental arms.",
+    "scientific": "All R160-R199 formal rollouts belong to one unchanged beta-gating treatment. Recovery changed control-plane execution only."
+  },
+  "producer_lineage": [
+    {
+      "reason": "R160 rollout rows were already sealed; only the post-rollout transition moved to the R200-capable successor.",
+      "rollout_producer_git_sha": "c9dfc37fba27a7b644f2f0d5e8090383debf4449",
+      "round_complete_git_sha": "41a8ae9dca519bc0c10459fc43df363c8f446048",
+      "rounds": [
+        160,
+        160
+      ]
+    },
+    {
+      "rollout_producer_git_sha": "329d5370ec7a5ba949b8a06b2f34e953c15d7308",
+      "round_complete_git_sha": "329d5370ec7a5ba949b8a06b2f34e953c15d7308",
+      "rounds": [
+        161,
+        161
+      ]
+    },
+    {
+      "rollout_producer_git_sha": "42e8148fe22ad38e70235715e9c40dc833a56ff4",
+      "round_complete_git_sha": "42e8148fe22ad38e70235715e9c40dc833a56ff4",
+      "rounds": [
+        162,
+        164
+      ]
+    },
+    {
+      "completion_first_policy": "carrier-completion-first-policy-v1",
+      "rollout_producer_git_sha": "89b080ec6349cc991871a9661acec3019a0c2358",
+      "round_complete_git_sha": "89b080ec6349cc991871a9661acec3019a0c2358",
+      "rounds": [
+        165,
+        199
+      ]
+    }
+  ],
+  "recovery_boundaries": {
+    "completion_first_from_r165": {
+      "additional_model_calls_for_disposition": 0,
+      "adopt_after_round": 164,
+      "beta_policy_unchanged": true,
+      "carrier_contract_unchanged": true,
+      "content_rejection_action": "KEEP_PRIOR_AND_CONTINUE",
+      "data_bytes_unchanged": true,
+      "external_teacher_calls_allowed": false,
+      "final_panel_access_allowed": false,
+      "formal_rollout_replay": 0,
+      "gdr_policy_unchanged": true,
+      "integrity_unknown_action": "PAUSE_FOR_DIAGNOSTIC",
+      "prospective_rounds": [
+        165,
+        199
+      ],
+      "reward_conditioning_allowed": false,
+      "rollout_schedule_unchanged": true,
+      "sampling_unchanged": true,
+      "scientific_state_mutated_by_disposition": false,
+      "status": "OWNER_AUTHORIZED_PROSPECTIVE_SUCCESSOR",
+      "update_frequency_unchanged": true
+    },
+    "r160_zero_replay": {
+      "external_teacher_calls_delta": 0,
+      "final_panel_access_delta": 0,
+      "formal_rollout_replay": 0,
+      "predecessor_execution_git_sha": "c9dfc37fba27a7b644f2f0d5e8090383debf4449",
+      "reason": "The R160 rollout was already sealed and valid. The first transition attempt failed only because the historical transition driver rejected round_index=160, so continuation resumed after rollout without replay.",
+      "scientific_contract_changed": false,
+      "status": "AUTHORIZED_ZERO_REPLAY_CONTINUATION",
+      "successor_execution_git_sha": "41a8ae9dca519bc0c10459fc43df363c8f446048"
+    },
+    "r164_planned_handoff": {
+      "external_teacher_calls_delta": 0,
+      "final_panel_access_delta": 0,
+      "formal_rollout_replay": 0,
+      "predecessor_execution_git_sha": "42e8148fe22ad38e70235715e9c40dc833a56ff4",
+      "reason": "The predecessor runner was stopped before it could launch R165 while the active R164 controller was preserved unchanged.",
+      "round_index": 164,
+      "scientific_state_mutated": false,
+      "status": "PARENT_RUNNER_STOPPED_ACTIVE_ROUND_PRESERVED"
+    },
+    "r199_effective_boundary": {
+      "action": "CONTINUE_WITH_CONTENT_REJECTION",
+      "additional_model_calls": 0,
+      "block_next_round": false,
+      "final_panel_access": 0,
+      "formal_rollout_replay": 0,
+      "integrity_failures": [],
+      "scientific_state_mutated": false,
+      "status": "PASS_WITH_CONTENT_REJECTION"
+    }
+  },
+  "schema": "basemodel.delta-beta-r200-control-plane-evidence.v1",
+  "scientific_identity": {
+    "current_update_rank": 8,
+    "experiment_id": "20260930-bounded-beta-r200-extension",
+    "fork_origin": "R159_AFTER",
+    "parent_experiment_id": "202609160255-bounded-effective-state-gdr",
+    "persistent_state_rank": 128,
+    "reader_name": "Bounded Online Recurrence + beta-gating (alpha fixed at 1)",
+    "treatment_mode": "EFFECTIVE_STATE_GDR_LORA_V1"
+  },
+  "sealed_accounting": {
+    "bounded_logical_history_count": 200,
+    "cumulative_formal_rollouts": 25600,
+    "external_teacher_calls": 0,
+    "final_panel_access_count": 0,
+    "final_state_id": "5e8251985b1ea24ab02b5fad54138438b237fe9cd070c3adc514082d82e149c4",
+    "historical_parent_rerun": false,
+    "new_formal_rollouts": 5120,
+    "new_frontiers": 40,
+    "next_round": 200,
+    "parameter_noops": 0,
+    "parameter_updates": 40,
+    "seal_execution_git_sha": "dc5bf3b8a708bf13784e2dd1711b9a8c25356875",
+    "status": "PASS"
+  },
+  "source_repository": "mykcs/openevo-experiment",
+  "status": "SEALED_AND_AUDITED"
+}

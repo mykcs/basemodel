@@ -71,6 +71,13 @@ const metricCharts = {
     href: panelHref('Action-family entropy', '06 输出长度与任务路径'),
     alt: t('三组实验 160 轮 action-family Shannon entropy 静态曲线', 'Static 160-round action-family Shannon entropy curves for the three experiments'),
   },
+  r200TaskScore: {
+    title: t('β-gating · R96–R199 Task Score', 'β-gating · R96–R199 Task Score'),
+    src: '/research/seed-openevo/evidence/bounded-beta-r200-task-score-r96-r199.svg',
+    href: '/research/seed-openevo/evidence/bounded-beta-r200-round-series-20261001.json',
+    linkText: t('打开 104 轮逐轮 evidence →', 'Open 104-round evidence →'),
+    alt: t('β-gating 从 R96 到 R199 的逐轮 Task Score，以及五个非重叠窗口均值和 R160 延长实验边界', 'Round-level β-gating Task Score from R96 to R199 with five non-overlapping window means and the R160 extension boundary'),
+  },
 };
 
 type LossRow = {
@@ -109,7 +116,69 @@ const r200 = JSON.parse(
   consecutive_phase_update_cosine: Record<string, number>;
   extension: { mean_score_R160_R199: number; mean_loss_R160_R199: number; net_update_frobenius_R160_R199: number; net_update_cosine_R140_R159_vs_R160_R199: number };
 };
+type R200ControlEvidence = {
+  sealed_accounting: {
+    new_frontiers: number;
+    new_formal_rollouts: number;
+    parameter_updates: number;
+    parameter_noops: number;
+    cumulative_formal_rollouts: number;
+    historical_parent_rerun: boolean;
+    final_panel_access_count: number;
+    external_teacher_calls: number;
+    final_state_id: string;
+  };
+  recovery_boundaries: {
+    r160_zero_replay: {
+      status: string;
+      formal_rollout_replay: number;
+      scientific_contract_changed: boolean;
+      final_panel_access_delta: number;
+      external_teacher_calls_delta: number;
+    };
+    r164_planned_handoff: {
+      status: string;
+      formal_rollout_replay: number;
+      scientific_state_mutated: boolean;
+      final_panel_access_delta: number;
+      external_teacher_calls_delta: number;
+    };
+    completion_first_from_r165: {
+      status: string;
+      adopt_after_round: number;
+      prospective_rounds: [number, number];
+      formal_rollout_replay: number;
+      additional_model_calls_for_disposition: number;
+      scientific_state_mutated_by_disposition: boolean;
+      beta_policy_unchanged: boolean;
+      gdr_policy_unchanged: boolean;
+      carrier_contract_unchanged: boolean;
+      final_panel_access_allowed: boolean;
+      external_teacher_calls_allowed: boolean;
+    };
+    r199_effective_boundary: {
+      status: string;
+      action: string;
+      block_next_round: boolean;
+      integrity_failures: string[];
+      additional_model_calls: number;
+      formal_rollout_replay: number;
+      scientific_state_mutated: boolean;
+      final_panel_access: number;
+    };
+  };
+  interpretation: {
+    scientific: string;
+    not_a_new_treatment: string;
+    failed_predecessor_boundary: string;
+  };
+};
+const r200Control = JSON.parse(
+  readFileSync(new URL('../../../public/research/seed-openevo/evidence/bounded-beta-r200-control-plane-20261001.json', import.meta.url), 'utf8'),
+) as R200ControlEvidence;
 const r200EvidenceHref = '/research/seed-openevo/evidence/bounded-beta-r200-analysis-20261001.json';
+const r200SeriesHref = '/research/seed-openevo/evidence/bounded-beta-r200-round-series-20261001.json';
+const r200ControlHref = '/research/seed-openevo/evidence/bounded-beta-r200-control-plane-20261001.json';
 const r200SourceCommitHref = 'https://github.com/mykcs/openevo-experiment/commit/dc5bf3b8a708bf13784e2dd1711b9a8c25356875';
 
 const math = {
@@ -823,6 +892,28 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
       `R160–R199 是从封存 R159 之后继续的同一 β-gating（α 固定为 1）训练轨迹：新增 ${r200.identity.added_rounds} 轮、${r200.identity.added_rollouts.toLocaleString()} 次正式 rollout，没有重跑 R0–R159。最终 next_round=${r200.seal.next_round}、累计 ${r200.seal.rollouts_consumed.toLocaleString()} rollouts，R199 封存 PASS。`,
       `R160–R199 continues the same β-gating treatment with α fixed at 1 from the sealed R159 boundary: ${r200.identity.added_rounds} new rounds and ${r200.identity.added_rollouts.toLocaleString()} formal rollouts, with no rerun of R0–R159. The extension seals at next_round=${r200.seal.next_round}, ${r200.seal.rollouts_consumed.toLocaleString()} cumulative rollouts, and R199 PASS.`,
     )}</p>
+
+    <p class="paper__metric-label">{t('① 这 40 轮实际跑了什么', '① What actually ran in these 40 rounds')}</p>
+    <div class="paper-table-wrap">
+      <table class="paper-table paper-table--dense-results">
+        <thead><tr><th>{t('封存账本', 'Sealed ledger')}</th><th>{t('结果', 'Result')}</th><th>{t('它说明什么', 'Meaning')}</th></tr></thead>
+        <tbody>
+          <tr><td>{t('新 frontier', 'new frontiers')}</td><td><strong>{r200Control.sealed_accounting.new_frontiers}</strong></td><td>{t('R160–R199 全部 40 轮都进入正式 extension', 'all R160–R199 rounds belong to the formal extension')}</td></tr>
+          <tr><td>{t('新增正式 rollout', 'new formal rollouts')}</td><td><strong>{r200Control.sealed_accounting.new_formal_rollouts.toLocaleString()}</strong></td><td>{t('40 × 128；历史 R0–R159 不重跑', '40 × 128; historical R0–R159 is not rerun')}</td></tr>
+          <tr><td>{t('参数 State', 'parameter State')}</td><td><strong>{r200Control.sealed_accounting.parameter_updates} UPDATE / {r200Control.sealed_accounting.parameter_noops} NOOP</strong></td><td>{t('延长的 40 轮每轮都发生一次参数更新', 'each extension round performs one parameter update')}</td></tr>
+          <tr><td>{t('累计正式 rollout', 'cumulative formal rollouts')}</td><td><strong>{r200Control.sealed_accounting.cumulative_formal_rollouts.toLocaleString()}</strong></td><td>{t('与 next_round=200、logical history=200 一致', 'consistent with next_round=200 and logical history=200')}</td></tr>
+          <tr><td>{t('受保护边界', 'protected boundaries')}</td><td><strong>Final {r200Control.sealed_accounting.final_panel_access_count} · teacher {r200Control.sealed_accounting.external_teacher_calls}</strong></td><td>{t('延长训练没有偷看终评，也没有调用外部教师', 'the continuation neither opens the final panel nor calls an external teacher')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <MetricEvidenceFigure item={metricCharts.r200TaskScore} />
+    <p class="paper__chart-note">{t(
+      '灰线是 R96–R199 的逐轮训练 Task Score；蓝色粗线是五个互不重叠窗口的均值，R160 虚线是 extension 起点。图中后 40 轮来自新的正式 rollout，不是把 R140–R159 重新抽样或重放。',
+      'The gray line is round-level training Task Score over R96–R199; thick blue segments are five non-overlapping window means, and the R160 dashed line marks the extension boundary. The final 40 rounds are new formal rollouts, not resampling or replay of R140–R159.',
+    )}</p>
+
+    <p class="paper__metric-label">{t('② 把晚期轨迹按窗口拆开', '② Break the late trajectory into windows')}</p>
     <div class="paper-table-wrap">
       <table class="paper-table paper-table--dense-results">
         <thead><tr><th>{t('训练窗口', 'Training window')}</th><th>Task Score / 100</th><th>training loss</th><th>{t('β · step-max 中位数', 'β · median step-max')}</th><th>{t('每步 tokens', 'tokens / step')}</th><th>{t('平均步骤', 'steps')}</th><th>action H</th></tr></thead>
@@ -843,15 +934,36 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
       </table>
     </div>
     <p>{t(
-      `最关键的新事实不是“R200 更高”，而是 R140–159 的低谷没有继续单调恶化：20 轮平均 Task Score 从 ${(r200.phases['R140-159']!.mean_score * 100).toFixed(2)} 回到 R160–179 的 ${(r200.phases['R160-179']!.mean_score * 100).toFixed(2)}，R180–199 为 ${(r200.phases['R180-199']!.mean_score * 100).toFixed(2)}。因此，“160 轮之后已经单调饱和、继续训练只会更差”这个简单故事不成立。`,
-      `The key new fact is not that “R200 is better,” but that the R140–R159 trough does not continue as a monotonic decline. The 20-round mean Task Score moves from ${(r200.phases['R140-159']!.mean_score * 100).toFixed(2)} to ${(r200.phases['R160-179']!.mean_score * 100).toFixed(2)} in R160–R179 and ${(r200.phases['R180-199']!.mean_score * 100).toFixed(2)} in R180–R199. The simple story that training had monotonically saturated by R160 and could only get worse is therefore not supported.`,
+      `最关键的新事实不是“R200 更高”，而是 R140–159 的低谷没有继续单调恶化：20 轮平均 Task Score 从 ${(r200.phases['R140-159']!.mean_score * 100).toFixed(2)} 回到 R160–179 的 ${(r200.phases['R160-179']!.mean_score * 100).toFixed(2)}，R180–199 为 ${(r200.phases['R180-199']!.mean_score * 100).toFixed(2)}。同时 β 的 step-max 中位数仍在 5×10⁻⁴ 量级，没有塌到 0。因此，“160 轮之后已经单调饱和、继续训练只会更差”以及“掉分只是因为 β 不再写入”这两个简单故事都不成立。`,
+      `The key new fact is not that “R200 is better,” but that the R140–R159 trough does not continue as a monotonic decline. The 20-round mean Task Score moves from ${(r200.phases['R140-159']!.mean_score * 100).toFixed(2)} to ${(r200.phases['R160-179']!.mean_score * 100).toFixed(2)} in R160–R179 and ${(r200.phases['R180-199']!.mean_score * 100).toFixed(2)} in R180–R199. Median per-step β maxima also remain on the order of 5×10⁻⁴ rather than collapsing to zero. The simple stories “training had monotonically saturated by R160” and “the score drop happened because β stopped writing” are therefore both unsupported.`,
     )}</p>
+
+    <p class="paper__metric-label">{t('③ 中途 recovery 有没有偷偷改变实验？', '③ Did recovery silently change the experiment?')}</p>
+    <div class="paper-table-wrap">
+      <table class="paper-table paper-table--dense-results">
+        <thead><tr><th>{t('控制面事件', 'Control-plane event')}</th><th>{t('实际处理', 'What happened')}</th><th>{t('科学边界', 'Scientific boundary')}</th></tr></thead>
+        <tbody>
+          <tr><td>R160 zero-replay</td><td>{t('rollout 已经封存；只从 transition 继续', 'rollout was already sealed; continuation resumed at transition only')}</td><td><strong>{r200Control.recovery_boundaries.r160_zero_replay.formal_rollout_replay} replay</strong> · {t('scientific contract 未变', 'scientific contract unchanged')}</td></tr>
+          <tr><td>R164 → R165 handoff</td><td>{t('停止旧 runner，但保留正在执行的 R164 controller', 'stop the predecessor runner while preserving the active R164 controller')}</td><td><strong>{r200Control.recovery_boundaries.r164_planned_handoff.formal_rollout_replay} replay</strong> · {t('scientific state 未改', 'scientific state unchanged')}</td></tr>
+          <tr><td>R165–R199 Completion-First</td><td>{t('可审计的 carrier 内容拒绝时沿用旧内容继续；完整性不确定仍暂停', 'keep the prior carrier on auditable content rejection; still pause on integrity uncertainty')}</td><td><strong>{r200Control.recovery_boundaries.completion_first_from_r165.additional_model_calls_for_disposition} extra calls · {r200Control.recovery_boundaries.completion_first_from_r165.formal_rollout_replay} replay</strong> · β/GDR/sampling/update frequency {t('均不变', 'unchanged')}</td></tr>
+          <tr><td>R199 boundary</td><td>{r200Control.recovery_boundaries.r199_effective_boundary.status}</td><td><strong>{r200Control.recovery_boundaries.r199_effective_boundary.integrity_failures.length} integrity failures</strong> · {r200Control.recovery_boundaries.r199_effective_boundary.additional_model_calls} extra calls · {r200Control.recovery_boundaries.r199_effective_boundary.formal_rollout_replay} replay</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="paper__boundary">{t(
+      '所以旧 runner / transition 的失败与后来的 Completion-First 都属于控制面恢复证据，不是新的实验臂。更早那个在 R160 transition guard 上失败的 predecessor 保留用于审计，但不能再算一条“R200 实验结果”。真正的科学轨迹只有一条：从封存 R159 继续到 R199，正式 rollout 不重放，算法 treatment 不变。',
+      'The old runner/transition failure and the later Completion-First handling are therefore control-plane recovery evidence, not new experimental arms. The earlier predecessor that failed at the R160 transition guard is retained for audit but is not another R200 scientific result. There is one scientific trajectory: continue from sealed R159 through R199, with no formal-rollout replay and no treatment change.',
+    )}</p>
+
+    <p class="paper__metric-label">{t('④ 这次延长能回答什么、不能回答什么', '④ What the extension can and cannot answer')}</p>
     <p class="paper__boundary">{t(
       `但这里仍然只是每轮任务会变化的训练轨迹，不是新的 frozen-final。延长实验从未打开 final panel（access=${r200.identity.final_panel_access_count}），也没有外部 teacher call（${r200.identity.external_teacher_calls}）。所以它不能证明 R120、R160 或 R200 哪个是最优 stopping point；要回答停止轮数，仍然需要事先冻结 validation 指标和 stopping rule。`,
       `These are still training-round trajectories with changing tasks, not a new frozen final. The extension never opens the final panel (access=${r200.identity.final_panel_access_count}) and makes ${r200.identity.external_teacher_calls} external-teacher calls. It therefore does not establish R120, R160, or R200 as the optimal stopping point; that requires a prospectively frozen validation metric and stopping rule.`,
     )}</p>
     <p class="paper__links">
-      <a href={r200EvidenceHref}>{t('R200 公开分析 evidence →', 'R200 public analysis evidence →')}</a>
+      <a href={r200EvidenceHref}>{t('R200 窗口分析 evidence →', 'R200 window analysis evidence →')}</a>
+      <a href={r200SeriesHref}>{t('R96–R199 逐轮 evidence →', 'R96–R199 round-level evidence →')}</a>
+      <a href={r200ControlHref}>{t('R200 recovery / seal evidence →', 'R200 recovery / seal evidence →')}</a>
       <a href={r200SourceCommitHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={r200SourceCommitHref} />{t('R200 封存代码身份', 'R200 seal code identity')}</a>
     </p>
   </div>
@@ -1192,7 +1304,9 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
         <li><a href={study.evidence.longHorizon}><ExternalBrandMark href={study.evidence.longHorizon} />{t('长期统计与 bootstrap', 'long-horizon statistics and bootstrap')}</a></li>
         <li><a href={study.evidence.publicSnapshot}>{t('公开机器可读结果快照', 'public machine-readable snapshot')}</a></li>
         <li><a href={study.posthocAnalysis.snapshot}>{t('只读后分析快照', 'read-only post-hoc snapshot')}</a></li>
-        <li><a href={r200EvidenceHref}>{t('R160–R199 延长实验公开分析 evidence', 'public R160–R199 extension analysis evidence')}</a></li>
+        <li><a href={r200EvidenceHref}>{t('R160–R199 延长实验窗口分析', 'R160–R199 extension window analysis')}</a></li>
+        <li><a href={r200SeriesHref}>{t('R96–R199 逐轮训练轨迹', 'R96–R199 round-level training trajectory')}</a></li>
+        <li><a href={r200ControlHref}>{t('R200 recovery / seal 控制面证据', 'R200 recovery / seal control-plane evidence')}</a></li>
       </ul>
     </details>
     <details class="paper__details">

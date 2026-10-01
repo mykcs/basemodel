@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="Bounded plus beta R96 to R199 Task Score trajectory">
+<rect width="1200" height="675" rx="18" fill="#ffffff"/>
+<text x="56" y="52" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="26" font-weight="700" fill="#111827">Bounded + β-gating · R96–R199 Task Score</text>
+<text x="56" y="77" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14" fill="#6B7280">Training trajectory only · R160 starts the sealed 40-round extension · not a frozen final</text>
+<rect x="742.43" y="100" width="397.57" height="465" fill="#EFF6FF"/>
+<text x="754.43" y="122" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13" font-weight="600" fill="#2563EB">R160–R199 extension</text>
+<line x1="90" y1="565.00" x2="1140" y2="565.00" stroke="#E5E7EB" stroke-width="1"/>
+<text x="76" y="570.00" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">0</text>
+<line x1="90" y1="472.00" x2="1140" y2="472.00" stroke="#E5E7EB" stroke-width="1"/>
+<text x="76" y="477.00" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">20</text>
+<line x1="90" y1="379.00" x2="1140" y2="379.00" stroke="#E5E7EB" stroke-width="1"/>
+<text x="76" y="384.00" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">40</text>
+<line x1="90" y1="286.00" x2="1140" y2="286.00" stroke="#E5E7EB" stroke-width="1"/>
+<text x="76" y="291.00" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">60</text>
+<line x1="90" y1="193.00" x2="1140" y2="193.00" stroke="#E5E7EB" stroke-width="1"/>
+<text x="76" y="198.00" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">80</text>
+<line x1="90" y1="100.00" x2="1140" y2="100.00" stroke="#E5E7EB" stroke-width="1"/>
+<text x="76" y="105.00" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">100</text>
+<line x1="90.00" y1="100" x2="90.00" y2="565" stroke="#F3F4F6" stroke-width="1"/>
+<text x="90.00" y="595" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">R96</text>
+<line x1="334.66" y1="100" x2="334.66" y2="565" stroke="#F3F4F6" stroke-width="1"/>
+<text x="334.66" y="595" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">R120</text>
+<line x1="538.54" y1="100" x2="538.54" y2="565" stroke="#F3F4F6" stroke-width="1"/>
+<text x="538.54" y="595" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">R140</text>
+<line x1="742.43" y1="100" x2="742.43" y2="565" stroke="#F3F4F6" stroke-width="1"/>
+<text x="742.43" y="595" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">R160</text>
+<line x1="946.31" y1="100" x2="946.31" y2="565" stroke="#F3F4F6" stroke-width="1"/>
+<text x="946.31" y="595" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">R180</text>
+<line x1="1140.00" y1="100" x2="1140.00" y2="565" stroke="#F3F4F6" stroke-width="1"/>
+<text x="1140.00" y="595" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#6B7280">R199</text>
+<polyline fill="none" stroke="#9CA3AF" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="90.00,302.35 100.19,264.38 110.39,307.48 120.58,353.83 130.78,284.74 140.97,284.49 151.17,323.48 161.36,348.78 171.55,326.63 181.75,275.41 191.94,334.03 202.14,245.92 212.33,238.80 222.52,317.71 232.72,296.04 242.91,240.10 253.11,239.91 263.30,280.88 273.50,284.71 283.69,311.22 293.88,281.58 304.08,281.83 314.27,297.19 324.47,214.33 334.66,287.27 344.85,262.44 355.05,328.84 365.24,321.12 375.44,247.90 385.63,293.23 395.83,257.52 406.02,200.57 416.21,320.99 426.41,213.31 436.60,261.67 446.80,340.84 456.99,302.22 467.18,302.00 477.38,302.90 487.57,265.26 497.77,257.71 507.96,266.89 518.16,265.37 528.35,274.92 538.54,248.34 548.74,252.43 558.93,343.83 569.13,243.74 579.32,287.94 589.51,343.99 599.71,208.33 609.90,333.55 620.10,316.32 630.29,314.68 640.49,284.73 650.68,370.45 660.87,341.85 671.07,347.97 681.26,322.31 691.46,345.36 701.65,357.07 711.84,336.62 722.04,357.56 732.23,294.51 742.43,301.26 752.62,282.64 762.82,386.03 773.01,316.07 783.20,316.66 793.40,291.94 803.59,315.20 813.79,317.74 823.98,359.21 834.17,243.01 844.37,228.18 854.56,232.78 864.76,265.17 874.95,295.11 885.15,265.36 895.34,263.98 905.53,269.66 915.73,242.63 925.92,271.84 936.12,301.10 946.31,328.98 956.50,300.67 966.70,305.11 976.89,304.11 987.09,356.08 997.28,290.21 1007.48,307.26 1017.67,289.56 1027.86,271.82 1038.06,332.46 1048.25,253.20 1058.45,197.93 1068.64,213.89 1078.83,292.11 1089.03,287.61 1099.22,267.73 1109.42,284.61 1119.61,242.77 1129.81,274.10 1140.00,283.55"/>
+<line x1="90.00" y1="288.99" x2="324.47" y2="288.99" stroke="#2563EB" stroke-width="5" stroke-linecap="round"/>
+<text x="207.23" y="278.99" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13" font-weight="700" fill="#1D4ED8">59.36</text>
+<line x1="334.66" y1="278.65" x2="528.35" y2="278.65" stroke="#2563EB" stroke-width="5" stroke-linecap="round"/>
+<text x="431.50" y="268.65" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13" font-weight="700" fill="#1D4ED8">61.58</text>
+<line x1="538.54" y1="312.58" x2="732.23" y2="312.58" stroke="#2563EB" stroke-width="5" stroke-linecap="round"/>
+<text x="635.39" y="302.58" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13" font-weight="700" fill="#1D4ED8">54.28</text>
+<line x1="742.43" y1="288.28" x2="936.12" y2="288.28" stroke="#2563EB" stroke-width="5" stroke-linecap="round"/>
+<text x="839.27" y="278.28" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13" font-weight="700" fill="#1D4ED8">59.51</text>
+<line x1="946.31" y1="284.19" x2="1140.00" y2="284.19" stroke="#2563EB" stroke-width="5" stroke-linecap="round"/>
+<text x="1043.16" y="274.19" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13" font-weight="700" fill="#1D4ED8">60.39</text>
+<line x1="742.43" y1="100" x2="742.43" y2="565" stroke="#2563EB" stroke-width="2" stroke-dasharray="7 6"/>
+<line x1="90" y1="627" x2="118" y2="627" stroke="#9CA3AF" stroke-width="3" stroke-linecap="round"/>
+<text x="128" y="632" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14" fill="#374151">single-round Task Score</text>
+<line x1="350" y1="627" x2="378" y2="627" stroke="#2563EB" stroke-width="5" stroke-linecap="round"/>
+<text x="388" y="632" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14" fill="#374151">non-overlapping window mean</text>
+</svg>
