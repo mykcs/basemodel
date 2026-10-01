@@ -1,0 +1,179 @@
+{
+  "schema": "basemodel.delta-beta-r200-public-analysis.v1",
+  "checked_at": "2026-10-01",
+  "status": "SEALED_EXTENSION_WITH_READ_ONLY_POSTHOC",
+  "source": {
+    "repository": "mykcs/openevo-experiment",
+    "seal_execution_git_sha": "dc5bf3b8a708bf13784e2dd1711b9a8c25356875",
+    "extension_authority_sha256": "0b6f92b1d4a4ba4eb1d2e5c8b644105026de9dbb0f2998b924c6a57feb68a802",
+    "derived_analysis_sha256": "568579c81ba94477a3911898b9d58e46fd8e2b7eb320615fbac6b23f577ffb5f"
+  },
+  "identity": {
+    "treatment": "Bounded Online Recurrence + β-gating (α fixed at 1)",
+    "fork_origin": "R159_AFTER",
+    "rounds": [
+      160,
+      199
+    ],
+    "added_rounds": 40,
+    "added_rollouts": 5120,
+    "historical_parent_rerun": false,
+    "final_panel_access_count": 0,
+    "external_teacher_calls": 0
+  },
+  "seal": {
+    "status": "PASS",
+    "next_round": 200,
+    "rollouts_consumed": 25600,
+    "bounded_logical_history_count": 200,
+    "r199_status": "PASS",
+    "r199_rollouts": 128,
+    "r199_engineering_invalid_count": 0,
+    "final_panel_access_count": 0,
+    "external_teacher_calls": 0
+  },
+  "phases": {
+    "R96-119": {
+      "mean_score": 0.5935658482142855,
+      "score_slope_per_round": 0.004355014405506931,
+      "mean_loss": 0.08513658985551847,
+      "loss_slope_per_round": -0.000695019159722537,
+      "median_beta_step_max": 0.0005625658095723121,
+      "mean_step_tokens": 27.26308394013718,
+      "mean_episode_tokens": 220.7265625,
+      "mean_steps": 8.108723958333334,
+      "mean_round_action_family_entropy": 0.3836931585877075,
+      "exact_total": 688
+    },
+    "R120-139": {
+      "mean_score": 0.6158119518285532,
+      "score_slope_per_round": 0.0011852834746837366,
+      "mean_loss": 0.07531550104734659,
+      "loss_slope_per_round": -0.00027977449612236085,
+      "median_beta_step_max": 0.0006122871353795048,
+      "mean_step_tokens": 27.552551844786016,
+      "mean_episode_tokens": 205.62734375,
+      "mean_steps": 7.478515625,
+      "mean_round_action_family_entropy": 0.40081860588553697,
+      "exact_total": 619
+    },
+    "R140-159": {
+      "mean_score": 0.5428393618100649,
+      "score_slope_per_round": -0.00908327989040513,
+      "mean_loss": 0.07195866123958547,
+      "loss_slope_per_round": -0.00003064077414843096,
+      "median_beta_step_max": 0.000523865769406679,
+      "mean_step_tokens": 26.460854554360886,
+      "mean_episode_tokens": 242.90546875,
+      "mean_steps": 9.20703125,
+      "mean_round_action_family_entropy": 0.3535014612198588,
+      "exact_total": 675
+    },
+    "R160-179": {
+      "mean_score": 0.5950996009199133,
+      "score_slope_per_round": 0.0073689530237932704,
+      "mean_loss": 0.06262823393381013,
+      "loss_slope_per_round": -0.00011906168616520788,
+      "median_beta_step_max": 0.0005513558553555437,
+      "mean_step_tokens": 26.473163400121773,
+      "mean_episode_tokens": 228.582421875,
+      "mean_steps": 8.66640625,
+      "mean_round_action_family_entropy": 0.36366443236216583,
+      "exact_total": 700
+    },
+    "R180-199": {
+      "mean_score": 0.6038969606782106,
+      "score_slope_per_round": 0.0069272244209685405,
+      "mean_loss": 0.058328067701854225,
+      "loss_slope_per_round": -0.00035481241658437803,
+      "median_beta_step_max": 0.000504399229285798,
+      "mean_step_tokens": 26.479103748658254,
+      "mean_episode_tokens": 228.492578125,
+      "mean_steps": 8.6359375,
+      "mean_round_action_family_entropy": 0.3652660277719225,
+      "exact_total": 852
+    }
+  },
+  "state_endpoints": {
+    "R119": {
+      "frobenius": 15.61438507838138,
+      "max_spectral": 1.7179329177499574,
+      "rank95_median": 7
+    },
+    "R139": {
+      "frobenius": 17.793768048370847,
+      "max_spectral": 1.9408035167003133,
+      "rank95_median": 7
+    },
+    "R159": {
+      "frobenius": 17.925321384876362,
+      "max_spectral": 1.9457812357406101,
+      "rank95_median": 7
+    },
+    "R179": {
+      "frobenius": 19.356508411557705,
+      "max_spectral": 2.0910767296185884,
+      "rank95_median": 7
+    },
+    "R199": {
+      "frobenius": 21.930202716752152,
+      "max_spectral": 2.35865674914254,
+      "rank95_median": 7
+    }
+  },
+  "phase_net_update": {
+    "R96-119": {
+      "frobenius": 3.0243479212944364
+    },
+    "R120-139": {
+      "frobenius": 2.6033293732849416
+    },
+    "R140-159": {
+      "frobenius": 1.293498577562385
+    },
+    "R160-179": {
+      "frobenius": 1.8993231653451657
+    },
+    "R180-199": {
+      "frobenius": 2.8348998618900483
+    }
+  },
+  "consecutive_phase_update_cosine": {
+    "R96-119_vs_R120-139": 0.7905382278509646,
+    "R120-139_vs_R140-159": 0.181721868570601,
+    "R140-159_vs_R160-179": 0.29051932847394146,
+    "R160-179_vs_R180-199": 0.7580726563207338
+  },
+  "extension": {
+    "mean_score_R160_R199": 0.5994982807990619,
+    "mean_loss_R160_R199": 0.06047815081783218,
+    "net_update_frobenius_R160_R199": 4.450573542565636,
+    "net_update_cosine_R140_R159_vs_R160_R199": 0.25868206733559573
+  },
+  "interpretation": {
+    "supported": [
+      "The R140-R159 training-score decline did not continue monotonically after R160; both R160-R179 and R180-R199 have higher mean training Task Score.",
+      "Training loss continued to fall while Task Score first fell and then recovered, so training loss alone does not define a stopping round.",
+      "The β write scale did not collapse to zero; the late windows remain in the same order of magnitude.",
+      "The effective parameter State continued to grow after R160 while rank95 median stayed 7.",
+      "Net update direction changed around the R140-R159 decline and again entering R160-R179; the two post-R160 halves are more aligned with each other.",
+      "Per-step output length stayed nearly flat across R140-R199; episode steps rose in the decline window and then shortened after R160; action-family entropy partially rebounded."
+    ],
+    "not_supported": [
+      "R200 is not a new frozen-final capability score because the extension never accessed the final panel.",
+      "The training trajectory does not prove R120, R160, or R200 is the optimal stopping point.",
+      "β, update direction, State norm/spectrum, path length, or entropy alone does not establish the causal mechanism.",
+      "rank95≈7 does not prove a rank8 persistent State is task-performance equivalent."
+    ]
+  },
+  "validation": {
+    "geometry_reproduction": {
+      "expected_r159_frobenius": 17.92532067595396,
+      "recomputed_r159_frobenius": 17.925321384876362,
+      "expected_r159_max_spectral": 1.9457811117172241,
+      "recomputed_r159_max_spectral": 1.9457812357406101,
+      "expected_r159_rank95_median": 7,
+      "recomputed_r159_rank95_median": 7
+    }
+  }
+}
