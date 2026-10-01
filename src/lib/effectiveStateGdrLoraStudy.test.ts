@@ -251,6 +251,30 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).not.toContain('从 linear attention 的“记忆写入”借一个规则');
   });
 
+  it('publishes the sealed R200 training continuation without upgrading it into a new final', () => {
+    const evidence = JSON.parse(readFileSync(new URL('../../public/research/seed-openevo/evidence/bounded-beta-r200-analysis-20261001.json', import.meta.url), 'utf8'));
+    expect(evidence.seal.status).toBe('PASS');
+    expect(evidence.seal.next_round).toBe(200);
+    expect(evidence.seal.rollouts_consumed).toBe(25_600);
+    expect(evidence.seal.r199_status).toBe('PASS');
+    expect(evidence.identity.added_rollouts).toBe(5_120);
+    expect(evidence.identity.historical_parent_rerun).toBe(false);
+    expect(evidence.identity.final_panel_access_count).toBe(0);
+    expect(evidence.identity.external_teacher_calls).toBe(0);
+    expect(evidence.phases['R140-159'].mean_score).toBeCloseTo(0.5428393618, 9);
+    expect(evidence.phases['R160-179'].mean_score).toBeCloseTo(0.5950996009, 9);
+    expect(evidence.phases['R180-199'].mean_score).toBeCloseTo(0.6038969607, 9);
+    expect(evidence.state_endpoints.R159.frobenius).toBeCloseTo(17.9253213849, 9);
+    expect(evidence.state_endpoints.R199.frobenius).toBeCloseTo(21.9302027168, 9);
+    expect(evidence.state_endpoints.R199.rank95_median).toBe(7);
+
+    const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
+    expect(component).toContain('继续到 200 轮以后发生了什么');
+    expect(component).toContain('R200 公开分析 evidence');
+    expect(component).toContain('final panel（access=');
+    expect(component).toContain('不能证明 R120、R160 或 R200 哪个是最优 stopping point');
+  });
+
   it('keeps trainer/transition speedup separate from whole-Stage2 wall-clock time', () => {
     expect(study.timingComparison.directApply.trainerHours).toBeCloseTo(31.087279689253773, 10);
     expect(study.timingComparison.off.transitionHours).toBeCloseTo(2.024057791739987, 10);
@@ -342,8 +366,9 @@ describe('Effective-State GDR publication snapshot', () => {
     expect(component).toContain('“2 个任务 / 3 个任务”描述的是这次冻结 evidence builder 实际采用的门槛');
     expect(component).toContain('不应该读成 OpenEVO 的理论常数');
     expect(study.evidence.carrierEvidenceGateSource).toContain('ceiling1_stage2_vnext_evidence.py');
-    expect(component).toContain('上升 → 平台 → 掉分');
-    expect(component).toContain('这个分析目前还没有完成');
+    expect(component).toContain('R200 之后可以补上之前缺失的');
+    expect(component).toContain('净 State 位移');
+    expect(component).toContain('R160–179 与 R180–199 更一致');
     expect(component).toContain('Stage 1 OPSD 参数学习 → OPSD bootstrap');
     expect(component).toContain('study.posthocAnalysis.stage1.qwen3OneP7bOpsdOptimizerSteps.toLocaleString');
     expect(component).toContain("import MetricEvidenceFigure from './MetricEvidenceFigure.astro'");

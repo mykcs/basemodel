@@ -223,6 +223,17 @@ test('formal result preserves the matched-arm statistical boundary under public 
   await expect(page.locator('#compute')).toContainText('2.35');
   await expect(page.locator('#compute')).toContainText('15.36×');
   await expect(page.locator('#compute')).toContainText('1.33×');
+  const r200Extension = page.locator('#r200-extension');
+  await expect(r200Extension).toContainText('继续到 200 轮以后发生了什么');
+  await expect(r200Extension).toContainText('R160–R199');
+  await expect(r200Extension).toContainText('5,120');
+  await expect(r200Extension).toContainText('25,600');
+  await expect(r200Extension).toContainText('54.28');
+  await expect(r200Extension).toContainText('59.51');
+  await expect(r200Extension).toContainText('60.39');
+  await expect(r200Extension).toContainText('access=0');
+  await expect(r200Extension).toContainText('外部 teacher call（0）');
+  await expect(r200Extension.getByRole('link', { name: 'R200 公开分析 evidence →' })).toHaveAttribute('href', /bounded-beta-r200-analysis-20261001\.json/);
 });
 
 test('analysis follows a simple-to-complex metric ladder with definition result and analysis in every subsection', async ({ page }) => {
@@ -274,10 +285,12 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
   await expect(page.locator('#parameter-geometry')).toContainText('2.136');
   await expect(page.locator('#parameter-geometry')).toContainText('1.946');
   await expect(page.locator('#parameter-geometry')).toContainText('-0.287');
-  await expect(page.locator('#parameter-geometry')).toContainText('分数上升的时候');
-  await expect(page.locator('#parameter-geometry')).toContainText('R120–139 高点');
-  await expect(page.locator('#parameter-geometry')).toContainText('R140–159 回落期');
-  await expect(page.locator('#parameter-geometry')).toContainText('这个分析目前还没有完成');
+  await expect(page.locator('#parameter-geometry')).toContainText('20 轮窗口首尾 adapter 的净 State 位移');
+  await expect(page.locator('#parameter-geometry')).toContainText('R140–159');
+  await expect(page.locator('#parameter-geometry')).toContainText('净 State 位移');
+  await expect(page.locator('#parameter-geometry')).toContainText('0.182');
+  await expect(page.locator('#parameter-geometry')).toContainText('0.291');
+  await expect(page.locator('#parameter-geometry')).toContainText('0.758');
 
   await expect(page.locator('#length')).toContainText('216.8');
   await expect(page.locator('#length')).toContainText('229.1');
@@ -286,6 +299,9 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
   await expect(page.locator('#length')).toContainText('Task Score / 100');
   await expect(page.locator('#length')).toContainText('60.12');
   await expect(page.locator('#length')).toContainText('56.82');
+  await expect(page.locator('#length')).toContainText('26.46');
+  await expect(page.locator('#length')).toContainText('8.67');
+  await expect(page.locator('#length')).toContainText('8.64');
 
   await expect(page.locator('#entropy')).toContainText('0.5826');
   await expect(page.locator('#entropy')).toContainText('0.3705');
@@ -294,6 +310,9 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
   await expect(page.locator('#entropy')).toContainText('87.7%');
   await expect(page.locator('#entropy')).toContainText('90.0%');
   await expect(page.locator('#entropy')).toContainText('100%');
+  await expect(page.locator('#entropy')).toContainText('0.3535');
+  await expect(page.locator('#entropy')).toContainText('0.3637');
+  await expect(page.locator('#entropy')).toContainText('0.3653');
   await expect(page.locator('#analysis-boundary')).toContainText('把这些指标合起来后，我们能确定什么、还不能确定什么');
   await expect(page.locator('#analysis-boundary')).toContainText('还不能证明的');
 
@@ -302,7 +321,7 @@ test('analysis follows a simple-to-complex metric ladder with definition result 
   await expect(next).toContainText('第一优先：补普通 SFT、普通 OPSD 与 SEED 1.7B 参照');
   await expect(next).toContainText('第二优先：直接做 rank 8 / 16 / 32 / 64 / 128 容量消融');
   await expect(next).toContainText('第三优先：先做最简单的 β scaling baseline');
-  await expect(next).toContainText('160 轮不应该只由 training loss 决定');
+  await expect(next).toContainText('R200 回答了“160 后还有没有变化”，但还没有给出最佳停止轮');
   await expect(next).toContainText('动态 α + 动态 β 仍然保留，但不是当前第一优先');
 });
 

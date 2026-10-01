@@ -115,8 +115,8 @@ export const CAPABILITY_READER_ROUTES = [
     "owner": "OpenEvoEffectiveStateGdrLoraStudy",
     "label": { "zh": "三个已完成 1.7B OpenEVO 实验 + 一个未做空位", "en": "Three completed 1.7B OpenEVO experiments + one unrun slot" },
     "purpose": {
-      "zh": "Qwen3-1.7B 的三组已完成 OpenEVO 实验都跑到 160 轮，最终模型使用同一份冻结 128 题；后两组同设置正式对照是 Bounded 与 β-gating（α 固定为 1），动态 α + 动态 β 尚未运行。页面先说明做了哪些实验，再按 Task Score 完整曲线 → 每 20 轮平均 → 后 20 轮与同题终评 → 同设置对照成功率建立结果事实，随后才按 loss → 范数 → Task Vector → 谱与方向 → 输出长度与步数 → 行为 entropy 解释训练变化。",
-      "en": "Three completed Qwen3-1.7B OpenEVO experiments run for 160 rounds and use the same frozen 128-task final panel; the latter two matched runs are Bounded and β-gating (α fixed at 1), while dynamic α + dynamic β has not been run. The page first establishes what was run, then the results in the order full Task Score trajectory → 20-round means → last-20 and same-panel final → matched success statistics, before moving through loss → norms → Task Vector → spectrum and direction → output length and steps → behavioral entropy."
+      "zh": "三组原始 Qwen3-1.7B OpenEVO 实验都完成 160 轮并使用同一冻结 128 题；后两组正式匹配对照是 Bounded 与 β-gating（α 固定为 1）。β 组随后从封存 R159 继续 R160–R199，只扩展训练轨迹、不重新访问 final panel。页面先建立 160 轮 formal/final 边界，再回答“继续到 200 轮发生什么”，随后按 loss → 范数 → Task Vector → 谱与阶段方向 → 输出长度与步数 → 行为 entropy 解释训练变化；动态 α + 动态 β 尚未运行。",
+      "en": "The three original Qwen3-1.7B OpenEVO runs complete 160 rounds and use the same frozen 128-task final panel; the latter two matched runs are Bounded and β-gating (α fixed at 1). The β run then continues from sealed R159 through R160–R199, extending only the training trajectory without reopening the final panel. The page first establishes the 160-round formal/final boundary, then answers what changes through R200, before moving through loss → norms → Task Vector → spectrum and phase direction → output length and steps → behavioral entropy. dynamic α + dynamic β has not been run."
     }
   },
   {
