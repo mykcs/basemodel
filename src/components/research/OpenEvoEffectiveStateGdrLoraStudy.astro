@@ -85,6 +85,33 @@ const lossEvidence = JSON.parse(
 const lossFirst = lossEvidence.rows[0]!;
 const lossLast = lossEvidence.rows.at(-1)!;
 
+type R200Phase = {
+  mean_score: number;
+  score_slope_per_round: number;
+  mean_loss: number;
+  loss_slope_per_round: number;
+  median_beta_step_max: number;
+  mean_step_tokens: number;
+  mean_episode_tokens: number;
+  mean_steps: number;
+  mean_round_action_family_entropy: number;
+  exact_total: number;
+};
+type R200StateEndpoint = { frobenius: number; max_spectral: number; rank95_median: number };
+const r200 = JSON.parse(
+  readFileSync(new URL('../../../public/research/seed-openevo/evidence/bounded-beta-r200-analysis-20261001.json', import.meta.url), 'utf8'),
+) as {
+  identity: { added_rounds: number; added_rollouts: number; historical_parent_rerun: boolean; final_panel_access_count: number; external_teacher_calls: number };
+  seal: { status: string; next_round: number; rollouts_consumed: number; r199_status: string; r199_rollouts: number; r199_engineering_invalid_count: number };
+  phases: Record<string, R200Phase>;
+  state_endpoints: Record<string, R200StateEndpoint>;
+  phase_net_update: Record<string, { frobenius: number }>;
+  consecutive_phase_update_cosine: Record<string, number>;
+  extension: { mean_score_R160_R199: number; mean_loss_R160_R199: number; net_update_frobenius_R160_R199: number; net_update_cosine_R140_R159_vs_R160_R199: number };
+};
+const r200EvidenceHref = '/research/seed-openevo/evidence/bounded-beta-r200-analysis-20261001.json';
+const r200SourceCommitHref = 'https://github.com/mykcs/openevo-experiment/commit/dc5bf3b8a708bf13784e2dd1711b9a8c25356875';
+
 const math = {
   history: String.raw`W_t = W_0 + \sum_{i=1}^{t} \Delta W_i`,
   bounded: String.raw`S_t = \operatorname{Compress}_{128}\!\left(S_{t-1}+\Delta_t\right)`,
@@ -144,6 +171,7 @@ const twentyRoundScoreWindows = finalResult
 <article class="paper" data-effective-state-gdr-page data-copy-review data-reader-page="research-explainer" data-experiment-id={experiment.id}>
   <header class="paper__hero esg__hero" data-reader-context id="top">
     <h1>{t('OpenEVO 参数演变：Bounded State 与 β 组件', 'OpenEVO parameter evolution: Bounded State and the β component')}</h1>
+
 
     <figure class="paper-table-figure paper-table-figure--hero" data-result-stage="direct-result">
       <div class="paper-table-wrap paper-table-wrap--hero" aria-label={t('三组已完成实验、一个未做实验位置，以及 SEED 论文参考', 'Three completed experiments, one unrun slot, and a SEED paper reference')}>
@@ -788,14 +816,53 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     </div>
     <p class="paper__boundary">{t('参数更新阶段的十几倍加速不能直接写成整个 Stage 2 的十几倍加速；rollout 等其他阶段仍然占据大部分总时间。', 'The order-of-magnitude parameter-update speedup must not be reported as an order-of-magnitude full Stage-2 speedup; rollouts and other phases still dominate much of the total time.')}</p>
   </div>
+
+  <div id="r200-extension" data-r200-extension-result>
+    <h3>4.6 {t('继续到 200 轮以后发生了什么？', 'What happened when training continued to 200 rounds?')}</h3>
+    <p class="paper__lede">{t(
+      `R160–R199 是从封存 R159 之后继续的同一 β-gating（α 固定为 1）训练轨迹：新增 ${r200.identity.added_rounds} 轮、${r200.identity.added_rollouts.toLocaleString()} 次正式 rollout，没有重跑 R0–R159。最终 next_round=${r200.seal.next_round}、累计 ${r200.seal.rollouts_consumed.toLocaleString()} rollouts，R199 封存 PASS。`,
+      `R160–R199 continues the same β-gating treatment with α fixed at 1 from the sealed R159 boundary: ${r200.identity.added_rounds} new rounds and ${r200.identity.added_rollouts.toLocaleString()} formal rollouts, with no rerun of R0–R159. The extension seals at next_round=${r200.seal.next_round}, ${r200.seal.rollouts_consumed.toLocaleString()} cumulative rollouts, and R199 PASS.`,
+    )}</p>
+    <div class="paper-table-wrap">
+      <table class="paper-table paper-table--dense-results">
+        <thead><tr><th>{t('训练窗口', 'Training window')}</th><th>Task Score / 100</th><th>training loss</th><th>{t('β · step-max 中位数', 'β · median step-max')}</th><th>{t('每步 tokens', 'tokens / step')}</th><th>{t('平均步骤', 'steps')}</th><th>action H</th></tr></thead>
+        <tbody>
+          {['R120-139', 'R140-159', 'R160-179', 'R180-199'].map((label) => {
+            const phase = r200.phases[label]!;
+            return <tr>
+              <td><strong>{label.replace('-', '–')}</strong></td>
+              <td>{(phase.mean_score * 100).toFixed(2)}</td>
+              <td>{phase.mean_loss.toFixed(4)}</td>
+              <td>{phase.median_beta_step_max.toExponential(2)}</td>
+              <td>{phase.mean_step_tokens.toFixed(2)}</td>
+              <td>{phase.mean_steps.toFixed(2)}</td>
+              <td>{phase.mean_round_action_family_entropy.toFixed(4)}</td>
+            </tr>;
+          })}
+        </tbody>
+      </table>
+    </div>
+    <p>{t(
+      `最关键的新事实不是“R200 更高”，而是 R140–159 的低谷没有继续单调恶化：20 轮平均 Task Score 从 ${(r200.phases['R140-159']!.mean_score * 100).toFixed(2)} 回到 R160–179 的 ${(r200.phases['R160-179']!.mean_score * 100).toFixed(2)}，R180–199 为 ${(r200.phases['R180-199']!.mean_score * 100).toFixed(2)}。因此，“160 轮之后已经单调饱和、继续训练只会更差”这个简单故事不成立。`,
+      `The key new fact is not that “R200 is better,” but that the R140–R159 trough does not continue as a monotonic decline. The 20-round mean Task Score moves from ${(r200.phases['R140-159']!.mean_score * 100).toFixed(2)} to ${(r200.phases['R160-179']!.mean_score * 100).toFixed(2)} in R160–R179 and ${(r200.phases['R180-199']!.mean_score * 100).toFixed(2)} in R180–R199. The simple story that training had monotonically saturated by R160 and could only get worse is therefore not supported.`,
+    )}</p>
+    <p class="paper__boundary">{t(
+      `但这里仍然只是每轮任务会变化的训练轨迹，不是新的 frozen-final。延长实验从未打开 final panel（access=${r200.identity.final_panel_access_count}），也没有外部 teacher call（${r200.identity.external_teacher_calls}）。所以它不能证明 R120、R160 或 R200 哪个是最优 stopping point；要回答停止轮数，仍然需要事先冻结 validation 指标和 stopping rule。`,
+      `These are still training-round trajectories with changing tasks, not a new frozen final. The extension never opens the final panel (access=${r200.identity.final_panel_access_count}) and makes ${r200.identity.external_teacher_calls} external-teacher calls. It therefore does not establish R120, R160, or R200 as the optimal stopping point; that requires a prospectively frozen validation metric and stopping rule.`,
+    )}</p>
+    <p class="paper__links">
+      <a href={r200EvidenceHref}>{t('R200 公开分析 evidence →', 'R200 public analysis evidence →')}</a>
+      <a href={r200SourceCommitHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={r200SourceCommitHref} />{t('R200 封存代码身份', 'R200 seal code identity')}</a>
+    </p>
+  </div>
 </section>
 
 <section class="paper__section" id="analysis" data-result-stage="diagnostics" aria-labelledby="analysis-title">
   <p class="paper__section-number">5</p>
   <h2 id="analysis-title">{t('训练过程中发生了什么？从 loss 到行为变化', 'What changed during training? From loss to behavior')}</h2>
   <p class="paper__lede">{t(
-    '分数现象已经在上一节先摆出来。这里再按“优化 → 参数大小 → Task Vector → 谱与方向 → 输出路径 → 行为分布”逐层往里看。每个指标都先解释它是什么，再放证据，最后才说它能解释到哪里。',
-    'The score pattern is established first in the previous section. We now move inward in a fixed order: optimization → parameter magnitude → Task Vector → spectrum and direction → output path → behavior distribution. Each metric is defined before its evidence and interpretation.',
+    '分数现象已经在上一节先摆出来，包括 R160–R199 的延长轨迹。这里再按“优化 → 参数大小 → Task Vector → 谱与方向 → 输出路径 → 行为分布”逐层往里看，并把原来只到 R159 的问题重新检查到 R199。每个指标都先解释它是什么，再放证据，最后才说它能解释到哪里。',
+    'The previous section establishes the score pattern, including the R160–R199 continuation. We now move inward in a fixed order—optimization → parameter magnitude → Task Vector → spectrum and direction → output path → behavior distribution—and revisit the questions that previously stopped at R159 through R199. Each metric is defined before its evidence and interpretation.',
   )}</p>
   <p class="paper__links">
     <a href={wandbReportUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={wandbReportUrl} />{t('W&B Report（需要权限）', 'W&B Report (access required)')}</a>
@@ -826,6 +893,10 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
       '三条线的 loss 都从大约 1.05 降到 0.05–0.10 量级，说明训练过程本身没有“完全没学进去”。Bounded / β-gating 的末轮 loss 还低于普通 OpenEVO，但固定 128 题终评并没有因此更高。所以 loss 能排除明显的优化失败，却不能解释最终能力差异。',
       'All three losses fall from about 1.05 to the 0.05–0.10 range, so the runs did not simply fail to optimize. Bounded and β-gating even finish with lower loss than ordinary OpenEVO, yet their fixed-panel finals are not higher. Loss rules out an obvious optimization failure but does not explain the capability gap.',
     )}</p>
+    <p>{t(
+      `R200 延长把这个结论变得更清楚：β 组窗口 mean loss 从 R120–139 的 ${r200.phases['R120-139']!.mean_loss.toFixed(4)} → R140–159 的 ${r200.phases['R140-159']!.mean_loss.toFixed(4)} → R160–179 的 ${r200.phases['R160-179']!.mean_loss.toFixed(4)} → R180–199 的 ${r200.phases['R180-199']!.mean_loss.toFixed(4)} 持续下降；Task Score 却是 ${(r200.phases['R120-139']!.mean_score * 100).toFixed(2)} → ${(r200.phases['R140-159']!.mean_score * 100).toFixed(2)} → ${(r200.phases['R160-179']!.mean_score * 100).toFixed(2)} → ${(r200.phases['R180-199']!.mean_score * 100).toFixed(2)}。所以 training loss 既解释不了 R140–159 的掉分，也解释不了后面的恢复。`,
+      `The R200 continuation makes this clearer. Mean loss in the β run keeps falling across R120–139 (${r200.phases['R120-139']!.mean_loss.toFixed(4)}), R140–159 (${r200.phases['R140-159']!.mean_loss.toFixed(4)}), R160–179 (${r200.phases['R160-179']!.mean_loss.toFixed(4)}), and R180–199 (${r200.phases['R180-199']!.mean_loss.toFixed(4)}), while Task Score moves ${(r200.phases['R120-139']!.mean_score * 100).toFixed(2)} → ${(r200.phases['R140-159']!.mean_score * 100).toFixed(2)} → ${(r200.phases['R160-179']!.mean_score * 100).toFixed(2)} → ${(r200.phases['R180-199']!.mean_score * 100).toFixed(2)}. Training loss therefore explains neither the R140–R159 decline nor the later recovery.`,
+    )}</p>
   </div>
 
   <div class="paper__metric-step" id="norms">
@@ -854,6 +925,14 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     <p class="paper__boundary">{t(
       'β-gating 得到更小的长期 State，R159 的本轮更新大小也只有 Bounded 的约 88.9%。但“更小”没有自动换来更高分，所以仅靠 norm 不能解释最后的 Task Score。',
       'β-gating produces a smaller long-term State, and its R159 update is about 88.9% the size of Bounded. But smaller does not automatically produce a higher score, so norm alone does not explain the final Task Score.',
+    )}</p>
+    <p>{t(
+      `延长以后，β 组 State 并没有停在 R159：Frobenius ${r200.state_endpoints.R159!.frobenius.toFixed(3)} → R179 ${r200.state_endpoints.R179!.frobenius.toFixed(3)} → R199 ${r200.state_endpoints.R199!.frobenius.toFixed(3)}；max spectral ${r200.state_endpoints.R159!.max_spectral.toFixed(3)} → ${r200.state_endpoints.R199!.max_spectral.toFixed(3)}。与此同时 rank95 中位数一直是 ${r200.state_endpoints.R199!.rank95_median.toFixed(0)}。也就是说，“State 在 R160 已经不再变化”不成立，但活跃变化仍然高度低维。`,
+      `After the extension, the β State does not stop at R159: Frobenius grows from ${r200.state_endpoints.R159!.frobenius.toFixed(3)} to ${r200.state_endpoints.R179!.frobenius.toFixed(3)} at R179 and ${r200.state_endpoints.R199!.frobenius.toFixed(3)} at R199; max spectral grows from ${r200.state_endpoints.R159!.max_spectral.toFixed(3)} to ${r200.state_endpoints.R199!.max_spectral.toFixed(3)}. Median rank95 remains ${r200.state_endpoints.R199!.rank95_median.toFixed(0)}. The State therefore did not stop moving at R160, although its active change remains highly low-dimensional.`,
+    )}</p>
+    <p class="paper__boundary">{t(
+      'rank95≈7 仍然只是后验几何描述，不能反推“rank8 长期 State 一定够用”。容量是否够，必须用 matched capacity experiment 直接测任务性能。',
+      'rank95≈7 remains a posterior geometric description; it cannot be inverted into the claim that a rank8 persistent State must be sufficient. Capacity must be tested directly with a matched capacity experiment.',
     )}</p>
   </div>
 
@@ -912,12 +991,24 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     )}</p>
     <p>{t('R159 更新方向 cosine（β-gating vs Bounded）', 'R159 update-direction cosine (β-gating vs Bounded)')}: <strong>{study.posthocAnalysis.directionMagnitudeR159.updateCosineOnOff.toFixed(3)}</strong> · {t('第 19–27 层平均 cosine', 'mean cosine over layers 19–27')}: <strong>{study.posthocAnalysis.directionMagnitudeR159.lateLayerUpdateCosineMean.toFixed(3)}</strong></p>
     <p>{t(
-      '但这还没有回答另一个更关键的问题：β 组“分数上升的时候”和“后期掉分的时候”，它自己的 LoRA / Task Vector 到底有什么差别？R159 的 cross-arm cosine 只告诉我们最后一轮 β 与 Bounded 已经走向不同方向，并不能说明 β 组内部从上升 → 平台 → 掉分发生了什么变化。',
-      'This still does not answer a more important within-run question: how do LoRA / Task Vectors differ between periods when the β run is improving and periods when its score declines? The R159 cross-arm cosine only shows that β and Bounded end up moving in different directions; it does not explain the β run’s own transition from rise to plateau to late decline.',
+      'R200 之后可以补上之前缺失的“同一 β 组内部、按阶段比较”这一层：下面比较的是 20 轮窗口首尾 adapter 的净 State 位移，不是 cross-arm final cosine，也不是单轮 Task Vector。',
+      'R200 adds the previously missing within-run phase comparison for the β treatment. The table below compares net State displacement between the start and end adapters of each window; it is neither a cross-arm final cosine nor a per-round Task Vector.',
     )}</p>
+    <div class="paper-table-wrap">
+      <table class="paper-table paper-table--dense-results">
+        <thead><tr><th>{t('阶段', 'Phase')}</th><th>{t('净 State 位移 · Frobenius', 'net State displacement · Frobenius')}</th><th>{t('与前一阶段方向 cosine', 'cosine vs previous phase')}</th></tr></thead>
+        <tbody>
+          <tr><td>R96–119</td><td>{r200.phase_net_update['R96-119']!.frobenius.toFixed(3)}</td><td>—</td></tr>
+          <tr><td>R120–139</td><td>{r200.phase_net_update['R120-139']!.frobenius.toFixed(3)}</td><td>{r200.consecutive_phase_update_cosine['R96-119_vs_R120-139']!.toFixed(3)}</td></tr>
+          <tr><td>R140–159</td><td><strong>{r200.phase_net_update['R140-159']!.frobenius.toFixed(3)}</strong></td><td><strong>{r200.consecutive_phase_update_cosine['R120-139_vs_R140-159']!.toFixed(3)}</strong></td></tr>
+          <tr><td>R160–179</td><td>{r200.phase_net_update['R160-179']!.frobenius.toFixed(3)}</td><td>{r200.consecutive_phase_update_cosine['R140-159_vs_R160-179']!.toFixed(3)}</td></tr>
+          <tr><td>R180–199</td><td>{r200.phase_net_update['R180-199']!.frobenius.toFixed(3)}</td><td>{r200.consecutive_phase_update_cosine['R160-179_vs_R180-199']!.toFixed(3)}</td></tr>
+        </tbody>
+      </table>
+    </div>
     <p class="paper__boundary">{t(
-      '要回答这个问题，下一轮只读分析应该按训练阶段切开，例如上升期、R120–139 高点、R140–159 回落期，联合比较 β 分布、gradient / Adam moment、update cosine / norm，以及 click/search 的具体参数与任务路径。这个分析目前还没有完成，因此网页不把 R159 的方向差当成“掉分机制”。',
-      'To answer it, a follow-up read-only analysis should segment the trajectory into phases—for example the rising phase, the R120–139 high window, and the R140–159 decline—and jointly compare β distributions, gradients / Adam moments, update cosine / norm, click/search arguments, and task paths. That analysis has not yet been completed, so this page does not treat the R159 direction gap as the mechanism of the score decline.',
+      `R140–159 同时出现最小的 20 轮净位移（${r200.phase_net_update['R140-159']!.frobenius.toFixed(3)}）和明显的方向重定向（相对 R120–139 cosine=${r200.consecutive_phase_update_cosine['R120-139_vs_R140-159']!.toFixed(3)}）；进入 R160–179 后又再次换向（cosine=${r200.consecutive_phase_update_cosine['R140-159_vs_R160-179']!.toFixed(3)}），而 R160–179 与 R180–199 更一致（${r200.consecutive_phase_update_cosine['R160-179_vs_R180-199']!.toFixed(3)}）。这说明“掉分期只是在同一方向把更新缩小一点”过于简单，但仍不能把方向变化写成因果机制；gradient / Adam moment 的逐阶段因果诊断也没有在这次只读分析里补齐。`,
+      `R140–R159 combines the smallest 20-round net displacement (${r200.phase_net_update['R140-159']!.frobenius.toFixed(3)}) with a strong reorientation relative to R120–R139 (cosine=${r200.consecutive_phase_update_cosine['R120-139_vs_R140-159']!.toFixed(3)}). The run reorients again entering R160–R179 (cosine=${r200.consecutive_phase_update_cosine['R140-159_vs_R160-179']!.toFixed(3)}), while the two post-R160 halves are more aligned (${r200.consecutive_phase_update_cosine['R160-179_vs_R180-199']!.toFixed(3)}). This rules out the simple story that the decline is merely a smaller update in the same direction, but it does not establish direction change as causal; phase-wise gradient / Adam-moment causal diagnostics are still absent from this read-only analysis.`,
     )}</p>
     <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
     <p class="paper__boundary">{t(
@@ -955,6 +1046,10 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
       '所以后期掉分不是“每一步突然更啰嗦”。更直接的行为变化是：每一步长度差不多，但需要走更多步，整条 episode 输出又变长。也就是说，变化更像任务路径重新变长，而不是单步回答膨胀。',
       'The late drop is therefore not “each step suddenly becomes more verbose.” The clearer behavioral change is that individual steps stay similar in length while more steps are needed and total episode output grows again. The task path lengthens rather than individual responses simply inflating.',
     )}</p>
+    <p>{t(
+      `R200 延长进一步支持“不是单步输出变长”这个判断：R140–159 / R160–179 / R180–199 的每步 tokens 是 ${r200.phases['R140-159']!.mean_step_tokens.toFixed(2)} / ${r200.phases['R160-179']!.mean_step_tokens.toFixed(2)} / ${r200.phases['R180-199']!.mean_step_tokens.toFixed(2)}，几乎不动；平均 episode 步数却从 ${r200.phases['R140-159']!.mean_steps.toFixed(2)} 回落到 ${r200.phases['R160-179']!.mean_steps.toFixed(2)} / ${r200.phases['R180-199']!.mean_steps.toFixed(2)}。分数恢复与路径缩短同时出现，但仍然只是关联。`,
+      `R200 further supports the conclusion that the change is not per-step verbosity. Mean tokens per step are ${r200.phases['R140-159']!.mean_step_tokens.toFixed(2)}, ${r200.phases['R160-179']!.mean_step_tokens.toFixed(2)}, and ${r200.phases['R180-199']!.mean_step_tokens.toFixed(2)} across R140–159 / R160–179 / R180–199—essentially flat—while mean episode steps fall from ${r200.phases['R140-159']!.mean_steps.toFixed(2)} to ${r200.phases['R160-179']!.mean_steps.toFixed(2)} / ${r200.phases['R180-199']!.mean_steps.toFixed(2)}. Score recovery co-occurs with shorter paths, but remains an association rather than a causal result.`,
+    )}</p>
     <p class="paper__links"><a href="/research/seed-openevo/evidence/wandb-threeway/output-length-analysis.json">{t('160 轮完整长度 / 步数 JSON →', 'Full 160-round length / step JSON →')}</a></p>
   </div>
 
@@ -987,6 +1082,10 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
       'For β-gating (α fixed at 1), action entropy falls substantially and R159 valid actions are more concentrated on click; valid-action rate is 100% for all three methods. The policy itself is becoming more concentrated rather than failing parsing, but this remains co-occurrence rather than evidence that low entropy causes the score drop.',
     )}</p>
     <p>{t(
+      `继续到 R200 后，action-family entropy 没有继续单调降低：窗口均值从 R140–159 的 ${r200.phases['R140-159']!.mean_round_action_family_entropy.toFixed(4)} 回到 R160–179 的 ${r200.phases['R160-179']!.mean_round_action_family_entropy.toFixed(4)}、R180–199 的 ${r200.phases['R180-199']!.mean_round_action_family_entropy.toFixed(4)}。因此“策略越来越集中 → 分数一直下降”也不是完整解释；恢复期反而伴随轻微的 entropy 回升。`,
+      `After continuing to R200, action-family entropy does not keep falling monotonically. The window mean rises from ${r200.phases['R140-159']!.mean_round_action_family_entropy.toFixed(4)} in R140–R159 to ${r200.phases['R160-179']!.mean_round_action_family_entropy.toFixed(4)} in R160–R179 and ${r200.phases['R180-199']!.mean_round_action_family_entropy.toFixed(4)} in R180–R199. The story “policy concentration keeps increasing, therefore score keeps falling” is incomplete; the recovery period instead co-occurs with a modest entropy rebound.`,
+    )}</p>
+    <p>{t(
       '这个指标本身也有明显上限：WebShop 的动作大类本来就很少，主要是 search / click，所以 action-family entropy 只能告诉我们“动作大类是否更集中”，很难回答“到底点了哪个候选、搜索了什么词、正确候选和其他候选差多少”。正式 rollout 又没有保存逐 token logits / logprobs，因此下一轮如果继续研究行为不确定性，应该把 click/search 参数、候选概率和 token-level entropy 一起纳入，而不是继续只压榨这个粗粒度指标。',
       'The metric also has a clear ceiling: WebShop has only a few action families, dominated by search and click, so action-family entropy only tells us whether broad action types are becoming more concentrated. It cannot answer which candidate was clicked, what query was issued, or how far the correct candidate is from alternatives. The formal rollouts did not preserve per-token logits/logprobs, so a future behavioral-uncertainty study should capture click/search arguments, candidate probabilities, and token-level entropy instead of over-interpreting this coarse metric.',
     )}</p>
@@ -996,12 +1095,12 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   <div class="paper__analysis-summary" id="analysis-boundary" data-result-stage="synthesis">
     <h3>5.7 {t('把这些指标合起来后，我们能确定什么、还不能确定什么', 'After combining these metrics, what is established and what remains uncertain?')}</h3>
     <p><strong>{t('确定看到的：', 'Observed: ')}</strong>{t(
-      'β-gating 后期 Task Score 回落、任务路径重新变长、更新方向与 Bounded 明显分开，同时 action-family entropy 更集中。',
-      'late β-gating Task Score declines, task paths lengthen again, update direction separates from Bounded, and action-family entropy becomes more concentrated.',
+      'β-gating 在 R140–159 出现 Task Score 低谷，但 R160–199 又恢复到约 0.60 的训练期均值；loss 继续下降，State 继续变大，rank95 仍约 7；掉分窗口伴随更长任务路径和方向重定向，恢复期路径缩短、entropy 略回升。',
+      'β-gating reaches a Task Score trough in R140–R159 but recovers to roughly a 0.60 training-window mean over R160–R199; loss keeps falling, the State keeps growing, and rank95 stays near 7. The decline window co-occurs with longer task paths and update reorientation, while recovery co-occurs with shorter paths and a modest entropy rebound.',
     )}</p>
     <p><strong>{t('已经排除的简单解释：', 'Simple explanations ruled out: ')}</strong>{t(
-      '不是 trainer 完全没优化进去，不是单纯把同一方向更新缩小一点，也不是每一步输出突然变得更长，更不是非法动作增加。',
-      'the trainer did not simply fail to optimize; the change is not just a slightly smaller update in the same direction; individual steps do not suddenly become longer; and invalid actions do not increase.',
+      '不是 trainer 完全没优化进去，不是 β 写入强度塌成 0，不是单纯把同一方向更新缩小一点，也不是每一步输出突然变长，更不是“到 R160 后只会继续变差”的单调饱和。',
+      'the trainer did not simply fail to optimize; β write strength did not collapse to zero; the change is not just a smaller update in the same direction; per-step output does not suddenly inflate; and the trajectory does not simply keep worsening after R160.',
     )}</p>
     <p class="paper__boundary"><strong>{t('还不能证明的：', 'Not demonstrated: ')}</strong>{t(
       '目前没有证据把 Task Vector、norm、cosine、谱或 entropy 中任何一个单独指标认定为掉分的直接原因。它们现在是解释候选和后续实验线索，不是因果结论。',
@@ -1040,10 +1139,10 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
       'The current β controller predicts different write strengths from 22 local features across steps, modules, and ranks. A cleaner next control is to normalize the current update and multiply it by one fixed scalar β. That separates whether write-magnitude control itself is useful from whether the 22-feature MLP controller is well designed.',
     )}</p>
 
-    <h3>6.4 {t('训练轮数也要重新验证：160 轮不应该只由 training loss 决定', 'The training horizon must also be revalidated: training loss alone should not justify 160 rounds')}</h3>
+    <h3>6.4 {t('R200 回答了“160 后还有没有变化”，但还没有给出最佳停止轮', 'R200 answers whether anything changes after 160, but not the optimal stopping round')}</h3>
     <p>{t(
-      'training loss 继续下降只说明训练目标还能被进一步拟合，不能证明 WebShop validation 还在继续变好。后续实验应该预先冻结 validation 指标和 stopping rule，再判断 120 轮甚至更早是否已经足够。',
-      'Continued training-loss reduction only shows that the training objective can still be fit; it does not prove that WebShop validation keeps improving. Future studies should freeze a validation metric and stopping rule prospectively, then test whether 120 rounds or an earlier point is already sufficient.',
+      `现在已经不需要猜“160 后是不是只会继续变差”：R160–179 与 R180–199 的训练期 Task Score 均值分别回到 ${(r200.phases['R160-179']!.mean_score * 100).toFixed(2)} / ${(r200.phases['R180-199']!.mean_score * 100).toFixed(2)}，同时 loss 继续下降、State 继续变化。这说明 R160 不是一个由训练动力学自动给出的单调饱和点。但 extension 没有访问 frozen final，所以也不能反过来宣布“200 更好”。下一次要比较 120 / 160 / 200，应当在开跑前冻结 validation panel、统计量和 stopping rule。`,
+      `We no longer need to guess whether performance only worsens after R160: mean training Task Score returns to ${(r200.phases['R160-179']!.mean_score * 100).toFixed(2)} / ${(r200.phases['R180-199']!.mean_score * 100).toFixed(2)} in R160–R179 and R180–R199 while loss keeps falling and the State keeps changing. R160 is therefore not an automatic monotonic saturation point in the training dynamics. But the extension never accessed the frozen final, so it also cannot establish that 200 is better. A future 120 / 160 / 200 comparison should freeze the validation panel, statistic, and stopping rule before training starts.`,
     )}</p>
 
     <h3>6.5 {t('动态 α + 动态 β 仍然保留，但不是当前第一优先', 'Dynamic α + dynamic β remains in the method space, but is not the current first priority')}</h3>
@@ -1093,6 +1192,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
         <li><a href={study.evidence.longHorizon}><ExternalBrandMark href={study.evidence.longHorizon} />{t('长期统计与 bootstrap', 'long-horizon statistics and bootstrap')}</a></li>
         <li><a href={study.evidence.publicSnapshot}>{t('公开机器可读结果快照', 'public machine-readable snapshot')}</a></li>
         <li><a href={study.posthocAnalysis.snapshot}>{t('只读后分析快照', 'read-only post-hoc snapshot')}</a></li>
+        <li><a href={r200EvidenceHref}>{t('R160–R199 延长实验公开分析 evidence', 'public R160–R199 extension analysis evidence')}</a></li>
       </ul>
     </details>
     <details class="paper__details">
