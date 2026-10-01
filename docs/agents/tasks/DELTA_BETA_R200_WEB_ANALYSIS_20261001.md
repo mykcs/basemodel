@@ -1,6 +1,6 @@
 # Delta/β R200 webpage analysis
 
-Status: **ACTIVE · stacked on BaseModel Design System PR #806**
+Status: **IMPLEMENTED · rebased onto main · hosted acceptance lives on PR #810**
 Date: **2026-10-01**
 Target route owner: `src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro`
 
@@ -85,37 +85,39 @@ Follow the existing research-result reading contract:
 
 Before public copy:
 
-- [ ] mirror the sealed R200 extension summary into a public BaseModel evidence artifact without server-local paths or secrets;
-- [ ] compute the R120/R160/R200 trajectory windows from immutable round receipts;
-- [ ] reuse existing 160-round diagnostics where identities match;
-- [ ] add new R160–R199 diagnostics from sealed evidence;
-- [ ] keep final-panel and external-teacher counts explicit;
-- [ ] pin upstream Git evidence used by the page.
+- [x] mirror the sealed R200 extension summary into a public BaseModel evidence artifact without server-local paths or secrets;
+- [x] compute the R120/R160/R200 trajectory windows from immutable round receipts;
+- [x] reuse existing 160-round diagnostics where identities match;
+- [x] add new R160–R199 diagnostics from sealed evidence;
+- [x] keep final-panel and external-teacher counts explicit;
+- [x] pin upstream Git evidence used by the page.
 
 ## Website changes
 
-- [ ] update `OpenEvoEffectiveStateGdrLoraStudy.astro`;
-- [ ] extend its route-specific Reader Contract only where the R200 result changes the first-screen promise / next question;
-- [ ] update the experiment navigation summary if its current boundary still stops at R160;
-- [ ] keep figures beside the metric they explain;
-- [ ] add regression coverage for the R200 endpoint and claim boundaries;
-- [ ] preserve the existing mathematical explanation and 160-round sealed result instead of rewriting history.
+- [x] update `OpenEvoEffectiveStateGdrLoraStudy.astro`;
+- [x] extend its route-specific Reader Contract only where the R200 result changes the first-screen promise / next question;
+- [x] update the experiment navigation summary if its current boundary still stops at R160;
+- [x] keep figures beside the metric they explain;
+- [x] add regression coverage for the R200 endpoint and claim boundaries;
+- [x] preserve the existing mathematical explanation and 160-round sealed result instead of rewriting history.
 
 ## Acceptance
 
-- [ ] zero-context reader sees why R200 exists before deep diagnostics;
-- [ ] `next_round=200` and `25,600` total rollouts are represented correctly;
-- [ ] R199 PASS is represented correctly;
-- [ ] final-panel access = 0 and external-teacher calls = 0;
-- [ ] no claim that dynamic α+β was run;
-- [ ] no claim that R120/R160/R200 is the optimal stopping point without validation evidence;
-- [ ] no causal claim from β, Task Vector, norm/spectrum, path length, or entropy alone;
-- [ ] no server-private path or credential leaks;
-- [ ] focused deterministic tests pass;
-- [ ] 390 / 768 / 1440, light/dark browser acceptance passes for the target route;
-- [ ] exact-head Public PR CI passes;
-- [ ] final exact-head Vercel gate is requested only after the candidate is ready.
+- [x] zero-context reader sees why R200 exists before deep diagnostics;
+- [x] `next_round=200` and `25,600` total rollouts are represented correctly;
+- [x] R199 PASS is represented correctly;
+- [x] final-panel access = 0 and external-teacher calls = 0;
+- [x] no claim that dynamic α+β was run;
+- [x] no claim that R120/R160/R200 is the optimal stopping point without validation evidence;
+- [x] no causal claim from β, Task Vector, norm/spectrum, path length, or entropy alone;
+- [x] no server-private path or credential leaks;
+- [x] focused deterministic tests pass;
+- [x] 390 / 768 / 1440, light/dark browser acceptance passes for the target route;
+- Provider acceptance: exact-head Public PR CI is live state owned by PR #810, not duplicated as a permanent checkbox here;
+- Provider acceptance: the final exact-head Vercel gate and merge/Production verification are live release state owned by PR #810.
 
-## Stacking boundary
+## Integration boundary
 
-This PR is based on the open Design System PR #806 because #806 currently changes the same canonical component and tests. Until #806 merges, keep this PR stacked on `design/basemodel-design-system-v1-20260928` so the R200 diff stays isolated. After #806 lands, retarget/rebase this PR to `main` and re-run acceptance.
+The work was initially stacked on Design System PR #806 because both lines touched the canonical component. Before release, the four R200 commits were independently rebased onto current `main`, and the only real conflicts were resolved in the canonical page, experiment navigation, and Reader Contract. No #806-only Design System files are part of this PR.
+
+Local acceptance after the main rebase: focused Vitest **43 / 43 PASS**; Astro **0 errors / 0 warnings** with two pre-existing deprecation hints; Reader Contract audit **68 / 68**; target-route Chromium **22 / 22 PASS**; full `verify:deploy` PASS with structural **806 / 806** and behavior **37 / 37** tests.
