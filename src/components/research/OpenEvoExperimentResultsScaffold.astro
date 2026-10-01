@@ -20,7 +20,7 @@ const armMeta = {
     title:t('3B · 无外部教师（self）', '3B · self only'),
     eyebrow:t('历史单实验 · 旧 Stage 2 方法控制', 'HISTORICAL ARM · OLD STAGE-2 METHOD CONTROL'),
     status:t('旧方法控制已完成；Stage 2 = 0 次更新', 'Old method-control complete; Stage 2 = 0 updates'),
-    question:t('3B 只靠自己产生经验时，能不能跨过“先产生足够好经验，才能继续学”的门槛？', 'Can 3B, using only its own experience, cross the threshold required to keep learning?'),
+    question:t('结论先看：Stage 1 和旧 Stage 2 都没有改动 3B 参数；封存终评得分 1.71、完整成功 1/128、技术有效轨迹 121/128，与 3B base 逐项一致。', 'Result first: neither Stage 1 nor the old Stage 2 changed 3B parameters. Its sealed final score was 1.71, exact success was 1/128, and valid episodes were 121/128—all matching 3B base.'),
     known:[
       t('Stage 1 共找到 4 条可用于训练的完整成功轨迹，但它们只来自 1 个能够重复成功的任务；启动训练要求至少 8 个这样的不同任务。因此 3B/self 没达到启动门槛，没有创建新的学习适配器（adapter），Stage 1 的模型参数保持初始基础模型（base）状态。', 'Stage 1 found four trainable exact-success trajectories, but they came from only one task that succeeded repeatedly; bootstrap requires at least eight such distinct tasks. 3B/self therefore did not reach the start threshold, created no learned adapter, and kept the base model parameters unchanged.'),
       t('旧 Stage 2 完成了 20,480 次任务尝试，按每 256 次尝试分成 80 批。138 次尝试是完整成功、且轨迹质量足以进入训练候选池；但最好的一批里也只有 2 个不同任务能够各自重复完整成功，而当时的规则要求至少 8 个才允许更新参数。因此 80 批数据都没有触发参数更新。这个结果只说明旧方法控制规则怎样阻断了学习，不代表当前 OpenEVO Stage 2。', 'The old Stage 2 completed 20,480 task attempts, grouped into 80 batches of 256. Of those attempts, 138 were exact successes with traces clean enough to enter the training candidate pool. Even the best batch contained only two distinct tasks that each succeeded repeatedly, while the historical rule required at least eight before a parameter update was allowed. None of the 80 batches therefore triggered an update. This documents how the old method-control blocked learning; it does not define the current OpenEVO Stage 2.'),
@@ -45,7 +45,7 @@ const armMeta = {
     title:t('3B · MiniMax 任务后回看监督（有老师）', '3B · MiniMax hindsight analysis'),
     eyebrow:t('历史单实验 · 74.58% 时主动停止', 'HISTORICAL ARM · STOPPED AT 74.58%'),
     status:t('旧方法已停止；完成 59 批数据，第 60 批保留 171 次尚未计入完整批次的任务尝试', 'Old method stopped; 59 complete batches plus 171 attempts preserved from batch 60'),
-    question:t('按旧规则每 256 次尝试单独判断时，MiniMax 启动训练后的 3B 能不能继续更新参数？', 'Could the MiniMax-bootstrapped 3B keep updating when the old rule judged each 256 attempts separately?'),
+    question:t('结论先看：MiniMax 只在任务结束后分析轨迹；3B 启动训练完成 8 次更新，旧 Stage 2 在 74.58% 时停止且未更新，final eval 未运行。', 'Result first: MiniMax analyzed trajectories only after each task ended. 3B bootstrap completed eight updates; old Stage 2 stopped at 74.58% with no update, and the final evaluation was not run.'),
     known:[
       t('这里口头说“有老师”，更精确地说是：MiniMax 在 episode 结束后分析轨迹；它不替 3B 在 WebShop 里点击或搜索。', '“With a teacher” is shorthand here: MiniMax analyzes the trajectory after the episode; it does not click or search inside WebShop for the 3B actor.'),
       t('MiniMax 启动训练确实完成了 8 次参数更新；进入旧 Stage 2 后，前 59 批共 15,104 次任务尝试里只有 38 次是可用于训练的完整成功轨迹。最好的一批也只有 1 个不同任务能够重复完整成功，而当时要求至少 8 个才允许更新，因此 Stage 2 仍没有参数更新。停止时，第 60 批已产生的 171 次尝试原样保留，但不混入 59 批完整统计。', 'MiniMax bootstrap did complete eight parameter updates. In the old Stage 2, the first 59 complete batches contained 15,104 task attempts, of which only 38 were exact-success traces clean enough to enter training. Even the best batch had just one distinct task that succeeded repeatedly, while the historical rule required at least eight before an update was allowed. Stage 2 therefore still made no parameter update. The 171 attempts already produced in batch 60 were preserved when the run stopped, but are not mixed into the 59 complete-batch statistics.'),
@@ -57,7 +57,7 @@ const armMeta = {
     title:t('7B · MiniMax 任务后回看监督（有老师）', '7B · MiniMax hindsight analysis'),
     eyebrow:t('历史单实验 · 旧 Stage 2 已完成', 'HISTORICAL ARM · OLD STAGE-2 COMPLETE'),
     status:t('80 批任务尝试全部完成；Stage 2 没有触发参数更新', 'All 80 attempt batches completed; Stage 2 triggered no parameter update'),
-    question:t('MiniMax 启动训练后的 7B，在旧的逐批判断规则下能不能继续更新参数？', 'Could the MiniMax-bootstrapped 7B keep updating under the old batch-by-batch rule?'),
+    question:t('结论先看：MiniMax 只在任务结束后分析轨迹；7B 启动训练完成 8 次更新，旧 Stage 2 完成 20,480 次尝试后仍是 0 次更新；封存 final 为 16.94、0/128、116/128。', 'Result first: MiniMax analyzed trajectories only after each task ended. 7B bootstrap completed eight updates; after 20,480 old Stage-2 attempts it made no further update. Its sealed final was 16.94, 0/128 exact successes, and 116/128 valid episodes.'),
     known:[
       t('这里的 MiniMax 同样只在一次任务结束后回看并分析轨迹，不会替学生模型在 WebShop 里搜索或点击。', 'MiniMax is again a post-episode analyzer, not the WebShop actor.'),
       t('7B+MiniMax 启动训练完成了 8 次参数更新。旧 Stage 2 随后完成 20,480 次任务尝试，其中 592 次是可用于训练的完整成功轨迹。按当时规则，每 256 次尝试里至少要有 8 个不同任务各自重复完整成功才允许更新；实际最好的一批只有 7 个，所以 80 批数据都没有触发参数更新。', '7B+MiniMax bootstrap completed eight parameter updates. The old Stage 2 then completed 20,480 task attempts, including 592 exact-success traces clean enough to enter training. Under the historical rule, every 256 attempts needed at least eight distinct tasks that each succeeded repeatedly before an update was allowed. The best batch reached only seven, so none of the 80 batches triggered a parameter update.'),
@@ -206,6 +206,20 @@ const contrasts = [
       <small>{mode === '7b-self' ? t('训练保存点补测完成：2026-08-29', 'Checkpoint sweep completed: 2026-08-29') : mode === 'cross-arm' ? t('缺失 endpoint 保持缺失，不补成 0', 'Missing endpoint stays missing; it is not backfilled as zero') : t('历史实验记录', 'Historical run record')}</small>
     </div>
   </header>
+  {mode === 'cross-arm' && (
+    <section class="exp-scaffold__section" data-result-stage="direct-result" aria-labelledby="matrix-title">
+      <h2 id="matrix-title">{t('四组结果矩阵', 'Four-arm result matrix')}</h2>
+      <p class="exp-scaffold__section-intro">{t('现在 3B/self、7B/self、7B/MiniMax 都已有同一套封存 128 任务的真实最终数字；3B/MiniMax 因旧方法在 74.58% 时主动停止而没有 final eval，明确写“未运行”而不是 0。任何后续补测都必须清楚标注是否仍是同一套正式 panel。', '3B/self, 7B/self, and 7B/MiniMax now carry real final numbers from the same sealed 128-task panel. 3B/MiniMax has no final evaluation because the old-method run was explicitly stopped at 74.58%, so it is marked Not run rather than zero. Any later diagnostic must state whether it uses the same formal panel.')}</p>
+      <div class="exp-scaffold__table-wrap">
+        <table>
+          <thead><tr><th>{t('指标', 'Metric')}</th><th>3B / self</th><th>7B / self</th><th>3B / MiniMax</th><th>7B / MiniMax</th></tr></thead>
+          <tbody>
+            {matrixRows.map((row) => <tr><th scope="row">{row.label}</th>{[row.a,row.b,row.c,row.d].map((v) => <td class:list={{pending:v === PENDING}}>{v}</td>)}</tr>)}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )}
   <OpenEvoStage2StrategyChooser locale={locale} active="legacy" />
   <aside class="exp-scaffold__legacy-warning" data-testid="legacy-stage2-warning">
     <strong>{t('旧 Stage 2 规则 · 已取代', 'OLD STAGE-2 RULE · SUPERSEDED')}</strong>
@@ -244,21 +258,6 @@ const contrasts = [
         </div>
       </dl>
       <p class="exp-scaffold__resource-note">{t('这些时间来自已保存实验产物的时间戳，只计算 Stage 1 和旧 Stage 2 主实验本身。之后的固定 128 任务最终评测不在这 36 小时 44 分里；单独补测 8 个训练保存点另外用了约 80.2 分钟。', 'These times come from timestamps in the saved experiment artifacts and cover only Stage 1 plus the old Stage 2 main run. The later fixed-128 final evaluation is excluded; the separate checkpoint evaluation took about 80.2 additional minutes.')}</p>
-    </section>
-  )}
-
-  {mode === 'cross-arm' && (
-    <section class="exp-scaffold__section" data-result-stage="direct-result" aria-labelledby="matrix-title">
-        <h2 id="matrix-title">{t('四组结果矩阵', 'Four-arm result matrix')}</h2>
-        <p class="exp-scaffold__section-intro">{t('现在 3B/self、7B/self、7B/MiniMax 都已有同一套封存 128 任务的真实最终数字；3B/MiniMax 因旧方法在 74.58% 时主动停止而没有 final eval，明确写“未运行”而不是 0。任何后续补测都必须清楚标注是否仍是同一套正式 panel。', '3B/self, 7B/self, and 7B/MiniMax now carry real final numbers from the same sealed 128-task panel. 3B/MiniMax has no final evaluation because the old-method run was explicitly stopped at 74.58%, so it is marked Not run rather than zero. Any later diagnostic must state whether it uses the same formal panel.')}</p>
-        <div class="exp-scaffold__table-wrap">
-          <table>
-            <thead><tr><th>{t('指标', 'Metric')}</th><th>3B / self</th><th>7B / self</th><th>3B / MiniMax</th><th>7B / MiniMax</th></tr></thead>
-            <tbody>
-              {matrixRows.map((row) => <tr><th scope="row">{row.label}</th>{[row.a,row.b,row.c,row.d].map((v) => <td class:list={{pending:v === PENDING}}>{v}</td>)}</tr>)}
-            </tbody>
-          </table>
-        </div>
     </section>
   )}
 

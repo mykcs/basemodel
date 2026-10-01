@@ -143,8 +143,8 @@ export const HUMAN_EXPRESSION_ENFORCEMENT_REGISTRY: HumanExpressionEnforcementRe
     { kind: 'browser-gate', path: 'tests/e2e/effective-state-gdr-lora.spec.ts', note: 'keeps important W&B-derived evidence visible in-page while preserving native links' },
   ]},
   { family: 'presentation-canvas-not-scaled-as-unit', guards: [
-    { kind: 'browser-gate', path: 'tests/e2e/site-reader-contracts.spec.ts', note: 'checks the full 16:9 briefing canvas scales to phone width as one composition' },
-    { kind: 'browser-gate', path: 'tests/e2e/seed-openevo-briefing.spec.ts', note: 'checks fixed-slide geometry across desktop and phone' },
+    { kind: 'browser-gate', path: 'tests/e2e/site-reader-contracts.spec.ts', note: 'checks current briefing answers, natural section height and no overflow at phone, tablet and desktop widths' },
+    { kind: 'browser-gate', path: 'tests/e2e/seed-openevo-briefing.spec.ts', note: 'checks stable section anchors, responsive reading and light/dark views across phone, tablet and desktop' },
   ]},
   { family: 'unbounded-desktop-scaling', guards: [
     { kind: 'browser-gate', path: 'tests/e2e/site-reader-contracts.spec.ts', note: 'caps the desktop briefing canvas at the intended 1280 by 720 composition' },

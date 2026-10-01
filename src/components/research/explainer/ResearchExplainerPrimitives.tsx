@@ -66,6 +66,7 @@ export function StepControls({
   maxStep,
   steps,
   overview,
+  compactSteps = false,
   playing,
   reducedMotion,
   onStep,
@@ -77,6 +78,7 @@ export function StepControls({
   maxStep: number;
   steps: StepMeta[];
   overview: boolean;
+  compactSteps?: boolean;
   playing: boolean;
   reducedMotion: boolean;
   onStep: (step: number) => void;
@@ -88,6 +90,17 @@ export function StepControls({
   const activeNarration = overview
     ? (zh ? '先看完整拓扑、模块分组与回环；播放后再沿数据流逐步聚焦。' : 'Read the complete topology, module groups, and loops first; playback then follows the data flow step by step.')
     : steps[step]?.narration;
+  const stepper = (
+    <ol className="irx-stepper" aria-label={zh ? '步骤' : 'Steps'}>
+      {steps.map((item, index) => (
+        <li key={`${item.label}-${index}`} data-active={!overview && index === step} data-complete={!overview && index < step}>
+          <button type="button" aria-current={!overview && index === step ? 'step' : undefined} aria-label={`${index + 1}. ${item.label}`} onClick={() => onStep(index)}>
+            <span>{String(index + 1).padStart(2, '0')}</span><small>{item.label}</small>
+          </button>
+        </li>
+      ))}
+    </ol>
+  );
   return (
     <div className="irx-controls" data-overview={overview} aria-label={zh ? '交互步骤控制' : 'Explainer step controls'}>
       <div className="irx-transport">
@@ -121,32 +134,31 @@ export function StepControls({
         <i style={{ width: overview ? '0%' : `${((step + 1) / (maxStep + 1)) * 100}%` }} />
         <span>{overview ? 'MAP' : `${String(step + 1).padStart(2, '0')} / ${String(maxStep + 1).padStart(2, '0')}`}</span>
       </div>
-      <ol className="irx-stepper" aria-label={zh ? '步骤' : 'Steps'}>
-        {steps.map((item, index) => (
-          <li key={`${item.label}-${index}`} data-active={!overview && index === step} data-complete={!overview && index < step}>
-            <button type="button" aria-current={!overview && index === step ? 'step' : undefined} aria-label={`${index + 1}. ${item.label}`} onClick={() => onStep(index)}>
-              <span>{String(index + 1).padStart(2, '0')}</span><small>{item.label}</small>
-            </button>
-          </li>
-        ))}
-      </ol>
+      {compactSteps ? (
+        <details className="irx-step-selection">
+          <summary>{zh ? `选择追踪步骤（${steps.length} 步）` : `Choose a trace step (${steps.length} steps)`}</summary>
+          {stepper}
+        </details>
+      ) : stepper}
       <p className="irx-live" aria-live="polite"><b>{activeLabel}</b><span aria-hidden="true">/</span>{activeNarration}</p>
     </div>
   );
 }
 
-export function ExplainerHeader({ id, locale, title, lede, eyebrow }: { id: string; locale: Locale; title: string; lede: string; eyebrow: string }) {
+export function ExplainerHeader({ id, locale, title, lede, eyebrow, hideDepth = false }: { id: string; locale: Locale; title: string; lede: string; eyebrow: string; hideDepth?: boolean }) {
   const zh = locale === 'zh';
   return (
     <header className="irx-header">
       {eyebrow && <div className="irx-kicker">{eyebrow}</div>}
       <h2 id={id}>{title}</h2>
       <p>{lede}</p>
-      <ol className="irx-depth" aria-label={zh ? '阅读深度' : 'Reading depth'}>
-        <li><b>01</b><span>{zh ? '30 秒直觉' : '30-second intuition'}</span></li>
-        <li><b>02</b><span>{zh ? '逐步操作' : 'step-by-step interaction'}</span></li>
-        <li><b>03</b><span>{zh ? '技术边界' : 'technical boundary'}</span></li>
-      </ol>
+      {!hideDepth && (
+        <ol className="irx-depth" aria-label={zh ? '阅读深度' : 'Reading depth'}>
+          <li><b>01</b><span>{zh ? '30 秒直觉' : '30-second intuition'}</span></li>
+          <li><b>02</b><span>{zh ? '逐步操作' : 'step-by-step interaction'}</span></li>
+          <li><b>03</b><span>{zh ? '技术边界' : 'technical boundary'}</span></li>
+        </ol>
+      )}
     </header>
   );
 }

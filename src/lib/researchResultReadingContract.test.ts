@@ -81,18 +81,28 @@ describe('research result reading contract', () => {
     expect(source).toContain('③ 分析');
   });
 
-  it('keeps Stage1 objective ablation result-first and separates validation from evidence', () => {
+  it('puts the latest Stage1 result before historical comparisons and separates fit from capability', () => {
     const source = read('src/components/research/OpenEvoStage1LearningObjectives.astro');
-    const direct = at(source, 'data-result-stage="direct-result"');
+    const capability = at(source, 'id="next" data-result-stage="direct-result"');
+    const stages = at(source, 'id="stage1-stage2" data-result-stage="setup"');
+    const history = at(source, 'id="result" data-result-stage="direct-result"');
     const validation = at(source, 'data-result-stage="optimization"');
     const synthesis = at(source, 'data-result-stage="synthesis"');
     const evidence = at(source, 'data-result-stage="evidence"');
-    expect(direct).toBeLessThan(validation);
+    expect(capability).toBeLessThan(stages);
+    expect(stages).toBeLessThan(history);
+    expect(history).toBeLessThan(validation);
     expect(validation).toBeLessThan(synthesis);
     expect(synthesis).toBeLessThan(evidence);
+    expect(source).toContain('data-stage1-result');
+    expect(source).toContain('1.161 → 1.091 → 1.093');
+    expect(source).toContain('6/64 → 3/64 → 0 → 0');
     expect(source).toContain('final panel');
-    expect(source).toContain('运行中 / 未封存');
-    expect(source).toContain('数据已准备 / 未训练');
+    expect(source).toContain('已完成');
+    expect(source).toContain('Stage1 only');
+    expect(source).toContain('完整 SEED Stage2');
+    expect(source).toContain('0.0369');
+    expect(source).toContain('0.0000');
   });
 
   it('keeps every canonical multi-metric owner anchored by a direct result', () => {

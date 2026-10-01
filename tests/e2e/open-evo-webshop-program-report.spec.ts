@@ -41,6 +41,11 @@ test('Chinese results landing mounts the unified six-module findings page', asyn
   const currentEvidenceLinks = index.locator('a[href="#evidence-q7"]');
   await expect(currentEvidenceLinks).toHaveCount(2);
   await expect(index.locator('.results-primary a[href="#evidence-q7"]')).toBeVisible();
+  const snapshotAnswers = index.getByTestId('results-first-screen-answers');
+  await expect(snapshotAnswers.locator('[data-result-answer]')).toHaveCount(3);
+  await expect(snapshotAnswers.locator('[data-result-answer="learned"]')).toContainText('两次独立的一步更新实验');
+  await expect(snapshotAnswers.locator('[data-result-answer="latest"]')).toContainText('稳定优势尚未建立');
+  await expect(snapshotAnswers.locator('[data-result-answer="next"]')).toContainText('正式任务尚未解锁');
   await expect(index.locator('details.progress-detail a[href="#evidence-q7"]')).not.toBeVisible();
   await expect(index.locator('a[href="#evidence-q7"]:visible')).toHaveCount(1);
   await expect(index.locator('a[href="#next-n2"]')).toHaveCount(1);
@@ -55,7 +60,7 @@ test('Chinese results landing mounts the unified six-module findings page', asyn
   await expect(continuationRecord).not.toHaveAttribute('open', '');
   await continuationRecord.locator(':scope > summary').click();
   await expect(continuationRecord).toHaveAttribute('open', '');
-  await expect(continuationRecord.locator('a[href="https://github.com/mykcs/openevo-experiment/blob/main/configs/experiment/current-campaign.json"]')).toBeVisible();
+  await expect(continuationRecord.locator('a[href="https://github.com/mykcs/openevo-experiment/blob/836fc465f94619ecf81fe24aa1465015a6d8cc66/configs/experiment/current-campaign.json"]')).toBeVisible();
 
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 });
@@ -94,6 +99,25 @@ for (const theme of ['light', 'dark'] as const) {
         await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
         const index = page.getByTestId('openevo-webshop-result-index');
         await expect(index).toBeVisible();
+        const answers = index.locator('[data-testid="results-first-screen-answers"] [data-result-answer]');
+        await expect(answers).toHaveCount(3);
+        const answerGeometry = await answers.evaluateAll((nodes) => nodes.map((node) => {
+          const rect = node.getBoundingClientRect();
+          const style = getComputedStyle(node);
+          return {
+            top: rect.top,
+            bottom: rect.bottom,
+            fontSize: Number.parseFloat(style.fontSize),
+            clientWidth: (node as HTMLElement).clientWidth,
+            scrollWidth: (node as HTMLElement).scrollWidth,
+          };
+        }));
+        for (const geometry of answerGeometry) {
+          expect(geometry.top).toBeGreaterThanOrEqual(0);
+          expect(geometry.bottom).toBeLessThanOrEqual(viewport.height);
+          expect(geometry.fontSize).toBeGreaterThanOrEqual(16);
+          expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 1);
+        }
         await expect(index.locator('article.question-card')).toHaveCount(6);
         await expect(index.getByTestId('current-source-faithful-q7')).toHaveCount(1);
         await expect(index.locator('#q7')).toHaveCount(1);

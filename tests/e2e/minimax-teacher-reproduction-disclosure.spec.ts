@@ -10,6 +10,7 @@ async function setTheme(page: Page, theme: 'light' | 'dark') {
 
 for (const viewport of [
   { name: 'desktop', width: 1440, height: 1000 },
+  { name: 'tablet', width: 768, height: 1024 },
   { name: 'mobile', width: 390, height: 844 },
 ] as const) {
   for (const theme of ['light', 'dark'] as const) {
@@ -19,6 +20,12 @@ for (const viewport of [
       await page.goto(route, { waitUntil: 'domcontentloaded' });
 
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      const firstAnswer = page.locator('.hero-answer');
+      await expect(firstAnswer).toBeVisible();
+      const answerBox = await firstAnswer.boundingBox();
+      expect(answerBox).not.toBeNull();
+      expect(answerBox!.y).toBeGreaterThanOrEqual(0);
+      expect(answerBox!.y + answerBox!.height).toBeLessThanOrEqual(viewport.height + 2);
       const details = page.locator('.research-technical-disclosure').filter({ hasText: summaryText });
       const summary = details.locator('summary');
       const command = details.locator('pre');

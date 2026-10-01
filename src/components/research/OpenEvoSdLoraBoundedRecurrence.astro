@@ -24,35 +24,34 @@ const lineageHref = `https://github.com/${lineage.repository}/blob/${lineage.com
 const stableHref = p(`${root}sd-lora-equivalence/`);
 const successorHref = p(`${root}bounded-effective-state-gdr/`);
 const accelerationHref = p(`${root}sd-lora-bounded-acceleration/`);
+const postAdvisorHref = 'https://github.com/mykcs/openevo-experiment/pull/597';
+const capacityEvidenceHref = '/research/seed-openevo/evidence/post-advisor-ab-final-20260928.json';
 const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
 ---
 <article class="bounded" data-copy-review data-sd-lora-bounded-recurrence>
   <header class="bounded__hero">
-    <p class="bounded__eyebrow">{t('07 / 07 · 固定 rank128 · R150–R159 连续更新', '07 / 07 · fixed rank128 · recurrent R150–R159')}</p>
-    <h1>{t('历史继续增长，参数状态保持 rank128', 'History keeps growing while the parameter state stays rank128')}</h1>
-    <p class="bounded__lede">
-      {t(
-        `从 R150 到 R159，我们没有再把不断增长的历史 component 全部带进下一轮。历史被维护成一个固定 rank128 状态，每轮只学习一个 rank8 新更新，再折回 rank128；9 轮连续更新全部通过 hard gate。`,
-        `From R150 through R159, the next round no longer carried the full growing component history. History stayed in one fixed rank128 state, each round learned one new rank8 update, then folded back to rank128; all nine recurrent updates passed their hard gates.`,
-      )}
-    </p>
-    <dl class="bounded__metrics" aria-label={t('Bounded recurrence 主要结果', 'Bounded recurrence headline results')}>
-      <div><dt>{t('历史状态', 'Historical state')}</dt><dd>rank{result.stateRank}</dd></div>
-      <div><dt>{t('连续更新', 'Recurrent updates')}</dt><dd>{result.recurrentRounds} / {result.recurrentRounds} PASS</dd></div>
-      <div><dt>{t('同轮 Vanilla 对比', 'Vs same-round Vanilla')}</dt><dd>{result.formalSpeedupMean.toFixed(2)}×</dd></div>
-    </dl>
-    <p class="bounded__boundary">
-      {t(
-        '这项 PASS 只覆盖封存的 R150–R159 历史窗口：它证明旧 component 数 K 不再直接决定这条更新路径的成本，但每轮时间仍取决于样本和 token 数；这不是“所有持续学习都 O(1)”的证明，也没有打开 protected final panel。',
-        'This PASS covers only the sealed R150–R159 historical window. It shows that the old component count K no longer directly controls this update path, while per-round time still depends on examples and tokens. It is not a proof that all continual learning is O(1), and the protected final panel was not opened.',
-      )}
-    </p>
-    <nav class="bounded__links" aria-label={t('本页证据', 'Evidence for this page')}>
-      <a href={q1Href}><ExternalBrandMark href={q1Href} />{t('Q1 最终 closeout', 'Q1 final closeout')}</a>
-      <a href={lineageHref}><ExternalBrandMark href={lineageHref} />{t('两条 SD-LoRA 线索索引', 'Two-line SD-LoRA lineage index')}</a>
-    </nav>
-    <p class="bounded__next-question"><a href={accelerationHref}>{t('后续加速研究：真正慢的是训练还是 rank128 压缩？→', 'Follow-up acceleration study: is training or rank128 compression actually slow? →')}</a></p>
-    <p class="bounded__next-question"><a href={successorHref}>{t('另一条后续问题：固定 rank128 以后，怎样控制每次新经验写多强？→', 'Another follow-up: after fixing rank128, how strongly should each new experience be written? →')}</a></p>
+    <p class="bounded__eyebrow">{t('07 / 07 · rank32 容量筛查 · R152–R159 matched continuation', '07 / 07 · rank32 capacity screen · matched R152–R159 continuation')}</p>
+    <h1>{t('固定状态需要多大容量？', 'How much capacity does a bounded state need?')}</h1>
+    <p class="bounded__lede">{t(
+      '在同一续训窗口中，rank32 使用约四分之一的持久参数 payload，并保留大部分已观测行为；严格无损或 non-inferiority 尚未得到证明。',
+      'Across a matched continuation window, rank32 uses about one quarter of the persistent parameter payload and retains most observed behavior; strict losslessness and non-inferiority are not established.',
+    )}</p>
+    <figure class="bounded__capacity-figure" data-bounded-capacity-result aria-labelledby="capacity-figure-title">
+      <figcaption id="capacity-figure-title">{t('仅比较持久 adapter payload；rank32 续训筛查', 'Persistent adapter payload only; rank32 continuation screen')}</figcaption>
+      <div class="bounded__capacity-bars" aria-label={t('rank32 payload 约为 rank128 的四分之一', 'rank32 payload is about one quarter of rank128')}>
+        <div><span>rank128</span><span class="bounded__bar bounded__bar--128" role="img" aria-label={t('相对 rank128 基线的持久 payload：100%', 'Persistent payload relative to the rank128 baseline: 100%')}></span><strong>205,551,528 B</strong><small>196.0 MiB</small></div>
+        <div><span>rank32</span><span class="bounded__bar bounded__bar--32" role="img" aria-label={t('相对 rank128 基线的持久 payload：25%', 'Persistent payload relative to the rank128 baseline: 25%')}></span><strong>51,410,296 B</strong><small>49.0 MiB</small></div>
+      </div>
+      <div class="bounded__capacity-outcomes">
+        <p><span>{t('Task Score 均值', 'Mean Task Score')}</span><strong>0.6298 → 0.6119</strong><small>Δ −0.0179 · 95% CI [−0.0368, 0.0012]</small></p>
+        <p><span>{t('Exact Success', 'Exact Success')}</span><strong>341 / 1024 → 350 / 1024</strong><small>Δ +0.0088 · 95% CI [−0.0137, 0.0313]</small></p>
+      </div>
+    </figure>
+    <p class="bounded__boundary" data-bounded-capacity-boundary>{t(
+      '范围：同一 R152–R159 task / seed schedule 的 1,024 个配对 rollout；点估计与区间都不能确立无损或 non-inferiority。容量只涉及持久 payload，不代表总模型内存或运行速度；protected final panel 未访问。下一步扫 rank16 / 32 / 64 / 128。',
+      'Scope: 1,024 paired rollouts on the same R152–R159 task / seed schedule. Neither the point estimates nor intervals establish losslessness or non-inferiority. This covers persistent payload only, not total model memory or runtime; the protected final panel was not accessed. Next, sweep rank16 / 32 / 64 / 128.',
+    )}</p>
+    <p class="bounded__next-question"><a href="#rank32-capacity">{t('查看压缩来源、匹配方法与完整证据 →', 'Read the compression origin, matched method, and full evidence →')}</a></p>
   </header>
 
   <section class="bounded__section" aria-labelledby="lineage-title">
@@ -73,9 +72,15 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
       </table>
     </div>
     <p class="bounded__related"><a href={stableHref}>{t('查看 Stable Reduction 的 2× 结果和 WebShop 小面板 →', 'See the Stable Reduction ~2× result and small WebShop panel →')}</a></p>
+    <p class="bounded__related"><a href={accelerationHref}>{t('后续加速研究：主要时间花在训练还是压缩？→', 'Follow-up acceleration study: does training or compression dominate runtime? →')}</a></p>
+    <p class="bounded__next-question"><a href={successorHref}>{t('写入控制仍是独立问题：容量扫清以后再决定 alpha / beta →', 'Write control remains a separate question: settle capacity before deciding on alpha / beta →')}</a></p>
   </section>
   <section class="bounded__section" aria-labelledby="recurrent-title">
     <h2 id="recurrent-title">{t('R150 到 R159 没有回到 Vanilla', 'R150 through R159 never reset to Vanilla')}</h2>
+    <p class="bounded__baseline" data-bounded-rank128-baseline>{t(
+      '历史基线：rank128 状态连续 9/9 gate PASS；同轮 Vanilla trainer 平均约 37×。这是独立的 R150–R159 资格窗口，不是 rank32 对照的运行速度。',
+      'Historical baseline: the rank128 state passed 9/9 gates, with about 37× mean same-round Vanilla trainer speedup. This is a separate R150–R159 qualification window, not a runtime comparison for the rank32 fork.',
+    )}</p>
     <figure class="bounded__flow">
       <div class="bounded__flow-line" role="img" aria-label={t('R150 bounded 状态连续更新到 R159，每轮保持 rank128', 'The bounded R150 state updates continuously through R159 while remaining rank128')}>
         <span>R150 · r128</span><b>→</b><span>R151</span><b>→</b><span>R152</span><b>→</b><span>…</span><b>→</b><span>R159 · r128</span>
@@ -108,6 +113,46 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
       </table>
     </div>
   </section>
+  <section class="bounded__section" aria-labelledby="capacity-title" id="rank32-capacity">
+    <h2 id="capacity-title">{t('rank32 容量筛查：从哪里来、能说明什么', 'Rank32 capacity screen: its origin and what it supports')}</h2>
+    <nav class="bounded__links" aria-label={t('本页证据', 'Evidence for this page')}>
+      <a href={q1Href}><ExternalBrandMark href={q1Href} />{t('Q1 最终 closeout', 'Q1 final closeout')}</a>
+      <a href={lineageHref}><ExternalBrandMark href={lineageHref} />{t('两条 SD-LoRA 线索索引', 'Two-line SD-LoRA lineage index')}</a>
+    </nav>
+    <p>{t(
+      '后续容量实验没有重跑历史 rank128，而是从同一个 sealed R151-after 状态做 deterministic rank32 compression，然后沿完全相同的 R152–R159 task / seed schedule 继续 8 轮、进行 1,024 个配对 rollout。它比较容量，不是重新做一次 DirectApply-vs-Bounded。',
+      'The follow-up capacity experiment did not rerun historical rank128. It deterministically compressed the same sealed R151-after state to rank32, then continued for eight rounds on the exact same R152–R159 task / seed schedule with 1,024 paired rollouts. It compares capacity, not DirectApply-vs-Bounded.',
+    )}</p>
+    <dl class="bounded__metrics" aria-label={t('rank32 容量实验主要结果', 'Headline rank32 capacity results')}>
+      <div><dt>{t('rank32 持久 payload', 'rank32 persistent payload')}</dt><dd>49.0 MiB</dd></div>
+      <div><dt>{t('rank128 大小', 'rank128 size')}</dt><dd>196.0 MiB</dd></div>
+      <div><dt>{t('大小比例', 'Size ratio')}</dt><dd>0.250×</dd></div>
+    </dl>
+    <div class="bounded__table-wrap">
+      <table class="bounded__table bounded__table--numbers">
+        <thead><tr><th scope="col"></th><th scope="col">rank128</th><th scope="col">rank32</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">{t('R152–R159 平均 Task Score', 'Mean Task Score, R152–R159')}</th><td>0.6298</td><td>0.6119</td></tr>
+          <tr><th scope="row">{t('Exact Success', 'Exact Success')}</th><td>341 / 1024</td><td>350 / 1024</td></tr>
+          <tr><th scope="row">{t('持久参数 payload', 'Persistent parameter payload')}</th><td>205,551,528 B</td><td>51,410,296 B</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="bounded__claim">{t(
+      '通俗地说：把持久参数盒子从 rank128 缩成 rank32 后，payload 约为四分之一，大部分已测行为仍被观察到。Task Score 点估计低约 0.0179，但区间跨过 0；目前尚未证明严格无损或 non-inferior，也不能据此断言 rank128 配置过大。',
+      'In plain terms: shrinking the persistent parameter box from rank128 to rank32 leaves about one quarter of the payload, with most measured behavior still observed. The Task Score point estimate is about 0.0179 lower, but its interval crosses 0; strict losslessness and non-inferiority remain unproven, and this does not establish that rank128 is over-provisioned.',
+    )}</p>
+    <p id="capacity-next">{t(
+      '配对 rank32 − rank128 Task Score 差为 −0.0179，bootstrap 95% CI 为 [−0.0368, 0.0012]；exact-success-rate 差为 +0.0088，95% CI 为 [−0.0137, 0.0313]。因此现在最合理的下一步是先扫 rank16 / 32 / 64 / 128 的容量曲线，再决定是否值得继续复杂 alpha / beta；不能因为后验 rank95≈8 就跳到“rank8 已经够用”。',
+      'The paired rank32 − rank128 Task Score difference is −0.0179 with bootstrap 95% CI [−0.0368, 0.0012]; the exact-success-rate difference is +0.0088 with 95% CI [−0.0137, 0.0313]. The next clean step is therefore a rank16 / 32 / 64 / 128 capacity sweep before adding richer alpha / beta control; posterior rank95≈8 is not evidence that rank8 is sufficient.',
+    )}</p>
+    <p class="bounded__boundary">{t(
+      '证据身份说明：更早的 rank32 纵向 S3a 资格筛查在 R155 未通过预设 score margin；它与这里的后续 R152–R159 matched capacity fork 是不同实验和证据面板，不能合并成同一个 rank32 结论。',
+      'Evidence identity: an earlier longitudinal rank32 S3a qualification screen failed its prespecified score margin at R155. It is a different experiment and evidence panel from this later R152–R159 matched capacity fork; do not combine them into one rank32 result.',
+    )}</p>
+    <p class="bounded__related"><a href={postAdvisorHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={postAdvisorHref} />{t('Post-advisor rank32 最终收口 · PR #597 ↗', 'Post-advisor rank32 final closeout · PR #597 ↗')}</a>{' · '}<a href={capacityEvidenceHref} target="_blank" rel="noreferrer">{t('BaseModel 本地证据镜像 ↗', 'BaseModel local evidence mirror ↗')}</a></p>
+  </section>
+
   <section class="bounded__section" aria-labelledby="claim-title">
     <h2 id="claim-title">{t('现在能说什么', 'What this result supports')}</h2>
     <p class="bounded__claim">{t(
@@ -132,5 +177,5 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
   <OpenEvoSdLoraHistorySeriesNav locale={locale} />
 </article>
 <style>
-.bounded{width:100%;padding:0 0 4rem}.bounded__hero,.bounded__section{width:min(980px,calc(100% - 2rem));margin:0 auto}.bounded__hero{padding:clamp(2.2rem,6vw,4.8rem) 0 2rem}.bounded__eyebrow{margin:0 0 .65rem;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}.bounded__hero h1{max-width:15ch;margin:0;font-size:clamp(2.2rem,5.7vw,4.8rem);line-height:1.02;letter-spacing:-.045em}.bounded__lede,.bounded__boundary,.bounded__section>p,.bounded__flow figcaption{max-width:48rem;font-size:1.05rem;line-height:1.68}.bounded__lede{margin:1.1rem 0 0;color:var(--ink);font-size:clamp(1.08rem,2vw,1.28rem)}.bounded__boundary{margin:1rem 0 0;color:var(--muted)}.bounded__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.6rem 0 0;border-block:1px solid var(--line)}.bounded__metrics div{padding:1rem 1rem 1rem 0}.bounded__metrics dt{color:var(--muted);font-size:.92rem}.bounded__metrics dd{margin:.25rem 0 0;font-size:1.45rem;font-weight:800}.bounded__links{display:flex;flex-wrap:wrap;gap:.8rem 1.1rem;margin-top:1rem}.bounded__links a,.bounded__related a,.bounded__evidence a{color:var(--accent-deep);text-underline-offset:.2em}.bounded__section{padding-top:2.8rem}.bounded__section h2{max-width:26ch;margin:0;font-size:clamp(1.55rem,3vw,2.25rem);line-height:1.15}.bounded__table-wrap{margin-top:1.2rem;overflow-x:auto}.bounded__table{width:100%;min-width:680px;border-collapse:collapse}.bounded__table th,.bounded__table td{padding:.8rem .7rem;font-size:1rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5}.bounded__table thead th{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}.bounded__table tbody th{width:18%;color:var(--muted);font-weight:650}.bounded__table--numbers{min-width:520px}.bounded__table--numbers td,.bounded__table--numbers th{font-variant-numeric:tabular-nums}.bounded__related{margin-top:1rem}.bounded__flow{margin:1.25rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}.bounded__flow-line{display:flex;align-items:center;gap:.6rem;overflow-x:auto;padding:.2rem 0 .6rem;font:750 1rem/1.2 var(--font-mono)}.bounded__flow-line span{flex:0 0 auto;padding:.5rem .6rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.bounded__flow-line b{color:var(--accent-deep)}.bounded__section>.bounded__claim{font-size:1.16rem;color:var(--ink);font-weight:650}.bounded__evidence{max-width:48rem;margin-top:1rem}.bounded__evidence summary{cursor:pointer;font-weight:700}.bounded__evidence li{margin:.55rem 0;line-height:1.5}@media(max-width:680px){.bounded__hero,.bounded__section{width:min(100% - 1rem,980px)}.bounded__metrics{grid-template-columns:1fr}.bounded__metrics div{border-bottom:1px solid var(--line)}.bounded__metrics div:last-child{border-bottom:0}.bounded__table{min-width:640px}}
+.bounded{width:100%;padding:0 0 4rem}.bounded__hero,.bounded__section{width:min(980px,calc(100% - 2rem));margin:0 auto}.bounded__hero{padding:1.8rem 0 .7rem}.bounded__eyebrow{margin:0 0 .55rem;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono)}.bounded__hero h1{max-width:18ch;margin:0;font-size:clamp(2rem,5.2vw,4rem);line-height:1.04;letter-spacing:-.04em}.bounded__lede,.bounded__boundary,.bounded__baseline,.bounded__section>p,.bounded__flow figcaption{max-width:48rem;font-size:1rem;line-height:1.55}.bounded__lede{margin:.65rem 0 0;color:var(--ink);font-size:clamp(1rem,1.8vw,1.18rem)}.bounded__capacity-figure{max-width:52rem;margin:1rem 0 0;padding:.85rem 1rem;border:1px solid var(--line);background:var(--surface-muted)}.bounded__capacity-figure>figcaption{font-size:1rem;font-weight:750;color:var(--muted)}.bounded__capacity-bars{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:.65rem}.bounded__capacity-bars>div{display:grid;grid-template-columns:auto 1fr;gap:.22rem .5rem;align-items:center;font-size:1rem}.bounded__capacity-bars strong,.bounded__capacity-bars small{grid-column:1/-1;font-variant-numeric:tabular-nums}.bounded__capacity-bars small{color:var(--muted);font-size:1rem}.bounded__bar{display:block;height:.6rem;background:var(--accent-deep)}.bounded__bar--128{width:100%}.bounded__bar--32{width:25%;min-width:1.3rem}.bounded__capacity-outcomes{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:.75rem;border-top:1px solid var(--line)}.bounded__capacity-outcomes p{display:grid;gap:.12rem;margin:.6rem 0 0;font-size:1rem}.bounded__capacity-outcomes strong{font-size:1rem;font-variant-numeric:tabular-nums}.bounded__capacity-outcomes small{color:var(--muted);font-size:1rem;line-height:1.35}.bounded__boundary{margin:.7rem 0 0;color:var(--muted)}.bounded__baseline{margin:.55rem 0 0;color:var(--muted)}.bounded__next-question{margin:.55rem 0 0;line-height:1.45}.bounded__next-question a,.bounded__links a,.bounded__related a,.bounded__evidence a{color:var(--accent-deep);text-underline-offset:.2em}.bounded__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1rem 0 0;border-block:1px solid var(--line)}.bounded__metrics div{padding:.8rem .8rem .8rem 0}.bounded__metrics dt{color:var(--muted);font-size:1rem}.bounded__metrics dd{margin:.2rem 0 0;font-size:1.25rem;font-weight:800}.bounded__links{display:flex;flex-wrap:wrap;gap:.6rem 1rem;margin-top:.75rem}.bounded__section{padding-top:2.2rem}.bounded__section h2{max-width:26ch;margin:0;font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.15}.bounded__table-wrap{margin-top:1rem;overflow-x:auto}.bounded__table{width:100%;min-width:680px;border-collapse:collapse}.bounded__table th,.bounded__table td{padding:.8rem .7rem;font-size:1rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5}.bounded__table thead th{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}.bounded__table tbody th{width:18%;color:var(--muted);font-weight:650}.bounded__table--numbers{min-width:520px}.bounded__table--numbers td,.bounded__table--numbers th{font-variant-numeric:tabular-nums}.bounded__related{margin-top:1rem}.bounded__flow{margin:1.25rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}.bounded__flow-line{display:flex;align-items:center;gap:.6rem;overflow-x:auto;padding:.2rem 0 .6rem;font:750 1rem/1.2 var(--font-mono)}.bounded__flow-line span{flex:0 0 auto;padding:.5rem .6rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.bounded__flow-line b{color:var(--accent-deep)}.bounded__section>.bounded__claim{font-size:1.12rem;color:var(--ink);font-weight:650}.bounded__evidence{max-width:48rem;margin-top:1rem}.bounded__evidence summary{cursor:pointer;font-weight:700}.bounded__evidence li{margin:.55rem 0;line-height:1.5}@media(max-width:680px){.bounded__hero,.bounded__section{width:min(100% - 1rem,980px)}.bounded__hero{padding:.5rem 0 .6rem}.bounded__capacity-figure{margin-top:.35rem;padding:.45rem .55rem}.bounded__capacity-bars{gap:.4rem;margin-top:.4rem}.bounded__capacity-outcomes{grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.45rem}.bounded__capacity-outcomes p{font-size:1rem;margin-top:.45rem;line-height:1.25}.bounded__capacity-outcomes strong{font-size:1rem}.bounded__metrics{grid-template-columns:1fr}.bounded__metrics div{border-bottom:1px solid var(--line)}.bounded__metrics div:last-child{border-bottom:0}.bounded__table{min-width:640px}.bounded__eyebrow{margin-bottom:.35rem}.bounded__lede{margin-top:.45rem;line-height:1.4}.bounded__capacity-figure>figcaption{line-height:1.3}.bounded__boundary{margin-top:.4rem;line-height:1.4}}
 </style>

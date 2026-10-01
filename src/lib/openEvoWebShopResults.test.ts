@@ -76,10 +76,9 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
   });
 
   it('starts with direct human-readable findings and keeps machine identity out of the primary reading line', () => {
-    expect(hero).toContain('如果你知道实验室正在比较 OpenEvo、SEED 和 WebShop');
-    expect(hero).toContain('已经知道');
-    expect(hero).toContain('最新评测');
-    expect(hero).toContain('接下来');
+    expect(hero).toContain('data-result-answer="learned"');
+    expect(hero).toContain('data-result-answer="latest"');
+    expect(hero).toContain('data-result-answer="next"');
     expect(hero).toContain('模型从自己做成功的任务里学习一次以后');
     expect(hero).toContain('同一 128 个任务已经先给基础模型做一遍，再给加载 OpenEvo 学习结果后的模型做一遍，共 256 个任务回合');
     expect(hero).toContain('统计范围仍然包含“没有差异”');
@@ -157,7 +156,8 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(questions).not.toContain('Track A 当前是 PREPARED');
     expect(questions).not.toContain('formal execution not authorized');
     expect(currentQ7).toContain('id="q7"');
-    expect(currentQ7).toContain('还缺的方法级对照');
+    expect(currentQ7).toContain('一轮有效测量仍未证明稳定优势');
+    expect(currentQ7).toContain('PENDING_ZERO_FORMAL_PREFLIGHT');
     expect(currentQ7).toContain('已完成 · 未证明稳定提升');
     expect(questions).not.toContain('现在的答案：');
     expect(questions).not.toContain('专业解释：');
@@ -250,16 +250,17 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(evidenceRefs).toContain('overflow-wrap:anywhere');
   });
 
-  it('keeps historical evidence immutable while making the one live WB1 router explicit', () => {
+  it('keeps historical evidence immutable and pins the current inactive follow-on plan', () => {
     for (const source of [protocol, questions, wrapperAttribution, g2Ablation]) {
       expect(source).not.toContain('/blob/main/');
     }
     expect(questions).toContain('2cf2fadca3c5aba28da68e8e1405182ba8d90e6c');
     expect(questions).toContain('1971fad6602d23d499a5de8bd4bf718947207d86');
     expect(currentQ7).toContain('f80ae1816384bb7e8e82d193b22644e17f561f19');
-    expect(nextSteps).toContain('https://github.com/mykcs/openevo-experiment/blob/main/configs/experiment/current-campaign.json');
-    expect(nextSteps).toContain('2026-09-01');
-    expect(nextSteps).toContain('d471341e518ed4568fc84f4f732784d091613b03');
+    expect(nextSteps).toContain('836fc465f94619ecf81fe24aa1465015a6d8cc66');
+    expect(nextSteps).toContain('${postAdvisorRoot}/configs/experiment/current-campaign.json');
+    expect(nextSteps).toContain('2026-09-28');
+    expect(nextSteps).toContain('PENDING_ZERO_FORMAL_PREFLIGHT');
     expect(nextSteps).toContain('c2791000a3af97190c264ba5ea39f0c4e5f65823');
     expect(nextSteps).toContain('state-v28 采纳时的不可变 campaign 快照');
   });
@@ -321,26 +322,35 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(resultNote).not.toContain('经验供给不是当前直接瓶颈');
   });
 
-  it('orders next steps around the completed 128-task measurement, method-level resumption gate, and ALFWorld', () => {
+  it('orders next steps around the completed 128-task measurement, inactive five-study plan, and ALFWorld', () => {
     expect(nextSteps).toContain('id="next-steps"');
-    expect(nextSteps).toContain('下一轮 OpenEvo 与 SEED 公平比较');
+    expect(nextSteps).toContain('后续研究计划与执行门');
     expect(nextSteps).toContain('同一 128 个任务的两模型测量已完成');
     expect(nextSteps).toContain('全部 256 个原始任务回合以及对账、分析和运行凭据已逐文件校验并发布');
     expect(nextSteps).toContain('这个面板不是论文最终 128 题');
     expect(nextSteps).toContain('不能当作论文 89.7 / 78.1% 的精确复现');
-    expect(nextSteps).toContain('方法对方法比较等待继续授权');
-    expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
-    expect(nextSteps).toContain('WB1 live router · main');
-    expect(nextSteps).toContain('恢复执行前必须重新读取最新的运行授权');
+    expect(nextSteps).toContain('五项后续研究已预注册；正式执行尚未激活');
+    expect(nextSteps).toContain('state-v28');
+    expect(nextSteps).toContain('PENDING_ZERO_FORMAL_PREFLIGHT');
+    expect(nextSteps).toContain('正式任务消费仍锁定');
     expect(nextSteps).toContain('id={`next-${step.index.toLowerCase()}`}');
-    expect(nextSteps).toContain('原本漏存的训练状态也已经在不重跑 WebShop、不使用 GPU 的前提下补齐并核对通过');
     expect(nextSteps).not.toContain('formal_task_consumption_allowed=false');
     expect(nextSteps).toContain('ALFWorld');
-    expect(nextSteps).toContain('两轮比较回答不同问题');
-    expect(nextSteps).toContain('只有后一个实验才能直接回答 OpenEvo 与 SEED 的公平比较');
+    expect(nextSteps).toContain('已完成测量、历史状态与待执行计划');
+    expect(nextSteps).toContain('计划不能被写成新实验结果');
     expect(nextSteps).toContain('<details class="step-detail">');
     expect(nextSteps).toContain("t('下一步实验', 'NEXT STEPS')");
-    expect(nextSteps).toContain('/research/seed-openevo/study/');
+    expect(nextSteps).toContain('id={`next-${step.index.toLowerCase()}`}');
+  });
+
+  it('puts the known result, latest paired measurement, and inactive next plan on the first screen', () => {
+    expect(hero).toContain('data-testid="results-first-screen-answers"');
+    for (const answer of ['learned', 'latest', 'next']) {
+      expect(hero).toContain(`data-result-answer="${answer}"`);
+    }
+    expect(hero).toContain('两次独立的一步更新实验');
+    expect(hero).toContain('完整成功数相同');
+    expect(hero).toContain('正式任务尚未解锁');
   });
 
   it('keeps the historical records complete: twelve notes, lineage, RTX6 record, evidence trail, and print provenance', () => {

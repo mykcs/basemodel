@@ -45,7 +45,7 @@
 }
 .decision-section-heading h2 { margin: 0; font-size: 1.35rem; }
 .decision-section-heading p { margin: 0; color: var(--muted); font-size: .9rem; }
-.model-card { box-shadow: none; border-radius: 11px; }
+.model-card { box-shadow: none; border-radius: var(--radius-panel); }
 
 /* Home: three intents first; secondary scenarios are progressively disclosed. */
 .novice-entry { margin: 18px 0 0; color: var(--muted); }
@@ -118,8 +118,6 @@
 .paper-case-facts { gap: 9px; }
 .paper-case-facts dt { color: var(--muted); }
 .paper-case-facts dd { line-height: 1.5; }
-.paper-case-card { box-shadow: none !important; border-radius: 10px !important; }
-
 /* Landscape learning mode is the default low-cognitive-load path. */
 .landscape-learning-card { box-shadow: none !important; border-radius: 10px !important; }
 .accessible-landscape { margin-top: 20px; }

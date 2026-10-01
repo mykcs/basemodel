@@ -21,14 +21,13 @@ describe('current Track A wrapper audit and adopted WB1 state', () => {
   });
 
   it('publishes the continuation boundary in human language while retaining the exact state in the record layer', () => {
-    expect(nextSteps).toContain('GEN28_STATE_V28_BARRIER_PASS_ADOPTED');
-    expect(nextSteps).toContain('原本漏存的训练状态也已经在不重跑 WebShop、不使用 GPU 的前提下补齐并核对通过');
+    expect(nextSteps).toContain('state-v28 采纳时的不可变 campaign 快照');
+    expect(nextSteps).toContain('前序 WB1 state-v28 是独立匹配比较线的历史状态');
     expect(nextSteps).toContain('3,584 / 20,640');
-    expect(nextSteps).toContain('17,056');
     expect(nextSteps).not.toContain('formal_task_consumption_allowed=false');
     expect(nextSteps).not.toContain('gpu_allocation_allowed=false');
-    expect(nextSteps).toContain('当前记录仍明确禁止继续消耗正式任务和分配 GPU，最终测试也保持锁定');
-    expect(nextSteps).toContain('恢复执行前必须重新读取最新的运行授权');
+    expect(nextSteps).toContain('正式任务消费仍锁定');
+    expect(nextSteps).toContain('PENDING_ZERO_FORMAL_PREFLIGHT');
     expect(nextSteps).toContain('RECONCILIATION.json');
   });
 });

@@ -132,8 +132,31 @@ test('loops is one canonical comparison with no duplicate interactive player', a
     await expect(page.locator('[data-interactive-research-explainer="compare"]')).toHaveCount(0);
     await expect(page.locator('.irx-transport')).toHaveCount(0);
     await expect(page.getByText('CORE COMPARISON', { exact: true })).toHaveCount(0);
+    const figure = page.locator('#fig-seed-openevo-update-target');
+    const diagram = figure.locator('figure.comparison-body');
+    const deepLinks = page.getByRole('navigation', { name: '更新机制的深入阅读' });
+    await expect(diagram.locator('.figure-actions')).toHaveCount(0);
+    await expect(deepLinks.locator('a')).toHaveCount(2);
+    const sharedExperienceY = (await figure.locator('.shared-experience').boundingBox())!.y;
+    const deepLinksY = (await deepLinks.boundingBox())!.y;
+    expect(sharedExperienceY).toBeLessThan(deepLinksY);
   }
 });
+
+for (const matrix of matrices.filter(({ viewport }) => [390, 768, 1440].includes(viewport.width))) {
+  test(`${matrix.name} puts the shared task experience before mechanism deep links`, async ({ page }) => {
+    await page.setViewportSize(matrix.viewport);
+    await setTheme(page, matrix.theme);
+    await page.goto('/research/seed-openevo/flow/loops/', { waitUntil: 'domcontentloaded' });
+    const figure = page.locator('#fig-seed-openevo-update-target');
+    const shared = figure.locator('.shared-experience');
+    const deepLinks = page.getByRole('navigation', { name: '更新机制的深入阅读' });
+    await expect(shared).toBeVisible();
+    await expect(deepLinks.locator('a')).toHaveCount(2);
+    expect((await shared.boundingBox())!.y).toBeLessThan((await deepLinks.boundingBox())!.y);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+  });
+}
 
 test('canonical static figures remain complete without JavaScript on active Chinese routes', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });

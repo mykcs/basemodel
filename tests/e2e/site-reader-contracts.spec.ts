@@ -150,6 +150,165 @@ for (const viewport of viewports) {
   });
 }
 
+for (const width of [390, 768, 1440]) {
+  for (const theme of ['light', 'dark']) {
+    test(`selected model comparison starts with both models and a decision field at ${width}px ${theme}`, async ({ page }) => {
+      const height = width === 390 ? 844 : width === 768 ? 1024 : 1000;
+      await page.setViewportSize({ width, height });
+      await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/compare/?models=qwen3-8b%2Cgpt-oss-20b', { waitUntil: 'domcontentloaded' });
+      await page.evaluate(() => document.fonts.ready);
+
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      await expect(page.locator('.comparison-result-heading')).toContainText('Qwen3-8B');
+      await expect(page.locator('.comparison-result-heading')).toContainText('gpt-oss-20b');
+      await expect(page.locator('.comparison-result-heading a[href="#compare-selection"]')).toBeVisible();
+
+      const firstDecisionValues = width <= 720
+        ? page.locator('.comparison-mobile-field').first().locator('.comparison-mobile-value')
+        : page.locator('.comparison-table tbody tr:not(.comparison-group)').first();
+      if (width <= 720) await expect(firstDecisionValues).toHaveCount(2);
+      else await expect(firstDecisionValues).toBeVisible();
+      for (const firstDecisionValue of await firstDecisionValues.all()) {
+        const bounds = await firstDecisionValue.boundingBox();
+        expect(bounds).not.toBeNull();
+        expect(bounds!.y).toBeGreaterThanOrEqual(0);
+        expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(height + 2);
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+    });
+  }
+}
+
+for (const width of [390, 768, 1440]) {
+  for (const theme of ['light', 'dark']) {
+    test(`Stage1 first viewport keeps optimization and capability distinct at ${width}px ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 844 });
+      await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/', { waitUntil: 'domcontentloaded' });
+      await page.evaluate(() => document.fonts.ready);
+
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      const h1 = page.locator('#main-content h1');
+      const result = page.locator('#main-content [data-stage1-result]');
+      await expect(h1).toContainText('WebShop');
+      await expect(result).toBeVisible();
+      await expect(result).toContainText('2.713 → 0.830');
+      await expect(result).toContainText('0.0369 → 0.0352 → 0 → 0');
+      await expect(result).toContainText('final panel');
+      await expect(result).toContainText('完整 Stage2 未测试');
+
+      const geometry = await result.evaluate((node) => {
+        const rect = node.getBoundingClientRect();
+        return { top: rect.top, bottom: rect.bottom, viewport: innerHeight };
+      });
+      expect(geometry.top).toBeGreaterThanOrEqual(0);
+      expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewport + 2);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+    });
+  }
+}
+
+for (const width of [390, 768, 1440]) {
+  for (const theme of ['light', 'dark']) {
+    test(`Bounded capacity answer and historical boundary fit at ${width}px ${theme}`, async ({ page }) => {
+      const height = width === 768 ? 1024 : width === 1440 ? 1000 : 844;
+      await page.setViewportSize({ width, height });
+      await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/', { waitUntil: 'domcontentloaded' });
+      await page.evaluate(() => document.fonts.ready);
+
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      await expect(page.locator('#main-content h1')).toContainText('固定状态需要多大容量');
+      const result = page.locator('#main-content [data-bounded-capacity-result]');
+      const boundary = page.locator('#main-content [data-bounded-capacity-boundary]');
+      await expect(result).toContainText('205,551,528 B');
+      await expect(result).toContainText('51,410,296 B');
+      await expect(result).toContainText('0.6298 → 0.6119');
+      await expect(result).toContainText('341 / 1024 → 350 / 1024');
+      await expect(boundary).toContainText('protected final panel 未访问');
+
+      for (const locator of [result, boundary]) {
+        const geometry = await locator.evaluate((node) => {
+          const rect = node.getBoundingClientRect();
+          return { top: rect.top, bottom: rect.bottom, viewport: innerHeight };
+        });
+        expect(geometry.top).toBeGreaterThanOrEqual(0);
+        expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewport + 2);
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+    });
+  }
+}
+
+for (const width of [320, 390]) {
+  for (const theme of ['light', 'dark']) {
+    test(`Study mobile research chain stays complete and readable at ${width}px ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 844 });
+      await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/research/seed-openevo/study/', { waitUntil: 'domcontentloaded' });
+      await page.evaluate(() => document.fonts.ready);
+
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      const thread = page.locator('[data-testid="experiment-first-study-index"] .study-hero__mobile-thread');
+      await expect(thread).toBeVisible();
+      for (const step of ['参数没更新', '长周期更新', '小模型接口', '候选准入', '参数历史', '固定 State / β', 'Stage1 学习方式']) {
+        await expect(thread).toContainText(step);
+      }
+
+      const geometry = await thread.evaluate((node) => {
+        const rect = node.getBoundingClientRect();
+        return {
+          top: rect.top,
+          bottom: rect.bottom,
+          fontSize: Number.parseFloat(getComputedStyle(node).fontSize),
+          clientWidth: node.clientWidth,
+          scrollWidth: node.scrollWidth,
+        };
+      });
+      expect(geometry.top).toBeGreaterThanOrEqual(0);
+      expect(geometry.bottom).toBeLessThanOrEqual(844);
+      expect(geometry.fontSize).toBeGreaterThanOrEqual(16);
+      expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 2);
+      await expect(page.locator('.experiment-children:visible')).toHaveCount(0);
+      await expect(page.locator('.experiment-node__main')).toHaveCount(7);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+    });
+  }
+}
+
+test('Stage1 route controls stay keyboard-visible at 200% text size', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/', { waitUntil: 'domcontentloaded' });
+  await page.addStyleTag({ content: 'html { font-size: 200% !important; }' });
+
+  const scaled = await page.evaluate(() => ({
+    rootFontSize: getComputedStyle(document.documentElement).fontSize,
+    viewportWidth: document.documentElement.clientWidth,
+    documentWidth: document.documentElement.scrollWidth,
+  }));
+  expect(scaled.rootFontSize).toBe('32px');
+  expect(scaled.documentWidth).toBeLessThanOrEqual(scaled.viewportWidth + 2);
+
+  for (let index = 0; index < 4; index++) {
+    await page.keyboard.press('Tab');
+    await page.waitForFunction(() => {
+      const rect = document.activeElement?.getBoundingClientRect();
+      return Boolean(rect && rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < innerHeight);
+    }, undefined, { timeout: 1_500 });
+    const focus = await page.evaluate(() => {
+      const element = document.activeElement;
+      const rect = element?.getBoundingClientRect();
+      return {
+        visible: Boolean(element && rect && rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < innerHeight),
+        focusVisible: Boolean(element?.matches(':focus-visible')),
+      };
+    });
+    expect(focus.visible, `keyboard stop ${index + 1} is visible`).toBe(true);
+    expect(focus.focusVisible, `keyboard stop ${index + 1} exposes focus`).toBe(true);
+  }
+});
+
 
 test('Study phone first screen exposes exactly the seven experiment parents', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -232,51 +391,34 @@ test('Study desktop keeps the three SD-LoRA acceleration entries grouped and sho
 });
 
 
-test('briefing scales the whole 16:9 slide to iPhone width without horizontal scrolling and caps desktop at 1280×720', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/research/seed-openevo/study/briefing/#capacity-diagnostic', { waitUntil: 'networkidle' });
-  const phone = await page.evaluate(() => {
-    const slide = document.querySelector('#capacity-diagnostic');
-    const deck = document.querySelector('[data-testid="progress-briefing"]');
-    const inner = slide?.querySelector('.slide-inner');
-    if (!slide || !deck || !inner) return null;
-    const box = slide.getBoundingClientRect();
-    const innerBox = inner.getBoundingClientRect();
-    const innerStyle = getComputedStyle(inner);
-    const matrix = new DOMMatrixReadOnly(innerStyle.transform);
-    return {
-      viewport: innerWidth,
-      documentWidth: document.documentElement.scrollWidth,
-      slideWidth: box.width,
-      slideHeight: box.height,
-      scale: Number.parseFloat(getComputedStyle(deck).getPropertyValue('--deck-scale')),
-      internalCssWidth: Number.parseFloat(innerStyle.width),
-      internalCssHeight: Number.parseFloat(innerStyle.height),
-      internalRenderedWidth: innerBox.width,
-      internalRenderedHeight: innerBox.height,
-      internalTransformScaleX: matrix.a,
-      internalTransformScaleY: matrix.d,
-    };
-  });
-  expect(phone).not.toBeNull();
-  expect(phone!.documentWidth).toBeLessThanOrEqual(phone!.viewport + 2);
-  expect(phone!.slideWidth).toBeCloseTo(phone!.viewport, 0);
-  expect(phone!.slideHeight / phone!.slideWidth).toBeCloseTo(9 / 16, 3);
-  expect(phone!.scale).toBeCloseTo(390 / 1280, 4);
-  // Guard the exact failure the owner caught: an outer 390px box is not enough if
-  // the inner desktop slide reflows/squeezes. The internal coordinate system must
-  // remain literal 1280×720 and only its rendered transform may scale down.
-  expect(phone!.internalCssWidth).toBeCloseTo(1280, 1);
-  expect(phone!.internalCssHeight).toBeCloseTo(720, 1);
-  expect(phone!.internalRenderedWidth).toBeCloseTo(phone!.slideWidth, 1);
-  expect(phone!.internalRenderedHeight).toBeCloseTo(phone!.slideHeight, 1);
-  expect(phone!.internalTransformScaleX).toBeCloseTo(390 / 1280, 4);
-  expect(phone!.internalTransformScaleY).toBeCloseTo(390 / 1280, 4);
-
-  await page.setViewportSize({ width: 2560, height: 1440 });
-  await page.goto('/research/seed-openevo/study/briefing/#capacity-diagnostic', { waitUntil: 'networkidle' });
-  const desktop = await page.locator('#capacity-diagnostic').boundingBox();
-  expect(desktop).not.toBeNull();
-  expect(desktop!.width).toBe(1280);
-  expect(desktop!.height).toBe(720);
+test('briefing presents current answers in natural reading flow at phone, tablet and desktop widths', async ({ page }) => {
+  for (const viewport of [{ width: 390, height: 844 }, { width: 768, height: 1024 }, { width: 1440, height: 1000 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/research/seed-openevo/study/briefing/#briefing-top', { waitUntil: 'networkidle' });
+    const result = await page.evaluate(() => {
+      const cover = document.querySelector('#briefing-top');
+      const answers = document.querySelector('[data-briefing-current-answers]');
+      const coverBox = cover?.getBoundingClientRect();
+      const answerBox = answers?.getBoundingClientRect();
+      return {
+        viewport: innerWidth,
+        viewportHeight: innerHeight,
+        documentWidth: document.documentElement.scrollWidth,
+        coverWidth: coverBox?.width ?? 0,
+        coverHeight: coverBox?.height ?? 0,
+        answerWidth: answerBox?.width ?? 0,
+        answerBottom: answerBox?.bottom ?? 0,
+        coverBottom: coverBox?.bottom ?? 0,
+        scale: getComputedStyle(document.querySelector('[data-testid="progress-briefing"]')!).getPropertyValue('--deck-scale'),
+      };
+    });
+    expect(result.documentWidth).toBeLessThanOrEqual(result.viewport + 2);
+    expect(result.coverWidth).toBeLessThanOrEqual(result.viewport + 2);
+    expect(result.coverHeight).toBeGreaterThan(0);
+    expect(result.answerWidth).toBeGreaterThan(0);
+    expect(result.answerBottom).toBeLessThanOrEqual(result.viewportHeight + 1);
+    expect(result.scale.trim()).toBe('');
+    await expect(page.locator('[data-briefing-current-answers] .current-answer')).toHaveCount(2);
+    await expect(page.locator('#next')).toHaveCount(1);
+  }
 });

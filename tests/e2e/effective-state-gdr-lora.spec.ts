@@ -344,24 +344,40 @@ for (const theme of ['light', 'dark'] as const) {
   });
 }
 
-test('phone first screen establishes the three experiments before deep method detail', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(route, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('.research-route-context')).toHaveCount(0);
-  await expect(page.locator('.paper__kicker')).toHaveCount(0);
-  const h1 = page.getByRole('heading', { level: 1 });
-  await expect(h1).toContainText('OpenEVO 参数演变：Bounded State 与 β 组件');
-  const ablation = page.locator('.paper-table-wrap--hero');
-  await expect(ablation).toBeVisible();
-  const h1Box = await h1.boundingBox();
-  const tableBox = await ablation.boundingBox();
-  expect(h1Box).not.toBeNull();
-  expect(tableBox).not.toBeNull();
-  expect(h1Box!.y).toBeLessThan(tableBox!.y);
-  expect(tableBox!.y).toBeLessThan(844);
-  expect(tableBox!.x).toBeGreaterThanOrEqual(0);
-  expect(tableBox!.x + tableBox!.width).toBeLessThanOrEqual(390);
-});
+for (const viewport of [
+  { width: 390, height: 844, theme: 'light' as const },
+  { width: 390, height: 844, theme: 'dark' as const },
+  { width: 768, height: 1024, theme: 'light' as const },
+  { width: 768, height: 1024, theme: 'dark' as const },
+  { width: 1440, height: 1000, theme: 'light' as const },
+  { width: 1440, height: 1000, theme: 'dark' as const },
+]) {
+  test(`matched-result answer and boundary lead the paper at ${viewport.width}px ${viewport.theme}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), viewport.theme);
+    await page.goto(route, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('.research-route-context')).toHaveCount(0);
+    await expect(page.locator('.paper__kicker')).toHaveCount(0);
+
+    const h1 = page.getByRole('heading', { level: 1 });
+    const answer = page.locator('.esg__lede');
+    await expect(h1).toContainText('OpenEVO 参数演变：Bounded State 与 β 组件');
+    await expect(answer).toContainText('正式匹配仅比较 Bounded 与 β-gating');
+    await expect(answer).toContainText('+0.0250');
+    await expect(answer).toContainText('跨 0');
+    await expect(answer).toContainText('-2.21 pp');
+    await expect(answer).toContainText('45.98/100（32/128）与 20.77/100（10/128）');
+
+    const geometry = await answer.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+    expect(overflow).toBe(false);
+  });
+}
 
 test('evidence keeps public names separate from exact internal experiment identities', async ({ page }) => {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
@@ -377,7 +393,9 @@ test('historical Gated-Delta and Bounded pages still point to the successor stud
   await page.goto('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('link', { name: /回到三组 1\.7B 已完成实验.*β-gating/ })).toHaveAttribute('href', route);
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('.bounded__next-question').getByRole('link', { name: /另一条后续问题/ })).toHaveAttribute('href', route);
+  const successor = page.locator(`.bounded__next-question a[href="${route}"]`);
+  await expect(successor).toHaveCount(1);
+  await expect(successor).toBeVisible();
 });
 
 test('paper page emits no browser errors', async ({ page }) => {

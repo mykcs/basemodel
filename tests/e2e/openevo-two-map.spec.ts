@@ -18,6 +18,206 @@ async function assertNoPageOverflow(page: Page) {
   expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 2);
 }
 
+for (const viewport of [
+  { width: 390, height: 844, theme: 'light' as const },
+  { width: 390, height: 844, theme: 'dark' as const },
+  { width: 768, height: 1024, theme: 'light' as const },
+  { width: 768, height: 1024, theme: 'dark' as const },
+  { width: 1440, height: 1000, theme: 'light' as const },
+  { width: 1440, height: 1000, theme: 'dark' as const },
+]) {
+  test(`archive identity and current-state boundary lead categories at ${viewport.width}px ${viewport.theme}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.evaluate((theme) => localStorage.setItem('atlas-theme', theme), viewport.theme);
+    const response = await page.goto(archive, { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+
+    const archivePage = page.getByTestId('openevo-experiment-archive');
+    const heading = archivePage.locator('.archive__head');
+    await expect(archivePage.locator('h1')).toHaveText('实验档案');
+    await expect(heading).toContainText('不是当前运行状态页');
+    await expect(heading).toContainText('核对数字和实验来源');
+    await expect(archivePage.locator('.archive__jump a')).toHaveCount(4);
+
+    const geometry = await heading.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    await assertNoPageOverflow(page);
+  });
+}
+
+for (const viewport of [
+  { width: 390, height: 844, theme: 'light' as const },
+  { width: 390, height: 844, theme: 'dark' as const },
+  { width: 768, height: 1024, theme: 'light' as const },
+  { width: 768, height: 1024, theme: 'dark' as const },
+  { width: 1440, height: 1000, theme: 'light' as const },
+  { width: 1440, height: 1000, theme: 'dark' as const },
+]) {
+  test(`legacy Stage-1 identity and sampling boundary lead archived assets at ${viewport.width}px ${viewport.theme}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), viewport.theme);
+    const previous = `${root}stage1-previous/`;
+    const response = await page.goto(previous, { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+
+    const archive = page.getByTestId('legacy-stage1-archive');
+    const hero = archive.locator('.legacy-s1__hero');
+    await expect(archive.locator('h1')).toHaveText('历史初始经验与模型文件');
+    await expect(hero).toContainText('随机种子与实际采样设置不同，因此不能视为逐条相同的数据');
+    await expect(hero.locator('aside')).toContainText('不能改名当作后续实验重新采集的数据');
+    await expect(archive.locator('.legacy-s1__artifacts a')).toHaveCount(3);
+
+    const geometry = await hero.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    await assertNoPageOverflow(page);
+  });
+}
+
+for (const viewport of [
+  { width: 390, height: 844, theme: 'light' as const },
+  { width: 390, height: 844, theme: 'dark' as const },
+  { width: 768, height: 1024, theme: 'light' as const },
+  { width: 768, height: 1024, theme: 'dark' as const },
+  { width: 1440, height: 1000, theme: 'light' as const },
+  { width: 1440, height: 1000, theme: 'dark' as const },
+]) {
+  test(`Stage-1 exploration answers the interface question first at ${viewport.width}px ${viewport.theme}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), viewport.theme);
+    const explorationHistory = `${root}stage1-evolution/`;
+    const response = await page.goto(explorationHistory, { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+
+    const orientation = page.locator('[data-research-orientation]');
+    const answer = orientation.locator('[data-reader-purpose]');
+    await expect(orientation.locator('h1')).toHaveText('购物接口的探索与修订');
+    await expect(answer).toContainText('形成两种模型共用的购物规则');
+    await expect(answer).toContainText('旧记录保留原身份');
+
+    const geometry = await answer.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    await assertNoPageOverflow(page);
+  });
+}
+
+for (const viewport of [
+  { width: 390, height: 844, theme: 'light' as const },
+  { width: 390, height: 844, theme: 'dark' as const },
+  { width: 768, height: 1024, theme: 'light' as const },
+  { width: 768, height: 1024, theme: 'dark' as const },
+  { width: 1440, height: 1000, theme: 'light' as const },
+  { width: 1440, height: 1000, theme: 'dark' as const },
+]) {
+  test(`old Stage-2 gate explains successes without updates at ${viewport.width}px ${viewport.theme}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), viewport.theme);
+    const legacy = `${root}stage2-256-window/`;
+    const response = await page.goto(legacy, { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+
+    const archive = page.getByTestId('legacy-stage2-archive');
+    const answer = archive.locator('[data-budget-boundary]');
+    await expect(archive.locator('h1')).toHaveText('旧批次门槛：有成功经验，参数仍然没有更新');
+    await expect(answer).toContainText('797 条可以用于训练的完整成功轨迹');
+    await expect(answer).toContainText('592 条');
+    await expect(answer).toContainText('至少要有 8 个不同任务各自成功 2 次');
+    await expect(answer).toContainText('最好的一批只有 7 个');
+
+    const geometry = await answer.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    await assertNoPageOverflow(page);
+  });
+}
+
+for (const viewport of [
+  { width: 390, height: 844, theme: 'light' as const },
+  { width: 390, height: 844, theme: 'dark' as const },
+  { width: 768, height: 1024, theme: 'light' as const },
+  { width: 768, height: 1024, theme: 'dark' as const },
+  { width: 1440, height: 1000, theme: 'light' as const },
+  { width: 1440, height: 1000, theme: 'dark' as const },
+]) {
+  test(`Ceiling final evidence leads before the paper reference at ${viewport.width}px ${viewport.theme}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), viewport.theme);
+    const ceiling = `${root}stage2-ceiling/`;
+    const response = await page.goto(ceiling, { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+
+    const pageOwner = page.getByTestId('ceiling-stage2-strategy');
+    const answer = pageOwner.locator('.ceiling__hero>div>span');
+    await expect(pageOwner.locator('h1')).toHaveText('7B 持续学习的最终结果');
+    await expect(answer).toContainText('49.33/100');
+    await expect(answer).toContainText('58 道完全成功');
+    await expect(answer).toContainText('149 轮学习、19,072 次');
+    await expect(answer).toContainText('143 次参数更新');
+    await expect(pageOwner.locator('.ceiling__final')).toContainText('不是同模型状态、同一批任务上的本地配对重跑');
+
+    const geometry = await answer.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    await assertNoPageOverflow(page);
+  });
+}
+
+for (const viewport of [
+  { width: 390, height: 844, theme: 'light' as const },
+  { width: 390, height: 844, theme: 'dark' as const },
+  { width: 768, height: 1024, theme: 'light' as const },
+  { width: 768, height: 1024, theme: 'dark' as const },
+  { width: 1440, height: 1000, theme: 'light' as const },
+  { width: 1440, height: 1000, theme: 'dark' as const },
+]) {
+  test(`7B analysis leads with the training/effect boundary at ${viewport.width}px ${viewport.theme}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), viewport.theme);
+    const analysis = `${root}stage2-7b-analysis/`;
+    const response = await page.goto(analysis, { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+
+    const pageOwner = page.getByTestId('openevo-7b-stage2-analysis-map');
+    const firstViewport = pageOwner.locator('.stage2-map__head');
+    await expect(firstViewport.locator('h1')).toHaveText('7B 后续学习与参数分析');
+    await expect(firstViewport.locator('strong')).toContainText('修改规则后，模型确实产生了参数更新');
+    await expect(firstViewport.locator('span')).toContainText('购物能力有没有提高，还要在未用于训练的任务上比较表现');
+    await expect(firstViewport.locator('span')).toContainText('来自不同实验，不能合并成一次运行');
+
+    const geometry = await firstViewport.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    await assertNoPageOverflow(page);
+  });
+}
+
 registerOpenEvoResearchDeepDiveTests();
 registerReaderJourneyTests();
 
@@ -120,6 +320,103 @@ test('successor gateway exposes exactly two reading modes and shared Stage1 fact
   await expect(gateway).toContainText('50 / 1440');
   await assertNoPageOverflow(page);
 });
+
+for (const viewport of [
+  { width: 390, height: 844, theme: 'light' as const },
+  { width: 390, height: 844, theme: 'dark' as const },
+  { width: 768, height: 1024, theme: 'light' as const },
+  { width: 768, height: 1024, theme: 'dark' as const },
+  { width: 1440, height: 1000, theme: 'light' as const },
+  { width: 1440, height: 1000, theme: 'dark' as const },
+]) {
+  test(`successor result and comparison boundary lead at ${viewport.width}px ${viewport.theme}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), viewport.theme);
+    const response = await page.goto(successor, { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+
+    const orientation = page.locator('[data-research-orientation]');
+    const answer = orientation.locator('[data-reader-purpose]');
+    await expect(orientation.locator('h1')).toHaveText('3B 与 1.7B 的学习实验');
+    await expect(answer).toContainText('1.7B 已完成学习和最终测试');
+    await expect(answer).toContainText('3B 还没有同口径最终结果');
+    await expect(answer).toContainText('两种模型使用同一套购物规则');
+
+    const geometry = await answer.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    await assertNoPageOverflow(page);
+  });
+}
+
+for (const viewport of [
+  { width: 390, height: 844, theme: 'light' as const },
+  { width: 390, height: 844, theme: 'dark' as const },
+  { width: 768, height: 1024, theme: 'light' as const },
+  { width: 768, height: 1024, theme: 'dark' as const },
+  { width: 1440, height: 1000, theme: 'light' as const },
+  { width: 1440, height: 1000, theme: 'dark' as const },
+]) {
+  test(`successor report leads with result and SEED boundary at ${viewport.width}px ${viewport.theme}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), viewport.theme);
+    const response = await page.goto(report, { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+
+    const orientation = page.locator('[data-research-orientation]');
+    const answer = orientation.locator('[data-reader-purpose]');
+    await expect(orientation.locator('h1')).toHaveText('3B 与 1.7B 购物学习实验');
+    await expect(answer).toContainText('1.7B 最终测试 37.60 分');
+    await expect(answer).toContainText('128 题中 1 题完全成功');
+    await expect(answer).toContainText('3B 还没有同口径最终结果');
+    await expect(answer).toContainText('SEED 数字只是外部参考，不是本地配对对照');
+
+    const geometry = await answer.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    await assertNoPageOverflow(page);
+  });
+}
+
+for (const viewport of [
+  { width: 390, height: 844, theme: 'light' as const },
+  { width: 390, height: 844, theme: 'dark' as const },
+  { width: 768, height: 1024, theme: 'light' as const },
+  { width: 768, height: 1024, theme: 'dark' as const },
+  { width: 1440, height: 1000, theme: 'light' as const },
+  { width: 1440, height: 1000, theme: 'dark' as const },
+]) {
+  test(`successor exploration leads with the failure question at ${viewport.width}px ${viewport.theme}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), viewport.theme);
+    const response = await page.goto(exploration, { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+
+    const orientation = page.locator('[data-research-orientation]');
+    const answer = orientation.locator('[data-reader-purpose]');
+    await expect(orientation.locator('h1')).toHaveText('购物接口的探索与修订');
+    await expect(answer).toContainText('3B 经常无法完成购物');
+    await expect(answer).toContainText('两种模型共用的购物规则');
+    await expect(answer).toContainText('旧记录保留原身份');
+
+    const geometry = await answer.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    await assertNoPageOverflow(page);
+  });
+}
 
 for (const path of [root, firstRun, successor, exploration, report, mechanism, archive, `${root}stage1-previous/`, `${root}stage2-256-window/`, `${root}stage2-ceiling/`, `${successor}harness-2-0/`, `${root}stage1-evolution/`]) {
   test(`desktop route ${path} is healthy`, async ({ page }) => {

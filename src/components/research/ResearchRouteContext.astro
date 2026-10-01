@@ -20,7 +20,9 @@ const isExperimentHub = Boolean(experiment && route === experimentPrimaryRoute);
 const task = compact
   ? (zh ? 'WebShop：按要求搜索、选规格、购买商品。' : 'WebShop: search, choose options, and buy the requested product.')
   : (zh ? 'WebShop 是模拟购物任务：模型读取页面，选择搜索、选规格或购买等动作。OpenEvo 研究怎样把这些经验用于后续尝试。' : 'WebShop is a simulated shopping task: the model reads pages and chooses actions such as searching, selecting options, or purchasing. OpenEvo studies how that experience can inform later attempts.');
-const compactPurpose = route === 'first-run'
+const compactPurpose = route === 'stage1-learning-objectives'
+  ? (zh ? '只看 Stage1 学习信号；不外推至完整 Stage2。' : 'Stage 1 learning signal only; no claim about full Stage 2.')
+  : route === 'first-run'
   ? (zh ? '第一轮历史记录；不是当前运行。' : 'First-run history; not a live run.')
   : route === 'openevo-2-0'
     ? (zh ? '3B 与 1.7B 使用同一购物规则。' : '3B and 1.7B use the same shopping rules.')
@@ -30,8 +32,10 @@ const compactPurpose = route === 'first-run'
         ? (zh ? 'DirectApply 派生分析：SD-LoRA 计算扩展性。' : 'DirectApply analysis: SD-LoRA compute scaling.')
         : route === 'q17-directapply-frontier'
           ? (zh ? 'WebShop 网页购物任务。这里的更新规则是：候选参数通过共同检查后，下一轮直接使用，不再做旧 GDR-v1 的 16 题新旧参数小测；正式名称是 DirectApply / No-GDR。本页只比较第 127 / 128 轮起点的两个相邻参数状态在同一组 32 题上的局部变化。' : 'WebShop shopping tasks. Here, a candidate update enters the next round after the shared checks pass, without the old GDR-v1 16-task old-vs-new probe; the formal name is DirectApply / No-GDR. This page only compares the local change between the model states entering rounds 127 and 128 on the same 32 tasks.')
-          : route === 'bounded-effective-state-gdr'
+        : route === 'bounded-effective-state-gdr'
             ? (zh ? '三组已完成 1.7B：普通 OpenEVO / Bounded Online Recurrence / β-gating（α 固定为 1）；动态 α+β 尚未运行。' : 'Three completed 1.7B experiments: ordinary OpenEVO / Bounded Online Recurrence / β-gating (α fixed at 1); dynamic α+β has not been run.')
+            : route === 'sd-lora-bounded-state'
+              ? (zh ? 'rank32 容量筛查；详细结果与边界见下方。' : 'rank32 capacity screen; results and limits follow below.')
             : record.purpose[locale];
 const purpose = isExperimentHub && experiment && !compact ? experiment.motivation[locale] : (compact ? compactPurpose : record.purpose[locale]);
 const contextExperimentTitle = experiment?.title[locale];
@@ -40,6 +44,8 @@ const contextExperimentHubTitle = route === 'bounded-effective-state-gdr'
   : experiment?.title[locale];
 const contextRecordLabel = route === 'q17-directapply-frontier' && compact
   ? (zh ? '相邻两个模型状态 · 32 题同题诊断' : 'Two adjacent model states · 32-task same-task diagnostic')
+  : route === 'sd-lora-bounded-state' && compact
+    ? (zh ? 'SD-LoRA · Bounded 容量筛查' : 'SD-LoRA · Bounded capacity screen')
   : record.label[locale];
 const resultLinks = experiment ? experiment.childLinks.filter((link) => link.role === 'result') : [];
 const hubResults = experiment && resultLinks.length === 0

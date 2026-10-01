@@ -24,6 +24,14 @@ Before any user-facing product, copy, navigation, information-architecture, page
 
 For implementation, read [`docs/dev/LATEST.md`](docs/dev/LATEST.md). For CI, hosting, runner, or release changes, also read [`docs/dev/DESIGN.md`](docs/dev/DESIGN.md), then the existing current owners routed by [`docs/dev/README.md`](docs/dev/README.md), executable configuration, and live provider state. Consult [`docs/dev/ARCHIVE.md`](docs/dev/ARCHIVE.md) only for a replaced direction. The shared lifecycle is owned by https://github.com/mykcs/.agents/blob/main/docs/agents/DEV_PROTOCOL.md; Dev explains choices without replacing `docs/agents/current/` or the required checks.
 
+## Current design direction
+
+For material user-facing composition, visual hierarchy, page rhythm, responsive expression, or content-to-HTML design work, read [`docs/design/LATEST.md`](docs/design/LATEST.md). For system-level redesign, shared patterns/components, or site-wide migration, also read [`docs/design/README.md`](docs/design/README.md), [`docs/design/SYSTEM.md`](docs/design/SYSTEM.md), [`docs/design/PATTERNS.md`](docs/design/PATTERNS.md), and [`docs/design/DELIVERY.md`](docs/design/DELIVERY.md).
+
+`docs/design/` is parallel to Wish and Dev: Wish decides what the product should become; Dev explains how it is built/operated; Design explains how research meaning becomes content, narrative, semantic HTML, visual hierarchy, and responsive reading. Design coordinates existing narrow current owners rather than replacing scientific authority, Reader Contracts, `ui-design-principles.md`, research presentation rules, accessibility/theme contracts, or executable tests.
+
+For the current Design v1 rollout, follow [`docs/agents/tasks/BASEMODEL_DESIGN_SYSTEM_V1_20260928.md`](docs/agents/tasks/BASEMODEL_DESIGN_SYSTEM_V1_20260928.md) and [`docs/design/CODEX_LUNA_RUNBOOK.md`](docs/design/CODEX_LUNA_RUNBOOK.md).
+
 ## Central website learning
 
 For every user-facing website copy task, read the current shared human-expression standard before the first substantial draft:

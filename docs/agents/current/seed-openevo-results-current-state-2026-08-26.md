@@ -4,6 +4,16 @@ This file is the narrow latest-state override for the Results route.
 
 Read it together with `seed-openevo-results-reader-contract.md`. Where the older reader-contract snapshot says the source-faithful successor is `executing-formal-run`, `PREPARED`, or still awaiting 128/128 runtime semantic validation, **this file is newer and wins**.
 
+## 2026-09-28 live-state refresh
+
+This section supersedes the August snapshot's `PREPARED` Track A successor and its old WB1 `next_gate`. The historical results below remain valid at their immutable evidence revisions.
+
+The current WB1 router on `mykcs/openevo-experiment/main@18f0d2bb9e6fdb8f4b8e6f86d511fb8a8c2feac5` records Track B state-v28 adopted at `3,584 / 20,640` counted episodes. Formal task consumption and GPU allocation are false; the final panel is locked. Its next gate is a separate Gen29 execution-readiness/resumption decision. This is a dated router snapshot, not a claim that Gen29 is running.
+
+The latest owner-authorized follow-on workline is open PR #609 at `mykcs/openevo-experiment@836fc465f94619ecf81fe24aa1465015a6d8cc66`. It preregisters five unanswered packages (direction-preserving scalar gate, token/click-choice entropy, rank-capacity sweep, causal Task Vector intervention, and full SEED-style Stage2). The activation record is `PENDING_ZERO_FORMAL_PREFLIGHT`; formal task consumption and final-panel access remain false. The plan is not an experiment result, and the page must not describe its work as started or completed. Its immutable state sources are that commit's `configs/experiment/current-campaign.json`, `configs/experiment/activations/post-advisor-unanswered-202609282338.json`, and `docs/science/webshop/program/POST_ADVISOR_UNANSWERED_EXPERIMENTS_202609282338.md`.
+
+Track A remains closed at `mykcs/openevo-experiment@f80ae1816384bb7e8e82d193b22644e17f561f19`: 128/128 semantic validation passed, both arms contributed 128 valid episodes, BASE / frozen SD-LoRA Task Score×100 was `7.17 / 8.74`, both had `5/128` exact successes, and the paired Task Score 95% interval `[-3.21, +6.31]` crosses zero. The result does not establish stable improvement. Keep this completed measurement, the prior WB1 state snapshot, and the newly authorized but inactive plan as separate states.
+
 ## Current Track A state
 
 Source-faithful Track A is now scientifically closed as a **valid paired measurement that does not establish a stable improvement**.

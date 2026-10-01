@@ -282,9 +282,12 @@ describe('sitewide normalization first repair batch', () => {
     expect(runGuide).toContain('Technical capability is not project authorization');
     expect(runGuide).toContain('从 Gate 01 开始 ↓');
 
-    expect(briefing).toContain('--deck-w:1280px');
-    expect(briefing).toContain('--deck-h:720px');
     expect(briefing).toContain('class="briefing-slide');
+    expect(briefing).toContain('height:auto');
+    expect(briefing).toContain('.taskvector-paper{grid-template-columns:minmax(0,1fr)');
+    expect(briefing).not.toContain('--deck-w');
+    expect(briefing).not.toContain('--deck-h');
+    expect(briefing).not.toContain('overflow-x:clip');
 
     for (const page of [baseModelCompat, studyDesignCompat]) {
       expect(page).toContain('window.location.replace(target)');

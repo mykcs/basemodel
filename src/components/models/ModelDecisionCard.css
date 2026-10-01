@@ -1,4 +1,4 @@
-.model-card { display: flex; min-height: 235px; flex-direction: column; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); padding: 18px; }
+.model-card { display: flex; min-height: 235px; flex-direction: column; border: 1px solid var(--line); background: var(--surface); padding: 18px; }
 .model-card h3 a { text-decoration: none; }
 .model-card h3 a:hover { color: var(--accent-deep); }
 .card-topline, .card-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; }

@@ -148,6 +148,8 @@ describe('canonical SEED / OpenEvo research figures', () => {
     expect(compareFigure).toContain('VALIDATED SUCCESSOR CARRIER / STATE');
     expect(compareFigure).toContain('non-weight');
     expect(compareFigure).toContain('parametric');
+    expect(compareFigure.indexOf('<figure class="comparison-body">')).toBeLessThan(compareFigure.indexOf('<nav class="figure-actions"'));
+    expect(compareFigure).toContain("aria-label={t('更新机制的深入阅读', 'Explore update mechanisms in depth')}");
     expect(compareFigure).not.toContain('CORE COMPARISON');
   });
 

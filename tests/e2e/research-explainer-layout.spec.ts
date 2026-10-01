@@ -38,6 +38,49 @@ async function settle(page: Page) {
   await page.waitForTimeout(80);
 }
 
+test('WebShop benchmark identity and evidence lead its page contents directory', async ({ page }) => {
+  test.skip(!routeInScope('/research/seed-openevo/flow/webshop/'), 'outside hosted focused route scope');
+
+  for (const matrix of matrices) {
+    await test.step(matrix.name, async () => {
+      await page.setViewportSize(matrix.viewport);
+      await page.goto('/research/seed-openevo/flow/webshop/', { waitUntil: 'domcontentloaded' });
+      await page.evaluate((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await settle(page);
+
+      const summary = page.locator('.benchmark-summary');
+      const facts = summary.locator('.benchmark-facts');
+      const contents = page.locator('.webshop-entry > .page-contents');
+      await expect(summary.getByRole('heading', { name: 'WebShop 基准' })).toBeVisible();
+      await expect(facts.locator('a[href="https://arxiv.org/abs/2207.01206"]')).toBeVisible();
+      await expect(facts).toContainText('NeurIPS 2022');
+      await expect(facts).toContainText('1.18M');
+      await expect(facts).toContainText('12,087');
+      await expect(facts.locator('#webshop-impact')).toContainText('386 Scopus citations');
+      await expect(facts.locator('#webshop-impact')).toContainText('截至 2026-09-12');
+      await expect(contents).toBeVisible();
+
+      const firstViewportEvidence = await facts.evaluate((element) => {
+        const summary = element.closest('.benchmark-summary');
+        const contents = document.querySelector('.webshop-entry > .page-contents');
+        return {
+          factsBottom: element.getBoundingClientRect().bottom,
+          viewportHeight: window.innerHeight,
+          contentsFollowsSummary: Boolean(summary && contents
+            && summary.compareDocumentPosition(contents) & Node.DOCUMENT_POSITION_FOLLOWING),
+          contentsPrecedesSetting: Boolean(contents && document.querySelector('.seed-setting')
+            && contents.compareDocumentPosition(document.querySelector('.seed-setting')!) & Node.DOCUMENT_POSITION_FOLLOWING),
+        };
+      });
+      expect(firstViewportEvidence.contentsFollowsSummary).toBe(true);
+      expect(firstViewportEvidence.contentsPrecedesSetting).toBe(true);
+      expect(firstViewportEvidence.factsBottom).toBeLessThanOrEqual(firstViewportEvidence.viewportHeight);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+    });
+  }
+});
+
 async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage: boolean) {
   return root.evaluate((element, context) => {
     const { width, requiresMainStage } = context;
@@ -508,3 +551,52 @@ test('research framework opens as a system map and can enter and leave trace mod
   await root.getByRole('button', { name: '重置' }).click();
   await expect(root).toHaveAttribute('data-overview', 'true');
 });
+
+const compactMapRoutes = [
+  { kind: 'openevo', path: '/research/seed-openevo/flow/openevo/', label: 'OpenEvo' },
+  { kind: 'seed', path: '/research/seed-openevo/flow/seed/', label: 'SEED' },
+  { kind: 'alfworld', path: '/research/seed-openevo/flow/alfworld/', label: 'ALFWorld' },
+] as const;
+
+for (const matrix of matrices) {
+  for (const route of compactMapRoutes) {
+    test(`${route.label} keeps trace controls before the map and brings the map into first view at ${matrix.name}`, async ({ page }) => {
+      test.skip(!routeInScope(route.path), 'outside hosted focused route scope');
+      await page.setViewportSize(matrix.viewport);
+      await page.addInitScript((theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+      await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+      const root = page.locator(`[data-interactive-research-explainer="${route.kind}"]`);
+      await waitForHydratedExplainer(root);
+      const geometry = await root.evaluate((element) => {
+        const figure = element.querySelector('.irx-paper-figure')!.getBoundingClientRect();
+        const controls = element.querySelector('.irx-controls')!.getBoundingClientRect();
+        return {
+          figureTop: figure.top,
+          controlsTop: controls.top,
+          viewportHeight: window.innerHeight,
+          scrollWidth: document.documentElement.scrollWidth,
+          clientWidth: document.documentElement.clientWidth,
+        };
+      });
+      expect(geometry.controlsTop).toBeLessThan(geometry.figureTop);
+      expect(geometry.figureTop).toBeLessThan(geometry.viewportHeight);
+      expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 2);
+      await expect(root).toHaveAttribute('data-overview', 'true');
+      await expect(root.locator('.irx-paper-caption')).toContainText('系统结构');
+      const stepSelection = root.locator('.irx-step-selection');
+      await expect(stepSelection.locator('summary')).toContainText('选择追踪步骤');
+      const stepCount = Number(await root.locator('.irx-progress').getAttribute('aria-valuemax'));
+      await expect(stepSelection.locator('.irx-stepper button')).toHaveCount(stepCount);
+      await expect(stepSelection.locator('.irx-stepper button').first()).toBeHidden();
+      await stepSelection.locator('summary').click();
+      await expect(stepSelection.locator('.irx-stepper button').first()).toBeVisible();
+      if (route.kind === 'alfworld') {
+        await expect(root.locator('.irx-paper-caption')).toContainText('总览模式保留完整拓扑');
+        await expect(root.locator('.irx-live')).toBeHidden();
+        await root.getByRole('button', { name: '下一步' }).click();
+        await expect(root).toHaveAttribute('data-overview', 'false');
+        await expect(root.locator('.irx-live')).toBeVisible();
+      }
+    });
+  }
+}

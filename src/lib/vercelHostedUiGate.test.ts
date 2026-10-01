@@ -91,7 +91,7 @@ describe('Vercel hosted UI gate planner', () => {
     expect(plan.specs).toEqual(['tests/e2e/openevo-two-map.spec.ts']);
   });
 
-  it('focuses the fixed 16:9 briefing on its active Chinese route', () => {
+  it('focuses the responsive briefing on its active Chinese route', () => {
     const plan = planHostedUi([
       'src/components/research/SeedOpenEvoProgressBriefing.astro',
       'src/lib/seedOpenEvoProgressBriefing.test.ts',

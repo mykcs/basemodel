@@ -54,7 +54,7 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
     seed: {
       eyebrow: '',
       title: zh ? 'SEED 的两阶段 WebShop 学习循环' : 'SEED’s two-stage WebShop learning loop',
-      lede: zh ? 'Stage 1 先由 Qwen 通过 SEED / verl-agent harness 与 Princeton WebShop 环境交互采轨迹，再由外部 GLM-5.2 离线生成 hindsight skill 并做 SFT；Stage 2 保持同一 interaction contract，改由当前 policy 自己复盘，并把 OPD 与 GRPO 写回下一版参数。' : 'Stage 1 first collects Qwen trajectories through the SEED / verl-agent harness over the Princeton WebShop environment, then uses external GLM-5.2 offline for hindsight-skill SFT; Stage 2 keeps the same interaction contract, moves analysis to the current policy, and writes OPD plus GRPO into the next parameter state.',
+      lede: zh ? 'Stage 1 用 GLM-5.2 离线分析已完成轨迹并生成 hindsight skill，再做 SFT；Stage 2 改由当前 policy 自己复盘，并以 OPD + GRPO 更新参数。两个阶段共享同一 WebShop 交互合同。' : 'Stage 1 uses offline GLM-5.2 analysis to produce hindsight skills for SFT; Stage 2 moves reflection into the current policy and updates parameters with OPD plus GRPO. Both stages share the same WebShop interaction contract.',
       steps: [
         { label: 'rollout', narration: zh ? 'Stage 2：当前 policy → SEED / verl-agent harness ↔ Princeton WebShop，做真实 on-policy interaction。' : 'Stage 2: current policy → SEED / verl-agent harness ↔ Princeton WebShop for real on-policy interaction.' },
         { label: 'trajectory', narration: zh ? '完整 episode 被封存，原 action 不再改写。' : 'The completed episode is preserved and its sampled actions are no longer rewritten.' },
@@ -66,8 +66,8 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
     },
     openevo: {
       eyebrow: '',
-      title: zh ? 'OpenEvo 如何把一次 WebShop 经验变成下一版 Agent' : 'How OpenEvo turns one WebShop experience into the next agent revision',
-      lede: zh ? '先完成 WebShop 任务 N 并封存证据；演化只在任务完成边界之后发生。当前参数路线把经验写入 SD-LoRA adapter，通过验证后才形成任务 N+1 使用的新版本。' : 'Finish WebShop Task N and seal its evidence first; evolution happens only after the task boundary. The current parametric path writes experience into an SD-LoRA adapter, which becomes the Task N+1 successor revision only after validation.',
+      title: zh ? '一次 WebShop 经验怎样进入后续任务' : 'How one WebShop experience reaches a later task',
+      lede: zh ? '任务 N 完成并封存证据后，演化方法才生成候选 adapter；通过验证的 SD-LoRA 状态从任务 N+1 开始生效。' : 'Only after Task N is complete and its evidence is sealed does an evolution method produce a candidate adapter; validated SD-LoRA state activates from Task N+1.',
       steps: [
         { label: 'Task N', narration: zh ? '当前 Project Head 在环境里完成任务。' : 'The current Project Head completes the task in the environment.' },
         { label: zh ? '封存' : 'Seal', narration: zh ? '任务完成边界把 trajectory/outcome/metadata 封存。' : 'The task-completion boundary seals trajectory/outcome/metadata.' },
@@ -185,22 +185,8 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
     ? '总览模式保留完整拓扑。颜色区分角色，形状区分数据类型，实线表示数据流，虚线表示控制或回环。'
     : 'Overview mode preserves the complete topology. Color separates roles, shape separates data types, solid lines carry data, and dashed lines show control or feedback.';
 
-  return (
-    <section
-      ref={rootRef}
-      className={`irx irx-${kind}`}
-      data-interactive-research-explainer={kind}
-      data-overview={overview}
-      data-transport-docked={transportDocked}
-      data-reduced-motion={reducedMotion}
-      data-compact={compact}
-      data-ui-audit="contrast layout"
-      tabIndex={0}
-      onKeyDown={onKeyDown}
-      aria-label={config.title}
-    >
-      <ExplainerHeader id={`irx-${kind}-title`} locale={locale} title={config.title} lede={config.lede} eyebrow={config.eyebrow} />
-      <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} overview={overview} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={togglePlay} onOverview={showOverview} />
+  const figure = (
+    <>
       <figure className="irx-paper-figure" data-overview={overview}>
         <div className="irx-stage" data-step={step}>
           {kind === 'webshop' && <WebShopExplainer locale={locale} step={step} />}
@@ -233,6 +219,26 @@ export default function InteractiveResearchExplainer({ locale, kind, compact = f
         <summary><span>Level 3</span>{zh ? '技术边界与复现提示' : 'Technical boundary and reproduction notes'}</summary>
         <p>{technicalCopy(kind, locale)}</p>
       </details>
+    </>
+  );
+
+  return (
+    <section
+      ref={rootRef}
+      className={`irx irx-${kind}`}
+      data-interactive-research-explainer={kind}
+      data-overview={overview}
+      data-transport-docked={transportDocked}
+      data-reduced-motion={reducedMotion}
+      data-compact={compact}
+      data-ui-audit="contrast layout"
+      tabIndex={0}
+      onKeyDown={onKeyDown}
+      aria-label={config.title}
+    >
+      <ExplainerHeader id={`irx-${kind}-title`} locale={locale} title={config.title} lede={config.lede} eyebrow={config.eyebrow} hideDepth={kind === 'openevo' || kind === 'seed'} />
+      <StepControls locale={locale} step={step} maxStep={maxStep} steps={config.steps} overview={overview} compactSteps={kind === 'openevo' || kind === 'seed' || kind === 'alfworld'} playing={playing} reducedMotion={reducedMotion} onStep={go} onPlay={togglePlay} onOverview={showOverview} />
+      {figure}
     </section>
   );
 }

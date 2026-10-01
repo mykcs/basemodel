@@ -27,6 +27,22 @@ const routes = [
   },
 ] as const;
 
+const historicalArms = [
+  { id: '3b-self', path: '/research/seed-openevo/study/results/3b-self-analysis/', answer: '1.71', boundary: '与 3B base 逐项一致' },
+  { id: '7b-self', path: '/research/seed-openevo/study/results/7b-self-analysis/', answer: '13.33 升到 25.66', boundary: '只从 3 个增到 4 个' },
+  { id: '3b-minimax', path: '/research/seed-openevo/study/results/3b-minimax-analysis/', answer: '74.58% 时停止', boundary: 'final eval 未运行' },
+  { id: '7b-minimax', path: '/research/seed-openevo/study/results/7b-minimax-analysis/', answer: '16.94、0/128、116/128', boundary: '任务结束后分析轨迹' },
+] as const;
+
+const resultNotes = [
+  { id: 'why-it-kept-failing', answer: '接近 0' },
+  { id: 'first-positive-transfer', answer: '+0.124' },
+  { id: 'independent-replication', answer: '740 次科学有效' },
+  { id: 'second-generation', answer: '132 条轨迹' },
+  { id: 'measurement-boundary', answer: 'MV4：测量已验证' },
+  { id: 'current-conclusion', answer: '可复现收益' },
+] as const;
+
 for (const width of [390, 768, 1440]) {
   for (const route of routes) {
     test(`${route.id} keeps result-first order and page containment at ${width}px`, async ({ page }) => {
@@ -39,6 +55,10 @@ for (const width of [390, 768, 1440]) {
       await expect(direct).toBeVisible();
       await expect(later).toBeVisible();
       await expect(direct).toContainText(route.directText);
+      if (route.id === 'four-arm') {
+        const firstResultTop = await direct.evaluate((element) => element.getBoundingClientRect().top);
+        expect(firstResultTop, 'four-arm result matrix must start in the first viewport').toBeLessThan(width === 390 ? 844 : 1000);
+      }
       await expect(page.locator('body')).toContainText(route.boundaryText);
 
       const order = await page.evaluate(({ directSelector, laterSelector }) => {
@@ -51,6 +71,48 @@ for (const width of [390, 768, 1440]) {
 
       const overflow = await page.evaluate(() =>
         document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+      expect(overflow, `${route.id}: page-level horizontal overflow at ${width}px`).toBe(false);
+    });
+  }
+}
+
+for (const width of [390, 768, 1440]) {
+  for (const note of resultNotes) {
+    test(`${note.id} starts with result evidence before series navigation at ${width}px`, async ({ page }) => {
+      const height = width === 390 ? 844 : 1000;
+      await page.setViewportSize({ width, height });
+      await page.goto(`/research/seed-openevo/study/results/${note.id}/`, { waitUntil: 'domcontentloaded' });
+      const summary = page.locator('.note-hero .dek');
+      await expect(summary).toBeVisible();
+      const summaryBox = await summary.boundingBox();
+      expect(summaryBox && summaryBox.y + summaryBox.height, `${note.id}: direct answer must fit in the first viewport`).toBeLessThanOrEqual(height);
+      const firstSection = page.locator('.note-body section').first();
+      await expect(firstSection).toContainText(note.answer);
+      const sectionTop = await firstSection.evaluate((element) => element.getBoundingClientRect().top);
+      expect(sectionTop, `${note.id}: direct result must precede the series navigation`).toBeLessThan(height);
+      const navOrder = await page.locator('.note-body').evaluate((body, selector) => {
+        const nav = document.querySelector(selector as string);
+        return Boolean(nav && body.compareDocumentPosition(nav) & Node.DOCUMENT_POSITION_FOLLOWING);
+      }, '.series-nav');
+      expect(navOrder, `${note.id}: navigation must follow the result content`).toBe(true);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+      expect(overflow, `${note.id}: page-level horizontal overflow at ${width}px`).toBe(false);
+    });
+  }
+}
+
+for (const width of [390, 768, 1440]) {
+  for (const route of historicalArms) {
+    test(`${route.id} leads with the sealed result at ${width}px`, async ({ page }) => {
+      const height = width === 390 ? 844 : 1000;
+      await page.setViewportSize({ width, height });
+      await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+      const lead = page.locator('.exp-scaffold__lead');
+      await expect(lead).toContainText(route.answer);
+      await expect(lead).toContainText(route.boundary);
+      const box = await lead.boundingBox();
+      expect(box && box.y + box.height, `${route.id}: direct answer must fit in the first viewport`).toBeLessThanOrEqual(height);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
       expect(overflow, `${route.id}: page-level horizontal overflow at ${width}px`).toBe(false);
     });
   }

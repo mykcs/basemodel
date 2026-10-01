@@ -18,18 +18,6 @@ const seedTaskSampler = `${seedCodeRoot}/agent_system/environments/env_package/w
 ---
 
 <section class="webshop-entry" data-ui-audit="contrast layout overflow">
-  <nav class="page-contents" aria-labelledby="webshop-contents-title">
-    <h2 id="webshop-contents-title">{t('目录', 'Contents')}</h2>
-    <ol>
-      <li><a href="#webshop-benchmark"><span>01</span>{t('WebShop 基准', 'WebShop benchmark')}</a></li>
-      <li><a href="#webshop-impact"><span>02</span>{t('论文影响力', 'Paper impact')}</a></li>
-      <li><a href="#webshop-seed-setting"><span>03</span>{t('SEED 的 WebShop 设置', 'SEED WebShop setting')}</a></li>
-      <li><a href="#irx-webshop-title"><span>04</span>{t('Agent 交互', 'Agent interaction')}</a></li>
-      <li><a href="#fig-webshop-small-world"><span>05</span>{t('任务生成与划分', 'Task generation and split')}</a></li>
-      <li><a href="#fig-webshop-evaluation"><span>06</span>{t('评分与公平比较', 'Scoring and fair comparison')}</a></li>
-    </ol>
-  </nav>
-
   <section id="webshop-benchmark" class="benchmark-summary" aria-labelledby="webshop-benchmark-title">
     <header>
       <h2 id="webshop-benchmark-title">{t('WebShop 基准', 'WebShop benchmark')}</h2>
@@ -64,6 +52,18 @@ const seedTaskSampler = `${seedCodeRoot}/agent_system/environments/env_package/w
       <a href={impactSource} target="_blank" rel="noreferrer"><ExternalBrandMark href={impactSource} />{t('引用数来源 ↗', 'Citation source ↗')}</a>
     </div>
   </section>
+
+  <nav class="page-contents" aria-labelledby="webshop-contents-title">
+    <h2 id="webshop-contents-title">{t('目录', 'Contents')}</h2>
+    <ol>
+      <li><a href="#webshop-benchmark"><span>01</span>{t('WebShop 基准', 'WebShop benchmark')}</a></li>
+      <li><a href="#webshop-impact"><span>02</span>{t('论文影响力', 'Paper impact')}</a></li>
+      <li><a href="#webshop-seed-setting"><span>03</span>{t('SEED 的 WebShop 设置', 'SEED WebShop setting')}</a></li>
+      <li><a href="#irx-webshop-title"><span>04</span>{t('Agent 交互', 'Agent interaction')}</a></li>
+      <li><a href="#fig-webshop-small-world"><span>05</span>{t('任务生成与划分', 'Task generation and split')}</a></li>
+      <li><a href="#fig-webshop-evaluation"><span>06</span>{t('评分与公平比较', 'Scoring and fair comparison')}</a></li>
+    </ol>
+  </nav>
 
   <section id="webshop-seed-setting" class="seed-setting" aria-labelledby="webshop-seed-setting-title">
     <header>

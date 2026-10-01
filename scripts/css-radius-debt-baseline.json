@@ -6,7 +6,7 @@
     "16",
     "999"
   ],
-  "baseline_total": 394,
+  "baseline_total": 387,
   "debt": {
     "src/components/AgentToSeedBridge.astro": {
       "8": 1,
@@ -45,9 +45,6 @@
     "src/components/catalog/CatalogFreshnessNotice.astro": {
       "12": 1
     },
-    "src/components/models/ModelDecisionCard.css": {
-      "15": 1
-    },
     "src/components/models/detail/ModelResearchSummary.astro": {
       "14": 1
     },
@@ -57,10 +54,6 @@
     },
     "src/components/navigation/PageOutline.astro": {
       "8": 1
-    },
-    "src/components/papers/PaperExplorer.css": {
-      "8": 1,
-      "12": 2
     },
     "src/components/research/AlfworldTaskFamilies.astro": {
       "8": 1,
@@ -357,7 +350,6 @@
     },
     "src/styles/final-hardening.css": {
       "9": 2,
-      "11": 1,
       "12": 4,
       "13": 1,
       "14": 5,
@@ -398,7 +390,6 @@
       "7": 2,
       "8": 4,
       "9": 5,
-      "11": 2,
       "12": 5,
       "14": 1,
       "18": 2,
