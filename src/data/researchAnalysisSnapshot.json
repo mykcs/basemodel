@@ -1,0 +1,520 @@
+{
+  "schema": "basemodel.comparative-analysis.v1",
+  "mode": "existing-site-projection",
+  "recipe": {
+    "version": 1,
+    "sourceHashes": {
+      "src/lib/researchComparisons.ts": "993841a8690105be57aff739ac45149cdba2fb8df21e2b02c5a63776d8b5aad6",
+      "src/lib/researchStudyAnalyses.ts": "1ea59a7c49883c7d8205747eb3bad976a0793adfb97d344d2972a7b659fc2213",
+      "scripts/research/analyze-evidence.ts": "1d4ddcc31e60931cfb2723ecf1a1f8b6cd67fd282b4f7a7ffea022a68d818f0d"
+    },
+    "toleranceForPublishedFloats": 1e-10,
+    "exactCountTolerance": 0,
+    "randomResampling": "not-performed",
+    "selection": "all-prespecified-by-this-version-windows-and-reported-epochs; exploratory-not-preregistered"
+  },
+  "inputs": {
+    "betaHistory": {
+      "repository": "mykcs/basemodel",
+      "commit": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "path": "public/research/seed-openevo/evidence/bounded-beta-r200-round-series-20261001.json",
+      "sha256": "ed97e8d26fad52cdd4822fd6fb95414de30c916c16554ff415246140bddd1cde",
+      "normalizedContentSha256": "cc0b138ea4815151c067d422035a06a3434a135a85721c50a0fed1fd3cec6f69"
+    },
+    "betaAggregate": {
+      "repository": "mykcs/basemodel",
+      "commit": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "path": "public/research/seed-openevo/evidence/bounded-beta-r200-analysis-20261001.json",
+      "sha256": "237246d32275e057dd5533853b9c1750bdd6a9816154ab99d98f2487808f479c"
+    },
+    "frozenFinal": {
+      "repository": "mykcs/basemodel",
+      "commit": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "path": "public/research/seed-openevo/evidence/bounded-effective-state-final-snapshot-20260918.json",
+      "sha256": "29771a71343fa1e99b6210bf843aea98a4f76f84988c469d2fc588d56ec302a0"
+    },
+    "postAdvisor": null
+  },
+  "studies": {
+    "learningSignal": {
+      "id": "stage1-learning-signal",
+      "status": "awaiting-pr805-integration",
+      "values": null,
+      "source": {
+        "repository": "mykcs/basemodel",
+        "commit": "43fa2cbb3998824333826e8542cebf8265842f17",
+        "path": "public/research/seed-openevo/evidence/post-advisor-ab-final-20260928.json",
+        "sha256": "d1f9373230a327b2626b2c39e7c67f3a032cad855f03d764d8d9d28e48a4d80d"
+      },
+      "reason": "The source can be rehearsed offline, but its website publication is owned by PR 805. Missing input is not measured zero."
+    },
+    "rankCapacity": {
+      "id": "rank32-capacity",
+      "status": "awaiting-pr805-integration",
+      "values": null,
+      "source": {
+        "repository": "mykcs/basemodel",
+        "commit": "43fa2cbb3998824333826e8542cebf8265842f17",
+        "path": "public/research/seed-openevo/evidence/post-advisor-ab-final-20260928.json",
+        "sha256": "d1f9373230a327b2626b2c39e7c67f3a032cad855f03d764d8d9d28e48a4d80d"
+      },
+      "reason": "The source can be rehearsed offline, but its website publication is owned by PR 805. Missing input is not measured zero."
+    },
+    "betaLateTraining": {
+      "id": "beta-late-training",
+      "analysisRole": "exploratory",
+      "publication": "existing-site-projection",
+      "inputKind": "per-round-scalar",
+      "source": {
+        "repository": "mykcs/basemodel",
+        "commit": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+        "path": "public/research/seed-openevo/evidence/bounded-beta-r200-round-series-20261001.json",
+        "sha256": "ed97e8d26fad52cdd4822fd6fb95414de30c916c16554ff415246140bddd1cde"
+      },
+      "aggregatePointer": "https://github.com/mykcs/basemodel/blob/360eabb92e5feb9ccef6ae7785332f73f7620ee0/public/research/seed-openevo/evidence/bounded-beta-r200-analysis-20261001.json",
+      "recipe": {
+        "version": 1,
+        "windows": [
+          {
+            "id": "R96-119",
+            "first": 96,
+            "last": 119
+          },
+          {
+            "id": "R120-139",
+            "first": 120,
+            "last": 139
+          },
+          {
+            "id": "R140-159",
+            "first": 140,
+            "last": 159
+          },
+          {
+            "id": "R160-179",
+            "first": 160,
+            "last": 179
+          },
+          {
+            "id": "R180-199",
+            "first": 180,
+            "last": 199
+          }
+        ],
+        "selection": "all-published-windows",
+        "aggregation": "equal-round-mean-and-ordinary-least-squares-slope",
+        "exclusions": [],
+        "randomResampling": "not-performed"
+      },
+      "scope": {
+        "firstRound": 96,
+        "lastRound": 199,
+        "roundCount": 104,
+        "independentUnitCount": null,
+        "finalPanelAccess": 0
+      },
+      "comparison": {
+        "disposition": "descriptive-only",
+        "reasons": [],
+        "limitations": [
+          "task-population-identity-unknown",
+          "unique-task-count-unknown",
+          "trial-denominator-unknown",
+          "identity-not-controlled:model",
+          "identity-not-controlled:method",
+          "identity-not-controlled:harness",
+          "identity-not-controlled:decoding",
+          "treatment-identity-unknown:budget",
+          "treatment-identity-unknown:checkpointLineage",
+          "treatment-identity-unknown:taskSchedule",
+          "treatment-identity-unknown:seedSchedule",
+          "historical-or-temporal-descriptive-contrast",
+          "paired-observations-unavailable",
+          "pairing-keys-unavailable",
+          "independent-unit-count-unknown"
+        ],
+        "contract": {
+          "id": "beta-late-training",
+          "arms": [
+            "pre-extension",
+            "extension"
+          ],
+          "metricId": "taskScore",
+          "unit": "ratio",
+          "evaluationRole": "training",
+          "design": "temporal-windows",
+          "heldFixed": {},
+          "treatmentVariables": [
+            "checkpointLineage",
+            "budget",
+            "taskSchedule",
+            "seedSchedule"
+          ],
+          "estimand": "Descriptive change across all fixed published training windows; no frozen-final or causal stopping contrast",
+          "pairingKeys": [],
+          "independentUnit": "round",
+          "exclusionRule": "missing-stays-null-no-success-filter",
+          "aggregationRule": "reported-mean",
+          "analysisRole": "exploratory",
+          "preregistrationRef": null,
+          "recipeRef": "src/lib/researchStudyAnalyses.ts@v1",
+          "rawPairsAvailable": false
+        },
+        "sampleSizes": [
+          {
+            "arm": "pre-extension",
+            "trials": null,
+            "independentUnits": null
+          },
+          {
+            "arm": "extension",
+            "trials": null,
+            "independentUnits": null
+          }
+        ],
+        "causalClaimAuthorized": false
+      },
+      "windows": [
+        {
+          "id": "R96-119",
+          "firstRound": 96,
+          "lastRound": 119,
+          "roundCount": 24,
+          "meanTaskScore": 0.5935658482142855,
+          "scorePoints": 59.35658482142855,
+          "meanLoss": 0.08513658985551847,
+          "exactSuccessCount": 688,
+          "scoreSlopePerRound": 0.004355014405506931,
+          "lossSlopePerRound": -0.000695019159722537,
+          "missing": {
+            "taskScore": [],
+            "loss": [],
+            "exactSuccess": []
+          },
+          "agreement": {
+            "score": {
+              "computed": 0.5935658482142855,
+              "reported": 0.5935658482142855,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "loss": {
+              "computed": 0.08513658985551847,
+              "reported": 0.08513658985551847,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "exact": {
+              "computed": 688,
+              "reported": 688,
+              "absoluteError": 0,
+              "tolerance": 0
+            },
+            "scoreSlope": {
+              "computed": 0.004355014405506931,
+              "reported": 0.004355014405506931,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "lossSlope": {
+              "computed": -0.000695019159722537,
+              "reported": -0.000695019159722537,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            }
+          }
+        },
+        {
+          "id": "R120-139",
+          "firstRound": 120,
+          "lastRound": 139,
+          "roundCount": 20,
+          "meanTaskScore": 0.6158119518285532,
+          "scorePoints": 61.58119518285532,
+          "meanLoss": 0.07531550104734659,
+          "exactSuccessCount": 619,
+          "scoreSlopePerRound": 0.0011852834746837366,
+          "lossSlopePerRound": -0.00027977449612236085,
+          "missing": {
+            "taskScore": [],
+            "loss": [],
+            "exactSuccess": []
+          },
+          "agreement": {
+            "score": {
+              "computed": 0.6158119518285532,
+              "reported": 0.6158119518285532,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "loss": {
+              "computed": 0.07531550104734659,
+              "reported": 0.07531550104734659,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "exact": {
+              "computed": 619,
+              "reported": 619,
+              "absoluteError": 0,
+              "tolerance": 0
+            },
+            "scoreSlope": {
+              "computed": 0.0011852834746837366,
+              "reported": 0.0011852834746837366,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "lossSlope": {
+              "computed": -0.00027977449612236085,
+              "reported": -0.00027977449612236085,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            }
+          }
+        },
+        {
+          "id": "R140-159",
+          "firstRound": 140,
+          "lastRound": 159,
+          "roundCount": 20,
+          "meanTaskScore": 0.5428393618100649,
+          "scorePoints": 54.28393618100649,
+          "meanLoss": 0.07195866123958547,
+          "exactSuccessCount": 675,
+          "scoreSlopePerRound": -0.00908327989040513,
+          "lossSlopePerRound": -0.00003064077414843096,
+          "missing": {
+            "taskScore": [],
+            "loss": [],
+            "exactSuccess": []
+          },
+          "agreement": {
+            "score": {
+              "computed": 0.5428393618100649,
+              "reported": 0.5428393618100649,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "loss": {
+              "computed": 0.07195866123958547,
+              "reported": 0.07195866123958547,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "exact": {
+              "computed": 675,
+              "reported": 675,
+              "absoluteError": 0,
+              "tolerance": 0
+            },
+            "scoreSlope": {
+              "computed": -0.00908327989040513,
+              "reported": -0.00908327989040513,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "lossSlope": {
+              "computed": -0.00003064077414843096,
+              "reported": -0.00003064077414843096,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            }
+          }
+        },
+        {
+          "id": "R160-179",
+          "firstRound": 160,
+          "lastRound": 179,
+          "roundCount": 20,
+          "meanTaskScore": 0.5950996009199133,
+          "scorePoints": 59.50996009199133,
+          "meanLoss": 0.06262823393381013,
+          "exactSuccessCount": 700,
+          "scoreSlopePerRound": 0.0073689530237932704,
+          "lossSlopePerRound": -0.00011906168616520788,
+          "missing": {
+            "taskScore": [],
+            "loss": [],
+            "exactSuccess": []
+          },
+          "agreement": {
+            "score": {
+              "computed": 0.5950996009199133,
+              "reported": 0.5950996009199133,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "loss": {
+              "computed": 0.06262823393381013,
+              "reported": 0.06262823393381013,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "exact": {
+              "computed": 700,
+              "reported": 700,
+              "absoluteError": 0,
+              "tolerance": 0
+            },
+            "scoreSlope": {
+              "computed": 0.0073689530237932704,
+              "reported": 0.0073689530237932704,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "lossSlope": {
+              "computed": -0.00011906168616520788,
+              "reported": -0.00011906168616520788,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            }
+          }
+        },
+        {
+          "id": "R180-199",
+          "firstRound": 180,
+          "lastRound": 199,
+          "roundCount": 20,
+          "meanTaskScore": 0.6038969606782106,
+          "scorePoints": 60.38969606782106,
+          "meanLoss": 0.058328067701854225,
+          "exactSuccessCount": 852,
+          "scoreSlopePerRound": 0.0069272244209685405,
+          "lossSlopePerRound": -0.00035481241658437803,
+          "missing": {
+            "taskScore": [],
+            "loss": [],
+            "exactSuccess": []
+          },
+          "agreement": {
+            "score": {
+              "computed": 0.6038969606782106,
+              "reported": 0.6038969606782106,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "loss": {
+              "computed": 0.058328067701854225,
+              "reported": 0.058328067701854225,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "exact": {
+              "computed": 852,
+              "reported": 852,
+              "absoluteError": 0,
+              "tolerance": 0
+            },
+            "scoreSlope": {
+              "computed": 0.0069272244209685405,
+              "reported": 0.0069272244209685405,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            },
+            "lossSlope": {
+              "computed": -0.00035481241658437803,
+              "reported": -0.00035481241658437803,
+              "absoluteError": 0,
+              "tolerance": 1e-10
+            }
+          }
+        }
+      ],
+      "adjacentChanges": [
+        {
+          "from": "R96-119",
+          "to": "R120-139",
+          "taskScore": 0.02224610361426771,
+          "loss": -0.009821088808171882
+        },
+        {
+          "from": "R120-139",
+          "to": "R140-159",
+          "taskScore": -0.07297259001848833,
+          "loss": -0.0033568398077611222
+        },
+        {
+          "from": "R140-159",
+          "to": "R160-179",
+          "taskScore": 0.05226023910984845,
+          "loss": -0.009330427305775338
+        },
+        {
+          "from": "R160-179",
+          "to": "R180-199",
+          "taskScore": 0.008797359758297318,
+          "loss": -0.004300166231955907
+        }
+      ],
+      "extension": {
+        "meanTaskScore": 0.599498280799062,
+        "meanLoss": 0.06047815081783218,
+        "agreement": {
+          "score": {
+            "computed": 0.599498280799062,
+            "reported": 0.5994982807990619,
+            "absoluteError": 1.1102230246251565e-16,
+            "tolerance": 1e-10
+          },
+          "loss": {
+            "computed": 0.06047815081783218,
+            "reported": 0.06047815081783218,
+            "absoluteError": 0,
+            "tolerance": 1e-10
+          }
+        }
+      },
+      "diagnostics": {
+        "lossFellInEveryAdjacentWindow": true,
+        "scoreFellDespiteLowerLoss": [
+          "R120-139:R140-159"
+        ],
+        "postExtensionMeansAboveR140R159": true
+      },
+      "uncertainty": {
+        "origin": "not-computed",
+        "reason": "Round-level aggregates do not provide independent paired tasks or a preregistered stopping comparison."
+      },
+      "unsupported": [
+        "new-frozen-final-score",
+        "optimal-120-160-200-stopping-round",
+        "beta-causes-the-recovery",
+        "effective-rank-proves-minimum-state-capacity"
+      ]
+    }
+  },
+  "frozenFinal": {
+    "status": "unchanged-existing-final",
+    "values": {
+      "sameFrozenPanel": true,
+      "panelContentSha256": "3529b94f97491434da01f9b2adc2faf1d0571545603a788d367561ae2b529d48",
+      "panelFileSha256": "aea97afdd5b176126cf67f7ed315189c95fbf37b07263c84b947903cca69aa4d",
+      "panelDigest": "cd531caff21d13d72df5c6fb013fadc10457393134d8bc3bcdc63fadf76bc453",
+      "directApply": {
+        "score": 60.71597673160174,
+        "exactCount": 50,
+        "exactRate": 0.390625
+      },
+      "off": {
+        "score": 45.984865395021636,
+        "exactCount": 32,
+        "exactRate": 0.25
+      },
+      "on": {
+        "score": 20.769142316017316,
+        "exactCount": 10,
+        "exactRate": 0.078125
+      },
+      "boundary": "DirectApply is a historical predecessor on the same frozen 128-task panel, not a third arm of the preregistered OFF-vs-ON treatment contrast"
+    },
+    "cannotReplaceWithTrainingScore": true
+  },
+  "permissions": {
+    "newExperiments": false,
+    "finalPanelAccess": false,
+    "sitePublicationExpansion": false,
+    "onlineServiceCalls": false
+  },
+  "contentSha256": "ddff5e8af2b81aba3933cf9855ee75d6b31ad9eaa6c29ee121bdf8aa0b08fe62"
+}

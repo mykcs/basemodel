@@ -1,0 +1,105 @@
+{
+  "schema": "basemodel.d03-qualification.v1",
+  "baseline_commit": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+  "dependencies": {
+    "D01": "618e4b65cbf3052e0503ea1d875d81015231aa33",
+    "D02": "bfdbb5c5a5a668055e45e4e718436660d87a2e77"
+  },
+  "scope": "Three existing-source offline analyses; post-advisor inputs stay restricted and are not added to website publication.",
+  "implementation_sha256": {
+    "src/lib/researchComparisons.ts": "993841a8690105be57aff739ac45149cdba2fb8df21e2b02c5a63776d8b5aad6",
+    "src/lib/researchStudyAnalyses.ts": "1ea59a7c49883c7d8205747eb3bad976a0793adfb97d344d2972a7b659fc2213",
+    "src/lib/researchComparisons.test.ts": "0f49dac2d7196ce7112336db1e5109b30235ae1cd5ee3957b572d342c3980186",
+    "src/lib/researchStudyAnalyses.test.ts": "ac596ead8cdff8ab473c37d215d031fe7974452d1602ef640111479be0a0b351",
+    "scripts/research/analyze-evidence.ts": "1d4ddcc31e60931cfb2723ecf1a1f8b6cd67fd282b4f7a7ffea022a68d818f0d",
+    "scripts/research/verify-analysis-independent.py": "750082941068931c738092583c4097d758947267c42b22069f9a8dafaf6ab8d9",
+    "scripts/validate-data.ts": "63b309a2f009860b29e65551af209f823644e1cb151f4c08214c94fb5f162720",
+    "src/data/researchAnalysisSnapshot.json": "44f0ff75812e2a09be094c24570a7b92e9d2d20d4698485b749c7e4344678595"
+  },
+  "checks": {
+    "node": "24.20.0",
+    "new_tests": 51,
+    "structural_tests": 934,
+    "behavior_tests": 37,
+    "typecheck_files": 603,
+    "typecheck_errors": 0,
+    "verify_deploy": "PASS",
+    "build": "PASS",
+    "static_pages": 265
+  },
+  "default_projection": {
+    "content_sha256": "ddff5e8af2b81aba3933cf9855ee75d6b31ad9eaa6c29ee121bdf8aa0b08fe62",
+    "available_questions": [
+      "beta-late-training"
+    ],
+    "awaiting_publication": [
+      "stage1-learning-signal",
+      "rank32-capacity"
+    ],
+    "inputs": {
+      "betaHistory": {
+        "repository": "mykcs/basemodel",
+        "commit": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+        "path": "public/research/seed-openevo/evidence/bounded-beta-r200-round-series-20261001.json",
+        "sha256": "ed97e8d26fad52cdd4822fd6fb95414de30c916c16554ff415246140bddd1cde",
+        "normalizedContentSha256": "cc0b138ea4815151c067d422035a06a3434a135a85721c50a0fed1fd3cec6f69"
+      },
+      "betaAggregate": {
+        "repository": "mykcs/basemodel",
+        "commit": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+        "path": "public/research/seed-openevo/evidence/bounded-beta-r200-analysis-20261001.json",
+        "sha256": "237246d32275e057dd5533853b9c1750bdd6a9816154ab99d98f2487808f479c"
+      },
+      "frozenFinal": {
+        "repository": "mykcs/basemodel",
+        "commit": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+        "path": "public/research/seed-openevo/evidence/bounded-effective-state-final-snapshot-20260918.json",
+        "sha256": "29771a71343fa1e99b6210bf843aea98a4f76f84988c469d2fc588d56ec302a0"
+      },
+      "postAdvisor": null
+    }
+  },
+  "restricted_rehearsal": {
+    "content_sha256": "d189ad066899504555f7469601d361371501439dff5d467d95c351751db8f555",
+    "three_questions_verified": true,
+    "same_content_hash_on_repeat": true,
+    "source": {
+      "repository": "mykcs/basemodel",
+      "commit": "43fa2cbb3998824333826e8542cebf8265842f17",
+      "path": "public/research/seed-openevo/evidence/post-advisor-ab-final-20260928.json",
+      "sha256": "d1f9373230a327b2626b2c39e7c67f3a032cad855f03d764d8d9d28e48a4d80d"
+    },
+    "copied_to_publication": false
+  },
+  "independent_arithmetic": [
+    {
+      "status": "PASS",
+      "numeric_checks": 38,
+      "maximum_absolute_error": 1.1102230246251565e-16,
+      "post_advisor_checked": false,
+      "uncertainty_recomputed": false,
+      "human_review": false
+    },
+    {
+      "status": "PASS",
+      "numeric_checks": 47,
+      "maximum_absolute_error": 1.1102230246251565e-16,
+      "post_advisor_checked": true,
+      "uncertainty_recomputed": false,
+      "human_review": false
+    },
+    {
+      "negative_count_mutation": "REJECTED",
+      "exit_code": 1
+    }
+  ],
+  "unsupported_completion_claims": [
+    "independent human review",
+    "bootstrap recomputed",
+    "new final-panel result",
+    "online W&B or server ingestion",
+    "Vercel final gate",
+    "merge",
+    "Production release"
+  ]
+}
