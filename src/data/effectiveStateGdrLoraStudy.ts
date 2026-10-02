@@ -1,4 +1,7 @@
 import { BOUNDED_FORMAL_TRAJECTORY } from './boundedFormalTrajectory';
+import { frozenFinalView } from './researchEvidenceIndex';
+
+const frozenFinal = frozenFinalView();
 
 export type EffectiveStateSealedEvidence = {
   repository: 'mykcs/openevo-experiment';
@@ -286,16 +289,7 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     publicSnapshot: '/research/seed-openevo/evidence/bounded-effective-state-final-snapshot-20260918.json',
     currentMainPrelaunchHandoff: `${repo}/blob/9f6259be9b961223a5cab7711fe1f297e272d541/docs/agent-handoffs/BOUNDED_GDR_WANDB_PRELAUNCH_HANDOFF_2026-09-15.md`,
   },
-  threeWayFinal: {
-    sameFrozenPanel: true,
-    panelContentSha256: '3529b94f97491434da01f9b2adc2faf1d0571545603a788d367561ae2b529d48',
-    panelFileSha256: 'aea97afdd5b176126cf67f7ed315189c95fbf37b07263c84b947903cca69aa4d',
-    panelDigest: 'cd531caff21d13d72df5c6fb013fadc10457393134d8bc3bcdc63fadf76bc453',
-    directApply: { score: 60.71597673160174, exactCount: 50, exactRate: 0.390625 },
-    off: { score: 45.984865395021635, exactCount: 32, exactRate: 0.25 },
-    on: { score: 20.769142316017317, exactCount: 10, exactRate: 0.078125 },
-    boundary: 'DirectApply is a historical predecessor on the same frozen 128-task panel, not a third arm of the preregistered OFF-vs-ON treatment contrast',
-  },
+  threeWayFinal: frozenFinal,
   timingComparison: {
     directApply: { trainerHours: 31.087279689253773, wallClockHours: 74.77710828602314, rolloutGpuActiveHours: 76.65479753295581 },
     off: { transitionHours: 2.024057791739987, wallClockHours: 56.24978798992104, rolloutGpuActiveHours: 82.53728786057896, gpuActiveLowerBoundHours: 84.56134565231895 },
@@ -486,13 +480,13 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     trajectory: BOUNDED_FORMAL_TRAJECTORY,
     finalPanel: {
       label: 'same frozen 128-task final · Task Score / 100',
-      off: 45.984865395021635,
-      on: 20.769142316017317,
-      offExactCount: 32,
-      onExactCount: 10,
-      offExactRate: 0.25,
-      onExactRate: 0.078125,
-      panelDigest: 'cd531caff21d13d72df5c6fb013fadc10457393134d8bc3bcdc63fadf76bc453',
+      off: frozenFinal.off.score,
+      on: frozenFinal.on.score,
+      offExactCount: frozenFinal.off.exactCount,
+      onExactCount: frozenFinal.on.exactCount,
+      offExactRate: frozenFinal.off.exactRate,
+      onExactRate: frozenFinal.on.exactRate,
+      panelDigest: frozenFinal.panelDigest,
     },
     conclusion: 'LONG_HORIZON_TRANSIENT_ONLY',
   } satisfies EffectiveStateFormalResult,
