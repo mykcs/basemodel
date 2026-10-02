@@ -25,6 +25,7 @@ const HOSTED_GATE_OWNERS = new Set([
   'scripts/vercel-lab-browser-gate.mjs',
   'vercel.json',
   'scripts/ci-ui-gate.mjs',
+  'scripts/ci-build-artifact.mjs',
   'scripts/ci-public-plan.mjs',
   'scripts/ci-ui-test-list.mjs',
   'scripts/ci-ui-test-timings-202609061200.json',
