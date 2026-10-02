@@ -69,13 +69,16 @@ function commandMenuPayloadBytes(html) {
 const home = read('index.html');
 const metrics = {
   modelsHtml: bytes('models/index.html'),
+  papersHtml: bytes('papers/index.html'),
+  compareHtml: bytes('compare/index.html'),
   workspaceHtml: bytes('workspace/index.html'),
+  landscapeHtml: bytes('landscape/index.html'),
   commandProps: commandPropsBytes(home),
   commandMenuPayload: commandMenuPayloadBytes(home),
   homeReachableJsGzip: reachableJsGzip(home),
   homeGlobalCssGzip: homeStylesGzip(home),
 };
-const limits = { modelsHtml: 250000, workspaceHtml: 250000, commandProps: 8000, commandMenuPayload: 8000, homeReachableJsGzip: 64800, homeGlobalCssGzip: 21360 };
+const limits = { modelsHtml: 120000, papersHtml: 150000, compareHtml: 150000, workspaceHtml: 120000, landscapeHtml: 150000, commandProps: 8000, commandMenuPayload: 8000, homeReachableJsGzip: 64800, homeGlobalCssGzip: 21360 };
 const failures = Object.entries(metrics).filter(([key, value]) => value >= limits[key]);
 console.log(JSON.stringify({ metrics, limits }, null, 2));
 if (failures.length) throw new Error(`payload budget exceeded: ${failures.map(([key, value]) => `${key}=${value}`).join(', ')}`);
