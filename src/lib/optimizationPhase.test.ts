@@ -51,8 +51,11 @@ describe('optimization-phase regressions', () => {
     const landscape = readSource('../pages/_bodies/landscape.astro');
     const families = readSource('../pages/_bodies/families-index.astro');
 
-    expect(landscape).toContain('<LandscapePrototype client:visible');
+    expect(landscape).toContain('<LandscapePrototype client:visible locale={locale} />');
     expect(landscape).not.toContain('<LandscapePrototype client:load');
+    expect(landscape).not.toContain('models={models}');
+    expect(landscape).toContain('id="landscape-interactive"');
+    expect(landscape).toContain('data-landscape-static-fallback');
     expect(families).toContain('<FamilyTimeline client:visible');
     expect(families).not.toContain('<FamilyTimeline client:load');
   });
@@ -63,18 +66,27 @@ describe('optimization-phase regressions', () => {
 
     expect(explorer).not.toContain('if (!hydrated) return null');
     expect(explorer).toContain('useState<FilterState>(emptyFilters)');
+    expect(page).toContain('<PaperExplorer client:visible locale={locale} />');
+    expect(page).not.toContain('<PaperExplorer client:load');
+    expect(page).not.toContain('papers={papers} models={models}');
+    expect(page).toContain('data-paper-static-fallback');
+    expect(explorer).toContain('loadCatalog()');
     expect(page).not.toContain('<PaperModelMatrix client:load');
     expect(page).toContain('<PaperModelMatrix papers={matrixPapers}');
     expect(page).toContain('<noscript>');
     expect(page).toContain('paper-matrix-noscript');
   });
 
-  it('renders the comparison picker as static HTML before client state restoration', () => {
+  it('keeps a static comparison picker while loading the catalog outside island props', () => {
     const source = readSource('../components/ModelComparison.tsx');
-    expect(source).not.toContain("from '../lib/useHydrated'");
-    expect(source).not.toContain('if (!hydrated) return null');
+    const page = readSource('../pages/_bodies/compare.astro');
+    expect(source).toContain('loadCatalog()');
     expect(source).toContain('className="comparison-picker"');
     expect(source).toContain('initialSelection(models)');
+    expect(page).toContain('data-compare-static-fallback');
+    expect(page).toContain('<ModelComparison client:load locale={locale} />');
+    expect(page).not.toContain('models={displayModels}');
+    expect(page).not.toContain('papers={papers}');
   });
 
   it('renders the model catalog deterministically before restoring browser state', () => {
@@ -86,19 +98,22 @@ describe('optimization-phase regressions', () => {
     expect(source).toContain('if (!urlStateReady) return;');
     expect(source).toContain('const activeCandidates = hydrated ? selectedCandidates : []');
     expect(source).toContain('const hasActiveTask = hydrated && hasMeaningfulResearchTask(task)');
-    expect(source).toContain('model-data/catalog.json');
+    expect(source).toContain('loadCatalog()');
     expect(page).toContain('data-model-static-fallback');
-    expect(page).toContain('<ModelExplorer client:load locale={locale} />');
+    expect(page).toContain('<ModelExplorer client:visible locale={locale} />');
+    expect(page).not.toContain('<ModelExplorer client:load');
     expect(page).not.toContain('models={models} papers={papers}');
   });
 
   it('keeps workspace fallback meaningful and fetches the catalog outside island props', () => {
     const workspace = readSource('../components/workspace/ResearchWorkspace.tsx');
     const page = readSource('../pages/workspace/index.astro');
-    expect(workspace).toContain('model-data/catalog.json');
+    expect(workspace).toContain('loadCatalog()');
     expect(workspace).toContain('initResearchTaskFromUrl()');
     expect(page).toContain('data-workspace-static-fallback');
-    expect(page).toContain('<ResearchWorkspace client:load locale="zh" />');
+    expect(page).toContain("<ResearchWorkspace client:visible={{ rootMargin: '-64px 0px' }} locale=\"zh\" />");
+    expect(page).toContain('id="workspace-interactive"');
+    expect(page).not.toContain('<ResearchWorkspace client:load');
     expect(workspace).not.toContain("setAttribute('hidden'");
     expect(workspace).not.toContain('<h1>');
     expect(page).not.toContain('models={models}');
