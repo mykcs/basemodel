@@ -113,6 +113,23 @@ test('mechanism-copy shard 1 still propagates dependency installation failures',
 });
 
 
+
+test('a verified shared build skips per-shard build work', (t) => {
+  const state = fixture(t, 'src/styles/budget-check.css');
+  const npm = join(state.bin, 'npm');
+  writeFileSync(npm, `#!/bin/sh
+printf '%s\n' 'npm' "$@" >> "$CI_BUDGET_LOG"
+if [ "$1" = ci ]; then exit 0; fi
+exit 91
+`);
+  chmodSync(npm, 0o755);
+  const result = run(state, { CI_BROWSER_BUILD: '0' });
+  assert.equal(result.status, 73, result.stdout + result.stderr);
+  const log = readFileSync(state.log, 'utf8');
+  assert.match(log, /^npm\nci\nnpx\nplaywright\ninstall\nchromium\n$/);
+  assert.doesNotMatch(log, /run\nbuild/);
+});
+
 test('planner drift fails before spending browser work', (t) => {
   const state = fixture(t, 'src/styles/budget-check.css');
   const result = run(state, { CI_EXPECTED_UI_MODE: 'focused' });

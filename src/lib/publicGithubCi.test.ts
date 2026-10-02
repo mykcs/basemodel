@@ -25,12 +25,16 @@ describe('public GitHub Actions PR preflight', () => {
     expect(workflow).toMatch(/CI_FULL_BROWSER_SHARDS: '[1-8]'/);
     expect(workflow).toContain('browser_total: ${{ steps.plan.outputs.browser_total }}');
     expect(workflow).toContain('shards_json: ${{ steps.plan.outputs.shards_json }}');
-    expect(workflow).toContain("if: needs.plan.result == 'success' && needs.plan.outputs.browser_total != '0'");
+    expect(workflow).toContain("if: needs.plan.result == 'success' && needs.static_build.result == 'success' && needs.plan.outputs.browser_total != '0'");
     expect(workflow).toContain('shard: ${{ fromJSON(needs.plan.outputs.shards_json) }}');
     expect(workflow).toContain('CI_EXPECTED_UI_MODE: ${{ needs.plan.outputs.mode }}');
     expect(workflow).toContain("PLAYWRIGHT_WORKERS: '1'");
-    expect(workflow).toContain('image: mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e');
+    expect(workflow).toContain('image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27');
     expect(workflow).toContain('PLAYWRIGHT_BROWSERS_PATH: /ms-playwright');
+    expect(workflow).toContain("CI_BROWSER_BUILD: '0'");
+    expect(workflow).toContain('name: public-static-build');
+    expect(workflow).toContain('node scripts/ci-build-artifact.mjs create');
+    expect(workflow).toContain('node scripts/ci-build-artifact.mjs verify');
     expect(workflow).toContain('node scripts/ci-public-plan.mjs --github-output');
     expect(workflow).toContain('node scripts/ci-ui-gate.mjs');
     expect(workflow).toContain('name: public-ci-gate');
@@ -57,11 +61,15 @@ describe('public GitHub Actions PR preflight', () => {
   it('pins third-party actions and self-protects CI changes as full browser risk', () => {
     expect(workflow).toContain('actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1');
     expect(workflow).toContain('actions/setup-node@820762786026740c76f36085b0efc47a31fe5020');
+    expect(workflow).toContain('actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a');
+    expect(workflow).toContain('actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c');
     expect(planner).toContain("'.github/workflows/public-pr-ci.yml'");
     expect(planner).toContain("'.github/workflows/review-preview.yml'");
+    expect(planner).toContain("'scripts/ci-build-artifact.mjs'");
     expect(planner).toContain("'scripts/ci-public-plan.mjs'");
     expect(ciUiGate).toContain("file === '.github/workflows/public-pr-ci.yml'");
     expect(ciUiGate).toContain("file === '.github/workflows/review-preview.yml'");
+    expect(ciUiGate).toContain("file === 'scripts/ci-build-artifact.mjs'");
     expect(ciUiGate).toContain("file === 'scripts/ci-public-plan.mjs'");
   });
 });
