@@ -3,7 +3,6 @@
    noise, strengthening reading order, and making dense UI safer at narrow widths. */
 
 :root {
-  --reading-width: 68ch;
   --quiet-shadow: 0 8px 26px color-mix(in srgb, var(--ink) 5%, transparent);
 }
 
@@ -36,9 +35,6 @@ h2 { letter-spacing: -.018em; }
   max-width: var(--reading-width);
   line-height: 1.72;
 }
-
-.section-heading { align-items: flex-start; }
-.section-heading h2 { max-width: 22ch; }
 
 /* Do not make every panel appear equally elevated. */
 .hero-note,
@@ -325,7 +321,6 @@ h2 { letter-spacing: -.018em; }
   .shell { width: min(var(--content-max), calc(100% - 28px)); }
   .page-header { padding-top: 34px; }
   .page-header h1 { font-size: clamp(2rem, 11vw, 2.8rem); }
-  .section-heading { display: grid; grid-template-columns: 1fr; gap: 8px; }
   .site-main .guide-learning-page .primer-goal {
     padding: 16px 0 0;
     border-left: 0;
