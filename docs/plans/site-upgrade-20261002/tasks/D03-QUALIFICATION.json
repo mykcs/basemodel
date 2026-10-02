@@ -10,16 +10,16 @@
     "src/lib/researchComparisons.ts": "993841a8690105be57aff739ac45149cdba2fb8df21e2b02c5a63776d8b5aad6",
     "src/lib/researchStudyAnalyses.ts": "1ea59a7c49883c7d8205747eb3bad976a0793adfb97d344d2972a7b659fc2213",
     "src/lib/researchComparisons.test.ts": "0f49dac2d7196ce7112336db1e5109b30235ae1cd5ee3957b572d342c3980186",
-    "src/lib/researchStudyAnalyses.test.ts": "ac596ead8cdff8ab473c37d215d031fe7974452d1602ef640111479be0a0b351",
-    "scripts/research/analyze-evidence.ts": "1d4ddcc31e60931cfb2723ecf1a1f8b6cd67fd282b4f7a7ffea022a68d818f0d",
+    "src/lib/researchStudyAnalyses.test.ts": "af027531c59dabca92e87ea9f86d7ab046d7517aa746881e8e8327e5b98d6064",
+    "scripts/research/analyze-evidence.ts": "9cda24bff9c753f07bc507d6d95cb33132feebed0afc507a5ca27e6c76e6a031",
     "scripts/research/verify-analysis-independent.py": "750082941068931c738092583c4097d758947267c42b22069f9a8dafaf6ab8d9",
     "scripts/validate-data.ts": "63b309a2f009860b29e65551af209f823644e1cb151f4c08214c94fb5f162720",
-    "src/data/researchAnalysisSnapshot.json": "44f0ff75812e2a09be094c24570a7b92e9d2d20d4698485b749c7e4344678595"
+    "src/data/researchAnalysisSnapshot.json": "c36686396945660a5f91e37bd59a58e4dec9ee10d9fe0ad8640d57be59f3c318"
   },
   "checks": {
     "node": "24.20.0",
-    "new_tests": 51,
-    "structural_tests": 934,
+    "new_tests": 52,
+    "structural_tests": 935,
     "behavior_tests": 37,
     "typecheck_files": 603,
     "typecheck_errors": 0,
@@ -28,7 +28,7 @@
     "static_pages": 265
   },
   "default_projection": {
-    "content_sha256": "ddff5e8af2b81aba3933cf9855ee75d6b31ad9eaa6c29ee121bdf8aa0b08fe62",
+    "content_sha256": "59e80894f2817d32aa45c7632358f2102085444634aa73fa7d41c213bde754d4",
     "available_questions": [
       "beta-late-training"
     ],
@@ -60,7 +60,7 @@
     }
   },
   "restricted_rehearsal": {
-    "content_sha256": "d189ad066899504555f7469601d361371501439dff5d467d95c351751db8f555",
+    "content_sha256": "e149c6cc6c184bc6c10ecacfd6a1cfbf23005fb295482b5ea4789a148a1faaa6",
     "three_questions_verified": true,
     "same_content_hash_on_repeat": true,
     "source": {
@@ -101,5 +101,11 @@
     "Vercel final gate",
     "merge",
     "Production release"
-  ]
+  ],
+  "clean_checkout_guard": {
+    "initial_failure": "Input validation accessed a local-only staging directory before rejecting an outside input.",
+    "repair": "Reject outside paths lexically before resolving directory existence; retain realpath containment checks.",
+    "dedicated_missing_staging_test": "PASS",
+    "required_checks_weakened": false
+  }
 }

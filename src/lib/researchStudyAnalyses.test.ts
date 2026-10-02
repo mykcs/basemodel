@@ -179,6 +179,14 @@ describe('publication projection and replay integrity', () => {
       expect(()=>runEvidenceAnalysis({root:temporary})).toThrow(/SHA-256/);
     } finally { fs.rmSync(temporary,{recursive:true,force:true}); }
   });
+  it('rejects outside inputs in a clean checkout with no private staging directory', () => {
+    const temporary=copyProjectionInputs();
+    try {
+      expect(fs.existsSync(path.join(temporary,'reports/research-analysis-inputs'))).toBe(false);
+      expect(()=>runEvidenceAnalysis({root:temporary,postAdvisorFile:ANALYSIS_SOURCES.betaAggregate.path})).toThrow(/allowed directory/);
+      expect(fs.existsSync(path.join(temporary,'reports'))).toBe(false);
+    } finally { fs.rmSync(temporary,{recursive:true,force:true}); }
+  });
   it('does not accept an arbitrary external file or replace missing staged data with zero', () => {
     expect(()=>runEvidenceAnalysis({postAdvisorFile:'reports/research-analysis-inputs/not-here.json'})).toThrow();
     expect(()=>runEvidenceAnalysis({postAdvisorFile:ANALYSIS_SOURCES.betaAggregate.path})).toThrow(/allowed directory/);

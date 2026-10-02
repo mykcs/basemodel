@@ -6,7 +6,7 @@
     "sourceHashes": {
       "src/lib/researchComparisons.ts": "993841a8690105be57aff739ac45149cdba2fb8df21e2b02c5a63776d8b5aad6",
       "src/lib/researchStudyAnalyses.ts": "1ea59a7c49883c7d8205747eb3bad976a0793adfb97d344d2972a7b659fc2213",
-      "scripts/research/analyze-evidence.ts": "1d4ddcc31e60931cfb2723ecf1a1f8b6cd67fd282b4f7a7ffea022a68d818f0d"
+      "scripts/research/analyze-evidence.ts": "9cda24bff9c753f07bc507d6d95cb33132feebed0afc507a5ca27e6c76e6a031"
     },
     "toleranceForPublishedFloats": 1e-10,
     "exactCountTolerance": 0,
@@ -516,5 +516,5 @@
     "sitePublicationExpansion": false,
     "onlineServiceCalls": false
   },
-  "contentSha256": "ddff5e8af2b81aba3933cf9855ee75d6b31ad9eaa6c29ee121bdf8aa0b08fe62"
+  "contentSha256": "59e80894f2817d32aa45c7632358f2102085444634aa73fa7d41c213bde754d4"
 }

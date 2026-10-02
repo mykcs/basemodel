@@ -19,8 +19,12 @@ const sha256 = (value: string | Buffer) => createHash('sha256').update(value).di
 const pointer = (source: { repository: string; commit: string; path: string }) => `https://github.com/${source.repository}/blob/${source.commit}/${source.path}`;
 
 function readPinnedJson(root: string, file: string, digest: string, allowedDirectory: string): unknown {
-  const allowed = fs.realpathSync(path.resolve(root, allowedDirectory));
-  const actual = fs.realpathSync(path.resolve(root, file));
+  const lexicalAllowed = path.resolve(root, allowedDirectory);
+  const lexicalFile = path.resolve(root, file);
+  // Reject outside inputs before touching a staging directory that may not exist in clean CI.
+  if (!lexicalFile.startsWith(`${lexicalAllowed}${path.sep}`)) throw new Error('Analysis input escapes its allowed directory');
+  const allowed = fs.realpathSync(lexicalAllowed);
+  const actual = fs.realpathSync(lexicalFile);
   if (!actual.startsWith(`${allowed}${path.sep}`)) throw new Error('Analysis input escapes its allowed directory');
   if (fs.statSync(actual).size > 2 * 1024 * 1024) throw new Error('Analysis input exceeds scalar-snapshot limit');
   const bytes = fs.readFileSync(actual);
