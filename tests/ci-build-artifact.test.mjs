@@ -4,6 +4,7 @@ import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSy
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
+import { waitForWorkflowArtifact } from '../scripts/ci-build-artifact.mjs';
 
 const SOURCE_SCRIPT = new URL('../scripts/ci-build-artifact.mjs', import.meta.url);
 const git = (cwd, ...args) => execFileSync('git', ['--no-pager', ...args], { cwd, encoding: 'utf8', stdio: 'pipe' }).trim();
@@ -155,4 +156,38 @@ test('create fails closed on missing identities, empty roots and symlinks', (t) 
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /unsupported symlink/);
   }
+});
+
+
+test('artifact readiness wait retries transient absence without leaking the token', async () => {
+  const calls = [];
+  const responses = [
+    { ok: true, status: 200, json: async () => ({ artifacts: [] }) },
+    { ok: true, status: 200, json: async () => ({ artifacts: [{ id: 42, name: 'build-123', expired: false }] }) },
+  ];
+  let clock = 0;
+  const result = await waitForWorkflowArtifact({
+    repository: 'mykcs/basemodel', runId: '123', artifactName: 'build-123', token: 'secret-token',
+    timeoutMs: 5_000, intervalMs: 100,
+    fetchImpl: async (url, options) => { calls.push([url, options]); return responses.shift(); },
+    sleep: async (ms) => { clock += ms; }, now: () => clock,
+  });
+  assert.equal(result.id, 42);
+  assert.equal(calls.length, 2);
+  assert.equal(calls[0][1].headers.Authorization, 'Bearer secret-token');
+});
+
+test('artifact readiness wait fails closed for authorization errors and timeout', async () => {
+  await assert.rejects(() => waitForWorkflowArtifact({
+    repository: 'mykcs/basemodel', runId: '123', artifactName: 'build-123', token: 'token',
+    fetchImpl: async () => ({ ok: false, status: 403 }),
+  }), /HTTP 403/);
+
+  let clock = 0;
+  await assert.rejects(() => waitForWorkflowArtifact({
+    repository: 'mykcs/basemodel', runId: '123', artifactName: 'build-123', token: 'token',
+    timeoutMs: 100, intervalMs: 100,
+    fetchImpl: async () => ({ ok: true, status: 200, json: async () => ({ artifacts: [] }) }),
+    sleep: async (ms) => { clock += ms; }, now: () => clock,
+  }), /timed out/);
 });

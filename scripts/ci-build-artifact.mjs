@@ -7,6 +7,8 @@ import { pathToFileURL } from 'node:url';
 export const BUILD_ARTIFACT_SCHEMA_VERSION = 1;
 export const DEFAULT_ARTIFACT_ROOT = 'dist';
 export const DEFAULT_MANIFEST_PATH = 'ci-public-build-manifest.json';
+export const DEFAULT_WAIT_TIMEOUT_MS = 120_000;
+export const DEFAULT_WAIT_INTERVAL_MS = 2_000;
 export const PUBLIC_BUILD_ENV_KEYS = [
   'PUBLIC_SITE_URL',
   'PUBLIC_SEARCH_INDEXING',
@@ -125,6 +127,49 @@ export function buildManifest({ rootPath = DEFAULT_ARTIFACT_ROOT, env = process.
   };
 }
 
+
+export async function waitForWorkflowArtifact({
+  repository,
+  runId,
+  artifactName,
+  token,
+  timeoutMs = DEFAULT_WAIT_TIMEOUT_MS,
+  intervalMs = DEFAULT_WAIT_INTERVAL_MS,
+  fetchImpl = fetch,
+  sleep = (ms) => new Promise((resolvePromise) => setTimeout(resolvePromise, ms)),
+  now = () => Date.now(),
+} = {}) {
+  if (!repository || !/^[^/]+\/[^/]+$/.test(repository)) throw new Error('GITHUB_REPOSITORY must be owner/repository');
+  if (!runId || !/^\d+$/.test(String(runId))) throw new Error('GITHUB_RUN_ID must be numeric');
+  if (!artifactName) throw new Error('CI_BUILD_ARTIFACT_NAME is required');
+  if (!token) throw new Error('GITHUB_TOKEN is required to wait for the workflow artifact');
+  if (!Number.isFinite(timeoutMs) || timeoutMs < 0) throw new Error('artifact wait timeout must be non-negative');
+  if (!Number.isFinite(intervalMs) || intervalMs < 0) throw new Error('artifact wait interval must be non-negative');
+
+  const deadline = now() + timeoutMs;
+  const url = `https://api.github.com/repos/${repository}/actions/runs/${runId}/artifacts?per_page=100`;
+  while (true) {
+    const response = await fetchImpl(url, {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${token}`,
+        'User-Agent': 'basemodel-public-ci',
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
+    if (response.ok) {
+      const payload = await response.json();
+      const artifact = payload?.artifacts?.find((candidate) => candidate?.name === artifactName && candidate?.expired !== true);
+      if (artifact) return artifact;
+    } else if (response.status < 500 && response.status !== 429) {
+      throw new Error(`artifact readiness API returned HTTP ${response.status}`);
+    }
+
+    if (now() >= deadline) throw new Error(`timed out waiting for workflow artifact ${artifactName}`);
+    await sleep(intervalMs);
+  }
+}
+
 function assertDeepEqual(label, actual, expected) {
   if (JSON.stringify(actual) !== JSON.stringify(expected)) {
     throw new Error(`${label} mismatch: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
@@ -171,16 +216,29 @@ function argValue(name, fallback) {
 }
 
 function usage() {
-  console.error('Usage: node scripts/ci-build-artifact.mjs <create|verify> [--root dist] [--manifest ci-public-build-manifest.json]');
+  console.error('Usage: node scripts/ci-build-artifact.mjs <create|verify|wait> [--root dist] [--manifest ci-public-build-manifest.json]');
 }
 
-export function main() {
+export async function main() {
   const command = process.argv[2];
-  if (!['create', 'verify'].includes(command)) {
+  if (!['create', 'verify', 'wait'].includes(command)) {
     usage();
     process.exitCode = 2;
     return;
   }
+
+  if (command === 'wait') {
+    const artifactName = process.env.CI_BUILD_ARTIFACT_NAME?.trim();
+    const artifact = await waitForWorkflowArtifact({
+      repository: process.env.GITHUB_REPOSITORY?.trim(),
+      runId: process.env.GITHUB_RUN_ID?.trim(),
+      artifactName,
+      token: process.env.GITHUB_TOKEN,
+    });
+    console.log(`[ci-build-artifact] artifact ready name=${artifactName} id=${artifact.id ?? 'unknown'}`);
+    return;
+  }
+
   const rootPath = argValue('--root', DEFAULT_ARTIFACT_ROOT);
   const manifestPath = argValue('--manifest', DEFAULT_MANIFEST_PATH);
 
@@ -199,10 +257,8 @@ export function main() {
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href;
 if (isMain) {
-  try {
-    main();
-  } catch (error) {
+  main().catch((error) => {
     console.error(`[ci-build-artifact] FAIL: ${error instanceof Error ? error.message : String(error)}`);
     process.exit(1);
-  }
+  });
 }

@@ -27,7 +27,7 @@ test('full shard total is bounded and fails closed on malformed configuration', 
 test('workflow plans before browser runner allocation and gates skipped browser work explicitly', () => {
   const workflow = read('.github/workflows/public-pr-ci.yml');
   assert.match(workflow, /name: public-plan/);
-  assert.match(workflow, /needs: \[plan, static_build\]/);
+  assert.match(workflow, /name: public-browser-\$\{\{ matrix\.shard \}\}-of-\$\{\{ needs\.plan\.outputs\.browser_total \}\}[\s\S]*?needs: plan/);
   assert.match(workflow, /browser_total: \$\{\{ steps\.plan\.outputs\.browser_total \}\}/);
   assert.match(workflow, /shard: \$\{\{ fromJSON\(needs\.plan\.outputs\.shards_json\) \}\}/);
   assert.match(workflow, /CI_EXPECTED_UI_MODE: \$\{\{ needs\.plan\.outputs\.mode \}\}/);
@@ -39,7 +39,9 @@ test('workflow plans before browser runner allocation and gates skipped browser 
 
 test('workflow builds once, seals the artifact, and verifies it before browser acceptance', () => {
   const workflow = read('.github/workflows/public-pr-ci.yml');
-  assert.equal((workflow.match(/run: npm run build/g) ?? []).length, 1);
+  assert.equal((workflow.match(/run: npm run build/g) ?? []).length, 2);
+  assert.match(workflow, /Build static artifact when browser acceptance is skipped[\s\S]*?if: steps\.deterministic_plan\.outputs\.browser_total == '0'[\s\S]*?run: npm run build/);
+  assert.match(workflow, /name: public-static-build[\s\S]*?if: needs\.plan\.result == 'success' && needs\.plan\.outputs\.browser_total != '0'/);
   assert.match(workflow, /name: public-static-build/);
   assert.match(workflow, /node scripts\/ci-build-artifact\.mjs create/);
   assert.match(workflow, /actions\/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/);

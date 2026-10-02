@@ -13,6 +13,7 @@ describe('public GitHub Actions PR preflight', () => {
     expect(workflow).toContain('pull_request:');
     expect(workflow).not.toContain('pull_request_target');
     expect(workflow).toContain('contents: read');
+    expect(workflow).toContain('actions: read');
     expect(workflow).toContain('persist-credentials: false');
     expect(workflow).toContain('refs/pull/${{ github.event.pull_request.number }}/head');
     expect(workflow).toContain('git config --global --add safe.directory "$GITHUB_WORKSPACE"');
@@ -25,7 +26,7 @@ describe('public GitHub Actions PR preflight', () => {
     expect(workflow).toMatch(/CI_FULL_BROWSER_SHARDS: '[1-8]'/);
     expect(workflow).toContain('browser_total: ${{ steps.plan.outputs.browser_total }}');
     expect(workflow).toContain('shards_json: ${{ steps.plan.outputs.shards_json }}');
-    expect(workflow).toContain("if: needs.plan.result == 'success' && needs.static_build.result == 'success' && needs.plan.outputs.browser_total != '0'");
+    expect(workflow).toContain("if: needs.plan.result == 'success' && needs.plan.outputs.browser_total != '0'");
     expect(workflow).toContain('shard: ${{ fromJSON(needs.plan.outputs.shards_json) }}');
     expect(workflow).toContain('CI_EXPECTED_UI_MODE: ${{ needs.plan.outputs.mode }}');
     expect(workflow).toContain("PLAYWRIGHT_WORKERS: '1'");
@@ -34,6 +35,7 @@ describe('public GitHub Actions PR preflight', () => {
     expect(workflow).toContain("CI_BROWSER_BUILD: '0'");
     expect(workflow).toContain('name: public-static-build');
     expect(workflow).toContain('node scripts/ci-build-artifact.mjs create');
+    expect(workflow).toContain('node scripts/ci-build-artifact.mjs wait');
     expect(workflow).toContain('node scripts/ci-build-artifact.mjs verify');
     expect(workflow).toContain('node scripts/ci-public-plan.mjs --github-output');
     expect(workflow).toContain('node scripts/ci-ui-gate.mjs');
