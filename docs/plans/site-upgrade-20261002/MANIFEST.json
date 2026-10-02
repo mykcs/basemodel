@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "state": "planning_only",
+  "state": "specifications_complete_one_pr_creation_blocked",
   "new_work_packets": 14,
   "reused_work_packets": 4,
   "program_pr_is_not_implementation": true,
@@ -14,7 +14,11 @@
       "depends": [],
       "size": "M：一条 CI 数据路径，不改测试语义",
       "branch": "docs/site-upgrade-ci-artifact-20261002",
-      "path": "docs/plans/site-upgrade-20261002/tasks/A01.md"
+      "path": "docs/plans/site-upgrade-20261002/tasks/A01.md",
+      "pr_number": 814,
+      "pr_url": "https://github.com/mykcs/basemodel/pull/814",
+      "pr_creation_status": "draft_open",
+      "spec_status": "committed_and_verified"
     },
     {
       "id": "A02",
@@ -24,7 +28,11 @@
       "depends": [],
       "size": "M：五类代表性页面，不重写框架",
       "branch": "docs/site-upgrade-static-first-20261002",
-      "path": "docs/plans/site-upgrade-20261002/tasks/A02.md"
+      "path": "docs/plans/site-upgrade-20261002/tasks/A02.md",
+      "pr_number": 815,
+      "pr_url": "https://github.com/mykcs/basemodel/pull/815",
+      "pr_creation_status": "draft_open",
+      "spec_status": "committed_and_verified"
     },
     {
       "id": "A03",
@@ -37,7 +45,11 @@
       ],
       "size": "M：两个共享样式热点的有证据清理",
       "branch": "docs/site-upgrade-module-css-20261002",
-      "path": "docs/plans/site-upgrade-20261002/tasks/A03.md"
+      "path": "docs/plans/site-upgrade-20261002/tasks/A03.md",
+      "pr_number": 816,
+      "pr_url": "https://github.com/mykcs/basemodel/pull/816",
+      "pr_creation_status": "draft_open",
+      "spec_status": "committed_and_verified"
     },
     {
       "id": "B01",
@@ -47,7 +59,11 @@
       "depends": [],
       "size": "M：首页、Study 与导航的一个完整旅程",
       "branch": "docs/site-upgrade-reader-journeys-20261002",
-      "path": "docs/plans/site-upgrade-20261002/tasks/B01.md"
+      "path": "docs/plans/site-upgrade-20261002/tasks/B01.md",
+      "pr_number": 817,
+      "pr_url": "https://github.com/mykcs/basemodel/pull/817",
+      "pr_creation_status": "draft_open",
+      "spec_status": "committed_and_verified"
     },
     {
       "id": "B02",
@@ -62,7 +78,11 @@
       ],
       "size": "L：三篇关联正文，逐篇提交并统一验收",
       "branch": "docs/site-upgrade-research-synthesis-20261002",
-      "path": "docs/plans/site-upgrade-20261002/tasks/B02.md"
+      "path": "docs/plans/site-upgrade-20261002/tasks/B02.md",
+      "pr_number": 818,
+      "pr_url": "https://github.com/mykcs/basemodel/pull/818",
+      "pr_creation_status": "draft_open",
+      "spec_status": "committed_and_verified"
     },
     {
       "id": "B03",
@@ -75,7 +95,11 @@
       ],
       "size": "M：发布状态与三类消费者",
       "branch": "docs/site-upgrade-content-lifecycle-20261002",
-      "path": "docs/plans/site-upgrade-20261002/tasks/B03.md"
+      "path": "docs/plans/site-upgrade-20261002/tasks/B03.md",
+      "pr_number": 819,
+      "pr_url": "https://github.com/mykcs/basemodel/pull/819",
+      "pr_creation_status": "draft_open",
+      "spec_status": "committed_and_verified"
     },
     {
       "id": "C01",
@@ -88,7 +112,11 @@
       ],
       "size": "M：窄表格能力与两个真实调用方",
       "branch": "docs/site-upgrade-scientific-tables-20261002",
-      "path": "docs/plans/site-upgrade-20261002/tasks/C01.md"
+      "path": "docs/plans/site-upgrade-20261002/tasks/C01.md",
+      "pr_number": null,
+      "pr_url": null,
+      "pr_creation_status": "blocked_by_tool_safety_check",
+      "spec_status": "committed_and_verified"
     },
     {
       "id": "C02",
@@ -102,7 +130,11 @@
       ],
       "size": "M：现有 W&B 面板与三种研究图",
       "branch": "docs/site-upgrade-research-figures-20261002",
-      "path": "docs/plans/site-upgrade-20261002/tasks/C02.md"
+      "path": "docs/plans/site-upgrade-20261002/tasks/C02.md",
+      "pr_number": 820,
+      "pr_url": "https://github.com/mykcs/basemodel/pull/820",
+      "pr_creation_status": "draft_open",
+      "spec_status": "committed_and_verified"
     },
     {
       "id": "C03",
@@ -112,7 +144,11 @@
       "depends": [],
       "size": "M：Vanilla SD-LoRA 一轮及其可复用小能力",
       "branch": "docs/site-upgrade-mechanism-flow-20261002",
-      "path": "docs/plans/site-upgrade-20261002/tasks/C03.md"
+      "path": "docs/plans/site-upgrade-20261002/tasks/C03.md",
+      "pr_number": 821,
+      "pr_url": "https://github.com/mykcs/basemodel/pull/821",
+      "pr_creation_status": "draft_open",
+      "spec_status": "committed_and_verified"
     },
     {
       "id": "D01",
@@ -122,7 +158,11 @@
       "depends": [],
       "size": "M：三个代表来源的最小领域合同",
       "branch": "docs/site-upgrade-evidence-contract-20261002",
-      "path": "docs/plans/site-upgrade-20261002/tasks/D01.md"
+      "path": "docs/plans/site-upgrade-20261002/tasks/D01.md",
+      "pr_number": 822,
+      "pr_url": "https://github.com/mykcs/basemodel/pull/822",
+      "pr_creation_status": "draft_open",
+      "spec_status": "committed_and_verified"
     },
     {
       "id": "D02",
@@ -134,7 +174,11 @@
       ],
       "size": "M：三个已存在实验的可恢复导入，不训练",
       "branch": "docs/site-upgrade-history-import-20261002",
-      "path": "docs/plans/site-upgrade-20261002/tasks/D02.md"
+      "path": "docs/plans/site-upgrade-20261002/tasks/D02.md",
+      "pr_number": 823,
+      "pr_url": "https://github.com/mykcs/basemodel/pull/823",
+      "pr_creation_status": "draft_open",
+      "spec_status": "committed_and_verified"
     },
     {
       "id": "D03",
@@ -147,7 +191,11 @@
       ],
       "size": "M：三个问题的分析配方，不建泛用分析平台",
       "branch": "docs/site-upgrade-comparative-analysis-20261002",
-      "path": "docs/plans/site-upgrade-20261002/tasks/D03.md"
+      "path": "docs/plans/site-upgrade-20261002/tasks/D03.md",
+      "pr_number": 824,
+      "pr_url": "https://github.com/mykcs/basemodel/pull/824",
+      "pr_creation_status": "draft_open",
+      "spec_status": "committed_and_verified"
     },
     {
       "id": "D04",
@@ -159,7 +207,11 @@
       ],
       "size": "M：五个决策问题与可证伪候选，不运行实验",
       "branch": "docs/site-upgrade-research-decisions-20261002",
-      "path": "docs/plans/site-upgrade-20261002/tasks/D04.md"
+      "path": "docs/plans/site-upgrade-20261002/tasks/D04.md",
+      "pr_number": 825,
+      "pr_url": "https://github.com/mykcs/basemodel/pull/825",
+      "pr_creation_status": "draft_open",
+      "spec_status": "committed_and_verified"
     },
     {
       "id": "Q01",
@@ -187,7 +239,11 @@
       ],
       "size": "M：覆盖与整合验收，不再重做各条实现",
       "branch": "docs/site-upgrade-site-acceptance-20261002",
-      "path": "docs/plans/site-upgrade-20261002/tasks/Q01.md"
+      "path": "docs/plans/site-upgrade-20261002/tasks/Q01.md",
+      "pr_number": 826,
+      "pr_url": "https://github.com/mykcs/basemodel/pull/826",
+      "pr_creation_status": "draft_open",
+      "spec_status": "committed_and_verified"
     }
   ],
   "existing_prs": {
@@ -195,5 +251,16 @@
     "X805": 805,
     "X806": 806,
     "X812": 812
+  },
+  "program_pr": 813,
+  "program_pr_url": "https://github.com/mykcs/basemodel/pull/813",
+  "new_task_specs_committed": 14,
+  "new_child_prs_opened": 13,
+  "new_prs_including_program": 14,
+  "remaining_creation_action": {
+    "id": "C01",
+    "status": "blocked_by_tool_safety_check",
+    "scope": "PR creation only; full specification is already committed",
+    "not_retried_via_other_channel": true
   }
 }

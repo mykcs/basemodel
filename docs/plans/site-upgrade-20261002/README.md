@@ -4,6 +4,31 @@
 
 状态：方案编写与 Draft PR 建立；产品/科研实现尚未开始。本总控另算一项文档 PR，不充当网站实现。
 
+## 本轮实际交付状态
+
+十四份新增任务规格全部已提交并核对；十三个子任务 Draft PR 已创建，另有本总控 #813，因此本轮实际新建十四个 Draft PR。四项旧 PR 保持原状并被纳入复用计划。
+
+**唯一未完成的创建动作：C01 学术表格 PR。** 工具安全检查拦截了创建请求，随后只读确认该分支没有 PR；未通过其他通道重试。完整 C01 规格和分支已存在，下面保留文档入口，不编造 PR 编号。这个状态不影响其他独立任务的计划可读性。
+
+| 任务 | 实际 PR / 规格 | 状态 |
+|---|---|---|
+| A01 | [#814](https://github.com/mykcs/basemodel/pull/814) | Draft；仅规划 |
+| A02 | [#815](https://github.com/mykcs/basemodel/pull/815) | Draft；仅规划 |
+| A03 | [#816](https://github.com/mykcs/basemodel/pull/816) | Draft；仅规划 |
+| B01 | [#817](https://github.com/mykcs/basemodel/pull/817) | Draft；仅规划 |
+| B02 | [#818](https://github.com/mykcs/basemodel/pull/818) | Draft；仅规划 |
+| B03 | [#819](https://github.com/mykcs/basemodel/pull/819) | Draft；仅规划 |
+| C01 | [完整 C01 规格](https://github.com/mykcs/basemodel/blob/docs/site-upgrade-scientific-tables-20261002/docs/plans/site-upgrade-20261002/tasks/C01.md) | 规格已提交；PR 创建被工具拦截 |
+| C02 | [#820](https://github.com/mykcs/basemodel/pull/820) | Draft；仅规划 |
+| C03 | [#821](https://github.com/mykcs/basemodel/pull/821) | Draft；仅规划 |
+| D01 | [#822](https://github.com/mykcs/basemodel/pull/822) | Draft；仅规划 |
+| D02 | [#823](https://github.com/mykcs/basemodel/pull/823) | Draft；仅规划 |
+| D03 | [#824](https://github.com/mykcs/basemodel/pull/824) | Draft；仅规划 |
+| D04 | [#825](https://github.com/mykcs/basemodel/pull/825) | Draft；仅规划 |
+| Q01 | [#826](https://github.com/mykcs/basemodel/pull/826) | Draft；仅规划 |
+
+本轮未改 src/public/scripts/workflow/package，也未实施实验、合并或请求部署。文档、远端分支与 PR 状态核验不等于产品测试通过；网站 build、浏览器冷读、真实性能比较属于后续执行。
+
 ## 规划结构
 
 A 开发 3 项；B 内容 3 项；C 设计 3 项；D 证据与研究决策 4 项；Q 整体验收 1 项。另复用 X783/X805/X806/X812 四项既有 PR，共18项执行工作，不要求每个方向拆成同样数量。
