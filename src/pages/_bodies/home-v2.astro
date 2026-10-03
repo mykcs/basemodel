@@ -42,24 +42,28 @@ const currentAnswers = [
 
 const nextActions = [
   {
-    title: t('理解研究', 'Understand the study'),
-    body: t('先弄清 Base Model、SEED、OpenEvo、WebShop / ALFWorld 分别是什么，以及经验到底被写到哪里。', 'Understand the base model, SEED, OpenEvo, WebShop / ALFWorld, and where experience is actually written.'),
+    audience: t('第一次来', 'First visit'),
+    title: t('先理解这项研究', 'Understand the study first'),
+    body: t('从 Base Model、SEED、OpenEvo 和 WebShop 开始，先弄清我们在比较什么，以及经验到底写到哪里。', 'Start with the base model, SEED, OpenEvo, and WebShop to understand what is being compared and where experience is written.'),
     href: p('/research/seed-openevo/flow/'),
   },
   {
-    title: t('实验与结果', 'Experiments and results'),
-    body: t('沿七次主要实验继续，看上一轮结果怎样改变下一问；第 07 项回到 Stage1，单独比较 SFT、OPSD 与 hindsight-skill。', 'Follow the seven major experiments and see how one result changes the next question; Experiment 07 moves back to Stage 1 to compare SFT, OPSD, and hindsight-skill.'),
-    href: p('/research/seed-openevo/study/'),
+    audience: t('只想看结论', 'Current conclusions only'),
+    title: t('现在证据支持什么', 'See what the evidence supports now'),
+    body: t('直接进入 Results：看已经封存的结果、限制，以及哪些问题现在仍然不能回答。', 'Go straight to Results for sealed findings, limitations, and the questions that still cannot be answered.'),
+    href: p('/research/seed-openevo/study/results/'),
   },
   {
-    title: t('复现实验', 'Reproduce an experiment'),
-    body: t('查看代码、任务规则、运行记录和证据怎样组成一份可复现的实验身份。', 'See how code, task rules, run records, and evidence form a reproducible experiment identity.'),
+    audience: t('隔一阵回来', 'Returning later'),
+    title: t('从最新研究问题接上', 'Resume from the latest research question'),
+    body: t('先到实验目录的读者入口，再从最后一项主实验继续；需要时再向前追溯上一问。', 'Open the study reader entry and continue from the latest main experiment; trace backward only when you need the previous question.'),
+    href: `${p('/research/seed-openevo/study/')}#reader-entry`,
+  },
+  {
+    audience: t('准备继续实验', 'Ready to run work'),
+    title: t('查看运行与复现边界', 'Check execution and reproduction boundaries'),
+    body: t('查看代码、任务规则、运行记录、授权边界和证据怎样组成一份可复现的实验身份。', 'See how code, task rules, run records, authorization boundaries, and evidence form a reproducible experiment identity.'),
     href: p('/research/seed-openevo/study/run/'),
-  },
-  {
-    title: t('设计下一组实验', 'Design the next experiment'),
-    body: t('把研究目标、模型角色和资源限制放进工作台，再检查候选模型和比较条件。', 'Put the research goal, model role, and resource limits into the workspace, then inspect candidate models and comparison conditions.'),
-    href: p('/workspace/'),
   },
 ] as const;
 ---
@@ -131,6 +135,7 @@ const nextActions = [
         <a href={action.href}>
           <span>{String(index + 1).padStart(2, '0')}</span>
           <div>
+            <small class="next-audience">{action.audience}</small>
             <strong>{action.title}</strong>
             <p>{action.body}</p>
           </div>
@@ -178,7 +183,8 @@ const nextActions = [
   .next-list a:nth-child(odd) { margin-right: 1rem; }
   .next-list a:nth-child(even) { padding-left: 1rem; border-left: 1px solid var(--line); }
   .next-list > a > span { padding-top: .18rem; color: var(--accent-deep); font: 800 .68rem/1 var(--font-mono); }
-  .next-list strong { font-size: .98rem; }
+  .next-audience { display: block; margin-bottom: .2rem; color: var(--accent-deep); font-size: .68rem; font-weight: 800; }
+  .next-list strong { display: block; font-size: .98rem; }
   .next-list p { margin: .38rem 0 0; color: var(--muted); font-size: .8rem; line-height: 1.55; }
   .next-list i { color: var(--muted); font-style: normal; }
 
