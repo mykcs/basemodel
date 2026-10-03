@@ -416,12 +416,12 @@ Before handing a Preview to the owner, verify:
 17. Any interaction, animation, or video keeps a complete static/accessible path for the main scientific meaning and claim-changing boundaries whenever practical.
 18. The route still works as static HTML and remains legible in light/dark and narrow/wide layouts.
 19. The exact-head Vercel Preview is inspected after repository validation.
-18. Does every mechanism heading introduce an operation/object the reader already has enough context to understand, rather than asking “why X” before X exists in the reader's model?
-19. Does every prominent number/dimension/acronym name its semantic object before the reader is asked to interpret the number?
-20. If implementation understanding changed during review, was the correction integrated at first use instead of appended as a repair FAQ?
-21. If the document requests an advisor/reviewer decision or arrangement, does the TL;DR state that ask?
-22. Are source-code links clearly labelled as source code, with raw commit hashes kept out of the main reading path unless provenance verification itself is the task?
-23. If an existing W&B/chart is central evidence for a claim, is a useful preview visible locally rather than hidden behind a link?
+20. Does every mechanism heading introduce an operation/object the reader already has enough context to understand, rather than asking “why X” before X exists in the reader's model?
+21. Does every prominent number/dimension/acronym name its semantic object before the reader is asked to interpret the number?
+22. If implementation understanding changed during review, was the correction integrated at first use instead of appended as a repair FAQ?
+23. If the document requests an advisor/reviewer decision or arrangement, does the TL;DR state that ask?
+24. Are source-code links clearly labelled as source code, with raw commit hashes kept out of the main reading path unless provenance verification itself is the task?
+25. If an existing W&B/chart is central evidence for a claim, is a useful preview visible locally rather than hidden behind a link?
 
 ---
 
