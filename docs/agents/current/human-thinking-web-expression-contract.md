@@ -69,8 +69,9 @@ Before editing user-facing code, form a concise **Page Expression Brief**. For a
 6. **Primary path** — What is the one main reading or action sequence?
 7. **Secondary depth** — Which details, evidence, history, and diagnostics should stay available without interrupting the main path?
 8. **Semantic shape** — Is the material fundamentally a sequence, hierarchy, comparison, topology, evidence ladder, branch, timeline, state transition, or executable instruction?
-9. **Density plan** — What belongs in orientation, mainline, detail, and on-demand layers?
-10. **Acceptance evidence** — How will an Agent prove that the structure is understandable, usable, responsive, and visually safe?
+9. **Medium choice** — Why is this best expressed as prose, table/chart, semantic diagram, interactive HTML, or temporal media? What concrete comprehension/verification gain justifies anything richer than prose?
+10. **Density plan** — What belongs in orientation, mainline, detail, and on-demand layers?
+11. **Acceptance evidence** — How will an Agent prove that the structure is understandable, usable, responsive, and visually safe?
 
 Do not begin by asking “which card component can hold this text?” Begin by asking “what thought structure must the page make visible?”
 
@@ -93,6 +94,11 @@ Choose the web form from the meaning of the information, not from a preferred de
 | Executable instruction | `<pre><code>`, copy action, expected output, failure-first diagnostic |
 | State or status | explicit status text, semantic badges, timestamps, provenance; never color alone |
 | Unknown or uncertainty | visible unknown state and evidence boundary; never silently fill with a guess |
+| Exploration / parameter change / replay | static explanation plus purposeful interactive HTML controls when the interaction changes a real question the reader can answer |
+
+**Choose the medium before polishing the copy.** Prose, tables, diagrams, interactive HTML, animation, and video are not maturity levels. Choose the smallest representation that exposes the semantic shape faithfully. A purpose-built disposable explainer is valid when it cheaply solves one narrow comprehension or verification problem; reuse is not required. Do not promote a one-off artifact into the shared component system merely to justify its existence.
+
+Temporal media are justified only when time or motion carries information that is materially harder to recover from a static sequence. On a web route, keep a complete static/accessible reading path whenever practical; interaction or motion must not hide the only copy of a result, caveat, or evidence boundary.
 
 Use animation only when it measurably reduces cognitive load or makes an already understandable static sequence, dependency, or state change easier to follow. A moving dot, pulse, shimmer, auto-advancing highlight, or other ambient motion is not justified merely because the content is a flow. If removing the motion does not make the mechanism harder to understand, remove the motion. Animation must never carry the only copy of meaning.
 
