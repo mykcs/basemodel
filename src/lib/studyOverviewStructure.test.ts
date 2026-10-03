@@ -28,6 +28,19 @@ describe('study overview information architecture', () => {
       for (const owner of formerHomepageOwners) expect(page).not.toContain(owner);
     }
     expect((experimentIndex.match(/<h1\b/g) ?? []).length).toBe(1);
+    for (const required of [
+      '我们真正想回答的是',
+      'data-reader-entry',
+      '第一次来',
+      '只想看当前结论',
+      '隔一阵回来',
+      '当前结论与限制由 Results 页维护',
+      '七次实验怎样一步步把问题缩小',
+      "OPEN_EVO_EXPERIMENTS.at(-1)",
+    ]) expect(experimentIndex).toContain(required);
+    for (const duplicatedMovingResult of ['7.17', '8.74', '95% CI [-3.21, +6.31]']) {
+      expect(experimentIndex).not.toContain(duplicatedMovingResult);
+    }
     expect(OPEN_EVO_EXPERIMENTS.map((item) => item.title.zh)).toContain('训练跑了很久，但参数一直没有更新');
     expect(OPEN_EVO_EXPERIMENTS.map((item) => item.title.zh)).toContain('1.7B · DirectApply / No-GDR 实验');
     for (const required of [
