@@ -68,17 +68,19 @@ describe('site-wide reader attention contracts', () => {
     expect(compatibility?.firstViewportSelector).toBe('.sdlora-intro__lede');
   });
 
-  it('keeps the Study phone budget at seven experiment parents plus one SD-LoRA overview and two treatment branches', () => {
+  it('keeps the Study first screen focused while preserving experiment taxonomy below it', () => {
     const row = SITE_READER_CONTRACTS.find((contract) => contract.id === 'study');
-    expect(row?.firstViewportBudget?.maxInteractive).toBe(10);
-    expect(row?.firstViewportGoal).toContain('七次主要实验');
-    expect(row?.firstViewportGoal).toContain('两条路线说明');
-    expect(row?.firstViewportGoal).toContain('Stable Reduction');
-    expect(row?.firstViewportGoal).toContain('Bounded Online Recurrence');
+    expect(row?.firstViewportBudget?.maxInteractive).toBe(4);
+    expect(row?.firstViewportGoal).toContain('三个互不混淆的入口');
+    expect(row?.firstViewportGoal).toContain('第一次来去 Flow');
+    expect(row?.firstViewportGoal).toContain('只想看当前结论去 Results');
+    expect(row?.firstViewportGoal).toContain('隔一阵回来直接接最后一项主实验');
     expect(row?.mustStayVisible).toContain('七个主实验父项');
     expect(row?.mustStayVisible).toContain('SD-LoRA 加速');
     expect(row?.mustStayVisible).toContain('解释入口而不是第三个 treatment');
     expect(row?.mustStayVisible).toContain('SD-LoRA v2 只属于 Stable Reduction');
+    expect(row?.mustStayVisible).toContain('Bounded Online Recurrence 保持独立');
+    expect(row?.mustStayVisible).toContain('dynamic α + dynamic β 未运行');
   });
 
   it('resolves exact pages before dynamic families and shares contracts across locales', () => {

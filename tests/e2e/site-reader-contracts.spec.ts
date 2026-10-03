@@ -151,22 +151,24 @@ for (const viewport of viewports) {
 }
 
 
-test('Study phone first screen exposes exactly the seven experiment parents', async ({ page }) => {
+test('Study phone first screen offers reader-purpose entry before the complete seven-experiment directory', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/research/seed-openevo/study/', { waitUntil: 'domcontentloaded' });
   await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
 
-  const visible = await page.locator('#main-content [data-experiment-primary]').evaluateAll((links) => links
-    .filter((el) => {
-      const rect = el.getBoundingClientRect();
-      const style = getComputedStyle(el);
-      const visibleHeight = Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0);
-      return rect.width > 0 && rect.height > 0 && visibleHeight >= Math.min(12, Math.max(2, rect.height * 0.25))
-        && style.display !== 'none' && style.visibility !== 'hidden' && Number.parseFloat(style.opacity || '1') > 0;
-    })
-    .map((el) => el.getAttribute('data-experiment-primary')));
+  const entry = page.locator('#reader-entry');
+  await expect(entry).toBeVisible();
+  const entryLinks = entry.locator('nav > a');
+  await expect(entryLinks).toHaveCount(3);
+  await expect(entryLinks.nth(0)).toContainText('第一次来');
+  await expect(entryLinks.nth(0)).toHaveAttribute('href', '/research/seed-openevo/flow/');
+  await expect(entryLinks.nth(1)).toContainText('只想看当前结论');
+  await expect(entryLinks.nth(1)).toHaveAttribute('href', '/research/seed-openevo/study/results/');
+  await expect(entryLinks.nth(2)).toContainText('隔一阵回来');
 
-  expect(visible).toEqual([
+  const experimentParents = page.locator('#main-content [data-experiment-primary]');
+  await expect(experimentParents).toHaveCount(7);
+  expect(await experimentParents.evaluateAll((links) => links.map((el) => el.getAttribute('data-experiment-primary')))).toEqual([
     'gate-no-update',
     '7b-long-run',
     'successor-3b-1p7b',
@@ -175,6 +177,7 @@ test('Study phone first screen exposes exactly the seven experiment parents', as
     'bounded-effective-state-1p7b',
     'stage1-learning-objectives',
   ]);
+
   const visibleChildren = await page.locator('#main-content .experiment-children a').evaluateAll((links) => links.filter((el) => el.getClientRects().length > 0).length);
   expect(visibleChildren).toBe(0);
   const featured = page.locator('#main-content .experiment-mobile-featured--group');
