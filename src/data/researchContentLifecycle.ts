@@ -93,8 +93,8 @@ export const REPRODUCTION_ASSET_STATES = [
     state: 'restricted' as const,
     label: { zh: '服务器身份与私有路径', en: 'Server identity and private paths' },
     detail: {
-      zh: '真实账号、hostname、端口和私有项目路径只从实验室私有运行文档解析。没有这些权限表示“受限”，不是“文件不存在”。',
-      en: 'Real accounts, hostnames, ports, and private project paths are resolved only from the private lab runbook. Lacking that access means restricted, not missing.',
+      zh: '真实账号、hostname、端口和私有项目路径只从实验室私有运行文档解析。没有这些权限时，状态仍应标为“受限”；公开页面不能据此推断资产可用性。',
+      en: 'Real accounts, hostnames, ports, and private project paths are resolved only from the private lab runbook. Lacking that access remains a restricted-access state; the public page must not infer asset availability from it.',
     },
   },
   {
