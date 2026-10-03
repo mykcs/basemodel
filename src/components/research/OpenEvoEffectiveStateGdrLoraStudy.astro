@@ -244,6 +244,11 @@ const twentyRoundScoreWindows = finalResult
     <h1>{t('OpenEVO 参数演变：Bounded State 与 β 组件', 'OpenEVO parameter evolution: Bounded State and the β component')}</h1>
 
 
+      <p class="paper__lede esg__lede paper__first-result" data-reader-task data-reader-purpose>{t(
+        '三条已完成路线现在形成了一个很清楚的结果：Bounded 把参数更新累计耗时从 31.09 小时降到 2.02 小时，但同题终评从 60.72 降到 45.98；继续加入 β 组件后，终评进一步降到 20.77。接下来的核心问题是：固定容量到底应该多大、Bounded 为什么没有完全保持能力，以及 β 为什么后期掉分。',
+        'The three completed lines now form a clear result: Bounded reduces cumulative parameter-update time from 31.09 hours to 2.02 hours, but the same-panel final drops from 60.72 to 45.98; adding the β component lowers it further to 20.77. The central open questions are the required fixed-state capacity, why Bounded does not fully preserve capability, and why β-gating degrades late.',
+      )}</p>
+
     <div data-result-stage="direct-result">
       <ScientificTable view={SAME_PANEL_FINAL_TABLE} tableNumber={t('表 1.', 'Table 1.')} />
       <p class="paper-table__external-reference">
@@ -257,10 +262,6 @@ const twentyRoundScoreWindows = finalResult
     </div>
 
     <div class="paper__metric-context">
-      <p class="paper__lede esg__lede" data-reader-task data-reader-purpose>{t(
-        '三条已完成路线现在形成了一个很清楚的结果：Bounded 把参数更新累计耗时从 31.09 小时降到 2.02 小时，但同题终评从 60.72 降到 45.98；继续加入 β 组件后，终评进一步降到 20.77。接下来的核心问题是：固定容量到底应该多大、Bounded 为什么没有完全保持能力，以及 β 为什么后期掉分。',
-        'The three completed lines now form a clear result: Bounded reduces cumulative parameter-update time from 31.09 hours to 2.02 hours, but the same-panel final drops from 60.72 to 45.98; adding the β component lowers it further to 20.77. The central open questions are the required fixed-state capacity, why Bounded does not fully preserve capability, and why β-gating degrades late.',
-      )}</p>
       <p>{t(
         'Task Score 是 WebShop 每个任务结束时给出的 0–1 连续分数的平均值 × 100。商品属性只完成一部分时也可能得到部分分；“完整做对”则要求任务真正成功且 task_score = 1.0。因此 60.72 / 100 和 50/128 不是同一个指标。',
         'Task Score is the mean terminal WebShop task_score in [0,1], multiplied by 100. Partial satisfaction can receive partial credit; “exact success” requires the task to be completed successfully with task_score = 1.0. So 60.72/100 and 50/128 are different metrics.',
@@ -1309,17 +1310,6 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   .paper-table thead th{border-top:2px solid var(--text-primary);border-bottom:1.5px solid var(--text-primary);font-weight:750}
   .paper-table tbody tr:last-child td{border-bottom:2px solid var(--text-primary)}
   .paper-table td.paper-table__mark{text-align:center;font-size:1.2rem;font-weight:800}
-  .paper-table--ablation{min-width:960px;table-layout:fixed}
-  .paper-table--ablation th,.paper-table--ablation td{padding-block:6px;line-height:1.35}
-  .paper-table--ablation th:first-child,.paper-table--ablation td:first-child{width:31%}
-  .paper-table--ablation th:nth-child(2),.paper-table--ablation td:nth-child(2){width:8%}
-  .paper-table--ablation th:nth-child(3),.paper-table--ablation td:nth-child(3){width:8%}
-  .paper-table--ablation th:nth-child(4),.paper-table--ablation td:nth-child(4){width:8%}
-  .paper-table--ablation th:nth-child(5),.paper-table--ablation td:nth-child(5){width:20%}
-  .paper-table--ablation th:nth-child(6),.paper-table--ablation td:nth-child(6){width:25%}
-  .paper-table--ablation td:nth-child(n+2),.paper-table--ablation th:nth-child(n+2){text-align:center}
-  .paper-table__reference-row td{border-top:1.5px solid var(--text-primary)}
-  .paper-table-wrap--hero{margin-top:12px;overflow-x:auto}
   .paper__math-caption{max-width:880px;margin:-.45rem 0 1rem;color:var(--text-secondary);font-size:1rem;line-height:1.6}
   .paper__math-boundary{max-width:880px;margin:1rem 0;padding:.85rem 0 .85rem 1rem;border-left:3px solid var(--border-color);color:var(--text-secondary);font-size:1rem;line-height:1.65}
   .paper__math-symbol{font-family:serif;font-style:italic}
@@ -1340,8 +1330,6 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     .paper__setup{grid-template-columns:1fr}
     .paper__hub-grid{grid-template-columns:1fr}
     .paper-table{min-width:640px}
-    .paper-table--ablation{min-width:900px}
-    .paper-table--ablation th,.paper-table--ablation td{padding:7px 7px;overflow-wrap:anywhere}
   }
   @media(prefers-reduced-motion:reduce){.paper *,.paper *::before,.paper *::after{scroll-behavior:auto;transition:none;animation:none}}
 </style>
