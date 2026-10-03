@@ -41,7 +41,7 @@ describe('B02 research synthesis articles', () => {
 
   it('marks observed, inferred and proposed layers without inventing a new result store', () => {
     for (const layer of ['observed', 'inferred', 'proposed']) expect(synthesis).toContain(`data-claim-layer="${layer}"`);
-    for (const owner of ['BaseModel #805', 'D03 #824', 'D04 #825']) expect(synthesis).toContain(owner);
+    for (const owner of ['BaseModel PR 805', 'D03 PR 824', 'D04 PR 825']) expect(synthesis).toContain(owner);
     for (const duplicatedRawValue of ['0.0369', '0.6119', '20.77 / 100', '45.98 / 100', '60.72 / 100']) {
       expect(synthesis).not.toContain(duplicatedRawValue);
     }
