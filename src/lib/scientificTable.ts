@@ -41,6 +41,12 @@ export function displayScientificCell(cell: ScientificTableCell): string {
   return String(cell.raw);
 }
 
+export function scientificTableCell(row: ScientificTableRow, key: string, tableId = 'scientific-table'): ScientificTableCell {
+  const cell = row.cells[key];
+  if (!cell) throw new Error(`${tableId}/${row.id}: missing cell ${key}`);
+  return cell;
+}
+
 function assertFiniteScalar(value: ScientificScalar, context: string): void {
   if (typeof value === 'number' && !Number.isFinite(value)) throw new Error(`${context} contains a non-finite number`);
 }
@@ -55,8 +61,8 @@ export function validateScientificTableView(view: ScientificTableView): Scientif
   for (const row of view.rows) {
     if (!row.label) throw new Error(`${view.id}/${row.id}: missing row label`);
     for (const key of keys) {
-      if (!(key in row.cells)) throw new Error(`${view.id}/${row.id}: missing cell ${key}`);
-      assertFiniteScalar(row.cells[key].raw, `${view.id}/${row.id}/${key}`);
+      const cell = scientificTableCell(row, key, view.id);
+      assertFiniteScalar(cell.raw, `${view.id}/${row.id}/${key}`);
     }
     for (const key of Object.keys(row.cells)) {
       if (!keys.has(key)) throw new Error(`${view.id}/${row.id}: unknown cell ${key}`);
@@ -90,7 +96,7 @@ export function scientificTableToCsv(input: ScientificTableView): string {
   const rows = view.rows.map((row) => [
     row.group ?? '',
     row.label,
-    ...view.columns.map((column) => row.cells[column.key].raw),
+    ...view.columns.map((column) => scientificTableCell(row, column.key, view.id).raw),
   ].map(csvField).join(','));
   return [header, ...rows].join('\n') + '\n';
 }
@@ -132,7 +138,7 @@ export function scientificTableToLatex(input: ScientificTableView): string {
     }
     body.push([
       escapeLatexText(row.label),
-      ...view.columns.map((column) => latexCell(row.cells[column.key].raw)),
+      ...view.columns.map((column) => latexCell(scientificTableCell(row, column.key, view.id).raw)),
     ].join(' & ') + String.raw` \\`);
   }
   const noteLines = view.notes.map((note) => `% ${note.replaceAll('\n', ' ')}`);
