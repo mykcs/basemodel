@@ -1,0 +1,86 @@
+---
+import type { Locale } from '../../i18n';
+import { CAPACITY_TRADEOFF_FIGURE as figure } from '../../data/researchFigureData';
+import ResearchEvidenceFigure from './ResearchEvidenceFigure.astro';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+---
+
+<ResearchEvidenceFigure
+  locale={locale}
+  id={figure.id}
+  title={t(figure.title, 'Persistent-State capacity · quality · payload')}
+  question={t(figure.question, 'What happens to capability and storage when the persistent parameter State is compressed?')}
+  role={t('开发对照 · 等待来源发布', 'Development comparison · awaiting source publication')}
+  sourceHref={figure.source.href}
+  sourceLabel={t(figure.source.label, 'Source publication PR 805')}
+  supports={t(figure.supports, 'The comparison has a known source owner, but the website publication data is not integrated yet.')}
+  doesNotSupport={t(figure.doesNotSupport, 'Until PR 805 is integrated, do not draw a capacity frontier, copy result values, or infer a minimum trainable rank from effective rank.')}
+  status="pending"
+>
+  <div slot="visual" class="capacity-pending" data-capacity-pending>
+    <div class="capacity-pending__axis" aria-hidden="true">
+      <span class="capacity-pending__label">rank128</span>
+      <div class="capacity-pending__line"></div>
+      <span class="capacity-pending__label">rank32</span>
+    </div>
+    <p>{t(
+      '这里故意不画点。rank32 / rank128 已经有明确的来源记录，但网站正式发布数据仍由 PR 805 接入；在那之前画出 Task Score、adapter 文件大小或“前沿”都会制造第二套事实源。',
+      'No data points are drawn here on purpose. The rank32/rank128 result has a source owner, but website publication is still owned by PR 805. Drawing Task Score, adapter bytes, or a frontier before that integration would create a second fact source.',
+    )}</p>
+  </div>
+
+  <div slot="table" class="capacity-pending__table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>{t('State 容量', 'State capacity')}</th>
+          <th>{t('adapter 文件大小', 'adapter bytes')}</th>
+          <th>Task Score</th>
+          <th>exact success</th>
+        </tr>
+      </thead>
+      <tbody>
+        {figure.rows.map((row) => (
+          <tr>
+            <td>{row.label}</td>
+            <td>{t('等待 PR 805 接入', 'await PR 805')}</td>
+            <td>{t('等待 PR 805 接入', 'await PR 805')}</td>
+            <td>{t('等待 PR 805 接入', 'await PR 805')}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</ResearchEvidenceFigure>
+
+<style>
+  .capacity-pending{
+    display:grid;
+    grid-template-columns:minmax(12rem,.8fr) minmax(0,1.2fr);
+    gap:1.1rem;
+    align-items:center;
+    padding:1rem;
+    border:1px dashed var(--color-border);
+    border-radius:var(--radius-control);
+    background:var(--color-surface-subtle);
+  }
+  .capacity-pending p{margin:0;max-width:48rem;line-height:1.65;color:var(--color-text-muted)}
+  .capacity-pending__axis{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:.55rem;min-width:0}
+  .capacity-pending__line{height:1px;background:var(--color-border);position:relative}
+  .capacity-pending__line::before,
+  .capacity-pending__line::after{content:'';position:absolute;top:50%;width:.65rem;height:.65rem;border:1px dashed var(--color-text-muted);border-radius:50%;background:var(--color-surface);transform:translateY(-50%)}
+  .capacity-pending__line::before{left:0}
+  .capacity-pending__line::after{right:0}
+  .capacity-pending__label{font-weight:760;font-variant-numeric:tabular-nums}
+  .capacity-pending__table-wrap{overflow-x:auto}
+  .capacity-pending__table-wrap table{width:100%;border-collapse:collapse}
+  .capacity-pending__table-wrap th,
+  .capacity-pending__table-wrap td{padding:.5rem .58rem;border-bottom:1px solid var(--color-border);text-align:right;white-space:nowrap}
+  .capacity-pending__table-wrap th:first-child,
+  .capacity-pending__table-wrap td:first-child{text-align:left}
+  @media(max-width:720px){.capacity-pending{grid-template-columns:1fr}}
+</style>

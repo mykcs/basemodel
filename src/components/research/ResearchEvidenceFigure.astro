@@ -1,0 +1,154 @@
+---
+import ExternalBrandMark from '../common/ExternalBrandMark';
+interface Props {
+  locale?: 'zh' | 'en';
+  id: string;
+  title: string;
+  question: string;
+  role: string;
+  sourceHref: string;
+  sourceLabel: string;
+  supports: string;
+  doesNotSupport: string;
+  status?: 'ready' | 'pending';
+}
+const {
+  locale = 'zh',
+  id,
+  title,
+  question,
+  role,
+  sourceHref,
+  sourceLabel,
+  supports,
+  doesNotSupport,
+  status = 'ready',
+} = Astro.props;
+const t = (cn: string, en: string) => locale === 'zh' ? cn : en;
+const titleId = id + '-title';
+---
+
+<figure
+  id={id}
+  class:list={['research-evidence-figure', status === 'pending' && 'research-evidence-figure--pending']}
+  data-research-evidence-figure
+  data-ui-audit="contrast layout"
+  aria-labelledby={titleId}
+>
+  <header class="research-evidence-figure__header">
+    <div>
+      <p class="research-evidence-figure__role">{role}</p>
+      <h4 id={titleId}>{title}</h4>
+      <p class="research-evidence-figure__question">{question}</p>
+    </div>
+    {status === 'pending' && <span class="research-evidence-figure__status">{t('等待来源接入', 'Awaiting source integration')}</span>}
+  </header>
+
+  <div class="research-evidence-figure__visual" data-ui-audit-item>
+    <slot name="visual" />
+  </div>
+
+  <div class="research-evidence-figure__table" data-ui-audit-item>
+    <slot name="table" />
+  </div>
+
+  <figcaption>
+    <dl class="research-evidence-figure__claims">
+      <div>
+        <dt>{t('这张图支持', 'This figure supports')}</dt>
+        <dd>{supports}</dd>
+      </div>
+      <div>
+        <dt>{t('这张图不支持', 'This figure does not support')}</dt>
+        <dd>{doesNotSupport}</dd>
+      </div>
+    </dl>
+    <a class="research-evidence-figure__source" href={sourceHref}><ExternalBrandMark href={sourceHref} />{sourceLabel} →</a>
+  </figcaption>
+</figure>
+
+<style>
+  .research-evidence-figure{
+    margin:1.4rem 0 1.9rem;
+    padding:clamp(1rem,2.3vw,1.5rem);
+    border:1px solid var(--color-border);
+    border-radius:var(--radius-panel);
+    background:var(--color-surface);
+    min-width:0;
+    scroll-margin-top:10rem;
+  }
+  .research-evidence-figure__header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:1rem;
+    margin-bottom:1rem;
+  }
+  .research-evidence-figure__role{
+    margin:0 0 .3rem;
+    color:var(--color-accent);
+    font-size:.76rem;
+    font-weight:800;
+    letter-spacing:.055em;
+    text-transform:uppercase;
+  }
+  .research-evidence-figure h4{
+    margin:0;
+    font-size:clamp(1.18rem,2.3vw,1.55rem);
+    letter-spacing:-.02em;
+  }
+  .research-evidence-figure__question{
+    max-width:62rem;
+    margin:.45rem 0 0;
+    color:var(--color-text-muted);
+    line-height:1.62;
+  }
+  .research-evidence-figure__status{
+    flex:0 0 auto;
+    padding:.3rem .55rem;
+    border:1px solid var(--color-border);
+    border-radius:999px;
+    color:var(--color-text-muted);
+    font-size:.76rem;
+    font-weight:750;
+  }
+  .research-evidence-figure__visual{min-width:0}
+  .research-evidence-figure__table{margin-top:1rem;min-width:0}
+  .research-evidence-figure figcaption{
+    display:grid;
+    gap:.8rem;
+    margin-top:1rem;
+    padding-top:1rem;
+    border-top:1px solid var(--color-border);
+  }
+  .research-evidence-figure__claims{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:.8rem 1.25rem;
+    margin:0;
+  }
+  .research-evidence-figure__claims div{min-width:0}
+  .research-evidence-figure__claims dt{
+    margin-bottom:.22rem;
+    font-size:.78rem;
+    font-weight:800;
+  }
+  .research-evidence-figure__claims dd{
+    margin:0;
+    color:var(--color-text-muted);
+    line-height:1.62;
+  }
+  .research-evidence-figure__source{width:max-content;max-width:100%;font-weight:760}
+  .research-evidence-figure--pending{border-style:dashed}
+  @media(max-width:720px){
+    .research-evidence-figure{padding:1rem}
+    .research-evidence-figure__header{display:grid}
+    .research-evidence-figure__status{width:max-content}
+    .research-evidence-figure__claims{grid-template-columns:1fr}
+  }
+  @media print{
+    .research-evidence-figure{break-inside:avoid;border-color:#888;background:#fff;color:#000}
+    .research-evidence-figure__question,
+    .research-evidence-figure__claims dd{color:#333}
+  }
+</style>
