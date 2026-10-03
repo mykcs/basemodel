@@ -412,8 +412,10 @@ Before handing a Preview to the owner, verify:
 13. Metric figures explain what the outputs mean, not only their field names.
 14. No pedagogical mock value is visually presented as a measured experiment result.
 15. Public copy contains no editor-facing “this page omits/moves/organizes content” narration.
-16. The route still works as static HTML and remains legible in light/dark and narrow/wide layouts.
-17. The exact-head Vercel Preview is inspected after repository validation.
+16. The primary representation is justified by the reader task: prose for bounded explanation, aligned comparison for comparable dimensions, semantic diagram for relation/topology, interactive HTML for real exploration, and temporal media only when motion carries necessary information. Richer media are not automatically better.
+17. Any interaction, animation, or video keeps a complete static/accessible path for the main scientific meaning and claim-changing boundaries whenever practical.
+18. The route still works as static HTML and remains legible in light/dark and narrow/wide layouts.
+19. The exact-head Vercel Preview is inspected after repository validation.
 18. Does every mechanism heading introduce an operation/object the reader already has enough context to understand, rather than asking “why X” before X exists in the reader's model?
 19. Does every prominent number/dimension/acronym name its semantic object before the reader is asked to interpret the number?
 20. If implementation understanding changed during review, was the correction integrated at first use instead of appended as a repair FAQ?
