@@ -6,7 +6,6 @@ interface Props { locale: Locale; mode: 'results' | 'reproduction' | 'archive' }
 const { locale, mode } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
-const localEvidenceHref = (sourcePath: string) => sourcePath.startsWith('public/') ? '/' + sourcePath.slice('public/'.length) : null;
 const stateLabel = (value: string) => ({
   complete: t('完整', 'complete'),
   partial: t('部分', 'partial'),
