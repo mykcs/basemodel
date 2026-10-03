@@ -4,7 +4,7 @@
 
 共享的「说人话 / 去 AI 味」当前标准由中央 authority 负责：
 
-https://github.com/mykcs/.codex/blob/main/website-governance/HUMAN_EXPRESSION_STANDARD.md
+https://github.com/mykcs/.agents/blob/main/docs/agents/HUMAN_EXPRESSION_STANDARD.md
 
 真人 RAW、共享偏好和 BaseModel 专有 learned experience 分别位于：
 
