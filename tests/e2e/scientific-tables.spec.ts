@@ -58,11 +58,18 @@ test.describe('scientific research tables', () => {
     expect(await finalTex.text()).toContain('\\textemdash{}');
   });
 
-  test('200% content zoom does not create root overflow', async ({ page }) => {
+  test('200% text zoom reflows while table overflow stays local', async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 900 });
     await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/');
-    await page.evaluate(() => { document.body.style.zoom = '2'; });
-    const rootOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
-    expect(rootOverflow).toBe(false);
+    await page.evaluate(() => { document.documentElement.style.fontSize = '200%'; });
+    const geometry = await page.evaluate(() => {
+      const scroller = document.querySelector<HTMLElement>('[data-scientific-table="rank32-capacity"] .scientific-table__scroll');
+      return {
+        rootOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+        tableOverflow: !!scroller && scroller.scrollWidth > scroller.clientWidth,
+      };
+    });
+    expect(geometry.rootOverflow).toBe(false);
+    expect(geometry.tableOverflow).toBe(true);
   });
 });
