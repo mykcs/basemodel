@@ -1,5 +1,5 @@
 ---
-import { displayScientificCell, type ScientificTableView } from '../../lib/scientificTable';
+import { displayScientificCell, scientificTableCell, type ScientificTableView } from '../../lib/scientificTable';
 
 interface Props {
   view: ScientificTableView;
@@ -47,7 +47,7 @@ for (const row of view.rows) {
             <tr data-row-id={row.id}>
               <th scope="row" class="scientific-table__row-header">{row.label}</th>
               {view.columns.map((column) => {
-                const cell = row.cells[column.key];
+                const cell = scientificTableCell(row, column.key, view.id);
                 return (
                   <td
                     class:list={[`align-${column.align ?? 'left'}`, typeof cell.raw === 'number' && 'is-numeric', cell.raw === null && 'is-missing']}
