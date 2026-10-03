@@ -2,7 +2,7 @@
 
 Status: **current project-wide research publication and progressive-disclosure contract**
 Decision date: **2026-08-30**
-Last reviewed: **2026-09-20**
+Last reviewed: **2026-10-03**
 
 This document consolidates durable owner preferences for how BaseModel presents scientific research to people who did not personally run every experiment. It is a content-and-presentation contract, not a replacement for the existing visual, evidence, or browser-acceptance policies.
 
@@ -224,6 +224,37 @@ observation
 
 Do not merge different evidence layers into one causal claim merely because the numbers sit on the same page.
 
+### 7.1 When a reader asks “where did this come from?”, show the actual path
+
+For implementation-, data-, or calculation-specific claims, BaseModel uses the shared account-level evidence-addressable pattern and specializes it for research publication:
+
+```text
+reader question / claim
+-> immutable source or raw artifact link
+-> short source excerpt / raw fields
+-> human explanation, pseudocode, equation, or compact table
+-> runtime/result evidence when behavior is being claimed
+-> claim boundary
+```
+
+Examples:
+
+- **“β 代码是怎么写的？”** Link the exact implementation at an immutable commit, show only the core lines that compute/apply β, then explain the state transition in plain language or pseudocode. If the page claims how β behaved in a run, also link the corresponding raw receipt/trace/result; source code alone does not prove runtime behavior.
+- **“这个数据从哪里来？”** Link the source dataset/task manifest/raw episode, show the exact fields or sample definition that matter, then explain selection/filtering and the denominator. A screenshot of a table is supporting presentation, not the sole provenance when raw data exists.
+- **“这个数怎么算的？”** Link the raw inputs and the analysis script/function, show the formula or aggregation in real math/table form, and link the machine-produced output. The reader should be able to reconstruct the transformation path without reverse-engineering prose.
+
+On web pages, keep the main explanation readable and use a nearby evidence disclosure for longer raw material. The disclosure should normally contain:
+
+1. **源码 / 原始数据 / 原始结果** — exact immutable link, with line range or artifact identity when available;
+2. **核心原文** — a small code/data/result excerpt, not a whole file dump;
+3. **怎么读** — explanation of variables, rows, formula, or transformation;
+4. **验证** — test/receipt/runtime output when the claim is about executed behavior;
+5. **边界** — what this evidence establishes and what remains inference or unknown.
+
+Do not create a detached “参考链接” wall. Each evidence capsule belongs next to the claim it supports. Do not silently copy code into prose without the owning source identity, and do not use a moving `main` link for a historical statement when an immutable commit is known.
+
+GitHub/source links and raw-artifact links should remain direct reader actions. Brand treatment may make the destination recognizable, but UI decoration must not obscure the exact destination or replace the source text.
+
 ## 8. Scientific wording boundaries
 
 Never upgrade evidence strength for rhetorical neatness.
@@ -302,13 +333,15 @@ Before merge, answer yes to all of the following:
 2. Are decisive numbers and caveats visible without opening disclosures?
 3. Are unfamiliar Stage labels, thresholds, negative labels, and acronyms explained where first used?
 4. Does each important claim have nearby provenance that actually supports it?
-5. Are commands, scripts, configs, secrets setup, and logs optional depth unless they change interpretation?
-6. Does every disclosure have a meaningful summary and keyboard-visible focus?
-7. Are result, interpretation, and “cannot prove” boundaries separated?
-8. Does navigation reflect conceptual hierarchy rather than internal repository structure, and do display-only parent groups stay separate from child scientific identity/provenance?
-9. Are real quantitative relationships represented with truthful web-native geometry rather than decorative art?
-10. Do the route body, `<title>`, description, Open Graph/Twitter metadata, and other search/share summaries describe the same scientific state with the same claim boundary?
-11. Has the affected route passed the required light/dark and responsive acceptance matrix?
+5. When a claim depends on code, data, or a calculation, can the reader reach the primary source, inspect the smallest useful raw excerpt, and understand the transformation without asking the author?
+6. If runtime behavior is claimed, is there runtime/result evidence in addition to source code?
+7. Are commands, scripts, configs, secrets setup, and logs optional depth unless they change interpretation?
+8. Does every disclosure have a meaningful summary and keyboard-visible focus?
+9. Are result, interpretation, and “cannot prove” boundaries separated?
+10. Does navigation reflect conceptual hierarchy rather than internal repository structure, and do display-only parent groups stay separate from child scientific identity/provenance?
+11. Are real quantitative relationships represented with truthful web-native geometry rather than decorative art?
+12. Do the route body, `<title>`, description, Open Graph/Twitter metadata, and other search/share summaries describe the same scientific state with the same claim boundary?
+13. Has the affected route passed the required light/dark and responsive acceptance matrix?
 
 ## Relationship to current policy owners
 
