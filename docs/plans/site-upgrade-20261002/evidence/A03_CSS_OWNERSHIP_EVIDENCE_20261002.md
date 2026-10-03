@@ -132,7 +132,7 @@ Full repository and browser acceptance are recorded separately in the PR once co
 After the final ownership changes:
 
 - `npm run verify:deploy`: **PASS**.
-- Full repository Vitest inside the gate: **PASS** (123 test files / 807 tests after adding the A03 ownership contract).
+- Full repository Vitest inside the gate: **PASS** (124 test files / 808 tests after adding the A03 ownership contract).
 - CSS audit: **PASS** with the new single-owner checks.
 - Fresh build: **PASS**, 265 routes.
 
