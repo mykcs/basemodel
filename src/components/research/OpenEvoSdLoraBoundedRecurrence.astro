@@ -3,6 +3,8 @@ import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import OpenEvoSdLoraHistorySeriesNav from './OpenEvoSdLoraHistorySeriesNav.astro';
 import ExternalBrandMark from '../common/ExternalBrandMark';
+import ScientificTable from './ScientificTable.astro';
+import { RANK32_CAPACITY_TABLE } from '../../data/scientificResearchTables';
 import { SD_LORA_V2_LOCAL } from '../../data/sdLoraV2Outcome';
 import {
   SD_LORA_BOUNDED_RECURRENCE_RESULT as result,
@@ -24,6 +26,8 @@ const lineageHref = `https://github.com/${lineage.repository}/blob/${lineage.com
 const stableHref = p(`${root}sd-lora-equivalence/`);
 const successorHref = p(`${root}bounded-effective-state-gdr/`);
 const accelerationHref = p(`${root}sd-lora-bounded-acceleration/`);
+const postAdvisorHref = 'https://github.com/mykcs/openevo-experiment/pull/597';
+const capacityEvidenceHref = '/research/seed-openevo/evidence/post-advisor-ab-final-20260928.json';
 const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
 ---
 <article class="bounded" data-copy-review data-sd-lora-bounded-recurrence>
@@ -36,6 +40,10 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
         `From R150 through R159, the next round no longer carried the full growing component history. History stayed in one fixed rank128 state, each round learned one new rank8 update, then folded back to rank128; all nine recurrent updates passed their hard gates.`,
       )}
     </p>
+    <p class="bounded__capacity-highlight">{t(
+      '新容量结果：rank32 只用约 25% 的持久参数 payload，在同一 R152–R159 的 1,024 个 matched rollout 上保住了大部分行为；平均 Task Score 低约 0.0179，因此不能写成严格无损。下一步先扫 rank16 / 32 / 64 / 128。',
+      'New capacity result: rank32 uses only about 25% of the persistent parameter payload and retains most behavior across the same 1,024 matched R152–R159 rollouts; mean Task Score is about 0.0179 lower, so strict losslessness is not established. Next, sweep rank16 / 32 / 64 / 128.'
+    )}</p>
     <dl class="bounded__metrics" aria-label={t('Bounded recurrence 主要结果', 'Bounded recurrence headline results')}>
       <div><dt>{t('历史状态', 'Historical state')}</dt><dd>rank{result.stateRank}</dd></div>
       <div><dt>{t('连续更新', 'Recurrent updates')}</dt><dd>{result.recurrentRounds} / {result.recurrentRounds} PASS</dd></div>
@@ -52,7 +60,8 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
       <a href={lineageHref}><ExternalBrandMark href={lineageHref} />{t('两条 SD-LoRA 线索索引', 'Two-line SD-LoRA lineage index')}</a>
     </nav>
     <p class="bounded__next-question"><a href={accelerationHref}>{t('后续加速研究：真正慢的是训练还是 rank128 压缩？→', 'Follow-up acceleration study: is training or rank128 compression actually slow? →')}</a></p>
-    <p class="bounded__next-question"><a href={successorHref}>{t('另一条后续问题：固定 rank128 以后，怎样控制每次新经验写多强？→', 'Another follow-up: after fixing rank128, how strongly should each new experience be written? →')}</a></p>
+    <p class="bounded__next-question"><a href="#rank32-capacity">{t('新结果：rank32 只有约四分之一大小，行为大部分保留；先看容量实验 →', 'New result: rank32 is about one quarter the size while retaining most behavior; see the capacity screen →')}</a></p>
+    <p class="bounded__next-question"><a href={successorHref}>{t('写入控制仍是独立问题：容量扫清以后再决定 alpha / beta →', 'Write control remains a separate question: settle capacity before deciding on alpha / beta →')}</a></p>
   </header>
 
   <section class="bounded__section" aria-labelledby="lineage-title">
@@ -108,6 +117,29 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
       </table>
     </div>
   </section>
+  <section class="bounded__section" aria-labelledby="capacity-title" id="rank32-capacity">
+    <h2 id="capacity-title">{t('rank128 真的需要这么大吗？rank32 的纵向 fork 现在有结果了', 'Does rank128 really need to be this large? The longitudinal rank32 fork now has a result')}</h2>
+    <p>{t(
+      '后续实验没有重跑历史 rank128，而是从同一个 sealed R151-after 状态做 deterministic rank32 compression，然后沿完全相同的 R152–R159 task / seed schedule 继续 8 轮。这样问的是“容量够不够”，不是重新做一次 DirectApply-vs-Bounded。',
+      'The follow-up did not rerun historical rank128. It deterministically compressed the same sealed R151-after state to rank32, then continued for eight rounds on the exact same R152–R159 task / seed schedule. This isolates the capacity question rather than repeating DirectApply-vs-Bounded.',
+    )}</p>
+    <dl class="bounded__metrics" aria-label={t('rank32 容量实验主要结果', 'Headline rank32 capacity results')}>
+      <div><dt>{t('Adapter 大小', 'Adapter size')}</dt><dd>51.4 MiB</dd></div>
+      <div><dt>{t('rank128 大小', 'rank128 size')}</dt><dd>196.0 MiB</dd></div>
+      <div><dt>{t('大小比例', 'Size ratio')}</dt><dd>0.250×</dd></div>
+    </dl>
+    <ScientificTable view={RANK32_CAPACITY_TABLE} tableNumber={t('表 2.', 'Table 2.')} />
+    <p class="bounded__claim">{t(
+      'ELI5：把“长期记忆盒子”从 rank128 缩成 rank32 后，盒子只有原来的约四分之一大，但大部分行为还在。平均 Task Score 有约 0.0179 的下降迹象，所以不能说它完全无损；但这已经说明 rank128 很可能偏大。',
+      'ELI5: shrinking the long-term memory box from rank128 to rank32 makes it about one quarter the size while keeping most observed behavior. Mean Task Score is about 0.0179 lower, so this is not lossless; it does show that rank128 is likely over-provisioned.',
+    )}</p>
+    <p>{t(
+      '配对 rank32 − rank128 Task Score 差为 −0.0179，bootstrap 95% CI 为 [−0.0368, 0.0012]；exact-success-rate 差为 +0.0088，95% CI 为 [−0.0137, 0.0313]。因此现在最合理的下一步是先扫 rank16 / 32 / 64 / 128 的容量曲线，再决定是否值得继续复杂 alpha / beta；不能因为后验 rank95≈8 就跳到“rank8 已经够用”。',
+      'The paired rank32 − rank128 Task Score difference is −0.0179 with bootstrap 95% CI [−0.0368, 0.0012]; the exact-success-rate difference is +0.0088 with 95% CI [−0.0137, 0.0313]. The next clean step is therefore a rank16 / 32 / 64 / 128 capacity sweep before adding richer alpha / beta control; posterior rank95≈8 is not evidence that rank8 is sufficient.',
+    )}</p>
+    <p class="bounded__related"><a href={postAdvisorHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={postAdvisorHref} />{t('Post-advisor rank32 最终收口 · PR #597 ↗', 'Post-advisor rank32 final closeout · PR #597 ↗')}</a>{' · '}<a href={capacityEvidenceHref} target="_blank" rel="noreferrer">{t('BaseModel 本地证据镜像 ↗', 'BaseModel local evidence mirror ↗')}</a></p>
+  </section>
+
   <section class="bounded__section" aria-labelledby="claim-title">
     <h2 id="claim-title">{t('现在能说什么', 'What this result supports')}</h2>
     <p class="bounded__claim">{t(
@@ -132,5 +164,5 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
   <OpenEvoSdLoraHistorySeriesNav locale={locale} />
 </article>
 <style>
-.bounded{width:100%;padding:0 0 4rem}.bounded__hero,.bounded__section{width:min(980px,calc(100% - 2rem));margin:0 auto}.bounded__hero{padding:clamp(2.2rem,6vw,4.8rem) 0 2rem}.bounded__eyebrow{margin:0 0 .65rem;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}.bounded__hero h1{max-width:15ch;margin:0;font-size:clamp(2.2rem,5.7vw,4.8rem);line-height:1.02;letter-spacing:-.045em}.bounded__lede,.bounded__boundary,.bounded__section>p,.bounded__flow figcaption{max-width:48rem;font-size:1.05rem;line-height:1.68}.bounded__lede{margin:1.1rem 0 0;color:var(--ink);font-size:clamp(1.08rem,2vw,1.28rem)}.bounded__boundary{margin:1rem 0 0;color:var(--muted)}.bounded__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.6rem 0 0;border-block:1px solid var(--line)}.bounded__metrics div{padding:1rem 1rem 1rem 0}.bounded__metrics dt{color:var(--muted);font-size:.92rem}.bounded__metrics dd{margin:.25rem 0 0;font-size:1.45rem;font-weight:800}.bounded__links{display:flex;flex-wrap:wrap;gap:.8rem 1.1rem;margin-top:1rem}.bounded__links a,.bounded__related a,.bounded__evidence a{color:var(--accent-deep);text-underline-offset:.2em}.bounded__section{padding-top:2.8rem}.bounded__section h2{max-width:26ch;margin:0;font-size:clamp(1.55rem,3vw,2.25rem);line-height:1.15}.bounded__table-wrap{margin-top:1.2rem;overflow-x:auto}.bounded__table{width:100%;min-width:680px;border-collapse:collapse}.bounded__table th,.bounded__table td{padding:.8rem .7rem;font-size:1rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5}.bounded__table thead th{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}.bounded__table tbody th{width:18%;color:var(--muted);font-weight:650}.bounded__table--numbers{min-width:520px}.bounded__table--numbers td,.bounded__table--numbers th{font-variant-numeric:tabular-nums}.bounded__related{margin-top:1rem}.bounded__flow{margin:1.25rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}.bounded__flow-line{display:flex;align-items:center;gap:.6rem;overflow-x:auto;padding:.2rem 0 .6rem;font:750 1rem/1.2 var(--font-mono)}.bounded__flow-line span{flex:0 0 auto;padding:.5rem .6rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.bounded__flow-line b{color:var(--accent-deep)}.bounded__section>.bounded__claim{font-size:1.16rem;color:var(--ink);font-weight:650}.bounded__evidence{max-width:48rem;margin-top:1rem}.bounded__evidence summary{cursor:pointer;font-weight:700}.bounded__evidence li{margin:.55rem 0;line-height:1.5}@media(max-width:680px){.bounded__hero,.bounded__section{width:min(100% - 1rem,980px)}.bounded__metrics{grid-template-columns:1fr}.bounded__metrics div{border-bottom:1px solid var(--line)}.bounded__metrics div:last-child{border-bottom:0}.bounded__table{min-width:640px}}
+.bounded{width:100%;padding:0 0 4rem}.bounded__hero,.bounded__section{width:min(980px,calc(100% - 2rem));margin:0 auto}.bounded__hero{padding:clamp(2.2rem,6vw,4.8rem) 0 2rem}.bounded__eyebrow{margin:0 0 .65rem;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}.bounded__hero h1{max-width:15ch;margin:0;font-size:clamp(2.2rem,5.7vw,4.8rem);line-height:1.02;letter-spacing:-.045em}.bounded__lede,.bounded__boundary,.bounded__section>p,.bounded__flow figcaption{max-width:48rem;font-size:1.05rem;line-height:1.68}.bounded__lede{margin:1.1rem 0 0;color:var(--ink);font-size:clamp(1.08rem,2vw,1.28rem)}.bounded__capacity-highlight{max-width:48rem;margin:1rem 0 0;padding:.8rem 1rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted);font-size:1rem;line-height:1.55;font-weight:650}.bounded__boundary{margin:1rem 0 0;color:var(--muted)}.bounded__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.6rem 0 0;border-block:1px solid var(--line)}.bounded__metrics div{padding:1rem 1rem 1rem 0}.bounded__metrics dt{color:var(--muted);font-size:.92rem}.bounded__metrics dd{margin:.25rem 0 0;font-size:1.45rem;font-weight:800}.bounded__links{display:flex;flex-wrap:wrap;gap:.8rem 1.1rem;margin-top:1rem}.bounded__links a,.bounded__related a,.bounded__evidence a{color:var(--accent-deep);text-underline-offset:.2em}.bounded__section{padding-top:2.8rem}.bounded__section h2{max-width:26ch;margin:0;font-size:clamp(1.55rem,3vw,2.25rem);line-height:1.15}.bounded__table-wrap{margin-top:1.2rem;overflow-x:auto}.bounded__table{width:100%;min-width:680px;border-collapse:collapse}.bounded__table th,.bounded__table td{padding:.8rem .7rem;font-size:1rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5}.bounded__table thead th{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}.bounded__table tbody th{width:18%;color:var(--muted);font-weight:650}.bounded__table--numbers{min-width:520px}.bounded__table--numbers td,.bounded__table--numbers th{font-variant-numeric:tabular-nums}.bounded__related{margin-top:1rem}.bounded__flow{margin:1.25rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}.bounded__flow-line{display:flex;align-items:center;gap:.6rem;overflow-x:auto;padding:.2rem 0 .6rem;font:750 1rem/1.2 var(--font-mono)}.bounded__flow-line span{flex:0 0 auto;padding:.5rem .6rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.bounded__flow-line b{color:var(--accent-deep)}.bounded__section>.bounded__claim{font-size:1.16rem;color:var(--ink);font-weight:650}.bounded__evidence{max-width:48rem;margin-top:1rem}.bounded__evidence summary{cursor:pointer;font-weight:700}.bounded__evidence li{margin:.55rem 0;line-height:1.5}@media(max-width:680px){.bounded__hero,.bounded__section{width:min(100% - 1rem,980px)}.bounded__metrics{grid-template-columns:1fr}.bounded__metrics div{border-bottom:1px solid var(--line)}.bounded__metrics div:last-child{border-bottom:0}.bounded__table{min-width:640px}}
 </style>
