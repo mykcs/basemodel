@@ -3,7 +3,7 @@
 Status: **ACTIVE TASK PLAN · product sample**
 Repository: `mykcs/basemodel`
 Primary target: `/research/seed-openevo/study/`
-Baseline: `main@f7ce09363f46917973926130b0f44237728ceb10`
+Baseline: `main@aeac85458c6dc2fc949f7147d1ba4a40884225e8`
 Date: **2026-10-03**
 
 ## 1. Reader problem
@@ -19,7 +19,17 @@ The reader should be able to recover:
 
 The current task is not to add a dashboard or generic interactive timeline.
 
-## 2. Preferred representation hypothesis
+## 2. Loading / authority boundary
+
+This is substantial, durable public website content. Before substantial copy/structure work load:
+
+1. `mykcs/.agents/docs/agents/HUMAN_EXPRESSION_STANDARD.md`;
+2. BaseModel `website-design-spec.md`;
+3. the study gateway Reader Contract, research-integrity, comparison, and semantic web-expression owners.
+
+The root Agent lightweight conversation limits govern progress/status chat, not the finished page body. Keep the full shared standard centralized in `.agents`; BaseModel adds only project-specific scientific and product constraints.
+
+## 3. Preferred representation hypothesis
 
 Start from:
 
@@ -32,7 +42,7 @@ Use:
 
 Do not add interaction just to make the gateway feel modern.
 
-## 3. Scope
+## 4. Scope
 
 Primary product owner is the canonical study gateway at `/research/seed-openevo/study/`.
 
@@ -40,7 +50,7 @@ Phase A must bind the current source/component/data owners before editing.
 
 Prefer improving the existing route. A new route requires explicit Reader Contract evidence that the gateway cannot carry the comparison without competing with its primary task.
 
-## 4. Scientific/comparison contract
+## 5. Scientific/comparison contract
 
 Preserve:
 - actual model/task/budget identities;
@@ -52,7 +62,7 @@ Preserve:
 
 Do not make a visual symmetry imply scientific symmetry.
 
-## 5. Page story
+## 6. Page story
 
 A useful candidate sequence:
 
@@ -65,7 +75,7 @@ A useful candidate sequence:
 
 This is a reasoning sequence, not six mandatory cards.
 
-## 6. Implementation phases
+## 7. Implementation phases
 
 Phase A — cold-read current study gateway and sibling result routes.
 
@@ -79,7 +89,7 @@ Phase E — browser acceptance and zero-context cold read.
 
 Phase F — report reusable semantics to the later primitives-extraction PR; do not generalize them here.
 
-## 7. Negative controls
+## 8. Negative controls
 
 The result fails if:
 - it becomes a card wall;
@@ -89,7 +99,7 @@ The result fails if:
 - it makes SEED/OpenEVO look scientifically identical except for branding;
 - it moves exact evidence farther from the claim.
 
-## 8. Acceptance
+## 9. Acceptance
 
 - [ ] a zero-context reader can state SEED vs OpenEVO in ordinary language;
 - [ ] comparable dimensions are truly aligned;
@@ -102,7 +112,7 @@ The result fails if:
 - [ ] focused policy/unit/E2E coverage passes;
 - [ ] exact-head Public PR CI + required Vercel final gate pass before merge.
 
-## 9. Concurrency
+## 10. Concurrency
 
 This PR may run in parallel with the Vanilla sample because it owns a different route and a different representation problem.
 
