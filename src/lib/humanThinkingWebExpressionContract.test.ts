@@ -43,14 +43,24 @@ describe('human-thinking web expression contract', () => {
       'Primary path',
       'Secondary depth',
       'Semantic shape',
+      'Medium choice',
       'Density plan',
       'Acceptance evidence',
     ]) {
       expect(expressionContract).toContain(`**${field}**`);
     }
     expect(prTemplate).toContain('User-facing Page Expression Brief');
+    expect(prTemplate).toContain('Representation / medium choice');
     expect(prTemplate).toContain('Information-density plan');
     expect(prTemplate).toContain('Semantic HTML / visualization form');
+  });
+
+  it('requires an explicit medium choice instead of defaulting every explanation to prose', () => {
+    expect(expressionContract).toContain('**Choose the medium before polishing the copy.**');
+    expect(expressionContract).toContain('Prose, tables, diagrams, interactive HTML, animation, and video are not maturity levels');
+    expect(expressionContract).toContain('purpose-built disposable explainer');
+    expect(expressionContract).toContain('complete static/accessible reading path');
+    expect(prTemplate).toContain('concrete comprehension gain');
   });
 
   it('maps thought structures to semantic web forms and rejects decorative visualization', () => {
