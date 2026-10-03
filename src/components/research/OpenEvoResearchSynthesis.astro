@@ -1,0 +1,179 @@
+---
+import type { Locale } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+
+type Topic = 'learning-signal' | 'rank-capacity' | 'beta-late-training';
+interface Props { locale: Locale; topic: Topic }
+const { locale, topic } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+
+const baseModelPr = (number: number) => `https://github.com/mykcs/basemodel/pull/${number}`;
+const experimentPr = (number: number) => `https://github.com/mykcs/openevo-experiment/pull/${number}`;
+
+const topics = {
+  'learning-signal': {
+    title: t('学习目标变好了，为什么任务能力没有跟着变好？', 'Why can the learning objective improve without better task capability?'),
+    lead: t(
+      '把训练曲线和固定 WebShop 验证放在一起看，当前最重要的结论不是“SEED 不行”，而是：只让 Stage1 更会拟合 hindsight-skill 监督目标，并不足以说明它已经学会了更好的 WebShop 决策。',
+      'Reading the optimization curve together with fixed WebShop validation does not show that “SEED fails.” It shows something narrower: making Stage 1 fit the hindsight-skill supervision better is not enough to establish better WebShop decisions.',
+    ),
+    judgment: t(
+      '当前证据排除了一个简单解释：capability ceiling 不是靠“把这套 Stage1 监督目标继续训得更好”就自然消失。它没有排除完整 SEED Stage2 的 self-evolving / credit-assignment 闭环，因为那部分没有在这组实验里被测试。',
+      'The evidence rules out one simple story: the capability ceiling does not automatically disappear by fitting this Stage-1 supervision better. It does not rule out the full SEED Stage-2 self-evolving / credit-assignment loop, because that mechanism was not tested here.',
+    ),
+    observations: [
+      t('监督优化指标继续改善，但固定留出 WebShop capability 没有随之改善。', 'The supervised optimization objective improves while fixed held-out WebShop capability does not improve with it.'),
+      t('因此，loss 在这里是“模型是否更会完成监督目标”的证据，不是“模型是否更会完成 WebShop”的替代指标。', 'Loss is evidence that the model fits the supervised target better; it is not a substitute for evidence that the model solves WebShop better.'),
+    ],
+    alternatives: [
+      {
+        title: t('解释 A：学习信号没有把经验变成可迁移决策', 'Explanation A: the learning signal does not turn experience into transferable decisions'),
+        body: t('如果这个解释更接近事实，那么在相同验证合同下换一个更合适的学习信号，应该改善任务指标，而不必先引入完整 Stage2。', 'If this is the main issue, a better learning signal should improve task metrics under the same validation contract even before the full Stage-2 loop is introduced.'),
+      },
+      {
+        title: t('解释 B：真正缺的是 Stage2 的自演化闭环', 'Explanation B: the missing ingredient is the Stage-2 self-evolving loop'),
+        body: t('如果这个解释更接近事实，那么 Stage1 单独怎么拟合都不会稳定抬高 capability；在统一起点加入完整 Stage2 后才应该出现 Stage1 没有的增益。', 'If this is the main issue, fitting Stage 1 alone will not reliably raise capability; the improvement should appear only after adding the full Stage-2 loop from a controlled starting point.'),
+      },
+    ],
+    unknown: t('现在还不知道的是：学习信号本身和缺少 Stage2 各占多大责任。现有实验不能把两者拆成因果比例。', 'What remains unknown is how much of the limitation comes from the learning signal itself versus the missing Stage-2 loop. The current study cannot assign causal shares to those explanations.'),
+    change: t('会改变判断的证据：匹配的学习信号实验在同一留出合同下稳定改善任务能力，或完整 Stage2 在统一起点上产生 Stage1 单独没有的能力增益。', 'Evidence that would change the judgment: a matched learning-signal study reliably improves held-out capability, or a full Stage-2 loop from a controlled start produces gains that Stage 1 alone does not.'),
+    links: [
+      { label: t('已发布的 Stage1 / rank32 结果 · BaseModel #805', 'Published Stage-1 / rank32 results · BaseModel #805'), href: baseModelPr(805) },
+      { label: t('可复算比较边界 · D03 #824', 'Recomputable comparison boundary · D03 #824'), href: baseModelPr(824) },
+      { label: t('下一阶段决策边界 · D04 #825', 'Next-stage decision boundary · D04 #825'), href: baseModelPr(825) },
+      { label: t('现有学习信号工作线 · OpenEVO #629', 'Existing learning-signal workstream · OpenEVO #629'), href: experimentPr(629) },
+      { label: t('现有完整 Stage2 工作线 · OpenEVO #630', 'Existing full-Stage-2 workstream · OpenEVO #630'), href: experimentPr(630) },
+    ],
+  },
+  'rank-capacity': {
+    title: t('更小的长期状态，到底是“更高效”还是“容量不够”？', 'Is a smaller long-term state simply more efficient, or is it capacity-limited?'),
+    lead: t(
+      'rank32 的意义不在于得到一个新的“最佳 rank”，而在于第一次把容量、持久状态成本和任务行为放到同一个问题里。它显示 rank128 很可能不是唯一合理容量，但还没有证明更小状态与 rank128 等价。',
+      'The point of rank32 is not to announce a new best rank. It puts capacity, persistent-state cost, and task behavior into the same question. The result suggests rank128 is unlikely to be the only reasonable capacity, but it does not establish equivalence to rank128.',
+    ),
+    judgment: t(
+      '当前最稳妥的判断是：容量可以明显缩小，而任务行为没有按同一个指标一致地恶化；因此下一步应该测“容量曲线”，而不是从一个 rank32 点直接宣布无损，也不能从后验 effective-rank 几何直接推出最小可训练 rank。',
+      'The safest current judgment is that capacity can be reduced substantially without every task metric moving in the same direction. The next question is therefore the capacity curve—not whether one rank32 point proves losslessness, and not whether posterior effective-rank geometry reveals the minimum trainable rank.',
+    ),
+    observations: [
+      t('持久状态变小是明确的工程收益；Task Score 与 exact success 的方向却没有给出同一个“赢家”。', 'The smaller persistent state is a clear engineering gain, while Task Score and exact success do not point to one common winner.'),
+      t('“置信区间跨 0”只表示这批证据没有建立一个方向稳定的差异，不等于证明两种容量等价或严格 non-inferior。', 'A confidence interval crossing zero means this evidence does not establish a stable directional difference; it does not prove equivalence or strict non-inferiority.'),
+      t('后验 rank95 很低是几何诊断，不是“rank8 足够训练”的容量定理。', 'A low posterior rank95 is a geometric diagnostic, not a theorem that rank8 is sufficient for training.'),
+    ],
+    alternatives: [
+      {
+        title: t('解释 A：rank128 明显过量', 'Explanation A: rank128 is materially over-provisioned'),
+        body: t('如果是这样，更低 rank 应该在预先固定的能力与保持指标上形成一段较宽的平台，而不是刚低于 32 就系统性恶化。', 'If so, lower ranks should form a reasonably wide plateau on preregistered capability and retention metrics rather than degrading systematically immediately below 32.'),
+      },
+      {
+        title: t('解释 B：容量仍在限制保持或继续学习', 'Explanation B: capacity still limits retention or continued learning'),
+        body: t('如果是这样，随着 rank 下降，能力或保持损失应当稳定加重，并在重复或连续学习检查中重现。', 'If so, reducing rank should produce increasingly consistent capability or retention losses that repeat under matched continuation checks.'),
+      },
+    ],
+    unknown: t('现在还不知道容量拐点在哪里，也不知道“当前行为大部分保留”能否延伸到后续继续学习。', 'We do not yet know the capacity knee, nor whether retaining most current behavior also preserves future learning.'),
+    change: t('会改变判断的证据：现有容量 sweep 在统一任务、seed 与继续学习合同下出现清晰拐点，或者多个更低 rank 形成稳定平台。', 'Evidence that would change the judgment: the existing capacity sweep shows a clear knee under matched tasks, seeds, and continued-learning checks, or several lower ranks form a stable plateau.'),
+    links: [
+      { label: t('rank32 发布结果 · BaseModel #805', 'Published rank32 result · BaseModel #805'), href: baseModelPr(805) },
+      { label: t('可复算比较边界 · D03 #824', 'Recomputable comparison boundary · D03 #824'), href: baseModelPr(824) },
+      { label: t('下一阶段决策边界 · D04 #825', 'Next-stage decision boundary · D04 #825'), href: baseModelPr(825) },
+      { label: t('现有容量 sweep · OpenEVO #631', 'Existing capacity sweep · OpenEVO #631'), href: experimentPr(631) },
+    ],
+  },
+  'beta-late-training': {
+    title: t('后期训练分数回升，为什么不能说 β 已经“恢复”了？', 'Why does a late training rebound not mean β has recovered?'),
+    lead: t(
+      'β 这条线最容易把两种问题混在一起：冻结 Final 回答“封存模型在固定题集上最终怎样”，后续训练曲线回答“继续训练时内部轨迹还会不会变化”。R160 之后的回升只改变第二个答案，没有重新打开第一个答案。',
+      'The β line is easy to misread because it contains two different questions. The frozen Final asks how the sealed model performs on a fixed panel; the continued training curve asks whether the training trajectory can still change. The post-R160 rebound changes only the second answer because the Final was not reopened.',
+    ),
+    judgment: t(
+      '当前判断是：β 在唯一同题冻结 Final 上仍是三组里最弱的一组；R160–R199 的训练回升说明“后期只会单调变差”这个解释不成立，但不能写成新的 Final、已经反超，或证明 200 轮比 160 轮更好。',
+      'The current judgment is that β remains the weakest of the three on the only same-panel frozen Final. The R160–R199 training rebound rejects the simple story of monotonic late deterioration, but it is not a new Final, an overtake, or evidence that 200 rounds is better than 160.',
+    ),
+    observations: [
+      t('训练 loss 可以继续下降，同时任务训练分数经历下降再回升；两者不能互相替代。', 'Training loss can keep falling while task-training scores decline and later rebound; neither metric substitutes for the other.'),
+      t('DirectApply 是历史前驱，不是这次 Bounded / β 的随机匹配臂，因此不能把三条线包装成一个纯随机三臂因果实验。', 'DirectApply is a historical predecessor, not a randomized matched arm of the Bounded/β study, so the three lines are not a pure randomized three-arm causal experiment.'),
+    ],
+    alternatives: [
+      {
+        title: t('解释 A：主要问题是更新幅度', 'Explanation A: update magnitude is the main problem'),
+        body: t('如果成立，在保持方向不变时调节写入强度，应该改善后期开发指标并减少退化。', 'If true, controlling write magnitude while preserving direction should improve late development metrics and reduce degradation.'),
+      },
+      {
+        title: t('解释 B：方向选择或旧能力保持更关键', 'Explanation B: direction selection or retention is more important'),
+        body: t('如果成立，单纯缩小更新不会稳定修复；保持/遗忘检查或方向干预应该更能解释后期变化。', 'If true, simple shrinkage should not reliably fix the issue; retention tests or direction interventions should better explain the late behavior.'),
+      },
+    ],
+    unknown: t('目前还不能把 β 强度、更新方向、任务分布变化和旧能力遗忘拆成单一因果原因。', 'We still cannot isolate β strength, update direction, task-distribution shift, and retention loss into one causal explanation.'),
+    change: t('会改变判断的证据：在冻结开发合同下，保持方向的增益控制稳定改善后期能力，或保持检验证明后期退化主要伴随旧任务损失。冻结 Final 不因训练曲线回升自动重开。', 'Evidence that would change the judgment: gain control with fixed direction reliably improves late capability under a frozen development contract, or retention tests show that late degradation is mainly accompanied by loss on older tasks. The frozen Final is not automatically reopened by a training rebound.'),
+    links: [
+      { label: t('β 页面阅读基准 · BaseModel #812', 'β page reading baseline · BaseModel #812'), href: baseModelPr(812) },
+      { label: t('可复算后期轨迹 · D03 #824', 'Recomputable late trajectory · D03 #824'), href: baseModelPr(824) },
+      { label: t('竞争解释与下一步 · D04 #825', 'Competing explanations and next steps · D04 #825'), href: baseModelPr(825) },
+      { label: t('增益 / β 工作线 · OpenEVO #632', 'Gain / β workstream · OpenEVO #632'), href: experimentPr(632) },
+      { label: t('方向因果证据 · OpenEVO #634', 'Direction causal evidence · OpenEVO #634'), href: experimentPr(634) },
+      { label: t('保持 / 遗忘工作线 · OpenEVO #635', 'Retention / forgetting workstream · OpenEVO #635'), href: experimentPr(635) },
+    ],
+  },
+} as const;
+
+const article = topics[topic];
+---
+<section class="research-synthesis" data-research-synthesis={topic} aria-labelledby={`synthesis-${topic}`}>
+  <p class="research-synthesis__eyebrow">{t('综合判断', 'Synthesis')}</p>
+  <h2 id={`synthesis-${topic}`}>{article.title}</h2>
+  <p class="research-synthesis__lede" data-claim-layer="inferred">{article.lead}</p>
+
+  <h3>{t('目前判断', 'Current judgment')}</h3>
+  <p data-claim-layer="inferred">{article.judgment}</p>
+
+  <h3>{t('这批证据实际告诉了我们什么', 'What the evidence actually tells us')}</h3>
+  <ul class="research-synthesis__observations">
+    {article.observations.map((item) => <li data-claim-layer="observed">{item}</li>)}
+  </ul>
+
+  <h3>{t('至少还有两个解释仍然成立', 'At least two explanations remain viable')}</h3>
+  <div class="research-synthesis__alternatives">
+    {article.alternatives.map((item) => (
+      <section>
+        <h4>{item.title}</h4>
+        <p data-claim-layer="inferred">{item.body}</p>
+      </section>
+    ))}
+  </div>
+
+  <p class="research-synthesis__unknown" data-claim-layer="inferred"><strong>{t('仍不知道：', 'Still unknown: ')}</strong>{article.unknown}</p>
+  <p class="research-synthesis__change" data-claim-layer="proposed"><strong>{t('什么证据会改变判断：', 'What evidence would change the judgment: ')}</strong>{article.change}</p>
+
+  <details class="research-synthesis__sources">
+    <summary>{t('比较合同、来源与现有后续工作', 'Comparison contracts, sources, and existing follow-up work')}</summary>
+    <ul>
+      {article.links.map((link) => (
+        <li><a href={link.href} target="_blank" rel="noreferrer"><ExternalBrandMark href={link.href} />{link.label}</a></li>
+      ))}
+    </ul>
+  </details>
+</section>
+
+<style>
+  .research-synthesis{width:min(820px,calc(100% - 2rem));margin:0 auto 5rem;padding:3rem 0 0;border-top:2px solid var(--ink)}
+  .research-synthesis__eyebrow{margin:0 0 .5rem;color:var(--accent-deep);font:800 .72rem/1.3 var(--font-mono);letter-spacing:.05em}
+  .research-synthesis h2{max-width:22ch;margin:0;font-size:clamp(1.9rem,4vw,3rem);line-height:1.08;letter-spacing:-.04em}
+  .research-synthesis__lede{margin:1rem 0 2.2rem;font-size:clamp(1.05rem,2vw,1.24rem);line-height:1.7}
+  .research-synthesis h3{margin:2rem 0 .65rem;font-size:1.28rem;line-height:1.3}
+  .research-synthesis h4{margin:0 0 .35rem;font-size:1rem;line-height:1.4}
+  .research-synthesis p,.research-synthesis li{line-height:1.72}
+  .research-synthesis__observations{margin:.7rem 0 0;padding-left:1.25rem}
+  .research-synthesis__observations li+li{margin-top:.5rem}
+  .research-synthesis__alternatives{border-block:1px solid var(--line)}
+  .research-synthesis__alternatives section{padding:1rem 0}
+  .research-synthesis__alternatives section+section{border-top:1px solid var(--line)}
+  .research-synthesis__alternatives p{margin:.3rem 0 0;color:var(--muted)}
+  .research-synthesis__unknown,.research-synthesis__change{margin:1rem 0 0;padding:.9rem 0;border-bottom:1px solid var(--line)}
+  .research-synthesis__change{color:var(--ink)}
+  .research-synthesis__sources{margin-top:1.4rem;padding-top:.75rem;border-top:1px solid var(--line)}
+  .research-synthesis__sources summary{cursor:pointer;font-weight:750}
+  .research-synthesis__sources ul{display:grid;gap:.35rem;margin:.7rem 0 0;padding-left:1.1rem}
+  .research-synthesis__sources a{color:var(--accent-deep);text-underline-offset:.2em}
+  @media(max-width:600px){.research-synthesis{width:calc(100% - 1.2rem);padding-top:2.2rem}.research-synthesis h2{font-size:2rem}.research-synthesis__lede{margin-bottom:1.6rem}}
+</style>
