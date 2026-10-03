@@ -25,9 +25,9 @@ The CI crossing zero remains in the table notes and is explicitly **not** treate
 
 ## Caller 2 — same frozen Final
 
-Source: `effectiveStateGdrLoraStudy.ts` plus the existing DirectApply and sealed Bounded/β trajectories.
+Source: `effectiveStateGdrLoraStudy.ts`, which owns the same-panel frozen Final values and panel identity.
 
-The table contains only the local rows that share the same frozen 128-task Final. The SEED paper remains a nearby external reference because it uses a different 128-task validation panel.
+The table contains only the local rows that share the same frozen 128-task Final. Training-period last-20-round means stay in their existing later training-dynamics table instead of being mixed into the Final. The SEED paper remains a nearby external reference because it uses a different 128-task validation panel.
 
 The dynamic α+β row is represented with `null` result cells. HTML shows an em dash, CSV exports `NA`, and LaTeX exports `\\textemdash{}`; no path turns the unrun method into zero.
 
