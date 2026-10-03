@@ -68,10 +68,11 @@ describe('site-wide reader attention contracts', () => {
     expect(compatibility?.firstViewportSelector).toBe('.sdlora-intro__lede');
   });
 
-  it('keeps the Study phone budget at seven experiment parents plus one SD-LoRA overview and two treatment branches', () => {
+  it('keeps the Study phone budget at seven experiment parents, the meeting disclosure, and the SD-LoRA branch links', () => {
     const row = SITE_READER_CONTRACTS.find((contract) => contract.id === 'study');
-    expect(row?.firstViewportBudget?.maxInteractive).toBe(10);
+    expect(row?.firstViewportBudget?.maxInteractive).toBe(11);
     expect(row?.firstViewportGoal).toContain('七次主要实验');
+    expect(row?.firstViewportGoal).toContain('和学长开会');
     expect(row?.firstViewportGoal).toContain('两条路线说明');
     expect(row?.firstViewportGoal).toContain('Stable Reduction');
     expect(row?.firstViewportGoal).toContain('Bounded Online Recurrence');
