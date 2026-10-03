@@ -174,7 +174,7 @@ export const OPEN_EVO_EXPERIMENTS: OpenEvoExperimentNavigationItem[] = [
   },
   {
     id: 'stage1-learning-objectives',
-    number: '07',
+    number: '08',
     title: { zh: '起始参数怎么学：SFT / OPSD / hindsight-skill', en: 'Learning the starting parameters: SFT / OPSD / hindsight-skill' },
     summary: { zh: '这组实验把 Stage1 bootstrap 与 Stage2 SD-LoRA 持续演变拆开：先固定同一个 Qwen3-1.7B 和同一批 WebShop 经验，只比较怎样训练出“一套 Stage2 起始参数”。', en: 'This study separates the Stage-1 bootstrap from Stage-2 SD-LoRA continual evolution: it fixes the same Qwen3-1.7B and WebShop experience and compares how to learn one Stage-2 starting parameter set.' },
     motivation: { zh: '当前 Stage1 正式流程使用 OPSD，但 Stage2 真正的持续参数演变机制是 SD-LoRA。为了避免把两层混在一起，先单独比较 SFT、OPSD 与 hindsight-skill SFT 谁更适合作为 Stage2 起点。', en: 'The current formal Stage 1 uses OPSD, while Stage 2 uses SD-LoRA for continual parameter evolution. To avoid conflating the two layers, compare SFT, OPSD, and hindsight-skill SFT as alternative ways to create the Stage-2 starting point.' },

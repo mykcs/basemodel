@@ -1,5 +1,7 @@
 ---
 import { localePath, type Locale } from '../../i18n';
+import { OPEN_EVO_ADVISOR_MEETING } from '../../data/openEvoAdvisorMeeting';
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import {
   OPEN_EVO_EXPERIMENTS,
   OPEN_EVO_SECONDARY_ROUTES,
@@ -40,14 +42,33 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
   <header class="study-hero">
     <h1>{zh ? 'OpenEVO × WebShop：七次实验的研究演进' : 'OpenEVO × WebShop: seven experiments in one research progression'}</h1>
     <p class="study-hero__lede">{zh
-      ? '七次实验不是七个平行项目。上一轮留下的问题，决定下一轮为什么发生；第 07 项回到上游，重新检查 Stage1 到底该怎么学。'
-      : 'These are not seven parallel projects. One experiment leaves the question for the next; Experiment 07 moves upstream to re-check how Stage 1 should learn.'}</p>
+      ? '上一轮留下的问题，决定下一轮为什么发生。第 07 项记录和学长开会时收敛的问题，第 08 项回到上游，重新检查 Stage1 到底该怎么学。'
+      : 'One experiment leaves the question for the next. Item 07 records the questions refined in the meeting; Item 08 moves upstream to re-check how Stage 1 should learn.'}</p>
     <p class="study-hero__mobile-thread" aria-label={zh ? '七次实验的研究演进' : 'Research progression across seven experiments'}>{zh
-      ? '参数没更新 → 长周期更新 → 小模型接口 → 候选准入 → 参数历史 → 固定 State / β → Stage1 学习方式'
-      : 'blocked updates → long run → smaller-model interface → candidate admission → parameter history → fixed State / β → Stage-1 learning'}</p>
+      ? '参数没更新 → 长周期更新 → 小模型接口 → 候选准入 → 参数历史 → 固定 State / β → 和学长开会 → Stage1 学习方式'
+      : 'blocked updates → long run → smaller-model interface → candidate admission → parameter history → fixed State / β → meeting → Stage-1 learning'}</p>
   </header>
   <ol class="experiment-tree" aria-label={zh ? '主要实验目录' : 'Major experiment index'}>
     {OPEN_EVO_EXPERIMENTS.map((experiment) => (
+      <>
+      {experiment.id === 'stage1-learning-objectives' && (
+        <li class="experiment-node meeting-node" id="advisor-meeting" data-ui-audit-item data-advisor-meeting>
+          <div class="experiment-node__rail" aria-hidden="true"><span>07</span></div>
+          <article aria-labelledby="advisor-meeting-title">
+            <h2 id="advisor-meeting-title">和学长开会</h2>
+            <time datetime={OPEN_EVO_ADVISOR_MEETING.date}>{OPEN_EVO_ADVISOR_MEETING.date}</time>
+            <p>讨论普通 OpenEVO、Bounded 与 β-gating 的结果后，我们把下一步收敛为几个更基础、可验证的问题：先弄清参数怎样学、需要学多久、需要多大状态，再讨论更复杂的更新机制。</p>
+            <details>
+              <summary>当时精炼的六个问题</summary>
+              <ul>
+                {OPEN_EVO_ADVISOR_MEETING.points.map((point) => <li><strong>{point.title}：</strong>{point.text}</li>)}
+              </ul>
+              <p class="meeting-source">会议问题依据：<a href={OPEN_EVO_ADVISOR_MEETING.sourceHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.sourceHref} />9 月 28 日整理的会议对应记录</a>。这里保留 9 月 22 日的待验证问题，后续结果见各实验页面。</p>
+            </details>
+            <p class="meeting-next">因此，下一步先回答最基础的一问：给定相同模型与经验，SFT、OPSD 或 hindsight-skill SFT，哪一种更适合训练 Stage2 的起始参数？</p>
+          </article>
+        </li>
+      )}
       <li class="experiment-node" data-ui-audit-item>
         <div class="experiment-node__rail" aria-hidden="true"><span>{experiment.number}</span></div>
         <article>
@@ -88,6 +109,7 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
           ))}
         </article>
       </li>
+      </>
     ))}
   </ol>
 
@@ -112,6 +134,17 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
   .experiment-node:last-child .experiment-node__rail::after{display:none}
   .experiment-node__rail span{position:relative;z-index:1;display:grid;place-items:center;width:2.7rem;height:2.7rem;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);font:800 .86rem/1 var(--font-mono)}
   .experiment-node article{min-width:0}
+  .meeting-node h2{margin:0;font-size:clamp(1.35rem,2.6vw,2rem);line-height:1.2;letter-spacing:-.025em}
+  .meeting-node time{display:block;margin-top:.5rem;color:var(--color-text-muted);font-size:.85rem}
+  .meeting-node details{margin-top:.8rem}
+  .meeting-node summary{cursor:pointer;font-weight:650}
+  .meeting-node ul{padding-left:1.2rem;line-height:1.7}
+  .meeting-node li+li{margin-top:.7rem}
+  .meeting-node>article>p,.meeting-node li{color:var(--color-text);overflow-wrap:anywhere}
+  .meeting-node .meeting-source{color:var(--color-text-muted);font-size:.85rem}
+  .meeting-source a{color:inherit;text-underline-offset:.22em}
+  .meeting-node .meeting-next{font-weight:650}
+  summary:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px}
   .experiment-node__main{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;color:var(--color-text);text-decoration:none}
   .experiment-node__main strong{font-size:clamp(1.35rem,2.6vw,2rem);line-height:1.2;letter-spacing:-.025em}
   .experiment-node__main>span{font-size:1.35rem;color:var(--color-text-muted)}
@@ -146,6 +179,7 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
     .experiment-node__rail span{width:2.15rem;height:2.15rem}
     .experiment-node__rail::after{left:1.05rem;top:2.05rem;bottom:-.62rem}
     .experiment-node__main strong{font-size:1.12rem;line-height:1.15}
+    .meeting-node h2{font-size:1.12rem;line-height:1.15}
     .experiment-node__progression,.experiment-node__relation,.experiment-children{display:none}
     .experiment-node .experiment-mobile-featured{display:block;margin:.55rem 0 0;font-size:1rem;line-height:1.45;color:var(--color-text)}
     .experiment-mobile-featured a{color:var(--color-text);text-underline-offset:.2em}
