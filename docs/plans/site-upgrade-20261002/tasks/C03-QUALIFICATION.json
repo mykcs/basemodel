@@ -1,0 +1,106 @@
+{
+  "schema": "basemodel.c03-qualification.v1",
+  "checked_at": "2026-10-03",
+  "baseline_main": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+  "plan_head_before_implementation": "dd1dfe112992e31b3fe5372692e1054be909afb1",
+  "scientific_authority": {
+    "repository": "mykcs/openevo-experiment",
+    "execution_commit": "ac130148ee08b6462d9728e482a858fe5f514047",
+    "sources": [
+      "scripts/openevo_webshop/ceiling1_stage2_vnext_evidence.py",
+      "scripts/openevo_webshop/ceiling1_stage2_vnext_parametric_dataset.py",
+      "scripts/openevo_webshop/run_ceiling1_stage2_vnext_arm.py"
+    ],
+    "no_update_contract": {
+      "evidence_gate_reason": "VNEXT_PARAMETRIC_NO_UNATTEMPTED_CLEAN_EXACT",
+      "dataset_gate_status": "NOOP_NO_UNCONSUMED_CLEAN_EXACT",
+      "action": "keep prior adapter, artifact identity, and component count unchanged for the parametric channel"
+    }
+  },
+  "implementation_sha256": {
+    "src/data/vanillaSdLoraMechanism.ts": "63e7c52e486125024250994dc5f23a97a9ef8ac0e6c3098ea0e4ab561fc98af5",
+    "src/components/research/OpenEvoVanillaSdLoraSlide.astro": "13a5511a982bb1308a61f97e731994f02182ae13e9f5ed4977479893f32a04ed",
+    "src/components/research/OpenEvoVanillaSdLoraMechanism.astro": "e1fe3ad1ee09f4cc5800b04714301d80afe117fd040b7eb2a14ddb05ea6cfe7d",
+    "src/lib/vanillaSdLoraMechanism.test.ts": "963d0a4a30ab79aa31a36fad7d95ff693749783550f6ac1bcc0e25337ceb8bc7",
+    "tests/e2e/vanilla-sd-lora-mechanism.spec.ts": "68ad4ef40dbc81f4bd6010161250f6cce7b0a77dc5586f938bf998aa6ef9e318",
+    "docs/plans/site-upgrade-20261002/tasks/C03.md": "83f7e5a9cffb6865ebffc9dce75e58d4779f4a0e16f0b046ebc5d40b00029095",
+    "docs/plans/site-upgrade-20261002/tasks/C03-IMPLEMENTATION.md": "0a68856151405b337c549319b8c4fb43e3665e9b561dea9b77ee5e1261d4035f"
+  },
+  "delivered": {
+    "existing_topology_reused": true,
+    "new_parallel_slide_engine": false,
+    "desktop_noop_branch": true,
+    "mobile_noop_branch": true,
+    "step_focus_controls": true,
+    "autoplay": false,
+    "no_javascript_complete_static_flow": true,
+    "print_complete_static_flow": true,
+    "reduced_motion_supported": true,
+    "svg_marker_instance_isolation": true
+  },
+  "checks": {
+    "mechanism_structural_tests": "6/6 PASS",
+    "chromium_webkit_mechanism_tests": "40/40 PASS",
+    "browser_engines": ["chromium", "webkit"],
+    "viewports": ["390x844", "768x1024", "1440x900"],
+    "themes": ["light", "dark"],
+    "zoom_check": {
+      "mode": "layout-equivalent reflow",
+      "desktop_physical_width": 1440,
+      "css_width_at_200_percent_equivalent": 720,
+      "result": "PASS",
+      "claim_boundary": "This is a responsive-layout equivalence check, not an OS-level browser-zoom automation."
+    },
+    "verify_deploy": "PASS",
+    "structural_test_files": 123,
+    "structural_tests": 808,
+    "behavior_test_files": 7,
+    "behavior_tests": 37,
+    "typecheck_files": 590,
+    "typecheck_errors": 0,
+    "typecheck_warnings": 0,
+    "existing_typecheck_hints": 2,
+    "strict_copy_invariant_failures": 0,
+    "reader_contract_routes": 68,
+    "build": "PASS",
+    "static_pages": 265
+  },
+  "visual_gut_check": {
+    "tool": "agent-browser",
+    "viewports": ["1440x900", "390x844"],
+    "default_full_map": "PASS",
+    "noop_focus": "PASS",
+    "mobile_order": "PASS",
+    "document_horizontal_overflow": false,
+    "screenshots_committed": false
+  },
+  "bugs_found_during_acceptance": [
+    {
+      "kind": "brittle-math-text-test",
+      "fix": "assert KaTeX MathML source annotation instead of a hand-written Unicode rendering"
+    },
+    {
+      "kind": "print-grid-zero-height",
+      "fix": "switch print layout to block and give the static topology an explicit height"
+    },
+    {
+      "kind": "overbroad-svg-id-test",
+      "fix": "scope duplicate-id assertions to mechanism marker ids instead of KaTeX internal SVG ids"
+    },
+    {
+      "kind": "simplified-noop-semantics",
+      "fix": "re-read exact Q17 vNext sources and replace the old 'zero success' shorthand with unattempted/unconsumed clean-exact evidence semantics"
+    }
+  ],
+  "boundaries": {
+    "training_protocol_changed": false,
+    "new_experiment_started": false,
+    "new_formal_rollouts": 0,
+    "final_panel_access_added": 0,
+    "wandb_changed": false,
+    "task_memory_skill_agent_changed": false,
+    "vercel_final_gate_requested": false,
+    "merged": false,
+    "production_released": false
+  }
+}
