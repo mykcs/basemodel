@@ -1,5 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import postAdvisor from '../../public/research/seed-openevo/evidence/post-advisor-ab-final-20260928.json';
+import { RANK32_CAPACITY_TABLE } from '../data/scientificResearchTables';
+import { scientificTableCell } from './scientificTable';
 
 const read = (path: string) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
@@ -19,10 +22,13 @@ describe('post-advisor A/B BaseModel publication', () => {
   it('publishes the matched rank32 capacity result with the non-inferiority boundary intact', () => {
     const page = read('components/research/OpenEvoSdLoraBoundedRecurrence.astro');
     expect(page).toContain('rank32');
-    expect(page).toContain('0.6119');
-    expect(page).toContain('0.6298');
-    expect(page).toContain('51,410,296 B');
-    expect(page).toContain('205,551,528 B');
+    expect(page).toContain('view={RANK32_CAPACITY_TABLE}');
+    const score = RANK32_CAPACITY_TABLE.rows.find((row) => row.id === 'mean-task-score')!;
+    const payload = RANK32_CAPACITY_TABLE.rows.find((row) => row.id === 'persistent-payload')!;
+    expect(scientificTableCell(score, 'rank32', RANK32_CAPACITY_TABLE.id).raw).toBe(postAdvisor.B.rank32.mean_task_score);
+    expect(scientificTableCell(score, 'rank128', RANK32_CAPACITY_TABLE.id).raw).toBe(postAdvisor.B.rank128.mean_task_score);
+    expect(scientificTableCell(payload, 'rank32', RANK32_CAPACITY_TABLE.id).raw).toBe(postAdvisor.B.rank32.final_adapter_bytes);
+    expect(scientificTableCell(payload, 'rank128', RANK32_CAPACITY_TABLE.id).raw).toBe(postAdvisor.B.rank128.final_adapter_bytes);
     expect(page).toContain('不能说它完全无损');
     expect(page).toContain('rank16 / 32 / 64 / 128');
     expect(page).toContain('不能因为后验 rank95≈8');
