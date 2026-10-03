@@ -54,7 +54,7 @@ describe('B01 reader entry journeys', () => {
     expect(studyContract?.primaryTask).toContain('最新研究问题');
     expect(studyContract?.firstViewportGoal).toContain('三个互不混淆的入口');
     expect(studyContract?.mustStayVisible).toContain('Results 页维护');
-    expect(studyContract?.firstViewportSelector).toBe('.study-hero');
+    expect(studyContract?.firstViewportSelector).toBe('.study-hero__lede');
     expect(studyContract?.firstViewportBudget?.maxInteractive).toBe(4);
     expect(studyContract?.firstViewportBudget?.maxHeadings).toBe(1);
   });
