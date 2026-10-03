@@ -91,8 +91,11 @@ describe('research result reading contract', () => {
     expect(validation).toBeLessThan(synthesis);
     expect(synthesis).toBeLessThan(evidence);
     expect(source).toContain('final panel');
-    expect(source).toContain('运行中 / 未封存');
-    expect(source).toContain('数据已准备 / 未训练');
+    expect(source).toContain('已完成');
+    expect(source).toContain('Stage1 only');
+    expect(source).toContain('完整 SEED Stage2');
+    expect(source).toContain('0.0369');
+    expect(source).toContain('0.0000');
   });
 
   it('keeps every canonical multi-metric owner anchored by a direct result', () => {
