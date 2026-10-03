@@ -21,7 +21,7 @@ describe('visual identity non-drift contract', () => {
     for (const token of [
       '--canvas-editorial:',
       '--canvas-workbench:',
-      '--reading-width: 68ch',
+      '--reading-width: 720px',
       '--editorial-max: 1120px',
       '--workbench-max: 1440px',
     ]) {

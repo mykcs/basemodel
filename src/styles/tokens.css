@@ -39,7 +39,7 @@
   --radius-md: var(--radius-panel);
   --radius-lg: var(--radius-feature);
 
-  --reading-width: 68ch; /* canonical current reading measure; legacy patch overrides retired */
+  --reading-width: 720px;
   --editorial-max: 1120px;
   --workbench-max: 1440px;
   --content-max: 1180px; /* compatibility width for legacy shared shells */

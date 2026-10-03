@@ -3,6 +3,8 @@
    noise, strengthening reading order, and making dense UI safer at narrow widths. */
 
 :root {
+  /* Compatibility override: current runtime remains 68ch; A03 does not redefine the canonical 720px design token. */
+  --reading-width: 68ch;
   --quiet-shadow: 0 8px 26px color-mix(in srgb, var(--ink) 5%, transparent);
 }
 

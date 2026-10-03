@@ -6,7 +6,7 @@ Status: implementation evidence for PR #816. This work consolidates proven share
 
 A03 was planned after inspecting the open design worklines:
 
-- PR #806 (`design/basemodel-design-system-v1-20260928`, head `8f976af80439f83fc4c9bfcf451e87ed60ad8126`) already contains broad route-family design work, but remains open and was unmergeable against the A03 baseline. Its relevant shared-CSS delta does not own the three A03 hotspots below; it mainly moves a small Compare surface into component CSS and normalizes several radii.
+- PR #806 (`design/basemodel-design-system-v1-20260928`, head `8f976af80439f83fc4c9bfcf451e87ed60ad8126`) already contains broad route-family design work, but remains open and was unmergeable against the A03 baseline. Its relevant shared-CSS delta does not own the two A03 hotspots below; it mainly moves a small Compare surface into component CSS and normalizes several radii.
 - PR #812 (`design/beta-sujianlin-reader-20261001`, head `e94b1618760b9cbd201ff88ce61141e592989693`) is still a planning-only page-scoped reader redesign. A03 therefore does not pretend its proposed β article layout is an accepted shared owner.
 
 A03 stays on current main and does not absorb either PR. Scientific content, result values, page order, and route semantics are untouched.
@@ -71,24 +71,6 @@ The CSS audit now:
 - rejects duplicated default width/padding in those consumers;
 - explicitly rejects the different SEED × OpenEvo comparison figure from opting in.
 
-## Hotspot 3 — reading-width token truth
-
-### Before
-
-Three files claimed ownership of one token:
-
-- `tokens.css`: `--reading-width: 720px`;
-- `visual-upgrade.css`: later override `72ch`;
-- `design-refinement.css`: still later override `68ch`.
-
-Chromium confirmed the real rendered value was **68ch**, while the existing contract test only asserted that the earlier `720px` token text existed. The test therefore did not describe runtime truth.
-
-### After
-
-`src/styles/tokens.css` is the only `--reading-width` owner and contains the already-rendered value **68ch**. The two compatibility overrides are removed. `visualIdentityContract.test.ts` now asserts the truthful canonical token, and the CSS audit fails if a second owner appears.
-
-This is an ownership repair, not a deliberate reading-width redesign: browser-computed width remains 68ch.
-
 ## Render-equivalence witness
 
 Before mutation, a Chromium probe recorded computed layout values for:
@@ -100,11 +82,9 @@ Before mutation, a Chromium probe recorded computed layout values for:
 
 Total: **36 computed-style cases**.
 
-After all three consolidations and a fresh build, the same probe reported:
+After both ownership consolidations and a fresh build, the same probe reported:
 
 > **36 cases measured; 0 computed-style differences.**
-
-The browser still reports `--reading-width: 68ch` after token consolidation.
 
 The witness compares effective properties relevant to this migration: display, alignment, flex direction/wrap, gap, margin, measured width, padding, radius, surface/border color, and section-heading `h2` max-width/font-size.
 
@@ -134,7 +114,6 @@ A figure with a genuinely different semantic canvas may remain separate; the SEE
 - `visualIdentityContract.test.ts`: PASS;
 - `canonicalResearchFigures.test.ts`: PASS;
 - first and final 36-case render-equivalence probes: **0 style drift**;
-- reading-width runtime witness: **68ch before and after**;
 - `git diff --check`: PASS during each migration step.
 
 Full repository and browser acceptance are recorded separately in the PR once complete.

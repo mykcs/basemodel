@@ -3,6 +3,8 @@
    responsive behavior, and collision handling across the site. */
 
 :root {
+  /* Compatibility override: preserve the current rendered measure until a separate design decision retires it. */
+  --reading-width: 72ch;
   --compare-tray-space: 88px;
 }
 

@@ -6,7 +6,6 @@ const site = read('../styles/site.css');
 const visualUpgrade = read('../styles/visual-upgrade.css');
 const designRefinement = read('../styles/design-refinement.css');
 const figures = read('../styles/research-figure-readability.css');
-const tokens = read('../styles/tokens.css');
 const paperFigures = [
   '../components/research/SeedWebShopCanonicalFigure.astro',
   '../components/research/WebShopDatasetCanonicalFigure.astro',
@@ -18,12 +17,6 @@ const paperFigures = [
 ];
 
 describe('A03 shared CSS ownership', () => {
-  it('keeps the effective reading measure in the token owner instead of patch layers', () => {
-    expect(tokens).toContain('--reading-width: 68ch;');
-    expect(visualUpgrade).not.toContain('--reading-width:');
-    expect(designRefinement).not.toContain('--reading-width:');
-  });
-
   it('keeps shared section-heading structure in site.css instead of patch layers', () => {
     expect(site).toContain('.section-heading { display: flex; align-items: flex-start;');
     expect(site).toContain('.section-heading h2 { max-width: 22ch; }');

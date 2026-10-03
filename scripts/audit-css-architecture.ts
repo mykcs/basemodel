@@ -41,7 +41,6 @@ const canonicalFigureOwnerPath = 'src/styles/research-figure-readability.css';
 const sectionHeadingOwnerPath = 'src/styles/site.css';
 const missionChainOwnerPath = 'src/components/research/SeedOpenEvoMissionHero.astro';
 const radiusTokensPath = 'src/styles/tokens.css';
-const readingWidthOwnerPath = radiusTokensPath;
 const radiusDebtBaselinePath = 'scripts/css-radius-debt-baseline.json';
 const importantDebtBaselinePath = 'scripts/css-important-debt-baseline.json';
 
@@ -202,16 +201,6 @@ equal(missionChainSelectorFiles, [missionChainOwnerPath], 'mission-chain CSS sel
 const shellOwner = read(shellOwnerPath);
 for (const invariant of ['.shell', '.footer-inner', '@media (max-width: 390px)']) {
   if (!shellOwner.includes(invariant)) fail(`${shellOwnerPath} is missing required shell invariant: ${invariant}`);
-}
-
-const readingWidthOwnerFiles = walk(stylesRoot)
-  .filter((path) => path.endsWith('.css'))
-  .filter((path) => /--reading-width\s*:/.test(readFileSync(path, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')))
-  .map((path) => relative(root, path).replaceAll('\\', '/'))
-  .sort();
-equal(readingWidthOwnerFiles, [readingWidthOwnerPath], 'reading-width token ownership');
-if (!read(readingWidthOwnerPath).includes('--reading-width: 68ch;')) {
-  fail(`${readingWidthOwnerPath} must own the effective 68ch reading measure`);
 }
 
 const radiusTokens = read(radiusTokensPath);
@@ -404,7 +393,6 @@ console.log(`  mission-chain visual owner: ${missionChainOwnerPath}`);
 console.log('  unscoped structural layout selectors: forbidden; no legacy debt remains');
 console.log('  Header legacy selector debt: frozen to 3 compatibility/foundation files plus the canonical owner');
 console.log('  patch-style layers: frozen; design-refinement, visual-closeout, and mobile-composition Header debt retired');
-console.log(`  reading-width owner: ${readingWidthOwnerPath} (68ch)`);
 console.log(`  radius system: 6/10/16px tokens; legacy non-canonical debt ${observedRadiusDebtTotal}/${radiusBaseline.baseline_total} and may only decrease`);
 console.log('  state colors: semantic selectors contain zero raw hex colors');
 console.log(`  !important compatibility debt: ${observedImportantDebtTotal}/${importantBaseline.baseline_total} and may only decrease`);
