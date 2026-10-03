@@ -3,6 +3,7 @@ import ExternalBrandMark from './common/ExternalBrandMark';
 import { localePath, type Locale } from '../i18n';
 import { openEvoScientificState } from '../lib/openEvoScientificState';
 import AgentEnvironmentTrajectory from './research/AgentEnvironmentTrajectory.astro';
+import ResearchContentLifecycle from './research/ResearchContentLifecycle.astro';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
@@ -40,6 +41,7 @@ const gates = [
       </nav>
     </div>
   </header>
+  <ResearchContentLifecycle locale={locale} mode="reproduction" />
 
   <section class="gate-section" id="repro-gates" aria-labelledby="gates-title">
     <div class="gate-intro"><header><h2 id="gates-title">{t('12 个复现 Gate','12 reproduction gates')}</h2><p>{t('从账号角色和权限边界开始；每一步都有进入条件、可执行检查与下一步证据。代码块按内容自然高度显示。','Begin with account role and authority boundaries. Each step has an entry condition, executable check, and evidence for what follows. Code blocks use content-driven height.')}</p></header></div>

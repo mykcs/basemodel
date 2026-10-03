@@ -1,0 +1,111 @@
+---
+import type { Locale } from '../../i18n';
+import { BETA_HISTORY_CHANGE, REPRODUCTION_ASSET_STATES, RESEARCH_CONTENT_LIFECYCLE } from '../../data/researchContentLifecycle';
+
+interface Props { locale: Locale; mode: 'results' | 'reproduction' | 'archive' }
+const { locale, mode } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+const localEvidenceHref = (sourcePath: string) => sourcePath.startsWith('public/') ? '/' + sourcePath.slice('public/'.length) : null;
+const stateLabel = (value: string) => ({
+  complete: t('完整', 'complete'),
+  partial: t('部分', 'partial'),
+  unavailable: t('尚不可发布', 'unavailable'),
+  training: t('训练期', 'training'),
+  development: t('开发 / 验证', 'development / validation'),
+  validation: t('验证', 'validation'),
+  frozen_final: t('冻结终评', 'frozen final'),
+  completed: t('已完成', 'completed'),
+  historical: t('历史', 'historical'),
+  'in-progress': t('进行中', 'in progress'),
+}[value] ?? value);
+---
+
+{mode === 'results' && (
+  <section class="lifecycle lifecycle--results" data-research-lifecycle="results" aria-labelledby="lifecycle-results-title">
+    <p class="lifecycle__eyebrow">{t('证据状态', 'Evidence state')}</p>
+    <h2 id="lifecycle-results-title">{t('实验时间、证据核对和网页发布是三件不同的事', 'Experiment time, evidence review, and site publication are different things')}</h2>
+    <p>{t(
+      '下面只说明证据身份和适用范围，不重复结果数字。旧证据不会因为“超过 30 天”自动失效；只有源 revision、比较合同或科学边界变化，才需要重新复核对应正文与图表。',
+      'This section describes evidence identity and scope without copying result numbers. Historical evidence does not expire just because it is older than 30 days; source revisions, comparison contracts, or scientific boundaries trigger review.',
+    )}</p>
+    <div class="lifecycle__rows">
+      {RESEARCH_CONTENT_LIFECYCLE.map((item) => (
+        <article>
+          <strong>{item.label[locale]}</strong>
+          <dl>
+            <div><dt>{t('实验状态', 'Experiment')}</dt><dd>{stateLabel(item.experimentStatus)}</dd></div>
+            <div><dt>{t('证据角色', 'Evidence role')}</dt><dd>{stateLabel(item.evidenceRole)}</dd></div>
+            <div><dt>{t('完整度', 'Completeness')}</dt><dd>{stateLabel(item.evidenceCompleteness)}</dd></div>
+            <div><dt>{t('证据核对', 'Evidence captured')}</dt><dd>{item.evidenceCapturedAt}</dd></div>
+            <div><dt>{t('正文复核', 'Content reviewed')}</dt><dd>{item.contentReviewedAt}</dd></div>
+            <div><dt>{t('Production 发布', 'Production publication')}</dt><dd>{item.sitePublishedAt ?? t('本 Draft 未声称已发布', 'Not claimed by this Draft')}</dd></div>
+          </dl>
+          <a href={item.currentRoute}>{t('打开当前解释 →', 'Open current interpretation →')}</a>
+        </article>
+      ))}
+    </div>
+  </section>
+)}
+
+{mode === 'reproduction' && (
+  <aside class="lifecycle lifecycle--reproduction" data-research-lifecycle="reproduction" aria-labelledby="lifecycle-repro-title">
+    <p class="lifecycle__eyebrow">{t('复现状态', 'Reproduction status')}</p>
+    <h2 id="lifecycle-repro-title">{t('“有复现步骤”不等于“所有私有资产都公开可取”', 'A reproduction procedure does not make every private asset publicly available')}</h2>
+    <div class="lifecycle__asset-list">
+      {REPRODUCTION_ASSET_STATES.map((asset) => (
+        <div>
+          <strong>{asset.label[locale]}</strong>
+          <span>{asset.detail[locale]}</span>
+        </div>
+      ))}
+    </div>
+  </aside>
+)}
+
+{mode === 'archive' && (
+  <section class="lifecycle lifecycle--archive" data-research-lifecycle="archive" aria-labelledby="lifecycle-archive-title">
+    <p class="lifecycle__eyebrow">{t('历史判断怎样变化', 'How a historical judgment changed')}</p>
+    <h2 id="lifecycle-archive-title">{t('后来的证据可以改下一问，但不能倒写旧证据', 'Later evidence can change the next question without rewriting earlier evidence')}</h2>
+    <ol class="lifecycle__timeline">
+      <li>
+        <time datetime={BETA_HISTORY_CHANGE.earlier.capturedAt}>{BETA_HISTORY_CHANGE.earlier.capturedAt}</time>
+        <strong>{t('冻结终评', 'Frozen final')}</strong>
+        <p>{BETA_HISTORY_CHANGE.earlier.judgment[locale]}</p>
+      </li>
+      <li>
+        <time datetime={BETA_HISTORY_CHANGE.later.capturedAt}>{BETA_HISTORY_CHANGE.later.capturedAt}</time>
+        <strong>{t('后续训练证据', 'Later training evidence')}</strong>
+        <p>{BETA_HISTORY_CHANGE.later.judgment[locale]}</p>
+      </li>
+    </ol>
+    <p class="lifecycle__boundary">{t(
+      '因此“R200 后训练仍会变化”和“冻结 Final 的同题比较”可以同时为真；Archive 保存当时为什么这样判断，Results 负责当前能支持什么。',
+      'So “training can still change after R200” and the frozen same-panel Final can both remain true. Archive preserves why a historical judgment was made; Results owns what the current evidence supports.',
+    )}</p>
+  </section>
+)}
+
+<style>
+  .lifecycle{max-width:960px;margin:1.5rem auto;padding:1.15rem 0;border-block:1px solid var(--line)}
+  .lifecycle__eyebrow{margin:0 0 .35rem;color:var(--accent-deep);font:800 .68rem/1.3 var(--font-mono)}
+  .lifecycle h2{max-width:30ch;margin:0;font-size:clamp(1.25rem,2.5vw,1.75rem);line-height:1.2}
+  .lifecycle>p{max-width:76ch;line-height:1.65}
+  .lifecycle__rows{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:1rem;background:var(--line);border:1px solid var(--line)}
+  .lifecycle__rows article{min-width:0;padding:1rem;background:var(--surface)}
+  .lifecycle__rows article>strong{display:block;line-height:1.4}
+  .lifecycle dl{display:grid;gap:.35rem;margin:.8rem 0}
+  .lifecycle dl>div{display:grid;grid-template-columns:7rem minmax(0,1fr);gap:.5rem}
+  .lifecycle dt{color:var(--muted);font-size:.72rem}
+  .lifecycle dd{margin:0;font-size:.75rem;overflow-wrap:anywhere}
+  .lifecycle a{color:var(--accent-deep);font-size:.75rem;font-weight:760}
+  .lifecycle__asset-list{display:grid;margin-top:1rem;border-top:1px solid var(--line)}
+  .lifecycle__asset-list>div{display:grid;grid-template-columns:minmax(11rem,.45fr) minmax(0,1.55fr);gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--line)}
+  .lifecycle__asset-list span{color:var(--muted);line-height:1.55}
+  .lifecycle__timeline{display:grid;gap:0;margin:1rem 0 0;padding:0;list-style:none;border-top:1px solid var(--line)}
+  .lifecycle__timeline li{display:grid;grid-template-columns:7rem 9rem minmax(0,1fr);gap:1rem;padding:.85rem 0;border-bottom:1px solid var(--line)}
+  .lifecycle__timeline time{font:700 .72rem/1.5 var(--font-mono);color:var(--muted)}
+  .lifecycle__timeline p{margin:0;color:var(--muted);line-height:1.55}
+  .lifecycle__boundary{margin-bottom:0;color:var(--muted)}
+  @media(max-width:760px){.lifecycle{width:calc(100% - 1.2rem)}.lifecycle__rows{grid-template-columns:1fr}.lifecycle__asset-list>div,.lifecycle__timeline li{grid-template-columns:1fr;gap:.25rem}}
+</style>
