@@ -1,4 +1,4 @@
-import { OPEN_EVO_EXPERIMENTS } from './openEvoExperimentNavigation';
+import { OPEN_EVO_EXPERIMENTS, type OpenEvoExperimentId } from './openEvoExperimentNavigation';
 import { RESEARCH_EVIDENCE, RESEARCH_EVIDENCE_CONSUMERS } from './researchEvidenceIndex';
 import type { EvidenceSnapshot } from '../lib/researchEvidenceSchema';
 
@@ -8,7 +8,7 @@ export type ReproductionAssetState = 'public-protocol' | 'restricted' | 'not-rev
 export interface ResearchLifecycleRecord {
   id: string;
   label: { zh: string; en: string };
-  experimentId: string;
+  experimentId: OpenEvoExperimentId;
   experimentStatus: 'historical' | 'completed' | 'in-progress';
   evidenceId: string;
   expectedRevision: string;
