@@ -42,7 +42,7 @@ These files are complementary owners, not competing style guides:
 
 | Owner | Load when | Owns |
 |---|---|---|
-| [central Human Expression Standard](https://github.com/mykcs/.codex/blob/main/website-governance/HUMAN_EXPRESSION_STANDARD.md) | every public page/copy task | cross-site natural language / zero-context / terminology / information-order standard |
+| [central Human Expression Standard](https://github.com/mykcs/.agents/blob/main/docs/agents/HUMAN_EXPRESSION_STANDARD.md) | substantial/durable public content artifact | full cross-site writing / structure / representation standard |
 | [`website-design-spec.md`](current/website-design-spec.md) | BaseModel public research surfaces | BaseModel-specific scientific presentation, Reader Contract, ELI5 and local execution overlay |
 | [`site-reader-attention-contract.md`](current/site-reader-attention-contract.md) | any new public page or substantial public-page structure/attention change | per-route audience, primary task, first-viewport goal, non-hideable boundary, next step, attention mode, and executable fail-closed coverage |
 | [`audience-centered-technical-copy.md`](current/audience-centered-technical-copy.md) | any public technical copy | headings name subjects, concrete language, context, terminology, audience baseline |
@@ -55,7 +55,7 @@ These files are complementary owners, not competing style guides:
 
 For user-facing research work, `reader-first-copy-hierarchy.md` and `research-editorial-style.md` are mandatory through `src/components/research/AGENTS.md`. Add `layered-technical-explainer-copy.md` when the Chinese page teaches a technical mechanism. A narrower task-specific contract refines the general rule; it does not erase scientific or product truth.
 
-If the owner says `说人话`, `不要 AI 味`, `自然一点`, or equivalent, read the current shared standard at https://github.com/mykcs/.codex/blob/main/website-governance/HUMAN_EXPRESSION_STANDARD.md first. Load learned evidence from https://github.com/mykcs/.agents/blob/main/docs/learning/shared/content/HUMAN_EXPRESSION.md and BaseModel-specific learned experience only when prior feedback matters. Then apply `current/website-design-spec.md` as the BaseModel-specific overlay. The retired local case corpus is historical evidence only; there is no local `feedback:retrieve` step.
+If the task is a substantial/durable page or copy artifact, read https://github.com/mykcs/.agents/blob/main/docs/agents/HUMAN_EXPRESSION_STANDARD.md and then apply `current/website-design-spec.md` as the BaseModel-specific overlay. A small wording tweak or conversational `说人话 / 不要 AI 味 / 自然一点` request can use the lightweight root behavior without loading the full artifact-writing stack. Load learned evidence from https://github.com/mykcs/.agents/blob/main/docs/learning/shared/content/HUMAN_EXPRESSION.md and BaseModel-specific learned experience only when prior feedback matters. The retired local case corpus is historical evidence only; there is no local `feedback:retrieve` step.
 
 For UI/layout/theme/CSS work also read:
 
