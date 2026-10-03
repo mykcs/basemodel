@@ -1,0 +1,6038 @@
+{
+  "schema": "basemodel.q01-route-matrix.v1",
+  "materialInputs": {
+    "sha256": "f77f62404f6bed7a1cba99d40c8d3b3f7522ea8f33fd199ca1e682f32f0776e0",
+    "files": 806,
+    "scope": "src + public + scripts + root build configuration"
+  },
+  "scope": "Dated actual generated outputs, not evidence of human comprehension or integrated release.",
+  "sourceInventory": {
+    "liveSourceFiles": 84,
+    "publicPageSources": 68,
+    "bodyFragments": [
+      "_bodies/compare.astro",
+      "_bodies/data-status.astro",
+      "_bodies/families-index.astro",
+      "_bodies/home-v2.astro",
+      "_bodies/landscape.astro",
+      "_bodies/model-detail.astro",
+      "_bodies/models-index.astro",
+      "_bodies/not-found.astro",
+      "_bodies/paper-detail.astro",
+      "_bodies/papers-index.astro"
+    ],
+    "endpointSources": [
+      "landscape/models.json.ts",
+      "model-data/[id].json.ts",
+      "model-data/catalog.json.ts",
+      "robots.txt.ts",
+      "search-index.json.ts",
+      "sitemap.xml.ts"
+    ],
+    "archivedEnglishPageSources": 62,
+    "archivedSourcesAreLiveRoutes": false
+  },
+  "counts": {
+    "documents": 262,
+    "redirects": 3,
+    "endpoints": 172,
+    "readerFamilies": 68
+  },
+  "rows": [
+    {
+      "file": "404.html",
+      "pathname": "/404/",
+      "bytes": 29099,
+      "sha256": "0ad76869864b09454bb1433938e52dd970e52b187e2f767b68f0daae2ecff94f",
+      "source": "src/pages/404.astro",
+      "kind": "document",
+      "contractId": "not-found",
+      "owners": [
+        "A02",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "compare/index.html",
+      "pathname": "/compare/",
+      "bytes": 847366,
+      "sha256": "17fe7f666ff9e18375ea1457e40f060311dea6328452da5d46b8a21f3c2ec943",
+      "source": "src/pages/compare.astro",
+      "kind": "document",
+      "contractId": "compare",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "data-status/index.html",
+      "pathname": "/data-status/",
+      "bytes": 1028825,
+      "sha256": "8bd51a6f1693807d28024d151d0e555b9233f41d1aa8abd2b690158b2b79c07e",
+      "source": "src/pages/data-status.astro",
+      "kind": "document",
+      "contractId": "data-status",
+      "owners": [
+        "A02",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "development/index.html",
+      "pathname": "/development/",
+      "bytes": 39582,
+      "sha256": "f9a2cc0a242bd557f1af442ed7e3ea789cab31231ea3454b630bed04d295c48a",
+      "source": "src/pages/development.astro",
+      "kind": "document",
+      "contractId": "development",
+      "owners": [
+        "A02",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "families/index.html",
+      "pathname": "/families/",
+      "bytes": 918318,
+      "sha256": "b923af1d3a18aa8b6b5bb6787e972476e93e539cbf2c7df9fb2bdb602ac5c202",
+      "source": "src/pages/families/index.astro",
+      "kind": "document",
+      "contractId": "families",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "guide/index.html",
+      "pathname": "/guide/",
+      "bytes": 42698,
+      "sha256": "19e3a8567b5c04f728f1c0a32c24f4df1fe85d7a062474fd44744091438d29ec",
+      "source": "src/pages/guide.astro",
+      "kind": "document",
+      "contractId": "guide",
+      "owners": [
+        "B03",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "guide/today/index.html",
+      "pathname": "/guide/today/",
+      "bytes": 37870,
+      "sha256": "d2a5e2ebcf3c24d0ec422a08b434a821aeb8ec5ddfe9cf285b62b3755dbe1c7b",
+      "source": "src/pages/guide/today.astro",
+      "kind": "document",
+      "contractId": "guide-today",
+      "owners": [
+        "B03",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "index.html",
+      "pathname": "/",
+      "bytes": 44464,
+      "sha256": "fce293b8d35f5e4e324294ef96e3282ffc3dfb28b1cf3b62a9be82dc64b78c37",
+      "source": "src/pages/index.astro",
+      "kind": "document",
+      "contractId": "home",
+      "owners": [
+        "B01",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "lab/index.html",
+      "pathname": "/lab/",
+      "bytes": 68965,
+      "sha256": "bcf73e7e2f4b23d0a1f2c0fb5d788cd41d3e16f06100c4c1675dcd6b6f96a91b",
+      "source": "src/pages/lab.astro",
+      "kind": "document",
+      "contractId": "lab",
+      "owners": [
+        "A02",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "landscape/index.html",
+      "pathname": "/landscape/",
+      "bytes": 842834,
+      "sha256": "58c8dc4e337f3e79887c35ef709fb82aafdf762af8d7287bb3226598db3b0ad1",
+      "source": "src/pages/landscape/index.astro",
+      "kind": "document",
+      "contractId": "landscape",
+      "owners": [
+        "A02",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "landscape/models.json",
+      "pathname": "/landscape/models.json",
+      "bytes": 57682,
+      "sha256": "ef8ac214b26b34fb986f8d1c6d278f522e52e54df952b8dbedf8d2517e1c751e",
+      "kind": "endpoint",
+      "source": "src/pages/landscape/models.json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "methodology/index.html",
+      "pathname": "/methodology/",
+      "bytes": 30482,
+      "sha256": "98c7c806a6c5e6aadf87905e116d22988387c9f4c967d14b5105c213f6c09d9a",
+      "source": "src/pages/methodology.astro",
+      "kind": "document",
+      "contractId": "methodology",
+      "owners": [
+        "A02",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/catalog.json",
+      "pathname": "/model-data/catalog.json",
+      "bytes": 510754,
+      "sha256": "d2748347d14a10aea3d424c936fc40c43e8df5c5e3414bf5f94635be2d5c0f63",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/catalog.json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-2.json",
+      "pathname": "/model-data/claude-2.json",
+      "bytes": 2511,
+      "sha256": "721660502c32fd828b3560cf871754117de16c1c73e998557ee97bb0506e6c56",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-3-5-sonnet.json",
+      "pathname": "/model-data/claude-3-5-sonnet.json",
+      "bytes": 2610,
+      "sha256": "a2f0dbc27b4866cb4f5e52576f94723d60fe5485bf8e49a71b559af0e2895970",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-3-7-sonnet.json",
+      "pathname": "/model-data/claude-3-7-sonnet.json",
+      "bytes": 2702,
+      "sha256": "6e9d1535ea042ec6270065bf352d3d6758a3a14c4e6cd16c09556060b7c41b65",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-3-opus.json",
+      "pathname": "/model-data/claude-3-opus.json",
+      "bytes": 2571,
+      "sha256": "4fde92457c637c6f66c613094a4bed7ae8634d052eaffd68a7ee71de66dcfaa7",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-fable-5.json",
+      "pathname": "/model-data/claude-fable-5.json",
+      "bytes": 2596,
+      "sha256": "c63355553276c8fd0feb62eb7a6b131e2224ac7f92cd8304eee33e0561bd28f0",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-haiku-4-5.json",
+      "pathname": "/model-data/claude-haiku-4-5.json",
+      "bytes": 2585,
+      "sha256": "f99244c3fec9dfcab4c2cfde84c484d68a5a5ea3713d9980d6b8be663c0b2986",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-mythos-5.json",
+      "pathname": "/model-data/claude-mythos-5.json",
+      "bytes": 2638,
+      "sha256": "9d3b1b18c7af90f9fdee45bb26ea7309931f87934a1b4e8da1d6745a4c2b099b",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-opus-4-1.json",
+      "pathname": "/model-data/claude-opus-4-1.json",
+      "bytes": 2689,
+      "sha256": "cc41f734d52ca216fb020c5a16c57a40242cfb5f8177eda1a5cc91d11f99bc2a",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-opus-4-5.json",
+      "pathname": "/model-data/claude-opus-4-5.json",
+      "bytes": 2580,
+      "sha256": "52fa288cb5e662e8c96b975cba85d21c73f061312be31b0ea367158c1983ed1c",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-opus-4-6.json",
+      "pathname": "/model-data/claude-opus-4-6.json",
+      "bytes": 2580,
+      "sha256": "c2e810fb9d1d07b74ca0b669da6a5d244c4f63edd866225ff13e96cfd2694cd8",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-opus-4-7.json",
+      "pathname": "/model-data/claude-opus-4-7.json",
+      "bytes": 2580,
+      "sha256": "d5a1f6bc1e85718ef592e03bd1b11177a43c63becc4b6424c874f177f3eced7a",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-opus-4-8.json",
+      "pathname": "/model-data/claude-opus-4-8.json",
+      "bytes": 2580,
+      "sha256": "38258cbeff04b2a4e2fd3f2e8d8965a875801aa5b51c96733acd92ddc1ffd7bc",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-opus-4.json",
+      "pathname": "/model-data/claude-opus-4.json",
+      "bytes": 2677,
+      "sha256": "9cb9adcbd556610543e6dad812638eb8c6ed597b90748d7917e86ef5d170e55c",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-opus-5.json",
+      "pathname": "/model-data/claude-opus-5.json",
+      "bytes": 2751,
+      "sha256": "924b00ffa49fc09f0303a3119f16adf8a45c6e86e5896be7ab5a3c6f83b91477",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-sonnet-4-5.json",
+      "pathname": "/model-data/claude-sonnet-4-5.json",
+      "bytes": 2564,
+      "sha256": "3bb67e117dd17cbdc6d685f6f7399e8f1609efe82b61d0fc709bde73d66984ec",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-sonnet-4-6.json",
+      "pathname": "/model-data/claude-sonnet-4-6.json",
+      "bytes": 2592,
+      "sha256": "dfede3d7bca39282f8db3f3aaa232573f769407ed8af190f113e683217990d5e",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-sonnet-4.json",
+      "pathname": "/model-data/claude-sonnet-4.json",
+      "bytes": 2697,
+      "sha256": "36f53925aba2e7ba9148155a2fe90547f59f66ffa6cc8f19aa73b7e8b66ff91c",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/claude-sonnet-5.json",
+      "pathname": "/model-data/claude-sonnet-5.json",
+      "bytes": 2579,
+      "sha256": "5e3892ef6b36f186adb4ccc2f2e463ef837cd26f3cf5d3b19ee3f61a444f6b0f",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/deepseek-coder-v2-lite-instruct.json",
+      "pathname": "/model-data/deepseek-coder-v2-lite-instruct.json",
+      "bytes": 3420,
+      "sha256": "603dac8ce2fca5a0c9acaa48f3eb94ac33fb5a197c4ae9fec490a082aaa0f56b",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/deepseek-r1-0528.json",
+      "pathname": "/model-data/deepseek-r1-0528.json",
+      "bytes": 2680,
+      "sha256": "72a9ea54d723bacd64c5ef98fc7303fe942e3524e3634e47451c125fe1c3fc8f",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/deepseek-r1.json",
+      "pathname": "/model-data/deepseek-r1.json",
+      "bytes": 3332,
+      "sha256": "2b1865cbb1189df96106b74b7ad19bf0ce9e3b84f3dd494dda98fc5a1361daaf",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/deepseek-v3-0324.json",
+      "pathname": "/model-data/deepseek-v3-0324.json",
+      "bytes": 3256,
+      "sha256": "f502d89f1ea5c97a1d3c51b9de9f27d6256b0c11239ba154ba8391d498916fb8",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/deepseek-v3-1.json",
+      "pathname": "/model-data/deepseek-v3-1.json",
+      "bytes": 2581,
+      "sha256": "55ed02910cdc31da54c511caab0b8c7483a85ffa18bd980aad569b053d37b22d",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/deepseek-v3-2-exp.json",
+      "pathname": "/model-data/deepseek-v3-2-exp.json",
+      "bytes": 2605,
+      "sha256": "6c9f4f471fd261aa7a81281a30973d102be76c7d32b5e1ad5936ce9c5fcdcbc9",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/deepseek-v3-2-speciale.json",
+      "pathname": "/model-data/deepseek-v3-2-speciale.json",
+      "bytes": 3088,
+      "sha256": "3db50516be4aff60e6c2dff782fcfc13a3c9a50b75d67f553d19fe7d05c6027d",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/deepseek-v3-2.json",
+      "pathname": "/model-data/deepseek-v3-2.json",
+      "bytes": 3114,
+      "sha256": "751aba8885e9a48c0ddad46fd2e3eb4adb76cc262fff2f809842523694b194b3",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/deepseek-v3.json",
+      "pathname": "/model-data/deepseek-v3.json",
+      "bytes": 2626,
+      "sha256": "31e9de5f32f4291f7f0e53c99e7021504d9a7f99eca9ad5fb181548b16545c7c",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/deepseek-v4-flash-base.json",
+      "pathname": "/model-data/deepseek-v4-flash-base.json",
+      "bytes": 2591,
+      "sha256": "2c87c3fdb7d0ce3f96671dbea109956222341c56a4a7e2f8fe7c4c4c8b5bf2fd",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/deepseek-v4-flash.json",
+      "pathname": "/model-data/deepseek-v4-flash.json",
+      "bytes": 2960,
+      "sha256": "d8fb67679e8bbfc4443187b4578508d2148f26a8bc4d3d6b03a0f91346deff7a",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/deepseek-v4-pro-base.json",
+      "pathname": "/model-data/deepseek-v4-pro-base.json",
+      "bytes": 2582,
+      "sha256": "b0494e6459f7888566ebd3195068166549203cb41f5c316d1a9dc04aa8095b66",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/deepseek-v4-pro.json",
+      "pathname": "/model-data/deepseek-v4-pro.json",
+      "bytes": 2909,
+      "sha256": "4c5abecaf8a3d00d55de2f2849340e105a599d8ec534cd869e48765acf1c8969",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/devstral-medium.json",
+      "pathname": "/model-data/devstral-medium.json",
+      "bytes": 2685,
+      "sha256": "112cd34fc03f5e21206abbb6b7e231f0a420ef5b319289b5a48b4e937d09f9a3",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/devstral-small.json",
+      "pathname": "/model-data/devstral-small.json",
+      "bytes": 3491,
+      "sha256": "a29352cdb89c9f76f02d9129f65af822b34bff9930035a00a570223438b1b239",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemini-1-5-pro.json",
+      "pathname": "/model-data/gemini-1-5-pro.json",
+      "bytes": 1815,
+      "sha256": "ca09fd685b8b08908f19baea49aaf6d99bd076e7a57724384701c0a5a29acbc0",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemini-2-0-flash.json",
+      "pathname": "/model-data/gemini-2-0-flash.json",
+      "bytes": 2443,
+      "sha256": "7f437894e755e7dd68a53e33dc69b34dd64b4ad786db285802db62412967e87b",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemini-2-5-flash.json",
+      "pathname": "/model-data/gemini-2-5-flash.json",
+      "bytes": 2638,
+      "sha256": "58a7efc52c9e2e87e613c5a182d2b7fd286e9e4ee4ae8a39403ebf4df91bb415",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemini-2-5-pro.json",
+      "pathname": "/model-data/gemini-2-5-pro.json",
+      "bytes": 2644,
+      "sha256": "f16d0c2cd110b0155daf33337bc97cdb924924594ab37f01fed7a78fb8c7f9e4",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemini-3-1-flash-lite.json",
+      "pathname": "/model-data/gemini-3-1-flash-lite.json",
+      "bytes": 2704,
+      "sha256": "19bd25f7ea417ae949564dbb21cf0ada28e1eff6fb8428f9aa018a4db4595465",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemini-3-1-pro.json",
+      "pathname": "/model-data/gemini-3-1-pro.json",
+      "bytes": 2668,
+      "sha256": "3a96d9782e2bf70aed53947415183ecbbac79b7fb21f8cd4776991bdaf7de17c",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemini-3-5-flash-lite.json",
+      "pathname": "/model-data/gemini-3-5-flash-lite.json",
+      "bytes": 2740,
+      "sha256": "7fa5ea680460e02ed5f2ce3ca4e6b33be3f40f299fd111600e1e507c6541c36f",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemini-3-5-flash.json",
+      "pathname": "/model-data/gemini-3-5-flash.json",
+      "bytes": 2676,
+      "sha256": "45fe5aed964c98c9a2e225900e2bd5c39396b5a110ea93d087f0ed84b376b1e9",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemini-3-6-flash.json",
+      "pathname": "/model-data/gemini-3-6-flash.json",
+      "bytes": 2679,
+      "sha256": "faf1e7d5af9c76ab61343d1f2094624593a9dd1d5147b768c830290e1652db5e",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemini-3-flash.json",
+      "pathname": "/model-data/gemini-3-flash.json",
+      "bytes": 2618,
+      "sha256": "c0f6f45fb3960ea6b97c17a7b14443df67d61f0111aeebe8da539f86292bd315",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemini-3-pro.json",
+      "pathname": "/model-data/gemini-3-pro.json",
+      "bytes": 2474,
+      "sha256": "82c4c1c140a47fe81171a2d72e667f50d6545d56958a8077f4cff50f37eff506",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemma-3-12b-it.json",
+      "pathname": "/model-data/gemma-3-12b-it.json",
+      "bytes": 1960,
+      "sha256": "6e80f8cd639faa0aa4b4c30eba8f2541c9c01f55de87917eb4b2bc04c23e0e3f",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemma-3-27b.json",
+      "pathname": "/model-data/gemma-3-27b.json",
+      "bytes": 2245,
+      "sha256": "3b38403a52125914567ccbb3479a0100ba2010e31efd750213e78209f0925a18",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemma-3-4b-it.json",
+      "pathname": "/model-data/gemma-3-4b-it.json",
+      "bytes": 1945,
+      "sha256": "0d80ca96770f65e5074181478f1e91404a8e0c3aaf2ff4ddf0f5330090c09a49",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemma-4-12b.json",
+      "pathname": "/model-data/gemma-4-12b.json",
+      "bytes": 3180,
+      "sha256": "afcd74181c0e2c40b7d6ae9b8c73197c770e55fc7f141b71a663bcbea533a0e5",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemma-4-26b-a4b.json",
+      "pathname": "/model-data/gemma-4-26b-a4b.json",
+      "bytes": 3177,
+      "sha256": "76779302190aa62a6af931341f3c609ed302784ea30a3f6347df333dce42446d",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemma-4-31b.json",
+      "pathname": "/model-data/gemma-4-31b.json",
+      "bytes": 3020,
+      "sha256": "f792bcbc7b0fe8baed2295d8419090bcc3f80d00de8b12ac5f0aeec333010285",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemma-4-e2b.json",
+      "pathname": "/model-data/gemma-4-e2b.json",
+      "bytes": 3066,
+      "sha256": "329c80abae7aaea445f45c6fe4f58202c88d141c9a3bd2984a2ec4fb86ac66ad",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gemma-4-e4b.json",
+      "pathname": "/model-data/gemma-4-e4b.json",
+      "bytes": 3033,
+      "sha256": "8cfc8b7a59575c31fc42e9bc2f4d0a3a8ea18b2a29be9e7f1480a0ae5e455f88",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/glm-4-5-air.json",
+      "pathname": "/model-data/glm-4-5-air.json",
+      "bytes": 3520,
+      "sha256": "b81f3ab3ae029e6b15f6548fc33a5150b134045f0d8e065b8822bf3d3f60b038",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/glm-4-5.json",
+      "pathname": "/model-data/glm-4-5.json",
+      "bytes": 4163,
+      "sha256": "06973f375c2e969001b0defd4355483233c77d36eb0671b866f68dd72bca15cc",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/glm-4-6.json",
+      "pathname": "/model-data/glm-4-6.json",
+      "bytes": 2170,
+      "sha256": "db0c3a60507ab3914fba38499266a2f5e5767b637150335ed2f55ae6fc611e49",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/glm-4-7.json",
+      "pathname": "/model-data/glm-4-7.json",
+      "bytes": 2170,
+      "sha256": "fa19894e0808d9c9b15976960cae7f2ac2c0cff2da56044ed9f00637005e2234",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/glm-4-9b-chat.json",
+      "pathname": "/model-data/glm-4-9b-chat.json",
+      "bytes": 1929,
+      "sha256": "e93e58000aa787d5a98955db7cfd42983682404b850bc6656715c9192097df38",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/glm-5-1.json",
+      "pathname": "/model-data/glm-5-1.json",
+      "bytes": 3275,
+      "sha256": "948cfb84f6e497e7d831429ea42ec3dff00d994dca765bfe0e8e4c8fb42c93f1",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/glm-5-2.json",
+      "pathname": "/model-data/glm-5-2.json",
+      "bytes": 3434,
+      "sha256": "b342ce344ee252b0c88c9ed6ad219ba146e447cb17f516ed69d15446078c5005",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/glm-5.json",
+      "pathname": "/model-data/glm-5.json",
+      "bytes": 3286,
+      "sha256": "5d8da2383724cf42c196238d9ea1091bf37a7a43db59efa5992ae92da3e6595e",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-3-5-turbo.json",
+      "pathname": "/model-data/gpt-3-5-turbo.json",
+      "bytes": 2638,
+      "sha256": "c64e06d77f5ed8a9c5b9cb46d9f8576aa852d6d330e18706d4e8f42099417300",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-4-1.json",
+      "pathname": "/model-data/gpt-4-1.json",
+      "bytes": 2667,
+      "sha256": "6cf77f6036981e5d452c9c7e135ccc443cd19a15e18680ce9136d4644775a45c",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-4-5.json",
+      "pathname": "/model-data/gpt-4-5.json",
+      "bytes": 2379,
+      "sha256": "85de941155f28ae48971224c53bad3bd08f7650e34cb725bde08f9452103c176",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-4-v.json",
+      "pathname": "/model-data/gpt-4-v.json",
+      "bytes": 2750,
+      "sha256": "a94e9e01bc91cd3119dd6977207f2744c6b97c8c51f6b5ece7aae6edfb38deb4",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-4.json",
+      "pathname": "/model-data/gpt-4.json",
+      "bytes": 2600,
+      "sha256": "dc4f918a493ac7da5209834e350c08744d79e4012cd07aefaa9755a5a233f185",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-4o.json",
+      "pathname": "/model-data/gpt-4o.json",
+      "bytes": 2653,
+      "sha256": "a4f8a8054146ec5b8218720de06289127b13d21c0d3b7d48befcba5fa30a91ca",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5-1.json",
+      "pathname": "/model-data/gpt-5-1.json",
+      "bytes": 2969,
+      "sha256": "94208aeb62bf1762e38e4da71b4dd6414c007cc8108917587870a8cd65c1640e",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5-2.json",
+      "pathname": "/model-data/gpt-5-2.json",
+      "bytes": 3038,
+      "sha256": "3a47ae906d03d6604f07ab47dc12f0ab31f34cd566479504598f96d7f0ffbf5a",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5-3-codex.json",
+      "pathname": "/model-data/gpt-5-3-codex.json",
+      "bytes": 2439,
+      "sha256": "f073706c971721bfb5ce102e4e4fad77717f43522c27203f2ef9f38d5f9467db",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5-4-mini.json",
+      "pathname": "/model-data/gpt-5-4-mini.json",
+      "bytes": 2486,
+      "sha256": "5017b24b8ca270b19a9ea7852970ce948ea57d702f3746ae9fcad8d8f5a66e10",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5-4-nano.json",
+      "pathname": "/model-data/gpt-5-4-nano.json",
+      "bytes": 2518,
+      "sha256": "b31be74ad55728ffc1bffa44bad39664657da33315028a3cf6c4f544e0a12391",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5-4-pro.json",
+      "pathname": "/model-data/gpt-5-4-pro.json",
+      "bytes": 2392,
+      "sha256": "591ca9b3a1bf9dd14f2218bb5dbec4b58565fc93a7f999e8df2987275568ad42",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5-4.json",
+      "pathname": "/model-data/gpt-5-4.json",
+      "bytes": 2494,
+      "sha256": "33097e6568f35785961d4d1c3a4dd34b5bbfa696bbe7377062271bebb4cbbec0",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5-5-pro.json",
+      "pathname": "/model-data/gpt-5-5-pro.json",
+      "bytes": 2409,
+      "sha256": "32c53d0e9f6f40d240e44a58e12fce7d60885bca81d34701fb2fedabd1954fb1",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5-5.json",
+      "pathname": "/model-data/gpt-5-5.json",
+      "bytes": 2439,
+      "sha256": "d203d836f2c034b0ac3b632a1fa1abfd8422a32e31a1b7f973ab8ca83e8b68b8",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5-6-luna.json",
+      "pathname": "/model-data/gpt-5-6-luna.json",
+      "bytes": 2432,
+      "sha256": "549a168fbca1f8a77c938f920910f871296e314e6188a08f2a49d0e1b592e8e2",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5-6-sol.json",
+      "pathname": "/model-data/gpt-5-6-sol.json",
+      "bytes": 2452,
+      "sha256": "67c8e46bca034d0d2ff01136b1f03054da4a35cf5e6c9d853d7dcf30f1b65018",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5-6-terra.json",
+      "pathname": "/model-data/gpt-5-6-terra.json",
+      "bytes": 2443,
+      "sha256": "0b7fbd3653bc5e089652c2a934a0aedd8f639d1a8fa28a2840a7ab01f33a0792",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5-mini.json",
+      "pathname": "/model-data/gpt-5-mini.json",
+      "bytes": 3010,
+      "sha256": "7c91bdcf92c6c2201e52ed46faa112babd472784db4ff7ef911eead32cfe4c5c",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5-nano.json",
+      "pathname": "/model-data/gpt-5-nano.json",
+      "bytes": 3011,
+      "sha256": "929fde3d8ad079752e812c75464a4080efeb0080075d6d119050ea6ac256e172",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-5.json",
+      "pathname": "/model-data/gpt-5.json",
+      "bytes": 2947,
+      "sha256": "0fc8bc2bd39c4de99bce6a29335f3394a5232ddb8d673abb7663e73c080c40f2",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-oss-120b.json",
+      "pathname": "/model-data/gpt-oss-120b.json",
+      "bytes": 2979,
+      "sha256": "4a195b922567994d79bc1b12187731b93bb94cb17236d247887b9c5effc7fa11",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/gpt-oss-20b.json",
+      "pathname": "/model-data/gpt-oss-20b.json",
+      "bytes": 2963,
+      "sha256": "3f67a9683629698af3709034f6c4c262bbc46f6a755385e11ab692b0a699aaab",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/grok-3.json",
+      "pathname": "/model-data/grok-3.json",
+      "bytes": 2344,
+      "sha256": "eb25169c919e9e3c2bb4d892c01356cbf70755e431e4e68b9e6ea4ee38b2cc11",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/grok-4-1.json",
+      "pathname": "/model-data/grok-4-1.json",
+      "bytes": 2730,
+      "sha256": "6601456ca71bf5848a1b16e27c992ef6dde63693b1bb279b89e21a23396bbe6d",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/grok-4-20-multi-agent.json",
+      "pathname": "/model-data/grok-4-20-multi-agent.json",
+      "bytes": 2672,
+      "sha256": "74b0c58d740adb6bb5d2d641b4c90d44f890d9370d1f62dec07b87e8be586aaa",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/grok-4-20.json",
+      "pathname": "/model-data/grok-4-20.json",
+      "bytes": 3262,
+      "sha256": "0d81feb807ca9564b094088ed1e588c79a7a641dc2e69d3ddd5d2bbdb408d6e6",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/grok-4-3.json",
+      "pathname": "/model-data/grok-4-3.json",
+      "bytes": 2528,
+      "sha256": "3d7273855be5a987488746f16c6ec6fe2070e9cf7c419ea91e4cea534641cebb",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/grok-4-5.json",
+      "pathname": "/model-data/grok-4-5.json",
+      "bytes": 2533,
+      "sha256": "3539647aefa30d9fc1e2b96bf97a64eed32bbd7bbde3e1dc2332947fe864e4ee",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/grok-4.json",
+      "pathname": "/model-data/grok-4.json",
+      "bytes": 2797,
+      "sha256": "d81c7cf09e65a246c1866e5378021d6481a894452d8fe29cbebb37727cd8c478",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/grok-build-0-1.json",
+      "pathname": "/model-data/grok-build-0-1.json",
+      "bytes": 3067,
+      "sha256": "8475f8015613725ba59873bb8df5e9b737b80c04d8a1b07ab7308df5952c25de",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/kimi-audio-7b-instruct.json",
+      "pathname": "/model-data/kimi-audio-7b-instruct.json",
+      "bytes": 2689,
+      "sha256": "6b6ee832a7251e66e4ea679b804908fd67d1724c6470c971cf422f5dd60eb920",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/kimi-dev-72b.json",
+      "pathname": "/model-data/kimi-dev-72b.json",
+      "bytes": 2629,
+      "sha256": "ec9dc57f4d023d50643458bafe3e6472e18824c109de1bd8b7a5ebc43a0f924a",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/kimi-k2-5.json",
+      "pathname": "/model-data/kimi-k2-5.json",
+      "bytes": 3240,
+      "sha256": "e74e88c6f06829c47a4d3fb1533f461fc076e8b29a741fd3c23bc5b3daa1b0e1",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/kimi-k2-6.json",
+      "pathname": "/model-data/kimi-k2-6.json",
+      "bytes": 2990,
+      "sha256": "0a0fa3e9ee6e7853097ffbe395e9255054f40f4a8e6271613e747ee04de36307",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/kimi-k2-7-code.json",
+      "pathname": "/model-data/kimi-k2-7-code.json",
+      "bytes": 3471,
+      "sha256": "97a99556a2e4f233a928f8ec49fb84c82465027854504701af8cbb15afe59039",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/kimi-k2-base.json",
+      "pathname": "/model-data/kimi-k2-base.json",
+      "bytes": 2511,
+      "sha256": "3fe101c49b65667006260c504ee1377fdcf400b6d6c888dd903442e0a5ab8019",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/kimi-k2-instruct-0905.json",
+      "pathname": "/model-data/kimi-k2-instruct-0905.json",
+      "bytes": 2768,
+      "sha256": "0622fd63c876b88f9b07be233bb951e1e2559f3a68bb82901f43f9e8f48db8aa",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/kimi-k2-instruct.json",
+      "pathname": "/model-data/kimi-k2-instruct.json",
+      "bytes": 2533,
+      "sha256": "df6ace58abce91526d41a223752264ae50f6c03a926a3b3e4655621183f5bc42",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/kimi-k2-thinking.json",
+      "pathname": "/model-data/kimi-k2-thinking.json",
+      "bytes": 3065,
+      "sha256": "e34695af2c566a5fdaeee71e390d6b7a2a3c653fa74aedf30817cd8123872f6c",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/kimi-k3.json",
+      "pathname": "/model-data/kimi-k3.json",
+      "bytes": 4127,
+      "sha256": "b3167124dc9aca10558dacce1b5bb0e7c2c8514d610029041ea9cee49fd01e0c",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/kimi-linear-48b-a3b-instruct.json",
+      "pathname": "/model-data/kimi-linear-48b-a3b-instruct.json",
+      "bytes": 2846,
+      "sha256": "baa771e596b986c2dbebaebcb5167c857bfe14b7df5894dc8957c93347c7afba",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/kimi-vl-a3b-thinking-2506.json",
+      "pathname": "/model-data/kimi-vl-a3b-thinking-2506.json",
+      "bytes": 2732,
+      "sha256": "c9d6aa698c5583227f022c714d8875169c4e86c9988edb7e24a4f46568fe7742",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/llama-2-13b-chat.json",
+      "pathname": "/model-data/llama-2-13b-chat.json",
+      "bytes": 1918,
+      "sha256": "efb5ed4120fb7e9bf1bd42c3f7d3e22f1a8a7003aa52683d45e5e2e718173c64",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/llama-2-70b-chat.json",
+      "pathname": "/model-data/llama-2-70b-chat.json",
+      "bytes": 1928,
+      "sha256": "2e89f93a4f08d122af721b5bdffc822a185bfec52fc340fbaf0d98b451818e24",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/llama-3-1-405b-instruct.json",
+      "pathname": "/model-data/llama-3-1-405b-instruct.json",
+      "bytes": 2004,
+      "sha256": "edead339753b1682dceeef3e81c7570734acb7ae54b61cb0f750f01c4e0d0510",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/llama-3-1-70b-instruct.json",
+      "pathname": "/model-data/llama-3-1-70b-instruct.json",
+      "bytes": 1994,
+      "sha256": "4a587e1b4fdc24386713d2f798f1c8be8362b752b02d20435f966c1c7f071ed9",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/llama-3-1-8b-instruct.json",
+      "pathname": "/model-data/llama-3-1-8b-instruct.json",
+      "bytes": 1974,
+      "sha256": "5c888ddc8602f3a3f5ec360a1589aa32ff7fdb594099d0c1f3347737ea832469",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/llama-3-2-11b-vision-instruct.json",
+      "pathname": "/model-data/llama-3-2-11b-vision-instruct.json",
+      "bytes": 2019,
+      "sha256": "75fabb2327f92f4397aedc7a6d3bb786921dd9a9f9af110962ee8983d029578b",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/llama-3-3-70b-instruct.json",
+      "pathname": "/model-data/llama-3-3-70b-instruct.json",
+      "bytes": 1994,
+      "sha256": "4cb343e0f8e0993f0cabaf5b2e91fc9a6d3aa1ddaa29565659d1fdea5f6684cb",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/llama-3-70b-instruct.json",
+      "pathname": "/model-data/llama-3-70b-instruct.json",
+      "bytes": 3378,
+      "sha256": "5c3113ab37cd71eb1e6b1d5a1302d4aa45ba3035cf964db3dc8bcba28d6a43f1",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/llama-3-8b-instruct.json",
+      "pathname": "/model-data/llama-3-8b-instruct.json",
+      "bytes": 3351,
+      "sha256": "9a214ebc2133c39d2061e0624605d669ee017de7b8ecf55aff2b56e7745b3707",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/llama-4-maverick-17b-128e.json",
+      "pathname": "/model-data/llama-4-maverick-17b-128e.json",
+      "bytes": 2404,
+      "sha256": "17cbff0d8e862e64ee858075411958582cafe227d2d075fb41748e27b89b048d",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/llama-4-scout-17b-16e.json",
+      "pathname": "/model-data/llama-4-scout-17b-16e.json",
+      "bytes": 2306,
+      "sha256": "90ebef28e62dbc781fa30e638aa33cb224307af68311aeca09f2b12368aaca33",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/magistral-medium.json",
+      "pathname": "/model-data/magistral-medium.json",
+      "bytes": 2611,
+      "sha256": "307a499557c6a4fd33b65c609929cc2928287ceafc090f8a09529cae93a9fea1",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/magistral-small.json",
+      "pathname": "/model-data/magistral-small.json",
+      "bytes": 3570,
+      "sha256": "5efe7dfab6ae8dff24406c55d3e2f3046214cb68961398bd30ab79e903cad910",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/minimax-m1.json",
+      "pathname": "/model-data/minimax-m1.json",
+      "bytes": 2805,
+      "sha256": "81d6f89fbfc7ff04994846db4db82efeea44b9d82e5397523c7bdef518fcc6de",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/minimax-m2-7.json",
+      "pathname": "/model-data/minimax-m2-7.json",
+      "bytes": 3150,
+      "sha256": "e1a5fbcab07dab26c4e63e868a5aa45203d4b9545421257f89d35241fd417895",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/minimax-m2.json",
+      "pathname": "/model-data/minimax-m2.json",
+      "bytes": 2881,
+      "sha256": "1bff1e38fc695c9f448996d7ff1beaf980ee4a40d0c0595ca4b7491bb560db94",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/minimax-m3.json",
+      "pathname": "/model-data/minimax-m3.json",
+      "bytes": 4857,
+      "sha256": "d1c311f4a2db9dd4f8e1d7665425815a4e7896324f0341c4412f826dcb2c52bf",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/mistral-7b-instruct-v0-3.json",
+      "pathname": "/model-data/mistral-7b-instruct-v0-3.json",
+      "bytes": 1988,
+      "sha256": "455fa734fef325dd045a43d10eba45c80504ca1976bfcb1e73bf6313d3ceeb5c",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/mistral-large-3.json",
+      "pathname": "/model-data/mistral-large-3.json",
+      "bytes": 5189,
+      "sha256": "d224225ab13240932fdbe845ae5b32a9f128befc9ed958e1dde24756cb48e991",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/mistral-medium-3-5.json",
+      "pathname": "/model-data/mistral-medium-3-5.json",
+      "bytes": 3748,
+      "sha256": "7b99e89bdff272c96c3dc0ce09d7265515c09e5e5b734fa4c11fb465715e826b",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/mistral-medium-3.json",
+      "pathname": "/model-data/mistral-medium-3.json",
+      "bytes": 2869,
+      "sha256": "09708289aa90575d2ae54c7f286b462ed877e92d7525dd7e76ea8279cce87dc7",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/mistral-small-24b-instruct-2501.json",
+      "pathname": "/model-data/mistral-small-24b-instruct-2501.json",
+      "bytes": 2043,
+      "sha256": "f0fdb484eee47b6e13d165b37b1ea6ed28f361fef2977f483fa35a4a9b7e0579",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/mistral-small-4.json",
+      "pathname": "/model-data/mistral-small-4.json",
+      "bytes": 3916,
+      "sha256": "e54ca2fd1c03c0120c20cef5c09e0fd6ea62f86b3b5ae4349e2ce43606e215f4",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/moonlight-16b-a3b-instruct.json",
+      "pathname": "/model-data/moonlight-16b-a3b-instruct.json",
+      "bytes": 2705,
+      "sha256": "0e8ba38190fc8f19142ddc3735fe27ecb6f301d33ac9c55e8f1a64dca159275f",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/muse-spark-1-1.json",
+      "pathname": "/model-data/muse-spark-1-1.json",
+      "bytes": 2533,
+      "sha256": "6c1451eb249cb69a96ac0308efdab4b57ef25c5510e9deee6c25ac8e86949f8b",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/muse-spark.json",
+      "pathname": "/model-data/muse-spark.json",
+      "bytes": 2872,
+      "sha256": "6a34f662d969b898230895e7a6064c84e68c5bc949553bbbb92013437143451e",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/o1.json",
+      "pathname": "/model-data/o1.json",
+      "bytes": 2414,
+      "sha256": "ff939e44b2302afdb49fbdd5e82824f6be401af8600f28f52a45ff21fc20932e",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/o3.json",
+      "pathname": "/model-data/o3.json",
+      "bytes": 2414,
+      "sha256": "a83f95b968268a9f86cd39370bbb35d76545815622b10126fac3be8178cc20b4",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/o4-mini.json",
+      "pathname": "/model-data/o4-mini.json",
+      "bytes": 2470,
+      "sha256": "33b1728555c53feffc2782693a566f7f9ab0e375f6fbdd24876d4b8e97ff1966",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen-7b-chat.json",
+      "pathname": "/model-data/qwen-7b-chat.json",
+      "bytes": 1901,
+      "sha256": "e63c6b43f86018bd8a1d1337f72b7bf9184284cc534d3f1f0fba70bcffae10b8",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-5-0-5b-instruct.json",
+      "pathname": "/model-data/qwen2-5-0-5b-instruct.json",
+      "bytes": 3262,
+      "sha256": "8497c49785213bba0560879b5036c306eb678bb2db69875fdf0c202523322ad8",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-5-0-5b.json",
+      "pathname": "/model-data/qwen2-5-0-5b.json",
+      "bytes": 3272,
+      "sha256": "3fbb00bcabbe8f80125469b4b6b4cb98045a92a9c5693f14505ca90796bf680c",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-5-1-5b-instruct.json",
+      "pathname": "/model-data/qwen2-5-1-5b-instruct.json",
+      "bytes": 3309,
+      "sha256": "c2779a91b428dd30c8ac623e0aea008eefdebf9c6a8c8ce56e2700b456594e2e",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-5-1-5b.json",
+      "pathname": "/model-data/qwen2-5-1-5b.json",
+      "bytes": 3250,
+      "sha256": "a10f6b51c210cce3bad62bd7c0a2e7e73761f8a63a5afa3953ba78e582a15a98",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-5-14b-instruct.json",
+      "pathname": "/model-data/qwen2-5-14b-instruct.json",
+      "bytes": 3283,
+      "sha256": "de8defeceb580b212daebf56e17472d9d76fda64b28c550b6b85d3b2bc39684a",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-5-14b.json",
+      "pathname": "/model-data/qwen2-5-14b.json",
+      "bytes": 3267,
+      "sha256": "44a80a48494a63ae95fc76fa60dab07bdcdbb00c04ee0283b2a9a2a9783894d8",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-5-32b-instruct.json",
+      "pathname": "/model-data/qwen2-5-32b-instruct.json",
+      "bytes": 3299,
+      "sha256": "84a03c05171601619334003bf207aec7609c02b1b45dfa7ef613ad06f72482d0",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-5-32b.json",
+      "pathname": "/model-data/qwen2-5-32b.json",
+      "bytes": 3267,
+      "sha256": "e535918aeb0f9f424b3a3da6a311b154fb274d8ebfc277f81aad87049f9a2e2d",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-5-3b-instruct.json",
+      "pathname": "/model-data/qwen2-5-3b-instruct.json",
+      "bytes": 3404,
+      "sha256": "c1852ec3f043856542e8e6e4b34863e334d652da36083503d9c32e79e7a52204",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-5-3b.json",
+      "pathname": "/model-data/qwen2-5-3b.json",
+      "bytes": 3318,
+      "sha256": "bb705aac575042576cfd25040ef9cf0fd8230232bf7c8fc54b03943851814890",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-5-72b-instruct.json",
+      "pathname": "/model-data/qwen2-5-72b-instruct.json",
+      "bytes": 3421,
+      "sha256": "52e2c448c55bd5e4d6aa819b35b0a28d6d3546419740b653b1dbf3414aed5813",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-5-72b.json",
+      "pathname": "/model-data/qwen2-5-72b.json",
+      "bytes": 3379,
+      "sha256": "1f89525d67ee2edfb8bfe4a8e9573477cfa60f958d1127dbf82cd4ac481af5df",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-5-7b-instruct.json",
+      "pathname": "/model-data/qwen2-5-7b-instruct.json",
+      "bytes": 3270,
+      "sha256": "36ca7b87ffa42738beb2a263a9befd8c28dc3a3abc3628ee93db460da7876d68",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-5-7b.json",
+      "pathname": "/model-data/qwen2-5-7b.json",
+      "bytes": 3258,
+      "sha256": "9964e025f2a71d0fecc3bf6f6b03e467c63c836aecd4b505acf76cc99428b23b",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen2-72b-instruct.json",
+      "pathname": "/model-data/qwen2-72b-instruct.json",
+      "bytes": 3066,
+      "sha256": "68bf8c782785a6ba9874fc82c2f6fd8c331d99d44ee3f924789fcdf575e5e4a2",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-1-7b.json",
+      "pathname": "/model-data/qwen3-1-7b.json",
+      "bytes": 3693,
+      "sha256": "7c6efc715035708ebc19c224b8f37ecbf5017c34e4b3b430eb8aec2bca3d5d1c",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-235b-a22b.json",
+      "pathname": "/model-data/qwen3-235b-a22b.json",
+      "bytes": 2531,
+      "sha256": "38e59237a6a0809114df9329ae68e5478b9cb7cb22613a09fa38366e24eec4f1",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-30b-a3b.json",
+      "pathname": "/model-data/qwen3-30b-a3b.json",
+      "bytes": 2135,
+      "sha256": "644c769441cf6b369625609524f35ac6334aacbdf461adbce9a47bca6b1fd5c2",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-32b.json",
+      "pathname": "/model-data/qwen3-32b.json",
+      "bytes": 2161,
+      "sha256": "1fd3c2cb3720663b2ccaca786ce919c3595f1bbc8a5bff9688813b991e052aa6",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-5-27b.json",
+      "pathname": "/model-data/qwen3-5-27b.json",
+      "bytes": 2188,
+      "sha256": "42d3f04f1d7a885d3628b456c2a2287e053b02e54b7e042d6b84fd2c64eadad5",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-6-27b.json",
+      "pathname": "/model-data/qwen3-6-27b.json",
+      "bytes": 2916,
+      "sha256": "8fc9447963039810397e281866efd1cf4ab27112ec2ce7f64e1639e29a732570",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-6-35b-a3b.json",
+      "pathname": "/model-data/qwen3-6-35b-a3b.json",
+      "bytes": 3359,
+      "sha256": "e68e9b3e56ce2ea05b5635f016000cd8fdfb8bda6a640b6379b60f10ca0139cb",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-6-flash.json",
+      "pathname": "/model-data/qwen3-6-flash.json",
+      "bytes": 2762,
+      "sha256": "903fdd44a1a29f6e071706e45e56325a3997c8e6ca46b39316061a78d2e48030",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-6-max-preview.json",
+      "pathname": "/model-data/qwen3-6-max-preview.json",
+      "bytes": 2387,
+      "sha256": "291146bfb0e390da8954a3857799de0b2e153c8155b8ee08809a4cc0be1ca888",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-6-plus.json",
+      "pathname": "/model-data/qwen3-6-plus.json",
+      "bytes": 2699,
+      "sha256": "2cb40edda8e9f8303906aa8b4c8339bd7e94ca3f5eb23aaf44218c432ba8d6bb",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-7-max.json",
+      "pathname": "/model-data/qwen3-7-max.json",
+      "bytes": 2934,
+      "sha256": "9ceef1fc73580450e557ce46267cfac957f9394fa9cc096550bc308a05567156",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-7-plus.json",
+      "pathname": "/model-data/qwen3-7-plus.json",
+      "bytes": 2992,
+      "sha256": "78c9ac6ba5b8846ca7b11b9dbe6d482bb2b298d3af610c353186b21c87a0edb1",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-8b.json",
+      "pathname": "/model-data/qwen3-8b.json",
+      "bytes": 2162,
+      "sha256": "1a22836631caf39c63c8f1631f3a5774a6b3f5520e0ae8e8efb193a087b1548b",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-coder-480b-a35b-instruct.json",
+      "pathname": "/model-data/qwen3-coder-480b-a35b-instruct.json",
+      "bytes": 3318,
+      "sha256": "b82bdac0f8187619eb3365009eb21cfab9a5db056288c1a50f386f04b08b519d",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-max.json",
+      "pathname": "/model-data/qwen3-max.json",
+      "bytes": 3392,
+      "sha256": "bb9a300ecd413aecd9756f0ed71ee3551d8c2c9257073290b1498aa09490531f",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-next-80b-a3b-instruct.json",
+      "pathname": "/model-data/qwen3-next-80b-a3b-instruct.json",
+      "bytes": 3282,
+      "sha256": "35db2fe2d7d1c8071a595f82f7f484741bf5ade85b39885f6761d957bedf74e2",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/qwen3-vl-235b-a22b-instruct.json",
+      "pathname": "/model-data/qwen3-vl-235b-a22b-instruct.json",
+      "bytes": 3231,
+      "sha256": "70f6f0c0f65adec0c8c765f6571ebbfc66d76b82a1505973b13a038f82e03fb1",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/text-davinci-003.json",
+      "pathname": "/model-data/text-davinci-003.json",
+      "bytes": 1786,
+      "sha256": "98d1da4be28650eeb50a54bd63af5d61afc977acc5078c72def00b4fe854801b",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "model-data/vicuna-13b.json",
+      "pathname": "/model-data/vicuna-13b.json",
+      "bytes": 1901,
+      "sha256": "bcfcfd9dc8dd9220991c9b925aabf8a92c1663f45861ff562570587d56fa63db",
+      "kind": "endpoint",
+      "source": "src/pages/model-data/[id].json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-2/index.html",
+      "pathname": "/models/claude-2/",
+      "bytes": 128001,
+      "sha256": "d2aeb7e7b7c21d222324b376ca7e0bd73a23497925711e1123c81f3c6f29e1ae",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-3-5-sonnet/index.html",
+      "pathname": "/models/claude-3-5-sonnet/",
+      "bytes": 131027,
+      "sha256": "fe367fb14e8457309dec5339124d7e07de5f9a7e786121fbe2f0882924918371",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-3-7-sonnet/index.html",
+      "pathname": "/models/claude-3-7-sonnet/",
+      "bytes": 128007,
+      "sha256": "c2836713263f2060800311629b9a19a49dc7ef1d3aead8d7ee88b59ad6081042",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-3-opus/index.html",
+      "pathname": "/models/claude-3-opus/",
+      "bytes": 128542,
+      "sha256": "fe45e603aec5c1bd33f31e83f256c589e2a0ab86a3bbff119fa85a69e4a77258",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-fable-5/index.html",
+      "pathname": "/models/claude-fable-5/",
+      "bytes": 125821,
+      "sha256": "25bfcaaa4294db69f39279afe4e934335dc99188560bf272b907ee538599c7af",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-haiku-4-5/index.html",
+      "pathname": "/models/claude-haiku-4-5/",
+      "bytes": 125698,
+      "sha256": "0a4da8a45df6db30722ee4e8a7c2aaf5a5d421aac70ac2fd9a7c17062f501fba",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-mythos-5/index.html",
+      "pathname": "/models/claude-mythos-5/",
+      "bytes": 126929,
+      "sha256": "bbf853b652326bc4af63fad41f87dedcf4e0334650268eda8eafe120e04acd7b",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-opus-4-1/index.html",
+      "pathname": "/models/claude-opus-4-1/",
+      "bytes": 127935,
+      "sha256": "2c58ad45c508626cb19719d553041f1f47c96a9ac9be527afe100197ba090f37",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-opus-4-5/index.html",
+      "pathname": "/models/claude-opus-4-5/",
+      "bytes": 125658,
+      "sha256": "3842092c8c0f3a06b93878a9f5d3d597da8244dcb1313b9225cba12e03b9c4bd",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-opus-4-6/index.html",
+      "pathname": "/models/claude-opus-4-6/",
+      "bytes": 125635,
+      "sha256": "8920280bd70dadffb30d2ed643fbb4a01d79bc3c5e0ddf16fb16d2b45d2a236c",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-opus-4-7/index.html",
+      "pathname": "/models/claude-opus-4-7/",
+      "bytes": 125642,
+      "sha256": "c9c7af1b468d5f54e163898929ea15cefb2bf7a8c2ef9b121e0ddb693ba25144",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-opus-4-8/index.html",
+      "pathname": "/models/claude-opus-4-8/",
+      "bytes": 125638,
+      "sha256": "9973dc1b64172b2fa9baf0e0bcd0dc2e9f5f477fb15b9d30fd4d5363a0b73adb",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-opus-4/index.html",
+      "pathname": "/models/claude-opus-4/",
+      "bytes": 127871,
+      "sha256": "88cfcce33818368bd0993317a8da2c999565c71a9e031aee3b7fbcb25d43175c",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-opus-5/index.html",
+      "pathname": "/models/claude-opus-5/",
+      "bytes": 127690,
+      "sha256": "071db7f9be660fbb03facba68e465ec81b8dc7394cf5c74b3ba45a8827535fa0",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-sonnet-4-5/index.html",
+      "pathname": "/models/claude-sonnet-4-5/",
+      "bytes": 125665,
+      "sha256": "e450f78a7dd7e72e51b13795ef53efe42ed1a4274542e4d491ff5afec1312caa",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-sonnet-4-6/index.html",
+      "pathname": "/models/claude-sonnet-4-6/",
+      "bytes": 125698,
+      "sha256": "bd92d31e9e2ca1d2658965ee784a36ca645d2f76ac2cb18639b46c05fda994ca",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-sonnet-4/index.html",
+      "pathname": "/models/claude-sonnet-4/",
+      "bytes": 127954,
+      "sha256": "2947ae7cf6fc893deb6f40cc60937a4b9e0007fe391f3d3e8796b33f36d82531",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/claude-sonnet-5/index.html",
+      "pathname": "/models/claude-sonnet-5/",
+      "bytes": 125638,
+      "sha256": "b9ee13a1c4f21c971b01e7c811c08bcc4adc058adf265018e1816baf7015474d",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/deepseek-coder-v2-lite-instruct/index.html",
+      "pathname": "/models/deepseek-coder-v2-lite-instruct/",
+      "bytes": 129732,
+      "sha256": "569db21416b09b0654a30bff1ad0c4d617bec3cde06a9eb5709b6c8042a0a68e",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/deepseek-r1-0528/index.html",
+      "pathname": "/models/deepseek-r1-0528/",
+      "bytes": 126190,
+      "sha256": "12837931cf0f0c7aaf3515b87965ac5d42889855675e62eef4b0cb55369fb962",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/deepseek-r1/index.html",
+      "pathname": "/models/deepseek-r1/",
+      "bytes": 131121,
+      "sha256": "d7fa456454acf3c6e8245ec5922c53cce903abde67e72de43b6910d9830a4db5",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/deepseek-v3-0324/index.html",
+      "pathname": "/models/deepseek-v3-0324/",
+      "bytes": 131047,
+      "sha256": "80b918d9b0bba091a09f344388fba821aacc64808e6c5a1b38f4e5d725493d22",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/deepseek-v3-1/index.html",
+      "pathname": "/models/deepseek-v3-1/",
+      "bytes": 127390,
+      "sha256": "b27b4ff989325ed93b6102b39e407c49dde257f9aa74d7f80908c957bee5a901",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/deepseek-v3-2-exp/index.html",
+      "pathname": "/models/deepseek-v3-2-exp/",
+      "bytes": 126244,
+      "sha256": "b85e45bd2678809156a0941f5a2769e0f788d6f16827fbb18ccc5cc701948071",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/deepseek-v3-2-speciale/index.html",
+      "pathname": "/models/deepseek-v3-2-speciale/",
+      "bytes": 128656,
+      "sha256": "066a37c8d978cdd0988cc3757673fabffade76b8b1c164d0644f925171c0c376",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/deepseek-v3-2/index.html",
+      "pathname": "/models/deepseek-v3-2/",
+      "bytes": 131724,
+      "sha256": "b72c7b0d906b753d9a7448b33e6a1e52f1f3ed8090bc5958b7e6e16e4c482dfc",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/deepseek-v3/index.html",
+      "pathname": "/models/deepseek-v3/",
+      "bytes": 129179,
+      "sha256": "a1fea4a7014bbe71d5f1c6c5b0bf7a5fa8faaf8446ace7cc9b623bf430d2d252",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/deepseek-v4-flash-base/index.html",
+      "pathname": "/models/deepseek-v4-flash-base/",
+      "bytes": 131236,
+      "sha256": "6740a4e131ec9adfec75c6cabf9d9d06e9f2aaaa1b736ac32102988393dd22c7",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/deepseek-v4-flash/index.html",
+      "pathname": "/models/deepseek-v4-flash/",
+      "bytes": 130516,
+      "sha256": "eab593258226078de83162e47737ec2d7538d87a1ee0206230b7dc77c83ced71",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/deepseek-v4-pro-base/index.html",
+      "pathname": "/models/deepseek-v4-pro-base/",
+      "bytes": 131189,
+      "sha256": "a361170416a770573a01a9649f7021ea1c3b78661ae0d21784ef09457b70fe64",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/deepseek-v4-pro/index.html",
+      "pathname": "/models/deepseek-v4-pro/",
+      "bytes": 130202,
+      "sha256": "e22f34680bd8be854ee6ccef71422aa9abb68f0397e1f93d2fdd0fbfe82393ec",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/devstral-medium/index.html",
+      "pathname": "/models/devstral-medium/",
+      "bytes": 129348,
+      "sha256": "79908f8542285481cd2fe9c5655f5e66331ed8507d1e26086d17d7258e16c966",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/devstral-small/index.html",
+      "pathname": "/models/devstral-small/",
+      "bytes": 133732,
+      "sha256": "9ff686d855900617f851a2f958a87e3f5efb218327ac16793f00ab3cc34e94b6",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemini-1-5-pro/index.html",
+      "pathname": "/models/gemini-1-5-pro/",
+      "bytes": 121808,
+      "sha256": "a93e0d9da501f6f337f047e6c915f7378aae659de90ddd1ee006f0d8ee7da5c4",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemini-2-0-flash/index.html",
+      "pathname": "/models/gemini-2-0-flash/",
+      "bytes": 126220,
+      "sha256": "cb6afa273dbe93a7c05d91b0af194f37610dbb8985acd7fc03efed061f99f2dc",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemini-2-5-flash/index.html",
+      "pathname": "/models/gemini-2-5-flash/",
+      "bytes": 126518,
+      "sha256": "6bbd74baf670fd6aa180569b832d3693e7e4065878afb354fcb0d6b5bdd2598a",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemini-2-5-pro/index.html",
+      "pathname": "/models/gemini-2-5-pro/",
+      "bytes": 126641,
+      "sha256": "280d37c150b7a15f14459ecefa69582fc5058146be88ac2930c12acb4f55c168",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemini-3-1-flash-lite/index.html",
+      "pathname": "/models/gemini-3-1-flash-lite/",
+      "bytes": 127713,
+      "sha256": "754c49f8be6d2a3c97dc658e8627490743ef91e4acab27e2ffe7f680696916eb",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemini-3-1-pro/index.html",
+      "pathname": "/models/gemini-3-1-pro/",
+      "bytes": 126982,
+      "sha256": "518219aac83ce44e5f49ce51ffd4fd45e41fe242461d099d651a70c736a69c31",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemini-3-5-flash-lite/index.html",
+      "pathname": "/models/gemini-3-5-flash-lite/",
+      "bytes": 127944,
+      "sha256": "d989c742783706f2420cccfadb27a265711cb1f9689193b2a461eb5716e308db",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemini-3-5-flash/index.html",
+      "pathname": "/models/gemini-3-5-flash/",
+      "bytes": 126891,
+      "sha256": "a7dbe32e89b180bd6e0283757aa00f1970f419806d305b01e18cd8a574ee6f59",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemini-3-6-flash/index.html",
+      "pathname": "/models/gemini-3-6-flash/",
+      "bytes": 126836,
+      "sha256": "8b88dcc6b34f116cadc2e1786e168eef1de09624e45c61ce3a7ff486f18624e3",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemini-3-flash/index.html",
+      "pathname": "/models/gemini-3-flash/",
+      "bytes": 126576,
+      "sha256": "ca0aa0290950eec957ba5238f5681baeed38b9c2663a2a8aac962543e13982cc",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemini-3-pro/index.html",
+      "pathname": "/models/gemini-3-pro/",
+      "bytes": 126451,
+      "sha256": "cc84a56b92be5f9b4df806149d90617d71bbed841a181e23dd0b5e1b4f0cd26e",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemma-3-12b-it/index.html",
+      "pathname": "/models/gemma-3-12b-it/",
+      "bytes": 121034,
+      "sha256": "608519bbed93a423bb30409cc62d22e6ef1cb06f42711456f71f1c26f5d33756",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemma-3-27b/index.html",
+      "pathname": "/models/gemma-3-27b/",
+      "bytes": 121373,
+      "sha256": "1aa87856ae63ae54a36bde718cf2d0997dea39d5162d63f9c6be915c203ce1e9",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemma-3-4b-it/index.html",
+      "pathname": "/models/gemma-3-4b-it/",
+      "bytes": 120978,
+      "sha256": "339c4bec4ccb2b4b3fb026b7e8aa358e5e1567846903b0af6b5b19b44d0e75b9",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemma-4-12b/index.html",
+      "pathname": "/models/gemma-4-12b/",
+      "bytes": 131965,
+      "sha256": "e8d90f7d51a2cc2875e97ce99911e9063701a5a82f3e95184cf437168583e00b",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemma-4-26b-a4b/index.html",
+      "pathname": "/models/gemma-4-26b-a4b/",
+      "bytes": 133852,
+      "sha256": "cbca3b2e2481bbaffe9c4dab7e146ba96a21fab204818a258795a2cdd8ded8b4",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemma-4-31b/index.html",
+      "pathname": "/models/gemma-4-31b/",
+      "bytes": 131263,
+      "sha256": "267527cfcf49b38dd0fdaa8df58ed72a26fcd9ea0b7b4651c9b10538516c666a",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemma-4-e2b/index.html",
+      "pathname": "/models/gemma-4-e2b/",
+      "bytes": 130950,
+      "sha256": "a0202afe4560ad5ced9507718bbddf5244fae68f9fb33ac3d780dacbfbce5e19",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gemma-4-e4b/index.html",
+      "pathname": "/models/gemma-4-e4b/",
+      "bytes": 130877,
+      "sha256": "eee1202c0768dd6701560e58dacbe972375f47156a4c935299f70534a4714561",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/glm-4-5-air/index.html",
+      "pathname": "/models/glm-4-5-air/",
+      "bytes": 133494,
+      "sha256": "5628fbd596e08e5b13de170e899a65d13b929d357764b5b7e273feb8d37b9f81",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/glm-4-5/index.html",
+      "pathname": "/models/glm-4-5/",
+      "bytes": 125162,
+      "sha256": "1c68727377d14c49b636a441f85b54d9ad484bfe0276fa985a1885c2f50621d5",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/glm-4-6/index.html",
+      "pathname": "/models/glm-4-6/",
+      "bytes": 121459,
+      "sha256": "e9168fcd7420c9373281112c8a87a20459621ec86bcd3e7b0c69caa22d5e2445",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/glm-4-7/index.html",
+      "pathname": "/models/glm-4-7/",
+      "bytes": 121458,
+      "sha256": "9dd3b62afe7f66d2dc80b721f13b9a808312d8a5ec2f165e2429b57941fe6672",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/glm-4-9b-chat/index.html",
+      "pathname": "/models/glm-4-9b-chat/",
+      "bytes": 120788,
+      "sha256": "0129a59a51ab810e6bbac0d7b224d2e4394e8341a3f1fa28a40f05639dd6d8f9",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/glm-5-1/index.html",
+      "pathname": "/models/glm-5-1/",
+      "bytes": 131525,
+      "sha256": "7ed842c8caa13fb97380a462598f0f381570180a8e759966dcd39b49567b6bb0",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/glm-5-2/index.html",
+      "pathname": "/models/glm-5-2/",
+      "bytes": 160354,
+      "sha256": "df036234e630790708b4397cdf644e55a15a063316607c6ae834ad6a22f59563",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/glm-5/index.html",
+      "pathname": "/models/glm-5/",
+      "bytes": 132773,
+      "sha256": "52be474f1aaa9e67e864434c2b3d7e3af5d1ae3679c399d36ce204f6ecfc1bda",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-3-5-turbo/index.html",
+      "pathname": "/models/gpt-3-5-turbo/",
+      "bytes": 154256,
+      "sha256": "4e68ff8e4a740dd69115cef7848c692858cb1ca7d2e6acc44d9045aa31da7971",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-4-1/index.html",
+      "pathname": "/models/gpt-4-1/",
+      "bytes": 126152,
+      "sha256": "2eaf004b99d9d246881925bc8c58254439f1c6e57c6aaedca29dfc0f1b04b1bb",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-4-5/index.html",
+      "pathname": "/models/gpt-4-5/",
+      "bytes": 125605,
+      "sha256": "a724c24099f20455f2ea77c707753e5c44644ed9b6863fc109cd9e4e817f4747",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-4-v/index.html",
+      "pathname": "/models/gpt-4-v/",
+      "bytes": 126222,
+      "sha256": "0b2ec1d3a048a7fb4e33af586b4a54d0e54f4770a14db819684889e0cd93f953",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-4/index.html",
+      "pathname": "/models/gpt-4/",
+      "bytes": 159278,
+      "sha256": "6ce796ee1523a3405144c550e8376dbb5a85d684557877d5992e58454b65f11c",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-4o/index.html",
+      "pathname": "/models/gpt-4o/",
+      "bytes": 130802,
+      "sha256": "538503cf70507305b4bb1466693dd3f28de663be473721b957c40bf12fcab4b5",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5-1/index.html",
+      "pathname": "/models/gpt-5-1/",
+      "bytes": 126984,
+      "sha256": "9cfc467e8fc441dbf52ddc7761b8e316ca538002c3e88b1428a90d1722be6508",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5-2/index.html",
+      "pathname": "/models/gpt-5-2/",
+      "bytes": 127122,
+      "sha256": "e9e71979a55d531970777681763f93d32f674b17bbbce2bf17bc14a70926f947",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5-3-codex/index.html",
+      "pathname": "/models/gpt-5-3-codex/",
+      "bytes": 125413,
+      "sha256": "3ae2a2cff5a97d08fa7ee396a40333d481b39692d451dc25b97688e5ea5b835f",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5-4-mini/index.html",
+      "pathname": "/models/gpt-5-4-mini/",
+      "bytes": 126496,
+      "sha256": "ea8464a131f333d191c8a8d3b12d0fb9e11b95069bab939b1d2c03c007785603",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5-4-nano/index.html",
+      "pathname": "/models/gpt-5-4-nano/",
+      "bytes": 126558,
+      "sha256": "1e802ae235f5b921ee0bf2439d3e65371be9d2f17aeaf3365df8d01f93ed16cf",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5-4-pro/index.html",
+      "pathname": "/models/gpt-5-4-pro/",
+      "bytes": 125812,
+      "sha256": "aef19888c72685899f76e1c3aee50338f0dbf0471c2d5ce4113ab06be77581ac",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5-4/index.html",
+      "pathname": "/models/gpt-5-4/",
+      "bytes": 125787,
+      "sha256": "5e962320eee7444a5fd42ca2b628a7c21afb8c6670b1e406b58c604f6e4edeaa",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5-5-pro/index.html",
+      "pathname": "/models/gpt-5-5-pro/",
+      "bytes": 125851,
+      "sha256": "8e07f6769a2f86d8f628d58b155420ea8aa6795aaecaf7bf27651cb0f90ee386",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5-5/index.html",
+      "pathname": "/models/gpt-5-5/",
+      "bytes": 125501,
+      "sha256": "7c58576d4dc543a763669cd073f4809283f7fcc5b22619d3abb3079f4d529a25",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5-6-luna/index.html",
+      "pathname": "/models/gpt-5-6-luna/",
+      "bytes": 125680,
+      "sha256": "3745bded577120c22118beb23c9795da9fc5dd62102e04de7bd47e47fcc68438",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5-6-sol/index.html",
+      "pathname": "/models/gpt-5-6-sol/",
+      "bytes": 125592,
+      "sha256": "6cbc828a4966ad299cd2bbc6bd3a6b70b0f713a764f2230ff51e7f2bf91c49e3",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5-6-terra/index.html",
+      "pathname": "/models/gpt-5-6-terra/",
+      "bytes": 125730,
+      "sha256": "dfdf753fc328655235708fa85a37b7efe23adc907ed4b461aa4474e52009c1cb",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5-mini/index.html",
+      "pathname": "/models/gpt-5-mini/",
+      "bytes": 127306,
+      "sha256": "b25108f9aabf74b5cc6ad0c233bbd3f2c7c160b164fa35e1a89001799d7fde7e",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5-nano/index.html",
+      "pathname": "/models/gpt-5-nano/",
+      "bytes": 127310,
+      "sha256": "c52b3c1947918442e9b49f2a7cde00c89d011556ba5c280af9e8c7cba9665fa0",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-5/index.html",
+      "pathname": "/models/gpt-5/",
+      "bytes": 126885,
+      "sha256": "b3b60bda6fb4b1a26ce368f0d12def705d729f20ca58048b2059c3dceb42ebb8",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-oss-120b/index.html",
+      "pathname": "/models/gpt-oss-120b/",
+      "bytes": 126994,
+      "sha256": "c45a6b083555ee343aed34b505d92bd323553631c22ea49a30cf85641ff843f4",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/gpt-oss-20b/index.html",
+      "pathname": "/models/gpt-oss-20b/",
+      "bytes": 126928,
+      "sha256": "c84005bca74c4c4b2133b5b8240c3f6b68fd39a441a5cca285671abd6cbe40a4",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/grok-3/index.html",
+      "pathname": "/models/grok-3/",
+      "bytes": 125606,
+      "sha256": "c16d00fe99bbe44f89c7ba1832376fe7238a89d84fa40e360e70d35697d1f129",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/grok-4-1/index.html",
+      "pathname": "/models/grok-4-1/",
+      "bytes": 125775,
+      "sha256": "d5fe8a5104959aa7f1c412eb843b8fab7c57a64d0d08403ee28140720e43bc12",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/grok-4-20-multi-agent/index.html",
+      "pathname": "/models/grok-4-20-multi-agent/",
+      "bytes": 129538,
+      "sha256": "a703253d292627c96cdb8f63f824d5e4a5681714fc25b983e45b69c629351ac9",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/grok-4-20/index.html",
+      "pathname": "/models/grok-4-20/",
+      "bytes": 131962,
+      "sha256": "87fd87a84f794d91eb404b465eea2ba54d751e8024b6cda12f879f740a208dee",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/grok-4-3/index.html",
+      "pathname": "/models/grok-4-3/",
+      "bytes": 124821,
+      "sha256": "e879b0f723d1c6f99701332b0e19122cfe9e86d68075d11b59f982a6a22bd5cc",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/grok-4-5/index.html",
+      "pathname": "/models/grok-4-5/",
+      "bytes": 124819,
+      "sha256": "0cb5a1e897f6cf7c9660a6faac219e36faff75fe7cb06d9d1d1fd7b7c8d073c4",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/grok-4/index.html",
+      "pathname": "/models/grok-4/",
+      "bytes": 125953,
+      "sha256": "93cce1fa66e5bc37ca3441b994228bdba59edfdb3ef309e90a012659ec1b8a44",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/grok-build-0-1/index.html",
+      "pathname": "/models/grok-build-0-1/",
+      "bytes": 130890,
+      "sha256": "c63dc0763a07025d01956cbe6cccc21a80e15f1202e2061ac0b5308e270fde62",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/index.html",
+      "pathname": "/models/",
+      "bytes": 80062,
+      "sha256": "28bc743e302b6079493dff1cad8767d4065833760e7b8d2f4e8537be524ca65d",
+      "source": "src/pages/models/index.astro",
+      "kind": "document",
+      "contractId": "models-index",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/kimi-audio-7b-instruct/index.html",
+      "pathname": "/models/kimi-audio-7b-instruct/",
+      "bytes": 130980,
+      "sha256": "eaccb05f81eaa6ea173322981b757da1f8453e59f8eaf4b7ef2b36e867ac4ef3",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/kimi-dev-72b/index.html",
+      "pathname": "/models/kimi-dev-72b/",
+      "bytes": 132150,
+      "sha256": "023c43d472fa32def2c2618280a7085f8248d8263af1ca3b3c9c3a115c15566a",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/kimi-k2-5/index.html",
+      "pathname": "/models/kimi-k2-5/",
+      "bytes": 130290,
+      "sha256": "5855c4ccbd07ce181ba259c9e4e09a3d817e3d7e0717b4d034a6739c1d95703f",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/kimi-k2-6/index.html",
+      "pathname": "/models/kimi-k2-6/",
+      "bytes": 129506,
+      "sha256": "a01c86c8438ed70e864502ffe313cb0c80fa301af46eaff25a3e88624aa7ffc8",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/kimi-k2-7-code/index.html",
+      "pathname": "/models/kimi-k2-7-code/",
+      "bytes": 139759,
+      "sha256": "baf27e1b10e681bbe6a474aaec982a96b226b8a09fcb35e83bd5b8768c0631ce",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/kimi-k2-base/index.html",
+      "pathname": "/models/kimi-k2-base/",
+      "bytes": 125796,
+      "sha256": "5dbc96f93177f6838a3e6a6847839beeabd21914e74f0893e9ffc10af24ef9ab",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/kimi-k2-instruct-0905/index.html",
+      "pathname": "/models/kimi-k2-instruct-0905/",
+      "bytes": 134554,
+      "sha256": "cf292e5b4df1969e48919db558b1b14741602a4aa4fae0a10786c04018499086",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/kimi-k2-instruct/index.html",
+      "pathname": "/models/kimi-k2-instruct/",
+      "bytes": 124783,
+      "sha256": "a2633308a24ab08eb2928615371a7877ee905e947161ea5709947a0418494ca3",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/kimi-k2-thinking/index.html",
+      "pathname": "/models/kimi-k2-thinking/",
+      "bytes": 129247,
+      "sha256": "be52fd7c451bad83ae8cd0085b0f490b561c6440918f986f426c0b8d0109cdd9",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/kimi-k3/index.html",
+      "pathname": "/models/kimi-k3/",
+      "bytes": 139575,
+      "sha256": "eba473059ab094d61ecb40af9a765416d36e9935f4a8ce5efb29f6e88a4d67c1",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/kimi-linear-48b-a3b-instruct/index.html",
+      "pathname": "/models/kimi-linear-48b-a3b-instruct/",
+      "bytes": 133633,
+      "sha256": "605a33c121efbd0aa73073d845e1e751118221c3223641be0c415a57e24540a7",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/kimi-vl-a3b-thinking-2506/index.html",
+      "pathname": "/models/kimi-vl-a3b-thinking-2506/",
+      "bytes": 132543,
+      "sha256": "98297d585ab5a597d1c54c4bebe070fa7d48f10f6421d19100285141840179ab",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/llama-2-13b-chat/index.html",
+      "pathname": "/models/llama-2-13b-chat/",
+      "bytes": 122660,
+      "sha256": "993c14efc8d3f6b53f1b409b03e31e1af61b3549f28df671b227ca017ed058c8",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/llama-2-70b-chat/index.html",
+      "pathname": "/models/llama-2-70b-chat/",
+      "bytes": 131157,
+      "sha256": "fc579e64ad2cd42951eb16a10d7e74fc5145510f3f18a51ca65acb0e1a615b67",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/llama-3-1-405b-instruct/index.html",
+      "pathname": "/models/llama-3-1-405b-instruct/",
+      "bytes": 121384,
+      "sha256": "efdbf59783394e9c3d35721959ca399d3148c1649e17f33c902584d8d19d2fb7",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/llama-3-1-70b-instruct/index.html",
+      "pathname": "/models/llama-3-1-70b-instruct/",
+      "bytes": 121339,
+      "sha256": "373ea4829d1f31a2ba3c84fc3d4f2a1ee30bfaf0c1161e2a801a08883128e51b",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/llama-3-1-8b-instruct/index.html",
+      "pathname": "/models/llama-3-1-8b-instruct/",
+      "bytes": 121272,
+      "sha256": "c91fd057fe27941e061c5c6ca017279013f8a717cbdd7081bcd8aa62b6d27998",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/llama-3-2-11b-vision-instruct/index.html",
+      "pathname": "/models/llama-3-2-11b-vision-instruct/",
+      "bytes": 121383,
+      "sha256": "65677555a58690f4148369e1c0ec147ae42159583e42dcd4f2d82be17ef1a7e1",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/llama-3-3-70b-instruct/index.html",
+      "pathname": "/models/llama-3-3-70b-instruct/",
+      "bytes": 121342,
+      "sha256": "ec37b4cf823248042cef52bbaf3990be078e85adedaa1c2391f16684c20f3001",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/llama-3-70b-instruct/index.html",
+      "pathname": "/models/llama-3-70b-instruct/",
+      "bytes": 133638,
+      "sha256": "5d159630afc218436c3c9cc45ff4603b152353ee87183d0df9f6af56d97f6866",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/llama-3-8b-instruct/index.html",
+      "pathname": "/models/llama-3-8b-instruct/",
+      "bytes": 133537,
+      "sha256": "07298f8ddd419a2900ad6001efcf2650854a7429000f094baa205299e31cf743",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/llama-4-maverick-17b-128e/index.html",
+      "pathname": "/models/llama-4-maverick-17b-128e/",
+      "bytes": 122549,
+      "sha256": "488462c10909634fca4a69be4f1d1c9d9cd15b53fec7190ef5043c48a4d675c7",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/llama-4-scout-17b-16e/index.html",
+      "pathname": "/models/llama-4-scout-17b-16e/",
+      "bytes": 122461,
+      "sha256": "dabccfc0e1a519bb24266d35ff194b6d876fc78e723b04386200770e2d4adf7e",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/magistral-medium/index.html",
+      "pathname": "/models/magistral-medium/",
+      "bytes": 127259,
+      "sha256": "bc1838456d7d4f521519bce355bedc78c7a200dd47d1de41d16f8323c3c13b83",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/magistral-small/index.html",
+      "pathname": "/models/magistral-small/",
+      "bytes": 134403,
+      "sha256": "8c9924ed6b361773024bb1412749d1dc97143994fd25e14e9741ca9be68f104b",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/minimax-m1/index.html",
+      "pathname": "/models/minimax-m1/",
+      "bytes": 128862,
+      "sha256": "5981a83a4efc1176df724ab39adc02ef6b9e1b4e773c5153e7ccccf62d201c5d",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/minimax-m2-7/index.html",
+      "pathname": "/models/minimax-m2-7/",
+      "bytes": 130098,
+      "sha256": "8aa56fa762af159bc2f3d666298271c201289e0b403f4c83fe94a1bef291d3e7",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/minimax-m2/index.html",
+      "pathname": "/models/minimax-m2/",
+      "bytes": 129553,
+      "sha256": "0200478e23eb7c444139e2de42d83a92967467fb7f54dfec267c6d1ec69ccdaf",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/minimax-m3/index.html",
+      "pathname": "/models/minimax-m3/",
+      "bytes": 145365,
+      "sha256": "dbe39ded1d247a94214beaacffccad7e70a0cd49984aca4659c3cb784bd92c00",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/mistral-7b-instruct-v0-3/index.html",
+      "pathname": "/models/mistral-7b-instruct-v0-3/",
+      "bytes": 121058,
+      "sha256": "2a3de54d1a647b77ec4bcd1a0d68c34b85d127dec4ebe2fc93dbe6f9cd4aa49f",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/mistral-large-3/index.html",
+      "pathname": "/models/mistral-large-3/",
+      "bytes": 153624,
+      "sha256": "a6aa3891b71916352b0bc185041347718a901318d49140adf2c6b6b1ccdfc819",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/mistral-medium-3-5/index.html",
+      "pathname": "/models/mistral-medium-3-5/",
+      "bytes": 139119,
+      "sha256": "01b2d7b02ceacca964ce5cefc235a3e7e185345cd87f833044923092afbbaecb",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/mistral-medium-3/index.html",
+      "pathname": "/models/mistral-medium-3/",
+      "bytes": 130158,
+      "sha256": "d2356e5f1b4ba01543514369d9556785301a15ec472af8a105cdc26e7517ed2b",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/mistral-small-24b-instruct-2501/index.html",
+      "pathname": "/models/mistral-small-24b-instruct-2501/",
+      "bytes": 121486,
+      "sha256": "7b3692c82c9319ecdab47965cbdb250c7315dd2ad7b0ee2d5d9ee033868ca2dc",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/mistral-small-4/index.html",
+      "pathname": "/models/mistral-small-4/",
+      "bytes": 142527,
+      "sha256": "5f4fc388802b871dc71e70aaf0b83b4137efeeb96f4b2e6751c284562ca7f1ed",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/moonlight-16b-a3b-instruct/index.html",
+      "pathname": "/models/moonlight-16b-a3b-instruct/",
+      "bytes": 131621,
+      "sha256": "0e4cf4f1d97f3223e43ac7c7efd304a58dd02b7317b2c15f5808d1e1a96d0a19",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/muse-spark-1-1/index.html",
+      "pathname": "/models/muse-spark-1-1/",
+      "bytes": 124689,
+      "sha256": "92940c21ae9e9b0c0ffc555ba4a9d891fc0e83a72777276fa538fdfd34df8d08",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/muse-spark/index.html",
+      "pathname": "/models/muse-spark/",
+      "bytes": 127266,
+      "sha256": "b0a9c49d434af8aebd454a2d97d31527e71ad47c48b6f930b88e7e81e79a6aca",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/o1/index.html",
+      "pathname": "/models/o1/",
+      "bytes": 125112,
+      "sha256": "19a5f222c4b4dc1bb37d65f9d2fed44061a148b9604595a5e915a6bf3187f5dd",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/o3/index.html",
+      "pathname": "/models/o3/",
+      "bytes": 125113,
+      "sha256": "e94033de817a2cd9bfc6ab6b09e2ee244ce633561c462f8451a64c7ea550413d",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/o4-mini/index.html",
+      "pathname": "/models/o4-mini/",
+      "bytes": 125379,
+      "sha256": "2e4eed2c71f4d2bdaf7d7412e36d966c9d9244676f50d8022ed9a536492cb41e",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen-7b-chat/index.html",
+      "pathname": "/models/qwen-7b-chat/",
+      "bytes": 123184,
+      "sha256": "d4aa86801879d15095234fcea0c427484c1e55ac013600f097f17c9438781e26",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-5-0-5b-instruct/index.html",
+      "pathname": "/models/qwen2-5-0-5b-instruct/",
+      "bytes": 134183,
+      "sha256": "f7f23dbbdbf857143f4ba72bc2dd669573f2919942e25a5fdc5e67017385f4f3",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-5-0-5b/index.html",
+      "pathname": "/models/qwen2-5-0-5b/",
+      "bytes": 134758,
+      "sha256": "855c66ded7d9a05ec182ee3932c911f9538e908be67f352b65ddda44bc945798",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-5-1-5b-instruct/index.html",
+      "pathname": "/models/qwen2-5-1-5b-instruct/",
+      "bytes": 134427,
+      "sha256": "f9858113f3aadef8d9906a91e099e829c0ad7952c306cca33547ff7abbe837bc",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-5-1-5b/index.html",
+      "pathname": "/models/qwen2-5-1-5b/",
+      "bytes": 133857,
+      "sha256": "30733dafe9be805eadc6ee77db42f456eb006f52978c7c950500ef654af12202",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-5-14b-instruct/index.html",
+      "pathname": "/models/qwen2-5-14b-instruct/",
+      "bytes": 134340,
+      "sha256": "4502ef141a35293b28294e7166ec68a4e13f4263443f4a27fbf9ce6876cf7a5e",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-5-14b/index.html",
+      "pathname": "/models/qwen2-5-14b/",
+      "bytes": 134717,
+      "sha256": "ae10927b2b337595b4d95bc90049a30d3a84a8c75187b654e6fc9e977e1abd8a",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-5-32b-instruct/index.html",
+      "pathname": "/models/qwen2-5-32b-instruct/",
+      "bytes": 134544,
+      "sha256": "88001e4a2ccc19a70960e4ac7059212777f6a03ad54822491b5243bc617da7e0",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-5-32b/index.html",
+      "pathname": "/models/qwen2-5-32b/",
+      "bytes": 134717,
+      "sha256": "30239f38cd69e3ffee9dc86b8c82864374c4aaf7347e5c0e8027e600038b7677",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-5-3b-instruct/index.html",
+      "pathname": "/models/qwen2-5-3b-instruct/",
+      "bytes": 164596,
+      "sha256": "4d26f7f28de307b671c35e59688f6626dfdf17a9fb0b831399ba66884205a0bb",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-5-3b/index.html",
+      "pathname": "/models/qwen2-5-3b/",
+      "bytes": 133103,
+      "sha256": "2c55c2f91e925c5c190c2f9328039a04421e71ab5ee04663bb8ea711e9df9eb7",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-5-72b-instruct/index.html",
+      "pathname": "/models/qwen2-5-72b-instruct/",
+      "bytes": 133971,
+      "sha256": "509106df98bee6e61b9752f0e68cefddc2f7393e786b3473a2840d3ac03cb474",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-5-72b/index.html",
+      "pathname": "/models/qwen2-5-72b/",
+      "bytes": 134118,
+      "sha256": "55de4cd588eb3a07001ecfa2c3b14b3ec0325ae3e7301929daac888ec4a695ba",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-5-7b-instruct/index.html",
+      "pathname": "/models/qwen2-5-7b-instruct/",
+      "bytes": 161234,
+      "sha256": "04057c39fec29eb74c5e51cf92a0fb3d83c61ed6ccd66da7019a0ea2c6b321c2",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-5-7b/index.html",
+      "pathname": "/models/qwen2-5-7b/",
+      "bytes": 134665,
+      "sha256": "60bd98b48bf91879a2329e8fba67c53ebc391da4898d27e5bb54f000a9eecdcd",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen2-72b-instruct/index.html",
+      "pathname": "/models/qwen2-72b-instruct/",
+      "bytes": 130877,
+      "sha256": "635d7383cfa24186ccee5873bc73df415d7e3212a191810df7ffe68f2bcabfa7",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-1-7b/index.html",
+      "pathname": "/models/qwen3-1-7b/",
+      "bytes": 170413,
+      "sha256": "43ccb7d000fac6a35eb175d3d6df6a5ee7efb81f4526d1cff1422ef57260cc06",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-235b-a22b/index.html",
+      "pathname": "/models/qwen3-235b-a22b/",
+      "bytes": 127095,
+      "sha256": "63eddf33ce095f88555ca1abd6de6637ce6dc25d6440d3ac8ca79c776e57efb1",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-30b-a3b/index.html",
+      "pathname": "/models/qwen3-30b-a3b/",
+      "bytes": 121309,
+      "sha256": "84cbdd2b9cc3f38f836961a727f98021fa31d7cdcac15329f80a3c22bdb139f6",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-32b/index.html",
+      "pathname": "/models/qwen3-32b/",
+      "bytes": 123151,
+      "sha256": "67aa315856c0891aaeb4aa721e0c8c3fdbb51bdc863936f4906a13cff6f56c12",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-5-27b/index.html",
+      "pathname": "/models/qwen3-5-27b/",
+      "bytes": 124206,
+      "sha256": "57cbc9298b7835b679e64721f6f0257fe9cd459e94649ce48b5d80205861c951",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-6-27b/index.html",
+      "pathname": "/models/qwen3-6-27b/",
+      "bytes": 135235,
+      "sha256": "3c7a10dd6a5f45be89e43502041d3b542e6e2d88697f4f0d4f0c77c508cd97e8",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-6-35b-a3b/index.html",
+      "pathname": "/models/qwen3-6-35b-a3b/",
+      "bytes": 138642,
+      "sha256": "c9863f78aa88978fa36d01d990a330c1da9789141c3585644651c5db01f3d5fe",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-6-flash/index.html",
+      "pathname": "/models/qwen3-6-flash/",
+      "bytes": 128295,
+      "sha256": "cb53232273dcd63bcf03ce331e9bceb17c5287d2b642d47d44c7376abda7f3ae",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-6-max-preview/index.html",
+      "pathname": "/models/qwen3-6-max-preview/",
+      "bytes": 126073,
+      "sha256": "bd864c39c23584620a3647ec2f13087da22f8814aab63e90fb7b090dd995ef6c",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-6-plus/index.html",
+      "pathname": "/models/qwen3-6-plus/",
+      "bytes": 127765,
+      "sha256": "1ec6a8a46762c9296dd9d59e33235c5beb56834597c012b5151904bec04f30aa",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-7-max/index.html",
+      "pathname": "/models/qwen3-7-max/",
+      "bytes": 130157,
+      "sha256": "4b4f85eb2666b4e2af2b8b675dd5599e2a9fd1a523049c1dbf08ef9674ee4fe4",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-7-plus/index.html",
+      "pathname": "/models/qwen3-7-plus/",
+      "bytes": 130743,
+      "sha256": "40495cef69570a3bb66dd58626cf8ba112939adb237239590cfe37588ebd2e5d",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-8b/index.html",
+      "pathname": "/models/qwen3-8b/",
+      "bytes": 123285,
+      "sha256": "379f47a44b431a44310e97625e3c6f272687b31fe8c4b1cfec4543423edc5f9b",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-coder-480b-a35b-instruct/index.html",
+      "pathname": "/models/qwen3-coder-480b-a35b-instruct/",
+      "bytes": 133767,
+      "sha256": "d9e1a382bdd9fcd9c54840d3f5b42919e3ff64b92b4fd7bae83bbb59f42de09d",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-max/index.html",
+      "pathname": "/models/qwen3-max/",
+      "bytes": 131212,
+      "sha256": "68c7a34c73b9eb4c7dc75984b9f34cd9944c80237aa27bcb7871e38023ecf901",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-next-80b-a3b-instruct/index.html",
+      "pathname": "/models/qwen3-next-80b-a3b-instruct/",
+      "bytes": 133731,
+      "sha256": "a68484442ed234426871efe5b27933f017d94d13eedbc83bb77aff5ee8abda63",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/qwen3-vl-235b-a22b-instruct/index.html",
+      "pathname": "/models/qwen3-vl-235b-a22b-instruct/",
+      "bytes": 132418,
+      "sha256": "726d44710b3fad383ed26a9e61a7b95c09a5e88a7141c533d97571cdb161b3fe",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/text-davinci-003/index.html",
+      "pathname": "/models/text-davinci-003/",
+      "bytes": 126175,
+      "sha256": "512398b97915bda2294254ef26e67690e2ddf71671b11f01772673ff1bd06c9a",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "models/vicuna-13b/index.html",
+      "pathname": "/models/vicuna-13b/",
+      "bytes": 121446,
+      "sha256": "10895d273db34c6a8192c81852da77f5a1ea768655b6afd6269d007e7caeaad0",
+      "source": "src/pages/models/[id].astro",
+      "kind": "document",
+      "contractId": "model-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/adaplanner/index.html",
+      "pathname": "/papers/adaplanner/",
+      "bytes": 102610,
+      "sha256": "9c3627f93a3dddb7d6483eb69b5cafb9db66ee3618b9accc60fac13c1a19553e",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/agentbench/index.html",
+      "pathname": "/papers/agentbench/",
+      "bytes": 116131,
+      "sha256": "ebae709580052a65ea38591b668a36a0074790cb61c74cdd5003a1d2db7704f9",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/agentboard/index.html",
+      "pathname": "/papers/agentboard/",
+      "bytes": 116207,
+      "sha256": "73600aa5569b3499b8069ad182f5481dd53ea4c58698ae958ccd3334f1cbc026",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/agentverse/index.html",
+      "pathname": "/papers/agentverse/",
+      "bytes": 108796,
+      "sha256": "0a18212489a5ea41ef1d7df416f418c79093a4bb3112e9409d6187ce6b062647",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/appworld/index.html",
+      "pathname": "/papers/appworld/",
+      "bytes": 113747,
+      "sha256": "9e16c491a260b34c3c313ce0193ebe449debb01d5082778ce5f66d80232371f7",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/camel/index.html",
+      "pathname": "/papers/camel/",
+      "bytes": 103926,
+      "sha256": "b43a427185be1684beba9d8ee7f7e90ce502fe296b165b79dce31adf8df8a65a",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/chameleon/index.html",
+      "pathname": "/papers/chameleon/",
+      "bytes": 108649,
+      "sha256": "22a3bc8c389f09a2821ced042775f0eb177461821f99c06ab4a63df46b5bc250",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/critic/index.html",
+      "pathname": "/papers/critic/",
+      "bytes": 111809,
+      "sha256": "2e2f17b7d8afc3df63bfcc31044dd52f34a3404c18271379e141100705edc997",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/dspy/index.html",
+      "pathname": "/papers/dspy/",
+      "bytes": 107783,
+      "sha256": "3bd41f370df5c800f639966cdf3cd3397c97b3807495a02959e70b8e01d968d3",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/expel/index.html",
+      "pathname": "/papers/expel/",
+      "bytes": 108391,
+      "sha256": "8d0c3747147b1296a5e5d7ac433792279125b8ee77b71d4181bb8c4ef094e3ab",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/generative-agents/index.html",
+      "pathname": "/papers/generative-agents/",
+      "bytes": 103825,
+      "sha256": "3d75204cdd2955d75619984ed11eba4f8c3fc7076989d4a3a6eaada690ea0b3d",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/index.html",
+      "pathname": "/papers/",
+      "bytes": 908919,
+      "sha256": "bb25488961147b33ddb34854df4e5cb0f9968e3e2f3e9ae91ee3ad124c432163",
+      "source": "src/pages/papers/index.astro",
+      "kind": "document",
+      "contractId": "papers-index",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/metagpt/index.html",
+      "pathname": "/papers/metagpt/",
+      "bytes": 103646,
+      "sha256": "410e570709161786626111b05977c883375e116b012d71f140c08394564472f9",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/openhands/index.html",
+      "pathname": "/papers/openhands/",
+      "bytes": 109032,
+      "sha256": "85605095d8c682efd62ed59dc063eacf5785c8cbf29b6d45fbe2a6a7e8a8150c",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/osworld/index.html",
+      "pathname": "/papers/osworld/",
+      "bytes": 117630,
+      "sha256": "9aff993dd934a4ff2874770f358b8bc8e8b7623a23dcb6b6fb6015e92f534225",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/reflexion/index.html",
+      "pathname": "/papers/reflexion/",
+      "bytes": 103641,
+      "sha256": "b5ee5548234ec69c14e6bfa4d556a2da5de1a8ba5b5e12efe95f6f6a668d9b85",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/seed/index.html",
+      "pathname": "/papers/seed/",
+      "bytes": 176121,
+      "sha256": "3d585c4cbfc95ab9fc7938693af33362dc6927d203ad0cc57ba9619eec681828",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/self-refine/index.html",
+      "pathname": "/papers/self-refine/",
+      "bytes": 108545,
+      "sha256": "334b253ef571a20a8ea16b1ee2f35b248e1c9ac0aaea8df49807c1090b69cbb6",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/swe-agent/index.html",
+      "pathname": "/papers/swe-agent/",
+      "bytes": 103683,
+      "sha256": "dade28cbfdfbb198e77c6433c6b6b8588bbdc1a537dece5a9fee355e835dffb1",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/swe-bench/index.html",
+      "pathname": "/papers/swe-bench/",
+      "bytes": 113284,
+      "sha256": "93c819ac8a3ca71c45adb628729c0aad4969d64883084c5774630dc3335a43c2",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/voyager/index.html",
+      "pathname": "/papers/voyager/",
+      "bytes": 103596,
+      "sha256": "ea427101cd6214b8c2c1d705968af66584731176ec7511930c85d4ccbd3dd0b3",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "papers/webarena/index.html",
+      "pathname": "/papers/webarena/",
+      "bytes": 116250,
+      "sha256": "120df778adb3be6c3a62dce795d72917c05586f16f40c60e3d77608a850e1ef0",
+      "source": "src/pages/papers/[id].astro",
+      "kind": "document",
+      "contractId": "paper-detail",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/flow/alfworld/index.html",
+      "pathname": "/research/seed-openevo/flow/alfworld/",
+      "bytes": 52160,
+      "sha256": "bacddd62dfc94aa33d77449de63ef7d74bd415dc043466dec4849243e2c2f3eb",
+      "source": "src/pages/research/seed-openevo/flow/alfworld.astro",
+      "kind": "document",
+      "contractId": "flow-alfworld",
+      "owners": [
+        "C03",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/flow/base-model/index.html",
+      "pathname": "/research/seed-openevo/flow/base-model/",
+      "bytes": 29816,
+      "sha256": "75e82465e5bfe604af7191562a3298acef18c79e08677d663c6fa2eea9ddfdbb",
+      "source": "src/pages/research/seed-openevo/flow/base-model/index.astro",
+      "kind": "redirect",
+      "contractId": "flow-base-model",
+      "owners": [
+        "C03",
+        "X806"
+      ],
+      "redirectTo": "/models/qwen2-5-3b-instruct/"
+    },
+    {
+      "file": "research/seed-openevo/flow/benchmarks/index.html",
+      "pathname": "/research/seed-openevo/flow/benchmarks/",
+      "bytes": 39241,
+      "sha256": "44cba0ef718cfcad91ae19545962052f767b9f4bf83ce77fcec1e0f17ee88688",
+      "source": "src/pages/research/seed-openevo/flow/benchmarks.astro",
+      "kind": "document",
+      "contractId": "flow-benchmarks",
+      "owners": [
+        "C03",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/flow/index.html",
+      "pathname": "/research/seed-openevo/flow/",
+      "bytes": 49308,
+      "sha256": "b75450f296af3147782f81128d00fa20d21fc0388630ea278ee9d2a0dd28626a",
+      "source": "src/pages/research/seed-openevo/flow/index.astro",
+      "kind": "document",
+      "contractId": "flow",
+      "owners": [
+        "C03",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/flow/loops/index.html",
+      "pathname": "/research/seed-openevo/flow/loops/",
+      "bytes": 51970,
+      "sha256": "d437f2909dcbb94d3067f1e81e0e0e4582dfa2b73da312e347fd2d899f7d8508",
+      "source": "src/pages/research/seed-openevo/flow/loops.astro",
+      "kind": "document",
+      "contractId": "flow-loops",
+      "owners": [
+        "C03",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/flow/openevo/index.html",
+      "pathname": "/research/seed-openevo/flow/openevo/",
+      "bytes": 66460,
+      "sha256": "f729bf964affa8ca9acc2c28f76df8dedafee24ee715946bcf5a9f84fdbd1d93",
+      "source": "src/pages/research/seed-openevo/flow/openevo.astro",
+      "kind": "document",
+      "contractId": "flow-openevo",
+      "owners": [
+        "C03",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/flow/sd-lora/index.html",
+      "pathname": "/research/seed-openevo/flow/sd-lora/",
+      "bytes": 86820,
+      "sha256": "0d7a2d2f897c56c2a47da7c46103227c366eadef3725e6d7c95b73eb14438096",
+      "source": "src/pages/research/seed-openevo/flow/sd-lora/index.astro",
+      "kind": "document",
+      "contractId": "flow-sd-lora",
+      "owners": [
+        "C03",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/flow/seed/index.html",
+      "pathname": "/research/seed-openevo/flow/seed/",
+      "bytes": 66283,
+      "sha256": "87238055b7795dc8377569ff2e6e58d9c8353a849912ab4123ef3903ed370c36",
+      "source": "src/pages/research/seed-openevo/flow/seed.astro",
+      "kind": "document",
+      "contractId": "flow-seed",
+      "owners": [
+        "C03",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/flow/server/index.html",
+      "pathname": "/research/seed-openevo/flow/server/",
+      "bytes": 55961,
+      "sha256": "1e77a0756743d6dfdbdc0ef01d2b37e374a0b0551476dbf863467613fb70dc40",
+      "source": "src/pages/research/seed-openevo/flow/server.astro",
+      "kind": "document",
+      "contractId": "flow-server",
+      "owners": [
+        "C03",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/flow/webshop/index.html",
+      "pathname": "/research/seed-openevo/flow/webshop/",
+      "bytes": 114245,
+      "sha256": "c2b13e959fc84b148149d8e91a1d0003504647f31fc5502cbab2b87d3c227db2",
+      "source": "src/pages/research/seed-openevo/flow/webshop.astro",
+      "kind": "document",
+      "contractId": "flow-webshop",
+      "owners": [
+        "C03",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/briefing/index.html",
+      "pathname": "/research/seed-openevo/study/briefing/",
+      "bytes": 188703,
+      "sha256": "011f7de87f3bc2ca96b9b9719607cbb5ef73ce7c9676ac35f47cff43a4e4564e",
+      "source": "src/pages/research/seed-openevo/study/briefing/index.astro",
+      "kind": "document",
+      "contractId": "study-briefing",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/briefing/technical-notes/index.html",
+      "pathname": "/research/seed-openevo/study/briefing/technical-notes/",
+      "bytes": 74511,
+      "sha256": "9f6300f4facf0ae7abad8695fac76e8eee2ad8b4d8133622e3f7d3439350ae1d",
+      "source": "src/pages/research/seed-openevo/study/briefing/technical-notes/index.astro",
+      "kind": "document",
+      "contractId": "study-briefing-technical",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/archive/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/archive/",
+      "bytes": 45096,
+      "sha256": "9098c9b180616e5220962f81b11bab062fb1043f474f6217175d6b95f75f8994",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/archive/index.astro",
+      "kind": "document",
+      "contractId": "capability-archive",
+      "owners": [
+        "B03",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/",
+      "bytes": 201917,
+      "sha256": "9eccd04590388a2d2522628ac4b3aab6548cfacdb126d0ce704d30b0cd3e61d0",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/index.astro",
+      "kind": "document",
+      "contractId": "capability-bounded-effective-state-gdr",
+      "owners": [
+        "B02",
+        "C02",
+        "X805",
+        "X812"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/first-run/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/first-run/",
+      "bytes": 60663,
+      "sha256": "92c577da41d9ce699cce0bafc99adfa4a4af4d1cdbacce8516a33f9aaed5fe3e",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/first-run/index.astro",
+      "kind": "document",
+      "contractId": "capability-first-run",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/",
+      "bytes": 134864,
+      "sha256": "62536009df218aa4cb64908abf38cef773173e5b5589c6d03a89716ec7e8c6d2",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/index.astro",
+      "kind": "document",
+      "contractId": "capability-gated-delta",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/gdr-directapply/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/gdr-directapply/",
+      "bytes": 42868,
+      "sha256": "d3a50b1e72af231eb0a8846307c4b2214ef7d2c8ddec740928682feb6e8d1ba2",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/gdr-directapply/index.astro",
+      "kind": "document",
+      "contractId": "capability-gdr",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/",
+      "bytes": 57169,
+      "sha256": "e3aa6de323a1e22bb5486414902c79714dbc0d36eb57f41d57dc2b8b2498ee74",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/index.astro",
+      "kind": "document",
+      "contractId": "capability-home",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/mechanism-1-0/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/mechanism-1-0/",
+      "bytes": 82077,
+      "sha256": "94488fee72dd91eef068cb90cc4e80cb240f444717434b10bb1f92f3ebec2a63",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/mechanism-1-0/index.astro",
+      "kind": "document",
+      "contractId": "capability-mechanism",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/",
+      "bytes": 66905,
+      "sha256": "a012ceacf2a84d542fcd7916dac81fa6d23db02de1a975b0fe1ba562140ecedf",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/index.astro",
+      "kind": "document",
+      "contractId": "capability-successor-exploration",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/",
+      "bytes": 49685,
+      "sha256": "0536b999c7e00a79526cc645af54dd8a5d6559e6d4f986303ff6a0548afa681c",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0.astro",
+      "kind": "document",
+      "contractId": "capability-successor-harness",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/openevo-2-0/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/openevo-2-0/",
+      "bytes": 80273,
+      "sha256": "55317eb5df8be8bf0319f3c074ae0f87a6c8a28fafa18e5afdad0a6cf1e3fc3d",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/openevo-2-0/index.astro",
+      "kind": "document",
+      "contractId": "capability-successor",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/openevo-2-0/report/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/openevo-2-0/report/",
+      "bytes": 67979,
+      "sha256": "e7b046e9ee8ad1f1db9a82bd63777faa049c9ade4a290cd65dfbc9862165a07d",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/openevo-2-0/report/index.astro",
+      "kind": "document",
+      "contractId": "capability-successor-report",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/q17-directapply-analysis/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/",
+      "bytes": 110573,
+      "sha256": "ccf6089d75b476511fcee5aac83b61bb8b35fc2c25fc68c25d8ba88062ce7780",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/index.astro",
+      "kind": "document",
+      "contractId": "capability-q17-directapply-analysis",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/",
+      "bytes": 89546,
+      "sha256": "44571f5a8e8bd34566ddd9c068102a479b589aee66eedb1e404d4951f0347fce",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.astro",
+      "kind": "document",
+      "contractId": "capability-q17-frontier",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/sd-lora-bounded-acceleration/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/sd-lora-bounded-acceleration/",
+      "bytes": 54172,
+      "sha256": "ed6f9bb18c3c0041af65962ad3d7daf07ed0c259eadf2e5bf904097b8df51b48",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-bounded-acceleration/index.astro",
+      "kind": "document",
+      "contractId": "capability-sd-lora-bounded-acceleration",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/",
+      "bytes": 49025,
+      "sha256": "053591f09e00144c4dc61f3652d814f67b78b7e5d84155beaeed00cfee4466ac",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/index.astro",
+      "kind": "document",
+      "contractId": "capability-sd-lora-bounded-state",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/sd-lora-equivalence/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/",
+      "bytes": 54329,
+      "sha256": "e96923cb9888590dfe224af31dd8da99d03aad9c654de06131dcb2c2623f7f6d",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/index.astro",
+      "kind": "document",
+      "contractId": "capability-sd-lora-equivalence",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/sd-lora-future-learning/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/sd-lora-future-learning/",
+      "bytes": 39328,
+      "sha256": "83cdcc7d78b01d5a13fae6ae69416e3f371d4be05a1c62adcfcea813aa5beabb",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-future-learning/index.astro",
+      "kind": "document",
+      "contractId": "capability-sd-lora-future-learning",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/sd-lora-history-novelty/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/sd-lora-history-novelty/",
+      "bytes": 39272,
+      "sha256": "db62efa75e7f5e3d54a0d89bce48a22a5a238770fdd92602faee7983f7dbb353",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-history-novelty/index.astro",
+      "kind": "document",
+      "contractId": "capability-sd-lora-history-novelty",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/sd-lora-history/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/sd-lora-history/",
+      "bytes": 62100,
+      "sha256": "31ee48280a39e327ca643be5684ae07b89c34a56ee0611693da5394824a6c72a",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-history/index.astro",
+      "kind": "document",
+      "contractId": "capability-sd-lora-history",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/sd-lora-present-function/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/sd-lora-present-function/",
+      "bytes": 39214,
+      "sha256": "01f4a2b13a09386eec6c3b8a9c6a646e48e4bae2362ac5424a72a3edd1411e23",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-present-function/index.astro",
+      "kind": "document",
+      "contractId": "capability-sd-lora-present-function",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/sd-lora-scaling/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/sd-lora-scaling/",
+      "bytes": 65783,
+      "sha256": "69c5a00b7ce13312816ddc99d6462182a7a86e15f02fa8c338b7bd35917abfe5",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-scaling/index.astro",
+      "kind": "document",
+      "contractId": "capability-sd-lora-scaling",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/stage1-evolution/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/stage1-evolution/",
+      "bytes": 66854,
+      "sha256": "03367726ef27d9788c9ecbaa79614fc149ea1c80dae482e9c9c07916d784e775",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/stage1-evolution/index.astro",
+      "kind": "document",
+      "contractId": "capability-stage1-evolution",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/stage1-learning-objectives/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/",
+      "bytes": 46693,
+      "sha256": "d9461a14614db57f3290f67c1d4b0ebceeea274db3743c530d2505c9201dabd4",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/index.astro",
+      "kind": "document",
+      "contractId": "capability-stage1-learning-objectives",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/stage1-previous/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/stage1-previous/",
+      "bytes": 40397,
+      "sha256": "9fb725a6c6da6dc30b679c76ad3fb55b0b0c31a603454ce1eddf87bb082026bc",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/stage1-previous/index.astro",
+      "kind": "document",
+      "contractId": "capability-stage1-previous",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/stage2-256-window/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/stage2-256-window/",
+      "bytes": 77968,
+      "sha256": "bbbbe790f0986544ebcafb39b7f48f64a685bf3dde3d3ea763963c951731ac1a",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/stage2-256-window/index.astro",
+      "kind": "document",
+      "contractId": "capability-stage2-window",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/stage2-7b-analysis/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/",
+      "bytes": 45799,
+      "sha256": "1a4a085473f95c648e4cf265f3aa2350f5e7ccd41174ad89dbda6fab41f8e227",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/index.astro",
+      "kind": "document",
+      "contractId": "capability-stage2-analysis",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/stage2-ceiling/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/stage2-ceiling/",
+      "bytes": 58650,
+      "sha256": "f51a841532394084af14cd3048be362a3729af752a061e6cf4e5302379aa9f49",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/stage2-ceiling/index.astro",
+      "kind": "document",
+      "contractId": "capability-stage2-ceiling",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/text-memory/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/text-memory/",
+      "bytes": 47915,
+      "sha256": "a6b5be29c41b103800d067244b8d3c32429e83f0cc9b283b650ea691c84d40ea",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/text-memory/index.astro",
+      "kind": "document",
+      "contractId": "capability-text-memory",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/capability-exploration/vanilla-sd-lora/index.html",
+      "pathname": "/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/",
+      "bytes": 31920,
+      "sha256": "d9480c44340960c441587331f3d0605ebd8d5bdec8ca456e7d5975dc9002757f",
+      "source": "src/pages/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/index.astro",
+      "kind": "redirect",
+      "contractId": "capability-vanilla-sd-lora",
+      "owners": [
+        "C03",
+        "X806"
+      ],
+      "redirectTo": "/research/seed-openevo/flow/sd-lora/"
+    },
+    {
+      "file": "research/seed-openevo/study/design/index.html",
+      "pathname": "/research/seed-openevo/study/design/",
+      "bytes": 29679,
+      "sha256": "56ee1552b82a832de965bb5026d3107fdf664d11c38fb53e40f5275dc56f17d4",
+      "source": "src/pages/research/seed-openevo/study/design/index.astro",
+      "kind": "redirect",
+      "contractId": "study-design",
+      "owners": [
+        "A02",
+        "X806"
+      ],
+      "redirectTo": "/research/seed-openevo/flow/"
+    },
+    {
+      "file": "research/seed-openevo/study/index.html",
+      "pathname": "/research/seed-openevo/study/",
+      "bytes": 55519,
+      "sha256": "53703742780d72a7bc82343b3506466f5fd5272ffaf7ec3aa6ba6ed7f555f819",
+      "source": "src/pages/research/seed-openevo/study/index.astro",
+      "kind": "document",
+      "contractId": "study",
+      "owners": [
+        "B01",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/minimax-teacher/index.html",
+      "pathname": "/research/seed-openevo/study/minimax-teacher/",
+      "bytes": 54960,
+      "sha256": "6a48d2443897143f72b69e02d912d028a58b566522d23ce2a6ddb3bddb9c2a4c",
+      "source": "src/pages/research/seed-openevo/study/minimax-teacher/index.astro",
+      "kind": "document",
+      "contractId": "minimax-teacher",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/3b-minimax-analysis/index.html",
+      "pathname": "/research/seed-openevo/study/results/3b-minimax-analysis/",
+      "bytes": 52919,
+      "sha256": "e5a10293f8a6186cf760ea48e7237d5f6c8c7c834d3640e5323d547d8642b527",
+      "source": "src/pages/research/seed-openevo/study/results/3b-minimax-analysis/index.astro",
+      "kind": "document",
+      "contractId": "result-3b-minimax",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/3b-self-analysis/index.html",
+      "pathname": "/research/seed-openevo/study/results/3b-self-analysis/",
+      "bytes": 53132,
+      "sha256": "dbcbc0796d5b16558965a032088260d37eb36fdeaa681f74ac642c71be30d416",
+      "source": "src/pages/research/seed-openevo/study/results/3b-self-analysis/index.astro",
+      "kind": "document",
+      "contractId": "result-3b-self",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/7b-minimax-analysis/index.html",
+      "pathname": "/research/seed-openevo/study/results/7b-minimax-analysis/",
+      "bytes": 52981,
+      "sha256": "4b4159747d3b3f5d13b00ad6dff5ae6b74e6dacfc405b275757871d57439ee76",
+      "source": "src/pages/research/seed-openevo/study/results/7b-minimax-analysis/index.astro",
+      "kind": "document",
+      "contractId": "result-7b-minimax",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/7b-self-analysis/index.html",
+      "pathname": "/research/seed-openevo/study/results/7b-self-analysis/",
+      "bytes": 78211,
+      "sha256": "88fb040fe162eda3234b55e292bd39b357985c5c87487018971168dc61293db4",
+      "source": "src/pages/research/seed-openevo/study/results/7b-self-analysis/index.astro",
+      "kind": "document",
+      "contractId": "result-7b-self",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/benchmark-first/index.html",
+      "pathname": "/research/seed-openevo/study/results/benchmark-first/",
+      "bytes": 35266,
+      "sha256": "43907dff945d08e7cc7367b7daf131a848631e9e5afc0aa0936a1652c0dfef28",
+      "source": "src/pages/research/seed-openevo/study/results/[note].astro",
+      "kind": "document",
+      "contractId": "result-note",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/current-conclusion/index.html",
+      "pathname": "/research/seed-openevo/study/results/current-conclusion/",
+      "bytes": 35477,
+      "sha256": "5baff1bdbed8d22434d7e5a291cf5c941ca02fb908cf4c77f3acbd2345daf4f7",
+      "source": "src/pages/research/seed-openevo/study/results/[note].astro",
+      "kind": "document",
+      "contractId": "result-note",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/first-positive-transfer/index.html",
+      "pathname": "/research/seed-openevo/study/results/first-positive-transfer/",
+      "bytes": 34396,
+      "sha256": "d4ca55d97a9ac36504ca9b8b9ea01b1ace239c55b6e0d4ee1cfac44e4dec0bd5",
+      "source": "src/pages/research/seed-openevo/study/results/[note].astro",
+      "kind": "document",
+      "contractId": "result-note",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/four-arm-analysis/index.html",
+      "pathname": "/research/seed-openevo/study/results/four-arm-analysis/",
+      "bytes": 102190,
+      "sha256": "22be83ab0f0f70d8636674559a63851bd9b1497c3d92805875405927bb8dc0af",
+      "source": "src/pages/research/seed-openevo/study/results/four-arm-analysis/index.astro",
+      "kind": "document",
+      "contractId": "result-four-arm",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/independent-replication/index.html",
+      "pathname": "/research/seed-openevo/study/results/independent-replication/",
+      "bytes": 34490,
+      "sha256": "532a11320ebf0b2ae61f6fefb8079acd2ea9626fc8ccbed033e5dbb5a7a52c69",
+      "source": "src/pages/research/seed-openevo/study/results/[note].astro",
+      "kind": "document",
+      "contractId": "result-note",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/index.html",
+      "pathname": "/research/seed-openevo/study/results/",
+      "bytes": 224903,
+      "sha256": "8a6d3e6de16db54055eebaa5892dae781e4e12959fd95f7e6ddb83f61d272984",
+      "source": "src/pages/research/seed-openevo/study/results.astro",
+      "kind": "document",
+      "contractId": "study-results",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/measurement-boundary/index.html",
+      "pathname": "/research/seed-openevo/study/results/measurement-boundary/",
+      "bytes": 37172,
+      "sha256": "7feaa98e6b1950d259a3ff899c3b3a59882bbf4fd7d0281f5bfe7ddae7e49f08",
+      "source": "src/pages/research/seed-openevo/study/results/[note].astro",
+      "kind": "document",
+      "contractId": "result-note",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/openevo-benchmark-design/index.html",
+      "pathname": "/research/seed-openevo/study/results/openevo-benchmark-design/",
+      "bytes": 36113,
+      "sha256": "ce6c4069589a857086e57cdcbe925d3504cd34b3ee1c8f879ead339d56cbfe39",
+      "source": "src/pages/research/seed-openevo/study/results/[note].astro",
+      "kind": "document",
+      "contractId": "result-note",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/openevo-training/index.html",
+      "pathname": "/research/seed-openevo/study/results/openevo-training/",
+      "bytes": 30839,
+      "sha256": "bd3195cb13a95dedd62238c5d5dd194680096d2a8f2c2abb0acf820489de9b84",
+      "source": "src/pages/research/seed-openevo/study/results/[note].astro",
+      "kind": "document",
+      "contractId": "result-note",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/second-generation/index.html",
+      "pathname": "/research/seed-openevo/study/results/second-generation/",
+      "bytes": 35923,
+      "sha256": "4b5656f75e788d3f25dafc08e591d62de7a0226ecdeefbe29ebed508c9142380",
+      "source": "src/pages/research/seed-openevo/study/results/[note].astro",
+      "kind": "document",
+      "contractId": "result-note",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/seed-faithful-benchmark/index.html",
+      "pathname": "/research/seed-openevo/study/results/seed-faithful-benchmark/",
+      "bytes": 37129,
+      "sha256": "4496739b4712894929114964efd400bcb62c0d51881a668f3934c46e09751da5",
+      "source": "src/pages/research/seed-openevo/study/results/[note].astro",
+      "kind": "document",
+      "contractId": "result-note",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/seed-training/index.html",
+      "pathname": "/research/seed-openevo/study/results/seed-training/",
+      "bytes": 30773,
+      "sha256": "287fb011edc8c7a874bf774626dc540f376d74ae6367566c4392a1c208c22cbc",
+      "source": "src/pages/research/seed-openevo/study/results/[note].astro",
+      "kind": "document",
+      "contractId": "result-note",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/webshop-training/index.html",
+      "pathname": "/research/seed-openevo/study/results/webshop-training/",
+      "bytes": 30756,
+      "sha256": "45dcb60a1a0011a4052b349d98615559b0d1cda35c8106106756f29b7aa1364b",
+      "source": "src/pages/research/seed-openevo/study/results/[note].astro",
+      "kind": "document",
+      "contractId": "result-note",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/results/why-it-kept-failing/index.html",
+      "pathname": "/research/seed-openevo/study/results/why-it-kept-failing/",
+      "bytes": 34749,
+      "sha256": "e2e32bc4619135548b91ed127bd130234ca1c66a64f9cd202a30e6c38a6b2202",
+      "source": "src/pages/research/seed-openevo/study/results/[note].astro",
+      "kind": "document",
+      "contractId": "result-note",
+      "owners": [
+        "B02",
+        "X805",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "research/seed-openevo/study/run/index.html",
+      "pathname": "/research/seed-openevo/study/run/",
+      "bytes": 47516,
+      "sha256": "3b5347d88a2af74dccffca1429bdb15dca3140b91e9b5a9cceefcd68ad1b5bc8",
+      "source": "src/pages/research/seed-openevo/study/run.astro",
+      "kind": "document",
+      "contractId": "study-run",
+      "owners": [
+        "B03",
+        "X806"
+      ],
+      "redirectTo": null
+    },
+    {
+      "file": "robots.txt",
+      "pathname": "/robots.txt",
+      "bytes": 366,
+      "sha256": "0b6ef98cba8d1add4844cf13e3352d517e33485f25ae6669048bc19bcfe1fa8f",
+      "kind": "endpoint",
+      "source": "src/pages/robots.txt.ts",
+      "owners": [
+        "X806"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "search-index.json",
+      "pathname": "/search-index.json",
+      "bytes": 24861,
+      "sha256": "74a0130cf64049f396be45a78f41be02ffc78cb2aa810a87b2b5c5ad72fbc7ca",
+      "kind": "endpoint",
+      "source": "src/pages/search-index.json.ts",
+      "owners": [
+        "A02"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "sitemap.xml",
+      "pathname": "/sitemap.xml",
+      "bytes": 22341,
+      "sha256": "863dae39be83618ef8039ad79d9145dc5ad009c6c38ed751fd04dc2b047dcfa8",
+      "kind": "endpoint",
+      "source": "src/pages/sitemap.xml.ts",
+      "owners": [
+        "X806"
+      ],
+      "contractId": null,
+      "redirectTo": null
+    },
+    {
+      "file": "workspace/index.html",
+      "pathname": "/workspace/",
+      "bytes": 35322,
+      "sha256": "8ab1867066f9a9ff19907bad2a963a9e5ba52f63fbdcdb26163d4a6aa2a99eba",
+      "source": "src/pages/workspace/index.astro",
+      "kind": "document",
+      "contractId": "workspace",
+      "owners": [
+        "X783",
+        "X806"
+      ],
+      "redirectTo": null
+    }
+  ]
+}
