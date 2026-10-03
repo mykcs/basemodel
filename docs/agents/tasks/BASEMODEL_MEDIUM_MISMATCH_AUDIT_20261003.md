@@ -2,7 +2,7 @@
 
 Status: **ACTIVE TASK PLAN · audit only**
 Repository: `mykcs/basemodel`
-Baseline: `main@f7ce09363f46917973926130b0f44237728ceb10`
+Baseline: `main@aeac85458c6dc2fc949f7147d1ba4a40884225e8`
 Date: **2026-10-03**
 
 > This PR answers one question: **is each important reader task currently expressed in the right medium?** It inventories and prioritizes; it does not redesign production pages.
@@ -16,10 +16,12 @@ Read current:
 - `docs/agents/current/research-explainer-page-standard.md`;
 - `docs/agents/current/site-reader-attention-contract.md`;
 - `src/data/siteReaderContracts.ts`;
-- central Human Expression Standard in `mykcs/.codex`;
+- canonical full-artifact Human Expression Standard at `mykcs/.agents/docs/agents/HUMAN_EXPRESSION_STANDARD.md`;
 - shared learned evidence in `mykcs/.agents`.
 
-PR #828 is the merged baseline that made medium choice an explicit authoring/acceptance rule.
+PR #828 made medium choice an explicit authoring/acceptance rule. The later `.agents` PR #262 and BaseModel PR #834 established the loading boundary: lightweight conversation stays on root Agent defaults, while substantial/durable website artifacts load the full Human Expression Standard.
+
+This audit itself produces a durable human-readable report, so its report artifact uses the full standard. Routine progress/status messages around the audit remain lightweight chat and must not inherit the full writing stack.
 
 ## 2. Scope
 
@@ -109,6 +111,10 @@ The shortlist must explicitly evaluate:
 - [ ] no product route changed;
 - [ ] repository validation passes.
 
-## 8. Handoff
+## 8. Loading boundary
+
+This task audits **public/durable BaseModel artifacts**, not ordinary conversation. Do not turn findings into a reason to load the full writing standard for every status update, quick explanation, or small wording tweak.
+
+## 9. Handoff
 
 This PR is the portfolio map. It may refine the priority/order of child implementation PRs, but it must not absorb their product code.
