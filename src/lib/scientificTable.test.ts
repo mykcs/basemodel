@@ -9,6 +9,7 @@ import {
   type ScientificTableView,
 } from './scientificTable';
 import { RANK32_CAPACITY_TABLE, SAME_PANEL_FINAL_TABLE } from '../data/scientificResearchTables';
+import { EFFECTIVE_STATE_GDR_LORA_STUDY as study } from '../data/effectiveStateGdrLoraStudy';
 
 const fixture: ScientificTableView = {
   id: 'fixture',
@@ -64,9 +65,9 @@ describe('scientific table semantics', () => {
     expect(rankCsv).toContain('"51410296"');
 
     const finalCsv = scientificTableToCsv(SAME_PANEL_FINAL_TABLE);
-    expect(finalCsv).toContain('"60.71597673160174"');
-    expect(finalCsv).toContain('"45.984865395021635"');
-    expect(finalCsv).toContain('"20.769142316017317"');
+    expect(finalCsv).toContain(`"${String(study.threeWayFinal.directApply.score)}"`);
+    expect(finalCsv).toContain(`"${String(study.threeWayFinal.off.score)}"`);
+    expect(finalCsv).toContain(`"${String(study.threeWayFinal.on.score)}"`);
     expect(finalCsv).toContain('"NA"');
   });
 
