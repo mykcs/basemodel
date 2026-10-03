@@ -28,7 +28,7 @@ For implementation, read [`docs/dev/LATEST.md`](docs/dev/LATEST.md). For CI, hos
 
 For every user-facing website copy task, read the current shared human-expression standard before the first substantial draft:
 
-- https://github.com/mykcs/.codex/blob/main/website-governance/HUMAN_EXPRESSION_STANDARD.md
+- https://github.com/mykcs/.agents/blob/main/docs/agents/HUMAN_EXPRESSION_STANDARD.md
 
 When prior owner feedback or failure-family evidence matters, also read:
 
