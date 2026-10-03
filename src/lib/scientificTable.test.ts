@@ -4,6 +4,7 @@ import {
   escapeLatexText,
   scientificTableToCsv,
   scientificTableToLatex,
+  scientificTableCell,
   validateScientificTableView,
   type ScientificTableView,
 } from './scientificTable';
@@ -71,7 +72,7 @@ describe('scientific table semantics', () => {
 
   it('never upgrades missing or cross-contract evidence into a numeric winner', () => {
     const dynamic = SAME_PANEL_FINAL_TABLE.rows.find((row) => row.id === 'dynamic-alpha-beta')!;
-    expect(dynamic.cells.finalScore.raw).toBeNull();
+    expect(scientificTableCell(dynamic, 'finalScore', SAME_PANEL_FINAL_TABLE.id).raw).toBeNull();
     expect(SAME_PANEL_FINAL_TABLE.notes.join(' ')).toContain('不同');
     expect(RANK32_CAPACITY_TABLE.notes.join(' ')).toContain('不能写成等价');
   });
