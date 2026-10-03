@@ -381,7 +381,7 @@ test('phone first screen establishes the three experiments before deep method de
   await expect(page.locator('.paper__kicker')).toHaveCount(0);
   const h1 = page.getByRole('heading', { level: 1 });
   await expect(h1).toContainText('OpenEVO 参数演变：Bounded State 与 β 组件');
-  const ablation = page.locator('.paper-table-wrap--hero');
+  const ablation = page.locator('[data-scientific-table="same-panel-final"]');
   await expect(ablation).toBeVisible();
   const h1Box = await h1.boundingBox();
   const tableBox = await ablation.boundingBox();
