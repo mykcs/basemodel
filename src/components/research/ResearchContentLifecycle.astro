@@ -6,7 +6,7 @@ interface Props { locale: Locale; mode: 'results' | 'reproduction' | 'archive' }
 const { locale, mode } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
-const stateLabel = (value: string) => ({
+const stateLabels: Record<string, string> = {
   complete: t('完整', 'complete'),
   partial: t('部分', 'partial'),
   unavailable: t('尚不可发布', 'unavailable'),
@@ -17,7 +17,8 @@ const stateLabel = (value: string) => ({
   completed: t('已完成', 'completed'),
   historical: t('历史', 'historical'),
   'in-progress': t('进行中', 'in progress'),
-}[value] ?? value);
+};
+const stateLabel = (value: string) => stateLabels[value] ?? value;
 ---
 
 {mode === 'results' && (
