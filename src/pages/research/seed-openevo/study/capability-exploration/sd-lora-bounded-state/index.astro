@@ -2,6 +2,7 @@
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoSdLoraBoundedRecurrence from '../../../../../../components/research/OpenEvoSdLoraBoundedRecurrence.astro';
 import ResearchRouteContext from '../../../../../../components/research/ResearchRouteContext.astro';
+import OpenEvoResearchSynthesis from '../../../../../../components/research/OpenEvoResearchSynthesis.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
@@ -11,4 +12,5 @@ const locale = 'zh' as const;
 >
   <ResearchRouteContext locale={locale} route="sd-lora-bounded-state" />
   <OpenEvoSdLoraBoundedRecurrence locale={locale} />
+  <OpenEvoResearchSynthesis locale={locale} topic="rank-capacity" />
 </AppLayout>

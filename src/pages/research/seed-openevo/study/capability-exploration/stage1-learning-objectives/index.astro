@@ -1,6 +1,7 @@
 ---
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoStage1LearningObjectives from '../../../../../../components/research/OpenEvoStage1LearningObjectives.astro';
+import OpenEvoResearchSynthesis from '../../../../../../components/research/OpenEvoResearchSynthesis.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
@@ -9,4 +10,5 @@ const locale = 'zh' as const;
   locale={locale}
 >
   <OpenEvoStage1LearningObjectives locale={locale} />
+  <OpenEvoResearchSynthesis locale={locale} topic="learning-signal" />
 </AppLayout>

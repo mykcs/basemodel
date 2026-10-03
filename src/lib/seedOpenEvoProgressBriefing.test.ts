@@ -480,21 +480,26 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(technical).toContain('post-hoc checkpoint replay');
   });
 
-  it('ends with the current post-advisor goal state rather than the superseded Frontier Curriculum default', () => {
+  it('ends with the sealed post-advisor answers and their claim boundaries', () => {
     const finalSlide = briefing.slice(sectionPosition('next'));
-    expect(finalSlide).toContain('参数学习问题已经收口；下一步拆成学习信号和参数容量两个问题');
-    expect(finalSlide).toContain('最早在 120 updates 后进入平台');
-    expect(finalSlide).toContain('0.355 → 0.283 → 0.241');
-    expect(finalSlide).toContain('A：SEED-style 1.7B；B：Bounded rank32');
-    expect(finalSlide).toContain('Task Score 0.6256 → 0.6396');
-    expect(finalSlide).toContain('exact success 23/64 → 22/64');
-    expect(finalSlide).toContain('获准继续 R152–R159，但尚未启动');
-    expect(finalSlide).toContain('RTX 5090 兼容的执行环境适配');
-    expect(finalSlide).toContain('正式 2-GPU one-step FSDP qualification 尚未运行');
-    expect(finalSlide).toContain('2026-09-24 15:15 SGT 起 GPU6/7 已按 owner 指令暂停并释放');
-    expect(finalSlide).toContain('Q17 参数学习收口 · PR #588');
-    expect(finalSlide).toContain('会后方向与当前状态 · PR #590');
-    expect(finalSlide).toContain('历史 Q17 路线图');
+    expect(finalSlide).toContain('学长问的两个问题都跑完了');
+    expect(finalSlide).toContain('0.0369');
+    expect(finalSlide).toContain('0.0352');
+    expect(finalSlide).toContain('epoch2/3');
+    expect(finalSlide).toContain('完整 SEED Stage2 self-evolving / OPD / RL 还没有测试');
+    expect(finalSlide).toContain('rank32');
+    expect(finalSlide).toContain('0.6119');
+    expect(finalSlide).toContain('0.6298');
+    expect(finalSlide).toContain('约 25%');
+    expect(finalSlide).toContain('不能宣布严格 non-inferior');
+    expect(finalSlide).toContain('rank16 / 32 / 64 / 128');
+    expect(finalSlide).toContain('Post-advisor A/B 最终收口 · PR #597');
+    expect(finalSlide).toContain('BaseModel 本地证据镜像');
+    expect(finalSlide).not.toContain('A/B in progress');
+    expect(finalSlide).not.toContain('resource paused');
+    expect(finalSlide).not.toContain('获准继续 R152–R159，但尚未启动');
+    expect(finalSlide).not.toContain('等待 hindsight-skill');
+    expect(finalSlide).not.toContain('等待 3-epoch SFT');
     expect(finalSlide).not.toContain('把更多探索机会给“差一点就会”的难题');
     expect(finalSlide).not.toContain('再经单独预注册和授权，启动下一条单变量实验');
     expect(finalSlide).not.toContain('向北');
