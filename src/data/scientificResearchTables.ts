@@ -1,11 +1,6 @@
 import postAdvisor from '../../public/research/seed-openevo/evidence/post-advisor-ab-final-20260928.json';
 import { EFFECTIVE_STATE_GDR_LORA_STUDY as study } from './effectiveStateGdrLoraStudy';
-import { OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS as directApplyDynamics } from './openEvoDirectApplyLiveDynamics';
 import { validateScientificTableView, type ScientificTableView } from '../lib/scientificTable';
-
-const mean = (rows: readonly { score: number }[]) => rows.reduce((sum, row) => sum + row.score, 0) / rows.length;
-const sealed = study.formalResult.status === 'sealed' ? study.formalResult : null;
-if (!sealed) throw new Error('Scientific Final table requires sealed Bounded/β formal result');
 
 const localFinalNames = {
   directApply: '普通 OpenEVO / DirectApply',
@@ -70,20 +65,15 @@ export const RANK32_CAPACITY_TABLE = validateScientificTableView({
   exportBasePath: '/research/seed-openevo/exports/rank32-capacity',
 } satisfies ScientificTableView);
 
-const directApplyLast20 = mean(directApplyDynamics.score.slice(-20));
-const boundedLast20 = mean(sealed.trajectory.off.slice(-20));
-const betaLast20 = mean(sealed.trajectory.on.slice(-20));
-
 export const SAME_PANEL_FINAL_TABLE = validateScientificTableView({
   id: 'same-panel-final',
-  caption: '三条已完成 OpenEVO 路线：训练后期描述与同一冻结 128 题 Final',
+  caption: '三条已完成 OpenEVO 路线：同一冻结 128 题 Final',
   comparisonId: 'bounded-effective-state-same-panel-final',
   rowHeaderLabel: '实验',
   columns: [
     { key: 'bounded', label: 'Bounded', align: 'center' },
     { key: 'beta', label: '动态 β', align: 'center' },
     { key: 'alpha', label: '动态 α', align: 'center' },
-    { key: 'lateScore', label: '最后 20 轮平均 Task Score', unit: '/100', align: 'right' },
     { key: 'finalScore', label: '冻结 Final Task Score', unit: '/100', align: 'right' },
     { key: 'exact', label: '完整做对', unit: 'count / 128', align: 'right' },
   ],
@@ -96,7 +86,6 @@ export const SAME_PANEL_FINAL_TABLE = validateScientificTableView({
         bounded: { raw: false },
         beta: { raw: false },
         alpha: { raw: false },
-        lateScore: { raw: directApplyLast20, display: directApplyLast20.toFixed(2) },
         finalScore: { raw: study.threeWayFinal.directApply.score, display: study.threeWayFinal.directApply.score.toFixed(2) },
         exact: { raw: study.threeWayFinal.directApply.exactCount },
       },
@@ -109,7 +98,6 @@ export const SAME_PANEL_FINAL_TABLE = validateScientificTableView({
         bounded: { raw: true },
         beta: { raw: false },
         alpha: { raw: false },
-        lateScore: { raw: boundedLast20, display: boundedLast20.toFixed(2) },
         finalScore: { raw: study.threeWayFinal.off.score, display: study.threeWayFinal.off.score.toFixed(2) },
         exact: { raw: study.threeWayFinal.off.exactCount },
       },
@@ -122,7 +110,6 @@ export const SAME_PANEL_FINAL_TABLE = validateScientificTableView({
         bounded: { raw: true },
         beta: { raw: true },
         alpha: { raw: false },
-        lateScore: { raw: betaLast20, display: betaLast20.toFixed(2) },
         finalScore: { raw: study.threeWayFinal.on.score, display: study.threeWayFinal.on.score.toFixed(2) },
         exact: { raw: study.threeWayFinal.on.exactCount },
       },
@@ -135,14 +122,13 @@ export const SAME_PANEL_FINAL_TABLE = validateScientificTableView({
         bounded: { raw: true },
         beta: { raw: true },
         alpha: { raw: true },
-        lateScore: { raw: null },
         finalScore: { raw: null },
         exact: { raw: null },
       },
     },
   ],
   notes: [
-    '最后 20 轮平均来自每轮变化的训练任务，只描述训练后期典型水平，不是固定题考试。',
+    '这张表只展示冻结 Final；每轮变化任务上的最后 20 轮训练均值留在后面的训练动力学表，不与 Final 混成一个指标。',
     '三条已完成模型使用同一个冻结 128 题 Final；其中 DirectApply 是更早独立完成的历史前驱，真正属于同一次预注册 matched campaign 的是 Bounded 与 β-gating 两组。',
     'dynamic α + dynamic β 尚未运行，因此保持缺失值；缺失不是 0，也不参与统计比较。',
     'SEED 论文使用自己的 128 个 validation tasks；由于任务 panel 不同，它只作为外部参考，不放进这张同题表里制造伪横向比较。',
