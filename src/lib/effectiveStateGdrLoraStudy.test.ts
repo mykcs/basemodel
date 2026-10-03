@@ -4,6 +4,8 @@ import {
   EFFECTIVE_STATE_GDR_LORA_STUDY as study,
   type EffectiveStateFormalResult,
 } from '../data/effectiveStateGdrLoraStudy';
+import { SAME_PANEL_FINAL_TABLE } from '../data/scientificResearchTables';
+import { scientificTableCell } from './scientificTable';
 
 const sha40 = /^[0-9a-f]{40}$/;
 const sha64 = /^[0-9a-f]{64}$/;
@@ -37,27 +39,21 @@ describe('Effective-State GDR publication snapshot', () => {
   it('publishes the three experiments as one consistent ablation family without strengthening the causal claim', () => {
     const component = readFileSync(new URL('../components/research/OpenEvoEffectiveStateGdrLoraStudy.astro', import.meta.url), 'utf8');
     expect(component).toContain('OpenEVO 参数演变：Bounded State 与 β 组件');
-    expect(component).toContain('paper-table--ablation');
-    expect(component).toContain('普通 OpenEVO');
-    expect(component).toContain('OpenEVO + Bounded Online Recurrence');
-    expect(component).toContain('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）');
-        expect(component).toContain('动态 α + 动态 β（未做）');
-        expect(component).toContain("<th>{t('动态 β', 'Dynamic β')}</th>");
-        expect(component).toContain("<th>{t('动态 α', 'Dynamic α')}</th>");
-        expect(component).not.toContain("gdr: t('OpenEVO + Bounded Online Recurrence + GDR'");
+    expect(component).toContain("import ScientificTable from './ScientificTable.astro'");
+    expect(component).toContain('view={SAME_PANEL_FINAL_TABLE}');
+    expect(component).toContain('paper-table__external-reference');
+    expect(component).toContain('不放进同题表中比较高低');
+    expect(component).not.toContain('paper-table--ablation');
     expect(study.threeWayFinal.directApply.score).toBeCloseTo(60.71597673160174, 10);
     expect(study.threeWayFinal.off.score).toBeCloseTo(45.984865395021635, 10);
     expect(study.threeWayFinal.on.score).toBeCloseTo(20.769142316017317, 10);
-    expect(component).toContain('study.threeWayFinal.directApply.score.toFixed(2)');
-    expect(component).toContain('study.threeWayFinal.off.score.toFixed(2)');
-    expect(component).toContain('study.threeWayFinal.on.score.toFixed(2)');
+    expect(scientificTableCell(SAME_PANEL_FINAL_TABLE.rows.find((row) => row.id === 'directapply')!, 'finalScore', SAME_PANEL_FINAL_TABLE.id).raw).toBe(study.threeWayFinal.directApply.score);
+    expect(scientificTableCell(SAME_PANEL_FINAL_TABLE.rows.find((row) => row.id === 'bounded')!, 'finalScore', SAME_PANEL_FINAL_TABLE.id).raw).toBe(study.threeWayFinal.off.score);
+    expect(scientificTableCell(SAME_PANEL_FINAL_TABLE.rows.find((row) => row.id === 'beta')!, 'finalScore', SAME_PANEL_FINAL_TABLE.id).raw).toBe(study.threeWayFinal.on.score);
     expect(component).toContain('const seedPaperWebShopScore = 87.1');
     expect(component).toContain('const seedPaperWebShopSuccess = 77.3');
-    expect(component).toContain('id="ablation-table-caption"');
-    expect(component).toContain('SEED（论文，Qwen3-1.7B）');
-    expect(component).toContain('不是我们三条 OpenEVO 最终模型共用的同一冻结 128 题');
+    expect(SAME_PANEL_FINAL_TABLE.notes.join(' ')).toContain('不同');
     expect(component).not.toContain('paper-table__experiment-note');
-    expect(component).toContain('跨 0');
     expect(component).not.toContain('Effective-State GDR 优于 Bounded');
     expect(component).not.toContain('Effective-State GDR beats Bounded');
   });
