@@ -60,6 +60,22 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 
 ---
 
+## TRIGGER: source-backed technical explanation / “代码怎么写” / “数据从哪来” / “这个数怎么算的”
+
+**Cues:** a research page, briefing, or owner request asks how a mechanism is implemented, where a dataset/result came from, how a metric was calculated, asks to show source/raw evidence, or a technical claim materially depends on code/data/configuration rather than prose alone.
+
+**Automatic response:**
+
+1. Read `research-site-presentation-contract.md#71-when-a-reader-asks-where-did-this-come-from-show-the-actual-path` and the shared `HUMAN_EXPRESSION_STANDARD.md` evidence-addressable rule before authoring the claim.
+2. Resolve the closest primary source first: immutable commit + exact file/function/line range for code; raw dataset/task manifest/episode for data; analysis script/function + raw inputs/output for calculations; manifest/config for settings. Do not start from a secondary summary when primary evidence exists.
+3. Put the source action next to the claim, then show the **smallest useful raw excerpt** in a code/data/result block. Do not dump whole files or make the reader click away merely to discover which lines/fields matter.
+4. Explain the excerpt in human language. Use pseudocode, real LaTeX, a compact table, or a semantic diagram only when it reduces decoding cost; never let the explanatory representation replace the primary source identity.
+5. If the prose claims what executed code **did**, add runtime/result evidence such as a receipt, trace, raw episode, machine result, or test. Source code by itself proves implementation intent/structure, not that a particular run exercised it as described.
+6. State the evidence boundary beside the explanation. Keep restricted/private evidence labeled before the click and preserve privacy/secret boundaries; never make a private repository/provider public just to satisfy presentation convenience.
+7. Keep the evidence capsule claim-local and responsive. Avoid a detached reference-link wall; preserve direct GitHub/raw-artifact actions, keyboard access, and local overflow handling for long technical tokens.
+
+---
+
 ## TRIGGER: compound shell / RDC / SSH multi-command
 
 **Cues:** a command uses Bash-only syntax such as `for ... do ... done`, heredocs, arrays, `set -euo pipefail`, process substitution, or compound remote shell logic; the execution surface is Remote Desktop Commander, SSH, or another tool whose outer shell may be Fish/Zsh/sh; or the command embeds multiline Markdown/code/data containing shell-significant characters.
