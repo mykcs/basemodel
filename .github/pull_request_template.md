@@ -15,6 +15,7 @@ For user-facing work:
 - **Target mental model and next action:**
 - **Primary reading/action path:**
 - **Secondary detail or diagnostics kept out of the mainline:**
+- **Representation / medium choice (prose / table-chart / diagram / interactive HTML / temporal media) and the concrete comprehension gain:**
 - **Information-density plan (orientation / mainline / detail / on-demand):**
 - **Semantic HTML / visualization form and why it matches the thought structure:**
 - **Surrounding routes/sections checked for continuity:**
