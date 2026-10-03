@@ -14,7 +14,7 @@ test('Study keeps the seven real experiments as the primary directory', async ({
   await expect(firstProgression).toContainText('当时的问题');
   await expect(firstProgression).toContainText('结果边界');
   await expect(firstProgression).toContainText('留下的下一问');
-  await expect(page.locator('.experiment-node')).toHaveCount(7);
+  await expect(page.locator('.experiment-node')).toHaveCount(8);
   await expect(page.locator('.experiment-node').first()).toHaveCSS('border-radius', '0px');
   await expect(page.locator('.secondary-routes')).toContainText('跨实验入口');
 });
@@ -68,4 +68,33 @@ for (const width of [390, 768, 1440]) {
       expect(overflow, `${route} overflows at ${width}px`).toBe(false);
     }
   });
+}
+
+for (const width of [390, 768, 1440]) {
+  for (const theme of ['light', 'dark']) {
+    test(`Study meeting links historical questions to Stage1 at ${width}px in ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto(study, { waitUntil: 'domcontentloaded' });
+      const meeting = page.locator('[data-advisor-meeting]');
+      const stage1 = page.locator('[data-experiment-primary="stage1-learning-objectives"]');
+      await expect(meeting.locator('h2')).toHaveText('和学长开会');
+      await expect(meeting.locator('time')).toHaveAttribute('datetime', '2026-09-22');
+      await expect(meeting).toContainText('哪一种更适合训练 Stage2 的起始参数');
+      await meeting.locator('summary').click();
+      await expect(meeting.locator('details > ul > li')).toHaveCount(6);
+      await expect(meeting).toContainText('检查 120 轮附近是否已经达到平台');
+      await expect(meeting).toContainText('不能直接说明 rank8 就足够保留能力');
+      await expect(meeting.locator('.meeting-source a')).toHaveAttribute('href', /ADVISOR_RESEARCH_RECONCILIATION_2026-09-28/);
+      const meetingBox = await meeting.boundingBox();
+      const stage1Box = await stage1.boundingBox();
+      expect(meetingBox).not.toBeNull();
+      expect(stage1Box).not.toBeNull();
+      expect(meetingBox!.y + meetingBox!.height).toBeLessThanOrEqual(stage1Box!.y);
+      await expect(stage1.locator('..').locator('..').locator('.experiment-node__rail')).toHaveText('08');
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+      await meeting.locator('summary').click();
+      await expect(meeting.locator('details')).not.toHaveAttribute('open', '');
+    });
+  }
 }
