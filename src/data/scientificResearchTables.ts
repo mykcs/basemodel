@@ -14,6 +14,11 @@ const localFinalNames = {
   dynamicAlphaBeta: 'OpenEVO + Bounded + dynamic α + dynamic β（未运行）',
 } as const;
 
+const scoreCi = postAdvisor.B.rank32_minus_rank128.mean_task_score_bootstrap95;
+const scoreCiLow = scoreCi[0];
+const scoreCiHigh = scoreCi[1];
+if (scoreCiLow === undefined || scoreCiHigh === undefined) throw new Error('rank32 Task Score CI must contain two endpoints');
+
 export const RANK32_CAPACITY_TABLE = validateScientificTableView({
   id: 'rank32-capacity',
   caption: 'rank128 与 rank32：R152–R159 matched continuation 容量对照',
@@ -55,7 +60,7 @@ export const RANK32_CAPACITY_TABLE = validateScientificTableView({
   ],
   notes: [
     `同一 R152–R159 task / seed schedule，共 ${postAdvisor.B.paired_attempts} 个 matched rollouts；这是 development/prospective continuation，不是 final-panel 证据。`,
-    `rank32 − rank128 Task Score 差为 ${postAdvisor.B.rank32_minus_rank128.mean_task_score.toFixed(4)}；95% CI [${postAdvisor.B.rank32_minus_rank128.mean_task_score_bootstrap95[0].toFixed(4)}, ${postAdvisor.B.rank32_minus_rank128.mean_task_score_bootstrap95[1].toFixed(4)}]。区间跨 0 不能写成等价或严格 non-inferior。`,
+    `rank32 − rank128 Task Score 差为 ${postAdvisor.B.rank32_minus_rank128.mean_task_score.toFixed(4)}；95% CI [${scoreCiLow.toFixed(4)}, ${scoreCiHigh.toFixed(4)}]。区间跨 0 不能写成等价或严格 non-inferior。`,
     '后验 effective rank 很低不等于更低 rank 已经通过训练/能力保持验证；下一步仍应看预先定义的容量 sweep。',
   ],
   sourceIds: [
