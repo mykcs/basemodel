@@ -158,6 +158,13 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   ban(studyOverview, 'COPY-FIRST-READER-JARGON-001', '配对评测', 'The first-reader study overview must state the concrete comparison objects and shared tasks before any statistical design term.');
   for (const forbidden of ['实验共同流程', '分数与阶段', 'main benchmark', 'MiniMax hindsight', 'OpenEvo × SEED：WebShop 研究', '三个研究问题怎样连起来', 'WebShop 是一个文字购物环境：模型要根据用户需求搜索商品']) ban(studyOverview, 'COPY-FIRST-SCREEN-002', forbidden, 'Study must keep the accepted reader-first overview and route duplicated flow, score-table, and internal vocabulary to their canonical semantic owners.');
 
+  const activeStudyIndex = 'src/components/research/OpenEvoExperimentIndex.astro';
+  for (const required of ['我们真正想回答的是', '第一次来', '只想看当前结论', '隔一阵回来', '当前结论与限制由 Results 页维护', '七次实验怎样一步步把问题缩小']) requireText(activeStudyIndex, 'COPY-READER-ENTRY-001', required, 'The active Study owner must let first-time, conclusion-first, and returning readers enter without learning internal route structure first.');
+  for (const movingResult of ['7.17', '8.74', '95% CI [-3.21, +6.31]']) ban(activeStudyIndex, 'COPY-READER-ENTRY-002', movingResult, 'The Study entry must route to Results instead of duplicating moving scientific measurements.');
+
+  const homeEntry = 'src/pages/_bodies/home-v2.astro';
+  for (const required of ['第一次来', '只想看结论', '隔一阵回来', '准备继续实验', '#reader-entry']) requireText(homeEntry, 'COPY-READER-ENTRY-003', required, 'Home continuation links must distinguish first visit, conclusion lookup, returning context recovery, and execution intent.');
+
   const resultsProtocol = 'src/components/research/OpenEvoWebShopResultsProtocol.astro';
   requireText(resultsProtocol, 'COPY-CONTEXT-SWITCH-001', '训练范围内未见任务与 SEED 验证任务', 'The Results protocol must name the two task populations directly instead of making a reading instruction the visual center.');
   for (const forbidden of ['先分清两种“新任务”', '先把数字、单位和项目内部编号翻译成人话', 'project-terms', 'goal_idx']) ban(resultsProtocol, 'COPY-CONTEXT-SWITCH-001', forbidden, 'The Results protocol must explain task identity locally instead of requiring a presenter heading or centralized glossary lookup.');
