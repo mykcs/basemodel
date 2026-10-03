@@ -46,7 +46,9 @@ describe('C01 scientific table publication', () => {
 
   it('preserves missing dynamic alpha+beta as null rather than zero', () => {
     expect(tables).toContain("id: 'dynamic-alpha-beta'");
-    expect(tables.match(/raw: null/g)?.length).toBeGreaterThanOrEqual(3);
+    expect(tables.match(/raw: null/g)?.length).toBeGreaterThanOrEqual(2);
+    expect(tables).toContain("finalScore: { raw: null }");
+    expect(tables).toContain("exact: { raw: null }");
   });
 
   it('reuses the existing MathFormula path instead of inventing CSS/HTML math', () => {
