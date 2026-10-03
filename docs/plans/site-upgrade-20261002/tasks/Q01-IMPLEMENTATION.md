@@ -53,4 +53,4 @@
 
 同时修复了验收器自身一个错误：结构解析改变对象字段顺序会造成清单哈希误报。现在按明确排序的字段元组计算清单身份，并加入属性顺序变化与真实字节变化的反例测试。
 
-依赖快照可以用 `python3 scripts/snapshot-site-upgrade-dependencies.py` 重新生成；需要已授权的 GitHub CLI，只读取 GitHub，并将指定提交取到本地供祖先检查，不写远端。发生 head 变化会停止，避免把两个版本的文件列表拼成一个结果。
+依赖快照可以用 `python3 scripts/snapshot-site-upgrade-dependencies.py` 重新生成；需要已授权的 GitHub CLI，只读取 GitHub，并将指定提交取到本地供祖先检查，不写远端。发生 head 变化会停止，避免把两个版本的文件列表拼成一个结果。脚本对瞬时 GitHub CLI 失败最多重试两次后仍失败关闭；2026-10-03 的刷新实际遇到一次 TLS handshake timeout，第二次读取成功，没有把部分结果写成完整快照。刷新同时发现 C01 / #827 从 `37cc61c…` 前进到 `94ac62c…`，因此旧依赖快照作废并重新生成；17 项依赖仍有 36 个重叠路径，其中 16 个需要 owner 对账。

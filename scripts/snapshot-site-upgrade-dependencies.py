@@ -1,11 +1,23 @@
-import json, subprocess, datetime
+import json, subprocess, datetime, sys, time
 from pathlib import Path
 # Run manually from this repository with authenticated gh; never called by build/CI.
 root = Path.cwd()
 if not (root / 'docs/plans/site-upgrade-20261002/tasks/Q01.md').is_file():
     raise SystemExit('Run from the BaseModel repository root')
 def run(*args):
-    return subprocess.check_output(args, cwd=root, text=True)
+    attempts = 3 if args and args[0] == 'gh' else 1
+    last = None
+    for attempt in range(attempts):
+        try:
+            return subprocess.check_output(args, cwd=root, text=True)
+        except subprocess.CalledProcessError as exc:
+            last = exc
+            if attempt + 1 >= attempts:
+                raise
+            wait = 2 ** attempt
+            print(f'retry {attempt + 1}/{attempts - 1} after command failure: {args[0]} {args[1] if len(args) > 1 else ""}; sleep={wait}s', file=sys.stderr)
+            time.sleep(wait)
+    raise last if last else RuntimeError('unreachable')
 def api(endpoint):
     return json.loads(run('gh', 'api', endpoint))
 repo = 'mykcs/basemodel'

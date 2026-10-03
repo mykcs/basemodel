@@ -1,7 +1,7 @@
 {
   "schema": "basemodel.q01-dependency-audit.v1",
-  "observedAt": "2026-10-03T12:16:01.148640+00:00",
-  "candidateBeforeImplementation": "f669ec3ba25ca8b029b311567ea2f0dcaea3a1b4",
+  "observedAt": "2026-10-03T12:38:02.623279+00:00",
+  "candidateBeforeImplementation": "30449ea9428fd4075941f007456ad011fd833415",
   "dependencies": [
     {
       "packet": "A01",
@@ -606,7 +606,7 @@
     {
       "packet": "C01",
       "pr": 827,
-      "head": "37cc61cff46593caef89806eec50208c3f0c20a1",
+      "head": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
       "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
       "branch": "docs/site-upgrade-scientific-tables-20261002",
       "draft": true,
@@ -635,7 +635,7 @@
         },
         {
           "path": "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro",
-          "blob": "abe57680a9b1d48df76df866cae5a6ba29551854",
+          "blob": "2ef11561b9403d2f5fdabae48c69c3a51444e90d",
           "status": "modified"
         },
         {
@@ -670,7 +670,7 @@
         },
         {
           "path": "src/data/siteReaderContracts.ts",
-          "blob": "3cf544f04d85c44cd61c2a2df1957df7ae499397",
+          "blob": "338f014d8c609814bf3de8d368bad4a807c62d29",
           "status": "modified"
         },
         {
@@ -730,7 +730,7 @@
         },
         {
           "path": "tests/e2e/effective-state-gdr-lora.spec.ts",
-          "blob": "6c3673ab754a00990f49a3b408f75a627e1cadff",
+          "blob": "9de797f1c80c932354faf96aaa04980ae3b30611",
           "status": "modified"
         },
         {
@@ -741,11 +741,11 @@
       ],
       "includedInCandidate": false,
       "individualPublicCI": {
-        "id": 37118338509,
-        "head_sha": "37cc61cff46593caef89806eec50208c3f0c20a1",
+        "id": 37123131162,
+        "head_sha": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
         "status": "completed",
-        "conclusion": "failure",
-        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37118338509"
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37123131162"
       }
     },
     {
@@ -2056,10 +2056,10 @@
   ],
   "c01": {
     "planRef": "refs/heads/docs/site-upgrade-scientific-tables-20261002",
-    "head": "37cc61cff46593caef89806eec50208c3f0c20a1",
+    "head": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
     "prs": [
       {
-        "headRefOid": "37cc61cff46593caef89806eec50208c3f0c20a1",
+        "headRefOid": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
         "number": 827,
         "state": "OPEN"
       }
@@ -2282,7 +2282,7 @@
         {
           "packet": "C01",
           "pr": 827,
-          "blob": "abe57680a9b1d48df76df866cae5a6ba29551854",
+          "blob": "2ef11561b9403d2f5fdabae48c69c3a51444e90d",
           "status": "modified"
         },
         {
@@ -2582,7 +2582,7 @@
         {
           "packet": "C01",
           "pr": 827,
-          "blob": "3cf544f04d85c44cd61c2a2df1957df7ae499397",
+          "blob": "338f014d8c609814bf3de8d368bad4a807c62d29",
           "status": "modified"
         },
         {

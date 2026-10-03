@@ -1,9 +1,9 @@
 {
   "schema": "basemodel.q01-first-slice.v1",
-  "observedAt": "2026-10-03T12:28:22.815124+00:00",
+  "observedAt": "2026-10-03T12:41:25.813313+00:00",
   "completion": "first-slice-complete; final integration and real-reader evaluation pending",
   "sourceBase": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
-  "localPreflightHead": "f669ec3ba25ca8b029b311567ea2f0dcaea3a1b4",
+  "localPreflightHead": "30449ea9428fd4075941f007456ad011fd833415",
   "localPreflightWasClean": false,
   "implementationSha256": {
     "astro.config.mjs": "dfbbbb2ec90add4d704af97025bbf236f6e449f1abde0a4923c59092a19fb2d5",
@@ -12,17 +12,17 @@
     "scripts/site-acceptance-files.ts": "94c99f68be688d06e82f3b287f46c1f885cb6f6fa790888c39b3d02a6535b5a3",
     "scripts/audit-site-acceptance.ts": "36b3d5437998cc783b7431da4bb71179b3910daadc2f698b520007cbe15e07fa",
     "scripts/site-reader-evaluation.ts": "b9e07b50df17c5dd73c7f5fd8f6fd49c226819c2730979d62058cf1936c13aa9",
-    "scripts/snapshot-site-upgrade-dependencies.py": "0cd85c55d1037f0eba5b68a163db1ed28ff9e62175b1fb4fd0d04f60d61bc820",
+    "scripts/snapshot-site-upgrade-dependencies.py": "bd9251fe7221af0aef94dba7296da07bb2d533624c5470671819995f6a8714da",
     "src/lib/siteAcceptance.test.ts": "f6638dd7ee4309da25e203e65e5311ddd0c26791e58d5afacff1a58407b300f6"
   },
   "materialInputs": {
-    "sha256": "f77f62404f6bed7a1cba99d40c8d3b3f7522ea8f33fd199ca1e682f32f0776e0",
+    "sha256": "998caa98c34b74ed2b7929a7e0c027d259f172f5e0370c37853f78827308e270",
     "files": 806,
     "scope": "src + public + scripts + root build configuration"
   },
   "outputManifestSha256": "0e69d2fe5e3f6f188086a234b1d27b44b17ff5013e166ebdcb15b8200166ec1d",
-  "routeMatrixSha256": "418966d3ed14c8fb84dfbf5f166bb00f9e243eacd6c6041e2a0ff9817d67f93e",
-  "dependencySnapshotSha256": "3402613adef4aa065e6bb0ec616ba02b2e8a59ae9a1daa86f067cb324101317b",
+  "routeMatrixSha256": "68c7e04800e7dea2fba7fd4c9bf7622dd6c79c7c6af7441b29fa27fd5f3eb537",
+  "dependencySnapshotSha256": "d82e6793ee1083ebd9df781cf8ebc4104acd1ac5ae6b03aa8f03e5ddcbee2bee",
   "coverage": {
     "documents": 262,
     "redirects": 3,
