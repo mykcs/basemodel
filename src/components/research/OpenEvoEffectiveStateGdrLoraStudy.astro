@@ -4,6 +4,8 @@ import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
 import MathFormula from '../common/MathFormula.astro';
 import MetricEvidenceFigure from './MetricEvidenceFigure.astro';
+import ScientificTable from './ScientificTable.astro';
+import { SAME_PANEL_FINAL_TABLE } from '../../data/scientificResearchTables';
 import { readFileSync } from 'node:fs';
 import { EFFECTIVE_STATE_GDR_LORA_STUDY as study } from '../../data/effectiveStateGdrLoraStudy';
 import type { EffectiveStateFormalResult } from '../../data/effectiveStateGdrLoraStudy';
@@ -242,71 +244,17 @@ const twentyRoundScoreWindows = finalResult
     <h1>{t('OpenEVO 参数演变：Bounded State 与 β 组件', 'OpenEVO parameter evolution: Bounded State and the β component')}</h1>
 
 
-    <figure class="paper-table-figure paper-table-figure--hero" data-result-stage="direct-result">
-      <div class="paper-table-wrap paper-table-wrap--hero" aria-label={t('三组已完成实验、一个未做实验位置，以及 SEED 论文参考', 'Three completed experiments, one unrun slot, and a SEED paper reference')}>
-        <table class="paper-table paper-table--ablation" aria-describedby="ablation-table-caption">
-          <thead>
-            <tr>
-              <th>{t('实验', 'Experiment')}</th>
-              <th>Bounded</th>
-              <th>{t('动态 β', 'Dynamic β')}</th>
-              <th>{t('动态 α', 'Dynamic α')}</th>
-              <th>{t('最后 20 轮平均 Task Score', 'Mean Task Score over the last 20 rounds')}</th>
-              <th>{t('WebShop 评测', 'WebShop evaluation')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="paper-table__reference-row">
-              <td><strong><a href={seedPaperHref}><ExternalBrandMark href={seedPaperHref} />SEED {t('（论文，Qwen3-1.7B）', '(paper, Qwen3-1.7B)')}</a></strong></td>
-              <td class="paper-table__mark">—</td>
-              <td class="paper-table__mark">—</td>
-              <td class="paper-table__mark">—</td>
-              <td>—</td>
-              <td><strong>{seedPaperWebShopScore.toFixed(1)}</strong> / 100<br/><span class="paper-table__metric-detail">{seedPaperWebShopSuccess.toFixed(1)}% Succ.</span></td>
-            </tr>
-            <tr>
-              <td><strong>{names.baseline}</strong></td>
-              <td class="paper-table__mark">—</td>
-              <td class="paper-table__mark">—</td>
-              <td class="paper-table__mark">—</td>
-              <td><strong>{directApplyLast20Score.toFixed(2)}</strong></td>
-              <td><strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{t('同题 ', 'same-panel ')}{study.threeWayFinal.directApply.exactCount}/128 {t('完整做对', 'exact')}</span></td>
-            </tr>
-            <tr>
-              <td><strong>{names.bounded}</strong></td>
-              <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
-              <td class="paper-table__mark">—</td>
-              <td class="paper-table__mark">—</td>
-              <td><strong>{boundedLast20Score?.toFixed(2) ?? '—'}</strong></td>
-              <td><strong>{study.threeWayFinal.off.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{t('同题 ', 'same-panel ')}{study.threeWayFinal.off.exactCount}/128 {t('完整做对', 'exact')}</span></td>
-            </tr>
-            <tr>
-              <td><strong>{names.gdr}</strong></td>
-              <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
-              <td class="paper-table__mark" aria-label={t('使用', 'enabled')}>✓</td>
-              <td class="paper-table__mark">—</td>
-              <td><strong>{gdrLast20Score?.toFixed(2) ?? '—'}</strong></td>
-              <td><strong>{study.threeWayFinal.on.score.toFixed(2)}</strong> / 100<br/><span class="paper-table__metric-detail">{t('同题 ', 'same-panel ')}{study.threeWayFinal.on.exactCount}/128 {t('完整做对', 'exact')}</span></td>
-            </tr>
-            <tr>
-              <td><strong>{names.dynamicAlphaBeta}</strong></td>
-              <td class="paper-table__mark">✓</td>
-              <td class="paper-table__mark">✓</td>
-              <td class="paper-table__mark">✓</td>
-              <td>—</td>
-              <td>—</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <figcaption id="ablation-table-caption" class="paper-table__caption">
-        <strong>{t('表 1.', 'Table 1.')}</strong>{' '}
+    <div data-result-stage="direct-result">
+      <ScientificTable view={SAME_PANEL_FINAL_TABLE} tableNumber={t('表 1.', 'Table 1.')} />
+      <p class="paper-table__external-reference">
+        <strong>{t('外部参考：', 'External reference: ')}</strong>
         {t(
-          '消融设置与结果。SEED（论文，Qwen3-1.7B）是外部参考：原论文 Table 1 在 WebShop 上报告 Score 87.1、Success 77.3%。它使用论文自己的 128 个 validation tasks，不是我们三条 OpenEVO 最终模型共用的同一冻结 128 题，因此只能作为论文参考，不能把数值差直接解释成严格同题消融收益。普通 OpenEVO 是原始 DirectApply：每轮 rank8 SD-LoRA 更新继续累积；+ Bounded 把累计参数历史压回固定 rank128 State；+ β-gating（α 固定为 1）在 Bounded 上再用动态 β 控制新经验写入长期参数 State 的强度；动态 α + 动态 β 是尚未运行的方法空间空位，因此结果保持为空且不参与统计比较，但它不代表当前下一实验的第一优先级。',
-          'Ablation settings and results. SEED (paper, Qwen3-1.7B) is an external reference: Table 1 of the paper reports WebShop Score 87.1 and Success 77.3%. It uses the paper’s own 128 validation tasks rather than the same frozen 128-task panel shared by our three OpenEVO final models, so it is a paper reference rather than a strict same-panel ablation. OpenEVO is the original DirectApply, where each rank-8 SD-LoRA update continues to accumulate; + Bounded compresses accumulated parameter history back to a fixed rank-128 State; + β-gating (α fixed at 1) adds dynamic β on top of Bounded to control how strongly new experience is written into the long-term parameter State; dynamic α + dynamic β remains an unrun method-space slot, so its results remain blank and it is excluded from statistical comparisons, but it is not presented as the current first-priority next experiment.',
+          `SEED 论文 Table 1 在它自己的 128 个 WebShop validation tasks 上报告 Score ${seedPaperWebShopScore.toFixed(1)}、Success ${seedPaperWebShopSuccess.toFixed(1)}%。因为不是本页三条 OpenEVO 最终模型共用的同一冻结 128 题，所以不放进同题表中比较高低。`,
+          `SEED Table 1 reports WebShop Score ${seedPaperWebShopScore.toFixed(1)} and Success ${seedPaperWebShopSuccess.toFixed(1)}% on its own 128 validation tasks. Because that is not the same frozen 128-task panel used by the three OpenEVO final models here, it is kept outside the same-panel table.`,
         )}
-      </figcaption>
-    </figure>
+        {' '}<a href={seedPaperHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedPaperHref} />{t('论文 ↗', 'Paper ↗')}</a>
+      </p>
+    </div>
 
     <div class="paper__metric-context">
       <p class="paper__lede esg__lede" data-reader-task data-reader-purpose>{t(
@@ -1327,7 +1275,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   .paper__hero{padding:4px 0 32px}
   .paper h1{max-width:900px;margin:0;font-size:clamp(2rem,4vw,3.5rem);line-height:1.04;letter-spacing:-.05em}
   .paper__lede{max-width:830px;margin:18px 0 14px;font-size:clamp(1.08rem,2vw,1.28rem);line-height:1.7}
-  .paper__metric-context{max-width:900px;margin-top:18px}
+  .paper-table__external-reference{max-width:76ch;margin:.75rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.58}.paper-table__external-reference strong{color:var(--ink)}.paper-table__external-reference a{color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}.paper__metric-context{max-width:900px;margin-top:18px}
   .paper__metric-context p{margin:10px 0}
   .paper-table__metric-detail{color:var(--text-secondary);font-size:1rem}
   .paper__boundary{max-width:880px;color:var(--text-secondary);font-size:1rem;line-height:1.65}

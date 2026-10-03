@@ -1,0 +1,117 @@
+---
+import { displayScientificCell, type ScientificTableView } from '../../lib/scientificTable';
+
+interface Props {
+  view: ScientificTableView;
+  tableNumber?: string;
+}
+const { view, tableNumber } = Astro.props;
+const noteId = `scientific-table-notes-${view.id}`;
+const groups: { label?: string; rows: ScientificTableView['rows'] }[] = [];
+for (const row of view.rows) {
+  const previous = groups.at(-1);
+  if (!previous || previous.label !== row.group) groups.push({ label: row.group, rows: [row] });
+  else previous.rows.push(row);
+}
+---
+
+<figure class="scientific-table" data-scientific-table={view.id} data-comparison-id={view.comparisonId}>
+  <div
+    class="scientific-table__scroll"
+    tabindex="0"
+    role="region"
+    aria-label={`${view.caption} · 可横向滚动表格`}
+    aria-describedby={noteId}
+  >
+    <table>
+      <caption>{tableNumber && <strong>{tableNumber}{' '}</strong>}{view.caption}</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="scientific-table__row-header">{view.rowHeaderLabel}</th>
+          {view.columns.map((column) => (
+            <th scope="col" class:list={[`align-${column.align ?? 'left'}`]}>
+              <span>{column.label}</span>
+              {column.unit && <small>{column.unit}</small>}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      {groups.map((group) => (
+        <tbody>
+          {group.label && (
+            <tr class="scientific-table__group">
+              <th scope="rowgroup" colspan={view.columns.length + 1}>{group.label}</th>
+            </tr>
+          )}
+          {group.rows.map((row) => (
+            <tr data-row-id={row.id}>
+              <th scope="row" class="scientific-table__row-header">{row.label}</th>
+              {view.columns.map((column) => {
+                const cell = row.cells[column.key];
+                return (
+                  <td
+                    class:list={[`align-${column.align ?? 'left'}`, typeof cell.raw === 'number' && 'is-numeric', cell.raw === null && 'is-missing']}
+                    data-raw-value={cell.raw === null ? 'NA' : String(cell.raw)}
+                  >{displayScientificCell(cell)}</td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      ))}
+    </table>
+  </div>
+
+  <figcaption id={noteId} class="scientific-table__caption">
+    <ul>
+      {view.notes.map((note) => <li>{note}</li>)}
+    </ul>
+    <div class="scientific-table__exports" aria-label="表格导出">
+      <span>同源导出：</span>
+      <a href={`${view.exportBasePath}.csv`}>CSV</a>
+      <a href={`${view.exportBasePath}.tex`}>LaTeX</a>
+    </div>
+    <details>
+      <summary>数据身份</summary>
+      <ul class="scientific-table__sources">
+        {view.sourceIds.map((source) => <li><code>{source}</code></li>)}
+      </ul>
+    </details>
+  </figcaption>
+</figure>
+
+<style>
+  .scientific-table{width:100%;margin:1.4rem 0 1.8rem}
+  .scientific-table__scroll{max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;outline:none}
+  .scientific-table__scroll:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}
+  .scientific-table table{width:100%;min-width:42rem;border-collapse:collapse;border-spacing:0;font-size:.9rem;font-variant-numeric:tabular-nums}
+  .scientific-table caption{caption-side:top;padding:0 0 .7rem;text-align:left;color:var(--ink);font-size:.9rem;line-height:1.55}
+  .scientific-table thead th{padding:.58rem .68rem;border-top:2px solid var(--ink);border-bottom:1px solid var(--ink);vertical-align:bottom;font-weight:760}
+  .scientific-table thead th small{display:block;margin-top:.12rem;color:var(--muted);font-size:.68rem;font-weight:600;white-space:nowrap}
+  .scientific-table tbody th,.scientific-table tbody td{padding:.62rem .68rem;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.48}
+  .scientific-table tbody:last-of-type tr:last-child>th,.scientific-table tbody:last-of-type tr:last-child>td{border-bottom:2px solid var(--ink)}
+  .scientific-table__row-header{text-align:left;min-width:12rem}
+  .scientific-table tbody .scientific-table__row-header{font-weight:650}
+  .scientific-table__group th{padding:.72rem .68rem .42rem;color:var(--muted);font-size:.72rem;font-weight:800;letter-spacing:.02em;background:transparent;border-bottom:0}
+  .scientific-table .align-left{text-align:left}.scientific-table .align-center{text-align:center}.scientific-table .align-right{text-align:right}
+  .scientific-table .is-numeric{white-space:nowrap}
+  .scientific-table .is-missing{color:var(--muted)}
+  .scientific-table__caption{max-width:76ch;margin-top:.65rem;color:var(--muted);font-size:.76rem;line-height:1.55}
+  .scientific-table__caption>ul{display:grid;gap:.25rem;margin:.55rem 0 0;padding-left:1.05rem}
+  .scientific-table__exports{display:flex;flex-wrap:wrap;gap:.45rem .7rem;margin-top:.7rem}
+  .scientific-table__exports a{color:var(--accent-deep);font-weight:760;text-underline-offset:.2em}
+  .scientific-table__caption details{margin-top:.55rem}
+  .scientific-table__caption summary{cursor:pointer;color:var(--ink);font-weight:700}
+  .scientific-table__sources{margin:.4rem 0 0;padding-left:1rem}
+  .scientific-table__sources code{overflow-wrap:anywhere}
+  @media(max-width:600px){
+    .scientific-table{margin-block:1rem 1.4rem}
+    .scientific-table table{min-width:38rem;font-size:.82rem}
+    .scientific-table thead th,.scientific-table tbody th,.scientific-table tbody td{padding:.52rem .55rem}
+  }
+  @media print{
+    .scientific-table__scroll{overflow:visible}
+    .scientific-table table{min-width:0;font-size:8.5pt}
+    .scientific-table__exports,.scientific-table__caption details{display:none}
+  }
+</style>
