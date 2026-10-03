@@ -3,7 +3,7 @@
 Status: **ACTIVE TASK PLAN · product sample**
 Repository: `mykcs/basemodel`
 Target route: `/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/`
-Baseline: `main@f7ce09363f46917973926130b0f44237728ceb10`
+Baseline: `main@aeac85458c6dc2fc949f7147d1ba4a40884225e8`
 Date: **2026-10-03**
 
 ## 1. Reader problem
@@ -21,7 +21,17 @@ The reader should be able to answer, without internal project context:
 
 The hypothesis is that **state across rounds** is easier to understand through purposeful interaction than through another paragraph.
 
-## 2. Current owners to reuse
+## 2. Loading / authority boundary
+
+This task edits a substantial, durable public research webpage, so before substantial copy/structure work load:
+
+1. `mykcs/.agents/docs/agents/HUMAN_EXPRESSION_STANDARD.md` — full artifact-writing / representation standard;
+2. BaseModel `website-design-spec.md` — site-specific scientific/public-expression overlay;
+3. the route Reader Contract and semantic web-expression owners listed below.
+
+The root Agent “15 lines / 5 items” conversation-density defaults apply to progress/status chat around the work, **not to the public page body**. Do not copy the full writing standard into BaseModel.
+
+## 3. Current owners to reuse
 
 Prefer current owners:
 - `src/components/research/OpenEvoVanillaSdLoraMechanism.astro`;
@@ -33,7 +43,7 @@ Prefer current owners:
 
 Do not fork a second mechanism dataset.
 
-## 3. Medium decision
+## 4. Medium decision
 
 Candidate representation:
 
@@ -46,7 +56,7 @@ The interaction must answer a real question such as:
 
 A scrubber/timeline/control is justified only if it changes a recoverable state. A moving dot or auto-play alone is not sufficient.
 
-## 4. Progressive enhancement boundary
+## 5. Progressive enhancement boundary
 
 The main mechanism must remain understandable:
 - without autoplay;
@@ -60,7 +70,7 @@ Interaction may deepen inspection. It may not contain the only copy of:
 - component identity;
 - evidence/provenance boundary.
 
-## 5. Scientific integrity
+## 6. Scientific integrity
 
 Do not:
 - invent a measured speedup/slowdown from the teaching interaction;
@@ -71,7 +81,7 @@ Do not:
 
 The route must label schematic teaching states as schematic.
 
-## 6. Implementation shape
+## 7. Implementation shape
 
 Phase A — cold read current route and bind the exact comprehension gap.
 
@@ -88,7 +98,7 @@ Phase D — verify that interaction reduces switching/reconstruction cost rather
 
 Phase E — only after product acceptance, identify reusable semantics for the later primitives-extraction PR. **Do not extract shared primitives in this PR.**
 
-## 7. Acceptance
+## 8. Acceptance
 
 - [ ] zero-context reader can explain one round and cross-round persistence;
 - [ ] return/feedback topology stays visually recoverable;
@@ -102,7 +112,7 @@ Phase E — only after product acceptance, identify reusable semantics for the l
 - [ ] focused Vitest + route E2E pass;
 - [ ] exact-head Public PR CI and required Vercel final gate pass before merge.
 
-## 8. Dependency / concurrency
+## 9. Dependency / concurrency
 
 The sitewide medium-mismatch audit may run in parallel. This route is preselected by the owner as a sample, so implementation need not wait for the whole audit; however, consume any completed audit finding before final acceptance.
 
