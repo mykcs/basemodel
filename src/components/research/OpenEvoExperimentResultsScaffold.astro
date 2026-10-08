@@ -32,7 +32,7 @@ const armMeta = {
     title:t('7B / self：Stage 1 提升明显，旧 Stage 2 没有继续更新', '7B / self: Stage 1 improved, while the old Stage 2 made no further update'),
     eyebrow:t('历史实验 · 无外部教师', 'HISTORICAL RUN · NO EXTERNAL TEACHER'),
     status:t('Stage 1 更新 8 次；旧 Stage 2 更新 0 次', '8 Stage-1 updates; 0 updates in the old Stage 2'),
-    question:t('结论先看：固定 128 个任务上的平均得分从 13.33 升到 25.66，但完整成功只从 3 个增到 4 个；旧 Stage 2 后来收集了大量成功轨迹，却没有再改动模型参数。', 'Bottom line: mean score on the fixed 128 tasks rose from 13.33 to 25.66, while exact success moved only from 3 to 4; the old Stage 2 later collected many successful traces but never changed the model parameters again.'),
+    question:t('为什么同一批 128 道题上的平均得分几乎翻倍，完整成功却只多 1 题？为什么旧 Stage 2 已经得到成功轨迹，却始终没有再更新参数？', 'Why did the mean score on the same 128 tasks nearly double while exact successes rose by only one—and why did the old Stage 2 never update parameters despite collecting successful traces?'),
     known:[
       t('Stage 1 先用 1,440 次 WebShop 任务尝试收集经验。成功经验达到了当时的启动条件，因此模型真正进行了 8 次 SD-LoRA 参数更新。训练 loss 从 0.479 降到 0.055，说明它越来越贴合这批训练记录；但 loss 只是训练信号，不能直接当成“做题能力提高了多少”。', 'Stage 1 first collected experience from 1,440 WebShop task attempts. Enough successful experience met the historical start condition, so the model actually made eight SD-LoRA parameter updates. Training loss fell from 0.479 to 0.055, showing better fit to the training records; loss alone does not measure how much task-solving ability improved.'),
       t('旧 Stage 2 又让模型做了 20,480 次任务，其中 797 次完整成功，而且轨迹质量足以用于训练。问题出在当时的更新规则：每 256 次尝试被切成一批，只有同一批里至少有 8 个不同任务都能各自完整成功 2 次，才允许改一次参数。实际最好的一批只有 7 个这样的任务，所以 80 批数据都没有进入参数更新。也就是说，模型并不是“没有成功经验”，而是这些经验被旧规则挡在了训练之前。', 'The old Stage 2 added 20,480 task attempts, including 797 exact successes with traces clean enough for training. The problem was the historical update rule: every 256 attempts formed one batch, and a parameter update was allowed only if at least eight distinct tasks each achieved two exact successes inside that batch. The best batch reached seven, so none of the 80 batches entered parameter training. The model did produce successful experience; the old rule blocked that experience before training.'),
@@ -167,7 +167,16 @@ const matrixRows = [
   { label:t('旧 Stage 2 实际参数更新次数', 'Actual old Stage-2 parameter updates'), a:t('0（80/80 block）','0 (80/80 blocks)'), b:t('0（80/80 block）', '0 (80/80 blocks)'), c:t('0（59 个完整 block；随后停止）','0 (59 complete blocks; then stopped)'), d:t('0（80/80 block）','0 (80/80 blocks)') },
   { label:t('技术有效轨迹（Valid Episode）', 'Technically valid episodes'), a:'121 / 128', b:'122 / 128', c:NOT_RUN_3B_MINIMAX, d:'116 / 128' },
   { label:t('各训练保存点的评测能力', 'Evaluation capability at each training checkpoint'), a:t('最终参数仍是 base；final eval 与 3B base 一致', 'Final parameters remain base; final evaluation matches 3B base'), b:t('已完成；中间有回落；最后一个保存点 25.66 最高', 'Complete; performance regresses between some updates; final checkpoint is best at 25.66'), c:NOT_RUN_3B_MINIMAX, d:t('最终评测已封存；未做完整 checkpoint sweep', 'Final evaluation sealed; no full checkpoint sweep') },
-];
+] as const;
+
+const comparisonArms = [
+  { key: 'a', label: '3B / self' },
+  { key: 'b', label: '7B / self' },
+  { key: 'c', label: '3B / MiniMax' },
+  { key: 'd', label: '7B / MiniMax' },
+] as const;
+const finalComparisonRows = [matrixRows[1], matrixRows[2], matrixRows[4], matrixRows[3]];
+const trainingComparisonRows = [matrixRows[0], matrixRows[5]];
 
 const sevenBSelfCheckpointCurve = [
   { label:'base', loss:'—', rank:'0', score:'13.33', exact:'3 / 128', valid:'109 / 128', failures:'19' },
@@ -215,6 +224,48 @@ const contrasts = [
 
 
 
+  {mode !== 'cross-arm' && current && (
+    <section class="exp-scaffold__section" data-result-stage="direct-result" aria-labelledby="slots-title">
+        <h2 id="slots-title">{mode === '7b-self' ? t('最终评测与训练结果', 'Final evaluation and training results') : t('已有的结果与未运行的指标', 'Observed results and unrun endpoints')}</h2>
+        <div class="exp-scaffold__table-wrap">
+          <table>
+            <thead><tr><th>{t('指标', 'Metric')}</th><th>{t('结果', 'Result')}</th><th>{t('这个数字说明什么', 'What this result means')}</th></tr></thead>
+            <tbody>
+              {individualMetrics.map((row) => <tr><th scope="row">{row.metric}</th><td class:list={{pending:row.value === PENDING}}>{row.value}</td><td>{row.note}</td></tr>)}
+            </tbody>
+          </table>
+        </div>
+    </section>
+  )}
+
+  {mode !== 'cross-arm' && current && (
+      <section class="exp-scaffold__section exp-scaffold__two-col" aria-labelledby="known-title">
+        <div>
+          <h2 id="known-title">{t(`这组历史实验确认的 ${current.known.length} 件事`, `${current.known.length} findings supported by this historical run`)}</h2>
+          <div class="exp-scaffold__known">
+            {current.known.map((item, i) => <article><span>{String(i + 1).padStart(2,'0')}</span><p>{item}</p></article>)}
+          </div>
+        </div>
+        <aside class="exp-scaffold__pending-callout">
+          <span>{t('结果怎样解释', 'How to interpret the result')}</span>
+          <h3>{mode === '7b-self'
+            ? t('平均得分提高了，但完整成功只小幅增加', 'Mean score improved, while exact completion changed only slightly')
+            : mode === '3b-self'
+              ? t('旧训练门槛阻止参数更新，最终得分仍等于基础模型', 'The old gate blocked parameter updates, leaving the final score at base')
+              : mode === '7b-minimax'
+                ? t('旧 Stage 2 没有更新参数，最终测到的是 MiniMax 启动训练后的模型', 'With no Stage-2 update, the final measures the MiniMax-bootstrapped model')
+                : t('这条运行在最终评测前停止，不能给出最终能力分数', 'This run stopped before final evaluation; no endpoint score exists')}</h3>
+          <p>{current.next}</p>
+          <div class="exp-scaffold__pending-chip">{mode === '3b-minimax'
+            ? t('最终评测：未运行', 'Final evaluation: not run')
+            : mode === '7b-self'
+              ? t('训练保存点分析：完成', 'Checkpoint analysis: complete')
+              : t('历史结果：已封存', 'Historical endpoint: sealed')}</div>
+        </aside>
+      </section>
+
+  )}
+
   {mode === '7b-self' && (
     <section class="exp-scaffold__resource-summary" aria-labelledby="resource-summary-title">
       <div class="exp-scaffold__resource-heading">
@@ -251,23 +302,39 @@ const contrasts = [
     <section class="exp-scaffold__section" data-result-stage="direct-result" aria-labelledby="matrix-title">
         <h2 id="matrix-title">{t('四组结果矩阵', 'Four-arm result matrix')}</h2>
         <p class="exp-scaffold__section-intro">{t('现在 3B/self、7B/self、7B/MiniMax 都已有同一套封存 128 任务的真实最终数字；3B/MiniMax 因旧方法在 74.58% 时主动停止而没有 final eval，明确写“未运行”而不是 0。任何后续补测都必须清楚标注是否仍是同一套正式 panel。', '3B/self, 7B/self, and 7B/MiniMax now carry real final numbers from the same sealed 128-task panel. 3B/MiniMax has no final evaluation because the old-method run was explicitly stopped at 74.58%, so it is marked Not run rather than zero. Any later diagnostic must state whether it uses the same formal panel.')}</p>
-        <div class="exp-scaffold__table-wrap">
+        <div class="exp-scaffold__table-wrap" data-historical-arm-comparison>
           <table>
-            <thead><tr><th>{t('指标', 'Metric')}</th><th>3B / self</th><th>7B / self</th><th>3B / MiniMax</th><th>7B / MiniMax</th></tr></thead>
+            <caption>{t('同一历史冻结 128 题的终局结果；Task Score 统一为 0–100 分，完整成功与技术有效按 128 次任务尝试计数。未测结果保持未运行。', 'Endpoints from the same historical frozen 128-task panel. Task Score is on a 0–100 scale; exact successes and valid episodes count out of 128 attempts. Unmeasured endpoints stay not run.')}</caption>
+            <thead><tr><th scope="col">{t('实验路线', 'Experiment')}</th>{finalComparisonRows.map((row) => <th scope="col">{row.label}</th>)}</tr></thead>
             <tbody>
-              {matrixRows.map((row) => <tr><th scope="row">{row.label}</th>{[row.a,row.b,row.c,row.d].map((v) => <td class:list={{pending:v === PENDING}}>{v}</td>)}</tr>)}
+              {comparisonArms.map((arm) => <tr><th scope="row">{arm.label}</th>{finalComparisonRows.map((row) => <td class:list={{pending:row[arm.key] === NOT_RUN_3B_MINIMAX}}>{row[arm.key]}</td>)}</tr>)}
             </tbody>
           </table>
         </div>
+        <p class="exp-scaffold__section-intro" data-reader-gap-explanation>{t('7B/self 得 25.66 分、7B/MiniMax 得 16.94 分，是同一历史题集上的观察差异；教师监督与 Stage 1 学习轨迹并未受到只改一个变量的控制，不能把 −8.72 分直接解释为 MiniMax 的因果效果。3B/self 的 1.71 分还伴随 Stage 1 没产生 adapter，3B/MiniMax 则没有终评，所以四格结果也不足以隔离模型规模效应。', '7B/self scored 25.66 and 7B/MiniMax scored 16.94 on the same historical panel. Teacher treatment and Stage-1 learning paths were not isolated as a single controlled variable, so the −8.72-point difference is not a causal effect of MiniMax. The 3B/self score of 1.71 also comes from a path with no Stage-1 adapter, while 3B/MiniMax lacks a final evaluation. The four cells therefore cannot isolate a pure model-scale effect.')}</p>
+        <details class="exp-scaffold__history-details">
+          <summary>{t('训练起点与各保存点的区别', 'Stage-1 starts and checkpoint coverage')}</summary>
+          <div class="exp-scaffold__table-wrap">
+            <table>
+              <thead><tr><th scope="col">{t('实验路线', 'Experiment')}</th>{trainingComparisonRows.map((row) => <th scope="col">{row.label}</th>)}</tr></thead>
+              <tbody>
+                {comparisonArms.map((arm) => <tr><th scope="row">{arm.label}</th>{trainingComparisonRows.map((row) => <td>{row[arm.key]}</td>)}</tr>)}
+              </tbody>
+            </table>
+          </div>
+        </details>
     </section>
   )}
 
   <section class="exp-scaffold__section exp-scaffold__counting" data-result-stage="mechanism" aria-labelledby="counting-title">
     <h2 id="counting-title">{t('20,480 次任务尝试为什么没有带来参数更新', 'Why 20,480 task attempts produced no parameter update')}</h2>
     <p class="exp-scaffold__section-intro">{t('这个结果需要把三件事分开：模型做了多少次任务、其中有多少次完整成功并且可以用于训练、程序最后有没有真的改动模型参数。旧 Stage 2 前两件事都发生了，第三件事没有发生。', 'Three quantities must be separated: how many tasks the model attempted, how many attempts were exact successes clean enough for training, and whether the program actually changed model parameters. The old Stage 2 produced the first two, but not the third.')}</p>
-    <dl class="exp-scaffold__term-list">
-      {experimentTerms.map((item) => <div><dt>{item.term}</dt><dd>{item.meaning}</dd></div>)}
-    </dl>
+    <details class="exp-scaffold__terms-disclosure">
+      <summary>{t('需要时再看：Stage 1 / Stage 2、任务尝试与成功轨迹的区别', 'Reference: Stage 1 / Stage 2, task attempts and trainable successes')}</summary>
+      <dl class="exp-scaffold__term-list">
+        {experimentTerms.map((item) => <div><dt>{item.term}</dt><dd>{item.meaning}</dd></div>)}
+      </dl>
+    </details>
 
     {mode === '7b-self' && (
       <figure class="exp-scaffold__gate-figure" aria-labelledby="gate-flow-title">
@@ -286,33 +353,6 @@ const contrasts = [
 
   {mode !== 'cross-arm' && current && (
     <>
-      <section class="exp-scaffold__section exp-scaffold__two-col" aria-labelledby="known-title">
-        <div>
-          <h2 id="known-title">{t('这组实验已经确认的四件事', 'Four findings supported by this run')}</h2>
-          <div class="exp-scaffold__known">
-            {current.known.map((item, i) => <article><span>{String(i + 1).padStart(2,'0')}</span><p>{item}</p></article>)}
-          </div>
-        </div>
-        <aside class="exp-scaffold__pending-callout">
-          <span>{mode === '7b-self' ? t('最终结论', 'FINAL INTERPRETATION') : t('还不能回答', 'STILL UNKNOWN')}</span>
-          <h3>{mode === '7b-self' ? t('平均得分提高了，但完整成功只小幅增加', 'Mean score improved, while exact completion changed only slightly') : t('最终解释先留空', 'Keep the final interpretation empty')}</h3>
-          <p>{current.next}</p>
-          <div class="exp-scaffold__pending-chip">{mode === '7b-self' ? t('训练保存点分析：完成', 'Checkpoint analysis: complete') : t('结论：等待证据', 'Conclusion: pending evidence')}</div>
-        </aside>
-      </section>
-
-      <section class="exp-scaffold__section" aria-labelledby="slots-title">
-        <h2 id="slots-title">{mode === '7b-self' ? t('最终评测与训练结果', 'Final evaluation and training results') : t('结果槽位', 'Result slots')}</h2>
-        <div class="exp-scaffold__table-wrap">
-          <table>
-            <thead><tr><th>{t('指标', 'Metric')}</th><th>{t('结果', 'Result')}</th><th>{t('这个数字说明什么', 'What this result means')}</th></tr></thead>
-            <tbody>
-              {individualMetrics.map((row) => <tr><th scope="row">{row.metric}</th><td class:list={{pending:row.value === PENDING}}>{row.value}</td><td>{row.note}</td></tr>)}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
       {mode === '7b-self' && (
         <section class="exp-scaffold__section" aria-labelledby="checkpoint-curve-title">
           <h2 id="checkpoint-curve-title">{t('8 次参数更新总体变好，但中间两次出现回落', 'Eight updates improved the final model, with two regressions along the way')}</h2>
@@ -397,7 +437,7 @@ const contrasts = [
 .exp-scaffold__gate-figure{margin:1.4rem 0 0;padding:1.1rem;border:1px solid var(--color-border);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--color-accent) 3.5%,transparent)}.exp-scaffold__gate-figure figcaption{font-weight:850;font-size:.9rem}.exp-scaffold__gate-flow{list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.05rem;margin:1rem 0 0;padding:0}.exp-scaffold__gate-flow li{position:relative;min-width:0;padding:.9rem;border:1px solid var(--color-border);border-radius:var(--radius-panel);background:var(--color-bg)}.exp-scaffold__gate-flow li:not(:last-child)::after{content:'';position:absolute;z-index:2;top:50%;right:-1.05rem;width:1.05rem;border-top:2px solid var(--color-accent)}.exp-scaffold__gate-flow li:not(:last-child)::before{content:'';position:absolute;z-index:3;top:calc(50% - 4px);right:-1.08rem;border-left:7px solid var(--color-accent);border-top:4px solid transparent;border-bottom:4px solid transparent}.exp-scaffold__gate-number{display:block;color:var(--color-accent);font:900 1.25rem/1 var(--font-mono)}.exp-scaffold__gate-flow strong{display:block;margin-top:.45rem;font-size:.76rem;line-height:1.45}.exp-scaffold__gate-flow p{margin:.4rem 0 0;color:var(--color-text-muted);font-size:.7rem;line-height:1.55}.exp-scaffold__gate-conclusion{margin:1rem 0 0;padding-top:.9rem;border-top:1px dashed var(--color-border);font-size:.8rem;font-weight:650;line-height:1.65}
 .exp-scaffold__two-col{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:2rem}.exp-scaffold__known{margin-top:1.2rem;border-top:1px solid var(--color-border)}.exp-scaffold__known article{display:grid;grid-template-columns:42px minmax(0,1fr);gap:.75rem;padding:1rem 0;border-bottom:1px solid var(--color-border)}.exp-scaffold__known article>span{color:var(--color-accent);font:800 .68rem var(--font-mono)}.exp-scaffold__known p{margin:0;line-height:1.72}
 .exp-scaffold__pending-callout{align-self:start;padding:1.1rem;border:1px dashed var(--color-border);border-radius:var(--radius-feature)}.exp-scaffold__pending-callout>span{font:800 .64rem var(--font-mono);letter-spacing:.08em;color:var(--color-text-muted)}.exp-scaffold__pending-callout h3{margin:.45rem 0 .6rem;font-size:1rem}.exp-scaffold__pending-callout p{margin:0;color:var(--color-text-muted);font-size:.86rem;line-height:1.65}.exp-scaffold__pending-chip{display:inline-block;margin-top:.9rem;padding:.35rem .55rem;border-radius:var(--radius-control);background:color-mix(in srgb,var(--color-accent) 10%,transparent);color:var(--color-accent);font:750 .72rem var(--font-mono)}
-.exp-scaffold__table-wrap{margin-top:1.25rem;overflow:auto;padding:.65rem 0 .5rem;border-top:1.5px solid var(--color-text);border-bottom:1.5px solid var(--color-text);background:var(--color-surface);font-family:var(--font-interface)}.exp-scaffold table{width:100%;border-collapse:collapse;min-width:720px;font-variant-numeric:tabular-nums lining-nums;line-height:1.12}.checkpoint-table tbody tr.best{background:color-mix(in srgb,var(--color-accent) 10%,var(--color-surface))}.exp-scaffold__checkpoint-reading{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1rem}.exp-scaffold__checkpoint-reading article{padding:1rem;border:1px solid var(--color-border);border-radius:var(--radius-panel)}.exp-scaffold__checkpoint-reading article>span{display:block;color:var(--color-accent);font:800 .66rem var(--font-mono)}.exp-scaffold__checkpoint-reading strong{display:block;margin:.5rem 0 .35rem;font-size:.84rem}.exp-scaffold__checkpoint-reading p,.exp-scaffold__provenance-note{margin:0;color:var(--color-text-muted);font-size:.75rem;line-height:1.6}.exp-scaffold__provenance-note{margin-top:1rem;padding-top:1rem;border-top:1px dashed var(--color-border)}.exp-scaffold__table-wrap th,.exp-scaffold__table-wrap td{padding:.36rem .58rem;border:0;text-align:left;vertical-align:baseline;font-size:.82rem;line-height:1.28}.exp-scaffold__table-wrap thead th{padding-top:.42rem;padding-bottom:.38rem;border-bottom:1px solid var(--color-text);background:transparent;color:var(--color-text);font-size:.8rem;font-weight:700;letter-spacing:0;text-transform:none}.exp-scaffold__table-wrap tbody th{width:23%;font-weight:400}.exp-scaffold__table-wrap tbody tr+tr th,.exp-scaffold__table-wrap tbody tr+tr td{border-top:1px solid color-mix(in srgb,var(--color-text) 12%,transparent)}.exp-scaffold__table-wrap .checkpoint-table td:not(:first-child),.exp-scaffold__table-wrap .checkpoint-table thead th:not(:first-child){text-align:center;white-space:nowrap}.exp-scaffold__table-wrap table:not(.checkpoint-table) tbody td:nth-child(2){font-weight:650}.exp-scaffold .pending{color:var(--color-accent);font-style:italic;font-weight:700}
+.exp-scaffold__table-wrap table caption{caption-side:bottom;margin:.75rem 0 0;text-align:left;color:var(--color-text-muted);font-size:.82rem;line-height:1.5;max-width:78ch}.exp-scaffold__history-details{margin-top:1rem;border-top:1px solid var(--color-border)}.exp-scaffold__history-details>summary{padding:.7rem 0;cursor:pointer;text-decoration:underline;text-underline-offset:.18rem;color:var(--color-text)}.exp-scaffold__history-details>summary:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}.exp-scaffold__terms-disclosure{border-top:1px solid var(--color-border);margin:1rem 0}.exp-scaffold__terms-disclosure>summary{padding:.7rem 0;cursor:pointer;text-decoration:underline;text-underline-offset:.18rem}.exp-scaffold__terms-disclosure>summary:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}.exp-scaffold__table-wrap{margin-top:1.25rem;overflow:auto;padding:.65rem 0 .5rem;border-top:1.5px solid var(--color-text);border-bottom:1.5px solid var(--color-text);background:var(--color-surface);font-family:var(--font-interface)}.exp-scaffold table{width:100%;border-collapse:collapse;min-width:720px;font-variant-numeric:tabular-nums lining-nums;line-height:1.12}.checkpoint-table tbody tr.best{background:color-mix(in srgb,var(--color-accent) 10%,var(--color-surface))}.exp-scaffold__checkpoint-reading{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1rem}.exp-scaffold__checkpoint-reading article{padding:1rem;border:1px solid var(--color-border);border-radius:var(--radius-panel)}.exp-scaffold__checkpoint-reading article>span{display:block;color:var(--color-accent);font:800 .66rem var(--font-mono)}.exp-scaffold__checkpoint-reading strong{display:block;margin:.5rem 0 .35rem;font-size:.84rem}.exp-scaffold__checkpoint-reading p,.exp-scaffold__provenance-note{margin:0;color:var(--color-text-muted);font-size:.75rem;line-height:1.6}.exp-scaffold__provenance-note{margin-top:1rem;padding-top:1rem;border-top:1px dashed var(--color-border)}.exp-scaffold__table-wrap th,.exp-scaffold__table-wrap td{padding:.36rem .58rem;border:0;text-align:left;vertical-align:baseline;font-size:.82rem;line-height:1.28}.exp-scaffold__table-wrap thead th{padding-top:.42rem;padding-bottom:.38rem;border-bottom:1px solid var(--color-text);background:transparent;color:var(--color-text);font-size:.8rem;font-weight:700;letter-spacing:0;text-transform:none}.exp-scaffold__table-wrap tbody th{width:23%;font-weight:400}.exp-scaffold__table-wrap tbody tr+tr th,.exp-scaffold__table-wrap tbody tr+tr td{border-top:1px solid color-mix(in srgb,var(--color-text) 12%,transparent)}.exp-scaffold__table-wrap .checkpoint-table td:not(:first-child),.exp-scaffold__table-wrap .checkpoint-table thead th:not(:first-child){text-align:center;white-space:nowrap}.exp-scaffold__table-wrap table:not(.checkpoint-table) tbody td:nth-child(2){font-weight:650}.exp-scaffold .pending{color:var(--color-accent);font-style:italic;font-weight:700}
 .exp-scaffold__pipeline{list-style:none;margin:1.3rem 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--color-border);border-radius:var(--radius-panel);overflow:hidden}.exp-scaffold__pipeline li{min-width:0;padding:1rem;border-right:1px solid var(--color-border)}.exp-scaffold__pipeline li:last-child{border-right:0}.exp-scaffold__pipeline span{display:block;margin-bottom:.8rem;color:var(--color-accent);font:800 .66rem var(--font-mono)}.exp-scaffold__pipeline strong{font-size:.82rem}.exp-scaffold__pipeline p{margin:.45rem 0 0;color:var(--color-text-muted);font-size:.74rem;line-height:1.55}
 .exp-scaffold__contrast-grid{display:grid;margin-top:1.3rem;border-top:1px solid var(--color-border)}.exp-scaffold__contrast-grid article{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(170px,.55fr) minmax(0,1.65fr);gap:1rem;padding:1rem 0;border-bottom:1px solid var(--color-border)}.exp-scaffold__contrast-head{display:grid;grid-template-columns:36px minmax(0,1fr);gap:.6rem}.exp-scaffold__contrast-head>span{color:var(--color-accent);font:800 .68rem var(--font-mono)}.exp-scaffold__contrast-grid h3{margin:0;font-size:.92rem}.exp-scaffold__contrast-grid code{display:block;align-self:start;margin:0;padding:.1rem 0;color:var(--color-text-muted);font-size:.72rem;line-height:1.55;white-space:normal}.exp-scaffold__contrast-grid dl{margin:0}.exp-scaffold__contrast-grid dl>div{display:grid;grid-template-columns:80px minmax(0,1fr);gap:.6rem;padding:0 0 .55rem}.exp-scaffold__contrast-grid dl>div+div{padding-top:.55rem;border-top:1px solid var(--color-border)}.exp-scaffold__contrast-grid dt{color:var(--color-text-muted);font-size:.7rem}.exp-scaffold__contrast-grid dd{margin:0;font-size:.75rem;line-height:1.5}
 .exp-scaffold__guardrail ul{max-width:84ch;margin:1rem 0 0;padding-left:1.15rem}.exp-scaffold__guardrail li{margin:.55rem 0;color:var(--color-text-muted);line-height:1.65}.exp-scaffold__footer{display:flex;justify-content:space-between;gap:1rem;padding-top:24px;color:var(--color-text-muted);font-size:.75rem}.exp-scaffold__footer a{color:var(--color-accent);font-weight:760;text-decoration:none}.exp-scaffold__footer a:hover{text-decoration:underline}

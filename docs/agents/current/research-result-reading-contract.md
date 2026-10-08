@@ -32,6 +32,28 @@ Examples include a frozen Task Score and exact success, a same-panel comparison 
 
 Training-round score is not a frozen final. A historical or mismatched panel is not a causal treatment effect.
 
+## Reader Question Check — explain an observed surprise before planning another experiment
+
+For substantial research results and advisor/peer reports, load the canonical
+[Project Report Skill](https://github.com/mykcs/myk-skills/blob/main/project-report/SKILL.md)
+when it is available through the active Harness. This BaseModel contract
+specializes its scientific HTML publication, not a second report-writing authority.
+
+Before approving a page, review the visible artifact as a scientifically literate reader
+who has not followed the author's working sessions:
+
+1. Identify **one interpretation-changing natural question** raised by the actual evidence, if one exists: an unexpectedly large score gap, a reversal between checkpoints, a loss/ability contradiction, a model that appears finished but has no outcome, or a change in the research decision. Do not manufacture a question for a straightforward result.
+2. Put all values of **the same named metric on one explicit reader-facing scale**, stating denominator, panel and measurement point. For WebShop, `0.06617` on a 0–1 scale can be displayed as `6.62 / 100`; a scientific source may still retain the full raw precision.
+3. **Presentation normalization does not establish protocol comparability.** Separately check model state, tasks, prompt, sampling, carriers, evaluator, and phase. A paper's 87.1/100 and a local custom-panel 6.62/100 must not appear as a causal method ranking merely because their score units match.
+4. Explain what existing traces, task-level pairs, confidence intervals, and protocol facts establish; distinguish supported observations from plausible but untested causes. If no cause can be isolated, state precisely **what remains unknown** next to the result. An unexecuted future experiment is not the explanation of today's result.
+5. For a real turn in the research direction, show prior assumption → evidence that changed it → revised judgment and its limits. Never reconstruct a person's motivations without a source.
+6. In HTML, ensure a mobile/touch/keyboard reader can recover the question, primary evidence and scientific boundary without hovering, animations or opening every detail disclosure. Charts and interactive views must be more informative than a well-labeled static table; maintain a static reading path.
+
+This is a **semantic review**. A machine check proving that the page has a title,
+four labels or the word “why” does not establish that it genuinely answered the reader.
+Use route-level regression for observed failure families and a cold-read of the final output.
+A new failure found in one route triggers a sibling-family check, not 53 identical cards.
+
 ## Metric subsection rule
 
 When a metric owns a subsection, use this order:
