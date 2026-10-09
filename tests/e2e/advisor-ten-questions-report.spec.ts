@@ -86,3 +86,53 @@ test('desktop introduction has no empty pseudo-column; units live in final notes
     return !!note && !!ending && Boolean(ending.compareDocumentPosition(note) & Node.DOCUMENT_POSITION_FOLLOWING);
   })).toBe(true);
 });
+
+test('Q03 interactive measured-point curve exposes all four true points and never ranks the paper protocol', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const figure = page.locator('[data-report-figure="q03-custom-curve"]');
+  await expect(figure.locator('svg [data-trend-point]')).toHaveCount(4);
+  await expect(figure.locator('svg polyline')).toHaveCount(1);
+  await expect(figure.locator('[data-stage-detail]')).toContainText('A0 · 3.71');
+  await expect(figure).toContainText('纵轴局部放大为 0–10 分');
+  await expect(figure).toContainText('中间轮次');
+  await expect(figure).toContainText('0/64');
+  const a80 = figure.getByRole('button', { name: 'A80' });
+  await a80.click();
+  await expect(a80).toHaveAttribute('aria-pressed', 'true');
+  await expect(figure.locator('[data-stage-detail]')).toContainText('A80 · 0.69');
+  await expect(figure.locator('[data-trend-point="A80"]')).toHaveClass(/is-active/);
+  await expect(figure.getByRole('button', { name: 'A0' })).toHaveAttribute('aria-pressed', 'false');
+  await figure.getByRole('button', { name: 'A120' }).focus();
+  await page.keyboard.press('Enter');
+  await expect(figure.locator('[data-stage-detail]')).toContainText('A120 · 6.62');
+  await expect(figure.locator('tbody tr')).toHaveCount(4);
+  await expect(page.locator('[data-comparison-boundary="noncomparable"]')).toContainText('87.10 / 100');
+  expect(await figure.locator('svg').textContent()).not.toContain('87.10');
+});
+
+test('advisor report uses evidence-appropriate visuals and visible meeting history', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const titles = [
+    'q01-horizon',
+    'q03-custom-curve',
+    'q04-capacity',
+    'q05-same-final',
+  ];
+  for (const id of titles) {
+    await expect(page.locator('[data-report-figure="' + id + '"]')).toHaveCount(1);
+    await expect(page.locator('[data-report-figure="' + id + '"] figcaption')).toBeVisible();
+  }
+  await expect(page.locator('[data-report-visual="q02-early-sft"] .advisor-viz__bar-row')).toHaveCount(3);
+  await expect(page.locator('[data-report-visual="q07-confidence-interval"] svg')).toBeVisible();
+  await expect(page.locator('[data-report-visual="q07-confidence-interval"]')).toContainText('−10.06');
+  await expect(page.locator('[data-report-figure="q04-capacity"] .advisor-viz__double section')).toHaveCount(2);
+  await expect(page.locator('[data-report-figure="q09-update-counts"] tbody tr')).toHaveCount(3);
+  await expect(page.locator('.advisor-ten__lede')).toContainText('9 月 22 日，我和学长');
+  await expect(page.locator('.advisor-ten__meeting-source a')).toHaveAttribute('href', /github.com\/mykcs/);
+  await page.locator('.advisor-ten__meeting-details summary').click();
+  await expect(page.locator('.advisor-ten__meeting-details ol li')).toHaveCount(6);
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+  expect(overflow).toBe(false);
+});

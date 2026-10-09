@@ -102,4 +102,23 @@ describe('advisor ten-question scientific report', () => {
     expect(page.indexOf('Q10 为会后延伸')).toBeGreaterThan(footnotes);
   });
 
+  it('uses source-backed geometry where it beats prose and preserves meeting context', () => {
+    const page = read(pagePath);
+    const plots = read('src/components/research/AdvisorTenEvidenceVisual.astro');
+    expect(page).toContain('9 月 22 日，我和学长');
+    expect(page).toContain('OPEN_EVO_ADVISOR_MEETING.points');
+    expect(page).toContain('OPEN_EVO_ADVISOR_MEETING.sourceHref');
+    expect(page.indexOf('advisor-ten__meeting-context')).toBeLessThan(page.indexOf('id="thesis-title"'));
+    for (const family of ['q01', 'q02', 'q03', 'q04', 'q05', 'q07']) {
+      expect(page).toContain('variant="' + family + '"');
+    }
+    expect(plots).toContain('ADVISOR_Q03_CUSTOM_PANEL.map');
+    expect(plots).toContain('points={points}');
+    expect(plots).toContain('纵轴局部放大为 0–10 分');
+    expect(plots).toContain('中间轮次未测');
+    expect(plots).toContain('aria-pressed');
+    expect(plots).toContain('effectX(-15.02)');
+    expect(page).toContain('data-report-figure="q09-update-counts"');
+  });
+
 });

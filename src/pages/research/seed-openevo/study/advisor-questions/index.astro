@@ -1,13 +1,12 @@
 ---
 import AppLayout from '../../../../../layouts/AppLayout.astro';
 import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
+import AdvisorTenEvidenceVisual from '../../../../../components/research/AdvisorTenEvidenceVisual.astro';
+import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeeting';
 import {
   ADVISOR_RESEARCH_AS_OF,
   ADVISOR_QUESTIONS,
-  ADVISOR_Q03_CUSTOM_PANEL,
-  ADVISOR_Q04_CAPACITY,
-  ADVISOR_Q05_FROZEN,
-  ADVISOR_Q09_UPDATES,
+        ADVISOR_Q09_UPDATES,
 } from '../../../../../data/openEvoAdvisorTenQuestions';
 
 const chapters = [
@@ -53,9 +52,23 @@ const methodStatus = {
       <p class="advisor-ten__eyebrow">WebShop · 研究汇报</p>
       <h1>OpenEVO 实验汇报：十个研究问题</h1>
       <p class="advisor-ten__lede" data-reader-purpose>
-        本次整理了十个研究问题，涉及训练轮数、普通 SFT/OPSD 与 SEED、长期参数更新、旧能力保持和独立复现。
-        下面记录各项已完成的实验、目前的结果，以及仍缺少的证据。
+        9 月 22 日，我和学长回顾了 OpenEVO 在 WebShop 上已经开展的实验。我们讨论了普通 SFT / OPSD 与持续更新的区别、160 轮训练是否必要、长期参数状态的容量，以及 β / GDR 这样更复杂的控制机制有没有实际收益。
       </p>
+      <p class="advisor-ten__meeting-context">
+        学长还希望我们把模型的行为看得更细：具体点击选择中的犹豫、参数更新的方向、以前学过的任务能否保留，以及文字记忆到底起了什么作用。我们希望在明确任务、预算和评测口径以后，判断各项实验究竟支持什么结论。
+      </p>
+      <p class="advisor-ten__meeting-context">
+        会后，我们把这次讨论整理成 Q01–Q09 九个研究问题，又增加了新任务独立复现这一项（Q10）。部分实验已经得到了有限但明确的结论，还有一些只完成了测量或准备工作。
+      </p>
+      <p class="advisor-ten__meeting-source">
+        会议依据：<a href={OPEN_EVO_ADVISOR_MEETING.sourceHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.sourceHref} />9 月 22 日讨论内容（9 月 28 日整理）</a>
+      </p>
+      <details class="advisor-ten__meeting-details">
+        <summary>会议当时整理出的六个讨论方向</summary>
+        <ol>{OPEN_EVO_ADVISOR_MEETING.points.map((point) => (
+          <li><strong>{point.title}</strong><span>{point.text}</span></li>
+        ))}</ol>
+      </details>
     </header>
 
     <section class="advisor-ten__thesis" aria-labelledby="thesis-title" data-result-stage="direct-result">
@@ -97,40 +110,16 @@ const methodStatus = {
             <p class="advisor-ten__opening">{question.opening}</p>
             <p><strong>我们怎么检验：</strong>{question.experiment}</p>
             <p class="advisor-ten__finding" data-report-finding={question.id}><strong>实际看到：</strong>{question.finding}</p>
+            {question.id === 'q02' && <AdvisorTenEvidenceVisual variant="q02" />}
+            {question.id === 'q07' && <AdvisorTenEvidenceVisual variant="q07" />}
 
             {question.id === 'q01' && (
-              <figure class="advisor-ten__figure" data-report-figure="q01-horizon">
-                <div class="advisor-ten__table-scroll" tabindex="0" aria-label="训练平台期三方法比较，可横向滚动">
-                  <table>
-                    <caption>相同冻结 64 题开发评测协议下，各方法的近似平台轮次</caption>
-                    <thead><tr><th scope="col">方法</th><th scope="col">约在何时进入平台</th><th scope="col">之后的观察</th></tr></thead>
-                    <tbody>
-                      <tr><th scope="row">普通 DirectApply</th><td>第 120 轮</td><td>新增收益较小</td></tr>
-                      <tr><th scope="row">Bounded</th><td>第 150 轮</td><td>后段仍有收益</td></tr>
-                      <tr><th scope="row">历史复杂 β/GDR</th><td>第 130 轮</td><td>后期明显下降</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-                <figcaption>平台是根据预先确定的开发集曲线得出的近似位置，不是自动停止规则，也不是不同 Final panel 上的胜负。</figcaption>
-              </figure>
+              <AdvisorTenEvidenceVisual variant="q01" />
             )}
 
             {question.id === 'q03' && (
               <>
-                <figure class="advisor-ten__figure" data-report-figure="q03-custom-curve">
-                  <div class="advisor-ten__table-scroll" tabindex="0" aria-label="Q03 在自定义64题上的四个保存点评测">
-                    <table>
-                      <caption>混合 SEED Q03 · 同一个自定义 64 题评测面板 · Task Score 满分 100</caption>
-                      <thead><tr><th scope="col">Stage2 保存点</th><th scope="col">Task Score / 100</th><th scope="col">完整成功</th><th scope="col">现象</th></tr></thead>
-                      <tbody>
-                        {ADVISOR_Q03_CUSTOM_PANEL.map((point) => (
-                          <tr><th scope="row">{point.update}</th><td class="advisor-ten__number">{point.score}</td><td>{point.exact}</td><td>{point.note}</td></tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <figcaption>原始平均分介于 0 与 1；这里逐个乘以 100。A40 的回升和 A80 的坍落同样是观察结果，不能只挑一个节点。</figcaption>
-                </figure>
+              <AdvisorTenEvidenceVisual variant="q03" />
                 <div class="advisor-ten__paper-reference" data-comparison-boundary="noncomparable">
                   <p><strong>论文参考属于另一份成绩单。</strong>SEED（Paper，Qwen3-1.7B）报告 <strong>87.10 / 100</strong>、完整成功 <strong>77.3%</strong>；Q03 是改动过方法与交互协议的 64 题结果，不能用“87.10 − 6.62”来推断某种算法损失了多少能力。</p>
                   <p>独立的公开代码复现已经重新收集 1,440 条轨迹，得到 1,200 条有效教师标注（1,080 训练、120 验证）；截至所核执行收据，正式 SFT 和 Stage2 尚无新的能力结果。因此它仍应显示“未测”，绝不能借用论文分数填表。</p>
@@ -139,29 +128,11 @@ const methodStatus = {
             )}
 
             {question.id === 'q04' && (
-              <figure class="advisor-ten__figure" data-report-figure="q04-capacity">
-                <div class="advisor-ten__table-scroll" tabindex="0" aria-label="rank128 与 rank32 对照">
-                  <table>
-                    <caption>匹配的第 152–159 轮，共 1,024 次任务尝试；参数文件为第 159 轮状态</caption>
-                    <thead><tr><th scope="col">长期状态</th><th scope="col">参数文件</th><th scope="col">Task Score / 100</th><th scope="col">完整成功率</th></tr></thead>
-                    <tbody>{ADVISOR_Q04_CAPACITY.map((row) => <tr><th scope="row">{row.method}</th><td>{row.bytes}</td><td class="advisor-ten__number">{row.score}</td><td>{row.exact}</td></tr>)}</tbody>
-                  </table>
-                </div>
-                <figcaption>rank32 − rank128 的平均分差约 −1.79/100，配对 95% 区间约 [−3.68, +0.12] 分；区间跨零不等于已经证明两种容量等价。</figcaption>
-              </figure>
+              <AdvisorTenEvidenceVisual variant="q04" />
             )}
 
             {question.id === 'q05' && (
-              <figure class="advisor-ten__figure" data-report-figure="q05-same-final">
-                <div class="advisor-ten__table-scroll" tabindex="0" aria-label="三条路线在同一冻结128题上的最后评测">
-                  <table>
-                    <caption>三条已完成路线的冻结 128 题 Final；Task Score 满分 100</caption>
-                    <thead><tr><th scope="col">路线</th><th scope="col">Task Score / 100</th><th scope="col">完整成功</th></tr></thead>
-                    <tbody>{ADVISOR_Q05_FROZEN.map((row) => <tr><th scope="row">{row.method}</th><td class="advisor-ten__number">{row.score}</td><td>{row.exact}</td></tr>)}</tbody>
-                  </table>
-                </div>
-                <figcaption>三条路线使用同一份冻结 Final 题集；普通 DirectApply 是更早的历史前驱，不能冒充与后两者完全匹配的随机实验臂。</figcaption>
-              </figure>
+              <AdvisorTenEvidenceVisual variant="q05" />
             )}
 
             {question.id === 'q09' && (
@@ -220,6 +191,16 @@ const methodStatus = {
 .advisor-ten__eyebrow{margin:0 0 1.15rem;font-size:.81rem;font-weight:700;letter-spacing:.06em;color:var(--color-text-muted)}
 .advisor-ten__hero h1{margin:0;font-size:clamp(2rem,3.6vw,3.15rem);line-height:1.18;letter-spacing:-.035em;text-wrap:balance}
 .advisor-ten__lede{max-width:76ch;font-size:clamp(1.08rem,1.65vw,1.3rem);line-height:1.72;margin:1.1rem 0 0}
+.advisor-ten__meeting-context{max-width:78ch;margin:.75rem 0 0;font-size:1rem;line-height:1.78}
+.advisor-ten__meeting-source{font-size:.88rem;line-height:1.7;color:var(--color-text-muted);margin:.9rem 0 0}
+.advisor-ten__meeting-source a{color:var(--color-text);text-underline-offset:.2rem}
+.advisor-ten__meeting-details{max-width:78ch;margin:.85rem 0 0;border-top:1px solid var(--color-border);padding-top:.6rem}
+.advisor-ten__meeting-details summary{cursor:pointer;text-decoration:underline;text-underline-offset:.18rem;font-size:.91rem}
+.advisor-ten__meeting-details summary:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+.advisor-ten__meeting-details ol{margin:.85rem 0 0;padding-left:1.5rem}
+.advisor-ten__meeting-details li{line-height:1.75;margin:.45rem 0}
+.advisor-ten__meeting-details li strong{display:block}
+.advisor-ten__meeting-details li span{color:var(--color-text-muted)}
 .advisor-ten__thesis{padding:2.6rem 0;border-bottom:1px solid var(--color-border)}
 .advisor-ten__thesis h2,.advisor-ten__contents h2{font-size:clamp(1.45rem,2.5vw,1.95rem);margin:0 0 1.2rem;line-height:1.3}
 .advisor-ten__thesis ol{max-width:75ch;margin:0;padding-left:1.6rem}
