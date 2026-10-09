@@ -1,22 +1,43 @@
 import { describe, expect, it } from 'vitest';
-import { initialRewardMatches, scoreRewardExample } from './webshopRewardExample';
+import {
+  exampleProducts, inspectExamplePurchase, initialExamplePurchase,
+} from './webshopRewardExample';
 
-describe('WebShop reward explainer (teaching subset, not measurements)', () => {
-  it('begins partially satisfied, not successful', () => {
-    expect(scoreRewardExample(initialRewardMatches)).toEqual({
-      matched: 3, total: 4, taskScore: 0.75, complete: false,
+describe('WebShop purchase-dependent teaching example', () => {
+  it('begins with a completed purchase at 0.75, not an action-progress score', () => {
+    expect(inspectExamplePurchase(initialExamplePurchase)).toMatchObject({
+      status: 'scored', score: .75, matched: 3, exact: false,
+      checks: { waterproof: true, breathable: true, size: false, price: true },
     });
   });
-  it('handles all 16 possible match combinations', () => {
-    for (let mask = 0; mask < 16; mask += 1) {
-      const matches = {
-        waterproof: Boolean(mask & 1), breathable: Boolean(mask & 2),
-        size: Boolean(mask & 4), price: Boolean(mask & 8),
-      };
-      const count = Object.values(matches).filter(Boolean).length;
-      expect(scoreRewardExample(matches)).toEqual({
-        matched: count, total: 4, taskScore: count / 4, complete: count === 4,
+
+  it('changes the final reward only after a purchase, not after each UI action', () => {
+    expect(inspectExamplePurchase({ productId: 'trail', size: '9', purchased: false }))
+      .toMatchObject({ status: 'not-purchased', score: null, exact: null });
+    expect(inspectExamplePurchase({ productId: 'trail', size: '9', purchased: true }))
+      .toMatchObject({ status: 'scored', score: 1, exact: true });
+  });
+
+  it('does not permit an unavailable size to be purchased or scored', () => {
+    expect(exampleProducts.basic.sizes).toEqual(['8']);
+    expect(inspectExamplePurchase({ productId: 'basic', size: '9', purchased: true }))
+      .toMatchObject({ status: 'invalid-option', score: null, exact: null });
+    expect(inspectExamplePurchase({ productId: 'basic', size: '9', purchased: false }))
+      .toMatchObject({ status: 'invalid-option', score: null, exact: null });
+  });
+
+  it('ties attributes, price and options to the chosen product, not independent booleans', () => {
+    expect(inspectExamplePurchase({ productId: 'basic', size: '8', purchased: true }))
+      .toMatchObject({
+        score: .5, exact: false,
+        checks: { waterproof: false, breathable: true, size: false, price: true },
       });
-    }
+    expect(inspectExamplePurchase({ productId: 'premium', size: '9', purchased: true }))
+      .toMatchObject({
+        score: .5, exact: false,
+        checks: { waterproof: true, breathable: false, size: true, price: false },
+      });
+    expect(inspectExamplePurchase({ productId: 'premium', size: '10', purchased: true }))
+      .toMatchObject({ score: .25, exact: false });
   });
 });
