@@ -1,6 +1,7 @@
 ---
 import ExternalBrandMark from '../common/ExternalBrandMark';
 import MathFormula from '../common/MathFormula.astro';
+import WebShopRewardExplorer from './WebShopRewardExplorer.tsx';
 import { type Locale } from '../../i18n';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -72,6 +73,8 @@ const rewardUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/web_agen
         </article>
       </section>
     </section>
+
+    <WebShopRewardExplorer locale={locale} client:visible />
 
     <aside class="metric-meaning" role="note">
       <div>
