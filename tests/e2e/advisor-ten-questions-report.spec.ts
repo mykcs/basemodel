@@ -58,3 +58,31 @@ test('each topic remains navigable, static and source-linked', async ({ page }) 
   });
   expect(visible).toBe(true);
 });
+
+test('desktop introduction has no empty pseudo-column; units live in final notes', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('h1')).toHaveText('OpenEVO 实验汇报：十个研究问题');
+  await expect(page.locator('.advisor-ten__contents h2')).toHaveText('十个问题');
+  const metrics = await page.evaluate(() => {
+    const bounds = (selector: string) => document.querySelector(selector)?.getBoundingClientRect();
+    const hero = bounds('.advisor-ten__hero');
+    const heading = bounds('.advisor-ten__hero h1');
+    const intro = bounds('.advisor-ten__lede');
+    if (!hero || !heading || !intro) return null;
+    return { heroWidth: hero.width, headingFill: heading.width / hero.width, introFill: intro.width / hero.width };
+  });
+  expect(metrics).not.toBeNull();
+  expect(metrics!.heroWidth).toBeLessThanOrEqual(930);
+  expect(metrics!.headingFill).toBeGreaterThan(0.75);
+  expect(metrics!.introFill).toBeGreaterThan(0.7);
+
+  const endNote = page.locator('.advisor-ten__footnotes');
+  await expect(endNote).toContainText('Task Score 统一按满分 100 分');
+  await expect(endNote).toContainText('Q10 为会后延伸');
+  expect(await page.evaluate(() => {
+    const note = document.querySelector('.advisor-ten__footnotes');
+    const ending = document.querySelector('.advisor-ten__closing');
+    return !!note && !!ending && Boolean(ending.compareDocumentPosition(note) & Node.DOCUMENT_POSITION_FOLLOWING);
+  })).toBe(true);
+});
