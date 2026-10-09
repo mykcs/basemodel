@@ -1,0 +1,283 @@
+---
+import AppLayout from '../../../../../layouts/AppLayout.astro';
+import {
+  ADVISOR_RESEARCH_AS_OF,
+  ADVISOR_QUESTIONS,
+  ADVISOR_Q03_CUSTOM_PANEL,
+  ADVISOR_Q04_CAPACITY,
+  ADVISOR_Q05_FROZEN,
+  ADVISOR_Q09_UPDATES,
+} from '../../../../../data/openEvoAdvisorTenQuestions';
+
+const chapters = [
+  {
+    id: 'learning',
+    ordinal: '01',
+    title: '先确认模型究竟学会了什么',
+    lede: '训练多久、用什么学习目标、SEED 的结果为什么和论文差那么大：这些问题都要先在自己的评测协议里回答。',
+  },
+  {
+    id: 'updating',
+    ordinal: '02',
+    title: '再判断长期状态如何保留和更新',
+    lede: '从参数容量、β、模型对点击的犹豫，到直接反转更新方向，我们逐渐把“更新了参数”与“真的改善了行为”分开。',
+  },
+  {
+    id: 'generalization',
+    ordinal: '03',
+    title: '最后追问能否记住、复现和推广',
+    lede: '单次能力提升还不等于持续学习。要知道哪些旧能力被保留、文字载体是否有贡献，以及新任务还能否重复得到同样结果。',
+  },
+] as const;
+
+const methodStatus = {
+  'bounded-answer': '已有范围明确的结论',
+  'partial': '已完成部分测量',
+  'unrun': '核心因果对照尚无成绩',
+} as const;
+---
+
+<AppLayout
+  title="和学长讨论后：十个问题、已有实验与尚未回答的事"
+  description="从训练停止点、普通 SFT/OPSD 与混合 SEED，到长期状态容量、β、entropy、Task Vector、遗忘、文字记忆及独立复现。全部 WebShop Task Score 主阅读尺度统一为 0–100，严格区别同题实验与论文参考。"
+  locale="zh"
+>
+  <main class="advisor-ten" data-advisor-ten-questions data-copy-review data-ui-audit="contrast layout evidence">
+    <div class="advisor-ten__back">
+      <a href="/research/seed-openevo/study/">← 返回 OpenEVO 实验目录</a>
+      <span>研究汇报 · 证据快照 {ADVISOR_RESEARCH_AS_OF}</span>
+    </div>
+
+    <header class="advisor-ten__hero">
+      <p class="advisor-ten__eyebrow">OpenEVO × WebShop · 学长会后研究汇报</p>
+      <h1>训练了一百多轮，我们究竟证明了什么？</h1>
+      <p class="advisor-ten__lede" data-reader-purpose>
+        学长在 9 月 22 日围绕训练、参数容量、更新机制和能力保持提出了一组问题。
+        我们后来将它们拆成十个可以逐一验证的研究问题。现在一部分已经有明确的局部答案，
+        一部分实验虽已运行，却还不能支持因果结论。
+      </p>
+      <p class="advisor-ten__scope">
+        这是一份截至 {ADVISOR_RESEARCH_AS_OF}、根据已公开收据整理的研究快照，不是实时 GPU 看板。
+        十问并非会议逐字提出的十条：Q10 是会后为了检验前九问能否推广而提出的新问题。
+      </p>
+    </header>
+
+    <section class="advisor-ten__thesis" aria-labelledby="thesis-title" data-result-stage="direct-result">
+      <h2 id="thesis-title">目前最重要的三个判断</h2>
+      <ol>
+        <li><strong>训练不是越久越好。</strong>普通 DirectApply 约在第 120 轮进入平台，Bounded 更晚；历史复杂 β/GDR 在训练后期反而掉分。</li>
+        <li><strong>分数上升与“真正持续学会”仍有距离。</strong>参数方向在个别轮次有可验证的因果作用，但损失下降、参数变化、训练轮得分和完整成功不是同一个指标。</li>
+        <li><strong>最大的不确定性还在评测和保持能力。</strong>混合 SEED 的分数远低于论文，但两套评测不是同一场考试；遗忘、文字记忆贡献和新任务复现都还缺决定性证据。</li>
+      </ol>
+      <p class="advisor-ten__metric-note">本文 WebShop <strong>Task Score</strong> 一律写成满分 100 分；<strong>完整成功</strong>另列为成功题数或百分比。数字单位统一，只解决阅读问题，不自动解决实验协议的公平性问题。</p>
+    </section>
+
+    <nav class="advisor-ten__contents" aria-label="十个研究问题目录">
+      <h2>十个问题，从哪里读起？</h2>
+      <p>你可以从头跟着研究思路读，也可以直接跳到最关心的问题。</p>
+      <ol>
+        {ADVISOR_QUESTIONS.map((question) => (
+          <li><a href={'#' + question.id}><span>{question.id.toUpperCase()}</span>{question.title}</a></li>
+        ))}
+      </ol>
+    </nav>
+
+    {chapters.map((chapter) => (
+      <section class="advisor-ten__chapter" id={chapter.id} aria-labelledby={chapter.id + '-title'}>
+        <header class="advisor-ten__chapter-header">
+          <span>第 {chapter.ordinal} 部分</span>
+          <h2 id={chapter.id + '-title'}>{chapter.title}</h2>
+          <p>{chapter.lede}</p>
+        </header>
+
+        {ADVISOR_QUESTIONS.filter((q) => q.family === chapter.id).map((question) => (
+          <article class="advisor-ten__question" id={question.id} aria-labelledby={question.id + '-title'} data-report-question={question.id}>
+            <header class="advisor-ten__question-header">
+              <span class="advisor-ten__question-num">{question.id.toUpperCase()}</span>
+              <div>
+                <h3 id={question.id + '-title'}>{question.title}</h3>
+                <p class="advisor-ten__evidence-state">{methodStatus[question.evidenceState]}</p>
+              </div>
+            </header>
+            <p class="advisor-ten__opening">{question.opening}</p>
+            <p><strong>我们怎么检验：</strong>{question.experiment}</p>
+            <p class="advisor-ten__finding" data-report-finding={question.id}><strong>实际看到：</strong>{question.finding}</p>
+
+            {question.id === 'q01' && (
+              <figure class="advisor-ten__figure" data-report-figure="q01-horizon">
+                <div class="advisor-ten__table-scroll" tabindex="0" aria-label="训练平台期三方法比较，可横向滚动">
+                  <table>
+                    <caption>相同冻结 64 题开发评测协议下，各方法的近似平台轮次</caption>
+                    <thead><tr><th scope="col">方法</th><th scope="col">约在何时进入平台</th><th scope="col">之后的观察</th></tr></thead>
+                    <tbody>
+                      <tr><th scope="row">普通 DirectApply</th><td>第 120 轮</td><td>新增收益较小</td></tr>
+                      <tr><th scope="row">Bounded</th><td>第 150 轮</td><td>后段仍有收益</td></tr>
+                      <tr><th scope="row">历史复杂 β/GDR</th><td>第 130 轮</td><td>后期明显下降</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <figcaption>平台是根据预先确定的开发集曲线得出的近似位置，不是自动停止规则，也不是不同 Final panel 上的胜负。</figcaption>
+              </figure>
+            )}
+
+            {question.id === 'q03' && (
+              <>
+                <figure class="advisor-ten__figure" data-report-figure="q03-custom-curve">
+                  <div class="advisor-ten__table-scroll" tabindex="0" aria-label="Q03 在自定义64题上的四个保存点评测">
+                    <table>
+                      <caption>混合 SEED Q03 · 同一个自定义 64 题评测面板 · Task Score 满分 100</caption>
+                      <thead><tr><th scope="col">Stage2 保存点</th><th scope="col">Task Score / 100</th><th scope="col">完整成功</th><th scope="col">现象</th></tr></thead>
+                      <tbody>
+                        {ADVISOR_Q03_CUSTOM_PANEL.map((point) => (
+                          <tr><th scope="row">{point.update}</th><td class="advisor-ten__number">{point.score}</td><td>{point.exact}</td><td>{point.note}</td></tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <figcaption>原始平均分介于 0 与 1；这里逐个乘以 100。A40 的回升和 A80 的坍落同样是观察结果，不能只挑一个节点。</figcaption>
+                </figure>
+                <div class="advisor-ten__paper-reference" data-comparison-boundary="noncomparable">
+                  <p><strong>论文参考属于另一份成绩单。</strong>SEED（Paper，Qwen3-1.7B）报告 <strong>87.10 / 100</strong>、完整成功 <strong>77.3%</strong>；Q03 是改动过方法与交互协议的 64 题结果，不能用“87.10 − 6.62”来推断某种算法损失了多少能力。</p>
+                  <p>独立的公开代码复现已经重新收集 1,440 条轨迹，得到 1,200 条有效教师标注（1,080 训练、120 验证）；截至所核执行收据，正式 SFT 和 Stage2 尚无新的能力结果。因此它仍应显示“未测”，绝不能借用论文分数填表。</p>
+                </div>
+              </>
+            )}
+
+            {question.id === 'q04' && (
+              <figure class="advisor-ten__figure" data-report-figure="q04-capacity">
+                <div class="advisor-ten__table-scroll" tabindex="0" aria-label="rank128 与 rank32 对照">
+                  <table>
+                    <caption>匹配的第 152–159 轮，共 1,024 次任务尝试；参数文件为第 159 轮状态</caption>
+                    <thead><tr><th scope="col">长期状态</th><th scope="col">参数文件</th><th scope="col">Task Score / 100</th><th scope="col">完整成功率</th></tr></thead>
+                    <tbody>{ADVISOR_Q04_CAPACITY.map((row) => <tr><th scope="row">{row.method}</th><td>{row.bytes}</td><td class="advisor-ten__number">{row.score}</td><td>{row.exact}</td></tr>)}</tbody>
+                  </table>
+                </div>
+                <figcaption>rank32 − rank128 的平均分差约 −1.79/100，配对 95% 区间约 [−3.68, +0.12] 分；区间跨零不等于已经证明两种容量等价。</figcaption>
+              </figure>
+            )}
+
+            {question.id === 'q05' && (
+              <figure class="advisor-ten__figure" data-report-figure="q05-same-final">
+                <div class="advisor-ten__table-scroll" tabindex="0" aria-label="三条路线在同一冻结128题上的最后评测">
+                  <table>
+                    <caption>三条已完成路线的冻结 128 题 Final；Task Score 满分 100</caption>
+                    <thead><tr><th scope="col">路线</th><th scope="col">Task Score / 100</th><th scope="col">完整成功</th></tr></thead>
+                    <tbody>{ADVISOR_Q05_FROZEN.map((row) => <tr><th scope="row">{row.method}</th><td class="advisor-ten__number">{row.score}</td><td>{row.exact}</td></tr>)}</tbody>
+                  </table>
+                </div>
+                <figcaption>三条路线使用同一份冻结 Final 题集；普通 DirectApply 是更早的历史前驱，不能冒充与后两者完全匹配的随机实验臂。</figcaption>
+              </figure>
+            )}
+
+            {question.id === 'q09' && (
+              <figure class="advisor-ten__figure" data-report-figure="q09-update-counts">
+                <div class="advisor-ten__table-scroll" tabindex="0" aria-label="三条路线在160轮中各载体内容实际更新的轮数">
+                  <table>
+                    <caption>160 轮内内容实际改变的次数，不是推理时读取次数</caption>
+                    <thead><tr><th scope="col">方法</th><th scope="col">参数状态</th><th scope="col">Text Memory</th><th scope="col">Skill</th><th scope="col">Agent System</th></tr></thead>
+                    <tbody>{ADVISOR_Q09_UPDATES.map((row) => <tr><th scope="row">{row.method}</th><td>{row.parametric}</td><td>{row.textMemory}</td><td>{row.skill}</td><td>{row.agent}</td></tr>)}</tbody>
+                  </table>
+                </div>
+                <figcaption>同样内容可以在很多后续任务里被反复使用；因此“更新少”既不能证明没价值，也不能证明它有因果贡献。</figcaption>
+              </figure>
+            )}
+
+            <p class="advisor-ten__interpretation"><strong>为什么这样理解：</strong>{question.interpretation}</p>
+            <p class="advisor-ten__limit"><strong>当前还不能说：</strong>{question.unknown}</p>
+            <footer class="advisor-ten__sources">
+              <span>原始证据</span>
+              {question.evidence.map((evidence) => (
+                <a href={evidence.href} target="_blank" rel="noopener noreferrer">{evidence.label} ↗</a>
+              ))}
+            </footer>
+          </article>
+        ))}
+      </section>
+    ))}
+
+    <section class="advisor-ten__closing" aria-labelledby="closing-title" data-result-stage="synthesis">
+      <h2 id="closing-title">十个问题放在一起，我们的认识改变了什么？</h2>
+      <p>
+        一开始我们容易把“训练了多少轮、损失下降了多少、参数有没有更新”当成进展。
+        后来的负结果让问题变得更精确：<strong>能力是否在相同任务和评测协议下提高，方向与容量各自贡献什么，旧知识还能否被保留？</strong>
+      </p>
+      <p>
+        现在 Q01 给出了方法各不相同的平台区间，Q07 在局部状态上提供了更新方向的因果证据。
+        Q03 的非单调低分、Q04 的容量取舍、Q05 的复杂门控退化，则告诉我们不能简单地把更久训练、更多参数和更复杂的控制器当成更好的持续学习。
+        至于文字状态、遗忘、独立复现，仍需要更强的证据才能完成判断。
+      </p>
+      <p class="advisor-ten__closing-next">现在最合理的研究顺序，是先把已经设计好的同口径对照和有效评测收口，明确保留不了的能力，再由真实结果决定是否值得增加新机制。</p>
+      <p class="advisor-ten__closing-links"><a href="/research/seed-openevo/study/">回到七次实验的研究演进 →</a> <a href="/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/">深入阅读 Bounded / β 研究 →</a></p>
+    </section>
+  </main>
+</AppLayout>
+
+<style>
+.advisor-ten{width:min(1060px,calc(100% - 2.2rem));margin:0 auto 6rem;color:var(--color-text)}
+.advisor-ten__back{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem 1rem;margin:1.6rem 0 0;font-size:.86rem;color:var(--color-text-muted)}
+.advisor-ten__back a{color:inherit;text-underline-offset:.22rem}
+.advisor-ten__hero{padding:clamp(2.2rem,5vw,4.7rem) 0 2.2rem;border-bottom:1px solid var(--color-border)}
+.advisor-ten__eyebrow{margin:0 0 1.15rem;font-size:.81rem;font-weight:700;letter-spacing:.06em;color:var(--color-text-muted)}
+.advisor-ten__hero h1{max-width:20ch;margin:0;font-size:clamp(2.25rem,5.25vw,4.25rem);line-height:1.13;letter-spacing:-.045em;text-wrap:balance}
+.advisor-ten__lede{max-width:42ch;font-size:clamp(1.18rem,2.2vw,1.55rem);line-height:1.65;margin:1.4rem 0 0}
+.advisor-ten__scope{max-width:78ch;font-size:.88rem;color:var(--color-text-muted);line-height:1.75;margin:1.3rem 0 0}
+.advisor-ten__thesis{padding:2.6rem 0;border-bottom:1px solid var(--color-border)}
+.advisor-ten__thesis h2,.advisor-ten__contents h2{font-size:clamp(1.45rem,2.5vw,1.95rem);margin:0 0 1.2rem;line-height:1.3}
+.advisor-ten__thesis ol{max-width:75ch;margin:0;padding-left:1.6rem}
+.advisor-ten__thesis li{padding:.48rem 0;font-size:1.02rem;line-height:1.88}
+.advisor-ten__metric-note{max-width:75ch;margin:1.4rem 0 0;color:var(--color-text-muted);font-size:.88rem;line-height:1.8}
+.advisor-ten__contents{padding:2.1rem 0 2.7rem}
+.advisor-ten__contents>p{margin:-.5rem 0 1.2rem;color:var(--color-text-muted)}
+.advisor-ten__contents ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 2rem}
+.advisor-ten__contents li{border-bottom:1px solid var(--color-border);min-width:0}
+.advisor-ten__contents a{display:flex;gap:.85rem;padding:.7rem 0;color:var(--color-text);text-decoration:none;line-height:1.45}
+.advisor-ten__contents a:hover{text-decoration:underline;text-underline-offset:.2rem}
+.advisor-ten__contents a:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+.advisor-ten__contents a span{font-variant-numeric:tabular-nums;color:var(--color-text-muted);font-size:.8rem;min-width:2.4rem}
+.advisor-ten__chapter{border-top:2px solid var(--color-text);padding-top:2.3rem}
+.advisor-ten__chapter-header{max-width:75ch;padding-bottom:1.3rem}
+.advisor-ten__chapter-header>span{font-size:.86rem;font-weight:700;color:var(--color-text-muted)}
+.advisor-ten__chapter-header h2{font-size:clamp(1.85rem,3.9vw,2.7rem);line-height:1.23;margin:.65rem 0;letter-spacing:-.035em;text-wrap:balance}
+.advisor-ten__chapter-header p{font-size:1rem;line-height:1.8;color:var(--color-text-muted)}
+.advisor-ten__question{scroll-margin-top:1.5rem;padding:2.25rem 0 3rem;border-top:1px solid var(--color-border)}
+.advisor-ten__question-header{display:grid;grid-template-columns:3.1rem minmax(0,1fr);gap:.85rem;max-width:880px;align-items:start}
+.advisor-ten__question-num{padding-top:.38rem;font-size:.89rem;color:var(--color-text-muted);font-variant-numeric:tabular-nums;font-weight:750}
+.advisor-ten__question h3{font-size:clamp(1.45rem,2.8vw,2.2rem);line-height:1.3;letter-spacing:-.035em;margin:0;text-wrap:balance}
+.advisor-ten__evidence-state{font-size:.8rem;color:var(--color-text-muted);margin:.55rem 0 0}
+.advisor-ten__question>p{max-width:79ch;font-size:1rem;line-height:1.88;margin:1.15rem 0;overflow-wrap:anywhere}
+.advisor-ten__opening{font-size:1.1rem!important;color:var(--color-text)}
+.advisor-ten__finding{padding-left:1rem;border-left:3px solid var(--color-text);font-weight:540}
+.advisor-ten__interpretation{margin-top:1.45rem!important}
+.advisor-ten__limit{color:var(--color-text-muted)}
+.advisor-ten__sources{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem 1.1rem;font-size:.85rem;border-top:1px solid var(--color-border);padding-top:.9rem;margin-top:1.65rem}
+.advisor-ten__sources span{color:var(--color-text-muted);font-size:.77rem;margin-right:.25rem}
+.advisor-ten__sources a{color:var(--color-text);text-underline-offset:.22rem;overflow-wrap:anywhere}
+.advisor-ten__figure{margin:1.7rem 0 1.45rem;max-width:950px}
+.advisor-ten__table-scroll{overflow-x:auto;max-width:100%;border-top:1.5px solid var(--color-text);border-bottom:1px solid var(--color-border)}
+.advisor-ten__table-scroll:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+.advisor-ten__figure table{width:100%;border-collapse:collapse;min-width:540px;font-variant-numeric:tabular-nums lining-nums}
+.advisor-ten__figure table caption{caption-side:top;text-align:left;font-size:.84rem;font-weight:630;line-height:1.55;padding:1rem .1rem;color:var(--color-text)}
+.advisor-ten__figure th,.advisor-ten__figure td{padding:.75rem .75rem .72rem .15rem;font-size:.92rem;line-height:1.5;text-align:left;vertical-align:top;border-top:1px solid var(--color-border);overflow-wrap:normal}
+.advisor-ten__figure th[scope=col]{color:var(--color-text-muted);font-weight:680;font-size:.8rem}
+.advisor-ten__figure th[scope=row]{font-weight:680;min-width:130px}
+.advisor-ten__number{font-weight:790;font-size:1.08rem!important}
+.advisor-ten__figure figcaption{font-size:.83rem;color:var(--color-text-muted);max-width:83ch;line-height:1.75;margin-top:.62rem}
+.advisor-ten__paper-reference{border-block:1px solid var(--color-border);margin:1.8rem 0;padding:.5rem 0}
+.advisor-ten__paper-reference p{max-width:79ch;line-height:1.8;font-size:.95rem;margin:.9rem 0}
+.advisor-ten__closing{padding:3rem 0 3.5rem;border-top:2px solid var(--color-text);max-width:900px}
+.advisor-ten__closing h2{font-size:clamp(1.9rem,3.8vw,2.7rem);line-height:1.2;letter-spacing:-.035em;max-width:22ch}
+.advisor-ten__closing p{font-size:1.03rem;line-height:1.85;max-width:74ch}
+.advisor-ten__closing-next{font-weight:620}
+.advisor-ten__closing-links{display:flex;gap:1.3rem;flex-wrap:wrap;font-size:.91rem!important;margin-top:2rem!important}
+.advisor-ten__closing-links a{color:var(--color-text);text-underline-offset:.22rem}
+@media(max-width:650px){
+.advisor-ten{width:calc(100% - 2rem)}
+.advisor-ten__contents ol{grid-template-columns:minmax(0,1fr)}
+.advisor-ten__question-header{grid-template-columns:2.65rem minmax(0,1fr);gap:.55rem}
+.advisor-ten__question{padding:1.8rem 0 2.4rem}
+.advisor-ten__figure th,.advisor-ten__figure td{font-size:.85rem}
+.advisor-ten__lede{font-size:1.17rem}
+.advisor-ten__back{font-size:.79rem}
+}
+@media(prefers-reduced-motion:reduce){.advisor-ten *{scroll-behavior:auto!important}}
+</style>
