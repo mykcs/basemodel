@@ -275,6 +275,9 @@ test('briefing scales the whole 16:9 slide to iPhone width without horizontal sc
 
   await page.setViewportSize({ width: 2560, height: 1440 });
   await page.goto('/research/seed-openevo/study/briefing/#capacity-diagnostic', { waitUntil: 'networkidle' });
+  // Same-URL navigation after a resize can resolve before the inline resize
+  // handler applies --scaled-deck-w. Wait for the required value, not time.
+  await expect(page.locator('#capacity-diagnostic')).toHaveCSS('width', '1280px');
   const desktop = await page.locator('#capacity-diagnostic').boundingBox();
   expect(desktop).not.toBeNull();
   expect(desktop!.width).toBe(1280);
