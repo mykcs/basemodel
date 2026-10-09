@@ -53,13 +53,8 @@ const methodStatus = {
       <p class="advisor-ten__eyebrow">WebShop · 研究汇报</p>
       <h1>OpenEVO 实验汇报：十个研究问题</h1>
       <p class="advisor-ten__lede" data-reader-purpose>
-        学长在 9 月 22 日围绕训练、参数容量、更新机制和能力保持提出了一组问题。
-        我们后来将它们拆成十个可以逐一验证的研究问题。现在一部分已经有明确的局部答案，
-        一部分实验虽已运行，却还不能支持因果结论。
-      </p>
-      <p class="advisor-ten__scope">
-        这是一份截至 {ADVISOR_RESEARCH_AS_OF}、根据已公开收据整理的研究快照，不是实时 GPU 看板。
-        十问并非会议逐字提出的十条：Q10 是会后为了检验前九问能否推广而提出的新问题。
+        本次整理了十个研究问题，涉及训练轮数、普通 SFT/OPSD 与 SEED、长期参数更新、旧能力保持和独立复现。
+        下面记录各项已完成的实验、目前的结果，以及仍缺少的证据。
       </p>
     </header>
 
@@ -75,7 +70,7 @@ const methodStatus = {
 
     <nav class="advisor-ten__contents" aria-label="十个研究问题目录">
       <h2>十个问题</h2>
-      <p>你可以从头跟着研究思路读，也可以直接跳到最关心的问题。</p>
+      
       <ol>
         {ADVISOR_QUESTIONS.map((question) => (
           <li><a href={'#' + question.id}><span>{question.id.toUpperCase()}</span>{question.title}</a></li>
@@ -200,7 +195,7 @@ const methodStatus = {
       <h2 id="closing-title">目前的研究结论与局限</h2>
       <p>
         一开始我们容易把“训练了多少轮、损失下降了多少、参数有没有更新”当成进展。
-        后来的负结果让问题变得更精确：<strong>能力是否在相同任务和评测协议下提高，方向与容量各自贡献什么，旧知识还能否被保留？</strong>
+        后来的负结果让研究重点变得更明确：<strong>相同评测条件下的任务能力、更新方向与容量的影响，以及旧能力能否保留。</strong>
       </p>
       <p>
         现在 Q01 给出了方法各不相同的平台区间，Q07 在局部状态上提供了更新方向的因果证据。
