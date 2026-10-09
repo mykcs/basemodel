@@ -1,0 +1,266 @@
+---
+import {
+  ADVISOR_Q03_CUSTOM_PANEL,
+  ADVISOR_Q04_CAPACITY,
+  ADVISOR_Q05_FROZEN,
+} from '../../data/openEvoAdvisorTenQuestions';
+
+type Variant = 'q01' | 'q02' | 'q03' | 'q04' | 'q05' | 'q07';
+interface Props { variant: Variant }
+const { variant } = Astro.props;
+const plateau = [
+  { name: '普通 DirectApply', round: 120, note: '后期新增收益较小' },
+  { name: 'Bounded', round: 150, note: '后期仍继续改善' },
+  { name: '历史复杂 β/GDR', round: 130, note: '随后明显下降' },
+];
+const earlySft = [
+  { name: 'SFT · 1 遍', score: 35.53 },
+  { name: 'SFT · 2 遍', score: 28.30 },
+  { name: 'SFT · 3 遍', score: 24.10 },
+];
+const notes = [
+  'A0 · 3.71 分。旧 Stage1 起点；64 题中没有完整成功。',
+  'A40 · 6.43 分。相对 A0 提高约 2.72 分，但尚不能说明稳定改善。',
+  'A80 · 0.69 分。相对 A40 下降约 5.74 分；只看 A40 会遗漏这一反转。',
+  'A120 · 6.62 分。再次回升约 5.93 分，仍是 0/64 个任务完整成功。',
+];
+const checkpoints = ADVISOR_Q03_CUSTOM_PANEL.map((point, index) => ({
+  ...point,
+  x: 88 + index * 156,
+  y: 225 - Number(point.score) * 17,
+  note: notes[index],
+}));
+const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y)).join(' ');
+const scorePct = (value: string) => Math.min(100, Math.max(0, Number(value))) + '%';
+const effectX = (value: number) => 80 + (value + 20) * 18;
+---
+{variant === 'q01' && (
+  <figure class="advisor-viz" data-report-figure="q01-horizon" data-evidence-shape="platform-position">
+    <header class="advisor-viz__heading"><strong>三种更新方法的平台轮次</strong><span>开发题 · 第 0–160 轮</span></header>
+    <div class="advisor-viz__rows">
+      {plateau.map((item) => (
+        <div class="advisor-viz__item">
+          <span class="advisor-viz__name">{item.name}</span>
+          <div class="advisor-viz__track" aria-hidden="true">
+            <i class="advisor-viz__marker" style={'left:' + item.round / 160 * 100 + '%'}></i>
+          </div>
+          <strong class="advisor-viz__value">约 {item.round} 轮</strong>
+          <small>{item.note}</small>
+        </div>
+      ))}
+    </div>
+    <div class="advisor-viz__ticks" aria-hidden="true"><span>第 0 轮</span><span>第 80 轮</span><span>第 160 轮</span></div>
+    <figcaption>位置表示大约何时出现平台，不是完整训练曲线，也不表示训练越久能力越高。三条路线比较的是同一开发评测协议下的保存点。</figcaption>
+    <details class="advisor-viz__details"><summary>查看原始平台期对照</summary>
+      <div class="advisor-viz__table"><table>
+        <caption>各方法近似平台期（冻结 64 题开发评测）</caption>
+        <thead><tr><th scope="col">方法</th><th scope="col">平台位置</th><th scope="col">后段变化</th></tr></thead>
+        <tbody>{plateau.map((item) => <tr><th scope="row">{item.name}</th><td>第 {item.round} 轮左右</td><td>{item.note}</td></tr>)}</tbody>
+      </table></div>
+    </details>
+  </figure>
+)}
+{variant === 'q02' && (
+  <figure class="advisor-viz" data-report-visual="q02-early-sft" data-evidence-shape="single-method-bar">
+    <header class="advisor-viz__heading"><strong>早期普通 SFT：多训练几遍，分数反而下降</strong><span>Task Score / 100</span></header>
+    <div class="advisor-viz__bars">
+      {earlySft.map((item) => (
+        <div class="advisor-viz__bar-row">
+          <span class="advisor-viz__name">{item.name}</span>
+          <div class="advisor-viz__bar" aria-hidden="true"><i style={'width:' + item.score + '%'}></i></div>
+          <strong class="advisor-viz__value">{item.score.toFixed(2)}</strong>
+        </div>
+      ))}
+    </div>
+    <figcaption>仅显示原有早期开发集上的 SFT 单路线 1/2/3 遍训练，不是正在核账的三随机种子 × SFT/OPSD 六项新训练；不能据此宣布 OPSD 胜出。</figcaption>
+  </figure>
+)}
+{variant === 'q03' && (
+  <figure class="advisor-viz" data-report-figure="q03-custom-curve" data-evidence-shape="four-measured-points" data-protocol="custom-q17-64">
+    <header class="advisor-viz__heading"><strong>Q03 · 四次实际测量的 Task Score</strong><span>同一自定义 64 题 · 满分 100</span></header>
+    <svg class="advisor-viz__trend" viewBox="0 0 625 285" role="img" aria-labelledby="advisor-q03-title advisor-q03-description">
+      <title id="advisor-q03-title">Q03 Stage2 的成绩先上升、再下降、再上升</title>
+      <desc id="advisor-q03-description">四个真实保存点：A0 为3.71分，A40为6.43分，A80为0.69分，A120为6.62分；纵轴局部显示零至十分，实际满分一百分，中间轮次未测。</desc>
+      {[0, 5, 10].map((tick) => (
+        <g><line class="advisor-viz__grid" x1="73" x2="592" y1={225 - tick * 17} y2={225 - tick * 17} />
+          <text class="advisor-viz__axis" x="57" y={230 - tick * 17} text-anchor="end">{tick}</text></g>
+      ))}
+      <polyline class="advisor-viz__polyline" points={points} />
+      {checkpoints.map((point, i) => (
+        <g data-trend-point={point.update} class:list={{ 'is-active': i === 0 }}>
+          <circle class="advisor-viz__halo" cx={point.x} cy={point.y} r="10" />
+          <circle class="advisor-viz__point" cx={point.x} cy={point.y} r="5.6" />
+          <text class="advisor-viz__number" x={point.x} y={point.y - 17} text-anchor="middle">{point.score}</text>
+          <text class="advisor-viz__axis" x={point.x} y="264" text-anchor="middle">{point.update}</text>
+        </g>
+      ))}
+    </svg>
+    <p class="advisor-viz__zoom"><strong>纵轴局部放大为 0–10 分</strong>（实际满分 100）。只画四个真实采样点；连线仅表示测量先后，并不代表中间轮次有对应成绩。</p>
+    <div class="advisor-viz__steps" data-q03-stage-selector aria-label="查看指定保存点">
+      {checkpoints.map((point, i) => (
+        <button type="button" data-stage={point.update} data-detail={point.note} aria-pressed={i === 0 ? 'true' : 'false'}>{point.update}</button>
+      ))}
+    </div>
+    <p class="advisor-viz__stage-note" data-stage-detail role="status" aria-live="polite">{checkpoints[0]?.note ?? ''}</p>
+    <figcaption>四次完整成功均为 0/64。论文 SEED 的 87.10 分来自另一套评测协议，不出现在这条曲线上；模型、任务、提示和采样差异见紧接本图的正文。</figcaption>
+    <details class="advisor-viz__details"><summary>查看四个保存点的完整数字</summary>
+      <div class="advisor-viz__table"><table>
+        <caption>混合 SEED Q03 · 自定义 64 题上的测量点</caption>
+        <thead><tr><th scope="col">Stage2 保存点</th><th scope="col">Task Score / 100</th><th scope="col">完整成功</th><th scope="col">观察</th></tr></thead>
+        <tbody>{ADVISOR_Q03_CUSTOM_PANEL.map((point) => (
+          <tr><th scope="row">{point.update}</th><td>{point.score}</td><td>{point.exact}</td><td>{point.note}</td></tr>
+        ))}</tbody>
+      </table></div>
+    </details>
+  </figure>
+)}
+{variant === 'q04' && (
+  <figure class="advisor-viz" data-report-figure="q04-capacity" data-evidence-shape="two-scale-tradeoff">
+    <header class="advisor-viz__heading"><strong>文件大小减少约四分之三，Task Score 变化较小</strong><span>分开显示容量和能力</span></header>
+    <div class="advisor-viz__double">
+      <section aria-label="参数文件大小">
+        <h4>长期参数文件 <small>MB</small></h4>
+        {ADVISOR_Q04_CAPACITY.map((item) => (
+          <div class="advisor-viz__bar-row">
+            <span class="advisor-viz__name">{item.method}</span>
+            <div class="advisor-viz__bar" aria-hidden="true"><i style={'width:' + Number(item.bytes.replace(' MB', '')) / 205.6 * 100 + '%'}></i></div>
+            <strong class="advisor-viz__value">{item.bytes}</strong>
+          </div>
+        ))}
+      </section>
+      <section aria-label="WebShop Task Score">
+        <h4>WebShop Task Score <small>/ 100</small></h4>
+        {ADVISOR_Q04_CAPACITY.map((item) => (
+          <div class="advisor-viz__bar-row">
+            <span class="advisor-viz__name">{item.method}</span>
+            <div class="advisor-viz__bar" aria-hidden="true"><i style={'width:' + scorePct(item.score)}></i></div>
+            <strong class="advisor-viz__value">{item.score}</strong>
+          </div>
+        ))}
+      </section>
+    </div>
+    <figcaption>第 152–159 轮的 1,024 次同题尝试；参数文件大小取第 159 轮。左侧以 205.6 MB 为满格，右侧以 Task Score 满分 100 为满格。不能把两种不同单位的长度直接比较，也尚未证明两种 rank 等价。</figcaption>
+    <details class="advisor-viz__details"><summary>查看容量、得分和完整成功率</summary>
+      <div class="advisor-viz__table"><table>
+        <caption>rank128 与 rank32 的匹配对照</caption>
+        <thead><tr><th scope="col">长期状态</th><th scope="col">参数文件</th><th scope="col">Task Score / 100</th><th scope="col">完整成功率</th></tr></thead>
+        <tbody>{ADVISOR_Q04_CAPACITY.map((item) => <tr><th scope="row">{item.method}</th><td>{item.bytes}</td><td>{item.score}</td><td>{item.exact}</td></tr>)}</tbody>
+      </table></div>
+    </details>
+  </figure>
+)}
+{variant === 'q05' && (
+  <figure class="advisor-viz" data-report-figure="q05-same-final" data-evidence-shape="matched-panel-bars">
+    <header class="advisor-viz__heading"><strong>三条历史路线的冻结终评</strong><span>同一 128 题 · Task Score / 100</span></header>
+    <div class="advisor-viz__bars">
+      {ADVISOR_Q05_FROZEN.map((item) => (
+        <div class="advisor-viz__bar-row">
+          <span class="advisor-viz__name">{item.method}</span>
+          <div class="advisor-viz__bar" aria-hidden="true"><i style={'width:' + scorePct(item.score)}></i></div>
+          <strong class="advisor-viz__value">{item.score}</strong>
+        </div>
+      ))}
+    </div>
+    <figcaption>在同一冻结题集上观察到能力差异，不自动等于算法的因果效果。普通 DirectApply 是较早历史前驱；匹配对照时仍需考虑不同起点与执行条件。</figcaption>
+    <details class="advisor-viz__details"><summary>查看完整成功数</summary>
+      <div class="advisor-viz__table"><table>
+        <caption>三条路线的历史冻结 128 题终评</caption>
+        <thead><tr><th scope="col">路线</th><th scope="col">Task Score / 100</th><th scope="col">完整成功</th></tr></thead>
+        <tbody>{ADVISOR_Q05_FROZEN.map((item) => <tr><th scope="row">{item.method}</th><td>{item.score}</td><td>{item.exact}</td></tr>)}</tbody>
+      </table></div>
+    </details>
+  </figure>
+)}
+{variant === 'q07' && (
+  <figure class="advisor-viz" data-report-visual="q07-confidence-interval" data-evidence-shape="confidence-interval">
+    <header class="advisor-viz__heading"><strong>反转第 156 轮更新方向后，分数下降</strong><span>配对 Task Score 变化 · 百分制</span></header>
+    <p class="advisor-viz__interval-summary"><strong>−10.06 分</strong><span>95% 配对置信区间：−15.02 至 −5.60 分</span></p>
+    <svg class="advisor-viz__trend advisor-viz__trend--ci" viewBox="0 0 625 126" role="img" aria-labelledby="advisor-q07-title advisor-q07-desc">
+      <title id="advisor-q07-title">第 156 轮反转更新方向，Task Score 配对差异为负</title>
+      <desc id="advisor-q07-desc">平均下降 10.06 分；95%区间为下降 15.02 到 5.60 分。区间全部位于零点左侧。</desc>
+      <line class="advisor-viz__baseline" x1={effectX(-20)} x2={effectX(5)} y1="67" y2="67"/>
+      {[-20,-10,0].map((v) => <g><line class="advisor-viz__grid" x1={effectX(v)} x2={effectX(v)} y1="25" y2="90"/>
+        <text class="advisor-viz__axis" x={effectX(v)} y="114" text-anchor="middle">{v}</text></g>)}
+      <line class="advisor-viz__ci" x1={effectX(-15.02)} x2={effectX(-5.60)} y1="67" y2="67"/>
+      <line class="advisor-viz__cap" x1={effectX(-15.02)} x2={effectX(-15.02)} y1="58" y2="76"/>
+      <line class="advisor-viz__cap" x1={effectX(-5.60)} x2={effectX(-5.60)} y1="58" y2="76"/>
+      <circle class="advisor-viz__ci-point" cx={effectX(-10.06)} cy="67" r="6"/>
+    </svg>
+    <figcaption>0 代表没有分数差异。该次反向干预的 95% 区间完全在零点左侧，但其他轮次没有全部得到同样结果；不能将这一次的局部发现扩大为普遍规则。</figcaption>
+  </figure>
+)}
+<style>
+.advisor-viz{border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border);padding:1rem 0 .8rem;margin:1.4rem 0 1.7rem;max-width:930px;font-variant-numeric:tabular-nums lining-nums}
+.advisor-viz__heading{display:flex;flex-wrap:wrap;gap:.2rem 1rem;justify-content:space-between;align-items:baseline;margin-bottom:1.05rem}
+.advisor-viz__heading strong{font-size:1.05rem;line-height:1.5;font-weight:700}
+.advisor-viz__heading span{font-size:.9rem;line-height:1.5;color:var(--color-text-muted)}
+.advisor-viz figcaption{font-size:.91rem;line-height:1.75;color:var(--color-text-muted);margin:.8rem 0 .3rem;max-width:82ch}
+.advisor-viz__rows,.advisor-viz__bars{display:grid;gap:.95rem}
+.advisor-viz__item{display:grid;grid-template-columns:minmax(9rem,1fr) minmax(8rem,1.4fr) minmax(5rem,.6fr);gap:.3rem .9rem;align-items:center}
+.advisor-viz__name{font-size:.91rem;line-height:1.55;font-weight:590;overflow-wrap:anywhere}
+.advisor-viz__track{height:1.3rem;position:relative;border-bottom:1px solid var(--color-border);background:repeating-linear-gradient(to right,transparent,transparent calc(25% - 1px),var(--color-border) calc(25% - 1px),var(--color-border) 25%)}
+.advisor-viz__marker{position:absolute;top:50%;transform:translate(-50%,-50%);width:.82rem;height:.82rem;border-radius:50%;background:var(--color-text)}
+.advisor-viz__item small{grid-column:2/-1;font-size:.84rem;line-height:1.45;color:var(--color-text-muted)}
+.advisor-viz__value{text-align:right;font-size:.95rem;font-weight:760;white-space:nowrap}
+.advisor-viz__ticks{display:flex;justify-content:space-between;padding-left:36%;padding-right:5rem;margin:.85rem 0 0;color:var(--color-text-muted);font-size:.78rem}
+.advisor-viz__bar-row{display:grid;grid-template-columns:minmax(9rem,1fr) minmax(6rem,1.4fr) 4.6rem;align-items:center;gap:.7rem}
+.advisor-viz__bar{height:1.05rem;background:var(--color-border);overflow:hidden}
+.advisor-viz__bar i{height:100%;background:var(--color-text);display:block;min-width:1px}
+.advisor-viz__double{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem}
+.advisor-viz__double section{min-width:0}
+.advisor-viz__double h4{font-size:.98rem;font-weight:700;margin:0 0 .9rem;line-height:1.5}
+.advisor-viz__double h4 small{color:var(--color-text-muted);font-size:.84rem}
+.advisor-viz__double .advisor-viz__bar-row{grid-template-columns:minmax(4rem,1fr) minmax(4rem,1.2fr) minmax(4rem,.7fr);gap:.4rem;margin:.7rem 0}
+.advisor-viz__double .advisor-viz__name{font-size:.84rem}
+.advisor-viz__trend{display:block;width:100%;max-width:680px}
+.advisor-viz__grid{stroke:var(--color-border);stroke-width:1}
+.advisor-viz__axis{fill:var(--color-text-muted);font-size:14px}
+.advisor-viz__polyline{fill:none;stroke:var(--color-text);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.advisor-viz__point{fill:var(--color-text)}
+.advisor-viz__halo{fill:transparent;stroke:transparent}
+[data-trend-point].is-active .advisor-viz__halo{stroke:var(--color-accent);stroke-width:2.2}
+.advisor-viz__number{fill:var(--color-text);font-size:16px;font-weight:710}
+.advisor-viz__zoom{margin:.35rem 0 .7rem;color:var(--color-text-muted);font-size:.9rem;line-height:1.65}
+.advisor-viz__zoom strong{color:var(--color-text)}
+.advisor-viz__steps{display:flex;flex-wrap:wrap;gap:.5rem;margin:.85rem 0 .35rem}
+.advisor-viz__steps button{padding:.4rem .85rem;min-height:2.35rem;border:1px solid var(--color-border);background:transparent;color:var(--color-text);border-radius:0;font:inherit;font-size:.89rem;cursor:pointer}
+.advisor-viz__steps button[aria-pressed=true]{color:var(--color-bg,#fff);background:var(--color-text);border-color:var(--color-text)}
+.advisor-viz__steps button:focus-visible,.advisor-viz__details summary:focus-visible,.advisor-viz__table:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+.advisor-viz__stage-note{font-size:.95rem;line-height:1.75;margin:.45rem 0}
+.advisor-viz__details{margin:.85rem 0 .2rem}
+.advisor-viz__details summary{cursor:pointer;text-decoration:underline;text-underline-offset:.18rem;padding:.35rem 0;font-size:.89rem}
+.advisor-viz__table{max-width:100%;overflow-x:auto;margin:.7rem 0}
+.advisor-viz__table table{width:100%;border-collapse:collapse;min-width:530px}
+.advisor-viz__table caption{caption-side:top;text-align:left;font-size:.86rem;padding:.4rem 0;line-height:1.6;color:var(--color-text-muted)}
+.advisor-viz__table th,.advisor-viz__table td{font-size:.88rem;text-align:left;vertical-align:top;padding:.65rem .75rem .65rem 0;border-top:1px solid var(--color-border)}
+.advisor-viz__table th[scope=row]{font-weight:700}
+.advisor-viz__interval-summary{display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:baseline;margin:0;line-height:1.7}
+.advisor-viz__interval-summary strong{font-size:1.4rem}
+.advisor-viz__interval-summary span{font-size:.9rem;color:var(--color-text-muted)}
+.advisor-viz__trend--ci{max-width:630px}
+.advisor-viz__baseline{stroke:var(--color-border);stroke-width:2}
+.advisor-viz__ci,.advisor-viz__cap{stroke:var(--color-text);stroke-width:5;stroke-linecap:round}
+.advisor-viz__cap{stroke-width:2}
+.advisor-viz__ci-point{fill:var(--color-text)}
+@media(max-width:720px){
+.advisor-viz__double{grid-template-columns:1fr;gap:.8rem}
+.advisor-viz__item{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(4.6rem,.5fr);gap:.4rem}
+.advisor-viz__item small{grid-column:1/-1}
+.advisor-viz__ticks{padding-left:0;padding-right:0}
+.advisor-viz__bar-row{grid-template-columns:minmax(7rem,1fr) minmax(4rem,1.1fr) 4.4rem;gap:.4rem}
+}
+@media(max-width:430px){.advisor-viz__name{font-size:.84rem}.advisor-viz__bar-row{grid-template-columns:minmax(6.5rem,1fr) minmax(3rem,.9fr) 4.3rem}.advisor-viz__value{font-size:.84rem}}
+</style>
+<script>
+document.querySelectorAll<HTMLElement>('[data-report-figure="q03-custom-curve"]').forEach((figure) => {
+  const buttons = [...figure.querySelectorAll<HTMLButtonElement>('[data-q03-stage-selector] button')];
+  const output = figure.querySelector<HTMLElement>('[data-stage-detail]');
+  buttons.forEach((button) => button.addEventListener('click', () => {
+    buttons.forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
+    figure.querySelectorAll<SVGGElement>('[data-trend-point]').forEach((dot) => {
+      dot.classList.toggle('is-active', dot.dataset.trendPoint === button.dataset.stage);
+    });
+    if (output) output.textContent = button.dataset.detail || '';
+  }));
+});
+</script>

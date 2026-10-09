@@ -39,6 +39,8 @@ For substantial research results and advisor/peer reports, load the canonical
 when it is available through the active Harness. This BaseModel contract
 specializes its scientific HTML publication, not a second report-writing authority.
 
+**This is an internal analysis check, not a recipe for question-shaped headings.** Headings normally name the experiment or topic in ordinary declarative Chinese; preserve a question mark only when it is a genuine research question the section actually investigates. Do not manufacture an H1 to make a report seem intriguing, and do not turn section navigation into an invitation such as “从哪里读起？”. This inherits the existing Human Expression heading rules; it does not replace them.
+
 Before approving a page, review the visible artifact as a scientifically literate reader
 who has not followed the author's working sessions:
 
