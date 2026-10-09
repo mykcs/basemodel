@@ -10,7 +10,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
       selected: '—',
       selectedTokens: ['—'],
       transition: zh ? '任务载入，网页处于首页。' : 'Task loaded; storefront is at the home page.',
-      reward: 'task_score = 0',
+      reward: zh ? '本步 reward = 0 · 尚无终局评分' : 'Step reward = 0 · not terminal',
     },
     {
       observation: zh ? '首页提供搜索框。Agent 只能基于当前 observation 选择动作。' : 'The home page exposes a search box. The agent chooses from the current observation.',
@@ -18,7 +18,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
       selected: 'search["black sports sweatshirt"]',
       selectedTokens: ['search', '[', '"black sports sweatshirt"', ']'],
       transition: zh ? '环境返回搜索结果页。' : 'The environment returns a results page.',
-      reward: 'task_score = 0',
+      reward: zh ? '本步 reward = 0 · 尚无终局评分' : 'Step reward = 0 · not terminal',
     },
     {
       observation: zh ? '搜索结果里出现 Core Run Hoodie，$39。' : 'Search results include Core Run Hoodie at $39.',
@@ -26,7 +26,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
       selected: 'click["Core Run Hoodie"]',
       selectedTokens: ['click', '[', '"Core Run Hoodie"', ']'],
       transition: zh ? '网页切换到商品详情页。' : 'The page transitions to product detail.',
-      reward: 'task_score = 0',
+      reward: zh ? '本步 reward = 0 · 尚无终局评分' : 'Step reward = 0 · not terminal',
     },
     {
       observation: zh ? '商品页暴露颜色与尺码选项：Black / Gray，S / M / L。' : 'The product page exposes color and size options: Black / Gray, S / M / L.',
@@ -34,7 +34,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
       selected: 'click["Black"] + click["M"]',
       selectedTokens: ['click["Black"]', '+', 'click["M"]'],
       transition: zh ? '环境保存当前商品选项。' : 'The environment stores the selected options.',
-      reward: 'task_score = 0',
+      reward: zh ? '本步 reward = 0 · 尚无终局评分' : 'Step reward = 0 · not terminal',
     },
     {
       observation: zh ? '商品、颜色、尺码、价格都满足目标。' : 'Product, color, size, and price now satisfy the goal.',
@@ -99,7 +99,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
           </dl>
         </aside>
       </div>
-      <aside className="irx-boundary-note"><b>{zh ? '教学边界' : 'Teaching boundary'}</b><span>{zh ? '最后一步显示的 “DEMO: task_score = 1.0” 只是教学演示，不是测得的实验结果。商品规模、任务划分和具体研究协议是独立实验条件，不能从这段交互示例推断。' : 'The final-step “DEMO: task_score = 1.0” is a teaching example, not a measured experiment result. Product scale, task splits, and the specific research protocol are separate experimental conditions and cannot be inferred from this interaction example.'}</span></aside>
+      <aside className="irx-boundary-note"><b>{zh ? '教学边界' : 'Teaching boundary'}</b><span>{zh ? '最后一步显示的 “DEMO: task_score = 1.0” 只是教学演示，不是测得的实验结果。此前每一步的 reward = 0 是尚未购买时的即时反馈，不能当作一次失败购买的最终 Task Score = 0。商品规模、任务划分和具体研究协议是独立实验条件，不能从这段交互示例推断。' : 'The final-step “DEMO: task_score = 1.0” is a teaching example, not a measured experiment result. Earlier reward = 0 values are nonterminal step feedback, not a final Task Score = 0 for a completed failed purchase. Product scale, task splits, and the specific research protocol are separate experimental conditions and cannot be inferred from this interaction example.'}</span></aside>
     </>
   );
 }

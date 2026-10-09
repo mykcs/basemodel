@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   exampleProducts, inspectExamplePurchase, initialExamplePurchase,
@@ -40,4 +41,14 @@ describe('WebShop purchase-dependent teaching example', () => {
     expect(inspectExamplePurchase({ productId: 'premium', size: '10', purchased: true }))
       .toMatchObject({ score: .25, exact: false });
   });
+  it('keeps nonterminal step feedback distinct from final WebShop Task Score', () => {
+    const source = readFileSync(
+      new URL('../components/research/explainer/EnvironmentExplainers.tsx', import.meta.url),
+      'utf8',
+    );
+    expect(source).not.toContain("reward: 'task_score = 0'");
+    expect(source).toContain('本步 reward = 0 · 尚无终局评分');
+    expect(source).toContain('不能当作一次失败购买的最终 Task Score = 0');
+  });
+
 });
