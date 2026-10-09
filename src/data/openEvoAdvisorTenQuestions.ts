@@ -59,7 +59,7 @@ export const ADVISOR_QUESTIONS = [
     experiment: '历史 Q03 复用了 OpenEVO 冻结轨迹与 MiniMax 分析，完成三遍 Stage1 SFT；随后以不同于公开论文的自分析粒度和 OpenEVO 自定义 64 题评测运行 SEED-derived Stage2，到 A120 停下。另一条新的公开代码复现则独立收集 Stage1，不沿用旧 Q03。',
     finding: 'Q03 的 Stage2 在同一 64 题上的 Task Score 从 3.71 到 6.43，再跌至 0.69，最后 A120 回到 6.62（均为满分 100）；每次完整成功都是 0/64。它在当前协议下仍然很弱，且明显非单调。论文 Qwen3-1.7B 报告 87.10/100、完整成功 77.3%，但评测协议不同。',
     interpretation: '数值可以统一换成百分制，实验仍然不能直接排名。Q03 使用弱的历史 Stage1 起点、不同提示和动作解释、非空文字载体、温度 1.0 和 64 题；论文使用另一套原生 128 题。我们知道这些差异存在，但还不知道各自造成了多少分的差距。',
-    unknown: 'Q03 的原生 SEED 验证尚无可靠封存成绩，不能宣称“SEED 方法失败”。全新公开代码路线已采集 1,440 条 Stage1 轨迹，取得 1,200 条有效教师标注，但截至所核的 10 月 8 日收据，正式真实数据 SFT 和 Stage2 仍没有可报告的能力分数。',
+    unknown: 'Q03 的原生 SEED 验证尚无可靠封存成绩，不能宣称“SEED 方法失败”。全新公开代码路线已采集 1,440 条 Stage1 轨迹，取得 1,200 条有效教师标注，但截至所核的 10 月 8 日收据，正式 SFT 和 Stage2 仍没有可报告的能力分数。',
     evidence: [
       { label: 'Q03 · A0–A120 封存与原生评测差异', href: 'https://github.com/mykcs/openevo-experiment/pull/678' },
       { label: 'Q03 历史 Stage2', href: 'https://github.com/mykcs/openevo-experiment/pull/630' },
