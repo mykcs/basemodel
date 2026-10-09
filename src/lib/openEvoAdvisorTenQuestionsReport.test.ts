@@ -87,4 +87,19 @@ describe('advisor ten-question scientific report', () => {
     expect(index).toContain('当时精炼的六个问题');
     expect(index).toContain('OPEN_EVO_ADVISOR_MEETING.points');
   });
+  it('keeps reader-question analysis internal and names visible sections directly', () => {
+    const page = read(pagePath);
+    expect(page).toContain('<h1>OpenEVO 实验汇报：十个研究问题</h1>');
+    expect(page).toContain('<h2>十个问题</h2>');
+    expect(page).not.toContain('训练了一百多轮，我们究竟证明了什么？');
+    expect(page).not.toContain('十个问题，从哪里读起？');
+    expect(page).not.toContain('目前最重要的三个判断');
+    expect(page).not.toContain('max-width:20ch');
+    expect(page).not.toContain('max-width:42ch');
+    const footnotes = page.indexOf('class="advisor-ten__footnotes"');
+    expect(footnotes).toBeGreaterThan(page.indexOf('id="closing-title"'));
+    expect(page.indexOf('本文 WebShop Task Score 统一按满分 100 分展示')).toBeGreaterThan(footnotes);
+    expect(page.indexOf('Q10 为会后延伸')).toBeGreaterThan(footnotes);
+  });
+
 });
