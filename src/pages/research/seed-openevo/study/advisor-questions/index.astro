@@ -43,10 +43,6 @@ const methodStatus = {
   locale="zh"
 >
   <main class="advisor-ten" data-advisor-ten-questions data-copy-review data-ui-audit="contrast layout evidence">
-    <div class="advisor-ten__back">
-      <a href="/research/seed-openevo/study/">← 返回 OpenEVO 实验目录</a>
-      <span>研究汇报 · 证据快照 {ADVISOR_RESEARCH_AS_OF}</span>
-    </div>
 
     <header class="advisor-ten__hero">
       <p class="advisor-ten__eyebrow">WebShop · 研究汇报</p>
@@ -185,8 +181,6 @@ const methodStatus = {
 
 <style>
 .advisor-ten{width:min(900px,calc(100% - 2.2rem));margin:0 auto 6rem;color:var(--color-text)}
-.advisor-ten__back{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem 1rem;margin:1.6rem 0 0;font-size:.86rem;color:var(--color-text-muted)}
-.advisor-ten__back a{color:inherit;text-underline-offset:.22rem}
 .advisor-ten__hero{padding:clamp(1.8rem,4vw,3rem) 0 2rem;border-bottom:1px solid var(--color-border)}
 .advisor-ten__eyebrow{margin:0 0 1.15rem;font-size:.81rem;font-weight:700;letter-spacing:.06em;color:var(--color-text-muted)}
 .advisor-ten__hero h1{margin:0;font-size:clamp(2rem,3.6vw,3.15rem);line-height:1.18;letter-spacing:-.035em;text-wrap:balance}
@@ -258,7 +252,6 @@ const methodStatus = {
 .advisor-ten__question{padding:1.8rem 0 2.4rem}
 .advisor-ten__figure th,.advisor-ten__figure td{font-size:.85rem}
 .advisor-ten__lede{font-size:1.17rem}
-.advisor-ten__back{font-size:.79rem}
 }
 @media(prefers-reduced-motion:reduce){.advisor-ten *{scroll-behavior:auto}}
 </style>

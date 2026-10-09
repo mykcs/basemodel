@@ -130,6 +130,7 @@ test('advisor report uses evidence-appropriate visuals and visible meeting histo
   await expect(page.locator('[data-report-figure="q04-capacity"] .advisor-viz__double section')).toHaveCount(2);
   await expect(page.locator('[data-report-figure="q09-update-counts"] tbody tr')).toHaveCount(3);
   await expect(page.locator('.advisor-ten__lede')).toContainText('9 月 22 日，我和学长');
+  await expect(page.locator('.advisor-ten__back')).toHaveCount(0);
   await expect(page.locator('.advisor-ten__meeting-source a')).toHaveAttribute('href', /github.com\/mykcs/);
   await page.locator('.advisor-ten__meeting-details summary').click();
   await expect(page.locator('.advisor-ten__meeting-details ol li')).toHaveCount(6);
