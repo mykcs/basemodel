@@ -5,7 +5,7 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
   const zh = locale === 'zh';
   const states = [
     {
-      observation: zh ? '任务目标：买一件黑色、M 码、价格低于 $50 的运动衫。' : 'Goal: buy a black, size-M sports sweatshirt under $50.',
+      observation: zh ? '任务目标：买一双防水、透气、9 码、价格不超过 $60 的跑鞋。' : 'Goal: buy waterproof, breathable, size-9 running shoes under $60.',
       actions: zh ? '环境已就绪；可从搜索开始。' : 'Environment ready; search can begin.',
       selected: '—',
       selectedTokens: ['—'],
@@ -15,29 +15,29 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
     {
       observation: zh ? '首页提供搜索框。Agent 只能基于当前 observation 选择动作。' : 'The home page exposes a search box. The agent chooses from the current observation.',
       actions: 'search[query]',
-      selected: 'search["black sports sweatshirt"]',
-      selectedTokens: ['search', '[', '"black sports sweatshirt"', ']'],
+      selected: 'search["waterproof breathable running shoes"]',
+      selectedTokens: ['search', '[', '"waterproof breathable running shoes"', ']'],
       transition: zh ? '环境返回搜索结果页。' : 'The environment returns a results page.',
       reward: zh ? '本步 reward = 0 · 尚无终局评分' : 'Step reward = 0 · not terminal',
     },
     {
-      observation: zh ? '搜索结果里出现 Core Run Hoodie，$39。' : 'Search results include Core Run Hoodie at $39.',
+      observation: zh ? '搜索结果里出现 Trail Runner 跑鞋，$55。' : 'Search results include Trail Runner shoes at $55.',
       actions: 'click[product] · search[new query]',
-      selected: 'click["Core Run Hoodie"]',
-      selectedTokens: ['click', '[', '"Core Run Hoodie"', ']'],
+      selected: 'click["Trail Runner"]',
+      selectedTokens: ['click', '[', '"Trail Runner"', ']'],
       transition: zh ? '网页切换到商品详情页。' : 'The page transitions to product detail.',
       reward: zh ? '本步 reward = 0 · 尚无终局评分' : 'Step reward = 0 · not terminal',
     },
     {
-      observation: zh ? '商品页暴露颜色与尺码选项：Black / Gray，S / M / L。' : 'The product page exposes color and size options: Black / Gray, S / M / L.',
+      observation: zh ? '商品页提供颜色 Black / Blue，尺码 8 / 9。' : 'The product offers colors Black / Blue and sizes 8 / 9.',
       actions: 'click[color] · click[size] · click[buy]',
-      selected: 'click["Black"] + click["M"]',
+      selected: 'click["Black"] + click["9"]',
       selectedTokens: ['click["Black"]', '+', 'click["M"]'],
       transition: zh ? '环境保存当前商品选项。' : 'The environment stores the selected options.',
       reward: zh ? '本步 reward = 0 · 尚无终局评分' : 'Step reward = 0 · not terminal',
     },
     {
-      observation: zh ? '商品、颜色、尺码、价格都满足目标。' : 'Product, color, size, and price now satisfy the goal.',
+      observation: zh ? '购买的跑鞋符合防水、透气、9 码和价格条件。' : 'The shoes match waterproof, breathable, size and price requirements.',
       actions: 'click[buy]',
       selected: 'click["Buy Now"]',
       selectedTokens: ['click["Buy Now"]'],
@@ -55,26 +55,26 @@ export function WebShopExplainer({ locale, step }: { locale: Locale; step: numbe
           <div className="irx-browser-bar"><i></i><i></i><i></i><code>webshop.local</code></div>
           <div className="irx-shop-header">
             <strong>WebShop</strong>
-            <label><span className="sr-only">Search</span><input readOnly value={step >= 1 ? 'black sports sweatshirt' : ''} placeholder={zh ? '搜索商品' : 'Search products'} /></label>
+            <label><span className="sr-only">Search</span><input readOnly value={step >= 1 ? 'waterproof breathable running shoes' : ''} placeholder={zh ? '搜索商品' : 'Search products'} /></label>
             <button type="button" tabIndex={-1}>Search</button>
           </div>
           {step === 0 && (
             <div className="irx-shop-welcome">
-              <span>{zh ? "购物目标" : "GOAL"}</span><b>{zh ? '黑色 · M 码 · 运动衫 · ≤ $50' : 'Black · M · sweatshirt · ≤ $50'}</b>
+              <span>{zh ? "购物目标" : "GOAL"}</span><b>{zh ? '防水 · 透气 · 跑鞋 9 码 · ≤ $60' : 'Waterproof · Breathable · shoes size 9 · ≤ $60'}</b>
               <p>{zh ? 'WebShop 不是问答题。Agent 必须通过一连串页面状态变化完成任务。' : 'WebShop is not a question-answer task. The agent must complete a sequence of page-state transitions.'}</p>
             </div>
           )}
           {step >= 1 && step <= 2 && (
             <div className="irx-products" data-ui-audit="contrast layout">
-              <article data-ui-audit-item data-selected={step === 2}><div className="irx-product-image">HOODIE</div><strong>Core Run Hoodie</strong><span>$39</span><small>Black · Gray · S/M/L</small></article>
-              <article data-ui-audit-item><div className="irx-product-image">ZIP</div><strong>Trail Zip Jacket</strong><span>$64</span><small>Black · Navy</small></article>
-              <article data-ui-audit-item><div className="irx-product-image">TEE</div><strong>Training Tee</strong><span>$28</span><small>Black · White</small></article>
+              <article data-ui-audit-item data-selected={step === 2}><div className="irx-product-image">SHOES</div><strong>Trail Runner</strong><span>$55</span><small>Black · Blue · 8/9</small></article>
+              <article data-ui-audit-item><div className="irx-product-image">SHOES</div><strong>Premium Runner</strong><span>$75</span><small>Size 9/10</small></article>
+              <article data-ui-audit-item><div className="irx-product-image">SHOES</div><strong>Daily Runner</strong><span>$45</span><small>Size 8</small></article>
             </div>
           )}
           {step >= 3 && (
             <div className="irx-product-detail">
-              <div className="irx-product-image irx-product-image-large">HOODIE</div>
-              <div><small>Core Run Hoodie</small><h3>$39</h3><p>{zh ? '颜色' : 'Color'}</p><div className="irx-options"><span data-selected>Black</span><span>Gray</span></div><p>{zh ? '尺码' : 'Size'}</p><div className="irx-options"><span>S</span><span data-selected>M</span><span>L</span></div><button type="button" tabIndex={-1} data-ready={step === 4}>Buy Now</button></div>
+              <div className="irx-product-image irx-product-image-large">SHOES</div>
+              <div><small>Trail Runner</small><h3>$55</h3><p>{zh ? '颜色' : 'Color'}</p><div className="irx-options"><span data-selected>Black</span><span>Blue</span></div><p>{zh ? '尺码' : 'Size'}</p><div className="irx-options"><span>8</span><span data-selected>9</span></div><button type="button" tabIndex={-1} data-ready={step === 4}>Buy Now</button></div>
             </div>
           )}
         </section>

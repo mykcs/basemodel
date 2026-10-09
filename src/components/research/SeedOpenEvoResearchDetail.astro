@@ -24,8 +24,8 @@ const copy: Record<DetailPage, { title: string; lede: string }> = {
     lede: t('ALFWorld 看 Agent 能否完成家务目标，主要报告任务家族成功率；WebShop 看 Agent 能否按购物要求完成网页任务，同时报告连续完成度分数和精确成功。两套指标回答的问题不同，不能直接混比。', 'ALFWorld asks whether an agent completes household goals and primarily reports task-family success rates. WebShop asks whether an agent completes a shopping request and reports both continuous completion score and exact success. The metrics answer different questions and should not be mixed directly.'),
   },
   webshop: {
-    title: t('WebShop 任务与评测', 'WebShop tasks and evaluation'),
-    lede: t('WebShop 是一个模拟电商网站 benchmark：Agent 根据自然语言购物要求连续搜索、浏览、选择商品属性并完成购买。SEED 用它评测长程 Agent，并分别报告 normalized Score 与 exact Success。', 'WebShop is a simulated e-commerce benchmark where an agent follows a natural-language shopping request through repeated search, browsing, product-option selection, and purchase. SEED uses it to evaluate long-horizon agents and reports normalized Score and exact Success separately.'),
+    title: t('WebShop：让 AI 真的买对东西', 'WebShop: can an AI agent buy the right item?'),
+    lede: t('给 AI 一张购物清单。它要搜索商品、检查尺码并真正完成购买；评分取决于最后买到了什么。', 'WebShop gives an agent a shopping request. It must read pages, pick a matching product and complete the purchase. Researchers then score the purchased result. How the goals are generated and sampled by SEED determines what those results mean.'),
   },
   alfworld: {
     title: t('ALFWorld 任务与评测', 'ALFWorld tasks and evaluation'),
@@ -46,11 +46,18 @@ const current = copy[page];
 <div class:list={['plain-detail', { 'plain-detail--results': page === 'results' }]} data-locale={locale}>
   {page !== 'results' && (
     <header class="plain-detail__header">
+      {page === 'webshop' && <nav class="webshop-breadcrumb" aria-label="位置：研究原理中的 WebShop">
+        <a href="/research/seed-openevo/flow/">研究原理</a>
+        <span aria-hidden="true">/</span>
+        <a href="/research/seed-openevo/flow/benchmarks/">任务环境</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">WebShop</span>
+      </nav>}
       <h1>{current.title}</h1>
       <p>{current.lede}</p>
     </header>
   )}
-  {hasExplainer && <div class="plain-detail__interactive"><slot /></div>}
+  {hasExplainer && <div class="plain-detail__interactive" data-page-outline-ignore={page === 'webshop' ? true : undefined}><slot /></div>}
   {page !== 'results' && page !== 'webshop' && <div class="plain-detail-core"><SeedOpenEvoResearchPageCore locale={locale} page={page} /></div>}
   {hasExplainer && page !== 'results' && <ExplainerScrollLink />}
 </div>
@@ -68,6 +75,9 @@ const current = copy[page];
   .plain-detail__interactive :global(.irx + .irx){margin-top:1.5rem}
   .plain-detail-core{width:min(780px,100%);margin-inline:auto}
   @media(max-width:720px){.plain-detail{width:min(100% - 1rem,1160px)}.plain-detail__header{padding-top:1.2rem}.plain-detail__header p{font-size:.9rem}.plain-detail__interactive{margin-bottom:1.6rem}}
+  .webshop-breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; margin-bottom: .9rem; color: var(--muted); font-size: .72rem; }
+  .webshop-breadcrumb a { color: var(--accent-deep); text-underline-offset: 3px; }
+  .webshop-breadcrumb a:focus-visible { outline: 2px solid var(--focus-ring); }
 </style>
 
 <style is:global>
