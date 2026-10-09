@@ -9,6 +9,7 @@ import WebShopGoalGenerationFigure from '../../../../components/research/WebShop
 import WebShopSeedSplitFigure from '../../../../components/research/WebShopSeedSplitFigure.astro';
 import WebShopSeedDataUsageFigure from '../../../../components/research/WebShopSeedDataUsageFigure.astro';
 import WebShopEvaluationFigure from '../../../../components/research/WebShopEvaluationFigure.astro';
+import WebShopRewardExplorer from '../../../../components/research/WebShopRewardExplorer.tsx';
 import SeedWebShopCanonicalFigure from '../../../../components/research/SeedWebShopCanonicalFigure.astro';
 const locale = 'zh' as const;
 ---
@@ -22,6 +23,7 @@ const locale = 'zh' as const;
     <WebShopSeedSplitFigure locale={locale} />
     <WebShopSeedDataUsageFigure locale={locale} />
     <WebShopEvaluationFigure locale={locale} />
+    <WebShopRewardExplorer locale={locale} client:visible />
     <SeedWebShopCanonicalFigure locale={locale} />
   </SeedOpenEvoResearchPage>
 </AppLayout>
