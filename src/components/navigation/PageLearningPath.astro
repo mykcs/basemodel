@@ -1,0 +1,86 @@
+---
+import type { Locale } from '../../i18n';
+
+type LearningItem = Readonly<{ href: `#${string}`; zh: string; en: string }>;
+interface Props {
+  locale: Locale;
+  items: readonly LearningItem[];
+}
+
+const { locale, items } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+if (items.length < 2 || items.length > 5) throw new Error('PageLearningPath requires 2–5 real destinations');
+if (items.some((item) => !/^#[\p{L}\p{N}_-]+$/u.test(item.href) || !item.zh.trim() || !item.en.trim())) {
+  throw new Error('PageLearningPath entries need a static section anchor and bilingual meaning');
+}
+if (new Set(items.map((item) => item.href)).size !== items.length) {
+  throw new Error('PageLearningPath destinations must be unique');
+}
+---
+
+<nav class="page-learning-path" data-reader-guide data-ui-audit="contrast layout overflow"
+  aria-label={t('本页学习路线', 'Learning path for this page')}>
+  <p class="page-learning-path__heading">{t('读完本页，你会弄清楚', 'What you will understand')}</p>
+  <ol>
+    {items.map((item, index) => (
+      <li>
+        <a href={item.href}>
+          <span class="page-learning-path__index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+          <span>{t(item.zh, item.en)}</span>
+          <span class="page-learning-path__go" aria-hidden="true">↘</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .page-learning-path {
+    max-width: 52rem;
+    margin: .6rem 0 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .page-learning-path__heading {
+    margin: 0;
+    padding: .7rem 0 .35rem;
+    color: var(--muted);
+    font-size: .75rem;
+    line-height: 1.4;
+    font-weight: 700;
+  }
+  .page-learning-path ol { margin: 0; padding: 0; list-style: none; }
+  .page-learning-path li { border-bottom: 1px solid var(--line); }
+  .page-learning-path a {
+    display: grid;
+    grid-template-columns: 1.75rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .48rem;
+    min-height: 40px;
+    padding: .38rem .15rem;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: .84rem;
+    line-height: 1.46;
+    font-weight: 650;
+  }
+  .page-learning-path__index { color: var(--accent-deep); font: 720 .66rem/1.25 var(--font-mono); }
+  .page-learning-path__go { color: var(--muted); font-size: .77rem; }
+  .page-learning-path a:hover, .page-learning-path a:focus-visible {
+    color: var(--accent-deep);
+    text-decoration: underline;
+    text-underline-offset: .18em;
+  }
+  .page-learning-path a:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: -2px;
+  }
+  @media (max-width: 720px) {
+    .page-learning-path { margin-top: .65rem; }
+    .page-learning-path a { font-size: .82rem; min-height: 42px; }
+  }
+  @media print {
+    .page-learning-path { display: none; }
+  }
+</style>

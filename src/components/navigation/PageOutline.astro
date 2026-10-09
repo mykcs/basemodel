@@ -74,6 +74,15 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
     list.replaceChildren();
     tooltip.hidden = true;
 
+    // A long article may already provide a meaningful, labeled reading route.
+    // Never add a second rail of anonymous bars next to a primary reading path,
+    // a model/paper navigation list, or a choose/operate work surface.
+    const attentionMode = document.body.dataset.readerAttentionMode;
+    const hasRealNavigation = main.querySelector(
+      '[data-reader-guide], [data-webshop-story-nav], .page-contents, .paper-nav, .model-detail-nav, .papers-reading-path, .learning-track-nav, .next-list',
+    );
+    if (hasRealNavigation || ['choice', 'operational', 'comparison'].includes(attentionMode ?? '')) return;
+
     const headings = collectHeadings(main).slice(0, 48);
     const longEnough = main.scrollHeight >= Math.max(1400, window.innerHeight * 1.65);
     if (headings.length < 4 || !longEnough) return;

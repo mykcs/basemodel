@@ -2,6 +2,7 @@
 import type { Locale } from '../../i18n';
 import SeedOpenEvoResearchPageCore from './SeedOpenEvoResearchPageCore.astro';
 import ExplainerScrollLink from './ExplainerScrollLink.astro';
+import PageLearningPath from '../navigation/PageLearningPath.astro';
 
 type DetailPage = 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'results';
 interface Props { locale: Locale; page: DetailPage }
@@ -41,6 +42,35 @@ const copy: Record<DetailPage, { title: string; lede: string }> = {
   },
 };
 
+type ReadingStep = Readonly<{ href: `#${string}`; zh: string; en: string }>;
+const readingPaths: Partial<Record<DetailPage, readonly ReadingStep[]>> = {
+  seed: [
+    { href: '#seed-responsibilities', zh: '一次任务的轨迹与反馈怎样产生', en: 'How a task produces traces and feedback' },
+    { href: '#seed-stages', zh: 'Stage 1 与 Stage 2 各训练什么', en: 'What Stage 1 and Stage 2 train' },
+    { href: '#seed-time-scales', zh: '一次做题与一次更新有什么区别', en: 'Task episodes versus parameter updates' },
+  ],
+  openevo: [
+    { href: '#openevo-task-boundary', zh: '做完一题后，什么经验能留到下一题', en: 'What experience survives a finished task' },
+    { href: '#openevo-carriers', zh: '四类载体怎样保存经验', en: 'How the four carriers preserve experience' },
+    { href: '#openevo-benchmark', zh: '哪些环境证据必须留存', en: 'Which environmental evidence must be preserved' },
+  ],
+  benchmarks: [
+    { href: '#benchmarks-interaction', zh: '两种任务环境里，Agent 分别做什么', en: 'What the agent does in each environment' },
+    { href: '#benchmarks-outcomes', zh: 'WebShop 与 ALFWorld 怎样评分', en: 'How each benchmark is scored' },
+    { href: '#benchmarks-fairness', zh: '公平比较必须固定哪些条件', en: 'Which conditions must stay fixed' },
+  ],
+  alfworld: [
+    { href: '#alfworld-world', zh: 'Agent 怎样改变房间里的物体状态', en: 'How the agent changes the world state' },
+    { href: '#alfworld-preconditions', zh: '为什么动作有时不能执行', en: 'Why an action may be invalid' },
+    { href: '#alfworld-evaluation', zh: '任务成功和平均成绩怎样计算', en: 'How success and averages are reported' },
+  ],
+  loops: [
+    { href: '#loops-updates', zh: 'SEED 和 OpenEvo 更新的到底是什么', en: 'What SEED and OpenEvo update' },
+    { href: '#loops-interfaces', zh: '哪些输出会进入下一版本', en: 'What persists into the next version' },
+    { href: '#loops-controlled', zh: '怎样在相同条件下比较两者', en: 'How to compare under controlled conditions' },
+  ],
+};
+
 const current = copy[page];
 ---
 <div class:list={['plain-detail', { 'plain-detail--results': page === 'results' }]} data-locale={locale}>
@@ -48,6 +78,7 @@ const current = copy[page];
     <header class="plain-detail__header">
       <h1>{current.title}</h1>
       <p>{current.lede}</p>
+      {readingPaths[page] && <PageLearningPath locale={locale} items={readingPaths[page]!} />}
     </header>
   )}
   {hasExplainer && <div class="plain-detail__interactive"><slot /></div>}
@@ -67,6 +98,9 @@ const current = copy[page];
   .plain-detail-core :global(.mission-page__header),.plain-detail-core :global(.mission-tabs){display:none}
   .plain-detail__interactive :global(.irx + .irx){margin-top:1.5rem}
   .plain-detail-core{width:min(780px,100%);margin-inline:auto}
+  .plain-detail :global(.mission-section[id]), .plain-detail :global(.irx h2[id]) {
+    scroll-margin-top: calc(var(--site-header-height, 4rem) + var(--research-nav-offset, 4rem) + 1rem);
+  }
   @media(max-width:720px){.plain-detail{width:min(100% - 1rem,1160px)}.plain-detail__header{padding-top:1.2rem}.plain-detail__header p{font-size:.9rem}.plain-detail__interactive{margin-bottom:1.6rem}}
 </style>
 
