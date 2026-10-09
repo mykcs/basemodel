@@ -23,7 +23,7 @@ export interface AdvisorQuestion {
 
 export const ADVISOR_RESEARCH_AS_OF = '2026-10-09';
 
-export const ADVISOR_QUESTIONS: AdvisorQuestion[] = [
+export const ADVISOR_QUESTIONS = [
   {
     id: 'q01',
     family: 'learning',
@@ -160,7 +160,7 @@ export const ADVISOR_QUESTIONS: AdvisorQuestion[] = [
     evidence: [{ label: 'Q10 · 新任务独立复现计划和执行状态', href: 'https://github.com/mykcs/openevo-experiment/pull/637' }],
     evidenceState: 'unrun',
   },
-] as const;
+] satisfies AdvisorQuestion[];
 
 export const ADVISOR_Q03_CUSTOM_PANEL = [
   { update: 'A0', score: '3.71', exact: '0 / 64', note: '旧 Stage1 模型在 Q17 桥接面板的起点' },
