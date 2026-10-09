@@ -14,19 +14,19 @@ const chapters = [
   {
     id: 'learning',
     ordinal: '01',
-    title: '起始学习实际提高了什么能力？',
+    title: '初始训练、SFT/OPSD 与 SEED',
     lede: '训练多久、用什么学习目标、SEED 的结果为什么和论文差那么大：这些问题都要先在自己的评测协议里回答。',
   },
   {
     id: 'updating',
     ordinal: '02',
-    title: '长期参数如何保留与更新？',
+    title: '长期参数容量与更新机制',
     lede: '从参数容量、β、模型对点击的犹豫，到直接反转更新方向，我们逐渐把“更新了参数”与“真的改善了行为”分开。',
   },
   {
     id: 'generalization',
     ordinal: '03',
-    title: '旧能力能否保持，结论能否复现？',
+    title: '旧能力保持、文字状态与独立复现',
     lede: '单次能力提升还不等于持续学习。要知道哪些旧能力被保留、文字载体是否有贡献，以及新任务还能否重复得到同样结果。',
   },
 ] as const;
@@ -39,7 +39,7 @@ const methodStatus = {
 ---
 
 <AppLayout
-  title="和学长讨论后：十个问题、已有实验与尚未回答的事"
+  title="OpenEVO 实验汇报：十个研究问题"
   description="从训练停止点、普通 SFT/OPSD 与混合 SEED，到长期状态容量、β、entropy、Task Vector、遗忘、文字记忆及独立复现。全部 WebShop Task Score 主阅读尺度统一为 0–100，严格区别同题实验与论文参考。"
   locale="zh"
 >
@@ -50,8 +50,8 @@ const methodStatus = {
     </div>
 
     <header class="advisor-ten__hero">
-      <p class="advisor-ten__eyebrow">OpenEVO × WebShop · 学长会后研究汇报</p>
-      <h1>训练了一百多轮，我们究竟证明了什么？</h1>
+      <p class="advisor-ten__eyebrow">WebShop · 研究汇报</p>
+      <h1>OpenEVO 实验汇报：十个研究问题</h1>
       <p class="advisor-ten__lede" data-reader-purpose>
         学长在 9 月 22 日围绕训练、参数容量、更新机制和能力保持提出了一组问题。
         我们后来将它们拆成十个可以逐一验证的研究问题。现在一部分已经有明确的局部答案，
@@ -64,7 +64,7 @@ const methodStatus = {
     </header>
 
     <section class="advisor-ten__thesis" aria-labelledby="thesis-title" data-result-stage="direct-result">
-      <h2 id="thesis-title">目前最重要的三个判断</h2>
+      <h2 id="thesis-title">目前的主要结果</h2>
       <ol>
         <li><strong>训练不是越久越好。</strong>普通 DirectApply 约在第 120 轮进入平台，Bounded 更晚；历史复杂 β/GDR 在训练后期反而掉分。</li>
         <li><strong>分数上升与“真正持续学会”仍有距离。</strong>参数方向在个别轮次有可验证的因果作用，但损失下降、参数变化、训练轮得分和完整成功不是同一个指标。</li>
@@ -74,7 +74,7 @@ const methodStatus = {
     </section>
 
     <nav class="advisor-ten__contents" aria-label="十个研究问题目录">
-      <h2>十个问题，从哪里读起？</h2>
+      <h2>十个问题</h2>
       <p>你可以从头跟着研究思路读，也可以直接跳到最关心的问题。</p>
       <ol>
         {ADVISOR_QUESTIONS.map((question) => (
@@ -197,7 +197,7 @@ const methodStatus = {
     ))}
 
     <section class="advisor-ten__closing" aria-labelledby="closing-title" data-result-stage="synthesis">
-      <h2 id="closing-title">十个问题放在一起，我们的认识改变了什么？</h2>
+      <h2 id="closing-title">目前的研究结论与局限</h2>
       <p>
         一开始我们容易把“训练了多少轮、损失下降了多少、参数有没有更新”当成进展。
         后来的负结果让问题变得更精确：<strong>能力是否在相同任务和评测协议下提高，方向与容量各自贡献什么，旧知识还能否被保留？</strong>
