@@ -65,7 +65,6 @@ const methodStatus = {
         <li><strong>分数上升与“真正持续学会”仍有距离。</strong>参数方向在个别轮次有可验证的因果作用，但损失下降、参数变化、训练轮得分和完整成功不是同一个指标。</li>
         <li><strong>最大的不确定性还在评测和保持能力。</strong>混合 SEED 的分数远低于论文，但两套评测不是同一场考试；遗忘、文字记忆贡献和新任务复现都还缺决定性证据。</li>
       </ol>
-      <p class="advisor-ten__metric-note">本文 WebShop <strong>Task Score</strong> 一律写成满分 100 分；<strong>完整成功</strong>另列为成功题数或百分比。数字单位统一，只解决阅读问题，不自动解决实验协议的公平性问题。</p>
     </section>
 
     <nav class="advisor-ten__contents" aria-label="十个研究问题目录">
@@ -205,6 +204,11 @@ const methodStatus = {
       <p class="advisor-ten__closing-next">现在最合理的研究顺序，是先把已经设计好的同口径对照和有效评测收口，明确保留不了的能力，再由真实结果决定是否值得增加新机制。</p>
       <p class="advisor-ten__closing-links"><a href="/research/seed-openevo/study/">回到七次实验的研究演进 →</a> <a href="/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/">深入阅读 Bounded / β 研究 →</a></p>
     </section>
+    <footer class="advisor-ten__footnotes" aria-labelledby="report-notes-title">
+      <h2 id="report-notes-title">注</h2>
+      <p>本文 WebShop Task Score 统一按满分 100 分展示（原始 0–1 分数乘以 100）；完整成功另列题数或比例。显示单位相同，不等于不同模型、任务集或评测协议可以直接排名。</p>
+      <p>截至 {ADVISOR_RESEARCH_AS_OF} 的研究记录。学长于 2026 年 9 月 22 日提出训练方式、轮数、参数状态等问题；这里的十问是会后整理的研究框架，Q10 为会后延伸，并非会议逐字提问。</p>
+    </footer>
   </main>
 </AppLayout>
 
