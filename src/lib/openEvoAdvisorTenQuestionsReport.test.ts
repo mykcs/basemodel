@@ -52,8 +52,9 @@ describe('advisor ten-question scientific report', () => {
     expect(ADVISOR_Q05_FROZEN.map((r) => r.score)).toEqual(['60.72', '45.98', '20.77']);
     expect(ADVISOR_Q09_UPDATES.map((r) => r.parametric)).toEqual([159, 158, 154]);
     const q02 = ADVISOR_QUESTIONS.find((q) => q.id === 'q02')!;
-    expect(q02.unknown).toContain('状态冲突');
-    expect(q02.unknown).toContain('3/6');
+    expect(q02.finding).toContain('六个固定训练格的训练 summary 均为 PASS');
+    expect(q02.unknown).toContain('统一固定开发题评测');
+    expect(q02.evidence[0]?.href).toContain('issuecomment-5976961612');
     const q07 = ADVISOR_QUESTIONS.find((q) => q.id === 'q07')!;
     expect(q07.finding).toContain('10.06');
     expect(q07.interpretation).toContain('因果');

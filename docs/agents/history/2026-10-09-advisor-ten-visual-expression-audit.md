@@ -34,3 +34,7 @@
 **构建和浏览器 PASS 不等于“真人理解达到80%”。** 真人看到本次独立 Preview 后继续验证实际阅读价值。
 
 重复纠正 use-site witness：trigger = 图表应承担的关系被压成长句或会议背景消失；owner = PR #839 页面与局部图形组件；checked artifacts = 原 Notion、科学 PR、真实浏览器；allowed next action = 有证据的图形、测试、真人评估；invalidation = 面板、指标、数据、页面 owner 或科学封存状态变化。
+
+## 证据时效纠正：Q02
+
+2026-10-04 的 Q02 PR comment 收据明确 supersede PR 正文较旧的 3/6 状态：服务器端六个训练 cell 都有 status PASS 的 durable training/summary.json。先前十问网页错误地沿用 3/6，因此修正为训练 6/6 已完成、固定开发题能力评估和六格配对统计仍未收口。这证明每次引用 PR 需要扫描其最新 durable 评论/收据，不能把正文最后的 stale 段落作为唯一事实源。来源：https://github.com/mykcs/openevo-experiment/pull/629#issuecomment-5976961612
