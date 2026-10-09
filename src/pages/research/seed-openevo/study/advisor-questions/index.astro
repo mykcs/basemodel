@@ -1,5 +1,6 @@
 ---
 import AppLayout from '../../../../../layouts/AppLayout.astro';
+import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
 import {
   ADVISOR_RESEARCH_AS_OF,
   ADVISOR_QUESTIONS,
@@ -187,7 +188,7 @@ const methodStatus = {
             <footer class="advisor-ten__sources">
               <span>原始证据</span>
               {question.evidence.map((evidence) => (
-                <a href={evidence.href} target="_blank" rel="noopener noreferrer">{evidence.label} ↗</a>
+                <a href={evidence.href} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={evidence.href} />{evidence.label} ↗</a>
               ))}
             </footer>
           </article>
