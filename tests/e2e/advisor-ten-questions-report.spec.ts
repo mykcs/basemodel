@@ -137,3 +137,31 @@ test('advisor report uses evidence-appropriate visuals and visible meeting histo
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
   expect(overflow).toBe(false);
 });
+
+
+test('research goal and returning-researcher path give macro meaning without rewriting science', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const context = page.locator('[data-report-context]');
+  await expect(context).toContainText('为什么这十个问题值得一起研究');
+  await expect(context).toContainText('同一冻结 128 题');
+  await expect(context).toContainText('60.72/100');
+  await expect(context).toContainText('45.98/100');
+  await expect(context).toContainText('20.77/100');
+  await expect(context).toContainText('不能和后面 Q04');
+  await expect(context.getByRole('link', { name: /查看 Q05/ })).toHaveAttribute('href', '#q05');
+
+  const reentry = page.locator('[data-report-reentry]');
+  await expect(reentry).toContainText('一周以后回来');
+  await expect(reentry).toContainText('2026-10-09');
+  await expect(reentry).toContainText('六格训练已 PASS');
+  await expect(reentry).toContainText('不能把这篇历史报告当作实时控制台');
+  await expect(reentry.getByRole('link')).toHaveCount(8);
+  for (const link of await reentry.getByRole('link').all()) {
+    const target = await link.getAttribute('href');
+    expect(target).toMatch(/^#q\d\d$/);
+    await expect(page.locator(target!)).toHaveCount(1);
+  }
+  await expect(page.locator('[data-report-question]')).toHaveCount(10);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+});

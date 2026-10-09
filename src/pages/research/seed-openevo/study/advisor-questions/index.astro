@@ -76,6 +76,13 @@ const methodStatus = {
       </ol>
     </section>
 
+    <section class="advisor-ten__frame" id="research-problem" aria-labelledby="research-problem-title" data-report-context>
+      <h2 id="research-problem-title">为什么这十个问题值得一起研究</h2>
+      <p>我们研究的是一个实际难题：一个 Agent 做完一批 WebShop 购物任务后，能不能把有用经验带到下一批任务，同时避免长期参数越积越大、训练越来越慢，或遗失原先学会的能力？<strong>训练损失降低不等于买对商品；参数变化也不等于持续学习成功。</strong></p>
+      <p>普通 SFT / OPSD 是最基础的“直接训练参数”参照；普通 OpenEVO 继续累积长期参数；Bounded 限制参数状态的容量；历史复杂 β/GDR 尝试控制参数更新。<strong>新增机制是不是值得使用</strong>，最终要看在相同任务和评测规则下，能力提升多少、代价是什么。</p>
+      <p>一个已经完成的能力取舍是：三条此前完成的 160 轮路线后来在<strong>同一冻结 128 题</strong>上终评，普通 OpenEVO 为 <strong>60.72/100</strong>、Bounded 为 <strong>45.98/100</strong>、Bounded 加历史复杂 β/GDR 为 <strong>20.77/100</strong>。Bounded 能限制长期状态，但<strong>该终评也显示了能力损失</strong>；这些数值不能和后面 Q04 的第 152–159 轮平均比较混为一谈。<a href="#q05">查看 Q05 的原始对照与证据 →</a></p>
+    </section>
+
     <nav class="advisor-ten__contents" aria-label="十个研究问题目录">
       <h2>十个问题</h2>
       
@@ -171,6 +178,16 @@ const methodStatus = {
       <p class="advisor-ten__closing-next">现在最合理的研究顺序，是先把已经设计好的同口径对照和有效评测收口，明确保留不了的能力，再由真实结果决定是否值得增加新机制。</p>
       <p class="advisor-ten__closing-links"><a href="/research/seed-openevo/study/">回到七次实验的研究演进 →</a> <a href="/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/">深入阅读 Bounded / β 研究 →</a></p>
     </section>
+    <section class="advisor-ten__reentry" id="research-reentry" aria-labelledby="research-reentry-title" data-report-reentry>
+      <h2 id="research-reentry-title">一周以后回来，从哪里接着读？</h2>
+      <p>这是截至 <time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time> 的研究解释快照，不是实时实验状态或启动授权。以后重新接手，先从这三个问题恢复当时的判断，而不是从训练日志猜来龙去脉。</p>
+      <ol>
+        <li><strong>当时知道什么：</strong><a href="#q01">训练停止点因方法而异</a>；<a href="#q04">长期容量存在成本—能力取舍</a>；<a href="#q07">第 156 轮的更新方向干预改变了任务得分</a>。<a href="#q03">Q03 的四个分数节点</a>先升、后跌、再恢复，且完整成功始终为零。</li>
+        <li><strong>什么还没证明：</strong><a href="#q02">Q02 的六格训练已 PASS，但全部固定面板配对统计未封存</a>；Q03 原生 SEED 128 题校准与新公开配方的正式学习未出能力结论；<a href="#q08">遗忘</a>、<a href="#q09">文字状态的因果贡献</a>、<a href="#q10">新任务独立复现</a>仍需要新证据。</li>
+        <li><strong>下一步如何核对：</strong>每个问题底部都有对应原始实验来源。先读当时的测试/评测身份和冻结收据；要判断<strong>今天</strong>是否已完成或能否启动，必须另查当前执行分支的实验记录，不能把这篇历史报告当作实时控制台。</li>
+      </ol>
+    </section>
+
     <footer class="advisor-ten__footnotes" aria-labelledby="report-notes-title">
       <h2 id="report-notes-title">注</h2>
       <p>本文 WebShop Task Score 统一按满分 100 分展示（原始 0–1 分数乘以 100）；完整成功另列题数或比例。显示单位相同，不等于不同模型、任务集或评测协议可以直接排名。</p>
@@ -198,6 +215,17 @@ const methodStatus = {
 .advisor-ten__thesis{padding:2.6rem 0;border-bottom:1px solid var(--color-border)}
 .advisor-ten__thesis h2,.advisor-ten__contents h2{font-size:clamp(1.45rem,2.5vw,1.95rem);margin:0 0 1.2rem;line-height:1.3}
 .advisor-ten__thesis ol{max-width:75ch;margin:0;padding-left:1.6rem}
+
+.advisor-ten__frame,.advisor-ten__reentry{max-width:900px;padding:2rem 0;border-bottom:1px solid var(--color-border)}
+.advisor-ten__frame h2,.advisor-ten__reentry h2{margin:0 0 1rem;font-size:clamp(1.35rem,2.5vw,1.95rem);line-height:1.25;letter-spacing:-.018em}
+.advisor-ten__frame p,.advisor-ten__reentry p,.advisor-ten__reentry li{max-width:78ch;font-size:.98rem;line-height:1.75}
+.advisor-ten__frame p{margin:.8rem 0}
+.advisor-ten__frame a,.advisor-ten__reentry a{color:var(--color-text);text-underline-offset:.2rem}
+.advisor-ten__reentry{border-top:1px solid var(--color-border);border-bottom:0;margin-top:0;padding-top:1.8rem}
+.advisor-ten__reentry ol{margin:1rem 0 0;padding-left:1.5rem}
+.advisor-ten__reentry li{margin:.75rem 0}
+.advisor-ten__reentry :where(a):focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+
 .advisor-ten__thesis li{padding:.48rem 0;font-size:1.02rem;line-height:1.88}
 .advisor-ten__contents{padding:2.1rem 0 2.7rem}
 .advisor-ten__contents ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 2rem}
