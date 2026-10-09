@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Locale } from '../../i18n';
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import { initialRewardMatches, scoreRewardExample, type RewardMatches } from '../../lib/webshopRewardExample';
 import '../../styles/components/webshop-reward-explorer.css';
 
@@ -81,6 +82,7 @@ export default function WebShopRewardExplorer({ locale }: Props) {
         {t('这里只演示商品类型已经匹配（r_type = 1）的情况，四项匹配各占 1/4。真实 WebShop 还会检查商品类型和模糊匹配。这里不是完整评估器，也不是 SEED / OpenEVO 实验的实测结果；实际完整成功须以真实评测记录为准。',
           'This holds product-type reward at r_type = 1 and gives each match 1/4 weight. Real WebShop also checks product type and fuzzy matches. This is neither a full evaluator nor a SEED / OpenEVO measured result; actual success must follow the evaluation record.')}{' '}
         <a href="https://github.com/princeton-nlp/WebShop/blob/master/web_agent_site/engine/goal.py" target="_blank" rel="noreferrer">
+          <ExternalBrandMark href="https://github.com/princeton-nlp/WebShop/blob/master/web_agent_site/engine/goal.py" />
           {t('官方评分代码 ↗', 'Official reward code ↗')}
         </a>
       </p>
