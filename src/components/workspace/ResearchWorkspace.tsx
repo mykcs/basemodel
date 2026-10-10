@@ -9,38 +9,35 @@ import { initResearchTaskFromUrl } from '../../stores/researchTask';
 import { mobileWorkspacePane, type MobileWorkspacePane } from '../../stores/ui';
 import { WorkspaceMobileNav } from './WorkspaceMobileNav';
 import { ModelQuickViewDialog } from '../models/ModelQuickViewDialog';
-import type { AtlasModel, AtlasPaper } from '../../lib/schemas';
 import { useHydrated } from '../../lib/useHydrated';
-import { baseUrl, getMessages, type Locale } from '../../i18n';
+import { getMessages, type Locale } from '../../i18n';
+import { loadCatalog, type CatalogPayload } from '../../lib/catalogClient';
 import '../../styles/workspace.css';
 
-interface CatalogPayload { models: AtlasModel[]; papers: AtlasPaper[] }
 interface Props { locale?: Locale }
-let catalogRequest: Promise<CatalogPayload> | null = null;
 
 export function ResearchWorkspace({ locale = 'zh' }: Props) {
   const hydrated = useHydrated();
   const m = getMessages(locale);
   const [catalog, setCatalog] = useState<CatalogPayload | null>(null);
+  const [catalogError, setCatalogError] = useState(false);
   const activePane = useStore(mobileWorkspacePane);
 
   useEffect(() => {
     initResearchTaskFromUrl();
-    catalogRequest ??= fetch(`${baseUrl()}model-data/catalog.json`, { credentials: 'same-origin' }).then((response) => {
-      if (!response.ok) throw new Error('workspace catalog unavailable');
-      return response.json() as Promise<CatalogPayload>;
-    });
     let active = true;
-    void catalogRequest.then((payload) => {
+    void loadCatalog().then((payload) => {
       if (!active) return;
       setCatalog(payload);
+    }).catch(() => {
+      if (active) setCatalogError(true);
     });
     return () => { active = false; };
   }, []);
 
   const setPane = (pane: MobileWorkspacePane) => mobileWorkspacePane.set(pane);
 
-  if (!hydrated || !catalog) return <p className="muted" role="status">{locale === 'zh' ? '正在加载交互式工作台…' : 'Loading interactive workspace…'}</p>;
+  if (!hydrated || !catalog) return <p className="muted" role="status">{catalogError ? (locale === 'zh' ? '交互式工作台暂时不可用；上面的研究说明仍可阅读。' : 'The interactive workspace is unavailable; the research orientation above remains readable.') : (locale === 'zh' ? '正在加载交互式工作台…' : 'Loading interactive workspace…')}</p>;
   const { models, papers } = catalog;
 
   return (

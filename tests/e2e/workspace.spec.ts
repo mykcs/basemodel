@@ -6,7 +6,7 @@ async function clickBelowStickyHeader(locator: Locator) {
 }
 
 test('workspace scores candidates into three buckets and renders reasons, risks, and a decision memo', async ({ page }) => {
-  await page.goto('workspace/');
+  await page.goto('workspace/#workspace-interactive');
 
   // 设定一个会触发打分差异的任务：新实验 + 开放权重 + 中文专长 + LoRA。
   await page.getByRole('button', { name: /全新实验/ }).click();
@@ -43,7 +43,7 @@ test('workspace scores candidates into three buckets and renders reasons, risks,
   await expect(page.locator('.substitute-card').first().getByRole('columnheader', { name: /变化|Change/i })).toBeVisible();
 
   // 离开工作台后，模型浏览器仍读取同一研究任务，并显示任务匹配状态。
-  await page.goto('models/');
+  await page.goto('models/#model-browser');
   await expect(page.locator('.task-fit').first()).toBeVisible();
   await expect(page.locator('.task-fit').first()).toContainText('当前任务匹配');
 
@@ -54,7 +54,7 @@ test('workspace scores candidates into three buckets and renders reasons, risks,
 
 test('mobile workspace switches between task, candidate, evidence, and compare panes', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('workspace/');
+  await page.goto('workspace/#workspace-interactive');
 
   const nav = page.locator('.workspace-mobile-nav');
   await expect(nav).toBeVisible();
@@ -74,7 +74,7 @@ test('mobile workspace switches between task, candidate, evidence, and compare p
 
 test('mobile candidate quick view opens a native dialog and supports Escape', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('workspace/?v=2&mode=modern');
+  await page.goto('workspace/?v=2&mode=modern#workspace-interactive');
 
   await page.locator('.candidate-row').first().getByRole('button', { name: '一眼概览' }).click();
   await expect(page.locator('.quick-view-dialog[open]')).toBeVisible();
@@ -84,7 +84,7 @@ test('mobile candidate quick view opens a native dialog and supports Escape', as
 });
 
 test('task resources, five-dimensional fit, and local project history are connected', async ({ page }) => {
-  await page.goto('workspace/?v=2&mode=modern');
+  await page.goto('workspace/?v=2&mode=modern#workspace-interactive');
   await page.getByRole('button', { name: /资源条件|Resource budget/ }).click();
   await page.locator('.hardware-calculator select').first().selectOption('int8');
   await page.locator('.hardware-calculator input').nth(2).fill('4');

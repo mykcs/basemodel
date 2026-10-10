@@ -2,13 +2,18 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import { getMessages, localePath, type Locale } from '../../i18n';
 import { statusLabel, tierLabel } from '../../lib/format';
 import type { AtlasModel } from '../../lib/types';
+import { loadCatalog, type CatalogPayload } from '../../lib/catalogClient';
 import type { LandscapeColorBy, LandscapeDimension } from '../../lib/landscape';
 
 const LandscapeD3 = lazy(() => import('./LandscapeD3'));
 const LandscapeECharts = lazy(() => import('./LandscapeECharts'));
 
-export default function LandscapePrototype({ models, paperModelIds = [], locale = 'zh' }: { models: AtlasModel[]; paperModelIds?: string[]; locale?: Locale }) {
+export default function LandscapePrototype({ models: providedModels, paperModelIds: providedPaperModelIds, locale = 'zh' }: { models?: AtlasModel[]; paperModelIds?: string[]; locale?: Locale }) {
   const m = getMessages(locale);
+  const [catalog, setCatalog] = useState<CatalogPayload | null>(null);
+  const [catalogError, setCatalogError] = useState(false);
+  const models = providedModels ?? catalog?.models ?? [];
+  const paperModelIds = providedPaperModelIds ?? catalog?.paperModelIds ?? [];
   const [engine, setEngine] = useState<'echarts' | 'd3'>('echarts');
   const [view, setView] = useState<'learning' | 'full'>('learning');
   const [onlyPaper, setOnlyPaper] = useState(false);
@@ -16,7 +21,20 @@ export default function LandscapePrototype({ models, paperModelIds = [], locale 
   const [colorBy, setColorBy] = useState<LandscapeColorBy>('vendor');
   const [controlsReady, setControlsReady] = useState(false);
   useEffect(() => setControlsReady(true), []);
+  useEffect(() => {
+    if (providedModels !== undefined) return;
+    let active = true;
+    void loadCatalog().then((payload) => {
+      if (!active) return;
+      setCatalog(payload);
+      document.querySelector<HTMLElement>('[data-landscape-static-fallback]')?.setAttribute('hidden', '');
+    }).catch(() => {
+      if (active) setCatalogError(true);
+    });
+    return () => { active = false; };
+  }, [providedModels]);
   const filtered = onlyPaper ? models.filter((model) => paperModelIds.includes(model.id)) : models;
+  if (providedModels === undefined && !catalog) return <p className="muted" role="status">{catalogError ? (locale === 'zh' ? '交互视图暂时不可用；下面的静态数据表仍可阅读。' : 'The interactive view is unavailable; the static data table below remains readable.') : (locale === 'zh' ? '正在准备交互视图…' : 'Preparing interactive view…')}</p>;
   return <div className="landscape-prototype"><fieldset className="landscape-controls" disabled={!controlsReady} aria-busy={!controlsReady} aria-label={locale === 'zh' ? 'Landscape 视图控制' : 'Landscape view controls'}><button className={`button ${view === 'learning' ? 'is-active' : ''}`} type="button" onClick={() => setView('learning')}>{locale === 'zh' ? '学习视图' : 'Learning view'}</button><button className={`button ${view === 'full' ? 'is-active' : ''}`} type="button" onClick={() => setView('full')}>{locale === 'zh' ? '完整视图' : 'Full view'}</button><label className="check-row"><input type="checkbox" checked={onlyPaper} onChange={(event) => setOnlyPaper(event.target.checked)} />{locale === 'zh' ? '仅显示论文采用模型' : 'Paper-used models only'}</label>{view === 'full' && <><label className="field"><span>{locale === 'zh' ? '纵轴含义' : 'Y-axis meaning'}</span><select value={dimension} onChange={(event) => setDimension(event.target.value as LandscapeDimension)}><option value="hardware">{locale === 'zh' ? '推理资源' : 'Inference resource'}</option><option value="parameters">{locale === 'zh' ? '参数规模' : 'Parameter scale'}</option></select></label><label className="field"><span>{locale === 'zh' ? '颜色含义' : 'Color meaning'}</span><select value={colorBy} onChange={(event) => setColorBy(event.target.value as LandscapeColorBy)}><option value="vendor">{locale === 'zh' ? '厂商 / 家族' : 'Vendor / family'}</option><option value="access">{locale === 'zh' ? '访问方式' : 'Access'}</option><option value="evidence">{locale === 'zh' ? '证据状态' : 'Evidence status'}</option></select></label><div className="engine-switch"><button className={`button ${engine === 'echarts' ? 'is-active' : ''}`} type="button" onClick={() => setEngine('echarts')}>ECharts</button><button className={`button ${engine === 'd3' ? 'is-active' : ''}`} type="button" onClick={() => setEngine('d3')}>D3</button></div></>}</fieldset>{view === 'learning' ? <LearningLandscapeList models={filtered} locale={locale} /> : <><p className="muted landscape-view-note">{locale === 'zh' ? '完整视图允许切换研究含义：纵轴比较推理资源或参数规模，颜色区分厂商、访问方式或证据状态。' : 'Full view lets you switch research meanings: compare inference resources or parameter scale on the Y-axis, and color by vendor, access, or evidence.'}</p><Suspense fallback={<div className="empty-state" role="status">{m.landscape.chartHint}</div>}>{engine === 'echarts' ? <LandscapeECharts models={filtered} locale={locale} dimension={dimension} colorBy={colorBy} /> : <LandscapeD3 models={filtered} locale={locale} dimension={dimension} colorBy={colorBy} />}</Suspense></>}<AccessibleLandscapeTable models={filtered} locale={locale} /></div>;
 }
 
