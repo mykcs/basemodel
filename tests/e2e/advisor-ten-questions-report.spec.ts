@@ -178,7 +178,7 @@ test('ICLR-structured evidence ladder keeps scientific comparison boundaries exp
   await expect(methods).toContainText('普通 OpenEVO 是较早的前序实验');
   await expect(methods).toContainText('不能用分差衡量算法优劣');
   await expect(methods).toContainText('第 152–159 轮');
-  await expect(methods.getByRole('link', { name: /完整 ICLR/ })).toHaveAttribute('href', /docs\/reports\/2026-10-10-advisor-ten-iclr-style\.md$/);
+  await expect(methods.getByRole('link', { name: /完整 ICLR/ })).toHaveAttribute('href', /blob\/main\/docs\/reports\/2026-10-10-advisor-ten-iclr-style\.md$/);
   await expect(page.locator('[data-report-question]')).toHaveCount(10);
   await expect(page.locator('[data-result-stage="synthesis"]')).toContainText('6 · Discussion & Conclusion');
   await expect(page.locator('[data-report-reentry]')).toContainText('7 · Reproducibility & Next Experiments');
