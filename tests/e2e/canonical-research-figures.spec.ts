@@ -201,3 +201,105 @@ test('legacy primer URLs stay stable but point readers to canonical ownership', 
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
   }
 });
+
+
+test('C02 research evidence figures stay readable across mobile, tablet, and desktop', async ({ page }) => {
+  const path = '/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/';
+  const cases = [
+    { width: 390, height: 844, theme: 'dark' as Theme },
+    { width: 768, height: 1024, theme: 'light' as Theme },
+    { width: 1440, height: 1000, theme: 'dark' as Theme },
+  ];
+
+  for (const item of cases) {
+    await page.setViewportSize({ width: item.width, height: item.height });
+    await setTheme(page, item.theme);
+    await page.goto(path, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('html')).toHaveAttribute('data-theme', item.theme);
+
+    for (const selector of [
+      '#same-panel-final-comparison',
+      '#beta-r96-r199-task-score',
+      '#rank-capacity-tradeoff',
+    ]) {
+      const figure = page.locator(selector);
+      await expect(figure).toBeVisible();
+      const box = await figure.boundingBox();
+      expect(box).not.toBeNull();
+      expect(box!.x).toBeGreaterThanOrEqual(-2);
+      expect(box!.x + box!.width).toBeLessThanOrEqual(item.width + 2);
+    }
+
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+  }
+});
+
+test('C02 beta round reader works with keyboard-style input without changing the scientific series', async ({ page }) => {
+  await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/', { waitUntil: 'domcontentloaded' });
+  const figure = page.locator('#beta-r96-r199-task-score');
+  const slider = figure.locator('[data-beta-round-reader]');
+  const output = figure.locator('[data-beta-round-output]');
+
+  await expect(slider).toHaveAttribute('min', '96');
+  await expect(slider).toHaveAttribute('max', '199');
+  await slider.focus();
+  await slider.press('Home');
+  await expect(output).toContainText('第96轮');
+  await expect(output).toContainText('/ 100');
+
+  await slider.press('End');
+  await expect(output).toContainText('第199轮');
+});
+
+test('C02 figures retain static meaning when JavaScript is disabled', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+  const page = await context.newPage();
+  await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/', { waitUntil: 'domcontentloaded' });
+
+  await expect(page.locator('#beta-r96-r199-task-score svg')).toBeVisible();
+  await expect(page.locator('#beta-r96-r199-task-score table').first()).toBeVisible();
+  await expect(page.locator('#same-panel-final-comparison table')).toBeVisible();
+  await expect(page.locator('#rank-capacity-tradeoff')).toContainText('等待 PR 805 接入');
+  await expect(page.locator('#rank-capacity-tradeoff')).not.toContainText('0.6297622');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+
+  await context.close();
+});
+
+test('C02 figures remain printable without interactive-only meaning', async ({ page }) => {
+  await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/', { waitUntil: 'domcontentloaded' });
+  await page.emulateMedia({ media: 'print' });
+
+  await expect(page.locator('#same-panel-final-comparison')).toBeVisible();
+  await expect(page.locator('#beta-r96-r199-task-score svg')).toBeVisible();
+  await expect(page.locator('#beta-r96-r199-task-score [data-beta-round-reader]')).toBeHidden();
+  await expect(page.locator('#rank-capacity-tradeoff')).toBeVisible();
+});
+
+
+test('C02 anchored evidence figures clear the sticky research chrome', async ({ page }) => {
+  for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/', { waitUntil: 'domcontentloaded' });
+    const figure = page.locator('#beta-r96-r199-task-score');
+    await page.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; });
+    await figure.evaluate((node) => node.scrollIntoView({ block: 'start' }));
+    const top = await figure.evaluate((node) => node.getBoundingClientRect().top);
+    expect(top).toBeGreaterThanOrEqual(140);
+  }
+});
+
+
+test('C02 beta plot uses local horizontal scrolling on mobile without widening the page', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/', { waitUntil: 'domcontentloaded' });
+  const plot = page.locator('#beta-r96-r199-task-score [data-beta-plot-scroll]');
+  const geometry = await plot.evaluate((node) => ({
+    clientWidth: (node as HTMLElement).clientWidth,
+    scrollWidth: (node as HTMLElement).scrollWidth,
+    overflowX: getComputedStyle(node).overflowX,
+  }));
+  expect(geometry.scrollWidth).toBeGreaterThan(geometry.clientWidth);
+  expect(geometry.overflowX).toBe('auto');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+});
