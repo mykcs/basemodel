@@ -90,7 +90,7 @@ describe('audience copy audit', () => {
     expect(auditSource).toContain('COPY-INTERNAL-LABEL-001');
     expect(auditSource).toContain('COPY-FIRST-READER-JARGON-001');
     expect(standard).toContain('Prefer the literal experimental operation over a narrative metaphor');
-    expect(standard).toContain('Eyebrows and kickers are optional');
+    expect(standard).toContain('Eyebrows and kickers are **absent by default**');
   });
 
   it('flags presenter-style reading instructions when they are promoted into headings', () => {

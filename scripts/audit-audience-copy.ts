@@ -271,7 +271,7 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   }
 
   const standardPath = 'docs/agents/current/audience-centered-technical-copy.md';
-  for (const required of ['Headings name the subject', '标题先命名主题', '首屏先认对象，再回答实验做了什么', 'Canonical background belongs behind a link', 'Prefer the literal experimental operation over a narrative metaphor', 'Eyebrows and kickers are optional', 'ALFWorld 与 WebShop 研究', 'Current scientific claims must be delegated, not copied', 'actual openevo-experiment checkout / branch / SHA']) requireText(standardPath, 'COPY-STANDARD-001', required, 'The durable copy standard must preserve subject headings, literal experimental wording, optional informative eyebrows, first-screen attention, and branch-aware scientific-state provenance.');
+  for (const required of ['Headings name the subject', '标题先命名主题', '首屏先认对象，再回答实验做了什么', 'Canonical background belongs behind a link', 'Prefer the literal experimental operation over a narrative metaphor', 'Eyebrows and kickers are **absent by default**', 'ALFWorld 与 WebShop 研究', 'Current scientific claims must be delegated, not copied', 'actual openevo-experiment checkout / branch / SHA']) requireText(standardPath, 'COPY-STANDARD-001', required, 'The durable copy standard must preserve subject headings, literal experimental wording, the default absence of decorative eyebrows, first-screen attention, and branch-aware scientific-state provenance.');
 
   return failures;
 }

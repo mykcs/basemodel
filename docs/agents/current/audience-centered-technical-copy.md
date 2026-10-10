@@ -87,7 +87,7 @@ Prefer:
 
 Avoid using `分岔`, `路径分叉`, `核心分叉问题`, or `design fork` merely to make a research page sound like a story. The reader should spend attention on the experimental object, not on decoding an invented metaphor.
 
-Eyebrows and kickers are optional. Keep one only when it adds phase, date, status, category, or provenance information that the heading does not already provide. On a Chinese surface, a decorative all-English uppercase eyebrow such as `HISTORICAL MAP · FIRST RUN` or `ROGUELIKE RESEARCH MAP · EXPLORATION` should be removed; if the label is scientifically necessary, provide the Chinese meaning first.
+Eyebrows and kickers are **absent by default**. A true date, project identity, phase, category or provenance field is not by itself a reason for a separate line. Keep an eyebrow only if deleting it would conceal a distinction that matters to the reader's current task **and** the distinction belongs above H1 rather than beside the relevant result/source. Otherwise start with the H1 and lede; put a necessary research evidence-as-of date in the corresponding source section. Do not append boilerplate footnotes merely to repeat metric units, document format, meeting attribution or unrun disclaimers already explained beside their evidence. Preserve genuinely interpretation-changing caveats, references, legal notices and live-state warnings where needed.
 
 ## 2. Separate subject, snapshot, live state, and interpretation
 
@@ -263,7 +263,7 @@ Before publishing user-facing copy, inspect every H1/H2/H3 and the first paragra
 16. Does the first-screen TL;DR say what the experiment did / compares and the current evidence boundary, rather than repeat benchmark background?
 17. If a canonical explainer already owns the background, does this page link to it instead of teaching it again?
 18. Does any `fork / 分叉 / 分岔 / diverge` wording describe a real experimental split that matters scientifically, or is it only narrative packaging?
-19. Does every eyebrow/kicker add a real phase/date/status/category/provenance fact, and is a Chinese surface free of decorative English-only eyebrow text?
+19. Default no eyebrow/kicker or boilerplate footnote: does each surviving one carry unique, task-critical meaning at that position, rather than merely an accurate date/status/category? Can necessary evidence dates move next to the source without hiding a claim-changing caveat?
 
 Run `npm run audit:copy` for the review queue and `npm run audit:copy:strict` for repository-approved invariants. `npm run verify:deploy` includes the strict copy gate and unit tests.
 
@@ -272,8 +272,8 @@ Run `npm run audit:copy` for the review queue and `npm run audit:copy:strict` fo
 - H1: page subject only.
 - H2: major subject within the page.
 - H3: subsection/object name.
-- Eyebrow/kicker: optional; use only for phase, date, category, status, or provenance that adds information beyond the heading.
-- Paragraph: interpretation, caveat, explanation, or chronology.
+- Eyebrow/kicker: absent by default; show only a necessary distinction whose removal would mislead the reader at this exact position. Accurate date/category/status alone is insufficient.
+- Paragraph: interpretation, caveat, explanation, or chronology. Move evidence date to the relevant result/provenance and omit repeated boilerplate endnotes; never hide a claim-changing caveat.
 - `<dl>` / compact facts: configuration and status values.
 - `<details>`: optional incident history and troubleshooting.
 - Diagrams: boundaries and flows, not decorative slogans.

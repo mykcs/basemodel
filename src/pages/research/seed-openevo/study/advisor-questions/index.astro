@@ -3,32 +3,7 @@ import AppLayout from '../../../../../layouts/AppLayout.astro';
 import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
 import AdvisorTenEvidenceVisual from '../../../../../components/research/AdvisorTenEvidenceVisual.astro';
 import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeeting';
-import {
-  ADVISOR_RESEARCH_AS_OF,
-  ADVISOR_QUESTIONS,
-        ADVISOR_Q09_UPDATES,
-} from '../../../../../data/openEvoAdvisorTenQuestions';
-
-const chapters = [
-  {
-    id: 'learning',
-    ordinal: '03',
-    title: '初始训练、SFT/OPSD 与 SEED',
-    lede: '这一部分整理训练轮数、学习目标和 SEED 的实验结果，并分别注明评测协议。',
-  },
-  {
-    id: 'updating',
-    ordinal: '04',
-    title: '长期参数容量与更新机制',
-    lede: '从参数容量、β、模型对点击的犹豫，到直接反转更新方向，我们逐渐把“更新了参数”与“真的改善了行为”分开。',
-  },
-  {
-    id: 'generalization',
-    ordinal: '05',
-    title: '旧能力保持、文字状态与独立复现',
-    lede: '这一部分整理旧任务保持评测、文字载体的作用和新任务独立复现的现有证据。',
-  },
-] as const;
+import { ADVISOR_RESEARCH_AS_OF, ADVISOR_QUESTIONS, ADVISOR_Q09_UPDATES, ADVISOR_Q05_FROZEN } from '../../../../../data/openEvoAdvisorTenQuestions';
 
 const methodStatus = {
   'bounded-answer': '已有范围明确的结论',
@@ -38,192 +13,299 @@ const methodStatus = {
 ---
 
 <AppLayout
-  title="OpenEVO 实验汇报：十个研究问题"
-  description="从训练停止点、普通 SFT/OPSD 与混合 SEED，到长期状态容量、β、entropy、Task Vector、遗忘、文字记忆及独立复现。全部 WebShop Task Score 主阅读尺度统一为 0–100，严格区别同题实验与论文参考。"
+  title="长期参数记忆的效率与能力权衡｜OpenEVO × WebShop 科研汇报"
+  description="按照引言、相关工作、方法、实验设置、主实验、消融、可视化、讨论与局限组织 OpenEVO WebShop 研究证据，保留学长十问作为附录。"
   locale="zh"
 >
-  <main class="advisor-ten" data-advisor-ten-questions data-copy-review data-ui-audit="contrast layout evidence">
 
+  <main class="advisor-ten paper-report" data-advisor-ten-questions data-paper-report data-copy-review data-ui-audit="contrast layout evidence">
     <header class="advisor-ten__hero">
-      <p class="advisor-ten__eyebrow">WebShop · ICLR 论文结构式研究汇报</p>
-      <h1>OpenEVO 实验汇报：十个研究问题</h1>
+      <h1>长期参数记忆的效率与能力权衡</h1>
       <p class="advisor-ten__lede" data-reader-purpose>
-        9 月 22 日，我和学长回顾了 OpenEVO 在 WebShop 上已经开展的实验。我们讨论了普通 SFT / OPSD 与持续更新的区别、160 轮训练是否必要、长期参数状态的容量，以及 β / GDR 这样更复杂的控制机制有没有实际收益。
+        把 Agent 的经验留在参数中，可以让它持续学习；但长期状态变小、训练变快之后，购物任务的能力能否保持？我们比较了三条 160 轮路线，并用容量、方向和评测协议消融检验原因。
       </p>
-      <p class="advisor-ten__meeting-context">
-        学长还希望我们把模型的行为看得更细：具体点击选择中的犹豫、参数更新的方向、以前学过的任务能否保留，以及文字记忆到底起了什么作用。我们希望在明确任务、预算和评测口径以后，判断各项实验究竟支持什么结论。
-      </p>
-      <p class="advisor-ten__meeting-context">
-        会后，我们把这次讨论整理成 Q01–Q09 九个研究问题，又增加了新任务独立复现这一项（Q10）。部分实验已经得到了有限但明确的结论，还有一些只完成了测量或准备工作。
-      </p>
-      <p class="advisor-ten__meeting-source">
-        会议依据：<a href={OPEN_EVO_ADVISOR_MEETING.sourceHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.sourceHref} />9 月 22 日讨论内容（9 月 28 日整理）</a>
-      </p>
-      <details class="advisor-ten__meeting-details">
-        <summary>会议当时整理出的六个讨论方向</summary>
-        <ol>{OPEN_EVO_ADVISOR_MEETING.points.map((point) => (
-          <li><strong>{point.title}</strong><span>{point.text}</span></li>
-        ))}</ol>
-      </details>
     </header>
 
-    <section class="advisor-ten__thesis" aria-labelledby="thesis-title" data-result-stage="direct-result">
-      <p class="advisor-ten__paper-label">Abstract · 研究摘要</p>
-      <h2 id="thesis-title">目前的主要结果</h2>
-      <p class="advisor-ten__abstract">我们以 WebShop 中的长期参数记忆为对象，检查训练收益、状态容量、更新机制与能力保持。三条已完成的长期路线在后来相同的冻结 128 题上得分为 60.72、45.98 与 20.77 / 100；固定容量减少了参数更新耗时，但没有无代价地保持能力。十项问题同时暴露了仍缺少的公平 SEED 基线、遗忘量与独立复现。</p>
+    <section class="advisor-ten__thesis" id="paper-abstract" aria-labelledby="paper-abstract-title" data-result-stage="direct-result">
+      <h2 id="paper-abstract-title">摘要</h2>
+      <p class="advisor-ten__abstract">我们研究 Qwen3-1.7B Agent 在 WebShop 上持续更新时，长期参数状态的计算成本和任务能力如何相互制约。固定容量的 Bounded Online Recurrence 将历史统计窗口中的参数更新累计时间从 <strong>31.09 小时降至 2.02 小时</strong>，但完整实验耗时只缩短约 1.33 倍。三个历史最终模型后来在<strong>同一冻结 128 题</strong>上的 Task Score 分别为 <strong>60.72、45.98、20.77 / 100</strong>；其中普通 OpenEVO 是较早的前序实验，不属于同一预注册三臂随机对照。</p>
+      <p class="advisor-ten__abstract">后段容量筛选表明 rank32 可以用约四分之一的参数文件保留多数任务表现，但仍无法证明严格非劣。第 156 轮的 Task Vector 反向干预显示了一次局部方向因果效应。完整 SEED 基线、遗忘量和文字状态贡献仍缺决定性证据。十个研究问题作为本论文式报告的证据索引，放在文末附录。</p>
+    </section>
+
+    <nav class="paper-toc" aria-label="论文主要章节">
+      <h2>论文结构</h2>
       <ol>
-        <li><strong>训练不是越久越好。</strong>普通 DirectApply 约在第 120 轮进入平台，Bounded 更晚；历史复杂 β/GDR 在训练后期反而掉分。</li>
-        <li><strong>分数上升与“真正持续学会”仍有距离。</strong>参数方向在个别轮次有可验证的因果作用，但损失下降、参数变化、训练轮得分和完整成功不是同一个指标。</li>
-        <li><strong>最大的不确定性还在评测和保持能力。</strong>混合 SEED 的分数远低于论文，但两套评测不是同一场考试；遗忘、文字记忆贡献和新任务复现都还缺决定性证据。</li>
-      </ol>
-    </section>
-
-    <section class="advisor-ten__frame" id="research-problem" aria-labelledby="research-problem-title" data-report-context>
-      <p class="advisor-ten__paper-label">1 · Introduction</p>
-      <h2 id="research-problem-title">为什么这十个问题值得一起研究</h2>
-      <p>我们研究的是一个实际难题：一个 Agent 做完一批 WebShop 购物任务后，能不能把有用经验带到下一批任务，同时避免长期参数越积越大、训练越来越慢，或遗失原先学会的能力？<strong>训练损失降低不等于买对商品；参数变化也不等于持续学习成功。</strong></p>
-      <p>普通 SFT / OPSD 是最基础的“直接训练参数”参照；普通 OpenEVO 继续累积长期参数；Bounded 限制参数状态的容量；历史复杂 β/GDR 尝试控制参数更新。<strong>新增机制是不是值得使用</strong>，最终要看在相同任务和评测规则下，能力提升多少、代价是什么。</p>
-      <p>一个已经完成的能力取舍是：三条此前完成的 160 轮路线后来在<strong>同一冻结 128 题</strong>上终评，普通 OpenEVO 为 <strong>60.72/100</strong>、Bounded 为 <strong>45.98/100</strong>、Bounded 加历史复杂 β/GDR 为 <strong>20.77/100</strong>。Bounded 能限制长期状态，但<strong>该终评也显示了能力损失</strong>；这些数值不能和后面 Q04 的第 152–159 轮平均比较混为一谈。<a href="#q05">查看 Q05 的原始对照与证据 →</a></p>
-    </section>
-
-    <section class="advisor-ten__methods" id="experimental-design" aria-labelledby="experimental-design-title" data-report-methods>
-      <p class="advisor-ten__paper-label">2 · Methods &amp; Evaluation</p>
-      <h2 id="experimental-design-title">实验设置与可比较范围</h2>
-      <p>主要研究 Qwen3-1.7B Agent 在 WebShop 上从任务经验中学习。每次比较都必须指明模型起点、训练状态、题目集合、随机设置、评估时点和额外文字状态。<strong>Task Score 是终局购物条件满足程度（此处统一为满分 100），完整成功另报；训练 loss 与更新范数不能代替这两项。</strong></p>
-      <div class="advisor-ten__methods-scroll" tabindex="0" aria-label="四类研究证据的比较资格">
-        <table>
-          <caption>同一分数单位不自动产生相同的实验协议</caption>
-          <thead><tr><th scope="col">研究证据</th><th scope="col">实际评测范围</th><th scope="col">允许的解释</th></tr></thead>
-          <tbody>
-            <tr><th scope="row">三条长期路线</th><td>后来使用同一套冻结 128 题终评；普通 OpenEVO 是较早的前序实验</td><td>可描述同题结果差异；不能把三组都当成同期严格控制的因果处理</td></tr>
-            <tr><th scope="row">rank32 与 rank128</th><td>第 152–159 轮、1,024 次配对任务尝试</td><td>只支持该后段训练窗口的容量取舍，不等于完整 160 轮终评</td></tr>
-            <tr><th scope="row">历史 Q03 与 SEED 论文</th><td>自定义 64 题对比论文另一套原生 128 题</td><td>只能说明各自报告的结果，不能用分差衡量算法优劣</td></tr>
-            <tr><th scope="row">Task Vector 方向干预</th><td>特定第 156 轮模型与冻结 64 题；配对、多重比较</td><td>有局部因果证据，但不能自动推广到所有轮次与模型</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>正文 Q01–Q10 分别提供实验操作、实际观察、解释和未知项。完整的论文结构式初稿另有独立 Markdown 版本，按 <strong>摘要 → 引言 → 方法 → 结果 → 分析 → 讨论 → 局限 → 后续实验</strong> 展开，不含未完成实验的假成绩。</p>
-      <p><a href="https://github.com/mykcs/basemodel/blob/main/docs/reports/2026-10-10-advisor-ten-iclr-style.md" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/basemodel/blob/main/docs/reports/2026-10-10-advisor-ten-iclr-style.md" />阅读可引用、可修改的完整 ICLR 结构式研究稿 ↗</a></p>
-    </section>
-
-    <nav class="advisor-ten__contents" aria-label="十个研究问题目录">
-      <h2>十个问题</h2>
-      
-      <ol>
-        {ADVISOR_QUESTIONS.map((question) => (
-          <li><a href={'#' + question.id}><span>{question.id.toUpperCase()}</span>{question.title}</a></li>
-        ))}
+        <li><a href="#paper-introduction"><span>01</span> 引言</a></li>
+        <li><a href="#paper-related-work"><span>02</span> 相关工作</a></li>
+        <li><a href="#paper-method"><span>03</span> 方法</a></li>
+        <li><a href="#paper-experiments"><span>04</span> 实验设置</a></li>
+        <li><a href="#paper-results"><span>05</span> 主实验结果</a></li>
+        <li><a href="#paper-ablations"><span>06</span> 消融实验</a></li>
+        <li><a href="#paper-visualization"><span>07</span> 可视化与机制分析</a></li>
+        <li><a href="#paper-discussion"><span>08</span> 讨论与局限</a></li>
+        <li><a href="#paper-conclusion"><span>09</span> 结论与下一步</a></li>
       </ol>
     </nav>
 
-    {chapters.map((chapter) => (
-      <section class="advisor-ten__chapter" id={chapter.id} aria-labelledby={chapter.id + '-title'}>
-        <header class="advisor-ten__chapter-header">
-          <span>第 {chapter.ordinal} 部分</span>
-          <h2 id={chapter.id + '-title'}>{chapter.title}</h2>
-          <p>{chapter.lede}</p>
-        </header>
-
-        {ADVISOR_QUESTIONS.filter((q) => q.family === chapter.id).map((question) => (
-          <article class="advisor-ten__question" id={question.id} aria-labelledby={question.id + '-title'} data-report-question={question.id}>
-            <header class="advisor-ten__question-header">
-              <span class="advisor-ten__question-num">{question.id.toUpperCase()}</span>
-              <div>
-                <h3 id={question.id + '-title'}>{question.title}</h3>
-                <p class="advisor-ten__evidence-state">{methodStatus[question.evidenceState]}</p>
-              </div>
-            </header>
-            <p class="advisor-ten__opening">{question.opening}</p>
-            <p><strong>我们怎么检验：</strong>{question.experiment}</p>
-            <p class="advisor-ten__finding" data-report-finding={question.id}><strong>实际看到：</strong>{question.finding}</p>
-            {question.id === 'q02' && <AdvisorTenEvidenceVisual variant="q02" />}
-            {question.id === 'q07' && <AdvisorTenEvidenceVisual variant="q07" />}
-
-            {question.id === 'q01' && (
-              <AdvisorTenEvidenceVisual variant="q01" />
-            )}
-
-            {question.id === 'q03' && (
-              <>
-              <AdvisorTenEvidenceVisual variant="q03" />
-                <div class="advisor-ten__paper-reference" data-comparison-boundary="noncomparable">
-                  <p><strong>论文参考属于另一份成绩单。</strong>SEED（Paper，Qwen3-1.7B）报告 <strong>87.10 / 100</strong>、完整成功 <strong>77.3%</strong>；Q03 是改动过方法与交互协议的 64 题结果，不能用“87.10 − 6.62”来推断某种算法损失了多少能力。</p>
-                  <p>独立的公开代码复现已经重新收集 1,440 条轨迹，得到 1,200 条有效教师标注（1,080 训练、120 验证）；截至所核执行收据，正式 SFT 和 Stage2 尚无新的能力结果。因此它仍应显示“未测”，绝不能借用论文分数填表。</p>
-                </div>
-              </>
-            )}
-
-            {question.id === 'q04' && (
-              <AdvisorTenEvidenceVisual variant="q04" />
-            )}
-
-            {question.id === 'q05' && (
-              <AdvisorTenEvidenceVisual variant="q05" />
-            )}
-
-            {question.id === 'q09' && (
-              <figure class="advisor-ten__figure" data-report-figure="q09-update-counts">
-                <div class="advisor-ten__table-scroll" tabindex="0" aria-label="三条路线在160轮中各载体内容实际更新的轮数">
-                  <table>
-                    <caption>160 轮内内容实际改变的次数，不是推理时读取次数</caption>
-                    <thead><tr><th scope="col">方法</th><th scope="col">参数状态</th><th scope="col">Text Memory</th><th scope="col">Skill</th><th scope="col">Agent System</th></tr></thead>
-                    <tbody>{ADVISOR_Q09_UPDATES.map((row) => <tr><th scope="row">{row.method}</th><td>{row.parametric}</td><td>{row.textMemory}</td><td>{row.skill}</td><td>{row.agent}</td></tr>)}</tbody>
-                  </table>
-                </div>
-                <figcaption>同样内容可以在很多后续任务里被反复使用；因此“更新少”既不能证明没价值，也不能证明它有因果贡献。</figcaption>
-              </figure>
-            )}
-
-            <p class="advisor-ten__interpretation"><strong>为什么这样理解：</strong>{question.interpretation}</p>
-            <p class="advisor-ten__limit"><strong>当前还不能说：</strong>{question.unknown}</p>
-            <footer class="advisor-ten__sources">
-              <span>原始证据</span>
-              {question.evidence.map((evidence) => (
-                <a href={evidence.href} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={evidence.href} />{evidence.label} ↗</a>
-              ))}
-            </footer>
-          </article>
-        ))}
-      </section>
-    ))}
-
-    <section class="advisor-ten__closing" aria-labelledby="closing-title" data-result-stage="synthesis">
-      <p class="advisor-ten__paper-label">6 · Discussion &amp; Conclusion</p>
-      <h2 id="closing-title">目前的研究结论与局限</h2>
-      <p>
-        一开始我们容易把“训练了多少轮、损失下降了多少、参数有没有更新”当成进展。
-        后来的负结果让研究重点变得更明确：<strong>相同评测条件下的任务能力、更新方向与容量的影响，以及旧能力能否保留。</strong>
-      </p>
-      <p>
-        现在 Q01 给出了方法各不相同的平台区间，Q07 在局部状态上提供了更新方向的因果证据。
-        Q03 的非单调低分、Q04 的容量取舍、Q05 的复杂门控退化，则告诉我们不能简单地把更久训练、更多参数和更复杂的控制器当成更好的持续学习。
-        至于文字状态、遗忘、独立复现，仍需要更强的证据才能完成判断。
-      </p>
-      <p class="advisor-ten__closing-next">现在最合理的研究顺序，是先把已经设计好的同口径对照和有效评测收口，明确保留不了的能力，再由真实结果决定是否值得增加新机制。</p>
-      <p class="advisor-ten__closing-links"><a href="/research/seed-openevo/study/">回到七次实验的研究演进 →</a> <a href="/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/">深入阅读 Bounded / β 研究 →</a></p>
+    <section class="paper-section advisor-ten__frame" id="paper-introduction" data-report-context aria-labelledby="paper-introduction-title">
+      <h2 id="paper-introduction-title">引言：持续学习需要同时衡量能力与代价</h2>
+      <p>WebShop 模拟一笔真实购物：Agent 读取购买要求、搜索商品、选择属性，最后完成购买。训练损失下降只说明模型更适应训练目标，不能证明它后来能买对商品。我们必须同时衡量<strong>任务得分、完整成功、训练时间和参数存储</strong>。</p>
+      <p>普通 OpenEVO 将每轮新的低秩参数更新连同历史组件一并保留。长时间训练时，历史越来越长，后期参数更新越来越慢。Bounded 试图把历史参数限制在固定容量；β 控制机制进一步尝试调节每一步写入。成本下降后能否保持效果，是整个研究的核心张力。</p>
+      <p>本文报告三类贡献：<strong>一项效率—能力实测权衡</strong>、<strong>一组有条件的容量和更新方向证据</strong>，以及<strong>一份明确尚未完成的基线与泛化清单</strong>。这些是研究进展，不是完整持续学习算法获胜的证明。</p>
     </section>
-    <section class="advisor-ten__reentry" id="research-reentry" aria-labelledby="research-reentry-title" data-report-reentry>
-      <p class="advisor-ten__paper-label">7 · Reproducibility &amp; Next Experiments</p>
-      <h2 id="research-reentry-title">一周以后回来，从哪里接着读？</h2>
-      <p>这是截至 <time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time> 的研究解释快照，不是实时实验状态或启动授权。以后重新接手，先从这三个问题恢复当时的判断，而不是从训练日志猜来龙去脉。</p>
-      <ol>
-        <li><strong>当时知道什么：</strong><a href="#q01">训练停止点因方法而异</a>；<a href="#q04">长期容量存在成本—能力取舍</a>；<a href="#q07">第 156 轮的更新方向干预改变了任务得分</a>。<a href="#q03">Q03 的四个分数节点</a>先升、后跌、再恢复，且完整成功始终为零。</li>
-        <li><strong>什么还没证明：</strong><a href="#q02">Q02 的六格训练已 PASS，但全部固定面板配对统计未封存</a>；Q03 原生 SEED 128 题校准与新公开配方的正式学习未出能力结论；<a href="#q08">遗忘</a>、<a href="#q09">文字状态的因果贡献</a>、<a href="#q10">新任务独立复现</a>仍需要新证据。</li>
-        <li><strong>下一步如何核对：</strong>每个问题底部都有对应原始实验来源。先读当时的测试/评测身份和冻结收据；要判断<strong>今天</strong>是否已完成或能否启动，必须另查当前执行分支的实验记录，不能把这篇历史报告当作实时控制台。</li>
+
+    <section class="paper-section" id="paper-related-work" aria-labelledby="paper-related-work-title">
+      <h2 id="paper-related-work-title">相关工作：任务环境、学习信号和参数存储</h2>
+      <div class="paper-related-grid">
+        <article>
+          <h3>WebShop：我们在测什么</h3>
+          <p>Yao 等人的 WebShop 给出了商品搜索、属性选择和最终购买的交互式基准。本文沿用它的任务语义，但<strong>不同任务清单仍必须分别报告</strong>。</p>
+          <p class="paper-source"><a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2207.01206" />WebShop 原论文 ↗</a></p>
+        </article>
+        <article>
+          <h3>SEED：把事后技能蒸馏回策略</h3>
+          <p>SEED 将轨迹分析得到的事后技能作为训练时的监督，并通过 on-policy distillation 影响策略更新。它与持续保留低秩参数组件的 OpenEVO 不属于同一更新机制，<strong>论文分数不能替代本地复现</strong>。</p>
+          <p class="paper-source"><a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED 原论文 ↗</a> <a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED" />官方代码 ↗</a></p>
+        </article>
+        <article>
+          <h3>LoRA：低秩更新的基础</h3>
+          <p>LoRA 用低秩矩阵表示模型适配更新。本文研究的额外问题是：<strong>许多轮 LoRA 更新积累之后，状态容量、计算开销和后续能力如何变化</strong>。</p>
+          <p class="paper-source"><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />LoRA 原论文 ↗</a></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="paper-section" id="paper-method" aria-labelledby="paper-method-title">
+      <h2 id="paper-method-title">方法：三种长期参数更新规则</h2>
+      <p>模型执行一批购物任务之后，从经验中形成下一轮使用的参数状态。三条路线的关键区别是<strong>如何保留旧更新，以及如何处理新更新</strong>。下图是语义示意，不是新提出的更新方程。</p>
+      <figure class="paper-method-diagram" data-paper-figure="method">
+        <div class="paper-method-flow" role="group" aria-label="每轮从任务轨迹、参数更新到下一轮策略的共同路径">
+          <div><span>输入</span><strong>WebShop 任务轨迹</strong><small>一次批次的交互经验</small></div>
+          <span class="paper-method-arrow" aria-hidden="true">→</span>
+          <div><span>处理</span><strong>生成本轮参数更新</strong><small>当前学习信号与更新规则</small></div>
+          <span class="paper-method-arrow" aria-hidden="true">→</span>
+          <div><span>输出</span><strong>下一轮模型状态</strong><small>再去完成新的购物任务</small></div>
+        </div>
+        <div class="paper-method-arms">
+          <div><strong>DirectApply（原始 OpenEVO）</strong><p>逐轮追加并保留低秩更新组件；历史可以不断增长。</p></div>
+          <div><strong>Bounded Online Recurrence</strong><p>把历史与新更新整合为固定容量的长期参数状态；实验中先设 rank128。</p></div>
+          <div><strong>Bounded + 历史 β/GDR</strong><p>在固定容量基础上干预更新写入；旧复杂机制与后续简单非负 β 不是同一个实验。</p></div>
+        </div>
+        <figcaption>图 1｜三路线共享任务环境和跨轮学习目标，但状态保留规则不同。它不是对所有运行细节、优化器或文字记忆的逐元素等价声明。</figcaption>
+      </figure>
+      <p>为了知道复杂机制是否真的有必要，另设普通 <strong>SFT / OPSD</strong> 初始训练参照；为了检查公开算法，独立进行 <strong>SEED</strong> 复现。这些线没有全部取得可同口径比较的最终成绩，不能提前填入主结果表。</p>
+    </section>
+
+    <section class="paper-section advisor-ten__methods" id="paper-experiments" data-report-methods aria-labelledby="paper-experiments-title">
+      <h2 id="paper-experiments-title">实验设置：不同证据不混成一场考试</h2>
+      <p>主要模型是 <strong>Qwen3-1.7B</strong>，任务为 WebShop。Task Score 以满分 100 表示终局满足程度；<strong>Exact Success</strong> 表示多少题的所有条件均达成。以下四种实验回答不同问题：</p>
+      <div class="advisor-ten__methods-scroll" tabindex="0" aria-label="评测合同及比较边界">
+        <table>
+          <caption>表 1｜样本、时间点、可比性与证据作用</caption>
+          <thead><tr><th scope="col">研究部分</th><th scope="col">真实评测身份</th><th scope="col">允许的结论</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">主要终评</th><td>三条 160 轮路线，后来在同一冻结 128 题终评</td><td>同题表现描述；普通线是前序历史，不宣称全部三臂严格控制</td></tr>
+            <tr><th scope="row">容量消融</th><td>第 152–159 轮，rank128 与 rank32，共 1,024 次匹配任务尝试</td><td>该后段窗口的性能和文件成本，不代表 160 轮完整最终成绩</td></tr>
+            <tr><th scope="row">SEED 历史 Q03</th><td>自定义 64 题，A0 / A40 / A80 / A120</td><td>桥接协议内趋势；不能与论文另一套 128 题直接比较</td></tr>
+            <tr><th scope="row">方向干预</th><td>指定第 156 轮，冻结 64 题；配对并校正多重比较</td><td>局部方向因果证据；不能外推到所有更新</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="paper-boundary"><strong>可比性原则：</strong>相同分数单位仍需要相同模型起点、任务清单、prompt、温度、动作解释、文字状态、评估时点和 evaluator。验证题用于分析和模型选择；冻结最终题不能反复拿来调参。所有百分制 Task Score 都来自原始 0–1 分数的线性换算。</p>
+    </section>
+
+    <section class="paper-section" id="paper-results" aria-labelledby="paper-results-title" data-result-stage="paper-main-results">
+      <h2 id="paper-results-title">主实验：节省参数更新时间，但损失了部分任务能力</h2>
+      <p>三条历史长期学习路线都完成了 160 轮，之后的最终模型在<strong>同一冻结 128 题</strong>上得到以下结果。</p>
+      <div class="advisor-ten__methods-scroll" tabindex="0" aria-label="三路线在同一冻结128题上的终评">
+        <table class="paper-main-table">
+          <caption>表 2｜WebShop 冻结 128 题的最终模型；普通 OpenEVO 是较早前序实验</caption>
+          <thead><tr><th scope="col">方法</th><th scope="col">Task Score / 100</th><th scope="col">完整成功</th></tr></thead>
+          <tbody>{ADVISOR_Q05_FROZEN.map((row) => <tr><th scope="row">{row.method}</th><td class="paper-main-value">{row.score}</td><td>{row.exact}</td></tr>)}</tbody>
+        </table>
+      </div>
+      <div class="paper-metrics" aria-label="训练耗时比较">
+        <div><span>参数更新累计耗时</span><strong>31.09 → 2.02 h</strong><small>历史 Bounded 对普通线 · 约 15.36×</small></div>
+        <div><span>包含任务执行的整段耗时</span><strong>74.78 → 56.25 h</strong><small>整体约 1.33×，不能写成 15.36×</small></div>
+      </div>
+      <p class="paper-boundary">该结果的核心是<strong>效率—能力取舍</strong>：Bounded 的参数训练更便宜，但相同冻结题上的得分低于普通 OpenEVO；历史复杂 β/GDR 的结果更低。<strong>Bounded 与 β 是更接近正式预注册的处理对照</strong>，不能凭三组终评分差单独证明“压缩”或“β”就是所有掉分的直接原因。</p>
+      <p class="paper-source"><a href="https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro" />已发布的三路线结果与原始证据链接 ↗</a></p>
+    </section>
+
+    <section class="paper-section" id="paper-ablations" aria-labelledby="paper-ablations-title">
+      <h2 id="paper-ablations-title">消融实验：哪些机制是必要的</h2>
+      <h3>6.1 长期容量：rank32 与 rank128</h3>
+      <p>在相同任务和随机设置的第 <strong>152–159</strong> 轮继续训练中，匹配比较两种固定容量，合计 <strong>1,024 次任务尝试</strong>。</p>
+      <AdvisorTenEvidenceVisual variant="q04" />
+      <p>rank32 的参数文件约 <strong>51.4 MB</strong>，rank128 为约 <strong>205.6 MB</strong>；Task Score 为 <strong>61.19 对 62.98 / 100</strong>。两者得分差的配对 95% 区间（rank32 − rank128）为 <strong>[−3.68, +0.12]</strong> 分，跨过零：该容量筛选支持降低成本的可能性，<strong>不能宣称严格等价或非劣</strong>。它也不是上节冻结 128 题的完整终评。</p>
+      <h3>6.2 学习目标：普通 SFT 与 OPSD</h3>
+      <p>早期小样本对照的任务分数方向与完整成功并不一致：OPSD 的平均 Task Score 略高，而 SFT 完整成功更多；SFT 多遍训练也没有单调改善。后续 <strong>3 个随机设置 × 2 个目标</strong>的六次训练已完成，但六格的同题评测和配对统计尚未封存。</p>
+      <AdvisorTenEvidenceVisual variant="q02" />
+      <h3>6.3 已计划但尚无胜负结果的机制消融</h3>
+      <p>简单非负 β 的方向保持检查是实现诊断，尚无完整配对能力结论。Text Memory、Skill 与 Agent System 的关闭消融也尚无可报告结果；<strong>改写次数少并不能证明这些文字状态对推理无用</strong>。本节不把未完成的消融画成零分。</p>
+      <p class="paper-source"><a href="https://github.com/mykcs/openevo-experiment/pull/597" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/597" />rank32 成本—能力证据 ↗</a> <a href="https://github.com/mykcs/openevo-experiment/pull/629" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/629" />SFT / OPSD 六格收据 ↗</a></p>
+    </section>
+
+    <section class="paper-section" id="paper-visualization" aria-labelledby="paper-visualization-title">
+      <h2 id="paper-visualization-title">可视化：把趋势、异常和方向效应分开看</h2>
+      <h3>7.1 长期任务能力轨迹</h3>
+      <figure class="paper-wandb" data-paper-figure="full-trajectory">
+        <img src="/research/seed-openevo/evidence/wandb-threeway/task-score.svg" alt="普通 OpenEVO、Bounded 和历史复杂 β/GDR 的 WebShop 训练轮任务得分轨迹" loading="lazy"/>
+        <figcaption>图 2｜三路线历史 160 轮训练过程的 Task Score 可视化（已归档 W&amp;B 来源）。训练轮分数与表 2 的冻结 128 题终评不同，不能把两种时点合成一条成绩线。</figcaption>
+      </figure>
+      <h3>7.2 不同更新规则的平台出现时间</h3>
+      <AdvisorTenEvidenceVisual variant="q01" />
+      <p>开发题上普通 DirectApply 约第 <strong>120</strong> 轮趋于平台，Bounded 更晚，历史复杂 β/GDR 后段退化。它们是各自开发协议上的近似位置，不是已经验证的自动早停算法。</p>
+      <h3>7.3 历史 SEED 桥接实验的非单调任务得分</h3>
+      <AdvisorTenEvidenceVisual variant="q03" />
+      <div class="advisor-ten__paper-reference" data-comparison-boundary="noncomparable">
+        <p>图中的四个点属于同一<strong>自定义 64 题</strong>：3.71 → 6.43 → 0.69 → 6.62 / 100，全部为 <strong>0/64</strong> 完整成功。论文中 Qwen3-1.7B 的 <strong>87.10 / 100</strong>、完整成功 <strong>77.3%</strong> 用的是不同的原生 128 题和交互协议，<strong>不能直接排名或归因</strong>。</p>
+        <p>另一条独立的公开配方 SEED 已采集 1,440 条 Stage1 轨迹和 1,200 条有效教师标注；截至这份证据快照，其正式 SFT / Stage2 能力结果为<strong>未测</strong>，不能从论文数字借用成绩。</p>
+      </div>
+      <h3>7.4 Task Vector 方向反转的局部因果效应</h3>
+      <AdvisorTenEvidenceVisual variant="q07" />
+      <p>第 <strong>156</strong> 轮将一项真实更新方向反转后，固定 64 题的 Task Score 下降约 <strong>10.06 分</strong>（配对 95% 区间：下降 5.60–15.02 分）。这是八次方向反转中通过多重比较校正的一次；不代表任何一轮都能复现。</p>
+      <h3>7.5 文字记忆更新频率是诊断，不是贡献消融</h3>
+      <div class="advisor-ten__table-scroll" tabindex="0" data-report-figure="q09-update-counts" aria-label="三路线长期训练期间文字载体实际改写次数">
+        <table>
+          <caption>表 3｜160 轮中实际内容 UPDATE 的轮数；不等于推理读取次数或因果贡献</caption>
+          <thead><tr><th scope="col">方法</th><th scope="col">参数状态</th><th scope="col">Text Memory</th><th scope="col">Skill</th><th scope="col">Agent System</th></tr></thead>
+          <tbody>{ADVISOR_Q09_UPDATES.map((row) => <tr><th scope="row">{row.method}</th><td>{row.parametric}</td><td>{row.textMemory}</td><td>{row.skill}</td><td>{row.agent}</td></tr>)}</tbody>
+        </table>
+      </div>
+      <p>Q06 的合法点击候选熵曾做测量，但缺无泄漏的独立预测检验；它没有证明“熵能预测掉分”。参数范数、方向余弦、熵、路径长度是不同观察，只有 Q07 的指定方向干预具有该范围内的因果解释资格。</p>
+    </section>
+
+    <section class="paper-section advisor-ten__closing" id="paper-discussion" data-result-stage="synthesis" aria-labelledby="paper-discussion-title">
+      <h2 id="paper-discussion-title">讨论与局限：我们知道的和仍不能证明的</h2>
+      <p>最强的已观测事实是：在某些历史运行条件下，固定容量缓解了随轮次增长的计算瓶颈，却没有保住同题最终任务能力。方向反转证明一次局部因果影响，但仍不足以解释所有 β/GDR 后期掉分。</p>
+      <div class="paper-limitations">
+        <p><strong>公平基线仍缺。</strong>Q02 的六格训练已完成但配对能力统计缺失；完整公开 SEED Stage2 尚无可报告同口径结果，不能据此宣称 OpenEVO 胜过或不如 SEED。</p>
+        <p><strong>遗忘仍未知。</strong>Q08 的 960 次旧任务尝试完成了测量，但缺少可靠的“当时已学会”起点，不能严格计算遗忘量。</p>
+        <p><strong>文字载体因果贡献未知。</strong>Q09 的 Text Memory / Skill / Agent System 更新很稀疏，并未完成关闭载体的同条件对照。</p>
+        <p><strong>跨任务泛化未证实。</strong>会后提出的 Q10 尚无独立新任务、不同随机流的正式重复成绩。</p>
+      </div>
+      <p>当前不宜继续叠加未经独立验证的复杂控制器。最值得优先解决的是：普通训练参照是否可靠，容量变小造成的能力代价能否被归因，以及本地 SEED 是否真正执行了可比的学习与评测协议。</p>
+    </section>
+
+    <section class="paper-section advisor-ten__reentry" id="paper-conclusion" data-report-reentry aria-labelledby="paper-conclusion-title">
+      <h2 id="paper-conclusion-title">结论与下一组实验</h2>
+      <p>本研究已经得到一个明确的工程—科学取舍：<strong>让参数记忆不再无限增长，可以明显降低局部计算成本；长期任务能力的保持仍需新的证据与方法。</strong></p>
+      <ol class="paper-next">
+        <li><strong>完成可靠参照：</strong>复用 Q02 已完成的六格 SFT/OPSD 权重，补齐同题评测；并把公开 SEED 的原生评测、独立训练结果与 Q03 桥接实验严格分开。</li>
+        <li><strong>找到容量边界：</strong>同合同补齐更小 rank 的任务表现、完整成功、续学和运行成本，避免从低有效秩直接推导最小容量。</li>
+        <li><strong>测试实际保持：</strong>用有可核早期成功身份的任务计算遗忘，再对文字状态和 β 控制分别做真正的关闭／简化干预。</li>
+        <li><strong>独立复现：</strong>冻结新任务和随机流，再检验性能、容量与方向结论是否稳健。</li>
       </ol>
     </section>
 
-    <footer class="advisor-ten__footnotes" aria-labelledby="report-notes-title">
-      <p class="advisor-ten__paper-label">References · 科学依据</p>
-      <h2 id="report-notes-title">注</h2>
-      <p>本文 WebShop Task Score 统一按满分 100 分展示（原始 0–1 分数乘以 100）；完整成功另列题数或比例。显示单位相同，不等于不同模型、任务集或评测协议可以直接排名。</p>
-      <p>截至 {ADVISOR_RESEARCH_AS_OF} 的研究记录。学长于 2026 年 9 月 22 日提出训练方式、轮数、参数状态等问题；这里的十问是会后整理的研究框架，Q10 为会后延伸，并非会议逐字提问。</p>
-    </footer>
+    <section class="paper-section paper-sources" id="paper-sources" aria-labelledby="paper-sources-title">
+      <h2 id="paper-sources-title">参考文献与原始实验来源</h2>
+      <p class="paper-source-provenance">研究证据核对日期：<time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>。日期标示本报告引用的历史研究状态，并非实时实验进度。<a href="https://github.com/mykcs/basemodel/blob/main/docs/reports/2026-10-10-advisor-ten-iclr-style.md" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/basemodel/blob/main/docs/reports/2026-10-10-advisor-ten-iclr-style.md" />完整 Markdown 研究稿 ↗</a></p>
+      <p>参考文献：[1] <a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2207.01206" />WebShop</a>；[2] <a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED</a>；[3] <a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />LoRA</a>。实验一手来源见下方十问附录及 <a href="https://github.com/mykcs/openevo-experiment" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment" />openevo-experiment 仓库</a>。</p>
+      <details class="advisor-ten__meeting-details">
+        <summary>会议记录：2026 年 9 月 22 日的六个讨论方向</summary>
+        <p>会议原始依据：<a href={OPEN_EVO_ADVISOR_MEETING.sourceHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.sourceHref} />学长讨论整理 ↗</a></p>
+        <ol>{OPEN_EVO_ADVISOR_MEETING.points.map((point) => <li><strong>{point.title}</strong><span>{point.text}</span></li>)}</ol>
+      </details>
+    </section>
+
+    <section class="paper-section paper-appendix" id="paper-appendix" aria-labelledby="paper-appendix-title">
+      <h2 id="paper-appendix-title">十问原始证据索引</h2>
+      <p>2026 年 9 月 22 日会议讨论了六个方向，会后拆分为 Q01–Q09，并新增 Q10 独立复现。以下保留每个问题的实验、发现、解释、未知项和原始证据；它们是论文叙事的底层来源，不再承担十个平行的正文大章节。</p>
+      <nav class="advisor-ten__contents" aria-label="附录十问锚点">
+        <h3>定位原始问题</h3>
+        <ol>{ADVISOR_QUESTIONS.map((q) => <li><a href={'#' + q.id}><span>{q.id.toUpperCase()}</span>{q.title}</a></li>)}</ol>
+      </nav>
+      {ADVISOR_QUESTIONS.map((question) => (
+        <article class="advisor-ten__question" id={question.id} data-report-question={question.id} aria-labelledby={question.id + '-title'}>
+          <header class="advisor-ten__question-header">
+            <span class="advisor-ten__question-num">{question.id.toUpperCase()}</span>
+            <div><h3 id={question.id + '-title'}>{question.title}</h3><p class="advisor-ten__evidence-state">{methodStatus[question.evidenceState]}</p></div>
+          </header>
+          <p class="advisor-ten__opening">{question.opening}</p>
+          <p><strong>实验：</strong>{question.experiment}</p>
+          <p class="advisor-ten__finding" data-report-finding={question.id}><strong>实际观察：</strong>{question.finding}</p>
+          <p class="advisor-ten__interpretation"><strong>支持的解释：</strong>{question.interpretation}</p>
+          <p class="advisor-ten__limit"><strong>未解决：</strong>{question.unknown}</p>
+          <footer class="advisor-ten__sources"><span>一手证据</span>{question.evidence.map((e) => <a href={e.href} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={e.href} />{e.label} ↗</a>)}</footer>
+        </article>
+      ))}
+    </section>
   </main>
 </AppLayout>
-
 <style>
-.advisor-ten__paper-label{margin:0 0 .55rem;font-size:.79rem;font-weight:700;letter-spacing:.035em;color:var(--color-text-muted)}
+
+.paper-report{--paper-rule:var(--color-border)}
+.paper-report .advisor-ten__hero{padding-bottom:1.6rem}
+.paper-report .advisor-ten__hero h1{font-size:clamp(2rem,4vw,3.15rem);letter-spacing:-.035em}
+.paper-report .advisor-ten__thesis{padding:1.65rem 0 1.8rem}
+.paper-report .advisor-ten__thesis h2{margin:.1rem 0 .7rem}
+.paper-report .advisor-ten__abstract{margin:.7rem 0;max-width:77ch}
+.paper-toc{border-top:1px solid var(--paper-rule);padding:1.6rem 0 1.3rem}
+.paper-toc h2{font-size:.88rem;font-weight:720;margin:0 0 .7rem;color:var(--color-text-muted)}
+.paper-toc ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;padding:0;margin:0}
+.paper-toc li{min-width:0;border-bottom:1px solid var(--paper-rule)}
+.paper-toc a{display:flex;gap:.65rem;padding:.55rem 0;color:var(--color-text);text-decoration:none;font-size:.94rem;line-height:1.5}
+.paper-toc a:hover{text-decoration:underline;text-underline-offset:.2rem}
+.paper-toc a span{font-size:.75rem;color:var(--color-text-muted);font-variant-numeric:tabular-nums;padding-top:.13rem}
+.paper-section{border-top:1.5px solid var(--color-text);padding:2rem 0 2.4rem;scroll-margin-top:1rem}
+.paper-section h2{font-size:clamp(1.65rem,3.3vw,2.35rem);line-height:1.25;margin:.1rem 0 1.25rem;letter-spacing:-.025em}
+.paper-section h3{font-size:clamp(1.15rem,2vw,1.48rem);margin:2rem 0 .65rem;line-height:1.45}
+.paper-section>p:not(.advisor-ten__paper-label){max-width:78ch;font-size:1rem;line-height:1.83;margin:.75rem 0}
+.paper-section a{color:var(--color-text);text-underline-offset:.2rem;overflow-wrap:anywhere}
+.paper-related-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem;margin:1.4rem 0}
+.paper-related-grid article{padding-top:.8rem;border-top:1px solid var(--paper-rule)}
+.paper-related-grid h3{font-size:1.13rem;line-height:1.45;margin:0 0 .6rem}
+.paper-related-grid p{line-height:1.75;margin:.6rem 0;font-size:.94rem}
+.paper-source{font-size:.9rem;color:var(--color-text-muted);display:flex;flex-wrap:wrap;gap:.6rem 1rem}
+.paper-method-diagram{margin:1.4rem 0 1.5rem;padding:1rem 0;border-block:1px solid var(--paper-rule)}
+.paper-method-flow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);gap:.55rem;align-items:stretch}
+.paper-method-flow div{padding:.9rem .7rem;border:1px solid var(--paper-rule);min-width:0}
+.paper-method-flow div span,.paper-method-flow div small{display:block;color:var(--color-text-muted);font-size:.78rem;line-height:1.55}
+.paper-method-flow div strong{display:block;font-size:.95rem;line-height:1.5;padding:.2rem 0}
+.paper-method-arrow{font-size:1.35rem;align-self:center;color:var(--color-text-muted)}
+.paper-method-arms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.1rem;margin:1.25rem 0}
+.paper-method-arms>div{border-top:2px solid var(--color-text);padding:.8rem .2rem}
+.paper-method-arms strong{font-size:.92rem;line-height:1.5}
+.paper-method-arms p{font-size:.89rem;line-height:1.68;margin:.45rem 0}
+.paper-method-diagram figcaption,.paper-wandb figcaption{max-width:80ch;font-size:.87rem;line-height:1.7;color:var(--color-text-muted)}
+.paper-report .advisor-ten__methods{border-top:1.5px solid var(--color-text);border-bottom:0;padding:2rem 0 2.4rem}
+.paper-report .advisor-ten__methods h2{margin:.1rem 0 1.25rem}
+.paper-boundary{border-left:3px solid var(--color-text);padding-left:1rem}
+.paper-main-value{font-size:1.18rem;font-weight:790;font-variant-numeric:tabular-nums}
+.paper-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin:1.4rem 0}
+.paper-metrics div{border-top:2px solid var(--color-text);padding:.75rem 0}
+.paper-metrics span,.paper-metrics small{display:block;line-height:1.55;font-size:.85rem;color:var(--color-text-muted)}
+.paper-metrics strong{display:block;font-size:clamp(1.35rem,2.5vw,1.8rem);line-height:1.3;margin:.35rem 0;font-variant-numeric:tabular-nums}
+.paper-wandb{margin:1rem 0 1.35rem;padding:1rem 0;border-block:1px solid var(--paper-rule)}
+.paper-wandb img{display:block;width:100%;height:auto;max-height:530px;object-fit:contain}
+.paper-wandb figcaption{margin-top:.8rem}
+.paper-limitations{border-top:1px solid var(--paper-rule)}
+.paper-limitations p{border-bottom:1px solid var(--paper-rule);padding:.8rem 0;line-height:1.75;margin:0}
+.paper-next{padding-left:1.3rem;max-width:76ch;line-height:1.75}
+.paper-next li{margin:1rem 0}
+.paper-sources>p{font-size:.92rem}
+.paper-report .advisor-ten__meeting-details ol li strong{display:block}
+.paper-report .advisor-ten__meeting-details ol li span{display:block}
+.paper-appendix{border-top:1px solid var(--paper-rule)}
+.paper-appendix .advisor-ten__contents{padding:1rem 0}
+.paper-appendix .advisor-ten__contents h3{font-size:1rem;font-weight:680;margin:0 0 .4rem}
+.paper-appendix .advisor-ten__question{padding:1.2rem 0 1.6rem}
+.paper-appendix .advisor-ten__question h3{font-size:1.25rem;margin:0}
+.paper-appendix .advisor-ten__question>p{font-size:.94rem;line-height:1.72;margin:.85rem 0}
+.paper-report .advisor-ten__reentry{padding:2rem 0 2.4rem;border-top:1.5px solid var(--color-text)}
+.paper-report .advisor-ten__closing{padding:2rem 0 2.4rem}
+.paper-report .advisor-ten__closing h2{max-width:none}
+@media(max-width:730px){
+.paper-toc ol{grid-template-columns:repeat(2,minmax(0,1fr))}
+.paper-related-grid{grid-template-columns:1fr;gap:.45rem}
+.paper-method-arms{grid-template-columns:1fr;gap:.2rem}
+.paper-method-flow{grid-template-columns:1fr;gap:.3rem}
+.paper-method-arrow{transform:rotate(90deg);justify-self:center;line-height:1}
+.paper-metrics{grid-template-columns:1fr;gap:.45rem}
+}
+@media(max-width:420px){.paper-toc ol{grid-template-columns:1fr}}
 .advisor-ten__abstract{max-width:76ch;margin:0 0 1rem;font-size:1rem;line-height:1.82}
 .advisor-ten__methods{padding:2rem 0 2.3rem;border-bottom:1px solid var(--color-border)}
 .advisor-ten__methods h2{margin:0 0 .9rem;font-size:clamp(1.35rem,2.5vw,1.95rem);line-height:1.3}
@@ -238,7 +320,6 @@ const methodStatus = {
 .advisor-ten__methods th[scope=col]{font-size:.82rem;color:var(--color-text-muted)}
 .advisor-ten{width:min(900px,calc(100% - 2.2rem));margin:0 auto 6rem;color:var(--color-text)}
 .advisor-ten__hero{padding:clamp(1.8rem,4vw,3rem) 0 2rem;border-bottom:1px solid var(--color-border)}
-.advisor-ten__eyebrow{margin:0 0 1.15rem;font-size:.81rem;font-weight:700;letter-spacing:.06em;color:var(--color-text-muted)}
 .advisor-ten__hero h1{margin:0;font-size:clamp(2rem,3.6vw,3.15rem);line-height:1.18;letter-spacing:-.035em;text-wrap:balance}
 .advisor-ten__lede{max-width:76ch;font-size:clamp(1.08rem,1.65vw,1.3rem);line-height:1.72;margin:1.1rem 0 0}
 .advisor-ten__meeting-context{max-width:78ch;margin:.75rem 0 0;font-size:1rem;line-height:1.78}
@@ -309,9 +390,6 @@ const methodStatus = {
 .advisor-ten__closing-next{font-weight:620}
 .advisor-ten__closing p.advisor-ten__closing-links{display:flex;gap:1.3rem;flex-wrap:wrap;font-size:.91rem;margin-top:2rem}
 .advisor-ten__closing-links a{color:var(--color-text);text-underline-offset:.22rem}
-.advisor-ten__footnotes{margin-top:1.2rem;padding-top:1.4rem;border-top:1px solid var(--color-border);color:var(--color-text-muted)}
-.advisor-ten__footnotes h2{margin:0 0 .65rem;font-size:.9rem;line-height:1.5;font-weight:690}
-.advisor-ten__footnotes p{margin:.5rem 0;font-size:.84rem;line-height:1.75;max-width:84ch}
 @media(max-width:650px){
 .advisor-ten{width:calc(100% - 2rem)}
 .advisor-ten__contents ol{grid-template-columns:minmax(0,1fr)}
