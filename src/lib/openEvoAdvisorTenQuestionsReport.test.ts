@@ -120,14 +120,18 @@ describe('advisor ten-question paper-structured scientific report', () => {
     expect(originalMeeting).toContain('OPEN_EVO_ADVISOR_MEETING.points');
   });
 
-  it('protects HTML semantics, reader contract, and post-meeting footnotes', () => {
+  it('protects HTML semantics and puts evidence dates near sources without redundant chrome', () => {
     const page = read(pagePath);
     expect(page).toContain('data-reader-purpose');
     expect(page).toContain('data-result-stage="direct-result"');
     expect(page).toContain('data-result-stage="synthesis"');
-    expect(page).toContain('class="advisor-ten__footnotes"');
-    expect(page).toContain('Q10 为会后延伸');
-    expect(page).toContain('Task Score 统一按满分 100 分');
+    expect(page).not.toContain('class="advisor-ten__footnotes"');
+    expect(page).not.toContain('class="advisor-ten__eyebrow"');
+    expect(page).not.toContain('class="advisor-ten__paper-label"');
+    expect(page).not.toContain('class="paper-hero-note"');
+    expect(page).toContain('研究证据核对日期：');
+    expect(page).toContain('datetime={ADVISOR_RESEARCH_AS_OF}');
+    expect(page).toContain('Task Score 以满分 100');
     expect(page).toContain('<caption>');
     expect(page).toContain('<figcaption>');
     expect(page).toContain('tabindex="0"');
