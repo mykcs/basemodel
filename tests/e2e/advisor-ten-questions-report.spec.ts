@@ -165,3 +165,22 @@ test('research goal and returning-researcher path give macro meaning without rew
   await expect(page.locator('[data-report-question]')).toHaveCount(10);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
 });
+
+test('ICLR-structured evidence ladder keeps scientific comparison boundaries explicit', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+
+  await expect(page.locator('.advisor-ten__thesis')).toContainText('Abstract · 研究摘要');
+  await expect(page.locator('[data-report-context]')).toContainText('1 · Introduction');
+  const methods = page.locator('[data-report-methods]');
+  await expect(methods).toContainText('2 · Methods & Evaluation');
+  await expect(methods.locator('tbody tr')).toHaveCount(4);
+  await expect(methods).toContainText('普通 OpenEVO 是较早的前序实验');
+  await expect(methods).toContainText('不能用分差衡量算法优劣');
+  await expect(methods).toContainText('第 152–159 轮');
+  await expect(methods.getByRole('link', { name: /完整 ICLR/ })).toHaveAttribute('href', /docs\/reports\/2026-10-10-advisor-ten-iclr-style\.md$/);
+  await expect(page.locator('[data-report-question]')).toHaveCount(10);
+  await expect(page.locator('[data-result-stage="synthesis"]')).toContainText('6 · Discussion & Conclusion');
+  await expect(page.locator('[data-report-reentry]')).toContainText('7 · Reproducibility & Next Experiments');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+});
