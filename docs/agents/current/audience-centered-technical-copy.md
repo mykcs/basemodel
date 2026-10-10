@@ -263,7 +263,7 @@ Before publishing user-facing copy, inspect every H1/H2/H3 and the first paragra
 16. Does the first-screen TL;DR say what the experiment did / compares and the current evidence boundary, rather than repeat benchmark background?
 17. If a canonical explainer already owns the background, does this page link to it instead of teaching it again?
 18. Does any `fork / 分叉 / 分岔 / diverge` wording describe a real experimental split that matters scientifically, or is it only narrative packaging?
-19. Does every eyebrow/kicker add a real phase/date/status/category/provenance fact, and is a Chinese surface free of decorative English-only eyebrow text?
+19. Default no eyebrow/kicker or boilerplate footnote: does each surviving one carry unique, task-critical meaning at that position, rather than merely an accurate date/status/category? Can necessary evidence dates move next to the source without hiding a claim-changing caveat?
 
 Run `npm run audit:copy` for the review queue and `npm run audit:copy:strict` for repository-approved invariants. `npm run verify:deploy` includes the strict copy gate and unit tests.
 
@@ -272,8 +272,8 @@ Run `npm run audit:copy` for the review queue and `npm run audit:copy:strict` fo
 - H1: page subject only.
 - H2: major subject within the page.
 - H3: subsection/object name.
-- Eyebrow/kicker: optional; use only for phase, date, category, status, or provenance that adds information beyond the heading.
-- Paragraph: interpretation, caveat, explanation, or chronology.
+- Eyebrow/kicker: absent by default; show only a necessary distinction whose removal would mislead the reader at this exact position. Accurate date/category/status alone is insufficient.
+- Paragraph: interpretation, caveat, explanation, or chronology. Move evidence date to the relevant result/provenance and omit repeated boilerplate endnotes; never hide a claim-changing caveat.
 - `<dl>` / compact facts: configuration and status values.
 - `<details>`: optional incident history and troubleshooting.
 - Diagrams: boundaries and flows, not decorative slogans.
