@@ -87,7 +87,7 @@ Prefer:
 
 Avoid using `分岔`, `路径分叉`, `核心分叉问题`, or `design fork` merely to make a research page sound like a story. The reader should spend attention on the experimental object, not on decoding an invented metaphor.
 
-Eyebrows and kickers are optional. Keep one only when it adds phase, date, status, category, or provenance information that the heading does not already provide. On a Chinese surface, a decorative all-English uppercase eyebrow such as `HISTORICAL MAP · FIRST RUN` or `ROGUELIKE RESEARCH MAP · EXPLORATION` should be removed; if the label is scientifically necessary, provide the Chinese meaning first.
+Eyebrows and kickers are **absent by default**. A true date, project identity, phase, category or provenance field is not by itself a reason for a separate line. Keep an eyebrow only if deleting it would conceal a distinction that matters to the reader's current task **and** the distinction belongs above H1 rather than beside the relevant result/source. Otherwise start with the H1 and lede; put a necessary research evidence-as-of date in the corresponding source section. Do not append boilerplate footnotes merely to repeat metric units, document format, meeting attribution or unrun disclaimers already explained beside their evidence. Preserve genuinely interpretation-changing caveats, references, legal notices and live-state warnings where needed.
 
 ## 2. Separate subject, snapshot, live state, and interpretation
 
