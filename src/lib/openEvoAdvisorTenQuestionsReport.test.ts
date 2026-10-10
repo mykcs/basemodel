@@ -78,6 +78,10 @@ describe('advisor ten-question paper-structured scientific report', () => {
       '## 7 Visualization', '## 8 Discussion', '## 9 Conclusion',
     ]) expect(md).toContain(h);
     expect(md.indexOf('## Appendix A')).toBeGreaterThan(md.indexOf('## References'));
+    // A research title and abstract must not be separated by self-describing metadata.
+    expect(md.split('## Abstract｜摘要')[0]?.trim()).toBe(
+      '# 长期参数记忆的效率与能力权衡：OpenEVO 在 WebShop 上的实证研究',
+    );
   });
 
   it('does not confuse frozen final results, capacity-screen, Q03, and paper SEED', () => {
