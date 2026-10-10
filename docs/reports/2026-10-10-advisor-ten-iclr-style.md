@@ -1,13 +1,5 @@
 # 长期参数记忆的效率与能力权衡：OpenEVO 在 WebShop 上的实证研究
 
-**Efficiency–Capability Trade-offs in Long-Term Parametric Memory: An Empirical Study of OpenEVO on WebShop**
-
-*ICLR 论文章节式科研汇报｜证据核对截至 2026-10-09｜2026-10-10 整理*
-
-*用途：导师与学长讨论、组会报告、后续论文写作的科学梳理；**不是**已投稿或通过审稿的 ICLR 论文。*
-
-*研究对象：OpenEVO / SEED、Qwen3-1.7B、WebShop；实验真值由原始实验记录拥有，本报告不替代冻结收据。*
-
 ## Abstract｜摘要
 
 持续学习的 WebShop Agent 必须在新任务中变好，同时控制长期参数状态的存储与训练开销，并保留旧能力。OpenEVO 的 SD-LoRA 将多轮经验留在参数组件中，但组件累积会拖慢后期更新。我们将学长于 2026 年 9 月 22 日提出的六个研究方向整理为九个可检验问题，并另外提出跨新任务、随机设置的独立复现问题（Q10）。这些问题涉及训练停止点、监督学习基线、SEED 复现、状态容量、更新幅度与方向、行为不确定性、遗忘及文字记忆的因果作用。
