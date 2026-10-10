@@ -21,6 +21,11 @@ for (const width of [390, 768, 1440]) {
     await expect(page.locator('h1')).toHaveText('长期参数记忆的效率与能力权衡');
     await expect(page.locator('[data-paper-report]')).toBeVisible();
     await expect(page.locator('.advisor-ten__lede')).toBeVisible();
+    // Reader attention: a true date or publication label alone is not a reason for a visual eyebrow.
+    await expect(page.locator('.advisor-ten__hero > :first-child')).toHaveText('长期参数记忆的效率与能力权衡');
+    await expect(page.locator('.advisor-ten__hero > p:not(.advisor-ten__lede)')).toHaveCount(0);
+    await expect(page.locator('.advisor-ten__paper-label')).toHaveCount(0);
+    await expect(page.locator('.advisor-ten__footnotes')).toHaveCount(0);
     await expect(page.locator('#paper-abstract')).toContainText('31.09 小时');
     await expect(page.locator('#paper-abstract')).toContainText('20.77');
 
@@ -125,8 +130,10 @@ test('the ten meeting questions remain as an evidence appendix, not the main pap
     await expect(article.locator('.advisor-ten__limit')).toBeVisible();
     await expect(article.locator('.advisor-ten__sources a').first()).toHaveAttribute('href', /github.com\/mykcs/);
   }
-  await expect(page.locator('#paper-conclusion')).toContainText('2026-10-09');
-  await expect(page.locator('.advisor-ten__footnotes')).toContainText('Q10 为会后延伸');
+  // Preserve necessary historical source identity at the source, not in page chrome.
+  await expect(page.locator('#paper-sources')).toContainText('2026-10-09');
+  await expect(page.locator('#paper-sources')).toContainText('研究证据核对日期');
+  await expect(page.locator('#paper-appendix')).toContainText('Q10 独立复现');
   await expect(page.locator('#paper-conclusion a[href*="/docs/reports/"]')).toHaveAttribute(
     'href', /blob\/main\/docs\/reports\/2026-10-10-advisor-ten-iclr-style\.md$/,
   );
