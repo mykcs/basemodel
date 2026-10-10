@@ -104,13 +104,13 @@ Q03 复用历史 OpenEVO 轨迹和 MiniMax 分析，训练了自己的 Stage1，
 | **Q03** SEED 复现 | A0→A120 为 3.71→6.43→0.69→6.62，均 0/64 exact | **部分回答**；先只读原生 128 题校准，再得公开配方正式成绩 [#678](https://github.com/mykcs/openevo-experiment/pull/678) [#677](https://github.com/mykcs/openevo-experiment/pull/677) |
 | **Q04** 容量 | rank32 约四分之一文件大小；该后段窗口 Task Score 61.19 vs 62.98 | **部分回答**；rank8/16/64 的同契约对照与可学习性证据 [#631](https://github.com/mykcs/openevo-experiment/pull/631) |
 | **Q05** β 幅度 | 历史复杂 β 终评 20.77；简单非负 β 在第 120 轮的更新方向余弦接近 1（精确值见原始收据） | **部分回答**；新简单 β 尚无完整配对能力结果，不能借旧结果替代 [#632](https://github.com/mykcs/openevo-experiment/pull/632) |
-| **Q06** 点击犹豫 | 单一固定节点合法点击候选 entropy 均值≈0.763；另测了 7×64 题 | **描述性**；尚无独立、无泄漏预测结论 [#633](https://github.com/mykcs/openevo-experiment/pull/633) [#649](https://github.com/mykcs/openevo-experiment/pull/649) |
+| **Q06** 点击犹豫 | 单一固定节点测得合法点击候选的不确定性；另测了 7×64 题 | **描述性**；尚无独立、无泄漏预测结论 [#633](https://github.com/mykcs/openevo-experiment/pull/633) [#649](https://github.com/mykcs/openevo-experiment/pull/649) |
 | **Q07** 方向因果 | 第 156 轮反转导致 Task Score −10.06 分，配对 CI 不跨零 | **局部因果证据**；跨轮/模型/新任务仍未建立 [#634](https://github.com/mykcs/openevo-experiment/pull/634) |
 | **Q08** 遗忘 | 960 次旧任务评测执行完成 | **未能严格测遗忘量**：缺可比的“当初已学会”起点 [#635](https://github.com/mykcs/openevo-experiment/pull/635) |
 | **Q09** 文字状态 | 普通线 160 轮中参数 UPDATE 159 次；Text Memory / Skill / Agent System 为 2/1/3 次 | **没有因果结论**；未完成可报告的关闭文字状态对照 [#636](https://github.com/mykcs/openevo-experiment/pull/636) |
 | **Q10** 新任务独立复现 | 已有方案与部分执行准备 | **核心正式成绩未出**；新任务 / 随机流 / 不泄漏评测 [#637](https://github.com/mykcs/openevo-experiment/pull/637) |
 
-### 5.1 为什么“loss 下降”没有回答持续学习
+Q05 的第 120 轮简单非负 β 收据给出更新方向余弦约 **0.9992**；Q06 的具体合法点击候选 entropy 均值约 **0.763**。这两项都是机制与行为诊断，不能直接替代任务得分或预测检验。\n\n### 5.1 为什么“loss 下降”没有回答持续学习
 
 loss 是模型对训练目标的适配程度；Task Score 和 Exact Success 是完成 WebShop 任务的端点。Q02 的早期对照在同样预算下出现 OPSD 平均分稍高、SFT 完整成功更多的**指标方向冲突**。例如早期 1-pass Task Score 约 OPSD **36.58**、SFT **35.53**；SFT−OPSD 的配对 95% 区间约为 **[−16.64，+14.57] 分**，不能宣布稳定赢家。后续重复训练的**六格训练完成**，与六格同题评测/配对分析完成是两回事。[Q02 证据](https://github.com/mykcs/openevo-experiment/pull/629)。
 
