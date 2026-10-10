@@ -1,14 +1,15 @@
 ---
 import type { Locale } from '../../i18n';
 import MathFormula from '../common/MathFormula.astro';
-interface Props { locale: Locale }
-const { locale } = Astro.props;
+interface Props { locale: Locale; instanceId?: string }
+const { locale, instanceId = 'round-map' } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
-const arrowId = `sdlora-flow-arrow-${locale}`;
+const safeInstanceId = instanceId.replace(/[^a-zA-Z0-9_-]/g, '-');
+const arrowId = `sdlora-flow-arrow-${locale}-${safeInstanceId}`;
 const arrowUrl = `url(#${arrowId})`;
 ---
-<section class="sdlora-slide" data-locale={locale} data-slide-canvas data-ui-audit="contrast layout" aria-labelledby="sdlora-title">
+<section class="sdlora-slide" data-locale={locale} data-slide-canvas data-active-step-id="all" data-ui-audit="contrast layout" aria-labelledby="sdlora-title">
   <header class="sdlora-slide__header">
     <div>
       <p id="sdlora-title" class="sdlora-slide__title">{t('一轮 SD-LoRA 参数更新', 'One SD-LoRA parameter-update round')}</p>
@@ -19,11 +20,22 @@ const arrowUrl = `url(#${arrowId})`;
     </div>
   </header>
 
+  <nav class="sdlora-stepper" data-sdlora-stepper aria-label={t('逐步查看一轮参数更新', 'Inspect one parameter-update round step by step')}>
+    <button type="button" data-step-id="all" aria-pressed="true">{t('全图', 'Full map')}</button>
+    <button type="button" data-step-id="attempts" aria-pressed="false">{t('01 尝试', '01 Attempts')}</button>
+    <button type="button" data-step-id="select" aria-pressed="false">{t('02 筛选', '02 Select')}</button>
+    <button type="button" data-step-id="update" aria-pressed="false">{t('03 更新', '03 Update')}</button>
+    <button type="button" data-step-id="candidate" aria-pressed="false">{t('04 候选', '04 Candidate')}</button>
+    <button type="button" data-step-id="choose" aria-pressed="false">{t('05 采用规则', '05 Adoption')}</button>
+    <button type="button" data-step-id="noop" aria-pressed="false">{t('无训练样本', 'No trainable sample')}</button>
+    <button type="button" data-step-id="next" aria-pressed="false">{t('下一轮', 'Next round')}</button>
+  </nav>
+
   <figure class="sdlora-map" data-testid="sdlora-topology-map" aria-labelledby="sdlora-map-caption">
     <figcaption id="sdlora-map-caption" class="sdlora-map__caption">
       {t(
-        '上一轮选定的累计 LoRA 先做 128 次任务尝试；每题最早一条通过全部检查的成功进入训练，最多 64 条旧经验从旁路一起训练。SD-LoRA 保留旧方向、学一个新方向，再重新调整每个方向的影响大小，得到候选 LoRA。当前 DirectApply 直接采用通过检查的新候选；历史本地 GDR-v1 会先用 16 个任务小测再选新旧参数。选定后进入下一轮，再回到任务尝试。',
-        'The cumulative LoRA selected last round runs 128 task attempts. The earliest fully checked success per task trains together with up to 64 old examples. SD-LoRA keeps old directions fixed, learns one new direction, and rebalances their influence to produce a candidate LoRA. Current DirectApply adopts a candidate after checks; historical local GDR-v1 first probes 16 tasks before choosing new or old parameters. The selected state then runs the next round.'
+        '上一轮选定的累计 LoRA 先做 128 次任务尝试；每题最早一条通过全部检查的成功进入训练，最多 64 条旧经验从旁路一起训练。SD-LoRA 保留旧方向、学一个新方向，再重新调整每个方向的影响大小，得到候选 LoRA。如果没有新的、尚未消费并最终能进入参数训练数据集的 clean exact success，参数通道直接 NOOP，沿用上一版累计 LoRA。当前 DirectApply 对有候选的轮次直接采用通过检查的新候选；历史本地 GDR-v1 会先用 16 个任务小测再选新旧参数。选定或沿用后进入下一轮，再回到任务尝试。',
+        'The cumulative LoRA selected last round runs 128 task attempts. The earliest fully checked success per task trains together with up to 64 old examples. SD-LoRA keeps old directions fixed, learns one new direction, and rebalances their influence to produce a candidate LoRA. If no new, unattempted clean-exact evidence remains eligible for the parametric training dataset, the parametric channel is a NOOP and keeps the prior cumulative LoRA. For rounds with a candidate, current DirectApply adopts it after checks, while historical local GDR-v1 first probes 16 tasks before choosing new or old parameters. The selected or retained state then runs the next round.'
       )}
     </figcaption>
 
@@ -38,6 +50,8 @@ const arrowUrl = `url(#${arrowId})`;
         <path data-edge="prior-rollout" class="sdlora-map__edge sdlora-map__edge--main" d="M200 72 H245" marker-end={arrowUrl} />
         <path data-edge="rollout-clean" class="sdlora-map__edge sdlora-map__edge--main" d="M405 72 H450" marker-end={arrowUrl} />
         <path data-edge="clean-update" class="sdlora-map__edge sdlora-map__edge--main" d="M640 72 H700" marker-end={arrowUrl} />
+        <path data-edge="clean-noop" class="sdlora-map__edge sdlora-map__edge--noop" d="M555 122 V344 H700" marker-end={arrowUrl} />
+        <text class="sdlora-map__edge-label sdlora-map__edge-label--noop" x="560" y="330">{t('没有新的可训练成功', 'no new eligible clean success')}</text>
         <path data-edge="update-candidate" class="sdlora-map__edge sdlora-map__edge--main" d="M930 72 H995" marker-end={arrowUrl} />
 
         <path data-edge="replay-update" class="sdlora-map__edge sdlora-map__edge--side" d="M620 260 H655 Q685 260 700 225" marker-end={arrowUrl} />
@@ -47,8 +61,9 @@ const arrowUrl = `url(#${arrowId})`;
         <path data-edge="candidate-gdr" class="sdlora-map__edge sdlora-map__edge--branch" d="M1090 122 V155 H1145 V225" marker-end={arrowUrl} />
         <text class="sdlora-map__edge-label" x="1036" y="147">{t('下一轮用哪一版', 'choose next state')}</text>
 
-        <path data-edge="directapply-next" class="sdlora-map__edge sdlora-map__edge--branch" d="M1015 320 V348 H1090 V380" marker-end={arrowUrl} />
-        <path data-edge="gdr-next" class="sdlora-map__edge sdlora-map__edge--branch" d="M1145 320 V348 H1090 V380" marker-end={arrowUrl} />
+        <path data-edge="directapply-next" class="sdlora-map__edge sdlora-map__edge--branch" d="M1015 320 V365 H1090 V405" marker-end={arrowUrl} />
+        <path data-edge="gdr-next" class="sdlora-map__edge sdlora-map__edge--branch" d="M1145 320 V365 H1090 V405" marker-end={arrowUrl} />
+        <path data-edge="noop-next" class="sdlora-map__edge sdlora-map__edge--noop" d="M930 360 H960 V430 H995" marker-end={arrowUrl} />
 
         <path data-edge="round-return" class="sdlora-map__edge sdlora-map__edge--return" d="M995 430 H950 V492 H315 V126" marker-end={arrowUrl} />
         <text class="sdlora-map__edge-label sdlora-map__edge-label--return" x="606" y="482">{t('下一轮：再做 128 次任务尝试', 'Next round: run 128 task attempts again')}</text>
@@ -76,6 +91,12 @@ const arrowUrl = `url(#${arrowId})`;
         <small>{t('旁路 · 旧经验回放', 'Side input · old-example replay')}</small>
         <strong>{t('最多带回 64 条旧经验', 'Bring back up to 64 old examples')}</strong>
         <p>{t('它们和本轮成功样本一起训练，但不算本轮任务尝试。', 'They train alongside this round’s successful examples, but they are not current-round attempts.')}</p>
+      </aside>
+
+      <aside class="sdlora-node sdlora-node--noop" data-flow-node="noop" data-ui-audit-item>
+        <small>{t('02b · 没有新的可训练成功', '02b · no new eligible clean success')}</small>
+        <strong>{t('参数不更新，沿用上一版 LoRA', 'No parameter update; keep the prior LoRA')}</strong>
+        <p>{t('没有新的、尚未消费并能进入训练数据集的 clean exact success 时，参数通道记为 NOOP，adapter 与 component 数保持不变。', 'When no new, unattempted clean-exact evidence remains eligible for the training dataset, the parametric channel records a NOOP and keeps the adapter and component count unchanged.')}</p>
       </aside>
 
       <article class="sdlora-node sdlora-node--update" data-flow-node="update" data-testid="sdlora-direction-magnitude-core" data-ui-audit-item>
@@ -130,6 +151,19 @@ const arrowUrl = `url(#${arrowId})`;
         <small>{t('02 · 训练数据', '02 · training data')}</small><strong>{t('通过全部检查的成功', 'Fully checked success')}</strong><p>{t('每题取最早一条；其他结果只留作分析。', 'Take the earliest one per task; other results stay for diagnostics.')}</p>
       </article>
 
+      <div class="sdlora-mobile-noop" aria-label={t('没有新的可训练成功时的参数 NOOP 分支', 'parameter NOOP branch when no new eligible clean success remains')}>
+        <svg viewBox="0 0 64 48" role="img" aria-label={t('没有新的可训练成功，进入 NOOP', 'no new eligible clean success, enter NOOP')}><path data-edge="clean-noop-mobile" d="M32 2 V28 H50"/><path d="M44 22 L52 28 L44 34"/></svg>
+        <aside data-flow-node="noop-mobile">
+          <small>{t('如果没有新的可训练成功', 'if no new eligible clean success remains')}</small>
+          <strong>{t('参数不更新，沿用上一版 LoRA', 'No parameter update; keep the prior LoRA')}</strong>
+          <p>{t('参数通道记录 NOOP；adapter 与 component 数不变，直接继续下一轮。', 'The parametric channel records a NOOP; adapter and component count stay unchanged, then the next round continues.')}</p>
+          <div class="sdlora-mobile-noop__next-row">
+            <svg class="sdlora-mobile-noop__next" viewBox="0 0 72 28" role="img" aria-label={t('沿用参数后进入下一轮', 'retained parameters continue to the next round')}><path data-edge="noop-next-mobile" d="M2 14 H58"/><path d="M52 8 L60 14 L52 20"/></svg>
+            <span data-flow-node="noop-terminal-mobile">{t('下一轮 · 沿用上一版 LoRA', 'Next round · keep the prior LoRA')}</span>
+          </div>
+        </aside>
+      </div>
+
       <div class="sdlora-mobile-join">
         <aside class="sdlora-mobile-side" data-flow-node="replay-mobile"><small>{t('旧经验回放', 'old-example replay')}</small><strong>{t('最多 64 条', 'up to 64')}</strong></aside>
         <svg viewBox="0 0 64 88" role="img" aria-label={t('旧经验从旁边一起参加训练', 'old examples join training from the side')}><path data-edge="replay-update-mobile" d="M4 28 H36 Q52 28 52 44 V58"/><path d="M46 52 L52 60 L58 52"/></svg>
@@ -168,16 +202,89 @@ const arrowUrl = `url(#${arrowId})`;
     <span data-kind="main">{t('主流程', 'main path')}</span>
     <span data-kind="side">{t('旧经验回放', 'old-example replay')}</span>
     <span data-kind="branch">{t('新旧参数选择', 'new/old parameter choice')}</span>
+    <span data-kind="noop">{t('没有训练样本时不更新', 'no update without trainable data')}</span>
     <span data-kind="return">{t('回到下一轮', 'return to next round')}</span>
   </div>
 </section>
 
+<script>
+  const stepMap = {
+    attempts: {
+      nodes: ['prior', 'rollout', 'prior-mobile', 'rollout-mobile'],
+      edges: ['prior-rollout', 'prior-rollout-mobile'],
+    },
+    select: {
+      nodes: ['rollout', 'clean', 'rollout-mobile', 'clean-mobile'],
+      edges: ['rollout-clean', 'rollout-clean-mobile'],
+    },
+    update: {
+      nodes: ['clean', 'replay', 'update', 'clean-mobile', 'replay-mobile', 'update-mobile'],
+      edges: ['clean-update', 'replay-update', 'replay-update-mobile'],
+    },
+    candidate: {
+      nodes: ['update', 'candidate', 'update-mobile', 'candidate-mobile'],
+      edges: ['update-candidate', 'update-candidate-mobile'],
+    },
+    choose: {
+      nodes: ['candidate', 'directapply', 'gdr', 'next', 'candidate-mobile', 'next-mobile'],
+      edges: ['candidate-directapply', 'candidate-gdr', 'directapply-next', 'gdr-next', 'candidate-directapply-mobile', 'candidate-gdr-mobile', 'directapply-next-mobile', 'gdr-next-mobile'],
+    },
+    noop: {
+      nodes: ['clean', 'noop', 'next', 'clean-mobile', 'noop-mobile', 'noop-terminal-mobile', 'next-mobile'],
+      edges: ['clean-noop', 'noop-next', 'clean-noop-mobile', 'noop-next-mobile'],
+    },
+    next: {
+      nodes: ['next', 'rollout', 'next-mobile', 'rollout-mobile'],
+      edges: ['round-return', 'round-return-mobile'],
+    },
+  } as const;
+
+  document.querySelectorAll<HTMLElement>('[data-slide-canvas]').forEach((root) => {
+    const stepper = root.querySelector<HTMLElement>('[data-sdlora-stepper]');
+    if (!stepper || root.dataset.enhanced === 'true') return;
+    root.dataset.enhanced = 'true';
+    const buttons = [...stepper.querySelectorAll<HTMLButtonElement>('[data-step-id]')];
+
+    const setActiveStepId = (activeStepId: string) => {
+      root.dataset.activeStepId = activeStepId;
+      root.dataset.stepFiltered = activeStepId === 'all' ? 'false' : 'true';
+      buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.stepId === activeStepId)));
+
+      root.querySelectorAll<HTMLElement>('[data-flow-node], [data-edge]').forEach((element) => {
+        element.removeAttribute('data-sdlora-focused');
+      });
+      if (activeStepId === 'all') return;
+      const group = stepMap[activeStepId as keyof typeof stepMap];
+      if (!group) return;
+      group.nodes.forEach((node) => root.querySelectorAll<HTMLElement>(`[data-flow-node="${node}"]`).forEach((element) => element.dataset.sdloraFocused = 'true'));
+      group.edges.forEach((edge) => root.querySelectorAll<HTMLElement>(`[data-edge="${edge}"]`).forEach((element) => element.dataset.sdloraFocused = 'true'));
+    };
+
+    buttons.forEach((button, index) => {
+      button.addEventListener('click', () => setActiveStepId(button.dataset.stepId || 'all'));
+      button.addEventListener('keydown', (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        const nextIndex = event.key === 'Home'
+          ? 0
+          : event.key === 'End'
+            ? buttons.length - 1
+            : (index + (event.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length;
+        buttons[nextIndex]?.focus();
+        buttons[nextIndex]?.click();
+      });
+    });
+
+    setActiveStepId('all');
+  });
+</script>
+
 <style>
-.sdlora-slide{box-sizing:border-box;aspect-ratio:16/9;min-height:0;padding:1.05rem 1.25rem .75rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface);display:grid;grid-template-rows:auto 1fr auto;gap:.55rem;overflow:hidden}.sdlora-slide__header{border-bottom:1px solid var(--line);padding-bottom:.58rem}.sdlora-slide__title{max-width:28ch;margin:0;font-size:clamp(1.15rem,2vw,1.55rem);font-weight:820;line-height:1.12;letter-spacing:-.025em}.sdlora-slide__header>div>p{max-width:66rem;margin:.38rem 0 0;font-size:.92rem;line-height:1.42}.sdlora-map{position:relative;min-height:0;margin:0}.sdlora-map__caption{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.sdlora-map__desktop{position:relative;height:100%;min-height:0}.sdlora-map__mobile{display:none}.sdlora-map__edges{position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:visible}.sdlora-map__edge{fill:none;stroke:var(--line-strong,var(--line));stroke-width:2.2;vector-effect:non-scaling-stroke}.sdlora-map__edge--main{stroke:var(--accent-deep);stroke-dasharray:10 8;animation:sdlora-route-trace 2.8s linear infinite}.sdlora-map__edge--side{stroke:var(--color-info);stroke-dasharray:6 6}.sdlora-map__edge--branch{stroke:var(--muted);stroke-dasharray:5 5}.sdlora-map__edge--return{stroke:var(--color-positive);stroke-dasharray:11 9;animation:sdlora-route-trace 3.3s linear infinite}.sdlora-map__arrowhead{fill:var(--ink)}.sdlora-map__edge-label{fill:var(--muted);font:700 13px/1 var(--font-sans)}.sdlora-map__edge-label--return{fill:var(--color-positive)}.sdlora-node{position:absolute;z-index:1;box-sizing:border-box;padding:.55rem .65rem;border:1px solid var(--line);border-radius:.72rem;background:color-mix(in srgb,var(--surface) 96%,transparent);box-shadow:none}.sdlora-node small{display:block;color:var(--muted);font:800 .58rem/1.2 var(--font-mono);letter-spacing:.03em}.sdlora-node strong{display:block;margin:.18rem 0 0;font-size:.76rem;line-height:1.24}.sdlora-node p{margin:.22rem 0 0;color:var(--muted);font-size:.61rem;line-height:1.34}.sdlora-node--prior{left:1.2%;top:2%;width:15.5%}.sdlora-node--rollout{left:20.3%;top:2%;width:15.2%}.sdlora-node--clean{left:38.4%;top:2%;width:16.8%}.sdlora-node--update{left:58.4%;top:0;width:19.4%;min-height:51%;border-color:color-mix(in srgb,var(--accent-deep) 48%,var(--line));background:color-mix(in srgb,var(--accent) 7%,var(--surface))}.sdlora-node--candidate{left:82.2%;top:2%;width:16.5%}.sdlora-node--replay{left:39.2%;top:42%;width:16.4%;border-style:dashed}.sdlora-node--direct{left:80.5%;top:43%;width:8.7%;text-align:center}.sdlora-node--gdr{left:90.7%;top:43%;width:8.1%;text-align:center}.sdlora-node--direct p,.sdlora-node--gdr p{font-size:.55rem}.sdlora-node--next{left:82.2%;top:72%;width:16.5%;border-color:color-mix(in srgb,var(--color-positive) 48%,var(--line))}.sdlora-update-grid{display:grid;grid-template-columns:1fr 1fr;gap:.24rem;margin:.45rem 0 .4rem}.sdlora-update-grid span{display:grid;gap:.08rem;padding:.25rem .3rem;border:1px solid var(--line);border-radius:.42rem;background:var(--surface)}.sdlora-update-grid b{font:800 .59rem/1.15 var(--font-mono)}.sdlora-update-grid span{color:var(--muted);font-size:.49rem;line-height:1.2}.sdlora-node--update code{display:block;padding-top:.28rem;border-top:1px solid var(--line);white-space:normal;color:var(--ink);font-size:.55rem;line-height:1.3}.sdlora-legend{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .9rem;padding-top:.36rem;border-top:1px solid var(--line);font-size:.64rem;color:var(--muted)}.sdlora-legend span::before{content:"";display:inline-block;width:.72rem;height:.16rem;margin-right:.3rem;vertical-align:.2rem;background:var(--line)}.sdlora-legend span[data-kind="main"]::before{background:var(--accent-deep)}.sdlora-legend span[data-kind="side"]::before{background:var(--color-info)}.sdlora-legend span[data-kind="branch"]::before{background:var(--muted)}.sdlora-legend span[data-kind="return"]::before{background:var(--color-positive)}
+.sdlora-slide{box-sizing:border-box;aspect-ratio:16/9;min-height:0;padding:1.05rem 1.25rem .75rem;border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface);display:grid;grid-template-rows:auto auto 1fr auto;gap:.55rem;overflow:hidden}.sdlora-slide__header{border-bottom:1px solid var(--line);padding-bottom:.58rem}.sdlora-slide__title{max-width:28ch;margin:0;font-size:clamp(1.15rem,2vw,1.55rem);font-weight:820;line-height:1.12;letter-spacing:-.025em}.sdlora-slide__header>div>p{max-width:66rem;margin:.38rem 0 0;font-size:.92rem;line-height:1.42}.sdlora-stepper{display:none;min-width:0;gap:.28rem;overflow-x:auto;overscroll-behavior-inline:contain;padding:.05rem 0 .1rem;scrollbar-width:thin}.sdlora-slide[data-enhanced="true"] .sdlora-stepper{display:flex}.sdlora-stepper button{flex:0 0 auto;min-height:30px;padding:.24rem .48rem;border:1px solid var(--line);border-radius:var(--radius-control);background:transparent;color:var(--muted);font:750 .62rem/1.1 var(--font-sans);cursor:pointer}.sdlora-stepper button[aria-pressed="true"]{border-color:var(--accent-deep);background:color-mix(in srgb,var(--accent) 9%,var(--surface));color:var(--ink)}.sdlora-stepper button:focus-visible{outline:2px solid var(--accent-deep);outline-offset:2px}.sdlora-map{position:relative;min-height:0;margin:0}.sdlora-map__caption{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.sdlora-map__desktop{position:relative;height:100%;min-height:0}.sdlora-map__mobile{display:none}.sdlora-map__edges{position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:visible}.sdlora-map__edge{fill:none;stroke:var(--line-strong,var(--line));stroke-width:2.2;vector-effect:non-scaling-stroke}.sdlora-map__edge--main{stroke:var(--accent-deep);stroke-dasharray:10 8;animation:sdlora-route-trace 2.8s linear infinite}.sdlora-map__edge--side{stroke:var(--color-info);stroke-dasharray:6 6}.sdlora-map__edge--branch{stroke:var(--muted);stroke-dasharray:5 5}.sdlora-map__edge--noop{stroke:var(--color-warning);stroke-dasharray:3 6}.sdlora-map__edge--return{stroke:var(--color-positive);stroke-dasharray:11 9;animation:sdlora-route-trace 3.3s linear infinite}.sdlora-map__arrowhead{fill:var(--ink)}.sdlora-map__edge-label{fill:var(--muted);font:700 13px/1 var(--font-sans)}.sdlora-map__edge-label--return{fill:var(--color-positive)}.sdlora-map__edge-label--noop{fill:var(--color-warning)}.sdlora-node{position:absolute;z-index:1;box-sizing:border-box;padding:.55rem .65rem;border:1px solid var(--line);border-radius:.72rem;background:color-mix(in srgb,var(--surface) 96%,transparent);box-shadow:none}.sdlora-node small{display:block;color:var(--muted);font:800 .58rem/1.2 var(--font-mono);letter-spacing:.03em}.sdlora-node strong{display:block;margin:.18rem 0 0;font-size:.76rem;line-height:1.24}.sdlora-node p{margin:.22rem 0 0;color:var(--muted);font-size:.61rem;line-height:1.34}.sdlora-node--prior{left:1.2%;top:2%;width:15.5%}.sdlora-node--rollout{left:20.3%;top:2%;width:15.2%}.sdlora-node--clean{left:38.4%;top:2%;width:16.8%}.sdlora-node--update{left:58.4%;top:0;width:19.4%;min-height:51%;border-color:color-mix(in srgb,var(--accent-deep) 48%,var(--line));background:color-mix(in srgb,var(--accent) 7%,var(--surface))}.sdlora-node--candidate{left:82.2%;top:2%;width:16.5%}.sdlora-node--replay{left:39.2%;top:42%;width:16.4%;border-style:dashed}.sdlora-node--noop{left:58.4%;top:61%;width:19.4%;border-style:dashed;border-color:color-mix(in srgb,var(--color-warning) 65%,var(--line));background:color-mix(in srgb,var(--color-warning) 5%,var(--surface))}.sdlora-node--direct{left:80.5%;top:43%;width:8.7%;text-align:center}.sdlora-node--gdr{left:90.7%;top:43%;width:8.1%;text-align:center}.sdlora-node--direct p,.sdlora-node--gdr p{font-size:.55rem}.sdlora-node--next{left:82.2%;top:78%;width:16.5%;border-color:color-mix(in srgb,var(--color-positive) 48%,var(--line))}.sdlora-update-grid{display:grid;grid-template-columns:1fr 1fr;gap:.24rem;margin:.45rem 0 .4rem}.sdlora-update-grid span{display:grid;gap:.08rem;padding:.25rem .3rem;border:1px solid var(--line);border-radius:.42rem;background:var(--surface)}.sdlora-update-grid b{font:800 .59rem/1.15 var(--font-mono)}.sdlora-update-grid span{color:var(--muted);font-size:.49rem;line-height:1.2}.sdlora-node--update code{display:block;padding-top:.28rem;border-top:1px solid var(--line);white-space:normal;color:var(--ink);font-size:.55rem;line-height:1.3}.sdlora-slide[data-step-filtered="true"] :is([data-flow-node],[data-edge]){opacity:.2;transition:opacity .16s ease,filter .16s ease,box-shadow .16s ease}.sdlora-slide[data-step-filtered="true"] :is([data-flow-node],[data-edge])[data-sdlora-focused="true"]{opacity:1}.sdlora-slide[data-step-filtered="true"] [data-flow-node][data-sdlora-focused="true"]{filter:none;box-shadow:0 0 0 2px color-mix(in srgb,var(--accent-deep) 28%,transparent)}.sdlora-slide[data-step-filtered="true"] [data-edge][data-sdlora-focused="true"]{stroke-width:4}.sdlora-legend{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .9rem;padding-top:.36rem;border-top:1px solid var(--line);font-size:.64rem;color:var(--muted)}.sdlora-legend span::before{content:"";display:inline-block;width:.72rem;height:.16rem;margin-right:.3rem;vertical-align:.2rem;background:var(--line)}.sdlora-legend span[data-kind="main"]::before{background:var(--accent-deep)}.sdlora-legend span[data-kind="side"]::before{background:var(--color-info)}.sdlora-legend span[data-kind="branch"]::before{background:var(--muted)}.sdlora-legend span[data-kind="noop"]::before{background:var(--color-warning)}.sdlora-legend span[data-kind="return"]::before{background:var(--color-positive)}
 @keyframes sdlora-route-trace{to{stroke-dashoffset:-36}}
-@media(prefers-reduced-motion:reduce){.sdlora-map__edge--main,.sdlora-map__edge--return{animation:none}}
-@media(max-width:900px){.sdlora-slide{aspect-ratio:auto;overflow:visible}.sdlora-map__desktop{display:none}.sdlora-map__mobile{display:grid;gap:.12rem;padding:.3rem 0}.sdlora-mobile-node{padding:.68rem .75rem;border:1px solid var(--line);border-radius:.72rem;background:var(--surface-muted)}.sdlora-mobile-node small,.sdlora-mobile-side small,.sdlora-mobile-branch article small{display:block;color:var(--muted);font:800 .61rem/1.2 var(--font-mono)}.sdlora-mobile-node strong,.sdlora-mobile-side strong,.sdlora-mobile-branch article strong{display:block;margin-top:.15rem;font-size:.84rem;line-height:1.28}.sdlora-mobile-node p{margin:.2rem 0 0;color:var(--muted);font-size:.7rem;line-height:1.4}.sdlora-mobile-node code{display:block;margin-top:.34rem;padding-top:.3rem;border-top:1px solid var(--line);font-size:.66rem}.sdlora-mobile-edge{width:40px;height:32px;justify-self:center;overflow:visible}.sdlora-mobile-edge path,.sdlora-mobile-join svg path,.sdlora-mobile-branch svg path,.sdlora-mobile-return path{fill:none;stroke:var(--accent-deep);stroke-width:2.2;vector-effect:non-scaling-stroke}.sdlora-mobile-edge path:first-child{stroke-dasharray:7 6;animation:sdlora-route-trace 2.8s linear infinite}.sdlora-mobile-join{display:grid;grid-template-columns:minmax(0,.72fr) 48px minmax(0,1.45fr);align-items:center;gap:.35rem}.sdlora-mobile-side{padding:.55rem .6rem;border:1px dashed var(--color-info);border-radius:.68rem;background:var(--surface)}.sdlora-mobile-join svg{width:48px;height:72px}.sdlora-mobile-join svg path{stroke:var(--color-info);stroke-dasharray:5 5}.sdlora-mobile-node--update{border-color:color-mix(in srgb,var(--accent-deep) 48%,var(--line));background:color-mix(in srgb,var(--accent) 7%,var(--surface))}.sdlora-mobile-branch{display:grid;gap:0}.sdlora-mobile-branch__split,.sdlora-mobile-branch__join{width:min(300px,86%);height:48px;justify-self:center}.sdlora-mobile-branch svg path{stroke:var(--muted);stroke-dasharray:5 5}.sdlora-mobile-branch__choices{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}.sdlora-mobile-branch__choices article{padding:.58rem .65rem;border:1px solid var(--line);border-radius:.68rem;text-align:center;background:var(--surface)}.sdlora-mobile-return{width:min(320px,94%);height:68px;justify-self:center}.sdlora-mobile-return path{stroke:var(--color-positive);stroke-dasharray:9 7;animation:sdlora-route-trace 3.3s linear infinite}.sdlora-mobile-return text{fill:var(--color-positive);font:700 12px/1 var(--font-sans)}.sdlora-legend{font-size:.62rem}}
-@media(max-width:620px){.sdlora-slide{padding:.7rem 0 0;border:0;border-top:1px solid var(--line);border-radius:0;background:transparent}.sdlora-slide__header{padding-bottom:.42rem}.sdlora-slide__title{color:var(--muted);font-size:.88rem;font-weight:720;letter-spacing:0}.sdlora-slide__header>div>p:not(.sdlora-slide__title){display:none}.sdlora-map__mobile{padding-top:.15rem}.sdlora-mobile-node{background:transparent}.sdlora-mobile-join{grid-template-columns:minmax(0,.8fr) 34px minmax(0,1.35fr);gap:.22rem}.sdlora-mobile-join svg{width:34px}.sdlora-mobile-side{padding:.48rem;background:transparent}.sdlora-mobile-side strong{font-size:.74rem}.sdlora-mobile-node--update{background:color-mix(in srgb,var(--accent) 4%,transparent)}.sdlora-mobile-node--update strong{font-size:.78rem}.sdlora-legend{display:none}}
+@media(prefers-reduced-motion:reduce){.sdlora-map__edge--main,.sdlora-map__edge--return{animation:none}.sdlora-slide[data-step-filtered="true"] :is([data-flow-node],[data-edge]){transition:none}}
+@media(max-width:900px){.sdlora-slide{aspect-ratio:auto;overflow:visible}.sdlora-map__desktop{display:none}.sdlora-map__mobile{display:grid;gap:.12rem;padding:.3rem 0}.sdlora-mobile-node{padding:.68rem .75rem;border:1px solid var(--line);border-radius:.72rem;background:var(--surface-muted)}.sdlora-mobile-node small,.sdlora-mobile-side small,.sdlora-mobile-branch article small{display:block;color:var(--muted);font:800 .61rem/1.2 var(--font-mono)}.sdlora-mobile-node strong,.sdlora-mobile-side strong,.sdlora-mobile-branch article strong{display:block;margin-top:.15rem;font-size:.84rem;line-height:1.28}.sdlora-mobile-node p{margin:.2rem 0 0;color:var(--muted);font-size:.7rem;line-height:1.4}.sdlora-mobile-node code{display:block;margin-top:.34rem;padding-top:.3rem;border-top:1px solid var(--line);font-size:.66rem}.sdlora-mobile-edge{width:40px;height:32px;justify-self:center;overflow:visible}.sdlora-mobile-edge path,.sdlora-mobile-join svg path,.sdlora-mobile-branch svg path,.sdlora-mobile-return path,.sdlora-mobile-noop svg path{fill:none;stroke:var(--accent-deep);stroke-width:2.2;vector-effect:non-scaling-stroke}.sdlora-mobile-edge path:first-child{stroke-dasharray:7 6;animation:sdlora-route-trace 2.8s linear infinite}.sdlora-mobile-join{display:grid;grid-template-columns:minmax(0,.72fr) 48px minmax(0,1.45fr);align-items:center;gap:.35rem}.sdlora-mobile-side{padding:.55rem .6rem;border:1px dashed var(--color-info);border-radius:.68rem;background:var(--surface)}.sdlora-mobile-join svg{width:48px;height:72px}.sdlora-mobile-join svg path{stroke:var(--color-info);stroke-dasharray:5 5}.sdlora-mobile-noop{display:grid;grid-template-columns:48px minmax(0,1fr);align-items:center;gap:.35rem;margin:.1rem 0 .2rem}.sdlora-mobile-noop>svg{width:48px;height:48px}.sdlora-mobile-noop>svg path,.sdlora-mobile-noop__next path{stroke:var(--color-warning);stroke-dasharray:3 5}.sdlora-mobile-noop aside{padding:.55rem .62rem;border:1px dashed color-mix(in srgb,var(--color-warning) 65%,var(--line));border-radius:.68rem;background:color-mix(in srgb,var(--color-warning) 5%,var(--surface))}.sdlora-mobile-noop small{display:block;color:var(--muted);font:800 .61rem/1.2 var(--font-mono)}.sdlora-mobile-noop strong{display:block;margin-top:.15rem;font-size:.82rem;line-height:1.28}.sdlora-mobile-noop p{margin:.2rem 0 0;color:var(--muted);font-size:.7rem;line-height:1.4}.sdlora-mobile-noop__next-row{display:grid;grid-template-columns:72px minmax(0,1fr);align-items:center;gap:.25rem;margin-top:.25rem}.sdlora-mobile-noop__next{display:block;width:72px;height:28px}.sdlora-mobile-noop__next-row span{padding:.24rem .35rem;border:1px solid color-mix(in srgb,var(--color-warning) 55%,var(--line));border-radius:var(--radius-control);color:var(--ink);font-size:.68rem;font-weight:760;line-height:1.25}.sdlora-mobile-node--update{border-color:color-mix(in srgb,var(--accent-deep) 48%,var(--line));background:color-mix(in srgb,var(--accent) 7%,var(--surface))}.sdlora-mobile-branch{display:grid;gap:0}.sdlora-mobile-branch__split,.sdlora-mobile-branch__join{width:min(300px,86%);height:48px;justify-self:center}.sdlora-mobile-branch svg path{stroke:var(--muted);stroke-dasharray:5 5}.sdlora-mobile-branch__choices{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}.sdlora-mobile-branch__choices article{padding:.58rem .65rem;border:1px solid var(--line);border-radius:.68rem;text-align:center;background:var(--surface)}.sdlora-mobile-return{width:min(320px,94%);height:68px;justify-self:center}.sdlora-mobile-return path{stroke:var(--color-positive);stroke-dasharray:9 7;animation:sdlora-route-trace 3.3s linear infinite}.sdlora-mobile-return text{fill:var(--color-positive);font:700 12px/1 var(--font-sans)}.sdlora-legend{font-size:.62rem}}
+@media(max-width:620px){.sdlora-slide{padding:.7rem 0 0;border:0;border-top:1px solid var(--line);border-radius:0;background:transparent}.sdlora-stepper{margin-inline:-.1rem;padding-bottom:.25rem}.sdlora-stepper button{min-height:34px;font-size:.66rem}.sdlora-slide__header{padding-bottom:.42rem}.sdlora-slide__title{color:var(--muted);font-size:.88rem;font-weight:720;letter-spacing:0}.sdlora-slide__header>div>p:not(.sdlora-slide__title){display:none}.sdlora-map__mobile{padding-top:.15rem}.sdlora-mobile-node{background:transparent}.sdlora-mobile-join{grid-template-columns:minmax(0,.8fr) 34px minmax(0,1.35fr);gap:.22rem}.sdlora-mobile-join svg{width:34px}.sdlora-mobile-side{padding:.48rem;background:transparent}.sdlora-mobile-side strong{font-size:.74rem}.sdlora-mobile-node--update{background:color-mix(in srgb,var(--accent) 4%,transparent)}.sdlora-mobile-node--update strong{font-size:.78rem}.sdlora-legend{display:none}}
 @media(prefers-reduced-motion:reduce) and (max-width:900px){.sdlora-mobile-edge path:first-child,.sdlora-mobile-return path{animation:none}}
-@media print{.sdlora-slide{border:0;border-radius:0;min-height:0;aspect-ratio:16/9;break-inside:avoid}.sdlora-map__desktop{display:block}.sdlora-map__mobile{display:none}.sdlora-map__edge--main,.sdlora-map__edge--return{animation:none}}
+@media print{.sdlora-slide{display:block;border:0;border-radius:0;min-height:0;aspect-ratio:auto;overflow:visible;break-inside:avoid}.sdlora-slide__header{margin-bottom:.35rem}.sdlora-stepper,.sdlora-slide[data-enhanced="true"] .sdlora-stepper{display:none}.sdlora-map{height:520px;margin:.35rem 0}.sdlora-slide[data-step-filtered="true"] :is([data-flow-node],[data-edge]){opacity:1}.sdlora-slide[data-step-filtered="true"] [data-flow-node][data-sdlora-focused="true"]{box-shadow:none}.sdlora-map__desktop{display:block;height:100%}.sdlora-map__mobile{display:none}.sdlora-map__edge--main,.sdlora-map__edge--return{animation:none}}
 </style>
