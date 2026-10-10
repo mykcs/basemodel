@@ -134,7 +134,7 @@ test('the ten meeting questions remain as an evidence appendix, not the main pap
   await expect(page.locator('#paper-sources')).toContainText('2026-10-09');
   await expect(page.locator('#paper-sources')).toContainText('研究证据核对日期');
   await expect(page.locator('#paper-appendix')).toContainText('Q10 独立复现');
-  await expect(page.locator('#paper-conclusion a[href*="/docs/reports/"]')).toHaveAttribute(
+  await expect(page.locator('#paper-sources a[href*="/docs/reports/"]')).toHaveAttribute(
     'href', /blob\/main\/docs\/reports\/2026-10-10-advisor-ten-iclr-style\.md$/,
   );
 });
