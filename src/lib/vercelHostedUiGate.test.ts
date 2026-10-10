@@ -154,6 +154,7 @@ describe('Vercel hosted UI gate planner', () => {
     expect(planHostedUi(['src/styles/tokens.css']).mode).toBe('full');
     expect(planHostedUi(['scripts/vercel-ui-plan.ts']).mode).toBe('full');
     expect(planHostedUi(['scripts/ci-ui-gate.mjs']).mode).toBe('full');
+    expect(planHostedUi(['scripts/ci-build-artifact.mjs']).mode).toBe('full');
     expect(planHostedUi(['scripts/ci-ui-test-list.mjs']).mode).toBe('full');
     expect(planHostedUi(['scripts/ci-ui-test-timings-202609061200.json']).mode).toBe('full');
     expect(planHostedUi(['scripts/ci-ui-test-timings-202609152256.json']).mode).toBe('full');
