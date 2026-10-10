@@ -110,7 +110,7 @@ Q03 复用历史 OpenEVO 轨迹和 MiniMax 分析，训练了自己的 Stage1，
 | **Q09** 文字状态 | 普通线 160 轮中参数 UPDATE 159 次；Text Memory / Skill / Agent System 为 2/1/3 次 | **没有因果结论**；未完成可报告的关闭文字状态对照 [#636](https://github.com/mykcs/openevo-experiment/pull/636) |
 | **Q10** 新任务独立复现 | 已有方案与部分执行准备 | **核心正式成绩未出**；新任务 / 随机流 / 不泄漏评测 [#637](https://github.com/mykcs/openevo-experiment/pull/637) |
 
-Q05 的第 120 轮简单非负 β 收据给出更新方向余弦约 **0.9992**；Q06 的具体合法点击候选 entropy 均值约 **0.763**。这两项都是机制与行为诊断，不能直接替代任务得分或预测检验。\n\n### 5.1 为什么“loss 下降”没有回答持续学习
+Q05 的第 120 轮简单非负 β 收据给出更新方向余弦约 **0.9992**；Q06 的具体合法点击候选 entropy 均值约 **0.763**。两者分别衡量参数更新方向和行为选择的不确定性。\n\n这两项诊断不能直接替代任务得分或独立预测检验。\n\n### 5.1 为什么“loss 下降”没有回答持续学习
 
 loss 是模型对训练目标的适配程度；Task Score 和 Exact Success 是完成 WebShop 任务的端点。Q02 的早期对照在同样预算下出现 OPSD 平均分稍高、SFT 完整成功更多的**指标方向冲突**。例如早期 1-pass Task Score 约 OPSD **36.58**、SFT **35.53**；SFT−OPSD 的配对 95% 区间约为 **[−16.64，+14.57] 分**，不能宣布稳定赢家。后续重复训练的**六格训练完成**，与六格同题评测/配对分析完成是两回事。[Q02 证据](https://github.com/mykcs/openevo-experiment/pull/629)。
 
