@@ -78,7 +78,7 @@ WebShop 要求 Agent 依据商品属性、用户约束和购买动作完成模�
 | Task Score /100 | **62.98** | **61.19** |
 | Exact Success | 341/1024（33.3%） | 350/1024（34.2%） |
 
-rank32 − rank128 的 Task Score 原始平均差为 **−0.0179062**（0–1），即 **−1.79 分**（满分 100）；其配对 95% 区间为 **[−3.68，+0.12] 分**（满分 100）。因此该窗口支持“将文件大小缩到约四分之一，能力损失不按容量同比例缩小”的观察；**尚不支持**“两者等价 / rank32 严格不劣”。几何上 rank95 很低也不能证明 rank8/16 跨轮容量足够。[#597 的匹配筛选与 #805 的发布核验](https://github.com/mykcs/basemodel/pull/805)。
+rank32 − rank128 的 Task Score 平均差为 **−1.79 分**（满分 100；原始数据与完整精度保留在实验收据）；其配对 95% 区间为 **[−3.68，+0.12] 分**（满分 100）。因此该窗口支持“将文件大小缩到约四分之一，能力损失不按容量同比例缩小”的观察；**尚不支持**“两者等价 / rank32 严格不劣”。几何上 rank95 很低也不能证明 rank8/16 跨轮容量足够。[#597 的匹配筛选与 #805 的发布核验](https://github.com/mykcs/basemodel/pull/805)。
 
 ### 4.3 SEED-derived 历史训练出现非单调波动
 
@@ -99,13 +99,13 @@ Q03 复用历史 OpenEVO 轨迹和 MiniMax 分析，训练了自己的 Stage1，
 
 | 问题 | 已有观察（简写） | 科学状态 / 下一证据 |
 |---|---|---|
-| **Q01** 停止点 | DirectApply ≈ R120、Bounded ≈ R150、历史复杂 β ≈ R130 后退化 | **有限回答**；固定外部验证后才可能形成停止规则 [#628](https://github.com/mykcs/openevo-experiment/pull/628) |
+| **Q01** 停止点 | DirectApply 约第 120 轮、Bounded 约第 150 轮、历史复杂 β 约第 130 轮后退化 | **有限回答**；固定外部验证后才可能形成停止规则 [#628](https://github.com/mykcs/openevo-experiment/pull/628) |
 | **Q02** 普通训练 | 早期 32 题 SFT 与 OPSD 指标方向不一致；6 个固定训练格训练 summary 均 PASS | **部分回答**；补齐同一固定开发题的六格逐题配对，不重训 [#629](https://github.com/mykcs/openevo-experiment/pull/629) |
 | **Q03** SEED 复现 | A0→A120 为 3.71→6.43→0.69→6.62，均 0/64 exact | **部分回答**；先只读原生 128 题校准，再得公开配方正式成绩 [#678](https://github.com/mykcs/openevo-experiment/pull/678) [#677](https://github.com/mykcs/openevo-experiment/pull/677) |
 | **Q04** 容量 | rank32 约四分之一文件大小；该后段窗口 Task Score 61.19 vs 62.98 | **部分回答**；rank8/16/64 的同契约对照与可学习性证据 [#631](https://github.com/mykcs/openevo-experiment/pull/631) |
-| **Q05** β 幅度 | 历史复杂 β 终评 20.77；简单非负 β 在 R120 的方向余弦≈0.9992 | **部分回答**；新简单 β 尚无完整配对能力结果，不能借旧结果替代 [#632](https://github.com/mykcs/openevo-experiment/pull/632) |
+| **Q05** β 幅度 | 历史复杂 β 终评 20.77；简单非负 β 在第 120 轮的更新方向余弦接近 1（精确值见原始收据） | **部分回答**；新简单 β 尚无完整配对能力结果，不能借旧结果替代 [#632](https://github.com/mykcs/openevo-experiment/pull/632) |
 | **Q06** 点击犹豫 | 单一固定节点合法点击候选 entropy 均值≈0.763；另测了 7×64 题 | **描述性**；尚无独立、无泄漏预测结论 [#633](https://github.com/mykcs/openevo-experiment/pull/633) [#649](https://github.com/mykcs/openevo-experiment/pull/649) |
-| **Q07** 方向因果 | R156 反转导致 Task Score −10.06 分，配对 CI 不跨零 | **局部因果证据**；跨轮/模型/新任务仍未建立 [#634](https://github.com/mykcs/openevo-experiment/pull/634) |
+| **Q07** 方向因果 | 第 156 轮反转导致 Task Score −10.06 分，配对 CI 不跨零 | **局部因果证据**；跨轮/模型/新任务仍未建立 [#634](https://github.com/mykcs/openevo-experiment/pull/634) |
 | **Q08** 遗忘 | 960 次旧任务评测执行完成 | **未能严格测遗忘量**：缺可比的“当初已学会”起点 [#635](https://github.com/mykcs/openevo-experiment/pull/635) |
 | **Q09** 文字状态 | 普通线 160 轮中参数 UPDATE 159 次；Text Memory / Skill / Agent System 为 2/1/3 次 | **没有因果结论**；未完成可报告的关闭文字状态对照 [#636](https://github.com/mykcs/openevo-experiment/pull/636) |
 | **Q10** 新任务独立复现 | 已有方案与部分执行准备 | **核心正式成绩未出**；新任务 / 随机流 / 不泄漏评测 [#637](https://github.com/mykcs/openevo-experiment/pull/637) |
@@ -150,7 +150,7 @@ loss 是模型对训练目标的适配程度；Task Score 和 Exact Success 是�
 
 建议按信息增益安排：第一，完成**已有** Q02 六个训练格的同题逐题配对与 SEED 自身协议校准，不重做已有训练；第二，做 rank8/16/32/64/128 在完全同一继续学习任务上的容量与旧能力保持对照；第三，分离**简单幅度 β**与旧复杂控制器；第四，在条件冻结后以新的随机流和任务验证机制结果。每一项都应预先规定任务集、计算预算、评价指标、置信区间和“何时停止/拒绝结论”的规则。
 
-导师现在需要做的不是替 Agent 选一个新 controller，而是判断**哪一项证据若成立，会真正改变科研方向**。这决定我们是继续发展固定容量参数记忆，还是转向更简洁的普通训练或别的能力保持机制。
+导师目前最有价值的判断是：**哪一项证据若成立，会真正改变科研方向**。这决定我们是继续发展固定容量参数记忆，还是转向更简洁的普通训练或别的能力保持机制。
 
 ## References｜科研来源与可复查入口
 
