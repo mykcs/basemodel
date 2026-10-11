@@ -42,6 +42,14 @@ for (const width of [390, 768, 1440]) {
         tr.children.item(nthCol)?.getBoundingClientRect().right ?? 0);
     });
     expect(Math.max(...rightEdges) - Math.min(...rightEdges)).toBeLessThanOrEqual(2);
+    if (width === 1440) {
+      const geometry = await capacityTable.evaluate((table) => {
+        const bounds = table.getBoundingClientRect();
+        const paper = table.closest('.paper-report')!.getBoundingClientRect();
+        return { tableWidth: bounds.width, articleWidth: paper.width };
+      });
+      expect(geometry.tableWidth, 'compact result tables must use natural width, not stretch to page').toBeLessThan(geometry.articleWidth - 24);
+    }
     await expect(page.locator('.advisor-ten__lede')).toBeVisible();
     // Reader attention: a true date or publication label alone is not a reason for a visual eyebrow.
     await expect(page.locator('.advisor-ten__hero > :first-child')).toHaveText('长期参数记忆的效率与能力权衡');
@@ -51,21 +59,36 @@ for (const width of [390, 768, 1440]) {
     await expect(page.locator('#paper-abstract')).toContainText('31.09 小时');
     await expect(page.locator('#paper-abstract')).toContainText('20.77');
 
-    const actual = await page.locator('.paper-toc a').evaluateAll((links) =>
+    const actual = await page.locator('.paper-toc__chapters a').evaluateAll((links) =>
       links.map((link) => link.getAttribute('href')?.slice(1)),
     );
-    expect(actual).toEqual(sections);
+    expect(actual).toEqual([...sections, 'paper-sources', 'paper-appendix']);
     const chapterPositions = await page.locator('.paper-section[id]').evaluateAll((nodes) =>
       nodes.filter((n) => n.id !== 'paper-sources' && n.id !== 'paper-appendix')
         .map((n) => n.id),
     );
     expect(chapterPositions).toEqual(sections);
+    await expect(page.locator('.paper-toc > h2')).toHaveText('目录');
+    await expect(page.getByRole('navigation', { name: '报告目录' })).toHaveCount(1);
+    await expect(page.locator('.paper-toc__appendix > h3')).toHaveText('附录重点');
+    const highlighted = await page.locator('.paper-toc__highlights a').evaluateAll((links) =>
+      links.map((link) => link.getAttribute('href')),
+    );
+    expect(highlighted).toEqual(['#q01', '#q03', '#q04', '#q07', '#q09', '#q10']);
+    for (const id of highlighted) {
+      await expect(page.locator(id!)).toHaveCount(1);
+    }
+    const refs = page.locator('#paper-sources .paper-reference-list > li');
+    await expect(refs).toHaveCount(3);
+    await expect(refs.nth(0)).toContainText('WebShop');
+    await expect(refs.nth(1)).toContainText('SEED');
+    await expect(refs.nth(2)).toContainText('LoRA');
 
     for (const [index, id] of sections.entries()) {
       const chapterNumber = String(index + 1);
       // Numbering is a meaningful academic heading, not a decorative eyebrow.
       await expect(page.locator('#' + id + ' > h2')).toHaveText(new RegExp('^' + chapterNumber + ' '));
-      await expect(page.locator('.paper-toc li:nth-child(' + chapterNumber + ') a span')).toHaveText(chapterNumber);
+      await expect(page.locator('.paper-toc__chapters > li:nth-child(' + chapterNumber + ') a span')).toHaveText(chapterNumber);
     }
     for (const [id, prefixes] of [
       ['paper-related-work', ['2.1', '2.2', '2.3']],
