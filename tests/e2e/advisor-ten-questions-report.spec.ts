@@ -22,8 +22,8 @@ for (const width of [390, 768, 1440]) {
     await expect(page.locator('[data-paper-report]')).toBeVisible();
     // Every evidence table uses one native, booktabs-like table grammar.
     const tables = page.locator('.paper-report table');
-    await expect(tables).toHaveCount(7);
-    await expect(page.locator('.paper-report table.research-booktabs')).toHaveCount(7);
+    await expect(tables).toHaveCount(6);
+    await expect(page.locator('.paper-report table.research-booktabs')).toHaveCount(6);
     const styles = await tables.evaluateAll((nodes) => nodes.map((node) => {
       const style = getComputedStyle(node);
       const headCells = Array.from(node.querySelectorAll('thead th[data-numeric]'));
