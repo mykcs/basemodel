@@ -39,9 +39,23 @@ for (const width of [390, 768, 1440]) {
     );
     expect(chapterPositions).toEqual(sections);
 
-    for (const id of sections) {
-      await expect(page.locator('#' + id + ' h2')).toHaveCount(1);
+    for (const [index, id] of sections.entries()) {
+      const chapterNumber = String(index + 1);
+      // Numbering is a meaningful academic heading, not a decorative eyebrow.
+      await expect(page.locator('#' + id + ' > h2')).toHaveText(new RegExp('^' + chapterNumber + ' '));
+      await expect(page.locator('.paper-toc li:nth-child(' + chapterNumber + ') a span')).toHaveText(chapterNumber);
     }
+    for (const [id, prefixes] of [
+      ['paper-related-work', ['2.1', '2.2', '2.3']],
+      ['paper-ablations', ['6.1', '6.2', '6.3']],
+      ['paper-visualization', ['7.1', '7.2', '7.3', '7.4', '7.5']],
+    ] as const) {
+      const actual = await page.locator('#' + id + ' h3').allTextContents();
+      expect(actual.map((heading) => heading.trim().split(' ')[0])).toEqual(prefixes);
+    }
+    await expect(page.locator('#paper-abstract > h2')).toHaveText('摘要');
+    await expect(page.locator('#paper-sources > h2')).toHaveText('参考文献与原始实验来源');
+    await expect(page.locator('#paper-appendix > h2')).toHaveText('附录 A：十问原始证据索引');
     await expect(page.locator('#paper-related-work')).toContainText('SEED');
     await expect(page.locator('#paper-method [data-paper-figure="method"]')).toBeVisible();
     await expect(page.locator('#paper-results .paper-main-table tbody tr')).toHaveCount(3);
