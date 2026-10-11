@@ -99,8 +99,8 @@ describe('advisor ten-question paper-structured scientific report', () => {
     const page = read(pagePath);
     const md = read(reportPath);
     expect(page).toContain('data-comparison-boundary="noncomparable"');
-    expect(page).toContain('不能直接排名或归因');
-    expect(page).toContain('正式 SFT / Stage2 能力结果为<strong>未测</strong>');
+    expect(page).toContain('需先用统一任务和执行合同重新测量');
+    expect(page).toContain('正式 SFT / Stage2 能力评测目前为<strong>未测</strong>');
     expect(page).toContain('第 152–159');
     expect(page).toContain('1,024 次');
     expect(page).toContain('普通 OpenEVO 是较早前序实验');
@@ -133,6 +133,32 @@ describe('advisor ten-question paper-structured scientific report', () => {
     const originalMeeting = read('src/components/research/OpenEvoExperimentIndex.astro');
     expect(originalMeeting).toContain('当时精炼的六个问题');
     expect(originalMeeting).toContain('OPEN_EVO_ADVISOR_MEETING.points');
+  });
+
+  it('keeps all report tables in a single booktabs grammar and explains inference after data', () => {
+    const page = read(pagePath);
+    const viz = read('src/components/research/AdvisorTenEvidenceVisual.astro');
+    const md = read(reportPath);
+    const css = read('src/styles/research-booktabs.css');
+    expect(page).toContain("import '../../../../../styles/research-booktabs.css';");
+    expect(page).toContain('class="research-booktabs"');
+    expect(page).toContain('class="paper-main-table research-booktabs"');
+    expect(page).toContain('class="advisor-ten__table-scroll research-booktabs-wrap"');
+    expect(viz).toContain('data-evidence-shape="paired-paper-table"');
+    expect(viz).toContain('表 3｜固定容量与后段任务表现');
+    expect(viz).toContain('data-numeric');
+    expect(viz).not.toContain('advisor-viz__double');
+    expect(viz).not.toContain('分开显示容量和能力');
+    expect(css).toContain('table.research-booktabs');
+    expect(css).toContain('border-collapse: collapse');
+    expect(css).toContain('border-bottom: 1px solid var(--color-text)');
+    for (const value of ['观察到什么：', '为什么这样判断：', '这意味着什么：', '95% 置信区间', '配对差值', '1,024 组']) {
+      expect(page).toContain(value);
+    }
+    expect(md).toContain('Bootstrap 自助重采样');
+    expect(md).toContain('表 3：固定容量与后段任务表现');
+    expect(page.indexOf('观察到什么：')).toBeLessThan(page.indexOf('为什么这样判断：'));
+    expect(page.indexOf('为什么这样判断：')).toBeLessThan(page.indexOf('这意味着什么：'));
   });
 
   it('protects HTML semantics and puts evidence dates near sources without redundant chrome', () => {
