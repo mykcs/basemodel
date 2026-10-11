@@ -5,6 +5,7 @@
  * Do not apply automatically to interactive workbench/data-entry grids.
  */
 .research-booktabs-wrap {
+  width: fit-content;
   max-width: 100%;
   overflow-x: auto;
   margin: 1.3rem 0 1.5rem;
@@ -17,8 +18,9 @@
 }
 table.research-booktabs {
   border-collapse: collapse;
-  width: 100%;
-  min-width: 540px;
+  width: max-content;
+  max-width: 100%;
+  min-width: 0;
   border-top: 1.6px solid var(--color-text);
   border-bottom: 1.6px solid var(--color-text);
   color: var(--color-text);
