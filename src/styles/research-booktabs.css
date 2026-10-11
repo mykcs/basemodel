@@ -1,0 +1,73 @@
+/*
+ * Shared paper-table grammar for evidence-bearing research report tables.
+ * HTML table semantics stay intact; this emulates LaTeX booktabs rather
+ * than reproducing LaTeX output as a screenshot.
+ * Do not apply automatically to interactive workbench/data-entry grids.
+ */
+.research-booktabs-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1.3rem 0 1.5rem;
+  padding: .2rem 0 .15rem;
+  scrollbar-width: thin;
+}
+.research-booktabs-wrap:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+table.research-booktabs {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 540px;
+  border-top: 1.6px solid var(--color-text);
+  border-bottom: 1.6px solid var(--color-text);
+  color: var(--color-text);
+  background: transparent;
+  font-family: var(--font-editorial);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: .9rem;
+  line-height: 1.48;
+}
+table.research-booktabs caption {
+  caption-side: top;
+  padding: 0 0 .68rem;
+  text-align: left;
+  line-height: 1.6;
+  font-weight: 660;
+  font-size: .88rem;
+  color: var(--color-text);
+}
+table.research-booktabs th,
+table.research-booktabs td {
+  text-align: left;
+  vertical-align: baseline;
+  font-size: inherit;
+  line-height: inherit;
+  padding: .64rem .7rem .64rem .25rem;
+  border: 0;
+  background: transparent;
+  overflow-wrap: normal;
+}
+table.research-booktabs thead th {
+  border-bottom: 1px solid var(--color-text);
+  font-weight: 700;
+  color: var(--color-text);
+  vertical-align: bottom;
+}
+table.research-booktabs tbody th[scope="row"] { font-weight: 600; }
+table.research-booktabs tbody tr + tr > * {
+  border-top: 1px solid color-mix(in srgb, var(--color-text) 13%, transparent);
+}
+table.research-booktabs :is(th,td)[data-numeric] {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+table.research-booktabs td.paper-main-value {
+  font-weight: 700;
+  font-size: inherit;
+}
+@media(max-width: 640px) {
+  table.research-booktabs { font-size: .86rem; }
+  table.research-booktabs :is(th,td) { padding: .56rem .6rem .56rem .15rem; }
+}

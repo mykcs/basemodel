@@ -20,6 +20,28 @@ for (const width of [390, 768, 1440]) {
 
     await expect(page.locator('h1')).toHaveText('长期参数记忆的效率与能力权衡');
     await expect(page.locator('[data-paper-report]')).toBeVisible();
+    // Every evidence table uses one native, booktabs-like table grammar.
+    const tables = page.locator('.paper-report table');
+    await expect(tables).toHaveCount(6);
+    await expect(page.locator('.paper-report table.research-booktabs')).toHaveCount(6);
+    const styles = await tables.evaluateAll((nodes) => nodes.map((node) => {
+      const style = getComputedStyle(node);
+      const headCells = Array.from(node.querySelectorAll('thead th[data-numeric]'));
+      return {
+        collapse: style.borderCollapse,
+        topRule: parseFloat(style.borderTopWidth),
+        bottomRule: parseFloat(style.borderBottomWidth),
+        numericHeaders: headCells.every((cell) => getComputedStyle(cell).textAlign === 'right'),
+      };
+    }));
+    expect(styles.every((t) => t.collapse === 'collapse' && t.topRule > 0 && t.bottomRule > 0 && t.numericHeaders)).toBe(true);
+    const capacityTable = page.locator('#paper-ablations table.research-booktabs');
+    const rightEdges = await capacityTable.evaluate((table) => {
+      const nthCol = 2;
+      return Array.from(table.querySelectorAll('tr')).map((tr) =>
+        tr.children.item(nthCol)?.getBoundingClientRect().right ?? 0);
+    });
+    expect(Math.max(...rightEdges) - Math.min(...rightEdges)).toBeLessThanOrEqual(2);
     await expect(page.locator('.advisor-ten__lede')).toBeVisible();
     // Reader attention: a true date or publication label alone is not a reason for a visual eyebrow.
     await expect(page.locator('.advisor-ten__hero > :first-child')).toHaveText('长期参数记忆的效率与能力权衡');
@@ -92,14 +114,23 @@ test('related work links to genuine papers and scientific differences remain exp
 test('capacity and SFT ablations are measured without invented missing results', async ({ page }) => {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const ablations = page.locator('#paper-ablations');
-  await expect(ablations.locator('[data-report-figure="q04-capacity"] .advisor-viz__double section')).toHaveCount(2);
-  await expect(ablations).toContainText('51.4 MB');
-  await expect(ablations).toContainText('205.6 MB');
-  await expect(ablations).toContainText('[−3.68, +0.12]');
+  const capacity = ablations.locator('[data-report-figure="q04-capacity"]');
+  await expect(capacity.locator('table.research-booktabs tbody tr')).toHaveCount(2);
+  await expect(capacity.locator('table caption')).toContainText('表 3');
+  await expect(capacity.locator('thead th')).toHaveCount(4);
+  await expect(capacity.locator('tbody tr').nth(0)).toContainText('62.98');
+  await expect(capacity.locator('tbody tr').nth(1)).toContainText('61.19');
+  await expect(capacity.locator('tbody tr').nth(1).locator('td').first()).toHaveText('51.4');
+  await expect(capacity.locator('tbody tr').nth(0).locator('td').first()).toHaveText('205.6');
+  await expect(capacity.locator('thead')).toContainText('参数文件（MB）');
+  await expect(ablations).toContainText('[−3.68，+0.12]');
   await expect(ablations.locator('[data-report-visual="q02-early-sft"] .advisor-viz__bar-row')).toHaveCount(3);
-  await expect(ablations).toContainText('六次训练已完成');
-  await expect(ablations).toContainText('尚无完整配对能力结论');
-  await expect(ablations).toContainText('不能宣称严格等价或非劣');
+  await expect(ablations).toContainText('完成六次训练');
+  await expect(ablations).toContainText('任务能力还缺同条件配对评测');
+  await expect(ablations).toContainText('95% 置信区间');
+  await expect(ablations).toContainText('配对差值');
+  await expect(ablations).toContainText('为什么这样判断');
+  await expect(ablations).toContainText('这意味着什么');
 });
 
 test('real figures show their evidence identity and keep SEED paper outside the Q03 chart', async ({ page }) => {
@@ -108,7 +139,7 @@ test('real figures show their evidence identity and keep SEED paper outside the 
 
   const full = page.locator('[data-paper-figure="full-trajectory"]');
   await expect(full.locator('img')).toHaveAttribute('src', /wandb-threeway\/task-score\.svg$/);
-  await expect(full.locator('figcaption')).toContainText('训练轮分数与表 2 的冻结 128 题终评不同');
+  await expect(full.locator('figcaption')).toContainText('表 2 是训练结束后的冻结 128 题终评');
   await expect(page.locator('[data-report-figure="q01-horizon"]')).toBeVisible();
 
   const q03 = page.locator('[data-report-figure="q03-custom-curve"]');
@@ -124,7 +155,7 @@ test('real figures show their evidence identity and keep SEED paper outside the 
   const boundary = page.locator('[data-comparison-boundary="noncomparable"]');
   await expect(boundary).toContainText('87.10 / 100');
   await expect(boundary).toContainText('未测');
-  await expect(boundary).toContainText('不能直接排名或归因');
+  await expect(boundary).toContainText('需先用统一任务和执行合同重新测量');
   await expect(page.locator('[data-report-visual="q07-confidence-interval"]')).toContainText('−10.06');
   await expect(page.locator('[data-report-figure="q09-update-counts"] tbody tr')).toHaveCount(3);
 });
