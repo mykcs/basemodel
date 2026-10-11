@@ -23,7 +23,7 @@ table.research-booktabs {
   border-bottom: 1.6px solid var(--color-text);
   color: var(--color-text);
   background: transparent;
-  font-family: var(--font-interface);
+  font-family: var(--font-editorial);
   font-variant-numeric: tabular-nums lining-nums;
   font-size: .9rem;
   line-height: 1.48;
