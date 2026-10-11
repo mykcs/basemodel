@@ -35,40 +35,40 @@ const methodStatus = {
     <nav class="paper-toc" aria-label="论文主要章节">
       <h2>论文结构</h2>
       <ol>
-        <li><a href="#paper-introduction"><span>01</span> 引言</a></li>
-        <li><a href="#paper-related-work"><span>02</span> 相关工作</a></li>
-        <li><a href="#paper-method"><span>03</span> 方法</a></li>
-        <li><a href="#paper-experiments"><span>04</span> 实验设置</a></li>
-        <li><a href="#paper-results"><span>05</span> 主实验结果</a></li>
-        <li><a href="#paper-ablations"><span>06</span> 消融实验</a></li>
-        <li><a href="#paper-visualization"><span>07</span> 可视化与机制分析</a></li>
-        <li><a href="#paper-discussion"><span>08</span> 讨论与局限</a></li>
-        <li><a href="#paper-conclusion"><span>09</span> 结论与下一步</a></li>
+        <li><a href="#paper-introduction"><span>1</span> 引言</a></li>
+        <li><a href="#paper-related-work"><span>2</span> 相关工作</a></li>
+        <li><a href="#paper-method"><span>3</span> 方法</a></li>
+        <li><a href="#paper-experiments"><span>4</span> 实验设置</a></li>
+        <li><a href="#paper-results"><span>5</span> 主实验结果</a></li>
+        <li><a href="#paper-ablations"><span>6</span> 消融实验</a></li>
+        <li><a href="#paper-visualization"><span>7</span> 可视化与机制分析</a></li>
+        <li><a href="#paper-discussion"><span>8</span> 讨论与局限</a></li>
+        <li><a href="#paper-conclusion"><span>9</span> 结论与下一步</a></li>
       </ol>
     </nav>
 
     <section class="paper-section advisor-ten__frame" id="paper-introduction" data-report-context aria-labelledby="paper-introduction-title">
-      <h2 id="paper-introduction-title">引言：持续学习需要同时衡量能力与代价</h2>
+      <h2 id="paper-introduction-title">1 引言：持续学习需要同时衡量能力与代价</h2>
       <p>WebShop 模拟一笔真实购物：Agent 读取购买要求、搜索商品、选择属性，最后完成购买。训练损失下降只说明模型更适应训练目标，不能证明它后来能买对商品。我们必须同时衡量<strong>任务得分、完整成功、训练时间和参数存储</strong>。</p>
       <p>普通 OpenEVO 将每轮新的低秩参数更新连同历史组件一并保留。长时间训练时，历史越来越长，后期参数更新越来越慢。Bounded 试图把历史参数限制在固定容量；β 控制机制进一步尝试调节每一步写入。成本下降后能否保持效果，是整个研究的核心张力。</p>
       <p>本文报告三类贡献：<strong>一项效率—能力实测权衡</strong>、<strong>一组有条件的容量和更新方向证据</strong>，以及<strong>一份明确尚未完成的基线与泛化清单</strong>。这些是研究进展，不是完整持续学习算法获胜的证明。</p>
     </section>
 
     <section class="paper-section" id="paper-related-work" aria-labelledby="paper-related-work-title">
-      <h2 id="paper-related-work-title">相关工作：任务环境、学习信号和参数存储</h2>
+      <h2 id="paper-related-work-title">2 相关工作：任务环境、学习信号和参数存储</h2>
       <div class="paper-related-grid">
         <article>
-          <h3>WebShop：我们在测什么</h3>
+          <h3>2.1 WebShop：我们在测什么</h3>
           <p>Yao 等人的 WebShop 给出了商品搜索、属性选择和最终购买的交互式基准。本文沿用它的任务语义，但<strong>不同任务清单仍必须分别报告</strong>。</p>
           <p class="paper-source"><a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2207.01206" />WebShop 原论文 ↗</a></p>
         </article>
         <article>
-          <h3>SEED：把事后技能蒸馏回策略</h3>
+          <h3>2.2 SEED：把事后技能蒸馏回策略</h3>
           <p>SEED 将轨迹分析得到的事后技能作为训练时的监督，并通过 on-policy distillation 影响策略更新。它与持续保留低秩参数组件的 OpenEVO 不属于同一更新机制，<strong>论文分数不能替代本地复现</strong>。</p>
           <p class="paper-source"><a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED 原论文 ↗</a> <a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED" />官方代码 ↗</a></p>
         </article>
         <article>
-          <h3>LoRA：低秩更新的基础</h3>
+          <h3>2.3 LoRA：低秩更新的基础</h3>
           <p>LoRA 用低秩矩阵表示模型适配更新。本文研究的额外问题是：<strong>许多轮 LoRA 更新积累之后，状态容量、计算开销和后续能力如何变化</strong>。</p>
           <p class="paper-source"><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />LoRA 原论文 ↗</a></p>
         </article>
@@ -76,7 +76,7 @@ const methodStatus = {
     </section>
 
     <section class="paper-section" id="paper-method" aria-labelledby="paper-method-title">
-      <h2 id="paper-method-title">方法：三种长期参数更新规则</h2>
+      <h2 id="paper-method-title">3 方法：三种长期参数更新规则</h2>
       <p>模型执行一批购物任务之后，从经验中形成下一轮使用的参数状态。三条路线的关键区别是<strong>如何保留旧更新，以及如何处理新更新</strong>。下图是语义示意，不是新提出的更新方程。</p>
       <figure class="paper-method-diagram" data-paper-figure="method">
         <div class="paper-method-flow" role="group" aria-label="每轮从任务轨迹、参数更新到下一轮策略的共同路径">
@@ -97,7 +97,7 @@ const methodStatus = {
     </section>
 
     <section class="paper-section advisor-ten__methods" id="paper-experiments" data-report-methods aria-labelledby="paper-experiments-title">
-      <h2 id="paper-experiments-title">实验设置：不同证据不混成一场考试</h2>
+      <h2 id="paper-experiments-title">4 实验设置：不同证据不混成一场考试</h2>
       <p>主要模型是 <strong>Qwen3-1.7B</strong>，任务为 WebShop。Task Score 以满分 100 表示终局满足程度；<strong>Exact Success</strong> 表示多少题的所有条件均达成。以下四种实验回答不同问题：</p>
       <div class="advisor-ten__methods-scroll" tabindex="0" aria-label="评测合同及比较边界">
         <table>
@@ -115,7 +115,7 @@ const methodStatus = {
     </section>
 
     <section class="paper-section" id="paper-results" aria-labelledby="paper-results-title" data-result-stage="paper-main-results">
-      <h2 id="paper-results-title">主实验：节省参数更新时间，但损失了部分任务能力</h2>
+      <h2 id="paper-results-title">5 主实验：节省参数更新时间，但损失了部分任务能力</h2>
       <p>三条历史长期学习路线都完成了 160 轮，之后的最终模型在<strong>同一冻结 128 题</strong>上得到以下结果。</p>
       <div class="advisor-ten__methods-scroll" tabindex="0" aria-label="三路线在同一冻结128题上的终评">
         <table class="paper-main-table">
@@ -133,7 +133,7 @@ const methodStatus = {
     </section>
 
     <section class="paper-section" id="paper-ablations" aria-labelledby="paper-ablations-title">
-      <h2 id="paper-ablations-title">消融实验：哪些机制是必要的</h2>
+      <h2 id="paper-ablations-title">6 消融实验：哪些机制是必要的</h2>
       <h3>6.1 长期容量：rank32 与 rank128</h3>
       <p>在相同任务和随机设置的第 <strong>152–159</strong> 轮继续训练中，匹配比较两种固定容量，合计 <strong>1,024 次任务尝试</strong>。</p>
       <AdvisorTenEvidenceVisual variant="q04" />
@@ -147,7 +147,7 @@ const methodStatus = {
     </section>
 
     <section class="paper-section" id="paper-visualization" aria-labelledby="paper-visualization-title">
-      <h2 id="paper-visualization-title">可视化：把趋势、异常和方向效应分开看</h2>
+      <h2 id="paper-visualization-title">7 可视化：把趋势、异常和方向效应分开看</h2>
       <h3>7.1 长期任务能力轨迹</h3>
       <figure class="paper-wandb" data-paper-figure="full-trajectory">
         <img src="/research/seed-openevo/evidence/wandb-threeway/task-score.svg" alt="普通 OpenEVO、Bounded 和历史复杂 β/GDR 的 WebShop 训练轮任务得分轨迹" loading="lazy"/>
@@ -177,7 +177,7 @@ const methodStatus = {
     </section>
 
     <section class="paper-section advisor-ten__closing" id="paper-discussion" data-result-stage="synthesis" aria-labelledby="paper-discussion-title">
-      <h2 id="paper-discussion-title">讨论与局限：我们知道的和仍不能证明的</h2>
+      <h2 id="paper-discussion-title">8 讨论与局限：我们知道的和仍不能证明的</h2>
       <p>最强的已观测事实是：在某些历史运行条件下，固定容量缓解了随轮次增长的计算瓶颈，却没有保住同题最终任务能力。方向反转证明一次局部因果影响，但仍不足以解释所有 β/GDR 后期掉分。</p>
       <div class="paper-limitations">
         <p><strong>公平基线仍缺。</strong>Q02 的六格训练已完成但配对能力统计缺失；完整公开 SEED Stage2 尚无可报告同口径结果，不能据此宣称 OpenEVO 胜过或不如 SEED。</p>
@@ -189,7 +189,7 @@ const methodStatus = {
     </section>
 
     <section class="paper-section advisor-ten__reentry" id="paper-conclusion" data-report-reentry aria-labelledby="paper-conclusion-title">
-      <h2 id="paper-conclusion-title">结论与下一组实验</h2>
+      <h2 id="paper-conclusion-title">9 结论与下一组实验</h2>
       <p>本研究已经得到一个明确的工程—科学取舍：<strong>让参数记忆不再无限增长，可以明显降低局部计算成本；长期任务能力的保持仍需新的证据与方法。</strong></p>
       <ol class="paper-next">
         <li><strong>完成可靠参照：</strong>复用 Q02 已完成的六格 SFT/OPSD 权重，补齐同题评测；并把公开 SEED 的原生评测、独立训练结果与 Q03 桥接实验严格分开。</li>
@@ -211,7 +211,7 @@ const methodStatus = {
     </section>
 
     <section class="paper-section paper-appendix" id="paper-appendix" aria-labelledby="paper-appendix-title">
-      <h2 id="paper-appendix-title">十问原始证据索引</h2>
+      <h2 id="paper-appendix-title">附录 A：十问原始证据索引</h2>
       <p>2026 年 9 月 22 日会议讨论了六个方向，会后拆分为 Q01–Q09，并新增 Q10 独立复现。以下保留每个问题的实验、发现、解释、未知项和原始证据；它们是论文叙事的底层来源，不再承担十个平行的正文大章节。</p>
       <nav class="advisor-ten__contents" aria-label="附录十问锚点">
         <h3>定位原始问题</h3>
