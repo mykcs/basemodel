@@ -89,7 +89,7 @@ for (const width of [390, 768, 1440]) {
         href: node.querySelector('a')?.getAttribute('href'),
       })),
     );
-    expect(referenceGeometry.every((ref, i) => i === 0 || ref.top > referenceGeometry[i - 1].top)).toBe(true);
+    expect(referenceGeometry.every((ref, i) => i === 0 || ref.top > (referenceGeometry[i - 1]?.top ?? -Infinity))).toBe(true);
     expect(referenceGeometry.map((ref) => ref.href)).toEqual([
       'https://arxiv.org/abs/2207.01206',
       'https://arxiv.org/abs/2607.14777',
