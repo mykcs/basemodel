@@ -2,9 +2,12 @@
  * Shared paper-table grammar for evidence-bearing research report tables.
  * HTML table semantics stay intact; this emulates LaTeX booktabs rather
  * than reproducing LaTeX output as a screenshot.
+ * Tables use their natural content width rather than stretching to the page.
+ * The wrapper alone scrolls on narrow screens when truly necessary.
  * Do not apply automatically to interactive workbench/data-entry grids.
  */
 .research-booktabs-wrap {
+  width: fit-content;
   max-width: 100%;
   overflow-x: auto;
   margin: 1.3rem 0 1.5rem;
@@ -17,8 +20,9 @@
 }
 table.research-booktabs {
   border-collapse: collapse;
-  width: 100%;
-  min-width: 540px;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
   border-top: 1.6px solid var(--color-text);
   border-bottom: 1.6px solid var(--color-text);
   color: var(--color-text);
