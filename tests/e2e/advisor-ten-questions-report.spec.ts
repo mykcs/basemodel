@@ -42,6 +42,16 @@ for (const width of [390, 768, 1440]) {
         tr.children.item(nthCol)?.getBoundingClientRect().right ?? 0);
     });
     expect(Math.max(...rightEdges) - Math.min(...rightEdges)).toBeLessThanOrEqual(2);
+    // Small paper tables should use their intrinsic content width, not an arbitrary full-page stretch.
+    if (width === 1440) {
+      for (const selector of ['#paper-ablations table.research-booktabs', '#paper-results table.research-booktabs']) {
+        const dimensions = await page.locator(selector).evaluate((table) => ({
+          table: table.getBoundingClientRect().width,
+          parent: table.parentElement!.getBoundingClientRect().width,
+        }));
+        expect(dimensions.table, selector + ' naturally sized').toBeLessThan(dimensions.parent - 24);
+      }
+    }
     await expect(page.locator('.advisor-ten__lede')).toBeVisible();
     // Reader attention: a true date or publication label alone is not a reason for a visual eyebrow.
     await expect(page.locator('.advisor-ten__hero > :first-child')).toHaveText('长期参数记忆的效率与能力权衡');
@@ -51,10 +61,40 @@ for (const width of [390, 768, 1440]) {
     await expect(page.locator('#paper-abstract')).toContainText('31.09 小时');
     await expect(page.locator('#paper-abstract')).toContainText('20.77');
 
-    const actual = await page.locator('.paper-toc a').evaluateAll((links) =>
+    await expect(page.locator('.paper-toc > h2')).toHaveText('目录');
+    const actual = await page.locator('.paper-toc__main a').evaluateAll((links) =>
       links.map((link) => link.getAttribute('href')?.slice(1)),
     );
     expect(actual).toEqual(sections);
+    const extraDestinations = ['paper-sources', 'paper-appendix', 'q03', 'q04', 'q05', 'q07', 'q09', 'q10'];
+    const extraLinks = page.locator('.paper-toc__extras a');
+    await expect(extraLinks).toHaveCount(extraDestinations.length);
+    const actualExtras = await extraLinks.evaluateAll((links) =>
+      links.map((link) => link.getAttribute('href')?.slice(1)),
+    );
+    expect(actualExtras).toEqual(extraDestinations);
+    for (const id of extraDestinations) {
+      await expect(page.locator('[id="' + id + '"]')).toHaveCount(1);
+    }
+    await extraLinks.last().click();
+    await expect(page).toHaveURL(/#q10$/);
+    await page.locator('.paper-toc__extras a[href="#paper-sources"]').click();
+    await expect(page).toHaveURL(/#paper-sources$/);
+
+    const references = page.locator('#paper-sources > ol.paper-references > li');
+    await expect(references).toHaveCount(3);
+    const referenceGeometry = await references.evaluateAll((nodes) =>
+      nodes.map((node) => ({
+        top: node.getBoundingClientRect().top,
+        href: node.querySelector('a')?.getAttribute('href'),
+      })),
+    );
+    expect(referenceGeometry.every((ref, i) => i === 0 || ref.top > referenceGeometry[i - 1].top)).toBe(true);
+    expect(referenceGeometry.map((ref) => ref.href)).toEqual([
+      'https://arxiv.org/abs/2207.01206',
+      'https://arxiv.org/abs/2607.14777',
+      'https://arxiv.org/abs/2106.09685',
+    ]);
     const chapterPositions = await page.locator('.paper-section[id]').evaluateAll((nodes) =>
       nodes.filter((n) => n.id !== 'paper-sources' && n.id !== 'paper-appendix')
         .map((n) => n.id),
@@ -65,7 +105,7 @@ for (const width of [390, 768, 1440]) {
       const chapterNumber = String(index + 1);
       // Numbering is a meaningful academic heading, not a decorative eyebrow.
       await expect(page.locator('#' + id + ' > h2')).toHaveText(new RegExp('^' + chapterNumber + ' '));
-      await expect(page.locator('.paper-toc li:nth-child(' + chapterNumber + ') a span')).toHaveText(chapterNumber);
+      await expect(page.locator('.paper-toc__main > li:nth-child(' + chapterNumber + ') a span')).toHaveText(chapterNumber);
     }
     for (const [id, prefixes] of [
       ['paper-related-work', ['2.1', '2.2', '2.3']],
