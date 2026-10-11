@@ -151,6 +151,7 @@ describe('advisor ten-question paper-structured scientific report', () => {
     expect(viz).not.toContain('分开显示容量和能力');
     expect(css).toContain('table.research-booktabs');
     expect(css).toContain('border-collapse: collapse');
+    expect(css).toContain('font-family: var(--font-editorial)');
     expect(css).toContain('border-bottom: 1px solid var(--color-text)');
     for (const value of ['观察到什么：', '为什么这样判断：', '这意味着什么：', '95% 置信区间', '配对差值', '1,024 组']) {
       expect(page).toContain(value);
