@@ -30,12 +30,12 @@ const methodStatus = {
     <section class="advisor-ten__thesis" id="paper-abstract" aria-labelledby="paper-abstract-title" data-result-stage="direct-result">
       <h2 id="paper-abstract-title">摘要</h2>
       <p class="advisor-ten__abstract">我们研究 Qwen3-1.7B Agent 在 WebShop 上持续更新时，长期参数状态的计算成本和任务能力如何相互制约。固定容量的 Bounded Online Recurrence 将历史统计窗口中的参数更新累计时间从 <strong>31.09 小时降至 2.02 小时</strong>，但完整实验耗时只缩短约 1.33 倍。三个历史最终模型后来在<strong>同一冻结 128 题</strong>上的 Task Score 分别为 <strong>60.72、45.98、20.77 / 100</strong>；其中普通 OpenEVO 是较早的前序实验，不属于同一预注册三臂随机对照。</p>
-      <p class="advisor-ten__abstract">后段容量筛选表明 rank32 可以用约四分之一的参数文件保留多数任务表现，但仍无法证明严格非劣。第 156 轮的 Task Vector 反向干预显示了一次局部方向因果效应。完整 SEED 基线、遗忘量和文字状态贡献仍缺决定性证据。十个研究问题作为本论文式报告的证据索引，放在文末附录。</p>
+      <p class="advisor-ten__abstract">后段容量筛选表明 rank32 可以用约四分之一的参数文件保留多数任务表现，但仍无法证明严格非劣。第 156 轮的 Task Vector 反向干预显示了一次局部方向因果效应。完整 SEED 基线、遗忘量和文字状态贡献仍缺决定性证据。十个研究问题作为本报告的证据索引，放在文末附录。</p>
     </section>
 
-    <nav class="paper-toc" aria-label="论文主要章节">
-      <h2>论文结构</h2>
-      <ol>
+    <nav class="paper-toc" aria-label="报告目录">
+      <h2>目录</h2>
+      <ol class="paper-toc__main">
         <li><a href="#paper-introduction"><span>1</span> 引言</a></li>
         <li><a href="#paper-related-work"><span>2</span> 相关工作</a></li>
         <li><a href="#paper-method"><span>3</span> 方法</a></li>
@@ -46,6 +46,20 @@ const methodStatus = {
         <li><a href="#paper-discussion"><span>8</span> 讨论与局限</a></li>
         <li><a href="#paper-conclusion"><span>9</span> 结论与下一步</a></li>
       </ol>
+      <ul class="paper-toc__extras">
+        <li><a href="#paper-sources">参考文献与原始实验来源</a></li>
+        <li>
+          <a href="#paper-appendix">附录 A：十问原始证据索引</a>
+          <ul class="paper-toc__appendix-links">
+            <li><a href="#q03">Q03 · SEED 本地复现</a></li>
+            <li><a href="#q04">Q04 · 长期参数容量</a></li>
+            <li><a href="#q05">Q05 · β 更新与得分</a></li>
+            <li><a href="#q07">Q07 · Task Vector 方向</a></li>
+            <li><a href="#q09">Q09 · 文字状态的作用</a></li>
+            <li><a href="#q10">Q10 · 新任务复现</a></li>
+          </ul>
+        </li>
+      </ul>
     </nav>
 
     <section class="paper-section advisor-ten__frame" id="paper-introduction" data-report-context aria-labelledby="paper-introduction-title">
@@ -212,7 +226,12 @@ const methodStatus = {
     <section class="paper-section paper-sources" id="paper-sources" aria-labelledby="paper-sources-title">
       <h2 id="paper-sources-title">参考文献与原始实验来源</h2>
       <p class="paper-source-provenance">研究证据核对日期：<time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>。日期标示本报告引用的历史研究状态，并非实时实验进度。<a href="https://github.com/mykcs/basemodel/blob/main/docs/reports/2026-10-10-advisor-ten-iclr-style.md" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/basemodel/blob/main/docs/reports/2026-10-10-advisor-ten-iclr-style.md" />完整 Markdown 研究稿 ↗</a></p>
-      <p>参考文献：[1] <a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2207.01206" />WebShop</a>；[2] <a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED</a>；[3] <a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />LoRA</a>。实验一手来源见下方十问附录及 <a href="https://github.com/mykcs/openevo-experiment" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment" />openevo-experiment 仓库</a>。</p>
+      <ol class="paper-references" aria-label="参考文献">
+        <li><a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2207.01206" />WebShop：交互式购物任务基准 ↗</a></li>
+        <li><a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED：自我进化的在线策略蒸馏 ↗</a></li>
+        <li><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />LoRA：大模型的低秩适配 ↗</a></li>
+      </ol>
+      <p class="paper-primary-evidence">本研究的一手实验记录可从<a href="#paper-appendix">附录 A 的各项证据</a>及 <a href="https://github.com/mykcs/openevo-experiment" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment" />openevo-experiment 仓库 ↗</a>查阅。</p>
       <details class="advisor-ten__meeting-details">
         <summary>会议记录：2026 年 9 月 22 日的六个讨论方向</summary>
         <p>会议原始依据：<a href={OPEN_EVO_ADVISOR_MEETING.sourceHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.sourceHref} />学长讨论整理 ↗</a></p>
@@ -222,7 +241,7 @@ const methodStatus = {
 
     <section class="paper-section paper-appendix" id="paper-appendix" aria-labelledby="paper-appendix-title">
       <h2 id="paper-appendix-title">附录 A：十问原始证据索引</h2>
-      <p>2026 年 9 月 22 日会议讨论了六个方向，会后拆分为 Q01–Q09，并新增 Q10 独立复现。以下保留每个问题的实验、发现、解释、未知项和原始证据；它们是论文叙事的底层来源，不再承担十个平行的正文大章节。</p>
+      <p>2026 年 9 月 22 日会议讨论了六个方向，会后拆分为 Q01–Q09，并新增 Q10 独立复现。以下保留每个问题的实验、发现、解释、未知项和原始证据；它们为正文的研究结论提供来源、过程和可复核证据。</p>
       <nav class="advisor-ten__contents" aria-label="附录十问锚点">
         <h3>定位原始问题</h3>
         <ol>{ADVISOR_QUESTIONS.map((q) => <li><a href={'#' + q.id}><span>{q.id.toUpperCase()}</span>{q.title}</a></li>)}</ol>
@@ -254,7 +273,16 @@ const methodStatus = {
 .paper-report .advisor-ten__abstract{margin:.7rem 0;max-width:77ch}
 .paper-toc{border-top:1px solid var(--paper-rule);padding:1.6rem 0 1.3rem}
 .paper-toc h2{font-size:.88rem;font-weight:720;margin:0 0 .7rem;color:var(--color-text-muted)}
-.paper-toc ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;padding:0;margin:0}
+.paper-toc__main{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;padding:0;margin:0}
+.paper-toc__extras{list-style:none;padding:0;margin:1rem 0 0}
+.paper-toc__extras>li{border-top:1px solid var(--paper-rule);border-bottom:0}
+.paper-toc__extras>li>a{font-weight:630}
+.paper-toc__appendix-links{list-style:none;margin:.1rem 0 .7rem;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 1rem}
+.paper-toc__appendix-links>li{border:0}
+.paper-toc__appendix-links a{font-size:.86rem;padding:.34rem 0;color:var(--color-text-muted)}
+.paper-references{max-width:76ch;margin:.8rem 0 1rem;padding-left:1.5rem}
+.paper-references li{padding:.42rem 0;line-height:1.65}
+.paper-primary-evidence{margin-top:.65rem}
 .paper-toc li{min-width:0;border-bottom:1px solid var(--paper-rule)}
 .paper-toc a{display:flex;gap:.65rem;padding:.55rem 0;color:var(--color-text);text-decoration:none;font-size:.94rem;line-height:1.5}
 .paper-toc a:hover{text-decoration:underline;text-underline-offset:.2rem}
@@ -308,14 +336,14 @@ const methodStatus = {
 .paper-report .advisor-ten__closing{padding:2rem 0 2.4rem}
 .paper-report .advisor-ten__closing h2{max-width:none}
 @media(max-width:730px){
-.paper-toc ol{grid-template-columns:repeat(2,minmax(0,1fr))}
+.paper-toc__main,.paper-toc__appendix-links{grid-template-columns:repeat(2,minmax(0,1fr))}
 .paper-related-grid{grid-template-columns:1fr;gap:.45rem}
 .paper-method-arms{grid-template-columns:1fr;gap:.2rem}
 .paper-method-flow{grid-template-columns:1fr;gap:.3rem}
 .paper-method-arrow{transform:rotate(90deg);justify-self:center;line-height:1}
 .paper-metrics{grid-template-columns:1fr;gap:.45rem}
 }
-@media(max-width:420px){.paper-toc ol{grid-template-columns:1fr}}
+@media(max-width:420px){.paper-toc__main,.paper-toc__appendix-links{grid-template-columns:1fr}}
 .advisor-ten__abstract{max-width:76ch;margin:0 0 1rem;font-size:1rem;line-height:1.82}
 .advisor-ten__methods{padding:2rem 0 2.3rem;border-bottom:1px solid var(--color-border)}
 .advisor-ten__methods h2{margin:0 0 .9rem;font-size:clamp(1.35rem,2.5vw,1.95rem);line-height:1.3}
