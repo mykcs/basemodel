@@ -50,7 +50,7 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
       ))}
     </div>
     <div class="advisor-viz__ticks" aria-hidden="true"><span>第 0 轮</span><span>第 80 轮</span><span>第 160 轮</span></div>
-    <figcaption>位置表示大约何时出现平台，不是完整训练曲线，也不表示训练越久能力越高。三条路线比较的是同一开发评测协议下的保存点。</figcaption>
+    <figcaption>这些位置标示开发评测中大约何时出现得分平台。每条路线按其对应保存点确定近似位置；长期能力还需通过完整训练轨迹和冻结终评观察。</figcaption>
     <details class="advisor-viz__details"><summary>查看原始平台期对照</summary>
       <div class="advisor-viz__table research-booktabs-wrap" tabindex="0"><table class="research-booktabs">
         <caption>各方法近似平台期（冻结 64 题开发评测）</caption>
@@ -62,7 +62,7 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
 )}
 {variant === 'q02' && (
   <figure class="advisor-viz" data-report-visual="q02-early-sft" data-evidence-shape="single-method-bar">
-    <header class="advisor-viz__heading"><strong>早期普通 SFT：多训练几遍，分数反而下降</strong><span>Task Score / 100</span></header>
+    <header class="advisor-viz__heading"><strong>早期 SFT：增加训练遍数后开发得分下降</strong><span>Task Score / 100</span></header>
     <div class="advisor-viz__bars">
       {earlySft.map((item) => (
         <div class="advisor-viz__bar-row">
@@ -72,7 +72,7 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
         </div>
       ))}
     </div>
-    <figcaption>仅显示原有早期开发集上的 SFT 单路线 1/2/3 遍训练，不是正在核账的三随机种子 × SFT/OPSD 六项新训练；不能据此宣布 OPSD 胜出。</figcaption>
+    <figcaption>图中展示早期 SFT 单路线在开发集上训练 1、2、3 遍后的实测分数。另一次 3 个随机设置 × SFT/OPSD 的六格训练已完成，对应配对能力评测仍待封存。</figcaption>
   </figure>
 )}
 {variant === 'q03' && (
@@ -102,7 +102,7 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
       ))}
     </div>
     <p class="advisor-viz__stage-note" data-stage-detail role="status" aria-live="polite">{checkpoints[0]?.note ?? ''}</p>
-    <figcaption>四次完整成功均为 0/64。论文 SEED 的 87.10 分来自另一套评测协议，不出现在这条曲线上；模型、任务、提示和采样差异见紧接本图的正文。</figcaption>
+    <figcaption>同一自定义 64 题上的四次保存点完整成功均为 0/64。曲线只连接这组可同口径的实测分数；紧接本图的正文说明 SEED 论文原生 128 题与本地协议之间的差异。</figcaption>
     <details class="advisor-viz__details"><summary>查看四个保存点的完整数字</summary>
       <div class="advisor-viz__table research-booktabs-wrap" tabindex="0"><table class="research-booktabs">
         <caption>混合 SEED Q03 · 自定义 64 题上的测量点</caption>
@@ -154,7 +154,7 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
         </div>
       ))}
     </div>
-    <figcaption>在同一冻结题集上观察到能力差异，不自动等于算法的因果效果。普通 DirectApply 是较早历史前驱；匹配对照时仍需考虑不同起点与执行条件。</figcaption>
+    <figcaption>三组最终模型接受同一冻结 128 题的评测，表格显示其任务能力差异。普通 DirectApply 属于较早的历史前驱；归因到具体算法机制，需要进一步对齐训练起点与执行条件。</figcaption>
     <details class="advisor-viz__details"><summary>查看完整成功数</summary>
       <div class="advisor-viz__table research-booktabs-wrap" tabindex="0"><table class="research-booktabs">
         <caption>三条路线的历史冻结 128 题终评</caption>
@@ -179,7 +179,7 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
       <line class="advisor-viz__cap" x1={effectX(-5.60)} x2={effectX(-5.60)} y1="58" y2="76"/>
       <circle class="advisor-viz__ci-point" cx={effectX(-10.06)} cy="67" r="6"/>
     </svg>
-    <figcaption>0 代表没有分数差异。该次反向干预的 95% 区间完全在零点左侧，但其他轮次没有全部得到同样结果；不能将这一次的局部发现扩大为普遍规则。</figcaption>
+    <figcaption>横轴 0 是无得分变化的参考点。第 156 轮反向干预的 95% 置信区间位于零点左侧，支持这次操作对任务表现的负向影响。要形成通用方向控制规则，还需要在其他轮次和独立任务流上重复测量。</figcaption>
   </figure>
 )}
 <style>
