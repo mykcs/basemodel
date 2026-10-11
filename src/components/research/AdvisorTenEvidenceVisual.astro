@@ -52,7 +52,7 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
     <div class="advisor-viz__ticks" aria-hidden="true"><span>第 0 轮</span><span>第 80 轮</span><span>第 160 轮</span></div>
     <figcaption>位置表示大约何时出现平台，不是完整训练曲线，也不表示训练越久能力越高。三条路线比较的是同一开发评测协议下的保存点。</figcaption>
     <details class="advisor-viz__details"><summary>查看原始平台期对照</summary>
-      <div class="advisor-viz__table"><table>
+      <div class="advisor-viz__table research-booktabs-wrap" tabindex="0"><table class="research-booktabs">
         <caption>各方法近似平台期（冻结 64 题开发评测）</caption>
         <thead><tr><th scope="col">方法</th><th scope="col">平台位置</th><th scope="col">后段变化</th></tr></thead>
         <tbody>{plateau.map((item) => <tr><th scope="row">{item.name}</th><td>第 {item.round} 轮左右</td><td>{item.note}</td></tr>)}</tbody>
@@ -104,49 +104,42 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
     <p class="advisor-viz__stage-note" data-stage-detail role="status" aria-live="polite">{checkpoints[0]?.note ?? ''}</p>
     <figcaption>四次完整成功均为 0/64。论文 SEED 的 87.10 分来自另一套评测协议，不出现在这条曲线上；模型、任务、提示和采样差异见紧接本图的正文。</figcaption>
     <details class="advisor-viz__details"><summary>查看四个保存点的完整数字</summary>
-      <div class="advisor-viz__table"><table>
+      <div class="advisor-viz__table research-booktabs-wrap" tabindex="0"><table class="research-booktabs">
         <caption>混合 SEED Q03 · 自定义 64 题上的测量点</caption>
-        <thead><tr><th scope="col">Stage2 保存点</th><th scope="col">Task Score / 100</th><th scope="col">完整成功</th><th scope="col">观察</th></tr></thead>
+        <thead><tr><th scope="col">Stage2 保存点</th><th scope="col" data-numeric>Task Score / 100</th><th scope="col" data-numeric>完整成功</th><th scope="col">观察</th></tr></thead>
         <tbody>{ADVISOR_Q03_CUSTOM_PANEL.map((point) => (
-          <tr><th scope="row">{point.update}</th><td>{point.score}</td><td>{point.exact}</td><td>{point.note}</td></tr>
+          <tr><th scope="row">{point.update}</th><td data-numeric>{point.score}</td><td data-numeric>{point.exact}</td><td>{point.note}</td></tr>
         ))}</tbody>
       </table></div>
     </details>
   </figure>
 )}
 {variant === 'q04' && (
-  <figure class="advisor-viz" data-report-figure="q04-capacity" data-evidence-shape="two-scale-tradeoff">
-    <header class="advisor-viz__heading"><strong>文件大小减少约四分之三，Task Score 变化较小</strong><span>分开显示容量和能力</span></header>
-    <div class="advisor-viz__double">
-      <section aria-label="参数文件大小">
-        <h4>长期参数文件 <small>MB</small></h4>
-        {ADVISOR_Q04_CAPACITY.map((item) => (
-          <div class="advisor-viz__bar-row">
-            <span class="advisor-viz__name">{item.method}</span>
-            <div class="advisor-viz__bar" aria-hidden="true"><i style={'width:' + Number(item.bytes.replace(' MB', '')) / 205.6 * 100 + '%'}></i></div>
-            <strong class="advisor-viz__value">{item.bytes}</strong>
-          </div>
-        ))}
-      </section>
-      <section aria-label="WebShop Task Score">
-        <h4>WebShop Task Score <small>/ 100</small></h4>
-        {ADVISOR_Q04_CAPACITY.map((item) => (
-          <div class="advisor-viz__bar-row">
-            <span class="advisor-viz__name">{item.method}</span>
-            <div class="advisor-viz__bar" aria-hidden="true"><i style={'width:' + scorePct(item.score)}></i></div>
-            <strong class="advisor-viz__value">{item.score}</strong>
-          </div>
-        ))}
-      </section>
+  <figure class="advisor-viz" data-report-figure="q04-capacity" data-evidence-shape="paired-paper-table">
+    <div class="advisor-viz__table research-booktabs-wrap" tabindex="0" aria-label="长期状态容量和 WebShop 得分对照表">
+      <table class="research-booktabs">
+        <caption>表 3｜固定容量与后段任务表现</caption>
+        <thead>
+          <tr>
+            <th scope="col">长期参数状态</th>
+            <th scope="col" data-numeric>参数文件（MB）</th>
+            <th scope="col" data-numeric>Task Score / 100</th>
+            <th scope="col" data-numeric>完整成功率</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ADVISOR_Q04_CAPACITY.map((item) => (
+            <tr>
+              <th scope="row">{item.method}</th>
+              <td data-numeric>{item.bytes.replace(' MB', '')}</td>
+              <td data-numeric>{item.score}</td>
+              <td data-numeric>{item.exact}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
-    <figcaption>第 152–159 轮的 1,024 次同题尝试；参数文件大小取第 159 轮。左侧以 205.6 MB 为满格，右侧以 Task Score 满分 100 为满格。不能把两种不同单位的长度直接比较，也尚未证明两种 rank 等价。</figcaption>
-    <details class="advisor-viz__details"><summary>查看容量、得分和完整成功率</summary>
-      <div class="advisor-viz__table"><table>
-        <caption>rank128 与 rank32 的匹配对照</caption>
-        <thead><tr><th scope="col">长期状态</th><th scope="col">参数文件</th><th scope="col">Task Score / 100</th><th scope="col">完整成功率</th></tr></thead>
-        <tbody>{ADVISOR_Q04_CAPACITY.map((item) => <tr><th scope="row">{item.method}</th><td>{item.bytes}</td><td>{item.score}</td><td>{item.exact}</td></tr>)}</tbody>
-      </table></div>
-    </details>
+    <figcaption>两种容量使用第 152–159 轮的 1,024 组同任务、同随机条件配对尝试；参数文件大小测于第 159 轮末。表中的得分和成功率均来自该后段窗口。</figcaption>
   </figure>
 )}
 {variant === 'q05' && (
@@ -163,10 +156,10 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
     </div>
     <figcaption>在同一冻结题集上观察到能力差异，不自动等于算法的因果效果。普通 DirectApply 是较早历史前驱；匹配对照时仍需考虑不同起点与执行条件。</figcaption>
     <details class="advisor-viz__details"><summary>查看完整成功数</summary>
-      <div class="advisor-viz__table"><table>
+      <div class="advisor-viz__table research-booktabs-wrap" tabindex="0"><table class="research-booktabs">
         <caption>三条路线的历史冻结 128 题终评</caption>
-        <thead><tr><th scope="col">路线</th><th scope="col">Task Score / 100</th><th scope="col">完整成功</th></tr></thead>
-        <tbody>{ADVISOR_Q05_FROZEN.map((item) => <tr><th scope="row">{item.method}</th><td>{item.score}</td><td>{item.exact}</td></tr>)}</tbody>
+        <thead><tr><th scope="col">路线</th><th scope="col" data-numeric>Task Score / 100</th><th scope="col" data-numeric>完整成功</th></tr></thead>
+        <tbody>{ADVISOR_Q05_FROZEN.map((item) => <tr><th scope="row">{item.method}</th><td data-numeric>{item.score}</td><td data-numeric>{item.exact}</td></tr>)}</tbody>
       </table></div>
     </details>
   </figure>
@@ -206,12 +199,10 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
 .advisor-viz__bar-row{display:grid;grid-template-columns:minmax(9rem,1fr) minmax(6rem,1.4fr) 4.6rem;align-items:center;gap:.7rem}
 .advisor-viz__bar{height:1.05rem;background:var(--color-border);overflow:hidden}
 .advisor-viz__bar i{height:100%;background:var(--color-text);display:block;min-width:1px}
-.advisor-viz__double{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem}
-.advisor-viz__double section{min-width:0}
-.advisor-viz__double h4{font-size:.98rem;font-weight:700;margin:0 0 .9rem;line-height:1.5}
-.advisor-viz__double h4 small{color:var(--color-text-muted);font-size:.84rem}
-.advisor-viz__double .advisor-viz__bar-row{grid-template-columns:minmax(4rem,1fr) minmax(4rem,1.2fr) minmax(4rem,.7fr);gap:.4rem;margin:.7rem 0}
-.advisor-viz__double .advisor-viz__name{font-size:.84rem}
+
+
+
+
 .advisor-viz__trend{display:block;width:100%;max-width:680px}
 .advisor-viz__grid{stroke:var(--color-border);stroke-width:1}
 .advisor-viz__axis{fill:var(--color-text-muted);font-size:14px}
@@ -229,11 +220,9 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
 .advisor-viz__stage-note{font-size:.95rem;line-height:1.75;margin:.45rem 0}
 .advisor-viz__details{margin:.85rem 0 .2rem}
 .advisor-viz__details summary{cursor:pointer;text-decoration:underline;text-underline-offset:.18rem;padding:.35rem 0;font-size:.89rem}
-.advisor-viz__table{max-width:100%;overflow-x:auto;margin:.7rem 0}
-.advisor-viz__table table{width:100%;border-collapse:collapse;min-width:530px}
-.advisor-viz__table caption{caption-side:top;text-align:left;font-size:.86rem;padding:.4rem 0;line-height:1.6;color:var(--color-text-muted)}
-.advisor-viz__table th,.advisor-viz__table td{font-size:.88rem;text-align:left;vertical-align:top;padding:.65rem .75rem .65rem 0;border-top:1px solid var(--color-border)}
-.advisor-viz__table th[scope=row]{font-weight:700}
+
+
+
 .advisor-viz__interval-summary{display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:baseline;margin:0;line-height:1.7}
 .advisor-viz__interval-summary strong{font-size:1.4rem}
 .advisor-viz__interval-summary span{font-size:.9rem;color:var(--color-text-muted)}
@@ -243,7 +232,7 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
 .advisor-viz__cap{stroke-width:2}
 .advisor-viz__ci-point{fill:var(--color-text)}
 @media(max-width:720px){
-.advisor-viz__double{grid-template-columns:1fr;gap:.8rem}
+
 .advisor-viz__item{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(4.6rem,.5fr);gap:.4rem}
 .advisor-viz__item small{grid-column:1/-1}
 .advisor-viz__ticks{padding-left:0;padding-right:0}
