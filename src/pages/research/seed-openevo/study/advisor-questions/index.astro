@@ -1,5 +1,6 @@
 ---
 import AppLayout from '../../../../../layouts/AppLayout.astro';
+import '../../../../../styles/research-booktabs.css';
 import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
 import AdvisorTenEvidenceVisual from '../../../../../components/research/AdvisorTenEvidenceVisual.astro';
 import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeeting';
@@ -99,8 +100,8 @@ const methodStatus = {
     <section class="paper-section advisor-ten__methods" id="paper-experiments" data-report-methods aria-labelledby="paper-experiments-title">
       <h2 id="paper-experiments-title">4 实验设置：不同证据不混成一场考试</h2>
       <p>主要模型是 <strong>Qwen3-1.7B</strong>，任务为 WebShop。Task Score 以满分 100 表示终局满足程度；<strong>Exact Success</strong> 表示多少题的所有条件均达成。以下四种实验回答不同问题：</p>
-      <div class="advisor-ten__methods-scroll" tabindex="0" aria-label="评测合同及比较边界">
-        <table>
+      <div class="advisor-ten__methods-scroll research-booktabs-wrap" tabindex="0" aria-label="评测合同及比较边界">
+        <table class="research-booktabs">
           <caption>表 1｜样本、时间点、可比性与证据作用</caption>
           <thead><tr><th scope="col">研究部分</th><th scope="col">真实评测身份</th><th scope="col">允许的结论</th></tr></thead>
           <tbody>
@@ -117,11 +118,11 @@ const methodStatus = {
     <section class="paper-section" id="paper-results" aria-labelledby="paper-results-title" data-result-stage="paper-main-results">
       <h2 id="paper-results-title">5 主实验：节省参数更新时间，但损失了部分任务能力</h2>
       <p>三条历史长期学习路线都完成了 160 轮，之后的最终模型在<strong>同一冻结 128 题</strong>上得到以下结果。</p>
-      <div class="advisor-ten__methods-scroll" tabindex="0" aria-label="三路线在同一冻结128题上的终评">
-        <table class="paper-main-table">
+      <div class="advisor-ten__methods-scroll research-booktabs-wrap" tabindex="0" aria-label="三路线在同一冻结128题上的终评">
+        <table class="paper-main-table research-booktabs">
           <caption>表 2｜WebShop 冻结 128 题的最终模型；普通 OpenEVO 是较早前序实验</caption>
-          <thead><tr><th scope="col">方法</th><th scope="col">Task Score / 100</th><th scope="col">完整成功</th></tr></thead>
-          <tbody>{ADVISOR_Q05_FROZEN.map((row) => <tr><th scope="row">{row.method}</th><td class="paper-main-value">{row.score}</td><td>{row.exact}</td></tr>)}</tbody>
+          <thead><tr><th scope="col">方法</th><th scope="col" data-numeric>Task Score / 100</th><th scope="col" data-numeric>完整成功</th></tr></thead>
+          <tbody>{ADVISOR_Q05_FROZEN.map((row) => <tr><th scope="row">{row.method}</th><td class="paper-main-value" data-numeric>{row.score}</td><td data-numeric>{row.exact}</td></tr>)}</tbody>
         </table>
       </div>
       <div class="paper-metrics" aria-label="训练耗时比较">
@@ -166,11 +167,11 @@ const methodStatus = {
       <AdvisorTenEvidenceVisual variant="q07" />
       <p>第 <strong>156</strong> 轮将一项真实更新方向反转后，固定 64 题的 Task Score 下降约 <strong>10.06 分</strong>（配对 95% 区间：下降 5.60–15.02 分）。这是八次方向反转中通过多重比较校正的一次；不代表任何一轮都能复现。</p>
       <h3>7.5 文字记忆更新频率是诊断，不是贡献消融</h3>
-      <div class="advisor-ten__table-scroll" tabindex="0" data-report-figure="q09-update-counts" aria-label="三路线长期训练期间文字载体实际改写次数">
-        <table>
-          <caption>表 3｜160 轮中实际内容 UPDATE 的轮数；不等于推理读取次数或因果贡献</caption>
-          <thead><tr><th scope="col">方法</th><th scope="col">参数状态</th><th scope="col">Text Memory</th><th scope="col">Skill</th><th scope="col">Agent System</th></tr></thead>
-          <tbody>{ADVISOR_Q09_UPDATES.map((row) => <tr><th scope="row">{row.method}</th><td>{row.parametric}</td><td>{row.textMemory}</td><td>{row.skill}</td><td>{row.agent}</td></tr>)}</tbody>
+      <div class="advisor-ten__table-scroll research-booktabs-wrap" tabindex="0" data-report-figure="q09-update-counts" aria-label="三路线长期训练期间文字载体实际改写次数">
+        <table class="research-booktabs">
+          <caption>表 4｜160 轮中参数与文字状态的实际改写次数</caption>
+          <thead><tr><th scope="col">方法</th><th scope="col" data-numeric>参数状态</th><th scope="col" data-numeric>Text Memory</th><th scope="col" data-numeric>Skill</th><th scope="col" data-numeric>Agent System</th></tr></thead>
+          <tbody>{ADVISOR_Q09_UPDATES.map((row) => <tr><th scope="row">{row.method}</th><td data-numeric>{row.parametric}</td><td data-numeric>{row.textMemory}</td><td data-numeric>{row.skill}</td><td data-numeric>{row.agent}</td></tr>)}</tbody>
         </table>
       </div>
       <p>Q06 的合法点击候选熵曾做测量，但缺无泄漏的独立预测检验；它没有证明“熵能预测掉分”。参数范数、方向余弦、熵、路径长度是不同观察，只有 Q07 的指定方向干预具有该范围内的因果解释资格。</p>
@@ -311,13 +312,13 @@ const methodStatus = {
 .advisor-ten__methods h2{margin:0 0 .9rem;font-size:clamp(1.35rem,2.5vw,1.95rem);line-height:1.3}
 .advisor-ten__methods>p:not(.advisor-ten__paper-label){max-width:78ch;line-height:1.78;font-size:.97rem}
 .advisor-ten__methods a{color:var(--color-text);text-underline-offset:.2rem}
-.advisor-ten__methods-scroll{max-width:100%;overflow-x:auto;margin:1.35rem 0;border-block:1px solid var(--color-border)}
-.advisor-ten__methods-scroll:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
-.advisor-ten__methods table{border-collapse:collapse;width:100%;min-width:620px}
-.advisor-ten__methods caption{text-align:left;caption-side:top;padding:.7rem 0;color:var(--color-text-muted);font-size:.84rem}
-.advisor-ten__methods th,.advisor-ten__methods td{text-align:left;vertical-align:top;padding:.7rem .8rem .7rem 0;border-top:1px solid var(--color-border);line-height:1.55;font-size:.9rem}
-.advisor-ten__methods th[scope=row]{width:21%;min-width:130px;font-weight:690}
-.advisor-ten__methods th[scope=col]{font-size:.82rem;color:var(--color-text-muted)}
+
+
+
+
+
+
+
 .advisor-ten{width:min(900px,calc(100% - 2.2rem));margin:0 auto 6rem;color:var(--color-text)}
 .advisor-ten__hero{padding:clamp(1.8rem,4vw,3rem) 0 2rem;border-bottom:1px solid var(--color-border)}
 .advisor-ten__hero h1{margin:0;font-size:clamp(2rem,3.6vw,3.15rem);line-height:1.18;letter-spacing:-.035em;text-wrap:balance}
@@ -373,7 +374,7 @@ const methodStatus = {
 .advisor-ten__sources span{color:var(--color-text-muted);font-size:.77rem;margin-right:.25rem}
 .advisor-ten__sources a{color:var(--color-text);text-underline-offset:.22rem;overflow-wrap:anywhere}
 .advisor-ten__figure{margin:1.7rem 0 1.45rem;max-width:950px}
-.advisor-ten__table-scroll{overflow-x:auto;max-width:100%;border-top:1.5px solid var(--color-text);border-bottom:1px solid var(--color-border)}
+
 .advisor-ten__table-scroll:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
 .advisor-ten__figure table{width:100%;border-collapse:collapse;min-width:540px;font-variant-numeric:tabular-nums lining-nums}
 .advisor-ten__figure table caption{caption-side:top;text-align:left;font-size:.84rem;font-weight:630;line-height:1.55;padding:1rem .1rem;color:var(--color-text)}
