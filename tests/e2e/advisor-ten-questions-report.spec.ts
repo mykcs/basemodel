@@ -120,9 +120,10 @@ test('capacity and SFT ablations are measured without invented missing results',
   await expect(capacity.locator('thead th')).toHaveCount(4);
   await expect(capacity.locator('tbody tr').nth(0)).toContainText('62.98');
   await expect(capacity.locator('tbody tr').nth(1)).toContainText('61.19');
-  await expect(ablations).toContainText('51.4 MB');
-  await expect(ablations).toContainText('205.6 MB');
-  await expect(ablations).toContainText('[−3.68, +0.12]');
+  await expect(capacity.locator('tbody tr').nth(1).locator('td').first()).toHaveText('51.4');
+  await expect(capacity.locator('tbody tr').nth(0).locator('td').first()).toHaveText('205.6');
+  await expect(capacity.locator('thead')).toContainText('参数文件（MB）');
+  await expect(ablations).toContainText('[−3.68，+0.12]');
   await expect(ablations.locator('[data-report-visual="q02-early-sft"] .advisor-viz__bar-row')).toHaveCount(3);
   await expect(ablations).toContainText('完成六次训练');
   await expect(ablations).toContainText('任务能力还缺同条件配对评测');
