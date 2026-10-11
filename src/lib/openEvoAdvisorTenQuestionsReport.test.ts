@@ -72,6 +72,17 @@ describe('advisor ten-question paper-structured scientific report', () => {
     expect(page.indexOf('id="paper-appendix"')).toBeGreaterThan(page.indexOf('id="paper-conclusion"'));
     expect(page).toContain('data-report-question={question.id}');
     expect(page).not.toContain('const chapters =');
+    for (const [index, id] of sectionIds.entries()) {
+      const n = index + 1;
+      expect(page).toContain('<h2 id="' + id + '-title">' + n + ' ');
+      expect(page).toContain('<li><a href="#' + id + '"><span>' + n + '</span> ');
+    }
+    for (const section of ['2.1 WebShop', '2.2 SEED', '2.3 LoRA', '6.1 长期容量', '7.1 长期任务能力轨迹']) {
+      expect(page).toContain('<h3>' + section);
+    }
+    expect(page).toContain('<h2 id="paper-abstract-title">摘要</h2>');
+    expect(page).toContain('<h2 id="paper-appendix-title">附录 A：十问原始证据索引</h2>');
+    expect(page).not.toContain('class="advisor-ten__paper-label"');
     for (const h of [
       '## 1 Introduction', '## 2 Related Work', '## 3 Method',
       '## 4 Experimental Setup', '## 5 Main Results', '## 6 Ablation Studies',
