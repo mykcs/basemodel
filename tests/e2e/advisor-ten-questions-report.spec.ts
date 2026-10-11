@@ -47,9 +47,9 @@ for (const width of [390, 768, 1440]) {
       for (const selector of ['#paper-ablations table.research-booktabs', '#paper-results table.research-booktabs']) {
         const dimensions = await page.locator(selector).evaluate((table) => ({
           table: table.getBoundingClientRect().width,
-          parent: table.parentElement!.getBoundingClientRect().width,
+          article: table.closest('.paper-report')!.getBoundingClientRect().width,
         }));
-        expect(dimensions.table, selector + ' naturally sized').toBeLessThan(dimensions.parent - 24);
+        expect(dimensions.table, selector + ' naturally sized').toBeLessThan(dimensions.article - 24);
       }
     }
     await expect(page.locator('.advisor-ten__lede')).toBeVisible();
