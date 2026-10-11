@@ -50,9 +50,9 @@ const methodStatus = {
 
     <section class="paper-section advisor-ten__frame" id="paper-introduction" data-report-context aria-labelledby="paper-introduction-title">
       <h2 id="paper-introduction-title">1 引言：持续学习需要同时衡量能力与代价</h2>
-      <p>WebShop 模拟一笔真实购物：Agent 读取购买要求、搜索商品、选择属性，最后完成购买。训练损失下降只说明模型更适应训练目标，不能证明它后来能买对商品。我们必须同时衡量<strong>任务得分、完整成功、训练时间和参数存储</strong>。</p>
+      <p>WebShop 模拟真实购物：Agent 阅读要求、搜索商品、选择规格，最后完成购买。<strong>训练损失</strong>衡量模型对训练目标的拟合，<strong>Task Score 和完整成功率</strong>衡量它实际完成购物要求的能力。两组指标回答的问题不同，因此还要一起记录训练耗时和长期参数文件大小。</p>
       <p>普通 OpenEVO 将每轮新的低秩参数更新连同历史组件一并保留。长时间训练时，历史越来越长，后期参数更新越来越慢。Bounded 试图把历史参数限制在固定容量；β 控制机制进一步尝试调节每一步写入。成本下降后能否保持效果，是整个研究的核心张力。</p>
-      <p>本文报告三类贡献：<strong>一项效率—能力实测权衡</strong>、<strong>一组有条件的容量和更新方向证据</strong>，以及<strong>一份明确尚未完成的基线与泛化清单</strong>。这些是研究进展，不是完整持续学习算法获胜的证明。</p>
+      <p>本文给出三类研究结果：<strong>长期参数更新时间与任务能力之间的实测取舍</strong>、<strong>容量和更新方向的局部实验发现</strong>，以及<strong>仍待完成的基线与泛化检验</strong>。每项结论都对应具体任务集和测量阶段，后续研究将检验它们能否在新任务和新的训练随机设置下保持。</p>
     </section>
 
     <section class="paper-section" id="paper-related-work" aria-labelledby="paper-related-work-title">
@@ -60,12 +60,12 @@ const methodStatus = {
       <div class="paper-related-grid">
         <article>
           <h3>2.1 WebShop：我们在测什么</h3>
-          <p>Yao 等人的 WebShop 给出了商品搜索、属性选择和最终购买的交互式基准。本文沿用它的任务语义，但<strong>不同任务清单仍必须分别报告</strong>。</p>
+          <p>Yao 等人的 WebShop 定义了商品搜索、属性选择和最终购买的交互式任务。本文使用这一任务环境。不同实验使用的题目清单、采样次数和评估时点分别记录，因为这些条件决定了分数可以比较到什么程度。</p>
           <p class="paper-source"><a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2207.01206" />WebShop 原论文 ↗</a></p>
         </article>
         <article>
           <h3>2.2 SEED：把事后技能蒸馏回策略</h3>
-          <p>SEED 将轨迹分析得到的事后技能作为训练时的监督，并通过 on-policy distillation 影响策略更新。它与持续保留低秩参数组件的 OpenEVO 不属于同一更新机制，<strong>论文分数不能替代本地复现</strong>。</p>
+          <p>SEED 从任务轨迹提取事后技能，转化为训练监督，并通过 on-policy distillation 更新策略。OpenEVO 则持续写入和保留低秩参数更新。两种方法的训练信号与状态管理机制不同；比较学习效果需要对齐模型起点、训练预算、任务集和评分程序。本地 SEED 复现仍是单独的证据任务。</p>
           <p class="paper-source"><a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED 原论文 ↗</a> <a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED" />官方代码 ↗</a></p>
         </article>
         <article>
@@ -78,7 +78,7 @@ const methodStatus = {
 
     <section class="paper-section" id="paper-method" aria-labelledby="paper-method-title">
       <h2 id="paper-method-title">3 方法：三种长期参数更新规则</h2>
-      <p>模型执行一批购物任务之后，从经验中形成下一轮使用的参数状态。三条路线的关键区别是<strong>如何保留旧更新，以及如何处理新更新</strong>。下图是语义示意，不是新提出的更新方程。</p>
+      <p>每批 WebShop 交互会产生新的学习信号，系统把它写入下一轮使用的参数状态。三条路线改变的是<strong>历史更新的保留方式</strong>和<strong>新更新的写入规则</strong>。下图标出这一共同过程及三个方法的处理位置。</p>
       <figure class="paper-method-diagram" data-paper-figure="method">
         <div class="paper-method-flow" role="group" aria-label="每轮从任务轨迹、参数更新到下一轮策略的共同路径">
           <div><span>输入</span><strong>WebShop 任务轨迹</strong><small>一次批次的交互经验</small></div>
@@ -92,9 +92,9 @@ const methodStatus = {
           <div><strong>Bounded Online Recurrence</strong><p>把历史与新更新整合为固定容量的长期参数状态；实验中先设 rank128。</p></div>
           <div><strong>Bounded + 历史 β/GDR</strong><p>在固定容量基础上干预更新写入；旧复杂机制与后续简单非负 β 不是同一个实验。</p></div>
         </div>
-        <figcaption>图 1｜三路线共享任务环境和跨轮学习目标，但状态保留规则不同。它不是对所有运行细节、优化器或文字记忆的逐元素等价声明。</figcaption>
+        <figcaption>图 1｜三条路线都经过任务交互、生成学习信号和写入下一轮参数状态。图中突出状态保留规则的差异；优化器与文字记忆配置需查各自的实验合同。</figcaption>
       </figure>
-      <p>为了知道复杂机制是否真的有必要，另设普通 <strong>SFT / OPSD</strong> 初始训练参照；为了检查公开算法，独立进行 <strong>SEED</strong> 复现。这些线没有全部取得可同口径比较的最终成绩，不能提前填入主结果表。</p>
+      <p>普通 <strong>SFT / OPSD</strong> 训练作为学习信号的参照，独立 <strong>SEED</strong> 复现用于核对公开方法在本地环境中的效果。当前它们的评估进度不同，主结果表只展示已经按对应合同完成的测量；未完成的对照在第 8 节列出。</p>
     </section>
 
     <section class="paper-section advisor-ten__methods" id="paper-experiments" data-report-methods aria-labelledby="paper-experiments-title">
@@ -112,7 +112,7 @@ const methodStatus = {
           </tbody>
         </table>
       </div>
-      <p class="paper-boundary"><strong>可比性原则：</strong>相同分数单位仍需要相同模型起点、任务清单、prompt、温度、动作解释、文字状态、评估时点和 evaluator。验证题用于分析和模型选择；冻结最终题不能反复拿来调参。所有百分制 Task Score 都来自原始 0–1 分数的线性换算。</p>
+      <p class="paper-boundary"><strong>比较依据：</strong>Task Score 统一换算成满分 100，方便阅读。同口径的能力比较还需要对齐模型起点、任务清单、prompt、温度、动作解释、文字状态、测量时点和评分程序。开发题用于分析与选择，冻结最终题用于一次性报告终评；这些用途决定了表 1 的四组结果各自能够支持的结论。</p>
     </section>
 
     <section class="paper-section" id="paper-results" aria-labelledby="paper-results-title" data-result-stage="paper-main-results">
@@ -129,7 +129,9 @@ const methodStatus = {
         <div><span>参数更新累计耗时</span><strong>31.09 → 2.02 h</strong><small>历史 Bounded 对普通线 · 约 15.36×</small></div>
         <div><span>包含任务执行的整段耗时</span><strong>74.78 → 56.25 h</strong><small>整体约 1.33×，不能写成 15.36×</small></div>
       </div>
-      <p class="paper-boundary">该结果的核心是<strong>效率—能力取舍</strong>：Bounded 的参数训练更便宜，但相同冻结题上的得分低于普通 OpenEVO；历史复杂 β/GDR 的结果更低。<strong>Bounded 与 β 是更接近正式预注册的处理对照</strong>，不能凭三组终评分差单独证明“压缩”或“β”就是所有掉分的直接原因。</p>
+      <p>**事实：**Bounded 缩短了参数更新累计耗时；三条历史路线在同一冻结 128 题上的能力表现见表 2。普通 OpenEVO 的平均得分最高，Bounded 次之，历史复杂 β/GDR 最低。</p>
+       <p>**原因与证据边界：**普通 OpenEVO 属于较早的历史实验，三条路线的训练起点与执行条件并未构成同时随机分配的完整三臂对照。Bounded 与历史 β/GDR 的处理对比更接近预注册的实验合同。因而当前数据可以描述三组终评表现，针对容量压缩或 β 机制的单独因果贡献，还需要进一步控制其他训练因素。</p>
+       <p>**研究意义：**下一步优先固定相同模型起点和任务流，单独改变长期容量或 β 更新规则，观察两者对能力的影响。</p>
       <p class="paper-source"><a href="https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro" />已发布的三路线结果与原始证据链接 ↗</a></p>
     </section>
 
@@ -138,12 +140,16 @@ const methodStatus = {
       <h3>6.1 长期容量：rank32 与 rank128</h3>
       <p>在相同任务和随机设置的第 <strong>152–159</strong> 轮继续训练中，匹配比较两种固定容量，合计 <strong>1,024 次任务尝试</strong>。</p>
       <AdvisorTenEvidenceVisual variant="q04" />
-      <p>rank32 的参数文件约 <strong>51.4 MB</strong>，rank128 为约 <strong>205.6 MB</strong>；Task Score 为 <strong>61.19 对 62.98 / 100</strong>。两者得分差的配对 95% 区间（rank32 − rank128）为 <strong>[−3.68, +0.12]</strong> 分，跨过零：该容量筛选支持降低成本的可能性，<strong>不能宣称严格等价或非劣</strong>。它也不是上节冻结 128 题的完整终评。</p>
+      <p><strong>观察到什么：</strong>表 3 显示，把长期参数容量从 rank128 降到 rank32 后，文件大小缩至原来的约四分之一（节省约 75%）；平均 Task Score 低约 <strong>1.79 分</strong>（满分 100）。这说明容量节省很明确，同时也观察到一定的平均得分差。</p>
+       <p><strong>为什么这样判断：</strong>我们先将同一轮次、同一任务与随机设置下的两个 Task Score 成对相减，定义差值为 <strong>rank32 − rank128</strong>；随后对这 <strong>1,024 组配对差值</strong>做有放回的 Bootstrap（自助重采样），每次计算平均差，得到平均差的<strong>95% 置信区间（CI）[−3.68，+0.12] 分</strong>。区间包含 <strong>0 分</strong>：这一批数据仍允许平均差为零，也允许下降约 3.68 分。因此，我们尚无法确认稳定的均值下降，更无法用这个区间证明两种容量具有相同的任务能力。</p>
+       <p><strong>这意味着什么：</strong>这张表测量的是<strong>第 152–159 轮的后段任务尝试</strong>，第 5 节的表 2 则测量<strong>训练结束后、同一冻结 128 题上的最终模型</strong>。两种测量的任务身份和时点不同；用这里的 1.79 分解释第 5 节三组终评分差，会把容量与评估条件混在一起。下一步应让 rank32 和 rank128 在同一批冻结评测题上再次成对比较，检验节省容量后能否保持最终任务能力。</p>
       <h3>6.2 学习目标：普通 SFT 与 OPSD</h3>
-      <p>早期小样本对照的任务分数方向与完整成功并不一致：OPSD 的平均 Task Score 略高，而 SFT 完整成功更多；SFT 多遍训练也没有单调改善。后续 <strong>3 个随机设置 × 2 个目标</strong>的六次训练已完成，但六格的同题评测和配对统计尚未封存。</p>
+      <p>早期小样本对照里，OPSD 的平均 Task Score 略高，SFT 完整完成购物任务的次数更多；SFT 连续训练多遍后，Task Score 逐步下降。这表明<strong>部分得分</strong>和<strong>完整成功</strong>在衡量学习效果时可能给出不同判断。</p>
+       <p>为了核对这种差异是否稳定，后续已按<strong>3 个随机设置 × 2 个学习目标</strong>完成六次训练。对应的同题评测和配对统计仍待封存；得到这些结果后，才能判断学习目标本身是否造成稳定的能力差异。</p>
       <AdvisorTenEvidenceVisual variant="q02" />
       <h3>6.3 已计划但尚无胜负结果的机制消融</h3>
-      <p>简单非负 β 的方向保持检查是实现诊断，尚无完整配对能力结论。Text Memory、Skill 与 Agent System 的关闭消融也尚无可报告结果；<strong>改写次数少并不能证明这些文字状态对推理无用</strong>。本节不把未完成的消融画成零分。</p>
+      <p>简单非负 β 目前完成的是更新方向检查，能够核对实现行为；任务能力还缺同条件配对评测。Text Memory、Skill 与 Agent System 的改写频率已被记录，但关闭这些文字状态后的独立对照仍待开展。</p>
+       <p>因而现阶段可以报告的是<strong>代码行为和更新次数</strong>；判断这些机制是否提高任务表现，需要固定其他条件并进行关闭/简化实验。</p>
       <p class="paper-source"><a href="https://github.com/mykcs/openevo-experiment/pull/597" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/597" />rank32 成本—能力证据 ↗</a> <a href="https://github.com/mykcs/openevo-experiment/pull/629" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/629" />SFT / OPSD 六格收据 ↗</a></p>
     </section>
 
@@ -152,20 +158,21 @@ const methodStatus = {
       <h3>7.1 长期任务能力轨迹</h3>
       <figure class="paper-wandb" data-paper-figure="full-trajectory">
         <img src="/research/seed-openevo/evidence/wandb-threeway/task-score.svg" alt="普通 OpenEVO、Bounded 和历史复杂 β/GDR 的 WebShop 训练轮任务得分轨迹" loading="lazy"/>
-        <figcaption>图 2｜三路线历史 160 轮训练过程的 Task Score 可视化（已归档 W&amp;B 来源）。训练轮分数与表 2 的冻结 128 题终评不同，不能把两种时点合成一条成绩线。</figcaption>
+        <figcaption>图 2｜W&amp;B 归档的三路线历史 160 轮训练 Task Score 轨迹。它反映训练过程中的开发测量；表 2 是训练结束后的冻结 128 题终评。评估时点和任务用途不同，分别阅读才能判断训练趋势与最终能力。</figcaption>
       </figure>
       <h3>7.2 不同更新规则的平台出现时间</h3>
       <AdvisorTenEvidenceVisual variant="q01" />
-      <p>开发题上普通 DirectApply 约第 <strong>120</strong> 轮趋于平台，Bounded 更晚，历史复杂 β/GDR 后段退化。它们是各自开发协议上的近似位置，不是已经验证的自动早停算法。</p>
+      <p>开发评测显示，普通 DirectApply 约第 <strong>120</strong> 轮开始进入收益较小的阶段；Bounded 的变化持续得更久，历史复杂 β/GDR 在后段出现退化。平台位置来自历史保存点上的实际测量。自动停止训练还需在独立任务流上验证平台判据，才能把这些观察转成可靠的停止规则。</p>
       <h3>7.3 历史 SEED 桥接实验的非单调任务得分</h3>
       <AdvisorTenEvidenceVisual variant="q03" />
       <div class="advisor-ten__paper-reference" data-comparison-boundary="noncomparable">
-        <p>图中的四个点属于同一<strong>自定义 64 题</strong>：3.71 → 6.43 → 0.69 → 6.62 / 100，全部为 <strong>0/64</strong> 完整成功。论文中 Qwen3-1.7B 的 <strong>87.10 / 100</strong>、完整成功 <strong>77.3%</strong> 用的是不同的原生 128 题和交互协议，<strong>不能直接排名或归因</strong>。</p>
-        <p>另一条独立的公开配方 SEED 已采集 1,440 条 Stage1 轨迹和 1,200 条有效教师标注；截至这份证据快照，其正式 SFT / Stage2 能力结果为<strong>未测</strong>，不能从论文数字借用成绩。</p>
+        <p>这条曲线来自本地<strong>自定义 64 题</strong>，四个保存点的 Task Score 为 <strong>3.71 → 6.43 → 0.69 → 6.62 / 100</strong>，对应完整成功均为 <strong>0/64</strong>。它显示本地训练过程出现了先升、后降、再回升的变化。</p>
+         <p>SEED 论文的 <strong>87.10 / 100</strong> 和 <strong>77.3%</strong> 完整成功来自另一套原生 128 题及交互协议。题集、动作处理和采样设定都可能改变得分；两组数字目前适合说明各自的协议结果。要比较方法效果，需先用统一任务和执行合同重新测量。</p>
+        <p>另一路公开配方 SEED 已收集 <strong>1,440 条 Stage1 轨迹</strong>和 <strong>1,200 条有效教师标注</strong>，正式 SFT / Stage2 能力评测目前为<strong>未测</strong>。这项结果将在本地训练与评估完成之后独立报告。</p>
       </div>
       <h3>7.4 Task Vector 方向反转的局部因果效应</h3>
       <AdvisorTenEvidenceVisual variant="q07" />
-      <p>第 <strong>156</strong> 轮将一项真实更新方向反转后，固定 64 题的 Task Score 下降约 <strong>10.06 分</strong>（配对 95% 区间：下降 5.60–15.02 分）。这是八次方向反转中通过多重比较校正的一次；不代表任何一轮都能复现。</p>
+      <p>第 <strong>156</strong> 轮反转一次真实参数更新方向后，同一冻结 64 题的 Task Score 平均下降 <strong>10.06 分</strong>，配对 <strong>95% 置信区间</strong>对应下降约 <strong>5.60–15.02 分</strong>。该次效果在八次反转检验的多重比较校正后仍成立，因此支持<strong>这一特定轮次的更新方向确实影响了任务表现</strong>。若要据此设计通用更新控制器，还需跨轮次和不同任务重复验证。</p>
       <h3>7.5 文字记忆更新频率是诊断，不是贡献消融</h3>
       <div class="advisor-ten__table-scroll research-booktabs-wrap" tabindex="0" data-report-figure="q09-update-counts" aria-label="三路线长期训练期间文字载体实际改写次数">
         <table class="research-booktabs">
@@ -174,19 +181,21 @@ const methodStatus = {
           <tbody>{ADVISOR_Q09_UPDATES.map((row) => <tr><th scope="row">{row.method}</th><td data-numeric>{row.parametric}</td><td data-numeric>{row.textMemory}</td><td data-numeric>{row.skill}</td><td data-numeric>{row.agent}</td></tr>)}</tbody>
         </table>
       </div>
-      <p>Q06 的合法点击候选熵曾做测量，但缺无泄漏的独立预测检验；它没有证明“熵能预测掉分”。参数范数、方向余弦、熵、路径长度是不同观察，只有 Q07 的指定方向干预具有该范围内的因果解释资格。</p>
+      <p>Q06 已测量合法点击候选的熵，下一步需要独立、无泄漏的预测检验，才能判断熵与后续任务得分变化是否有稳定关系。参数范数、方向余弦、熵和路径长度描述不同的模型行为；目前只有 Q07 的指定方向干预提供了范围明确的因果证据。</p>
     </section>
 
     <section class="paper-section advisor-ten__closing" id="paper-discussion" data-result-stage="synthesis" aria-labelledby="paper-discussion-title">
       <h2 id="paper-discussion-title">8 讨论与局限：我们知道的和仍不能证明的</h2>
-      <p>最强的已观测事实是：在某些历史运行条件下，固定容量缓解了随轮次增长的计算瓶颈，却没有保住同题最终任务能力。方向反转证明一次局部因果影响，但仍不足以解释所有 β/GDR 后期掉分。</p>
+      <p><strong>已观测的事实：</strong>固定容量减少了历史参数累积带来的训练计算开销；对应模型在冻结任务上的得分出现下降。第 156 轮的方向反转实验显示，一次具体更新方向能影响任务表现。</p>
+       <p><strong>可能的原因：</strong>压缩后的表达容量、写入规则及不同训练条件都可能影响后期学习。方向反转提供了一处受控证据；其余差异还需要在相同起点和任务流下分开检验。</p>
+       <p><strong>接下来：</strong>先建立可信的普通训练和 SEED 参照，再分别测量容量与 β 的作用，最后通过新任务验证这些发现的稳定性。</p>
       <div class="paper-limitations">
-        <p><strong>公平基线仍缺。</strong>Q02 的六格训练已完成但配对能力统计缺失；完整公开 SEED Stage2 尚无可报告同口径结果，不能据此宣称 OpenEVO 胜过或不如 SEED。</p>
-        <p><strong>遗忘仍未知。</strong>Q08 的 960 次旧任务尝试完成了测量，但缺少可靠的“当时已学会”起点，不能严格计算遗忘量。</p>
-        <p><strong>文字载体因果贡献未知。</strong>Q09 的 Text Memory / Skill / Agent System 更新很稀疏，并未完成关闭载体的同条件对照。</p>
-        <p><strong>跨任务泛化未证实。</strong>会后提出的 Q10 尚无独立新任务、不同随机流的正式重复成绩。</p>
+        <p><strong>公平基线：</strong>Q02 已完成六格训练，尚需统一任务上的配对评测与不确定性统计。公开 SEED Stage2 的本地结果仍待测量；两条路线完成同口径评测后，才能形成可信的方法比较。</p>
+        <p><strong>遗忘测量：</strong>Q08 已测量 960 次旧任务尝试。严谨的遗忘率还需要核对每道题在早期确实学会的证据，以此作为后续能力下降的起点。</p>
+        <p><strong>文字状态作用：</strong>Q09 记录到 Text Memory、Skill 和 Agent System 的实际改写次数较少。关闭这些状态、保持其他条件一致的对照将检验它们对任务能力的贡献。</p>
+        <p><strong>跨任务稳定性：</strong>会后增加的 Q10 计划在独立新任务和不同随机流上重复关键实验，目前处于待测阶段。</p>
       </div>
-      <p>当前不宜继续叠加未经独立验证的复杂控制器。最值得优先解决的是：普通训练参照是否可靠，容量变小造成的能力代价能否被归因，以及本地 SEED 是否真正执行了可比的学习与评测协议。</p>
+      <p>当前优先工作是<strong>补齐普通训练参照、分离容量变化对任务能力的影响，以及完成本地 SEED 的可比评测</strong>。这些测量将直接决定是否需要引入更复杂的更新控制规则。</p>
     </section>
 
     <section class="paper-section advisor-ten__reentry" id="paper-conclusion" data-report-reentry aria-labelledby="paper-conclusion-title">
