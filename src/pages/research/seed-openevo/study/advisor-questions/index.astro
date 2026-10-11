@@ -30,12 +30,12 @@ const methodStatus = {
     <section class="advisor-ten__thesis" id="paper-abstract" aria-labelledby="paper-abstract-title" data-result-stage="direct-result">
       <h2 id="paper-abstract-title">摘要</h2>
       <p class="advisor-ten__abstract">我们研究 Qwen3-1.7B Agent 在 WebShop 上持续更新时，长期参数状态的计算成本和任务能力如何相互制约。固定容量的 Bounded Online Recurrence 将历史统计窗口中的参数更新累计时间从 <strong>31.09 小时降至 2.02 小时</strong>，但完整实验耗时只缩短约 1.33 倍。三个历史最终模型后来在<strong>同一冻结 128 题</strong>上的 Task Score 分别为 <strong>60.72、45.98、20.77 / 100</strong>；其中普通 OpenEVO 是较早的前序实验，不属于同一预注册三臂随机对照。</p>
-      <p class="advisor-ten__abstract">后段容量筛选表明 rank32 可以用约四分之一的参数文件保留多数任务表现，但仍无法证明严格非劣。第 156 轮的 Task Vector 反向干预显示了一次局部方向因果效应。完整 SEED 基线、遗忘量和文字状态贡献仍缺决定性证据。十个研究问题作为本论文式报告的证据索引，放在文末附录。</p>
+      <p class="advisor-ten__abstract">后段容量筛选表明 rank32 可以用约四分之一的参数文件保留多数任务表现，但仍无法证明严格非劣。第 156 轮的 Task Vector 反向干预显示了一次局部方向因果效应。完整 SEED 基线、遗忘量和文字状态贡献仍缺决定性证据。十个研究问题作为本报告的证据索引，放在文末附录。</p>
     </section>
 
-    <nav class="paper-toc" aria-label="论文主要章节">
-      <h2>论文结构</h2>
-      <ol>
+    <nav class="paper-toc" aria-label="报告目录">
+      <h2>目录</h2>
+      <ol class="paper-toc__chapters">
         <li><a href="#paper-introduction"><span>1</span> 引言</a></li>
         <li><a href="#paper-related-work"><span>2</span> 相关工作</a></li>
         <li><a href="#paper-method"><span>3</span> 方法</a></li>
@@ -45,14 +45,27 @@ const methodStatus = {
         <li><a href="#paper-visualization"><span>7</span> 可视化与机制分析</a></li>
         <li><a href="#paper-discussion"><span>8</span> 讨论与局限</a></li>
         <li><a href="#paper-conclusion"><span>9</span> 结论与下一步</a></li>
+        <li><a href="#paper-sources"><span aria-hidden="true">—</span> 参考文献与实验来源</a></li>
+        <li><a href="#paper-appendix"><span>A</span> 附录：十问证据索引</a></li>
       </ol>
+      <div class="paper-toc__appendix" aria-label="附录重点导航">
+        <h3>附录重点</h3>
+        <ul class="paper-toc__highlights">
+          <li><a href="#q01"><span>Q01</span> 训练何时停止</a></li>
+          <li><a href="#q03"><span>Q03</span> SEED 得分差异</a></li>
+          <li><a href="#q04"><span>Q04</span> 长期容量选择</a></li>
+          <li><a href="#q07"><span>Q07</span> 更新方向干预</a></li>
+          <li><a href="#q09"><span>Q09</span> 文字状态作用</a></li>
+          <li><a href="#q10"><span>Q10</span> 新任务独立复现</a></li>
+        </ul>
+      </div>
     </nav>
 
     <section class="paper-section advisor-ten__frame" id="paper-introduction" data-report-context aria-labelledby="paper-introduction-title">
       <h2 id="paper-introduction-title">1 引言：持续学习需要同时衡量能力与代价</h2>
       <p>WebShop 模拟真实购物：Agent 阅读要求、搜索商品、选择规格，最后完成购买。<strong>训练损失</strong>衡量模型对训练目标的拟合，<strong>Task Score 和完整成功率</strong>衡量它实际完成购物要求的能力。两组指标回答的问题不同，因此还要一起记录训练耗时和长期参数文件大小。</p>
       <p>普通 OpenEVO 将每轮新的低秩参数更新连同历史组件一并保留。长时间训练时，历史越来越长，后期参数更新越来越慢。Bounded 试图把历史参数限制在固定容量；β 控制机制进一步尝试调节每一步写入。成本下降后能否保持效果，是整个研究的核心张力。</p>
-      <p>本文给出三类研究结果：<strong>长期参数更新时间与任务能力之间的实测取舍</strong>、<strong>容量和更新方向的局部实验发现</strong>，以及<strong>仍待完成的基线与泛化检验</strong>。每项结论都对应具体任务集和测量阶段，后续研究将检验它们能否在新任务和新的训练随机设置下保持。</p>
+      <p>本报告给出三类研究结果：<strong>长期参数更新时间与任务能力之间的实测取舍</strong>、<strong>容量和更新方向的局部实验发现</strong>，以及<strong>仍待完成的基线与泛化检验</strong>。每项结论都对应具体任务集和测量阶段，后续研究将检验它们能否在新任务和新的训练随机设置下保持。</p>
     </section>
 
     <section class="paper-section" id="paper-related-work" aria-labelledby="paper-related-work-title">
@@ -60,7 +73,7 @@ const methodStatus = {
       <div class="paper-related-grid">
         <article>
           <h3>2.1 WebShop：我们在测什么</h3>
-          <p>Yao 等人的 WebShop 定义了商品搜索、属性选择和最终购买的交互式任务。本文使用这一任务环境。不同实验使用的题目清单、采样次数和评估时点分别记录，因为这些条件决定了分数可以比较到什么程度。</p>
+          <p>Yao 等人的 WebShop 定义了商品搜索、属性选择和最终购买的交互式任务。本报告使用这一任务环境。不同实验使用的题目清单、采样次数和评估时点分别记录，因为这些条件决定了分数可以比较到什么程度。</p>
           <p class="paper-source"><a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2207.01206" />WebShop 原论文 ↗</a></p>
         </article>
         <article>
@@ -212,7 +225,12 @@ const methodStatus = {
     <section class="paper-section paper-sources" id="paper-sources" aria-labelledby="paper-sources-title">
       <h2 id="paper-sources-title">参考文献与原始实验来源</h2>
       <p class="paper-source-provenance">研究证据核对日期：<time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>。日期标示本报告引用的历史研究状态，并非实时实验进度。<a href="https://github.com/mykcs/basemodel/blob/main/docs/reports/2026-10-10-advisor-ten-iclr-style.md" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/basemodel/blob/main/docs/reports/2026-10-10-advisor-ten-iclr-style.md" />完整 Markdown 研究稿 ↗</a></p>
-      <p>参考文献：[1] <a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2207.01206" />WebShop</a>；[2] <a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED</a>；[3] <a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />LoRA</a>。实验一手来源见下方十问附录及 <a href="https://github.com/mykcs/openevo-experiment" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment" />openevo-experiment 仓库</a>。</p>
+      <ol class="paper-reference-list" aria-label="外部参考论文">
+        <li><a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2207.01206" />Yao 等（2022）：WebShop — 交互式购物任务基准 ↗</a></li>
+        <li><a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />Wu 等（2026）：SEED — 事后技能与策略蒸馏 ↗</a></li>
+        <li><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />Hu 等（2021）：LoRA — 低秩参数适配 ↗</a></li>
+      </ol>
+      <p class="paper-source-ledger">实验一手来源：<a href="https://github.com/mykcs/openevo-experiment" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment" />OpenEVO Experiment 仓库 ↗</a>。各项测量与原始收据可从下面的十问附录逐项打开。</p>
       <details class="advisor-ten__meeting-details">
         <summary>会议记录：2026 年 9 月 22 日的六个讨论方向</summary>
         <p>会议原始依据：<a href={OPEN_EVO_ADVISOR_MEETING.sourceHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.sourceHref} />学长讨论整理 ↗</a></p>
@@ -222,7 +240,7 @@ const methodStatus = {
 
     <section class="paper-section paper-appendix" id="paper-appendix" aria-labelledby="paper-appendix-title">
       <h2 id="paper-appendix-title">附录 A：十问原始证据索引</h2>
-      <p>2026 年 9 月 22 日会议讨论了六个方向，会后拆分为 Q01–Q09，并新增 Q10 独立复现。以下保留每个问题的实验、发现、解释、未知项和原始证据；它们是论文叙事的底层来源，不再承担十个平行的正文大章节。</p>
+      <p>2026 年 9 月 22 日会议讨论了六个方向，会后拆分为 Q01–Q09，并新增 Q10 独立复现。以下保留每个问题的实验、发现、解释、未知项和原始证据；这些记录补充正文的论证与实验来源，可按上方目录的重点问题直接定位。</p>
       <nav class="advisor-ten__contents" aria-label="附录十问锚点">
         <h3>定位原始问题</h3>
         <ol>{ADVISOR_QUESTIONS.map((q) => <li><a href={'#' + q.id}><span>{q.id.toUpperCase()}</span>{q.title}</a></li>)}</ol>
@@ -254,11 +272,15 @@ const methodStatus = {
 .paper-report .advisor-ten__abstract{margin:.7rem 0;max-width:77ch}
 .paper-toc{border-top:1px solid var(--paper-rule);padding:1.6rem 0 1.3rem}
 .paper-toc h2{font-size:.88rem;font-weight:720;margin:0 0 .7rem;color:var(--color-text-muted)}
-.paper-toc ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;padding:0;margin:0}
+.paper-toc__chapters,.paper-toc__highlights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;padding:0;margin:0}
 .paper-toc li{min-width:0;border-bottom:1px solid var(--paper-rule)}
 .paper-toc a{display:flex;gap:.65rem;padding:.55rem 0;color:var(--color-text);text-decoration:none;font-size:.94rem;line-height:1.5}
 .paper-toc a:hover{text-decoration:underline;text-underline-offset:.2rem}
 .paper-toc a span{font-size:.75rem;color:var(--color-text-muted);font-variant-numeric:tabular-nums;padding-top:.13rem}
+.paper-toc__appendix{margin-top:1.2rem}
+.paper-toc__appendix h3{font-size:.87rem;color:var(--color-text-muted);margin:0 0 .5rem;font-weight:680}
+.paper-toc__highlights a{font-size:.88rem}
+.paper-toc__highlights a span{min-width:2.2rem}
 .paper-section{border-top:1.5px solid var(--color-text);padding:2rem 0 2.4rem;scroll-margin-top:1rem}
 .paper-section h2{font-size:clamp(1.65rem,3.3vw,2.35rem);line-height:1.25;margin:.1rem 0 1.25rem;letter-spacing:-.025em}
 .paper-section h3{font-size:clamp(1.15rem,2vw,1.48rem);margin:2rem 0 .65rem;line-height:1.45}
@@ -296,6 +318,10 @@ const methodStatus = {
 .paper-next{padding-left:1.3rem;max-width:76ch;line-height:1.75}
 .paper-next li{margin:1rem 0}
 .paper-sources>p{font-size:.92rem}
+.paper-reference-list{display:grid;gap:.35rem;list-style:decimal;margin:1.2rem 0 1.35rem;padding-left:1.8rem;max-width:74ch}
+.paper-reference-list li{font-size:.95rem;line-height:1.75;padding:.22rem 0}
+.paper-reference-list a{display:inline;text-decoration-thickness:1px}
+.paper-sources>p.paper-source-ledger{margin-top:1rem}
 .paper-report .advisor-ten__meeting-details ol li strong{display:block}
 .paper-report .advisor-ten__meeting-details ol li span{display:block}
 .paper-appendix{border-top:1px solid var(--paper-rule)}
@@ -308,14 +334,14 @@ const methodStatus = {
 .paper-report .advisor-ten__closing{padding:2rem 0 2.4rem}
 .paper-report .advisor-ten__closing h2{max-width:none}
 @media(max-width:730px){
-.paper-toc ol{grid-template-columns:repeat(2,minmax(0,1fr))}
+.paper-toc__chapters,.paper-toc__highlights{grid-template-columns:repeat(2,minmax(0,1fr))}
 .paper-related-grid{grid-template-columns:1fr;gap:.45rem}
 .paper-method-arms{grid-template-columns:1fr;gap:.2rem}
 .paper-method-flow{grid-template-columns:1fr;gap:.3rem}
 .paper-method-arrow{transform:rotate(90deg);justify-self:center;line-height:1}
 .paper-metrics{grid-template-columns:1fr;gap:.45rem}
 }
-@media(max-width:420px){.paper-toc ol{grid-template-columns:1fr}}
+@media(max-width:420px){.paper-toc__chapters,.paper-toc__highlights{grid-template-columns:1fr}}
 .advisor-ten__abstract{max-width:76ch;margin:0 0 1rem;font-size:1rem;line-height:1.82}
 .advisor-ten__methods{padding:2rem 0 2.3rem;border-bottom:1px solid var(--color-border)}
 .advisor-ten__methods h2{margin:0 0 .9rem;font-size:clamp(1.35rem,2.5vw,1.95rem);line-height:1.3}
