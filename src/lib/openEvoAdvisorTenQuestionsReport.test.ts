@@ -83,6 +83,22 @@ describe('advisor ten-question paper-structured scientific report', () => {
     expect(page).toContain('<h2 id="paper-abstract-title">摘要</h2>');
     expect(page).toContain('<h2 id="paper-appendix-title">附录 A：十问原始证据索引</h2>');
     expect(page).not.toContain('class="advisor-ten__paper-label"');
+    expect(page).toContain('<nav class="paper-toc" aria-label="报告目录">');
+    expect(page).toContain('<h2>目录</h2>');
+    expect(page).not.toContain('论文结构</h2>');
+    expect(page).toContain('class="paper-toc__chapters"');
+    expect(page).toContain('class="paper-toc__highlights"');
+    for (const id of ['q01', 'q03', 'q04', 'q07', 'q09', 'q10']) {
+      expect(page).toContain('href="#' + id + '"');
+    }
+    for (const id of ['paper-sources', 'paper-appendix']) {
+      expect(page).toContain('href="#' + id + '"');
+    }
+    expect(page).toContain('<ol class="paper-reference-list"');
+    expect(page).not.toContain('参考文献：[1]');
+    expect(page).toContain('Yao 等（2022）');
+    expect(page).toContain('Wu 等（2026）');
+    expect(page).toContain('Hu 等（2021）');
     for (const h of [
       '## 1 Introduction', '## 2 Related Work', '## 3 Method',
       '## 4 Experimental Setup', '## 5 Main Results', '## 6 Ablation Studies',
@@ -152,6 +168,10 @@ describe('advisor ten-question paper-structured scientific report', () => {
     expect(css).toContain('table.research-booktabs');
     expect(css).toContain('border-collapse: collapse');
     expect(css).toContain('font-family: var(--font-editorial)');
+    expect(css).toContain('width: fit-content');
+    expect(css).toContain('width: auto');
+    expect(css).toContain('min-width: 0');
+    expect(css).not.toContain('min-width: 540px');
     expect(css).toContain('border-bottom: 1px solid var(--color-text)');
     for (const value of ['观察到什么：', '为什么这样判断：', '这意味着什么：', '95% 置信区间', '配对差值', '1,024 组']) {
       expect(page).toContain(value);
