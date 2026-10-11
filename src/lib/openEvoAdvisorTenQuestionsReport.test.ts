@@ -162,6 +162,28 @@ describe('advisor ten-question paper-structured scientific report', () => {
     expect(page.indexOf('为什么这样判断：')).toBeLessThan(page.indexOf('这意味着什么：'));
   });
 
+  it('keeps the table of contents factual, appendix navigable, and research tables intrinsic width', () => {
+    const page = read(pagePath);
+    const css = read('src/styles/research-booktabs.css');
+    expect(page).toContain('<nav class="paper-toc" aria-label="报告目录">');
+    expect(page).toContain('<h2>目录</h2>');
+    expect(page).not.toContain('<h2>论文结构</h2>');
+    expect(page).toContain('<ol class="paper-toc__main">');
+    for (const appendixId of ['q03', 'q04', 'q05', 'q07', 'q09', 'q10']) {
+      expect(page).toContain('href="#' + appendixId + '"');
+    }
+    expect(page).toContain('<a href="#paper-sources">参考文献与原始实验来源</a>');
+    expect(page).toContain('<a href="#paper-appendix">附录 A：十问原始证据索引</a>');
+    expect(page).toContain('<ol class="paper-references" aria-label="参考文献">');
+    expect(page).toContain('paper-primary-evidence');
+    expect(page).not.toContain('参考文献：[1]');
+    expect(css).toContain('width: fit-content');
+    expect(css).toContain('width: max-content');
+    expect(css).toContain('max-width: 100%');
+    expect(css).not.toContain('min-width: 540px');
+    expect(page).not.toContain('本论文式报告');
+  });
+
   it('protects HTML semantics and puts evidence dates near sources without redundant chrome', () => {
     const page = read(pagePath);
     expect(page).toContain('data-reader-purpose');
