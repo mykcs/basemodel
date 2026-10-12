@@ -34,7 +34,7 @@ SEED（Wu et al., arXiv 2026）先让策略学习从完成轨迹中提炼 hindsi
 
 Hu 等于 **2021 年**首次公开 *LoRA: Low-Rank Adaptation of Large Language Models*，并于 **ICLR 2022** 正式发表。LoRA 冻结预训练模型的基础权重，用少量可训练的低秩矩阵适配任务，显著减少每次更新需要训练的参数。对持续收集交互轨迹的 Agent 而言，这降低了把经验转化为模型参数更新的工程门槛。来源：[2021 年 arXiv 原稿](https://arxiv.org/abs/2106.09685) / [ICLR 2022 官方发表记录](https://www.microsoft.com/en-us/research/publication/lora-low-rank-adaptation-of-large-language-models/)。
 
-**研究评价：LoRA 已成为参数高效学习的重要技术基础，但它只提供更新的表示与成本优势。** 智能体长期自我改进仍要解决经验选择、跨轮知识管理和旧能力保持。Wu Yichen 等于 **ICLR 2025** 发表 [SD-LoRA](https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html)，在**类增量学习**场景研究低秩更新的方向与幅度；OpenEVO 则将跨轮低秩组件用于 WebShop **交互式 Agent**。普通 DirectApply 持续追加历史组件，Bounded 将历史控制在固定容量。**核心评价是：低成本的单次更新为持续学习创造了条件，长期有效的任务学习仍取决于记忆容量、更新规则和真实能力评估。** 因此本研究测量跨轮成本与旧任务能力之间的取舍。
+**研究评价：LoRA 已成为参数高效学习的重要技术基础，但它只提供更新的表示与成本优势。** 智能体长期自我改进仍要解决经验选择、跨轮知识管理和旧能力保持。Wu Yichen 等于 **ICLR 2025** 发表 [SD-LoRA](https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html)，在**类增量学习**场景研究低秩更新的方向与幅度；OpenEVO 则将跨轮低秩组件用于 WebShop **交互式 Agent**。普通 DirectApply 持续追加历史组件，Bounded 将历史控制在固定容量。**核心评价是：低成本的单次更新为持续学习创造了条件，长期有效的任务学习仍取决于记忆容量、更新规则和真实能力评估。** 因此本研究测量跨轮成本与旧任务能力之间的取舍。独立新任务上的长期保持能力仍为**未测**，需要后续在冻结的新任务流中检验。
 
 
 ## 3 Method｜方法
