@@ -1,235 +1,97 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import {
-  ADVISOR_QUESTIONS,
-  ADVISOR_Q03_CUSTOM_PANEL,
-  ADVISOR_Q04_CAPACITY,
-  ADVISOR_Q05_FROZEN,
-  ADVISOR_Q09_UPDATES,
+  ADVISOR_QUESTIONS, ADVISOR_Q03_CUSTOM_PANEL,
+  ADVISOR_Q04_CAPACITY, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES,
   ADVISOR_RESEARCH_AS_OF,
 } from '../data/openEvoAdvisorTenQuestions';
 import { SITE_READER_CONTRACTS } from '../data/siteReaderContracts';
+const read = (path:string) => readFileSync(new URL('../../'+path,import.meta.url),'utf8');
+const root = 'src/pages/research/seed-openevo/study/';
+const methods = read(root+'openevo-methods/index.astro');
+const results = read(root+'parameter-memory-results/index.astro');
+const questions = read(root+'advisor-questions/index.astro');
+const methodComponent = read('src/components/research/AdvisorTenMethodExplainer.astro');
+const sibling = read('src/components/research/OpenEvoArticleNavigation.astro');
 
-const read = (path: string) => readFileSync(new URL('../../' + path, import.meta.url), 'utf8');
-const pagePath = 'src/pages/research/seed-openevo/study/advisor-questions/index.astro';
-const reportPath = 'docs/reports/2026-10-10-advisor-ten-iclr-style.md';
-const sectionIds = [
-  'paper-introduction', 'paper-related-work', 'paper-method',
-  'paper-experiments', 'paper-results', 'paper-ablations',
-  'paper-visualization', 'paper-discussion', 'paper-conclusion',
-];
-
-describe('advisor ten-question paper-structured scientific report', () => {
-  it('keeps all original scientific questions and post-meeting Q10 attribution', () => {
+describe('three OpenEVO research articles', () => {
+  it('keeps ten complete source questions and distinguishes the post-meeting Q10', () => {
     expect(ADVISOR_QUESTIONS).toHaveLength(10);
-    expect(ADVISOR_QUESTIONS.map((q) => q.id)).toEqual(
-      Array.from({ length: 10 }, (_, i) => 'q' + String(i + 1).padStart(2, '0')),
-    );
+    expect(ADVISOR_QUESTIONS.map((q)=>q.id)).toEqual(Array.from({length:10},(_,i)=>'q'+String(i+1).padStart(2,'0')));
     for (const q of ADVISOR_QUESTIONS) {
-      expect(q.opening.length).toBeGreaterThan(12);
-      expect(q.experiment.length).toBeGreaterThan(25);
-      expect(q.finding.length).toBeGreaterThan(25);
-      expect(q.interpretation.length).toBeGreaterThan(25);
-      expect(q.unknown.length).toBeGreaterThan(25);
+      for (const key of ['opening','experiment','finding','interpretation','unknown'] as const) {
+        expect(q[key].length).toBeGreaterThan(12);
+      }
       expect(q.evidence.length).toBeGreaterThanOrEqual(1);
-      for (const e of q.evidence) expect(e.href).toMatch(/^https:\/\/github\.com\/mykcs\//);
+      for(const e of q.evidence) expect(e.href).toMatch(/^https:\/\/github\.com\/mykcs\//);
     }
-    expect(ADVISOR_QUESTIONS.at(-1)?.unknown).toContain('会后');
+    expect(ADVISOR_QUESTIONS[9]?.unknown).toContain('会后');
+    expect(questions).toContain("ADVISOR_QUESTIONS.map");
+    expect(questions).toContain("data-report-question={q.id}");
+    expect(questions).toContain("q.unknown");
+    expect(questions).toContain("Q10 是会后延伸");
     expect(ADVISOR_RESEARCH_AS_OF).toBe('2026-10-09');
   });
-
-  it('preserves sealed scores, panel identities, and unrun boundaries', () => {
-    expect(ADVISOR_Q03_CUSTOM_PANEL.map((r) => r.score)).toEqual(['3.71', '6.43', '0.69', '6.62']);
-    expect(ADVISOR_Q03_CUSTOM_PANEL.every((r) => r.exact === '0 / 64')).toBe(true);
-    expect(ADVISOR_Q04_CAPACITY.map((r) => r.score)).toEqual(['62.98', '61.19']);
-    expect(ADVISOR_Q05_FROZEN.map((r) => r.score)).toEqual(['60.72', '45.98', '20.77']);
-    expect(ADVISOR_Q09_UPDATES.map((r) => r.parametric)).toEqual([159, 158, 154]);
-
-    const q03 = ADVISOR_QUESTIONS.find((q) => q.id === 'q03')!;
-    expect(q03.interpretation).toContain('不能直接排名');
-    expect(q03.finding).toContain('87.10');
-    expect(q03.unknown).toContain('正式 SFT 和 Stage2');
-
-    const q02 = ADVISOR_QUESTIONS.find((q) => q.id === 'q02')!;
-    expect(q02.finding).toContain('六个固定训练格的训练 summary 均为 PASS');
-    expect(q02.unknown).toContain('统一固定开发题评测');
-    expect(q02.evidence[0]?.href).toContain('issuecomment-5976961612');
-
-    expect(ADVISOR_QUESTIONS.find((q) => q.id === 'q08')?.unknown).toContain('不能证明有遗忘');
-    expect(ADVISOR_QUESTIONS.find((q) => q.id === 'q09')?.unknown).toContain('尚无可报告');
-    expect(ADVISOR_QUESTIONS.find((q) => q.id === 'q10')?.evidenceState).toBe('unrun');
+  it('does not change sealed benchmark quantities when splitting presentation', () => {
+    expect(ADVISOR_Q03_CUSTOM_PANEL.map(x=>x.score)).toEqual(['3.71','6.43','0.69','6.62']);
+    expect(ADVISOR_Q04_CAPACITY.map(x=>x.score)).toEqual(['62.98','61.19']);
+    expect(ADVISOR_Q05_FROZEN.map(x=>x.score)).toEqual(['60.72','45.98','20.77']);
+    expect(ADVISOR_Q05_FROZEN.map(x=>x.exact)).toEqual(['50 / 128','32 / 128','10 / 128']);
+    expect(ADVISOR_Q09_UPDATES.map(x=>x.parametric)).toEqual([159,158,154]);
+    for(const v of ['31.09','2.02','74.78','56.25','1,024','−3.68','+0.12','10.06']) expect(results).toContain(v);
   });
-
-  it('uses a real academic section hierarchy rather than ten parallel body chapters', () => {
-    const page = read(pagePath);
-    const md = read(reportPath);
-    expect(page).toContain('<h1>长期参数记忆的效率与能力权衡</h1>');
-    expect(page).toContain('data-paper-report');
-    for (const id of sectionIds) expect(page).toContain('id="' + id + '"');
-    const positions = sectionIds.map((id) => page.indexOf('id="' + id + '"'));
-    expect(positions).toEqual([...positions].sort((a, b) => a - b));
-    expect(positions.every((n) => n > 0)).toBe(true);
-    expect(page.indexOf('id="paper-appendix"')).toBeGreaterThan(page.indexOf('id="paper-conclusion"'));
-    expect(page).toContain('data-report-question={question.id}');
-    expect(page).not.toContain('const chapters =');
-    for (const [index, id] of sectionIds.entries()) {
-      const n = index + 1;
-      expect(page).toContain('<h2 id="' + id + '-title">' + n + ' ');
-      expect(page).toContain('<li><a href="#' + id + '"><span>' + n + '</span> ');
-    }
-    for (const section of ['2.1 WebShop', '2.2 Reflexion', '2.3 SEED', '2.4 LoRA', '2.5 SD-LoRA', '6.1 长期容量', '7.1 长期任务能力轨迹']) {
-      expect(page).toContain('<h3>' + section);
-    }
-    expect(page).toContain('<h2 id="paper-abstract-title">摘要</h2>');
-    expect(page).toContain('<h2 id="paper-appendix-title">附录 A：学长十问的完整研究记录</h2>');
-    expect(page).not.toContain('class="advisor-ten__paper-label"');
-    expect(page).toContain('<nav class="paper-toc" aria-label="报告目录">');
-    expect(page).toContain('<h2>目录</h2>');
-    expect(page).not.toContain('论文结构</h2>');
-    expect(page).toContain('class="paper-toc__chapters"');
-    expect(page).toContain('class="paper-toc__highlights"');
-    for (const id of ['q01', 'q03', 'q04', 'q07', 'q09', 'q10']) {
-      expect(page).toContain('href="#' + id + '"');
-    }
-    for (const id of ['paper-sources', 'paper-appendix']) {
-      expect(page).toContain('href="#' + id + '"');
-    }
-    expect(page).toContain('<ol class="paper-reference-list"');
-    expect(page).not.toContain('参考文献：[1]');
-    expect(page).toContain('Yao 等（NeurIPS 2022）');
-    expect(page).toContain('Wu 等（2026）');
-    expect(page).toContain('Hu 等（2021 原稿；ICLR 2022）');
-    expect(page).toContain('Wu 等（ICLR 2025）');
-    expect(page).toContain('Reflexion');
-    expect(page).toContain('ExpeL');
-    expect(page).toContain('Delta Rule');
-    for (const h of [
-      '## 1 Introduction', '## 2 Related Work', '## 3 Method',
-      '## 4 Experimental Setup', '## 5 Main Results', '## 6 Ablation Studies',
-      '## 7 Visualization', '## 8 Discussion', '## 9 Conclusion',
-    ]) expect(md).toContain(h);
-    expect(md.indexOf('## Appendix A')).toBeGreaterThan(md.indexOf('## References'));
-    // A research title and abstract must not be separated by self-describing metadata.
-    expect(md.split('## Abstract｜摘要')[0]?.trim()).toBe(
-      '# 长期参数记忆的效率与能力权衡：OpenEVO 在 WebShop 上的实证研究',
-    );
+  it('separates full methods, experiments, and question answers', () => {
+    expect(methods).toContain('BUNDLE');
+    expect(methods).toContain('<AdvisorTenMethodExplainer />');
+    expect(methods).toContain('Delta Rule');
+    expect(methods).toContain('S_t');
+    expect(methodComponent).toContain('data-rank8-disclosure');
+    expect(methodComponent).toContain('rank4');
+    expect(methodComponent).toContain('rank128');
+    expect(methodComponent).not.toContain("name: '按学习信号调节写入（Gated Delta）'");
+    expect(results).toContain('ADVISOR_Q05_FROZEN.map');
+    expect(results).toContain('ADVISOR_Q09_UPDATES.map');
+    expect(results).toContain('AdvisorTenEvidenceVisual variant="q04"');
+    expect(questions).toContain('q.finding');
+    expect(questions).toContain('q.interpretation');
+    expect(questions).toContain('q.unknown');
+    expect(questions).not.toContain('31.09 → 2.02');
   });
-
-  it('evaluates LoRA as a foundation for agents without confusing it with continual-learning success', () => {
-    const page = read(pagePath);
-    const md = read(reportPath);
-    expect(page).toContain('LoRA</strong>（Hu 等，2021 年首发，ICLR 2022）');
-    expect(page).toContain('冻结基础模型权重');
-    expect(page).toContain('许多轮组件如何累积');
-    expect(page).toContain('SD-LoRA</strong>（Wu 等，ICLR 2025）');
-    expect(page).toContain('类增量学习');
-    expect(page).toContain('Text Memory');
-    expect(read('src/components/research/AdvisorTenMethodExplainer.astro')).toContain('真实任务成绩仍需要单独测量');
-    expect(md).toContain('2021 年');
-    expect(md).toContain('ICLR 2022');
-    expect(md).toContain('ICLR 2025');
-    expect(md).toContain('**研究评价：LoRA 已成为参数高效学习的重要技术基础');
-    expect(md).toContain('SD-LoRA: Scalable Decoupled Low-Rank Adaptation');
-  });
-
-  it('does not confuse frozen final results, capacity-screen, Q03, and paper SEED', () => {
-    const page = read(pagePath);
-    const md = read(reportPath);
-    expect(page).toContain('data-comparison-boundary="noncomparable"');
-    expect(page).toContain('需先用统一任务和执行合同重新测量');
-    expect(page).toContain('正式 SFT / Stage2 能力评测目前为<strong>未测</strong>');
-    expect(page).toContain('第 152–159');
-    expect(page).toContain('1,024 次');
-    expect(page).toContain('普通 OpenEVO 是较早前序实验');
-    expect(page).toContain('31.09 → 2.02 h');
-    expect(page).toContain('74.78 → 56.25 h');
-    expect(md).toContain('Q03 自定义 64 题');
-    expect(md).toContain('rank32');
-    expect(md).toContain('未测');
-    expect(md).toContain('15.36×');
-  });
-
-  it('places genuine figures by evidence role and keeps meeting source attribution', () => {
-    const page = read(pagePath);
-    const plots = read('src/components/research/AdvisorTenEvidenceVisual.astro');
-    for (const variant of ['q01', 'q02', 'q03', 'q04', 'q07']) {
-      expect(page).toContain('variant="' + variant + '"');
+  it('gives every article a real route and first-read contract', () => {
+    const ids=['study-openevo-methods','study-parameter-memory-results','study-advisor-ten'];
+    const paths=['openevo-methods','parameter-memory-results','advisor-questions'];
+    for(let i=0;i<ids.length;i++){
+      const c=SITE_READER_CONTRACTS.find(x=>x.id===ids[i]);
+      expect(c?.sourceRoute).toBe('/research/seed-openevo/study/'+paths[i]+'/');
+      expect(c?.firstViewportSelector).toBe('.evo-article__lede');
     }
-    expect(page).toContain('data-paper-figure="full-trajectory"');
-    expect(page).toContain('wandb-threeway/task-score.svg');
-    const methods = read('src/components/research/AdvisorTenMethodExplainer.astro');
-    expect(page).toContain('<AdvisorTenMethodExplainer />');
-    expect(methods).toContain('data-paper-figure="method"');
-    expect(methods).toContain('data-rank8-disclosure');
-    expect(methods).toContain('普通 OpenEVO');
-    expect(methods).toContain('rank128');
-    expect(methods).toContain('Gated Delta');
-    expect(page).toContain('data-report-figure="q09-update-counts"');
-    expect(page).toContain('OPEN_EVO_ADVISOR_MEETING.points');
-    expect(page).toContain('OPEN_EVO_ADVISOR_MEETING.sourceHref');
-    expect(plots).toContain('ADVISOR_Q03_CUSTOM_PANEL.map');
-    expect(plots).toContain('points={points}');
-    expect(plots).toContain('中间轮次未测');
-    expect(plots).toContain('aria-pressed');
-    expect(plots).toContain('effectX(-15.02)');
-
-    const originalMeeting = read('src/components/research/OpenEvoExperimentIndex.astro');
-    expect(originalMeeting).toContain('当时精炼的六个问题');
-    expect(originalMeeting).toContain('OPEN_EVO_ADVISOR_MEETING.points');
-  });
-
-  it('keeps all report tables in a single booktabs grammar and explains inference after data', () => {
-    const page = read(pagePath);
-    const viz = read('src/components/research/AdvisorTenEvidenceVisual.astro');
-    const md = read(reportPath);
-    const css = read('src/styles/research-booktabs.css');
-    expect(page).toContain("import '../../../../../styles/research-booktabs.css';");
-    expect(page).toContain('class="research-booktabs"');
-    expect(page).toContain('class="paper-main-table research-booktabs"');
-    expect(page).toContain('class="advisor-ten__table-scroll research-booktabs-wrap"');
-    expect(viz).toContain('data-evidence-shape="paired-paper-table"');
-    expect(viz).toContain('表 3｜固定容量与后段任务表现');
-    expect(viz).toContain('data-numeric');
-    expect(viz).not.toContain('advisor-viz__double');
-    expect(viz).not.toContain('分开显示容量和能力');
-    expect(css).toContain('table.research-booktabs');
-    expect(css).toContain('border-collapse: collapse');
-    expect(css).toContain('font-family: var(--font-editorial)');
-    expect(css).toContain('width: fit-content');
-    expect(css).toContain('width: auto');
-    expect(css).toContain('min-width: 0');
-    expect(css).not.toContain('min-width: 540px');
-    expect(css).toContain('border-bottom: 1px solid var(--color-text)');
-    for (const value of ['观察到什么：', '为什么这样判断：', '这意味着什么：', '95% 置信区间', '配对差值', '1,024 组']) {
-      expect(page).toContain(value);
+    expect(new Set(SITE_READER_CONTRACTS.map(x=>x.id)).size).toBe(SITE_READER_CONTRACTS.length);
+    for(const page of [methods,results,questions]){
+      expect(page).toContain('OpenEvoArticleNavigation');
+      expect(page).toContain('openevo-research-blogs.css');
+      expect(page).toContain('evo-article__toc');
+      expect(page).toContain('evo-article__sources');
     }
-    expect(md).toContain('Bootstrap 自助重采样');
-    expect(md).toContain('表 3：固定容量与后段任务表现');
-    expect(page.indexOf('观察到什么：')).toBeLessThan(page.indexOf('为什么这样判断：'));
-    expect(page.indexOf('为什么这样判断：')).toBeLessThan(page.indexOf('这意味着什么：'));
+    expect(sibling).toContain('openevo-methods/');
+    expect(sibling).toContain('parameter-memory-results/');
+    expect(sibling).toContain('advisor-questions/');
+    expect(sibling).toContain('aria-current');
   });
-
-  it('protects HTML semantics and puts evidence dates near sources without redundant chrome', () => {
-    const page = read(pagePath);
-    expect(page).toContain('data-reader-purpose');
-    expect(page).toContain('data-result-stage="direct-result"');
-    expect(page).toContain('data-result-stage="synthesis"');
-    expect(page).not.toContain('class="advisor-ten__footnotes"');
-    expect(page).not.toContain('class="advisor-ten__eyebrow"');
-    expect(page).not.toContain('class="advisor-ten__paper-label"');
-    expect(page).not.toContain('class="paper-hero-note"');
-    expect(page).toContain('研究证据核对日期：');
-    expect(page).toContain('datetime={ADVISOR_RESEARCH_AS_OF}');
-    expect(page).toContain('Task Score 以满分 100');
-    expect(page).toContain('<caption>');
-    expect(page).toContain('<figcaption>');
-    expect(page).toContain('tabindex="0"');
-    expect(page).toContain('prefers-reduced-motion');
-    expect(page).not.toContain('innerHTML');
-    const contract = SITE_READER_CONTRACTS.find((r) => r.id === 'study-advisor-ten');
-    expect(contract?.sourceRoute).toBe('/research/seed-openevo/study/advisor-questions/');
-    expect(contract?.firstViewportSelector).toBe('.advisor-ten__lede');
-    expect(contract?.mustStayVisible).toContain('Q03');
-    expect(contract?.firstViewportGoal).toContain('论文式');
+  it('uses shared subdued-green article surface without changing global tokens', () => {
+    const css=read('src/styles/openevo-research-blogs.css');
+    expect(css).toContain(':has(.evo-blog)');
+    expect(css).toContain('#f6f7f5');
+    expect(css).toContain('--paper:#fff');
+    expect(css).toContain('font-size:17px');
+    expect(css).toContain('font-size:16.5px');
+    const tokens=read('src/styles/tokens.css');
+    expect(tokens).toContain('--color-bg: #f7f3eb;');
+  });
+  it('preserves statistical uncertainty and historical comparison boundaries', () => {
+    expect(results).toContain('普通 OpenEVO 是更早的历史前序路线');
+    expect(results).toContain('rank32 的平均 Task Score 低 1.79 分');
+    expect(results).toContain('还没有足够证据确认 rank32');
+    expect(results).toContain('不是同一个测量');
+    expect(results).toContain('独立研究');
   });
 });

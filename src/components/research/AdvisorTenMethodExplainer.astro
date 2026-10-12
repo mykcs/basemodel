@@ -20,17 +20,11 @@ const methods = [
     explanation: '在 Bounded 基础上加入当时的复杂 β/GDR 写入规则。这是历史长跑所采用的控制方法，与后来设计的简单非负 β 不属于同一次实验。',
     scope: '历史 160 轮处理组',
   },
-  {
-    name: '按学习信号调节写入（Gated Delta）',
-    rule: '依据训练信号调节当次写入',
-    explanation: '借鉴 Gated Delta 的状态读写思想，控制 LoRA 参数的有效写入。这条路线先做了独立的四轮配对资格实验，不能与上述三条历史路线混为同一组终评。',
-    scope: '独立的四轮资格研究',
-  },
 ] as const;
 ---
 
 <div class="advisor-method" data-advisor-method-explainer>
-  <p>OpenEVO 在任务结束后从交互轨迹整理经验，并让后续的 Qwen 模型使用更新后的状态。下面比较的是其中<strong>参数记忆如何保留和写入</strong>的四种研究路线；Text Memory、Skill 与 Agent System 仍是框架内的其他状态。</p>
+  <p>OpenEVO 在任务结束后从交互轨迹整理经验，并让后续的 Qwen 模型使用更新后的状态。下面比较的是其中<strong>参数记忆如何保留和写入</strong>的三种历史研究路线；Text Memory、Skill 与 Agent System 仍是框架内的其他状态。</p>
 
   <h3>3.1 LoRA 怎样表示一次参数更新</h3>
   <p>LoRA（低秩适配）通常保留基础模型的大部分原有权重，只训练两组较小矩阵来表示需要增加的参数变化。低秩维度用 <MathFormula latex={String.raw`r`} display={false} /> 表示。两组小矩阵相乘后，形状与所适配的原始权重矩阵一致：</p>
@@ -54,7 +48,7 @@ const methods = [
         </article>
       ))}
     </div>
-    <figcaption>图 1｜所有路线共享相同的交互与参数更新流程。图中同类方框的尺寸、边框和背景一致，只让处理规则的文字发生变化。四轮 Gated Delta 与三条历史 160 轮路线具有不同的实验身份，不能合并计算最终成绩。</figcaption>
+    <figcaption>图 1｜所有路线共享相同的交互与参数更新流程。图中同类方框的尺寸、边框和背景一致，只让处理规则的文字发生变化。图中三条路线对应普通参数更新、固定容量与历史写入控制。独立 Gated Delta 四轮资格研究在本文第 5 节另行交代。</figcaption>
   </figure>
 
   <details class="advisor-method__rank" data-rank8-disclosure>

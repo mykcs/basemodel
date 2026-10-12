@@ -1,0 +1,18 @@
+---
+type Kind = 'methods' | 'results' | 'questions';
+interface Props { current: Kind }
+const { current } = Astro.props;
+const pages = [
+  { id: 'methods', title:'OpenEVO 的参数记忆方法', path:'/research/seed-openevo/study/openevo-methods/' },
+  { id: 'results', title:'长期实验与测量', path:'/research/seed-openevo/study/parameter-memory-results/' },
+  { id: 'questions', title:'学长十问', path:'/research/seed-openevo/study/advisor-questions/' },
+] as const;
+---
+<nav class="evo-article__siblings" aria-label="三篇 OpenEVO 技术博客">
+  <p>同一研究线的三篇文章</p>
+  <ol>
+    {pages.map((item,index) => (
+      <li><a href={item.path} aria-current={current === item.id ? 'page' : undefined}><span class="evo-number">{String(index+1).padStart(2,'0')}</span>{item.title}</a></li>
+    ))}
+  </ol>
+</nav>

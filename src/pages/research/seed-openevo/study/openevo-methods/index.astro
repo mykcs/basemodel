@@ -1,0 +1,110 @@
+---
+import AppLayout from '../../../../../layouts/AppLayout.astro';
+import '../../../../../styles/openevo-research-blogs.css';
+import OpenEvoArticleNavigation from '../../../../../components/research/OpenEvoArticleNavigation.astro';
+import AdvisorTenMethodExplainer from '../../../../../components/research/AdvisorTenMethodExplainer.astro';
+import MathFormula from '../../../../../components/common/MathFormula.astro';
+import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
+---
+
+<AppLayout
+  title="OpenEVO 怎样保存和更新经验：方法与改进"
+  description="从 OpenEVO 的 BUNDLE 状态、LoRA/SD-LoRA 和普通参数累积，推导 Bounded 固定容量与 β/Gated Delta 的不同写入机制，并区分公式角色与实验身份。"
+  locale="zh"
+>
+  <main class="evo-blog evo-article" data-evo-blog="methods" data-reader-page="research-blog" data-copy-review>
+    <header class="evo-article__intro">
+      <h1>OpenEVO 怎样保存和更新经验</h1>
+      <p class="evo-article__lede" data-reader-purpose>OpenEVO 让智能体从已完成的任务中提取经验，再把更新后的状态交给下一轮模型。我们在 WebShop 任务中研究三条主要的参数路线：保留每轮更新、限制长期参数容量，以及调节新经验的写入方式。</p>
+    </header>
+    <div class="evo-article__abstract">
+      <h2>摘要</h2>
+      <p>OpenEVO 的 BUNDLE 可以由文字经验、可复用技能、行为规则和参数更新共同组成。其中，SD-LoRA 用多个低秩组件记录跨轮参数变化；随着历史组件增长，后期训练会逐渐变慢。固定容量的 Bounded Online Recurrence 尝试让长期状态大小可控；历史 β 机制和后续 Gated Delta 研究则关注每次更新写入多少、沿哪个方向写。不同机制的作用范围和证据阶段并不完全相同。</p>
+    </div>
+    <OpenEvoArticleNavigation current="methods" />
+    <nav class="evo-article__toc" aria-label="方法文章目录">
+      <h2>目录</h2>
+      <ol>
+        <li><a href="#background">1 OpenEVO 与 BUNDLE</a></li>
+        <li><a href="#related-work">2 相关工作</a></li>
+        <li><a href="#methods">3 三条主要参数路线</a></li>
+        <li><a href="#formalization">4 长期状态与写入公式</a></li>
+        <li><a href="#delta">5 Delta Rule 与 Gated Delta</a></li>
+        <li><a href="#boundaries">6 方法与证据的边界</a></li>
+        <li><a href="#sources">参考文献与原始记录</a></li>
+      </ol>
+    </nav>
+    <section id="background" class="evo-article__section">
+      <h2>1 OpenEVO 与 BUNDLE：任务结束以后发生什么</h2>
+      <p>一轮任务中，由 OpenEVO 管理的 Qwen 模型先在 WebShop 上完成购物任务：搜索、阅读商品说明、核对规格，再执行购买动作。模型完成任务以后，系统根据已保存的交互轨迹整理经验，生成下一轮可以使用的状态。<strong>WebShop 是测量模型任务能力的环境，OpenEVO 才是我们研究的持续演化框架。</strong></p>
+      <figure class="evo-article__figure">
+        <div class="evo-article__flow-simple" role="group" aria-label="任务、记录、状态与下一轮">
+          <div><strong>模型执行任务</strong><small>WebShop 等环境</small></div><span aria-hidden="true">→</span>
+          <div><strong>保存与分析轨迹</strong><small>任务结束后</small></div><span aria-hidden="true">→</span>
+          <div><strong>更新 BUNDLE</strong><small>文字状态 + 参数状态</small></div><span aria-hidden="true">→</span>
+          <div><strong>下一轮模型</strong><small>使用更新的状态</small></div>
+        </div>
+        <figcaption>图 1｜这一流程描述 OpenEVO 的任务间更新。它不代表每一轮都一定成功产生所有四类更新。</figcaption>
+      </figure>
+      <p>BUNDLE 的经验可以进入不同载体：<strong>Text Memory</strong> 保存简短文字经验，<strong>Skill</strong> 保存可复用的技能，<strong>Agent System</strong> 调整行为规则，<strong>SD-LoRA</strong> 则保存模型的低秩参数适配。它们都可能影响下一轮执行，但更新次数、被使用的次数与实际能力贡献是不同的测量对象。</p>
+      <p>本研究重点检查参数载体。文字载体在长期实验中并未关闭，所以研究参数方法时仍需记录 BUNDLE 的真实状态，不能把实验简称理解成关闭了其他载体。</p>
+    </section>
+    <section id="related-work" class="evo-article__section">
+      <h2>2 相关工作：这些方法从哪里来</h2>
+      <p><strong>ReAct</strong> 研究模型如何将推理与动作结合，<strong>Reflexion</strong> 和 <strong>ExpeL</strong> 研究如何从任务反馈中保留文字经验，<strong>SEED</strong> 则从轨迹中提炼事后技能，再把它作为策略学习信号。这些工作分别回答“怎样行动”和“经验怎样影响后续行为”。</p>
+      <p><strong>LoRA</strong>（ICLR 2022）使用两组较小的低秩矩阵表达模型适配更新；<strong>SD-LoRA</strong>（ICLR 2025）研究持续学习时跨轮低秩组件的方向和幅度。OpenEVO 将持续低秩参数适配引入交互智能体，进一步面临长期参数状态的计算与能力保持问题。</p>
+      <p><strong>Delta Rule</strong> 和 <strong>Gated Delta Networks</strong> 来自序列状态更新研究。它们提供了残差写入和状态保留的数学思想。迁移到 LoRA 参数时，我们需要分清严格代数恒等与按功能角色进行的映射。</p>
+    </section>
+    <section id="methods" class="evo-article__section">
+      <h2>3 普通 OpenEVO 与参数记忆的改进</h2>
+      <AdvisorTenMethodExplainer />
+      <p>图中三条路线分别是普通 OpenEVO、Bounded 和 Bounded + 历史 β/GDR，它们均有相应的历史长期结果。Gated Delta 的四轮资格实验是独立研究，不能直接充当第四组 160 轮最终成绩。</p>
+    </section>
+    <section id="formalization" class="evo-article__section">
+      <h2>4 参数状态增长与固定容量的数学表达</h2>
+      <h3>4.1 持续累积</h3>
+      <p>把第 <code>t</code> 轮新增的有效 LoRA 更新记为 <MathFormula latex={String.raw`\Delta W_t`} display={false} />。为便于理解，忽略实现中组件的不同权重规范和投影细节，历史累计可以用下式示意：</p>
+      <MathFormula latex={String.raw`W_{\mathrm{adapt},t}=\sum_{i=1}^{t}c_i\Delta W_i`} label="示意：跨轮累积的有效 LoRA 参数变化" />
+      <p>这是一条<strong>概念表达</strong>：每轮增加一组低秩更新，历史组件数量随着学习轮次增长。真实 Q17 训练里，每次新组件设为 rank8；rank8 是冻结的实验配置，不是 LoRA 理论上的全局上限。</p>
+      <h3>4.2 固定容量的长期状态</h3>
+      <p>Bounded 将累积历史重新表示成受固定容量约束的状态。用 <MathFormula latex={String.raw`S_t`} display={false} /> 表示下一轮保存的状态，可按如下方式理解：</p>
+      <MathFormula latex={String.raw`S_t=\operatorname{Compress}_{r}\!\left(S_{t-1}+\Delta W_t\right)`} label="示意：将历史状态与当前更新整合回固定容量" />
+      <p>这里的 <MathFormula latex={String.raw`r`} display={false} /> 指<strong>长期保存的状态容量</strong>，不是新组件的 rank8。在已完成的长跑中原始容量为 rank128，后段筛选比较 rank32 和 rank128。这条公式说明处理对象，不宣称 <code>Compress</code> 与真实代码中的数值重建逐步骤相同。</p>
+      <h3>4.3 写入强度与方向</h3>
+      <p>固定容量决定历史状态最多保留多大；进一步的写入策略决定本轮信息以多大强度进入下一轮。对较简单的非负 β 倍率方案，其研究意图可写作：</p>
+      <MathFormula latex={String.raw`S_t\ \approx\ \operatorname{Compress}_{r}\!\left(S_{t-1}+\beta_t\Delta W_t\right),\quad\beta_t\geq0`} label="概念示意：使用非负 beta 控制当前参数更新幅度" />
+      <p>这个近似式适合解释<strong>后续简化 β 的研究目标</strong>。历史长跑使用的复杂 β/GDR 机制还涉及额外规则，不应从此式反推当时运行代码的全部行为。<strong>参数方向是否改变、任务能力是否变化，必须单独评测。</strong></p>
+    </section>
+    <section id="delta" class="evo-article__section">
+      <h2>5 从 Delta Rule 到 Gated Delta</h2>
+      <p>在原始序列建模中，State 可以看成一个随输入不断更新的矩阵。Delta Rule 不是简单追加信息，而是先看已有 State 对当前输入的预测，再将未解释的差值写入。</p>
+      <MathFormula latex={String.raw`\begin{aligned}r_t&=v_t-S_{t-1}k_t\\ S_t&=S_{t-1}+\beta_t r_tk_t^\top\end{aligned}`} label="序列 Delta Rule 的残差写入表示" />
+      <p>Gated Delta 再引入旧 State 的保留比例 <MathFormula latex={String.raw`\alpha_t`} display={false} />：</p>
+      <MathFormula latex={String.raw`\begin{aligned}\widetilde S_{t-1}&=\alpha_tS_{t-1}\\r_t&=v_t-\widetilde S_{t-1}k_t\\S_t&=\widetilde S_{t-1}+\beta_t r_tk_t^\top\end{aligned}`} label="Gated Delta Networks 的状态更新关系" />
+      <p>这些公式对<strong>序列状态</strong>有明确数学意义。OpenEVO 的 Gated Delta 研究借鉴“旧状态、残差、写入强度”的角色，实际把控制作用落在 LoRA 参数上。它不意味着序列里的 <code>k_t</code> 与 <code>v_t</code> 就是 LoRA 两个因子的别名。</p>
+      <details class="evo-article__disclosure"><summary>四轮 Gated Delta 资格实验使用了哪些设置？</summary><div><p>实际的四轮配对实验在一份冻结任务安排中改变部分 LoRA 的写入方式，并保持其余处理范围按对照合同运行。第一版 D1 固定保留控制为 <MathFormula latex={String.raw`\alpha=1`} display={false} />，β 控制器的参数被冻结，但每次生成的 β 数值可以变化。它证明对应机制能执行，并提供限定于这四轮任务的结果，不是跨 160 轮的普遍有效性证明。</p></div></details>
+    </section>
+    <section id="boundaries" class="evo-article__section">
+      <h2>6 方法定义与能力判断应分开</h2>
+      <p>我们已经可以分别说清：普通 OpenEVO 如何保留跨轮组件、Bounded 如何限制状态大小、β 如何控制新更新的写入，以及 Gated Delta 的残差状态规则从何而来。至于这些修改让模型在 WebShop 上得分提高还是下降，应阅读同题评测、置信区间和原始实验收据。</p>
+      <p>三条主要实验路线的数据见 <a href="/research/seed-openevo/study/parameter-memory-results/">长期实验与测量</a>；学长关于训练平台、SEED 对照、容量、方向和文字载体的十个追问见 <a href="/research/seed-openevo/study/advisor-questions/">学长十问</a>。</p>
+    </section>
+    <section id="sources" class="evo-article__section evo-article__sources">
+      <h2>参考文献与原始记录</h2>
+      <ol>
+        <li><a href="https://arxiv.org/abs/2210.03629"><ExternalBrandMark href="https://arxiv.org/abs/2210.03629" />ReAct · Yao 等（ICLR 2023）</a></li>
+        <li><a href="https://arxiv.org/abs/2303.11366"><ExternalBrandMark href="https://arxiv.org/abs/2303.11366" />Reflexion · Shinn 等（NeurIPS 2023）</a></li>
+        <li><a href="https://arxiv.org/abs/2308.10144"><ExternalBrandMark href="https://arxiv.org/abs/2308.10144" />ExpeL · Zhao 等（AAAI 2024）</a></li>
+        <li><a href="https://arxiv.org/abs/2607.14777"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED · Wu 等（2026 预印本）</a></li>
+        <li><a href="https://arxiv.org/abs/2106.09685"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />LoRA · Hu 等（ICLR 2022）</a></li>
+        <li><a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html">SD-LoRA · Wu 等（ICLR 2025）</a></li>
+        <li><a href="https://proceedings.mlr.press/v139/schlag21a.html">Delta Rule · Schlag 等（ICML 2021）</a></li>
+        <li><a href="https://arxiv.org/abs/2412.06464"><ExternalBrandMark href="https://arxiv.org/abs/2412.06464" />Gated Delta Networks · Yang 等（ICLR 2025）</a></li>
+        <li><a href="https://github.com/mykcs/openevo-experiment/blob/main/docs/evidence/q17-sd-lora-latency-202609112003/README.md"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/blob/main/docs/evidence/q17-sd-lora-latency-202609112003/README.md" />Q17 每轮 rank8 与训练开销</a></li>
+        <li><a href="https://github.com/mykcs/openevo-experiment/pull/597"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/597" />rank32 / rank128 的冻结配对实验</a></li>
+        <li><a href="https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoGatedDeltaSdLoraExplainer.astro"><ExternalBrandMark href="https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoGatedDeltaSdLoraExplainer.astro" />Gated Delta 数学推导与实验角色</a></li>
+      </ol>
+      <p class="evo-article__note">本文公式中标注为“示意”“近似”的部分用于解释研究对象。精确的训练执行和封存结论以对应实验代码、配置与收据为准。</p>
+    </section>
+  </main>
+</AppLayout>
