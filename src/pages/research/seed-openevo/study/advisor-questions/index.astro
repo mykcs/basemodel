@@ -23,14 +23,15 @@ const methodStatus = {
     <header class="advisor-ten__hero">
       <h1>长期参数记忆的效率与能力权衡</h1>
       <p class="advisor-ten__lede" data-reader-purpose>
-        把 Agent 的经验留在参数中，可以让它持续学习；但长期状态变小、训练变快之后，购物任务的能力能否保持？我们比较了三条 160 轮路线，并用容量、方向和评测协议消融检验原因。
+        在 WebShop 上，OpenEVO 把每轮经验保存在低秩参数更新中，历史越长，后期训练越慢。固定容量方案显著减少了参数更新时间，但历史模型的最终购物得分并不相同。本报告区分实际测到的效率收益、尚不能归因的能力差异，以及下一步需要完成的对照。
       </p>
     </header>
 
     <section class="advisor-ten__thesis" id="paper-abstract" aria-labelledby="paper-abstract-title" data-result-stage="direct-result">
       <h2 id="paper-abstract-title">摘要</h2>
-      <p class="advisor-ten__abstract">我们研究 Qwen3-1.7B Agent 在 WebShop 上持续更新时，长期参数状态的计算成本和任务能力如何相互制约。固定容量的 Bounded Online Recurrence 将历史统计窗口中的参数更新累计时间从 <strong>31.09 小时降至 2.02 小时</strong>，但完整实验耗时只缩短约 1.33 倍。三个历史最终模型后来在<strong>同一冻结 128 题</strong>上的 Task Score 分别为 <strong>60.72、45.98、20.77 / 100</strong>；其中普通 OpenEVO 是较早的前序实验，不属于同一预注册三臂随机对照。</p>
-      <p class="advisor-ten__abstract">后段容量筛选表明 rank32 可以用约四分之一的参数文件保留多数任务表现，但仍无法证明严格非劣。第 156 轮的 Task Vector 反向干预显示了一次局部方向因果效应。完整 SEED 基线、遗忘量和文字状态贡献仍缺决定性证据。十个研究问题作为本报告的证据索引，放在文末附录。</p>
+      <p class="advisor-ten__abstract">我们研究 Qwen3-1.7B Agent 在 WebShop 上长期学习时的一个取舍：持续累积低秩参数更新会增加训练成本，固定容量能否让计算可控，同时保住实际购物能力？在已完成的 160 轮历史运行统计中，Bounded 的参数更新累计耗时从 <strong>31.09 小时降至 2.02 小时</strong>；包含任务执行的整体耗时从 <strong>74.78 小时降至 56.25 小时</strong>（约 1.33 倍）。</p>
+      <p class="advisor-ten__abstract">三个历史模型在<strong>同一冻结 128 题</strong>上的 Task Score 为 <strong>60.72、45.98、20.77 / 100</strong>，完整成功分别为 <strong>50、32、10 / 128</strong>（普通 DirectApply、Bounded、Bounded + 历史复杂 β/GDR）。普通 DirectApply 是更早的前序实验，三条路线并非完全受控的三臂对照；<strong>因此不能把这些得分差直接归因于容量压缩或 β 规则</strong>。</p>
+      <p class="advisor-ten__abstract">在第 152–159 轮的匹配容量筛选中，rank32 的参数文件比 rank128 小约 75%，平均 Task Score 差为 −1.79 分，配对 95% 置信区间为 [−3.68，+0.12] 分，尚不能证明两种容量等价或非劣。第 156 轮的更新方向反转提供了一次局部因果证据；可靠的 SEED 基线、遗忘量和文字状态贡献仍待验证。下一步先固定模型起点、任务流与评测合同，分别检验容量和 β 的作用。</p>
     </section>
 
     <nav class="paper-toc" aria-label="报告目录">
@@ -143,9 +144,9 @@ const methodStatus = {
         <div><span>参数更新累计耗时</span><strong>31.09 → 2.02 h</strong><small>历史 Bounded 对普通线 · 约 15.36×</small></div>
         <div><span>包含任务执行的整段耗时</span><strong>74.78 → 56.25 h</strong><small>整体约 1.33×，不能写成 15.36×</small></div>
       </div>
-      <p>**事实：**Bounded 缩短了参数更新累计耗时；三条历史路线在同一冻结 128 题上的能力表现见表 2。普通 OpenEVO 的平均得分最高，Bounded 次之，历史复杂 β/GDR 最低。</p>
-       <p>**原因与证据边界：**普通 OpenEVO 属于较早的历史实验，三条路线的训练起点与执行条件并未构成同时随机分配的完整三臂对照。Bounded 与历史 β/GDR 的处理对比更接近预注册的实验合同。因而当前数据可以描述三组终评表现，针对容量压缩或 β 机制的单独因果贡献，还需要进一步控制其他训练因素。</p>
-       <p>**研究意义：**下一步优先固定相同模型起点和任务流，单独改变长期容量或 β 更新规则，观察两者对能力的影响。</p>
+      <p>把训练更新环节单独统计，Bounded 的累计耗时明显更短；把 WebShop 任务执行也算进去，整段运行只快约 1.33 倍。同题终评中，普通 OpenEVO 得分最高，Bounded 次之，历史复杂 β/GDR 最低。<strong>计算收益已观测到，但这些分数还不能告诉我们有多少能力变化由压缩本身造成。</strong></p>
+      <p>普通 OpenEVO 属于更早的前序实验，与另外两条路线不构成完全受控的三臂随机对照。因此，60.72 与 45.98 分的差不能直接视为容量压缩的因果效果。Bounded 与历史 β/GDR 的对比更接近预注册的处理合同，但结论仍必须服从各自原始实验条件。</p>
+      <p>下一步应固定模型起点、训练任务流和评测合同，只改变长期容量；再单独改变 β 写入规则，分别检验它们对任务表现与计算成本的影响。</p>
       <p class="paper-source"><a href="https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro" />已发布的三路线结果与原始证据链接 ↗</a></p>
     </section>
 
