@@ -34,7 +34,7 @@ const methods = [
 
   <h3>3.1 LoRA 怎样表示一次参数更新</h3>
   <p>LoRA（低秩适配）通常保留基础模型的大部分原有权重，只训练两组较小矩阵来表示需要增加的参数变化。低秩维度用 <MathFormula latex={String.raw`r`} display={false} /> 表示。两组小矩阵相乘后，形状与所适配的原始权重矩阵一致：</p>
-  <MathFormula latex={String.raw`\Delta W=BA,\qquad A\in\mathbb{R}^{r\times d_{\mathrm{in}}},\quad B\in\mathbb{R}^{d_{\mathrm{out}}\times r}`} label="标准 LoRA 的低秩参数更新" />
+  <MathFormula latex={String.raw`\begin{aligned}\Delta W&=BA\\A&\in\mathbb{R}^{r\times d_{\mathrm{in}}}\\B&\in\mathbb{R}^{d_{\mathrm{out}}\times r}\end{aligned}`} label="标准 LoRA 的低秩参数更新" />
   <p>这里的 rank 描述低秩矩阵之间的内部维度。数值越大，通常意味着可表达的更新方向和参数存储空间更多；真实任务成绩仍需要单独测量。一次新更新的 rank 与长期积累的容量 rank 是两个不同的实验选择。</p>
 
   <h3>3.2 普通 OpenEVO 与参数改进方案</h3>
