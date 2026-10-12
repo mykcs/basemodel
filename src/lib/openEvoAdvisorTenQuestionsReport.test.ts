@@ -98,7 +98,8 @@ describe('advisor ten-question paper-structured scientific report', () => {
     expect(page).not.toContain('参考文献：[1]');
     expect(page).toContain('Yao 等（2022）');
     expect(page).toContain('Wu 等（2026）');
-    expect(page).toContain('Hu 等（2021）');
+    expect(page).toContain('Hu 等（2021 预印本；ICLR 2022）');
+    expect(page).toContain('Wu Yichen 等（ICLR 2025）');
     for (const h of [
       '## 1 Introduction', '## 2 Related Work', '## 3 Method',
       '## 4 Experimental Setup', '## 5 Main Results', '## 6 Ablation Studies',
@@ -109,6 +110,23 @@ describe('advisor ten-question paper-structured scientific report', () => {
     expect(md.split('## Abstract｜摘要')[0]?.trim()).toBe(
       '# 长期参数记忆的效率与能力权衡：OpenEVO 在 WebShop 上的实证研究',
     );
+  });
+
+  it('evaluates LoRA as a foundation for agents without confusing it with continual-learning success', () => {
+    const page = read(pagePath);
+    const md = read(reportPath);
+    expect(page).toContain('Hu 等于 <strong>2021 年</strong>公开 LoRA');
+    expect(page).toContain('论文发表于 <strong>ICLR 2022</strong>');
+    expect(page).toContain('Wu 等发表于 <strong>ICLR 2025</strong> 的 SD-LoRA');
+    expect(page).toContain('在类增量学习中');
+    expect(page).toContain('OpenEVO 将跨轮低秩组件用于 WebShop 交互 Agent');
+    expect(page).toContain('研究评价：');
+    expect(page).toContain('经验选择、跨轮记忆管理与旧能力保持');
+    expect(md).toContain('2021 年');
+    expect(md).toContain('ICLR 2022');
+    expect(md).toContain('ICLR 2025');
+    expect(md).toContain('**研究评价：LoRA 已成为参数高效学习的重要技术基础');
+    expect(md).toContain('SD-LoRA: Scalable Decoupled Low-Rank Adaptation');
   });
 
   it('does not confuse frozen final results, capacity-screen, Q03, and paper SEED', () => {
