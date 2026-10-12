@@ -77,11 +77,11 @@ describe('advisor ten-question paper-structured scientific report', () => {
       expect(page).toContain('<h2 id="' + id + '-title">' + n + ' ');
       expect(page).toContain('<li><a href="#' + id + '"><span>' + n + '</span> ');
     }
-    for (const section of ['2.1 WebShop', '2.2 SEED', '2.3 LoRA', '6.1 长期容量', '7.1 长期任务能力轨迹']) {
+    for (const section of ['2.1 WebShop', '2.2 Reflexion', '2.3 SEED', '2.4 LoRA', '2.5 SD-LoRA', '6.1 长期容量', '7.1 长期任务能力轨迹']) {
       expect(page).toContain('<h3>' + section);
     }
     expect(page).toContain('<h2 id="paper-abstract-title">摘要</h2>');
-    expect(page).toContain('<h2 id="paper-appendix-title">附录 A：十问原始证据索引</h2>');
+    expect(page).toContain('<h2 id="paper-appendix-title">附录 A：学长十问的完整研究记录</h2>');
     expect(page).not.toContain('class="advisor-ten__paper-label"');
     expect(page).toContain('<nav class="paper-toc" aria-label="报告目录">');
     expect(page).toContain('<h2>目录</h2>');
@@ -96,10 +96,13 @@ describe('advisor ten-question paper-structured scientific report', () => {
     }
     expect(page).toContain('<ol class="paper-reference-list"');
     expect(page).not.toContain('参考文献：[1]');
-    expect(page).toContain('Yao 等（2022）');
+    expect(page).toContain('Yao 等（NeurIPS 2022）');
     expect(page).toContain('Wu 等（2026）');
-    expect(page).toContain('Hu 等（2021 预印本；ICLR 2022）');
-    expect(page).toContain('Wu Yichen 等（ICLR 2025）');
+    expect(page).toContain('Hu 等（2021 原稿；ICLR 2022）');
+    expect(page).toContain('Wu 等（ICLR 2025）');
+    expect(page).toContain('Reflexion');
+    expect(page).toContain('ExpeL');
+    expect(page).toContain('Delta Rule');
     for (const h of [
       '## 1 Introduction', '## 2 Related Work', '## 3 Method',
       '## 4 Experimental Setup', '## 5 Main Results', '## 6 Ablation Studies',
@@ -115,13 +118,13 @@ describe('advisor ten-question paper-structured scientific report', () => {
   it('evaluates LoRA as a foundation for agents without confusing it with continual-learning success', () => {
     const page = read(pagePath);
     const md = read(reportPath);
-    expect(page).toContain('Hu 等于 <strong>2021 年</strong>公开 LoRA');
-    expect(page).toContain('论文发表于 <strong>ICLR 2022</strong>');
-    expect(page).toContain('Wu 等发表于 <strong>ICLR 2025</strong> 的 SD-LoRA');
-    expect(page).toContain('在类增量学习中');
-    expect(page).toContain('OpenEVO 将跨轮低秩组件用于 WebShop 交互 Agent');
-    expect(page).toContain('研究评价：');
-    expect(page).toContain('经验选择、跨轮记忆管理与旧能力保持');
+    expect(page).toContain('LoRA</strong>（Hu 等，2021 年首发，ICLR 2022）');
+    expect(page).toContain('冻结基础模型权重');
+    expect(page).toContain('许多轮组件如何累积');
+    expect(page).toContain('SD-LoRA</strong>（Wu 等，ICLR 2025）');
+    expect(page).toContain('类增量学习');
+    expect(page).toContain('Text Memory');
+    expect(read('src/components/research/AdvisorTenMethodExplainer.astro')).toContain('真实任务成绩仍需要单独测量');
     expect(md).toContain('2021 年');
     expect(md).toContain('ICLR 2022');
     expect(md).toContain('ICLR 2025');
@@ -154,7 +157,13 @@ describe('advisor ten-question paper-structured scientific report', () => {
     }
     expect(page).toContain('data-paper-figure="full-trajectory"');
     expect(page).toContain('wandb-threeway/task-score.svg');
-    expect(page).toContain('data-paper-figure="method"');
+    const methods = read('src/components/research/AdvisorTenMethodExplainer.astro');
+    expect(page).toContain('<AdvisorTenMethodExplainer />');
+    expect(methods).toContain('data-paper-figure="method"');
+    expect(methods).toContain('data-rank8-disclosure');
+    expect(methods).toContain('普通 OpenEVO');
+    expect(methods).toContain('rank128');
+    expect(methods).toContain('Gated Delta');
     expect(page).toContain('data-report-figure="q09-update-counts"');
     expect(page).toContain('OPEN_EVO_ADVISOR_MEETING.points');
     expect(page).toContain('OPEN_EVO_ADVISOR_MEETING.sourceHref');
