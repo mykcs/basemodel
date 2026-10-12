@@ -79,12 +79,10 @@ for (const width of [390, 768, 1440]) {
       await expect(page.locator(id!)).toHaveCount(1);
     }
     const refs = page.locator('#paper-sources .paper-reference-list > li');
-    await expect(refs).toHaveCount(4);
-    await expect(refs.nth(0)).toContainText('WebShop');
-    await expect(refs.nth(1)).toContainText('SEED');
-    await expect(refs.nth(2)).toContainText('ICLR 2022');
-    await expect(refs.nth(3)).toContainText('SD-LoRA');
-    await expect(refs.nth(3)).toContainText('ICLR 2025');
+    await expect(refs).toHaveCount(9);
+    for (const [index, name] of ['WebShop', 'ReAct', 'Reflexion', 'ExpeL', 'SEED', 'LoRA', 'SD-LoRA', 'Delta Rule', 'Gated Delta'].entries()) {
+      await expect(refs.nth(index)).toContainText(name);
+    }
 
     for (const [index, id] of sections.entries()) {
       const chapterNumber = String(index + 1);
@@ -93,7 +91,7 @@ for (const width of [390, 768, 1440]) {
       await expect(page.locator('.paper-toc__chapters > li:nth-child(' + chapterNumber + ') a span')).toHaveText(chapterNumber);
     }
     for (const [id, prefixes] of [
-      ['paper-related-work', ['2.1', '2.2', '2.3']],
+      ['paper-related-work', ['2.1', '2.2', '2.3', '2.4', '2.5']],
       ['paper-ablations', ['6.1', '6.2', '6.3']],
       ['paper-visualization', ['7.1', '7.2', '7.3', '7.4', '7.5']],
     ] as const) {
@@ -102,7 +100,7 @@ for (const width of [390, 768, 1440]) {
     }
     await expect(page.locator('#paper-abstract > h2')).toHaveText('摘要');
     await expect(page.locator('#paper-sources > h2')).toHaveText('参考文献与原始实验来源');
-    await expect(page.locator('#paper-appendix > h2')).toHaveText('附录 A：十问原始证据索引');
+    await expect(page.locator('#paper-appendix > h2')).toHaveText('附录 A：学长十问的完整研究记录');
     await expect(page.locator('#paper-related-work')).toContainText('SEED');
     await expect(page.locator('#paper-method [data-paper-figure="method"]')).toBeVisible();
     await expect(page.locator('#paper-results .paper-main-table tbody tr')).toHaveCount(3);
@@ -123,16 +121,15 @@ test('related work links to genuine papers and scientific differences remain exp
   for (const ref of ['2207.01206', '2607.14777', '2106.09685']) {
     await expect(page.locator('#paper-related-work a[href="https://arxiv.org/abs/' + ref + '"]')).toHaveCount(1);
   }
-  const lora = page.locator('#paper-related-work article').nth(2);
+  const lora = page.locator('#paper-related-work article').nth(3);
+  const sdLora = page.locator('#paper-related-work article').nth(4);
   await expect(lora).toContainText('2021 年');
   await expect(lora).toContainText('ICLR 2022');
-  await expect(lora).toContainText('ICLR 2025');
-  await expect(lora).toContainText('研究评价');
-  await expect(lora).toContainText('类增量学习');
-  await expect(lora).toContainText('WebShop 交互 Agent');
-  await expect(lora).toContainText('旧能力保持');
+  await expect(sdLora).toContainText('ICLR 2025');
+  await expect(sdLora).toContainText('类增量学习');
+  await expect(lora).toContainText('许多轮组件如何累积');
   await expect(lora.locator('a[href="https://www.microsoft.com/en-us/research/publication/lora-low-rank-adaptation-of-large-language-models/"]')).toHaveCount(1);
-  await expect(lora.locator('a[href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html"]')).toHaveCount(1);
+  await expect(sdLora.locator('a[href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html"]')).toHaveCount(1);
   const setup = page.locator('[data-report-methods]');
   await expect(setup.locator('tbody tr')).toHaveCount(4);
   await expect(setup).toContainText('第 152–159 轮');
@@ -227,4 +224,34 @@ test('meeting details remain inspectable while source paper is publication-safe'
   await expect(meeting.locator('a[href^="https://github.com/mykcs/"]').first()).toBeVisible();
   await expect(page.locator('#paper-discussion')).toContainText('960 次旧任务');
   await expect(page.locator('#paper-discussion')).toContainText('独立新任务');
+});
+
+test('full advisor ten is preserved; rank8 depth is opt-in and method visuals are consistent', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('[data-report-question]')).toHaveCount(10);
+  const detail = page.locator('[data-rank8-disclosure]');
+  await expect(detail).toHaveCount(1);
+  await expect(detail).not.toHaveAttribute('open', '');
+  await detail.locator('summary').click();
+  await expect(detail).toHaveAttribute('open', '');
+  await expect(detail).toContainText('rank4');
+  await expect(detail).toContainText('rank128');
+  const lanes = page.locator('[data-advisor-method-explainer] .advisor-method__lane');
+  await expect(lanes).toHaveCount(4);
+  const geometry = await lanes.evaluateAll((nodes) => nodes.map((lane) => {
+    const item = lane.querySelector('.advisor-method__node')!;
+    const css = getComputedStyle(item);
+    return { width: Math.round(item.getBoundingClientRect().width), background: css.backgroundColor, border: css.borderTopColor };
+  }));
+  expect(new Set(geometry.map((x) => x.width)).size).toBe(1);
+  expect(new Set(geometry.map((x) => x.background)).size).toBe(1);
+  expect(new Set(geometry.map((x) => x.border)).size).toBe(1);
+  const desktopSize = await page.locator('#paper-introduction p').first().evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
+  expect(desktopSize).toBeGreaterThanOrEqual(16.5);
+  expect(desktopSize).toBeLessThanOrEqual(17.5);
+  await page.setViewportSize({ width: 390, height: 844 });
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(2);
+  await expect(page.locator('[data-report-question]')).toHaveCount(10);
 });

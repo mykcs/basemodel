@@ -3,6 +3,7 @@ import AppLayout from '../../../../../layouts/AppLayout.astro';
 import '../../../../../styles/research-booktabs.css';
 import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
 import AdvisorTenEvidenceVisual from '../../../../../components/research/AdvisorTenEvidenceVisual.astro';
+import AdvisorTenMethodExplainer from '../../../../../components/research/AdvisorTenMethodExplainer.astro';
 import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeeting';
 import { ADVISOR_RESEARCH_AS_OF, ADVISOR_QUESTIONS, ADVISOR_Q09_UPDATES, ADVISOR_Q05_FROZEN } from '../../../../../data/openEvoAdvisorTenQuestions';
 
@@ -23,15 +24,15 @@ const methodStatus = {
     <header class="advisor-ten__hero">
       <h1>长期参数记忆的效率与能力权衡</h1>
       <p class="advisor-ten__lede" data-reader-purpose>
-        在 WebShop 上，OpenEVO 把每轮经验保存在低秩参数更新中，历史越长，后期训练越慢。固定容量方案显著减少了参数更新时间，但历史模型的最终购物得分并不相同。本报告区分实际测到的效率收益、尚不能归因的能力差异，以及下一步需要完成的对照。
+        OpenEVO 让 Qwen 模型把任务经验带到后续任务。普通参数更新会随训练轮次累积越来越多的历史组件，固定容量方案让这部分开销可控。我们在 WebShop 上测量两件事：长期学习花费多少计算，以及模型是否仍能完成实际购物任务。
       </p>
     </header>
 
     <section class="advisor-ten__thesis" id="paper-abstract" aria-labelledby="paper-abstract-title" data-result-stage="direct-result">
       <h2 id="paper-abstract-title">摘要</h2>
-      <p class="advisor-ten__abstract">我们研究 Qwen3-1.7B Agent 在 WebShop 上长期学习时的一个取舍：持续累积低秩参数更新会增加训练成本，固定容量能否让计算可控，同时保住实际购物能力？在已完成的 160 轮历史运行统计中，Bounded 的参数更新累计耗时从 <strong>31.09 小时降至 2.02 小时</strong>；包含任务执行的整体耗时从 <strong>74.78 小时降至 56.25 小时</strong>（约 1.33 倍）。</p>
+      <p class="advisor-ten__abstract">OpenEVO 在任务完成后整理经验，帮助后续 Qwen 模型持续改进。我们以 WebShop 为任务评测环境，研究跨轮低秩参数组件不断积累时的计算代价，以及固定容量能否保留任务能力。在已完成的 160 轮历史运行统计中，固定容量方案把参数更新累计耗时从 <strong>31.09 小时降至 2.02 小时</strong>；包含任务执行的整段耗时从 <strong>74.78 小时降至 56.25 小时</strong>（约 1.33 倍）。</p>
       <p class="advisor-ten__abstract">三个历史模型在<strong>同一冻结 128 题</strong>上的 Task Score 为 <strong>60.72、45.98、20.77 / 100</strong>，完整成功分别为 <strong>50、32、10 / 128</strong>（普通 DirectApply、Bounded、Bounded + 历史复杂 β/GDR）。普通 DirectApply 是更早的前序实验，三条路线并非完全受控的三臂对照；<strong>因此不能把这些得分差直接归因于容量压缩或 β 规则</strong>。</p>
-      <p class="advisor-ten__abstract">在第 152–159 轮的匹配容量筛选中，rank32 的参数文件比 rank128 小约 75%，平均 Task Score 差为 −1.79 分，配对 95% 置信区间为 [−3.68，+0.12] 分，尚不能证明两种容量等价或非劣。第 156 轮的更新方向反转提供了一次局部因果证据；可靠的 SEED 基线、遗忘量和文字状态贡献仍待验证。下一步先固定模型起点、任务流与评测合同，分别检验容量和 β 的作用。</p>
+      <p class="advisor-ten__abstract">在第 152–159 轮的匹配容量筛选中，rank32 的参数文件比 rank128 小约 75%，平均 Task Score 低 1.79 分，配对 95% 置信区间为 [−3.68，+0.12] 分。统计证据尚不足以确认得分会稳定下降，也没有证明缩小容量后的能力损失足够小。第 156 轮的更新方向反转提供了一次局部因果证据；可靠的 SEED 基线、遗忘量和文字状态贡献仍待验证。下一步先固定模型起点、任务流与评测合同，分别检验容量和 β 的作用。</p>
     </section>
 
     <nav class="paper-toc" aria-label="报告目录">
@@ -63,53 +64,48 @@ const methodStatus = {
     </nav>
 
     <section class="paper-section advisor-ten__frame" id="paper-introduction" data-report-context aria-labelledby="paper-introduction-title">
-      <h2 id="paper-introduction-title">1 引言：持续学习需要同时衡量能力与代价</h2>
-      <p>WebShop 模拟真实购物：Agent 阅读要求、搜索商品、选择规格，最后完成购买。<strong>训练损失</strong>衡量模型对训练目标的拟合，<strong>Task Score 和完整成功率</strong>衡量它实际完成购物要求的能力。两组指标回答的问题不同，因此还要一起记录训练耗时和长期参数文件大小。</p>
-      <p>普通 OpenEVO 将每轮新的低秩参数更新连同历史组件一并保留。长时间训练时，历史越来越长，后期参数更新越来越慢。Bounded 试图把历史参数限制在固定容量；β 控制机制进一步尝试调节每一步写入。成本下降后能否保持效果，是整个研究的核心张力。</p>
-      <p>本报告给出三类研究结果：<strong>长期参数更新时间与任务能力之间的实测取舍</strong>、<strong>容量和更新方向的局部实验发现</strong>，以及<strong>仍待完成的基线与泛化检验</strong>。每项结论都对应具体任务集和测量阶段，后续研究将检验它们能否在新任务和新的训练随机设置下保持。</p>
+      <h2 id="paper-introduction-title">1 引言：OpenEVO 的长期学习与任务能力</h2>
+      <p>OpenEVO 框架让智能体在完成任务后保存可复用经验，并在后续任务中更新文字状态或模型参数。本文研究其中的参数学习路线：由 OpenEVO 管理的 <strong>Qwen3-1.7B</strong> 模型在 <strong>WebShop</strong>（模拟网购的交互任务环境）中阅读要求、搜索商品、选择规格并完成购买。WebShop 为我们提供可核对的任务得分；它只是 OpenEVO 可使用的评测环境之一，本文没有报告 ALFWorld 或终端任务的对应实测成绩。</p>
+      <p>在普通 OpenEVO 路线中，每轮新学到的低秩参数更新与历史组件一同保留，后期更新越来越慢。固定容量方案尝试把历史重新整合为一份大小可控的长期状态；写入控制则进一步改变新信息怎样进入状态。研究必须同时测量计算成本、Task Score（部分满足购物条件的程度）和完整成功率（所有条件都满足的比例）。</p>
+      <p>学长在 2026 年 9 月 22 日提出六个研究方向，后来分解为九项可检验问题，并在会后增加独立新任务验证，形成十个研究问题。正文沿科学论证介绍主要发现；文末附录保留 <strong>Q01–Q10 每个问题的实验、观察、解释、尚未解决之处和原始证据</strong>，供汇报与复核使用。</p>
     </section>
 
     <section class="paper-section" id="paper-related-work" aria-labelledby="paper-related-work-title">
-      <h2 id="paper-related-work-title">2 相关工作：任务环境、学习信号和参数存储</h2>
+      <h2 id="paper-related-work-title">2 相关工作：智能体经验学习与参数记忆</h2>
+      <p>现有工作分别研究智能体怎样执行任务、怎样保存经验，以及怎样低成本地更新参数。OpenEVO 的长期学习问题把这几条研究线连接起来。</p>
       <div class="paper-related-grid">
         <article>
-          <h3>2.1 WebShop：我们在测什么</h3>
-          <p>Yao 等人的 WebShop 定义了商品搜索、属性选择和最终购买的交互式任务。本报告使用这一任务环境。不同实验使用的题目清单、采样次数和评估时点分别记录，因为这些条件决定了分数可以比较到什么程度。</p>
-          <p class="paper-source"><a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2207.01206" />WebShop 原论文 ↗</a></p>
+          <h3>2.1 WebShop 与 ReAct：交互任务和行动能力</h3>
+          <p><strong>WebShop</strong>（Yao 等，NeurIPS 2022）用搜索商品、核对属性和完成购买来检验智能体的行动能力。<strong>ReAct</strong>（Yao 等，ICLR 2023）展示模型如何将推理、行动和环境反馈连接成一个过程。这些工作为 OpenEVO 提供可交互的任务与观察方式，长期更新之后的能力仍须重新评测。</p>
+          <p class="paper-source"><a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2207.01206" />WebShop 原论文 ↗</a><a href="https://research.google/blog/react-synergizing-reasoning-and-acting-in-language-models/" target="_blank" rel="noopener noreferrer">ReAct 原始研究介绍 ↗</a></p>
         </article>
         <article>
-          <h3>2.2 SEED：把事后技能蒸馏回策略</h3>
-          <p>SEED 从任务轨迹提取事后技能，转化为训练监督，并通过 on-policy distillation 更新策略。OpenEVO 则持续写入和保留低秩参数更新。两种方法的训练信号与状态管理机制不同；比较学习效果需要对齐模型起点、训练预算、任务集和评分程序。本地 SEED 复现仍是单独的证据任务。</p>
-          <p class="paper-source"><a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED 原论文 ↗</a> <a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED" />官方代码 ↗</a></p>
+          <h3>2.2 Reflexion 与 ExpeL：从任务反馈中保存经验</h3>
+          <p><strong>Reflexion</strong>（Shinn 等，NeurIPS 2023）让智能体把反馈写成后续可读的文字反思；<strong>ExpeL</strong>（Zhao 等，AAAI 2024）尝试从多次任务中提炼可复用的经验。这些研究说明经验也可以保存在外部文字状态中，因此 OpenEVO 的 Text Memory、Skill 和 Agent System 应与参数记忆分开理解与测量。</p>
+          <p class="paper-source"><a href="https://proceedings.neurips.cc/paper_files/paper/2023/hash/1b44b878bb782e6954cd888628510e90-Abstract-Conference.html" target="_blank" rel="noopener noreferrer">Reflexion ↗</a><a href="https://ojs.aaai.org/index.php/AAAI/article/view/29936" target="_blank" rel="noopener noreferrer">ExpeL ↗</a></p>
         </article>
         <article>
-          <h3>2.3 LoRA：低成本参数更新与持续学习的边界</h3>
-          <p>Hu 等于 <strong>2021 年</strong>公开 LoRA，论文发表于 <strong>ICLR 2022</strong>。它冻结基础模型权重，用少量可训练的低秩矩阵适配新任务，显著减少每次更新需要训练的参数。对从交互经验中学习的 Agent 而言，LoRA 使参数更新成为成本更可控的操作。</p>
-          <p><strong>研究评价：</strong>LoRA 奠定了参数高效学习的技术基础；持续自我改进还需要可靠的经验选择、跨轮记忆管理与旧能力保持。Wu 等发表于 <strong>ICLR 2025</strong> 的 SD-LoRA 在类增量学习中进一步研究低秩更新的方向与幅度。OpenEVO 将跨轮低秩组件用于 WebShop 交互 Agent，历史组件累积会增加训练成本，压缩历史又可能影响任务能力。<strong>因此本研究重点检验：能否持续、低成本地写入经验，并保留实际购物任务能力。</strong></p>
-          <p class="paper-source"><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />LoRA · 2021 原稿 ↗</a> <a href="https://www.microsoft.com/en-us/research/publication/lora-low-rank-adaptation-of-large-language-models/" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://www.microsoft.com/en-us/research/publication/lora-low-rank-adaptation-of-large-language-models/" />ICLR 2022 发表记录 ↗</a> <a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html" />SD-LoRA · ICLR 2025 ↗</a></p>
+          <h3>2.3 SEED：让经验成为策略训练信号</h3>
+          <p><strong>SEED</strong>（Wu 等，2026 年预印本）从任务轨迹中提取事后技能，并通过 on-policy distillation 更新策略。OpenEVO 的经验载体和长期状态管理与 SEED 不完全相同；双方要形成公平比较，必须对齐模型起点、题目、训练预算、动作接口和评分程序。本地 SEED 复现仍作为独立研究问题。</p>
+          <p class="paper-source"><a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED 原论文 ↗</a><a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED" />SEED 官方代码 ↗</a></p>
+        </article>
+        <article>
+          <h3>2.4 LoRA：用少量参数适配基础模型</h3>
+          <p><strong>LoRA</strong>（Hu 等，2021 年首发，ICLR 2022）通常冻结基础模型权重，用两个较小矩阵表示任务适配更新，降低单次训练所需的可训练参数规模。这为智能体参数学习提供了技术基础；许多轮组件如何累积、旧能力能否保留，需要另外研究。</p>
+          <p class="paper-source"><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />LoRA 原稿 ↗</a><a href="https://www.microsoft.com/en-us/research/publication/lora-low-rank-adaptation-of-large-language-models/" target="_blank" rel="noopener noreferrer">ICLR 2022 发表记录 ↗</a></p>
+        </article>
+        <article>
+          <h3>2.5 SD-LoRA 与 Delta Rule：跨轮参数状态的更新</h3>
+          <p><strong>SD-LoRA</strong>（Wu 等，ICLR 2025）在类增量学习中研究低秩组件的方向与幅度，提供跨轮参数适配的技术思路。<strong>Delta Rule</strong>（Schlag 等，ICML 2021）和 <strong>Gated Delta Networks</strong>（Yang 等，ICLR 2025）研究持续状态的残差写入和保留机制。OpenEVO 将其中有关持续状态与写入控制的思想用于自己的参数研究；序列状态公式不能直接当成 LoRA 参数空间的逐元素等式。</p>
+          <p class="paper-source"><a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html" target="_blank" rel="noopener noreferrer">SD-LoRA · ICLR 2025 ↗</a><a href="https://proceedings.mlr.press/v139/schlag21a.html" target="_blank" rel="noopener noreferrer">Delta Rule · ICML 2021 ↗</a><a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/4904fad153f6434a7bcf04465d4be2cc-Abstract-Conference.html" target="_blank" rel="noopener noreferrer">Gated Delta Networks · ICLR 2025 ↗</a></p>
         </article>
       </div>
     </section>
 
     <section class="paper-section" id="paper-method" aria-labelledby="paper-method-title">
-      <h2 id="paper-method-title">3 方法：三种长期参数更新规则</h2>
-      <p>每批 WebShop 交互会产生新的学习信号，系统把它写入下一轮使用的参数状态。三条路线改变的是<strong>历史更新的保留方式</strong>和<strong>新更新的写入规则</strong>。下图标出这一共同过程及三个方法的处理位置。</p>
-      <figure class="paper-method-diagram" data-paper-figure="method">
-        <div class="paper-method-flow" role="group" aria-label="每轮从任务轨迹、参数更新到下一轮策略的共同路径">
-          <div><span>输入</span><strong>WebShop 任务轨迹</strong><small>一次批次的交互经验</small></div>
-          <span class="paper-method-arrow" aria-hidden="true">→</span>
-          <div><span>处理</span><strong>生成本轮参数更新</strong><small>当前学习信号与更新规则</small></div>
-          <span class="paper-method-arrow" aria-hidden="true">→</span>
-          <div><span>输出</span><strong>下一轮模型状态</strong><small>再去完成新的购物任务</small></div>
-        </div>
-        <div class="paper-method-arms">
-          <div><strong>DirectApply（原始 OpenEVO）</strong><p>逐轮追加并保留低秩更新组件；历史可以不断增长。</p></div>
-          <div><strong>Bounded Online Recurrence</strong><p>把历史与新更新整合为固定容量的长期参数状态；实验中先设 rank128。</p></div>
-          <div><strong>Bounded + 历史 β/GDR</strong><p>在固定容量基础上干预更新写入；旧复杂机制与后续简单非负 β 不是同一个实验。</p></div>
-        </div>
-        <figcaption>图 1｜三条路线都经过任务交互、生成学习信号和写入下一轮参数状态。图中突出状态保留规则的差异；优化器与文字记忆配置需查各自的实验合同。</figcaption>
-      </figure>
-      <p>普通 <strong>SFT / OPSD</strong> 训练作为学习信号的参照，独立 <strong>SEED</strong> 复现用于核对公开方法在本地环境中的效果。当前它们的评估进度不同，主结果表只展示已经按对应合同完成的测量；未完成的对照在第 8 节列出。</p>
+      <h2 id="paper-method-title">3 方法：普通 OpenEVO 与参数记忆的改进</h2>
+      <AdvisorTenMethodExplainer />
+      <p>在实验对照中，普通 SFT / OPSD 和 SEED 分别回答“学习信号如何形成”的问题；固定容量与参数写入规则回答“跨轮参数状态怎样保存和修改”的问题。只有具备同口径正式评测时，这些不同研究线才能作可信的成绩比较。</p>
     </section>
 
     <section class="paper-section advisor-ten__methods" id="paper-experiments" data-report-methods aria-labelledby="paper-experiments-title">
@@ -131,13 +127,13 @@ const methodStatus = {
     </section>
 
     <section class="paper-section" id="paper-results" aria-labelledby="paper-results-title" data-result-stage="paper-main-results">
-      <h2 id="paper-results-title">5 主实验：节省参数更新时间，但损失了部分任务能力</h2>
+      <h2 id="paper-results-title">5 主实验：固定容量缩短参数更新，但终评成绩存在差异</h2>
       <p>三条历史长期学习路线都完成了 160 轮，之后的最终模型在<strong>同一冻结 128 题</strong>上得到以下结果。</p>
       <div class="advisor-ten__methods-scroll research-booktabs-wrap" tabindex="0" aria-label="三路线在同一冻结128题上的终评">
         <table class="paper-main-table research-booktabs">
           <caption>表 2｜WebShop 冻结 128 题的最终模型；普通 OpenEVO 是较早前序实验</caption>
           <thead><tr><th scope="col">方法</th><th scope="col" data-numeric>Task Score / 100</th><th scope="col" data-numeric>完整成功</th></tr></thead>
-          <tbody>{ADVISOR_Q05_FROZEN.map((row) => <tr><th scope="row">{row.method}</th><td class="paper-main-value" data-numeric>{row.score}</td><td data-numeric>{row.exact}</td></tr>)}</tbody>
+          <tbody>{ADVISOR_Q05_FROZEN.map((row) => <tr><th scope="row">{row.method.replace(' / DirectApply', '')}</th><td class="paper-main-value" data-numeric>{row.score}</td><td data-numeric>{row.exact}</td></tr>)}</tbody>
         </table>
       </div>
       <div class="paper-metrics" aria-label="训练耗时比较">
@@ -152,7 +148,7 @@ const methodStatus = {
 
     <section class="paper-section" id="paper-ablations" aria-labelledby="paper-ablations-title">
       <h2 id="paper-ablations-title">6 消融实验：哪些机制是必要的</h2>
-      <h3>6.1 长期容量：rank32 与 rank128</h3>
+      <h3>6.1 长期容量：rank32 平均得分比 rank128 低 1.79 分</h3>
       <p>在相同任务和随机设置的第 <strong>152–159</strong> 轮继续训练中，匹配比较两种固定容量，合计 <strong>1,024 次任务尝试</strong>。</p>
       <AdvisorTenEvidenceVisual variant="q04" />
       <p><strong>观察到什么：</strong>表 3 显示，把长期参数容量从 rank128 降到 rank32 后，文件大小缩至原来的约四分之一（节省约 75%）；平均 Task Score 低约 <strong>1.79 分</strong>（满分 100）。这说明容量节省很明确，同时也观察到一定的平均得分差。</p>
@@ -228,11 +224,17 @@ const methodStatus = {
       <h2 id="paper-sources-title">参考文献与原始实验来源</h2>
       <p class="paper-source-provenance">研究证据核对日期：<time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>。日期标示本报告引用的历史研究状态，并非实时实验进度。<a href="https://github.com/mykcs/basemodel/blob/main/docs/reports/2026-10-10-advisor-ten-iclr-style.md" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/basemodel/blob/main/docs/reports/2026-10-10-advisor-ten-iclr-style.md" />完整 Markdown 研究稿 ↗</a></p>
       <ol class="paper-reference-list" aria-label="外部参考论文">
-        <li><a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2207.01206" />Yao 等（2022）：WebShop — 交互式购物任务基准 ↗</a></li>
+        <li><a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2207.01206" />Yao 等（NeurIPS 2022）：WebShop — 交互式购物任务 ↗</a></li>
+        <li><a href="https://research.google/blog/react-synergizing-reasoning-and-acting-in-language-models/" target="_blank" rel="noopener noreferrer">Yao 等（ICLR 2023）：ReAct — 推理与行动 ↗</a></li>
+        <li><a href="https://proceedings.neurips.cc/paper_files/paper/2023/hash/1b44b878bb782e6954cd888628510e90-Abstract-Conference.html" target="_blank" rel="noopener noreferrer">Shinn 等（NeurIPS 2023）：Reflexion — 语言反馈与反思记忆 ↗</a></li>
+        <li><a href="https://ojs.aaai.org/index.php/AAAI/article/view/29936" target="_blank" rel="noopener noreferrer">Zhao 等（AAAI 2024）：ExpeL — 经验学习 ↗</a></li>
         <li><a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />Wu 等（2026）：SEED — 事后技能与策略蒸馏 ↗</a></li>
-        <li><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />Hu 等（2021 预印本；ICLR 2022）：LoRA — 低秩参数适配 ↗</a></li>
-        <li><a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html" />Wu Yichen 等（ICLR 2025）：SD-LoRA — 类增量学习中的连续低秩适配 ↗</a></li>
+        <li><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />Hu 等（2021 原稿；ICLR 2022）：LoRA — 低秩参数适配 ↗</a></li>
+        <li><a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html" target="_blank" rel="noopener noreferrer">Wu 等（ICLR 2025）：SD-LoRA — 连续低秩适配 ↗</a></li>
+        <li><a href="https://proceedings.mlr.press/v139/schlag21a.html" target="_blank" rel="noopener noreferrer">Schlag 等（ICML 2021）：Delta Rule — 在线快速权重更新 ↗</a></li>
+        <li><a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/4904fad153f6434a7bcf04465d4be2cc-Abstract-Conference.html" target="_blank" rel="noopener noreferrer">Yang 等（ICLR 2025）：Gated Delta Networks — 状态保留与写入控制 ↗</a></li>
       </ol>
+      <p class="paper-source-ledger"><strong>rank8 配置原始记录：</strong><a href="https://github.com/mykcs/openevo-experiment/blob/main/docs/evidence/q17-sd-lora-latency-202609112003/README.md" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/blob/main/docs/evidence/q17-sd-lora-latency-202609112003/README.md" />Q17 每个组件 rank8 的训练记录 ↗</a>；<a href="https://github.com/mykcs/openevo-experiment/blob/main/configs/experiment/h1.38b-method-control-v1.json" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/blob/main/configs/experiment/h1.38b-method-control-v1.json" />早期 H1.38B 每组件 rank4 的对照配置 ↗</a>；<a href="https://github.com/mykcs/openevo-experiment/pull/597" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/597" />rank32 与 rank128 匹配筛选的完整记录 ↗</a>。</p>
       <p class="paper-source-ledger">实验一手来源：<a href="https://github.com/mykcs/openevo-experiment" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment" />OpenEVO Experiment 仓库 ↗</a>。各项测量与原始收据可从下面的十问附录逐项打开。</p>
       <details class="advisor-ten__meeting-details">
         <summary>会议记录：2026 年 9 月 22 日的六个讨论方向</summary>
@@ -242,7 +244,7 @@ const methodStatus = {
     </section>
 
     <section class="paper-section paper-appendix" id="paper-appendix" aria-labelledby="paper-appendix-title">
-      <h2 id="paper-appendix-title">附录 A：十问原始证据索引</h2>
+      <h2 id="paper-appendix-title">附录 A：学长十问的完整研究记录</h2>
       <p>2026 年 9 月 22 日会议讨论了六个方向，会后拆分为 Q01–Q09，并新增 Q10 独立复现。以下保留每个问题的实验、发现、解释、未知项和原始证据；这些记录补充正文的论证与实验来源，可按上方目录的重点问题直接定位。</p>
       <nav class="advisor-ten__contents" aria-label="附录十问锚点">
         <h3>定位原始问题</h3>
@@ -438,4 +440,29 @@ const methodStatus = {
 .advisor-ten__lede{font-size:1.17rem}
 }
 @media(prefers-reduced-motion:reduce){.advisor-ten *{scroll-behavior:auto}}
+
+/* Scoped reading calibration: MacBook 18px prototype was slightly large,
+   existing production article 15-16px was too small. */
+.paper-report .paper-section>p,
+.paper-report .advisor-ten__frame p,
+.paper-report .advisor-ten__reentry p,
+.paper-report .advisor-ten__reentry li,
+.paper-report .advisor-ten__abstract {font-size:1.0625rem;line-height:1.82}
+.paper-report .paper-related-grid p{font-size:1.02rem;line-height:1.77}
+.paper-report .advisor-ten__question>p{font-size:1.0625rem;line-height:1.79}
+.paper-report .advisor-ten__question>p.advisor-ten__opening{font-size:1.09rem}
+.paper-report .paper-toc a{font-size:1rem}
+.paper-report .paper-reference-list li{font-size:1rem;line-height:1.7}
+.paper-report .research-booktabs{font-size:.99rem;line-height:1.58}
+.paper-report .paper-method-diagram figcaption{font-size:.93rem}
+@media(max-width:650px){
+  .paper-report .paper-section>p,
+  .paper-report .advisor-ten__frame p,
+  .paper-report .advisor-ten__reentry p,
+  .paper-report .advisor-ten__reentry li,
+  .paper-report .advisor-ten__abstract,
+  .paper-report .advisor-ten__question>p{font-size:1.025rem;line-height:1.8}
+  .paper-report .paper-related-grid p{font-size:1rem}
+  .paper-report .paper-toc a{font-size:.98rem}
+}
 </style>
