@@ -79,10 +79,12 @@ for (const width of [390, 768, 1440]) {
       await expect(page.locator(id!)).toHaveCount(1);
     }
     const refs = page.locator('#paper-sources .paper-reference-list > li');
-    await expect(refs).toHaveCount(3);
+    await expect(refs).toHaveCount(4);
     await expect(refs.nth(0)).toContainText('WebShop');
     await expect(refs.nth(1)).toContainText('SEED');
-    await expect(refs.nth(2)).toContainText('LoRA');
+    await expect(refs.nth(2)).toContainText('ICLR 2022');
+    await expect(refs.nth(3)).toContainText('SD-LoRA');
+    await expect(refs.nth(3)).toContainText('ICLR 2025');
 
     for (const [index, id] of sections.entries()) {
       const chapterNumber = String(index + 1);
@@ -121,6 +123,16 @@ test('related work links to genuine papers and scientific differences remain exp
   for (const ref of ['2207.01206', '2607.14777', '2106.09685']) {
     await expect(page.locator('#paper-related-work a[href="https://arxiv.org/abs/' + ref + '"]')).toHaveCount(1);
   }
+  const lora = page.locator('#paper-related-work article').nth(2);
+  await expect(lora).toContainText('2021 年');
+  await expect(lora).toContainText('ICLR 2022');
+  await expect(lora).toContainText('ICLR 2025');
+  await expect(lora).toContainText('研究评价');
+  await expect(lora).toContainText('类增量学习');
+  await expect(lora).toContainText('WebShop 交互 Agent');
+  await expect(lora).toContainText('旧能力保持');
+  await expect(lora.locator('a[href="https://www.microsoft.com/en-us/research/publication/lora-low-rank-adaptation-of-large-language-models/"]')).toHaveCount(1);
+  await expect(lora.locator('a[href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html"]')).toHaveCount(1);
   const setup = page.locator('[data-report-methods]');
   await expect(setup.locator('tbody tr')).toHaveCount(4);
   await expect(setup).toContainText('第 152–159 轮');

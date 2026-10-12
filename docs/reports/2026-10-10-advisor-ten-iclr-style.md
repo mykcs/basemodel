@@ -30,9 +30,11 @@ WebShop（Yao et al., NeurIPS 2022）提供带真实商品和自然语言要求�
 
 SEED（Wu et al., arXiv 2026）先让策略学习从完成轨迹中提炼 hindsight skills，再在 on-policy 训练中比较普通上下文和技能增强上下文下的动作概率，将新增监督蒸馏回策略。[论文](https://arxiv.org/abs/2607.14777) / [公开代码](https://github.com/jinyangwu/SEED)。**论文中的方法效果不等于本地 Q03 桥接实现的效果**：Q03 采用不同 Stage1 起点、任务、温度、提示及动作解析，新的公开配方复现则是独立工作线。
 
-### 2.3 LoRA 与多轮参数状态
+### 2.3 LoRA：低成本参数更新与持续学习的边界
 
-LoRA（Hu et al., 2021）用低秩适配减少需要训练的参数。[论文](https://arxiv.org/abs/2106.09685)。OpenEVO 的 SD-LoRA 长期追加历史组件；Bounded 将跨轮历史约束在固定容量。本文测量**跨轮参数保留、压缩和更新控制对任务能力及开销的影响**；后续未测假设仍保持为未测。
+Hu 等于 **2021 年**首次公开 *LoRA: Low-Rank Adaptation of Large Language Models*，并于 **ICLR 2022** 正式发表。LoRA 冻结预训练模型的基础权重，用少量可训练的低秩矩阵适配任务，显著减少每次更新需要训练的参数。对持续收集交互轨迹的 Agent 而言，这降低了把经验转化为模型参数更新的工程门槛。来源：[2021 年 arXiv 原稿](https://arxiv.org/abs/2106.09685) / [ICLR 2022 官方发表记录](https://www.microsoft.com/en-us/research/publication/lora-low-rank-adaptation-of-large-language-models/)。
+
+**研究评价：LoRA 已成为参数高效学习的重要技术基础，但它只提供更新的表示与成本优势。** 智能体长期自我改进仍要解决经验选择、跨轮知识管理和旧能力保持。Wu Yichen 等于 **ICLR 2025** 发表 [SD-LoRA](https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html)，在**类增量学习**场景研究低秩更新的方向与幅度；OpenEVO 则将跨轮低秩组件用于 WebShop **交互式 Agent**。普通 DirectApply 持续追加历史组件，Bounded 将历史控制在固定容量。**核心评价是：低成本的单次更新为持续学习创造了条件，长期有效的任务学习仍取决于记忆容量、更新规则和真实能力评估。** 因此本研究测量跨轮成本与旧任务能力之间的取舍。独立新任务上的长期保持能力仍为**未测**，需要后续在冻结的新任务流中检验。
 
 
 ## 3 Method｜方法
@@ -190,7 +192,8 @@ Q03 复用历史 OpenEVO 轨迹和 MiniMax 分析，训练了自己的 Stage1，
 
 1. Yao, S. et al. (2022). *WebShop: Towards Scalable Real-World Web Interaction with Grounded Language Agents*. [arXiv:2207.01206](https://arxiv.org/abs/2207.01206).
 2. Wu, J. et al. (2026). *SEED: Self-Evolving On-Policy Distillation for Agentic Reinforcement Learning*. [arXiv:2607.14777](https://arxiv.org/abs/2607.14777).
-3. Hu, E. et al. (2021). *LoRA: Low-Rank Adaptation of Large Language Models*. [arXiv:2106.09685](https://arxiv.org/abs/2106.09685).
+3. Hu, E. et al. (2021 arXiv; **ICLR 2022**). *LoRA: Low-Rank Adaptation of Large Language Models*. [arXiv:2106.09685](https://arxiv.org/abs/2106.09685) / [官方发表记录](https://www.microsoft.com/en-us/research/publication/lora-low-rank-adaptation-of-large-language-models/).
+4. Wu, Yichen et al. (**ICLR 2025**). *SD-LoRA: Scalable Decoupled Low-Rank Adaptation for Class Incremental Learning*. [ICLR 官方论文](https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html).
 
 **本地研究证据：**
 
