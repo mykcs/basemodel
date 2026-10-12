@@ -82,9 +82,10 @@ const methodStatus = {
           <p class="paper-source"><a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED 原论文 ↗</a> <a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED" />官方代码 ↗</a></p>
         </article>
         <article>
-          <h3>2.3 LoRA：低秩更新的基础</h3>
-          <p>LoRA 用低秩矩阵表示模型适配更新。本文研究的额外问题是：<strong>许多轮 LoRA 更新积累之后，状态容量、计算开销和后续能力如何变化</strong>。</p>
-          <p class="paper-source"><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />LoRA 原论文 ↗</a></p>
+          <h3>2.3 LoRA：低成本参数更新与持续学习的边界</h3>
+          <p>Hu 等于 <strong>2021 年</strong>公开 LoRA，论文发表于 <strong>ICLR 2022</strong>。它冻结基础模型权重，用少量可训练的低秩矩阵适配新任务，显著减少每次更新需要训练的参数。对从交互经验中学习的 Agent 而言，LoRA 使参数更新成为成本更可控的操作。</p>
+          <p><strong>研究评价：</strong>LoRA 奠定了参数高效学习的技术基础；持续自我改进还需要可靠的经验选择、跨轮记忆管理与旧能力保持。Wu 等发表于 <strong>ICLR 2025</strong> 的 SD-LoRA 在类增量学习中进一步研究低秩更新的方向与幅度。OpenEVO 将跨轮低秩组件用于 WebShop 交互 Agent，历史组件累积会增加训练成本，压缩历史又可能影响任务能力。<strong>因此本研究重点检验：能否持续、低成本地写入经验，并保留实际购物任务能力。</strong></p>
+          <p class="paper-source"><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />LoRA · 2021 原稿 ↗</a> <a href="https://www.microsoft.com/en-us/research/publication/lora-low-rank-adaptation-of-large-language-models/" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://www.microsoft.com/en-us/research/publication/lora-low-rank-adaptation-of-large-language-models/" />ICLR 2022 发表记录 ↗</a> <a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html" />SD-LoRA · ICLR 2025 ↗</a></p>
         </article>
       </div>
     </section>
@@ -228,7 +229,8 @@ const methodStatus = {
       <ol class="paper-reference-list" aria-label="外部参考论文">
         <li><a href="https://arxiv.org/abs/2207.01206" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2207.01206" />Yao 等（2022）：WebShop — 交互式购物任务基准 ↗</a></li>
         <li><a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />Wu 等（2026）：SEED — 事后技能与策略蒸馏 ↗</a></li>
-        <li><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />Hu 等（2021）：LoRA — 低秩参数适配 ↗</a></li>
+        <li><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2106.09685" />Hu 等（2021 预印本；ICLR 2022）：LoRA — 低秩参数适配 ↗</a></li>
+        <li><a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html" />Wu Yichen 等（ICLR 2025）：SD-LoRA — 类增量学习中的连续低秩适配 ↗</a></li>
       </ol>
       <p class="paper-source-ledger">实验一手来源：<a href="https://github.com/mykcs/openevo-experiment" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment" />OpenEVO Experiment 仓库 ↗</a>。各项测量与原始收据可从下面的十问附录逐项打开。</p>
       <details class="advisor-ten__meeting-details">
