@@ -59,7 +59,7 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .evo-article__siblings ol{padding:0;margin:0;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem}
 .evo-blog .evo-article__siblings li{margin:0}
 .evo-blog .evo-article__siblings a{display:block;text-decoration:none;line-height:1.5;font-size:.93em;padding:.6rem .25rem .7rem 0;border-bottom:2px solid transparent}
-.evo-blog .evo-article__siblings a[aria-current="page"]{border-color:var(--paper-ink);font-weight:720}
+.evo-blog .evo-article__siblings [aria-current="page"]{border-color:var(--paper-ink);font-weight:720}
 .evo-blog .evo-article__siblings .evo-number{font-variant-numeric:tabular-nums;color:var(--paper-muted);font-size:.85em;margin-right:.45em}
 .evo-blog .evo-article__sources{border-top:1.4px solid var(--paper-ink);padding-top:1.6rem}
 .evo-blog .evo-article__sources ol{padding-left:1.3rem;max-width:80ch}
@@ -126,3 +126,6 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .evo-article__question-header{display:flex;align-items:baseline;gap:.65rem;flex-wrap:wrap;margin:.25rem 0 .7rem}
 .evo-blog .evo-article__question-header h3{margin:0;line-height:1.38}
 .evo-blog .evo-article__qnum{font-size:.88rem;letter-spacing:.02em;color:var(--paper-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.evo-blog .evo-article__siblings .evo-current{display:block;font-size:.93em;line-height:1.5;padding:.6rem .25rem .7rem 0;border-bottom:2px solid var(--paper-ink);color:var(--paper-ink)}
+@media(max-width:720px){.evo-blog .evo-article__siblings .evo-current{padding:.45rem 0}}

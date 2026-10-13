@@ -16,9 +16,9 @@ for(const width of [390,768,1440]){
       await expect(article).toBeVisible();
       await expect(article.locator('h1')).toHaveText(item.title);
       const navigation=page.getByRole('navigation',{name:'三篇 OpenEVO 技术博客'});
-      await expect(navigation.locator('a')).toHaveCount(3);
-      await expect(navigation.locator('a[aria-current="page"]')).toHaveCount(1);
-      const names=await navigation.locator('a').allTextContents();
+      await expect(navigation.locator('a')).toHaveCount(2);
+      await expect(navigation.locator('.evo-current[aria-current="page"]')).toHaveCount(1);
+      const names=await navigation.locator('li').allTextContents();
       expect(names[0]).toContain('参数记忆方法');
       expect(names[1]).toContain('学长十问');
       expect(names[2]).toContain('我们的回应实验');

@@ -12,7 +12,13 @@ const pages = [
   <p>同一研究线的三篇文章</p>
   <ol>
     {pages.map((item,index) => (
-      <li><a href={item.path} aria-current={current === item.id ? 'page' : undefined}><span class="evo-number">{String(index+1).padStart(2,'0')}</span>{item.title}</a></li>
+      <li>
+        {current===item.id ? (
+          <span class="evo-current" aria-current="page"><span class="evo-number">{String(index+1).padStart(2,'0')}</span>{item.title}</span>
+        ) : (
+          <a href={item.path}><span class="evo-number">{String(index+1).padStart(2,'0')}</span>{item.title}</a>
+        )}
+      </li>
     ))}
   </ol>
 </nav>
