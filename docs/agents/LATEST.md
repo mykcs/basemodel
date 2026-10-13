@@ -10,6 +10,12 @@ Status: **The SEED × OpenEvo Results route is aligned to the closed Track A pai
 
 This file is a short current-state router. Detailed policy belongs under `docs/agents/current/`; historical rationale belongs under `docs/agents/history/`.
 
+## 三篇 OpenEVO 技术博客的当前文章职责（2026-10-13）
+
+PR #851 保留三个独立路由，顺序 **① OpenEVO 方法详解 → ② 学长十问（问题本身）→ ③ 我们的回应实验（Q01–Q10 的实验、结果及未知）**。Q10 是会后新增，不当作学长逐字提问。页面角色权威在 `docs/wish/DESIGN.md`；本地测试保护第二篇不混入成绩/图表、第三篇十项回应各有来源。三篇共享 `src/data/openEvoAdvisorTenQuestions.ts`；可用浏览器 QA 评价风格，但不得改写科研证据。
+
+未合并的 PR/Preview 不等于 Production。恢复或延续任务时先核对 PR exact head、CI 与 Vercel 的实时状态。
+
 ## Current architecture
 
 ```text

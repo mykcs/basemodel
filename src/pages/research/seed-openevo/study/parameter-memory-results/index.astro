@@ -6,22 +6,22 @@ import OpenEvoArticleNavigation from '../../../../../components/research/OpenEvo
 import AdvisorTenEvidenceVisual from '../../../../../components/research/AdvisorTenEvidenceVisual.astro';
 import MathFormula from '../../../../../components/common/MathFormula.astro';
 import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
-import { ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from '../../../../../data/openEvoAdvisorTenQuestions';
+import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from '../../../../../data/openEvoAdvisorTenQuestions';
 ---
 
 <AppLayout
-  title="OpenEVO 的长期参数记忆：容量、β 与任务能力的实测结果"
-  description="报告三条历史长期训练路线的 WebShop 同题终评、Bounded 参数开销、rank32 与 rank128 的后段配对比较、更新方向干预与 BUNDLE 载体计数，并说明可比性限制。"
+  title="我们的回应实验：OpenEVO 学长十问的逐项测量"
+  description="针对整理出的十个 OpenEVO 研究问题，逐项列出已运行实验、真实结果、统计边界和下一步；保留 Bounded、β、SEED 与文字状态的一手证据。"
   locale="zh"
 >
   <main class="evo-blog evo-article" data-evo-blog="results" data-reader-page="research-blog" data-copy-review>
     <header>
-      <h1>长期参数记忆的实验结果</h1>
-      <p class="evo-article__lede" data-reader-purpose>OpenEVO 逐轮保留模型学到的低秩参数更新。我们完成了三条历史长期学习路线，并进一步测量固定容量、β 写入控制和参数方向与 WebShop 任务能力之间的关系。</p>
+      <h1>我们的回应实验：逐项回答学长十问</h1>
+      <p class="evo-article__lede" data-reader-purpose>学长提出的问题，我们分别用什么实验回应？有些问题已经得到范围明确的结果，有些只完成了训练或诊断，还有一些关键对照尚未运行。本篇逐项交代实验、真实观察、证据边界和下一步。</p>
     </header>
     <div class="evo-article__abstract">
       <h2>摘要</h2>
-      <p>在 160 轮历史实验中，Bounded 的参数更新累计耗时从 <strong>31.09 小时降低到 2.02 小时</strong>，但包括 WebShop 任务执行在内的整段实验只加速约 1.33 倍。三个历史终点在同一冻结 128 题的 Task Score 分别为 <strong>60.72、45.98 和 20.77</strong>。此外，第 152–159 轮的匹配容量筛选显示，rank32 把参数文件缩小约 75%，平均得分比 rank128 低 1.79 分；统计证据仍不足以确认类似任务上会稳定下降。历史终点不构成完全受控的三臂随机试验，方法效果需要与任务身份和实验合同一起解释。</p>
+      <p>围绕 Q01–Q10，我们已完成多组 WebShop 训练、固定模型评测、容量筛选和参数方向干预。最重要的历史结果包括：三种长期路线在冻结 128 题上的 Task Score 为 <strong>60.72、45.98 和 20.77</strong>；第 152–159 轮的 rank32 容量筛选把参数文件缩小约 75%，平均得分比 rank128 低 1.79 分，但统计区间包含零。训练完成不等于能力比较完成，旧任务遗忘、文字状态的因果作用和新任务复现仍缺决定性证据。每项研究回应均链接到<a href="/research/seed-openevo/study/advisor-questions/">第二篇提出的问题</a>和本篇底部的原始记录。</p>
     </div>
     <OpenEvoArticleNavigation current="results" />
     <nav class="evo-article__toc" aria-label="实验文章目录">
@@ -29,12 +29,14 @@ import { ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from 
       <ol>
         <li><a href="#context">1 研究问题与评测</a></li>
         <li><a href="#experiment">2 实验身份</a></li>
-        <li><a href="#main-results">3 长期训练结果</a></li>
-        <li><a href="#capacity">4 长期容量</a></li>
-        <li><a href="#beta">5 β 写入控制</a></li>
-        <li><a href="#direction">6 参数方向</a></li>
-        <li><a href="#bundle">7 BUNDLE 载体</a></li>
-        <li><a href="#discussion">8 讨论与局限</a></li>
+        <li><a href="#responses">3 学长十问的逐项实验回应</a></li>
+        {ADVISOR_QUESTIONS.map(q => <li><a href={'#response-'+q.id}>{q.id.toUpperCase()} {q.title}</a></li>)}
+        <li><a href="#main-results">4 三种长期路线的终评结果</a></li>
+        <li><a href="#capacity">5 长期容量</a></li>
+        <li><a href="#beta">6 β 写入控制</a></li>
+        <li><a href="#direction">7 参数方向</a></li>
+        <li><a href="#bundle">8 BUNDLE 载体</a></li>
+        <li><a href="#discussion">9 讨论与局限</a></li>
         <li><a href="#sources">原始记录</a></li>
       </ol>
     </nav>
@@ -59,8 +61,28 @@ import { ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from 
       </div>
       <p class="evo-article__note">每项测量必须保留自己的任务身份、模型起点与评估时点。以满分 100 展示得分，只是统一数字尺度，不意味着不同任务面板可以直接比较。</p>
     </section>
+    <section class="evo-article__section" id="responses" data-response-experiments>
+      <h2>3 我们对十个研究问题做了哪些实验</h2>
+      <p>下面按第二篇的 Q01–Q10 顺序列出<strong>实际运行内容、观察到的结果、可以得出的解释和尚缺的证据</strong>。只有实验记录足够完整时，我们才认为某个问题得到了范围明确的回答。每个结果都可以跳回<a href="/research/seed-openevo/study/advisor-questions/">对应的问题</a>。</p>
+      {ADVISOR_QUESTIONS.map(q => (
+        <article class="evo-article__question" id={'response-'+q.id} data-experiment-response={q.id} aria-labelledby={'response-'+q.id+'-title'}>
+          <header class="evo-article__question-header"><span class="evo-article__qnum">{q.id.toUpperCase()}</span><h3 id={'response-'+q.id+'-title'}>{q.title}</h3></header>
+          <p><strong>实验怎么做：</strong>{q.experiment}</p>
+          <p class="evo-article__answer" data-experiment-finding={q.id}><strong>实际结果：</strong>{q.finding.replaceAll('普通 DirectApply','普通 OpenEVO')}</p>
+          {q.id==='q01' && <AdvisorTenEvidenceVisual variant="q01" />}
+          {q.id==='q02' && <AdvisorTenEvidenceVisual variant="q02" />}
+          {q.id==='q03' && <AdvisorTenEvidenceVisual variant="q03" />}
+          <p><strong>支持的研究判断：</strong>{q.interpretation}</p>
+          <p class="evo-article__limit"><strong>还缺什么：</strong>{q.unknown}</p>
+          <p class="evo-article__note">
+            <a href={'/research/seed-openevo/study/advisor-questions/#'+q.id}>对应的研究问题 ↗</a> ·
+            <a href={'#source-'+q.id}>原始记录 ↓</a>
+          </p>
+        </article>
+      ))}
+    </section>
     <section id="main-results" class="evo-article__section">
-      <h2>3 历史长期训练：计算更省，最终成绩不同</h2>
+      <h2>4 三种历史长期路线：计算更省，最终成绩不同</h2>
       <p>三条路线均已完成 160 轮学习。训练结束后的模型在相同冻结 128 道 WebShop 任务上得到下表成绩：</p>
       <div class="evo-article__tablewrap" tabindex="0" aria-label="三条路线冻结最终测试">
         <table>
@@ -80,7 +102,7 @@ import { ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from 
       <p>普通 OpenEVO 是更早的历史前序路线，与 Bounded 两组并非从完全相同的起点构成三臂随机实验。60.72 与 45.98 的差不能简单归因于容量压缩；固定容量组和历史 β 组则具有更接近正式匹配的实验安排。</p>
     </section>
     <section id="capacity" class="evo-article__section">
-      <h2>4 rank32 将长期参数文件缩小约四分之三</h2>
+      <h2>5 rank32 将长期参数文件缩小约四分之三</h2>
       <p>第 152–159 轮使用 1,024 组匹配任务比较长期状态 rank128 与 rank32。rank32 的参数文件为 51.4 MB，rank128 为 205.6 MB。</p>
       <AdvisorTenEvidenceVisual variant="q04" />
       <p><strong>在这批任务上，rank32 的平均 Task Score 低 1.79 分。</strong>为了判断抽样波动，我们将同任务、同随机设置下的两个结果相减，对配对差值做多次有放回的重新抽样，并计算平均差。</p>
@@ -103,18 +125,18 @@ import { ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from 
       <details class="evo-article__disclosure"><summary>按下展开：95% 置信区间怎样计算，有什么意义？</summary><div><p>把 1,024 组同题结果分别相减，再以“每组配对结果”为单位重复抽取、反复计算平均差。重采样均值形成一组统计波动范围，95% 区间是按既定覆盖率方法得到的结果。这里的 95% 指在重复使用同一种统计程序时，它长期覆盖固定真实差值的比例，并不表示这个已经算好的区间有 95% 的概率包含真实差值。</p><p>如果要宣称“减少容量没有造成不可接受的性能损失”，应在看实验结果前确定能够接受的最大损失，然后按照对应的单侧统计检验进行判断；不能看到区间后再选择宽松标准。</p></div></details>
     </section>
     <section id="beta" class="evo-article__section">
-      <h2>5 历史 β 写入控制的终评成绩更低</h2>
+      <h2>6 历史 β 写入控制的终评成绩更低</h2>
       <p>同一冻结 128 题上，固定容量的历史 β/GDR 路线平均得分为 <strong>20.77</strong>，没有开启当时复杂 β 处理的 Bounded 路线为 <strong>45.98</strong>。这提示额外控制新经验写入的方法需要独立验证，参数机制更复杂并不自动带来更好的任务能力。</p>
       <p>这次历史 β/GDR 方案，与后续只对更新幅度施加非负 β 倍率的简化方案，并不是同一个实验。也不能把另一个四轮 Gated Delta 资格研究的结果接在 160 轮长跑后当作第四条曲线。有关机制设计和来源见<a href="/research/seed-openevo/study/openevo-methods/#delta">方法篇的 Gated Delta 一节</a>。</p>
     </section>
     <section id="direction" class="evo-article__section">
-      <h2>6 第 156 轮的一次方向反转，平均得分下降 10.06 分</h2>
+      <h2>7 第 156 轮的一次方向反转，平均得分下降 10.06 分</h2>
       <p>低秩参数更新有大小，也有方向。为了分析它们各自的重要性，我们对选定轮次的真实 Task Vector 做反向干预，在冻结 64 题上测量同一模型其他条件不变时的结果。</p>
       <AdvisorTenEvidenceVisual variant="q07" />
       <p>第 156 轮的方向反转使 Task Score 下降约 10.06 分，配对 95% 区间为下降 5.60–15.02 分，且在八次反转中通过预先设定的多重比较校正。这支持<strong>该模型状态、该轮更新和这批题目上的局部因果效应</strong>，没有证明所有更新方向都应采用相同的在线控制规则。</p>
     </section>
     <section id="bundle" class="evo-article__section">
-      <h2>7 BUNDLE 的文字载体更新次数较少</h2>
+      <h2>8 BUNDLE 的文字载体更新次数较少</h2>
       <p>OpenEVO 的经验除了参数，还可以进入 Text Memory、Skill 和 Agent System。长期实验的收据显示，参数更新很频繁，文字状态实际改写得少得多。</p>
       <div class="evo-article__tablewrap" tabindex="0" aria-label="BUNDLE 更新计数">
         <table>
@@ -126,15 +148,26 @@ import { ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from 
       <p><strong>很少改写文字，不等于文字状态没有作用。</strong>早期生成的文字可能在后续多轮被反复读取。必须单独关闭或替换载体，在其他条件尽量一致的任务上重新评测，才能判断它对能力的贡献。</p>
     </section>
     <section id="discussion" class="evo-article__section">
-      <h2>8 讨论：已得到什么证据，还缺什么</h2>
+      <h2>9 讨论：哪些问题仍需继续验证</h2>
       <p>目前可以确认，固定容量明显减少了长期参数更新所需的计算，并将长期参数文件大小保持在受控范围内。rank32 在后段匹配任务中用约四分之一的文件容量保留了大部分观测得分。历史 β/GDR 终点评测较低，第 156 轮方向干预展示了一次局部因果影响。</p>
       <p>任务成绩差异还需要更严格地分离：普通 OpenEVO 属于历史前序实验；容量筛选与最终冻结 128 题不是同一个测量阶段；文字载体的因果消融尚无可靠正式结果。更小 rank、可靠的 SEED 对照、旧任务保持和新随机任务复现，都是后续研究需要的证据。</p>
-      <p>这些具体研究问题及已经完成、尚未完成的状态，由第三篇 <a href="/research/seed-openevo/study/advisor-questions/">学长十问</a>逐项展开。</p>
+      <p>十项回应的结果、局限和原始记录已在本篇逐项列出；问题本身的提出背景见<a href="/research/seed-openevo/study/advisor-questions/">第二篇“学长十问”</a>。方法推导与参数记忆的工作原理详见<a href="/research/seed-openevo/study/openevo-methods/">第一篇方法介绍</a>。</p>
     </section>
     <section id="sources" class="evo-article__section evo-article__sources">
       <h2>原始记录</h2>
       <p class="evo-article__note">本文当前采用的科研证据快照核对于 <time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>；这不是服务器实验的实时状态。</p>
       <ol>
+        {ADVISOR_QUESTIONS.map(q=>(
+          <li id={'source-'+q.id} data-response-source={q.id}>
+            <strong>{q.id.toUpperCase()} · {q.title}</strong>：
+            {q.evidence.map((e, i) => (
+              <span>
+                <a href={e.href} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={e.href} />原始记录 ↗</a>
+                {i < q.evidence.length - 1 && '；'}
+              </span>
+            ))}
+          </li>
+        ))}
         <li><a href="https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro"><ExternalBrandMark href="https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro" />三条 160 轮路线的结果与对应实验记录</a></li>
         <li><a href="https://github.com/mykcs/openevo-experiment/pull/597"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/597" />rank32/rank128 1,024 次匹配任务与文件大小</a></li>
         <li><a href="https://github.com/mykcs/openevo-experiment/pull/634"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/634" />Task Vector 方向反转实验</a></li>
