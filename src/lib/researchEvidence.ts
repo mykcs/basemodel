@@ -82,3 +82,10 @@ export const verifiedEvidenceHref = (href: string) => {
 };
 
 export const evidenceKindLabel = (kind: EvidenceKind, locale: Locale) => labels[kind][locale];
+
+// Structured numeric evidence extends this existing research owner; legacy refs stay compatible.
+export {
+  evidenceContractSchema, evidenceSnapshotSchema, validateEvidenceRegistry,
+  publishedEvidence, evidenceNumber, formatEvidencePoint, researchMetricCatalog,
+} from './researchEvidenceSchema';
+export type { EvidenceContract, EvidenceSnapshot, EvidenceSource, EvidencePoint } from './researchEvidenceSchema';
