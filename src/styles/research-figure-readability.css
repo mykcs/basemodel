@@ -1,3 +1,16 @@
+/* Live canonical paper-style WebShop figures share one structural shell. Feature
+ * geometry, chart semantics, and breakpoint-specific composition remain with
+ * each figure component. The SEED × OpenEvo comparison figure intentionally
+ * uses a different full-width shell and does not opt into this class. */
+.canonical-figure--paper {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 2.2rem auto;
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-feature);
+  background: var(--surface);
+}
+
 /*
  * Canonical research figures are reading surfaces, not dense slide thumbnails.
  * Geometry-only QA previously allowed legal-but-unreadable layouts: 8–10px

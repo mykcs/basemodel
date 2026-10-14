@@ -44,7 +44,7 @@ const rows = [
 ];
 ---
 
-<section id="fig-webshop-seed-data-usage" class="canonical-figure webshop-seed-data-usage" aria-labelledby="webshop-seed-data-usage-title" data-ui-audit="contrast layout overflow">
+<section id="fig-webshop-seed-data-usage" class="canonical-figure canonical-figure--paper webshop-seed-data-usage" aria-labelledby="webshop-seed-data-usage-title" data-ui-audit="contrast layout overflow">
   <header class="figure-header">
     <div class="figure-label">{t('补充 · SEED 到底用了多少 WebShop？','SUPPLEMENT · HOW MUCH WEBSHOP DOES SEED ACTUALLY USE?')}</div>
     <h2 id="webshop-seed-data-usage-title">{t('不是“1,000 个商品跑了 150 轮”这么算','It is not “1,000 products × 150 rounds”')}</h2>
@@ -194,7 +194,8 @@ const rows = [
 </section>
 
 <style>
-  .webshop-seed-data-usage{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:var(--radius-feature);background:var(--surface);scroll-margin-top:7rem}
+  .webshop-seed-data-usage{scroll-margin-top:7rem}
+
   .figure-header{max-width:950px}.figure-label{color:var(--accent);font:800 .66rem/1.2 var(--font-mono);letter-spacing:.08em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.55rem,3.5vw,2.75rem);line-height:1.08;letter-spacing:-.04em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}.usage-story{margin:1.55rem 0 0}
   .answer,.epoch-note,.calculation-boundary{padding:1rem 1.1rem;border-left:3px solid var(--accent);background:var(--surface-muted)}.answer strong,.epoch-note strong,.calculation-boundary strong{display:block;font-size:.9rem}.answer p,.epoch-note p,.calculation-boundary p{margin:.4rem 0 0;color:var(--muted);font-size:.82rem;line-height:1.65}
   .unit-map{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:.55rem;align-items:center;margin-top:1rem}.unit-map>div{min-width:0;padding:.85rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.unit-map>span{color:var(--muted);font-weight:900}.unit-map small,.unit-map strong,.unit-map div>span{display:block}.unit-map small{color:var(--muted);font:800 .55rem/1.2 var(--font-mono);letter-spacing:.06em}.unit-map strong{margin:.28rem 0 .12rem;font-size:1.25rem}.unit-map div>span{color:var(--muted);font-size:.72rem}

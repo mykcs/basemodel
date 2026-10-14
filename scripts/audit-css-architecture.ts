@@ -37,6 +37,8 @@ const headerOwnerPath = 'src/styles/components/header.css';
 const headerComponentPath = 'src/components/Header.astro';
 const shellOwnerPath = 'src/styles/components/global-shell.css';
 const trainingNoteOwnerPath = 'src/styles/components/webshop-training-note.css';
+const canonicalFigureOwnerPath = 'src/styles/research-figure-readability.css';
+const sectionHeadingOwnerPath = 'src/styles/site.css';
 const missionChainOwnerPath = 'src/components/research/SeedOpenEvoMissionHero.astro';
 const radiusTokensPath = 'src/styles/tokens.css';
 const radiusDebtBaselinePath = 'scripts/css-radius-debt-baseline.json';
@@ -85,6 +87,61 @@ const grandfatheredPatchLayers = new Set([
   'visual-closeout.css',
   'visual-upgrade.css',
 ]);
+
+const retiredSectionHeadingOwners = [
+  'src/styles/design-refinement.css',
+  'src/styles/visual-upgrade.css',
+];
+for (const path of retiredSectionHeadingOwners) {
+  if (/\.section-heading\b/.test(read(path).replace(/\/\*[\s\S]*?\*\//g, ''))) {
+    fail(`${path} must not regain shared .section-heading ownership. Put shared structure in ${sectionHeadingOwnerPath}; keep page-specific structure scoped to its component.`);
+  }
+}
+const sectionHeadingOwner = read(sectionHeadingOwnerPath);
+for (const invariant of [
+  '.section-heading { display: flex; align-items: flex-start;',
+  '.section-heading h2 { max-width: 22ch; }',
+  '@media (max-width: 760px)',
+  '@media (max-width: 720px)',
+  '.section-heading { display: grid; grid-template-columns: 1fr; gap: 8px; }',
+]) {
+  if (!sectionHeadingOwner.includes(invariant)) fail(`${sectionHeadingOwnerPath} is missing shared section-heading invariant: ${invariant}`);
+}
+
+const canonicalFigureSelectorFiles = walk(join(root, 'src'))
+  .filter((path) => path.endsWith('.css') || path.endsWith('.astro'))
+  .filter((path) => /\.canonical-figure--paper\b/.test(readFileSync(path, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')))
+  .map((path) => relative(root, path).replaceAll('\\', '/'))
+  .sort();
+equal(canonicalFigureSelectorFiles, [canonicalFigureOwnerPath], 'canonical paper figure shell CSS ownership');
+const canonicalFigureOwner = read(canonicalFigureOwnerPath);
+for (const invariant of [
+  '.canonical-figure--paper {',
+  'width: min(1120px, calc(100% - 2rem));',
+  'border-radius: var(--radius-feature);',
+  'background: var(--surface);',
+]) {
+  if (!canonicalFigureOwner.includes(invariant)) fail(`${canonicalFigureOwnerPath} is missing canonical paper-figure shell invariant: ${invariant}`);
+}
+const canonicalFigureConsumers = [
+  'src/components/research/SeedWebShopCanonicalFigure.astro',
+  'src/components/research/WebShopDatasetCanonicalFigure.astro',
+  'src/components/research/WebShopEvaluationFigure.astro',
+  'src/components/research/WebShopGoalGenerationFigure.astro',
+  'src/components/research/WebShopSeedDataUsageFigure.astro',
+  'src/components/research/WebShopSeedSplitFigure.astro',
+  'src/components/research/WebShopSmallWorldFigure.astro',
+];
+for (const path of canonicalFigureConsumers) {
+  const source = read(path);
+  if (!source.includes('class="canonical-figure canonical-figure--paper ')) fail(`${path} must opt into the canonical paper figure shell`);
+  if (/width:\s*min\(1120px,\s*calc\(100%\s*-\s*2rem\)\)/.test(source)) fail(`${path} duplicates canonical paper figure width; keep the shell in ${canonicalFigureOwnerPath}`);
+  if (/padding:\s*clamp\(1rem,\s*3vw,\s*2rem\)/.test(source)) fail(`${path} duplicates canonical paper figure padding; keep the shell in ${canonicalFigureOwnerPath}`);
+}
+if (read('src/components/research/SeedOpenEvoCanonicalFigure.astro').includes('canonical-figure--paper')) {
+  fail('SeedOpenEvoCanonicalFigure.astro intentionally owns a distinct full-width comparison shell and must not opt into canonical-figure--paper');
+}
+
 const patchLikeName = /(?:^|[-.])(hardening|closeout|refinement|upgrade)(?:[-.]|$)/i;
 const stylesRoot = join(root, 'src/styles');
 for (const name of readdirSync(stylesRoot)) {
@@ -330,6 +387,8 @@ console.log(`  canonical global entry: ${appEntryPath}`);
 console.log(`  canonical shell owners: ${shellOwnerPath}, ${headerOwnerPath}`);
 console.log('  Header component: scoped internals only; no global feature-style injection');
 console.log(`  canonical themed editorial owner: ${trainingNoteOwnerPath}`);
+console.log(`  shared section-heading structure owner: ${sectionHeadingOwnerPath}`);
+console.log(`  canonical paper-figure shell owner: ${canonicalFigureOwnerPath} (${canonicalFigureConsumers.length} consumers)`);
 console.log(`  mission-chain visual owner: ${missionChainOwnerPath}`);
 console.log('  unscoped structural layout selectors: forbidden; no legacy debt remains');
 console.log('  Header legacy selector debt: frozen to 3 compatibility/foundation files plus the canonical owner');
