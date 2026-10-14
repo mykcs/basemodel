@@ -3,25 +3,166 @@ import AppLayout from '../../../../layouts/AppLayout.astro';
 import SeedOpenEvoResearchPage from '../../../../components/research/SeedOpenEvoResearchPage.astro';
 import InteractiveResearchExplainer from '../../../../components/research/InteractiveResearchExplainer.tsx';
 import WebShopReaderMap from '../../../../components/research/WebShopReaderMap.astro';
+import WebShopResearchSources from '../../../../components/research/WebShopResearchSources.astro';
 import WebShopDatasetCanonicalFigure from '../../../../components/research/WebShopDatasetCanonicalFigure.astro';
 import WebShopSmallWorldFigure from '../../../../components/research/WebShopSmallWorldFigure.astro';
 import WebShopGoalGenerationFigure from '../../../../components/research/WebShopGoalGenerationFigure.astro';
 import WebShopSeedSplitFigure from '../../../../components/research/WebShopSeedSplitFigure.astro';
 import WebShopSeedDataUsageFigure from '../../../../components/research/WebShopSeedDataUsageFigure.astro';
 import WebShopEvaluationFigure from '../../../../components/research/WebShopEvaluationFigure.astro';
+import WebShopRewardExplorer from '../../../../components/research/WebShopRewardExplorer.tsx';
 import SeedWebShopCanonicalFigure from '../../../../components/research/SeedWebShopCanonicalFigure.astro';
 const locale = 'zh' as const;
 ---
-<AppLayout title="WebShop 原理、交互与评测" description="WebShop 基准、论文影响力、SEED 使用的 WebShop 设置，以及购物交互、任务生成、任务划分、训练数据使用量与最终评分。" locale={locale}>
+<AppLayout title="WebShop：AI 怎样完成一笔购物" description="从一笔真实的模拟购物操作理解 WebShop，再看商品数据、合成任务、SEED 抽样、终局评分和公平比较证据。" locale={locale}>
   <SeedOpenEvoResearchPage locale={locale} page="webshop">
     <WebShopReaderMap locale={locale} />
-    <InteractiveResearchExplainer locale={locale} kind="webshop" client:visible />
-    <WebShopDatasetCanonicalFigure locale={locale} />
-    <WebShopSmallWorldFigure locale={locale} />
-    <WebShopGoalGenerationFigure locale={locale} />
-    <WebShopSeedSplitFigure locale={locale} />
-    <WebShopSeedDataUsageFigure locale={locale} />
-    <WebShopEvaluationFigure locale={locale} />
-    <SeedWebShopCanonicalFigure locale={locale} />
+
+    <nav class="webshop-story-nav" aria-label="本页四个阅读阶段" data-webshop-story-nav>
+      <span class="webshop-story-nav__label">本页路线</span>
+      <ol>
+        <li><a href="#webshop-experience"><span>01</span>买一次</a></li>
+        <li><a href="#webshop-data"><span>02</span>题目从哪里来</a></li>
+        <li><a href="#webshop-sampling"><span>03</span>SEED 怎样用题</a></li>
+        <li><a href="#webshop-scoring"><span>04</span>怎样评分和比较</a></li>
+      </ol>
+    </nav>
+
+    <section class="webshop-chapter-intro" id="webshop-experience" aria-labelledby="webshop-experience-title">
+      <span class="webshop-chapter-index">01 / 04 · 一次购物</span>
+      <h2 id="webshop-experience-title">选错商品，后面就可能没有正确选项</h2>
+      <p>从一张购物清单开始，亲自尝试买鞋。商品决定了价钱、属性和可用尺码；买下去之后，才会得到终局分数。</p>
+    </section>
+    <WebShopRewardExplorer locale={locale} client:visible />
+    <div class="webshop-extended">
+      <span>继续理解 Agent 怎样操作网页</span>
+      <p>上面的案例强调商品与尺码的依赖关系。下面的五步回放展示 Agent 实际依次获得哪些网页信息、能采取什么动作、网页如何变化。</p>
+    </div>
+    <InteractiveResearchExplainer locale={locale} kind="webshop" compact client:visible />
+
+    <section class="webshop-chapter" id="webshop-data" aria-labelledby="webshop-data-title">
+      <header class="webshop-chapter-intro">
+        <span class="webshop-chapter-index">02 / 04 · 数据怎么变成任务</span>
+        <h2 id="webshop-data-title">购物题不是直接从商品数量里抽出来的</h2>
+        <p>商品目录和人工购物指令是两类不同的数据。WebShop 官方 small 模式使用准备好的商品子集，再根据商品的可选属性组合生成不同购物任务。</p>
+      </header>
+      <WebShopDatasetCanonicalFigure locale={locale} />
+      <WebShopSmallWorldFigure locale={locale} />
+      <WebShopGoalGenerationFigure locale={locale} />
+      <a class="webshop-next" href="#webshop-sampling">接下来：这些题怎样用于 SEED 训练？ <span aria-hidden="true">↓</span></a>
+    </section>
+
+    <section class="webshop-chapter" id="webshop-sampling" aria-labelledby="webshop-sampling-title">
+      <header class="webshop-chapter-intro">
+        <span class="webshop-chapter-index">03 / 04 · 训练与留出题目</span>
+        <h2 id="webshop-sampling-title">SEED：500 条保留题，6,410 条训练候选</h2>
+        <p>6,910 条合成购物要求中，500 条不进入训练；其余 6,410 条是训练候选。一次更新只抽其中一小批，反复采样不等于遍历完整题库。</p>
+      </header>
+      <WebShopSeedSplitFigure locale={locale} />
+      <WebShopSeedDataUsageFigure locale={locale} />
+      <a class="webshop-next" href="#webshop-scoring">接下来：怎样判定买对了没有？ <span aria-hidden="true">↓</span></a>
+    </section>
+
+    <section class="webshop-chapter" id="webshop-scoring" aria-labelledby="webshop-scoring-title">
+      <header class="webshop-chapter-intro">
+        <span class="webshop-chapter-index">04 / 04 · 评分与研究结论</span>
+        <h2 id="webshop-scoring-title">得分看最终买了什么，比较还要看考的是哪一批题</h2>
+        <p>WebShop 的 Task Score 衡量最终购买要求满足多少，完整成功要求全部满足。比较 SEED 和 OpenEvo 时，双方还必须使用同样的任务、环境和评分规则。</p>
+      </header>
+      <WebShopEvaluationFigure locale={locale} />
+      <SeedWebShopCanonicalFigure locale={locale} />
+      <WebShopResearchSources locale={locale} />
+      <nav class="webshop-outro" aria-label="读完 WebShop 后的下一步">
+        <span>继续研究</span>
+        <a href="/research/seed-openevo/flow/seed/">理解 SEED 怎样学习 <span aria-hidden="true">↗</span></a>
+        <a href="/research/seed-openevo/study/results/">查看真实实验结果 <span aria-hidden="true">↗</span></a>
+        <a href="/research/seed-openevo/study/run/">进入复现实验指南 <span aria-hidden="true">↗</span></a>
+      </nav>
+    </section>
   </SeedOpenEvoResearchPage>
 </AppLayout>
+
+<style>
+  .webshop-story-nav {
+    position: sticky;
+    z-index: 11;
+    top: calc(var(--site-header-height, 73px) + 48px);
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+    margin: .2rem 0 2rem;
+    padding: .65rem .75rem;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 97%, transparent);
+    backdrop-filter: blur(10px);
+  }
+  .webshop-story-nav__label { flex: none; color: var(--muted); font-size: .72rem; }
+  .webshop-story-nav ol { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .55rem; width: 100%; min-width: 0; margin: 0; padding: 0; list-style: none; }
+  .webshop-story-nav a { display: flex; align-items: baseline; gap: .35rem; min-height: 30px; padding: .3rem .4rem; border-radius: var(--radius-control); color: var(--ink); font-size: .76rem; font-weight: 720; text-decoration: none; }
+  .webshop-story-nav a:hover, .webshop-story-nav a:focus-visible { background: var(--surface-muted); outline-offset: 2px; }
+  .webshop-story-nav a span { color: var(--accent-deep); font: 750 .64rem/1 var(--font-mono); }
+  .webshop-story-nav a[aria-current="location"] { background:var(--surface-muted); color:var(--accent-deep); text-decoration:underline; text-underline-offset:3px; }
+  .webshop-chapter, .webshop-chapter-intro { scroll-margin-top: calc(var(--site-header-height, 73px) + 116px); }
+  .webshop-chapter { margin: 2.7rem 0; padding-top: 1.1rem; border-top: 2px solid var(--line); }
+  .webshop-chapter :global(.canonical-figure) { scroll-margin-top:calc(var(--site-header-height, 73px) + 116px); }
+  .webshop-chapter-intro { max-width: 850px; margin: 0 0 1.7rem; }
+  .webshop-chapter-index { display: block; margin-bottom: .65rem; color: var(--accent-deep); font: 750 .72rem/1.4 var(--font-mono); }
+  .webshop-chapter-intro h2 { margin: 0 0 .55rem; font-size: clamp(1.7rem, 3vw, 2.5rem); line-height: 1.2; letter-spacing: -.03em; }
+  .webshop-chapter-intro p { max-width: 70ch; margin: 0; color: var(--muted); font-size: .95rem; line-height: 1.7; }
+  .webshop-extended { max-width: 780px; margin: 1.6rem 0 .65rem; padding: .9rem 0 0; border-top: 1px solid var(--line); }
+  .webshop-extended span { color: var(--accent-deep); font-size: .73rem; font-weight: 770; }
+  .webshop-extended p { margin: .35rem 0 0; color: var(--muted); font-size: .87rem; line-height: 1.6; }
+  .webshop-next { display: flex; gap: 1rem; justify-content: space-between; align-items: center; width: fit-content; margin: 1.3rem 0 0 auto; padding: .65rem 0; border-bottom: 1px solid var(--line); color: var(--accent-deep); font-size: .85rem; font-weight: 750; text-decoration: none; }
+  .webshop-next:focus-visible, .webshop-next:hover { border-color: var(--accent-deep); text-decoration: underline; text-underline-offset: 4px; }
+  .webshop-outro { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; margin-top: 1.8rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+  .webshop-outro>span { grid-column: 1 / -1; color: var(--muted); font-size: .75rem; font-weight: 750; }
+  .webshop-outro a { display: flex; justify-content: space-between; gap: .4rem; min-width: 0; padding: .9rem; border: 1px solid var(--line); border-radius: var(--radius-control); color: var(--ink); font-size: .85rem; font-weight: 700; text-decoration: none; }
+  .webshop-outro a:hover, .webshop-outro a:focus-visible { border-color: var(--accent-deep); color: var(--accent-deep); }
+  @media(max-width:850px) {
+    .webshop-story-nav { position: relative; top: auto; align-items: flex-start; flex-direction: column; margin-bottom: 1.4rem; }
+    .webshop-story-nav ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .webshop-chapter-intro,.webshop-chapter { scroll-margin-top: 92px; }
+  }
+  @media(max-width:540px) {
+    .webshop-story-nav { padding: .65rem .25rem; }
+    .webshop-story-nav__label { font-size: .7rem; }
+    .webshop-story-nav a { padding: .3rem .1rem; font-size: .73rem; }
+    .webshop-chapter { margin: 2rem 0; }
+    .webshop-chapter-intro h2 { font-size: 1.65rem; }
+    .webshop-outro { grid-template-columns: 1fr; }
+  }
+</style>
+
+
+<script>
+  // Local chapter navigation is a real navigation system, not a second floating outline.
+  const rail = document.querySelector<HTMLElement>('[data-webshop-story-nav]');
+  if (rail) {
+    const links = [...rail.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
+    const chapters = links.map((link) => ({ link, target: document.getElementById(link.hash.slice(1)) }))
+      .filter((item): item is { link: HTMLAnchorElement; target: HTMLElement } => item.target !== null);
+    let scheduled = false;
+    const update = () => {
+      scheduled = false;
+      const marker = Math.min(window.innerHeight * .34, 330);
+      let current = chapters[0];
+      for (const candidate of chapters) {
+        if (candidate.target.getBoundingClientRect().top <= marker) current = candidate;
+      }
+      for (const candidate of chapters) {
+        if (candidate === current) candidate.link.setAttribute('aria-current', 'location');
+        else candidate.link.removeAttribute('aria-current');
+      }
+    };
+    const onScroll = () => {
+      if (!scheduled) {
+        scheduled = true;
+        window.requestAnimationFrame(update);
+      }
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+  }
+</script>

@@ -1,0 +1,60 @@
+---
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import { type Locale } from '../../i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = (cn: string, en: string) => locale === 'zh' ? cn : en;
+const paper = 'https://arxiv.org/abs/2207.01206';
+const site = 'https://webshop-pnlp.github.io/';
+const code = 'https://github.com/princeton-nlp/WebShop';
+const impact = 'https://collaborate.princeton.edu/en/publications/webshop-towards-scalable-real-world-web-interaction-with-grounded/';
+const seed = 'https://arxiv.org/abs/2607.14777';
+const seedCommit = 'https://github.com/jinyangwu/SEED/blob/2cf2fadca3c5aba28da68e8e1405182ba8d90e6c';
+const seedLauncher = `${seedCommit}/examples/seed_trainer/_common/webshop.sh`;
+const seedSampler = `${seedCommit}/agent_system/environments/env_package/webshop/envs.py`;
+---
+<aside class="webshop-research-sources" id="webshop-seed-setting" aria-labelledby="webshop-source-title">
+  <h3 id="webshop-source-title">{t('研究来源与具体参数', 'Research references and exact parameters')}</h3>
+  <p class="webshop-source-boundary">{t('论文报告 128 个测试样本，但公开资料没有唯一确定论文最终那 128 个 goal ID 与 checkpoint。不要把公开代码可运行的默认题池当成论文最终测试清单。', 'The paper reports 128 test samples, but public information does not uniquely pin their goal IDs or checkpoint. Do not mistake released-code defaults for the paper-final test list.')}</p>
+
+  <details id="webshop-benchmark">
+    <summary>{t('WebShop 论文、原始数据与影响力', 'WebShop paper, original data and impact')}</summary>
+    <dl>
+      <div><dt>{t('论文', 'Paper')}</dt><dd><a href={paper} target="_blank" rel="noreferrer"><ExternalBrandMark href={paper} />WebShop: Towards Scalable Real-World Web Interaction with Grounded Language Agents ↗</a> · NeurIPS 2022</dd></div>
+      <div><dt>{t('官方资源', 'Official')}</dt><dd><a href={site} target="_blank" rel="noreferrer"><ExternalBrandMark href={site} />{t('项目主页 ↗', 'Project ↗')}</a> · <a href={code} target="_blank" rel="noreferrer"><ExternalBrandMark href={code} />{t('代码 ↗', 'Code ↗')}</a></dd></div>
+      <div id="webshop-impact"><dt>{t('引用（历史快照）', 'Citations (historical snapshot)')}</dt><dd>386 Scopus citations · 2026-09-12 · <a href={impact} target="_blank" rel="noreferrer">{t('Princeton 来源 ↗', 'Princeton source ↗')}</a> {t('（不同数据库与日期的计数会不同）', '(counts vary across sources and dates)')}</dd></div>
+    </dl>
+  </details>
+  <details>
+    <summary>{t('SEED 的 WebShop 参数：论文与发布代码逐项对照', 'SEED WebShop settings: paper versus released code')}</summary>
+    <div class="webshop-setting-table" role="region" aria-label="SEED WebShop 设置证据表" tabindex="0">
+      <table>
+        <thead><tr><th scope="col">{t('证据层', 'Evidence')}</th><th scope="col">{t('已知事实', 'Supported facts')}</th><th scope="col">{t('来源', 'Source')}</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">{t('论文报告', 'Paper')}</th><td><strong>128</strong> {t('测试任务', 'test samples')} · {t('训练 batch', 'training batch')} <strong>16</strong> · rollout group <strong>8</strong> · {t('最多', 'maximum')} <strong>15</strong> steps · <strong>150</strong> policy updates</td><td><a href={seed} target="_blank" rel="noreferrer"><ExternalBrandMark href={seed} />SEED paper ↗</a></td></tr>
+          <tr><th scope="row">{t('发布代码', 'Released code')}</th><td>small WebShop <strong>1,000</strong> products · <strong>6,910</strong> goals · {t('训练候选', 'training candidates')} goal <strong>500–6909</strong> · held-out <strong>0–499</strong> · validation <strong>128</strong> · T=<strong>0.4</strong> · max <strong>15</strong> steps</td><td><a href={seedLauncher} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedLauncher} />launcher ↗</a> · <a href={seedSampler} target="_blank" rel="noreferrer"><ExternalBrandMark href={seedSampler} />sampler ↗</a></td></tr>
+          <tr><th scope="row">{t('尚未公开', 'Unknown')}</th><td>{t('论文最终测试使用的确切 128-task manifest、validation 次序与对应 checkpoint 未被公开信息唯一绑定。', 'The paper-final 128-task manifest, validation order, and checkpoint are not uniquely pinned by public evidence.')}</td><td><a href="#fig-seed-webshop">{t('比较边界 ↑', 'Comparison boundary ↑')}</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+</aside>
+<style>
+  .webshop-research-sources { margin: 1.4rem 0 0; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  .webshop-research-sources h3 { margin: 0; font-size: 1.1rem; }
+  .webshop-source-boundary { max-width: 76ch; margin: .5rem 0 1rem; color: var(--ink); font-size: .85rem; line-height: 1.6; }
+  .webshop-research-sources details { padding: .75rem 0; border-top: 1px solid var(--line); }
+  .webshop-research-sources summary { cursor: pointer; color: var(--accent-deep); font-size: .85rem; font-weight: 740; }
+  .webshop-research-sources summary:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+  .webshop-research-sources dl { display: grid; gap: .75rem; margin: .85rem 0 0; }
+  .webshop-research-sources dl>div { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 1rem; }
+  .webshop-research-sources dt { color: var(--muted); font-size: .77rem; }
+  .webshop-research-sources dd { min-width: 0; margin: 0; font-size: .8rem; line-height: 1.6; overflow-wrap: anywhere; }
+  .webshop-research-sources a { color: var(--accent-deep); text-underline-offset: 3px; }
+  .webshop-setting-table { max-width: 100%; margin: .8rem 0; overflow-x: auto; }
+  .webshop-setting-table:focus-visible { outline: 2px solid var(--focus-ring); }
+  table { width: 100%; min-width: 700px; border-collapse: collapse; text-align: left; }
+  th,td { padding: .75rem; border-bottom: 1px solid var(--line); font-size: .78rem; line-height: 1.6; vertical-align: top; }
+  thead th { color: var(--muted); }
+  @media(max-width:600px) { .webshop-research-sources dl>div { grid-template-columns: 1fr; gap: .15rem; } }
+</style>

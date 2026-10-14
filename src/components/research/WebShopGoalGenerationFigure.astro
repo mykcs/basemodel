@@ -3,132 +3,117 @@ import ExternalBrandMark from '../common/ExternalBrandMark';
 import { type Locale } from '../../i18n';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
-const zh = locale === 'zh';
-const t = (cn: string, en: string) => zh ? cn : en;
+const t = (cn: string, en: string) => locale === 'zh' ? cn : en;
 const goalCodeUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/web_agent_site/engine/goal.py';
 const envCodeUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/web_agent_site/envs/web_agent_text_env.py';
 const readmeUrl = 'https://github.com/princeton-nlp/WebShop#webpage-environment-html-mode';
+const sizes = ['8', '9', '10'] as const;
+const colors = ['Black', 'Blue'] as const;
 ---
-
 <section id="fig-webshop-goal-generation" class="canonical-figure webshop-goal-generation" aria-labelledby="webshop-goal-generation-title" data-ui-audit="contrast layout overflow">
   <header class="figure-header">
-    <div class="figure-label">{t('第三步 · GOAL GENERATION','STEP 3 · GOAL GENERATION')}</div>
-    <h2 id="webshop-goal-generation-title">{t('Small WebShop：1,000 个商品生成 6,910 个可执行 goals','Small WebShop: 1,000 products generate 6,910 executable goals')}</h2>
-    <p>{t('这里的操作是 generate（生成），不是过滤。WebShop 会把商品的文字要求、属性、价格条件和 option 组合成可执行购物任务；一个商品可以对应多个 goal。','This operation is generation, not filtering. WebShop combines product instructions, attributes, price constraints, and options into executable shopping goals, so one product can produce multiple goals.')}</p>
+    <div class="figure-label">{t('第三步 · GOAL GENERATION', 'STEP 3 · GOAL GENERATION')}</div>
+    <h3 id="webshop-goal-generation-title">{t('Small WebShop：1,000 个商品生成 6,910 个可执行 goals', 'Small WebShop: 1,000 products generate 6,910 executable goals')}</h3>
+    <p>{t('商品是一条货架记录，goal 是一道“帮我买到符合这些条件的商品”的题目。WebShop 会组合商品已有选项，形成不同购买要求；这一步叫生成（generate），不是把人工指令过滤一遍。', 'A product is one catalog record; a goal is a shopping request. WebShop can combine available product options into distinct requests. This is generation, not filtering human instructions.')}</p>
   </header>
-
   <figure class="generation-story" aria-labelledby="webshop-goal-generation-title">
-    <div class="macro-flow" aria-label={t('1,000 商品生成 6,910 goals','1,000 products generate 6,910 goals')}>
-      <article class="macro-node products" data-ui-audit-item>
-        <small>{t('small WebShop','SMALL WEBSHOP')}</small>
-        <strong>1,000</strong>
-        <span>{t('商品（products）','products')}</span>
-      </article>
-
-      <section class="generator" aria-label={t('WebShop 合成购物任务生成器','WebShop synthetic goal generator')}>
-        <div class="generator-arrow" aria-hidden="true"></div>
-        <div class="generator-card">
-          <small>{t('生成','GENERATE')}</small>
-          <strong>{t('合成购物任务生成','Synthetic goal generation')}</strong>
-          <code>get_synthetic_goals(...)</code>
-          <span>{t('对商品的 option 组合使用 itertools.product(...)','Enumerates option combinations with itertools.product(...)')}</span>
-          <a href={goalCodeUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={goalCodeUrl} />{t('查看官方 goal.py ↗','View official goal.py ↗')}</a>
-        </div>
-      </section>
-
-      <article class="macro-node goals" data-ui-audit-item>
-        <small>{t('small 环境输出','SMALL ENV OUTPUT')}</small>
-        <strong>6,910</strong>
-        <span>{t('synthetic goals（可执行购物任务）','synthetic executable goals')}</span>
-      </article>
+    <div class="quantity-line" role="group" aria-label={t('商品目录与合成任务数量', 'Product records and generated goals')}>
+      <div><span>{t('官方 small 商品目录', 'OFFICIAL SMALL CATALOG')}</span><strong>1,000</strong><small>{t('件商品', 'products')}</small></div>
+      <p>{t('根据商品的颜色、尺码、属性等，生成多个购物要求', 'Generate shopping requests from product options and attributes')}</p>
+      <div><span>{t('运行环境产生的题目', 'GENERATED GOALS')}</span><strong>6,910</strong><small>synthetic goals</small></div>
     </div>
 
-    <details class="one-product-example" open>
-      <summary>
-        <span>{t('组合示例','COMBINATION EXAMPLE')}</span>
-        <strong>{t('一个商品可以展开成多个 goal','One product can expand into multiple goals')}</strong>
-      </summary>
-
-      <div class="example-flow">
-        <article class="product-record" data-ui-audit-item>
-          <div class="example-label">{t('示意商品记录','SCHEMATIC PRODUCT RECORD')}</div>
-          <strong>{t('一件有颜色和尺码选项的商品','A product with color and size options')}</strong>
-          <dl>
-            <div><dt>{t('基础要求','instruction_text')}</dt><dd>{t('找到符合要求的这类商品','Find this kind of product')}</dd></div>
-            <div><dt>{t('颜色','Color')}</dt><dd><span>Black</span><span>Blue</span></dd></div>
-            <div><dt>{t('尺码','Size')}</dt><dd><span>8</span><span>9</span><span>10</span></dd></div>
-            <div><dt>{t('其他条件','Other conditions')}</dt><dd>{t('属性 + 价格上限','attributes + price limit')}</dd></div>
-          </dl>
-          <p>{t('这是为了解释组合逻辑而画的示意例子，不是数据集中的某一条真实商品记录。','This is a schematic example of the combination logic, not a literal record from the dataset.')}</p>
-        </article>
-
-        <div class="combiner" aria-label={t('选项组合','Option combination')}>
-          <code>Color × Size</code>
-          <strong>2 × 3 = 6</strong>
-          <span>{t('种 option 组合','option combinations')}</span>
-        </div>
-
-        <section class="goal-fan" aria-label={t('生成的示意 goals','Generated schematic goals')}>
-          <div class="goal-card"><span>Goal 1</span><strong>Black · 8</strong></div>
-          <div class="goal-card"><span>Goal 2</span><strong>Black · 9</strong></div>
-          <div class="goal-card"><span>Goal 3</span><strong>Black · 10</strong></div>
-          <div class="goal-card"><span>Goal 4</span><strong>Blue · 8</strong></div>
-          <div class="goal-card"><span>Goal 5</span><strong>Blue · 9</strong></div>
-          <div class="goal-card"><span>Goal 6</span><strong>Blue · 10</strong></div>
-        </section>
+    <div class="variant-example">
+      <div class="variant-example__intro">
+        <span>{t('一个具体的组合例子 · 示意', 'ILLUSTRATIVE PRODUCT EXAMPLE')}</span>
+        <p>{t('假设一双鞋只有两种颜色、三个尺码。每个格子对应一种可以写进购物要求里的选择；所有格子都来自同一件商品的选项。', 'Imagine one shoe offered in two colors and three sizes. Each cell is one possible option combination for a shopping request, all drawn from the same product.')}</p>
       </div>
-    </details>
+      <div class="variant-table-wrap" role="region" tabindex="0" aria-label={t('颜色和尺码的六种组合', 'Six color-size combinations')}>
+        <table class="variant-table">
+          <caption>{t('可选颜色 × 可选尺码（教学示意）', 'Available colors × sizes (illustrative)')}</caption>
+          <thead><tr><th scope="col">{t('颜色 / 尺码', 'Color / size')}</th>{sizes.map((size) => <th scope="col">{size}</th>)}</tr></thead>
+          <tbody>{colors.map((color) => <tr><th scope="row">{color}</th>{sizes.map((size) => <td>{color} · {size}</td>)}</tr>)}</tbody>
+        </table>
+      </div>
+      <p class="combination-note"><strong>{t('2 种颜色 × 3 个尺码 = 6 种组合', '2 colors × 3 sizes = 6 combinations')}</strong>{t('。它表示同一商品的六种选项组合，不是六次点击，也不是每件商品都会恰好生成六个 goal。', '. These are option combinations for one product, not six clicks and not a universal six-goal-per-product rule.')}</p>
+    </div>
 
-    <aside class="unit-boundary" role="note" aria-label={t('人工指令与 synthetic goals 的单位边界','Boundary between human instructions and synthetic goals')}>
-      <div class="boundary-copy">
-        <small>{t('单位边界','UNIT BOUNDARY')}</small>
-        <strong>{t('12,087 条人工指令不是 6,910 个 synthetic goals 的过滤来源','The 12,087 human instructions are not the source list filtered into 6,910 synthetic goals')}</strong>
-        <p>{t('12,087 是原始 WebShop 中人工编写的购物指令；6,910 是 small 环境根据 1,000 个商品自动生成的购物任务。两个数字数的是不同对象。','12,087 counts the original WebShop crowd-sourced text instructions; 6,910 comes from synthetic goal generation over the 1,000-product small environment. The two numbers count different objects.')}</p>
-      </div>
-      <div class="boundary-equation" role="img" aria-label={t('12,087 条人工指令不等于筛选后得到 6,910 goals','12,087 human instructions are not filtered into 6,910 goals')}>
-        <span><b>12,087</b>{t('human instructions','human instructions')}</span>
-        <strong>≠</strong>
-        <span><b>6,910</b>{t('synthetic goals','synthetic goals')}</span>
-      </div>
+    <aside class="unit-boundary" role="note">
+      <span class="unit-kicker">两组数字的统计对象不同</span>
+      <strong>{t('12,087 条人工指令不是 6,910 个 synthetic goals 的过滤来源', '12,087 human instructions are not the source list filtered into 6,910 goals')}</strong>
+      <p>{t('12,087 条来自原始 WebShop 众包人工指令；6,910 条来自 small 环境里 1,000 件商品的 synthetic goal generation。两个数字数的是不同对象。', 'The 12,087 instructions come from original WebShop crowd-sourcing; 6,910 goals are generated from the 1,000-product small environment. The counts refer to different objects.')}</p>
     </aside>
 
     <details class="evidence">
-      <summary>{t('查看代码证据','Show code evidence')}</summary>
+      <summary>{t('查看任务生成代码与数量证据', 'Inspect source code for task generation and counts')}</summary>
       <div class="evidence-grid">
-        <article>
-          <small>{t('goal.py · 发布代码','goal.py · RELEASED CODE')}</small>
-          <code>combinations = list(itertools.product(...))</code>
-          <p>{t('WebShop 会枚举一个商品不同 option 的组合，并为组合构造 goal。','WebShop enumerates a product’s option combinations and constructs goals from those combinations.')}</p>
-          <a href={goalCodeUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={goalCodeUrl} />{t('打开官方 goal.py ↗','Open official goal.py ↗')}</a>
-        </article>
-        <article>
-          <small>{t('web_agent_text_env.py · 发布代码','web_agent_text_env.py · RELEASED CODE')}</small>
+        <div>
+          <strong>goal.py · get_synthetic_goals(...)</strong>
+          <code>itertools.product(...)</code>
+          <p>{t('代码枚举同一个商品不同 option 的组合，再为组合构造 goal。', 'The code enumerates combinations of each product’s options before constructing goals.')}</p>
+          <a href={goalCodeUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={goalCodeUrl} />{t('官方 goal.py ↗', 'Official goal.py ↗')}</a>
+        </div>
+        <div>
+          <strong>web_agent_text_env.py</strong>
           <code>human_goals=0 → get_goals(...)</code>
-          <p>{t('默认 SimServer 使用 synthetic goals；随后固定 seed 233 打乱 goal 顺序。','The default SimServer uses synthetic goals, then shuffles goal order with fixed seed 233.')}</p>
-          <a href={envCodeUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={envCodeUrl} />{t('打开官方环境代码 ↗','Open official environment code ↗')}</a>
-        </article>
-        <article>
-          <small>{t('WebShop README · 官方运行输出','WebShop README · OFFICIAL RUN OUTPUT')}</small>
+          <p>{t('默认环境使用 synthetic goals；goal 次序按环境代码里的随机种子处理。', 'The default environment uses synthetic goals; their order is set by the environment implementation.')}</p>
+          <a href={envCodeUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={envCodeUrl} />{t('官方环境源码 ↗', 'Official environment code ↗')}</a>
+        </div>
+        <div>
+          <strong>WebShop README</strong>
           <code>Loaded 6910 goals.</code>
-          <p>{t('官方 README 的 small WebShop 示例运行输出明确打印 6,910 goals。','The official README’s small-WebShop example run explicitly prints 6,910 loaded goals.')}</p>
-          <a href={readmeUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={readmeUrl} />{t('打开官方 README ↗','Open official README ↗')}</a>
-        </article>
+          <p>{t('官方 small 模式运行示例输出 6,910 个可执行 goals。', 'The official small-mode example logs 6,910 loaded goals.')}</p>
+          <a href={readmeUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={readmeUrl} />{t('官方 README ↗', 'Official README ↗')}</a>
+        </div>
       </div>
     </details>
-
-    <figcaption>{t('1,000 个商品通过 WebShop 的 synthetic goal generation 产生 6,910 个可执行 goals。','1,000 products are turned into 6,910 executable goals by WebShop’s synthetic goal generation.')}</figcaption>
+    <figcaption>{t('1,000 件商品对应 6,910 个合成购物任务；颜色 × 尺码的 2 × 3 = 6 只是解释组合逻辑的示意，不是整个数据集的乘法公式。', '1,000 products yield 6,910 synthetic shopping goals. The 2 × 3 = 6 example only illustrates option combinations, not a multiplication formula for the whole dataset.')}</figcaption>
   </figure>
 </section>
-
 <style>
-  .webshop-goal-generation{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
-  .figure-header{max-width:930px}.figure-label{color:var(--accent);font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.6rem,3.7vw,2.9rem);line-height:1.05;letter-spacing:-.045em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}
-  .generation-story{margin:1.5rem 0 0}.macro-flow{display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,.7fr) minmax(0,1fr);gap:1rem;align-items:stretch}.macro-node{padding:1.1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface-muted);display:flex;flex-direction:column;justify-content:center;min-height:220px}.macro-node small{color:var(--muted);font:800 .6rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.macro-node strong{display:block;margin:.65rem 0 .12rem;font-size:clamp(2.3rem,5vw,4.6rem);line-height:.9;letter-spacing:-.06em}.macro-node span{color:var(--muted);font-size:.76rem}.macro-node.products{border-top:5px solid var(--line-strong,var(--line))}.macro-node.goals{border-top:5px solid var(--accent)}
-  .generator{position:relative;display:grid;place-items:center}.generator-arrow{position:absolute;left:-.35rem;right:-.35rem;top:50%;height:2px;background:var(--accent)}.generator-arrow::after{content:'';position:absolute;right:-2px;top:50%;border:7px solid transparent;border-left-color:var(--accent);transform:translateY(-50%)}.generator-card{position:relative;z-index:1;width:100%;padding:1rem;border:1px solid var(--accent);border-radius:12px;background:var(--surface);text-align:center}.generator-card small,.generator-card span{display:block}.generator-card small{color:var(--accent);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.generator-card strong{display:block;margin:.28rem 0 .65rem;font-size:1rem}.generator-card code{display:block;padding:.5rem;border-radius:7px;background:var(--surface-muted);font-size:.68rem;overflow-wrap:anywhere}.generator-card span{margin-top:.55rem;color:var(--muted);font-size:.68rem;line-height:1.45}.generator-card a{display:inline-block;margin-top:.7rem;color:#1467d2;font-size:.68rem;font-weight:800;text-underline-offset:3px}
-  .one-product-example{margin-top:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.one-product-example summary{cursor:pointer;padding:1rem 1.1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.45rem .8rem}.one-product-example summary span{color:var(--accent);font-size:.7rem;font-weight:800}.one-product-example summary strong{font-size:.95rem}.example-flow{display:grid;grid-template-columns:minmax(0,1.05fr) 150px minmax(0,1.35fr);gap:1rem;padding:0 1rem 1rem;align-items:center}.product-record{padding:1rem;border:1px solid var(--line);border-radius:12px;background:var(--surface-muted)}.example-label{color:var(--muted);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.product-record>strong{display:block;margin:.4rem 0 .8rem;font-size:.9rem}.product-record dl{display:grid;gap:.45rem;margin:0}.product-record dl div{display:grid;grid-template-columns:95px 1fr;gap:.5rem;padding-top:.45rem;border-top:1px solid var(--line)}.product-record dt{color:var(--muted);font-size:.66rem}.product-record dd{display:flex;flex-wrap:wrap;gap:.3rem;margin:0;font-size:.7rem}.product-record dd span{padding:.18rem .38rem;border:1px solid var(--line);border-radius:999px;background:var(--surface)}.product-record p{margin:.75rem 0 0;color:var(--muted);font-size:.64rem;line-height:1.5}
-  .combiner{text-align:center}.combiner code{display:block;color:var(--accent);font-weight:800}.combiner strong{display:block;margin:.25rem 0;font-size:1.5rem}.combiner span{color:var(--muted);font-size:.64rem}.goal-fan{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}.goal-card{padding:.65rem .7rem;border:1px solid color-mix(in srgb,var(--accent) 38%,var(--line));border-radius:9px;background:color-mix(in srgb,var(--accent) 5%,var(--surface))}.goal-card span{display:block;color:var(--accent);font:800 .56rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.goal-card strong{display:block;margin-top:.2rem;font-size:.72rem}
-  .unit-boundary{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(250px,.65fr);gap:1rem;align-items:center;margin-top:1rem;padding:1rem;border:1px dashed var(--line);border-radius:12px;background:var(--surface)}.boundary-copy small{display:block;color:var(--muted);font:800 .58rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.boundary-copy strong{display:block;margin:.28rem 0 .35rem;font-size:.86rem}.boundary-copy p{margin:0;color:var(--muted);font-size:.74rem;line-height:1.55}.boundary-equation{display:grid;grid-template-columns:1fr auto 1fr;gap:.5rem;align-items:center}.boundary-equation>strong{font-size:1.4rem;color:var(--muted)}.boundary-equation span{padding:.65rem;border:1px solid var(--line);border-radius:9px;background:var(--surface-muted);text-align:center;font-size:.6rem;color:var(--muted)}.boundary-equation b{display:block;margin-bottom:.15rem;color:var(--ink);font-size:1rem}
-  .evidence{margin-top:1rem;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.evidence summary{cursor:pointer;padding:.85rem 1rem;font-weight:800;font-size:.8rem}.evidence-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;padding:0 1rem 1rem}.evidence-grid article{padding:.8rem;border:1px solid var(--line);border-radius:8px;background:var(--surface-muted)}.evidence-grid small{display:block;color:var(--muted);font:800 .56rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}.evidence-grid code{display:block;margin:.45rem 0;padding:.5rem;border-radius:6px;background:var(--surface);font-size:.66rem;overflow-wrap:anywhere}.evidence-grid p{margin:0;color:var(--muted);font-size:.7rem;line-height:1.5}.evidence-grid a{display:inline-block;margin-top:.55rem;color:#1467d2;font-size:.66rem;font-weight:800}.generation-story figcaption{margin-top:.85rem;color:var(--muted);font-size:.76rem;line-height:1.6}
-  @media(max-width:860px){.macro-flow,.example-flow,.unit-boundary{grid-template-columns:1fr}.generator{min-height:155px}.generator-arrow{left:50%;right:auto;top:-.25rem;bottom:-.25rem;width:2px;height:auto;transform:translateX(-50%)}.generator-arrow::after{right:auto;left:50%;top:auto;bottom:-8px;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--accent)}.combiner{padding:.45rem 0}.goal-fan{grid-template-columns:repeat(2,minmax(0,1fr))}.evidence-grid{grid-template-columns:1fr}}
-  @media(max-width:560px){.webshop-goal-generation{width:min(100% - 1rem,1120px);padding:1rem}.goal-fan,.boundary-equation{grid-template-columns:1fr}.boundary-equation>strong{text-align:center}.product-record dl div{grid-template-columns:1fr}.one-product-example summary{display:block}.one-product-example summary strong{display:block;margin-top:.28rem}}
+  .webshop-goal-generation { width: 100%; margin: 1.5rem auto; padding: 1.1rem 0 1.5rem; border-top: 1px solid var(--line); }
+  .figure-header { max-width: 880px; }
+  .figure-label { color: var(--accent-deep); font: 750 .66rem/1.3 var(--font-mono); }
+  .figure-header h3 { margin: .4rem 0 .55rem; font-size: clamp(1.26rem, 2.7vw, 1.95rem); line-height: 1.26; letter-spacing: -.02em; }
+  .figure-header p { max-width: 74ch; margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.65; }
+  .generation-story { margin: 1rem 0 0; }
+  .quantity-line { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr); align-items: center; gap: .9rem; padding: .8rem 0 1rem; border-block: 1px solid var(--line); }
+  .quantity-line>div { min-width: 0; }
+  .quantity-line span { display: block; color: var(--muted); font-size: .7rem; font-weight: 750; }
+  .quantity-line strong { display: block; margin: .3rem 0; color: var(--ink); font: 800 clamp(1.55rem, 3.2vw, 2.25rem)/1.1 var(--font-mono); }
+  .quantity-line small { color: var(--muted); font-size: .75rem; }
+  .quantity-line>p { min-width: 0; margin: 0; padding: 0 1rem; border-inline: 1px solid var(--line); color: var(--ink); text-align: center; font-size: .82rem; line-height: 1.56; }
+  .variant-example { max-width: 930px; margin: 1.3rem 0 .8rem; }
+  .variant-example__intro span { color: var(--accent-deep); font-size: .7rem; font-weight: 750; }
+  .variant-example__intro p { max-width: 77ch; margin: .4rem 0 .75rem; font-size: .83rem; line-height: 1.6; }
+  .variant-table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface); }
+  .variant-table-wrap:focus-visible { outline: 2px solid var(--focus-ring); }
+  .variant-table { width: 100%; min-width: 290px; border-collapse: collapse; }
+  .variant-table caption { padding: .5rem .65rem; text-align: left; color: var(--muted); font-size: .7rem; }
+  .variant-table th,.variant-table td { padding: .65rem .8rem; border-top: 1px solid var(--line); border-right: 1px solid var(--line); font-size: .79rem; font-weight: 560; text-align: left; }
+  .variant-table th { color: var(--muted); font-weight: 750; }
+  .variant-table tbody td { color: var(--ink); font-family: var(--font-mono); font-size: .72rem; }
+  .variant-table th:last-child,.variant-table td:last-child { border-right: 0; }
+  .combination-note { margin: .65rem 0; color: var(--muted); font-size: .79rem; line-height: 1.62; }
+  .combination-note strong { color: var(--ink); font-size: .83rem; }
+  .unit-boundary { max-width: 89ch; margin: 1.15rem 0 0; padding: .65rem 0 .65rem .85rem; border-left: 3px solid var(--color-warning); }
+  .unit-kicker { display:block; margin-bottom:.4rem; color:var(--accent-deep); font-size:.65rem; font-weight:760; }
+  .unit-boundary strong { display: block; font-size: .83rem; line-height: 1.45; }
+  .unit-boundary p { margin: .35rem 0 0; color: var(--muted); font-size: .78rem; line-height: 1.65; }
+  .evidence { margin-top: 1rem; border-top: 1px solid var(--line); }
+  .evidence summary { cursor: pointer; padding: .65rem 0; color: var(--accent-deep); font-size: .79rem; font-weight: 750; }
+  .evidence summary:focus-visible { outline: 2px solid var(--focus-ring); }
+  .evidence-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; padding: .7rem 0; }
+  .evidence-grid>div { min-width: 0; }
+  .evidence-grid strong { display: block; font-size: .77rem; }
+  .evidence-grid code { display: block; margin: .5rem 0; padding: .4rem; border-radius: var(--radius-control); background: var(--surface-muted); font-size: .72rem; overflow-wrap: anywhere; }
+  .evidence-grid p { color: var(--muted); font-size: .76rem; line-height: 1.52; }
+  .evidence-grid a { color: var(--accent-deep); font-size: .72rem; font-weight: 750; }
+  .generation-story figcaption { max-width: 89ch; margin-top: .65rem; color: var(--muted); font-size: .74rem; line-height: 1.6; }
+  @media(max-width:760px) {
+    .variant-table th,.variant-table td { padding:.6rem .4rem; font-size:.7rem; }
+    .quantity-line { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .quantity-line>p { grid-column: 1 / -1; grid-row: 2; padding: .75rem 0 0; border: 0; border-top: 1px solid var(--line); text-align: left; }
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
 </style>
