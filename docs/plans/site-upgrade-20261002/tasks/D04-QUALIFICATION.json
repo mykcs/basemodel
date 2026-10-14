@@ -1,0 +1,117 @@
+{
+  "schema": "basemodel.d04-qualification.v1",
+  "checked_at": "2026-10-03",
+  "baseline_main": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+  "stack": {
+    "D01": "618e4b65cbf3052e0503ea1d875d81015231aa33",
+    "D02": "bfdbb5c5a5a668055e45e4e718436660d87a2e77",
+    "D03": "f738b67a018fe3a1b068fd210b367cafd649cc24",
+    "D04_plan_head_before_dependency_merge": "1c4fee33cca7472f078c4488a75a3c567c1ccbd8"
+  },
+  "implementation_sha256": {
+    "src/data/researchDecisionNotes.ts": "739465f445f3f393a15b737e20d7062e6caced2cd470e283d9c07faafec10952",
+    "src/lib/researchDecisionNotes.test.ts": "2a500cb8a2bc487ed4a7f5ce9887d852afbc3678d23207fa197e164d4b39a8ab",
+    "scripts/validate-data.ts": "b051d54e9e6596a497ee42f37d7a2d043441d8780c171a5656fdbf6836c31a5d",
+    "docs/plans/site-upgrade-20261002/tasks/D04.md": "975eb00664335bb737833b780d4a95416727dc76773acf2ee9f05a2d752c74c4",
+    "docs/plans/site-upgrade-20261002/tasks/D04-IMPLEMENTATION.md": "005551b8612f5359295165b36d5f2cf31f4069ddc3e9f55860a36d888a8c27e2"
+  },
+  "upstream_snapshot": {
+    "mykcs/openevo-experiment#597": {
+      "head": "fd7ef9e8d377b731407f7b2c923ba2616719a71d",
+      "state": "closed-unmerged",
+      "role": "completed Stage1 and rank32 scientific evidence"
+    },
+    "mykcs/openevo-experiment#628": {
+      "head": "3223a157f8b347180e5d7e629cf8fddaca2ee53e",
+      "state": "merged",
+      "role": "cross-mechanism horizon answer"
+    },
+    "mykcs/openevo-experiment#629": {
+      "head": "a8e50b3e79bc009ea95ac47a73eccf51a50eadab",
+      "state": "open",
+      "role": "learning-signal owner"
+    },
+    "mykcs/openevo-experiment#630": {
+      "head": "9c88e4917d623e80340699c3ee10ad5de0afe5d7",
+      "state": "open",
+      "role": "full SEED Stage2 owner"
+    },
+    "mykcs/openevo-experiment#631": {
+      "head": "e5987eb950f82cd11d007deaa2c9926cf927d3b1",
+      "state": "open",
+      "role": "rank-capacity owner"
+    },
+    "mykcs/openevo-experiment#632": {
+      "head": "065a2cd675a28cbbf5bd503aa471d916895b5c67",
+      "state": "open",
+      "role": "beta magnitude/adaptive-gain owner"
+    },
+    "mykcs/openevo-experiment#634": {
+      "head": "593e58daf537f7616cbfde8b785d42f8b0fbb92d",
+      "state": "merged",
+      "role": "causal Task Vector direction evidence"
+    },
+    "mykcs/openevo-experiment#635": {
+      "head": "f9a0cab1d8b37ac0f5929f505e356933c285a436",
+      "state": "open",
+      "role": "retention/forgetting owner"
+    },
+    "mykcs/openevo-experiment#471": {
+      "head": "961c17fb3999f2c469564a7635aaa11c8a73279a",
+      "state": "merged",
+      "role": "acceleration lineage boundary"
+    },
+    "mykcs/openevo-experiment#481": {
+      "head": "7200e4836d5330fe634739f49f8ec27e9a2d71f6",
+      "state": "closed-unmerged",
+      "role": "historical acceleration admission analysis"
+    }
+  },
+  "decision_summary": {
+    "questions": 5,
+    "continue_existing_work": [
+      "learning-signal-transfer",
+      "rank-capacity-knee",
+      "beta-late-dynamics"
+    ],
+    "closed_by_evidence": [
+      "training-horizon"
+    ],
+    "wait_for_existing_evidence": [
+      "acceleration-budget-reallocation"
+    ],
+    "d04_new_formal_rollouts": 0,
+    "d04_new_prs": 0,
+    "d04_final_panel_access_added": 0
+  },
+  "checks": {
+    "new_tests": 20,
+    "focused_tests": 72,
+    "focused_test_files": 3,
+    "structural_test_files": 128,
+    "structural_tests": 955,
+    "behavior_test_files": 7,
+    "behavior_tests": 37,
+    "typecheck_files": 605,
+    "typecheck_errors": 0,
+    "verify_deploy": "PASS",
+    "build": "PASS",
+    "static_pages": 265,
+    "reader_contract_routes": 68,
+    "strict_copy_invariant_failures": 0
+  },
+  "boundaries": {
+    "training_started": false,
+    "final_panel_access": 0,
+    "new_experiment_authority": false,
+    "new_openevo_experiment_pr": false,
+    "production_source_page_changed": false,
+    "vercel_final_gate_requested": false,
+    "merged": false,
+    "production_released": false
+  },
+  "known_non_blocking_existing_findings": {
+    "astro_check_hints": 2,
+    "copy_audit_candidate_findings": "existing review queue; strict invariant failures remain zero"
+  }
+}
