@@ -274,9 +274,51 @@ test('briefing scales the whole 16:9 slide to iPhone width without horizontal sc
   expect(phone!.internalTransformScaleY).toBeCloseTo(390 / 1280, 4);
 
   await page.setViewportSize({ width: 2560, height: 1440 });
-  await page.goto('/research/seed-openevo/study/briefing/#capacity-diagnostic', { waitUntil: 'networkidle' });
-  const desktop = await page.locator('#capacity-diagnostic').boundingBox();
+  const desktopSlide = page.locator('#capacity-diagnostic');
+  // The resize event and the inline deck-scale recalculation are delivered on a later frame.
+  // setViewportSize() and navigation/networkidle can finish before that frame. Wait for the
+  // real layout instead of weakening the original 1280×720 acceptance thresholds.
+  // Also exercise the live resize path: no page reload is needed to restore the desktop deck.
+  await expect(desktopSlide).toHaveCSS('width', '1280px');
+  await expect(desktopSlide).toHaveCSS('height', '720px');
+  const desktop = await desktopSlide.boundingBox();
   expect(desktop).not.toBeNull();
   expect(desktop!.width).toBe(1280);
   expect(desktop!.height).toBe(720);
+  const desktopScale = await page.evaluate(() => {
+    const deck = document.querySelector('[data-testid="progress-briefing"]');
+    const inner = document.querySelector('#capacity-diagnostic .slide-inner');
+    if (!deck || !inner) return null;
+    const style = getComputedStyle(inner);
+    const matrix = new DOMMatrixReadOnly(style.transform);
+    return {
+      viewport: innerWidth,
+      deckScale: Number.parseFloat(getComputedStyle(deck).getPropertyValue('--deck-scale')),
+      cssWidth: Number.parseFloat(style.width),
+      cssHeight: Number.parseFloat(style.height),
+      transformX: matrix.a,
+      transformY: matrix.d,
+    };
+  });
+  expect(desktopScale).not.toBeNull();
+  expect(desktopScale!.viewport).toBe(2560);
+  expect(desktopScale!.deckScale).toBe(1);
+  expect(desktopScale!.cssWidth).toBe(1280);
+  expect(desktopScale!.cssHeight).toBe(720);
+  expect(desktopScale!.transformX).toBe(1);
+  expect(desktopScale!.transformY).toBe(1);
+
+  // Re-entering phone width must also rescale without a reload or horizontal overflow.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(desktopSlide).toHaveCSS('width', '390px');
+  const phoneAgain = await desktopSlide.boundingBox();
+  expect(phoneAgain).not.toBeNull();
+  expect(phoneAgain!.width).toBeCloseTo(390, 0);
+  expect(phoneAgain!.height / phoneAgain!.width).toBeCloseTo(9 / 16, 3);
+  const phoneAgainState = await page.evaluate(() => ({
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    scale: Number.parseFloat(getComputedStyle(document.querySelector('[data-testid="progress-briefing"]')!).getPropertyValue('--deck-scale')),
+  }));
+  expect(phoneAgainState.overflow).toBeLessThanOrEqual(2);
+  expect(phoneAgainState.scale).toBeCloseTo(390 / 1280, 4);
 });
