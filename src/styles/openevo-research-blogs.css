@@ -129,3 +129,9 @@ html[data-theme="dark"] .evo-blog {
 
 .evo-blog .evo-article__siblings .evo-current{display:block;font-size:.93em;line-height:1.5;padding:.6rem .25rem .7rem 0;border-bottom:2px solid var(--paper-ink);color:var(--paper-ink)}
 @media(max-width:720px){.evo-blog .evo-article__siblings .evo-current{padding:.45rem 0}}
+
+.evo-blog .evo-article__experiment-guide{max-width:82ch;margin:1rem 0 1.35rem}
+.evo-blog .evo-article__experiment-guide>div{padding:.9rem 0;border-bottom:1px solid var(--paper-line)}
+.evo-blog .evo-article__experiment-guide>div:first-child{border-top:1px solid var(--paper-line)}
+.evo-blog .evo-article__experiment-guide dt{font-weight:700;line-height:1.6}
+.evo-blog .evo-article__experiment-guide dd{margin:.27rem 0 0;line-height:1.74;color:var(--paper-muted)}

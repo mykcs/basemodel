@@ -43,8 +43,8 @@ const checkpointEvidence = {
       <h2>目录</h2>
       <ol>
         <li><a href="#context">1 研究问题与评测</a></li>
-        <li><a href="#experiment">2 评测口径</a></li>
-        <li><a href="#responses">3 学长十问的逐项实验回应</a></li>
+        <li><a href="#experiment">2 我们做了哪些实验</a></li>
+        <li><a href="#responses">3 十个问题的实验回答</a></li>
         {ADVISOR_QUESTIONS.map(q => <li><a href={'#response-'+q.id}>{q.id.toUpperCase()} {q.title}</a></li>)}
         <li><a href="#main-results">4 三种长期路线的终评结果</a></li>
         <li><a href="#capacity">5 长期容量</a></li>
@@ -62,29 +62,35 @@ const checkpointEvidence = {
       <p>普通 OpenEVO 逐轮保留新的低秩参数组件；Bounded 把历史整合进固定容量；历史 β 机制进一步控制更新写入。三条路线首先回答“保留历史越来越贵时，模型还能学会多少”这个问题。相关的 LoRA、SD-LoRA、Bounded 和 β 数学结构，在第一篇 <a href="/research/seed-openevo/study/openevo-methods/">方法文章</a>中详细介绍。</p>
     </section>
     <section id="experiment" class="evo-article__section">
-      <h2>2 六类证据的评测口径</h2>
-      <div class="evo-article__tablewrap" tabindex="0" aria-label="各实验统计口径">
-        <table>
-          <caption>表 1｜不同研究证据的任务和用途</caption>
-          <thead><tr><th>测量</th><th>样本与时点</th><th>可以回答什么</th></tr></thead>
-          <tbody>
-            <tr><th>三条路线终评</th><td>三条历史 160 轮路线各自结束以后，在同一冻结 128 题上测试</td><td>历史模型的同题最终表现；不直接识别每一种算法修改的因果影响</td></tr>
-            <tr><th>长期容量筛选</th><td>第 152–159 轮，1,024 组相同任务与随机条件的配对尝试</td><td>该后段窗口的文件容量与任务得分变化</td></tr>
-            <tr><th>更新方向干预</th><td>指定模型保存点，冻结 64 题，对某轮更新做方向反转</td><td>局部的方向因果效应</td></tr>
-            <tr><th>载体更新计数</th><td>历史长期训练收据</td><td>Text Memory、Skill、Agent System 和参数各更新了多少次</td></tr>
-            <tr><th>R159 开发题</th><td>第 160 次更新后：冻结 64 题及旧 64×8 次重复尝试</td><td>单模型开发集能力和成功波动；不是历史 128 题终评</td></tr>
-            <tr><th>R159 压缩诊断</th><td>16 个训练任务的 32 条旧动作前输入</td><td>压缩前后动作标签改变；没有重新执行购物任务</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="evo-article__note">每项测量必须保留自己的任务身份、模型起点与评估时点。以满分 100 展示得分，只是统一数字尺度，不意味着不同任务面板可以直接比较。</p>
+      <h2>2 我们做了哪些实验，分别想回答什么？</h2>
+      <p>训练轮数够不够、不同更新方法做题表现怎样、减少参数容量有没有损失，都需要真正的购物任务成绩。我们分别检查<strong>训练过程中保存的模型</strong>、<strong>训练结束后的模型</strong>，以及<strong>只改变某项机制的配对任务</strong>。</p>
+      <dl class="evo-article__experiment-guide">
+        <div>
+          <dt><a href="/research/seed-openevo/study/advisor-questions/#q01">训练 160 轮会不会太多了？</a></dt>
+          <dd>三种方法各选 11 个已有保存点，在同一冻结 64 道开发题上考试，观察后半段得分何时趋于稳定。</dd>
+        </div>
+        <div>
+          <dt><a href="#main-results">三条长期路线，最终做题能力怎样？</a></dt>
+          <dd>训练结束后，让三组模型完成同一冻结 128 题，比较任务得分与完整成功数；普通路线是较早的历史实验。</dd>
+        </div>
+        <div>
+          <dt><a href="/research/seed-openevo/study/advisor-questions/#q04">长期参数需要保留多大容量？</a></dt>
+          <dd>在第 152–159 轮的 1,024 组配对任务里比较 rank32 和 rank128，测量文件大小及任务成绩的变化。</dd>
+        </div>
+        <div>
+          <dt><a href="/research/seed-openevo/study/advisor-questions/#q07">参数更新方向会影响能力吗？</a></dt>
+          <dd>对选定保存点的一轮参数更新做方向反转，在冻结 64 题上测量同一模型的成绩变化。</dd>
+        </div>
+      </dl>
+      <p>后文还使用已有的文字载体更新收据，以及 R159 在 64 题上的重复尝试和 32 条训练期动作输入的压缩诊断。Q02、Q03 的 SFT 与 SEED 实验使用独立协议，逐问说明。每项结果都会附上它所属的题目、模型与测量时点。</p>
     </section>
     <section class="evo-article__section" id="responses" data-response-experiments>
-      <h2>3 十个研究问题的实验回应</h2>
-      <p>下面按第二篇的 Q01–Q10 顺序列出<strong>实际运行内容、观察到的结果、可以得出的解释和尚缺的证据</strong>。只有实验记录足够完整时，我们才认为某个问题得到了范围明确的回答。每个结果都可以跳回<a href="/research/seed-openevo/study/advisor-questions/">对应的问题</a>。</p>
+      <h2>3 十个研究问题，我们得到了哪些回答？</h2>
+      <p>Q01–Q10 逐一对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。每个问题标题下都有直达第二篇<strong>问题正文与背景</strong>的链接，以及本篇的实验做法、实际结果与证据缺口。9 月 22 日会议的逐字记录见本文开头。</p>
       {ADVISOR_QUESTIONS.map(q => (
         <article class="evo-article__question" id={'response-'+q.id} data-experiment-response={q.id} aria-labelledby={'response-'+q.id+'-title'}>
           <header class="evo-article__question-header"><span class="evo-article__qnum">{q.id.toUpperCase()}</span><h3 id={'response-'+q.id+'-title'}>{q.title}</h3></header>
+          <p class="evo-article__note" data-question-origin-link={q.id}><a href={'/research/seed-openevo/study/advisor-questions/#'+q.id}>查看第二篇的 {q.id.toUpperCase()} 问题正文与背景 ↗</a>{q.id==='q10' && ' · 会后新增问题'}</p>
           <p><strong>实验怎么做：</strong>{q.experiment}</p>
           <p class="evo-article__answer" data-experiment-finding={q.id}><strong>实际结果：</strong>{q.finding.replaceAll('普通 DirectApply','普通 OpenEVO')}</p>
           {q.id==='q01' && <AdvisorTenEvidenceVisual variant="q01" />}
@@ -96,7 +102,6 @@ const checkpointEvidence = {
           <p><strong>支持的研究判断：</strong>{q.interpretation}</p>
           <p class="evo-article__limit"><strong>还缺什么：</strong>{q.unknown}</p>
           <p class="evo-article__note">
-            <a href={'/research/seed-openevo/study/advisor-questions/#'+q.id}>对应的研究问题 ↗</a> ·
             {q.evidence.slice(0, 1).map(e => <span><a href={e.href} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={e.href} />本问实验来源 ↗</a> · </span>)}
             <a href={'#source-'+q.id}>更多实验来源 ↓</a>
           </p>
@@ -108,7 +113,7 @@ const checkpointEvidence = {
       <p>三条路线均已完成 160 轮学习。训练结束后的模型在相同冻结 128 道 WebShop 任务上得到下表成绩：</p>
       <div class="evo-article__tablewrap" tabindex="0" aria-label="三条路线冻结最终测试">
         <table>
-          <caption>表 2｜同一冻结 128 题的三个历史终点</caption>
+          <caption>表 1｜同一冻结 128 题的三个历史终点</caption>
           <thead><tr><th>方法</th><th data-numeric>Task Score / 100</th><th data-numeric>完整成功</th></tr></thead>
           <tbody>{ADVISOR_Q05_FROZEN.map((item) => (
             <tr><th>{item.method.replace(' / DirectApply','')}</th><td data-numeric>{item.score}</td><td data-numeric>{item.exact}</td></tr>
@@ -162,7 +167,7 @@ const checkpointEvidence = {
       <p>OpenEVO 的经验除了参数，还可以进入 Text Memory、Skill 和 Agent System。长期实验的收据显示，参数更新很频繁，文字状态实际改写得少得多。</p>
       <div class="evo-article__tablewrap" tabindex="0" aria-label="BUNDLE 更新计数">
         <table>
-          <caption>表 4｜三条历史路线中不同载体的内容更新次数</caption>
+          <caption>表 3｜三条历史路线中不同载体的内容更新次数</caption>
           <thead><tr><th>路线</th><th data-numeric>参数</th><th data-numeric>Text Memory</th><th data-numeric>Skill</th><th data-numeric>Agent System</th></tr></thead>
           <tbody>{ADVISOR_Q09_UPDATES.map((item) => <tr><th>{item.method}</th><td data-numeric>{item.parametric}</td><td data-numeric>{item.textMemory}</td><td data-numeric>{item.skill}</td><td data-numeric>{item.agent}</td></tr>)}</tbody>
         </table>
@@ -176,7 +181,7 @@ const checkpointEvidence = {
       <p>历史上已对相同 64 题各尝试 8 次，共 512 次结果。按“每题在前 k 次中至少成功一次”统计的 Success@k 如下；这些数字来自旧数据的严格复用，并非本次写作重新运行 WebShop。</p>
       <div class="evo-article__tablewrap" tabindex="0" aria-label="R159 重复八次的 Success at k">
         <table>
-          <caption>表 5｜R159 开发集 64 题：前 k 次至少成功一次的题数</caption>
+          <caption>表 4｜R159 开发集 64 题：前 k 次至少成功一次的题数</caption>
           <thead><tr><th>尝试次数 k</th><th data-numeric>至少成功一次的题数 / 64</th></tr></thead>
           <tbody>
             <tr><th scope="row">1 次</th><td data-numeric>18/64</td></tr>

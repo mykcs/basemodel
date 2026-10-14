@@ -160,7 +160,7 @@ test('publication tables have unique labels and frozen comparisons link to actua
   const root=page.locator('[data-evo-blog="results"]');
   const captions=await root.locator('table caption').allTextContents();
   const labeled=captions.filter(c=>/表\s*[1-5]｜/.test(c));
-  for(const number of [1,2,3,4,5]) expect(labeled.filter(c=>c.includes('表 '+number+'｜')).length).toBe(1);
+  for(const number of [1,2,3,4]) expect(labeled.filter(c=>c.includes('表 '+number+'｜')).length).toBe(1);
   const finals=page.locator('#main-results');
   await expect(finals.locator('table tbody tr')).toHaveCount(3);
   await expect(finals.locator('[data-report-figure="q05-same-final"]')).toHaveCount(0);
@@ -169,6 +169,35 @@ test('publication tables have unique labels and frozen comparisons link to actua
   const repeated=page.locator('#checkpoint-evidence table tbody tr');
   await expect(repeated).toHaveCount(4);
   await expect(repeated.last()).toContainText('31/64');
+});
+
+test('Q01 shows measured Task Score curves and links each answer to the second-article question',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(prefix+'parameter-memory-results/');
+  const guide=page.locator('#experiment');
+  await expect(guide.locator('dt')).toHaveCount(4);
+  await expect(guide.locator('table')).toHaveCount(0);
+  await expect(guide).toContainText('我们做了哪些实验，分别想回答什么？');
+  const answer=page.locator('#response-q01');
+  await expect(answer.locator('h3')).toHaveText('训练 160 轮会不会太多了？');
+  const link=answer.locator('[data-question-origin-link="q01"] a');
+  await expect(link).toHaveAttribute('href','/research/seed-openevo/study/advisor-questions/#q01');
+  const chart=answer.locator('[data-report-figure="q01-horizon"]');
+  await expect(chart).toHaveAttribute('data-evidence-shape','measured-score-curves');
+  await expect(chart.locator('[data-q01-line]')).toHaveCount(3);
+  await expect(chart.locator('[data-q01-phone-line]')).toHaveCount(3);
+  for(const line of await chart.locator('[data-q01-line]').all())
+    await expect(line.locator('circle')).toHaveCount(11);
+  await expect(chart).toContainText('第 120 次更新约 60.40');
+  await expect(chart).toContainText('后段下降约 12.93');
+  await expect(chart.locator('a[href*="three-way-curve.csv"]')).toBeVisible();
+  await expect(chart.locator('a[href*="Q01_THREE_WAY_RESULT.json"]')).toBeVisible();
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(2);
+  await link.click();
+  await expect(page).toHaveURL(/advisor-questions\/#q01$/);
+  await expect(page.locator('#q01 h3')).toHaveText('训练 160 轮会不会太多了？');
+  await expect(page.locator('#q01 a[href*="parameter-memory-results"]')).toBeVisible();
 });
 
 test('cross-article flow is method → questions → our response experiments',async({page})=>{
