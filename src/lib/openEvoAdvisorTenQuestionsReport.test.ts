@@ -40,7 +40,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(intro).toContain('会议原始逐字记录（RAW）');
     expect(intro.indexOf('会议原始逐字记录')).toBeLessThan(intro.indexOf('Q01–Q09'));
     expect(intro).toContain('Q10');
-    expect(intro).toContain('并不是学长当场逐字提出的十句话');
+    expect(intro).toContain('不是学长当时逐字提出的十句话');
     expect(questions).toContain('href={OPEN_EVO_ADVISOR_MEETING.rawHref}');
     expect(questions).toContain('href={OPEN_EVO_ADVISOR_MEETING.reconciliationHref}');
     expect(questions).toContain('后续分析（非 RAW）');
@@ -114,6 +114,27 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('独立研究');
     expect(questions).toContain('不能当作学长当时逐字提出的十句话');
   });
+  it('keeps evaluation scope, unique booktabs numbers and primary source proximity',()=>{
+    const capacity=read('src/components/research/AdvisorTenEvidenceVisual.astro');
+    expect(responses).toContain('六类证据的评测口径');
+    expect(responses).not.toContain('四种测量不能混成一次对照');
+    expect(responses).toContain('十个研究问题的证据');
+    expect(responses).not.toContain('逐项回答学长十问');
+    for(const label of ['表 1｜','表 2｜','表 3｜','表 4｜','表 5｜']){
+      const amount=responses.split(label).length-1 + capacity.split(label).length-1;
+      if(label==='表 3｜') expect(amount).toBe(1); // Capacity is rendered by the component.
+      else expect(responses.split(label).length-1).toBe(1);
+    }
+    expect(responses).not.toContain('<AdvisorTenEvidenceVisual variant="q05" />');
+    for(const source of ['checkpointEvidence.directFinal','checkpointEvidence.boundedFinal','checkpointEvidence.resourceAnalysis','checkpointEvidence.capacity','checkpointEvidence.direction'])
+      expect(responses).toContain('href={'+source+'}');
+    expect(responses).not.toContain('原始记录 ↗</a>');
+    expect(responses).toContain('研究记录 ↗');
+    expect(questions).toContain('问题编目源码');
+    const kBlock=responses.split('aria-label="R159 重复八次的 Success at k"')[1]?.split('</table>')[0] ?? '';
+    expect(kBlock).toContain('scope="row">1 次');
+    expect(kBlock).toContain('scope="row">8 次');
+  });
   it('keeps the checkpoint addendum separate from historical conclusions',()=>{
     expect(responses).toContain('data-checkpoint-evidence');
     for(const v of ['60.1088/100','18/64','53/64','31/64','6/64','33/64','4/32、3/32、1/32','186','1,014','0/13','39/78','38/78','PARTIAL','2026-10-14'])
@@ -122,7 +143,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('没有运行压缩版的 WebShop Task Score');
     expect(responses).toContain('1bc2f7f6');
     expect(responses).toContain('18032c5c');
-    expect(responses).toContain('新增科学测量目前已暂停');
+    expect(responses).toContain('新增科研测量现已暂停');
     expect(questions).not.toContain('60.1088');
     expect(methods).not.toContain('39/78');
   });

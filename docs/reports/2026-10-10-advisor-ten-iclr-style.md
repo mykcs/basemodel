@@ -92,7 +92,7 @@ WebShop 一批任务轨迹 → 本轮学习信号与参数更新 → 历史保�
 
 **原因与可信范围。** 这些数据包含先后开展的历史运行。普通 OpenEVO 属于前序实验；训练起点与执行条件的差异会参与解释三组得分差。要单独估计容量或 β 的因果影响，需要固定其他训练条件并改变一个处理因素。
 
-**下一步。** 先完成统一模型起点和任务流的容量对照，再评估 β 干预，分别报告能力和计算成本。[原始三路线结果页面](https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro)。
+**研究空白。** 统一起点的容量对照与 β 的独立能力检验仍缺决定性证据；当前新增科研测量已经暂停，需要研究者另行授权才能继续。[普通路线冻结终评原始收据](https://github.com/mykcs/openevo-experiment/blob/04d6bd8e422103aa71be2b8f2672c2db97d0e351/docs/evidence/q17-final-closeout-20260912/FINAL_EVAL_VERIFICATION.json) · [Bounded 与 β 终评原始收据](https://github.com/mykcs/openevo-experiment/blob/04d6bd8e422103aa71be2b8f2672c2db97d0e351/docs/evidence/bounded-effective-state-final-closeout-20260918/FINAL_COMPARISON.json)。
 
 ## 6 Ablation Studies｜消融实验
 

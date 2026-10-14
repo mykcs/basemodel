@@ -4,7 +4,7 @@ const prefix='/research/seed-openevo/study/';
 const articles=[
   {slug:'openevo-methods',type:'methods',title:'OpenEVO 怎样保存和更新经验'},
   {slug:'advisor-questions',type:'questions',title:'学长十问：OpenEVO 还有哪些问题需要回答'},
-  {slug:'parameter-memory-results',type:'results',title:'我们的回应实验：逐项回答学长十问'},
+  {slug:'parameter-memory-results',type:'results',title:'我们的回应实验：十个研究问题的证据'},
 ] as const;
 
 for(const width of [390,768,1440]){
@@ -153,6 +153,22 @@ test('meeting date and primary RAW are visible where the reader first sees the a
   await expect(raw).toHaveCount(1);
   await expect(raw).toBeVisible();
   await expect(page.locator('#sources')).toContainText('后续分析（非 RAW）');
+});
+
+test('publication tables have unique labels and frozen comparisons link to actual receipts',async({page})=>{
+  await page.goto(prefix+'parameter-memory-results/');
+  const root=page.locator('[data-evo-blog="results"]');
+  const captions=await root.locator('table caption').allTextContents();
+  const labeled=captions.filter(c=>/表\s*[1-5]｜/.test(c));
+  for(const number of [1,2,3,4,5]) expect(labeled.filter(c=>c.includes('表 '+number+'｜')).length).toBe(1);
+  const finals=page.locator('#main-results');
+  await expect(finals.locator('table tbody tr')).toHaveCount(3);
+  await expect(finals.locator('[data-report-figure="q05-same-final"]')).toHaveCount(0);
+  await expect(finals.locator('a[href*="FINAL_COMPARISON.json"]')).toBeVisible();
+  await expect(finals.locator('a[href*="FINAL_EVAL_VERIFICATION.json"]')).toBeVisible();
+  const repeated=page.locator('#checkpoint-evidence table tbody tr');
+  await expect(repeated).toHaveCount(4);
+  await expect(repeated.last()).toContainText('31/64');
 });
 
 test('cross-article flow is method → questions → our response experiments',async({page})=>{
