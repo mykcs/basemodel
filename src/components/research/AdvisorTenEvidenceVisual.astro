@@ -4,15 +4,35 @@ import {
   ADVISOR_Q04_CAPACITY,
   ADVISOR_Q05_FROZEN,
 } from '../../data/openEvoAdvisorTenQuestions';
+import q01Csv from '../../data/research-evidence/advisor-q01-three-way-curve.csv?raw';
+import ExternalBrandMark from '../common/ExternalBrandMark';
 
 type Variant = 'q01' | 'q02' | 'q03' | 'q04' | 'q05' | 'q07';
 interface Props { variant: Variant }
 const { variant } = Astro.props;
-const plateau = [
-  { name: '普通 OpenEVO', round: 120, note: '后期新增收益较小' },
-  { name: 'Bounded', round: 150, note: '后期仍继续改善' },
-  { name: '历史复杂 β/GDR', round: 130, note: '随后明显下降' },
-];
+// This committed CSV has the exact same Git blob SHA as PR #628's sealed science output.
+// Only existing, fixed held-out checkpoint scores are read. No evaluation runs here.
+const q01CurveHref = 'https://github.com/mykcs/openevo-experiment/blob/48e1368c7afc260a1745a49e6c7c173bfbb172b2/docs/evidence/advisor-q01-horizon-plateau-20261001/three-way-curve.csv';
+const q01ResultHref = 'https://github.com/mykcs/openevo-experiment/blob/48e1368c7afc260a1745a49e6c7c173bfbb172b2/docs/evidence/advisor-q01-horizon-plateau-20261001/Q01_THREE_WAY_RESULT.json';
+
+const q01Data = q01Csv.trim().split('\n').slice(1).map((line) => {
+  const columns = line.split(',');
+  return { key: columns[0] ?? '', round: Number(columns[2]), actualUpdates: Number(columns[3]), score: Number(columns[4])*100, exact: Number(columns[5]) };
+});
+const q01Specs = [
+  { key:'ordinary_openevo',name:'普通 OpenEVO',takeaway:'第 120 次更新约 60.40 分，第 160 次约 60.11 分；额外训练没有带来明显增分。' },
+  { key:'bounded_state',name:'Bounded',takeaway:'第 120 轮约 58.72 分，到第 150 轮约 67.25 分；后段仍有收益。' },
+  { key:'delta_beta_family',name:'历史 β/GDR',takeaway:'第 130 轮约 58.16 分，到第 160 轮约 45.24 分；后段下降约 12.93 分。' },
+] as const;
+const q01Series = q01Specs.map((spec)=>({ ...spec,values:q01Data.filter((item)=>item.key===spec.key) }));
+const q01Rounds = q01Series[0]?.values.map((item)=>item.round) ?? [];
+if(q01Data.length !== 33 || q01Series.some((series)=>series.values.length!==11 || series.values.some((point,index)=>point.round!==q01Rounds[index] || !Number.isFinite(point.score)))){
+  throw new Error('Q01 frozen curve has unexpected source coverage');
+}
+const q01X = (round:number) => 63 + (round-1)/159*650;
+const q01Y = (score:number) => 28 + (100-score)*2.22;
+const q01PhoneX = (round:number) => 32 + (round-1)/159*294;
+const q01PhoneY = (score:number) => 21 + (100-score)*1.68;
 const earlySft = [
   { name: 'SFT · 1 遍', score: 35.53 },
   { name: 'SFT · 2 遍', score: 28.30 },
@@ -35,28 +55,87 @@ const scorePct = (value: string) => Math.min(100, Math.max(0, Number(value))) + 
 const effectX = (value: number) => 80 + (value + 20) * 18;
 ---
 {variant === 'q01' && (
-  <figure class="advisor-viz" data-report-figure="q01-horizon" data-evidence-shape="platform-position">
-    <header class="advisor-viz__heading"><strong>三种更新方法的平台轮次</strong><span>开发题 · 第 0–160 轮</span></header>
-    <div class="advisor-viz__rows">
-      {plateau.map((item) => (
-        <div class="advisor-viz__item">
-          <span class="advisor-viz__name">{item.name}</span>
-          <div class="advisor-viz__track" aria-hidden="true">
-            <i class="advisor-viz__marker" style={'left:' + item.round / 160 * 100 + '%'}></i>
-          </div>
-          <strong class="advisor-viz__value">约 {item.round} 轮</strong>
-          <small>{item.note}</small>
-        </div>
+  <figure class="advisor-viz advisor-viz--q01" data-report-figure="q01-horizon" data-evidence-shape="measured-score-curves">
+    <header class="advisor-viz__heading">
+      <strong>训练 160 轮会不会太多了？</strong>
+      <span>同一冻结 64 题 · 每种方法 11 个已测保存点</span>
+    </header>
+    <p class="advisor-viz__q01-lead">我们把模型在不同训练时点的购物成绩画出来，看后半段的学习有没有继续带来实际收益。</p>
+    <div class="advisor-viz__q01-reading">
+      {q01Series.map((item) => (
+        <p>
+          <span class={'advisor-viz__q01-key advisor-viz__q01-key--'+item.key} aria-hidden="true"></span>
+          <strong>{item.name}：</strong>{item.takeaway}
+        </p>
       ))}
     </div>
-    <div class="advisor-viz__ticks" aria-hidden="true"><span>第 0 轮</span><span>第 80 轮</span><span>第 160 轮</span></div>
-    <figcaption>这些位置标示开发评测中大约何时出现得分平台。每条路线按其对应保存点确定近似位置；长期能力还需通过完整训练轨迹和冻结终评观察。</figcaption>
-    <details class="advisor-viz__details"><summary>查看原始平台期对照</summary>
-      <div class="advisor-viz__table research-booktabs-wrap" tabindex="0"><table class="research-booktabs">
-        <caption>各方法近似平台期（冻结 64 题开发评测）</caption>
-        <thead><tr><th scope="col">方法</th><th scope="col">平台位置</th><th scope="col">后段变化</th></tr></thead>
-        <tbody>{plateau.map((item) => <tr><th scope="row">{item.name}</th><td>第 {item.round} 轮左右</td><td>{item.note}</td></tr>)}</tbody>
-      </table></div>
+    <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--desktop" viewBox="0 0 740 310" role="img" aria-labelledby="advisor-q01-chart-title advisor-q01-chart-desc">
+      <title id="advisor-q01-chart-title">三种方法的真实开发集任务成绩随训练进度变化</title>
+      <desc id="advisor-q01-chart-desc">每条曲线来自十一个已有检查点，同一组六十四道开发题。普通 OpenEVO 大约在第一百二十次参数更新后进入实用平台；Bounded 在第一百五十轮附近进入平台；历史复杂 beta GDR 在第一百三十轮之后明显下降。纵轴是零到一百的 Task Score。</desc>
+      {[0,25,50,75,100].map((tick) => (
+        <g>
+          <line class="advisor-viz__q01-grid" x1="63" x2="713" y1={q01Y(tick)} y2={q01Y(tick)} />
+          <text class="advisor-viz__q01-axis" x="52" y={q01Y(tick)+4} text-anchor="end">{tick}</text>
+        </g>
+      ))}
+      {[1,40,80,120,160].map((tick) => (
+        <text class="advisor-viz__q01-axis" x={q01X(tick)} y="280" text-anchor="middle">{tick}</text>
+      ))}
+      {q01Series.map((item) => (
+        <g class={'advisor-viz__q01-series advisor-viz__q01-series--'+item.key} data-q01-line={item.key}>
+          <polyline class="advisor-viz__q01-curve" points={item.values.map((v) => q01X(v.round)+','+q01Y(v.score)).join(' ')} />
+          {item.values.map((v) => (
+            <circle class="advisor-viz__q01-point" cx={q01X(v.round)} cy={q01Y(v.score)} r="3.6" />
+          ))}
+        </g>
+      ))}
+      <text class="advisor-viz__q01-axis" x="63" y="14">Task Score / 100</text>
+      <text class="advisor-viz__q01-axis" x="713" y="301" text-anchor="end">已完成的训练轮数 / 更新数</text>
+    </svg>
+    <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--phone" viewBox="0 0 340 232" role="img" aria-labelledby="advisor-q01-phone-title advisor-q01-phone-desc">
+      <title id="advisor-q01-phone-title">三条方法的真实训练成绩变化，手机视图</title>
+      <desc id="advisor-q01-phone-desc">三组十一点开发集成绩曲线。普通 OpenEVO 在一百二十次更新后已基本达到平台，Bounded 到一百五十轮仍增长，历史 beta GDR 一百三十轮后下降。</desc>
+      {[0,25,50,75,100].map((tick) => (
+        <g>
+          <line class="advisor-viz__q01-grid" x1="32" x2="326" y1={q01PhoneY(tick)} y2={q01PhoneY(tick)} />
+          <text class="advisor-viz__q01-axis" x="26" y={q01PhoneY(tick)+4} text-anchor="end">{tick}</text>
+        </g>
+      ))}
+      {[1,80,120,160].map((tick) => (
+        <text class="advisor-viz__q01-axis" x={q01PhoneX(tick)} y="214" text-anchor="middle">{tick}</text>
+      ))}
+      {q01Series.map((item) => (
+        <g class={'advisor-viz__q01-series advisor-viz__q01-series--'+item.key} data-q01-phone-line={item.key}>
+          <polyline class="advisor-viz__q01-curve" points={item.values.map((v) => q01PhoneX(v.round)+','+q01PhoneY(v.score)).join(' ')} />
+          {item.values.map((v) => (
+            <circle class="advisor-viz__q01-point" cx={q01PhoneX(v.round)} cy={q01PhoneY(v.score)} r="2.6" />
+          ))}
+        </g>
+      ))}
+      <text class="advisor-viz__q01-axis" x="33" y="12">Task Score / 100</text>
+      <text class="advisor-viz__q01-axis" x="326" y="230" text-anchor="end">轮次 / 更新数</text>
+    </svg>
+    <figcaption>图 1｜同一冻结 64 题上的 Task Score 变化（满分 100）。三种方法各有 11 个真实测量点，连线帮助观察成绩走势。横轴对普通 OpenEVO 表示参数更新次数，对 Bounded、历史 β/GDR 表示已完成的 Stage2 轮数；后两组有少量未更新参数的轮次。</figcaption>
+    <p class="advisor-viz__q01-source">数据与规则：<a href={q01CurveHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01CurveHref} />11 点原始 CSV ↗</a> · <a href={q01ResultHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01ResultHref} />平台判据及原始结论 ↗</a></p>
+    <details class="advisor-viz__details">
+      <summary>实用平台如何判断？各保存点是多少分？</summary>
+      <p>这次研究使用了预先确定的实用平台判据：找到最早一个已测保存点，此后所有已测保存点的平均 Task Score 均未比它提高超过 2 分，完整成功数也未增加超过 2/64。这是开发集上的保存点选择证据。</p>
+      <div class="advisor-viz__table research-booktabs-wrap" tabindex="0">
+        <table class="research-booktabs" data-q01-measured-table>
+          <caption>同一冻结 64 题；Task Score / 100（仅列出已实际测量的保存点）</caption>
+          <thead><tr><th scope="col">轮次或更新数</th><th scope="col" data-numeric>普通 OpenEVO</th><th scope="col" data-numeric>Bounded</th><th scope="col" data-numeric>历史 β/GDR</th></tr></thead>
+          <tbody>
+            {q01Rounds.map((round) => (
+              <tr>
+                <th scope="row">{round}</th>
+                {q01Series.map((item) => (
+                  <td data-numeric>{item.values.find((row) => row.round===round)?.score.toFixed(2)}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </details>
   </figure>
 )}
@@ -118,7 +197,7 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
   <figure class="advisor-viz" data-report-figure="q04-capacity" data-evidence-shape="paired-paper-table">
     <div class="advisor-viz__table research-booktabs-wrap" tabindex="0" aria-label="长期状态容量和 WebShop 得分对照表">
       <table class="research-booktabs">
-        <caption>表 3｜固定容量与后段任务表现</caption>
+        <caption>表 2｜固定容量与后段任务表现</caption>
         <thead>
           <tr>
             <th scope="col">长期参数状态</th>
@@ -231,6 +310,36 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
 .advisor-viz__ci,.advisor-viz__cap{stroke:var(--color-text);stroke-width:5;stroke-linecap:round}
 .advisor-viz__cap{stroke-width:2}
 .advisor-viz__ci-point{fill:var(--color-text)}
+
+/* Q01: score-over-training evidence, with readable mobile axis and direct conclusions */
+.advisor-viz--q01{max-width:850px}
+.advisor-viz__q01-lead{margin:.15rem 0 .9rem;line-height:1.75;color:var(--color-text-muted);max-width:78ch}
+.advisor-viz__q01-reading{display:grid;gap:.45rem;margin:.9rem 0 1rem;max-width:82ch}
+.advisor-viz__q01-reading p{margin:0;line-height:1.6;display:flex;gap:.4rem;align-items:baseline;flex-wrap:wrap}
+.advisor-viz__q01-reading strong{min-width:7.2rem}
+.advisor-viz__q01-key{display:inline-block;flex:0 0 1.5rem;width:1.5rem;height:.7rem;border-bottom:3px solid currentColor;vertical-align:middle}
+.advisor-viz__q01-key--ordinary_openevo,.advisor-viz__q01-series--ordinary_openevo{color:#2c4945}
+.advisor-viz__q01-key--bounded_state,.advisor-viz__q01-series--bounded_state{color:#437a78}
+.advisor-viz__q01-key--delta_beta_family,.advisor-viz__q01-series--delta_beta_family{color:#ad6555}
+.advisor-viz__q01-key--bounded_state{border-bottom-style:dashed}
+.advisor-viz__q01-key--delta_beta_family{border-bottom-style:dotted}
+.advisor-viz__q01-chart{display:block;width:100%;max-width:740px;height:auto;margin:.7rem 0 0}
+.advisor-viz__q01-chart--phone{display:none}
+.advisor-viz__q01-grid{stroke:var(--color-border);stroke-width:1}
+.advisor-viz__q01-axis{fill:var(--color-text-muted);font-size:13px}
+.advisor-viz__q01-curve{stroke:currentColor;stroke-width:3;stroke-linejoin:round;stroke-linecap:round;fill:none}
+.advisor-viz__q01-series--bounded_state .advisor-viz__q01-curve{stroke-dasharray:8 4}
+.advisor-viz__q01-series--delta_beta_family .advisor-viz__q01-curve{stroke-dasharray:3 5}
+.advisor-viz__q01-point{stroke:currentColor;stroke-width:2;fill:var(--color-bg,#fff)}
+.advisor-viz__q01-source{margin:.35rem 0 1rem;font-size:.9rem;line-height:1.7}
+.advisor-viz__q01-source a{color:var(--color-text);text-underline-offset:.2rem}
+@media(max-width:720px){
+  .advisor-viz__q01-chart--desktop{display:none}
+  .advisor-viz__q01-chart--phone{display:block;max-width:340px}
+  .advisor-viz__q01-chart--phone .advisor-viz__q01-axis{font-size:12px}
+  .advisor-viz__q01-chart--phone .advisor-viz__q01-curve{stroke-width:2.4}
+  .advisor-viz__q01-reading strong{min-width:0}
+}
 @media(max-width:720px){
 
 .advisor-viz__item{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(4.6rem,.5fr);gap:.4rem}

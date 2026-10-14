@@ -36,7 +36,7 @@ import ExternalBrandMark from '../../../../../components/common/ExternalBrandMar
     </nav>
     <section id="background" class="evo-article__section">
       <h2>1 OpenEVO 与 BUNDLE：任务结束以后发生什么</h2>
-      <p>一轮任务中，由 OpenEVO 管理的 Qwen 模型先在 WebShop 上完成购物任务：搜索、阅读商品说明、核对规格，再执行购买动作。模型完成任务以后，系统根据已保存的交互轨迹整理经验，生成下一轮可以使用的状态。<strong>WebShop 是测量模型任务能力的环境，OpenEVO 才是我们研究的持续演化框架。</strong></p>
+      <p>一轮任务中，由 OpenEVO 管理的 Qwen 模型先在 WebShop 上完成购物任务：搜索、阅读商品说明、核对规格，再执行购买动作。模型完成任务以后，系统根据已保存的交互轨迹整理经验，生成下一轮可以使用的状态。<strong>WebShop 提供购物任务与成绩，OpenEVO 负责根据任务经验更新模型状态。</strong></p>
       <figure class="evo-article__figure">
         <div class="evo-article__flow-simple" role="group" aria-label="任务、记录、状态与下一轮">
           <div><strong>模型执行任务</strong><small>WebShop 等环境</small></div><span aria-hidden="true">→</span>
@@ -77,7 +77,7 @@ import ExternalBrandMark from '../../../../../components/common/ExternalBrandMar
     </section>
     <section id="delta" class="evo-article__section">
       <h2>5 从 Delta Rule 到 Gated Delta</h2>
-      <p>在原始序列建模中，State 可以看成一个随输入不断更新的矩阵。Delta Rule 不是简单追加信息，而是先看已有 State 对当前输入的预测，再将未解释的差值写入。</p>
+      <p>在原始序列建模中，State 可以看成一个随输入不断更新的矩阵。Delta Rule 先让已有 State 预测当前输入，再计算目标与预测之间的残差，最后将这份残差写回 State。</p>
       <MathFormula latex={String.raw`\begin{aligned}r_t&=v_t-S_{t-1}k_t\\ S_t&=S_{t-1}+\beta_t r_tk_t^\top\end{aligned}`} label="序列 Delta Rule 的残差写入表示" />
       <p>Gated Delta 再引入旧 State 的保留比例 <MathFormula latex={String.raw`\alpha_t`} display={false} />：</p>
       <MathFormula latex={String.raw`\begin{aligned}\widetilde S_{t-1}&=\alpha_tS_{t-1}\\r_t&=v_t-\widetilde S_{t-1}k_t\\S_t&=\widetilde S_{t-1}+\beta_t r_tk_t^\top\end{aligned}`} label="Gated Delta Networks 的状态更新关系" />

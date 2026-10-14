@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import {
   ADVISOR_QUESTIONS, ADVISOR_Q03_CUSTOM_PANEL,
   ADVISOR_Q04_CAPACITY, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES,
@@ -97,7 +98,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('q.unknown');
     expect(responses).toContain('q.evidence.map');
     expect(responses).toContain("id={'source-'+q.id}");
-    expect(responses).toContain('对应的研究问题');
+    expect(responses).toContain('查看第二篇的');
     for(const v of ['31.09','2.02','74.78','56.25','1,024','−3.68','+0.12','10.06'])
       expect(responses).toContain(v);
     expect(ADVISOR_Q03_CUSTOM_PANEL.map(x=>x.score)).toEqual(['3.71','6.43','0.69','6.62']);
@@ -116,13 +117,16 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
   });
   it('keeps evaluation scope, unique booktabs numbers and primary source proximity',()=>{
     const capacity=read('src/components/research/AdvisorTenEvidenceVisual.astro');
-    expect(responses).toContain('六类证据的评测口径');
+    expect(responses).toContain('2 我们做了哪些实验，分别想回答什么？');
+    expect(responses).toContain('evo-article__experiment-guide');
+    expect(responses).not.toContain('aria-label="研究问题与具体测量对应表"');
+    expect(responses).not.toContain('六类证据的评测口径');
     expect(responses).not.toContain('四种测量不能混成一次对照');
     expect(responses).toContain('十个研究问题的证据');
     expect(responses).not.toContain('逐项回答学长十问');
-    for(const label of ['表 1｜','表 2｜','表 3｜','表 4｜','表 5｜']){
+    for(const label of ['表 1｜','表 2｜','表 3｜','表 4｜']){
       const amount=responses.split(label).length-1 + capacity.split(label).length-1;
-      if(label==='表 3｜') expect(amount).toBe(1); // Capacity is rendered by the component.
+      if(label==='表 2｜') expect(amount).toBe(1); // Capacity table renders inside the Q04 component.
       else expect(responses.split(label).length-1).toBe(1);
     }
     expect(responses).not.toContain('<AdvisorTenEvidenceVisual variant="q05" />');
@@ -134,6 +138,36 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     const kBlock=responses.split('aria-label="R159 重复八次的 Success at k"')[1]?.split('</table>')[0] ?? '';
     expect(kBlock).toContain('scope="row">1 次');
     expect(kBlock).toContain('scope="row">8 次');
+  });
+  it('uses 33 real Q01 curve points, preserves the science CSV bytes, and exposes second-article question bodies',()=>{
+    const visual=read('src/components/research/AdvisorTenEvidenceVisual.astro');
+    const csv=read('src/data/research-evidence/advisor-q01-three-way-curve.csv');
+    const blobHash=createHash('sha1').update('blob '+Buffer.byteLength(csv)+String.fromCharCode(0)+csv).digest('hex');
+    expect(blobHash).toBe('7d9fb607879848acd66c1c998015c6ccc251cfbb');
+    const rows=csv.trim().split(/\r?\n/).slice(1).map((line)=>line.split(','));
+    expect(rows).toHaveLength(33);
+    for(const key of ['ordinary_openevo','bounded_state','delta_beta_family'])
+      expect(rows.filter(row=>row[0]===key)).toHaveLength(11);
+    for(const [key,round,score] of [
+      ['ordinary_openevo',120,60.40192663239539],
+      ['ordinary_openevo',160,60.10876059704184],
+      ['bounded_state',150,67.24696744227994],
+      ['delta_beta_family',130,58.16392158189033],
+      ['delta_beta_family',160,45.23648877164502],
+    ] as const){
+      const row=rows.find(r=>r[0]===key && Number(r[2])===round);
+      expect(Number(row?.[4])*100).toBeCloseTo(score,7);
+    }
+    expect(ADVISOR_QUESTIONS[0]?.title).toBe('训练 160 轮会不会太多了？');
+    expect(ADVISOR_QUESTIONS[0]?.experiment).not.toContain('而不是拿最后的训练损失当答案');
+    expect(visual).toContain('data-evidence-shape="measured-score-curves"');
+    expect(visual).not.toContain('data-evidence-shape="platform-position"');
+    expect(visual).toContain('q01Series.map');
+    expect(visual).toContain('11 点原始 CSV');
+    expect(responses).toContain('第二篇的 {q.id.toUpperCase()} 问题正文与背景');
+    expect(responses).toContain('data-question-origin-link={q.id}');
+    expect(responses).toContain('Q10');
+    expect(responses).toContain('原始逐字');
   });
   it('keeps the checkpoint addendum separate from historical conclusions',()=>{
     expect(responses).toContain('data-checkpoint-evidence');
