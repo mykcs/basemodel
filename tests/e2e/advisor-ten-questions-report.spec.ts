@@ -137,6 +137,24 @@ test('R159 evidence remains separate from final and displays science pause on mo
   expect(overflow).toBeLessThanOrEqual(2);
 });
 
+test('meeting date and primary RAW are visible where the reader first sees the account',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  const rawPath='2026-09-22-meeting-transcript.raw.md';
+  await page.goto(prefix+'parameter-memory-results/');
+  const lede=page.locator('[data-evo-blog="results"] .evo-article__lede');
+  await expect(lede).toContainText('2026 年 9 月 22 日，我们和学长开了一次');
+  const source=lede.getByRole('link',{name:/会议原始逐字记录/});
+  await expect(source).toBeVisible();
+  await expect(source).toHaveAttribute('href',new RegExp('85ee773d04f9949db369c8dd928dbbae12c68c8d/.+'+rawPath));
+  const horizontalOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  expect(horizontalOverflow).toBeLessThanOrEqual(2);
+  await page.goto(prefix+'advisor-questions/');
+  const raw=page.locator('.evo-article__abstract a[href*="'+rawPath+'"]');
+  await expect(raw).toHaveCount(1);
+  await expect(raw).toBeVisible();
+  await expect(page.locator('#sources')).toContainText('后续分析（非 RAW）');
+});
+
 test('cross-article flow is method → questions → our response experiments',async({page})=>{
   await page.goto(prefix+'openevo-methods/');
   await page.locator('.evo-article__siblings a[href$="/advisor-questions/"]').click();

@@ -7,6 +7,7 @@ import AdvisorTenEvidenceVisual from '../../../../../components/research/Advisor
 import MathFormula from '../../../../../components/common/MathFormula.astro';
 import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
 import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from '../../../../../data/openEvoAdvisorTenQuestions';
+import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeeting';
 
 // Immutable source snapshot only. Scientific status is owned by openevo-experiment, not this page.
 const checkpointEvidence = {
@@ -26,7 +27,7 @@ const checkpointEvidence = {
   <main class="evo-blog evo-article" data-evo-blog="results" data-reader-page="research-blog" data-copy-review>
     <header>
       <h1>我们的回应实验：逐项回答学长十问</h1>
-      <p class="evo-article__lede" data-reader-purpose>我们把 2026 年 9 月的会议讨论整理为 Q01–Q09，会后补上 Q10。历史实验已回答其中一部分：有些有实际任务成绩，有些只有局部诊断，有些还缺可信对照。本篇逐项交代实验、能支持的判断和仍不知道的事。</p>
+      <p class="evo-article__lede" data-reader-purpose>2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会（<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />会议原始逐字记录（RAW）↗</a>）。会上讨论了训练轮数、参数容量与更新方向等问题。会后，我们把讨论细化为 Q01–Q09，并另外提出 Q10：换一批新任务能否复现结论。这十个编号是我们后来整理的研究问题，并不是学长当场逐字提出的十句话。本篇按问题交代已经做过的实验、实际结果与仍然未知的部分。</p>
     </header>
     <div class="evo-article__abstract">
       <h2>摘要</h2>

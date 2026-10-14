@@ -26,7 +26,7 @@ const themes = {
     </header>
     <section class="evo-article__abstract" aria-label="摘要">
       <h2>摘要</h2>
-      <p>2026 年 9 月 22 日的讨论提出了六个研究方向。随后我们把这些方向整理成九个可检验问题，并另外加入 Q10：换一批新任务能否重复得到相同结论。本文专门说明<strong>问题的背景、研究意义和问题之间的关系</strong>。实际做了什么实验、得到什么成绩，以及证据能支持什么判断，放到独立的第三篇《我们的回应实验》中。</p>
+      <p>2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会（<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />会议原始逐字记录（RAW）↗</a>）。会后，我们将讨论归纳为六个方向，再整理成 Q01–Q09 九个可检验问题，并另外加入 Q10：换一批新任务能否重复得到相同结论。本文说明<strong>问题的背景、研究意义和相互关系</strong>；实验结果和科学边界放到第三篇《我们的回应实验》中。</p>
     </section>
     <OpenEvoArticleNavigation current="questions" />
     <nav class="evo-article__toc" aria-label="学长十问目录">
@@ -43,7 +43,7 @@ const themes = {
     </nav>
     <section class="evo-article__section" id="origin">
       <h2>1 学长原本提出的六个方向</h2>
-      <p>这些问题围绕 OpenEVO 的持续学习能力展开。WebShop 是我们当时使用的交互评测环境；OpenEVO 的参数更新、文字记忆与行为规则，才是研究对象。会议原始整理保留了六个讨论方向：</p>
+      <p>这些问题围绕 OpenEVO 的持续学习能力展开。WebShop 是我们当时使用的交互评测环境；OpenEVO 的参数更新、文字记忆与行为规则，才是研究对象。根据当时的逐字记录与会后分析，我们归纳出六个讨论方向：</p>
       <ol class="evo-article__meeting-questions">
         {OPEN_EVO_ADVISOR_MEETING.points.map((point,i) => (
           <li><strong>{i+1}. {point.title}</strong><p>{point.text}</p></li>
@@ -73,7 +73,8 @@ const themes = {
     <section class="evo-article__section evo-article__sources" id="sources">
       <h2>原始记录</h2>
       <ol>
-        <li>2026 年 9 月 22 日六个原始讨论方向的历史整理：<a href={OPEN_EVO_ADVISOR_MEETING.sourceHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.sourceHref} />原始记录 ↗</a></li>
+        <li>2026 年 9 月 22 日的会议逐字记录：<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />原始记录（RAW）↗</a></li>
+        <li>2026 年 9 月 28 日的会后研究整理：<a href={OPEN_EVO_ADVISOR_MEETING.reconciliationHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.reconciliationHref} />后续分析（非 RAW）↗</a></li>
         <li>Q01–Q10 的问题与实验证据结构化档案：<a href="https://github.com/mykcs/basemodel/blob/main/src/data/openEvoAdvisorTenQuestions.ts" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/basemodel/blob/main/src/data/openEvoAdvisorTenQuestions.ts" />原始记录 ↗</a></li>
       </ol>
       <p class="evo-article__note">此页是研究问题的导读，不报告新的实验成绩。问题与回应的编号一一对应，便于之后独立更新实验，不影响这份问题目录的历史来源。</p>

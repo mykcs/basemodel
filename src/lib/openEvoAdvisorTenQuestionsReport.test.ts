@@ -19,6 +19,9 @@ const navigation=read('src/components/research/OpenEvoArticleNavigation.astro');
 describe('OpenEVO blog roles: method, ten questions, response experiments', () => {
   it('preserves original meeting and all ten research questions without rewriting raw evidence',()=>{
     expect(OPEN_EVO_ADVISOR_MEETING.points).toHaveLength(6);
+    expect(OPEN_EVO_ADVISOR_MEETING.date).toBe('2026-09-22');
+    expect(OPEN_EVO_ADVISOR_MEETING.rawHref).toBe('https://github.com/mykcs/openevo-experiment/blob/85ee773d04f9949db369c8dd928dbbae12c68c8d/docs/evidence/advisor/liaochang/2026-09-22-meeting-transcript.raw.md');
+    expect(OPEN_EVO_ADVISOR_MEETING.reconciliationHref).toContain('ADVISOR_RESEARCH_RECONCILIATION_2026-09-28.md');
     expect(ADVISOR_QUESTIONS).toHaveLength(10);
     expect(ADVISOR_QUESTIONS.map(q=>q.id)).toEqual(Array.from({length:10},(_,i)=>'q'+String(i+1).padStart(2,'0')));
     for(const q of ADVISOR_QUESTIONS) {
@@ -29,6 +32,23 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     }
     expect(ADVISOR_QUESTIONS[9]?.unknown).toContain('会后');
     expect(ADVISOR_RESEARCH_AS_OF).toBe('2026-10-09');
+  });
+  it('names the actual meeting before Q-numbering and links RAW at first mention',()=>{
+    const intro = responses.match(/<p class="evo-article__lede" data-reader-purpose>([\s\S]*?)<\/p>/)?.[1] ?? '';
+    expect(intro).toContain('2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会');
+    expect(intro).toContain('href={OPEN_EVO_ADVISOR_MEETING.rawHref}');
+    expect(intro).toContain('会议原始逐字记录（RAW）');
+    expect(intro.indexOf('会议原始逐字记录')).toBeLessThan(intro.indexOf('Q01–Q09'));
+    expect(intro).toContain('Q10');
+    expect(intro).toContain('并不是学长当场逐字提出的十句话');
+    expect(questions).toContain('href={OPEN_EVO_ADVISOR_MEETING.rawHref}');
+    expect(questions).toContain('href={OPEN_EVO_ADVISOR_MEETING.reconciliationHref}');
+    expect(questions).toContain('后续分析（非 RAW）');
+    expect(questions).not.toContain('OPEN_EVO_ADVISOR_MEETING.sourceHref');
+    const index=read('src/components/research/OpenEvoExperimentIndex.astro');
+    expect(index).toContain('OPEN_EVO_ADVISOR_MEETING.rawHref');
+    expect(index).toContain('OPEN_EVO_ADVISOR_MEETING.reconciliationHref');
+    expect(index).not.toContain('OPEN_EVO_ADVISOR_MEETING.sourceHref');
   });
   it('uses the exact owner-requested reading order: methods, questions, our responses',()=>{
     const paths=['openevo-methods/','advisor-questions/','parameter-memory-results/'];

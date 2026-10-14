@@ -228,7 +228,7 @@ Q03 复用历史 OpenEVO 轨迹和 MiniMax 分析，训练了自己的 Stage1，
 | 长期参数更新（Q04–Q07） | rank128 必要性、β 的效果、点击 entropy、Task Vector 方向 | 哪些状态容量和更新操作在给定任务与预算下有可测影响？ |
 | 可靠性与迁移（Q08–Q10） | 旧任务遗忘、文字状态贡献；会后加入新任务复现 | 能否在可证实的已学任务上测遗忘，能否排除文字状态的混杂，结果能否跨随机设置成立？ |
 
-**会议来源边界：**2026-09-22 的实际讨论由六个主题构成；Q01–Q09 是会后细化的九个问题，Q10 是会后新增的推广性问题，不应伪装成学长逐字提出的第十问。[原始会议整理在 BaseModel 数据源中可追溯](https://github.com/mykcs/basemodel/blob/main/src/data/openEvoAdvisorMeeting.ts)。
+**会议来源边界：**2026 年 9 月 22 日，我们和学长召开了一次 OpenEVO 研究讨论会。[当时的完整会议逐字记录（RAW）](https://github.com/mykcs/openevo-experiment/blob/85ee773d04f9949db369c8dd928dbbae12c68c8d/docs/evidence/advisor/liaochang/2026-09-22-meeting-transcript.raw.md)是会议话语的原始证据；[9 月 28 日会后整理](https://github.com/mykcs/openevo-experiment/blob/main/docs/science/webshop/reports/ADVISOR_RESEARCH_RECONCILIATION_2026-09-28.md)才将讨论归纳为六个主题。Q01–Q09 是我们进一步细化的九个研究问题；Q10 是会后新增的独立复现问题，不能伪装成学长当场逐字提出的第十问。
 
 | 问题 | 已有观察（简写） | 科学状态 / 下一证据 |
 |---|---|---|
