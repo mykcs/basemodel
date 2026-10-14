@@ -1,0 +1,10 @@
+/* Starlight-owned handbook only: do not import into the native AppLayout. */
+:root { --sl-content-width: 49rem; --sl-font: Inter, 'PingFang SC', system-ui, sans-serif; }
+:root[data-theme='light'] {
+  --sl-color-bg: #f6f7f5;
+  --sl-color-bg-nav: #f6f7f5;
+  --sl-color-bg-sidebar: #f6f7f5;
+  --sl-color-accent: #315c47;
+  --sl-color-accent-high: #254535;
+  --sl-color-accent-low: #d8ebdf;
+}
