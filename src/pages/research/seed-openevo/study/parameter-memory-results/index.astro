@@ -4,6 +4,7 @@ import '../../../../../styles/openevo-research-blogs.css';
 import '../../../../../styles/research-booktabs.css';
 import OpenEvoArticleNavigation from '../../../../../components/research/OpenEvoArticleNavigation.astro';
 import AdvisorTenEvidenceVisual from '../../../../../components/research/AdvisorTenEvidenceVisual.astro';
+import OpenEvoSeedWorld4Reproduction from '../../../../../components/research/OpenEvoSeedWorld4Reproduction.astro';
 import MathFormula from '../../../../../components/common/MathFormula.astro';
 import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
 import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from '../../../../../data/openEvoAdvisorTenQuestions';
@@ -105,6 +106,7 @@ const checkpointEvidence = {
             {q.evidence.slice(0, 1).map(e => <span><a href={e.href} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={e.href} />本问实验来源 ↗</a> · </span>)}
             <a href={'#source-'+q.id}>更多实验来源 ↓</a>
           </p>
+          {q.id==='q03' && <OpenEvoSeedWorld4Reproduction />}
         </article>
       ))}
     </section>
