@@ -68,7 +68,7 @@ test('paper quick-view first click survives before the visible React island hydr
 });
 
 test('Landscape enables controls when the visible island is ready', async ({ page }) => {
-  await page.goto('/landscape/');
+  await page.goto('/landscape/#landscape-interactive');
   await expect(page.locator('.landscape-learning-list')).toBeVisible();
   const fullView = page.getByRole('button', { name: '完整视图' });
   await fullView.scrollIntoViewIfNeeded();

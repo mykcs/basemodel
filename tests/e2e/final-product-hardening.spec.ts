@@ -10,7 +10,7 @@ test('home starts from three research intents and a live example', async ({ page
 });
 
 test('model explorer puts research constraints before catalog metadata', async ({ page }) => {
-  await page.goto('models/');
+  await page.goto('models/#model-browser');
   await page.locator('.filter-button').click();
   await expect(page.getByRole('button', { name: '研究约束' })).toBeVisible();
   await expect(page.getByText('当前开放权重研究候选')).toBeVisible();
@@ -48,7 +48,7 @@ test('guide teaches concepts in four decision chapters', async ({ page }) => {
 });
 
 test('decision memo presents readable research sections before Markdown source', async ({ page }) => {
-  await page.goto('workspace/?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1');
+  await page.goto('workspace/?v=2&mode=method&paper=seed&model=qwen2-5-3b-instruct&role=actor&roles=actor%2Canalyzer&update=rl&access=local&runtime=verl&open=1#workspace-interactive');
   await expect(page.locator('.memo-readable')).toBeVisible();
   await expect(page.locator('.memo-source-preview')).toBeVisible();
   await expect(page.locator('.memo-source-preview')).not.toHaveAttribute('open', '');
@@ -61,7 +61,7 @@ test('data status separates hosted/API and open-weight current models', async ({
 });
 
 test('landscape defaults to learning mode and keeps the accessible table', async ({ page }) => {
-  await page.goto('landscape/');
+  await page.goto('landscape/#landscape-interactive');
   await expect(page.locator('.landscape-learning-list')).toBeVisible();
   await expect(page.getByRole('button', { name: '学习视图' })).toHaveClass(/is-active/);
   await expect(page.locator('.accessible-landscape')).toBeVisible();
@@ -71,7 +71,7 @@ test('hardening remains usable at phone width', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('guide/');
   await expect(page.locator('.guide-chapter').first()).toBeVisible();
-  await page.goto('models/');
+  await page.goto('models/#model-browser');
   await expect(page.locator('.explorer-shell')).toBeVisible();
   await page.goto('papers/');
   await expect(page.locator('.paper-case-card').first()).toBeVisible();
@@ -80,7 +80,7 @@ test('hardening remains usable at phone width', async ({ page }) => {
 test('English guide and model explorer expose the same decision hierarchy', async ({ page }) => {
   await page.goto('en/guide/');
   await expect(page.getByRole('heading', { name: 'What exactly am I choosing?' })).toBeVisible();
-  await page.goto('en/models/');
+  await page.goto('en/models/#model-browser');
   await page.locator('.filter-button').click();
   await expect(page.getByRole('button', { name: 'Research constraints' })).toBeVisible();
   await expect(page.getByText('Current open-weight research candidates')).toBeVisible();

@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { filterModels, parseOptionalBooleanParam, sortModels, type ModelFilters } from '../lib/modelFilters';
 import { architectureLabel, checkpointLabel, displayBoolean, parameterSummary, specializationLabel } from '../lib/format';
-import { baseUrl, getMessages, localePath, type Locale } from '../i18n';
+import { getMessages, localePath, type Locale } from '../i18n';
 import type { AtlasModel } from '../lib/types';
-import type { AtlasPaper } from '../lib/schemas';
+import { loadCatalog, type CatalogPayload } from '../lib/catalogClient';
 import { hasMeaningfulResearchTask, researchTask } from '../stores/researchTask';
 import { candidateIds, addCandidate, removeCandidate } from '../stores/candidates';
 import { compareIds, addToCompare, removeFromCompare } from '../stores/compare';
@@ -27,20 +27,9 @@ type DecisionSection = {
   models: AtlasModel[];
 };
 
-interface CatalogPayload { models: AtlasModel[]; papers: AtlasPaper[]; paperModelIds: string[] }
-
-let catalogRequest: Promise<CatalogPayload> | null = null;
-
-function loadCatalog() {
-  catalogRequest ??= fetch(`${baseUrl()}model-data/catalog.json`, { credentials: 'same-origin' }).then((response) => {
-    if (!response.ok) throw new Error('model catalog unavailable');
-    return response.json() as Promise<CatalogPayload>;
-  });
-  return catalogRequest;
-}
-
 export default function ModelExplorer({ locale = 'zh' }: { locale?: Locale }) {
   const [catalog, setCatalog] = useState<CatalogPayload | null>(null);
+  const [catalogError, setCatalogError] = useState(false);
   const m = getMessages(locale);
 
   useEffect(() => {
@@ -49,11 +38,13 @@ export default function ModelExplorer({ locale = 'zh' }: { locale?: Locale }) {
       if (!active) return;
       setCatalog(payload);
       document.querySelector<HTMLElement>('[data-model-static-fallback]')?.setAttribute('hidden', '');
+    }).catch(() => {
+      if (active) setCatalogError(true);
     });
     return () => { active = false; };
   }, []);
 
-  if (!catalog) return <p className="muted" role="status">{m.explorer.showing}…</p>;
+  if (!catalog) return <p className="muted" role="status">{catalogError ? (locale === 'zh' ? '交互筛选暂时不可用；下面的静态目录仍可阅读。' : 'Interactive filtering is unavailable; the static catalog below remains readable.') : `${m.explorer.showing}…`}</p>;
   return <LoadedModelExplorer {...catalog} locale={locale} />;
 }
 

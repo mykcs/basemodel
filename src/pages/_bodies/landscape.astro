@@ -3,14 +3,13 @@ import { getCollection } from 'astro:content';
 import LandscapePrototype from '../../components/landscape/LandscapePrototype';
 import CatalogFreshnessNotice from '../../components/catalog/CatalogFreshnessNotice.astro';
 import { getMessages, type Locale } from '../../i18n';
+import { statusLabel } from '../../lib/format';
 import familiesData from '../../content/coverage/families.json';
 
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? 'zh';
 const m = getMessages(locale);
 const models = (await getCollection('models')).map((entry) => entry.data);
-const papers = (await getCollection('papers')).map((entry) => entry.data);
-const paperModelIds = [...new Set(papers.flatMap((paper) => paper.models.map((use) => use.model_id)))];
 const totalModels = models.length;
 const familyCount = familiesData.families.length;
 const openWeightCount = models.filter((model) => model.openness.weights_available === true).length;
@@ -29,9 +28,15 @@ const openWeightCount = models.filter((model) => model.openness.weights_availabl
     <div class="stats overview-stats"><div class="stat"><strong>{totalModels}</strong><span>{locale === 'zh' ? '模型记录' : 'Models'}</span></div><div class="stat"><strong>{familyCount}</strong><span>{locale === 'zh' ? '模型家族' : 'Families'}</span></div><div class="stat"><strong>{openWeightCount}</strong><span>{locale === 'zh' ? '开放权重' : 'Open weights'}</span></div></div>
   </section>
 
-  <LandscapePrototype client:visible models={models} paperModelIds={paperModelIds} locale={locale} />
+  <div id="landscape-interactive"><LandscapePrototype client:visible locale={locale} /></div>
+  <details class="landscape-static-fallback" data-landscape-static-fallback>
+    <summary>{locale === 'zh' ? '静态模型数据表' : 'Static model data table'}</summary>
+    <p class="muted">{locale === 'zh' ? '交互视图只在滚动到这里后加载；这张表不依赖 JavaScript。' : 'The interactive view loads only when you reach it; this table does not require JavaScript.'}</p>
+    <div class="comparison-table-wrap"><table><caption class="sr-only">{locale === 'zh' ? '模型 Landscape 数据' : 'Landscape model data'}</caption><thead><tr><th>{locale === 'zh' ? '模型' : 'Model'}</th><th>{locale === 'zh' ? '发布日期' : 'Release'}</th><th>{locale === 'zh' ? '家族' : 'Family'}</th><th>{locale === 'zh' ? '证据状态' : 'Evidence'}</th></tr></thead><tbody>{models.map((model) => <tr><th scope="row"><a href={`/models/${model.id}/`}>{model.name}</a></th><td>{model.release_date}</td><td>{model.family}</td><td>{statusLabel(model.data_status, locale)}</td></tr>)}</tbody></table></div>
+  </details>
 </div>
 
 <style>
   .landscape-entry{box-sizing:border-box;min-height:calc(100svh - 110px);display:flex;flex-direction:column;justify-content:center;max-width:860px}.landscape-entry .lede{max-width:58ch}@media(max-width:720px){.landscape-entry{min-height:calc(100svh - 96px)}}
+  .landscape-static-fallback{margin:1rem 0 2rem}.landscape-static-fallback>summary{cursor:pointer;font-weight:800}.landscape-static-fallback .comparison-table-wrap{margin-top:.75rem}
 </style>

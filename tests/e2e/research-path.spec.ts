@@ -31,7 +31,7 @@ test('persistent browser state hydrates without React console errors', async ({ 
 });
 
 test('landscape prototype loads both code-split chart engines', async ({ page }) => {
-  await page.goto('landscape/');
+  await page.goto('landscape/#landscape-interactive');
 
   await expect(page.locator('#landscape-learning-title')).toBeVisible();
   await expect(page.locator('.landscape-chart')).toHaveCount(0);
@@ -42,9 +42,9 @@ test('landscape prototype loads both code-split chart engines', async ({ page })
 });
 
 test('model explorer exposes quick filters and a comparison entry point', async ({ page }) => {
-  await page.goto('models/');
+  await page.goto('models/#model-browser');
 
-  const rlFilter = page.getByRole('button', { name: '适合 RL', exact: true });
+  const rlFilter = page.getByRole('button', { name: /适合强化学习.*RL/ });
   await expect(rlFilter).toHaveAttribute('aria-pressed', 'false');
   await rlFilter.click();
   await expect(rlFilter).toHaveAttribute('aria-pressed', 'true');
@@ -58,7 +58,9 @@ test('model explorer exposes quick filters and a comparison entry point', async 
   await expect(page.locator('.model-timeline')).toBeVisible();
   await page.getByRole('tab', { name: '决策', exact: true }).click();
 
-  const compareLink = page.locator('.model-card').first().getByRole('link', { name: /加入模型对比/ });
+  const firstCard = page.locator('.model-card').first();
+  await firstCard.getByRole('button', { name: '加入对比', exact: true }).click();
+  const compareLink = page.locator('.compare-tray').getByRole('link', { name: '打开对比' });
   await expect(compareLink).toHaveAttribute('href', /\/compare\/\?models=.+/);
 });
 
@@ -194,7 +196,7 @@ test('global command search finds models and papers', async ({ page }) => {
 });
 
 test('compare tray is keyboard reachable and keeps a shareable models URL', async ({ page }) => {
-  await page.goto('models/');
+  await page.goto('models/#model-browser');
 
   const card = page.locator('.model-card').first();
   await card.getByRole('button', { name: '加入对比' }).click();

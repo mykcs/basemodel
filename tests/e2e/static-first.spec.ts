@@ -29,6 +29,23 @@ test.describe('static-first core research pages', () => {
   });
 
 
+  test('workspace keeps a useful orientation and start link without JavaScript', async ({ page }) => {
+    await page.goto('/workspace/');
+    const fallback = page.locator('[data-workspace-static-fallback]');
+    await expect(fallback.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(fallback.getByRole('link', { name: '开始填写实验条件' })).toHaveAttribute('href', '?v=2&mode=modern#workspace-interactive');
+  });
+
+  test('landscape keeps catalog counts and a readable static table without JavaScript', async ({ page }) => {
+    await page.goto('/landscape/');
+    await expect(page.locator('.landscape-overview')).toBeVisible();
+    const fallback = page.locator('[data-landscape-static-fallback]');
+    await fallback.locator('summary').click();
+    await expect(fallback.getByRole('table')).toBeVisible();
+    expect(await fallback.getByRole('row').count()).toBeGreaterThan(1);
+  });
+
+
   test('legacy Results primer URLs keep a readable move notice without JavaScript', async ({ page }) => {
     const cases = [
       ['/research/seed-openevo/study/results/webshop-training/', '/research/seed-openevo/flow/webshop/'],

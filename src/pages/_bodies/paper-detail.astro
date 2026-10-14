@@ -62,7 +62,7 @@ const hasCheckpointLink = typeof paper.checkpoint_url === 'string' && paper.chec
       <div class="tag-row">
         <a class="button button-primary" href={localePath(locale, `/workspace/?v=2&mode=strict&paper=${paper.id}`)}>{m.paperDetail.strictReproduction}</a>
         <a class="button button-secondary" href={localePath(locale, `/workspace/?v=2&mode=method&paper=${paper.id}`)}>{m.paperDetail.methodReproduction}</a>
-        <a class="button button-secondary" href={localePath(locale, `/workspace/?v=2&mode=modern&paper=${paper.id}`)}>{m.paperDetail.modernRerun}</a>
+        <a class="button button-secondary" href={localePath(locale, `/workspace/?v=2&mode=modern&paper=${paper.id}#workspace-interactive`)}>{m.paperDetail.modernRerun}</a>
       </div>
     </section>
 

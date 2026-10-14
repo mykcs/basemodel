@@ -6,9 +6,9 @@ import { ResearchWorkspace } from '../../components/workspace/ResearchWorkspace.
   <section class="shell page-header workspace-primary" data-workspace-static-fallback data-reader-primary>
     <h1>实验工作台</h1>
     <p class="lede">实验工作台根据研究目标、模型角色和资源限制筛掉不合适的方案，并把候选、比较和证据保留在同一个研究任务里。</p>
-    <p><a class="button button-primary" href="?v=2&mode=modern">开始填写实验条件</a></p>
+    <p><a class="button button-primary" href="?v=2&mode=modern#workspace-interactive">开始填写实验条件</a></p>
   </section>
-  <ResearchWorkspace client:load locale="zh" />
+  <div id="workspace-interactive"><ResearchWorkspace client:visible={{ rootMargin: '-64px 0px' }} locale="zh" /></div>
 </AppLayout>
 
 <style>

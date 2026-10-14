@@ -150,7 +150,7 @@ test('D3 tooltip and compare tray stay within the viewport in bilingual layouts'
   for (const locale of LOCALES) {
     for (const width of VIEWPORTS) {
       await page.setViewportSize({ width, height: 900 });
-      await open(page, `${locale.prefix}landscape/`);
+      await open(page, `${locale.prefix}landscape/#landscape-interactive`);
       await page.getByRole('button', { name: /完整视图|Full view/ }).click();
       await page.getByRole('button', { name: 'D3', exact: true }).click();
       await expect(page.locator('.landscape-d3 svg')).toBeVisible();

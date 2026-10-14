@@ -4,6 +4,7 @@ import './PaperExplorer.css';
 import { categoryLabel, evolutionTargetLabel, roleLabel } from '../../lib/format';
 import { localePath, type Locale } from '../../i18n';
 import type { AtlasModel, AtlasPaper } from '../../lib/schemas';
+import { loadCatalog, type CatalogPayload } from '../../lib/catalogClient';
 
 type FilterState = {
   query: string;
@@ -75,9 +76,13 @@ function copy(locale: Locale) {
     : { search: 'Search papers, methods, or benchmarks…', evolution: 'Evolution target', role: 'Model role', family: 'Model family', benchmark: 'Benchmark', code: 'Code', codeAll: 'All', codeAvailable: 'Code available', codeMissing: 'No code', checkpoint: 'Checkpoint', checkpointAvailable: 'Available', checkpointMissing: 'Missing / pending', local: 'Reproduction evidence', localAll: 'All', localReady: 'Mostly complete', localUnknown: 'Needs verification', weight: 'Weight update', weightAll: 'All', updated: 'Weights updated', notUpdated: 'No weight update', clear: 'Clear filters', results: 'papers', total: 'total', method: 'Method summary', methodPending: 'No evidence-checked method summary has been stored yet', scope: 'Research scope', roles: 'Model roles', burden: 'Experiment burden', open: 'Open case', noResults: 'No paper cases match these filters.', available: 'Available', unknown: 'Needs verification', checked: 'Evidence-checked summary', derived: 'Atlas derived', estimated: 'Atlas heuristic' };
 }
 
-export default function PaperExplorer({ papers, models, locale = 'zh' }: { papers: AtlasPaper[]; models: AtlasModel[]; locale?: Locale }) {
+export default function PaperExplorer({ papers: providedPapers, models: providedModels, locale = 'zh' }: { papers?: AtlasPaper[]; models?: AtlasModel[]; locale?: Locale }) {
   const hydrated = useHydrated();
   const m = copy(locale);
+  const [catalog, setCatalog] = useState<CatalogPayload | null>(null);
+  const [catalogError, setCatalogError] = useState(false);
+  const papers = providedPapers ?? catalog?.papers ?? [];
+  const models = providedModels ?? catalog?.models ?? [];
   const [filters, setFilters] = useState<FilterState>(emptyFilters);
   const modelMap = useMemo(() => new Map(models.map((model) => [model.id, model])), [models]);
   const modelFamily = useMemo(() => new Map(models.map((model) => [model.id, model.family])), [models]);
@@ -85,6 +90,19 @@ export default function PaperExplorer({ papers, models, locale = 'zh' }: { paper
   const roles = useMemo(() => [...new Set(papers.flatMap((paper) => paper.models.map((item) => item.role)))].sort(), [papers]);
   const families = useMemo(() => [...new Set(papers.flatMap((paper) => paper.models.map((item) => modelFamily.get(item.model_id)).filter(Boolean) as string[]))].sort(), [modelFamily, papers]);
   const benchmarks = useMemo(() => [...new Set(papers.flatMap((paper) => paper.benchmarks))].sort(), [papers]);
+
+  useEffect(() => {
+    if (providedPapers !== undefined && providedModels !== undefined) return;
+    let active = true;
+    void loadCatalog().then((payload) => {
+      if (!active) return;
+      setCatalog(payload);
+      document.querySelector<HTMLElement>('[data-paper-static-fallback]')?.setAttribute('hidden', '');
+    }).catch(() => {
+      if (active) setCatalogError(true);
+    });
+    return () => { active = false; };
+  }, [providedModels, providedPapers]);
 
   const filtered = useMemo(() => papers.filter((paper) => {
     const needle = filters.query.trim().toLowerCase();
@@ -115,6 +133,8 @@ export default function PaperExplorer({ papers, models, locale = 'zh' }: { paper
   }, [filters, hydrated]);
 
   const update = <K extends keyof FilterState>(key: K, value: FilterState[K]) => setFilters((current) => ({ ...current, [key]: value }));
+
+  if ((providedPapers === undefined || providedModels === undefined) && !catalog) return <p className="muted" role="status">{catalogError ? (locale === 'zh' ? '交互筛选暂时不可用；下面的静态论文目录仍可阅读。' : 'Interactive filtering is unavailable; the static paper catalog below remains readable.') : (locale === 'zh' ? '正在准备论文筛选器…' : 'Preparing paper filters…')}</p>;
 
   return <section className="paper-explorer" aria-labelledby="paper-explorer-title">
     <div className="paper-explorer-toolbar">

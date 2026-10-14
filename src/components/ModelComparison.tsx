@@ -4,6 +4,7 @@ import { comparisonToCsv, comparisonToMarkdown, type CompareExportRow } from '..
 import type { CompareImpactCode } from '../lib/research/compareImpact';
 import { getMessages, localePath, type Locale } from '../i18n';
 import type { AtlasModel, AtlasPaper } from '../lib/types';
+import { loadCatalog, type CatalogPayload } from '../lib/catalogClient';
 import { compareIds } from '../stores/compare';
 
 const semanticUnknown = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable', 'unknown']);
@@ -16,8 +17,13 @@ type ComparisonRow = {
   unknown?: (model: AtlasModel) => boolean;
 };
 
-export default function ModelComparison({ models, papers = [], locale = 'zh' }: { models: AtlasModel[]; papers?: AtlasPaper[]; locale?: Locale }) {
+export default function ModelComparison({ models: providedModels, papers: providedPapers, locale = 'zh' }: { models?: AtlasModel[]; papers?: AtlasPaper[]; locale?: Locale }) {
   const m = getMessages(locale);
+  const [catalog, setCatalog] = useState<CatalogPayload | null>(null);
+  const [catalogError, setCatalogError] = useState(false);
+  const models = providedModels ?? catalog?.models ?? [];
+  const papers = providedPapers ?? catalog?.papers ?? [];
+  const dataReady = (providedModels !== undefined && providedPapers !== undefined) || catalog !== null;
   const [selected, setSelected] = useState<string[]>([]);
   const [query, setQuery] = useState('');
   const [onlyDifferences, setOnlyDifferences] = useState(false);
@@ -36,6 +42,20 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
   const toggle = (id: string) => setSelected((current) => current.includes(id) ? current.filter((value) => value !== id) : current.length < 5 ? [...current, id] : current);
 
   useEffect(() => {
+    if (providedModels !== undefined && providedPapers !== undefined) return;
+    let active = true;
+    void loadCatalog().then((payload) => {
+      if (!active) return;
+      setCatalog(payload);
+      document.querySelector<HTMLElement>('[data-compare-static-fallback]')?.setAttribute('hidden', '');
+    }).catch(() => {
+      if (active) setCatalogError(true);
+    });
+    return () => { active = false; };
+  }, [providedModels, providedPapers]);
+
+  useEffect(() => {
+    if (!dataReady) return;
     const requested = initialSelection(models);
     setSelected(requested);
     compareIds.set(requested);
@@ -43,9 +63,10 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
     setOnlyDifferences(params.get('diff') === '1');
     setOnlyImpacts(params.get('impact') === '1');
     setOnlyUnknown(params.get('unknown') === '1');
-  }, [models]);
+  }, [dataReady, models]);
 
   useEffect(() => {
+    if (!dataReady) return;
     const next = new URLSearchParams(window.location.search);
     if (selected.length) next.set('models', selected.join(',')); else next.delete('models');
     if (onlyDifferences) next.set('diff', '1'); else next.delete('diff');
@@ -53,7 +74,7 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
     if (onlyUnknown) next.set('unknown', '1'); else next.delete('unknown');
     compareIds.set(selected);
     window.history.replaceState({}, '', `${window.location.pathname}${next.toString() ? `?${next}` : ''}`);
-  }, [selected, onlyDifferences, onlyImpacts, onlyUnknown]);
+  }, [dataReady, selected, onlyDifferences, onlyImpacts, onlyUnknown]);
 
   const joiner = locale === 'zh' ? '、' : ', ';
   const paperRoles = (model: AtlasModel) => {
@@ -114,6 +135,8 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
   const exportRows: CompareExportRow[] = visibleRows.map((row) => ({ label: row.label, values: rowState(row).values }));
   const impactLabel = (code: CompareImpactCode) => m.compare.impactLabels[code];
   const displayCell = (values: string[], index: number) => valueMode === 'absolute' || index === 0 ? values[index] : values[index] === values[0] ? (locale === 'zh' ? '相同' : 'Same') : `${locale === 'zh' ? '差异：' : 'Diff: '}${values[index]}`;
+
+  if (!dataReady) return <p className="muted" role="status">{catalogError ? (locale === 'zh' ? '交互对比暂时不可用；下面仍可浏览模型名单。' : 'Interactive comparison is unavailable; the model list below remains readable.') : (locale === 'zh' ? '正在准备模型对比…' : 'Preparing model comparison…')}</p>;
 
   const copyMarkdown = async () => { await navigator.clipboard.writeText(comparisonToMarkdown(active, exportRows)); setExportNotice(m.compare.copied); };
   const downloadCsv = () => {

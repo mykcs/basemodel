@@ -35,7 +35,14 @@ const matrixPapers = papers.map((paper) => ({ ...paper, models: paper.models.map
     </ol>
     <p class="papers-reading-note">{locale === 'zh' ? '下面的筛选器按研究问题、方法、模型角色、Benchmark 与复现资料组织论文。论文报道与本站复现是两层证据；筛选只负责找到相关案例，不会把“有论文”变成“已经复现”。证据缺口保持“待核验”，不会自动补成肯定或否定。' : 'The filters below follow these dimensions: narrow the research question and model roles first, then check benchmarks and reproduction evidence. A paper report and a local reproduction are separate evidence layers; finding a paper does not mean the result has been reproduced here. Evidence gaps remain pending verification instead of being silently turned into yes or no.'}</p>
   </header>
-  <section class="section" id="paper-browser"><PaperExplorer client:load papers={papers} models={models} locale={locale} /></section>
+  <section class="section" id="paper-browser"><PaperExplorer client:visible locale={locale} /></section>
+  <section class="paper-static-catalog" data-paper-static-fallback aria-labelledby="paper-static-catalog-title">
+    <h2 id="paper-static-catalog-title">{locale === 'zh' ? '论文目录' : 'Paper catalog'}</h2>
+    <p class="muted">{locale === 'zh' ? '完整筛选器滚动到这里后再加载；下面的论文入口不依赖 JavaScript。' : 'The full filter loads when this section is reached; the paper links below do not require JavaScript.'}</p>
+    <div class="paper-static-list">
+      {papers.map((paper) => <article><time datetime={paper.published_at}>{paper.published_at}</time><h3><a href={`/papers/${paper.id}/`}>{paper.title}</a></h3><p>{paper.benchmarks.join(' · ')}</p></article>)}
+    </div>
+  </section>
   <details class="paper-matrix-advanced">
     <summary>{locale === 'zh' ? '论文—模型矩阵' : 'Paper–model matrix'}</summary>
     <p class="muted">{locale === 'zh' ? '需要确认某个模型在论文里负责 actor、teacher、critic 等角色时，再展开这张表。' : 'Open this table when you need to inspect actor, teacher, critic, or other model roles in each paper.'}</p>
@@ -53,4 +60,5 @@ const matrixPapers = papers.map((paper) => ({ ...paper, models: paper.models.map
 
 <style>
   .papers-entry{box-sizing:border-box;max-width:860px;padding:clamp(2.2rem,6vw,4.5rem) 0 1.4rem}.papers-entry .lede{max-width:58ch}.papers-reading-path{margin:1rem 0 0;padding:0;border-top:1px solid var(--line);list-style:none;counter-reset:paper-lens}.papers-reading-path li{display:grid;grid-template-columns:2rem minmax(7rem,.55fr) minmax(0,1.45fr);gap:.7rem;align-items:baseline;padding:.55rem 0;border-bottom:1px solid var(--line);counter-increment:paper-lens}.papers-reading-path li::before{content:counter(paper-lens,decimal-leading-zero);color:var(--accent-deep);font:800 .68rem var(--font-mono)}.papers-reading-path strong{font-size:.78rem}.papers-reading-path span,.papers-reading-note{color:var(--muted);font-size:.76rem;line-height:1.45}.papers-reading-note{max-width:68ch;margin:.8rem 0 0}@media(max-width:720px){.papers-reading-path li{grid-template-columns:1.7rem minmax(0,1fr)}.papers-reading-path span{grid-column:2}}
+  .paper-static-catalog{margin:1.25rem 0 2rem}.paper-static-catalog>h2{font-size:1.15rem}.paper-static-list{display:grid;gap:.7rem}.paper-static-list article{padding:.75rem 0;border-top:1px solid var(--line)}.paper-static-list time,.paper-static-list p{color:var(--muted);font-size:.72rem}.paper-static-list h3{margin:.2rem 0;font-size:.92rem}.paper-static-list p{margin:0}
 </style>
