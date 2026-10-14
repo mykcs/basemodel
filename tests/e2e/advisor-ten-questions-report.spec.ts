@@ -105,8 +105,16 @@ test('third article answers all Q01–Q10 with experiments, measurements, limits
   }
   await expect(page.locator('#sources [data-response-source]')).toHaveCount(10);
   const q03=page.locator('#response-q03 [data-report-figure="q03-custom-curve"]');
-  await q03.getByRole('button',{name:'A80'}).click();
-  await expect(q03.locator('[data-stage-detail]')).toContainText('A80 · 0.69');
+  await expect(q03).toHaveAttribute('data-evidence-shape','paper-static-observations');
+  await expect(q03.locator('button, [data-q03-stage-selector], [data-stage-detail]')).toHaveCount(0);
+  const points=await q03.locator('[data-trend-point]').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-trend-point')));
+  expect(points).toEqual(['A0','A40','A80','A120']);
+  const table=q03.locator('.advisor-viz__q03-phone-table');
+  await expect(table).toBeVisible();
+  await expect(table.locator('tbody tr')).toHaveCount(4);
+  await expect(table).toContainText('0.69');
+  await expect(table).toContainText('6.62');
+  await expect(q03).toContainText('中间轮次');
   await expect(page.locator('#response-q10')).toContainText('当前并没有三条新随机流');
 });
 
@@ -207,3 +215,38 @@ test('cross-article flow is method → questions → our response experiments',a
   await page.locator('.evo-article__siblings a[href$="/parameter-memory-results/"]').click();
   await expect(page.locator('[data-response-experiments]')).toBeVisible();
 });
+
+
+for (const width of [390, 768, 1440]) {
+  test('Q03 paper figure displays all four checkpoints without clicks at ' + width + 'px', async ({page}, testInfo) => {
+    await page.setViewportSize({width, height:width===390?844:900});
+    await page.goto(prefix+'parameter-memory-results/', {waitUntil:'domcontentloaded'});
+    const figure=page.locator('#response-q03 [data-report-figure="q03-custom-curve"]');
+    await expect(figure).toHaveAttribute('data-evidence-shape','paper-static-observations');
+    await expect(figure.locator('button,[data-q03-stage-selector],[data-stage-detail],[aria-pressed]')).toHaveCount(0);
+    const labels=await figure.locator('[data-trend-point]').evaluateAll(nodes=>nodes.map(x=>x.getAttribute('data-trend-point')));
+    expect(labels).toEqual(['A0','A40','A80','A120']);
+    await expect(figure).toContainText('3.71');
+    await expect(figure).toContainText('6.43');
+    await expect(figure).toContainText('0.69');
+    await expect(figure).toContainText('6.62');
+    await expect(figure).toContainText('0/64');
+    await expect(figure.locator('figcaption')).toContainText('没有测量中间轮次');
+    await expect(figure.locator('figcaption a[href*="/pull/678"]')).toBeVisible();
+    const plot=figure.locator('.advisor-viz__q03-chart');
+    const table=figure.locator('.advisor-viz__q03-phone-table');
+    if (width<=720) {
+      await expect(plot).toBeHidden();
+      await expect(table).toBeVisible();
+      await expect(table.locator('tbody tr')).toHaveCount(4);
+      const overflow=await table.evaluate(x=>x.scrollWidth-x.clientWidth);
+      expect(overflow,'mobile table must fit its own viewport').toBeLessThanOrEqual(2);
+    } else {
+      await expect(plot).toBeVisible();
+      await expect(table).toBeHidden();
+    }
+    const overall=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    expect(overall,'horizontal viewport overflow').toBeLessThanOrEqual(2);
+    if(width!==768) await figure.screenshot({path:testInfo.outputPath('q03-static-paper-'+width+'.png'),animations:'disabled'});
+  });
+}
