@@ -72,4 +72,21 @@ const chain = [
     .mission-chain ol{grid-auto-columns:minmax(218px,82vw)}
     .mission-chain figcaption .mission-chain__swipe-hint{margin-bottom:0;line-height:1.4;letter-spacing:normal}
   }
+  /* Reduce headline dominance without pulling a third choice into the
+     first viewport. The compact research hub and figures are unchanged. */
+  .mission-hero:not(.mission-hero--compact) .mission-hero__copy {
+    min-height: calc(100svh - 80px);
+    justify-content: flex-start;
+    padding-top: clamp(2rem, 5vw, 3.7rem);
+  }
+  .mission-hero:not(.mission-hero--compact) h1 {
+    max-width: 19ch;
+    font-size: clamp(2.4rem, 5vw, 4.3rem);
+    line-height: 1.08;
+  }
+  @media (max-width: 640px) {
+    .mission-hero:not(.mission-hero--compact) .mission-hero__copy {
+      min-height: calc(100svh - 64px);
+    }
+  }
 </style>
