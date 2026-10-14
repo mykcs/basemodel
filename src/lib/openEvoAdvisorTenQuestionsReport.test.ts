@@ -94,6 +94,18 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('独立研究');
     expect(questions).toContain('不能当作学长当时逐字提出的十句话');
   });
+  it('keeps the checkpoint addendum separate from historical conclusions',()=>{
+    expect(responses).toContain('data-checkpoint-evidence');
+    for(const v of ['60.1088/100','18/64','53/64','31/64','6/64','33/64','4/32、3/32、1/32','186','1,014','0/13','39/78','38/78','PARTIAL','2026-10-14'])
+      expect(responses).toContain(v);
+    expect(responses).toContain('不是留出的新任务');
+    expect(responses).toContain('没有运行压缩版的 WebShop Task Score');
+    expect(responses).toContain('1bc2f7f6');
+    expect(responses).toContain('18032c5c');
+    expect(responses).toContain('新增科学测量目前已暂停');
+    expect(questions).not.toContain('60.1088');
+    expect(methods).not.toContain('39/78');
+  });
   it('reuses subdued-green paper typography only on the three blog pages',()=>{
     const css=read('src/styles/openevo-research-blogs.css');
     expect(css).toContain(':has(.evo-blog)');

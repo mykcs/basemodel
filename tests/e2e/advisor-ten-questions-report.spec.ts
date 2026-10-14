@@ -123,6 +123,20 @@ test('response article also keeps frozen final, paired capacity, direction, unce
   await expect(page.locator('#capacity details')).toContainText('配对');
 });
 
+test('R159 evidence remains separate from final and displays science pause on mobile',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(prefix+'parameter-memory-results/');
+  const ev=page.locator('[data-checkpoint-evidence]');
+  for (const v of ['60.1088/100','18/64','31/64','4/32、3/32、1/32','39/78','0/13'])
+    await expect(ev).toContainText(v);
+  await expect(ev).toContainText('目前已暂停');
+  await expect(ev.locator('table')).toHaveCount(1);
+  await expect(ev.locator('a[href*="627da5c0fa9001d94b0891c38de6646b8cc796b2"]')).toHaveCount(4);
+  await expect(page.locator('#response-q07')).toContainText('Bounded OFF');
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(2);
+});
+
 test('cross-article flow is method → questions → our response experiments',async({page})=>{
   await page.goto(prefix+'openevo-methods/');
   await page.locator('.evo-article__siblings a[href$="/advisor-questions/"]').click();

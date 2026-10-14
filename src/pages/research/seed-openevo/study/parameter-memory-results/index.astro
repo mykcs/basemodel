@@ -7,21 +7,30 @@ import AdvisorTenEvidenceVisual from '../../../../../components/research/Advisor
 import MathFormula from '../../../../../components/common/MathFormula.astro';
 import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
 import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from '../../../../../data/openEvoAdvisorTenQuestions';
+
+// Immutable source snapshot only. Scientific status is owned by openevo-experiment, not this page.
+const checkpointEvidence = {
+  ledger: 'https://github.com/mykcs/openevo-experiment/blob/627da5c0fa9001d94b0891c38de6646b8cc796b2/docs/evidence/checkpoint-measurement-20261012/q17-r159/METRIC_STATUS_78.json',
+  repeat8: 'https://github.com/mykcs/openevo-experiment/blob/627da5c0fa9001d94b0891c38de6646b8cc796b2/docs/evidence/checkpoint-measurement-20261014/q17-r159/R159_SUCCESS_AT_K_M1_STRICT_REUSE.json',
+  compression: 'https://github.com/mykcs/openevo-experiment/blob/627da5c0fa9001d94b0891c38de6646b8cc796b2/docs/evidence/checkpoint-measurement-20261014/q17-r159/R159_D1_FIXED_PREFIX_SAME_MODEL_EVIDENCE_REUSE.json',
+  matrix: 'https://github.com/mykcs/openevo-experiment/blob/627da5c0fa9001d94b0891c38de6646b8cc796b2/docs/evidence/checkpoint-measurement-20261014/CHECKPOINT13_CANONICAL_ALL_13_BY_78_METRIC_MATRIX_V1.json',
+  q03: 'https://github.com/mykcs/openevo-experiment/blob/627da5c0fa9001d94b0891c38de6646b8cc796b2/docs/evidence/checkpoint-measurement-20261014/q03-native/Q03_SIX_STEP_672_QKVO_PER_MODULE_STRICT_SOURCE_DERIVATION.json',
+};
 ---
 
 <AppLayout
   title="我们的回应实验：OpenEVO 学长十问的逐项测量"
-  description="针对整理出的十个 OpenEVO 研究问题，逐项列出已运行实验、真实结果、统计边界和下一步；保留 Bounded、β、SEED 与文字状态的一手证据。"
+  description="针对整理出的十个 OpenEVO 研究问题，逐项列出已运行实验、真实结果、统计边界和未完成项；保留 Bounded、β、SEED 与文字状态的一手证据。"
   locale="zh"
 >
   <main class="evo-blog evo-article" data-evo-blog="results" data-reader-page="research-blog" data-copy-review>
     <header>
       <h1>我们的回应实验：逐项回答学长十问</h1>
-      <p class="evo-article__lede" data-reader-purpose>学长提出的问题，我们分别用什么实验回应？有些问题已经得到范围明确的结果，有些只完成了训练或诊断，还有一些关键对照尚未运行。本篇逐项交代实验、真实观察、证据边界和下一步。</p>
+      <p class="evo-article__lede" data-reader-purpose>我们把 2026 年 9 月的会议讨论整理为 Q01–Q09，会后补上 Q10。历史实验已回答其中一部分：有些有实际任务成绩，有些只有局部诊断，有些还缺可信对照。本篇逐项交代实验、能支持的判断和仍不知道的事。</p>
     </header>
     <div class="evo-article__abstract">
       <h2>摘要</h2>
-      <p>围绕 Q01–Q10，我们已完成多组 WebShop 训练、固定模型评测、容量筛选和参数方向干预。最重要的历史结果包括：三种长期路线在冻结 128 题上的 Task Score 为 <strong>60.72、45.98 和 20.77</strong>；第 152–159 轮的 rank32 容量筛选把参数文件缩小约 75%，平均得分比 rank128 低 1.79 分，但统计区间包含零。训练完成不等于能力比较完成，旧任务遗忘、文字状态的因果作用和新任务复现仍缺决定性证据。每项研究回应均链接到<a href="/research/seed-openevo/study/advisor-questions/">第二篇提出的问题</a>和本篇底部的原始记录。</p>
+      <p>围绕 Q01–Q10，我们已完成多组 WebShop 训练、固定模型评测、容量筛选和参数方向干预。最重要的历史结果包括：三种长期路线在冻结 128 题上的 Task Score 为 <strong>60.72、45.98 和 20.77</strong>；第 152–159 轮的 rank32 容量筛选把参数文件缩小约 75%，平均得分比 rank128 低 1.79 分，但统计区间包含零。10 月 14 日的旧证据核账还确认 Q17 DirectApply R159 在冻结 64 题开发集上为 <strong>60.1088/100、18/64 完整成功</strong>，它不能替代上面的 128 题终评。训练完成不等于能力比较完成，旧任务遗忘、文字状态的因果作用和新任务复现仍缺决定性证据。新增科学测量目前已暂停。每项研究回应均链接到<a href="/research/seed-openevo/study/advisor-questions/">第二篇提出的问题</a>和本篇底部的原始记录。</p>
     </div>
     <OpenEvoArticleNavigation current="results" />
     <nav class="evo-article__toc" aria-label="实验文章目录">
@@ -36,7 +45,8 @@ import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RES
         <li><a href="#beta">6 β 写入控制</a></li>
         <li><a href="#direction">7 参数方向</a></li>
         <li><a href="#bundle">8 BUNDLE 载体</a></li>
-        <li><a href="#discussion">9 讨论与局限</a></li>
+        <li><a href="#checkpoint-evidence">9 R159 与 checkpoint 旧证据</a></li>
+        <li><a href="#discussion">10 讨论与局限</a></li>
         <li><a href="#sources">原始记录</a></li>
       </ol>
     </nav>
@@ -56,6 +66,8 @@ import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RES
             <tr><th>长期容量筛选</th><td>第 152–159 轮，1,024 组相同任务与随机条件的配对尝试</td><td>该后段窗口的文件容量与任务得分变化</td></tr>
             <tr><th>更新方向干预</th><td>指定模型保存点，冻结 64 题，对某轮更新做方向反转</td><td>局部的方向因果效应</td></tr>
             <tr><th>载体更新计数</th><td>历史长期训练收据</td><td>Text Memory、Skill、Agent System 和参数各更新了多少次</td></tr>
+            <tr><th>R159 开发题</th><td>第 160 次更新后：冻结 64 题及旧 64×8 次重复尝试</td><td>单模型开发集能力和成功波动；不是历史 128 题终评</td></tr>
+            <tr><th>R159 压缩诊断</th><td>16 个训练任务的 32 条旧动作前输入</td><td>压缩前后动作标签改变；没有重新执行购物任务</td></tr>
           </tbody>
         </table>
       </div>
@@ -72,11 +84,15 @@ import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RES
           {q.id==='q01' && <AdvisorTenEvidenceVisual variant="q01" />}
           {q.id==='q02' && <AdvisorTenEvidenceVisual variant="q02" />}
           {q.id==='q03' && <AdvisorTenEvidenceVisual variant="q03" />}
+          {q.id==='q03' && <p class="evo-article__note">10 月 14 日核对的既有原生参数证据还覆盖 Q03 Step39/40/79/80/119/120 六个保存点，每点 112 个 q/k/v/o 模块，共 672 条累计变化数据。这只证明<strong>参数变化的谱与几何</strong>，不是六次新的原生 SEED 推理，也不能将 Step40 的分数挪到 Step39。<a href={checkpointEvidence.q03} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.q03} />原参数来源 ↗</a></p>}
+          {q.id==='q06' && <p class="evo-article__note">DirectApply R159 的旧 361 个步骤没有保存历史 logits，所以该保存点的历史概率熵、合法点击概率等第 21–26 项仍因原始采样概率缺失而不能验收（BLOCKED）；保留模型权重不等于能恢复当时的采样分布。<a href={checkpointEvidence.ledger} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.ledger} />原账本 ↗</a></p>}
+          {q.id==='q07' && <p class="evo-article__note">Q07 干预来自 <strong>Bounded OFF</strong> 模型（Adapter SHA256 前缀 <code>1bc2f7f6</code>），下文 R159 是 <strong>DirectApply</strong>（前缀 <code>18032c5c</code>）；两者不是同一权重，10.06 分的 Q07 因果结果不能填入 DirectApply R159。<a href={checkpointEvidence.compression} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.compression} />身份核对 ↗</a></p>}
           <p><strong>支持的研究判断：</strong>{q.interpretation}</p>
           <p class="evo-article__limit"><strong>还缺什么：</strong>{q.unknown}</p>
           <p class="evo-article__note">
             <a href={'/research/seed-openevo/study/advisor-questions/#'+q.id}>对应的研究问题 ↗</a> ·
-            <a href={'#source-'+q.id}>原始记录 ↓</a>
+            {q.evidence.slice(0, 1).map(e => <span><a href={e.href} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={e.href} />本问实验来源 ↗</a> · </span>)}
+            <a href={'#source-'+q.id}>全部原始记录 ↓</a>
           </p>
         </article>
       ))}
@@ -127,7 +143,7 @@ import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RES
     <section id="beta" class="evo-article__section">
       <h2>6 历史 β 写入控制的终评成绩更低</h2>
       <p>同一冻结 128 题上，固定容量的历史 β/GDR 路线平均得分为 <strong>20.77</strong>，没有开启当时复杂 β 处理的 Bounded 路线为 <strong>45.98</strong>。这提示额外控制新经验写入的方法需要独立验证，参数机制更复杂并不自动带来更好的任务能力。</p>
-      <p>这次历史 β/GDR 方案，与后续只对更新幅度施加非负 β 倍率的简化方案，并不是同一个实验。也不能把另一个四轮 Gated Delta 资格研究的结果接在 160 轮长跑后当作第四条曲线。有关机制设计和来源见<a href="/research/seed-openevo/study/openevo-methods/#delta">方法篇的 Gated Delta 一节</a>。</p>
+      <p>这条历史 β/GDR 路线，与后续只对更新幅度施加非负 β 倍率的简化方案，并不是同一个实验。也不能把另一个四轮 Gated Delta 资格研究的结果接在 160 轮长跑后当作第四条曲线。有关机制设计和来源见<a href="/research/seed-openevo/study/openevo-methods/#delta">方法篇的 Gated Delta 一节</a>。</p>
     </section>
     <section id="direction" class="evo-article__section">
       <h2>7 第 156 轮的一次方向反转，平均得分下降 10.06 分</h2>
@@ -147,15 +163,36 @@ import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RES
       </div>
       <p><strong>很少改写文字，不等于文字状态没有作用。</strong>早期生成的文字可能在后续多轮被反复读取。必须单独关闭或替换载体，在其他条件尽量一致的任务上重新评测，才能判断它对能力的贡献。</p>
     </section>
+    <section id="checkpoint-evidence" class="evo-article__section" data-checkpoint-evidence>
+      <h2>9 R159 的已有证据：任务成绩、重复波动和压缩边界</h2>
+      <p>这里核对的是 <strong>Q17 DirectApply / No-GDR 的 Qwen3-1.7B R159</strong>，即完成第 160 次参数更新之后的模型。它在冻结的 <strong>64 道开发题</strong>上取得 Task Score <strong>60.1088/100</strong>、<strong>18/64</strong> 道完整成功、<strong>53/64</strong> 道有正奖励；旧 361 个执行步骤中记录的工程无效动作为 0。这是单个保存点的开发题成绩，<strong>不能替代</strong>上面三条路线各自的 128 题终评。<a href={checkpointEvidence.ledger} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.ledger} />R159 原始科学账本 ↗</a></p>
+      <h3>同一批题重复尝试，成功并不均匀</h3>
+      <p>历史上已对相同 64 题各尝试 8 次，共 512 次结果。按“每题在前 k 次中至少成功一次”统计的 Success@k 如下；这些数字来自旧数据的严格复用，并非本次写作重新运行 WebShop。</p>
+      <div class="evo-article__tablewrap" tabindex="0" aria-label="R159 重复八次的 Success at k">
+        <table>
+          <caption>表 4｜R159 开发集 64 题：前 k 次至少成功一次的题数</caption>
+          <thead><tr><th>尝试次数 k</th><th data-numeric>1</th><th data-numeric>2</th><th data-numeric>4</th><th data-numeric>8</th></tr></thead>
+          <tbody><tr><th>Success@k</th><td data-numeric>18/64</td><td data-numeric>24/64</td><td data-numeric>27/64</td><td data-numeric>31/64</td></tr></tbody>
+        </table>
+      </div>
+      <p><strong>31/64 不代表次次成功。</strong>只有 <strong>6/64</strong> 道题在八次中次次成功，<strong>33/64</strong> 道题八次全失败，其余 25 道题存在波动。需要每题连续奖励的 Best-of-k 仍因缺少逐题连续分数而无法验收（BLOCKED），不能由组平均分倒推。<a href={checkpointEvidence.repeat8} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.repeat8} />M1 原始重复观察 ↗</a></p>
+      <h3>压缩改变了一些动作标签，但还没有购物得分</h3>
+      <p>另一份已有的 D1 证据使用<strong>同一 R159 原权重</strong>，从 16 个训练任务中取出共 32 条已经用过的动作前输入，比较原参数和 K64、K80、K96 三种压缩状态。三组分别有 <strong>4/32、3/32、1/32</strong> 条动作标签结果变化，其中包括合法与无效标签之间的转换。这里的 K 是任务向量基容量，<strong>不是</strong>上面 rank32/rank128 容量筛选中的 LoRA rank。</p>
+      <p>这些输入不是留出的新任务，也不是冻结开发集 64 题。完整词表下一 token 的 KL/JS 变化不能冒充合法点击集合的概率差异；没有运行压缩版的 WebShop Task Score。因此 R159 的 <strong>#52、#65、#66</strong> 只有<strong>部分证据（PARTIAL）</strong>支持，完整通过数量并未增加，也不能替代另一模型 Q07 的方向干预。<a href={checkpointEvidence.compression} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.compression} />D1 同模型证据与限制 ↗</a></p>
+      <h3>有 13 份账本，不等于有 13 份完整体检报告</h3>
+      <p>截至 2026 年 10 月 14 日，13 份模型各建立了 78 项状态格，合计 <strong>1,014</strong> 格，其中 <strong>186</strong> 格是严格接纳的旧实测或来源核实复用项；核心指标为 <strong>64/117</strong>。<strong>真正达到 78/78 的模型是 0/13</strong>。186 不是新跑的实验数，更不是总体科研完成率。<a href={checkpointEvidence.matrix} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.matrix} />13×78 状态矩阵 ↗</a></p>
+      <p>R159 在尚未合并的实验 PR #703 分支接纳 <strong>39/78</strong>，核心 <strong>9/9</strong>；实验仓库的 <code>main</code> 在这份快照仍是 <strong>38/78</strong>。这 39 项由 30 项直接验证通过（PASS）和 9 项来源复用核实（REUSED_VERIFIED）构成；剩下 10 项仅有部分证据（PARTIAL）、18 项因缺材料阻塞（BLOCKED）、10 项待验证（PENDING）、1 项不适用（NOT_APPLICABLE）。原 361 步缺失 logits，远端完整冷恢复也没有通过；这些缺口不能用文稿补齐。</p>
+      <p class="evo-article__note">这些数字是<strong>已有科学证据的写作核对</strong>。新增 checkpoint、GPU、WebShop 和正式面板测量目前已暂停。科学账本由 <a href="https://github.com/mykcs/openevo-experiment/pull/703" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/703" />实验 PR #703</a> 持有；本页不把 PARTIAL 或计划写成 PASS，也不修改原始数据。</p>
+    </section>
     <section id="discussion" class="evo-article__section">
-      <h2>9 讨论：哪些问题仍需继续验证</h2>
+      <h2>10 讨论：结论到哪里，哪些仍未知</h2>
       <p>目前可以确认，固定容量明显减少了长期参数更新所需的计算，并将长期参数文件大小保持在受控范围内。rank32 在后段匹配任务中用约四分之一的文件容量保留了大部分观测得分。历史 β/GDR 终点评测较低，第 156 轮方向干预展示了一次局部因果影响。</p>
-      <p>任务成绩差异还需要更严格地分离：普通 OpenEVO 属于历史前序实验；容量筛选与最终冻结 128 题不是同一个测量阶段；文字载体的因果消融尚无可靠正式结果。更小 rank、可靠的 SEED 对照、旧任务保持和新随机任务复现，都是后续研究需要的证据。</p>
+      <p>任务成绩差异还需要更严格地分离：普通 OpenEVO 属于历史前序实验；容量筛选与最终冻结 128 题不是同一个测量阶段；文字载体的因果消融尚无可靠正式结果。更小 rank、可靠的 SEED 对照、旧任务保持和新随机任务复现仍缺决定性证据；本阶段暂停新增测量，只整理已经取得的结果。</p>
       <p>十项回应的结果、局限和原始记录已在本篇逐项列出；问题本身的提出背景见<a href="/research/seed-openevo/study/advisor-questions/">第二篇“学长十问”</a>。方法推导与参数记忆的工作原理详见<a href="/research/seed-openevo/study/openevo-methods/">第一篇方法介绍</a>。</p>
     </section>
     <section id="sources" class="evo-article__section evo-article__sources">
       <h2>原始记录</h2>
-      <p class="evo-article__note">本文当前采用的科研证据快照核对于 <time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>；这不是服务器实验的实时状态。</p>
+      <p class="evo-article__note">Q01–Q10 的原有结果核对日期为 <time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>；R159 与 13×78 的补充核对日期为 <time datetime="2026-10-14">2026-10-14</time>。这是来源快照，不是实验实时面板。</p>
       <ol>
         {ADVISOR_QUESTIONS.map(q=>(
           <li id={'source-'+q.id} data-response-source={q.id}>

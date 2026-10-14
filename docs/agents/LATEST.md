@@ -10,6 +10,12 @@ Status: **The SEED × OpenEvo Results route is aligned to the closed Track A pai
 
 This file is a short current-state router. Detailed policy belongs under `docs/agents/current/`; historical rationale belongs under `docs/agents/history/`.
 
+## 2026-10-14 三篇博客写作续接（科研测量暂停）
+
+BaseModel PR #851 仍按 **① OpenEVO 方法 → ② 学长十问 → ③ 我们的回应实验**。本轮只将已有科研证据补写第三篇和报告，不运行 GPU、checkpoint 或 WebShop。Q17 DirectApply R159 冻结64题开发成绩为 **60.1088/100、18/64 exact**，旧 M1 64×8 Success@k、D1 同模型32条训练 prefix 证据与128题三线终评、rank32/rank128 后段1024次比较均非同一测量。D1 #52/#65/#66 只到 PARTIAL；Q07 Bounded OFF 不能替代 DirectApply R159。实验 PR #703 未合并的 **39/78、核心9/9** 不等于实验 main 的旧 **38/78**；全体13份仅186/1014接纳格、0/13达78/78。权威交接：https://github.com/mykcs/openevo-experiment/blob/science/checkpoint13-cpu-evidence-followthrough-20261013/docs/science/webshop/program/OPEN_EVO_CHECKPOINT78_PAUSED_BASEMODEL_WRITING_HANDOFF_20261014.md
+
+新文章提交需要**重新验收 PR #851 的 exact head**，旧 60da447 的 CI / Vercel Preview 通过只属历史；PR / Preview 不是 Production。
+
 ## 三篇 OpenEVO 技术博客的当前文章职责（2026-10-13）
 
 PR #851 保留三个独立路由，顺序 **① OpenEVO 方法详解 → ② 学长十问（问题本身）→ ③ 我们的回应实验（Q01–Q10 的实验、结果及未知）**。Q10 是会后新增，不当作学长逐字提问。页面角色权威在 `docs/wish/DESIGN.md`；本地测试保护第二篇不混入成绩/图表、第三篇十项回应各有来源。三篇共享 `src/data/openEvoAdvisorTenQuestions.ts`；可用浏览器 QA 评价风格，但不得改写科研证据。
