@@ -1,0 +1,90 @@
+{
+  "schema": "basemodel.c02-qualification.v1",
+  "checked_at": "2026-10-03",
+  "baseline_main": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+  "stack": {
+    "D01": "618e4b65cbf3052e0503ea1d875d81015231aa33",
+    "D02": "bfdbb5c5a5a668055e45e4e718436660d87a2e77",
+    "D03": "f738b67a018fe3a1b068fd210b367cafd649cc24",
+    "D04": "40ea5b24e8ffad9597f6fdfc53eefe61b5511664",
+    "C02_plan_head_before_dependency_merge": "5a7ccd64b92976b10249adbe449b7fbdc853e968"
+  },
+  "implementation_sha256": {
+    "src/data/researchFigureData.ts": "968d80f1566e0744160afc25fdf2ba64051d3dc34f6d6568e2d86c31ee240364",
+    "src/components/research/ResearchEvidenceFigure.astro": "69ea375137c1afe88e2d2eddd6e54966d9f3e1fe0c82be956b3790f79db42581",
+    "src/components/research/BetaTrainingEvidenceFigure.astro": "8bd66d1c2e90abc8c884b92cdbbd59dd6c5f958234262ca4fbc17ff304ec079b",
+    "src/components/research/SamePanelFinalEvidenceFigure.astro": "a2a5abb7f56e2a51c4c458d3aa70b0092c36d3b01f528307ec5d4c18138ac89d",
+    "src/components/research/CapacityTradeoffEvidenceFigure.astro": "74e51e1a5df074cc8ba2341ccad90e7d292b104c9e6d90d5685a329bbc4e353e",
+    "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro": "4411f87190c9e62b9dba34940840003849e8134294314a9473066f38b68dbe65",
+    "src/lib/researchFigureData.test.ts": "32b55eac7fed7c62b19e402ab0aaf1c6823f2137d8834fd77f9b46187edf7a13",
+    "src/lib/researchEvidenceFigures.test.ts": "e38053095d452b6fac375e0e2a1b90c1ce7dadacaf8cd9c7cf4a5e6d79898ca0",
+    "tests/e2e/canonical-research-figures.spec.ts": "e277722fef919f4a75e97abb73010db4393fb5e20ac71e03ea9106d1692b8784"
+  },
+  "figure_roles": {
+    "beta_training": {
+      "state": "ready",
+      "evaluation_role": "training",
+      "rounds": 104,
+      "first_round": 96,
+      "last_round": 199,
+      "window_round_counts": [24, 20, 20, 20, 20],
+      "y_domain": [0, 100],
+      "missing_is_zero": false,
+      "new_final_created": false
+    },
+    "same_panel_final": {
+      "state": "ready",
+      "evaluation_role": "frozen_final",
+      "task_count": 128,
+      "task_scores": [60.71597673160174, 45.984865395021636, 20.769142316017316],
+      "exact_counts": [50, 32, 10],
+      "ordinary_openevo_is_third_randomized_arm": false
+    },
+    "rank_capacity_tradeoff": {
+      "state": "awaiting-pr805-integration",
+      "evaluation_role": "development",
+      "published_numeric_points": 0,
+      "copied_pr805_numbers": false,
+      "reason": "D01 still marks rank32-continuation-pending unavailable; C02 fails closed until the website publication owner is integrated."
+    }
+  },
+  "checks": {
+    "c02_structural_tests": 19,
+    "focused_structural_tests": 58,
+    "structural_test_files": 130,
+    "structural_tests": 974,
+    "behavior_test_files": 7,
+    "behavior_tests": 37,
+    "typecheck_files": 612,
+    "typecheck_errors": 0,
+    "typecheck_warnings": 0,
+    "existing_typecheck_hints": 2,
+    "verify_deploy": "PASS",
+    "build": "PASS",
+    "static_pages": 265,
+    "strict_copy_invariant_failures": 0,
+    "reader_contract_routes": 68,
+    "chromium_canonical_figure_tests": "19/19 PASS",
+    "c02_chromium_webkit_tests": "12/12 PASS"
+  },
+  "visual_gut_check": {
+    "tool": "agent-browser",
+    "viewports": ["390x844", "1440x1000"],
+    "page_has_content": true,
+    "error_overlay": false,
+    "document_horizontal_overflow": false,
+    "mobile_plot_scroll_is_local": true,
+    "smooth_scroll_false_positive_found_and_test_repaired": true,
+    "screenshots_committed": false
+  },
+  "boundaries": {
+    "new_chart_dependency": false,
+    "wandb_visibility_changed": false,
+    "original_evidence_changed": false,
+    "new_experiment_started": false,
+    "new_final_panel_access": 0,
+    "vercel_final_gate_requested": false,
+    "merged": false,
+    "production_released": false
+  }
+}

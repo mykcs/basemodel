@@ -3,13 +3,19 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { familySchema, modelSchema, paperSchema } from '../src/lib/schemas';
 import familiesFile from '../src/content/coverage/families.json';
+import { RESEARCH_EVIDENCE } from '../src/data/researchEvidenceIndex';
+import { verifyResearchEvidenceFiles } from './research-evidence-integrity';
+import { checkAnalysisProjection } from './research/analyze-evidence';
+import { validateResearchDecisionNotes } from '../src/data/researchDecisionNotes';
 
 type RawRecord = { file: string; data: Record<string, unknown> };
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const readJsonFiles = (directory: string): RawRecord[] => (fs.readdirSync(directory) as string[]).filter((file) => file.endsWith('.json')).map((file) => ({ file, data: JSON.parse(fs.readFileSync(path.join(directory, file), 'utf8')) as Record<string, unknown> }));
 const models = readJsonFiles(path.join(root, 'src/content/models'));
 const papers = readJsonFiles(path.join(root, 'src/content/papers'));
-const errors: string[] = [];
+const errors: string[] = verifyResearchEvidenceFiles(root, RESEARCH_EVIDENCE);
+checkAnalysisProjection(root);
+errors.push(...validateResearchDecisionNotes());
 const unique = (items: RawRecord[], label: string) => { const ids = new Set<string>(); for (const item of items) { const id = item.data.id; if (typeof id !== 'string' || !id) errors.push(`${label}/${item.file}: missing id`); else if (ids.has(id)) errors.push(`${label}/${item.file}: duplicate id ${id}`); else ids.add(id); } };
 unique(models, 'models'); unique(papers, 'papers');
 for (const item of models) { const result = modelSchema.safeParse(item.data); if (!result.success) errors.push(`models/${item.file}: ${result.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`).join('; ')}`); }

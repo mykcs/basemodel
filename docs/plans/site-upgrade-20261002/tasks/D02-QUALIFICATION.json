@@ -1,0 +1,158 @@
+{
+  "schema": "basemodel.d02-offline-qualification.v1",
+  "baseline_commit": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+  "dependency_d01_commit": "618e4b65cbf3052e0503ea1d875d81015231aa33",
+  "scope": "Existing frozen local projections only; local partitions are not verified W&B API pagination.",
+  "implementation_sha256": {
+    "src/lib/researchHistory.ts": "ad268964a36a13dd1b1b554829c411a96d80e515adbd00a7ff06da138add648e",
+    "src/lib/researchHistory.test.ts": "e05eb7b96168eaa5cfe7581ca1da68c02e8d9897a804c62a5eab2e6372b45816",
+    "scripts/research/history-sources.ts": "8d92fad4e38f72122ef1363855e06e9b09c403d9f243e38d56584b5c9f3d26c8",
+    "scripts/research/import-history.ts": "4dc81625de5a67cb86897cbdbaf70cae8fa0a27350936fb941fc0d8c9520bef5"
+  },
+  "checks": {
+    "node": "24.20.0",
+    "verify_deploy": "PASS",
+    "structural_tests": 883,
+    "behavior_tests": 37,
+    "d02_new_tests": 34,
+    "typecheck_files": 598,
+    "typecheck_errors": 0,
+    "build": "PASS",
+    "static_pages": 265
+  },
+  "sources": [
+    {
+      "source": "beta-r200",
+      "source_identity": {
+        "repository": "mykcs/basemodel",
+        "commit": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+        "path": "public/research/seed-openevo/evidence/bounded-beta-r200-round-series-20261001.json",
+        "sha256": "ed97e8d26fad52cdd4822fd6fb95414de30c916c16554ff415246140bddd1cde"
+      },
+      "scientific_content_sha256": "cc0b138ea4815151c067d422035a06a3434a135a85721c50a0fed1fd3cec6f69",
+      "page_kind": "local-partition",
+      "rows": 104,
+      "local_partitions": 2,
+      "fields": [
+        {
+          "key": "task_score",
+          "series": "bounded-beta",
+          "metricId": "taskScore",
+          "positions": 104,
+          "recorded": 104,
+          "missing": 0
+        },
+        {
+          "key": "training_loss",
+          "series": "bounded-beta",
+          "metricId": "trainingLoss",
+          "positions": 104,
+          "recorded": 104,
+          "missing": 0
+        },
+        {
+          "key": "exact_success_count",
+          "series": "bounded-beta",
+          "metricId": "exactSuccessCount",
+          "positions": 104,
+          "recorded": 104,
+          "missing": 0
+        }
+      ],
+      "first_write_reused": false,
+      "second_write_reused": true
+    },
+    {
+      "source": "threeway-loss",
+      "source_identity": {
+        "repository": "mykcs/basemodel",
+        "commit": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+        "path": "public/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.json",
+        "sha256": "d0c0079fc8878f60da9085af525ef80ec2e93aabbb0471e6bd663fcc52071608"
+      },
+      "scientific_content_sha256": "dd3be51e01c1dd7ffa1d7e1a40613389877d4ea2218285ae8100d92a77282b47",
+      "page_kind": "local-partition",
+      "rows": 160,
+      "local_partitions": 1,
+      "fields": [
+        {
+          "key": "ordinary_openevo_loss",
+          "series": "ordinary",
+          "metricId": "trainingLoss",
+          "positions": 160,
+          "recorded": 160,
+          "missing": 1
+        },
+        {
+          "key": "bounded_loss",
+          "series": "bounded",
+          "metricId": "trainingLoss",
+          "positions": 160,
+          "recorded": 160,
+          "missing": 2
+        },
+        {
+          "key": "bounded_gdr_loss",
+          "series": "beta",
+          "metricId": "trainingLoss",
+          "positions": 160,
+          "recorded": 160,
+          "missing": 6
+        }
+      ],
+      "first_write_reused": false,
+      "second_write_reused": true
+    },
+    {
+      "source": "threeway-window-score",
+      "source_identity": {
+        "repository": "mykcs/basemodel",
+        "commit": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+        "path": "public/research/seed-openevo/evidence/wandb-threeway/task-score-20-round-mean.json",
+        "sha256": "f3edc302ab64ed50b378e23f112941bc26f79f2dd245d3a2615a27003297da93"
+      },
+      "scientific_content_sha256": "5e9f16d6b6fa41fe7f7827d5a00bbe8b1125f6c14259fdd7cb4f8c3b61f25013",
+      "page_kind": "local-partition",
+      "rows": 8,
+      "local_partitions": 1,
+      "fields": [
+        {
+          "key": "ordinary",
+          "series": "ordinary",
+          "metricId": "taskScore",
+          "positions": 8,
+          "recorded": 8,
+          "missing": 0
+        },
+        {
+          "key": "bounded",
+          "series": "bounded",
+          "metricId": "taskScore",
+          "positions": 8,
+          "recorded": 8,
+          "missing": 0
+        },
+        {
+          "key": "beta",
+          "series": "beta",
+          "metricId": "taskScore",
+          "positions": 8,
+          "recorded": 8,
+          "missing": 0
+        }
+      ],
+      "first_write_reused": false,
+      "second_write_reused": true
+    }
+  ],
+  "not_performed": [
+    "live W&B/server collection",
+    "new experiments",
+    "source or credential changes",
+    "visibility expansion",
+    "Vercel final gate",
+    "merge",
+    "deployment",
+    "human reading acceptance"
+  ]
+}

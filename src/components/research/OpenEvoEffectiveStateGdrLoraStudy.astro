@@ -4,6 +4,9 @@ import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
 import MathFormula from '../common/MathFormula.astro';
 import MetricEvidenceFigure from './MetricEvidenceFigure.astro';
+import BetaTrainingEvidenceFigure from './BetaTrainingEvidenceFigure.astro';
+import SamePanelFinalEvidenceFigure from './SamePanelFinalEvidenceFigure.astro';
+import CapacityTradeoffEvidenceFigure from './CapacityTradeoffEvidenceFigure.astro';
 import { readFileSync } from 'node:fs';
 import { EFFECTIVE_STATE_GDR_LORA_STUDY as study } from '../../data/effectiveStateGdrLoraStudy';
 import type { EffectiveStateFormalResult } from '../../data/effectiveStateGdrLoraStudy';
@@ -70,13 +73,6 @@ const metricCharts = {
     src: '/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.svg',
     href: panelHref('Action-family entropy', '06 输出长度与任务路径'),
     alt: t('三组实验 160 轮 action-family Shannon entropy 静态曲线', 'Static 160-round action-family Shannon entropy curves for the three experiments'),
-  },
-  r200TaskScore: {
-    title: t('β-gating · R96–R199 Task Score', 'β-gating · R96–R199 Task Score'),
-    src: '/research/seed-openevo/evidence/bounded-beta-r200-task-score-r96-r199.svg',
-    href: '/research/seed-openevo/evidence/bounded-beta-r200-round-series-20261001.json',
-    linkText: t('打开 104 轮逐轮 evidence →', 'Open 104-round evidence →'),
-    alt: t('β-gating 从 R96 到 R199 的逐轮 Task Score，以及五个非重叠窗口均值和 R160 延长实验边界', 'Round-level β-gating Task Score from R96 to R199 with five non-overlapping window means and the R160 extension boundary'),
   },
 };
 
@@ -826,17 +822,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     '最后 20 轮平均更接近“训练后期通常处在什么水平”，但它不是同题考试。下面的固定终评则让三组最终模型做完全相同、顺序相同的 128 题，同时给连续 Task Score 和完整做对数量。',
     'The last-20 mean is closer to typical late-training behavior, but it is not a same-task exam. The fixed final below evaluates all three final models on exactly the same ordered 128 tasks and reports both continuous Task Score and exact-success count.',
   )}</p>
-  <div class="paper-table-wrap">
-    <table class="paper-table">
-      <thead><tr><th>{t('实验', 'Experiment')}</th><th>Task Score / 100</th><th>{t('完整做对', 'Exact success')}</th></tr></thead>
-      <tbody>
-        <tr><td>{names.baseline}</td><td><strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong></td><td>{study.threeWayFinal.directApply.exactCount}/128</td></tr>
-        <tr><td>{names.bounded}</td><td><strong>{study.threeWayFinal.off.score.toFixed(2)}</strong></td><td>{study.threeWayFinal.off.exactCount}/128</td></tr>
-        <tr><td>{names.gdr}</td><td><strong>{study.threeWayFinal.on.score.toFixed(2)}</strong></td><td>{study.threeWayFinal.on.exactCount}/128</td></tr>
-        <tr><td>{names.dynamicAlphaBeta}</td><td>—</td><td>—</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <SamePanelFinalEvidenceFigure locale={locale} />
   <p class="paper__boundary">{t(
     '固定终评适合回答“在这一套冻结题上谁完成得更多”，但仍只是一套 128 题，不能读成全面能力分数。普通 OpenEVO 还是更早的独立前序实验；它不是后两组预注册同设置正式对照里的第三条实验。',
     'The fixed final answers who completes more of this frozen panel, but it is still one set of 128 tasks rather than a comprehensive capability score. Ordinary OpenEVO remains an earlier predecessor run, not a third formal arm in the preregistered matched campaign below.',
@@ -907,7 +893,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
       </table>
     </div>
 
-    <MetricEvidenceFigure item={metricCharts.r200TaskScore} />
+    <BetaTrainingEvidenceFigure locale={locale} />
     <p class="paper__chart-note">{t(
       '灰线是 R96–R199 的逐轮训练 Task Score；蓝色粗线是五个互不重叠窗口的均值，R160 虚线是 extension 起点。图中后 40 轮来自新的正式 rollout，不是把 R140–R159 重新抽样或重放。',
       'The gray line is round-level training Task Score over R96–R199; thick blue segments are five non-overlapping window means, and the R160 dashed line marks the extension boundary. The final 40 rounds are new formal rollouts, not resampling or replay of R140–R159.',
@@ -1046,6 +1032,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
       'rank95≈7 仍然只是后验几何描述，不能反推“rank8 长期 State 一定够用”。容量是否够，必须用 matched capacity experiment 直接测任务性能。',
       'rank95≈7 remains a posterior geometric description; it cannot be inverted into the claim that a rank8 persistent State must be sufficient. Capacity must be tested directly with a matched capacity experiment.',
     )}</p>
+    <CapacityTradeoffEvidenceFigure locale={locale} />
   </div>
 
   <div class="paper__metric-step" id="task-vector">
