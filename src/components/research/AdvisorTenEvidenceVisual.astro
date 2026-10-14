@@ -178,7 +178,7 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
       ))}
       <text class="advisor-viz__q03-axis-title" x="331" y="280" text-anchor="middle">Stage2 保存点</text>
     </svg>
-    <svg class="advisor-viz__trend advisor-viz__q03-chart advisor-viz__q03-chart--phone" data-q03-mobile-chart viewBox="0 0 350 236" role="img" aria-labelledby="advisor-q03-phone-title advisor-q03-phone-description">
+    <svg class="advisor-viz__trend advisor-viz__q03-phone-chart" data-q03-mobile-chart viewBox="0 0 350 236" role="img" aria-labelledby="advisor-q03-phone-title advisor-q03-phone-description">
       <title id="advisor-q03-phone-title">Q03 四个真实保存点成绩先升、后降、再回升，手机视图</title>
       <desc id="advisor-q03-phone-description">自定义 64 题开发面板，A0 为 3.71，A40 为 6.43，A80 为 0.69，A120 为 6.62；纵轴局部放大到 0–10 分，完整满分为 100。虚线只是连接已测点，中间没有观测。</desc>
       <text class="advisor-viz__q03-axis-title" x="43" y="20">Task Score / 100</text>
@@ -311,7 +311,7 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
 .advisor-viz__zoom{margin:.35rem 0 .7rem;color:var(--color-text-muted);font-size:.9rem;line-height:1.65}
 .advisor-viz__zoom strong{color:var(--color-text)}
 .advisor-viz__q03-chart{max-width:625px;height:auto;margin:.5rem 0 .2rem}
-.advisor-viz__q03-chart--phone{display:none}
+.advisor-viz__q03-phone-chart{display:none;max-width:350px;height:auto;margin:.5rem 0 .2rem}
 .advisor-viz__q03-axis-title{fill:var(--color-text-muted);font-size:13px;font-weight:540}
 .advisor-viz__q03-axis-line{stroke:var(--color-text);stroke-width:1.3}
 .advisor-viz__q03-grid{stroke:var(--color-border);stroke-width:.85}
@@ -324,7 +324,7 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
 .advisor-viz__q03-phone-table .research-booktabs caption{font-size:.84rem;line-height:1.5}
 @media(max-width:720px){
   .advisor-viz__q03-chart--desktop{display:none}
-  .advisor-viz__q03-chart--phone{display:block;max-width:350px;width:100%}
+  .advisor-viz__q03-phone-chart{display:block;max-width:350px;width:100%}
   .advisor-viz__q03-phone-table{display:block;margin:.8rem 0 .7rem}
   .advisor-viz__q03-phone-table .research-booktabs{font-size:.85rem}
   .advisor-viz__q03-phone-table :is(th,td){padding:.52rem .45rem;white-space:normal}
