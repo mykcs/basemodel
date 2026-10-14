@@ -1,230 +1,180 @@
 import { expect, test } from '@playwright/test';
 
-const route = '/research/seed-openevo/study/advisor-questions/';
-const sections = [
-  'paper-introduction',
-  'paper-related-work',
-  'paper-method',
-  'paper-experiments',
-  'paper-results',
-  'paper-ablations',
-  'paper-visualization',
-  'paper-discussion',
-  'paper-conclusion',
-];
+const prefix='/research/seed-openevo/study/';
+const articles=[
+  {slug:'openevo-methods',type:'methods',title:'OpenEVO 怎样保存和更新经验'},
+  {slug:'advisor-questions',type:'questions',title:'学长十问：OpenEVO 还有哪些问题需要回答'},
+  {slug:'parameter-memory-results',type:'results',title:'我们的回应实验：十个研究问题的证据'},
+] as const;
 
-for (const width of [390, 768, 1440]) {
-  test('academic chapter order and horizontal safety at ' + width + 'px', async ({ page }) => {
-    await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
-    await page.goto(route, { waitUntil: 'domcontentloaded' });
-
-    await expect(page.locator('h1')).toHaveText('长期参数记忆的效率与能力权衡');
-    await expect(page.locator('[data-paper-report]')).toBeVisible();
-    // Every evidence table uses one native, booktabs-like table grammar.
-    const tables = page.locator('.paper-report table');
-    await expect(tables).toHaveCount(6);
-    await expect(page.locator('.paper-report table.research-booktabs')).toHaveCount(6);
-    const styles = await tables.evaluateAll((nodes) => nodes.map((node) => {
-      const style = getComputedStyle(node);
-      const headCells = Array.from(node.querySelectorAll('thead th[data-numeric]'));
-      return {
-        collapse: style.borderCollapse,
-        topRule: parseFloat(style.borderTopWidth),
-        bottomRule: parseFloat(style.borderBottomWidth),
-        numericHeaders: headCells.every((cell) => getComputedStyle(cell).textAlign === 'right'),
-      };
-    }));
-    expect(styles.every((t) => t.collapse === 'collapse' && t.topRule > 0 && t.bottomRule > 0 && t.numericHeaders)).toBe(true);
-    const capacityTable = page.locator('#paper-ablations table.research-booktabs');
-    const rightEdges = await capacityTable.evaluate((table) => {
-      const nthCol = 2;
-      return Array.from(table.querySelectorAll('tr')).map((tr) =>
-        tr.children.item(nthCol)?.getBoundingClientRect().right ?? 0);
-    });
-    expect(Math.max(...rightEdges) - Math.min(...rightEdges)).toBeLessThanOrEqual(2);
-    if (width === 1440) {
-      const geometry = await capacityTable.evaluate((table) => {
-        const bounds = table.getBoundingClientRect();
-        const paper = table.closest('.paper-report')!.getBoundingClientRect();
-        return { tableWidth: bounds.width, articleWidth: paper.width };
+for(const width of [390,768,1440]){
+  for(const item of articles){
+    test(item.type+' article at '+width+'px',async({page})=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.goto(prefix+item.slug+'/',{waitUntil:'domcontentloaded'});
+      const article=page.locator('[data-evo-blog="'+item.type+'"]');
+      await expect(article).toBeVisible();
+      await expect(article.locator('h1')).toHaveText(item.title);
+      const navigation=page.getByRole('navigation',{name:'三篇 OpenEVO 技术博客'});
+      await expect(navigation.locator('a')).toHaveCount(2);
+      await expect(navigation.locator('.evo-current[aria-current="page"]')).toHaveCount(1);
+      const names=await navigation.locator('li').allTextContents();
+      expect(names[0]).toContain('参数记忆方法');
+      expect(names[1]).toContain('学长十问');
+      expect(names[2]).toContain('我们的回应实验');
+      const toc=article.locator('.evo-article__toc a');
+      expect(await toc.count()).toBeGreaterThanOrEqual(6);
+      const anchors=await toc.evaluateAll(nodes=>nodes.map(a=>a.getAttribute('href')));
+      for(const anchor of anchors) await expect(page.locator(anchor!)).toHaveCount(1);
+      const geometry=await page.evaluate(()=>{
+        const node=document.querySelector('.evo-blog')!;
+        const style=getComputedStyle(node);
+        return {
+          overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+          background:getComputedStyle(document.body).backgroundColor,
+          paper:style.backgroundColor,
+          size:parseFloat(style.fontSize),
+        };
       });
-      expect(geometry.tableWidth, 'compact result tables must use natural width, not stretch to page').toBeLessThan(geometry.articleWidth - 24);
-    }
-    await expect(page.locator('.advisor-ten__lede')).toBeVisible();
-    // Reader attention: a true date or publication label alone is not a reason for a visual eyebrow.
-    await expect(page.locator('.advisor-ten__hero > :first-child')).toHaveText('长期参数记忆的效率与能力权衡');
-    await expect(page.locator('.advisor-ten__hero > p:not(.advisor-ten__lede)')).toHaveCount(0);
-    await expect(page.locator('.advisor-ten__paper-label')).toHaveCount(0);
-    await expect(page.locator('.advisor-ten__footnotes')).toHaveCount(0);
-    await expect(page.locator('#paper-abstract')).toContainText('31.09 小时');
-    await expect(page.locator('#paper-abstract')).toContainText('20.77');
-
-    const actual = await page.locator('.paper-toc__chapters a').evaluateAll((links) =>
-      links.map((link) => link.getAttribute('href')?.slice(1)),
-    );
-    expect(actual).toEqual([...sections, 'paper-sources', 'paper-appendix']);
-    const chapterPositions = await page.locator('.paper-section[id]').evaluateAll((nodes) =>
-      nodes.filter((n) => n.id !== 'paper-sources' && n.id !== 'paper-appendix')
-        .map((n) => n.id),
-    );
-    expect(chapterPositions).toEqual(sections);
-    await expect(page.locator('.paper-toc > h2')).toHaveText('目录');
-    await expect(page.getByRole('navigation', { name: '报告目录' })).toHaveCount(1);
-    await expect(page.locator('.paper-toc__appendix > h3')).toHaveText('附录重点');
-    const highlighted = await page.locator('.paper-toc__highlights a').evaluateAll((links) =>
-      links.map((link) => link.getAttribute('href')),
-    );
-    expect(highlighted).toEqual(['#q01', '#q03', '#q04', '#q07', '#q09', '#q10']);
-    for (const id of highlighted) {
-      await expect(page.locator(id!)).toHaveCount(1);
-    }
-    const refs = page.locator('#paper-sources .paper-reference-list > li');
-    await expect(refs).toHaveCount(4);
-    await expect(refs.nth(0)).toContainText('WebShop');
-    await expect(refs.nth(1)).toContainText('SEED');
-    await expect(refs.nth(2)).toContainText('ICLR 2022');
-    await expect(refs.nth(3)).toContainText('SD-LoRA');
-    await expect(refs.nth(3)).toContainText('ICLR 2025');
-
-    for (const [index, id] of sections.entries()) {
-      const chapterNumber = String(index + 1);
-      // Numbering is a meaningful academic heading, not a decorative eyebrow.
-      await expect(page.locator('#' + id + ' > h2')).toHaveText(new RegExp('^' + chapterNumber + ' '));
-      await expect(page.locator('.paper-toc__chapters > li:nth-child(' + chapterNumber + ') a span')).toHaveText(chapterNumber);
-    }
-    for (const [id, prefixes] of [
-      ['paper-related-work', ['2.1', '2.2', '2.3']],
-      ['paper-ablations', ['6.1', '6.2', '6.3']],
-      ['paper-visualization', ['7.1', '7.2', '7.3', '7.4', '7.5']],
-    ] as const) {
-      const actual = await page.locator('#' + id + ' h3').allTextContents();
-      expect(actual.map((heading) => heading.trim().split(' ')[0])).toEqual(prefixes);
-    }
-    await expect(page.locator('#paper-abstract > h2')).toHaveText('摘要');
-    await expect(page.locator('#paper-sources > h2')).toHaveText('参考文献与原始实验来源');
-    await expect(page.locator('#paper-appendix > h2')).toHaveText('附录 A：十问原始证据索引');
-    await expect(page.locator('#paper-related-work')).toContainText('SEED');
-    await expect(page.locator('#paper-method [data-paper-figure="method"]')).toBeVisible();
-    await expect(page.locator('#paper-results .paper-main-table tbody tr')).toHaveCount(3);
-    await expect(page.locator('#paper-ablations [data-report-figure="q04-capacity"]')).toBeVisible();
-    await expect(page.locator('#paper-visualization [data-report-figure="q03-custom-curve"]')).toBeVisible();
-    await expect(page.locator('#paper-visualization [data-report-visual="q07-confidence-interval"]')).toBeVisible();
-    await expect(page.locator('[data-report-question]')).toHaveCount(10);
-
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-    );
-    expect(overflow, 'no document-level horizontal overflow').toBeLessThanOrEqual(2);
-  });
+      expect(geometry.overflow).toBeLessThanOrEqual(2);
+      expect(geometry.paper).toBe('rgb(255, 255, 255)');
+      expect(geometry.background).toBe('rgb(246, 247, 245)');
+      expect(geometry.size).toBeGreaterThanOrEqual(width===390?16:16.5);
+      expect(geometry.size).toBeLessThanOrEqual(17.5);
+    });
+  }
 }
 
-test('related work links to genuine papers and scientific differences remain explicit', async ({ page }) => {
-  await page.goto(route, { waitUntil: 'domcontentloaded' });
-  for (const ref of ['2207.01206', '2607.14777', '2106.09685']) {
-    await expect(page.locator('#paper-related-work a[href="https://arxiv.org/abs/' + ref + '"]')).toHaveCount(1);
+test('first article retains three equal method diagrams, mathematics, optional rank8 depth',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto(prefix+'openevo-methods/');
+  const lanes=page.locator('.advisor-method__lane');
+  await expect(lanes).toHaveCount(3);
+  const styles=await lanes.evaluateAll(nodes=>nodes.map(l=>{
+    const n=l.querySelector('.advisor-method__node')!;
+    const s=getComputedStyle(n);
+    return {bg:s.backgroundColor,border:s.borderTopColor,width:Math.round(n.getBoundingClientRect().width)};
+  }));
+  expect(new Set(styles.map(s=>s.bg)).size).toBe(1);
+  expect(new Set(styles.map(s=>s.border)).size).toBe(1);
+  expect(new Set(styles.map(s=>s.width)).size).toBe(1);
+  await expect(page.locator('#formalization .katex').first()).toBeVisible();
+  const detail=page.locator('[data-rank8-disclosure]');
+  await expect(detail).not.toHaveAttribute('open','');
+  await detail.locator('summary').click();
+  await expect(detail).toHaveAttribute('open','');
+  await expect(detail).toContainText('rank4');
+});
+
+test('second article contains the advisor question background but not our answers',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(prefix+'advisor-questions/');
+  const article=page.locator('[data-question-only]');
+  await expect(article).toBeVisible();
+  const list=article.locator('[data-research-question]');
+  await expect(list).toHaveCount(10);
+  expect(await list.evaluateAll(nodes=>nodes.map(x=>x.id))).toEqual(Array.from({length:10},(_,i)=>'q'+String(i+1).padStart(2,'0')));
+  await expect(article.locator('#origin ol > li')).toHaveCount(6);
+  await expect(article.locator('#q10')).toContainText('会后新增');
+  await expect(article).toContainText('Q10 是会后');
+  await expect(article.locator('[data-report-finding]')).toHaveCount(0);
+  await expect(article.locator('[data-experiment-finding]')).toHaveCount(0);
+  await expect(article.locator('.advisor-viz')).toHaveCount(0);
+  await expect(article).not.toContainText('60.72');
+  await expect(article).not.toContainText('−3.68');
+  const link=article.locator('#q03 a[href*="parameter-memory-results"]');
+  await expect(link).toHaveAttribute('href',/response-q03$/);
+  await link.click();
+  await expect(page.locator('#response-q03')).toBeVisible();
+  await expect(page.locator('#response-q03 [data-experiment-finding]')).toBeVisible();
+});
+
+test('third article answers all Q01–Q10 with experiments, measurements, limits, source links',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(prefix+'parameter-memory-results/');
+  const article=page.locator('[data-response-experiments]');
+  const responses=article.locator('[data-experiment-response]');
+  await expect(responses).toHaveCount(10);
+  expect(await responses.evaluateAll(nodes=>nodes.map(x=>x.id))).toEqual(Array.from({length:10},(_,i)=>'response-q'+String(i+1).padStart(2,'0')));
+  for (const response of await responses.all()){
+    const id=await response.getAttribute('data-experiment-response');
+    await expect(response.locator('[data-experiment-finding]')).toHaveCount(1);
+    await expect(response.locator('.evo-article__limit')).toHaveCount(1);
+    await expect(response.locator('a[href="#source-'+id+'"]')).toHaveCount(1);
+    await expect(response.locator('a[href*="advisor-questions/#'+id+'"]')).toHaveCount(1);
   }
-  const lora = page.locator('#paper-related-work article').nth(2);
-  await expect(lora).toContainText('2021 年');
-  await expect(lora).toContainText('ICLR 2022');
-  await expect(lora).toContainText('ICLR 2025');
-  await expect(lora).toContainText('研究评价');
-  await expect(lora).toContainText('类增量学习');
-  await expect(lora).toContainText('WebShop 交互 Agent');
-  await expect(lora).toContainText('旧能力保持');
-  await expect(lora.locator('a[href="https://www.microsoft.com/en-us/research/publication/lora-low-rank-adaptation-of-large-language-models/"]')).toHaveCount(1);
-  await expect(lora.locator('a[href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/92f43b1d33fae4aa1958f75317f0cec1-Abstract-Conference.html"]')).toHaveCount(1);
-  const setup = page.locator('[data-report-methods]');
-  await expect(setup.locator('tbody tr')).toHaveCount(4);
-  await expect(setup).toContainText('第 152–159 轮');
-  await expect(setup).toContainText('不能与论文另一套 128 题直接比较');
-  const main = page.locator('#paper-results');
-  await expect(main).toContainText('60.72');
-  await expect(main).toContainText('45.98');
-  await expect(main).toContainText('20.77');
-  await expect(main).toContainText('普通 OpenEVO 是较早前序实验');
-  await expect(main).toContainText('74.78');
-  await expect(main).toContainText('56.25');
-});
-
-test('capacity and SFT ablations are measured without invented missing results', async ({ page }) => {
-  await page.goto(route, { waitUntil: 'domcontentloaded' });
-  const ablations = page.locator('#paper-ablations');
-  const capacity = ablations.locator('[data-report-figure="q04-capacity"]');
-  await expect(capacity.locator('table.research-booktabs tbody tr')).toHaveCount(2);
-  await expect(capacity.locator('table caption')).toContainText('表 3');
-  await expect(capacity.locator('thead th')).toHaveCount(4);
-  await expect(capacity.locator('tbody tr').nth(0)).toContainText('62.98');
-  await expect(capacity.locator('tbody tr').nth(1)).toContainText('61.19');
-  await expect(capacity.locator('tbody tr').nth(1).locator('td').first()).toHaveText('51.4');
-  await expect(capacity.locator('tbody tr').nth(0).locator('td').first()).toHaveText('205.6');
-  await expect(capacity.locator('thead')).toContainText('参数文件（MB）');
-  await expect(ablations).toContainText('[−3.68，+0.12]');
-  await expect(ablations.locator('[data-report-visual="q02-early-sft"] .advisor-viz__bar-row')).toHaveCount(3);
-  await expect(ablations).toContainText('完成六次训练');
-  await expect(ablations).toContainText('任务能力还缺同条件配对评测');
-  await expect(ablations).toContainText('95% 置信区间');
-  await expect(ablations).toContainText('配对差值');
-  await expect(ablations).toContainText('为什么这样判断');
-  await expect(ablations).toContainText('这意味着什么');
-});
-
-test('real figures show their evidence identity and keep SEED paper outside the Q03 chart', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(route, { waitUntil: 'domcontentloaded' });
-
-  const full = page.locator('[data-paper-figure="full-trajectory"]');
-  await expect(full.locator('img')).toHaveAttribute('src', /wandb-threeway\/task-score\.svg$/);
-  await expect(full.locator('figcaption')).toContainText('表 2 是训练结束后的冻结 128 题终评');
-  await expect(page.locator('[data-report-figure="q01-horizon"]')).toBeVisible();
-
-  const q03 = page.locator('[data-report-figure="q03-custom-curve"]');
-  await expect(q03.locator('svg [data-trend-point]')).toHaveCount(4);
-  await expect(q03.locator('tbody tr')).toHaveCount(4);
-  await q03.getByRole('button', { name: 'A80' }).click();
+  await expect(page.locator('#sources [data-response-source]')).toHaveCount(10);
+  const q03=page.locator('#response-q03 [data-report-figure="q03-custom-curve"]');
+  await q03.getByRole('button',{name:'A80'}).click();
   await expect(q03.locator('[data-stage-detail]')).toContainText('A80 · 0.69');
-  await q03.getByRole('button', { name: 'A120' }).focus();
-  await page.keyboard.press('Enter');
-  await expect(q03.locator('[data-stage-detail]')).toContainText('A120 · 6.62');
-  expect(await q03.locator('svg').textContent()).not.toContain('87.10');
-
-  const boundary = page.locator('[data-comparison-boundary="noncomparable"]');
-  await expect(boundary).toContainText('87.10 / 100');
-  await expect(boundary).toContainText('未测');
-  await expect(boundary).toContainText('需先用统一任务和执行合同重新测量');
-  await expect(page.locator('[data-report-visual="q07-confidence-interval"]')).toContainText('−10.06');
-  await expect(page.locator('[data-report-figure="q09-update-counts"] tbody tr')).toHaveCount(3);
+  await expect(page.locator('#response-q10')).toContainText('当前并没有三条新随机流');
 });
 
-test('the ten meeting questions remain as an evidence appendix, not the main paper chapters', async ({ page }) => {
-  await page.goto(route, { waitUntil: 'domcontentloaded' });
-  const appendix = page.locator('#paper-appendix');
-  await expect(appendix).toContainText('Q10');
-  const hrefs = await appendix.locator('.advisor-ten__contents a').evaluateAll((nodes) =>
-    nodes.map((n) => n.getAttribute('href')),
-  );
-  expect(hrefs).toEqual(Array.from({ length: 10 }, (_, i) => '#q' + String(i + 1).padStart(2, '0')));
-  for (let i = 1; i <= 10; i++) {
-    const id = 'q' + String(i).padStart(2, '0');
-    const article = appendix.locator('[data-report-question="' + id + '"]');
-    await expect(article.locator('[data-report-finding]')).toBeVisible();
-    await expect(article.locator('.advisor-ten__limit')).toBeVisible();
-    await expect(article.locator('.advisor-ten__sources a').first()).toHaveAttribute('href', /github.com\/mykcs/);
-  }
-  // Preserve necessary historical source identity at the source, not in page chrome.
-  await expect(page.locator('#paper-sources')).toContainText('2026-10-09');
-  await expect(page.locator('#paper-sources')).toContainText('研究证据核对日期');
-  await expect(page.locator('#paper-appendix')).toContainText('Q10 独立复现');
-  await expect(page.locator('#paper-sources a[href*="/docs/reports/"]')).toHaveAttribute(
-    'href', /blob\/main\/docs\/reports\/2026-10-10-advisor-ten-iclr-style\.md$/,
-  );
+test('response article also keeps frozen final, paired capacity, direction, uncertainty',async({page})=>{
+  await page.goto(prefix+'parameter-memory-results/');
+  const a=page.locator('[data-evo-blog="results"]');
+  for (const v of ['60.72','45.98','20.77','1,024','rank32','rank128','10.06','−3.68','+0.12'])
+    await expect(a).toContainText(v);
+  await expect(page.locator('#main-results .evo-article__tablewrap tbody tr')).toHaveCount(3);
+  await expect(page.locator('#capacity [data-report-figure="q04-capacity"]')).toBeVisible();
+  await expect(page.locator('#direction [data-report-visual="q07-confidence-interval"]')).toBeVisible();
+  await expect(page.locator('#bundle .evo-article__tablewrap tbody tr')).toHaveCount(3);
+  await page.locator('#capacity details summary').click();
+  await expect(page.locator('#capacity details')).toContainText('配对');
 });
 
-test('meeting details remain inspectable while source paper is publication-safe', async ({ page }) => {
-  await page.goto(route, { waitUntil: 'domcontentloaded' });
-  const meeting = page.locator('#paper-sources .advisor-ten__meeting-details');
-  await meeting.locator('summary').click();
-  await expect(meeting.locator('ol li')).toHaveCount(6);
-  await expect(meeting.locator('a[href^="https://github.com/mykcs/"]').first()).toBeVisible();
-  await expect(page.locator('#paper-discussion')).toContainText('960 次旧任务');
-  await expect(page.locator('#paper-discussion')).toContainText('独立新任务');
+test('R159 evidence remains separate from final and displays science pause on mobile',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(prefix+'parameter-memory-results/');
+  const ev=page.locator('[data-checkpoint-evidence]');
+  for (const v of ['60.1088/100','18/64','31/64','4/32、3/32、1/32','39/78','0/13'])
+    await expect(ev).toContainText(v);
+  await expect(ev).toContainText('目前已暂停');
+  await expect(ev.locator('table')).toHaveCount(1);
+  await expect(ev.locator('a[href*="627da5c0fa9001d94b0891c38de6646b8cc796b2"]')).toHaveCount(4);
+  await expect(page.locator('#response-q07')).toContainText('Bounded OFF');
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(2);
+});
+
+test('meeting date and primary RAW are visible where the reader first sees the account',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  const rawPath='2026-09-22-meeting-transcript.raw.md';
+  await page.goto(prefix+'parameter-memory-results/');
+  const lede=page.locator('[data-evo-blog="results"] .evo-article__lede');
+  await expect(lede).toContainText('2026 年 9 月 22 日，我们和学长开了一次');
+  const source=lede.getByRole('link',{name:/会议原始逐字记录/});
+  await expect(source).toBeVisible();
+  await expect(source).toHaveAttribute('href',new RegExp('85ee773d04f9949db369c8dd928dbbae12c68c8d/.+'+rawPath));
+  const horizontalOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  expect(horizontalOverflow).toBeLessThanOrEqual(2);
+  await page.goto(prefix+'advisor-questions/');
+  const raw=page.locator('.evo-article__abstract a[href*="'+rawPath+'"]');
+  await expect(raw).toHaveCount(1);
+  await expect(raw).toBeVisible();
+  await expect(page.locator('#sources')).toContainText('后续分析（非 RAW）');
+});
+
+test('publication tables have unique labels and frozen comparisons link to actual receipts',async({page})=>{
+  await page.goto(prefix+'parameter-memory-results/');
+  const root=page.locator('[data-evo-blog="results"]');
+  const captions=await root.locator('table caption').allTextContents();
+  const labeled=captions.filter(c=>/表\s*[1-5]｜/.test(c));
+  for(const number of [1,2,3,4,5]) expect(labeled.filter(c=>c.includes('表 '+number+'｜')).length).toBe(1);
+  const finals=page.locator('#main-results');
+  await expect(finals.locator('table tbody tr')).toHaveCount(3);
+  await expect(finals.locator('[data-report-figure="q05-same-final"]')).toHaveCount(0);
+  await expect(finals.locator('a[href*="FINAL_COMPARISON.json"]')).toBeVisible();
+  await expect(finals.locator('a[href*="FINAL_EVAL_VERIFICATION.json"]')).toBeVisible();
+  const repeated=page.locator('#checkpoint-evidence table tbody tr');
+  await expect(repeated).toHaveCount(4);
+  await expect(repeated.last()).toContainText('31/64');
+});
+
+test('cross-article flow is method → questions → our response experiments',async({page})=>{
+  await page.goto(prefix+'openevo-methods/');
+  await page.locator('.evo-article__siblings a[href$="/advisor-questions/"]').click();
+  await expect(page.locator('[data-question-only]')).toBeVisible();
+  await page.locator('.evo-article__siblings a[href$="/parameter-memory-results/"]').click();
+  await expect(page.locator('[data-response-experiments]')).toBeVisible();
 });

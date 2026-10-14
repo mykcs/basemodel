@@ -9,7 +9,7 @@ type Variant = 'q01' | 'q02' | 'q03' | 'q04' | 'q05' | 'q07';
 interface Props { variant: Variant }
 const { variant } = Astro.props;
 const plateau = [
-  { name: '普通 DirectApply', round: 120, note: '后期新增收益较小' },
+  { name: '普通 OpenEVO', round: 120, note: '后期新增收益较小' },
   { name: 'Bounded', round: 150, note: '后期仍继续改善' },
   { name: '历史复杂 β/GDR', round: 130, note: '随后明显下降' },
 ];
@@ -148,18 +148,18 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
     <div class="advisor-viz__bars">
       {ADVISOR_Q05_FROZEN.map((item) => (
         <div class="advisor-viz__bar-row">
-          <span class="advisor-viz__name">{item.method}</span>
+          <span class="advisor-viz__name">{item.method.replace(" / DirectApply", "")}</span>
           <div class="advisor-viz__bar" aria-hidden="true"><i style={'width:' + scorePct(item.score)}></i></div>
           <strong class="advisor-viz__value">{item.score}</strong>
         </div>
       ))}
     </div>
-    <figcaption>三组最终模型接受同一冻结 128 题的评测，表格显示其任务能力差异。普通 DirectApply 属于较早的历史前驱；归因到具体算法机制，需要进一步对齐训练起点与执行条件。</figcaption>
+    <figcaption>三组最终模型接受同一冻结 128 题的评测，表格显示其任务能力差异。普通 OpenEVO 属于较早的历史前驱；归因到具体算法机制，需要进一步对齐训练起点与执行条件。</figcaption>
     <details class="advisor-viz__details"><summary>查看完整成功数</summary>
       <div class="advisor-viz__table research-booktabs-wrap" tabindex="0"><table class="research-booktabs">
         <caption>三条路线的历史冻结 128 题终评</caption>
         <thead><tr><th scope="col">路线</th><th scope="col" data-numeric>Task Score / 100</th><th scope="col" data-numeric>完整成功</th></tr></thead>
-        <tbody>{ADVISOR_Q05_FROZEN.map((item) => <tr><th scope="row">{item.method}</th><td data-numeric>{item.score}</td><td data-numeric>{item.exact}</td></tr>)}</tbody>
+        <tbody>{ADVISOR_Q05_FROZEN.map((item) => <tr><th scope="row">{item.method.replace(" / DirectApply", "")}</th><td data-numeric>{item.score}</td><td data-numeric>{item.exact}</td></tr>)}</tbody>
       </table></div>
     </details>
   </figure>

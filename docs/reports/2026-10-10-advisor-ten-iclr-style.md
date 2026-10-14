@@ -1,12 +1,14 @@
 # 长期参数记忆的效率与能力权衡：OpenEVO 在 WebShop 上的实证研究
 
+> **写作状态 · 2026-10-14：新增科学测量暂停。** 以下保留历史科研结果，只补充已有 R159、Q03 与 13×78 的来源核查。新增内容来自实验 Draft [PR #703](https://github.com/mykcs/openevo-experiment/pull/703) 而非合并后的 main；网站写作继续使用 [BaseModel PR #851](https://github.com/mykcs/basemodel/pull/851)。本文没有启动 checkpoint、GPU、WebShop 或训练任务。
+
 ## Abstract｜摘要
 
-持续学习的 WebShop Agent 必须在新任务中变好，同时控制长期参数状态的存储与训练开销，并保留旧能力。OpenEVO 的 SD-LoRA 将多轮经验留在参数组件中，但组件累积会拖慢后期更新。我们将学长于 2026 年 9 月 22 日提出的六个研究方向整理为九个可检验问题，并另外提出跨新任务、随机设置的独立复现问题（Q10）。这些问题涉及训练停止点、监督学习基线、SEED 复现、状态容量、更新幅度与方向、行为不确定性、遗忘及文字记忆的因果作用。
+WebShop Agent 要从每轮购物交互中学习，同时控制长期训练成本并保留已经掌握的任务能力。OpenEVO 把经验写入一串低秩参数组件；历史组件越多，后期更新越慢。固定容量的长期参数状态能降低这一开销，但是否保住真实购物能力，必须另用任务结果验证。本报告区分三条已完成的 160 轮历史路线、后段同条件容量筛选，以及特定轮次的方向干预：哪些取舍已经被测到，哪些得分差尚不能归因于某一种更新机制。
 
 现有证据呈现出明显的**效率—能力权衡**：在历史的 160 轮运行统计窗口里，Bounded Online Recurrence 将参数更新累计耗时由 **31.09 小时降到 2.02 小时（15.36×）**，但包含任务执行等环节的完整时间仅由 **74.78 小时降到 56.25 小时（1.33×）**。三个长期实验的最终模型后来在同一冻结 128 题上评测，普通 OpenEVO、Bounded 和 Bounded + 历史复杂 β/GDR 的 Task Score 分别为 **60.72、45.98、20.77/100**，完整成功分别为 **50、32、10/128**。其中正式预注册的匹配 treatment 是 Bounded 与 Bounded + β；普通 OpenEVO 属于较早的前序实验，**三者并非完全受控的三臂随机对照**。
 
-进一步的匹配后段容量筛选（第 152–159 轮，1,024 次任务尝试）显示，rank32 将参数文件降至约 **51.4 MB**，对比 rank128 的约 **205.6 MB**；Task Score 为 **61.19** 对 **62.98/100**，差值的配对 95% 置信区间跨零，**不足以证明统计等价或严格非劣**。在另一项固定 64 题的局部干预中，第 156 轮的 Task Vector 方向反转降低 Task Score **10.06 分**（95% 区间：下降 5.60–15.02 分），但不能外推为通用方向控制策略。当前没有充分证据确认复杂 β 退化的直接原因、量化遗忘、文字记忆的因果收益，或 OpenEVO 与完整 SEED 的公平胜负。研究下一步应优先补齐可比基线、冻结评测和独立复现，而不是先增加控制器复杂度。
+进一步的匹配后段容量筛选（第 152–159 轮，1,024 次任务尝试）显示，rank32 将参数文件降至约 **51.4 MB**，对比 rank128 的约 **205.6 MB**；Task Score 为 **61.19** 对 **62.98/100**，差值的配对 95% 置信区间跨零，**不足以证明统计等价或严格非劣**。在另一项固定 64 题的局部干预中，第 156 轮的 Task Vector 方向反转降低 Task Score **10.06 分**（95% 区间：下降 5.60–15.02 分），但不能外推为通用方向控制策略。当前没有充分证据确认复杂 β 退化的直接原因、量化遗忘、文字记忆的因果收益，或 OpenEVO 与完整 SEED 的公平胜负。可比基线、冻结评测和独立复现仍是科学空白，当前不因写作任务而启动新测量。
 
 **Keywords:** agent self-improvement; continual learning; parametric memory; low-rank adaptation; WebShop; evaluation comparability.
 
@@ -90,7 +92,7 @@ WebShop 一批任务轨迹 → 本轮学习信号与参数更新 → 历史保�
 
 **原因与可信范围。** 这些数据包含先后开展的历史运行。普通 OpenEVO 属于前序实验；训练起点与执行条件的差异会参与解释三组得分差。要单独估计容量或 β 的因果影响，需要固定其他训练条件并改变一个处理因素。
 
-**下一步。** 先完成统一模型起点和任务流的容量对照，再评估 β 干预，分别报告能力和计算成本。[原始三路线结果页面](https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro)。
+**研究空白。** 统一起点的容量对照与 β 的独立能力检验仍缺决定性证据；当前新增科研测量已经暂停，需要研究者另行授权才能继续。[普通路线冻结终评原始收据](https://github.com/mykcs/openevo-experiment/blob/04d6bd8e422103aa71be2b8f2672c2db97d0e351/docs/evidence/q17-final-closeout-20260912/FINAL_EVAL_VERIFICATION.json) · [Bounded 与 β 终评原始收据](https://github.com/mykcs/openevo-experiment/blob/04d6bd8e422103aa71be2b8f2672c2db97d0e351/docs/evidence/bounded-effective-state-final-closeout-20260918/FINAL_COMPARISON.json)。
 
 ## 6 Ablation Studies｜消融实验
 
@@ -174,17 +176,29 @@ Q03 复用历史 OpenEVO 轨迹和 MiniMax 分析，训练了自己的 Stage1，
 - **选择和验证必须分离**：Q01 的后验平台估计不能直接作为未验证的普适早停规则；Q06 的 7×64 题观察不能在无独立划分时宣称预测能力。
 - **机制关联不足以归因**：方向余弦、entropy、路径长度、文字 UPDATE 频率不自动构成 β 掉分原因；Q07 仅是特定干预的局部因果结果。
 - **关键空白仍在**：Q02 六格的完整固定开发题配对、Q03 公开原生验证与正式 Stage2、Q08 有效遗忘基线、Q09 载体消融、Q10 完整独立复现仍缺可报告结果。空白不是零分。
-- **时间戳是证据快照**：状态为 **2026-10-09 核对**，不是运行中实验的实时仪表盘。引用新的科学结论前应核对实验 authority。
+- **时间戳是证据快照**：Q01–Q10 的历史结果核对日为 **2026-10-09**，checkpoint 补充核对日为 **2026-10-14**，均不是运行中实验的实时仪表盘。引用新的科学结论前应核对实验 authority。
 
 遗忘需要一个在时间点 t 已经确认掌握、之后在相同评测条件下重新测试的能力集合。如果无法重建“当时确实学会了”的任务身份和初始成绩，后续失败只能叫低表现，不能自动归因为遗忘。Q08 的 960 次任务尝试属于**评测执行完毕、因果前提未满足**。[Q08 证据](https://github.com/mykcs/openevo-experiment/pull/635)。
 
-## 9 Conclusion & Next Experiments｜结论与下一步
+## 9 Conclusion & Boundaries｜结论与研究边界
 
 **当前可以确定**：Bounded 在工程上显著缓解了参数更新成本，但同题最终能力低于历史普通线；旧复杂 β/GDR 的能力结果较差；小容量值得继续测；在局部模型状态上参数方向具有可报告的因果影响。**当前不能确定**：何种更新机制能同时达到能力提升、低成本与不遗忘，以及它是否比完整 SEED 更优。
 
-建议按信息增益安排：第一，完成**已有** Q02 六个训练格的同题逐题配对与 SEED 自身协议校准，不重做已有训练；第二，做 rank8/16/32/64/128 在完全同一继续学习任务上的容量与旧能力保持对照；第三，分离**简单幅度 β**与旧复杂控制器；第四，在条件冻结后以新的随机流和任务验证机制结果。每一项都应预先规定任务集、计算预算、评价指标、置信区间和“何时停止/拒绝结论”的规则。
+历史上提出的后续问题包括：Q02 六格同题配对、完整 SEED 协议校准、多个容量的续学与旧任务保持、简单 β 的能力评估及 Q10 的新任务复现。它们目前只是**尚未回答的研究问题**；2026-10-14 的暂停决定没有因此自动恢复任何测量。
 
 导师目前最有价值的判断是：**哪一项证据若成立，会真正改变科研方向**。这决定我们是继续发展固定容量参数记忆，还是转向更简洁的普通训练或别的能力保持机制。
+
+## 2026-10-14 Evidence Addendum｜R159 与 13×78 旧证据
+
+**R159 任务结果。** Q17 DirectApply / No-GDR 的 Qwen3-1.7B（原 Adapter SHA256 前缀 18032c5c）在第 160 次参数更新后，冻结 **64 道开发题** Task Score 为 **60.1088/100**，完整成功 **18/64**，正奖励 **53/64**，原 361 步工程无效动作 0。它不是三条长期路线的 **128 题终评**。[R159 原账本](https://github.com/mykcs/openevo-experiment/blob/627da5c0fa9001d94b0891c38de6646b8cc796b2/docs/evidence/checkpoint-measurement-20261012/q17-r159/METRIC_STATUS_78.json)。
+
+**重复波动。** 已封存的同64题每题8次共512次 M1 数据，Success@1/2/4/8（前 k 次至少一次成功）依次为 **18/64、24/64、27/64、31/64**；仅 **6/64** 八次全成功、**33/64** 八次全失败，另外25题波动。Success@k 和八次全部成功不是同一指标；Best-of-k 缺每题连续分数，保持 BLOCKED。这是旧证据的严格复用，没有新的 GPU 或 WebShop。[M1 严格复用](https://github.com/mykcs/openevo-experiment/blob/627da5c0fa9001d94b0891c38de6646b8cc796b2/docs/evidence/checkpoint-measurement-20261014/q17-r159/R159_SUCCESS_AT_K_M1_STRICT_REUSE.json)。
+
+**D1 压缩只到局部机制。** 复用同一 R159 原权重，在16个训练任务的32条既有动作前输入上比较 K64/K80/K96 压缩状态，动作标签结果变化为 **4/32、3/32、1/32**，其中包含解析有效性转换。这不是合法点击候选归一化 KL/JS，不是独立留出 WebShop 成绩；#52/#65/#66 只能维持 **PARTIAL**，没有新增完整 PASS。Q07 的方向干预使用 **Bounded OFF** 模型（Adapter SHA 前缀 1bc2f7f6），不能当成 DirectApply R159 的因果实验。[D1 来源](https://github.com/mykcs/openevo-experiment/blob/627da5c0fa9001d94b0891c38de6646b8cc796b2/docs/evidence/checkpoint-measurement-20261014/q17-r159/R159_D1_FIXED_PREFIX_SAME_MODEL_EVIDENCE_REUSE.json)。
+
+**状态清单与协议。** 13 份 checkpoint 各建78格，共 **1,014** 个状态位置，其中**186** 格被严格接纳、核心 **64/117**，达到78/78的模型仍为 **0/13**。R159 在未合并实验 PR #703 分支为 **39/78、核心9/9**，其 main 的旧快照仍 **38/78**；R159 其余10 PARTIAL、18 BLOCKED、10 PENDING、1 NOT_APPLICABLE。旧361步缺历史 logits，不能补造第21–26项；HF-only 冷恢复未通过。Q03 六步112模块合计672条源参数派生值只证明累计几何/谱测量，不是原生 SEED 能力评测。[13×78矩阵](https://github.com/mykcs/openevo-experiment/blob/627da5c0fa9001d94b0891c38de6646b8cc796b2/docs/evidence/checkpoint-measurement-20261014/CHECKPOINT13_CANONICAL_ALL_13_BY_78_METRIC_MATRIX_V1.json) · [Q03 数值来源](https://github.com/mykcs/openevo-experiment/blob/627da5c0fa9001d94b0891c38de6646b8cc796b2/docs/evidence/checkpoint-measurement-20261014/q03-native/Q03_SIX_STEP_672_QKVO_PER_MODULE_STRICT_SOURCE_DERIVATION.json)。
+
+186项是被接纳的账本状态格，不是186次新实验，也不是科研完成率；写作只保留真结果与未知。
 
 ## References｜参考文献与证据来源
 
@@ -214,7 +228,7 @@ Q03 复用历史 OpenEVO 轨迹和 MiniMax 分析，训练了自己的 Stage1，
 | 长期参数更新（Q04–Q07） | rank128 必要性、β 的效果、点击 entropy、Task Vector 方向 | 哪些状态容量和更新操作在给定任务与预算下有可测影响？ |
 | 可靠性与迁移（Q08–Q10） | 旧任务遗忘、文字状态贡献；会后加入新任务复现 | 能否在可证实的已学任务上测遗忘，能否排除文字状态的混杂，结果能否跨随机设置成立？ |
 
-**会议来源边界：**2026-09-22 的实际讨论由六个主题构成；Q01–Q09 是会后细化的九个问题，Q10 是会后新增的推广性问题，不应伪装成学长逐字提出的第十问。[原始会议整理在 BaseModel 数据源中可追溯](https://github.com/mykcs/basemodel/blob/main/src/data/openEvoAdvisorMeeting.ts)。
+**会议来源边界：**2026 年 9 月 22 日，我们和学长召开了一次 OpenEVO 研究讨论会。[当时的完整会议逐字记录（RAW）](https://github.com/mykcs/openevo-experiment/blob/85ee773d04f9949db369c8dd928dbbae12c68c8d/docs/evidence/advisor/liaochang/2026-09-22-meeting-transcript.raw.md)是会议话语的原始证据；[9 月 28 日会后整理](https://github.com/mykcs/openevo-experiment/blob/main/docs/science/webshop/reports/ADVISOR_RESEARCH_RECONCILIATION_2026-09-28.md)才将讨论归纳为六个主题。Q01–Q09 是我们进一步细化的九个研究问题；Q10 是会后新增的独立复现问题，不能伪装成学长当场逐字提出的第十问。
 
 | 问题 | 已有观察（简写） | 科学状态 / 下一证据 |
 |---|---|---|
