@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: basemodel-public-pr-ci-${{ github.event.pull_request.number }}
@@ -82,8 +83,15 @@ jobs:
           git fetch --no-tags --depth=1 origin "$CI_BASE_SHA"
           git cat-file -e "$CI_BASE_SHA^{commit}"
 
+      - name: Re-evaluate browser allocation for deterministic build ownership
+        id: deterministic_plan
+        env:
+          CI_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          CI_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/ci-public-plan.mjs --github-output
+
       - name: Validate CI contracts
-        run: node --test tests/ci-plan.test.mjs tests/ci-circleci-prepare.test.mjs tests/ci-browser-budget.test.mjs tests/ci-public-plan.test.mjs
+        run: node --test tests/ci-plan.test.mjs tests/ci-circleci-prepare.test.mjs tests/ci-browser-budget.test.mjs tests/ci-public-plan.test.mjs tests/ci-build-artifact.test.mjs
 
       - name: Install dependencies
         run: npm ci
@@ -91,8 +99,62 @@ jobs:
       - name: Deterministic repository gate
         run: npm run verify:deploy
 
-      - name: Build static artifact
+      - name: Build static artifact when browser acceptance is skipped
+        if: steps.deterministic_plan.outputs.browser_total == '0'
         run: npm run build
+
+  static_build:
+    name: public-static-build
+    needs: plan
+    if: needs.plan.result == 'success' && needs.plan.outputs.browser_total != '0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/head
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Setup Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Bind exact candidate identity
+        env:
+          CI_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          CI_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$CI_HEAD_SHA"
+          git fetch --no-tags --depth=1 origin "$CI_BASE_SHA"
+          git cat-file -e "$CI_BASE_SHA^{commit}"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static artifact once
+        run: npm run build
+
+      - name: Seal exact-head static artifact
+        env:
+          CI_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          CI_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/ci-build-artifact.mjs create
+
+      - name: Upload exact-head static artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: basemodel-public-build-${{ github.run_id }}
+          path: |
+            dist
+            ci-public-build-manifest.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
 
   browser:
     name: public-browser-${{ matrix.shard }}-of-${{ needs.plan.outputs.browser_total }}
@@ -100,7 +162,7 @@ jobs:
     if: needs.plan.result == 'success' && needs.plan.outputs.browser_total != '0'
     runs-on: ubuntu-24.04
     container:
-      image: mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e
+      image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -113,7 +175,7 @@ jobs:
       CI_BROWSER_SHARD_INDEX: ${{ matrix.shard }}
       CI_BROWSER_SHARD_TOTAL: ${{ needs.plan.outputs.browser_total }}
       CI_BROWSER_INSTALL: '1'
-      CI_BROWSER_BUILD: '1'
+      CI_BROWSER_BUILD: '0'
       CI_PLAYWRIGHT_WITH_DEPS: '0'
       PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
       PLAYWRIGHT_WORKERS: '1'
@@ -140,13 +202,28 @@ jobs:
           git fetch --no-tags --depth=1 origin "$CI_BASE_SHA"
           git cat-file -e "$CI_BASE_SHA^{commit}"
 
+      - name: Wait for exact-head static artifact
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CI_BUILD_ARTIFACT_NAME: basemodel-public-build-${{ github.run_id }}
+        run: node scripts/ci-build-artifact.mjs wait
+
+      - name: Download exact-head static artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: basemodel-public-build-${{ github.run_id }}
+          path: .
+
+      - name: Verify exact-head static artifact
+        run: node scripts/ci-build-artifact.mjs verify
+
       - name: Risk-based browser acceptance shard
         run: node scripts/ci-ui-gate.mjs
 
   gate:
     name: public-ci-gate
     if: always()
-    needs: [plan, deterministic, browser]
+    needs: [plan, deterministic, static_build, browser]
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     steps:
@@ -155,13 +232,16 @@ jobs:
           PLAN_RESULT: ${{ needs.plan.result }}
           BROWSER_TOTAL: ${{ needs.plan.outputs.browser_total }}
           DETERMINISTIC_RESULT: ${{ needs.deterministic.result }}
+          STATIC_BUILD_RESULT: ${{ needs.static_build.result }}
           BROWSER_RESULT: ${{ needs.browser.result }}
         run: |
           set -euo pipefail
           test "$PLAN_RESULT" = success
           test "$DETERMINISTIC_RESULT" = success
           if [ "$BROWSER_TOTAL" = 0 ]; then
+            test "$STATIC_BUILD_RESULT" = skipped
             test "$BROWSER_RESULT" = skipped
           else
+            test "$STATIC_BUILD_RESULT" = success
             test "$BROWSER_RESULT" = success
           fi
