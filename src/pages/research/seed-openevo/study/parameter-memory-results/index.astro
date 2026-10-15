@@ -37,7 +37,7 @@ const checkpointEvidence = {
     </header>
     <div class="evo-article__abstract">
       <h2>摘要</h2>
-      <p>三条长期路线在同一冻结 128 题上的 Task Score 分别为 <strong>60.72、45.98 和 20.77/100</strong>，完整成功分别为 50、32 和 10 题；这些历史结果不构成完全受控的三臂试验。第 152–159 轮的 rank32 容量筛选使参数文件缩小约 75%，平均得分比 rank128 低 1.79 分，置信区间仍跨零。另一份 R159 冻结 <strong>64 题开发集</strong>结果为 <strong>60.1088/100、18/64 完整成功</strong>，不能替代 128 题终评。旧任务遗忘、文字载体因果收益和新任务复现仍未得到决定性回答；新增科研测量现已暂停。各问的来源与<a href="/research/seed-openevo/study/advisor-questions/">研究背景</a>在正文就地链接。</p>
+      <p>三条长期路线在同一冻结 128 题上的 Task Score 分别为 <strong>60.72、45.98 和 20.77/100</strong>，完整成功分别为 50、32 和 10 题；这些历史结果不构成完全受控的三臂试验。第 152–159 轮的 rank32 容量筛选使参数文件缩小约 75%，平均得分比 rank128 低 1.79 分，置信区间仍跨零。另一份 R159 冻结 <strong>64 题开发集</strong>结果为 <strong>60.1088/100、18/64 完整成功</strong>，不能替代 128 题终评。旧任务遗忘、文字载体因果收益和新任务复现仍未得到决定性回答。新的公开 SEED 复现已取得八卡工程训练证据，正式任务成绩仍待测；Q17/13 份 checkpoint 的新增科研测量在本次写作中没有继续执行。各问的来源与<a href="/research/seed-openevo/study/advisor-questions/">研究背景</a>在正文就地链接。</p>
     </div>
     <OpenEvoArticleNavigation current="results" />
     <nav class="evo-article__toc" aria-label="实验文章目录">
@@ -205,12 +205,12 @@ const checkpointEvidence = {
     <section id="discussion" class="evo-article__section">
       <h2>10 讨论：结论到哪里，哪些仍未知</h2>
       <p>目前可以确认，固定容量明显减少了长期参数更新所需的计算，并将长期参数文件大小保持在受控范围内。rank32 在后段匹配任务中用约四分之一的文件容量保留了大部分观测得分。历史 β/GDR 终点评测较低，第 156 轮方向干预展示了一次局部因果影响。</p>
-      <p>任务成绩差异还需要更严格地分离：普通 OpenEVO 属于历史前序实验；容量筛选与最终冻结 128 题不是同一个测量阶段；文字载体的因果消融尚无可靠正式结果。更小 rank、可靠的 SEED 对照、旧任务保持和新随机任务复现仍缺决定性证据；本阶段暂停新增测量，只整理已经取得的结果。</p>
+      <p>任务成绩差异还需要更严格地分离：普通 OpenEVO 属于历史前序实验；容量筛选与最终冻结 128 题不是同一个测量阶段；文字载体的因果消融尚无可靠正式结果。更小 rank、可靠的 SEED 对照、旧任务保持和新随机任务复现仍缺决定性证据；Q17/checkpoint 的后续科研指标仍待验收；公开 SEED 新路线的正式 SFT 和 Stage2 也尚未产生新成绩。</p>
       <p>十项回应的结果、局限和原始记录已在本篇逐项列出；问题本身的提出背景见<a href="/research/seed-openevo/study/advisor-questions/">第二篇“学长十问”</a>。方法推导与参数记忆的工作原理详见<a href="/research/seed-openevo/study/openevo-methods/">第一篇方法介绍</a>。</p>
     </section>
     <section id="sources" class="evo-article__section evo-article__sources">
       <h2>科研来源与实验记录</h2>
-      <p class="evo-article__note">Q01–Q10 的原有结果核对日期为 <time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>；R159 与 13×78 的补充核对日期为 <time datetime="2026-10-14">2026-10-14</time>。这是来源快照，不是实验实时面板。</p>
+      <p class="evo-article__note">Q01–Q10 的原有结果核对日期为 <time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>；R159 与 13×78 的补充核对日期为 <time datetime="2026-10-14">2026-10-14</time>；公开 SEED 工程训练与开发题进度以 <time datetime="2026-10-15">2026-10-15</time> 17:43（新加坡时间）的原始收据为准。以上均为来源快照，不提供实时服务器状态。</p>
       <ol>
         {ADVISOR_QUESTIONS.map(q=>(
           <li id={'source-'+q.id} data-response-source={q.id}>
