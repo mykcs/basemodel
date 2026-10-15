@@ -177,9 +177,28 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('没有运行压缩版的 WebShop Task Score');
     expect(responses).toContain('1bc2f7f6');
     expect(responses).toContain('18032c5c');
-    expect(responses).toContain('新增科研测量现已暂停');
+    expect(responses).toContain('Q17/13 份 checkpoint 的新增科研测量在本次写作中没有继续执行');
     expect(questions).not.toContain('60.1088');
     expect(methods).not.toContain('39/78');
+  });
+  it('publishes Oct 15 SEED engineering receipts in Q03 without claiming formal results',()=>{
+    const q03=read('src/components/research/OpenEvoSeedWorld4Reproduction.astro');
+    const item=ADVISOR_QUESTIONS.find(q=>q.id==='q03');
+    expect(item?.unknown).toContain('正式 Stage2 为 0/160');
+    expect(item?.evidence.some(e=>e.href.includes('c930744044c4e648f5daf54514a23f2d188c268e'))).toBe(true);
+    expect(questions).toContain('查看 10 月 15 日更新的公开 SEED 复现实验');
+    expect(questions).not.toContain('384 / 512');
+    expect(questions).not.toContain('20.4 GiB');
+    expect(responses).toContain('<OpenEvoSeedWorld4Reproduction />');
+    expect(responses).toContain('2026-10-15');
+    expect(q03).toContain('data-evidence-as-of="2026-10-15"');
+    expect(q03).toContain('data-seed-eight-progress');
+    for(const v of ['1,440 条','1,200 条','296 秒和 309 秒','20.4 GiB','128 / 512','384 / 512','192 / 512','40.45 GB','4/7','正式 Stage2 为 0/160 轮'])
+      expect(q03).toContain(v);
+    expect(q03).toContain('工程 SFT 第三轮尚未完成，正式数据上的 SFT 尚未启动');
+    expect(q03).toContain('十月十四日两次四卡实测');
+    expect(q03).toContain('不能用已完成分片的平均分代替最终成绩');
+    expect(q03).not.toContain('接下来验证六卡方案');
   });
   it('reuses subdued-green paper typography only on the three blog pages',()=>{
     const css=read('src/styles/openevo-research-blogs.css');
