@@ -2,6 +2,8 @@
 
 **Status:** quality-target index, not a competing executable policy. All exact thresholds remain in their current owners and tests.
 
+**A named inspiration is not an approved quality rule.** The [Reference Library](REFERENCE_LIBRARY.md) records what the owner actually cited; the [Intake process](REFERENCE_INTAKE.md) requires source, intended lesson, real owner and acceptance evidence before turning any pattern into a durable requirement.
+
 | Dimension | What must be true for the reader or researcher? | Authoritative owner |
 | --- | --- | --- |
 | **First-read comprehension** | The first screen orients a zero-context visitor to the main research question/result, relevant boundary and useful next step. Attention is scarce; no decorative card wall or blank-space workaround. | [Reader attention](../agents/current/site-reader-attention-contract.md), [web expression](../agents/current/human-thinking-web-expression-contract.md), [Wish](../wish/LATEST.md) |
