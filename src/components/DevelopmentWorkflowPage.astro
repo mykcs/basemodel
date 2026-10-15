@@ -44,6 +44,12 @@ const t = (cn: string, en: string) => zh ? cn : en;
       </p>
     </section>
 
+    <section class="development-handbook" aria-labelledby="development-handbook-title">
+      <h2 id="development-handbook-title">{t('技术手册', 'Technical handbook')}</h2>
+      <p>{t('开发页面解释工具之间的职责；需要逐步检查 Agent Harness 或 OpenEVO GPU 调度时，可进入有目录、搜索和明确来源的技术手册。', 'This page explains the roles; for step-by-step Agent Harness and OpenEVO GPU guidance, use the searchable technical handbook.')}</p>
+      <p><a href="/handbook/">{t('打开技术手册 →', 'Open the technical handbook →')}</a></p>
+    </section>
+
     <section aria-labelledby="tool-roles-title">
       <h2 id="tool-roles-title">{t('每个工具负责什么', 'What each tool does')}</h2>
       <div class="tool-roles">

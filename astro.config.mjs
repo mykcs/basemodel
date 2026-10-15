@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
+import starlight from '@astrojs/starlight';
 
 const VERCEL_PRODUCTION_URL = 'https://basemodel-preview.vercel.app';
 const LEGACY_PAGES_URL = 'https://basemodel.pages.dev';
@@ -16,7 +17,17 @@ export default defineConfig({
   // meaningful spaces between adjacent inline elements. Preserve the Astro 6
   // HTML-aware behavior so the framework upgrade does not change rendered copy.
   compressHTML: true,
-  integrations: [react()],
+  integrations: [react(), starlight({
+    title: 'BaseModel · 技术手册',
+    description: 'OpenEVO、Agent Harness 和科研资源的可检索操作文档',
+    customCss: ['./src/styles/starlight-handbook.css'],
+    head: [{ tag: 'meta', attrs: { name: 'robots', content: 'noindex,nofollow' } }],
+    sidebar: [{ label: '技术手册', items: [
+      { label: '从这里开始', link: '/handbook/' },
+      { label: 'Agent Harness', link: '/handbook/agent-harness/' },
+      { label: 'OpenEVO GPU 调度', link: '/handbook/openevo-gpu/' },
+    ] }],
+  })],
   build: {
     format: 'directory',
   },

@@ -1,0 +1,15 @@
+---
+title: ChatGPT 网页端 Harness
+description: 从短 Prompt 到真实执行证据，如何检查 Skill 的每一环。
+---
+
+import ExternalBrandMark from '../../../components/common/ExternalBrandMark';
+
+
+ChatGPT 里的短 Prompt 提供 Skill 名称、GitHub URL 和当前任务。真实执行仍需要逐项检查：
+
+1. Agent 是否读取了当前 Skill 与本任务需要的参考文件。
+2. 是否只触发了适用的流程，而没有执行菜单中的其他动作。
+3. 若动了 GitHub、网站或服务器，是否回到真实目标系统核对结果。
+
+当前标准：<a href="https://github.com/mykcs/.agents/blob/main/docs/agents/WORKFLOW_ENTRYPOINT_STANDARD.md"><ExternalBrandMark href="https://github.com/mykcs/.agents/blob/main/docs/agents/WORKFLOW_ENTRYPOINT_STANDARD.md" /> Skill 入口和执行验收</a>。文档存在不能证明每个 ChatGPT 会话都正确执行。
