@@ -78,7 +78,7 @@ const technicalChecks = [
     <p>历史 Q03 的 A0–A120 分数使用了自定义 64 题。我们另外从头运行公开 SEED 源码，使用 Qwen3-1.7B 与 MiniMax-M3 教师标注，检查公开训练流程是否能在 RTX 5090 上执行。新路线已取得训练工程进展，<strong>还没有可用于和论文比较的正式 WebShop 成绩</strong>。</p>
   </header>
 
-  <p class="q03-world4__verdict"><strong>最新结论：</strong>八卡工程测试已完成两轮原生优化器更新并保存检查点。正式 SFT 第三轮仍待完成，<strong>正式 Stage2 为 0/160 轮</strong>。历史四卡反向传播失败的原因和数值保留在下文。</p>
+  <p class="q03-world4__verdict"><strong>最新结论：</strong>八卡工程测试已完成两轮原生优化器更新并保存检查点。工程 SFT 第三轮尚未完成，正式数据上的 SFT 尚未启动；<strong>正式 Stage2 为 0/160 轮</strong>。历史四卡反向传播失败的原因和数值保留在下文。</p>
 
   <div class="q03-world4__evidence" data-seed-eight-progress aria-labelledby="q03-eight-progress-title">
     <h5 id="q03-eight-progress-title">十月十五日，八卡训练和任务评估推进到哪里？</h5>
@@ -174,7 +174,7 @@ const technicalChecks = [
 
   <div class="q03-world4__next" aria-labelledby="q03-world4-next">
     <h5 id="q03-world4-next">正式训练还需要完成什么？</h5>
-    <p>八卡工程路径已经证明可以更新参数和保存原生检查点。后续还需完成第三轮 SFT、八卡原生保存与加载后的精确任务流恢复，并重新通过长期训练的存储检查。正式 160 轮 Stage2 只能在这些条件满足后启动。</p>
+    <p>八卡工程路径已经证明可以更新参数和保存原生检查点。后续还需完成工程 SFT 第三轮、八卡原生保存与加载后的精确任务流恢复，并重新通过长期训练的存储检查。通过完整工程资格后，才能正式执行三遍 SFT，再启动 160 轮 Stage2。</p>
     <p><strong>科研边界：</strong>四卡 OOM 是历史工程失败，两轮八卡更新使用的是工程资格模型；它们都没有产生公开 SEED 正式模型的能力成绩。<a href={source.eight} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eight}/>查看当前八卡恢复 PR ↗</a>；<a href={source.recovery} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.recovery}/>历史四卡恢复 PR ↗</a></p>
   </div>
 
