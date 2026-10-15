@@ -10,13 +10,13 @@ for (const width of [390, 768, 1440]) {
     const q03 = page.locator('#response-q03');
     const caseStudy = q03.locator('[data-seed-world4-case]');
     await expect(caseStudy).toHaveCount(1);
-    await expect(caseStudy).toHaveAttribute('data-evidence-as-of', '2026-10-14');
-    await expect(caseStudy.locator('h4')).toContainText('四张 RTX 5090');
+    await expect(caseStudy).toHaveAttribute('data-evidence-as-of', '2026-10-15');
+    await expect(caseStudy.locator('h4')).toContainText('四卡训练遇到显存不足后');
     await expect(q03.locator('[data-report-figure="q03-custom-curve"]')).toBeVisible();
     await expect(caseStudy).toContainText('A0–A120');
-    await expect(caseStudy).toContainText('正式 Stage2 更新仍为 0');
-    await expect(caseStudy).toContainText('六卡还没有');
-    await expect(caseStudy).toContainText('四卡失败也不能推断 SEED 算法本身失败');
+    await expect(caseStudy).toContainText('正式 Stage2 为 0/160 轮');
+    await expect(caseStudy).toContainText('完整八卡保存、加载、继续取题并更新的验证仍待进行');
+    await expect(caseStudy).toContainText('四卡 OOM 是历史工程失败');
 
     const hardware = caseStudy.locator('.q03-world4__hardware');
     await expect(hardware).toContainText('8 × A800');
@@ -65,7 +65,7 @@ for (const width of [390, 768, 1440]) {
         path: testInfo.outputPath('q03-native-flow-' + width + '.png'),
         animations: 'disabled',
       });
-      await caseStudy.locator('.q03-world4__evidence').screenshot({
+      await measured.screenshot({
         path: testInfo.outputPath('q03-oom-facts-' + width + '.png'),
         animations: 'disabled',
       });

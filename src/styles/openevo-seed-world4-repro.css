@@ -238,3 +238,10 @@
     color: var(--q03-muted);
   }
 }
+
+/* Oct 15 model diagnostics have two value cells; phone rows use two equal columns. */
+@media (max-width: 490px) {
+  .q03-world4 [data-seed-eight-progress] .q03-world4__tablewrap tbody tr {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
