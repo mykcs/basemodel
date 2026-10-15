@@ -281,7 +281,7 @@ test('dated Q17 supplements land on visible topic headings',async({page})=>{
   await page.locator('#response-q04 a[href="#q17-capacity"]').click();
   const heading=page.locator('#q17-capacity');
   await expect(heading).toBeVisible();
-  const box=await heading.boundingBox();
-  expect(box?.y).toBeGreaterThanOrEqual(65);
+  await expect.poll(async()=> (await heading.boundingBox())?.y ?? -1).toBeGreaterThanOrEqual(65);
+  await expect.poll(async()=> (await heading.boundingBox())?.y ?? Infinity).toBeLessThan(200);
   await expect(page.locator('[data-q17-diagnostics]')).toContainText('完整 SVD 的 BF16 重构对照');
 });
