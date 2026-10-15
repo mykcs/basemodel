@@ -24,6 +24,10 @@ Before any user-facing product, copy, navigation, information-architecture, page
 
 For implementation, read [`docs/dev/LATEST.md`](docs/dev/LATEST.md). For CI, hosting, runner, or release changes, also read [`docs/dev/DESIGN.md`](docs/dev/DESIGN.md), then the existing current owners routed by [`docs/dev/README.md`](docs/dev/README.md), executable configuration, and live provider state. Consult [`docs/dev/ARCHIVE.md`](docs/dev/ARCHIVE.md) only for a replaced direction. The shared lifecycle is owned by https://github.com/mykcs/.agents/blob/main/docs/agents/DEV_PROTOCOL.md; Dev explains choices without replacing `docs/agents/current/` or the required checks.
 
+## Quality standards acceptance index
+
+For project quality targets and evidence routing, use [BaseModel Standards](docs/standards/README.md) and [its acceptance map](docs/standards/ACCEPTANCE_MAP.md). **Navigation only:** current rules remain under `docs/agents/current/`, Wish owns intent, Dev owns implementation direction, and code/tests plus live provider/experiment state remain the truth. Read this index when planning or reviewing quality; do not load it for every unrelated task or duplicate active Design/Starlight PR work.
+
 ## Central website learning
 
 For substantial/durable user-facing website content artifacts, read the current shared human-expression standard before the first substantial draft:
