@@ -208,6 +208,27 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   await expect(page.locator('#q01 a[href*="parameter-memory-results"]')).toBeVisible();
 });
 
+test('Q03 displays the Oct 15 six-card diagnostic snapshot separately from formal SEED results on phone',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(prefix+'advisor-questions/');
+  const entry=page.locator('#q03 a[href*="parameter-memory-results"]');
+  await expect(entry).toContainText('10 月 15 日更新');
+  await expect(page.locator('[data-question-only]')).not.toContainText('384 / 512');
+  await entry.click();
+  const q03=page.locator('#response-q03 [data-seed-eight-progress]');
+  await expect(q03).toBeVisible();
+  await expect(q03).toContainText('八卡训练和任务评估');
+  await expect(q03.locator('tbody tr')).toHaveCount(3);
+  await expect(q03.locator('tbody')).toContainText('128 / 512');
+  await expect(q03.locator('tbody')).toContainText('384 / 512');
+  await expect(q03.locator('tbody')).toContainText('192 / 512');
+  const study=page.locator('#response-q03 [data-seed-world4-case]');
+  await expect(study).toContainText('正式 Stage2 为 0/160 轮');
+  await expect(study).toContainText('十月十四日两次四卡实测');
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  expect(overflow,'phone article must not scroll horizontally').toBeLessThanOrEqual(2);
+});
+
 test('cross-article flow is method → questions → our response experiments',async({page})=>{
   await page.goto(prefix+'openevo-methods/');
   await page.locator('.evo-article__siblings a[href$="/advisor-questions/"]').click();
