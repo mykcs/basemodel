@@ -131,14 +131,16 @@ test('response article also keeps frozen final, paired capacity, direction, unce
   await expect(page.locator('#capacity details')).toContainText('配对');
 });
 
-test('R159 evidence remains separate from final and displays science pause on mobile',async({page})=>{
+test('Q17 diagnostics distinguish new measurements from dated history on mobile',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto(prefix+'parameter-memory-results/');
   const ev=page.locator('[data-checkpoint-evidence]');
   for (const v of ['60.1088/100','18/64','31/64','4/32、3/32、1/32','39/78','0/13'])
     await expect(ev).toContainText(v);
-  await expect(ev).toContainText('目前已暂停');
-  await expect(ev.locator('table')).toHaveCount(1);
+  await expect(ev.locator('[data-q17-diagnostics]')).toContainText('78 项处置闭合不等于 78 项数值全部测得');
+  await expect(ev.locator('[data-q17-diagnostics]')).toContainText('没有测得紧凑部署的加速或显存节省');
+  await ev.locator(':scope > details > summary').click();
+  await expect(ev.locator('table')).toHaveCount(3);
   await expect(ev.locator('a[href*="627da5c0fa9001d94b0891c38de6646b8cc796b2"]')).toHaveCount(4);
   await expect(page.locator('#response-q07')).toContainText('Bounded OFF');
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
@@ -174,7 +176,7 @@ test('publication tables have unique labels and frozen comparisons link to actua
   await expect(finals.locator('[data-report-figure="q05-same-final"]')).toHaveCount(0);
   await expect(finals.locator('a[href*="FINAL_COMPARISON.json"]')).toBeVisible();
   await expect(finals.locator('a[href*="FINAL_EVAL_VERIFICATION.json"]')).toBeVisible();
-  const repeated=page.locator('#checkpoint-evidence table tbody tr');
+  const repeated=page.locator('#checkpoint-evidence > details table tbody tr');
   await expect(repeated).toHaveCount(4);
   await expect(repeated.last()).toContainText('31/64');
 });
@@ -271,3 +273,15 @@ for (const width of [390, 768, 1440]) {
     if(width!==768) await figure.screenshot({path:testInfo.outputPath('q03-static-paper-'+width+'.png'),animations:'disabled'});
   });
 }
+
+// New result anchors must remain readable below the fixed site header.
+test('dated Q17 supplements land on visible topic headings',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(prefix+'parameter-memory-results/');
+  await page.locator('#response-q04 a[href="#q17-capacity"]').click();
+  const heading=page.locator('#q17-capacity');
+  await expect(heading).toBeVisible();
+  await expect.poll(async()=> (await heading.boundingBox())?.y ?? -1).toBeGreaterThanOrEqual(65);
+  await expect.poll(async()=> (await heading.boundingBox())?.y ?? Infinity).toBeLessThan(200);
+  await expect(page.locator('[data-q17-diagnostics]')).toContainText('完整 SVD 的 BF16 重构对照');
+});

@@ -177,7 +177,11 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('没有运行压缩版的 WebShop Task Score');
     expect(responses).toContain('1bc2f7f6');
     expect(responses).toContain('18032c5c');
-    expect(responses).toContain('Q17/13 份 checkpoint 的新增科研测量在本次写作中没有继续执行');
+    expect(responses).toContain('data-q17-diagnostics');
+    expect(responses).toContain('78 项处置闭合不等于 78 项数值全部测得');
+    expect(responses).toContain('没有测得紧凑部署的加速或显存节省');
+    expect(responses).toContain('完整关闭三种载体权限的消融仍未完成');
+    expect(responses).toContain('独立单位是 12 或 8 道题');
     expect(questions).not.toContain('60.1088');
     expect(methods).not.toContain('39/78');
   });

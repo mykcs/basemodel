@@ -34,7 +34,7 @@ test('public research routes do not expose the old fake-formula patterns', async
   await expect(page.locator('.scaling-hero__equation')).toHaveCount(0);
 });
 
-test('every built public route is free of rendered fake-math patterns', async ({ page }) => {
+test('every built public route is free of rendered fake-math patterns', async ({ context }) => {
   test.setTimeout(90_000);
   // Enumerate the actual built HTML surface instead of sitemap.xml.
   // Vercel Preview intentionally suppresses public indexing, so its sitemap may be empty
@@ -54,37 +54,44 @@ test('every built public route is free of rendered fake-math patterns', async ({
   const findings: Array<{ route: string; kind: string; detail: string }> = [];
 
   for (const route of routes) {
-    const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
-    if (!response?.ok()) {
-      findings.push({ route, kind: 'http', detail: String(response?.status() ?? 'no response') });
-      continue;
+    // Legacy routes can schedule a redirect after DOMContentLoaded. Isolate each
+    // document so a pending redirect cannot interrupt the next route under test.
+    const page = await context.newPage();
+    try {
+      const response = await page.goto(route);
+      if (!response?.ok()) {
+        findings.push({ route, kind: 'http', detail: String(response?.status() ?? 'no response') });
+        continue;
+      }
+      const routeFindings = await page.evaluate(() => {
+        const issues: Array<{ kind: string; detail: string }> = [];
+        const mathCode = /(?:ΔW|θ|τ|λ|β|Σ|√|‖|≈|∈)/;
+        for (const code of document.querySelectorAll('code')) {
+          const text = code.textContent || '';
+          if (mathCode.test(text) && !code.closest('.katex')) {
+            issues.push({ kind: 'math-code', detail: text.trim().slice(0, 180) });
+          }
+        }
+        for (const sub of document.querySelectorAll('sub, sup')) {
+          if (sub.closest('.katex')) continue;
+          const text = sub.parentElement?.textContent || '';
+          if (/(?:π|θ|τ|λ|β|ΔW|Σ|√|‖)/.test(text)) {
+            issues.push({ kind: 'handmade-sub-sup', detail: text.trim().slice(0, 180) });
+          }
+        }
+        const clone = document.body.cloneNode(true) as HTMLElement;
+        clone.querySelectorAll('.katex,script,style').forEach((node) => node.remove());
+        const text = clone.textContent || '';
+        const rawTeX = text.match(/\\(?:frac|theta|lambda|beta|Delta|sum|sqrt|lVert|begin\{cases\})[^\s<]*/g) || [];
+        for (const item of rawTeX.slice(0, 5)) issues.push({ kind: 'raw-tex', detail: item });
+        const rawEquation = text.match(/(?:v[₀-₉ₜ₋₁]*\s*=\s*θ|T\(K\)\s*[=≈]|λ\s*∈|τ\s*=\s*0|β(?:_eff)?\s*=|α\s*=\s*1)/g) || [];
+        for (const item of rawEquation.slice(0, 5)) issues.push({ kind: 'raw-inline-equation', detail: item });
+        return issues;
+      });
+      for (const finding of routeFindings) findings.push({ route, ...finding });
+    } finally {
+      await page.close();
     }
-    const routeFindings = await page.evaluate(() => {
-      const issues: Array<{ kind: string; detail: string }> = [];
-      const mathCode = /(?:ΔW|θ|τ|λ|β|Σ|√|‖|≈|∈)/;
-      for (const code of document.querySelectorAll('code')) {
-        const text = code.textContent || '';
-        if (mathCode.test(text) && !code.closest('.katex')) {
-          issues.push({ kind: 'math-code', detail: text.trim().slice(0, 180) });
-        }
-      }
-      for (const sub of document.querySelectorAll('sub, sup')) {
-        if (sub.closest('.katex')) continue;
-        const text = sub.parentElement?.textContent || '';
-        if (/(?:π|θ|τ|λ|β|ΔW|Σ|√|‖)/.test(text)) {
-          issues.push({ kind: 'handmade-sub-sup', detail: text.trim().slice(0, 180) });
-        }
-      }
-      const clone = document.body.cloneNode(true) as HTMLElement;
-      clone.querySelectorAll('.katex,script,style').forEach((node) => node.remove());
-      const text = clone.textContent || '';
-      const rawTeX = text.match(/\\(?:frac|theta|lambda|beta|Delta|sum|sqrt|lVert|begin\{cases\})[^\s<]*/g) || [];
-      for (const item of rawTeX.slice(0, 5)) issues.push({ kind: 'raw-tex', detail: item });
-      const rawEquation = text.match(/(?:v[₀-₉ₜ₋₁]*\s*=\s*θ|T\(K\)\s*[=≈]|λ\s*∈|τ\s*=\s*0|β(?:_eff)?\s*=|α\s*=\s*1)/g) || [];
-      for (const item of rawEquation.slice(0, 5)) issues.push({ kind: 'raw-inline-equation', detail: item });
-      return issues;
-    });
-    for (const finding of routeFindings) findings.push({ route, ...finding });
   }
 
   expect(routes.length).toBeGreaterThan(200);
