@@ -12,6 +12,8 @@ This directory answers **what quality must hold, who owns the rule, and how to v
 - [QUALITY_BAR.md](QUALITY_BAR.md) — reader-facing quality outcomes and definition of done.
 - [ACCEPTANCE_MAP.md](ACCEPTANCE_MAP.md) — quality condition → authoritative owner → existing executable and human/provider check.
 - [OPEN_GAPS.md](OPEN_GAPS.md) — actual unresolved dependencies, with named owners and honest status.
+- [REFERENCE_LIBRARY.md](REFERENCE_LIBRARY.md) — user-chosen websites, technical blogs, HTML prototypes and papers with clear **source, lesson, application, status and evidence caveats**.
+- [REFERENCE_INTAKE.md](REFERENCE_INTAKE.md) — how to admit and verify future references without duplicating Design authority.
 
 ## Boundary with other systems
 
