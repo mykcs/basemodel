@@ -3,6 +3,7 @@ import AppLayout from '../../../../../layouts/AppLayout.astro';
 import '../../../../../styles/openevo-research-blogs.css';
 import '../../../../../styles/research-booktabs.css';
 import MathFormula from '../../../../../components/common/MathFormula.astro';
+import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
 
 const report = '/research/seed-openevo/study/parameter-memory-results/';
 const q07 = report + '#response-q07';
@@ -92,7 +93,7 @@ const notion = 'https://app.notion.com/p/3fbfedee6267811c9d79c1fd0b82fb5c';
           <p><strong>目的：</strong>约束长期状态容量，并尽可能保留原方法的截断语义。</p>
         </article>
       </div>
-      <p>2026 年 9 月 16 日已有一次<strong>无需 GPU 的确定性反例</strong>：在 136×136 矩阵上，截断 SVD 的结果秩为 128，而 Muon 式 Newton–Schulz 运行 5 步或 12 步后仍是 136。额外迭代也没有把它变成 top-128 截断。因此，不能把 Muon 当作当前 Bounded SVD 的无损加速替代。<a href={muonHistorical} target="_blank" rel="noopener noreferrer">查看封存的工程测试 ↗</a></p>
+      <p>2026 年 9 月 16 日已有一次<strong>无需 GPU 的确定性反例</strong>：在 136×136 矩阵上，截断 SVD 的结果秩为 128，而 Muon 式 Newton–Schulz 运行 5 步或 12 步后仍是 136。额外迭代也没有把它变成 top-128 截断。因此，不能把 Muon 当作当前 Bounded SVD 的无损加速替代。<a href={muonHistorical} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={muonHistorical} />查看封存的工程测试 ↗</a></p>
       <div class="muon-formula">
         <p>在标准 LoRA 表示中，有效参数更新可以写为：</p>
         <MathFormula latex={'\\Delta W=BA,\\qquad \\mathrm{rank}(\\Delta W)\\le r'} label="LoRA 有效更新与秩约束" />
@@ -186,10 +187,10 @@ const notion = 'https://app.notion.com/p/3fbfedee6267811c9d79c1fd0b82fb5c';
       <h2>来源与后续研究</h2>
       <p>此研究独立于现有三篇 OpenEVO 文章及另一条 OSA 记忆探索线。原论文和开源代码提供方法背景；网站上可追溯的 Q07/Q17 提供我们自己的观察。两类证据不会相互替代。</p>
       <ol>
-        <li><a href="https://kellerjordan.github.io/posts/muon/" target="_blank" rel="noopener noreferrer">Keller Jordan：Muon 原始方法说明 ↗</a>及<a href="https://github.com/KellerJordan/Muon" target="_blank" rel="noopener noreferrer">参考实现 ↗</a>。</li>
-        <li><a href="https://arxiv.org/abs/2502.16982" target="_blank" rel="noopener noreferrer">Muon is Scalable for LLM Training ↗</a>：其预训练效率结果不可直接当作我们的 WebShop 效率。</li>
-        <li><a href="https://arxiv.org/abs/2608.14492" target="_blank" rel="noopener noreferrer">Approximate Muon with Low-Rank Adapters ↗</a>：相关的低秩几何研究，需要单独核查比较协议。</li>
-        <li><a href={muonHistorical} target="_blank" rel="noopener noreferrer">OpenEVO｜2026-09-16 Newton–Schulz 与 rank128 截断的工程反例 ↗</a>（私有仓库，需授权）。</li>
+        <li><a href="https://kellerjordan.github.io/posts/muon/" target="_blank" rel="noopener noreferrer">Keller Jordan：Muon 原始方法说明 ↗</a>及<a href="https://github.com/KellerJordan/Muon" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/KellerJordan/Muon" />参考实现 ↗</a>。</li>
+        <li><a href="https://arxiv.org/abs/2502.16982" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2502.16982" />Muon is Scalable for LLM Training ↗</a>：其预训练效率结果不可直接当作我们的 WebShop 效率。</li>
+        <li><a href="https://arxiv.org/abs/2608.14492" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2608.14492" />Approximate Muon with Low-Rank Adapters ↗</a>：相关的低秩几何研究，需要单独核查比较协议。</li>
+        <li><a href={muonHistorical} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={muonHistorical} />OpenEVO｜2026-09-16 Newton–Schulz 与 rank128 截断的工程反例 ↗</a>（私有仓库，需授权）。</li>
         <li><a href={q07}>学长十问 Q07 的真实参数方向干预</a>与<a href={q17}>Q17 10 月 15 日新测量</a>。</li>
         <li><a href={notion} target="_blank" rel="noopener noreferrer">Notion｜Muon × OpenEVO 独立研究记录 ↗</a>。</li>
       </ol>
