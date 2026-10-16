@@ -1,0 +1,31 @@
+---
+interface Row {
+  label: string;
+  top1: number;
+  top5: number | null;
+  oldTop1: number;
+  bytes: number;
+}
+interface Props { rows: Row[]; caption: string; capacity?: boolean }
+const { rows, caption, capacity = true } = Astro.props;
+const percent = (value: number) => `${(value * 100).toFixed(2)}%`;
+---
+<div class="evo-article__tablewrap" tabindex="0" role="region" aria-label={caption}>
+  <table data-osa-comparison>
+    <caption>{caption}</caption>
+    <thead><tr>
+      <th scope="col">方法</th>
+      <th scope="col" data-numeric>首位命中率</th>
+      {capacity && <th scope="col" data-numeric>前五位命中率</th>}
+      <th scope="col" data-numeric>较旧记录首位命中率</th>
+      {capacity && <th scope="col" data-numeric>索引张量</th>}
+    </tr></thead>
+    <tbody>{rows.map(row => <tr>
+      <th scope="row">{row.label}</th>
+      <td data-numeric>{percent(row.top1)}</td>
+      {capacity && <td data-numeric>{row.top5 === null ? '不适用' : percent(row.top5)}</td>}
+      <td data-numeric>{percent(row.oldTop1)}</td>
+      {capacity && <td data-numeric>{row.bytes / 1024} KiB</td>}
+    </tr>)}</tbody>
+  </table>
+</div>
