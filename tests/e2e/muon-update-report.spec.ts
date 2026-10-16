@@ -54,6 +54,11 @@ test('Muon is a discoverable separate study, not an eleventh advisor question', 
   await expect(page.locator('[data-secondary-route="muon-study"]')).toHaveAttribute('href', url);
   await page.goto('/research/seed-openevo/study/advisor-questions/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-research-question]')).toHaveCount(10);
+  await page.goto(url, { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#evidence a[href="/research/seed-openevo/study/parameter-memory-results/#direction"]')).toHaveCount(1);
+  await expect(page.locator('#evidence a[href="/research/seed-openevo/study/parameter-memory-results/#checkpoint-evidence"]')).toHaveCount(1);
   await page.goto('/research/seed-openevo/study/parameter-memory-results/', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#direction')).toHaveCount(1);
+  await expect(page.locator('#checkpoint-evidence')).toHaveCount(1);
   await expect(page.locator('#direction a[href="' + url + '"]')).toHaveCount(1);
 });
