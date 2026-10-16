@@ -34,7 +34,6 @@ for (const width of [390, 768, 1440]) {
         const node = paper.querySelector('.muon-node')!;
         const html = document.documentElement;
         const paperStyle = getComputedStyle(paper);
-        const nodeStyle = getComputedStyle(node);
         return {
           overflow: html.scrollWidth - html.clientWidth,
           paper: paperStyle.backgroundColor,
