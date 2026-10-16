@@ -222,7 +222,7 @@ export const OPEN_EVO_CANONICAL_ROUTE_OWNERS: Readonly<Record<string, OpenEvoExp
   'text-memory': 'directapply-1p7b',
 };
 
-export type OpenEvoSecondaryRouteId = 'method-background' | 'cross-experiment-results' | 'reproduction';
+export type OpenEvoSecondaryRouteId = 'method-background' | 'cross-experiment-results' | 'muon-study' | 'reproduction';
 
 export interface OpenEvoSecondaryRoute {
   id: OpenEvoSecondaryRouteId;
