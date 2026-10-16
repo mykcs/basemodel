@@ -75,6 +75,7 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .evo-article__tablewrap caption{font-size:.9em;text-align:left;caption-side:top;margin-bottom:.35rem;color:var(--paper-muted)}
 .evo-blog .evo-article__tablewrap th,.evo-blog .evo-article__tablewrap td{border-bottom:1px solid var(--paper-line);padding:.65rem .9rem .65rem 0;text-align:left;vertical-align:top;white-space:normal}
 .evo-blog .evo-article__tablewrap [data-numeric]{text-align:right}
+.evo-blog [data-osa-comparison] td[data-numeric]{white-space:nowrap}
 .evo-blog .evo-article__question{padding:1.6rem 0 2rem;border-bottom:1px solid var(--paper-line);scroll-margin-top:5.8rem}
 .evo-blog .evo-article__question>h2{font-size:1.45rem}
 .evo-blog .evo-article__question .evo-article__answer{font-weight:630;line-height:1.8}
