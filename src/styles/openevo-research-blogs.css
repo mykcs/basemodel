@@ -65,6 +65,23 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .evo-article__sources ol{padding-left:1.3rem;max-width:80ch}
 .evo-blog .evo-article__sources li{padding:.38rem 0;font-size:.92em}
 .evo-blog .evo-article__sources a{overflow-wrap:anywhere}
+/* Research-paper presentation: evidence links are native underlined citations,
+   not boxed website-brand pictograms. The exact linked providers and their
+   semantic DOM marks remain intact for the sitewide provenance contract.
+   This opt-in applies ONLY to the three existing OpenEVO academic articles. */
+.evo-blog[data-paper-citation-style="plain-text"] .external-brand-mark {
+  display: none;
+}
+.evo-blog[data-paper-citation-style="plain-text"] a:has(> .external-brand-mark) {
+  text-decoration: underline;
+  text-decoration-thickness: .055em;
+  text-underline-offset: .16em;
+}
+.evo-blog[data-paper-citation-style="plain-text"] a:has(> .external-brand-mark):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
 .evo-blog .evo-article__note{font-size:.9em;color:var(--paper-muted);line-height:1.7;max-width:80ch}
 .evo-blog .evo-article__stat{font-variant-numeric:tabular-nums;font-weight:720;font-size:1.4em}
 .evo-blog .evo-article__figure{margin:1.5rem 0}
