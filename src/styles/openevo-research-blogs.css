@@ -138,6 +138,7 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .evo-article__question-header{display:flex;align-items:baseline;gap:.65rem;flex-wrap:wrap;margin:.25rem 0 .7rem}
 .evo-blog .evo-article__question-header h3{margin:0;line-height:1.38}
 .evo-blog .evo-article__qnum{font-size:.88rem;letter-spacing:.02em;color:var(--paper-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.evo-blog[data-evo-blog="results"] .evo-article__question-header h3 .evo-article__qnum{display:inline-block;margin-inline-end:.25rem;vertical-align:baseline}
 
 .evo-blog .evo-article__siblings .evo-current{display:block;font-size:.93em;line-height:1.5;padding:.6rem .25rem .7rem 0;border-bottom:2px solid var(--paper-ink);color:var(--paper-ink)}
 @media(max-width:720px){.evo-blog .evo-article__siblings .evo-current{padding:.45rem 0}}
