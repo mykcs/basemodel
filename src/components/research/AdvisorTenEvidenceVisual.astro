@@ -72,7 +72,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
     </div>
     <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--desktop" viewBox="0 0 740 310" role="img" aria-labelledby="advisor-q01-chart-title advisor-q01-chart-desc">
       <title id="advisor-q01-chart-title">三种方法的真实开发集任务成绩随训练进度变化</title>
-      <desc id="advisor-q01-chart-desc">每条曲线来自十一个已有检查点，同一组六十四道开发题。普通 OpenEVO 大约在第一百二十次参数更新后进入实用平台；Bounded 在第一百五十轮附近进入平台；历史复杂 beta GDR 在第一百三十轮之后明显下降。纵轴是零到一百的 Task Score。</desc>
+      <desc id="advisor-q01-chart-desc">每条曲线来自十一个真实保存的模型版本，在同一批事先固定的六十四道购物题上测试。普通 OpenEVO 第一百二十次更新后的成绩几乎没有提高；Bounded 一百五十轮之前还在提高；历史 beta GDR 一百三十轮之后下降。纵轴是零到一百的 Task Score。</desc>
       {[0,25,50,75,100].map((tick) => (
         <g>
           {tick > 0 && tick < 100 && <line class="advisor-viz__q01-grid" x1="63" x2="713" y1={q01Y(tick)} y2={q01Y(tick)} />}
@@ -103,7 +103,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
     </svg>
     <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--phone" viewBox="0 0 340 232" role="img" aria-labelledby="advisor-q01-phone-title advisor-q01-phone-desc">
       <title id="advisor-q01-phone-title">三条方法的真实训练成绩变化，手机视图</title>
-      <desc id="advisor-q01-phone-desc">三组十一点开发集成绩曲线。普通 OpenEVO 在一百二十次更新后已基本达到平台，Bounded 到一百五十轮仍增长，历史 beta GDR 一百三十轮后下降。</desc>
+      <desc id="advisor-q01-phone-desc">每种方法十一个已测模型版本的做题成绩。普通 OpenEVO 一百二十次更新之后进步很少，Bounded 到一百五十轮仍有提升，历史 beta GDR 一百三十轮后开始下降。</desc>
       {[0,25,50,75,100].map((tick) => (
         <g>
           {tick > 0 && tick < 100 && <line class="advisor-viz__q01-grid" x1="32" x2="326" y1={q01PhoneY(tick)} y2={q01PhoneY(tick)} />}
@@ -136,10 +136,10 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
     <div class="advisor-viz__q01-reading">
       {q01Series.map((item) => <p><strong>{item.name}：</strong>{item.takeaway}</p>)}
     </div>
-    <p class="advisor-viz__q01-source">数据与规则：<a href={q01CurveHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01CurveHref} />11 个保存点的原始 CSV ↗</a> · <a href={q01ResultHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01ResultHref} />平台判据及原始结论 ↗</a></p>
+    <p class="advisor-viz__q01-source">数据与规则：<a href={q01CurveHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01CurveHref} />11 个保存点的原始 CSV ↗</a> · <a href={q01ResultHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01ResultHref} />判断何时停止的规则与原始结果 ↗</a></p>
     <details class="advisor-viz__details">
-      <summary>实用平台如何判断？各保存点是多少分？</summary>
-      <p>这次研究使用了预先确定的实用平台判据：找到最早一个已测保存点，此后所有已测保存点的平均 Task Score 均未比它提高超过 2 分，完整成功数也未增加超过 2/64。这是开发集上的保存点选择证据。</p>
+      <summary>怎样判断继续训练是否还值得？各个版本是多少分？</summary>
+      <p>研究开始前，我们约定了一条挑选模型版本的规则：从已测的 11 个版本里，寻找最早的一个，使后面所有已测版本的平均分都没有比它高出超过 2 分（满分 100），完整成功的题数也没有多出超过 2 道（共 64 道）。原始英文收据把它称作 practical plateau；这只是“后面的版本没有明显超过它”的判断规则。历史 β/GDR 在第 130 轮后成绩下降，不能被理解成成绩始终平稳。这里的结论只适用于这批事先固定的 64 道题。</p>
       <div class="advisor-viz__table research-booktabs-wrap" tabindex="0">
         <table class="research-booktabs" data-q01-measured-table>
           <caption>补充表 S1｜同一冻结 64 题；Task Score / 100（仅列出已实际测量的保存点）</caption>
@@ -163,7 +163,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
   <div class="advisor-viz" data-report-visual="q02-early-sft" data-evidence-shape="measured-paper-table">
     <div class="advisor-viz__table research-booktabs-wrap" tabindex="0">
       <table class="research-booktabs">
-        <caption>表 1｜早期 SFT 不同训练遍数的开发题成绩</caption>
+        <caption>表 1｜早期 SFT 在同一批固定购物题上的成绩</caption>
         <thead><tr><th scope="col">训练条件</th><th scope="col" data-numeric>Task Score / 100</th></tr></thead>
         <tbody>{earlySft.map(item => (
           <tr><th scope="row">{item.name}</th><td data-numeric>{item.score.toFixed(2)}</td></tr>
@@ -177,7 +177,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
   <figure class="advisor-viz advisor-viz--q03" data-report-figure="q03-custom-curve" data-evidence-shape="paper-static-observations" data-protocol="custom-q17-64">
     <header class="advisor-viz__heading">
       <strong>Q03 · 四个保存点的 Task Score</strong>
-      <span>自定义 64 题开发面板 · 0–100 分</span>
+      <span>自定义的 64 道购物测试题 · 0–100 分</span>
     </header>
     <svg class="advisor-viz__trend advisor-viz__q03-chart advisor-viz__q03-chart--desktop" data-q03-desktop-chart viewBox="0 0 625 285" role="img" aria-labelledby="advisor-q03-title advisor-q03-description">
       <title id="advisor-q03-title">Q03 四个已测 Stage2 保存点的成绩先升、再降、再回升</title>
@@ -203,7 +203,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
     </svg>
     <svg class="advisor-viz__trend advisor-viz__q03-phone-chart" data-q03-mobile-chart viewBox="0 0 350 236" role="img" aria-labelledby="advisor-q03-phone-title advisor-q03-phone-description">
       <title id="advisor-q03-phone-title">Q03 四个真实保存点成绩先升、后降、再回升，手机视图</title>
-      <desc id="advisor-q03-phone-description">自定义 64 题开发面板，A0 为 3.71，A40 为 6.43，A80 为 0.69，A120 为 6.62；纵轴局部放大到 0–10 分，完整满分为 100。虚线只是连接已测点，中间没有观测。</desc>
+      <desc id="advisor-q03-phone-description">自定义 64 道购物测试题，A0 为 3.71，A40 为 6.43，A80 为 0.69，A120 为 6.62；纵轴局部放大到 0–10 分，完整满分为 100。虚线只是连接已测点，中间没有观测。</desc>
       <text class="advisor-viz__q03-axis-title" x="43" y="20">Task Score / 100</text>
       {[0,5,10].map((tick) => (
         <g>
@@ -225,7 +225,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
     </svg>
     <div class="advisor-viz__q03-phone-table research-booktabs-wrap" tabindex="0" aria-label="四个保存点的论文式数据表">
       <table class="research-booktabs">
-        <caption>补充表 S2｜四个真实保存点 · 自定义 64 题开发面板</caption>
+        <caption>补充表 S2｜四个真实保存点 · 自定义的 64 道购物题</caption>
         <thead><tr><th scope="col">保存点</th><th scope="col" data-numeric>得分 / 100</th><th scope="col" data-numeric>完整成功 / 64</th></tr></thead>
         <tbody>{ADVISOR_Q03_CUSTOM_PANEL.map((point) => (
           <tr><th scope="row">{point.update}</th><td data-numeric>{point.score}</td><td data-numeric>{point.exact.replace(' / ', '/')}</td></tr>
@@ -268,7 +268,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
   <div class="advisor-viz" data-report-figure="q05-same-final" data-evidence-shape="frozen-paper-table">
     <div class="advisor-viz__table research-booktabs-wrap" tabindex="0">
       <table class="research-booktabs">
-        <caption>补充表 S5｜三条历史路线的冻结 128 题终评</caption>
+        <caption>补充表 S5｜三条历史路线在固定 128 题上的训练后成绩</caption>
         <thead><tr><th scope="col">历史路线</th><th scope="col" data-numeric>Task Score / 100</th><th scope="col" data-numeric>完整成功</th></tr></thead>
         <tbody>{ADVISOR_Q05_FROZEN.map(item => (
           <tr><th scope="row">{item.method.replace(' / DirectApply','')}</th><td data-numeric>{item.score}</td><td data-numeric>{item.exact}</td></tr>

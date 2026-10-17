@@ -170,6 +170,61 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('Q10');
     expect(responses).toContain('原始逐字');
   });
+  it('keeps each advisor heading within the scientific question actually tested',()=>{
+    const visual=read('src/components/research/AdvisorTenEvidenceVisual.astro');
+    const intended: Record<string,string> = {
+      q01: '训练 160 轮会不会太多了？',
+      q02: '开始逐轮学习之前，怎样训练出一个更好的初始模型？',
+      q03: '我们的 SEED 实验成绩，能直接和论文比较吗？',
+      q04: '把长期参数容量从 rank128 缩到 rank32，做题成绩会怎样？',
+      q05: '增加参数写入控制后，模型做题成绩有什么变化？',
+      q06: '模型选择商品时有多拿不准？',
+      q07: '把某轮参数更新的方向反过来，成绩会怎样？',
+      q08: '训练很多轮后，模型还会做以前学过的购物题吗？',
+      q09: '改变模型收到的文字经验提示，会影响做题吗？',
+      q10: '换一批真正新的任务，这些判断还能成立吗？',
+    };
+    for(const [id,title] of Object.entries(intended))
+      expect(ADVISOR_QUESTIONS.find(q=>q.id===id)?.title).toBe(title);
+    const q02=ADVISOR_QUESTIONS.find(q=>q.id==='q02')!;
+    const q03=ADVISOR_QUESTIONS.find(q=>q.id==='q03')!;
+    const q05=ADVISOR_QUESTIONS.find(q=>q.id==='q05')!;
+    const q09=ADVISOR_QUESTIONS.find(q=>q.id==='q09')!;
+    expect(q02.opening).toContain('逐轮学习');
+    expect(q02.experiment).toContain('第一阶段怎样训练初始模型');
+    expect(q02.finding).toContain('36.01/100');
+    expect(q02.finding).toContain('34.96/100');
+    expect(q02.unknown).toContain('长期逐轮学习');
+    expect(q03.opening).toContain('64 道购物题');
+    expect(q03.opening).toContain('87 分');
+    expect(q03.interpretation).toContain('不能直接判断方法优劣');
+    expect(q03.unknown).toContain('正式 Stage2 为 0/160');
+    expect(q05.finding).toContain('20.77');
+    expect(q05.unknown).toContain('新的简单 β');
+    expect(q09.evidenceState).toBe('partial');
+    expect(q09.experiment).toContain('保持三个载体的使用权限');
+    expect(q09.finding).toContain('三个平均得分差的 95% 区间均包含零');
+    expect(q09.unknown).toContain('完整消融还没有完成');
+    expect(q09.evidence.some(x=>x.href.includes('q17-checkpoint-diagnostics-20261015.json'))).toBe(true);
+    expect(ADVISOR_QUESTIONS[9]?.evidenceState).toBe('unrun');
+    for(const phrase of ['实用平台','普通 SFT 和 OPSD 能替代持续学习吗','为什么我们的 SEED 分数只有','Text Memory、Skill、Agent System 真的有用吗'])
+      expect(JSON.stringify(ADVISOR_QUESTIONS)+visual).not.toContain(phrase);
+    expect(visual).toContain('原始英文收据把它称作 practical plateau');
+    expect(visual).toContain('平均分都没有比它高出超过 2 分');
+    expect(visual).toContain('历史 β/GDR 在第 130 轮后成绩下降');
+    expect(responses).toContain('这样的固定题在研究中叫“开发题”');
+    expect(responses).toContain('同题比较');
+    expect(responses).toContain('逐轮学习开始前，初始模型怎么训练？');
+    expect(responses).toContain('历史 SEED 实验能直接与论文比较吗？');
+    expect(responses).toContain('训练后压缩');
+    expect(responses).toContain('已测结果：');
+    expect(questions).toContain('SFT 和 OPSD 怎样训练初始模型');
+    expect(questions).toContain('Q10 是会后另行增加的独立复现问题');
+    expect(questions).not.toContain('themes[q.family]');
+    expect(questions).toContain('会后新增的独立复现问题');
+    expect(questions).toContain('OPEN_EVO_ADVISOR_MEETING.points.map');
+    expect(responses).toContain('会议原始逐字记录（RAW）');
+  });
   it('keeps the checkpoint addendum separate from historical conclusions',()=>{
     expect(responses).toContain('data-checkpoint-evidence');
     for(const v of ['60.1088/100','18/64','53/64','31/64','6/64','33/64','4/32、3/32、1/32','186','1,014','0/13','39/78','38/78','PARTIAL','2026-10-14'])
@@ -216,7 +271,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     for(const id of ['q04-posthoc','q07-zero-latest','q08-old-queue','q09-context','rank32-paired']) expect(responses).toContain('id="'+id+'"');
     for(const v of ['estimate:-0.87,low:-3.91,high:1.65','estimate:-0.85,low:-2.17,high:0','estimate:-9.38,low:-23.96,high:4.17','estimate:-26.60,low:-37.41,high:-15.64','estimate:-1.79,low:-3.68,high:0.12']) expect(responses).toContain(v);
     expect(responses).toContain('不是同一模型、同一干预');
-    expect(responses).toContain('后验压缩');
+    expect(responses).toContain('训练后压缩');
     expect(responses).toContain('640 是全部新旧队列');
     expect(responses).toContain('完整关闭载体权限的因果消融仍未完成');
     const plot=read('src/components/research/PaperIntervalPlot.astro');

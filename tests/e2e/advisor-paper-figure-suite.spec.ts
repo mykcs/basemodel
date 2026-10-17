@@ -25,7 +25,7 @@ for (const width of [390,768,1440]) {
       await expect(plot.locator('.paper-effect__unit')).toContainText('95%');
     }
     const text=await page.locator('[data-q17-inline="q04"]').innerText();
-    expect(text).toContain('后验压缩');
+    expect(text).toContain('训练后压缩');
     await expect(page.locator('[data-q17-inline="q07"]')).toContainText('不是同一模型、同一干预');
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(2);

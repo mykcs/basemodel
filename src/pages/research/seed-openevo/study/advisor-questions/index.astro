@@ -8,11 +8,6 @@ import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeet
 
 const responseHref = (id: string) =>
   '/research/seed-openevo/study/parameter-memory-results/#response-' + id;
-const themes = {
-  learning: '训练如何产生真实能力',
-  updating: '参数更新应该保留多大、写入多少',
-  generalization: '学到的能力能否保留与复现',
-} as const;
 ---
 <AppLayout
   title="学长十问：OpenEVO 持续学习需要回答的研究问题"
@@ -53,11 +48,11 @@ const themes = {
     </section>
     <section class="evo-article__section" id="question-index">
       <h2>2 把研究方向拆解成十个可检验的问题</h2>
-      <p>一个大问题往往包含几项不同的判断。比如“模型学会了吗”既涉及训练是否继续带来收益，也涉及训练方式、旧任务保持以及新任务效果。我们因此将问题拆开，每个问题都可以有自己的实验和证据。</p>
+      <p>一个大问题往往包含几项不同的判断。比如“模型学会了吗”既涉及训练是否继续带来收益，也涉及训练方式、旧任务保持以及新任务效果。我们因此将问题拆开，每个问题都可以有自己的实验和证据。下面的标题描述具体要检验哪一步；有些实验尚未完成，标题不会预先替实验宣布结果。</p>
       {ADVISOR_QUESTIONS.map(q => (
         <article class="evo-article__question" id={q.id} data-research-question={q.id} aria-labelledby={q.id+'-title'}>
           <header class="evo-article__question-header"><span class="evo-article__qnum">{q.id.toUpperCase()}</span><h3 id={q.id+'-title'}>{q.title}</h3></header>
-          <p class="evo-article__note">{themes[q.family]}{q.id==='q10' ? ' · 会后新增' : ''}</p>
+          {q.id==='q10' && <p class="evo-article__note">会后新增的独立复现问题</p>}
           <p>{q.opening}</p>
           <p class="evo-article__note"><a href={responseHref(q.id)}>{q.id==='q03' ? '查看公开 SEED 复现的工程测量与限制 →' : ['q04','q07','q08','q09'].includes(q.id) ? '查看 10 月 15 日补充的 Q17 实验回应 →' : '查看我们针对这一问题的实验回应 →'}</a></p>
         </article>
@@ -65,7 +60,7 @@ const themes = {
     </section>
     <section class="evo-article__section" id="relationship">
       <h2>3 这十个问题怎样连接起来</h2>
-      <p><strong>Q01–Q03</strong> 先判断训练是否真正改善任务能力，以及 SFT、OPSD 和 SEED 的基线能否形成公平比较。</p>
+      <p><strong>Q01–Q03</strong> 依次研究三个不同的环节：训练多久才有明显收益；开始逐轮学习前，SFT 和 OPSD 怎样训练初始模型；我们的 SEED 复现实验能否按论文的条件公平比较。三者不能用一次实验互相替代。</p>
       <p><strong>Q04–Q07</strong> 进一步追问参数记忆需要多大容量、写入幅度和方向能否影响能力，以及如何通过行为指标理解模型状态。</p>
       <p><strong>Q08–Q10</strong> 最后考察旧任务保持、Text Memory / Skill / Agent System 的作用，以及换一批新任务能否重复关键结论。</p>
       <p>阅读到这里，我们已经知道<strong>为什么要做这些实验</strong>。随后可进入<a href="/research/seed-openevo/study/parameter-memory-results/">第三篇：我们的回应实验</a>，逐项检查完成状态、结果和尚未解决的问题。关于普通 OpenEVO、Bounded 和 β 的公式，则在<a href="/research/seed-openevo/study/openevo-methods/">第一篇方法介绍</a>中详细说明。</p>

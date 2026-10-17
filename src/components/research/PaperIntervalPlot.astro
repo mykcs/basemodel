@@ -48,7 +48,7 @@ const ariaText = effects.map(e => `${e.label}: ${fmt(e.estimate)}, 95% CI [${fmt
       <span></span>
     </div>
   </div>
-  <p class="paper-effect__unit">{unit} · 点为配对均分差，横线为 95% 置信区间；虚线表示无差异（0）</p>
+  <p class="paper-effect__unit">{unit} · 圆点表示两种条件在相同题目上的平均差值；横线表示 95% 置信区间；虚线表示差值为零</p>
   <figcaption>{caption}</figcaption>
 </figure>
 

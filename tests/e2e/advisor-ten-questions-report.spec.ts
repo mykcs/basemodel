@@ -185,7 +185,9 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   await page.setViewportSize({width:390,height:844});
   await page.goto(prefix+'parameter-memory-results/');
   const guide=page.locator('#experiment');
-  await expect(guide.locator('dt')).toHaveCount(4);
+  await expect(guide.locator('dt')).toHaveCount(6);
+  await expect(guide).toContainText('逐轮学习开始前，初始模型怎么训练？');
+  await expect(guide).toContainText('历史 SEED 实验能直接与论文比较吗？');
   await expect(guide.locator('table')).toHaveCount(0);
   await expect(guide).toContainText('我们做了哪些实验，分别想回答什么？');
   const answer=page.locator('#response-q01');
