@@ -92,7 +92,6 @@ for (const theme of ['light', 'dark'] as const) {
     await page.addInitScript(value => localStorage.setItem('atlas-theme', value), theme);
     await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/');
     const table = page.locator('.comparison-table');
-    const wrap = page.locator('.comparison-table-wrap');
     await expect(table).toContainText('Vanilla');
     await expect(table).toContainText('105.11 s');
     const geometry = await table.evaluate(el => {
