@@ -49,6 +49,22 @@ Visual character:
 
 The Editorial canvas should feel like a technical publication with interactive evidence, not a marketing landing page.
 
+### Research-figure and quantitative-table width: borrow the paper object, retain the website
+
+**Applies sitewide when an object is genuine scientific evidence.** BaseModel is a research website, with an editorial reading path and a workbench. Do not turn the entire site, ordinary advisor reports, body text, navigation, engineering-status UI, or documentation into a literal ICLR/NeurIPS two-column paper. The reference is the *final typesetting quality* of scientific figures and tables: precise labels, thin axes, restrained line work, readable captions, real units/uncertainty, grayscale/print legibility, and native LaTeX-style `booktabs` table semantics.
+
+Use the same content-first size distinction as final two-column LaTeX:
+
+| Evidence object | Paper analogy | Website behavior |
+| --- | --- | --- |
+| One confidence interval, a small one-panel curve, a simple ablation, a few-column quantitative table | `figure` / `\columnwidth` | Compact relative width (roughly `38rem` for a plot); short tables use their intrinsic content width, never fill the row for decoration |
+| Several paired effects, genuinely complex multi-panel results or a method / system flow requiring side-by-side comparison | `figure*` / `\textwidth` | Wide relative width (up to the editorial `70rem` content region when space exists); preserve source boundaries between incomparable experiments |
+| Fixed 16:9 presentation slides, interactive experimental maps, provider screenshots, product/workbench matrices and operational tables | Their own semantic layout | Keep the existing component owner, intrinsic visual scale, and mobile/print contract; borrowing a serif caption does not grant a full-width or double-column layout |
+
+This is a **relative, responsive figure hierarchy**, not a hard pixel template. A wide illustration can be genuinely larger on desktop while both tiers fit the same narrow phone viewport. Dense tables scroll inside their own wrapper; the page itself must not scroll horizontally. Never shrink axes/text to unreadable sizes to fit a single-column slot. Prefer editorial/vector SVG and native semantic HTML over screenshot approximations. Never invent graph data or remove uncertainty, source identity or unrun-state labels to make a layout prettier.
+
+**Acceptance for sitewide changes:** inventory *all generated routes and rendered scientific figures/tables*, classify paper-like evidence separately from structural diagrams, slides and operational UI, choose a width tier per evidence family, inspect desktop/phone plus light/dark and print/grayscale where relevant, then rerun source and scientific-claim regressions. A sampled page does not establish whole-site coverage. This visual contract is implemented by the owning components; the narrowly scoped research-report rules remain in [Project Report PR-P2-008/009](https://github.com/mykcs/myk-skills/blob/main/project-report/rules/RULES.yaml).
+
 ### B. Experimental Workbench
 
 Use for `/workspace/`, comparison, candidate analysis, substitution, and decision memo work.

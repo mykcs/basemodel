@@ -63,6 +63,10 @@ BaseModel 的核心不是“收集更多模型字段”，也不是“把实验�
 
 每个指标小节都应先回答“这个指标是什么、为什么现在看它”，然后给结果，最后才分析。
 
+### 科研图表借鉴论文最终排版，整站保留网站身份
+
+只有真正需要呈现科学证据的图、表或公式，才借鉴 ICLR/NeurIPS 最终 LaTeX PDF 的清晰度、三线表、刻度和图注。小型单曲线、单组置信区间、短表按单栏小图的尺度紧凑排版；多面板、复杂方法流程和多组效果对比可参考跨双栏图，在有空间的桌面上画大一些。网页正文仍按读者学习路径组织，手机需要适配；菜单、状态、交互工具和整站页面不套会议论文模板。具体宽度规范见 [UI design principles](../agents/current/ui-design-principles.md#research-figure-and-quantitative-table-width-borrow-the-paper-object-retain-the-website)。
+
 ### Setup 和 Analysis 分层
 
 实验身份、任务流、预算、seed、evaluation boundary 必须明确，但不应该让读者在看到结果之前穿过一堵配置墙。第一层给理解研究所必需的 setup；完整命令、日志、运行细节放到更深层或执行手册。
