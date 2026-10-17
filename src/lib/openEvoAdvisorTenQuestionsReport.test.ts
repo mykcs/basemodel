@@ -39,6 +39,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(intro).toContain('2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会');
     expect(intro).toContain('href={OPEN_EVO_ADVISOR_MEETING.rawHref}');
     expect(intro).toContain('会议原始逐字记录（RAW）');
+    expect(responses).not.toContain('9 月 22 日会议的逐字记录见本文开头。');
     expect(intro.indexOf('会议原始逐字记录')).toBeLessThan(intro.indexOf('Q01–Q09'));
     expect(intro).toContain('Q10');
     expect(intro).toContain('不是学长当时逐字提出的十句话');
