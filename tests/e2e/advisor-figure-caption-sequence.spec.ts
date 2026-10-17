@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 const route = '/research/seed-openevo/study/parameter-memory-results/';
 const expectedFigures = Array.from({ length: 9 }, (_, index) => '图 ' + (index + 1) + '｜');
 const expectedTables = Array.from({ length: 7 }, (_, index) => '表 ' + (index + 1) + '｜');
-const supplemental = Array.from({ length: 4 }, (_, index) => '补充表 S' + (index + 1) + '｜');
+const supplemental = Array.from({ length: 6 }, (_, index) => '补充表 S' + (index + 1) + '｜');
 
 for (const width of [390, 768, 1440]) {
   for (const theme of ['light', 'dark'] as const) {
@@ -20,6 +20,10 @@ for (const width of [390, 768, 1440]) {
       expect(tables.filter(s => /^表\s*\d+｜/.test(s)).map(s => s.match(/^表\s*\d+｜/)?.[0])).toEqual(expectedTables);
       expect(tables.filter(s => /^补充表 S\d+｜/.test(s)).map(s => s.match(/^补充表 S\d+｜/)?.[0])).toEqual(supplemental);
 
+      await expect(article.locator('.q03-world4__hardware table tbody tr')).toHaveCount(2);
+      await expect(article.locator('#main-results .evo-article__tablewrap table')).toHaveCount(2);
+      await expect(article).toContainText('15.36×');
+      await expect(article).toContainText('1.33×');
       // Genuine table-only comparison is not mislabeled as a separate figure.
       expect(await page.locator('[data-report-visual="q02-early-sft"]').evaluate(el => el.tagName)).toBe('DIV');
       expect(await page.locator('[data-report-figure="q04-capacity"]').evaluate(el => el.tagName)).toBe('DIV');

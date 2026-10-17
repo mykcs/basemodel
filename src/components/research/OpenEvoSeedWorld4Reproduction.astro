@@ -114,9 +114,15 @@ const technicalChecks = [
 
   <h5>此前的四卡工程为何在反向传播失败？</h5>
 
-  <div class="q03-world4__hardware" aria-label="原论文与本次复现的训练硬件">
-    <div><span>SEED 论文报告的训练硬件</span><strong>8 × A800 <small>80 GB/卡</small></strong></div>
-    <div><span>10 月 14 日四卡工程硬件</span><strong>4 × RTX 5090 <small>约 32 GB/卡</small></strong></div>
+  <div class="q03-world4__tablewrap q03-world4__hardware" tabindex="0" aria-label="原论文与四卡工程训练硬件对照">
+    <table>
+      <caption>补充表 S3｜原论文与四卡工程的硬件条件（只比较 GPU 数量和显存）</caption>
+      <thead><tr><th scope="col">实验条件</th><th scope="col">GPU 型号与数量</th><th scope="col">单卡显存</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">SEED 论文</th><td>8 × A800</td><td>80 GB</td></tr>
+        <tr><th scope="row">2026-10-14 四卡工程</th><td>4 × RTX 5090</td><td>约 32 GB</td></tr>
+      </tbody>
+    </table>
   </div>
   <p class="q03-world4__context">两组硬件的单卡显存和 GPU 数量同时不同。FSDP 可以切分参数，不能把四张卡的显存合成一块供单次反向传播任意使用。论文还使用不同的教师模型及训练轮次；这里的比较说明资源约束，不能替代同协议的任务成绩对照。</p>
 
@@ -124,7 +130,7 @@ const technicalChecks = [
     <h5 id="q03-world4-measured">十月十四日两次四卡实测，停在 <code>loss.backward()</code></h5>
     <div class="q03-world4__tablewrap" tabindex="0" aria-label="两次四卡 Stage2 显存不足的实际日志对照">
       <table>
-        <caption>补充表 S3｜原生 Stage2 工程测试 · 2026 年 10 月 14 日 · 单卡 GiB</caption>
+        <caption>补充表 S4｜原生 Stage2 工程测试 · 2026 年 10 月 14 日 · 单卡 GiB</caption>
         <thead><tr><th scope="col">测试</th><th scope="col">待分配显存</th><th scope="col">当时剩余</th><th scope="col">参数更新</th></tr></thead>
         <tbody>
           <tr><th scope="row">v3 · 默认预留</th><td data-label="待分配显存">5.80 GiB</td><td data-label="当时剩余">5.48 GiB</td><td data-label="参数更新">未完成</td></tr>
