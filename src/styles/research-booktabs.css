@@ -75,3 +75,48 @@ table.research-booktabs td.paper-main-value {
   table.research-booktabs { font-size: .86rem; }
   table.research-booktabs :is(th,td) { padding: .56rem .6rem .56rem .15rem; }
 }
+
+/*
+ * The long-form OpenEVO evidence article also has native semantic tables that
+ * predate .research-booktabs. Bring those siblings into the same booktabs
+ * grammar without changing any research data or comparison scope.
+ */
+.evo-blog .evo-article__tablewrap {
+  padding-block: .18rem;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+}
+.evo-blog .evo-article__tablewrap table {
+  font-family: var(--font-editorial, Georgia, serif);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.evo-blog .evo-article__tablewrap table caption {
+  color: var(--paper-ink);
+  font-size: .9em;
+  line-height: 1.6;
+  margin-bottom: .55rem;
+}
+.evo-blog .evo-article__tablewrap thead th {
+  border-bottom: 1.15px solid var(--paper-ink);
+  color: var(--paper-ink);
+  font-weight: 700;
+  vertical-align: bottom;
+}
+.evo-blog .evo-article__tablewrap tbody tr > * {
+  border-bottom: 0;
+}
+.evo-blog .evo-article__tablewrap tbody tr + tr > * {
+  border-top: 1px solid color-mix(in srgb, var(--paper-ink) 15%, transparent);
+}
+.evo-blog .evo-article__tablewrap tbody th {
+  font-weight: 600;
+}
+.evo-blog .evo-article__tablewrap :is(th, td)[data-numeric] {
+  white-space: nowrap;
+  text-align: right;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.evo-blog .evo-article__tablewrap :is(th, td):last-child {
+  padding-inline-end: 0;
+}
