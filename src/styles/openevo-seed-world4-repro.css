@@ -29,23 +29,7 @@
   background: transparent;
   color: inherit;
 }
-.q03-world4__hardware {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-top: 1px solid var(--q03-border);
-  border-bottom: 1px solid var(--q03-border);
-  margin: 1.1rem 0 .65rem;
-}
-.q03-world4__hardware > div {
-  display: grid;
-  gap: .28rem;
-  padding: 1.05rem 1.1rem 1.15rem;
-  min-width: 0;
-}
-.q03-world4__hardware > div + div { border-left: 1px solid var(--q03-border); }
-.q03-world4__hardware span { font-size: .88rem; color: var(--q03-muted); }
-.q03-world4__hardware strong { font-size: clamp(1.25rem, 2.1vw, 1.6rem); font-weight: 720; letter-spacing: -.015em; line-height: 1.35; }
-.q03-world4__hardware small { font-size: .73em; font-weight: 500; white-space: nowrap; }
+.q03-world4__hardware { margin: 1.1rem 0 .65rem; }
 .q03-world4__context { color: var(--q03-muted); font-size: .92rem; }
 .q03-world4 h5 { font-size: 1.08rem; line-height: 1.5; font-weight: 710; letter-spacing: -.007em; }
 .q03-world4__evidence { margin-top: 1.65rem; }
@@ -186,9 +170,6 @@
 }
 @media (max-width: 490px) {
   .q03-world4 { margin-top: 1.6rem; padding-top: 1.25rem; }
-  .q03-world4__hardware { grid-template-columns: 1fr; }
-  .q03-world4__hardware > div { padding: .8rem .4rem; }
-  .q03-world4__hardware > div + div { border-left: 0; border-top: 1px solid var(--q03-border); }
   .q03-world4__tablewrap table { font-size: .84rem; }
   .q03-world4__flow { padding: .8rem; }
   .q03-world4__lane-heading { display: grid; }

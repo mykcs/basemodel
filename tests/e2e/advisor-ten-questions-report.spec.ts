@@ -123,7 +123,7 @@ test('response article also keeps frozen final, paired capacity, direction, unce
   const a=page.locator('[data-evo-blog="results"]');
   for (const v of ['60.72','45.98','20.77','1,024','rank32','rank128','10.06','−3.68','+0.12'])
     await expect(a).toContainText(v);
-  await expect(page.locator('#main-results .evo-article__tablewrap tbody tr')).toHaveCount(3);
+  await expect(page.locator('#main-results .evo-article__tablewrap[aria-label="三条路线冻结最终测试"] tbody tr')).toHaveCount(3);
   await expect(page.locator('#capacity [data-report-figure="q04-capacity"]')).toBeVisible();
   await expect(page.locator('#direction [data-report-visual="q07-confidence-interval"]')).toBeVisible();
   await expect(page.locator('#bundle .evo-article__tablewrap tbody tr')).toHaveCount(3);
@@ -172,7 +172,7 @@ test('publication tables have unique labels and frozen comparisons link to actua
   const labeled=captions.filter(c=>/表\s*[1-5]｜/.test(c));
   for(const number of [1,2,3,4]) expect(labeled.filter(c=>c.includes('表 '+number+'｜')).length).toBe(1);
   const finals=page.locator('#main-results');
-  await expect(finals.locator('table tbody tr')).toHaveCount(3);
+  await expect(finals.locator('[aria-label="三条路线冻结最终测试"] table tbody tr')).toHaveCount(3);
   await expect(finals.locator('[data-report-figure="q05-same-final"]')).toHaveCount(0);
   await expect(finals.locator('a[href*="FINAL_COMPARISON.json"]')).toBeVisible();
   await expect(finals.locator('a[href*="FINAL_EVAL_VERIFICATION.json"]')).toBeVisible();

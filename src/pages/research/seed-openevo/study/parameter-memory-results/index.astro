@@ -176,9 +176,15 @@ const q17Effects = {
         </table>
       </div>
       <p class="evo-article__note">可直接核对两份冻结 128 题的原始收据：<a href={checkpointEvidence.directFinal} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.directFinal} />普通 OpenEVO 终评 JSON ↗</a> · <a href={checkpointEvidence.boundedFinal} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.boundedFinal} />Bounded 与历史 β 终评 JSON ↗</a>。三组评测题单相同，但普通路线是更早的历史前驱。</p>
-      <div class="evo-article__measure">
-        <div><strong>31.09 → 2.02 小时</strong><span>历史比较：参数更新累计耗时，约快 15.36 倍</span></div>
-        <div><strong>74.78 → 56.25 小时</strong><span>包含 rollout 的整段耗时，约快 1.33 倍</span></div>
+      <div class="evo-article__tablewrap" tabindex="0" aria-label="历史参数更新与整段训练的耗时对照">
+        <table>
+          <caption>补充表 S5｜历史耗时对照：分别计时参数更新及含 rollout 的完整运行（小时）</caption>
+          <thead><tr><th scope="col">计时范围</th><th scope="col" data-numeric>历史方案 / h</th><th scope="col" data-numeric>改进方案 / h</th><th scope="col" data-numeric>耗时比</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">累计参数更新</th><td data-numeric>31.09</td><td data-numeric>2.02</td><td data-numeric>15.36×</td></tr>
+            <tr><th scope="row">完整运行（含 rollout）</th><td data-numeric>74.78</td><td data-numeric>56.25</td><td data-numeric>1.33×</td></tr>
+          </tbody>
+        </table>
       </div>
       <p>参数更新只占整个实验的一部分。WebShop 任务执行（rollout）的时间没有被这一容量改进同等加速，因此两种时间口径可以同时成立。<a href={checkpointEvidence.resourceAnalysis} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.resourceAnalysis} />核对累计耗时原始统计 ↗</a>。对本研究而言，更值得追问的是<strong>固定容量以后，任务成绩为什么不同</strong>。</p>
       <p>普通 OpenEVO 是更早的历史前序路线，与 Bounded 两组并非从完全相同的起点构成三臂随机实验。60.72 与 45.98 的差不能简单归因于容量压缩；固定容量组和历史 β 组则具有更接近正式匹配的实验安排。</p>
@@ -249,7 +255,7 @@ const q17Effects = {
       <p>历史上已对相同 64 题各尝试 8 次，共 512 次结果。按“每题在前 k 次中至少成功一次”统计的 Success@k 如下；这些数字来自旧数据的严格复用，并非本次写作重新运行 WebShop。</p>
       <div class="evo-article__tablewrap" tabindex="0" aria-label="R159 重复八次的 Success at k">
         <table>
-          <caption>补充表 S4｜R159 开发集 64 题：前 k 次至少成功一次的题数</caption>
+          <caption>补充表 S6｜R159 开发集 64 题：前 k 次至少成功一次的题数</caption>
           <thead><tr><th>尝试次数 k</th><th data-numeric>至少成功一次的题数 / 64</th></tr></thead>
           <tbody>
             <tr><th scope="row">1 次</th><td data-numeric>18/64</td></tr>
