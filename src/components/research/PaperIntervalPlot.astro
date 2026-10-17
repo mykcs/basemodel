@@ -13,8 +13,10 @@ interface Props {
   ticks: number[];
   effects: ReadonlyArray<Effect>;
   caption: string;
+  /** Single-column-like for small evidence; opt into double-column-like for dense multi-row evidence. */
+  widthTier?: 'single' | 'double';
 }
-const { id, title, unit, min, max, ticks, effects, caption } = Astro.props;
+const { id, title, unit, min, max, ticks, effects, caption, widthTier = 'single' } = Astro.props;
 if (!(min < 0 && max > 0 && min < max) || effects.length===0 ||
   effects.some(e => !Number.isFinite(e.estimate) || !Number.isFinite(e.low) || !Number.isFinite(e.high) ||
     e.low > e.estimate || e.estimate > e.high || e.low < min || e.high > max)) {
@@ -24,7 +26,7 @@ const at = (n: number) => ((n-min)/(max-min)*100);
 const fmt = (n: number) => (n > 0 ? '+' : '') + n.toFixed(2).replace('-', '−');
 const ariaText = effects.map(e => `${e.label}: ${fmt(e.estimate)}, 95% CI [${fmt(e.low)}, ${fmt(e.high)}] ${unit}`).join('; ');
 ---
-<figure class="paper-effect" data-paper-effect={id} data-paper-figure="interval">
+<figure class:list={{ 'paper-effect': true, 'paper-effect--double': widthTier === 'double' }} data-paper-effect={id} data-paper-figure="interval" data-paper-width={widthTier}>
   <h4 class="paper-effect__title">{title}</h4>
   <div class="paper-effect__plot" role="img" aria-label={`${title}；${ariaText}；竖虚线为零差异`}>
     {effects.map((e) => (
@@ -53,7 +55,8 @@ const ariaText = effects.map(e => `${e.label}: ${fmt(e.estimate)}, 95% CI [${fmt
 </figure>
 
 <style>
-.paper-effect{max-width:890px;margin:1.15rem 0 1.55rem;padding:.85rem 0 1rem;border-block:1px solid var(--paper-line,var(--color-border))}
+.paper-effect{width:min(100%,38rem);max-width:100%;margin:1.15rem 0 1.55rem;padding:.85rem 0 1rem;border-block:1px solid var(--paper-line,var(--color-border))}
+.paper-effect--double{width:min(100%,55.625rem)}
 .paper-effect__title{font-family:Georgia,"Noto Serif SC","Songti SC",serif;font-size:1.03em;line-height:1.45;font-weight:650;margin:.1rem 0 1rem}
 .paper-effect__plot{display:grid;gap:.45rem}
 .paper-effect__row{display:grid;grid-template-columns:minmax(9.5rem,1.12fr) minmax(13rem,1.9fr) minmax(10rem,1.12fr);align-items:center;gap:.72rem;min-height:2.25rem}

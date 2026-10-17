@@ -287,6 +287,8 @@ A chart is successful when the reader can understand the relation it encodes, no
 
 **Report navigation and sources follow the object, not a publication costume.** An unpublished research report uses the plain heading “目录”, not “论文结构”. Include its principal chapters, references, appendix, and a few high-value appendix anchors (such as capacity/SEED/Task Vector/new-task evidence) that materially help navigation; avoid pasting the whole appendix twice. Display scholarly references as separate list items, not multiple citations crammed into a single semicolon-delimited paragraph. Preserve source links and evidence roles.
 
+**研究图的占宽按科研对象选择**：一张简单曲线、一组置信区间和短量化表保持单栏式紧凑宽度；多面板、并排推理机制与多组效果比较才采用更宽的跨双栏式空间。这里只借鉴论文图表的 LaTeX 观感，不强制 BaseModel 网页布局、导师汇报正文或产品 UI 成为双栏论文。设计 owner 是 [UI design principles](ui-design-principles.md#research-figure-and-quantitative-table-width-borrow-the-paper-object-retain-the-website)；科研实测、来源和边界仍由本合同控制。
+
 ## 10. Responsive, theme, and accessibility requirements
 
 Research depth must remain usable across the normal browser matrix.

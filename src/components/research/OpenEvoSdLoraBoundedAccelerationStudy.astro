@@ -235,6 +235,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
 .ba-accel__section>.ba-accel__result-line{font-size:clamp(1.12rem,2.1vw,1.28rem);font-weight:720}
 .ba-accel__table-wrap{margin-top:1.35rem;overflow-x:auto}
 .ba-accel__table{width:100%;min-width:680px;border-collapse:collapse}
+.ba-accel__table:not(:has(thead tr > :nth-child(4))){width:max-content;min-width:0;max-width:min(100%,46rem)}
 .ba-accel__table th,.ba-accel__table td{padding:.78rem .72rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:1rem;line-height:1.5}
 .ba-accel__table thead th{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink);font-weight:760}.ba-accel__table tbody th{font-weight:680}.ba-accel__table--numbers td{font-variant-numeric:tabular-nums}
 .ba-accel__equation{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;margin:1.4rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}
