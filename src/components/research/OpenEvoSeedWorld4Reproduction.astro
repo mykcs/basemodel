@@ -94,7 +94,7 @@ const technicalChecks = [
     <p>为了检查工程更新是否伴随任务能力变化，我们让 SFT 初始模型、Step30 与 Step60 工程模型分别在同一组 <strong>64 道冻结开发题</strong>上重复执行 <strong>8 次</strong>。共 <strong>1,536 次完整任务尝试</strong>，已按题目与重复序号核对原始轨迹。下面是 2026 年 10 月 16 日 00:45（新加坡时间）封存的完整结果：</p>
     <div class="q03-world4__tablewrap" tabindex="0" aria-label="三组工程模型的冻结开发题完整成绩">
       <table>
-        <caption>工程诊断｜每组 64 题 × 8 次重复；Task Score 满分 100，完整成功按 512 次任务尝试计算</caption>
+        <caption>表 2｜工程诊断：每组 64 题 × 8 次重复；Task Score 满分 100，完整成功按 512 次任务尝试计算</caption>
         <thead><tr><th scope="col">工程模型</th><th scope="col">评测完成</th><th scope="col">平均 Task Score / 100</th><th scope="col">完整成功</th></tr></thead>
         <tbody>
           {engineeringPanel.map(item => (
@@ -124,7 +124,7 @@ const technicalChecks = [
     <h5 id="q03-world4-measured">十月十四日两次四卡实测，停在 <code>loss.backward()</code></h5>
     <div class="q03-world4__tablewrap" tabindex="0" aria-label="两次四卡 Stage2 显存不足的实际日志对照">
       <table>
-        <caption>原生 Stage2 工程测试 · 2026 年 10 月 14 日 · 单卡 GiB</caption>
+        <caption>补充表 S3｜原生 Stage2 工程测试 · 2026 年 10 月 14 日 · 单卡 GiB</caption>
         <thead><tr><th scope="col">测试</th><th scope="col">待分配显存</th><th scope="col">当时剩余</th><th scope="col">参数更新</th></tr></thead>
         <tbody>
           <tr><th scope="row">v3 · 默认预留</th><td data-label="待分配显存">5.80 GiB</td><td data-label="当时剩余">5.48 GiB</td><td data-label="参数更新">未完成</td></tr>
@@ -170,7 +170,7 @@ const technicalChecks = [
         ))}
       </ol>
     </div>
-    <figcaption>两条路径用于解释数据放在哪里、何时需要移动，属于<strong>机制示意</strong>，不代表论文作者的逐条代码追踪。CPU 张量处理与 GPU 等待有明确的实现和运行证据；各阶段耗时占比、跨 NUMA 的影响及 OOM 的完整内存成因仍待进一步剖析。</figcaption>
+    <figcaption><strong>图 3｜</strong>两条路径用于解释数据放在哪里、何时需要移动，属于<strong>机制示意</strong>，不代表论文作者的逐条代码追踪。CPU 张量处理与 GPU 等待有明确的实现和运行证据；各阶段耗时占比、跨 NUMA 的影响及 OOM 的完整内存成因仍待进一步剖析。</figcaption>
   </figure>
 
   <p class="q03-world4__measurement"><strong>现场观察：</strong>四个 Ray 训练 worker 的 CPU 时间持续增长，一次采样中容器 CPU 使用率约 820%、主机内存使用约 258 GiB；同一段训练中，GPU 利用率在 0% 与 100% 之间变化。程序确实做了计算，但尚未顺利完成一轮参数更新。</p>

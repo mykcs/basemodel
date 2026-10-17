@@ -124,11 +124,11 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).not.toContain('四种测量不能混成一次对照');
     expect(responses).toContain('十个研究问题的证据');
     expect(responses).not.toContain('逐项回答学长十问');
-    for(const label of ['表 1｜','表 2｜','表 3｜','表 4｜']){
-      const amount=responses.split(label).length-1 + capacity.split(label).length-1;
-      if(label==='表 2｜') expect(amount).toBe(1); // Capacity table renders inside the Q04 component.
-      else expect(responses.split(label).length-1).toBe(1);
-    }
+    const allReportTables=responses+capacity+read('src/components/research/OpenEvoSeedWorld4Reproduction.astro');
+    for(const label of ['表 1｜','表 2｜','表 3｜','表 4｜','表 5｜','表 6｜','表 7｜'])
+      expect(allReportTables.split(label).length-1).toBe(1);
+    for(const label of ['补充表 S1｜','补充表 S2｜','补充表 S3｜','补充表 S4｜'])
+      expect(allReportTables).toContain(label);
     expect(responses).not.toContain('<AdvisorTenEvidenceVisual variant="q05" />');
     for(const source of ['checkpointEvidence.directFinal','checkpointEvidence.boundedFinal','checkpointEvidence.resourceAnalysis','checkpointEvidence.capacity','checkpointEvidence.direction'])
       expect(responses).toContain('href={'+source+'}');
