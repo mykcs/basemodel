@@ -270,8 +270,6 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).not.toContain('17:43（新加坡时间）');
     expect(q03).toContain('data-evidence-as-of="2026-10-16"');
     expect(q03).toContain('data-seed-eight-progress');
-    expect(q03).toContain('负责给这些进程安排任务的工具叫 Ray');
-    expect(q03).not.toContain('四个 Ray 训练 worker 的 CPU 时间持续增长');
     for(const v of ['1,440 条','1,200 条','296 秒和 309 秒','20.4 GiB','1,536 次','512 / 512','4.07','3.97','4.28','1 / 512','3 / 512','28.66 GB','5/7','正式 Stage2 为 0/160 轮','95% 区间都跨过零'])
       expect(q03).toContain(v);
     expect(item?.evidence.some(e=>e.href.includes('31693e914487c9f210f93e3b4019037f9d5f0e06'))).toBe(true);
@@ -279,6 +277,12 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
       expect(q03).not.toContain(outdated);
     expect(q03).toContain('工程 SFT 第三轮尚未完成，正式数据上的 SFT 尚未启动');
     expect(q03).toContain('10 月 14 日两次四卡实测');
+    expect(q03).toContain('<summary>工程细节，你可能感兴趣...</summary>');
+    expect(q03).toContain('data-seed-gpu-explainer');
+    expect(q03).toContain('负责给这些进程安排任务的工具叫 Ray');
+    expect(q03).not.toContain('四个 Ray 训练 worker 的 CPU 时间持续增长');
+    expect(q03).toContain('GPU 可能等待');
+    expect(q03).not.toContain('大显存条件下的简化路径');
     expect(q03).toContain('完整八卡保存、加载、继续取新题并更新仍未验收');
     expect(q03).not.toContain('接下来验证六卡方案');
   });
