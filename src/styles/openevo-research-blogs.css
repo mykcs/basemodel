@@ -105,8 +105,8 @@ html[data-theme="dark"] .evo-blog {
  .evo-blog .evo-article__tablewrap th,.evo-blog .evo-article__tablewrap td{font-size:.91em}
 }
 
-.evo-blog .evo-article__flow-simple{display:grid;grid-template-columns:repeat(4,minmax(0,1fr) 18px);gap:.35rem;align-items:center;margin:.85rem 0}
-.evo-blog .evo-article__flow-simple>div{border:1px solid var(--paper-line);background:var(--paper);padding:.75rem .5rem;min-width:0;min-height:5.4rem}
+.evo-blog .evo-article__flow-simple{display:grid;grid-template-columns:minmax(0,1fr) 14px minmax(0,1fr) 14px minmax(0,1fr) 14px minmax(0,1fr);gap:.25rem;align-items:center;margin:1.15rem 0;padding:.8rem 0;border-block:1px solid var(--paper-line)}
+.evo-blog .evo-article__flow-simple>div{border:0;background:transparent;padding:.5rem .2rem;min-width:0;min-height:4rem}
 .evo-blog .evo-article__flow-simple>div strong,.evo-blog .evo-article__flow-simple>div small{display:block}
 .evo-blog .evo-article__flow-simple>div strong{font-size:.87rem;line-height:1.45}
 .evo-blog .evo-article__flow-simple>div small{font-size:.76rem;color:var(--paper-muted)}
@@ -135,3 +135,8 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .evo-article__experiment-guide>div:first-child{border-top:1px solid var(--paper-line)}
 .evo-blog .evo-article__experiment-guide dt{font-weight:700;line-height:1.6}
 .evo-blog .evo-article__experiment-guide dd{margin:.27rem 0 0;line-height:1.74;color:var(--paper-muted)}
+
+/* Source-bound dated Q17 appendices; evidence is local to each question, not a dashboard. */
+.evo-blog .evo-article__followup{margin:1.15rem 0 1.3rem;border-top:1px solid var(--paper-line);padding-top:.65rem;max-width:100%}
+.evo-blog .evo-article__followup>p{max-width:80ch;line-height:1.7}
+.evo-blog .evo-article__followup>.evo-article__note{font-size:.87em}

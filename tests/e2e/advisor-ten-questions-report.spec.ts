@@ -196,8 +196,8 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   await expect(chart).toHaveAttribute('data-evidence-shape','measured-score-curves');
   await expect(chart.locator('[data-q01-line]')).toHaveCount(3);
   await expect(chart.locator('[data-q01-phone-line]')).toHaveCount(3);
-  for(const line of await chart.locator('[data-q01-line]').all())
-    await expect(line.locator('circle')).toHaveCount(11);
+  for(const [index,shape] of ['circle','rect','polygon'].entries())
+    await expect(chart.locator('[data-q01-line]').nth(index).locator(shape)).toHaveCount(11);
   await expect(chart).toContainText('第 120 次更新约 60.40');
   await expect(chart).toContainText('后段下降约 12.93');
   await expect(chart.locator('a[href*="three-way-curve.csv"]')).toBeVisible();

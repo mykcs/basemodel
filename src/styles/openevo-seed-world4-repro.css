@@ -24,10 +24,10 @@
 .q03-world4__intro > p { max-width: 80ch; }
 .q03-world4__verdict {
   margin: 1.3rem 0 1.45rem;
-  padding: .85rem 1rem;
-  border-left: 3px solid #426f63;
-  background: #f4f7f4;
-  color: #283831;
+  padding: .6rem 0 .6rem 1rem;
+  border-left: 1.5px solid var(--paper-ink, var(--q03-ink));
+  background: transparent;
+  color: inherit;
 }
 .q03-world4__hardware {
   display: grid;
@@ -52,29 +52,31 @@
 .q03-world4__evidence h5 { margin-bottom: .65rem; }
 .q03-world4__evidence code { font-size: .91em; font-weight: 550; }
 .q03-world4__tablewrap { overflow-x: auto; max-width: 100%; scrollbar-width: thin; }
-.q03-world4__tablewrap table { min-width: 520px; width: 100%; border-collapse: collapse; border-top: 1.5px solid #555e57; border-bottom: 1.5px solid #555e57; line-height: 1.5; font-size: .89rem; }
+.q03-world4__tablewrap table { min-width: 520px; width: max-content; max-width: none; border-collapse: collapse; border-top: 1.45px solid var(--q03-ink); border-bottom: 1.45px solid var(--q03-ink); font-family: Georgia,"Songti SC",serif; font-variant-numeric: tabular-nums lining-nums; line-height: 1.5; font-size: .89rem; }
 .q03-world4__tablewrap caption { caption-side: top; text-align: left; font-size: .78rem; color: var(--q03-muted); margin-bottom: .35rem; }
-.q03-world4__tablewrap thead { border-bottom: 1px solid var(--q03-border); }
-.q03-world4__tablewrap th, .q03-world4__tablewrap td { padding: .65rem .65rem; border: none; background: transparent; text-align: left; white-space: nowrap; }
+.q03-world4__tablewrap thead { border-bottom: 1.1px solid var(--q03-ink); }
+.q03-world4__tablewrap th, .q03-world4__tablewrap td { padding: .58rem .85rem .58rem .2rem; border: none; background: transparent; text-align: left; white-space: nowrap; }
+.q03-world4__tablewrap th:not(:first-child), .q03-world4__tablewrap td:not(:first-child) { text-align: right; }
+.q03-world4__tablewrap thead th { font-weight: 650; }
 .q03-world4__tablewrap tbody th { font-weight: 600; }
-.q03-world4__tablewrap tbody tr + tr { border-top: 1px solid #edf0ec; }
+.q03-world4__tablewrap tbody tr + tr { border-top: .6px solid var(--q03-border); }
 .q03-world4__table-note { font-size: .88rem; color: var(--q03-muted); margin-top: .65rem; }
 .q03-world4__flow {
   margin: 1.9rem 0 1.4rem;
-  border: 1px solid var(--q03-border);
-  border-radius: var(--radius-panel);
-  background: #fcfdfa;
-  padding: clamp(1rem, 2.5vw, 1.45rem);
+  border-block: 1px solid var(--q03-border);
+  border-inline: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: clamp(.75rem, 2.5vw, 1.15rem) 0;
   max-width: 100%;
   min-width: 0;
 }
 .q03-world4__flow-header { display: grid; gap: .22rem; margin-bottom: 1.15rem; }
-.q03-world4__flow-header > span { font-size: .79rem; color: #557369; font-weight: 630; }
+
 .q03-world4__flow-header > p { color: var(--q03-muted); font-size: .91rem; }
-.q03-world4__lane { padding: 1rem; border: 1px solid #e5eae5; border-radius: var(--radius-panel); min-width: 0; }
+.q03-world4__lane { padding: .85rem 0 1rem; border-top: 1px solid var(--q03-border); border-radius: 0; min-width: 0; }
 .q03-world4__lane + .q03-world4__lane { margin-top: .85rem; }
-.q03-world4__lane--paper { background: #f7f9f7; }
-.q03-world4__lane--cpu { background: #faf8f3; border-color: #e9e6db; }
+.q03-world4__lane--paper,.q03-world4__lane--cpu { background: transparent; border-color: var(--q03-border); }
 .q03-world4__lane-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .15rem 1rem; margin-bottom: .85rem; }
 .q03-world4__lane-heading strong { font-size: .95rem; line-height: 1.5; font-weight: 690; }
 .q03-world4__lane-heading span { color: var(--q03-muted); font-size: .79rem; }
@@ -99,13 +101,11 @@
   min-width: 0;
   min-height: 103px;
   padding: .56rem .3rem;
-  border: 1px solid #dce4df;
-  border-radius: var(--radius-control);
-  background: #fff;
+  border: 1px solid var(--q03-border);
+  border-radius: 0;
+  background: transparent;
 }
-.q03-world4__step.is-gpu { border-top: 3px solid #61998a; }
-.q03-world4__step.is-cpu { border-top: 3px solid #b6a477; }
-.q03-world4__step.is-update { border-top: 3px solid #6e8a73; }
+.q03-world4__step.is-gpu,.q03-world4__step.is-cpu,.q03-world4__step.is-update { border-top: 1px solid var(--q03-border); }
 .q03-world4__step-index { font-size: .67rem; font-weight: 700; line-height: 1.25; color: var(--q03-muted); }
 .q03-world4__step strong { font-size: .83rem; line-height: 1.45; overflow-wrap: anywhere; }
 .q03-world4__step small { font-size: .73rem; line-height: 1.35; color: var(--q03-muted); overflow-wrap: anywhere; }
@@ -194,54 +194,15 @@
   .q03-world4__lane-heading { display: grid; }
 }
 
-/* Compact measured facts without a sideways-scroll tax on phone screens. */
+/* Native paper tables remain tables on phones. Only the table scrolls, never the article. */
 .q03-world4__flow { scroll-margin-top: 7.5rem; }
-@media (max-width: 490px) {
-  .q03-world4__tablewrap { overflow: visible; }
-  .q03-world4__tablewrap table { min-width: 0; width: 100%; }
-  .q03-world4__tablewrap thead {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-  .q03-world4__tablewrap tbody { display: block; }
-  .q03-world4__tablewrap tbody tr {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: .25rem;
-    padding: .55rem 0 .75rem;
-    border-top: 1px solid var(--q03-border);
-  }
-  .q03-world4__tablewrap tbody tr:first-child { border-top: 0; }
-  .q03-world4__tablewrap tbody th {
-    grid-column: 1 / -1;
-    white-space: normal;
-    padding: .2rem 0;
-    font-size: .94rem;
-  }
-  .q03-world4__tablewrap tbody td {
-    min-width: 0;
-    padding: .1rem 0;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    font-size: .85rem;
-  }
-  .q03-world4__tablewrap tbody td::before {
-    content: attr(data-label);
-    display: block;
-    font-size: .72rem;
-    line-height: 1.5;
-    color: var(--q03-muted);
-  }
-}
-
-/* Oct 15 model diagnostics have two value cells; phone rows use two equal columns. */
-@media (max-width: 490px) {
-  .q03-world4 [data-seed-eight-progress] .q03-world4__tablewrap tbody tr {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.q03-world4__tablewrap:focus-visible { outline: 2px solid var(--q03-ink); outline-offset: 2px; }
+@media (max-width:490px) {
+ .q03-world4__tablewrap { overflow-x: auto; }
+ .q03-world4__tablewrap table { min-width:520px; width:max-content; font-size:.84rem; }
+ .q03-world4__tablewrap thead { position:static;clip-path:none;width:auto;height:auto; }
+ .q03-world4__tablewrap tbody { display:table-row-group; }
+ .q03-world4__tablewrap tbody tr { display:table-row; }
+ .q03-world4__tablewrap tbody th,.q03-world4__tablewrap tbody td { display:table-cell;white-space:nowrap;padding:.56rem .62rem .56rem .12rem; }
+ .q03-world4__tablewrap tbody td::before { display:none; }
 }
