@@ -8,11 +8,20 @@ const source = {
   experiment: 'https://github.com/mykcs/openevo-experiment/pull/677',
   eight: 'https://github.com/mykcs/openevo-experiment/pull/707',
   eightReceipt: 'https://github.com/mykcs/openevo-experiment/blob/c930744044c4e648f5daf54514a23f2d188c268e/docs/evidence/seed-public-repro-minimax-20261007/EIGHT_PARALLEL_PROGRESS_AND_TASK_OBSERVER_CPU_20261015.json',
+  pairedEvidence: 'https://github.com/mykcs/openevo-experiment/blob/31693e914487c9f210f93e3b4019037f9d5f0e06/docs/evidence/seed-public-repro-minimax-20261007/EIGHT_THREE_CHECKPOINT_CORE_BEHAVIOR_20261015.json',
   recovery: 'https://github.com/mykcs/openevo-experiment/pull/704',
   findings: 'https://github.com/mykcs/openevo-experiment/pull/704#issuecomment-6170762809',
   offline: 'https://github.com/mykcs/openevo-experiment/blob/research/seed-minimax-gpu2345-20261014/docs/evidence/seed-public-repro-minimax-20261007/PR704_GEOMETRY3K_OFFLINE_CPU_PREFLIGHT_20261014.md',
   qualification: 'https://github.com/mykcs/openevo-experiment/blob/research/seed-minimax-gpu2345-20261014/docs/evidence/seed-public-repro-minimax-20261007/PR704_WORLD4_OFFLINE_STAGE2_LIVE_20261014.md',
 };
+
+// Frozen engineering-only results: 64 WebShop dev tasks × 8 repeats per model.
+// PR #707's complete source-bound analysis; not a formal SEED Stage2 evaluation.
+const engineeringPanel = [
+  { model: 'SFT 初始工程模型', attempts: '512 / 512', score: '4.07', exact: '1 / 512' },
+  { model: 'Stage2 Step30 工程模型', attempts: '512 / 512', score: '3.97', exact: '1 / 512' },
+  { model: 'Stage2 Step60 工程模型', attempts: '512 / 512', score: '4.28', exact: '3 / 512' },
+] as const;
 
 const paperPath = [
   { place: 'gpu', label: 'GPU 前向', explanation: '计算并保存反向传播所需的状态' },
@@ -67,36 +76,40 @@ const technicalChecks = [
   '当时观察到容器 CPU 使用率约 820%、RAM 约 258 GiB；4 个 Ray worker 的 CPU 时间持续增长。性能瓶颈的逐阶段耗时尚未准确剖析。',
   '此前的物理 chunk=2 优化在 Qwen3 数值对照中没有通过梯度与 AdamW 更新一致性验收，因此不能直接替代正式实现。',
   '10 月 14 日的六卡方案属于历史恢复尝试。10 月 15 日已另有八卡原生工程更新，但完整八卡任务流恢复资格仍待验证。',
-  '10 月 14 日的历史盘空间估算约 67 GiB；10 月 15 日 17:43 的新收据记录约 40.45 GB 可用。下一份受控写入的实测最低空间约 33.16 GB，长期训练存储资格仍未通过。',
+  '10 月 15 日 17:41 UTC 的最后一次保存空间收据为 28.66 GB 可用；下一份 SFT 工程保存及余量要求 33.16 GB，差额约 4.50 GB。这是当时的空间快照，不能当作实时剩余空间。长期正式训练存储资格未通过。',
 ];
 ---
 
-<section class="q03-world4" data-seed-world4-case data-evidence-as-of="2026-10-15" aria-labelledby="q03-world4-title">
+<section class="q03-world4" data-seed-world4-case data-evidence-as-of="2026-10-16" aria-labelledby="q03-world4-title">
   <header class="q03-world4__intro">
-    <span class="q03-world4__eyebrow">Q03 · 公开 SEED 复现 · 2026 年 10 月 15 日实验收据</span>
-    <h4 id="q03-world4-title">四卡训练遇到显存不足后，八卡工程训练完成两轮更新</h4>
+    <h4 id="q03-world4-title">八卡工程训练已完成两轮更新，三组模型有了完整的开发题测量</h4>
     <p>历史 Q03 的 A0–A120 分数使用了自定义 64 题。我们另外从头运行公开 SEED 源码，使用 Qwen3-1.7B 与 MiniMax-M3 教师标注，检查公开训练流程是否能在 RTX 5090 上执行。新路线已取得训练工程进展，<strong>还没有可用于和论文比较的正式 WebShop 成绩</strong>。</p>
   </header>
 
   <p class="q03-world4__verdict"><strong>最新结论：</strong>八卡工程测试已完成两轮原生优化器更新并保存检查点。工程 SFT 第三轮尚未完成，正式数据上的 SFT 尚未启动；<strong>正式 Stage2 为 0/160 轮</strong>。历史四卡反向传播失败的原因和数值保留在下文。</p>
 
   <div class="q03-world4__evidence" data-seed-eight-progress aria-labelledby="q03-eight-progress-title">
-    <h5 id="q03-eight-progress-title">十月十五日，八卡训练和任务评估推进到哪里？</h5>
-    <p>Stage1 已完成 <strong>1,440 条</strong>原始轨迹，得到 <strong>1,200 条有效 MiniMax 标注</strong>，另有 240 条失败记录。工程用八卡模型连续完成两轮 Stage2 原生 AdamW 更新，更新步数从 30 到 60；两轮分别用时约 <strong>296 秒和 309 秒</strong>，各保存约 <strong>20.4 GiB</strong> 的原生检查点，两轮均未发生 CUDA OOM。</p>
-    <p>为了观察训练前后模型行为，我们又用同一组冻结的 64 道开发题，每题预设重复 8 次（每个版本共 512 条轨迹）。下表是截至<strong>2026 年 10 月 15 日 17:43（新加坡时间）</strong>已经保存的完整轨迹数量：</p>
-    <div class="q03-world4__tablewrap" tabindex="0" aria-label="八卡工程模型开发集轨迹进度">
+    <h5 id="q03-eight-progress-title">三组工程模型实际测到了什么？</h5>
+    <p>独立公开配方复现的 Stage1 已收集 <strong>1,440 条</strong>原始轨迹，其中 <strong>1,200 条</strong>获得有效 MiniMax 教师标注。八卡工程测试接着完成两轮原生 AdamW 更新（Step30 → Step60），分别用时约 <strong>296 秒和 309 秒</strong>，各保存约 <strong>20.4 GiB</strong> 的原生检查点，未发生 CUDA OOM。</p>
+    <p>为了检查工程更新是否伴随任务能力变化，我们让 SFT 初始模型、Step30 与 Step60 工程模型分别在同一组 <strong>64 道冻结开发题</strong>上重复执行 <strong>8 次</strong>。共 <strong>1,536 次完整任务尝试</strong>，已按题目与重复序号核对原始轨迹。下面是 2026 年 10 月 16 日 00:45（新加坡时间）封存的完整结果：</p>
+    <div class="q03-world4__tablewrap" tabindex="0" aria-label="三组工程模型的冻结开发题完整成绩">
       <table>
-        <caption>工程诊断的保存进度；这些是测试轨迹数量，尚未形成三个完整的 512 条结果矩阵</caption>
-        <thead><tr><th scope="col">工程模型</th><th scope="col">完整轨迹</th><th scope="col">进度</th></tr></thead>
+        <caption>工程诊断｜每组 64 题 × 8 次重复；Task Score 满分 100，完整成功按 512 次任务尝试计算</caption>
+        <thead><tr><th scope="col">工程模型</th><th scope="col">评测完成</th><th scope="col">平均 Task Score / 100</th><th scope="col">完整成功</th></tr></thead>
         <tbody>
-          <tr><th scope="row">SFT 初始模型</th><td data-label="完整轨迹">128 / 512</td><td data-label="进度">25%</td></tr>
-          <tr><th scope="row">Step30</th><td data-label="完整轨迹">384 / 512</td><td data-label="进度">75%</td></tr>
-          <tr><th scope="row">Step60</th><td data-label="完整轨迹">192 / 512</td><td data-label="进度">37.5%</td></tr>
+          {engineeringPanel.map(item => (
+            <tr>
+              <th scope="row">{item.model}</th>
+              <td data-label="评测完成">{item.attempts}</td>
+              <td data-label="平均 Task Score / 100">{item.score}</td>
+              <td data-label="完整成功">{item.exact}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
-    <p class="q03-world4__table-note">每个版本的完整 512 条结果都应按照原来的题目和重复序号拼回矩阵；不能用已完成分片的平均分代替最终成绩。早期工程恢复遗漏任务随机数状态，曾造成重复选题；新的任务分发记录已通过 CPU 与 Ray 检查，完整八卡保存、加载、继续取题并更新的验证仍待进行。<a href={source.eightReceipt} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eightReceipt}/>17:43 冻结进度与运行收据 ↗</a></p>
-    <p>目前已将原有七项工程资产上传 Hugging Face，其中 <strong>4/7</strong> 通过了匿名完整字节读回和 CPU 加载。另两份八卡原生 SFT 第一、二轮文件已经发布，仍在做完整恢复验证。17:43 的磁盘剩余约 <strong>40.45 GB</strong>；下一份受控写入至少需要约 33.16 GB，长期正式训练的存储资格尚未通过。<a href={source.eight} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eight}/>八卡工程恢复与未完成事项 · PR #707 ↗</a></p>
+    <p class="q03-world4__table-note">Step30 比初始模型略低，Step60 又有所回升；三个均分都在 5/100 以下。按 64 道任务为簇、每簇保留 8 次重复进行 Bootstrap，SFT 初始模型→Step30、Step30→Step60 的两组配对均分差 95% 区间都跨过零。<strong>这两轮工程更新还没有提供可信的任务能力改善证据</strong>，更不能充当正式 SEED 成绩。<a href={source.pairedEvidence} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.pairedEvidence}/>1,536 次原始轨迹与配对分析收据 ↗</a></p>
+    <p>完整保存和恢复仍是工程门槛：早期运行遗漏任务随机数状态，出现重复选题；CPU 与 Ray 的任务分发核对已通过，但完整八卡保存、加载、继续取新题并更新仍未验收。原七项工程备份中 <strong>5/7</strong> 已完成匿名完整字节读回和 CPU 加载；另两项仍待完整证明。10 月 16 日凌晨（新加坡时间）的容量收据记录实验盘剩余 <strong>28.66 GB</strong>，下一次 SFT 工程保存连同余量需要 <strong>33.16 GB</strong>，尚缺约 <strong>4.50 GB</strong>。这些空间数字是当时快照，并非当前实时值。<a href={source.eight} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eight}/>八卡恢复状态与存储限制 · PR #707 ↗</a></p>
   </div>
 
   <h5>此前的四卡工程为何在反向传播失败？</h5>
@@ -188,7 +201,8 @@ const technicalChecks = [
       <a href={source.source} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.source}/>作者公开源码 ↗</a>
       <a href={source.experiment} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.experiment}/>公开复现实验 #677 ↗</a>
       <a href={source.eight} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eight}/>八卡工程最新 #707 ↗</a>
-      <a href={source.eightReceipt} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eightReceipt}/>10 月 15 日冻结运行收据 ↗</a>
+      <a href={source.eightReceipt} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eightReceipt}/>早期 CPU/Ray 任务分发收据 ↗</a>
+      <a href={source.pairedEvidence} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.pairedEvidence}/>三组工程模型完整配对诊断 ↗</a>
       <a href={source.offline} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.offline}/>离线缓存核验证据 ↗</a>
       <a href={source.qualification} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.qualification}/>四卡工程阶段记录 ↗</a>
       <a href={source.findings} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.findings}/>v3 / v4 失败核对 ↗</a>
