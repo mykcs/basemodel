@@ -139,14 +139,14 @@ const q17Effects = {
           {q.id==='q04' && (
             <div class="evo-article__followup" data-q17-inline="q04">
               <p><strong>10 月 15 日新增：</strong>在另一条普通 DirectApply 路线上，R159 训练结束后截断为 rank128/BF16，参数因子文件从约 1,021 MB 缩至 102.8 MB；下面测量的是<strong>训练后压缩</strong>，与上面的 rank32/rank128 续学实验不同。</p>
-              <PaperIntervalPlot id="q04-posthoc" title="R159 训练后压缩对做题分数的影响" unit="Task Score 分 / 100" min={-6} max={3} ticks={[-6,-3,0,3]} effects={q17Effects.capacity} caption="图 4｜Q04 训练后压缩：压缩版减原模型。两组随机设置都在事先固定的相同 64 道购物题上比较压缩前后的分数；第二次仍然使用同一批题。两个区间均包含零；BF16 数值重构本身也可能改变行为，尚无紧凑部署速度测量。" />
+              <PaperIntervalPlot id="q04-posthoc" widthTier="double" title="R159 训练后压缩对做题分数的影响" unit="Task Score 分 / 100" min={-6} max={3} ticks={[-6,-3,0,3]} effects={q17Effects.capacity} caption="图 4｜Q04 训练后压缩：压缩版减原模型。两组随机设置都在事先固定的相同 64 道购物题上比较压缩前后的分数；第二次仍然使用同一批题。两个区间均包含零；BF16 数值重构本身也可能改变行为，尚无紧凑部署速度测量。" />
               <p class="evo-article__note"><a href="#q17-capacity">查看完整 Q17 压缩表和原始收据 ↓</a></p>
             </div>
           )}
           {q.id==='q07' && (
             <div class="evo-article__followup" data-q17-inline="q07">
               <p><strong>10 月 15 日新增：</strong>对另一条 DirectApply 路线的 R129/R159，将最新拟合参数组件系数置零，两模型各有 31.25% 的题出现动作变化；但得分差区间都包含 0。它与 Bounded OFF 第 156 轮的方向反转<strong>不是同一模型、同一干预</strong>。</p>
-              <PaperIntervalPlot id="q07-zero-latest" title="DirectApply 最新组件置零的局部效果" unit="Task Score 分 / 100" min={-8} max={3} ticks={[-8,-4,0,3]} effects={q17Effects.direction} caption="图 5｜Q07 最新组件置零：相对原模型的平均得分变化；同一批固定的 64 道购物题，两个保存点的原始/置零/反向共 384 次任务测量。这里的零点是无净得分变化，不能代替旧 Q07 的 −10.06 分方向反转结果。" />
+              <PaperIntervalPlot id="q07-zero-latest" widthTier="double" title="DirectApply 最新组件置零的局部效果" unit="Task Score 分 / 100" min={-8} max={3} ticks={[-8,-4,0,3]} effects={q17Effects.direction} caption="图 5｜Q07 最新组件置零：相对原模型的平均得分变化；同一批固定的 64 道购物题，两个保存点的原始/置零/反向共 384 次任务测量。这里的零点是无净得分变化，不能代替旧 Q07 的 −10.06 分方向反转结果。" />
               <p class="evo-article__note"><a href="#q17-direction">查看新组件干预的实验范围 ↓</a></p>
             </div>
           )}
@@ -160,7 +160,7 @@ const q17Effects = {
           {q.id==='q09' && (
             <div class="evo-article__followup" data-q17-inline="q09">
               <p><strong>10 月 15 日新增：</strong>中和 Memory、Skill、Agent System 的具体指导文字，以及反转当前商品结果页顺序。三种文字中和的区间均跨 0；结果页顺序反转下降明显，属于<strong>当前页面顺序敏感性</strong>，不能当作长期文字记忆的收益。</p>
-              <PaperIntervalPlot id="q09-context" title="R159 文字指导与结果页顺序的同题比较" unit="Task Score 分 / 100" min={-40} max={15} ticks={[-40,-20,0,15]} effects={q17Effects.context} caption="图 7｜Q09 文字与结果页干预：R159 在同一批固定的 64 道购物题上，相对未改动条件的得分差。保留三类载体权限，仅中和指导文字；完整关闭载体权限的因果消融仍未完成。结果页顺序反转测试的是另一种行为敏感性。" />
+              <PaperIntervalPlot id="q09-context" widthTier="double" title="R159 文字指导与结果页顺序的同题比较" unit="Task Score 分 / 100" min={-40} max={15} ticks={[-40,-20,0,15]} effects={q17Effects.context} caption="图 7｜Q09 文字与结果页干预：R159 在同一批固定的 64 道购物题上，相对未改动条件的得分差。保留三类载体权限，仅中和指导文字；完整关闭载体权限的因果消融仍未完成。结果页顺序反转测试的是另一种行为敏感性。" />
               <p class="evo-article__note"><a href="#q17-context">查看完整 Q17 文字干预表 ↓</a></p>
             </div>
           )}
