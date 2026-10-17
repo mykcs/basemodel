@@ -23,19 +23,13 @@ const engineeringPanel = [
   { model: 'Stage2 Step60 工程模型', attempts: '512 / 512', score: '4.28', exact: '3 / 512' },
 ] as const;
 
-const paperPath = [
-  { place: 'gpu', label: 'GPU 前向', explanation: '计算并保存反向传播所需的状态' },
-  { place: 'gpu', label: 'GPU 反向', explanation: '计算梯度' },
-  { place: 'update', label: '更新参数', explanation: '优化器写入新权重' },
-];
-
-const engineeringPath = [
-  { place: 'gpu', label: 'GPU 前向', explanation: '产生中间张量' },
-  { place: 'cpu', label: '搬到 CPU', explanation: '显存暂时释放部分张量' },
-  { place: 'cpu', label: 'CPU 压缩', explanation: '按 4 MiB 分块运行 zlib' },
-  { place: 'cpu', label: 'CPU 解压', explanation: '反向传播需要张量时还原' },
-  { place: 'gpu', label: '搬回 GPU', explanation: '恢复原始形状和数值' },
-  { place: 'gpu', label: 'GPU 反向', explanation: '仍须容纳梯度与中间状态' },
+// These are actual data movement dependencies from the four-card engineering
+// route, not measured wall-clock phases or a synthetic large-VRAM baseline.
+const gpuTrace = [
+  { stage: 'GPU 前向计算', place: '数据在 GPU', action: 'GPU 执行计算', description: '生成反向传播后面还要用到的中间张量。' },
+  { stage: 'CPU 暂存与压缩', place: 'GPU → CPU', action: 'GPU 可能等待', description: '部分张量搬到主机内存，以 4 MiB 分块压缩。' },
+  { stage: 'CPU 解压并回传', place: 'CPU → GPU', action: 'GPU 可能等待', description: '需要这些张量时先解压，再把数据送回 GPU。' },
+  { stage: 'GPU 反向计算', place: '数据返回 GPU', action: 'GPU 需要更多显存', description: '反向传播还要容纳梯度与中间状态；历史四卡测试在这里显存不足。' },
 ];
 
 const efforts = [
@@ -127,7 +121,7 @@ const technicalChecks = [
   <p class="q03-world4__context">两组硬件的单卡显存和 GPU 数量同时不同。FSDP 可以切分参数，不能把四张卡的显存合成一块供单次反向传播任意使用。论文还使用不同的教师模型及训练轮次；这里的比较说明资源约束，不能替代同协议的任务成绩对照。</p>
 
   <div class="q03-world4__evidence" aria-labelledby="q03-world4-measured">
-    <h5 id="q03-world4-measured">十月十四日两次四卡实测，停在 <code>loss.backward()</code></h5>
+    <h5 id="q03-world4-measured">10 月 14 日两次四卡实测，停在 <code>loss.backward()</code></h5>
     <div class="q03-world4__tablewrap" tabindex="0" aria-label="两次四卡 Stage2 显存不足的实际日志对照">
       <table>
         <caption>补充表 S4｜原生 Stage2 工程测试 · 2026 年 10 月 14 日 · 单卡 GiB</caption>
@@ -141,45 +135,44 @@ const technicalChecks = [
     <p class="q03-world4__table-note">“待分配”指报错时 PyTorch 申请的新显存，并非总共缺少这么多显存。两次容器均以错误码 1 退出，尚无成功保存的四卡原生优化器状态。<a href={source.findings} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.findings}/>查看原始失败与代码核查记录 ↗</a></p>
   </div>
 
-  <figure class="q03-world4__flow" data-intelligence-ui data-seed-world4-flow aria-labelledby="q03-world4-flow-title">
-    <header class="q03-world4__flow-header">
+  <p class="q03-world4__context">显存占用和 GPU 利用率衡量的是两件事：显存中可能一直放着模型与张量，GPU 却暂时在等待 CPU 处理和传回数据。这次四卡测试记录到了 CPU 工作负载和 GPU 利用率变化，具体每一步花了多久尚未测清。</p>
+  <details class="q03-world4__details q03-world4__gpu-details" data-seed-world4-detail data-seed-gpu-explainer>
+    <summary>工程细节，你可能感兴趣...</summary>
+    <section aria-labelledby="q03-world4-flow-title">
       <h5 id="q03-world4-flow-title">GPU 为什么有时只占显存，却几乎不计算？</h5>
-      <p>这次四卡工程方案为了节省显存，把一部分反向传播需要的张量暂存到 CPU。GPU 可能要等这些数据恢复才能继续计算。</p>
-    </header>
-    <div class="q03-world4__lane q03-world4__lane--paper">
-      <div class="q03-world4__lane-heading">
-        <strong>大显存条件下的简化路径</strong>
-        <span>较少依赖额外的 CPU 压缩环节</span>
-      </div>
-      <ol class="q03-world4__steps q03-world4__steps--short">
-        {paperPath.map((step, i) => (
-          <li class:list={{'q03-world4__step': true, 'is-gpu': step.place==='gpu', 'is-update': step.place==='update'}}>
-            <span class="q03-world4__step-index">{String(i+1).padStart(2,'0')}</span>
-            <strong>{step.label}</strong>
-            <small>{step.explanation}</small>
-          </li>
-        ))}
-      </ol>
-    </div>
-    <div class="q03-world4__lane q03-world4__lane--cpu">
-      <div class="q03-world4__lane-heading">
-        <strong>本次四卡工程方案的 CPU 绕行</strong>
-        <span>中间张量保存 / 恢复</span>
-      </div>
-      <ol class="q03-world4__steps q03-world4__steps--long">
-        {engineeringPath.map((step, i) => (
-          <li class:list={{'q03-world4__step': true, 'is-gpu': step.place==='gpu', 'is-cpu': step.place==='cpu'}}>
-            <span class="q03-world4__step-index">{String(i+1).padStart(2,'0')}</span>
-            <strong>{step.label}</strong>
-            <small>{step.explanation}</small>
-          </li>
-        ))}
-      </ol>
-    </div>
-    <figcaption><strong>图 3｜</strong>两条路径用于解释数据放在哪里、何时需要移动，属于<strong>机制示意</strong>，不代表论文作者的逐条代码追踪。CPU 张量处理与 GPU 等待有明确的实现和运行证据；各阶段耗时占比、跨 NUMA 的影响及 OOM 的完整内存成因仍待进一步剖析。</figcaption>
-  </figure>
-
-  <p class="q03-world4__measurement"><strong>现场观察：</strong>四个 Ray 训练 worker 的 CPU 时间持续增长，一次采样中容器 CPU 使用率约 820%、主机内存使用约 258 GiB；同一段训练中，GPU 利用率在 0% 与 100% 之间变化。程序确实做了计算，但尚未顺利完成一轮参数更新。</p>
+      <p>四卡工程方案把一部分反向传播需要的张量暂存到 CPU。CPU 负责压缩、解压和搬运时，GPU 可能要等待；模型参数仍可能占用显存。这是实际的数据依赖关系，等待时间尚未独立测量。</p>
+      <figure class="q03-world4__flow" data-intelligence-ui data-seed-world4-flow aria-label="四卡训练时数据从 GPU 移到 CPU 再返回 GPU 的四个阶段">
+        <ol class="q03-world4__trace">
+          {gpuTrace.map((step, i) => (
+            <li>
+              <span class="q03-world4__trace-number">{String(i+1).padStart(2,'0')}</span>
+              <strong>{step.stage}</strong>
+              <span class="q03-world4__trace-place">{step.place}</span>
+              <span class="q03-world4__trace-action">{step.action}</span>
+              <p>{step.description}</p>
+            </li>
+          ))}
+        </ol>
+        <figcaption><strong>图 3｜</strong>四卡工程训练中的真实数据处理顺序。GPU → CPU → GPU 的往返解释了为什么显存仍有占用时，GPU 也可能等待其他处理环节。箭头表示数据依赖关系，<strong>不表示测过各阶段耗时</strong>；四卡反向传播显存不足的测量见上表。</figcaption>
+      </figure>
+      <p class="q03-world4__measurement"><strong>现场观察：</strong>四个 Ray 训练 worker 的 CPU 时间持续增长，一次采样中容器 CPU 使用率约 820%、主机内存使用约 258 GiB；同一段训练中，GPU 利用率在 0% 与 100% 之间变化。程序确实做了计算，但尚未顺利完成一轮参数更新。</p>
+    </section>
+    <h5>其余技术核对与原始来源</h5>
+    <ul>
+      {technicalChecks.map((line) => <li>{line}</li>)}
+    </ul>
+    <nav aria-label="公开 SEED 四卡复现实验的证据来源">
+      <a href={source.upstream} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.upstream}/>SEED 原论文 ↗</a>
+      <a href={source.source} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.source}/>作者公开源码 ↗</a>
+      <a href={source.experiment} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.experiment}/>公开复现实验 #677 ↗</a>
+      <a href={source.eight} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eight}/>八卡工程最新 #707 ↗</a>
+      <a href={source.eightReceipt} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eightReceipt}/>早期 CPU/Ray 任务分发收据 ↗</a>
+      <a href={source.pairedEvidence} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.pairedEvidence}/>三组工程模型完整配对诊断 ↗</a>
+      <a href={source.offline} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.offline}/>离线缓存核验证据 ↗</a>
+      <a href={source.qualification} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.qualification}/>四卡工程阶段记录 ↗</a>
+      <a href={source.findings} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.findings}/>v3 / v4 失败核对 ↗</a>
+    </nav>
+  </details>
 
   <div class="q03-world4__efforts" aria-labelledby="q03-world4-efforts">
     <h5 id="q03-world4-efforts">这次排查具体推进了哪些事情</h5>
@@ -196,21 +189,5 @@ const technicalChecks = [
     <p><strong>科研边界：</strong>四卡 OOM 是历史工程失败，两轮八卡更新使用的是工程资格模型；它们都没有产生公开 SEED 正式模型的能力成绩。<a href={source.eight} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eight}/>查看当前八卡恢复 PR ↗</a>；<a href={source.recovery} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.recovery}/>历史四卡恢复 PR ↗</a></p>
   </div>
 
-  <details class="q03-world4__details" data-seed-world4-detail>
-    <summary>展开技术细节、失败边界与原始来源</summary>
-    <ul>
-      {technicalChecks.map((line) => <li>{line}</li>)}
-    </ul>
-    <nav aria-label="公开 SEED 四卡复现实验的证据来源">
-      <a href={source.upstream} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.upstream}/>SEED 原论文 ↗</a>
-      <a href={source.source} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.source}/>作者公开源码 ↗</a>
-      <a href={source.experiment} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.experiment}/>公开复现实验 #677 ↗</a>
-      <a href={source.eight} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eight}/>八卡工程最新 #707 ↗</a>
-      <a href={source.eightReceipt} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eightReceipt}/>早期 CPU/Ray 任务分发收据 ↗</a>
-      <a href={source.pairedEvidence} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.pairedEvidence}/>三组工程模型完整配对诊断 ↗</a>
-      <a href={source.offline} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.offline}/>离线缓存核验证据 ↗</a>
-      <a href={source.qualification} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.qualification}/>四卡工程阶段记录 ↗</a>
-      <a href={source.findings} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.findings}/>v3 / v4 失败核对 ↗</a>
-    </nav>
-  </details>
+
 </section>
