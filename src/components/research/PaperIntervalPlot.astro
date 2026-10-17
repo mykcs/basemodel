@@ -69,7 +69,7 @@ const ariaText = effects.map(e => `${e.label}: ${fmt(e.estimate)}, 95% CI [${fmt
 .paper-effect__axis-row{min-height:1.1rem}
 .paper-effect__axis{height:1.3rem;position:relative;font: .74em Georgia,serif;color:var(--paper-muted,var(--color-text-muted))}
 .paper-effect__axis span{position:absolute;transform:translateX(-50%);white-space:nowrap}
-.paper-effect__unit{font-size:.78em!important;line-height:1.55!important;margin:.3rem 0!important;color:var(--paper-muted,var(--color-text-muted))}
+.paper-effect p.paper-effect__unit{font-size:.78em;line-height:1.55;margin:.3rem 0;color:var(--paper-muted,var(--color-text-muted))}
 .paper-effect figcaption{font-size:.86em;line-height:1.66;color:var(--paper-muted,var(--color-text-muted));margin:.55rem 0 0;max-width:82ch}
 @media(max-width:700px){
  .paper-effect__row{grid-template-columns:minmax(0,1fr);gap:.13rem;padding-block:.38rem}
