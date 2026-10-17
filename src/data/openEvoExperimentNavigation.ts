@@ -222,7 +222,7 @@ export const OPEN_EVO_CANONICAL_ROUTE_OWNERS: Readonly<Record<string, OpenEvoExp
   'text-memory': 'directapply-1p7b',
 };
 
-export type OpenEvoSecondaryRouteId = 'method-background' | 'cross-experiment-results' | 'reproduction';
+export type OpenEvoSecondaryRouteId = 'method-background' | 'cross-experiment-results' | 'muon-study' | 'reproduction';
 
 export interface OpenEvoSecondaryRoute {
   id: OpenEvoSecondaryRouteId;
@@ -245,5 +245,6 @@ export const OPEN_EVO_CROSS_EXPERIMENT_RESULTS_ROUTE = {
 export const OPEN_EVO_SECONDARY_ROUTES = [
   OPEN_EVO_METHOD_BACKGROUND_ROUTE,
   OPEN_EVO_CROSS_EXPERIMENT_RESULTS_ROUTE,
+  { id: 'muon-study', label: { zh: 'Muon × OpenEVO：更新方向研究', en: 'Muon × OpenEVO: update geometry study' }, href: '/research/seed-openevo/study/muon-update/' },
   { id: 'reproduction', label: { zh: '复现实验', en: 'Reproduce experiments' }, href: '/research/seed-openevo/study/run/' },
 ] satisfies OpenEvoSecondaryRoute[];
