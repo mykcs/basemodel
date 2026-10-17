@@ -132,7 +132,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
       <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="33" y="12">Task Score / 100</text>
       <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="326" y="227" text-anchor="end">轮次 / 更新数</text>
     </svg>
-    <figcaption><strong>图 1.</strong> 三种参数更新方法在同一冻结 64 题上的 Task Score（满分 100）。每条曲线包含 11 个真实保存点，线段只连接已测点。普通 OpenEVO 横轴为已完成的参数更新次数；Bounded 和历史 β/GDR 横轴为已完成的 Stage2 轮数，后两组含少数未实际更新参数的轮次。</figcaption>
+    <figcaption><strong>图 1｜</strong>三种参数更新方法在同一冻结 64 题上的 Task Score（满分 100）。每条曲线包含 11 个真实保存点，线段只连接已测点。普通 OpenEVO 横轴为已完成的参数更新次数；Bounded 和历史 β/GDR 横轴为已完成的 Stage2 轮数，后两组含少数未实际更新参数的轮次。</figcaption>
     <div class="advisor-viz__q01-reading">
       {q01Series.map((item) => <p><strong>{item.name}：</strong>{item.takeaway}</p>)}
     </div>
@@ -142,7 +142,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
       <p>这次研究使用了预先确定的实用平台判据：找到最早一个已测保存点，此后所有已测保存点的平均 Task Score 均未比它提高超过 2 分，完整成功数也未增加超过 2/64。这是开发集上的保存点选择证据。</p>
       <div class="advisor-viz__table research-booktabs-wrap" tabindex="0">
         <table class="research-booktabs" data-q01-measured-table>
-          <caption>同一冻结 64 题；Task Score / 100（仅列出已实际测量的保存点）</caption>
+          <caption>补充表 S1｜同一冻结 64 题；Task Score / 100（仅列出已实际测量的保存点）</caption>
           <thead><tr><th scope="col">轮次或更新数</th><th scope="col" data-numeric>普通 OpenEVO</th><th scope="col" data-numeric>Bounded</th><th scope="col" data-numeric>历史 β/GDR</th></tr></thead>
           <tbody>
             {q01Rounds.map((round) => (
@@ -160,18 +160,18 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
   </figure>
 )}
 {variant === 'q02' && (
-  <figure class="advisor-viz" data-report-visual="q02-early-sft" data-evidence-shape="measured-paper-table">
+  <div class="advisor-viz" data-report-visual="q02-early-sft" data-evidence-shape="measured-paper-table">
     <div class="advisor-viz__table research-booktabs-wrap" tabindex="0">
       <table class="research-booktabs">
-        <caption>表 Q02｜早期 SFT 不同训练遍数的开发题成绩</caption>
+        <caption>表 1｜早期 SFT 不同训练遍数的开发题成绩</caption>
         <thead><tr><th scope="col">训练条件</th><th scope="col" data-numeric>Task Score / 100</th></tr></thead>
         <tbody>{earlySft.map(item => (
           <tr><th scope="row">{item.name}</th><td data-numeric>{item.score.toFixed(2)}</td></tr>
         ))}</tbody>
       </table>
     </div>
-    <figcaption>单条历史 SFT 路线的已测得分。六格重复训练的统一配对科学评测尚未封存；这张表不用于判定 SFT 与 OPSD 的最终胜负。</figcaption>
-  </figure>
+    <p class="advisor-viz__table-note">单条历史 SFT 路线的已测得分。六格重复训练的统一配对科学评测尚未封存；这张表不用于判定 SFT 与 OPSD 的最终胜负。</p>
+  </div>
 )}
 {variant === 'q03' && (
   <figure class="advisor-viz advisor-viz--q03" data-report-figure="q03-custom-curve" data-evidence-shape="paper-static-observations" data-protocol="custom-q17-64">
@@ -225,7 +225,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
     </svg>
     <div class="advisor-viz__q03-phone-table research-booktabs-wrap" tabindex="0" aria-label="四个保存点的论文式数据表">
       <table class="research-booktabs">
-        <caption>表 Q03｜四个真实保存点 · 自定义 64 题开发面板</caption>
+        <caption>补充表 S2｜四个真实保存点 · 自定义 64 题开发面板</caption>
         <thead><tr><th scope="col">保存点</th><th scope="col" data-numeric>得分 / 100</th><th scope="col" data-numeric>完整成功 / 64</th></tr></thead>
         <tbody>{ADVISOR_Q03_CUSTOM_PANEL.map((point) => (
           <tr><th scope="row">{point.update}</th><td data-numeric>{point.score}</td><td data-numeric>{point.exact.replace(' / ', '/')}</td></tr>
@@ -233,14 +233,14 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
       </table>
     </div>
     <p class="advisor-viz__q03-reading">从 A0 的 <strong>3.71</strong> 分升至 A40 的 <strong>6.43</strong> 分，A80 降至 <strong>0.69</strong> 分，A120 回升至 <strong>6.62</strong> 分。四次完整成功均为 <strong>0/64</strong>。</p>
-    <figcaption><strong>图 Q03｜历史 Q03 的四个测量点。</strong>纵轴局部放大至 0–10 分，实际满分 100；细虚线只连接已测点，<strong>没有测量中间轮次</strong>，不能据此推断连续训练曲线。它与公开 SEED 论文的 128 题成绩不属于同一评测协议。<a href="https://github.com/mykcs/openevo-experiment/pull/678" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/678" />原始评测记录 ↗</a></figcaption>
+    <figcaption><strong>图 2｜Q03 历史四个测量点。</strong>纵轴局部放大至 0–10 分，实际满分 100；细虚线只连接已测点，<strong>没有测量中间轮次</strong>，不能据此推断连续训练曲线。它与公开 SEED 论文的 128 题成绩不属于同一评测协议。<a href="https://github.com/mykcs/openevo-experiment/pull/678" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/678" />原始评测记录 ↗</a></figcaption>
   </figure>
 )}
 {variant === 'q04' && (
-  <figure class="advisor-viz" data-report-figure="q04-capacity" data-evidence-shape="paired-paper-table">
+  <div class="advisor-viz" data-report-figure="q04-capacity" data-evidence-shape="paired-paper-table">
     <div class="advisor-viz__table research-booktabs-wrap" tabindex="0" aria-label="长期状态容量和 WebShop 得分对照表">
       <table class="research-booktabs">
-        <caption>表 2｜固定容量与后段任务表现</caption>
+        <caption>表 4｜固定容量与后段任务表现</caption>
         <thead>
           <tr>
             <th scope="col">长期参数状态</th>
@@ -261,26 +261,26 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
         </tbody>
       </table>
     </div>
-    <figcaption>两种容量使用第 152–159 轮的 1,024 组同任务、同随机条件配对尝试；参数文件大小测于第 159 轮末。表中的得分和成功率均来自该后段窗口。</figcaption>
-  </figure>
+    <p class="advisor-viz__table-note">两种容量使用第 152–159 轮的 1,024 组同任务、同随机条件配对尝试；参数文件大小测于第 159 轮末。表中的得分和成功率均来自该后段窗口。</p>
+  </div>
 )}
 {variant === 'q05' && (
-  <figure class="advisor-viz" data-report-figure="q05-same-final" data-evidence-shape="frozen-paper-table">
+  <div class="advisor-viz" data-report-figure="q05-same-final" data-evidence-shape="frozen-paper-table">
     <div class="advisor-viz__table research-booktabs-wrap" tabindex="0">
       <table class="research-booktabs">
-        <caption>三条历史路线的冻结 128 题终评</caption>
+        <caption>补充表 S5｜三条历史路线的冻结 128 题终评</caption>
         <thead><tr><th scope="col">历史路线</th><th scope="col" data-numeric>Task Score / 100</th><th scope="col" data-numeric>完整成功</th></tr></thead>
         <tbody>{ADVISOR_Q05_FROZEN.map(item => (
           <tr><th scope="row">{item.method.replace(' / DirectApply','')}</th><td data-numeric>{item.score}</td><td data-numeric>{item.exact}</td></tr>
         ))}</tbody>
       </table>
     </div>
-    <figcaption>普通 OpenEVO 是较早的历史前序路线。三个终点使用同一冻结题单，但训练起点没有构成完全匹配的随机三臂试验。</figcaption>
-  </figure>
+    <p class="advisor-viz__table-note">普通 OpenEVO 是较早的历史前序路线。三个终点使用同一冻结题单，但训练起点没有构成完全匹配的随机三臂试验。</p>
+  </div>
 )}
 {variant === 'q07' && (
   <div data-report-visual="q07-confidence-interval" data-evidence-shape="confidence-interval">
-    <PaperIntervalPlot id="q07-inversion" title="第 156 轮反转一次 Task Vector 的局部效果" unit="Task Score 分 / 100" min={-20} max={5} ticks={[-20,-10,0,5]} effects={[{id:'inverse',label:'Bounded OFF · 方向反转',estimate:-10.06,low:-15.02,high:-5.60}]} caption="图 Q07-a｜同一冻结 64 题的配对 Task Score 变化；95% 区间 [−15.02, −5.60] 不含零。这是八次方向反转中通过预设多重比较校正的一次，不能推广成普适的在线方向控制规则。" />
+    <PaperIntervalPlot id="q07-inversion" title="第 156 轮反转一次 Task Vector 的局部效果" unit="Task Score 分 / 100" min={-20} max={5} ticks={[-20,-10,0,5]} effects={[{id:'inverse',label:'Bounded OFF · 方向反转',estimate:-10.06,low:-15.02,high:-5.60}]} caption="图 9｜Q07 第 156 轮方向反转：同一冻结 64 题的配对 Task Score 变化；95% 区间 [−15.02, −5.60] 不含零。这是八次方向反转中通过预设多重比较校正的一次，不能推广成普适的在线方向控制规则。" />
   </div>
 )}
 <style>
@@ -288,7 +288,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 .advisor-viz__heading{display:flex;flex-wrap:wrap;gap:.2rem 1rem;justify-content:space-between;align-items:baseline;margin-bottom:1.05rem}
 .advisor-viz__heading strong{font-size:1.05rem;line-height:1.5;font-weight:700}
 .advisor-viz__heading span{font-size:.9rem;line-height:1.5;color:var(--color-text-muted)}
-.advisor-viz figcaption{font-size:.91rem;line-height:1.75;color:var(--color-text-muted);margin:.8rem 0 .3rem;max-width:82ch}
+.advisor-viz figcaption,.advisor-viz__table-note{font-size:.91rem;line-height:1.75;color:var(--color-text-muted);margin:.8rem 0 .3rem;max-width:82ch}
 .advisor-viz__rows,.advisor-viz__bars{display:grid;gap:.95rem}
 .advisor-viz__item{display:grid;grid-template-columns:minmax(9rem,1fr) minmax(8rem,1.4fr) minmax(5rem,.6fr);gap:.3rem .9rem;align-items:center}
 .advisor-viz__name{font-size:.91rem;line-height:1.55;font-weight:590;overflow-wrap:anywhere}

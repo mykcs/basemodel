@@ -128,28 +128,28 @@ const q17Effects = {
           {q.id==='q04' && (
             <div class="evo-article__followup" data-q17-inline="q04">
               <p><strong>10 月 15 日新增：</strong>在另一条普通 DirectApply 路线上，R159 训练结束后截断为 rank128/BF16，参数因子文件从约 1,021 MB 缩至 102.8 MB；下面测量的是<strong>后验压缩</strong>，与上面的 rank32/rank128 续学实验不同。</p>
-              <PaperIntervalPlot id="q04-posthoc" title="R159 后验压缩后的任务得分变化" unit="Task Score 分 / 100" min={-6} max={3} ticks={[-6,-3,0,3]} effects={q17Effects.capacity} caption="图 Q04-b｜压缩版减原模型。相同的冻结 64 道开发题、两组生成种子各自进行配对分析。两个区间均跨 0；BF16 数值重构本身也可能改变行为，尚无紧凑部署速度测量。" />
+              <PaperIntervalPlot id="q04-posthoc" title="R159 后验压缩后的任务得分变化" unit="Task Score 分 / 100" min={-6} max={3} ticks={[-6,-3,0,3]} effects={q17Effects.capacity} caption="图 4｜Q04 后验压缩：压缩版减原模型。相同的冻结 64 道开发题、两组生成种子各自进行配对分析。两个区间均跨 0；BF16 数值重构本身也可能改变行为，尚无紧凑部署速度测量。" />
               <p class="evo-article__note"><a href="#q17-capacity">查看完整 Q17 压缩表和原始收据 ↓</a></p>
             </div>
           )}
           {q.id==='q07' && (
             <div class="evo-article__followup" data-q17-inline="q07">
               <p><strong>10 月 15 日新增：</strong>对另一条 DirectApply 路线的 R129/R159，将最新拟合参数组件系数置零，两模型各有 31.25% 的题出现动作变化；但得分差区间都包含 0。它与 Bounded OFF 第 156 轮的方向反转<strong>不是同一模型、同一干预</strong>。</p>
-              <PaperIntervalPlot id="q07-zero-latest" title="DirectApply 最新组件置零的局部效果" unit="Task Score 分 / 100" min={-8} max={3} ticks={[-8,-4,0,3]} effects={q17Effects.direction} caption="图 Q07-b｜相对原模型的平均得分变化；冻结 64 题开发面板，两个保存点的原始/置零/反向共 384 次任务测量。这里的零点是无净得分变化，不能代替旧 Q07 的 −10.06 分方向反转结果。" />
+              <PaperIntervalPlot id="q07-zero-latest" title="DirectApply 最新组件置零的局部效果" unit="Task Score 分 / 100" min={-8} max={3} ticks={[-8,-4,0,3]} effects={q17Effects.direction} caption="图 5｜Q07 最新组件置零：相对原模型的平均得分变化；冻结 64 题开发面板，两个保存点的原始/置零/反向共 384 次任务测量。这里的零点是无净得分变化，不能代替旧 Q07 的 −10.06 分方向反转结果。" />
               <p class="evo-article__note"><a href="#q17-direction">查看新组件干预的实验范围 ↓</a></p>
             </div>
           )}
           {q.id==='q08' && (
             <div class="evo-article__followup" data-q17-inline="q08">
               <p><strong>10 月 15 日新增：</strong>旧队列 12 题、新队列 8 题，每题每条件重复 8 次，累计 640 次任务尝试。R159 比 R129 在旧队列上的完整成功率低 9.38 个百分点；独立统计单位仍只有 12 道旧题，区间跨 0，无法判定稳定遗忘。</p>
-              <PaperIntervalPlot id="q08-old-queue" title="旧队列任务保持：R159 减 R129" unit="完整成功率变化（百分点）" min={-30} max={10} ticks={[-30,-20,-10,0,10]} effects={q17Effects.retention} caption="图 Q08-b｜12 道旧队列任务上的配对成功率差及任务聚类 95% 区间。640 是全部新旧队列、模型条件与重复尝试的总次数，不是 640 个独立旧任务。" />
+              <PaperIntervalPlot id="q08-old-queue" title="旧队列任务保持：R159 减 R129" unit="完整成功率变化（百分点）" min={-30} max={10} ticks={[-30,-20,-10,0,10]} effects={q17Effects.retention} caption="图 6｜Q08 旧任务保持：12 道旧队列任务上的配对成功率差及任务聚类 95% 区间。640 是全部新旧队列、模型条件与重复尝试的总次数，不是 640 个独立旧任务。" />
               <p class="evo-article__note"><a href="#q17-retention">查看旧队列奖励变化与迁移边界 ↓</a></p>
             </div>
           )}
           {q.id==='q09' && (
             <div class="evo-article__followup" data-q17-inline="q09">
               <p><strong>10 月 15 日新增：</strong>中和 Memory、Skill、Agent System 的具体指导文字，以及反转当前商品结果页顺序。三种文字中和的区间均跨 0；结果页顺序反转下降明显，属于<strong>当前页面顺序敏感性</strong>，不能当作长期文字记忆的收益。</p>
-              <PaperIntervalPlot id="q09-context" title="R159 文字指导与结果页顺序的配对干预" unit="Task Score 分 / 100" min={-40} max={15} ticks={[-40,-20,0,15]} effects={q17Effects.context} caption="图 Q09-b｜同一冻结 64 题开发面板上的 R159 相对原生条件分差。保留三类载体权限，仅中和指导文字；完整关闭载体权限的因果消融仍未完成。结果页顺序反转测试的是另一种行为敏感性。" />
+              <PaperIntervalPlot id="q09-context" title="R159 文字指导与结果页顺序的配对干预" unit="Task Score 分 / 100" min={-40} max={15} ticks={[-40,-20,0,15]} effects={q17Effects.context} caption="图 7｜Q09 文字与结果页干预：同一冻结 64 题开发面板上的 R159 相对原生条件分差。保留三类载体权限，仅中和指导文字；完整关闭载体权限的因果消融仍未完成。结果页顺序反转测试的是另一种行为敏感性。" />
               <p class="evo-article__note"><a href="#q17-context">查看完整 Q17 文字干预表 ↓</a></p>
             </div>
           )}
@@ -168,7 +168,7 @@ const q17Effects = {
       <p>三条路线均已完成 160 轮学习。训练结束后的模型在相同冻结 128 道 WebShop 任务上得到下表成绩：</p>
       <div class="evo-article__tablewrap" tabindex="0" aria-label="三条路线冻结最终测试">
         <table>
-          <caption>表 1｜同一冻结 128 题的三个历史终点</caption>
+          <caption>表 3｜同一冻结 128 题的三个历史终点</caption>
           <thead><tr><th>方法</th><th data-numeric>Task Score / 100</th><th data-numeric>完整成功</th></tr></thead>
           <tbody>{ADVISOR_Q05_FROZEN.map((item) => (
             <tr><th>{item.method.replace(' / DirectApply','')}</th><td data-numeric>{item.score}</td><td data-numeric>{item.exact}</td></tr>
@@ -190,7 +190,7 @@ const q17Effects = {
       <p><strong>在这批任务上，rank32 的平均 Task Score 低 1.79 分。</strong>为了判断抽样波动，我们将同任务、同随机设置下的两个结果相减，对配对差值做多次有放回的重新抽样，并计算平均差。</p>
       <MathFormula latex={String.raw`d_i=\mathrm{Score}_{32,i}-\mathrm{Score}_{128,i}`} label="同题配对差值的定义" />
       <div data-capacity-ci>
-        <PaperIntervalPlot id="rank32-paired" title="第 152–159 轮的长期容量配对差异" unit="Task Score 分 / 100" min={-5} max={2} ticks={[-4,-2,0,2]} effects={[{id:'rank32',label:'rank32 − rank128',estimate:-1.79,low:-3.68,high:0.12}]} caption="图 2｜1,024 组相同任务与随机条件下，rank32 减 rank128 的配对平均 Task Score 分差及 95% 区间。区间跨 0，不能据此认定无损或严格等价；它与另一个冻结 128 题终评不属于同一统计窗口。" />
+        <PaperIntervalPlot id="rank32-paired" title="第 152–159 轮的长期容量配对差异" unit="Task Score 分 / 100" min={-5} max={2} ticks={[-4,-2,0,2]} effects={[{id:'rank32',label:'rank32 − rank128',estimate:-1.79,low:-3.68,high:0.12}]} caption="图 8｜1,024 组相同任务与随机条件下，rank32 减 rank128 的配对平均 Task Score 分差及 95% 区间。区间跨 0，不能据此认定无损或严格等价；它与另一个冻结 128 题终评不属于同一统计窗口。" />
       </div>
       <p>这一统计区间为 <strong>[−3.68，+0.12] 分</strong>：目前还没有足够证据确认 rank32 在类似任务上的平均分会稳定下降。同时，区间仍容许几个百分点的能力损失，因而不能证明容量缩小后影响可以忽略。<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.capacity} />查看 1,024 次配对统计与实验收据 ↗</a></p>
       <details class="evo-article__disclosure"><summary>按下展开：95% 置信区间怎样计算，有什么意义？</summary><div><p>把 1,024 组同题结果分别相减，再以“每组配对结果”为单位重复抽取、反复计算平均差。重采样均值形成一组统计波动范围，95% 区间是按既定覆盖率方法得到的结果。这里的 95% 指在重复使用同一种统计程序时，它长期覆盖固定真实差值的比例，并不表示这个已经算好的区间有 95% 的概率包含真实差值。</p><p>如果要宣称“减少容量没有造成不可接受的性能损失”，应在看实验结果前确定能够接受的最大损失，然后按照对应的单侧统计检验进行判断；不能看到区间后再选择宽松标准。</p></div></details>
@@ -211,7 +211,7 @@ const q17Effects = {
       <p>OpenEVO 的经验除了参数，还可以进入 Text Memory、Skill 和 Agent System。长期实验的收据显示，参数更新很频繁，文字状态实际改写得少得多。</p>
       <div class="evo-article__tablewrap" tabindex="0" aria-label="BUNDLE 更新计数">
         <table>
-          <caption>表 3｜三条历史路线中不同载体的内容更新次数</caption>
+          <caption>表 5｜三条历史路线中不同载体的内容更新次数</caption>
           <thead><tr><th>路线</th><th data-numeric>参数</th><th data-numeric>Text Memory</th><th data-numeric>Skill</th><th data-numeric>Agent System</th></tr></thead>
           <tbody>{ADVISOR_Q09_UPDATES.map((item) => <tr><th>{item.method}</th><td data-numeric>{item.parametric}</td><td data-numeric>{item.textMemory}</td><td data-numeric>{item.skill}</td><td data-numeric>{item.agent}</td></tr>)}</tbody>
         </table>
@@ -225,7 +225,7 @@ const q17Effects = {
         <h3 id="q17-capacity">训练后的参数压缩</h3>
         <p>对两个保存点各比较 15 种参数状态，在同一批 64 道开发题上使用两个独立生成种子，共 3,840 次任务测量。R159 截断到 rank128 后，以 BF16 因子表示作大小对照，参数文件从约 1,021 MB 缩至 102.8 MB（约保留 10.07%）；计入基础模型后，总文件大小约保留 79.42%。这里采用十进制 MB，只计权重文件；1,021 MB 是 BF16 因子对照，不是原始 FP32 checkpoint 的大小。</p>
         <div class="evo-article__tablewrap" tabindex="0" aria-label="R159 训练后 rank128 压缩得分差">
-          <table><caption>表 5｜R159：压缩版减原模型，Task Score 分差（满分 100）</caption><thead><tr><th>生成种子组</th><th data-numeric>平均分差</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">首次测量</th><td data-numeric>−0.87</td><td data-numeric>[−3.91, 1.65]</td></tr><tr><th scope="row">独立种子确认</th><td data-numeric>−0.61</td><td data-numeric>[−1.48, 0.05]</td></tr></tbody></table>
+          <table><caption>表 6｜R159：压缩版减原模型，Task Score 分差（满分 100）</caption><thead><tr><th>生成种子组</th><th data-numeric>平均分差</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">首次测量</th><td data-numeric>−0.87</td><td data-numeric>[−3.91, 1.65]</td></tr><tr><th scope="row">独立种子确认</th><td data-numeric>−0.61</td><td data-numeric>[−1.48, 0.05]</td></tr></tbody></table>
         </div>
         <p>这支持继续研究更小的参数表示，但尚未证明压缩后性能等价。完整 SVD 的 BF16 重构对照在 R159 首次测量中也下降约 2.22 分，说明数值重构本身可能改变行为，rank128 相对原模型的差额不能全部归因于截断。区间是对 64 道题逐题配对重采样得到的单项区间；第二个种子仍使用相同开发题，不是新留出任务。实际生成保留原有补零矩阵形状，<strong>没有测得紧凑部署的加速或显存节省</strong>。它也不同于第 5 节“直接用 rank32 训练”的实验。</p>
         <p>去掉最大的 8 个奇异方向时，R159 首次测量下降 41.37 分（95% 区间 [−51.81, −30.61]），独立种子下降 37.52 分（[−47.88, −27.11]）；R129 两次也均下降。这说明这些方向影响所测任务行为，不能推成“所有记忆只有八维”。</p>
@@ -237,7 +237,7 @@ const q17Effects = {
         <h3 id="q17-context">文字提示与结果页顺序</h3>
         <p>分别将 memory、skill、agent 的指导文字中和为无具体指导的文字，保留原生载体权限；另测当前结果页顺序反转。两模型共 512 次新干预，加 128 次原生基线，共 640 条记录。以下为 R159 相对原生基线的分差：</p>
         <div class="evo-article__tablewrap" tabindex="0" aria-label="R159 文字指导与结果页顺序干预">
-          <table><caption>表 6｜R159：干预后减原模型，Task Score 分差（满分 100）</caption><thead><tr><th>干预对象</th><th data-numeric>平均分差</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">memory 指导文字中和</th><td data-numeric>+2.22</td><td data-numeric>[−3.99, 8.75]</td></tr><tr><th scope="row">skill 指导文字中和</th><td data-numeric>−4.11</td><td data-numeric>[−9.61, 0.26]</td></tr><tr><th scope="row">agent 指导文字中和</th><td data-numeric>+1.64</td><td data-numeric>[−1.50, 5.75]</td></tr><tr><th scope="row">当前结果页顺序反转</th><td data-numeric>−26.60</td><td data-numeric>[−37.41, −15.64]</td></tr></tbody></table>
+          <table><caption>表 7｜R159：干预后减原模型，Task Score 分差（满分 100）</caption><thead><tr><th>干预对象</th><th data-numeric>平均分差</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">memory 指导文字中和</th><td data-numeric>+2.22</td><td data-numeric>[−3.99, 8.75]</td></tr><tr><th scope="row">skill 指导文字中和</th><td data-numeric>−4.11</td><td data-numeric>[−9.61, 0.26]</td></tr><tr><th scope="row">agent 指导文字中和</th><td data-numeric>+1.64</td><td data-numeric>[−1.50, 5.75]</td></tr><tr><th scope="row">当前结果页顺序反转</th><td data-numeric>−26.60</td><td data-numeric>[−37.41, −15.64]</td></tr></tbody></table>
         </div>
         <p>三个指导文字干预的平均分差区间均包含零，不能宣称它们无效；skill 干预仍改变了 51.56% 任务的第一步动作。结果页顺序反转明显降低得分，表明模型对当前页面排列敏感，但这与文字记忆收益是两个不同问题。<strong>完整关闭三种载体权限的消融仍未完成</strong>，Q10 的新任务流独立复现也没有由这些开发集实验代替。</p>
         <p class="evo-article__note">参数与文字干预的区间均按同一批 64 题配对计算，未作整条曲线同时置信保证。<a href="/research/seed-openevo/evidence/q17-checkpoint-diagnostics-20261015.json">公开汇总数据、原始收据哈希与限制（JSON）</a>；<a href="https://huggingface.co/datasets/openevo-recovery/openevo-full-server-disaster-recovery-v1"><ExternalBrandMark href="https://huggingface.co/datasets/openevo-recovery/openevo-full-server-disaster-recovery-v1" />私有原始证据库（需授权）</a>。网页只发布汇总，不发布任务原文或轨迹。</p>
@@ -249,7 +249,7 @@ const q17Effects = {
       <p>历史上已对相同 64 题各尝试 8 次，共 512 次结果。按“每题在前 k 次中至少成功一次”统计的 Success@k 如下；这些数字来自旧数据的严格复用，并非本次写作重新运行 WebShop。</p>
       <div class="evo-article__tablewrap" tabindex="0" aria-label="R159 重复八次的 Success at k">
         <table>
-          <caption>表 4｜R159 开发集 64 题：前 k 次至少成功一次的题数</caption>
+          <caption>补充表 S4｜R159 开发集 64 题：前 k 次至少成功一次的题数</caption>
           <thead><tr><th>尝试次数 k</th><th data-numeric>至少成功一次的题数 / 64</th></tr></thead>
           <tbody>
             <tr><th scope="row">1 次</th><td data-numeric>18/64</td></tr>
