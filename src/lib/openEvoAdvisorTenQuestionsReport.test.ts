@@ -163,7 +163,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(visual).toContain('data-evidence-shape="measured-score-curves"');
     expect(visual).not.toContain('data-evidence-shape="platform-position"');
     expect(visual).toContain('q01Series.map');
-    expect(visual).toContain('11 点原始 CSV');
+    expect(visual).toContain('11 个保存点的原始 CSV');
     expect(responses).toContain('第二篇的 {q.id.toUpperCase()} 问题正文与背景');
     expect(responses).toContain('data-question-origin-link={q.id}');
     expect(responses).toContain('Q10');
@@ -209,6 +209,22 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(q03).toContain('十月十四日两次四卡实测');
     expect(q03).toContain('完整八卡保存、加载、继续取新题并更新仍未验收');
     expect(q03).not.toContain('接下来验证六卡方案');
+  });
+  it('keeps newer Q17 experiment identities and uncertainties alongside their original advisor questions',()=>{
+    for(const id of ['q04','q07','q08','q09']) expect(responses).toContain('data-q17-inline="'+id+'"');
+    for(const id of ['q04-posthoc','q07-zero-latest','q08-old-queue','q09-context','rank32-paired']) expect(responses).toContain('id="'+id+'"');
+    for(const v of ['estimate:-0.87,low:-3.91,high:1.65','estimate:-0.85,low:-2.17,high:0','estimate:-9.38,low:-23.96,high:4.17','estimate:-26.60,low:-37.41,high:-15.64','estimate:-1.79,low:-3.68,high:0.12']) expect(responses).toContain(v);
+    expect(responses).toContain('不是同一模型、同一干预');
+    expect(responses).toContain('后验压缩');
+    expect(responses).toContain('640 是全部新旧队列');
+    expect(responses).toContain('完整关闭载体权限的因果消融仍未完成');
+    const plot=read('src/components/research/PaperIntervalPlot.astro');
+    expect(plot).toContain('data-paper-effect={id}');
+    expect(plot).toContain('e.low > e.estimate');
+    expect(plot).toContain('paper-effect__zero');
+    expect(plot).toContain('95% 置信区间');
+    expect(plot).not.toContain('setTimeout');
+    expect(read('src/styles/openevo-seed-world4-repro.css')).not.toContain('tbody { display: block; }');
   });
   it('reuses subdued-green paper typography only on the three blog pages',()=>{
     const css=read('src/styles/openevo-research-blogs.css');

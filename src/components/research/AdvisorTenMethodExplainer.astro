@@ -48,7 +48,7 @@ const methods = [
         </article>
       ))}
     </div>
-    <figcaption>图 1｜所有路线共享相同的交互与参数更新流程。图中同类方框的尺寸、边框和背景一致，只让处理规则的文字发生变化。图中三条路线对应普通参数更新、固定容量与历史写入控制。独立 Gated Delta 四轮资格研究在本文第 5 节另行交代。</figcaption>
+    <figcaption><strong>图 2.</strong> 三条历史参数路线的统一流程。输入与下一轮继承状态一致，差异集中在中间的参数处理规则；本图是方法关系示意，独立 Gated Delta 四轮资格研究不是第四条长跑。</figcaption>
   </figure>
 
   <details class="advisor-method__rank" data-rank8-disclosure>
@@ -66,12 +66,12 @@ const methods = [
   .advisor-method>p{font-size:1.0625rem;line-height:1.82;max-width:78ch;margin:.8rem 0}
   .advisor-method__figure{margin:1.4rem 0 1.5rem}
   .advisor-method__lanes{display:grid;gap:1.5rem}
-  .advisor-method__lane{border-top:1px solid var(--color-border);padding-top:.9rem}
+  .advisor-method__lane{border-top:1px solid var(--paper-line,var(--color-border));padding-top:.9rem}
   .advisor-method__lane-head{display:flex;align-items:baseline;gap:.55rem 1rem;justify-content:space-between;flex-wrap:wrap;margin-bottom:.6rem}
   .advisor-method__lane-head h4{font-size:1.07rem;font-weight:730;line-height:1.5;margin:0}
   .advisor-method__lane-head span{color:var(--color-text-muted);font-size:.88rem}
   .advisor-method__flow{display:grid;grid-template-columns:minmax(0,1fr) 1rem minmax(0,1fr) 1rem minmax(0,1fr);align-items:stretch;gap:.45rem}
-  .advisor-method__node{border:1px solid var(--color-border);background:var(--color-surface, transparent);border-radius:.3rem;padding:.7rem .78rem;min-width:0;min-height:5.6rem;display:flex;flex-direction:column;justify-content:center}
+  .advisor-method__node{border:1px solid var(--paper-line,var(--color-border));background:transparent;border-radius:0;padding:.58rem .55rem;min-width:0;min-height:4.3rem;display:flex;flex-direction:column;justify-content:center}
   .advisor-method__node small{color:var(--color-text-muted);font-size:.82rem;line-height:1.4}
   .advisor-method__node strong{font-size:.98rem;line-height:1.5;font-weight:620;margin-top:.2rem}
   .advisor-method__arrow{align-self:center;text-align:center;color:var(--color-text-muted);font-size:1.18rem}
