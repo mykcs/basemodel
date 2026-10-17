@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { humanDateText } from '../../lib/readableDate.js';
 import { useStore } from '@nanostores/react';
 import { researchTask, type ResearchMode, type ResearchTask } from '../../stores/researchTask';
 import { analyzeReplacement } from '../../lib/research/replacement';
@@ -35,7 +36,7 @@ export function SubstituteLab({ models, papers, m, locale = 'zh' }: Props) {
   return <section className="substitute-lab" aria-label={title}>
     <h2>{title}</h2>
     <p className="muted">{locale === 'zh' ? '同一个替代模型会分别按严格复现、方法复现和现代化重跑判断。下方表格按你在工作台选择的复现方式解释每项变化。' : 'The same replacement is judged separately for strict reproduction, method reproduction, and a modern rerun. The table below explains each change using the reproduction mode selected in the workspace.'}</p>
-    <div className="field"><label htmlFor="substitute-base">{locale === 'zh' ? '要替换的模型' : 'Model to replace'}</label><select id="substitute-base" value={baseId} onChange={(event) => setBaseId(event.target.value)}><option value="">—</option>{models.map((model) => <option key={model.id} value={model.id}>{model.name} ({model.release_date})</option>)}</select></div>
+    <div className="field"><label htmlFor="substitute-base">{locale === 'zh' ? '要替换的模型' : 'Model to replace'}</label><select id="substitute-base" value={baseId} onChange={(event) => setBaseId(event.target.value)}><option value="">—</option>{models.map((model) => <option key={model.id} value={model.id}>{model.name} ({humanDateText(model.release_date,locale)})</option>)}</select></div>
     {!base ? <p className="empty-state">{m.research.substitute.empty}</p> : substitutes.length === 0 ? <p className="empty-state">{m.research.substitute.noSubstitute}</p> : <div className="substitute-list">{substitutes.map(({ entry, impacts }) => <SubstituteCard key={entry.model.id} base={base} rep={entry.model} impacts={impacts} task={task} papers={papers} m={m} locale={locale} />)}</div>}
   </section>;
 }
