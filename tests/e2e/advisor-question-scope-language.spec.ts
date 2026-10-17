@@ -42,8 +42,14 @@ for (const {width,theme} of [
     await expect(page.locator('.evo-article__abstract a[href*="2026-09-22-meeting-transcript.raw.md"]')).toBeVisible();
     response=await page.goto(responseRoute,{waitUntil:'domcontentloaded'});
     expect(response?.status()).toBe(200);
-    for(const [id,title] of Object.entries(titles))
-      await expect(page.locator('#response-'+id+'-title')).toHaveText(title);
+    for(const [id,title] of Object.entries(titles)) {
+      const headingNumber = '3.Q'+Number(id.slice(1));
+      const responseId = '#response-'+id;
+      await expect(page.locator(responseId+'-title')).toHaveText(headingNumber+' '+title);
+      await expect(page.locator(responseId+'-title .evo-article__qnum')).toHaveText(headingNumber);
+      await expect(page.locator('.evo-article__toc a[href="'+responseId+'"]')).toHaveText(headingNumber+' '+title);
+      await expect(page.locator('#response-index a[href="'+responseId+'"] .advisor-question-index__number')).toHaveText(headingNumber);
+    }
     const fig=page.locator('#response-q01 [data-report-figure="q01-horizon"]');
     await expect(fig).not.toContainText('实用平台');
     const details=fig.locator('details');

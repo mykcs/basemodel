@@ -191,7 +191,7 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   await expect(guide.locator('table')).toHaveCount(0);
   await expect(guide).toContainText('我们做了哪些实验，分别想回答什么？');
   const answer=page.locator('#response-q01');
-  await expect(answer.locator('h3')).toHaveText('训练 160 轮会不会太多了？');
+  await expect(answer.locator('h3')).toHaveText('3.Q1 训练 160 轮会不会太多了？');
   const link=answer.locator('[data-question-origin-link="q01"] a');
   await expect(link).toHaveAttribute('href','/research/seed-openevo/study/advisor-questions/#q01');
   const chart=answer.locator('[data-report-figure="q01-horizon"]');

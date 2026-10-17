@@ -90,6 +90,20 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     for(const forbidden of ['q.finding','q.experiment','q.interpretation','q.unknown','AdvisorTenEvidenceVisual','data-report-finding','31.09','20.77','第 156 轮'])
       expect(questions).not.toContain(forbidden);
   });
+  it('numbers all response headings as subsections 3.Q1–3.Q10 while preserving canonical q01–q10 anchors',()=>{
+    const index=read('src/components/research/OpenEvoQuestionIndex.astro');
+    expect(responses).toContain("const responseHeadingNumber = (id: string) => '3.Q'+Number(id.slice(1));");
+    expect(responses).toContain('>{responseHeadingNumber(q.id)} {q.title}</a>');
+    expect(responses).toContain('headingNumber:responseHeadingNumber(q.id)');
+    expect(responses).toContain('<span class="evo-article__qnum">{responseHeadingNumber(q.id)}</span> {q.title}');
+    expect(index).toContain('question.headingNumber ?? question.id.toUpperCase()');
+    const audit=read('scripts/audit-rendered-human-expression.mjs');
+    expect(audit).toContain("relative === 'research/seed-openevo/study/parameter-memory-results/index.html'");
+    expect(audit).toContain("match[1] === '3' && responseId");
+    expect(audit).toContain('contentForInternalIdAudit = heading.slice(prefix.length)');
+    expect(responses).toContain("id={'response-'+q.id}");
+    expect(questions).toContain("id={q.id}");
+  });
   it('makes article three answer all ten problems with experiment, observations, limits, raw sources',()=>{
     expect(responses).toContain('data-response-experiments');
     expect(responses).toContain('data-experiment-response={q.id}');
