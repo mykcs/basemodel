@@ -59,7 +59,7 @@ const themes = {
           <header class="evo-article__question-header"><span class="evo-article__qnum">{q.id.toUpperCase()}</span><h3 id={q.id+'-title'}>{q.title}</h3></header>
           <p class="evo-article__note">{themes[q.family]}{q.id==='q10' ? ' · 会后新增' : ''}</p>
           <p>{q.opening}</p>
-          <p class="evo-article__note"><a href={responseHref(q.id)}>{q.id==='q03' ? '查看 10 月 15 日更新的公开 SEED 复现实验 →' : ['q04','q07','q08','q09'].includes(q.id) ? '查看 10 月 15 日补充的 Q17 实验回应 →' : '查看我们针对这一问题的实验回应 →'}</a></p>
+          <p class="evo-article__note"><a href={responseHref(q.id)}>{q.id==='q03' ? '查看公开 SEED 复现的工程测量与限制 →' : ['q04','q07','q08','q09'].includes(q.id) ? '查看 10 月 15 日补充的 Q17 实验回应 →' : '查看我们针对这一问题的实验回应 →'}</a></p>
         </article>
       ))}
     </section>
