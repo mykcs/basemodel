@@ -195,6 +195,9 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(questions).not.toContain('20.4 GiB');
     expect(responses).toContain('<OpenEvoSeedWorld4Reproduction />');
     expect(responses).toContain('2026-10-15');
+    expect(responses).toContain('三组工程模型共完成 1,536 次冻结开发题评测');
+    expect(responses).toContain('于 <time datetime="2026-10-16">2026-10-16</time> 00:45');
+    expect(responses).not.toContain('17:43（新加坡时间）');
     expect(q03).toContain('data-evidence-as-of="2026-10-16"');
     expect(q03).toContain('data-seed-eight-progress');
     for(const v of ['1,440 条','1,200 条','296 秒和 309 秒','20.4 GiB','1,536 次','512 / 512','4.07','3.97','4.28','1 / 512','3 / 512','28.66 GB','5/7','正式 Stage2 为 0/160 轮','95% 区间都跨过零'])
