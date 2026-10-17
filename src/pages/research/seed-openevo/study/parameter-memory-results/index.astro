@@ -37,7 +37,7 @@ const checkpointEvidence = {
     </header>
     <div class="evo-article__abstract">
       <h2>摘要</h2>
-      <p>三条长期路线在同一冻结 128 题上的 Task Score 分别为 <strong>60.72、45.98 和 20.77/100</strong>，完整成功分别为 50、32 和 10 题；这些历史结果不构成完全受控的三臂试验。第 152–159 轮的 rank32 容量筛选使参数文件缩小约 75%，平均得分比 rank128 低 1.79 分，置信区间仍跨零。另一份 R159 冻结 <strong>64 题开发集</strong>结果为 <strong>60.1088/100、18/64 完整成功</strong>，不能替代 128 题终评。旧任务遗忘、文字载体因果收益和新任务复现仍未得到决定性回答。新的公开 SEED 复现已取得八卡工程训练证据，正式任务成绩仍待测；10 月 15 日补入 Q17 R129/R159 的参数压缩、方向与文字提示干预、队列任务保持测量，见第 9 节；这些结果不代表 13 份 checkpoint 全部完成验收。各问的来源与<a href="/research/seed-openevo/study/advisor-questions/">研究背景</a>在正文就地链接。</p>
+      <p>三条长期路线在同一冻结 128 题上的 Task Score 分别为 <strong>60.72、45.98 和 20.77/100</strong>，完整成功分别为 50、32 和 10 题；这些历史结果不构成完全受控的三臂试验。第 152–159 轮的 rank32 容量筛选使参数文件缩小约 75%，平均得分比 rank128 低 1.79 分，置信区间仍跨零。另一份 R159 冻结 <strong>64 题开发集</strong>结果为 <strong>60.1088/100、18/64 完整成功</strong>，不能替代 128 题终评。旧任务遗忘、文字载体因果收益和新任务复现仍未得到决定性回答。独立公开 SEED 复现的三组工程模型共完成 1,536 次冻结开发题评测，两项相邻配对均分差的 95% 区间都跨零；正式 SFT 尚未启动，Stage2 仍为 0/160。10 月 15 日还补入 Q17 R129/R159 的参数压缩、方向与文字提示干预、队列任务保持测量，见第 9 节；这些结果不代表 13 份 checkpoint 全部完成验收。各问的来源与<a href="/research/seed-openevo/study/advisor-questions/">研究背景</a>在正文就地链接。</p>
     </div>
     <OpenEvoArticleNavigation current="results" />
     <nav class="evo-article__toc" aria-label="实验文章目录">
@@ -236,7 +236,7 @@ const checkpointEvidence = {
     </section>
     <section id="sources" class="evo-article__section evo-article__sources">
       <h2>科研来源与实验记录</h2>
-      <p class="evo-article__note">Q01–Q10 的原有结果核对日期为 <time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>；Q17 新诊断核对日期为 2026-10-15；以下历史 R159 与 13×78 的核对日期为 <time datetime="2026-10-14">2026-10-14</time>；公开 SEED 工程训练与开发题进度以 <time datetime="2026-10-15">2026-10-15</time> 17:43（新加坡时间）的原始收据为准。以上均为来源快照，不提供实时服务器状态。</p>
+      <p class="evo-article__note">Q01–Q10 的原有结果核对日期为 <time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>；Q17 新诊断核对日期为 2026-10-15。Q03 三组工程模型的 1,536 次开发题诊断于 <time datetime="2026-10-16">2026-10-16</time> 00:45（新加坡时间）封存，八卡恢复与存储状态见带日期的实验收据。以下历史 R159 与 13×78 的核对日期为 <time datetime="2026-10-14">2026-10-14</time>。所有资源状态均为历史快照。</p>
       <ol>
         {ADVISOR_QUESTIONS.map(q=>(
           <li id={'source-'+q.id} data-response-source={q.id}>
