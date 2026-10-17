@@ -276,7 +276,11 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     for(const outdated of ['128 / 512','384 / 512','192 / 512','40.45 GB','4/7'])
       expect(q03).not.toContain(outdated);
     expect(q03).toContain('工程 SFT 第三轮尚未完成，正式数据上的 SFT 尚未启动');
-    expect(q03).toContain('十月十四日两次四卡实测');
+    expect(q03).toContain('10 月 14 日两次四卡实测');
+    expect(q03).toContain('<summary>工程细节，你可能感兴趣...</summary>');
+    expect(q03).toContain('data-seed-gpu-explainer');
+    expect(q03).toContain('GPU 可能等待');
+    expect(q03).not.toContain('大显存条件下的简化路径');
     expect(q03).toContain('完整八卡保存、加载、继续取新题并更新仍未验收');
     expect(q03).not.toContain('接下来验证六卡方案');
   });
