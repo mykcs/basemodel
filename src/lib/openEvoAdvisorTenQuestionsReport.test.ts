@@ -190,7 +190,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
       q01: '训练 160 轮会不会太多了？',
       q02: '开始逐轮学习之前，怎样训练出一个更好的初始模型？',
       q03: '我们的 SEED 实验成绩，能直接和论文比较吗？',
-      q04: '把长期参数容量从 rank128 缩到 rank32，做题成绩会怎样？',
+      q04: '长期参数容量需要 rank128 这么大吗，缩小一点怎么样？',
       q05: '增加参数写入控制后，模型做题成绩有什么变化？',
       q06: '模型选择商品时有多拿不准？',
       q07: '把某轮参数更新的方向反过来，成绩会怎样？',
@@ -270,13 +270,15 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).not.toContain('17:43（新加坡时间）');
     expect(q03).toContain('data-evidence-as-of="2026-10-16"');
     expect(q03).toContain('data-seed-eight-progress');
+    expect(q03).toContain('负责给这些进程安排任务的工具叫 Ray');
+    expect(q03).not.toContain('四个 Ray 训练 worker 的 CPU 时间持续增长');
     for(const v of ['1,440 条','1,200 条','296 秒和 309 秒','20.4 GiB','1,536 次','512 / 512','4.07','3.97','4.28','1 / 512','3 / 512','28.66 GB','5/7','正式 Stage2 为 0/160 轮','95% 区间都跨过零'])
       expect(q03).toContain(v);
     expect(item?.evidence.some(e=>e.href.includes('31693e914487c9f210f93e3b4019037f9d5f0e06'))).toBe(true);
     for(const outdated of ['128 / 512','384 / 512','192 / 512','40.45 GB','4/7'])
       expect(q03).not.toContain(outdated);
     expect(q03).toContain('工程 SFT 第三轮尚未完成，正式数据上的 SFT 尚未启动');
-    expect(q03).toContain('十月十四日两次四卡实测');
+    expect(q03).toContain('10 月 14 日两次四卡实测');
     expect(q03).toContain('完整八卡保存、加载、继续取新题并更新仍未验收');
     expect(q03).not.toContain('接下来验证六卡方案');
   });
@@ -293,6 +295,13 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(plot).toContain('e.low > e.estimate');
     expect(plot).toContain('paper-effect__zero');
     expect(plot).toContain('95% 置信区间');
+    expect(plot).toContain('paper-effect__comparison');
+    expect(plot).toContain('paper-effect__directions');
+    expect(plot).toContain('paper-effect__interval');
+    expect(plot).toContain('paper-effect__takeaway');
+    expect(plot).toContain('border:1px solid color-mix');
+    expect(responses).toContain('压缩后 − 原模型');
+    expect(responses).toContain('训练后压缩');
     expect(plot).not.toContain('setTimeout');
     expect(read('src/styles/openevo-seed-world4-repro.css')).not.toContain('tbody { display: block; }');
   });
