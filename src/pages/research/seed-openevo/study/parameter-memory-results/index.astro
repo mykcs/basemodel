@@ -111,7 +111,7 @@ const q17Effects = {
     </section>
     <section class="evo-article__section" id="responses" data-response-experiments>
       <h2>3 十个研究问题，我们得到了哪些回答？</h2>
-      <p>Q01–Q10 逐一对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。每个问题标题下都有直达第二篇<strong>问题正文与背景</strong>的链接，以及本篇的实验做法、实际结果与证据缺口。9 月 22 日会议的逐字记录见本文开头。</p>
+      <p>Q01–Q10 逐一对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。每个问题标题下都有直达第二篇<strong>问题正文与背景</strong>的链接，以及本篇的实验做法、实际结果与证据缺口。</p>
       <OpenEvoQuestionIndex questions={ADVISOR_QUESTIONS} />
       {ADVISOR_QUESTIONS.map(q => (
         <article class="evo-article__question" id={'response-'+q.id} data-experiment-response={q.id} aria-labelledby={'response-'+q.id+'-title'}>
