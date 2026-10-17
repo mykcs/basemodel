@@ -32,7 +32,7 @@ for (const width of [390, 768, 1440]) {
       await expect(article.locator('[data-report-figure="q03-custom-curve"] figcaption')).toContainText('没有测量中间轮次');
       await expect(page.locator('[data-paper-effect="rank32-paired"] figcaption')).toContainText('1,024');
       await expect(page.locator('[data-paper-effect="q07-inversion"] figcaption')).toContainText('第 156 轮');
-      await expect(page.locator('[data-paper-effect="q04-posthoc"] figcaption')).toContainText('后验压缩');
+      await expect(page.locator('[data-paper-effect="q04-posthoc"] figcaption')).toContainText('训练后压缩');
       await expect(page.locator('[data-paper-effect="q09-context"] figcaption')).toContainText('完整关闭载体权限的因果消融仍未完成');
       await expect(article).toContainText('1,536 次完整任务尝试');
       await expect(article).toContainText('正式 Stage2 为 0/160 轮');
