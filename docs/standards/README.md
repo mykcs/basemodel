@@ -15,6 +15,11 @@ This directory answers **what quality must hold, who owns the rule, and how to v
 - [REFERENCE_LIBRARY.md](REFERENCE_LIBRARY.md) — user-chosen websites, technical blogs, HTML prototypes and papers with clear **source, lesson, application, status and evidence caveats**.
 - [REFERENCE_INTAKE.md](REFERENCE_INTAKE.md) — how to admit and verify future references without duplicating Design authority.
 
+## 当前阶段：只收集参考（2026-10-16）
+
+用户已经明确：**先把参考案例放进这里，之后采用哪些原则、制定哪些新标准，再另行讨论和决定。** 因此 [参考库](REFERENCE_LIBRARY.md) 与 [参考收录说明](REFERENCE_INTAKE.md) 当前只管理**名称、来源、用户提到的具体特点、证据状态**，不自动授权网站改版、组件设计、发布或新增强制质量门槛。既有 `QUALITY_BAR.md` 和 `ACCEPTANCE_MAP.md` 是之前已存在的项目索引，**不因为参考入库而改动或升级其规则**。
+
+
 ## Boundary with other systems
 
 | System | Question | Real owner |
