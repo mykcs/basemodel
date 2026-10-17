@@ -15,13 +15,14 @@ for(const width of [390,768,1440]){
       const article=page.locator('[data-evo-blog="'+item.type+'"]');
       await expect(article).toBeVisible();
       await expect(article.locator('h1')).toHaveText(item.title);
-      const navigation=page.getByRole('navigation',{name:'三篇 OpenEVO 技术博客'});
-      await expect(navigation.locator('a')).toHaveCount(2);
+      const navigation=page.getByRole('navigation',{name:'OpenEVO 研究文章'});
+      await expect(navigation.locator('a')).toHaveCount(3);
       await expect(navigation.locator('.evo-current[aria-current="page"]')).toHaveCount(1);
       const names=await navigation.locator('li').allTextContents();
       expect(names[0]).toContain('参数记忆方法');
       expect(names[1]).toContain('学长十问');
-      expect(names[2]).toContain('我们的回应实验');
+      expect(names[2]).toContain('独立探索：OSA');
+      expect(names[3]).toContain('我们的回应实验');
       const toc=article.locator('.evo-article__toc a');
       expect(await toc.count()).toBeGreaterThanOrEqual(6);
       const anchors=await toc.evaluateAll(nodes=>nodes.map(a=>a.getAttribute('href')));

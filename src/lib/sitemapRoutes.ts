@@ -64,6 +64,7 @@ export const zhOnlyCompatibilityPaths = [
 ] as const;
 
 export const zhOnlyStaticPaths = [
+  '/research/seed-openevo/study/osa-memory/',
   '/guide/today/',
   '/research/seed-openevo/study/results/why-it-kept-failing/',
   '/research/seed-openevo/study/results/first-positive-transfer/',

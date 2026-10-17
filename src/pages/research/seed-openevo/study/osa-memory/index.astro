@@ -1,0 +1,122 @@
+---
+import AppLayout from '../../../../../layouts/AppLayout.astro';
+import '../../../../../styles/openevo-research-blogs.css';
+import OpenEvoArticleNavigation from '../../../../../components/research/OpenEvoArticleNavigation.astro';
+import OsaMemoryComparisonTable from '../../../../../components/research/OsaMemoryComparisonTable.astro';
+import MathFormula from '../../../../../components/common/MathFormula.astro';
+import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
+import report from '../../../../../../public/data/research/osa-memory-20261015.json';
+
+const synthetic = report.phases[0]!;
+const catalog = report.phases[1]!;
+const ridge = report.phases[2]!;
+const primary = (phase: typeof catalog) => ['none', 'osa', 'matched_reservoir_bank', 'full_vector_bank']
+  .map(id => phase.rows.find(row => row.id === id)!).filter(Boolean);
+const evidence = [
+  { label: '第一轮：合成记忆的完整结果', href: synthetic.sourceHref },
+  { label: '第二轮：商品目录检索的完整结果', href: catalog.sourceHref },
+  { label: '第三轮：最小二乘与正交化读出的配对结果', href: ridge.sourceHref },
+  { label: '三轮状态、设计与证据核验索引', href: report.sourceRoot + 'configs/experiment/osa-memory-current.json' },
+];
+const implementations = [
+  { label: '矩阵记忆与四种更新方式', path: 'scripts/openevo_webshop/osa_state_memory.py' },
+  { label: '原文检索与最小二乘统计', path: 'scripts/openevo_webshop/osa_record_memory.py' },
+  { label: '合成记忆实验程序', path: 'scripts/analysis/osa_memory_pilot.py' },
+  { label: '商品检索实验程序', path: 'scripts/analysis/osa_catalog_retrieval_pilot.py' },
+];
+---
+<AppLayout
+  title="OSA 正交化记忆在 OpenEVO 中的三轮探索"
+  description="三轮固定容量记忆实验：合成数据有局部检索收益，商品目录测试仍弱于强基线，正交化读出未超过普通最小二乘；尚无完整 Agent 任务能力结果。"
+  locale="zh"
+>
+  <main class="evo-blog evo-article" data-evo-blog="osa" data-osa-memory-report data-reader-page="research-blog" data-copy-review>
+    <header>
+      <h1>OSA 正交化记忆在 OpenEVO 中的三轮探索</h1>
+      <p class="evo-article__lede" data-reader-purpose>OpenEVO 希望保留任务经验，让后续任务受益，同时控制记忆容量。本次尝试用 OSA 的正交化约束固定大小的矩阵记忆。三轮测试发现局部检索收益，但最后一轮正交化读出的首位命中率为 <strong>19.02%</strong>，普通最小二乘为 <strong>19.69%</strong>，尚未证明能改善完整 Agent 的任务能力。</p>
+    </header>
+    <aside class="evo-article__abstract" aria-labelledby="osa-verdict">
+      <h2 id="osa-verdict">几何状态更整齐 未必保留更多信息</h2>
+      <p>合成数据上的正向信号，没有转化为稳定超过强基线的检索优势。原文与索引分离、内容统计与查询读出分离，形成了可继续验证的实现；<strong>当前证据不足以把正交化记忆作为 OpenEVO 的有效改进。</strong></p>
+    </aside>
+    <OpenEvoArticleNavigation current="osa" />
+    <nav class="evo-article__toc" aria-label="OSA 记忆报告目录">
+      <h2>目录</h2>
+      <ol>
+        <li><a href="#question">研究问题与 OSA 思想</a></li>
+        <li><a href="#synthetic">第一轮：合成收益与反例</a></li>
+        <li><a href="#catalog">第二轮：原文与索引分离</a></li>
+        <li><a href="#ridge">第三轮：内容统计与读出分离</a></li>
+        <li><a href="#decision">当前判断与下一项验证</a></li>
+        <li><a href="#sources">数据、代码与复核入口</a></li>
+      </ol>
+    </nav>
+
+    <section class="evo-article__section" id="question">
+      <h2>固定容量的记忆 能否保留更久</h2>
+      <p>一次任务留下的经历，只有在以后被正确找到和使用，才可能帮助 Agent。矩阵记忆像一本固定大小的索引册：用新经历的特征写入信息，再用新问题的特征查询。容量固定后，不同记录可能互相干扰；后续写入也可能覆盖旧信息。</p>
+      <p>OSA 对记忆状态做正交化，希望减少少数方向支配整个状态的问题。本次借用的是这项<strong>状态更新</strong>思想。Muon 则正交化优化器产生的<strong>参数更新</strong>；本次没有训练 Muon 优化器，也没有改写语言模型的参数更新。</p>
+      <p>这项独立探索承接<a href="/research/seed-openevo/study/advisor-questions/#q04">长期容量</a>与<a href="/research/seed-openevo/study/advisor-questions/#q08">旧能力保持</a>的关切，但测量对象是检索命中率。它不替代十问已有的真实任务对照，也不作为学长提出的第十一问。</p>
+      <ol>
+        <li><strong>直接约束记忆状态。</strong>先检查正交化何时有帮助，何时损伤信息。</li>
+        <li><strong>保留原文，用矩阵定位。</strong>让几何索引找到记录，返回未经投影的原始内容。</li>
+        <li><strong>保留内容统计，只约束读出。</strong>避免每次投影不可逆地改写已积累的信息。</li>
+      </ol>
+    </section>
+
+    <section class="evo-article__section" id="synthetic">
+      <h2>第一轮 高干扰场景有收益 幅度信息也会受损</h2>
+      <p>四类合成数据分别测试方向等幅、方向幅度不同、带噪声的等幅映射，以及相互独立且容易干扰的记录。四种方法使用相同输入序列、相同矩阵容量和五个随机种子，共 <strong>80 个实验单元</strong>，每个单元写入 512 次。</p>
+      <p>首位命中率表示正确记录排在第一位的查询比例。“较旧记录”按最近一次写入时间排序，取最久未更新的四分之一；这是记忆检索指标，不是语言模型旧任务的能力保持率。</p>
+      <OsaMemoryComparisonTable rows={synthetic.rows} capacity={false} caption="独立记录高干扰场景：最后检查点、五个随机种子的平均值" />
+      <p>OSA 的总体命中率比普通更新高 <strong>11.72 个百分点</strong>，但较旧记录仅有 <strong>3.75%</strong> 被排在首位。最新四分之一记录的命中率仍达 95.63%，因此总体收益没有解决长期保留。</p>
+      <p>反例来自不同方向幅度有意义的映射：普通更新在未写入查询上的平均余弦相似度为 <strong>{report.anisotropic.deltaCosine.toFixed(4)}</strong>，OSA 降至 <strong>{report.anisotropic.osaCosine.toFixed(4)}</strong>，保持原幅度的正交化为 {report.anisotropic.normMatchedCosine.toFixed(4)}。接近 1 表示读出更接近真实目标。把方向强弱拉平，可能同时抹掉任务需要的信息。</p>
+      <p class="evo-article__note"><a href="#sources">原始配对结果为受限来源，需要仓库权限；本页数字也提供公开摘要下载。</a></p>
+    </section>
+
+    <section class="evo-article__section" id="catalog">
+      <h2>第二轮 原文保持完整 索引仍然遗忘</h2>
+      <p>从真实 WebShop 商品目录固定选取 <strong>512 条记录</strong>。每件商品生成完整标题和保留约 65% 词语的标题两条查询，共 <strong>1,024 条</strong>。固定哈希编码器把文本变成特征，矩阵学习特征与记录编号的对应关系，再返回原始文本；文本本身不参与正交化。</p>
+      <p>五个种子改变记录编码与写入顺序。四种矩阵方法各写入三遍记录，并与两种向量库比较，共 <strong>30 个实验单元</strong>。以下展示主要对照，完整方法数字保留在数据摘要中。</p>
+      <OsaMemoryComparisonTable rows={primary(catalog)} caption="商品标题派生查询：五个种子的平均命中率与持久索引张量容量" />
+      <p>前五位命中率表示正确商品进入前五名的查询比例。OSA 相比普通矩阵更新，首位提高 3.34 个百分点、前五位提高 8.07 个百分点；但较旧记录首位命中率只有 <strong>2.27%</strong>。同容量抽样库的首位与旧记录保持更好，OSA 的前五位更高，不能概括成整体更优。</p>
+      <p><strong>32 KiB 仅指持久保存的索引张量。</strong>原始文本、编号、Python 对象和查询时生成的解码矩阵另占空间。抽样库索引 128 件商品，完整库索引全部 512 件且占 128 KiB；完整库是更强的质量参照，不是同容量对照。</p>
+      <p>这些查询由商品标题生成，不能代表独立的人类购物目标。目录真实，不等于已经完成真实 Agent 购物任务。</p>
+    </section>
+
+    <section class="evo-article__section" id="ridge">
+      <h2>第三轮 保留统计后 正交化读出仍没有额外收益</h2>
+      <p>第三轮复用经典的最小二乘记忆，累积内容与特征的对应统计，查询时求出一个带正则化的读出矩阵。原始统计保持不变，分别比较直接读出与 OSA 正交化读出。</p>
+      <p>额外的特征相关统计使索引增至 <strong>48 KiB</strong>，同容量抽样库相应索引 192 件商品。沿用第二轮商品与查询，另外五个种子共运行 <strong>25 个实验单元</strong>；这是同一开发资料上的方法迭代，不是独立测试集确认。</p>
+      <OsaMemoryComparisonTable rows={primary(ridge)} caption="最小二乘与正交化读出的同轮配对：五个种子的平均值" />
+      <p><strong>OSA 读出没有超过普通最小二乘。</strong>首位命中率下降约 0.66 个百分点，前五位下降约 0.12 个百分点。普通最小二乘的较旧记录与总体命中率接近，但首位命中率仍低于同索引容量抽样库。</p>
+      <p>保持原幅度的 OSA 读出与 OSA 读出得到相同排名：查询采用余弦相似度，统一缩放读出不改变排名。第二轮旧记录的 2.27% 与第三轮普通最小二乘的 19.61%，来自不同容量和随机设置，不能把差值全部归因于更新方法。</p>
+      <details class="evo-article__details">
+        <summary>最小二乘保存了什么 正交化作用在哪里</summary>
+        <p>特征向量记为 k，内容编码记为 v。程序保存内容与特征的交叉统计 A，以及特征相关统计 C，查询时求读出 W。正交化只生成临时查询矩阵，不覆盖 A 和 C。</p>
+        <MathFormula latex={String.raw`A=\sum_t v_t k_t^{\mathsf T},\qquad C=\sum_t k_t k_t^{\mathsf T},\qquad W=A(C+\lambda I)^{-1}`} label="最小二乘记忆的统计与读出" />
+        <p>实际代码用线性方程求解器求 W，正则系数固定为 0.1。这是对成熟最小二乘方法的复用，不是新增算法的新颖性证明。<a href="#implementations">源代码请参考：原文检索与最小二乘统计（受限来源）</a>。</p>
+      </details>
+    </section>
+
+    <section class="evo-article__section" id="decision">
+      <h2>当前保留实现 继续检验正交化的必要性</h2>
+      <p>直接约束状态带来有条件的检索收益，也可能损伤信息；保留原文后，索引仍然遗忘；保留原始统计后，正交化读出仍未超过普通读出。当前可以复用的是原文与索引分离的接口、固定容量记忆实现，以及对照和核验工具。</p>
+      <p>下一项验证要回答：<strong>在更有表达力的固定文本特征和独立查询上，正交化是否仍有普通检索不能替代的收益？</strong>应先固定新查询，再比较完整向量库、同索引容量抽样库、普通最小二乘与 OSA 候选，同时报告命中率、旧记录保持、总内存和耗时。若仍没有优势，就不把当前检索机制继续接入 Agent 闭环。</p>
+      <p>本次没有完整 WebShop 购物任务，也没有语言模型参数训练。它不回答十问中旧任务能力是否遗忘、Task Vector 方向干预是否有效，或 OpenEVO 与 SEED 谁更强；这些问题仍需各自的真实任务对照。</p>
+    </section>
+
+    <section class="evo-article__section evo-article__sources" id="sources">
+      <h2>结果摘要与受限原始证据</h2>
+      <p>三轮分别完成 80、30、25 个实验单元，合计 <strong>135 个</strong>；这些单元包含重复设置下的基线，不是 135 项独立发现。五个种子也不是五份独立商品或人类查询集。数据日期为 <time datetime="2026-10-15">2026 年 10 月 15 日</time>。</p>
+      <p><a href="/data/research/osa-memory-20261015.json" download>下载公开结果摘要 JSON</a>，包含全部已比较方法的均值与容量。代码通过 11 项针对性 CPU 测试及三次小型 CUDA 检查，三轮源码和配置已按实际执行版本核验；正式 WebShop 任务、语言模型参数更新、外部教师调用与最终面板访问均为零。</p>
+      <p><strong>以下 GitHub 原始结果和源代码为受限来源，需要相应仓库权限。</strong>公开摘要可直接下载；底层记录未因网页发布而变更访问权限。</p>
+      <ol>{evidence.map(item => <li><a href={item.href} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={item.href} />{item.label}（受限）↗</a></li>)}</ol>
+      <details class="evo-article__details" id="implementations">
+        <summary>源代码与实现证据 需要仓库权限</summary>
+        <ul>{implementations.map(item => <li>源代码请参考：<a href={report.sourceRoot + item.path} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={report.sourceRoot + item.path} />{item.label}（受限）↗</a></li>)}</ul>
+      </details>
+      <p>方法来源：<a href="https://arxiv.org/html/2603.26188v1" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/html/2603.26188v1" />OSA 原文 ↗</a>；<a href="https://github.com/KellerJordan/Muon" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/KellerJordan/Muon" />Muon 实现与说明 ↗</a>。最小二乘和正交化都有成熟先例，本次没有建立新算法的新颖性。</p>
+    </section>
+  </main>
+</AppLayout>
