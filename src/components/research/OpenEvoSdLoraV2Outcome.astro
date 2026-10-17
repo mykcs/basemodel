@@ -112,7 +112,7 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
         'A fast local benchmark is not enough. Starting from the same sealed state, Vanilla and v2 each consumed the same 47 current examples plus 47 replay examples and ran the first eight optimizer steps. Both completed normally with finite losses and parameters.',
       )}</p>
     </div>
-    <div class="comparison-table-wrap">
+    <div class="comparison-table-wrap" role="region" tabindex="0" aria-label={t("Vanilla 与 SD-LoRA v2 的同题训练数值表，可在此区域内横向滚动", "Vanilla and SD-LoRA v2 paired training values; scroll this table region horizontally")}>
       <table class="comparison-table">
         <thead><tr><th scope="col">{t('同一 8-step 训练', 'Same eight-step training')}</th><th scope="col">Vanilla</th><th scope="col">SD-LoRA v2</th></tr></thead>
         <tbody>
@@ -256,5 +256,9 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
   .sdlora-v2{width:min(100% - 1rem,1120px)}.sdlora-v2__hero{padding-top:2rem}.sdlora-v2__hero h1{font-size:clamp(2.1rem,11vw,3.35rem)}
   .sdlora-v2__hero-links{display:grid}.strict-flow{display:grid;grid-template-columns:1fr}.strict-flow>b{transform:rotate(90deg);justify-self:center}.v2-rule{grid-template-columns:1fr}.v2-rule>b{transform:rotate(90deg);justify-self:center}.v2-rule figcaption{grid-column:auto}
   .webshop-compare__row{grid-template-columns:1fr 1fr}.webshop-compare__row>strong,.webshop-compare__row>small{grid-column:1/-1}.comparison-table,.next-table{min-width:0;table-layout:fixed;font-size:1rem}.comparison-table th,.comparison-table td,.next-table th,.next-table td{padding:.62rem .45rem;overflow-wrap:anywhere}.next-table th:first-child{width:8.5rem}.evidence-grid{grid-template-columns:1fr}
+  /* Keep scientific metric columns readable; let only the table scroll locally. */
+  .comparison-table{width:max-content;min-width:31rem;max-width:none;table-layout:auto}
+  .comparison-table thead th:nth-child(n+2),.comparison-table tbody td:nth-child(2){white-space:nowrap;overflow-wrap:normal}
+  .comparison-table-wrap{scrollbar-width:thin;overscroll-behavior-inline:contain}
 }
 </style>

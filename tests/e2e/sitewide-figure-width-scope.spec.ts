@@ -85,3 +85,36 @@ test('paper evidence width remains local to scientific plots; app catalog remain
   await page.goto('/research/seed-openevo/study/briefing/');
   expect(await page.locator('.dynamics-chart').count()).toBe(8);
 });
+
+for (const theme of ['light', 'dark'] as const) {
+  test('SD-LoRA v2 small scientific table keeps method names and numbers intact on mobile: ' + theme, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.addInitScript(value => localStorage.setItem('atlas-theme', value), theme);
+    await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/');
+    const table = page.locator('.comparison-table');
+    const wrap = page.locator('.comparison-table-wrap');
+    await expect(table).toContainText('Vanilla');
+    await expect(table).toContainText('105.11 s');
+    const geometry = await table.evaluate(el => {
+      const th = el.querySelector('thead th:nth-child(2)')!;
+      const value = el.querySelector('tbody tr:first-child td:nth-child(2)')!;
+      const holder = el.parentElement!;
+      return {
+        width: el.getBoundingClientRect().width,
+        holderWidth: holder.clientWidth,
+        holderScrollWidth: holder.scrollWidth,
+        headerWhitespace: getComputedStyle(th).whiteSpace,
+        valueWhitespace: getComputedStyle(value).whiteSpace,
+        holderOverflow: getComputedStyle(holder).overflowX
+      };
+    });
+    expect(geometry.width).toBeGreaterThan(460);
+    expect(geometry.holderScrollWidth).toBeGreaterThan(geometry.holderWidth);
+    expect(geometry.headerWhitespace).toBe('nowrap');
+    expect(geometry.valueWhitespace).toBe('nowrap');
+    expect(geometry.holderOverflow).toBe('auto');
+    const pageOverflow = await page.evaluate(() =>
+      document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(pageOverflow).toBeLessThanOrEqual(2);
+  });
+}
