@@ -163,7 +163,15 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(visual).toContain('data-evidence-shape="measured-score-curves"');
     expect(visual).not.toContain('data-evidence-shape="platform-position"');
     expect(visual).toContain('q01Series.map');
-    expect(visual).toContain('11 点原始 CSV');
+    expect(visual).toContain('11 个保存点的原始 CSV');
+    expect(visual).toContain('data-paper-figure="true"');
+    expect(visual).toContain('advisor-viz__q01-legend');
+    for(const marker of ['<circle class="advisor-viz__q01-point"','<rect class="advisor-viz__q01-point"','<polygon class="advisor-viz__q01-point"'])
+      expect(visual).toContain(marker);
+    expect(visual).toContain('advisor-viz__q01-axes');
+    expect(visual).toContain('figcaption><strong>图 1.');
+    expect(visual).not.toContain('advisor-viz__q01-key');
+    expect(visual).not.toContain('stroke-width:3;stroke-linejoin');
     expect(responses).toContain('第二篇的 {q.id.toUpperCase()} 问题正文与背景');
     expect(responses).toContain('data-question-origin-link={q.id}');
     expect(responses).toContain('Q10');

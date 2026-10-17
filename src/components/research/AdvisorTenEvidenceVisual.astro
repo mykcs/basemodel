@@ -49,18 +49,24 @@ const scorePct = (value: string) => Math.min(100, Math.max(0, Number(value))) + 
 const effectX = (value: number) => 80 + (value + 20) * 18;
 ---
 {variant === 'q01' && (
-  <figure class="advisor-viz advisor-viz--q01" data-report-figure="q01-horizon" data-evidence-shape="measured-score-curves">
+  <figure class="advisor-viz advisor-viz--q01" data-report-figure="q01-horizon" data-evidence-shape="measured-score-curves" data-paper-figure="true">
     <header class="advisor-viz__heading">
-      <strong>训练 160 轮会不会太多了？</strong>
-      <span>同一冻结 64 题 · 每种方法 11 个已测保存点</span>
+      <strong>训练进度与 WebShop Task Score</strong>
+      <span>冻结 64 题 · 每种方法 11 个实际保存点</span>
     </header>
-    <p class="advisor-viz__q01-lead">我们把模型在不同训练时点的购物成绩画出来，看后半段的学习有没有继续带来实际收益。</p>
-    <div class="advisor-viz__q01-reading">
+    <div class="advisor-viz__q01-legend" role="group" aria-label="三种方法的线型和点形图例">
       {q01Series.map((item) => (
-        <p>
-          <span class={'advisor-viz__q01-key advisor-viz__q01-key--'+item.key} aria-hidden="true"></span>
-          <strong>{item.name}：</strong>{item.takeaway}
-        </p>
+        <span class={'advisor-viz__q01-legend-item advisor-viz__q01-series--'+item.key}>
+          <svg viewBox="0 0 34 14" focusable="false" aria-hidden="true">
+            <line class="advisor-viz__q01-curve" x1="2" x2="32" y1="7" y2="7" />
+            {item.key === 'ordinary_openevo'
+              ? <circle class="advisor-viz__q01-point" cx="17" cy="7" r="3" />
+              : item.key === 'bounded_state'
+                ? <rect class="advisor-viz__q01-point" x="14" y="4" width="6" height="6" />
+                : <polygon class="advisor-viz__q01-point" points="17,3 20.6,10 13.4,10" />}
+          </svg>
+          <span>{item.name}</span>
+        </span>
       ))}
     </div>
     <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--desktop" viewBox="0 0 740 310" role="img" aria-labelledby="advisor-q01-chart-title advisor-q01-chart-desc">
@@ -68,49 +74,68 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
       <desc id="advisor-q01-chart-desc">每条曲线来自十一个已有检查点，同一组六十四道开发题。普通 OpenEVO 大约在第一百二十次参数更新后进入实用平台；Bounded 在第一百五十轮附近进入平台；历史复杂 beta GDR 在第一百三十轮之后明显下降。纵轴是零到一百的 Task Score。</desc>
       {[0,25,50,75,100].map((tick) => (
         <g>
-          <line class="advisor-viz__q01-grid" x1="63" x2="713" y1={q01Y(tick)} y2={q01Y(tick)} />
+          {tick > 0 && tick < 100 && <line class="advisor-viz__q01-grid" x1="63" x2="713" y1={q01Y(tick)} y2={q01Y(tick)} />}
           <text class="advisor-viz__q01-axis" x="52" y={q01Y(tick)+4} text-anchor="end">{tick}</text>
         </g>
       ))}
+      <path class="advisor-viz__q01-axes" d="M63 28 V250 H713" />
       {[1,40,80,120,160].map((tick) => (
-        <text class="advisor-viz__q01-axis" x={q01X(tick)} y="280" text-anchor="middle">{tick}</text>
+        <g>
+          <line class="advisor-viz__q01-tick" x1={q01X(tick)} x2={q01X(tick)} y1="250" y2="254" />
+          <text class="advisor-viz__q01-axis" x={q01X(tick)} y="273" text-anchor="middle">{tick}</text>
+        </g>
       ))}
       {q01Series.map((item) => (
         <g class={'advisor-viz__q01-series advisor-viz__q01-series--'+item.key} data-q01-line={item.key}>
           <polyline class="advisor-viz__q01-curve" points={item.values.map((v) => q01X(v.round)+','+q01Y(v.score)).join(' ')} />
           {item.values.map((v) => (
-            <circle class="advisor-viz__q01-point" cx={q01X(v.round)} cy={q01Y(v.score)} r="3.6" />
+            item.key === 'ordinary_openevo'
+              ? <circle class="advisor-viz__q01-point" cx={q01X(v.round)} cy={q01Y(v.score)} r="3" />
+              : item.key === 'bounded_state'
+                ? <rect class="advisor-viz__q01-point" x={q01X(v.round)-2.8} y={q01Y(v.score)-2.8} width="5.6" height="5.6" />
+                : <polygon class="advisor-viz__q01-point" points={[q01X(v.round)+','+(q01Y(v.score)-3.5),(q01X(v.round)+3.6)+','+(q01Y(v.score)+3),(q01X(v.round)-3.6)+','+(q01Y(v.score)+3)].join(' ')} />
           ))}
         </g>
       ))}
-      <text class="advisor-viz__q01-axis" x="63" y="14">Task Score / 100</text>
-      <text class="advisor-viz__q01-axis" x="713" y="301" text-anchor="end">已完成的训练轮数 / 更新数</text>
+      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="63" y="15">Task Score / 100</text>
+      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="713" y="301" text-anchor="end">已完成的训练轮数 / 更新数</text>
     </svg>
     <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--phone" viewBox="0 0 340 232" role="img" aria-labelledby="advisor-q01-phone-title advisor-q01-phone-desc">
       <title id="advisor-q01-phone-title">三条方法的真实训练成绩变化，手机视图</title>
       <desc id="advisor-q01-phone-desc">三组十一点开发集成绩曲线。普通 OpenEVO 在一百二十次更新后已基本达到平台，Bounded 到一百五十轮仍增长，历史 beta GDR 一百三十轮后下降。</desc>
       {[0,25,50,75,100].map((tick) => (
         <g>
-          <line class="advisor-viz__q01-grid" x1="32" x2="326" y1={q01PhoneY(tick)} y2={q01PhoneY(tick)} />
+          {tick > 0 && tick < 100 && <line class="advisor-viz__q01-grid" x1="32" x2="326" y1={q01PhoneY(tick)} y2={q01PhoneY(tick)} />}
           <text class="advisor-viz__q01-axis" x="26" y={q01PhoneY(tick)+4} text-anchor="end">{tick}</text>
         </g>
       ))}
+      <path class="advisor-viz__q01-axes" d="M32 21 V189 H326" />
       {[1,80,120,160].map((tick) => (
-        <text class="advisor-viz__q01-axis" x={q01PhoneX(tick)} y="214" text-anchor="middle">{tick}</text>
+        <g>
+          <line class="advisor-viz__q01-tick" x1={q01PhoneX(tick)} x2={q01PhoneX(tick)} y1="189" y2="193" />
+          <text class="advisor-viz__q01-axis" x={q01PhoneX(tick)} y="208" text-anchor="middle">{tick}</text>
+        </g>
       ))}
       {q01Series.map((item) => (
         <g class={'advisor-viz__q01-series advisor-viz__q01-series--'+item.key} data-q01-phone-line={item.key}>
           <polyline class="advisor-viz__q01-curve" points={item.values.map((v) => q01PhoneX(v.round)+','+q01PhoneY(v.score)).join(' ')} />
           {item.values.map((v) => (
-            <circle class="advisor-viz__q01-point" cx={q01PhoneX(v.round)} cy={q01PhoneY(v.score)} r="2.6" />
+            item.key === 'ordinary_openevo'
+              ? <circle class="advisor-viz__q01-point" cx={q01PhoneX(v.round)} cy={q01PhoneY(v.score)} r="2.7" />
+              : item.key === 'bounded_state'
+                ? <rect class="advisor-viz__q01-point" x={q01PhoneX(v.round)-2.6} y={q01PhoneY(v.score)-2.6} width="5.2" height="5.2" />
+                : <polygon class="advisor-viz__q01-point" points={[q01PhoneX(v.round)+','+(q01PhoneY(v.score)-3.1),(q01PhoneX(v.round)+3.2)+','+(q01PhoneY(v.score)+2.9),(q01PhoneX(v.round)-3.2)+','+(q01PhoneY(v.score)+2.9)].join(' ')} />
           ))}
         </g>
       ))}
-      <text class="advisor-viz__q01-axis" x="33" y="12">Task Score / 100</text>
-      <text class="advisor-viz__q01-axis" x="326" y="230" text-anchor="end">轮次 / 更新数</text>
+      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="33" y="12">Task Score / 100</text>
+      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="326" y="227" text-anchor="end">轮次 / 更新数</text>
     </svg>
-    <figcaption>图 1｜同一冻结 64 题上的 Task Score 变化（满分 100）。三种方法各有 11 个真实测量点，连线帮助观察成绩走势。横轴对普通 OpenEVO 表示参数更新次数，对 Bounded、历史 β/GDR 表示已完成的 Stage2 轮数；后两组有少量未更新参数的轮次。</figcaption>
-    <p class="advisor-viz__q01-source">数据与规则：<a href={q01CurveHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01CurveHref} />11 点原始 CSV ↗</a> · <a href={q01ResultHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01ResultHref} />平台判据及原始结论 ↗</a></p>
+    <figcaption><strong>图 1.</strong> 三种参数更新方法在同一冻结 64 题上的 Task Score（满分 100）。每条曲线包含 11 个真实保存点，线段只连接已测点。普通 OpenEVO 横轴为已完成的参数更新次数；Bounded 和历史 β/GDR 横轴为已完成的 Stage2 轮数，后两组含少数未实际更新参数的轮次。</figcaption>
+    <div class="advisor-viz__q01-reading">
+      {q01Series.map((item) => <p><strong>{item.name}：</strong>{item.takeaway}</p>)}
+    </div>
+    <p class="advisor-viz__q01-source">数据与规则：<a href={q01CurveHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01CurveHref} />11 个保存点的原始 CSV ↗</a> · <a href={q01ResultHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01ResultHref} />平台判据及原始结论 ↗</a></p>
     <details class="advisor-viz__details">
       <summary>实用平台如何判断？各保存点是多少分？</summary>
       <p>这次研究使用了预先确定的实用平台判据：找到最早一个已测保存点，此后所有已测保存点的平均 Task Score 均未比它提高超过 2 分，完整成功数也未增加超过 2/64。这是开发集上的保存点选择证据。</p>
@@ -317,34 +342,46 @@ const effectX = (value: number) => 80 + (value + 20) * 18;
 .advisor-viz__cap{stroke-width:2}
 .advisor-viz__ci-point{fill:var(--color-text)}
 
-/* Q01: score-over-training evidence, with readable mobile axis and direct conclusions */
-.advisor-viz--q01{max-width:850px}
-.advisor-viz__q01-lead{margin:.15rem 0 .9rem;line-height:1.75;color:var(--color-text-muted);max-width:78ch}
-.advisor-viz__q01-reading{display:grid;gap:.45rem;margin:.9rem 0 1rem;max-width:82ch}
-.advisor-viz__q01-reading p{margin:0;line-height:1.6;display:flex;gap:.4rem;align-items:baseline;flex-wrap:wrap}
-.advisor-viz__q01-reading strong{min-width:7.2rem}
-.advisor-viz__q01-key{display:inline-block;flex:0 0 1.5rem;width:1.5rem;height:.7rem;border-bottom:3px solid currentColor;vertical-align:middle}
-.advisor-viz__q01-key--ordinary_openevo,.advisor-viz__q01-series--ordinary_openevo{color:#2c4945}
-.advisor-viz__q01-key--bounded_state,.advisor-viz__q01-series--bounded_state{color:#437a78}
-.advisor-viz__q01-key--delta_beta_family,.advisor-viz__q01-series--delta_beta_family{color:#ad6555}
-.advisor-viz__q01-key--bounded_state{border-bottom-style:dashed}
-.advisor-viz__q01-key--delta_beta_family{border-bottom-style:dotted}
-.advisor-viz__q01-chart{display:block;width:100%;max-width:740px;height:auto;margin:.7rem 0 0}
+/* Q01 scientific figure: publication-oriented typesetting, vector geometry,
+ * grayscale-safe line/marker combinations, and the same editorial voice as
+ * the neighboring research-booktabs tables. No generated image assets.
+ */
+.advisor-viz--q01{max-width:800px;border:0;padding:0;margin:1.4rem 0 1.8rem;background:transparent;color:var(--color-text)}
+.advisor-viz--q01 .advisor-viz__heading{margin-bottom:.6rem;gap:.1rem .8rem}
+.advisor-viz--q01 .advisor-viz__heading strong{font:650 1rem/1.45 var(--font-editorial),Georgia,serif}
+.advisor-viz--q01 .advisor-viz__heading span{font-size:.8rem;letter-spacing:0}
+.advisor-viz__q01-legend{display:flex;flex-wrap:wrap;gap:.35rem 1.2rem;margin:.4rem 0 .25rem;font-family:var(--font-editorial),Georgia,serif;font-size:.82rem;line-height:1.55}
+.advisor-viz__q01-legend-item{display:inline-flex;gap:.35rem;align-items:center;white-space:nowrap}
+.advisor-viz__q01-legend-item svg{width:34px;height:14px;flex:0 0 34px;overflow:visible}
+.advisor-viz__q01-chart{display:block;width:100%;max-width:740px;height:auto;margin:.25rem 0 .1rem;background:#fff;color:#29343b;font-family:Georgia,'Times New Roman','Songti SC','STSong',serif;font-variant-numeric:tabular-nums lining-nums}
 .advisor-viz__q01-chart--phone{display:none}
-.advisor-viz__q01-grid{stroke:var(--color-border);stroke-width:1}
-.advisor-viz__q01-axis{fill:var(--color-text-muted);font-size:13px}
-.advisor-viz__q01-curve{stroke:currentColor;stroke-width:3;stroke-linejoin:round;stroke-linecap:round;fill:none}
-.advisor-viz__q01-series--bounded_state .advisor-viz__q01-curve{stroke-dasharray:8 4}
-.advisor-viz__q01-series--delta_beta_family .advisor-viz__q01-curve{stroke-dasharray:3 5}
-.advisor-viz__q01-point{stroke:currentColor;stroke-width:2;fill:var(--color-bg,#fff)}
-.advisor-viz__q01-source{margin:.35rem 0 1rem;font-size:.9rem;line-height:1.7}
+.advisor-viz__q01-grid{stroke:#dededb;stroke-width:.7;stroke-linecap:butt}
+.advisor-viz__q01-axes{stroke:#44494c;stroke-width:.95;fill:none}
+.advisor-viz__q01-tick{stroke:#51575a;stroke-width:.85}
+.advisor-viz__q01-axis{fill:#454b4e;font-size:12px;font-weight:400}
+.advisor-viz__q01-axis-label{font-size:12.5px}
+.advisor-viz__q01-curve{stroke:currentColor;stroke-width:1.85;stroke-linejoin:round;stroke-linecap:round;fill:none}
+.advisor-viz__q01-point{stroke:currentColor;stroke-width:1.2;fill:#fff;stroke-linejoin:round}
+.advisor-viz__q01-series--ordinary_openevo{color:#303a41}
+.advisor-viz__q01-series--bounded_state{color:#57758a}
+.advisor-viz__q01-series--delta_beta_family{color:#98655b}
+.advisor-viz__q01-series--bounded_state .advisor-viz__q01-curve{stroke-dasharray:7 4}
+.advisor-viz__q01-series--delta_beta_family .advisor-viz__q01-curve{stroke-dasharray:2.5 4}
+.advisor-viz--q01 figcaption{max-width:80ch;margin:.55rem 0 .65rem;font:400 .87rem/1.63 var(--font-editorial),Georgia,serif;color:var(--color-text)}
+.advisor-viz--q01 figcaption strong{font-weight:700}
+.advisor-viz__q01-reading{display:grid;gap:.28rem;margin:.75rem 0 .65rem;max-width:80ch;font-size:.88rem}
+.advisor-viz__q01-reading p{margin:0;line-height:1.65}
+.advisor-viz__q01-reading strong{font-weight:650}
+.advisor-viz__q01-source{margin:.3rem 0 .8rem;font-size:.84rem;line-height:1.65}
 .advisor-viz__q01-source a{color:var(--color-text);text-underline-offset:.2rem}
+.advisor-viz--q01 .advisor-viz__details{margin-top:.5rem}
 @media(max-width:720px){
   .advisor-viz__q01-chart--desktop{display:none}
   .advisor-viz__q01-chart--phone{display:block;max-width:340px}
-  .advisor-viz__q01-chart--phone .advisor-viz__q01-axis{font-size:12px}
-  .advisor-viz__q01-chart--phone .advisor-viz__q01-curve{stroke-width:2.4}
-  .advisor-viz__q01-reading strong{min-width:0}
+  .advisor-viz__q01-chart--phone .advisor-viz__q01-axis{font-size:11px}
+  .advisor-viz__q01-chart--phone .advisor-viz__q01-axis-label{font-size:11.5px}
+  .advisor-viz__q01-chart--phone .advisor-viz__q01-curve{stroke-width:1.6}
+  .advisor-viz__q01-legend{gap:.3rem .8rem;font-size:.79rem}
 }
 @media(max-width:720px){
 

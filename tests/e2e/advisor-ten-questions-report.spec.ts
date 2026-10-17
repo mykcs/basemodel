@@ -197,10 +197,39 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   await expect(chart.locator('[data-q01-line]')).toHaveCount(3);
   await expect(chart.locator('[data-q01-phone-line]')).toHaveCount(3);
   for(const line of await chart.locator('[data-q01-line]').all())
-    await expect(line.locator('circle')).toHaveCount(11);
+    await expect(line.locator('.advisor-viz__q01-point')).toHaveCount(11);
+  for(const line of await chart.locator('[data-q01-phone-line]').all())
+    await expect(line.locator('.advisor-viz__q01-point')).toHaveCount(11);
+  const expectedMarkers=[
+    ['ordinary_openevo','circle'],
+    ['bounded_state','rect'],
+    ['delta_beta_family','polygon'],
+  ] as const;
+  for(const [key,shape] of expectedMarkers){
+    await expect(chart.locator('[data-q01-line="'+key+'"] '+shape+'.advisor-viz__q01-point')).toHaveCount(11);
+    await expect(chart.locator('[data-q01-phone-line="'+key+'"] '+shape+'.advisor-viz__q01-point')).toHaveCount(11);
+    await expect(chart.locator('.advisor-viz__q01-legend-item.advisor-viz__q01-series--'+key+' svg '+shape)).toHaveCount(1);
+  }
+  await expect(chart).toHaveAttribute('data-paper-figure','true');
+  const theme=await chart.evaluate((figure)=>{
+    const svg=figure.querySelector<SVGElement>('.advisor-viz__q01-chart--phone');
+    const grid=svg?.querySelector<SVGElement>('.advisor-viz__q01-grid');
+    const axis=svg?.querySelector<SVGElement>('.advisor-viz__q01-axis');
+    return {
+      canvas:svg?getComputedStyle(svg).backgroundColor:'',
+      stroke:grid?parseFloat(getComputedStyle(grid).strokeWidth):0,
+      font:axis?getComputedStyle(axis).fontFamily:'',
+    };
+  });
+  expect(theme.canvas).toBe('rgb(255, 255, 255)');
+  expect(theme.stroke).toBeLessThanOrEqual(1);
+  expect(theme.font).toMatch(/Georgia|Times New Roman|Songti/);
   await expect(chart).toContainText('第 120 次更新约 60.40');
   await expect(chart).toContainText('后段下降约 12.93');
   await expect(chart.locator('a[href*="three-way-curve.csv"]')).toBeVisible();
+  await page.setViewportSize({width:1440,height:900});
+  await expect(chart.locator('.advisor-viz__q01-chart--desktop')).toBeVisible();
+  await expect(chart.locator('.advisor-viz__q01-chart--phone')).toBeHidden();
   await expect(chart.locator('a[href*="Q01_THREE_WAY_RESULT.json"]')).toBeVisible();
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(2);
