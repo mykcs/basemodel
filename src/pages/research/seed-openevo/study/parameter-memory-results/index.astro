@@ -139,28 +139,28 @@ const q17Effects = {
           {q.id==='q04' && (
             <div class="evo-article__followup" data-q17-inline="q04">
               <p><strong>10 月 15 日新增：</strong>在另一条普通 DirectApply 路线上，R159 训练结束后截断为 rank128/BF16，参数因子文件从约 1,021 MB 缩至 102.8 MB；下面测量的是<strong>训练后压缩</strong>，与上面的 rank32/rank128 续学实验不同。</p>
-              <PaperIntervalPlot id="q04-posthoc" title="R159 训练后压缩对做题分数的影响" unit="Task Score 分 / 100" min={-6} max={3} ticks={[-6,-3,0,3]} effects={q17Effects.capacity} caption="图 4｜Q04 训练后压缩：压缩版减原模型。两组随机设置都在事先固定的相同 64 道购物题上比较压缩前后的分数；第二次仍然使用同一批题。两个区间均包含零；BF16 数值重构本身也可能改变行为，尚无紧凑部署速度测量。" />
+              <PaperIntervalPlot id="q04-posthoc" widthTier="double" title="R159 训练后压缩对做题分数的影响" unit="Task Score 分 / 100" min={-6} max={3} ticks={[-6,-3,0,3]} effects={q17Effects.capacity} comparison="R159 训练后的 rank128/BF16 压缩版 − 未压缩原模型；固定 64 道购物题" negativeLabel="压缩后成绩更低" positiveLabel="压缩后成绩更高" takeaway="首次测量平均低 0.87 分；两次 95% 区间都包含 0。现有证据尚不能确定压缩会稳定掉分，也没有证明压缩完全无损。" caption="图 4｜Q04 训练后压缩：压缩版减原模型。两组随机设置都在事先固定的相同 64 道购物题上比较压缩前后的分数；第二次仍然使用同一批题。两个区间均包含零；BF16 数值重构本身也可能改变行为，尚无紧凑部署速度测量。" />
               <p class="evo-article__note"><a href="#q17-capacity">查看完整 Q17 压缩表和原始收据 ↓</a></p>
             </div>
           )}
           {q.id==='q07' && (
             <div class="evo-article__followup" data-q17-inline="q07">
               <p><strong>10 月 15 日新增：</strong>对另一条 DirectApply 路线的 R129/R159，将最新拟合参数组件系数置零，两模型各有 31.25% 的题出现动作变化；但得分差区间都包含 0。它与 Bounded OFF 第 156 轮的方向反转<strong>不是同一模型、同一干预</strong>。</p>
-              <PaperIntervalPlot id="q07-zero-latest" title="DirectApply 最新组件置零的局部效果" unit="Task Score 分 / 100" min={-8} max={3} ticks={[-8,-4,0,3]} effects={q17Effects.direction} caption="图 5｜Q07 最新组件置零：相对原模型的平均得分变化；同一批固定的 64 道购物题，两个保存点的原始/置零/反向共 384 次任务测量。这里的零点是无净得分变化，不能代替旧 Q07 的 −10.06 分方向反转结果。" />
+              <PaperIntervalPlot id="q07-zero-latest" widthTier="double" title="DirectApply 最新组件置零的局部效果" unit="Task Score 分 / 100" min={-8} max={3} ticks={[-8,-4,0,3]} effects={q17Effects.direction} comparison="最新参数组件置零后 − 未修改模型；固定 64 道购物题" negativeLabel="置零后成绩更低" positiveLabel="置零后成绩更高" caption="图 5｜Q07 最新组件置零：相对原模型的平均得分变化；同一批固定的 64 道购物题，两个保存点的原始/置零/反向共 384 次任务测量。这里的零点是无净得分变化，不能代替旧 Q07 的 −10.06 分方向反转结果。" />
               <p class="evo-article__note"><a href="#q17-direction">查看新组件干预的实验范围 ↓</a></p>
             </div>
           )}
           {q.id==='q08' && (
             <div class="evo-article__followup" data-q17-inline="q08">
               <p><strong>10 月 15 日新增：</strong>旧队列 12 题、新队列 8 题，每题每条件重复 8 次，累计 640 次任务尝试。R159 比 R129 在旧队列上的完整成功率低 9.38 个百分点；独立统计单位仍只有 12 道旧题，区间跨 0，无法判定稳定遗忘。</p>
-              <PaperIntervalPlot id="q08-old-queue" title="旧队列任务保持：R159 减 R129" unit="完整成功率变化（百分点）" min={-30} max={10} ticks={[-30,-20,-10,0,10]} effects={q17Effects.retention} caption="图 6｜Q08 旧任务保持：12 道旧任务上两个模型的完整成功率差；每道题重复做 8 次，计算 95% 区间时按题目分组。640 是全部新旧队列、模型条件与重复尝试的总次数，不是 640 个独立旧任务。" />
+              <PaperIntervalPlot id="q08-old-queue" title="旧队列任务保持：R159 减 R129" unit="完整成功率变化（百分点）" min={-30} max={10} ticks={[-30,-20,-10,0,10]} effects={q17Effects.retention} comparison="第 160 次更新的 R159 − 第 130 次更新的 R129；12 道旧队列任务" negativeLabel="R159 成功率更低" positiveLabel="R159 成功率更高" caption="图 6｜Q08 旧任务保持：12 道旧任务上两个模型的完整成功率差；每道题重复做 8 次，计算 95% 区间时按题目分组。640 是全部新旧队列、模型条件与重复尝试的总次数，不是 640 个独立旧任务。" />
               <p class="evo-article__note"><a href="#q17-retention">查看旧队列奖励变化与迁移边界 ↓</a></p>
             </div>
           )}
           {q.id==='q09' && (
             <div class="evo-article__followup" data-q17-inline="q09">
               <p><strong>10 月 15 日新增：</strong>中和 Memory、Skill、Agent System 的具体指导文字，以及反转当前商品结果页顺序。三种文字中和的区间均跨 0；结果页顺序反转下降明显，属于<strong>当前页面顺序敏感性</strong>，不能当作长期文字记忆的收益。</p>
-              <PaperIntervalPlot id="q09-context" title="R159 文字指导与结果页顺序的同题比较" unit="Task Score 分 / 100" min={-40} max={15} ticks={[-40,-20,0,15]} effects={q17Effects.context} caption="图 7｜Q09 文字与结果页干预：R159 在同一批固定的 64 道购物题上，相对未改动条件的得分差。保留三类载体权限，仅中和指导文字；完整关闭载体权限的因果消融仍未完成。结果页顺序反转测试的是另一种行为敏感性。" />
+              <PaperIntervalPlot id="q09-context" widthTier="double" title="R159 文字指导与结果页顺序的同题比较" unit="Task Score 分 / 100" min={-40} max={15} ticks={[-40,-20,0,15]} effects={q17Effects.context} comparison="改变指导文字或结果页顺序后 − 未改动的 R159；固定 64 道购物题" negativeLabel="改动后分数更低" positiveLabel="改动后分数更高" caption="图 7｜Q09 文字与结果页干预：R159 在同一批固定的 64 道购物题上，相对未改动条件的得分差。保留三类载体权限，仅中和指导文字；完整关闭载体权限的因果消融仍未完成。结果页顺序反转测试的是另一种行为敏感性。" />
               <p class="evo-article__note"><a href="#q17-context">查看完整 Q17 文字干预表 ↓</a></p>
             </div>
           )}
@@ -207,7 +207,7 @@ const q17Effects = {
       <p><strong>在这批任务上，rank32 的平均 Task Score 低 1.79 分。</strong>为了判断抽样波动，我们将同任务、同随机设置下的两个结果相减，对配对差值做多次有放回的重新抽样，并计算平均差。</p>
       <MathFormula latex={String.raw`d_i=\mathrm{Score}_{32,i}-\mathrm{Score}_{128,i}`} label="同题配对差值的定义" />
       <div data-capacity-ci>
-        <PaperIntervalPlot id="rank32-paired" title="第 152–159 轮的长期容量配对差异" unit="Task Score 分 / 100" min={-5} max={2} ticks={[-4,-2,0,2]} effects={[{id:'rank32',label:'rank32 − rank128',estimate:-1.79,low:-3.68,high:0.12}]} caption="图 8｜1,024 组相同任务与随机条件下，rank32 减 rank128 的同题平均 Task Score 分差及 95% 区间。区间跨 0，不能据此认定无损或严格等价；它与另一个冻结 128 题终评不属于同一统计窗口。" />
+        <PaperIntervalPlot id="rank32-paired" title="第 152–159 轮的长期容量配对差异" unit="Task Score 分 / 100" min={-5} max={2} ticks={[-4,-2,0,2]} effects={[{id:'rank32',label:'rank32 − rank128',estimate:-1.79,low:-3.68,high:0.12}]} comparison="rank32 − rank128；第 152–159 轮的 1,024 组同题结果" negativeLabel="rank32 成绩更低" positiveLabel="rank32 成绩更高" takeaway="rank32 平均低 1.79 分，但 95% 区间包含 0；还不能确定缩小容量会稳定掉分，也不能证明它完全无损。" caption="图 8｜1,024 组相同任务与随机条件下，rank32 减 rank128 的同题平均 Task Score 分差及 95% 区间。区间跨 0，不能据此认定无损或严格等价；它与另一个冻结 128 题终评不属于同一统计窗口。" />
       </div>
       <p>这一统计区间为 <strong>[−3.68，+0.12] 分</strong>：目前还没有足够证据确认 rank32 在类似任务上的平均分会稳定下降。同时，区间仍容许几个百分点的能力损失，因而不能证明容量缩小后影响可以忽略。<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.capacity} />查看 1,024 次配对统计与实验收据 ↗</a></p>
       <details class="evo-article__disclosure"><summary>按下展开：95% 置信区间怎样计算，有什么意义？</summary><div><p>把 1,024 组同题结果分别相减，再以“每组配对结果”为单位重复抽取、反复计算平均差。重采样均值形成一组统计波动范围，95% 区间是按既定覆盖率方法得到的结果。这里的 95% 指在重复使用同一种统计程序时，它长期覆盖固定真实差值的比例，并不表示这个已经算好的区间有 95% 的概率包含真实差值。</p><p>如果要宣称“减少容量没有造成不可接受的性能损失”，应在看实验结果前确定能够接受的最大损失，然后按照对应的单侧统计检验进行判断；不能看到区间后再选择宽松标准。</p></div></details>
@@ -244,6 +244,7 @@ const q17Effects = {
         <div class="evo-article__tablewrap" tabindex="0" aria-label="R159 训练后 rank128 压缩得分差">
           <table><caption>表 6｜R159：压缩版减原模型，Task Score 分差（满分 100）</caption><thead><tr><th>生成种子组</th><th data-numeric>平均分差</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">首次测量</th><td data-numeric>−0.87</td><td data-numeric>[−3.91, 1.65]</td></tr><tr><th scope="row">独立种子确认</th><td data-numeric>−0.61</td><td data-numeric>[−1.48, 0.05]</td></tr></tbody></table>
         </div>
+        <p class="evo-article__note">读表方法：分差始终按「压缩后 − 原模型」计算。首次测量的 −0.87 表示平均低 0.87 分；[−3.91，+1.65] 是 95% 统计区间，既包括可能的下降，也包括可能的上升。区间包含 0，不能据此说压缩已被证明无损。</p>
         <p>这支持继续研究更小的参数表示，但尚未证明压缩后性能等价。完整 SVD 的 BF16 重构对照在 R159 首次测量中也下降约 2.22 分，说明数值重构本身可能改变行为，rank128 相对原模型的差额不能全部归因于截断。区间是对 64 道题逐题配对重采样得到的单项区间；第二组随机设置仍使用相同的题，不是新留出任务。实际生成保留原有补零矩阵形状，<strong>没有测得紧凑部署的加速或显存节省</strong>。它也不同于第 5 节“直接用 rank32 训练”的实验。</p>
         <p>去掉最大的 8 个奇异方向时，R159 首次测量下降 41.37 分（95% 区间 [−51.81, −30.61]），独立种子下降 37.52 分（[−47.88, −27.11]）；R129 两次也均下降。这说明这些方向影响所测任务行为，不能推成“所有记忆只有八维”。</p>
         <h3 id="q17-direction">最新参数组件的局部干预</h3>
