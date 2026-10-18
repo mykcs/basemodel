@@ -38,7 +38,7 @@ table.research-booktabs caption {
   text-align: left;
   line-height: 1.6;
   font-weight: 660;
-  font-size: .88rem;
+  font-size: .94rem;
   color: var(--color-text);
 }
 table.research-booktabs th,
@@ -82,7 +82,11 @@ table.research-booktabs td.paper-main-value {
  * grammar without changing any research data or comparison scope.
  */
 .evo-blog .evo-article__tablewrap {
-  padding-block: .18rem;
+  /* A table reads as a compact, open booktabs object; charts use a light full frame. */
+  padding-block: .3rem;
+  margin-block: 1.4rem 1.7rem;
+  max-width: 100%;
+  width: fit-content;
   overscroll-behavior-inline: contain;
   scrollbar-width: thin;
 }
@@ -93,9 +97,10 @@ table.research-booktabs td.paper-main-value {
 }
 .evo-blog .evo-article__tablewrap table caption {
   color: var(--paper-ink);
-  font-size: .9em;
-  line-height: 1.6;
-  margin-bottom: .55rem;
+  font-size: var(--research-evidence-caption-size,1rem);
+  font-weight: 650;
+  line-height: 1.55;
+  margin-bottom: .62rem;
 }
 .evo-blog .evo-article__tablewrap thead th {
   border-bottom: 1.15px solid var(--paper-ink);
