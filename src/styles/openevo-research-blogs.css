@@ -131,7 +131,15 @@ html[data-theme="dark"] .evo-blog {
 }
 .evo-blog .advisor-viz--q01{width:min(100%,var(--research-evidence-double-width))}
 .evo-blog .advisor-viz--q03{width:min(100%,43rem)}
-.evo-blog .advisor-viz--q07{width:min(100%,var(--research-evidence-single-width))}
+.evo-blog .advisor-viz:not(figure){
+  /* Evidence tables keep the booktabs open layout: one less nested box. */
+  width:fit-content;
+  max-width:100%;
+  padding:.15rem 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
 .evo-blog .advisor-viz__heading strong{font-size:var(--research-evidence-title-size)}
 .evo-blog .advisor-viz figcaption,
 .evo-blog .advisor-viz__table-note{font-size:var(--research-evidence-caption-size);line-height:1.65;color:var(--paper-muted)}
