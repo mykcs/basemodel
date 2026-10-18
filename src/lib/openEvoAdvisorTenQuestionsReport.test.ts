@@ -355,7 +355,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     for(const repaired of [
       '我们做了三组长期学习实验',
       '固定 state 的 Bounded',
-      '这些实验<strong>不是完全严格的对照</strong>',
+      '这些实验不是完全严格的对照',
       '快结束的第 152–159 轮',
       '不能据此声称整个 160 轮都得到同样结果',
       'href={checkpointEvidence.capacity}',
@@ -395,6 +395,45 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(plot).toContain('width:min(100%,var(--research-evidence-single-width,38rem))');
     expect(plot).toContain('width:min(100%,var(--research-evidence-double-width,55.625rem))');
     expect(responses).toContain('data-capacity-ci');
+  });
+
+  it('uses owner examples to guard the reading sequence, not cosmetic bold as a stand-in for explanation',()=>{
+    const summary=responses.split('<div class="evo-article__abstract">')[1]?.split('</div>')[0] ?? '';
+    const intro=responses.split('<section id="context"')[1]?.split('</section>')[0] ?? '';
+    const plain=(source:string)=>source.replace(/<\\/?strong>/g,'');
+    // Real known-bad example: bare score first, method identity is missing.
+    const historicBad='三条长期路线在同一冻结 128 题上的 Task Score 分别为 60.72、45.98 和 20.77/100';
+    const explainsArms=(source:string)=>{
+      const text=plain(source);
+      const begin=text.indexOf('我们做了三组长期学习实验');
+      const arms=['普通 OpenEVO','固定 state 的 Bounded','Bounded + 历史 β/GDR'].every(name=>text.indexOf(name)>begin);
+      const scores=text.indexOf('60.72、45.98、20.77/100');
+      return begin>=0 && arms && scores>begin && text.indexOf('Bounded + 历史 β/GDR')<scores;
+    };
+    expect(explainsArms(historicBad)).toBe(false);
+    expect(explainsArms(summary)).toBe(true);
+    expect(summary).toContain('128 道购物题');
+    expect(summary).toContain('不是完全严格的对照');
+    expect(summary).toContain('第 152–159 轮');
+    expect(summary).toContain('rank128 用已经封存的同轮次历史结果');
+    expect(summary).toContain('href={checkpointEvidence.capacity}');
+
+    // Negative visual witness: making the method words heavier is no substitute
+    // for orientation. Keep meaningful numerical emphasis and existing scientific labels.
+    expect(summary).not.toContain('<strong>普通 OpenEVO</strong>');
+    expect(summary).not.toContain('<strong>固定 state 的 Bounded</strong>');
+    expect(intro).not.toContain('<strong>第一，');
+    expect(summary).toContain('<strong>60.72、45.98、20.77/100</strong>');
+    expect(responses).toContain('data-research-status={q.progress.tone}');
+
+    // Same-family sibling scan: article two should tell the reader where to find
+    // measured evidence instead of using bold on a narrator sentence.
+    expect(questions).toContain('这篇文章说明这些问题从哪里来、会后怎样拆分成十问');
+    expect(questions).toContain('逐项介绍实际完成的实验、结果和仍缺少的证据');
+    expect(questions).not.toContain('<strong>为什么要做这些实验</strong>');
+    // Legitimate boundary: method definitions still mark technical terminology.
+    expect(methods).toContain('<strong>SD-LoRA</strong>');
+    expect(methods).toContain('<MathFormula');
   });
 
 });
