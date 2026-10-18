@@ -248,6 +248,7 @@ const q17Effects = {
       <p>低秩参数更新有大小，也有方向。为了分析它们各自的重要性，我们对选定轮次的真实 Task Vector 做反向干预，在冻结 64 题上测量同一模型其他条件不变时的结果。</p>
       <AdvisorTenEvidenceVisual variant="q07" />
       <p>第 156 轮的方向反转使 Task Score 下降约 10.06 分，配对 95% 区间为下降 5.60–15.02 分，且在八次反转中通过预先设定的多重比较校正。这支持<strong>该模型状态、该轮更新和这批题目上的局部因果效应</strong>，没有证明所有更新方向都应采用相同的在线控制规则。<a href={checkpointEvidence.direction} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.direction} />查看原方向干预实验和多重校正 ↗</a></p>
+      <p class="evo-article__note">这项真实实验促成了新的<a href="/research/seed-openevo/study/muon-update/">Muon 思路与 OpenEVO 更新方向研究</a>。该独立篇章目前只有既有证据、历史工程反例与待验证方案，没有获得新方法的 WebShop 成绩。</p>
     </section>
     <section id="bundle" class="evo-article__section">
       <h2>8 BUNDLE 的文字载体更新次数较少</h2>
