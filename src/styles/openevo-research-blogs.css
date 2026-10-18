@@ -103,7 +103,7 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .evo-article__question>h2{font-size:1.45rem}
 .evo-blog[data-evo-blog="results"] .evo-article__question-header{display:grid;gap:.38rem;justify-items:start;align-items:start;margin:.15rem 0 .9rem}
 .evo-blog[data-evo-blog="results"] .evo-article__question-header h3{font-size:1.28rem;margin:0}
-.evo-blog[data-evo-blog="results"] .evo-article__status{display:inline-flex;align-items:center;gap:.48rem;font-size:1rem;line-height:1.55;font-weight:700;color:var(--paper-muted)}
+.evo-blog[data-evo-blog="results"] .evo-article__status{display:inline-flex;align-items:center;gap:.48rem;font-size:1rem;line-height:1.55;font-weight:600;color:var(--paper-muted)}
 .evo-blog[data-evo-blog="results"] .evo-article__status-dot{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;flex:0 0 .6rem;background:var(--status-dot);outline:1px solid color-mix(in srgb,var(--status-dot) 60%,var(--paper));outline-offset:1.5px}
 .evo-blog[data-evo-blog="results"] .evo-article__status--green{--status-dot:var(--color-positive)}
 .evo-blog[data-evo-blog="results"] .evo-article__status--yellow{--status-dot:var(--color-warning)}
