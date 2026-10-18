@@ -70,6 +70,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
         </span>
       ))}
     </div>
+    <p class="advisor-viz__q01-axis-explainer" data-q01-axis-scope><strong>横轴使用两种计数：</strong>普通 OpenEVO 按实际参数更新次数统计；Bounded 和历史 β/GDR 按已完成的 Stage2 轮数统计，其中一些轮次没有真正更新参数。<strong>横轴数字相同，不代表实际更新次数或计算成本相同。</strong></p>
     <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--desktop" viewBox="0 0 740 310" role="img" aria-labelledby="advisor-q01-chart-title advisor-q01-chart-desc">
       <title id="advisor-q01-chart-title">三种方法的真实开发集任务成绩随训练进度变化</title>
       <desc id="advisor-q01-chart-desc">每条曲线来自十一个真实保存的模型版本，在同一批事先固定的六十四道购物题上测试。普通 OpenEVO 第一百二十次更新后的成绩几乎没有提高；Bounded 一百五十轮之前还在提高；历史 beta GDR 一百三十轮之后下降。纵轴是零到一百的 Task Score。</desc>
@@ -99,7 +100,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
         </g>
       ))}
       <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="63" y="15">Task Score / 100</text>
-      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="713" y="301" text-anchor="end">已完成的训练轮数 / 更新数</text>
+      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="713" y="301" text-anchor="end">训练进度（口径见上）</text>
     </svg>
     <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--phone" viewBox="0 0 340 232" role="img" aria-labelledby="advisor-q01-phone-title advisor-q01-phone-desc">
       <title id="advisor-q01-phone-title">三条方法的真实训练成绩变化，手机视图</title>
@@ -130,9 +131,9 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
         </g>
       ))}
       <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="33" y="12">Task Score / 100</text>
-      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="326" y="227" text-anchor="end">轮次 / 更新数</text>
+      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="326" y="227" text-anchor="end">训练进度（计数不同）</text>
     </svg>
-    <figcaption><strong>图 1｜</strong>三种参数更新方法在同一冻结 64 题上的 Task Score（满分 100）。每条曲线包含 11 个真实保存点，线段只连接已测点。普通 OpenEVO 横轴为已完成的参数更新次数；Bounded 和历史 β/GDR 横轴为已完成的 Stage2 轮数，后两组含少数未实际更新参数的轮次。</figcaption>
+    <figcaption><strong>图 1｜</strong>三种参数更新方法在同一冻结 64 题上的 Task Score（满分 100）。每条曲线包含 11 个真实保存点，线段只连接已测点。普通 OpenEVO 横轴为实际参数更新次数；Bounded 和历史 β/GDR 横轴为已完成的 Stage2 轮数，后两组包含未实际更新参数的轮次。同一横轴刻度不是相同的训练计算量，不应据此进行等成本排名。</figcaption>
     <div class="advisor-viz__q01-reading">
       {q01Series.map((item) => <p><strong>{item.name}：</strong>{item.takeaway}</p>)}
     </div>
@@ -356,6 +357,8 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 .advisor-viz__q01-legend{display:flex;flex-wrap:wrap;gap:.35rem 1.2rem;margin:.4rem 0 .25rem;font-family:var(--font-editorial),Georgia,serif;font-size:.82rem;line-height:1.55}
 .advisor-viz__q01-legend-item{display:inline-flex;gap:.35rem;align-items:center;white-space:nowrap}
 .advisor-viz__q01-legend-item svg{width:34px;height:14px;flex:0 0 34px;overflow:visible}
+.advisor-viz__q01-axis-explainer{max-width:79ch;margin:.45rem 0 .6rem;color:var(--color-text);font-size:.82rem;line-height:1.62}
+.advisor-viz__q01-axis-explainer strong{font-weight:660}
 .advisor-viz__q01-chart{display:block;width:100%;max-width:740px;height:auto;margin:.25rem 0 .1rem;background:#fff;color:#29343b;font-family:Georgia,'Times New Roman','Songti SC','STSong',serif;font-variant-numeric:tabular-nums lining-nums}
 .advisor-viz__q01-chart--phone{display:none}
 .advisor-viz__q01-grid{stroke:#dededb;stroke-width:.7;stroke-linecap:butt}

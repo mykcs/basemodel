@@ -1,0 +1,37 @@
+import { expect, test } from '@playwright/test';
+
+for (const { width, theme } of [
+  {width:390,theme:'light'},
+  {width:390,theme:'dark'},
+  {width:768,theme:'light'},
+  {width:1440,theme:'light'},
+  {width:1440,theme:'dark'},
+] as const) {
+  test('research reader can see distinct training counters and honest repeat scope at '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(v=>localStorage.setItem('atlas-theme',v),theme);
+    const response=await page.goto('/research/seed-openevo/study/parameter-memory-results/',{waitUntil:'domcontentloaded'});
+    expect(response?.status()).toBe(200);
+    const q01=page.locator('#response-q01');
+    await expect(q01).toContainText('不是把同一份固定训练集完整遍历一次的 epoch');
+    const fig=q01.locator('[data-report-figure="q01-horizon"]');
+    await expect(fig.locator('[data-q01-axis-scope]')).toBeVisible();
+    await expect(fig.locator('[data-q01-axis-scope]')).toContainText('横轴数字相同，不代表实际更新次数或计算成本相同');
+    const svg=fig.locator(width<=720?'.advisor-viz__q01-chart--phone':'.advisor-viz__q01-chart--desktop');
+    await expect(svg).toBeVisible();
+    await expect(svg.locator('.advisor-viz__q01-axis-label').last()).toContainText('训练进度');
+    await expect(svg.locator('.advisor-viz__q01-axis-label').last()).not.toContainText('轮次 / 更新数');
+    await expect(fig.locator('[data-q01-line]')).toHaveCount(3);
+    const capacity=page.locator('#capacity');
+    await expect(capacity.locator('h2')).toContainText('长期 LoRA 参数更新文件');
+    await expect(capacity).toContainText('不包括基础模型权重');
+    const cohort=page.locator('#q17-capacity');
+    await expect(cohort).toBeVisible();
+    const diagnostic=page.locator('[data-q17-diagnostics]');
+    await expect(diagnostic).toContainText('同题换随机设置复测');
+    await expect(diagnostic).toContainText('不是换了新题');
+    await expect(diagnostic).not.toContainText('独立种子确认');
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(2);
+  });
+}

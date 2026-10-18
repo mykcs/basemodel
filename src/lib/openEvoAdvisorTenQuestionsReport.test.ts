@@ -154,6 +154,25 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(kBlock).toContain('scope="row">1 次');
     expect(kBlock).toContain('scope="row">8 次');
   });
+  it('explains x-axis unit mismatch, round versus epoch, and same-task reruns without overstating proof',()=>{
+    const visual=read('src/components/research/AdvisorTenEvidenceVisual.astro');
+    const q01=ADVISOR_QUESTIONS.find(x=>x.id==='q01')!;
+    expect(q01.opening).toContain('不是把同一份固定训练集完整遍历一次的 epoch');
+    expect(q01.opening).toContain('有些轮次没有真正更新参数');
+    expect(visual).toContain('data-q01-axis-scope');
+    expect(visual).toContain('横轴数字相同，不代表实际更新次数或计算成本相同');
+    expect(visual).toContain('普通 OpenEVO 按实际参数更新次数统计');
+    expect(visual).toContain('Bounded 和历史 β/GDR 按已完成的 Stage2 轮数');
+    expect(visual).toContain('不应据此进行等成本排名');
+    expect(responses).toContain('5 rank32 让长期 LoRA 参数更新文件缩小约四分之三');
+    expect(responses).toContain('这个比例不包括基础模型权重');
+    expect(responses).toContain('rank32 为 51.4 MB，rank128 为 205.6 MB');
+    expect(responses).toContain('同题换随机设置复测');
+    expect(responses).toContain('仍然测试同一批 64 道题');
+    expect(responses).not.toContain('独立种子确认');
+    expect(responses).toContain('第二组只是更换随机设置');
+    expect(responses).toContain('95% 置信区间');
+  });
   it('uses 33 real Q01 curve points, preserves the science CSV bytes, and exposes second-article question bodies',()=>{
     const visual=read('src/components/research/AdvisorTenEvidenceVisual.astro');
     const csv=read('src/data/research-evidence/advisor-q01-three-way-curve.csv');

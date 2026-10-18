@@ -129,6 +129,7 @@ const q17Effects = {
           <header class="evo-article__question-header"><h3 id={'response-'+q.id+'-title'}><span class="evo-article__qnum">{responseHeadingNumber(q.id)}</span> {q.title}</h3></header>
           <p class="evo-article__note" data-question-origin-link={q.id}><a href={'/research/seed-openevo/study/advisor-questions/#'+q.id}>查看第二篇的 {q.id.toUpperCase()} 问题正文与背景 ↗</a>{q.id==='q10' && ' · 会后新增问题'}</p>
           <p><strong>实验怎么做：</strong>{q.experiment}</p>
+          {q.id==='q01' && <p class="evo-article__note" data-q01-iteration-definition>这里的“轮”是 OpenEVO 反复执行购物任务、整理经验并继续学习的迭代，不是把同一份固定训练集完整遍历一次的 epoch。部分轮次没有实际更新参数；普通 OpenEVO 的曲线按实际更新次数统计。</p>}
           <p class="evo-article__answer" data-experiment-finding={q.id}><strong>已测结果：</strong>{q.finding.replaceAll('普通 DirectApply','普通 OpenEVO')}</p>
           {q.id==='q01' && <AdvisorTenEvidenceVisual variant="q01" />}
           {q.id==='q02' && <AdvisorTenEvidenceVisual variant="q02" />}
@@ -201,8 +202,8 @@ const q17Effects = {
       <p>普通 OpenEVO 是更早的历史前序路线，与 Bounded 两组并非从完全相同的起点构成三臂随机实验。60.72 与 45.98 的差不能简单归因于容量压缩；固定容量组和历史 β 组则具有更接近正式匹配的实验安排。</p>
     </section>
     <section id="capacity" class="evo-article__section">
-      <h2>5 rank32 将长期参数文件缩小约四分之三</h2>
-      <p>第 152–159 轮使用 1,024 组匹配任务比较长期状态 rank128 与 rank32。rank32 的参数文件为 51.4 MB，rank128 为 205.6 MB。</p>
+      <h2>5 rank32 让长期 LoRA 参数更新文件缩小约四分之三</h2>
+      <p>第 152–159 轮使用 1,024 组同题比较结果，检查长期状态 rank128 与 rank32。这里缩小的是保存历史更新的 LoRA 参数文件：rank32 为 51.4 MB，rank128 为 205.6 MB。<strong>这个比例不包括基础模型权重，不能解读成整个模型文件缩小了约 75%。</strong></p>
       <AdvisorTenEvidenceVisual variant="q04" />
       <p><strong>在这批任务上，rank32 的平均 Task Score 低 1.79 分。</strong>为了判断抽样波动，我们将同任务、同随机设置下的两个结果相减，对配对差值做多次有放回的重新抽样，并计算平均差。</p>
       <MathFormula latex={String.raw`d_i=\mathrm{Score}_{32,i}-\mathrm{Score}_{128,i}`} label="同题配对差值的定义" />
@@ -242,11 +243,11 @@ const q17Effects = {
         <h3 id="q17-capacity">训练后的参数压缩</h3>
         <p>对两个保存点各比较 15 种参数状态，在同一批固定的 64 道购物题上使用两组独立随机设置（随机种子），共 3,840 次做题记录。R159 截断到 rank128 后，以 BF16 因子表示作大小对照，参数文件从约 1,021 MB 缩至 102.8 MB（约保留 10.07%）；计入基础模型后，总文件大小约保留 79.42%。这里采用十进制 MB，只计权重文件；1,021 MB 是 BF16 因子对照，不是原始 FP32 checkpoint 的大小。</p>
         <div class="evo-article__tablewrap" tabindex="0" aria-label="R159 训练后 rank128 压缩得分差">
-          <table><caption>表 6｜R159：压缩版减原模型，Task Score 分差（满分 100）</caption><thead><tr><th>生成种子组</th><th data-numeric>平均分差</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">首次测量</th><td data-numeric>−0.87</td><td data-numeric>[−3.91, 1.65]</td></tr><tr><th scope="row">独立种子确认</th><td data-numeric>−0.61</td><td data-numeric>[−1.48, 0.05]</td></tr></tbody></table>
+          <table><caption>表 6｜R159：压缩版减原模型，Task Score 分差（满分 100）</caption><thead><tr><th>生成种子组</th><th data-numeric>平均分差</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">首次测量</th><td data-numeric>−0.87</td><td data-numeric>[−3.91, 1.65]</td></tr><tr><th scope="row">同题换随机设置复测</th><td data-numeric>−0.61</td><td data-numeric>[−1.48, 0.05]</td></tr></tbody></table>
         </div>
         <p class="evo-article__note">读表方法：分差始终按「压缩后 − 原模型」计算。首次测量的 −0.87 表示平均低 0.87 分；[−3.91，+1.65] 是 95% 统计区间，既包括可能的下降，也包括可能的上升。区间包含 0，不能据此说压缩已被证明无损。</p>
-        <p>这支持继续研究更小的参数表示，但尚未证明压缩后性能等价。完整 SVD 的 BF16 重构对照在 R159 首次测量中也下降约 2.22 分，说明数值重构本身可能改变行为，rank128 相对原模型的差额不能全部归因于截断。区间是对 64 道题逐题配对重采样得到的单项区间；第二组随机设置仍使用相同的题，不是新留出任务。实际生成保留原有补零矩阵形状，<strong>没有测得紧凑部署的加速或显存节省</strong>。它也不同于第 5 节“直接用 rank32 训练”的实验。</p>
-        <p>去掉最大的 8 个奇异方向时，R159 首次测量下降 41.37 分（95% 区间 [−51.81, −30.61]），独立种子下降 37.52 分（[−47.88, −27.11]）；R129 两次也均下降。这说明这些方向影响所测任务行为，不能推成“所有记忆只有八维”。</p>
+        <p>这支持继续研究更小的参数表示，但尚未证明压缩后性能等价。完整 SVD 的 BF16 重构对照在 R159 首次测量中也下降约 2.22 分，说明数值重构本身可能改变行为，rank128 相对原模型的差额不能全部归因于截断。区间是对 64 道题逐题配对重采样得到的单项区间；第二组只是更换随机设置，仍然测试同一批 64 道题，不是换了新题，也不能据此宣称独立新任务复现。实际生成保留原有补零矩阵形状，<strong>没有测得紧凑部署的加速或显存节省</strong>。它也不同于第 5 节“直接用 rank32 训练”的实验。</p>
+        <p>去掉最大的 8 个奇异方向时，R159 首次测量下降 41.37 分（95% 区间 [−51.81, −30.61]），换随机设置后下降 37.52 分（[−47.88, −27.11]）；R129 两次也均下降。这说明这些方向影响所测任务行为，不能推成“所有记忆只有八维”。</p>
         <h3 id="q17-direction">最新参数组件的局部干预</h3>
         <p>固定其他当前拟合系数，只把最新组件的系数置零；两模型、三种状态（原始、置零、反向）各测 64 题，共 384 次。置零后，两模型均有 31.25% 的题出现动作序列变化；R129 平均分差为 −1.64（95% 区间 [−6.02, 1.96]），R159 为 −0.85（[−2.17, 0.00]）。行为确实改变，但平均收益方向尚不确定。该操作不是恢复上一个 checkpoint，也不是删除训练样本；不能据此认定这一轮训练无用。</p>
         <h3 id="q17-retention">队列任务的保持与迁移</h3>

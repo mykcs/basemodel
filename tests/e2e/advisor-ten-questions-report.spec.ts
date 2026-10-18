@@ -232,7 +232,8 @@ test('Q03 shows complete paired engineering measurements without formal SEED cla
     await expect(q03).not.toContainText(stale);
   const study=page.locator('#response-q03 [data-seed-world4-case]');
   await expect(study).toContainText('正式 Stage2 为 0/160 轮');
-  await expect(study).toContainText('十月十四日两次四卡实测');
+  await expect(study).toContainText('10 月 14 日两次四卡实测');
+  await expect(study).not.toContainText('十月十四日两次四卡实测');
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
   expect(overflow,'phone article must not scroll horizontally').toBeLessThanOrEqual(2);
 });
