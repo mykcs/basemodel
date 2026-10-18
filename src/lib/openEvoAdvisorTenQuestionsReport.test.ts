@@ -190,7 +190,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
       q01: '训练 160 轮会不会太多了？',
       q02: '开始逐轮学习之前，怎样训练出一个更好的初始模型？',
       q03: '我们的 SEED 实验成绩，能直接和论文比较吗？',
-      q04: '把长期参数容量从 rank128 缩到 rank32，做题成绩会怎样？',
+      q04: '长期参数容量需要 rank128 这么大吗，缩小一点怎么样？',
       q05: '增加参数写入控制后，模型做题成绩有什么变化？',
       q06: '模型选择商品时有多拿不准？',
       q07: '把某轮参数更新的方向反过来，成绩会怎样？',
@@ -279,6 +279,8 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(q03).toContain('10 月 14 日两次四卡实测');
     expect(q03).toContain('<summary>工程细节，你可能感兴趣...</summary>');
     expect(q03).toContain('data-seed-gpu-explainer');
+    expect(q03).toContain('负责给这些进程安排任务的工具叫 Ray');
+    expect(q03).not.toContain('四个 Ray 训练 worker 的 CPU 时间持续增长');
     expect(q03).toContain('GPU 可能等待');
     expect(q03).not.toContain('大显存条件下的简化路径');
     expect(q03).toContain('完整八卡保存、加载、继续取新题并更新仍未验收');
@@ -297,6 +299,13 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(plot).toContain('e.low > e.estimate');
     expect(plot).toContain('paper-effect__zero');
     expect(plot).toContain('95% 置信区间');
+    expect(plot).toContain('paper-effect__comparison');
+    expect(plot).toContain('paper-effect__directions');
+    expect(plot).toContain('paper-effect__interval');
+    expect(plot).toContain('paper-effect__takeaway');
+    expect(plot).toContain('border:1px solid color-mix');
+    expect(responses).toContain('压缩后 − 原模型');
+    expect(responses).toContain('训练后压缩');
     expect(plot).not.toContain('setTimeout');
     expect(read('src/styles/openevo-seed-world4-repro.css')).not.toContain('tbody { display: block; }');
   });
