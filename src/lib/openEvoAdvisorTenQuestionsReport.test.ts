@@ -164,7 +164,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(visual).toContain('普通 OpenEVO 按实际参数更新次数统计');
     expect(visual).toContain('Bounded 和历史 β/GDR 按已完成的 Stage2 轮数');
     expect(visual).toContain('不应据此进行等成本排名');
-    expect(responses).toContain('5 rank32 让长期 LoRA 参数更新文件缩小约四分之三');
+    expect(responses).toContain('5 训练最后 8 轮：长期参数从 rank128 缩到 rank32 会怎样？');
     expect(responses).toContain('这个比例不包括基础模型权重');
     expect(responses).toContain('rank32 为 51.4 MB，rank128 为 205.6 MB');
     expect(responses).toContain('同题换随机设置复测');
@@ -322,7 +322,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(plot).toContain('paper-effect__directions');
     expect(plot).toContain('paper-effect__interval');
     expect(plot).toContain('paper-effect__takeaway');
-    expect(plot).toContain('border:1px solid color-mix');
+    expect(plot).toContain('border:1px solid var(--research-evidence-frame');
     expect(responses).toContain('压缩后 − 原模型');
     expect(responses).toContain('训练后压缩');
     expect(plot).not.toContain('setTimeout');
@@ -343,4 +343,58 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     }
     expect(read('src/styles/tokens.css')).toContain('--color-bg: #f7f3eb;');
   });
+  it('rejects the owner-identified cold-read failures in the report and keeps a scoped green/yellow/red scientific ledger',()=>{
+    // Negative probes: a previously-green page must not pass with these known bad claims.
+    const knownBad = [
+      '这些历史结果不构成完全受控的三臂试验',
+      '在正文就地链接',
+      '三条长期路线在同一冻结 128 题上的 Task Score 分别为',
+      '第 152–159 轮的 rank32 容量筛选使参数文件缩小约 75%',
+    ];
+    for(const bad of knownBad) expect(responses).not.toContain(bad);
+    for(const repaired of [
+      '我们做了三组长期学习实验',
+      '固定 state 的 Bounded',
+      '这些实验<strong>不是完全严格的对照</strong>',
+      '快结束的第 152–159 轮',
+      '不能据此声称整个 160 轮都得到同样结果',
+      'href={checkpointEvidence.capacity}',
+      'data-research-status={q.progress.tone}',
+      'data-next-work={q.id}',
+      '工作量粗估：',
+    ]) expect(responses).toContain(repaired);
+    expect(responses).toContain('responseQuestions.map(q => (');
+    const progressSource = responses.split('const researchProgress = {')[1]?.split('} as const;')[0] ?? '';
+    const tones=[...progressSource.matchAll(/tone:'(green|yellow|red)'/g)].map(match=>match[1]);
+    expect(tones).toHaveLength(10);
+    expect(tones.filter(t=>t==='green')).toHaveLength(2);
+    expect(tones.filter(t=>t==='yellow')).toHaveLength(6);
+    expect(tones.filter(t=>t==='red')).toHaveLength(2);
+    for(let n=1;n<=10;n++) expect(progressSource).toContain('q'+String(n).padStart(2,'0')+':');
+    expect(progressSource).toContain('GPU 小时');
+    const q04=ADVISOR_QUESTIONS.find(q=>q.id==='q04')!;
+    expect(q04.experiment).toContain('末尾八轮（第 152–159 轮）');
+    expect(q04.unknown).toContain('rank8、16、64');
+    // Legitimate limits remain visible: 'red' means core verification missing,
+    // not that completed engineering evidence has disappeared.
+    expect(responses).toContain('1,536 次冻结开发题评测');
+    expect(responses).toContain('正式 SFT 尚未启动，Stage2 仍为 0/160');
+  });
+  it('presents plots and research tables with one documented visual hierarchy without making every table a card',()=>{
+    const blog=read('src/styles/openevo-research-blogs.css');
+    const booktabs=read('src/styles/research-booktabs.css');
+    const plot=read('src/components/research/PaperIntervalPlot.astro');
+    for(const token of ['--research-evidence-frame','--research-evidence-title-size','--research-evidence-caption-size','--research-evidence-single-width','--research-evidence-double-width']) {
+      expect(blog).toContain(token);
+      expect(plot).toContain(token);
+    }
+    expect(blog).toContain('.evo-blog .advisor-viz:not(figure)');
+    expect(blog).toContain('border:0;');
+    expect(booktabs).toContain('font-size: var(--research-evidence-caption-size,1rem)');
+    expect(plot).toContain('box-shadow:none');
+    expect(plot).toContain('width:min(100%,var(--research-evidence-single-width,38rem))');
+    expect(plot).toContain('width:min(100%,var(--research-evidence-double-width,55.625rem))');
+    expect(responses).toContain('data-capacity-ci');
+  });
+
 });
