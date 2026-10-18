@@ -15,8 +15,13 @@ interface Props {
   caption: string;
   /** Single-column-like for small evidence; opt into double-column-like for dense multi-row evidence. */
   widthTier?: 'single' | 'double';
+  /** Reader-facing subtraction identity, required when the compared conditions are not obvious. */
+  comparison?: string;
+  negativeLabel?: string;
+  positiveLabel?: string;
+  takeaway?: string;
 }
-const { id, title, unit, min, max, ticks, effects, caption, widthTier = 'single' } = Astro.props;
+const { id, title, unit, min, max, ticks, effects, caption, widthTier = 'single', comparison, negativeLabel = '前一个条件更低', positiveLabel = '前一个条件更高', takeaway } = Astro.props;
 if (!(min < 0 && max > 0 && min < max) || effects.length===0 ||
   effects.some(e => !Number.isFinite(e.estimate) || !Number.isFinite(e.low) || !Number.isFinite(e.high) ||
     e.low > e.estimate || e.estimate > e.high || e.low < min || e.high > max)) {
@@ -28,10 +33,18 @@ const ariaText = effects.map(e => `${e.label}: ${fmt(e.estimate)}, 95% CI [${fmt
 ---
 <figure class:list={{ 'paper-effect': true, 'paper-effect--double': widthTier === 'double' }} data-paper-effect={id} data-paper-figure="interval" data-paper-width={widthTier}>
   <h4 class="paper-effect__title">{title}</h4>
-  <div class="paper-effect__plot" role="img" aria-label={`${title}；${ariaText}；竖虚线为零差异`}>
+  {comparison && <p class="paper-effect__comparison"><strong>比较方式：</strong>{comparison}</p>}
+  <div class="paper-effect__directions" aria-hidden="true">
+    <span>← {negativeLabel}</span>
+    <span>{positiveLabel} →</span>
+  </div>
+  <div class="paper-effect__plot" role="img" aria-label={`${title}；${comparison ?? '前一种条件减后一种条件'}；${ariaText}；竖虚线为零差异`}>
     {effects.map((e) => (
-      <div class="paper-effect__row" data-effect-row={e.id}>
-        <span class="paper-effect__label">{e.label}</span>
+      <div class="paper-effect__item" data-effect-row={e.id}>
+        <div class="paper-effect__row-heading">
+          <span class="paper-effect__label">{e.label}</span>
+          <span class="paper-effect__value"><strong>{fmt(e.estimate)}</strong><small>{unit} · 平均变化</small></span>
+        </div>
         <div class="paper-effect__track" aria-hidden="true">
           <i class="paper-effect__zero" style={`left:${at(0)}%`}></i>
           <i class="paper-effect__whisker" style={`left:${at(e.low)}%;width:${at(e.high)-at(e.low)}%`}></i>
@@ -39,50 +52,69 @@ const ariaText = effects.map(e => `${e.label}: ${fmt(e.estimate)}, 95% CI [${fmt
           <i class="paper-effect__end" style={`left:${at(e.high)}%`}></i>
           <i class="paper-effect__dot" style={`left:${at(e.estimate)}%`}></i>
         </div>
-        <span class="paper-effect__value">{fmt(e.estimate)} <small>[{fmt(e.low)}, {fmt(e.high)}]</small></span>
+        <p class="paper-effect__interval"><strong>95% 置信区间：</strong>{fmt(e.low)} 至 {fmt(e.high)} {unit}{e.low <= 0 && e.high >= 0 && <span> · 区间包含 0</span>}</p>
       </div>
     ))}
-    <div class="paper-effect__row paper-effect__axis-row" aria-hidden="true">
-      <span></span>
-      <div class="paper-effect__axis">
-        {ticks.map(tick => <span style={`left:${at(tick)}%`}>{tick}</span>)}
-      </div>
-      <span></span>
+    <div class="paper-effect__axis" aria-hidden="true">
+      {ticks.map(tick => <span style={`left:${at(tick)}%;transform:${tick===min?'none':tick===max?'translateX(-100%)':'translateX(-50%)'}`}>{tick}</span>)}
     </div>
   </div>
-  <p class="paper-effect__unit">{unit} · 圆点表示两种条件在相同题目上的平均差值；横线表示 95% 置信区间；虚线表示差值为零</p>
+  <p class="paper-effect__unit"><strong>怎么看：</strong>圆点是两种条件的平均差值，横线是 95% 置信区间；与下方坐标轴的 0 刻度对齐的竖虚线表示没有平均变化。区间跨过 0 不能证明两种条件完全一样。</p>
+  {takeaway && <p class="paper-effect__takeaway"><strong>目前能判断：</strong>{takeaway}</p>}
   <figcaption>{caption}</figcaption>
 </figure>
 
 <style>
-.paper-effect{width:min(100%,38rem);max-width:100%;margin:1.15rem 0 1.55rem;padding:.85rem 0 1rem;border-block:1px solid var(--paper-line,var(--color-border))}
-.paper-effect--double{width:min(100%,55.625rem)}
-.paper-effect__title{font-family:Georgia,"Noto Serif SC","Songti SC",serif;font-size:1.03em;line-height:1.45;font-weight:650;margin:.1rem 0 1rem}
-.paper-effect__plot{display:grid;gap:.45rem}
-.paper-effect__row{display:grid;grid-template-columns:minmax(9.5rem,1.12fr) minmax(13rem,1.9fr) minmax(10rem,1.12fr);align-items:center;gap:.72rem;min-height:2.25rem}
-.paper-effect__label{font-size:.88em;line-height:1.45;overflow-wrap:anywhere}
-.paper-effect__track{height:2rem;position:relative;border-bottom:1px solid color-mix(in srgb,var(--paper-ink,currentColor) 32%,transparent)}
-.paper-effect__track i{position:absolute;display:block}
-.paper-effect__zero{top:0;bottom:0;border-left:1px dashed var(--paper-muted,currentColor);opacity:.8}
-.paper-effect__whisker{top:1.02rem;height:1.5px;background:var(--paper-ink,currentColor)}
-.paper-effect__start,.paper-effect__end{top:.69rem;height:.68rem;border-left:1.5px solid var(--paper-ink,currentColor)}
-.paper-effect__dot{top:.67rem;width:.73rem;height:.73rem;border:2px solid var(--paper-ink,currentColor);background:var(--paper,var(--color-surface,#fff));border-radius:50%;transform:translateX(-50%)}
-.paper-effect__value{font-family:Georgia,"Songti SC",serif;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-size:.9em}
-.paper-effect__value small{display:block;font-family:inherit;font-size:.8em;color:var(--paper-muted,var(--color-text-muted));font-weight:400}
-.paper-effect__axis-row{min-height:1.1rem}
-.paper-effect__axis{height:1.3rem;position:relative;font: .74em Georgia,serif;color:var(--paper-muted,var(--color-text-muted))}
-.paper-effect__axis span{position:absolute;transform:translateX(-50%);white-space:nowrap}
-.paper-effect p.paper-effect__unit{font-size:.78em;line-height:1.55;margin:.3rem 0;color:var(--paper-muted,var(--color-text-muted))}
-.paper-effect figcaption{font-size:.86em;line-height:1.66;color:var(--paper-muted,var(--color-text-muted));margin:.55rem 0 0;max-width:82ch}
-@media(max-width:700px){
- .paper-effect__row{grid-template-columns:minmax(0,1fr);gap:.13rem;padding-block:.38rem}
- .paper-effect__track{width:calc(100% - 1.4rem);margin-inline:.7rem}
- .paper-effect__label{font-size:.89em;font-weight:600}
- .paper-effect__value{text-align:left;font-size:.82em}
- .paper-effect__value small{display:inline}
- .paper-effect__axis-row{padding:0}
- .paper-effect__axis{width:calc(100% - 1.4rem);margin-inline:.7rem}
- .paper-effect__axis-row>span{display:none}
+.paper-effect {
+  width:min(100%,var(--research-evidence-single-width,38rem));
+  max-width:100%;
+  min-width:0;
+  margin:1.4rem 0 1.8rem;
+  padding:var(--research-evidence-inset,clamp(.95rem,2vw,1.35rem));
+  border:1px solid var(--research-evidence-frame,color-mix(in srgb,var(--paper-ink,#1f2b29) 25%,var(--paper,#fff)));
+  border-radius:.42rem;
+  background:var(--paper,var(--color-surface,#fff));
+  color:var(--paper-ink,var(--color-text));
+  box-shadow:none;
+  overflow:hidden;
+  font-variant-numeric:tabular-nums;
 }
-@media print{.paper-effect{break-inside:avoid}.paper-effect__track{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+.paper-effect--double{width:min(100%,var(--research-evidence-double-width,55.625rem))}
+.paper-effect__title{font-family:Georgia,"Noto Serif SC","Songti SC",serif;font-size:var(--research-evidence-title-size,1.06rem);line-height:1.48;font-weight:650;margin:0 0 .5rem}
+.paper-effect p.paper-effect__comparison{margin:.25rem 0 .9rem;font-size:.95em;line-height:1.62;color:var(--paper-muted,var(--color-text-muted));overflow-wrap:anywhere}
+.paper-effect__comparison strong{color:var(--paper-ink,var(--color-text));font-weight:650}
+.paper-effect__directions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.55rem;align-items:center;font-size:.92em;line-height:1.45;color:var(--paper-muted,var(--color-text-muted));padding:.4rem .1rem .5rem;border-top:1px solid var(--paper-line,var(--color-border));}
+.paper-effect__directions span:first-child{text-align:left}
+.paper-effect__directions span:last-child{text-align:right}
+.paper-effect__plot{display:grid;gap:0;min-width:0}
+.paper-effect__item{min-width:0;padding:.78rem 0 .65rem;border-top:1px solid var(--paper-line,var(--color-border))}
+.paper-effect__row-heading{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.15rem 1rem;min-width:0}
+.paper-effect__label{font-size:.9em;line-height:1.52;font-weight:650;overflow-wrap:anywhere}
+.paper-effect__value{display:inline-flex;gap:.4rem;align-items:baseline;flex-wrap:wrap;text-align:right;font-family:Georgia,"Songti SC",serif;font-variant-numeric:tabular-nums}
+.paper-effect__value strong{font-size:1.2em;line-height:1.2;font-weight:700;white-space:nowrap}
+.paper-effect__value small{font-family:inherit;font-size:.76em;font-weight:400;line-height:1.4;color:var(--paper-muted,var(--color-text-muted))}
+.paper-effect__track{height:2.05rem;position:relative;margin:.45rem .8rem .25rem;border-bottom:1px solid color-mix(in srgb,var(--paper-ink,currentColor) 28%,transparent)}
+.paper-effect__track i{position:absolute;display:block}
+.paper-effect__zero{top:0;bottom:0;border-left:1.5px dashed var(--paper-muted,currentColor);opacity:.95}
+.paper-effect__whisker{top:1.02rem;height:2px;background:var(--paper-ink,currentColor)}
+.paper-effect__start,.paper-effect__end{top:.72rem;height:.6rem;border-left:1.5px solid var(--paper-ink,currentColor)}
+.paper-effect__dot{top:.65rem;width:.76rem;height:.76rem;border:2px solid var(--paper-ink,currentColor);background:var(--paper,var(--color-surface,#fff));border-radius:50%;transform:translateX(-50%)}
+.paper-effect p.paper-effect__interval{max-width:100%;margin:.3rem 0 0;font-size:.95em;line-height:1.55;color:var(--paper-muted,var(--color-text-muted));overflow-wrap:anywhere}
+.paper-effect__interval strong{font-weight:650;color:var(--paper-ink,var(--color-text))}
+.paper-effect__axis{height:1.3rem;position:relative;margin:0 .8rem;font:.75em Georgia,serif;color:var(--paper-muted,var(--color-text-muted))}
+.paper-effect__axis span{position:absolute;white-space:nowrap}
+.paper-effect p.paper-effect__unit{margin:.5rem 0 .35rem;padding-top:.7rem;border-top:1px solid var(--paper-line,var(--color-border));font-size:.94em;line-height:1.68;color:var(--paper-muted,var(--color-text-muted))}
+.paper-effect p.paper-effect__takeaway{max-width:100%;font-size:.9em;line-height:1.7;margin:.72rem 0 .3rem;color:var(--paper-ink,var(--color-text))}
+.paper-effect__takeaway strong{font-weight:700}
+.paper-effect figcaption{font:400 var(--research-evidence-caption-size,1rem)/1.68 var(--font-editorial),Georgia,serif;color:var(--paper-muted,var(--color-text-muted));margin:.75rem 0 0;max-width:82ch;overflow-wrap:anywhere}
+@media(max-width:700px){
+  .paper-effect{padding:1rem .9rem}
+  .paper-effect__directions{font-size:.9em;gap:.4rem}
+  .paper-effect__value{font-size:.95em}
+  .paper-effect__track,.paper-effect__axis{margin-inline:.75rem}
+}
+@media print{
+  .paper-effect{break-inside:avoid;box-shadow:none;border-color:#666}
+  .paper-effect__track{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
 </style>

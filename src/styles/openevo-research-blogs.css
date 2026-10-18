@@ -13,6 +13,13 @@ html[data-theme="light"]:has(.evo-blog) {
   --paper-line:#dde4df;
   --paper-muted:#53635c;
   --paper-ink:#1f2b29;
+  /* One hierarchy for evidence-bearing charts, intervals and tables in the study series. */
+  --research-evidence-frame:color-mix(in srgb,var(--paper-ink) 25%,var(--paper));
+  --research-evidence-title-size:1.06rem;
+  --research-evidence-caption-size:1rem;
+  --research-evidence-inset:clamp(.95rem,2vw,1.35rem);
+  --research-evidence-single-width:38rem;
+  --research-evidence-double-width:55.625rem;
   width:min(1060px,calc(100% - 2rem));
   margin:2.2rem auto 5rem;
   padding:clamp(1.5rem,4.5vw,3.8rem);
@@ -94,6 +101,16 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .evo-article__tablewrap [data-numeric]{text-align:right}
 .evo-blog .evo-article__question{padding:1.6rem 0 2rem;border-bottom:1px solid var(--paper-line);scroll-margin-top:5.8rem}
 .evo-blog .evo-article__question>h2{font-size:1.45rem}
+.evo-blog[data-evo-blog="results"] .evo-article__question-header{display:grid;gap:.38rem;justify-items:start;align-items:start;margin:.15rem 0 .9rem}
+.evo-blog[data-evo-blog="results"] .evo-article__question-header h3{font-size:1.28rem;margin:0}
+.evo-blog[data-evo-blog="results"] .evo-article__status{display:inline-flex;align-items:center;gap:.48rem;font-size:1rem;line-height:1.55;font-weight:600;color:var(--paper-muted)}
+.evo-blog[data-evo-blog="results"] .evo-article__status-dot{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;flex:0 0 .6rem;background:var(--status-dot);outline:1px solid color-mix(in srgb,var(--status-dot) 60%,var(--paper));outline-offset:1.5px}
+.evo-blog[data-evo-blog="results"] .evo-article__status--green{--status-dot:var(--color-positive)}
+.evo-blog[data-evo-blog="results"] .evo-article__status--yellow{--status-dot:var(--color-warning)}
+.evo-blog[data-evo-blog="results"] .evo-article__status--red{--status-dot:var(--color-danger)}
+.evo-blog[data-evo-blog="results"] .evo-article__next-work{border-left:2px solid var(--paper-line);padding:.2rem 0 .15rem .8rem;font-size:.96em;line-height:1.76}
+.evo-blog[data-evo-blog="results"] .evo-article__next-work span{display:block;margin-top:.12rem;color:var(--paper-muted)}
+
 .evo-blog .evo-article__question .evo-article__answer{font-weight:630;line-height:1.8}
 .evo-blog .evo-article__question p{max-width:80ch}
 .evo-blog .evo-article__question .evo-article__limit{color:var(--paper-muted)}
@@ -103,7 +120,30 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .advisor-method__node{background:var(--paper);border-color:var(--paper-line)}
 .evo-blog .advisor-method__lane{border-color:var(--paper-line)}
 .evo-blog .advisor-method__lane>p{font-size:1em}
-.evo-blog .advisor-viz{max-width:100%}
+.evo-blog .advisor-viz{
+  max-width:100%;
+  border:1px solid var(--research-evidence-frame);
+  border-radius:.42rem;
+  background:var(--paper);
+  padding:var(--research-evidence-inset);
+  margin:1.4rem 0 1.8rem;
+  box-shadow:none;
+}
+.evo-blog .advisor-viz--q01{width:min(100%,var(--research-evidence-double-width))}
+.evo-blog .advisor-viz--q03{width:min(100%,43rem)}
+.evo-blog .advisor-viz:not(figure){
+  /* Evidence tables keep the booktabs open layout: one less nested box. */
+  width:fit-content;
+  max-width:100%;
+  padding:.15rem 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+.evo-blog .advisor-viz__heading strong{font-size:var(--research-evidence-title-size)}
+.evo-blog .advisor-viz figcaption,
+.evo-blog .advisor-viz__table-note{font-size:var(--research-evidence-caption-size);line-height:1.65;color:var(--paper-muted)}
+
 .evo-blog .advisor-viz__heading,.evo-blog .advisor-viz figcaption{font-size:.9em}
 .evo-blog .advisor-viz__name,.evo-blog .advisor-viz__value{font-size:.91em}
 .evo-blog .math-formula {max-width:100%}

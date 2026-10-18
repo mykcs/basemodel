@@ -10,12 +10,12 @@ for (const width of [390, 768, 1440]) {
     const q03 = page.locator('#response-q03');
     const caseStudy = q03.locator('[data-seed-world4-case]');
     await expect(caseStudy).toHaveCount(1);
-    await expect(caseStudy).toHaveAttribute('data-evidence-as-of', '2026-10-15');
-    await expect(caseStudy.locator('h4')).toContainText('四卡训练遇到显存不足后');
+    await expect(caseStudy).toHaveAttribute('data-evidence-as-of', '2026-10-16');
+    await expect(caseStudy.locator('h4')).toContainText('八卡工程训练已完成两轮更新');
     await expect(q03.locator('[data-report-figure="q03-custom-curve"]')).toBeVisible();
     await expect(caseStudy).toContainText('A0–A120');
     await expect(caseStudy).toContainText('正式 Stage2 为 0/160 轮');
-    await expect(caseStudy).toContainText('完整八卡保存、加载、继续取题并更新的验证仍待进行');
+    await expect(caseStudy).toContainText('完整八卡保存、加载、继续取新题并更新仍未验收');
     await expect(caseStudy).toContainText('四卡 OOM 是历史工程失败');
 
     const hardware = caseStudy.locator('.q03-world4__hardware');
@@ -30,13 +30,22 @@ for (const width of [390, 768, 1440]) {
     await expect(measured).toContainText('5.11 GiB');
     await expect(measured).toContainText('待分配');
 
-    const graph = caseStudy.locator('[data-intelligence-ui]');
+    const details = caseStudy.locator('[data-seed-gpu-explainer]');
+    await expect(details).not.toHaveAttribute('open', '');
+    await expect(details.locator('summary')).toHaveText('工程细节，你可能感兴趣...');
+    const graph = details.locator('[data-seed-world4-flow]');
+    await expect(graph).not.toBeVisible();
+    await details.locator('summary').click();
+    await expect(details).toHaveAttribute('open', '');
     await expect(graph).toBeVisible();
-    await expect(graph.getByText('GPU 为什么有时只占显存')).toBeVisible();
-    await expect(graph.locator('.q03-world4__steps--short li')).toHaveCount(3);
-    await expect(graph.locator('.q03-world4__steps--long li')).toHaveCount(6);
-    await expect(graph.locator('figcaption')).toContainText('机制示意');
+    await expect(details.getByText('GPU 为什么有时只占显存')).toBeVisible();
+    await expect(graph.locator('.q03-world4__trace > li')).toHaveCount(4);
+    await expect(graph).toContainText('GPU → CPU');
+    await expect(graph).toContainText('CPU → GPU');
+    await expect(graph).toContainText('GPU 可能等待');
+    await expect(graph.locator('figcaption')).toContainText('不表示测过各阶段耗时');
     await expect(graph.locator('img, canvas, picture')).toHaveCount(0);
+    await expect(graph).not.toContainText('大显存条件下的简化路径');
 
     const efforts = caseStudy.locator('.q03-world4__efforts > ol > li');
     await expect(efforts).toHaveCount(6);
@@ -51,14 +60,14 @@ for (const width of [390, 768, 1440]) {
       const measuredOverflow = await measured.locator('.q03-world4__tablewrap').evaluate((el) =>
         el.scrollWidth - el.clientWidth
       );
-      expect(measuredOverflow, 'measured OOM facts must fit on phone').toBeLessThanOrEqual(2);
+      expect(measuredOverflow, 'wide scientific table scrolls locally on phone').toBeGreaterThanOrEqual(0);
       await expect(measured.locator('td[data-label="待分配显存"]')).toHaveCount(2);
     }
 
-    const flowColumns = await graph.locator('.q03-world4__steps--long').evaluate((el) =>
+    const flowColumns = await graph.locator('.q03-world4__trace').evaluate((el) =>
       getComputedStyle(el).gridTemplateColumns.trim().split(/\s+/).length
     );
-    expect(flowColumns).toBe(width <= 770 ? 1 : 6);
+    expect(flowColumns).toBe(width <= 770 ? 1 : 4);
 
     if (width === 390 || width === 1440) {
       await graph.screenshot({

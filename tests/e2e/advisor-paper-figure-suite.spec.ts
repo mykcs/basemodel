@@ -24,6 +24,26 @@ for (const width of [390,768,1440]) {
       await expect(plot.locator('.paper-effect__zero')).toHaveCount(count);
       await expect(plot.locator('.paper-effect__unit')).toContainText('95%');
     }
+    const q04Interval=page.locator('[data-paper-effect="q04-posthoc"]');
+    await expect(q04Interval.locator('.paper-effect__comparison')).toContainText('压缩版 − 未压缩原模型');
+    await expect(q04Interval.locator('.paper-effect__value').first()).toContainText('−0.87');
+    await expect(q04Interval.locator('.paper-effect__interval').first()).toContainText('−3.91 至 +1.65');
+    await expect(q04Interval.locator('.paper-effect__takeaway')).toContainText('不能确定压缩会稳定掉分');
+    const frame=await q04Interval.evaluate(el=>{
+      const css=getComputedStyle(el),box=el.getBoundingClientRect();
+      const axisLabels=[...el.querySelectorAll('.paper-effect__axis span')].map(label=>label.getBoundingClientRect());
+      return {width:css.borderTopWidth,side:css.borderLeftWidth,clipped:axisLabels.some(r=>r.left<box.left-1||r.right>box.right+1)};
+    });
+    expect(frame.width).toBe('1px');
+    expect(frame.side).toBe('1px');
+    expect(frame.clipped).toBe(false);
+    await expect(q04Interval.locator('.paper-effect__directions span')).toHaveCount(2);
+    const zeroAligned=await q04Interval.evaluate(el=>{
+      const zero=el.querySelector('.paper-effect__zero')!.getBoundingClientRect();
+      const tick=[...el.querySelectorAll('.paper-effect__axis span')].find(x=>x.textContent?.trim()==='0')!.getBoundingClientRect();
+      return Math.abs((zero.left+zero.width/2)-(tick.left+tick.width/2));
+    });
+    expect(zeroAligned).toBeLessThan(2);
     const text=await page.locator('[data-q17-inline="q04"]').innerText();
     expect(text).toContain('训练后压缩');
     await expect(page.locator('[data-q17-inline="q07"]')).toContainText('不是同一模型、同一干预');
@@ -50,8 +70,15 @@ for(const width of [390,1440]){
     expect(tableTags.caption).toBe('top');
     expect(tableTags.xOverflow).toBeLessThanOrEqual(2);
     if(width===390)expect(tableTags.localScroll).toBe(true);
-    const flow=page.locator('[data-seed-world4-flow]');
+    const detail=page.locator('[data-seed-gpu-explainer]');
+    await expect(detail).not.toHaveAttribute('open','');
+    await expect(detail.locator('summary')).toHaveText('工程细节，你可能感兴趣...');
+    const flow=detail.locator('[data-seed-world4-flow]');
+    await expect(flow).not.toBeVisible();
+    await detail.locator('summary').click();
+    await expect(detail).toContainText('工具叫 Ray');
     await expect(flow).toBeVisible();
+    await expect(flow.locator('.q03-world4__trace > li')).toHaveCount(4);
     const style=await flow.evaluate(el=>({radius:getComputedStyle(el).borderRadius,bg:getComputedStyle(el).backgroundColor}));
     expect(style.radius).toBe('0px');
     expect(['transparent','rgba(0, 0, 0, 0)']).toContain(style.bg);
