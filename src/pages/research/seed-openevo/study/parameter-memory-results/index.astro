@@ -130,7 +130,7 @@ const q17Effects = {
         </div>
         <div>
           <dt><a href="/research/seed-openevo/study/advisor-questions/#q04">长期参数需要保留多大容量？</a></dt>
-          <dd>整段实验共 160 轮。选接近结束的最后 8 轮（第 152–159 轮），让 rank32 与 rank128 在尽量相同的条件下做相同的题，得到 1,024 组比较结果；<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer">原实验记录</a>可直接查看。这里只比较末尾阶段。</dd>
+          <dd>整段实验共 160 轮。选接近结束的最后 8 轮（第 152–159 轮），让 rank32 与 rank128 在尽量相同的条件下做相同的题，得到 1,024 组比较结果；<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.capacity} />原实验记录</a>可直接查看。这里只比较末尾阶段。</dd>
         </div>
         <div>
           <dt><a href="/research/seed-openevo/study/advisor-questions/#q07">参数更新方向会影响能力吗？</a></dt>
@@ -228,7 +228,7 @@ const q17Effects = {
     </section>
     <section id="capacity" class="evo-article__section">
       <h2>5 训练最后 8 轮：长期参数从 rank128 缩到 rank32 会怎样？</h2>
-      <p>整个长期实验共 160 轮，我们只在接近结束的最后 8 轮（第 152–159 轮）观察容量变化的效果。这样能先检查训练后段的成绩和文件大小，<strong>不能据此声称整个 160 轮都得到同样结果</strong>。这 8 轮有 1,024 组同题比较，<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer">对应实验记录</a>。这里缩小的是保存历史更新的 LoRA 参数文件：rank32 为 51.4 MB，rank128 为 205.6 MB。<strong>这个比例不包括基础模型权重，不能解读成整个模型文件缩小了约 75%。</strong></p>
+      <p>整个长期实验共 160 轮，我们只在接近结束的最后 8 轮（第 152–159 轮）观察容量变化的效果。这样能先检查训练后段的成绩和文件大小，<strong>不能据此声称整个 160 轮都得到同样结果</strong>。这 8 轮有 1,024 组同题比较，<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.capacity} />对应实验记录</a>。这里缩小的是保存历史更新的 LoRA 参数文件：rank32 为 51.4 MB，rank128 为 205.6 MB。<strong>这个比例不包括基础模型权重，不能解读成整个模型文件缩小了约 75%。</strong></p>
       <AdvisorTenEvidenceVisual variant="q04" />
       <p><strong>在这批任务上，rank32 的平均 Task Score 低 1.79 分。</strong>为了判断抽样波动，我们将同任务、同随机设置下的两个结果相减，对配对差值做多次有放回的重新抽样，并计算平均差。</p>
       <MathFormula latex={String.raw`d_i=\mathrm{Score}_{32,i}-\mathrm{Score}_{128,i}`} label="同题配对差值的定义" />
