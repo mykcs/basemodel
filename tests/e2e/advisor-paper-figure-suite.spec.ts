@@ -35,7 +35,7 @@ for (const width of [390,768,1440]) {
       return {width:css.borderTopWidth,side:css.borderLeftWidth,clipped:axisLabels.some(r=>r.left<box.left-1||r.right>box.right+1)};
     });
     expect(frame.width).toBe('1px');
-    expect(frame.side).toBe('1px');
+    expect(frame.side).toBe('0px'); // Native paper figure: a thin top rule, no dashboard-card side border.
     expect(frame.clipped).toBe(false);
     await expect(q04Interval.locator('.paper-effect__directions span')).toHaveCount(2);
     const zeroAligned=await q04Interval.evaluate(el=>{

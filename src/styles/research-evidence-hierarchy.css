@@ -1,0 +1,85 @@
+/*
+ * Research evidence hierarchy shared by BaseModel's scientific articles.
+ * The source-owned width tiers remain in PaperIntervalPlot; this layer gives
+ * small plots, tables, and captions one neutral editorial grammar.
+ *
+ * Only scoped research figures/tables receive this style. Page navigation,
+ * operational grids, interactive cards, and 16:9 presentation slides are not
+ * forced to imitate LaTeX.
+ */
+.evo-blog {
+  --research-evidence-line: var(--paper-line, var(--color-border));
+  --research-evidence-muted: var(--paper-muted, var(--color-text-muted));
+  --research-evidence-ink: var(--paper-ink, var(--color-text));
+  --research-evidence-caption-size: .76rem; /* matches nearby native table caption (~14px at default editorial zoom) */
+}
+.evo-blog figure.paper-effect[data-paper-figure="interval"] {
+  border: 0;
+  border-block-start: 1px solid var(--research-evidence-line);
+  border-block-end: 1px solid var(--research-evidence-line);
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  padding: .9rem 0 .72rem;
+  margin: 1.35rem 0 1.7rem;
+  overflow: visible;
+  max-width: 100%;
+}
+.evo-blog .paper-effect__title {
+  font: 650 1rem/1.5 var(--font-editorial,Georgia,serif);
+  margin-bottom: .44rem;
+}
+.evo-blog .paper-effect__plot { gap: 0; }
+.evo-blog .paper-effect__item {
+  padding: .62rem 0 .5rem;
+  border-top: .7px solid var(--research-evidence-line);
+}
+.evo-blog .paper-effect__value strong {
+  font-size: 1.1em;
+  line-height: 1.36;
+}
+.evo-blog .paper-effect__track {
+  height: 1.75rem;
+  margin-block: .32rem .18rem;
+}
+.evo-blog .paper-effect__whisker { top: .88rem; }
+.evo-blog .paper-effect__start,
+.evo-blog .paper-effect__end { top: .6rem; }
+.evo-blog .paper-effect__dot { top: .52rem; }
+.evo-blog .paper-effect__interval { font-variant-numeric: tabular-nums lining-nums; }
+.evo-blog figure.paper-effect figcaption,
+.evo-blog figure.advisor-viz figcaption,
+.evo-blog .evo-article__tablewrap table caption,
+.evo-blog .research-booktabs-wrap table caption {
+  font-family: var(--font-editorial, Georgia, serif);
+  font-size: var(--research-evidence-caption-size);
+  line-height: 1.62;
+  font-weight: 400;
+  color: var(--research-evidence-muted);
+}
+.evo-blog figure.paper-effect figcaption strong,
+.evo-blog figure.advisor-viz figcaption strong,
+.evo-blog .evo-article__tablewrap table caption strong,
+.evo-blog .research-booktabs-wrap table caption strong {
+  color: var(--research-evidence-ink);
+  font-weight: 680;
+}
+.evo-blog .evo-article__tablewrap,
+.evo-blog .research-booktabs-wrap { margin-block: 1.1rem 1.35rem; }
+.evo-blog .evo-article__tablewrap thead th,
+.evo-blog .research-booktabs-wrap thead th {
+  font-weight: 650;
+  letter-spacing: 0;
+}
+@media (max-width:700px) {
+  .evo-blog figure.paper-effect[data-paper-figure="interval"] {
+    padding: .8rem 0;
+    margin-block: 1.05rem 1.35rem;
+  }
+}
+@media print {
+  .evo-blog figure.paper-effect[data-paper-figure="interval"] {
+    break-inside: avoid;
+    border-color: #777;
+  }
+}

@@ -173,6 +173,34 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('第二组只是更换随机设置');
     expect(responses).toContain('95% 置信区间');
   });
+  it('preserves source-backed owner corrections and progress with no fabricated hour estimates',()=>{
+    const progress=read('src/data/openEvoAdvisorProgress.ts');
+    const scoping=read('src/styles/research-evidence-hierarchy.css');
+    expect(responses).toContain('我们先做了<strong>三组历史实验</strong>');
+    expect(responses).toContain('不是完全严格对照');
+    expect(responses).not.toContain('不构成完全受控的三臂试验');
+    expect(responses).not.toContain('就地链接');
+    expect(responses).toContain('我们先观察到一个问题');
+    expect(responses).toContain('我们想先探索两个方向');
+    expect(responses).toContain('160 轮长跑末尾的第 152–159 轮');
+    expect(responses).toContain('href={checkpointEvidence.capacity}');
+    expect(responses).toContain("ADVISOR_QUESTION_PROGRESS[id as keyof typeof ADVISOR_QUESTION_PROGRESS]");
+    expect(responses).toContain('data-question-status={q.id}');
+    expect(responses).toContain('data-question-workload={q.id}');
+    expect(responses).toContain('时间与资源：');
+    expect(progress).toContain("ADVISOR_PROGRESS_AS_OF = '2026-10-18'");
+    for(let n=1;n<=10;n++)expect(progress).toMatch(new RegExp('\\bq'+String(n).padStart(2,'0')+': \\{'));
+    expect(progress).toContain('1,280 次评测');
+    expect(progress).toContain('122,880 次训练任务');
+    expect(progress).toContain('没有可信');
+    expect(progress).not.toContain('预估 3 小时');
+    expect(ADVISOR_QUESTIONS.find(x=>x.id==='q02')?.finding).toContain('3 个训练单元');
+    expect(scoping).toContain('.evo-blog figure.paper-effect[data-paper-figure="interval"]');
+    expect(scoping).toContain('border-radius: 0');
+    expect(scoping).toContain('box-shadow: none');
+    expect(responses).toContain('id="q09-context" widthTier="double"');
+    expect(responses).toContain('id="q04-posthoc" widthTier="single"');
+  });
   it('uses 33 real Q01 curve points, preserves the science CSV bytes, and exposes second-article question bodies',()=>{
     const visual=read('src/components/research/AdvisorTenEvidenceVisual.astro');
     const csv=read('src/data/research-evidence/advisor-q01-three-way-curve.csv');
@@ -284,7 +312,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(questions).not.toContain('20.4 GiB');
     expect(responses).toContain('<OpenEvoSeedWorld4Reproduction />');
     expect(responses).toContain('2026-10-15');
-    expect(responses).toContain('三组工程模型共完成 1,536 次冻结开发题评测');
+    expect(responses).toContain('三组工程模型共 1,536 次做题评测');
     expect(responses).toContain('于 <time datetime="2026-10-16">2026-10-16</time> 00:45');
     expect(responses).not.toContain('17:43（新加坡时间）');
     expect(q03).toContain('data-evidence-as-of="2026-10-16"');

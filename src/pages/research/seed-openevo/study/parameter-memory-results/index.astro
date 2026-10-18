@@ -11,6 +11,16 @@ import MathFormula from '../../../../../components/common/MathFormula.astro';
 import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
 import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from '../../../../../data/openEvoAdvisorTenQuestions';
 import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeeting';
+import { ADVISOR_QUESTION_PROGRESS, ADVISOR_PROGRESS_AS_OF } from '../../../../../data/openEvoAdvisorProgress';
+
+// A green state is a *bounded answer* for that question, never proof that all
+// related generalization experiments or any server job has finished.
+const evidenceLabels = {
+  'bounded-answer': '绿 · 这部分有回答',
+  partial: '黄 · 还有关键证据要补',
+  unrun: '红 · 正式验证尚未开始',
+} as const;
+const progressOf = (id: string) => ADVISOR_QUESTION_PROGRESS[id as keyof typeof ADVISOR_QUESTION_PROGRESS];
 
 // Section 3 is the experiment-response chapter; source IDs intentionally stay q01–q10.
 const responseHeadingNumber = (id: string) => '3.Q'+Number(id.slice(1));
@@ -64,7 +74,9 @@ const q17Effects = {
     </header>
     <div class="evo-article__abstract">
       <h2>摘要</h2>
-      <p>三条长期路线在同一冻结 128 题上的 Task Score 分别为 <strong>60.72、45.98 和 20.77/100</strong>，完整成功分别为 50、32 和 10 题；这些历史结果不构成完全受控的三臂试验。第 152–159 轮的 rank32 容量筛选使参数文件缩小约 75%，平均得分比 rank128 低 1.79 分，置信区间仍跨零。另一份 R159 在<strong>固定的 64 道研究用购物题</strong>上的结果为 <strong>60.1088/100、18/64 完整成功</strong>，不能替代 128 题终评。旧任务遗忘、文字载体因果收益和新任务复现仍未得到决定性回答。独立公开 SEED 复现的三组工程模型共完成 1,536 次冻结开发题评测，两组前后模型在相同题目上的平均分差，其 95% 置信区间都包含零；正式 SFT 尚未启动，Stage2 仍为 0/160。10 月 15 日还补入 Q17 R129/R159 的参数压缩、方向与文字提示干预、队列任务保持测量，见第 9 节；这些结果不代表 13 份 checkpoint 全部完成验收。各问的来源与<a href="/research/seed-openevo/study/advisor-questions/">研究背景</a>在正文就地链接。</p>
+      <p>我们先做了<strong>三组历史实验</strong>：普通 OpenEVO、把历史参数整合到固定容量里的 Bounded，以及在 Bounded 上增加历史 β/GDR 写入控制的方案。这三组模型在同一批固定的 128 道购物题上，平均 Task Score 分别为 <strong>60.72、45.98、20.77 分（满分 100）</strong>，完整做对的题数分别是 <strong>50、32、10 题</strong>。这些实验<strong>不是完全严格对照</strong>，所以成绩只能帮助我们做一个大致判断，还不能把差别都归因于某项参数机制。</p>
+      <p>我们还想知道：训练到接近结束时，长期参数能否保存得更小？因此在 <strong>160 轮长跑末尾的第 152–159 轮</strong>，比较了 rank32 与 rank128 的同题结果。rank32 的长期 LoRA 参数文件缩小约 75%，平均分低 1.79 分，但现有置信区间仍包含零；<a href="#capacity">第 5 节说明具体做法</a>，也可查看<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.capacity} />对应的原始测量记录</a>。另一个 R159 模型在固定 64 道研究用购物题上取得 <strong>60.1088/100、18/64 道完整成功</strong>，这不能替代前面的 128 题成绩。</p>
+      <p>旧任务是否遗忘、文字经验到底贡献多少，以及换新题能否复现，仍缺关键证据。独立 SEED 复现已完成三组工程模型共 1,536 次做题评测，但正式训练的 Stage2 仍为 0/160。10 月 15 日又增加了 Q17 的压缩、方向和文字提示测试，它们的比较对象不同，不能混成一次实验。每问的研究背景与原始记录都可从对应段落直接打开。</p>
     </div>
     <OpenEvoArticleNavigation current="results" />
     <nav class="evo-article__toc" aria-label="实验文章目录">
@@ -87,7 +99,8 @@ const q17Effects = {
     <section id="context" class="evo-article__section">
       <h2>1 研究问题：长期学习的效率与任务能力</h2>
       <p>OpenEVO 把智能体的任务经验保留到后续轮次。在我们的 WebShop 实验中，Qwen3-1.7B 模型需要按照购物要求搜索商品、选择规格、完成购买。我们用 Task Score（满足要求的程度，满分 100）与完整成功数衡量实际任务能力。</p>
-      <p>普通 OpenEVO 逐轮保留新的低秩参数组件；Bounded 把历史整合进固定容量；历史 β 机制进一步控制更新写入。三条路线首先回答“保留历史越来越贵时，模型还能学会多少”这个问题。相关的 LoRA、SD-LoRA、Bounded 和 β 数学结构，在第一篇 <a href="/research/seed-openevo/study/openevo-methods/">方法文章</a>中详细介绍。</p>
+      <p>我们先观察到一个问题：普通 OpenEVO 会在逐轮学习中不断保留新的低秩参数组件。训练时间越长，需要保存和处理的历史参数也越多，但做题成绩不一定一直提高。于是我们想先探索两个方向：<strong>一是让长期参数状态保持固定大小，减少计算和存储负担；二是控制新经验写入多少，以及沿什么方向更新。</strong></p>
+      <p>围绕这两个方向，我们做了三组历史实验：<strong>普通 OpenEVO</strong> 作为逐轮增加组件的参考；<strong>Bounded</strong> 把历史更新整合进固定大小的状态；<strong>Bounded + 历史 β/GDR</strong> 进一步尝试控制新参数的写入。这三组实验有不同的训练历史，并不是完全严格对照。想了解具体的参数更新规则，可以打开第一篇<a href="/research/seed-openevo/study/openevo-methods/">方法说明</a>。</p>
     </section>
     <section id="experiment" class="evo-article__section">
       <h2>2 我们做了哪些实验，分别想回答什么？</h2>
@@ -111,7 +124,7 @@ const q17Effects = {
         </div>
         <div>
           <dt><a href="/research/seed-openevo/study/advisor-questions/#q04">长期参数需要保留多大容量？</a></dt>
-          <dd>在第 152–159 轮，让 rank32 与 rank128 做相同的题，尽可能使用相同的随机条件，共比较 1,024 组结果，并记录文件大小与分数。</dd>
+          <dd>在 160 轮长跑接近结束时，选取末尾第 152–159 轮的模型，用同样的题和尽可能相同的随机条件比较 rank32 与 rank128，共取得 1,024 组结果。<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.capacity} />查看为什么比较这些末尾轮次的实验安排与原始记录</a>。</dd>
         </div>
         <div>
           <dt><a href="/research/seed-openevo/study/advisor-questions/#q07">参数更新方向会影响能力吗？</a></dt>
@@ -122,11 +135,20 @@ const q17Effects = {
     </section>
     <section class="evo-article__section" id="responses" data-response-experiments>
       <h2>3 十个研究问题，我们得到了哪些回答？</h2>
-      <p>Q01–Q10 逐一对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。每个问题标题下都有直达第二篇<strong>问题正文与背景</strong>的链接，以及本篇的实验做法、实际结果与证据缺口。</p>
+      <p>这里依次回应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇整理出的十个问题</a>。每问前面的绿、黄、红只表示<strong>这个具体问题</strong>的证据状态；即使标绿，也不能把局部结果理解成整个研究都结束了。黄色和红色的问题列出还差什么，以及已有工作计划中的实际任务量。<strong>预计小时数必须基于运行记录，不能随意猜。</strong></p>
+      <p class="evo-article__progress-asof">进度依据：截至 <time datetime={ADVISOR_PROGRESS_AS_OF}>2026 年 10 月 18 日</time> 读取的实验工作单。训练次数和评测次数是计划上限或尚待核账的工作量，不能当作已经运行，也不能据此计算准确剩余时间。</p>
       <OpenEvoQuestionIndex questions={ADVISOR_QUESTIONS.map(q=>({...q,headingNumber:responseHeadingNumber(q.id)}))} />
       {ADVISOR_QUESTIONS.map(q => (
         <article class="evo-article__question" id={'response-'+q.id} data-experiment-response={q.id} aria-labelledby={'response-'+q.id+'-title'}>
-          <header class="evo-article__question-header"><h3 id={'response-'+q.id+'-title'}><span class="evo-article__qnum">{responseHeadingNumber(q.id)}</span> {q.title}</h3></header>
+          <header class="evo-article__question-header">
+            <span class={'evo-article__research-status evo-article__research-status--'+q.evidenceState} data-question-status={q.id} data-evidence-state={q.evidenceState}>{evidenceLabels[q.evidenceState]}</span>
+            <h3 id={'response-'+q.id+'-title'}><span class="evo-article__qnum">{responseHeadingNumber(q.id)}</span> {q.title}</h3>
+          </header>
+          <div class="evo-article__question-progress" data-question-workload={q.id}>
+            <p><strong>{q.evidenceState==='bounded-answer' ? '还需要进一步验证：' : '还差什么：'}</strong>{progressOf(q.id).remaining}</p>
+            <p><strong>工作量：</strong>{progressOf(q.id).effort}</p>
+            <p class="evo-article__progress-time"><strong>时间与资源：</strong>{progressOf(q.id).time} <a href={progressOf(q.id).source} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={progressOf(q.id).source} />{progressOf(q.id).sourceLabel} ↗</a></p>
+          </div>
           <p class="evo-article__note" data-question-origin-link={q.id}><a href={'/research/seed-openevo/study/advisor-questions/#'+q.id}>查看第二篇的 {q.id.toUpperCase()} 问题正文与背景 ↗</a>{q.id==='q10' && ' · 会后新增问题'}</p>
           <p><strong>实验怎么做：</strong>{q.experiment}</p>
           {q.id==='q01' && <p class="evo-article__note" data-q01-iteration-definition>这里的“轮”是 OpenEVO 反复执行购物任务、整理经验并继续学习的迭代，不是把同一份固定训练集完整遍历一次的 epoch。部分轮次没有实际更新参数；普通 OpenEVO 的曲线按实际更新次数统计。</p>}
@@ -140,14 +162,14 @@ const q17Effects = {
           {q.id==='q04' && (
             <div class="evo-article__followup" data-q17-inline="q04">
               <p><strong>10 月 15 日新增：</strong>在另一条普通 DirectApply 路线上，R159 训练结束后截断为 rank128/BF16，参数因子文件从约 1,021 MB 缩至 102.8 MB；下面测量的是<strong>训练后压缩</strong>，与上面的 rank32/rank128 续学实验不同。</p>
-              <PaperIntervalPlot id="q04-posthoc" widthTier="double" title="R159 训练后压缩对做题分数的影响" unit="Task Score 分 / 100" min={-6} max={3} ticks={[-6,-3,0,3]} effects={q17Effects.capacity} comparison="R159 训练后的 rank128/BF16 压缩版 − 未压缩原模型；固定 64 道购物题" negativeLabel="压缩后成绩更低" positiveLabel="压缩后成绩更高" takeaway="首次测量平均低 0.87 分；两次 95% 区间都包含 0。现有证据尚不能确定压缩会稳定掉分，也没有证明压缩完全无损。" caption="图 4｜Q04 训练后压缩：压缩版减原模型。两组随机设置都在事先固定的相同 64 道购物题上比较压缩前后的分数；第二次仍然使用同一批题。两个区间均包含零；BF16 数值重构本身也可能改变行为，尚无紧凑部署速度测量。" />
+              <PaperIntervalPlot id="q04-posthoc" widthTier="single" title="R159 训练后压缩对做题分数的影响" unit="Task Score 分 / 100" min={-6} max={3} ticks={[-6,-3,0,3]} effects={q17Effects.capacity} comparison="R159 训练后的 rank128/BF16 压缩版 − 未压缩原模型；固定 64 道购物题" negativeLabel="压缩后成绩更低" positiveLabel="压缩后成绩更高" takeaway="首次测量平均低 0.87 分；两次 95% 区间都包含 0。现有证据尚不能确定压缩会稳定掉分，也没有证明压缩完全无损。" caption="图 4｜Q04 训练后压缩：压缩版减原模型。两组随机设置都在事先固定的相同 64 道购物题上比较压缩前后的分数；第二次仍然使用同一批题。两个区间均包含零；BF16 数值重构本身也可能改变行为，尚无紧凑部署速度测量。" />
               <p class="evo-article__note"><a href="#q17-capacity">查看完整 Q17 压缩表和原始收据 ↓</a></p>
             </div>
           )}
           {q.id==='q07' && (
             <div class="evo-article__followup" data-q17-inline="q07">
               <p><strong>10 月 15 日新增：</strong>对另一条 DirectApply 路线的 R129/R159，将最新拟合参数组件系数置零，两模型各有 31.25% 的题出现动作变化；但得分差区间都包含 0。它与 Bounded OFF 第 156 轮的方向反转<strong>不是同一模型、同一干预</strong>。</p>
-              <PaperIntervalPlot id="q07-zero-latest" widthTier="double" title="DirectApply 最新组件置零的局部效果" unit="Task Score 分 / 100" min={-8} max={3} ticks={[-8,-4,0,3]} effects={q17Effects.direction} comparison="最新参数组件置零后 − 未修改模型；固定 64 道购物题" negativeLabel="置零后成绩更低" positiveLabel="置零后成绩更高" caption="图 5｜Q07 最新组件置零：相对原模型的平均得分变化；同一批固定的 64 道购物题，两个保存点的原始/置零/反向共 384 次任务测量。这里的零点是无净得分变化，不能代替旧 Q07 的 −10.06 分方向反转结果。" />
+              <PaperIntervalPlot id="q07-zero-latest" widthTier="single" title="DirectApply 最新组件置零的局部效果" unit="Task Score 分 / 100" min={-8} max={3} ticks={[-8,-4,0,3]} effects={q17Effects.direction} comparison="最新参数组件置零后 − 未修改模型；固定 64 道购物题" negativeLabel="置零后成绩更低" positiveLabel="置零后成绩更高" caption="图 5｜Q07 最新组件置零：相对原模型的平均得分变化；同一批固定的 64 道购物题，两个保存点的原始/置零/反向共 384 次任务测量。这里的零点是无净得分变化，不能代替旧 Q07 的 −10.06 分方向反转结果。" />
               <p class="evo-article__note"><a href="#q17-direction">查看新组件干预的实验范围 ↓</a></p>
             </div>
           )}
@@ -203,7 +225,7 @@ const q17Effects = {
     </section>
     <section id="capacity" class="evo-article__section">
       <h2>5 rank32 让长期 LoRA 参数更新文件缩小约四分之三</h2>
-      <p>第 152–159 轮使用 1,024 组同题比较结果，检查长期状态 rank128 与 rank32。这里缩小的是保存历史更新的 LoRA 参数文件：rank32 为 51.4 MB，rank128 为 205.6 MB。<strong>这个比例不包括基础模型权重，不能解读成整个模型文件缩小了约 75%。</strong></p>
+      <p>在 160 轮长跑接近结束时，我们选取<strong>最后八轮（第 152–159 轮）</strong>保存的模型，共用 1,024 组同题比较结果，检查长期状态 rank128 与 rank32。这组比较针对训练后段的容量选择，<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.capacity} />原始实验安排和数据记录</a>可核对。这里缩小的是保存历史更新的 LoRA 参数文件：rank32 为 51.4 MB，rank128 为 205.6 MB。<strong>这个比例不包括基础模型权重，不能解读成整个模型文件缩小了约 75%。</strong></p>
       <AdvisorTenEvidenceVisual variant="q04" />
       <p><strong>在这批任务上，rank32 的平均 Task Score 低 1.79 分。</strong>为了判断抽样波动，我们将同任务、同随机设置下的两个结果相减，对配对差值做多次有放回的重新抽样，并计算平均差。</p>
       <MathFormula latex={String.raw`d_i=\mathrm{Score}_{32,i}-\mathrm{Score}_{128,i}`} label="同题配对差值的定义" />
