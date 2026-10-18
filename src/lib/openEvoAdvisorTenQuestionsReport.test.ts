@@ -457,4 +457,26 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(methods).toContain('<MathFormula');
   });
 
+  it('names the exact historical compute arms and decodes the shared BUNDLE state for a cold reader',()=>{
+    // Two independent context-isolated source readers flagged these reader-risk
+    // hypotheses; they are NOT evidence that real humans actually misunderstood.
+    const oldTable='<th scope="col" data-numeric>历史方案 / h</th><th scope="col" data-numeric>改进方案 / h</th>';
+    const oldHeader='<h2>8 BUNDLE 的文字载体更新次数较少</h2>';
+    expect(responses).not.toContain(oldTable);
+    expect(responses).not.toContain(oldHeader);
+    expect(responses).toContain('普通 OpenEVO / h</th>');
+    expect(responses).toContain('Bounded（无历史 β）/ h</th>');
+    expect(responses).toContain('31.09</td><td data-numeric>2.02');
+    expect(responses).toContain('74.78</td><td data-numeric>56.25');
+    expect(responses).toContain('8 三条长期路线中，文字经验改写了多少次？');
+    expect(responses).toContain('OpenEVO 把每轮学习后留下的经验状态合称为 BUNDLE');
+    expect(responses).toContain('这些次数不等于读取次数');
+    expect(responses).toContain('Text Memory、Skill 和 Agent System');
+    // Do not fix an explanatory gap by newly bolding a technical term.
+    expect(responses).not.toContain('<strong>BUNDLE</strong>');
+    // Scientific claim boundaries must survive the editorial change.
+    expect(responses).toContain('这些实验不是完全严格对照');
+    expect(responses).toContain('不能替代 128 题终评');
+  });
+
 });

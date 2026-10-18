@@ -216,7 +216,7 @@ const q17Effects = {
       <div class="evo-article__tablewrap" tabindex="0" aria-label="历史参数更新与整段训练的耗时对照">
         <table>
           <caption>补充表 S5｜历史耗时对照：分别计时参数更新及含 rollout 的完整运行（小时）</caption>
-          <thead><tr><th scope="col">计时范围</th><th scope="col" data-numeric>历史方案 / h</th><th scope="col" data-numeric>改进方案 / h</th><th scope="col" data-numeric>耗时比</th></tr></thead>
+          <thead><tr><th scope="col">计时范围</th><th scope="col" data-numeric>普通 OpenEVO / h</th><th scope="col" data-numeric>Bounded（无历史 β）/ h</th><th scope="col" data-numeric>耗时比</th></tr></thead>
           <tbody>
             <tr><th scope="row">累计参数更新</th><td data-numeric>31.09</td><td data-numeric>2.02</td><td data-numeric>15.36×</td></tr>
             <tr><th scope="row">完整运行（含 rollout）</th><td data-numeric>74.78</td><td data-numeric>56.25</td><td data-numeric>1.33×</td></tr>
@@ -250,8 +250,8 @@ const q17Effects = {
       <p>第 156 轮的方向反转使 Task Score 下降约 10.06 分，配对 95% 区间为下降 5.60–15.02 分，且在八次反转中通过预先设定的多重比较校正。这支持<strong>该模型状态、该轮更新和这批题目上的局部因果效应</strong>，没有证明所有更新方向都应采用相同的在线控制规则。<a href={checkpointEvidence.direction} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.direction} />查看原方向干预实验和多重校正 ↗</a></p>
     </section>
     <section id="bundle" class="evo-article__section">
-      <h2>8 BUNDLE 的文字载体更新次数较少</h2>
-      <p>OpenEVO 的经验除了参数，还可以进入 Text Memory、Skill 和 Agent System。长期实验的收据显示，参数更新很频繁，文字状态实际改写得少得多。</p>
+      <h2>8 三条长期路线中，文字经验改写了多少次？</h2>
+      <p>OpenEVO 把每轮学习后留下的经验状态合称为 BUNDLE，里面有参数更新，也可以有 Text Memory、Skill 和 Agent System 这三种文字经验。我们在这里统计的是各部分的内容被改写过多少次：长期实验中参数更新很频繁，文字内容实际改写得少得多。这些次数不等于读取次数，也不能直接说明某一部分带来多少任务收益。</p>
       <div class="evo-article__tablewrap" tabindex="0" aria-label="BUNDLE 更新计数">
         <table>
           <caption>表 5｜三条历史路线中不同载体的内容更新次数</caption>
