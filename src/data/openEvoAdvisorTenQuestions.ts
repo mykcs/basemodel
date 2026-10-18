@@ -44,10 +44,11 @@ export const ADVISOR_QUESTIONS = [
     title: '开始逐轮学习之前，怎样训练出一个更好的初始模型？',
     opening: 'OpenEVO 开始长期逐轮学习之前，先要用已有经验训练出一套起始参数。这里比较 SFT 与 OPSD 两种训练起点的方式。哪种初始训练方式更好，和后续多轮学习能否继续提高能力，是两个需要分别检验的问题。',
     experiment: '先让相同的 Qwen 模型学习同一批 WebShop 任务经验，并保持训练步数、参数容量等条件一致。SFT 直接学习示范回复；OPSD 在训练时让教师视角看到额外的经验总结，再指导学生学习。这里测试的是第一阶段怎样训练初始模型，还没有替代后续的逐轮学习实验。',
-    finding: '早期同一批 32 道题上，OPSD 的平均 Task Score 是 36.01/100，SFT 是 34.96/100；完整做对的题目分别是 0/32、3/32。平均分差的 95% 置信区间跨过零，现阶段没有明确赢家。另有六次固定设置的训练在 10 月 4 日核账均已完成，但六组统一评测结果尚未封存。',
+    finding: '早期同一批 32 道题上，OPSD 的平均 Task Score 是 36.01/100，SFT 是 34.96/100；完整做对的题目分别是 0/32、3/32。平均分差的 95% 置信区间跨过零，现阶段没有明确赢家。10 月 4 日另有六次历史训练设置核账完成；较新的 Q02 匹配训练方案截至 10 月 18 日还有三项训练未完成，并报告磁盘空间不足。两批实验不能合并算作六组正式比较已完成。',
     interpretation: '这组实验先比较两种训练方式能否给后续学习提供更好的起点。平均分、完整成功数和训练损失回答不同的问题；SFT 或 OPSD 在第一阶段的局部表现，不能直接回答“后续持续学习是否值得”。',
-    unknown: '六种固定训练设置都已运行，但它们在同一套固定购物题上的完整对照成绩尚未封存。早期 32 题的结果无法确定哪种初始训练方式在新任务上更好，更没有比较两种方式经过长期逐轮学习后的差异。',
+    unknown: '较新的匹配训练工作包尚有三项训练、固定题评估和配对统计未完成；旧六项核账不能替代新工作包的完成证明。早期 32 题的结果无法确定哪种初始训练方式在新任务上更好，更没有比较两种方式经过长期逐轮学习后的差异。',
     evidence: [
+      { label: 'Q02 · 当前匹配训练工作包与剩余单元', href: 'https://github.com/mykcs/openevo-experiment/pull/629' },
       { label: 'Q02 · 六次训练全部 PASS 的 10 月 4 日核账', href: 'https://github.com/mykcs/openevo-experiment/pull/629#issuecomment-5976961612' },
       { label: '早期目标消融网页', href: 'https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoStage1LearningObjectives.astro' },
     ],
@@ -95,7 +96,7 @@ export const ADVISOR_QUESTIONS = [
     experiment: '先让普通 OpenEVO、Bounded 和带历史 β/GDR 的模型各自完成固定的 128 道购物题，核对训练结束的得分。再对较新的简单 β 检查参数更新方向是否保持一致；它的正式做题成绩还没有完成同题比较。',
     finding: '同一套 128 题的历史成绩是：普通 OpenEVO 60.72 分、Bounded 45.98 分、Bounded 加历史 β/GDR 20.77 分。较新的简单 β 在第 120 轮测得缩放前后方向余弦约 0.9992，只说明这一处更新方向基本保持一致。',
     interpretation: '历史 β/GDR 路线的成绩比 Bounded 更低，需要继续分清写入规则与训练历史的作用。简单 β 的方向检查结果不等于它已经提高了做题成绩。',
-    unknown: '新的简单 β 还缺少正式的同题能力比较和不确定性分析。普通 OpenEVO 是更早的历史路线，不能将三组终评误当成从完全相同起点训练的随机三组试验。',
+    unknown: '新的简单 β 工作包仍在训练，记录已完成 R120 更新但后续训练、1,280 次评估和最终配对区间尚未封存。普通 OpenEVO 是更早的历史路线，不能将三组终评误当成从完全相同起点训练的随机三组试验。',
     evidence: [
       { label: 'Q05 · 简单 β 训练进度与方向收据', href: 'https://github.com/mykcs/openevo-experiment/pull/632' },
       { label: '已有三路线冻结终评', href: 'https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro' },
