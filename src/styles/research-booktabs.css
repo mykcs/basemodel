@@ -125,3 +125,22 @@ table.research-booktabs td.paper-main-value {
 .evo-blog .evo-article__tablewrap :is(th, td):last-child {
   padding-inline-end: 0;
 }
+
+/* Study-series typography contract: native and component tables are peers. */
+.evo-blog table.research-booktabs,
+.evo-blog .evo-article__tablewrap table {
+  font-size: .93em;
+  line-height: 1.5;
+}
+.evo-blog table.research-booktabs caption,
+.evo-blog .evo-article__tablewrap table caption {
+  font-size: var(--research-evidence-caption-size,1rem);
+  line-height: 1.6;
+  font-weight: 650;
+  color: var(--paper-ink);
+  margin-bottom: .55rem;
+}
+@media(max-width:640px){
+  .evo-blog table.research-booktabs,
+  .evo-blog .evo-article__tablewrap table {font-size:.91em}
+}
