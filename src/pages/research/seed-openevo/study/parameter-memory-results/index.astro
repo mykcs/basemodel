@@ -81,8 +81,8 @@ const q17Effects = {
     </header>
     <div class="evo-article__abstract">
       <h2>摘要</h2>
-      <p>我们做了三组长期学习实验：<strong>普通 OpenEVO</strong>（逐轮保留新的低秩参数组件）、<strong>固定 state 的 Bounded</strong>（把历史更新整合进固定容量）、<strong>Bounded + 历史 β/GDR</strong>（进一步控制写入）。训练结束后，三组模型在同一批事先固定的 128 道购物题上，Task Score 依次为 <strong>60.72、45.98、20.77/100</strong>，完整成功分别为 <strong>50、32、10 题</strong>。<a href="#main-results">第 4 节列出完整结果和原始收据</a>。这些实验<strong>不是完全严格的对照</strong>，结果先作为大致判断，不能把分数差全部归因于某一个改动。</p>
-      <p>另外，在整个 160 轮训练<strong>快结束的第 152–159 轮</strong>，我们比较了 rank128 和更小的 rank32（<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.capacity} />实验来源</a>）。这次只新增 rank32 在最后 8 轮的训练和做题记录，rank128 用已经封存的同轮次历史结果，没有重新训练。两者同题比较显示：长期 LoRA 参数更新文件缩小约 75%，rank32 平均低 1.79 分，但 95% 置信区间跨过 0。<a href="#capacity">为什么选末尾 8 轮、以及统计结果如何理解，见第 5 节</a>；它不是整段训练都用 rank32 的结论。</p>
+      <p>我们做了三组长期学习实验：普通 OpenEVO（逐轮保留新的低秩参数组件）、固定 state 的 Bounded（把历史更新整合进固定容量）、Bounded + 历史 β/GDR（进一步控制写入）。训练结束后，三组模型在同一批事先固定的 128 道购物题上，Task Score 依次为 <strong>60.72、45.98、20.77/100</strong>，完整成功分别为 50、32、10 题。<a href="#main-results">第 4 节列出完整结果和原始收据</a>。这些实验不是完全严格的对照，结果先作为大致判断，不能把分数差全部归因于某一个改动。</p>
+      <p>另外，在整个 160 轮训练快结束的第 152–159 轮，我们比较了 rank128 和更小的 rank32（<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.capacity} />实验来源</a>）。这次只新增 rank32 在最后 8 轮的训练和做题记录，rank128 用已经封存的同轮次历史结果，没有重新训练。两者同题比较显示：长期 LoRA 参数更新文件缩小约 75%，rank32 平均低 1.79 分，但 95% 置信区间跨过 0。<a href="#capacity">为什么选末尾 8 轮、以及统计结果如何理解，见第 5 节</a>；它不是整段训练都用 rank32 的结论。</p>
       <p>我们还测了另一份 R159 在<strong>固定的 64 道研究用购物题</strong>上的成绩：<strong>60.1088/100、18/64 完整成功</strong>，不能替代 128 题终评。旧任务遗忘、文字状态的独立收益和新任务复现还没有确定答案。公开 SEED 的独立复现中，三组工程模型共完成 1,536 次冻结开发题评测（使用事先固定的题单），两组前后模型在相同题上的平均分差，其 95% 区间均包含 0；正式 SFT 尚未启动，Stage2 仍为 0/160。10 月 15 日还补入 Q17 R129/R159 的容量、方向、文字与旧队列测量，<a href="#checkpoint-evidence">详见第 9 节</a>；它们不代表 13 份 checkpoint 已全部测完。<a href="/research/seed-openevo/study/advisor-questions/">学长十问的原始问题与背景</a>及每项实验的具体来源，分别在对应段落给出。</p>
     </div>
     <OpenEvoArticleNavigation current="results" />
@@ -106,7 +106,7 @@ const q17Effects = {
     <section id="context" class="evo-article__section">
       <h2>1 研究问题：长期学习的效率与任务能力</h2>
       <p>OpenEVO 把智能体的任务经验保留到后续轮次。在我们的 WebShop 实验中，Qwen3-1.7B 模型需要按照购物要求搜索商品、选择规格、完成购买。我们用 Task Score（满足要求的程度，满分 100）与完整成功数衡量实际任务能力。</p>
-      <p>在普通 OpenEVO 的长期实验里，我们观察到一个问题：每一轮都增加新的低秩参数组件，历史越积越多，保存和参数更新越来越重。我们想先探索两个方向：<strong>第一，长期 state 能不能一直保持固定大小？第二，固定大小后，新经验该怎么写进去？</strong>于是保留普通 OpenEVO 作为历史参照，尝试用 Bounded 把旧更新整合到固定容量里，再在 Bounded 上尝试历史 β/GDR 写入控制。这样形成了三条已运行的路线。我们先看它们能否省计算、还能做对多少题；具体的 LoRA、SD-LoRA、Bounded 和 β 机制可读<a href="/research/seed-openevo/study/openevo-methods/">第一篇方法介绍</a>。</p>
+      <p>在普通 OpenEVO 的长期实验里，我们观察到一个问题：每一轮都增加新的低秩参数组件，历史越积越多，保存和参数更新越来越重。我们想先探索两个方向：第一，长期 state 能不能一直保持固定大小？第二，固定大小后，新经验该怎么写进去？于是保留普通 OpenEVO 作为历史参照，尝试用 Bounded 把旧更新整合到固定容量里，再在 Bounded 上尝试历史 β/GDR 写入控制。这样形成了三条已运行的路线。我们先看它们能否省计算、还能做对多少题；具体的 LoRA、SD-LoRA、Bounded 和 β 机制可读<a href="/research/seed-openevo/study/openevo-methods/">第一篇方法介绍</a>。</p>
     </section>
     <section id="experiment" class="evo-article__section">
       <h2>2 我们做了哪些实验，分别想回答什么？</h2>
@@ -141,7 +141,7 @@ const q17Effects = {
     </section>
     <section class="evo-article__section" id="responses" data-response-experiments>
       <h2>3 十个研究问题，我们得到了哪些回答？</h2>
-      <p>Q01–Q10 逐一对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。标题前的状态表示<strong>科学问题回答到哪一步</strong>：绿色＝已有明确的局部结论，黄色＝做过实验但关键问题尚未回答，红色＝核心验证仍未完成。每一问都有实验做法、实际发现、缺口和下一步投入。所列人日是粗略规划估计；没有真实计时的 GPU 训练和推理不填写臆测小时数。</p>
+      <p>Q01–Q10 逐一对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。标题前的状态表示科学问题回答到哪一步：绿色＝已有明确的局部结论，黄色＝做过实验但关键问题尚未回答，红色＝核心验证仍未完成。每一问都有实验做法、实际发现、缺口和下一步投入。所列人日是粗略规划估计；没有真实计时的 GPU 训练和推理不填写臆测小时数。</p>
       <OpenEvoQuestionIndex questions={responseQuestions.map(q=>({...q,headingNumber:responseHeadingNumber(q.id)}))} />
       {responseQuestions.map(q => (
         <article class="evo-article__question" id={'response-'+q.id} data-experiment-response={q.id} aria-labelledby={'response-'+q.id+'-title'}>
@@ -228,7 +228,7 @@ const q17Effects = {
     </section>
     <section id="capacity" class="evo-article__section">
       <h2>5 训练最后 8 轮：长期参数从 rank128 缩到 rank32 会怎样？</h2>
-      <p>整个长期实验共 160 轮。我们选择接近结束的最后 8 轮（第 152–159 轮），是因为此前已有 rank128 在同一阶段的封存续训结果。本次只新增 rank32 的这段续训，再把两组在同轮次、同任务上的结果配对比较；没有重跑历史 rank128。这能先检查训练后段的成绩和文件大小，<strong>不能据此声称整个 160 轮都得到同样结果</strong>。这 8 轮有 1,024 组同题比较，<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.capacity} />对应实验记录</a>。这里缩小的是保存历史更新的 LoRA 参数文件：rank32 为 51.4 MB，rank128 为 205.6 MB。<strong>这个比例不包括基础模型权重，不能解读成整个模型文件缩小了约 75%。</strong></p>
+      <p>整个长期实验共 160 轮。我们选择接近结束的最后 8 轮（第 152–159 轮），是因为此前已有 rank128 在同一阶段的封存续训结果。本次只新增 rank32 的这段续训，再把两组在同轮次、同任务上的结果配对比较；没有重跑历史 rank128。这能先检查训练后段的成绩和文件大小，不能据此声称整个 160 轮都得到同样结果。这 8 轮有 1,024 组同题比较，<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.capacity} />对应实验记录</a>。这里缩小的是保存历史更新的 LoRA 参数文件：rank32 为 51.4 MB，rank128 为 205.6 MB。<strong>这个比例不包括基础模型权重，不能解读成整个模型文件缩小了约 75%。</strong></p>
       <AdvisorTenEvidenceVisual variant="q04" />
       <p><strong>在这批任务上，rank32 的平均 Task Score 低 1.79 分。</strong>为了判断抽样波动，我们将同任务、同随机设置下的两个结果相减，对配对差值做多次有放回的重新抽样，并计算平均差。</p>
       <MathFormula latex={String.raw`d_i=\mathrm{Score}_{32,i}-\mathrm{Score}_{128,i}`} label="同题配对差值的定义" />
