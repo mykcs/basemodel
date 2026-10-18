@@ -400,7 +400,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
   it('uses owner examples to guard the reading sequence, not cosmetic bold as a stand-in for explanation',()=>{
     const summary=responses.split('<div class="evo-article__abstract">')[1]?.split('</div>')[0] ?? '';
     const intro=responses.split('<section id="context"')[1]?.split('</section>')[0] ?? '';
-    const plain=(source:string)=>source.replace(/<\\/?strong>/g,'');
+    const plain=(source:string)=>source.replaceAll('<strong>','').replaceAll('</strong>','');
     // Real known-bad example: bare score first, method identity is missing.
     const historicBad='三条长期路线在同一冻结 128 题上的 Task Score 分别为 60.72、45.98 和 20.77/100';
     const explainsArms=(source:string)=>{
