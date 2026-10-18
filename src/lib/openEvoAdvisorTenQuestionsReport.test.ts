@@ -373,7 +373,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     for(let n=1;n<=10;n++) expect(progressSource).toContain('q'+String(n).padStart(2,'0')+':');
     expect(progressSource).toContain('GPU 小时');
     const q04=ADVISOR_QUESTIONS.find(q=>q.id==='q04')!;
-    expect(q04.experiment).toContain('最后八轮（第 152–159 轮）');
+    expect(q04.experiment).toContain('末尾八轮（第 152–159 轮）');
     expect(q04.unknown).toContain('rank8、16、64');
     // Legitimate limits remain visible: 'red' means core verification missing,
     // not that completed engineering evidence has disappeared.
