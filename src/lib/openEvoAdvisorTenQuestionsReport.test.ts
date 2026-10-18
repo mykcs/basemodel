@@ -380,6 +380,27 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('1,536 次冻结开发题评测');
     expect(responses).toContain('正式 SFT 尚未启动，Stage2 仍为 0/160');
   });
+  it('anchors per-question red/yellow/green workload to current experiment sources, not old green receipts',()=>{
+    const q02=ADVISOR_QUESTIONS.find(q=>q.id==='q02')!;
+    expect(q02.finding).toContain('三项训练未完成');
+    expect(q02.finding).toContain('两批实验不能合并算作六组正式比较已完成');
+    expect(q02.unknown).toContain('旧六项核账不能替代');
+    expect(q02.evidence[0]?.href).toBe('https://github.com/mykcs/openevo-experiment/pull/629');
+    expect(ADVISOR_QUESTIONS.find(q=>q.id==='q05')?.unknown).toContain('1,280 次评估');
+    const progress=responses.split('const researchProgress = {')[1]?.split('} as const;')[0] ?? '';
+    for(let n=1;n<=10;n++) {
+      const q='q'+String(n).padStart(2,'0');
+      expect(progress).toMatch(new RegExp('\\b'+q+': \\{[^\\n]*source:'));
+    }
+    expect(progress).toContain("source:'https://github.com/mykcs/openevo-experiment/pull/629'");
+    expect(progress).toContain("source:'https://github.com/mykcs/openevo-experiment/pull/632'");
+    expect(progress).toContain('3 个训练单元');
+    expect(progress).toContain('40,960 次训练任务、1,664 次评估');
+    expect(progress).toContain('122,880 次训练任务和 4,224 次评估');
+    expect(responses).toContain('data-question-plan-source={q.id}');
+    expect(responses).toContain('进度按 2026 年 10 月 18 日的工作单核对');
+    expect(progress).toContain('GPU 小时');
+  });
   it('presents plots and research tables with one documented visual hierarchy without making every table a card',()=>{
     const blog=read('src/styles/openevo-research-blogs.css');
     const booktabs=read('src/styles/research-booktabs.css');

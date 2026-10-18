@@ -18,16 +18,16 @@ const responseHeadingNumber = (id: string) => '3.Q'+Number(id.slice(1));
 // 科研回答状态与后续投入是本页的规划快照；不覆盖实验仓库的运行账本。
 // 人日是人工准备/核对的粗略估计，不是测得的训练耗时或资源承诺。
 const researchProgress = {
-  q01: { tone:'green', label:'已有局部回答', next:'换一批预先冻结的购物题，复核三条路线各自的停止时点。', effort:'人工约 0.5–1 人日；至少三条路线各做一轮新题评测，机器耗时待实测。' },
-  q02: { tone:'yellow', label:'已有初步结果', next:'为已完成的六种初始训练设置补齐同题评测，再安排长期续学比较。', effort:'先需六组同题评测及约 1 人日核账；后续训练预算尚未测定。' },
-  q03: { tone:'red', label:'正式复现未完成', next:'完成正式数据 SFT、整段 160 轮 Stage2 与论文协议对应的终评。', effort:'至少一条正式训练链和一套终评；需先打通训练与存储，再实测 GPU 小时，不能用工程开发题耗时推算。' },
-  q04: { tone:'yellow', label:'容量结论尚不完整', next:'在同一任务与训练预算下继续比较 rank8、rank16、rank64，并检查后续学习能力。', effort:'至少三档容量的同题评测与续学核对，人工约 1–2 人日；GPU 时长待标定。' },
-  q05: { tone:'yellow', label:'历史对照已完成', next:'让新的简单 β 和 Bounded 在相同起点、任务与预算下重新比较任务成绩。', effort:'至少一组匹配对照及重复随机设置，人工约 1–2 人日；训练卡时未测。' },
-  q06: { tone:'yellow', label:'只有描述性测量', next:'给七个保存点的任务记录划出互不泄漏的训练集与验证集，检验概率指标能否预测失败。', effort:'需整理七组×64 题的记录并做一次独立验证，人工约 1 人日；若需重取概率还要追加推理。' },
-  q07: { tone:'green', label:'已有局部因果回答', next:'换保存点、模型与任务继续重复方向反转干预，再评估能否用于在线更新。', effort:'每新增一个保存点，至少再做一组原始/反向的同题评测；人工约半天起，GPU 耗时待测。' },
-  q08: { tone:'yellow', label:'遗忘尚未判定', next:'先找回每道旧题刚学会时的可比测量和任务身份，再与长期训练后对照。', effort:'人工约 1–2 人日核对旧账本；若早期锚点缺失，需要重新训练与评测，卡时未知。' },
-  q09: { tone:'yellow', label:'文字贡献尚未判定', next:'分别真正关闭三种文字载体的权限，在同一题单上与原条件配对比较。', effort:'至少三种关闭条件加一组原始条件、每组同批 64 题；人工约 0.5–1 人日，推理耗时待测。' },
-  q10: { tone:'red', label:'独立复现尚未完成', next:'先冻结新的任务流与排除规则，再完成三条独立随机流的正式训练及新题终评。', effort:'目标包含三条新训练流，每条按既定 160 轮设计；运行稳定前无法可靠估计 GPU 小时，人工准备约 1–2 人日。' },
+  q01: { tone:'green', label:'已有局部回答', next:'换一批预先冻结的购物题，复核三条路线各自的停止时点。', effort:'人工约 0.5–1 人日；至少三条路线各做一轮新题评测，机器耗时待实测。' , source:'https://github.com/mykcs/openevo-experiment/blob/48e1368c7afc260a1745a49e6c7c173bfbb172b2/docs/evidence/advisor-q01-horizon-plateau-20261001/Q01_THREE_WAY_RESULT.json' },
+  q02: { tone:'yellow', label:'已有初步结果', next:'核对新的匹配训练工作包中还剩的 3 项训练、固定题评估及配对统计，并解决其记录的磁盘空间问题；不要把 10 月 4 日的另一批历史训练核账直接算入。', effort:'新工作包尚有 3 个训练单元和未封存的正式同题评估（原计划评估上限 1,216 次，须先扣除已复用记录）；人工核账约 1 人日。GPU 小时须等空间与运行吞吐恢复后测量。' , source:'https://github.com/mykcs/openevo-experiment/pull/629' },
+  q03: { tone:'red', label:'正式复现未完成', next:'完成正式数据 SFT、整段 160 轮 Stage2 与论文协议对应的终评。', effort:'至少一条正式训练链和一套终评；需先打通训练与存储，再实测 GPU 小时，不能用工程开发题耗时推算。' , source:'https://github.com/mykcs/openevo-experiment/pull/707' },
+  q04: { tone:'yellow', label:'容量结论尚不完整', next:'在同一任务与训练预算下继续比较 rank8、rank16、rank64，并检查后续学习能力。', effort:'至少三档容量的同题评测与续学核对，人工约 1–2 人日；GPU 时长待标定。' , source:'https://github.com/mykcs/openevo-experiment/pull/631' },
+  q05: { tone:'yellow', label:'历史对照已完成', next:'完成新的简单 β 正式训练与后续 1,280 次同题评估，比较不同写入设置的得分及不确定性。已完成的 R120 方向检查不能代替正式能力判断。', effort:'当前工作单包含 12 个训练单元/96 轮的正式方案；仍需后续训练和 1,280 次评估，人工核对约 1–2 人日，实际 GPU 小时待统计。' , source:'https://github.com/mykcs/openevo-experiment/pull/632' },
+  q06: { tone:'yellow', label:'只有描述性测量', next:'给七个保存点的任务记录划出互不泄漏的训练集与验证集，检验概率指标能否预测失败。', effort:'需整理七组×64 题的记录并做一次独立验证，人工约 1 人日；若需重取概率还要追加推理。' , source:'https://github.com/mykcs/openevo-experiment/pull/633' },
+  q07: { tone:'green', label:'已有局部因果回答', next:'换保存点、模型与任务继续重复方向反转干预，再评估能否用于在线更新。', effort:'每新增一个保存点，至少再做一组原始/反向的同题评测；人工约半天起，GPU 耗时待测。' , source:'https://github.com/mykcs/openevo-experiment/pull/634' },
+  q08: { tone:'yellow', label:'遗忘尚未判定', next:'先找回每道旧题刚学会时的可比测量和任务身份，再与长期训练后对照。', effort:'人工约 1–2 人日核对旧账本；若早期锚点缺失，需要重新训练与评测，卡时未知。' , source:'https://github.com/mykcs/openevo-experiment/pull/635' },
+  q09: { tone:'yellow', label:'文字贡献尚未判定', next:'分别真正关闭三种文字载体的权限，在同一题单上与原条件配对比较。', effort:'当前载体完整关闭正式方案尚未启动；工作单列出必要路径最多 40,960 次训练任务、1,664 次评估（属于预算上限，非已消耗），人工资格/核账粗估 0.5–1 人日，GPU 时长未知。' , source:'https://github.com/mykcs/openevo-experiment/pull/636' },
+  q10: { tone:'red', label:'独立复现尚未完成', next:'先冻结新的任务流与排除规则，再完成三条独立随机流的正式训练及新题终评。', effort:'计划上限为 3 条新训练流、122,880 次训练任务和 4,224 次评估；严格同源复用可减少净增量。人工准备约 1–2 人日；尚未启用，不应虚报训练小时。' , source:'https://github.com/mykcs/openevo-experiment/pull/637' },
 } as const;
 const responseQuestions = ADVISOR_QUESTIONS.map(q=>({...q,progress:researchProgress[q.id as keyof typeof researchProgress]}));
 
@@ -141,7 +141,7 @@ const q17Effects = {
     </section>
     <section class="evo-article__section" id="responses" data-response-experiments>
       <h2>3 十个研究问题，我们得到了哪些回答？</h2>
-      <p>Q01–Q10 逐一对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。标题前的状态表示科学问题回答到哪一步：绿色＝已有明确的局部结论，黄色＝做过实验但关键问题尚未回答，红色＝核心验证仍未完成。每一问都有实验做法、实际发现、缺口和下一步投入。所列人日是粗略规划估计；没有真实计时的 GPU 训练和推理不填写臆测小时数。</p>
+      <p>Q01–Q10 逐一对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。标题前的状态表示科学问题回答到哪一步：绿色＝已有明确的局部结论，黄色＝做过实验但关键问题尚未回答，红色＝核心验证仍未完成。每一问都有实验做法、实际发现、缺口和下一步投入。所列人日是粗略规划估计；没有真实计时的 GPU 训练和推理不填写臆测小时数。 进度按 2026 年 10 月 18 日的工作单核对，后续实验可能变化。</p>
       <OpenEvoQuestionIndex questions={responseQuestions.map(q=>({...q,headingNumber:responseHeadingNumber(q.id)}))} />
       {responseQuestions.map(q => (
         <article class="evo-article__question" id={'response-'+q.id} data-experiment-response={q.id} aria-labelledby={'response-'+q.id+'-title'}>
@@ -191,7 +191,7 @@ const q17Effects = {
           )}
           <p><strong>支持的研究判断：</strong>{q.interpretation}</p>
           <p class="evo-article__limit"><strong>还缺什么：</strong>{q.unknown}</p>
-          <p class="evo-article__next-work" data-next-work={q.id}><strong>下一步：</strong>{q.progress.next}<span><strong>工作量粗估：</strong>{q.progress.effort}</span></p>
+          <p class="evo-article__next-work" data-next-work={q.id}><strong>下一步：</strong>{q.progress.next}<span><strong>工作量粗估：</strong>{q.progress.effort}</span> <a href={q.progress.source} target="_blank" rel="noopener noreferrer" data-question-plan-source={q.id}><ExternalBrandMark href={q.progress.source} />核对当前实验工作单 ↗</a></p>
           <p class="evo-article__note">
             {q.evidence.slice(0, 1).map(e => <span><a href={e.href} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={e.href} />本问实验来源 ↗</a> · </span>)}
             <a href={'#source-'+q.id}>更多实验来源 ↓</a>
