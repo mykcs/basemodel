@@ -24,7 +24,7 @@ for (const { width, theme } of [
     await expect(fig.locator('[data-q01-line]')).toHaveCount(3);
     const capacity=page.locator('#capacity');
     await expect(capacity.locator('h2')).toContainText('训练最后 8 轮');
-    await expect(capacity).toContainText('长期 LoRA 参数更新文件');
+    await expect(capacity).toContainText('保存历史更新的 LoRA 参数文件');
     await expect(capacity).toContainText('不包括基础模型权重');
     const cohort=page.locator('#q17-capacity');
     await expect(cohort).toBeVisible();
