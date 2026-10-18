@@ -23,7 +23,8 @@ for (const { width, theme } of [
     await expect(svg.locator('.advisor-viz__q01-axis-label').last()).not.toContainText('轮次 / 更新数');
     await expect(fig.locator('[data-q01-line]')).toHaveCount(3);
     const capacity=page.locator('#capacity');
-    await expect(capacity.locator('h2')).toContainText('长期 LoRA 参数更新文件');
+    await expect(capacity.locator('h2')).toContainText('训练最后 8 轮');
+    await expect(capacity).toContainText('长期 LoRA 参数更新文件');
     await expect(capacity).toContainText('不包括基础模型权重');
     const cohort=page.locator('#q17-capacity');
     await expect(cohort).toBeVisible();
@@ -31,6 +32,35 @@ for (const { width, theme } of [
     await expect(diagnostic).toContainText('同题换随机设置复测');
     await expect(diagnostic).toContainText('不是换了新题');
     await expect(diagnostic).not.toContainText('独立种子确认');
+
+    // The status applies to scientific answers, and the revised hierarchy must
+    // remain readable on mobile/dark as well as desktop/light.
+    const ledger=page.locator('#responses [data-research-status]');
+    await expect(ledger).toHaveCount(10);
+    await expect(ledger.filter({hasText:'已有局部回答'})).toHaveCount(1);
+    await expect(page.locator('#response-q03 [data-research-status="red"]')).toBeVisible();
+    await expect(page.locator('#response-q10 [data-research-status="red"]')).toBeVisible();
+    await expect(page.locator('#response-q04 [data-research-status="yellow"]')).toBeVisible();
+    await expect(page.locator('#response-q04 [data-next-work="q04"]')).toContainText('工作量粗估');
+    const plot=page.locator('[data-paper-effect="rank32-paired"]');
+    await expect(plot).toBeVisible();
+    const hierarchy=await page.evaluate(()=>{
+      const heading=document.querySelector('#capacity h2');
+      const plot=document.querySelector('[data-paper-effect="rank32-paired"]');
+      const plotHeading=plot?.querySelector('.paper-effect__title');
+      const caption=document.querySelector('#capacity .research-booktabs caption');
+      if(!heading || !plot || !plotHeading || !caption) return null;
+      return {
+        sectionSize:parseFloat(getComputedStyle(heading).fontSize),
+        plotSize:parseFloat(getComputedStyle(plotHeading).fontSize),
+        captionSize:parseFloat(getComputedStyle(caption).fontSize),
+        plotBorder:getComputedStyle(plot).borderTopWidth,
+      };
+    });
+    expect(hierarchy).not.toBeNull();
+    expect(hierarchy!.sectionSize).toBeGreaterThan(hierarchy!.plotSize);
+    expect(hierarchy!.captionSize).toBeGreaterThanOrEqual(15);
+    expect(hierarchy!.plotBorder).toBe('1px');
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(2);
   });
