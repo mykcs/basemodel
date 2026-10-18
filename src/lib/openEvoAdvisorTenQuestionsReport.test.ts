@@ -154,6 +154,25 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(kBlock).toContain('scope="row">1 次');
     expect(kBlock).toContain('scope="row">8 次');
   });
+  it('explains x-axis unit mismatch, round versus epoch, and same-task reruns without overstating proof',()=>{
+    const visual=read('src/components/research/AdvisorTenEvidenceVisual.astro');
+    const q01=ADVISOR_QUESTIONS.find(x=>x.id==='q01')!;
+    expect(q01.opening).toContain('不是把同一份固定训练集完整遍历一次的 epoch');
+    expect(q01.opening).toContain('有些轮次没有真正更新参数');
+    expect(visual).toContain('data-q01-axis-scope');
+    expect(visual).toContain('横轴数字相同，不代表实际更新次数或计算成本相同');
+    expect(visual).toContain('普通 OpenEVO 按实际参数更新次数统计');
+    expect(visual).toContain('Bounded 和历史 β/GDR 按已完成的 Stage2 轮数');
+    expect(visual).toContain('不应据此进行等成本排名');
+    expect(responses).toContain('5 训练最后 8 轮：长期参数从 rank128 缩到 rank32 会怎样？');
+    expect(responses).toContain('这个比例不包括基础模型权重');
+    expect(responses).toContain('rank32 为 51.4 MB，rank128 为 205.6 MB');
+    expect(responses).toContain('同题换随机设置复测');
+    expect(responses).toContain('仍然测试同一批 64 道题');
+    expect(responses).not.toContain('独立种子确认');
+    expect(responses).toContain('第二组只是更换随机设置');
+    expect(responses).toContain('95% 置信区间');
+  });
   it('uses 33 real Q01 curve points, preserves the science CSV bytes, and exposes second-article question bodies',()=>{
     const visual=read('src/components/research/AdvisorTenEvidenceVisual.astro');
     const csv=read('src/data/research-evidence/advisor-q01-three-way-curve.csv');
@@ -190,7 +209,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
       q01: '训练 160 轮会不会太多了？',
       q02: '开始逐轮学习之前，怎样训练出一个更好的初始模型？',
       q03: '我们的 SEED 实验成绩，能直接和论文比较吗？',
-      q04: '把长期参数容量从 rank128 缩到 rank32，做题成绩会怎样？',
+      q04: '长期参数容量需要 rank128 这么大吗，缩小一点怎么样？',
       q05: '增加参数写入控制后，模型做题成绩有什么变化？',
       q06: '模型选择商品时有多拿不准？',
       q07: '把某轮参数更新的方向反过来，成绩会怎样？',
@@ -279,6 +298,8 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(q03).toContain('10 月 14 日两次四卡实测');
     expect(q03).toContain('<summary>工程细节，你可能感兴趣...</summary>');
     expect(q03).toContain('data-seed-gpu-explainer');
+    expect(q03).toContain('负责给这些进程安排任务的工具叫 Ray');
+    expect(q03).not.toContain('四个 Ray 训练 worker 的 CPU 时间持续增长');
     expect(q03).toContain('GPU 可能等待');
     expect(q03).not.toContain('大显存条件下的简化路径');
     expect(q03).toContain('完整八卡保存、加载、继续取新题并更新仍未验收');
@@ -297,6 +318,13 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(plot).toContain('e.low > e.estimate');
     expect(plot).toContain('paper-effect__zero');
     expect(plot).toContain('95% 置信区间');
+    expect(plot).toContain('paper-effect__comparison');
+    expect(plot).toContain('paper-effect__directions');
+    expect(plot).toContain('paper-effect__interval');
+    expect(plot).toContain('paper-effect__takeaway');
+    expect(plot).toContain('border:1px solid var(--research-evidence-frame');
+    expect(responses).toContain('压缩后 − 原模型');
+    expect(responses).toContain('训练后压缩');
     expect(plot).not.toContain('setTimeout');
     expect(read('src/styles/openevo-seed-world4-repro.css')).not.toContain('tbody { display: block; }');
   });
@@ -315,4 +343,140 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     }
     expect(read('src/styles/tokens.css')).toContain('--color-bg: #f7f3eb;');
   });
+  it('rejects the owner-identified cold-read failures in the report and keeps a scoped green/yellow/red scientific ledger',()=>{
+    // Negative probes: a previously-green page must not pass with these known bad claims.
+    const knownBad = [
+      '这些历史结果不构成完全受控的三臂试验',
+      '在正文就地链接',
+      '三条长期路线在同一冻结 128 题上的 Task Score 分别为',
+      '第 152–159 轮的 rank32 容量筛选使参数文件缩小约 75%',
+    ];
+    for(const bad of knownBad) expect(responses).not.toContain(bad);
+    for(const repaired of [
+      '我们做了三组长期学习实验',
+      '固定 state 的 Bounded',
+      '这些实验不是完全严格的对照',
+      '快结束的第 152–159 轮',
+      '不能据此声称整个 160 轮都得到同样结果',
+      'href={checkpointEvidence.capacity}',
+      'data-research-status={q.progress.tone}',
+      'data-next-work={q.id}',
+      '工作量粗估：',
+    ]) expect(responses).toContain(repaired);
+    expect(responses).toContain('responseQuestions.map(q => (');
+    const progressSource = responses.split('const researchProgress = {')[1]?.split('} as const;')[0] ?? '';
+    const tones=[...progressSource.matchAll(/tone:'(green|yellow|red)'/g)].map(match=>match[1]);
+    expect(tones).toHaveLength(10);
+    expect(tones.filter(t=>t==='green')).toHaveLength(2);
+    expect(tones.filter(t=>t==='yellow')).toHaveLength(6);
+    expect(tones.filter(t=>t==='red')).toHaveLength(2);
+    for(let n=1;n<=10;n++) expect(progressSource).toContain('q'+String(n).padStart(2,'0')+':');
+    expect(progressSource).toContain('GPU 小时');
+    const q04=ADVISOR_QUESTIONS.find(q=>q.id==='q04')!;
+    expect(q04.experiment).toContain('末尾八轮（第 152–159 轮）');
+    expect(q04.unknown).toContain('rank8、16、64');
+    // Legitimate limits remain visible: 'red' means core verification missing,
+    // not that completed engineering evidence has disappeared.
+    expect(responses).toContain('1,536 次冻结开发题评测');
+    expect(responses).toContain('正式 SFT 尚未启动，Stage2 仍为 0/160');
+  });
+  it('anchors per-question red/yellow/green workload to current experiment sources, not old green receipts',()=>{
+    const q02=ADVISOR_QUESTIONS.find(q=>q.id==='q02')!;
+    expect(q02.finding).toContain('三项训练未完成');
+    expect(q02.finding).toContain('两批实验不能合并算作六组正式比较已完成');
+    expect(q02.unknown).toContain('旧六项核账不能替代');
+    expect(q02.evidence[0]?.href).toBe('https://github.com/mykcs/openevo-experiment/pull/629');
+    expect(ADVISOR_QUESTIONS.find(q=>q.id==='q05')?.unknown).toContain('1,280 次评估');
+    const progress=responses.split('const researchProgress = {')[1]?.split('} as const;')[0] ?? '';
+    for(let n=1;n<=10;n++) {
+      const q='q'+String(n).padStart(2,'0');
+      expect(progress).toMatch(new RegExp('\\b'+q+': \\{[^\\n]*source:'));
+    }
+    expect(progress).toContain("source:'https://github.com/mykcs/openevo-experiment/pull/629'");
+    expect(progress).toContain("source:'https://github.com/mykcs/openevo-experiment/pull/632'");
+    expect(progress).toContain('3 个训练单元');
+    expect(progress).toContain('40,960 次训练任务、1,664 次评估');
+    expect(progress).toContain('122,880 次训练任务和 4,224 次评估');
+    expect(responses).toContain('data-question-plan-source={q.id}');
+    expect(responses).toContain('进度按 2026 年 10 月 18 日的工作单核对');
+    expect(progress).toContain('GPU 小时');
+  });
+  it('presents plots and research tables with one documented visual hierarchy without making every table a card',()=>{
+    const blog=read('src/styles/openevo-research-blogs.css');
+    const booktabs=read('src/styles/research-booktabs.css');
+    const plot=read('src/components/research/PaperIntervalPlot.astro');
+    for(const token of ['--research-evidence-frame','--research-evidence-title-size','--research-evidence-caption-size','--research-evidence-single-width','--research-evidence-double-width']) {
+      expect(blog).toContain(token);
+      expect(plot).toContain(token);
+    }
+    expect(blog).toContain('.evo-blog .advisor-viz:not(figure)');
+    expect(blog).toContain('border:0;');
+    expect(booktabs).toContain('font-size: var(--research-evidence-caption-size,1rem)');
+    expect(plot).toContain('box-shadow:none');
+    expect(plot).toContain('width:min(100%,var(--research-evidence-single-width,38rem))');
+    expect(plot).toContain('width:min(100%,var(--research-evidence-double-width,55.625rem))');
+    expect(responses).toContain('data-capacity-ci');
+  });
+
+  it('uses owner examples to guard the reading sequence, not cosmetic bold as a stand-in for explanation',()=>{
+    const summary=responses.split('<div class="evo-article__abstract">')[1]?.split('</div>')[0] ?? '';
+    const intro=responses.split('<section id="context"')[1]?.split('</section>')[0] ?? '';
+    const plain=(source:string)=>source.replaceAll('<strong>','').replaceAll('</strong>','');
+    // Real known-bad example: bare score first, method identity is missing.
+    const historicBad='三条长期路线在同一冻结 128 题上的 Task Score 分别为 60.72、45.98 和 20.77/100';
+    const explainsArms=(source:string)=>{
+      const text=plain(source);
+      const begin=text.indexOf('我们做了三组长期学习实验');
+      const arms=['普通 OpenEVO','固定 state 的 Bounded','Bounded + 历史 β/GDR'].every(name=>text.indexOf(name)>begin);
+      const scores=text.indexOf('60.72、45.98、20.77/100');
+      return begin>=0 && arms && scores>begin && text.indexOf('Bounded + 历史 β/GDR')<scores;
+    };
+    expect(explainsArms(historicBad)).toBe(false);
+    expect(explainsArms(summary)).toBe(true);
+    expect(summary).toContain('128 道购物题');
+    expect(summary).toContain('不是完全严格的对照');
+    expect(summary).toContain('第 152–159 轮');
+    expect(summary).toContain('rank128 用已经封存的同轮次历史结果');
+    expect(summary).toContain('href={checkpointEvidence.capacity}');
+
+    // Negative visual witness: making the method words heavier is no substitute
+    // for orientation. Keep meaningful numerical emphasis and existing scientific labels.
+    expect(summary).not.toContain('<strong>普通 OpenEVO</strong>');
+    expect(summary).not.toContain('<strong>固定 state 的 Bounded</strong>');
+    expect(intro).not.toContain('<strong>第一，');
+    expect(summary).toContain('<strong>60.72、45.98、20.77/100</strong>');
+    expect(responses).toContain('data-research-status={q.progress.tone}');
+
+    // Same-family sibling scan: article two should tell the reader where to find
+    // measured evidence instead of using bold on a narrator sentence.
+    expect(questions).toContain('这篇文章说明这些问题从哪里来、会后怎样拆分成十问');
+    expect(questions).toContain('逐项介绍实际完成的实验、结果和仍缺少的证据');
+    expect(questions).not.toContain('<strong>为什么要做这些实验</strong>');
+    // Legitimate boundary: method definitions still mark technical terminology.
+    expect(methods).toContain('<strong>SD-LoRA</strong>');
+    expect(methods).toContain('<MathFormula');
+  });
+
+  it('names the exact historical compute arms and decodes the shared BUNDLE state for a cold reader',()=>{
+    // Two independent context-isolated source readers flagged these reader-risk
+    // hypotheses; they are NOT evidence that real humans actually misunderstood.
+    const oldTable='<th scope="col" data-numeric>历史方案 / h</th><th scope="col" data-numeric>改进方案 / h</th>';
+    const oldHeader='<h2>8 BUNDLE 的文字载体更新次数较少</h2>';
+    expect(responses).not.toContain(oldTable);
+    expect(responses).not.toContain(oldHeader);
+    expect(responses).toContain('普通 OpenEVO / h</th>');
+    expect(responses).toContain('Bounded（无历史 β）/ h</th>');
+    expect(responses).toContain('31.09</td><td data-numeric>2.02');
+    expect(responses).toContain('74.78</td><td data-numeric>56.25');
+    expect(responses).toContain('8 三条长期路线中，文字经验改写了多少次？');
+    expect(responses).toContain('OpenEVO 把每轮学习后留下的经验状态合称为 BUNDLE');
+    expect(responses).toContain('这些次数不等于读取次数');
+    expect(responses).toContain('Text Memory、Skill 和 Agent System');
+    // Do not fix an explanatory gap by newly bolding a technical term.
+    expect(responses).not.toContain('<strong>BUNDLE</strong>');
+    // Scientific claim boundaries must survive the editorial change.
+    expect(responses).toContain('这些实验不是完全严格对照');
+    expect(responses).toContain('不能替代 128 题终评');
+  });
+
 });

@@ -1357,6 +1357,9 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   .paper-table__caption strong{color:var(--text-primary);font-weight:750}
   .paper-table-wrap{overflow-x:auto;margin:18px 0 12px}
   .paper-table{width:100%;min-width:700px;border-collapse:collapse;font-size:1rem}
+  /* Short scientific tables read like LaTeX columnwidth, not full-width report dashboards.
+     Dense/multi-column scientific comparisons retain the full page panel. */
+  .paper-table:not(.paper-table--dense-results):not(.paper-table--ablation):not(:has(thead tr > :nth-child(4))){width:max-content;min-width:0;max-width:min(100%,46rem)}
   .paper-table th,.paper-table td{padding:11px 12px;border-bottom:1px solid var(--border-color);text-align:left;vertical-align:middle;font-size:16px}
   .paper-table thead th{border-top:2px solid var(--text-primary);border-bottom:1.5px solid var(--text-primary);font-weight:750}
   .paper-table tbody tr:last-child td{border-bottom:2px solid var(--text-primary)}

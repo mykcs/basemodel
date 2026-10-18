@@ -21,7 +21,7 @@ const responseHref = (id: string) =>
     </header>
     <section class="evo-article__abstract" aria-label="摘要">
       <h2>摘要</h2>
-      <p>2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会（<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />会议原始逐字记录（RAW）↗</a>）。会后，我们将讨论归纳为六个方向，再整理成 Q01–Q09 九个可检验问题，并另外加入 Q10：换一批新任务能否重复得到相同结论。本文说明<strong>问题的背景、研究意义和相互关系</strong>；实验结果和科学边界放到第三篇《我们的回应实验》中。</p>
+      <p>2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会（<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />会议原始逐字记录（RAW）↗</a>）。会后，我们将讨论归纳为六个方向，再整理成 Q01–Q09 九个可检验问题，并另外加入 Q10：换一批新任务能否重复得到相同结论。这篇文章说明这些问题从哪里来、会后怎样拆分成十问。第三篇《我们的回应实验》逐项介绍实际完成的实验、结果和仍缺少的证据。</p>
     </section>
     <OpenEvoArticleNavigation current="questions" />
     <nav class="evo-article__toc" aria-label="学长十问目录">
@@ -63,7 +63,7 @@ const responseHref = (id: string) =>
       <p><strong>Q01–Q03</strong> 依次研究三个不同的环节：训练多久才有明显收益；开始逐轮学习前，SFT 和 OPSD 怎样训练初始模型；我们的 SEED 复现实验能否按论文的条件公平比较。三者不能用一次实验互相替代。</p>
       <p><strong>Q04–Q07</strong> 进一步追问参数记忆需要多大容量、写入幅度和方向能否影响能力，以及如何通过行为指标理解模型状态。</p>
       <p><strong>Q08–Q10</strong> 最后考察旧任务保持、Text Memory / Skill / Agent System 的作用，以及换一批新任务能否重复关键结论。</p>
-      <p>阅读到这里，我们已经知道<strong>为什么要做这些实验</strong>。随后可进入<a href="/research/seed-openevo/study/parameter-memory-results/">第三篇：我们的回应实验</a>，逐项检查完成状态、结果和尚未解决的问题。关于普通 OpenEVO、Bounded 和 β 的公式，则在<a href="/research/seed-openevo/study/openevo-methods/">第一篇方法介绍</a>中详细说明。</p>
+      <p>这十个问题确定了下一步想检验什么。<a href="/research/seed-openevo/study/parameter-memory-results/">第三篇《我们的回应实验》</a>逐项说明已经做过的实验、测到的结果和还没有回答的部分。关于普通 OpenEVO、Bounded 和 β 的公式，则在<a href="/research/seed-openevo/study/openevo-methods/">第一篇方法介绍</a>中详细说明。</p>
     </section>
     <section class="evo-article__section evo-article__sources" id="sources">
       <h2>会议原文、会后解释与问题编目</h2>

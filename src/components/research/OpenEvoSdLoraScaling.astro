@@ -91,7 +91,7 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
         `All five primary points fix ${SD_LORA_FIXED_WORKLOAD.model}, 47 current + 47 replay examples, 94 optimizer steps, BF16, rank 8/component, q/k/v/o targets, and gradient checkpointing.`,
       )}</p>
     </div>
-    <figure class="scaling-chart" aria-labelledby="component-scaling-caption">
+    <figure class="scaling-chart" data-research-figure-size="wide" aria-labelledby="component-scaling-caption">
       <svg viewBox="0 0 760 350" role="img" aria-labelledby="component-scaling-chart-title component-scaling-chart-desc">
         <title id="component-scaling-chart-title">{t('历史 component 数与单次更新时间', 'Prior component count versus update time')}</title>
         <desc id="component-scaling-chart-desc">{t('从 K=1 的 44.05 秒上升到 K=148 的 969.17 秒，五个点接近一条直线。', 'Five points rise from 44.05 seconds at K=1 to 969.17 seconds at K=148, closely following a straight line.')}</desc>
