@@ -43,12 +43,12 @@ for (const {width,theme} of [
     response=await page.goto(responseRoute,{waitUntil:'domcontentloaded'});
     expect(response?.status()).toBe(200);
     for(const [id,title] of Object.entries(titles)) {
-      const headingNumber = '3.Q'+Number(id.slice(1));
+      const ref = id.toUpperCase();
       const responseId = '#response-'+id;
-      await expect(page.locator(responseId+'-title')).toHaveText(headingNumber+' '+title);
-      await expect(page.locator(responseId+'-title .evo-article__qnum')).toHaveText(headingNumber);
-      await expect(page.locator('.evo-article__toc a[href="'+responseId+'"]')).toHaveText(headingNumber+' '+title);
-      await expect(page.locator('#response-index a[href="'+responseId+'"] .advisor-question-index__number')).toHaveText(headingNumber);
+      await expect(page.locator(responseId+'-title')).toHaveText(title);
+      await expect(page.locator(responseId+' [data-question-number="'+id+'"]')).toHaveText(ref);
+      await expect(page.locator('.evo-article__toc a[href="'+responseId+'"]')).toHaveText(ref+' · '+title);
+      await expect(page.locator('#response-index a[href="'+responseId+'"] .advisor-question-index__number')).toHaveText(ref);
     }
     const fig=page.locator('#response-q01 [data-report-figure="q01-horizon"]');
     await expect(fig).not.toContainText('实用平台');
@@ -62,11 +62,11 @@ for (const {width,theme} of [
     await expect(page.locator('#response-q01')).toContainText('64 道 WebShop 开发题');
     await expect(page.locator('#experiment')).toContainText('开始长期学习前，SFT 和 OPSD 哪种方法更好？');
     const q02=page.locator('#response-q02');
-    await expect(q02).toContainText('36.01/100');
-    await expect(q02).toContainText('34.96/100');
+    await expect(q02).toContainText('36.01 分');
+    await expect(q02).toContainText('34.96 分');
     await expect(q02).toContainText('第一阶段');
     const q03=page.locator('#response-q03');
-    await expect(q03).toContainText('正式 Stage2 为 0/160');
+    await expect(q03).toContainText('计划进行 160 轮的正式 Stage2 尚未启动');
     await expect(q03).toContainText('不能直接判断方法优劣');
     const q05=page.locator('#response-q05');
     await expect(q05).toContainText('简单 β');

@@ -15,13 +15,19 @@ for (const width of [390, 768, 1440]) {
       '#response-q' + String(i + 1).padStart(2, '0')));
     const sourceTitles = await page.locator('[data-experiment-response] h3').allTextContents();
     const navTitles = await nav.locator('.advisor-question-index__question').allTextContents();
+    const navNumbers = await nav.locator('.advisor-question-index__number').allTextContents();
+    // The heading itself stays natural Chinese; quiet Q01–Q10 references
+    // remain in the index and the header's separate metadata.
     expect(navTitles).toEqual(sourceTitles);
+    expect(navNumbers).toEqual(Array.from({length:10},(_,i)=>'Q'+String(i+1).padStart(2,'0')));
 
     await nav.locator('a[href="#response-q07"]').click();
     await expect(page).toHaveURL(/#response-q07$/);
     const target = page.locator('#response-q07');
     await expect(target).toBeInViewport({ ratio: 0.1 });
-    expect(await target.evaluate(el => getComputedStyle(el).borderInlineStartWidth)).toBe('3px');
+    // The latest reviewed article explicitly rejects a jump-target highlight bar.
+    expect(await target.evaluate(el => getComputedStyle(el).borderInlineStartWidth)).toBe('0px');
+    expect(await target.evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)');
     const overflow = await page.evaluate(() =>
       document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(2);
@@ -32,7 +38,8 @@ for (const width of [390, 1440]) {
   test('native evidence tables use the shared paper grammar at '+width+'px', async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(results);
-    const frozen = page.locator('#main-results .evo-article__tablewrap table');
+    const frozen = page.locator('#main-results .evo-article__tablewrap table').first();
+    await expect(frozen.locator('caption')).toContainText('三个历史终点');
     await expect(frozen).toBeVisible();
     await expect(frozen.locator('tbody tr')).toHaveCount(3);
     await expect(frozen).toContainText('60.72');

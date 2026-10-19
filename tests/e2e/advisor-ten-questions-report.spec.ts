@@ -37,10 +37,17 @@ for(const width of [390,768,1440]){
         };
       });
       expect(geometry.overflow).toBeLessThanOrEqual(2);
-      expect(geometry.paper).toBe('rgb(255, 255, 255)');
-      expect(geometry.background).toBe('rgb(246, 247, 245)');
-      expect(geometry.size).toBeGreaterThanOrEqual(width===390?16:16.5);
-      expect(geometry.size).toBeLessThanOrEqual(17.5);
+      // Only the third article uses the owner-approved narrow reader style.
+      if(item.type==='results') {
+        expect(geometry.paper).toBe('rgb(252, 252, 251)');
+        expect(geometry.background).toBe('rgb(249, 249, 247)');
+        expect(geometry.size).toBe(14);
+      } else {
+        expect(geometry.paper).toBe('rgb(255, 255, 255)');
+        expect(geometry.background).toBe('rgb(246, 247, 245)');
+        expect(geometry.size).toBeGreaterThanOrEqual(width===390?16:16.5);
+        expect(geometry.size).toBeLessThanOrEqual(17.5);
+      }
     });
   }
 }
@@ -118,19 +125,25 @@ test('third article answers all Q01–Q10 with experiments, measurements, limits
   await expect(page.locator('#response-q10')).toContainText('当前并没有三条新随机流');
 });
 
-test('conversation reference paragraphs stay identical in the TLDR and the detailed answers',async({page})=>{
+test('approved TLDR prose is preserved once and detailed questions own their evidence',async({page})=>{
   await page.goto(prefix+'parameter-memory-results/');
   const guide=page.locator('#experiment [data-review-source="single"]');
   await expect(guide.locator('[data-review-summary]')).toHaveCount(10);
+  await expect(page.locator('[data-conversation-detail]')).toHaveCount(0);
   for(let n=1;n<=10;n++){
     const id='q'+String(n).padStart(2,'0');
     const brief=guide.locator('[data-review-summary="'+id+'"]');
     const paragraphs=brief.locator('dd p');
     await expect(paragraphs).toHaveCount(2);
-    await expect(page.locator('[data-conversation-detail="'+id+'"]')).toHaveText(await paragraphs.nth(0).innerText());
     await expect(paragraphs.nth(1)).toContainText('后续研究：');
-    const next=(await paragraphs.nth(1).innerText()).replace(/^后续研究：/,'');
-    await expect(page.locator('[data-next-work="'+id+'"]')).toContainText(next);
+    await expect(page.locator('#response-'+id+' [data-experiment-finding="'+id+'"]')).toBeVisible();
+    await expect(page.locator('#response-'+id+' [data-supported-answer="'+id+'"]')).toBeVisible();
+    // The detailed answer keeps a source-bound result and next concrete task;
+    // it must not reprint the exact TLDR paragraph.
+    const summary=await paragraphs.first().innerText();
+    const detail=await page.locator('#response-'+id).innerText();
+    expect(detail).not.toContain(summary);
+    await expect(page.locator('#response-'+id+' [data-next-work="'+id+'"]')).toContainText('下一步：');
   }
   await expect(guide.locator('[data-review-summary="q01"] [data-conversation-summary]')).toHaveText('我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。');
   await expect(guide.locator('[data-review-summary="q02"]')).toContainText('SFT 直接学习示范，OPSD 利用额外经验指导模型学习');
@@ -179,14 +192,24 @@ test('response article also keeps frozen final, paired capacity, direction, unce
 test('Q17 diagnostics distinguish new measurements from dated history on mobile',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto(prefix+'parameter-memory-results/');
-  const ev=page.locator('[data-checkpoint-evidence]');
-  for (const v of ['60.1088/100','18/64','31/64','4/32、3/32、1/32','39/78','0/13'])
-    await expect(ev).toContainText(v);
-  await expect(ev.locator('[data-q17-diagnostics]')).toContainText('78 项处置闭合不等于 78 项数值全部测得');
-  await expect(ev.locator('[data-q17-diagnostics]')).toContainText('没有测得紧凑部署的加速或显存节省');
-  await ev.locator(':scope > details > summary').click();
-  await expect(ev.locator('table')).toHaveCount(3);
-  await expect(ev.locator('a[href*="627da5c0fa9001d94b0891c38de6646b8cc796b2"]')).toHaveCount(4);
+  // Each new Q17 diagnostic now lives under its owning advisor question.
+  const q04=page.locator('#response-q04');
+  await expect(q04.locator('[data-q17-topic="capacity"]')).toContainText('没有测得紧凑部署的加速或显存节省');
+  const d1=q04.locator('[data-q04-historical-compression]');
+  await d1.locator('summary').click();
+  await expect(d1).toContainText('K64 压缩状态有');
+  const repeated=page.locator('#response-q08 [data-q08-repeat-evidence]');
+  await repeated.locator('summary').click();
+  await expect(repeated).toContainText('31 道至少成功过一次');
+  await expect(repeated.locator('table tbody tr')).toHaveCount(4);
+  await expect(page.locator('#response-q07 [data-q17-topic="direction"]')).toContainText('最新参数组件的局部干预');
+  await expect(page.locator('#response-q09 [data-q17-topic="text"]')).toContainText('三个指导文字干预');
+  // The archive itself owns its dated ledger, separate from task outcomes.
+  const ledger=page.locator('#checkpoint-evidence');
+  await ledger.locator('summary').click();
+  await expect(ledger).toContainText('13 份模型中还没有任何');
+  await expect(ledger).toContainText('39 项');
+  await expect(ledger).toContainText('78 项处置闭合不等于 78 项数值全部测得');
   await expect(page.locator('#response-q07')).toContainText('Bounded OFF');
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(2);
@@ -221,9 +244,9 @@ test('publication tables have unique labels and frozen comparisons link to actua
   await expect(finals.locator('[data-report-figure="q05-same-final"]')).toHaveCount(0);
   await expect(finals.locator('a[href*="FINAL_COMPARISON.json"]')).toBeVisible();
   await expect(finals.locator('a[href*="FINAL_EVAL_VERIFICATION.json"]')).toBeVisible();
-  const repeated=page.locator('#checkpoint-evidence > details table tbody tr');
+  const repeated=page.locator('#response-q08 [data-q08-repeat-evidence] table tbody tr');
   await expect(repeated).toHaveCount(4);
-  await expect(repeated.last()).toContainText('31/64');
+  await expect(repeated.last()).toContainText('31 题');
 });
 
 test('Q01 shows measured Task Score curves and links each answer to the second-article question',async({page})=>{
@@ -242,7 +265,8 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   await expect(guide).toContainText('ALFWorld');
   await expect(guide).toContainText('十问速览：我们发现了什么，下一轮还想研究什么？');
   const answer=page.locator('#response-q01');
-  await expect(answer.locator('h3')).toHaveText('3.Q1 训练 160 轮会不会太多？');
+  await expect(answer.locator('h3')).toHaveText('训练 160 轮会不会太多？');
+  await expect(answer.locator('[data-question-number="q01"]')).toHaveText('Q01');
   const link=answer.locator('[data-question-origin-link="q01"] a');
   await expect(link).toHaveAttribute('href','/research/seed-openevo/study/advisor-questions/#q01');
   const chart=answer.locator('[data-report-figure="q01-horizon"]');
@@ -275,14 +299,14 @@ test('Q03 shows complete paired engineering measurements without formal SEED cla
   await expect(q03).toContainText('三组工程模型实际测到了什么');
   await expect(q03).toContainText('1,536 次完整任务尝试');
   await expect(q03.locator('tbody tr')).toHaveCount(3);
-  for(const v of ['512 / 512','4.07','3.97','4.28','1 / 512','3 / 512'])
+  for(const v of ['512 次','4.07 分','3.97 分','4.28 分','1 次','3 次'])
     await expect(q03.locator('tbody')).toContainText(v);
-  await expect(q03).toContainText('95% 区间都跨过零');
+  await expect(q03).toContainText('95% 置信区间均包含零');
   await expect(q03).toContainText('不能充当正式 SEED 成绩');
   for(const stale of ['128 / 512','384 / 512','192 / 512','40.45 GB','4/7'])
     await expect(q03).not.toContainText(stale);
   const study=page.locator('#response-q03 [data-seed-world4-case]');
-  await expect(study).toContainText('正式 Stage2 为 0/160 轮');
+  await expect(study).toContainText('正式 Stage2 计划训练 160 轮，目前尚未开始');
   await expect(study).toContainText('10 月 14 日两次四卡实测');
   await expect(study).not.toContainText('十月十四日两次四卡实测');
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
@@ -311,7 +335,7 @@ for (const width of [390, 768, 1440]) {
     await expect(figure).toContainText('6.43');
     await expect(figure).toContainText('0.69');
     await expect(figure).toContainText('6.62');
-    await expect(figure).toContainText('0/64');
+    await expect(figure).toContainText('均没有完整成功的题目');
     await expect(figure.locator('figcaption')).toContainText('没有测量中间轮次');
     await expect(figure.locator('figcaption a[href*="/pull/678"]')).toBeVisible();
     const plot=figure.locator('.advisor-viz__q03-chart');
@@ -341,5 +365,192 @@ test('dated Q17 supplements land on visible topic headings',async({page})=>{
   await expect(heading).toBeVisible();
   await expect.poll(async()=> (await heading.boundingBox())?.y ?? -1).toBeGreaterThanOrEqual(65);
   await expect.poll(async()=> (await heading.boundingBox())?.y ?? Infinity).toBeLessThan(200);
-  await expect(page.locator('[data-q17-diagnostics]')).toContainText('完整 SVD 的 BF16 重构对照');
+  await expect(page.locator('[data-q17-topic="capacity"]')).toContainText('完整 SVD 的 BF16 重构对照');
+});
+
+// The entire researcher-approved reader grammar is scoped to this one route.
+for(const width of [320,390,1440]){
+  test('approved response reader and seven complementary scientific matrices at '+width+'px',async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.goto(prefix+'parameter-memory-results/',{waitUntil:'domcontentloaded'});
+    const article=page.locator('[data-evo-blog="results"]');
+    await expect(article).toHaveClass(/evo-approved-reader/);
+    await expect(article.locator('h1')).toHaveCSS('font-size',width<=520?'26px':'28px');
+    const references=article.locator('.advisor-approved-question-ref');
+    await expect(references).toHaveCount(10);
+    expect(await references.allTextContents()).toEqual(
+      Array.from({length:10},(_,i)=>'Q'+String(i+1).padStart(2,'0')));
+    const refStyle=await references.first().evaluate(el=>({
+      numeric:getComputedStyle(el).fontVariantNumeric,
+      size:getComputedStyle(el).fontSize,
+      weight:getComputedStyle(el).fontWeight,
+    }));
+    expect(refStyle.numeric).toBe('normal');
+    expect(refStyle.size).toBe('12px');
+    expect(refStyle.weight).toBe('400');
+    await expect(article.locator('#response-q01-title')).toHaveText('训练 160 轮会不会太多？');
+    await expect(article.locator('#response-q01-title')).not.toContainText('3.Q1');
+    await expect(article.locator('[data-advisor-matrix]')).toHaveCount(7);
+    await expect(article.locator('#response-q10 [data-advisor-matrix]')).toHaveCount(0);
+    await expect(article.locator('#response-q03 [data-advisor-matrix]')).toHaveCount(1);
+    await expect(article.locator('#response-q05 [data-advisor-matrix]')).toHaveCount(1);
+    const q01='我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。';
+    await expect(article.locator('#response-q01 [data-conversation-detail]')).toHaveCount(0);
+    await expect(article.locator('#experiment [data-conversation-summary="q01"]')).toHaveText(q01);
+    const header=article.locator('#response-q05 [data-advisor-matrix]').first().locator('thead th').first();
+    await expect(header.locator('.advisor-result-matrix__sr-only')).toHaveText('实验方法或条件');
+    const label=await header.locator('.advisor-result-matrix__sr-only').evaluate(node=>({
+      position:getComputedStyle(node).position,width:node.getBoundingClientRect().width
+    }));
+    expect(label.position).toBe('absolute');
+    expect(label.width).toBeLessThanOrEqual(2);
+    await expect(article.locator('#capacity [data-report-figure="q04-capacity"]')).toContainText('205.6');
+    await expect(article.locator('#capacity [data-report-figure="q04-capacity"]')).toContainText('51.4');
+    await expect(article.locator('#response-q07 [data-advisor-matrix]')).toContainText('下降 10.06 分');
+    await expect(article).not.toContainText('↗');
+    const geo=await article.evaluate(el=>{
+      const row=el.querySelector('#response-q05 .advisor-result-matrix');
+      const table=row?.querySelector('table');
+      const cap=row?.querySelector('figcaption');
+      const area=el.getBoundingClientRect();
+      return {
+        tableWidth:table?.getBoundingClientRect().width || 0,
+        contentWidth:area.width-parseFloat(getComputedStyle(el).paddingLeft)-parseFloat(getComputedStyle(el).paddingRight)-2,
+        caption:cap?.textContent || '',
+        overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth
+      };
+    });
+    expect(geo.tableWidth).toBeLessThanOrEqual(geo.contentWidth+1);
+    expect(geo.overflow).toBeLessThanOrEqual(2);
+    expect(geo.caption).toContain('怎么看');
+    expect(geo.caption).toContain('证据边界');
+    const toc=article.locator('.advisor-ten-toc');
+    await expect(toc).toBeVisible();
+    await expect(toc).not.toHaveAttribute('open','');
+    await toc.locator('summary').click();
+    await expect(toc).toHaveAttribute('open','');
+    await toc.locator('a[href="#response-q07"]').click();
+    await expect(page).toHaveURL(/#response-q07$/);
+    await expect(toc).not.toHaveAttribute('open','');
+  });
+}
+
+
+test('all advisor-response numeric claims are readable in the actual rendered page',async({page})=>{
+  await page.setViewportSize({width:390,height:900});
+  await page.goto(prefix+'parameter-memory-results/',{waitUntil:'domcontentloaded'});
+  const article=page.locator('[data-evo-blog="results"]');
+  const abstract=article.locator('.evo-article__abstract p').first();
+  await expect(abstract).toContainText('普通 OpenEVO 的 Task Score 为 60.72 分');
+  await expect(abstract).toContainText('Bounded 为 45.98 分');
+  await expect(abstract).toContainText('历史 β/GDR 为 20.77 分');
+  await expect(abstract).toContainText('完整做对 50 题');
+  const headings=article.locator('#main-results .evo-article__tablewrap table').first().locator('thead th');
+  await expect(headings.nth(1)).toContainText('满分 100 分');
+  await expect(headings.nth(2)).toContainText('共 128 题');
+  await expect(article.locator('#response-q02 [data-advisor-matrix]')).toContainText('3 题');
+  await expect(article.locator('#capacity .research-booktabs')).toContainText('62.98');
+  await expect(article.locator('[data-q17-topic="capacity"]')).toContainText('下降 3.91 分至提高 1.65 分');
+
+  // A known-bad user example must be flagged, while a valid per-method
+  // sentence and ordinary model names/intervals must be accepted.
+  const patterns=[
+    /(?<![A-Za-z0-9])\d+(?:\.\d+)?\s*\/\s*(?:100|128|64|32|512|160|78|117|13)\b/,
+    /(?:\d+(?:\.\d+)?[、，]){2,}\d+(?:\.\d+)?/,
+    /\[\s*[−+-]?\d+(?:\.\d+)?\s*[,，]\s*[−+-]?\d+(?:\.\d+)?\s*\]/
+  ];
+  const bad='Task Score 依次为 60.72、45.98、20.77/100，完整成功分别为 50、32、10 题';
+  const good='普通 OpenEVO 的 Task Score 为 60.72 分，完整成功 50 题；Bounded 得 45.98 分，完整成功 32 题。';
+  expect(patterns.some(r=>r.test(bad))).toBe(true);
+  expect(patterns.some(r=>r.test(good))).toBe(false);
+  expect(patterns.some(r=>r.test('R159 与 rank128，95% 区间从下降 3.68 分到提高 0.12 分'))).toBe(false);
+  const texts=await article.locator('p,th,td,caption,figcaption,svg desc').allTextContents();
+  const badRendered=texts
+    .filter(s=>patterns.some(pattern=>pattern.test(s)))
+    .map(s=>s.trim().slice(0,180));
+  expect(badRendered).toEqual([]);
+});
+
+test('advisor numeric typography stays plain throughout prose, tables and plots',async({page})=>{
+  await page.setViewportSize({width:390,height:900});
+  await page.goto(prefix+'parameter-memory-results/',{waitUntil:'domcontentloaded'});
+  const article=page.locator('[data-evo-blog="results"]');
+  const selectors=[
+    '.evo-article__abstract p strong',
+    '#response-q01-title',
+    '#response-q01 .advisor-viz__q01-chart text',
+    '#response-q03 .advisor-viz__q03-score',
+    '#response-q03 .q03-world4__tablewrap table td',
+    '#capacity .research-booktabs td[data-numeric]',
+    '#response-q02 .advisor-viz .research-booktabs td',
+    '#response-q07 .paper-effect__value strong',
+    '#capacity .paper-effect__axis',
+    '#main-results .evo-article__tablewrap table td',
+  ];
+  for(const selector of selectors){
+    const node=article.locator(selector).first();
+    await expect(node,selector).toHaveCount(1);
+    const style=await node.evaluate(el=>{
+      const value=getComputedStyle(el);
+      return {font:value.fontFamily,numeric:value.fontVariantNumeric,features:value.fontFeatureSettings};
+    });
+    expect(style.font,selector).toContain('PingFang SC');
+    expect(style.font,selector).not.toMatch(/Georgia|Times New Roman|Songti SC|STSong|Noto Serif/i);
+    expect(style.numeric,selector).toBe('normal');
+    expect(style.features,selector).toBe('normal');
+  }
+  // The mathematical font remains KaTeX; the text-font change must not break it.
+  await expect(article.locator('#capacity .katex').first()).toBeVisible();
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(2);
+
+  // Negative control: make one scientific table use the owner's rejected
+  // serif/tabular numerals. The same computed-style check must now reject it.
+  await page.addStyleTag({content: '.evo-blog.evo-approved-reader .advisor-result-matrix table {font-family: Georgia, serif !important; font-variant-numeric: tabular-nums !important}'});
+  const deliberatelyBroken=await article.locator('#response-q07 .advisor-result-matrix table').evaluate(el=>{
+    const st=getComputedStyle(el);
+    return {font:st.fontFamily,numeric:st.fontVariantNumeric};
+  });
+  expect(deliberatelyBroken.font).toContain('Georgia');
+  expect(deliberatelyBroken.numeric).toBe('tabular-nums');
+});
+
+
+test('Q10 ends the main question sequence and no historical topic restarts as chapter four',async({page})=>{
+  await page.setViewportSize({width:390,height:900});
+  await page.goto(prefix+'parameter-memory-results/',{waitUntil:'domcontentloaded'});
+  const article=page.locator('[data-evo-blog="results"]');
+  const responses=article.locator('#responses [data-experiment-response]');
+  await expect(responses).toHaveCount(10);
+  await expect(responses.last()).toHaveAttribute('id','response-q10');
+  const after=await article.locator('#responses ~ section > h2').allTextContents();
+  expect(after).toEqual(['研究总结与仍待回答的问题','科研来源与实验记录']);
+  const noRepeatedChapters=(headings:string[])=>headings.every(x=> !/^(?:[4-9]|10)\s/.test(x));
+  expect(noRepeatedChapters(after)).toBe(true);
+  // Known-bad witness: a restored "4" after Q10 must be rejected.
+  expect(noRepeatedChapters([...after,'4 三条长期路线的终评结果'])).toBe(false);
+
+  for(const [id,question] of [
+    ['main-results','q05'],['capacity','q04'],['beta','q05'],
+    ['direction','q07'],['bundle','q09'],
+  ]){
+    const owner=await page.locator('#'+id).evaluate(el=>el.closest('[data-experiment-response]')?.getAttribute('data-experiment-response'));
+    expect(owner,'Unexpected owner for '+id).toBe(question);
+  }
+  for(const [topic,question] of [
+    ['capacity','q04'],['direction','q07'],['retention','q08'],['text','q09']
+  ]){
+    const owner=await page.locator('[data-q17-topic="'+topic+'"]').evaluate(el=>el.closest('[data-experiment-response]')?.getAttribute('data-experiment-response'));
+    expect(owner,'Missing Q17 topic '+topic).toBe(question);
+  }
+  await expect(article.locator('[data-conversation-detail]')).toHaveCount(0);
+  await expect(article.locator('[data-advisor-matrix]')).toHaveCount(7);
+  await expect(article.locator('#response-q04 [data-report-figure="q04-capacity"]')).toHaveCount(1);
+  await expect(article.locator('#response-q05 [aria-label="三条路线冻结最终测试"] table')).toHaveCount(1);
+  await expect(article.locator('#response-q09 [aria-label="BUNDLE 更新计数"] table')).toHaveCount(1);
+  await expect(article.locator('#response-q03 [data-seed-eight-progress] table')).toHaveCount(1);
+  await expect(article.locator('#checkpoint-evidence details')).toHaveCount(1);
+  await expect(article.locator('#response-q08 [data-q08-repeat-evidence]')).toHaveCount(1);
+  const noOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  expect(noOverflow).toBeLessThanOrEqual(2);
 });

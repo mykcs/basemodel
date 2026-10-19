@@ -99,7 +99,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
           ))}
         </g>
       ))}
-      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="63" y="15">Task Score / 100</text>
+      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="63" y="15">Task Score（满分 100 分）</text>
       <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="713" y="301" text-anchor="end">训练进度（口径见上）</text>
     </svg>
     <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--phone" viewBox="0 0 340 232" role="img" aria-labelledby="advisor-q01-phone-title advisor-q01-phone-desc">
@@ -130,27 +130,27 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
           ))}
         </g>
       ))}
-      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="33" y="12">Task Score / 100</text>
+      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="33" y="12">Task Score（满分 100 分）</text>
       <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="326" y="227" text-anchor="end">训练进度（计数不同）</text>
     </svg>
     <figcaption><strong>图 1｜</strong>三种参数更新方法在同一冻结 64 题上的 Task Score（满分 100）。每条曲线包含 11 个真实保存点，线段只连接已测点。普通 OpenEVO 横轴为实际参数更新次数；Bounded 和历史 β/GDR 横轴为已完成的 Stage2 轮数，后两组包含未实际更新参数的轮次。同一横轴刻度不是相同的训练计算量，不应据此进行等成本排名。</figcaption>
     <div class="advisor-viz__q01-reading">
       {q01Series.map((item) => <p><strong>{item.name}：</strong>{item.takeaway}</p>)}
     </div>
-    <p class="advisor-viz__q01-source">数据与规则：<a href={q01CurveHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01CurveHref} />11 个保存点的原始 CSV ↗</a> · <a href={q01ResultHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01ResultHref} />判断何时停止的规则与原始结果 ↗</a></p>
+    <p class="advisor-viz__q01-source">数据与规则：<a href={q01CurveHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01CurveHref} />11 个保存点的原始 CSV</a> · <a href={q01ResultHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01ResultHref} />判断何时停止的规则与原始结果</a></p>
     <details class="advisor-viz__details">
       <summary>怎样判断继续训练是否还值得？各个版本是多少分？</summary>
       <p>研究开始前，我们约定了一条挑选模型版本的规则：从已测的 11 个版本里，寻找最早的一个，使后面所有已测版本的平均分都没有比它高出超过 2 分（满分 100），完整成功的题数也没有多出超过 2 道（共 64 道）。原始英文收据把它称作 practical plateau；这只是“后面的版本没有明显超过它”的判断规则。历史 β/GDR 在第 130 轮后成绩下降，不能被理解成成绩始终平稳。这里的结论只适用于这批事先固定的 64 道题。</p>
       <div class="advisor-viz__table research-booktabs-wrap" tabindex="0">
         <table class="research-booktabs" data-q01-measured-table>
-          <caption>补充表 S1｜同一冻结 64 题；Task Score / 100（仅列出已实际测量的保存点）</caption>
+          <caption>补充表 S1｜同一冻结 64 题；Task Score（满分 100 分）（仅列出已实际测量的保存点）</caption>
           <thead><tr><th scope="col">轮次或更新数</th><th scope="col" data-numeric>普通 OpenEVO</th><th scope="col" data-numeric>Bounded</th><th scope="col" data-numeric>历史 β/GDR</th></tr></thead>
           <tbody>
             {q01Rounds.map((round) => (
               <tr>
                 <th scope="row">{round}</th>
                 {q01Series.map((item) => (
-                  <td data-numeric>{item.values.find((row) => row.round===round)?.score.toFixed(2)}</td>
+                  <td data-numeric>{item.values.find((row) => row.round===round)?.score.toFixed(2)} 分</td>
                 ))}
               </tr>
             ))}
@@ -165,9 +165,9 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
     <div class="advisor-viz__table research-booktabs-wrap" tabindex="0">
       <table class="research-booktabs">
         <caption>表 1｜早期 SFT 在同一批固定购物题上的成绩</caption>
-        <thead><tr><th scope="col">训练条件</th><th scope="col" data-numeric>Task Score / 100</th></tr></thead>
+        <thead><tr><th scope="col">训练条件</th><th scope="col" data-numeric>Task Score（满分 100 分）</th></tr></thead>
         <tbody>{earlySft.map(item => (
-          <tr><th scope="row">{item.name}</th><td data-numeric>{item.score.toFixed(2)}</td></tr>
+          <tr><th scope="row">{item.name}</th><td data-numeric>{item.score.toFixed(2)} 分</td></tr>
         ))}</tbody>
       </table>
     </div>
@@ -182,8 +182,8 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
     </header>
     <svg class="advisor-viz__trend advisor-viz__q03-chart advisor-viz__q03-chart--desktop" data-q03-desktop-chart viewBox="0 0 625 285" role="img" aria-labelledby="advisor-q03-title advisor-q03-description">
       <title id="advisor-q03-title">Q03 四个已测 Stage2 保存点的成绩先升、再降、再回升</title>
-      <desc id="advisor-q03-description">自定义 64 题，不是论文原生 128 题。A0: 3.71，A40: 6.43，A80: 0.69，A120: 6.62 分，满分 100。纵轴仅显示 0–10 分的局部范围，四个保存点完整成功均为 0/64，中间训练轮次没有被测量。</desc>
-      <text class="advisor-viz__q03-axis-title" x="75" y="30">Task Score / 100</text>
+      <desc id="advisor-q03-description">自定义 64 题，不是论文原生 128 题。A0 模型得 3.71 分，A40 得 6.43 分，A80 得 0.69 分，A120 得 6.62 分，满分 100 分。纵轴仅显示 0–10 分的局部范围，四个保存点在各自的 64 道题中都没有完整成功的题目，中间训练轮次没有被测量。</desc>
+      <text class="advisor-viz__q03-axis-title" x="75" y="30">Task Score（满分 100 分）</text>
       {[0, 5, 10].map((tick) => (
         <g>
           <line class="advisor-viz__q03-grid" x1="75" x2="587" y1={225 - tick * 17} y2={225 - tick * 17} />
@@ -205,7 +205,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
     <svg class="advisor-viz__trend advisor-viz__q03-phone-chart" data-q03-mobile-chart viewBox="0 0 350 236" role="img" aria-labelledby="advisor-q03-phone-title advisor-q03-phone-description">
       <title id="advisor-q03-phone-title">Q03 四个真实保存点成绩先升、后降、再回升，手机视图</title>
       <desc id="advisor-q03-phone-description">自定义 64 道购物测试题，A0 为 3.71，A40 为 6.43，A80 为 0.69，A120 为 6.62；纵轴局部放大到 0–10 分，完整满分为 100。虚线只是连接已测点，中间没有观测。</desc>
-      <text class="advisor-viz__q03-axis-title" x="43" y="20">Task Score / 100</text>
+      <text class="advisor-viz__q03-axis-title" x="43" y="20">Task Score（满分 100 分）</text>
       {[0,5,10].map((tick) => (
         <g>
           <line class="advisor-viz__q03-grid" x1="42" x2="335" y1={185-tick*13} y2={185-tick*13} />
@@ -227,26 +227,26 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
     <div class="advisor-viz__q03-phone-table research-booktabs-wrap" tabindex="0" aria-label="四个保存点的论文式数据表">
       <table class="research-booktabs">
         <caption>补充表 S2｜四个真实保存点 · 自定义的 64 道购物题</caption>
-        <thead><tr><th scope="col">保存点</th><th scope="col" data-numeric>得分 / 100</th><th scope="col" data-numeric>完整成功 / 64</th></tr></thead>
+        <thead><tr><th scope="col">保存点</th><th scope="col" data-numeric>Task Score（满分 100 分）</th><th scope="col" data-numeric>完整成功题数（共 64 题）</th></tr></thead>
         <tbody>{ADVISOR_Q03_CUSTOM_PANEL.map((point) => (
-          <tr><th scope="row">{point.update}</th><td data-numeric>{point.score}</td><td data-numeric>{point.exact.replace(' / ', '/')}</td></tr>
+          <tr><th scope="row">{point.update}</th><td data-numeric>{point.score} 分</td><td data-numeric>{point.exact.replace(/\s*\/\s*\d+$/, '').trim()} 题</td></tr>
         ))}</tbody>
       </table>
     </div>
-    <p class="advisor-viz__q03-reading">从 A0 的 <strong>3.71</strong> 分升至 A40 的 <strong>6.43</strong> 分，A80 降至 <strong>0.69</strong> 分，A120 回升至 <strong>6.62</strong> 分。四次完整成功均为 <strong>0/64</strong>。</p>
-    <figcaption><strong>图 2｜Q03 历史四个测量点。</strong>纵轴局部放大至 0–10 分，实际满分 100；细虚线只连接已测点，<strong>没有测量中间轮次</strong>，不能据此推断连续训练曲线。它与公开 SEED 论文的 128 题成绩不属于同一评测协议。<a href="https://github.com/mykcs/openevo-experiment/pull/678" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/678" />原始评测记录 ↗</a></figcaption>
+    <p class="advisor-viz__q03-reading">从 A0 的 <strong>3.71</strong> 分升至 A40 的 <strong>6.43</strong> 分，A80 降至 <strong>0.69</strong> 分，A120 回升至 <strong>6.62</strong> 分。四个保存点分别测试了 64 道题，<strong>均没有完整成功的题目</strong>。</p>
+    <figcaption><strong>图 2｜Q03 历史四个测量点。</strong>纵轴局部放大至 0–10 分，实际满分 100；细虚线只连接已测点，<strong>没有测量中间轮次</strong>，不能据此推断连续训练曲线。它与公开 SEED 论文的 128 题成绩不属于同一评测协议。<a href="https://github.com/mykcs/openevo-experiment/pull/678" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/678" />原始评测记录</a></figcaption>
   </figure>
 )}
 {variant === 'q04' && (
   <div class="advisor-viz" data-report-figure="q04-capacity" data-evidence-shape="paired-paper-table">
     <div class="advisor-viz__table research-booktabs-wrap" tabindex="0" aria-label="长期状态容量和 WebShop 得分对照表">
       <table class="research-booktabs">
-        <caption>表 4｜固定容量与后段任务表现</caption>
+        <caption>表 3｜固定容量与后段任务表现</caption>
         <thead>
           <tr>
             <th scope="col">长期参数状态</th>
             <th scope="col" data-numeric>参数文件（MB）</th>
-            <th scope="col" data-numeric>Task Score / 100</th>
+            <th scope="col" data-numeric>Task Score（满分 100 分）</th>
             <th scope="col" data-numeric>完整成功率</th>
           </tr>
         </thead>
@@ -270,9 +270,9 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
     <div class="advisor-viz__table research-booktabs-wrap" tabindex="0">
       <table class="research-booktabs">
         <caption>补充表 S5｜三条历史路线在固定 128 题上的训练后成绩</caption>
-        <thead><tr><th scope="col">历史路线</th><th scope="col" data-numeric>Task Score / 100</th><th scope="col" data-numeric>完整成功</th></tr></thead>
+        <thead><tr><th scope="col">历史路线</th><th scope="col" data-numeric>Task Score（满分 100 分）</th><th scope="col" data-numeric>完整成功题数（共 128 题）</th></tr></thead>
         <tbody>{ADVISOR_Q05_FROZEN.map(item => (
-          <tr><th scope="row">{item.method.replace(' / DirectApply','')}</th><td data-numeric>{item.score}</td><td data-numeric>{item.exact}</td></tr>
+          <tr><th scope="row">{item.method.replace(' / DirectApply','')}</th><td data-numeric>{item.score} 分</td><td data-numeric>{item.exact.replace(/\s*\/\s*\d+$/, '').trim()} 题</td></tr>
         ))}</tbody>
       </table>
     </div>
@@ -281,7 +281,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 )}
 {variant === 'q07' && (
   <div data-report-visual="q07-confidence-interval" data-evidence-shape="confidence-interval">
-    <PaperIntervalPlot id="q07-inversion" title="第 156 轮反转一次 Task Vector 的局部效果" unit="Task Score 分 / 100" min={-20} max={5} ticks={[-20,-10,0,5]} effects={[{id:'inverse',label:'Bounded OFF · 方向反转',estimate:-10.06,low:-15.02,high:-5.60}]} comparison="第 156 轮的更新方向反转后 − 原始 Bounded OFF 模型；相同 64 道购物题" negativeLabel="反转后分数更低" positiveLabel="反转后分数更高" caption="图 9｜Q07 第 156 轮方向反转：同一冻结 64 题的配对 Task Score 变化；95% 区间 [−15.02, −5.60] 不含零。这是八次方向反转中通过预设多重比较校正的一次，不能推广成普适的在线方向控制规则。" />
+    <PaperIntervalPlot id="q07-inversion" title="第 156 轮反转一次 Task Vector 的局部效果" unit="Task Score 成绩变化（分）" min={-20} max={5} ticks={[-20,-10,0,5]} effects={[{id:'inverse',label:'Bounded OFF · 方向反转',estimate:-10.06,low:-15.02,high:-5.60}]} comparison="第 156 轮的更新方向反转后 − 原始 Bounded OFF 模型；相同 64 道购物题" negativeLabel="反转后分数更低" positiveLabel="反转后分数更高" caption="图 6｜Q07 第 156 轮方向反转：同一冻结 64 题的配对 Task Score 变化；95% 置信区间对应下降 5.60 至 15.02 分，没有包含零。这是八次方向反转中通过预设多重比较校正的一次，不能推广成普适的在线方向控制规则。" />
   </div>
 )}
 <style>

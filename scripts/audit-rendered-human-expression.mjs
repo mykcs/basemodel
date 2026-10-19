@@ -39,15 +39,15 @@ for (const file of htmlFiles) {
 
   for (const match of source.matchAll(/<h([1-3])\b[^>]*>([\s\S]*?)<\/h\1>/gi)) {
     const heading = textOnly(match[2]);
-    // Academic subsection numbers are reader-facing headings when explicitly authored.
-    // Exempt ONLY matching 3.Q1–3.Q10 prefixes on the ten anchored H3 response titles.
-    // The heading text after that prefix still receives every ordinary jargon check.
-    let contentForInternalIdAudit = heading;
-    const responseId = match[0].match(/\bid="response-q(0[1-9]|10)-title"/i);
-    if (relative === 'research/seed-openevo/study/parameter-memory-results/index.html' &&
-        match[1] === '3' && responseId) {
-      const prefix = '3.Q'+Number(responseId[1])+' ';
-      if (heading.startsWith(prefix)) contentForInternalIdAudit = heading.slice(prefix.length);
+    // The third OpenEVO article keeps chapter "3" at the section level.
+    // Q01–Q10 are quiet reference labels outside h3; legacy "3.Q1"
+    // heading prefixes must fail rather than silently pass an exemption.
+    const isAdvisorResponseHeading =
+      relative === 'research/seed-openevo/study/parameter-memory-results/index.html' &&
+      match[1] === '3' &&
+      /\bid="response-q(?:0[1-9]|10)-title"/i.test(match[0]);
+    if (isAdvisorResponseHeading && /^3\.Q(?:[1-9]|10)(?:\s|$)/.test(heading)) {
+      findings.push({file:relative,rule:'HUMAN-EXPRESSION-ADVISOR-LEGACY-NUMBER',detail:heading});
     }
     for (const [rule, pattern] of [
       ['HUMAN-EXPRESSION-INTERNAL-ID-HEADING', internalHeading],
@@ -56,7 +56,7 @@ for (const file of htmlFiles) {
       ['HUMAN-EXPRESSION-PROJECT-STATUS-AS-STORY', projectStatusHeading],
       ['HUMAN-EXPRESSION-PRESENTER-HEADING', presenterHeading],
     ]) {
-      const checkedText = rule === 'HUMAN-EXPRESSION-INTERNAL-ID-HEADING' ? contentForInternalIdAudit : heading;
+      const checkedText = heading;
       if (pattern.test(checkedText)) findings.push({ file: relative, rule, detail: heading });
     }
   }
@@ -72,6 +72,27 @@ for (const file of htmlFiles) {
 
   if (/data-research-glossary|class=["'][^"']*(?:research-glossary|note-glossary)[^"']*["']/i.test(source)) {
     findings.push({ file: relative, rule: 'HUMAN-EXPRESSION-CENTRALIZED-GLOSSARY', detail: 'centralized glossary rendered on the public reading path' });
+  }
+
+  // User-visible numeric expression regression, 2026-10-19:
+  // "Task Score 依次为 60.72、45.98、20.77/100 ..."
+  // Reject reader-facing numerator/denominator shorthand, bare parallel
+  // numeric lists and unexplained bracket-style CI pairs across the ENTIRE
+  // advisor response article. Raw experimental values and LaTeX remain intact.
+  if (relative === 'research/seed-openevo/study/parameter-memory-results/index.html') {
+    const packedRatio = /(?<![A-Za-z0-9])\d+(?:\.\d+)?\s*\/\s*(?:100|128|64|32|512|160|78|117|13)\b/;
+    const packedParallel = /(?:\d+(?:\.\d+)?[、，]){2,}\d+(?:\.\d+)?/;
+    const rawConfidenceInterval = /\[\s*[−+-]?\d+(?:\.\d+)?\s*[,，]\s*[−+-]?\d+(?:\.\d+)?\s*\]/;
+    for (const match of source.matchAll(/<(p|th|td|caption|figcaption|desc|li)\b[^>]*>([\s\S]*?)<\/\1>/gi)) {
+      const value = textOnly(match[2]);
+      if ([packedRatio,packedParallel,rawConfidenceInterval].some(pattern => pattern.test(value))) {
+        findings.push({
+          file:relative,
+          rule:'HUMAN-EXPRESSION-ADVISOR-PACKED-NUMBERS',
+          detail:value.slice(0,220)
+        });
+      }
+    }
   }
 
   const defaultReadingLayer = source

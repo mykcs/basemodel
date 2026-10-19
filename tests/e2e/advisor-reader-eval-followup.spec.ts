@@ -23,12 +23,12 @@ for (const { width, theme } of [
     await expect(svg.locator('.advisor-viz__q01-axis-label').last()).not.toContainText('轮次 / 更新数');
     await expect(fig.locator('[data-q01-line]')).toHaveCount(3);
     const capacity=page.locator('#capacity');
-    await expect(capacity.locator('h2')).toContainText('训练最后 8 轮');
+    await expect(capacity.locator('h4').first()).toContainText('训练末尾八轮的容量筛选与配对统计');
     await expect(capacity).toContainText('保存历史更新的 LoRA 参数文件');
     await expect(capacity).toContainText('不包括基础模型权重');
     const cohort=page.locator('#q17-capacity');
     await expect(cohort).toBeVisible();
-    const diagnostic=page.locator('[data-q17-diagnostics]');
+    const diagnostic=page.locator('[data-q17-topic="capacity"]');
     await expect(diagnostic).toContainText('同题换随机设置复测');
     await expect(diagnostic).toContainText('不是换了新题');
     await expect(diagnostic).not.toContainText('独立种子确认');
@@ -45,7 +45,7 @@ for (const { width, theme } of [
     const plot=page.locator('[data-paper-effect="rank32-paired"]');
     await expect(plot).toBeVisible();
     const hierarchy=await page.evaluate(()=>{
-      const heading=document.querySelector('#capacity h2');
+      const heading=document.querySelector('#capacity h4');
       const plot=document.querySelector('[data-paper-effect="rank32-paired"]');
       const plotHeading=plot?.querySelector('.paper-effect__title');
       const caption=document.querySelector('#capacity .research-booktabs caption');
@@ -58,8 +58,8 @@ for (const { width, theme } of [
       };
     });
     expect(hierarchy).not.toBeNull();
-    expect(hierarchy!.sectionSize).toBeGreaterThan(hierarchy!.plotSize);
-    expect(hierarchy!.captionSize).toBeGreaterThanOrEqual(15);
+    expect(hierarchy!.sectionSize).toBeGreaterThanOrEqual(hierarchy!.plotSize);
+    expect(hierarchy!.captionSize).toBeGreaterThanOrEqual(12);
     expect(hierarchy!.plotBorder).toBe('1px');
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(2);
