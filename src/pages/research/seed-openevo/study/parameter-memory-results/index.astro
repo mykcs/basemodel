@@ -134,7 +134,7 @@ const q17Effects = {
         </div>
         <div>
           <dt><a href="#response-q06">Q06 · 哪一种熵，才能看出模型做选择时的犹豫？</a></dt>
-          <dd><strong>已测：</strong>第一版实验结束后，我们从轨迹回算了 <strong>action-family entropy（动作类型熵）</strong>，只区分 search 与 click。WebShop 的动作大类本来就少，这无法告诉我们模型究竟点错了哪个商品；之后我们测量了 click-choice entropy（具体点击候选的熵）等更细的概率指标，并在两条后续数据流中尝试预测表现，但预设整体检验结果为 <strong>NOT_CONFIRMED（尚未确认）</strong>。<strong>接下来：</strong>用独立起点和新题验证它究竟能否预测错误，而不是重复统计 search/click。</dd>
+          <dd><strong>已测：</strong>第一版实验结束后，我们从轨迹回算了 <strong>action-family entropy（动作类型熵）</strong>，只区分 search 与 click。WebShop 的动作大类本来就少，这无法告诉我们模型究竟点错了哪个商品；之后我们测量了 click-choice entropy（具体点击候选的熵）等更细的概率指标，并在两条后续数据流中尝试预测表现，但预设整体检验结果为 <strong>NOT_CONFIRMED（尚未确认）</strong>。<strong>接下来：</strong>结合 token-level entropy（逐 token 熵），在独立起点和新题上验证这些指标能否预测错误，而不是重复统计 search/click。</dd>
         </div>
         <div>
           <dt><a href="#response-q07">Q07 · Task Vector 的更新方向真的重要吗？</a></dt>
