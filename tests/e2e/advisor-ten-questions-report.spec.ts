@@ -118,6 +118,26 @@ test('third article answers all Q01–Q10 with experiments, measurements, limits
   await expect(page.locator('#response-q10')).toContainText('当前并没有三条新随机流');
 });
 
+test('accepted ten-question copy stays identical between TLDR and detailed answers',async({page})=>{
+  await page.goto(prefix+'parameter-memory-results/');
+  const guide=page.locator('#experiment [data-review-source="single"]');
+  await expect(guide.locator('[data-review-summary]')).toHaveCount(10);
+  for(let n=1;n<=10;n++){
+    const id='q'+String(n).padStart(2,'0');
+    const brief=guide.locator('[data-review-summary="'+id+'"]');
+    const paragraphs=brief.locator('dd p');
+    await expect(paragraphs).toHaveCount(4);
+    await expect(page.locator('[data-reviewed-did="'+id+'"]')).toHaveText(await paragraphs.nth(0).innerText());
+    await expect(page.locator('[data-reviewed-finding="'+id+'"]')).toHaveText(await paragraphs.nth(1).innerText());
+    await expect(page.locator('[data-reviewed-completion="'+id+'"]')).toHaveText(await paragraphs.nth(2).innerText());
+    const next=(await paragraphs.nth(3).innerText()).replace(/^下一步：/,'');
+    await expect(page.locator('[data-next-work="'+id+'"]')).toContainText(next);
+  }
+  await expect(guide.locator('[data-review-summary="q06"]')).toContainText('action-family entropy');
+  await expect(guide.locator('[data-review-summary="q07"]')).toContainText('完整、未干预的 Bounded');
+  await expect(guide.locator('[data-review-summary="q10"]')).toContainText('ALFWorld');
+});
+
 test('response article also keeps frozen final, paired capacity, direction, uncertainty',async({page})=>{
   await page.goto(prefix+'parameter-memory-results/');
   const a=page.locator('[data-evo-blog="results"]');
@@ -186,8 +206,8 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   await page.goto(prefix+'parameter-memory-results/');
   const guide=page.locator('#experiment');
   await expect(guide.locator('dt')).toHaveCount(10);
-  await expect(guide).toContainText('SFT 和 OPSD，哪种初始训练方式更好？');
-  await expect(guide).toContainText('我们的 SEED 成绩，为什么和论文差这么多？');
+  await expect(guide).toContainText('开始长期学习前，SFT 和 OPSD 哪种方法更好？');
+  await expect(guide).toContainText('我们的 SEED 实验成绩为什么比论文低这么多？');
   await expect(guide.locator('table')).toHaveCount(0);
   for(let n=1;n<=10;n++) {
     const id='q'+String(n).padStart(2,'0');
@@ -197,7 +217,7 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   await expect(guide).toContainText('ALFWorld');
   await expect(guide).toContainText('十问速览：我们发现了什么，下一轮还想研究什么？');
   const answer=page.locator('#response-q01');
-  await expect(answer.locator('h3')).toHaveText('3.Q1 训练 160 轮会不会太多了？');
+  await expect(answer.locator('h3')).toHaveText('3.Q1 训练 160 轮会不会太多？');
   const link=answer.locator('[data-question-origin-link="q01"] a');
   await expect(link).toHaveAttribute('href','/research/seed-openevo/study/advisor-questions/#q01');
   const chart=answer.locator('[data-report-figure="q01-horizon"]');
@@ -214,7 +234,7 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   expect(overflow).toBeLessThanOrEqual(2);
   await link.click();
   await expect(page).toHaveURL(/advisor-questions\/#q01$/);
-  await expect(page.locator('#q01 h3')).toHaveText('训练 160 轮会不会太多了？');
+  await expect(page.locator('#q01 h3')).toHaveText('训练 160 轮会不会太多？');
   await expect(page.locator('#q01 a[href*="parameter-memory-results"]')).toBeVisible();
 });
 
@@ -222,7 +242,7 @@ test('Q03 shows complete paired engineering measurements without formal SEED cla
   await page.setViewportSize({width:390,height:844});
   await page.goto(prefix+'advisor-questions/');
   const entry=page.locator('#q03 a[href*="parameter-memory-results"]');
-  await expect(entry).toContainText('工程测量与限制');
+  await expect(entry).toContainText('查看 Q03 已完成的实验、结果与未解问题');
   await expect(page.locator('[data-question-only]')).not.toContainText('4.07');
   await entry.click();
   const q03=page.locator('#response-q03 [data-seed-eight-progress]');

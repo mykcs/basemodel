@@ -7,6 +7,7 @@ import {
   ADVISOR_RESEARCH_AS_OF,
 } from '../data/openEvoAdvisorTenQuestions';
 import { OPEN_EVO_ADVISOR_MEETING } from '../data/openEvoAdvisorMeeting';
+import { ADVISOR_REVIEWED_COPY } from '../data/openEvoAdvisorReviewedCopy';
 import { SITE_READER_CONTRACTS } from '../data/siteReaderContracts';
 
 const read = (path:string) => readFileSync(new URL('../../'+path,import.meta.url),'utf8');
@@ -135,9 +136,18 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('2 十问速览：我们发现了什么，下一轮还想研究什么？');
     expect(responses).toContain('evo-article__experiment-guide');
     const tlDr=responses.split('data-ten-question-tldr')[1]?.split('</section>')[0] ?? '';
-    for(let n=1;n<=10;n++) expect(tlDr).toContain('href="#response-q'+String(n).padStart(2,'0')+'"');
-    for(const phrase of ['action-family entropy','token-level entropy','完整、未干预的模型','ALFWorld','GPU 数量']) expect(tlDr).toContain(phrase);
-    expect((tlDr.match(/<dt>/g)||[])).toHaveLength(10);
+    expect(tlDr).toContain('data-review-source="single"');
+    expect(tlDr).toContain('responseQuestions.map(q =>');
+    expect(tlDr).toContain('data-review-summary={q.id}');
+    for(const field of ['did','found','status','next']) expect(tlDr).toContain('{q.reviewed.'+field+'}');
+    expect(Object.keys(ADVISOR_REVIEWED_COPY)).toEqual(Array.from({length:10},(_,i)=>'q'+String(i+1).padStart(2,'0')));
+    expect(ADVISOR_REVIEWED_COPY.q06.did).toContain('action-family entropy');
+    expect(ADVISOR_REVIEWED_COPY.q06.status).toContain('token-level entropy');
+    expect(ADVISOR_REVIEWED_COPY.q07.found).toContain('完整、未干预的 Bounded');
+    expect(ADVISOR_REVIEWED_COPY.q10.next).toContain('ALFWorld');
+    expect(responses).toContain('data-reviewed-finding={q.id}');
+    expect(responses).toContain('data-reviewed-completion={q.id}');
+    expect(responses).toContain('GPU 数量');
     expect(responses).not.toContain('aria-label="研究问题与具体测量对应表"');
     expect(responses).not.toContain('六类证据的评测口径');
     expect(responses).not.toContain('四种测量不能混成一次对照');
@@ -196,7 +206,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
       const row=rows.find(r=>r[0]===key && Number(r[2])===round);
       expect(Number(row?.[4])*100).toBeCloseTo(score,7);
     }
-    expect(ADVISOR_QUESTIONS[0]?.title).toBe('训练 160 轮会不会太多了？');
+    expect(ADVISOR_QUESTIONS[0]?.title).toBe('训练 160 轮会不会太多？');
     expect(ADVISOR_QUESTIONS[0]?.experiment).not.toContain('而不是拿最后的训练损失当答案');
     expect(visual).toContain('data-evidence-shape="measured-score-curves"');
     expect(visual).not.toContain('data-evidence-shape="platform-position"');
@@ -210,16 +220,16 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
   it('keeps each advisor heading within the scientific question actually tested',()=>{
     const visual=read('src/components/research/AdvisorTenEvidenceVisual.astro');
     const intended: Record<string,string> = {
-      q01: '训练 160 轮会不会太多了？',
-      q02: '开始逐轮学习之前，怎样训练出一个更好的初始模型？',
-      q03: '我们的 SEED 实验成绩，能直接和论文比较吗？',
+      q01: '训练 160 轮会不会太多？',
+      q02: '开始长期学习前，SFT 和 OPSD 哪种方法更好？',
+      q03: '我们的 SEED 实验成绩为什么比论文低这么多？',
       q04: '长期参数容量需要 rank128 这么大吗，缩小一点怎么样？',
-      q05: '增加参数写入控制后，模型做题成绩有什么变化？',
-      q06: '模型选择商品时有多拿不准？',
-      q07: '把某轮参数更新的方向反过来，成绩会怎样？',
-      q08: '训练很多轮后，模型还会做以前学过的购物题吗？',
-      q09: '改变模型收到的文字经验提示，会影响做题吗？',
-      q10: '换一批真正新的任务，这些判断还能成立吗？',
+      q05: 'β 写入控制会让模型学得更好吗？',
+      q06: '模型做选择时有多犹豫？能用熵来衡量吗？',
+      q07: '参数更新的方向，会影响模型的做题能力吗？',
+      q08: 'OpenEVO 训练很多轮以后，会忘记以前学会的任务吗？',
+      q09: '模型外部保存的文字经验，究竟有多大作用？',
+      q10: '换一批新任务，OpenEVO 的实验结论还成立吗？',
     };
     for(const [id,title] of Object.entries(intended))
       expect(ADVISOR_QUESTIONS.find(q=>q.id===id)?.title).toBe(title);
@@ -277,10 +287,10 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(visual).toContain('原始英文收据把它称作 practical plateau');
     expect(visual).toContain('平均分都没有比它高出超过 2 分');
     expect(visual).toContain('历史 β/GDR 在第 130 轮后成绩下降');
-    expect(responses).toContain('同一批 64 道开发题');
+    expect(ADVISOR_REVIEWED_COPY.q01.did).toContain('同一批 64 道开发题');
     expect(responses).toContain('同题比较');
-    expect(responses).toContain('SFT 和 OPSD，哪种初始训练方式更好？');
-    expect(responses).toContain('我们的 SEED 成绩，为什么和论文差这么多？');
+    expect(ADVISOR_QUESTIONS[1]?.title).toBe('开始长期学习前，SFT 和 OPSD 哪种方法更好？');
+    expect(ADVISOR_QUESTIONS[2]?.title).toBe('我们的 SEED 实验成绩为什么比论文低这么多？');
     expect(responses).toContain('训练后压缩');
     expect(responses).toContain('已测结果：');
     expect(questions).toContain('SFT 和 OPSD 怎样训练初始模型');

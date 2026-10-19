@@ -3,16 +3,16 @@ import { expect, test } from '@playwright/test';
 const questionRoute='/research/seed-openevo/study/advisor-questions/';
 const responseRoute='/research/seed-openevo/study/parameter-memory-results/';
 const titles={
-  q01:'训练 160 轮会不会太多了？',
-  q02:'开始逐轮学习之前，怎样训练出一个更好的初始模型？',
-  q03:'我们的 SEED 实验成绩，能直接和论文比较吗？',
+  q01:'训练 160 轮会不会太多？',
+  q02:'开始长期学习前，SFT 和 OPSD 哪种方法更好？',
+  q03:'我们的 SEED 实验成绩为什么比论文低这么多？',
   q04:'长期参数容量需要 rank128 这么大吗，缩小一点怎么样？',
-  q05:'增加参数写入控制后，模型做题成绩有什么变化？',
-  q06:'模型选择商品时有多拿不准？',
-  q07:'把某轮参数更新的方向反过来，成绩会怎样？',
-  q08:'训练很多轮后，模型还会做以前学过的购物题吗？',
-  q09:'改变模型收到的文字经验提示，会影响做题吗？',
-  q10:'换一批真正新的任务，这些判断还能成立吗？',
+  q05:'β 写入控制会让模型学得更好吗？',
+  q06:'模型做选择时有多犹豫？能用熵来衡量吗？',
+  q07:'参数更新的方向，会影响模型的做题能力吗？',
+  q08:'OpenEVO 训练很多轮以后，会忘记以前学会的任务吗？',
+  q09:'模型外部保存的文字经验，究竟有多大作用？',
+  q10:'换一批新任务，OpenEVO 的实验结论还成立吗？',
 } as const;
 
 for (const {width,theme} of [
@@ -60,7 +60,7 @@ for (const {width,theme} of [
     await expect(details).toContainText('成绩下降');
     await expect(page.locator('#experiment')).toContainText('同一批 64 道开发题');
     await expect(page.locator('#experiment')).toContainText('同题比较');
-    await expect(page.locator('#experiment')).toContainText('SFT 和 OPSD，哪种初始训练方式更好？');
+    await expect(page.locator('#experiment')).toContainText('开始长期学习前，SFT 和 OPSD 哪种方法更好？');
     const q02=page.locator('#response-q02');
     await expect(q02).toContainText('36.01/100');
     await expect(q02).toContainText('34.96/100');
