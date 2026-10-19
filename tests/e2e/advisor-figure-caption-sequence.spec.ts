@@ -13,7 +13,7 @@ for (const width of [390, 768, 1440]) {
       await page.goto(route);
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
       const article = page.locator('[data-evo-blog="results"]');
-      // Eleven new method×metric tables own their own explanatory figcaptions.
+      // Seven complementary method×metric tables own their own explanatory figcaptions.
       // Figure numbering still belongs to the nine actual scientific figures.
       const captions = (await article.locator('figure:not(.paper-table-figure) figcaption').allTextContents()).map(s => s.trim());
       expect(captions).toHaveLength(9);

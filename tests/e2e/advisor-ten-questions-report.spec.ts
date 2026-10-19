@@ -125,19 +125,25 @@ test('third article answers all Q01–Q10 with experiments, measurements, limits
   await expect(page.locator('#response-q10')).toContainText('当前并没有三条新随机流');
 });
 
-test('conversation reference paragraphs stay identical in the TLDR and the detailed answers',async({page})=>{
+test('approved TLDR prose is preserved once and detailed questions own their evidence',async({page})=>{
   await page.goto(prefix+'parameter-memory-results/');
   const guide=page.locator('#experiment [data-review-source="single"]');
   await expect(guide.locator('[data-review-summary]')).toHaveCount(10);
+  await expect(page.locator('[data-conversation-detail]')).toHaveCount(0);
   for(let n=1;n<=10;n++){
     const id='q'+String(n).padStart(2,'0');
     const brief=guide.locator('[data-review-summary="'+id+'"]');
     const paragraphs=brief.locator('dd p');
     await expect(paragraphs).toHaveCount(2);
-    await expect(page.locator('[data-conversation-detail="'+id+'"]')).toHaveText(await paragraphs.nth(0).innerText());
     await expect(paragraphs.nth(1)).toContainText('后续研究：');
-    const next=(await paragraphs.nth(1).innerText()).replace(/^后续研究：/,'');
-    await expect(page.locator('[data-next-work="'+id+'"]')).toContainText(next);
+    await expect(page.locator('#response-'+id+' [data-experiment-finding="'+id+'"]')).toBeVisible();
+    await expect(page.locator('#response-'+id+' [data-supported-answer="'+id+'"]')).toBeVisible();
+    // The detailed answer keeps a source-bound result and next concrete task;
+    // it must not reprint the exact TLDR paragraph.
+    const summary=await paragraphs.first().innerText();
+    const detail=await page.locator('#response-'+id).innerText();
+    expect(detail).not.toContain(summary);
+    await expect(page.locator('#response-'+id+' [data-next-work="'+id+'"]')).toContainText('下一步：');
   }
   await expect(guide.locator('[data-review-summary="q01"] [data-conversation-summary]')).toHaveText('我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。');
   await expect(guide.locator('[data-review-summary="q02"]')).toContainText('SFT 直接学习示范，OPSD 利用额外经验指导模型学习');
@@ -186,14 +192,24 @@ test('response article also keeps frozen final, paired capacity, direction, unce
 test('Q17 diagnostics distinguish new measurements from dated history on mobile',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto(prefix+'parameter-memory-results/');
-  const ev=page.locator('[data-checkpoint-evidence]');
-  for (const v of ['60.1088 分','18 道完整成功','31 道至少成功过一次','K64 压缩状态有','39 项','13 份模型中还没有任何'])
-    await expect(ev).toContainText(v);
-  await expect(ev.locator('[data-q17-diagnostics]')).toContainText('78 项处置闭合不等于 78 项数值全部测得');
-  await expect(ev.locator('[data-q17-diagnostics]')).toContainText('没有测得紧凑部署的加速或显存节省');
-  await ev.locator(':scope > details > summary').click();
-  await expect(ev.locator('table')).toHaveCount(3);
-  await expect(ev.locator('a[href*="627da5c0fa9001d94b0891c38de6646b8cc796b2"]')).toHaveCount(4);
+  // Each new Q17 diagnostic now lives under its owning advisor question.
+  const q04=page.locator('#response-q04');
+  await expect(q04.locator('[data-q17-topic="capacity"]')).toContainText('没有测得紧凑部署的加速或显存节省');
+  const d1=q04.locator('[data-q04-historical-compression]');
+  await d1.locator('summary').click();
+  await expect(d1).toContainText('K64 压缩状态有');
+  const repeated=page.locator('#response-q08 [data-q08-repeat-evidence]');
+  await repeated.locator('summary').click();
+  await expect(repeated).toContainText('31 道至少成功过一次');
+  await expect(repeated.locator('table tbody tr')).toHaveCount(4);
+  await expect(page.locator('#response-q07 [data-q17-topic="direction"]')).toContainText('最新参数组件的局部干预');
+  await expect(page.locator('#response-q09 [data-q17-topic="text"]')).toContainText('三个指导文字干预');
+  // The archive itself owns its dated ledger, separate from task outcomes.
+  const ledger=page.locator('#checkpoint-evidence');
+  await ledger.locator('summary').click();
+  await expect(ledger).toContainText('13 份模型中还没有任何');
+  await expect(ledger).toContainText('39 项');
+  await expect(ledger).toContainText('78 项处置闭合不等于 78 项数值全部测得');
   await expect(page.locator('#response-q07')).toContainText('Bounded OFF');
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(2);
@@ -228,7 +244,7 @@ test('publication tables have unique labels and frozen comparisons link to actua
   await expect(finals.locator('[data-report-figure="q05-same-final"]')).toHaveCount(0);
   await expect(finals.locator('a[href*="FINAL_COMPARISON.json"]')).toBeVisible();
   await expect(finals.locator('a[href*="FINAL_EVAL_VERIFICATION.json"]')).toBeVisible();
-  const repeated=page.locator('#checkpoint-evidence > details table tbody tr');
+  const repeated=page.locator('#response-q08 [data-q08-repeat-evidence] table tbody tr');
   await expect(repeated).toHaveCount(4);
   await expect(repeated.last()).toContainText('31 题');
 });
@@ -349,12 +365,12 @@ test('dated Q17 supplements land on visible topic headings',async({page})=>{
   await expect(heading).toBeVisible();
   await expect.poll(async()=> (await heading.boundingBox())?.y ?? -1).toBeGreaterThanOrEqual(65);
   await expect.poll(async()=> (await heading.boundingBox())?.y ?? Infinity).toBeLessThan(200);
-  await expect(page.locator('[data-q17-diagnostics]')).toContainText('完整 SVD 的 BF16 重构对照');
+  await expect(page.locator('[data-q17-topic="capacity"]')).toContainText('完整 SVD 的 BF16 重构对照');
 });
 
 // The entire researcher-approved reader grammar is scoped to this one route.
 for(const width of [320,390,1440]){
-  test('approved response reader and eleven semantic matrices at '+width+'px',async({page})=>{
+  test('approved response reader and seven complementary scientific matrices at '+width+'px',async({page})=>{
     await page.setViewportSize({width,height:900});
     await page.goto(prefix+'parameter-memory-results/',{waitUntil:'domcontentloaded'});
     const article=page.locator('[data-evo-blog="results"]');
@@ -374,12 +390,12 @@ for(const width of [320,390,1440]){
     expect(refStyle.weight).toBe('400');
     await expect(article.locator('#response-q01-title')).toHaveText('训练 160 轮会不会太多？');
     await expect(article.locator('#response-q01-title')).not.toContainText('3.Q1');
-    await expect(article.locator('[data-advisor-matrix]')).toHaveCount(11);
+    await expect(article.locator('[data-advisor-matrix]')).toHaveCount(7);
     await expect(article.locator('#response-q10 [data-advisor-matrix]')).toHaveCount(0);
-    await expect(article.locator('#response-q03 [data-advisor-matrix]')).toHaveCount(2);
-    await expect(article.locator('#response-q05 [data-advisor-matrix]')).toHaveCount(2);
+    await expect(article.locator('#response-q03 [data-advisor-matrix]')).toHaveCount(1);
+    await expect(article.locator('#response-q05 [data-advisor-matrix]')).toHaveCount(1);
     const q01='我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。';
-    await expect(article.locator('#response-q01 [data-conversation-detail]')).toHaveText(q01);
+    await expect(article.locator('#response-q01 [data-conversation-detail]')).toHaveCount(0);
     await expect(article.locator('#experiment [data-conversation-summary="q01"]')).toHaveText(q01);
     const header=article.locator('#response-q05 [data-advisor-matrix]').first().locator('thead th').first();
     await expect(header.locator('.advisor-result-matrix__sr-only')).toHaveText('实验方法或条件');
@@ -388,8 +404,8 @@ for(const width of [320,390,1440]){
     }));
     expect(label.position).toBe('absolute');
     expect(label.width).toBeLessThanOrEqual(2);
-    await expect(article.locator('#response-q04 [data-advisor-matrix]')).toContainText('205.6 MB');
-    await expect(article.locator('#response-q04 [data-advisor-matrix]')).toContainText('51.4 MB');
+    await expect(article.locator('#capacity [data-report-figure="q04-capacity"]')).toContainText('205.6');
+    await expect(article.locator('#capacity [data-report-figure="q04-capacity"]')).toContainText('51.4');
     await expect(article.locator('#response-q07 [data-advisor-matrix]')).toContainText('下降 10.06 分');
     await expect(article).not.toContainText('↗');
     const geo=await article.evaluate(el=>{
@@ -433,8 +449,8 @@ test('all advisor-response numeric claims are readable in the actual rendered pa
   await expect(headings.nth(1)).toContainText('满分 100 分');
   await expect(headings.nth(2)).toContainText('共 128 题');
   await expect(article.locator('#response-q02 [data-advisor-matrix]')).toContainText('3 题');
-  await expect(article.locator('#response-q04 [data-advisor-matrix]')).toContainText('62.98 分');
-  await expect(article.locator('#checkpoint-evidence')).toContainText('下降 3.91 分至提高 1.65 分');
+  await expect(article.locator('#capacity .research-booktabs')).toContainText('62.98');
+  await expect(article.locator('[data-q17-topic="capacity"]')).toContainText('下降 3.91 分至提高 1.65 分');
 
   // A known-bad user example must be flagged, while a valid per-method
   // sentence and ordinary model names/intervals must be accepted.
@@ -465,7 +481,7 @@ test('advisor numeric typography stays plain throughout prose, tables and plots'
     '#response-q01 .advisor-viz__q01-chart text',
     '#response-q03 .advisor-viz__q03-score',
     '#response-q03 .q03-world4__tablewrap table td',
-    '#response-q04 .advisor-result-matrix table td[data-numeric]',
+    '#capacity .research-booktabs td[data-numeric]',
     '#response-q02 .advisor-viz .research-booktabs td',
     '#response-q07 .paper-effect__value strong',
     '#capacity .paper-effect__axis',
@@ -491,10 +507,50 @@ test('advisor numeric typography stays plain throughout prose, tables and plots'
   // Negative control: make one scientific table use the owner's rejected
   // serif/tabular numerals. The same computed-style check must now reject it.
   await page.addStyleTag({content: '.evo-blog.evo-approved-reader .advisor-result-matrix table {font-family: Georgia, serif !important; font-variant-numeric: tabular-nums !important}'});
-  const deliberatelyBroken=await article.locator('#response-q04 .advisor-result-matrix table').evaluate(el=>{
+  const deliberatelyBroken=await article.locator('#response-q07 .advisor-result-matrix table').evaluate(el=>{
     const st=getComputedStyle(el);
     return {font:st.fontFamily,numeric:st.fontVariantNumeric};
   });
   expect(deliberatelyBroken.font).toContain('Georgia');
   expect(deliberatelyBroken.numeric).toBe('tabular-nums');
+});
+
+
+test('Q10 ends the main question sequence and no historical topic restarts as chapter four',async({page})=>{
+  await page.setViewportSize({width:390,height:900});
+  await page.goto(prefix+'parameter-memory-results/',{waitUntil:'domcontentloaded'});
+  const article=page.locator('[data-evo-blog="results"]');
+  const responses=article.locator('#responses [data-experiment-response]');
+  await expect(responses).toHaveCount(10);
+  await expect(responses.last()).toHaveAttribute('id','response-q10');
+  const after=await article.locator('#responses ~ section > h2').allTextContents();
+  expect(after).toEqual(['研究总结与仍待回答的问题','科研来源与实验记录']);
+  const noRepeatedChapters=(headings:string[])=>headings.every(x=> !/^(?:[4-9]|10)\s/.test(x));
+  expect(noRepeatedChapters(after)).toBe(true);
+  // Known-bad witness: a restored "4" after Q10 must be rejected.
+  expect(noRepeatedChapters([...after,'4 三条长期路线的终评结果'])).toBe(false);
+
+  for(const [id,question] of [
+    ['main-results','q05'],['capacity','q04'],['beta','q05'],
+    ['direction','q07'],['bundle','q09'],
+  ]){
+    const owner=await page.locator('#'+id).evaluate(el=>el.closest('[data-experiment-response]')?.getAttribute('data-experiment-response'));
+    expect(owner,'Unexpected owner for '+id).toBe(question);
+  }
+  for(const [topic,question] of [
+    ['capacity','q04'],['direction','q07'],['retention','q08'],['text','q09']
+  ]){
+    const owner=await page.locator('[data-q17-topic="'+topic+'"]').evaluate(el=>el.closest('[data-experiment-response]')?.getAttribute('data-experiment-response'));
+    expect(owner,'Missing Q17 topic '+topic).toBe(question);
+  }
+  await expect(article.locator('[data-conversation-detail]')).toHaveCount(0);
+  await expect(article.locator('[data-advisor-matrix]')).toHaveCount(7);
+  await expect(article.locator('#response-q04 [data-report-figure="q04-capacity"]')).toHaveCount(1);
+  await expect(article.locator('#response-q05 [aria-label="三条路线冻结最终测试"] table')).toHaveCount(1);
+  await expect(article.locator('#response-q09 [aria-label="BUNDLE 更新计数"] table')).toHaveCount(1);
+  await expect(article.locator('#response-q03 [data-seed-eight-progress] table')).toHaveCount(1);
+  await expect(article.locator('#checkpoint-evidence details')).toHaveCount(1);
+  await expect(article.locator('#response-q08 [data-q08-repeat-evidence]')).toHaveCount(1);
+  const noOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  expect(noOverflow).toBeLessThanOrEqual(2);
 });

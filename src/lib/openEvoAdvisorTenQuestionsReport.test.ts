@@ -175,7 +175,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(ADVISOR_REVIEWED_COPY.q01.summary).toBe('我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。');
     expect(tlDr).toContain('data-conversation-summary={q.id}');
     expect(tlDr).toContain('data-conversation-next={q.id}');
-    expect(responses).toContain('data-conversation-detail={q.id}');
+    expect(responses).not.toContain('data-conversation-detail={q.id}');
     expect(ADVISOR_REVIEWED_COPY.q06.summary).toContain('action-family entropy');
     expect(ADVISOR_REVIEWED_COPY.q06.nextResearch).toContain('token-level entropy');
     expect(ADVISOR_REVIEWED_COPY.q07.summary).toContain('完整、未干预的 Bounded');
@@ -218,7 +218,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(visual).toContain('普通 OpenEVO 按实际参数更新次数统计');
     expect(visual).toContain('Bounded 和历史 β/GDR 按已完成的 Stage2 轮数');
     expect(visual).toContain('不应据此进行等成本排名');
-    expect(responses).toContain('5 训练最后 8 轮：长期参数从 rank128 缩到 rank32 会怎样？');
+    expect(responses).toContain('训练末尾八轮的容量筛选与配对统计');
     expect(responses).toContain('这个比例不包括基础模型权重');
     expect(responses).toContain('rank128 的文件约为 205.6 MB，rank32 的文件约为 51.4 MB');
     expect(responses).toContain('同题换随机设置复测');
@@ -341,7 +341,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('会议原始逐字记录（RAW）');
   });
   it('keeps the checkpoint addendum separate from historical conclusions',()=>{
-    expect(responses).toContain('data-checkpoint-evidence');
+    expect(responses).toContain('data-q17-ledger-appendix');
     for(const v of ['60.1088 分','18 道完整成功','53 道获得正奖励','31 道至少成功过一次','6 道题','33 道题','K64 压缩状态有','K80 有','K96 有','186','1,014','13 份模型中还没有任何','39 项','38 项','PARTIAL','2026-10-14'])
       expect(responses).toContain(v);
     expect(responses).toContain('不是留出的新任务');
@@ -553,7 +553,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('Bounded（无历史 β，小时）</th>');
     expect(responses).toContain('31.09 小时</td><td data-numeric>2.02 小时');
     expect(responses).toContain('74.78 小时</td><td data-numeric>56.25 小时');
-    expect(responses).toContain('8 三条长期路线中，文字经验改写了多少次？');
+    expect(responses).toContain('三条长期路线的文字状态改写次数');
     expect(responses).toContain('OpenEVO 把每轮学习后留下的经验状态合称为 BUNDLE');
     expect(responses).toContain('这些次数不等于读取次数');
     expect(responses).toContain('Text Memory、Skill 和 Agent System');

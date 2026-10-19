@@ -3,16 +3,12 @@
  * Compact method × metric research tables for the advisor-response article.
  * This is a PRESENTATION projection of existing, source-bound experiments.
  * It neither changes an upstream receipt nor manufactures unfinished results.
- * Keep Q03 historical vs SEED engineering and Q05 historical vs new policy
- * sensitivity as separate tables: their task panels/estimands differ.
+ * The canonical Q03 SEED engineering, Q04 capacity, Q05 historical final and
+ * Q09 carrier tables are owned by their full source-linked evidence blocks.
+ * This component holds only complementary summaries, avoiding duplicates.
  * The Q01 data is computed from the same checked-in CSV as the original chart.
  */
-import {
-  ADVISOR_Q03_CUSTOM_PANEL,
-  ADVISOR_Q04_CAPACITY,
-  ADVISOR_Q05_FROZEN,
-  ADVISOR_Q09_UPDATES,
-} from '../../data/openEvoAdvisorTenQuestions';
+import { ADVISOR_Q03_CUSTOM_PANEL } from '../../data/openEvoAdvisorTenQuestions';
 import q01Csv from '../../data/research-evidence/advisor-q01-three-way-curve.csv?raw';
 
 interface Row {
@@ -83,42 +79,8 @@ const matrices: Record<string, Matrix[]> = {
       finding:'A120 的 Task Score 为 6.62 分（满分 100 分），四个保存点在各自的 64 道题中都没有完整成功的任务；中途的均分有回落。',
       boundary:'属于历史自定义协议，不能直接与论文报告的 SEED 分数比较。',
     },
-    {
-      id:'seed-engineering',
-      title:'独立 SEED：工程开发题诊断',
-      headers:['Task Score（满分 100 分）','完整成功次数（共 512 次尝试）'],
-      numeric:[0,1],
-      rows:[
-        {label:'SFT 初始模型',cells:['4.07 分','1 次']},
-        {label:'Step30 模型',cells:['3.97 分','1 次']},
-        {label:'Step60 模型',cells:['4.28 分','3 次']},
-      ],
-      how:'每组 64 道固定工程开发题各重复 8 次，共 512 次尝试。',
-      finding:'这些工程模型的平均得分接近，邻近模型配对区间跨 0。',
-      boundary:'这是工程诊断，不能作为按照论文完成正式 Stage2 后的 SEED 终评。',
-    },
   ],
-  q04: [{
-    id:'capacity',
-    title:'rank128 与 rank32：训练末尾八轮的容量筛选',
-    headers:['参数文件大小','Task Score（满分 100 分）','完整成功率'],
-    numeric:[1,2],
-    rows:ADVISOR_Q04_CAPACITY.map(item=>({label:item.method,cells:[item.bytes,item.score+' 分',item.exact]})),
-    how:'不同 rank 是长期参数状态容量，文件大小只计这一部分参数文件。',
-    finding:'rank32 的参数文件约缩小 75%，平均得分从 62.98 降到 61.19。',
-    boundary:'只比较第 152–159 轮后段 1,024 组任务，95% 得分差区间从下降 3.68 分到提高 0.12 分；不能据此证明两个容量等价。',
-  }],
   q05: [
-    {
-      id:'historical-final',
-      title:'三条历史路线的冻结 128 题终评',
-      headers:['Task Score（满分 100 分）','完整成功题数（共 128 题）'],
-      numeric:[0,1],
-      rows:ADVISOR_Q05_FROZEN.map(item=>({label:item.method.replace(' / DirectApply',''),cells:[item.score+' 分',item.exact.replace(/\s*\/\s*\d+$/, '').trim()+' 题']})),
-      how:'每一行是一种长期参数更新方法，两个指标来自同一批冻结的 128 道题。',
-      finding:'这批历史终评中，普通 OpenEVO 的平均分与完整成功数都最高。',
-      boundary:'普通路线是更早的历史前驱，不是完全严格的三组随机训练对照；不能仅凭此表归因 β 机制。',
-    },
     {
       id:'short-sensitivity',
       title:'简单 β 的独立短程敏感性测量',
@@ -162,19 +124,7 @@ const matrices: Record<string, Matrix[]> = {
     finding:'评测已经运行，但无法确认所有旧题在当初确实学会。',
     boundary:'后期做错不足以直接证明遗忘；另一条 R129/R159 旧队列测量只提供局部比较。',
   }],
-  q09: [{
-    id:'carrier-updates',
-    title:'三条历史路线的参数与文字状态改写次数',
-    headers:['参数更新（次）','Text Memory 改写（次）','Skill 改写（次）','Agent System 改写（次）'],
-    numeric:[0,1,2,3],
-    rows:ADVISOR_Q09_UPDATES.map(item=>({
-      label:item.method,
-      cells:[String(item.parametric),String(item.textMemory),String(item.skill),String(item.agent)],
-    })),
-    how:'行是三条历史方法，列统计各类状态被实际改写的次数。',
-    finding:'参数状态更新远多于文字内容改写。',
-    boundary:'改写次数不能当作读取次数；文字中和实验及完整关闭三类载体的消融是不同的科学问题。',
-  }],
+
 };
 
 const groups=matrices[questionId] ?? [];

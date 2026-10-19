@@ -241,7 +241,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
   <div class="advisor-viz" data-report-figure="q04-capacity" data-evidence-shape="paired-paper-table">
     <div class="advisor-viz__table research-booktabs-wrap" tabindex="0" aria-label="长期状态容量和 WebShop 得分对照表">
       <table class="research-booktabs">
-        <caption>表 4｜固定容量与后段任务表现</caption>
+        <caption>表 3｜固定容量与后段任务表现</caption>
         <thead>
           <tr>
             <th scope="col">长期参数状态</th>
@@ -281,7 +281,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 )}
 {variant === 'q07' && (
   <div data-report-visual="q07-confidence-interval" data-evidence-shape="confidence-interval">
-    <PaperIntervalPlot id="q07-inversion" title="第 156 轮反转一次 Task Vector 的局部效果" unit="Task Score 成绩变化（分）" min={-20} max={5} ticks={[-20,-10,0,5]} effects={[{id:'inverse',label:'Bounded OFF · 方向反转',estimate:-10.06,low:-15.02,high:-5.60}]} comparison="第 156 轮的更新方向反转后 − 原始 Bounded OFF 模型；相同 64 道购物题" negativeLabel="反转后分数更低" positiveLabel="反转后分数更高" caption="图 9｜Q07 第 156 轮方向反转：同一冻结 64 题的配对 Task Score 变化；95% 置信区间对应下降 5.60 至 15.02 分，没有包含零。这是八次方向反转中通过预设多重比较校正的一次，不能推广成普适的在线方向控制规则。" />
+    <PaperIntervalPlot id="q07-inversion" title="第 156 轮反转一次 Task Vector 的局部效果" unit="Task Score 成绩变化（分）" min={-20} max={5} ticks={[-20,-10,0,5]} effects={[{id:'inverse',label:'Bounded OFF · 方向反转',estimate:-10.06,low:-15.02,high:-5.60}]} comparison="第 156 轮的更新方向反转后 − 原始 Bounded OFF 模型；相同 64 道购物题" negativeLabel="反转后分数更低" positiveLabel="反转后分数更高" caption="图 6｜Q07 第 156 轮方向反转：同一冻结 64 题的配对 Task Score 变化；95% 置信区间对应下降 5.60 至 15.02 分，没有包含零。这是八次方向反转中通过预设多重比较校正的一次，不能推广成普适的在线方向控制规则。" />
   </div>
 )}
 <style>

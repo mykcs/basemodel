@@ -98,6 +98,30 @@ html[data-theme="dark"] .evo-approved-reader {
   font-size: 18px;
   font-weight: 650;
 }
+/* All source-bound results now live under Q01–Q10. Subheadings use a
+   restrained hierarchy so moving historical evidence never creates another
+   full-size chapter after Q10. */
+.evo-approved-reader .advisor-question-evidence {
+  margin: 20px 0 24px;
+  max-width: 100%;
+}
+.evo-approved-reader .advisor-question-evidence > div {
+  margin: 14px 0 18px;
+}
+.evo-approved-reader .advisor-question-evidence h4 {
+  margin: 17px 0 10px;
+  font: 600 16px/1.5 var(--advisor-plain-font);
+  color: var(--paper-ink);
+}
+.evo-approved-reader .advisor-technical-appendix {
+  margin-top: 24px;
+  border-top: 1px solid var(--paper-line);
+  padding-top: 12px;
+}
+.evo-approved-reader .advisor-technical-appendix h3 {
+  font-size: 15px;
+  font-weight: 600;
+}
 /* Quiet question identity lives outside the heading. Do not use the old
    '3.Q1' subsection notation, tabular digits or display-style number font. */
 .evo-approved-reader .advisor-approved-question-meta {
