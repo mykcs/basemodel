@@ -193,8 +193,10 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).not.toContain('<AdvisorTenEvidenceVisual variant="q05" />');
     for(const source of ['checkpointEvidence.directFinal','checkpointEvidence.boundedFinal','checkpointEvidence.resourceAnalysis','checkpointEvidence.capacity','checkpointEvidence.direction'])
       expect(responses).toContain('href={'+source+'}');
+    // Keep the actual evidence action while removing the rejected ↗ decoration.
     expect(responses).not.toContain('原始记录 ↗</a>');
-    expect(responses).toContain('研究记录 ↗');
+    expect(responses).toContain('研究记录</a>');
+    expect(responses).not.toContain('研究记录 ↗');
     expect(questions).toContain('问题编目源码');
     const kBlock=responses.split('aria-label="R159 重复八次的 Success at k"')[1]?.split('</table>')[0] ?? '';
     expect(kBlock).toContain('scope="row">1 次');

@@ -37,10 +37,17 @@ for(const width of [390,768,1440]){
         };
       });
       expect(geometry.overflow).toBeLessThanOrEqual(2);
-      expect(geometry.paper).toBe('rgb(255, 255, 255)');
-      expect(geometry.background).toBe('rgb(246, 247, 245)');
-      expect(geometry.size).toBeGreaterThanOrEqual(width===390?16:16.5);
-      expect(geometry.size).toBeLessThanOrEqual(17.5);
+      // Only the third article uses the owner-approved narrow reader style.
+      if(item.type==='results') {
+        expect(geometry.paper).toBe('rgb(252, 252, 251)');
+        expect(geometry.background).toBe('rgb(249, 249, 247)');
+        expect(geometry.size).toBe(14);
+      } else {
+        expect(geometry.paper).toBe('rgb(255, 255, 255)');
+        expect(geometry.background).toBe('rgb(246, 247, 245)');
+        expect(geometry.size).toBeGreaterThanOrEqual(width===390?16:16.5);
+        expect(geometry.size).toBeLessThanOrEqual(17.5);
+      }
     });
   }
 }
@@ -343,3 +350,56 @@ test('dated Q17 supplements land on visible topic headings',async({page})=>{
   await expect.poll(async()=> (await heading.boundingBox())?.y ?? Infinity).toBeLessThan(200);
   await expect(page.locator('[data-q17-diagnostics]')).toContainText('完整 SVD 的 BF16 重构对照');
 });
+
+// The entire researcher-approved reader grammar is scoped to this one route.
+for(const width of [320,390,1440]){
+  test('approved response reader and eleven semantic matrices at '+width+'px',async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.goto(prefix+'parameter-memory-results/',{waitUntil:'domcontentloaded'});
+    const article=page.locator('[data-evo-blog="results"]');
+    await expect(article).toHaveClass(/evo-approved-reader/);
+    await expect(article.locator('h1')).toHaveCSS('font-size',width<=520?'26px':'28px');
+    await expect(article.locator('[data-advisor-matrix]')).toHaveCount(11);
+    await expect(article.locator('#response-q10 [data-advisor-matrix]')).toHaveCount(0);
+    await expect(article.locator('#response-q03 [data-advisor-matrix]')).toHaveCount(2);
+    await expect(article.locator('#response-q05 [data-advisor-matrix]')).toHaveCount(2);
+    const q01='我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。';
+    await expect(article.locator('#response-q01 [data-conversation-detail]')).toHaveText(q01);
+    await expect(article.locator('#experiment [data-conversation-summary="q01"]')).toHaveText(q01);
+    const header=article.locator('#response-q05 [data-advisor-matrix]').first().locator('thead th').first();
+    await expect(header.locator('.advisor-result-matrix__sr-only')).toHaveText('实验方法或条件');
+    const label=await header.locator('.advisor-result-matrix__sr-only').evaluate(node=>({
+      position:getComputedStyle(node).position,width:node.getBoundingClientRect().width
+    }));
+    expect(label.position).toBe('absolute');
+    expect(label.width).toBeLessThanOrEqual(2);
+    await expect(article.locator('#response-q04 [data-advisor-matrix]')).toContainText('205.6 MB');
+    await expect(article.locator('#response-q04 [data-advisor-matrix]')).toContainText('51.4 MB');
+    await expect(article.locator('#response-q07 [data-advisor-matrix]')).toContainText('−10.06');
+    await expect(article).not.toContainText('↗');
+    const geo=await article.evaluate(el=>{
+      const row=el.querySelector('#response-q05 .advisor-result-matrix');
+      const table=row?.querySelector('table');
+      const cap=row?.querySelector('figcaption');
+      const area=el.getBoundingClientRect();
+      return {
+        tableWidth:table?.getBoundingClientRect().width || 0,
+        contentWidth:area.width-parseFloat(getComputedStyle(el).paddingLeft)-parseFloat(getComputedStyle(el).paddingRight)-2,
+        caption:cap?.textContent || '',
+        overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth
+      };
+    });
+    expect(geo.tableWidth).toBeLessThanOrEqual(geo.contentWidth+1);
+    expect(geo.overflow).toBeLessThanOrEqual(2);
+    expect(geo.caption).toContain('怎么看');
+    expect(geo.caption).toContain('证据边界');
+    const toc=article.locator('.advisor-ten-toc');
+    await expect(toc).toBeVisible();
+    await expect(toc).not.toHaveAttribute('open','');
+    await toc.locator('summary').click();
+    await expect(toc).toHaveAttribute('open','');
+    await toc.locator('a[href="#response-q07"]').click();
+    await expect(page).toHaveURL(/#response-q07$/);
+    await expect(toc).not.toHaveAttribute('open','');
+  });
+}

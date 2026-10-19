@@ -102,8 +102,8 @@ const technicalChecks = [
         </tbody>
       </table>
     </div>
-    <p class="q03-world4__table-note">Step30 比初始模型略低，Step60 又有所回升；三个均分都在 5/100 以下。按 64 道任务为簇、每簇保留 8 次重复进行 Bootstrap，SFT 初始模型→Step30、Step30→Step60 的两组配对均分差 95% 区间都跨过零。<strong>这两轮工程更新还没有提供可信的任务能力改善证据</strong>，更不能充当正式 SEED 成绩。<a href={source.pairedEvidence} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.pairedEvidence}/>1,536 次原始轨迹与配对分析收据 ↗</a></p>
-    <p>完整保存和恢复仍是工程门槛：早期运行遗漏任务随机数状态，出现重复选题；CPU 与 Ray 的任务分发核对已通过，但完整八卡保存、加载、继续取新题并更新仍未验收。原七项工程备份中 <strong>5/7</strong> 已完成匿名完整字节读回和 CPU 加载；另两项仍待完整证明。10 月 16 日凌晨（新加坡时间）的容量收据记录实验盘剩余 <strong>28.66 GB</strong>，下一次 SFT 工程保存连同余量需要 <strong>33.16 GB</strong>，尚缺约 <strong>4.50 GB</strong>。这些空间数字是当时快照，并非当前实时值。<a href={source.eight} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eight}/>八卡恢复状态与存储限制 · PR #707 ↗</a></p>
+    <p class="q03-world4__table-note">Step30 比初始模型略低，Step60 又有所回升；三个均分都在 5/100 以下。按 64 道任务为簇、每簇保留 8 次重复进行 Bootstrap，SFT 初始模型→Step30、Step30→Step60 的两组配对均分差 95% 区间都跨过零。<strong>这两轮工程更新还没有提供可信的任务能力改善证据</strong>，更不能充当正式 SEED 成绩。<a href={source.pairedEvidence} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.pairedEvidence}/>1,536 次原始轨迹与配对分析收据</a></p>
+    <p>完整保存和恢复仍是工程门槛：早期运行遗漏任务随机数状态，出现重复选题；CPU 与 Ray 的任务分发核对已通过，但完整八卡保存、加载、继续取新题并更新仍未验收。原七项工程备份中 <strong>5/7</strong> 已完成匿名完整字节读回和 CPU 加载；另两项仍待完整证明。10 月 16 日凌晨（新加坡时间）的容量收据记录实验盘剩余 <strong>28.66 GB</strong>，下一次 SFT 工程保存连同余量需要 <strong>33.16 GB</strong>，尚缺约 <strong>4.50 GB</strong>。这些空间数字是当时快照，并非当前实时值。<a href={source.eight} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eight}/>八卡恢复状态与存储限制 · PR #707</a></p>
   </div>
 
   <h5>此前的四卡工程为何在反向传播失败？</h5>
@@ -132,7 +132,7 @@ const technicalChecks = [
         </tbody>
       </table>
     </div>
-    <p class="q03-world4__table-note">“待分配”指报错时 PyTorch 申请的新显存，并非总共缺少这么多显存。两次容器均以错误码 1 退出，尚无成功保存的四卡原生优化器状态。<a href={source.findings} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.findings}/>查看原始失败与代码核查记录 ↗</a></p>
+    <p class="q03-world4__table-note">“待分配”指报错时 PyTorch 申请的新显存，并非总共缺少这么多显存。两次容器均以错误码 1 退出，尚无成功保存的四卡原生优化器状态。<a href={source.findings} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.findings}/>查看原始失败与代码核查记录</a></p>
   </div>
 
   <p class="q03-world4__context">显存占用和 GPU 利用率衡量的是两件事：显存中可能一直放着模型与张量，GPU 却暂时在等待 CPU 处理和传回数据。这次四卡测试记录到了 CPU 工作负载和 GPU 利用率变化，具体每一步花了多久尚未测清。</p>
@@ -162,15 +162,15 @@ const technicalChecks = [
       {technicalChecks.map((line) => <li>{line}</li>)}
     </ul>
     <nav aria-label="公开 SEED 四卡复现实验的证据来源">
-      <a href={source.upstream} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.upstream}/>SEED 原论文 ↗</a>
-      <a href={source.source} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.source}/>作者公开源码 ↗</a>
-      <a href={source.experiment} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.experiment}/>公开复现实验 #677 ↗</a>
-      <a href={source.eight} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eight}/>八卡工程最新 #707 ↗</a>
-      <a href={source.eightReceipt} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eightReceipt}/>早期 CPU/Ray 任务分发收据 ↗</a>
-      <a href={source.pairedEvidence} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.pairedEvidence}/>三组工程模型完整配对诊断 ↗</a>
-      <a href={source.offline} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.offline}/>离线缓存核验证据 ↗</a>
-      <a href={source.qualification} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.qualification}/>四卡工程阶段记录 ↗</a>
-      <a href={source.findings} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.findings}/>v3 / v4 失败核对 ↗</a>
+      <a href={source.upstream} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.upstream}/>SEED 原论文</a>
+      <a href={source.source} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.source}/>作者公开源码</a>
+      <a href={source.experiment} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.experiment}/>公开复现实验 #677</a>
+      <a href={source.eight} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eight}/>八卡工程最新 #707</a>
+      <a href={source.eightReceipt} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eightReceipt}/>早期 CPU/Ray 任务分发收据</a>
+      <a href={source.pairedEvidence} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.pairedEvidence}/>三组工程模型完整配对诊断</a>
+      <a href={source.offline} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.offline}/>离线缓存核验证据</a>
+      <a href={source.qualification} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.qualification}/>四卡工程阶段记录</a>
+      <a href={source.findings} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.findings}/>v3 / v4 失败核对</a>
     </nav>
   </details>
 
@@ -186,7 +186,7 @@ const technicalChecks = [
   <div class="q03-world4__next" aria-labelledby="q03-world4-next">
     <h5 id="q03-world4-next">正式训练还需要完成什么？</h5>
     <p>八卡工程路径已经证明可以更新参数和保存原生检查点。后续还需完成工程 SFT 第三轮、八卡原生保存与加载后的精确任务流恢复，并重新通过长期训练的存储检查。通过完整工程资格后，才能正式执行三遍 SFT，再启动 160 轮 Stage2。</p>
-    <p><strong>科研边界：</strong>四卡 OOM 是历史工程失败，两轮八卡更新使用的是工程资格模型；它们都没有产生公开 SEED 正式模型的能力成绩。<a href={source.eight} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eight}/>查看当前八卡恢复 PR ↗</a>；<a href={source.recovery} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.recovery}/>历史四卡恢复 PR ↗</a></p>
+    <p><strong>科研边界：</strong>四卡 OOM 是历史工程失败，两轮八卡更新使用的是工程资格模型；它们都没有产生公开 SEED 正式模型的能力成绩。<a href={source.eight} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eight}/>查看当前八卡恢复 PR</a>；<a href={source.recovery} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.recovery}/>历史四卡恢复 PR</a></p>
   </div>
 
 

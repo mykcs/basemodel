@@ -137,7 +137,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
     <div class="advisor-viz__q01-reading">
       {q01Series.map((item) => <p><strong>{item.name}：</strong>{item.takeaway}</p>)}
     </div>
-    <p class="advisor-viz__q01-source">数据与规则：<a href={q01CurveHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01CurveHref} />11 个保存点的原始 CSV ↗</a> · <a href={q01ResultHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01ResultHref} />判断何时停止的规则与原始结果 ↗</a></p>
+    <p class="advisor-viz__q01-source">数据与规则：<a href={q01CurveHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01CurveHref} />11 个保存点的原始 CSV</a> · <a href={q01ResultHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01ResultHref} />判断何时停止的规则与原始结果</a></p>
     <details class="advisor-viz__details">
       <summary>怎样判断继续训练是否还值得？各个版本是多少分？</summary>
       <p>研究开始前，我们约定了一条挑选模型版本的规则：从已测的 11 个版本里，寻找最早的一个，使后面所有已测版本的平均分都没有比它高出超过 2 分（满分 100），完整成功的题数也没有多出超过 2 道（共 64 道）。原始英文收据把它称作 practical plateau；这只是“后面的版本没有明显超过它”的判断规则。历史 β/GDR 在第 130 轮后成绩下降，不能被理解成成绩始终平稳。这里的结论只适用于这批事先固定的 64 道题。</p>
@@ -234,7 +234,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
       </table>
     </div>
     <p class="advisor-viz__q03-reading">从 A0 的 <strong>3.71</strong> 分升至 A40 的 <strong>6.43</strong> 分，A80 降至 <strong>0.69</strong> 分，A120 回升至 <strong>6.62</strong> 分。四次完整成功均为 <strong>0/64</strong>。</p>
-    <figcaption><strong>图 2｜Q03 历史四个测量点。</strong>纵轴局部放大至 0–10 分，实际满分 100；细虚线只连接已测点，<strong>没有测量中间轮次</strong>，不能据此推断连续训练曲线。它与公开 SEED 论文的 128 题成绩不属于同一评测协议。<a href="https://github.com/mykcs/openevo-experiment/pull/678" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/678" />原始评测记录 ↗</a></figcaption>
+    <figcaption><strong>图 2｜Q03 历史四个测量点。</strong>纵轴局部放大至 0–10 分，实际满分 100；细虚线只连接已测点，<strong>没有测量中间轮次</strong>，不能据此推断连续训练曲线。它与公开 SEED 论文的 128 题成绩不属于同一评测协议。<a href="https://github.com/mykcs/openevo-experiment/pull/678" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/678" />原始评测记录</a></figcaption>
   </figure>
 )}
 {variant === 'q04' && (
