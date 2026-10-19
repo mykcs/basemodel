@@ -30,7 +30,10 @@ for (const width of [390, 768, 1440]) {
 
       if (width === 1440) {
         expect(Math.max(...compactWidths)).toBeLessThan(650);
-        expect(Math.min(...wideWidths)).toBeGreaterThan(820);
+        // The owner-approved 620px reading column deliberately no longer allows
+        // the older 820px full-bleed width. Keep meaningful single/double contrast.
+        expect(Math.min(...wideWidths)).toBeGreaterThan(580);
+        expect(Math.max(...wideWidths)).toBeLessThanOrEqual(625);
         expect(Math.min(...wideWidths) - Math.max(...compactWidths)).toBeGreaterThan(180);
         const tableWidth = (await page.locator('[data-report-visual="q02-early-sft"] table').boundingBox())!.width;
         expect(tableWidth).toBeLessThan(450);
@@ -43,7 +46,10 @@ for (const width of [390, 768, 1440]) {
       await expect(page.locator('[data-paper-effect="q07-inversion"] figcaption')).toContainText('第 156 轮');
       await expect(page.locator('[data-paper-effect="q09-context"] figcaption')).toContainText('完整关闭载体权限');
       await expect(page.locator('[data-paper-effect="q09-context"] [data-effect-row]')).toHaveCount(4);
-      await expect(page.getByRole('table', { name: /表 3｜同一冻结 128 题/ })).toContainText('60.72');
+      // The frozen final now belongs under Q05; the capacity comparison is Table 3.
+      const finalTable = page.locator('#response-q05 [aria-label="三条路线冻结最终测试"] table');
+      await expect(finalTable).toHaveAccessibleName(/表 5｜同一冻结 128 题/);
+      await expect(finalTable).toContainText('60.72');
     });
   }
 }
@@ -55,5 +61,5 @@ test('print keeps single-panel confidence plot compact and multiple-effect figur
   const one = (await page.locator('[data-paper-effect="q07-inversion"]').boundingBox())!.width;
   const multi = (await page.locator('[data-paper-effect="q09-context"]').boundingBox())!.width;
   expect(multi).toBeGreaterThan(one + 180);
-  await expect(page.locator('[data-paper-effect="q07-inversion"] figcaption')).toContainText('图 9');
+  await expect(page.locator('[data-paper-effect="q07-inversion"] figcaption')).toContainText('图 6');
 });

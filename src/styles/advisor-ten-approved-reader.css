@@ -31,7 +31,8 @@ html[data-theme="dark"]:has(.evo-approved-reader) {
   --research-evidence-frame: #c3c2b7;
   --research-evidence-title-size: 14px;
   --research-evidence-caption-size: 12.5px;
-  --research-evidence-single-width: 100%;
+  /* A single interval stays compact; a multi-effect comparison uses the full reading column. */
+  --research-evidence-single-width: 24rem;
   --research-evidence-double-width: 100%;
   --research-evidence-inset: 14px;
   width: min(750.4px, calc(100% - 24px));
