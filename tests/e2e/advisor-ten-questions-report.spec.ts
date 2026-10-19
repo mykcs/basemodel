@@ -185,11 +185,17 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   await page.setViewportSize({width:390,height:844});
   await page.goto(prefix+'parameter-memory-results/');
   const guide=page.locator('#experiment');
-  await expect(guide.locator('dt')).toHaveCount(6);
-  await expect(guide).toContainText('逐轮学习开始前，初始模型怎么训练？');
-  await expect(guide).toContainText('历史 SEED 实验能直接与论文比较吗？');
+  await expect(guide.locator('dt')).toHaveCount(10);
+  await expect(guide).toContainText('SFT 和 OPSD，哪种初始训练方式更好？');
+  await expect(guide).toContainText('我们的 SEED 成绩，为什么和论文差这么多？');
   await expect(guide.locator('table')).toHaveCount(0);
-  await expect(guide).toContainText('我们做了哪些实验，分别想回答什么？');
+  for(let n=1;n<=10;n++) {
+    const id='q'+String(n).padStart(2,'0');
+    await expect(guide.locator('dt a[href="#response-'+id+'"]').first()).toHaveCount(1);
+  }
+  await expect(guide).toContainText('action-family entropy');
+  await expect(guide).toContainText('ALFWorld');
+  await expect(guide).toContainText('十问速览：我们发现了什么，下一轮还想研究什么？');
   const answer=page.locator('#response-q01');
   await expect(answer.locator('h3')).toHaveText('3.Q1 训练 160 轮会不会太多了？');
   const link=answer.locator('[data-question-origin-link="q01"] a');
