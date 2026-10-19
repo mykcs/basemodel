@@ -181,7 +181,8 @@ test('response article also keeps frozen final, paired capacity, direction, unce
   const a=page.locator('[data-evo-blog="results"]');
   for (const v of ['60.72','45.98','20.77','1,024','rank32','rank128','10.06','−3.68','+0.12'])
     await expect(a).toContainText(v);
-  await expect(page.locator('#main-results .evo-article__tablewrap[aria-label="三条路线冻结最终测试"] tbody tr')).toHaveCount(3);
+  await expect(page.locator('#main-results [data-score-origin="our-frozen-128"] tr')).toHaveCount(3);
+  await expect(page.locator('#main-results [data-score-origin="paper-reported-128"] tr')).toHaveCount(1);
   await expect(page.locator('#capacity [data-report-figure="q04-capacity"]')).toBeVisible();
   await expect(page.locator('#direction [data-report-visual="q07-confidence-interval"]')).toBeVisible();
   await expect(page.locator('#bundle .evo-article__tablewrap tbody tr')).toHaveCount(3);
@@ -240,13 +241,51 @@ test('publication tables have unique labels and frozen comparisons link to actua
   const labeled=captions.filter(c=>/表\s*[1-5]｜/.test(c));
   for(const number of [1,2,3,4]) expect(labeled.filter(c=>c.includes('表 '+number+'｜')).length).toBe(1);
   const finals=page.locator('#main-results');
-  await expect(finals.locator('[aria-label="三条路线冻结最终测试"] table tbody tr')).toHaveCount(3);
+  await expect(finals.locator('[data-score-origin="our-frozen-128"] tr')).toHaveCount(3);
+  await expect(finals.locator('[data-score-origin="paper-reported-128"] tr')).toHaveCount(1);
   await expect(finals.locator('[data-report-figure="q05-same-final"]')).toHaveCount(0);
   await expect(finals.locator('a[href*="FINAL_COMPARISON.json"]')).toBeVisible();
   await expect(finals.locator('a[href*="FINAL_EVAL_VERIFICATION.json"]')).toBeVisible();
   const repeated=page.locator('#response-q08 [data-q08-repeat-evidence] table tbody tr');
   await expect(repeated).toHaveCount(4);
   await expect(repeated.last()).toContainText('31 题');
+});
+
+test('SEED Table 1 appears with paper-only Score and Succ. without inventing a shared 128-task comparison',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(prefix+'parameter-memory-results/');
+  const table=page.locator('#main-results [data-webshop-seed-paper-comparison]');
+  await expect(table).toHaveCount(1);
+  const historical=table.locator('tbody[data-score-origin="our-frozen-128"] tr');
+  const paper=table.locator('tbody[data-score-origin="paper-reported-128"] tr');
+  await expect(historical).toHaveCount(3);
+  await expect(paper).toHaveCount(1);
+  expect(await historical.locator('td:nth-of-type(2)').allTextContents()).toEqual(['39.1%','25.0%','7.8%']);
+  expect(await historical.locator('td:nth-of-type(3)').allTextContents()).toEqual(['50 题','32 题','10 题']);
+  await expect(paper).toContainText('Qwen3-1.7B-Instruct');
+  await expect(paper.locator('td').nth(0)).toHaveText('87.1 分');
+  await expect(paper.locator('td').nth(1)).toHaveText('77.3%');
+  await expect(paper.locator('td').nth(2)).toContainText('论文仅报告成功率');
+  await expect(paper.locator('a')).toHaveAttribute('href','https://arxiv.org/html/2607.14777v1');
+  const notice=page.locator('#main-results [data-seed-paper-evaluation-boundary]');
+  await expect(notice).toContainText('题目身份');
+  await expect(notice).toContainText('不能把这张表直接当作方法公平排名');
+  const wrap=page.locator('#main-results [aria-label="历史三路线与SEED论文WebShop指标"]');
+  const narrow=await wrap.evaluate(el=>{
+    const first=el.querySelector('thead th:first-child')!;
+    const paper=el.querySelector('[data-seed-paper-reference]')!;
+    return {scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,
+      firstColumnWidth:first.getBoundingClientRect().width,
+      paperRowHeight:paper.getBoundingClientRect().height};
+  });
+  expect(narrow.scrollWidth).toBeGreaterThan(narrow.clientWidth+180);
+  expect(narrow.firstColumnWidth).toBeGreaterThanOrEqual(170);
+  expect(narrow.paperRowHeight).toBeLessThan(145);
+  await expect(page.locator('[data-seed-table-mobile-hint]')).toBeVisible();
+  const scrollLeft=await wrap.evaluate(el=>(el.scrollLeft=el.scrollWidth,el.scrollLeft));
+  expect(scrollLeft).toBeGreaterThan(180);
+  const globalOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  expect(globalOverflow).toBeLessThanOrEqual(2);
 });
 
 test('Q01 shows measured Task Score curves and links each answer to the second-article question',async({page})=>{
@@ -447,7 +486,8 @@ test('all advisor-response numeric claims are readable in the actual rendered pa
   await expect(abstract).toContainText('完整做对 50 题');
   const headings=article.locator('#main-results .evo-article__tablewrap table').first().locator('thead th');
   await expect(headings.nth(1)).toContainText('满分 100 分');
-  await expect(headings.nth(2)).toContainText('共 128 题');
+  await expect(headings.nth(2)).toContainText('Succ.');
+  await expect(headings.nth(3)).toContainText('共 128 题');
   await expect(article.locator('#response-q02 [data-advisor-matrix]')).toContainText('3 题');
   await expect(article.locator('#capacity .research-booktabs')).toContainText('62.98');
   await expect(article.locator('[data-q17-topic="capacity"]')).toContainText('下降 3.91 分至提高 1.65 分');
@@ -546,7 +586,7 @@ test('Q10 ends the main question sequence and no historical topic restarts as ch
   await expect(article.locator('[data-conversation-detail]')).toHaveCount(0);
   await expect(article.locator('[data-advisor-matrix]')).toHaveCount(7);
   await expect(article.locator('#response-q04 [data-report-figure="q04-capacity"]')).toHaveCount(1);
-  await expect(article.locator('#response-q05 [aria-label="三条路线冻结最终测试"] table')).toHaveCount(1);
+  await expect(article.locator('#response-q05 [aria-label="历史三路线与SEED论文WebShop指标"] table')).toHaveCount(1);
   await expect(article.locator('#response-q09 [aria-label="BUNDLE 更新计数"] table')).toHaveCount(1);
   await expect(article.locator('#response-q03 [data-seed-eight-progress] table')).toHaveCount(1);
   await expect(article.locator('#checkpoint-evidence details')).toHaveCount(1);

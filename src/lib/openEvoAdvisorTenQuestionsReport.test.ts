@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import {
   ADVISOR_QUESTIONS, ADVISOR_Q03_CUSTOM_PANEL,
-  ADVISOR_Q04_CAPACITY, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES,
+  ADVISOR_Q04_CAPACITY, ADVISOR_Q05_FROZEN, ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE, ADVISOR_Q09_UPDATES,
   ADVISOR_RESEARCH_AS_OF,
 } from '../data/openEvoAdvisorTenQuestions';
 import { OPEN_EVO_ADVISOR_MEETING } from '../data/openEvoAdvisorMeeting';
@@ -128,6 +128,32 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(ADVISOR_Q05_FROZEN.map(x=>x.score)).toEqual(['60.72','45.98','20.77']);
     expect(ADVISOR_Q05_FROZEN.map(x=>x.exact)).toEqual(['50 / 128','32 / 128','10 / 128']);
     expect(ADVISOR_Q09_UPDATES.map(x=>x.parametric)).toEqual([159,158,154]);
+  });
+  it('adds SEED paper WebShop numbers as a separate-source reference, never a fourth frozen arm',()=>{
+    expect(ADVISOR_Q05_FROZEN).toHaveLength(3);
+    expect(ADVISOR_Q05_FROZEN.map(x=>x.score)).toEqual(['60.72','45.98','20.77']);
+    expect(ADVISOR_Q05_FROZEN.map(x=>x.exact)).toEqual(['50 / 128','32 / 128','10 / 128']);
+    expect(ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE).toMatchObject({
+      score: '87.1',
+      succPercent: '77.3',
+      taskCount: 128,
+      exactSuccessCount: null,
+      paperTable: 'Table 1',
+      source: 'https://arxiv.org/html/2607.14777v1',
+      pairedWithOurFrozenTasks: false,
+    });
+    expect(ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.method).toContain('Qwen3-1.7B-Instruct');
+    const relevant=responses.split('data-webshop-seed-paper-comparison')[1]?.split('</table>')[0] ?? '';
+    expect(relevant).toContain('data-score-origin="our-frozen-128"');
+    expect(relevant).toContain('data-score-origin="paper-reported-128"');
+    expect(relevant).toContain('ADVISOR_Q05_FROZEN.map');
+    expect(relevant).toContain('ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.succPercent');
+    expect(relevant).toContain('historicalSuccPercent(item.exact)');
+    expect(relevant).toContain('—（论文仅报告成功率）');
+    expect(responses).toContain('data-seed-paper-evaluation-boundary');
+    expect(responses).toContain('不能把这张表直接当作方法公平排名');
+    expect(responses).toContain('href={ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.source}');
+    expect(responses).not.toContain('99 / 128');
   });
   it('preserves scientific uncertainty while reassigning article roles',()=>{
     expect(responses).toContain('普通 OpenEVO 是更早的历史前序路线');

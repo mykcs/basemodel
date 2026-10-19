@@ -193,3 +193,26 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .evo-article__followup{margin:1.15rem 0 1.3rem;border-top:1px solid var(--paper-line);padding-top:.65rem;max-width:100%}
 .evo-blog .evo-article__followup>p{max-width:80ch;line-height:1.7}
 .evo-blog .evo-article__followup>.evo-article__note{font-size:.87em}
+
+/* Narrow-width paper comparison: preserve method names; scroll the table, not the document. */
+@media (max-width: 640px) {
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] {
+    width: 650px;
+    min-width: 650px;
+    max-width: none;
+    table-layout: fixed;
+  }
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:first-child {
+    width: 175px;
+    min-width: 175px;
+    max-width: 175px;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(2) { width: 150px; }
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(3) { width: 135px; }
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(4) { width: 190px; }
+}
+@media (min-width: 641px) {
+  .evo-blog[data-evo-blog="results"] [data-seed-table-mobile-hint] { display: none; }
+}
