@@ -241,11 +241,11 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(q09.evidenceState).toBe('partial');
     const q04=ADVISOR_QUESTIONS.find(q=>q.id==='q04')!;
     const q06=ADVISOR_QUESTIONS.find(q=>q.id==='q06')!;
-    expect(q02.finding).toContain('15 个不同方法');
+    expect(q02.finding).toContain('15 个模型版本');
     expect(q04.finding).toContain('640/640');
     expect(q05.finding).toContain('512 次评测');
     expect(q06.finding).toContain('NOT_CONFIRMED');
-    expect(q09.finding).toContain('canonical_40_round_seal=false');
+    expect(q09.finding).toContain('40 轮对照的正式验收');
     expect(q09.unknown).toContain('完整消融还没有完成');
 
     expect(q09.experiment).toContain('保留三类载体权限');
