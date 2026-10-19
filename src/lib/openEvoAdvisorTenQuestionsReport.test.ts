@@ -249,10 +249,10 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(visual).toContain('原始英文收据把它称作 practical plateau');
     expect(visual).toContain('平均分都没有比它高出超过 2 分');
     expect(visual).toContain('历史 β/GDR 在第 130 轮后成绩下降');
-    expect(responses).toContain('这样的固定题在研究中叫“开发题”');
+    expect(responses).toContain('同一批 64 道开发题');
     expect(responses).toContain('同题比较');
-    expect(responses).toContain('逐轮学习开始前，初始模型怎么训练？');
-    expect(responses).toContain('历史 SEED 实验能直接与论文比较吗？');
+    expect(responses).toContain('SFT 和 OPSD，哪种初始训练方式更好？');
+    expect(responses).toContain('我们的 SEED 成绩，为什么和论文差这么多？');
     expect(responses).toContain('训练后压缩');
     expect(responses).toContain('已测结果：');
     expect(questions).toContain('SFT 和 OPSD 怎样训练初始模型');
