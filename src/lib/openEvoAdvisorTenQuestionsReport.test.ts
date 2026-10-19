@@ -408,7 +408,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(progress).toContain("source:'https://github.com/mykcs/openevo-experiment/pull/629'");
     expect(progress).toContain("source:'https://github.com/mykcs/openevo-experiment/pull/632'");
     expect(progress).toContain('6/6 组训练已 PASS');
-    expect(progress).toContain('40,960 次训练任务、1,664 次评估');
+    expect(progress).toContain('40,960 次训练任务和 1,664 次评估');
     expect(progress).toContain('122,880 次训练任务和 4,224 次评估');
     expect(responses).toContain('data-question-plan-source={q.id}');
     expect(responses).toContain('2026 年 10 月 19 日只读核对');
