@@ -92,7 +92,7 @@ test('advisor ELI5 keeps experiment identity, human-sized numbers and distinct u
   await expect(page.locator('#response-q10 [data-evidence-readiness="q10"]')).toHaveAttribute('data-evidence-state','unrun');
   const oldBad='Task Score 分别为 60.72、45.98、20.77/100，完整成功分别为 50、32、10 题';
   const actual=await page.locator('.evo-article__abstract p').first().innerText();
-  expect(oldBad).toMatch(/(?:\\d+(?:\\.\\d+)?[、，]){2}/);
+  expect(oldBad).toContain('60.72、45.98、20.77/100');
   expect(actual).toContain('普通 OpenEVO 的 Task Score 为 60.72 分');
   expect(actual).not.toContain('20.77/100');
 });
