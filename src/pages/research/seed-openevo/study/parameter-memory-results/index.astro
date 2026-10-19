@@ -10,6 +10,7 @@ import OpenEvoSeedWorld4Reproduction from '../../../../../components/research/Op
 import MathFormula from '../../../../../components/common/MathFormula.astro';
 import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
 import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from '../../../../../data/openEvoAdvisorTenQuestions';
+import { ADVISOR_REVIEWED_COPY } from '../../../../../data/openEvoAdvisorReviewedCopy';
 import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeeting';
 
 // Section 3 is the experiment-response chapter; source IDs intentionally stay q01–q10.
@@ -20,16 +21,16 @@ const responseHeadingNumber = (id: string) => '3.Q'+Number(id.slice(1));
 const researchProgress = {
   q01: { tone:'green', label:'已有局部回答', next:'换一批预先冻结的购物题，复核三条路线各自的停止时点。', effort:'人工约 0.5–1 人日；至少三条路线各做一轮新题评测，机器耗时待实测。' , source:'https://github.com/mykcs/openevo-experiment/blob/48e1368c7afc260a1745a49e6c7c173bfbb172b2/docs/evidence/advisor-q01-horizon-plateau-20261001/Q01_THREE_WAY_RESULT.json' },
   q02: { tone:'yellow', label:'六组训练完成，配对统计待验', next:'按冻结协议核对 18 个开发集评测位置，复用已完成的 15 格，仅补足真正缺失的三个位置并完成配对统计；之后再比较不同起点对长期学习的影响。', effort:'6/6 组训练已 PASS，15 个模型版本各完成 64 题评测；额外评测、人工核账与 GPU 小时依真实缺口计算。', source:'https://github.com/mykcs/openevo-experiment/pull/629' },
-  q03: { tone:'red', label:'正式复现未完成', next:'完成正式数据 SFT、整段 160 轮 Stage2 与论文协议对应的终评。', effort:'至少一条正式训练链和一套终评；需先打通训练与存储，再实测 GPU 小时，不能用工程开发题耗时推算。' , source:'https://github.com/mykcs/openevo-experiment/pull/707' },
+  q03: { tone:'red', label:'正式复现未完成', next:'先完成 A0/A40/A80/A120 的原生 128 题只读校准，再推进正式数据 SFT、Stage2 和论文协议对应的终评；不同协议成绩分开报告。', effort:'至少一条正式训练链和一套终评；需先打通训练与存储，再实测 GPU 小时，不能用工程开发题耗时推算。' , source:'https://github.com/mykcs/openevo-experiment/pull/707' },
   q04: { tone:'yellow', label:'五档筛选完成，续学尚不完整', next:'先用已完成的五档 Phase-A 结果选择合理的容量，再补齐 Phase-B 中 rank128、64、32 的固定协议后续学习比较，而非重测已完成的第一阶段。', effort:'Phase-A 640/640 开发集评测已完成；Phase-B 有部分训练收据，剩余工作与 GPU 小时须按实际封存和运行状态复核。', source:'https://github.com/mykcs/openevo-experiment/pull/631' },
   q05: { tone:'yellow', label:'敏感性评测完成，正式对照未收口', next:'先分析 8 组敏感性结果的同题配对与评测边界，再继续核对简单 β 正式多单元实验的真实剩余部分；区分能力与历史方向阈值。', effort:'另一次敏感性实验已有 512 次评测；原多单元工作包规划 1,280 次评估，不能不核身份就从中扣减 512；实际 GPU 小时待核算。', source:'https://github.com/mykcs/openevo-experiment/pull/632' },
   q06: { tone:'yellow', label:'预测实验已做，整体未确认', next:'针对本轮预测 NOT_CONFIRMED 结果，检查指标与错误的对应关系，再在真正独立的模型起点和预先冻结的新题上验证；避免重复做已保存的候选熵测量。', effort:'两条后续数据流已完成条件分析；独立确认需要的推理/训练成本尚未冻结，GPU 小时不虚报。', source:'https://github.com/mykcs/openevo-experiment/pull/633' },
-  q07: { tone:'green', label:'已有局部因果回答', next:'换保存点、模型与任务继续重复方向反转干预，再评估能否用于在线更新。', effort:'每新增一个保存点，至少再做一组原始/反向的同题评测；人工约半天起，GPU 耗时待测。' , source:'https://github.com/mykcs/openevo-experiment/pull/634' },
+  q07: { tone:'green', label:'已有局部因果回答', next:'对普通 OpenEVO、Bounded 和 Bounded + β 分别开展可比的更新删除、方向反转测试，再考虑是否设计在线方向控制器。', effort:'每新增一个保存点，至少再做一组原始/反向的同题评测；人工约半天起，GPU 耗时待测。' , source:'https://github.com/mykcs/openevo-experiment/pull/634' },
   q08: { tone:'yellow', label:'遗忘尚未判定', next:'先找回每道旧题刚学会时的可比测量和任务身份，再与长期训练后对照。', effort:'人工约 1–2 人日核对旧账本；若早期锚点缺失，需要重新训练与评测，卡时未知。' , source:'https://github.com/mykcs/openevo-experiment/pull/635' },
   q09: { tone:'yellow', label:'两条末端状态已得，完整消融未完成', next:'先完成两条冻结流尚未封账的转换与对应核对，再真正关闭 Text Memory、Skill、Agent System，进行同题配对。', effort:'两条延伸流已有第 160 轮末端状态，但 canonical 40 轮封存仍未完成；原完整计划最多 40,960 次训练任务和 1,664 次评估，是预算上限而非本轮新增消耗。', source:'https://github.com/mykcs/openevo-experiment/pull/636' },
-  q10: { tone:'red', label:'独立复现尚未完成', next:'先冻结新的任务流与排除规则，再完成三条独立随机流的正式训练及新题终评。', effort:'计划上限为 3 条新训练流、122,880 次训练任务和 4,224 次评估；严格同源复用可减少净增量。人工准备约 1–2 人日；尚未启用，不应虚报训练小时。' , source:'https://github.com/mykcs/openevo-experiment/pull/637' },
+  q10: { tone:'red', label:'独立复现尚未完成', next:'先在冻结的新 WebShop 题上完成独立随机流的复现；之后参考 SEED（arXiv:2607.14777）的 ALFWorld 实验，在这个模拟家庭任务环境中重新训练并对照三种 OpenEVO 方法。', effort:'计划上限为 3 条新训练流、122,880 次训练任务和 4,224 次评估；严格同源复用可减少净增量。人工准备约 1–2 人日；尚未启用，不应虚报训练小时。' , source:'https://github.com/mykcs/openevo-experiment/pull/637' },
 } as const;
-const responseQuestions = ADVISOR_QUESTIONS.map(q=>({...q,progress:researchProgress[q.id as keyof typeof researchProgress]}));
+const responseQuestions = ADVISOR_QUESTIONS.map(q=>({...q,reviewed:ADVISOR_REVIEWED_COPY[q.id as keyof typeof ADVISOR_REVIEWED_COPY],progress:researchProgress[q.id as keyof typeof researchProgress]}));
 
 
 // Immutable source snapshot only. Scientific status is owned by openevo-experiment, not this page.
@@ -111,47 +112,16 @@ const q17Effects = {
     <section id="experiment" class="evo-article__section" data-ten-question-tldr>
       <h2>2 十问速览：我们发现了什么，下一轮还想研究什么？</h2>
       <p>下面把十个研究问题的<strong>已有发现、尚未回答的部分和后续研究方向</strong>放在一起。每项只保留理解结论所需的事实；详细的实验设置、统计图和原始来源从第 3 节逐问查看。</p>
-      <dl class="evo-article__experiment-guide">
-        <div>
-          <dt><a href="#response-q01">Q01 · 训练 160 轮会不会太多？</a></dt>
-          <dd><strong>已测：</strong>同一批 64 道开发题上，普通 OpenEVO 约在第 120 次参数更新后收益变小；Bounded 到第 150 轮仍有提升，历史 β/GDR 则在后期掉分。β-gating 已有从 160 轮延伸至 200 轮的训练轨迹，但这不是新的固定题终评。<strong>接下来：</strong>在事先固定的新题上比较不同停止时点，而不是给三种方法统一规定 120 轮。</dd>
-        </div>
-        <div>
-          <dt><a href="#response-q02">Q02 · SFT 和 OPSD，哪种初始训练方式更好？</a></dt>
-          <dd><strong>已测：</strong>早期 32 道题没有明确赢家。新的六组匹配训练均 PASS，已有 15 个模型版本分别完成 64 道固定开发题评测。<strong>还缺：</strong>原 18 个评测位置的余下 3 格与最终配对统计。<strong>接下来：</strong>优先补齐这三格，再比较两种训练起点对长期学习的影响。</dd>
-        </div>
-        <div>
-          <dt><a href="#response-q03">Q03 · 我们的 SEED 成绩，为什么和论文差这么多？</a></dt>
-          <dd><strong>已测：</strong>历史模型在自定义 64 题上的成绩较低；它的训练、提示和评测条件与 SEED 论文不同，分数不能直接排名。另有独立的公开方法复现，但尚无完整正式成绩。<strong>接下来：</strong>先对齐论文评测并完成复现，再分别研究初始训练、教师模型等差异的影响。</dd>
-        </div>
-        <div>
-          <dt><a href="#response-q04">Q04 · 长期参数一定需要 rank128 这么大吗？</a></dt>
-          <dd><strong>已测：</strong>在第 152–159 轮的同题比较中，rank32 的参数文件比 rank128 小约 75%，平均成绩低 1.79 分，仍不能断言稳定掉分或完全无损。后续五档 rank8、16、32、64、128 的第一阶段筛选已完成 640 次评测，尚未找到稳定的最佳容量。<strong>接下来：</strong>完成筛选后选定档位的后续学习实验，并比较能力与计算开销。</dd>
-        </div>
-        <div>
-          <dt><a href="#response-q05">Q05 · β 写入控制能让模型学得更好吗？</a></dt>
-          <dd><strong>已测：</strong>历史 Bounded 与加入 β/GDR 后的同题终评分数分别为 45.98 和 20.77；新的简单 β 已做过参数方向测量，独立敏感性实验又完成 8 组共 512 次做题评测。不同测试阶段与任务上的表现不一致，尚无统一收益结论。<strong>接下来：</strong>核对这些对照的统计证据，并补齐正式多单元比较。</dd>
-        </div>
-        <div>
-          <dt><a href="#response-q06">Q06 · 哪一种熵，才能看出模型做选择时的犹豫？</a></dt>
-          <dd><strong>已测：</strong>第一版实验结束后，我们从轨迹回算了 <strong>action-family entropy（动作类型熵）</strong>，只区分 search 与 click。WebShop 的动作大类本来就少，这无法告诉我们模型究竟点错了哪个商品；之后我们测量了 click-choice entropy（具体点击候选的熵）等更细的概率指标，并在两条后续数据流中尝试预测表现，但预设整体检验结果为 <strong>NOT_CONFIRMED（尚未确认）</strong>。<strong>接下来：</strong>结合 token-level entropy（逐 token 熵），在独立起点和新题上验证这些指标能否预测错误，而不是重复统计 search/click。</dd>
-        </div>
-        <div>
-          <dt><a href="#response-q07">Q07 · Task Vector 的更新方向真的重要吗？</a></dt>
-          <dd><strong>已测：</strong>对 <strong>Bounded（未加入 β）</strong> 的末尾 8 轮进行方向干预。反转第 156 轮更新后，相比<strong>完整、未干预的模型</strong>，Task Score 下降约 10.06 分，并通过多重比较校正。<strong>接下来：</strong>对普通 OpenEVO 和 Bounded + β 进行可比干预，研究这种方向敏感性是否具有普遍性。</dd>
-        </div>
-        <div>
-          <dt><a href="#response-q08">Q08 · 长期学习会造成 Catastrophic Forgetting（灾难性遗忘）吗？</a></dt>
-          <dd><strong>已测：</strong>旧任务保持评测已完成 960 次，但部分题缺少可靠的“当初确实学会了”证据，因此后期做错尚不能证明遗忘。<strong>接下来：</strong>补齐相同旧题在学会前后及长期训练后的成绩，再比较三种方法保留旧能力的差异。</dd>
-        </div>
-        <div>
-          <dt><a href="#response-q09">Q09 · Text Memory、Skill 和 Agent System 有多少作用？</a></dt>
-          <dd><strong>已测：</strong>普通 OpenEVO 在 160 轮中更新参数 159 次，三种文字载体分别只改写 2、1、3 次；改变 R159 的指导文字，尚未得到稳定的成绩收益证据。两条后续训练流已有第 160 轮末端状态，但正式 40 轮对照仍未封存。少改写不意味着后续没有使用。<strong>接下来：</strong>先完成正式对照，再分别关闭载体，测量实际贡献。</dd>
-        </div>
-        <div>
-          <dt><a href="#response-q10">Q10 · 换一批新任务，结论还能成立吗？</a></dt>
-          <dd><strong>已做：</strong>会后新增了新题和独立随机种子的复现方案，尚无完整的独立正式结果。<strong>接下来：</strong>先在未参与实验选择的新 WebShop 题上重复训练和验证；再参考 <a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED（arXiv:2607.14777）</a> 等研究使用的 <strong>ALFWorld</strong>，检验三种 OpenEVO 方法在不同任务环境下是否仍有类似表现。</dd>
-        </div>
+      <dl class="evo-article__experiment-guide" data-review-source="single">
+        {responseQuestions.map(q => (
+          <div data-review-summary={q.id}>
+            <dt><a href={'#response-'+q.id}>{q.id.toUpperCase()} · {q.title}</a></dt>
+            <dd>
+              <p data-conversation-summary={q.id}>{q.reviewed.summary}</p>
+              <p data-conversation-next={q.id}><strong>后续研究：</strong>{q.reviewed.nextResearch}</p>
+            </dd>
+          </div>
+        ))}
       </dl>
       <p class="evo-article__note">Q01–Q09 是由 2026 年 9 月 22 日会议议题整理出的研究问题，Q10 是会后新增的方向，并非学长当时逐字提出的十句话。后续实验的 GPU 数量、单卡显存、预计机器小时和人工投入将按实际方案核算；目前不填未经测量的数值。这里是研究进展导读，不取代后文的完整证据。</p>
     </section>
@@ -168,7 +138,9 @@ const q17Effects = {
             <h3 id={'response-'+q.id+'-title'}><span class="evo-article__qnum">{responseHeadingNumber(q.id)}</span> {q.title}</h3>
           </header>
           <p class="evo-article__note" data-question-origin-link={q.id}><a href={'/research/seed-openevo/study/advisor-questions/#'+q.id}>查看第二篇的 {q.id.toUpperCase()} 问题正文与背景 ↗</a>{q.id==='q10' && ' · 会后新增问题'}</p>
-          <p><strong>实验怎么做：</strong>{q.experiment}</p>
+          {q.id!=='q01' && <p class="evo-article__question-setup" data-response-background={q.id}>{q.opening}</p>}
+          <p data-conversation-detail={q.id}>{q.reviewed.summary}</p>
+          <p><strong>更详细的实验设置：</strong>{q.experiment}</p>
           {q.id==='q01' && <p class="evo-article__note" data-q01-iteration-definition>这里的“轮”是 OpenEVO 反复执行购物任务、整理经验并继续学习的迭代，不是把同一份固定训练集完整遍历一次的 epoch。部分轮次没有实际更新参数；普通 OpenEVO 的曲线按实际更新次数统计。</p>}
           <p class="evo-article__answer" data-experiment-finding={q.id}><strong>已测结果：</strong>{q.finding.replaceAll('普通 DirectApply','普通 OpenEVO')}</p>
           {q.id==='q01' && <AdvisorTenEvidenceVisual variant="q01" />}
@@ -205,9 +177,9 @@ const q17Effects = {
               <p class="evo-article__note"><a href="#q17-context">查看完整 Q17 文字干预表 ↓</a></p>
             </div>
           )}
-          <p><strong>支持的研究判断：</strong>{q.interpretation}</p>
+          <p data-supported-answer={q.id}><strong>目前回答了什么：</strong>{q.interpretation}</p>
           <p class="evo-article__limit"><strong>还缺什么：</strong>{q.unknown}</p>
-          <p class="evo-article__next-work" data-next-work={q.id}><strong>下一步：</strong>{q.progress.next}<span><strong>工作量粗估：</strong>{q.progress.effort}</span> <a href={q.progress.source} target="_blank" rel="noopener noreferrer" data-question-plan-source={q.id}><ExternalBrandMark href={q.progress.source} />核对当前实验工作单 ↗</a></p>
+          <p class="evo-article__next-work" data-next-work={q.id}><strong>下一步：</strong>{q.reviewed.nextResearch}<span><strong>具体补缺：</strong>{q.progress.next}</span><span><strong>工作量粗估：</strong>{q.progress.effort}</span> <a href={q.progress.source} target="_blank" rel="noopener noreferrer" data-question-plan-source={q.id}><ExternalBrandMark href={q.progress.source} />核对当前实验工作单 ↗</a></p>
           <p class="evo-article__note">
             {q.evidence.slice(0, 1).map(e => <span><a href={e.href} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={e.href} />本问实验来源 ↗</a> · </span>)}
             <a href={'#source-'+q.id}>更多实验来源 ↓</a>
@@ -337,7 +309,7 @@ const q17Effects = {
     </section>
     <section id="sources" class="evo-article__section evo-article__sources">
       <h2>科研来源与实验记录</h2>
-      <p class="evo-article__note">Q01–Q10 的原有结果核对日期为 <time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>；Q17 新诊断核对日期为 2026-10-15。Q03 三组工程模型的 1,536 次开发题诊断于 <time datetime="2026-10-16">2026-10-16</time> 00:45（新加坡时间）封存，八卡恢复与存储状态见带日期的实验收据。以下历史 R159 与 13×78 的核对日期为 <time datetime="2026-10-14">2026-10-14</time>。所有资源状态均为历史快照。</p>
+      <p class="evo-article__note">Q01–Q10 的历史基线结果核对日期为 <time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>；Q02、Q04、Q05、Q06、Q09 的补充科研进展于 <time datetime="2026-10-19">2026-10-19</time> 核对对应训练或评测收据，保留其各自的科学边界。Q17 新诊断核对日期为 2026-10-15。Q03 三组工程模型的 1,536 次开发题诊断于 <time datetime="2026-10-16">2026-10-16</time> 00:45（新加坡时间）封存，八卡恢复与存储状态见带日期的实验收据。以下历史 R159 与 13×78 的核对日期为 <time datetime="2026-10-14">2026-10-14</time>。所有资源状态均为历史快照。</p>
       <ol>
         {ADVISOR_QUESTIONS.map(q=>(
           <li id={'source-'+q.id} data-response-source={q.id}>

@@ -118,6 +118,51 @@ test('third article answers all Q01–Q10 with experiments, measurements, limits
   await expect(page.locator('#response-q10')).toContainText('当前并没有三条新随机流');
 });
 
+test('conversation reference paragraphs stay identical in the TLDR and the detailed answers',async({page})=>{
+  await page.goto(prefix+'parameter-memory-results/');
+  const guide=page.locator('#experiment [data-review-source="single"]');
+  await expect(guide.locator('[data-review-summary]')).toHaveCount(10);
+  for(let n=1;n<=10;n++){
+    const id='q'+String(n).padStart(2,'0');
+    const brief=guide.locator('[data-review-summary="'+id+'"]');
+    const paragraphs=brief.locator('dd p');
+    await expect(paragraphs).toHaveCount(2);
+    await expect(page.locator('[data-conversation-detail="'+id+'"]')).toHaveText(await paragraphs.nth(0).innerText());
+    await expect(paragraphs.nth(1)).toContainText('后续研究：');
+    const next=(await paragraphs.nth(1).innerText()).replace(/^后续研究：/,'');
+    await expect(page.locator('[data-next-work="'+id+'"]')).toContainText(next);
+  }
+  await expect(guide.locator('[data-review-summary="q01"] [data-conversation-summary]')).toHaveText('我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。');
+  await expect(guide.locator('[data-review-summary="q02"]')).toContainText('SFT 直接学习示范，OPSD 利用额外经验指导模型学习');
+  await expect(guide.locator('[data-review-summary="q06"]')).toContainText('action-family entropy');
+  await expect(guide.locator('[data-review-summary="q07"]')).toContainText('完整、未干预的 Bounded');
+  await expect(guide.locator('[data-review-summary="q10"]')).toContainText('ALFWorld');
+});
+
+test('navigating to a detailed answer does not add a green bar or box',async({page})=>{
+  await page.goto(prefix+'parameter-memory-results/#response-q07');
+  const article=page.locator('#response-q07');
+  await expect(article).toBeVisible();
+  await expect(article).toHaveCSS('border-left-width','0px');
+  await expect(article).toHaveCSS('border-right-width','0px');
+  await expect(article).toHaveCSS('border-top-width','0px');
+  const decoration=await article.evaluate(node=>{
+    const a=getComputedStyle(node);
+    const next=getComputedStyle(node.querySelector('[data-next-work]')!);
+    return {
+      target:node.matches(':target'),
+      background:a.backgroundColor,
+      borderInlineStart:a.borderInlineStartWidth,
+      nextBorderInlineStart:next.borderInlineStartWidth
+    };
+  });
+  expect(decoration.target).toBe(true);
+  expect(decoration.background).toBe('rgba(0, 0, 0, 0)');
+  expect(decoration.borderInlineStart).toBe('0px');
+  expect(decoration.nextBorderInlineStart).toBe('0px');
+});
+
+
 test('response article also keeps frozen final, paired capacity, direction, uncertainty',async({page})=>{
   await page.goto(prefix+'parameter-memory-results/');
   const a=page.locator('[data-evo-blog="results"]');
@@ -186,8 +231,8 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   await page.goto(prefix+'parameter-memory-results/');
   const guide=page.locator('#experiment');
   await expect(guide.locator('dt')).toHaveCount(10);
-  await expect(guide).toContainText('SFT 和 OPSD，哪种初始训练方式更好？');
-  await expect(guide).toContainText('我们的 SEED 成绩，为什么和论文差这么多？');
+  await expect(guide).toContainText('开始长期学习前，SFT 和 OPSD 哪种方法更好？');
+  await expect(guide).toContainText('我们的 SEED 实验成绩为什么比论文低这么多？');
   await expect(guide.locator('table')).toHaveCount(0);
   for(let n=1;n<=10;n++) {
     const id='q'+String(n).padStart(2,'0');
@@ -197,7 +242,7 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   await expect(guide).toContainText('ALFWorld');
   await expect(guide).toContainText('十问速览：我们发现了什么，下一轮还想研究什么？');
   const answer=page.locator('#response-q01');
-  await expect(answer.locator('h3')).toHaveText('3.Q1 训练 160 轮会不会太多了？');
+  await expect(answer.locator('h3')).toHaveText('3.Q1 训练 160 轮会不会太多？');
   const link=answer.locator('[data-question-origin-link="q01"] a');
   await expect(link).toHaveAttribute('href','/research/seed-openevo/study/advisor-questions/#q01');
   const chart=answer.locator('[data-report-figure="q01-horizon"]');
@@ -214,7 +259,7 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   expect(overflow).toBeLessThanOrEqual(2);
   await link.click();
   await expect(page).toHaveURL(/advisor-questions\/#q01$/);
-  await expect(page.locator('#q01 h3')).toHaveText('训练 160 轮会不会太多了？');
+  await expect(page.locator('#q01 h3')).toHaveText('训练 160 轮会不会太多？');
   await expect(page.locator('#q01 a[href*="parameter-memory-results"]')).toBeVisible();
 });
 
@@ -222,7 +267,7 @@ test('Q03 shows complete paired engineering measurements without formal SEED cla
   await page.setViewportSize({width:390,height:844});
   await page.goto(prefix+'advisor-questions/');
   const entry=page.locator('#q03 a[href*="parameter-memory-results"]');
-  await expect(entry).toContainText('工程测量与限制');
+  await expect(entry).toContainText('查看 Q03 已完成的实验、结果与未解问题');
   await expect(page.locator('[data-question-only]')).not.toContainText('4.07');
   await entry.click();
   const q03=page.locator('#response-q03 [data-seed-eight-progress]');

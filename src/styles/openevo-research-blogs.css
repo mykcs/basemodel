@@ -108,7 +108,7 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog[data-evo-blog="results"] .evo-article__status--green{--status-dot:var(--color-positive)}
 .evo-blog[data-evo-blog="results"] .evo-article__status--yellow{--status-dot:var(--color-warning)}
 .evo-blog[data-evo-blog="results"] .evo-article__status--red{--status-dot:var(--color-danger)}
-.evo-blog[data-evo-blog="results"] .evo-article__next-work{border-left:2px solid var(--paper-line);padding:.2rem 0 .15rem .8rem;font-size:.96em;line-height:1.76}
+.evo-blog[data-evo-blog="results"] .evo-article__next-work{padding:.2rem 0 .15rem;font-size:.96em;line-height:1.76}
 .evo-blog[data-evo-blog="results"] .evo-article__next-work > span{display:block;margin-top:.12rem;color:var(--paper-muted)}
 
 .evo-blog .evo-article__question .evo-article__answer{font-weight:630;line-height:1.8}

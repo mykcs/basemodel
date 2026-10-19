@@ -7,6 +7,7 @@ import {
   ADVISOR_RESEARCH_AS_OF,
 } from '../data/openEvoAdvisorTenQuestions';
 import { OPEN_EVO_ADVISOR_MEETING } from '../data/openEvoAdvisorMeeting';
+import { ADVISOR_REVIEWED_COPY } from '../data/openEvoAdvisorReviewedCopy';
 import { SITE_READER_CONTRACTS } from '../data/siteReaderContracts';
 
 const read = (path:string) => readFileSync(new URL('../../'+path,import.meta.url),'utf8');
@@ -29,9 +30,9 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
       for(const k of ['opening','experiment','finding','interpretation','unknown'] as const)
         expect(q[k].length).toBeGreaterThan(12);
       expect(q.evidence.length).toBeGreaterThanOrEqual(1);
-      for(const e of q.evidence) expect(e.href).toMatch(/^https:\/\/github\.com\/mykcs\//);
+      for(const e of q.evidence) expect(e.href).toMatch(q.id==='q10' ? /^https:\/\/(?:github\.com\/mykcs\/|arxiv\.org\/abs\/)/ : /^https:\/\/github\.com\/mykcs\//);
     }
-    expect(ADVISOR_QUESTIONS[9]?.unknown).toContain('会后');
+    expect(ADVISOR_QUESTIONS[9]?.experiment).toContain('会后问题');
     expect(ADVISOR_RESEARCH_AS_OF).toBe('2026-10-09');
   });
   it('names the actual meeting before Q-numbering and links RAW at first mention',()=>{
@@ -130,14 +131,55 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('独立研究');
     expect(questions).toContain('不能当作学长当时逐字提出的十句话');
   });
+  it('protects conversation-reference prose and unframed answer navigation',()=>{
+    // Q01 is directly user-requoted; Q02-Q10 are historically discussed reference drafts.
+    // Any deliberate editorial change must update this regression with evidence.
+    const expected={
+      "q01": "6303bdeaae1d0364eaff316dee9597f92a03a244f1de50d2a9610548945ece5f",
+      "q02": "285e1a5b4e8ec565bda7e70c62d235b7aadfcf9bd6ea861a5ecdafad729fa65b",
+      "q03": "59d081e75d8ce2dcab40a319891e69243b6a5bf5e27e0a389bc59d3a4b7dd03f",
+      "q04": "193911af621d09cfe25c328f58adf35856035774425a480e006bb2a173b1a180",
+      "q05": "e25182c5ac6e2d764df63fc3960ec1b35fe3a1cae22fa1c7c72d82f813feb2fc",
+      "q06": "362ad9cd6447440270c26dec555d6297cb2f6c976ffe182883e4c0c70ead211b",
+      "q07": "78d47d8ee66af198ace9f9d35b71a0898449e4ec3d532dc4163e660f10b4359b",
+      "q08": "8ae27f42eee8a2ece6cc169de6e9e1c497f7d582f11beb5a7d9a08a10ce23eb7",
+      "q09": "6a73bc18570711ce0682cf32a29aea0897294c4172aafcface09ad77d4580863",
+      "q10": "109a67a40028a82378bd9c75b18780bf7bfee9c880f7dfadffc37daeebea7925"
+    } as const;
+    for(const [id,hash] of Object.entries(expected)){
+      const item=ADVISOR_REVIEWED_COPY[id as keyof typeof ADVISOR_REVIEWED_COPY];
+      expect(createHash('sha256').update(item.summary).digest('hex')).toBe(hash);
+      expect(item.nextResearch.length).toBeGreaterThan(20);
+    }
+    expect(ADVISOR_REVIEWED_COPY.q01.provenance).toBe('user-quoted-exact');
+    expect(ADVISOR_REVIEWED_COPY.q02.provenance).toBe('chatgpt-discussed-draft');
+    expect(read('src/components/research/OpenEvoQuestionIndex.astro')).not.toContain('[data-experiment-response]:target');
+    expect(read('src/styles/openevo-research-blogs.css')).not.toContain('.evo-article__next-work{border-left');
+  });
   it('keeps evaluation scope, unique booktabs numbers and primary source proximity',()=>{
     const capacity=read('src/components/research/AdvisorTenEvidenceVisual.astro');
     expect(responses).toContain('2 十问速览：我们发现了什么，下一轮还想研究什么？');
     expect(responses).toContain('evo-article__experiment-guide');
     const tlDr=responses.split('data-ten-question-tldr')[1]?.split('</section>')[0] ?? '';
-    for(let n=1;n<=10;n++) expect(tlDr).toContain('href="#response-q'+String(n).padStart(2,'0')+'"');
-    for(const phrase of ['action-family entropy','token-level entropy','完整、未干预的模型','ALFWorld','GPU 数量']) expect(tlDr).toContain(phrase);
-    expect((tlDr.match(/<dt>/g)||[])).toHaveLength(10);
+    expect(tlDr).toContain('data-review-source="single"');
+    expect(tlDr).toContain('responseQuestions.map(q =>');
+    expect(tlDr).toContain('data-review-summary={q.id}');
+    for(const field of ['summary','nextResearch']) expect(tlDr).toContain('{q.reviewed.'+field+'}');
+    expect(Object.keys(ADVISOR_REVIEWED_COPY)).toEqual(Array.from({length:10},(_,i)=>'q'+String(i+1).padStart(2,'0')));
+    expect(ADVISOR_REVIEWED_COPY.q01.summary).toBe('我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。');
+    expect(tlDr).toContain('data-conversation-summary={q.id}');
+    expect(tlDr).toContain('data-conversation-next={q.id}');
+    expect(responses).toContain('data-conversation-detail={q.id}');
+    expect(ADVISOR_REVIEWED_COPY.q06.summary).toContain('action-family entropy');
+    expect(ADVISOR_REVIEWED_COPY.q06.nextResearch).toContain('token-level entropy');
+    expect(ADVISOR_REVIEWED_COPY.q07.summary).toContain('完整、未干预的 Bounded');
+    expect(ADVISOR_REVIEWED_COPY.q10.nextResearch).toContain('ALFWorld');
+    expect(ADVISOR_REVIEWED_COPY.q02.summary).toContain('SFT 直接学习示范，OPSD 利用额外经验指导模型学习');
+    expect(ADVISOR_REVIEWED_COPY.q09.summary).toContain('文字很少改写');
+    // The detailed response reuses the same core paragraph without an extra result/finished-work box.
+    expect(responses).not.toContain('data-reviewed-completion={q.id}');
+    expect(responses).not.toContain('data-reviewed-finding={q.id}');
+    expect(responses).toContain('GPU 数量');
     expect(responses).not.toContain('aria-label="研究问题与具体测量对应表"');
     expect(responses).not.toContain('六类证据的评测口径');
     expect(responses).not.toContain('四种测量不能混成一次对照');
@@ -196,7 +238,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
       const row=rows.find(r=>r[0]===key && Number(r[2])===round);
       expect(Number(row?.[4])*100).toBeCloseTo(score,7);
     }
-    expect(ADVISOR_QUESTIONS[0]?.title).toBe('训练 160 轮会不会太多了？');
+    expect(ADVISOR_QUESTIONS[0]?.title).toBe('训练 160 轮会不会太多？');
     expect(ADVISOR_QUESTIONS[0]?.experiment).not.toContain('而不是拿最后的训练损失当答案');
     expect(visual).toContain('data-evidence-shape="measured-score-curves"');
     expect(visual).not.toContain('data-evidence-shape="platform-position"');
@@ -210,16 +252,16 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
   it('keeps each advisor heading within the scientific question actually tested',()=>{
     const visual=read('src/components/research/AdvisorTenEvidenceVisual.astro');
     const intended: Record<string,string> = {
-      q01: '训练 160 轮会不会太多了？',
-      q02: '开始逐轮学习之前，怎样训练出一个更好的初始模型？',
-      q03: '我们的 SEED 实验成绩，能直接和论文比较吗？',
+      q01: '训练 160 轮会不会太多？',
+      q02: '开始长期学习前，SFT 和 OPSD 哪种方法更好？',
+      q03: '我们的 SEED 实验成绩为什么比论文低这么多？',
       q04: '长期参数容量需要 rank128 这么大吗，缩小一点怎么样？',
-      q05: '增加参数写入控制后，模型做题成绩有什么变化？',
-      q06: '模型选择商品时有多拿不准？',
-      q07: '把某轮参数更新的方向反过来，成绩会怎样？',
-      q08: '训练很多轮后，模型还会做以前学过的购物题吗？',
-      q09: '改变模型收到的文字经验提示，会影响做题吗？',
-      q10: '换一批真正新的任务，这些判断还能成立吗？',
+      q05: 'β 写入控制会让模型学得更好吗？',
+      q06: '模型做选择时有多犹豫？能用熵来衡量吗？',
+      q07: '参数更新的方向，会影响模型的做题能力吗？',
+      q08: 'OpenEVO 训练很多轮以后，会忘记以前学会的任务吗？',
+      q09: '模型外部保存的文字经验，究竟有多大作用？',
+      q10: '换一批新任务，OpenEVO 的实验结论还成立吗？',
     };
     for(const [id,title] of Object.entries(intended))
       expect(ADVISOR_QUESTIONS.find(q=>q.id===id)?.title).toBe(title);
@@ -228,7 +270,26 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     const q05=ADVISOR_QUESTIONS.find(q=>q.id==='q05')!;
     const q09=ADVISOR_QUESTIONS.find(q=>q.id==='q09')!;
     expect(q02.opening).toContain('逐轮学习');
-    expect(q02.experiment).toContain('第一阶段怎样训练初始模型');
+    expect(responses).toContain("data-response-background={q.id}");
+    expect(responses).toContain("data-supported-answer={q.id}");
+    expect(questions).toContain('const researchTargets = {');
+    expect(questions).toContain('data-question-research-target={q.id}');
+    expect(questions).toContain('data-question-q10-environment');
+    expect(questions).toContain('arxiv.org/abs/2607.14777');
+    const targets=questions.split('const researchTargets = {')[1]?.split('} as const;')[0] ?? '';
+    for(let n=1;n<=10;n++) expect(targets).toContain('q'+String(n).padStart(2,'0')+':');
+    expect((targets.match(/\bq\d\d:/g)??[])).toHaveLength(10);
+    expect(questions).not.toContain('data-experiment-finding={q.id}');
+    expect(questions).not.toContain('data-supported-answer={q.id}');
+
+    expect(responses).toContain('2026-10-19</time> 核对对应训练或评测收据');
+    expect(ADVISOR_QUESTIONS[5]?.experiment).toContain('action-family entropy');
+    expect(ADVISOR_QUESTIONS[5]?.finding).toContain('NOT_CONFIRMED');
+    expect(ADVISOR_QUESTIONS[6]?.finding).toContain('完整、未干预的 Bounded');
+    expect(ADVISOR_QUESTIONS[7]?.finding).toContain('960 次');
+    expect(ADVISOR_QUESTIONS[9]?.interpretation).toContain('ALFWorld');
+
+    expect(q02.experiment).toContain('两种方法、三组随机设置');
     expect(q02.finding).toContain('36.01/100');
     expect(q02.finding).toContain('34.96/100');
     expect(q02.unknown).toContain('长期逐轮学习');
@@ -245,7 +306,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(q04.finding).toContain('640/640');
     expect(q05.finding).toContain('512 次评测');
     expect(q06.finding).toContain('NOT_CONFIRMED');
-    expect(q09.finding).toContain('40 轮对照的正式验收');
+    expect(q09.finding).toContain('40 轮对照的完整科学验收');
     expect(q09.unknown).toContain('完整消融还没有完成');
 
     expect(q09.experiment).toContain('保留三类载体权限');
@@ -258,10 +319,10 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(visual).toContain('原始英文收据把它称作 practical plateau');
     expect(visual).toContain('平均分都没有比它高出超过 2 分');
     expect(visual).toContain('历史 β/GDR 在第 130 轮后成绩下降');
-    expect(responses).toContain('同一批 64 道开发题');
+    expect(ADVISOR_QUESTIONS[0]?.experiment).toContain('64 道');
     expect(responses).toContain('同题比较');
-    expect(responses).toContain('SFT 和 OPSD，哪种初始训练方式更好？');
-    expect(responses).toContain('我们的 SEED 成绩，为什么和论文差这么多？');
+    expect(ADVISOR_QUESTIONS[1]?.title).toBe('开始长期学习前，SFT 和 OPSD 哪种方法更好？');
+    expect(ADVISOR_QUESTIONS[2]?.title).toBe('我们的 SEED 实验成绩为什么比论文低这么多？');
     expect(responses).toContain('训练后压缩');
     expect(responses).toContain('已测结果：');
     expect(questions).toContain('SFT 和 OPSD 怎样训练初始模型');
@@ -292,7 +353,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     const item=ADVISOR_QUESTIONS.find(q=>q.id==='q03');
     expect(item?.unknown).toContain('正式 Stage2 为 0/160');
     expect(item?.evidence.some(e=>e.href.includes('c930744044c4e648f5daf54514a23f2d188c268e'))).toBe(true);
-    expect(questions).toContain('查看公开 SEED 复现的工程测量与限制');
+    expect(questions).toContain('查看 {q.id.toUpperCase()} 已完成的实验、结果与未解问题');
     expect(questions).not.toContain('384 / 512');
     expect(questions).not.toContain('20.4 GiB');
     expect(responses).toContain('<OpenEvoSeedWorld4Reproduction />');
@@ -387,7 +448,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(progressSource).toContain('GPU 小时');
     const q04=ADVISOR_QUESTIONS.find(q=>q.id==='q04')!;
     expect(q04.experiment).toContain('末尾八轮（第 152–159 轮）');
-    expect(q04.unknown).toContain('rank8、16、64');
+    expect(q04.unknown).toContain('rank128、64、32');
     // Legitimate limits remain visible: 'red' means core verification missing,
     // not that completed engineering evidence has disappeared.
     expect(responses).toContain('1,536 次冻结开发题评测');
@@ -397,9 +458,9 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     const q02=ADVISOR_QUESTIONS.find(q=>q.id==='q02')!;
     expect(q02.finding).toContain('六组 SFT/OPSD 训练摘要均 PASS');
     expect(q02.finding).toContain('不能代替最终的逐题配对统计');
-    expect(q02.unknown).toContain('剩余 3 格与最终配对统计');
+    expect(q02.unknown).toContain('3 格缺少可验收');
     expect(q02.evidence[0]?.href).toBe('https://github.com/mykcs/openevo-experiment/pull/629');
-    expect(ADVISOR_QUESTIONS.find(q=>q.id==='q05')?.unknown).toContain('1,280 次评估');
+    expect(ADVISOR_QUESTIONS.find(q=>q.id==='q05')?.unknown).toContain('1,280 次同题评估');
     const progress=responses.split('const researchProgress = {')[1]?.split('} as const;')[0] ?? '';
     for(let n=1;n<=10;n++) {
       const q='q'+String(n).padStart(2,'0');
