@@ -20,11 +20,11 @@ for(const width of [390,1440]) {
       await expect(link).toBeVisible();
       await expect(link).toHaveAttribute('href',/^https:\/\/github\.com\/mykcs\/openevo-experiment\//);
    }
-   await expect(page.locator('#response-q02 [data-next-work="q02"]')).toContainText('3 个训练单元');
+   await expect(page.locator('#response-q02 [data-next-work="q02"]')).toContainText('六组训练摘要均 PASS');
    await expect(page.locator('#response-q05 [data-next-work="q05"]')).toContainText('1,280 次评估');
    await expect(page.locator('#response-q09 [data-next-work="q09"]')).toContainText('40,960 次训练任务');
    await expect(page.locator('#response-q10 [data-next-work="q10"]')).toContainText('122,880 次训练任务');
-   await expect(page.locator('#response-q02 [data-experiment-finding="q02"]')).toContainText('三项训练未完成');
+   await expect(page.locator('#response-q02 [data-experiment-finding="q02"]')).toContainText('六组 SFT/OPSD 训练现均有 status=PASS');
    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
    expect(overflow).toBeLessThanOrEqual(2);
  });
