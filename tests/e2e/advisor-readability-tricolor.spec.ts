@@ -33,6 +33,7 @@ for(const {width,theme} of [
         await expect(summary.locator('[data-brief-done="'+id+'"]')).toContainText('已经做了：');
         await expect(summary.locator('[data-brief-missing="'+id+'"]')).toContainText('还差什么：');
         await expect(details.locator('[data-progress-stage="'+id+'"]')).toContainText('目前进度：');
+        await expect(details.locator('[data-evidence-readiness="'+id+'"]')).toContainText('证据成熟度：');
         await expect(details.locator('[data-progress-gap="'+id+'"]')).toContainText('还差什么才能回答：');
         const render=await detailStatus.evaluate(node=>{
           const dot=node.querySelector('.evo-article__status-dot');
@@ -46,6 +47,11 @@ for(const {width,theme} of [
     }
     expect(palette.size).toBe(3);
     await expect(page.locator('[data-advisor-overview]')).toContainText('并非整项研究全部结束');
+    await expect(page.locator('[data-advisor-key-findings]')).toContainText('平均成绩下降约 10 分');
+    await expect(page.locator('[data-advisor-priorities]')).toContainText('18 个评测位置还有 3 个缺口');
+    await expect(page.locator('[data-advisor-priorities] a[href="#response-q03"]')).toBeVisible();
+    await expect(page.locator('[data-evidence-readiness="q03"]')).toHaveAttribute('data-evidence-state','partial');
+    await expect(page.locator('[data-evidence-readiness="q10"]')).toHaveAttribute('data-evidence-state','unrun');
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(2);
   });
