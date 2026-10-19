@@ -138,17 +138,15 @@ const groups=matrices[questionId] ?? [];
           <th scope="col"><span class="advisor-result-matrix__sr-only">实验方法或条件</span></th>
           {table.headers.map((head,i)=><th scope="col" data-numeric={table.numeric?.includes(i) ? '' : undefined}>{head}</th>)}
         </tr></thead>
-        <tbody>{table.rows.map((row,index)=><tr>
-          <th scope="row">{index===0 ? <strong>{row.label}</strong> : row.label}</th>
-          {row.cells.map((cell,i)=><td data-numeric={table.numeric?.includes(i) ? '' : undefined}>{index===0 ? <strong>{cell}</strong> : cell}</td>)}
+        <tbody>{table.rows.map(row=><tr>
+          <th scope="row">{row.label}</th>
+          {row.cells.map((cell,i)=><td data-numeric={table.numeric?.includes(i) ? '' : undefined}>{cell}</td>)}
         </tr>)}</tbody>
       </table>
     </div>
     <figcaption>
-      <p><strong>{table.title}</strong></p>
-      <p><strong>怎么看：</strong>{table.how}</p>
-      <p><strong>目前观察到：</strong>{table.finding}</p>
-      <p><strong>证据边界：</strong>{table.boundary}</p>
+      <p><strong>{table.title}</strong>。{table.finding}</p>
+      <p>{table.how} {table.boundary}</p>
     </figcaption>
   </figure>
 ))}
