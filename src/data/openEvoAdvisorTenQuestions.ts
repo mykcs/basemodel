@@ -194,6 +194,22 @@ export const ADVISOR_Q05_FROZEN = [
   { method: 'Bounded + 历史复杂 β/GDR', score: '20.77', exact: '10 / 128' },
 ] as const;
 
+// SEED v1 Table 1, Qwen3-1.7B-Instruct, WebShop: paper-reported only.
+// The paper reports the normalized Score / 100 and Succ. %, but does not
+// publish a verifiable count of exact successes or matching per-task IDs.
+// Never merge this source into our three historical frozen 128-task arms.
+export const ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE = {
+  method: 'SEED（论文；Qwen3-1.7B-Instruct）',
+  score: '87.1',
+  succPercent: '77.3',
+  taskCount: 128,
+  exactSuccessCount: null,
+  paperTable: 'Table 1',
+  source: 'https://arxiv.org/html/2607.14777v1',
+  pairedWithOurFrozenTasks: false,
+} as const;
+
+
 export const ADVISOR_Q09_UPDATES = [
   { method: '普通 OpenEVO', parametric: 159, textMemory: 2, skill: 1, agent: 3 },
   { method: 'Bounded', parametric: 158, textMemory: 3, skill: 0, agent: 0 },

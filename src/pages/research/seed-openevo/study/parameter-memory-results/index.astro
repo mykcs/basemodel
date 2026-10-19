@@ -11,7 +11,7 @@ import PaperIntervalPlot from '../../../../../components/research/PaperIntervalP
 import OpenEvoSeedWorld4Reproduction from '../../../../../components/research/OpenEvoSeedWorld4Reproduction.astro';
 import MathFormula from '../../../../../components/common/MathFormula.astro';
 import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
-import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from '../../../../../data/openEvoAdvisorTenQuestions';
+import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from '../../../../../data/openEvoAdvisorTenQuestions';
 import { ADVISOR_REVIEWED_COPY } from '../../../../../data/openEvoAdvisorReviewedCopy';
 import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeeting';
 
@@ -34,6 +34,16 @@ const researchProgress = {
   q10: { tone:'red', label:'独立复现尚未完成', next:'先在冻结的新 WebShop 题上完成独立随机流的复现；之后参考 SEED（arXiv:2607.14777）的 ALFWorld 实验，在这个模拟家庭任务环境中重新训练并对照三种 OpenEVO 方法。', effort:'计划上限为 3 条新训练流、122,880 次训练任务和 4,224 次评估；严格同源复用可减少净增量。人工准备约 1–2 人日；尚未启用，不应虚报训练小时。' , source:'https://github.com/mykcs/openevo-experiment/pull/637' },
 } as const;
 const responseQuestions = ADVISOR_QUESTIONS.map(q=>({...q,reviewed:ADVISOR_REVIEWED_COPY[q.id as keyof typeof ADVISOR_REVIEWED_COPY],progress:researchProgress[q.id as keyof typeof researchProgress]}));
+
+// Derived percent for paper Succ. column; the historical source stays n / 128.
+const historicalSuccPercent = (exact: string): string => {
+  const m = /^([0-9]+)\s*\/\s*128$/.exec(exact);
+  if(!m) throw new Error('Historical exact success count must be n / 128');
+  const n = Number(m[1]);
+  if(n < 0 || n > 128) throw new Error('Invalid historical success count');
+  return (100 * n / 128).toFixed(1);
+};
+
 
 
 // Immutable source snapshot only. Scientific status is owned by openevo-experiment, not this page.
@@ -147,18 +157,37 @@ const q17Effects = {
           <p class="evo-article__answer" data-experiment-finding={q.id}><strong>已测结果：</strong>{q.finding.replaceAll('普通 DirectApply','普通 OpenEVO')}</p>
           {q.id==='q05' && (
             <div class="advisor-question-evidence" id="main-results" data-response-historical-final>
-              <h4>历史三条路线的终评与训练耗时</h4>
-                    <p>三条路线均已完成 160 轮学习。训练结束后的模型在相同冻结 128 道 WebShop 任务上得到下表成绩：</p>
-                    <div class="evo-article__tablewrap" tabindex="0" aria-label="三条路线冻结最终测试">
-                      <table>
-                        <caption>表 5｜同一冻结 128 题的三个历史终点</caption>
-                        <thead><tr><th scope="col">方法</th><th data-numeric>Task Score（满分 100 分）</th><th data-numeric>完整成功题数（共 128 题）</th></tr></thead>
-                        <tbody>{ADVISOR_Q05_FROZEN.map((item) => (
-                          <tr><th scope="row">{item.method.replace(' / DirectApply','')}</th><td data-numeric>{item.score} 分</td><td data-numeric>{item.exact.replace(/\s*\/\s*\d+$/, '').trim()} 题</td></tr>
-                        ))}</tbody>
+              <h4>历史终评、SEED 论文参考与训练耗时</h4>
+                    <p>前三条是我们已经运行的历史路线，使用同一批事先冻结的 128 道 WebShop 购物题；SEED 一行来自论文报告的另外一组 128 道测试题。没有证据证明两套题单相同，也不是四组严格对照实验。</p>
+                    <p class="evo-article__note" data-seed-table-mobile-hint>在手机上向左滑动这张表，可以查看成功率和完整成功题数。</p>
+                    <div class="evo-article__tablewrap" tabindex="0" aria-label="历史三路线与SEED论文WebShop指标">
+                      <table data-webshop-seed-paper-comparison>
+                        <caption>表 5｜历史三路线与 SEED 论文 WebShop 指标（非同题对照）</caption>
+                        <thead>
+                          <tr>
+                            <th scope="col">方法</th>
+                            <th data-numeric>Task Score（满分 100 分）</th>
+                            <th data-numeric>Succ.（完整成功率）</th>
+                            <th data-numeric>完整成功题数（共 128 题）</th>
+                          </tr>
+                        </thead>
+                        <tbody data-score-origin="our-frozen-128">
+                          {ADVISOR_Q05_FROZEN.map((item) => (
+                            <tr><th scope="row">{item.method.replace(' / DirectApply','')}</th><td data-numeric>{item.score} 分</td><td data-numeric>{historicalSuccPercent(item.exact)}%</td><td data-numeric>{item.exact.replace(/\s*\/\s*\d+$/, '').trim()} 题</td></tr>
+                          ))}
+                        </tbody>
+                        <tbody data-score-origin="paper-reported-128">
+                          <tr data-seed-paper-reference>
+                            <th scope="row"><a href={ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.source} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.source} />{ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.method}</a></th>
+                            <td data-numeric>{ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.score} 分</td>
+                            <td data-numeric>{ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.succPercent}%</td>
+                            <td>—（论文仅报告成功率）</td>
+                          </tr>
+                        </tbody>
                       </table>
                     </div>
-                    <p class="evo-article__note">可直接核对两份冻结 128 题的原始收据：<a href={checkpointEvidence.directFinal} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.directFinal} />普通 OpenEVO 终评 JSON</a> · <a href={checkpointEvidence.boundedFinal} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.boundedFinal} />Bounded 与历史 β 终评 JSON</a>。三组评测题单相同，但普通路线是更早的历史前驱。</p>
+                    <p class="evo-article__note" data-seed-paper-evaluation-boundary>前三行的完整成功率都由各自的完整成功题数除以 128 得到，并保留一位小数。最后一行引用 <a href={ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.source} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.source} />SEED 论文 Table 1</a> 的 Qwen3-1.7B-Instruct WebShop Score 和 Succ.；论文没有报告可直接核验的完整成功题数，因此保留「—」。两套评测的题目身份、训练起点和协议没有严格对齐，不能把这张表直接当作方法公平排名。</p>
+                    <p class="evo-article__note">可直接核对两份冻结 128 题的原始收据：<a href={checkpointEvidence.directFinal} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.directFinal} />普通 OpenEVO 终评 JSON</a> · <a href={checkpointEvidence.boundedFinal} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.boundedFinal} />Bounded 与历史 β 终评 JSON</a>。三条历史路线的题单相同，但普通路线是更早的历史前驱。</p>
                     <div class="evo-article__tablewrap" tabindex="0" aria-label="历史参数更新与整段训练的耗时对照">
                       <table>
                         <caption>补充表 S5｜历史耗时对照：分别计时参数更新及含 rollout 的完整运行（小时）</caption>
