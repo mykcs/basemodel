@@ -549,7 +549,7 @@ html[data-theme="dark"] .evo-approved-reader {
   margin: 4px 0 0;
 }
 .evo-approved-reader .advisor-digest__answer {
-  font-weight: 650;
+  font-weight: 500;
   color: var(--paper-ink);
 }
 .evo-approved-reader .advisor-digest__done,
