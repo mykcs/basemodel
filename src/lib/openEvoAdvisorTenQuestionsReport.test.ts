@@ -132,8 +132,12 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
   });
   it('keeps evaluation scope, unique booktabs numbers and primary source proximity',()=>{
     const capacity=read('src/components/research/AdvisorTenEvidenceVisual.astro');
-    expect(responses).toContain('2 我们做了哪些实验，分别想回答什么？');
+    expect(responses).toContain('2 十问速览：我们发现了什么，下一轮还想研究什么？');
     expect(responses).toContain('evo-article__experiment-guide');
+    const tlDr=responses.split('data-ten-question-tldr')[1]?.split('</section>')[0] ?? '';
+    for(let n=1;n<=10;n++) expect(tlDr).toContain('href="#response-q'+String(n).padStart(2,'0')+'"');
+    for(const phrase of ['action-family entropy','token-level entropy','完整、未干预的模型','ALFWorld','GPU 数量']) expect(tlDr).toContain(phrase);
+    expect((tlDr.match(/<dt>/g)||[])).toHaveLength(10);
     expect(responses).not.toContain('aria-label="研究问题与具体测量对应表"');
     expect(responses).not.toContain('六类证据的评测口径');
     expect(responses).not.toContain('四种测量不能混成一次对照');
@@ -382,9 +386,9 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
   });
   it('anchors per-question red/yellow/green workload to current experiment sources, not old green receipts',()=>{
     const q02=ADVISOR_QUESTIONS.find(q=>q.id==='q02')!;
-    expect(q02.finding).toContain('三项训练未完成');
-    expect(q02.finding).toContain('两批实验不能合并算作六组正式比较已完成');
-    expect(q02.unknown).toContain('旧六项核账不能替代');
+    expect(q02.finding).toContain('六组 SFT/OPSD 训练现均有 status=PASS');
+    expect(q02.finding).toContain('完成训练并不意味着');
+    expect(q02.unknown).toContain('完整核对固定题评估覆盖');
     expect(q02.evidence[0]?.href).toBe('https://github.com/mykcs/openevo-experiment/pull/629');
     expect(ADVISOR_QUESTIONS.find(q=>q.id==='q05')?.unknown).toContain('1,280 次评估');
     const progress=responses.split('const researchProgress = {')[1]?.split('} as const;')[0] ?? '';
@@ -394,7 +398,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     }
     expect(progress).toContain("source:'https://github.com/mykcs/openevo-experiment/pull/629'");
     expect(progress).toContain("source:'https://github.com/mykcs/openevo-experiment/pull/632'");
-    expect(progress).toContain('3 个训练单元');
+    expect(progress).toContain('六组训练摘要均 PASS');
     expect(progress).toContain('40,960 次训练任务、1,664 次评估');
     expect(progress).toContain('122,880 次训练任务和 4,224 次评估');
     expect(responses).toContain('data-question-plan-source={q.id}');
