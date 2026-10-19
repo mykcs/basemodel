@@ -609,3 +609,25 @@ html[data-theme="dark"] .evo-approved-reader {
     flex-direction: column;
   }
 }
+
+/* Advisor decision-first brief: neutral visual hierarchy, no fourth status color. */
+.evo-approved-reader .advisor-overview__decisions {
+  margin: 12px 0 9px;
+  padding-top: 10px;
+  border-top: 1px solid var(--paper-line);
+}
+.evo-approved-reader .advisor-overview__decisions p,
+.evo-approved-reader .advisor-response__evidence {
+  margin: 7px 0;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--paper-ink);
+}
+.evo-approved-reader .advisor-overview__decisions strong,
+.evo-approved-reader .advisor-response__evidence strong {
+  font-weight: 650;
+}
+.evo-approved-reader .advisor-overview__decisions a {
+  text-decoration: underline;
+  text-underline-offset: .2em;
+}
