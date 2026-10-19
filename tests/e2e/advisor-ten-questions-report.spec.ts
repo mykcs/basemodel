@@ -469,8 +469,14 @@ for(const width of [320,390,1440]){
     });
     expect(geo.tableWidth).toBeLessThanOrEqual(geo.contentWidth+1);
     expect(geo.overflow).toBeLessThanOrEqual(2);
-    expect(geo.caption).toContain('怎么看');
-    expect(geo.caption).toContain('证据边界');
+    // Check scientific meaning rather than requiring repeated caption-template labels.
+    expect(geo.caption).toContain('512 次尝试');
+    expect(geo.caption).toContain('不能代替简单 β 多单元正式训练');
+    const q02Rows=article.locator('#response-q02 [data-advisor-matrix] tbody tr');
+    await expect(q02Rows).toHaveCount(2);
+    await expect(q02Rows.locator('strong')).toHaveCount(0);
+    const numberWeights=await q02Rows.locator('td').evaluateAll(nodes=>nodes.map(n=>getComputedStyle(n).fontWeight));
+    expect(new Set(numberWeights).size).toBe(1);
     const toc=article.locator('.advisor-ten-toc');
     await expect(toc).toBeVisible();
     await expect(toc).not.toHaveAttribute('open','');
