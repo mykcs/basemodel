@@ -31,7 +31,7 @@ export const ADVISOR_REVIEWED_COPY = {
     "provenance": "chatgpt-discussed-draft"
   },
   "q05": {
-    "summary": "我们在 Bounded 的基础上增加了历史 β/GDR 写入机制。两组模型在相同 128 道题上的成绩分别为 45.98 和 20.77 分。新的简单 β 方案已有部分方向测量，但完整的做题能力比较尚未完成。",
+    "summary": "我们在 Bounded 的基础上增加了历史 β/GDR 写入机制。在相同的 128 道购物题上，Bounded 平均得到 45.98 分，加入历史 β/GDR 写入机制后的模型平均得到 20.77 分。新的简单 β 方案已有部分方向测量，但完整的做题能力比较尚未完成。",
     "nextResearch": "先验证只控制更新强度的简单 β，再进一步研究更新方向、写入时机和新旧知识之间的关系。",
     "provenance": "chatgpt-discussed-draft"
   },
@@ -51,7 +51,7 @@ export const ADVISOR_REVIEWED_COPY = {
     "provenance": "chatgpt-discussed-draft"
   },
   "q09": {
-    "summary": "OpenEVO 除了参数更新，还会保存外部文字经验。我们发现，普通 OpenEVO 在 160 轮中更新参数 159 次，而 Text Memory、Skill 和 Agent System 分别只改写了 2、1、3 次。随后，我们尝试替换这些文字指导内容，但目前尚未发现统计上明确的稳定收益。文字很少改写，也不代表后续任务没有使用它。",
+    "summary": "OpenEVO 除了参数更新，还会保存外部文字经验。我们发现，普通 OpenEVO 在 160 轮中更新参数 159 次，而 Text Memory 改写了 2 次，Skill 改写了 1 次，Agent System 改写了 3 次。随后，我们尝试替换这些文字指导内容，但目前尚未发现统计上明确的稳定收益。文字很少改写，也不代表后续任务没有使用它。",
     "nextResearch": "分别真正关闭 Text Memory、Skill Bundle 和 Agent System，再与原模型进行同题比较。同时观察三种 OpenEVO 对这些文字记忆的依赖是否不同。",
     "provenance": "chatgpt-discussed-draft"
   },

@@ -187,7 +187,7 @@ test('Q17 diagnostics distinguish new measurements from dated history on mobile'
   await page.setViewportSize({width:390,height:844});
   await page.goto(prefix+'parameter-memory-results/');
   const ev=page.locator('[data-checkpoint-evidence]');
-  for (const v of ['60.1088/100','18/64','31/64','4/32、3/32、1/32','39/78','0/13'])
+  for (const v of ['60.1088 分','18 道完整成功','31 道至少成功过一次','K64 压缩状态有','39 项','13 份模型中还没有任何'])
     await expect(ev).toContainText(v);
   await expect(ev.locator('[data-q17-diagnostics]')).toContainText('78 项处置闭合不等于 78 项数值全部测得');
   await expect(ev.locator('[data-q17-diagnostics]')).toContainText('没有测得紧凑部署的加速或显存节省');
@@ -230,7 +230,7 @@ test('publication tables have unique labels and frozen comparisons link to actua
   await expect(finals.locator('a[href*="FINAL_EVAL_VERIFICATION.json"]')).toBeVisible();
   const repeated=page.locator('#checkpoint-evidence > details table tbody tr');
   await expect(repeated).toHaveCount(4);
-  await expect(repeated.last()).toContainText('31/64');
+  await expect(repeated.last()).toContainText('31 题');
 });
 
 test('Q01 shows measured Task Score curves and links each answer to the second-article question',async({page})=>{
@@ -283,14 +283,14 @@ test('Q03 shows complete paired engineering measurements without formal SEED cla
   await expect(q03).toContainText('三组工程模型实际测到了什么');
   await expect(q03).toContainText('1,536 次完整任务尝试');
   await expect(q03.locator('tbody tr')).toHaveCount(3);
-  for(const v of ['512 / 512','4.07','3.97','4.28','1 / 512','3 / 512'])
+  for(const v of ['512 次','4.07 分','3.97 分','4.28 分','1 次','3 次'])
     await expect(q03.locator('tbody')).toContainText(v);
-  await expect(q03).toContainText('95% 区间都跨过零');
+  await expect(q03).toContainText('95% 置信区间均包含零');
   await expect(q03).toContainText('不能充当正式 SEED 成绩');
   for(const stale of ['128 / 512','384 / 512','192 / 512','40.45 GB','4/7'])
     await expect(q03).not.toContainText(stale);
   const study=page.locator('#response-q03 [data-seed-world4-case]');
-  await expect(study).toContainText('正式 Stage2 为 0/160 轮');
+  await expect(study).toContainText('正式 Stage2 计划训练 160 轮，目前尚未开始');
   await expect(study).toContainText('10 月 14 日两次四卡实测');
   await expect(study).not.toContainText('十月十四日两次四卡实测');
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
@@ -319,7 +319,7 @@ for (const width of [390, 768, 1440]) {
     await expect(figure).toContainText('6.43');
     await expect(figure).toContainText('0.69');
     await expect(figure).toContainText('6.62');
-    await expect(figure).toContainText('0/64');
+    await expect(figure).toContainText('均没有完整成功的题目');
     await expect(figure.locator('figcaption')).toContainText('没有测量中间轮次');
     await expect(figure.locator('figcaption a[href*="/pull/678"]')).toBeVisible();
     const plot=figure.locator('.advisor-viz__q03-chart');
@@ -390,7 +390,7 @@ for(const width of [320,390,1440]){
     expect(label.width).toBeLessThanOrEqual(2);
     await expect(article.locator('#response-q04 [data-advisor-matrix]')).toContainText('205.6 MB');
     await expect(article.locator('#response-q04 [data-advisor-matrix]')).toContainText('51.4 MB');
-    await expect(article.locator('#response-q07 [data-advisor-matrix]')).toContainText('−10.06');
+    await expect(article.locator('#response-q07 [data-advisor-matrix]')).toContainText('下降 10.06 分');
     await expect(article).not.toContainText('↗');
     const geo=await article.evaluate(el=>{
       const row=el.querySelector('#response-q05 .advisor-result-matrix');
@@ -418,3 +418,39 @@ for(const width of [320,390,1440]){
     await expect(toc).not.toHaveAttribute('open','');
   });
 }
+
+
+test('all advisor-response numeric claims are readable in the actual rendered page',async({page})=>{
+  await page.setViewportSize({width:390,height:900});
+  await page.goto(prefix+'parameter-memory-results/',{waitUntil:'domcontentloaded'});
+  const article=page.locator('[data-evo-blog="results"]');
+  const abstract=article.locator('.evo-article__abstract p').first();
+  await expect(abstract).toContainText('普通 OpenEVO 的 Task Score 为 60.72 分');
+  await expect(abstract).toContainText('Bounded 为 45.98 分');
+  await expect(abstract).toContainText('历史 β/GDR 为 20.77 分');
+  await expect(abstract).toContainText('完整做对 50 题');
+  const headings=article.locator('#main-results .evo-article__tablewrap table').first().locator('thead th');
+  await expect(headings.nth(1)).toContainText('满分 100 分');
+  await expect(headings.nth(2)).toContainText('共 128 题');
+  await expect(article.locator('#response-q02 [data-advisor-matrix]')).toContainText('3 题');
+  await expect(article.locator('#response-q04 [data-advisor-matrix]')).toContainText('62.98 分');
+  await expect(article.locator('#checkpoint-evidence')).toContainText('下降 3.91 分至提高 1.65 分');
+
+  // A known-bad user example must be flagged, while a valid per-method
+  // sentence and ordinary model names/intervals must be accepted.
+  const patterns=[
+    /(?<![A-Za-z0-9])\d+(?:\.\d+)?\s*\/\s*(?:100|128|64|32|512|160|78|117|13)\b/,
+    /(?:\d+(?:\.\d+)?[、，]){2,}\d+(?:\.\d+)?/,
+    /\[\s*[−+-]?\d+(?:\.\d+)?\s*[,，]\s*[−+-]?\d+(?:\.\d+)?\s*\]/
+  ];
+  const bad='Task Score 依次为 60.72、45.98、20.77/100，完整成功分别为 50、32、10 题';
+  const good='普通 OpenEVO 的 Task Score 为 60.72 分，完整成功 50 题；Bounded 得 45.98 分，完整成功 32 题。';
+  expect(patterns.some(r=>r.test(bad))).toBe(true);
+  expect(patterns.some(r=>r.test(good))).toBe(false);
+  expect(patterns.some(r=>r.test('R159 与 rank128，95% 区间从下降 3.68 分到提高 0.12 分'))).toBe(false);
+  const texts=await article.locator('p,th,td,caption,figcaption,svg desc').allTextContents();
+  const badRendered=texts
+    .filter(s=>patterns.some(pattern=>pattern.test(s)))
+    .map(s=>s.trim().slice(0,180));
+  expect(badRendered).toEqual([]);
+});

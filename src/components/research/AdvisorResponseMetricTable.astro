@@ -43,13 +43,13 @@ const q01Records = q01Csv.trim().split('\n').slice(1).map(line=>{
 const point = (method:string, round:number) => {
   const found=q01Records.find(p=>p.method===method && p.checkpoint===round);
   if(!found || !Number.isFinite(found.score)) throw new Error('Missing sealed Q01 CSV measurement');
-  return `第${round}${method==='ordinary_openevo'?'次更新':'轮'} · ${found.score.toFixed(2)}`;
+  return `第${round}${method==='ordinary_openevo'?'次更新':'轮'}：${found.score.toFixed(2)} 分`;
 };
 const matrices: Record<string, Matrix[]> = {
   q01: [{
     id:'time',
     title:'三条历史路线的训练停止时点比较',
-    headers:['较早保存点（分）','较晚保存点（分）'],
+    headers:['较早保存点的成绩','较晚保存点的成绩'],
     rows:[
       {label:'普通 OpenEVO', cells:[point('ordinary_openevo',120),point('ordinary_openevo',160)]},
       {label:'Bounded（固定容量）', cells:[point('bounded_state',120),point('bounded_state',150)]},
@@ -62,11 +62,11 @@ const matrices: Record<string, Matrix[]> = {
   q02: [{
     id:'initial-training',
     title:'早期 SFT 与 OPSD 的初始能力',
-    headers:['Task Score / 100','完整成功 / 32'],
+    headers:['Task Score（满分 100 分）','完整成功题数（共 32 题）'],
     numeric:[0,1],
     rows:[
-      {label:'SFT',cells:['34.96','3 / 32']},
-      {label:'OPSD',cells:['36.01','0 / 32']},
+      {label:'SFT',cells:['34.96 分','3 题']},
+      {label:'OPSD',cells:['36.01 分','0 题']},
     ],
     how:'相同早期 32 道购物题上比较两种初始训练方式；平均分和完整成功题数分别衡量完成程度与完全做对。',
     finding:'OPSD 的平均得分略高，SFT 的完整成功更多；两种指标没有给出统一赢家。',
@@ -76,22 +76,22 @@ const matrices: Record<string, Matrix[]> = {
     {
       id:'historic-checkpoints',
       title:'历史 Q03：四个自定义 64 题保存点',
-      headers:['Task Score / 100','完整成功 / 64'],
+      headers:['Task Score（满分 100 分）','完整成功题数（共 64 题）'],
       numeric:[0,1],
-      rows: ADVISOR_Q03_CUSTOM_PANEL.map(item=>({label:item.update,cells:[item.score,item.exact]})),
+      rows: ADVISOR_Q03_CUSTOM_PANEL.map(item=>({label:item.update,cells:[item.score+' 分',item.exact.replace(/\s*\/\s*\d+$/, '').trim()+' 题']})),
       how:'行表示训练时保存的不同模型版本；均测试同一套自定义 64 题。',
-      finding:'A120 为 6.62/100，四个保存点完整成功均为零，中途的均分有回落。',
+      finding:'A120 的 Task Score 为 6.62 分（满分 100 分），四个保存点在各自的 64 道题中都没有完整成功的任务；中途的均分有回落。',
       boundary:'属于历史自定义协议，不能直接与论文报告的 SEED 分数比较。',
     },
     {
       id:'seed-engineering',
       title:'独立 SEED：工程开发题诊断',
-      headers:['Task Score / 100','完整成功 / 512'],
+      headers:['Task Score（满分 100 分）','完整成功次数（共 512 次尝试）'],
       numeric:[0,1],
       rows:[
-        {label:'SFT initializer',cells:['4.07','1 / 512']},
-        {label:'Step30',cells:['3.97','1 / 512']},
-        {label:'Step60',cells:['4.28','3 / 512']},
+        {label:'SFT 初始模型',cells:['4.07 分','1 次']},
+        {label:'Step30 模型',cells:['3.97 分','1 次']},
+        {label:'Step60 模型',cells:['4.28 分','3 次']},
       ],
       how:'每组 64 道固定工程开发题各重复 8 次，共 512 次尝试。',
       finding:'这些工程模型的平均得分接近，邻近模型配对区间跨 0。',
@@ -101,20 +101,20 @@ const matrices: Record<string, Matrix[]> = {
   q04: [{
     id:'capacity',
     title:'rank128 与 rank32：训练末尾八轮的容量筛选',
-    headers:['文件大小','Task Score / 100','完整成功率'],
+    headers:['参数文件大小','Task Score（满分 100 分）','完整成功率'],
     numeric:[1,2],
-    rows:ADVISOR_Q04_CAPACITY.map(item=>({label:item.method,cells:[item.bytes,item.score,item.exact]})),
+    rows:ADVISOR_Q04_CAPACITY.map(item=>({label:item.method,cells:[item.bytes,item.score+' 分',item.exact]})),
     how:'不同 rank 是长期参数状态容量，文件大小只计这一部分参数文件。',
     finding:'rank32 的参数文件约缩小 75%，平均得分从 62.98 降到 61.19。',
-    boundary:'只比较第 152–159 轮后段 1,024 组任务，95% 得分差区间为 −3.68 至 +0.12；不能据此证明两个容量等价。',
+    boundary:'只比较第 152–159 轮后段 1,024 组任务，95% 得分差区间从下降 3.68 分到提高 0.12 分；不能据此证明两个容量等价。',
   }],
   q05: [
     {
       id:'historical-final',
       title:'三条历史路线的冻结 128 题终评',
-      headers:['Task Score / 100','完整成功 / 128'],
+      headers:['Task Score（满分 100 分）','完整成功题数（共 128 题）'],
       numeric:[0,1],
-      rows:ADVISOR_Q05_FROZEN.map(item=>({label:item.method.replace(' / DirectApply',''),cells:[item.score,item.exact]})),
+      rows:ADVISOR_Q05_FROZEN.map(item=>({label:item.method.replace(' / DirectApply',''),cells:[item.score+' 分',item.exact.replace(/\s*\/\s*\d+$/, '').trim()+' 题']})),
       how:'每一行是一种长期参数更新方法，两个指标来自同一批冻结的 128 道题。',
       finding:'这批历史终评中，普通 OpenEVO 的平均分与完整成功数都最高。',
       boundary:'普通路线是更早的历史前驱，不是完全严格的三组随机训练对照；不能仅凭此表归因 β 机制。',
@@ -125,8 +125,8 @@ const matrices: Record<string, Matrix[]> = {
       headers:['起点开发题得分','R127 后旧题得分'],
       numeric:[0,1],
       rows:[
-        {label:'R126 候选',cells:['55.53','67.78']},
-        {label:'R125 对照',cells:['62.29','64.75']},
+        {label:'R126 候选',cells:['55.53 分','67.78 分']},
+        {label:'R125 对照',cells:['62.29 分','64.75 分']},
       ],
       how:'同一敏感性计划包含 8 组各 64 题、共 512 次尝试。列的评测题集合与时点不同，比较应分别在各列内进行。',
       finding:'两个时点的描述性排序发生变化。',
@@ -146,9 +146,9 @@ const matrices: Record<string, Matrix[]> = {
   q07: [{
     id:'direction-reversal',
     title:'第 156 轮 Task Vector 方向反转',
-    headers:['Task Score 差','95% 置信区间','同题数'],
+    headers:['平均成绩变化','95% 置信区间','配对题数'],
     numeric:[0,1,2],
-    rows:[{label:'Bounded OFF · 反向更新',cells:['−10.06','[−15.02, −5.60]','64']}],
+    rows:[{label:'Bounded OFF · 反向更新',cells:['下降 10.06 分','下降 5.60 至 15.02 分','64 题']}],
     how:'计算反转方向后的得分减去未干预 Bounded OFF 模型的得分；负值表示变差。',
     finding:'这一轮反转在配对 64 题中平均下降 10.06 分，并通过八项比较的多重校正。',
     boundary:'这属于 Bounded OFF 的单轮局部因果证据，不能套用到 DirectApply R159 或所有 OpenEVO 路线。',
@@ -165,7 +165,7 @@ const matrices: Record<string, Matrix[]> = {
   q09: [{
     id:'carrier-updates',
     title:'三条历史路线的参数与文字状态改写次数',
-    headers:['参数','Text Memory','Skill','Agent System'],
+    headers:['参数更新（次）','Text Memory 改写（次）','Skill 改写（次）','Agent System 改写（次）'],
     numeric:[0,1,2,3],
     rows:ADVISOR_Q09_UPDATES.map(item=>({
       label:item.method,

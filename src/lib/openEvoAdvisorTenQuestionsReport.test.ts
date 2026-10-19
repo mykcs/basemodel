@@ -121,7 +121,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('q.evidence.map');
     expect(responses).toContain("id={'source-'+q.id}");
     expect(responses).toContain('查看第二篇的');
-    for(const v of ['31.09','2.02','74.78','56.25','1,024','−3.68','+0.12','10.06'])
+    for(const v of ['31.09 小时','2.02 小时','74.78 小时','56.25 小时','1,024','下降 3.68 分到提高 0.12 分','10.06'])
       expect(responses).toContain(v);
     expect(ADVISOR_Q03_CUSTOM_PANEL.map(x=>x.score)).toEqual(['3.71','6.43','0.69','6.62']);
     expect(ADVISOR_Q04_CAPACITY.map(x=>x.score)).toEqual(['62.98','61.19']);
@@ -145,11 +145,11 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
       "q02": "285e1a5b4e8ec565bda7e70c62d235b7aadfcf9bd6ea861a5ecdafad729fa65b",
       "q03": "59d081e75d8ce2dcab40a319891e69243b6a5bf5e27e0a389bc59d3a4b7dd03f",
       "q04": "193911af621d09cfe25c328f58adf35856035774425a480e006bb2a173b1a180",
-      "q05": "e25182c5ac6e2d764df63fc3960ec1b35fe3a1cae22fa1c7c72d82f813feb2fc",
+      "q05": "f7160cacf83f72882404c1b38210b2f8dbafc6da6c4e0c8989964984d8bfc569",
       "q06": "362ad9cd6447440270c26dec555d6297cb2f6c976ffe182883e4c0c70ead211b",
       "q07": "78d47d8ee66af198ace9f9d35b71a0898449e4ec3d532dc4163e660f10b4359b",
       "q08": "8ae27f42eee8a2ece6cc169de6e9e1c497f7d582f11beb5a7d9a08a10ce23eb7",
-      "q09": "6a73bc18570711ce0682cf32a29aea0897294c4172aafcface09ad77d4580863",
+      "q09": "5e93b81c874d0d687e9f08bdf3fbecd327ab033eae3c7a532370de94850941a9",
       "q10": "109a67a40028a82378bd9c75b18780bf7bfee9c880f7dfadffc37daeebea7925"
     } as const;
     for(const [id,hash] of Object.entries(expected)){
@@ -220,7 +220,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(visual).toContain('不应据此进行等成本排名');
     expect(responses).toContain('5 训练最后 8 轮：长期参数从 rank128 缩到 rank32 会怎样？');
     expect(responses).toContain('这个比例不包括基础模型权重');
-    expect(responses).toContain('rank32 为 51.4 MB，rank128 为 205.6 MB');
+    expect(responses).toContain('rank128 的文件约为 205.6 MB，rank32 的文件约为 51.4 MB');
     expect(responses).toContain('同题换随机设置复测');
     expect(responses).toContain('仍然测试同一批 64 道题');
     expect(responses).not.toContain('独立种子确认');
@@ -298,20 +298,20 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(ADVISOR_QUESTIONS[9]?.interpretation).toContain('ALFWorld');
 
     expect(q02.experiment).toContain('两种方法、三组随机设置');
-    expect(q02.finding).toContain('36.01/100');
-    expect(q02.finding).toContain('34.96/100');
+    expect(q02.finding).toContain('36.01 分');
+    expect(q02.finding).toContain('34.96 分');
     expect(q02.unknown).toContain('长期逐轮学习');
     expect(q03.opening).toContain('64 道购物题');
     expect(q03.opening).toContain('87 分');
     expect(q03.interpretation).toContain('不能直接判断方法优劣');
-    expect(q03.unknown).toContain('正式 Stage2 为 0/160');
+    expect(q03.unknown).toContain('计划进行 160 轮的正式 Stage2 尚未启动');
     expect(q05.finding).toContain('20.77');
     expect(q05.unknown).toContain('新的简单 β');
     expect(q09.evidenceState).toBe('partial');
     const q04=ADVISOR_QUESTIONS.find(q=>q.id==='q04')!;
     const q06=ADVISOR_QUESTIONS.find(q=>q.id==='q06')!;
     expect(q02.finding).toContain('15 个模型版本');
-    expect(q04.finding).toContain('640/640');
+    expect(q04.finding).toContain('全部 640 次');
     expect(q05.finding).toContain('512 次评测');
     expect(q06.finding).toContain('NOT_CONFIRMED');
     expect(q09.finding).toContain('40 轮对照的完整科学验收');
@@ -342,7 +342,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
   });
   it('keeps the checkpoint addendum separate from historical conclusions',()=>{
     expect(responses).toContain('data-checkpoint-evidence');
-    for(const v of ['60.1088/100','18/64','53/64','31/64','6/64','33/64','4/32、3/32、1/32','186','1,014','0/13','39/78','38/78','PARTIAL','2026-10-14'])
+    for(const v of ['60.1088 分','18 道完整成功','53 道获得正奖励','31 道至少成功过一次','6 道题','33 道题','K64 压缩状态有','K80 有','K96 有','186','1,014','13 份模型中还没有任何','39 项','38 项','PARTIAL','2026-10-14'])
       expect(responses).toContain(v);
     expect(responses).toContain('不是留出的新任务');
     expect(responses).toContain('没有运行压缩版的 WebShop Task Score');
@@ -359,7 +359,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
   it('publishes complete Oct 16 Q03 engineering diagnostics without claiming formal results',()=>{
     const q03=read('src/components/research/OpenEvoSeedWorld4Reproduction.astro');
     const item=ADVISOR_QUESTIONS.find(q=>q.id==='q03');
-    expect(item?.unknown).toContain('正式 Stage2 为 0/160');
+    expect(item?.unknown).toContain('计划进行 160 轮的正式 Stage2 尚未启动');
     expect(item?.evidence.some(e=>e.href.includes('c930744044c4e648f5daf54514a23f2d188c268e'))).toBe(true);
     expect(questions).toContain('查看 {q.id.toUpperCase()} 已完成的实验、结果与未解问题');
     expect(questions).not.toContain('384 / 512');
@@ -371,7 +371,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).not.toContain('17:43（新加坡时间）');
     expect(q03).toContain('data-evidence-as-of="2026-10-16"');
     expect(q03).toContain('data-seed-eight-progress');
-    for(const v of ['1,440 条','1,200 条','296 秒和 309 秒','20.4 GiB','1,536 次','512 / 512','4.07','3.97','4.28','1 / 512','3 / 512','28.66 GB','5/7','正式 Stage2 为 0/160 轮','95% 区间都跨过零'])
+    for(const v of ['1,440 条','1,200 条','296 秒和 309 秒','20.4 GiB','1,536 次','512 次','4.07 分','3.97 分','4.28 分','1 次','3 次','28.66 GB','5 项','正式 Stage2 计划训练 160 轮，目前尚未开始','95% 置信区间均包含零'])
       expect(q03).toContain(v);
     expect(item?.evidence.some(e=>e.href.includes('31693e914487c9f210f93e3b4019037f9d5f0e06'))).toBe(true);
     for(const outdated of ['128 / 512','384 / 512','192 / 512','40.45 GB','4/7'])
@@ -456,15 +456,15 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(progressSource).toContain('GPU 小时');
     const q04=ADVISOR_QUESTIONS.find(q=>q.id==='q04')!;
     expect(q04.experiment).toContain('末尾八轮（第 152–159 轮）');
-    expect(q04.unknown).toContain('rank128、64、32');
+    expect(q04.unknown).toContain('rank128、rank64、rank32');
     // Legitimate limits remain visible: 'red' means core verification missing,
     // not that completed engineering evidence has disappeared.
     expect(responses).toContain('1,536 次冻结开发题评测');
-    expect(responses).toContain('正式 SFT 尚未启动，Stage2 仍为 0/160');
+    expect(responses).toContain('160 轮正式 Stage2 训练也尚未开始');
   });
   it('anchors per-question red/yellow/green workload to current experiment sources, not old green receipts',()=>{
     const q02=ADVISOR_QUESTIONS.find(q=>q.id==='q02')!;
-    expect(q02.finding).toContain('六组 SFT/OPSD 训练摘要均 PASS');
+    expect(q02.finding).toContain('SFT 和 OPSD 各有 3 组完成并通过检查');
     expect(q02.finding).toContain('不能代替最终的逐题配对统计');
     expect(q02.unknown).toContain('3 格缺少可验收');
     expect(q02.evidence[0]?.href).toBe('https://github.com/mykcs/openevo-experiment/pull/629');
@@ -476,7 +476,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     }
     expect(progress).toContain("source:'https://github.com/mykcs/openevo-experiment/pull/629'");
     expect(progress).toContain("source:'https://github.com/mykcs/openevo-experiment/pull/632'");
-    expect(progress).toContain('6/6 组训练已 PASS');
+    expect(progress).toContain('计划的 6 组训练均已通过检查');
     expect(progress).toContain('40,960 次训练任务和 1,664 次评估');
     expect(progress).toContain('122,880 次训练任务和 4,224 次评估');
     expect(responses).toContain('data-question-plan-source={q.id}');
@@ -505,16 +505,19 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     const intro=responses.split('<section id="context"')[1]?.split('</section>')[0] ?? '';
     const plain=(source:string)=>source.replaceAll('<strong>','').replaceAll('</strong>','');
     // Real known-bad example: bare score first, method identity is missing.
-    const historicBad='三条长期路线在同一冻结 128 题上的 Task Score 分别为 60.72、45.98 和 20.77/100';
-    const explainsArms=(source:string)=>{
-      const text=plain(source);
-      const begin=text.indexOf('我们做了三组长期学习实验');
-      const arms=['普通 OpenEVO','固定 state 的 Bounded','Bounded + 历史 β/GDR'].every(name=>text.indexOf(name)>begin);
-      const scores=text.indexOf('60.72、45.98、20.77/100');
-      return begin>=0 && arms && scores>begin && text.indexOf('Bounded + 历史 β/GDR')<scores;
-    };
-    expect(explainsArms(historicBad)).toBe(false);
-    expect(explainsArms(summary)).toBe(true);
+    // Same owner-reported known-bad witness, now correctly rejected.
+    const badNumeric='Task Score 依次为 60.72、45.98、20.77/100，完整成功分别为 50、32、10 题';
+    const clearNumeric='普通 OpenEVO 的 Task Score 为 60.72 分，完整做对 50 题；固定容量的 Bounded 为 45.98 分，完整做对 32 题；历史 β/GDR 为 20.77 分，完整做对 10 题。';
+    const packed=(source:string)=>/(?:\d+(?:\.\d+)?[、，]){2,}\d|(?:\d+(?:\.\d+)?\s*\/\s*(?:100|128|64|32|512|78|117|160))/.test(source);
+    expect(packed(badNumeric)).toBe(true);
+    expect(packed(clearNumeric)).toBe(false);
+    expect(packed(plain(summary))).toBe(false);
+    for(const method of ['普通 OpenEVO','Bounded','历史 β/GDR']){
+      expect(summary).toContain(method);
+    }
+    expect(summary).toContain('60.72 分');
+    expect(summary).toContain('45.98 分');
+    expect(summary).toContain('20.77 分');
     expect(summary).toContain('128 道购物题');
     expect(summary).toContain('不是完全严格的对照');
     expect(summary).toContain('第 152–159 轮');
@@ -526,7 +529,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(summary).not.toContain('<strong>普通 OpenEVO</strong>');
     expect(summary).not.toContain('<strong>固定 state 的 Bounded</strong>');
     expect(intro).not.toContain('<strong>第一，');
-    expect(summary).toContain('<strong>60.72、45.98、20.77/100</strong>');
+    expect(summary).not.toContain('60.72、45.98、20.77/100');
     expect(responses).toContain('data-research-status={q.progress.tone}');
 
     // Same-family sibling scan: article two should tell the reader where to find
@@ -546,10 +549,10 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     const oldHeader='<h2>8 BUNDLE 的文字载体更新次数较少</h2>';
     expect(responses).not.toContain(oldTable);
     expect(responses).not.toContain(oldHeader);
-    expect(responses).toContain('普通 OpenEVO / h</th>');
-    expect(responses).toContain('Bounded（无历史 β）/ h</th>');
-    expect(responses).toContain('31.09</td><td data-numeric>2.02');
-    expect(responses).toContain('74.78</td><td data-numeric>56.25');
+    expect(responses).toContain('普通 OpenEVO（小时）</th>');
+    expect(responses).toContain('Bounded（无历史 β，小时）</th>');
+    expect(responses).toContain('31.09 小时</td><td data-numeric>2.02 小时');
+    expect(responses).toContain('74.78 小时</td><td data-numeric>56.25 小时');
     expect(responses).toContain('8 三条长期路线中，文字经验改写了多少次？');
     expect(responses).toContain('OpenEVO 把每轮学习后留下的经验状态合称为 BUNDLE');
     expect(responses).toContain('这些次数不等于读取次数');

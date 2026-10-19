@@ -74,6 +74,27 @@ for (const file of htmlFiles) {
     findings.push({ file: relative, rule: 'HUMAN-EXPRESSION-CENTRALIZED-GLOSSARY', detail: 'centralized glossary rendered on the public reading path' });
   }
 
+  // User-visible numeric expression regression, 2026-10-19:
+  // "Task Score 依次为 60.72、45.98、20.77/100 ..."
+  // Reject reader-facing numerator/denominator shorthand, bare parallel
+  // numeric lists and unexplained bracket-style CI pairs across the ENTIRE
+  // advisor response article. Raw experimental values and LaTeX remain intact.
+  if (relative === 'research/seed-openevo/study/parameter-memory-results/index.html') {
+    const packedRatio = /(?<![A-Za-z0-9])\d+(?:\.\d+)?\s*\/\s*(?:100|128|64|32|512|160|78|117|13)\b/;
+    const packedParallel = /(?:\d+(?:\.\d+)?[、，]){2,}\d+(?:\.\d+)?/;
+    const rawConfidenceInterval = /\[\s*[−+-]?\d+(?:\.\d+)?\s*[,，]\s*[−+-]?\d+(?:\.\d+)?\s*\]/;
+    for (const match of source.matchAll(/<(p|th|td|caption|figcaption|desc|li)\b[^>]*>([\s\S]*?)<\/\1>/gi)) {
+      const value = textOnly(match[2]);
+      if ([packedRatio,packedParallel,rawConfidenceInterval].some(pattern => pattern.test(value))) {
+        findings.push({
+          file:relative,
+          rule:'HUMAN-EXPRESSION-ADVISOR-PACKED-NUMBERS',
+          detail:value.slice(0,220)
+        });
+      }
+    }
+  }
+
   const defaultReadingLayer = source
     .replace(/<details\b[\s\S]*?<\/details>/gi, ' ')
     .replace(/<code\b[\s\S]*?<\/code>/gi, ' ')
