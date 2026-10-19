@@ -1,8 +1,9 @@
 /**
  * Advisor research-question report, evidence snapshot verified 2026-10-09.
  *
- * Q09 additionally summarizes the frozen 2026-10-15 R159 text-guidance
- * neutralization receipt; full carrier-off ablation remains unrun.
+ * Q02/Q04/Q05/Q06/Q09 additionally include a 2026-10-19 read-only
+ * host-receipt reconciliation. This projection is not the experiment authority;
+ * the original receipt/PR remains the source. Full carrier-off ablation remains unrun.
  * Reader-facing synthesis, NOT a scientific metric authority or live run ledger.
  * Every claim links to the corresponding OpenEVO experimental evidence/PR.
  * Historical six meeting themes were later decomposed into ten research questions:
@@ -44,9 +45,9 @@ export const ADVISOR_QUESTIONS = [
     title: '开始逐轮学习之前，怎样训练出一个更好的初始模型？',
     opening: 'OpenEVO 开始长期逐轮学习之前，先要用已有经验训练出一套起始参数。这里比较 SFT 与 OPSD 两种训练起点的方式。哪种初始训练方式更好，和后续多轮学习能否继续提高能力，是两个需要分别检验的问题。',
     experiment: '先让相同的 Qwen 模型学习同一批 WebShop 任务经验，并保持训练步数、参数容量等条件一致。SFT 直接学习示范回复；OPSD 在训练时让教师视角看到额外的经验总结，再指导学生学习。这里测试的是第一阶段怎样训练初始模型，还没有替代后续的逐轮学习实验。',
-    finding: '早期同一批 32 道题上，OPSD 的平均 Task Score 是 36.01/100，SFT 是 34.96/100；完整做对的题目分别是 0/32、3/32。平均分差的 95% 置信区间跨过零，现阶段没有明确赢家。新 Q02 匹配方案的六组 SFT/OPSD 训练现均有 status=PASS 的训练摘要；完成训练并不意味着对应固定题评估、逐题配对和统计结论已经全部验收。',
+    finding: '早期同一批 32 道题上，OPSD 的平均 Task Score 是 36.01/100，SFT 是 34.96/100；完整成功分别是 0/32、3/32，平均分差的置信区间跨零。之后的匹配方案六组 SFT/OPSD 训练摘要均 PASS。匹配方案按训练方法、随机种子和 epoch 组成 18 个评测位置，目前已有 15 个模型版本完成固定 64 题评测，状态均为 PASS；训练完成和评测通过还不能代替最终的逐题配对统计。',
     interpretation: '这组实验先比较两种训练方式能否给后续学习提供更好的起点。平均分、完整成功数和训练损失回答不同的问题；SFT 或 OPSD 在第一阶段的局部表现，不能直接回答“后续持续学习是否值得”。',
-    unknown: '六组匹配训练摘要已核实为 PASS，但仍需完整核对固定题评估覆盖、配对统计和最终研究结论。早期 32 题的结果无法确定哪种初始训练方式在新任务上更好，也尚未比较两种方式经过长期逐轮学习后的差异。',
+    unknown: '原方案按两种方法、三组随机种子、三个 epoch 构成 18 个评测位置；这次只读核验到 15 个，剩余 3 格与最终配对统计仍待确认。早期 32 题不能决定哪种初始方法更好，长期逐轮学习后的差异也尚未独立比较。',
     evidence: [
       { label: 'Q02 · 当前匹配训练工作包与剩余单元', href: 'https://github.com/mykcs/openevo-experiment/pull/629' },
       { label: 'Q02 · 六次训练全部 PASS 的 10 月 4 日核账', href: 'https://github.com/mykcs/openevo-experiment/pull/629#issuecomment-5976961612' },
@@ -78,10 +79,10 @@ export const ADVISOR_QUESTIONS = [
     family: 'updating',
     title: '长期参数容量需要 rank128 这么大吗，缩小一点怎么样？',
     opening: 'rank 是长期参数状态的容量档位。此前我们用 rank128 保存历史更新，但还没有证明一定需要这么大；因此试着减到 rank32，比较文件大小和同题成绩。',
-    experiment: '整段训练共 160 轮。此前 rank128 已经完成并封存末尾八轮（第 152–159 轮）的续训结果。本次只让 rank32 在相同阶段新增训练与做题记录，再与原 rank128 历史结果逐题配对比较，共 1,024 组；没有重新训练 rank128。这里只检验末尾阶段，不代表两种容量从起点训练 160 轮的结果。',
-    finding: 'rank128 与 rank32 的参数文件分别约 205.6 MB、51.4 MB，做题均分分别是 62.98、61.19/100。rank32 文件小了约 75%，均分低 1.79 分；95% 置信区间为 −3.68 至 +0.12 分，当前尚不能确定它一定造成稳定的成绩损失，也未证明完全无损。',
+    experiment: '整段训练共 160 轮。此前 rank128 已经封存末尾八轮（第 152–159 轮）的续训结果，我们新增 rank32 的同阶段结果并与它做 1,024 组逐题配对。后续 Q04 Phase-A 又筛选 rank8、16、32、64、128 五种容量，累计完成 640 次开发题评测；这与前面的八轮配对不是同一个实验。',
+    finding: '原来的 rank128、rank32 参数文件分别约 205.6 MB、51.4 MB，在后段匹配题上的 Task Score 分别为 62.98、61.19/100，rank32 平均低 1.79 分，95% 区间为 −3.68 至 +0.12 分。新的五档第一阶段（Phase A）评测已 640/640 完成，但分析没有找到稳定的最佳容量拐点。',
     interpretation: 'rank128 的全部容量还未被证明必要。但“差距不大”不等于统计上已经证明两个容量等价或严格非劣。',
-    unknown: 'rank8、16、64 的完整能力/续学结果仍需看各自封存数据；当前不能从几何上的低有效秩直接推断所需的最小可学习容量。',
+    unknown: 'rank8、16、64 的第一阶段筛选已经有结果。还缺的是选定 rank128、64、32 在后续新任务流上的完整续学对照：第二阶段（Phase B）已有部分训练记录，但没有整套正式封存；所需最小长期容量尚未确定。',
     evidence: [
       { label: 'rank32 已完成的配对证据', href: 'https://github.com/mykcs/openevo-experiment/pull/597' },
       { label: 'Q04 · 更小容量正式实验', href: 'https://github.com/mykcs/openevo-experiment/pull/631' },
@@ -93,10 +94,10 @@ export const ADVISOR_QUESTIONS = [
     family: 'updating',
     title: '增加参数写入控制后，模型做题成绩有什么变化？',
     opening: '历史实验在 Bounded 固定容量方法上增加了复杂的 β/GDR 写入规则。后来又设计了只调节写入大小的简单 β。它们是两种不同的实验，需要分别看实际成绩与更新方向。',
-    experiment: '先让普通 OpenEVO、Bounded 和带历史 β/GDR 的模型各自完成固定的 128 道购物题，核对训练结束的得分。再对较新的简单 β 检查参数更新方向是否保持一致；它的正式做题成绩还没有完成同题比较。',
-    finding: '同一套 128 题的历史成绩是：普通 OpenEVO 60.72 分、Bounded 45.98 分、Bounded 加历史 β/GDR 20.77 分。较新的简单 β 在第 120 轮测得缩放前后方向余弦约 0.9992，只说明这一处更新方向基本保持一致。',
-    interpretation: '历史 β/GDR 路线的成绩比 Bounded 更低，需要继续分清写入规则与训练历史的作用。简单 β 的方向检查结果不等于它已经提高了做题成绩。',
-    unknown: '新的简单 β 工作包仍在训练，记录已完成 R120 更新但后续训练、1,280 次评估和最终配对区间尚未封存。普通 OpenEVO 是更早的历史路线，不能将三组终评误当成从完全相同起点训练的随机三组试验。',
+    experiment: '先比较历史三条 160 轮路线的固定 128 题终评，并对新简单 β 检查更新方向。另有一项独立的短程敏感性实验：比较 R125 未写入对照和 R126 触发方向门槛的候选，在开始与 R127 后两个时点、开发题与旧题保持题上分别测量；共有 8 个评测单元，每个 64 道题。这不等于继续原来已正式终止的 R126 训练线。',
+    finding: '历史三路线的固定 128 题分数为普通 OpenEVO 60.72、Bounded 45.98、历史 β/GDR 20.77；较简单 β 的 R120 更新方向余弦约 0.9992。新敏感性测试另完成了 8 × 64 = 512 次评测：R126 候选和 R125 对照在起点开发题上分别为 55.53、62.29 分，在 R127 后旧题保持题上则为 67.78、64.75 分。不同条件下描述性排序发生变化，尚不能宣布简单 β 的普遍收益。',
+    interpretation: '历史 β/GDR 的长期掉分不能直接归因于新简单 β。R126 曾触发预先冻结的方向门槛，这是该实验合同下的终止结果；门槛源自历史八轮范围，并非已验证的能力损失阈值。后续 512 次行为评测使我们能观察不同条件下的成绩，但没有证明统一的 β 机制效益。',
+    unknown: '新的简单 β 正式多单元工作包尚未完成全部训练与计划的 1,280 次评估及配对统计；10 月 18 日的 512 次独立敏感性评测不能替代这套正式比较。仍需确认写入强度、方向变化与旧能力保持之间的关系。',
     evidence: [
       { label: 'Q05 · 简单 β 训练进度与方向收据', href: 'https://github.com/mykcs/openevo-experiment/pull/632' },
       { label: '已有三路线冻结终评', href: 'https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro' },
@@ -108,10 +109,10 @@ export const ADVISOR_QUESTIONS = [
     family: 'updating',
     title: '模型选择商品时有多拿不准？',
     opening: 'WebShop 需要在多个商品、规格和点击选项里做决定。模型选中某个按钮时有多确定，可以从它给各个合法选项分配的概率来观察；这能否预测以后出错，还需要单独检验。',
-    experiment: '在 Bounded 的一个第 120 轮模型版本上，测量模型面对合法点击选项时分配的概率；另外检查七个已保存的模型版本，每个版本使用固定的 64 道题。',
-    finding: '一个模型版本的合法点击候选平均熵（表示选择有多分散）为 0.763；最终选中的候选平均概率约 63%，排在前三的候选合计约 93%。这些是当前做选择时的观察结果。',
-    interpretation: '概率分布可以帮助描述模型当前有多确定，但要用来提前预测后面哪些题会失败，还需要专门的预测实验。',
-    unknown: '七组共 448 道任务的预测研究尚未形成无泄漏的独立训练/验证划分，因此没有可信的“entropy 可以提前预测掉分”结论。',
+    experiment: '最早只从历史轨迹计算 search/click 两类动作的 action-family entropy（动作类型熵），它区分不了具体商品选择。随后在 Bounded 保存点测量合法 click 候选的概率分布，并对多个保存点进行同题测量。10 月 18 日又用两条共享 R119 训练祖先的新数据流，做了条件性的未来表现预测检验。',
+    finding: '动作类型熵过于粗糙，无法判断究竟点击了哪个候选。较细的点击候选测量中，一个保存点的平均熵为 0.763，模型最终选中候选的平均概率约为 63%。后续两条数据流的预设整组预测检验已经计算完成，但综合结论为 NOT_CONFIRMED（未达到确认标准），不能说熵已经能够提前预测任务失败。',
+    interpretation: '测量合法点击候选以及逐 token 的概率，比只统计 search/click 动作类型更接近真实决策。两个后续流共用 R119 祖先，属于条件验证，不能冒充独立初始化的重复实验；整体预测检验未确认，也不构成提高做题能力的因果证据。',
+    unknown: '目前还没有可信的、可跨新训练起点泛化的“entropy 能预测掉分”结论。后续需用真正独立的模型起点与预先冻结的训练/验证划分核实 click-choice entropy、token-level entropy 及具体错误之间的关系。',
     evidence: [
       { label: 'Q06 · 原始分析和预测方案', href: 'https://github.com/mykcs/openevo-experiment/pull/633' },
       { label: '七组独立固定模型评测结果', href: 'https://github.com/mykcs/openevo-experiment/pull/649' },
@@ -147,10 +148,10 @@ export const ADVISOR_QUESTIONS = [
     family: 'generalization',
     title: '改变模型收到的文字经验提示，会影响做题吗？',
     opening: 'Text Memory、Skill 和 Agent System 都可能给模型提供文字经验或行为指导。我们先核对这些内容多久改写一次，再检查：只改变模型读到的指导文字，做题结果会不会变化？完整关闭这些功能是更大的一步实验。',
-    experiment: '先在三条历史长跑里数清参数状态与文字状态分别改写了多少次。之后针对 DirectApply R159，保持三个载体的使用权限，只把具体指导文字替换成不提供指导的文字，让模型在同一批 64 道题上再做一次对照；关闭整个载体的消融仍未完成。',
-    finding: '历史普通 OpenEVO 参数状态更新 159 次，Text Memory / Skill / Agent System 分别只改写 2 / 1 / 3 次。10 月 15 日针对 R159 的三种文字提示中和实验已经完成，但三个平均得分差的 95% 区间均包含零；结果不足以确定哪种文字提示稳定提高了做题成绩。',
+    experiment: '先统计三条历史训练里参数和文字记忆分别改写了多少次，再针对 DirectApply R159 保留三类载体权限、只中和具体指导文字，在同一批 64 道题上比较成绩。随后两条用于后续研究的冻结训练流已延伸至 R159 末端状态，但这不是三类载体完整关闭的配对消融。',
+    finding: '普通 OpenEVO 参数更新 159 次，Text Memory、Skill、Agent System 仅改写 2、1、3 次。10 月 15 日的三项文字中和实验，平均成绩差的 95% 区间都包含零。10 月 18 日两条后续流已产生第 160 轮对应的末端模型状态，但这项工作还没有通过原计划 40 轮对照的正式验收，仍有 32 次状态转换未按协议完成结算，不能算作完整对照实验。',
     interpretation: '文字很少改写，不代表模型很少读到它。文字提示中和实验只检查了提示内容变化；目前无法从这些数据推断彻底关闭整个 Text Memory、Skill 或 Agent System 的效果。',
-    unknown: '彻底关闭三种文字载体权限、其他条件保持一致的完整消融还没有完成。另一次将购物结果页顺序反转导致了成绩下降，那测的是页面排列敏感性，不能算成文字记忆的效果。',
+    unknown: '完整消融还没有完成：尚未在统一条件下真正关闭三种文字载体权限并形成正式配对结论。两条新训练流的末端状态可用于后续分析，但不能据此证明文字记忆有效或无效；另一次商品结果页排序反转测试不属于文字记忆收益。',
     evidence: [
       { label: 'Q09 · 关闭文字载体的因果对照计划（尚未执行完整关闭）', href: 'https://github.com/mykcs/openevo-experiment/pull/636' },
       { label: 'Q09 · 2026-10-15 已完成的文字指导中和测试', href: 'https://github.com/mykcs/basemodel/blob/f6c857cccbb11183d5d98ca31ce861f4c4311729/public/research/seed-openevo/evidence/q17-checkpoint-diagnostics-20261015.json' },

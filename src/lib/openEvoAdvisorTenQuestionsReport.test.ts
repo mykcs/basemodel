@@ -239,8 +239,17 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(q05.finding).toContain('20.77');
     expect(q05.unknown).toContain('新的简单 β');
     expect(q09.evidenceState).toBe('partial');
-    expect(q09.experiment).toContain('保持三个载体的使用权限');
-    expect(q09.finding).toContain('三个平均得分差的 95% 区间均包含零');
+    const q04=ADVISOR_QUESTIONS.find(q=>q.id==='q04')!;
+    const q06=ADVISOR_QUESTIONS.find(q=>q.id==='q06')!;
+    expect(q02.finding).toContain('15 个模型版本');
+    expect(q04.finding).toContain('640/640');
+    expect(q05.finding).toContain('512 次评测');
+    expect(q06.finding).toContain('NOT_CONFIRMED');
+    expect(q09.finding).toContain('40 轮对照的正式验收');
+    expect(q09.unknown).toContain('完整消融还没有完成');
+
+    expect(q09.experiment).toContain('保留三类载体权限');
+    expect(q09.finding).toContain('95% 区间都包含零');
     expect(q09.unknown).toContain('完整消融还没有完成');
     expect(q09.evidence.some(x=>x.href.includes('q17-checkpoint-diagnostics-20261015.json'))).toBe(true);
     expect(ADVISOR_QUESTIONS[9]?.evidenceState).toBe('unrun');
@@ -386,9 +395,9 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
   });
   it('anchors per-question red/yellow/green workload to current experiment sources, not old green receipts',()=>{
     const q02=ADVISOR_QUESTIONS.find(q=>q.id==='q02')!;
-    expect(q02.finding).toContain('六组 SFT/OPSD 训练现均有 status=PASS');
-    expect(q02.finding).toContain('完成训练并不意味着');
-    expect(q02.unknown).toContain('完整核对固定题评估覆盖');
+    expect(q02.finding).toContain('六组 SFT/OPSD 训练摘要均 PASS');
+    expect(q02.finding).toContain('不能代替最终的逐题配对统计');
+    expect(q02.unknown).toContain('剩余 3 格与最终配对统计');
     expect(q02.evidence[0]?.href).toBe('https://github.com/mykcs/openevo-experiment/pull/629');
     expect(ADVISOR_QUESTIONS.find(q=>q.id==='q05')?.unknown).toContain('1,280 次评估');
     const progress=responses.split('const researchProgress = {')[1]?.split('} as const;')[0] ?? '';
@@ -398,11 +407,11 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     }
     expect(progress).toContain("source:'https://github.com/mykcs/openevo-experiment/pull/629'");
     expect(progress).toContain("source:'https://github.com/mykcs/openevo-experiment/pull/632'");
-    expect(progress).toContain('六组训练摘要均 PASS');
-    expect(progress).toContain('40,960 次训练任务、1,664 次评估');
+    expect(progress).toContain('6/6 组训练已 PASS');
+    expect(progress).toContain('40,960 次训练任务和 1,664 次评估');
     expect(progress).toContain('122,880 次训练任务和 4,224 次评估');
     expect(responses).toContain('data-question-plan-source={q.id}');
-    expect(responses).toContain('进度按 2026 年 10 月 18 日的工作单核对');
+    expect(responses).toContain('2026 年 10 月 19 日只读核对');
     expect(progress).toContain('GPU 小时');
   });
   it('presents plots and research tables with one documented visual hierarchy without making every table a card',()=>{

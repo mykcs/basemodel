@@ -74,7 +74,7 @@ for (const {width,theme} of [
     const q09=page.locator('#response-q09');
     await expect(q09).toContainText('指导文字');
     await expect(q09).toContainText('完整消融还没有完成');
-    await expect(q09).toContainText('三个平均得分差的 95% 区间均包含零');
+    await expect(q09).toContainText('95% 区间都包含零');
     await expect(page.locator('#response-q10')).toContainText('三条新随机流');
     await expect(page.locator('.evo-article__lede a[href*="2026-09-22-meeting-transcript.raw.md"]')).toBeVisible();
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
