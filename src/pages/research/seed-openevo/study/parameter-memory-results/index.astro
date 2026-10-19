@@ -19,14 +19,14 @@ const responseHeadingNumber = (id: string) => '3.Q'+Number(id.slice(1));
 // 人日是人工准备/核对的粗略估计，不是测得的训练耗时或资源承诺。
 const researchProgress = {
   q01: { tone:'green', label:'已有局部回答', next:'换一批预先冻结的购物题，复核三条路线各自的停止时点。', effort:'人工约 0.5–1 人日；至少三条路线各做一轮新题评测，机器耗时待实测。' , source:'https://github.com/mykcs/openevo-experiment/blob/48e1368c7afc260a1745a49e6c7c173bfbb172b2/docs/evidence/advisor-q01-horizon-plateau-20261001/Q01_THREE_WAY_RESULT.json' },
-  q02: { tone:'yellow', label:'训练已完成，能力对照待验', next:'核对六组已完成训练所对应的固定开发题评测、逐题配对统计，并完成 SFT 与 OPSD 的能力对照结论；仅补缺失的评测，不重训已封存单元。', effort:'六组训练摘要均 PASS；新评估数量、可复用记录及人工核对量待按实际评测账本确认，GPU 小时待实测。' , source:'https://github.com/mykcs/openevo-experiment/pull/629' },
+  q02: { tone:'yellow', label:'六组训练完成，配对统计待验', next:'按冻结协议核对 18 个开发集评测位置，复用已完成的 15 格，仅补足真正缺失的三个位置并完成配对统计；之后再比较不同起点对长期学习的影响。', effort:'6/6 组训练已 PASS，15 个模型版本各完成 64 题评测；额外评测、人工核账与 GPU 小时依真实缺口计算。', source:'https://github.com/mykcs/openevo-experiment/pull/629' },
   q03: { tone:'red', label:'正式复现未完成', next:'完成正式数据 SFT、整段 160 轮 Stage2 与论文协议对应的终评。', effort:'至少一条正式训练链和一套终评；需先打通训练与存储，再实测 GPU 小时，不能用工程开发题耗时推算。' , source:'https://github.com/mykcs/openevo-experiment/pull/707' },
-  q04: { tone:'yellow', label:'容量结论尚不完整', next:'在同一任务与训练预算下继续比较 rank8、rank16、rank64，并检查后续学习能力。', effort:'至少三档容量的同题评测与续学核对，人工约 1–2 人日；GPU 时长待标定。' , source:'https://github.com/mykcs/openevo-experiment/pull/631' },
-  q05: { tone:'yellow', label:'历史对照已完成', next:'完成新的简单 β 正式训练与后续 1,280 次同题评估，比较不同写入设置的得分及不确定性。已完成的 R120 方向检查不能代替正式能力判断。', effort:'当前工作单包含 12 个训练单元/96 轮的正式方案；仍需后续训练和 1,280 次评估，人工核对约 1–2 人日，实际 GPU 小时待统计。' , source:'https://github.com/mykcs/openevo-experiment/pull/632' },
-  q06: { tone:'yellow', label:'只有描述性测量', next:'给七个保存点的任务记录划出互不泄漏的训练集与验证集，检验概率指标能否预测失败。', effort:'需整理七组×64 题的记录并做一次独立验证，人工约 1 人日；若需重取概率还要追加推理。' , source:'https://github.com/mykcs/openevo-experiment/pull/633' },
+  q04: { tone:'yellow', label:'五档筛选完成，续学尚不完整', next:'先用已完成的五档 Phase-A 结果选择合理的容量，再补齐 Phase-B 中 rank128、64、32 的固定协议后续学习比较，而非重测已完成的第一阶段。', effort:'Phase-A 640/640 开发集评测已完成；Phase-B 有部分训练收据，剩余工作与 GPU 小时须按实际封存和运行状态复核。', source:'https://github.com/mykcs/openevo-experiment/pull/631' },
+  q05: { tone:'yellow', label:'敏感性评测完成，正式对照未收口', next:'先分析 8 组敏感性结果的同题配对与评测边界，再继续核对简单 β 正式多单元实验的真实剩余部分；区分能力与历史方向阈值。', effort:'另一次敏感性实验已有 512 次评测；原多单元工作包规划 1,280 次评估，不能不核身份就从中扣减 512；实际 GPU 小时待核算。', source:'https://github.com/mykcs/openevo-experiment/pull/632' },
+  q06: { tone:'yellow', label:'预测实验已做，整体未确认', next:'针对本轮预测 NOT_CONFIRMED 结果，检查指标与错误的对应关系，再在真正独立的模型起点和预先冻结的新题上验证；避免重复做已保存的候选熵测量。', effort:'两条后续数据流已完成条件分析；独立确认需要的推理/训练成本尚未冻结，GPU 小时不虚报。', source:'https://github.com/mykcs/openevo-experiment/pull/633' },
   q07: { tone:'green', label:'已有局部因果回答', next:'换保存点、模型与任务继续重复方向反转干预，再评估能否用于在线更新。', effort:'每新增一个保存点，至少再做一组原始/反向的同题评测；人工约半天起，GPU 耗时待测。' , source:'https://github.com/mykcs/openevo-experiment/pull/634' },
   q08: { tone:'yellow', label:'遗忘尚未判定', next:'先找回每道旧题刚学会时的可比测量和任务身份，再与长期训练后对照。', effort:'人工约 1–2 人日核对旧账本；若早期锚点缺失，需要重新训练与评测，卡时未知。' , source:'https://github.com/mykcs/openevo-experiment/pull/635' },
-  q09: { tone:'yellow', label:'文字贡献尚未判定', next:'分别真正关闭三种文字载体的权限，在同一题单上与原条件配对比较。', effort:'当前载体完整关闭正式方案尚未启动；工作单列出必要路径最多 40,960 次训练任务、1,664 次评估（属于预算上限，非已消耗），人工资格/核账粗估 0.5–1 人日，GPU 时长未知。' , source:'https://github.com/mykcs/openevo-experiment/pull/636' },
+  q09: { tone:'yellow', label:'两条末端状态已得，完整消融未完成', next:'先完成两条冻结流尚未封账的转换与对应核对，再真正关闭 Text Memory、Skill、Agent System，进行同题配对。', effort:'两条延伸流已有第 160 轮末端状态，但 canonical 40 轮封存仍未完成；原完整计划最多 40,960 次训练任务和 1,664 次评估，是预算上限而非本轮新增消耗。', source:'https://github.com/mykcs/openevo-experiment/pull/636' },
   q10: { tone:'red', label:'独立复现尚未完成', next:'先冻结新的任务流与排除规则，再完成三条独立随机流的正式训练及新题终评。', effort:'计划上限为 3 条新训练流、122,880 次训练任务和 4,224 次评估；严格同源复用可减少净增量。人工准备约 1–2 人日；尚未启用，不应虚报训练小时。' , source:'https://github.com/mykcs/openevo-experiment/pull/637' },
 } as const;
 const responseQuestions = ADVISOR_QUESTIONS.map(q=>({...q,progress:researchProgress[q.id as keyof typeof researchProgress]}));
@@ -118,7 +118,7 @@ const q17Effects = {
         </div>
         <div>
           <dt><a href="#response-q02">Q02 · SFT 和 OPSD，哪种初始训练方式更好？</a></dt>
-          <dd><strong>已测：</strong>早期 32 道题上两种方法的平均成绩接近，尚无明确赢家；后续同条件方案的六组训练摘要都已 PASS。<strong>还缺：</strong>完整的固定题配对评估与统计结论。<strong>接下来：</strong>完成这部分比较，再检验两种起点经过长期学习后是否仍有差异。</dd>
+          <dd><strong>已测：</strong>早期 32 道题没有明确赢家。新的六组匹配训练均 PASS，已有 15 个模型版本分别完成 64 道固定开发题评测。<strong>还缺：</strong>原 18 个评测位置的余下 3 格与最终配对统计。<strong>接下来：</strong>优先补齐这三格，再比较两种训练起点对长期学习的影响。</dd>
         </div>
         <div>
           <dt><a href="#response-q03">Q03 · 我们的 SEED 成绩，为什么和论文差这么多？</a></dt>
@@ -126,15 +126,15 @@ const q17Effects = {
         </div>
         <div>
           <dt><a href="#response-q04">Q04 · 长期参数一定需要 rank128 这么大吗？</a></dt>
-          <dd><strong>已测：</strong>在第 152–159 轮的同题比较中，rank32 的参数文件比 rank128 小约 75%，平均成绩低 1.79 分，仍不能断言稳定掉分或完全无损。后续也已开展其他容量档位的阶段性筛选。<strong>接下来：</strong>检查不同容量从更早阶段继续学习时的能力和资源开销，找出真正合适的容量。</dd>
+          <dd><strong>已测：</strong>在第 152–159 轮的同题比较中，rank32 的参数文件比 rank128 小约 75%，平均成绩低 1.79 分，仍不能断言稳定掉分或完全无损。后续五档 rank8、16、32、64、128 的第一阶段筛选已完成 640 次评测，尚未找到稳定的最佳容量。<strong>接下来：</strong>完成筛选后选定档位的后续学习实验，并比较能力与计算开销。</dd>
         </div>
         <div>
           <dt><a href="#response-q05">Q05 · β 写入控制能让模型学得更好吗？</a></dt>
-          <dd><strong>已测：</strong>历史 Bounded 与加入 β/GDR 后的同题终评分数分别为 45.98 和 20.77；新的简单 β 也已有参数方向测量，但不能据此宣称做题变好。<strong>接下来：</strong>完成简单 β 的公平能力对照，再分开研究写入强度、更新方向和旧知识保持。</dd>
+          <dd><strong>已测：</strong>历史 Bounded 与加入 β/GDR 后的同题终评分数分别为 45.98 和 20.77；新的简单 β 已做过参数方向测量，独立敏感性实验又完成 8 组共 512 次做题评测。不同测试阶段与任务上的表现不一致，尚无统一收益结论。<strong>接下来：</strong>核对这些对照的统计证据，并补齐正式多单元比较。</dd>
         </div>
         <div>
           <dt><a href="#response-q06">Q06 · 哪一种熵，才能看出模型做选择时的犹豫？</a></dt>
-          <dd><strong>已测：</strong>第一版实验结束后，我们从轨迹回算了 <strong>action-family entropy（动作类型熵）</strong>，只区分 search 与 click。WebShop 的动作大类本来就少，这无法告诉我们模型究竟点错了哪个商品；随后已有局部点击候选概率测量。<strong>接下来：</strong>重点测 click-choice entropy（具体点击候选的熵）和 token-level entropy（逐 token 熵），再检验它们能否预测做题失败。</dd>
+          <dd><strong>已测：</strong>第一版实验结束后，我们从轨迹回算了 <strong>action-family entropy（动作类型熵）</strong>，只区分 search 与 click。WebShop 的动作大类本来就少，这无法告诉我们模型究竟点错了哪个商品；之后我们测量了 click-choice entropy（具体点击候选的熵）等更细的概率指标，并在两条后续数据流中尝试预测表现，但预设整体检验结果为 <strong>NOT_CONFIRMED（尚未确认）</strong>。<strong>接下来：</strong>用独立起点和新题验证它究竟能否预测错误，而不是重复统计 search/click。</dd>
         </div>
         <div>
           <dt><a href="#response-q07">Q07 · Task Vector 的更新方向真的重要吗？</a></dt>
@@ -146,7 +146,7 @@ const q17Effects = {
         </div>
         <div>
           <dt><a href="#response-q09">Q09 · Text Memory、Skill 和 Agent System 有多少作用？</a></dt>
-          <dd><strong>已测：</strong>普通 OpenEVO 在 160 轮中更新参数 159 次，三种文字载体分别只改写 2、1、3 次；改变 R159 的指导文字，尚未得到稳定的成绩收益证据。少改写不意味着后续没有使用。<strong>接下来：</strong>分别真正关闭各载体，测量它们对能力的独立贡献以及与参数更新的配合。</dd>
+          <dd><strong>已测：</strong>普通 OpenEVO 在 160 轮中更新参数 159 次，三种文字载体分别只改写 2、1、3 次；改变 R159 的指导文字，尚未得到稳定的成绩收益证据。两条后续训练流已有第 160 轮末端状态，但正式 40 轮对照仍未封存。少改写不意味着后续没有使用。<strong>接下来：</strong>先完成正式对照，再分别关闭载体，测量实际贡献。</dd>
         </div>
         <div>
           <dt><a href="#response-q10">Q10 · 换一批新任务，结论还能成立吗？</a></dt>
@@ -157,7 +157,7 @@ const q17Effects = {
     </section>
     <section class="evo-article__section" id="responses" data-response-experiments>
       <h2>3 十个研究问题，我们得到了哪些回答？</h2>
-      <p>Q01–Q10 逐一对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。标题前的状态表示科学问题回答到哪一步：绿色＝已有明确的局部结论，黄色＝做过实验但关键问题尚未回答，红色＝核心验证仍未完成。每一问都有实验做法、实际发现、缺口和下一步投入。所列人日是粗略规划估计；没有真实计时的 GPU 训练和推理不填写臆测小时数。 进度按 2026 年 10 月 18 日的工作单核对，后续实验可能变化。</p>
+      <p>Q01–Q10 逐一对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。标题前的状态表示科学问题回答到哪一步：绿色＝已有明确的局部结论，黄色＝做过实验但关键问题尚未回答，红色＝核心验证仍未完成。每一问都有实验做法、实际发现、缺口和下一步投入。所列人日是粗略规划估计；没有真实计时的 GPU 训练和推理不填写臆测小时数。 Q02、Q04、Q05、Q06、Q09 的后续实验进展于 2026 年 10 月 19 日只读核对；其余内容仍按各自带日期的科研收据解释。</p>
       <OpenEvoQuestionIndex questions={responseQuestions.map(q=>({...q,headingNumber:responseHeadingNumber(q.id)}))} />
       {responseQuestions.map(q => (
         <article class="evo-article__question" id={'response-'+q.id} data-experiment-response={q.id} aria-labelledby={'response-'+q.id+'-title'}>
