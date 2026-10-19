@@ -40,6 +40,12 @@ const readerAnswerStatus = {
   yellow: {label:'关键问题待验证', explanation:'已有实验记录，核心答案尚不确定'},
   red: {label:'核心验证未完成', explanation:'正式关键验证未完成，可能已有准备工作'},
 } as const;
+// The maturity of the evidence is a different dimension from the colored answer status.
+const evidenceReadiness = {
+  'bounded-answer': '已有可核查的局部实验结果，但还需在其他条件下复测',
+  partial: '已做部分测量，回答完整问题所需的证据还不齐',
+  unrun: '已有实验方案，关键独立验证还没有运行',
+} as const;
 const responseQuestions = ADVISOR_QUESTIONS.map(q=>({
   ...q,
   reviewed:ADVISOR_REVIEWED_COPY[q.id as keyof typeof ADVISOR_REVIEWED_COPY],
@@ -121,6 +127,10 @@ const q17Effects = {
         ))}
       </dl>
       <p class="advisor-overview__explanation">绿色表示已有范围明确的局部结论，并非整项研究全部结束；黄色表示做过实验，但关键答案还不确定；红色表示核心正式验证未完成，并非没有做过任何工作。</p>
+      <div class="advisor-overview__decisions" data-advisor-decisions>
+        <p data-advisor-key-findings><strong>目前最值得关注的发现：</strong>固定容量路线在历史实验中明显缩短了参数更新耗时；另一项实验发现，反转固定容量模型某一轮参数更新的方向，会让同一批题的平均成绩下降约 10 分。历史路线不是完全严格对照，方向结果也只来自一个训练状态。<a href="#response-q05">历史路线的成绩与耗时</a> · <a href="#response-q07">方向干预证据</a></p>
+        <p data-advisor-priorities><strong>接下来优先补的证据：</strong><a href="#response-q02">Q02</a> 的六组训练已完成，18 个评测位置还有 3 个缺口；<a href="#response-q03">Q03</a> 需要先对齐论文的评测条件，再完成正式复现。这是按现有证据缺口排列的阅读建议，不代表新的实验已经运行。</p>
+      </div>
       <a class="advisor-overview__jump" href="#experiment">逐问查看：已有结果、做到哪里、还缺什么 ↓</a>
     </section>
     <div class="evo-article__abstract">
@@ -178,6 +188,7 @@ const q17Effects = {
     <section class="evo-article__section" id="responses" data-response-experiments>
       <h2>3 十个研究问题，我们得到了哪些回答？</h2>
       <p>Q01–Q10 对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。本节和前面的速览使用同一套绿、黄、红状态，每问明确写出实际完成的部分、实验发现、仍缺的关键证据和下一步。规划工作量与已经测得的 GPU 耗时严格区分。Q02、Q04、Q05、Q06、Q09 的后续实验进展于 2026 年 10 月 19 日只读核对对应实验收据；其他问题保留各自原始收据的时间边界。</p>
+      <p class="evo-article__note" data-status-axes>彩色状态表示科学问题回答到哪里；下面另外写出实际运行进度和证据成熟度。训练结束、完成评测与得到可信的科学结论需要分别判断。</p>
       <OpenEvoQuestionIndex questions={responseQuestions.map(q=>({...q,headingNumber:responseQuestionRef(q.id)}))} />
       {responseQuestions.map(q => (
         <article class="evo-article__question" id={'response-'+q.id} data-experiment-response={q.id} aria-labelledby={'response-'+q.id+'-title'}>
@@ -192,6 +203,7 @@ const q17Effects = {
           </header>
           <p class="advisor-response__answer" data-detail-brief={q.id}><strong>目前最直接的回答：</strong>{q.brief.answer}</p>
           <p class="advisor-response__stage" data-progress-stage={q.id}><strong>目前进度：</strong>{q.progress.label}。{q.brief.done}</p>
+          <p class="advisor-response__evidence" data-evidence-readiness={q.id} data-evidence-state={q.evidenceState}><strong>证据成熟度：</strong>{evidenceReadiness[q.evidenceState]}。</p>
           <p class="advisor-response__missing" data-progress-gap={q.id}><strong>还差什么才能回答：</strong>{q.brief.missing}</p>
           <p class="evo-article__note" data-question-origin-link={q.id}><a href={'/research/seed-openevo/study/advisor-questions/#'+q.id}>查看第二篇的 {q.id.toUpperCase()} 问题正文与背景</a>{q.id==='q10' && ' · 会后新增问题'}</p>
           {q.id!=='q01' && <p class="evo-article__question-setup" data-response-background={q.id}>{q.opening}</p>}
