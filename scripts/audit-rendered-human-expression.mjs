@@ -39,15 +39,15 @@ for (const file of htmlFiles) {
 
   for (const match of source.matchAll(/<h([1-3])\b[^>]*>([\s\S]*?)<\/h\1>/gi)) {
     const heading = textOnly(match[2]);
-    // Academic subsection numbers are reader-facing headings when explicitly authored.
-    // Exempt ONLY matching 3.Q1–3.Q10 prefixes on the ten anchored H3 response titles.
-    // The heading text after that prefix still receives every ordinary jargon check.
-    let contentForInternalIdAudit = heading;
-    const responseId = match[0].match(/\bid="response-q(0[1-9]|10)-title"/i);
-    if (relative === 'research/seed-openevo/study/parameter-memory-results/index.html' &&
-        match[1] === '3' && responseId) {
-      const prefix = '3.Q'+Number(responseId[1])+' ';
-      if (heading.startsWith(prefix)) contentForInternalIdAudit = heading.slice(prefix.length);
+    // The third OpenEVO article keeps chapter "3" at the section level.
+    // Q01–Q10 are quiet reference labels outside h3; legacy "3.Q1"
+    // heading prefixes must fail rather than silently pass an exemption.
+    const isAdvisorResponseHeading =
+      relative === 'research/seed-openevo/study/parameter-memory-results/index.html' &&
+      match[1] === '3' &&
+      /\bid="response-q(?:0[1-9]|10)-title"/i.test(match[0]);
+    if (isAdvisorResponseHeading && /^3\.Q(?:[1-9]|10)(?:\s|$)/.test(heading)) {
+      findings.push({file:relative,rule:'HUMAN-EXPRESSION-ADVISOR-LEGACY-NUMBER',detail:heading});
     }
     for (const [rule, pattern] of [
       ['HUMAN-EXPRESSION-INTERNAL-ID-HEADING', internalHeading],
@@ -56,7 +56,7 @@ for (const file of htmlFiles) {
       ['HUMAN-EXPRESSION-PROJECT-STATUS-AS-STORY', projectStatusHeading],
       ['HUMAN-EXPRESSION-PRESENTER-HEADING', presenterHeading],
     ]) {
-      const checkedText = rule === 'HUMAN-EXPRESSION-INTERNAL-ID-HEADING' ? contentForInternalIdAudit : heading;
+      const checkedText = heading;
       if (pattern.test(checkedText)) findings.push({ file: relative, rule, detail: heading });
     }
   }

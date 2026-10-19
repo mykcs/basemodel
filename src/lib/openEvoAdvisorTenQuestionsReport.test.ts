@@ -91,17 +91,23 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     for(const forbidden of ['q.finding','q.experiment','q.interpretation','q.unknown','AdvisorTenEvidenceVisual','data-report-finding','31.09','20.77','第 156 轮'])
       expect(questions).not.toContain(forbidden);
   });
-  it('numbers all response headings as subsections 3.Q1–3.Q10 while preserving canonical q01–q10 anchors',()=>{
+  it('keeps Q01–Q10 as quiet reference labels outside natural question headings',()=>{
     const index=read('src/components/research/OpenEvoQuestionIndex.astro');
-    expect(responses).toContain("const responseHeadingNumber = (id: string) => '3.Q'+Number(id.slice(1));");
-    expect(responses).toContain('>{responseHeadingNumber(q.id)} {q.title}</a>');
-    expect(responses).toContain('headingNumber:responseHeadingNumber(q.id)');
-    expect(responses).toContain('<span class="evo-article__qnum">{responseHeadingNumber(q.id)}</span> {q.title}');
+    const style=read('src/styles/advisor-ten-approved-reader.css');
+    expect(responses).toContain("const responseQuestionRef = (id: string) => id.toUpperCase();");
+    expect(responses).toContain('>{responseQuestionRef(q.id)} · {q.title}</a>');
+    expect(responses).toContain('headingNumber:responseQuestionRef(q.id)');
+    expect(responses).toContain('<span class="advisor-approved-question-ref" data-question-number={q.id}>{responseQuestionRef(q.id)}</span>');
+    expect(responses).toContain("<h3 id={'response-'+q.id+'-title'}>{q.title}</h3>");
+    expect(responses).not.toContain("const responseHeadingNumber =");
+    expect(responses).not.toContain("3.Q'+");
+    expect(style).toContain('.evo-approved-reader .advisor-approved-question-ref');
+    expect(style).toContain('font-variant-numeric: normal;');
     expect(index).toContain('question.headingNumber ?? question.id.toUpperCase()');
     const audit=read('scripts/audit-rendered-human-expression.mjs');
     expect(audit).toContain("relative === 'research/seed-openevo/study/parameter-memory-results/index.html'");
-    expect(audit).toContain("match[1] === '3' && responseId");
-    expect(audit).toContain('contentForInternalIdAudit = heading.slice(prefix.length)');
+    expect(audit).toContain('HUMAN-EXPRESSION-ADVISOR-LEGACY-NUMBER');
+    expect(audit).not.toContain('contentForInternalIdAudit = heading.slice(prefix.length)');
     expect(responses).toContain("id={'response-'+q.id}");
     expect(questions).toContain("id={q.id}");
   });

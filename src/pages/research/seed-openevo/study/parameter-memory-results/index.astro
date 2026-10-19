@@ -15,8 +15,9 @@ import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_Q09_UPDATES, ADVISOR_RES
 import { ADVISOR_REVIEWED_COPY } from '../../../../../data/openEvoAdvisorReviewedCopy';
 import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeeting';
 
-// Section 3 is the experiment-response chapter; source IDs intentionally stay q01–q10.
-const responseHeadingNumber = (id: string) => '3.Q'+Number(id.slice(1));
+// Section 3 is the response chapter. Question identities stay Q01–Q10,
+// independent of chapter numbering, so the visible headings read naturally.
+const responseQuestionRef = (id: string) => id.toUpperCase();
 
 // 科研回答状态与后续投入是本页的规划快照；不覆盖实验仓库的运行账本。
 // 人日是人工准备/核对的粗略估计，不是测得的训练耗时或资源承诺。
@@ -96,7 +97,7 @@ const q17Effects = {
         <li><a href="#context">1 研究问题与评测</a></li>
         <li><a href="#experiment">2 十问速览与后续研究</a></li>
         <li><a href="#responses">3 十个问题的实验回答</a></li>
-        {ADVISOR_QUESTIONS.map(q => <li><a href={'#response-'+q.id}>{responseHeadingNumber(q.id)} {q.title}</a></li>)}
+        {ADVISOR_QUESTIONS.map(q => <li><a href={'#response-'+q.id}>{responseQuestionRef(q.id)} · {q.title}</a></li>)}
         <li><a href="#main-results">4 三种长期路线的终评结果</a></li>
         <li><a href="#capacity">5 长期容量</a></li>
         <li><a href="#beta">6 β 写入控制</a></li>
@@ -132,14 +133,17 @@ const q17Effects = {
     <section class="evo-article__section" id="responses" data-response-experiments>
       <h2>3 十个研究问题，我们得到了哪些回答？</h2>
       <p>Q01–Q10 逐一对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。标题前的状态表示科学问题回答到哪一步：绿色＝已有明确的局部结论，黄色＝做过实验但关键问题尚未回答，红色＝核心验证仍未完成。每一问都有实验做法、实际发现、缺口和下一步投入。所列人日是粗略规划估计；没有真实计时的 GPU 训练和推理不填写臆测小时数。 Q02、Q04、Q05、Q06、Q09 的后续实验进展于 2026 年 10 月 19 日只读核对；其余内容仍按各自带日期的科研收据解释。</p>
-      <OpenEvoQuestionIndex questions={responseQuestions.map(q=>({...q,headingNumber:responseHeadingNumber(q.id)}))} />
+      <OpenEvoQuestionIndex questions={responseQuestions.map(q=>({...q,headingNumber:responseQuestionRef(q.id)}))} />
       {responseQuestions.map(q => (
         <article class="evo-article__question" id={'response-'+q.id} data-experiment-response={q.id} aria-labelledby={'response-'+q.id+'-title'}>
           <header class="evo-article__question-header">
-            <span class:list={['evo-article__status', 'evo-article__status--'+q.progress.tone]} data-research-status={q.progress.tone}>
-              <span class="evo-article__status-dot" aria-hidden="true"></span>{q.progress.label}
-            </span>
-            <h3 id={'response-'+q.id+'-title'}><span class="evo-article__qnum">{responseHeadingNumber(q.id)}</span> {q.title}</h3>
+            <div class="advisor-approved-question-meta">
+              <span class="advisor-approved-question-ref" data-question-number={q.id}>{responseQuestionRef(q.id)}</span>
+              <span class:list={['evo-article__status', 'evo-article__status--'+q.progress.tone]} data-research-status={q.progress.tone}>
+                <span class="evo-article__status-dot" aria-hidden="true"></span>{q.progress.label}
+              </span>
+            </div>
+            <h3 id={'response-'+q.id+'-title'}>{q.title}</h3>
           </header>
           <p class="evo-article__note" data-question-origin-link={q.id}><a href={'/research/seed-openevo/study/advisor-questions/#'+q.id}>查看第二篇的 {q.id.toUpperCase()} 问题正文与背景</a>{q.id==='q10' && ' · 会后新增问题'}</p>
           {q.id!=='q01' && <p class="evo-article__question-setup" data-response-background={q.id}>{q.opening}</p>}

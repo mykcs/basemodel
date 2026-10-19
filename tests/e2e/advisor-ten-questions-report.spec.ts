@@ -249,7 +249,8 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   await expect(guide).toContainText('ALFWorld');
   await expect(guide).toContainText('十问速览：我们发现了什么，下一轮还想研究什么？');
   const answer=page.locator('#response-q01');
-  await expect(answer.locator('h3')).toHaveText('3.Q1 训练 160 轮会不会太多？');
+  await expect(answer.locator('h3')).toHaveText('训练 160 轮会不会太多？');
+  await expect(answer.locator('[data-question-number="q01"]')).toHaveText('Q01');
   const link=answer.locator('[data-question-origin-link="q01"] a');
   await expect(link).toHaveAttribute('href','/research/seed-openevo/study/advisor-questions/#q01');
   const chart=answer.locator('[data-report-figure="q01-horizon"]');
@@ -359,6 +360,20 @@ for(const width of [320,390,1440]){
     const article=page.locator('[data-evo-blog="results"]');
     await expect(article).toHaveClass(/evo-approved-reader/);
     await expect(article.locator('h1')).toHaveCSS('font-size',width<=520?'26px':'28px');
+    const references=article.locator('.advisor-approved-question-ref');
+    await expect(references).toHaveCount(10);
+    expect(await references.allTextContents()).toEqual(
+      Array.from({length:10},(_,i)=>'Q'+String(i+1).padStart(2,'0')));
+    const refStyle=await references.first().evaluate(el=>({
+      numeric:getComputedStyle(el).fontVariantNumeric,
+      size:getComputedStyle(el).fontSize,
+      weight:getComputedStyle(el).fontWeight,
+    }));
+    expect(refStyle.numeric).toBe('normal');
+    expect(refStyle.size).toBe('12px');
+    expect(refStyle.weight).toBe('400');
+    await expect(article.locator('#response-q01-title')).toHaveText('训练 160 轮会不会太多？');
+    await expect(article.locator('#response-q01-title')).not.toContainText('3.Q1');
     await expect(article.locator('[data-advisor-matrix]')).toHaveCount(11);
     await expect(article.locator('#response-q10 [data-advisor-matrix]')).toHaveCount(0);
     await expect(article.locator('#response-q03 [data-advisor-matrix]')).toHaveCount(2);

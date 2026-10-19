@@ -16,7 +16,10 @@ for (const width of [390, 768, 1440]) {
     const sourceTitles = await page.locator('[data-experiment-response] h3').allTextContents();
     const navTitles = await nav.locator('.advisor-question-index__question').allTextContents();
     const navNumbers = await nav.locator('.advisor-question-index__number').allTextContents();
-    expect(navTitles.map((title,i) => navNumbers[i]+' '+title)).toEqual(sourceTitles);
+    // The heading itself stays natural Chinese; quiet Q01–Q10 references
+    // remain in the index and the header's separate metadata.
+    expect(navTitles).toEqual(sourceTitles);
+    expect(navNumbers).toEqual(Array.from({length:10},(_,i)=>'Q'+String(i+1).padStart(2,'0')));
 
     await nav.locator('a[href="#response-q07"]').click();
     await expect(page).toHaveURL(/#response-q07$/);

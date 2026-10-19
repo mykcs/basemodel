@@ -93,6 +93,27 @@ html[data-theme="dark"] .evo-approved-reader {
   font-size: 18px;
   font-weight: 650;
 }
+/* Quiet question identity lives outside the heading. Do not use the old
+   '3.Q1' subsection notation, tabular digits or display-style number font. */
+.evo-approved-reader .advisor-approved-question-meta {
+  display: flex;
+  gap: 7px 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-family: "PingFang SC", system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.evo-approved-reader .advisor-approved-question-ref,
+.evo-approved-reader .advisor-question-index__number {
+  color: var(--paper-muted);
+  font-family: "PingFang SC", system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  font-variant-numeric: normal;
+  font-feature-settings: normal;
+  letter-spacing: normal;
+}
 .evo-approved-reader .evo-article__status {
   color: var(--paper-muted);
   font-size: 12px;
