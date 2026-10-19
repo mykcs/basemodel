@@ -19,7 +19,7 @@ const responseHeadingNumber = (id: string) => '3.Q'+Number(id.slice(1));
 // 人日是人工准备/核对的粗略估计，不是测得的训练耗时或资源承诺。
 const researchProgress = {
   q01: { tone:'green', label:'已有局部回答', next:'换一批预先冻结的购物题，复核三条路线各自的停止时点。', effort:'人工约 0.5–1 人日；至少三条路线各做一轮新题评测，机器耗时待实测。' , source:'https://github.com/mykcs/openevo-experiment/blob/48e1368c7afc260a1745a49e6c7c173bfbb172b2/docs/evidence/advisor-q01-horizon-plateau-20261001/Q01_THREE_WAY_RESULT.json' },
-  q02: { tone:'yellow', label:'已有初步结果', next:'核对新的匹配训练工作包中还剩的 3 项训练、固定题评估及配对统计，并解决其记录的磁盘空间问题；不要把 10 月 4 日的另一批历史训练核账直接算入。', effort:'新工作包尚有 3 个训练单元和未封存的正式同题评估（原计划评估上限 1,216 次，须先扣除已复用记录）；人工核账约 1 人日。GPU 小时须等空间与运行吞吐恢复后测量。' , source:'https://github.com/mykcs/openevo-experiment/pull/629' },
+  q02: { tone:'yellow', label:'训练已完成，能力对照待验', next:'核对六组已完成训练所对应的固定开发题评测、逐题配对统计，并完成 SFT 与 OPSD 的能力对照结论；仅补缺失的评测，不重训已封存单元。', effort:'六组训练摘要均 PASS；新评估数量、可复用记录及人工核对量待按实际评测账本确认，GPU 小时待实测。' , source:'https://github.com/mykcs/openevo-experiment/pull/629' },
   q03: { tone:'red', label:'正式复现未完成', next:'完成正式数据 SFT、整段 160 轮 Stage2 与论文协议对应的终评。', effort:'至少一条正式训练链和一套终评；需先打通训练与存储，再实测 GPU 小时，不能用工程开发题耗时推算。' , source:'https://github.com/mykcs/openevo-experiment/pull/707' },
   q04: { tone:'yellow', label:'容量结论尚不完整', next:'在同一任务与训练预算下继续比较 rank8、rank16、rank64，并检查后续学习能力。', effort:'至少三档容量的同题评测与续学核对，人工约 1–2 人日；GPU 时长待标定。' , source:'https://github.com/mykcs/openevo-experiment/pull/631' },
   q05: { tone:'yellow', label:'历史对照已完成', next:'完成新的简单 β 正式训练与后续 1,280 次同题评估，比较不同写入设置的得分及不确定性。已完成的 R120 方向检查不能代替正式能力判断。', effort:'当前工作单包含 12 个训练单元/96 轮的正式方案；仍需后续训练和 1,280 次评估，人工核对约 1–2 人日，实际 GPU 小时待统计。' , source:'https://github.com/mykcs/openevo-experiment/pull/632' },
@@ -90,7 +90,7 @@ const q17Effects = {
       <h2>目录</h2>
       <ol>
         <li><a href="#context">1 研究问题与评测</a></li>
-        <li><a href="#experiment">2 我们做了哪些实验</a></li>
+        <li><a href="#experiment">2 十问速览与后续研究</a></li>
         <li><a href="#responses">3 十个问题的实验回答</a></li>
         {ADVISOR_QUESTIONS.map(q => <li><a href={'#response-'+q.id}>{responseHeadingNumber(q.id)} {q.title}</a></li>)}
         <li><a href="#main-results">4 三种长期路线的终评结果</a></li>
@@ -108,36 +108,52 @@ const q17Effects = {
       <p>OpenEVO 把智能体的任务经验保留到后续轮次。在我们的 WebShop 实验中，Qwen3-1.7B 模型需要按照购物要求搜索商品、选择规格、完成购买。我们用 Task Score（满足要求的程度，满分 100）与完整成功数衡量实际任务能力。</p>
       <p>在普通 OpenEVO 的长期实验里，我们观察到一个问题：每一轮都增加新的低秩参数组件，历史越积越多，保存和参数更新越来越重。我们想先探索两个方向：第一，长期 state 能不能一直保持固定大小？第二，固定大小后，新经验该怎么写进去？于是保留普通 OpenEVO 作为历史参照，尝试用 Bounded 把旧更新整合到固定容量里，再在 Bounded 上尝试历史 β/GDR 写入控制。这样形成了三条已运行的路线。我们先看它们能否省计算、还能做对多少题；具体的 LoRA、SD-LoRA、Bounded 和 β 机制可读<a href="/research/seed-openevo/study/openevo-methods/">第一篇方法介绍</a>。</p>
     </section>
-    <section id="experiment" class="evo-article__section">
-      <h2>2 我们做了哪些实验，分别想回答什么？</h2>
-      <p>训练轮数够不够、减少长期参数容量有没有损失，都要通过真正的购物任务来检验。我们分别检查<strong>训练过程中保存的模型</strong>、<strong>训练结束后的模型</strong>，并做<strong>同题比较</strong>：让两个方案尽可能在相同条件下做同一批题，再比较每道题的结果。</p>
+    <section id="experiment" class="evo-article__section" data-ten-question-tldr>
+      <h2>2 十问速览：我们发现了什么，下一轮还想研究什么？</h2>
+      <p>下面把十个研究问题的<strong>已有发现、尚未回答的部分和后续研究方向</strong>放在一起。每项只保留理解结论所需的事实；详细的实验设置、统计图和原始来源从第 3 节逐问查看。</p>
       <dl class="evo-article__experiment-guide">
         <div>
-          <dt><a href="/research/seed-openevo/study/advisor-questions/#q01">训练 160 轮会不会太多了？</a></dt>
-          <dd>三种方法各拿出 11 个训练时保存的模型版本，用事先固定的 64 道购物题逐一考试。这样的固定题在研究中叫“开发题”，用来观察训练效果，还不能当作面对全新题目的最终成绩。</dd>
+          <dt><a href="#response-q01">Q01 · 训练 160 轮会不会太多？</a></dt>
+          <dd><strong>已测：</strong>同一批 64 道开发题上，普通 OpenEVO 约在第 120 次参数更新后收益变小；Bounded 到第 150 轮仍有提升，历史 β/GDR 则在后期掉分。β-gating 已有从 160 轮延伸至 200 轮的训练轨迹，但这不是新的固定题终评。<strong>接下来：</strong>在事先固定的新题上比较不同停止时点，而不是给三种方法统一规定 120 轮。</dd>
         </div>
         <div>
-          <dt><a href="/research/seed-openevo/study/advisor-questions/#q02">逐轮学习开始前，初始模型怎么训练？</a></dt>
-          <dd>在相同经验和训练预算下比较 SFT、OPSD 两种初始训练方式；长期学习效果需由后续多轮实验回答。</dd>
+          <dt><a href="#response-q02">Q02 · SFT 和 OPSD，哪种初始训练方式更好？</a></dt>
+          <dd><strong>已测：</strong>早期 32 道题上两种方法的平均成绩接近，尚无明确赢家；后续同条件方案的六组训练摘要都已 PASS。<strong>还缺：</strong>完整的固定题配对评估与统计结论。<strong>接下来：</strong>完成这部分比较，再检验两种起点经过长期学习后是否仍有差异。</dd>
         </div>
         <div>
-          <dt><a href="/research/seed-openevo/study/advisor-questions/#q03">历史 SEED 实验能直接与论文比较吗？</a></dt>
-          <dd>先核对训练流程、任务题单和模型输入是否一致。旧 Q03 使用自定义 64 题，公开论文报告另一套 128 题结果，正式复现仍在进行。</dd>
+          <dt><a href="#response-q03">Q03 · 我们的 SEED 成绩，为什么和论文差这么多？</a></dt>
+          <dd><strong>已测：</strong>历史模型在自定义 64 题上的成绩较低；它的训练、提示和评测条件与 SEED 论文不同，分数不能直接排名。另有独立的公开方法复现，但尚无完整正式成绩。<strong>接下来：</strong>先对齐论文评测并完成复现，再分别研究初始训练、教师模型等差异的影响。</dd>
         </div>
         <div>
-          <dt><a href="#main-results">三条长期路线，最终做题能力怎样？</a></dt>
-          <dd>训练结束后，再让三组模型完成另外一批事先固定的 128 道题，比较做题分数与完整成功数；普通路线是更早的历史实验。</dd>
+          <dt><a href="#response-q04">Q04 · 长期参数一定需要 rank128 这么大吗？</a></dt>
+          <dd><strong>已测：</strong>在第 152–159 轮的同题比较中，rank32 的参数文件比 rank128 小约 75%，平均成绩低 1.79 分，仍不能断言稳定掉分或完全无损。后续也已开展其他容量档位的阶段性筛选。<strong>接下来：</strong>检查不同容量从更早阶段继续学习时的能力和资源开销，找出真正合适的容量。</dd>
         </div>
         <div>
-          <dt><a href="/research/seed-openevo/study/advisor-questions/#q04">长期参数需要保留多大容量？</a></dt>
-          <dd>整段实验共 160 轮。已有 rank128 在末尾 8 轮（第 152–159 轮）的封存记录，因此只为 rank32 新做这一段续训，用相同轮次和任务做 1,024 组比较；rank128 没有重跑。<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.capacity} />原实验记录</a>可直接查看。这里只比较末尾阶段。</dd>
+          <dt><a href="#response-q05">Q05 · β 写入控制能让模型学得更好吗？</a></dt>
+          <dd><strong>已测：</strong>历史 Bounded 与加入 β/GDR 后的同题终评分数分别为 45.98 和 20.77；新的简单 β 也已有参数方向测量，但不能据此宣称做题变好。<strong>接下来：</strong>完成简单 β 的公平能力对照，再分开研究写入强度、更新方向和旧知识保持。</dd>
         </div>
         <div>
-          <dt><a href="/research/seed-openevo/study/advisor-questions/#q07">参数更新方向会影响能力吗？</a></dt>
-          <dd>将一个已保存模型版本中的某轮参数更新方向反过来，重新做相同的 64 道题，观察成绩变化。</dd>
+          <dt><a href="#response-q06">Q06 · 哪一种熵，才能看出模型做选择时的犹豫？</a></dt>
+          <dd><strong>已测：</strong>第一版实验结束后，我们从轨迹回算了 <strong>action-family entropy（动作类型熵）</strong>，只区分 search 与 click。WebShop 的动作大类本来就少，这无法告诉我们模型究竟点错了哪个商品；随后已有局部点击候选概率测量。<strong>接下来：</strong>重点测 click-choice entropy（具体点击候选的熵）和 token-level entropy（逐 token 熵），再检验它们能否预测做题失败。</dd>
+        </div>
+        <div>
+          <dt><a href="#response-q07">Q07 · Task Vector 的更新方向真的重要吗？</a></dt>
+          <dd><strong>已测：</strong>对 <strong>Bounded（未加入 β）</strong> 的末尾 8 轮进行方向干预。反转第 156 轮更新后，相比<strong>完整、未干预的模型</strong>，Task Score 下降约 10.06 分，并通过多重比较校正。<strong>接下来：</strong>对普通 OpenEVO 和 Bounded + β 进行可比干预，研究这种方向敏感性是否具有普遍性。</dd>
+        </div>
+        <div>
+          <dt><a href="#response-q08">Q08 · 长期学习会造成 Catastrophic Forgetting（灾难性遗忘）吗？</a></dt>
+          <dd><strong>已测：</strong>旧任务保持评测已完成 960 次，但部分题缺少可靠的“当初确实学会了”证据，因此后期做错尚不能证明遗忘。<strong>接下来：</strong>补齐相同旧题在学会前后及长期训练后的成绩，再比较三种方法保留旧能力的差异。</dd>
+        </div>
+        <div>
+          <dt><a href="#response-q09">Q09 · Text Memory、Skill 和 Agent System 有多少作用？</a></dt>
+          <dd><strong>已测：</strong>普通 OpenEVO 在 160 轮中更新参数 159 次，三种文字载体分别只改写 2、1、3 次；改变 R159 的指导文字，尚未得到稳定的成绩收益证据。少改写不意味着后续没有使用。<strong>接下来：</strong>分别真正关闭各载体，测量它们对能力的独立贡献以及与参数更新的配合。</dd>
+        </div>
+        <div>
+          <dt><a href="#response-q10">Q10 · 换一批新任务，结论还能成立吗？</a></dt>
+          <dd><strong>已做：</strong>会后新增了新题和独立随机种子的复现方案，尚无完整的独立正式结果。<strong>接下来：</strong>先在未参与实验选择的新 WebShop 题上重复训练和验证；再参考 <a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED（arXiv:2607.14777）</a> 等研究使用的 <strong>ALFWorld</strong>，检验三种 OpenEVO 方法在不同任务环境下是否仍有类似表现。</dd>
         </div>
       </dl>
-      <p>后文还使用已有的文字载体更新收据，以及 R159 在 64 题上的重复尝试和 32 条训练期动作输入的压缩诊断。Q02、Q03 的 SFT 与 SEED 实验使用独立协议，逐问说明。每项结果都会附上它所属的题目、模型与测量时点。</p>
+      <p class="evo-article__note">Q01–Q09 是由 2026 年 9 月 22 日会议议题整理出的研究问题，Q10 是会后新增的方向，并非学长当时逐字提出的十句话。后续实验的 GPU 数量、单卡显存、预计机器小时和人工投入将按实际方案核算；目前不填未经测量的数值。这里是研究进展导读，不取代后文的完整证据。</p>
     </section>
     <section class="evo-article__section" id="responses" data-response-experiments>
       <h2>3 十个研究问题，我们得到了哪些回答？</h2>
