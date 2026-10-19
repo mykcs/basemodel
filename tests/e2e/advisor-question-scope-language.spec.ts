@@ -58,9 +58,9 @@ for (const {width,theme} of [
     await expect(details).toContainText('64 道题');
     await expect(details).toContainText('practical plateau');
     await expect(details).toContainText('成绩下降');
-    await expect(page.locator('#experiment')).toContainText('这样的固定题在研究中叫“开发题”');
+    await expect(page.locator('#experiment')).toContainText('同一批 64 道开发题');
     await expect(page.locator('#experiment')).toContainText('同题比较');
-    await expect(page.locator('#experiment')).toContainText('初始模型怎么训练？');
+    await expect(page.locator('#experiment')).toContainText('SFT 和 OPSD，哪种初始训练方式更好？');
     const q02=page.locator('#response-q02');
     await expect(q02).toContainText('36.01/100');
     await expect(q02).toContainText('34.96/100');
