@@ -141,6 +141,9 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(tlDr).toContain('data-review-summary={q.id}');
     for(const field of ['did','found','status','next']) expect(tlDr).toContain('{q.reviewed.'+field+'}');
     expect(Object.keys(ADVISOR_REVIEWED_COPY)).toEqual(Array.from({length:10},(_,i)=>'q'+String(i+1).padStart(2,'0')));
+    expect(ADVISOR_REVIEWED_COPY.q01.approvedSummary).toBe('我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。');
+    expect(tlDr).toContain('data-confirmed-summary="q01"');
+    expect(responses).toContain('data-confirmed-detail="q01"');
     expect(ADVISOR_REVIEWED_COPY.q06.did).toContain('action-family entropy');
     expect(ADVISOR_REVIEWED_COPY.q06.status).toContain('token-level entropy');
     expect(ADVISOR_REVIEWED_COPY.q07.found).toContain('完整、未干预的 Bounded');

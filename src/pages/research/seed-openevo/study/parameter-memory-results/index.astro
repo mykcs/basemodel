@@ -117,10 +117,19 @@ const q17Effects = {
           <div data-review-summary={q.id}>
             <dt><a href={'#response-'+q.id}>{q.id.toUpperCase()} · {q.title}</a></dt>
             <dd>
-              <p><strong>我们做了什么：</strong>{q.reviewed.did}</p>
-              <p><strong>目前发现：</strong>{q.reviewed.found}</p>
-              <p><strong>完成情况：</strong>{q.reviewed.status}</p>
-              <p><strong>下一步：</strong>{q.reviewed.next}</p>
+              {q.id==='q01' ? (
+                <>
+                  <p data-confirmed-summary="q01">{ADVISOR_REVIEWED_COPY.q01.approvedSummary}</p>
+                  <p><strong>后续研究：</strong>{q.reviewed.next}</p>
+                </>
+              ) : (
+                <>
+                  <p><strong>我们做了什么：</strong>{q.reviewed.did}</p>
+                  <p><strong>目前发现：</strong>{q.reviewed.found}</p>
+                  <p><strong>完成情况：</strong>{q.reviewed.status}</p>
+                  <p><strong>下一步：</strong>{q.reviewed.next}</p>
+                </>
+              )}
             </dd>
           </div>
         ))}
@@ -141,8 +150,14 @@ const q17Effects = {
           </header>
           <p class="evo-article__note" data-question-origin-link={q.id}><a href={'/research/seed-openevo/study/advisor-questions/#'+q.id}>查看第二篇的 {q.id.toUpperCase()} 问题正文与背景 ↗</a>{q.id==='q10' && ' · 会后新增问题'}</p>
           {q.id!=='q01' && <p class="evo-article__question-setup" data-response-background={q.id}>{q.opening}</p>}
-          <p data-reviewed-did={q.id}><strong>我们做了什么：</strong>{q.reviewed.did}</p>
-          <p data-reviewed-finding={q.id}><strong>目前发现：</strong>{q.reviewed.found}</p>
+          {q.id==='q01' ? (
+            <p data-confirmed-detail="q01">{ADVISOR_REVIEWED_COPY.q01.approvedSummary}</p>
+          ) : (
+            <>
+              <p data-reviewed-did={q.id}><strong>我们做了什么：</strong>{q.reviewed.did}</p>
+              <p data-reviewed-finding={q.id}><strong>目前发现：</strong>{q.reviewed.found}</p>
+            </>
+          )}
           <p><strong>更详细的实验设置：</strong>{q.experiment}</p>
           {q.id==='q01' && <p class="evo-article__note" data-q01-iteration-definition>这里的“轮”是 OpenEVO 反复执行购物任务、整理经验并继续学习的迭代，不是把同一份固定训练集完整遍历一次的 epoch。部分轮次没有实际更新参数；普通 OpenEVO 的曲线按实际更新次数统计。</p>}
           <p class="evo-article__answer" data-experiment-finding={q.id}><strong>已测结果：</strong>{q.finding.replaceAll('普通 DirectApply','普通 OpenEVO')}</p>

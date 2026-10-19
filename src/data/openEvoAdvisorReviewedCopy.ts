@@ -1,13 +1,17 @@
 /**
- * Human-reviewed ten-question explanation language.
+ * Conversation-derived ten-question copy: explicitly verified versus reconstructed.
  * This block protects the user-reviewed research narrative from being silently
  * replaced by later evidence-led rewrites. New experiments belong in the
  * detailed evidence fields, with a dated qualifier when they update a claim.
- * The 2026-10-18 discussion was reconstructed from the visible review sequence;
- * never claim every sentence is a verbatim quotation from the meeting.
+ * Q01.approvedSummary is the user-provided, verbatim Q01 answer reconfirmed in
+ * the 2026-10-19 chat. This is different from the assistant's reconstructed
+ * did/found/status/next fields: do not paraphrase or split approvedSummary.
+ * Q02-Q10 have not yet received the same explicit verbatim re-confirmation.
+ * Do not equate user-approved answer copy with the 2026-09-22 advisor RAW.
  */
 export const ADVISOR_REVIEWED_COPY = {
   "q01": {
+    "approvedSummary": "我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。",
     "did": "我们把普通 OpenEVO、Bounded 和历史 β/GDR 的训练保存点放在同一批 64 道开发题上比较，观察训练到第 120、150、160 轮时的变化。",
     "found": "普通 OpenEVO 约在第 120 次更新后收益很小；Bounded 到第 150 轮仍有提升；历史 β/GDR 后期出现掉分。因此，160 轮是否过多取决于采用哪一种更新方法。",
     "status": "三种方法的保存点对比已经做完。β-gating 另外已有延伸到 200 轮的训练轨迹，但这些证据还不能证明三种方法在新题上的最佳停止点。",

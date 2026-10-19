@@ -126,6 +126,14 @@ test('accepted ten-question copy stays identical between TLDR and detailed answe
     const id='q'+String(n).padStart(2,'0');
     const brief=guide.locator('[data-review-summary="'+id+'"]');
     const paragraphs=brief.locator('dd p');
+    if(id==='q01') {
+      await expect(paragraphs).toHaveCount(2);
+      const approved=brief.locator('[data-confirmed-summary="q01"]');
+      await expect(approved).toHaveText('我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。');
+      await expect(page.locator('[data-confirmed-detail="q01"]')).toHaveText(await approved.innerText());
+      await expect(paragraphs.nth(1)).toContainText('后续研究：');
+      continue;
+    }
     await expect(paragraphs).toHaveCount(4);
     await expect(page.locator('[data-reviewed-did="'+id+'"]')).toHaveText(await paragraphs.nth(0).innerText());
     await expect(page.locator('[data-reviewed-finding="'+id+'"]')).toHaveText(await paragraphs.nth(1).innerText());
