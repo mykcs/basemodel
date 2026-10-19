@@ -48,6 +48,9 @@ for(const {width,theme} of [
     expect(palette.size).toBe(3);
     await expect(page.locator('[data-advisor-overview]')).toContainText('并非整项研究全部结束');
     await expect(page.locator('[data-advisor-key-findings]')).toContainText('平均成绩下降约 10 分');
+    await expect(page.locator('[data-advisor-key-findings]')).toContainText('31.09 小时');
+    await expect(page.locator('[data-advisor-key-findings]')).toContainText('2.02 小时');
+    await expect(page.locator('[data-advisor-overview]')).toContainText('训练轮数和参数更新方向');
     await expect(page.locator('[data-advisor-priorities]')).toContainText('18 个评测位置还有 3 个缺口');
     await expect(page.locator('[data-advisor-priorities] a[href="#response-q03"]')).toBeVisible();
     await expect(page.locator('[data-evidence-readiness="q03"]')).toHaveAttribute('data-evidence-state','partial');
@@ -73,4 +76,23 @@ test('previous all-grey status override is rejected while ordinary grey body met
   expect(new Set(withOldBug).size).toBe(1);
   expect(withOldBug[0]).toBe(normalMetadata);
   expect(new Set(withOldBug).size===3).toBe(false);
+});
+
+test('advisor ELI5 keeps experiment identity, human-sized numbers and distinct unknowns',async({page})=>{
+  await page.goto('/research/seed-openevo/study/parameter-memory-results/',{waitUntil:'domcontentloaded'});
+  const brief=page.locator('#experiment');
+  await expect(brief.locator('[data-brief-answer="q01"]')).toContainText('普通 OpenEVO');
+  await expect(brief.locator('[data-brief-done="q01"]')).toContainText('64 道购物题');
+  await expect(brief.locator('[data-brief-answer="q03"]')).toContainText('工程检查和开发题测试');
+  await expect(brief.locator('[data-brief-answer="q04"]')).toContainText('205.6 MB');
+  await expect(brief.locator('[data-brief-answer="q04"]')).toContainText('51.4 MB');
+  await expect(brief.locator('[data-brief-answer="q08"]')).toContainText('当初确实做对的记录');
+  await expect(brief.locator('[data-brief-missing="q09"]')).toContainText('分别关闭三种文字指导来源');
+  await expect(page.locator('#response-q03 [data-evidence-readiness="q03"]')).toHaveAttribute('data-evidence-state','partial');
+  await expect(page.locator('#response-q10 [data-evidence-readiness="q10"]')).toHaveAttribute('data-evidence-state','unrun');
+  const oldBad='Task Score 分别为 60.72、45.98、20.77/100，完整成功分别为 50、32、10 题';
+  const actual=await page.locator('.evo-article__abstract p').first().innerText();
+  expect(oldBad).toMatch(/(?:\\d+(?:\\.\\d+)?[、，]){2}/);
+  expect(actual).toContain('普通 OpenEVO 的 Task Score 为 60.72 分');
+  expect(actual).not.toContain('20.77/100');
 });
