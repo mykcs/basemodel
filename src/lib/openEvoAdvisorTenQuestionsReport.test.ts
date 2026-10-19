@@ -131,6 +131,31 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('独立研究');
     expect(questions).toContain('不能当作学长当时逐字提出的十句话');
   });
+  it('protects conversation-reference prose and unframed answer navigation',()=>{
+    // Q01 is directly user-requoted; Q02-Q10 are historically discussed reference drafts.
+    // Any deliberate editorial change must update this regression with evidence.
+    const expected={
+      "q01": "6303bdeaae1d0364eaff316dee9597f92a03a244f1de50d2a9610548945ece5f",
+      "q02": "285e1a5b4e8ec565bda7e70c62d235b7aadfcf9bd6ea861a5ecdafad729fa65b",
+      "q03": "59d081e75d8ce2dcab40a319891e69243b6a5bf5e27e0a389bc59d3a4b7dd03f",
+      "q04": "193911af621d09cfe25c328f58adf35856035774425a480e006bb2a173b1a180",
+      "q05": "e25182c5ac6e2d764df63fc3960ec1b35fe3a1cae22fa1c7c72d82f813feb2fc",
+      "q06": "362ad9cd6447440270c26dec555d6297cb2f6c976ffe182883e4c0c70ead211b",
+      "q07": "78d47d8ee66af198ace9f9d35b71a0898449e4ec3d532dc4163e660f10b4359b",
+      "q08": "8ae27f42eee8a2ece6cc169de6e9e1c497f7d582f11beb5a7d9a08a10ce23eb7",
+      "q09": "6a73bc18570711ce0682cf32a29aea0897294c4172aafcface09ad77d4580863",
+      "q10": "109a67a40028a82378bd9c75b18780bf7bfee9c880f7dfadffc37daeebea7925"
+    } as const;
+    for(const [id,hash] of Object.entries(expected)){
+      const item=ADVISOR_REVIEWED_COPY[id as keyof typeof ADVISOR_REVIEWED_COPY];
+      expect(createHash('sha256').update(item.summary).digest('hex')).toBe(hash);
+      expect(item.nextResearch.length).toBeGreaterThan(20);
+    }
+    expect(ADVISOR_REVIEWED_COPY.q01.provenance).toBe('user-quoted-exact');
+    expect(ADVISOR_REVIEWED_COPY.q02.provenance).toBe('chatgpt-discussed-draft');
+    expect(read('src/components/research/OpenEvoQuestionIndex.astro')).not.toContain('[data-experiment-response]:target');
+    expect(read('src/styles/openevo-research-blogs.css')).not.toContain('.evo-article__next-work{border-left');
+  });
   it('keeps evaluation scope, unique booktabs numbers and primary source proximity',()=>{
     const capacity=read('src/components/research/AdvisorTenEvidenceVisual.astro');
     expect(responses).toContain('2 十问速览：我们发现了什么，下一轮还想研究什么？');
@@ -139,17 +164,21 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(tlDr).toContain('data-review-source="single"');
     expect(tlDr).toContain('responseQuestions.map(q =>');
     expect(tlDr).toContain('data-review-summary={q.id}');
-    for(const field of ['did','found','status','next']) expect(tlDr).toContain('{q.reviewed.'+field+'}');
+    for(const field of ['summary','nextResearch']) expect(tlDr).toContain('{q.reviewed.'+field+'}');
     expect(Object.keys(ADVISOR_REVIEWED_COPY)).toEqual(Array.from({length:10},(_,i)=>'q'+String(i+1).padStart(2,'0')));
-    expect(ADVISOR_REVIEWED_COPY.q01.approvedSummary).toBe('我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。');
-    expect(tlDr).toContain('data-confirmed-summary="q01"');
-    expect(responses).toContain('data-confirmed-detail="q01"');
-    expect(ADVISOR_REVIEWED_COPY.q06.did).toContain('action-family entropy');
-    expect(ADVISOR_REVIEWED_COPY.q06.status).toContain('token-level entropy');
-    expect(ADVISOR_REVIEWED_COPY.q07.found).toContain('完整、未干预的 Bounded');
-    expect(ADVISOR_REVIEWED_COPY.q10.next).toContain('ALFWorld');
-    expect(responses).toContain('data-reviewed-finding={q.id}');
-    expect(responses).toContain('data-reviewed-completion={q.id}');
+    expect(ADVISOR_REVIEWED_COPY.q01.summary).toBe('我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。');
+    expect(tlDr).toContain('data-conversation-summary={q.id}');
+    expect(tlDr).toContain('data-conversation-next={q.id}');
+    expect(responses).toContain('data-conversation-detail={q.id}');
+    expect(ADVISOR_REVIEWED_COPY.q06.summary).toContain('action-family entropy');
+    expect(ADVISOR_REVIEWED_COPY.q06.nextResearch).toContain('token-level entropy');
+    expect(ADVISOR_REVIEWED_COPY.q07.summary).toContain('完整、未干预的 Bounded');
+    expect(ADVISOR_REVIEWED_COPY.q10.nextResearch).toContain('ALFWorld');
+    expect(ADVISOR_REVIEWED_COPY.q02.summary).toContain('SFT 直接学习示范，OPSD 利用额外经验指导模型学习');
+    expect(ADVISOR_REVIEWED_COPY.q09.summary).toContain('文字很少改写');
+    // The detailed response reuses the same core paragraph without an extra result/finished-work box.
+    expect(responses).not.toContain('data-reviewed-completion={q.id}');
+    expect(responses).not.toContain('data-reviewed-finding={q.id}');
     expect(responses).toContain('GPU 数量');
     expect(responses).not.toContain('aria-label="研究问题与具体测量对应表"');
     expect(responses).not.toContain('六类证据的评测口径');
@@ -290,7 +319,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(visual).toContain('原始英文收据把它称作 practical plateau');
     expect(visual).toContain('平均分都没有比它高出超过 2 分');
     expect(visual).toContain('历史 β/GDR 在第 130 轮后成绩下降');
-    expect(ADVISOR_REVIEWED_COPY.q01.did).toContain('同一批 64 道开发题');
+    expect(ADVISOR_QUESTIONS[0]?.experiment).toContain('64 道');
     expect(responses).toContain('同题比较');
     expect(ADVISOR_QUESTIONS[1]?.title).toBe('开始长期学习前，SFT 和 OPSD 哪种方法更好？');
     expect(ADVISOR_QUESTIONS[2]?.title).toBe('我们的 SEED 实验成绩为什么比论文低这么多？');

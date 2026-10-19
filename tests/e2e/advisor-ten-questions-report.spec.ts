@@ -118,7 +118,7 @@ test('third article answers all Q01–Q10 with experiments, measurements, limits
   await expect(page.locator('#response-q10')).toContainText('当前并没有三条新随机流');
 });
 
-test('accepted ten-question copy stays identical between TLDR and detailed answers',async({page})=>{
+test('conversation reference paragraphs stay identical in the TLDR and the detailed answers',async({page})=>{
   await page.goto(prefix+'parameter-memory-results/');
   const guide=page.locator('#experiment [data-review-source="single"]');
   await expect(guide.locator('[data-review-summary]')).toHaveCount(10);
@@ -126,25 +126,42 @@ test('accepted ten-question copy stays identical between TLDR and detailed answe
     const id='q'+String(n).padStart(2,'0');
     const brief=guide.locator('[data-review-summary="'+id+'"]');
     const paragraphs=brief.locator('dd p');
-    if(id==='q01') {
-      await expect(paragraphs).toHaveCount(2);
-      const approved=brief.locator('[data-confirmed-summary="q01"]');
-      await expect(approved).toHaveText('我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。');
-      await expect(page.locator('[data-confirmed-detail="q01"]')).toHaveText(await approved.innerText());
-      await expect(paragraphs.nth(1)).toContainText('后续研究：');
-      continue;
-    }
-    await expect(paragraphs).toHaveCount(4);
-    await expect(page.locator('[data-reviewed-did="'+id+'"]')).toHaveText(await paragraphs.nth(0).innerText());
-    await expect(page.locator('[data-reviewed-finding="'+id+'"]')).toHaveText(await paragraphs.nth(1).innerText());
-    await expect(page.locator('[data-reviewed-completion="'+id+'"]')).toHaveText(await paragraphs.nth(2).innerText());
-    const next=(await paragraphs.nth(3).innerText()).replace(/^下一步：/,'');
+    await expect(paragraphs).toHaveCount(2);
+    await expect(page.locator('[data-conversation-detail="'+id+'"]')).toHaveText(await paragraphs.nth(0).innerText());
+    await expect(paragraphs.nth(1)).toContainText('后续研究：');
+    const next=(await paragraphs.nth(1).innerText()).replace(/^后续研究：/,'');
     await expect(page.locator('[data-next-work="'+id+'"]')).toContainText(next);
   }
+  await expect(guide.locator('[data-review-summary="q01"] [data-conversation-summary]')).toHaveText('我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。');
+  await expect(guide.locator('[data-review-summary="q02"]')).toContainText('SFT 直接学习示范，OPSD 利用额外经验指导模型学习');
   await expect(guide.locator('[data-review-summary="q06"]')).toContainText('action-family entropy');
   await expect(guide.locator('[data-review-summary="q07"]')).toContainText('完整、未干预的 Bounded');
   await expect(guide.locator('[data-review-summary="q10"]')).toContainText('ALFWorld');
 });
+
+test('navigating to a detailed answer does not add a green bar or box',async({page})=>{
+  await page.goto(prefix+'parameter-memory-results/#response-q07');
+  const article=page.locator('#response-q07');
+  await expect(article).toBeVisible();
+  await expect(article).toHaveCSS('border-left-width','0px');
+  await expect(article).toHaveCSS('border-right-width','0px');
+  await expect(article).toHaveCSS('border-top-width','0px');
+  const decoration=await article.evaluate(node=>{
+    const a=getComputedStyle(node);
+    const next=getComputedStyle(node.querySelector('[data-next-work]')!);
+    return {
+      target:node.matches(':target'),
+      background:a.backgroundColor,
+      borderInlineStart:a.borderInlineStartWidth,
+      nextBorderInlineStart:next.borderInlineStartWidth
+    };
+  });
+  expect(decoration.target).toBe(true);
+  expect(decoration.background).toBe('rgba(0, 0, 0, 0)');
+  expect(decoration.borderInlineStart).toBe('0px');
+  expect(decoration.nextBorderInlineStart).toBe('0px');
+});
+
 
 test('response article also keeps frozen final, paired capacity, direction, uncertainty',async({page})=>{
   await page.goto(prefix+'parameter-memory-results/');

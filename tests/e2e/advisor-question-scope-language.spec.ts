@@ -58,7 +58,7 @@ for (const {width,theme} of [
     await expect(details).toContainText('64 道题');
     await expect(details).toContainText('practical plateau');
     await expect(details).toContainText('成绩下降');
-    await expect(page.locator('#experiment [data-confirmed-summary="q01"]')).toHaveText('我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。');
+    await expect(page.locator('#experiment [data-conversation-summary="q01"]')).toHaveText('我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。');
     await expect(page.locator('#response-q01')).toContainText('64 道 WebShop 开发题');
     await expect(page.locator('#experiment')).toContainText('开始长期学习前，SFT 和 OPSD 哪种方法更好？');
     const q02=page.locator('#response-q02');
