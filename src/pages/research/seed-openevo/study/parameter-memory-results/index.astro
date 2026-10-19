@@ -113,11 +113,11 @@ const q17Effects = {
   <main class="evo-blog evo-article evo-approved-reader" data-evo-blog="results" data-paper-citation-style="plain-text" data-reader-page="research-blog" data-copy-review>
     <header>
       <h1>我们的回应实验：十个研究问题的证据</h1>
-      <p class="evo-article__lede" data-reader-purpose>2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会（<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />会议原始逐字记录（RAW）</a>）。我们讨论了购物智能体应该训练多久、长期参数该保存多大，以及更新方向是否影响能力。会后将讨论细化为 Q01–Q09，又新增独立复现问题 Q10；这些编号不是学长当时逐字提出的十句话。本篇解释我们实际做了什么、结果是多少、还缺什么证据。</p>
+      <p class="evo-article__lede" data-reader-purpose>2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会（<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />会议原始逐字记录（RAW）</a>）。我们的模型要在模拟网店里按要求找到商品、选对规格并完成购买；完成一批任务后，再尝试把有用经验变成下一轮的学习。学长希望知道：模型训练多久合适、长期参数该保存多大、更新方式会怎样影响做题成绩。会后我们把会议议题整理成九问，并新增新任务独立复现这一问。这篇报告逐项给出已经测到的结果、尚缺的证据和下一步。</p>
     </header>
     <section class="advisor-overview" data-advisor-overview aria-labelledby="advisor-overview-title">
-      <h2 id="advisor-overview-title">十问进度：现在回答到哪一步了？</h2>
-      <p class="advisor-overview__lead">我们已经找到一些明确的局部结果，但长期能力、遗忘、文字经验和新任务复现还没有全部回答。下方按科学问题是否得到回答分类，而不是按训练次数或代码完成情况打分。</p>
+      <h2 id="advisor-overview-title">十项研究问题的进度</h2>
+      <p class="advisor-overview__lead">训练轮数和参数更新方向已有范围明确的局部结论；另外六问做过部分实验，关键答案仍需核实；SEED 的正式复现和跨新任务验证尚未完成。</p>
       <dl class="advisor-overview__counts" aria-label="十项研究问题的回答状态">
         {answerTones.map(tone => (
           <div class:list={['advisor-overview__count', 'advisor-overview__count--'+tone]} data-overview-status={tone}>
@@ -128,7 +128,7 @@ const q17Effects = {
       </dl>
       <p class="advisor-overview__explanation">绿色表示已有范围明确的局部结论，并非整项研究全部结束；黄色表示做过实验，但关键答案还不确定；红色表示核心正式验证未完成，并非没有做过任何工作。</p>
       <div class="advisor-overview__decisions" data-advisor-decisions>
-        <p data-advisor-key-findings><strong>目前最值得关注的发现：</strong>固定容量路线在历史实验中明显缩短了参数更新耗时；另一项实验发现，反转固定容量模型某一轮参数更新的方向，会让同一批题的平均成绩下降约 10 分。历史路线不是完全严格对照，方向结果也只来自一个训练状态。<a href="#response-q05">历史路线的成绩与耗时</a> · <a href="#response-q07">方向干预证据</a></p>
+        <p data-advisor-key-findings><strong>已经测到的关键现象：</strong>历史普通 OpenEVO 的参数更新累计耗时 31.09 小时，固定容量模型为 2.02 小时；完整任务运行没有同等幅度的加速。另一次同题干预把固定容量模型第 156 轮的更新方向反过来，平均成绩下降约 10 分。三条历史训练路线并非严格随机对照，方向结果目前也只来自一个模型状态。<a href="#response-q05">查看历史成绩与耗时</a> · <a href="#response-q07">查看方向干预</a></p>
         <p data-advisor-priorities><strong>接下来优先补的证据：</strong><a href="#response-q02">Q02</a> 的六组训练已完成，18 个评测位置还有 3 个缺口；<a href="#response-q03">Q03</a> 需要先对齐论文的评测条件，再完成正式复现。这是按现有证据缺口排列的阅读建议，不代表新的实验已经运行。</p>
       </div>
       <a class="advisor-overview__jump" href="#experiment">逐问查看：已有结果、做到哪里、还缺什么 ↓</a>
@@ -145,7 +145,7 @@ const q17Effects = {
         <summary aria-label="展开或收起文章目录">目录</summary>
       <ol>
         <li><a href="#context">1 研究问题与评测</a></li>
-        <li><a href="#experiment">2 十问速览与后续研究</a></li>
+        <li><a href="#experiment">2 十问速览与后续工作</a></li>
         <li><a href="#responses">3 十个问题的实验回答</a></li>
         {ADVISOR_QUESTIONS.map(q => <li><a href={'#response-'+q.id}>{responseQuestionRef(q.id)} · {q.title}</a></li>)}
         <li><a href="#discussion">研究总结</a></li>
@@ -155,12 +155,12 @@ const q17Effects = {
     </nav>
     <section id="context" class="evo-article__section">
       <h2>1 研究问题：长期学习的效率与任务能力</h2>
-      <p>OpenEVO 把智能体的任务经验保留到后续轮次。在我们的 WebShop 实验中，Qwen3-1.7B 模型需要按照购物要求搜索商品、选择规格、完成购买。我们用 Task Score（满足要求的程度，满分 100）与完整成功数衡量实际任务能力。</p>
+      <p>OpenEVO 让模型从已完成的任务中挑选经验，再尝试改进下一轮的表现。例如，WebShop 会要求模型买到指定颜色和尺码的商品；Qwen3-1.7B 模型需要搜索、比较商品、选择规格并完成购买。Task Score 衡量购买结果满足要求的程度（满分 100 分），完整成功数统计全部要求都做到的题目数。</p>
       <p>在普通 OpenEVO 的长期实验里，我们观察到一个问题：每一轮都增加新的低秩参数组件，历史越积越多，保存和参数更新越来越重。我们想先探索两个方向：第一，长期 state 能不能一直保持固定大小？第二，固定大小后，新经验该怎么写进去？于是保留普通 OpenEVO 作为历史参照，尝试用 Bounded 把旧更新整合到固定容量里，再在 Bounded 上尝试历史 β/GDR 写入控制。这样形成了三条已运行的路线。我们先看它们能否省计算、还能做对多少题；具体的 LoRA、SD-LoRA、Bounded 和 β 机制可读<a href="/research/seed-openevo/study/openevo-methods/">第一篇方法介绍</a>。</p>
     </section>
     <section id="experiment" class="evo-article__section" data-ten-question-tldr>
-      <h2>2 十问速览：我们发现了什么，下一轮还想研究什么？</h2>
-      <p>每问依次列出<strong>目前的回答、已经做的实验和仍缺的证据</strong>。状态颜色只表示问题回答到哪一步；问题标题链接到详细结果。</p>
+      <h2>2 十问速览与后续工作</h2>
+      <p>每问都有一句目前的回答、实际已做的工作和还缺的证据。点击问题标题可查看完整结果、图表与实验记录。</p>
       <dl class="evo-article__experiment-guide advisor-digest" data-review-source="single">
         {responseQuestions.map(q => (
           <div data-review-summary={q.id} data-brief-tone={q.progress.tone}>
@@ -186,9 +186,9 @@ const q17Effects = {
       <p class="evo-article__note">Q01–Q09 是由 2026 年 9 月 22 日会议议题整理出的研究问题，Q10 是会后新增的方向，并非学长当时逐字提出的十句话。后续实验的 GPU 数量、单卡显存、预计机器小时和人工投入将按实际方案核算；目前不填未经测量的数值。这里是研究进展导读，不取代后文的完整证据。</p>
     </section>
     <section class="evo-article__section" id="responses" data-response-experiments>
-      <h2>3 十个研究问题，我们得到了哪些回答？</h2>
+      <h2>3 十个问题的实验结果与证据</h2>
       <p>Q01–Q10 对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。本节和前面的速览使用同一套绿、黄、红状态，每问明确写出实际完成的部分、实验发现、仍缺的关键证据和下一步。规划工作量与已经测得的 GPU 耗时严格区分。Q02、Q04、Q05、Q06、Q09 的后续实验进展于 2026 年 10 月 19 日只读核对对应实验收据；其他问题保留各自原始收据的时间边界。</p>
-      <p class="evo-article__note" data-status-axes>彩色状态表示科学问题回答到哪里；下面另外写出实际运行进度和证据成熟度。训练结束、完成评测与得到可信的科学结论需要分别判断。</p>
+      <p class="evo-article__note" data-status-axes>每问分别记录实验进度、测得的结果与证据是否足够。即使训练已经完成，仍可能需要独立复现才能回答更大的科学问题。</p>
       <OpenEvoQuestionIndex questions={responseQuestions.map(q=>({...q,headingNumber:responseQuestionRef(q.id)}))} />
       {responseQuestions.map(q => (
         <article class="evo-article__question" id={'response-'+q.id} data-experiment-response={q.id} aria-labelledby={'response-'+q.id+'-title'}>
@@ -415,7 +415,7 @@ const q17Effects = {
       ))}
     </section>
     <section id="discussion" class="evo-article__section">
-      <h2>研究总结与仍待回答的问题</h2>
+      <h2>研究总结与关键缺口</h2>
       <p>目前可以确认，固定容量明显减少了长期参数更新所需的计算，并将长期参数文件大小保持在受控范围内。rank32 在后段匹配任务中用约四分之一的文件容量保留了大部分观测得分。历史 β/GDR 终点评测较低，第 156 轮方向干预展示了一次局部因果影响。</p>
       <p>任务成绩差异还需要更严格地分离：普通 OpenEVO 属于历史前序实验；容量筛选与最终冻结 128 题不是同一个测量阶段；文字指导中和已测，但完整关闭载体权限的消融仍缺失。更小 rank、可靠的 SEED 对照、旧任务保持和新随机任务复现仍缺决定性证据；各问题下补充的 R129 和 R159 测量提供了局部诊断，仍不能回答完整持续学习与独立新任务复现；公开 SEED 新路线的正式 SFT 和 Stage2 也尚未产生新成绩。</p>
       <p>十项回应的结果、局限和原始记录已在本篇逐项列出；问题本身的提出背景见<a href="/research/seed-openevo/study/advisor-questions/">第二篇“学长十问”</a>。方法推导与参数记忆的工作原理详见<a href="/research/seed-openevo/study/openevo-methods/">第一篇方法介绍</a>。</p>
@@ -448,7 +448,7 @@ const q17Effects = {
           <p>R129 和 R159 都对 78 项指标逐项给出了处置结论。R129 有 75 项实测或经来源核实复用，1 项不适用，另有 2 项保留历史缺失说明；R159 有 74 项实测或经来源核实复用，1 项不适用，另有 3 项保留历史缺失说明。<strong>78 项处置闭合不等于 78 项数值全部测得</strong>；缺失的历史梯度、成本等日志不能由今天重跑还原。这也不把另外 11 份模型升级为验收完成。</p>
       <h3>10 月 14 日的历史证据与当时缺口</h3>
             <p>这里核对的是 <strong>Q17 DirectApply / No-GDR 的 Qwen3-1.7B R159</strong>，即完成第 160 次参数更新之后的模型。它在冻结的 <strong>64 道开发题</strong>上的 Task Score 为 <strong>60.1088 分</strong>（满分 100 分）；64 道题中有 <strong>18 道完整成功</strong>、<strong>53 道获得正奖励</strong>；旧 361 个执行步骤中记录的工程无效动作为 0。这是单个训练时保存的模型版本在固定研究题上的成绩，<strong>不能替代</strong>上面三条路线各自的 128 题终评。<a href={checkpointEvidence.ledger} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.ledger} />R159 原始科学账本</a></p>
-            <h3>有 13 份账本，不等于有 13 份完整体检报告</h3>
+            <h3>13 份模型的测量证据覆盖情况</h3>
             <p>截至 2026 年 10 月 14 日，13 份模型各建立了 78 项状态格，合计 <strong>1,014</strong> 格，其中 <strong>186</strong> 格是严格接纳的旧实测或来源核实复用项；117 个核心指标格中已有 <strong>64 格</strong>接纳证据。<strong>13 份模型中还没有任何一份完成全部 78 项指标</strong>。186 不是新跑的实验数，更不是总体科研完成率。<a href={checkpointEvidence.matrix} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.matrix} />13 份模型的 78 项指标状态矩阵</a></p>
             <p>根据当时尚未合并的实验 PR #703 分支，R159 在 78 项指标中已有 <strong>39 项</strong>接纳证据，<strong>9 项核心指标均已核验</strong>；实验仓库的 <code>main</code> 在这份快照中仅接纳了 <strong>38 项</strong>。这 39 项由 30 项直接验证通过（PASS）和 9 项来源复用核实（REUSED_VERIFIED）构成；剩下 10 项仅有部分证据（PARTIAL）、18 项因缺材料阻塞（BLOCKED）、10 项待验证（PENDING）、1 项不适用（NOT_APPLICABLE）。原 361 步缺失 logits，远端完整冷恢复也没有通过；这些缺口不能用文稿补齐。</p>
             <p class="evo-article__note">这些数字是<strong>已有科学证据的写作核对</strong>。该快照当时尚未包含上方 10 月 15 日的新测量；下述状态均保留为历史记录。科学账本由 <a href="https://github.com/mykcs/openevo-experiment/pull/703" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/703" />实验 PR #703</a> 持有；本页不把 PARTIAL 或计划写成 PASS，也不修改原始数据。</p>
