@@ -454,3 +454,47 @@ test('all advisor-response numeric claims are readable in the actual rendered pa
     .map(s=>s.trim().slice(0,180));
   expect(badRendered).toEqual([]);
 });
+
+test('advisor numeric typography stays plain throughout prose, tables and plots',async({page})=>{
+  await page.setViewportSize({width:390,height:900});
+  await page.goto(prefix+'parameter-memory-results/',{waitUntil:'domcontentloaded'});
+  const article=page.locator('[data-evo-blog="results"]');
+  const selectors=[
+    '.evo-article__abstract p strong',
+    '#response-q01-title',
+    '#response-q01 .advisor-viz__q01-chart text',
+    '#response-q03 .advisor-viz__q03-score',
+    '#response-q03 .q03-world4__tablewrap table td',
+    '#response-q04 .advisor-result-matrix table td[data-numeric]',
+    '#response-q02 .advisor-viz .research-booktabs td',
+    '#response-q07 .paper-effect__value strong',
+    '#capacity .paper-effect__axis',
+    '#main-results .evo-article__tablewrap table td',
+  ];
+  for(const selector of selectors){
+    const node=article.locator(selector).first();
+    await expect(node,selector).toHaveCount(1);
+    const style=await node.evaluate(el=>{
+      const value=getComputedStyle(el);
+      return {font:value.fontFamily,numeric:value.fontVariantNumeric,features:value.fontFeatureSettings};
+    });
+    expect(style.font,selector).toContain('PingFang SC');
+    expect(style.font,selector).not.toMatch(/Georgia|Times New Roman|Songti SC|STSong|Noto Serif/i);
+    expect(style.numeric,selector).toBe('normal');
+    expect(style.features,selector).toBe('normal');
+  }
+  // The mathematical font remains KaTeX; the text-font change must not break it.
+  await expect(article.locator('#capacity .katex').first()).toBeVisible();
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(2);
+
+  // Negative control: make one scientific table use the owner's rejected
+  // serif/tabular numerals. The same computed-style check must now reject it.
+  await page.addStyleTag({content: '.evo-blog.evo-approved-reader .advisor-result-matrix table {font-family: Georgia, serif !important; font-variant-numeric: tabular-nums !important}'});
+  const deliberatelyBroken=await article.locator('#response-q04 .advisor-result-matrix table').evaluate(el=>{
+    const st=getComputedStyle(el);
+    return {font:st.fontFamily,numeric:st.fontVariantNumeric};
+  });
+  expect(deliberatelyBroken.font).toContain('Georgia');
+  expect(deliberatelyBroken.numeric).toBe('tabular-nums');
+});
