@@ -46,10 +46,14 @@ for (const width of [390, 768, 1440]) {
       await expect(page.locator('[data-paper-effect="q07-inversion"] figcaption')).toContainText('第 156 轮');
       await expect(page.locator('[data-paper-effect="q09-context"] figcaption')).toContainText('完整关闭载体权限');
       await expect(page.locator('[data-paper-effect="q09-context"] [data-effect-row]')).toHaveCount(4);
-      // The frozen final now belongs under Q05; the capacity comparison is Table 3.
-      const finalTable = page.locator('#response-q05 [aria-label="三条路线冻结最终测试"] table');
-      await expect(finalTable).toHaveAccessibleName(/表 5｜同一冻结 128 题/);
+      // Historical 128-task measurements remain a three-row panel; the SEED
+      // paper's independent 128-task results are a clearly separate reference.
+      const finalTable = page.locator('#response-q05 [data-webshop-seed-paper-comparison]');
+      await expect(finalTable).toHaveAccessibleName(/表 5｜历史三路线与 SEED 论文 WebShop 指标/);
+      await expect(finalTable.locator('[data-score-origin="our-frozen-128"] tr')).toHaveCount(3);
+      await expect(finalTable.locator('[data-score-origin="paper-reported-128"] tr')).toHaveCount(1);
       await expect(finalTable).toContainText('60.72');
+      await expect(finalTable).toContainText('77.3%');
     });
   }
 }
