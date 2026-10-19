@@ -522,7 +522,10 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(summary).toContain('不是完全严格的对照');
     expect(summary).toContain('第 152–159 轮');
     expect(summary).toContain('rank128 用已经封存的同轮次历史结果');
-    expect(summary).toContain('href={checkpointEvidence.capacity}');
+    // The first screen should retain the primary meeting RAW and the compact
+    // TOC. Detailed capacity evidence stays linked under its own Q04 answer.
+    expect(summary).not.toContain('href={checkpointEvidence.capacity}');
+    expect(responses).toContain('href={checkpointEvidence.capacity}');
 
     // Negative visual witness: making the method words heavier is no substitute
     // for orientation. Keep meaningful numerical emphasis and existing scientific labels.
