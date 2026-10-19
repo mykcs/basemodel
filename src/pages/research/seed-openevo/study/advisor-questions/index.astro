@@ -8,6 +8,20 @@ import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeet
 
 const responseHref = (id: string) =>
   '/research/seed-openevo/study/parameter-memory-results/#response-' + id;
+
+// Each entry is a question to test, not an experiment result or a promised outcome.
+const researchTargets = {
+  q01: '三种方法是否应该在不同的轮次停止训练？在新题上还成立吗？',
+  q02: 'SFT 和 OPSD 哪种初始训练更合适？不同起点会改变以后的长期学习吗？',
+  q03: '按 SEED 原生题单、提示和训练流程评测后，成绩差距还有多大？',
+  q04: '减小 LoRA rank 后，眼前的成绩与后续持续学习能力分别受到什么影响？',
+  q05: '只调节参数写入强度的简单 β，能否比历史复杂 β 取得更好的长期成绩？',
+  q06: '逐 token 熵和具体点击候选的熵，能否比 search/click 动作类型更好地解释错误？',
+  q07: '反转或删除某次 Task Vector 更新，对普通 OpenEVO、Bounded 与 Bounded + β 分别有什么影响？',
+  q08: '有证据确认模型曾经学会的旧题，长期训练后究竟保留了多少？',
+  q09: '真正关闭 Text Memory、Skill、Agent System 中任意一种，会改变多少做题能力？',
+  q10: '换新 WebShop 题、换训练随机设置、再换到 ALFWorld，原来的判断分别能复现吗？',
+} as const;
 ---
 <AppLayout
   title="学长十问：OpenEVO 持续学习需要回答的研究问题"
@@ -54,7 +68,8 @@ const responseHref = (id: string) =>
           <header class="evo-article__question-header"><span class="evo-article__qnum">{q.id.toUpperCase()}</span><h3 id={q.id+'-title'}>{q.title}</h3></header>
           {q.id==='q10' && <p class="evo-article__note">会后新增的独立复现问题</p>}
           <p>{q.opening}</p>
-          <p class="evo-article__note"><a href={responseHref(q.id)}>{q.id==='q03' ? '查看公开 SEED 复现的工程测量与限制 →' : ['q04','q07','q08','q09'].includes(q.id) ? '查看 10 月 15 日补充的 Q17 实验回应 →' : '查看我们针对这一问题的实验回应 →'}</a></p>
+          <p class="evo-article__note" data-question-research-target={q.id}><strong>真正想检验：</strong>{researchTargets[q.id as keyof typeof researchTargets]}</p>
+          <p class="evo-article__note"><a href={responseHref(q.id)}>查看 {q.id.toUpperCase()} 已完成的实验、结果与未解问题 →</a></p>
         </article>
       ))}
     </section>
@@ -63,6 +78,7 @@ const responseHref = (id: string) =>
       <p><strong>Q01–Q03</strong> 依次研究三个不同的环节：训练多久才有明显收益；开始逐轮学习前，SFT 和 OPSD 怎样训练初始模型；我们的 SEED 复现实验能否按论文的条件公平比较。三者不能用一次实验互相替代。</p>
       <p><strong>Q04–Q07</strong> 进一步追问参数记忆需要多大容量、写入幅度和方向能否影响能力，以及如何通过行为指标理解模型状态。</p>
       <p><strong>Q08–Q10</strong> 最后考察旧任务保持、Text Memory / Skill / Agent System 的作用，以及换一批新任务能否重复关键结论。</p>
+      <p class="evo-article__note" data-question-q10-environment>跨任务环境的候选参照是 <a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED（arXiv:2607.14777）</a> 使用的 <strong>ALFWorld</strong>：在模拟家庭环境中按文字指令完成任务。这里提出的是后续想验证的科学问题，还没有报告新的 ALFWorld 实验成绩。</p>
       <p>这十个问题确定了下一步想检验什么。<a href="/research/seed-openevo/study/parameter-memory-results/">第三篇《我们的回应实验》</a>逐项说明已经做过的实验、测到的结果和还没有回答的部分。关于普通 OpenEVO、Bounded 和 β 的公式，则在<a href="/research/seed-openevo/study/openevo-methods/">第一篇方法介绍</a>中详细说明。</p>
     </section>
     <section class="evo-article__section evo-article__sources" id="sources">

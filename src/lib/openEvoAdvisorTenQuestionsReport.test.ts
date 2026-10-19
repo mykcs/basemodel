@@ -29,9 +29,9 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
       for(const k of ['opening','experiment','finding','interpretation','unknown'] as const)
         expect(q[k].length).toBeGreaterThan(12);
       expect(q.evidence.length).toBeGreaterThanOrEqual(1);
-      for(const e of q.evidence) expect(e.href).toMatch(/^https:\/\/github\.com\/mykcs\//);
+      for(const e of q.evidence) expect(e.href).toMatch(q.id==='q10' ? /^https:\/\/(?:github\.com\/mykcs\/|arxiv\.org\/abs\/)/ : /^https:\/\/github\.com\/mykcs\//);
     }
-    expect(ADVISOR_QUESTIONS[9]?.unknown).toContain('会后');
+    expect(ADVISOR_QUESTIONS[9]?.experiment).toContain('会后问题');
     expect(ADVISOR_RESEARCH_AS_OF).toBe('2026-10-09');
   });
   it('names the actual meeting before Q-numbering and links RAW at first mention',()=>{
@@ -228,7 +228,26 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     const q05=ADVISOR_QUESTIONS.find(q=>q.id==='q05')!;
     const q09=ADVISOR_QUESTIONS.find(q=>q.id==='q09')!;
     expect(q02.opening).toContain('逐轮学习');
-    expect(q02.experiment).toContain('第一阶段怎样训练初始模型');
+    expect(responses).toContain("data-response-background={q.id}");
+    expect(responses).toContain("data-supported-answer={q.id}");
+    expect(questions).toContain('const researchTargets = {');
+    expect(questions).toContain('data-question-research-target={q.id}');
+    expect(questions).toContain('data-question-q10-environment');
+    expect(questions).toContain('arxiv.org/abs/2607.14777');
+    const targets=questions.split('const researchTargets = {')[1]?.split('} as const;')[0] ?? '';
+    for(let n=1;n<=10;n++) expect(targets).toContain('q'+String(n).padStart(2,'0')+':');
+    expect((targets.match(/\bq\d\d:/g)??[])).toHaveLength(10);
+    expect(questions).not.toContain('data-experiment-finding={q.id}');
+    expect(questions).not.toContain('data-supported-answer={q.id}');
+
+    expect(responses).toContain('2026-10-19</time> 核对对应训练或评测收据');
+    expect(ADVISOR_QUESTIONS[5]?.experiment).toContain('action-family entropy');
+    expect(ADVISOR_QUESTIONS[5]?.finding).toContain('NOT_CONFIRMED');
+    expect(ADVISOR_QUESTIONS[6]?.finding).toContain('完整、未干预的 Bounded');
+    expect(ADVISOR_QUESTIONS[7]?.finding).toContain('960 次');
+    expect(ADVISOR_QUESTIONS[9]?.interpretation).toContain('ALFWorld');
+
+    expect(q02.experiment).toContain('两种方法、三组随机设置');
     expect(q02.finding).toContain('36.01/100');
     expect(q02.finding).toContain('34.96/100');
     expect(q02.unknown).toContain('长期逐轮学习');
@@ -245,7 +264,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(q04.finding).toContain('640/640');
     expect(q05.finding).toContain('512 次评测');
     expect(q06.finding).toContain('NOT_CONFIRMED');
-    expect(q09.finding).toContain('40 轮对照的正式验收');
+    expect(q09.finding).toContain('40 轮对照的完整科学验收');
     expect(q09.unknown).toContain('完整消融还没有完成');
 
     expect(q09.experiment).toContain('保留三类载体权限');
@@ -292,7 +311,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     const item=ADVISOR_QUESTIONS.find(q=>q.id==='q03');
     expect(item?.unknown).toContain('正式 Stage2 为 0/160');
     expect(item?.evidence.some(e=>e.href.includes('c930744044c4e648f5daf54514a23f2d188c268e'))).toBe(true);
-    expect(questions).toContain('查看公开 SEED 复现的工程测量与限制');
+    expect(questions).toContain('查看 {q.id.toUpperCase()} 已完成的实验、结果与未解问题');
     expect(questions).not.toContain('384 / 512');
     expect(questions).not.toContain('20.4 GiB');
     expect(responses).toContain('<OpenEvoSeedWorld4Reproduction />');
@@ -387,7 +406,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(progressSource).toContain('GPU 小时');
     const q04=ADVISOR_QUESTIONS.find(q=>q.id==='q04')!;
     expect(q04.experiment).toContain('末尾八轮（第 152–159 轮）');
-    expect(q04.unknown).toContain('rank8、16、64');
+    expect(q04.unknown).toContain('rank128、64、32');
     // Legitimate limits remain visible: 'red' means core verification missing,
     // not that completed engineering evidence has disappeared.
     expect(responses).toContain('1,536 次冻结开发题评测');
@@ -397,9 +416,9 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     const q02=ADVISOR_QUESTIONS.find(q=>q.id==='q02')!;
     expect(q02.finding).toContain('六组 SFT/OPSD 训练摘要均 PASS');
     expect(q02.finding).toContain('不能代替最终的逐题配对统计');
-    expect(q02.unknown).toContain('剩余 3 格与最终配对统计');
+    expect(q02.unknown).toContain('3 格缺少可验收');
     expect(q02.evidence[0]?.href).toBe('https://github.com/mykcs/openevo-experiment/pull/629');
-    expect(ADVISOR_QUESTIONS.find(q=>q.id==='q05')?.unknown).toContain('1,280 次评估');
+    expect(ADVISOR_QUESTIONS.find(q=>q.id==='q05')?.unknown).toContain('1,280 次同题评估');
     const progress=responses.split('const researchProgress = {')[1]?.split('} as const;')[0] ?? '';
     for(let n=1;n<=10;n++) {
       const q='q'+String(n).padStart(2,'0');
