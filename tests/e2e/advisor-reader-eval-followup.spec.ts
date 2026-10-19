@@ -37,7 +37,7 @@ for (const { width, theme } of [
     // remain readable on mobile/dark as well as desktop/light.
     const ledger=page.locator('#responses [data-research-status]');
     await expect(ledger).toHaveCount(10);
-    await expect(ledger.filter({hasText:'已有局部回答'})).toHaveCount(1);
+    await expect(ledger.filter({hasText:'已有局部结论'})).toHaveCount(2);
     await expect(page.locator('#response-q03 [data-research-status="red"]')).toBeVisible();
     await expect(page.locator('#response-q10 [data-research-status="red"]')).toBeVisible();
     await expect(page.locator('#response-q04 [data-research-status="yellow"]')).toBeVisible();

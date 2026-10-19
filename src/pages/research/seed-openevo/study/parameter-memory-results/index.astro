@@ -13,6 +13,7 @@ import MathFormula from '../../../../../components/common/MathFormula.astro';
 import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
 import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from '../../../../../data/openEvoAdvisorTenQuestions';
 import { ADVISOR_REVIEWED_COPY } from '../../../../../data/openEvoAdvisorReviewedCopy';
+import { ADVISOR_READER_DIGEST } from '../../../../../data/openEvoAdvisorReaderDigest';
 import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeeting';
 
 // Section 3 is the response chapter. Question identities stay Q01–Q10,
@@ -33,7 +34,22 @@ const researchProgress = {
   q09: { tone:'yellow', label:'两条末端状态已得，完整消融未完成', next:'先完成两条冻结流尚未封账的转换与对应核对，再真正关闭 Text Memory、Skill、Agent System，进行同题配对。', effort:'两条延伸流已有第 160 轮末端状态，但 canonical 40 轮封存仍未完成；原完整计划最多 40,960 次训练任务和 1,664 次评估，是预算上限而非本轮新增消耗。', source:'https://github.com/mykcs/openevo-experiment/pull/636' },
   q10: { tone:'red', label:'独立复现尚未完成', next:'先在冻结的新 WebShop 题上完成独立随机流的复现；之后参考 SEED（arXiv:2607.14777）的 ALFWorld 实验，在这个模拟家庭任务环境中重新训练并对照三种 OpenEVO 方法。', effort:'计划上限为 3 条新训练流、122,880 次训练任务和 4,224 次评估；严格同源复用可减少净增量。人工准备约 1–2 人日；尚未启用，不应虚报训练小时。' , source:'https://github.com/mykcs/openevo-experiment/pull/637' },
 } as const;
-const responseQuestions = ADVISOR_QUESTIONS.map(q=>({...q,reviewed:ADVISOR_REVIEWED_COPY[q.id as keyof typeof ADVISOR_REVIEWED_COPY],progress:researchProgress[q.id as keyof typeof researchProgress]}));
+// 单一状态语义：科研结论是否已回答；不代表训练任务、PR 或软件验收是否完成。
+const readerAnswerStatus = {
+  green: {label:'已有局部结论', explanation:'有可核查的局部结果，仍有适用范围'},
+  yellow: {label:'关键问题待验证', explanation:'已有实验记录，核心答案尚不确定'},
+  red: {label:'核心验证未完成', explanation:'正式关键验证未完成，可能已有准备工作'},
+} as const;
+const responseQuestions = ADVISOR_QUESTIONS.map(q=>({
+  ...q,
+  reviewed:ADVISOR_REVIEWED_COPY[q.id as keyof typeof ADVISOR_REVIEWED_COPY],
+  progress:researchProgress[q.id as keyof typeof researchProgress],
+  brief:ADVISOR_READER_DIGEST[q.id as keyof typeof ADVISOR_READER_DIGEST],
+}));
+const answerTones = ['green','yellow','red'] as const;
+const answerStatusCounts = Object.fromEntries(answerTones.map(tone=>[
+  tone,responseQuestions.filter(q=>q.progress.tone===tone).length,
+])) as Record<(typeof answerTones)[number],number>;
 
 // Derived percent for paper Succ. column; the historical source stays n / 128.
 const historicalSuccPercent = (exact: string): string => {
@@ -93,6 +109,20 @@ const q17Effects = {
       <h1>我们的回应实验：十个研究问题的证据</h1>
       <p class="evo-article__lede" data-reader-purpose>2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会（<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />会议原始逐字记录（RAW）</a>）。我们讨论了购物智能体应该训练多久、长期参数该保存多大，以及更新方向是否影响能力。会后将讨论细化为 Q01–Q09，又新增独立复现问题 Q10；这些编号不是学长当时逐字提出的十句话。本篇解释我们实际做了什么、结果是多少、还缺什么证据。</p>
     </header>
+    <section class="advisor-overview" data-advisor-overview aria-labelledby="advisor-overview-title">
+      <h2 id="advisor-overview-title">十问进度：现在回答到哪一步了？</h2>
+      <p class="advisor-overview__lead">我们已经找到一些明确的局部结果，但长期能力、遗忘、文字经验和新任务复现还没有全部回答。下方按科学问题是否得到回答分类，而不是按训练次数或代码完成情况打分。</p>
+      <dl class="advisor-overview__counts" aria-label="十项研究问题的回答状态">
+        {answerTones.map(tone => (
+          <div class:list={['advisor-overview__count', 'advisor-overview__count--'+tone]} data-overview-status={tone}>
+            <dt><span class:list={['evo-article__status', 'evo-article__status--'+tone]}><span class="evo-article__status-dot" aria-hidden="true"></span>{readerAnswerStatus[tone].label}</span></dt>
+            <dd><strong data-overview-count={tone}>{answerStatusCounts[tone]}</strong><span>问</span></dd>
+          </div>
+        ))}
+      </dl>
+      <p class="advisor-overview__explanation">绿色表示已有范围明确的局部结论，并非整项研究全部结束；黄色表示做过实验，但关键答案还不确定；红色表示核心正式验证未完成，并非没有做过任何工作。</p>
+      <a class="advisor-overview__jump" href="#experiment">逐问查看：已有结果、做到哪里、还缺什么 ↓</a>
+    </section>
     <div class="evo-article__abstract">
       <h2>摘要</h2>
       <p>我们做了三组长期学习实验：普通 OpenEVO（逐轮保留新的低秩参数组件）、固定 state 的 Bounded（把历史更新整合进固定容量）、Bounded + 历史 β/GDR（进一步控制写入）。训练结束后，三组模型在同一批事先固定的 128 道购物题上，普通 OpenEVO 的 Task Score 为 <strong>60.72 分</strong>，完整做对 <strong>50 题</strong>；固定容量的 Bounded 为 <strong>45.98 分</strong>，完整做对 <strong>32 题</strong>；历史 β/GDR 为 <strong>20.77 分</strong>，完整做对 <strong>10 题</strong>。Task Score 满分为 100 分。这三组结果的完整表格和原始收据见下文 Q05。这些实验不是完全严格的对照，结果先作为大致判断，不能把分数差全部归因于某一个改动。</p>
@@ -120,14 +150,25 @@ const q17Effects = {
     </section>
     <section id="experiment" class="evo-article__section" data-ten-question-tldr>
       <h2>2 十问速览：我们发现了什么，下一轮还想研究什么？</h2>
-      <p>下面把十个研究问题的<strong>已有发现、尚未回答的部分和后续研究方向</strong>放在一起。每项只保留理解结论所需的事实；详细的实验设置、统计图和原始来源从第 3 节逐问查看。</p>
-      <dl class="evo-article__experiment-guide" data-review-source="single">
+      <p>每问依次列出<strong>目前的回答、已经做的实验和仍缺的证据</strong>。状态颜色只表示问题回答到哪一步；问题标题链接到详细结果。</p>
+      <dl class="evo-article__experiment-guide advisor-digest" data-review-source="single">
         {responseQuestions.map(q => (
-          <div data-review-summary={q.id}>
-            <dt><a href={'#response-'+q.id}>{q.id.toUpperCase()} · {q.title}</a></dt>
+          <div data-review-summary={q.id} data-brief-tone={q.progress.tone}>
+            <dt>
+              <a href={'#response-'+q.id}>{q.id.toUpperCase()} · {q.title}</a>
+              <span class:list={['evo-article__status','evo-article__status--'+q.progress.tone]} data-brief-status={q.id}>
+                <span class="evo-article__status-dot" aria-hidden="true"></span>{readerAnswerStatus[q.progress.tone].label}
+              </span>
+            </dt>
             <dd>
-              <p data-conversation-summary={q.id}>{q.reviewed.summary}</p>
-              <p data-conversation-next={q.id}><strong>后续研究：</strong>{q.reviewed.nextResearch}</p>
+              <p class="advisor-digest__answer" data-brief-answer={q.id}>{q.brief.answer}</p>
+              <p class="advisor-digest__done" data-brief-done={q.id}><strong>已经做了：</strong>{q.brief.done}</p>
+              <p class="advisor-digest__missing" data-brief-missing={q.id}><strong>还差什么：</strong>{q.brief.missing}</p>
+              <details class="advisor-digest__original">
+                <summary>查看此前讨论的完整表述与后续研究</summary>
+                <p data-conversation-summary={q.id}>{q.reviewed.summary}</p>
+                <p data-conversation-next={q.id}><strong>后续研究：</strong>{q.reviewed.nextResearch}</p>
+              </details>
             </dd>
           </div>
         ))}
@@ -136,7 +177,7 @@ const q17Effects = {
     </section>
     <section class="evo-article__section" id="responses" data-response-experiments>
       <h2>3 十个研究问题，我们得到了哪些回答？</h2>
-      <p>Q01–Q10 逐一对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。标题前的状态表示科学问题回答到哪一步：绿色＝已有明确的局部结论，黄色＝做过实验但关键问题尚未回答，红色＝核心验证仍未完成。每一问都有实验做法、实际发现、缺口和下一步投入。所列人日是粗略规划估计；没有真实计时的 GPU 训练和推理不填写臆测小时数。 Q02、Q04、Q05、Q06、Q09 的后续实验进展于 2026 年 10 月 19 日只读核对；其余内容仍按各自带日期的科研收据解释。</p>
+      <p>Q01–Q10 对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。本节和前面的速览使用同一套绿、黄、红状态，每问明确写出实际完成的部分、实验发现、仍缺的关键证据和下一步。规划工作量与已经测得的 GPU 耗时严格区分。Q02、Q04、Q05、Q06、Q09 的后续实验进展于 2026 年 10 月 19 日只读核对对应实验收据；其他问题保留各自原始收据的时间边界。</p>
       <OpenEvoQuestionIndex questions={responseQuestions.map(q=>({...q,headingNumber:responseQuestionRef(q.id)}))} />
       {responseQuestions.map(q => (
         <article class="evo-article__question" id={'response-'+q.id} data-experiment-response={q.id} aria-labelledby={'response-'+q.id+'-title'}>
@@ -144,11 +185,14 @@ const q17Effects = {
             <div class="advisor-approved-question-meta">
               <span class="advisor-approved-question-ref" data-question-number={q.id}>{responseQuestionRef(q.id)}</span>
               <span class:list={['evo-article__status', 'evo-article__status--'+q.progress.tone]} data-research-status={q.progress.tone}>
-                <span class="evo-article__status-dot" aria-hidden="true"></span>{q.progress.label}
+                <span class="evo-article__status-dot" aria-hidden="true"></span>{readerAnswerStatus[q.progress.tone].label}
               </span>
             </div>
             <h3 id={'response-'+q.id+'-title'}>{q.title}</h3>
           </header>
+          <p class="advisor-response__answer" data-detail-brief={q.id}><strong>目前最直接的回答：</strong>{q.brief.answer}</p>
+          <p class="advisor-response__stage" data-progress-stage={q.id}><strong>目前进度：</strong>{q.progress.label}。{q.brief.done}</p>
+          <p class="advisor-response__missing" data-progress-gap={q.id}><strong>还差什么才能回答：</strong>{q.brief.missing}</p>
           <p class="evo-article__note" data-question-origin-link={q.id}><a href={'/research/seed-openevo/study/advisor-questions/#'+q.id}>查看第二篇的 {q.id.toUpperCase()} 问题正文与背景</a>{q.id==='q10' && ' · 会后新增问题'}</p>
           {q.id!=='q01' && <p class="evo-article__question-setup" data-response-background={q.id}>{q.opening}</p>}
 
