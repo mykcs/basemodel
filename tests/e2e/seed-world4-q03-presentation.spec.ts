@@ -101,3 +101,64 @@ test('Q03 incident details accessible and the second article stays questions-onl
   await expect(page.locator('[data-question-only] [data-seed-world4-case]')).toHaveCount(0);
   await expect(page.locator('[data-question-only] [data-report-finding]')).toHaveCount(0);
 });
+
+
+// Guard the real Q03 scientific table, its explanatory figure, and phone geometry.
+for (const width of [390, 768, 1440] as const) {
+  for (const theme of ['light', 'dark'] as const) {
+    test('Q03 typography roles at ' + width + 'px / ' + theme, async ({page}) => {
+      await page.setViewportSize({width, height: width === 390 ? 844 : 900});
+      await page.addInitScript(mode => localStorage.setItem('atlas-theme', mode), theme);
+      await page.goto(report, {waitUntil: 'domcontentloaded'});
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      const area = page.locator('#response-q03 [data-seed-world4-case]');
+      const table = area.locator('.q03-world4__tablewrap table').first();
+      await expect(table).toBeVisible();
+      const actual = await table.evaluate(el => {
+        const s = getComputedStyle(el);
+        const wrap = el.closest('.q03-world4__tablewrap')!;
+        return {size: parseFloat(s.fontSize),family:s.fontFamily,numeric:s.fontVariantNumeric,
+          top:parseFloat(s.borderTopWidth),bottom:parseFloat(s.borderBottomWidth),
+          localScroll:wrap.scrollWidth-wrap.clientWidth,
+          documentScroll:document.documentElement.scrollWidth-document.documentElement.clientWidth};
+      });
+      expect(actual.size).toBeGreaterThanOrEqual(14.5);
+      expect(actual.family).toMatch(/Inter|PingFang|system-ui/);
+      expect(actual.family).not.toMatch(/Georgia|Songti|Times New Roman/);
+      expect(actual.numeric).toContain('tabular-nums');
+      expect(actual.top).toBeGreaterThanOrEqual(1);
+      expect(actual.bottom).toBeGreaterThanOrEqual(1);
+      expect(actual.documentScroll).toBeLessThanOrEqual(2);
+      if (width === 390) expect(actual.localScroll).toBeGreaterThan(20);
+      const h4px = await area.locator('h4').first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
+      expect(h4px).toBeGreaterThanOrEqual(20);
+      const details=area.locator('[data-seed-gpu-explainer]');
+      await details.locator('summary').click();
+      const figcaption=details.locator('[data-seed-world4-flow] figcaption').first();
+      await expect(figcaption).toBeVisible();
+      const captionPx=await figcaption.evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
+      expect(captionPx).toBeGreaterThanOrEqual(14);
+      expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+    });
+  }
+}
+
+test('restored Georgia or 10px table fails the real typography predicate',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(report);
+  const table=page.locator('#response-q03 [data-seed-world4-case] .q03-world4__tablewrap table').first();
+  const accepted=async()=>table.evaluate(el=>{
+    const s=getComputedStyle(el);
+    return !/Georgia|Songti|Times New Roman/.test(s.fontFamily) && parseFloat(s.fontSize)>=14.5;
+  });
+  expect(await accepted()).toBe(true);
+  await table.evaluate(el=>(el as HTMLElement).style.fontFamily='Georgia, serif');
+  expect(await accepted()).toBe(false);
+  await table.evaluate(el=>{
+    (el as HTMLElement).style.removeProperty('font-family');
+    (el as HTMLElement).style.fontSize='10px';
+  });
+  expect(await accepted()).toBe(false);
+  await table.evaluate(el=>(el as HTMLElement).style.removeProperty('font-size'));
+  expect(await accepted()).toBe(true);
+});
