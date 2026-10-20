@@ -73,6 +73,6 @@ test('a restored hover-only docking rule fails the same stability predicate', as
     '.plain-detail__interactive>astro-island>.irx:hover>.irx-controls>.irx-transport { position:fixed !important; }',
   });
   expect(await stable(), 'restored hover docking must fail the product invariant').toBe(false);
-  await regression.evaluate(el=>el.remove());
+  await regression.evaluate(el => el.parentNode?.removeChild(el));
   expect(await stable()).toBe(true);
 });
