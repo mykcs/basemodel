@@ -18,8 +18,8 @@
   border-radius: 7px;
   color: var(--muted);
   text-decoration: none;
-  font-size: .76rem;
-  font-weight: 650;
+  font-size: var(--type-meta);
+  font-weight: var(--type-weight-label);
 }
 .model-detail-nav a:hover,
 .model-detail-nav a:focus-visible { color: var(--ink); background: var(--surface-muted); }
@@ -35,7 +35,7 @@
   border-radius: 10px;
   background: var(--surface);
 }
-.unresolved-field-item p { margin: 4px 0 0; color: var(--muted); font-size: .78rem; }
+.unresolved-field-item p { margin: 4px 0 0; color: var(--muted); font-size: var(--type-body-small); }
 
 .tree-checkpoint { display: grid; gap: 8px; }
 .tree-checkpoint > a { color: inherit; text-decoration: none; }
@@ -47,13 +47,13 @@
   background: transparent;
   color: var(--accent-deep);
   font: inherit;
-  font-size: .72rem;
-  font-weight: 700;
+  font-size: var(--type-meta);
+  font-weight: var(--type-weight-label);
   cursor: pointer;
 }
 .role-model { display: grid; gap: 5px; }
 .role-model-actions { display: inline-flex; align-items: center; gap: 9px; }
-.role-model-actions a { color: var(--accent-deep); font-size: .72rem; font-weight: 700; text-decoration: none; }
+.role-model-actions a { color: var(--accent-deep); font-size: var(--type-meta); font-weight: var(--type-weight-label); text-decoration: none; }
 
 .quick-view-task-fit {
   margin: 0 0 16px;
@@ -61,14 +61,14 @@
   border-left: 3px solid var(--accent);
   background: var(--surface-muted);
 }
-.quick-view-task-fit h3 { margin-bottom: 6px; font-size: .9rem; }
+.quick-view-task-fit h3 { margin-bottom: 6px; font-size: var(--type-minor-heading); }
 .quick-view-task-fit p,
-.quick-view-task-fit ul { margin: 0; font-size: .78rem; }
+.quick-view-task-fit ul { margin: 0; font-size: var(--type-body-small); }
 .quick-view-task-fit ul { padding-left: 18px; color: var(--accent-deep); }
 .fit-ok { color: var(--positive); }
 
 .paper-case-summary.is-unverified { color: var(--muted); }
-.paper-case-scope { color: var(--muted); font-size: .82rem; }
+.paper-case-scope { color: var(--muted); font-size: var(--type-body-small); }
 .paper-method-summary .lede { max-width: 780px; }
 
 .replacement-mode-verdicts {
@@ -84,10 +84,10 @@
   border: 1px solid var(--line);
   border-radius: 9px;
   background: var(--surface-muted);
-  font-size: .72rem;
+  font-size: var(--type-meta);
 }
 .replacement-verdict span { color: var(--muted); }
-.replacement-verdict strong { font-size: .8rem; }
+.replacement-verdict strong { font-size: var(--type-body-small); }
 .verdict-recommended strong { color: var(--positive); }
 .verdict-conditional strong { color: var(--accent-deep); }
 .verdict-not_recommended strong { color: var(--danger, #a7322c); }
@@ -99,7 +99,7 @@
 .comparison-mobile-group > h3 {
   margin: 0;
   color: var(--muted);
-  font-size: .72rem;
+  font-size: var(--type-minor-heading);
   letter-spacing: .08em;
   text-transform: uppercase;
 }
@@ -109,7 +109,7 @@
   padding: 13px;
   background: var(--surface);
 }
-.comparison-mobile-field > h4 { margin: 0 0 10px; font-size: .9rem; }
+.comparison-mobile-field > h4 { margin: 0 0 10px; font-size: var(--type-body); }
 .comparison-mobile-values { display: grid; gap: 7px; }
 .comparison-mobile-value {
   display: grid;
@@ -117,10 +117,10 @@
   gap: 10px;
   padding-top: 7px;
   border-top: 1px solid var(--line);
-  font-size: .78rem;
+  font-size: var(--type-table);
 }
 .comparison-mobile-value strong { overflow-wrap: anywhere; }
-.comparison-mobile-impact { margin: 10px 0 0; color: var(--accent-deep); font-size: .75rem; }
+.comparison-mobile-impact { margin: 10px 0 0; color: var(--accent-deep); font-size: var(--type-body-small); }
 
 /* OpenEvo results: P1–P4 are a reading list, never a generic ordered-list card. */
 body:has([data-program-report]) [data-program-report] .priority-list {
