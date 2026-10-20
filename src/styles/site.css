@@ -245,7 +245,7 @@ fieldset.landscape-controls:disabled :is(button, input, select) { opacity: .58; 
    These are actual sentences (not mathematical symbols or decorative IDs).
    This narrow accessibility exception outranks old feature literal sizes;
    semantic geometry still belongs to each feature and browser regressions. */
-:is(
+html body .site-main :is(
   .harness-fairness__rows,
   .exp-scaffold__pipeline,
   .exp-scaffold__gate-flow,
@@ -268,8 +268,8 @@ fieldset.landscape-controls:disabled :is(button, input, select) { opacity: .58; 
   .harness-fairness,
   .parameter-note
 ) p,
-p.irx-live {
-  font-size: max(var(--type-meta), 1em) !important;
+html body .site-main p.irx-live {
+  font-size: max(var(--type-meta), 1em);
   line-height: 1.55;
   overflow-wrap: anywhere;
 }
