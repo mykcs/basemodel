@@ -49,6 +49,7 @@ test('real seal/aggregate/download path fails closed when a shard artifact is lo
     for(let i=0;i<4;i++) {
       const dir=join(raw,`part-${i+1}`),inventory=join(dir,'figure-inventory'),results=join(dir,'test-results');
       mkdirSync(inventory,{recursive:true});mkdirSync(results);
+      writeFileSync(join(results,'.last-run.json'),'{}');
       const write=(path,item)=>writeFileSync(path,JSON.stringify(item));
       write(join(inventory,'expected-playwright.json'),{suites:[{specs:cases}]});
       write(join(inventory,'playwright-run.json'),{suites:[{specs:[cases[i]]}]});
@@ -64,6 +65,8 @@ test('real seal/aggregate/download path fails closed when a shard artifact is lo
       }
       run('shard',dir,undefined,{...env,FIGURE_SHARD:String(i+1)});
     }
+    // upload-artifact excludes hidden metadata by default; the seal must agree.
+    for(let i=0;i<4;i++) rmSync(join(raw,`part-${i+1}`,'test-results/.last-run.json'));
     run('aggregate',raw,join(root,'accepted'),env);
     cpSync(join(root,'accepted'),join(root,'downloaded'),{recursive:true});
     run('roundtrip',join(root,'downloaded'),undefined,env);

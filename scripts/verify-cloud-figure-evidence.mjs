@@ -71,7 +71,7 @@ export function run(mode, root, output, env = process.env) {
     const executed = population(json(join(root,'figure-inventory/playwright-run.json')), true);
     if (executed.some(id => !expected.includes(id))) fail('Shard contains unknown tests');
     const paths = [...walk(join(root,'test-results')), ...walk(join(root,'figure-inventory'))]
-      .map(path => relative(root,path)).filter(path => /\.(png|json|zip|webm|md)$/.test(path) && !path.endsWith('evidence-manifest.json'));
+      .map(path => relative(root,path)).filter(path => !path.split(/[\\/]/).some(part => part.startsWith('.'))).filter(path => /\.(png|json|zip|webm|md)$/.test(path) && !path.endsWith('evidence-manifest.json'));
     const manifest = { sha,browser,shard,total:4,expected,executed,entries:entries(root,paths) };
     writeFileSync(join(root,'figure-inventory/evidence-manifest.json'),JSON.stringify(manifest,null,2));
     return;
