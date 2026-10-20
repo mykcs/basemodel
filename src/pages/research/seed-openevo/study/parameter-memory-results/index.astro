@@ -245,7 +245,7 @@ const q17Effects = {
                     <p class="evo-article__note" data-seed-paper-evaluation-boundary>前三行的完整成功率都由各自的完整成功题数除以 128 得到，并保留一位小数。最后一行引用 <a href={ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.source} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.source} />SEED 论文 Table 1</a> 的 Qwen3-1.7B-Instruct WebShop Score 和 Succ.；论文没有报告可直接核验的完整成功题数，因此保留「—」。两套评测的题目身份、训练起点和协议没有严格对齐，不能把这张表直接当作方法公平排名。</p>
                     <p class="evo-article__note">可直接核对两份冻结 128 题的原始收据：<a href={checkpointEvidence.directFinal} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.directFinal} />普通 OpenEVO 终评 JSON</a> · <a href={checkpointEvidence.boundedFinal} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.boundedFinal} />Bounded 与历史 β 终评 JSON</a>。三条历史路线的题单相同，但普通路线是更早的历史前驱。</p>
                     <div class="evo-article__tablewrap" tabindex="0" aria-label="历史参数更新与整段训练的耗时对照">
-                      <table>
+                      <table class="advisor-timing-table">
                         <caption>补充表 S5｜历史耗时对照：分别计时参数更新及含 rollout 的完整运行（小时）</caption>
                         <thead><tr><th scope="col">计时范围</th><th scope="col" data-numeric>普通 OpenEVO（小时）</th><th scope="col" data-numeric>Bounded（无历史 β，小时）</th><th scope="col" data-numeric>耗时比</th></tr></thead>
                         <tbody>
@@ -460,6 +460,7 @@ const q17Effects = {
 
 <style>
   [data-q17-diagnostics] h4 { scroll-margin-top: 5.8rem; }
+  .advisor-timing-table th[scope="row"] { white-space: nowrap; }
 </style>
 
 <script>
