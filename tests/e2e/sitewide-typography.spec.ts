@@ -113,3 +113,34 @@ for(const item of knownUnreadableProse) {
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
   });
 }
+
+for(const width of [390,1280] as const){
+  test("SD-LoRA's branch boxes never overlap at "+width+"px",async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.goto('/research/seed-openevo/flow/sd-lora/',{waitUntil:'domcontentloaded'});
+    const slide=page.locator('.sdlora-slide').first();
+    await expect(slide).toBeVisible();
+    if(width<=900){
+      await expect(slide.locator('.sdlora-map__mobile')).toBeVisible();
+      const mobileText=slide.locator('.sdlora-mobile-node p').first();
+      await expect(mobileText).toBeVisible();
+      expect(await mobileText.evaluate(e=>parseFloat(getComputedStyle(e).fontSize))).toBeGreaterThanOrEqual(13);
+    }else{
+      await expect(slide.locator('.sdlora-map__desktop')).toBeVisible();
+      const overlap=await slide.evaluate(el=>{
+        const nodes=[...el.querySelectorAll('.sdlora-map__desktop .sdlora-node')];
+        const rects=nodes.map(n=>({name:n.className,rect:n.getBoundingClientRect()}));
+        return rects.flatMap((a,i)=>rects.slice(i+1).filter(b=>
+          Math.min(a.rect.right,b.rect.right)-Math.max(a.rect.left,b.rect.left)>2
+          && Math.min(a.rect.bottom,b.rect.bottom)-Math.max(a.rect.top,b.rect.top)>2
+        ).map(b=>a.name+' overlaps '+b.name));
+      });
+      expect(overlap).toEqual([]);
+      for(const node of ['direct','gdr']){
+        await expect(slide.locator('.sdlora-map__desktop .sdlora-node--'+node+' p')).toBeHidden();
+        await expect(slide.locator('.sdlora-map__desktop .sdlora-node--'+node+' strong')).toBeVisible();
+      }
+    }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+  });
+}
