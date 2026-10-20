@@ -399,8 +399,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 /* Paper figure ownership for the advisor's Q03 observation curve.
    Deliberately local to this evidence object: no sitewide typography change.
    The original large border/padding belonged to UI cards, not LaTeX figures. */
-.evo-blog.evo-approved-reader [data-report-figure="q03-custom-curve"] {
-  width: min(100%, 38rem);
+.evo-blog.evo-approved-reader :is([data-report-figure="q01-horizon"],[data-report-figure="q03-custom-curve"]) {
   max-width: 100%;
   margin: 1.5rem 0 1.8rem;
   padding: 0;
@@ -408,6 +407,12 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
   border-radius: 0;
   box-shadow: none;
   background: transparent;
+}
+.evo-blog.evo-approved-reader [data-report-figure="q01-horizon"] {
+  width: min(100%, 55.625rem);
+}
+.evo-blog.evo-approved-reader [data-report-figure="q03-custom-curve"] {
+  width: min(100%, 38rem);
 }
 .evo-blog.evo-approved-reader [data-report-figure="q03-custom-curve"] .advisor-viz__heading {
   align-items: baseline;
