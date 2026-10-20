@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { writeFileSync } from 'node:fs';
 
 // User-reported Figure 2 defect on the actual advisor report (desktop and phone),
 // plus sibling Figure 1: check the rendered evidence, not only CSS source.
@@ -7,7 +8,7 @@ const checkpointScores=['3.71','6.43','0.69','6.62'] as const;
 
 for(const width of [390,768,1440] as const){
   for(const theme of ['light','dark'] as const){
-    test('Q01/Q03 paper figures: no tooltip/card or clipped value at '+width+' '+theme,async({page})=>{
+    test('Q01/Q03 paper figures: no tooltip/card or clipped value at '+width+' '+theme,async({page},testInfo)=>{
       await page.setViewportSize({width,height:900});
       await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
       const response=await page.goto(route,{waitUntil:'domcontentloaded'});
@@ -70,6 +71,18 @@ for(const width of [390,768,1440] as const){
         expect(parseFloat(sides.bottom)).toBeGreaterThan(0);
         expect(sides.caption).toBe('top');
       }
+      // These PNGs and computed measurements become short-lived GitHub
+      // Actions artifacts, so MacBook/RDC screenshots are not needed.
+      await q03.screenshot({
+        path:testInfo.outputPath('q03-paper-'+width+'-'+theme+'.png'),
+        animations:'disabled',
+      });
+      if(width!==768) await q01.screenshot({
+        path:testInfo.outputPath('q01-paper-'+width+'-'+theme+'.png'),
+        animations:'disabled',
+      });
+      writeFileSync(testInfo.outputPath('q03-paper-geometry-'+width+'-'+theme+'.json'),
+        JSON.stringify({width,theme,metrics,source:'rendered Chromium/WebKit Playwright',route},null,2)+'\n');
     });
   }
 }
