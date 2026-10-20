@@ -6,7 +6,7 @@
  * labels may remain compact; prose may not.
  */
 .canonical-figure :where(p, figcaption, [data-ui-prose]) {
-  font-size: max(.74rem, 11.8px) !important;
+  font-size: max(var(--type-meta), 13px) !important;
   line-height: 1.58 !important;
 }
 
@@ -23,7 +23,7 @@
   .next-agent span,
   .training-only-note strong
 ) {
-  font-size: .74rem !important;
+  font-size: var(--type-meta) !important;
   line-height: 1.55 !important;
 }
 
