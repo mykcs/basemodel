@@ -9,7 +9,16 @@ for (const width of [390, 768, 1440] as const) {
       await page.setViewportSize({width,height:width===390?844:900});
       await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
       await page.goto('/models/qwen3-8b/',{waitUntil:'domcontentloaded'});
-      const nav=page.locator('.model-detail-nav a').first();
+      // ModelDetailNav intentionally belongs to the closed citation/source
+      // disclosure. Test the reader's real interaction, not hidden DOM text.
+      const actions = page.locator('.model-detail-actions').first();
+      await expect(actions).toBeVisible();
+      await expect(actions).not.toHaveAttribute('open', '');
+      const nav = actions.locator('.model-detail-nav a').first();
+      await expect(nav).toBeAttached();
+      await expect(nav).toBeHidden();
+      await actions.locator(':scope > summary').click();
+      await expect(actions).toHaveAttribute('open', '');
       await expect(nav).toBeVisible();
       const a=await nav.evaluate(el=>{const s=getComputedStyle(el);return {size:parseFloat(s.fontSize),family:s.fontFamily,italic:s.fontStyle}});
       expect(a.size).toBeGreaterThanOrEqual(13);
