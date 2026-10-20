@@ -59,7 +59,10 @@ for (const width of [390, 768, 1440] as const) {
           expect(metric.size, role.role).toBeGreaterThanOrEqual(role.min);
           expect(metric.family, role.role).toMatch(/Inter|PingFang|system-ui/);
           expect(metric.style, role.role).toBe('normal');
-          expect(metric.width, role.role).toBeGreaterThanOrEqual(width === 390 ? 200 : 130);
+          // Explanatory paragraphs need reading measure; a short link may be narrower.
+          expect(metric.width, role.role).toBeGreaterThanOrEqual(
+            role.min > 14 ? (width === 390 ? 200 : 130) : 40,
+          );
           expect(metric.localOverflow, role.role).toBeLessThanOrEqual(2);
           if (role.min > 14) {
             expect(metric.lineHeight, role.role).toBeGreaterThanOrEqual(metric.size * 1.35);
