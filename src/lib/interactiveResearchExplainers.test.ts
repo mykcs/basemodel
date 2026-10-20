@@ -165,7 +165,10 @@ describe('interactive research explainers', () => {
     expect(explainer).toContain('data-transport-docked={transportDocked}');
     expect(explainer).toContain('setTransportDocked(true)');
     expect(explainer).toContain('setTransportDocked(false)');
-    expect(css).toContain('.irx:is([data-transport-docked=true],:focus-within,:hover)>.irx-controls>.irx-transport{position:fixed');
+    // Passive hover/focus must not detach controls from normal layout. Actual
+    // browser witnesses separately verify pointer/keyboard interaction.
+    expect(css).toContain('.irx[data-transport-docked=true]>.irx-controls>.irx-transport{position:fixed');
+    expect(css).not.toContain('.irx:is([data-transport-docked=true],:focus-within,:hover)>.irx-controls>.irx-transport');
     expect(css).not.toContain('[data-overview=false]>.irx-controls>.irx-transport{position:fixed');
     expect(css).not.toContain('.irx-split__rail [data-interactive-research-explainer]>.irx-controls>.irx-transport{position:fixed');
     expect(css).not.toContain('.canonical-figure>.irx-controls');
