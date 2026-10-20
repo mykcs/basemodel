@@ -20,7 +20,7 @@ const assertCloudFigureSafety = (source: string) => {
   expect(job.environment).toBeUndefined();
   expect(job.strategy.matrix.browser).toEqual(['chromium', 'webkit']);
   const lock = readJson<{ packages: Record<string, { version: string }> }>('../../package-lock.json');
-  expect(job.container.image).toMatch(new RegExp('^mcr\\.microsoft\\.com/playwright:v' + lock.packages['node_modules/@playwright/test'].version.replaceAll('.', '\\.') + '-noble@sha256:[a-f0-9]{64}$'));
+  expect(job.container.image).toMatch(new RegExp('^mcr\\.microsoft\\.com/playwright:v' + lock.packages['node_modules/@playwright/test']!.version.replaceAll('.', '\\.') + '-noble@sha256:[a-f0-9]{64}$'));
   const checkout = job.steps.find((step: { uses?: string }) => step.uses?.startsWith('actions/checkout@'));
   expect(checkout.with['persist-credentials']).toBe(false);
   expect(checkout.with.ref).toBe('${{ steps.candidate.outputs.sha }}');

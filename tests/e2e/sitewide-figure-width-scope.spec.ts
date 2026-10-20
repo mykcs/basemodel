@@ -61,7 +61,7 @@ for (const route of routes) {
             if (width === 1440 && theme === 'light') {
               const grayscale = await page.addStyleTag({content:'html { filter: grayscale(1) !important; }'});
               await figure.screenshot({path:testInfo.outputPath(`figure-${index}-grayscale.png`),animations:'disabled'});
-              await grayscale.evaluate(node => node.remove());
+              await grayscale.evaluate(node => node.parentNode?.removeChild(node));
               await page.emulateMedia({media:'print'});
               if (await figure.isVisible()) await figure.screenshot({path:testInfo.outputPath(`figure-${index}-print.png`),animations:'disabled'});
               await page.emulateMedia({media:'screen'});
@@ -72,8 +72,8 @@ for (const route of routes) {
         }
         const tables = await page.locator('table').evaluateAll(els => els.map((el,index) => ({
           index,owner:el.className,caption:el.querySelector('caption')?.textContent?.trim()??'',
-          box:el.getBoundingClientRect().toJSON(),rows:el.rows.length,
-          columns:el.rows[0]?.cells.length??0,status:'NEEDS_VISUAL_REVIEW',
+          box:el.getBoundingClientRect().toJSON(),rows:el.querySelectorAll('tr').length,
+          columns:el.querySelector('tr')?.children.length??0,status:'NEEDS_VISUAL_REVIEW',
         })));
         evidence.push({route,width,theme,tables,rootOverflow:overflow});
       }

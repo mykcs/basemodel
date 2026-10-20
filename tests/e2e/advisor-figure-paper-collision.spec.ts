@@ -93,7 +93,7 @@ for(const width of [390,768,1440] as const){
 }
 
 for(const width of [390,1440] as const){
-  test('the original Q03 value collision is rejected at '+width+'px',async({page})=>{
+  test('the original Q03 value collision is rejected at '+width+'px',async({page},testInfo)=>{
     await page.setViewportSize({width,height:900});
     await page.goto(route,{waitUntil:'domcontentloaded'});
     const chart=page.locator(width===390?'[data-q03-mobile-chart]':'[data-q03-desktop-chart]');
@@ -111,6 +111,13 @@ for(const width of [390,1440] as const){
     const original=await measure();
     expect(original).not.toBeNull();
     expect(original!.left).toBeLessThanOrEqual(original!.axis+2);
+    // Exercise the same accepting predicate against the deliberately bad DOM.
+    expect(()=>expect(original!.left).toBeGreaterThan(original!.axis+2)).toThrow();
+    await chart.screenshot({path:testInfo.outputPath('q03-known-bad-'+width+'.png'),animations:'disabled'});
+    writeFileSync(testInfo.outputPath('q03-known-bad-'+width+'.json'),JSON.stringify({
+      sha:sourceSha,browser:testInfo.project.name,width,accepted,original,knownBadRejected:true,
+      mutation:width===390?'A0 xPhone=50':'A0 x=88',route,
+    },null,2)+'\n');
   });
 }
 
