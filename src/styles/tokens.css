@@ -74,6 +74,7 @@
   --type-caption: .875rem;
   --type-meta: .8125rem;
   --type-plot-label: .75rem;
+  --type-paper-plot-width: 38rem; /* readable one-panel plot in editorial column */
   --type-weight-normal: 400;
   --type-weight-medium: 500;
   --type-weight-label: 600;
