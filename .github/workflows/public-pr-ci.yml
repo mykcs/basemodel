@@ -143,6 +143,22 @@ jobs:
       - name: Risk-based browser acceptance shard
         run: node scripts/ci-ui-gate.mjs
 
+      # Keep the exact-head browser evidence in GitHub Actions, not on an
+      # owner's MacBook. Playwright produces screenshots on selected tests and
+      # screenshots/videos/traces on failure; upload only those bounded files.
+      - name: Retain cloud Playwright visual evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: basemodel-ui-pr-${{ github.event.pull_request.number }}-shard-${{ matrix.shard }}
+          path: |
+            test-results/**/*.png
+            test-results/**/*.webm
+            test-results/**/*.zip
+            test-results/**/*.md
+          if-no-files-found: ignore
+          retention-days: 3
+
   gate:
     name: public-ci-gate
     if: always()
