@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
-import { readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
+const captureAudit = process.env.CLOUD_FIGURE_AUDIT === '1';
 const root = join(process.cwd(), 'dist');
 function discover(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
@@ -22,15 +23,66 @@ test('visual-route audit covers all source-rendered graphics/table routes', () =
 // Every static route with visible graphics or a table is in the browser acceptance
 // matrix. Operational UI and fixed 16:9 slides retain their own semantic layout.
 for (const route of routes) {
-  test('research figure/table route remains viewport-safe: ' + route, async ({ page }) => {
-    for (const width of [390, 1440]) {
+  test('research figure/table route remains viewport-safe: ' + route, async ({ page }, testInfo) => {
+    if (captureAudit) testInfo.setTimeout(180_000); // Full per-object six-state capture, not the ordinary overflow probe.
+    const evidence = [];
+    for (const theme of (captureAudit ? ['light', 'dark'] : ['light'])) {
+    for (const width of (captureAudit ? [390, 768, 1440] : [390, 1440])) {
+      await page.addInitScript(value => localStorage.setItem('atlas-theme', value), theme);
       await page.setViewportSize({ width, height: 900 });
       const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
       expect(response?.status()).toBe(200);
       const overflow = await page.evaluate(() =>
         document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow).toBeLessThanOrEqual(2);
+      if (captureAudit) {
+        await page.evaluate(() => {
+          // Capture explicitly records this expanded reading state.
+          for (const details of document.querySelectorAll('details')) {
+            if (details.querySelector('figure, table')) details.open = true;
+          }
+        });
+        for (const [index, figure] of (await page.locator('figure').all()).entries()) {
+          const visible = await figure.isVisible();
+          const png = `figure-${index}-${width}-${theme}.png`;
+          const details = await figure.evaluate(el => ({
+            owner: el.className || '(none)',
+            caption: el.querySelector('figcaption')?.textContent?.trim() ?? '',
+            sources: [...el.querySelectorAll('a[href]')].map(a => a.getAttribute('href')),
+            svgTitles: el.querySelectorAll('svg title').length,
+            box: el.getBoundingClientRect().toJSON(),
+            text: [...el.querySelectorAll('svg text')].map(node => ({
+              text: node.textContent, box: node.getBoundingClientRect().toJSON(),
+              fontSize: getComputedStyle(node).fontSize,
+            })),
+          }));
+          if (visible) {
+            await figure.screenshot({path:testInfo.outputPath(png),animations:'disabled'});
+            if (width === 1440 && theme === 'light') {
+              const grayscale = await page.addStyleTag({content:'html { filter: grayscale(1) !important; }'});
+              await figure.screenshot({path:testInfo.outputPath(`figure-${index}-grayscale.png`),animations:'disabled'});
+              await grayscale.evaluate(node => node.remove());
+              await page.emulateMedia({media:'print'});
+              if (await figure.isVisible()) await figure.screenshot({path:testInfo.outputPath(`figure-${index}-print.png`),animations:'disabled'});
+              await page.emulateMedia({media:'screen'});
+            }
+          }
+          evidence.push({route,index,width,theme,...details,visible,png:visible?png:null,
+            status:'NEEDS_VISUAL_REVIEW',state:'details containing evidence expanded'});
+        }
+        const tables = await page.locator('table').evaluateAll(els => els.map((el,index) => ({
+          index,owner:el.className,caption:el.querySelector('caption')?.textContent?.trim()??'',
+          box:el.getBoundingClientRect().toJSON(),rows:el.rows.length,
+          columns:el.rows[0]?.cells.length??0,status:'NEEDS_VISUAL_REVIEW',
+        })));
+        evidence.push({route,width,theme,tables,rootOverflow:overflow});
+      }
     }
+    }
+    if (captureAudit) writeFileSync(testInfo.outputPath('sitewide-figure-table.json'),JSON.stringify({
+      sha:process.env.FIGURE_SOURCE_SHA,browser:testInfo.project.name,route,evidence,
+      boundary:'Screenshots and geometry are review inputs; no automatic visual or scientific PASS.',
+    },null,2)+'\n');
   });
 }
 

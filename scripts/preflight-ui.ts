@@ -32,6 +32,12 @@ const RISK_ORDER: UiRisk[] = ['none', 'content', 'local', 'shared', 'global'];
 
 export const ESCAPED_UI_REGRESSIONS: EscapedUiRegression[] = [
   {
+    id: 'q03-rendered-label-axis-collision',
+    failureClass: 'Q03 A0 label collides with the axis after SVG scaling or native tooltip obscures evidence',
+    stage: 'browser',
+    gate: 'tests/e2e/advisor-figure-paper-collision.spec.ts',
+  },
+  {
     id: 'reader-journey-default-visible',
     failureClass: 'experiment task, start, stop or dependency exists only as jargon or hidden source text',
     stage: 'browser',

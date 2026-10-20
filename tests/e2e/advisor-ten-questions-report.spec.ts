@@ -224,13 +224,15 @@ test('Q17 diagnostics distinguish new measurements from dated history on mobile'
   expect(overflow).toBeLessThanOrEqual(2);
 });
 
-test('meeting date and primary RAW are visible where the reader first sees the account',async({page})=>{
+test('meeting date and original RAW remain reachable after the scientific first screen',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   const rawPath='2026-09-22-meeting-transcript.raw.md';
   await page.goto(prefix+'parameter-memory-results/');
   const lede=page.locator('[data-evo-blog="results"] .evo-article__lede');
-  await expect(lede).toContainText('2026 年 9 月 22 日，我们和学长开了一次');
-  const source=lede.getByRole('link',{name:/会议原始逐字记录/});
+  await expect(lede).toContainText('十个研究问题已经测到什么');
+  const provenance=page.locator('[data-meeting-provenance]');
+  await expect(provenance).toContainText('2026 年 9 月 22 日，我们和学长开了一次');
+  const source=provenance.getByRole('link',{name:/会议原始逐字记录/});
   await expect(source).toBeVisible();
   await expect(source).toHaveAttribute('href',new RegExp('85ee773d04f9949db369c8dd928dbbae12c68c8d/.+'+rawPath));
   const horizontalOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);

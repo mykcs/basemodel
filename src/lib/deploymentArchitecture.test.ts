@@ -1,8 +1,40 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { parse } from 'yaml';
 
 const readText = (relativePath: string): string => readFileSync(new URL(relativePath, import.meta.url), 'utf8');
 const readJson = <T>(relativePath: string): T => JSON.parse(readText(relativePath)) as T;
+
+const allowedWorkflowFiles = [
+  'cloud-figure-visual-review.yml', 'public-pr-ci.yml', 'review-preview.yml', 'self-hosted-ci.yml',
+];
+const assertWorkflowFiles = (files: string[]) => expect([...files].sort()).toEqual(allowedWorkflowFiles);
+const assertCloudFigureSafety = (source: string) => {
+  const workflow = parse(source);
+  expect(Object.keys(workflow.on).sort()).toEqual(['pull_request', 'workflow_dispatch']);
+  expect(workflow.permissions).toEqual({ contents: 'read' });
+  expect(Object.keys(workflow.jobs)).toEqual(['cloud-figure-browsers']);
+  const job = workflow.jobs['cloud-figure-browsers'];
+  expect(job['runs-on']).toBe('ubuntu-24.04');
+  expect(job.permissions).toBeUndefined();
+  expect(job.environment).toBeUndefined();
+  expect(job.strategy.matrix.browser).toEqual(['chromium', 'webkit']);
+  const lock = readJson<{ packages: Record<string, { version: string }> }>('../../package-lock.json');
+  expect(job.container.image).toMatch(new RegExp('^mcr\\.microsoft\\.com/playwright:v' + lock.packages['node_modules/@playwright/test'].version.replaceAll('.', '\\.') + '-noble@sha256:[a-f0-9]{64}$'));
+  const checkout = job.steps.find((step: { uses?: string }) => step.uses?.startsWith('actions/checkout@'));
+  expect(checkout.with['persist-credentials']).toBe(false);
+  expect(checkout.with.ref).toBe('${{ steps.candidate.outputs.sha }}');
+  const upload = job.steps.find((step: { uses?: string }) => step.uses?.startsWith('actions/upload-artifact@'));
+  expect(upload.if).toBe('always()');
+  expect(upload.with['retention-days']).toBe(3);
+  expect(upload.with['if-no-files-found']).toBe('error');
+  for (const step of job.steps) {
+    if (step.uses) expect(step.uses).toMatch(/^actions\/[a-z-]+@[a-f0-9]{40}$/);
+  }
+  // Inspect parsed values: a comment cannot satisfy a permission/trigger assertion.
+  const executable = JSON.stringify(workflow);
+  expect(executable).not.toMatch(/secrets\.|write-all|contents:write|vercel deploy|target=production|git push/i);
+};
 
 describe('Vercel production deployment architecture', () => {
   const workflowsDir = new URL('../../.github/workflows/', import.meta.url);
@@ -33,7 +65,7 @@ describe('Vercel production deployment architecture', () => {
 
   it('uses Vercel as primary CI while retaining CircleCI and Mac as manual fallbacks', () => {
     const workflowFiles = existsSync(workflowsDir) ? readdirSync(workflowsDir).filter((name) => /\.ya?ml$/i.test(name)) : [];
-    expect(workflowFiles).toEqual(['public-pr-ci.yml', 'review-preview.yml', 'self-hosted-ci.yml']);
+    assertWorkflowFiles(workflowFiles);
     expect(circleCiConfig).not.toContain('pr_cloud_ci:');
     expect(circleCiConfig).not.toContain('main_cloud_ci:');
     expect(circleCiConfig).toContain('manual_cloud_ci:');
@@ -72,6 +104,27 @@ describe('Vercel production deployment architecture', () => {
     expect(runnerStart).not.toContain('docker exec "$container" bash -lc "ps -ef');
     expect(runnerStart).not.toContain('/var/run/docker.sock');
     expect(runnerStart).not.toMatch(/(?:^|\s)(?:-v|--volume)(?:\s|=)/m);
+  });
+
+  it('keeps the cloud figure workflow read-only, pinned and exact-head bound', () => {
+    const cloud = readText('../../.github/workflows/cloud-figure-visual-review.yml');
+    assertCloudFigureSafety(cloud);
+    for (const command of ['test:ui', 'test:ui:all'])
+      expect(packageJson.scripts[command]).toContain('tests/e2e/advisor-figure-paper-collision.spec.ts');
+    expect(readText('../../scripts/preflight-ui.ts')).toContain('q03-rendered-label-axis-collision');
+    expect(cloud).toContain('tests/e2e/sitewide-figure-width-scope.spec.ts');
+  });
+
+  it('rejects unknown workflows and unsafe cloud workflow mutations', () => {
+    expect(() => assertWorkflowFiles([...allowedWorkflowFiles, 'unknown.yml'])).toThrow();
+    const source = readText('../../.github/workflows/cloud-figure-visual-review.yml');
+    for (const bad of [
+      source.replace('  pull_request:', '  pull_request_target:'),
+      source.replace('  contents: read', '  contents: write'),
+      source.replace('    runs-on: ubuntu-24.04', '    runs-on: ubuntu-24.04\n    environment: production'),
+      source.replace('run: npm ci', 'run: vercel deploy --target=production'),
+      source.replace('persist-credentials: false', 'persist-credentials: true'),
+    ]) expect(() => assertCloudFigureSafety(bad)).toThrow();
   });
 
   it('reconciles runner image drift without deleting the previous container', () => {

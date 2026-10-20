@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
 import { writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+const sourceSha=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
+test.beforeAll(()=>{
+  if(process.env.FIGURE_SOURCE_SHA) expect(sourceSha).toBe(process.env.FIGURE_SOURCE_SHA);
+});
 
 // User-reported Figure 2 defect on the actual advisor report (desktop and phone),
 // plus sibling Figure 1: check the rendered evidence, not only CSS source.
@@ -82,7 +87,7 @@ for(const width of [390,768,1440] as const){
         animations:'disabled',
       });
       writeFileSync(testInfo.outputPath('q03-paper-geometry-'+width+'-'+theme+'.json'),
-        JSON.stringify({width,theme,metrics,source:'rendered Chromium/WebKit Playwright',route},null,2)+'\n');
+        JSON.stringify({sha:sourceSha,browser:testInfo.project.name,width,theme,metrics,source:'rendered Chromium/WebKit Playwright',route},null,2)+'\n');
     });
   }
 }
@@ -127,16 +132,23 @@ for(const width of [390,1440] as const){
   });
 }
 
-test('phone advisor first screen offers one evidence route alongside meeting RAW',async({page})=>{
+test('phone reader gets a Q10 decision route and can still find the meeting RAW',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto(route,{waitUntil:'domcontentloaded'});
-  const links=await page.locator('#main-content a').evaluateAll(anchors=>anchors.filter(el=>{
-    const r=el.getBoundingClientRect(),style=getComputedStyle(el);
-    const h=Math.min(r.bottom,innerHeight)-Math.max(r.top,0);
-    return r.width>0&&r.height>0&&h>=Math.min(12,Math.max(2,r.height*.25))
-      && style.display!=='none'&&style.visibility!=='hidden';
-  }).map(el=>({text:el.textContent?.trim()||'',href:el.getAttribute('href')})));
-  expect(links).toHaveLength(2);
-  expect(links[0]?.text).toContain('会议原始逐字记录');
-  expect(links[1]).toEqual({text:'查看 Q05、Q07 的详细证据',href:'#responses'});
+  const finding=page.locator('[data-advisor-key-findings]');
+  const q10=page.locator('[data-advisor-priorities] a[href="#response-q10"]');
+  const raw=page.locator('[data-meeting-provenance] a[href*="2026-09-22-meeting-transcript.raw.md"]');
+  await expect(finding).toContainText('Q05、Q07');
+  await expect(q10).toBeVisible();
+  await expect(raw).toHaveCount(1);
+  await expect(raw).toContainText('会议原始逐字记录');
+  const placement=await page.evaluate(()=>{
+    const first=document.querySelector('[data-advisor-key-findings]');
+    const source=document.querySelector('[data-meeting-provenance]');
+    if(!first||!source)throw new Error('missing scientific finding or meeting provenance');
+    return {finding:first.getBoundingClientRect().top,source:source.getBoundingClientRect().top,overflow:document.documentElement.scrollWidth-innerWidth};
+  });
+  expect(placement.finding).toBeLessThan(844);
+  expect(placement.source).toBeGreaterThan(placement.finding);
+  expect(placement.overflow).toBeLessThanOrEqual(2);
 });

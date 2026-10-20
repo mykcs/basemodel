@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /** Sitewide visual-medium inventory. Reads every generated public HTML route. */
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join, relative, dirname } from 'node:path';
 
 const root = new URL('../dist/', import.meta.url).pathname;
@@ -65,12 +66,12 @@ function inspect(filename) {
   const role=classifyRoute(route);
   const rawFigs=[...html.matchAll(/<figure(?=[\s>])([^>]*)>/gi)];
   const rawTables=[...html.matchAll(/<table(?=[\s>])([^>]*)>/gi)];
-  const figures=rawFigs.map(match=>{
+  const figures=rawFigs.map((match,index)=>{
     const attrs=match[1];
     const classes=attr(attrs,'class');
-    return {owner:classes.split(/\s+/).slice(0,2).join(' ')||'(none)',mode:mode(classes,attrs,role,route)};
+    return {index,owner:classes.split(/\s+/).slice(0,2).join(' ')||'(none)',mode:mode(classes,attrs,role,route),attributes:attrs.trim(),status:'NEEDS_VISUAL_REVIEW',viewports_tested:[],themes_tested:[],evidence_artifact:null};
   });
-  records.push({route,role,figures,tables:rawTables.length});
+  records.push({route,role,figures,tables:rawTables.length,table_inventory:rawTables.map((match,index)=>({index,owner:attr(match[1],'class')||'(none)',status:'NEEDS_VISUAL_REVIEW'}))});
 }
 walk(root);
 records.sort((a,b)=>a.route.localeCompare(b.route));
@@ -87,7 +88,7 @@ const summary={
 if (records.length < 260 || summary.figure_instances < 60 || summary.table_source_instances < 115)
  problems.push('generated route inventory appears incomplete');
 if (output) {
- const payload={snapshot_date:'2026-10-17',basis:'generated static public HTML; interactive runtime charts require browser acceptance',summary,routes:records};
+ const payload={snapshot_date:new Date().toISOString().slice(0,10),source_sha:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),basis:'generated static public HTML; interactive runtime charts require browser acceptance',summary,routes:records};
  mkdirSync(dirname(output),{recursive:true});
  writeFileSync(output,JSON.stringify(payload,null,2)+'\n');
 }
