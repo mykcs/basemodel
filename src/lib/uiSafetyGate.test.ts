@@ -188,7 +188,7 @@ describe('UI visual acceptance gate contract', () => {
   });
 
   it('makes readable research prose and intent-bound control ownership hard release conditions', () => {
-    for (const term of ['width: 390', 'width: 768', 'width: 1024', 'width: 1440', 'prose font too small', 'CJK prose is too narrow']) {
+    for (const term of ['width: 390', 'width: 768', 'width: 1024', 'width: 1440', 'prose font too small', 'mixed-script prose is too narrow']) {
       expect(canonicalFigureGate).toContain(term);
     }
     for (const term of ['prose font too small', 'CJK prose is too narrow', 'interactive transport stays local until explicit reader interaction', 'data-transport-docked']) {
