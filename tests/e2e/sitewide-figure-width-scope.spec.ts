@@ -11,7 +11,7 @@ function discover(dir: string): string[] {
     if (entry.isDirectory()) return discover(path);
     if (!entry.name.endsWith('.html')) return [];
     const source = readFileSync(path, 'utf8');
-    if (!/<figure(?=[\s>])|<table(?=[\s>])/i.test(source)) return [];
+    if (!/<figure(?=[\s>])|<table(?=[\s>])|<svg[^>]*role=["']img/i.test(source)) return [];
     const route = '/' + relative(root, path).split(sep).join('/').replace(/index\.html$/, '').replace(/\.html$/, '');
     return [route === '//' ? '/' : route];
   });
@@ -25,7 +25,7 @@ test('visual-route audit covers all source-rendered graphics/table routes', () =
 // matrix. Operational UI and fixed 16:9 slides retain their own semantic layout.
 for (const route of routes) {
   test('research figure/table route remains viewport-safe: ' + route, async ({ page }, testInfo) => {
-    if (captureAudit) testInfo.setTimeout(180_000); // Full per-object six-state capture, not the ordinary overflow probe.
+    if (captureAudit) testInfo.setTimeout(600_000); // Full per-object capture includes dense tables; the ordinary overflow probe keeps its original budget.
     const evidence = [];
     for (const theme of (captureAudit ? ['light', 'dark'] : ['light'])) {
     for (const width of (captureAudit ? [390, 768, 1440] : [390, 1440])) {
@@ -43,39 +43,53 @@ for (const route of routes) {
             if (details.querySelector('figure, table')) details.open = true;
           }
         });
-        for (const [index, figure] of (await page.locator('figure').all()).entries()) {
+        let figureIndex=0,svgIndex=0;
+        for (const figure of await page.locator('figure, svg[role="img"]').all()) {
+          const kind=await figure.evaluate(el=>el.tagName.toLowerCase()==='figure'?'figure':el.closest('figure')?'inside-figure':'nonfigure-svg');
+          if(kind==='inside-figure') continue;
+          const index=kind==='figure'?figureIndex++:svgIndex++;
           const visible = await figure.isVisible();
-          const png = `figure-${index}-${width}-${theme}.png`;
+          const png = `${kind}-${index}-${width}-${theme}.png`;
           const details = await figure.evaluate(el => ({
-            owner: el.className || '(none)',
-            caption: el.querySelector('figcaption')?.textContent?.trim() ?? '',
+            owner: el.closest('[data-testid]')?.getAttribute('data-testid') || el.getAttribute('class') || '(none)',
+            caption: (el.querySelector('figcaption')??el.querySelector('desc'))?.textContent?.trim() ?? '',
             sources: [...el.querySelectorAll('a[href]')].map(a => a.getAttribute('href')),
             svgTitles: el.querySelectorAll('svg title').length,
             box: el.getBoundingClientRect().toJSON(),
             text: [...el.querySelectorAll('svg text')].map(node => ({
               text: node.textContent, box: node.getBoundingClientRect().toJSON(),
               fontSize: getComputedStyle(node).fontSize,
+              renderedFontSize:node instanceof SVGGraphicsElement?parseFloat(getComputedStyle(node).fontSize)*Math.hypot(node.getScreenCTM()?.a??1,node.getScreenCTM()?.b??0):null,
             })),
           }));
           if (visible) {
             await captureFigureEvidence(figure,testInfo.outputPath(png));
             if (width === 1440 && theme === 'light') {
               const grayscale = await page.addStyleTag({content:'html { filter: grayscale(1) !important; }'});
-              await captureFigureEvidence(figure,testInfo.outputPath(`figure-${index}-grayscale.png`));
+              await captureFigureEvidence(figure,testInfo.outputPath(`${kind}-${index}-grayscale.png`));
               await grayscale.evaluate(node => node.parentNode?.removeChild(node));
               await page.emulateMedia({media:'print'});
-              if (await figure.isVisible()) await captureFigureEvidence(figure,testInfo.outputPath(`figure-${index}-print.png`));
+              if (await figure.isVisible()) await captureFigureEvidence(figure,testInfo.outputPath(`${kind}-${index}-print.png`));
               await page.emulateMedia({media:'screen'});
             }
           }
-          evidence.push({route,index,width,theme,...details,visible,png:visible?png:null,
+          evidence.push({route,kind,index,width,theme,...details,visible,png:visible?png:null,
             status:'NEEDS_VISUAL_REVIEW',state:'details containing evidence expanded'});
         }
         const tables = await page.locator('table').evaluateAll(els => els.map((el,index) => ({
           index,owner:el.className,caption:el.querySelector('caption')?.textContent?.trim()??'',
           box:el.getBoundingClientRect().toJSON(),rows:el.querySelectorAll('tr').length,
           columns:el.querySelector('tr')?.children.length??0,status:'NEEDS_VISUAL_REVIEW',
+          inFigure:Boolean(el.closest('figure')),
+          borders:{top:getComputedStyle(el).borderTopWidth,bottom:getComputedStyle(el).borderBottomWidth},
+          cells:[...el.querySelectorAll('th,td')].map(cell=>({text:cell.textContent?.trim(),
+            box:cell.getBoundingClientRect().toJSON(),fontSize:getComputedStyle(cell).fontSize})),
         })));
+        for (const table of tables) {
+          const target=page.locator('table').nth(table.index);
+          if (width!==768 && !table.inFigure && await target.isVisible())
+            await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`));
+        }
         evidence.push({route,width,theme,tables,rootOverflow:overflow});
       }
     }
