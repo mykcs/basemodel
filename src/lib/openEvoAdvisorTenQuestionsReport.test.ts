@@ -37,13 +37,15 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
   });
   it('names the actual meeting before Q-numbering and links RAW at first mention',()=>{
     const intro = responses.match(/<p class="evo-article__lede" data-reader-purpose>([\s\S]*?)<\/p>/)?.[1] ?? '';
-    expect(intro).toContain('2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会');
-    expect(intro).toContain('href={OPEN_EVO_ADVISOR_MEETING.rawHref}');
-    expect(intro).toContain('会议原始逐字记录（RAW）');
+    const provenance = responses.match(/<p class="evo-article__note" data-meeting-provenance>([\s\S]*?)<\/p>/)?.[1] ?? '';
+    expect(intro).toContain('这里先告诉你：十个研究问题已经测到什么');
+    expect(provenance).toContain('2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会');
+    expect(provenance).toContain('href={OPEN_EVO_ADVISOR_MEETING.rawHref}');
+    expect(provenance).toContain('会议原始逐字记录（RAW）');
     expect(responses).not.toContain('9 月 22 日会议的逐字记录见本文开头。');
-    expect(intro.indexOf('会议原始逐字记录')).toBeLessThan(intro.indexOf('Q01–Q09'));
-    expect(intro).toContain('Q10');
-    expect(intro).toContain('不是学长当时逐字提出的十句话');
+    expect(provenance.indexOf('会议原始逐字记录')).toBeLessThan(provenance.indexOf('Q01–Q09'));
+    expect(provenance).toContain('Q10');
+    expect(provenance).toContain('不是学长当时逐字提出的十句话');
     expect(questions).toContain('href={OPEN_EVO_ADVISOR_MEETING.rawHref}');
     expect(questions).toContain('href={OPEN_EVO_ADVISOR_MEETING.reconciliationHref}');
     expect(questions).toContain('后续分析（非 RAW）');
