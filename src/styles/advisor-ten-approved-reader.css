@@ -456,10 +456,14 @@ html[data-theme="dark"] .evo-approved-reader {
   .evo-approved-reader h3,
   .evo-approved-reader .evo-article__question-header h3 { font-size: var(--type-article-subsection); }
   .evo-approved-reader .advisor-result-matrix table {
+    /* Keep the existing fixed-column reading grammar (#906 owns row labels),
+       but stop squeezing native data into 13px / phone-width slivers. */
     width: 100%;
+    min-width: 26rem;
+    max-width: none;
     table-layout: fixed;
-    font-size: var(--type-meta);
-    line-height: 1.5;
+    font-size: var(--type-table);
+    line-height: var(--type-leading-caption);
   }
   .evo-approved-reader .advisor-result-matrix th,
   .evo-approved-reader .advisor-result-matrix td {
@@ -477,7 +481,8 @@ html[data-theme="dark"] .evo-approved-reader {
   }
   .evo-approved-reader .advisor-result-matrix__wrap {
     width: 100%;
-    overflow-x: hidden;
+    max-width: 100%;
+    overflow-x: auto;
   }
   .evo-approved-reader .advisor-result-matrix figcaption,
   .evo-approved-reader .advisor-result-matrix figcaption p { font-size: var(--type-caption); }

@@ -144,3 +144,97 @@ for(const width of [390,1280] as const){
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
   });
 }
+
+/* The same native evidence table is readable on phones and remains a local
+ * scroller; a green document-overflow check alone did not catch 13px cells or
+ * a hidden local overflow owner. The table's labels remain with PR #906. */
+const advisorTableRoute='/research/seed-openevo/study/parameter-memory-results/';
+const advisorTableSelector='[data-advisor-matrix="q02"]';
+const acceptScientificCellSize=(pixels:number)=>expect(pixels).toBeGreaterThanOrEqual(15);
+const acceptLocalTableScroller=(overflowX:string)=>expect(overflowX).toBe('auto');
+
+for(const width of [390,768,1440] as const) {
+  for(const theme of ['light','dark'] as const) {
+    test('advisor Q02 native table font roles and local containment at '+width+'/'+theme,async({page},testInfo)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+      const response=await page.goto(advisorTableRoute,{waitUntil:'domcontentloaded'});
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await page.evaluate(()=>document.fonts.ready);
+
+      const matrix=page.locator(advisorTableSelector);
+      await expect(matrix).toBeVisible();
+      const scroller=matrix.locator('.advisor-result-matrix__wrap');
+      await scroller.scrollIntoViewIfNeeded();
+      const geometry=await matrix.evaluate(figure=>{
+        const own=(selector:string)=>{
+          const node=figure.querySelector(selector);
+          if(!node)throw Error('Missing scientific cell role: '+selector);
+          const s=getComputedStyle(node);
+          return {size:parseFloat(s.fontSize),family:s.fontFamily,weight:s.fontWeight,style:s.fontStyle};
+        };
+        const globalRole=(selector:string)=>{
+          const node=document.querySelector(selector);
+          if(!node)throw Error('Missing article hierarchy: '+selector);
+          return parseFloat(getComputedStyle(node).fontSize);
+        };
+        const holder=figure.querySelector('.advisor-result-matrix__wrap') as HTMLElement;
+        const holderBounds=holder.getBoundingClientRect();
+        const nativeTable=figure.querySelector('table') as HTMLElement;
+        return {
+          heading:globalRole('#responses > h2'),
+          question:globalRole('#response-q02 .evo-article__question-header h3'),
+          answer:globalRole('#response-q02 .advisor-response__answer'),
+          table:own('table'),
+          numeric:own('tbody td[data-numeric]'),
+          caption:own('figcaption p'),
+          holder:{client:holder.clientWidth,scroll:holder.scrollWidth,overflowX:getComputedStyle(holder).overflowX,left:holderBounds.left,right:holderBounds.right},
+          tableWidth:nativeTable.getBoundingClientRect().width,
+          rootOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+        };
+      });
+      expect(geometry.heading).toBeGreaterThan(geometry.question);
+      expect(geometry.question).toBeGreaterThan(geometry.answer);
+      expect(geometry.answer).toBeGreaterThanOrEqual(16);
+      acceptScientificCellSize(geometry.table.size);
+      acceptScientificCellSize(geometry.numeric.size);
+      expect(geometry.caption.size).toBeGreaterThanOrEqual(14);
+      expect(geometry.numeric.family).toMatch(/Inter|PingFang|system-ui/);
+      expect(geometry.numeric.style).toBe('normal');
+      expect(geometry.rootOverflow).toBeLessThanOrEqual(2);
+      expect(geometry.holder.left).toBeGreaterThanOrEqual(-2);
+      expect(geometry.holder.right).toBeLessThanOrEqual(width+2);
+      acceptLocalTableScroller(geometry.holder.overflowX);
+      if(width===390) {
+        expect(geometry.tableWidth).toBeGreaterThanOrEqual(416-1);
+        expect(geometry.holder.scroll).toBeGreaterThan(geometry.holder.client);
+      }
+      const label='advisor-q02-'+width+'-'+theme;
+      await scroller.screenshot({path:testInfo.outputPath(label+'.png'),animations:'disabled',
+        style:'.site-header { visibility: hidden; }'});
+    });
+  }
+}
+
+test('former 13px data and hidden local scroller both fail the actual advisor table predicates',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(advisorTableRoute,{waitUntil:'domcontentloaded'});
+  const cell=page.locator(advisorTableSelector+' tbody td[data-numeric]').first();
+  const scroller=page.locator(advisorTableSelector+' .advisor-result-matrix__wrap');
+  const readSize=()=>cell.evaluate(node=>parseFloat(getComputedStyle(node).fontSize));
+  const readScroll=()=>scroller.evaluate(node=>getComputedStyle(node).overflowX);
+  acceptScientificCellSize(await readSize());
+  acceptLocalTableScroller(await readScroll());
+  await page.addStyleTag({content:`
+    .evo-approved-reader .advisor-result-matrix table {font-size:13px !important;}
+    .evo-approved-reader .advisor-result-matrix__wrap {overflow-x:hidden !important;}
+  `});
+  expect(()=>acceptScientificCellSize(13)).toThrow();
+  const badSize=await readSize();
+  expect(badSize).toBeLessThan(15);
+  expect(()=>acceptScientificCellSize(badSize)).toThrow();
+  const badScroller=await readScroll();
+  expect(badScroller).toBe('hidden');
+  expect(()=>acceptLocalTableScroller(badScroller)).toThrow();
+});
