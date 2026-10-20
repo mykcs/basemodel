@@ -9,8 +9,13 @@ a { color: inherit; }
 .footer-inner { min-height: 72px; display: flex; justify-content: space-between; align-items: center; }
 .skip-link { position: absolute; left: 16px; top: -100px; padding: 8px 12px; background: var(--ink); color: var(--bg); z-index: 30; } .skip-link:focus { top: 10px; }
 .hero { padding: 84px 0 56px; } .hero-grid { display: grid; grid-template-columns: 1.12fr .88fr; gap: 56px; align-items: end; } .hero-actions { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 28px; }
-.eyebrow, .section-kicker { color: var(--accent-deep); text-transform: uppercase; letter-spacing: .12em; font-size: .72rem; font-weight: 750; }
-h1, h2, h3, p { margin-top: 0; } h1 { font-size: clamp(2.5rem, 6vw, 5.2rem); line-height: .98; letter-spacing: -.065em; max-width: 740px; margin-bottom: 24px; } h2 { font-size: clamp(1.55rem, 3vw, 2.4rem); line-height: 1.05; letter-spacing: -.04em; margin-bottom: 12px; } h3 { font-size: 1.15rem; margin-bottom: 8px; } .lede { font-size: 1.12rem; color: var(--muted); max-width: 670px; }
+.eyebrow, .section-kicker { color: var(--accent-deep); text-transform: uppercase; letter-spacing: .06em; font-size: var(--type-meta); font-weight: var(--type-weight-label); }
+h1, h2, h3, p { margin-top: 0; }
+h1 { font-size: var(--type-page); line-height: var(--type-leading-heading); letter-spacing: -.035em; max-width: 740px; margin-bottom: 24px; }
+h2 { font-size: var(--type-section); line-height: var(--type-leading-heading); letter-spacing: -.02em; margin-bottom: 12px; }
+h3 { font-size: var(--type-subsection); line-height: var(--type-leading-heading); margin-bottom: 8px; }
+.hero h1 { font-size: var(--type-display); }
+.lede { font-size: var(--type-lead); line-height: var(--type-leading-body); color: var(--muted); max-width: var(--reading-width); }
 .hero-note { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 24px; box-shadow: var(--shadow); } .hero-note p:last-child { margin-bottom: 0; }
 .stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); } .stat { min-width: 0; padding: 18px 0; } .stat + .stat { border-left: 1px solid var(--line); padding-left: 24px; } .stat strong { display: block; font-size: 1.8rem; } .stat span { color: var(--muted); font-size: .82rem; }
 .section { padding: 34px 0; } .section-first { padding-top: 4px; } .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 20px; } .section-heading > * { min-width: 0; } .muted { color: var(--muted); } .text-link { color: var(--accent-deep); text-decoration: none; font-weight: 700; font-size: .9rem; }
