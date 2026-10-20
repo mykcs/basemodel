@@ -17,6 +17,45 @@ for (const width of [390,768,1440]) {
     const q03=page.locator('[data-report-figure="q03-custom-curve"]');
     await expect(width<=720 ? q03.locator('[data-q03-mobile-chart]') : q03.locator('.advisor-viz__q03-chart--desktop')).toBeVisible();
     await expect(q03.locator('button')).toHaveCount(0);
+    // Regression for the owner's Q03 screenshot: paper figure, not a floating
+    // tooltip/card; value labels stay clear of the y-axis on phone and desktop.
+    const plot=width<=720 ? q03.locator('[data-q03-mobile-chart]') : q03.locator('[data-q03-desktop-chart]');
+    await expect(plot).toHaveAttribute('aria-label',/四个.*保存点/);
+    await expect(plot.locator('title')).toHaveCount(0);
+    const q01Name=await q01.getAttribute('aria-label');
+    expect(q01Name?.length).toBeGreaterThan(8);
+    await expect(q01.locator('title')).toHaveCount(0);
+    const geometry=await plot.evaluate(svg=>{
+      const left=svg.querySelector('[data-trend-point="A0"] .advisor-viz__q03-score, [data-trend-point-phone="A0"] .advisor-viz__q03-score');
+      const axis=svg.querySelector('.advisor-viz__q03-axis-line');
+      if(!(left instanceof SVGGraphicsElement)||!(axis instanceof SVGGraphicsElement))return null;
+      const label=left.getBBox();
+      const origin=axis.getBBox().x;
+      return {leftEdge:label.x,axisX:origin};
+    });
+    expect(geometry).not.toBeNull();
+    expect(geometry!.leftEdge).toBeGreaterThan(geometry!.axisX+2);
+    // SVG source font-size alone is not the reader-visible size: a 625px
+    // viewBox squeezed to 384px makes its 13.5px labels render near 8px.
+    const renderedScorePx=await plot.evaluate(svg=>{
+      const label=svg.querySelector('.advisor-viz__q03-score');
+      if(!(label instanceof SVGTextElement)||!(svg instanceof SVGSVGElement))return 0;
+      return parseFloat(getComputedStyle(label).fontSize)
+        * svg.getBoundingClientRect().width/svg.viewBox.baseVal.width;
+    });
+    expect(renderedScorePx).toBeGreaterThanOrEqual(11.5);
+    const paper=await q03.evaluate(node=>{
+      const root=document.querySelector('.evo-approved-reader');
+      const caption=node.querySelector('figcaption');
+      return {
+        border:getComputedStyle(node).borderTopWidth,
+        caption:caption?parseFloat(getComputedStyle(caption).fontSize):0,
+        body:root?parseFloat(getComputedStyle(root).fontSize):0
+      };
+    });
+    expect(paper.border).toBe('0px');
+    expect(paper.caption).toBeGreaterThanOrEqual(13);
+    expect(paper.caption).toBeLessThan(paper.body);
     for(const [id,count] of [['q04-posthoc',2],['q07-zero-latest',2],['q08-old-queue',1],['q09-context',4],['rank32-paired',1],['q07-inversion',1]] as const){
       const plot=page.locator('[data-paper-effect="'+id+'"]');
       await expect(plot).toBeVisible();

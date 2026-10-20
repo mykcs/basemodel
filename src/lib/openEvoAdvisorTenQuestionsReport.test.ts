@@ -441,8 +441,8 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(css).toContain(':has(.evo-blog)');
     expect(css).toContain('#f6f7f5');
     expect(css).toContain('--paper:#fff');
-    expect(css).toContain('font-size:17px');
-    expect(css).toContain('font-size:16.5px');
+    expect(css).toContain('font-size:var(--type-body)');
+    expect(css).toContain('font-family:var(--font-interface)');
     for(const page of [methods,questions,responses]){
       expect(page).toContain('OpenEvoArticleNavigation');
       expect(page).toContain('openevo-research-blogs.css');
@@ -450,6 +450,17 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
       expect(page).toContain('evo-article__sources');
     }
     expect(read('src/styles/tokens.css')).toContain('--color-bg: #f7f3eb;');
+    const tokens=read('src/styles/tokens.css');
+    for(const name of ['--type-article-page','--type-article-section','--type-article-subsection','--type-body','--type-caption','--type-plot-label']) {
+      expect(tokens).toContain(name+':');
+    }
+    expect(read('src/styles/editorial-hierarchy.css')).toContain('font-size: var(--type-section) !important;');
+    expect(read('src/styles/site.css')).toContain('h1 { font-size: var(--type-page);');
+    expect(read('src/styles/research-booktabs.css')).toContain('font-family: var(--font-interface);');
+    const visual=read('src/components/research/AdvisorTenEvidenceVisual.astro');
+    expect(visual).toContain('x: 110 + index * 150');
+    expect(visual).toContain('xPhone: 62 + index * 85.5');
+    expect(visual).not.toContain('<title id="advisor-q03-title">');
   });
   it('rejects the owner-identified cold-read failures in the report and keeps a scoped green/yellow/red scientific ledger',()=>{
     // Negative probes: a previously-green page must not pass with these known bad claims.
@@ -519,7 +530,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     }
     expect(blog).toContain('.evo-blog .advisor-viz:not(figure)');
     expect(blog).toContain('border:0;');
-    expect(booktabs).toContain('font-size: var(--research-evidence-caption-size,1rem)');
+    expect(booktabs).toContain('font-size: var(--research-evidence-caption-size,var(--type-caption))');
     expect(plot).toContain('box-shadow:none');
     expect(plot).toContain('width:min(100%,var(--research-evidence-single-width,38rem))');
     expect(plot).toContain('width:min(100%,var(--research-evidence-double-width,55.625rem))');

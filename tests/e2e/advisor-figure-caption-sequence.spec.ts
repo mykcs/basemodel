@@ -31,7 +31,7 @@ for (const width of [390, 768, 1440]) {
       expect(await page.locator('[data-report-figure="q04-capacity"]').evaluate(el => el.tagName)).toBe('DIV');
 
       // Existing model/panel boundaries remain in their associated figure captions.
-      await expect(article.locator('[data-report-figure="q03-custom-curve"] figcaption')).toContainText('没有测量中间轮次');
+      await expect(article.locator('[data-report-figure="q03-custom-curve"] figcaption')).toContainText('中间轮次没有测量');
       await expect(page.locator('[data-paper-effect="rank32-paired"] figcaption')).toContainText('1,024');
       await expect(page.locator('[data-paper-effect="q07-inversion"] figcaption')).toContainText('第 156 轮');
       await expect(page.locator('[data-paper-effect="q04-posthoc"] figcaption')).toContainText('训练后压缩');

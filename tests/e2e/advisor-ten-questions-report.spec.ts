@@ -383,7 +383,7 @@ for (const width of [390, 768, 1440]) {
     await expect(figure).toContainText('0.69');
     await expect(figure).toContainText('6.62');
     await expect(figure).toContainText('均没有完整成功的题目');
-    await expect(figure.locator('figcaption')).toContainText('没有测量中间轮次');
+    await expect(figure.locator('figcaption')).toContainText('中间轮次没有测量');
     await expect(figure.locator('figcaption a[href*="/pull/678"]')).toBeVisible();
     const plot=figure.locator('.advisor-viz__q03-chart');
     const table=figure.locator('.advisor-viz__q03-phone-table');
@@ -422,7 +422,15 @@ for(const width of [320,390,1440]){
     await page.goto(prefix+'parameter-memory-results/',{waitUntil:'domcontentloaded'});
     const article=page.locator('[data-evo-blog="results"]');
     await expect(article).toHaveClass(/evo-approved-reader/);
-    await expect(article.locator('h1')).toHaveCSS('font-size',width<=520?'26px':'28px');
+    const typeSizes=await article.evaluate(el=>{
+      const h1=el.querySelector('h1'),h2=el.querySelector('h2');
+      if(!h1||!h2)return null;
+      return {h1:parseFloat(getComputedStyle(h1).fontSize),h2:parseFloat(getComputedStyle(h2).fontSize)};
+    });
+    expect(typeSizes).not.toBeNull();
+    expect(typeSizes!.h1).toBeGreaterThanOrEqual(28);
+    expect(typeSizes!.h1).toBeLessThanOrEqual(37);
+    expect(typeSizes!.h1).toBeGreaterThan(typeSizes!.h2);
     const references=article.locator('.advisor-approved-question-ref');
     await expect(references).toHaveCount(10);
     expect(await references.allTextContents()).toEqual(

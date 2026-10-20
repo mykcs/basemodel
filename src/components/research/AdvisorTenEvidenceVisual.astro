@@ -42,9 +42,9 @@ const earlySft = [
 // Q03: the four observed checkpoints are already sufficient for a static figure.
 const checkpoints = ADVISOR_Q03_CUSTOM_PANEL.map((point, index) => ({
   ...point,
-  x: 88 + index * 156,
+  x: 110 + index * 150,
   y: 225 - Number(point.score) * 17,
-  xPhone: 50 + index * 90,
+  xPhone: 62 + index * 85.5,
   yPhone: 185 - Number(point.score) * 13,
 }));
 const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y)).join(' ');
@@ -71,8 +71,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
       ))}
     </div>
     <p class="advisor-viz__q01-axis-explainer" data-q01-axis-scope><strong>横轴使用两种计数：</strong>普通 OpenEVO 按实际参数更新次数统计；Bounded 和历史 β/GDR 按已完成的 Stage2 轮数统计，其中一些轮次没有真正更新参数。<strong>横轴数字相同，不代表实际更新次数或计算成本相同。</strong></p>
-    <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--desktop" viewBox="0 0 740 310" role="img" aria-labelledby="advisor-q01-chart-title advisor-q01-chart-desc">
-      <title id="advisor-q01-chart-title">三种方法的真实开发集任务成绩随训练进度变化</title>
+    <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--desktop" viewBox="0 0 740 310" role="img" aria-label="三种方法的真实开发集任务成绩随训练进度变化" aria-describedby="advisor-q01-chart-desc">
       <desc id="advisor-q01-chart-desc">每条曲线来自十一个真实保存的模型版本，在同一批事先固定的六十四道购物题上测试。普通 OpenEVO 第一百二十次更新后的成绩几乎没有提高；Bounded 一百五十轮之前还在提高；历史 beta GDR 一百三十轮之后下降。纵轴是零到一百的 Task Score。</desc>
       {[0,25,50,75,100].map((tick) => (
         <g>
@@ -102,8 +101,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
       <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="63" y="15">Task Score（满分 100 分）</text>
       <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="713" y="301" text-anchor="end">训练进度（口径见上）</text>
     </svg>
-    <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--phone" viewBox="0 0 340 232" role="img" aria-labelledby="advisor-q01-phone-title advisor-q01-phone-desc">
-      <title id="advisor-q01-phone-title">三条方法的真实训练成绩变化，手机视图</title>
+    <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--phone" viewBox="0 0 340 232" role="img" aria-label="三条方法的真实训练成绩变化，手机视图" aria-describedby="advisor-q01-phone-desc">
       <desc id="advisor-q01-phone-desc">每种方法十一个已测模型版本的做题成绩。普通 OpenEVO 一百二十次更新之后进步很少，Bounded 到一百五十轮仍有提升，历史 beta GDR 一百三十轮后开始下降。</desc>
       {[0,25,50,75,100].map((tick) => (
         <g>
@@ -177,11 +175,10 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 {variant === 'q03' && (
   <figure class="advisor-viz advisor-viz--q03" data-report-figure="q03-custom-curve" data-evidence-shape="paper-static-observations" data-protocol="custom-q17-64">
     <header class="advisor-viz__heading">
-      <strong>Q03 · 四个保存点的 Task Score</strong>
+      <strong>Q03 历史训练的四个测量点</strong>
       <span>自定义的 64 道购物测试题 · 0–100 分</span>
     </header>
-    <svg class="advisor-viz__trend advisor-viz__q03-chart advisor-viz__q03-chart--desktop" data-q03-desktop-chart viewBox="0 0 625 285" role="img" aria-labelledby="advisor-q03-title advisor-q03-description">
-      <title id="advisor-q03-title">Q03 四个已测 Stage2 保存点的成绩先升、再降、再回升</title>
+    <svg class="advisor-viz__trend advisor-viz__q03-chart advisor-viz__q03-chart--desktop" data-q03-desktop-chart viewBox="0 0 625 285" role="img" aria-label="Q03 四个已测 Stage2 保存点的成绩先升、再降、再回升" aria-describedby="advisor-q03-description">
       <desc id="advisor-q03-description">自定义 64 题，不是论文原生 128 题。A0 模型得 3.71 分，A40 得 6.43 分，A80 得 0.69 分，A120 得 6.62 分，满分 100 分。纵轴仅显示 0–10 分的局部范围，四个保存点在各自的 64 道题中都没有完整成功的题目，中间训练轮次没有被测量。</desc>
       <text class="advisor-viz__q03-axis-title" x="75" y="30">Task Score（满分 100 分）</text>
       {[0, 5, 10].map((tick) => (
@@ -202,8 +199,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
       ))}
       <text class="advisor-viz__q03-axis-title" x="331" y="280" text-anchor="middle">Stage2 保存点</text>
     </svg>
-    <svg class="advisor-viz__trend advisor-viz__q03-phone-chart" data-q03-mobile-chart viewBox="0 0 350 236" role="img" aria-labelledby="advisor-q03-phone-title advisor-q03-phone-description">
-      <title id="advisor-q03-phone-title">Q03 四个真实保存点成绩先升、后降、再回升，手机视图</title>
+    <svg class="advisor-viz__trend advisor-viz__q03-phone-chart" data-q03-mobile-chart viewBox="0 0 350 236" role="img" aria-label="Q03 四个真实保存点成绩先升、后降、再回升，手机视图" aria-describedby="advisor-q03-phone-description">
       <desc id="advisor-q03-phone-description">自定义 64 道购物测试题，A0 为 3.71，A40 为 6.43，A80 为 0.69，A120 为 6.62；纵轴局部放大到 0–10 分，完整满分为 100。虚线只是连接已测点，中间没有观测。</desc>
       <text class="advisor-viz__q03-axis-title" x="43" y="20">Task Score（满分 100 分）</text>
       {[0,5,10].map((tick) => (
@@ -233,8 +229,8 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
         ))}</tbody>
       </table>
     </div>
-    <p class="advisor-viz__q03-reading">从 A0 的 <strong>3.71</strong> 分升至 A40 的 <strong>6.43</strong> 分，A80 降至 <strong>0.69</strong> 分，A120 回升至 <strong>6.62</strong> 分。四个保存点分别测试了 64 道题，<strong>均没有完整成功的题目</strong>。</p>
-    <figcaption><strong>图 2｜Q03 历史四个测量点。</strong>纵轴局部放大至 0–10 分，实际满分 100；细虚线只连接已测点，<strong>没有测量中间轮次</strong>，不能据此推断连续训练曲线。它与公开 SEED 论文的 128 题成绩不属于同一评测协议。<a href="https://github.com/mykcs/openevo-experiment/pull/678" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/678" />原始评测记录</a></figcaption>
+    <p class="advisor-viz__q03-reading">四次测量的平均分先升、后降、再回升，但每次测试的 64 道题都没有完整成功的题目。</p>
+    <figcaption><strong>图 2｜</strong>历史四个模型保存点在同一批 64 道购物题上的 Task Score，满分 100 分（纵轴仅展示 0–10 分）。虚线只连接实测点，中间轮次没有测量；与 SEED 论文的 128 题评测协议不同。<a href="https://github.com/mykcs/openevo-experiment/pull/678" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/678" />原始评测记录</a></figcaption>
   </figure>
 )}
 {variant === 'q04' && (
@@ -289,7 +285,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 .advisor-viz__heading{display:flex;flex-wrap:wrap;gap:.2rem 1rem;justify-content:space-between;align-items:baseline;margin-bottom:1.05rem}
 .advisor-viz__heading strong{font-size:1.05rem;line-height:1.5;font-weight:700}
 .advisor-viz__heading span{font-size:.9rem;line-height:1.5;color:var(--color-text-muted)}
-.advisor-viz figcaption,.advisor-viz__table-note{font-size:.91rem;line-height:1.75;color:var(--color-text-muted);margin:.8rem 0 .3rem;max-width:82ch}
+.advisor-viz figcaption,.advisor-viz__table-note{font-size:var(--type-caption);line-height:var(--type-leading-caption);color:var(--color-text-muted);margin:.6rem 0 .3rem;max-width:var(--type-reading-measure)}
 .advisor-viz__rows,.advisor-viz__bars{display:grid;gap:.95rem}
 .advisor-viz__item{display:grid;grid-template-columns:minmax(9rem,1fr) minmax(8rem,1.4fr) minmax(5rem,.6fr);gap:.3rem .9rem;align-items:center}
 .advisor-viz__name{font-size:.91rem;line-height:1.55;font-weight:590;overflow-wrap:anywhere}
@@ -313,15 +309,15 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 .advisor-viz__number{fill:var(--color-text);font-size:16px;font-weight:710}
 .advisor-viz__zoom{margin:.35rem 0 .7rem;color:var(--color-text-muted);font-size:.9rem;line-height:1.65}
 .advisor-viz__zoom strong{color:var(--color-text)}
-.advisor-viz__q03-chart{max-width:625px;height:auto;margin:.5rem 0 .2rem}
-.advisor-viz__q03-phone-chart{display:none;max-width:350px;height:auto;margin:.5rem 0 .2rem}
-.advisor-viz__q03-axis-title{fill:var(--color-text-muted);font-size:13px;font-weight:540}
+.advisor-viz__q03-chart{max-width:625px;height:auto;margin:.5rem 0 .2rem;overflow:visible}
+.advisor-viz__q03-phone-chart{display:none;max-width:350px;height:auto;margin:.5rem 0 .2rem;overflow:visible}
+.advisor-viz__q03-axis-title{fill:var(--color-text-muted);font-size:12px;font-weight:500}
 .advisor-viz__q03-axis-line{stroke:var(--color-text);stroke-width:1.3}
 .advisor-viz__q03-grid{stroke:var(--color-border);stroke-width:.85}
 .advisor-viz__q03-connector{fill:none;stroke:var(--color-text);stroke-width:1.5;stroke-dasharray:5 5;opacity:.7}
-.advisor-viz__q03-marker{stroke:var(--color-text);fill:var(--color-bg,#fff);stroke-width:2}
-.advisor-viz__q03-score{fill:var(--color-text);font-size:16px;font-weight:670}
-.advisor-viz__q03-reading{font-size:.93rem;line-height:1.7;margin:.3rem 0 .6rem;max-width:80ch}
+.advisor-viz__q03-marker{stroke:var(--color-text);fill:var(--paper,var(--color-surface));stroke-width:1.8}
+.advisor-viz__q03-score{fill:var(--color-text);font-size:13.5px;font-weight:600}
+.advisor-viz__q03-reading{font-size:var(--type-body-small,.9375rem);line-height:1.65;margin:.7rem 0 .3rem;max-width:68ch}
 .advisor-viz__q03-phone-table{display:none;max-width:100%;overflow-x:auto}
 .advisor-viz__q03-phone-table .research-booktabs{width:auto;min-width:0;max-width:100%;font-variant-numeric:tabular-nums}
 .advisor-viz__q03-phone-table .research-booktabs caption{font-size:.84rem;line-height:1.5}
