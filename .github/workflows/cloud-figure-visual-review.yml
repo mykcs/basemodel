@@ -84,6 +84,7 @@ jobs:
           name: basemodel-figure-${{ github.event.pull_request.number || inputs.pr_number }}-${{ matrix.browser }}
           path: |
             test-results/**/*.png
+            test-results/**/*.json
             test-results/**/*.webm
             test-results/**/*.zip
             test-results/**/*.md
