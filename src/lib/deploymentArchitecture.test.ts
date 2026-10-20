@@ -113,6 +113,8 @@ describe('Vercel production deployment architecture', () => {
       expect(packageJson.scripts[command]).toContain('tests/e2e/advisor-figure-paper-collision.spec.ts');
     expect(readText('../../scripts/preflight-ui.ts')).toContain('q03-rendered-label-axis-collision');
     expect(cloud).toContain('tests/e2e/sitewide-figure-width-scope.spec.ts');
+    expect(cloud).toContain('git config --global --add safe.directory "$GITHUB_WORKSPACE"');
+    expect(cloud).not.toMatch(/safe\.directory\s+['"]?\*/);
   });
 
   it('rejects unknown workflows and unsafe cloud workflow mutations', () => {
