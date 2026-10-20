@@ -133,16 +133,24 @@ test('approved TLDR prose is preserved once and detailed questions own their evi
   for(let n=1;n<=10;n++){
     const id='q'+String(n).padStart(2,'0');
     const brief=guide.locator('[data-review-summary="'+id+'"]');
-    const paragraphs=brief.locator('dd p');
-    await expect(paragraphs).toHaveCount(2);
-    await expect(paragraphs.nth(1)).toContainText('后续研究：');
+    await expect(brief.locator('[data-brief-answer="'+id+'"]')).toBeVisible();
+    await expect(brief.locator('[data-brief-done="'+id+'"]')).toContainText('已经做了：');
+    await expect(brief.locator('[data-brief-missing="'+id+'"]')).toContainText('还差什么：');
+    await expect(page.locator('#response-'+id+' [data-detail-brief="'+id+'"]')).toBeVisible();
+    await expect(page.locator('#response-'+id+' [data-progress-stage="'+id+'"]')).toContainText('目前进度：');
+    await expect(page.locator('#response-'+id+' [data-progress-gap="'+id+'"]')).toContainText('还差什么才能回答：');
     await expect(page.locator('#response-'+id+' [data-experiment-finding="'+id+'"]')).toBeVisible();
     await expect(page.locator('#response-'+id+' [data-supported-answer="'+id+'"]')).toBeVisible();
-    // The detailed answer keeps a source-bound result and next concrete task;
-    // it must not reprint the exact TLDR paragraph.
-    const summary=await paragraphs.first().innerText();
+    // The original conversation prose remains accessible but no longer
+    // occupies the fast skim path or repeats in the detailed answer.
+    const disclosure=brief.locator('.advisor-digest__original');
+    await expect(disclosure).not.toHaveAttribute('open','');
+    await disclosure.locator('summary').click();
+    await expect(disclosure.locator('p')).toHaveCount(2);
+    await expect(disclosure.locator('[data-conversation-next="'+id+'"]')).toContainText('后续研究：');
+    const original=await disclosure.locator('[data-conversation-summary="'+id+'"]').innerText();
     const detail=await page.locator('#response-'+id).innerText();
-    expect(detail).not.toContain(summary);
+    expect(detail).not.toContain(original);
     await expect(page.locator('#response-'+id+' [data-next-work="'+id+'"]')).toContainText('下一步：');
   }
   await expect(guide.locator('[data-review-summary="q01"] [data-conversation-summary]')).toHaveText('我们比较了普通 OpenEVO、Bounded 和历史 β/GDR 在不同训练轮次的做题成绩。结果发现：普通方法到约 120 次更新后提升不明显，Bounded 到第 150 轮仍有进步，而历史 β/GDR 在后期出现掉分。');
@@ -461,8 +469,14 @@ for(const width of [320,390,1440]){
     });
     expect(geo.tableWidth).toBeLessThanOrEqual(geo.contentWidth+1);
     expect(geo.overflow).toBeLessThanOrEqual(2);
-    expect(geo.caption).toContain('怎么看');
-    expect(geo.caption).toContain('证据边界');
+    // Check scientific meaning rather than requiring repeated caption-template labels.
+    expect(geo.caption).toContain('512 次尝试');
+    expect(geo.caption).toContain('不能代替简单 β 多单元正式训练');
+    const q02Rows=article.locator('#response-q02 [data-advisor-matrix] tbody tr');
+    await expect(q02Rows).toHaveCount(2);
+    await expect(q02Rows.locator('strong')).toHaveCount(0);
+    const numberWeights=await q02Rows.locator('td').evaluateAll(nodes=>nodes.map(n=>getComputedStyle(n).fontWeight));
+    expect(new Set(numberWeights).size).toBe(1);
     const toc=article.locator('.advisor-ten-toc');
     await expect(toc).toBeVisible();
     await expect(toc).not.toHaveAttribute('open','');

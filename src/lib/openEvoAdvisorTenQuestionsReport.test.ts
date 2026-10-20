@@ -190,7 +190,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
   });
   it('keeps evaluation scope, unique booktabs numbers and primary source proximity',()=>{
     const capacity=read('src/components/research/AdvisorTenEvidenceVisual.astro');
-    expect(responses).toContain('2 十问速览：我们发现了什么，下一轮还想研究什么？');
+    expect(responses).toContain('2 十问速览与后续工作');
     expect(responses).toContain('evo-article__experiment-guide');
     const tlDr=responses.split('data-ten-question-tldr')[1]?.split('</section>')[0] ?? '';
     expect(tlDr).toContain('data-review-source="single"');
