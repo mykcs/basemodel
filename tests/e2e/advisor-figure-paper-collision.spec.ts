@@ -124,6 +124,6 @@ test('phone advisor first screen offers one evidence route alongside meeting RAW
       && style.display!=='none'&&style.visibility!=='hidden';
   }).map(el=>({text:el.textContent?.trim()||'',href:el.getAttribute('href')})));
   expect(links).toHaveLength(2);
-  expect(links[0].text).toContain('会议原始逐字记录');
+  expect(links[0]?.text).toContain('会议原始逐字记录');
   expect(links[1]).toEqual({text:'查看 Q05、Q07 的详细证据',href:'#responses'});
 });
