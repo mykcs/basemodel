@@ -81,10 +81,27 @@ export function registerReaderJourneyTests() {
               if (expanded) await page.locator('[data-copy-review] details').evaluateAll((nodes) => {
                 nodes.forEach((node) => { (node as HTMLDetailsElement).open = true; });
               });
-              const measured = await page.locator('[data-copy-review]').evaluate((owner) => {
+              const auditCopy = () => page.locator('[data-copy-review]').evaluate((owner) => {
                 const failures: string[] = [];
                 let count = 0;
                 let owned = 0;
+                const rootStyle = getComputedStyle(document.documentElement);
+                const rootPx = Number.parseFloat(rootStyle.fontSize);
+                const tokenPx = (name: string) => {
+                  const value = rootStyle.getPropertyValue(name).trim();
+                  if (value.endsWith('rem')) return Number.parseFloat(value) * rootPx;
+                  if (value.endsWith('px')) return Number.parseFloat(value);
+                  throw new Error('Unrecognized typography token ' + name + ': ' + value);
+                };
+                const tokens = {
+                  meta: tokenPx('--type-meta'),
+                  table: tokenPx('--type-table'),
+                  bodySmall: tokenPx('--type-body-small'),
+                  body: tokenPx('--type-body'),
+                };
+                // Historical Archive has distinct metadata, result and prose roles.
+                // A 13px provenance label is not equivalent to 16px reading prose.
+                // All other capability pages keep the existing 15.9px floor.
                 owner.querySelectorAll<HTMLElement>('p, li, dd, td, small, span, strong, a').forEach((node) => {
                   // Nested components keep their own typography contracts.
                   // Astro's scope token identifies prose owned by this component.
@@ -96,7 +113,28 @@ export function registerReaderJourneyTests() {
                   count++;
                   const style = getComputedStyle(node);
                   const sample = node.textContent.trim().slice(0, 60);
-                  if (parseFloat(style.fontSize) < 15.9) failures.push(`small prose: ${sample}`);
+                  let minimumPx = 15.9;
+                  let role = 'prose';
+                  if (owner.matches('.legacy')) {
+                    if (node.matches('.legacy__hero > div > p, .legacy__arm-panel > header span, .legacy__arm-panel > header em, .legacy__metrics dt, .legacy__final span, .legacy__checkpoint-links span, .legacy__checkpoint-links small, .legacy__links span, .legacy__links small')) {
+                      minimumPx = tokens.meta;
+                      role = 'metadata';
+                    } else if (node.matches('.legacy__note, .legacy__actions a, .legacy__archive-facts span, .legacy__checkpoint-links strong, .legacy__links strong, .legacy__why li strong, .legacy__final--not-run')) {
+                      minimumPx = tokens.bodySmall;
+                      role = 'body-small';
+                    } else if (node.matches('p, li, .legacy__hero > div > span')) {
+                      minimumPx = tokens.body;
+                      role = 'body';
+                    } else if (node.matches('dd, td, strong')) {
+                      minimumPx = tokens.table;
+                      role = 'table-data';
+                    } else {
+                      minimumPx = tokens.meta;
+                      role = 'short-label';
+                    }
+                  }
+                  const fontPx = Number.parseFloat(style.fontSize);
+                  if (fontPx + 0.05 < minimumPx) failures.push('small ' + role + ' ' + fontPx + 'px < ' + minimumPx + 'px: ' + sample);
                   if (node.clientWidth && node.scrollWidth > node.clientWidth + 2) failures.push(`clipped prose: ${sample}`);
                 });
                 owner.querySelectorAll<HTMLElement>('.lineage-node, .patch-node').forEach((panel) => {
@@ -118,8 +156,24 @@ export function registerReaderJourneyTests() {
                 if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 2) failures.push('document overflow');
                 return { owned, count, failures };
               });
+              const measured = await auditCopy();
               if (measured.owned === 0 || (expanded && measured.count === 0)) routeFailures.push(`${path}: no owned prose measured`);
               routeFailures.push(...measured.failures.map((failure) => `${path} expanded=${expanded}: ${failure}`));
+              if (expanded && path.endsWith('/stage2-256-window/')) {
+                const note = page.locator('[data-copy-review] .legacy__note').first();
+                await note.evaluate(node => { node.style.fontSize = '9px'; });
+                const injected = await auditCopy();
+                expect(injected.failures.some(error => error.includes('small body-small') && error.includes('9px')), 'a genuine 9px historical note must be rejected').toBe(true);
+                await note.evaluate(node => { node.style.removeProperty('font-size'); });
+                expect((await auditCopy()).failures).toEqual([]);
+
+                const paragraph = page.locator('[data-copy-review] .legacy__intro').first();
+                await paragraph.evaluate(node => { node.style.fontSize = '13px'; });
+                const proseRegression = await auditCopy();
+                expect(proseRegression.failures.some(error => error.includes('small body') && error.includes('13px')), 'a 13px reading paragraph must be rejected').toBe(true);
+                await paragraph.evaluate(node => { node.style.removeProperty('font-size'); });
+                expect((await auditCopy()).failures).toEqual([]);
+              }
             }
           }
           expect(routeFailures).toEqual([]);
