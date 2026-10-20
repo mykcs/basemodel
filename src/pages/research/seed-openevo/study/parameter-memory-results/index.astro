@@ -119,7 +119,7 @@ const q17Effects = {
       <h2 id="advisor-overview-title">十项研究问题的进度</h2>
       <p class="advisor-overview__lead">训练轮数和参数更新方向已有范围明确的局部结论；另外六问做过部分实验，关键答案仍需核实；SEED 的正式复现和跨新任务验证尚未完成。</p>
       <div class="advisor-overview__decisions" data-advisor-decisions>
-        <p data-advisor-key-findings><strong>已经测到的关键现象：</strong>历史普通 OpenEVO 的参数更新累计耗时 31.09 小时，固定容量模型为 2.02 小时；完整任务运行没有同等幅度的加速。另一次同题干预把固定容量模型第 156 轮的更新方向反过来，平均成绩下降约 10 分。三条历史训练路线并非严格随机对照，方向结果目前也只来自一个模型状态。<a href="#responses">查看 Q05、Q07 的详细证据</a></p>
+        <p data-advisor-key-findings><strong>已经测到的关键现象：</strong>固定容量把参数更新累计耗时从 31.09 小时降到 2.02 小时，但完整任务没有同样大幅加速。把一次参数更新方向反过来，平均成绩下降约 10 分。三条历史路线不是严格对照，反向实验也只测过一个模型状态。<a href="#responses">查看 Q05、Q07 的详细证据</a></p>
         <p data-advisor-priorities><strong>接下来优先补的证据：</strong><a href="#response-q02">Q02</a> 的六组训练已完成，18 个评测位置还有 3 个缺口；<a href="#response-q03">Q03</a> 需要先对齐论文的评测条件，再完成正式复现。这是按现有证据缺口排列的阅读建议，不代表新的实验已经运行。</p>
       </div>
       <dl class="advisor-overview__counts" aria-label="十项研究问题的回答状态">
