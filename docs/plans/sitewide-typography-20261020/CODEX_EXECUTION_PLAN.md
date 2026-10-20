@@ -119,171 +119,107 @@
 3. 工程侧优先 GitHub 插件；若必须 checkout 用独立云端 workspace/job，不碰 MacBook 公共目录。
 4. 不为了触发 Actions/Vercel 制造 noop commit，不放行宽松规则，不静默改变 `base` / 合并 / 关闭 PR。
 
-## 5. 待办工作包（完成一包立即报告）
+## 5. 可执行工作清单（WP0–WP6；每包独立提交、验证并汇报）
 
-### WP0 — 冻结实时基线与覆盖表（实施的必经依赖）
+> **状态规范**：下面全是**Codex 接手后尚待执行/重新验证的任务**，初始为 `[ ]`。前面「已完成工作」仍有效，不必返工。每项只在对应 exact-head 日志/代码/截图/PR 收据存在后勾选；如果不能做，写成 `BLOCKED: <PR/文件/错误/依赖>`，不勾成已完成。`NOT RUN` 与 `PASS` 必须区分。
+>
+> **顺序**：WP0 → （WP1 / WP2 可在**不重叠文件**上分批）→ WP3 → WP4 → WP5 → WP6。每 WP 完成一次真实提交/验证后马上按第 6 节向用户简短汇报，再继续下一包；遇到 blocker 不要静默卡住或强改别人的分支。
+>
+> **固定证据落点**：`docs/agents/evidence/sitewide-typography/<YYYY-MM-DD>/` 保存每包 `README.md`、规则分类 `inventory.json`、`route-inventory.json`、`ownership.json` 等可读/机器清单；截图和 trace 由 GitHub Actions Artifact 存，文档记录可访问的 run/Artifact URL（不把大图或秘密放进 Git）。
 
-- [ ] 对当前 HEAD `npm ci`（Node 24）、`npm run verify:deploy`、`npm run build`、`npm run audit:typography` 和现有 `npm run audit:css` 获得**精确 HEAD 的日志**。不要把旧版 249/268 当下一轮实时值。
-- [ ] 盘点生成后的所有 HTML 路由及其 `figure` / `table` / 页面角色，写出 machine-readable route inventory；将 CSS 属性按 `file:line + selector + property + original value + route/consumer + semantic role + CSS owner + action` 映射。
-- [ ] 新旧 CSS 残余分五类：`MIGRATE`、`JUSTIFIED_EXCEPTION`、`DEAD_OR_SHADOWED`、`LAYOUT_BLOCKER`、`CONCURRENT_PR_BLOCKER`。最后两类不是“已迁移”。
-- [ ] 列出所有适用 `AGENTS.md`、Wish、Skill、human feedback 和 PR 最新检查结果；记下实际读到的版本。
-- [ ] 建立审计收据：`docs/agents/evidence/sitewide-typography/<date>/inventory.json` 与 `README.md`，机器产出与读者解释分离；包含 baseline SHA、每个规则的状态及未覆盖的范围。
+### WP0 — 当前版本、真实基线、消费者与冲突所有权
 
-建议完善现有 `scripts/audit-sitewide-typography.mjs`，而不是新增第二个审计 owner。该脚本目前只正则扫描 `src/**/*.css` 的四类 font 声明，并检查 `dist/**/*.html`；它不会自动识别全部 Astro scoped CSS、inline style、font 简写、真实 computed size、权重覆盖或死 selector。可以补统一 inventory 输出，但保留已有静态契约和数字/科学不变量。没有 parser 能力时先标未知，不假称完整 AST。
+- [ ] **T0.01 | 锁定准确对象**：从 GitHub 读取 `main`、#895/#898 的 head/base/state/draft，`git rev-parse HEAD` 与 #898 HEAD 一致才执行写入；记录到 `ownership.json`。**PASS：**文件有 SHA、branch、时间、PR URL，未替换/误改 main。
+- [ ] **T0.02 | 读取适用权威**：核对根 `AGENTS.md`、`src/AGENTS.md`、改动子目录的 `AGENTS.md`、Wish LATEST/DESIGN、Typography/CSS/UI Visual Gate、Human Expression、Project Report 和 `docs/dev/LATEST.md`。**PASS：**`README.md` 列出实际读取的路径/ref 及会影响实现的硬约束。
+- [ ] **T0.03 | 全部 Open PR 文件交叉检查**：`gh pr list -R mykcs/basemodel --state open --limit 100`（或 GitHub 插件）；对目标文件查每个相关 PR 的变更清单，至少 #895/#806/#816/#901。**PASS：**`ownership.json` 每个目标文件有主 owner、重叠 PR、`SAFE / STACKED_DEPENDENCY / BLOCKED`，禁止擅自覆盖。
+- [ ] **T0.04 | 生成基线日志**：在 Node **24.x** 隔离云端运行下方命令，保存 `HEAD`、exit code、stdout/stderr 与 CI run URL。**PASS：**`verify:deploy`、`build`、`audit:css` 和 `audit:typography` 有该 HEAD 的真实结果，失败附日志不藏起。
+- [ ] **T0.05 | 全路由静态 inventory**：从 `dist/**/*.html` 列出每个实际路由的 `h1 / figure / table` 数与页面类型；输出 `route-inventory.json`。**PASS：**路由数量和同 HEAD `audit:typography` 一致；报告「静态遍历全部页面」而不是「全部页面人工截图」。
+- [ ] **T0.06 | 扩展现有审计**：增强 `scripts/audit-sitewide-typography.mjs` 输出机器可读明细（例如 `--json <path>`，具体接口由实现/测试决定），至少 `src/**/*.css` 的 `font-size/family/weight/style` 及可可靠识别的 `font:` shorthand，额外检查 Astro scoped/inline/JS style。**PASS：**每项有 `file:line / selector / property / value`；未可靠分析的情况显式 `UNKNOWN`，不伪称遍历全部动态样式。
+- [ ] **T0.07 | 建立消费/语义归类**：依据真实 source 引用与浏览器计算结果，在 `inventory.json` 每项填 `route/consumer/semantic role/CSS owner/PR owner/decision/evidence`；五种状态 `MIGRATE / JUSTIFIED_EXCEPTION / DEAD_OR_SHADOWED / LAYOUT_BLOCKER / CONCURRENT_PR_BLOCKER`。**PASS：**全部已检出的值被归类，`unclassified=0`；不能识别 consumer 的项目进入 blocker，不靠猜测。
+- [ ] **T0.08 | 汇报起点并冻结下一包范围**：写 `WP0` 收据，说明本 HEAD CSS 文件数、总声明数、剩余 direct font-size 个数与高风险 owner；优先排无 PR 冲突文件。**PASS：**附 SHA、日志、可执行的 WP1/WP2 文件表，发一次 ELI5 汇报。
 
-示例数据形状：
-
-~~~json
-{
-  "head": "<exact-commit-sha>",
-  "route": "/research/seed-openevo/flow/seed/",
-  "owner": "src/styles/interactive-research-explainer-methods.css",
-  "selector": ".irx-seed-stage__boundary-copy p",
-  "original": "0.72rem",
-  "computed_px": 15,
-  "semantic_role": "body-small",
-  "decision": "MIGRATE",
-  "required_regression": "tests/e2e/typography-method-role-witness.spec.ts",
-  "evidence": "CI artifact or browser receipt"
-}
-~~~
-
-注意：该 JSON 是**结构样例**，`computed_px` 必须从真实执行的浏览器读出，不能从 CSS 字符串推断。
-
-**WP0 收口**：全路由清单可复算、249 基线与最新差异解释清楚；未读文件/未知 owner 有精确 blocker，不把空白当 0。
-
-### WP1 — 未迁移的目录 / 工具 / 共享 UI
-
-按由低冲突到高冲突排序，先确认真正 consumer 再改：
-
-1. `src/styles/v2-closeout.css`：#898 已迁移大部分 Compare、Model Detail、Paper 快速查看；剩余 `font-size: 0 !important` 是**隐藏 list marker**（非可读文字），合理例外保留；不要再为了计数删掉。
-2. `src/components/ModelExplorer.css`、`src/pages/_bodies/models-index.astro`、`src/styles/workspace.css`、`src/components/navigation/CommandMenu.css`、`src/components/workspace/*`：复核 source owner、真实按钮字体、宽度、行高、长期阅读舒适性；清理已废弃重复声明。
-3. `src/styles/site.css`（上次 81 处，#895 owner）：计划迁移 `.field`、`.explorer-summary`、`.quick-filter`、`th,td`、`.comparison-group`、`.landscape-learning-card`、`.paper-row`、`.evidence-row` 等角色，但只在 #895/其他 owner 协调后逐类执行。**不要批量替换全文件**；`.workflow-edge-label`、`.semantic-status-icon`、单独 Hero `clamp` 属不同语义。
-4. `src/components/models/ModelDecisionCard.css`、`src/components/papers/PaperExplorer.css`、`src/styles/final-hardening.css`（#806 owner）需要先处理并行 ownership；不能把不允许动写成“完成”。
-
-**验收**：Home/Nav/Models listing+detail/Papers listing+detail/Families/Landscape/Compare/Workspace/Guide 每种代表路由 390×768×1440 / light×dark；`getComputedStyle` 查真实字体家族/字重/行高/斜体，长中文行宽、选项按钮、表格列名、data label，横向溢出。Compare 手机版 `h3` 分组不比 `h4` 字段更小、数据行至少现有 `--type-table`；不能把论文表统一改成工作台 table 或反过来。
-
-建议沿用：`tests/e2e/typography-product-tools.spec.ts`、`layout-anomaly-guard.spec.ts`、`workspace.spec.ts`、`ordinary-tech-debt-round2.spec.ts`。
-
-### WP2 — 研究博客、科研 Figures/Tables、公式
-
-1. `src/styles/openevo-research-blogs.css`（旧 27）、`advisor-ten-approved-reader.css`（旧 23）、`research-booktabs.css`（#895 相关）、`research-figure-readability.css`（#816/895）、`src/components/research/**`：先 owner/冲突核验，再按 Article/Section/Body/Meta/Figure/Caption/Table 分类迁移。
-2. `src/styles/interactive-research-explainer-methods.css`（旧 20）与 `interactive-research-explainer-core.css`（旧 17，#806 owner）：特别区分短方法标签、坐标系标签、技术 ID 与真正的说明句。某些固定几何节点必须同时改变 Grid / connector / wrap，禁止把 8px → 15px 后任其碰撞。
-3. Q01/Q03 真实图的点、轴、数字、Q03 四个测量及“中间轮次没有测量”边界严格保留。`MathFormula`/KaTeX 数学字体和符号不为了全站字体统一而改变。普通试验分数绝不能继承装饰性 serif、monospace 或花体数字。
-4. 真实三线表只在科研语义对象使用 booktabs：顶线/表头线/底线；无无意义逐行框；指标名/行标协调、真实数值右对齐、单位和样本/窗口说明放 caption。宽表在 wrapper **局部**滚动，手机 `documentElement.scrollWidth - clientWidth <= 2`；导出/CSV/LaTeX 来源口径不变。**不要**把整个网站变两栏。
-5. 遵守 Figure 的单栏/宽图角色；`role=img` + `aria-label` + `desc`，避免遮挡式 SVG `title`。视觉密度/数据点数量/坐标轴范围不能制造虚假的科学差异。
-
-既有测试：`tests/e2e/canonical-research-figures.spec.ts`、`sitewide-typography.spec.ts`、`advisor-paper-figure-suite.spec.ts`、`seed-world4-q03-presentation.spec.ts`、`research-explainer-layout.spec.ts`。#901 的云端 Chromium/WebKit Figure Artifacts 工作在兼容后复用，避免重复写工作流。
-
-**WP2 收口**：每张改动的 Figure/Table 的 before/after 图像（同状态、同尺寸）、计算样式/几何 JSON、科研数值不变校验、有意义的例外与未修复块均记录。研究图不能仅靠 CI 绿色获得肉眼验收。
-
-### WP3 — CSS 遗产收敛，防止再次产生“多 owner”
-
-高债务快照（249 残余）：
-
-| 文件 | 快照未迁移 font-size literal | 当前约束 |
-| --- | ---: | --- |
-| `src/styles/site.css` | 81 | #895 与 #816 重叠 |
-| `src/styles/final-hardening.css` | 29 | #806 |
-| `src/styles/openevo-research-blogs.css` | 27 | #895 |
-| `src/styles/advisor-ten-approved-reader.css` | 23 | #895 |
-| `src/styles/interactive-research-explainer-methods.css` | 20 | #898，可按图的几何依赖处理 |
-| `src/styles/interactive-research-explainer-core.css` | 17 | #806 |
-| `src/styles/visual-upgrade.css` | 16 | #816 |
-| `src/components/models/ModelDecisionCard.css` | 9 | #806 |
-| `src/components/papers/PaperExplorer.css` | 8 | #806 |
-| `src/styles/design-refinement.css` | 4 | #816 |
-
-这些前十合计不等于 249 的全量；其余也要进入分类 ledger。还有字号 `font:` 简写、像素/行高/字距/字重/斜体漂移，不被该单一计数覆盖。
-
-逐 owner 做**迁移 → computed-style 等价或改进测试 → 删除遮蔽/废弃副本**；比对 CSS 架构审计对 `!important` 的冻结基线，不可以新增兼容补丁来解决当前可修的 owner。**只有确认文件真的不再有在线消费者**才能移除整个兼容样式表。`final-hardening.css`、`design-refinement.css` 等仍有在线职责，不可为了目录整齐一次性删除。
-
-### WP4 — 真实浏览器回归与负向证伪
-
-最少做到：
-
-- [ ] 对**全部生成 HTML**执行 source/render inventory（静态）；逐类抽代表性页面做真实浏览器计算样式。将“抽样页面”与“全部页面”分开报告，不能声称 268 页全视觉验收。
-- [ ] 三视口 390/768/1440px × light/dark，至少 Chromium + WebKit（Q01/Q03 用 #901 兼容设施，其他共享/全站变化运行适用 WebKit）。依源码支持时补 320px、宽 tablet、200% zoom、print/reduced-motion、键盘/展开态。
-- [ ] 实际 `getComputedStyle`：`fontFamily`、`fontSize`、`fontWeight`、`fontStyle`、`lineHeight`、`letterSpacing`、`fontVariantNumeric`；`document.fonts.ready` 后测。页面角色与可读性必要条件用断言，不用简单 CSS 文本包含检查冒充。
-- [ ] 几何：`getBoundingClientRect`、`scrollWidth/clientWidth`、真实 line wrapping、裁切、点标-坐标轴间隙、兄弟节点重叠、Figure 外缘，必要时 SVG `getBBox`；允许 2px rounding tolerance，异常更大必须定位 owner。
-- [ ] 中英混排规则**不能**只用 CJK 字数除以所有文字行数：Figure C1 曾因此误报；应测真实字体和混排总体字符宽度/行宽，并保留“故意压成 75px 窄栏”的负向案例。
-- [ ] 复现旧 9–10px 段落、原生按钮 Arial、SEED 双列窄 lane、移动 Compare 9px 数据、Q03 轴碰撞、SVG title 覆盖、长中文五六个字/行、Dark 低对比等真实 bad case。每例需绿（修正）→ 红（故意恢复旧坏例）→ 绿（撤销注入），在**实际 Gate**里面证明触发；测试代码不能在正常仓库里永久加入坏 CSS。
-- [ ] `src/lib/uiSafetyGate.test.ts` 里硬编码旧报错字符串的断言应与真实 browser invariant 同步；若发现误报，应修检测方法并证明还能识别真实坏例（不能简单移除断言）。
-- [ ] 截图文件/geometry JSON/trace 在 GitHub Actions Artifacts 存储，写明 job/run/sha/viewport/theme/路径/预期结果。**必须实际查看截图**；截图存在不等于通过。
-- [ ] Live Light/Dark Theme 正反切换，页面无不可预期横滚；没有截断状态按钮、标题倒挂、异常花体数字、正文落成小字。
-
-已有命令/测试依次运行，按当前 `package.json` 为准：
+基线实际命令（从`package.json`再核对定义后使用）：
 
 ~~~bash
-node --version                       # repository Node 24.x
+node --version               # 预期 Node 24.x
+git rev-parse HEAD
 npm ci
-npm run verify:deploy                # ESLint / Astro / CSS audit / domain / Vitest / integrity
-npm run build                        # renders routes and audits typography/math/date/figure
-npm run audit:typography             # after build; static inventory only
+npm run verify:deploy
+npm run build
+npm run audit:typography
 npm run audit:css
-npm run preflight:ui:plan
-npm run preflight:ui
-npx playwright test tests/e2e/sitewide-typography.spec.ts \
-  tests/e2e/typography-method-role-witness.spec.ts \
-  tests/e2e/typography-product-tools.spec.ts \
-  tests/e2e/layout-anomaly-guard.spec.ts \
-  tests/e2e/research-explainer-layout.spec.ts \
-  --project=chromium --max-failures=1
-npm run test:ui:all                   # full Chromium/WebKit on supported cloud runner
 git diff --check
 ~~~
 
-`public-ci-gate` 是必备的 exact-commit GitHub 合并证据。当前常规 CI full/global 模式分 8 个 browser shard；**不能只引用其它 HEAD 的绿灯**，也不能在只跑 Chromium 时写 “Safari 通过”。
+**旧值对照**：`911b5acf` 时是 268 HTML、73 Figure、130 Table、35 CSS、249 未含 `var(` 的 font-size 声明；`font_declarations=632` 是四类字体属性之和，不是 632 个字体大小。开始之后使用新 HEAD 的数字，差异必须解释，不能复用历史数字作实时结果。
 
-典型可执行见证（仅范式，不替代现有 test helper）：
+### WP1 — 首页、目录、模型/论文详情、Compare、Workspace
 
-~~~ts
-const actual = await locator.evaluate((el) => {
-  const css = getComputedStyle(el);
-  const box = el.getBoundingClientRect();
-  return {
-    family: css.fontFamily,
-    px: parseFloat(css.fontSize),
-    weight: css.fontWeight,
-    italic: css.fontStyle,
-    leading: css.lineHeight,
-    letterSpacing: css.letterSpacing,
-    width: box.width,
-    overflow: el.scrollWidth - el.clientWidth,
-  };
-});
-expect(actual.family).toMatch(/Inter|PingFang|system-ui/);
-expect(actual.px).toBeGreaterThanOrEqual(13);
-expect(actual.italic).toBe('normal');
-expect(actual.overflow).toBeLessThanOrEqual(2);
-~~~
+- [ ] **T1.01 | Route × Role 选点**：从 T0.05 inventory 为首页、导航、Models list/detail、Papers list/detail、Families、Landscape、Guide、Compare、Workspace 建立具体 `route + selector + expected role` 表。**PASS：**每个路由真实存在且 selector 能找到可见内容；含中英文长标签、数据行和操作状态。
+- [ ] **T1.02 | 复核已迁移组件的真实级联**：检查 `src/components/ModelExplorer.css`、`src/pages/_bodies/models-index.astro`、`CommandMenu.css`、`workspace.css`、`CompareTray.css`、`ResearchContextBar.css`、`v2-closeout.css`。使用 `getComputedStyle` 验证字体、字号、字重、斜体、行高；查过度覆盖/无消费者 selector。**PASS：**记录至少各主要 UI 角色的有效值和问题清单，不无故重写已正确样式。
+- [ ] **T1.03 | 实际修复不冲突的 UI**：只对 T0.03 判 `SAFE` 的组件修改代码：用现有 `--type-*` / `--font-interface`、正确 `minmax(0,1fr)` / `min-width:0` / 正常换行；原生 `button` 要检验是否继承字体。**PASS：**`git diff --stat` 有真实生产代码改动，且没有新平行 Tokens/`!important`。
+- [ ] **T1.04 | Compare 与宽表**：在 `/compare/` 用 2+ 个真实有效 model ID 选择比较，手机 `.comparison-mobile-group > h3` / `.comparison-mobile-field > h4` / `.comparison-mobile-value` 实测层级正确；桌面表在表格容器局部横滚、不撑大文档。**PASS：**移动标题层级 `h3 ≥ h4`，文字和数字可读、无横向页面溢出。
+- [ ] **T1.05 | 处理高风险共享 owner**：若 `src/styles/site.css`（旧 81 条）或 `ModelDecisionCard.css` / `PaperExplorer.css` / `final-hardening.css` 仍与 #895/#806/#816 冲突，明确 `CONCURRENT_PR_BLOCKER` 并先做 T1.03；文件所有权解除后按 selector 一组一组改，不无声合并/覆盖。**PASS：**每个待改 selector 有 conflict 记录或相容的提交，不擅自写别人 owner。
+- [ ] **T1.06 | 真实浏览器核验**：复用 `tests/e2e/typography-product-tools.spec.ts`、`layout-anomaly-guard.spec.ts`、`workspace.spec.ts`，必要时补针对同类问题的负向案例。测 390 / 768 / 1440 × light/dark，字体与 `documentElement.scrollWidth-clientWidth <= 2`。**PASS：**当前 HEAD 的相关 Playwright 命令与构建均通过，截屏比对手机/桌面。
+- [ ] **T1.07 | 更新分类与汇报**：修改 T0.07 ledger，统计本包 `MIGRATE / JUSTIFIED_EXCEPTION / BLOCKED` 变化，附 commit、受影响真实页面与测试 run。**PASS：**已验证才勾、每完成一包发 ELI5 汇报，不把剩余冲突归零。
 
-`getComputedStyle` 只能证明属性，不保证内容理解；同一快照要有人眼检查标题分节、图说、表格密度、不同视觉层级。
+### WP2 — OpenEVO/SEED 长文、论文式 Figure/Table、KaTeX、交互机制图
 
-### WP5 — 最终真实 Preview（不是 Production）
+- [ ] **T2.01 | 科学证据封存**：确定 Q01/Q03、其他结果 Figure/Table 的当前 source、真实测量、指标单位、样本/训练/评估窗口、未知/未测点、引用链接与科学限制；记录原始路径/提交。**PASS：**变更前有事实核对表，严禁改数据或把未运行变已完成。
+- [ ] **T2.02 | 研究对象归类**：从 T0.05 所有 Figure/Table 列表分 `paper-single / paper-wide / method-flow / small-table / workbench-table / slide / formula`；为每种选真实测试路由和 role token。**PASS：**生成清单能定位至少 73 Figure / 130 Table 的历史基线差异，标出不该做论文式样式的对象。
+- [ ] **T2.03 | 长文科研排版**：安全 owner 中调整 `openevo-research-blogs.css`、`advisor-ten-approved-reader.css`、文章 title/section/subsection、正文/图注/阅读宽度；若与 #895 冲突先处理 T0.03。**PASS：**实际字号/行高/H1-H4/中英文阅读截图通过，没有把网页变双栏。
+- [ ] **T2.04 | Figure/Table 视觉与语义**：逐类检查 `research-booktabs.css`、`research-figure-readability.css` 与消费组件：图标题/Axis/Data label/Caption 不混级；单图适度紧凑、多面板允许较宽；三线表、右对齐数值、caption 的统计口径与 wrapper 局部滚动。**PASS：**每个修改对象有 before/after 同尺寸截图 + computed style 或 SVG 几何 JSON，不增逐行花哨表格线。
+- [ ] **T2.05 | 复杂机制图几何修复**：检查 `interactive-research-explainer-methods.css`、`interactive-research-explainer-core.css`、Flow/SEED/OpenEVO/WebShop/ALFWorld。对小而重要的解释文本提高可读性时同步改 `grid-template-areas`/容器/换行/连接线，保护 390px 手机布局。**PASS：**所有主要节点无真实重叠/裁切；固定 54/82px 特殊标签要么重构几何，要么保留列入有依据的 exception。
+- [ ] **T2.06 | 数学/数字/中英文规则**：真实公式保留 KaTeX 数学字体和符号；代码/SHA 保留 mono，普通科研数字/得分不使用装饰 serif/monospace 或排名自动加粗；核对 `font-variant-numeric` 与学长十问 plain-numeral owner。**PASS：**真实计算字体与两种语言截图无异常字形，科学数据逐项核对不变。
+- [ ] **T2.07 | 研究回归保护**：复用 `canonical-research-figures.spec.ts`、`seed-world4-q03-presentation.spec.ts`、`research-explainer-layout.spec.ts`，验证 Q03 点轴 bbox 间距、SVG `aria-label + desc`、无覆盖式 `title`、Figure C1 中英混排合理性与真 75px 窄栏负向失败。**PASS：**同 HEAD 相关 Chromium/WebKit 与科学事实测试通过。
+- [ ] **T2.08 | 保存研究视觉收据**：更新 Figure/Table 清单、真实受影响路由、截图/测量 Artifact 和未修复布局 blocker，向用户汇报。**PASS：**没有把 `CI passed` 当作人眼批准。
 
-当前 #898 是 **Draft + base #895 branch**。`scripts/request-vercel-final-gate.mjs 898` 的**代码级硬前置**明确要求：
+### WP3 — 逐 owner 删除旧 CSS，留下可追踪的合理例外
 
-- PR 是 Open **且非 Draft**；
-- base **直接为 `main`**；
-- HEAD 完全包含最新 `main`；
-- exact-head `public-ci-gate` 来自要求的 GitHub Actions App 且 success；
-- 作者 commit identity 可映射 GitHub；
-- `ci/vercel-gate-final` 已存在且没有别的 pending gate。
+- [ ] **T3.01 | 重取债务 Top-N**：重新运行 T0.06；比较历史 `site.css=81`、`final-hardening.css=29`、`openevo-research-blogs.css=27`、`advisor-ten-approved-reader.css=23`、`methods.css=20`、`core.css=17`、`visual-upgrade.css=16` 等 owner。**PASS：**记录当前真实文件/行数，数字不从本计划复制。
+- [ ] **T3.02 | 证明规则是否在线**：对每个可疑 selector 查 source/生成 HTML/已 hydrate DOM 中的消费者和最终 cascade；将遮蔽/废弃规则标 `DEAD_OR_SHADOWED`（需要引用/截图或 DOM 证据），不可只凭 `rg` 没找到名字就删除动态组件规则。
+- [ ] **T3.03 | 安全删除与语义迁移**：只处理 owner 已明确的 `MIGRATE / DEAD_OR_SHADOWED`，每组采取 `迁移到现有语义 role→重跑 computed style/布局→删冗余 copy`；检查 `src/styles/app.css` 的 import/优先级不变。**PASS：**删前删后等价或更好且对应测试通过，不产生新全局 CSS override。
+- [ ] **T3.04 | 例外账本逐条落地**：为合法 `JUSTIFIED_EXCEPTION` 写 `file:line / owner / reason / effect / screenshot-or-test / future guard`，如 CSS 中隐藏 ordered-list marker 的 `font-size:0!important`、固定 SVG 坐标或 KaTeX。**PASS：**残余不再有理由不明的 direct/font shorthand，未处理的真正 blocker 不得混为例外。
+- [ ] **T3.05 | CSS Architecture 检查**：运行 `npm run audit:css` 与同类 selector 审计；既有 `!important` 债务不可新增，非法半迁移不可留在尾部 `final-hardening.css`，没有第二套 Token/`@layer`/全局补丁文件。**PASS：**当前 HEAD exact CI 通过，删除名单/例外名单可复算。
+- [ ] **T3.06 | 数字收口与阻塞汇报**：`inventory.json` 分类满足 `unclassified=0`。若 `MIGRATE` 尚未完成或 `CONCURRENT_PR_BLOCKER` 未解决，WP3 标 `BLOCKED/PARTIAL`，写明具体 PR/文件/所需协调，不能宣布全站迁移完成。
 
-**因此在 #895 尚未合并、#898 尚是堆叠 Draft 时，绝不能为了触发 final gate 擅自重定向 base、改 main 或强制触发 provider。** UI 调整中的预览使用现有 `.github/workflows/review-preview.yml` 的 review-only lane；Codex 可通过已有 Vercel 集成核对 deployed HEAD，减少重复构建。Review Preview 不是 Release Gate。到真正最终阶段，如依赖已合并并经主人同意 Ready，再按当前规则请求 final gate，仍不自动 merge。
+### WP4 — 精确 SHA 工程测试、跨浏览器截图、坏例证伪
 
-每一个交付给主人的 URL 必须是**当前 HEAD**：核验 Vercel deployment meta 提交 SHA、状态 READY、具体主页/Models/Papers/Compare/Workspace/Q03/研究流程 URL、Light/Dark、`noindex`，且必须打开渲染目标。**Vercel 登录跳转后显示的 200 不是目标页面 200。** 遇访问权限限制报告“需登录/无法外部审阅”，不要擅自关闭部署保护。
+- [ ] **T4.01 | 代码完整 Gate**：同 HEAD 执行 `npm run verify:deploy`、`npm run build`、`npm run audit:typography`、`npm run audit:css`、`git diff --check`。**PASS：**exit=0，构建路由/图表统计和 sha 写入 `README.md`；失败列源文件和原因。
+- [ ] **T4.02 | 浏览器矩阵**：运行已有 `tests/e2e/sitewide-typography.spec.ts`、`typography-product-tools.spec.ts`、`typography-method-role-witness.spec.ts`、`layout-anomaly-guard.spec.ts`、`research-explainer-layout.spec.ts` 和风险相关 tests，在 390/768/1440 × light/dark，Chromium **与 WebKit** 的云端 runner 上验收。**PASS：**有每引擎真实 run/成功数；仅 Chromium 通过不能写 Safari 通过。
+- [ ] **T4.03 | 真 CSS 与布局见证**：在 `await document.fonts.ready` 后记录 `fontFamily/fontSize/fontWeight/fontStyle/lineHeight/letterSpacing/fontVariantNumeric` 及 `getBoundingClientRect / scrollWidth / clientWidth / SVG getBBox`。检查中文/英文换行、图轴碰撞、卡片/流程节点、Table wrapper；页面非预期横滚 ≤2px。**PASS：**每个选定 route+viewport+theme 有 JSON 和可复验脚本。
+- [ ] **T4.04 | 坏例→拒绝→修正的证伪**：在隔离测试态故意重现 9–10px 长说明、Arial 原生按钮、SEED 双列窄 lane、Compare 9px 行、Figure C1 假误报与真实 75px 窄栏、Q03 轴标碰撞、SVG title 覆盖、暗色低对比等。**PASS：**相同强制发布 Gate 检测真实坏例变红；恢复正常变绿，正当例外仍通过（不要只 assert 一个新测试 helper 的 Boolean）。
+- [ ] **T4.05 | 复用云端 Screenshot 所有者**：检查 #901 是否合并/在当前 head 可用；能用则运行其既有云端 Chromium/WebKit Figure 截图 + JSON Workflow。若尚未接入，不改 #901 代码：用当前 PR 已有测试/云端 Playwright 按相同输出证据形式生成 Artifact，并准确报告该依赖。**PASS：**每张 PNG/trace/JSON 有 run、sha、route、viewport、theme、截取状态。
+- [ ] **T4.06 | 真实视觉复核**：**打开** T4.05 的图片，逐张看 Home/Models/Papers/Compare/Workspace/SEED/OpenEVO 代表性 route 的 H1–H4、长中文行宽、数字、图注/表格、边界、暗色对比和节点是否重叠。**PASS：**review sheet 填 `ACCEPT / FIX / NEEDS HUMAN REVIEW`，每个 `FIX` 重开对应生产代码任务，不以有截图等于视觉合格。
+- [ ] **T4.07 | Public CI 最终收据**：确认 GitHub `public-ci-gate` 为**当前 HEAD 的 completed/success**，全部风险要求的浏览器分片结束；科学内容无改写、`npm run audit:claims`/`validate` 通过。**PASS：**存真实 Actions run URL/sha/失败数；不能挪用历史 8/8 的截图或 CI。
+- [ ] **T4.08 | WP4 汇报**：列静态全路由与实际浏览器样本数、通过的浏览器/主题/宽度、截图检视数、红绿红测试结果和仍需读者确认项，附 HEAD，发一次 ELI5 汇报。
 
-### WP6 — 最终验收、文档与 Codex 交接
+### WP5 — 同 SHA 的 Vercel Review Preview（禁止触及 Production）
 
-- [ ] 生成最终 `docs/agents/evidence/sitewide-typography/<date>/README.md`：起始/结束 SHA、已改文件和组件数、影响路由数（真实路径，而非猜数）、静态完整路由数、例外 ledger、所有未解决 blocker、CI/Artifacts/截图/Preview 清单。
-- [ ] 每类写**结果**与**完成状态**：例如“图中文字不再挤压”有截图/几何证据；“CSS 仍 80 个旧字面值”是迁移状态，不可替代视觉结果。
-- [ ] 维护 PR #898 描述，按 WP0~WP6 标 `PASS/FAILED/NOT RUN/BLOCKED/NEEDS HUMAN REVIEW`；每完成一个小包向用户简短汇报一次，附 commit、改动、测试和下一包。
-- [ ] 全量 CSS 例外分类 0 未知；残余特殊规则有 owner/理由/触发路由、经过本轮视觉判断，并且未来不会因为审计回归而失控。
-- [ ] 对科研的所有数据和 Q01/Q03、其他真实 Figure、Figure Caption / Stats / Source 做事实不变收据，不通过“清理文字”改变已有结论。
-- [ ] 不擅自把 `NEEDS HUMAN REVIEW` 写成 `PASS`。如有某部分不能实际运行/预览，请给**准确 blocker、精确文件、失败日志与可执行下一步**，而不是凭绿灯宣布完成。
-- [ ] 主人没有批准前，PR 保持未合并，Production 没有变化。
+- [ ] **T5.01 | 核对可用 Review 工作流的硬前置**：阅读 `.github/workflows/review-preview.yml`。该 Workflow **目前要求 PR base=main**，而 #898 **base=#895 的分支**。**PASS：**先报告此真实约束；在 stacked 状态**不能**直接运行 `gh workflow run review-preview.yml --ref main -f pr_number=898` 并期待成功，不为过关擅自 retarget base。
+- [ ] **T5.02 | 选择合规 Review 路径**：若 #898 后续确实已 base=main 且现有 `review-preview.yml` 配置齐全，可以执行 `gh workflow run review-preview.yml --repo mykcs/basemodel --ref main -f pr_number=898`。若仍堆叠，则沿此前经授权的**独立 non-Production Vercel Review-only 项目/插件**，只在必要时用准确 SHA 创建 Preview，并强制验证 `noindex`/访问控制/构建预算；若这条路径不可用，写 `BLOCKED: Review preview access`，而不是绕过权限或伪造 URL。
+- [ ] **T5.03 | 精确身份验证**：比对 Vercel deployment object 的 `meta.githubCommitSha` / build source SHA = #898 当前 HEAD，`readyState=READY`；验证 Preview 不是 Production 域、没有更改 canonical、`noindex` 有效。**PASS：**提供 deployment ID、完整 HTTPS URL、HEAD、触发方式及静态构建日志。
+- [ ] **T5.04 | 真正打开 Preview 检查页面**：在相应合法权限下打开首页、Models/Papers 目录与详情、Compare/Workspace、Q03 Results、SEED/OpenEVO Flow 的目标路径；按 390/768/1440 × light/dark 对比对应截图，确认新 CSS 实际加载、目标视觉存在。**PASS：**验收记录包含路线与截图；若返回 Vercel 登录页或重定向，**不得**把最终 HTTP 200 当目标网页通过，写 `NEEDS AUTHENTICATED REVIEW`。
+- [ ] **T5.05 | 尊重最终 Gate**：检查 `scripts/request-vercel-final-gate.mjs` 的约束（Open、非 Draft、base=main、当前 main 包含、exact-head public-ci-gate 成功），#895 未合并或 #898 Draft 时绝不调用 final gate；不执行 merge/close/Production/promote。**PASS：**PR 保持开放且无 Production 更改，Review-only 与 release candidate 清楚分开。
+- [ ] **T5.06 | WP5 汇报**：给用户一个**确实验过准确 HEAD**的 Review URL 与重要测试/SSO 状态；否则只报告 blocker 和已取得的准确收据，不能拿旧 Preview 的 URL冒充新 HEAD。
+
+### WP6 — 最终分类、PR 验收与用户收口
+
+- [ ] **T6.01 | 生成完整 Evidence Receipt**：写 `docs/agents/evidence/sitewide-typography/<YYYY-MM-DD>/README.md`，列起点/终点 SHA、文件/组件/实际路由清单、各项源码迁移和删除量、合理例外、需协调的 PR、CI、浏览器、Artifact 和 Vercel 链接。**PASS：**别人能从来源重跑并复核每个数字/结论。
+- [ ] **T6.02 | 验证迁移归类闭环**：确认 `inventory.json` 未分类数为 0；所有应迁移条目均已改好/有失败 blocker；每个例外有 reader-role 理由、owner、route 和测试/截图，且非数学/技术元素的已知不可读情况没有被误标例外。**PASS：**没有以数字 0 或“历史 CSS”掩盖布局问题。
+- [ ] **T6.03 | 科研事实与视觉双重复查**：对科研数据、公式、四个 Q03 测量/未测点、科学图来源、指标统计范围做 diff 和重新读取；浏览器截图做最终完整复核。**PASS：**事实无漂移；未完成读者冷读/SSH/登录权限有明确状态。
+- [ ] **T6.04 | 更新 PR #898 正文中的 WP 状态**：从当前 HEAD 更新 `PASS / PARTIAL / FAILED / BLOCKED / NOT RUN / NEEDS HUMAN REVIEW`，勾选的 Txx.yy 附具体 commit、Actions run、截图 Artifact、准确 Preview，未勾选项附 blocker。**PASS：**打开 PR 即能重建事实，没有「文档计划完成=网站完成」的混淆。
+- [ ] **T6.05 | 用 ELI5 向用户交付九项回答**：原来真实字体问题 / 已修 / 实际页面及组件数 / 删除合并旧规则 / 剩余例外 / CI浏览器截图 / 当前可用 Preview / blocker / 同类问题仍漏网否。**PASS：**每项有可验证证据或明确未知，不以 CI 绿灯代替读者验收。
+- [ ] **T6.06 | 保护发布边界**：最后复查 #898 未合并、#895 未擅自修改、Production 未触及；等待用户对最终视觉确认及后续 merge 的单独授权。**PASS：**不存在未经请求的 release/Production 变更。
+
+### 每包“Done”判定（必须同时成立）
+
+1. [ ] 生产修复任务有真实 diff（WP0 只读/盘点及 WP6 文档收口除外）、对应源码 owner、局部实际行为修复和迁移 Ledger 更新。
+2. [ ] 针对改动的 `verify:deploy / build / audit` 与浏览器测试在**同一代码 HEAD**下有可读日志；若 browser/CI 不可用写 `NOT RUN`、不能勾。
+3. [ ] 改动真实影响的 viewport/theme 截图和 computed geometry 实际检查，科学事实/合法例外不退化。
+4. [ ] PR 当前 HEAD 与证据 SHA 对应，任务清单标记正确、附下一包依赖和 blocker，向用户汇报一次。
+
+如第 1–4 项缺任何一项，只能标 `PARTIAL` 或 `BLOCKED`；不要将全部 WP 预先勾上。
 
 ## 6. 每批反馈模板（对用户，ELI5 中文）
 
