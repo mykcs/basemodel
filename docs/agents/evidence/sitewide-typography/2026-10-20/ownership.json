@@ -7,26 +7,33 @@
     {
       "baseRefName": "main",
       "headRefName": "ci/cloud-webkit-visual-evidence-20261020",
-      "headRefOid": "bbb877876b342b762902e4a123eba11524153557",
+      "headRefOid": "7c6f7eede259072eb4eb2b54d0d3176495e4e538",
       "number": 901,
       "files": [
         ".github/workflows/cloud-figure-visual-review.yml",
         "docs/agents/LATEST.md",
+        "docs/agents/current/hosting-architecture.md",
         "docs/plans/2026-10-20-figure-cloud-closeout.md",
         "package-lock.json",
         "package.json",
         "scripts/audit-sitewide-research-figure-widths.mjs",
         "scripts/preflight-ui.ts",
+        "scripts/verify-cloud-figure-evidence.mjs",
+        "scripts/verify-cloud-figure-evidence.test.mjs",
+        "src/components/research/OpenEvoCheckpointCurve.astro",
         "src/lib/deploymentArchitecture.test.ts",
         "tests/e2e/advisor-figure-paper-collision.spec.ts",
         "tests/e2e/figure-evidence.ts",
+        "tests/e2e/open-evo-webshop-program-report.spec.ts",
+        "tests/e2e/research-explainer-layout.spec.ts",
+        "tests/e2e/site-reader-contracts.spec.ts",
         "tests/e2e/sitewide-figure-width-scope.spec.ts"
       ]
     },
     {
       "baseRefName": "design/sitewide-type-and-paper-figures-20261020",
       "headRefName": "design/typography-catalog-workspace-20261020",
-      "headRefOid": "c5d0f4f36176cf3f8d640c64d1db230c7993dc24",
+      "headRefOid": "6c6a8dde5ef5cf1338f222587f9e7548131d9159",
       "number": 898,
       "files": [
         "docs/agents/evidence/typography-method-stage-migration-20261020.md",
@@ -783,6 +790,7 @@
     }
   ],
   "notes": [
-    "#901 moved to bbb87787 during work; package.json and LATEST additions inspected, not imported. Its figure workflow remains independent."
+    "Latest #901 head/path snapshot recorded above. Its research-explainer-layout change stabilizes the scroll test near the file end; #898 changes only matrix case granularity. Neither hunk overwrites the other. #806 core CSS patch changes control structure, not existing typography declarations; #898 migrates those declarations and preserves the pending structure.",
+    "Snapshot captures current open PRs. No other branch was merged, closed or rewritten."
   ]
 }

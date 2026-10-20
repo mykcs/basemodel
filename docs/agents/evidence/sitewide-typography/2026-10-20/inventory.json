@@ -2,10 +2,10 @@
   "source_base_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
   "status": "PARTIAL: CSS ledger classified; full scoped-source ledger unfinished",
   "counts": {
-    "CONCURRENT_PR_BLOCKER": 244,
-    "JUSTIFIED_EXCEPTION": 7,
-    "DEAD_OR_SHADOWED": 2,
-    "MIGRATE": 46
+    "CONCURRENT_PR_BLOCKER": 208,
+    "JUSTIFIED_EXCEPTION": 8,
+    "MIGRATE": 81,
+    "DEAD_OR_SHADOWED": 2
   },
   "summary": {
     "rendered_routes": 268,
@@ -13,9 +13,10 @@
     "tables": 130,
     "routes_with_figures": 26,
     "routes_with_tables": 62,
-    "css_owners": 35,
-    "font_declarations": 655,
-    "font_size_literals_remaining": 229,
+    "css_owners": 36,
+    "font_declarations": 665,
+    "font_size_literals_remaining": 213,
+    "invalid_inherited_font_shorthands": 0,
     "major_legacy_css_owners": [
       [
         "src/styles/site.css",
@@ -32,10 +33,6 @@
       [
         "src/styles/advisor-ten-approved-reader.css",
         23
-      ],
-      [
-        "src/styles/interactive-research-explainer-core.css",
-        17
       ],
       [
         "src/styles/visual-upgrade.css",
@@ -56,6 +53,10 @@
       [
         "src/styles/interactive-research-explainer-methods.css",
         3
+      ],
+      [
+        "src/styles/components/header.css",
+        2
       ]
     ],
     "exact_Q03_article_count": 1
@@ -2133,19 +2134,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "800 .66rem/1.2 var(--font-mono)",
+      "current_value": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 34,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2158,19 +2161,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-section)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "clamp(1.5rem,2.8vw,2.45rem)",
+      "current_value": "var(--type-section)",
       "current_line": 35,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2183,19 +2188,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-body)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".94rem",
+      "current_value": "var(--type-body)",
       "current_line": 36,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2208,19 +2215,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-meta)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".67rem",
+      "current_value": "var(--type-meta)",
       "current_line": 38,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2233,19 +2242,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-label) var(--type-plot-label)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "800 .58rem/1 var(--font-mono)",
+      "current_value": "var(--type-weight-label) var(--type-plot-label)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 39,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2258,19 +2269,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "short diagram label",
+      "decision": "MIGRATE",
+      "reason": "Literal font shorthand expanded into explicit existing family/size/weight/leading roles.",
+      "evidence": [
+        "original and final selector in source diff; method witness suite checks live representatives"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "750 .68rem/1.1 inherit",
-      "current_line": 44,
-      "resolution": "REMAINS"
+      "current_value": null,
+      "current_line": null,
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2283,19 +2296,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "800 .58rem/1 var(--font-mono)",
+      "current_value": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 54,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2308,19 +2323,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "800 .56rem/1 var(--font-mono)",
+      "current_value": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 61,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2333,19 +2350,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-meta)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".59rem",
+      "current_value": "var(--type-meta)",
       "current_line": 62,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2358,19 +2377,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-body-small)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".68rem",
+      "current_value": "var(--type-body-small)",
       "current_line": 69,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2383,19 +2404,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "850 .53rem/1.2 var(--font-mono)",
+      "current_value": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 90,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2408,19 +2431,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-figure-title)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".76rem",
+      "current_value": "var(--type-figure-title)",
       "current_line": 91,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2433,19 +2458,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-caption)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".63rem",
+      "current_value": "var(--type-caption)",
       "current_line": 92,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2458,19 +2485,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-meta)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".54rem",
+      "current_value": "var(--type-meta)",
       "current_line": 94,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2483,19 +2512,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "800 .52rem/1.2 var(--font-mono)",
+      "current_value": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 101,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2508,19 +2539,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-minor-heading)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".74rem",
+      "current_value": "var(--type-minor-heading)",
       "current_line": 103,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2533,19 +2566,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-body-small)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".58rem",
+      "current_value": "var(--type-body-small)",
       "current_line": 104,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2558,19 +2593,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "800 .55rem/1.2 var(--font-mono)",
+      "current_value": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 119,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2582,11 +2619,13 @@
       "value": ".6rem",
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
-      "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "consumer": "irx-node-more summary",
+      "semanticRole": "decorative disclosure glyph",
+      "decision": "JUSTIFIED_EXCEPTION",
+      "reason": "Optical disclosure + glyph inside fixed 14px box; accessible summary text uses meta role.",
+      "evidence": [
+        "core CSS fixed glyph box and separate summary role"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
@@ -2608,19 +2647,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-body-small)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".58rem",
+      "current_value": "var(--type-body-small)",
       "current_line": 124,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2633,19 +2674,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "850 .54rem/1 var(--font-mono)",
+      "current_value": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 129,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2658,19 +2701,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-minor-heading)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".72rem",
+      "current_value": "var(--type-minor-heading)",
       "current_line": 130,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2683,19 +2728,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-body-small)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".62rem",
+      "current_value": "var(--type-body-small)",
       "current_line": 131,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2708,19 +2755,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-meta)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".63rem",
+      "current_value": "var(--type-meta)",
       "current_line": 133,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2733,19 +2782,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-label) var(--type-plot-label)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "800 .51rem/1 var(--font-mono)",
+      "current_value": "var(--type-weight-label) var(--type-plot-label)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 138,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2758,19 +2809,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-meta)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".6rem",
+      "current_value": "var(--type-meta)",
       "current_line": 139,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2783,19 +2836,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-caption)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": ".56rem",
+      "current_value": "var(--type-caption)",
       "current_line": 139,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2808,19 +2863,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-label) var(--type-plot-label)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "700 9px/1 var(--font-mono)",
+      "current_value": "var(--type-weight-label) var(--type-plot-label)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 150,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2833,19 +2890,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-label) var(--type-plot-label)/var(--type-leading-heading) var(--font-mono)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "800 .56rem/1.1 var(--font-mono)",
+      "current_value": "var(--type-weight-label) var(--type-plot-label)/var(--type-leading-heading) var(--font-mono)",
       "current_line": 159,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2858,19 +2917,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-label) var(--type-plot-label)/var(--type-leading-heading) var(--font-mono)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "750 .58rem/1.2 var(--font-mono)",
+      "current_value": "var(--type-weight-label) var(--type-plot-label)/var(--type-leading-heading) var(--font-mono)",
       "current_line": 168,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2883,19 +2944,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-normal) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "800 .58rem/1 var(--font-mono)",
+      "current_value": "var(--type-weight-normal) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 172,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2908,19 +2971,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-normal) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "800 .55rem/1.2 var(--font-mono)",
+      "current_value": "var(--type-weight-normal) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 173,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2933,19 +2998,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-label) var(--type-plot-label)/var(--type-leading-heading) var(--font-mono)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "800 .5rem/1.25 var(--font-mono)",
+      "current_value": "var(--type-weight-label) var(--type-plot-label)/var(--type-leading-heading) var(--font-mono)",
       "current_line": 183,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2958,19 +3025,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "800 .56rem/1.2 var(--font-mono)",
+      "current_value": "var(--type-weight-label) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 193,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -2983,19 +3052,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-normal) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "800 .62rem/1 var(--font-mono)",
+      "current_value": "var(--type-weight-normal) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 198,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-core.css",
@@ -3008,19 +3079,21 @@
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/interactive-research-explainer-core.css",
       "consumer": "UNKNOWN: requires rendered selector matching",
-      "semanticRole": "UNKNOWN: requires owner review",
-      "decision": "CONCURRENT_PR_BLOCKER",
-      "reason": "Live file owner must be reconciled before changing its semantic rules; not a claim that every declaration conflicts.",
-      "evidence": [],
+      "semanticRole": "var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
+      "decision": "MIGRATE",
+      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "evidence": [
+        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+      ],
       "overlapping_prs": [
         {
           "number": 806,
           "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126"
         }
       ],
-      "current_value": "800 .52rem/1.2 var(--font-mono)",
+      "current_value": "var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface)",
       "current_line": 199,
-      "resolution": "REMAINS"
+      "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     },
     {
       "file": "src/styles/interactive-research-explainer-environments.css",
@@ -8189,22 +8262,22 @@
       "value": "1.35rem",
       "source_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
       "cssOwner": "src/styles/workspace.css",
-      "consumer": "UNKNOWN: requires rendered selector matching",
+      "consumer": "GlobalModelQuickView and ModelQuickViewDialog",
       "semanticRole": "var(--type-subsection)",
       "decision": "MIGRATE",
-      "reason": "Migrated in this continuation to an existing semantic type token.",
+      "reason": "Shared interior moved into ModelQuickView.css imported by both actual dialog consumers",
       "evidence": [
-        "typography-method-role-witness.spec.ts / typography-product-tools.spec.ts; acceptance status is recorded separately on #898"
+        "modelQuickViewTypographyOwnership.test.ts; rendered dialog common-assertion negative"
       ],
       "overlapping_prs": [],
-      "current_value": "var(--type-subsection)",
-      "current_line": 167,
+      "current_value": null,
+      "current_line": null,
       "resolution": "IMPLEMENTED; browser/CI acceptance is a separate receipt"
     }
   ],
   "scoped_source_summary": {
     "status": "UNCLASSIFIED / PARTIAL; regenerate complete entries with audit --json",
-    "literal_or_shorthand_rules": 2306,
+    "literal_or_shorthand_rules": 2281,
     "by_file": {
       "src/components/AgentToSeedBridge.astro": 4,
       "src/components/DevelopmentWorkflowPage.astro": 9,
@@ -8252,7 +8325,6 @@
       "src/components/research/OpenEvoHarness2MiniStudy.astro": 35,
       "src/components/research/OpenEvoHarnessFairnessPanel.astro": 9,
       "src/components/research/OpenEvoLegacyStage1Archive.astro": 16,
-      "src/components/research/OpenEvoLegacyStage2Archive.astro": 25,
       "src/components/research/OpenEvoLegacyStage2ResearchJourney.astro": 21,
       "src/components/research/OpenEvoM1DResults.astro": 7,
       "src/components/research/OpenEvoMechanismMap.astro": 15,

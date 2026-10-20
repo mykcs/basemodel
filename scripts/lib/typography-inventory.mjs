@@ -24,6 +24,10 @@ export function inventoryCSS(content, file, lineOffset = 0) {
       directSize: declaration.prop === 'font-size' && !declaration.value.includes('var('),
       // A shorthand can contain a family token yet still hide a literal size.
       shorthandLiteralSize: declaration.prop === 'font' && /(?:^|\s)(?:\d*\.)?\d+(?:px|rem|em|pt|vw|vh|%)(?=[/\s]|$)/.test(declaration.value),
+      // `font: inherit` is valid; an unquoted inherit family after size/weight
+      // is invalid and silently restores different UA control fonts by engine.
+      invalidInheritedFontShorthand: declaration.prop === 'font' && declaration.value.trim() !== 'inherit'
+        && /(?:^|[,\s])inherit\s*$/.test(declaration.value),
       cssOwner: file, consumer: 'UNKNOWN: requires rendered selector matching',
       semanticRole: 'UNKNOWN: requires owner review', decision: null, evidence: [],
     });

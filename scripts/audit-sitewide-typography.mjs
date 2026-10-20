@@ -60,6 +60,10 @@ for(const file of filesUnder(sourceRoot,['.tsx','.ts','.jsx','.js'])) {
       kind:'javascript-style-candidate',status:'UNKNOWN: source expression, may be non-style data'});
   }
 }
+const invalidInheritedFonts=extendedDeclarations.filter(d=>d.invalidInheritedFontShorthand);
+for(const declaration of invalidInheritedFonts)errors.push(
+  declaration.file+':'+declaration.line+' invalid font shorthand restores UA family: '+declaration.value,
+);
 const directSizes=declarations.filter(d=>d.property==='font-size' && !d.value.includes('var('));
 const sizeDebt=Object.entries(directSizes.reduce((counts,d)=>{
   counts[d.file]=(counts[d.file]||0)+1;
@@ -107,6 +111,7 @@ const summary={
   css_owners:cssFiles.length,
   font_declarations:declarations.length,
   font_size_literals_remaining:directSizes.length,
+  invalid_inherited_font_shorthands:invalidInheritedFonts.length,
   major_legacy_css_owners:sizeDebt,
   exact_Q03_article_count:q03
 };

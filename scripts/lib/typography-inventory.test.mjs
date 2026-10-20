@@ -19,3 +19,8 @@ test('Astro styles keep original lines and report dynamic inline expressions as 
   assert.equal(result.unresolved.length, 1);
   assert.match(result.unresolved[0].status, /UNKNOWN/);
 });
+
+test('invalid inherited font family is rejected without confusing whole-value inheritance or a quoted family',()=>{
+  const entries=inventoryCSS('.valid { font: inherit; font: 600 1rem "inherit"; } .bad { font: 750 .68rem/1.1 inherit; }','fixture.css');
+  assert.deepEqual(entries.map(entry=>entry.invalidInheritedFontShorthand),[false,false,true]);
+});

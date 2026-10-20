@@ -1,12 +1,20 @@
 import { expect, test, type Locator } from '@playwright/test';
 import { writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { waitForHydratedExplainer } from './hydration-ready';
+
+const sourceIdentity={
+  sha:process.env.CI_HEAD_SHA??execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),
+  dirty:Boolean(execFileSync('git',['status','--porcelain'],{encoding:'utf8'}).trim()),
+};
 
 async function assertReadableRole(node: Locator, minimum: number) {
   await expect(node).toBeVisible();
   const values = await node.evaluate(element => {
     const css = getComputedStyle(element);
-    return { size: Number.parseFloat(css.fontSize), font: css.fontFamily, style: css.fontStyle };
+    return { size: Number.parseFloat(css.fontSize), font: css.fontFamily, style: css.fontStyle,
+      weight:css.fontWeight,lineHeight:css.lineHeight,letterSpacing:css.letterSpacing,
+      fontVariantNumeric:css.fontVariantNumeric };
   });
   expect(values.size).toBeGreaterThanOrEqual(minimum);
   expect(values.font).toMatch(/Inter|PingFang|system-ui/);
@@ -99,10 +107,13 @@ for (const width of [390, 768, 1440] as const) {
           await root.locator('.irx-carrier-details > summary').click();
           await expect(root.locator('.irx-carrier-details')).toHaveAttribute('open', '');
         }
-        for (const field of witness.fields) {
+        const roleReceipts=[];
+        const fields=[{selector:'.irx-transport button',minimum:13,role:'native transport control'},...witness.fields];
+        for (const field of fields) {
           const node = root.locator(field.selector).first();
           await expect(node, field.role + ' missing on ' + witness.route).toBeAttached();
-          await assertReadableRole(node, field.minimum);
+          const metrics=await assertReadableRole(node, field.minimum);
+          roleReceipts.push({selector:field.selector,role:field.role,...metrics});
           const value = await node.evaluate(element => {
             const style = getComputedStyle(element);
             const rect = element.getBoundingClientRect();
@@ -126,6 +137,13 @@ for (const width of [390, 768, 1440] as const) {
           document.documentElement.scrollWidth - document.documentElement.clientWidth,
         );
         expect(overflow, witness.route + ' at ' + width + 'px').toBeLessThanOrEqual(2);
+        writeFileSync(testInfo.outputPath('roles-'+witness.kind+'-'+width+'-'+theme+'.json'),JSON.stringify({
+          sourceIdentity,route:witness.route,width,theme,engine:testInfo.project.name,
+          state:witness.kind==='openevo'?'default diagram + expanded carrier details':'overview',
+          documentOverflow:overflow,roles:roleReceipts,
+        },null,2));
+        await root.locator('.irx-controls').screenshot({path:testInfo.outputPath('controls-'+witness.kind+'-'+width+'-'+theme+'.png'),
+          animations:'disabled',style:'.site-header,.research-navigation { visibility:hidden; }'});
         if (witness.kind === 'server' && width === 390) {
           const labels = root.locator('.irx-mobile-relations li > span');
           await assertSingleLineLabels(labels);
@@ -187,6 +205,70 @@ test('native Arial carrier control fails the same rendered role assertion', asyn
   await button.evaluate(node=>{(node as HTMLElement).style.removeProperty('font-family');});
   await assertReadableRole(title,13);
 });
+
+test('invalid inherited-font shorthand is rejected by the actual transport role gate',async({page})=>{
+  await page.goto('/research/seed-openevo/flow/seed/');
+  const root=page.locator('[data-interactive-research-explainer="seed"]');
+  await waitForHydratedExplainer(root);
+  const button=root.locator('.irx-transport button').first();
+  await assertReadableRole(button,13);
+  const owners=await page.evaluateHandle(()=>{
+    const found:Array<{rule:CSSStyleRule;cssText:string}>=[];
+    const walk=(rules:CSSRuleList)=>{
+      for(const rule of [...rules]){
+        if(rule instanceof CSSStyleRule&&rule.selectorText.split(',').some(s=>s.trim()==='.irx-transport button')){
+          found.push({rule,cssText:rule.style.cssText});
+        }
+        if('cssRules' in rule)walk((rule as CSSGroupingRule).cssRules);
+      }
+    };
+    for(const sheet of [...document.styleSheets])walk(sheet.cssRules);
+    return found;
+  });
+  expect(await owners.evaluate(rules=>rules.length)).toBeGreaterThan(0);
+  expect(await page.evaluate(()=>CSS.supports('font','750 .68rem/1.1 inherit'))).toBe(false);
+  await owners.evaluate(rules=>{
+    for(const {rule} of rules){
+      for(const property of ['font','font-family','font-size','font-weight','line-height'])rule.style.removeProperty(property);
+      rule.style.setProperty('font','750 .68rem/1.1 inherit');
+    }
+  });
+  await expect(assertReadableRole(button,13)).rejects.toThrow();
+  await owners.evaluate(rules=>{for(const {rule,cssText} of rules)rule.style.cssText=cssText;});
+  await assertReadableRole(button,13);
+  await owners.dispose();
+});
+
+for(const width of [390,768,1440] as const){
+  for(const theme of ['light','dark'] as const){
+    test('historical Stage 2 keeps ordinary scores and native controls at '+width+'/'+theme,async({page},testInfo)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+      const route='/research/seed-openevo/study/capability-exploration/stage2-256-window/';
+      await page.goto(route,{waitUntil:'domcontentloaded'});
+      await page.evaluate(()=>document.fonts.ready);
+      const root=page.locator('[data-testid="legacy-stage2-archive"]');
+      await root.locator('[data-model-choice="7b"]').click();
+      await expect(root.locator('[data-model-choice="7b"]')).toHaveAttribute('aria-pressed','true');
+      const panel=root.locator('[data-arm-panel][data-model="7b"][data-teacher="self"]');
+      await expect(panel).toBeVisible();
+      const control=await assertReadableRole(root.locator('[data-model-choice="7b"]'),16);
+      const data=panel.locator('.legacy__metrics dd, .legacy__final b');
+      expect(await data.count()).toBeGreaterThan(3);
+      const values=[];
+      for(let i=0;i<await data.count();i++){
+        const value=await assertReadableRole(data.nth(i),15);
+        expect(value.weight).toBe('400');
+        values.push(value);
+      }
+      const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+      expect(overflow).toBeLessThanOrEqual(2);
+      writeFileSync(testInfo.outputPath('legacy-roles.json'),JSON.stringify({sourceIdentity,route,width,theme,engine:testInfo.project.name,control,values,overflow},null,2));
+      await panel.screenshot({path:testInfo.outputPath('legacy-'+width+'-'+theme+'.png'),animations:'disabled',
+        style:'.site-header,.research-navigation { visibility:hidden; }'});
+    });
+  }
+}
 
 
 test('SEED mobile exchange uses two readable full-width rows, not old parallel slivers', async ({ page }) => {
