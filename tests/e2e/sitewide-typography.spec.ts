@@ -87,3 +87,29 @@ test('restoring the Q03 value-label collision actually fails the same geometry t
   expect(bad).not.toBeNull();
   expect(bad!.left).toBeLessThanOrEqual(bad!.axis+2);
 });
+
+const knownUnreadableProse=[
+  {route:'/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/',selector:'.harness-fairness__rows p'},
+  {route:'/research/seed-openevo/study/results/3b-minimax-analysis/',selector:'.exp-scaffold__pipeline p'},
+  {route:'/research/seed-openevo/flow/sd-lora/',selector:'.sdlora-map p'},
+  {route:'/research/seed-openevo/flow/alfworld/',selector:'.irx-paper-caption p'},
+  {route:'/research/seed-openevo/study/capability-exploration/stage2-256-window/',selector:'.s2-choice__head p'},
+  {route:'/lab/',selector:'.lab-first-login p'},
+] as const;
+
+for(const item of knownUnreadableProse) {
+  test('a known 8–11px research-prose family becomes actually legible: '+item.route,async({page})=>{
+    await page.setViewportSize({width:1280,height:900});
+    const res=await page.goto(item.route,{waitUntil:'domcontentloaded'});
+    expect(res?.status()).toBe(200);
+    const paragraphs=page.locator(item.selector);
+    expect(await paragraphs.count()).toBeGreaterThan(0);
+    const rendered=await paragraphs.evaluateAll(nodes=>nodes.map(node=>({
+      size:parseFloat(getComputedStyle(node).fontSize),
+      text:node.textContent?.trim()||''
+    })).filter(x=>x.text.length>0));
+    expect(rendered.length).toBeGreaterThan(0);
+    for(const item of rendered) expect(item.size).toBeGreaterThanOrEqual(13);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+  });
+}
