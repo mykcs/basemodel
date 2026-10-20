@@ -269,7 +269,7 @@ Cloud workflow 改进/核验：
 
 ## 9. WP-06：Exact-head PR/Provider/Production 的真验收
 
-仓库门禁链：当前 `main` → PR #901 exact HEAD → `public-ci-gate`（GitHub App 15368，必需）+ Cloud Figure Chromium/WebKit（这项工作合同要求，两者都应成功）→ ```node scripts/request-vercel-final-gate.mjs 901``` → 同 exact-head `Vercel` provider status SUCCESS / Preview READY → 两条真实路由复检 → 带 `expected_head_sha` 的 merge → `main` Production 状态和目标页面复核。
+仓库门禁链：当前 `main` → PR #901 exact HEAD → `public-ci-gate`（GitHub App 15368，必需）+ Cloud Figure Chromium/WebKit（这项工作合同要求，两者都应成功）→ `node scripts/request-vercel-final-gate.mjs 901` → 同 exact-head `Vercel` provider status SUCCESS / Preview READY → 两条真实路由复检 → 带 `expected_head_sha` 的 merge → `main` Production 状态和目标页面复核。
 
 执行细则：
 1. 如果 `main` 发生并发改变，比较新旧 base 的**真实语义差异**、交叉文件，重组最终 tree 后再跑所需 gate；不得用旧成功作为新 tree 成功。
