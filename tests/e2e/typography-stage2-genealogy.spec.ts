@@ -85,7 +85,7 @@ for (const width of [390, 768, 1024, 1440] as const) {
             path: info.outputPath('stage2-genealogy-' + width + '-' + theme + '.png'),
             animations: 'disabled',
             // Screenshot-only: the sticky global header can overlay scrolled elements.
-            style: '.site-header, [data-site-header] { visibility: hidden; }',
+            style: '.site-header, .research-module-nav-shell, [data-site-header] { visibility: hidden; }',
           });
         }
       });
