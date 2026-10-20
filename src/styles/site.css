@@ -238,3 +238,38 @@ fieldset.landscape-controls:disabled :is(button, input, select) { opacity: .58; 
   .tree-generation-heading { display: grid; gap: 4px; }
   .workflow-flow { padding-bottom: 10px; }
 }
+
+
+/* Sitewide research-prose readability floor. A 268-route browser audit found
+   8–11px explanatory paragraphs hidden inside diagram/experiment components.
+   These are actual sentences (not mathematical symbols or decorative IDs).
+   This narrow accessibility exception outranks old feature literal sizes;
+   semantic geometry still belongs to each feature and browser regressions. */
+:is(
+  .harness-fairness__rows,
+  .exp-scaffold__pipeline,
+  .exp-scaffold__gate-flow,
+  .evidence-grid,
+  .irx-paper-caption,
+  .irx-inspector-current,
+  .irx-authority-inspector,
+  .irx-action-console,
+  .irx-tech,
+  .sdlora-map,
+  .s2-choice__head,
+  .experiment-selector__heading,
+  .experiment-selector__flow,
+  .legacy-journey__copy,
+  .lab-first-login,
+  .lab-lineage,
+  .snapshot-facts,
+  .reason-grid,
+  .question-grid,
+  .harness-fairness,
+  .parameter-note
+) p,
+p.irx-live {
+  font-size: max(var(--type-meta), 1em) !important;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
