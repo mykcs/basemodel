@@ -113,3 +113,17 @@ for(const width of [390,1440] as const){
     expect(overflow).toBeLessThanOrEqual(2);
   });
 }
+
+test('phone advisor first screen offers one evidence route alongside meeting RAW',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(route,{waitUntil:'domcontentloaded'});
+  const links=await page.locator('#main-content a').evaluateAll(anchors=>anchors.filter(el=>{
+    const r=el.getBoundingClientRect(),style=getComputedStyle(el);
+    const h=Math.min(r.bottom,innerHeight)-Math.max(r.top,0);
+    return r.width>0&&r.height>0&&h>=Math.min(12,Math.max(2,r.height*.25))
+      && style.display!=='none'&&style.visibility!=='hidden';
+  }).map(el=>({text:el.textContent?.trim()||'',href:el.getAttribute('href')})));
+  expect(links).toHaveLength(2);
+  expect(links[0].text).toContain('会议原始逐字记录');
+  expect(links[1]).toEqual({text:'查看 Q05、Q07 的详细证据',href:'#responses'});
+});
