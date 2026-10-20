@@ -40,9 +40,9 @@ html[data-theme="dark"] .evo-blog {
 }
 .evo-blog *, .evo-blog *::before, .evo-blog *::after {box-sizing:border-box}
 .evo-blog h1,.evo-blog h2,.evo-blog h3,.evo-blog h4 {color:var(--paper-ink);line-height:1.33;letter-spacing:-.018em}
-.evo-blog h1{font-size:var(--type-page);letter-spacing:-.033em;margin:0 0 1.1rem;max-width:18ch}
-.evo-blog h2{font-size:var(--type-section);margin:0 0 1rem}
-.evo-blog h3{font-size:var(--type-subsection);margin:1.5rem 0 .6rem}
+.evo-blog h1{font-size:var(--type-article-page);letter-spacing:-.033em;margin:0 0 1.1rem;max-width:18ch}
+.evo-blog h2{font-size:var(--type-article-section);margin:0 0 1rem}
+.evo-blog h3{font-size:var(--type-article-subsection);margin:1.5rem 0 .6rem}
 .evo-blog h4{font-size:var(--type-minor-heading)}
 .evo-blog p,.evo-blog li{font-size:1em;line-height:1.8}
 .evo-blog p{max-width:81ch;margin:.85rem 0}
