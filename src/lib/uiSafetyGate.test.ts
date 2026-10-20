@@ -204,7 +204,8 @@ describe('UI visual acceptance gate contract', () => {
       'SEED transport remains attached before interaction',
     ]) expect(floatingTransportGate).toContain(term);
     expect(researchReadabilityStyles).toContain('.canonical-figure');
-    expect(researchReadabilityStyles).toContain('font-size: max(.74rem, 11.8px) !important');
+    // The shared research caption floor now follows #895's semantic metadata role.
+    expect(researchReadabilityStyles).toContain('font-size: max(var(--type-meta), 13px) !important');
     expect(interactiveResearchStyles).not.toContain('>.irx-controls>.irx-transport{position:fixed');
     expect(geometryPolicy).toContain('at least **7 CJK characters per rendered line**');
     expect(geometryPolicy).toContain('becomes a bottom `position: fixed` dock');

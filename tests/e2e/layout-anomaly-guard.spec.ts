@@ -160,7 +160,7 @@ for (const matrix of matrices) {
 const typographyWitnesses = [
   { route: '/models/', selector: '.explorer-summary', minPx: 15 },
   { route: '/workspace/?v=2&mode=modern', selector: '.candidate-board h2', minPx: 16 },
-  { route: '/', selector: '.command-search-trigger', minPx: 13 },
+  { route: '/', selector: '.command-hint', minPx: 13 },
 ] as const;
 
 async function measureTextRole(page: Page, selector: string) {
@@ -191,6 +191,11 @@ for (const width of [390, 768, 1440] as const) {
       for (const witness of typographyWitnesses) {
         await page.goto(witness.route, { waitUntil: 'domcontentloaded' });
         await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+        // On phones the trigger deliberately hides its text; inspect the visible dialog hint.
+        if (witness.selector === '.command-hint') {
+          await page.locator('.command-search-trigger').click();
+          await expect(page.locator('.command-menu[open]')).toBeVisible();
+        }
         const actual = await measureTextRole(page, witness.selector);
         expect(actual.px, `${witness.route} ${witness.selector} font size`).toBeGreaterThanOrEqual(witness.minPx);
         expect(actual.family).toMatch(/Inter|PingFang|system-ui/);
