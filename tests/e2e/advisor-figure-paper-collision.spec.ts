@@ -95,3 +95,21 @@ for(const width of [390,1440] as const){
     expect(original!.left).toBeLessThanOrEqual(original!.axis+2);
   });
 }
+
+
+for(const width of [390,1440] as const){
+  test('sibling research scaling SVG retains accessible evidence without blocking hover tooltip at '+width,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    const response=await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-scaling/',{waitUntil:'domcontentloaded'});
+    expect(response?.status()).toBe(200);
+    const figure=page.locator('figure.scaling-chart');
+    const svg=figure.locator('svg[role="img"]');
+    await expect(svg).toHaveAttribute('aria-label',/component.*更新/);
+    await expect(svg.locator('title')).toHaveCount(0);
+    await expect(svg.locator('desc')).toContainText('44.05');
+    await expect(svg.locator('desc')).toContainText('969.17');
+    await expect(figure.locator('figcaption')).toBeVisible();
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(2);
+  });
+}
