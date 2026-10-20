@@ -68,10 +68,21 @@ async function auditFigure(page: Page, selector: string, viewportWidth: number) 
       if (cjk < 12) return;
       const lineHeight = Number.parseFloat(style.lineHeight) || fontSize * 1.5;
       const box = node.getBoundingClientRect();
-      const lines = Math.max(1, Math.round(box.height / lineHeight));
-      const charsPerLine = cjk / lines;
-      if (lines >= 3 && charsPerLine < 7) {
-        issues.push(`CJK prose is too narrow: ${charsPerLine.toFixed(1)} chars/line across ${lines} lines (${text.slice(0, 48)})`);
+      const lines = Math.max(1, Math.round((box.height - Number.parseFloat(style.paddingTop) - Number.parseFloat(style.paddingBottom)) / lineHeight));
+
+      // Real Chinese/English technical captions spend line width on Latin too.
+      // CJK-count / ALL-lines wrongly marked the full-width Figure C1 caption as
+      // a 6.9-char rail despite 345px available width. Measure actual font advance
+      // for the complete mixed-script sentence instead; preserve the same 7-glyph
+      // minimum and verify the true narrow-column negative case below.
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      if (!context) throw new Error('2D text measurement unavailable');
+      context.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+      const measuredAdvance = context.measureText(text.replace(/\s+/g, ' ')).width;
+      const glyphWidthsPerLine = measuredAdvance / (fontSize * lines);
+      if (lines >= 3 && glyphWidthsPerLine < 7) {
+        issues.push(`mixed-script prose is too narrow: ${glyphWidthsPerLine.toFixed(1)} em/line across ${lines} lines (${text.slice(0, 48)})`);
       }
     });
 
@@ -98,6 +109,29 @@ for (const matrix of matrices) {
     }
   });
 }
+
+test('C1 mixed-language caption is readable, but an actual 75px text rail fails', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/research/seed-openevo/flow/loops/', { waitUntil: 'domcontentloaded' });
+  const caption = page.locator('#fig-seed-openevo-update-target figcaption');
+  await expect(caption).toBeVisible();
+  const actual = await caption.evaluate((el) => {
+    const style = getComputedStyle(el);
+    return { width: el.getBoundingClientRect().width, px: Number.parseFloat(style.fontSize) };
+  });
+  expect(actual.width).toBeGreaterThanOrEqual(280);
+  expect(actual.px).toBeGreaterThanOrEqual(12);
+  expect(await auditFigure(page, '#fig-seed-openevo-update-target', 390)).toEqual([]);
+
+  await caption.evaluate((el) => {
+    const node = el as HTMLElement;
+    node.style.width = '75px';
+    node.style.maxWidth = '75px';
+    node.style.overflowWrap = 'anywhere';
+  });
+  const errors = await auditFigure(page, '#fig-seed-openevo-update-target', 390);
+  expect(errors.some(message => message.startsWith('mixed-script prose is too narrow:')), errors.join('\n')).toBe(true);
+});
 
 test('WebShop keeps one first-reader explainer sequence and drops legacy duplicate sections', async ({ page }) => {
   for (const path of ['/research/seed-openevo/flow/webshop/']) {
