@@ -7,18 +7,26 @@
     {
       "baseRefName": "main",
       "headRefName": "ci/cloud-webkit-visual-evidence-20261020",
-      "headRefOid": "2cac962c132ae3a3a9589cad68251096da6d182b",
+      "headRefOid": "bbb877876b342b762902e4a123eba11524153557",
       "number": 901,
       "files": [
         ".github/workflows/cloud-figure-visual-review.yml",
+        "docs/agents/LATEST.md",
         "docs/plans/2026-10-20-figure-cloud-closeout.md",
-        "tests/e2e/advisor-figure-paper-collision.spec.ts"
+        "package-lock.json",
+        "package.json",
+        "scripts/audit-sitewide-research-figure-widths.mjs",
+        "scripts/preflight-ui.ts",
+        "src/lib/deploymentArchitecture.test.ts",
+        "tests/e2e/advisor-figure-paper-collision.spec.ts",
+        "tests/e2e/figure-evidence.ts",
+        "tests/e2e/sitewide-figure-width-scope.spec.ts"
       ]
     },
     {
       "baseRefName": "design/sitewide-type-and-paper-figures-20261020",
       "headRefName": "design/typography-catalog-workspace-20261020",
-      "headRefOid": "4b7017a3c08990c4387b740a3bdacd978abb8829",
+      "headRefOid": "c5d0f4f36176cf3f8d640c64d1db230c7993dc24",
       "number": 898,
       "files": [
         "docs/agents/evidence/typography-method-stage-migration-20261020.md",
@@ -773,5 +781,8 @@
         "docs/plans/2026-09-22-pr-d-resource-mission-bridges.md"
       ]
     }
+  ],
+  "notes": [
+    "#901 moved to bbb87787 during work; package.json and LATEST additions inspected, not imported. Its figure workflow remains independent."
   ]
 }

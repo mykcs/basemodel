@@ -1,5 +1,6 @@
 import { expect, test, type Locator } from '@playwright/test';
 import { writeFileSync } from 'node:fs';
+import { waitForHydratedExplainer } from './hydration-ready';
 
 async function assertReadableRole(node: Locator, minimum: number) {
   await expect(node).toBeVisible();
@@ -11,6 +12,18 @@ async function assertReadableRole(node: Locator, minimum: number) {
   expect(values.font).toMatch(/Inter|PingFang|system-ui/);
   expect(values.style).toBe('normal');
   return values;
+}
+
+async function assertSingleLineLabels(labels: Locator) {
+  const lineCounts = await labels.evaluateAll(nodes => nodes.map(node => {
+    // Grid items stretch to their neighbor's line box. Count the text's actual
+    // rendered lines, rather than misclassifying a stretched item as wrapping.
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    return new Set([...range.getClientRects()].map(rect => Math.round(rect.top))).size;
+  }));
+  expect(lineCounts.length).toBeGreaterThan(0);
+  for (const lines of lineCounts) expect(lines).toBe(1);
 }
 
 // Stage typography checks computed values, not class names or CSS source text.
@@ -66,19 +79,21 @@ const witnesses = [
 
 for (const width of [390, 768, 1440] as const) {
   for (const theme of ['light', 'dark'] as const) {
-    test('research stage type roles remain readable at ' + width + 'px ' + theme, async ({ page }, testInfo) => {
+    for (const witness of witnesses) {
+    test(witness.kind + ' type roles remain readable at ' + width + 'px ' + theme, async ({ page }, testInfo) => {
       await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
       await page.addInitScript(mode => localStorage.setItem('atlas-theme', mode), theme);
-      for (const witness of witnesses) {
         const response = await page.goto(witness.route, { waitUntil: 'domcontentloaded' });
         expect(response?.status()).toBe(200);
         await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
         const root = page.locator('[data-interactive-research-explainer="' + witness.kind + '"]').first();
         await expect(root).toBeVisible();
+        await waitForHydratedExplainer(root);
         await page.evaluate(() => document.fonts.ready);
         if (witness.kind === 'openevo') {
           await root.locator('.irx-openevo-scene').screenshot({
             path: testInfo.outputPath('openevo-default-' + width + '-' + theme + '.png'),
+            animations: 'disabled',
             style: '.site-header, .research-navigation { visibility: hidden; }',
           });
           await root.locator('.irx-carrier-details > summary').click();
@@ -111,6 +126,15 @@ for (const width of [390, 768, 1440] as const) {
           document.documentElement.scrollWidth - document.documentElement.clientWidth,
         );
         expect(overflow, witness.route + ' at ' + width + 'px').toBeLessThanOrEqual(2);
+        if (witness.kind === 'server' && width === 390) {
+          const labels = root.locator('.irx-mobile-relations li > span');
+          await assertSingleLineLabels(labels);
+          const oldNarrowRow = root.locator('.irx-mobile-relations li').last();
+          await oldNarrowRow.evaluate(node => { (node as HTMLElement).style.gridTemplateColumns = '72px minmax(0, 1fr)'; });
+          await expect(assertSingleLineLabels(labels)).rejects.toThrow();
+          await oldNarrowRow.evaluate(node => { (node as HTMLElement).style.removeProperty('grid-template-columns'); });
+          await assertSingleLineLabels(labels);
+        }
         if (witness.kind === 'seed') {
           const geometry = await root.locator('.irx-seed-stage, .irx-seed-role, .irx-seed-offline-pipeline li').evaluateAll(nodes => nodes.map(node => {
             const css = getComputedStyle(node);
@@ -124,16 +148,17 @@ for (const width of [390, 768, 1440] as const) {
           // Hide only chrome in the capture, after all unmodified-page checks.
           await root.locator('.irx-seed-stage').first().screenshot({
             path: testInfo.outputPath('seed-' + width + '-' + theme + '.png'),
+            animations: 'disabled',
             style: '.site-header, .research-navigation { visibility: hidden; }',
           });
         }
         if (witness.kind === 'server' || witness.kind === 'openevo') {
           const target = root.locator(witness.kind === 'server' ? '.irx-host-boundary' : '.irx-carrier-lane').first();
-          await target.screenshot({ path: testInfo.outputPath(witness.kind + '-' + width + '-' + theme + '.png'),
+          await target.screenshot({ animations: 'disabled', path: testInfo.outputPath(witness.kind + '-' + width + '-' + theme + '.png'),
             style: '.site-header, .research-navigation { visibility: hidden; }' });
         }
-      }
     });
+    }
   }
 }
 
@@ -147,6 +172,20 @@ test('a restored 9px stage explanation is caught by the same computed-style gate
   await expect(assertReadableRole(text, 15)).rejects.toThrow();
   await text.evaluate(element => { (element as HTMLElement).style.removeProperty('font-size'); });
   await assertReadableRole(text, 15);
+});
+
+test('native Arial carrier control fails the same rendered role assertion', async ({page})=>{
+  await page.goto('/research/seed-openevo/flow/openevo/');
+  const root=page.locator('[data-interactive-research-explainer="openevo"]');
+  await waitForHydratedExplainer(root);
+  await root.locator('.irx-carrier-details > summary').click();
+  const button=root.locator('.irx-carrier').first();
+  const title=button.locator('strong');
+  await assertReadableRole(title,13);
+  await button.evaluate(node=>{(node as HTMLElement).style.fontFamily='Arial';});
+  await expect(assertReadableRole(title,13)).rejects.toThrow();
+  await button.evaluate(node=>{(node as HTMLElement).style.removeProperty('font-family');});
+  await assertReadableRole(title,13);
 });
 
 

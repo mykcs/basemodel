@@ -1,5 +1,9 @@
 # Typography continuation: audit and method-diagram migration
 
+Latest followthrough and superseding counters: [available-owner CSS closeout](OWNED_CSS_CLOSEOUT.md).
+
+The rest of this file is the **initial c5d0f4f3 batch receipt**.
+
 Status: **PARTIAL — not whole-site acceptance**. The canonical working PR remains
 [#898](https://github.com/mykcs/basemodel/pull/898), stacked on #895. No merge,
 retarget, Production deployment, scientific-data or claim change is authorized by

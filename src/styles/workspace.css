@@ -164,7 +164,7 @@
   .quick-view-dialog::backdrop { background: rgb(20 25 25 / .45); }
   .quick-view-dialog-inner { padding: 20px; }
   .quick-view-header { display: flex; justify-content: space-between; gap: 14px; align-items: start; }
-  .quick-view-header h2 { margin: 2px 0 4px; font-size: 1.35rem; }
+  .quick-view-header h2 { margin: 2px 0 4px; font-size: var(--type-subsection); }
   .quick-view-facts { display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; margin: 20px 0; border-top: 1px solid var(--line); padding-top: 14px; font-size: var(--type-body-small); }
   .quick-view-facts dt { color: var(--muted); }
   .quick-view-facts dd { margin: 0; text-align: right; }
