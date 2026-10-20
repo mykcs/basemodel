@@ -125,7 +125,8 @@ for (const width of [390, 768, 1440] as const) {
       expect(actual.size).toBeGreaterThanOrEqual(14.5);
       expect(actual.family).toMatch(/Inter|PingFang|system-ui/);
       expect(actual.family).not.toMatch(/Georgia|Songti|Times New Roman/);
-      expect(actual.numeric).toContain('tabular-nums');
+      // The canonical advisor reader deliberately keeps ordinary (non-tabular) figures.
+      expect(actual.numeric).toBe('normal');
       expect(actual.top).toBeGreaterThanOrEqual(1);
       expect(actual.bottom).toBeGreaterThanOrEqual(1);
       expect(actual.documentScroll).toBeLessThanOrEqual(2);

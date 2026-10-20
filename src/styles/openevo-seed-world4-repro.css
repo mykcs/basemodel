@@ -6,7 +6,7 @@
   padding: 1.55rem 0 0;
   border-top: 1px solid var(--q03-border);
   max-width: 100%;
-  font-variant-numeric: tabular-nums lining-nums;
+  /* Advisor report owns plain numeral shaping; no competing local numeric mode. */
 }
 .q03-world4 :where(p, h4, h5) { margin: 0; }
 .q03-world4 a { text-underline-offset: 3px; }
@@ -36,7 +36,7 @@
 .q03-world4__evidence h5 { margin-bottom: .65rem; }
 .q03-world4__evidence code { font-size: .91em; font-family: var(--font-mono); font-weight: var(--type-weight-medium); }
 .q03-world4__tablewrap { overflow-x: auto; max-width: 100%; scrollbar-width: thin; }
-.q03-world4__tablewrap table { min-width: 520px; width: max-content; max-width: none; border-collapse: collapse; border-top: 1.45px solid var(--q03-ink); border-bottom: 1.45px solid var(--q03-ink); font-family: var(--font-interface); font-variant-numeric: tabular-nums lining-nums; line-height: 1.5; font-size: var(--type-table); }
+.q03-world4__tablewrap table { min-width: 520px; width: max-content; max-width: none; border-collapse: collapse; border-top: 1.45px solid var(--q03-ink); border-bottom: 1.45px solid var(--q03-ink); font-family: var(--font-interface); line-height: 1.5; font-size: var(--type-table); }
 .q03-world4__tablewrap caption { caption-side: top; text-align: left; font-size: var(--type-caption); color: var(--q03-muted); margin-bottom: .35rem; }
 .q03-world4__tablewrap thead { border-bottom: 1.1px solid var(--q03-ink); }
 .q03-world4__tablewrap th, .q03-world4__tablewrap td { padding: .58rem .85rem .58rem .2rem; border: none; background: transparent; text-align: left; white-space: nowrap; }
