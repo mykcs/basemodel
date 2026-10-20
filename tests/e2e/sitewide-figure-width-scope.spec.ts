@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { captureFigureEvidence } from './figure-evidence';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
@@ -57,13 +58,13 @@ for (const route of routes) {
             })),
           }));
           if (visible) {
-            await figure.screenshot({path:testInfo.outputPath(png),animations:'disabled'});
+            await captureFigureEvidence(figure,testInfo.outputPath(png));
             if (width === 1440 && theme === 'light') {
               const grayscale = await page.addStyleTag({content:'html { filter: grayscale(1) !important; }'});
-              await figure.screenshot({path:testInfo.outputPath(`figure-${index}-grayscale.png`),animations:'disabled'});
+              await captureFigureEvidence(figure,testInfo.outputPath(`figure-${index}-grayscale.png`));
               await grayscale.evaluate(node => node.parentNode?.removeChild(node));
               await page.emulateMedia({media:'print'});
-              if (await figure.isVisible()) await figure.screenshot({path:testInfo.outputPath(`figure-${index}-print.png`),animations:'disabled'});
+              if (await figure.isVisible()) await captureFigureEvidence(figure,testInfo.outputPath(`figure-${index}-print.png`));
               await page.emulateMedia({media:'screen'});
             }
           }

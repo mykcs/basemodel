@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { captureFigureEvidence } from './figure-evidence';
 import { writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 const sourceSha=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
@@ -78,14 +79,8 @@ for(const width of [390,768,1440] as const){
       }
       // These PNGs and computed measurements become short-lived GitHub
       // Actions artifacts, so MacBook/RDC screenshots are not needed.
-      await q03.screenshot({
-        path:testInfo.outputPath('q03-paper-'+width+'-'+theme+'.png'),
-        animations:'disabled',
-      });
-      if(width!==768) await q01.screenshot({
-        path:testInfo.outputPath('q01-paper-'+width+'-'+theme+'.png'),
-        animations:'disabled',
-      });
+      await captureFigureEvidence(q03,testInfo.outputPath('q03-paper-'+width+'-'+theme+'.png'));
+      if(width!==768) await captureFigureEvidence(q01,testInfo.outputPath('q01-paper-'+width+'-'+theme+'.png'));
       writeFileSync(testInfo.outputPath('q03-paper-geometry-'+width+'-'+theme+'.json'),
         JSON.stringify({sha:sourceSha,browser:testInfo.project.name,width,theme,metrics,source:'rendered Chromium/WebKit Playwright',route},null,2)+'\n');
     });
@@ -113,7 +108,7 @@ for(const width of [390,1440] as const){
     expect(original!.left).toBeLessThanOrEqual(original!.axis+2);
     // Exercise the same accepting predicate against the deliberately bad DOM.
     expect(()=>expect(original!.left).toBeGreaterThan(original!.axis+2)).toThrow();
-    await chart.screenshot({path:testInfo.outputPath('q03-known-bad-'+width+'.png'),animations:'disabled'});
+    await captureFigureEvidence(chart,testInfo.outputPath('q03-known-bad-'+width+'.png'));
     writeFileSync(testInfo.outputPath('q03-known-bad-'+width+'.json'),JSON.stringify({
       sha:sourceSha,browser:testInfo.project.name,width,accepted,original,knownBadRejected:true,
       mutation:width===390?'A0 xPhone=50':'A0 x=88',route,
@@ -158,4 +153,33 @@ test('phone reader gets a Q10 decision route and can still find the meeting RAW'
   expect(placement.finding).toBeLessThan(844);
   expect(placement.source).toBeGreaterThan(placement.finding);
   expect(placement.overflow).toBeLessThanOrEqual(2);
+});
+
+
+test('native document capture rejects the sticky-layer-obscured Q01 framing',async({page},testInfo)=>{
+  await page.setViewportSize({width:390,height:900});
+  await page.goto(route,{waitUntil:'domcontentloaded'});
+  const figure=page.locator('[data-report-figure="q01-horizon"]');
+  const title=figure.locator('strong').first();
+  // Controlled bad camera position: tall-object auto-scroll can put the title
+  // under persistent navigation. This changes scroll only, never product DOM.
+  await title.evaluate(el=>window.scrollTo(0,el.getBoundingClientRect().top+scrollY));
+  await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))));
+  const obscured=await title.evaluate(el=>{
+    const r=el.getBoundingClientRect();
+    const hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);
+    return {blocked:!hit||!el.contains(hit),top:r.top,blocker:hit?.tagName};
+  });
+  expect(obscured.blocked).toBe(true);
+  await page.screenshot({path:testInfo.outputPath('q01-known-bad-viewport.png'),animations:'disabled'});
+  const clip=await captureFigureEvidence(figure,testInfo.outputPath('q01-document-safe.png'));
+  const fixedBottom=await page.evaluate(()=>Math.max(0,...[...document.querySelectorAll('body *')].filter(el=>{
+    const style=getComputedStyle(el),r=el.getBoundingClientRect();
+    return ['fixed','sticky'].includes(style.position)&&r.width>0&&r.height>0&&r.top<innerHeight;
+  }).map(el=>el.getBoundingClientRect().bottom)));
+  expect(clip.y).toBeGreaterThan(fixedBottom);
+  writeFileSync(testInfo.outputPath('q01-capture-framing.json'),JSON.stringify({
+    sha:sourceSha,browser:testInfo.project.name,obscured,clip,fixedBottom,
+    method:'native document clip; DOM and viewport dimensions unchanged',route,
+  },null,2)+'\n');
 });

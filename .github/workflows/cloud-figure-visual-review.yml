@@ -9,6 +9,7 @@ on:
       - 'src/components/research/OpenEvoSdLoraScaling.astro'
       - 'tests/e2e/advisor-figure-paper-collision.spec.ts'
       - 'tests/e2e/advisor-paper-figure-suite.spec.ts'
+      - 'tests/e2e/figure-evidence.ts'
       - 'tests/e2e/sitewide-figure-width-scope.spec.ts'
       - 'scripts/audit-sitewide-research-figure-widths.mjs'
       - 'package.json'
