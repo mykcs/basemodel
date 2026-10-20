@@ -1,6 +1,7 @@
 import { readdirSync } from 'node:fs';
 import { relative, sep } from 'node:path';
 import { expect, test } from '@playwright/test';
+import { partitionRoundRobin } from '../../src/lib/ciRouteSharding';
 
 const routes = [
   ['/research/seed-openevo/study/briefing/technical-notes/', 4],
@@ -34,8 +35,6 @@ test('public research routes do not expose the old fake-formula patterns', async
   await expect(page.locator('.scaling-hero__equation')).toHaveCount(0);
 });
 
-test('every built public route is free of rendered fake-math patterns', async ({ context }) => {
-  test.setTimeout(90_000);
   // Enumerate the actual built HTML surface instead of sitemap.xml.
   // Vercel Preview intentionally suppresses public indexing, so its sitemap may be empty
   // even though every public HTML route was generated and is available to the hosted UI gate.
@@ -45,15 +44,21 @@ test('every built public route is free of rendered fake-math patterns', async ({
       return entry.isDirectory() ? walk(full) : entry.name.endsWith('.html') ? [full] : [];
     });
   })('dist');
-  const routes = htmlFiles
+  const allBuiltRoutes = htmlFiles
     .map((file) => relative('dist', file).split(sep).join('/'))
     .filter((file) => file !== '404.html')
     .map((file) => file === 'index.html' ? '/' : file.endsWith('/index.html') ? `/${file.slice(0, -'index.html'.length)}` : `/${file}`)
     .filter((route, index, items) => items.indexOf(route) === index);
 
+// A single 90-second case stopped before all 268 built routes on real cloud
+// WebKit. Reuse the existing route partitioner; preserve every route and check.
+const mathRouteBatches = partitionRoundRobin(allBuiltRoutes, 8);
+for (const [batchIndex, routeBatch] of mathRouteBatches.entries()) {
+ test(`every built public route is free of rendered fake-math patterns: batch ${batchIndex + 1}/8`, async ({ context }) => {
+  test.setTimeout(180_000);
   const findings: Array<{ route: string; kind: string; detail: string }> = [];
 
-  for (const route of routes) {
+  for (const route of routeBatch) {
     // Legacy routes can schedule a redirect after DOMContentLoaded. Isolate each
     // document so a pending redirect cannot interrupt the next route under test.
     const page = await context.newPage();
@@ -94,6 +99,8 @@ test('every built public route is free of rendered fake-math patterns', async ({
     }
   }
 
-  expect(routes.length).toBeGreaterThan(200);
+  expect(allBuiltRoutes.length).toBeGreaterThan(200);
   expect(findings).toEqual([]);
 });
+
+}

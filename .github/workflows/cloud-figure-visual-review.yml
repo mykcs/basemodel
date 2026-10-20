@@ -17,6 +17,7 @@ on:
       - 'scripts/audit-sitewide-research-figure-widths.mjs'
       - 'scripts/verify-cloud-figure-evidence*'
       - 'tests/e2e/site-reader-contracts.spec.ts'
+      - 'tests/e2e/sitewide-math-rendering.spec.ts'
       - 'package.json'
       - 'package-lock.json'
   workflow_dispatch:
