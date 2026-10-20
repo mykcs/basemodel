@@ -1,0 +1,91 @@
+name: Cloud Figure Visual Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - '.github/workflows/cloud-figure-visual-review.yml'
+      - 'src/components/research/AdvisorTenEvidenceVisual.astro'
+      - 'src/components/research/OpenEvoSdLoraScaling.astro'
+      - 'tests/e2e/advisor-figure-paper-collision.spec.ts'
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Open BaseModel PR number to test with Chromium and WebKit'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: basemodel-cloud-figure-visual-${{ github.event.pull_request.number || inputs.pr_number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  cloud-figure-browsers:
+    name: cloud-figure-${{ matrix.browser }}
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    env:
+      CI: '1'
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+      PLAYWRIGHT_WORKERS: '1'
+    steps:
+      - name: Validate manual PR number
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        env:
+          PR_NUMBER: ${{ inputs.pr_number }}
+        run: |
+          set -euo pipefail
+          [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]
+
+      - name: Checkout exact PR head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event_name == 'pull_request' && format('refs/pull/{0}/head', github.event.pull_request.number) || format('refs/pull/{0}/head', inputs.pr_number) }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Setup Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Bind candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "## Cloud ${{ matrix.browser }} visual review" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Exact commit: \`$(git rev-parse HEAD)\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- PR: ${{ github.event.pull_request.number || inputs.pr_number }}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build fresh static routes
+        run: npm run build
+
+      - name: Run research figures in ${{ matrix.browser }}
+        run: npx playwright test tests/e2e/advisor-figure-paper-collision.spec.ts tests/e2e/advisor-paper-figure-suite.spec.ts --project=${{ matrix.browser }} --workers=1
+
+      - name: Upload visual screenshots and error traces
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: basemodel-figure-${{ github.event.pull_request.number || inputs.pr_number }}-${{ matrix.browser }}
+          path: |
+            test-results/**/*.png
+            test-results/**/*.webm
+            test-results/**/*.zip
+            test-results/**/*.md
+          if-no-files-found: ignore
+          retention-days: 3
