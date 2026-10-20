@@ -1,6 +1,7 @@
 import { readdirSync } from 'node:fs';
 import { relative, sep } from 'node:path';
 import { expect, test } from '@playwright/test';
+import { SITE_READER_CONTRACTS } from '../../src/data/siteReaderContracts';
 import { partitionRoundRobin } from '../../src/lib/ciRouteSharding';
 
 const routes = [
@@ -68,6 +69,12 @@ for (const [batchIndex, routeBatch] of mathRouteBatches.entries()) {
         findings.push({ route, kind: 'http', detail: String(response?.status() ?? 'no response') });
         continue;
       }
+      const redirect = SITE_READER_CONTRACTS.find(contract => contract.sourceRoute === route)?.redirectsTo;
+      if (redirect) {
+        const target = new URL(redirect, page.url());
+        await page.waitForURL(url => url.pathname === target.pathname && url.hash === target.hash);
+      }
+      await page.waitForLoadState('load');
       const routeFindings = await page.evaluate(() => {
         const issues: Array<{ kind: string; detail: string }> = [];
         const mathCode = /(?:ΔW|θ|τ|λ|β|Σ|√|‖|≈|∈)/;

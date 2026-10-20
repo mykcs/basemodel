@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { captureFigureEvidence } from './figure-evidence';
+import { captureFigureEvidence, settleFigureHydration } from './figure-evidence';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
@@ -43,6 +43,12 @@ for (const route of routes) {
             if (details.querySelector('figure, table')) details.open = true;
           }
         });
+        await settleFigureHydration(page);
+        const sourceFile=join(root,route==='/'?'index.html':route.slice(1)+'index.html');
+        const source=readFileSync(sourceFile,'utf8');
+        const expectedFigures=[...source.matchAll(/<figure(?=[\s>])/gi)].length;
+        await expect(page.locator('figure')).toHaveCount(expectedFigures);
+        const figureCount=await page.locator('figure').count();
         let figureIndex=0,svgIndex=0;
         for (const figure of await page.locator('figure, svg[role="img"]').all()) {
           const kind=await figure.evaluate(el=>el.tagName.toLowerCase()==='figure'?'figure':el.closest('figure')?'inside-figure':'nonfigure-svg');
@@ -76,6 +82,8 @@ for (const route of routes) {
           evidence.push({route,kind,index,width,theme,...details,visible,png:visible?png:null,
             status:'NEEDS_VISUAL_REVIEW',state:'details containing evidence expanded'});
         }
+        expect(figureIndex).toBe(figureCount);
+        await expect(page.locator('figure')).toHaveCount(figureCount);
         const tables = await page.locator('table').evaluateAll(els => els.map((el,index) => ({
           index,owner:el.className,caption:el.querySelector('caption')?.textContent?.trim()??'',
           box:el.getBoundingClientRect().toJSON(),rows:el.querySelectorAll('tr').length,

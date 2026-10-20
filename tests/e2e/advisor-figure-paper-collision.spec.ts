@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { captureFigureEvidence } from './figure-evidence';
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 const sourceSha=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
 test.beforeAll(()=>{
@@ -163,7 +163,8 @@ test('native document capture rejects the sticky-layer-obscured Q01 framing',asy
   const title=figure.locator('strong').first();
   // Controlled bad camera position: tall-object auto-scroll can put the title
   // under persistent navigation. This changes scroll only, never product DOM.
-  await title.evaluate(el=>window.scrollTo(0,el.getBoundingClientRect().top+scrollY));
+  await title.evaluate(el=>window.scrollTo({top:el.getBoundingClientRect().top+scrollY,left:0,behavior:'instant'}));
+  await expect.poll(()=>title.evaluate(el=>Math.abs(el.getBoundingClientRect().top))).toBeLessThan(1);
   await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))));
   const obscured=await title.evaluate(el=>{
     const r=el.getBoundingClientRect();
@@ -181,5 +182,42 @@ test('native document capture rejects the sticky-layer-obscured Q01 framing',asy
   writeFileSync(testInfo.outputPath('q01-capture-framing.json'),JSON.stringify({
     sha:sourceSha,browser:testInfo.project.name,obscured,clip,fixedBottom,
     method:'native document clip; DOM and viewport dimensions unchanged',route,
+  },null,2)+'\n');
+});
+
+test('native document capture decodes an offscreen lazy scientific image and ignores hidden alternatives',async({page},testInfo)=>{
+  await page.setViewportSize({width:390,height:900});
+  await page.goto(route,{waitUntil:'load'});
+  const asset=readFileSync('public/research/seed-openevo/evidence/wandb-threeway/task-score.svg');
+  await page.route('**/task-score.svg?lazy-camera-control',async request=>{
+    // Browser lazy-load heuristics differ. Only this named fixture is held
+    // until a real scroll, making the undecoded control deterministic.
+    await page.waitForFunction(()=>scrollY>1000);
+    await request.fulfill({status:200,contentType:'image/svg+xml',body:asset});
+  });
+  await page.evaluate(()=>{
+    window.scrollTo({top:0,left:0,behavior:'instant'});
+    const spacer=document.createElement('div');
+    spacer.style.height='5000px';
+    const fixture=document.createElement('figure');
+    fixture.id='lazy-camera-control';
+    fixture.innerHTML='<figcaption>Test fixture: native lazy-image camera control, not experiment output</figcaption><img loading="lazy" width="340" height="220" src="/research/seed-openevo/evidence/wandb-threeway/task-score.svg?lazy-camera-control" alt="Existing scientific SVG"><img style="display:none" alt="Hidden responsive test alternative">';
+    document.body.append(spacer,fixture);
+  });
+  const figure=page.locator('#lazy-camera-control');
+  const image=figure.locator('img').first();
+  expect(await image.evaluate(node=>(node as HTMLImageElement).naturalWidth)).toBe(0);
+  const badClip=await figure.evaluate(el=>{
+    const r=el.getBoundingClientRect();
+    return {x:r.x+scrollX,y:r.y+scrollY,width:r.width,height:r.height};
+  });
+  await page.screenshot({path:testInfo.outputPath('lazy-known-bad-document.png'),clip:badClip,fullPage:true,animations:'disabled'});
+  await captureFigureEvidence(figure,testInfo.outputPath('lazy-decoded-document.png'));
+  expect(await image.evaluate(node=>(node as HTMLImageElement).complete&&(node as HTMLImageElement).naturalWidth>0)).toBe(true);
+  expect(await page.evaluate(()=>scrollY)).toBe(0);
+  writeFileSync(testInfo.outputPath('lazy-camera-control.json'),JSON.stringify({
+    sha:sourceSha,browser:testInfo.project.name,route,fixture:true,
+    source:'public/research/seed-openevo/evidence/wandb-threeway/task-score.svg',
+    undecodedControl:true,decodedAfterCapture:true,hiddenAlternativeIgnored:true,
   },null,2)+'\n');
 });
