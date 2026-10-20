@@ -140,6 +140,7 @@ jobs:
           NODE
 
       - name: Upload visual screenshots and error traces
+        id: evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -153,3 +154,26 @@ jobs:
             test-results/**/*.md
           if-no-files-found: error
           retention-days: 3
+
+      - name: Download the uploaded artifact for round-trip verification
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          artifact-ids: ${{ steps.evidence.outputs.artifact-id }}
+          path: artifact-roundtrip
+
+      - name: Verify downloaded PNG and JSON bytes against manifest
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          import { createHash } from 'node:crypto';
+          import { join } from 'node:path';
+          const root = 'artifact-roundtrip';
+          const manifest = JSON.parse(readFileSync(join(root,'figure-inventory/evidence-manifest.json')));
+          if (!manifest.entries.length) throw new Error('Empty downloaded evidence');
+          for (const item of manifest.entries) {
+            const bytes = readFileSync(join(root,item.path));
+            if (bytes.length !== item.bytes || createHash('sha256').update(bytes).digest('hex') !== item.sha256)
+              throw new Error(`Downloaded bytes differ: ${item.path}`);
+          }
+          console.log(`Verified ${manifest.entries.length} downloaded files for ${manifest.sha} ${manifest.browser}`);
+          NODE
