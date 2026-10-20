@@ -35,6 +35,15 @@ for (const width of [390,768,1440]) {
     });
     expect(geometry).not.toBeNull();
     expect(geometry!.leftEdge).toBeGreaterThan(geometry!.axisX+2);
+    // SVG source font-size alone is not the reader-visible size: a 625px
+    // viewBox squeezed to 384px makes its 13.5px labels render near 8px.
+    const renderedScorePx=await plot.evaluate(svg=>{
+      const label=svg.querySelector('.advisor-viz__q03-score');
+      if(!(label instanceof SVGTextElement)||!(svg instanceof SVGSVGElement))return 0;
+      return parseFloat(getComputedStyle(label).fontSize)
+        * svg.getBoundingClientRect().width/svg.viewBox.baseVal.width;
+    });
+    expect(renderedScorePx).toBeGreaterThanOrEqual(11.5);
     const paper=await q03.evaluate(node=>{
       const root=document.querySelector('.evo-approved-reader');
       const caption=node.querySelector('figcaption');
