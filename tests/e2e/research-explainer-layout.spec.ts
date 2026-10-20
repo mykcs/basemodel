@@ -510,3 +510,46 @@ test('research framework opens as a system map and can enter and leave trace mod
   await root.getByRole('button', { name: '重置' }).click();
   await expect(root).toHaveAttribute('data-overview', 'true');
 });
+
+for (const width of [390,768,1440]) for (const theme of ['light','dark'] as const) {
+  test('WebShop held-out ruler label stays horizontal without distorting the split: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/flow/webshop/',{waitUntil:'load'});
+    const ruler=page.locator('#fig-webshop-seed-split .ruler');
+    const heldout=ruler.locator('.heldout');
+    const label=heldout.locator('span');
+    await expect(label).toHaveText('保留候选池');
+    const measure=()=>label.evaluate(node=>{
+      const css=getComputedStyle(node),r=node.getBoundingClientRect(),segment=node.parentElement!.getBoundingClientRect();
+      return {writingMode:css.writingMode,transform:css.transform,width:r.width,height:r.height,segmentWidth:segment.width};
+    });
+    const accept=(m:Awaited<ReturnType<typeof measure>>)=>{
+      expect(m.writingMode).toBe('horizontal-tb');
+      expect(m.transform).toBe('none');
+      expect(m.width).toBeLessThanOrEqual(m.segmentWidth);
+      expect(m.height).toBeLessThan(m.width);
+    };
+    accept(await measure());
+    const ratio=await ruler.evaluate(node=>{
+      const total=node.getBoundingClientRect().width,part=node.querySelector('.heldout')!.getBoundingClientRect().width;
+      return part/(total-2);
+    });
+    expect(Math.abs(ratio-500/6910)).toBeLessThan(.002);
+    if(width===1440){
+      await label.evaluate(node=>{
+        (node as HTMLElement).style.writingMode='vertical-rl';
+        (node as HTMLElement).style.transform='rotate(180deg)';
+      });
+      const bad=await measure();
+      expect(()=>accept(bad)).toThrow();
+      await label.evaluate(node=>{
+        (node as HTMLElement).style.removeProperty('writing-mode');
+        (node as HTMLElement).style.removeProperty('transform');
+      });
+      accept(await measure());
+    }
+    await expect(page.locator('#fig-webshop-seed-split')).toContainText('6,410');
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  });
+}

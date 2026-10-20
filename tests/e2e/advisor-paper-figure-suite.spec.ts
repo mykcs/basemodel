@@ -88,3 +88,37 @@ for(const width of [390,1440]){
     expect(await lanes.first().locator('.advisor-method__node').first().evaluate(x=>getComputedStyle(x).borderRadius)).toBe('0px');
   });
 }
+
+for (const width of [390,768,1440]) for (const theme of ['light','dark']) {
+  test('Q01 legend text meets contrast and rejects its old palette inheritance: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto(result,{waitUntil:'load'});
+    const figure=page.locator('[data-report-figure="q01-horizon"]');
+    const labels=figure.locator('.advisor-viz__q01-legend-item > span');
+    await expect(labels).toHaveCount(3);
+    const measure=()=>labels.evaluateAll(nodes=>{
+      const rgb=(value:string)=>value.match(/[\d.]+/g)!.slice(0,3).map(Number);
+      const lum=(values:number[])=>values.map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((sum,v,i)=>sum+v*[.2126,.7152,.0722][i]!,0);
+      return nodes.map(node=>{
+        let owner:Element|null=node;
+        while(owner && ['transparent','rgba(0, 0, 0, 0)'].includes(getComputedStyle(owner).backgroundColor)) owner=owner.parentElement;
+        if(!owner)throw Error('Missing actual legend background');
+        const ink=lum(rgb(getComputedStyle(node).color)),paper=lum(rgb(getComputedStyle(owner).backgroundColor));
+        return (Math.max(ink,paper)+.05)/(Math.min(ink,paper)+.05);
+      });
+    });
+    for(const ratio of await measure())expect(ratio).toBeGreaterThanOrEqual(4.5);
+    if(theme==='dark'){
+      // Restore the exact old inherited series palette, on the real dark page.
+      await labels.evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.color=getComputedStyle(node.parentElement!).color));
+      const original=await measure();
+      expect(original.some(ratio=>ratio<4.5)).toBe(true);
+      expect(()=>original.forEach(ratio=>expect(ratio).toBeGreaterThanOrEqual(4.5))).toThrow();
+      await labels.evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.removeProperty('color')));
+      for(const ratio of await measure())expect(ratio).toBeGreaterThanOrEqual(4.5);
+    }
+    for(const sample of await figure.locator('.advisor-viz__q01-legend-item > svg').all())
+      await expect(sample).toHaveCSS('background-color','rgb(255, 255, 255)');
+  });
+}

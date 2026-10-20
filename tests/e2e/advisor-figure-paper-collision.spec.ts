@@ -201,8 +201,9 @@ test('native document capture decodes an offscreen lazy scientific image and ign
     spacer.style.height='5000px';
     const fixture=document.createElement('figure');
     fixture.id='lazy-camera-control';
-    fixture.innerHTML='<figcaption>Test fixture: native lazy-image camera control, not experiment output</figcaption><img loading="lazy" width="340" height="220" src="/research/seed-openevo/evidence/wandb-threeway/task-score.svg?lazy-camera-control" alt="Existing scientific SVG"><img style="display:none" alt="Hidden responsive test alternative">';
+    fixture.innerHTML='<figcaption>Test fixture: native lazy-image camera control, not experiment output</figcaption><img loading="lazy" width="340" height="220" src="/research/seed-openevo/evidence/wandb-threeway/task-score.svg?lazy-camera-control" alt="Existing scientific SVG"><div data-camera-local-scroll style="width:180px;overflow-x:auto;scroll-behavior:smooth"><div style="width:800px"><img loading="lazy" width="64" height="64" style="margin-left:500px" src="/research/seed-openevo/evidence/wandb-threeway/task-score.svg?lazy-camera-control" alt="Scrollable fixture alternative"></div></div><img style="display:none" alt="Hidden responsive test alternative">';
     document.body.append(spacer,fixture);
+    fixture.querySelector('[data-camera-local-scroll]')!.scrollTo({left:17,behavior:'instant'});
   });
   const figure=page.locator('#lazy-camera-control');
   const image=figure.locator('img').first();
@@ -215,9 +216,10 @@ test('native document capture decodes an offscreen lazy scientific image and ign
   await captureFigureEvidence(figure,testInfo.outputPath('lazy-decoded-document.png'));
   expect(await image.evaluate(node=>(node as HTMLImageElement).complete&&(node as HTMLImageElement).naturalWidth>0)).toBe(true);
   expect(await page.evaluate(()=>scrollY)).toBe(0);
+  expect(await figure.locator('[data-camera-local-scroll]').evaluate(node=>node.scrollLeft)).toBe(17);
   writeFileSync(testInfo.outputPath('lazy-camera-control.json'),JSON.stringify({
     sha:sourceSha,browser:testInfo.project.name,route,fixture:true,
     source:'public/research/seed-openevo/evidence/wandb-threeway/task-score.svg',
-    undecodedControl:true,decodedAfterCapture:true,hiddenAlternativeIgnored:true,
+    undecodedControl:true,decodedAfterCapture:true,hiddenAlternativeIgnored:true,localScrollRestored:17,
   },null,2)+'\n');
 });

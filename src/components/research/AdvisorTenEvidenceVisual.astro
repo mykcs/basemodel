@@ -352,6 +352,9 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 .advisor-viz--q01 .advisor-viz__heading span{font-size:.8rem;letter-spacing:0}
 .advisor-viz__q01-legend{display:flex;flex-wrap:wrap;gap:.35rem 1.2rem;margin:.4rem 0 .25rem;font-family:var(--font-editorial),Georgia,serif;font-size:.82rem;line-height:1.55}
 .advisor-viz__q01-legend-item{display:inline-flex;gap:.35rem;align-items:center;white-space:nowrap}
+/* Text follows the page theme; palette samples retain the white chart canvas. */
+.advisor-viz__q01-legend-item > span{color:var(--color-text)}
+.advisor-viz__q01-legend-item > svg{background:#fff}
 .advisor-viz__q01-legend-item svg{width:34px;height:14px;flex:0 0 34px;overflow:visible}
 .advisor-viz__q01-axis-explainer{max-width:79ch;margin:.45rem 0 .6rem;color:var(--color-text);font-size:.82rem;line-height:1.62}
 .advisor-viz__q01-axis-explainer strong{font-weight:660}

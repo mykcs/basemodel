@@ -72,7 +72,7 @@ for (const [batchIndex, routeBatch] of mathRouteBatches.entries()) {
       const redirect = SITE_READER_CONTRACTS.find(contract => contract.sourceRoute === route)?.redirectsTo;
       if (redirect) {
         const target = new URL(redirect, page.url());
-        await page.waitForURL(url => url.pathname === target.pathname && url.hash === target.hash);
+        await page.waitForURL(url => url.pathname === target.pathname && (!target.hash || url.hash === target.hash));
       }
       await page.waitForLoadState('load');
       const routeFindings = await page.evaluate(() => {

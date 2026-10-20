@@ -4,21 +4,30 @@ import { expect, type Locator, type Page } from '@playwright/test';
  * No DOM is hidden, restyled or raster-edited for the capture. */
 export async function captureFigureEvidence(figure: Locator, path: string) {
   const page = figure.page();
+  const scrollPositions=await figure.evaluateHandle(el=>{
+    const nodes=new Set<Element>([el,...el.querySelectorAll('*')]);
+    for(let parent=el.parentElement;parent;parent=parent.parentElement)nodes.add(parent);
+    return [...nodes].filter(node=>node!==document.documentElement&&node!==document.body&&(node.scrollWidth>node.clientWidth||node.scrollHeight>node.clientHeight))
+      .map(node=>({node,top:node.scrollTop,left:node.scrollLeft}));
+  });
   await figure.scrollIntoViewIfNeeded();
   for (const image of await figure.locator('img').all()) {
     // Responsive alternatives and closed details are not this reading state.
     if (!await image.isVisible()) continue;
-    await image.scrollIntoViewIfNeeded();
+    await image.evaluate(node=>node.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'}));
     await image.evaluate(async node => {
       if (!(node instanceof HTMLImageElement)) throw new Error('Expected image');
       await node.decode();
       if (!node.naturalWidth) throw new Error('Visible evidence image is empty');
     });
   }
+  await scrollPositions.evaluate(rows=>rows.forEach(({node,top,left})=>node.scrollTo({top,left,behavior:'instant'})));
+  await scrollPositions.dispose();
   await page.evaluate(async () => {
     await document.fonts.ready;
     await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
     window.scrollTo({top:0,left:0,behavior:'instant'});
+    await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
   });
   const clip = await figure.evaluate(el => {
     const rect = el.getBoundingClientRect();
