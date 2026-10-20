@@ -99,7 +99,7 @@ for (const width of [390,768,1440]) for (const theme of ['light','dark']) {
     await expect(labels).toHaveCount(3);
     const measure=()=>labels.evaluateAll(nodes=>{
       const rgb=(value:string)=>value.match(/[\d.]+/g)!.slice(0,3).map(Number);
-      const lum=(values:number[])=>values.map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((sum,v,i)=>sum+v*[.2126,.7152,.0722][i],0);
+      const lum=(values:number[])=>values.map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((sum,v,i)=>sum+v*[.2126,.7152,.0722][i]!,0);
       return nodes.map(node=>{
         let owner:Element|null=node;
         while(owner && ['transparent','rgba(0, 0, 0, 0)'].includes(getComputedStyle(owner).backgroundColor)) owner=owner.parentElement;
