@@ -132,13 +132,13 @@ const q17Effects = {
       </dl>
       <p class="advisor-overview__explanation">绿色表示已有范围明确的局部结论，并非整项研究全部结束；黄色表示做过实验，但关键答案还不确定；红色表示核心正式验证未完成，并非没有做过任何工作。</p>
     </section>
-    <p class="evo-article__note" data-meeting-provenance>2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会（<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />会议原始逐字记录（RAW）</a>）；Q01–Q09 根据会议议题整理，独立复现问题 Q10 为会后新增。这十问不是学长当时逐字提出的十句话。</p>
     <div class="evo-article__abstract">
       <h2>摘要</h2>
       <p>我们做了三组长期学习实验：普通 OpenEVO（逐轮保留新的低秩参数组件）、固定 state 的 Bounded（把历史更新整合进固定容量）、Bounded + 历史 β/GDR（进一步控制写入）。训练结束后，三组模型在同一批事先固定的 128 道购物题上，普通 OpenEVO 的 Task Score 为 <strong>60.72 分</strong>，完整做对 <strong>50 题</strong>；固定容量的 Bounded 为 <strong>45.98 分</strong>，完整做对 <strong>32 题</strong>；历史 β/GDR 为 <strong>20.77 分</strong>，完整做对 <strong>10 题</strong>。Task Score 满分为 100 分。这三组结果的完整表格和原始收据见下文 Q05。这些实验不是完全严格的对照，结果先作为大致判断，不能把分数差全部归因于某一个改动。</p>
       <p>另外，在整个 160 轮训练快结束的第 152–159 轮，我们比较了 rank128 和更小的 rank32。这次只新增 rank32 在最后 8 轮的训练和做题记录，rank128 用已经封存的同轮次历史结果，没有重新训练。两者同题比较显示：长期 LoRA 参数更新文件缩小约 75%，rank32 平均低 1.79 分，但 95% 置信区间跨过 0。为什么选择末尾八轮、怎样理解统计结果，详见下文 Q04；它不是整段训练都用 rank32 的结论。</p>
       <p>我们还测了另一份 R159 在<strong>固定的 64 道研究用购物题</strong>上的成绩：Task Score 为 <strong>约 60.11 分</strong>（满分 100 分；原始精度见后文），64 道题中有 <strong>18 道完整做对</strong>，不能替代 128 题终评。旧任务遗忘、文字状态的独立收益和新任务复现还没有确定答案。公开 SEED 的独立复现中，三组工程模型共完成 1,536 次冻结开发题评测（使用事先固定的题单），两组前后模型在相同题上的平均分差，其 95% 区间均包含 0；正式 SFT 尚未启动，计划中的 160 轮正式 Stage2 训练也尚未开始。10 月 15 日还补入 Q17 R129/R159 的容量、方向、文字与旧队列测量，<a href="#response-q04">分别见 Q04、Q07、Q08 和 Q09 的补充测量</a>；它们不代表 13 份 checkpoint 已全部测完。<a href="/research/seed-openevo/study/advisor-questions/">学长十问的原始问题与背景</a>及每项实验的具体来源，分别在对应段落给出。</p>
     </div>
+    <p class="evo-article__note" data-meeting-provenance>2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会（<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />会议原始逐字记录（RAW）</a>）；Q01–Q09 根据会议议题整理，独立复现问题 Q10 为会后新增。这十问不是学长当时逐字提出的十句话。</p>
     <OpenEvoArticleNavigation current="results" />
     <nav class="evo-article__toc" aria-label="实验文章目录">
       <details class="advisor-ten-toc">
