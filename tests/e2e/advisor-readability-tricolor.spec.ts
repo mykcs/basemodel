@@ -51,8 +51,8 @@ for(const {width,theme} of [
     await expect(page.locator('[data-advisor-key-findings]')).toContainText('31.09 小时');
     await expect(page.locator('[data-advisor-key-findings]')).toContainText('2.02 小时');
     await expect(page.locator('[data-advisor-overview]')).toContainText('训练轮数和参数更新方向');
-    await expect(page.locator('[data-advisor-priorities]')).toContainText('18 个评测位置还有 3 个缺口');
-    await expect(page.locator('[data-advisor-priorities] a[href="#response-q03"]')).toBeVisible();
+    await expect(page.locator('[data-advisor-priorities]')).toContainText('18 个评测位置尚缺 3 个');
+    await expect(page.locator('[data-advisor-priorities] a[href="#response-q10"]')).toBeVisible();
     await expect(page.locator('[data-evidence-readiness="q03"]')).toHaveAttribute('data-evidence-state','partial');
     await expect(page.locator('[data-evidence-readiness="q10"]')).toHaveAttribute('data-evidence-state','unrun');
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
