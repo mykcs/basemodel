@@ -37,7 +37,7 @@ describe('advisor-facing ten-question first viewport', () => {
       section.indexOf('advisor-overview__counts'),
     );
     expect(source.indexOf('data-meeting-provenance')).toBeGreaterThan(
-      section.indexOf('data-advisor-priorities'),
+      source.indexOf('data-advisor-priorities'),
     );
     expect(section).toContain('data-advisor-key-findings');
     expect(section).toContain('data-advisor-priorities');
