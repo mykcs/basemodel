@@ -310,7 +310,7 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   }
   await expect(guide).toContainText('action-family entropy');
   await expect(guide).toContainText('ALFWorld');
-  await expect(guide).toContainText('十问速览：我们发现了什么，下一轮还想研究什么？');
+  await expect(guide).toContainText('十问速览与后续工作');
   const answer=page.locator('#response-q01');
   await expect(answer.locator('h3')).toHaveText('训练 160 轮会不会太多？');
   await expect(answer.locator('[data-question-number="q01"]')).toHaveText('Q01');
@@ -578,7 +578,7 @@ test('Q10 ends the main question sequence and no historical topic restarts as ch
   await expect(responses).toHaveCount(10);
   await expect(responses.last()).toHaveAttribute('id','response-q10');
   const after=await article.locator('#responses ~ section > h2').allTextContents();
-  expect(after).toEqual(['研究总结与仍待回答的问题','科研来源与实验记录']);
+  expect(after).toEqual(['研究总结与关键缺口','科研来源与实验记录']);
   const noRepeatedChapters=(headings:string[])=>headings.every(x=> !/^(?:[4-9]|10)\s/.test(x));
   expect(noRepeatedChapters(after)).toBe(true);
   // Known-bad witness: a restored "4" after Q10 must be rejected.
