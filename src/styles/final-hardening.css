@@ -19,7 +19,7 @@
 .paper-case-scope,
 .paper-case-facts,
 .snapshot-change-notice {
-  font-size: .86rem;
+  font-size: var(--type-body);
   line-height: 1.58;
 }
 .provenance-badge,
@@ -28,9 +28,9 @@
 .paper-case-meta,
 .paper-case-actions,
 .status-caption {
-  font-size: .78rem;
+  font-size: var(--type-meta);
 }
-.source-meta { font-size: .8rem; }
+.source-meta { font-size: var(--type-meta); }
 
 /* Decision view is editorially grouped rather than one undifferentiated card catalog. */
 .decision-sections { display: grid; gap: 44px; }
@@ -43,8 +43,8 @@
   align-items: end;
   margin-bottom: 18px;
 }
-.decision-section-heading h2 { margin: 0; font-size: 1.35rem; }
-.decision-section-heading p { margin: 0; color: var(--muted); font-size: .9rem; }
+.decision-section-heading h2 { margin: 0; font-size: var(--type-section); }
+.decision-section-heading p { margin: 0; color: var(--muted); font-size: var(--type-body-small); }
 .model-card { box-shadow: none; border-radius: 11px; }
 
 /* Home: three intents first; secondary scenarios are progressively disclosed. */
@@ -198,11 +198,11 @@ summary:focus-visible {
 .site-main > .hero .shell { width: min(var(--study-max), calc(100% - 48px)); }
 .site-main > .hero h1 {
   max-width: 760px;
-  font-size: clamp(3rem, 5.1vw, 4.9rem);
+  font-size: var(--type-display);
   line-height: .98;
   letter-spacing: -.055em;
 }
-.site-main > .hero .lede { max-width: 62ch; font-size: clamp(1rem, 1.5vw, 1.14rem); line-height: 1.72; }
+.site-main > .hero .lede { max-width: 62ch; font-size: var(--type-lead); line-height: 1.72; }
 .site-main > .hero .hero-actions { margin-top: 28px; }
 .site-main > .hero .button-primary { min-height: 48px; padding: 12px 18px; border-radius: 12px; font-weight: 780; }
 
@@ -232,12 +232,12 @@ summary:focus-visible {
   content: '0' counter(study-intent);
   grid-column: 1 / -1;
   color: var(--accent-deep);
-  font-size: .72rem;
+  font-size: var(--type-meta);
   font-weight: 850;
   letter-spacing: .09em;
 }
-.intent-row h3 { margin-top: 14px; font-size: 1.08rem; line-height: 1.24; }
-.intent-row p { font-size: .9rem; line-height: 1.62; }
+.intent-row h3 { margin-top: 14px; font-size: var(--type-minor-heading); line-height: 1.24; }
+.intent-row p { font-size: var(--type-body-small); line-height: 1.62; }
 .intent-row > span { align-self: end; }
 .intent-row:hover,
 .intent-row:focus-visible {
@@ -255,7 +255,7 @@ summary:focus-visible {
   background: color-mix(in srgb, var(--surface) 96%, transparent);
 }
 .research-path-row + .research-path-row { padding-left: 20px !important; }
-.research-path-row h3 { margin: 10px 0 7px; font-size: 1.02rem; }
+.research-path-row h3 { margin: 10px 0 7px; font-size: var(--type-minor-heading); }
 .research-path-row p { line-height: 1.62; }
 .model-timeline li { padding-block: 15px; }
 .family-current-list { border-top: 0; display: grid; gap: 10px; }
@@ -276,8 +276,8 @@ summary:focus-visible {
 /* Guide page: readable measure, stronger progress cues, less visual fatigue. */
 .guide-learning-page { width: min(1120px, calc(100% - 48px)); max-width: 1120px !important; }
 .guide-learning-page > .page-header { max-width: 960px; padding-top: clamp(48px, 6vw, 76px); }
-.guide-learning-page > .page-header h1 { max-width: 880px; font-size: clamp(2.6rem, 5vw, 4.35rem); line-height: 1; letter-spacing: -.045em; }
-.guide-learning-page > .page-header .lede { max-width: var(--study-reading); font-size: 1.04rem; }
+.guide-learning-page > .page-header h1 { max-width: 880px; font-size: var(--type-page); line-height: 1; letter-spacing: -.045em; }
+.guide-learning-page > .page-header .lede { max-width: var(--study-reading); font-size: var(--type-lead); }
 .guide-learning-page .hardware-note {
   max-width: 780px;
   margin-top: 22px;
@@ -318,7 +318,7 @@ summary:focus-visible {
 .guide-learning-page .step > div > p { max-width: var(--study-reading); line-height: 1.68; }
 .guide-learning-page .step pre {
   border-radius: 13px;
-  font-size: .82rem;
+  font-size: var(--type-plot-label);
   line-height: 1.62;
   overscroll-behavior-inline: contain;
 }
@@ -348,7 +348,7 @@ pre { max-width: 100%; }
 @media (max-width: 1080px) {
   .nav-inner { min-height: 62px; }
   .brand { min-width: 0; }
-  .site-main > .hero h1 { font-size: clamp(2.8rem, 6.4vw, 4.2rem); }
+  .site-main > .hero h1 { font-size: var(--type-display); }
   .intent-row { min-height: 196px; }
   .guide-learning-page .route { top: 64px; }
 }
@@ -382,7 +382,7 @@ pre { max-width: 100%; }
   .site-header { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
   .nav-inner { min-height: 58px; gap: 8px; }
   .brand small { display: none; }
-  .brand strong { font-size: .92rem; }
+  .brand strong { font-size: var(--type-meta); }
   .brand-mark { width: 32px; height: 32px; border-radius: 10px; }
   .command-search-trigger,
   .theme-toggle,
@@ -395,32 +395,32 @@ pre { max-width: 100%; }
   .site-main > .hero .shell,
   .guide-learning-page { width: min(100% - 28px, 720px); }
   .site-main > .hero h1 {
-    font-size: clamp(2.25rem, 11.8vw, 3.15rem);
+    font-size: var(--type-page);
     line-height: 1.01;
     letter-spacing: -.045em;
   }
-  .site-main > .hero .lede { font-size: .98rem; line-height: 1.68; }
+  .site-main > .hero .lede { font-size: var(--type-lead); line-height: 1.68; }
   .site-main > .hero .hero-actions { margin-top: 22px; }
   .site-main > .hero .hero-actions .button { width: 100%; justify-content: center; }
-  .site-main > .hero .novice-entry { font-size: .88rem; line-height: 1.55; }
+  .site-main > .hero .novice-entry { font-size: var(--type-body-small); line-height: 1.55; }
 
   .section { padding-block: 30px; }
-  .section-heading h2 { font-size: clamp(1.45rem, 7vw, 1.8rem); }
+  .section-heading h2 { font-size: var(--type-section); }
   .intent-row { padding: 18px; border-radius: 14px; }
   .intent-row h3 { margin-top: 10px; }
   .research-path-row { padding: 18px !important; }
   .family-current-row { padding: 17px; }
   .family-current-row dl div { grid-template-columns: 80px minmax(0, 1fr); }
   .model-timeline li { grid-template-columns: 1fr; gap: 5px; }
-  .model-timeline time { font-size: .75rem; }
+  .model-timeline time { font-size: var(--type-meta); }
   .home-scenarios-advanced { padding: 15px; }
 
   .guide-learning-page > .page-header { padding-top: 38px; }
-  .guide-learning-page > .page-header h1 { font-size: clamp(2.3rem, 11vw, 3.05rem); }
-  .guide-learning-page > .page-header .lede { font-size: .96rem; line-height: 1.67; }
+  .guide-learning-page > .page-header h1 { font-size: var(--type-page); }
+  .guide-learning-page > .page-header .lede { font-size: var(--type-lead); line-height: 1.67; }
   .guide-learning-page .hardware-note { margin-top: 18px; padding: 13px 14px; }
   .guide-learning-page .agent-bridge { margin-top: 14px; padding: 18px !important; border-radius: 16px; }
-  .guide-learning-page .agent-bridge-head h2 { font-size: clamp(1.45rem, 7vw, 1.85rem); }
+  .guide-learning-page .agent-bridge-head h2 { font-size: var(--type-section); }
   .guide-learning-page .seed-guide { margin-top: 24px; }
   .guide-learning-page .route { margin-inline: -2px; padding: 6px; }
   .guide-learning-page .success-map { padding: 18px !important; }
@@ -431,8 +431,8 @@ pre { max-width: 100%; }
     padding-block: 28px !important;
   }
   .guide-learning-page .step-num { width: fit-content; min-width: 42px; min-height: 32px; display: grid; place-items: center; padding: 0 9px; border-radius: 999px; background: var(--study-soft); }
-  .guide-learning-page .step h3 { font-size: 1.28rem; line-height: 1.22; }
-  .guide-learning-page .step pre { margin-inline: 0; font-size: .78rem; }
+  .guide-learning-page .step h3 { font-size: var(--type-subsection); line-height: 1.22; }
+  .guide-learning-page .step pre { margin-inline: 0; font-size: var(--type-plot-label); }
   .guide-learning-page .gate,
   .guide-learning-page .check-first { display: grid; gap: 5px; padding: 13px; }
   .guide-learning-page .next-links a { min-height: 0; padding-block: 16px; }
@@ -454,7 +454,6 @@ pre { max-width: 100%; }
   .site-main > .hero .shell,
   .guide-learning-page { width: calc(100% - 22px); }
   .brand strong { max-width: 92px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .site-main > .hero h1 { font-size: 2.22rem; }
   .guide-learning-page .route a { flex-basis: 76vw; }
   .family-current-row dl div { grid-template-columns: 1fr; gap: 2px; }
 }
