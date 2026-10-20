@@ -70,3 +70,26 @@ test('mobile Compare regression rejects a restored 9px data row',async({page})=>
   await row.evaluate(e=>(e as HTMLElement).style.removeProperty('font-size'));
   expect(await legible()).toBe(true);
 });
+
+
+for (const width of [768, 1440] as const) {
+  for (const theme of ['light', 'dark'] as const) {
+    test('desktop Compare keeps table text readable with local scroll at ' + width + '/' + theme, async ({page}) => {
+      await page.setViewportSize({width,height:900});
+      await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+      await page.goto('/compare/?models=qwen3-8b,gpt-oss-20b',{waitUntil:'domcontentloaded'});
+      const table=page.locator('table.comparison-table').first();
+      await expect(table).toBeVisible();
+      const header=table.locator('thead th').first();
+      const style=await header.evaluate(el=>{
+        const s=getComputedStyle(el),r=el.getBoundingClientRect();
+        return {size:parseFloat(s.fontSize),family:s.fontFamily,width:r.width,italic:s.fontStyle};
+      });
+      expect(style.size).toBeGreaterThanOrEqual(13);
+      expect(style.family).toMatch(/Inter|PingFang|system-ui/);
+      expect(style.italic).toBe('normal');
+      expect(style.width).toBeGreaterThan(80);
+      expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+    });
+  }
+}
