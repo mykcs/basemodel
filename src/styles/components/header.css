@@ -45,7 +45,7 @@
 .site-header .brand small {
   margin-top: 4px;
   color: var(--muted);
-  font-size: .69rem;
+  font-size: var(--type-meta);
 }
 
 .site-header .brand-mark {
@@ -64,7 +64,7 @@
 
 .site-header nav a {
   color: var(--muted);
-  font-size: .9rem;
+  font-size: var(--type-body-small);
   text-decoration: none;
 }
 
@@ -109,7 +109,7 @@
   border-radius: 10px;
   background: var(--surface);
   box-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 5%, transparent);
-  font-size: .78rem;
+  font-size: var(--type-meta);
   white-space: nowrap;
 }
 
@@ -130,7 +130,7 @@
   flex: 0 0 auto;
   min-height: 42px;
   color: var(--muted);
-  font-size: .8rem;
+  font-size: var(--type-meta);
   font-weight: 700;
   text-decoration: none;
 }
@@ -252,12 +252,12 @@
     width: 32px;
     height: 32px;
     border-radius: 10px;
-    font-size: .9rem;
+    font-size: var(--type-body-small);
     line-height: 1;
   }
 
   body .site-header .brand strong {
-    font-size: .9rem;
+    font-size: var(--type-body-small);
     line-height: 1.1;
     letter-spacing: -.012em;
   }
@@ -313,7 +313,7 @@
     border-radius: 11px;
     background: var(--surface);
     color: var(--ink);
-    font-size: .84rem;
+    font-size: var(--type-caption);
     font-weight: 650;
     line-height: 1.28;
     letter-spacing: -.006em;
