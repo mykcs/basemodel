@@ -113,11 +113,15 @@ const q17Effects = {
   <main class="evo-blog evo-article evo-approved-reader" data-evo-blog="results" data-paper-citation-style="plain-text" data-reader-page="research-blog" data-copy-review>
     <header>
       <h1>我们的回应实验：十个研究问题的证据</h1>
-      <p class="evo-article__lede" data-reader-purpose>模型在模拟网店里练习购物，再尝试把完成任务的经验用于下一轮学习。这里先告诉你：十个研究问题已经测到什么、目前做到哪一步、下一步还缺什么。2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会（<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />会议原始逐字记录（RAW）</a>）；Q01–Q09 根据会议议题整理，独立复现问题 Q10 为会后新增。这十问不是学长当时逐字提出的十句话。</p>
+      <p class="evo-article__lede" data-reader-purpose>模型在模拟网店里练习购物，再尝试把完成任务的经验用于下一轮学习。这里先告诉你：十个研究问题已经测到什么、目前做到哪一步、下一步还缺什么。</p>
     </header>
     <section class="advisor-overview" data-advisor-overview aria-labelledby="advisor-overview-title">
       <h2 id="advisor-overview-title">十项研究问题的进度</h2>
       <p class="advisor-overview__lead">训练轮数和参数更新方向已有范围明确的局部结论；另外六问做过部分实验，关键答案仍需核实；SEED 的正式复现和跨新任务验证尚未完成。</p>
+      <div class="advisor-overview__decisions" data-advisor-decisions>
+        <p data-advisor-key-findings><strong>已经测到的关键现象：</strong>历史普通 OpenEVO 的参数更新累计耗时 31.09 小时，固定容量模型为 2.02 小时；完整任务运行没有同等幅度的加速。另一次同题干预把固定容量模型第 156 轮的更新方向反过来，平均成绩下降约 10 分。三条历史训练路线并非严格随机对照，方向结果目前也只来自一个模型状态。<a href="#responses">查看 Q05、Q07 的详细证据</a></p>
+        <p data-advisor-priorities><strong>接下来优先补的证据：</strong><a href="#response-q02">Q02</a> 的六组训练已完成，18 个评测位置还有 3 个缺口；<a href="#response-q03">Q03</a> 需要先对齐论文的评测条件，再完成正式复现。这是按现有证据缺口排列的阅读建议，不代表新的实验已经运行。</p>
+      </div>
       <dl class="advisor-overview__counts" aria-label="十项研究问题的回答状态">
         {answerTones.map(tone => (
           <div class:list={['advisor-overview__count', 'advisor-overview__count--'+tone]} data-overview-status={tone}>
@@ -126,13 +130,10 @@ const q17Effects = {
           </div>
         ))}
       </dl>
-      <div class="advisor-overview__decisions" data-advisor-decisions>
-        <p data-advisor-key-findings><strong>已经测到的关键现象：</strong>历史普通 OpenEVO 的参数更新累计耗时 31.09 小时，固定容量模型为 2.02 小时；完整任务运行没有同等幅度的加速。另一次同题干预把固定容量模型第 156 轮的更新方向反过来，平均成绩下降约 10 分。三条历史训练路线并非严格随机对照，方向结果目前也只来自一个模型状态。<a href="#responses">查看 Q05、Q07 的详细证据</a></p>
-        <p data-advisor-priorities><strong>接下来优先补的证据：</strong><a href="#response-q02">Q02</a> 的六组训练已完成，18 个评测位置还有 3 个缺口；<a href="#response-q03">Q03</a> 需要先对齐论文的评测条件，再完成正式复现。这是按现有证据缺口排列的阅读建议，不代表新的实验已经运行。</p>
-      </div>
       <p class="advisor-overview__explanation">绿色表示已有范围明确的局部结论，并非整项研究全部结束；黄色表示做过实验，但关键答案还不确定；红色表示核心正式验证未完成，并非没有做过任何工作。</p>
       <a class="advisor-overview__jump" href="#experiment">逐问查看：已有结果、做到哪里、还缺什么 ↓</a>
     </section>
+    <p class="evo-article__note" data-meeting-provenance>2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会（<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />会议原始逐字记录（RAW）</a>）；Q01–Q09 根据会议议题整理，独立复现问题 Q10 为会后新增。这十问不是学长当时逐字提出的十句话。</p>
     <div class="evo-article__abstract">
       <h2>摘要</h2>
       <p>我们做了三组长期学习实验：普通 OpenEVO（逐轮保留新的低秩参数组件）、固定 state 的 Bounded（把历史更新整合进固定容量）、Bounded + 历史 β/GDR（进一步控制写入）。训练结束后，三组模型在同一批事先固定的 128 道购物题上，普通 OpenEVO 的 Task Score 为 <strong>60.72 分</strong>，完整做对 <strong>50 题</strong>；固定容量的 Bounded 为 <strong>45.98 分</strong>，完整做对 <strong>32 题</strong>；历史 β/GDR 为 <strong>20.77 分</strong>，完整做对 <strong>10 题</strong>。Task Score 满分为 100 分。这三组结果的完整表格和原始收据见下文 Q05。这些实验不是完全严格的对照，结果先作为大致判断，不能把分数差全部归因于某一个改动。</p>
@@ -183,7 +184,7 @@ const q17Effects = {
           </div>
         ))}
       </dl>
-      <p class="evo-article__note">Q01–Q09 是由 2026 年 9 月 22 日会议议题整理出的研究问题，Q10 是会后新增的方向，并非学长当时逐字提出的十句话。后续实验的 GPU 数量、单卡显存、预计机器小时和人工投入将按实际方案核算；目前不填未经测量的数值。这里是研究进展导读，不取代后文的完整证据。</p>
+      <p class="evo-article__note">后续实验的 GPU 数量、单卡显存、预计机器小时和人工投入将按实际方案核算；目前不填未经测量的数值。这里是研究进展导读，不取代后文的完整证据。</p>
     </section>
     <section class="evo-article__section" id="responses" data-response-experiments>
       <h2>3 十个问题的实验结果与证据</h2>
