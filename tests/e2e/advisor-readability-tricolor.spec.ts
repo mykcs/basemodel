@@ -96,3 +96,34 @@ test('advisor ELI5 keeps experiment identity, human-sized numbers and distinct u
   expect(actual).toContain('普通 OpenEVO 的 Task Score 为 60.72 分');
   expect(actual).not.toContain('20.77/100');
 });
+
+
+for (const {width,height} of [{width:320,height:700},{width:390,height:844}] as const) {
+  test('advisor first screen exposes the finding and next evidence at '+width+'px',async({page})=>{
+    await page.setViewportSize({width,height});
+    const response=await page.goto('/research/seed-openevo/study/parameter-memory-results/',{waitUntil:'domcontentloaded'});
+    expect(response?.status()).toBe(200);
+    const result=await page.evaluate(()=>{
+      const top=(selector:string)=>{
+        const node=document.querySelector(selector);
+        if(!node)throw new Error('missing '+selector);
+        return node.getBoundingClientRect().top;
+      };
+      return {
+        finding:top('[data-advisor-key-findings]'),
+        priority:top('[data-advisor-priorities]'),
+        counts:top('.advisor-overview__counts'),
+        provenance:top('[data-meeting-provenance]'),
+        overflow:document.documentElement.scrollWidth-innerWidth,
+      };
+    });
+    expect(result.finding).toBeLessThan(height);
+    expect(result.priority).toBeLessThan(height);
+    expect(result.finding).toBeLessThan(result.priority);
+    expect(result.priority).toBeLessThan(result.counts);
+    expect(result.counts).toBeLessThan(result.provenance);
+    expect(result.overflow).toBeLessThanOrEqual(2);
+    await expect(page.locator('[data-meeting-provenance]')).toContainText('会议原始逐字记录（RAW）');
+    await expect(page.locator('[data-advisor-key-findings]')).toContainText('反向实验也只测过一个模型状态');
+  });
+}
