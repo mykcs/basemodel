@@ -92,8 +92,7 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
       )}</p>
     </div>
     <figure class="scaling-chart" data-research-figure-size="wide" aria-labelledby="component-scaling-caption">
-      <svg viewBox="0 0 760 350" role="img" aria-labelledby="component-scaling-chart-title component-scaling-chart-desc">
-        <title id="component-scaling-chart-title">{t('历史 component 数与单次更新时间', 'Prior component count versus update time')}</title>
+      <svg viewBox="0 0 760 350" role="img" aria-label={t('历史 component 数与单次更新时间', 'Prior component count versus update time')} aria-describedby="component-scaling-chart-desc">
         <desc id="component-scaling-chart-desc">{t('从 K=1 的 44.05 秒上升到 K=148 的 969.17 秒，五个点接近一条直线。', 'Five points rise from 44.05 seconds at K=1 to 969.17 seconds at K=148, closely following a straight line.')}</desc>
         {yTicks.map((tick) => <g class="gridline"><line x1={chartLeft} y1={yFor(tick)} x2={chartLeft + chartWidth} y2={yFor(tick)} /><text x={chartLeft - 12} y={yFor(tick) + 4}>{tick}</text></g>)}
         <line class="axis" x1={chartLeft} y1={chartTop} x2={chartLeft} y2={chartBottom} />
