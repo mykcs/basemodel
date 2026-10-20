@@ -232,3 +232,31 @@ test('computed-style gate rejects a reintroduced 10px catalog sentence', async (
   await sentence.evaluate(element => { (element as HTMLElement).style.removeProperty('font-size'); });
   expect(await failsLegibility()).toBe(false);
 });
+
+
+test('mobile mission hero preserves semantic reading width and copy size', async ({ page }) => {
+  for (const theme of ['light', 'dark'] as const) {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.addInitScript(mode => localStorage.setItem('atlas-theme', mode), theme);
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    const description = page.locator('.mission-hero__lede').first();
+    await expect(description).toBeVisible();
+    const style = await description.evaluate(element => {
+      const computed = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return {
+        size: Number.parseFloat(computed.fontSize),
+        width: rect.width,
+        lineHeight: Number.parseFloat(computed.lineHeight),
+        pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      };
+    });
+    expect(style.size).toBeGreaterThanOrEqual(15);
+    expect(style.lineHeight).toBeGreaterThan(style.size * 1.45);
+    expect(style.width).toBeGreaterThanOrEqual(220);
+    expect(style.pageOverflow).toBeLessThanOrEqual(2);
+    const action = page.locator('.mission-hero__actions .button').first();
+    await expect(action).toBeVisible();
+    expect(await action.evaluate(node => Number.parseFloat(getComputedStyle(node).fontSize))).toBeGreaterThanOrEqual(13);
+  }
+});
