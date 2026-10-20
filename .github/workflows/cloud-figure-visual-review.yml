@@ -98,13 +98,16 @@ jobs:
       - name: Build fresh static routes
         run: npm run build
 
+      - name: Check document overflow before browser acceptance
+        run: npm run ui:overflow-preflight
+
       - name: Inventory every freshly built route and evidence owner
         run: node scripts/audit-sitewide-research-figure-widths.mjs --snapshot figure-inventory/sitewide-inventory.json
 
-      - name: Run research figures in ${{ matrix.browser }}
+      - name: Run complete UI and research figure acceptance in ${{ matrix.browser }}
         env:
           FIGURE_SOURCE_SHA: ${{ steps.candidate.outputs.sha }}
-        run: npx playwright test tests/e2e/advisor-figure-paper-collision.spec.ts tests/e2e/advisor-paper-figure-suite.spec.ts tests/e2e/sitewide-figure-width-scope.spec.ts --project=${{ matrix.browser }} --workers=1
+        run: npm run test:ui:all -- --project=${{ matrix.browser }} --workers=1
 
       - name: Verify nonempty exact-head browser evidence
         env:

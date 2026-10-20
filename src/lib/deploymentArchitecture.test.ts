@@ -112,7 +112,9 @@ describe('Vercel production deployment architecture', () => {
     for (const command of ['test:ui', 'test:ui:all'])
       expect(packageJson.scripts[command]).toContain('tests/e2e/advisor-figure-paper-collision.spec.ts');
     expect(readText('../../scripts/preflight-ui.ts')).toContain('q03-rendered-label-axis-collision');
-    expect(cloud).toContain('tests/e2e/sitewide-figure-width-scope.spec.ts');
+    expect(packageJson.scripts['test:ui:all']).toContain('tests/e2e/sitewide-figure-width-scope.spec.ts');
+    expect(cloud).toContain('npm run test:ui:all -- --project=${{ matrix.browser }} --workers=1');
+    expect(cloud).toContain('npm run ui:overflow-preflight');
     expect(cloud).toContain('git config --global --add safe.directory "$GITHUB_WORKSPACE"');
     expect(cloud).not.toMatch(/safe\.directory\s+['"]?\*/);
   });
