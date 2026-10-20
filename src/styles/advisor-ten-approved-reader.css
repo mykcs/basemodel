@@ -364,7 +364,7 @@ html[data-theme="dark"] .evo-approved-reader {
   width: min(100%, var(--research-evidence-double-width));
 }
 .evo-blog.evo-approved-reader .advisor-viz--q03 {
-  width: min(100%, var(--research-evidence-single-width));
+  width: min(100%, var(--type-paper-plot-width));
 }
 .evo-blog.evo-approved-reader .advisor-viz--q03 .advisor-viz__heading {
   align-items: baseline;
