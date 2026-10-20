@@ -40,22 +40,75 @@
 
 第四条被用户**之后明确交给另一窗口**，本 PR 不再改 Typography。前三条要求的是从一个反例推广到同类审计、避免假绿色，并有可追溯、可回放、可证伪的验收。涉及保存 RAW/派生工程经验时，使用中央 `mykcs/.agents` 学习/Closeout 机制，按仓库规范保留原话和出处；不要只写空泛的设计原则。
 
-## 2. 工作拓扑与单一 owner（照顺序推进）
+## 2. 阶段目标 → 可执行清单（Codex 按顺序逐项勾选）
 
-| 工作包 | 当前状态 | 主要 owner / 文件 | 停止条件与交付 |
-| --- | --- | --- | --- |
-| WP-00 基线、并发和依赖核查 | 必做 | PR #901，`main`，其他开 PR，`AGENTS.md` | 最新基线、重叠文件、验收 SHA 全部记清 |
-| WP-01 消除旧 CI allowlist 失败 | 未完成 | `src/lib/deploymentArchitecture.test.ts` | 保留安全断言的条件下通过原失败 Vitest 与 `verify:deploy` |
-| WP-02 与最新 Q10 首屏测试语义合并 | 未完成 | `tests/e2e/advisor-figure-paper-collision.spec.ts` | 保护 main 新的 Q10/RAW 阅读合同，追加 screenshot/geometry 测量，不回退科研描述 |
-| WP-03 WebKit/Chromium 云端证据链 | 部分完成 | `.github/workflows/cloud-figure-visual-review.yml`、`tests/e2e/advisor-figure-paper-collision.spec.ts` | 两个引擎在同一 exact-head 上通过；两套非空截图+JSON Artifact 可列可读 |
-| WP-04 同类科研 Figure/Table 完整核查 | 部分完成 | `scripts/audit-sitewide-research-figure-widths.mjs`、现有 Figure owners / Playwright | 全量带 owner 的清单、真实重叠/溢出/遮挡分类、修复收据或清楚的剩余事项；原则上用独立聚焦 PR 修真实新缺陷 |
-| WP-05 读者表达/人工冷读 | 部分完成 | Reader Contract、当前结果页、验收记录 | 首屏与科学状态对照 PASS；独立真人阅读完成前明确 `NEEDS_READER` |
-| WP-06 严格 GitHub/Vercel 发布关口 | 未完成 | Public PR CI、Vercel final-gate、PR #901 | 当前 main + exact head + all gates PASS 才合并；Production 另核验 |
-| WP-07 Conversation Closeout | 未完成 | 原话 RAW / 可复用回归 / unfinished blockers | 事实、失败原因、修复与仍未解决项可复用且无虚假“全完成” |
+**状态纪律**：本节是**待执行任务**，只有在本 PR/关联 PR 留下**精确代码 SHA + 真实测试或人工验证链接 + 可查看交付物**后，才能将对应 `- [ ]` 改为 `- [x]`。旧 SHA 的历史 PASS、原设计已写好、CI 仅排队、Vercel READY 或自动扫描清点，都不能自动代替当前验收。未获真人反馈的冷读任务必须保持未勾选并标记 `NEEDS_READER`；被阻塞请保留 `[ ]` 并写清 blocker。仓库 Policy/Owner 变更时优先遵从现行约束，不能为了按表执行而覆盖其他窗口。
 
-**拓扑**：WP-00 → WP-01 + WP-02 → WP-03 → WP-04 发现新的真实缺陷时另开最窄代码 PR（必须考虑另一个 Typography Agent）→ WP-05 → WP-06 → WP-07。
+### WP-00｜同步最新代码与分工（所有写入的前置依赖）
 
-**PR 边界**：#901 优先完成云端 Figure 浏览器 CI 和它应有的归档、可证伪的验收；如果 WP-04 发现需要改动其他科研网页或 CSS，优先拆成独立 `fix/research/...` PR 并与 #901 关联。不要把多个大型视觉主题、全站 Typography 和 CI 拖进同一个无人能审核的巨型 diff。
+- [ ] **00.1 读取规范**：GitHub 读取 `AGENTS.md`、`src/AGENTS.md`、`docs/wish/LATEST.md`、当前 UI/Reader、branch、deployment、release-closeout 合同，记录读过的文件路径/必要版本；不能只依据本交接文档。
+- [ ] **00.2 核对远端身份**：读取 PR #901 的 `state/base/head SHA`、live `main SHA`、`merge-base`、`main...HEAD` 文件清单、当前 check runs、开放的重叠 PR（特别是 #895 和科研 Q10 相关 PR）。产出 `BASE_SHA / HEAD_SHA / OVERLAP` 文字收据；更新前发现 head 改变则重新读取。
+- [ ] **00.3 锁定明确范围**：确认字体/字号/字重/斜体/Token 由另一个窗口负责，本 PR 只改科研 Figure 云端验收、非字体的图表质量与必要的测试/计划；将重叠路径和责任人/PR 链接写在 #901。
+- [ ] **00.4 做前置失败复现**：抓取 `Public PR CI` 上实际第一条失败断言、Cloud Figure 两浏览器运行/Artifact 及其 SHA；分类为代码、陈旧测试、环境或科学内容问题，并留日志 URL。**验收**：PR 中有可核查的基线与 blocker，而不是猜测。
+  
+### WP-01｜修正 CI 架构白名单，不放宽安全约束（依赖 WP-00）
+
+- [ ] **01.1 修改准确 owner**：在 `src/lib/deploymentArchitecture.test.ts` 把 GitHub Workflows **精确允许列表**改为四项：`cloud-figure-visual-review.yml`、`public-pr-ci.yml`、`review-preview.yml`、`self-hosted-ci.yml`；保留对未知第五码 workflow 的 fail-closed 检查。
+- [ ] **01.2 补安全负例**：验证云端 Figure Workflow 有 read-only `permissions`、固定 action/container 身份、受限 `workflow_dispatch` / PR head、`chromium + webkit`；对新添加未知 workflow、`pull_request_target`、`push`/未授权部署、写权限的危险反例应实际 FAIL（不要删除旧断言）。
+- [ ] **01.3 运行确定性验收**：对当前 head 实际执行 `npx vitest run src/lib/deploymentArchitecture.test.ts`、`npm run verify:deploy`、`npm run build`；**验收**：三个命令退出码 0，当前 SHA 的 CI 日志能证明，旧红灯不再重现。
+- [ ] **01.4 保存防回归收据**：在 #901 留下具体修改行、负例被拦住的测试名称/日志，以及“没有削弱 required checks”的说明。
+
+### WP-02｜合并最新 Q10 首屏科研语义与云端截图功能（依赖 WP-00）
+
+- [ ] **02.1 双向对比同名文件**：`git diff main...HEAD -- tests/e2e/advisor-figure-paper-collision.spec.ts` 加上 `main` 单独提交审查，明确识别**新版** Q10/会议 RAW/`site-reader-contracts.spec.ts` 约束和旧 #901 图片输出；不做整文件 `ours/theirs`。
+- [ ] **02.2 保留新的科研与首屏断言**：当前 main 的 Q10“新题冻结、正式训练未完成”、Q01–Q10 证据边界、会议 RAW 位置及阅读优先级必须原样保留，不能复活过期的固定“首屏正好两个旧链接”测试。
+- [ ] **02.3 只移植证据生成逻辑**：在新版 `advisor-figure-paper-collision.spec.ts` 有限添加 `testInfo.outputPath`、`q03.screenshot`、`q01.screenshot` 和 `writeFileSync` 几何 JSON；PNG/JSON 存在于测试运行的 `test-results`，绝不把旧产物当成新构建。
+- [ ] **02.4 保护科学不变量**：断言 Q03 `A0/A40/A80/A120`、`3.71/6.43/0.69/6.62`、`0/64`、局部纵轴 `0–10`、非 SEED 论文 128 题同源评测；Q01/Scaling 的图形、来源链接、读屏 `aria-label + desc` 均仍在。
+- [ ] **02.5 证明防撞检测真的有用**：实际运行 `getBBox()` 首点-纵轴间距与手机/桌面负例（临时恢复 `x=88` / `xPhone=50` 必须被判失败）；运行 `npx playwright test tests/e2e/advisor-figure-paper-collision.spec.ts tests/e2e/advisor-paper-figure-suite.spec.ts --project=chromium`，**验收**：新版阅读测试与图表几何均在同一 HEAD PASS。
+
+### WP-03｜云端 Chromium/WebKit 与可恢复截图证据（依赖 WP-01、02）
+
+- [ ] **03.1 核实运行时**：`package-lock.json` 的 `@playwright/test` 版本与 `.github/workflows/cloud-figure-visual-review.yml` 的 Playwright Noble 镜像及 immutable digest 一致；不再发生 `webkit-2359/pw_run.sh` 缺失，也不随意改成 `latest`。
+- [ ] **03.2 完成安全云端 Workflow**：明确 PR/`workflow_dispatch` 的输入与目标 head、`contents: read`、`persist-credentials: false`、无 `pull_request_target` / Mac/RDC / Production secrets；`git rev-parse HEAD` 与 PR head 身份一致。
+- [ ] **03.3 运行双浏览器**：同一最新 HEAD 在 GitHub-hosted Ubuntu/Playwright cloud runner 上执行 `chromium` 和 `webkit` 的科研图专项测试（包括 390/768/1440、light/dark）。**验收**：两个 job 均 `completed/success`；旧 SHA 的绿灯不能充数。
+- [ ] **03.4 核对真实 Artifacts**：每个引擎从 GitHub Actions 产出非空 `.png` / `.json`，Q03 目标 6 组 viewport×theme 图、Q01 目标 4 组图与各组六份几何 JSON（若当前测试设计变化，先明确准确计数）；上传 `trace.zip`/video 失败证据并设置 3 天保留。
+- [ ] **03.5 下载与核验**：通过 GitHub Artifact API 下载**当前 SHA** 的 Chromium/WebKit ZIP，检查图像能打开、JSON 值是实际浏览器测量（如 `bbox`、rendered font-size、axis gap）、来源路由正确；在 PR 留 `run URL + artifact ID/name/size + 抽查结果`。无文件、错 SHA、仅有 200 登录页都不算 PASS。
+
+### WP-04｜科研 Figure/Table 同类缺陷系统盘点（依赖 WP-02、03；新产品改动独立聚焦 PR）
+
+- [ ] **04.1 清点全部生成对象**：在新鲜 `npm run build` 的 `dist/` 上执行 `node scripts/audit-sitewide-research-figure-widths.mjs --snapshot /tmp/basemodel-figure-current.json`；读取全部路线/`figure`/`table`，**记录本次真实总数**，旧 268/73/130 只作为历史参考。
+- [ ] **04.2 为每张对象标 owner**：给每张 Figure 和 Table 记录 `route / figure_id / owner component / scientific-or-structural role / single-double-workflow-slide / source identity`；生成可以审核的行级清单，漏 owner 或不明角色标 `BLOCKED`。
+- [ ] **04.3 执行几何与内容扫描**：用云端 Playwright 在 390/768/1440 与 light/dark 对有意义的科研图检查图例/轴/文字 `getBBox` 与矩形碰撞、真实渲染字号、水平溢出、遮挡型 SVG tooltip、表格 `booktabs`/局部横滚、科学来源及不可比数据声明；对投影/工作流/slide 按自身语义测试，不强套单栏 LaTeX。
+- [ ] **04.4 给每张图明确证据状态**：只有有真实截图或可复核几何/读者证据的对象才标 `PASS`；缺少视觉核对的明确标 `NEEDS_VISUAL_REVIEW`，失败给 `FAIL` 和 route+截图；**验收**：`PASS + FAIL + NEEDS_VISUAL_REVIEW + BLOCKED = 实际本次审计总数`，禁止把 inventory 当成全通过。
+- [ ] **04.5 按 owner 聚类修复**：真实重复错误先修共用组件再加有意退化的负例；跨越 CI 目的的新 UI/CSS 修复单独窄 PR，链接 #901。遇到字体体系则提交可复现发现给 Typography Agent，**不修改其所有文件**。
+- [ ] **04.6 输出完成/未完成清单**：在 #901 提供版本化 inventory 路径或 Artifact 链接、修复 PR 链接以及仍需人工审查的确切 Figure/Table 数量；不能仅报“扫描过 73 张”。
+
+### WP-05｜表达科学边界与真实冷读（依赖 WP-02；可与 WP-04 后段并行）
+
+- [ ] **05.1 逐问核对来源**：检查 Q01–Q10 速览与详细报告、科学状态和证据成熟度、三条历史训练路线并非完全受控对照、Q03 64 题与 SEED 128 题不同协议、Q10 “确认题已冻结但正式训练尚未开始”。
+- [ ] **05.2 阅读层验收**：检查 390/768/1440 下首屏一个中心、目录/图号/图注顺序、适度的链接数量、读者能找到 RAW 与完整技术细节；跑当前 `tests/e2e/site-reader-contracts.spec.ts` 与 `src/lib/openEvoAdvisorFirstViewport.test.ts`，不恢复过时的硬编码文字。
+- [ ] **05.3 独立真人 30 秒冷读**：邀请真正零上下文读者复述研究问题、已经有证据的一个结论、一个未完成问题及下一步；记录原话、误读位置、测试条件。**若无人参加，此项不勾选**，在最终状态写 `NEEDS_READER`，不能用 Codex 角色扮演冒充真人。
+- [ ] **05.4 按原话沉淀错误模式**：对照用户截图和原话记录“论文式图未落实、同类漏网、CI 假绿”等真实机制，使用中央 Closeout 规则；只把可证实工程结论写进可复用规范。
+
+### WP-06｜精确提交、Vercel、合并与 Production（依赖 WP-00～05 中所有机器可完成项）
+
+- [ ] **06.1 再核对并发**：合并前重新获取 live `main SHA` / PR `head SHA`、merge-base、changed paths 与科学权威；如果 main 更新了同文件，先语义集成再重新验收，禁止强制覆盖与复用旧 SHA 的 PASS。
+- [ ] **06.2 跑仓库必需门禁**：确保当前 HEAD 的 `npm run verify:deploy`、`npm run build`、Public PR CI 的风险规划 browser shards 及 `public-ci-gate`（App 15368）均为 `completed/success`，同时 WP-03 双浏览器与真实 Artifact 在该 HEAD 通过。
+- [ ] **06.3 申请唯一最终 Vercel Gate**：仅在 06.2 PASS 后执行 `node scripts/request-vercel-final-gate.mjs 901` 或严格等价的 GitHub/Gate ref 操作；先绑定 `ci/vercel-gate-base=live main`、`ci/vercel-gate-final=PR exact HEAD`，避免试探性 Preview 构建与无效 refs。
+- [ ] **06.4 实际打开 Preview**：核对 Vercel 对象 `READY`、`meta.git SHA=PR HEAD`、`noindex` 和真实 `data-report-figure="q03-custom-curve"`/Scaling 路由，浏览器应显示 BaseModel 正文而非 Vercel 登录页；做桌面/手机 light/dark 的最终视觉审读。
+- [ ] **06.5 依法合并或明确停下**：只有所有强制 checks 与当前 base 符合仓库保护规则、无未解科研/产品阻塞，才用带 `expected_head_sha` 的 PR merge；否则 PR 保持开放，列出阻塞而不伪装完成。
+- [ ] **06.6 合并后独立收口**：读回 `main merge SHA`、Production 的 `READY` 或 docs/CI-only `IGNORED/CANCELED` 的合规原因、正式 alias 的对应 SHA 与实际 Figure 路由；**不能用 Preview PASS 代替 Production**。保留匿名可审核的链接/收据。
+
+### WP-07｜Conversation Closeout 与交付收据（WP-06 后；真实未完可独立归档）
+
+- [ ] **07.1 按包汇报**：每完成 WP-00…WP-06 一个工作包，在 PR 评论写 `PASS / PARTIAL / BLOCKED`、文件/commit、所跑命令及结果、当前阻塞与下一任务；不可在交付之前虚标 `[x]`。
+- [ ] **07.2 归档逐字反馈与复现**：按 `mykcs/.agents` 的 Conversation Closeout 规范保存适用 RAW/设计原则，记录 Q03 轴碰撞/原生 tooltip、WebKit 1.62↔1.63、旧 Workflow allowlist、主分支 Q10 语义竞争及“不能用绿色代替阅读”的反例。
+- [ ] **07.3 记录真实发布证据**：给出 PR URL、HEAD/merge/main SHA、GitHub CI 两种浏览器 URL、Artifact 名称/大小/截图、Vercel Preview/Production、Figure/Table 数量与验收率、冷读状态；有明确 `NEEDS_READER` 或剩余问题单。
+- [ ] **07.4 最终 ELI5 核对**：回答“原问题是什么／确实修好什么／仍没做完什么／如何避免重复”；不得把 Codex 计划清单勾选完当作外部科学或真人验收完成。
+
+**执行关系**：WP-00 →（WP-01 与 WP-02）→ WP-03 → WP-04；WP-05 的机器审核可与 WP-04 后段并行，真人验收仍独立；WP-06 仅在强制机器 Gate 真通过时继续；WP-07 持续保存收据。**本节下方第 3～10 节是每包的代码与证据细节，不代表已经执行。** 大型新增视觉缺陷另开小 PR，不把 #895/Typography 和无关网页混入 #901。
+
+**每勾一项的收据格式**：`WP-xx.yy | STATUS | changed file(s) | exact commit SHA | command/run URL | Artifact/Preview/Source URL | unresolved blocker`。不能提供必要证据就保持未勾选。
 
 ## 3. WP-00：开始写代码前的精确基线清单
 
