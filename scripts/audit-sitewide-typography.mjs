@@ -6,8 +6,10 @@
  * as migration debt rather than silently rewritten. Browser tests remain the
  * authority for computed geometry and visible light/dark rendering.
  */
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { inventoryCSS, inventoryAstro } from './lib/typography-inventory.mjs';
 
 const repo=resolve(new URL('../',import.meta.url).pathname);
 const dist=join(repo,'dist');
@@ -37,10 +39,25 @@ function filesUnder(dir,extensions) {
 }
 const cssFiles=filesUnder(sourceRoot,['.css']).sort();
 const declarations=[];
+const extendedDeclarations=[];
+const unresolvedSurfaces=[];
 for(const file of cssFiles) {
+  extendedDeclarations.push(...inventoryCSS(readFileSync(file,'utf8'),relative(repo,file)));
   const content=readFileSync(file,'utf8').replace(/\/\*[\s\S]*?\*\//g,'');
   for(const m of content.matchAll(/\b(font-size|font-family|font-weight|font-style)\s*:\s*([^;}\n]+)/g)) {
     declarations.push({file:relative(repo,file),property:m[1],value:m[2].trim()});
+  }
+}
+for(const file of filesUnder(sourceRoot,['.astro'])) {
+  const result=inventoryAstro(readFileSync(file,'utf8'),relative(repo,file));
+  extendedDeclarations.push(...result.entries);
+  unresolvedSurfaces.push(...result.unresolved);
+}
+for(const file of filesUnder(sourceRoot,['.tsx','.ts','.jsx','.js'])) {
+  const content=readFileSync(file,'utf8');
+  for(const match of content.matchAll(/\b(?:fontSize|fontFamily|fontWeight|fontStyle|style)\s*[:=]/g)) {
+    unresolvedSurfaces.push({file:relative(repo,file),line:content.slice(0,match.index).split('\n').length,
+      kind:'javascript-style-candidate',status:'UNKNOWN: source expression, may be non-style data'});
   }
 }
 const directSizes=declarations.filter(d=>d.property==='font-size' && !d.value.includes('var('));
@@ -53,10 +70,13 @@ const htmlFiles=filesUnder(dist,['.html']);
 if(htmlFiles.length<260)errors.push('rendered HTML route inventory incomplete: '+htmlFiles.length);
 let routesWithTables=0,routesWithFigures=0,figureCount=0,tableCount=0;
 let q03=0;
+const routes=[];
 for(const file of htmlFiles) {
   const page=readFileSync(file,'utf8');
   const figs=[...page.matchAll(/<figure(?=[\s>])[^>]*>/gi)];
   const tables=[...page.matchAll(/<table(?=[\s>])[^>]*>/gi)];
+  routes.push({route:'/'+relative(dist,file).replace(/index\.html$/,''),
+    h1:[...page.matchAll(/<h1(?=[\s>])/gi)].length,figures:figs.length,tables:tables.length});
   figureCount+=figs.length;tableCount+=tables.length;
   if(figs.length)routesWithFigures++;
   if(tables.length)routesWithTables++;
@@ -91,5 +111,20 @@ const summary={
   exact_Q03_article_count:q03
 };
 console.log('[sitewide-typography]',errors.length?'FAIL':'PASS',JSON.stringify(summary));
+const jsonIndex=process.argv.indexOf('--json');
+if(jsonIndex!==-1) {
+  const destination=process.argv[jsonIndex+1];
+  if(!destination)throw new Error('--json requires a destination');
+  writeFileSync(destination,JSON.stringify({
+    sha:execFileSync('git',['rev-parse','HEAD'],{cwd:repo,encoding:'utf8'}).trim(),
+    dirtyTree:Boolean(execFileSync('git',['status','--porcelain'],{cwd:repo,encoding:'utf8'}).trim()),
+    summary,routes:routes.sort((a,b)=>a.route.localeCompare(b.route)),
+    declarations:extendedDeclarations,unresolvedSurfaces,
+    limitations:['CSS syntax parsed with locked Astro PostCSS toolchain',
+      'Astro style blocks parsed; inline expressions and JS candidates explicitly unresolved',
+      'Consumer, cascade and semantic role require browser and owner evidence; null decision is unclassified'],
+    errors,
+  },null,2)+'\n');
+}
 for(const message of errors)console.error('[sitewide-typography] '+message);
 if(errors.length)process.exitCode=1;

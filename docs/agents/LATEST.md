@@ -1,5 +1,15 @@
 # Latest Agent handoff
 
+## 2026-10-20 Typography continuation
+
+PR #898 remains the sole typography workline, Draft and stacked on #895. The
+continuation inventories all open PR paths and extends the audit to Astro scoped
+styles and font shorthands; the historical 249 CSS literal count is not a complete
+source inventory. Method-diagram migration and remaining ownership/classification
+are recorded in `evidence/sitewide-typography/2026-10-20/README.md`. Whole-site visual
+acceptance and a new exact-head Review Preview are still pending; historical green
+CI/Preview receipts do not transfer to this candidate. No merge/Production change.
+
 Last updated: **2026-08-28** (research-state snapshot)
 
 CI architecture last verified: **2026-09-21**
