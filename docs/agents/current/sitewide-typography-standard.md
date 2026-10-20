@@ -48,6 +48,6 @@ BaseModel 仍采用 Research Editorial × Experimental Workbench。参考苏剑�
 3. 对 Q03 回归做**旧坏例**和**修正例**：旧 SVG 标注距纵轴 13px 的重叠、原生 title 的遮挡必须判失败；新图在桌面和手机可读、图注不等于正文、数学与真实四点保留。Q01 相邻科研图也需检查；对合法的短方法标签/代码和必要的数学符号不误伤。
 4. 每次发布读取最终 Vercel artifact 并浏览器看真实图像。测试绿灯仅证明所检测的性质；读者能否快速理解还需独立冷读，未完成应标记 `NEEDS_READER`。
 
-参考：[苏剑林·科学空间](https://kexue.fm/archives/6508)；[OpenAI 前端设计建议](https://developers.openai.com/blog/designing-delightful-frontends-with-gpt-5.4)；[OpenAI Research](https://openai.com/research)；[OpenClaude](https://github.com/Gitlawb/openclaude)。
+参考：[苏剑林·科学空间](https://kexue.fm/)；[OpenAI 前端设计建议](https://developers.openai.com/blog/designing-delightful-frontends-with-gpt-5-4)；[OpenAI Research](https://openai.com/research)；[OpenClaude](https://github.com/Gitlawb/openclaude)。
 
 **历史真人反馈**：对“只是补一个开头”“只加粗”“图题挤压、字体大小不统一”“要全站同类扫描”曾多次提出纠正。每次新例子都必须驱动同类检测和实际产品修复；不得用“规范已经存在”替代验证。
