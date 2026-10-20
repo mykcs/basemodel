@@ -201,7 +201,7 @@
 .irx-seed-stage__boundary-copy {
   min-width: 0;
 }
-.irx-seed-stage__boundary-copy p {
+.irx .irx-seed-stage__boundary-copy p {
   margin: 0;
   color: var(--irx-readable-muted);
   font-size: var(--type-body-small);
@@ -779,5 +779,42 @@
   }
   .irx-seed-interaction-contract {
     width: 100%;
+  }
+
+  /* The source and return lanes are distinct messages, not two cramped
+   * 0.5rem columns. Stack each full-width on phones without touching the
+   * desktop diagram's fixed 54/82px connector geometry. */
+  .irx-stage1-collection > .irx-seed-exchange,
+  .irx-seed-interaction-body > .irx-seed-exchange {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+    padding: 0.55rem 0.65rem;
+  }
+  .irx-stage1-collection > .irx-seed-exchange > span,
+  .irx-seed-interaction-body > .irx-seed-exchange > span {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.3rem 0.55rem;
+    min-width: 0;
+    font-size: var(--type-plot-label);
+    line-height: 1.45;
+    text-align: left;
+  }
+  .irx-seed-interaction-contract .irx-seed-exchange > span,
+  .irx-seed-interaction-contract .irx-seed-exchange b {
+    font-size: var(--type-plot-label);
+  }
+  .irx-seed-interaction-contract .irx-seed-exchange b,
+  .irx-stage1-collection .irx-seed-exchange b {
+    font-family: var(--font-mono);
+    font-weight: var(--type-weight-label);
+    line-height: 1.45;
+  }
+  .irx-stage1-collection .irx-seed-exchange i,
+  .irx-seed-interaction-body .irx-seed-exchange i {
+    flex: 0 0 auto;
+    transform: rotate(90deg);
   }
 }

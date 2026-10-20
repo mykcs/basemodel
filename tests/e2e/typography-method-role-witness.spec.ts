@@ -8,7 +8,7 @@ const witnesses = [
     kind: 'seed',
     fields: [
       { selector: '.irx-seed-stage__head strong', minimum: 17, role: 'stage title' },
-      { selector: '.irx-seed-stage__boundary-copy p', minimum: 13, role: 'boundary explanation' },
+      { selector: '.irx-seed-stage__boundary-copy p', minimum: 15, role: 'boundary explanation' },
       { selector: '.irx-seed-role > span', minimum: 13, role: 'role explanation' },
       { selector: '.irx-seed-stage-divider small', minimum: 13, role: 'stage divider metadata' },
     ],
@@ -86,4 +86,43 @@ test('a restored 9px stage explanation is caught by the same computed-style gate
   expect(await check()).toBe(false);
   await text.evaluate(element => { (element as HTMLElement).style.removeProperty('font-size'); });
   expect(await check()).toBe(true);
+});
+
+
+test('SEED mobile exchange uses two readable full-width rows, not old parallel slivers', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
+  const channels = page.locator(
+    '[data-interactive-research-explainer="seed"] .irx-stage1-collection > .irx-seed-exchange, ' +
+    '[data-interactive-research-explainer="seed"] .irx-seed-interaction-body > .irx-seed-exchange',
+  );
+  await expect(channels.first()).toBeVisible();
+  expect(await channels.count()).toBeGreaterThanOrEqual(2);
+  const layout = async (index: number) => channels.nth(index).evaluate(root => {
+    const rows = [...root.querySelectorAll(':scope > span')];
+    const rects = rows.map(el => el.getBoundingClientRect());
+    return {
+      columns: getComputedStyle(root).gridTemplateColumns.trim().split(/\s+/).length,
+      rows: rows.length,
+      minFont: Math.min(...rows.map(el => Number.parseFloat(getComputedStyle(el).fontSize))),
+      lastBelowFirst: rects.length >= 2 && rects[1]!.top >= rects[0]!.bottom - 2,
+      rootWidth: root.getBoundingClientRect().width,
+      overflow: root.scrollWidth - root.clientWidth,
+    };
+  });
+  for (let i = 0; i < await channels.count(); i += 1) {
+    const actual = await layout(i);
+    expect(actual.columns).toBe(1);
+    expect(actual.rows).toBe(2);
+    expect(actual.minFont).toBeGreaterThanOrEqual(12);
+    expect(actual.lastBelowFirst).toBe(true);
+    expect(actual.rootWidth).toBeGreaterThan(200);
+    expect(actual.overflow).toBeLessThanOrEqual(2);
+  }
+
+  // Negative witness: the original 2-column bottleneck must fail this geometry predicate.
+  await channels.first().evaluate(el => { (el as HTMLElement).style.gridTemplateColumns = 'repeat(2, minmax(0, 1fr))'; });
+  expect((await layout(0)).lastBelowFirst).toBe(false);
+  await channels.first().evaluate(el => { (el as HTMLElement).style.removeProperty('grid-template-columns'); });
+  expect((await layout(0)).lastBelowFirst).toBe(true);
 });

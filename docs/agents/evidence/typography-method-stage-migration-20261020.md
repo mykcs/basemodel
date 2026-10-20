@@ -21,3 +21,9 @@ Date: 2026-10-20. Stacked work: [#898](https://github.com/mykcs/basemodel/pull/8
 - `tests/e2e/typography-method-role-witness.spec.ts` examines rendered sizes, family, italic, clipping and horizontal overflow at 390 / 768 / 1440px, light / dark, including a restored 9px negative witness.
 - Existing `tests/e2e/research-explainer-layout.spec.ts` remains authoritative for every-step geometry / connectors and the compact WebShop 440px height budget.
 - CI success alone does not satisfy visual acceptance. Exact-head Preview screenshot inspection is still required before claiming full completion.
+
+## Visual correction after cloud screenshot review
+
+A cloud-browser screenshot at 390px showed the SEED action/observation lane squeezed into two small adjacent label columns even while browser audits were green. In the component-owned `@container irx (max-width:760px)` rules, the lanes now stack into two separately legible rows (12px technical label floor) without changing the desktop mechanism. A browser negative witness restores the two-column geometry and verifies that it is rejected.
+
+The boundary explanation has its intended 15px `--type-body-small` effective size: the original selector tied with the later global `.irx p` cascade and only computed to 13px. A scoped selector now takes ownership without `!important`.
