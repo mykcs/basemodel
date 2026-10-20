@@ -15,7 +15,8 @@ are recorded on PR #898 after checks finish, rather than asserted in advance.
   File labels use content width and probability labels may wrap.
 - `OpenEvoLegacyStage2Archive.astro`: migrate 19 scoped sizes and six shorthands,
   including the other invalid inherit-family shorthand. Real scores/counts use
-  ordinary interface numerals, normal style and weight. The entire pre-style
+  ordinary interface numerals, normal style and weight. The archive owns a 16px
+  reader contract for all its prose, values and metadata; these use body tokens. The entire pre-style
   markup, copy and script prefix remains SHA256
   `40e8d344fb00b1c334c17fbf8405f027896c7c1733d4431f4bcd96afcfe1a30e`.
 - `ModelQuickView.css`, imported by both `GlobalModelQuickView.tsx` and
@@ -71,3 +72,11 @@ Reconcile concurrent semantic owners, finish the scoped-source/inline ledger,
 complete exact-head deterministic/full browser acceptance and wider screenshot
 review, then verify an exact-SHA dedicated Review Preview. PR stays Draft and
 stacked on #895; no Production deployment or merge is authorized.
+
+## Complete-gate correction
+
+Public CI run 39464610929 at 0eeba36f correctly failed three historical-reader
+cases: the new meta/table assignments shrank existing 16px text. Focused 192/192
+passing cases did not prove this contract. Preserve the full reader test and
+restore the archive's body-size floor in its own declarations. The original
+red run remains evidence; follow-up acceptance must use the corrective SHA.
