@@ -35,15 +35,14 @@ const shortLabel = (label: string) => label === 'base' ? 'base' : label.replace(
   </div>
 
   <div class="checkpoint-viz__canvas" tabindex="0" aria-label={t('7B self 训练 loss 与 WebShop Task Score 的 checkpoint 曲线', '7B self checkpoint curves for training loss and WebShop Task Score')}>
-    <svg viewBox={`0 0 ${width} 455`} role="img" aria-labelledby="checkpoint-chart-title checkpoint-chart-desc">
-      <title id="checkpoint-chart-title">{t('Loss 一直下降，但 WebShop 能力不是一直上升', 'Loss keeps falling, but WebShop capability does not keep rising')}</title>
+    <svg viewBox={`0 0 ${width} 455`} role="img" aria-label={t('Loss 一直下降，但 WebShop 能力不是一直上升', 'Loss keeps falling, but WebShop capability does not keep rising')} aria-describedby="checkpoint-chart-desc">
       <desc id="checkpoint-chart-desc">{t('上方折线显示 increment-00 到 increment-07 的 training loss 单调下降；下方折线显示同一批 checkpoint 的 Task Score 多次上下波动，其中 increment-01 到 02、increment-05 到 06 出现能力下降。', 'The upper line shows training loss decreasing monotonically from increment-00 to increment-07. The lower line shows Task Score fluctuating, with regressions from increment-01 to 02 and increment-05 to 06.')}</desc>
 
       <rect class="checkpoint-viz__panel" x="62" y="34" width="860" height="154" rx="10" />
       <rect class="checkpoint-viz__panel" x="62" y="222" width="860" height="188" rx="10" />
 
-      <text class="checkpoint-viz__panel-title" x="82" y="56">{t('训练目标误差（LOSS）· 越低 = 越贴合训练记录', 'TRAINING LOSS · LOWER = BETTER FIT TO TRAINING RECORDS')}</text>
-      <text class="checkpoint-viz__panel-title" x="82" y="246">WEBSHOP TASK SCORE ×100 · {t('越高越好', 'HIGHER IS BETTER')}</text>
+      <text class="checkpoint-viz__panel-title" x="82" y="22">{t('训练目标误差（LOSS）· 越低 = 越贴合训练记录', 'TRAINING LOSS · LOWER = BETTER FIT TO TRAINING RECORDS')}</text>
+      <text class="checkpoint-viz__panel-title" x="82" y="210">WEBSHOP TASK SCORE ×100 · {t('越高越好', 'HIGHER IS BETTER')}</text>
 
       {[0.50,0.25,0.05].map((tick) => <g>
         <line class="checkpoint-viz__grid" x1="82" x2="908" y1={lossY(tick)} y2={lossY(tick)} />
