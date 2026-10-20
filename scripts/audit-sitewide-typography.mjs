@@ -19,7 +19,7 @@ const roleFiles=[
   ['src/styles/site.css',['font-size: var(--type-page)','font-size: var(--type-section)','font-size: var(--type-display)']],
   ['src/styles/editorial-hierarchy.css',['var(--type-section)','var(--type-subsection)']],
   ['src/styles/openevo-research-blogs.css',['font-size:var(--type-body)','--research-evidence-caption-size:var(--type-caption)']],
-  ['src/styles/advisor-ten-approved-reader.css',['--advisor-plain-font: var(--font-interface)','width: min(100%, var(--research-evidence-single-width))']],
+  ['src/styles/advisor-ten-approved-reader.css',['--advisor-plain-font: var(--font-interface)','width: min(100%, var(--type-paper-plot-width))']],
   ['src/styles/research-booktabs.css',['font-family: var(--font-interface)','font-size: var(--type-table)']]
 ];
 for(const [file,markers] of roleFiles) {
