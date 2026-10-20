@@ -114,13 +114,14 @@ for(const width of [390,1440] as const){
   });
 }
 
-test('phone reader gets the result source before the preserved meeting RAW',async({page})=>{
+test('phone reader gets a Q10 decision route and can still find the meeting RAW',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto(route,{waitUntil:'domcontentloaded'});
   const finding=page.locator('[data-advisor-key-findings]');
-  const evidence=finding.getByRole('link',{name:'查看 Q05、Q07 的详细证据'});
+  const q10=page.locator('[data-advisor-priorities] a[href="#response-q10"]');
   const raw=page.locator('[data-meeting-provenance] a[href*="2026-09-22-meeting-transcript.raw.md"]');
-  await expect(evidence).toBeVisible();
+  await expect(finding).toContainText('Q05、Q07');
+  await expect(q10).toBeVisible();
   await expect(raw).toHaveCount(1);
   await expect(raw).toContainText('会议原始逐字记录');
   const placement=await page.evaluate(()=>{
