@@ -143,6 +143,24 @@ for (const width of [390,768,1440]) for (const theme of ['light','dark'] as cons
       await timing.locator('tbody th').evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.removeProperty('white-space')));
       acceptLabels(await labelLines());
     }
+    const rowBounds=()=>page.locator('.advisor-result-matrix tbody th[scope="row"]').evaluateAll(nodes=>nodes.map(node=>{
+      const range=document.createRange();range.selectNodeContents(node);
+      const cell=node.getBoundingClientRect();
+      return {text:node.textContent,lines:[...range.getClientRects()].map(rect=>({left:rect.left,right:rect.right})),left:cell.left,right:cell.right};
+    }));
+    const acceptRows=(rows:Awaited<ReturnType<typeof rowBounds>>)=>rows.forEach(row=>{
+      expect(row.lines.length).toBeGreaterThan(0);
+      for(const line of row.lines){expect(line.left).toBeGreaterThanOrEqual(row.left-1);expect(line.right).toBeLessThanOrEqual(row.right+1);}
+    });
+    acceptRows(await rowBounds());
+    if(width===390){
+      const oldLabel=page.locator('[data-advisor-matrix="q01"] tbody tr').nth(1).locator('th');
+      await oldLabel.evaluate(node=>(node as HTMLElement).style.whiteSpace='nowrap');
+      const oldRows=await rowBounds();
+      expect(()=>acceptRows(oldRows)).toThrow();
+      await oldLabel.evaluate(node=>(node as HTMLElement).style.removeProperty('white-space'));
+      acceptRows(await rowBounds());
+    }
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
     await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-acceleration/',{waitUntil:'load'});
     const composition=page.locator('.ba-accel__table').filter({hasText:'能否直接 composition'});
