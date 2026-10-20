@@ -74,9 +74,14 @@ for (const width of [390, 768, 1440] as const) {
         // Capture exactly one real visual state per viewport/theme.
         if (route === routes[0]) {
           const owner = page.locator('[data-testid="experiment-design-selector"]');
+          // Capture-only: hide the sticky shell so an element screenshot does
+          // not mistake the scrolled header overlay for component clipping.
+          // All computed-style, overflow and geometry assertions run above on
+          // the unmodified production page.
           await owner.screenshot({
             path: testInfo.outputPath('four-arm-' + width + '-' + theme + '.png'),
             animations: 'disabled',
+            style: '.site-header, [data-site-header] { visibility: hidden; }',
           });
         }
       });
