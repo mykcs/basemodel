@@ -311,9 +311,9 @@ Cloud workflow 改进/核验：
 
 ## 12. 本次实施的证据读取方式与冻结冷读任务
 
-本次云端证据改动保留 main 的 Q10 / meeting RAW 语义；不改生产组件、字体系统或科研数据。架构测试使用 YAML 解析器读取实际触发器、权限和矩阵，未知工作流与危险配置通过受控变异测试证伪。图表回归加入既有 `test:ui` / `test:ui:all` 和 escaped-regression registry，避免测试文件存在但正常门禁不执行。
+云端证据改动保留 main 的 Q10 / meeting RAW 语义；WP-04 新发现的图内几何问题按关联小 PR 独立审查，不改字体系统或科研数据。架构测试使用 YAML 解析器读取实际触发器、权限和矩阵，未知工作流与危险配置通过受控变异测试证伪。图表回归加入既有 `test:ui` / `test:ui:all` 和 escaped-regression registry，避免测试文件存在但正常门禁不执行。
 
-Cloud Figure 工作流解析 open/main PR 的不可变 head SHA，checkout 后复核；PNG/几何 JSON 和逐文件 SHA-256 manifest 绑定相同 SHA/浏览器。Q03 六张、Q01 四张及 Q03 六份 JSON 缺失时失败。全路由 inventory 与逐图截图复用现有审计脚本及 `sitewide-figure-width-scope.spec.ts`；正常屏幕矩阵为 390/768/1440 × light/dark，另保存桌面 light 的灰度和 print 图。包含证据的 details 在截图时显式展开，隐藏的幻灯片/未渲染对象保留未审状态。六状态逐图采集还包括非 `<figure>` 的 role=img SVG；原生表格另存 390/1440 × light/dark 截图，并在六状态记录几何和单元格字号。复杂结果页仅逐图采集已实测约 1.7 分钟，加入密集表格后，证据模式单例预算为 600 秒、矩阵 job 60 分钟；普通 overflow 探针预算及几何/可读性门槛不变。
+Cloud Figure 工作流解析 open/main PR 的不可变 head SHA，checkout 后复核；PNG/几何 JSON 和逐文件 SHA-256 manifest 绑定相同 SHA/浏览器。Q03 六张、Q01 四张及 Q03 六份 JSON 缺失时失败。全路由 inventory 与逐图截图复用现有审计脚本及 `sitewide-figure-width-scope.spec.ts`；正常屏幕矩阵为 390/768/1440 × light/dark，另保存桌面 light 的灰度和 print 图。包含证据的 details 在截图时显式展开，隐藏的幻灯片/未渲染对象保留未审状态。六状态逐图采集还包括非 `<figure>` 的 role=img SVG；原生表格另存 390/1440 × light/dark 截图，并在六状态记录几何和单元格字号。复杂结果页仅逐图采集已实测约 1.7 分钟，加入密集表格后，证据模式单例预算为 600 秒、四个原生分片 job 各 45 分钟，聚合 job 15 分钟；普通 overflow 探针预算及几何/可读性门槛不变。完整 347 用例清单在分片前生成，两浏览器分别要求四片执行并集无遗漏、无重复、无 skip/retry，再核对全路由六状态及上传后下载哈希；71 路由首屏长用例执行预算为 600 秒，阅读内容限制不变。
 
 **状态边界：** inventory 与逐对象 JSON 默认 `NEEDS_VISUAL_REVIEW`；截图存在、根溢出检查通过，都不能自动升级为逐图视觉/科学 PASS。图内未附链接也不自动认定来源缺失，需检查相邻正文与 owning data。执行收据、最终 SHA、真实 run/artifact URL 写入 PR 元数据，避免“记录当前提交通过”又产生新提交使证据过期。
 

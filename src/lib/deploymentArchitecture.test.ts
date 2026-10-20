@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
@@ -13,12 +14,34 @@ const assertCloudFigureSafety = (source: string) => {
   const workflow = parse(source);
   expect(Object.keys(workflow.on).sort()).toEqual(['pull_request', 'workflow_dispatch']);
   expect(workflow.permissions).toEqual({ contents: 'read' });
-  expect(Object.keys(workflow.jobs)).toEqual(['cloud-figure-browsers']);
+  expect(Object.keys(workflow.jobs)).toEqual(['cloud-figure-browsers', 'cloud-figure-evidence']);
   const job = workflow.jobs['cloud-figure-browsers'];
   expect(job['runs-on']).toBe('ubuntu-24.04');
   expect(job.permissions).toBeUndefined();
   expect(job.environment).toBeUndefined();
   expect(job.strategy.matrix.browser).toEqual(['chromium', 'webkit']);
+  expect(job.strategy.matrix.shard).toEqual([1, 2, 3, 4]);
+  expect(job.outputs.sha).toBe('${{ steps.candidate.outputs.sha }}');
+  const aggregate = workflow.jobs['cloud-figure-evidence'];
+  expect(aggregate.needs).toBe('cloud-figure-browsers');
+  expect(aggregate.if).toBe('always()');
+  expect(aggregate.strategy.matrix.browser).toEqual(['chromium', 'webkit']);
+  expect(aggregate.steps.find((step: { name: string }) => step.name === 'Require every browser shard to succeed').run).toBe('test "$SHARD_RESULT" = success');
+  for (const lane of Object.values(workflow.jobs) as typeof job[]) {
+    expect(lane['runs-on']).toBe('ubuntu-24.04');
+    expect(lane.permissions).toBeUndefined();
+    expect(lane.environment).toBeUndefined();
+    for (const step of lane.steps) {
+      if (step.uses) expect(step.uses).toMatch(/^actions\/[a-z-]+@[a-f0-9]{40}$/);
+      if (step.uses?.startsWith('actions/checkout@')) expect(step.with['persist-credentials']).toBe(false);
+      if (step.uses?.startsWith('actions/upload-artifact@')) {
+        expect(step.with['retention-days']).toBe(3);
+        expect(step.with['if-no-files-found']).toBe('error');
+      }
+    }
+  }
+  expect(aggregate.steps.some((step: { run?: string }) => step.run === 'node scripts/verify-cloud-figure-evidence.mjs aggregate raw-shards accepted-evidence')).toBe(true);
+  expect(aggregate.steps.some((step: { run?: string }) => step.run === 'node scripts/verify-cloud-figure-evidence.mjs roundtrip artifact-roundtrip')).toBe(true);
   const lock = readJson<{ packages: Record<string, { version: string }> }>('../../package-lock.json');
   expect(job.container.image).toMatch(new RegExp('^mcr\\.microsoft\\.com/playwright:v' + lock.packages['node_modules/@playwright/test']!.version.replaceAll('.', '\\.') + '-noble@sha256:[a-f0-9]{64}$'));
   const checkout = job.steps.find((step: { uses?: string }) => step.uses?.startsWith('actions/checkout@'));
@@ -116,9 +139,17 @@ describe('Vercel production deployment architecture', () => {
     expect(cloud).toContain('npm run test:ui:all -- --project=${{ matrix.browser }} --workers=1');
     expect(cloud).toContain('npm run ui:overflow-preflight');
     expect(cloud).toContain('actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131');
-    expect(cloud).toContain('Downloaded bytes differ:');
+    expect(cloud).toContain('--shard=${{ matrix.shard }}/4 --reporter=list,json');
+    expect(cloud).toContain('--list --reporter=json');
+    expect(readText('../../scripts/verify-cloud-figure-evidence.mjs')).toContain('Downloaded bytes differ:');
     expect(cloud).toContain('git config --global --add safe.directory "$GITHUB_WORKSPACE"');
     expect(cloud).not.toMatch(/safe\.directory\s+['"]?\*/);
+  });
+
+  it('rejects missing coverage, skipped cases and corrupt downloaded evidence', () => {
+    execFileSync(process.execPath, ['--test', 'scripts/verify-cloud-figure-evidence.test.mjs'], {
+      cwd: new URL('../../', import.meta.url), stdio: 'pipe',
+    });
   });
 
   it('rejects unknown workflows and unsafe cloud workflow mutations', () => {

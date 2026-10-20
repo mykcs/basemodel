@@ -9,11 +9,14 @@ on:
       - 'src/components/research/OpenEvoSdLoraScaling.astro'
       - 'src/components/research/OpenEvoCheckpointCurve.astro'
       - 'tests/e2e/open-evo-webshop-program-report.spec.ts'
+      - 'tests/e2e/research-explainer-layout.spec.ts'
       - 'tests/e2e/advisor-figure-paper-collision.spec.ts'
       - 'tests/e2e/advisor-paper-figure-suite.spec.ts'
       - 'tests/e2e/figure-evidence.ts'
       - 'tests/e2e/sitewide-figure-width-scope.spec.ts'
       - 'scripts/audit-sitewide-research-figure-widths.mjs'
+      - 'scripts/verify-cloud-figure-evidence*'
+      - 'tests/e2e/site-reader-contracts.spec.ts'
       - 'package.json'
       - 'package-lock.json'
   workflow_dispatch:
@@ -32,15 +35,18 @@ concurrency:
 
 jobs:
   cloud-figure-browsers:
-    name: cloud-figure-${{ matrix.browser }}
+    name: cloud-figure-${{ matrix.browser }}-${{ matrix.shard }}-of-4
+    outputs:
+      sha: ${{ steps.candidate.outputs.sha }}
     runs-on: ubuntu-24.04
     container:
       image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
-    timeout-minutes: 60
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
         browser: [chromium, webkit]
+        shard: [1, 2, 3, 4]
     env:
       CI: '1'
       PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
@@ -107,47 +113,29 @@ jobs:
       - name: Inventory every freshly built route and evidence owner
         run: node scripts/audit-sitewide-research-figure-widths.mjs --snapshot figure-inventory/sitewide-inventory.json
 
-      - name: Run complete UI and research figure acceptance in ${{ matrix.browser }}
+      - name: List complete canonical population before sharding
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_FILE: figure-inventory/expected-playwright.json
+        run: npm run test:ui:all -- --project=${{ matrix.browser }} --list --reporter=json
+
+      - name: Run complete UI and research figure acceptance shard
         env:
           FIGURE_SOURCE_SHA: ${{ steps.candidate.outputs.sha }}
-        run: npm run test:ui:all -- --project=${{ matrix.browser }} --workers=1
+          PLAYWRIGHT_JSON_OUTPUT_FILE: figure-inventory/playwright-run.json
+        run: npm run test:ui:all -- --project=${{ matrix.browser }} --workers=1 --shard=${{ matrix.shard }}/4 --reporter=list,json
 
-      - name: Verify nonempty exact-head browser evidence
+      - name: Seal successful shard evidence
         env:
           FIGURE_SOURCE_SHA: ${{ steps.candidate.outputs.sha }}
           FIGURE_BROWSER: ${{ matrix.browser }}
-        run: |
-          node --input-type=module <<'NODE'
-          import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
-          import { join } from 'node:path';
-          import { createHash } from 'node:crypto';
-          const walk = dir => readdirSync(dir, {withFileTypes:true}).flatMap(entry => {
-            const path = join(dir, entry.name);
-            return entry.isDirectory() ? walk(path) : [path];
-          });
-          const files = walk('test-results');
-          for (const [pattern, count] of [[/q03-paper-\d+-.*\.png$/,6],[/q01-paper-\d+-.*\.png$/,4],[/q03-paper-geometry-.*\.json$/,6]]) {
-            if (files.filter(path => pattern.test(path)).length !== count) throw new Error(`Incomplete evidence: ${pattern}`);
-          }
-          const entries = files.filter(path => /\.(png|json|zip|webm)$/.test(path)).map(path => {
-            const data = readFileSync(path);
-            if (!data.length) throw new Error(`Empty evidence: ${path}`);
-            if (path.endsWith('.png') && data.subarray(0,8).toString('hex') !== '89504e470d0a1a0a') throw new Error(`Invalid PNG: ${path}`);
-            if (/q03-paper-geometry|sitewide-figure-table/.test(path)) {
-              const item = JSON.parse(data);
-              if (item.sha !== process.env.FIGURE_SOURCE_SHA || item.browser !== process.env.FIGURE_BROWSER) throw new Error(`Wrong identity: ${path}`);
-            }
-            return {path,bytes:data.length,sha256:createHash('sha256').update(data).digest('hex')};
-          });
-          writeFileSync('figure-inventory/evidence-manifest.json',JSON.stringify({sha:process.env.FIGURE_SOURCE_SHA,browser:process.env.FIGURE_BROWSER,entries},null,2));
-          NODE
+          FIGURE_SHARD: ${{ matrix.shard }}
+        run: node scripts/verify-cloud-figure-evidence.mjs shard .
 
       - name: Upload visual screenshots and error traces
-        id: evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: basemodel-figure-${{ github.event.pull_request.number || inputs.pr_number }}-${{ matrix.browser }}-${{ steps.candidate.outputs.sha }}
+          name: figure-raw-${{ github.event.pull_request.number || inputs.pr_number }}-${{ matrix.browser }}-${{ matrix.shard }}-${{ steps.candidate.outputs.sha }}
           path: |
             figure-inventory/*.json
             test-results/**/*.png
@@ -158,25 +146,64 @@ jobs:
           if-no-files-found: error
           retention-days: 3
 
+  cloud-figure-evidence:
+    name: cloud-figure-${{ matrix.browser }}
+    needs: cloud-figure-browsers
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - name: Require every browser shard to succeed
+        env:
+          SHARD_RESULT: ${{ needs.cloud-figure-browsers.result }}
+        run: test "$SHARD_RESULT" = success
+
+      - name: Checkout the tested immutable candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ needs.cloud-figure-browsers.outputs.sha }}
+          persist-credentials: false
+
+      - name: Setup Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+          package-manager-cache: false
+
+      - name: Download all four native shards
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          pattern: figure-raw-${{ github.event.pull_request.number || inputs.pr_number }}-${{ matrix.browser }}-*-${{ needs.cloud-figure-browsers.outputs.sha }}
+          path: raw-shards
+          merge-multiple: false
+
+      - name: Verify exact population and evidence bytes
+        env:
+          FIGURE_SOURCE_SHA: ${{ needs.cloud-figure-browsers.outputs.sha }}
+          FIGURE_BROWSER: ${{ matrix.browser }}
+        run: node scripts/verify-cloud-figure-evidence.mjs aggregate raw-shards accepted-evidence
+
+      - name: Upload complete verified browser evidence
+        id: evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: basemodel-figure-${{ github.event.pull_request.number || inputs.pr_number }}-${{ matrix.browser }}-${{ needs.cloud-figure-browsers.outputs.sha }}
+          path: accepted-evidence/
+          if-no-files-found: error
+          retention-days: 3
+
       - name: Download the uploaded artifact for round-trip verification
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:
           artifact-ids: ${{ steps.evidence.outputs.artifact-id }}
           path: artifact-roundtrip
 
       - name: Verify downloaded PNG and JSON bytes against manifest
-        run: |
-          node --input-type=module <<'NODE'
-          import { readFileSync } from 'node:fs';
-          import { createHash } from 'node:crypto';
-          import { join } from 'node:path';
-          const root = 'artifact-roundtrip';
-          const manifest = JSON.parse(readFileSync(join(root,'figure-inventory/evidence-manifest.json')));
-          if (!manifest.entries.length) throw new Error('Empty downloaded evidence');
-          for (const item of manifest.entries) {
-            const bytes = readFileSync(join(root,item.path));
-            if (bytes.length !== item.bytes || createHash('sha256').update(bytes).digest('hex') !== item.sha256)
-              throw new Error(`Downloaded bytes differ: ${item.path}`);
-          }
-          console.log(`Verified ${manifest.entries.length} downloaded files for ${manifest.sha} ${manifest.browser}`);
-          NODE
+        env:
+          FIGURE_SOURCE_SHA: ${{ needs.cloud-figure-browsers.outputs.sha }}
+          FIGURE_BROWSER: ${{ matrix.browser }}
+        run: node scripts/verify-cloud-figure-evidence.mjs roundtrip artifact-roundtrip

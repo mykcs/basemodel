@@ -480,8 +480,10 @@ test('scroll-linked explainer updates do not pull a fast reader back to the stag
   await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
   const root = page.locator('[data-interactive-research-explainer="seed"]');
   await waitForHydratedExplainer(root);
-  await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'auto' }));
-  await page.waitForTimeout(650);
+  // 'auto' inherits the page's CSS smooth scrolling in WebKit. Freeze the
+  // actual starting position instead of measuring an unfinished animation.
+  await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'instant' }));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(1500);
   const before = await page.evaluate(() => window.scrollY);
   expect(before).toBeGreaterThan(900);
   await page.evaluate(() => window.dispatchEvent(new CustomEvent('irx:scroll-step', { detail: { step: 2 } })));

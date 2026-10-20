@@ -17,7 +17,9 @@ const defaultBudgets: Record<ReaderAttentionMode, { maxInteractive: number; maxH
 
 for (const viewport of viewports) {
   test(`site reader contracts stay visible in the ${viewport.name} first screen`, async ({ page }) => {
-    test.setTimeout(120_000);
+    // This case visits all 71 route contracts, including hydration settlement.
+    // Allow the complete walk on cloud WebKit; reader budgets below stay fixed.
+    test.setTimeout(600_000);
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     const failures: string[] = [];
 
