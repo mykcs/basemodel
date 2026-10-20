@@ -260,3 +260,52 @@ test('mobile mission hero preserves semantic reading width and copy size', async
     expect(await action.evaluate(node => Number.parseFloat(getComputedStyle(node).fontSize))).toBeGreaterThanOrEqual(13);
   }
 });
+
+
+// Environment stages use the same semantic reading scale as adjacent prose.
+// Technical IDs are 12px minimum; explanatory sentences are 13px minimum.
+for(const width of [390,768,1440] as const){
+  for(const theme of ['light','dark'] as const){
+    test('WebShop and ALFWorld rendered typography at '+width+'px / '+theme,async({page})=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+      for(const item of [
+        {route:'/research/seed-openevo/flow/webshop/',kind:'webshop',selectors:['.irx-shop-welcome p','.irx-event-tape dd','.irx-boundary-note']},
+        {route:'/research/seed-openevo/flow/alfworld/',kind:'alfworld',selectors:['.irx-action-console>p','.irx-world>header strong','.irx-action-set code']}
+      ]){
+        await page.goto(item.route,{waitUntil:'domcontentloaded'});
+        await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+        const root=page.locator('[data-interactive-research-explainer="'+item.kind+'"]');
+        await expect(root).toBeVisible();
+        const nodes=await root.evaluate((el,selectors)=>{
+          const shown=(node:Element)=>{const s=getComputedStyle(node),r=node.getBoundingClientRect();
+            return s.display!=='none'&&s.visibility!=='hidden'&&r.width>1&&r.height>1;};
+          return selectors.flatMap(selector=>[...el.querySelectorAll(selector)].filter(shown).map(node=>{
+            const e=node as HTMLElement,s=getComputedStyle(e);
+            return {selector,size:parseFloat(s.fontSize),width:e.getBoundingClientRect().width,
+              italic:s.fontStyle,text:(e.textContent||'').trim()};
+          })).filter(x=>x.text.length>0);
+        },item.selectors as string[]);
+        expect(nodes.length,item.route+' has visible explanatory text').toBeGreaterThan(0);
+        for(const n of nodes){
+          expect(n.size,n.selector+' '+item.route).toBeGreaterThanOrEqual(n.selector.includes('code')?12:13);
+          expect(n.width).toBeGreaterThan(32);
+          expect(n.italic).toBe('normal');
+        }
+        expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+      }
+    });
+  }
+}
+test('environment readability checker rejects restored 9px prose',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/research/seed-openevo/flow/webshop/');
+  const node=page.locator('[data-interactive-research-explainer="webshop"] .irx-boundary-note').first();
+  await expect(node).toBeVisible();
+  const legible=async()=>node.evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=13);
+  expect(await legible()).toBe(true);
+  await node.evaluate(el=>(el as HTMLElement).style.fontSize='9px');
+  expect(await legible()).toBe(false);
+  await node.evaluate(el=>(el as HTMLElement).style.removeProperty('font-size'));
+  expect(await legible()).toBe(true);
+});
