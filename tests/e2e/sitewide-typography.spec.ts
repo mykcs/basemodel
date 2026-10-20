@@ -227,10 +227,11 @@ test('former 13px data and hidden local scroller both fail the actual advisor ta
   acceptScientificCellSize(await readSize());
   acceptLocalTableScroller(await readScroll());
   await page.addStyleTag({content:`
-    .evo-approved-reader .advisor-result-matrix table {font-size:13px !important;}
+    /* Inject at the actual consumer, not the ancestor: a native td can keep
+       its own 15px declaration even after the table inherits 13px. */
+    .evo-approved-reader .advisor-result-matrix tbody td[data-numeric] {font-size:13px !important;}
     .evo-approved-reader .advisor-result-matrix__wrap {overflow-x:hidden !important;}
   `});
-  expect(()=>acceptScientificCellSize(13)).toThrow();
   const badSize=await readSize();
   expect(badSize).toBeLessThan(15);
   expect(()=>acceptScientificCellSize(badSize)).toThrow();
