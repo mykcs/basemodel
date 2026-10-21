@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { captureFigureEvidence, settleFigureHydration } from './figure-evidence';
+import { captureFigureEvidence, revealEvidenceReadingState, settleFigureHydration } from './figure-evidence';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
@@ -54,6 +54,7 @@ for (const route of routes) {
           const kind=await figure.evaluate(el=>el.tagName.toLowerCase()==='figure'?'figure':el.closest('figure')?'inside-figure':'nonfigure-svg');
           if(kind==='inside-figure') continue;
           const index=kind==='figure'?figureIndex++:svgIndex++;
+          const readingState=await revealEvidenceReadingState(figure);
           const visible = await figure.isVisible();
           const png = `${kind}-${index}-${width}-${theme}.png`;
           const details = await figure.evaluate(el => ({
@@ -80,24 +81,29 @@ for (const route of routes) {
             }
           }
           evidence.push({route,kind,index,width,theme,...details,visible,png:visible?png:null,
-            status:'NEEDS_VISUAL_REVIEW',state:'details containing evidence expanded'});
+            status:'NEEDS_VISUAL_REVIEW',state:readingState});
         }
         expect(figureIndex).toBe(figureCount);
         await expect(page.locator('figure')).toHaveCount(figureCount);
-        const tables = await page.locator('table').evaluateAll(els => els.map((el,index) => ({
-          index,owner:el.className,caption:el.querySelector('caption')?.textContent?.trim()??'',
-          box:el.getBoundingClientRect().toJSON(),rows:el.querySelectorAll('tr').length,
-          columns:el.querySelector('tr')?.children.length??0,status:'NEEDS_VISUAL_REVIEW',
-          inFigure:Boolean(el.closest('figure')),
-          borders:{top:getComputedStyle(el).borderTopWidth,bottom:getComputedStyle(el).borderBottomWidth},
-          cells:[...el.querySelectorAll('th,td')].map(cell=>({text:cell.textContent?.trim(),
-            box:cell.getBoundingClientRect().toJSON(),fontSize:getComputedStyle(cell).fontSize})),
-        })));
-        for (const table of tables) {
-          const target=page.locator('table').nth(table.index);
+        const tables=[];
+        const tableCount=await page.locator('table').count();
+        for(let index=0;index<tableCount;index++){
+          const target=page.locator('table').nth(index);
+          await revealEvidenceReadingState(target);
+          const table=await target.evaluate((el,index)=>({
+            index,owner:el.className,caption:el.querySelector('caption')?.textContent?.trim()??'',
+            box:el.getBoundingClientRect().toJSON(),rows:el.querySelectorAll('tr').length,
+            columns:el.querySelector('tr')?.children.length??0,status:'NEEDS_VISUAL_REVIEW',
+            inFigure:Boolean(el.closest('figure')),
+            borders:{top:getComputedStyle(el).borderTopWidth,bottom:getComputedStyle(el).borderBottomWidth},
+            cells:[...el.querySelectorAll('th,td')].map(cell=>({text:cell.textContent?.trim(),
+              box:cell.getBoundingClientRect().toJSON(),fontSize:getComputedStyle(cell).fontSize})),
+          }),index);
+          tables.push(table);
           if (width!==768 && !table.inFigure && await target.isVisible())
             await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`));
         }
+        await expect(page.locator('table')).toHaveCount(tableCount);
         evidence.push({route,width,theme,tables,rootOverflow:overflow});
       }
     }

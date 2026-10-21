@@ -1,9 +1,24 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 
+/** Open the object's real reading state, including native exclusive accordions. */
+export async function revealEvidenceReadingState(target: Locator) {
+  const parameterCase=await target.evaluate(el=>el.closest('[data-parameter-case]')?.getAttribute('data-parameter-case'));
+  if(parameterCase)
+    await target.page().locator('[data-parameter-controls] input[value="'+parameterCase+'"]').check();
+  await target.evaluate(el=>{
+    const ancestors:HTMLDetailsElement[]=[];
+    for(let parent=el.parentElement;parent;parent=parent.parentElement)
+      if(parent instanceof HTMLDetailsElement)ancestors.unshift(parent);
+    for(const detail of ancestors)detail.open=true;
+  });
+  return parameterCase?'parameter comparison '+parameterCase:'ancestor evidence details opened';
+}
+
 /** Decode the current visible reading state before native document clipping.
  * No DOM is hidden, restyled or raster-edited for the capture. */
 export async function captureFigureEvidence(figure: Locator, path: string) {
   const page = figure.page();
+  await revealEvidenceReadingState(figure);
   const scrollPositions=await figure.evaluateHandle(el=>{
     const nodes=new Set<Element>([el,...el.querySelectorAll('*')]);
     for(let parent=el.parentElement;parent;parent=parent.parentElement)nodes.add(parent);
@@ -19,13 +34,14 @@ export async function captureFigureEvidence(figure: Locator, path: string) {
       return rect.width>0&&rect.height>0&&style.visibility!=='hidden'&&style.visibility!=='collapse';
     });
     for(const image of images) {
-      if(!image.complete||!image.naturalWidth)
+      if(!image.complete||!image.naturalWidth) {
         image.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'});
-    }
-    await Promise.all(images.map(async image=>{
+        // Let native lazy-load intersection observers see this real scroll.
+        await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
+      }
       await image.decode();
       if(!image.naturalWidth)throw new Error('Visible evidence image is empty');
-    }));
+    }
   });
   await scrollPositions.evaluate(rows=>rows.forEach(({node,top,left})=>node.scrollTo({top,left,behavior:'instant'})));
   await scrollPositions.dispose();

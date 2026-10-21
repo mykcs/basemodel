@@ -206,7 +206,7 @@ test('native document capture decodes an offscreen lazy scientific image and ign
     dense.style.cssText='display:flex;width:180px;height:8px;overflow-x:auto';
     for(let i=0;i<1000;i++){
       const icon=document.createElement('img');
-      icon.width=4;icon.height=4;icon.loading='lazy';
+      icon.width=4;icon.height=4;icon.loading='lazy';icon.style.flexShrink='0';
       icon.src='/research/seed-openevo/evidence/wandb-threeway/task-score.svg?lazy-camera-control';
       icon.alt='Repeated real SVG in dense capture fixture';
       dense.append(icon);
@@ -223,7 +223,17 @@ test('native document capture decodes an offscreen lazy scientific image and ign
     return {x:r.x+scrollX,y:r.y+scrollY,width:r.width,height:r.height};
   });
   await page.screenshot({path:testInfo.outputPath('lazy-known-bad-document.png'),clip:badClip,fullPage:true,animations:'disabled'});
+  await figure.evaluate(node=>{
+    const detail=document.createElement('details');detail.name='camera-accordion-control';
+    detail.innerHTML='<summary>Test fixture: first exclusive evidence panel</summary>';
+    node.before(detail);detail.append(node);
+    const peer=document.createElement('details');peer.name=detail.name;
+    peer.innerHTML='<summary>Test fixture: sibling evidence panel</summary><p>Another reading state</p>';
+    detail.after(peer);peer.open=true;
+  });
+  await expect(figure).not.toBeVisible();
   await captureFigureEvidence(figure,testInfo.outputPath('lazy-decoded-document.png'));
+  await expect(figure).toBeVisible();
   expect(await image.evaluate(node=>(node as HTMLImageElement).complete&&(node as HTMLImageElement).naturalWidth>0)).toBe(true);
   expect(await figure.locator('img').evaluateAll(nodes=>nodes.filter(node=>getComputedStyle(node).display!=='none').every(node=>(node as HTMLImageElement).complete&&(node as HTMLImageElement).naturalWidth>0))).toBe(true);
   await expect(figure.locator('img')).toHaveCount(1003);
