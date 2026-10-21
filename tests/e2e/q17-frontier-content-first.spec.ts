@@ -61,3 +61,30 @@ for (const viewport of [
     });
   }
 }
+
+for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+  test('same-task comparison values stay inside their labeled cells: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto(route,{waitUntil:'load'});
+    const table=page.locator('.table-wrap table');
+    const measure=()=>table.locator('tbody td:nth-child(2),tbody td:nth-child(3),tbody td:nth-child(4)').evaluateAll(nodes=>nodes.map(node=>{
+      const range=document.createRange();range.selectNodeContents(node);
+      const cell=node.getBoundingClientRect();
+      return {text:node.textContent,left:cell.left,right:cell.right,lines:[...range.getClientRects()].map(r=>({left:r.left,right:r.right}))};
+    }));
+    const accept=(rows:Awaited<ReturnType<typeof measure>>)=>rows.forEach(row=>{
+      expect(row.lines.length).toBeGreaterThan(0);
+      for(const line of row.lines){expect(line.left).toBeGreaterThanOrEqual(row.left-1);expect(line.right,row.text??'').toBeLessThanOrEqual(row.right+1);}
+    });
+    accept(await measure());
+    for(const value of ['10 / 32 (31.25%)','8 / 32 (25.00%)','27 / 32 (84.38%)','25 / 32 (78.13%)'])await expect(table).toContainText(value);
+    if(width===390){
+      await table.locator('tbody tr').evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.gridTemplateColumns='repeat(3,minmax(0,1fr))'));
+      const old=await measure();expect(()=>accept(old)).toThrow();
+      await table.locator('tbody tr').evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.removeProperty('grid-template-columns')));
+      accept(await measure());
+    }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  });
+}

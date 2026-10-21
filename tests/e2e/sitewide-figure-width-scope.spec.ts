@@ -346,3 +346,31 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
   });
 }
+
+for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+  test('SD-LoRA research-line names stay within their table cells: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/',{waitUntil:'load'});
+    const names=page.locator('.next-table tbody th');
+    const measure=()=>names.evaluateAll(nodes=>nodes.map(node=>{
+      const range=document.createRange();range.selectNodeContents(node);
+      const cell=node.getBoundingClientRect();
+      return {text:node.textContent,left:cell.left,right:cell.right,lines:[...range.getClientRects()].map(r=>({left:r.left,right:r.right}))};
+    }));
+    const accept=(rows:Awaited<ReturnType<typeof measure>>)=>rows.forEach(row=>{
+      expect(row.lines.length).toBeGreaterThan(0);
+      for(const line of row.lines){expect(line.left).toBeGreaterThanOrEqual(row.left-1);expect(line.right,row.text??'').toBeLessThanOrEqual(row.right+1);}
+    });
+    accept(await measure());
+    await expect(names.nth(0)).toHaveText('SD-LoRA v2 · Stable Reduction');
+    await expect(names.nth(1)).toHaveText('SD-LoRA · Bounded Online Recurrence');
+    if(width===390){
+      await names.evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.whiteSpace='nowrap'));
+      const old=await measure();expect(()=>accept(old)).toThrow();
+      await names.evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.removeProperty('white-space')));
+      accept(await measure());
+    }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  });
+}

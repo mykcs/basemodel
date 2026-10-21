@@ -14,6 +14,8 @@ This file is a short current-state router. Detailed policy belongs under `docs/a
 
 [PR #901](https://github.com/mykcs/basemodel/pull/901) 的 [原任务书](../plans/2026-10-20-figure-cloud-closeout.md) 记录 Figure/云端证据的工作边界与冻结冷读任务。最新执行状态以 PR exact-head Actions、Artifacts 和 Vercel 实时收据为准；静态清点、截图生成、视觉审查和真人理解分别记账。Q03 碰撞反例已接入现有两条 UI 命令与 escaped-regression registry。Typography 继续由另一工作线负责。
 
+图表收尾已接入 checkpoint 标题、Q01 深色图例、WebShop 比例尺标签、科研表格内容宽度、实验计划数值列、方法对比图文字对比度、置信区间坐标标签间距，以及手机表格碰撞的命名正反例。云端捕获通过真实交互进入参数比较与购物示意步骤，并区分 Q03 手机专用表格和 SEED compact 组件明确不展示的租卡目录；这些状态不能混记成缺图或视觉通过。历史候选的绿色检查不继承给新 SHA；完整当前候选验收、逐对象审查和发布收据仍以 #901 为准，未取得真实收据前保持未完成。独立真人冷读为 **NEEDS_READER**；#895/#898 不并入此工作线。
+
 ## 2026-10-14 三篇博客写作续接（科研测量暂停）
 
 BaseModel PR #851 仍按 **① OpenEVO 方法 → ② 学长十问 → ③ 我们的回应实验**。本轮只将已有科研证据补写第三篇和报告，不运行 GPU、checkpoint 或 WebShop。Q17 DirectApply R159 冻结64题开发成绩为 **60.1088/100、18/64 exact**，旧 M1 64×8 Success@k、D1 同模型32条训练 prefix 证据与128题三线终评、rank32/rank128 后段1024次比较均非同一测量。D1 #52/#65/#66 只到 PARTIAL；Q07 Bounded OFF 不能替代 DirectApply R159。实验 PR #703 未合并的 **39/78、核心9/9** 不等于实验 main 的旧 **38/78**；全体13份仅186/1014接纳格、0/13达78/78。权威交接：https://github.com/mykcs/openevo-experiment/blob/science/checkpoint13-cpu-evidence-followthrough-20261013/docs/science/webshop/program/OPEN_EVO_CHECKPOINT78_PAUSED_BASEMODEL_WRITING_HANDOFF_20261014.md
