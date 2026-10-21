@@ -191,7 +191,8 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
         ))}</tbody>
       </table>
     </div>
-    <p class="advisor-q03-paper__reading">四次实测成绩先升、后降、再回升；每个保存点的 64 道题中，<strong>均没有完整成功的题目（0/64）</strong>。没有测量中间轮次，不能当成完整训练曲线；与 SEED 论文的 128 题也不是同一评测协议。<a href="https://github.com/mykcs/openevo-experiment/pull/678" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/678" />原始评测记录</a></p>
+    <p class="advisor-q03-paper__reading">四次实测成绩先升、后降、再回升。每个保存点评测了 64 道题，<strong>均没有完整成功的题目</strong>。没有测量中间轮次，不能当成完整训练曲线。</p>
+    <p class="advisor-q03-paper__boundary">这组自定义测试与 SEED 论文的 128 题评测协议不同，不能直接相减排名。<a href="https://github.com/mykcs/openevo-experiment/pull/678" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/678" />原始评测记录</a></p>
     <details class="advisor-q03-paper__trend" data-q03-trend-details>
       <summary>展开查看折线图（只连接四个实测点）</summary>
       <figure class="advisor-viz advisor-viz--q03" data-report-figure="q03-custom-curve" data-paper-width="single" data-evidence-shape="paper-static-observations" data-protocol="custom-q17-64">
@@ -332,7 +333,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 /* Q03's table is the default scientific object; the original curve is secondary evidence. */
 .advisor-q03-paper{width:min(100%,32rem);max-width:100%;margin:1.4rem auto 1.8rem;color:var(--color-text)}
 .advisor-q03-paper__scroll{width:fit-content;max-width:100%;margin:0 auto .6rem;overflow-x:auto;overscroll-behavior-inline:contain}
-.advisor-q03-paper__reading{margin:.5rem 0 .35rem;font-size:1rem;line-height:1.6}
+.advisor-q03-paper__reading,.advisor-q03-paper__boundary{margin:.5rem 0 .35rem;font-size:1rem;line-height:1.6}
 .advisor-q03-paper__trend{margin-top:.45rem}
 .advisor-q03-paper__trend summary{cursor:pointer;width:fit-content;font-size:.92rem;line-height:1.6;color:var(--color-text-muted);text-decoration:underline;text-underline-offset:.19rem}
 .advisor-q03-paper__trend summary:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
@@ -444,7 +445,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 .evo-blog.evo-approved-reader [data-q03-paper-table] :is(th,td)[data-numeric] {
   text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums lining-nums;
 }
-.evo-blog.evo-approved-reader [data-q03-report-paper] :is(.advisor-q03-paper__reading,.advisor-q03-paper__trend summary) {
+.evo-blog.evo-approved-reader [data-q03-report-paper] :is(.advisor-q03-paper__reading,.advisor-q03-paper__boundary,.advisor-q03-paper__trend summary) {
   font-family:var(--font-editorial),Georgia,serif;
 }
 @media print {
