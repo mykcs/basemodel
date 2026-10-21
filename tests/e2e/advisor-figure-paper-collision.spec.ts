@@ -89,10 +89,10 @@ for(const width of [390,768,1440] as const){
       // A four-row LaTeX booktabs table is typeset compactly, not as dashboard rows.
       expect(tableMetrics.rowHeight).toBeLessThanOrEqual(31);
       expect(tableMetrics.headerWeight).toBe('400');
-      if(width>720){
-        expect(tableMetrics.captionWidth).toBeGreaterThanOrEqual(430);
-        expect(tableMetrics.captionCenteredBy).toBeLessThanOrEqual(3);
-      }
+      // The genuine table caption must stay centered above a compact natural-width tabular.
+      expect(tableMetrics.tableWidth).toBeLessThanOrEqual(345);
+      expect(tableMetrics.captionWidth).toBeLessThanOrEqual(tableMetrics.tableWidth+1);
+      expect(tableMetrics.captionCenteredBy).toBeLessThanOrEqual(3);
       expect(tableMetrics.topBorder).toBeGreaterThanOrEqual(1.3);
       expect(tableMetrics.bottomBorder).toBeGreaterThanOrEqual(1.3);
       expect(tableMetrics.headerRule).toBeGreaterThanOrEqual(.8);
