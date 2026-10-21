@@ -49,7 +49,7 @@ for (const width of [390, 768, 1440] as const) {
 
           // Some of the historical checkpoint tables belong to user-operated details.
           await page.locator('.exp-scaffold details').evaluateAll(items => items.forEach(el => {
-            el.open = true;
+            (el as HTMLDetailsElement).open = true;
           }));
           for (const rule of common) {
             const actual = await computed(page, rule.selector);
