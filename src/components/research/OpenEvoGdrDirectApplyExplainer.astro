@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import { OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS } from '../../data/openEvoDirectApplyLiveDynamics';
@@ -38,7 +39,8 @@ const gdr = {
   <section class="gdr-history__section" id="admission-rule" aria-labelledby="admission-rule-title">
     <h2 id="admission-rule-title">{t('旧 GDR-v1：训练完，再筛一次', 'Old GDR-v1: train first, then screen the update')}</h2>
     <div class="gdr-history__compare" role="region" aria-label={t('旧 GDR-v1 与 DirectApply 每一步对照', 'Step-by-step comparison of old GDR-v1 and DirectApply')} tabindex="0">
-      <table>
+      <ResearchPaperTable>
+<Fragment slot="caption">{t('旧 GDR-v1：训练完，再筛一次', 'Old GDR-v1: train first, then screen the update')}</Fragment>
         <thead><tr><th scope="col">{t('步骤', 'Stage')}</th><th scope="col"><strong>GDR-v1</strong><span>{t('候选更新训练完，再做固定 16 题检查', 'run a fixed 16-task check after training the candidate update')}</span></th><th scope="col"><strong>DirectApply</strong><span>{t('不再用任务分数否决已训练的更新', 'stop using task score to veto a trained update')}</span></th></tr></thead>
         <tbody>
           <tr><th scope="row">01</th><td>{t('完成一轮 WebShop rollout', 'complete one WebShop rollout round')}</td><td>{t('完成相同预算的 WebShop rollout', 'complete the matched WebShop rollout budget')}</td></tr>
@@ -46,7 +48,7 @@ const gdr = {
           <tr><th scope="row">03</th><td>{t('用固定 16 题比较更新前后的模型', 'compare the model before and after the update on the same 16 tasks')}</td><td>{t('工程和数据安全检查照常保留', 'keep the engineering and data-safety checks')}</td></tr>
           <tr><th scope="row">04</th><td>{t('新状态更好才保留；否则下一轮继续用旧状态', 'keep the new state only if it is better; otherwise the next round keeps the old state')}</td><td>{t('通过这些检查后，更新直接进入下一轮，不再做 16 题分数筛选', 'after those checks, carry the update into the next round without the 16-task score screen')}</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
   </section>
 
@@ -103,10 +105,8 @@ const gdr = {
 .gdr-history__section h2{max-width:46rem;margin:0 0 .8rem;font-size:clamp(1.75rem,3.8vw,2.5rem);line-height:1.15;letter-spacing:-.02em}
 .gdr-history__section>p{max-width:50rem;margin:.75rem 0;font-size:1.06rem;line-height:1.72}
 .gdr-history__boundary{padding-left:1rem;border-left:3px solid var(--accent-deep);font-weight:650}
-.gdr-history__compare{max-width:100%;margin-top:1.4rem;overflow-x:auto;border-block:1px solid var(--line)}
-.gdr-history__compare table{width:100%;min-width:720px;border-collapse:collapse}
-.gdr-history__compare th,.gdr-history__compare td{padding:.75rem .85rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:1rem;line-height:1.5}
-.gdr-history__compare thead th{color:var(--muted);font-size:1rem}.gdr-history__compare thead th strong,.gdr-history__compare thead th span{display:block}.gdr-history__compare thead th strong{color:var(--ink);font-size:1.05rem}.gdr-history__compare thead th span{margin-top:.2rem;font-size:1rem;font-weight:500}.gdr-history__compare tbody th{width:3rem;color:var(--accent-deep);font:800 1rem/1.4 var(--font-mono)}.gdr-history__compare tbody tr:last-child>*{border-bottom:0}
+.gdr-history__compare{max-width:100%;margin-top:1.4rem;overflow-x:auto;}
+.gdr-history__compare table{min-width:720px}.gdr-history__compare thead th span{margin-top:.2rem}.gdr-history__compare tbody th{width:3rem}
 .gdr-history__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.2rem 0 1rem;border-block:1px solid var(--line)}
 .gdr-history__metrics>div{padding:.85rem 1rem;border-right:1px solid var(--line)}.gdr-history__metrics>div:nth-child(3n){border-right:0}.gdr-history__metrics dt{color:var(--muted);font-size:.9rem}.gdr-history__metrics dd{margin:.2rem 0 0;font-size:1.35rem;font-weight:800}
 .gdr-history__evidence{margin-top:2rem;border-block:1px solid var(--line)}.gdr-history__evidence summary{padding:1rem 0;cursor:pointer;color:var(--accent-deep);font-weight:750}.gdr-history__evidence dl{margin:0 0 1rem}.gdr-history__evidence dl>div{display:grid;grid-template-columns:10rem 1fr;gap:1rem;padding:.6rem 0;border-top:1px solid var(--line)}.gdr-history__evidence dt{font-weight:800}.gdr-history__evidence dd{margin:0;line-height:1.55}.gdr-history code{overflow-wrap:anywhere}

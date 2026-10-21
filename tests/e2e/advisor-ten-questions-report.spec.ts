@@ -374,36 +374,30 @@ test('cross-article flow is method → questions → our response experiments',a
 
 
 for (const width of [390, 768, 1440]) {
-  test('Q03 paper figure displays all four checkpoints without clicks at ' + width + 'px', async ({page}, testInfo) => {
-    await page.setViewportSize({width, height:width===390?844:900});
-    await page.goto(prefix+'parameter-memory-results/', {waitUntil:'domcontentloaded'});
-    const figure=page.locator('#response-q03 [data-report-figure="q03-custom-curve"]');
+  test('Q03 booktabs is primary and original trend remains available at '+width+'px', async({page},testInfo)=>{
+    await page.setViewportSize({width,height:width===390?844:900});
+    await page.goto(prefix+'parameter-memory-results/',{waitUntil:'domcontentloaded'});
+    const paper=page.locator('#response-q03 [data-q03-report-paper]');
+    const table=paper.locator('[data-q03-paper-table]');
+    const disclosure=paper.locator('[data-q03-trend-details]');
+    const figure=paper.locator('[data-report-figure="q03-custom-curve"]');
+    await expect(table).toBeVisible();
+    await expect(table.locator('caption')).toContainText('补充表 S2');
+    await expect(table.locator('tbody tr')).toHaveCount(4);
+    const rows=await table.locator('tbody tr').evaluateAll(els=>els.map(el=>[...el.querySelectorAll('th,td')].map(cell=>cell.textContent?.trim())));
+    expect(rows).toEqual([['A0','3.71','0'],['A40','6.43','0'],['A80','0.69','0'],['A120','6.62','0']]);
+    await expect(paper.locator('.advisor-q03-paper__boundary a[href*="/pull/678"]')).toBeVisible();
+    await expect(disclosure).not.toHaveAttribute('open','');
+    await expect(figure).toBeHidden();
+    await disclosure.locator('summary').click();
+    await expect(figure).toBeVisible();
     await expect(figure).toHaveAttribute('data-evidence-shape','paper-static-observations');
-    await expect(figure.locator('button,[data-q03-stage-selector],[data-stage-detail],[aria-pressed]')).toHaveCount(0);
-    const labels=await figure.locator('[data-trend-point]').evaluateAll(nodes=>nodes.map(x=>x.getAttribute('data-trend-point')));
-    expect(labels).toEqual(['A0','A40','A80','A120']);
-    await expect(figure).toContainText('3.71');
-    await expect(figure).toContainText('6.43');
-    await expect(figure).toContainText('0.69');
-    await expect(figure).toContainText('6.62');
-    await expect(figure).toContainText('均没有完整成功的题目');
+    expect(await figure.locator('[data-trend-point]').evaluateAll(els=>els.map(el=>el.getAttribute('data-trend-point')))).toEqual(['A0','A40','A80','A120']);
     await expect(figure.locator('figcaption')).toContainText('没有测量中间轮次');
-    await expect(figure.locator('figcaption a[href*="/pull/678"]')).toBeVisible();
-    const plot=figure.locator('.advisor-viz__q03-chart');
-    const table=figure.locator('.advisor-viz__q03-phone-table');
-    if (width<=720) {
-      await expect(plot).toBeHidden();
-      await expect(table).toBeVisible();
-      await expect(table.locator('tbody tr')).toHaveCount(4);
-      const overflow=await table.evaluate(x=>x.scrollWidth-x.clientWidth);
-      expect(overflow,'mobile table must fit its own viewport').toBeLessThanOrEqual(2);
-    } else {
-      await expect(plot).toBeVisible();
-      await expect(table).toBeHidden();
-    }
-    const overall=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
-    expect(overall,'horizontal viewport overflow').toBeLessThanOrEqual(2);
-    if(width!==768) await figure.screenshot({path:testInfo.outputPath('q03-static-paper-'+width+'.png'),animations:'disabled'});
+    await expect(width<=720?figure.locator('[data-q03-mobile-chart]'):figure.locator('[data-q03-desktop-chart]')).toBeVisible();
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(2);
+    if(width!==768)await table.screenshot({path:testInfo.outputPath('q03-booktabs-'+width+'.png'),animations:'disabled'});
   });
 }
 

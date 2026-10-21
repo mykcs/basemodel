@@ -23,8 +23,8 @@ html[data-theme="dark"]:has(.evo-approved-reader) {
 .evo-blog.evo-approved-reader {
   --paper: #fcfcfb;
   --paper-ink: #151515;
-  /* Standard system sans. Scientific numbers should not appear in Georgia, Times,
-     editorial lining/tabular variants, or decorated numeral glyphs. */
+  /* Prose, navigation and plot labels keep this system-sans treatment.
+     Native scientific tables use the shared paper/booktabs serif owner. */
   --advisor-plain-font: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   --paper-muted: #64625f;
   --paper-line: #e1e0d9;
@@ -105,10 +105,10 @@ html[data-theme="dark"] .evo-approved-reader {
 .evo-approved-reader .evo-article__question-header h3 {
   font-size: 18px;
   font-weight: 650;
-}
-/* All source-bound results now live under Q01–Q10. Subheadings use a
+}/* All source-bound results now live under Q01–Q10. Subheadings use a
    restrained hierarchy so moving historical evidence never creates another
    full-size chapter after Q10. */
+
 .evo-approved-reader .advisor-question-evidence {
   margin: 20px 0 24px;
   max-width: 100%;
@@ -129,9 +129,9 @@ html[data-theme="dark"] .evo-approved-reader {
 .evo-approved-reader .advisor-technical-appendix h3 {
   font-size: 15px;
   font-weight: 600;
-}
-/* Quiet question identity lives outside the heading. Do not use the old
+}/* Quiet question identity lives outside the heading. Do not use the old
    '3.Q1' subsection notation, tabular digits or display-style number font. */
+
 .evo-approved-reader .advisor-approved-question-meta {
   display: flex;
   gap: 7px 12px;
@@ -216,10 +216,10 @@ html[data-theme="dark"] .evo-approved-reader {
 .evo-approved-reader a[href^="http"]:hover,
 .evo-approved-reader .evo-article__note a:hover { color: var(--paper-ink); }
 .evo-approved-reader a:focus-visible,
-.evo-approved-reader summary:focus-visible { outline: 2px solid #c6613f; outline-offset: 3px; }
-
-/* The article contents are a quiet, collapsible LEFT navigation. Existing
+.evo-approved-reader summary:focus-visible { outline: 2px solid #c6613f; outline-offset: 3px; }/* The article contents are a quiet, collapsible LEFT navigation. Existing
    question-index anchors remain accessible and are not silently removed. */
+
+
 .evo-approved-reader .evo-article__toc {
   margin: 0;
   padding: 0;
@@ -274,10 +274,10 @@ html[data-theme="dark"] .evo-approved-reader {
   color: var(--paper-muted);
   text-decoration: none;
 }
-.evo-approved-reader .advisor-ten-toc a:hover { color: var(--paper-ink); }
-
-/* Scientific diagrams preserve genuine paper table semantics, never turn
+.evo-approved-reader .advisor-ten-toc a:hover { color: var(--paper-ink); }/* Scientific diagrams preserve genuine paper table semantics, never turn
    simple results into full-width UI cards. */
+
+
 .evo-approved-reader .advisor-result-matrix { margin: 19px 0 25px; max-width: 100%; }
 .evo-approved-reader .advisor-result-matrix__wrap {
   width: fit-content;
@@ -286,32 +286,8 @@ html[data-theme="dark"] .evo-approved-reader {
   scrollbar-width: thin;
 }
 .evo-approved-reader .advisor-result-matrix table {
-  border-collapse: collapse;
-  table-layout: auto;
-  width: auto;
   max-width: 100%;
   margin: 0;
-  border-top: 1.6px solid var(--paper-ink);
-  border-bottom: 1.6px solid var(--paper-ink);
-  font: 400 13px/1.55 var(--advisor-plain-font);
-  font-variant-numeric: normal;
-  font-feature-settings: normal;
-  color: var(--paper-ink);
-}
-.evo-approved-reader .advisor-result-matrix th,
-.evo-approved-reader .advisor-result-matrix td {
-  border: 0;
-  padding: 9px 11px 9px 0;
-  text-align: left;
-  vertical-align: top;
-}
-.evo-approved-reader .advisor-result-matrix thead th {
-  border-bottom: 1px solid var(--paper-ink);
-  font-weight: 650;
-  line-height: 1.45;
-}
-.evo-approved-reader .advisor-result-matrix tbody tr + tr > * {
-  border-top: 1px solid var(--paper-line);
 }
 .evo-approved-reader .advisor-result-matrix th:first-child { min-width: 7.5em; }
 .evo-approved-reader .advisor-result-matrix [data-numeric] { text-align: right; white-space: nowrap; }
@@ -335,10 +311,10 @@ html[data-theme="dark"] .evo-approved-reader {
   clip: rect(0,0,0,0);
   clip-path: inset(50%);
   white-space: nowrap;
-}
-
-/* C: Paper interval plots put the read path, actual endpoints and evidence
+}/* C: Paper interval plots put the read path, actual endpoints and evidence
    boundary in place; the figure is not artificially stretched beyond the text. */
+
+
 .evo-approved-reader .paper-effect,
 .evo-approved-reader .advisor-viz {
   max-width: 100%;
@@ -352,8 +328,8 @@ html[data-theme="dark"] .evo-approved-reader {
 .evo-approved-reader .advisor-viz figcaption {
   font-size: 12.5px;
   line-height: 1.7;
-}
-/* C: Soft mathematical region; KaTeX remains the existing server-side engine. */
+}/* C: Soft mathematical region; KaTeX remains the existing server-side engine. */
+
 .evo-approved-reader .math-formula {
   padding: 15px 16px;
   margin: 20px 0;
@@ -364,21 +340,18 @@ html[data-theme="dark"] .evo-approved-reader {
   box-shadow: none;
 }
 .evo-approved-reader .math-formula__scroll { max-width: 100%; }
-.evo-approved-reader .evo-article__tablewrap,
-.evo-approved-reader .research-booktabs-wrap {
+.evo-approved-reader .evo-article__tablewrap{
   width: fit-content;
   max-width: 100%;
+;min-width:0}
+
+.evo-approved-reader .research-booktabs-wrap {
+  max-width: 100%;
 }
-.evo-approved-reader .evo-article__tablewrap table { width: auto; max-width: 100%; }
-.evo-approved-reader .evo-article__tablewrap table caption {
-  font-size: 12.5px;
-  color: var(--paper-ink);
-}
+.evo-approved-reader .evo-article__tablewrap table { max-width: 100%; ;min-width:0}
 .evo-approved-reader .evo-article__tablewrap th,
 .evo-approved-reader .evo-article__tablewrap td {
-  font-size: 13px;
-  line-height: 1.58;
-}
+;min-width:0}
 @media (max-width: 1100px) {
   .evo-approved-reader .advisor-ten-toc {
     left: 12px;
@@ -411,15 +384,8 @@ html[data-theme="dark"] .evo-approved-reader {
   .evo-approved-reader h2 { font-size: 21px; }
   .evo-approved-reader h3,
   .evo-approved-reader .evo-article__question-header h3 { font-size: 17px; }
-  .evo-approved-reader .advisor-result-matrix table {
-    width: 100%;
-    table-layout: fixed;
-    font-size: 11.5px;
-    line-height: 1.5;
-  }
   .evo-approved-reader .advisor-result-matrix th,
   .evo-approved-reader .advisor-result-matrix td {
-    padding: 7px 3px 7px 0;
     overflow-wrap: anywhere;
     word-break: normal;
   }
@@ -438,19 +404,18 @@ html[data-theme="dark"] .evo-approved-reader {
   .evo-approved-reader .advisor-result-matrix figcaption,
   .evo-approved-reader .advisor-result-matrix figcaption p { font-size: 12px; }
   .evo-approved-reader .math-formula { padding: 12px 9px; }
-}
-/* Plain numerals throughout the response page, including scientific objects.
-   Other pages keep their existing editorial typography. KaTeX symbols keep
-   their actual mathematics font; no formula glyphs are replaced. */
+}/* Plain numerals for response prose and plot labels; native tables keep
+   their shared paper typography. KaTeX symbols retain their mathematics font. */
+
 .evo-blog.evo-approved-reader :is(
-  .research-booktabs,
-  .research-booktabs th,
-  .research-booktabs td,
-  .research-booktabs caption,
-  .evo-article__tablewrap table,
-  .evo-article__tablewrap th,
-  .evo-article__tablewrap td,
-  .evo-article__tablewrap caption,
+
+
+
+
+
+
+
+
   .advisor-viz,
   .advisor-viz svg,
   .advisor-viz svg text,
@@ -462,8 +427,7 @@ html[data-theme="dark"] .evo-approved-reader {
   .paper-effect__value,
   .paper-effect__axis,
   .paper-effect figcaption,
-  .q03-world4,
-  .q03-world4 table
+  .q03-world4
 ) {
   font-family: var(--advisor-plain-font);
   font-variant-numeric: normal;
@@ -473,9 +437,9 @@ html[data-theme="dark"] .evo-approved-reader {
   .evo-approved-reader .advisor-ten-toc { display: none; }
   .evo-blog.evo-approved-reader { border: 0; box-shadow: none; width: 100%; }
   .evo-approved-reader .advisor-result-matrix { break-inside: avoid; }
-}
+}/* Advisor's decision-reading layer: plain scientific prose, no decorative dashboard. */
 
-/* Advisor's decision-reading layer: plain scientific prose, no decorative dashboard. */
+
 .evo-approved-reader .advisor-overview {
   margin: 20px 0 24px;
   padding: 20px 0;
@@ -608,9 +572,9 @@ html[data-theme="dark"] .evo-approved-reader {
     align-items: flex-start;
     flex-direction: column;
   }
-}
+}/* Advisor decision-first brief: neutral visual hierarchy, no fourth status color. */
 
-/* Advisor decision-first brief: neutral visual hierarchy, no fourth status color. */
+
 .evo-approved-reader .advisor-overview__decisions {
   margin: 12px 0 9px;
   padding-top: 10px;
