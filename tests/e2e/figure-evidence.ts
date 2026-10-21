@@ -11,7 +11,14 @@ export async function revealEvidenceReadingState(target: Locator) {
       if(parent instanceof HTMLDetailsElement)ancestors.unshift(parent);
     for(const detail of ancestors)detail.open=true;
   });
-  return parameterCase?'parameter comparison '+parameterCase:'ancestor evidence details opened';
+  const shoppingFrame=await target.evaluate(el=>el.closest('[data-shopping-frame]')?.getAttribute('data-shopping-frame'));
+  if(shoppingFrame!==null&&shoppingFrame!==undefined){
+    const example=target.locator('xpath=ancestor::*[@data-task-example][1]');
+    await example.locator('[data-example-reset]').click();
+    for(let step=0;step<Number(shoppingFrame);step++)await example.locator('[data-example-next]').click();
+    await expect(target).toBeVisible();
+  }
+  return shoppingFrame!==null&&shoppingFrame!==undefined?'shopping example step '+shoppingFrame:parameterCase?'parameter comparison '+parameterCase:'ancestor evidence details opened';
 }
 
 /** Decode the current visible reading state before native document clipping.

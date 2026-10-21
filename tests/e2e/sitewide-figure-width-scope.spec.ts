@@ -89,7 +89,8 @@ for (const route of routes) {
         const tableCount=await page.locator('table').count();
         for(let index=0;index<tableCount;index++){
           const target=page.locator('table').nth(index);
-          await revealEvidenceReadingState(target);
+          const readingState=await revealEvidenceReadingState(target);
+          await expect(target).toBeVisible();
           const table=await target.evaluate((el,index)=>({
             index,owner:el.className,caption:el.querySelector('caption')?.textContent?.trim()??'',
             box:el.getBoundingClientRect().toJSON(),rows:el.querySelectorAll('tr').length,
@@ -99,9 +100,8 @@ for (const route of routes) {
             cells:[...el.querySelectorAll('th,td')].map(cell=>({text:cell.textContent?.trim(),
               box:cell.getBoundingClientRect().toJSON(),fontSize:getComputedStyle(cell).fontSize})),
           }),index);
-          tables.push(table);
-          if (width!==768 && !table.inFigure && await target.isVisible())
-            await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`));
+          tables.push({...table,state:readingState});
+          await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`));
         }
         await expect(page.locator('table')).toHaveCount(tableCount);
         evidence.push({route,width,theme,tables,rootOverflow:overflow});
@@ -304,6 +304,27 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
       await table.locator('td:has(>code),td:nth-last-child(2),td:last-child').evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.removeProperty('min-width')));
       accept(await widths());
     }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  });
+}
+
+for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+  test('table evidence enters the actual shopping illustration step: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/study/capability-exploration/mechanism-1-0/',{waitUntil:'load'});
+    const example=page.locator('[data-task-example]');
+    const table=example.locator('table');
+    await expect(example.locator('[data-example-controls]')).toBeVisible();
+    await example.locator('[data-example-reset]').click();
+    const ready=async()=>expect(await table.isVisible()).toBe(true);
+    await expect(ready()).rejects.toThrow();
+    expect(await revealEvidenceReadingState(table)).toBe('shopping example step 1');
+    await ready();
+    await expect(example.locator('[data-example-position]')).toHaveText('2 / 4');
+    await expect(table).toContainText('$18');
+    await expect(table).toContainText('$24');
+    expect((await table.boundingBox())!.width).toBeGreaterThan(0);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
   });
 }
