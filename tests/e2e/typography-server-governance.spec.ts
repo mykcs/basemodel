@@ -57,7 +57,7 @@ for (const width of [390,768,1440] as const) {
       for(const selector of toOpen){
         const candidates=owner.locator(selector);
         if(await candidates.count()){
-          await candidates.first().evaluate((element:HTMLDetailsElement)=>{element.open=true;});
+          await candidates.first().evaluate(element=>{if(element instanceof HTMLDetailsElement)element.open=true;});
         }
       }
       for(const role of [
