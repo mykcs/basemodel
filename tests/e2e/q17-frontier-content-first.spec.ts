@@ -6,7 +6,7 @@ test('focus result keeps the comparable result and scientific boundary in the fi
   await page.setViewportSize({ width: 1280, height: 633 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('h1')).toContainText('OpenEVO 的 WebShop 同题复测：暂时不能证明第 128 轮模型状态整体变差');
-  await expect(page.locator('.result-hero > .eyebrow')).toContainText('局部诊断 · 2026-09-11');
+  await expect(page.locator('.result-hero > .eyebrow')).toContainText('局部诊断 · 2026 年 9 月 11 日');
   await expect(page.locator('.result-hero__numbers')).toContainText('63.58 → 59.41');
   await expect(page.locator('.result-hero__numbers')).toContainText('10 / 32 → 8 / 32');
   await expect(page.locator('.result-hero__numbers')).not.toContainText('−17.13 ～ +8.00');
