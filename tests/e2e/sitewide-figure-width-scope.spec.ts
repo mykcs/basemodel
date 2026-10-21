@@ -8,7 +8,12 @@ const paperTableBaseline = JSON.parse(readFileSync(join(process.cwd(), 'tests/fi
 
 async function expectPaperGrammar(target: Locator, route: string, index: number) {
 
-  const expected = paperTableBaseline.routes.find(entry => entry.route === route)?.tables.find(entry => entry.index === index);
+  // The Q03 repair replaces two redundant score tables with one native paper table.
+  // Preserve every unaffected, immutable pre-change cell hash by mapping the
+  // remaining downstream DOM positions back to their original receipt indices.
+  // The new Q03 table is separately checked, cell by cell, in the Q03 figure spec.
+  const originalIndex = route === '/research/seed-openevo/study/parameter-memory-results/' && index >= 5 ? index + 1 : index;
+  const expected = paperTableBaseline.routes.find(entry => entry.route === route)?.tables.find(entry => entry.index === originalIndex);
   expect(expected, 'sealed original table identity '+route+'#'+index).toBeTruthy();
   const cellTexts = await target.locator('th,td').evaluateAll(cells => cells.map(cell => cell.textContent?.trim()));
   expect(createHash('sha256').update(JSON.stringify(cellTexts)).digest('hex')).toBe(expected!.hash);
