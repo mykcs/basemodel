@@ -154,7 +154,7 @@ describe('sitewide normalization first repair batch', () => {
     expect(benchmarkNote).not.toContain('class="two-column"');
 
     expect(ceilingStrategy).toContain('两版 Stage 2 更新规则');
-    expect(ceilingStrategy).toContain('<table>');
+    expect(ceilingStrategy).toContain('<ResearchPaperTable>');
     expect(ceilingStrategy).not.toContain('<section class="ceiling__section ceiling__compare">');
 
     expect(gdrDirectApply).toContain('旧 GDR-v1 与 DirectApply 每一步对照');

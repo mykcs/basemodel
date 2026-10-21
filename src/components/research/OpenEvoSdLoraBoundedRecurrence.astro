@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import OpenEvoSdLoraHistorySeriesNav from './OpenEvoSdLoraHistorySeriesNav.astro';
@@ -62,7 +63,8 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
       'Stable Reduction still retains the growing component history and makes cross-component reduction explicit and parallel-friendly. Bounded Online Recurrence instead folds history into one fixed rank128 state. Both results are valid, but the ~2× and ~37× numbers are not two timings of the same implementation.',
     )}</p>
     <div class="bounded__table-wrap">
-      <table class="bounded__table">
+      <ResearchPaperTable class="bounded__table">
+<Fragment slot="caption">{t('两条加速路线改的是不同东西', 'The two acceleration lines change different things')}</Fragment>
         <thead><tr><th scope="col"></th><th scope="col">SD-LoRA v2 · Stable Reduction</th><th scope="col">SD-LoRA · Bounded Online Recurrence</th></tr></thead>
         <tbody>
           <tr><th scope="row">{t('历史怎么保存', 'How history is stored')}</th><td>{t('历史 component 继续逐个保留', 'Historical components remain individually retained')}</td><td>{t('历史折成一个固定 rank128 状态', 'History is folded into one fixed rank128 state')}</td></tr>
@@ -70,7 +72,7 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
           <tr><th scope="row">{t('代表性 trainer 结果', 'Representative trainer result')}</th><td>{SD_LORA_V2_LOCAL.eightStepSpeedup.toFixed(2)}× {t('（matched 8-step）', '(matched eight-step)')}</td><td>{result.formalSpeedupMean.toFixed(2)}× {t('平均（R151–R159）', 'mean (R151–R159)')}</td></tr>
           <tr><th scope="row">{t('核心结论', 'Core conclusion')}</th><td>{t('更快的稳定数值 treatment', 'faster stable numerical treatment')}</td><td>{t('固定大小的在线参数状态', 'bounded online parameter state')}</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="bounded__related"><a href={stableHref}>{t('查看 Stable Reduction 的 2× 结果和 WebShop 小面板 →', 'See the Stable Reduction ~2× result and small WebShop panel →')}</a></p>
   </section>
@@ -98,14 +100,15 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
       'The score non-inferiority rule was lower bound ≥ -0.05; the exact-success rule was lower bound ≥ -0.0625. R150, R152, R155, and R159 all passed under rules frozen before evaluation.',
     )}</p>
     <div class="bounded__table-wrap">
-      <table class="bounded__table bounded__table--numbers">
+      <ResearchPaperTable class="bounded__table bounded__table--numbers">
+<Fragment slot="caption">{t('四个行为检查都守住了预先门槛', 'All four behavior checks stayed inside the frozen margins')}</Fragment>
         <thead><tr><th scope="col">Round</th><th scope="col">Score LB</th><th scope="col">Success LB</th><th scope="col">Status</th></tr></thead>
         <tbody>
           {result.behavior.map((row) => (
             <tr><th scope="row">R{row.round}</th><td>{row.scoreLowerBound.toFixed(4)}</td><td>{row.successLowerBound.toFixed(4)}</td><td><strong>PASS</strong></td></tr>
           ))}
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
   </section>
   <section class="bounded__section" aria-labelledby="claim-title">
@@ -132,6 +135,6 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
   <OpenEvoSdLoraHistorySeriesNav locale={locale} />
 </article>
 <style>
-.bounded{width:100%;padding:0 0 4rem}.bounded__hero,.bounded__section{width:min(980px,calc(100% - 2rem));margin:0 auto}.bounded__hero{padding:clamp(2.2rem,6vw,4.8rem) 0 2rem}.bounded__eyebrow{margin:0 0 .65rem;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}.bounded__hero h1{max-width:15ch;margin:0;font-size:clamp(2.2rem,5.7vw,4.8rem);line-height:1.02;letter-spacing:-.045em}.bounded__lede,.bounded__boundary,.bounded__section>p,.bounded__flow figcaption{max-width:48rem;font-size:1.05rem;line-height:1.68}.bounded__lede{margin:1.1rem 0 0;color:var(--ink);font-size:clamp(1.08rem,2vw,1.28rem)}.bounded__boundary{margin:1rem 0 0;color:var(--muted)}.bounded__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.6rem 0 0;border-block:1px solid var(--line)}.bounded__metrics div{padding:1rem 1rem 1rem 0}.bounded__metrics dt{color:var(--muted);font-size:.92rem}.bounded__metrics dd{margin:.25rem 0 0;font-size:1.45rem;font-weight:800}.bounded__links{display:flex;flex-wrap:wrap;gap:.8rem 1.1rem;margin-top:1rem}.bounded__links a,.bounded__related a,.bounded__evidence a{color:var(--accent-deep);text-underline-offset:.2em}.bounded__section{padding-top:2.8rem}.bounded__section h2{max-width:26ch;margin:0;font-size:clamp(1.55rem,3vw,2.25rem);line-height:1.15}.bounded__table-wrap{margin-top:1.2rem;overflow-x:auto}.bounded__table{width:100%;min-width:680px;border-collapse:collapse}
-.bounded__table:not(:has(thead tr > :nth-child(4))){width:max-content;min-width:0;max-width:min(100%,46rem)}.bounded__table th,.bounded__table td{padding:.8rem .7rem;font-size:1rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5}.bounded__table thead th{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}.bounded__table tbody th{width:18%;color:var(--muted);font-weight:650}.bounded__table--numbers{min-width:520px}.bounded__table--numbers td,.bounded__table--numbers th{font-variant-numeric:tabular-nums}.bounded__related{margin-top:1rem}.bounded__flow{margin:1.25rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}.bounded__flow-line{display:flex;align-items:center;gap:.6rem;overflow-x:auto;padding:.2rem 0 .6rem;font:750 1rem/1.2 var(--font-mono)}.bounded__flow-line span{flex:0 0 auto;padding:.5rem .6rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.bounded__flow-line b{color:var(--accent-deep)}.bounded__section>.bounded__claim{font-size:1.16rem;color:var(--ink);font-weight:650}.bounded__evidence{max-width:48rem;margin-top:1rem}.bounded__evidence summary{cursor:pointer;font-weight:700}.bounded__evidence li{margin:.55rem 0;line-height:1.5}@media(max-width:680px){.bounded__hero,.bounded__section{width:min(100% - 1rem,980px)}.bounded__metrics{grid-template-columns:1fr}.bounded__metrics div{border-bottom:1px solid var(--line)}.bounded__metrics div:last-child{border-bottom:0}.bounded__table{min-width:640px}}
+.bounded{width:100%;padding:0 0 4rem}.bounded__hero,.bounded__section{width:min(980px,calc(100% - 2rem));margin:0 auto}.bounded__hero{padding:clamp(2.2rem,6vw,4.8rem) 0 2rem}.bounded__eyebrow{margin:0 0 .65rem;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}.bounded__hero h1{max-width:15ch;margin:0;font-size:clamp(2.2rem,5.7vw,4.8rem);line-height:1.02;letter-spacing:-.045em}.bounded__lede,.bounded__boundary,.bounded__section>p,.bounded__flow figcaption{max-width:48rem;font-size:1.05rem;line-height:1.68}.bounded__lede{margin:1.1rem 0 0;color:var(--ink);font-size:clamp(1.08rem,2vw,1.28rem)}.bounded__boundary{margin:1rem 0 0;color:var(--muted)}.bounded__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.6rem 0 0;border-block:1px solid var(--line)}.bounded__metrics div{padding:1rem 1rem 1rem 0}.bounded__metrics dt{color:var(--muted);font-size:.92rem}.bounded__metrics dd{margin:.25rem 0 0;font-size:1.45rem;font-weight:800}.bounded__links{display:flex;flex-wrap:wrap;gap:.8rem 1.1rem;margin-top:1rem}.bounded__links a,.bounded__related a,.bounded__evidence a{color:var(--accent-deep);text-underline-offset:.2em}.bounded__section{padding-top:2.8rem}.bounded__section h2{max-width:26ch;margin:0;font-size:clamp(1.55rem,3vw,2.25rem);line-height:1.15}.bounded__table-wrap{margin-top:1.2rem;overflow-x:auto;min-width:0}.bounded__table{min-width:680px}
+.bounded__table:not(:has(thead tr > :nth-child(4))){min-width:0;max-width:min(100%,46rem)}.bounded__table tbody th{width:18%}.bounded__table--numbers{min-width:520px}.bounded__related{margin-top:1rem}.bounded__flow{margin:1.25rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}.bounded__flow-line{display:flex;align-items:center;gap:.6rem;overflow-x:auto;padding:.2rem 0 .6rem;font:750 1rem/1.2 var(--font-mono)}.bounded__flow-line span{flex:0 0 auto;padding:.5rem .6rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.bounded__flow-line b{color:var(--accent-deep)}.bounded__section>.bounded__claim{font-size:1.16rem;color:var(--ink);font-weight:650}.bounded__evidence{max-width:48rem;margin-top:1rem}.bounded__evidence summary{cursor:pointer;font-weight:700}.bounded__evidence li{margin:.55rem 0;line-height:1.5}@media(max-width:680px){.bounded__hero,.bounded__section{width:min(100% - 1rem,980px)}.bounded__metrics{grid-template-columns:1fr}.bounded__metrics div{border-bottom:1px solid var(--line)}.bounded__metrics div:last-child{border-bottom:0}.bounded__table{min-width:640px}}
 </style>

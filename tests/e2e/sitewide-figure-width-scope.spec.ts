@@ -1,7 +1,54 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
+import { createHash } from 'node:crypto';
 import { captureFigureEvidence, revealEvidenceReadingState, settleFigureHydration } from './figure-evidence';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
+
+const paperTableBaseline = JSON.parse(readFileSync(join(process.cwd(), 'tests/fixtures/research-paper-table-values.json'), 'utf8')) as { routes: { route: string; tables: { index: number; hash: string }[] }[] };
+
+async function expectPaperGrammar(target: Locator, route: string, index: number) {
+
+  const expected = paperTableBaseline.routes.find(entry => entry.route === route)?.tables.find(entry => entry.index === index);
+  expect(expected, 'sealed original table identity '+route+'#'+index).toBeTruthy();
+  const cellTexts = await target.locator('th,td').evaluateAll(cells => cells.map(cell => cell.textContent?.trim()));
+  expect(createHash('sha256').update(JSON.stringify(cellTexts)).digest('hex')).toBe(expected!.hash);
+  const grammar = await target.evaluate(el => {
+    const style = getComputedStyle(el);
+    const cap = el.querySelector('caption')!;
+    const box = el.getBoundingClientRect(), captionBox = cap.getBoundingClientRect();
+    const cells = [...el.querySelectorAll<HTMLElement>('th,td')];
+    return {
+      readableColumns: [...el.querySelectorAll<HTMLElement>('tbody th,tbody td')].every(cell => {
+        const minimum = cell.matches(':first-child') ? 8 : cell.classList.contains('paper-table__mark') ? 2 : cell.hasAttribute('data-numeric') ? 7 : 12;
+        const css=getComputedStyle(cell);
+        return cell.offsetWidth >= parseFloat(css.fontSize)*minimum-1 && css.overflowWrap==='normal' && css.wordBreak==='normal';
+      }),
+      roles: [...el.querySelectorAll('thead,tbody,tfoot,tr,th,td')].every(node => getComputedStyle(node).display === ({THEAD:'table-header-group',TBODY:'table-row-group',TFOOT:'table-footer-group',TR:'table-row',TH:'table-cell',TD:'table-cell'} as Record<string,string>)[node.tagName]),
+      display: style.display, family: style.fontFamily, font: parseFloat(style.fontSize),
+      top: parseFloat(style.borderTopWidth), bottom: parseFloat(style.borderBottomWidth),
+      caption: Boolean(cap && captionBox.width > 0 && captionBox.height > 0 && captionBox.bottom <= (el.querySelector('thead,tbody,tr')?.getBoundingClientRect().top ?? box.top) + 2),
+      captionSide: getComputedStyle(cap).captionSide,
+      verticalRules: cells.some(cell => parseFloat(getComputedStyle(cell).borderLeftWidth) > 0 || parseFloat(getComputedStyle(cell).borderRightWidth) > 0),
+      bodyRules: [...el.querySelectorAll<HTMLElement>('tbody tr:not(:first-child)>*')].some(cell => parseFloat(getComputedStyle(cell).borderTopWidth) > 0 || parseFloat(getComputedStyle(cell).borderBottomWidth) > 0),
+      numeric: [...el.querySelectorAll<HTMLElement>('[data-numeric]')].every(cell => getComputedStyle(cell).textAlign === 'right' && getComputedStyle(cell).fontVariantNumeric.includes('tabular-nums')),
+      bodyBackgrounds: [...el.querySelectorAll<HTMLElement>('tbody tr,tbody th,tbody td')].every(cell => ['rgba(0, 0, 0, 0)','transparent'].includes(getComputedStyle(cell).backgroundColor)),
+    };
+  });
+  expect(grammar.display).toBe('table');
+  expect(grammar.roles).toBe(true);
+  expect(grammar.readableColumns, JSON.stringify(await target.locator('tbody th,tbody td').evaluateAll(cells=>cells.map(cell=>({text:cell.textContent,width:(cell as HTMLElement).offsetWidth,font:getComputedStyle(cell).fontSize,min:getComputedStyle(cell).minWidth,wrap:getComputedStyle(cell).overflowWrap,break:getComputedStyle(cell).wordBreak}))))).toBe(true);
+  expect(grammar.family).toContain('Times');
+  expect(grammar.font).toBeGreaterThanOrEqual(route.includes('/briefing/') ? 14 : 16);
+  expect(grammar.top).toBeGreaterThan(0);
+  expect(grammar.bottom).toBeGreaterThan(0);
+  expect(grammar.caption, JSON.stringify(grammar)).toBe(true);
+  expect(grammar.captionSide).toBe('top');
+  expect(grammar.verticalRules).toBe(false);
+  expect(grammar.bodyRules).toBe(false);
+  expect(grammar.numeric).toBe(true);
+  expect(grammar.bodyBackgrounds).toBe(true);
+  await expect(target.locator('..')).toHaveCSS('overflow-x','auto');
+}
 
 const captureAudit = process.env.CLOUD_FIGURE_AUDIT === '1';
 const root = join(process.cwd(), 'dist');
@@ -36,6 +83,11 @@ for (const route of routes) {
       const overflow = await page.evaluate(() =>
         document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow).toBeLessThanOrEqual(2);
+      const nativeTables = page.locator('table');
+      for (let index = 0; index < await nativeTables.count(); index++) {
+        const target = nativeTables.nth(index);
+        if (await target.getAttribute('data-research-paper-table') !== null && await target.isVisible()) await expectPaperGrammar(target, route, index);
+      }
       if (captureAudit) {
         await page.evaluate(() => {
           // Capture explicitly records this expanded reading state.
@@ -118,8 +170,20 @@ for (const route of routes) {
             cells:[...el.querySelectorAll('th,td')].map(cell=>({text:cell.textContent?.trim(),
               box:cell.getBoundingClientRect().toJSON(),fontSize:getComputedStyle(cell).fontSize})),
           }),index);
+
+          if (await target.getAttribute('data-research-paper-table') !== null && visible) await expectPaperGrammar(target, route, index);
           tables.push({...table,visible,state:visible?readingState:alternative.phone?'source-owned phone-only table; desktop data chart visible':'source-owned compact rental catalog excluded from this page'});
-          if(visible)await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`));
+          if(visible) {
+            await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`));
+            if(width===1440 && theme==='light' && await target.getAttribute('data-research-paper-table') !== null) {
+              await target.evaluate(node=>(node as HTMLElement).style.filter='grayscale(1)');
+              await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-grayscale.png`));
+              await target.evaluate(node=>(node as HTMLElement).style.removeProperty('filter'));
+              await page.emulateMedia({media:'print'});
+              await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-print.png`));
+              await page.emulateMedia({media:'screen'});
+            }
+          }
         }
         await expect(page.locator('table')).toHaveCount(tableCount);
         evidence.push({route,width,theme,tables,rootOverflow:overflow});
@@ -133,7 +197,7 @@ for (const route of routes) {
   });
 }
 
-test('short quantitative tables shrink without affecting dense tables or method diagrams', async ({ page }) => {
+test('paper tables use content width while dense comparisons and diagrams retain their reading space', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/');
   const tables = page.locator('.paper-table');
@@ -154,18 +218,41 @@ test('short quantitative tables shrink without affecting dense tables or method 
     width: el.getBoundingClientRect().width,
   })));
   expect(accelSizes.find(row => row.cols === 2)?.width).toBeLessThan(500);
-  expect(accelSizes.find(row => row.cols === 5)?.width).toBeGreaterThan(900);
+  expect(accelSizes.find(row => row.cols === 5)?.width).toBeGreaterThan((accelSizes.find(row => row.cols === 2)?.width ?? Infinity) + 180);
 
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/');
   const state = page.locator('.bounded__table');
-  expect((await state.first().boundingBox())!.width).toBeLessThan(760);
-  expect((await state.last().boundingBox())!.width).toBeGreaterThan(900);
+  await expect(state).toHaveCount(2);
+  // A text-heavy three-column comparison can be wider than a four-column
+  // numeric result. Both must keep their intrinsic width when extra room is
+  // available, rather than stretching to fill an arbitrary desktop column.
+  const acceptIntrinsicWidth = async (table: Locator) => {
+    const column = table.locator('..').locator('..');
+    const originalStyle = await column.getAttribute('style');
+    const before = (await table.boundingBox())!.width;
+    const available = (await column.boundingBox())!.width;
+    expect(before).toBeLessThan(available);
+    try {
+      await column.evaluate((el, width) => { (el as HTMLElement).style.width=width+'px'; (el as HTMLElement).style.maxWidth='none'; }, available+600);
+      expect(Math.abs((await table.boundingBox())!.width-before)).toBeLessThanOrEqual(2);
+    } finally {
+      await column.evaluate((el, style) => { if(style===null)el.removeAttribute('style');else el.setAttribute('style',style); },originalStyle);
+    }
+  };
+  for (const table of await state.all()) await acceptIntrinsicWidth(table);
+  const compactState = state.first(), compactWindow = compactState.locator('..');
+  await compactWindow.evaluate(el => (el as HTMLElement).style.width='100%');
+  await compactState.evaluate(el => (el as HTMLElement).style.width='100%');
+  await expect(acceptIntrinsicWidth(compactState)).rejects.toThrow();
+  await compactWindow.evaluate(el => (el as HTMLElement).style.removeProperty('width'));
+  await compactState.evaluate(el => (el as HTMLElement).style.removeProperty('width'));
+  await acceptIntrinsicWidth(compactState);
 
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/');
   const v2Compact = page.locator('.comparison-table');
   const v2Wide = page.locator('.next-table');
   expect((await v2Compact.boundingBox())!.width).toBeLessThan(780);
-  expect((await v2Wide.boundingBox())!.width).toBeGreaterThan(800);
+  expect((await v2Wide.boundingBox())!.width).toBeGreaterThan((await v2Compact.boundingBox())!.width);
 
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-scaling/');
   await expect(page.locator('.scaling-chart')).toHaveAttribute('data-research-figure-size', 'wide');
@@ -254,10 +341,18 @@ for (const width of [390,768,1440]) for (const theme of ['light','dark'] as cons
     acceptRows(await rowBounds());
     if(width===390){
       const oldLabel=page.locator('[data-advisor-matrix="q01"] tbody tr').nth(1).locator('th');
-      await oldLabel.evaluate(node=>(node as HTMLElement).style.whiteSpace='nowrap');
+      await oldLabel.evaluate(node=>{
+        const table=node.closest('table')!;
+        table.style.tableLayout='fixed';table.style.width='350px';table.style.minWidth='0';table.style.maxWidth='350px';
+        (node as HTMLElement).style.whiteSpace='nowrap';
+      });
       const oldRows=await rowBounds();
       expect(()=>acceptRows(oldRows)).toThrow();
-      await oldLabel.evaluate(node=>(node as HTMLElement).style.removeProperty('white-space'));
+      await oldLabel.evaluate(node=>{
+        (node as HTMLElement).style.removeProperty('white-space');
+        const table=node.closest('table')!;
+        for(const property of ['table-layout','width','min-width','max-width'])table.style.removeProperty(property);
+      });
       acceptRows(await rowBounds());
     }
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
@@ -277,19 +372,22 @@ for (const width of [390,768,1440]) for (const theme of ['light','dark'] as cons
     if(width===390){
       const geometry=await holder.evaluate(node=>({client:node.clientWidth,scroll:node.scrollWidth}));
       expect(geometry.scroll).toBeGreaterThan(geometry.client);
-      await composition.evaluate(node=>{
-        (node as HTMLElement).style.minWidth='0';
-        (node as HTMLElement).style.maxWidth='min(100%,46rem)';
-        (node.querySelector('thead th:nth-child(2)') as HTMLElement).style.whiteSpace='normal';
+      const previousStyles=await composition.evaluate(node=>{
+        const nodes=[node,...node.querySelectorAll('th,td')];
+        const previous=nodes.map(cell=>cell.getAttribute('style'));
+        Object.assign((node as HTMLElement).style,{tableLayout:'fixed',width:'100px',minWidth:'0',maxWidth:'100px'});
+        for(const cell of node.querySelectorAll<HTMLElement>('th,td'))Object.assign(cell.style,{minWidth:'0',width:'auto'});
+        Object.assign((node.querySelector('thead th:nth-child(2)') as HTMLElement).style,{whiteSpace:'normal',overflowWrap:'anywhere',width:'1ch'});
+        return previous;
       });
       const old=await wordLines();
       expect(old).toBeGreaterThan(1);
       expect(()=>expect(old).toBe(1)).toThrow();
-      await composition.evaluate(node=>{
-        (node as HTMLElement).style.removeProperty('min-width');
-        (node as HTMLElement).style.removeProperty('max-width');
-        (node.querySelector('thead th:nth-child(2)') as HTMLElement).style.removeProperty('white-space');
-      });
+      await composition.evaluate((node,previous)=>{
+        [node,...node.querySelectorAll('th,td')].forEach((cell,index)=>{
+          if(previous[index]===null)cell.removeAttribute('style');else cell.setAttribute('style',previous[index]!);
+        });
+      },previousStyles);
       expect(await wordLines()).toBe(1);
     }
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
@@ -366,9 +464,17 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
     await expect(names.nth(0)).toHaveText('SD-LoRA v2 · Stable Reduction');
     await expect(names.nth(1)).toHaveText('SD-LoRA · Bounded Online Recurrence');
     if(width===390){
-      await names.evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.whiteSpace='nowrap'));
+      await names.evaluateAll(nodes=>nodes.forEach(node=>{
+        const table=node.closest('table')!;
+        table.style.tableLayout='fixed';table.style.width='350px';table.style.minWidth='0';table.style.maxWidth='350px';
+        (node as HTMLElement).style.whiteSpace='nowrap';
+      }));
       const old=await measure();expect(()=>accept(old)).toThrow();
-      await names.evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.removeProperty('white-space')));
+      await names.evaluateAll(nodes=>nodes.forEach(node=>{
+        (node as HTMLElement).style.removeProperty('white-space');
+        const table=node.closest('table')!;
+        for(const property of ['table-layout','width','min-width','max-width'])table.style.removeProperty(property);
+      }));
       accept(await measure());
     }
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
@@ -451,6 +557,51 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
       expect(plot.curves.some(c=>c.stroke==='#2563EB'&&c.dash==='12 6'),plot.name).toBe(true);
       expect(plot.curves.some(c=>c.stroke==='#B91C1C'&&c.dash==='3 5'),plot.name).toBe(true);
       expect(plot.legend,plot.name).toEqual(expect.arrayContaining(['12 6','3 5']));
+    }
+  });
+}
+
+test('expanded SD-LoRA paper comparison survives print without exposing unrelated sections',async({page},testInfo)=>{
+  await page.goto('/research/seed-openevo/flow/sd-lora/',{waitUntil:'load'});
+  const table=page.locator('table[data-research-paper-table]').first();
+  await revealEvidenceReadingState(table);
+  await page.emulateMedia({media:'print'});
+  await expect(table).toBeVisible();
+  const section=table.locator('xpath=ancestor::details[1]');
+  await expect(section).toHaveAttribute('open','');
+  await expect(page.locator('.sdlora__details')).toBeHidden();
+  await section.evaluate(node=>(node as HTMLElement).style.display='none');
+  await expect(captureFigureEvidence(table,testInfo.outputPath('sd-lora-print-hidden-negative.png'))).rejects.toThrow('no visible reading surface');
+  await section.evaluate(node=>(node as HTMLElement).style.removeProperty('display'));
+  await expect(table).toBeVisible();
+  await captureFigureEvidence(table,testInfo.outputPath('sd-lora-paper-comparison-print.png'));
+  await page.emulateMedia({media:'screen'});
+});
+
+for(const width of [390,768,1440]) {
+  test('paper row labels remain whole words and checkpoint identifiers: '+width,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    const route='/research/seed-openevo/study/parameter-memory-results/';
+    await page.goto(route,{waitUntil:'load'});
+    for(const id of ['q02','q03','q06','q07']) {
+      const table=page.locator('[data-advisor-matrix="'+id+'"] table');
+      await revealEvidenceReadingState(table);
+      const label=table.locator('tbody th').first();
+      const before=await label.boundingBox();
+      expect(before!.width).toBeGreaterThanOrEqual(127);
+      const fragments=await label.evaluate(el=>{
+        const text=el.firstChild!;
+        const value=text.textContent??'',word=value.match(/SFT|A\d+|Bounded/);
+        if(!word)throw Error('Missing scientific row identifier');
+        const range=document.createRange();range.setStart(text,word.index!);range.setEnd(text,word.index!+word[0].length);
+        return range.getClientRects().length;
+      });
+      expect(fragments).toBe(1);
+      await label.evaluate(el=>{(el as HTMLElement).style.minWidth='0';(el as HTMLElement).style.width='1ch';(el as HTMLElement).style.maxWidth='1ch';(el as HTMLElement).style.overflowWrap='anywhere';});
+      const index=await table.evaluate(el=>[...document.querySelectorAll('table')].indexOf(el as HTMLTableElement));
+      await expect(expectPaperGrammar(table,route,index)).rejects.toThrow();
+      await label.evaluate(el=>{for(const property of ['min-width','width','max-width','overflow-wrap'])(el as HTMLElement).style.removeProperty(property);});
+      expect((await label.boundingBox())!.width).toBeGreaterThanOrEqual(127);
     }
   });
 }

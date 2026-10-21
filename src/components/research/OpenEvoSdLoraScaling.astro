@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
@@ -109,7 +110,8 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
       )}</figcaption>
     </figure>
     <div class="scaling-table-wrap">
-      <table class="scaling-table">
+      <ResearchPaperTable class="scaling-table">
+<Fragment slot="caption">{t('只有历史 component 数量在变化', 'Only prior component count changes')}</Fragment>
         <thead><tr><th scope="col">K</th><th scope="col">{t('Trainer', 'Trainer')}</th><th scope="col">Forward</th><th scope="col">Backward</th></tr></thead>
         <tbody>
           {SD_LORA_SCALING_POINTS.map((point) => <tr>
@@ -119,7 +121,7 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
             <td>{round2(point.backward)} s</td>
           </tr>)}
         </tbody>
-      </table>
+      </ResearchPaperTable>
       <p>{t(
         '这些点使用人为只保留前 K 个历史 component 的诊断版本；它们只用于机制分析，不是历史 checkpoint，也不是新增的正式 Q17 treatment round。主曲线固定在同一张 GPU 上，K=128 又在另一张同型号 GPU 上独立复现。',
         'These points use diagnostic variants that retain only the first K prior components. They are mechanism probes, not historical checkpoints or additional formal Q17 treatment rounds. The primary curve stays on one GPU, and K=128 is independently repeated on another GPU of the same model.',
@@ -225,7 +227,7 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
 .scaling-hero__boundary{max-width:50rem;margin:1.05rem 0 0;color:var(--muted);line-height:1.6}.scaling-hero__links{display:flex;flex-wrap:wrap;gap:.45rem 1.1rem;margin-top:1rem}.scaling-hero__links a,.next-links a,.evidence-depth a{color:var(--accent-deep);font-weight:750;text-underline-offset:.22em}
 .scaling-evidence,.profile-evidence,.diagnosis,.mechanism,.conclusion{padding:2.8rem 0;border-bottom:1px solid var(--line)}.section-heading{max-width:50rem}.section-heading h2{margin:0;font-family:var(--font-editorial);font-size:clamp(1.65rem,3.3vw,2.55rem);line-height:1.08;letter-spacing:-.025em}.section-heading p{margin:.75rem 0 0;color:var(--muted);line-height:1.65}
 .scaling-chart{margin:1.5rem 0 0}.scaling-chart svg{display:block;width:100%;height:auto;overflow:visible}.gridline line{stroke:var(--line);stroke-width:1}.gridline text,.data-point text,.axis-label{fill:var(--muted);font:700 13px var(--font-mono)}.axis{stroke:var(--ink);stroke-width:1.4}.fit-line{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:7 7}.data-line{stroke:var(--accent-deep);stroke-width:3}.data-point circle{fill:var(--surface);stroke:var(--accent-deep);stroke-width:3}.data-point .value{fill:var(--ink);font-weight:800}.scaling-chart figcaption{max-width:52rem;margin:.75rem 0 0;color:var(--muted);font-size:1rem;line-height:1.55}
-.scaling-table-wrap{margin-top:1.35rem;overflow-x:auto}.scaling-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.scaling-table th,.scaling-table td{padding:.65rem .8rem;font-size:1rem;border-bottom:1px solid var(--line);text-align:right}.scaling-table th:first-child{text-align:left}.scaling-table thead th{font-size:1rem;color:var(--muted)}.scaling-table-wrap>p{margin:.7rem 0 0;color:var(--muted);font-size:1rem;line-height:1.5}
+.scaling-table-wrap{margin-top:1.35rem;overflow-x:auto;min-width:0}.scaling-table-wrap>p{margin:.7rem 0 0}
 .profile-bar{display:flex;min-height:4.5rem;margin:1.5rem 0 .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);overflow:hidden;background:var(--surface-muted)}.profile-bar span{display:block;min-width:0;flex:0 1 auto;border-right:1px solid var(--line)}.profile-bar span:last-child{border-right:0}.profile-bar__forward{background:color-mix(in srgb,var(--accent-fill) 13%,var(--surface))}.profile-bar__backward{background:color-mix(in srgb,var(--color-info) 12%,var(--surface))}.profile-bar__other{background:var(--surface-muted)}.profile-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin:.8rem 0 0}.profile-legend>div{padding-top:.65rem;border-top:1px solid var(--line)}.profile-legend dt{color:var(--muted);font-size:1rem}.profile-legend dd{margin:.2rem 0 0;font:800 1.08rem/1.25 var(--font-mono)}.profile-note{max-width:54rem;margin:.8rem 0 0;line-height:1.65}
 .diagnosis-path{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.5rem 0 0;padding:0;list-style:none;border-block:1px solid var(--line)}.diagnosis-path li{padding:1.15rem 1.1rem;border-right:1px solid var(--line)}.diagnosis-path li:last-child{border-right:0}.diagnosis-path strong{font-size:1.02rem}.diagnosis-path p{margin:.45rem 0 0;color:var(--muted);line-height:1.55}.diagnosis-path span{display:block;margin-top:.8rem;color:var(--accent-deep);font-weight:800;font-size:1rem}
 .mechanism-figure{display:grid;grid-template-columns:max-content 2rem minmax(0,1fr);align-items:center;gap:.7rem 1rem;margin:1.5rem 0 0;padding:1.35rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.mechanism-base{padding:.8rem 1rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);font-weight:800}.mechanism-plus{font-size:1.35rem;text-align:center;color:var(--muted)}.mechanism-components{display:flex;flex-wrap:wrap;gap:.45rem}.mechanism-components span{padding:.55rem .7rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);font:700 1rem/1.25 var(--font-mono)}.mechanism-arrow{grid-column:1/-1;text-align:center;color:var(--accent-deep);font-size:1.4rem}.mechanism-result{grid-column:1/-1;padding-top:.2rem;text-align:center}.mechanism-result strong{font-size:1.08rem}.mechanism-result p{max-width:46rem;margin:.35rem auto 0;color:var(--muted);line-height:1.55}.mechanism-figure figcaption{grid-column:1/-1;margin-top:.6rem;padding-top:.8rem;border-top:1px solid var(--line);color:var(--muted);font-size:1rem;line-height:1.55}
