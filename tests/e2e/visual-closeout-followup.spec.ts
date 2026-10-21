@@ -323,3 +323,69 @@ test('landscape catalog stats use a desktop row and mobile column', async ({ pag
     });
   }
 });
+
+
+/** Built-HTML inventory includes both paper matrices, but when JavaScript is
+ * enabled <noscript> is inert text. Verify the distinct no-JS reader state. */
+for (const width of [390, 768, 1440] as const) {
+  test('papers matrix no-JavaScript fallback really renders at ' + width + 'px', async ({ browser }, testInfo) => {
+    const context = await browser.newContext({
+      javaScriptEnabled: false,
+      viewport: { width, height: 900 },
+      colorScheme: 'light',
+    });
+    try {
+      const page = await context.newPage();
+      const response = await page.goto('/papers/', { waitUntil: 'domcontentloaded' });
+      expect(response?.status()).toBe(200);
+      const fallback = page.locator('.paper-matrix-noscript');
+      await expect(fallback).toBeVisible();
+      await expect(fallback).toContainText('JavaScript 已关闭');
+      const table = fallback.locator('table.matrix-table');
+      await expect(table).toBeVisible();
+      await expect(table.locator('thead tr')).toHaveCount(1);
+      expect(await table.locator('thead th').count()).toBeGreaterThan(1);
+      expect(await table.locator('tbody tr').count()).toBeGreaterThan(0);
+      await expect(table.locator('tbody a[href^="/papers/"]').first()).toBeVisible();
+
+      // A second matrix is intentionally kept in closed disclosure; only
+      // the alternate is visible to a no-JS reader on initial page load.
+      await expect(page.locator('.paper-matrix-advanced')).not.toHaveAttribute('open', '');
+      await expect(page.locator('.paper-matrix-advanced .matrix-table')).not.toBeVisible();
+      await expect(page.locator('table.matrix-table')).toHaveCount(2);
+      expect(await page.evaluate(() =>
+        document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      )).toBeLessThanOrEqual(2);
+
+      const scroller = fallback.locator('.matrix-wrap');
+      const geometry = await scroller.evaluate(node => ({
+        clientWidth: node.clientWidth,
+        scrollWidth: node.scrollWidth,
+        overflowX: getComputedStyle(node).overflowX,
+      }));
+      expect(geometry.clientWidth).toBeGreaterThan(0);
+      if (width === 390) {
+        expect(geometry.scrollWidth).toBeGreaterThan(geometry.clientWidth);
+        await scroller.evaluate(node => node.scrollTo({ left: node.scrollWidth, behavior: 'instant' }));
+        expect(await scroller.evaluate(node => node.scrollLeft)).toBeGreaterThan(0);
+      }
+      await scroller.screenshot({
+        path: testInfo.outputPath('papers-noscript-' + width + '.png'),
+        animations: 'disabled',
+      });
+    } finally {
+      await context.close();
+    }
+  });
+}
+
+test('papers noscript matrix stays inert when JavaScript is enabled', async ({ page }) => {
+  await page.goto('/papers/', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.paper-matrix-noscript')).toHaveCount(0);
+  await expect(page.locator('table.matrix-table')).toHaveCount(1);
+  const advanced = page.locator('.paper-matrix-advanced');
+  await expect(advanced).not.toHaveAttribute('open', '');
+  await advanced.locator('summary').click();
+  await expect(advanced).toHaveAttribute('open', '');
+  await expect(advanced.locator('table.matrix-table')).toBeVisible();
+});
