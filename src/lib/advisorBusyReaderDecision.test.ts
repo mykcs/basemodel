@@ -40,7 +40,7 @@ describe('busy advisor first-read decision path', () => {
     expect(ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q04')?.boundary).toContain('−3.68');
     expect(ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q07')?.finding).toContain('10.06');
     expect(ADVISOR_DECISION_BRIEF.unresolved.map(x=>x.id)).toEqual(['q10','q03']);
-    expect(ADVISOR_DECISION_BRIEF.historicalBoundary).toContain('不是完全严格');
+    expect(ADVISOR_DECISION_BRIEF.historicalBoundary).toContain('并非严格训练对照');
     // A professor's phone viewport may reveal only the first paragraph.
     // Scientific time scope and proposal/approval state must therefore be unambiguous there.
     expect(ADVISOR_DECISION_BRIEF.researchQuestion).toContain('Q10 新题');
