@@ -134,10 +134,10 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
       await expect(holder).toHaveCSS('overflow-x','auto');
       expect(await holder.evaluate(el=>el.scrollWidth-el.clientWidth)).toBeGreaterThan(0);
       await rank.evaluate(el=>{(el as HTMLElement).style.minWidth='0';(el as HTMLElement).style.maxWidth='100%';});
-      await cell.evaluate(el=>(el as HTMLElement).style.minWidth='0');
+      await rank.locator('th,td').evaluateAll(nodes=>nodes.forEach(el=>(el as HTMLElement).style.minWidth='0'));
       const old=await lines();expect(()=>accept(old)).toThrow();
       await rank.evaluate(el=>{(el as HTMLElement).style.removeProperty('min-width');(el as HTMLElement).style.removeProperty('max-width');});
-      await cell.evaluate(el=>(el as HTMLElement).style.removeProperty('min-width'));
+      await rank.locator('th,td').evaluateAll(nodes=>nodes.forEach(el=>(el as HTMLElement).style.removeProperty('min-width')));
       accept(await lines());
     }
     const difference=page.locator('.paper-table').filter({hasText:'R1–R159 mean reward'}).locator('tbody tr').first().locator('td').last();
