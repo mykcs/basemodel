@@ -239,3 +239,80 @@ test('former 13px data and hidden local scroller both fail the actual advisor ta
   expect(badScroller).toBe('hidden');
   expect(()=>acceptLocalTableScroller(badScroller)).toThrow();
 });
+
+
+
+const fourArmAnalysis='/research/seed-openevo/study/results/four-arm-analysis/';
+async function readFourArmType(page: import('@playwright/test').Page) {
+  return page.evaluate(()=>{
+    const root=document.querySelector('.analysis-plan');
+    if(!root) throw Error('Missing four-arm research report');
+    const describe=(element:Element)=>{
+      const style=getComputedStyle(element);
+      const rect=element.getBoundingClientRect();
+      return {size:parseFloat(style.fontSize),weight:parseFloat(style.fontWeight),
+        family:style.fontFamily,style:style.fontStyle,
+        width:rect.width,client:(element as HTMLElement).clientWidth,
+        scroll:(element as HTMLElement).scrollWidth,
+        text:element.textContent?.trim().slice(0,85)};
+    };
+    const selectors=['.section-kicker','.reasoning-line figcaption','.reasoning-line li','.reasoning-line li > span'];
+    const roles=Object.fromEntries(selectors.map(selector=>{
+      const nodes=[...root.querySelectorAll(selector)];
+      if(nodes.length===0)throw Error('Missing role '+selector);
+      return [selector,nodes.map(describe)];
+    })) as Record<string, ReturnType<typeof describe>[]>;
+    return {roles,overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};
+  });
+}
+function assertFourArmType(receipt:Awaited<ReturnType<typeof readFourArmType>>) {
+  expect(receipt.overflow).toBeLessThanOrEqual(2);
+  const a=receipt.roles;
+  for(const x of a['.section-kicker']!) {
+    expect(x.size).toBeGreaterThanOrEqual(13);
+    expect(x.family).toMatch(/Inter|PingFang|system-ui/);
+    expect(x.weight).toBeLessThanOrEqual(650);
+  }
+  for(const x of a['.reasoning-line figcaption']!)expect(x.size).toBeGreaterThanOrEqual(15);
+  for(const x of a['.reasoning-line li']!) {
+    expect(x.size).toBeGreaterThanOrEqual(15);
+    expect(x.family).toMatch(/Inter|PingFang|system-ui/);
+    expect(x.scroll).toBeLessThanOrEqual(x.client+2);
+  }
+  for(const x of a['.reasoning-line li > span']!) {
+    expect(x.size).toBeGreaterThanOrEqual(13);
+    expect(x.family).toMatch(/Inter|PingFang|system-ui/);
+    expect(x.weight).toBeLessThanOrEqual(650);
+  }
+}
+for(const width of [390,768,1440] as const) {
+  for(const theme of ['light','dark'] as const) {
+    test('four-arm reader sees legible reasoning steps at '+width+'/'+theme,async({page},testInfo)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(v=>localStorage.setItem('atlas-theme',v),theme);
+      const response=await page.goto(fourArmAnalysis,{waitUntil:'domcontentloaded'});
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await page.evaluate(()=>document.fonts.ready);
+      const receipt=await readFourArmType(page);
+      assertFourArmType(receipt);
+      const figure=page.locator('.reasoning-line').first();
+      await figure.scrollIntoViewIfNeeded();
+      await figure.screenshot({path:testInfo.outputPath('four-arm-reasoning-'+width+'-'+theme+'.png'),animations:'disabled',style:'.site-header{visibility:hidden}'});
+      await testInfo.attach('four-arm-type.json',{body:Buffer.from(JSON.stringify(receipt,null,2)),contentType:'application/json'});
+    });
+  }
+}
+test('same four-arm reader predicates reject restored 10px prose and metadata',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(fourArmAnalysis,{waitUntil:'domcontentloaded'});
+  assertFourArmType(await readFourArmType(page));
+  const injected=await page.addStyleTag({content:`
+    .analysis-plan .reasoning-line li {font-size:10px !important;}
+    .analysis-plan .reasoning-line li>span {font-size:10px !important;}
+  `});
+  const bad=await readFourArmType(page);
+  expect(()=>assertFourArmType(bad)).toThrow();
+  await injected.evaluate(node=>node.parentNode?.removeChild(node));
+  assertFourArmType(await readFourArmType(page));
+});
