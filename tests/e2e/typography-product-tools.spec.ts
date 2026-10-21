@@ -614,3 +614,91 @@ test('legacy guide rejects former one-column date wrap at tablet width',async({p
   await original.evaluate(node=>node.parentNode?.removeChild(node));
   assertLegacyRunbookTypography(await readLegacyRunbookTypography(page),768);
 });
+
+
+// Results landing page: five actual sealed/unrun experiment arm summaries.
+// Unlike a short tick, these are 15px reader evidence paragraphs.
+async function readFiveArmResultsIndex(page:import('@playwright/test').Page){
+  return page.evaluate(()=>{
+    const root=document.querySelector('.analysis-plan-index');
+    if(!root)throw Error('Mounted five-arm index missing on public Results route');
+    const selectors=['.analysis-plan-index h2','.analysis-plan-index__intro p',
+      '.analysis-plan-index li>span','.analysis-plan-index h3',
+      '.analysis-plan-index li p','.analysis-plan-index a'];
+    const roles=Object.fromEntries(selectors.map(selector=>{
+      const el=root.querySelector(selector);
+      if(!el)throw Error('Missing Result role: '+selector);
+      const css=getComputedStyle(el),b=el.getBoundingClientRect();
+      return [selector,{size:parseFloat(css.fontSize),family:css.fontFamily,
+        style:css.fontStyle,weight:parseFloat(css.fontWeight),client:(el as HTMLElement).clientWidth,
+        scroll:(el as HTMLElement).scrollWidth,width:b.width}];
+    })) as Record<string,{size:number;family:string;style:string;weight:number;
+      client:number;scroll:number;width:number}>;
+    const items=[...root.querySelectorAll(':scope > ol > li')];
+    const b=root.getBoundingClientRect();
+    return {roles,left:b.left,right:b.right,
+      overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+      count:items.length,labels:items.map(li=>li.querySelector(':scope > span')?.textContent?.trim()??''),
+      urls:items.map(li=>li.querySelector('a')?.getAttribute('href')??''),
+      text:root.textContent??''};
+  });
+}
+function acceptFiveArmResultsIndex(x:Awaited<ReturnType<typeof readFiveArmResultsIndex>>,width:number){
+  expect(x.count).toBe(5);
+  expect(x.labels).toEqual(['01','02','03','04','05']);
+  expect(x.text).toContain('3B/MiniMax 的 final 明确未运行');
+  expect(x.text).toContain('74.58%');
+  expect(x.urls.every(u=>u.startsWith('/research/seed-openevo/study/results/'))).toBe(true);
+  expect(x.overflow).toBeLessThanOrEqual(2);
+  expect(x.left).toBeGreaterThanOrEqual(-2);
+  expect(x.right).toBeLessThanOrEqual(width+2);
+  const floors:Record<string,number>={
+    '.analysis-plan-index h2':22,'.analysis-plan-index__intro p':16,
+    '.analysis-plan-index li>span':13,'.analysis-plan-index h3':17,
+    '.analysis-plan-index li p':15,'.analysis-plan-index a':15};
+  for(const [selector,min] of Object.entries(floors)){
+    const v=x.roles[selector];
+    if(!v)throw Error('Missing computed five-arm type '+selector);
+    expect(v.size,selector).toBeGreaterThanOrEqual(min);
+    expect(v.family,selector).toMatch(/Inter|PingFang|system-ui/);
+    expect(v.style,selector).toBe('normal');
+    expect(v.scroll,selector).toBeLessThanOrEqual(v.client+2);
+  }
+}
+for(const width of [390,768,1440] as const){
+  for(const theme of ['light','dark'] as const){
+    test('five-arm scientific Results index legible at '+width+'/'+theme,async({page},testInfo)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(v=>localStorage.setItem('atlas-theme',v),theme);
+      const response=await page.goto('/research/seed-openevo/study/results/',{waitUntil:'domcontentloaded'});
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await page.evaluate(()=>document.fonts.ready);
+      const measured=await readFiveArmResultsIndex(page);
+      acceptFiveArmResultsIndex(measured,width);
+      const rows=page.locator('.analysis-plan-index > ol > li');
+      await rows.first().scrollIntoViewIfNeeded();
+      await rows.first().screenshot({path:testInfo.outputPath('five-arm-first-'+width+'-'+theme+'.png'),
+        animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}'});
+      await rows.last().scrollIntoViewIfNeeded();
+      await rows.last().screenshot({path:testInfo.outputPath('five-arm-last-'+width+'-'+theme+'.png'),
+        animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}'});
+      await testInfo.attach('five-arm-computed.json',{
+        body:Buffer.from(JSON.stringify({...measured,text:'omitted, original scientific text unchanged'},null,2)),
+        contentType:'application/json'});
+    });
+  }
+}
+test('five-arm results gate rejects decorated 11px numbers and 12px scientific prose',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/research/seed-openevo/study/results/',{waitUntil:'domcontentloaded'});
+  acceptFiveArmResultsIndex(await readFiveArmResultsIndex(page),390);
+  const injected=await page.addStyleTag({content:
+    '.analysis-plan-index li>span{font-size:11px!important}' +
+    '.analysis-plan-index li p{font-size:12px!important}'});
+  const damaged=await readFiveArmResultsIndex(page);
+  expect(()=>acceptFiveArmResultsIndex(damaged,390)).toThrow();
+  await injected.evaluate(node=>node.parentNode?.removeChild(node));
+  acceptFiveArmResultsIndex(await readFiveArmResultsIndex(page),390);
+});
+
