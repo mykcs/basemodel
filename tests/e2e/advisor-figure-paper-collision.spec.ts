@@ -179,7 +179,10 @@ test('phone reader gets a Q10 decision route and can still find the meeting RAW'
   const finding=page.locator('[data-advisor-key-findings]');
   const q10=page.locator('[data-advisor-priorities] a[href="#response-q10"]');
   const raw=page.locator('[data-meeting-provenance] a[href*="2026-09-22-meeting-transcript.raw.md"]');
-  await expect(finding).toContainText('Q05、Q07');
+  // Current main reader contract prioritizes scope-bounded Q04/Q07; Q05 remains in deeper results.
+  await expect(finding).toContainText('Q04');
+  await expect(finding).toContainText('Q07');
+  await expect(finding).toContainText('95%');
   await expect(q10).toBeVisible();
   await expect(raw).toHaveCount(1);
   await expect(raw).toContainText('会议原始逐字记录');
