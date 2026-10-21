@@ -1,9 +1,10 @@
 import { expect, test, type Locator } from '@playwright/test';
 import { createHash } from 'node:crypto';
-import paperTableBaseline from '../fixtures/research-paper-table-values.json';
 import { captureFigureEvidence, revealEvidenceReadingState, settleFigureHydration } from './figure-evidence';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
+
+const paperTableBaseline = JSON.parse(readFileSync(join(process.cwd(), 'tests/fixtures/research-paper-table-values.json'), 'utf8')) as { routes: { route: string; tables: { index: number; hash: string }[] }[] };
 
 async function expectPaperGrammar(target: Locator, route: string, index: number) {
 
@@ -20,7 +21,7 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
       roles: [...el.querySelectorAll('thead,tbody,tfoot,tr,th,td')].every(node => getComputedStyle(node).display === ({THEAD:'table-header-group',TBODY:'table-row-group',TFOOT:'table-footer-group',TR:'table-row',TH:'table-cell',TD:'table-cell'} as Record<string,string>)[node.tagName]),
       display: style.display, family: style.fontFamily, font: parseFloat(style.fontSize),
       top: parseFloat(style.borderTopWidth), bottom: parseFloat(style.borderBottomWidth),
-      caption: Boolean(cap && captionBox.width > 0 && captionBox.height > 0 && captionBox.bottom <= (el.querySelector('thead')?.getBoundingClientRect().top ?? box.top) + 2),
+      caption: Boolean(cap && captionBox.width > 0 && captionBox.height > 0 && captionBox.bottom <= (el.querySelector('thead,tbody,tr')?.getBoundingClientRect().top ?? box.top) + 2),
       captionSide: getComputedStyle(cap).captionSide,
       verticalRules: cells.some(cell => parseFloat(getComputedStyle(cell).borderLeftWidth) > 0 || parseFloat(getComputedStyle(cell).borderRightWidth) > 0),
       bodyRules: [...el.querySelectorAll<HTMLElement>('tbody tr:not(:first-child)>*')].some(cell => parseFloat(getComputedStyle(cell).borderTopWidth) > 0 || parseFloat(getComputedStyle(cell).borderBottomWidth) > 0),
