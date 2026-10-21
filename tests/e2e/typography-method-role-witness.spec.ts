@@ -308,3 +308,138 @@ test('SEED mobile exchange uses two readable full-width rows, not old parallel s
   await channels.first().evaluate(el => { (el as HTMLElement).style.removeProperty('grid-template-columns'); });
   expect((await layout(0)).lastBelowFirst).toBe(true);
 });
+
+
+// A real, mounted 3-lane scientific method diagram on the article route.
+// The CSS source alone cannot demonstrate that Chinese nodes are readable.
+const advisorMethodsRoute='/research/seed-openevo/study/openevo-methods/';
+type AdvisorFigureMeasurement={
+  type:Record<string,{size:number;weight:number;style:string;family:string;lineHeight:string;width:number;scroll:number;client:number}>;
+  lanes:{nodes:{x:number;y:number;width:number;height:number}[];columns:string}[];
+  documentOverflow:number;figureLeft:number;figureRight:number;
+  scientificText:string;
+};
+const advisorFigureRoles={
+  '.advisor-method h3':20,
+  '.advisor-method > p':18,
+  '.advisor-method__lane-head h4':17,
+  '.advisor-method__lane-head span':14,
+  '.advisor-method__node small':13,
+  '.advisor-method__node strong':16,
+  '.advisor-method__lane > p':16,
+  '.advisor-method__figure figcaption':14,
+  '.advisor-method__rank summary':16,
+  '.advisor-method__rank p':16,
+  '.advisor-method__rank p.advisor-method__rank-source':14,
+} as const;
+async function measureAdvisorFigure(page:import('@playwright/test').Page):Promise<AdvisorFigureMeasurement>{
+  return page.evaluate((selectors)=>{
+    const root=document.querySelector<HTMLElement>('[data-advisor-method-explainer]');
+    if(!root)throw Error('Real AdvisorTenMethodExplainer is missing');
+    const figures=root.querySelectorAll('.advisor-method__lane');
+    if(figures.length!==3)throw Error('Missing one of three historical scientific lanes');
+    const summary=root.querySelector<HTMLDetailsElement>('[data-rank8-disclosure]');
+    if(!summary?.open)throw Error('Scientific rank8 disclosure was not opened');
+    const values=Object.fromEntries(selectors.map(selector=>{
+      const el=root.querySelector<HTMLElement>(selector);
+      if(!el)throw Error('Missing computed method role '+selector);
+      const css=getComputedStyle(el),box=el.getBoundingClientRect();
+      return [selector,{size:parseFloat(css.fontSize),weight:parseFloat(css.fontWeight),
+        style:css.fontStyle,family:css.fontFamily,lineHeight:css.lineHeight,
+        width:box.width,scroll:el.scrollWidth,client:el.clientWidth}];
+    })) as AdvisorFigureMeasurement['type'];
+    const lanes=[...figures].map(lane=>{
+      const flow=lane.querySelector<HTMLElement>('.advisor-method__flow');
+      if(!flow)throw Error('A method lane lost its flow');
+      return {columns:getComputedStyle(flow).gridTemplateColumns,
+        nodes:[...flow.querySelectorAll('.advisor-method__node')].map(node=>{
+          const b=node.getBoundingClientRect();
+          return {x:b.x,y:b.y,width:b.width,height:b.height};
+        })};
+    });
+    const fig=root.querySelector('.advisor-method__figure')?.getBoundingClientRect();
+    if(!fig)throw Error('Method Figure 2 is missing');
+    return {type:values,lanes,documentOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+      figureLeft:fig.left,figureRight:fig.right,scientificText:root.textContent??''};
+  },Object.keys(advisorFigureRoles));
+}
+function acceptAdvisorFigure(m:AdvisorFigureMeasurement,width:number){
+  expect(m.documentOverflow).toBeLessThanOrEqual(2);
+  expect(m.figureLeft).toBeGreaterThanOrEqual(-2);
+  expect(m.figureRight).toBeLessThanOrEqual(width+2);
+  expect(m.lanes).toHaveLength(3);
+  for(const [selector,floor] of Object.entries(advisorFigureRoles)){
+    const r=m.type[selector];
+    if(!r)throw Error('Missing measured method role '+selector);
+    expect(r.size,selector).toBeGreaterThanOrEqual(floor);
+    expect(r.family,selector).toMatch(/Inter|PingFang|system-ui/);
+    expect(r.style,selector).toBe('normal');
+    expect(r.scroll-r.client,selector+' clipped').toBeLessThanOrEqual(2);
+  }
+  expect(m.scientificText).toContain('普通 OpenEVO');
+  expect(m.scientificText).toContain('固定容量 OpenEVO（Bounded）');
+  expect(m.scientificText).toContain('rank4');
+  expect(m.scientificText).toContain('rank128');
+  expect(m.scientificText).toContain('独立 Gated Delta 四轮资格研究不是第四条长跑');
+  for(const lane of m.lanes){
+    expect(lane.nodes).toHaveLength(3);
+    if(width<=900){
+      // Full-width vertical reading, not three unreadable 80px columns.
+      for(const n of lane.nodes)expect(n.width).toBeGreaterThanOrEqual(180);
+      for(let i=1;i<3;i++){
+        expect(lane.nodes[i]!.y).toBeGreaterThan(lane.nodes[i-1]!.y+lane.nodes[i-1]!.height);
+        expect(Math.abs(lane.nodes[i]!.x-lane.nodes[i-1]!.x)).toBeLessThanOrEqual(2);
+      }
+    }else{
+      for(const n of lane.nodes)expect(n.width).toBeGreaterThanOrEqual(105);
+      for(let i=1;i<3;i++)expect(lane.nodes[i]!.x).toBeGreaterThan(lane.nodes[i-1]!.x+lane.nodes[i-1]!.width);
+    }
+  }
+}
+for(const width of [390,768,1440] as const){
+  for(const theme of ['light','dark'] as const){
+    test('advisor historic method Figure 2 is legible: '+width+'/'+theme,async({page},testInfo)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+      const response=await page.goto(advisorMethodsRoute,{waitUntil:'domcontentloaded'});
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await page.evaluate(()=>document.fonts.ready);
+      const root=page.locator('[data-advisor-method-explainer]');
+      await expect(root.locator('.advisor-method__lane')).toHaveCount(3);
+      const rank=root.locator('[data-rank8-disclosure]');
+      await expect(rank).not.toHaveAttribute('open','');
+      await rank.locator('summary').click();
+      await expect(rank).toHaveAttribute('open','');
+      const result=await measureAdvisorFigure(page);
+      acceptAdvisorFigure(result,width);
+      await testInfo.attach('advisor-method-types.json',{
+        body:Buffer.from(JSON.stringify({...result,scientificText:'unchanged and asserted'},null,2)),
+        contentType:'application/json'});
+      const lanes=root.locator('.advisor-method__lane');
+      for(const [index,which] of [[0,'first'],[2,'last']] as const){
+        await lanes.nth(index).scrollIntoViewIfNeeded();
+        await lanes.nth(index).screenshot({path:testInfo.outputPath('advisor-method-'+which+'-'+width+'-'+theme+'.png'),
+          animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}'});
+      }
+    });
+  }
+}
+test('advisor Figure 2 gate rejects old tiny nodes and tablet slivers',async({page})=>{
+  await page.setViewportSize({width:768,height:900});
+  await page.goto(advisorMethodsRoute,{waitUntil:'domcontentloaded'});
+  const rank=page.locator('[data-rank8-disclosure]');
+  await rank.locator('summary').click();
+  acceptAdvisorFigure(await measureAdvisorFigure(page),768);
+  const tooSmall=await page.addStyleTag({content:
+    '.advisor-method__node strong{font-size:9px!important}'});
+  expect(()=>acceptAdvisorFigure(await measureAdvisorFigure(page),768)).rejects.toThrow();
+  await tooSmall.evaluate(el=>el.parentNode?.removeChild(el));
+  acceptAdvisorFigure(await measureAdvisorFigure(page),768);
+  const oldGrid=await page.addStyleTag({content:
+    '.advisor-method__flow{grid-template-columns:minmax(0,1fr) 1rem minmax(0,1fr) 1rem minmax(0,1fr)!important}'});
+  await expect(measureAdvisorFigure(page).then(v=>acceptAdvisorFigure(v,768))).rejects.toThrow();
+  await oldGrid.evaluate(el=>el.parentNode?.removeChild(el));
+  acceptAdvisorFigure(await measureAdvisorFigure(page),768);
+});
+
