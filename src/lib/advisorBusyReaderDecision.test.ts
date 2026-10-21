@@ -46,9 +46,11 @@ describe('busy advisor first-read decision path', () => {
     expect(ADVISOR_DECISION_BRIEF.researchQuestion).toContain('Q10 新题');
     expect(ADVISOR_DECISION_BRIEF.researchQuestion).toContain('后续方案待确认');
     expect(ADVISOR_DECISION_BRIEF.researchQuestion).toContain('正式训练未据此启动');
-    expect(ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q04')?.finding).toContain('连续 8 轮');
+    expect(ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q04')?.finding).toContain('152–159 轮');
+    expect(ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q04')?.finding).toContain('同题比较');
+    expect(ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q07')?.finding).toContain('方向反过来');
     const directionBound = ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q07')?.boundary ?? '';
-    expect(directionBound).toContain('已经通过多重比较校正');
+    expect(directionBound).toContain('已经通过 Holm 多重比较校正');
     expect(directionBound).not.toContain('未经多重比较校正');
   });
 
