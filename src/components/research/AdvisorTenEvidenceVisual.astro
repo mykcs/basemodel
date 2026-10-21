@@ -420,26 +420,40 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 }
 .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] {
   border-collapse:collapse;border-spacing:0;table-layout:auto;width:max-content;max-width:none;
-  border:0;border-top:2px solid var(--color-text);border-bottom:2px solid var(--color-text);
+  border:0;border-top:1.5px solid var(--color-text);border-bottom:1.5px solid var(--color-text);
   border-radius:0;box-shadow:none;background:transparent;color:var(--color-text);
   font-family:"Times New Roman",Times,"Songti SC",STSong,Georgia,serif;
-  font-size:1rem;line-height:1.45;font-weight:400;font-style:normal;
+  font-size:1rem;line-height:1.4;font-weight:400;font-style:normal;
   font-variant-numeric:tabular-nums lining-nums;
 }
 .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] caption {
   display:table-caption;caption-side:top;position:static;text-align:left;
   padding:0 0 .6rem;margin:0;color:var(--color-text);
-  font:400 1rem/1.5 "Times New Roman",Times,"Songti SC",STSong,Georgia,serif;
+  font:400 .875rem/1.45 "Times New Roman",Times,"Songti SC",STSong,Georgia,serif;
+}
+/* A native LaTeX table caption has the paper-column width, not the narrow tabular width. */
+@media (min-width:721px) {
+  .evo-blog.evo-approved-reader [data-q03-report-paper] .advisor-q03-paper__scroll {
+    display:block;width:100%;overflow:visible;
+  }
+  .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] {
+    margin-inline:auto;
+  }
+  .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] caption {
+    position:relative;left:50%;transform:translateX(-50%);
+    width:min(32rem,calc(100vw - 2rem));max-width:none;
+    text-align:center;
+  }
 }
 .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td) {
-  border:0;padding:.43rem .7rem;background:transparent;box-shadow:none;
+  border:0;padding:.17rem .6rem;background:transparent;box-shadow:none;
   color:var(--color-text);font-family:inherit;font-size:inherit;line-height:inherit;font-weight:400;
   vertical-align:baseline;
 }
 .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td):first-child {padding-left:0}
 .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td):last-child {padding-right:0}
 .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] thead th {
-  border-bottom:1px solid var(--color-text);font-weight:600;vertical-align:bottom;
+  border-bottom:1px solid var(--color-text);font-weight:400;vertical-align:bottom;
 }
 .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] tbody tr + tr > * {border-top:0;border-bottom:0}
 .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td)[data-numeric] {
