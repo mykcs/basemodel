@@ -18,6 +18,12 @@ export const VANILLA_SD_LORA_MECHANISM = {
     maxTraceExamples: 240,
     maxRecords: 256,
   },
+  noUpdate: {
+    when: 'no new unattempted clean exact evidence remains eligible for the parametric dataset',
+    evidenceGateReason: 'VNEXT_PARAMETRIC_NO_UNATTEMPTED_CLEAN_EXACT',
+    datasetGateStatus: 'NOOP_NO_UNCONSUMED_CLEAN_EXACT',
+    action: 'keep prior adapter and component count unchanged',
+  },
   trainer: {
     rank: 8,
     learningRate: 2e-4,
@@ -37,7 +43,9 @@ export const VANILLA_SD_LORA_MECHANISM = {
     effectiveRankLimit: 4096,
   },
   sources: {
-    dataset: 'https://github.com/mykcs/openevo-experiment/blob/ac130148ee08b6462d9728e482a858fe5f514047/scripts/openevo_webshop/ceiling1_stage2_parametric_dataset_v2.py',
+    dataset: 'https://github.com/mykcs/openevo-experiment/blob/ac130148ee08b6462d9728e482a858fe5f514047/scripts/openevo_webshop/ceiling1_stage2_vnext_parametric_dataset.py',
+    evidence: 'https://github.com/mykcs/openevo-experiment/blob/ac130148ee08b6462d9728e482a858fe5f514047/scripts/openevo_webshop/ceiling1_stage2_vnext_evidence.py',
+    runner: 'https://github.com/mykcs/openevo-experiment/blob/ac130148ee08b6462d9728e482a858fe5f514047/scripts/openevo_webshop/run_ceiling1_stage2_vnext_arm.py',
     wrapper: 'https://github.com/mykcs/openevo-experiment/blob/ac130148ee08b6462d9728e482a858fe5f514047/scripts/openevo_webshop/ceiling1_stage2_sd_lora.py',
     capacity: 'https://github.com/mykcs/openevo-experiment/blob/ac130148ee08b6462d9728e482a858fe5f514047/configs/experiment/designs/openevo-ceiling1-stage2-vnext-qwen3-1p7b-capacity-v1.json',
     upstreamAudit: 'https://github.com/mykcs/openevo-experiment/blob/87938b167222dfecf034e1c5cb6dc358655b415c/docs/science/upstream/OPENEVO_AUDIT_2026-08-14.md',

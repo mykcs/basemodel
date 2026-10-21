@@ -37,7 +37,7 @@ test('Vanilla SD-LoRA page exposes the real round mechanism and scientific bound
   await expect(body).toContainText('最多带回 64 条旧经验');
   await expect(body).toContainText('旧方向');
   await expect(body).toContainText('重新调整所有方向的影响大小');
-  await expect(body).toContainText('ΔWₜ = Σ αᵢDᵢ');
+  await expect(body.locator('annotation[encoding="application/x-tex"]').filter({ hasText: String.raw`\Delta W_t = \sum_i \alpha_i D_i` }).first()).toBeAttached();
   await expect(body).toContainText('paper_equivalent=false');
   await expect(body).toContainText('rehearsal_free=false');
   await expect(body).toContainText('这些是接下来要测的风险');
@@ -110,12 +110,14 @@ test('desktop canvas carries real routed topology instead of card adjacency', as
     'prior-rollout',
     'rollout-clean',
     'clean-update',
+    'clean-noop',
     'replay-update',
     'update-candidate',
     'candidate-directapply',
     'candidate-gdr',
     'directapply-next',
     'gdr-next',
+    'noop-next',
     'round-return',
   ]) {
     await expect(desktop.locator(`[data-edge="${edge}"]`)).toHaveCount(1);
@@ -148,19 +150,117 @@ test('mobile canvas preserves side-input, branch, join, and return topology', as
   for (const edge of [
     'prior-rollout-mobile',
     'rollout-clean-mobile',
+    'clean-noop-mobile',
     'replay-update-mobile',
     'update-candidate-mobile',
     'candidate-directapply-mobile',
     'candidate-gdr-mobile',
     'directapply-next-mobile',
     'gdr-next-mobile',
+    'noop-next-mobile',
     'round-return-mobile',
   ]) {
     await expect(mobile.locator(`[data-edge="${edge}"]`)).toHaveCount(1);
   }
 
+  await expect(mobile.locator('[data-flow-node="noop-terminal-mobile"]')).toBeVisible();
   const vertical = await mobile.locator('[data-flow-node="prior-mobile"], [data-flow-node="rollout-mobile"], [data-flow-node="clean-mobile"], [data-flow-node="update-mobile"], [data-flow-node="candidate-mobile"], [data-flow-node="next-mobile"]').evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().top));
   expect(vertical).toEqual([...vertical].sort((a, b) => a - b));
+
+  await page.locator('button[data-step-id="noop"]').click();
+  await expect(mobile.locator('[data-flow-node="noop-terminal-mobile"]')).toHaveAttribute('data-sdlora-focused', 'true');
+  await expect(mobile.locator('[data-flow-node="update-mobile"]')).not.toHaveAttribute('data-sdlora-focused', 'true');
+});
+
+test('step focus is explicit, keyboard-operable, and never hides the full mechanism', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+
+  const slide = page.locator('[data-slide-canvas]');
+  const stepper = slide.locator('[data-sdlora-stepper]');
+  await expect(stepper).toBeVisible();
+  await expect(slide).toHaveAttribute('data-active-step-id', 'all');
+  await expect(slide).toHaveAttribute('data-step-filtered', 'false');
+
+  const noopButton = stepper.getByRole('button', { name: '无训练样本' });
+  await noopButton.click();
+  await expect(slide).toHaveAttribute('data-active-step-id', 'noop');
+  await expect(slide).toHaveAttribute('data-step-filtered', 'true');
+  await expect(noopButton).toHaveAttribute('aria-pressed', 'true');
+  await expect(slide.locator('[data-flow-node="noop"]')).toHaveAttribute('data-sdlora-focused', 'true');
+  await expect(slide.locator('[data-edge="clean-noop"]')).toHaveAttribute('data-sdlora-focused', 'true');
+  await expect(slide.locator('[data-edge="noop-next"]')).toHaveAttribute('data-sdlora-focused', 'true');
+  await expect(slide.locator('[data-flow-node="update"]')).not.toHaveAttribute('data-sdlora-focused', 'true');
+  await expect(slide.locator('[data-flow-node="update"]')).toBeVisible();
+
+  await noopButton.press('End');
+  const nextButton = stepper.getByRole('button', { name: '下一轮' });
+  await expect(nextButton).toBeFocused();
+  await expect(nextButton).toHaveAttribute('aria-pressed', 'true');
+  await expect(slide).toHaveAttribute('data-active-step-id', 'next');
+
+  await nextButton.press('Home');
+  const fullButton = stepper.getByRole('button', { name: '全图' });
+  await expect(fullButton).toBeFocused();
+  await expect(fullButton).toHaveAttribute('aria-pressed', 'true');
+  await expect(slide).toHaveAttribute('data-step-filtered', 'false');
+  await expect(slide.locator('[data-flow-node="noop"]')).toBeVisible();
+  await expect(slide.locator('[data-flow-node="update"]')).toBeVisible();
+});
+
+test('no-JavaScript view keeps the complete mainline and NOOP branch while hiding only the helper controls', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+  const page = await context.newPage();
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+
+  const slide = page.locator('[data-slide-canvas]');
+  await expect(slide.locator('[data-sdlora-stepper]')).toBeHidden();
+  await expect(slide.locator('[data-flow-layout="mobile"]')).toBeVisible();
+  await expect(slide.locator('[data-flow-node="noop-mobile"]')).toBeVisible();
+  await expect(slide.locator('[data-edge="clean-noop-mobile"]')).toHaveCount(1);
+  await expect(slide.locator('[data-edge="noop-next-mobile"]')).toHaveCount(1);
+  await expect(page.getByTestId('vanilla-sd-lora-mechanism')).toContainText('参数通道记录 NOOP');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+
+  await context.close();
+});
+
+test('print removes helper controls but keeps the complete static desktop topology', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  await page.locator('[data-sdlora-stepper]').getByRole('button', { name: '03 更新' }).click();
+  await page.emulateMedia({ media: 'print' });
+
+  const slide = page.locator('[data-slide-canvas]');
+  await expect(slide.locator('[data-sdlora-stepper]')).toBeHidden();
+  await expect(slide.locator('[data-flow-layout="desktop"]')).toBeVisible();
+  await expect(slide.locator('[data-flow-node="noop"]')).toBeVisible();
+  const noopOpacity = await slide.locator('[data-flow-node="noop"]').evaluate((node) => getComputedStyle(node).opacity);
+  expect(Number(noopOpacity)).toBe(1);
+});
+
+test('SVG marker ids are unique within the rendered mechanism instance', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const ids = await page.locator('[data-slide-canvas] marker[id]').evaluateAll((nodes) => nodes.map((node) => node.id));
+  expect(ids).toHaveLength(1);
+  expect(new Set(ids).size).toBe(ids.length);
+  expect(ids[0]).toBe('sdlora-flow-arrow-zh-mechanism-main');
+});
+
+test('200% desktop-zoom reflow equivalent keeps the mechanism readable without page overflow', async ({ page }) => {
+  // A 1440px desktop at 200% browser zoom exposes roughly a 720 CSS-px layout width.
+  await page.setViewportSize({ width: 720, height: 900 });
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  const slide = page.locator('[data-slide-canvas]');
+  await expect(slide).toBeVisible();
+  await expect(slide.locator('[data-flow-layout="mobile"]')).toBeVisible();
+  await expect(slide.locator('[data-flow-node="noop-mobile"]')).toBeVisible();
+  const geometry = await page.evaluate(() => ({
+    scrollWidth: document.documentElement.scrollWidth,
+    clientWidth: document.documentElement.clientWidth,
+  }));
+  expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 2);
 });
 
 test('reduced motion keeps static arrows and disables route animation', async ({ page }) => {
