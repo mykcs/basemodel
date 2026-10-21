@@ -43,11 +43,11 @@ const reproPending = model.reproducibility
 </section>
 <style>
   .research-summary { margin: 26px 0 24px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-muted); }
-  .research-summary h2 { margin-bottom: 16px; font-size: 1.35rem; }
-  .research-summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 20px; border-top: 1px solid var(--line); }
-  .summary-block { padding: 11px 0; border-bottom: 1px solid var(--line); }
-  .summary-block dt { color: var(--muted); font-size: .72rem; }
-  .summary-block dd { margin: 3px 0 0; font-size: .86rem; font-weight: 650; }
-  .summary-specializations { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 14px; color: var(--muted); font-size: .76rem; }
+  .research-summary h2 { margin-bottom: 16px; font-size: var(--type-article-subsection); line-height: var(--type-leading-heading); }
+  .research-summary-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; border-top: 1px solid var(--line); }
+  .summary-block { min-width: 0; padding: 11px 0; border-bottom: 1px solid var(--line); }
+  .summary-block dt { color: var(--muted); font-size: var(--type-meta); line-height: var(--type-leading-caption); }
+  .summary-block dd { min-width: 0; margin: 3px 0 0; font-size: var(--type-table); font-weight: var(--type-weight-medium); line-height: var(--type-leading-caption); overflow-wrap: anywhere; }
+  .summary-specializations { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 14px; color: var(--muted); font-size: var(--type-caption); line-height: var(--type-leading-caption); }
   @media (max-width: 560px) { .research-summary-grid { grid-template-columns: 1fr; } }
 </style>

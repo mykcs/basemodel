@@ -202,3 +202,160 @@ for (const width of [768, 1440] as const) {
     });
   }
 }
+
+
+// Mounted Models / Data Status surfaces: a catalog provenance explanation is
+// real body prose, not a 12px machine tag. The negative uses the same predicates.
+type TypeRole = {
+  size:number; family:string; weight:number; style:string; lineHeight:string;
+  letterSpacing:string; width:number; client:number; scroll:number;
+};
+type ModelReaderReceipt = {
+  roles:Record<string,TypeRole>; overflow:number;
+  columns:string; bounds:{left:number;right:number};
+};
+const modelTypeSelectors=[
+  '.research-summary h2','.research-summary .summary-block dt',
+  '.research-summary .summary-block dd',
+  '.catalog-freshness__summary strong','.catalog-freshness__summary p',
+] as const;
+async function readModelDetailType(page:import('@playwright/test').Page):Promise<ModelReaderReceipt>{
+  return page.evaluate((selectors)=>{
+    const describe=(selector:string)=>{
+      const node=document.querySelector(selector);
+      if(!node)throw Error('Missing mounted model role: '+selector);
+      const c=getComputedStyle(node),box=node.getBoundingClientRect();
+      return {size:parseFloat(c.fontSize),family:c.fontFamily,weight:parseFloat(c.fontWeight),
+        style:c.fontStyle,lineHeight:c.lineHeight,letterSpacing:c.letterSpacing,
+        width:box.width,client:(node as HTMLElement).clientWidth,scroll:(node as HTMLElement).scrollWidth};
+    };
+    const grid=document.querySelector('.research-summary-grid');
+    const card=document.querySelector('.research-summary');
+    if(!grid||!card)throw Error('ModelResearchSummary missing on model detail');
+    const b=card.getBoundingClientRect();
+    return {roles:Object.fromEntries(selectors.map(selector=>[selector,describe(selector)])),
+      overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+      columns:getComputedStyle(grid).gridTemplateColumns,
+      bounds:{left:b.left,right:b.right}};
+  },[...modelTypeSelectors]);
+}
+function acceptModelDetailType(r:ModelReaderReceipt,width:number){
+  expect(r.overflow).toBeLessThanOrEqual(2);
+  expect(r.bounds.left).toBeGreaterThanOrEqual(-2);
+  expect(r.bounds.right).toBeLessThanOrEqual(width+2);
+  const floors:Record<string,number>={
+    '.research-summary h2':18,
+    '.research-summary .summary-block dt':13,
+    '.research-summary .summary-block dd':15,
+    '.catalog-freshness__summary strong':16,
+    '.catalog-freshness__summary p':15,
+  };
+  for(const [selector,floor] of Object.entries(floors)){
+    const type=r.roles[selector];
+    expect(type,selector).toBeDefined();
+    expect(type.size,selector).toBeGreaterThanOrEqual(floor);
+    expect(type.family,selector).toMatch(/Inter|PingFang|system-ui/);
+    expect(type.style,selector).toBe('normal');
+    expect(type.scroll,selector).toBeLessThanOrEqual(type.client+2);
+  }
+  expect(r.roles['.research-summary .summary-block dd'].weight).toBeLessThanOrEqual(650);
+}
+for(const width of [390,768,1440] as const) {
+  for(const theme of ['light','dark'] as const) {
+    test('model evidence and dated catalog prose are legible: '+width+'/'+theme,async({page},testInfo)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(t=>localStorage.setItem('atlas-theme',t),theme);
+      const response=await page.goto('/models/qwen3-8b/',{waitUntil:'domcontentloaded'});
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await page.evaluate(()=>document.fonts.ready);
+      const receipt=await readModelDetailType(page);
+      acceptModelDetailType(receipt,width);
+      const section=page.locator('.research-summary').first();
+      await section.scrollIntoViewIfNeeded();
+      await page.screenshot({path:testInfo.outputPath('model-evidence-viewport-'+width+'-'+theme+'.png'),animations:'disabled'});
+      await section.screenshot({path:testInfo.outputPath('model-evidence-card-'+width+'-'+theme+'.png'),
+        animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}'});
+      await testInfo.attach('model-evidence-computed.json',{body:Buffer.from(JSON.stringify(receipt,null,2)),contentType:'application/json'});
+    });
+  }
+}
+test('model evidence predicate rejects 10px data and catalog provenance',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/models/qwen3-8b/',{waitUntil:'domcontentloaded'});
+  acceptModelDetailType(await readModelDetailType(page),390);
+  const badStyle=await page.addStyleTag({content:
+    '.research-summary .summary-block dd{font-size:10px!important}' +
+    '.catalog-freshness__summary p{font-size:10px!important}'});
+  const bad=await readModelDetailType(page);
+  expect(()=>acceptModelDetailType(bad,390)).toThrow();
+  await badStyle.evaluate(el=>el.parentNode?.removeChild(el));
+  acceptModelDetailType(await readModelDetailType(page),390);
+});
+
+async function readCatalogEvidenceType(page:import('@playwright/test').Page) {
+  return page.evaluate(()=>{
+    const roles=['.catalog-freshness__signal-note',
+      '.catalog-freshness__signal-head strong','.catalog-freshness__signal-head time',
+      '.catalog-freshness__signals li > p','.catalog-freshness__sources a'];
+    const values=Object.fromEntries(roles.map(selector=>{
+      const node=document.querySelector(selector);
+      if(!node)throw Error('Missing dated evidence role '+selector);
+      const c=getComputedStyle(node),b=node.getBoundingClientRect();
+      return [selector,{size:parseFloat(c.fontSize),family:c.fontFamily,
+        weight:parseFloat(c.fontWeight),style:c.fontStyle,width:b.width}];
+    })) as Record<string,{size:number;family:string;weight:number;style:string;width:number}>;
+    const parent=document.querySelector('.catalog-freshness__signals');
+    if(!parent)throw Error('Model evidence list did not render');
+    return {roles:values,overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+      parentWidth:parent.getBoundingClientRect().width};
+  });
+}
+function acceptCatalogEvidenceType(r:Awaited<ReturnType<typeof readCatalogEvidenceType>>){
+  expect(r.overflow).toBeLessThanOrEqual(2);
+  expect(r.parentWidth).toBeGreaterThan(170);
+  const floors:Record<string,number>={
+    '.catalog-freshness__signal-note':14,
+    '.catalog-freshness__signal-head strong':15,
+    '.catalog-freshness__signal-head time':13,
+    '.catalog-freshness__signals li > p':15,
+    '.catalog-freshness__sources a':13,
+  };
+  for(const [selector,min] of Object.entries(floors)){
+    const role=r.roles[selector];
+    expect(role,selector).toBeDefined();
+    expect(role.size,selector).toBeGreaterThanOrEqual(min);
+    expect(role.style,selector).toBe('normal');
+    expect(role.family,selector).toMatch(/Inter|PingFang|system-ui/);
+  }
+}
+for(const width of [390,1440] as const){
+  for(const theme of ['light','dark'] as const){
+    test('Data Status lists sourced dated catalog claims readably: '+width+'/'+theme,async({page},testInfo)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(t=>localStorage.setItem('atlas-theme',t),theme);
+      const response=await page.goto('/data-status/',{waitUntil:'domcontentloaded'});
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await page.evaluate(()=>document.fonts.ready);
+      const receipt=await readCatalogEvidenceType(page);
+      acceptCatalogEvidenceType(receipt);
+      const node=page.locator('.catalog-freshness__signals').first();
+      await node.scrollIntoViewIfNeeded();
+      await node.screenshot({path:testInfo.outputPath('dated-catalog-signals-'+width+'-'+theme+'.png'),
+        animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}'});
+      await testInfo.attach('dated-catalog-computed.json',{body:Buffer.from(JSON.stringify(receipt,null,2)),contentType:'application/json'});
+    });
+  }
+}
+test('the same sourced-date predicate rejects restored tiny prose',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/data-status/',{waitUntil:'domcontentloaded'});
+  acceptCatalogEvidenceType(await readCatalogEvidenceType(page));
+  const bad=await page.addStyleTag({content:
+    '.catalog-freshness__signals li>p{font-size:10px!important}'});
+  const receipt=await readCatalogEvidenceType(page);
+  expect(()=>acceptCatalogEvidenceType(receipt)).toThrow();
+  await bad.evaluate(node=>node.parentNode?.removeChild(node));
+  acceptCatalogEvidenceType(await readCatalogEvidenceType(page));
+});
