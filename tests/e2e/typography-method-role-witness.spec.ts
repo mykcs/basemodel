@@ -433,7 +433,7 @@ test('advisor Figure 2 gate rejects old tiny nodes and tablet slivers',async({pa
   acceptAdvisorFigure(await measureAdvisorFigure(page),768);
   const tooSmall=await page.addStyleTag({content:
     '.advisor-method__node strong{font-size:9px!important}'});
-  expect(()=>acceptAdvisorFigure(await measureAdvisorFigure(page),768)).rejects.toThrow();
+  await expect(measureAdvisorFigure(page).then(v=>acceptAdvisorFigure(v,768))).rejects.toThrow();
   await tooSmall.evaluate(el=>el.parentNode?.removeChild(el));
   acceptAdvisorFigure(await measureAdvisorFigure(page),768);
   const oldGrid=await page.addStyleTag({content:
