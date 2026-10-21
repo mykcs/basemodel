@@ -286,10 +286,8 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 .advisor-viz__heading{display:flex;flex-wrap:wrap;gap:.2rem 1rem;justify-content:space-between;align-items:baseline;margin-bottom:1.05rem}
 .advisor-viz__heading strong{font-size:1.05rem;line-height:1.5;font-weight:700}
 .advisor-viz__heading span{font-size:.9rem;line-height:1.5;color:var(--color-text-muted)}
-.advisor-viz figcaption{font-size:.91rem;line-height:1.75;color:var(--color-text-muted);margin:.8rem 0 .3rem;max-width:82ch}
-.advisor-viz__table-note{font-size:.91rem;line-height:1.75;color:var(--color-text-muted);margin:.8rem 0 .3rem;max-width:82ch}
-.advisor-viz__rows{display:grid;gap:.95rem}
-.advisor-viz__bars{display:grid;gap:.95rem}
+.advisor-viz figcaption,.advisor-viz__table-note{font-size:.91rem;line-height:1.75;color:var(--color-text-muted);margin:.8rem 0 .3rem;max-width:82ch}
+.advisor-viz__rows,.advisor-viz__bars{display:grid;gap:.95rem}
 .advisor-viz__item{display:grid;grid-template-columns:minmax(9rem,1fr) minmax(8rem,1.4fr) minmax(5rem,.6fr);gap:.3rem .9rem;align-items:center}
 .advisor-viz__name{font-size:.91rem;line-height:1.55;font-weight:590;overflow-wrap:anywhere}
 .advisor-viz__track{height:1.3rem;position:relative;border-bottom:1px solid var(--color-border);background:repeating-linear-gradient(to right,transparent,transparent calc(25% - 1px),var(--color-border) calc(25% - 1px),var(--color-border) 25%)}
@@ -338,8 +336,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 .advisor-viz__interval-summary span{font-size:.9rem;color:var(--color-text-muted)}
 .advisor-viz__trend--ci{max-width:630px}
 .advisor-viz__baseline{stroke:var(--color-border);stroke-width:2}
-.advisor-viz__ci{stroke:var(--color-text);stroke-width:5;stroke-linecap:round}
-.advisor-viz__cap{stroke:var(--color-text);stroke-width:5;stroke-linecap:round}
+.advisor-viz__ci,.advisor-viz__cap{stroke:var(--color-text);stroke-width:5;stroke-linecap:round}
 .advisor-viz__cap{stroke-width:2}
 .advisor-viz__ci-point{fill:var(--color-text)}/* Q01 scientific figure: publication-oriented typesetting, vector geometry,
  * grayscale-safe line/marker combinations, and the same editorial voice as

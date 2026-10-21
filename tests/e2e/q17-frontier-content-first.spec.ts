@@ -46,6 +46,10 @@ for (const viewport of [
           clientWidth: node.clientWidth,
         }));
         expect(tableGeometry.scrollWidth).toBeLessThanOrEqual(tableGeometry.clientWidth + 2);
+        const readingWindow = page.locator('[data-paper-table-scroll]');
+        await expect(readingWindow).toHaveCSS('overflow-x', 'auto');
+        await expect(page.locator('.table-wrap table')).toHaveCSS('display', 'table');
+        await readingWindow.evaluate(node => { const cell = node.querySelector('tbody td:nth-child(3)')!; (node as HTMLElement).scrollLeft = (cell as HTMLElement).offsetLeft; });
         const r128Cells = await page.locator('.table-wrap tbody tr td:nth-child(3)').evaluateAll((nodes) => nodes.map((node) => {
           const rect = node.getBoundingClientRect();
           return { left: rect.left, right: rect.right };
@@ -80,9 +84,9 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
     accept(await measure());
     for(const value of ['10 / 32 (31.25%)','8 / 32 (25.00%)','27 / 32 (84.38%)','25 / 32 (78.13%)'])await expect(table).toContainText(value);
     if(width===390){
-      await table.locator('tbody tr').evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.gridTemplateColumns='repeat(3,minmax(0,1fr))'));
+      await table.locator('tbody tr').evaluateAll(nodes=>nodes.forEach(node=>{(node as HTMLElement).style.display='grid';(node as HTMLElement).style.gridTemplateColumns='repeat(3,minmax(0,1fr))';}));
       const old=await measure();expect(()=>accept(old)).toThrow();
-      await table.locator('tbody tr').evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.removeProperty('grid-template-columns')));
+      await table.locator('tbody tr').evaluateAll(nodes=>nodes.forEach(node=>{(node as HTMLElement).style.removeProperty('display');(node as HTMLElement).style.removeProperty('grid-template-columns');}));
       accept(await measure());
     }
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);

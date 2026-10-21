@@ -238,7 +238,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
 .ba-accel__section h2{max-width:24ch;margin:0;font-size:clamp(1.65rem,3.4vw,2.55rem);line-height:1.12;letter-spacing:-.025em}
 .ba-accel__section>p{max-width:52rem;margin:1rem 0 0;font-size:1.04rem;line-height:1.72}
 .ba-accel__section>.ba-accel__result-line{font-size:clamp(1.12rem,2.1vw,1.28rem);font-weight:720}
-.ba-accel__table-wrap{margin-top:1.35rem}
+.ba-accel__table-wrap{margin-top:1.35rem;overflow-x:auto;min-width:0}
 .ba-accel__table:has(thead tr > :nth-child(3)):not(:has(thead tr > :nth-child(4))) thead th:nth-child(2){white-space:nowrap}
 .ba-accel__equation{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;margin:1.4rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}
 .ba-accel__equation span{font-weight:720}.ba-accel__equation b{color:var(--accent-deep)}
@@ -251,20 +251,16 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
 .ba-accel__decision-list{margin-top:1.35rem;border-top:1px solid var(--line)}
 .ba-accel__decision-list>div{display:grid;grid-template-columns:minmax(190px,.8fr) minmax(0,1.8fr);gap:1rem;padding:1rem 0;border-bottom:1px solid var(--line)}
 .ba-accel__decision-list strong{font-size:1.02rem}.ba-accel__decision-list p{margin:0;color:var(--ink);line-height:1.62}
-.ba-accel__next{display:flex;flex-wrap:wrap;gap:.7rem 1.2rem;margin-top:1.2rem}.ba-accel__next a{color:var(--accent-deep);font-weight:700;text-underline-offset:.2em}
-.ba-accel__evidence a{color:var(--accent-deep);font-weight:700;text-underline-offset:.2em}
+.ba-accel__next{display:flex;flex-wrap:wrap;gap:.7rem 1.2rem;margin-top:1.2rem}.ba-accel__next a,.ba-accel__evidence a{color:var(--accent-deep);font-weight:700;text-underline-offset:.2em}
 .ba-accel__evidence{margin:2.8rem 0 0;border-block:1px solid var(--line);padding:.9rem 0}.ba-accel__evidence summary{cursor:pointer;font-weight:780;line-height:1.5}
 .ba-accel__evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 1.4rem;margin-top:1rem}.ba-accel__evidence-grid>div{padding:1rem 0;border-top:1px solid var(--line)}
 .ba-accel__evidence-grid p{margin:.35rem 0 .55rem;color:var(--muted);font-size:1rem;line-height:1.58}.ba-accel__evidence-plan{margin:1rem 0 0}.ba-accel__provenance{max-width:52rem;margin:.8rem 0 0;color:var(--muted);font-size:1rem;line-height:1.6}
 @media(max-width:760px){
   .ba-accel{width:min(100% - 1rem,1080px)}
   .ba-accel__hero{padding-top:2rem}
-  .ba-accel__metrics{grid-template-columns:1fr}
-.ba-accel__findings{grid-template-columns:1fr}
-  .ba-accel__metrics div{padding:.85rem 0;border-bottom:1px solid var(--line)}
-.ba-accel__findings div{padding:.85rem 0;border-bottom:1px solid var(--line)}
-  .ba-accel__metrics div:last-child{border-bottom:0}
-.ba-accel__findings div:last-child{border-bottom:0}
+  .ba-accel__metrics,.ba-accel__findings{grid-template-columns:1fr}
+  .ba-accel__metrics div,.ba-accel__findings div{padding:.85rem 0;border-bottom:1px solid var(--line)}
+  .ba-accel__metrics div:last-child,.ba-accel__findings div:last-child{border-bottom:0}
   .ba-accel__order{grid-template-columns:1fr}
   .ba-accel__decision-list>div{grid-template-columns:1fr;gap:.35rem}
   .ba-accel__evidence-grid{grid-template-columns:1fr}
