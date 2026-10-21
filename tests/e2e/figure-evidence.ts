@@ -35,9 +35,20 @@ export async function captureFigureEvidence(figure: Locator, path: string) {
     });
     for(const image of images) {
       if(!image.complete||!image.naturalWidth) {
-        image.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'});
-        // Let native lazy-load intersection observers see this real scroll.
-        await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
+        await new Promise<void>((resolve,reject)=>{
+          const cleanup=()=>{
+            image.removeEventListener('load',loaded);
+            image.removeEventListener('error',failed);
+          };
+          const loaded=()=>{cleanup();resolve();};
+          const failed=()=>{cleanup();reject(new Error('Visible evidence image failed to load: '+image.currentSrc));};
+          image.addEventListener('load',loaded,{once:true});
+          image.addEventListener('error',failed,{once:true});
+          image.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'});
+          requestAnimationFrame(()=>{
+            if(image.complete){if(image.naturalWidth)loaded();else failed();}
+          });
+        });
       }
       await image.decode();
       if(!image.naturalWidth)throw new Error('Visible evidence image is empty');
