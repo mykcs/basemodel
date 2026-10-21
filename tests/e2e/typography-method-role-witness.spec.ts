@@ -443,3 +443,119 @@ test('advisor Figure 2 gate rejects old tiny nodes and tablet slivers',async({pa
   acceptAdvisorFigure(await measureAdvisorFigure(page),768);
 });
 
+
+// Stage2-7B analysis is an ACTUAL public route, not a superseded CSS branch.
+// Its numeric workflow labels represent ordinary experimental steps, while
+// evidence status must remain visually distinguishable from unknown/no-run.
+const stage2HistoricalRoute='/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/';
+const stage2TextFloors={
+  '.stage2-map__head>p':13,
+  '.authority-strip span':15,
+  '.stage2-map__direct-result>p':14,
+  '.story>header p':13,
+  '.node>span':14,
+  '.story h2':22,
+  '.node h3':20,
+  '.node p':16,
+  '.side-study header p':14,
+  '.side-study h2':20,
+  '.evidence header p':13,
+  '.evidence h2':20,
+  '.evidence nav small':13,
+  '.evidence nav span':16,
+} as const;
+type Stage2HistoricType={
+  roles:Record<string,{size:number;weight:number;style:string;family:string;client:number;scroll:number;width:number}>;
+  nodeCount:number;authorityCount:number;scienceText:string;urls:string[];
+  widths:{rootLeft:number;rootRight:number;firstNodeWidth:number;authorityWidths:number[]};
+  rootOverflow:number;
+};
+async function measureHistoric7BType(page:import('@playwright/test').Page):Promise<Stage2HistoricType>{
+  return page.evaluate((selectors)=>{
+    const root=document.querySelector<HTMLElement>('.stage2-map');
+    if(!root)throw Error('Missing rendered 7B Stage2 historical study');
+    const roles=Object.fromEntries(selectors.map(selector=>{
+      const el=root.querySelector<HTMLElement>(selector);
+      if(!el)throw Error('Missing mounted 7B research reading role '+selector);
+      const css=getComputedStyle(el),r=el.getBoundingClientRect();
+      return [selector,{size:parseFloat(css.fontSize),weight:parseFloat(css.fontWeight),
+        style:css.fontStyle,family:css.fontFamily,client:el.clientWidth,
+        scroll:el.scrollWidth,width:r.width}];
+    })) as Stage2HistoricType['roles'];
+    const bounds=root.getBoundingClientRect();
+    const nodes=[...root.querySelectorAll('.spine article.node')];
+    const authority=[...root.querySelectorAll('.authority-strip > div')];
+    const sourceLinks=[...root.querySelectorAll('a')].map(a=>a.getAttribute('href')??'');
+    return {roles,nodeCount:nodes.length,authorityCount:authority.length,
+      scienceText:root.textContent??'',urls:sourceLinks,
+      widths:{rootLeft:bounds.left,rootRight:bounds.right,
+        firstNodeWidth:nodes[0]?.getBoundingClientRect().width??0,
+        authorityWidths:authority.map(x=>x.getBoundingClientRect().width)},
+      rootOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};
+  },Object.keys(stage2TextFloors));
+}
+function acceptHistoric7BType(m:Stage2HistoricType,width:number){
+  expect(m.nodeCount).toBe(6);
+  expect(m.authorityCount).toBe(3);
+  expect(m.rootOverflow).toBeLessThanOrEqual(2);
+  expect(m.widths.rootLeft).toBeGreaterThanOrEqual(-2);
+  expect(m.widths.rootRight).toBeLessThanOrEqual(width+2);
+  expect(m.widths.firstNodeWidth).toBeGreaterThan(200);
+  if(width===390)for(const w of m.widths.authorityWidths)expect(w).toBeGreaterThan(260);
+  expect(m.scienceText).toContain('20,480');
+  expect(m.scienceText).toContain('797');
+  expect(m.scienceText).toContain('80 批');
+  expect(m.scienceText).toContain('Ceiling-1.0');
+  expect(m.scienceText).toContain('参数变化不能替代新任务效果');
+  expect(m.urls.some(x=>x.includes('/stage2-ceiling/'))).toBe(true);
+  for(const [selector,min] of Object.entries(stage2TextFloors)){
+    const r=m.roles[selector];
+    if(!r)throw Error('Measured 7B type role missing '+selector);
+    expect(r.size,selector).toBeGreaterThanOrEqual(min);
+    expect(r.family,selector).toMatch(/Inter|PingFang|system-ui/);
+    expect(r.style,selector).toBe('normal');
+    expect(r.scroll-r.client,selector+' overflow').toBeLessThanOrEqual(2);
+    if(selector.includes('>p')||selector.includes('>span')||selector.includes('header p'))
+      expect(r.weight,selector+' is not decorative extra bold').toBeLessThanOrEqual(650);
+  }
+}
+for(const width of [390,768,1440] as const){
+  for(const theme of ['light','dark'] as const){
+    test('7B Stage2 historical evidence has ordinary labels '+width+'/'+theme,async({page},testInfo)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+      const res=await page.goto(stage2HistoricalRoute,{waitUntil:'domcontentloaded'});
+      expect(res?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await page.evaluate(()=>document.fonts.ready);
+      const root=page.locator('.stage2-map');
+      await expect(root).toBeVisible();
+      const measured=await measureHistoric7BType(page);
+      acceptHistoric7BType(measured,width);
+      await testInfo.attach('7b-stage2-computed.json',{body:Buffer.from(JSON.stringify(
+        {...measured,scienceText:'unchanged: content assertions preserved'},null,2)),
+        contentType:'application/json'});
+      const box=root.locator('.authority-strip');
+      await box.scrollIntoViewIfNeeded();
+      await box.screenshot({path:testInfo.outputPath('stage2-7b-authority-'+width+'-'+theme+'.png'),
+        animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}'});
+      const node=root.locator('.spine .node').first();
+      await node.scrollIntoViewIfNeeded();
+      await node.screenshot({path:testInfo.outputPath('stage2-7b-node-'+width+'-'+theme+'.png'),
+        animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}'});
+    });
+  }
+}
+test('stage2 historical typography rejects former heavy mono statuses and tiny evidence',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(stage2HistoricalRoute,{waitUntil:'domcontentloaded'});
+  acceptHistoric7BType(await measureHistoric7BType(page),390);
+  const bad=await page.addStyleTag({content:
+    '.authority-strip span{font:800 9px/1.2 monospace!important}' +
+    '.node p{font-size:10px!important}'});
+  const damaged=await measureHistoric7BType(page);
+  await expect(Promise.resolve().then(()=>acceptHistoric7BType(damaged,390))).rejects.toThrow();
+  await bad.evaluate(el=>el.parentNode?.removeChild(el));
+  acceptHistoric7BType(await measureHistoric7BType(page),390);
+});
+
