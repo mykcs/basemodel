@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import { localePath, type Locale } from '../../i18n';
 import ResearchTechnicalDisclosure from './ResearchTechnicalDisclosure.astro';
 interface Props { locale: Locale }
@@ -31,13 +32,14 @@ const stages = [
   <section class="comparison-scope" data-learning-comparison-scope aria-labelledby="comparison-scope-title">
     <h3 id="comparison-scope-title">{t('比较口径决定差异能归因到哪里', 'The comparison scope determines what can explain a difference')}</h3>
     <div class="comparison-table-wrap">
-      <table>
+      <ResearchPaperTable>
+<Fragment slot="caption">{t('比较口径决定差异能归因到哪里', 'The comparison scope determines what can explain a difference')}</Fragment>
         <thead><tr><th scope="col">{t('比较口径', 'Comparison')}</th><th scope="col">{t('哪些条件保持一致', 'What stays aligned')}</th><th scope="col">{t('可以支持什么结论', 'What the result can support')}</th></tr></thead>
         <tbody>
           <tr><th scope="row">{t('完整系统比较', 'Full-system comparison')}</th><td>{t('模型、任务、评分和训练预算尽量一致；SEED 与 OpenEvo 可以使用各自的提示、历史与动作解析层。', 'Keep model, tasks, scoring, and training budget aligned; SEED and OpenEvo may use their own prompt, history, and action-parsing layers.')}</td><td>{t('只能比较两个完整系统的总体表现，不能把全部差异单独归因于第二阶段（Stage 2）的学习器。', 'Supports a comparison of the complete systems, not attribution of the whole difference to the Stage-2 learner alone.')}</td></tr>
           <tr><th scope="row">{t('只比较第二阶段（Stage 2）学习器', 'Stage-2 learner only')}</th><td>{t('共享第一阶段（Stage 1）的轨迹、事后分析、监督微调（SFT，也就是用已保存示例继续训练）配方和同一个起点模型保存点（checkpoint，也就是一版固定参数），再从这里分成 SEED 与 OpenEvo 的第二阶段学习。', 'Share Stage-1 trajectories, post-task analysis, the SFT recipe, and the same starting checkpoint — one fixed parameter snapshot — before forking into SEED Stage 2 and OpenEvo Stage 2.')}</td><td>{t('只有这种共同起点的对照，才允许把后续差异收窄到第二阶段（Stage 2）学习器。', 'Only this common-start comparison can narrow a later difference to the Stage-2 learner.')}</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
   </section>
 
@@ -75,11 +77,6 @@ const stages = [
   .comparison-scope{margin-top:.45rem;padding:1rem 0;border-top:1px solid var(--line)}
   .comparison-scope h3{margin:0 0 .65rem;font-size:.9rem}
   .comparison-table-wrap{max-width:100%;overflow-x:auto}
-  .comparison-scope table{width:100%;min-width:660px;border-collapse:collapse;font-size:.72rem;line-height:1.5}
-  .comparison-scope th,.comparison-scope td{padding:.65rem .7rem;border-top:1px solid var(--line);text-align:left;vertical-align:top}
-  .comparison-scope thead th{color:var(--muted);font-size:.66rem;font-weight:760}
-  .comparison-scope tbody th{width:18%;font-size:.74rem}
-  .comparison-scope tbody td{color:var(--muted)}
   .design-disclosures{display:grid;gap:.35rem;margin-top:.35rem}
   .parameter-note{margin:.35rem 0 0;color:var(--muted);font-size:.71rem;line-height:1.55}
   .parameter-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.35rem;padding:.75rem .75rem 0;margin:0}

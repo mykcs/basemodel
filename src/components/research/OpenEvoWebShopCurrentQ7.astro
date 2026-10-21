@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import ExternalBrandMark from '../common/ExternalBrandMark';
 import type { Locale } from '../../i18n';
 import OpenEvoEvidenceRefs from './OpenEvoEvidenceRefs.astro';
@@ -49,7 +50,8 @@ const frozenPanelHref = trackAManifest.href;
       <details class="evidence-details" id="evidence-q7">
         <summary>{t('展开实验依据', 'Expand experiment evidence')}</summary>
         <div class="evidence-detail-body">
-          <table>
+          <ResearchPaperTable>
+<Fragment slot="caption">{t('还缺的方法级对照', 'The remaining method-level comparison')}</Fragment>
             <tbody>
               <tr>
                 <th scope="row">{t('任务语义核对', 'Semantic gate')}</th>
@@ -76,7 +78,7 @@ const frozenPanelHref = trackAManifest.href;
                 <td><span>{t('科学合同与运行准备先冻结，但 main / 分支授权顺序没有先于第一个正式回合；历史不能倒写。', 'The scientific contract/readiness was frozen first, but main/branch authority did not precede the first formal episode; history is not rewritten.')}</span><OpenEvoEvidenceRefs locale={locale} sources={[trackAGovernance]} compact /></td>
               </tr>
             </tbody>
-          </table>
+          </ResearchPaperTable>
           <ul class="evidence-links">
             <li><a href={trackACloseout.href}><ExternalBrandMark href={trackACloseout.href} />{trackACloseout.label} ↗</a></li>
             <li><a href={trackAAnalysis.href}><ExternalBrandMark href={trackAAnalysis.href} />{trackAAnalysis.label} ↗</a></li>
@@ -112,9 +114,6 @@ const frozenPanelHref = trackAManifest.href;
   .evidence-details{max-width:900px;margin-top:14px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg)}
   summary{cursor:pointer;padding:13px 15px;font-size:.82rem;font-weight:760}
   .evidence-detail-body{padding:0 15px 15px;border-top:1px solid var(--color-border)}
-  table{width:100%;border-collapse:collapse;font-size:.78rem}
-  th,td{padding:10px 8px;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;line-height:1.55}
-  th{width:150px;color:var(--color-text-muted);font-weight:720}
   code{white-space:normal;overflow-wrap:anywhere}
   .evidence-links{display:grid;gap:7px;margin:14px 0 0;padding-left:18px;font-size:.78rem}
   .evidence-links a{color:var(--color-accent);text-decoration:none}
@@ -124,8 +123,6 @@ const frozenPanelHref = trackAManifest.href;
     .current-question-card{grid-template-columns:1fr;gap:8px}
     .manifest-callout{grid-template-columns:1fr}
     .manifest-link{justify-self:start;white-space:normal}
-    th,td{display:block;width:auto;padding-inline:0}
-    th{padding-bottom:2px;border-bottom:0}
-    td{padding-top:2px}
+    th,td{display:block}
   }
 </style>

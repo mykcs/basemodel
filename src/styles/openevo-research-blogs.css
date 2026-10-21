@@ -95,9 +95,8 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .evo-article__figure figcaption{font-size:.89em;line-height:1.7;color:var(--paper-muted);margin:.7rem 0}
 .evo-blog .evo-article__figure img{max-width:100%;height:auto;display:block}
 .evo-blog .evo-article__tablewrap {max-width:100%;width:fit-content;overflow-x:auto;margin:1.25rem 0}
-.evo-blog .evo-article__tablewrap table{width:auto;max-width:none;border-top:1.7px solid var(--paper-ink);border-bottom:1.7px solid var(--paper-ink);border-collapse:collapse;font-size:.93em;font-variant-numeric:tabular-nums}
-.evo-blog .evo-article__tablewrap caption{font-size:.9em;text-align:left;caption-side:top;margin-bottom:.35rem;color:var(--paper-muted)}
-.evo-blog .evo-article__tablewrap th,.evo-blog .evo-article__tablewrap td{border-bottom:1px solid var(--paper-line);padding:.65rem .9rem .65rem 0;text-align:left;vertical-align:top;white-space:normal}
+.evo-blog .evo-article__tablewrap caption{caption-side:top;margin-bottom:.35rem}
+.evo-blog .evo-article__tablewrap th,.evo-blog .evo-article__tablewrap td{white-space:normal}
 .evo-blog .evo-article__tablewrap [data-numeric]{text-align:right}
 .evo-blog .evo-article__question{padding:1.6rem 0 2rem;border-bottom:1px solid var(--paper-line);scroll-margin-top:5.8rem}
 .evo-blog .evo-article__question>h2{font-size:1.45rem}
@@ -154,7 +153,6 @@ html[data-theme="dark"] .evo-blog {
  .evo-blog .evo-article__siblings ol{grid-template-columns:1fr;gap:0}
  .evo-blog .evo-article__siblings a{padding:.45rem 0}
  .evo-blog .evo-article__section{padding:1.7rem 0;scroll-margin-top:4.5rem}
- .evo-blog .evo-article__tablewrap th,.evo-blog .evo-article__tablewrap td{font-size:.91em}
 }
 
 .evo-blog .evo-article__flow-simple{display:grid;grid-template-columns:minmax(0,1fr) 14px minmax(0,1fr) 14px minmax(0,1fr) 14px minmax(0,1fr);gap:.25rem;align-items:center;margin:1.15rem 0;padding:.8rem 0;border-block:1px solid var(--paper-line)}
@@ -203,15 +201,10 @@ html[data-theme="dark"] .evo-blog {
     table-layout: fixed;
   }
   .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:first-child {
-    width: 175px;
     min-width: 175px;
     max-width: 175px;
     overflow-wrap: normal;
-    word-break: normal;
-  }
-  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(2) { width: 150px; }
-  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(3) { width: 135px; }
-  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(4) { width: 190px; }
+    word-break: normal}
 }
 @media (min-width: 641px) {
   .evo-blog[data-evo-blog="results"] [data-seed-table-mobile-hint] { display: none; }

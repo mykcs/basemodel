@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from '../../../../../components/research/ResearchPaperTable.astro';
 import AppLayout from '../../../../../layouts/AppLayout.astro';
 import '../../../../../styles/openevo-research-blogs.css';
 import '../../../../../styles/research-booktabs.css';
@@ -217,7 +218,7 @@ const q17Effects = {
                     <p>前三条是我们已经运行的历史路线，使用同一批事先冻结的 128 道 WebShop 购物题；SEED 一行来自论文报告的另外一组 128 道测试题。没有证据证明两套题单相同，也不是四组严格对照实验。</p>
                     <p class="evo-article__note" data-seed-table-mobile-hint>在手机上向左滑动这张表，可以查看成功率和完整成功题数。</p>
                     <div class="evo-article__tablewrap" tabindex="0" aria-label="历史三路线与SEED论文WebShop指标">
-                      <table data-webshop-seed-paper-comparison>
+                      <ResearchPaperTable data-webshop-seed-paper-comparison>
                         <caption>表 5｜历史三路线与 SEED 论文 WebShop 指标（非同题对照）</caption>
                         <thead>
                           <tr>
@@ -240,19 +241,19 @@ const q17Effects = {
                             <td>—（论文仅报告成功率）</td>
                           </tr>
                         </tbody>
-                      </table>
+                      </ResearchPaperTable>
                     </div>
                     <p class="evo-article__note" data-seed-paper-evaluation-boundary>前三行的完整成功率都由各自的完整成功题数除以 128 得到，并保留一位小数。最后一行引用 <a href={ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.source} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.source} />SEED 论文 Table 1</a> 的 Qwen3-1.7B-Instruct WebShop Score 和 Succ.；论文没有报告可直接核验的完整成功题数，因此保留「—」。两套评测的题目身份、训练起点和协议没有严格对齐，不能把这张表直接当作方法公平排名。</p>
                     <p class="evo-article__note">可直接核对两份冻结 128 题的原始收据：<a href={checkpointEvidence.directFinal} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.directFinal} />普通 OpenEVO 终评 JSON</a> · <a href={checkpointEvidence.boundedFinal} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.boundedFinal} />Bounded 与历史 β 终评 JSON</a>。三条历史路线的题单相同，但普通路线是更早的历史前驱。</p>
                     <div class="evo-article__tablewrap" tabindex="0" aria-label="历史参数更新与整段训练的耗时对照">
-                      <table class="advisor-timing-table">
+                      <ResearchPaperTable class="advisor-timing-table">
                         <caption>补充表 S5｜历史耗时对照：分别计时参数更新及含 rollout 的完整运行（小时）</caption>
                         <thead><tr><th scope="col">计时范围</th><th scope="col" data-numeric>普通 OpenEVO（小时）</th><th scope="col" data-numeric>Bounded（无历史 β，小时）</th><th scope="col" data-numeric>耗时比</th></tr></thead>
                         <tbody>
                           <tr><th scope="row">累计参数更新</th><td data-numeric>31.09 小时</td><td data-numeric>2.02 小时</td><td data-numeric>15.36 倍</td></tr>
                           <tr><th scope="row">完整运行（含 rollout）</th><td data-numeric>74.78 小时</td><td data-numeric>56.25 小时</td><td data-numeric>1.33 倍</td></tr>
                         </tbody>
-                      </table>
+                      </ResearchPaperTable>
                     </div>
                     <p>参数更新只占整个实验的一部分。WebShop 任务执行（rollout）的时间没有被这一容量改进同等加速，因此两种时间口径可以同时成立。<a href={checkpointEvidence.resourceAnalysis} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.resourceAnalysis} />核对累计耗时原始统计</a>。对本研究而言，更值得追问的是<strong>固定容量以后，任务成绩为什么不同</strong>。</p>
                     <p>这些实验不是完全严格对照，结果先作为大致判断。普通 OpenEVO 是更早的历史前序路线，和后来两组在起点与实验安排上有差别，所以不能把 60.72 与 45.98 的分差直接看成固定容量带来的影响；Bounded 与历史 β 的比较条件更接近，但也需要后续严格核实。</p>
@@ -284,7 +285,7 @@ const q17Effects = {
                             <h4 id="q17-capacity">训练后的参数压缩</h4>
                                     <p>对两个保存点各比较 15 种参数状态，在同一批固定的 64 道购物题上使用两组独立随机设置（随机种子），共 3,840 次做题记录。R159 截断到 rank128 后，以 BF16 因子表示作大小对照，参数文件从约 1,021 MB 缩至 102.8 MB（约保留 10.07%）；计入基础模型后，总文件大小约保留 79.42%。这里采用十进制 MB，只计权重文件；1,021 MB 是 BF16 因子对照，不是原始 FP32 checkpoint 的大小。</p>
                                     <div class="evo-article__tablewrap" tabindex="0" aria-label="R159 训练后 rank128 压缩得分差">
-                                      <table><caption>表 4｜R159：压缩版减原模型，Task Score 分差（满分 100）</caption><thead><tr><th scope="col">随机设置</th><th data-numeric>平均成绩变化</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">首次测量</th><td data-numeric>下降 0.87 分</td><td data-numeric>下降 3.91 分至提高 1.65 分</td></tr><tr><th scope="row">同题换随机设置复测</th><td data-numeric>下降 0.61 分</td><td data-numeric>下降 1.48 分至提高 0.05 分</td></tr></tbody></table>
+                                      <ResearchPaperTable><caption>表 4｜R159：压缩版减原模型，Task Score 分差（满分 100）</caption><thead><tr><th scope="col">随机设置</th><th data-numeric>平均成绩变化</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">首次测量</th><td data-numeric>下降 0.87 分</td><td data-numeric>下降 3.91 分至提高 1.65 分</td></tr><tr><th scope="row">同题换随机设置复测</th><td data-numeric>下降 0.61 分</td><td data-numeric>下降 1.48 分至提高 0.05 分</td></tr></tbody></ResearchPaperTable>
                                     </div>
                                     <p class="evo-article__note">读表方法：分差始终按「压缩后 − 原模型」计算。首次测量平均低 0.87 分，95% 置信区间从下降 3.91 分到提高 1.65 分，既包括可能的下降，也包括可能的上升。区间包含 0，不能据此说压缩已被证明无损。</p>
                                     <p>这支持继续研究更小的参数表示，但尚未证明压缩后性能等价。完整 SVD 的 BF16 重构对照在 R159 首次测量中也下降约 2.22 分，说明数值重构本身可能改变行为，rank128 相对原模型的差额不能全部归因于截断。区间是对 64 道题逐题配对重采样得到的单项区间；第二组只是更换随机设置，仍然测试同一批 64 道题，不是换了新题，也不能据此宣称独立新任务复现。实际生成保留原有补零矩阵形状，<strong>没有测得紧凑部署的加速或显存节省</strong>。它也不同于Q04 的容量实验“直接用 rank32 训练”的实验。</p>
@@ -333,11 +334,11 @@ const q17Effects = {
               <h4>三条长期路线的文字状态改写次数</h4>
                     <p>OpenEVO 把每轮学习后留下的经验状态合称为 BUNDLE，里面有参数更新，也可以有 Text Memory、Skill 和 Agent System 这三种文字经验。我们在这里统计的是各部分的内容被改写过多少次：长期实验中参数更新很频繁，文字内容实际改写得少得多。这些次数不等于读取次数，也不能直接说明某一部分带来多少任务收益。</p>
                     <div class="evo-article__tablewrap" tabindex="0" aria-label="BUNDLE 更新计数">
-                      <table>
+                      <ResearchPaperTable>
                         <caption>表 6｜三条历史路线中不同载体的内容更新次数</caption>
                         <thead><tr><th>路线</th><th data-numeric>参数</th><th data-numeric>Text Memory</th><th data-numeric>Skill</th><th data-numeric>Agent System</th></tr></thead>
                         <tbody>{ADVISOR_Q09_UPDATES.map((item) => <tr><th>{item.method}</th><td data-numeric>{item.parametric}</td><td data-numeric>{item.textMemory}</td><td data-numeric>{item.skill}</td><td data-numeric>{item.agent}</td></tr>)}</tbody>
-                      </table>
+                      </ResearchPaperTable>
                     </div>
                     <p><strong>很少改写文字，不等于文字状态没有作用。</strong>早期生成的文字可能在后续多轮被反复读取。必须单独关闭或替换载体，在其他条件尽量一致的任务上重新评测，才能判断它对能力的贡献。<a href={checkpointEvidence.resourceAnalysis} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.resourceAnalysis} />载体更新原始统计</a></p>
               </div>
@@ -345,7 +346,7 @@ const q17Effects = {
               <h4 id="q17-context">文字提示与结果页顺序</h4>
                       <p>分别将 memory、skill、agent 的指导文字中和为无具体指导的文字，保留原生载体权限；另测当前结果页顺序反转。两模型共 512 次新干预，加 128 次原生基线，共 640 条记录。以下为 R159 相对原生基线的分差：</p>
                       <div class="evo-article__tablewrap" tabindex="0" aria-label="R159 文字指导与结果页顺序干预">
-                        <table><caption>表 7｜R159：干预后减原模型，Task Score 分差（满分 100）</caption><thead><tr><th scope="col">干预对象</th><th data-numeric>平均成绩变化</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">memory 指导文字中和</th><td data-numeric>提高 2.22 分</td><td data-numeric>下降 3.99 分至提高 8.75 分</td></tr><tr><th scope="row">skill 指导文字中和</th><td data-numeric>下降 4.11 分</td><td data-numeric>下降 9.61 分至提高 0.26 分</td></tr><tr><th scope="row">agent 指导文字中和</th><td data-numeric>提高 1.64 分</td><td data-numeric>下降 1.50 分至提高 5.75 分</td></tr><tr><th scope="row">当前结果页顺序反转</th><td data-numeric>下降 26.60 分</td><td data-numeric>下降 15.64 至 37.41 分</td></tr></tbody></table>
+                        <ResearchPaperTable><caption>表 7｜R159：干预后减原模型，Task Score 分差（满分 100）</caption><thead><tr><th scope="col">干预对象</th><th data-numeric>平均成绩变化</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">memory 指导文字中和</th><td data-numeric>提高 2.22 分</td><td data-numeric>下降 3.99 分至提高 8.75 分</td></tr><tr><th scope="row">skill 指导文字中和</th><td data-numeric>下降 4.11 分</td><td data-numeric>下降 9.61 分至提高 0.26 分</td></tr><tr><th scope="row">agent 指导文字中和</th><td data-numeric>提高 1.64 分</td><td data-numeric>下降 1.50 分至提高 5.75 分</td></tr><tr><th scope="row">当前结果页顺序反转</th><td data-numeric>下降 26.60 分</td><td data-numeric>下降 15.64 至 37.41 分</td></tr></tbody></ResearchPaperTable>
                       </div>
                       <p>三个指导文字干预的平均分差区间均包含零，不能宣称它们无效；skill 干预仍改变了 51.56% 任务的第一步动作。结果页顺序反转明显降低得分，表明模型对当前页面排列敏感，但这与文字记忆收益是两个不同问题。<strong>完整关闭三种载体权限的消融仍未完成</strong>，Q10 的新任务流独立复现也没有由这些开发集实验代替。</p>
                       <p class="evo-article__note">参数与文字干预的区间均按同一批 64 题配对计算，未作整条曲线同时置信保证。<a href="/research/seed-openevo/evidence/q17-checkpoint-diagnostics-20261015.json">公开汇总数据、原始收据哈希与限制（JSON）</a>；<a href="https://huggingface.co/datasets/openevo-recovery/openevo-full-server-disaster-recovery-v1"><ExternalBrandMark href="https://huggingface.co/datasets/openevo-recovery/openevo-full-server-disaster-recovery-v1" />私有原始证据库（需授权）</a>。网页只发布汇总，不发布任务原文或轨迹。</p>
@@ -378,7 +379,7 @@ const q17Effects = {
               <h4>同一批题重复尝试，成功并不均匀</h4>
                     <p>历史上已对相同 64 题各尝试 8 次，共 512 次结果。按“每题在前 k 次中至少成功一次”统计的 Success@k 如下；这些数字来自旧数据的严格复用，并非本次写作重新运行 WebShop。</p>
                     <div class="evo-article__tablewrap" tabindex="0" aria-label="R159 重复八次的 Success at k">
-                      <table>
+                      <ResearchPaperTable>
                         <caption>补充表 S6｜R159 开发集 64 题：前 k 次至少成功一次的题数</caption>
                         <thead><tr><th>尝试次数 k</th><th data-numeric>至少成功一次的题数（共 64 题）</th></tr></thead>
                         <tbody>
@@ -387,7 +388,7 @@ const q17Effects = {
                           <tr><th scope="row">4 次</th><td data-numeric>27 题</td></tr>
                           <tr><th scope="row">8 次</th><td data-numeric>31 题</td></tr>
                         </tbody>
-                      </table>
+                      </ResearchPaperTable>
                     </div>
                     <p><strong>64 道题中有 31 道至少成功过一次，但并非每次都成功。</strong>其中只有 <strong>6 道题</strong>在八次尝试中全部成功，<strong>33 道题</strong>八次都失败，其余 25 道题存在波动。需要每题连续奖励的 Best-of-k 仍因缺少逐题连续分数而无法验收（BLOCKED），不能由组平均分倒推。<a href={checkpointEvidence.repeat8} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.repeat8} />M1 原始重复观察</a></p>
               </details>
@@ -460,7 +461,7 @@ const q17Effects = {
 
 <style>
   [data-q17-diagnostics] h4 { scroll-margin-top: 5.8rem; }
-  .advisor-timing-table th[scope="row"] { white-space: nowrap; }
+  .advisor-timing-table th[scope="row"] { white-space: nowrap}
 </style>
 
 <script>

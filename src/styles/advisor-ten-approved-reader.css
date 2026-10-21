@@ -274,11 +274,11 @@ html[data-theme="dark"] .evo-approved-reader {
   color: var(--paper-muted);
   text-decoration: none;
 }
-.evo-approved-reader .advisor-ten-toc a:hover { color: var(--paper-ink); }
-
-/* Scientific diagrams preserve genuine paper table semantics, never turn
+.evo-approved-reader .advisor-ten-toc a:hover { color: var(--paper-ink); } never turn
    simple results into full-width UI cards. */
 .evo-approved-reader .advisor-result-matrix { margin: 19px 0 25px; max-width: 100%; }
+
+/* Scientific diagrams preserve genuine paper table semantics{ margin: 19px 0 25px}
 .evo-approved-reader .advisor-result-matrix__wrap {
   width: fit-content;
   max-width: 100%;
@@ -286,34 +286,8 @@ html[data-theme="dark"] .evo-approved-reader {
   scrollbar-width: thin;
 }
 .evo-approved-reader .advisor-result-matrix table {
-  border-collapse: collapse;
-  table-layout: auto;
-  width: auto;
-  max-width: 100%;
-  margin: 0;
-  border-top: 1.6px solid var(--paper-ink);
-  border-bottom: 1.6px solid var(--paper-ink);
-  font: 400 13px/1.55 var(--advisor-plain-font);
-  font-variant-numeric: normal;
-  font-feature-settings: normal;
-  color: var(--paper-ink);
-}
-.evo-approved-reader .advisor-result-matrix th,
-.evo-approved-reader .advisor-result-matrix td {
-  border: 0;
-  padding: 9px 11px 9px 0;
-  text-align: left;
-  vertical-align: top;
-}
-.evo-approved-reader .advisor-result-matrix thead th {
-  border-bottom: 1px solid var(--paper-ink);
-  font-weight: 650;
-  line-height: 1.45;
-}
-.evo-approved-reader .advisor-result-matrix tbody tr + tr > * {
-  border-top: 1px solid var(--paper-line);
-}
-.evo-approved-reader .advisor-result-matrix th:first-child { min-width: 7.5em; }
+  margin: 0}
+.evo-approved-reader .advisor-result-matrix th:first-child { min-width: 7.5em}
 .evo-approved-reader .advisor-result-matrix [data-numeric] { text-align: right; white-space: nowrap; }
 .evo-approved-reader .advisor-result-matrix figcaption {
   margin: 9px 0 0;
@@ -369,16 +343,6 @@ html[data-theme="dark"] .evo-approved-reader {
   width: fit-content;
   max-width: 100%;
 }
-.evo-approved-reader .evo-article__tablewrap table { width: auto; max-width: 100%; }
-.evo-approved-reader .evo-article__tablewrap table caption {
-  font-size: 12.5px;
-  color: var(--paper-ink);
-}
-.evo-approved-reader .evo-article__tablewrap th,
-.evo-approved-reader .evo-article__tablewrap td {
-  font-size: 13px;
-  line-height: 1.58;
-}
 @media (max-width: 1100px) {
   .evo-approved-reader .advisor-ten-toc {
     left: 12px;
@@ -411,30 +375,17 @@ html[data-theme="dark"] .evo-approved-reader {
   .evo-approved-reader h2 { font-size: 21px; }
   .evo-approved-reader h3,
   .evo-approved-reader .evo-article__question-header h3 { font-size: 17px; }
-  .evo-approved-reader .advisor-result-matrix table {
-    width: 100%;
-    table-layout: fixed;
-    font-size: 11.5px;
-    line-height: 1.5;
-  }
   .evo-approved-reader .advisor-result-matrix th,
   .evo-approved-reader .advisor-result-matrix td {
-    padding: 7px 3px 7px 0;
     overflow-wrap: anywhere;
-    word-break: normal;
-  }
+    word-break: normal}
   .evo-approved-reader .advisor-result-matrix th:first-child {
-    min-width: 0;
-    width: 34%;
-  }
+    min-width: 0}
   .evo-approved-reader .advisor-result-matrix [data-numeric] {
     white-space: normal;
     overflow-wrap: anywhere;
   }
-  .evo-approved-reader .advisor-result-matrix__wrap {
-    width: 100%;
-    overflow-x: hidden;
-  }
+  
   .evo-approved-reader .advisor-result-matrix figcaption,
   .evo-approved-reader .advisor-result-matrix figcaption p { font-size: 12px; }
   .evo-approved-reader .math-formula { padding: 12px 9px; }
@@ -443,14 +394,6 @@ html[data-theme="dark"] .evo-approved-reader {
    Other pages keep their existing editorial typography. KaTeX symbols keep
    their actual mathematics font; no formula glyphs are replaced. */
 .evo-blog.evo-approved-reader :is(
-  .research-booktabs,
-  .research-booktabs th,
-  .research-booktabs td,
-  .research-booktabs caption,
-  .evo-article__tablewrap table,
-  .evo-article__tablewrap th,
-  .evo-article__tablewrap td,
-  .evo-article__tablewrap caption,
   .advisor-viz,
   .advisor-viz svg,
   .advisor-viz svg text,
@@ -463,7 +406,6 @@ html[data-theme="dark"] .evo-approved-reader {
   .paper-effect__axis,
   .paper-effect figcaption,
   .q03-world4,
-  .q03-world4 table
 ) {
   font-family: var(--advisor-plain-font);
   font-variant-numeric: normal;

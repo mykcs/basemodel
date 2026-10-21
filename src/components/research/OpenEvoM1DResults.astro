@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import type { Locale } from '../../i18n';
 import { OPEN_EVO_M1D_RESULTS } from '../../data/openEvoM1DResults';
 interface Props { locale: Locale }
@@ -26,11 +27,11 @@ const contract = OPEN_EVO_M1D_RESULTS.stage1;
   <p class="m1d-results__boundary">{t('“封存”是把数据、身份和完整性检查固定下来，供别人核查。MiniMax 输出格式合格也不等于模型购物成功；最终比较只回答初始经验的差异。', 'Sealing fixes the data, identity, and completeness checks for inspection. A valid MiniMax output format is not a successful shopping outcome; the comparison addresses initial experience only.')}</p>
   <details>
     <summary>{t('结果封存后将公布的五项指标', 'The five metrics to publish after sealing')}</summary>
-    <table>
+    <ResearchPaperTable>
       <caption>{t('这些是预定指标名称，不是已测得结果。', 'These are planned metric names, not measured results.')}</caption>
       <thead><tr><th scope="col">{t('观察什么', 'What is observed')}</th><th scope="col">{t('发布状态', 'Publication status')}</th></tr></thead>
       <tbody>{OPEN_EVO_M1D_RESULTS.resultMetrics.map((metric) => <tr><th scope="row">{zh ? metric.zh : metric.en}</th><td data-result-placeholder>{t('等待封存', 'Awaiting seal')}</td></tr>)}</tbody>
-    </table>
+    </ResearchPaperTable>
   </details>
   <details>
     <summary>{t('固定运行设置与发布合同', 'Frozen runtime settings and publication contract')}</summary>
@@ -47,5 +48,5 @@ const contract = OPEN_EVO_M1D_RESULTS.stage1;
   </details>
 </section>
 <style>
-.m1d-results{margin:1.25rem 0;padding:1.25rem 0;border-block:1px solid var(--line);color:var(--ink);min-width:0}.m1d-results header{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap}.m1d-results h3{margin:0;font-size:1.35rem;line-height:1.5}.m1d-results__state{color:var(--color-warning);font-size:.9rem}.m1d-results p{max-width:48rem;margin:.8rem 0;line-height:1.8}.m1d-results__budget{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin:1.2rem 0;padding:1rem 0;border-block:1px solid var(--line)}.m1d-results__budget dt{font-size:.88rem;color:var(--muted)}.m1d-results__budget dd{font-size:1.15rem;font-weight:750;margin:.3rem 0;line-height:1.5}.m1d-results h4{margin:1.25rem 0 .6rem;font-size:1rem;line-height:1.5}.m1d-results__gates{padding-left:1.25rem;max-width:48rem}.m1d-results__gates li{padding-left:.25rem;margin:.8rem 0;line-height:1.8}.m1d-results__boundary{border-left:3px solid var(--accent-deep);padding-left:1rem}.m1d-results details{border-top:1px solid var(--line);padding:1rem 0 .25rem;margin-top:1rem}.m1d-results summary{cursor:pointer;min-height:44px;font-weight:700;line-height:1.7}.m1d-results summary:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}.m1d-results table{width:100%;border-collapse:collapse;font-size:.95rem;line-height:1.6}.m1d-results caption{text-align:left;margin:.5rem 0;color:var(--muted)}.m1d-results th,.m1d-results td{padding:.6rem .5rem;text-align:left;border-bottom:1px solid var(--line);overflow-wrap:anywhere}.m1d-results th[scope="row"]{font-weight:500}.m1d-results__technical{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.m1d-results__technical dd{margin:.3rem 0}.m1d-results code{overflow-wrap:anywhere;white-space:normal;font-size:.85rem}@media(max-width:760px){.m1d-results__budget{grid-template-columns:repeat(2,minmax(0,1fr))}.m1d-results__technical{grid-template-columns:1fr}}
+.m1d-results{margin:1.25rem 0;padding:1.25rem 0;border-block:1px solid var(--line);color:var(--ink);min-width:0}.m1d-results header{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap}.m1d-results h3{margin:0;font-size:1.35rem;line-height:1.5}.m1d-results__state{color:var(--color-warning);font-size:.9rem}.m1d-results p{max-width:48rem;margin:.8rem 0;line-height:1.8}.m1d-results__budget{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin:1.2rem 0;padding:1rem 0;border-block:1px solid var(--line)}.m1d-results__budget dt{font-size:.88rem;color:var(--muted)}.m1d-results__budget dd{font-size:1.15rem;font-weight:750;margin:.3rem 0;line-height:1.5}.m1d-results h4{margin:1.25rem 0 .6rem;font-size:1rem;line-height:1.5}.m1d-results__gates{padding-left:1.25rem;max-width:48rem}.m1d-results__gates li{padding-left:.25rem;margin:.8rem 0;line-height:1.8}.m1d-results__boundary{border-left:3px solid var(--accent-deep);padding-left:1rem}.m1d-results details{border-top:1px solid var(--line);padding:1rem 0 .25rem;margin-top:1rem}.m1d-results summary{cursor:pointer;min-height:44px;font-weight:700;line-height:1.7}.m1d-results summary:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}.m1d-results caption{margin:.5rem 0}.m1d-results th,.m1d-results td{overflow-wrap:anywhere}.m1d-results__technical{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.m1d-results__technical dd{margin:.3rem 0}.m1d-results code{overflow-wrap:anywhere;white-space:normal;font-size:.85rem}@media(max-width:760px){.m1d-results__budget{grid-template-columns:repeat(2,minmax(0,1fr))}.m1d-results__technical{grid-template-columns:1fr}}
 </style>

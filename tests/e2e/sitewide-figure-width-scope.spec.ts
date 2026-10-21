@@ -1,7 +1,45 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
+import { createHash } from 'node:crypto';
+import paperTableBaseline from '../fixtures/research-paper-table-values.json';
 import { captureFigureEvidence, revealEvidenceReadingState, settleFigureHydration } from './figure-evidence';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
+
+async function expectPaperGrammar(target: Locator, route: string, index: number) {
+
+  const expected = paperTableBaseline.routes.find(entry => entry.route === route)?.tables.find(entry => entry.index === index);
+  expect(expected, 'sealed original table identity '+route+'#'+index).toBeTruthy();
+  const cellTexts = await target.locator('th,td').evaluateAll(cells => cells.map(cell => cell.textContent?.trim()));
+  expect(createHash('sha256').update(JSON.stringify(cellTexts)).digest('hex')).toBe(expected!.hash);
+  const grammar = await target.evaluate(el => {
+    const style = getComputedStyle(el);
+    const cap = el.querySelector('caption')!;
+    const box = el.getBoundingClientRect(), captionBox = cap.getBoundingClientRect();
+    const cells = [...el.querySelectorAll<HTMLElement>('th,td')];
+    return {
+      display: style.display, family: style.fontFamily, font: parseFloat(style.fontSize),
+      top: parseFloat(style.borderTopWidth), bottom: parseFloat(style.borderBottomWidth),
+      caption: Boolean(cap && captionBox.width > 0 && captionBox.height > 0 && captionBox.bottom <= (el.querySelector('thead')?.getBoundingClientRect().top ?? box.top) + 2),
+      captionSide: getComputedStyle(cap).captionSide,
+      verticalRules: cells.some(cell => parseFloat(getComputedStyle(cell).borderLeftWidth) > 0 || parseFloat(getComputedStyle(cell).borderRightWidth) > 0),
+      bodyRules: [...el.querySelectorAll<HTMLElement>('tbody tr:not(:first-child)>*')].some(cell => parseFloat(getComputedStyle(cell).borderTopWidth) > 0 || parseFloat(getComputedStyle(cell).borderBottomWidth) > 0),
+      numeric: [...el.querySelectorAll<HTMLElement>('[data-numeric]')].every(cell => getComputedStyle(cell).textAlign === 'right' && getComputedStyle(cell).fontVariantNumeric.includes('tabular-nums')),
+      bodyBackgrounds: [...el.querySelectorAll<HTMLElement>('tbody tr,tbody th,tbody td')].every(cell => ['rgba(0, 0, 0, 0)','transparent'].includes(getComputedStyle(cell).backgroundColor)),
+    };
+  });
+  expect(grammar.display).toBe('table');
+  expect(grammar.family).toContain('Times');
+  expect(grammar.font).toBeGreaterThanOrEqual(route.includes('/briefing/') ? 14 : 16);
+  expect(grammar.top).toBeGreaterThan(0);
+  expect(grammar.bottom).toBeGreaterThan(0);
+  expect(grammar.caption).toBe(true);
+  expect(grammar.captionSide).toBe('top');
+  expect(grammar.verticalRules).toBe(false);
+  expect(grammar.bodyRules).toBe(false);
+  expect(grammar.numeric).toBe(true);
+  expect(grammar.bodyBackgrounds).toBe(true);
+  await expect(target.locator('..')).toHaveCSS('overflow-x','auto');
+}
 
 const captureAudit = process.env.CLOUD_FIGURE_AUDIT === '1';
 const root = join(process.cwd(), 'dist');
@@ -36,6 +74,11 @@ for (const route of routes) {
       const overflow = await page.evaluate(() =>
         document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow).toBeLessThanOrEqual(2);
+      const nativeTables = page.locator('table');
+      for (let index = 0; index < await nativeTables.count(); index++) {
+        const target = nativeTables.nth(index);
+        if (await target.getAttribute('data-research-paper-table') !== null && await target.isVisible()) await expectPaperGrammar(target, route, index);
+      }
       if (captureAudit) {
         await page.evaluate(() => {
           // Capture explicitly records this expanded reading state.
@@ -118,6 +161,8 @@ for (const route of routes) {
             cells:[...el.querySelectorAll('th,td')].map(cell=>({text:cell.textContent?.trim(),
               box:cell.getBoundingClientRect().toJSON(),fontSize:getComputedStyle(cell).fontSize})),
           }),index);
+
+          if (await target.getAttribute('data-research-paper-table') !== null && visible) await expectPaperGrammar(target, route, index);
           tables.push({...table,visible,state:visible?readingState:alternative.phone?'source-owned phone-only table; desktop data chart visible':'source-owned compact rental catalog excluded from this page'});
           if(visible)await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`));
         }

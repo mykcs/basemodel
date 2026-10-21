@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import { localePath, type Locale } from '../../i18n';
 
 export type MissionPage = 'hub' | 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'results';
@@ -46,7 +47,8 @@ const p = (path: string) => localePath(locale, path);
 
     <section class="mission-section" data-explainer-step="2">
       <div class="mission-section__heading"><span>03</span><div><small>{t('基准', 'Benchmarks')}</small><h2>{t('Benchmark 接入契约', 'Benchmark integration contract')}</h2></div></div>
-      <table class="mission-table"><thead><tr><th>{t('层', 'Layer')}</th><th>{t('必须保存', 'Required evidence')}</th></tr></thead><tbody><tr><td>{t('环境', 'Environment')}</td><td>reset / observation / valid action / termination</td></tr><tr><td>{t('轨迹', 'Trajectory')}</td><td>{t('动作、观察、分数、结束原因、模型输出', 'actions, observations, scores, termination, model outputs')}</td></tr><tr><td>{t('评测', 'Evaluation')}</td><td>{t('连续分数、exact success、步骤与失败类型', 'continuous score, exact success, steps, failure types')}</td></tr><tr><td>{t('演化', 'Evolution')}</td><td>{t('输入 artifact、方法身份、输出 artifact、激活 revision', 'input artifact, method identity, output artifact, activated revision')}</td></tr></tbody></table>
+      <ResearchPaperTable class="mission-table">
+<Fragment slot="caption">{t('Benchmark 接入契约', 'Benchmark integration contract')}</Fragment><thead><tr><th>{t('层', 'Layer')}</th><th>{t('必须保存', 'Required evidence')}</th></tr></thead><tbody><tr><td>{t('环境', 'Environment')}</td><td>reset / observation / valid action / termination</td></tr><tr><td>{t('轨迹', 'Trajectory')}</td><td>{t('动作、观察、分数、结束原因、模型输出', 'actions, observations, scores, termination, model outputs')}</td></tr><tr><td>{t('评测', 'Evaluation')}</td><td>{t('连续分数、exact success、步骤与失败类型', 'continuous score, exact success, steps, failure types')}</td></tr><tr><td>{t('演化', 'Evolution')}</td><td>{t('输入 artifact、方法身份、输出 artifact、激活 revision', 'input artifact, method identity, output artifact, activated revision')}</td></tr></tbody></ResearchPaperTable>
     </section>
   </>}
 
@@ -62,7 +64,8 @@ const p = (path: string) => localePath(locale, path);
 
     <section class="mission-section" data-explainer-step="-1">
       <div class="mission-section__heading"><span>02</span><div><h2>{t('结果与轨迹证据', 'Outcome and trajectory evidence')}</h2></div></div>
-      <table class="mission-table"><thead><tr><th>{t('证据', 'Evidence')}</th><th>ALFWorld</th><th>WebShop</th></tr></thead><tbody><tr><td>{t('最终成功', 'Final success')}</td><td>success / failure</td><td>exact success</td></tr><tr><td>{t('部分完成', 'Partial completion')}</td><td>—</td><td>normalized score</td></tr><tr><td>{t('轨迹诊断', 'Trajectory diagnostics')}</td><td>{t('循环、无效动作、状态遗漏', 'loops, invalid actions, missed state')}</td><td>{t('query、click、option、fallback', 'query, click, option, fallback')}</td></tr></tbody></table>
+      <ResearchPaperTable class="mission-table">
+<Fragment slot="caption">{t('结果与轨迹证据', 'Outcome and trajectory evidence')}</Fragment><thead><tr><th>{t('证据', 'Evidence')}</th><th>ALFWorld</th><th>WebShop</th></tr></thead><tbody><tr><td>{t('最终成功', 'Final success')}</td><td>success / failure</td><td>exact success</td></tr><tr><td>{t('部分完成', 'Partial completion')}</td><td>—</td><td>normalized score</td></tr><tr><td>{t('轨迹诊断', 'Trajectory diagnostics')}</td><td>{t('循环、无效动作、状态遗漏', 'loops, invalid actions, missed state')}</td><td>{t('query、click、option、fallback', 'query, click, option, fallback')}</td></tr></tbody></ResearchPaperTable>
     </section>
 
     <section class="mission-section" data-explainer-step="0">
@@ -74,7 +77,8 @@ const p = (path: string) => localePath(locale, path);
   {page === 'webshop' && <>
     <section class="mission-section" data-explainer-step="4">
       <div class="mission-section__heading"><span>01</span><div><small>{t('评测', 'Evaluation')}</small><h2>{t('分数与成功边界', 'Score and success boundary')}</h2></div></div>
-      <table class="mission-table"><thead><tr><th>{t('字段', 'Field')}</th><th>{t('含义', 'Meaning')}</th><th>{t('记录方式', 'Recording')}</th></tr></thead><tbody><tr><td>task_score</td><td>{t('归一化任务完成度，范围 0–1。', 'Normalized task completion in the range 0–1.')}</td><td>{t('保留连续数值', 'preserve the continuous value')}</td></tr><tr><td>won</td><td>{t('是否精确满足终局约束。', 'Whether terminal constraints are satisfied exactly.')}</td><td>{t('与 score 分开保存', 'store separately from score')}</td></tr><tr><td>DEMO</td><td>{t('交互图中的 1.0 仅为教学示意。', 'The 1.0 shown in the interactive figure is illustrative only.')}</td><td>{t('不并入实验结果', 'exclude from experiment results')}</td></tr></tbody></table>
+      <ResearchPaperTable class="mission-table">
+<Fragment slot="caption">{t('分数与成功边界', 'Score and success boundary')}</Fragment><thead><tr><th>{t('字段', 'Field')}</th><th>{t('含义', 'Meaning')}</th><th>{t('记录方式', 'Recording')}</th></tr></thead><tbody><tr><td>task_score</td><td>{t('归一化任务完成度，范围 0–1。', 'Normalized task completion in the range 0–1.')}</td><td>{t('保留连续数值', 'preserve the continuous value')}</td></tr><tr><td>won</td><td>{t('是否精确满足终局约束。', 'Whether terminal constraints are satisfied exactly.')}</td><td>{t('与 score 分开保存', 'store separately from score')}</td></tr><tr><td>DEMO</td><td>{t('交互图中的 1.0 仅为教学示意。', 'The 1.0 shown in the interactive figure is illustrative only.')}</td><td>{t('不并入实验结果', 'exclude from experiment results')}</td></tr></tbody></ResearchPaperTable>
       <div class="section-actions"><a class="button button-primary" href={p('/research/seed-openevo/flow/benchmarks/')}>{t('比较两个环境', 'Compare both environments')}</a><a class="button button-secondary" href={p('/research/seed-openevo/study/run/')}>{t('打开实验指南', 'Open experiment guide')}</a></div>
     </section>
   </>}
@@ -93,7 +97,8 @@ const p = (path: string) => localePath(locale, path);
 
     <section class="mission-section" data-explainer-step="8">
       <div class="mission-section__heading"><span>03</span><div><small>{t('评测', 'Evaluation')}</small><h2>{t('成功率与数据 split', 'Success rate and data splits')}</h2></div></div>
-      <table class="mission-table"><thead><tr><th>{t('字段', 'Field')}</th><th>{t('含义', 'Meaning')}</th><th>{t('边界', 'Boundary')}</th></tr></thead><tbody><tr><td>success</td><td>{t('终局目标是否满足。', 'Whether the terminal goal is satisfied.')}</td><td>{t('二元任务结果', 'binary task outcome')}</td></tr><tr><td>task-family rate</td><td>{t('每个家务任务家族的成功率。', 'Success rate for each household task family.')}</td><td>{t('按家族分别报告', 'report by family')}</td></tr><tr><td>macro-average</td><td>{t('各任务家族成功率的不加权平均。', 'Unweighted average of task-family success rates.')}</td><td>{t('不能与 WebShop normalized score 混用', 'do not mix with WebShop normalized score')}</td></tr><tr><td>split</td><td>train / valid_seen / valid_unseen</td><td>{t('保存原始环境 split 与上层抽样', 'preserve the environment split and upper-level sampling')}</td></tr></tbody></table>
+      <ResearchPaperTable class="mission-table">
+<Fragment slot="caption">{t('成功率与数据 split', 'Success rate and data splits')}</Fragment><thead><tr><th>{t('字段', 'Field')}</th><th>{t('含义', 'Meaning')}</th><th>{t('边界', 'Boundary')}</th></tr></thead><tbody><tr><td>success</td><td>{t('终局目标是否满足。', 'Whether the terminal goal is satisfied.')}</td><td>{t('二元任务结果', 'binary task outcome')}</td></tr><tr><td>task-family rate</td><td>{t('每个家务任务家族的成功率。', 'Success rate for each household task family.')}</td><td>{t('按家族分别报告', 'report by family')}</td></tr><tr><td>macro-average</td><td>{t('各任务家族成功率的不加权平均。', 'Unweighted average of task-family success rates.')}</td><td>{t('不能与 WebShop normalized score 混用', 'do not mix with WebShop normalized score')}</td></tr><tr><td>split</td><td>train / valid_seen / valid_unseen</td><td>{t('保存原始环境 split 与上层抽样', 'preserve the environment split and upper-level sampling')}</td></tr></tbody></ResearchPaperTable>
       <div class="section-actions"><a class="button button-primary" href={p('/research/seed-openevo/flow/benchmarks/')}>{t('比较两个环境', 'Compare both environments')}</a><a class="button button-secondary" href={p('/research/seed-openevo/study/run/')}>{t('打开实验指南', 'Open experiment guide')}</a></div>
     </section>
   </>}
@@ -106,7 +111,8 @@ const p = (path: string) => localePath(locale, path);
 
     <section class="mission-section" data-explainer-step="3">
       <div class="mission-section__heading"><span>02</span><div><small>{t('接口', 'Interfaces')}</small><h2>{t('更新对象与接口', 'Updated objects and interfaces')}</h2></div></div>
-      <table class="mission-table"><thead><tr><th>{t('维度', 'Dimension')}</th><th>SEED</th><th>OpenEvo</th></tr></thead><tbody><tr><td>{t('经验来源', 'Experience')}</td><td>on-policy trajectories</td><td>已封存的任务 / session 证据</td></tr><tr><td>{t('中间产物', 'Intermediate')}</td><td>hindsight skill</td><td>versioned artifact / adapter</td></tr><tr><td>{t('更新对象', 'Updated object')}</td><td>policy parameters</td><td>载体 / adapter / 下一版本</td></tr><tr><td>{t('生效边界', 'Activation')}</td><td>{t('下一次 policy update 后', 'after policy update')}</td><td>{t('后续任务加载 revision 时', 'when a later task loads the revision')}</td></tr></tbody></table>
+      <ResearchPaperTable class="mission-table">
+<Fragment slot="caption">{t('更新对象与接口', 'Updated objects and interfaces')}</Fragment><thead><tr><th>{t('维度', 'Dimension')}</th><th>SEED</th><th>OpenEvo</th></tr></thead><tbody><tr><td>{t('经验来源', 'Experience')}</td><td>on-policy trajectories</td><td>已封存的任务 / session 证据</td></tr><tr><td>{t('中间产物', 'Intermediate')}</td><td>hindsight skill</td><td>versioned artifact / adapter</td></tr><tr><td>{t('更新对象', 'Updated object')}</td><td>policy parameters</td><td>载体 / adapter / 下一版本</td></tr><tr><td>{t('生效边界', 'Activation')}</td><td>{t('下一次 policy update 后', 'after policy update')}</td><td>{t('后续任务加载 revision 时', 'when a later task loads the revision')}</td></tr></tbody></ResearchPaperTable>
     </section>
 
     <section class="mission-section" data-explainer-step="4">
@@ -156,12 +162,6 @@ const p = (path: string) => localePath(locale, path);
   .two-grid h3,.four-grid h3,.status-board h3{margin:.45rem 0 .35rem}
   .two-grid p,.four-grid p,.status-board p{margin:.35rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.62}
   .two-grid ol{margin:.65rem 0 0;padding-left:1.2rem;color:var(--muted);font-size:.78rem;line-height:1.66}
-
-  .mission-table{width:100%;border-collapse:collapse;font-size:.8rem}
-  .mission-table th,.mission-table td{padding:.74rem .45rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-  .mission-table th:first-child,.mission-table td:first-child{padding-left:0}
-  .mission-table th:last-child,.mission-table td:last-child{padding-right:0}
-  .mission-table th{color:var(--muted);font-size:.68rem}
 
   .section-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.15rem}
   .benchmark-detail-links{display:grid;grid-template-columns:1fr 1fr;gap:0 1.5rem;margin-top:1.1rem;border-block:1px solid var(--line)}
