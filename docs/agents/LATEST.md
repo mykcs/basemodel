@@ -16,7 +16,7 @@ This file is a short current-state router. Detailed policy belongs under `docs/a
 
 `research-paper-table-values.json` 保存已封存云端产物中 39 个研究路由、96 个原生表格的单元格序列指纹；浏览器验收同时核对数值与原生表格排版，并生成 390 / 768 / 1440、浅色 / 深色、打印及灰度证据。构建通过、截图生成、逐对象视觉审查、Preview、Production 和真人理解分别记账；当前精确提交的发布收据以 #920 实时 CI / Vercel 记录为准，真人冷读仍为 **NEEDS_READER**。
 
-Q03 的独立单栏论文图改动来自已合入的 [PR #921](https://github.com/mykcs/basemodel/pull/921)，与本次表格整合保留。先前字体与图表阅读窗口收尾见 [PR #918](https://github.com/mykcs/basemodel/pull/918)；账户中央归档已合入 Codex-Dialogue [PR #490](https://github.com/mykcs/Codex-Dialogue/pull/490)。这些历史收据不能替代 #920 合并树的实际验收。
+Q03 的独立单栏论文图改动来自已合入的 [PR #921](https://github.com/mykcs/basemodel/pull/921)，与本次表格整合保留。先前字体与图表阅读窗口收尾见 [PR #918](https://github.com/mykcs/basemodel/pull/918)；先前字体任务的账户中央归档见 `.agents` [PR #490](https://github.com/mykcs/.agents/pull/490)，本次论文表格纠偏的案例增量已合入 `.agents` [PR #500](https://github.com/mykcs/.agents/pull/500)。这些历史收据不能替代 #920 合并树的实际验收。
 
 ## 2026-10-20 科研 Figure 云端验收入口
 
