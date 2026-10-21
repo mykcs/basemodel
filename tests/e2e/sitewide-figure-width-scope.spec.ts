@@ -216,9 +216,31 @@ test('paper tables use content width while dense comparisons and diagrams retain
 
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/');
   const state = page.locator('.bounded__table');
-  const stateColumn = await state.first().evaluate(el => el.parentElement!.parentElement!.getBoundingClientRect().width);
-  expect((await state.first().boundingBox())!.width).toBeLessThan(stateColumn);
-  expect((await state.last().boundingBox())!.width).toBeGreaterThan((await state.first().boundingBox())!.width);
+  await expect(state).toHaveCount(2);
+  // A text-heavy three-column comparison can be wider than a four-column
+  // numeric result. Both must keep their intrinsic width when extra room is
+  // available, rather than stretching to fill an arbitrary desktop column.
+  const acceptIntrinsicWidth = async (table: Locator) => {
+    const column = table.locator('..').locator('..');
+    const originalStyle = await column.getAttribute('style');
+    const before = (await table.boundingBox())!.width;
+    const available = (await column.boundingBox())!.width;
+    expect(before).toBeLessThan(available);
+    try {
+      await column.evaluate((el, width) => { (el as HTMLElement).style.width=width+'px'; (el as HTMLElement).style.maxWidth='none'; }, available+600);
+      expect(Math.abs((await table.boundingBox())!.width-before)).toBeLessThanOrEqual(2);
+    } finally {
+      await column.evaluate((el, style) => { if(style===null)el.removeAttribute('style');else el.setAttribute('style',style); },originalStyle);
+    }
+  };
+  for (const table of await state.all()) await acceptIntrinsicWidth(table);
+  const compactState = state.first(), compactWindow = compactState.locator('..');
+  await compactWindow.evaluate(el => (el as HTMLElement).style.width='100%');
+  await compactState.evaluate(el => (el as HTMLElement).style.width='100%');
+  await expect(acceptIntrinsicWidth(compactState)).rejects.toThrow();
+  await compactWindow.evaluate(el => (el as HTMLElement).style.removeProperty('width'));
+  await compactState.evaluate(el => (el as HTMLElement).style.removeProperty('width'));
+  await acceptIntrinsicWidth(compactState);
 
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/');
   const v2Compact = page.locator('.comparison-table');
