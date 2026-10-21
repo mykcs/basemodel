@@ -383,11 +383,15 @@ test('native table capture respects the real scroll container instead of photogr
   const bad=testInfo.outputPath('unclipped-table-negative.png');
   await page.screenshot({path:bad,clip:rect!,fullPage:true});
   const pixels=(path:string)=>({width:readFileSync(path).readUInt32BE(16),height:readFileSync(path).readUInt32BE(20)});
-  const accept=(size:{width:number;height:number})=>{expect(size.width).toBeLessThanOrEqual(350);expect(size.height).toBeLessThanOrEqual(180);expect(size.height).toBeGreaterThan(0);};
+  // Native PNGs use device pixels; the reader window and clip use CSS pixels.
+  const deviceScale=await page.evaluate(()=>window.devicePixelRatio);
+  expect(deviceScale).toBeGreaterThan(0);
+  const accept=(size:{width:number;height:number})=>{expect(size.width/deviceScale).toBeLessThanOrEqual(350);expect(size.height/deviceScale).toBeLessThanOrEqual(180);expect(size.height).toBeGreaterThan(0);};
   const original=pixels(bad);expect(()=>accept(original)).toThrow();
   const good=testInfo.outputPath('scroll-container-native-positive.png');
   const clip=await captureFigureEvidence(table,good);
   accept(pixels(good));expect(clip.height).toBe(180);
+  expect(pixels(good).height).toBe(clip.height*deviceScale);
   await expect(page.locator('.holder')).toHaveJSProperty('scrollTop',0);
 });
 
