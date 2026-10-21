@@ -529,7 +529,9 @@ function assertLegacyRunbookTypography(r:Awaited<ReturnType<typeof readLegacyRun
   expect(r.rootOverflow).toBeLessThanOrEqual(2);
   expect(r.cardLeft).toBeGreaterThanOrEqual(-2);
   expect(r.cardRight).toBeLessThanOrEqual(width+2);
-  expect(r.dateText).toBe('2026-08-11');
+  // The global human-expression runtime may localize ISO dates to 2026 年 8 月 11 日.
+  // Check the calendar identity, not the former decorative string spelling.
+  expect(r.dateText?.replace(/\s+/g,'')).toMatch(/^2026(?:-08-11|年8月11日)$/);
   expect(r.currentLink).toContain('fuhuo-20260419.vercel.app/docs/machines');
   for(const [selector,min] of Object.entries(floors)){
     const v=r.roles[selector];
