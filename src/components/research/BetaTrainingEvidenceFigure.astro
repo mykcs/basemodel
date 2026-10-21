@@ -1,0 +1,223 @@
+---
+import type { Locale } from '../../i18n';
+import { BETA_TRAINING_FIGURE as figure } from '../../data/researchFigureData';
+import ResearchEvidenceFigure from './ResearchEvidenceFigure.astro';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+
+const width = 960;
+const height = 430;
+const plot = { left: 64, right: 26, top: 26, bottom: 54 };
+const xMin = 96;
+const xMax = 199;
+const yMin = figure.yDomain[0];
+const yMax = figure.yDomain[1];
+const x = (value: number) => plot.left + ((value - xMin) / (xMax - xMin)) * (width - plot.left - plot.right);
+const y = (value: number) => plot.top + ((yMax - value) / (yMax - yMin)) * (height - plot.top - plot.bottom);
+const yTicks = [0, 20, 40, 60, 80, 100];
+const xTicks = [96, 120, 140, 160, 180, 199];
+
+const pathFor = (points: readonly { round: number | null; score: number | null }[]) => {
+  let path = '';
+  let open = false;
+  for (const point of points) {
+    if (point.round === null || point.score === null) {
+      open = false;
+      continue;
+    }
+    path += `${open ? ' L' : 'M'} ${x(point.round).toFixed(2)} ${y(point.score).toFixed(2)}`;
+    open = true;
+  }
+  return path;
+};
+const rawPath = pathFor(figure.rawPoints);
+const pointPayload = figure.rawPoints.map((point) => ({ round: point.round, score: point.score }));
+---
+
+<ResearchEvidenceFigure
+  locale={locale}
+  id={figure.id}
+  title={t(figure.title, 'β-gating · rounds 96–199 training Task Score')}
+  question={t(figure.question, 'Did training performance keep worsening after the late trough?')}
+  role={t('训练轨迹 · 不是 Final', 'Training trajectory · not Final')}
+  sourceHref={figure.source.href}
+  sourceLabel={t(figure.source.label, '104-round machine-readable series')}
+  supports={t(figure.supports, 'Training Task Score rebounds in rounds 160–199 after the rounds 140–159 trough.')}
+  doesNotSupport={t(figure.doesNotSupport, 'This does not create a new frozen Final or identify 120, 160, or 200 as the optimal stopping point.')}
+>
+  <div slot="visual" class="beta-trend" data-beta-trend data-locale={locale}>
+    <div class="beta-trend__legend" aria-label={t('图例', 'Legend')}>
+      <span><i class="beta-trend__key beta-trend__key--raw"></i>{t('逐轮原始值', 'round-level raw')}</span>
+      <span><i class="beta-trend__key beta-trend__key--window"></i>{t('预设窗口均值', 'prespecified window mean')}</span>
+      <span><i class="beta-trend__key beta-trend__key--boundary"></i>{t('第160轮延长起点', 'round 160 extension boundary')}</span>
+    </div>
+
+    <p class="beta-trend__mobile-hint">{t('窄屏可以左右滑动图形；下面的窗口表保留完整数值。', 'On narrow screens, scroll the plot horizontally; the table below retains all values.')}</p>
+    <div class="beta-trend__plot-scroll" data-beta-plot-scroll tabindex="0" aria-label={t('训练曲线，可横向滚动', 'Training chart, horizontally scrollable')}>
+      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby="beta-trend-svg-title beta-trend-svg-desc">
+      <title id="beta-trend-svg-title">{t('第96–199轮 β-gating 训练 Task Score', 'β-gating training Task Score, rounds 96–199')}</title>
+      <desc id="beta-trend-svg-desc">{t(
+        '纵轴从0到100，不截断。细线是104个逐轮训练值，粗横线是五个互不重叠窗口均值，虚线标记第160轮延长实验起点。',
+        'The y-axis runs from 0 to 100 without truncation. The thin line shows 104 round-level training values, thick horizontal segments show five non-overlapping window means, and the dashed line marks the round-160 extension boundary.',
+      )}</desc>
+
+      <g class="beta-trend__grid" aria-hidden="true">
+        {yTicks.map((tick) => (
+          <line x1={plot.left} x2={width - plot.right} y1={y(tick)} y2={y(tick)} />
+        ))}
+      </g>
+      <g class="beta-trend__axis" aria-hidden="true">
+        <line x1={plot.left} x2={plot.left} y1={plot.top} y2={height - plot.bottom} />
+        <line x1={plot.left} x2={width - plot.right} y1={height - plot.bottom} y2={height - plot.bottom} />
+        {yTicks.map((tick) => <text x={plot.left - 12} y={y(tick) + 5} text-anchor="end">{tick}</text>)}
+        {xTicks.map((tick) => <text x={x(tick)} y={height - plot.bottom + 26} text-anchor="middle">{tick}</text>)}
+        <text x={(plot.left + width - plot.right) / 2} y={height - 10} text-anchor="middle">{t('训练轮次', 'training round')}</text>
+        <text transform={`translate(17 ${height / 2}) rotate(-90)`} text-anchor="middle">Task Score / 100</text>
+      </g>
+
+      <line
+        class="beta-trend__extension"
+        x1={x(figure.extensionBoundary)}
+        x2={x(figure.extensionBoundary)}
+        y1={plot.top}
+        y2={height - plot.bottom}
+        aria-hidden="true"
+      />
+
+      <path class="beta-trend__raw-line" d={rawPath} fill="none" aria-hidden="true" />
+
+      <g class="beta-trend__windows">
+        {figure.windows.map((window) => window.score === null ? null : (
+          <g>
+            <line
+              x1={x(window.firstRound)}
+              x2={x(window.lastRound)}
+              y1={y(window.score)}
+              y2={y(window.score)}
+            />
+            <title>{`${window.id}: ${window.score.toFixed(2)} / 100 · n=${window.roundCount} rounds`}</title>
+          </g>
+        ))}
+      </g>
+    </svg>
+    </div>
+
+    <div class="beta-trend__scrubber">
+      <label for="beta-round-reader">{t('读某一轮', 'Inspect a round')}</label>
+      <input id="beta-round-reader" data-beta-round-reader type="range" min={xMin} max={xMax} value="199" step="1" />
+      <output data-beta-round-output for="beta-round-reader">
+        {t('第199轮：', 'Round 199: ')}{figure.rawPoints.at(-1)?.score?.toFixed(2) ?? t('缺失', 'missing')} / 100
+      </output>
+    </div>
+
+    <script is:inline type="application/json" data-beta-point-payload set:html={JSON.stringify(pointPayload)}></script>
+  </div>
+
+  <div slot="table">
+    <div class="beta-trend__window-table">
+      <table>
+        <thead>
+          <tr>
+            <th>{t('训练窗口', 'Window')}</th>
+            <th>{t('轮数', 'Rounds')}</th>
+            <th>{t('平均 Task Score', 'Mean Task Score')}</th>
+            <th>{t('缺失轮', 'Missing rounds')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {figure.windows.map((window) => (
+            <tr>
+              <td>{window.id.replace('-', '–')}</td>
+              <td>{window.roundCount}</td>
+              <td>{window.score === null ? t('未知', 'unknown') : window.score.toFixed(2)}</td>
+              <td>{window.missingRounds.length ? window.missingRounds.join(', ') : '0'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <details class="beta-trend__raw-table">
+      <summary>{t('展开104轮逐轮数据', 'Open all 104 round-level values')}</summary>
+      <div>
+        <table>
+          <thead><tr><th>{t('轮次', 'Round')}</th><th>Task Score / 100</th></tr></thead>
+          <tbody>
+            {figure.rawPoints.map((point) => (
+              <tr>
+                <td>{point.round ?? '—'}</td>
+                <td>{point.score === null ? t('缺失', 'missing') : point.score.toFixed(4)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </div>
+</ResearchEvidenceFigure>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-beta-trend]').forEach((root) => {
+    if (root.dataset.enhanced === 'true') return;
+    root.dataset.enhanced = 'true';
+    const input = root.querySelector<HTMLInputElement>('[data-beta-round-reader]');
+    const output = root.querySelector<HTMLOutputElement>('[data-beta-round-output]');
+    const payload = root.querySelector<HTMLScriptElement>('[data-beta-point-payload]');
+    if (!input || !output || !payload) return;
+    const points = JSON.parse(payload.textContent || '[]') as Array<{ round: number | null; score: number | null }>;
+    const byRound = new Map(points.filter((point) => point.round !== null).map((point) => [point.round, point.score]));
+    const zh = root.dataset.locale !== 'en';
+    const render = () => {
+      const round = Number(input.value);
+      const score = byRound.get(round);
+      output.value = score == null
+        ? (zh ? `第${round}轮：缺失` : `Round ${round}: missing`)
+        : (zh ? `第${round}轮：${score.toFixed(2)} / 100` : `Round ${round}: ${score.toFixed(2)} / 100`);
+    };
+    input.addEventListener('input', render);
+    render();
+  });
+</script>
+
+<style>
+  .beta-trend{min-width:0}
+  .beta-trend__legend{display:flex;flex-wrap:wrap;gap:.55rem 1rem;margin-bottom:.65rem;color:var(--color-text-muted);font-size:.82rem}
+  .beta-trend__legend span{display:inline-flex;align-items:center;gap:.38rem}
+  .beta-trend__key{display:inline-block;width:1.45rem;height:0;border-top:2px solid currentColor}
+  .beta-trend__key--raw{color:var(--color-text-muted);opacity:.68}
+  .beta-trend__key--window{color:var(--color-accent);border-top-width:5px}
+  .beta-trend__key--boundary{color:var(--color-text-muted);border-top-style:dashed}
+  .beta-trend__plot-scroll{max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-gutter:stable}
+  .beta-trend svg{display:block;width:100%;height:auto;min-width:720px;overflow:visible}
+  .beta-trend__mobile-hint{display:none;margin:.2rem 0 .55rem;color:var(--color-text-muted);font-size:.82rem}
+  .beta-trend__grid line{stroke:var(--color-border);stroke-width:1;opacity:.58}
+  .beta-trend__axis line{stroke:var(--color-text-muted);stroke-width:1}
+  .beta-trend__axis text{fill:var(--color-text-muted);font-size:13px}
+  .beta-trend__raw-line{stroke:var(--color-text-muted);stroke-width:2;opacity:.66;vector-effect:non-scaling-stroke}
+  .beta-trend__windows line{stroke:var(--color-accent);stroke-width:7;stroke-linecap:round;vector-effect:non-scaling-stroke}
+  .beta-trend__extension{stroke:var(--color-text-muted);stroke-width:2;stroke-dasharray:7 7;vector-effect:non-scaling-stroke}
+  .beta-trend__scrubber{display:grid;grid-template-columns:auto minmax(120px,1fr) minmax(12rem,auto);align-items:center;gap:.65rem 1rem;margin-top:.55rem;padding:.72rem .8rem;background:var(--color-surface-subtle);border-radius:var(--radius-control)}
+  .beta-trend__scrubber label{font-weight:760}
+  .beta-trend__scrubber input{width:100%;accent-color:var(--color-accent)}
+  .beta-trend__scrubber output{font-variant-numeric:tabular-nums;color:var(--color-text-muted)}
+  .beta-trend__window-table,.beta-trend__raw-table>div{overflow-x:auto}
+  .beta-trend table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  .beta-trend th,.beta-trend td{padding:.48rem .58rem;border-bottom:1px solid var(--color-border);text-align:right;white-space:nowrap}
+  .beta-trend th:first-child,.beta-trend td:first-child{text-align:left}
+  .beta-trend__raw-table{margin-top:.8rem}
+  .beta-trend__raw-table summary{cursor:pointer;font-weight:740}
+  .beta-trend__raw-table>div{max-height:23rem;margin-top:.55rem}
+  @media(max-width:720px){
+    .beta-trend__scrubber{grid-template-columns:1fr}
+    .beta-trend__mobile-hint{display:block}
+    .beta-trend__plot-scroll svg{width:760px;max-width:none;min-height:0}
+    .beta-trend__axis text{font-size:16px}
+  }
+  @media print{
+    .beta-trend__scrubber{display:none}
+    .beta-trend__raw-table{display:none}
+  }
+</style>

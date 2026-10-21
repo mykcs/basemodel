@@ -1,0 +1,143 @@
+---
+import type { Locale } from '../../i18n';
+import { SAME_PANEL_FINAL_FIGURE as figure } from '../../data/researchFigureData';
+import ResearchEvidenceFigure from './ResearchEvidenceFigure.astro';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const zh = locale === 'zh';
+const t = (cn: string, en: string) => zh ? cn : en;
+---
+
+<ResearchEvidenceFigure
+  locale={locale}
+  id={figure.id}
+  title={t(figure.title, 'Same frozen 128-task panel · three final models')}
+  question={t(figure.question, 'How do the three completed final models compare when the tasks are fixed?')}
+  role={t('冻结 Final · 同一题集', 'Frozen Final · same panel')}
+  sourceHref={figure.source.href}
+  sourceLabel={t(figure.source.label, 'Same-panel Final machine-readable snapshot')}
+  supports={t(figure.supports, 'All three models can be read side by side on the exact same frozen 128-task panel.')}
+  doesNotSupport={t(
+    '普通 OpenEVO 是更早的独立前序实验，不是后两组预注册正式对照的第三条随机臂。',
+    figure.doesNotSupport,
+  )}
+>
+  <div slot="visual" class="same-panel-figure" role="img" aria-label={t(
+    '三组模型在同一冻结128题上的 Task Score 与完整成功率',
+    'Task Score and exact-success rate for three models on the same frozen 128-task panel',
+  )}>
+    <div class="same-panel-figure__head" aria-hidden="true">
+      <span>{t('实验', 'Experiment')}</span>
+      <span>Task Score / 100</span>
+      <span>{t('完整成功率', 'Exact success')}</span>
+    </div>
+    {figure.rows.map((row) => (
+      <div class="same-panel-figure__row">
+        <strong>{t(
+          row.id === 'directapply' ? '普通 OpenEVO' : row.id === 'bounded' ? 'OpenEVO + Bounded' : 'OpenEVO + Bounded + β',
+          row.id === 'directapply' ? 'OpenEVO' : row.id === 'bounded' ? 'OpenEVO + Bounded' : 'OpenEVO + Bounded + β',
+        )}</strong>
+        <div class="same-panel-figure__metric">
+          <div class="same-panel-figure__track" aria-hidden="true">
+            <span style={`--bar-value:${row.taskScore}%`}></span>
+          </div>
+          <b>{row.taskScore.toFixed(2)}</b>
+        </div>
+        <div class="same-panel-figure__metric">
+          <div class="same-panel-figure__track same-panel-figure__track--exact" aria-hidden="true">
+            <span style={`--bar-value:${(row.exactRate * 100).toFixed(6)}%`}></span>
+          </div>
+          <b>{row.exactCount}/{figure.denominator}</b>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div slot="table" class="same-panel-figure__table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>{t('实验', 'Experiment')}</th>
+          <th>Task Score / 100</th>
+          <th>{t('完整做对', 'Exact success')}</th>
+          <th>{t('题数', 'Tasks')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {figure.rows.map((row) => (
+          <tr>
+            <td>{t(
+              row.id === 'directapply' ? '普通 OpenEVO' : row.id === 'bounded' ? 'OpenEVO + Bounded' : 'OpenEVO + Bounded + β',
+              row.id === 'directapply' ? 'OpenEVO' : row.id === 'bounded' ? 'OpenEVO + Bounded' : 'OpenEVO + Bounded + β',
+            )}</td>
+            <td>{row.taskScore.toFixed(2)}</td>
+            <td>{row.exactCount}/{figure.denominator}</td>
+            <td>{figure.denominator}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</ResearchEvidenceFigure>
+
+<style>
+  .same-panel-figure{display:grid;gap:.55rem}
+  .same-panel-figure__head,
+  .same-panel-figure__row{
+    display:grid;
+    grid-template-columns:minmax(12rem,1.35fr) minmax(13rem,1fr) minmax(13rem,1fr);
+    gap:1rem;
+    align-items:center;
+  }
+  .same-panel-figure__head{
+    padding:0 .25rem .35rem;
+    color:var(--color-text-muted);
+    font-size:.76rem;
+    font-weight:780;
+  }
+  .same-panel-figure__row{
+    padding:.72rem .25rem;
+    border-top:1px solid var(--color-border);
+  }
+  .same-panel-figure__row>strong{line-height:1.35}
+  .same-panel-figure__metric{
+    display:grid;
+    grid-template-columns:minmax(5rem,1fr) auto;
+    align-items:center;
+    gap:.65rem;
+    font-variant-numeric:tabular-nums;
+  }
+  .same-panel-figure__track{
+    height:.66rem;
+    overflow:hidden;
+    border-radius:999px;
+    background:var(--color-surface-subtle);
+  }
+  .same-panel-figure__track span{
+    display:block;
+    width:var(--bar-value);
+    height:100%;
+    border-radius:inherit;
+    background:var(--color-accent);
+  }
+  .same-panel-figure__track--exact span{
+    background:color-mix(in srgb,var(--color-accent) 58%,var(--color-text-muted));
+  }
+  .same-panel-figure__metric b{min-width:4.6rem;text-align:right}
+  .same-panel-figure__table-wrap{overflow-x:auto}
+  .same-panel-figure__table-wrap table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  .same-panel-figure__table-wrap th,
+  .same-panel-figure__table-wrap td{padding:.5rem .58rem;border-bottom:1px solid var(--color-border);text-align:right;white-space:nowrap}
+  .same-panel-figure__table-wrap th:first-child,
+  .same-panel-figure__table-wrap td:first-child{text-align:left}
+  @media(max-width:760px){
+    .same-panel-figure__head{display:none}
+    .same-panel-figure__row{grid-template-columns:1fr;gap:.6rem}
+    .same-panel-figure__metric{grid-template-columns:1fr auto}
+  }
+  @media print{
+    .same-panel-figure__track{border:1px solid #aaa;background:#fff}
+    .same-panel-figure__track span{background:#333}
+  }
+</style>
