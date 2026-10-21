@@ -42,8 +42,8 @@ test('real 390-by-844 first viewport retains scientific scope and next-decision 
   expect(response?.status()).toBe(200);
   const lead=page.locator('[data-advisor-scientific-question]');
   await expect(lead).toContainText('Q10 新题');
-  await expect(lead).toContainText('尚未获导师批准');
-  await expect(lead).toContainText('尚未正式启动');
+  await expect(lead).toContainText('后续方案待确认');
+  await expect(lead).toContainText('正式训练未据此启动');
   const q04=page.locator('[data-advisor-executive-evidence="q04"]');
   const q07=page.locator('[data-advisor-executive-evidence="q07"]');
   await expect(q04).toContainText('连续 8 轮');
