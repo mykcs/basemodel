@@ -122,16 +122,16 @@ const q17Effects = {
       <div class="advisor-overview__decisions" data-advisor-decisions>
         <p data-advisor-key-findings><strong>已经测到的两个重要结果：</strong>
           {ADVISOR_DECISION_BRIEF.evidence.map(item => (
-            <span data-advisor-executive-evidence={item.id}> <a href={'#response-'+item.id}>{item.id.toUpperCase()}</a>：{item.finding} {item.boundary}</span>
+            <span data-advisor-executive-evidence={item.id}> <strong>{item.id.toUpperCase()}</strong>：{item.finding} {item.boundary}</span>
           ))}
         </p>
         <p data-advisor-critical-gaps><strong>仍不能下的结论：</strong>
           {ADVISOR_DECISION_BRIEF.unresolved.map(item => (
-            <span data-advisor-executive-gap={item.id}> <a href={'#response-'+item.id}>{item.id.toUpperCase()}</a>：{item.fact}</span>
+            <span data-advisor-executive-gap={item.id}> <strong>{item.id.toUpperCase()}</strong>：{item.fact}</span>
           ))}
           {ADVISOR_DECISION_BRIEF.historicalBoundary}
         </p>
-        <p data-advisor-priorities><strong>建议优先验证：</strong>{ADVISOR_DECISION_BRIEF.nextDecision} {ADVISOR_DECISION_BRIEF.decisionBoundary} <a href="#response-q10">Q10 详细进展</a> · <a href="#response-q03">Q03 详细进展</a></p>
+        <p data-advisor-priorities><strong>建议优先验证：</strong>{ADVISOR_DECISION_BRIEF.nextDecision} {ADVISOR_DECISION_BRIEF.decisionBoundary} <a href="#response-q10">查看 Q10 详细进展</a></p>
       </div>
       <dl class="advisor-overview__counts" aria-label="十项研究问题的回答状态">
         {answerTones.map(tone => (
