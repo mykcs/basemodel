@@ -91,13 +91,23 @@ for (const route of routes) {
           const target=page.locator('table').nth(index);
           const readingState=await revealEvidenceReadingState(target);
           const visible=await target.isVisible();
-          const phoneAlternative=await target.evaluate(el=>Boolean(el.closest('.advisor-viz__q03-phone-table')));
+          const alternative=await target.evaluate(el=>({
+            phone:Boolean(el.closest('.advisor-viz__q03-phone-table')),
+            compactCatalog:Boolean(el.closest('.seed-reproduction.compact .catalog-wrap')),
+          }));
           if(!visible){
             // The source owns this responsive alternative: its desktop SVG is
             // visible above 720px, while the same data table appears on phones.
-            expect(phoneAlternative).toBe(true);
-            expect(width).toBeGreaterThan(720);
-            await expect(page.locator('[data-q03-desktop-chart]')).toBeVisible();
+            if(alternative.phone){
+              expect(width).toBeGreaterThan(720);
+              await expect(page.locator('[data-q03-desktop-chart]')).toBeVisible();
+            }else{
+              // SeedReproductionPath's compact variant explicitly excludes its
+              // rental catalog; it is source-present, never a reading state.
+              expect(alternative.compactCatalog).toBe(true);
+              expect(route).toBe('/papers/seed/');
+              expect([0,1]).toContain(index);
+            }
           }
           const table=await target.evaluate((el,index)=>({
             index,owner:el.className,caption:el.querySelector('caption')?.textContent?.trim()??'',
@@ -108,7 +118,7 @@ for (const route of routes) {
             cells:[...el.querySelectorAll('th,td')].map(cell=>({text:cell.textContent?.trim(),
               box:cell.getBoundingClientRect().toJSON(),fontSize:getComputedStyle(cell).fontSize})),
           }),index);
-          tables.push({...table,visible,state:visible?readingState:'source-owned phone-only table; desktop data chart visible'});
+          tables.push({...table,visible,state:visible?readingState:alternative.phone?'source-owned phone-only table; desktop data chart visible':'source-owned compact rental catalog excluded from this page'});
           if(visible)await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`));
         }
         await expect(page.locator('table')).toHaveCount(tableCount);
