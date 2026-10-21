@@ -117,3 +117,23 @@ for (const theme of ['light', 'dark'] as const) {
     expect(pageOverflow).toBeLessThanOrEqual(2);
   });
 }
+
+for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+  test('three-way curve and legend identities survive grayscale: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',{waitUntil:'load'});
+    const names=["task-score.svg","task-score-20-round-mean.svg","loss-vs-rollout.svg","task-vector-frobenius.svg","tokens-per-step.svg","steps-per-episode.svg","action-family-entropy.svg"];
+    const styles=await page.evaluate(async names=>Promise.all(names.map(async name=>{
+      const response=await fetch('/research/seed-openevo/evidence/wandb-threeway/'+name);
+      if(!response.ok)throw Error('Missing native plot '+name);
+      const svg=new DOMParser().parseFromString(await response.text(),'image/svg+xml');
+      return {name,curves:[...svg.querySelectorAll('polyline')].map(el=>({stroke:el.getAttribute('stroke'),dash:el.getAttribute('stroke-dasharray')})),legend:[...svg.querySelectorAll('line[stroke="#2563EB"],line[stroke="#B91C1C"]')].map(el=>el.getAttribute('stroke-dasharray'))};
+    })),names);
+    for(const plot of styles){
+      expect(plot.curves.some(c=>c.stroke==='#2563EB'&&c.dash==='12 6'),plot.name).toBe(true);
+      expect(plot.curves.some(c=>c.stroke==='#B91C1C'&&c.dash==='3 5'),plot.name).toBe(true);
+      expect(plot.legend,plot.name).toEqual(expect.arrayContaining(['12 6','3 5']));
+    }
+  });
+}
