@@ -15,6 +15,7 @@ import ExternalBrandMark from '../../../../../components/common/ExternalBrandMar
 import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from '../../../../../data/openEvoAdvisorTenQuestions';
 import { ADVISOR_REVIEWED_COPY } from '../../../../../data/openEvoAdvisorReviewedCopy';
 import { ADVISOR_READER_DIGEST } from '../../../../../data/openEvoAdvisorReaderDigest';
+import { ADVISOR_DECISION_BRIEF } from '../../../../../data/openEvoAdvisorDecisionBrief';
 import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeeting';
 
 // Section 3 is the response chapter. Question identities stay Q01–Q10,
@@ -117,11 +118,21 @@ const q17Effects = {
       <p class="evo-article__lede" data-reader-purpose>模型在模拟网店里练习购物，再尝试把完成任务的经验用于下一轮学习。这里先告诉你：十个研究问题已经测到什么、目前做到哪一步、下一步还缺什么。</p>
     </header>
     <section class="advisor-overview" data-advisor-overview aria-labelledby="advisor-overview-title">
-      <h2 id="advisor-overview-title">十项研究问题的进度</h2>
-      <p class="advisor-overview__lead">训练轮数和参数更新方向已有范围明确的局部结论；另外六问做过部分实验，关键答案仍需核实；SEED 的正式复现和跨新任务验证尚未完成。</p>
+      <h2 id="advisor-overview-title">OpenEVO 长期学习：现在知道什么，还缺什么？</h2>
+      <p class="advisor-overview__lead" data-advisor-scientific-question>{ADVISOR_DECISION_BRIEF.researchQuestion}</p>
       <div class="advisor-overview__decisions" data-advisor-decisions>
-        <p data-advisor-key-findings><strong>已经测到的关键现象：</strong>固定容量把参数更新累计耗时从 31.09 小时降到 2.02 小时，但完整任务没有同样大幅加速。把一次参数更新方向反过来，平均成绩下降约 10 分。三条历史路线不是严格对照，反向实验也只测过一个模型状态。详细实验依据见下文 Q05、Q07</p>
-        <p data-advisor-priorities><strong>接下来优先补的证据：</strong><a href="#response-q10">Q10</a> 的新 128 道确认题已冻结，但独立的 160 轮训练与新题成绩尚未完成；Q03 还需对齐论文评测条件并完成正式复现；Q02 六组训练完成后，18 个评测位置尚缺 3 个。这些是待做的研究，不表示新实验已经启动。</p>
+        <p data-advisor-key-findings><strong>已经测到的两个重要结果：</strong>
+          {ADVISOR_DECISION_BRIEF.evidence.map(item => (
+            <span data-advisor-executive-evidence={item.id}> <strong>{item.id.toUpperCase()}</strong>：{item.finding} {item.boundary}</span>
+          ))}
+        </p>
+        <p data-advisor-critical-gaps><strong>仍不能下的结论：</strong>
+          {ADVISOR_DECISION_BRIEF.unresolved.map(item => (
+            <span data-advisor-executive-gap={item.id}> <strong>{item.id.toUpperCase()}</strong>：{item.fact}</span>
+          ))}
+          {ADVISOR_DECISION_BRIEF.historicalBoundary}
+        </p>
+        <p data-advisor-priorities><strong>建议优先验证：</strong>{ADVISOR_DECISION_BRIEF.nextDecision} {ADVISOR_DECISION_BRIEF.decisionBoundary} <a href="#response-q10">查看 Q10 详细进展</a></p>
       </div>
       <dl class="advisor-overview__counts" aria-label="十项研究问题的回答状态">
         {answerTones.map(tone => (

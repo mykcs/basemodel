@@ -18,6 +18,11 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
     const box = el.getBoundingClientRect(), captionBox = cap.getBoundingClientRect();
     const cells = [...el.querySelectorAll<HTMLElement>('th,td')];
     return {
+      readableColumns: [...el.querySelectorAll<HTMLElement>('tbody th,tbody td')].every(cell => {
+        const minimum = cell.matches(':first-child') ? 8 : cell.classList.contains('paper-table__mark') ? 2 : cell.hasAttribute('data-numeric') ? 7 : 12;
+        const css=getComputedStyle(cell);
+        return cell.getBoundingClientRect().width >= parseFloat(css.fontSize)*minimum-1 && css.overflowWrap==='normal' && css.wordBreak==='normal';
+      }),
       roles: [...el.querySelectorAll('thead,tbody,tfoot,tr,th,td')].every(node => getComputedStyle(node).display === ({THEAD:'table-header-group',TBODY:'table-row-group',TFOOT:'table-footer-group',TR:'table-row',TH:'table-cell',TD:'table-cell'} as Record<string,string>)[node.tagName]),
       display: style.display, family: style.fontFamily, font: parseFloat(style.fontSize),
       top: parseFloat(style.borderTopWidth), bottom: parseFloat(style.borderBottomWidth),
@@ -31,6 +36,7 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   });
   expect(grammar.display).toBe('table');
   expect(grammar.roles).toBe(true);
+  expect(grammar.readableColumns).toBe(true);
   expect(grammar.family).toContain('Times');
   expect(grammar.font).toBeGreaterThanOrEqual(route.includes('/briefing/') ? 14 : 16);
   expect(grammar.top).toBeGreaterThan(0);
@@ -568,3 +574,31 @@ test('expanded SD-LoRA paper comparison survives print without exposing unrelate
   await captureFigureEvidence(table,testInfo.outputPath('sd-lora-paper-comparison-print.png'));
   await page.emulateMedia({media:'screen'});
 });
+
+for(const width of [390,768,1440]) {
+  test('paper row labels remain whole words and checkpoint identifiers: '+width,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    const route='/research/seed-openevo/study/parameter-memory-results/';
+    await page.goto(route,{waitUntil:'load'});
+    for(const id of ['q02','q03','q06','q07']) {
+      const table=page.locator('[data-advisor-matrix="'+id+'"] table');
+      await revealEvidenceReadingState(table);
+      const label=table.locator('tbody th').first();
+      const before=await label.boundingBox();
+      expect(before!.width).toBeGreaterThanOrEqual(127);
+      const fragments=await label.evaluate(el=>{
+        const text=el.firstChild!;
+        const value=text.textContent??'',word=value.match(/SFT|A\d+|Bounded/);
+        if(!word)throw Error('Missing scientific row identifier');
+        const range=document.createRange();range.setStart(text,word.index!);range.setEnd(text,word.index!+word[0].length);
+        return range.getClientRects().length;
+      });
+      expect(fragments).toBe(1);
+      await label.evaluate(el=>{(el as HTMLElement).style.minWidth='0';(el as HTMLElement).style.width='1ch';(el as HTMLElement).style.maxWidth='1ch';(el as HTMLElement).style.overflowWrap='anywhere';});
+      const index=await table.evaluate(el=>[...document.querySelectorAll('table')].indexOf(el as HTMLTableElement));
+      await expect(expectPaperGrammar(table,route,index)).rejects.toThrow();
+      await label.evaluate(el=>{for(const property of ['min-width','width','max-width','overflow-wrap'])(el as HTMLElement).style.removeProperty(property);});
+      expect((await label.boundingBox())!.width).toBeGreaterThanOrEqual(127);
+    }
+  });
+}

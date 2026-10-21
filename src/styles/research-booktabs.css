@@ -32,7 +32,7 @@ table.research-booktabs :is(th,td) {
   padding:var(--paper-table-cell-padding,.42em .75em);border:0;border-radius:0;background:transparent;
   box-shadow:none;color:inherit;font-family:inherit;font-size:inherit;
   line-height:inherit;font-style:normal;letter-spacing:normal;
-  text-align:left;vertical-align:top;
+  text-align:left;vertical-align:top;overflow-wrap:normal;word-break:normal;
   font-variant-numeric:tabular-nums lining-nums;
 }
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] thead th,
@@ -42,14 +42,17 @@ table.research-booktabs thead th {
 }
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] tbody th,
 table.research-booktabs tbody th{font-weight:400}
+/* Preserve a readable column measure; dense evidence pans locally. */
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] tbody :is(th,td){min-width:12em}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] tbody .paper-table__mark{min-width:2em}
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] tbody+tbody>tr:first-child>*,
 table.research-booktabs tbody+tbody>tr:first-child>*{border-top:.6px solid var(--color-text)}
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td)[data-numeric],
 table.research-booktabs :is(th,td)[data-numeric]{
-  text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums lining-nums;
+  text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums lining-nums;min-width:7em;
 }
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td):first-child,
-table.research-booktabs :is(th,td):first-child{padding-left:0}
+table.research-booktabs :is(th,td):first-child{padding-left:0;min-width:8em}
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td):last-child,
 table.research-booktabs :is(th,td):last-child{padding-right:0}
 :root .research-booktabs-wrap--presentation>table.research-booktabs[data-research-paper-table]{font-size:14px}
