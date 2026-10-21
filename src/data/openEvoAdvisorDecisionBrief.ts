@@ -23,15 +23,15 @@ export const ADVISOR_DECISION_BRIEF = {
     {
       id: 'q10',
       state: 'unrun',
-      fact: '新 128 道确认题已冻结，但三条独立长程训练流及正式新题成绩尚未完成。',
+      fact: '新 128 题已冻结；三条独立长程训练流与正式新题成绩仍未完成。',
     },
     {
       id: 'q03',
       state: 'unrun',
-      fact: 'SEED 的工程与开发题检查已有结果，按论文条件的正式独立复现仍未完成。',
+      fact: 'SEED 工程与开发题已有结果，但论文条件下的正式独立复现仍未完成。',
     },
   ],
-  historicalBoundary: '三条历史路线的 128 题终评不是完全严格的训练对照，不能凭分数直接判定方法优劣。',
+  historicalBoundary: '三条历史路线并非严格训练对照，不能凭终评分数排方法优劣。',
   nextDecision: '先做 Q10 新题配对评测，再核对 Q03 的论文口径并正式复现，最后检验 Q04 的长期小容量学习。',
   decisionStatus: 'proposal',
   decisionBoundary: '这是研究优先顺序建议；正式训练尚未据此启动，也不代表导师已经批准。',
