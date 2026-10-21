@@ -553,3 +553,37 @@ for (const width of [390,768,1440]) for (const theme of ['light','dark'] as cons
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
   });
 }
+
+for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+  test('canonical SEED and OpenEvo comparison labels retain theme contrast: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:1000});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/flow/loops/',{waitUntil:'load'});
+    const root=page.locator('.comparison-figure');
+    const accept=async()=>{
+      for(const header of await root.locator('.column-header').all()){
+        const issues=await auditRoot(header,width,false);
+        expect(issues,issues.join('\n')).toEqual([]);
+      }
+    };
+    await accept();
+    const signal=await root.locator('.seed-column .column-header span').evaluate(el=>getComputedStyle(el).color);
+    const state=await root.locator('.evo-column .column-header span').evaluate(el=>getComputedStyle(el).color);
+    expect(await root.locator('.seed-column .wrapper-name').evaluate(el=>getComputedStyle(el).color)).toBe(signal);
+    expect(await root.locator('.evo-column .wrapper-name').evaluate(el=>getComputedStyle(el).color)).toBe(state);
+    expect(await root.locator('.successor-package>strong').evaluate(el=>getComputedStyle(el).color)).toBe(state);
+    if(theme==='dark'){
+      await root.evaluate(el=>{
+        (el as HTMLElement).style.setProperty('--signal-text','var(--signal)');
+        (el as HTMLElement).style.setProperty('--state-text','var(--state)');
+      });
+      await expect(accept()).rejects.toThrow();
+      await root.evaluate(el=>{
+        (el as HTMLElement).style.removeProperty('--signal-text');
+        (el as HTMLElement).style.removeProperty('--state-text');
+      });
+      await accept();
+    }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  });
+}

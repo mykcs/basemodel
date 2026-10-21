@@ -188,3 +188,38 @@ for (const width of [390, 768, 1440]) {
     });
   }
 }
+
+for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+  test('historical transfer confidence axis separates neighboring tick labels: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/study/results/',{waitUntil:'load'});
+    await page.locator('#evidence-q4>summary').click();
+    const figure=page.locator('.transfer-figure');
+    await expect(figure).toBeVisible();
+    const labels=()=>figure.locator('.scale-label').evaluateAll(nodes=>nodes.map(node=>{
+      const r=node.getBoundingClientRect();return {text:node.textContent,left:r.left,right:r.right,top:r.top,bottom:r.bottom};
+    }));
+    const accept=(items:Awaited<ReturnType<typeof labels>>)=>{
+      expect(items).toHaveLength(4);
+      for(let i=0;i<items.length;i++)for(let j=i+1;j<items.length;j++){
+        const a=items[i]!,b=items[j]!;
+        const x=Math.min(a.right,b.right)-Math.max(a.left,b.left)+4;
+        const y=Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)+4;
+        expect(Math.min(x,y),a.text+' / '+b.text+' need 4px separation').toBeLessThanOrEqual(0);
+      }
+    };
+    accept(await labels());
+    await expect(figure).toContainText('−0.05');
+    await expect(figure).toContainText('+0.35');
+    if(width===390){
+      await figure.locator('.forest-scale').evaluate(el=>(el as HTMLElement).style.height='34px');
+      await figure.locator('.scale-zero').evaluate(el=>(el as HTMLElement).style.bottom='8px');
+      const old=await labels();expect(()=>accept(old)).toThrow();
+      await figure.locator('.forest-scale').evaluate(el=>(el as HTMLElement).style.removeProperty('height'));
+      await figure.locator('.scale-zero').evaluate(el=>(el as HTMLElement).style.removeProperty('bottom'));
+      accept(await labels());
+    }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  });
+}
