@@ -36,3 +36,70 @@ for (const entry of cases) {
     }
   });
 }
+
+for (const width of [390, 768, 1440]) {
+  for (const theme of ['light', 'dark'] as const) {
+    test(`scientific chart reading ${width} ${theme}`, async ({ page }, testInfo) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.emulateMedia({ colorScheme: theme });
+      await page.goto('/research/seed-openevo/study/briefing/');
+      const buttons = page.locator('[data-briefing-chart]');
+      await expect(buttons).toHaveCount(8);
+      for (let i = 0; i < 8; i++) {
+        const original = await page.locator('.dynamics-chart svg').nth(i).evaluate((svg) => ({
+          text: Array.from(svg.querySelectorAll('text')).map((n) => n.textContent),
+          points: Array.from(svg.querySelectorAll('polyline')).map((n) => n.getAttribute('points')),
+        }));
+        await buttons.nth(i).click();
+        const dialog = page.locator('#research-chart-reader');
+        await expect(dialog).toBeVisible();
+        const reading = await dialog.locator('svg').evaluate((svg) => ({
+          text: Array.from(svg.querySelectorAll('text')).map((n) => n.textContent),
+          points: Array.from(svg.querySelectorAll('polyline')).map((n) => n.getAttribute('points')),
+          smallest: Math.min(...Array.from(svg.querySelectorAll<SVGTextElement>('text')).map((n) => {
+            const matrix = n.getScreenCTM()!;
+            return parseFloat(getComputedStyle(n).fontSize) * Math.hypot(matrix.a, matrix.b);
+          })),
+        }));
+        expect(reading.text).toEqual(original.text);
+        expect(reading.points).toEqual(original.points);
+        expect(reading.smallest).toBeGreaterThanOrEqual(12);
+        const canvas = dialog.locator('.research-chart-canvas');
+        await expect(canvas).toBeFocused();
+        if (width === 390) {
+          await canvas.press('End');
+          await canvas.evaluate((n) => { n.scrollLeft = n.scrollWidth; });
+          expect(await canvas.evaluate((n) => n.scrollLeft)).toBeGreaterThan(0);
+        }
+        await dialog.screenshot({ path: testInfo.outputPath(`chart-reader-${i}.png`) });
+        await page.keyboard.press('Escape');
+        await expect(dialog).not.toBeVisible();
+        await expect(buttons.nth(i)).toBeFocused();
+      }
+      await expect(page.locator('.briefing-slide')).toHaveCount(24);
+      await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/');
+      const images = page.locator('.metric-evidence__viewport img, .research-image-viewport img');
+      await expect(images).toHaveCount(8);
+      for (let i = 0; i < 8; i++) {
+        const image = images.nth(i);
+        await image.scrollIntoViewIfNeeded();
+        await expect.poll(() => image.evaluate((n: HTMLImageElement) => n.complete && n.naturalWidth > 0)).toBe(true);
+        const metrics = await image.evaluate((n: HTMLImageElement) => ({
+          width: n.getBoundingClientRect().width, natural: n.naturalWidth,
+          localOverflow: n.parentElement!.scrollWidth > n.parentElement!.clientWidth,
+        }));
+        if (width <= 860) {
+          expect(metrics.width / metrics.natural * 13).toBeGreaterThanOrEqual(12);
+          expect(metrics.localOverflow).toBe(true);
+          const region = page.locator('.metric-evidence__viewport, .research-image-viewport').nth(i);
+          await region.focus();
+          await expect(region).toBeFocused();
+          await region.evaluate((n) => { n.scrollLeft = n.scrollWidth; });
+          expect(await region.evaluate((n) => n.scrollLeft)).toBeGreaterThan(0);
+          await region.screenshot({ path: testInfo.outputPath(`image-reader-${i}.png`) });
+        }
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2)).toBe(true);
+    });
+  }
+}

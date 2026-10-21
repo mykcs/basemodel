@@ -1,0 +1,88 @@
+---
+/** Optional detailed reading preserves the original scientific chart and slide geometry. */
+---
+<dialog id="research-chart-reader" class="research-chart-reader" aria-labelledby="research-chart-title">
+  <header><h2 id="research-chart-title">图表</h2><form method="dialog"><button aria-label="关闭图表">关闭</button></form></header>
+  <p class="research-chart-caption"></p>
+  <div class="research-chart-canvas" tabindex="0" role="region" aria-label="图表，左右滚动查看"></div>
+  <div class="research-chart-context"></div>
+</dialog>
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#research-chart-reader');
+  if (dialog && !dialog.dataset.initialized) {
+    dialog.dataset.initialized = 'true';
+    const canvas = dialog.querySelector<HTMLElement>('.research-chart-canvas')!;
+    const title = dialog.querySelector<HTMLElement>('h2')!;
+    const caption = dialog.querySelector<HTMLElement>('.research-chart-caption')!;
+    const context = dialog.querySelector<HTMLElement>('.research-chart-context')!;
+    let opener: HTMLButtonElement | null = null;
+    document.querySelectorAll<HTMLElement>('.briefing-slide').forEach((slide) => {
+      const figures = slide.querySelectorAll<HTMLElement>('.dynamics-chart');
+      if (!figures.length) return;
+      const toolbar = document.createElement('div');
+      toolbar.className = 'research-chart-tools';
+      figures.forEach((figure) => {
+        const svg = figure.querySelector<SVGSVGElement>('svg');
+        if (!svg) return;
+        const button = document.createElement('button');
+        const label = figure.querySelector('figcaption')?.textContent?.trim() || '图表';
+        button.type = 'button';
+        button.textContent = '放大阅读 · ' + (label.includes('Loss') || label.includes('loss') ? 'Loss' : 'Score');
+        button.setAttribute('aria-controls', dialog.id);
+        button.dataset.briefingChart = '';
+        button.addEventListener('click', () => {
+          opener = button;
+          const clone = svg.cloneNode(true) as SVGSVGElement;
+          clone.removeAttribute('id');
+          clone.style.width = (svg.viewBox.baseVal.width * 1.2) + 'px';
+          clone.style.height = 'auto';
+          clone.style.maxWidth = 'none';
+          clone.querySelectorAll<SVGTextElement>('text').forEach((text) => {
+            text.style.fontSize = Math.max(12, parseFloat(getComputedStyle(text).fontSize) || 10) + 'px';
+          });
+          title.textContent = label.split('\n')[0].trim() || '图表';
+          caption.textContent = label;
+          canvas.replaceChildren(clone);
+          context.replaceChildren();
+          slide.querySelectorAll('.source-note, .dynamics-boundary').forEach((note) => context.append(note.cloneNode(true)));
+          dialog.showModal();
+          canvas.scrollLeft = 0;
+          canvas.focus();
+        });
+        toolbar.append(button);
+      });
+      slide.after(toolbar);
+    });
+    dialog.addEventListener('close', () => {
+      canvas.replaceChildren();
+      context.replaceChildren();
+      opener?.focus();
+    });
+    document.querySelectorAll<HTMLImageElement>('.paper__derived-figure > img').forEach((img) => {
+      const viewport = document.createElement('div');
+      viewport.className = 'research-image-viewport';
+      viewport.tabIndex = 0;
+      viewport.setAttribute('role', 'region');
+      viewport.setAttribute('aria-label', img.alt);
+      img.before(viewport);
+      viewport.append(img);
+    });
+  }
+</script>
+<style is:global>
+  .research-chart-reader{box-sizing:border-box;width:min(1100px,calc(100vw - 2rem));max-height:calc(100dvh - 2rem);padding:1rem;border:1px solid var(--border-color);border-radius:var(--radius-panel);background:var(--bg-primary,#fff);color:var(--text-primary);overflow:auto}
+  .research-chart-reader::backdrop{background:rgb(0 0 0 / .65)}
+  .research-chart-reader header{display:flex;align-items:start;justify-content:space-between;gap:1rem}
+  .research-chart-reader h2{font-size:1.2rem;line-height:1.5;margin:0}
+  .research-chart-reader form{margin:0}
+  .research-chart-reader button,.research-chart-tools button{font:inherit;font-size:1rem;min-height:44px;padding:.5rem .8rem;border:1px solid var(--border-color);border-radius:.5rem;background:var(--bg-primary,#fff);color:var(--text-primary);cursor:pointer}
+  .research-chart-canvas{max-width:100%;overflow:auto;overscroll-behavior-x:contain}
+  .research-chart-canvas svg{display:block;flex:none}
+  .research-chart-caption,.research-chart-context{font-size:1rem;line-height:1.6}
+  .research-chart-tools{display:flex;flex-wrap:wrap;gap:.5rem;padding:.6rem 1rem}
+  .research-image-viewport{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+  .research-image-viewport img{display:block;width:100%;height:auto;border:1px solid var(--border-color);border-radius:var(--radius-panel);background:white}
+  .research-chart-canvas:focus-visible,.research-image-viewport:focus-visible,.research-chart-tools button:focus-visible{outline:3px solid var(--text-primary);outline-offset:3px}
+  @media(max-width:860px){.research-image-viewport img{width:1200px;min-width:1200px;max-width:none}}
+  @media print{.research-chart-tools,.research-chart-reader{display:none}.research-image-viewport{overflow:visible}.research-image-viewport img{width:100%;min-width:0;max-width:100%}}
+</style>
