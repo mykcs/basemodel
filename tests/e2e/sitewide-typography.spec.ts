@@ -389,3 +389,125 @@ test('four-arm evidence guard rejects prior 11px status and 12px question prose'
   await injected.evaluate(node=>node.parentNode?.removeChild(node));
   acceptFourArmDataType(await readFourArmDataType(page));
 });
+
+
+
+/* MiniMax teacher: actual rendered scientific roles, local table scrolling,
+ * non-invented candidate status and a same-assertion font regression. */
+const minimaxTeacherRoute='/research/seed-openevo/study/minimax-teacher/';
+const minimaxRoleFloors={
+  '.section-no':13,
+  '.hero-answer p':16,
+  '.answer-main>p':16,
+  '.benchmark-callout>div small':13,
+  '.benchmark-callout li span':13,
+  '.fit-head small':13,
+  '.fit-row>div:first-child span':13,
+  '.fit-row>strong':13,
+  '.comparison thead th':15,
+  '.comparison tbody td':15,
+  '.boundary':15,
+  '.budget-flow p':15,
+  '.resource-cards dd':13,
+  '.repro-copy>p':15,
+  '.repro-checks span':13,
+  '.provenance a':13,
+  '.provenance p':14,
+  '.resource-cards header b':13,
+  '.resource-cards article.combined>p':15,
+  '.reconcile-row span':13,
+  '.reconcile-row b':15,
+  '.reconcile footer span':13,
+  '.bill-strip span':13,
+  '.bill-strip b':15,
+  '.bill-strip small':13,
+  '.protocol b':15,
+  '.protocol span':15,
+  '.frontier__lead':15,
+  '.frontier .point b':15,
+  '.frontier .point small':13,
+  '.frontier__note':14,
+} as const;
+async function readMinimaxTypography(page:import('@playwright/test').Page){
+  return page.evaluate((selectors)=>{
+    const roles:Record<string,{size:number,family:string,style:string,weight:number,scroll:number,client:number}>={};
+    for(const selector of selectors){
+      const node=document.querySelector(selector);
+      if(!node)throw Error('Missing MiniMax scientific role '+selector);
+      const css=getComputedStyle(node);
+      roles[selector]={size:parseFloat(css.fontSize),family:css.fontFamily,style:css.fontStyle,
+        weight:parseFloat(css.fontWeight),scroll:node.scrollWidth,client:node.clientWidth};
+    }
+    const table=document.querySelector('.comparison table') as HTMLTableElement | null;
+    const wrap=document.querySelector('.comparison .table-wrap') as HTMLElement | null;
+    const fit=document.querySelector('.fit-chart') as HTMLElement | null;
+    const frontier=document.querySelector('.frontier') as HTMLElement | null;
+    if(!table||!wrap||!fit||!frontier)throw Error('Missing native comparison or fitness plot');
+    const points=[...frontier.querySelectorAll('.frontier__candidates > li')].map(node=>{
+      const r=node.getBoundingClientRect();
+      return {left:r.left,right:r.right,top:r.top,bottom:r.bottom};
+    });
+    const pointOverlaps=points.flatMap((a,i)=>points.slice(i+1).filter(b=>
+      Math.min(a.right,b.right)-Math.max(a.left,b.left)>2 &&
+      Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>2
+    ).map(b=>[a.left,b.left]));
+    return {roles,documentOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+      wrap:{overflowX:getComputedStyle(wrap).overflowX,client:wrap.clientWidth,scroll:wrap.scrollWidth,
+        left:wrap.getBoundingClientRect().left,right:wrap.getBoundingClientRect().right},
+      table:{width:table.getBoundingClientRect().width,rows:table.tBodies[0]?.rows.length??0},
+      fit:{client:fit.clientWidth,scroll:fit.scrollWidth},
+      candidateList:{count:points.length,pointOverlaps,client:frontier.clientWidth,
+        scroll:frontier.scrollWidth,layout:getComputedStyle(frontier.querySelector('.frontier__candidates')!).display}};
+  },Object.keys(minimaxRoleFloors));
+}
+function acceptMinimaxTypography(m:Awaited<ReturnType<typeof readMinimaxTypography>>,width:number){
+  expect(m.documentOverflow).toBeLessThanOrEqual(2);
+  expect(m.table.rows).toBeGreaterThan(1);
+  for(const [selector,min] of Object.entries(minimaxRoleFloors)){
+    const role=m.roles[selector]!;
+    expect(role.size,selector+' text size').toBeGreaterThanOrEqual(min);
+    expect(role.family,selector+' font family').toMatch(/Inter|PingFang|system-ui/);
+    expect(role.style,selector+' italic style').toBe('normal');
+  }
+  expect(m.wrap.overflowX).toBe('auto');
+  expect(m.wrap.left).toBeGreaterThanOrEqual(-2);
+  expect(m.wrap.right).toBeLessThanOrEqual(width+2);
+  expect(m.fit.scroll).toBeLessThanOrEqual(m.fit.client+2);
+  expect(m.candidateList.count).toBe(4);
+  expect(m.candidateList.layout).toBe('grid');
+  expect(m.candidateList.pointOverlaps).toEqual([]);
+  expect(m.candidateList.scroll).toBeLessThanOrEqual(m.candidateList.client+2);
+  if(width===390){
+    expect(m.table.width).toBeGreaterThan(m.wrap.client+10);
+    expect(m.wrap.scroll).toBeGreaterThan(m.wrap.client);
+  }
+}
+for(const width of [390,768,1440] as const){
+  for(const theme of ['light','dark'] as const){
+    test('MiniMax teacher research roles readable at '+width+'/'+theme,async({page},testInfo)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+      const res=await page.goto(minimaxTeacherRoute,{waitUntil:'domcontentloaded'});
+      expect(res?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await page.evaluate(()=>document.fonts.ready);
+      const receipt=await readMinimaxTypography(page);
+      acceptMinimaxTypography(receipt,width);
+      await testInfo.attach('minimax-roles.json',{body:Buffer.from(JSON.stringify(receipt,null,2)),contentType:'application/json'});
+      await page.locator('.fit-chart').screenshot({path:testInfo.outputPath('minimax-fit-'+width+'-'+theme+'.png'),animations:'disabled'});
+      await page.locator('.comparison .table-wrap').screenshot({path:testInfo.outputPath('minimax-table-'+width+'-'+theme+'.png'),animations:'disabled'});
+      await page.locator('.frontier').screenshot({path:testInfo.outputPath('minimax-candidates-'+width+'-'+theme+'.png'),animations:'disabled'});
+    });
+  }
+}
+test('MiniMax teacher gate rejects old 10px data then accepts restored roles',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(minimaxTeacherRoute,{waitUntil:'domcontentloaded'});
+  acceptMinimaxTypography(await readMinimaxTypography(page),390);
+  const injected=await page.addStyleTag({content:'.teacher-audit .comparison tbody td {font-size:10px !important} .teacher-audit .fit-row>div:first-child span {font-size:9px !important}'});
+  const bad=await readMinimaxTypography(page);
+  expect(bad.roles['.comparison tbody td']!.size).toBeLessThan(15);
+  expect(()=>acceptMinimaxTypography(bad,390)).toThrow();
+  await injected.evaluate(node=>node.parentNode?.removeChild(node));
+  acceptMinimaxTypography(await readMinimaxTypography(page),390);
+});
