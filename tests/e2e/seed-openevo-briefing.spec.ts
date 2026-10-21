@@ -109,7 +109,7 @@ for (const width of [390, 768, 1440]) {
           width: n.getBoundingClientRect().width, natural: n.naturalWidth,
           localOverflow: n.parentElement!.scrollWidth > n.parentElement!.clientWidth,
         }));
-        if (width <= 860) {
+        {
           expect(metrics.width / metrics.natural * nativeFont).toBeGreaterThanOrEqual(12);
           expect(metrics.localOverflow).toBe(true);
           const region = page.locator('.metric-evidence__viewport, .research-image-viewport').nth(i);

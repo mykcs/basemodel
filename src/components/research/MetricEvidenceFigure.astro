@@ -28,10 +28,9 @@ const ariaAction = linkText.replace(/\s*↗$/, '');
   .metric-evidence{margin:1rem 0 1.35rem;min-width:0}
   .metric-evidence__viewport{overflow-x:auto;overscroll-behavior-x:contain}
   .metric-evidence__viewport>a{display:block;border:1px solid var(--line);border-radius:var(--radius-panel);background:#fff;box-shadow:0 10px 28px color-mix(in srgb,var(--ink) 7%,transparent)}
-  .metric-evidence img{display:block;width:100%;height:auto}
+  .metric-evidence img{display:block;width:100%;min-width:1200px;max-width:none;height:auto}
   .metric-evidence figcaption{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.45rem 1rem;margin-top:.6rem;line-height:1.5}
   .metric-evidence figcaption a{font-weight:700}
   .metric-evidence__viewport:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
-  @media(max-width:860px){.metric-evidence img{width:1200px;min-width:1200px;max-width:none}}
   @media print{.metric-evidence__viewport{overflow:visible}.metric-evidence img{width:100%;min-width:0;max-width:100%}}
 </style>

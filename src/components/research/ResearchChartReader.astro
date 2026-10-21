@@ -87,8 +87,7 @@
   .research-chart-reader .research-chart-context :is(.source-note,.dynamics-boundary,p,li,span,a){font-size:1rem;line-height:1.6}
   .research-chart-tools{display:flex;flex-wrap:wrap;gap:.5rem;padding:.6rem 1rem}
   .research-image-viewport{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
-  .research-image-viewport img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:var(--radius-panel);background:white}
+  .research-image-viewport img{display:block;width:100%;min-width:1200px;max-width:none;height:auto;border:1px solid var(--line);border-radius:var(--radius-panel);background:white}
   .research-chart-canvas:focus-visible,.research-image-viewport:focus-visible,.research-chart-tools button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
-  @media(max-width:860px){.research-image-viewport img{width:1200px;min-width:1200px;max-width:none}}
   @media print{.research-chart-tools,.research-chart-reader{display:none}.research-image-viewport{overflow:visible}.research-image-viewport img{width:100%;min-width:0;max-width:100%}}
 </style>
