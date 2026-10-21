@@ -40,7 +40,18 @@ describe('busy advisor first-read decision path', () => {
     expect(ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q04')?.boundary).toContain('−3.68');
     expect(ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q07')?.finding).toContain('10.06');
     expect(ADVISOR_DECISION_BRIEF.unresolved.map(x=>x.id)).toEqual(['q10','q03']);
-    expect(ADVISOR_DECISION_BRIEF.historicalBoundary).toContain('不是完全严格');
+    expect(ADVISOR_DECISION_BRIEF.historicalBoundary).toContain('并非严格训练对照');
+    // A professor's phone viewport may reveal only the first paragraph.
+    // Scientific time scope and proposal/approval state must therefore be unambiguous there.
+    expect(ADVISOR_DECISION_BRIEF.researchQuestion).toContain('Q10 新题');
+    expect(ADVISOR_DECISION_BRIEF.researchQuestion).toContain('后续方案待确认');
+    expect(ADVISOR_DECISION_BRIEF.researchQuestion).toContain('正式训练未据此启动');
+    expect(ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q04')?.finding).toContain('152–159 轮');
+    expect(ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q04')?.finding).toContain('同题比较');
+    expect(ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q07')?.finding).toContain('方向反过来');
+    const directionBound = ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q07')?.boundary ?? '';
+    expect(directionBound).toContain('已经通过 Holm 多重比较校正');
+    expect(directionBound).not.toContain('未经多重比较校正');
   });
 
   it('rejects known-bad greenwashing: missing scientific boundary or unrun work presented as confirmed', () => {

@@ -33,3 +33,32 @@ for (const width of [390,1440] as const) {
     expect(overflow).toBeLessThanOrEqual(2);
   });
 }
+
+test('real 390-by-844 first viewport retains scientific scope and next-decision status without scrolling',async({page})=>{
+  // Independent screenshot cold-read previously missed approval state on mobile.
+  // This is a GEOMETRY guard, not a replacement for independent reader comprehension.
+  await page.setViewportSize({width:390,height:844});
+  const response=await page.goto('/research/seed-openevo/study/parameter-memory-results/',{waitUntil:'domcontentloaded'});
+  expect(response?.status()).toBe(200);
+  const lead=page.locator('[data-advisor-scientific-question]');
+  await expect(lead).toContainText('Q10 新题');
+  await expect(lead).toContainText('后续方案待确认');
+  await expect(lead).toContainText('正式训练未据此启动');
+  const q04=page.locator('[data-advisor-executive-evidence="q04"]');
+  const q07=page.locator('[data-advisor-executive-evidence="q07"]');
+  await expect(q04).toContainText('第 152–159 轮同题比较');
+  await expect(q07).toContainText('方向反过来');
+  await expect(q07).toContainText('已经通过 Holm 多重比较校正');
+  for(const selector of [
+    '[data-advisor-scientific-question]',
+    '[data-advisor-key-findings]',
+    '[data-advisor-critical-gaps]',
+  ]){
+    const box=await page.locator(selector).boundingBox();
+    expect(box,selector).not.toBeNull();
+    expect(box!.y,selector).toBeGreaterThanOrEqual(0);
+    expect(box!.y+box!.height,selector).toBeLessThanOrEqual(844);
+  }
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(2);
+});
