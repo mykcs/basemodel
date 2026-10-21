@@ -390,3 +390,63 @@ test('native table capture respects the real scroll container instead of photogr
   accept(pixels(good));expect(clip.height).toBe(180);
   await expect(page.locator('.holder')).toHaveJSProperty('scrollTop',0);
 });
+
+for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+  test('bounded-state table labels and numerical differences retain content width: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',{waitUntil:'load'});
+    const rank=page.locator('.paper-table').filter({hasText:'rank95 · median'}).first();
+    const cell=rank.locator('tbody tr').first().locator('td').first();
+    const lines=()=>cell.evaluate(el=>{const r=document.createRange();r.selectNodeContents(el);return r.getClientRects().length;});
+    const accept=(count:number)=>expect(count).toBeLessThanOrEqual(2);
+    accept(await lines());
+    await expect(rank).toContainText('rank95 · median');
+    if(width===390){
+      const holder=rank.locator('..');
+      await expect(holder).toHaveCSS('overflow-x','auto');
+      expect(await holder.evaluate(el=>el.scrollWidth-el.clientWidth)).toBeGreaterThan(0);
+      await rank.evaluate(el=>{(el as HTMLElement).style.minWidth='0';(el as HTMLElement).style.maxWidth='100%';});
+      await rank.locator('th,td').evaluateAll(nodes=>nodes.forEach(el=>(el as HTMLElement).style.minWidth='0'));
+      const old=await lines();expect(()=>accept(old)).toThrow();
+      await rank.evaluate(el=>{(el as HTMLElement).style.removeProperty('min-width');(el as HTMLElement).style.removeProperty('max-width');});
+      await rank.locator('th,td').evaluateAll(nodes=>nodes.forEach(el=>(el as HTMLElement).style.removeProperty('min-width')));
+      accept(await lines());
+    }
+    const difference=page.locator('.paper-table').filter({hasText:'R1–R159 mean reward'}).locator('tbody tr').first().locator('td').last();
+    await expect(difference).toContainText('+0.0250');
+    const fragments=await difference.evaluate(el=>{const r=document.createRange();r.selectNodeContents(el);return r.getClientRects().length;});
+    expect(fragments).toBe(1);
+    const entropy=page.locator('.paper-table').filter({hasText:'R0–31 mean H'});
+    const numericFragments=await entropy.locator('tbody td:nth-child(n+2)').evaluateAll(nodes=>nodes.map(el=>{
+      const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),tops=new Set<number>();
+      while(walker.nextNode()){
+        const r=document.createRange();r.selectNodeContents(walker.currentNode);
+        for(const rect of r.getClientRects())if(rect.width)tops.add(Math.round(rect.top*10)/10);
+      }
+      return tops.size;
+    }));
+    for(const count of numericFragments)expect(count).toBe(1);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  });
+}
+
+for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+  test('three-way curve and legend identities survive grayscale: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',{waitUntil:'load'});
+    const names=["task-score.svg","task-score-20-round-mean.svg","loss-vs-rollout.svg","task-vector-frobenius.svg","tokens-per-step.svg","steps-per-episode.svg","action-family-entropy.svg"];
+    const styles=await page.evaluate(async names=>Promise.all(names.map(async name=>{
+      const response=await fetch('/research/seed-openevo/evidence/wandb-threeway/'+name);
+      if(!response.ok)throw Error('Missing native plot '+name);
+      const svg=new DOMParser().parseFromString(await response.text(),'image/svg+xml');
+      return {name,curves:[...svg.querySelectorAll('polyline')].map(el=>({stroke:el.getAttribute('stroke'),dash:el.getAttribute('stroke-dasharray')})),legend:[...svg.querySelectorAll('line[stroke="#2563EB"],line[stroke="#B91C1C"]')].map(el=>el.getAttribute('stroke-dasharray'))};
+    })),names);
+    for(const plot of styles){
+      expect(plot.curves.some(c=>c.stroke==='#2563EB'&&c.dash==='12 6'),plot.name).toBe(true);
+      expect(plot.curves.some(c=>c.stroke==='#B91C1C'&&c.dash==='3 5'),plot.name).toBe(true);
+      expect(plot.legend,plot.name).toEqual(expect.arrayContaining(['12 6','3 5']));
+    }
+  });
+}
