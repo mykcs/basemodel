@@ -270,7 +270,7 @@ const q17Effects = {
                     <p>这些实验不是完全严格对照，结果先作为大致判断。普通 OpenEVO 是更早的历史前序路线，和后来两组在起点与实验安排上有差别，所以不能把 60.72 与 45.98 的分差直接看成固定容量带来的影响；Bounded 与历史 β 的比较条件更接近，但也需要后续严格核实。</p>
             </div>
           )}
-          <AdvisorResponseMetricTable questionId={q.id} />
+          {q.id!=='q03' && <AdvisorResponseMetricTable questionId={q.id} />}
           {q.id==='q01' && <AdvisorTenEvidenceVisual variant="q01" />}
           {q.id==='q02' && <AdvisorTenEvidenceVisual variant="q02" />}
           {q.id==='q03' && <AdvisorTenEvidenceVisual variant="q03" />}

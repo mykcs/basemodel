@@ -14,6 +14,8 @@ for (const width of [390,768,1440]) {
     await expect(q01.locator('[data-q01-phone-line], [data-q01-line]')).toHaveCount(3);
     await expect(q01.locator('.advisor-viz__q01-point')).toHaveCount(33);
     await expect(original.locator('.advisor-viz__q01-legend-item')).toHaveCount(3);
+    await expect(page.locator('[data-q03-paper-table]')).toBeVisible();
+    await page.locator('[data-q03-trend-details]').evaluate(el=>(el as HTMLDetailsElement).open=true);
     const q03=page.locator('[data-report-figure="q03-custom-curve"]');
     await expect(width<=720 ? q03.locator('[data-q03-mobile-chart]') : q03.locator('.advisor-viz__q03-chart--desktop')).toBeVisible();
     await expect(q03.locator('button')).toHaveCount(0);

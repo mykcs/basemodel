@@ -174,61 +174,75 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
   </div>
 )}
 {variant === 'q03' && (
-  <figure class="advisor-viz advisor-viz--q03" data-report-figure="q03-custom-curve" data-paper-width="single" data-evidence-shape="paper-static-observations" data-protocol="custom-q17-64">
-    <svg class="advisor-viz__trend advisor-viz__q03-chart advisor-viz__q03-chart--desktop" data-q03-desktop-chart viewBox="0 0 625 285" role="img" aria-label="Q03 四个已测 Stage2 保存点的成绩先升、再降、再回升" aria-describedby="advisor-q03-description">
-      <desc id="advisor-q03-description">自定义 64 题，不是论文原生 128 题。A0 模型得 3.71 分，A40 得 6.43 分，A80 得 0.69 分，A120 得 6.62 分，满分 100 分。纵轴仅显示 0–10 分的局部范围，四个保存点在各自的 64 道题中都没有完整成功的题目，中间训练轮次没有被测量。</desc>
-      <text class="advisor-viz__q03-axis-title" x="75" y="30">Task Score（满分 100 分）</text>
-      {[0, 5, 10].map((tick) => (
-        <g>
-          <line class="advisor-viz__q03-grid" x1="75" x2="587" y1={225 - tick * 17} y2={225 - tick * 17} />
-          <text class="advisor-viz__axis" x="59" y={230 - tick * 17} text-anchor="end">{tick}</text>
-        </g>
-      ))}
-      <line class="advisor-viz__q03-axis-line" x1="75" x2="75" y1="55" y2="225" />
-      <line class="advisor-viz__q03-axis-line" x1="75" x2="587" y1="225" y2="225" />
-      <polyline class="advisor-viz__q03-connector" points={points} />
-      {checkpoints.map((point) => (
-        <g data-trend-point={point.update}>
-          <circle class="advisor-viz__q03-marker" cx={point.x} cy={point.y} r="4.8" />
-          <text class="advisor-viz__q03-score" x={point.x} y={point.y - 15} text-anchor="middle">{point.score}</text>
-          <text class="advisor-viz__axis" x={point.x} y="252" text-anchor="middle">{point.update}</text>
-        </g>
-      ))}
-      <text class="advisor-viz__q03-axis-title" x="331" y="280" text-anchor="middle">Stage2 保存点</text>
-    </svg>
-    <svg class="advisor-viz__trend advisor-viz__q03-phone-chart" data-q03-mobile-chart viewBox="0 0 350 236" role="img" aria-label="Q03 四个真实保存点成绩先升、后降、再回升，手机视图" aria-describedby="advisor-q03-phone-description">
-      <desc id="advisor-q03-phone-description">自定义 64 道购物测试题，A0 为 3.71，A40 为 6.43，A80 为 0.69，A120 为 6.62；纵轴局部放大到 0–10 分，完整满分为 100。虚线只是连接已测点，中间没有观测。</desc>
-      <text class="advisor-viz__q03-axis-title" x="43" y="20">Task Score（满分 100 分）</text>
-      {[0,5,10].map((tick) => (
-        <g>
-          <line class="advisor-viz__q03-grid" x1="42" x2="335" y1={185-tick*13} y2={185-tick*13} />
-          <text class="advisor-viz__axis" x="31" y={190-tick*13} text-anchor="end">{tick}</text>
-        </g>
-      ))}
-      <line class="advisor-viz__q03-axis-line" x1="42" x2="42" y1="55" y2="185" />
-      <line class="advisor-viz__q03-axis-line" x1="42" x2="335" y1="185" y2="185" />
-      <polyline class="advisor-viz__q03-connector" points={checkpoints.map((point)=>point.xPhone+','+point.yPhone).join(' ')} />
-      {checkpoints.map((point) => (
-        <g data-trend-point-phone={point.update}>
-          <circle class="advisor-viz__q03-marker" cx={point.xPhone} cy={point.yPhone} r="4.1" />
-          <text class="advisor-viz__q03-score" x={point.xPhone} y={point.yPhone-13} text-anchor="middle">{point.score}</text>
-          <text class="advisor-viz__axis" x={point.xPhone} y="210" text-anchor="middle">{point.update}</text>
-        </g>
-      ))}
-      <text class="advisor-viz__q03-axis-title" x="187" y="231" text-anchor="middle">Stage2 保存点</text>
-    </svg>
-    <figcaption><strong>图 2｜</strong>四个 Stage2 保存点在自定义 64 道购物题上的 Task Score。纵轴只显示 0–10 分，实际满分 100；虚线连接实测点，<strong>没有测量中间轮次</strong>，不能据此推断完整训练曲线。它与 SEED 论文的 128 题成绩使用不同评测协议。<a href="https://github.com/mykcs/openevo-experiment/pull/678" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/678" />原始评测记录</a></figcaption>
-    <div class="advisor-viz__q03-phone-table research-booktabs-wrap" tabindex="0" aria-label="四个保存点的论文式数据表">
-      <ResearchPaperTable class="research-booktabs">
-        <caption>补充表 S2｜四个真实保存点 · 自定义的 64 道购物题</caption>
-        <thead><tr><th scope="col">保存点</th><th scope="col" data-numeric>Task Score（满分 100 分）</th><th scope="col" data-numeric>完整成功题数（共 64 题）</th></tr></thead>
+  <div class="advisor-q03-paper" data-q03-report-paper data-report-table="q03-checkpoints" data-advisor-matrix="q03" data-matrix-kind="historic-checkpoints" data-protocol="custom-q17-64">
+    <div class="advisor-q03-paper__scroll research-booktabs-wrap" tabindex="0" aria-label="四个 Stage2 保存点的 LaTeX 论文式成绩表">
+      <table class="research-booktabs advisor-q03-paper__table" data-q03-paper-table>
+        <caption>补充表 S2｜四个 Stage2 保存点成绩</caption>
+        <thead><tr>
+          <th scope="col">保存点</th>
+          <th scope="col" data-numeric>Task Score / 100</th>
+          <th scope="col" data-numeric>完整成功 / 64 题</th>
+        </tr></thead>
         <tbody>{ADVISOR_Q03_CUSTOM_PANEL.map((point) => (
-          <tr><th scope="row">{point.update}</th><td data-numeric>{point.score} 分</td><td data-numeric>{point.exact.replace(/\s*\/\s*\d+$/, '').trim()} 题</td></tr>
+          <tr data-q03-checkpoint={point.update}>
+            <th scope="row">{point.update}</th>
+            <td data-numeric>{point.score}</td>
+            <td data-numeric>{point.exact.replace(/\s*\/\s*\d+$/, '').trim()}</td>
+          </tr>
         ))}</tbody>
-      </ResearchPaperTable>
+      </table>
     </div>
-    <p class="advisor-viz__q03-reading">四次测量的平均分先升、后降、再回升；每个保存点评测的 64 道题中，<strong>均没有完整成功的题目</strong>。</p>
-  </figure>
+    <p class="advisor-q03-paper__reading">四次实测成绩先升、后降、再回升。每个保存点评测了 64 道题，<strong>均没有完整成功的题目</strong>。没有测量中间轮次，不能当成完整训练曲线。</p>
+    <p class="advisor-q03-paper__boundary">这组自定义测试与 SEED 论文的 128 题评测协议不同，不能直接相减排名。<a href="https://github.com/mykcs/openevo-experiment/pull/678" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/678" />原始评测记录</a></p>
+    <details class="advisor-q03-paper__trend" data-q03-trend-details>
+      <summary>展开查看折线图（只连接四个实测点）</summary>
+      <figure class="advisor-viz advisor-viz--q03" data-report-figure="q03-custom-curve" data-paper-width="single" data-evidence-shape="paper-static-observations" data-protocol="custom-q17-64">
+      <svg class="advisor-viz__trend advisor-viz__q03-chart advisor-viz__q03-chart--desktop" data-q03-desktop-chart viewBox="0 0 625 285" role="img" aria-label="Q03 四个已测 Stage2 保存点的成绩先升、再降、再回升" aria-describedby="advisor-q03-description">
+        <desc id="advisor-q03-description">自定义 64 题，不是论文原生 128 题。A0 模型得 3.71 分，A40 得 6.43 分，A80 得 0.69 分，A120 得 6.62 分，满分 100 分。纵轴仅显示 0–10 分的局部范围，四个保存点在各自的 64 道题中都没有完整成功的题目，中间训练轮次没有被测量。</desc>
+        <text class="advisor-viz__q03-axis-title" x="75" y="30">Task Score（满分 100 分）</text>
+        {[0, 5, 10].map((tick) => (
+          <g>
+            <line class="advisor-viz__q03-grid" x1="75" x2="587" y1={225 - tick * 17} y2={225 - tick * 17} />
+            <text class="advisor-viz__axis" x="59" y={230 - tick * 17} text-anchor="end">{tick}</text>
+          </g>
+        ))}
+        <line class="advisor-viz__q03-axis-line" x1="75" x2="75" y1="55" y2="225" />
+        <line class="advisor-viz__q03-axis-line" x1="75" x2="587" y1="225" y2="225" />
+        <polyline class="advisor-viz__q03-connector" points={points} />
+        {checkpoints.map((point) => (
+          <g data-trend-point={point.update}>
+            <circle class="advisor-viz__q03-marker" cx={point.x} cy={point.y} r="4.8" />
+            <text class="advisor-viz__q03-score" x={point.x} y={point.y - 15} text-anchor="middle">{point.score}</text>
+            <text class="advisor-viz__axis" x={point.x} y="252" text-anchor="middle">{point.update}</text>
+          </g>
+        ))}
+        <text class="advisor-viz__q03-axis-title" x="331" y="280" text-anchor="middle">Stage2 保存点</text>
+      </svg>
+      <svg class="advisor-viz__trend advisor-viz__q03-phone-chart" data-q03-mobile-chart viewBox="0 0 350 236" role="img" aria-label="Q03 四个真实保存点成绩先升、后降、再回升，手机视图" aria-describedby="advisor-q03-phone-description">
+        <desc id="advisor-q03-phone-description">自定义 64 道购物测试题，A0 为 3.71，A40 为 6.43，A80 为 0.69，A120 为 6.62；纵轴局部放大到 0–10 分，完整满分为 100。虚线只是连接已测点，中间没有观测。</desc>
+        <text class="advisor-viz__q03-axis-title" x="43" y="20">Task Score（满分 100 分）</text>
+        {[0,5,10].map((tick) => (
+          <g>
+            <line class="advisor-viz__q03-grid" x1="42" x2="335" y1={185-tick*13} y2={185-tick*13} />
+            <text class="advisor-viz__axis" x="31" y={190-tick*13} text-anchor="end">{tick}</text>
+          </g>
+        ))}
+        <line class="advisor-viz__q03-axis-line" x1="42" x2="42" y1="55" y2="185" />
+        <line class="advisor-viz__q03-axis-line" x1="42" x2="335" y1="185" y2="185" />
+        <polyline class="advisor-viz__q03-connector" points={checkpoints.map((point)=>point.xPhone+','+point.yPhone).join(' ')} />
+        {checkpoints.map((point) => (
+          <g data-trend-point-phone={point.update}>
+            <circle class="advisor-viz__q03-marker" cx={point.xPhone} cy={point.yPhone} r="4.1" />
+            <text class="advisor-viz__q03-score" x={point.xPhone} y={point.yPhone-13} text-anchor="middle">{point.score}</text>
+            <text class="advisor-viz__axis" x={point.xPhone} y="210" text-anchor="middle">{point.update}</text>
+          </g>
+        ))}
+        <text class="advisor-viz__q03-axis-title" x="187" y="231" text-anchor="middle">Stage2 保存点</text>
+      </svg>
+      <figcaption><strong>图 2｜</strong>四个 Stage2 保存点在自定义 64 道购物题上的 Task Score。纵轴只显示 0–10 分，实际满分 100；虚线连接实测点，<strong>没有测量中间轮次</strong>，不能据此推断完整训练曲线。它与 SEED 论文的 128 题成绩使用不同评测协议。原始评测记录已在上方表格说明中提供。</figcaption>
+      </figure>
+    </details>
+  </div>
 )}
 {variant === 'q04' && (
   <div class="advisor-viz" data-report-figure="q04-capacity" data-evidence-shape="paired-paper-table">
@@ -317,14 +331,16 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 .advisor-viz__q03-connector{fill:none;stroke:var(--color-text);stroke-width:1.5;stroke-dasharray:5 5;opacity:.7}
 .advisor-viz__q03-marker{stroke:var(--color-text);fill:var(--paper,var(--color-surface));stroke-width:1.8}
 .advisor-viz__q03-score{fill:var(--color-text);font-size:14px;font-weight:600}
-.advisor-viz__q03-reading{font-size:.93rem;line-height:1.65;margin:.65rem 0 .35rem;max-width:70ch}
-.advisor-viz__q03-phone-table{display:none;max-width:100%;overflow-x:auto}
-.advisor-viz__q03-phone-table .research-booktabs{min-width:0;max-width:100%}
+/* Q03's table is the default scientific object; the original curve is secondary evidence. */
+.advisor-q03-paper{width:min(100%,32rem);max-width:100%;margin:1.4rem auto 1.8rem;color:var(--color-text)}
+.advisor-q03-paper__scroll{width:fit-content;max-width:100%;margin:0 auto .6rem;overflow-x:auto;overscroll-behavior-inline:contain}
+.advisor-q03-paper__reading,.advisor-q03-paper__boundary{margin:.5rem 0 .35rem;font-size:1rem;line-height:1.6}
+.advisor-q03-paper__trend{margin-top:.45rem}
+.advisor-q03-paper__trend summary{cursor:pointer;width:fit-content;font-size:.92rem;line-height:1.6;color:var(--color-text-muted);text-decoration:underline;text-underline-offset:.19rem}
+.advisor-q03-paper__trend summary:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
 @media(max-width:720px){
   .advisor-viz__q03-chart--desktop{display:none}
   .advisor-viz__q03-phone-chart{display:block;max-width:350px;width:100%}
-  .advisor-viz__q03-phone-table{display:block;margin:.8rem 0 .7rem}
-  .advisor-viz__q03-phone-table :is(th,td){white-space:normal}
 }
 .advisor-viz__details{margin:.85rem 0 .2rem}
 .advisor-viz__details summary{cursor:pointer;text-decoration:underline;text-underline-offset:.18rem;padding:.35rem 0;font-size:.89rem}
@@ -396,7 +412,49 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 @media(max-width:430px){.advisor-viz__name{font-size:.84rem}.advisor-viz__bar-row{grid-template-columns:minmax(6.5rem,1fr) minmax(3rem,.9fr) 4.3rem}.advisor-viz__value{font-size:.84rem}}
 </style>
 
-<style is:global>/* Paper figure ownership for the advisor's Q03 observation curve.
+<style is:global>/* Q03-only ICLR/booktabs table rules; never applied to other scientific tables. */
+.evo-blog.evo-approved-reader [data-q03-report-paper] {width:min(100%,32rem);margin:1.4rem auto 1.8rem}
+.evo-blog.evo-approved-reader [data-q03-report-paper] .advisor-q03-paper__scroll {
+  display:block;width:fit-content;max-width:100%;min-width:0;margin:0 auto .6rem;padding:0;overflow-x:auto;
+  border:0;border-radius:0;box-shadow:none;background:transparent;
+}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] {
+  border-collapse:collapse;border-spacing:0;table-layout:auto;width:max-content;max-width:none;
+  border:0;border-top:1.5px solid var(--color-text);border-bottom:1.5px solid var(--color-text);
+  border-radius:0;box-shadow:none;background:transparent;color:var(--color-text);
+  font-family:"Times New Roman",Times,"Songti SC",STSong,Georgia,serif;
+  font-size:1rem;line-height:1.4;font-weight:400;font-style:normal;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] caption {
+  display:table-caption;caption-side:top;position:static;text-align:left;
+  padding:0 0 .6rem;margin:0;color:var(--color-text);
+  font:400 .875rem/1.45 "Times New Roman",Times,"Songti SC",STSong,Georgia,serif;
+}
+/* The visible native caption is deliberately short enough to sit above the intrinsic-width
+ * tabular, just like a compact LaTeX booktabs object. Task scope stays in visible prose. */
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td) {
+  border:0;padding:.17rem .6rem;background:transparent;box-shadow:none;
+  color:var(--color-text);font-family:inherit;font-size:inherit;line-height:inherit;font-weight:400;
+  min-width:0;vertical-align:baseline;
+}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td):first-child {padding-left:0}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td):last-child {padding-right:0}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] thead th {
+  border-bottom:1px solid var(--color-text);font-weight:400;vertical-align:bottom;
+}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] tbody tr + tr > * {border-top:0;border-bottom:0}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td)[data-numeric] {
+  min-width:0;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums lining-nums;
+}
+.evo-blog.evo-approved-reader [data-q03-report-paper] :is(.advisor-q03-paper__reading,.advisor-q03-paper__boundary,.advisor-q03-paper__trend summary) {
+  font-family:var(--font-editorial),Georgia,serif;
+}
+@media print {
+  .evo-blog.evo-approved-reader [data-q03-report-paper] .advisor-q03-paper__scroll {overflow:visible}
+  .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] {font-size:10pt}
+}
+/* Paper figure ownership for the advisor's Q03 observation curve.
    Deliberately local to this evidence object: no sitewide typography change.
    The original large border/padding belonged to UI cards, not LaTeX figures. */
 
