@@ -4,7 +4,7 @@
  * 每条结果必须同时包含局部证据边界；未完成项不得呈现为已运行结果。
  */
 export const ADVISOR_DECISION_BRIEF = {
-  researchQuestion: 'OpenEVO 能否长期保留做题能力、控制长期参数体积与更新成本？建议先验证 Q10 新题；尚未获导师批准，也尚未正式启动。',
+  researchQuestion: '长期学习能否保留做题能力、控制长期参数体积与更新成本？建议先测 Q10 新题；后续方案待确认，正式训练未据此启动。',
   evidence: [
     {
       id: 'q04',
