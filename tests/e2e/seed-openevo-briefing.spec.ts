@@ -42,7 +42,9 @@ for (const width of [390, 768, 1440]) {
     test(`scientific chart reading ${width} ${theme}`, async ({ page }, testInfo) => {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ colorScheme: theme });
+      await page.addInitScript(value => localStorage.setItem('atlas-theme', value), theme);
       await page.goto('/research/seed-openevo/study/briefing/');
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
       const buttons = page.locator('[data-briefing-chart]');
       await expect(buttons).toHaveCount(8);
       for (let i = 0; i < 8; i++) {
@@ -53,6 +55,10 @@ for (const width of [390, 768, 1440]) {
         await buttons.nth(i).click();
         const dialog = page.locator('#research-chart-reader');
         await expect(dialog).toBeVisible();
+        const close = dialog.getByRole('button', { name: '关闭图表' });
+        expect(await close.evaluate((n) => n.getBoundingClientRect().height)).toBeLessThan(60);
+        expect(await close.evaluate((n) => n.getBoundingClientRect().width)).toBeGreaterThan(50);
+        if (theme === 'dark') expect(await dialog.evaluate((n) => getComputedStyle(n).backgroundColor)).not.toBe('rgb(255, 253, 248)');
         const reading = await dialog.locator('svg').evaluate((svg) => ({
           text: Array.from(svg.querySelectorAll('text')).map((n) => n.textContent),
           points: Array.from(svg.querySelectorAll('polyline')).map((n) => n.getAttribute('points')),
