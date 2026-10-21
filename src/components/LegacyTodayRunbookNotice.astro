@@ -28,7 +28,7 @@ const labHref = 'https://fuhuo-20260419.vercel.app/docs/machines';
     width: min(1120px, calc(100% - 32px));
     margin: 28px auto 0;
     display: grid;
-    grid-template-columns: 112px minmax(0, 1fr);
+    grid-template-columns: max-content minmax(0, 1fr);
     gap: 22px;
     align-items: start;
     padding: 20px 22px;
@@ -44,6 +44,8 @@ const labHref = 'https://fuhuo-20260419.vercel.app/docs/machines';
     font-size: var(--type-meta);
     font-weight: var(--type-weight-label);
     font-variant-numeric: tabular-nums;
+    line-height: var(--type-leading-caption);
+    white-space: nowrap;
   }
   .legacy-runbook-kicker {
     margin: 0 0 4px;

@@ -10,3 +10,9 @@ Owner `src/components/LegacyTodayRunbookNotice.astro` migrates:
 The existing warning state, desktop date/info grid and phone single-column structure are retained.
 
 `tests/e2e/typography-product-tools.spec.ts` adds 390/768/1440 x light/dark actual DOM/normal-font/card clipping checks, a real Chinese-route semantic/aria and canonical-link test, and same-predicate 9/10px negative → restore. Report CI/screenshot URLs only once the new HEAD succeeds. No new token, `!important`, research data change, Vercel Production, PR merge or Mac/RDC. `PageOutline.astro` overlaps open PR #841 and was not edited.
+
+## 2026-10-21 actual PNG review caught an escaped visual defect
+
+Exact-head `ce0140fb` Public PR CI [#39567251389](https://github.com/mykcs/basemodel/actions/runs/39567251389) did pass the structural and Chromium gates, but the downloaded 768px-dark original screenshot from [shard 3](https://github.com/mykcs/basemodel/actions/runs/39567251389/artifacts/12329992964) showed the globally localized date **`2026 年 8 月 11 日` wrapping the final `日` onto a second line** in the old fixed 112px date column. This was a real screenshot defect despite no horizontal overflow and green CI. The date source and scientific facts were not wrong; the global human-expression date transformation is valid.
+
+The follow-up CSS changes the date-column grid to `max-content`, adds `white-space:nowrap` and semantic caption line-height to the date itself, and adds actual geometry `height <= computed line-height + 2px` to all six state checks. A new tablet negative injects the former fixed 112px column and normal wrapping, confirms it **fails the same production acceptance**, and restores the correct appearance. All acceptance for this follow-up requires a fresh full GitHub CI and real 390/768/1440 screenshot on its exact SHA; previous ce0140 Green is not used as proof of this new code.

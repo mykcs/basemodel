@@ -505,10 +505,11 @@ async function readLegacyRunbookTypography(page:import('@playwright/test').Page)
         style:css.fontStyle,
         leading:css.lineHeight,
         width:rect.width,
+        height:rect.height,
         scroll:(element as HTMLElement).scrollWidth,
         client:(element as HTMLElement).clientWidth,
       }];
-    })) as Record<string,{size:number;family:string;weight:number;style:string;leading:string;width:number;scroll:number;client:number}>;
+    })) as Record<string,{size:number;family:string;weight:number;style:string;leading:string;width:number;height:number;scroll:number;client:number}>;
     const bounds=root.getBoundingClientRect();
     return {
       roles,rootOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
@@ -532,6 +533,11 @@ function assertLegacyRunbookTypography(r:Awaited<ReturnType<typeof readLegacyRun
   // The global human-expression runtime may localize ISO dates to 2026 年 8 月 11 日.
   // Check the calendar identity, not the former decorative string spelling.
   expect(r.dateText?.replace(/\s+/g,'')).toMatch(/^2026(?:-08-11|年8月11日)$/);
+  const dateRole=r.roles['.legacy-runbook-marker'];
+  if(!dateRole)throw Error('No measured historical date role');
+  expect(Number.isFinite(parseFloat(dateRole.leading))).toBe(true);
+  expect(dateRole.height,'the localized date must fit one line').toBeLessThanOrEqual(
+    parseFloat(dateRole.leading)+2);
   expect(r.currentLink).toContain('fuhuo-20260419.vercel.app/docs/machines');
   for(const [selector,min] of Object.entries(floors)){
     const v=r.roles[selector];
@@ -585,4 +591,22 @@ test('runbook readability gate rejects restored tiny dated warning and recovers'
   expect(()=>assertLegacyRunbookTypography(damaged,390)).toThrow();
   await bad.evaluate(node=>node.parentNode?.removeChild(node));
   assertLegacyRunbookTypography(await readLegacyRunbookTypography(page),390);
+});
+
+
+test('legacy guide rejects former one-column date wrap at tablet width',async({page})=>{
+  await page.setViewportSize({width:768,height:900});
+  await page.goto('/guide/today/',{waitUntil:'domcontentloaded'});
+  const before=await readLegacyRunbookTypography(page);
+  assertLegacyRunbookTypography(before,768);
+  const original=await page.addStyleTag({content:
+    '.legacy-runbook-notice{grid-template-columns:112px minmax(0,1fr)!important}' +
+    '.legacy-runbook-marker{white-space:normal!important}'});
+  const bad=await readLegacyRunbookTypography(page);
+  const oldDate=bad.roles['.legacy-runbook-marker'];
+  if(!oldDate)throw Error('Former date role missing after injection');
+  expect(oldDate.height).toBeGreaterThan(parseFloat(oldDate.leading)+2);
+  expect(()=>assertLegacyRunbookTypography(bad,768)).toThrow();
+  await original.evaluate(node=>node.parentNode?.removeChild(node));
+  assertLegacyRunbookTypography(await readLegacyRunbookTypography(page),768);
 });
