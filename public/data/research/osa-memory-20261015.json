@@ -1,0 +1,170 @@
+{
+  "schema": "basemodel.osa-memory-report-summary.v1",
+  "evidenceDate": "2026-10-15",
+  "publicationKind": "development-pilots",
+  "sourceAccess": "private-repository-required",
+  "phases": [
+    {
+      "id": "synthetic",
+      "cells": 80,
+      "rows": [
+        {
+          "id": "none",
+          "label": "普通矩阵更新",
+          "top1": 0.4109375,
+          "top5": null,
+          "oldTop1": 0.0,
+          "bytes": 8192
+        },
+        {
+          "id": "osa",
+          "label": "OSA 状态正交化",
+          "top1": 0.528125,
+          "top5": null,
+          "oldTop1": 0.0375,
+          "bytes": 8192
+        },
+        {
+          "id": "norm_matched_osa",
+          "label": "保持原幅度的正交化",
+          "top1": 0.465625,
+          "top5": null,
+          "oldTop1": 0.03125,
+          "bytes": 8192
+        },
+        {
+          "id": "spectral_cap",
+          "label": "仅限制谱范数",
+          "top1": 0.34375,
+          "top5": null,
+          "oldTop1": 0.0,
+          "bytes": 8192
+        }
+      ],
+      "sourceHref": "https://github.com/mykcs/openevo-experiment/blob/68d158cd6796e675ae70ab24adc1a5dd4869fbd7/docs/evidence/osa-memory-202610152229/analysis.json"
+    },
+    {
+      "id": "catalog",
+      "cells": 30,
+      "rows": [
+        {
+          "id": "full_vector_bank",
+          "label": "完整向量库",
+          "top1": 0.8564453125,
+          "top5": 0.951171875,
+          "oldTop1": 0.859375,
+          "bytes": 131072
+        },
+        {
+          "id": "matched_reservoir_bank",
+          "label": "同索引容量抽样向量库",
+          "top1": 0.23046875,
+          "top5": 0.245703125,
+          "oldTop1": 0.259375,
+          "bytes": 32768
+        },
+        {
+          "id": "none",
+          "label": "普通矩阵更新",
+          "top1": 0.1314453125,
+          "top5": 0.2154296875,
+          "oldTop1": 0.0015625,
+          "bytes": 32768
+        },
+        {
+          "id": "norm_matched_osa",
+          "label": "保持原幅度的正交化",
+          "top1": 0.1431640625,
+          "top5": 0.226953125,
+          "oldTop1": 0.00546875,
+          "bytes": 32768
+        },
+        {
+          "id": "osa",
+          "label": "OSA 状态正交化",
+          "top1": 0.16484375,
+          "top5": 0.29609375,
+          "oldTop1": 0.02265625,
+          "bytes": 32768
+        },
+        {
+          "id": "spectral_cap",
+          "label": "仅限制谱范数",
+          "top1": 0.1314453125,
+          "top5": 0.21484375,
+          "oldTop1": 0.00234375,
+          "bytes": 32768
+        }
+      ],
+      "sourceHref": "https://github.com/mykcs/openevo-experiment/blob/68d158cd6796e675ae70ab24adc1a5dd4869fbd7/docs/evidence/osa-catalog-202610152236/analysis.json"
+    },
+    {
+      "id": "ridge",
+      "cells": 25,
+      "rows": [
+        {
+          "id": "full_vector_bank",
+          "label": "完整向量库",
+          "top1": 0.8564453125,
+          "top5": 0.951171875,
+          "oldTop1": 0.8625,
+          "bytes": 131072
+        },
+        {
+          "id": "matched_reservoir_bank",
+          "label": "同索引容量抽样向量库",
+          "top1": 0.3390625,
+          "top5": 0.3662109375,
+          "oldTop1": 0.36171875,
+          "bytes": 49152
+        },
+        {
+          "id": "none",
+          "label": "普通最小二乘读出",
+          "top1": 0.196875,
+          "top5": 0.3791015625,
+          "oldTop1": 0.19609375,
+          "bytes": 49152
+        },
+        {
+          "id": "norm_matched_osa",
+          "label": "最小二乘加等幅 OSA 读出",
+          "top1": 0.190234375,
+          "top5": 0.3779296875,
+          "oldTop1": 0.1875,
+          "bytes": 49152
+        },
+        {
+          "id": "osa",
+          "label": "最小二乘加 OSA 读出",
+          "top1": 0.190234375,
+          "top5": 0.3779296875,
+          "oldTop1": 0.1875,
+          "bytes": 49152
+        }
+      ],
+      "sourceHref": "https://github.com/mykcs/openevo-experiment/blob/68d158cd6796e675ae70ab24adc1a5dd4869fbd7/docs/evidence/osa-ridge-202610152242/analysis.json"
+    }
+  ],
+  "anisotropic": {
+    "deltaCosine": 0.999609363079071,
+    "osaCosine": 0.696113896369934,
+    "normMatchedCosine": 0.7193640470504761
+  },
+  "catalog": {
+    "documents": 512,
+    "derivedQueries": 1024,
+    "seedsPerPilot": 5
+  },
+  "validation": {
+    "cpuTests": 11,
+    "cudaSmokes": 3,
+    "cells": 135,
+    "webshopEpisodes": 0,
+    "llmParameterUpdates": 0,
+    "externalTeacherCalls": 0,
+    "finalPanelAccess": 0
+  },
+  "sourceRoot": "https://github.com/mykcs/openevo-experiment/blob/68d158cd6796e675ae70ab24adc1a5dd4869fbd7/",
+  "claimBoundary": "合成记忆与商品标题派生检索，尚无完整 Agent 任务能力结果；第二三轮复用开发查询且容量不同。"
+}

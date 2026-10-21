@@ -1,22 +1,23 @@
 ---
-type Kind = 'methods' | 'results' | 'questions';
+type Kind = 'methods' | 'results' | 'questions' | 'osa';
 interface Props { current: Kind }
 const { current } = Astro.props;
 const pages = [
-  { id: 'methods', title:'OpenEVO 的参数记忆方法', path:'/research/seed-openevo/study/openevo-methods/' },
-  { id: 'questions', title:'学长十问：问题与背景', path:'/research/seed-openevo/study/advisor-questions/' },
-  { id: 'results', title:'我们的回应实验', path:'/research/seed-openevo/study/parameter-memory-results/' },
+  { id: 'methods', number:'01', title:'OpenEVO 的参数记忆方法', path:'/research/seed-openevo/study/openevo-methods/' },
+  { id: 'questions', number:'02', title:'学长十问：问题与背景', path:'/research/seed-openevo/study/advisor-questions/' },
+  { id: 'osa', number:'＋', title:'独立探索：OSA 正交化记忆', path:'/research/seed-openevo/study/osa-memory/' },
+  { id: 'results', number:'03', title:'我们的回应实验', path:'/research/seed-openevo/study/parameter-memory-results/' },
 ] as const;
 ---
-<nav class="evo-article__siblings" aria-label="三篇 OpenEVO 技术博客">
-  <p>同一研究线的三篇文章</p>
+<nav class="evo-article__siblings" aria-label="OpenEVO 研究文章">
+  <p>三篇研究文章与一项独立探索</p>
   <ol>
-    {pages.map((item,index) => (
+    {pages.map((item) => (
       <li>
         {current===item.id ? (
-          <span class="evo-current" aria-current="page"><span class="evo-number">{String(index+1).padStart(2,'0')}</span>{item.title}</span>
+          <span class="evo-current" aria-current="page"><span class="evo-number">{item.number}</span>{item.title}</span>
         ) : (
-          <a href={item.path}><span class="evo-number">{String(index+1).padStart(2,'0')}</span>{item.title}</a>
+          <a href={item.path}><span class="evo-number">{item.number}</span>{item.title}</a>
         )}
       </li>
     ))}
