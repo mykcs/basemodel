@@ -176,7 +176,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
   <div class="advisor-q03-paper" data-q03-report-paper data-report-table="q03-checkpoints" data-advisor-matrix="q03" data-matrix-kind="historic-checkpoints" data-protocol="custom-q17-64">
     <div class="advisor-q03-paper__scroll research-booktabs-wrap" tabindex="0" aria-label="四个 Stage2 保存点的 LaTeX 论文式成绩表">
       <table class="research-booktabs advisor-q03-paper__table" data-q03-paper-table>
-        <caption>补充表 S2｜四个 Stage2 保存点的实测成绩（自定义 64 道购物题）</caption>
+        <caption>补充表 S2｜四个 Stage2 保存点成绩</caption>
         <thead><tr>
           <th scope="col">保存点</th>
           <th scope="col" data-numeric>Task Score / 100</th>
@@ -431,20 +431,8 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
   padding:0 0 .6rem;margin:0;color:var(--color-text);
   font:400 .875rem/1.45 "Times New Roman",Times,"Songti SC",STSong,Georgia,serif;
 }
-/* A native LaTeX table caption has the paper-column width, not the narrow tabular width. */
-@media (min-width:721px) {
-  .evo-blog.evo-approved-reader [data-q03-report-paper] .advisor-q03-paper__scroll {
-    display:block;width:100%;overflow:visible;
-  }
-  .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] {
-    margin-inline:auto;
-  }
-  .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] caption {
-    position:relative;left:50%;transform:translateX(-50%);
-    width:min(32rem,calc(100vw - 2rem));max-width:none;
-    text-align:center;
-  }
-}
+/* The visible native caption is deliberately short enough to sit above the intrinsic-width
+ * tabular, just like a compact LaTeX booktabs object. Task scope stays in visible prose. */
 .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td) {
   border:0;padding:.17rem .6rem;background:transparent;box-shadow:none;
   color:var(--color-text);font-family:inherit;font-size:inherit;line-height:inherit;font-weight:400;
