@@ -27,9 +27,20 @@ const assertCloudFigureSafety = (source: string) => {
   expect(aggregate.if).toBe('always()');
   expect(aggregate.strategy.matrix.browser).toEqual(['chromium', 'webkit']);
   expect(aggregate.steps.find((step: { name: string }) => step.name === 'Require every browser shard to succeed').run).toBe('test "$SHARD_RESULT" = success');
-  for (const lane of Object.values(workflow.jobs) as typeof job[]) {
+  expect(aggregate.permissions).toEqual({ actions: 'read', contents: 'read' });
+  const indexStep = aggregate.steps.find((step: { name: string }) => step.name === 'Wait until exact evidence artifact ID is indexed by GitHub Actions');
+  const downloadStep = aggregate.steps.find((step: { name: string }) => step.name === 'Download the uploaded artifact for round-trip verification');
+  expect(indexStep).toBeDefined();
+  expect(indexStep.env).toEqual({ GH_TOKEN: '${{ github.token }}', FIGURE_ACCEPTED_ARTIFACT_ID: '${{ steps.evidence.outputs.artifact-id }}' });
+  expect(indexStep.run).toBe('node scripts/wait-for-cloud-figure-artifact.mjs');
+  expect(aggregate.steps.indexOf(indexStep) + 1).toBe(aggregate.steps.indexOf(downloadStep));
+  for (const [laneName, lane] of Object.entries(workflow.jobs) as [string, typeof job][]) {
     expect(lane['runs-on']).toBe('ubuntu-24.04');
-    expect(lane.permissions).toBeUndefined();
+    if (laneName === 'cloud-figure-evidence') {
+      expect(lane.permissions).toEqual({ actions: 'read', contents: 'read' });
+    } else {
+      expect(lane.permissions).toBeUndefined();
+    }
     expect(lane.environment).toBeUndefined();
     for (const step of lane.steps) {
       if (step.uses) expect(step.uses).toMatch(/^actions\/[a-z-]+@[a-f0-9]{40}$/);
@@ -150,9 +161,11 @@ describe('Vercel production deployment architecture', () => {
   });
 
   it('rejects missing coverage, skipped cases and corrupt downloaded evidence', () => {
-    execFileSync(process.execPath, ['--test', 'scripts/verify-cloud-figure-evidence.test.mjs'], {
-      cwd: new URL('../../', import.meta.url), stdio: 'pipe',
-    });
+    for (const testPath of ['scripts/verify-cloud-figure-evidence.test.mjs', 'scripts/wait-for-cloud-figure-artifact.test.mjs']) {
+      execFileSync(process.execPath, ['--test', testPath], {
+        cwd: new URL('../../', import.meta.url), stdio: 'pipe',
+      });
+    }
   });
 
   it('rejects unknown workflows and unsafe cloud workflow mutations', () => {
@@ -161,6 +174,8 @@ describe('Vercel production deployment architecture', () => {
     for (const bad of [
       source.replace('  pull_request:', '  pull_request_target:'),
       source.replace('  contents: read', '  contents: write'),
+      source.replace('      actions: read', '      actions: write'),
+      source.replace('Wait until exact evidence artifact ID is indexed by GitHub Actions', 'Artifact visibility check absent'),
       source.replace('    runs-on: ubuntu-24.04', '    runs-on: ubuntu-24.04\n    environment: production'),
       source.replace('run: npm ci', 'run: vercel deploy --target=production'),
       source.replace('persist-credentials: false', 'persist-credentials: true'),
