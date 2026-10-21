@@ -345,6 +345,33 @@ for (const width of [390, 768, 1440] as const) {
       await expect(table).toBeVisible();
       await expect(table.locator('thead tr')).toHaveCount(1);
       expect(await table.locator('thead th').count()).toBeGreaterThan(1);
+      // A wide operational matrix must scroll locally; it must not compress
+      // every long model header into an unreadable vertical stack.
+      const header = table.locator('thead th').filter({ hasText: 'Claude 3.5 Sonnet' });
+      await expect(header).toHaveCount(1);
+      const normal = await header.boundingBox();
+      expect(normal!.width).toBeGreaterThanOrEqual(120);
+      expect(normal!.height).toBeLessThan(100);
+      if (width === 390) {
+        // Negative control: remove the native per-model width and original
+        // word grouping; the known 40px header/187px tall failure returns.
+        await table.locator('thead th:not(:first-child)').evaluateAll(nodes =>
+          nodes.forEach(node => {
+            (node as HTMLElement).style.removeProperty('min-width');
+            (node as HTMLElement).style.removeProperty('overflow-wrap');
+          }),
+        );
+        const old = await header.boundingBox();
+        expect(old!.height).toBeGreaterThan(normal!.height + 30);
+        expect(() => expect(old!.height).toBeLessThan(100)).toThrow();
+        await table.locator('thead th:not(:first-child)').evaluateAll(nodes =>
+          nodes.forEach(node => {
+            (node as HTMLElement).style.minWidth = '120px';
+            (node as HTMLElement).style.overflowWrap = 'normal';
+          }),
+        );
+        expect((await header.boundingBox())!.height).toBeLessThan(100);
+      }
       expect(await table.locator('tbody tr').count()).toBeGreaterThan(0);
       await expect(table.locator('tbody a[href^="/papers/"]').first()).toBeVisible();
 
