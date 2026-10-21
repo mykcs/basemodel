@@ -29,6 +29,7 @@ for(const width of [390,768,1440] as const){
       await expect(q03Paper).toBeVisible();
       await expect(table).toBeVisible();
       await expect(table.locator('thead th')).toHaveCount(3);
+      await expect(table.locator('thead th').first()).toHaveText('保存点');
       await expect(table.locator('tbody tr')).toHaveCount(4);
       await expect(disclosure).not.toHaveAttribute('open','');
       await expect(q03).toBeHidden();
@@ -75,6 +76,8 @@ for(const width of [390,768,1440] as const){
       expect(tableMetrics.columnWidth).toBeLessThanOrEqual(514);
       expect(tableMetrics.centeredBy).toBeLessThanOrEqual(3);
       expect(tableMetrics.wrapWidth).toBeLessThanOrEqual(tableMetrics.columnWidth+1);
+      // Four-row paper tables should fit the phone reading column without hiding headings.
+      expect(tableMetrics.tableWidth).toBeLessThanOrEqual(tableMetrics.wrapWidth+1);
       expect(tableMetrics.captionSide).toBe('top');
       expect(tableMetrics.captionBeforeHeader).toBe(true);
       expect(tableMetrics.fontFamily).toContain('Times New Roman');
