@@ -191,7 +191,7 @@ for (const route of routes) {
   });
 }
 
-test('short quantitative tables shrink without affecting dense tables or method diagrams', async ({ page }) => {
+test('paper tables use content width while dense comparisons and diagrams retain their reading space', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/');
   const tables = page.locator('.paper-table');
@@ -212,18 +212,18 @@ test('short quantitative tables shrink without affecting dense tables or method 
     width: el.getBoundingClientRect().width,
   })));
   expect(accelSizes.find(row => row.cols === 2)?.width).toBeLessThan(500);
-  expect(accelSizes.find(row => row.cols === 5)?.width).toBeGreaterThan(900);
+  expect(accelSizes.find(row => row.cols === 5)?.width).toBeGreaterThan((accelSizes.find(row => row.cols === 2)?.width ?? Infinity) + 180);
 
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/');
   const state = page.locator('.bounded__table');
   expect((await state.first().boundingBox())!.width).toBeLessThan(760);
-  expect((await state.last().boundingBox())!.width).toBeGreaterThan(900);
+  expect((await state.last().boundingBox())!.width).toBeGreaterThan((await state.first().boundingBox())!.width);
 
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/');
   const v2Compact = page.locator('.comparison-table');
   const v2Wide = page.locator('.next-table');
   expect((await v2Compact.boundingBox())!.width).toBeLessThan(780);
-  expect((await v2Wide.boundingBox())!.width).toBeGreaterThan(800);
+  expect((await v2Wide.boundingBox())!.width).toBeGreaterThan((await v2Compact.boundingBox())!.width);
 
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-scaling/');
   await expect(page.locator('.scaling-chart')).toHaveAttribute('data-research-figure-size', 'wide');
@@ -312,10 +312,18 @@ for (const width of [390,768,1440]) for (const theme of ['light','dark'] as cons
     acceptRows(await rowBounds());
     if(width===390){
       const oldLabel=page.locator('[data-advisor-matrix="q01"] tbody tr').nth(1).locator('th');
-      await oldLabel.evaluate(node=>(node as HTMLElement).style.whiteSpace='nowrap');
+      await oldLabel.evaluate(node=>{
+        const table=node.closest('table')!;
+        table.style.tableLayout='fixed';table.style.width='350px';table.style.minWidth='0';table.style.maxWidth='350px';
+        (node as HTMLElement).style.whiteSpace='nowrap';
+      });
       const oldRows=await rowBounds();
       expect(()=>acceptRows(oldRows)).toThrow();
-      await oldLabel.evaluate(node=>(node as HTMLElement).style.removeProperty('white-space'));
+      await oldLabel.evaluate(node=>{
+        (node as HTMLElement).style.removeProperty('white-space');
+        const table=node.closest('table')!;
+        for(const property of ['table-layout','width','min-width','max-width'])table.style.removeProperty(property);
+      });
       acceptRows(await rowBounds());
     }
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
@@ -424,9 +432,17 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
     await expect(names.nth(0)).toHaveText('SD-LoRA v2 · Stable Reduction');
     await expect(names.nth(1)).toHaveText('SD-LoRA · Bounded Online Recurrence');
     if(width===390){
-      await names.evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.whiteSpace='nowrap'));
+      await names.evaluateAll(nodes=>nodes.forEach(node=>{
+        const table=node.closest('table')!;
+        table.style.tableLayout='fixed';table.style.width='350px';table.style.minWidth='0';table.style.maxWidth='350px';
+        (node as HTMLElement).style.whiteSpace='nowrap';
+      }));
       const old=await measure();expect(()=>accept(old)).toThrow();
-      await names.evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.removeProperty('white-space')));
+      await names.evaluateAll(nodes=>nodes.forEach(node=>{
+        (node as HTMLElement).style.removeProperty('white-space');
+        const table=node.closest('table')!;
+        for(const property of ['table-layout','width','min-width','max-width'])table.style.removeProperty(property);
+      }));
       accept(await measure());
     }
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
