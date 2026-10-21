@@ -511,3 +511,80 @@ test('MiniMax teacher gate rejects old 10px data then accepts restored roles',as
   await injected.evaluate(node=>node.parentNode?.removeChild(node));
   acceptMinimaxTypography(await readMinimaxTypography(page),390);
 });
+
+/* The native 1200px scientific SVG uses 13px tick labels; shrinking it to
+ * 390px visually yields ~4px glyphs even though the page has no overflow.
+ * One existing SVG stays visible as a compact preview and can be read at
+ * its original size in a keyboard-scrollable local viewport. */
+const metricZoomRoute='/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/';
+const readMetricZoom=async (figure:import('@playwright/test').Locator)=>{
+  return figure.evaluate(root=>{
+    const viewport=root.querySelector('.metric-evidence__viewport') as HTMLElement|null;
+    const img=viewport?.querySelector('img') as HTMLImageElement|null;
+    const button=root.querySelector('[data-metric-zoom]') as HTMLButtonElement|null;
+    if(!viewport||!img||!button)throw Error('Scientific metric zoom must be mounted');
+    const box=img.getBoundingClientRect();
+    return {native:img.naturalWidth,drawn:box.width,axis:13*box.width/1200,
+      client:viewport.clientWidth,scroll:viewport.scrollWidth,
+      localOverflow:getComputedStyle(viewport).overflowX,
+      expanded:button.getAttribute('aria-expanded'),tabindex:viewport.tabIndex,
+      rootOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};
+  });
+};
+const acceptMetricZoom=(value:Awaited<ReturnType<typeof readMetricZoom>>,wide:boolean)=>{
+  expect(value.native).toBe(1200);
+  expect(value.rootOverflow).toBeLessThanOrEqual(2);
+  if(wide){
+    expect(value.expanded).toBe('true');
+    expect(value.drawn).toBeGreaterThanOrEqual(1198);
+    expect(value.axis).toBeGreaterThanOrEqual(12.9);
+    expect(value.localOverflow).toBe('auto');
+    expect(value.scroll).toBeGreaterThan(value.client);
+    expect(value.tabindex).toBe(0);
+  }else{
+    expect(value.expanded).toBe('false');
+    expect(value.drawn).toBeLessThan(1200);
+  }
+};
+for(const width of [390,768,1440] as const) for(const theme of ['light','dark'] as const){
+  test('metric science plot retains original-size reading path '+width+'/'+theme,async({page},testInfo)=>{
+    await page.setViewportSize({width,height:width===390?844:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    const res=await page.goto(metricZoomRoute,{waitUntil:'domcontentloaded'});
+    expect(res?.status()).toBe(200);
+    const figs=page.locator('.metric-evidence');
+    await expect(figs).toHaveCount(7);
+    const first=figs.first();
+    const image=first.locator('img');
+    await image.scrollIntoViewIfNeeded();
+    await expect(image).toHaveJSProperty('complete',true);
+    const button=first.locator('[data-metric-zoom]');
+    await expect(button).toBeVisible();
+    acceptMetricZoom(await readMetricZoom(first),false);
+    const full=first.getByRole('link',{name:/原尺寸打开/});
+    await expect(full).toHaveAttribute('href',/wandb-threeway\/task-score\.svg$/);
+    await button.click();
+    await expect(button).toHaveAttribute('aria-expanded','true');
+    const receipt=await readMetricZoom(first);
+    acceptMetricZoom(receipt,true);
+    await testInfo.attach('metric-original-size.json',{body:Buffer.from(JSON.stringify({width,theme,...receipt},null,2)),contentType:'application/json'});
+    await first.locator('.metric-evidence__viewport').screenshot({path:testInfo.outputPath('metric-original-size-'+width+'-'+theme+'.png'),animations:'disabled'});
+    await button.click();
+    acceptMetricZoom(await readMetricZoom(first),false);
+  });
+}
+test('metric zoom actual 13px axis-readability predicate rejects old squeezed mobile image',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(metricZoomRoute,{waitUntil:'domcontentloaded'});
+  const first=page.locator('.metric-evidence').first();
+  await first.locator('img').scrollIntoViewIfNeeded();
+  await expect(first.locator('[data-metric-zoom]')).toBeVisible();
+  await first.locator('[data-metric-zoom]').click();
+  acceptMetricZoom(await readMetricZoom(first),true);
+  const style=await page.addStyleTag({content:'.metric-evidence__viewport.is-expanded a,.metric-evidence__viewport.is-expanded img{width:100% !important;max-width:100% !important}'});
+  const bad=await readMetricZoom(first);
+  expect(bad.axis).toBeLessThan(6);
+  expect(()=>acceptMetricZoom(bad,true)).toThrow();
+  await style.evaluate(node=>node.parentNode?.removeChild(node));
+  acceptMetricZoom(await readMetricZoom(first),true);
+});
