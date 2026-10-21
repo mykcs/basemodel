@@ -506,10 +506,12 @@ async function readLegacyRunbookTypography(page:import('@playwright/test').Page)
         leading:css.lineHeight,
         width:rect.width,
         height:rect.height,
+        paddingTop:parseFloat(css.paddingTop)||0,
+        paddingBottom:parseFloat(css.paddingBottom)||0,
         scroll:(element as HTMLElement).scrollWidth,
         client:(element as HTMLElement).clientWidth,
       }];
-    })) as Record<string,{size:number;family:string;weight:number;style:string;leading:string;width:number;height:number;scroll:number;client:number}>;
+    })) as Record<string,{size:number;family:string;weight:number;style:string;leading:string;width:number;height:number;paddingTop:number;paddingBottom:number;scroll:number;client:number}>;
     const bounds=root.getBoundingClientRect();
     return {
       roles,rootOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
@@ -536,7 +538,8 @@ function assertLegacyRunbookTypography(r:Awaited<ReturnType<typeof readLegacyRun
   const dateRole=r.roles['.legacy-runbook-marker'];
   if(!dateRole)throw Error('No measured historical date role');
   expect(Number.isFinite(parseFloat(dateRole.leading))).toBe(true);
-  expect(dateRole.height,'the localized date must fit one line').toBeLessThanOrEqual(
+  expect(dateRole.height-dateRole.paddingTop-dateRole.paddingBottom,
+    'the localized date ink/line box must fit one line').toBeLessThanOrEqual(
     parseFloat(dateRole.leading)+2);
   expect(r.currentLink).toContain('fuhuo-20260419.vercel.app/docs/machines');
   for(const [selector,min] of Object.entries(floors)){
@@ -605,7 +608,8 @@ test('legacy guide rejects former one-column date wrap at tablet width',async({p
   const bad=await readLegacyRunbookTypography(page);
   const oldDate=bad.roles['.legacy-runbook-marker'];
   if(!oldDate)throw Error('Former date role missing after injection');
-  expect(oldDate.height).toBeGreaterThan(parseFloat(oldDate.leading)+2);
+  expect(oldDate.height-oldDate.paddingTop-oldDate.paddingBottom).toBeGreaterThan(
+    parseFloat(oldDate.leading)+2);
   expect(()=>assertLegacyRunbookTypography(bad,768)).toThrow();
   await original.evaluate(node=>node.parentNode?.removeChild(node));
   assertLegacyRunbookTypography(await readLegacyRunbookTypography(page),768);
