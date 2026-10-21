@@ -56,6 +56,10 @@ for(const width of [390,768,1440] as const){
         const root=document.documentElement;
         return {
           tableWidth:el.getBoundingClientRect().width,
+          rowHeight:el.querySelector('tbody tr')!.getBoundingClientRect().height,
+          headerWeight:getComputedStyle(header).fontWeight,
+          captionWidth:caption.getBoundingClientRect().width,
+          captionCenteredBy:Math.abs((caption.getBoundingClientRect().left+caption.getBoundingClientRect().right)/2-(outer.left+outer.right)/2),
           wrapWidth:wrap.width,
           columnWidth:outer.width,
           centeredBy:Math.abs((wrap.left+wrap.right)/2-(outer.left+outer.right)/2),
@@ -82,6 +86,13 @@ for(const width of [390,768,1440] as const){
       expect(tableMetrics.captionBeforeHeader).toBe(true);
       expect(tableMetrics.fontFamily).toContain('Times New Roman');
       expect(tableMetrics.tableFontSize).toBeGreaterThanOrEqual(16);
+      // A four-row LaTeX booktabs table is typeset compactly, not as dashboard rows.
+      expect(tableMetrics.rowHeight).toBeLessThanOrEqual(31);
+      expect(tableMetrics.headerWeight).toBe('400');
+      if(width>720){
+        expect(tableMetrics.captionWidth).toBeGreaterThanOrEqual(430);
+        expect(tableMetrics.captionCenteredBy).toBeLessThanOrEqual(3);
+      }
       expect(tableMetrics.topBorder).toBeGreaterThanOrEqual(1.3);
       expect(tableMetrics.bottomBorder).toBeGreaterThanOrEqual(1.3);
       expect(tableMetrics.headerRule).toBeGreaterThanOrEqual(.8);
