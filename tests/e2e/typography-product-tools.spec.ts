@@ -478,3 +478,105 @@ test('reproduction setup actually rejects restored 10px protocol text',async({pa
   await bad.evaluate(node=>node.parentNode?.removeChild(node));
   acceptModelReproductionSetup(await readModelReproductionSetup(page),390);
 });
+
+
+// The current /guide/today/ URL displays a dated legacy runbook warning,
+// NOT today's live equipment facts. The 2026 date is normal UI text, while
+// the warning and the link to the current canonical source remain visible.
+async function readLegacyRunbookTypography(page:import('@playwright/test').Page) {
+  return page.evaluate(() => {
+    const root=document.querySelector('.legacy-runbook-notice');
+    if(!root) throw new Error('Missing mounted legacy runbook notice on /guide/today/');
+    const selectors=[
+      '.legacy-runbook-marker','.legacy-runbook-kicker',
+      '.legacy-runbook-notice h2',
+      '.legacy-runbook-notice p:not(.legacy-runbook-kicker)',
+      '.legacy-runbook-notice a',
+    ];
+    const roles=Object.fromEntries(selectors.map(selector=>{
+      const element=root.querySelector(selector);
+      if(!element) throw new Error('Missing runbook role '+selector);
+      const css=getComputedStyle(element);
+      const rect=element.getBoundingClientRect();
+      return [selector,{
+        size:parseFloat(css.fontSize),
+        family:css.fontFamily,
+        weight:parseFloat(css.fontWeight),
+        style:css.fontStyle,
+        leading:css.lineHeight,
+        width:rect.width,
+        scroll:(element as HTMLElement).scrollWidth,
+        client:(element as HTMLElement).clientWidth,
+      }];
+    })) as Record<string,{size:number;family:string;weight:number;style:string;leading:string;width:number;scroll:number;client:number}>;
+    const bounds=root.getBoundingClientRect();
+    return {
+      roles,rootOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+      cardLeft:bounds.left,cardRight:bounds.right,
+      dateText:root.querySelector('.legacy-runbook-marker')?.textContent?.trim(),
+      currentLink:root.querySelector('a')?.getAttribute('href')??'',
+    };
+  });
+}
+function assertLegacyRunbookTypography(r:Awaited<ReturnType<typeof readLegacyRunbookTypography>>,width:number) {
+  const floors:Record<string,number>={
+    '.legacy-runbook-marker':13,
+    '.legacy-runbook-kicker':13,
+    '.legacy-runbook-notice h2':20,
+    '.legacy-runbook-notice p:not(.legacy-runbook-kicker)':16,
+    '.legacy-runbook-notice a':15,
+  };
+  expect(r.rootOverflow).toBeLessThanOrEqual(2);
+  expect(r.cardLeft).toBeGreaterThanOrEqual(-2);
+  expect(r.cardRight).toBeLessThanOrEqual(width+2);
+  expect(r.dateText).toBe('2026-08-11');
+  expect(r.currentLink).toContain('fuhuo-20260419.vercel.app/docs/machines');
+  for(const [selector,min] of Object.entries(floors)){
+    const v=r.roles[selector];
+    if(!v)throw new Error('Missing computed runbook role '+selector);
+    expect(v.size,selector).toBeGreaterThanOrEqual(min);
+    expect(v.family,selector).toMatch(/Inter|PingFang|system-ui/);
+    expect(v.style,selector).toBe('normal');
+    expect(v.scroll,selector).toBeLessThanOrEqual(v.client+2);
+  }
+}
+for(const width of [390,768,1440] as const){
+  for(const theme of ['light','dark'] as const){
+    test('legacy guide labels explain dated equipment boundary legibly '+width+'/'+theme,async({page},testInfo)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+      const response=await page.goto('/guide/today/',{waitUntil:'domcontentloaded'});
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await page.evaluate(()=>document.fonts.ready);
+      const computed=await readLegacyRunbookTypography(page);
+      assertLegacyRunbookTypography(computed,width);
+      await page.locator('.legacy-runbook-notice').screenshot({
+        path:testInfo.outputPath('legacy-guide-card-'+width+'-'+theme+'.png'),
+        animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}',
+      });
+      await testInfo.attach('legacy-guide-computed.json',{
+        body:Buffer.from(JSON.stringify(computed,null,2)),contentType:'application/json'});
+    });
+  }
+}
+test('English dated guide retains normal date and readable source explanation',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  const response=await page.goto('/en/guide/today/',{waitUntil:'domcontentloaded'});
+  expect(response?.status()).toBe(200);
+  const result=await readLegacyRunbookTypography(page);
+  assertLegacyRunbookTypography(result,390);
+  await expect(page.locator('.legacy-runbook-notice h2')).toContainText('dedicated bastion');
+});
+test('runbook readability gate rejects restored tiny dated warning and recovers',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/guide/today/',{waitUntil:'domcontentloaded'});
+  assertLegacyRunbookTypography(await readLegacyRunbookTypography(page),390);
+  const bad=await page.addStyleTag({content:
+    '.legacy-runbook-kicker{font-size:9px!important}' +
+    '.legacy-runbook-notice p:not(.legacy-runbook-kicker){font-size:10px!important}'});
+  const damaged=await readLegacyRunbookTypography(page);
+  expect(()=>assertLegacyRunbookTypography(damaged,390)).toThrow();
+  await bad.evaluate(node=>node.parentNode?.removeChild(node));
+  assertLegacyRunbookTypography(await readLegacyRunbookTypography(page),390);
+});
