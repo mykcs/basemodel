@@ -132,8 +132,11 @@ describe('Vercel production deployment architecture', () => {
   it('keeps the cloud figure workflow read-only, pinned and exact-head bound', () => {
     const cloud = readText('../../.github/workflows/cloud-figure-visual-review.yml');
     assertCloudFigureSafety(cloud);
-    for (const command of ['test:ui', 'test:ui:all'])
+    for (const command of ['test:ui', 'test:ui:all']) {
       expect(packageJson.scripts[command]).toContain('tests/e2e/advisor-figure-paper-collision.spec.ts');
+      expect(packageJson.scripts[command]).toContain('tests/e2e/q17-frontier-content-first.spec.ts');
+    }
+    expect(readText('../../scripts/preflight-ui.ts')).toContain('q17-mobile-comparison-cell-collision');
     expect(readText('../../scripts/preflight-ui.ts')).toContain('q03-rendered-label-axis-collision');
     expect(packageJson.scripts['test:ui:all']).toContain('tests/e2e/sitewide-figure-width-scope.spec.ts');
     expect(cloud).toContain('npm run test:ui:all -- --project=${{ matrix.browser }} --workers=1');
