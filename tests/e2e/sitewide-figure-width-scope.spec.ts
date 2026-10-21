@@ -17,6 +17,7 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
     const box = el.getBoundingClientRect(), captionBox = cap.getBoundingClientRect();
     const cells = [...el.querySelectorAll<HTMLElement>('th,td')];
     return {
+      roles: [...el.querySelectorAll('thead,tbody,tfoot,tr,th,td')].every(node => getComputedStyle(node).display === ({THEAD:'table-header-group',TBODY:'table-row-group',TFOOT:'table-footer-group',TR:'table-row',TH:'table-cell',TD:'table-cell'} as Record<string,string>)[node.tagName]),
       display: style.display, family: style.fontFamily, font: parseFloat(style.fontSize),
       top: parseFloat(style.borderTopWidth), bottom: parseFloat(style.borderBottomWidth),
       caption: Boolean(cap && captionBox.width > 0 && captionBox.height > 0 && captionBox.bottom <= (el.querySelector('thead')?.getBoundingClientRect().top ?? box.top) + 2),
@@ -28,6 +29,7 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
     };
   });
   expect(grammar.display).toBe('table');
+  expect(grammar.roles).toBe(true);
   expect(grammar.family).toContain('Times');
   expect(grammar.font).toBeGreaterThanOrEqual(route.includes('/briefing/') ? 14 : 16);
   expect(grammar.top).toBeGreaterThan(0);

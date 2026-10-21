@@ -115,7 +115,13 @@ const hypotheses = [
 </main>
 <style>
   .tm-plan{width:min(1080px,calc(100% - 2rem));margin:0 auto;padding:1.5rem 0 4rem;color:var(--text)}
-  .tm-plan p,.tm-plan li,.tm-plan dd,.tm-plan small,.tm-plan span,.tm-plan strong,.tm-plan a{font-size:1rem}
+  .tm-plan p{font-size:1rem}
+.tm-plan li{font-size:1rem}
+.tm-plan dd{font-size:1rem}
+.tm-plan small{font-size:1rem}
+.tm-plan span{font-size:1rem}
+.tm-plan strong{font-size:1rem}
+.tm-plan a{font-size:1rem}
   .tm-hero{padding:1.8rem 0 1.5rem;border-bottom:1px solid var(--line);max-width:58rem}
   .tm-kicker{margin:0 0 .7rem;color:var(--muted);font-size:1rem;font-weight:700}
   .tm-hero h1{margin:0;font-size:clamp(2rem,4.4vw,3.5rem);line-height:1.18;letter-spacing:-.035em;max-width:55rem}
@@ -130,10 +136,12 @@ const hypotheses = [
   .tm-two article p{margin:.45rem 0}
   .tm-scroll-hint{display:none}
   @media(max-width:680px){.tm-scroll-hint{display:block;font-size:1rem;color:var(--muted)}}
-  .tm-table-wrap{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+  .tm-table-wrap{width:100%;max-width:100%;overscroll-behavior-x:contain}
   .tm-evidence{font-size:1rem;color:var(--muted);overflow-wrap:anywhere}
   a{color:var(--accent-deep);text-underline-offset:.2em}
-  a:focus-visible,summary:focus-visible,.tm-table-wrap:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}
+  a:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}
+summary:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}
+.tm-table-wrap:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}
   .tm-progress{padding-left:1.5rem;display:grid;gap:1rem}
   .tm-progress p{margin:.25rem 0}
   .tm-hypotheses{padding-left:1.5rem;line-height:1.8}
@@ -143,5 +151,6 @@ const hypotheses = [
   details{margin-top:1rem;padding:1rem;border:1px solid var(--line)}
   summary{cursor:pointer;font-weight:650;line-height:1.6}
   code{overflow-wrap:anywhere;word-break:break-word}
-  @media(max-width:680px){.tm-two,.tm-blank-grid{grid-template-columns:1fr}.tm-hero{padding-top:1rem}.tm-lede{font-size:1rem}.tm-section{margin-top:1.5rem}.tm-plan{width:calc(100% - 1.5rem)}.tm-progress{padding-left:1.2rem}}
+  @media(max-width:680px){.tm-two{grid-template-columns:1fr}
+.tm-blank-grid{grid-template-columns:1fr}.tm-hero{padding-top:1rem}.tm-lede{font-size:1rem}.tm-section{margin-top:1.5rem}.tm-plan{width:calc(100% - 1.5rem)}.tm-progress{padding-left:1.2rem}}
 </style>

@@ -22,6 +22,11 @@ describe('paper table scientific-content preservation', () => {
     expect(result).toContain('<caption id="panel">Frozen 128-task panel</caption>');
     expect(result).not.toContain('sr-only');
   });
+  it('aligns numeric row headings with the corresponding column heading', () => {
+    const result = preparePaperTable('<thead><tr><th>Checkpoint</th><th>Score</th></tr></thead><tbody><tr><th scope="row">128</th><td>60.72</td></tr></tbody>');
+    expect(result).toContain('<th data-numeric>Checkpoint</th>');
+    expect(result).toContain('<th scope="row" data-numeric>128</th>');
+  });
   it('does not infer grouped or spanning headers from an incomplete rectangular matrix', () => {
     const result = preparePaperTable('<thead><tr><th colspan="2">Protocol</th></tr></thead><tbody><tr><td colspan="2">128</td></tr></tbody>');
     expect(result).toContain('<th colspan="2">Protocol</th>');

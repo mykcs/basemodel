@@ -2,7 +2,7 @@ export const paperTableText = (html: string) => html.replace(/<[^>]*>/g, '').rep
 export const isPaperTableNumeric = (text: string) => /^[+−-]?(?:\d[\d\s.,eE+−\-/%×±:()\[\]–—]*)(?:\s*(?:s|ms|h|GB|MB|MiB|GiB|bytes|%|分|题|次|轮|步|秒|小时))?$/u.test(text);
 export function preparePaperTable(contents: string): string {
 contents = contents.replace(/<caption\b([^>]*)>/g, (_tag, attrs: string) => '<caption' + attrs.replace(/\sclass=(?:"[^"]*"|'[^']*')/g, '') + '>');
-contents = contents.replace(/<td\b([^>]*)>([\s\S]*?)<\/td>/g, (tag, attrs: string, value: string) => /\bdata-numeric(?:[\s=>]|$)/.test(attrs) || !isPaperTableNumeric(paperTableText(value)) ? tag : '<td' + attrs + ' data-numeric>' + value + '</td>');
+contents = contents.replace(/<(td|th)\b([^>]*)>([\s\S]*?)<\/\1>/g, (tag, kind: string, attrs: string, value: string) => /\bdata-numeric(?:[\s=>]|$)/.test(attrs) || !isPaperTableNumeric(paperTableText(value)) ? tag : '<' + kind + attrs + ' data-numeric>' + value + '</' + kind + '>');
 const bodyRows = [...contents.matchAll(/<tbody\b[^>]*>([\s\S]*?)<\/tbody>/g)].flatMap(body => [...body[1]!.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/g)].map(row => [...row[1]!.matchAll(/<(?:th|td)\b([^>]*)>([\s\S]*?)<\/(?:th|td)>/g)]));
 const widths = bodyRows.map(row => row.length);
 const columns = Math.max(0, ...widths);
