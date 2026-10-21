@@ -82,7 +82,7 @@
       "sampling": "R0-R159, one point per round, 160 points per curve",
       "y_scale": "shared 0-2.5 Frobenius norm",
       "bounded_beta_source_sha256": "344d2bb0ef921a5ee1c2f5a1b9636fc9be03ed98b8edc13ca6b028ebd331ceb1",
-      "sha256": "6164fa34e237f09b835dab3a9c6aefe7bd662a23f25c6d444a1691e501d6e68d",
+      "sha256": "1aa61bda2c6047524de482ecbf2ad8b6f5d98a9e470ff16f4ea2c5bca8c27bf6",
       "ordinary_source": "existing sealed 160-point ordinary OpenEVO scalar-history preview from W&B mirror run f587a9687171dadb"
     },
     "task_score_160_round_preview": {
@@ -90,7 +90,7 @@
       "display_scale": "Task Score /100",
       "source_scale": "W&B scalar 0-1",
       "transform": "display = source * 100",
-      "sha256": "cce099686fbd82fd824897623134a44742b7d92c531da65f3fa0b4752740872d"
+      "sha256": "5101233423a4b9bdde03127d3f6d50e7ca6f00087a5c3895f1d8fcacc9cda89e"
     }
   }
 }

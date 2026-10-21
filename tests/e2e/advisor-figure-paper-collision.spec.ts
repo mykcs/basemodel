@@ -1,4 +1,11 @@
 import { expect, test } from '@playwright/test';
+import { captureFigureEvidence } from './figure-evidence';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+const sourceSha=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
+test.beforeAll(()=>{
+  if(process.env.FIGURE_SOURCE_SHA) expect(sourceSha).toBe(process.env.FIGURE_SOURCE_SHA);
+});
 
 // User-reported Figure 2 defect on the actual advisor report (desktop and phone),
 // plus sibling Figure 1: check the rendered evidence, not only CSS source.
@@ -7,7 +14,7 @@ const checkpointScores=['3.71','6.43','0.69','6.62'] as const;
 
 for(const width of [390,768,1440] as const){
   for(const theme of ['light','dark'] as const){
-    test('Q01/Q03 paper figures: no tooltip/card or clipped value at '+width+' '+theme,async({page})=>{
+    test('Q01/Q03 paper figures: no tooltip/card or clipped value at '+width+' '+theme,async({page},testInfo)=>{
       await page.setViewportSize({width,height:900});
       await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
       const response=await page.goto(route,{waitUntil:'domcontentloaded'});
@@ -70,12 +77,18 @@ for(const width of [390,768,1440] as const){
         expect(parseFloat(sides.bottom)).toBeGreaterThan(0);
         expect(sides.caption).toBe('top');
       }
+      // These PNGs and computed measurements become short-lived GitHub
+      // Actions artifacts, so MacBook/RDC screenshots are not needed.
+      await captureFigureEvidence(q03,testInfo.outputPath('q03-paper-'+width+'-'+theme+'.png'));
+      if(width!==768) await captureFigureEvidence(q01,testInfo.outputPath('q01-paper-'+width+'-'+theme+'.png'));
+      writeFileSync(testInfo.outputPath('q03-paper-geometry-'+width+'-'+theme+'.json'),
+        JSON.stringify({sha:sourceSha,browser:testInfo.project.name,width,theme,metrics,source:'rendered Chromium/WebKit Playwright',route},null,2)+'\n');
     });
   }
 }
 
 for(const width of [390,1440] as const){
-  test('the original Q03 value collision is rejected at '+width+'px',async({page})=>{
+  test('the original Q03 value collision is rejected at '+width+'px',async({page},testInfo)=>{
     await page.setViewportSize({width,height:900});
     await page.goto(route,{waitUntil:'domcontentloaded'});
     const chart=page.locator(width===390?'[data-q03-mobile-chart]':'[data-q03-desktop-chart]');
@@ -93,6 +106,13 @@ for(const width of [390,1440] as const){
     const original=await measure();
     expect(original).not.toBeNull();
     expect(original!.left).toBeLessThanOrEqual(original!.axis+2);
+    // Exercise the same accepting predicate against the deliberately bad DOM.
+    expect(()=>expect(original!.left).toBeGreaterThan(original!.axis+2)).toThrow();
+    await captureFigureEvidence(chart,testInfo.outputPath('q03-known-bad-'+width+'.png'));
+    writeFileSync(testInfo.outputPath('q03-known-bad-'+width+'.json'),JSON.stringify({
+      sha:sourceSha,browser:testInfo.project.name,width,accepted,original,knownBadRejected:true,
+      mutation:width===390?'A0 xPhone=50':'A0 x=88',route,
+    },null,2)+'\n');
   });
 }
 
@@ -133,4 +153,98 @@ test('phone reader gets a Q10 decision route and can still find the meeting RAW'
   expect(placement.finding).toBeLessThan(844);
   expect(placement.source).toBeGreaterThan(placement.finding);
   expect(placement.overflow).toBeLessThanOrEqual(2);
+});
+
+
+test('native document capture rejects the sticky-layer-obscured Q01 framing',async({page},testInfo)=>{
+  await page.setViewportSize({width:390,height:900});
+  await page.goto(route,{waitUntil:'domcontentloaded'});
+  const figure=page.locator('[data-report-figure="q01-horizon"]');
+  const title=figure.locator('strong').first();
+  // Controlled bad camera position: tall-object auto-scroll can put the title
+  // under persistent navigation. This changes scroll only, never product DOM.
+  await title.evaluate(el=>window.scrollTo({top:el.getBoundingClientRect().top+scrollY,left:0,behavior:'instant'}));
+  await expect.poll(()=>title.evaluate(el=>Math.abs(el.getBoundingClientRect().top))).toBeLessThan(1);
+  await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))));
+  const obscured=await title.evaluate(el=>{
+    const r=el.getBoundingClientRect();
+    const hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);
+    return {blocked:!hit||!el.contains(hit),top:r.top,blocker:hit?.tagName};
+  });
+  expect(obscured.blocked).toBe(true);
+  await page.screenshot({path:testInfo.outputPath('q01-known-bad-viewport.png'),animations:'disabled'});
+  const clip=await captureFigureEvidence(figure,testInfo.outputPath('q01-document-safe.png'));
+  const fixedBottom=await page.evaluate(()=>Math.max(0,...[...document.querySelectorAll('body *')].filter(el=>{
+    const style=getComputedStyle(el),r=el.getBoundingClientRect();
+    return ['fixed','sticky'].includes(style.position)&&r.width>0&&r.height>0&&r.top<innerHeight;
+  }).map(el=>el.getBoundingClientRect().bottom)));
+  expect(clip.y).toBeGreaterThan(fixedBottom);
+  writeFileSync(testInfo.outputPath('q01-capture-framing.json'),JSON.stringify({
+    sha:sourceSha,browser:testInfo.project.name,obscured,clip,fixedBottom,
+    method:'native document clip; DOM and viewport dimensions unchanged',route,
+  },null,2)+'\n');
+});
+
+test('native document capture decodes an offscreen lazy scientific image and ignores hidden alternatives',async({page},testInfo)=>{
+  await page.setViewportSize({width:390,height:900});
+  await page.goto(route,{waitUntil:'load'});
+  const asset=readFileSync('public/research/seed-openevo/evidence/wandb-threeway/task-score.svg');
+  await page.route('**/task-score.svg?lazy-camera-control',async request=>{
+    // Browser lazy-load heuristics differ. Only this named fixture is held
+    // until a real scroll, making the undecoded control deterministic.
+    await page.waitForFunction(()=>scrollY>1000);
+    await request.fulfill({status:200,contentType:'image/svg+xml',body:asset});
+  });
+  await page.evaluate(()=>{
+    window.scrollTo({top:0,left:0,behavior:'instant'});
+    const spacer=document.createElement('div');
+    spacer.style.height='5000px';
+    const fixture=document.createElement('figure');
+    fixture.id='lazy-camera-control';
+    fixture.innerHTML='<figcaption>Test fixture: native lazy-image camera control, not experiment output</figcaption><img loading="lazy" width="340" height="220" src="/research/seed-openevo/evidence/wandb-threeway/task-score.svg?lazy-camera-control" alt="Existing scientific SVG"><div data-camera-local-scroll style="width:180px;overflow-x:auto;scroll-behavior:smooth"><div style="width:800px"><img loading="lazy" width="64" height="64" style="margin-left:500px" src="/research/seed-openevo/evidence/wandb-threeway/task-score.svg?lazy-camera-control" alt="Scrollable fixture alternative"></div></div><img style="display:none" alt="Hidden responsive test alternative">';
+    const dense=document.createElement('div');
+    dense.style.cssText='display:flex;width:180px;height:8px;overflow-x:auto';
+    for(let i=0;i<1000;i++){
+      const icon=document.createElement('img');
+      icon.width=4;icon.height=4;icon.loading='lazy';icon.style.flexShrink='0';
+      icon.src='/research/seed-openevo/evidence/wandb-threeway/task-score.svg?lazy-camera-control';
+      icon.alt='Repeated real SVG in dense capture fixture';
+      dense.append(icon);
+    }
+    fixture.append(dense);
+    document.body.append(spacer,fixture);
+    fixture.querySelector('[data-camera-local-scroll]')!.scrollTo({left:17,behavior:'instant'});
+  });
+  const figure=page.locator('#lazy-camera-control');
+  const image=figure.locator('img').first();
+  expect(await image.evaluate(node=>(node as HTMLImageElement).naturalWidth)).toBe(0);
+  const badClip=await figure.evaluate(el=>{
+    const r=el.getBoundingClientRect();
+    return {x:r.x+scrollX,y:r.y+scrollY,width:r.width,height:r.height};
+  });
+  await page.screenshot({path:testInfo.outputPath('lazy-known-bad-document.png'),clip:badClip,fullPage:true,animations:'disabled'});
+  await captureFigureEvidence(figure,testInfo.outputPath('lazy-decoded-document.png'));
+  expect(await image.evaluate(node=>(node as HTMLImageElement).complete&&(node as HTMLImageElement).naturalWidth>0)).toBe(true);
+  expect(await figure.locator('img').evaluateAll(nodes=>nodes.filter(node=>getComputedStyle(node).display!=='none').every(node=>(node as HTMLImageElement).complete&&(node as HTMLImageElement).naturalWidth>0))).toBe(true);
+  await expect(figure.locator('img')).toHaveCount(1003);
+  expect(await page.evaluate(()=>scrollY)).toBe(0);
+  expect(await figure.locator('[data-camera-local-scroll]').evaluate(node=>node.scrollLeft)).toBe(17);
+  // A separate native accordion fixture avoids reparenting an in-flight lazy
+  // image, which cancels its resource in WebKit and resets hidden scroll state.
+  await page.evaluate(()=>{
+    const detail=document.createElement('details');detail.name='camera-accordion-control';
+    detail.innerHTML='<summary>Test fixture: first exclusive evidence panel</summary><figure id="accordion-camera-control"><figcaption>Test fixture: native exclusive evidence reading state</figcaption><p>Evidence must be visible before document clipping.</p></figure>';
+    const peer=document.createElement('details');peer.name=detail.name;
+    peer.innerHTML='<summary>Test fixture: sibling evidence panel</summary><p>Another reading state</p>';
+    document.body.append(detail,peer);peer.open=true;
+  });
+  const accordion=page.locator('#accordion-camera-control');
+  await expect(accordion).not.toBeVisible();
+  await captureFigureEvidence(accordion,testInfo.outputPath('accordion-document.png'));
+  await expect(accordion).toBeVisible();
+  writeFileSync(testInfo.outputPath('lazy-camera-control.json'),JSON.stringify({
+    sha:sourceSha,browser:testInfo.project.name,route,fixture:true,
+    source:'public/research/seed-openevo/evidence/wandb-threeway/task-score.svg',
+    undecodedControl:true,decodedAfterCapture:true,hiddenAlternativeIgnored:true,localScrollRestored:17,
+  },null,2)+'\n');
 });

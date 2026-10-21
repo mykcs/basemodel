@@ -67,3 +67,80 @@ test('print keeps single-panel confidence plot compact and multiple-effect figur
   expect(multi).toBeGreaterThan(one + 180);
   await expect(page.locator('[data-paper-effect="q07-inversion"] figcaption')).toContainText('图 6');
 });
+
+
+/** A chart's existence and page overflow are insufficient: 390px compressed
+ * Q17 axes formerly rendered at ~3.71/4.47 CSS pixels. Keep the native data,
+ * preserve legible labels, and prove horizontal movement stays within figure. */
+for (const { label, route, root, scoreSelector, lossSelector } of [
+  {
+    label: 'frontier',
+    route: '/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/',
+    root: '.plateau-charts',
+    scoreSelector: '.score-chart',
+    lossSelector: '.loss-chart',
+  },
+  {
+    label: 'analysis',
+    route: '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/',
+    root: '.q17-analysis__charts',
+    scoreSelector: 'figure:first-child',
+    lossSelector: 'figure:nth-child(2)',
+  },
+]) {
+  for (const width of [390, 768]) for (const theme of ['light', 'dark'] as const) {
+    test(`Q17 ${label} scientific axes stay readable and locally scrollable at ${width}px ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.addInitScript(value => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto(route, { waitUntil: 'load' });
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      if (label === 'frontier') {
+        // Historical Q17 roadmap intentionally starts collapsed; test the
+        // reader's actual disclosure state rather than asserting hidden HTML
+        // must be visible before its summary is opened.
+        const disclosure = page.locator('.q17-roadmap-depth > details');
+        await disclosure.locator('summary').click();
+        await expect(disclosure).toHaveAttribute('open', '');
+      }
+
+      for (const selector of [scoreSelector, lossSelector]) {
+        const figure = page.locator(root).locator(selector);
+        const svg = figure.locator('svg');
+        await expect(figure).toBeVisible();
+        await expect(figure).toHaveAttribute('tabindex', '0');
+        const measure = () => svg.evaluate(node => {
+          const label = node.querySelector('text');
+          if (!(label instanceof SVGGraphicsElement)) throw Error('Missing scientific axis label');
+          const m = label.getScreenCTM();
+          if (!m) throw Error('Axis has no rendering matrix');
+          const figure = node.closest('figure')!;
+          return {
+            width: node.getBoundingClientRect().width,
+            renderedFontPx: parseFloat(getComputedStyle(label).fontSize) * Math.hypot(m.a, m.b),
+            figureClientWidth: figure.clientWidth,
+            figureScrollWidth: figure.scrollWidth,
+          };
+        });
+        const normal = await measure();
+        expect(normal.renderedFontPx).toBeGreaterThanOrEqual(11.5);
+        if (width === 390) {
+          expect(normal.figureScrollWidth).toBeGreaterThan(normal.figureClientWidth + 50);
+          await figure.evaluate(node => node.scrollTo({ left: node.scrollWidth, behavior: 'instant' }));
+          expect(await figure.evaluate(node => node.scrollLeft)).toBeGreaterThan(50);
+
+          // Negative control: replay the old phone shrink without hiding the
+          // labels. The exact same geometric contract must turn red.
+          await svg.evaluate(node => (node as SVGElement).style.minWidth = '0px');
+          const old = await measure();
+          expect(old.renderedFontPx).toBeLessThan(10);
+          expect(() => expect(old.renderedFontPx).toBeGreaterThanOrEqual(11.5)).toThrow();
+          await svg.evaluate(node => (node as SVGElement).style.removeProperty('min-width'));
+          expect((await measure()).renderedFontPx).toBeGreaterThanOrEqual(11.5);
+        }
+      }
+      const overflow = await page.evaluate(() =>
+        document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(overflow).toBeLessThanOrEqual(2);
+    });
+  }
+}
