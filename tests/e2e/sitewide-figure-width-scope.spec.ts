@@ -21,7 +21,7 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
       readableColumns: [...el.querySelectorAll<HTMLElement>('tbody th,tbody td')].every(cell => {
         const minimum = cell.matches(':first-child') ? 8 : cell.classList.contains('paper-table__mark') ? 2 : cell.hasAttribute('data-numeric') ? 7 : 12;
         const css=getComputedStyle(cell);
-        return cell.getBoundingClientRect().width >= parseFloat(css.fontSize)*minimum-1 && css.overflowWrap==='normal' && css.wordBreak==='normal';
+        return cell.offsetWidth >= parseFloat(css.fontSize)*minimum-1 && css.overflowWrap==='normal' && css.wordBreak==='normal';
       }),
       roles: [...el.querySelectorAll('thead,tbody,tfoot,tr,th,td')].every(node => getComputedStyle(node).display === ({THEAD:'table-header-group',TBODY:'table-row-group',TFOOT:'table-footer-group',TR:'table-row',TH:'table-cell',TD:'table-cell'} as Record<string,string>)[node.tagName]),
       display: style.display, family: style.fontFamily, font: parseFloat(style.fontSize),
@@ -36,7 +36,7 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   });
   expect(grammar.display).toBe('table');
   expect(grammar.roles).toBe(true);
-  expect(grammar.readableColumns).toBe(true);
+  expect(grammar.readableColumns, JSON.stringify(await target.locator('tbody th,tbody td').evaluateAll(cells=>cells.map(cell=>({text:cell.textContent,width:(cell as HTMLElement).offsetWidth,font:getComputedStyle(cell).fontSize,min:getComputedStyle(cell).minWidth,wrap:getComputedStyle(cell).overflowWrap,break:getComputedStyle(cell).wordBreak}))))).toBe(true);
   expect(grammar.family).toContain('Times');
   expect(grammar.font).toBeGreaterThanOrEqual(route.includes('/briefing/') ? 14 : 16);
   expect(grammar.top).toBeGreaterThan(0);
@@ -372,19 +372,22 @@ for (const width of [390,768,1440]) for (const theme of ['light','dark'] as cons
     if(width===390){
       const geometry=await holder.evaluate(node=>({client:node.clientWidth,scroll:node.scrollWidth}));
       expect(geometry.scroll).toBeGreaterThan(geometry.client);
-      await composition.evaluate(node=>{
-        (node as HTMLElement).style.minWidth='0';
-        (node as HTMLElement).style.maxWidth='min(100%,46rem)';
-        (node.querySelector('thead th:nth-child(2)') as HTMLElement).style.whiteSpace='normal';
+      const previousStyles=await composition.evaluate(node=>{
+        const nodes=[node,...node.querySelectorAll('th,td')];
+        const previous=nodes.map(cell=>cell.getAttribute('style'));
+        Object.assign((node as HTMLElement).style,{tableLayout:'fixed',width:'100px',minWidth:'0',maxWidth:'100px'});
+        for(const cell of node.querySelectorAll<HTMLElement>('th,td'))Object.assign(cell.style,{minWidth:'0',width:'auto'});
+        Object.assign((node.querySelector('thead th:nth-child(2)') as HTMLElement).style,{whiteSpace:'normal',overflowWrap:'anywhere',width:'1ch'});
+        return previous;
       });
       const old=await wordLines();
       expect(old).toBeGreaterThan(1);
       expect(()=>expect(old).toBe(1)).toThrow();
-      await composition.evaluate(node=>{
-        (node as HTMLElement).style.removeProperty('min-width');
-        (node as HTMLElement).style.removeProperty('max-width');
-        (node.querySelector('thead th:nth-child(2)') as HTMLElement).style.removeProperty('white-space');
-      });
+      await composition.evaluate((node,previous)=>{
+        [node,...node.querySelectorAll('th,td')].forEach((cell,index)=>{
+          if(previous[index]===null)cell.removeAttribute('style');else cell.setAttribute('style',previous[index]!);
+        });
+      },previousStyles);
       expect(await wordLines()).toBe(1);
     }
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);

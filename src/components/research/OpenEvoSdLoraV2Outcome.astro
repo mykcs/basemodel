@@ -257,11 +257,11 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
 @media(max-width:760px){
   .sdlora-v2{width:min(100% - 1rem,1120px)}.sdlora-v2__hero{padding-top:2rem}.sdlora-v2__hero h1{font-size:clamp(2.1rem,11vw,3.35rem)}
   .sdlora-v2__hero-links{display:grid}.strict-flow{display:grid;grid-template-columns:1fr}.strict-flow>b{transform:rotate(90deg);justify-self:center}.v2-rule{grid-template-columns:1fr}.v2-rule>b{transform:rotate(90deg);justify-self:center}.v2-rule figcaption{grid-column:auto}
-  .webshop-compare__row{grid-template-columns:1fr 1fr}.webshop-compare__row>strong,.webshop-compare__row>small{grid-column:1/-1}.comparison-table,.next-table{min-width:0}.comparison-table th,.comparison-table td,.next-table th,.next-table td{overflow-wrap:anywhere}.next-table th:first-child{width:8.5rem}.evidence-grid{grid-template-columns:1fr}/* Keep scientific metric columns readable; let only the table scroll locally. */
+  .webshop-compare__row{grid-template-columns:1fr 1fr}.webshop-compare__row>strong,.webshop-compare__row>small{grid-column:1/-1}.comparison-table,.next-table{min-width:0}.comparison-table th,.comparison-table td,.next-table th,.next-table td{}.next-table th:first-child{width:8.5rem}.evidence-grid{grid-template-columns:1fr}/* Keep scientific metric columns readable; let only the table scroll locally. */
   
   .comparison-table{min-width:31rem;max-width:none}
   .comparison-table thead th:nth-child(n+2),.comparison-table tbody td:nth-child(2){white-space:nowrap;overflow-wrap:normal}
   .comparison-table-wrap{scrollbar-width:thin;overscroll-behavior-inline:contain;min-width:0}
 }
-.next-table tbody th{white-space:normal;overflow-wrap:anywhere}
+.next-table tbody th{white-space:normal;}
 </style>
