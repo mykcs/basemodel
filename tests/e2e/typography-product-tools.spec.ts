@@ -560,13 +560,17 @@ for(const width of [390,768,1440] as const){
     });
   }
 }
-test('English dated guide retains normal date and readable source explanation',async({page})=>{
+test('live legacy guide keeps accessible dated warning and canonical source',async({page})=>{
   await page.setViewportSize({width:390,height:844});
-  const response=await page.goto('/en/guide/today/',{waitUntil:'domcontentloaded'});
+  const response=await page.goto('/guide/today/',{waitUntil:'domcontentloaded'});
   expect(response?.status()).toBe(200);
-  const result=await readLegacyRunbookTypography(page);
-  assertLegacyRunbookTypography(result,390);
-  await expect(page.locator('.legacy-runbook-notice h2')).toContainText('dedicated bastion');
+  const card=page.locator('aside.legacy-runbook-notice');
+  await expect(card).toHaveAttribute('aria-labelledby','legacy-runbook-notice-title');
+  await expect(page.locator('#legacy-runbook-notice-title')).toContainText('旧 Intel Mac');
+  await expect(card.locator('p').last()).toContainText('不代表当前设备清单');
+  await expect(card.locator('a')).toHaveAttribute('href',
+    'https://fuhuo-20260419.vercel.app/docs/machines');
+  assertLegacyRunbookTypography(await readLegacyRunbookTypography(page),390);
 });
 test('runbook readability gate rejects restored tiny dated warning and recovers',async({page})=>{
   await page.setViewportSize({width:390,height:844});
