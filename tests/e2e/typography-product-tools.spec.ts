@@ -361,3 +361,94 @@ test('the same sourced-date predicate rejects restored tiny prose',async({page})
   await bad.evaluate(node=>node.parentNode?.removeChild(node));
   acceptCatalogEvidenceType(await readCatalogEvidenceType(page));
 });
+
+
+// Mounted Qwen2.5-3B-Instruct reproduction setup: explanatory method text
+// is not a 10–12px technical glyph. Phone keeps its own table scroller.
+const reproSetupRoute='/models/qwen2-5-3b-instruct/';
+async function readModelReproductionSetup(page:import('@playwright/test').Page){
+  return page.evaluate(()=>{
+    const root=document.querySelector('[data-seed-openevo-experiment-setup]');
+    if(!root)throw Error('Missing mounted SEED/OpenEVO reproduction setup');
+    const selectors=[
+      '.experiment-setup__lede','.experiment-setup__group h3',
+      '.model-name-anatomy dt','.model-name-anatomy dd',
+      '.experiment-fields dt','.experiment-fields dd',
+      '.experiment-table th','.experiment-table tbody td',
+    ] as const;
+    const roles=Object.fromEntries(selectors.map(selector=>{
+      const node=root.querySelector(selector);
+      if(!node)throw Error('Missing method explanatory role '+selector);
+      const css=getComputedStyle(node);
+      return [selector,{size:parseFloat(css.fontSize),weight:parseFloat(css.fontWeight),
+        family:css.fontFamily,style:css.fontStyle,leading:css.lineHeight,
+        width:node.getBoundingClientRect().width,client:(node as HTMLElement).clientWidth,
+        scroll:(node as HTMLElement).scrollWidth}];
+    })) as Record<string,{size:number;weight:number;family:string;style:string;
+      leading:string;width:number;client:number;scroll:number}>;
+    const wrap=root.querySelector('.experiment-table-wrap') as HTMLElement|null;
+    const grid=root.querySelector('.model-name-anatomy');
+    if(!wrap||!grid)throw Error('Missing reproduction table or model-name grid');
+    const b=root.getBoundingClientRect();
+    return {roles,overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+      bounds:{left:b.left,right:b.right},grid:getComputedStyle(grid).gridTemplateColumns,
+      wrapper:{overflow:getComputedStyle(wrap).overflowX,client:wrap.clientWidth,scroll:wrap.scrollWidth}};
+  });
+}
+function acceptModelReproductionSetup(r:Awaited<ReturnType<typeof readModelReproductionSetup>>,width:number){
+  expect(r.overflow).toBeLessThanOrEqual(2);
+  expect(r.bounds.left).toBeGreaterThanOrEqual(-2);
+  expect(r.bounds.right).toBeLessThanOrEqual(width+2);
+  const floors:Record<string,number>={
+    '.experiment-setup__lede':15,
+    '.experiment-setup__group h3':17,
+    '.model-name-anatomy dt':16,
+    '.model-name-anatomy dd':15,
+    '.experiment-fields dt':15,
+    '.experiment-fields dd':15,
+    '.experiment-table th':14,
+    '.experiment-table tbody td':15,
+  };
+  for(const [selector,min] of Object.entries(floors)){
+    const role=r.roles[selector];
+    if(!role)throw Error('No measured reproduction role: '+selector);
+    expect(role.size,selector).toBeGreaterThanOrEqual(min);
+    expect(role.family,selector).toMatch(/Inter|PingFang|system-ui/);
+    expect(role.style,selector).toBe('normal');
+    expect(role.scroll,selector).toBeLessThanOrEqual(role.client+2);
+  }
+  expect(r.wrapper.overflow).toBe('auto');
+  if(width===390)expect(r.wrapper.scroll).toBeGreaterThan(r.wrapper.client);
+}
+for(const width of [390,768,1440] as const){
+  for(const theme of ['light','dark'] as const){
+    test('Qwen 3B reproducibility field meanings and method table readable: '+width+'/'+theme,async({page},testInfo)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(v=>localStorage.setItem('atlas-theme',v),theme);
+      const response=await page.goto(reproSetupRoute,{waitUntil:'domcontentloaded'});
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await page.evaluate(()=>document.fonts.ready);
+      const r=await readModelReproductionSetup(page);
+      acceptModelReproductionSetup(r,width);
+      const section=page.locator('[data-seed-openevo-experiment-setup]').first();
+      await section.scrollIntoViewIfNeeded();
+      await page.screenshot({path:testInfo.outputPath('repro-setup-viewport-'+width+'-'+theme+'.png'),animations:'disabled'});
+      await section.screenshot({path:testInfo.outputPath('repro-setup-component-'+width+'-'+theme+'.png'),
+        animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}'});
+      await testInfo.attach('reproduction-setup-computed.json',{body:Buffer.from(JSON.stringify(r,null,2)),contentType:'application/json'});
+    });
+  }
+}
+test('reproduction setup actually rejects restored 10px protocol text',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(reproSetupRoute,{waitUntil:'domcontentloaded'});
+  acceptModelReproductionSetup(await readModelReproductionSetup(page),390);
+  const bad=await page.addStyleTag({content:
+    '.experiment-setup .model-name-anatomy dd{font-size:10px!important}' +
+    '.experiment-setup .experiment-table td{font-size:10px!important}'});
+  const old=await readModelReproductionSetup(page);
+  expect(()=>acceptModelReproductionSetup(old,390)).toThrow();
+  await bad.evaluate(node=>node.parentNode?.removeChild(node));
+  acceptModelReproductionSetup(await readModelReproductionSetup(page),390);
+});
