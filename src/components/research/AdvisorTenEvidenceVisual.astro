@@ -418,7 +418,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
   display:block;width:fit-content;max-width:100%;min-width:0;margin:0 auto .6rem;padding:0;overflow-x:auto;
   border:0;border-radius:0;box-shadow:none;background:transparent;
 }
-.evo-blog.evo-approved-reader [data-q03-paper-table] {
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] {
   border-collapse:collapse;border-spacing:0;table-layout:auto;width:max-content;max-width:none;
   border:0;border-top:1.5px solid var(--color-text);border-bottom:1.5px solid var(--color-text);
   border-radius:0;box-shadow:none;background:transparent;color:var(--color-text);
@@ -426,23 +426,23 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
   font-size:1rem;line-height:1.45;font-weight:400;font-style:normal;
   font-variant-numeric:tabular-nums lining-nums;
 }
-.evo-blog.evo-approved-reader [data-q03-paper-table] caption {
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] caption {
   display:table-caption;caption-side:top;position:static;text-align:left;
   padding:0 0 .6rem;margin:0;color:var(--color-text);
   font:400 1rem/1.5 "Times New Roman",Times,"Songti SC",STSong,Georgia,serif;
 }
-.evo-blog.evo-approved-reader [data-q03-paper-table] :is(th,td) {
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td) {
   border:0;padding:.43rem .7rem;background:transparent;box-shadow:none;
   color:var(--color-text);font-family:inherit;font-size:inherit;line-height:inherit;font-weight:400;
   vertical-align:baseline;
 }
-.evo-blog.evo-approved-reader [data-q03-paper-table] :is(th,td):first-child {padding-left:0}
-.evo-blog.evo-approved-reader [data-q03-paper-table] :is(th,td):last-child {padding-right:0}
-.evo-blog.evo-approved-reader [data-q03-paper-table] thead th {
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td):first-child {padding-left:0}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td):last-child {padding-right:0}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] thead th {
   border-bottom:1px solid var(--color-text);font-weight:600;vertical-align:bottom;
 }
-.evo-blog.evo-approved-reader [data-q03-paper-table] tbody tr + tr > * {border-top:0;border-bottom:0}
-.evo-blog.evo-approved-reader [data-q03-paper-table] :is(th,td)[data-numeric] {
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] tbody tr + tr > * {border-top:0;border-bottom:0}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td)[data-numeric] {
   text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums lining-nums;
 }
 .evo-blog.evo-approved-reader [data-q03-report-paper] :is(.advisor-q03-paper__reading,.advisor-q03-paper__boundary,.advisor-q03-paper__trend summary) {
@@ -450,7 +450,7 @@ const points = checkpoints.map((point) => String(point.x) + ',' + String(point.y
 }
 @media print {
   .evo-blog.evo-approved-reader [data-q03-report-paper] .advisor-q03-paper__scroll {overflow:visible}
-  .evo-blog.evo-approved-reader [data-q03-paper-table] {font-size:10pt}
+  .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] {font-size:10pt}
 }
 /* Paper figure ownership for the advisor's Q03 observation curve.
    Deliberately local to this evidence object: no sitewide typography change.
