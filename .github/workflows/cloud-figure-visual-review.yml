@@ -149,6 +149,9 @@ jobs:
 
   cloud-figure-evidence:
     name: cloud-figure-${{ matrix.browser }}
+    permissions:
+      actions: read
+      contents: read
     needs: cloud-figure-browsers
     if: always()
     runs-on: ubuntu-24.04
@@ -197,6 +200,11 @@ jobs:
           if-no-files-found: error
           retention-days: 3
 
+      - name: Wait until exact evidence artifact ID is indexed by GitHub Actions
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FIGURE_ACCEPTED_ARTIFACT_ID: ${{ steps.evidence.outputs.artifact-id }}
+        run: node scripts/wait-for-cloud-figure-artifact.mjs
       - name: Download the uploaded artifact for round-trip verification
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:
