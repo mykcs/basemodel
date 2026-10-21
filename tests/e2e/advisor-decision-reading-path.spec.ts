@@ -46,8 +46,9 @@ test('real 390-by-844 first viewport retains scientific scope and next-decision 
   await expect(lead).toContainText('正式训练未据此启动');
   const q04=page.locator('[data-advisor-executive-evidence="q04"]');
   const q07=page.locator('[data-advisor-executive-evidence="q07"]');
-  await expect(q04).toContainText('连续 8 轮');
-  await expect(q07).toContainText('已经通过多重比较校正');
+  await expect(q04).toContainText('第 152–159 轮同题比较');
+  await expect(q07).toContainText('方向反过来');
+  await expect(q07).toContainText('已经通过 Holm 多重比较校正');
   for(const selector of [
     '[data-advisor-scientific-question]',
     '[data-advisor-key-findings]',
