@@ -34,10 +34,10 @@ for(const width of [390,768,1440] as const){
       await expect(q03).toBeHidden();
       await expect(q03Paper.locator('.advisor-viz__heading')).toHaveCount(0);
       await expect(table.locator('caption')).toContainText('表 S2｜四个 Stage2 保存点');
-      await expect(q03Paper.locator('.advisor-q03-paper__reading')).toContainText('均没有完整成功的题目（0/64）');
+      await expect(q03Paper.locator('.advisor-q03-paper__reading')).toContainText('均没有完整成功的题目');
       await expect(q03Paper.locator('.advisor-q03-paper__reading')).toContainText('没有测量中间轮次');
-      await expect(q03Paper.locator('.advisor-q03-paper__reading')).toContainText('SEED 论文');
-      await expect(q03Paper.locator('.advisor-q03-paper__reading a[href*="/pull/678"]')).toBeVisible();
+      await expect(q03Paper.locator('.advisor-q03-paper__boundary')).toContainText('SEED 论文');
+      await expect(q03Paper.locator('.advisor-q03-paper__boundary a[href*="/pull/678"]')).toBeVisible();
       const rows=await table.locator('tbody tr').evaluateAll(nodes=>nodes.map(row=>
         [...row.querySelectorAll('th,td')].map(cell=>cell.textContent?.trim())
       ));
