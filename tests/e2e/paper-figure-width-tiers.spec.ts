@@ -94,6 +94,14 @@ for (const { label, route, root, scoreSelector, lossSelector } of [
       await page.addInitScript(value => localStorage.setItem('atlas-theme', value), theme);
       await page.goto(route, { waitUntil: 'load' });
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      if (label === 'frontier') {
+        // Historical Q17 roadmap intentionally starts collapsed; test the
+        // reader's actual disclosure state rather than asserting hidden HTML
+        // must be visible before its summary is opened.
+        const disclosure = page.locator('.q17-roadmap-depth > details');
+        await disclosure.locator('summary').click();
+        await expect(disclosure).toHaveAttribute('open', '');
+      }
 
       for (const selector of [scoreSelector, lossSelector]) {
         const figure = page.locator(root).locator(selector);
