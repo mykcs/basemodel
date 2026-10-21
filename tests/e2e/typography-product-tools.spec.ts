@@ -436,6 +436,32 @@ for(const width of [390,768,1440] as const){
       await page.screenshot({path:testInfo.outputPath('repro-setup-viewport-'+width+'-'+theme+'.png'),animations:'disabled'});
       await section.screenshot({path:testInfo.outputPath('repro-setup-component-'+width+'-'+theme+'.png'),
         animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}'});
+      // A tall component crop can stop at the current viewport's lower edge.
+      // Independently prove the LAST real scientific row is in the document,
+      // reachable with native scroll, and within its table's vertical bounds.
+      const allRows=section.locator('.experiment-table tbody tr');
+      await expect(allRows).toHaveCount(4);
+      const lastRow=allRows.last();
+      await lastRow.scrollIntoViewIfNeeded();
+      await expect(lastRow).toBeVisible();
+      const tail=await lastRow.evaluate(el=>{
+        const table=el.closest('table');
+        const wrap=el.closest('.experiment-table-wrap');
+        if(!table||!wrap)throw Error('Last row is outside its own table/wrapper');
+        const row=el.getBoundingClientRect(),all=table.getBoundingClientRect(),holder=wrap.getBoundingClientRect();
+        return {rowTop:row.top,rowBottom:row.bottom,rowHeight:row.height,
+          tableTop:all.top,tableBottom:all.bottom,holderTop:holder.top,
+          holderBottom:holder.bottom,viewportHeight:innerHeight,
+          rootOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};
+      });
+      expect(tail.rowHeight).toBeGreaterThan(16);
+      expect(tail.rowTop).toBeGreaterThanOrEqual(tail.tableTop-2);
+      expect(tail.rowBottom).toBeLessThanOrEqual(tail.tableBottom+2);
+      expect(tail.rowTop).toBeGreaterThanOrEqual(-2);
+      expect(tail.rowBottom).toBeLessThanOrEqual(tail.viewportHeight+2);
+      expect(tail.rootOverflow).toBeLessThanOrEqual(2);
+      await page.screenshot({path:testInfo.outputPath('repro-setup-final-row-'+width+'-'+theme+'.png'),animations:'disabled'});
+      await testInfo.attach('reproduction-final-row-computed.json',{body:Buffer.from(JSON.stringify(tail,null,2)),contentType:'application/json'});
       await testInfo.attach('reproduction-setup-computed.json',{body:Buffer.from(JSON.stringify(r,null,2)),contentType:'application/json'});
     });
   }
