@@ -90,7 +90,15 @@ for (const route of routes) {
         for(let index=0;index<tableCount;index++){
           const target=page.locator('table').nth(index);
           const readingState=await revealEvidenceReadingState(target);
-          await expect(target).toBeVisible();
+          const visible=await target.isVisible();
+          const phoneAlternative=await target.evaluate(el=>Boolean(el.closest('.advisor-viz__q03-phone-table')));
+          if(!visible){
+            // The source owns this responsive alternative: its desktop SVG is
+            // visible above 720px, while the same data table appears on phones.
+            expect(phoneAlternative).toBe(true);
+            expect(width).toBeGreaterThan(720);
+            await expect(page.locator('[data-q03-desktop-chart]')).toBeVisible();
+          }
           const table=await target.evaluate((el,index)=>({
             index,owner:el.className,caption:el.querySelector('caption')?.textContent?.trim()??'',
             box:el.getBoundingClientRect().toJSON(),rows:el.querySelectorAll('tr').length,
@@ -100,8 +108,8 @@ for (const route of routes) {
             cells:[...el.querySelectorAll('th,td')].map(cell=>({text:cell.textContent?.trim(),
               box:cell.getBoundingClientRect().toJSON(),fontSize:getComputedStyle(cell).fontSize})),
           }),index);
-          tables.push({...table,state:readingState});
-          await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`));
+          tables.push({...table,visible,state:visible?readingState:'source-owned phone-only table; desktop data chart visible'});
+          if(visible)await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`));
         }
         await expect(page.locator('table')).toHaveCount(tableCount);
         evidence.push({route,width,theme,tables,rootOverflow:overflow});
