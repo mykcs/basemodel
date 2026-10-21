@@ -216,7 +216,8 @@ test('paper tables use content width while dense comparisons and diagrams retain
 
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/');
   const state = page.locator('.bounded__table');
-  expect((await state.first().boundingBox())!.width).toBeLessThan(760);
+  const stateColumn = await state.first().evaluate(el => el.parentElement!.parentElement!.getBoundingClientRect().width);
+  expect((await state.first().boundingBox())!.width).toBeLessThan(stateColumn);
   expect((await state.last().boundingBox())!.width).toBeGreaterThan((await state.first().boundingBox())!.width);
 
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/');

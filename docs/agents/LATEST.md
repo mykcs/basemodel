@@ -10,6 +10,14 @@ Status: **The SEED × OpenEvo Results route is aligned to the closed Track A pai
 
 This file is a short current-state router. Detailed policy belongs under `docs/agents/current/`; historical rationale belongs under `docs/agents/history/`.
 
+## 2026-10-21 科研论文表格的真实渲染入口
+
+[PR #920](https://github.com/mykcs/basemodel/pull/920) 将科研报告表格的实际调用统一到 `ResearchPaperTable.astro`；唯一排版 owner 是 `src/styles/research-booktabs.css`。采用 Times / 中文衬线回退、可见的上方表题、booktabs 横线和数字对齐；短表按内容取宽，宽表在自身窗口横向滚动，手机端保持原生行列。工作台、购物操作示意和应用目录保持各自职责。科研值、缺失状态、比较口径及来源不因排版变化而改写。
+
+`research-paper-table-values.json` 保存已封存云端产物中 39 个研究路由、96 个原生表格的单元格序列指纹；浏览器验收同时核对数值与原生表格排版，并生成 390 / 768 / 1440、浅色 / 深色、打印及灰度证据。构建通过、截图生成、逐对象视觉审查、Preview、Production 和真人理解分别记账；当前精确提交的发布收据以 #920 实时 CI / Vercel 记录为准，真人冷读仍为 **NEEDS_READER**。
+
+Q03 的独立单栏论文图改动来自已合入的 [PR #921](https://github.com/mykcs/basemodel/pull/921)，与本次表格整合保留。先前字体与图表阅读窗口收尾见 [PR #918](https://github.com/mykcs/basemodel/pull/918)；账户中央归档已合入 Codex-Dialogue [PR #490](https://github.com/mykcs/Codex-Dialogue/pull/490)。这些历史收据不能替代 #920 合并树的实际验收。
+
 ## 2026-10-20 科研 Figure 云端验收入口
 
 [PR #901](https://github.com/mykcs/basemodel/pull/901) 的 [原任务书](../plans/2026-10-20-figure-cloud-closeout.md) 记录 Figure/云端证据的工作边界与冻结冷读任务。最新执行状态以 PR exact-head Actions、Artifacts 和 Vercel 实时收据为准；静态清点、截图生成、视觉审查和真人理解分别记账。Q03 碰撞反例已接入现有两条 UI 命令与 escaped-regression registry。Typography 继续由另一工作线负责。
