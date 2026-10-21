@@ -69,7 +69,13 @@ for (const [batchIndex, routeBatch] of mathRouteBatches.entries()) {
         findings.push({ route, kind: 'http', detail: String(response?.status() ?? 'no response') });
         continue;
       }
-      const redirect = SITE_READER_CONTRACTS.find(contract => contract.sourceRoute === route)?.redirectsTo;
+      // ResearchPrimerMoved also redirects legacy result-note routes which
+      // are not Reader Contract aliases. Read the actual built response first.
+      const html=await response.text();
+      const primer=html.match(/<main\b[^>]*\bclass=["'][^"']*\bmoved-primer\b[^"']*["'][^>]*>[\s\S]*?<\/main>/i);
+      const primerTarget=primer?.[0].match(/<a\b(?=[^>]*\bclass=["'][^"']*\bprimary\b[^"']*["'])[^>]*\bhref=["']([^"']+)["']/i)?.[1];
+      if(primer)expect(primerTarget,'Built moved-primer must expose its real destination: '+route).toBeTruthy();
+      const redirect = SITE_READER_CONTRACTS.find(contract => contract.sourceRoute === route)?.redirectsTo ?? primerTarget;
       if (redirect) {
         const target = new URL(redirect, page.url());
         await page.waitForURL(url => url.pathname === target.pathname && (!target.hash || url.hash === target.hash));

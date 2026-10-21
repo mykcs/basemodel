@@ -10,17 +10,23 @@ export async function captureFigureEvidence(figure: Locator, path: string) {
     return [...nodes].filter(node=>node!==document.documentElement&&node!==document.body&&(node.scrollWidth>node.clientWidth||node.scrollHeight>node.clientHeight))
       .map(node=>({node,top:node.scrollTop,left:node.scrollLeft}));
   });
-  await figure.scrollIntoViewIfNeeded();
-  for (const image of await figure.locator('img').all()) {
-    // Responsive alternatives and closed details are not this reading state.
-    if (!await image.isVisible()) continue;
-    await image.evaluate(node=>node.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'}));
-    await image.evaluate(async node => {
-      if (!(node instanceof HTMLImageElement)) throw new Error('Expected image');
-      await node.decode();
-      if (!node.naturalWidth) throw new Error('Visible evidence image is empty');
+  await figure.evaluate(async el=>{
+    el.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'});
+    // Dense tables must not pay thousands of locator round trips. Every
+    // visible image still decodes; unloaded lazy images receive real scrolling.
+    const images=[...el.querySelectorAll('img')].filter(image=>{
+      const style=getComputedStyle(image),rect=image.getBoundingClientRect();
+      return rect.width>0&&rect.height>0&&style.visibility!=='hidden'&&style.visibility!=='collapse';
     });
-  }
+    for(const image of images) {
+      if(!image.complete||!image.naturalWidth)
+        image.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'});
+    }
+    await Promise.all(images.map(async image=>{
+      await image.decode();
+      if(!image.naturalWidth)throw new Error('Visible evidence image is empty');
+    }));
+  });
   await scrollPositions.evaluate(rows=>rows.forEach(({node,top,left})=>node.scrollTo({top,left,behavior:'instant'})));
   await scrollPositions.dispose();
   await page.evaluate(async () => {

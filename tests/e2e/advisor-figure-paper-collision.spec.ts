@@ -202,6 +202,16 @@ test('native document capture decodes an offscreen lazy scientific image and ign
     const fixture=document.createElement('figure');
     fixture.id='lazy-camera-control';
     fixture.innerHTML='<figcaption>Test fixture: native lazy-image camera control, not experiment output</figcaption><img loading="lazy" width="340" height="220" src="/research/seed-openevo/evidence/wandb-threeway/task-score.svg?lazy-camera-control" alt="Existing scientific SVG"><div data-camera-local-scroll style="width:180px;overflow-x:auto;scroll-behavior:smooth"><div style="width:800px"><img loading="lazy" width="64" height="64" style="margin-left:500px" src="/research/seed-openevo/evidence/wandb-threeway/task-score.svg?lazy-camera-control" alt="Scrollable fixture alternative"></div></div><img style="display:none" alt="Hidden responsive test alternative">';
+    const dense=document.createElement('div');
+    dense.style.cssText='display:flex;width:180px;height:8px;overflow-x:auto';
+    for(let i=0;i<1000;i++){
+      const icon=document.createElement('img');
+      icon.width=4;icon.height=4;icon.loading='lazy';
+      icon.src='/research/seed-openevo/evidence/wandb-threeway/task-score.svg?lazy-camera-control';
+      icon.alt='Repeated real SVG in dense capture fixture';
+      dense.append(icon);
+    }
+    fixture.append(dense);
     document.body.append(spacer,fixture);
     fixture.querySelector('[data-camera-local-scroll]')!.scrollTo({left:17,behavior:'instant'});
   });
@@ -215,6 +225,8 @@ test('native document capture decodes an offscreen lazy scientific image and ign
   await page.screenshot({path:testInfo.outputPath('lazy-known-bad-document.png'),clip:badClip,fullPage:true,animations:'disabled'});
   await captureFigureEvidence(figure,testInfo.outputPath('lazy-decoded-document.png'));
   expect(await image.evaluate(node=>(node as HTMLImageElement).complete&&(node as HTMLImageElement).naturalWidth>0)).toBe(true);
+  expect(await figure.locator('img').evaluateAll(nodes=>nodes.filter(node=>getComputedStyle(node).display!=='none').every(node=>(node as HTMLImageElement).complete&&(node as HTMLImageElement).naturalWidth>0))).toBe(true);
+  await expect(figure.locator('img')).toHaveCount(1003);
   expect(await page.evaluate(()=>scrollY)).toBe(0);
   expect(await figure.locator('[data-camera-local-scroll]').evaluate(node=>node.scrollLeft)).toBe(17);
   writeFileSync(testInfo.outputPath('lazy-camera-control.json'),JSON.stringify({
