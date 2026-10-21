@@ -13,7 +13,6 @@ const roles = [
   {selector:'.lifecycle-flow figcaption',min:13.9,role:'life-cycle caption'},
   {selector:'.reclaim-boundary p',min:14.9,role:'reclaim permission boundary'},
   {selector:'.reclaim-steps span',min:14.9,role:'reclaim steps'},
-  {selector:'.privacy-grid p',min:14.9,role:'privacy explanation'},
 ] as const;
 
 async function measure(page:Page, selector:string) {
@@ -53,7 +52,7 @@ for (const width of [390,768,1440] as const) {
       }
       // Disclosures are initially closed; expand as the user would before
       // checking genuinely long explanations in them.
-      const toOpen=['.operator-detail','.measurement-notes','.passport-authority-note','.q17-case-depth'];
+      const toOpen=['.server-reference-depth','.operator-detail','.measurement-notes','.passport-authority-note','.q17-case-depth'];
       for(const selector of toOpen){
         const candidates=owner.locator(selector);
         if(await candidates.count()){
@@ -61,6 +60,7 @@ for (const width of [390,768,1440] as const) {
         }
       }
       for(const role of [
+        {selector:'.privacy-grid p',min:14.9},
         {selector:'.operator-detail>p',min:15.9},
         {selector:'.passport-authority-note p',min:15.9},
         {selector:'.q17-case__note',min:14.9},
