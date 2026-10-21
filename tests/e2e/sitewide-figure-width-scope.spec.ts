@@ -146,7 +146,12 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
     expect(fragments).toBe(1);
     const entropy=page.locator('.paper-table').filter({hasText:'R0–31 mean H'});
     const numericFragments=await entropy.locator('tbody td:nth-child(n+2)').evaluateAll(nodes=>nodes.map(el=>{
-      const r=document.createRange();r.selectNodeContents(el);return r.getClientRects().length;
+      const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),tops=new Set<number>();
+      while(walker.nextNode()){
+        const r=document.createRange();r.selectNodeContents(walker.currentNode);
+        for(const rect of r.getClientRects())if(rect.width)tops.add(Math.round(rect.top*10)/10);
+      }
+      return tops.size;
     }));
     for(const count of numericFragments)expect(count).toBe(1);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
