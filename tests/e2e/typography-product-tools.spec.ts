@@ -252,13 +252,15 @@ function acceptModelDetailType(r:ModelReaderReceipt,width:number){
   };
   for(const [selector,floor] of Object.entries(floors)){
     const type=r.roles[selector];
-    expect(type,selector).toBeDefined();
+    if(!type)throw Error('Missing computed model role '+selector);
     expect(type.size,selector).toBeGreaterThanOrEqual(floor);
     expect(type.family,selector).toMatch(/Inter|PingFang|system-ui/);
     expect(type.style,selector).toBe('normal');
     expect(type.scroll,selector).toBeLessThanOrEqual(type.client+2);
   }
-  expect(r.roles['.research-summary .summary-block dd'].weight).toBeLessThanOrEqual(650);
+  const modelValue=r.roles['.research-summary .summary-block dd'];
+  if(!modelValue)throw Error('Missing model value role');
+  expect(modelValue.weight).toBeLessThanOrEqual(650);
 }
 for(const width of [390,768,1440] as const) {
   for(const theme of ['light','dark'] as const) {
@@ -323,7 +325,7 @@ function acceptCatalogEvidenceType(r:Awaited<ReturnType<typeof readCatalogEviden
   };
   for(const [selector,min] of Object.entries(floors)){
     const role=r.roles[selector];
-    expect(role,selector).toBeDefined();
+    if(!role)throw Error('Missing computed catalog role '+selector);
     expect(role.size,selector).toBeGreaterThanOrEqual(min);
     expect(role.style,selector).toBe('normal');
     expect(role.family,selector).toMatch(/Inter|PingFang|system-ui/);
