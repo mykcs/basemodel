@@ -1373,9 +1373,19 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   .paper__links{display:flex;flex-wrap:wrap;gap:8px 18px}.paper a{color:var(--accent);font-weight:700;text-underline-offset:3px}
   .paper-table-figure{margin:18px 0 12px}
   .paper-table-figure .paper-table-wrap{margin:0;min-width:0}
-  .paper-table__caption{margin:8px 0 0}
-  .paper-table-wrap{overflow-x:auto;margin:18px 0 12px;min-width:0}/* Short scientific tables read like LaTeX columnwidth, not full-width report dashboards.
+  .paper-table__caption{max-width:1040px;margin:8px 0 0}
+  .paper-table-wrap{overflow-x:auto;margin:18px 0 12px;min-width:0}
+  .paper-table{min-width:700px}/* Short scientific tables read like LaTeX columnwidth, not full-width report dashboards.
      Dense/multi-column scientific comparisons retain the full page panel. */
+  
+  .paper-table:not(.paper-table--dense-results):not(.paper-table--ablation):not(:has(thead tr > :nth-child(4))){min-width:0;max-width:min(100%,46rem)}
+  .paper-table--ablation{min-width:960px}
+  .paper-table--ablation th:first-child,.paper-table--ablation td:first-child{width:31%}
+  .paper-table--ablation th:nth-child(2),.paper-table--ablation td:nth-child(2){width:8%}
+  .paper-table--ablation th:nth-child(3),.paper-table--ablation td:nth-child(3){width:8%}
+  .paper-table--ablation th:nth-child(4),.paper-table--ablation td:nth-child(4){width:8%}
+  .paper-table--ablation th:nth-child(5),.paper-table--ablation td:nth-child(5){width:20%}
+  .paper-table--ablation th:nth-child(6),.paper-table--ablation td:nth-child(6){width:25%}
   .paper-table-wrap--hero{margin-top:12px;overflow-x:auto}
   .paper__math-caption{max-width:880px;margin:-.45rem 0 1rem;color:var(--text-secondary);font-size:1rem;line-height:1.6}
   .paper__math-boundary{max-width:880px;margin:1rem 0;padding:.85rem 0 .85rem 1rem;border-left:3px solid var(--border-color);color:var(--text-secondary);font-size:1rem;line-height:1.65}
@@ -1396,11 +1406,17 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     .paper{padding:24px 18px 72px}.paper__section{padding:36px 0}
     .paper__setup{grid-template-columns:1fr}
     .paper__hub-grid{grid-template-columns:1fr}
+    .paper-table{min-width:640px}
+    .paper-table--ablation{min-width:900px}
     .paper-table--ablation th,.paper-table--ablation td{overflow-wrap:anywhere}
   }
   @media(prefers-reduced-motion:reduce){.paper *,.paper *::before,.paper *::after{scroll-behavior:auto;transition:none;animation:none}}
   @media screen {
+    .paper-table th:first-child,.paper-table td:first-child{min-width:8rem}
+    .paper-table th:not(:first-child),.paper-table td:not(:first-child){min-width:6rem}
   }
   @media screen and (max-width:760px){
+    .paper-table:not(.paper-table--dense-results):not(.paper-table--ablation):not(:has(thead tr > :nth-child(4))){min-width:30rem;max-width:46rem}
   }
+.paper-table-wrap--hero{--paper-table-margin:0;--paper-table-window-padding:0;--paper-table-cell-padding:6px 8px}
 </style>

@@ -5,14 +5,14 @@
  */
 .research-booktabs-wrap {
   width:fit-content;max-width:100%;min-width:0;overflow-x:auto;
-  margin:1.25rem 0 1.5rem;padding:.2rem 0 .15rem;
+  margin:var(--paper-table-margin,1.25rem 0 1.5rem);padding:var(--paper-table-window-padding,.2rem 0 .15rem);
   overscroll-behavior-inline:contain;scrollbar-width:thin;
 }
 .research-booktabs-wrap:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px}
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table],
 table.research-booktabs {
   border-collapse:collapse;border-spacing:0;table-layout:auto;
-  width:auto;min-width:0;max-width:none;margin:0;
+  width:auto;max-width:none;margin:0;
   border:0;border-top:1.5px solid var(--color-text);border-bottom:1.5px solid var(--color-text);
   border-radius:0;box-shadow:none;background:transparent;color:var(--color-text);
   font-family:"Times New Roman",Times,"Noto Serif SC","Noto Serif CJK SC","Songti SC",STSong,SimSun,serif;
@@ -29,10 +29,10 @@ table.research-booktabs caption {
 }
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td),
 table.research-booktabs :is(th,td) {
-  padding:.42em .75em;border:0;border-radius:0;background:transparent;
+  padding:var(--paper-table-cell-padding,.42em .75em);border:0;border-radius:0;background:transparent;
   box-shadow:none;color:inherit;font-family:inherit;font-size:inherit;
   line-height:inherit;font-style:normal;letter-spacing:normal;
-  text-align:left;vertical-align:top;white-space:normal;
+  text-align:left;vertical-align:top;
   font-variant-numeric:tabular-nums lining-nums;
 }
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] thead th,

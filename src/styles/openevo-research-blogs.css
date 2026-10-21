@@ -95,8 +95,7 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .evo-article__figure figcaption{font-size:.89em;line-height:1.7;color:var(--paper-muted);margin:.7rem 0}
 .evo-blog .evo-article__figure img{max-width:100%;height:auto;display:block}
 .evo-blog .evo-article__tablewrap {max-width:100%;width:fit-content;overflow-x:auto;margin:1.25rem 0;min-width:0}
-.evo-blog .evo-article__tablewrap table{;min-width:0}
-.evo-blog .evo-article__tablewrap caption{caption-side:top;margin-bottom:.35rem;min-width:0}
+.evo-blog .evo-article__tablewrap table{max-width:none;min-width:0}
 .evo-blog .evo-article__tablewrap th,.evo-blog .evo-article__tablewrap td{white-space:normal;min-width:0}
 .evo-blog .evo-article__tablewrap [data-numeric]{text-align:right;min-width:0}
 .evo-blog .evo-article__question{padding:1.6rem 0 2rem;border-bottom:1px solid var(--paper-line);scroll-margin-top:5.8rem}
@@ -203,12 +202,15 @@ html[data-theme="dark"] .evo-blog {
     table-layout: fixed;
   ;min-width:0}
   .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:first-child {
+    width: 175px;
+    min-width: 175px;
+    max-width: 175px;
     overflow-wrap: normal;
     word-break: normal;
   ;min-width:0}
-  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(2) { ;min-width:0}
-  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(3) { ;min-width:0}
-  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(4) { ;min-width:0}
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(2) { width: 150px; ;min-width:0}
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(3) { width: 135px; ;min-width:0}
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(4) { width: 190px; ;min-width:0}
 }
 @media (min-width: 641px) {
   .evo-blog[data-evo-blog="results"] [data-seed-table-mobile-hint] { display: none; }

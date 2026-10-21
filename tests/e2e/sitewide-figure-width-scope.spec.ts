@@ -35,7 +35,7 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   expect(grammar.font).toBeGreaterThanOrEqual(route.includes('/briefing/') ? 14 : 16);
   expect(grammar.top).toBeGreaterThan(0);
   expect(grammar.bottom).toBeGreaterThan(0);
-  expect(grammar.caption).toBe(true);
+  expect(grammar.caption, JSON.stringify(grammar)).toBe(true);
   expect(grammar.captionSide).toBe('top');
   expect(grammar.verticalRules).toBe(false);
   expect(grammar.bodyRules).toBe(false);
@@ -167,7 +167,17 @@ for (const route of routes) {
 
           if (await target.getAttribute('data-research-paper-table') !== null && visible) await expectPaperGrammar(target, route, index);
           tables.push({...table,visible,state:visible?readingState:alternative.phone?'source-owned phone-only table; desktop data chart visible':'source-owned compact rental catalog excluded from this page'});
-          if(visible)await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`));
+          if(visible) {
+            await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`));
+            if(width===1440 && theme==='light' && await target.getAttribute('data-research-paper-table') !== null) {
+              await target.evaluate(node=>(node as HTMLElement).style.filter='grayscale(1)');
+              await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-grayscale.png`));
+              await target.evaluate(node=>(node as HTMLElement).style.removeProperty('filter'));
+              await page.emulateMedia({media:'print'});
+              await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-print.png`));
+              await page.emulateMedia({media:'screen'});
+            }
+          }
         }
         await expect(page.locator('table')).toHaveCount(tableCount);
         evidence.push({route,width,theme,tables,rootOverflow:overflow});

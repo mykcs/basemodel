@@ -286,8 +286,10 @@ html[data-theme="dark"] .evo-approved-reader {
   scrollbar-width: thin;
 }
 .evo-approved-reader .advisor-result-matrix table {
+  max-width: 100%;
   margin: 0;
 }
+.evo-approved-reader .advisor-result-matrix th:first-child { min-width: 7.5em; }
 .evo-approved-reader .advisor-result-matrix [data-numeric] { text-align: right; white-space: nowrap; }
 .evo-approved-reader .advisor-result-matrix figcaption {
   margin: 9px 0 0;
@@ -342,9 +344,11 @@ html[data-theme="dark"] .evo-approved-reader {
   width: fit-content;
   max-width: 100%;
 ;min-width:0}
-.evo-approved-reader .evo-article__tablewrap table { ;min-width:0}
-.evo-approved-reader .evo-article__tablewrap table caption {
-;min-width:0}
+
+.evo-approved-reader .research-booktabs-wrap {
+  max-width: 100%;
+}
+.evo-approved-reader .evo-article__tablewrap table { max-width: 100%; ;min-width:0}
 .evo-approved-reader .evo-article__tablewrap th,
 .evo-approved-reader .evo-article__tablewrap td {
 ;min-width:0}
@@ -384,6 +388,10 @@ html[data-theme="dark"] .evo-approved-reader {
   .evo-approved-reader .advisor-result-matrix td {
     overflow-wrap: anywhere;
     word-break: normal;
+  }
+  .evo-approved-reader .advisor-result-matrix th:first-child {
+    min-width: 0;
+    width: 34%;
   }
   .evo-approved-reader .advisor-result-matrix [data-numeric] {
     white-space: normal;
