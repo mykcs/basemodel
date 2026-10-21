@@ -16,14 +16,14 @@ export const ADVISOR_DECISION_BRIEF = {
       id: 'q07',
       kind: 'bounded-answer',
       finding: '把 Bounded 模型第 156 轮的参数更新方向反过来（幅度不变），重做同一批 64 题，均分下降 10.06 分。',
-      boundary: '这一轮方向反转结果已经通过 Holm 多重比较校正，但不能推广到其他轮次、方法或新题。',
+      boundary: '局部因果结果已经通过 Holm 多重比较校正，但不能推广到其他轮次、方法或新题。',
     },
   ],
   unresolved: [
     {
       id: 'q10',
       state: 'unrun',
-      fact: '新 128 题已冻结；三条独立长程训练流与正式新题成绩仍未完成。',
+      fact: '新 128 题已冻结；三条独立长程训练流与正式新题成绩尚未完成。',
     },
     {
       id: 'q03',
