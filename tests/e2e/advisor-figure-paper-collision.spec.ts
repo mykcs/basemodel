@@ -93,8 +93,10 @@ for(const width of [390,768,1440] as const){
       expect(tableMetrics.tableWidth).toBeLessThanOrEqual(345);
       expect(tableMetrics.captionWidth).toBeLessThanOrEqual(tableMetrics.tableWidth+1);
       expect(tableMetrics.captionCenteredBy).toBeLessThanOrEqual(3);
-      expect(tableMetrics.topBorder).toBeGreaterThanOrEqual(1.3);
-      expect(tableMetrics.bottomBorder).toBeGreaterThanOrEqual(1.3);
+      // In collapsed-border layout browsers may report a 1px resolved rule.
+      // The compiled LaTeX booktabs top/bottom rules are ~1 CSS pixel at 96dpi.
+      expect(tableMetrics.topBorder).toBeGreaterThanOrEqual(1);
+      expect(tableMetrics.bottomBorder).toBeGreaterThanOrEqual(1);
       expect(tableMetrics.headerRule).toBeGreaterThanOrEqual(.8);
       expect(tableMetrics.bodyRowRule).toBe(0);
       expect(tableMetrics.verticalRule).toBe(0);
