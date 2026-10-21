@@ -116,8 +116,10 @@ test('third article answers all Q01–Q10 with experiments, measurements, limits
   await expect(q03.locator('button, [data-q03-stage-selector], [data-stage-detail]')).toHaveCount(0);
   const points=await q03.locator('[data-trend-point]').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-trend-point')));
   expect(points).toEqual(['A0','A40','A80','A120']);
-  const table=q03.locator('.advisor-viz__q03-phone-table');
+  const table=page.locator('#response-q03 [data-q03-paper-table]');
   await expect(table).toBeVisible();
+  await expect(page.locator('#response-q03 [data-q03-trend-details]')).not.toHaveAttribute('open','');
+  await expect(q03).toBeHidden();
   await expect(table.locator('tbody tr')).toHaveCount(4);
   await expect(table).toContainText('0.69');
   await expect(table).toContainText('6.62');
