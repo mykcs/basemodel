@@ -64,7 +64,8 @@ for (const [batchIndex, routeBatch] of mathRouteBatches.entries()) {
     // document so a pending redirect cannot interrupt the next route under test.
     const page = await context.newPage();
     try {
-      const response = await page.goto(route);
+      // Bind the source response first; readiness belongs to the final document.
+      const response = await page.goto(route,{waitUntil:'commit'});
       if (!response?.ok()) {
         findings.push({ route, kind: 'http', detail: String(response?.status() ?? 'no response') });
         continue;
