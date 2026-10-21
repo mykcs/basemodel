@@ -71,7 +71,20 @@ export async function captureFigureEvidence(figure: Locator, path: string) {
   });
   const clip = await figure.evaluate(el => {
     const rect = el.getBoundingClientRect();
-    return { x: rect.x + scrollX, y: rect.y + scrollY, width: rect.width, height: rect.height };
+    let left=rect.left,right=rect.right,top=rect.top,bottom=rect.bottom;
+    for(let parent=el.parentElement;parent&&parent!==document.body&&parent!==document.documentElement;parent=parent.parentElement){
+      const css=getComputedStyle(parent),bounds=parent.getBoundingClientRect();
+      if(css.overflowX!=='visible'){
+        left=Math.max(left,bounds.left+parent.clientLeft);
+        right=Math.min(right,bounds.left+parent.clientLeft+parent.clientWidth);
+      }
+      if(css.overflowY!=='visible'){
+        top=Math.max(top,bounds.top+parent.clientTop);
+        bottom=Math.min(bottom,bounds.top+parent.clientTop+parent.clientHeight);
+      }
+    }
+    if(right<=left||bottom<=top)throw new Error('Evidence has no visible reading surface after native clipping');
+    return { x:left+scrollX,y:top+scrollY,width:right-left,height:bottom-top };
   });
   await page.screenshot({path,clip,fullPage:true,animations:'disabled'});
   return clip;

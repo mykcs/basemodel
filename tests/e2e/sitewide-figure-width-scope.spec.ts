@@ -374,3 +374,19 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
   });
 }
+
+test('native table capture respects the real scroll container instead of photographing following content',async({page},testInfo)=>{
+  await page.setViewportSize({width:390,height:900});
+  await page.setContent('<style>body{margin:0} .holder{height:180px;width:350px;overflow:auto} td{height:30px}</style><div class="holder"><table>'+Array.from({length:100},(_,i)=>'<tr><td>Measured row '+i+'</td><td>'+i+'</td></tr>').join('')+'</table></div><p>Following page content is outside the table reader.</p>');
+  const table=page.locator('table');
+  const rect=await table.boundingBox();
+  const bad=testInfo.outputPath('unclipped-table-negative.png');
+  await page.screenshot({path:bad,clip:rect!,fullPage:true});
+  const pixels=(path:string)=>({width:readFileSync(path).readUInt32BE(16),height:readFileSync(path).readUInt32BE(20)});
+  const accept=(size:{width:number;height:number})=>{expect(size.width).toBeLessThanOrEqual(350);expect(size.height).toBeLessThanOrEqual(180);expect(size.height).toBeGreaterThan(0);};
+  const original=pixels(bad);expect(()=>accept(original)).toThrow();
+  const good=testInfo.outputPath('scroll-container-native-positive.png');
+  const clip=await captureFigureEvidence(table,good);
+  accept(pixels(good));expect(clip.height).toBe(180);
+  await expect(page.locator('.holder')).toHaveJSProperty('scrollTop',0);
+});
