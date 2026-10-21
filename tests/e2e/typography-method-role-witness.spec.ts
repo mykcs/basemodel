@@ -449,19 +449,19 @@ test('advisor Figure 2 gate rejects old tiny nodes and tablet slivers',async({pa
 // evidence status must remain visually distinguishable from unknown/no-run.
 const stage2HistoricalRoute='/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/';
 const stage2TextFloors={
-  '.stage2-map__head>p':13,
-  '.authority-strip span':15,
-  '.stage2-map__direct-result>p':14,
-  '.story>header p':13,
-  '.node>span':14,
+  '.stage2-map__head>p':16,
+  '.authority-strip span':16,
+  '.stage2-map__direct-result>p':16,
+  '.story>header p':16,
+  '.node>span':16,
   '.story h2':22,
   '.node h3':20,
   '.node p':16,
-  '.side-study header p':14,
+  '.side-study header p':16,
   '.side-study h2':20,
-  '.evidence header p':13,
+  '.evidence header p':16,
   '.evidence h2':20,
-  '.evidence nav small':13,
+  '.evidence nav small':16,
   '.evidence nav span':16,
 } as const;
 type Stage2HistoricType={
