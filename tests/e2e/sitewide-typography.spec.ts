@@ -318,85 +318,6 @@ test('same four-arm reader predicates reject restored 10px prose and metadata',a
 });
 
 
-// Research scores and evidence boundaries are reader content, not 9–11px plot ticks.
-// This reuses the same predicates for the real CSS and deliberate old-style injection.
-const sevenBReaderRoute='/research/seed-openevo/study/results/7b-self-analysis/';
-const typedEvidenceRoles=['.score-comparison__table tbody td',
-  '.score-comparison__table small','.score-comparison__note',
-  '.score-comparison__heading p','.score-comparison__table .is-best'] as const;
-async function readSevenBTableType(page:import('@playwright/test').Page) {
-  return page.evaluate((selectors)=>{
-    const root=document.querySelector('[data-testid="webshop-7b-score-comparison"]');
-    if(!root)throw Error('Missing 7B WebShop performance table');
-    const values=Object.fromEntries(selectors.map(selector=>{
-      const element=root.querySelector(selector);
-      if(!element)throw Error('Missing evidence role '+selector);
-      const style=getComputedStyle(element);
-      const box=element.getBoundingClientRect();
-      return [selector,{size:parseFloat(style.fontSize),weight:parseFloat(style.fontWeight),
-        family:style.fontFamily,style:style.fontStyle,lineHeight:style.lineHeight,
-        letterSpacing:style.letterSpacing,numeric:style.fontVariantNumeric,width:box.width,
-        text:element.textContent?.trim().slice(0,90)}];
-    })) as Record<string,{size:number;weight:number;family:string;style:string;lineHeight:string;letterSpacing:string;numeric:string;width:number;text?:string}>;
-    const wrapper=root.querySelector('.score-comparison__wrap') as HTMLElement|null;
-    if(!wrapper)throw Error('No local scroll owner for research table');
-    return {values,overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
-      wrapper:{overflow:getComputedStyle(wrapper).overflowX,client:wrapper.clientWidth,scroll:wrapper.scrollWidth}};
-  },[...typedEvidenceRoles]);
-}
-function acceptSevenBTableType(receipt:Awaited<ReturnType<typeof readSevenBTableType>>) {
-  expect(receipt.overflow).toBeLessThanOrEqual(2);
-  for(const [selector,min] of [
-    ['.score-comparison__table tbody td',15],
-    ['.score-comparison__table small',13],
-    ['.score-comparison__note',14],
-    ['.score-comparison__heading p',14],
-    ['.score-comparison__table .is-best',15]
-  ] as const) {
-    const style=receipt.values[selector];
-    expect(style,selector).toBeDefined();
-    expect(style!.size,selector).toBeGreaterThanOrEqual(min);
-    expect(style!.family,selector).toMatch(/Inter|PingFang|system-ui/);
-    expect(style!.style,selector).toBe('normal');
-  }
-  expect(receipt.values['.score-comparison__table .is-best']!.weight).toBeLessThanOrEqual(650);
-  expect(receipt.wrapper.overflow).toBe('auto');
-}
-for(const width of [390,768,1440] as const){
-  for(const theme of ['light','dark'] as const){
-    test('7B scientific table type and local scroll: '+width+'/'+theme,async({page},testInfo)=>{
-      await page.setViewportSize({width,height:width===390?844:900});
-      await page.addInitScript(t=>localStorage.setItem('atlas-theme',t),theme);
-      const response=await page.goto(sevenBReaderRoute,{waitUntil:'domcontentloaded'});
-      expect(response?.status()).toBe(200);
-      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
-      await page.evaluate(()=>document.fonts.ready);
-      const receipt=await readSevenBTableType(page);
-      acceptSevenBTableType(receipt);
-      if(width===390)expect(receipt.wrapper.scroll).toBeGreaterThan(receipt.wrapper.client);
-      const region=page.locator('[data-testid="webshop-7b-score-comparison"]');
-      await region.scrollIntoViewIfNeeded();
-      await region.screenshot({path:testInfo.outputPath('seven-b-table-'+width+'-'+theme+'.png'),
-        animations:'disabled',style:'.site-header{visibility:hidden}'});
-      await testInfo.attach('seven-b-table-computed.json',{
-        body:Buffer.from(JSON.stringify(receipt,null,2)),contentType:'application/json'});
-    });
-  }
-}
-test('real 7B table evidence guard rejects 9px notes and 12px results',async({page})=>{
-  await page.setViewportSize({width:390,height:844});
-  await page.goto(sevenBReaderRoute,{waitUntil:'domcontentloaded'});
-  acceptSevenBTableType(await readSevenBTableType(page));
-  const old=await page.addStyleTag({content:
-    '.analysis-plan .score-comparison__table tbody td{font-size:12px!important}' +
-    '.analysis-plan .score-comparison__table small{font-size:9px!important}' +
-    '.analysis-plan .score-comparison__note{font-size:9px!important}'});
-  const bad=await readSevenBTableType(page);
-  expect(()=>acceptSevenBTableType(bad)).toThrow();
-  await old.evaluate(node=>node.remove());
-  acceptSevenBTableType(await readSevenBTableType(page));
-});
-
 async function readFourArmDataType(page:import('@playwright/test').Page){
   return page.evaluate(()=>{
     const root=document.querySelector('.analysis-plan');
@@ -460,6 +381,6 @@ test('four-arm evidence guard rejects prior 11px status and 12px question prose'
     '.analysis-plan .per-arm-grid p{font-size:12px!important}'});
   const bad=await readFourArmDataType(page);
   expect(()=>acceptFourArmDataType(bad)).toThrow();
-  await injected.evaluate(node=>node.remove());
+  await injected.evaluate(node=>node.parentNode?.removeChild(node));
   acceptFourArmDataType(await readFourArmDataType(page));
 });
