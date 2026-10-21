@@ -43,6 +43,26 @@ for(const width of [390,768,1440] as const){
       }
       const chart=width<=720?q03.locator('[data-q03-mobile-chart]'):q03.locator('[data-q03-desktop-chart]');
       await expect(chart).toBeVisible();
+      // Publication figure contract: the four-point plot is one compact, centered
+      // paper column. The caption immediately follows the visible plot; the old
+      // side-by-side dashboard heading and card framing must not return.
+      await expect(q03).toHaveAttribute('data-paper-width','single');
+      await expect(q03.locator('.advisor-viz__heading')).toHaveCount(0);
+      const paper=await q03.evaluate(figure=>{
+        const outer=figure.getBoundingClientRect();
+        const parent=figure.parentElement!.getBoundingClientRect();
+        const svg=[...figure.querySelectorAll('svg[data-q03-desktop-chart],svg[data-q03-mobile-chart]')]
+          .find(el=>getComputedStyle(el).display!=='none')!;
+        return {
+          width:outer.width,
+          centeredBy:Math.abs((outer.left+outer.right)/2-(parent.left+parent.right)/2),
+          chartBottom:svg.getBoundingClientRect().bottom,
+          captionTop:figure.querySelector('figcaption')!.getBoundingClientRect().top,
+        };
+      });
+      expect(paper.width).toBeLessThanOrEqual(514);
+      expect(paper.centeredBy).toBeLessThanOrEqual(3);
+      expect(paper.captionTop).toBeGreaterThanOrEqual(paper.chartBottom-2);
       const metrics=await chart.evaluate(svg=>{
         if(!(svg instanceof SVGSVGElement))return null;
         const first=svg.querySelector<SVGGraphicsElement>('.advisor-viz__q03-score');
