@@ -144,6 +144,11 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
     await expect(difference).toContainText('+0.0250');
     const fragments=await difference.evaluate(el=>{const r=document.createRange();r.selectNodeContents(el);return r.getClientRects().length;});
     expect(fragments).toBe(1);
+    const entropy=page.locator('.paper-table').filter({hasText:'R0–31 mean H'});
+    const numericFragments=await entropy.locator('tbody td:nth-child(n+2)').evaluateAll(nodes=>nodes.map(el=>{
+      const r=document.createRange();r.selectNodeContents(el);return r.getClientRects().length;
+    }));
+    for(const count of numericFragments)expect(count).toBe(1);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
   });
 }
