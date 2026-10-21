@@ -23,8 +23,8 @@ html[data-theme="dark"]:has(.evo-approved-reader) {
 .evo-blog.evo-approved-reader {
   --paper: #fcfcfb;
   --paper-ink: #151515;
-  /* Standard system sans. Scientific numbers should not appear in Georgia, Times,
-     editorial lining/tabular variants, or decorated numeral glyphs. */
+  /* Prose, navigation and plot labels keep this system-sans treatment.
+     Native scientific tables use the shared paper/booktabs serif owner. */
   --advisor-plain-font: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   --paper-muted: #64625f;
   --paper-line: #e1e0d9;
@@ -404,9 +404,8 @@ html[data-theme="dark"] .evo-approved-reader {
   .evo-approved-reader .advisor-result-matrix figcaption,
   .evo-approved-reader .advisor-result-matrix figcaption p { font-size: 12px; }
   .evo-approved-reader .math-formula { padding: 12px 9px; }
-}/* Plain numerals throughout the response page, including scientific objects.
-   Other pages keep their existing editorial typography. KaTeX symbols keep
-   their actual mathematics font; no formula glyphs are replaced. */
+}/* Plain numerals for response prose and plot labels; native tables keep
+   their shared paper typography. KaTeX symbols retain their mathematics font. */
 
 .evo-blog.evo-approved-reader :is(
 

@@ -551,3 +551,20 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
     }
   });
 }
+
+test('expanded SD-LoRA paper comparison survives print without exposing unrelated sections',async({page},testInfo)=>{
+  await page.goto('/research/seed-openevo/flow/sd-lora/',{waitUntil:'load'});
+  const table=page.locator('table[data-research-paper-table]').first();
+  await revealEvidenceReadingState(table);
+  await page.emulateMedia({media:'print'});
+  await expect(table).toBeVisible();
+  const section=table.locator('xpath=ancestor::details[1]');
+  await expect(section).toHaveAttribute('open','');
+  await expect(page.locator('.sdlora__details')).toBeHidden();
+  await section.evaluate(node=>(node as HTMLElement).style.display='none');
+  await expect(captureFigureEvidence(table,testInfo.outputPath('sd-lora-print-hidden-negative.png'))).rejects.toThrow('no visible reading surface');
+  await section.evaluate(node=>(node as HTMLElement).style.removeProperty('display'));
+  await expect(table).toBeVisible();
+  await captureFigureEvidence(table,testInfo.outputPath('sd-lora-paper-comparison-print.png'));
+  await page.emulateMedia({media:'screen'});
+});
