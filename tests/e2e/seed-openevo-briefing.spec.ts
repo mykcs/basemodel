@@ -67,9 +67,19 @@ for (const width of [390, 768, 1440]) {
         const canvas = dialog.locator('.research-chart-canvas');
         await expect(canvas).toBeFocused();
         if (width === 390) {
-          await canvas.press('End');
-          await canvas.evaluate((n) => { n.scrollLeft = n.scrollWidth; });
-          expect(await canvas.evaluate((n) => n.scrollLeft)).toBeGreaterThan(0);
+          await canvas.press('ArrowRight');
+          await expect.poll(() => canvas.evaluate((n) => n.scrollLeft)).toBeGreaterThan(0);
+        }
+        if (width === 390 && i === 0) {
+          const smallest = await dialog.locator('svg').evaluate((svg) => {
+            (svg as SVGSVGElement).style.transform = 'scale(0.3046875)';
+            return Math.min(...Array.from(svg.querySelectorAll<SVGTextElement>('text')).map((n) => {
+              const m = n.getScreenCTM()!;
+              return parseFloat(getComputedStyle(n).fontSize) * Math.hypot(m.a, m.b);
+            }));
+          });
+          expect(smallest).toBeLessThan(12);
+          await dialog.locator('svg').evaluate((svg) => { (svg as SVGSVGElement).style.transform = ''; });
         }
         await dialog.screenshot({ path: testInfo.outputPath(`chart-reader-${i}.png`) });
         await page.keyboard.press('Escape');
@@ -84,18 +94,24 @@ for (const width of [390, 768, 1440]) {
         const image = images.nth(i);
         await image.scrollIntoViewIfNeeded();
         await expect.poll(() => image.evaluate((n: HTMLImageElement) => n.complete && n.naturalWidth > 0)).toBe(true);
+        const source = await page.request.get((await image.getAttribute('src'))!);
+        expect(source.ok()).toBe(true);
+        const fontSizes = [...(await source.text()).matchAll(/font-size\s*[:=]\s*["']?(\d+(?:\.\d+)?)/g)].map((m) => Number(m[1]));
+        expect(fontSizes.length).toBeGreaterThan(0);
+        const nativeFont = Math.min(...fontSizes);
         const metrics = await image.evaluate((n: HTMLImageElement) => ({
           width: n.getBoundingClientRect().width, natural: n.naturalWidth,
           localOverflow: n.parentElement!.scrollWidth > n.parentElement!.clientWidth,
         }));
         if (width <= 860) {
-          expect(metrics.width / metrics.natural * 13).toBeGreaterThanOrEqual(12);
+          expect(metrics.width / metrics.natural * nativeFont).toBeGreaterThanOrEqual(12);
           expect(metrics.localOverflow).toBe(true);
           const region = page.locator('.metric-evidence__viewport, .research-image-viewport').nth(i);
           await region.focus();
           await expect(region).toBeFocused();
+          await region.press('ArrowRight');
+          await expect.poll(() => region.evaluate((n) => n.scrollLeft)).toBeGreaterThan(0);
           await region.evaluate((n) => { n.scrollLeft = n.scrollWidth; });
-          expect(await region.evaluate((n) => n.scrollLeft)).toBeGreaterThan(0);
           await region.screenshot({ path: testInfo.outputPath(`image-reader-${i}.png`) });
         }
       }
