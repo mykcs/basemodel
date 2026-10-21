@@ -117,3 +117,34 @@ for (const theme of ['light', 'dark'] as const) {
     expect(pageOverflow).toBeLessThanOrEqual(2);
   });
 }
+
+
+for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+  test('experiment plan table preserves contrast and time column reading width: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/study/results/four-arm-analysis/',{waitUntil:'load'});
+    const table=page.locator('.plan-table');
+    const widths=()=>table.evaluate(el=>{
+      const row=el.querySelector('tbody tr')!,rem=parseFloat(getComputedStyle(document.documentElement).fontSize);
+      return {contrast:row.children[2]!.getBoundingClientRect().width/rem,gpu:row.children[4]!.getBoundingClientRect().width/rem,time:row.children[5]!.getBoundingClientRect().width/rem};
+    });
+    const accept=(value:Awaited<ReturnType<typeof widths>>)=>{
+      expect(value.contrast).toBeGreaterThanOrEqual(12);
+      expect(value.gpu).toBeGreaterThanOrEqual(6);
+      expect(value.time).toBeGreaterThanOrEqual(7);
+    };
+    accept(await widths());
+    for(const id of ['B1','B2','B3','B4','B5','B6','B7','B8'])await expect(table).toContainText(id);
+    await expect(table.locator('..')).toHaveCSS('overflow-x','auto');
+    if(width===390){
+      expect(await table.locator('..').evaluate(el=>el.scrollWidth-el.clientWidth)).toBeGreaterThan(0);
+      await table.locator('td:has(>code),td:nth-last-child(2),td:last-child').evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.minWidth='0'));
+      const old=await widths();
+      expect(()=>accept(old)).toThrow();
+      await table.locator('td:has(>code),td:nth-last-child(2),td:last-child').evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.removeProperty('min-width')));
+      accept(await widths());
+    }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  });
+}
