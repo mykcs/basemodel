@@ -112,8 +112,8 @@ test('old 10px explanation, 9px value and missing table scroll fail the same ren
     { selector: '.exp-scaffold__table-wrap tbody td', px: 14.9, bad: '9px' },
   ]) {
     const el = root.locator(item.selector).first();
-    const readable = async () => el.evaluate(node =>
-      Number.parseFloat(getComputedStyle(node).fontSize) >= item.px);
+    const readable = async () => el.evaluate((node, minimum) =>
+      Number.parseFloat(getComputedStyle(node).fontSize) >= minimum, item.px);
     expect(await readable()).toBe(true);
     await el.evaluate((node, font) => { node.style.fontSize = font; }, item.bad);
     expect(await readable(), 'restored ' + item.bad + ' must be detected').toBe(false);
