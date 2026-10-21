@@ -223,22 +223,25 @@ test('native document capture decodes an offscreen lazy scientific image and ign
     return {x:r.x+scrollX,y:r.y+scrollY,width:r.width,height:r.height};
   });
   await page.screenshot({path:testInfo.outputPath('lazy-known-bad-document.png'),clip:badClip,fullPage:true,animations:'disabled'});
-  await figure.evaluate(node=>{
-    const detail=document.createElement('details');detail.name='camera-accordion-control';
-    detail.innerHTML='<summary>Test fixture: first exclusive evidence panel</summary>';
-    node.before(detail);detail.append(node);
-    const peer=document.createElement('details');peer.name=detail.name;
-    peer.innerHTML='<summary>Test fixture: sibling evidence panel</summary><p>Another reading state</p>';
-    detail.after(peer);peer.open=true;
-  });
-  await expect(figure).not.toBeVisible();
   await captureFigureEvidence(figure,testInfo.outputPath('lazy-decoded-document.png'));
-  await expect(figure).toBeVisible();
   expect(await image.evaluate(node=>(node as HTMLImageElement).complete&&(node as HTMLImageElement).naturalWidth>0)).toBe(true);
   expect(await figure.locator('img').evaluateAll(nodes=>nodes.filter(node=>getComputedStyle(node).display!=='none').every(node=>(node as HTMLImageElement).complete&&(node as HTMLImageElement).naturalWidth>0))).toBe(true);
   await expect(figure.locator('img')).toHaveCount(1003);
   expect(await page.evaluate(()=>scrollY)).toBe(0);
   expect(await figure.locator('[data-camera-local-scroll]').evaluate(node=>node.scrollLeft)).toBe(17);
+  // A separate native accordion fixture avoids reparenting an in-flight lazy
+  // image, which cancels its resource in WebKit and resets hidden scroll state.
+  await page.evaluate(()=>{
+    const detail=document.createElement('details');detail.name='camera-accordion-control';
+    detail.innerHTML='<summary>Test fixture: first exclusive evidence panel</summary><figure id="accordion-camera-control"><figcaption>Test fixture: native exclusive evidence reading state</figcaption><p>Evidence must be visible before document clipping.</p></figure>';
+    const peer=document.createElement('details');peer.name=detail.name;
+    peer.innerHTML='<summary>Test fixture: sibling evidence panel</summary><p>Another reading state</p>';
+    document.body.append(detail,peer);peer.open=true;
+  });
+  const accordion=page.locator('#accordion-camera-control');
+  await expect(accordion).not.toBeVisible();
+  await captureFigureEvidence(accordion,testInfo.outputPath('accordion-document.png'));
+  await expect(accordion).toBeVisible();
   writeFileSync(testInfo.outputPath('lazy-camera-control.json'),JSON.stringify({
     sha:sourceSha,browser:testInfo.project.name,route,fixture:true,
     source:'public/research/seed-openevo/evidence/wandb-threeway/task-score.svg',
