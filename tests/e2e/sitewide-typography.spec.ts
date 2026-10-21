@@ -365,8 +365,13 @@ for(const width of [390,768,1440] as const) {
       if(width===390)expect(r.local.scroll).toBeGreaterThan(r.local.client);
       const region=page.locator('.per-arm-grid');
       await region.scrollIntoViewIfNeeded();
+      // Two different proof surfaces: (1) true viewport with its live sticky navigation;
+      // (2) tall component crop without floating navigation covering paragraphs in
+      // the Playwright stitched element image. The latter is NOT a navigation acceptance.
+      await page.screenshot({path:testInfo.outputPath('four-arm-viewport-'+width+'-'+theme+'.png'),
+        animations:'disabled'});
       await region.screenshot({path:testInfo.outputPath('four-arm-evidence-'+width+'-'+theme+'.png'),
-        animations:'disabled',style:'.site-header{visibility:hidden}'});
+        animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}'});
       await testInfo.attach('four-arm-evidence-computed.json',{
         body:Buffer.from(JSON.stringify(r,null,2)),contentType:'application/json'});
     });

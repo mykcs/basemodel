@@ -1,6 +1,6 @@
 {
   "source_base_sha": "4b7017a3c08990c4387b740a3bdacd978abb8829",
-  "status": "PARTIAL: CSS ledger classified; full scoped-source ledger unfinished",
+  "status": "PARTIAL: refreshed exact source-count provenance; archived rule-level ledger remains historical, scoped/JS candidates NOT fully classified",
   "counts": {
     "CONCURRENT_PR_BLOCKER": 208,
     "JUSTIFIED_EXCEPTION": 8,
@@ -8752,6 +8752,41 @@
   "limitations": [
     "CSS syntax parsed with locked Astro PostCSS toolchain",
     "Astro style blocks parsed; inline expressions and JS candidates explicitly unresolved",
-    "Consumer, cascade and semantic role require browser and owner evidence; null decision is unclassified"
-  ]
+    "Consumer, cascade and semantic role require browser and owner evidence; null decision is unclassified",
+    "Current latest_source_audit is grounded in source-delta proof from the prior exact build; rules[]/counts retain older 4b entries and are not current full semantic classifications.",
+    "Public PR CI contains Chromium full shards, not necessarily WebKit; visual artifact review and SSO-independent actual Vercel response remain separate gates.",
+    "Unmounted legacy sevenB score comparison code was rejected as a false page-level proof. The actual /7b-self-analysis/ page is ResultsScaffold, concurrent with #806."
+  ],
+  "latest_source_audit": {
+    "source_sha": "185f3dd67ca652cf901369a40441325adc6447b6",
+    "previous_full_source_audit_sha": "7987f2a78685837a11d90bbcb1f745de931a40bb",
+    "provenance": "268 HTML and 36 independent CSS owner counts from prior full build/source audit; no generated-route or standalone CSS files changed between audit source and this exact SHA. Astro source candidate count recomputed by current owner delta (-7 direct font-size, -1 font shorthand in OpenEvoExperimentAnalysisPlan.astro) against 2,278 at prior source.",
+    "counts": {
+      "static_generated_html_routes": 268,
+      "html_figures": 73,
+      "html_tables": 130,
+      "standalone_css_owners": 36,
+      "standalone_css_font_size_literals": 61,
+      "astro_scoped_literal_or_shorthand_candidates": 2270,
+      "unresolved_inline_and_js_style_candidates": 56,
+      "fully_manually_reviewed_generated_html_routes": null,
+      "fully_manually_classified_scoped_candidates": 0
+    },
+    "ci": {
+      "sha": "185f3dd67ca652cf901369a40441325adc6447b6",
+      "run_id": 39544919705,
+      "public_ci_gate": "success",
+      "chromium_shards_success": "8/8",
+      "webkit_full_suite": "NOT RUN on #898 head"
+    },
+    "reality": "PARTIAL: 61 CSS literals and 2,270 scoped source candidates are debt candidates, not proof of an error. Archived rules[] and counts represent older 4b source; no claim that 2,270 scoped candidates have semantic classification; 56 inline/JS are unknown. Source inventory must be regenerated from final HEAD before unclassified=0 can be claimed.",
+    "acceptance": "Four-arm public route computed styles tested at 390/768/1440 light/dark; screenshots captured and manually inspected; sticky research navigation covers parts of tall element crops and crop technique is being fixed in next commit. Public 7B self route uses a different scaffold; orphan 7B-only CSS branch is NOT claimed as corrected.",
+    "concurrent_pr_blocker": [
+      806,
+      816,
+      895,
+      901,
+      908
+    ]
+  }
 }

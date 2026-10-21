@@ -1,5 +1,16 @@
 # Typography #898 continuation handoff
 
+## 2026-10-21 latest checked state — preserve downstream work
+
+- The original handoff stopped at `7b8246b3`, while the branch moved through `7987f2a7`. Its later commits were preserved. The next agent committed `33ee2d9d`, detected real CI failures (`astro check` returned two Node `remove` typing errors; browser tests incorrectly targeted an unmounted 7B table), then corrected at working production/test HEAD **`185f3dd67ca652cf901369a40441325adc6447b6`**. This HEAD has a true complete **Public PR CI PASS #39544919705** with 8 Chromium shards and two inject-and-reject negative checks for the live four-arm report.
+- **Actual fix**: `src/components/research/OpenEvoExperimentAnalysisPlan.astro` four-arm `.per-arm-grid`, `.factor-matrix`, `.plan-table` explanatory/data roles. Not the 7B public scaffold, not all 268 routes.
+- **Current source debt** grounded against 7987's whole-audit source and exact eight-declaration Astro owner delta: 61 independent CSS literal sizes; 2,270 Astro scoped literal/shorthand candidates; 56 inline/JS style candidates. `inventory.json` retains historical 4b rule entries and now has a separate exact-head source audit; unclassified ≠ 0.
+- **New concurrent work**: **#908** at `a9a94b80` adds plan-table column min-width in the exact same Astro file. The hunk differs semantically from typography, but there is a textual merge-conflict risk. Keep independent. #901 at `e446d769` owns WebKit/cloud figure gate; do not imply it has merged.
+- **Visual**: downloaded 7 hosted artifact ZIPs from run #39544919705, 93 unique PNG and 31 JSON. Opened all six 390/768/1440 × light/dark card PNGs plus one 390-dark reasoning PNG. The tall `.per-arm-grid` element screenshot captured `research-navigation` over the text (even with `.site-header` hidden), so classify these six card crops as **NEEDS CAPTURE FIX**, not ACCEPT. The next test adds unmodified viewport screenshots for honest navigation review and hides only sticky navigation in the component-specific crop; those new evidence files require a new exact-head successful CI.
+- **Live PR/preview**: #898 remains Draft and stacked on #895; don't alter any parallel PR or Production. The existing Vercel review project is `basemodel-ui-preview-20260811`; its latest older READY deployment at `7e3d5b6c` is **not** a candidate preview. Create a fresh `target=preview` review-only deployment of the final SHA, verify `noindex` and actual app rather than the HTTP-200 Vercel login shell. If SSO prevents independent page inspection, explicitly mark blocked.
+- **Do next**: complete crop/viewport artifact fix and exact-head hosted CI; inspect fresh PNGs. Regenerate complete scoped/inline/JS semantic ledger and reconcile owners (#806/#895/#908), WebKit all combos, then exact-head Vercel Review Preview. Do not mark full site accepted merely from CI.
+
+
 Status: **PARTIAL / NOT sitewide accepted**. Stop point requested by the owner.
 Continue the existing PR; no new PR, merge, closure of parallel PRs or Production.
 

@@ -1,14 +1,14 @@
 {
-  "captured_at": "2026-10-20",
+  "captured_at": "2026-10-21T04:46:46.391Z",
   "main_sha": "793a7ffc5afb2f2ff2df3341942f30e17f9f3bbc",
   "implementation_pr": 898,
   "stack_parent": 895,
   "pull_requests": [
     {
-      "baseRefName": "main",
-      "headRefName": "ci/cloud-webkit-visual-evidence-20261020",
-      "headRefOid": "7c6f7eede259072eb4eb2b54d0d3176495e4e538",
       "number": 901,
+      "headRefName": "ci/cloud-webkit-visual-evidence-20261020",
+      "headRefOid": "9f8cba4e68ef92d3abcc303ae80dcfae35c48eb9",
+      "baseRefName": "main",
       "files": [
         ".github/workflows/cloud-figure-visual-review.yml",
         "docs/agents/LATEST.md",
@@ -20,50 +20,157 @@
         "scripts/preflight-ui.ts",
         "scripts/verify-cloud-figure-evidence.mjs",
         "scripts/verify-cloud-figure-evidence.test.mjs",
+        "src/components/research/AdvisorResponseMetricTable.astro",
+        "src/components/research/AdvisorTenEvidenceVisual.astro",
         "src/components/research/OpenEvoCheckpointCurve.astro",
+        "src/components/research/OpenEvoExperimentAnalysisPlan.astro",
+        "src/components/research/OpenEvoSdLoraBoundedAccelerationStudy.astro",
+        "src/components/research/WebShopSeedSplitFigure.astro",
         "src/lib/deploymentArchitecture.test.ts",
+        "src/pages/research/seed-openevo/study/parameter-memory-results/index.astro",
         "tests/e2e/advisor-figure-paper-collision.spec.ts",
+        "tests/e2e/advisor-paper-figure-suite.spec.ts",
         "tests/e2e/figure-evidence.ts",
         "tests/e2e/open-evo-webshop-program-report.spec.ts",
         "tests/e2e/research-explainer-layout.spec.ts",
         "tests/e2e/site-reader-contracts.spec.ts",
-        "tests/e2e/sitewide-figure-width-scope.spec.ts"
-      ]
+        "tests/e2e/sitewide-figure-width-scope.spec.ts",
+        "tests/e2e/sitewide-math-rendering.spec.ts"
+      ],
+      "updatedAt": "2026-10-21T04:43:48Z"
     },
     {
-      "baseRefName": "design/sitewide-type-and-paper-figures-20261020",
-      "headRefName": "design/typography-catalog-workspace-20261020",
-      "headRefOid": "6c6a8dde5ef5cf1338f222587f9e7548131d9159",
-      "number": 898,
+      "number": 907,
+      "headRefName": "test/legacy-research-redirect-parity-20261021",
+      "headRefOid": "54d4a59368a3500aab4265bc464e1491496f44e7",
+      "baseRefName": "main",
       "files": [
+        "src/lib/legacyResearchRedirects.test.ts",
+        "src/lib/legacyResearchRedirects.ts"
+      ],
+      "updatedAt": "2026-10-21T04:36:40Z"
+    },
+    {
+      "number": 898,
+      "headRefName": "design/typography-catalog-workspace-20261020",
+      "headRefOid": "185f3dd67ca652cf901369a40441325adc6447b6",
+      "baseRefName": "design/sitewide-type-and-paper-figures-20261020",
+      "files": [
+        ".github/workflows/public-pr-ci.yml",
+        "docs/agents/LATEST.md",
+        "docs/agents/current/css-architecture.md",
+        "docs/agents/evidence/sitewide-typography/2026-10-20/CORE_AND_QUICK_VIEW.md",
+        "docs/agents/evidence/sitewide-typography/2026-10-20/OWNED_CSS_CLOSEOUT.md",
+        "docs/agents/evidence/sitewide-typography/2026-10-20/README.md",
+        "docs/agents/evidence/sitewide-typography/2026-10-20/inventory.json",
+        "docs/agents/evidence/sitewide-typography/2026-10-20/ownership.json",
+        "docs/agents/evidence/sitewide-typography/2026-10-20/route-inventory.json",
+        "docs/agents/evidence/sitewide-typography/2026-10-21/FOUR_ARM_REASONING.md",
         "docs/agents/evidence/typography-method-stage-migration-20261020.md",
         "docs/agents/evidence/typography-product-tools-20261020.md",
         "docs/plans/sitewide-typography-20261020/CODEX_EXECUTION_PLAN.md",
+        "docs/plans/sitewide-typography-20261020/HANDOFF_CONTINUATION.md",
+        "package.json",
+        "scripts/audit-sitewide-typography.mjs",
+        "scripts/css-radius-debt-baseline.json",
+        "scripts/lib/typography-inventory.mjs",
+        "scripts/lib/typography-inventory.test.mjs",
         "src/components/ModelExplorer.css",
+        "src/components/models/GlobalModelQuickView.tsx",
+        "src/components/models/ModelQuickView.css",
+        "src/components/models/ModelQuickViewDialog.tsx",
         "src/components/navigation/CommandMenu.css",
+        "src/components/research/OpenEvoExperimentAnalysisPlan.astro",
+        "src/components/research/OpenEvoLegacyStage2Archive.astro",
         "src/components/workspace/CompareTray.css",
         "src/components/workspace/ResearchContextBar.css",
+        "src/lib/modelQuickViewTypographyOwnership.test.ts",
         "src/lib/uiSafetyGate.test.ts",
         "src/pages/_bodies/models-index.astro",
         "src/styles/actionable-content.css",
+        "src/styles/advisor-ten-approved-reader.css",
+        "src/styles/final-hardening.css",
+        "src/styles/interactive-research-explainer-core.css",
         "src/styles/interactive-research-explainer-environments.css",
         "src/styles/interactive-research-explainer-methods.css",
         "src/styles/mobile-composition.css",
+        "src/styles/openevo-research-blogs.css",
         "src/styles/openevo-seed-world4-repro.css",
+        "src/styles/site.css",
         "src/styles/v2-closeout.css",
         "src/styles/workspace.css",
         "tests/e2e/canonical-research-figures.spec.ts",
         "tests/e2e/layout-anomaly-guard.spec.ts",
+        "tests/e2e/research-explainer-layout.spec.ts",
         "tests/e2e/seed-world4-q03-presentation.spec.ts",
+        "tests/e2e/sitewide-typography.spec.ts",
         "tests/e2e/typography-method-role-witness.spec.ts",
         "tests/e2e/typography-product-tools.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-21T04:35:53Z"
     },
     {
+      "number": 908,
+      "headRefName": "codex/research-plan-table-width-20261020",
+      "headRefOid": "a9a94b805d7e8bd990534f277d9528205e808606",
       "baseRefName": "main",
+      "files": [
+        "src/components/research/OpenEvoExperimentAnalysisPlan.astro",
+        "tests/e2e/sitewide-figure-width-scope.spec.ts"
+      ],
+      "updatedAt": "2026-10-21T04:35:01Z"
+    },
+    {
+      "number": 906,
+      "headRefName": "fix/research-table-content-width-20261020",
+      "headRefOid": "2fc0bdf9b61406db6136a489e35fe45f74df1510",
+      "baseRefName": "main",
+      "files": [
+        "src/components/research/AdvisorResponseMetricTable.astro",
+        "src/components/research/OpenEvoSdLoraBoundedAccelerationStudy.astro",
+        "src/pages/research/seed-openevo/study/parameter-memory-results/index.astro",
+        "tests/e2e/sitewide-figure-width-scope.spec.ts"
+      ],
+      "updatedAt": "2026-10-20T18:57:43Z"
+    },
+    {
+      "number": 904,
+      "headRefName": "fix/research-q01-legend-contrast-20261020",
+      "headRefOid": "db32cd62d7ab1f2acce83a48b3ade618c56092d8",
+      "baseRefName": "main",
+      "files": [
+        "src/components/research/AdvisorTenEvidenceVisual.astro",
+        "tests/e2e/advisor-paper-figure-suite.spec.ts"
+      ],
+      "updatedAt": "2026-10-20T18:42:37Z"
+    },
+    {
+      "number": 905,
+      "headRefName": "fix/research-webshop-ruler-label-20261020",
+      "headRefOid": "b5a9e380a9752f0a0eb3153b942494ea1924f88f",
+      "baseRefName": "main",
+      "files": [
+        "src/components/research/WebShopSeedSplitFigure.astro",
+        "tests/e2e/research-explainer-layout.spec.ts"
+      ],
+      "updatedAt": "2026-10-20T18:37:18Z"
+    },
+    {
+      "number": 903,
+      "headRefName": "fix/research-checkpoint-label-collision-20261020",
+      "headRefOid": "2e7e4bc0890c47d86f2b2a1420a87d9df81f1723",
+      "baseRefName": "main",
+      "files": [
+        "src/components/research/OpenEvoCheckpointCurve.astro",
+        "tests/e2e/open-evo-webshop-program-report.spec.ts"
+      ],
+      "updatedAt": "2026-10-20T16:19:14Z"
+    },
+    {
+      "number": 895,
       "headRefName": "design/sitewide-type-and-paper-figures-20261020",
       "headRefOid": "9a18359d247ffcb89ffae30434d03a0cb28e02c9",
-      "number": 895,
+      "baseRefName": "main",
       "files": [
         "AGENTS.md",
         "docs/agents/current/sitewide-typography-standard.md",
@@ -91,13 +198,25 @@
         "tests/e2e/advisor-paper-figure-suite.spec.ts",
         "tests/e2e/advisor-ten-questions-report.spec.ts",
         "tests/e2e/sitewide-typography.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-20T08:34:31Z"
     },
     {
+      "number": 849,
+      "headRefName": "dependabot/npm_and_yarn/dev-minor-patch-5666c173f5",
+      "headRefOid": "a0352d11a2eb506835f00eee5cad4c239f055715",
       "baseRefName": "main",
+      "files": [
+        "package-lock.json",
+        "package.json"
+      ],
+      "updatedAt": "2026-10-18T15:43:13Z"
+    },
+    {
+      "number": 866,
       "headRefName": "research/muon-inspired-openevo-20261016",
       "headRefOid": "2d4f9dc3801fa5f7b12990acd3b4d82f0145b05f",
-      "number": 866,
+      "baseRefName": "main",
       "files": [
         "src/data/openEvoExperimentNavigation.ts",
         "src/data/siteReaderContracts.ts",
@@ -106,13 +225,14 @@
         "src/pages/research/seed-openevo/study/muon-update/index.astro",
         "src/pages/research/seed-openevo/study/parameter-memory-results/index.astro",
         "tests/e2e/muon-update-report.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-16T17:29:03Z"
     },
     {
-      "baseRefName": "main",
+      "number": 865,
       "headRefName": "feat/osa-memory-report-20261016",
       "headRefOid": "181836a0185eb3bd884411515e069f463d96bb47",
-      "number": 865,
+      "baseRefName": "main",
       "files": [
         "public/data/research/osa-memory-20261015.json",
         "src/components/research/OpenEvoArticleNavigation.astro",
@@ -125,13 +245,14 @@
         "src/styles/openevo-research-blogs.css",
         "tests/e2e/advisor-ten-questions-report.spec.ts",
         "tests/e2e/osa-memory-report.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-16T07:33:58Z"
     },
     {
-      "baseRefName": "main",
+      "number": 860,
       "headRefName": "feat/starlight-technical-handbook-20261015",
       "headRefOid": "fbf2fe679245dcf2bcf59ba3aa2571942bf1423d",
-      "number": 860,
+      "baseRefName": "main",
       "files": [
         "astro.config.mjs",
         "package-lock.json",
@@ -144,54 +265,48 @@
         "src/content/docs/handbook/openevo-gpu.mdx",
         "src/styles/starlight-handbook.css",
         "tests/e2e/starlight-handbook.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-14T18:02:50Z"
     },
     {
-      "baseRefName": "main",
+      "number": 858,
       "headRefName": "feat/q03-mobile-paper-curve-parity-20261014",
       "headRefOid": "b344a68c583af83a035382c621b9b1ee4d3e1d67",
-      "number": 858,
+      "baseRefName": "main",
       "files": [
         "src/components/research/AdvisorTenEvidenceVisual.astro",
         "tests/e2e/q03-mobile-paper-curve.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-14T17:19:40Z"
     },
     {
-      "baseRefName": "main",
+      "number": 856,
       "headRefName": "design/q01-publication-figure-20261014",
       "headRefOid": "1ffad1d311b216e7cd78177df2fa59c71d047a83",
-      "number": 856,
+      "baseRefName": "main",
       "files": [
         "src/components/research/AdvisorTenEvidenceVisual.astro",
         "src/lib/openEvoAdvisorTenQuestionsReport.test.ts",
         "tests/e2e/advisor-ten-questions-report.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-14T16:19:51Z"
     },
     {
-      "baseRefName": "main",
+      "number": 855,
       "headRefName": "test/three-blog-first-screen-reader-route-20261014",
       "headRefOid": "ae6b73206fdee6f7df91830f303c1a87dbe7c315",
-      "number": 855,
+      "baseRefName": "main",
       "files": [
         "docs/agents/tasks/THREE_BLOG_FIRST_SCREEN_BENCHMARK_20261014.md",
         "tests/e2e/advisor-ten-questions-report.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-14T16:13:05Z"
     },
     {
-      "baseRefName": "main",
-      "headRefName": "dependabot/npm_and_yarn/dev-minor-patch-5666c173f5",
-      "headRefOid": "a0352d11a2eb506835f00eee5cad4c239f055715",
-      "number": 849,
-      "files": [
-        "package-lock.json",
-        "package.json"
-      ]
-    },
-    {
-      "baseRefName": "main",
+      "number": 841,
       "headRefName": "feat/sitewide-reading-path-20261009",
       "headRefOid": "71c8f35ad91fc16617529c4dc3fc9b25e6620a3d",
-      "number": 841,
+      "baseRefName": "main",
       "files": [
         "docs/agents/tasks/SITEWIDE_READING_PATH_20261009.md",
         "package.json",
@@ -205,13 +320,14 @@
         "src/pages/methodology.astro",
         "tests/e2e/page-learning-path.spec.ts",
         "tests/e2e/site-reader-contracts.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-09T13:58:45Z"
     },
     {
-      "baseRefName": "main",
+      "number": 840,
       "headRefName": "feat/webshop-reward-interactive-20261009",
       "headRefOid": "2a741b6b77e1d4c4cf1cf5744825b968d795cef2",
-      "number": 840,
+      "baseRefName": "main",
       "files": [
         "package.json",
         "src/components/research/SeedOpenEvoResearchDetail.astro",
@@ -235,49 +351,93 @@
         "src/styles/components/webshop-reward-explorer.css",
         "tests/e2e/webshop-journey-reader.spec.ts",
         "tests/e2e/webshop-reward-explorer.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-09T13:00:09Z"
     },
     {
-      "baseRefName": "main",
-      "headRefName": "refactor/research-explainer-primitives-20261003",
-      "headRefOid": "f112b575626bde88a776e74e0932af9e29dd0b16",
-      "number": 832,
-      "files": [
-        "docs/agents/tasks/RESEARCH_EXPLAINER_PRIMITIVES_EXTRACTION_20261003.md"
-      ]
-    },
-    {
-      "baseRefName": "main",
+      "number": 831,
       "headRefName": "research/seed-openevo-comparison-medium-20261003",
       "headRefOid": "3f1942807eaa3c5173842dd6a231a6c01200c4f4",
-      "number": 831,
+      "baseRefName": "main",
       "files": [
         "docs/agents/tasks/SEED_OPENEVO_COMPARISON_MEDIUM_REDESIGN_20261003.md"
-      ]
+      ],
+      "updatedAt": "2026-10-09T12:57:05Z"
     },
     {
-      "baseRefName": "main",
-      "headRefName": "research/vanilla-sd-lora-interactive-explainer-20261003",
-      "headRefOid": "17346e991bfd05219e3b13c37ee2b375f1018324",
-      "number": 830,
-      "files": [
-        "docs/agents/tasks/VANILLA_SD_LORA_INTERACTIVE_EXPLAINER_20261003.md"
-      ]
-    },
-    {
-      "baseRefName": "main",
+      "number": 829,
       "headRefName": "audit/medium-mismatch-20261003",
       "headRefOid": "ab465f0831fbdcb802e76c67e857c3a48e2901ba",
-      "number": 829,
+      "baseRefName": "main",
       "files": [
         "docs/agents/tasks/BASEMODEL_MEDIUM_MISMATCH_AUDIT_20261003.md"
-      ]
+      ],
+      "updatedAt": "2026-10-09T12:57:02Z"
     },
     {
+      "number": 813,
+      "headRefName": "docs/site-upgrade-program-20261002",
+      "headRefOid": "811e77ebb1dfad03c8bbd3d7538244ebbdce5d5d",
       "baseRefName": "main",
+      "files": [
+        "docs/plans/site-upgrade-20261002/COMMON.md",
+        "docs/plans/site-upgrade-20261002/EXISTING_WORK.md",
+        "docs/plans/site-upgrade-20261002/MANIFEST.json",
+        "docs/plans/site-upgrade-20261002/README.md",
+        "docs/plans/site-upgrade-20261002/ROUTE_SOURCE_INVENTORY.json",
+        "docs/plans/site-upgrade-20261002/SOURCES.md"
+      ],
+      "updatedAt": "2026-10-08T19:28:30Z"
+    },
+    {
+      "number": 832,
+      "headRefName": "refactor/research-explainer-primitives-20261003",
+      "headRefOid": "f112b575626bde88a776e74e0932af9e29dd0b16",
+      "baseRefName": "main",
+      "files": [
+        "docs/agents/tasks/RESEARCH_EXPLAINER_PRIMITIVES_EXTRACTION_20261003.md"
+      ],
+      "updatedAt": "2026-10-03T16:12:21Z"
+    },
+    {
+      "number": 830,
+      "headRefName": "research/vanilla-sd-lora-interactive-explainer-20261003",
+      "headRefOid": "17346e991bfd05219e3b13c37ee2b375f1018324",
+      "baseRefName": "main",
+      "files": [
+        "docs/agents/tasks/VANILLA_SD_LORA_INTERACTIVE_EXPLAINER_20261003.md"
+      ],
+      "updatedAt": "2026-10-03T16:12:14Z"
+    },
+    {
+      "number": 826,
+      "headRefName": "docs/site-upgrade-site-acceptance-20261002",
+      "headRefOid": "86e910c972a770e8674b150d67c74c6c56677ea8",
+      "baseRefName": "main",
+      "files": [
+        "astro.config.mjs",
+        "docs/plans/site-upgrade-20261002/tasks/Q01-COVERAGE.json",
+        "docs/plans/site-upgrade-20261002/tasks/Q01-DEPENDENCIES.json",
+        "docs/plans/site-upgrade-20261002/tasks/Q01-IMPLEMENTATION.md",
+        "docs/plans/site-upgrade-20261002/tasks/Q01-QUALIFICATION.json",
+        "docs/plans/site-upgrade-20261002/tasks/Q01-READER-PROTOCOL.md",
+        "docs/plans/site-upgrade-20261002/tasks/Q01-READER-TASKS.md",
+        "docs/plans/site-upgrade-20261002/tasks/Q01.md",
+        "scripts/audit-site-acceptance.ts",
+        "scripts/site-acceptance-build.ts",
+        "scripts/site-acceptance-core.ts",
+        "scripts/site-acceptance-files.ts",
+        "scripts/site-reader-evaluation.ts",
+        "scripts/snapshot-site-upgrade-dependencies.py",
+        "src/lib/siteAcceptance.test.ts"
+      ],
+      "updatedAt": "2026-10-03T12:44:25Z"
+    },
+    {
+      "number": 827,
       "headRefName": "docs/site-upgrade-scientific-tables-20261002",
       "headRefOid": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
-      "number": 827,
+      "baseRefName": "main",
       "files": [
         "docs/agents/tasks/POST_ADVISOR_AB_BASEMODEL_PUBLICATION_20260928.md",
         "docs/plans/site-upgrade-20261002/evidence/C01_SCIENTIFIC_TABLE_EVIDENCE_20261003.md",
@@ -304,150 +464,14 @@
         "src/pages/research/seed-openevo/exports/same-panel-final.tex.ts",
         "tests/e2e/effective-state-gdr-lora.spec.ts",
         "tests/e2e/scientific-tables.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-03T12:35:24Z"
     },
     {
-      "baseRefName": "main",
-      "headRefName": "docs/site-upgrade-site-acceptance-20261002",
-      "headRefOid": "86e910c972a770e8674b150d67c74c6c56677ea8",
-      "number": 826,
-      "files": [
-        "astro.config.mjs",
-        "docs/plans/site-upgrade-20261002/tasks/Q01-COVERAGE.json",
-        "docs/plans/site-upgrade-20261002/tasks/Q01-DEPENDENCIES.json",
-        "docs/plans/site-upgrade-20261002/tasks/Q01-IMPLEMENTATION.md",
-        "docs/plans/site-upgrade-20261002/tasks/Q01-QUALIFICATION.json",
-        "docs/plans/site-upgrade-20261002/tasks/Q01-READER-PROTOCOL.md",
-        "docs/plans/site-upgrade-20261002/tasks/Q01-READER-TASKS.md",
-        "docs/plans/site-upgrade-20261002/tasks/Q01.md",
-        "scripts/audit-site-acceptance.ts",
-        "scripts/site-acceptance-build.ts",
-        "scripts/site-acceptance-core.ts",
-        "scripts/site-acceptance-files.ts",
-        "scripts/site-reader-evaluation.ts",
-        "scripts/snapshot-site-upgrade-dependencies.py",
-        "src/lib/siteAcceptance.test.ts"
-      ]
-    },
-    {
-      "baseRefName": "main",
-      "headRefName": "docs/site-upgrade-research-decisions-20261002",
-      "headRefOid": "40ea5b24e8ffad9597f6fdfc53eefe61b5511664",
-      "number": 825,
-      "files": [
-        "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
-        "docs/plans/site-upgrade-20261002/tasks/D01.md",
-        "docs/plans/site-upgrade-20261002/tasks/D02-IMPLEMENTATION.md",
-        "docs/plans/site-upgrade-20261002/tasks/D02-QUALIFICATION.json",
-        "docs/plans/site-upgrade-20261002/tasks/D02.md",
-        "docs/plans/site-upgrade-20261002/tasks/D03-IMPLEMENTATION.md",
-        "docs/plans/site-upgrade-20261002/tasks/D03-QUALIFICATION.json",
-        "docs/plans/site-upgrade-20261002/tasks/D03.md",
-        "docs/plans/site-upgrade-20261002/tasks/D04-IMPLEMENTATION.md",
-        "docs/plans/site-upgrade-20261002/tasks/D04-QUALIFICATION.json",
-        "docs/plans/site-upgrade-20261002/tasks/D04.md",
-        "scripts/research-evidence-integrity.ts",
-        "scripts/research/analyze-evidence.ts",
-        "scripts/research/history-sources.ts",
-        "scripts/research/import-history.ts",
-        "scripts/research/verify-analysis-independent.py",
-        "scripts/validate-data.ts",
-        "src/data/effectiveStateGdrLoraStudy.ts",
-        "src/data/researchAnalysisSnapshot.json",
-        "src/data/researchDecisionNotes.ts",
-        "src/data/researchEvidenceIndex.ts",
-        "src/lib/researchComparisons.test.ts",
-        "src/lib/researchComparisons.ts",
-        "src/lib/researchDecisionNotes.test.ts",
-        "src/lib/researchEvidence.ts",
-        "src/lib/researchEvidenceSchema.test.ts",
-        "src/lib/researchEvidenceSchema.ts",
-        "src/lib/researchHistory.test.ts",
-        "src/lib/researchHistory.ts",
-        "src/lib/researchStudyAnalyses.test.ts",
-        "src/lib/researchStudyAnalyses.ts"
-      ]
-    },
-    {
-      "baseRefName": "main",
-      "headRefName": "docs/site-upgrade-comparative-analysis-20261002",
-      "headRefOid": "f738b67a018fe3a1b068fd210b367cafd649cc24",
-      "number": 824,
-      "files": [
-        "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
-        "docs/plans/site-upgrade-20261002/tasks/D01.md",
-        "docs/plans/site-upgrade-20261002/tasks/D02-IMPLEMENTATION.md",
-        "docs/plans/site-upgrade-20261002/tasks/D02-QUALIFICATION.json",
-        "docs/plans/site-upgrade-20261002/tasks/D02.md",
-        "docs/plans/site-upgrade-20261002/tasks/D03-IMPLEMENTATION.md",
-        "docs/plans/site-upgrade-20261002/tasks/D03-QUALIFICATION.json",
-        "docs/plans/site-upgrade-20261002/tasks/D03.md",
-        "scripts/research-evidence-integrity.ts",
-        "scripts/research/analyze-evidence.ts",
-        "scripts/research/history-sources.ts",
-        "scripts/research/import-history.ts",
-        "scripts/research/verify-analysis-independent.py",
-        "scripts/validate-data.ts",
-        "src/data/effectiveStateGdrLoraStudy.ts",
-        "src/data/researchAnalysisSnapshot.json",
-        "src/data/researchEvidenceIndex.ts",
-        "src/lib/researchComparisons.test.ts",
-        "src/lib/researchComparisons.ts",
-        "src/lib/researchEvidence.ts",
-        "src/lib/researchEvidenceSchema.test.ts",
-        "src/lib/researchEvidenceSchema.ts",
-        "src/lib/researchHistory.test.ts",
-        "src/lib/researchHistory.ts",
-        "src/lib/researchStudyAnalyses.test.ts",
-        "src/lib/researchStudyAnalyses.ts"
-      ]
-    },
-    {
-      "baseRefName": "main",
-      "headRefName": "docs/site-upgrade-history-import-20261002",
-      "headRefOid": "bfdbb5c5a5a668055e45e4e718436660d87a2e77",
-      "number": 823,
-      "files": [
-        "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
-        "docs/plans/site-upgrade-20261002/tasks/D01.md",
-        "docs/plans/site-upgrade-20261002/tasks/D02-IMPLEMENTATION.md",
-        "docs/plans/site-upgrade-20261002/tasks/D02-QUALIFICATION.json",
-        "docs/plans/site-upgrade-20261002/tasks/D02.md",
-        "scripts/research-evidence-integrity.ts",
-        "scripts/research/history-sources.ts",
-        "scripts/research/import-history.ts",
-        "scripts/validate-data.ts",
-        "src/data/effectiveStateGdrLoraStudy.ts",
-        "src/data/researchEvidenceIndex.ts",
-        "src/lib/researchEvidence.ts",
-        "src/lib/researchEvidenceSchema.test.ts",
-        "src/lib/researchEvidenceSchema.ts",
-        "src/lib/researchHistory.test.ts",
-        "src/lib/researchHistory.ts"
-      ]
-    },
-    {
-      "baseRefName": "main",
-      "headRefName": "docs/site-upgrade-evidence-contract-20261002",
-      "headRefOid": "618e4b65cbf3052e0503ea1d875d81015231aa33",
-      "number": 822,
-      "files": [
-        "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
-        "docs/plans/site-upgrade-20261002/tasks/D01.md",
-        "scripts/research-evidence-integrity.ts",
-        "scripts/validate-data.ts",
-        "src/data/effectiveStateGdrLoraStudy.ts",
-        "src/data/researchEvidenceIndex.ts",
-        "src/lib/researchEvidence.ts",
-        "src/lib/researchEvidenceSchema.test.ts",
-        "src/lib/researchEvidenceSchema.ts"
-      ]
-    },
-    {
-      "baseRefName": "main",
+      "number": 821,
       "headRefName": "docs/site-upgrade-mechanism-flow-20261002",
       "headRefOid": "cf3f371af5a005051a2848e6eec103958f4312a3",
-      "number": 821,
+      "baseRefName": "main",
       "files": [
         "docs/plans/site-upgrade-20261002/tasks/C03-IMPLEMENTATION.md",
         "docs/plans/site-upgrade-20261002/tasks/C03-QUALIFICATION.json",
@@ -457,13 +481,42 @@
         "src/data/vanillaSdLoraMechanism.ts",
         "src/lib/vanillaSdLoraMechanism.test.ts",
         "tests/e2e/vanilla-sd-lora-mechanism.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-03T10:52:50Z"
     },
     {
+      "number": 819,
+      "headRefName": "docs/site-upgrade-content-lifecycle-20261002",
+      "headRefOid": "66eae9a9d7c0fd0b4eeb5dbe28c85c1ad27c53d4",
       "baseRefName": "main",
+      "files": [
+        "docs/plans/site-upgrade-20261002/evidence/B03_CONTENT_LIFECYCLE_EVIDENCE_20261003.md",
+        "docs/plans/site-upgrade-20261002/tasks/B03.md",
+        "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
+        "docs/plans/site-upgrade-20261002/tasks/D01.md",
+        "package.json",
+        "scripts/audit-research-lifecycle.ts",
+        "scripts/research-evidence-integrity.ts",
+        "scripts/validate-data.ts",
+        "src/components/OpenEvoSeedBenchmarksGuide.astro",
+        "src/components/research/OpenEvoExperimentArchive.astro",
+        "src/components/research/ResearchContentLifecycle.astro",
+        "src/data/effectiveStateGdrLoraStudy.ts",
+        "src/data/researchContentLifecycle.ts",
+        "src/data/researchEvidenceIndex.ts",
+        "src/lib/researchContentLifecycle.test.ts",
+        "src/lib/researchEvidence.ts",
+        "src/lib/researchEvidenceSchema.test.ts",
+        "src/lib/researchEvidenceSchema.ts",
+        "src/pages/research/seed-openevo/study/results.astro"
+      ],
+      "updatedAt": "2026-10-03T10:28:16Z"
+    },
+    {
+      "number": 820,
       "headRefName": "docs/site-upgrade-research-figures-20261002",
       "headRefOid": "c31b6bef5d3d4a45c6849b64af5d51546c465f7f",
-      "number": 820,
+      "baseRefName": "main",
       "files": [
         "docs/plans/site-upgrade-20261002/tasks/C02-IMPLEMENTATION.md",
         "docs/plans/site-upgrade-20261002/tasks/C02-QUALIFICATION.json",
@@ -508,40 +561,14 @@
         "src/lib/researchStudyAnalyses.test.ts",
         "src/lib/researchStudyAnalyses.ts",
         "tests/e2e/canonical-research-figures.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-03T10:04:43Z"
     },
     {
-      "baseRefName": "main",
-      "headRefName": "docs/site-upgrade-content-lifecycle-20261002",
-      "headRefOid": "66eae9a9d7c0fd0b4eeb5dbe28c85c1ad27c53d4",
-      "number": 819,
-      "files": [
-        "docs/plans/site-upgrade-20261002/evidence/B03_CONTENT_LIFECYCLE_EVIDENCE_20261003.md",
-        "docs/plans/site-upgrade-20261002/tasks/B03.md",
-        "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
-        "docs/plans/site-upgrade-20261002/tasks/D01.md",
-        "package.json",
-        "scripts/audit-research-lifecycle.ts",
-        "scripts/research-evidence-integrity.ts",
-        "scripts/validate-data.ts",
-        "src/components/OpenEvoSeedBenchmarksGuide.astro",
-        "src/components/research/OpenEvoExperimentArchive.astro",
-        "src/components/research/ResearchContentLifecycle.astro",
-        "src/data/effectiveStateGdrLoraStudy.ts",
-        "src/data/researchContentLifecycle.ts",
-        "src/data/researchEvidenceIndex.ts",
-        "src/lib/researchContentLifecycle.test.ts",
-        "src/lib/researchEvidence.ts",
-        "src/lib/researchEvidenceSchema.test.ts",
-        "src/lib/researchEvidenceSchema.ts",
-        "src/pages/research/seed-openevo/study/results.astro"
-      ]
-    },
-    {
-      "baseRefName": "main",
+      "number": 818,
       "headRefName": "docs/site-upgrade-research-synthesis-20261002",
       "headRefOid": "fc1ed61807ccffe07e462c10ab466b48c7722921",
-      "number": 818,
+      "baseRefName": "main",
       "files": [
         "docs/agents/tasks/POST_ADVISOR_AB_BASEMODEL_PUBLICATION_20260928.md",
         "docs/plans/site-upgrade-20261002/evidence/B02_RESEARCH_SYNTHESIS_EVIDENCE_20261003.md",
@@ -560,13 +587,14 @@
         "src/pages/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/index.astro",
         "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/index.astro",
         "src/pages/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/index.astro"
-      ]
+      ],
+      "updatedAt": "2026-10-03T09:58:23Z"
     },
     {
-      "baseRefName": "main",
+      "number": 817,
       "headRefName": "docs/site-upgrade-reader-journeys-20261002",
       "headRefOid": "13282ac0a0c14f96eac19c441dc5a6342b255ba0",
-      "number": 817,
+      "baseRefName": "main",
       "files": [
         "docs/plans/site-upgrade-20261002/evidence/B01_READER_ENTRY_EVIDENCE_20261003.md",
         "docs/plans/site-upgrade-20261002/tasks/B01.md",
@@ -578,13 +606,14 @@
         "src/lib/studyOverviewStructure.test.ts",
         "src/pages/_bodies/home-v2.astro",
         "tests/e2e/site-reader-contracts.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-03T07:27:26Z"
     },
     {
-      "baseRefName": "main",
+      "number": 816,
       "headRefName": "docs/site-upgrade-module-css-20261002",
       "headRefOid": "dab55a699c7e690bfa6aef0d332d47895892bf70",
-      "number": 816,
+      "baseRefName": "main",
       "files": [
         "docs/plans/site-upgrade-20261002/evidence/A03_CSS_OWNERSHIP_EVIDENCE_20261002.md",
         "docs/plans/site-upgrade-20261002/tasks/A03.md",
@@ -601,13 +630,54 @@
         "src/styles/research-figure-readability.css",
         "src/styles/site.css",
         "src/styles/visual-upgrade.css"
-      ]
+      ],
+      "updatedAt": "2026-10-03T06:31:58Z"
     },
     {
+      "number": 825,
+      "headRefName": "docs/site-upgrade-research-decisions-20261002",
+      "headRefOid": "40ea5b24e8ffad9597f6fdfc53eefe61b5511664",
       "baseRefName": "main",
+      "files": [
+        "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
+        "docs/plans/site-upgrade-20261002/tasks/D01.md",
+        "docs/plans/site-upgrade-20261002/tasks/D02-IMPLEMENTATION.md",
+        "docs/plans/site-upgrade-20261002/tasks/D02-QUALIFICATION.json",
+        "docs/plans/site-upgrade-20261002/tasks/D02.md",
+        "docs/plans/site-upgrade-20261002/tasks/D03-IMPLEMENTATION.md",
+        "docs/plans/site-upgrade-20261002/tasks/D03-QUALIFICATION.json",
+        "docs/plans/site-upgrade-20261002/tasks/D03.md",
+        "docs/plans/site-upgrade-20261002/tasks/D04-IMPLEMENTATION.md",
+        "docs/plans/site-upgrade-20261002/tasks/D04-QUALIFICATION.json",
+        "docs/plans/site-upgrade-20261002/tasks/D04.md",
+        "scripts/research-evidence-integrity.ts",
+        "scripts/research/analyze-evidence.ts",
+        "scripts/research/history-sources.ts",
+        "scripts/research/import-history.ts",
+        "scripts/research/verify-analysis-independent.py",
+        "scripts/validate-data.ts",
+        "src/data/effectiveStateGdrLoraStudy.ts",
+        "src/data/researchAnalysisSnapshot.json",
+        "src/data/researchDecisionNotes.ts",
+        "src/data/researchEvidenceIndex.ts",
+        "src/lib/researchComparisons.test.ts",
+        "src/lib/researchComparisons.ts",
+        "src/lib/researchDecisionNotes.test.ts",
+        "src/lib/researchEvidence.ts",
+        "src/lib/researchEvidenceSchema.test.ts",
+        "src/lib/researchEvidenceSchema.ts",
+        "src/lib/researchHistory.test.ts",
+        "src/lib/researchHistory.ts",
+        "src/lib/researchStudyAnalyses.test.ts",
+        "src/lib/researchStudyAnalyses.ts"
+      ],
+      "updatedAt": "2026-10-03T04:31:08Z"
+    },
+    {
+      "number": 815,
       "headRefName": "docs/site-upgrade-static-first-20261002",
       "headRefOid": "a52cebeb0726fb836d14136e5f1f487bde8d9943",
-      "number": 815,
+      "baseRefName": "main",
       "files": [
         "docs/plans/site-upgrade-20261002/evidence/A02_STATIC_FIRST_EVIDENCE_20261002.md",
         "docs/plans/site-upgrade-20261002/tasks/A02.md",
@@ -633,13 +703,74 @@
         "tests/e2e/static-first.spec.ts",
         "tests/e2e/visual-regression.spec.ts",
         "tests/e2e/workspace.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-10-02T20:42:42Z"
     },
     {
+      "number": 824,
+      "headRefName": "docs/site-upgrade-comparative-analysis-20261002",
+      "headRefOid": "f738b67a018fe3a1b068fd210b367cafd649cc24",
       "baseRefName": "main",
+      "files": [
+        "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
+        "docs/plans/site-upgrade-20261002/tasks/D01.md",
+        "docs/plans/site-upgrade-20261002/tasks/D02-IMPLEMENTATION.md",
+        "docs/plans/site-upgrade-20261002/tasks/D02-QUALIFICATION.json",
+        "docs/plans/site-upgrade-20261002/tasks/D02.md",
+        "docs/plans/site-upgrade-20261002/tasks/D03-IMPLEMENTATION.md",
+        "docs/plans/site-upgrade-20261002/tasks/D03-QUALIFICATION.json",
+        "docs/plans/site-upgrade-20261002/tasks/D03.md",
+        "scripts/research-evidence-integrity.ts",
+        "scripts/research/analyze-evidence.ts",
+        "scripts/research/history-sources.ts",
+        "scripts/research/import-history.ts",
+        "scripts/research/verify-analysis-independent.py",
+        "scripts/validate-data.ts",
+        "src/data/effectiveStateGdrLoraStudy.ts",
+        "src/data/researchAnalysisSnapshot.json",
+        "src/data/researchEvidenceIndex.ts",
+        "src/lib/researchComparisons.test.ts",
+        "src/lib/researchComparisons.ts",
+        "src/lib/researchEvidence.ts",
+        "src/lib/researchEvidenceSchema.test.ts",
+        "src/lib/researchEvidenceSchema.ts",
+        "src/lib/researchHistory.test.ts",
+        "src/lib/researchHistory.ts",
+        "src/lib/researchStudyAnalyses.test.ts",
+        "src/lib/researchStudyAnalyses.ts"
+      ],
+      "updatedAt": "2026-10-02T20:39:04Z"
+    },
+    {
+      "number": 823,
+      "headRefName": "docs/site-upgrade-history-import-20261002",
+      "headRefOid": "bfdbb5c5a5a668055e45e4e718436660d87a2e77",
+      "baseRefName": "main",
+      "files": [
+        "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
+        "docs/plans/site-upgrade-20261002/tasks/D01.md",
+        "docs/plans/site-upgrade-20261002/tasks/D02-IMPLEMENTATION.md",
+        "docs/plans/site-upgrade-20261002/tasks/D02-QUALIFICATION.json",
+        "docs/plans/site-upgrade-20261002/tasks/D02.md",
+        "scripts/research-evidence-integrity.ts",
+        "scripts/research/history-sources.ts",
+        "scripts/research/import-history.ts",
+        "scripts/validate-data.ts",
+        "src/data/effectiveStateGdrLoraStudy.ts",
+        "src/data/researchEvidenceIndex.ts",
+        "src/lib/researchEvidence.ts",
+        "src/lib/researchEvidenceSchema.test.ts",
+        "src/lib/researchEvidenceSchema.ts",
+        "src/lib/researchHistory.test.ts",
+        "src/lib/researchHistory.ts"
+      ],
+      "updatedAt": "2026-10-02T19:38:14Z"
+    },
+    {
+      "number": 814,
       "headRefName": "docs/site-upgrade-ci-artifact-20261002",
       "headRefOid": "8d97bc293769ebef50a4877931716850ecb698c1",
-      "number": 814,
+      "baseRefName": "main",
       "files": [
         ".github/workflows/public-pr-ci.yml",
         ".gitignore",
@@ -652,36 +783,42 @@
         "tests/ci-browser-budget.test.mjs",
         "tests/ci-build-artifact.test.mjs",
         "tests/ci-public-plan.test.mjs"
-      ]
+      ],
+      "updatedAt": "2026-10-02T19:29:55Z"
     },
     {
+      "number": 822,
+      "headRefName": "docs/site-upgrade-evidence-contract-20261002",
+      "headRefOid": "618e4b65cbf3052e0503ea1d875d81015231aa33",
       "baseRefName": "main",
-      "headRefName": "docs/site-upgrade-program-20261002",
-      "headRefOid": "811e77ebb1dfad03c8bbd3d7538244ebbdce5d5d",
-      "number": 813,
       "files": [
-        "docs/plans/site-upgrade-20261002/COMMON.md",
-        "docs/plans/site-upgrade-20261002/EXISTING_WORK.md",
-        "docs/plans/site-upgrade-20261002/MANIFEST.json",
-        "docs/plans/site-upgrade-20261002/README.md",
-        "docs/plans/site-upgrade-20261002/ROUTE_SOURCE_INVENTORY.json",
-        "docs/plans/site-upgrade-20261002/SOURCES.md"
-      ]
+        "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
+        "docs/plans/site-upgrade-20261002/tasks/D01.md",
+        "scripts/research-evidence-integrity.ts",
+        "scripts/validate-data.ts",
+        "src/data/effectiveStateGdrLoraStudy.ts",
+        "src/data/researchEvidenceIndex.ts",
+        "src/lib/researchEvidence.ts",
+        "src/lib/researchEvidenceSchema.test.ts",
+        "src/lib/researchEvidenceSchema.ts"
+      ],
+      "updatedAt": "2026-10-02T19:19:42Z"
     },
     {
-      "baseRefName": "main",
+      "number": 812,
       "headRefName": "design/beta-sujianlin-reader-20261001",
       "headRefOid": "e94b1618760b9cbd201ff88ce61141e592989693",
-      "number": 812,
+      "baseRefName": "main",
       "files": [
         "docs/agents/tasks/BETA_SUJIANLIN_READER_REDESIGN_20261001.md"
-      ]
+      ],
+      "updatedAt": "2026-10-01T12:49:38Z"
     },
     {
-      "baseRefName": "main",
+      "number": 806,
       "headRefName": "design/basemodel-design-system-v1-20260928",
       "headRefOid": "8f976af80439f83fc4c9bfcf451e87ed60ad8126",
-      "number": 806,
+      "baseRefName": "main",
       "files": [
         "AGENTS.md",
         "docs/agents/current/seed-openevo-results-current-state-2026-08-26.md",
@@ -759,13 +896,14 @@
         "tests/e2e/site-reader-contracts.spec.ts",
         "tests/e2e/text-memory-research.spec.ts",
         "tests/e2e/vanilla-sd-lora-mechanism.spec.ts"
-      ]
+      ],
+      "updatedAt": "2026-09-29T03:03:58Z"
     },
     {
-      "baseRefName": "main",
+      "number": 805,
       "headRefName": "research/post-advisor-ab-final-results-20260928",
       "headRefOid": "43fa2cbb3998824333826e8542cebf8265842f17",
-      "number": 805,
+      "baseRefName": "main",
       "files": [
         "docs/agents/tasks/POST_ADVISOR_AB_BASEMODEL_PUBLICATION_20260928.md",
         "public/research/seed-openevo/evidence/post-advisor-ab-final-20260928.json",
@@ -777,20 +915,60 @@
         "src/lib/postAdvisorAbPublication.test.ts",
         "src/lib/researchResultReadingContract.test.ts",
         "src/lib/seedOpenEvoProgressBriefing.test.ts"
-      ]
+      ],
+      "updatedAt": "2026-09-28T14:10:13Z"
     },
     {
-      "baseRefName": "main",
+      "number": 783,
       "headRefName": "plan/resource-mission-bridges-20260922",
       "headRefOid": "90c7d46bde8447194d568aacce39de808aa59938",
-      "number": 783,
+      "baseRefName": "main",
       "files": [
         "docs/plans/2026-09-22-pr-d-resource-mission-bridges.md"
-      ]
+      ],
+      "updatedAt": "2026-09-22T02:20:42Z"
     }
   ],
   "notes": [
     "Latest #901 head/path snapshot recorded above. Its research-explainer-layout change stabilizes the scroll test near the file end; #898 changes only matrix case granularity. Neither hunk overwrites the other. #806 core CSS patch changes control structure, not existing typography declarations; #898 migrates those declarations and preserves the pending structure.",
-    "Snapshot captures current open PRs. No other branch was merged, closed or rewritten."
-  ]
+    "Snapshot captures current open PRs. No other branch was merged, closed or rewritten.",
+    "2026-10-21: GitHub open PRs refreshed from real-time REST snapshot (41). #908 now edits the same Astro source as #898; changes address distinct semantics, but future cherry-pick/merge must compare exact heads and preserve both. No other PR or Production ref was modified.",
+    "Concurrently writing agent identity/process is not exposed by GitHub; no unexpected #898 ref move was detected during atomic compare-and-swap pushes. A running agent cannot be ruled out solely by this snapshot."
+  ],
+  "snapshot_context": {
+    "capture_source": "GitHub REST /pulls?state=open&per_page=100, verified changed-files for moved/new PRs",
+    "work_pr": 898,
+    "work_branch_head_before_receipt": "185f3dd67ca652cf901369a40441325adc6447b6",
+    "open_pr_count": 41,
+    "stack_parent": 895,
+    "stack_parent_head": "9a18359d247ffcb89ffae30434d03a0cb28e02c9",
+    "ci_run_id": 39544919705,
+    "ci_conclusion": "success",
+    "overlap_findings": [
+      {
+        "pr": 908,
+        "head": "a9a94b805d7e8bd990534f277d9528205e808606",
+        "owner": "src/components/research/OpenEvoExperimentAnalysisPlan.astro",
+        "assessment": "CONCURRENT_PR_BLOCKER: same file, #908 adds @media screen .plan-table column min-width; semantic width rule is distinct from #898 typography but textual merge conflict possible; do not copy/merge or reset"
+      },
+      {
+        "pr": 806,
+        "head": "8f976af80439f83fc4c9bfcf451e87ed60ad8126",
+        "owner": "src/components/research/OpenEvoExperimentResultsScaffold.astro and shared Models/Papers CSS",
+        "assessment": "Existing parallel Design System v1 touches live 7B scaffold; former dead 7B comparison code is not a valid visual consumer; coordinate owner before work"
+      },
+      {
+        "pr": 895,
+        "head": "9a18359d247ffcb89ffae30434d03a0cb28e02c9",
+        "owner": "site.css/tokens and research figures",
+        "assessment": "Parent of stacked #898; preserve base and do not rewrite"
+      },
+      {
+        "pr": 901,
+        "head": "9f8cba4e68ef92d3abcc303ae80dcfae35c48eb9",
+        "owner": "cloud cross-browser Figure review pipeline",
+        "assessment": "Cloud WebKit implementation stays on unmerged PR; not part of #898 acceptance"
+      }
+    ]
+  }
 }
