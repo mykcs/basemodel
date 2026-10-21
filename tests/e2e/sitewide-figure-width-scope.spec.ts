@@ -592,6 +592,23 @@ for(const width of [390,768,1440]) {
       const table=page.locator('[data-advisor-matrix="'+id+'"] table');
       await revealEvidenceReadingState(table);
       const label=table.locator('tbody th').first();
+      if(id==='q03'){
+        // Short A0/A40/A80/A120 identifiers belong in a compact LaTeX column,
+        // unlike long method names which require a minimum 8em reading measure.
+        const ids=await table.locator('tbody th').allTextContents();
+        expect(ids.map(text=>text.trim())).toEqual(['A0','A40','A80','A120']);
+        const rows=await table.locator('tbody th').evaluateAll(nodes=>nodes.map(node=>{
+          const range=document.createRange();range.selectNodeContents(node);
+          return {rectCount:range.getClientRects().length,width:node.getBoundingClientRect().width,wrap:getComputedStyle(node).overflowWrap};
+        }));
+        expect(rows.every(row=>row.rectCount===1&&row.width>=30&&row.width<=115&&row.wrap==='normal')).toBe(true);
+        await label.evaluate(el=>{(el as HTMLElement).style.overflowWrap='anywhere';(el as HTMLElement).style.maxWidth='1ch';});
+        const badWrap=await label.evaluate(el=>getComputedStyle(el).overflowWrap);
+        expect(()=>expect(badWrap).toBe('normal')).toThrow();
+        await label.evaluate(el=>{(el as HTMLElement).style.removeProperty('overflow-wrap');(el as HTMLElement).style.removeProperty('max-width');});
+        expect(await label.evaluate(el=>getComputedStyle(el).overflowWrap)).toBe('normal');
+        continue;
+      }
       const before=await label.boundingBox();
       expect(before!.width).toBeGreaterThanOrEqual(127);
       const fragments=await label.evaluate(el=>{
