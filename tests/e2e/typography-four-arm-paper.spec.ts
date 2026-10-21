@@ -15,7 +15,8 @@ const roles = [
   { selector: '.factor-matrix small', minPx: 13.9, kind: 'factor explanation' },
   { selector: '.plan-table thead th', minPx: 14.9, kind: 'analysis table heading' },
   { selector: '.plan-table tbody td', minPx: 14.9, kind: 'analysis table value' },
-  { selector: '.plan-table td span', minPx: 13.9, kind: 'scientific table explanation' },
+  // The four-arm route does not render .plan-table td span. It remains a
+  // dormant selector, not proof of a currently visible explanatory role.
   { selector: '.plan-table code', minPx: 11.9, kind: 'technical identifier', mono: true },
   { selector: '.per-arm-grid footer', minPx: 12.9, kind: 'scientific status metadata' },
   { selector: '.section-kicker', minPx: 12.9, kind: 'provenance metadata' },
