@@ -72,7 +72,7 @@ const stages = [
   .responsibility-flow small,.responsibility-flow strong{display:block}
   .responsibility-flow small{margin-top:.6rem;color:var(--muted);font-size:.65rem}
   .responsibility-flow strong{margin-top:.15rem;font-size:.82rem}
-  .responsibility-flow p{margin:.35rem 0 0;color:var(--muted);font-size:.69rem;line-height:1.45}
+  .responsibility-flow p{margin:.35rem 0 0;color:var(--muted);font-size:var(--article-body-size,.69rem);line-height:var(--article-body-leading,1.45)}
   .stage2-bridge{margin:.9rem 0 0;padding:.85rem 0;border-top:1px solid var(--line);color:var(--muted);font-size:.76rem;line-height:1.6}
   .comparison-scope{margin-top:.45rem;padding:1rem 0;border-top:1px solid var(--line)}
   .comparison-scope h3{margin:0 0 .65rem;font-size:.9rem}
@@ -88,7 +88,7 @@ const stages = [
   .parameter-note{padding:0 .75rem .75rem}
   .design-next{margin:.8rem 0 0 3.05rem}
   .design-next a{font-size:.74rem;font-weight:750}
-  @media(max-width:950px){
+  @container reading-overview (max-width:900px){
     .responsibility-flow{grid-template-columns:1fr;gap:.75rem}
     .responsibility-flow li:not(:last-child)::after{right:auto;left:1.2rem;top:auto;bottom:-.75rem;width:0;height:.75rem;border-top:0;border-left:2px solid var(--muted)}
     .responsibility-flow li:not(:last-child)::before{right:auto;left:calc(1.2rem - 4px);top:auto;bottom:-.79rem;border-left:4px solid transparent;border-right:4px solid transparent;border-top:7px solid var(--muted);border-bottom:0}

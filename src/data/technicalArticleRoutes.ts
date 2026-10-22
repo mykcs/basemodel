@@ -47,7 +47,35 @@ export const TECHNICAL_ARTICLE_ROUTES = [
   "/research/seed-openevo/study/results/why-it-kept-failing/"
 ] as const;
 
+/** Research entries keep their navigation/controls in a wider reading frame. */
+export const READING_OVERVIEW_ROUTES = [
+  "/research/seed-openevo/flow/",
+  "/research/seed-openevo/flow/server/",
+  "/research/seed-openevo/study/",
+  "/research/seed-openevo/study/results/",
+  "/research/seed-openevo/study/capability-exploration/",
+  "/research/seed-openevo/study/capability-exploration/archive/",
+  "/research/seed-openevo/study/capability-exploration/first-run/",
+  "/research/seed-openevo/study/capability-exploration/mechanism-1-0/",
+  "/research/seed-openevo/study/capability-exploration/openevo-2-0/",
+  "/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/",
+  "/research/seed-openevo/study/capability-exploration/stage1-evolution/",
+  "/research/seed-openevo/study/capability-exploration/stage2-256-window/",
+  "/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/",
+  "/research/seed-openevo/study/capability-exploration/sd-lora-history/",
+  "/research/seed-openevo/study/capability-exploration/sd-lora-present-function/",
+  "/research/seed-openevo/study/capability-exploration/sd-lora-history-novelty/",
+  "/research/seed-openevo/study/capability-exploration/sd-lora-future-learning/",
+  "/guide/",
+  "/guide/today/"
+] as const;
+
+export function isReadingOverviewRoute(pathname: string): boolean {
+  const path = (pathname.split(/[?#]/, 1)[0] || '/').replace(/^\/en(?=\/|$)/, '').replace(/\/+$/, '') + '/';
+  return (READING_OVERVIEW_ROUTES as readonly string[]).includes(path) || /^\/papers\/[^/]+\/$/.test(path);
+}
+
 export function isTechnicalArticleRoute(pathname: string): boolean {
   const path = (pathname.split(/[?#]/, 1)[0] || '/').replace(/^\/en(?=\/|$)/, '').replace(/\/+$/, '') + '/';
-  return (TECHNICAL_ARTICLE_ROUTES as readonly string[]).includes(path);
+  return (TECHNICAL_ARTICLE_ROUTES as readonly string[]).includes(path) || isReadingOverviewRoute(path);
 }

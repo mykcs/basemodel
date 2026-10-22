@@ -1,21 +1,27 @@
 import { describe, expect, it } from 'vitest';
 import fs from 'node:fs';
-import { TECHNICAL_ARTICLE_ROUTES, isTechnicalArticleRoute } from '../data/technicalArticleRoutes';
+import { TECHNICAL_ARTICLE_ROUTES, READING_OVERVIEW_ROUTES, isReadingOverviewRoute, isTechnicalArticleRoute } from '../data/technicalArticleRoutes';
 import { readerContractForRoute } from '../data/siteReaderContracts';
 
 describe('technical article reading inventory', () => {
   it('binds every article to its existing reader contract without a wildcard', () => {
     expect(new Set(TECHNICAL_ARTICLE_ROUTES).size).toBe(TECHNICAL_ARTICLE_ROUTES.length);
-    for (const route of TECHNICAL_ARTICLE_ROUTES) {
+    for (const route of [...TECHNICAL_ARTICLE_ROUTES,...READING_OVERVIEW_ROUTES]) {
       expect(readerContractForRoute(route), route).toBeDefined();
       expect(isTechnicalArticleRoute(route + '?review=1#evidence'), route).toBe(true);
       expect(isTechnicalArticleRoute('/en' + route), route).toBe(true);
     }
   });
-  it('keeps tools, directories, presentations and moved pages out of the article treatment', () => {
-    for (const route of ['/','/models/','/papers/metagpt/','/compare/','/workspace/','/research/seed-openevo/flow/','/research/seed-openevo/flow/server/','/research/seed-openevo/study/','/research/seed-openevo/study/run/','/research/seed-openevo/study/briefing/','/research/seed-openevo/study/capability-exploration/','/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/','/research/seed-openevo/study/results/webshop-training/']) {
+  it('keeps tools, catalog directories, presentations and moved pages out of the article treatment', () => {
+    for (const route of ['/','/models/','/compare/','/workspace/','/research/seed-openevo/study/run/','/research/seed-openevo/study/briefing/','/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/','/research/seed-openevo/study/results/webshop-training/']) {
       expect(isTechnicalArticleRoute(route), route).toBe(false);
     }
+  });
+  it('includes paper records while keeping the paper catalog functional',()=>{
+    expect(isReadingOverviewRoute('/papers/seed/')).toBe(true);
+    expect(isReadingOverviewRoute('/en/papers/metagpt/?review=1')).toBe(true);
+    expect(isReadingOverviewRoute('/papers/')).toBe(false);
+    expect(isReadingOverviewRoute('/papers/seed/nested/')).toBe(false);
   });
   it('keeps one owner for prose while scientific table fonts stay with booktabs', () => {
     const read = (p: string) => fs.readFileSync(p, 'utf8');

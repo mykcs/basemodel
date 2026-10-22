@@ -1,5 +1,9 @@
 import { test, expect, type Page } from '@playwright/test';
-import { TECHNICAL_ARTICLE_ROUTES } from '../../src/data/technicalArticleRoutes';
+import { readdirSync } from 'node:fs';
+import { TECHNICAL_ARTICLE_ROUTES, READING_OVERVIEW_ROUTES } from '../../src/data/technicalArticleRoutes';
+
+const paperRoutes = readdirSync('src/content/papers').filter(file => file.endsWith('.json')).map(file => '/papers/' + file.slice(0,-5) + '/');
+const readingRoutes = [...TECHNICAL_ARTICLE_ROUTES, ...READING_OVERVIEW_ROUTES, ...paperRoutes];
 
 async function articleGeometry(page: Page, width: number) {
   return page.locator('#main-content .evo-approved-reader').evaluate((root, viewport) => {
@@ -11,7 +15,7 @@ async function articleGeometry(page: Page, width: number) {
     if (!h1) errors.push('missing H1');
     if (parseFloat(style.fontSize) !== 14) errors.push('body must use 14px reading type');
     if (heading && Math.abs(parseFloat(heading.fontSize) - (viewport <= 520 ? 26 : 28)) > .1) errors.push('old display heading escaped the article owner');
-    if (rect.width > Math.min(750.5, viewport - 23)) errors.push('article measure escaped the reading frame');
+    if (rect.width > Math.min(root.classList.contains('evo-reading-overview') ? 960.5 : 750.5, viewport - 23)) errors.push('article measure escaped the reading frame');
     if (document.documentElement.scrollWidth > viewport + 1) errors.push('document overflow');
     for (const node of root.querySelectorAll<HTMLElement>('p,dd,li,span,small')) {
       if (node.children.length || node.closest('details:not([open]),[hidden],[aria-hidden="true"]')) continue;
@@ -35,7 +39,7 @@ for (const width of [390, 768, 1440]) {
     test('all technical articles: ' + width + 'px ' + theme, async ({ page }) => {
       await page.setViewportSize({ width, height: width === 390 ? 844 : 1024 });
       await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
-      for (const route of TECHNICAL_ARTICLE_ROUTES) {
+      for (const route of readingRoutes) {
         await test.step(route, async () => {
           const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
           expect(response?.status(), route).toBe(200);
@@ -99,4 +103,65 @@ test('article text and native evidence remain readable without JavaScript', asyn
   await expect(page.locator('.advisor-ten-toc summary')).toBeVisible();
   expect(await page.locator('table').count()).toBeGreaterThan(1);
   await context.close();
+});
+
+for (const width of [390,768,1440]) {
+  test('chapter numbers stay on the heading left at '+width+'px', async ({page})=>{
+    await page.setViewportSize({width,height:900});
+    for (const route of ['/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/','/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/','/research/seed-openevo/study/minimax-teacher/','/research/seed-openevo/study/results/benchmark-first/','/research/seed-openevo/study/capability-exploration/archive/','/research/seed-openevo/flow/','/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/','/research/seed-openevo/study/capability-exploration/sd-lora-history-novelty/']) {
+      await page.goto(route);
+      const numbers=page.locator('.evo-article__heading-number');
+      expect(await numbers.count(),route).toBeGreaterThan(0);
+      expect(await headingNumberErrors(page),route).toEqual([]);
+    }
+  });
+}
+
+test('paper evidence and reproduction choices stay in the reading path',async({page})=>{
+  await page.goto('/papers/seed/');
+  await expect(page.locator('.evo-paper-record > aside')).toBeVisible();
+  for(const mode of ['strict','method','modern'])await expect(page.locator('#paper-reproduce a[href*="mode='+mode+'"]')).toBeVisible();
+  expect(await page.locator('.evo-paper-record > aside a').count()).toBeGreaterThan(0);
+});
+
+async function headingNumberErrors(page:Page){
+  return page.locator('.evo-article__heading-number').evaluateAll(nodes=>nodes.flatMap(n=>{
+        const h=n.parentElement!;const s=getComputedStyle(n);const hs=getComputedStyle(h);
+        const number=n.getBoundingClientRect();const text=document.createRange();text.setStartAfter(n);text.setEnd(h,h.childNodes.length);
+        const first=[...text.getClientRects()].find(r=>r.width>2&&r.height>2);
+        return /^H[123]$/.test(h.tagName)&&s.display==='inline'&&s.fontSize===hs.fontSize&&first&&number.x<first.x&&Math.abs(number.y-first.y)<4?[]:[h.textContent];
+      }));
+}
+
+test('number gate rejects the old small digit above its heading',async({page})=>{
+  await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/');
+  expect(await headingNumberErrors(page)).toEqual([]);
+  const bad=await page.addStyleTag({content:'.evo-article__heading-number {display:block!important;font-size:10px!important;}'});
+  expect((await headingNumberErrors(page)).length).toBeGreaterThan(0);
+  await bad.evaluate(node=>node.parentNode?.removeChild(node));
+  expect(await headingNumberErrors(page)).toEqual([]);
+});
+
+test('wide reading entries keep expanded contents in flow without covering the title',async({page})=>{
+  await page.setViewportSize({width:1440,height:1000});
+  for(const route of ['/papers/seed/','/research/seed-openevo/study/capability-exploration/','/research/seed-openevo/flow/','/research/seed-openevo/study/results/','/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/']){
+    await page.goto(route);
+    const nav=page.locator('[data-article-outline]');
+    await expect(page.locator('.evo-approved-reader [data-article-outline]')).toHaveCount(1);
+    await nav.locator('summary').click();
+    expect(await nav.evaluate(el=>getComputedStyle(el).position)).toBe('static');
+    const title=await page.locator('#main-content h1').boundingBox();
+    const box=await nav.boundingBox();
+    expect(box!.y).toBeGreaterThan(title!.y+title!.height);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
+  }
+});
+
+test('moving a chapter number into its heading preserves old generated anchors',async({page})=>{
+  await page.goto('/research/seed-openevo/study/results/benchmark-first/');
+  const heading=page.locator('.note-body h2').first();
+  const label='OpenEvo 已经有第一代内部迁移证据，但这还不是 SEED 官方保留任务结果。';
+  const id=label.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase().replace(/[^\p{Letter}\p{Number}]+/gu,'-').replace(/^-+|-+$/g,'').slice(0,72);
+  await expect(heading).toHaveAttribute('id',id);
+  await expect(page.locator('[data-article-outline] a').first()).toHaveAttribute('data-outline-target',id);
 });
