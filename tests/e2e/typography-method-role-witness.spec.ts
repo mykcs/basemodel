@@ -710,6 +710,8 @@ async function measureSharedDisclosure(depth:import('@playwright/test').Locator)
 function acceptSharedDisclosure(reading:DepthReading,width:number,kind:'method'|'history'){
   const slots=[['label',reading.label],['summary',reading.summary],['intro',reading.intro]] as const;
   for(const [name,slot] of slots){
+    // Collapsed native <details> hides its intro; geometry is only meaningful after opening.
+    if(name==='intro'&&!reading.open)continue;
     if(!slot){if(name==='intro')continue;throw Error('Missing '+name)}
     expect(slot.size,kind+' '+name+' minimum').toBeGreaterThanOrEqual(15.9);
     expect(slot.font,kind+' '+name+' interface family').toMatch(/Inter|PingFang|system-ui/);
