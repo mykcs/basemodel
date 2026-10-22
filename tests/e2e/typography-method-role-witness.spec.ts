@@ -104,8 +104,14 @@ for (const width of [390, 768, 1440] as const) {
             animations: 'disabled',
             style: '.site-header, .research-navigation { visibility: hidden; }',
           });
-          await root.locator('.irx-carrier-details > summary').click();
-          await expect(root.locator('.irx-carrier-details')).toHaveAttribute('open', '');
+          // The preceding tall capture scrolls the page and restores sticky chrome.
+          // Activate the native disclosure by keyboard, independent of that moving hit target.
+          const carrierDetails = root.locator('.irx-carrier-details');
+          await expect(carrierDetails).toHaveJSProperty('open', false);
+          await carrierDetails.locator(':scope > summary').focus();
+          await page.keyboard.press('Enter');
+          await expect(carrierDetails).toHaveJSProperty('open', true);
+          await expect(root.locator('.irx-carrier').first()).toBeVisible();
         }
         const roleReceipts=[];
         const fields=[{selector:'.irx-transport button',minimum:13,role:'native transport control'},...witness.fields];

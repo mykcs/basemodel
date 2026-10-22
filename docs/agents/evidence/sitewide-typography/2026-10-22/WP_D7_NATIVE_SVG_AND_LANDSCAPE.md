@@ -31,3 +31,11 @@ An isolated pair of **PR #898-only jobs** in the existing `.github/workflows/pub
 - The Project Report scientific claims/data and figures' coordinate sources remain untouched.
 - No Production deployment, PR merge/retarget, or Mac/RDC use. The historical Vercel READY deployment is not an exact candidate Preview.
 - Visual verdicts are pending actual cloud artifact inspection: **NEEDS HUMAN REVIEW** rather than a fabricated green stamp.
+
+## Followup: exact 58201cf failure diagnosis
+
+Run [39733958050](https://github.com/mykcs/basemodel/actions/runs/39733958050) completed with deterministic PASS, Chromium shards 5/6/7 PASS and 1/2/3/4/8 FAIL; full WebKit shards 1/2 PASS, 3/4 FAIL. All five Landscape failures in both engines measured 12px SVG labels against the unchanged 12.9px minimum. The option set 13px tick labels but left axis-name and legend-pagination defaults unspecified. The corrective candidate sets those roles and the chart's inherited interface family/default size explicitly; scientific series and coordinates remain unchanged. Label receipts now identify every SVG text and its computed size.
+
+The sole other full-WebKit failure was OpenEvo 768px dark: the trace resolves a genuinely closed carrier details element (open=null), not a boolean-attribute serialization mismatch. Its preceding tall screenshot moved the page and restored sticky controls. The typography witness now activates the native summary with keyboard Enter, checks closed→open state and visible carrier content; it does not force open state, retry clicks or relax any font/geometry threshold. Existing pointer-interaction tests remain.
+
+This is a source correction, not a new PASS receipt. Fresh exact-head public and full-WebKit runs, screenshots and Preview acceptance remain required. Vercel Sandbox creation returned 402 Hobby quota exhausted; the scoped CLI fallback returned 403. No billing, permissions or Production settings were changed. GitHub Actions remains the authorized test lane.

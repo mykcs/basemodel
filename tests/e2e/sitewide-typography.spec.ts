@@ -1063,13 +1063,13 @@ const readLandscapeLabels=async(page:import('@playwright/test').Page)=>page.loca
   const svg=root.querySelector('svg');
   const nodes=[...root.querySelectorAll<SVGTextElement>('svg text')].filter(node=>node.textContent?.trim());
   if(!svg||nodes.length<3)throw Error('Landscape ECharts labels did not render');
-  return {count:nodes.length,min:Math.min(...nodes.map(node=>parseFloat(getComputedStyle(node).fontSize))),
+  return {labels:nodes.map(node=>({text:node.textContent?.trim(),size:parseFloat(getComputedStyle(node).fontSize)})),count:nodes.length,min:Math.min(...nodes.map(node=>parseFloat(getComputedStyle(node).fontSize))),
     max:Math.max(...nodes.map(node=>parseFloat(getComputedStyle(node).fontSize))),
     documentOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};
 });
 const acceptLandscapeLabels=(m:Awaited<ReturnType<typeof readLandscapeLabels>>)=>{
   expect(m.count).toBeGreaterThanOrEqual(3);
-  expect(m.min,'ECharts axis and legend text must be readable').toBeGreaterThanOrEqual(12.9);
+  expect(m.min,'ECharts axis and legend text must be readable: '+JSON.stringify(m.labels)).toBeGreaterThanOrEqual(12.9);
   expect(m.max).toBeGreaterThanOrEqual(13.9);
   expect(m.documentOverflow).toBeLessThanOrEqual(2);
 };

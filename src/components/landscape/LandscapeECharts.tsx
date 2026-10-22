@@ -40,11 +40,12 @@ export default function LandscapeECharts({ models, locale = 'zh', dimension = 'h
       const dimensionLabels = landscapeDimensionLabels(points, locale, dimension);
       const responsiveAxis = landscapeAxisForWidth(chartRef.current.clientWidth, locale, muted, line);
       const option: EChartsCoreOption = {
+        textStyle: { fontFamily: styles.getPropertyValue('--font-interface').trim() || 'system-ui', fontSize: 13 },
         aria: { enabled: true, decal: { show: true } },
         animationDuration: 350,
         color: colorKeys.map((_, index) => colorForKey(colorKeys[index]!, colorBy, index)),
         grid: responsiveAxis.grid,
-        legend: { type: 'scroll', top: 0, textStyle: { color: muted, fontSize: 14 } },
+        legend: { type: 'scroll', top: 0, pageTextStyle: { color: muted, fontSize: 13 }, textStyle: { color: muted, fontSize: 14 } },
         tooltip: {
           trigger: 'item',
           backgroundColor: surface,
@@ -58,8 +59,8 @@ export default function LandscapeECharts({ models, locale = 'zh', dimension = 'h
             return `<strong>${escapeHtml(point.name)}</strong><br/>${escapeHtml(point.vendor)} · ${escapeHtml(point.releaseDate)}<br/>${escapeHtml(point.architectureLabel)} · ${escapeHtml(point.hardwareLabel)}<br/>${locale === 'zh' ? '访问' : 'Access'}: ${escapeHtml(point.accessLabel)}<br/>${locale === 'zh' ? '参数' : 'Parameters'}: ${escapeHtml(parameter)}<br/>${locale === 'zh' ? '证据状态' : 'Evidence'}: ${escapeHtml(point.dataStatusLabel)}<br/><span style="color:${muted}">${locale === 'zh' ? '点击打开模型详情' : 'Click to open model details'}</span>`;
           },
         },
-        xAxis: { type: 'time', name: locale === 'zh' ? '发布日期' : 'Release date', nameLocation: 'middle', nameGap: 30, splitNumber: responsiveAxis.splitNumber, axisLabel: responsiveAxis.axisLabel, axisLine: { lineStyle: { color: line } }, splitLine: { lineStyle: { color: line, opacity: .45 } } },
-        yAxis: { type: 'category', data: dimensionLabels, axisLabel: { color: muted, fontSize: 13 }, axisLine: { lineStyle: { color: line } }, splitLine: { lineStyle: { color: line, opacity: .35 } } },
+        xAxis: { type: 'time', name: locale === 'zh' ? '发布日期' : 'Release date', nameLocation: 'middle', nameGap: 30, nameTextStyle: { color: muted, fontSize: 13 }, splitNumber: responsiveAxis.splitNumber, axisLabel: responsiveAxis.axisLabel, axisLine: { lineStyle: { color: line } }, splitLine: { lineStyle: { color: line, opacity: .45 } } },
+        yAxis: { type: 'category', nameTextStyle: { color: muted, fontSize: 13 }, data: dimensionLabels, axisLabel: { color: muted, fontSize: 13 }, axisLine: { lineStyle: { color: line } }, splitLine: { lineStyle: { color: line, opacity: .35 } } },
         series: colorKeys.map((key) => ({
           name: key,
           type: 'scatter',
