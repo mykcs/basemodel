@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { writeFileSync } from 'node:fs';
 
 // Representative reader roles, not a claim that these paths are every static
 // route. The build audit separately walks all generated HTML.
@@ -587,4 +588,125 @@ test('metric zoom actual 13px axis-readability predicate rejects old squeezed mo
   expect(()=>acceptMetricZoom(bad,true)).toThrow();
   await style.evaluate(node=>node.parentNode?.removeChild(node));
   acceptMetricZoom(await readMetricZoom(first),true);
+});
+
+
+// Ceiling-1.0 actual 7B reader and table witnesses (WP-D4).
+// Freeze factual copy and the local table-scroll contract while removing
+// decorative monospace labels and unreadable small table headers.
+const ceilingRoute='/research/seed-openevo/study/capability-exploration/stage2-ceiling/';
+const ceilingRoot='[data-testid="ceiling-stage2-strategy"]';
+const ceilingRoles={
+  '.ceiling__hero>div>p':16,
+  '.ceiling__hero aside span':16,
+  '.ceiling__hero aside strong':16,
+  '.ceiling__hero aside small':16,
+  '.ceiling__budget b':20,
+  '.ceiling__budget span':16,
+  '.ceiling__rounds b':20,
+  '.ceiling__rounds p':16,
+  '.ceiling__learning-list span':16,
+  '.ceiling__compare thead th':16,
+  '.ceiling__compare tbody th':16,
+  '.ceiling__compare tbody td':16,
+  '.ceiling__arm-status article>span':16,
+  '.ceiling__arm-status article>strong':16,
+  '.ceiling__arm-status article p':16,
+  '.ceiling__provenance summary':16,
+  '.ceiling__provenance dt':16,
+  '.ceiling__provenance small':16,
+  '.ceiling__provenance nav a':16,
+} as const;
+type CeilingMeasure={
+  roles:Record<string,{size:number;family:string;weight:number;style:string;width:number;overflow:number;left:number;right:number}>;
+  table:{viewportWidth:number;scrollWidth:number;rows:number;headings:number;tabIndex:number};
+  rootLeft:number;rootRight:number;documentOverflow:number;scientificText:string;
+};
+async function measureCeiling(page:import('@playwright/test').Page):Promise<CeilingMeasure>{
+  return page.evaluate(selectors=>{
+    const root=document.querySelector<HTMLElement>('[data-testid="ceiling-stage2-strategy"]');
+    const wrapper=root?.querySelector<HTMLElement>('.ceiling__compare');
+    if(!root||!wrapper)throw Error('Real Ceiling-1.0 result/table missing');
+    const roles=Object.fromEntries(selectors.map(selector=>{
+      const el=root.querySelector<HTMLElement>(selector);
+      if(!el)throw Error('Missing Ceiling role '+selector);
+      const style=getComputedStyle(el),rect=el.getBoundingClientRect();
+      return [selector,{size:parseFloat(style.fontSize),family:style.fontFamily,weight:parseFloat(style.fontWeight),
+        style:style.fontStyle,width:rect.width,overflow:el.scrollWidth-el.clientWidth,left:rect.left,right:rect.right}];
+    })) as CeilingMeasure['roles'];
+    const b=root.getBoundingClientRect();
+    return {roles,table:{viewportWidth:wrapper.clientWidth,scrollWidth:wrapper.scrollWidth,
+      rows:wrapper.querySelectorAll('tbody tr').length,headings:wrapper.querySelectorAll('thead th').length,
+      tabIndex:wrapper.tabIndex},
+      rootLeft:b.left,rootRight:b.right,documentOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+      scientificText:root.textContent??''};
+  },Object.keys(ceilingRoles));
+}
+function acceptCeiling(m:CeilingMeasure,width:number){
+  expect(m.documentOverflow,'page should not horizontally scroll').toBeLessThanOrEqual(2);
+  expect(m.rootLeft).toBeGreaterThanOrEqual(-2);
+  expect(m.rootRight).toBeLessThanOrEqual(width+2);
+  for(const [selector,min] of Object.entries(ceilingRoles)){
+    const role=m.roles[selector];
+    if(!role)throw Error('Unmeasured '+selector);
+    expect(role.size,selector+' readable size').toBeGreaterThanOrEqual(min);
+    expect(role.family,selector+' interface instead of decorative monospace').toMatch(/Inter|PingFang|system-ui/);
+    expect(role.style,selector+' normal style').toBe('normal');
+    expect(role.weight,selector+' reasonable weight').toBeLessThanOrEqual(700);
+    expect(role.width,selector+' visible width').toBeGreaterThan(0);
+    expect(role.overflow,selector+' no clipped text').toBeLessThanOrEqual(2);
+    if(!selector.startsWith('.ceiling__compare ')){
+      expect(role.left,selector+' left edge').toBeGreaterThanOrEqual(-2);
+      expect(role.right,selector+' right edge').toBeLessThanOrEqual(width+2);
+    }
+  }
+  expect(m.table.rows,'preserve all old/new Stage2 method comparison rows').toBe(4);
+  expect(m.table.headings).toBe(3);
+  expect(m.table.viewportWidth).toBeGreaterThan(200);
+  expect(m.table.tabIndex).toBe(0);
+  if(width===390)expect(m.table.scrollWidth,'large scientific table scrolls inside its wrapper').toBeGreaterThan(m.table.viewportWidth+100);
+  for(const fact of ['49.33 / 100','58','128','20,480','19,072','149','89.7 / 100','Ceiling-1.0'])
+    expect(m.scientificText,'retain sealed 7B scientific copy').toContain(fact);
+}
+for(const width of [390,768,1440] as const){
+  for(const theme of ['light','dark'] as const){
+    test('Ceiling-1.0 historical 7B final and scrollable table '+width+'/'+theme,async({page},info)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+      const response=await page.goto(ceilingRoute,{waitUntil:'domcontentloaded'});
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await page.evaluate(()=>document.fonts.ready);
+      const details=page.locator('[data-testid="ceiling-7b-archive-identity"]');
+      await details.locator('summary').click();
+      await expect(details).toHaveAttribute('open','');
+      const good=await measureCeiling(page);
+      acceptCeiling(good,width);
+      writeFileSync(info.outputPath('ceiling-7b-'+width+'-'+theme+'.json'),
+        JSON.stringify({sha:process.env.CI_HEAD_SHA??'local',width,theme,route:ceilingRoute,good},null,2));
+      await page.locator(ceilingRoot+' .ceiling__arm-status').first().screenshot({
+        path:info.outputPath('ceiling-7b-final-'+width+'-'+theme+'.png'),animations:'disabled'});
+      await page.locator(ceilingRoot+' .ceiling__compare').screenshot({
+        path:info.outputPath('ceiling-stage2-table-'+width+'-'+theme+'.png'),animations:'disabled'});
+    });
+  }
+}
+test('Ceiling-1.0 9px status and header regression is rejected by the SAME geometry predicate',async({page})=>{
+  const width=390;
+  await page.setViewportSize({width,height:844});
+  const response=await page.goto(ceilingRoute,{waitUntil:'domcontentloaded'});
+  expect(response?.status()).toBe(200);
+  const details=page.locator('[data-testid="ceiling-7b-archive-identity"]');
+  await details.locator('summary').click();
+  await expect(details).toHaveAttribute('open','');
+  acceptCeiling(await measureCeiling(page),width);
+  const css=await page.addStyleTag({content:
+    '.ceiling__hero>div>p{font:850 9px/1 monospace!important}'+
+    '.ceiling__compare thead th{font-size:9px!important}'});
+  const broken=await measureCeiling(page);
+  expect(broken.roles['.ceiling__hero>div>p']!.size).toBeLessThan(10);
+  expect(broken.roles['.ceiling__compare thead th']!.size).toBeLessThan(10);
+  expect(()=>acceptCeiling(broken,width)).toThrow();
+  await css.evaluate(node=>node.parentNode?.removeChild(node));
+  acceptCeiling(await measureCeiling(page),width);
 });
