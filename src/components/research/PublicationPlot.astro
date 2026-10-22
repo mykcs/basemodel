@@ -9,8 +9,9 @@ interface Props {
   src: string;
   alt: string;
   captionId: string;
+  loading?: 'eager' | 'lazy';
 }
-const { id, src, alt, captionId } = Astro.props;
+const { id, src, alt, captionId, loading = 'lazy' } = Astro.props;
 if(!id || !src.startsWith('/research/') || !src.endsWith('.svg') || !alt || !captionId) {
   throw new Error('PublicationPlot needs one vetted local SVG and a meaningful accessible caption');
 }
@@ -23,7 +24,7 @@ if(!id || !src.startsWith('/research/') || !src.endsWith('.svg') || !alt || !cap
     data-pgfplot={id}
     width="340"
     height="208"
-    loading="lazy"
+    loading={loading}
     decoding="async"
   />
 </div>
