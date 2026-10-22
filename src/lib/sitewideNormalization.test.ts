@@ -217,7 +217,7 @@ describe('sitewide normalization first repair batch', () => {
     expect(gdrDirectApply).toContain('历史 GDR-v1 / DirectApply');
     expect(gdrDirectApply).toContain('Gated-Delta SD-LoRA');
     expect(gatedDeltaExplainer).toContain('从 sequence State 推到 residual write');
-    expect(gatedDeltaExplainer).toContain('Gated Delta：从序列 State 到参数 State');
+    expect(gatedDeltaExplainer).toContain('Gated Delta：从序列状态到参数更新');
   });
 
   it('keeps long-tail compatibility routes as redirects and historical notes explicitly historical', () => {

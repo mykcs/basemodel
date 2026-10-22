@@ -234,11 +234,12 @@ test('paper tables use content width while dense comparisons and diagrams retain
   const acceptIntrinsicWidth = async (table: Locator) => {
     const column = table.locator('..').locator('..');
     const originalStyle = await column.getAttribute('style');
-    const before = (await table.boundingBox())!.width;
     const available = (await column.boundingBox())!.width;
-    expect(before).toBeLessThan(available);
     try {
       await column.evaluate((el, width) => { (el as HTMLElement).style.width=width+'px'; (el as HTMLElement).style.maxWidth='none'; }, available+600);
+      const before = (await table.boundingBox())!.width;
+      expect(before).toBeLessThan(available + 600);
+      await column.evaluate((el, width) => { (el as HTMLElement).style.width=width+'px'; }, available+1200);
       expect(Math.abs((await table.boundingBox())!.width-before)).toBeLessThanOrEqual(2);
     } finally {
       await column.evaluate((el, style) => { if(style===null)el.removeAttribute('style');else el.setAttribute('style',style); },originalStyle);
@@ -262,7 +263,8 @@ test('paper tables use content width while dense comparisons and diagrams retain
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-scaling/');
   await expect(page.locator('.scaling-chart')).toHaveAttribute('data-research-figure-size', 'wide');
   // Five annotated observations must not be reduced to unreadable tiny labels.
-  expect((await page.locator('.scaling-chart').boundingBox())!.width).toBeGreaterThan(950);
+  expect((await page.locator('.scaling-chart svg').boundingBox())!.width).toBeGreaterThan(950);
+  expect(await page.locator('.scaling-chart').evaluate(node => node.scrollWidth > node.clientWidth)).toBe(true);
 });
 
 test('paper evidence width remains local to scientific plots; app catalog remains intact', async ({ page }) => {

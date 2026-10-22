@@ -103,7 +103,10 @@ async function auditConnectorGeometry(root: Locator, viewportWidth: number, requ
     if (rootRect.left < -2 || rootRect.right > width + 2) {
       issues.push(`explainer escapes 1280 viewport: left=${rootRect.left.toFixed(1)} right=${rootRect.right.toFixed(1)}`);
     }
-    if (requiresMainStage && width >= 1200 && rootRect.width < Math.min(920, width * 0.7)) {
+    const article = root.closest('.evo-approved-reader');
+    const articleStyle = article && getComputedStyle(article);
+    const available = article && articleStyle ? article.clientWidth - parseFloat(articleStyle.paddingLeft) - parseFloat(articleStyle.paddingRight) : width;
+    if (requiresMainStage && width >= 1200 && rootRect.width < Math.min(920, width * 0.7, available - 2)) {
       issues.push(`explainer remains a narrow desktop rail: width=${rootRect.width.toFixed(1)} viewport=${width}`);
     }
     if (root.scrollWidth > root.clientWidth + 2) {

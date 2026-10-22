@@ -10,6 +10,7 @@ import { EFFECTIVE_STATE_GDR_LORA_STUDY as study } from '../../data/effectiveSta
 import type { EffectiveStateFormalResult } from '../../data/effectiveStateGdrLoraStudy';
 import { OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS as directApplyDynamics } from '../../data/openEvoDirectApplyLiveDynamics';
 import { OPEN_EVO_EXPERIMENTS } from '../../data/openEvoExperimentNavigation';
+import "../../styles/research-article.css";
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -238,8 +239,8 @@ const twentyRoundScoreWindows = finalResult
   : [];
 ---
 
-<article class="paper" data-effective-state-gdr-page data-copy-review data-reader-page="research-explainer" data-experiment-id={experiment.id}>
-  <header class="paper__hero esg__hero" data-reader-context id="top">
+<article class="paper evo-approved-reader" data-effective-state-gdr-page data-copy-review data-reader-page="research-explainer" data-experiment-id={experiment.id}>
+  <header class="paper__hero esg__hero evo-article__header" data-reader-context id="top">
     <h1>{t('OpenEVO 参数演变：Bounded State 与 β 组件', 'OpenEVO parameter evolution: Bounded State and the β component')}</h1>
 
 
@@ -312,8 +313,8 @@ const twentyRoundScoreWindows = finalResult
 
     <div class="paper__metric-context">
       <p class="paper__lede esg__lede" data-reader-task data-reader-purpose>{t(
-        '三条已完成路线现在形成了一个很清楚的结果：Bounded 把参数更新累计耗时从 31.09 小时降到 2.02 小时，但同题终评从 60.72 降到 45.98；继续加入 β 组件后，终评进一步降到 20.77。接下来的核心问题是：固定容量到底应该多大、Bounded 为什么没有完全保持能力，以及 β 为什么后期掉分。',
-        'The three completed lines now form a clear result: Bounded reduces cumulative parameter-update time from 31.09 hours to 2.02 hours, but the same-panel final drops from 60.72 to 45.98; adding the β component lowers it further to 20.77. The central open questions are the required fixed-state capacity, why Bounded does not fully preserve capability, and why β-gating degrades late.',
+        '普通 OpenEVO 逐轮保留参数更新；Bounded 把历史更新整合为固定容量；Bounded + β 再控制新经验的写入强度。三条历史路线中，Bounded 的累计参数更新时间为 2.02 小时，普通 OpenEVO 为 31.09 小时；同一冻结题集上的 Task Score 分别为 45.98 和 60.72 分，加入 β 后为 20.77 分（满分 100 分）。这些结果提出了三个待研究的问题：固定容量需要多大、能力损失来自哪里，以及 β 为什么后期掉分。',
+        'Ordinary OpenEVO retains each parameter update; Bounded folds historical updates into a fixed-capacity state; Bounded + β also controls the strength of new writes. Across these historical runs, cumulative update time was 2.02 hours for Bounded and 31.09 hours for ordinary OpenEVO. Their Task Scores on the same frozen panel were 45.98 and 60.72 out of 100, while Bounded + β scored 20.77. Open questions concern the required capacity, the lost capability, and the late decline with β.',
       )}</p>
       <p>{t(
         'Task Score 是 WebShop 每个任务结束时给出的 0–1 连续分数的平均值 × 100。商品属性只完成一部分时也可能得到部分分；“完整做对”则要求任务真正成功且 task_score = 1.0。因此 60.72 / 100 和 50/128 不是同一个指标。',
@@ -330,7 +331,7 @@ const twentyRoundScoreWindows = finalResult
     </div>
   </header>
 
-  <section class="paper__section" id="motivation" aria-labelledby="motivation-title">
+  <section class="paper__section evo-article__section" id="motivation" aria-labelledby="motivation-title">
     <p class="paper__section-number">1</p>
     <h2 id="motivation-title">{t('我们先解决 SD-LoRA 越训练越慢', 'We first address SD-LoRA slowing down as history grows')}</h2>
     <p>{t(
@@ -350,7 +351,7 @@ const twentyRoundScoreWindows = finalResult
     <p class="paper__links"><a href={scalingHref}>{t('SD-LoRA 计算扩展性证据 →', 'SD-LoRA scaling evidence →')}</a></p>
   </section>
 
-  <section class="paper__section" id="method" aria-labelledby="method-title">
+  <section class="paper__section evo-article__section" id="method" aria-labelledby="method-title">
     <p class="paper__section-number">2</p>
     <h2 id="method-title">{t('Bounded State 与 β 组件：固定容量与写入强度控制', 'Bounded State and the β component: fixed capacity and write-strength control')}</h2>
 
@@ -578,7 +579,7 @@ delta_a = (beta_eff_a / c1_norm) * (da / da_norm)`}</code></pre>
     <p class="paper__math-caption">{t('这是参数空间里的概念式；实际 runtime 先写 C 得到真实 C1，再基于 C1 写 A。', 'Conceptual parameter-space form; runtime writes C first to obtain the actual C1, then writes A conditioned on C1.')}</p>
   </section>
 
-  <section class="paper__section" id="formal-design" data-result-stage="setup" aria-labelledby="experiment-title">
+  <section class="paper__section evo-article__section" id="formal-design" data-result-stage="setup" aria-labelledby="experiment-title">
     <p class="paper__section-number">3</p>
     <h2 id="experiment-title">{t('实验设置：Qwen3-1.7B × WebShop', 'Experiments: Qwen3-1.7B × WebShop')}</h2>
     <p>{t(
@@ -724,7 +725,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     </div>
   </section>
 
-  <section class="paper__section esg__results" id="formal-result" data-result-stage="task-result-detail" aria-labelledby="result-title">
+  <section class="paper__section esg__results evo-article__section" id="formal-result" data-result-stage="task-result-detail" aria-labelledby="result-title">
   <p class="paper__section-number">4</p>
   <h2 id="result-title">{t('实验结果：Task Score、成功率与计算代价', 'Results: Task Score, success, and compute')}</h2>
   <p class="paper__lede">{t(
@@ -984,7 +985,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   </div>
 </section>
 
-<section class="paper__section" id="analysis" data-result-stage="diagnostics" aria-labelledby="analysis-title">
+<section class="paper__section evo-article__section" id="analysis" data-result-stage="diagnostics" aria-labelledby="analysis-title">
   <p class="paper__section-number">5</p>
   <h2 id="analysis-title">{t('训练过程中发生了什么？从 loss 到行为变化', 'What changed during training? From loss to behavior')}</h2>
   <p class="paper__lede">{t(
@@ -1243,7 +1244,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   </div>
 </section>
 
-  <section class="paper__section" id="next-question" data-result-stage="next-question" aria-labelledby="next-question-title">
+  <section class="paper__section evo-article__section" id="next-question" data-result-stage="next-question" aria-labelledby="next-question-title">
     <p class="paper__section-number">6</p>
     <h2 id="next-question-title">{t('现在真正卡在哪里，以及下一步先做什么', 'What is actually blocked now, and what should come next')}</h2>
     <p>{t(
@@ -1290,7 +1291,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     )}</p>
   </section>
 
-  <section class="paper__section" id="evidence" data-result-stage="evidence" aria-labelledby="evidence-title">
+  <section class="paper__section evo-article__section" id="evidence" data-result-stage="evidence" aria-labelledby="evidence-title">
     <p class="paper__section-number">7</p>
     <h2 id="evidence-title">{t('证据与复现身份：如何确认这些结果来自哪一组实验', 'Evidence and reproducibility identity: how to identify the exact experiments behind these results')}</h2>
     <p>{t(
@@ -1345,15 +1346,11 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
 </article>
 
 <style>
-  .paper{max-width:1080px;margin:0 auto;padding:34px 24px 90px;color:var(--text-primary)}
-  .paper__hero{padding:4px 0 32px}
-  .paper h1{max-width:900px;margin:0;font-size:clamp(2rem,4vw,3.5rem);line-height:1.04;letter-spacing:-.05em}
-  .paper__lede{max-width:830px;margin:18px 0 14px;font-size:clamp(1.08rem,2vw,1.28rem);line-height:1.7}
+  .paper__lede{margin:18px 0 14px}
   .paper__metric-context{max-width:900px;margin-top:18px}
   .paper__metric-context p{margin:10px 0}
-  .paper__boundary{max-width:880px;color:var(--text-secondary);font-size:1rem;line-height:1.65}
+  .paper__boundary{color:var(--text-secondary)}
   .paper__chart-note{max-width:880px;margin:.65rem 0 1rem;color:var(--text-secondary);font-size:1rem;line-height:1.65}
-  .paper__section{padding:44px 0;border-top:1px solid var(--border-color)}
   .paper__metric-step{max-width:940px;margin:34px 0 0;padding:0 0 28px;border-bottom:1px solid var(--border-color)}
   .paper__metric-step:last-child{border-bottom:0;padding-bottom:0}
   .paper__metric-label{width:max-content;max-width:100%;margin:18px 0 6px;padding:4px 9px;border-radius:999px;background:var(--surface-muted);color:var(--text-secondary);font-size:1rem;font-weight:800;letter-spacing:.01em}
@@ -1363,13 +1360,9 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   .paper__derived-figure figcaption{display:flex;flex-wrap:wrap;gap:.35rem 1rem;margin-top:.6rem;line-height:1.5}
   .paper__derived-figure figcaption span{color:var(--text-secondary)}
   .paper__analysis-summary{max-width:900px;margin:34px 0 0;padding:22px 24px;border:1px solid var(--border-color);border-radius:var(--radius-panel);background:var(--surface-muted)}
-  .paper__analysis-summary h3{margin-top:0}
   .paper__analysis-summary p:last-child{margin-bottom:0}
 
   .paper__section-number{margin:0 0 5px;color:var(--text-secondary);font:700 1rem/1.3 var(--font-mono)}
-  .paper h2{max-width:900px;margin:0 0 20px;font-size:clamp(1.7rem,3vw,2.55rem);line-height:1.15;letter-spacing:-.035em}
-  .paper h3{max-width:900px;margin:32px 0 10px;font-size:clamp(1.18rem,2vw,1.45rem);line-height:1.35}
-  .paper p{max-width:880px;line-height:1.72}
   .paper__links{display:flex;flex-wrap:wrap;gap:8px 18px}.paper a{color:var(--accent);font-weight:700;text-underline-offset:3px}
   .paper-table-figure{margin:18px 0 12px}
   .paper-table-figure .paper-table-wrap{margin:0;min-width:0}
@@ -1394,21 +1387,18 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   .paper__code code{display:block;min-width:max-content;white-space:pre;overflow-wrap:normal;font-family:var(--font-mono);font-size:.94rem;line-height:1.6}
   .paper__setup{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:18px 0 22px;border-top:2px solid var(--text-primary);border-bottom:2px solid var(--text-primary)}
   .paper__setup>div{padding:14px 16px;border-bottom:1px solid var(--border-color)}
-  .paper__setup dt{color:var(--text-secondary);font-size:.95rem}.paper__setup dd{margin:5px 0 0;font-weight:700}
+  .paper__setup dt{color:var(--text-secondary);font-size:.95rem}.paper__setup dd{margin:5px 0 0}
   .paper__details{max-width:900px;margin:14px 0;border-top:1px solid var(--border-color);padding-top:10px}
   .paper__details summary{cursor:pointer;font-weight:750}.paper__details ul{line-height:1.7}
   .paper__experiment-hub [data-hub-motivation]{max-width:820px}
   .paper__hub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-  .paper__hub-grid h3{margin:12px 0 4px;font-size:1rem;letter-spacing:0}
   .paper__hub-grid ul{margin:4px 0;padding-left:20px}
   code{overflow-wrap:anywhere}
   @media(max-width:760px){
-    .paper{padding:24px 18px 72px}.paper__section{padding:36px 0}
     .paper__setup{grid-template-columns:1fr}
     .paper__hub-grid{grid-template-columns:1fr}
     .paper-table{min-width:640px}
     .paper-table--ablation{min-width:900px}
-    .paper-table--ablation th,.paper-table--ablation td{}
   }
   @media(prefers-reduced-motion:reduce){.paper *,.paper *::before,.paper *::after{scroll-behavior:auto;transition:none;animation:none}}
   @media screen {

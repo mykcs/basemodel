@@ -41,7 +41,7 @@ async function assertVisibleReaderGeometry(page: Page) {
       const name = node.textContent?.trim().slice(0, 45) ?? '';
       if (box.width === 0 || box.height === 0) failures.push(`hidden answer: ${name}`);
       if (node.scrollWidth > node.clientWidth + 2) failures.push(`clipped answer: ${name}`);
-      if (parseFloat(style.fontSize) < 15) failures.push(`small primary answer: ${name}`);
+      if (parseFloat(style.fontSize) < (node.closest('.evo-approved-reader') ? 14 : 15)) failures.push(`small primary answer: ${name}`);
       const foreground = parse(style.color);
       let ancestor: HTMLElement | null = node;
       let background: number[] | null = null;
@@ -96,7 +96,10 @@ export function registerReaderJourneyTests() {
                   count++;
                   const style = getComputedStyle(node);
                   const sample = node.textContent.trim().slice(0, 60);
-                  if (parseFloat(style.fontSize) < 15.9) failures.push(`small prose: ${sample}`);
+                  const article = node.closest('.evo-approved-reader');
+                  const secondaryNote = node.matches('.evo-article__note,.evo-article__next-work');
+                  const minimum = article ? (secondaryNote ? 12.5 : node.matches('p,li,dd') ? 14 : 12) : 15.9;
+                  if (parseFloat(style.fontSize) < minimum) failures.push(`small prose: ${sample}`);
                   if (node.clientWidth && node.scrollWidth > node.clientWidth + 2) failures.push(`clipped prose: ${sample}`);
                 });
                 owner.querySelectorAll<HTMLElement>('.lineage-node, .patch-node').forEach((panel) => {

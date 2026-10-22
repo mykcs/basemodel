@@ -8,6 +8,7 @@ import {
   SD_LORA_BOUNDED_ACCELERATION_RESULT as result,
   SD_LORA_BOUNDED_ACCELERATION_SOURCE as source,
 } from '../../data/sdLoraBoundedAccelerationStudy';
+import "../../styles/research-article.css";
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -25,9 +26,8 @@ const boundedHref = p(`${root}sd-lora-bounded-state/`);
 const scalingHref = p(`${root}sd-lora-scaling/`);
 const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
 ---
-<article class="ba-accel" data-copy-review data-ui-audit data-sd-lora-bounded-acceleration>
-  <header class="ba-accel__hero">
-    <p class="ba-accel__context">{t('Bounded Online Recurrence · 后续加速研究', 'Bounded Online Recurrence · follow-up acceleration study')}</p>
+<article class="ba-accel evo-approved-reader" data-copy-review data-ui-audit data-sd-lora-bounded-acceleration>
+  <header class="ba-accel__hero evo-article__header">
     <h1>{t('Bounded 的主要时间花在训练', 'Most Bounded update time is spent in training')}</h1>
     <p class="ba-accel__lede">
       {t(
@@ -48,7 +48,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
     </p>
   </header>
 
-  <section class="ba-accel__section" aria-labelledby="shard-title">
+  <section class="ba-accel__section evo-article__section" aria-labelledby="shard-title">
     <h2 id="shard-title">{t('四张卡算得一模一样，但没有更快', 'Four GPUs matched exactly, but did not run faster')}</h2>
     <p>{t(
       'Bounded 的 shared training 结束后，112 个 module 的 rank128 压缩可以彼此独立。我们先验证这件事，而不是直接假设“四卡一定更快”。GPU0 reference 对 GPU0/1/2/3 分片、以及 GPU3 reference 对镜像 GPU3/2/1/0，两次 assembly 都得到同一个 adapter SHA，所有 tensor 都逐元素相等。',
@@ -82,7 +82,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
       'Pre-splitting each shard down to its own 28 modules did not make the four-way path faster, and one multi-GPU container only removed part of the cold-start cost. Re-reading the full 205 MB prior was not the main explanation.',
     )}</p>
   </section>
-  <section class="ba-accel__section" aria-labelledby="svd-title">
+  <section class="ba-accel__section evo-article__section" aria-labelledby="svd-title">
     <h2 id="svd-title">{t('Muon 给了方向感，但 SVD 不是主瓶颈', 'Muon suggested a direction, but SVD is not the main bottleneck')}</h2>
     <p>{t(
       `steady-state Bounded 会把 rank${result.stateRank} prior 和 rank${result.currentRank} current 合成一个 ${result.spectralCore}×${result.spectralCore} 的小 core，再通过 SVD 保留最大的 rank${result.stateRank} 方向。我们想到 Muon，是因为它用少量 Newton–Schulz 迭代把昂贵的谱运算改写成 GPU 擅长的矩阵乘。`,
@@ -113,7 +113,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
       `The batched version stayed tensor-exact with max absolute difference ${result.batchedSvd.maxAbsDifference}, but its ${result.batchedSvd.totalSeconds.toFixed(3)} s total did not beat the original ${result.batchedSvd.serialWarm112Seconds.toFixed(3)} s. The batched SVD itself took only ${result.batchedSvd.svd112x136x136Seconds.toFixed(3)} s. Spending the main effort on SVD, Muon, or polar-like approximations would not attack the dominant training cost.`,
     )}</p>
   </section>
-  <section class="ba-accel__section" aria-labelledby="training-title">
+  <section class="ba-accel__section evo-article__section" aria-labelledby="training-title">
     <h2 id="training-title">{t('真实 1.7B 路径里，时间花在训练', 'On the real 1.7B path, time goes into training')}</h2>
     <p>{t(
       '前面的 compression smoke 只回答了后处理有多重。为了确认真正一轮 Bounded 更新把时间花在哪里，我们又用冻结的 Qwen3-1.7B、同一 dataset、seed 1993、AdamW 和原来的 rank8 → rank128 路径跑了两次小训练。',
@@ -144,7 +144,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
       'This changed the research direction. Bounded removed the old cost of carrying an ever-growing component history, but the remaining sequential bottleneck sits in full-model forward / backward, global gradient clipping, AdamW moments, and the learned-coefficient trajectory.',
     )}</p>
   </section>
-  <section class="ba-accel__section" aria-labelledby="order-title">
+  <section class="ba-accel__section evo-article__section" aria-labelledby="order-title">
     <h2 id="order-title">{t('同样五个训练样本，只把顺序倒过来，模型就变了', 'The same five training examples produce a different model when their order is reversed')}</h2>
     <p>{t(
       '如果 AdamW 的这些 step 可以像普通矩阵块一样独立计算，再把 chunk 合起来，那么仅仅交换执行顺序不应该把最终函数改得这么大。我们因此做了一个最小反例：dataset、五个 training example 对象、seed、模型初始化、AdamW、学习率、replay 和 compression 全部不变，只把 optimizer loop 的遍历顺序从 1→2→3→4→5 改成 5→4→3→2→1。',
@@ -168,7 +168,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
       'This counterexample rules out naive A that independently chunks or reorders the existing AdamW steps and merges them later. It does not prove that every possible exact chunk transfer is impossible; any exact A would have to preserve the full state dependence.',
     )}</p>
   </section>
-  <section class="ba-accel__section" aria-labelledby="fla-title">
+  <section class="ba-accel__section evo-article__section" aria-labelledby="fla-title">
     <h2 id="fla-title">{t('FLA / WY 真正提醒我们：先证明状态可以组合', 'The real FLA / WY lesson: prove the state transition composes first')}</h2>
     <p>{t(
       'DeltaNet 的 chunkwise 做法成立，是因为它的 hidden-state recurrence 可以写成 generalized Householder transformations，再用 compact WY / UT 把一段顺序更新表示成可组合的矩阵对象。关键不是“WY 很快”，而是它先有一个可以 exact composition 的递推结构。',
@@ -196,7 +196,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
     )}</p>
   </section>
 
-  <section class="ba-accel__section" aria-labelledby="decision-title">
+  <section class="ba-accel__section evo-article__section" aria-labelledby="decision-title">
     <h2 id="decision-title">{t('现在的研究路线已经收窄', 'The research path is now much narrower')}</h2>
     <div class="ba-accel__decision-list">
       <div><strong>{t('B · 四卡 compression suffix', 'B · four-GPU compression suffix')}</strong><p>{t('正确性有希望：GPU0–3 两种物理映射都 exact。性能上当前是负收益；正式 GPU4–7 B2/B3 仍未关闭。', 'Correctness looks promising: two GPU0–3 physical mappings were exact. Performance is currently negative; formal GPU4–7 B2/B3 remain open.')}</p></div>
@@ -226,17 +226,11 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
   </details>
 </article>
 <style>
-.ba-accel{width:min(1080px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--ink)}
-.ba-accel__hero{padding:clamp(1.5rem,3vw,2.75rem) 0 2.4rem;border-bottom:1px solid var(--line)}
-.ba-accel__context{margin:0 0 .7rem;color:var(--muted);font-size:1rem;font-weight:650}
-.ba-accel__hero h1{max-width:17ch;margin:0;font-family:var(--font-editorial);font-size:clamp(2.35rem,5.2vw,4.5rem);line-height:.98;letter-spacing:-.045em}
-.ba-accel__lede{max-width:52rem;margin:1.2rem 0 0;font-size:clamp(1.08rem,2vw,1.3rem);line-height:1.68}
+.ba-accel__lede{margin:1.2rem 0 0}
 .ba-accel__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.8rem 0 0;border-block:1px solid var(--line)}
-.ba-accel__metrics div{padding:1rem 1rem 1rem 0}.ba-accel__metrics dt{color:var(--muted);font-size:1rem;line-height:1.4}.ba-accel__metrics dd{margin:.3rem 0 0;font-size:clamp(1.22rem,2.4vw,1.65rem);font-weight:800;line-height:1.2}
-.ba-accel__boundary{max-width:52rem;margin:1rem 0 0;padding-left:.9rem;border-left:2px solid var(--accent-deep);color:var(--muted);font-size:1rem;line-height:1.65}
-.ba-accel__section{padding:clamp(2.7rem,6vw,4.8rem) 0;border-bottom:1px solid var(--line)}
-.ba-accel__section h2{max-width:24ch;margin:0;font-size:clamp(1.65rem,3.4vw,2.55rem);line-height:1.12;letter-spacing:-.025em}
-.ba-accel__section>p{max-width:52rem;margin:1rem 0 0;font-size:1.04rem;line-height:1.72}
+.ba-accel__metrics div{padding:1rem 1rem 1rem 0}.ba-accel__metrics dt{color:var(--muted);font-size:1rem;line-height:1.4}.ba-accel__metrics dd{margin:.3rem 0 0}
+.ba-accel__boundary{margin:1rem 0 0;padding-left:.9rem;border-left:2px solid var(--accent-deep);color:var(--muted)}
+.ba-accel__section>p{margin:1rem 0 0}
 .ba-accel__section>.ba-accel__result-line{font-size:clamp(1.12rem,2.1vw,1.28rem);font-weight:720}
 .ba-accel__table-wrap{margin-top:1.35rem;overflow-x:auto;min-width:0}
 .ba-accel__table{min-width:680px}
@@ -248,19 +242,17 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
 .ba-accel__order{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin:1.4rem 0 0;background:var(--line);border:1px solid var(--line)}
 .ba-accel__order div{display:grid;gap:.35rem;padding:1rem;background:var(--surface)}.ba-accel__order strong{font-size:1rem;color:var(--muted)}.ba-accel__order span{font:700 1.08rem/1.5 var(--font-mono)}
 .ba-accel__findings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:1.4rem 0 0;border-block:1px solid var(--line)}
-.ba-accel__findings div{padding:1rem 1rem 1rem 0}.ba-accel__findings dt{color:var(--muted);font-size:1rem}.ba-accel__findings dd{margin:.28rem 0 0;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.ba-accel__findings div{padding:1rem 1rem 1rem 0}.ba-accel__findings dt{color:var(--muted);font-size:1rem}.ba-accel__findings dd{margin:.28rem 0 0}
 .ba-accel__section>.ba-accel__boundary--inline{margin-top:1.25rem}
 .ba-accel__section>.ba-accel__formula{padding:.8rem 1rem;background:var(--surface-muted);border-left:3px solid var(--accent-deep);font-size:1rem}.ba-accel__formula code{white-space:normal}
 .ba-accel__decision-list{margin-top:1.35rem;border-top:1px solid var(--line)}
 .ba-accel__decision-list>div{display:grid;grid-template-columns:minmax(190px,.8fr) minmax(0,1.8fr);gap:1rem;padding:1rem 0;border-bottom:1px solid var(--line)}
-.ba-accel__decision-list strong{font-size:1.02rem}.ba-accel__decision-list p{margin:0;color:var(--ink);line-height:1.62}
+.ba-accel__decision-list strong{font-size:1.02rem}.ba-accel__decision-list p{margin:0;color:var(--ink)}
 .ba-accel__next{display:flex;flex-wrap:wrap;gap:.7rem 1.2rem;margin-top:1.2rem}.ba-accel__next a,.ba-accel__evidence a{color:var(--accent-deep);font-weight:700;text-underline-offset:.2em}
 .ba-accel__evidence{margin:2.8rem 0 0;border-block:1px solid var(--line);padding:.9rem 0}.ba-accel__evidence summary{cursor:pointer;font-weight:780;line-height:1.5}
 .ba-accel__evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 1.4rem;margin-top:1rem}.ba-accel__evidence-grid>div{padding:1rem 0;border-top:1px solid var(--line)}
-.ba-accel__evidence-grid p{margin:.35rem 0 .55rem;color:var(--muted);font-size:1rem;line-height:1.58}.ba-accel__evidence-plan{margin:1rem 0 0}.ba-accel__provenance{max-width:52rem;margin:.8rem 0 0;color:var(--muted);font-size:1rem;line-height:1.6}
+.ba-accel__evidence-grid p{margin:.35rem 0 .55rem;color:var(--muted)}.ba-accel__evidence-plan{margin:1rem 0 0}.ba-accel__provenance{max-width:52rem;margin:.8rem 0 0;color:var(--muted);font-size:1rem;line-height:1.6}
 @media(max-width:760px){
-  .ba-accel{width:min(100% - 1rem,1080px)}
-  .ba-accel__hero{padding-top:2rem}
   .ba-accel__metrics,.ba-accel__findings{grid-template-columns:1fr}
   .ba-accel__metrics div,.ba-accel__findings div{padding:.85rem 0;border-bottom:1px solid var(--line)}
   .ba-accel__metrics div:last-child,.ba-accel__findings div:last-child{border-bottom:0}

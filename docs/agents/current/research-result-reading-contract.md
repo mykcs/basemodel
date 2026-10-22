@@ -128,7 +128,7 @@ The current canonical multi-metric owners are:
 - `results/four-arm-analysis`;
 - `stage1-learning-objectives`.
 
-These pages keep their own visual grammar. The shared contract is semantic order, metric locality, evidence boundary, and next-question recovery — not a shared card/table skin.
+These article pages use the shared response-article reading treatment specified in website-design-spec.md §13. Their scientific figures, comparisons, metric locality, evidence boundaries and next-question recovery retain their semantic owners; the common reading frame does not replace those objects with a card/table skin.
 
 A mechanism page, runbook, catalog, archive, or operational page must keep its own role rather than pretending to be a result paper.
 

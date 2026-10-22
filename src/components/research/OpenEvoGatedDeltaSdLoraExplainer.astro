@@ -5,6 +5,7 @@ import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
 import MathFormula from '../common/MathFormula.astro';
 import { GATED_DELTA_SD_LORA_PUBLICATION as snapshot } from '../../data/gatedDeltaSdLoraPublicationSnapshot';
+import "../../styles/research-article.css";
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -51,22 +52,22 @@ S_t&=\widetilde S_{t-1}+\beta_t r_t k_t^{\top}
 };
 ---
 
-<article class="gds-page" data-testid="gated-delta-sd-lora-page" data-copy-review data-reader-page="research-explainer">
-  <header class="gds-hero" data-reader-context id="top">
+<article class="gds-page evo-approved-reader" data-testid="gated-delta-sd-lora-page" data-copy-review data-reader-page="research-explainer">
+  <header class="gds-hero evo-article__header" data-reader-context id="top">
     <a class="gds-back" href={p('/research/seed-openevo/study/capability-exploration/')}>← {t('OpenEvo 能力探索', 'OpenEvo capability exploration')}</a>
-    <h1>{t('Gated Delta：从序列 State 到参数 State', 'Gated Delta: from sequence State to parameter State')}</h1>
+    <h1>{t('Gated Delta：从序列状态到参数更新', 'Gated Delta: from sequence State to parameter State')}</h1>
     <p class="gds-hero__lede" data-reader-task data-reader-purpose>{t(
-      'Gated Delta 最初是序列建模里的一个持续 State 更新规则。这页从它的 online regression 目标开始，把梯度一步一步推成 residual write，再说明我们怎样把“长期 State、残差写入、动态写入强度”这些角色对应到 OpenEVO 的 LoRA 参数更新。',
+      'Gated Delta 是序列模型持续更新内部状态的一种规则：根据当前预测与目标的差异写入新信息，同时控制旧信息保留多少。在线回归目标可以推导出这种残差写入形式；我们进一步研究怎样把长期状态、残差写入和动态写入强度对应到 OpenEVO 的 LoRA 参数更新。',
       'Gated Delta starts as a recurrent State update rule for sequence modeling. This page begins from its online-regression objective, derives the residual write step by step, then shows how the roles of persistent State, residual write, and adaptive write strength map onto OpenEVO LoRA updates.'
     )}</p>
     <p class="gds-hero__boundary">{t(
-      '论文公式到 residual 形式是严格代数等价；从 sequence State 到 OpenEVO parameter State 是逐角色映射，不把 k / v 张量逐字当成 LoRA 张量。',
+      '论文公式与残差写入形式在代数上等价；序列状态与 OpenEVO 参数状态之间则是按功能角色进行的对应，不能把论文中的 k / v 张量直接当作 LoRA 张量。',
       'The paper equation and residual form are algebraically identical. Moving from sequence State to OpenEVO parameter State is a role-level mapping rather than a literal k/v-to-LoRA tensor identity.'
     )}</p>
     <p class="gds-hero__history"><a href={historyHref}>{t('旧 GDR-v1 / DirectApply 到底做了什么 →', 'What did the old GDR-v1 / DirectApply experiment actually do? →')}</a></p>
   </header>
 
-  <section class="gds-section" id="recurrence" aria-labelledby="recurrence-title">
+  <section class="gds-section evo-article__section" id="recurrence" aria-labelledby="recurrence-title">
     <h2 id="recurrence-title">{t('从 sequence State 推到 residual write', 'From sequence State to a residual write')}</h2>
     <p>{t(
       '先只看论文里的序列状态。Gated Delta Networks 把 State 写成一个 value 维 × key 维的矩阵：给一个 key，State 的矩阵乘法会读出当前已经记住的 value。最简单的线性注意力会把新的 value-key 外积直接累加进 State。',
@@ -131,7 +132,7 @@ S_t&=\widetilde S_{t-1}+\beta_t r_t k_t^{\top}
     <p class="gds-related"><a href={successorHref}>{t('回到三组 1.7B 已完成实验：这个映射最后怎样进入 β-gating（α 固定为 1）→', 'Back to the three completed 1.7B experiments: how this mapping becomes β-gating (α fixed at 1) →')}</a></p>
   </section>
 
-  <section class="gds-section" id="task-vector" aria-labelledby="task-vector-title">
+  <section class="gds-section evo-article__section" id="task-vector" aria-labelledby="task-vector-title">
     <h2 id="task-vector-title">{t('Task Vector 的角色', 'The role of the Task Vector')}</h2>
     <p>{t('Task Vector 记录一次训练前后参数移动了多少、朝哪里移动，因此适合做事后几何分析、离线 teacher / label 和训练后的比较。但它不参与当前在线写入：运行时的 K / V / β / g 不能由 Task Vector、WebShop 分数或固定 16 题候选检查来控制。', 'A Task Vector records how far and in what direction the parameters moved across an update, so it remains useful for retrospective geometry, offline teacher / label work, and post-hoc comparison. It does not control the current online write: runtime K / V / β / g cannot be driven by the Task Vector, WebShop score, or a candidate probe.')}</p>
     <div class="gds-tv-boundary">
@@ -142,7 +143,7 @@ S_t&=\widetilde S_{t-1}+\beta_t r_t k_t^{\top}
       <MathFormula latex={math.taskVector} display={false} label={t('Task Vector 定义', 'Task Vector definition')} />
     </div>
   </section>
-  <section class="gds-section" id="derivation" aria-labelledby="derivation-title">
+  <section class="gds-section evo-article__section" id="derivation" aria-labelledby="derivation-title">
     <h2 id="derivation-title">{t('我们怎样排除错误的参数映射', 'How we ruled out incorrect parameter mappings')}</h2>
     <p>{t('上面的数学只规定“State 怎样读、residual 怎样写”。真正落到 LoRA 时，还要找到什么信号能代表当前写入、AdamW 历史怎样进入，以及 State 放在哪里。下面四步保留我们当时排除错误方案的证据。', 'The mathematics above specifies how State is read and how a residual is written. Mapping that rule into LoRA still requires identifying the signal that represents the current write, incorporating AdamW history, and choosing where State lives. The four steps below preserve the evidence that ruled out incorrect mappings.')}</p>
     <ol class="gds-derivation">
@@ -166,7 +167,7 @@ S_t&=\widetilde S_{t-1}+\beta_t r_t k_t^{\top}
     </ol>
   </section>
 
-  <section class="gds-section" id="factor-state" aria-labelledby="factor-state-title">
+  <section class="gds-section evo-article__section" id="factor-state" aria-labelledby="factor-state-title">
     <h2 id="factor-state-title">{t('早期资格实验：State 怎样落到 LoRA A / C', 'Earlier qualification: placing State in LoRA A/C')}</h2>
     <p>{t(
       '这里记录的是前一版 event-write 资格实验，不是后面三组 160 轮实验的 rank128 Bounded State。它解决的是另一个具体问题：如果直接在 LoRA 的低秩因子上写，怎样避免因子坐标本身影响 β。',
@@ -197,7 +198,7 @@ S_t&=\widetilde S_{t-1}+\beta_t r_t k_t^{\top}
     <p class="gds-related"><a href={vanillaHref}>{t('对照阅读：Vanilla SD-LoRA 一轮怎样更新 →', 'Compare with one Vanilla SD-LoRA update →')}</a></p>
   </section>
 
-  <section class="gds-section gds-d1" id="d1-boundary" aria-labelledby="d1-boundary-title">
+  <section class="gds-section gds-d1 evo-article__section" id="d1-boundary" aria-labelledby="d1-boundary-title">
     <h2 id="d1-boundary-title">{t('四轮配对资格实验已完成并封存', 'The four-round paired qualification is complete and sealed')}</h2>
     <p>{t('Round 0 两组完全相同；从 Round 1 开始，两种参数更新已经产生不同状态。四轮全部完成后，treatment-control 的 reward 差分别是 0、+0.0247、+0.0970、+0.0209；完整成功差是 0、+6、+58、+11。预注册的四轮资格实验因此支持一个有限结论：在这份冻结 schedule 上，GDR 高于匹配的 Vanilla 对照。', 'Round 0 is identical across arms; from Round 1 onward the two update rules have produced different model states. Across the four sealed rounds, treatment-minus-control reward deltas are 0, +0.0247, +0.0970, and +0.0209, while exact-success deltas are 0, +6, +58, and +11. The preregistered qualification therefore supports one bounded conclusion: on this frozen schedule, GDR outperformed the matched Vanilla control.')}</p>
     <dl class="gds-d1__facts">
@@ -229,13 +230,11 @@ S_t&=\widetilde S_{t-1}+\beta_t r_t k_t^{\top}
   </footer>
 </article>
 <style>
-.gds-page{width:min(1060px,calc(100% - 2rem));margin:0 auto;padding:2.4rem 0 5rem;color:var(--text)}
-.gds-hero{padding:1rem 0 2.2rem;border-bottom:1px solid var(--line)}.gds-back,.gds-hero__history a,.gds-related a,.gds-sources a,.gds-evidence-nav a,.gds-evidence-links a{color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}.gds-hero h1{max-width:58rem;margin:.9rem 0 .8rem;font-size:clamp(2.5rem,6.2vw,5rem);line-height:1.03;letter-spacing:-.045em}.gds-hero__lede{max-width:54rem;margin:0;font-size:clamp(1.22rem,2.4vw,1.55rem);line-height:1.62}.gds-hero__boundary{max-width:52rem;margin:1.1rem 0 .5rem;padding:.8rem 0 .8rem 1rem;border-left:3px solid var(--accent-deep);color:var(--muted);font-size:1rem;line-height:1.65}.gds-hero__history{margin:.75rem 0 .1rem;font-size:1rem}
-.gds-section{padding:2.8rem 0;border-bottom:1px solid var(--line)}.gds-section>h2{max-width:50rem;margin:0 0 .8rem;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.13;letter-spacing:-.025em}.gds-section>h3{max-width:50rem;margin:2.25rem 0 .65rem;font-size:clamp(1.25rem,2.4vw,1.55rem);line-height:1.35}.gds-section>p{max-width:50rem;margin:.7rem 0;font-size:1.08rem;line-height:1.72}.gds-section>p.gds-sources,.gds-section>p.gds-related{font-size:1rem;color:var(--muted)}.gds-callout{padding:.85rem 0 .85rem 1rem;border-left:3px solid var(--line);color:var(--muted)}.gds-map-wrap{max-width:62rem;overflow-x:auto;margin:1.2rem 0 1.5rem}.gds-map{min-width:760px}
+.gds-back,.gds-hero__history a,.gds-related a,.gds-sources a,.gds-evidence-nav a,.gds-evidence-links a{color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}.gds-hero__lede{margin:0}.gds-hero__boundary{margin:1.1rem 0 .5rem;padding:.8rem 0 .8rem 1rem;border-left:3px solid var(--accent-deep);color:var(--muted)}.gds-hero__history{margin:.75rem 0 .1rem;font-size:1rem}.gds-section>p{margin:.7rem 0}.gds-section>p.gds-sources,.gds-section>p.gds-related{color:var(--muted)}.gds-callout{padding:.85rem 0 .85rem 1rem;border-left:3px solid var(--line);color:var(--muted)}.gds-map-wrap{max-width:62rem;overflow-x:auto;margin:1.2rem 0 1.5rem}.gds-map{min-width:760px}
 .gds-runtime__flow{display:grid;align-items:stretch}.gds-node{min-width:0;padding:1rem;border:1px solid var(--line);background:var(--surface)}.gds-node small{display:block;color:var(--muted);font-size:1rem;line-height:1.4}.gds-node strong{display:block;margin-top:.35rem;line-height:1.45}.gds-node.is-signal{border-color:#b98235}.gds-node.is-gate{border-color:#a15448}.gds-node.is-next{border-color:#4f7c66}.gds-node.is-event{border-color:#527b9d}.gds-connector{position:relative;min-height:3rem}.gds-connector:before{content:"";position:absolute;left:0;right:.45rem;top:50%;height:1px;background:var(--muted)}.gds-connector:after{content:"";position:absolute;right:.15rem;top:calc(50% - .28rem);border-left:.5rem solid var(--muted);border-block:.28rem solid transparent}.gds-runtime figcaption{color:var(--muted);font-size:1rem;line-height:1.62}
-.gds-tv-boundary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.5rem;align-items:center;margin-top:1.4rem;padding-block:1rem;border-block:1px solid var(--line)}.gds-tv-boundary dl{margin:0}.gds-tv-boundary dl>div{display:grid;grid-template-columns:8rem 1fr;gap:1rem;padding:.45rem 0}.gds-tv-boundary dt{font-weight:800}.gds-tv-boundary dd{margin:0;line-height:1.55}.gds-tv-boundary :global([data-math-formula-inline]){font-size:1.05rem;white-space:nowrap}
-.gds-derivation{list-style:none;margin:1.6rem 0 0;padding:0}.gds-derivation>li{display:grid;grid-template-columns:4rem minmax(0,1fr);gap:1rem;padding:1.6rem 0;border-top:1px solid var(--line)}.gds-derivation__index{font:800 1rem/1.2 var(--font-mono);color:var(--accent-deep)}.gds-derivation__body small{color:var(--muted);font:700 1rem/1.4 var(--font-mono);overflow-wrap:anywhere}.gds-derivation__body h3{margin:.35rem 0 .45rem;font-size:1.45rem;line-height:1.3}.gds-derivation__body p{max-width:48rem;margin:0;font-size:1.04rem;line-height:1.68}.gds-derivation details{margin-top:.75rem}.gds-derivation summary{cursor:pointer;color:var(--accent-deep);font-weight:750}.gds-evidence-status{margin:.7rem 0 .2rem;color:var(--muted);font-size:1rem}.gds-evidence-links,.gds-evidence-nav{display:flex;flex-wrap:wrap;gap:.6rem 1rem;margin-top:.7rem}.gds-evidence-links a,.gds-evidence-nav a{font-size:1rem}
-.gds-runtime{margin:1.5rem 0 0}.gds-runtime__flow{grid-template-columns:minmax(0,1fr) 2rem minmax(0,1fr) 2rem minmax(0,1fr) 2rem minmax(0,1fr)}.gds-d1{border-left:3px solid var(--accent-deep);padding-left:1.25rem}.gds-d1__facts{margin:1.25rem 0}.gds-d1__facts>div{display:grid;grid-template-columns:8rem 1fr;gap:1rem;padding:.65rem 0;border-top:1px solid var(--line)}.gds-d1__facts dt{font-weight:800}.gds-d1__facts dd{margin:0;line-height:1.55}.gds-d1__boundary{font-weight:650}.gds-provenance{display:grid;gap:.35rem;padding-top:1.6rem;color:var(--muted);font-size:1rem;line-height:1.55}.gds-provenance strong{color:var(--text)}.gds-provenance code{overflow-wrap:anywhere}
-@media(max-width:820px){.gds-page{width:min(100% - 1rem,1060px);padding-top:1.3rem}.gds-runtime__flow{grid-template-columns:1fr}.gds-connector{min-height:2.3rem}.gds-connector:before{left:50%;right:auto;top:.2rem;bottom:.45rem;width:1px;height:auto}.gds-connector:after{right:auto;left:calc(50% - .28rem);top:auto;bottom:.1rem;border-top:.5rem solid var(--muted);border-inline:.28rem solid transparent;border-left-color:transparent}.gds-tv-boundary{grid-template-columns:1fr}.gds-tv-boundary dl>div,.gds-d1__facts>div{grid-template-columns:1fr;gap:.25rem}.gds-tv-boundary :global([data-math-formula-inline]){white-space:normal}.gds-derivation>li{grid-template-columns:2.5rem minmax(0,1fr)}}
+.gds-tv-boundary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.5rem;align-items:center;margin-top:1.4rem;padding-block:1rem;border-block:1px solid var(--line)}.gds-tv-boundary dl{margin:0}.gds-tv-boundary dl>div{display:grid;grid-template-columns:8rem 1fr;gap:1rem;padding:.45rem 0}.gds-tv-boundary dd{margin:0}.gds-tv-boundary :global([data-math-formula-inline]){font-size:1.05rem;white-space:nowrap}
+.gds-derivation{list-style:none;margin:1.6rem 0 0;padding:0}.gds-derivation>li{display:grid;grid-template-columns:4rem minmax(0,1fr);gap:1rem;padding:1.6rem 0;border-top:1px solid var(--line)}.gds-derivation__index{font:800 1rem/1.2 var(--font-mono);color:var(--accent-deep)}.gds-derivation__body small{color:var(--muted);font:700 1rem/1.4 var(--font-mono);overflow-wrap:anywhere}.gds-derivation__body p{margin:0}.gds-derivation details{margin-top:.75rem}.gds-derivation summary{cursor:pointer;color:var(--accent-deep);font-weight:750}.gds-evidence-status{margin:.7rem 0 .2rem;color:var(--muted);font-size:1rem}.gds-evidence-links,.gds-evidence-nav{display:flex;flex-wrap:wrap;gap:.6rem 1rem;margin-top:.7rem}.gds-evidence-links a,.gds-evidence-nav a{font-size:1rem}
+.gds-runtime{margin:1.5rem 0 0}.gds-runtime__flow{grid-template-columns:minmax(0,1fr) 2rem minmax(0,1fr) 2rem minmax(0,1fr) 2rem minmax(0,1fr)}.gds-d1__facts{margin:1.25rem 0}.gds-d1__facts>div{display:grid;grid-template-columns:8rem 1fr;gap:1rem;padding:.65rem 0;border-top:1px solid var(--line)}.gds-d1__facts dt{font-weight:800}.gds-d1__facts dd{margin:0}.gds-provenance{display:grid;gap:.35rem;padding-top:1.6rem;color:var(--muted);font-size:1rem;line-height:1.55}.gds-provenance strong{color:var(--text)}.gds-provenance code{overflow-wrap:anywhere}
+@media(max-width:820px){.gds-runtime__flow{grid-template-columns:1fr}.gds-connector{min-height:2.3rem}.gds-connector:before{left:50%;right:auto;top:.2rem;bottom:.45rem;width:1px;height:auto}.gds-connector:after{right:auto;left:calc(50% - .28rem);top:auto;bottom:.1rem;border-top:.5rem solid var(--muted);border-inline:.28rem solid transparent;border-left-color:transparent}.gds-tv-boundary{grid-template-columns:1fr}.gds-tv-boundary dl>div,.gds-d1__facts>div{grid-template-columns:1fr;gap:.25rem}.gds-tv-boundary :global([data-math-formula-inline]){white-space:normal}.gds-derivation>li{grid-template-columns:2.5rem minmax(0,1fr)}}
 @media(prefers-reduced-motion:reduce){.gds-page{scroll-behavior:auto}.gds-page *{animation:none;transition:none}}
 </style>

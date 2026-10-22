@@ -12,6 +12,7 @@ import {
   SD_LORA_V2_WEBSHOP,
 } from '../../data/sdLoraV2Outcome';
 import { SD_LORA_BOUNDED_RECURRENCE_RESULT } from '../../data/sdLoraVrLineages';
+import "../../styles/research-article.css";
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -28,10 +29,9 @@ const v3EvidenceHref = `${sourceBase}/${SD_LORA_V2_PUBLICATION_SOURCE.v3Closeout
 const speedup = SD_LORA_V2_LOCAL.eightStepSpeedup.toFixed(2);
 const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
 ---
-<article class="sdlora-v2" data-copy-review data-sd-lora-v2-outcome data-ui-audit="contrast layout evidence">
-  <header class="sdlora-v2__hero">
-    <p class="sdlora-v2__chapter">{t('03 / 07 · Stable Reduction：历史 component 仍逐个保留', '03 / 07 · Stable Reduction: historical components remain individually retained')}</p>
-    <h1>{t('Stable Reduction 保留历史 component，训练约快 2×', 'Stable Reduction keeps the component history and trains about 2× faster')}</h1>
+<article class="sdlora-v2 evo-approved-reader" data-copy-review data-sd-lora-v2-outcome data-ui-audit="contrast layout evidence">
+  <header class="sdlora-v2__hero evo-article__header">
+    <h1>{t('Stable Reduction 保留历史参数组件，训练约快 2×', 'Stable Reduction keeps the component history and trains about 2× faster')}</h1>
     <p class="sdlora-v2__lede">
       {t(
         '我们已经做出了一个确实能更快训练的 SD-LoRA v2；它不是原算法一模一样的复制品，但目前的小规模真实 WebShop 检查没有发现它因为加速而明显变笨。',
@@ -57,7 +57,7 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
     </nav>
   </header>
 
-  <section class="sdlora-v2__section" aria-labelledby="strict-speed-title">
+  <section class="sdlora-v2__section evo-article__section" aria-labelledby="strict-speed-title">
     <div class="sdlora-v2__copy">
       <h2 id="strict-speed-title">{t('我们先试过：算法别变，只把它算快', 'We first tried to keep the algorithm unchanged and only make it faster')}</h2>
       <p>{t(
@@ -84,7 +84,7 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
     )}</p>
   </section>
 
-  <section class="sdlora-v2__section" aria-labelledby="v2-definition-title">
+  <section class="sdlora-v2__section evo-article__section" aria-labelledby="v2-definition-title">
     <div class="sdlora-v2__copy">
       <h2 id="v2-definition-title">{t('于是我们换了问题：明确做一个新的 SD-LoRA v2', 'So we changed the question and explicitly made a new SD-LoRA v2')}</h2>
       <p>{t(
@@ -105,7 +105,7 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
     </figure>
   </section>
 
-  <section class="sdlora-v2__section" aria-labelledby="eight-step-title">
+  <section class="sdlora-v2__section evo-article__section" aria-labelledby="eight-step-title">
     <div class="sdlora-v2__copy">
       <h2 id="eight-step-title">{t('v2 真的能继续学，而且 8 步大约快了 2×', 'v2 really keeps learning, and the matched eight-step trainer is about 2× faster')}</h2>
       <p>{t(
@@ -130,7 +130,7 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
     )}</p>
   </section>
 
-  <section class="sdlora-v2__section" aria-labelledby="webshop-title">
+  <section class="sdlora-v2__section evo-article__section" aria-labelledby="webshop-title">
     <div class="sdlora-v2__copy">
       <h2 id="webshop-title">{t('再去 WebShop 看：没有发现它因为加速而明显变笨', 'Then we checked WebShop: the speedup did not produce an obvious behavioral collapse')}</h2>
       <p>{t(
@@ -162,7 +162,7 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
     )}</p>
   </section>
 
-  <section class="sdlora-v2__section sdlora-v2__conclusion" aria-labelledby="conclusion-title">
+  <section class="sdlora-v2__section sdlora-v2__conclusion evo-article__section" aria-labelledby="conclusion-title">
     <h2 id="conclusion-title">{t('现在能说什么', 'What we can say now')}</h2>
     <blockquote>
       {t(
@@ -185,7 +185,7 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
     </ul>
   </section>
 
-  <section class="sdlora-v2__section" aria-labelledby="next-title">
+  <section class="sdlora-v2__section evo-article__section" aria-labelledby="next-title">
     <div class="sdlora-v2__copy">
       <h2 id="next-title">{t('另一条并行线已经把增长历史折成固定 rank128', 'A parallel line has already folded growing history into fixed rank128')}</h2>
       <p>{t(
@@ -224,19 +224,12 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
 </article>
 
 <style>
-.sdlora-v2{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--ink)}
-.sdlora-v2__hero{padding:clamp(2.5rem,7vw,5.8rem) 0 2.4rem;border-bottom:1px solid var(--line)}
-.sdlora-v2__chapter{margin:0 0 .65rem;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}
-.sdlora-v2__hero h1{max-width:16ch;margin:0;font-family:var(--font-editorial);font-size:clamp(2.35rem,6vw,5rem);line-height:.98;letter-spacing:-.045em}
-.sdlora-v2__lede{max-width:52rem;margin:1.25rem 0 0;font-size:clamp(1.15rem,2vw,1.45rem);line-height:1.64}
+.sdlora-v2__lede{margin:1.25rem 0 0}
 .sdlora-v2__headline-metric{display:flex;flex-wrap:wrap;align-items:baseline;gap:.45rem 1rem;margin:1.6rem 0 0;padding:1rem 0;border-block:1px solid var(--line);font-variant-numeric:tabular-nums}
 .sdlora-v2__headline-metric span{font:800 clamp(1.45rem,3.2vw,2.35rem)/1.1 var(--font-mono)}
 .sdlora-v2__headline-metric b{color:var(--muted);font-size:1.35rem}.sdlora-v2__headline-metric strong{color:var(--accent-deep);font:800 1.1rem/1.2 var(--font-mono)}
-.sdlora-v2__hero-boundary{max-width:50rem;margin:1rem 0 0;color:var(--muted);line-height:1.6}
-.sdlora-v2__hero-links{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin-top:1rem}.sdlora-v2__hero-links a,.sdlora-v2__evidence a,.next-link a{color:var(--accent-deep);font-weight:750;text-underline-offset:.22em}
-.sdlora-v2__section{padding:2.8rem 0;border-bottom:1px solid var(--line)}
-.sdlora-v2__copy{max-width:52rem}.sdlora-v2__section h2{margin:0;font-family:var(--font-editorial);font-size:clamp(1.7rem,3.4vw,2.65rem);line-height:1.08;letter-spacing:-.025em}
-.sdlora-v2__section p{line-height:1.68}.sdlora-v2__copy p{margin:.85rem 0 0;color:var(--ink)}
+.sdlora-v2__hero-boundary{margin:1rem 0 0;color:var(--muted)}
+.sdlora-v2__hero-links{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin-top:1rem}.sdlora-v2__hero-links a,.sdlora-v2__evidence a,.next-link a{color:var(--accent-deep);font-weight:750;text-underline-offset:.22em}.sdlora-v2__copy p{margin:.85rem 0 0;color:var(--ink)}
 .sdlora-v2__plain-result{max-width:54rem;margin:1.25rem 0 0;padding-left:1rem;border-left:3px solid var(--accent-deep);font-size:1.06rem}
 
 .strict-flow,.v2-rule{display:flex;align-items:stretch;gap:.7rem;margin:1.5rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}
@@ -248,16 +241,14 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
 .next-table{margin-top:1.35rem;overflow-x:auto}.comparison-table{min-width:0;max-width:min(100%,46rem)}
 .webshop-compare{margin-top:1.35rem;border-block:1px solid var(--line)}.webshop-compare__row{display:grid;grid-template-columns:minmax(9rem,1.2fr) repeat(2,minmax(7rem,.8fr)) auto;gap:.75rem;align-items:baseline;padding:.9rem 0;border-bottom:1px solid var(--line)}
 .webshop-compare__row:last-child{border-bottom:0}.webshop-compare__row>div{display:flex;align-items:baseline;gap:.5rem}.webshop-compare__row span{color:var(--muted);font-size:1rem}.webshop-compare__row b{font:800 1.2rem/1.1 var(--font-mono)}.webshop-compare__row small{color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}
-.paired-counts{max-width:52rem;margin:1rem 0 0;font-weight:700}.sdlora-v2__boundary{max-width:52rem;margin:.7rem 0 0;color:var(--muted)}
-.sdlora-v2__conclusion blockquote{max-width:52rem;margin:1.3rem 0 0;padding:0 0 0 1rem;border-left:4px solid var(--color-positive);font-family:var(--font-editorial);font-size:clamp(1.2rem,2.4vw,1.6rem);line-height:1.55}
-.sdlora-v2__conclusion>p{max-width:52rem}.boundary-list{max-width:50rem;margin:1rem 0 0;padding-left:1.2rem;color:var(--muted);line-height:1.6}
+.paired-counts{max-width:52rem;margin:1rem 0 0;font-weight:700}.sdlora-v2__boundary{margin:.7rem 0 0;color:var(--muted)}
+.sdlora-v2__conclusion blockquote{max-width:52rem;margin:1.3rem 0 0;padding:0 0 0 1rem;border-left:4px solid var(--color-positive);font-family:var(--font-editorial);font-size:clamp(1.2rem,2.4vw,1.6rem);line-height:1.55}.boundary-list{margin:1rem 0 0;padding-left:1.2rem;color:var(--muted)}
 .next-table th:first-child{width:12rem}.next-question{max-width:54rem;margin:1.25rem 0 0;font-size:1.08rem;font-weight:700}.next-link{margin:.8rem 0 0}
 
-.sdlora-v2__evidence{margin:2rem 0;border-block:1px solid var(--line)}.sdlora-v2__evidence>summary{padding:1rem 0;cursor:pointer;font-weight:800}.evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 1.5rem;padding-bottom:1rem}.evidence-grid>div{padding:.95rem 0;border-top:1px solid var(--line)}.evidence-grid p{margin:.4rem 0 .55rem;color:var(--muted);line-height:1.58}.evidence-links{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin:0 0 1.1rem}
+.sdlora-v2__evidence{margin:2rem 0;border-block:1px solid var(--line)}.sdlora-v2__evidence>summary{padding:1rem 0;cursor:pointer;font-weight:800}.evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 1.5rem;padding-bottom:1rem}.evidence-grid>div{padding:.95rem 0;border-top:1px solid var(--line)}.evidence-grid p{margin:.4rem 0 .55rem;color:var(--muted)}.evidence-links{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin:0 0 1.1rem}
 @media(max-width:760px){
-  .sdlora-v2{width:min(100% - 1rem,1120px)}.sdlora-v2__hero{padding-top:2rem}.sdlora-v2__hero h1{font-size:clamp(2.1rem,11vw,3.35rem)}
   .sdlora-v2__hero-links{display:grid}.strict-flow{display:grid;grid-template-columns:1fr}.strict-flow>b{transform:rotate(90deg);justify-self:center}.v2-rule{grid-template-columns:1fr}.v2-rule>b{transform:rotate(90deg);justify-self:center}.v2-rule figcaption{grid-column:auto}
-  .webshop-compare__row{grid-template-columns:1fr 1fr}.webshop-compare__row>strong,.webshop-compare__row>small{grid-column:1/-1}.comparison-table,.next-table{min-width:0}.comparison-table th,.comparison-table td,.next-table th,.next-table td{}.next-table th:first-child{width:8.5rem}.evidence-grid{grid-template-columns:1fr}/* Keep scientific metric columns readable; let only the table scroll locally. */
+  .webshop-compare__row{grid-template-columns:1fr 1fr}.webshop-compare__row>strong,.webshop-compare__row>small{grid-column:1/-1}.comparison-table,.next-table{min-width:0}.next-table th:first-child{width:8.5rem}.evidence-grid{grid-template-columns:1fr}/* Keep scientific metric columns readable; let only the table scroll locally. */
   
   .comparison-table{min-width:31rem;max-width:none}
   .comparison-table thead th:nth-child(n+2),.comparison-table tbody td:nth-child(2){white-space:nowrap;overflow-wrap:normal}
