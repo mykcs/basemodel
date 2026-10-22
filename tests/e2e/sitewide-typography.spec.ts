@@ -560,17 +560,32 @@ for(const width of [390,768,1440] as const) for(const theme of ['light','dark'] 
     await image.scrollIntoViewIfNeeded();
     await expect(image).toHaveJSProperty('complete',true);
     const button=first.locator('[data-metric-zoom]');
+    const hint=first.locator('[data-metric-scroll-hint]');
     await expect(button).toBeVisible();
+    await expect(hint).toBeHidden();
     acceptMetricZoom(await readMetricZoom(first),false);
     const full=first.getByRole('link',{name:/原尺寸打开/});
     await expect(full).toHaveAttribute('href',/wandb-threeway\/task-score\.svg$/);
     await button.click();
     await expect(button).toHaveAttribute('aria-expanded','true');
+    await expect(hint).toBeVisible();
+    await expect(hint).toContainText('左右滑动');
     const receipt=await readMetricZoom(first);
     acceptMetricZoom(receipt,true);
     await testInfo.attach('metric-original-size.json',{body:Buffer.from(JSON.stringify({width,theme,...receipt},null,2)),contentType:'application/json'});
-    await first.locator('.metric-evidence__viewport').screenshot({path:testInfo.outputPath('metric-original-size-'+width+'-'+theme+'.png'),animations:'disabled'});
+    const viewport=first.locator('.metric-evidence__viewport');
+    const scrolled=await viewport.evaluate(node=>{
+      (node as HTMLElement).scrollLeft=200;
+      const left=(node as HTMLElement).scrollLeft;
+      (node as HTMLElement).scrollLeft=0;
+      return left;
+    });
+    expect(scrolled).toBeGreaterThan(0);
+    await viewport.screenshot({path:testInfo.outputPath('metric-original-size-'+width+'-'+theme+'.png'),animations:'disabled'});
+    await first.screenshot({path:testInfo.outputPath('metric-expanded-with-controls-'+width+'-'+theme+'.png'),animations:'disabled',
+      style:'.site-header,.research-navigation{visibility:hidden}'});
     await button.click();
+    await expect(hint).toBeHidden();
     acceptMetricZoom(await readMetricZoom(first),false);
   });
 }
@@ -709,4 +724,45 @@ test('Ceiling-1.0 9px status and header regression is rejected by the SAME geome
   expect(()=>acceptCeiling(broken,width)).toThrow();
   await css.evaluate(node=>node.parentNode?.removeChild(node));
   acceptCeiling(await measureCeiling(page),width);
+});
+
+
+test('metric zoom control is keyboard operated and returns to compact state',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(metricZoomRoute,{waitUntil:'domcontentloaded'});
+  const figure=page.locator('.metric-evidence').first();
+  const toggle=figure.locator('[data-metric-zoom]');
+  const viewport=figure.locator('.metric-evidence__viewport');
+  const hint=figure.locator('[data-metric-scroll-hint]');
+  await expect(toggle).toBeVisible();
+  await toggle.focus();
+  await page.keyboard.press('Enter');
+  await expect(toggle).toHaveAttribute('aria-expanded','true');
+  await expect(viewport).toBeFocused();
+  await expect(hint).toBeVisible();
+  acceptMetricZoom(await readMetricZoom(figure),true);
+  await toggle.focus();
+  await page.keyboard.press('Enter');
+  await expect(toggle).toHaveAttribute('aria-expanded','false');
+  await expect(hint).toBeHidden();
+  acceptMetricZoom(await readMetricZoom(figure),false);
+});
+
+test('scientific metric SVG and source links remain available without JavaScript',async({browser})=>{
+  const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
+  try{
+    const page=await context.newPage();
+    const response=await page.goto(metricZoomRoute,{waitUntil:'domcontentloaded'});
+    expect(response?.status()).toBe(200);
+    const figures=page.locator('.metric-evidence');
+    await expect(figures).toHaveCount(7);
+    const first=figures.first();
+    await expect(first.locator('img')).toBeVisible();
+    await expect(first.locator('[data-metric-zoom]')).toBeHidden();
+    await expect(first.locator('[data-metric-scroll-hint]')).toBeHidden();
+    await expect(first.getByRole('link',{name:/原尺寸打开/})).toHaveAttribute('href',/wandb-threeway\/task-score\.svg$/);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+  }finally{
+    await context.close();
+  }
 });
