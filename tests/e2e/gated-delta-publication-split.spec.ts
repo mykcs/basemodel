@@ -25,14 +25,14 @@ for (const locale of locales) {
     test(`${locale.id} current/history stay single-purpose at ${viewport.id}`, async ({ page }) => {
       await page.setViewportSize(viewport);
       await page.goto(`${locale.prefix}${routes.current}`, { waitUntil: 'domcontentloaded' });
-      await expect(page.locator('h1')).toHaveText('Gated Delta：从序列 State 到参数 State');
+      await expect(page.locator('h1')).toHaveText('Gated Delta：从序列状态到参数更新');
       await expect(page).toHaveTitle(/Gated Delta：从序列 State 到 OpenEVO 参数 State/);
       await expect(page.locator('meta[name="description"]')).toHaveAttribute(
         'content',
         /online regression.*严格代数等价.*逐角色映射.*四轮冻结 D1 资格实验/,
       );
-      await expect(page.locator('.gds-hero__boundary')).toContainText('论文公式到 residual 形式是严格代数等价');
-      await expect(page.locator('.gds-hero__boundary')).toContainText('逐角色映射');
+      await expect(page.locator('.gds-hero__boundary')).toContainText('论文公式与残差写入形式在代数上等价');
+      await expect(page.locator('.gds-hero__boundary')).toContainText('按功能角色进行的对应');
       await expect(page.locator('#d1-boundary')).toContainText('四轮配对资格实验已完成并封存');
       await expect(page.locator('.gds-provenance')).toContainText('如果上游科学证据发生变化，会先核对新的证据来源和结论边界，再更新页面');
       await expect(page.locator('.gds-provenance')).not.toContainText('正式发布前');
@@ -86,8 +86,8 @@ test('core distinction remains readable without JavaScript', async ({ browser })
   const page = await context.newPage();
   try {
     await page.goto(routes.current, { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('.gds-hero__boundary')).toContainText('论文公式到 residual 形式是严格代数等价');
-    await expect(page.locator('.gds-hero__boundary')).toContainText('逐角色映射');
+    await expect(page.locator('.gds-hero__boundary')).toContainText('论文公式与残差写入形式在代数上等价');
+    await expect(page.locator('.gds-hero__boundary')).toContainText('按功能角色进行的对应');
     await expect(page.locator('#recurrence')).toBeVisible();
     await expect(page.locator('#d1-boundary')).toContainText('四轮配对资格实验已完成并封存');
     await page.goto(routes.history, { waitUntil: 'domcontentloaded' });

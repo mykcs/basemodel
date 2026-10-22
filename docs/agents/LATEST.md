@@ -10,6 +10,12 @@ Status: **The SEED × OpenEvo Results route is aligned to the closed Track A pai
 
 This file is a short current-state router. Detailed policy belongs under `docs/agents/current/`; historical rationale belongs under `docs/agents/history/`.
 
+## 2026-10-22 全站技术文章阅读样板
+
+以「我们的回应实验」为阅读样板的候选覆盖 `src/data/technicalArticleRoutes.ts` 中 44 个现行文章路由，共享 owner 为 `src/styles/research-article.css`。工具、目录、比较页、运行工作台及科研图表／booktabs 表格保留原有语义 owner；`PageOutline.astro` 为文章提供可折叠目录，三篇博客沿用自己的目录。当前主线没有 `/en` 发布路由，候选保留已有语言分支而不恢复归档页。
+
+用户本地路线图修改保留在原 checkout；文章候选在独立 worktree 开发。数值、原有锚点和外部证据链接须与基线逐页比对；本地检查、review-only Preview、精确提交 CI / Vercel 和 Production 分别验收，发布状态以候选 PR 的实时收据为准。
+
 ## 2026-10-21 科研论文表格的真实渲染入口
 
 [PR #920](https://github.com/mykcs/basemodel/pull/920) 将科研报告表格的实际调用统一到 `ResearchPaperTable.astro`；唯一排版 owner 是 `src/styles/research-booktabs.css`。采用 Times / 中文衬线回退、可见的上方表题、booktabs 横线和数字对齐；短表按内容取宽，宽表在自身窗口横向滚动，手机端保持原生行列。工作台、购物操作示意和应用目录保持各自职责。科研值、缺失状态、比较口径及来源不因排版变化而改写。

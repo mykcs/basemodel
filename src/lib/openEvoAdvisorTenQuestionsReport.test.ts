@@ -443,13 +443,12 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(plot).not.toContain('setTimeout');
     expect(read('src/styles/openevo-seed-world4-repro.css')).not.toContain('tbody { display: block; }');
   });
-  it('reuses subdued-green paper typography only on the three blog pages',()=>{
-    const css=read('src/styles/openevo-research-blogs.css');
-    expect(css).toContain(':has(.evo-blog)');
-    expect(css).toContain('#f6f7f5');
-    expect(css).toContain('--paper:#fff');
-    expect(css).toContain('font-size:17px');
-    expect(css).toContain('font-size:16.5px');
+  it('uses the owner-selected reading treatment while preserving the three article roles',()=>{
+    const css=read('src/styles/research-article.css');
+    expect(css).toContain(':has(.evo-approved-reader)');
+    expect(css).toContain('--paper: #fcfcfb');
+    expect(css).toContain('font: 400 14px/1.8');
+    expect(css).toContain('min(750.4px, calc(100% - 24px))');
     for(const page of [methods,questions,responses]){
       expect(page).toContain('OpenEvoArticleNavigation');
       expect(page).toContain('openevo-research-blogs.css');
@@ -517,7 +516,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(progress).toContain('GPU 小时');
   });
   it('presents plots and research tables with one documented visual hierarchy without making every table a card',()=>{
-    const blog=read('src/styles/openevo-research-blogs.css');
+    const blog=read('src/styles/openevo-research-blogs.css') + read('src/styles/research-article.css');
     const booktabs=read('src/styles/research-booktabs.css');
     const plot=read('src/components/research/PaperIntervalPlot.astro');
     for(const token of ['--research-evidence-frame','--research-evidence-title-size','--research-evidence-caption-size','--research-evidence-single-width','--research-evidence-double-width']) {

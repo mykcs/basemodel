@@ -10,6 +10,7 @@ import {
   SD_LORA_BOUNDED_RECURRENCE_SOURCE as source,
   SD_LORA_VR_LINEAGE_INDEX as lineage,
 } from '../../data/sdLoraVrLineages';
+import "../../styles/research-article.css";
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -27,13 +28,12 @@ const successorHref = p(`${root}bounded-effective-state-gdr/`);
 const accelerationHref = p(`${root}sd-lora-bounded-acceleration/`);
 const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
 ---
-<article class="bounded" data-copy-review data-sd-lora-bounded-recurrence>
-  <header class="bounded__hero">
-    <p class="bounded__eyebrow">{t('07 / 07 · 固定 rank128 · R150–R159 连续更新', '07 / 07 · fixed rank128 · recurrent R150–R159')}</p>
+<article class="bounded evo-approved-reader" data-copy-review data-sd-lora-bounded-recurrence>
+  <header class="bounded__hero evo-article__header">
     <h1>{t('历史继续增长，参数状态保持 rank128', 'History keeps growing while the parameter state stays rank128')}</h1>
     <p class="bounded__lede">
       {t(
-        `从 R150 到 R159，我们没有再把不断增长的历史 component 全部带进下一轮。历史被维护成一个固定 rank128 状态，每轮只学习一个 rank8 新更新，再折回 rank128；9 轮连续更新全部通过 hard gate。`,
+        `为了控制长期学习时不断增长的参数状态，我们在 R150–R159 的历史窗口中，把过去的更新整合为固定 rank128 状态。每轮学习一个 rank8 新更新，再整合回 rank128；九轮连续更新均通过预先规定的检查。`,
         `From R150 through R159, the next round no longer carried the full growing component history. History stayed in one fixed rank128 state, each round learned one new rank8 update, then folded back to rank128; all nine recurrent updates passed their hard gates.`,
       )}
     </p>
@@ -44,7 +44,7 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
     </dl>
     <p class="bounded__boundary">
       {t(
-        '这项 PASS 只覆盖封存的 R150–R159 历史窗口：它证明旧 component 数 K 不再直接决定这条更新路径的成本，但每轮时间仍取决于样本和 token 数；这不是“所有持续学习都 O(1)”的证明，也没有打开 protected final panel。',
+        '这项结果只覆盖封存的 R150–R159 历史窗口：历史参数组件数 K 不再直接决定这条更新路径的成本，但每轮时间仍取决于样本和 token 数。它不证明所有持续学习都具有恒定成本；受保护的最终测试题也没有在这项实验中打开。',
         'This PASS covers only the sealed R150–R159 historical window. It shows that the old component count K no longer directly controls this update path, while per-round time still depends on examples and tokens. It is not a proof that all continual learning is O(1), and the protected final panel was not opened.',
       )}
     </p>
@@ -56,7 +56,7 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
     <p class="bounded__next-question"><a href={successorHref}>{t('另一条后续问题：固定 rank128 以后，怎样控制每次新经验写多强？→', 'Another follow-up: after fixing rank128, how strongly should each new experience be written? →')}</a></p>
   </header>
 
-  <section class="bounded__section" aria-labelledby="lineage-title">
+  <section class="bounded__section evo-article__section" aria-labelledby="lineage-title">
     <h2 id="lineage-title">{t('两条加速路线改的是不同东西', 'The two acceleration lines change different things')}</h2>
     <p>{t(
       'Stable Reduction 仍然保留不断增加的历史 component，只把跨 component 的归约规则写得更稳定、更适合并行；Bounded Online Recurrence 则把历史折进固定 rank128 状态。两个结果都有效，但不能把 2× 和 37× 当成同一个实现的两次测速。',
@@ -76,7 +76,7 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
     </div>
     <p class="bounded__related"><a href={stableHref}>{t('查看 Stable Reduction 的 2× 结果和 WebShop 小面板 →', 'See the Stable Reduction ~2× result and small WebShop panel →')}</a></p>
   </section>
-  <section class="bounded__section" aria-labelledby="recurrent-title">
+  <section class="bounded__section evo-article__section" aria-labelledby="recurrent-title">
     <h2 id="recurrent-title">{t('R150 到 R159 没有回到 Vanilla', 'R150 through R159 never reset to Vanilla')}</h2>
     <figure class="bounded__flow">
       <div class="bounded__flow-line" role="img" aria-label={t('R150 bounded 状态连续更新到 R159，每轮保持 rank128', 'The bounded R150 state updates continuously through R159 while remaining rank128')}>
@@ -93,7 +93,7 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
     )}</p>
   </section>
 
-  <section class="bounded__section" aria-labelledby="behavior-title">
+  <section class="bounded__section evo-article__section" aria-labelledby="behavior-title">
     <h2 id="behavior-title">{t('四个行为检查都守住了预先门槛', 'All four behavior checks stayed inside the frozen margins')}</h2>
     <p>{t(
       'score 的非劣门槛是 lower bound ≥ -0.05；完整成功率的门槛是 lower bound ≥ -0.0625。R150、R152、R155、R159 都在实验前冻结的规则下 PASS。',
@@ -111,7 +111,7 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
       </ResearchPaperTable>
     </div>
   </section>
-  <section class="bounded__section" aria-labelledby="claim-title">
+  <section class="bounded__section evo-article__section" aria-labelledby="claim-title">
     <h2 id="claim-title">{t('现在能说什么', 'What this result supports')}</h2>
     <p class="bounded__claim">{t(
       '在封存的 R150–R159 历史窗口里，SD-LoRA 的逻辑历史继续增长，但维护的参数状态可以固定在 rank128，旧 component 数 K 不再让这条 history-dependent update path 越来越重。',
@@ -135,6 +135,6 @@ const mib = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
   <OpenEvoSdLoraHistorySeriesNav locale={locale} />
 </article>
 <style>
-.bounded{width:100%;padding:0 0 4rem}.bounded__hero,.bounded__section{width:min(980px,calc(100% - 2rem));margin:0 auto}.bounded__hero{padding:clamp(2.2rem,6vw,4.8rem) 0 2rem}.bounded__eyebrow{margin:0 0 .65rem;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}.bounded__hero h1{max-width:15ch;margin:0;font-size:clamp(2.2rem,5.7vw,4.8rem);line-height:1.02;letter-spacing:-.045em}.bounded__lede,.bounded__boundary,.bounded__section>p,.bounded__flow figcaption{max-width:48rem;font-size:1.05rem;line-height:1.68}.bounded__lede{margin:1.1rem 0 0;color:var(--ink);font-size:clamp(1.08rem,2vw,1.28rem)}.bounded__boundary{margin:1rem 0 0;color:var(--muted)}.bounded__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.6rem 0 0;border-block:1px solid var(--line)}.bounded__metrics div{padding:1rem 1rem 1rem 0}.bounded__metrics dt{color:var(--muted);font-size:.92rem}.bounded__metrics dd{margin:.25rem 0 0;font-size:1.45rem;font-weight:800}.bounded__links{display:flex;flex-wrap:wrap;gap:.8rem 1.1rem;margin-top:1rem}.bounded__links a,.bounded__related a,.bounded__evidence a{color:var(--accent-deep);text-underline-offset:.2em}.bounded__section{padding-top:2.8rem}.bounded__section h2{max-width:26ch;margin:0;font-size:clamp(1.55rem,3vw,2.25rem);line-height:1.15}.bounded__table-wrap{margin-top:1.2rem;overflow-x:auto;min-width:0}.bounded__table{min-width:680px}
-.bounded__table:not(:has(thead tr > :nth-child(4))){min-width:0;max-width:min(100%,46rem)}.bounded__table tbody th{width:18%}.bounded__table--numbers{min-width:520px}.bounded__related{margin-top:1rem}.bounded__flow{margin:1.25rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}.bounded__flow-line{display:flex;align-items:center;gap:.6rem;overflow-x:auto;padding:.2rem 0 .6rem;font:750 1rem/1.2 var(--font-mono)}.bounded__flow-line span{flex:0 0 auto;padding:.5rem .6rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.bounded__flow-line b{color:var(--accent-deep)}.bounded__section>.bounded__claim{font-size:1.16rem;color:var(--ink);font-weight:650}.bounded__evidence{max-width:48rem;margin-top:1rem}.bounded__evidence summary{cursor:pointer;font-weight:700}.bounded__evidence li{margin:.55rem 0;line-height:1.5}@media(max-width:680px){.bounded__hero,.bounded__section{width:min(100% - 1rem,980px)}.bounded__metrics{grid-template-columns:1fr}.bounded__metrics div{border-bottom:1px solid var(--line)}.bounded__metrics div:last-child{border-bottom:0}.bounded__table{min-width:640px}}
+.bounded__hero,.bounded__section{width:min(980px,calc(100% - 2rem));margin:0 auto}.bounded__lede{margin:1.1rem 0 0;color:var(--ink)}.bounded__boundary{margin:1rem 0 0;color:var(--muted)}.bounded__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.6rem 0 0;border-block:1px solid var(--line)}.bounded__metrics div{padding:1rem 1rem 1rem 0}.bounded__metrics dt{color:var(--muted);font-size:.92rem}.bounded__metrics dd{margin:.25rem 0 0}.bounded__links{display:flex;flex-wrap:wrap;gap:.8rem 1.1rem;margin-top:1rem}.bounded__links a,.bounded__related a,.bounded__evidence a{color:var(--accent-deep);text-underline-offset:.2em}.bounded__table-wrap{margin-top:1.2rem;overflow-x:auto;min-width:0}.bounded__table{min-width:680px}
+.bounded__table:not(:has(thead tr > :nth-child(4))){min-width:0;max-width:min(100%,46rem)}.bounded__table tbody th{width:18%}.bounded__table--numbers{min-width:520px}.bounded__related{margin-top:1rem}.bounded__flow{margin:1.25rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}.bounded__flow-line{display:flex;align-items:center;gap:.6rem;overflow-x:auto;padding:.2rem 0 .6rem;font:750 1rem/1.2 var(--font-mono)}.bounded__flow-line span{flex:0 0 auto;padding:.5rem .6rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.bounded__flow-line b{color:var(--accent-deep)}.bounded__section>.bounded__claim{font-size:1.16rem;color:var(--ink);font-weight:650}.bounded__evidence{max-width:48rem;margin-top:1rem}.bounded__evidence summary{cursor:pointer;font-weight:700}.bounded__evidence li{margin:.55rem 0}@media(max-width:680px){.bounded__hero,.bounded__section{width:min(100% - 1rem,980px)}.bounded__metrics{grid-template-columns:1fr}.bounded__metrics div{border-bottom:1px solid var(--line)}.bounded__metrics div:last-child{border-bottom:0}.bounded__table{min-width:640px}}
 </style>

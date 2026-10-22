@@ -1,18 +1,19 @@
 ---
 import AppLayout from '../../../../layouts/AppLayout.astro';
+import "../../../../styles/research-article.css";
 ---
 
 <AppLayout title="最近遇到的问题与研究复盘｜BaseModel" description="阶段性复盘 OpenEVO 研究的资源、技术、学习、汇报和时间安排问题，说明已做工作与下一步。" locale="zh">
-  <main class="shell reflection">
+  <main class="reflection evo-approved-reader">
     <a class="back" href="/">← 返回首页</a>
-    <header class="intro">
+    <header class="intro evo-article__header">
       <p class="eyebrow">OpenEVO · 阶段性复盘</p>
       <h1>最近遇到的问题</h1>
       <p class="lead">这段时间确实遇到了一些困难。我希望把它们说清楚：哪些是客观条件，哪些是我需要提高的能力，已经做了什么，以及接下来准备怎样改进。</p>
       <p class="meta">个人复盘 · 2026 年 10 月 22 日整理 · 研究与执行状态可能继续变化</p>
     </header>
 
-    <section class="summary" aria-labelledby="summary-title">
+    <section class="summary evo-article__section" aria-labelledby="summary-title">
       <h2 id="summary-title">先说目前的情况</h2>
       <p>9 月 24 日及之前，服务器计算资源优先支持同学准备 ICLR 论文，部分 GPU 实验因此受到影响。与此同时，我们继续阅读文献、分析既有结果、学习 Agent 相关方法并准备后续验证。这里的“继续推进”不等于这些准备工作已经产生新的正式实验结果。</p>
       <p>我的态度是：如果确实比别人推进得慢，就承认差距，抓紧时间学习和改进方法。我没有把这段时间当作休息期；除了原研究生导师安排的工作，其他可支配工作时间主要投入 OpenEVO。导师安排的科研和非科研任务，我个人粗略估计约占平时工作时间的 10%，这是主观估计，不是工时审计。</p>
@@ -30,7 +31,7 @@ import AppLayout from '../../../../layouts/AppLayout.astro';
       </div>
     </section>
 
-    <section class="response-section" aria-labelledby="reply-title">
+    <section class="response-section evo-article__section" aria-labelledby="reply-title">
       <div class="heading"><span>02 / 回应</span><h2 id="reply-title">如果老师问，怎么回答？</h2></div>
       <div class="qa">
         <article><h3>“这段时间主要做了什么？”</h3><p>服务器资源阶段性让给了赶 ICLR 投稿的同学，所以一些 GPU 实验没有持续推进。但我一直在围绕 OpenEVO 阅读相关文献、分析已有结果、补 Agent 知识、整理实验方案。哪些是已测出的结果，哪些只是准备，我会分开汇报。</p></article>
@@ -41,7 +42,7 @@ import AppLayout from '../../../../layouts/AppLayout.astro';
     </section>
 
 
-    <section class="reflection-section" aria-labelledby="reflection-title">
+    <section class="reflection-section evo-article__section" aria-labelledby="reflection-title">
       <div class="heading"><span>03 / 进一步反思</span><h2 id="reflection-title">困难之外，我还应该问自己什么？</h2></div>
       <p class="section-lede">这些问题不是魏老师的逐字评价，而是结合通话摘要、我的科研记录和目前实际遇到的困难，继续向自己提出的追问。努力值得珍惜，但也需要用结果检验方法是否有效。</p>
       <ol class="reflections">
@@ -90,7 +91,7 @@ import AppLayout from '../../../../layouts/AppLayout.astro';
       </ol>
     </section>
 
-    <section class="improvement-section" aria-labelledby="improvement-title">
+    <section class="improvement-section evo-article__section" aria-labelledby="improvement-title">
       <div class="heading"><span>04 / 检验改进</span><h2 id="improvement-title">下一阶段，我怎么知道自己真的变好了？</h2></div>
       <p class="section-lede">我希望用三个可观察的变化检验自己的改进。以下是自定检查方向，并非老师规定的考核标准；涉及实验的安排仍需要按正式流程确认。</p>
       <div class="improvement-list">
@@ -109,41 +110,30 @@ import AppLayout from '../../../../layouts/AppLayout.astro';
 </AppLayout>
 
 <style>
-  .reflection{max-width:960px;padding:clamp(2rem,5vw,4.5rem) 1.25rem 6rem;color:var(--ink)}
   .back{font-size:.85rem;color:var(--accent-deep);text-underline-offset:.2em}
-  .intro{padding:3rem 0 2.5rem;border-bottom:1px solid var(--line)}
   .eyebrow,.heading>span,.category{font-size:.72rem;font-weight:800;letter-spacing:.06em;color:var(--accent-deep)}
-  h1{font-size:clamp(2.6rem,7vw,5.2rem);line-height:1.08;letter-spacing:-.045em;margin:.7rem 0 1.25rem}
   .lead{font-size:clamp(1.1rem,2.2vw,1.4rem);line-height:1.7;max-width:42em}
   .meta{color:var(--muted);font-size:.8rem;margin-top:1.3rem}
   section{padding:2.5rem 0;border-bottom:1px solid var(--line)}
-  h2{font-size:clamp(1.55rem,3.2vw,2.4rem);line-height:1.2;letter-spacing:-.025em;margin:.3rem 0 1rem}
-  p{line-height:1.75}
-  .summary{max-width:76ch}
   .heading{margin-bottom:1.5rem}
   .issues,.qa{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
   .issues article,.qa article{min-width:0;border:1px solid var(--line);border-radius:var(--radius-panel);padding:1.4rem;background:var(--surface,transparent)}
-  h3{font-size:1.16rem;line-height:1.42;margin:.7rem 0}
-  .issues p,.qa p{font-size:.93rem;color:var(--muted);margin:.65rem 0 0}
+  .issues p,.qa p{color:var(--muted);margin:.65rem 0 0}
   .issues .response{border-top:1px solid var(--line);padding-top:1rem;margin-top:1rem;color:var(--ink)}
 
-  .section-lede{max-width:72ch;color:var(--muted);font-size:.96rem;margin:-.5rem 0 1.6rem}
+  .section-lede{color:var(--muted);margin:-.5rem 0 1.6rem}
   .reflections{list-style:none;padding:0;margin:0;display:grid;gap:0}
   .reflections li{padding:1.35rem 0;border-top:1px solid var(--line)}
   .reflections li:last-child{border-bottom:1px solid var(--line)}
-  .reflections h3{margin:.4rem 0 .55rem;font-size:1.15rem}
-  .reflections p{max-width:74ch;color:var(--muted);font-size:.94rem;margin:.35rem 0}
+  .reflections p{color:var(--muted);margin:.35rem 0}
   .reflections .next{color:var(--ink);margin-top:.65rem}
   .priority,.improvement-list span{font-size:.75rem;font-weight:750;color:var(--accent-deep)}
   .improvement-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem}
   .improvement-list article{border:1px solid var(--line);border-radius:var(--radius-panel);padding:1.25rem;min-width:0}
-  .improvement-list h3{font-size:1.08rem;margin:.45rem 0}
-  .improvement-list p{font-size:.9rem;color:var(--muted);margin:.4rem 0}
+  .improvement-list p{color:var(--muted);margin:.4rem 0}
   .spoken-response{max-width:75ch;margin-top:1.6rem;padding:1.35rem;border-left:3px solid var(--accent-deep);background:var(--surface,transparent)}
-  .spoken-response h3{margin:0 0 .6rem}
-  .spoken-response p{margin:0;font-size:.96rem}
+  .spoken-response p{margin:0}
   .boundary{margin-top:2rem;padding:1.4rem;border-left:3px solid var(--accent-deep);background:var(--surface,transparent)}
-  .boundary p{font-size:.88rem;color:var(--muted)}
-  .boundary a{font-weight:700;font-size:.9rem}
-  @media(max-width:700px){.issues,.qa,.improvement-list{grid-template-columns:1fr}.intro{padding-top:2rem}}
+  .boundary p{color:var(--muted)}
+  @media(max-width:700px){.issues,.qa,.improvement-list{grid-template-columns:1fr}}
 </style>
