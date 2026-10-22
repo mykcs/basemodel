@@ -103,3 +103,46 @@ for (const width of [320, 390, 768, 1440]) {
     }
   });
 }
+
+
+/** Regress older native evidence tables as well as ResearchPaperTable. */
+for(const width of [320,390,768,1440]){
+  test('native WebShop and model evidence tables require no horizontal drag at '+width+'px',async({page})=>{
+    await page.setViewportSize({width,height:900});
+    for(const theme of themes){
+      await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+      for(const [route,selector,expected] of [
+        ['/research/seed-openevo/flow/webshop/','.setting-table-wrap table, .webshop-seed-data-usage .table-wrap table',2],
+        ['/models/qwen2-5-3b-instruct/','.experiment-table-wrap .experiment-table',1],
+      ] as const){
+        const response=await page.goto(route,{waitUntil:'domcontentloaded'});
+        expect(response?.status(),route).toBe(200);
+        await page.evaluate(async value=>{document.documentElement.dataset.theme=value;await document.fonts.ready;},theme);
+        const tables=page.locator(selector);
+        await expect(tables,route).toHaveCount(expected);
+        const layout=await tables.evaluateAll(nodes=>nodes.map(table=>{
+          const wrap=table.parentElement!;
+          const box=table.getBoundingClientRect();
+          const cells=[...table.querySelectorAll('th,td')];
+          return {
+            width:box.width,
+            parentWidth:wrap.getBoundingClientRect().width,
+            localScroll:wrap.scrollWidth-wrap.clientWidth,
+            cellOverflow:Math.max(0,...cells.map(cell=>cell.scrollWidth-cell.clientWidth)),
+            minFont:Math.min(...cells.map(cell=>parseFloat(getComputedStyle(cell).fontSize))),
+            rowCount:table.querySelectorAll('tbody tr').length,
+            columns:table.querySelectorAll('thead th').length,
+          };
+        }));
+        for(const table of layout){
+          expect(table.columns,route).toBeGreaterThanOrEqual(3);
+          expect(table.rowCount,route).toBeGreaterThanOrEqual(3);
+          expect(table.width,route).toBeLessThanOrEqual(table.parentWidth+2);
+          expect(table.localScroll,route).toBeLessThanOrEqual(2);
+          expect(table.cellOverflow,route).toBeLessThanOrEqual(2);
+          expect(table.minFont,route).toBeGreaterThanOrEqual(12);
+        }
+      }
+    }
+  });
+}

@@ -80,14 +80,14 @@ const comparisonControls = [
   .experiment-fields div:nth-child(even){padding-left:1rem;border-left:1px solid var(--line)}
   .experiment-fields dt{font-size:.78rem;font-weight:800}
   .experiment-fields dd{margin:.28rem 0 0;color:var(--muted);font-size:.75rem;line-height:1.55}
-  .experiment-table-wrap{max-width:100%;overflow-x:auto;border-top:1px solid var(--line)}
-  .experiment-table{width:100%;border-collapse:collapse;font-size:.75rem}
-  .experiment-table th,.experiment-table td{padding:.72rem .7rem .72rem 0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5}
-  .experiment-table th{color:var(--muted);font-size:.68rem}
+  .experiment-table-wrap{max-width:100%;min-width:0;overflow:visible;border-top:1px solid var(--line)}
+  .experiment-table{width:100%;max-width:100%;min-width:0;table-layout:fixed;margin-inline:auto;border-collapse:collapse;font-size:clamp(.75rem,.7rem + .2vw,.875rem)}
+  .experiment-table th,.experiment-table td{min-width:0;padding:clamp(.3rem,1vw,.72rem) clamp(.2rem,.6vw,.7rem) clamp(.3rem,1vw,.72rem) 0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5;overflow-wrap:anywhere;word-break:normal}
+  .experiment-table th{color:var(--muted);font-size:clamp(.75rem,.7rem + .2vw,.82rem)}
   .experiment-table td:first-child{font-weight:750}
   @media(max-width:640px){
     .model-name-anatomy,.experiment-fields{grid-template-columns:1fr}
     .model-name-anatomy div+div,.experiment-fields div:nth-child(even){padding-left:0;border-left:0}
-    .experiment-table{min-width:620px}
+    .experiment-table{min-width:0}
   }
 </style>
