@@ -1,3 +1,5 @@
+import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 
 const acceptChartSize = (smallest: number) => expect(smallest).toBeGreaterThanOrEqual(12);
@@ -129,7 +131,7 @@ for (const width of [390, 768, 1440]) {
         {
           expect(metrics.width / metrics.natural * nativeFont).toBeGreaterThanOrEqual(12);
           expect(metrics.localOverflow).toBe(true);
-          await testInfo.attach(`image-reader-${i}.json`,{body:Buffer.from(JSON.stringify({sha:process.env.CI_HEAD_SHA,width,theme,engine:testInfo.project.name,nativeFont,...metrics})),contentType:'application/json'});
+          await testInfo.attach(`image-reader-${i}.json`,{body:Buffer.from(JSON.stringify({sha:process.env.CI_HEAD_SHA,viewportWidth:width,theme,engine:testInfo.project.name,nativeFont,...metrics})),contentType:'application/json'});
           const region = page.locator('.metric-evidence__viewport, .research-image-viewport').nth(i);
           await region.focus();
           await expect(region).toBeFocused();
@@ -143,3 +145,17 @@ for (const width of [390, 768, 1440]) {
     });
   }
 }
+
+// Run against the same freshly built tree served by the browser gate. Preserve
+// the complete raw candidate list; raw source inventory is not visual approval.
+test('fresh built-tree typography inventory has exact source identity', async ({}, info) => {
+  const path=info.outputPath('sitewide-typography-audit.json');
+  execFileSync(process.execPath,['scripts/audit-sitewide-typography.mjs','--json',path],{stdio:'pipe'});
+  const audit=JSON.parse(readFileSync(path,'utf8'));
+  if(process.env.CI_HEAD_SHA) expect(audit.sha).toBe(process.env.CI_HEAD_SHA);
+  expect(audit.errors).toEqual([]);
+  expect(audit.summary.rendered_routes).toBeGreaterThanOrEqual(260);
+  expect(audit.declarations.some((entry:{property:string})=>entry.property==='line-height')).toBe(true);
+  expect(audit.declarations.some((entry:{property:string})=>entry.property==='letter-spacing')).toBe(true);
+  await info.attach('sitewide-typography-audit.json',{path,contentType:'application/json'});
+});

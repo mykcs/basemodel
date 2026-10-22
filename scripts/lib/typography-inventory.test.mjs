@@ -24,3 +24,10 @@ test('invalid inherited font family is rejected without confusing whole-value in
   const entries=inventoryCSS('.valid { font: inherit; font: 600 1rem "inherit"; } .bad { font: 750 .68rem/1.1 inherit; }','fixture.css');
   assert.deepEqual(entries.map(entry=>entry.invalidInheritedFontShorthand),[false,false,true]);
 });
+
+test('typography inventory includes readable leading and tracking without approving semantics',()=>{
+  const entries=inventoryCSS('@media (width < 700px) { .caption { line-height: 1.5; letter-spacing: .02em; } }','fixture.css');
+  assert.deepEqual(entries.map(entry=>entry.property),['line-height','letter-spacing']);
+  assert.deepEqual(entries[0].contexts,['@media (width < 700px)']);
+  assert.ok(entries.every(entry=>entry.decision===null && entry.evidence.length===0));
+});

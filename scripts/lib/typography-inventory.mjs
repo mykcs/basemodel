@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 // interpreting braces, comments, multiline values and nested rules by regex.
 const require = createRequire(import.meta.url);
 const { parse } = createRequire(require.resolve('astro/package.json'))('postcss');
-const properties = new Set(['font', 'font-size', 'font-family', 'font-weight', 'font-style']);
+const properties = new Set(['font', 'font-size', 'font-family', 'font-weight', 'font-style', 'line-height', 'letter-spacing']);
 
 export function inventoryCSS(content, file, lineOffset = 0) {
   const entries = [];
