@@ -742,6 +742,9 @@ test('metric zoom control is keyboard operated and returns to compact state',asy
   const toggle=figure.locator('[data-metric-zoom]');
   const viewport=figure.locator('.metric-evidence__viewport');
   const hint=figure.locator('[data-metric-scroll-hint]');
+  const image=figure.locator('img');
+  await image.scrollIntoViewIfNeeded();
+  await expect.poll(()=>image.evaluate(node=>(node as HTMLImageElement).naturalWidth)).toBe(1200);
   await expect(toggle).toBeVisible();
   await toggle.focus();
   await page.keyboard.press('Enter');
