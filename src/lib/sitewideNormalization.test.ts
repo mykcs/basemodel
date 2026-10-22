@@ -95,7 +95,7 @@ describe('sitewide normalization first repair batch', () => {
   it('removes only the redundant SD-LoRA overview eyebrow and preserves child sequence metadata', () => {
     expect(sdLoraHistory).not.toContain('SD-LoRA 专题总览');
     expect(sdLoraHistory).not.toContain('SD-LoRA SERIES OVERVIEW');
-    expect(sdLoraHistory).toContain('!overview && <p class="series-page__eyebrow">');
+    expect(sdLoraHistory).toContain('!overview && <span class="evo-article__heading-number" aria-hidden="true">');
     expect(sdLoraHistory).toContain('`${item!.number} / 07`');
   });
 
@@ -180,7 +180,7 @@ describe('sitewide normalization first repair batch', () => {
     expect(legacyStage2Journey).not.toContain('grid-template-columns:repeat(2,minmax(0,1fr))}.legacy-journey__timeline');
 
     expect(trainingDesign).toContain('.responsibility-flow li:not(:last-child)::before');
-    expect(trainingDesign).toContain('@media(max-width:950px)');
+    expect(trainingDesign).toContain('@container reading-overview (max-width:900px)');
     expect(trainingDesign).toContain('.responsibility-flow{grid-template-columns:1fr;gap:.75rem}');
     expect(trainingDesign).not.toContain("content:'↓'");
 

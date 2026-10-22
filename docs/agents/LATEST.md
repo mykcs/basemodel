@@ -10,6 +10,10 @@ Status: **The SEED × OpenEvo Results route is aligned to the closed Track A pai
 
 This file is a short current-state router. Detailed policy belongs under `docs/agents/current/`; historical rationale belongs under `docs/agents/history/`.
 
+## 2026-10-22 阅读风格扩展与章节编号
+
+续接已合入的 #932：19 个研究入口／指南固定路由及21个论文详情页接入共享阅读层，功能入口采用960px内容框；原44篇文章保留750.4px样板。章节数字移入原h2左侧，与标题同字号同行，移除独立小号数字眉题。范围与静态数据由 technicalArticleRoutes.ts 和原内容 owner 维护；本轮不更改实验、部署、模型目录或工作台结构。发布状态以本轮候选精确提交的CI/Vercel收据为准。
+
 ## 2026-10-22 全站技术文章阅读样板
 
 以「我们的回应实验」为阅读样板的候选覆盖 `src/data/technicalArticleRoutes.ts` 中 44 个现行文章路由，共享 owner 为 `src/styles/research-article.css`。工具、目录、比较页、运行工作台及科研图表／booktabs 表格保留原有语义 owner；`PageOutline.astro` 为文章提供可折叠目录，三篇博客沿用自己的目录。当前主线没有 `/en` 发布路由，候选保留已有语言分支而不恢复归档页。

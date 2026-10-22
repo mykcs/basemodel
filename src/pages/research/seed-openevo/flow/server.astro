@@ -4,12 +4,5 @@ import Lyg2171ServerOverview from '../../../../components/research/Lyg2171Server
 const locale = 'zh' as const;
 ---
 <AppLayout title="约 0.99 TiB 可用；当前不用扩容" description="2026-09-15 22:10（UTC+8）服务器静态快照：约 0.99 TiB 可用，当前不用扩容；先归档并验证恢复，删除或公开可见性变化仍需单独批准。" locale={locale}>
-  <div class="server-route">
     <Lyg2171ServerOverview locale={locale} />
-  </div>
 </AppLayout>
-
-<style>
-  .server-route{width:min(1160px,calc(100% - 2rem));margin:1rem auto 4rem}
-  @media(max-width:720px){.server-route{width:min(100% - 1rem,1160px);margin-top:.6rem}}
-</style>
