@@ -12,7 +12,7 @@ for (const width of [390,768,1440]) {
     const pgf=original.locator('img[data-pgfplot="q01-three-way"]');
     await expect(pgf).toBeVisible();
     await expect(pgf).toHaveAttribute('loading','eager');
-    await expect(pgf).toHaveAttribute('alt',/每条 11 个实测保存点/);
+    await expect(pgf).toHaveAttribute('alt',/各 11 个实测保存点/);
     await expect(pgf).toHaveAttribute('src','/research/seed-openevo/figures/q01-three-way-pgfplots.svg');
     const q01Detail=original.locator('[data-q01-raw-svg]');
     await expect(q01Detail).not.toHaveAttribute('open','');
