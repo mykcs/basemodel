@@ -48,6 +48,7 @@ table.research-booktabs tbody+tbody>tr:first-child>*{border-top:.6px solid var(-
 table.research-booktabs :is(th,td)[data-numeric]{
   text-align:right;white-space:normal;font-variant-numeric:tabular-nums lining-nums;min-width:0;
 }
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] tbody :is(th,td)[data-numeric]{overflow-wrap:normal}
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td):first-child,
 table.research-booktabs :is(th,td):first-child{padding-left:0;min-width:0}
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td):last-child,
