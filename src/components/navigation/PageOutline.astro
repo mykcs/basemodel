@@ -28,13 +28,19 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
 
   const normalizeLabel = (value: string) => value.replace(/\s+/g, ' ').trim();
 
+  const headingLabel = (heading: HTMLHeadingElement) => {
+    const copy = heading.cloneNode(true) as HTMLElement;
+    copy.querySelectorAll('.evo-article__heading-number').forEach(number => number.remove());
+    return normalizeLabel(copy.textContent ?? '');
+  };
+
   const ensureHeadingId = (heading: HTMLHeadingElement, usedIds: Set<string>, index: number) => {
     if (heading.id) {
       usedIds.add(heading.id);
       return heading.id;
     }
 
-    const normalized = normalizeLabel(heading.textContent ?? '')
+    const normalized = headingLabel(heading)
       .normalize('NFKD')
       .replace(/[\u0300-\u036f]/g, '')
       .toLocaleLowerCase()
@@ -57,7 +63,7 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
     const candidates = [...main.querySelectorAll<HTMLHeadingElement>('h2, h3')].filter((heading) => {
       if (heading.closest(ignoredAncestorSelector)) return false;
       const style = getComputedStyle(heading);
-      return style.display !== 'none' && style.visibility !== 'hidden' && normalizeLabel(heading.textContent ?? '').length > 0;
+      return style.display !== 'none' && style.visibility !== 'hidden' && headingLabel(heading).length > 0;
     });
     const levelTwo = candidates.filter((heading) => heading.tagName === 'H2');
     return levelTwo.length >= 4 ? levelTwo : candidates;
@@ -89,7 +95,7 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
 
     headings.forEach((heading, index) => {
       const id = ensureHeadingId(heading, usedIds, index);
-      const text = normalizeLabel(heading.textContent ?? '');
+      const text = headingLabel(heading);
       const item = document.createElement('li');
       item.className = 'page-outline__item';
       item.dataset.outlineLevel = heading.tagName.toLowerCase();
@@ -177,7 +183,9 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
     root.hidden = false;
     root.classList.add('is-visible');
     if (articleMode && articleRoot) {
-      const header = articleRoot.querySelector(':scope > header, :scope > article > header, :scope > div > header');
+      const header = articleRoot.classList.contains('evo-reading-overview')
+        ? articleRoot.querySelector('h1')?.closest('header, [data-reader-primary], .results-hero, .result-hero') ?? articleRoot.querySelector('h1')
+        : articleRoot.querySelector('header');
       if (header) header.after(root);
     }
     updateActive();

@@ -144,9 +144,10 @@ test('number gate rejects the old small digit above its heading',async({page})=>
 
 test('wide reading entries keep expanded contents in flow without covering the title',async({page})=>{
   await page.setViewportSize({width:1440,height:1000});
-  for(const route of ['/papers/seed/','/research/seed-openevo/study/capability-exploration/']){
+  for(const route of ['/papers/seed/','/research/seed-openevo/study/capability-exploration/','/research/seed-openevo/flow/','/research/seed-openevo/study/results/','/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/']){
     await page.goto(route);
     const nav=page.locator('[data-article-outline]');
+    await expect(page.locator('.evo-approved-reader [data-article-outline]')).toHaveCount(1);
     await nav.locator('summary').click();
     expect(await nav.evaluate(el=>getComputedStyle(el).position)).toBe('static');
     const title=await page.locator('#main-content h1').boundingBox();
@@ -154,4 +155,13 @@ test('wide reading entries keep expanded contents in flow without covering the t
     expect(box!.y).toBeGreaterThan(title!.y+title!.height);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
   }
+});
+
+test('moving a chapter number into its heading preserves old generated anchors',async({page})=>{
+  await page.goto('/research/seed-openevo/study/results/benchmark-first/');
+  const heading=page.locator('.note-body h2').first();
+  const label='OpenEvo 已经有第一代内部迁移证据，但这还不是 SEED 官方保留任务结果。';
+  const id=label.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase().replace(/[^\p{Letter}\p{Number}]+/gu,'-').replace(/^-+|-+$/g,'').slice(0,72);
+  await expect(heading).toHaveAttribute('id',id);
+  await expect(page.locator('[data-article-outline] a').first()).toHaveAttribute('data-outline-target',id);
 });
