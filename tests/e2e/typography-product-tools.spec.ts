@@ -1,5 +1,48 @@
 import { expect, test, type Locator } from '@playwright/test';
 import { waitForHydratedIsland } from './hydration-ready';
+import { persistJsonAttachment } from './evidence-json';
+
+for (const width of [390, 768, 1440]) for (const theme of ['light', 'dark'] as const) {
+  test(`paper source titles retain a readable column ${width}/${theme}`, async ({ page }, info) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.addInitScript(mode => localStorage.setItem('atlas-theme', mode), theme);
+    await page.goto('/papers/seed/', { waitUntil: 'networkidle' });
+    await page.evaluate(() => document.fonts.ready);
+    const row = page.locator('.detail-aside a.evidence-row').first();
+    await expect(row).toBeVisible();
+    const measure = () => row.evaluate(node => {
+      const title = node.querySelector(':scope > span:first-child')!;
+      const box = node.getBoundingClientRect(), text = title.getBoundingClientRect();
+      const css = getComputedStyle(node), strong = getComputedStyle(title.querySelector('strong')!);
+      return { text: title.textContent, rowWidth: box.width, titleWidth: text.width,
+        innerWidth: node.clientWidth - parseFloat(css.paddingLeft) - parseFloat(css.paddingRight),
+        size: parseFloat(strong.fontSize), font: strong.fontFamily,
+        overflow: title.scrollWidth - title.clientWidth, left: text.left - box.left, right: box.right - text.right };
+    });
+    const accept = (value: Awaited<ReturnType<typeof measure>>) => {
+      expect(value.titleWidth).toBeGreaterThanOrEqual(Math.min(160, value.innerWidth) - 2);
+      expect(value.size).toBeGreaterThanOrEqual(14.9);
+      expect(value.font).toMatch(/Inter|PingFang|system-ui/);
+      expect(value.overflow).toBeLessThanOrEqual(2);
+      expect(value.left).toBeGreaterThanOrEqual(-2); expect(value.right).toBeGreaterThanOrEqual(-2);
+    };
+    const before = await measure(); accept(before);
+    let broken;
+    if (width === 1440 && theme === 'light') {
+      const legacy = await page.addStyleTag({ content: '.detail-aside a.evidence-row{grid-template-columns:minmax(0,1fr) auto auto!important}.detail-aside a.evidence-row>span{grid-column:auto!important;grid-row:auto!important}' });
+      try {
+        broken = await measure();
+        expect(broken.titleWidth).toBeLessThan(80);
+        expect(() => accept(broken!)).toThrow();
+      } finally { await legacy.evaluate(node => node.parentNode?.removeChild(node)); }
+    }
+    const restored = await measure(); accept(restored); expect(restored).toEqual(before);
+    await row.scrollIntoViewIfNeeded();
+    await page.screenshot({ path: info.outputPath('paper-source-unmodified-viewport.png') });
+    await page.locator('.detail-aside .evidence-block').screenshot({ path: info.outputPath('paper-source-block.png'), animations: 'disabled', style: '.site-header{visibility:hidden}' });
+    await persistJsonAttachment(info, 'paper-source-column.json', { body: Buffer.from(JSON.stringify({ width, theme, before, broken, restored, negativeRejected: broken !== undefined })), contentType: 'application/json' });
+  });
+}
 
 async function assertCompareData(row: Locator) {
   await expect(row).toBeVisible();

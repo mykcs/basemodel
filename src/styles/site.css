@@ -182,7 +182,10 @@ fieldset.landscape-controls:disabled :is(button, input, select) { opacity: .58; 
 .fact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .fact dd { word-break: break-word; }
 .paper-row { grid-template-columns: minmax(0, 1fr) auto; }
-.evidence-row { grid-template-columns: minmax(0, 1fr) auto auto; }
+.evidence-list > a.evidence-row { grid-template-columns: minmax(0, 1fr) auto; }
+.evidence-list > a.evidence-row > span:first-child { grid-column: 1 / -1; }
+.evidence-list > a.evidence-row > span:nth-child(2) { grid-column: 1; }
+.evidence-list > a.evidence-row > span:nth-child(3) { grid-column: 2; grid-row: 2; align-self: center; }
 .external-link { white-space: nowrap; }
 .claim-source { min-width: 0; }
 .workflow-step { display: flex; align-items: center; gap: 10px; min-width: max-content; }

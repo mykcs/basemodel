@@ -2,6 +2,11 @@
 
 > Current isolated candidate: source/role evidence, exact remaining migration debt, local failures and current ownership boundaries are recorded in [the evidence README](../../agents/evidence/sitewide-typography/2026-10-22/README.md). The latest exact-head CI/Preview/PNG acceptance is recorded on [PR #898](https://github.com/mykcs/basemodel/pull/898). Historical SHA results below remain historical. Candidate publication does not authorize merge, retarget or Production.
 
+> 2026-10-22 执行补齐：A 的展开提示/键盘/no-JS 已保留；B 的同源重排与原尺寸科学图阅读已实现；C 的5,773条来源声明和81处inline/JS候选逐项归类。角色未知为0，但仍有1,531项后续迁移和25项selector拆分，WP3不能写成全部迁移完成。当前浏览器回归补齐真实字号角色、三篇首屏、三处实际组件、原生章节点击及局部标尺坏例；本地6/6、32/32、20/20与12/12各有独立范围，不相加冒充全站完整套件。
+>
+> d899f4cb 和 f19f6ba5 的失败候选均保留；后者暴露Linux下旧标题负例余量不足，已作测试fixture修正，产品与科学内容未变。之后实际Preview审图发现论文来源标题窄栏，已限定修正EvidenceList链接行并通过12/12局部回归；当前来源指纹以evidence README为准。D/E只有最终精确HEAD完整8 Chromium+4 WebKit终态、同SHA READY Preview与实际PNG/JSON/冷读才能通过；每次提交后的最新状态以PR收据为准。干净源码构建的878输入相同，产物差异已逐文件定位为199个HTML仅Astro island uid值，不能说raw dist逐字节相同。下面旧快照和未勾选启动清单保留作历史，不覆盖本段、evidence README或最终PR收据。
+
+
 
 > **2026-10-22 cloud corrective iteration:** Feature/evidence commit [`f7251f31`](https://github.com/mykcs/basemodel/commit/f7251f31adcb2314f94db310fe1bf3a340873f0f) is on PR #898. Its complete [public/4-shard WebKit run #39731928649](https://github.com/mykcs/basemodel/actions/runs/39731928649) is **RED**, with WebKit shard 1 passing and 2–4 failing. Genuine failures were a public shallow-checkout-count invariant, test interactions before Astro Island/disclosure readiness, and a WebKit passive-scroll witness measuring in-flight inherited smooth scrolling. The followup patch removes only the extra checkout override, awaits real interactivity, opens disclosures explicitly, and makes only the witness's initial scroll instantaneous (the <12px event-induced-motion gate remains intact). A review-only Vercel deployment for exact `f7251f31` is READY/SSO/noindex and served application HTML, but **is not the final candidate**. Full green repeat, PNG/JSON review and scope backlog remain open. Evidence: [WP-D7](../../agents/evidence/sitewide-typography/2026-10-22/WP_D7_NATIVE_SVG_AND_LANDSCAPE.md).
 

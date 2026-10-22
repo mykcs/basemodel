@@ -1,7 +1,7 @@
 {
   "observedAt": "2026-10-22T11:43:19.755374+00:00",
   "workPR": 898,
-  "remoteHead": "d899f4cb693b0733d629e7c80ce191babac69b59",
+  "remoteHead": "f19f6ba57b840f49c1e68c9400c809fbe84180be",
   "base": "design/sitewide-type-and-paper-figures-20261020",
   "draft": true,
   "writer": "Codex root: sole source/test/formal-ledger writer for isolated PR898; independent reviewers read-only",
@@ -473,8 +473,8 @@
     "936": "2026-10-22 live read: open/head cb1b771d2ad818b6ace8785dbfe6ae7a4698a4a2;7 paths overlap candidate. Separate mobile-table writer; no overwrite, merge or closure authorized."
   },
   "sourceBaseSha": "30a8d2ec0b090e77dcb33f1ba5159dbf15e8c885",
-  "publicationParentSha": "d899f4cb693b0733d629e7c80ce191babac69b59",
-  "latestObservedMain": "df13da43ad5d4e89b03bf3b0832e642560d9623a",
+  "publicationParentSha": "f19f6ba57b840f49c1e68c9400c809fbe84180be",
+  "latestObservedMain": "8a6d2d77ebb046baa9f079945a23415ce37b5527",
   "integratedFollowups": {
     "930": "PaperModelMatrix 120px normal-wrap headers plus JS/no-JS geometry tests; 8 Chromium/WebKit tests passed, 6 PNG/JSON pairs reviewed on dirty candidate",
     "931": "Advisor first-screen researchQuestion explicitly says recommendation is not advisor approval; no science values changed",

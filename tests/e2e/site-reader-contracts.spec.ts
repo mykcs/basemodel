@@ -168,17 +168,26 @@ for (const theme of ['light', 'dark'] as const) for (const variant of ['bounded-
     const legacy = await page.addStyleTag({ content: variant === 'q17-directapply-analysis'
       ? '.research-route-context[data-reader-route="q17-directapply-analysis"] [data-reader-purpose]{max-width:75px!important}'
       : variant === 'sd-lora-scaling'
-      ? '.scaling-hero h1{max-width:18ch!important;font-size:clamp(2.25rem,6vw,4.9rem)!important;line-height:.98!important}'
+      ? '.scaling-hero h1{max-width:10ch!important;font-size:clamp(2.25rem,6vw,4.9rem)!important;line-height:.98!important}'
       : '.paper{padding-top:34px!important}.paper h1{font-size:clamp(2rem,4vw,3.5rem)!important;line-height:1.04!important}' });
     let broken;
+    let injectedHeading;
     try {
+      if (variant === 'sd-lora-scaling') {
+        injectedHeading = await page.locator('.scaling-hero h1').evaluate(node => {
+          const css = getComputedStyle(node), box = node.getBoundingClientRect();
+          return { size: parseFloat(css.fontSize), measure: css.maxWidth, width: box.width, height: box.height };
+        });
+        expect(injectedHeading.size).toBeGreaterThan(60);
+      }
       broken = await message.boundingBox();
       expect(firstViewportMessageFits(broken, 633)).toBe(false);
+      if (variant === 'sd-lora-scaling') expect(broken!.y + broken!.height).toBeGreaterThan(673);
       await page.screenshot({ path: info.outputPath('first-viewport-layout-negative.png') });
     } finally { await legacy.evaluate(node => node.parentNode?.removeChild(node)); }
     const restored = await message.boundingBox();
     expect(firstViewportMessageFits(restored, 633)).toBe(true);
-    await persistJsonAttachment(info, 'first-viewport-result.json', { body: Buffer.from(JSON.stringify({ variant, theme, selector, viewport: { width: 1280, height: 633 }, before, broken, restored, negativeKind: variant === 'q17-directapply-analysis' ? 'constrained purpose column' : 'legacy heading geometry', negativeRejected: true })), contentType: 'application/json' });
+    await persistJsonAttachment(info, 'first-viewport-result.json', { body: Buffer.from(JSON.stringify({ variant, theme, selector, viewport: { width: 1280, height: 633 }, before, broken, restored, injectedHeading, negativeKind: variant === 'q17-directapply-analysis' ? 'constrained purpose column' : variant === 'sd-lora-scaling' ? 'legacy heading size with a constrained10ch title measure' : 'legacy heading geometry', negativeRejected: true })), contentType: 'application/json' });
   });
 }
 
