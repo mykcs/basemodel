@@ -29,7 +29,8 @@ review the image before adopting the new hash rather than disabling the gate.
 ## Q01: full three-route comparison
 
 - Source CSV: `src/data/research-evidence/advisor-q01-three-way-curve.csv` (Git blob `7d9fb607879848acd66c1c998015c6ccc251cfbb`).
-- `figures/latex/q01-three-way-pgfplots.tex` → `public/research/seed-openevo/figures/q01-three-way-pgfplots.svg`.
+- Desktop: `figures/latex/q01-three-way-pgfplots.tex` → `public/research/seed-openevo/figures/q01-three-way-pgfplots.svg`.
+- Phone: `figures/latex/q01-three-way-mobile-pgfplots.tex` → `public/research/seed-openevo/figures/q01-three-way-mobile-pgfplots.svg`. Same 33 frozen measurements and full y-axis; uses shorter three-column legend, larger tick/axis text and phone-specific geometry so the mobile view is **not** a tiny desktop figure. Astro `<picture>` picks the appropriate compiled SVG at 720px without browser-side TeX.
 - Exactly 11 actually measured checkpoints for each of three historical mechanisms, 33 measured values total.
 - Ordinary OpenEVO counts parameter updates; Bounded and historical β/GDR count completed Stage2 rounds. The horizontal positions share printed values but not necessarily equivalent actual update counts or compute budgets.
 - Scores use a full 0–100 vertical range. Lines connect **measured** scores; they never imply that all intervening rounds were evaluated.
