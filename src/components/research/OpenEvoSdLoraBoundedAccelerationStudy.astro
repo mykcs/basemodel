@@ -233,10 +233,6 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
 .ba-accel__section>p{margin:1rem 0 0}
 .ba-accel__section>.ba-accel__result-line{font-size:clamp(1.12rem,2.1vw,1.28rem);font-weight:720}
 .ba-accel__table-wrap{margin-top:1.35rem;overflow-x:auto;min-width:0}
-.ba-accel__table{min-width:680px}
-.ba-accel__table:not(:has(thead tr > :nth-child(4))){min-width:0;max-width:min(100%,46rem)}
-.ba-accel__table:has(thead tr > :nth-child(3)):not(:has(thead tr > :nth-child(4))){min-width:36rem;max-width:46rem}
-.ba-accel__table:has(thead tr > :nth-child(3)):not(:has(thead tr > :nth-child(4))) thead th:nth-child(2){white-space:nowrap}
 .ba-accel__equation{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;margin:1.4rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}
 .ba-accel__equation span{font-weight:720}.ba-accel__equation b{color:var(--accent-deep)}
 .ba-accel__order{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin:1.4rem 0 0;background:var(--line);border:1px solid var(--line)}
@@ -259,6 +255,5 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
   .ba-accel__order{grid-template-columns:1fr}
   .ba-accel__decision-list>div{grid-template-columns:1fr;gap:.35rem}
   .ba-accel__evidence-grid{grid-template-columns:1fr}
-  .ba-accel__table{min-width:640px}
 }
 </style>

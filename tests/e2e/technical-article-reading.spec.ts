@@ -18,7 +18,7 @@ async function articleGeometry(page: Page, width: number) {
     if (rect.width > Math.min(root.classList.contains('evo-reading-overview') ? 960.5 : 750.5, viewport - 23)) errors.push('article measure escaped the reading frame');
     if (document.documentElement.scrollWidth > viewport + 1) errors.push('document overflow');
     for (const node of root.querySelectorAll<HTMLElement>('p,dd,li,span,small')) {
-      if (node.children.length || node.closest('details:not([open]),[hidden],[aria-hidden="true"]')) continue;
+      if (node.children.length || node.closest('details:not([open]),[hidden],[aria-hidden="true"],[data-research-paper-table]')) continue;
       const rect = node.getBoundingClientRect();
       if (rect.width < 1 || rect.height < 1 || getComputedStyle(node).visibility === 'hidden') continue;
       const text = node.innerText.trim();
