@@ -103,74 +103,94 @@ for(const width of [390,768,1440] as const){
       expect(tableMetrics.numericAlign).toBe('right');
       expect(tableMetrics.numericFontVariant).toContain('tabular-nums');
       expect(tableMetrics.pageOverflow).toBeLessThanOrEqual(2);
-      // Default screenshot is the actual LaTeX-style table, not the old SVG plot.
+      // Eagerly decode this small vector image even before opening its details:
+      // the evidence camera inspects all descendants of the Q03 reading block.
+      const hiddenPlot=q03.locator('img[data-pgfplot="q03-stage2"]');
+      await expect(hiddenPlot).toHaveAttribute('loading','eager');
+      await expect.poll(()=>hiddenPlot.evaluate(img=>
+        img instanceof HTMLImageElement && img.complete && img.naturalWidth>300
+      )).toBe(true);
+      // Default screenshot is still the real booktabs table; the figure is opt-in.
       await captureFigureEvidence(q03Paper,testInfo.outputPath('q03-paper-'+width+'-'+theme+'.png'));
       if(width!==768) await captureFigureEvidence(q01,testInfo.outputPath('q01-paper-'+width+'-'+theme+'.png'));
       await disclosure.evaluate(el=>(el as HTMLDetailsElement).open=true);
       await expect(q03).toBeVisible();
       await expect(q03).toHaveCSS('border-top-width','0px');
       await expect(q03).toHaveCSS('box-shadow','none');
-      const chart=width<=720?q03.locator('[data-q03-mobile-chart]'):q03.locator('[data-q03-desktop-chart]');
-      await expect(chart).toBeVisible();
-      for(const svg of await q03.locator('svg[role="img"]').all()){
-        await expect(svg.locator('title')).toHaveCount(0);
-        await expect(svg.locator('desc')).toHaveCount(1);
-      }
-      const plotMetrics=await chart.evaluate(svg=>{
-        if(!(svg instanceof SVGSVGElement))return null;
-        const first=svg.querySelector<SVGGraphicsElement>('.advisor-viz__q03-score');
-        const axis=svg.querySelector<SVGGraphicsElement>('.advisor-viz__q03-axis-line');
-        if(!first||!axis)return null;
+      const plot=q03.locator('img[data-pgfplot="q03-stage2"]');
+      await expect(plot).toBeVisible();
+      await expect(plot).toHaveAttribute('src','/research/seed-openevo/figures/q03-stage2-pgfplots.svg');
+      await expect(plot).toHaveAttribute('aria-describedby','advisor-q03-publication-caption');
+      await expect(plot).toHaveAttribute('alt',/A0 为 3\.71，A40 为 6\.43，A80 为 0\.69，A120 为 6\.62/);
+      await expect(q03.locator('svg[role="img"],canvas')).toHaveCount(0);
+      await plot.scrollIntoViewIfNeeded();
+      const imageMetrics=await plot.evaluate(async(img,scores)=>{
+        if(!(img instanceof HTMLImageElement))return null;
+        await img.decode();
+        const box=img.getBoundingClientRect();
+        const outer=img.closest('figure')!.getBoundingClientRect();
+        const text=img.getAttribute('alt')||'';
         return {
-          valueLeft:first.getBBox().x,
-          axisX:axis.getBBox().x,
-          renderedTextSize:parseFloat(getComputedStyle(first).fontSize)*svg.getBoundingClientRect().width/svg.viewBox.baseVal.width
+          loaded:img.complete&&img.naturalWidth>300&&img.naturalHeight>190,
+          naturalWidth:img.naturalWidth,naturalHeight:img.naturalHeight,
+          width:box.width,height:box.height,
+          left:box.left,right:box.right,
+          figureLeft:outer.left,figureRight:outer.right,
+          centeredBy:Math.abs((outer.left+outer.right)/2-(box.left+box.right)/2),
+          descriptive:scores.every(score=>text.includes(score)),
+          externalRequests:img.currentSrc.startsWith(location.origin+'/research/'),
         };
-      });
-      expect(plotMetrics).not.toBeNull();
-      expect(plotMetrics!.valueLeft).toBeGreaterThan(plotMetrics!.axisX+2);
-      expect(plotMetrics!.renderedTextSize).toBeGreaterThanOrEqual(13);
-      for(const score of checkpointScores)await expect(q03).toContainText(score);
-      await expect(q03.locator('figcaption')).toContainText('没有测量中间轮次');
-      await expect(q03.locator('figcaption')).toContainText('SEED 论文');
-      // Keep a separately inspectable optional-plot screenshot without changing its scientific data.
-      await captureFigureEvidence(q03,testInfo.outputPath('q03-optional-trend-'+width+'-'+theme+'.png'));
-      writeFileSync(testInfo.outputPath('q03-paper-geometry-'+width+'-'+theme+'.json'),
-        JSON.stringify({sha:sourceSha,browser:testInfo.project.name,width,theme,tableMetrics,metrics:plotMetrics,source:'rendered Chromium/WebKit Playwright',route},null,2)+'\n');
+      },[...checkpointScores]);
+      expect(imageMetrics).not.toBeNull();
+      expect(imageMetrics!.loaded).toBe(true);
+      expect(imageMetrics!.descriptive).toBe(true);
+      expect(imageMetrics!.externalRequests).toBe(true);
+      expect(imageMetrics!.width).toBeLessThanOrEqual(442);
+      expect(imageMetrics!.width).toBeGreaterThanOrEqual(250);
+      expect(imageMetrics!.left).toBeGreaterThanOrEqual(imageMetrics!.figureLeft-1);
+      expect(imageMetrics!.right).toBeLessThanOrEqual(imageMetrics!.figureRight+1);
+      expect(imageMetrics!.centeredBy).toBeLessThanOrEqual(3);
+      const caption=q03.locator('figcaption');
+      await expect(caption).toContainText('没有测量中间轮次');
+      await expect(caption).toContainText('SEED 论文');
+      await expect(caption).toContainText('0–10');
+      await expect(caption).toContainText('满分 100');
+      await captureFigureEvidence(q03,testInfo.outputPath('q03-pgfplots-paper-'+width+'-'+theme+'.png'));
+      writeFileSync(testInfo.outputPath('q03-pgfplots-geometry-'+width+'-'+theme+'.json'),
+        JSON.stringify({sha:sourceSha,browser:testInfo.project.name,width,theme,tableMetrics,imageMetrics,
+          renderer:'XeLaTeX + PGFPlots -> committed SVG -> Astro img',route},null,2)+'\n');
     });
   }
 }
 
 for(const width of [390,1440] as const){
-  test('the original Q03 value collision is rejected at '+width+'px',async({page},testInfo)=>{
+  test('Q03 PGFPlots image clipping is detected at '+width+'px',async({page},testInfo)=>{
     await page.setViewportSize({width,height:900});
     await page.goto(route,{waitUntil:'domcontentloaded'});
     await page.locator('[data-q03-trend-details]').evaluate(el=>(el as HTMLDetailsElement).open=true);
-    const chart=page.locator(width===390?'[data-q03-mobile-chart]':'[data-q03-desktop-chart]');
-    const measure=()=>chart.evaluate(svg=>{
-      const text=svg.querySelector<SVGGraphicsElement>('.advisor-viz__q03-score');
-      const axis=svg.querySelector<SVGGraphicsElement>('.advisor-viz__q03-axis-line');
-      if(!text||!axis)return null;
-      return {left:text.getBBox().x,axis:axis.getBBox().x};
+    const image=page.locator('img[data-pgfplot="q03-stage2"]');
+    await image.scrollIntoViewIfNeeded();
+    await expect(image).toBeVisible();
+    const geometry=()=>image.evaluate(img=>{
+      const imgBox=img.getBoundingClientRect(),outer=img.closest('figure')!.getBoundingClientRect();
+      return {left:imgBox.left,outerLeft:outer.left,right:imgBox.right,outerRight:outer.right};
     });
-    const accepted=await measure();
-    expect(accepted).not.toBeNull();
-    expect(accepted!.left).toBeGreaterThan(accepted!.axis+2);
-    // Reintroduce exactly the old A0 layout without changing source data.
-    await chart.locator('.advisor-viz__q03-score').first().evaluate((node,x)=>node.setAttribute('x',String(x)),width===390?50:88);
-    const original=await measure();
-    expect(original).not.toBeNull();
-    expect(original!.left).toBeLessThanOrEqual(original!.axis+2);
-    // Exercise the same accepting predicate against the deliberately bad DOM.
-    expect(()=>expect(original!.left).toBeGreaterThan(original!.axis+2)).toThrow();
-    await captureFigureEvidence(chart,testInfo.outputPath('q03-known-bad-'+width+'.png'));
-    writeFileSync(testInfo.outputPath('q03-known-bad-'+width+'.json'),JSON.stringify({
-      sha:sourceSha,browser:testInfo.project.name,width,accepted,original,knownBadRejected:true,
-      mutation:width===390?'A0 xPhone=50':'A0 x=88',route,
+    const good=await geometry();
+    expect(good.left).toBeGreaterThanOrEqual(good.outerLeft-1);
+    await image.evaluate(img=>(img as HTMLElement).style.transform='translateX(-110px)');
+    const bad=await geometry();
+    expect(bad.left).toBeLessThan(bad.outerLeft-5);
+    expect(()=>expect(bad.left).toBeGreaterThanOrEqual(bad.outerLeft-1)).toThrow();
+    await captureFigureEvidence(page.locator('[data-report-figure="q03-custom-curve"]'),testInfo.outputPath('q03-pgfplots-known-bad-'+width+'.png'));
+    await image.evaluate(img=>(img as HTMLElement).style.removeProperty('transform'));
+    const restored=await geometry();
+    expect(restored.left).toBeGreaterThanOrEqual(restored.outerLeft-1);
+    writeFileSync(testInfo.outputPath('q03-pgfplots-known-bad-'+width+'.json'),JSON.stringify({
+      sha:sourceSha,browser:testInfo.project.name,width,good,bad,restored,
+      knownBadRejected:true,mutation:'visible compiled image shifted left by 110px',route,
     },null,2)+'\n');
   });
 }
-
 
 for(const width of [390,1440] as const){
   test('sibling research scaling SVG retains accessible evidence without blocking hover tooltip at '+width,async({page})=>{

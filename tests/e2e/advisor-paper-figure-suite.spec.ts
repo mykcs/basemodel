@@ -17,7 +17,9 @@ for (const width of [390,768,1440]) {
     await expect(page.locator('[data-q03-paper-table]')).toBeVisible();
     await page.locator('[data-q03-trend-details]').evaluate(el=>(el as HTMLDetailsElement).open=true);
     const q03=page.locator('[data-report-figure="q03-custom-curve"]');
-    await expect(width<=720 ? q03.locator('[data-q03-mobile-chart]') : q03.locator('.advisor-viz__q03-chart--desktop')).toBeVisible();
+    const plot=q03.locator('img[data-pgfplot="q03-stage2"]');
+    await expect(plot).toBeVisible();
+    await expect(plot).toHaveAttribute('src','/research/seed-openevo/figures/q03-stage2-pgfplots.svg');
     await expect(q03.locator('button')).toHaveCount(0);
     for(const [id,count] of [['q04-posthoc',2],['q07-zero-latest',2],['q08-old-queue',1],['q09-context',4],['rank32-paired',1],['q07-inversion',1]] as const){
       const plot=page.locator('[data-paper-effect="'+id+'"]');
