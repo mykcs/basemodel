@@ -2,30 +2,30 @@
 
 **目标不是翻新外观，而是让一个不了解项目的人，能够理解研究问题、证据、判断与下一步。**
 
-状态：方案编写与 Draft PR 建立；产品/科研实现尚未开始。本总控另算一项文档 PR，不充当网站实现。
+当前入口（2026-10-22）：[实际执行次序](CURRENT_EXECUTION_ORDER_20261022.md)与[精确 PR / 文件 owner 快照](CURRENT_PR_OWNERS_20261022.json)。#930/#931 已依序合并并核验 Production，当前 main 为 `93d7f7ed`；其余工作按差集和依赖推进。本总控仍是文档 PR，不充当未验收实现的完成证明。下方保留原始规划范围，历史日期不能当作当前验收。
 
-## 本轮实际交付状态
+## 2026-10-02 原始规划交付（历史，当前状态见上方入口）
 
 十四份新增任务规格全部已提交并核对；十三个子任务 Draft PR 已创建，另有本总控 #813，因此本轮实际新建十四个 Draft PR。四项旧 PR 保持原状并被纳入复用计划。
 
-**唯一未完成的创建动作：C01 学术表格 PR。** 工具安全检查拦截了创建请求，随后只读确认该分支没有 PR；未通过其他通道重试。完整 C01 规格和分支已存在，下面保留文档入口，不编造 PR 编号。这个状态不影响其他独立任务的计划可读性。
+C01 已有真实 [PR #827](https://github.com/mykcs/basemodel/pull/827)。原创建失败仅为历史记录，不再是当前阻塞；其源码必须与后来已上线的 booktabs/PGFPlots 成果取差集，不能恢复旧实现。
 
 | 任务 | 实际 PR / 规格 | 状态 |
 |---|---|---|
-| A01 | [#814](https://github.com/mykcs/basemodel/pull/814) | Draft；仅规划 |
-| A02 | [#815](https://github.com/mykcs/basemodel/pull/815) | Draft；仅规划 |
-| A03 | [#816](https://github.com/mykcs/basemodel/pull/816) | Draft；仅规划 |
-| B01 | [#817](https://github.com/mykcs/basemodel/pull/817) | Draft；仅规划 |
-| B02 | [#818](https://github.com/mykcs/basemodel/pull/818) | Draft；仅规划 |
-| B03 | [#819](https://github.com/mykcs/basemodel/pull/819) | Draft；仅规划 |
-| C01 | [完整 C01 规格](https://github.com/mykcs/basemodel/blob/docs/site-upgrade-scientific-tables-20261002/docs/plans/site-upgrade-20261002/tasks/C01.md) | 规格已提交；PR 创建被工具拦截 |
-| C02 | [#820](https://github.com/mykcs/basemodel/pull/820) | Draft；仅规划 |
-| C03 | [#821](https://github.com/mykcs/basemodel/pull/821) | Draft；仅规划 |
-| D01 | [#822](https://github.com/mykcs/basemodel/pull/822) | Draft；仅规划 |
-| D02 | [#823](https://github.com/mykcs/basemodel/pull/823) | Draft；仅规划 |
-| D03 | [#824](https://github.com/mykcs/basemodel/pull/824) | Draft；仅规划 |
-| D04 | [#825](https://github.com/mykcs/basemodel/pull/825) | Draft；仅规划 |
-| Q01 | [#826](https://github.com/mykcs/basemodel/pull/826) | Draft；仅规划 |
+| A01 | [#814](https://github.com/mykcs/basemodel/pull/814) | Draft；实现与最新 main 差集/验收见当前快照 |
+| A02 | [#815](https://github.com/mykcs/basemodel/pull/815) | Draft；实现与最新 main 差集/验收见当前快照 |
+| A03 | [#816](https://github.com/mykcs/basemodel/pull/816) | Draft；实现与最新 main 差集/验收见当前快照 |
+| B01 | [#817](https://github.com/mykcs/basemodel/pull/817) | Draft；实现与最新 main 差集/验收见当前快照 |
+| B02 | [#818](https://github.com/mykcs/basemodel/pull/818) | Draft；实现与最新 main 差集/验收见当前快照 |
+| B03 | [#819](https://github.com/mykcs/basemodel/pull/819) | Draft；实现与最新 main 差集/验收见当前快照 |
+| C01 | [完整 C01 规格](https://github.com/mykcs/basemodel/blob/docs/site-upgrade-scientific-tables-20261002/docs/plans/site-upgrade-20261002/tasks/C01.md) | 实际 PR 为 [#827](https://github.com/mykcs/basemodel/pull/827)，待差集验收 |
+| C02 | [#820](https://github.com/mykcs/basemodel/pull/820) | Draft；实现与最新 main 差集/验收见当前快照 |
+| C03 | [#821](https://github.com/mykcs/basemodel/pull/821) | Draft；实现与最新 main 差集/验收见当前快照 |
+| D01 | [#822](https://github.com/mykcs/basemodel/pull/822) | Draft；实现与最新 main 差集/验收见当前快照 |
+| D02 | [#823](https://github.com/mykcs/basemodel/pull/823) | Draft；实现与最新 main 差集/验收见当前快照 |
+| D03 | [#824](https://github.com/mykcs/basemodel/pull/824) | Draft；实现与最新 main 差集/验收见当前快照 |
+| D04 | [#825](https://github.com/mykcs/basemodel/pull/825) | Draft；实现与最新 main 差集/验收见当前快照 |
+| Q01 | [#826](https://github.com/mykcs/basemodel/pull/826) | Draft；实现与最新 main 差集/验收见当前快照 |
 
 本轮未改 src/public/scripts/workflow/package，也未实施实验、合并或请求部署。文档、远端分支与 PR 状态核验不等于产品测试通过；网站 build、浏览器冷读、真实性能比较属于后续执行。
 

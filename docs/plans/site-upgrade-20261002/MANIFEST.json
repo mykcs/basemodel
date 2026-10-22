@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "state": "specifications_complete_one_pr_creation_blocked",
+  "state": "integration_in_progress",
   "new_work_packets": 14,
   "reused_work_packets": 4,
   "program_pr_is_not_implementation": true,
@@ -113,9 +113,9 @@
       "size": "M：窄表格能力与两个真实调用方",
       "branch": "docs/site-upgrade-scientific-tables-20261002",
       "path": "docs/plans/site-upgrade-20261002/tasks/C01.md",
-      "pr_number": null,
-      "pr_url": null,
-      "pr_creation_status": "blocked_by_tool_safety_check",
+      "pr_number": 827,
+      "pr_url": "https://github.com/mykcs/basemodel/pull/827",
+      "pr_creation_status": "draft_open",
       "spec_status": "committed_and_verified"
     },
     {
@@ -262,5 +262,16 @@
     "status": "blocked_by_tool_safety_check",
     "scope": "PR creation only; full specification is already committed",
     "not_retried_via_other_channel": true
+  },
+  "current_observation": {
+    "date": "2026-10-22",
+    "main": "93d7f7ed867b3be78fc12b5583ce356c7ec89238",
+    "completed_releases": [
+      930,
+      931
+    ],
+    "execution_order": "CURRENT_EXECUTION_ORDER_20261022.md",
+    "owner_snapshot": "CURRENT_PR_OWNERS_20261022.json",
+    "not_completion_evidence": true
   }
 }
