@@ -26,5 +26,10 @@
   },
   "observationsPerSeries": 11,
   "panel": "same frozen 64 WebShop tasks; Ordinary x counts parameter updates, Bounded and beta/GDR count completed Stage2 rounds; x ticks do not assert equivalent compute",
-  "reference": "https://github.com/mykcs/openevo-experiment/blob/48e1368c7afc260a1745a49e6c7c173bfbb172b2/docs/evidence/advisor-q01-horizon-plateau-20261001/three-way-curve.csv"
+  "reference": "https://github.com/mykcs/openevo-experiment/blob/48e1368c7afc260a1745a49e6c7c173bfbb172b2/docs/evidence/advisor-q01-horizon-plateau-20261001/three-way-curve.csv",
+  "mobileLatexSource": "figures/latex/q01-three-way-mobile-pgfplots.tex",
+  "mobileSvgAsset": "public/research/seed-openevo/figures/q01-three-way-mobile-pgfplots.svg",
+  "mobileLatexSha256": "bdef0ea464e68472ef18499c4be8e175fcc39834eb6fb7883a44fc64a0a97b42",
+  "mobileSvgSha256": "08c97c1aa1799bff17e00007e1150df655e36ef7d8d4e70532c775e6511853e4",
+  "mobileLayout": "Same 33 actual observations, full 0-100 y axis; short horizontal legend and enlarged fonts, no data transformation."
 }
