@@ -668,3 +668,122 @@ test('capability lobby restores 9px status and terminology defects only to be re
   await poison.evaluate(el=>el.parentNode?.removeChild(el));
   acceptLobby(await measureLobby(page),width);
 });
+
+
+// Shared research-depth real rendered disclosure typography (WP-D3).
+// The same source renders the methods and archived-research routes; the
+// original compact 14px, 800-weight monospace was not source-owner appropriate.
+const sharedDisclosureRoutes=[
+  {path:'/research/seed-openevo/study/capability-exploration/',kind:'method',label:'方法细节',intro:true},
+  {path:'/research/seed-openevo/study/capability-exploration/first-run/',kind:'history',label:'历史与回退',intro:true},
+] as const;
+type DepthReading={
+  label:{size:number;weight:number;font:string;style:string;leading:number;overflow:number;left:number;right:number;width:number};
+  summary:{size:number;weight:number;font:string;style:string;leading:number;overflow:number;left:number;right:number;width:number};
+  intro:null|{size:number;weight:number;font:string;style:string;leading:number;overflow:number;left:number;right:number;width:number};
+  disclosure:{left:number;right:number;width:number;overflow:number};
+  glyph:string;open:boolean;labelText:string;summaryText:string;
+  documentOverflow:number;
+};
+async function measureSharedDisclosure(depth:import('@playwright/test').Locator):Promise<DepthReading>{
+  return depth.evaluate((root)=>{
+    if(!(root instanceof HTMLDetailsElement))throw Error('Expected native research <details>');
+    const heading=root.querySelector<HTMLElement>(':scope > summary');
+    const label=heading?.querySelector<HTMLElement>('span');
+    const summary=heading?.querySelector<HTMLElement>('strong');
+    const intro=root.querySelector<HTMLElement>('.research-depth__intro');
+    if(!heading||!label||!summary)throw Error('Missing research-depth summary semantics');
+    const get=(el:HTMLElement)=>{
+      const css=getComputedStyle(el),rect=el.getBoundingClientRect();
+      return {size:parseFloat(css.fontSize),weight:parseFloat(css.fontWeight),font:css.fontFamily,
+        style:css.fontStyle,leading:parseFloat(css.lineHeight),
+        overflow:el.scrollWidth-el.clientWidth,left:rect.left,right:rect.right,width:rect.width};
+    };
+    const box=root.getBoundingClientRect();
+    return {label:get(label),summary:get(summary),intro:intro?get(intro):null,
+      disclosure:{left:box.left,right:box.right,width:box.width,overflow:root.scrollWidth-root.clientWidth},
+      glyph:getComputedStyle(summary,'::after').content,open:root.open,
+      labelText:label.textContent?.trim()??'',summaryText:summary.textContent?.trim()??'',
+      documentOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};
+  });
+}
+function acceptSharedDisclosure(reading:DepthReading,width:number,kind:'method'|'history'){
+  const slots=[['label',reading.label],['summary',reading.summary],['intro',reading.intro]] as const;
+  for(const [name,slot] of slots){
+    if(!slot){if(name==='intro')continue;throw Error('Missing '+name)}
+    expect(slot.size,kind+' '+name+' minimum').toBeGreaterThanOrEqual(15.9);
+    expect(slot.font,kind+' '+name+' interface family').toMatch(/Inter|PingFang|system-ui/);
+    expect(slot.style,kind+' '+name+' non-italic').toBe('normal');
+    expect(slot.weight,kind+' '+name+' ordinary weight').toBeLessThanOrEqual(700);
+    expect(slot.leading,kind+' '+name+' line-height').toBeGreaterThanOrEqual(20);
+    expect(slot.width,kind+' '+name+' visible').toBeGreaterThan(0);
+    expect(slot.overflow,kind+' '+name+' no hidden text').toBeLessThanOrEqual(2);
+    expect(slot.left,kind+' '+name+' left clipping').toBeGreaterThanOrEqual(-2);
+    expect(slot.right,kind+' '+name+' right clipping').toBeLessThanOrEqual(width+2);
+  }
+  expect(reading.label.weight,kind+' label not 800').toBeLessThanOrEqual(650);
+  expect(reading.disclosure.width,kind+' box visible').toBeGreaterThan(200);
+  expect(reading.disclosure.overflow,kind+' box no horizontal scroll').toBeLessThanOrEqual(2);
+  expect(reading.disclosure.left).toBeGreaterThanOrEqual(-2);
+  expect(reading.disclosure.right).toBeLessThanOrEqual(width+2);
+  expect(reading.documentOverflow,kind+' no document-wide horizontal scroll').toBeLessThanOrEqual(2);
+  expect(reading.labelText).toBe(kind==='method'?'方法细节':'历史与回退');
+  expect(reading.summaryText).toBeTruthy();
+}
+for(const width of [390,768,1440] as const){
+  for(const theme of ['light','dark'] as const){
+    test('shared research disclosure label/intro and keyboard '+width+'/'+theme,
+      async({page},info)=>{
+        await page.setViewportSize({width,height:width===390?844:900});
+        await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+        const readings=[];
+        for(const entry of sharedDisclosureRoutes){
+          const response=await page.goto(entry.path,{waitUntil:'domcontentloaded'});
+          expect(response?.status(),entry.path).toBe(200);
+          await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+          await page.evaluate(()=>document.fonts.ready);
+          const depth=page.locator('[data-research-depth="'+entry.kind+'"]').first();
+          await expect(depth).toBeVisible();
+          const summary=depth.locator('summary').first();
+          const before=await measureSharedDisclosure(depth);
+          acceptSharedDisclosure(before,width,entry.kind);
+          expect(before.open).toBe(false);
+          await summary.focus();
+          await summary.press('Enter');
+          await expect(depth).toHaveAttribute('open','');
+          const expanded=await measureSharedDisclosure(depth);
+          acceptSharedDisclosure(expanded,width,entry.kind);
+          expect(expanded.open).toBe(true);
+          expect(expanded.glyph,'open/closed glyph differs').not.toBe(before.glyph);
+          expect(expanded.intro,entry.path+' explanatory introduction').not.toBeNull();
+          await summary.screenshot({
+            path:info.outputPath('shared-depth-'+entry.kind+'-'+width+'-'+theme+'.png'),animations:'disabled'});
+          await summary.press('Enter');
+          await expect(depth).not.toHaveAttribute('open','');
+          const restored=await measureSharedDisclosure(depth);
+          expect(restored.glyph).toBe(before.glyph);
+          readings.push({route:entry.path,kind:entry.kind,before,expanded,restored});
+        }
+        writeFileSync(info.outputPath('shared-depth-'+width+'-'+theme+'.json'),
+          JSON.stringify({sourceIdentity,width,theme,readings},null,2));
+      });
+  }
+}
+test('research disclosure 9px monospace regression fails the SAME role predicate',async({page})=>{
+  const width=390;
+  await page.setViewportSize({width,height:844});
+  const response=await page.goto(sharedDisclosureRoutes[0].path,{waitUntil:'domcontentloaded'});
+  expect(response?.status()).toBe(200);
+  const depth=page.locator('[data-research-depth="method"]').first();
+  await expect(depth).toBeVisible();
+  acceptSharedDisclosure(await measureSharedDisclosure(depth),width,'method');
+  const style=await page.addStyleTag({content:
+    '.research-depth > summary span{font:800 9px/1.2 monospace!important}'+
+    '.research-depth > summary strong{font-size:9px!important}'});
+  const broken=await measureSharedDisclosure(depth);
+  expect(broken.label.size).toBeLessThan(10);
+  expect(broken.summary.size).toBeLessThan(10);
+  expect(()=>acceptSharedDisclosure(broken,width,'method')).toThrow();
+  await style.evaluate(node=>node.parentNode?.removeChild(node));
+  acceptSharedDisclosure(await measureSharedDisclosure(depth),width,'method');
+});
