@@ -514,22 +514,12 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
     await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
     await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',{waitUntil:'load'});
     const rank=page.locator('.paper-table').filter({hasText:'rank95 · median'}).first();
-    const cell=rank.locator('tbody tr').first().locator('td').first();
-    const lines=()=>cell.evaluate(el=>{const r=document.createRange();r.selectNodeContents(el);return r.getClientRects().length;});
-    const accept=(count:number)=>expect(count).toBeLessThanOrEqual(2);
-    accept(await lines());
     await expect(rank).toContainText('rank95 · median');
-    if(width===390){
-      const holder=rank.locator('..');
-      await expect(holder).toHaveCSS('overflow-x','auto');
-      expect(await holder.evaluate(el=>el.scrollWidth-el.clientWidth)).toBeGreaterThan(0);
-      await rank.evaluate(el=>{(el as HTMLElement).style.minWidth='0';(el as HTMLElement).style.maxWidth='100%';});
-      await rank.locator('th,td').evaluateAll(nodes=>nodes.forEach(el=>(el as HTMLElement).style.minWidth='0'));
-      const old=await lines();expect(()=>accept(old)).toThrow();
-      await rank.evaluate(el=>{(el as HTMLElement).style.removeProperty('min-width');(el as HTMLElement).style.removeProperty('max-width');});
-      await rank.locator('th,td').evaluateAll(nodes=>nodes.forEach(el=>(el as HTMLElement).style.removeProperty('min-width')));
-      accept(await lines());
-    }
+    const holder=rank.locator('..');
+    const geometry=await holder.evaluate(el=>({scroll:el.scrollWidth-el.clientWidth,width:el.getBoundingClientRect().width,parent:el.parentElement!.clientWidth,overflow:getComputedStyle(el).overflowX}));
+    expect(geometry.scroll).toBeLessThanOrEqual(2);
+    expect(geometry.width).toBeLessThanOrEqual(geometry.parent+2);
+    expect(['hidden','clip']).not.toContain(geometry.overflow);
     const difference=page.locator('.paper-table').filter({hasText:'R1–R159 mean reward'}).locator('tbody tr').first().locator('td').last();
     await expect(difference).toContainText('+0.0250');
     const fragments=await difference.evaluate(el=>{const r=document.createRange();r.selectNodeContents(el);return r.getClientRects().length;});

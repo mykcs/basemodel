@@ -61,3 +61,38 @@ for (const path of resultsRoutes) {
     }
   });
 }
+
+// Exercise the shared paper-table owner against real short, dense and carrier tables.
+for (const width of [320, 390, 768, 1440]) {
+  test(`research tables fit the article at ${width}px without clipping or local scrolling`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/');
+    await page.evaluate(() => document.fonts.ready);
+    for (const theme of themes) {
+      await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
+      const tables = await page.locator('[data-research-paper-table]').evaluateAll(elements => elements.map(table => {
+        const wrap = table.parentElement!;
+        const bounds = table.getBoundingClientRect();
+        return {
+          caption: table.querySelector('caption')?.textContent,
+          width: bounds.width,
+          available: wrap.parentElement!.clientWidth,
+          scroll: wrap.scrollWidth - wrap.clientWidth,
+          overflow: getComputedStyle(wrap).overflowX,
+          cellOverflow: Math.max(...Array.from(table.querySelectorAll('th,td')).map(cell => cell.scrollWidth - cell.clientWidth)),
+          fontSize: parseFloat(getComputedStyle(table).fontSize),
+        };
+      }));
+      expect(tables.length).toBeGreaterThan(5);
+      expect(tables.some(table => table.caption?.includes('参数状态与非参数状态'))).toBe(true);
+      for (const table of tables) {
+        expect(table.width, `${theme}: ${table.caption}`).toBeLessThanOrEqual(table.available + 2);
+        expect(table.scroll, `${theme}: ${table.caption}`).toBeLessThanOrEqual(2);
+        expect(table.cellOverflow, `${theme}: ${table.caption}`).toBeLessThanOrEqual(2);
+        expect(['hidden', 'clip']).not.toContain(table.overflow);
+        expect(table.fontSize).toBeGreaterThanOrEqual(12);
+      }
+      if (width === 1440) expect(tables.some(table => table.width < table.available * .8)).toBe(true);
+    }
+  });
+}
