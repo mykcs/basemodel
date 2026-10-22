@@ -35,7 +35,14 @@ export default defineConfig({
       { label: 'Agent Harness', link: '/handbook/agent-harness/' },
       { label: 'OpenEVO GPU 调度', link: '/handbook/openevo-gpu/' },
     ] }],
-  })],
+  }), {
+    name: 'basemodel-native-style-scope',
+    hooks: {
+      // Starlight defaults the whole app to `where`. Preserve native pages'
+      // existing scoped specificity instead of patching individual consumers.
+      'astro:config:setup': ({ updateConfig }) => updateConfig({ scopedStyleStrategy: 'attribute' }),
+    },
+  }],
   build: {
     format: 'directory',
   },

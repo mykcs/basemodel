@@ -41,9 +41,7 @@ function classifyRoute(route) {
 function mode(cls,attributes,role,route) {
   if (role==='fixed-presentation-slide') return 'presentation-owned';
   if (role==='operations-and-asset-reference' || role==='site-navigation-and-product') return 'nonpaper-ui';
-  // Astro may emit a compiler scope class instead of a data-astro attribute.
-  // It is not a semantic figure owner; retain all author-defined classes.
-  const first=cls.split(/\s+/).find(name=>name && !/^astro-[a-z0-9]+$/i.test(name)) || '(none)';
+  const first=cls.split(/\s+/)[0] || '(none)';
   if (first==='paper-effect') {
     const tier=attr(attributes,'data-paper-width');
     if (!['single','double'].includes(tier)) problems.push(route+': interval plot requires explicit single or double paper width');
