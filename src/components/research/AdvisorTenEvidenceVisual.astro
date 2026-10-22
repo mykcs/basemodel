@@ -61,6 +61,7 @@ const earlySft = [
       loading="eager"
       alt="同一冻结 64 道 WebShop 题上三条历史路线各 11 个实测保存点的 Task Score 曲线，纵轴 0 至 100。普通 OpenEVO 按参数更新次数，Bounded 与历史 β/GDR 按 Stage2 完成轮数；横轴刻度相同不代表同等实际更新次数。普通方法后段变化较小，Bounded 至 150 轮继续提升，历史 β/GDR 后段下降。"
     />
+    <figcaption id="advisor-q01-paper-caption"><strong>图 1｜</strong>三种参数更新方法在同一冻结 64 题上的 Task Score（满分 100）。每条曲线包含 11 个真实保存点，线段只连接已测点。普通 OpenEVO 横轴为实际参数更新次数；Bounded 和历史 β/GDR 横轴为已完成的 Stage2 轮数，后两组包含未实际更新参数的轮次。同一横轴刻度不是相同的训练计算量，不应据此进行等成本排名。</figcaption>
     <details class="advisor-viz__q01-raw-svg" data-q01-raw-svg>
       <summary>展开查看原始 33 个保存点的 SVG（技术核查）</summary>
     <div class="advisor-viz__q01-legend" role="group" aria-label="三种方法的线型和点形图例">
@@ -140,7 +141,6 @@ const earlySft = [
     </svg>
 
     </details>
-    <figcaption id="advisor-q01-paper-caption"><strong>图 1｜</strong>三种参数更新方法在同一冻结 64 题上的 Task Score（满分 100）。每条曲线包含 11 个真实保存点，线段只连接已测点。普通 OpenEVO 横轴为实际参数更新次数；Bounded 和历史 β/GDR 横轴为已完成的 Stage2 轮数，后两组包含未实际更新参数的轮次。同一横轴刻度不是相同的训练计算量，不应据此进行等成本排名。</figcaption>
     <div class="advisor-viz__q01-reading">
       {q01Series.map((item) => <p><strong>{item.name}：</strong>{item.takeaway}</p>)}
     </div>
