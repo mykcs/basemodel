@@ -480,8 +480,10 @@ test('scroll-linked explainer updates do not pull a fast reader back to the stag
   await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
   const root = page.locator('[data-interactive-research-explainer="seed"]');
   await waitForHydratedExplainer(root);
-  await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'auto' }));
-  await page.waitForTimeout(650);
+  // 'auto' inherits the page's CSS smooth scrolling in WebKit. Freeze the
+  // actual starting position instead of measuring an unfinished animation.
+  await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'instant' }));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(1500);
   const before = await page.evaluate(() => window.scrollY);
   expect(before).toBeGreaterThan(900);
   await page.evaluate(() => window.dispatchEvent(new CustomEvent('irx:scroll-step', { detail: { step: 2 } })));
@@ -508,3 +510,80 @@ test('research framework opens as a system map and can enter and leave trace mod
   await root.getByRole('button', { name: '重置' }).click();
   await expect(root).toHaveAttribute('data-overview', 'true');
 });
+
+for (const width of [390,768,1440]) for (const theme of ['light','dark'] as const) {
+  test('WebShop held-out ruler label stays horizontal without distorting the split: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/flow/webshop/',{waitUntil:'load'});
+    const ruler=page.locator('#fig-webshop-seed-split .ruler');
+    const heldout=ruler.locator('.heldout');
+    const label=heldout.locator('span');
+    await expect(label).toHaveText('保留候选池');
+    const measure=()=>label.evaluate(node=>{
+      const css=getComputedStyle(node),r=node.getBoundingClientRect(),segment=node.parentElement!.getBoundingClientRect();
+      return {writingMode:css.writingMode,transform:css.transform,width:r.width,height:r.height,segmentWidth:segment.width};
+    });
+    const accept=(m:Awaited<ReturnType<typeof measure>>)=>{
+      expect(m.writingMode).toBe('horizontal-tb');
+      expect(m.transform).toBe('none');
+      expect(m.width).toBeLessThanOrEqual(m.segmentWidth);
+      expect(m.height).toBeLessThan(m.width);
+    };
+    accept(await measure());
+    const ratio=await ruler.evaluate(node=>{
+      const total=node.getBoundingClientRect().width,part=node.querySelector('.heldout')!.getBoundingClientRect().width;
+      return part/(total-2);
+    });
+    expect(Math.abs(ratio-500/6910)).toBeLessThan(.002);
+    if(width===1440){
+      await label.evaluate(node=>{
+        (node as HTMLElement).style.writingMode='vertical-rl';
+        (node as HTMLElement).style.transform='rotate(180deg)';
+      });
+      const bad=await measure();
+      expect(()=>accept(bad)).toThrow();
+      await label.evaluate(node=>{
+        (node as HTMLElement).style.removeProperty('writing-mode');
+        (node as HTMLElement).style.removeProperty('transform');
+      });
+      accept(await measure());
+    }
+    await expect(page.locator('#fig-webshop-seed-split')).toContainText('6,410');
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  });
+}
+
+for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+  test('canonical SEED and OpenEvo comparison labels retain theme contrast: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:1000});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/flow/loops/',{waitUntil:'load'});
+    const root=page.locator('.comparison-figure');
+    const accept=async()=>{
+      for(const header of await root.locator('.column-header').all()){
+        const issues=await auditRoot(header,width,false);
+        expect(issues,issues.join('\n')).toEqual([]);
+      }
+    };
+    await accept();
+    const signal=await root.locator('.seed-column .column-header span').evaluate(el=>getComputedStyle(el).color);
+    const state=await root.locator('.evo-column .column-header span').evaluate(el=>getComputedStyle(el).color);
+    expect(await root.locator('.seed-column .wrapper-name').evaluate(el=>getComputedStyle(el).color)).toBe(signal);
+    expect(await root.locator('.evo-column .wrapper-name').evaluate(el=>getComputedStyle(el).color)).toBe(state);
+    expect(await root.locator('.successor-package>strong').evaluate(el=>getComputedStyle(el).color)).toBe(state);
+    if(theme==='dark'){
+      await root.evaluate(el=>{
+        (el as HTMLElement).style.setProperty('--signal-text','var(--signal)');
+        (el as HTMLElement).style.setProperty('--state-text','var(--state)');
+      });
+      await expect(accept()).rejects.toThrow();
+      await root.evaluate(el=>{
+        (el as HTMLElement).style.removeProperty('--signal-text');
+        (el as HTMLElement).style.removeProperty('--state-text');
+      });
+      await accept();
+    }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  });
+}

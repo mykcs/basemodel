@@ -24,6 +24,10 @@ Before any user-facing product, copy, navigation, information-architecture, page
 
 For implementation, read [`docs/dev/LATEST.md`](docs/dev/LATEST.md). For CI, hosting, runner, or release changes, also read [`docs/dev/DESIGN.md`](docs/dev/DESIGN.md), then the existing current owners routed by [`docs/dev/README.md`](docs/dev/README.md), executable configuration, and live provider state. Consult [`docs/dev/ARCHIVE.md`](docs/dev/ARCHIVE.md) only for a replaced direction. The shared lifecycle is owned by https://github.com/mykcs/.agents/blob/main/docs/agents/DEV_PROTOCOL.md; Dev explains choices without replacing `docs/agents/current/` or the required checks.
 
+## Quality standards acceptance index
+
+For project quality targets and evidence routing, use [BaseModel Standards](docs/standards/README.md) and [its acceptance map](docs/standards/ACCEPTANCE_MAP.md). **Navigation only:** current rules remain under `docs/agents/current/`, Wish owns intent, Dev owns implementation direction, and code/tests plus live provider/experiment state remain the truth. Read this index when planning or reviewing quality; do not load it for every unrelated task or duplicate active Design/Starlight PR work.
+
 ## Central website learning
 
 For substantial/durable user-facing website content artifacts, read the current shared human-expression standard before the first substantial draft:
@@ -102,6 +106,19 @@ main
 ```
 
 **Vercel is the only ordinary deployment provider and required final-candidate authority.** Public GitHub-hosted Actions is the ordinary automatic PR preflight compute lane. CircleCI and the Mac/OrbStack runner are explicit manual fallbacks; historical Cloudflare material is legacy/rollback evidence, not a normal release stage.
+
+### GitHub-first BaseModel execution (owner directive, 2026-10-20)
+
+**Default: GitHub plugin + GitHub Actions hosted runners + Vercel plugin. Do not use Remote Desktop Commander (RDC) or the owner's MacBook as the routine execution path for BaseModel.** The presence of an authorized device is not itself a reason to route work to it.
+
+- Read owners, current PRs and file history; create task branches, review changes, update source and open PRs through GitHub. Respect concurrent branches and compare exact SHAs before integration.
+- Execute TypeScript, lint, build, unit tests, Chromium and (when required and supported) WebKit using GitHub Actions/cloud runners. Current required Public PR CI covers Chromium; **do not claim WebKit passed unless an actual WebKit job ran**.
+- Use cloud Playwright outputs and retained GitHub Actions artifacts for screenshots, trace/video on failure, typography and figure geometry evidence. Where the existing workflow does not yet upload an artifact, explicitly state that limitation and improve the owning cloud workflow rather than silently falling back to the Mac.
+- Request a Vercel Preview/final gate on the exact accepted PR SHA, inspect the actual protected route (not a login page), then separately verify main and Production. GitHub status is not a substitute for rendered-page review.
+- RDC is an exceptional last resort only for genuinely MacBook-exclusive local files, authorized Mac-controlled compute/server access, or capabilities demonstrably unavailable in the cloud. Establish that need and obtain explicit user approval before using it for this task; return to cloud-first afterward.
+
+This allocation applies to BaseModel website changes, including research figures and UI acceptance. It does **not** alter the project-level release/security gates, and is not permission to skip browser or scientific-evidence validation.
+
 
 Agent-control/docs-only changes are not website-production inputs. A provider `IGNORED`/`CANCELED` record is not publication evidence.
 

@@ -12,10 +12,12 @@ const linkText = item.linkText ?? '打开 W&B 原生 panel ↗';
 const ariaAction = linkText.replace(/\s*↗$/, '');
 ---
 
-<figure class="metric-evidence">
+<figure class="metric-evidence" data-research-figure-size="wide">
+  <div class="metric-evidence__viewport" tabindex="0" role="region" aria-label={item.title}>
   <a href={item.href} target="_blank" rel="noreferrer" aria-label={`${item.title} · ${ariaAction}`}>
     <img src={item.src} alt={item.alt} loading="lazy" width="1200" height="675" />
   </a>
+  </div>
   <figcaption>
     <strong>{item.title}</strong>
     <a href={item.href} target="_blank" rel="noreferrer">{linkText}</a>
@@ -24,8 +26,11 @@ const ariaAction = linkText.replace(/\s*↗$/, '');
 
 <style>
   .metric-evidence{margin:1rem 0 1.35rem;min-width:0}
-  .metric-evidence>a{display:block;border:1px solid var(--border-color);border-radius:var(--radius-panel);overflow:hidden;background:#fff;box-shadow:0 10px 28px color-mix(in srgb,var(--text-primary) 7%,transparent)}
-  .metric-evidence img{display:block;width:100%;height:auto}
+  .metric-evidence__viewport{overflow-x:auto;overscroll-behavior-x:contain}
+  .metric-evidence__viewport>a{display:block;border:1px solid var(--line);border-radius:var(--radius-panel);background:#fff;box-shadow:0 10px 28px color-mix(in srgb,var(--ink) 7%,transparent)}
+  .metric-evidence img{display:block;width:100%;min-width:1200px;max-width:none;height:auto}
   .metric-evidence figcaption{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.45rem 1rem;margin-top:.6rem;line-height:1.5}
   .metric-evidence figcaption a{font-weight:700}
+  .metric-evidence__viewport:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+  @media print{.metric-evidence__viewport{overflow:visible}.metric-evidence img{width:100%;min-width:0;max-width:100%}}
 </style>

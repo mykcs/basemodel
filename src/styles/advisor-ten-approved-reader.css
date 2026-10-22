@@ -1,0 +1,597 @@
+/*
+ * Advisor response article — owner-approved reading treatment, 2026-10-19.
+ * ONLY the third OpenEVO blog opts into .evo-approved-reader.
+ * The first and second blogs, scientific data and shared booktabs keep their owners.
+ * Sources: Scientific Spaces geekg width/font CSS; Open Claude UI design tokens.
+ */
+html[data-theme="light"]:has(.evo-approved-reader) {
+  --color-bg: #f9f9f7;
+  --bg: #f9f9f7;
+  --color-surface: #fcfcfb;
+  --surface: #fcfcfb;
+  --color-surface-muted: #f6f6f4;
+  --surface-muted: #f6f6f4;
+}
+html[data-theme="dark"]:has(.evo-approved-reader) {
+  --color-bg: #151515;
+  --bg: #151515;
+  --color-surface: #20201f;
+  --surface: #20201f;
+  --color-surface-muted: #2c2c2a;
+  --surface-muted: #2c2c2a;
+}
+.evo-blog.evo-approved-reader {
+  --paper: #fcfcfb;
+  --paper-ink: #151515;
+  /* Prose, navigation and plot labels keep this system-sans treatment.
+     Native scientific tables use the shared paper/booktabs serif owner. */
+  --advisor-plain-font: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --paper-muted: #64625f;
+  --paper-line: #e1e0d9;
+  /* Just three semantic answer-status colors; grey is for secondary copy only. */
+  --advisor-status-green: #166b49;
+  --advisor-status-yellow: #835100;
+  --advisor-status-red: #b12632;
+  --research-evidence-frame: #c3c2b7;
+  --research-evidence-title-size: 14px;
+  --research-evidence-caption-size: 12.5px;
+  /* A single interval stays compact; a multi-effect comparison uses the full reading column. */
+  --research-evidence-single-width: 24rem;
+  --research-evidence-double-width: 100%;
+  --research-evidence-inset: 14px;
+  width: min(750.4px, calc(100% - 24px));
+  margin: 28px auto 70px;
+  padding: 42px 64px 60px;
+  background: var(--paper);
+  color: var(--paper-ink);
+  border: 1px solid var(--paper-line);
+  border-radius: 0;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
+  font: 400 14px/1.8 var(--advisor-plain-font);
+  font-variant-numeric: normal;
+  font-feature-settings: normal;
+}
+html[data-theme="dark"] .evo-approved-reader {
+  --paper: #20201f;
+  --paper-ink: #f3f3f0;
+  --paper-muted: #b4b3a8;
+  --paper-line: #454442;
+  --advisor-status-green: #72d5a6;
+  --advisor-status-yellow: #ffd37e;
+  --advisor-status-red: #ff9b9f;
+  --research-evidence-frame: #6d6b67;
+  box-shadow: none;
+}
+.evo-approved-reader p,
+.evo-approved-reader li,
+.evo-approved-reader dd {
+  font-size: 14px;
+  line-height: 1.8;
+}
+.evo-approved-reader h1 {
+  font: 580 28px/1.32 system-ui, -apple-system, "Segoe UI", "PingFang SC", sans-serif;
+  letter-spacing: -.023em;
+  max-width: none;
+  margin-bottom: 16px;
+  text-wrap: balance;
+}
+.evo-approved-reader h2 {
+  font: 650 21px/1.4 var(--advisor-plain-font);
+  letter-spacing: 0;
+  margin: 0 0 12px;
+}
+.evo-approved-reader h3 {
+  font: 650 18px/1.4 var(--advisor-plain-font);
+  letter-spacing: 0;
+}
+.evo-approved-reader .evo-article__lede {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--paper-muted);
+}
+.evo-approved-reader .evo-article__abstract {
+  padding: 12px 0;
+  margin: 18px 0 20px;
+}
+.evo-approved-reader .evo-article__abstract h2 { font-size: 18px; }
+.evo-approved-reader .evo-article__section {
+  padding: 27px 0 31px;
+  border-color: var(--paper-line);
+}
+.evo-approved-reader .evo-article__question {
+  padding: 23px 0 27px;
+  border-color: var(--paper-line);
+}
+.evo-approved-reader .evo-article__question-header h3 {
+  font-size: 18px;
+  font-weight: 650;
+}/* All source-bound results now live under Q01–Q10. Subheadings use a
+   restrained hierarchy so moving historical evidence never creates another
+   full-size chapter after Q10. */
+
+.evo-approved-reader .advisor-question-evidence {
+  margin: 20px 0 24px;
+  max-width: 100%;
+}
+.evo-approved-reader .advisor-question-evidence > div {
+  margin: 14px 0 18px;
+}
+.evo-approved-reader .advisor-question-evidence h4 {
+  margin: 17px 0 10px;
+  font: 600 16px/1.5 var(--advisor-plain-font);
+  color: var(--paper-ink);
+}
+.evo-approved-reader .advisor-technical-appendix {
+  margin-top: 24px;
+  border-top: 1px solid var(--paper-line);
+  padding-top: 12px;
+}
+.evo-approved-reader .advisor-technical-appendix h3 {
+  font-size: 15px;
+  font-weight: 600;
+}/* Quiet question identity lives outside the heading. Do not use the old
+   '3.Q1' subsection notation, tabular digits or display-style number font. */
+
+.evo-approved-reader .advisor-approved-question-meta {
+  display: flex;
+  gap: 7px 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-family: "PingFang SC", system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.evo-approved-reader .advisor-approved-question-ref,
+.evo-approved-reader .advisor-question-index__number {
+  color: var(--paper-muted);
+  font-family: "PingFang SC", system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  font-variant-numeric: normal;
+  font-feature-settings: normal;
+  letter-spacing: normal;
+}
+.evo-approved-reader .evo-article__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 650;
+}
+.evo-blog.evo-approved-reader[data-evo-blog="results"] .evo-article__status--green {
+  --status-dot: var(--advisor-status-green);
+  color: var(--advisor-status-green);
+}
+.evo-blog.evo-approved-reader[data-evo-blog="results"] .evo-article__status--yellow {
+  --status-dot: var(--advisor-status-yellow);
+  color: var(--advisor-status-yellow);
+}
+.evo-blog.evo-approved-reader[data-evo-blog="results"] .evo-article__status--red {
+  --status-dot: var(--advisor-status-red);
+  color: var(--advisor-status-red);
+}
+.evo-approved-reader .evo-article__status-dot {
+  width: 8px;
+  height: 8px;
+  flex-basis: 8px;
+  background: var(--status-dot);
+  outline: none;
+}
+.evo-approved-reader .evo-article__siblings {
+  font-family: system-ui, -apple-system, "PingFang SC", sans-serif;
+}
+.evo-approved-reader .evo-article__siblings a,
+.evo-approved-reader .evo-article__siblings .evo-current {
+  font-size: 13px;
+}
+.evo-approved-reader .evo-article__experiment-guide > div {
+  padding: 12px 0 16px;
+}
+.evo-approved-reader .evo-article__experiment-guide p {
+  margin: 7px 0;
+}
+.evo-approved-reader .evo-article__note,
+.evo-approved-reader .evo-article__next-work {
+  font-size: 12.5px;
+  line-height: 1.68;
+}
+.evo-blog.evo-approved-reader[data-evo-blog="results"] .evo-article__next-work {
+  margin: 16px 0;
+  padding: 7px 0;
+  border-inline-start: 0;
+  border-block-start: 1px solid var(--paper-line);
+}
+.evo-approved-reader a[href^="http"],
+.evo-approved-reader .evo-article__note a,
+.evo-approved-reader .evo-article__next-work a,
+.evo-approved-reader .evo-article__sources a {
+  color: var(--paper-muted);
+  font-size: 12px;
+  font-weight: 400;
+  text-decoration: underline;
+  text-decoration-thickness: .055em;
+  text-underline-offset: .21em;
+  overflow-wrap: anywhere;
+}
+.evo-approved-reader a[href^="http"]:hover,
+.evo-approved-reader .evo-article__note a:hover { color: var(--paper-ink); }
+.evo-approved-reader a:focus-visible,
+.evo-approved-reader summary:focus-visible { outline: 2px solid #c6613f; outline-offset: 3px; }/* The article contents are a quiet, collapsible LEFT navigation. Existing
+   question-index anchors remain accessible and are not silently removed. */
+
+
+.evo-approved-reader .evo-article__toc {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: system-ui, -apple-system, "PingFang SC", sans-serif;
+}
+.evo-approved-reader .advisor-ten-toc {
+  position: fixed;
+  z-index: 12;
+  top: 115px;
+  left: max(12px, calc(50% - 575px));
+  width: max-content;
+  max-width: min(250px, 40vw);
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius-control);
+  background: var(--paper);
+  box-shadow: 0 3px 15px rgb(0 0 0 / 6%);
+}
+.evo-approved-reader .advisor-ten-toc summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 8px 12px;
+  font: 600 12px/1.5 system-ui, -apple-system, "PingFang SC", sans-serif;
+  color: var(--paper-ink);
+}
+.evo-approved-reader .advisor-ten-toc summary::-webkit-details-marker { display: none; }
+.evo-approved-reader .advisor-ten-toc summary::before {
+  content: "☰";
+  display: inline-block;
+  font-size: 12px;
+  margin-right: 6px;
+  color: var(--paper-muted);
+}
+.evo-approved-reader .advisor-ten-toc[open] {
+  width: 246px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+}
+.evo-approved-reader .advisor-ten-toc ol {
+  display: block;
+  grid-template-columns: none;
+  margin: 0 10px 12px;
+  padding: 0;
+}
+.evo-approved-reader .advisor-ten-toc li { margin: 0; }
+.evo-approved-reader .advisor-ten-toc a {
+  display: block;
+  padding: 7px 4px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--paper-muted);
+  text-decoration: none;
+}
+.evo-approved-reader .advisor-ten-toc a:hover { color: var(--paper-ink); }/* Scientific diagrams preserve genuine paper table semantics, never turn
+   simple results into full-width UI cards. */
+
+
+.evo-approved-reader .advisor-result-matrix { margin: 19px 0 25px; max-width: 100%; }
+.evo-approved-reader .advisor-result-matrix__wrap {
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.evo-approved-reader .advisor-result-matrix table {
+  max-width: 100%;
+  margin: 0;
+}
+.evo-approved-reader .advisor-result-matrix th:first-child { min-width: 7.5em; }
+.evo-approved-reader .advisor-result-matrix [data-numeric] { text-align: right; white-space: nowrap; }
+.evo-approved-reader .advisor-result-matrix figcaption {
+  margin: 9px 0 0;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--paper-line);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--paper-muted);
+}
+.evo-approved-reader .advisor-result-matrix figcaption p { font-size: 12.5px; margin: 5px 0; }
+.evo-approved-reader .advisor-result-matrix figcaption strong { color: var(--paper-ink); }
+.evo-approved-reader .advisor-result-matrix__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}/* C: Paper interval plots put the read path, actual endpoints and evidence
+   boundary in place; the figure is not artificially stretched beyond the text. */
+
+
+.evo-approved-reader .paper-effect,
+.evo-approved-reader .advisor-viz {
+  max-width: 100%;
+  border-color: var(--research-evidence-frame);
+  box-shadow: none;
+  font-size: 13px;
+}
+.evo-approved-reader .paper-effect { border-radius: var(--radius-control); }
+.evo-approved-reader .paper-effect__title { font-size: 15px; }
+.evo-approved-reader .paper-effect figcaption,
+.evo-approved-reader .advisor-viz figcaption {
+  font-size: 12.5px;
+  line-height: 1.7;
+}/* C: Soft mathematical region; KaTeX remains the existing server-side engine. */
+
+.evo-approved-reader .math-formula {
+  padding: 15px 16px;
+  margin: 20px 0;
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius-panel);
+  border-left: 1px solid var(--paper-line);
+  background: var(--color-surface-muted);
+  box-shadow: none;
+}
+.evo-approved-reader .math-formula__scroll { max-width: 100%; }
+.evo-approved-reader .evo-article__tablewrap{
+  width: fit-content;
+  max-width: 100%;
+;min-width:0}
+
+.evo-approved-reader .research-booktabs-wrap {
+  max-width: 100%;
+}
+.evo-approved-reader .evo-article__tablewrap table { max-width: 100%; ;min-width:0}
+.evo-approved-reader .evo-article__tablewrap th,
+.evo-approved-reader .evo-article__tablewrap td {
+;min-width:0}
+@media (max-width: 1100px) {
+  .evo-approved-reader .advisor-ten-toc {
+    left: 12px;
+    top: 75px;
+  }
+}
+@media (max-width: 820px) {
+  .evo-blog.evo-approved-reader {
+    width: calc(100% - 24px);
+    padding: 30px clamp(20px, 4vw, 36px);
+    margin: 16px auto 48px;
+  }
+  .evo-approved-reader .evo-article__toc { margin: 16px 0; }
+  .evo-approved-reader .advisor-ten-toc {
+    position: static;
+    max-width: 100%;
+    box-shadow: none;
+  }
+  .evo-approved-reader .advisor-ten-toc[open] {
+    width: 100%;
+    max-height: min(460px, 55vh);
+  }
+}
+@media (max-width: 520px) {
+  .evo-blog.evo-approved-reader {
+    padding: 22px 14px 38px;
+    font-size: 14px;
+  }
+  .evo-approved-reader h1 { font-size: 26px; }
+  .evo-approved-reader h2 { font-size: 21px; }
+  .evo-approved-reader h3,
+  .evo-approved-reader .evo-article__question-header h3 { font-size: 17px; }
+  .evo-approved-reader .advisor-result-matrix th,
+  .evo-approved-reader .advisor-result-matrix td {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+  .evo-approved-reader .advisor-result-matrix th:first-child {
+    min-width: 0;
+    width: 34%;
+  }
+  .evo-approved-reader .advisor-result-matrix [data-numeric] {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .evo-approved-reader .advisor-result-matrix__wrap {
+    width: 100%;
+    overflow-x: hidden;
+  }
+  .evo-approved-reader .advisor-result-matrix figcaption,
+  .evo-approved-reader .advisor-result-matrix figcaption p { font-size: 12px; }
+  .evo-approved-reader .math-formula { padding: 12px 9px; }
+}/* Plain numerals for response prose and plot labels; native tables keep
+   their shared paper typography. KaTeX symbols retain their mathematics font. */
+
+.evo-blog.evo-approved-reader :is(
+
+
+
+
+
+
+
+
+  .advisor-viz,
+  .advisor-viz svg,
+  .advisor-viz svg text,
+  .advisor-viz__q01-chart,
+  .advisor-viz__q01-legend,
+  .advisor-viz--q01 figcaption,
+  .paper-effect,
+  .paper-effect__title,
+  .paper-effect__value,
+  .paper-effect__axis,
+  .paper-effect figcaption,
+  .q03-world4
+) {
+  font-family: var(--advisor-plain-font);
+  font-variant-numeric: normal;
+  font-feature-settings: normal;
+}
+@media print {
+  .evo-approved-reader .advisor-ten-toc { display: none; }
+  .evo-blog.evo-approved-reader { border: 0; box-shadow: none; width: 100%; }
+  .evo-approved-reader .advisor-result-matrix { break-inside: avoid; }
+}/* Advisor's decision-reading layer: plain scientific prose, no decorative dashboard. */
+
+
+.evo-approved-reader .advisor-overview {
+  margin: 20px 0 24px;
+  padding: 20px 0;
+  border-block: 1px solid var(--paper-line);
+}
+.evo-approved-reader .advisor-overview h2 {
+  margin-bottom: 8px;
+}
+.evo-approved-reader .advisor-overview__lead {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: var(--paper-ink);
+}
+.evo-approved-reader .advisor-overview__counts {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 10px;
+  margin: 0 0 10px;
+}
+.evo-approved-reader .advisor-overview__count {
+  min-width: 0;
+  padding: 12px 11px;
+  border: 1px solid var(--paper-line);
+}
+.evo-approved-reader .advisor-overview__count dt {
+  margin: 0 0 4px;
+  font-size: 12px;
+}
+.evo-approved-reader .advisor-overview__count dd {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin: 0;
+  color: var(--paper-ink);
+}
+.evo-approved-reader .advisor-overview__count dd strong {
+  font: 650 26px/1.25 var(--advisor-plain-font);
+  font-variant-numeric: normal;
+}
+.evo-approved-reader .advisor-overview__count dd span { font-size: 12px; }
+.evo-approved-reader .advisor-overview__explanation {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--paper-muted);
+}
+.evo-approved-reader .advisor-overview__jump {
+  display: inline-block;
+  margin: 5px 0 0;
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: .2em;
+}
+.evo-approved-reader .advisor-digest > div {
+  padding: 17px 0 19px;
+}
+.evo-approved-reader .advisor-digest dt {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+.evo-approved-reader .advisor-digest dt a {
+  color: var(--paper-ink);
+  flex: 1 1 230px;
+  font-size: 14px;
+}
+.evo-approved-reader .advisor-digest dd {
+  color: var(--paper-ink);
+  margin: 4px 0 0;
+}
+.evo-approved-reader .advisor-digest__answer {
+  font-weight: 500;
+  color: var(--paper-ink);
+}
+.evo-approved-reader .advisor-digest__done,
+.evo-approved-reader .advisor-digest__missing {
+  color: var(--paper-ink);
+}
+.evo-approved-reader .advisor-digest__done strong,
+.evo-approved-reader .advisor-digest__missing strong {
+  color: var(--paper-ink);
+}
+.evo-approved-reader .advisor-digest__original {
+  margin: 7px 0 0;
+  color: var(--paper-muted);
+}
+.evo-approved-reader .advisor-digest__original summary {
+  display: list-item;
+  list-style: revert;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--paper-muted);
+}
+.evo-approved-reader .advisor-digest__original p {
+  color: var(--paper-muted);
+  margin: 6px 0;
+}
+.evo-approved-reader .advisor-response__answer {
+  margin: 8px 0 10px;
+  font-weight: 500;
+  color: var(--paper-ink);
+}
+.evo-approved-reader .advisor-response__stage,
+.evo-approved-reader .advisor-response__missing {
+  margin: 7px 0;
+  color: var(--paper-ink);
+}
+.evo-approved-reader .advisor-response__answer strong,
+.evo-approved-reader .advisor-response__stage strong,
+.evo-approved-reader .advisor-response__missing strong {
+  font-weight: 650;
+}
+@media (max-width: 520px) {
+  .evo-approved-reader .advisor-overview__counts {
+    gap: 5px;
+  }
+  .evo-approved-reader .advisor-overview__count {
+    padding: 9px 6px;
+  }
+  .evo-approved-reader .advisor-overview__count dt {
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+  .evo-approved-reader .advisor-overview__count dd strong {
+    font-size: 23px;
+  }
+  .evo-approved-reader .advisor-digest dt {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}/* Advisor decision-first brief: neutral visual hierarchy, no fourth status color. */
+
+
+.evo-approved-reader .advisor-overview__decisions {
+  margin: 12px 0 9px;
+  padding-top: 10px;
+  border-top: 1px solid var(--paper-line);
+}
+.evo-approved-reader .advisor-overview__decisions p,
+.evo-approved-reader .advisor-response__evidence {
+  margin: 7px 0;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--paper-ink);
+}
+.evo-approved-reader .advisor-overview__decisions strong,
+.evo-approved-reader .advisor-response__evidence strong {
+  font-weight: 650;
+}
+.evo-approved-reader .advisor-overview__decisions a {
+  text-decoration: underline;
+  text-underline-offset: .2em;
+}

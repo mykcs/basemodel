@@ -1,0 +1,66 @@
+---
+/**
+ * Publication-quality static vector graphic, generated offline from PGFPlots.
+ * Keeps Astro/HTML semantics and real source-bound captions outside the asset.
+ * No browser-side TeX engine, canvas renderer or runtime code.
+ */
+interface Props {
+  id: string;
+  src: string;
+  alt: string;
+  captionId: string;
+  loading?: 'eager' | 'lazy';
+  widthTier?: 'single' | 'double';
+  naturalWidth?: number;
+  naturalHeight?: number;
+  mobileSrc?: string;
+}
+const { id, src, alt, captionId, loading = 'lazy', widthTier = 'single', naturalWidth = 340, naturalHeight = 208, mobileSrc } = Astro.props;
+if(!id || !src.startsWith('/research/') || !src.endsWith('.svg') || !alt || !captionId || (mobileSrc && (!mobileSrc.startsWith('/research/') || !mobileSrc.endsWith('.svg')))) {
+  throw new Error('PublicationPlot needs one vetted local SVG and a meaningful accessible caption');
+}
+---
+<div class:list={['publication-plot',widthTier==='double' && 'publication-plot--double']} data-publication-plot={id}>
+  <picture>
+    {mobileSrc && <source media="(max-width: 720px)" type="image/svg+xml" srcset={mobileSrc} />}
+    <img
+    src={src}
+    alt={alt}
+    aria-describedby={captionId}
+    data-pgfplot={id}
+    width={naturalWidth}
+    height={naturalHeight}
+    loading={loading}
+    decoding="async"
+    />
+  </picture>
+</div>
+
+<style>
+.publication-plot {
+  width: min(100%, 27.5rem);
+  max-width: 100%;
+  margin: 0 auto .45rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.publication-plot--double { width: min(100%, 44rem); }
+.publication-plot picture { display: block; width: 100%; }
+.publication-plot img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+  background: #fff; /* the immutable PDF/PGFPlots paper canvas, including dark mode */
+  color: #111;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+@media print {
+  .publication-plot { break-inside: avoid; }
+  .publication-plot img { print-color-adjust: exact; }
+}
+</style>

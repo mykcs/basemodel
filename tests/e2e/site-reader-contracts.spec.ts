@@ -17,7 +17,9 @@ const defaultBudgets: Record<ReaderAttentionMode, { maxInteractive: number; maxH
 
 for (const viewport of viewports) {
   test(`site reader contracts stay visible in the ${viewport.name} first screen`, async ({ page }) => {
-    test.setTimeout(120_000);
+    // This case visits all 71 route contracts, including hydration settlement.
+    // Allow the complete walk on cloud WebKit; reader budgets below stay fixed.
+    test.setTimeout(600_000);
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     const failures: string[] = [];
 
@@ -106,7 +108,14 @@ for (const viewport of viewports) {
               && Number.parseFloat(style.opacity || '1') > 0;
           };
 
-          const interactive = [...root.querySelectorAll('a,button,input:not([type="hidden"]),select,textarea,summary')].filter(inFirstScreen).length;
+          const interactiveElements = [...root.querySelectorAll('a,button,input:not([type="hidden"]),select,textarea,summary')].filter(inFirstScreen);
+          const interactive = interactiveElements.length;
+          const interactiveTargets = interactiveElements.map((el) => ({
+            text: el.textContent?.replace(/\s+/g, ' ').trim().slice(0, 70) ?? '',
+            href: el.getAttribute('href') ?? '',
+            tag: el.tagName,
+            y: Math.round(el.getBoundingClientRect().top),
+          }));
           const primaryHeading = root.querySelector('h1');
           const primaryHeadingSize = primaryHeading ? Number.parseFloat(getComputedStyle(primaryHeading).fontSize) : 0;
           const headings = [...root.querySelectorAll('h1,h2,h3')].filter((el) => {
@@ -133,11 +142,11 @@ for (const viewport of viewports) {
             const rect = range.getBoundingClientRect();
             if (rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < innerHeight) textChars += text.length;
           }
-          return { interactive, headings, textChars };
+          return { interactive, headings, textChars, interactiveTargets };
         });
 
         const budget = contract.firstViewportBudget ?? defaultBudgets[contract.attentionMode];
-        if (metrics.interactive > budget.maxInteractive) failures.push(`${contract.id}: ${metrics.interactive} first-screen interactive targets exceed budget ${budget.maxInteractive}`);
+        if (metrics.interactive > budget.maxInteractive) failures.push(`${contract.id}: ${metrics.interactive} first-screen interactive targets exceed budget ${budget.maxInteractive}; visible=${JSON.stringify(metrics.interactiveTargets)}`);
         if (metrics.headings > budget.maxHeadings) failures.push(`${contract.id}: ${metrics.headings} first-screen headings exceed budget ${budget.maxHeadings}`);
         if (metrics.textChars > budget.maxTextChars) failures.push(`${contract.id}: ${metrics.textChars} first-screen text characters exceed budget ${budget.maxTextChars}`);
       }

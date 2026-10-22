@@ -13,6 +13,13 @@ html[data-theme="light"]:has(.evo-blog) {
   --paper-line:#dde4df;
   --paper-muted:#53635c;
   --paper-ink:#1f2b29;
+  /* One hierarchy for evidence-bearing charts, intervals and tables in the study series. */
+  --research-evidence-frame:color-mix(in srgb,var(--paper-ink) 25%,var(--paper));
+  --research-evidence-title-size:1.06rem;
+  --research-evidence-caption-size:1rem;
+  --research-evidence-inset:clamp(.95rem,2vw,1.35rem);
+  --research-evidence-single-width:38rem;
+  --research-evidence-double-width:55.625rem;
   width:min(1060px,calc(100% - 2rem));
   margin:2.2rem auto 5rem;
   padding:clamp(1.5rem,4.5vw,3.8rem);
@@ -64,33 +71,78 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .evo-article__sources{border-top:1.4px solid var(--paper-ink);padding-top:1.6rem}
 .evo-blog .evo-article__sources ol{padding-left:1.3rem;max-width:80ch}
 .evo-blog .evo-article__sources li{padding:.38rem 0;font-size:.92em}
-.evo-blog .evo-article__sources a{overflow-wrap:anywhere}
+.evo-blog .evo-article__sources a{overflow-wrap:anywhere}/* Research-paper presentation: evidence links are native underlined citations,
+   not boxed website-brand pictograms. The exact linked providers and their
+   semantic DOM marks remain intact for the sitewide provenance contract.
+   This opt-in applies ONLY to the three existing OpenEVO academic articles. */
+
+.evo-blog[data-paper-citation-style="plain-text"] .external-brand-mark {
+  display: none;
+}
+.evo-blog[data-paper-citation-style="plain-text"] a:has(> .external-brand-mark) {
+  text-decoration: underline;
+  text-decoration-thickness: .055em;
+  text-underline-offset: .16em;
+}
+.evo-blog[data-paper-citation-style="plain-text"] a:has(> .external-brand-mark):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
 .evo-blog .evo-article__note{font-size:.9em;color:var(--paper-muted);line-height:1.7;max-width:80ch}
 .evo-blog .evo-article__stat{font-variant-numeric:tabular-nums;font-weight:720;font-size:1.4em}
 .evo-blog .evo-article__figure{margin:1.5rem 0}
 .evo-blog .evo-article__figure figcaption{font-size:.89em;line-height:1.7;color:var(--paper-muted);margin:.7rem 0}
 .evo-blog .evo-article__figure img{max-width:100%;height:auto;display:block}
-.evo-blog .evo-article__tablewrap {max-width:100%;width:fit-content;overflow-x:auto;margin:1.25rem 0}
-.evo-blog .evo-article__tablewrap table{width:auto;max-width:none;border-top:1.7px solid var(--paper-ink);border-bottom:1.7px solid var(--paper-ink);border-collapse:collapse;font-size:.93em;font-variant-numeric:tabular-nums}
-.evo-blog .evo-article__tablewrap caption{font-size:.9em;text-align:left;caption-side:top;margin-bottom:.35rem;color:var(--paper-muted)}
-.evo-blog .evo-article__tablewrap th,.evo-blog .evo-article__tablewrap td{border-bottom:1px solid var(--paper-line);padding:.65rem .9rem .65rem 0;text-align:left;vertical-align:top;white-space:normal}
-.evo-blog .evo-article__tablewrap [data-numeric]{text-align:right}
+.evo-blog .evo-article__tablewrap {max-width:100%;width:fit-content;overflow-x:auto;margin:1.25rem 0;min-width:0}
+.evo-blog .evo-article__tablewrap table{max-width:none;min-width:0}
+.evo-blog .evo-article__tablewrap th,.evo-blog .evo-article__tablewrap td{white-space:normal;min-width:0}
+.evo-blog .evo-article__tablewrap [data-numeric]{text-align:right;min-width:0}
 .evo-blog .evo-article__question{padding:1.6rem 0 2rem;border-bottom:1px solid var(--paper-line);scroll-margin-top:5.8rem}
 .evo-blog .evo-article__question>h2{font-size:1.45rem}
+.evo-blog[data-evo-blog="results"] .evo-article__question-header{display:grid;gap:.38rem;justify-items:start;align-items:start;margin:.15rem 0 .9rem}
+.evo-blog[data-evo-blog="results"] .evo-article__question-header h3{font-size:1.28rem;margin:0}
+.evo-blog[data-evo-blog="results"] .evo-article__status{display:inline-flex;align-items:center;gap:.48rem;font-size:1rem;line-height:1.55;font-weight:600;color:var(--paper-muted)}
+.evo-blog[data-evo-blog="results"] .evo-article__status-dot{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;flex:0 0 .6rem;background:var(--status-dot);outline:1px solid color-mix(in srgb,var(--status-dot) 60%,var(--paper));outline-offset:1.5px}
+.evo-blog[data-evo-blog="results"] .evo-article__status--green{--status-dot:var(--color-positive)}
+.evo-blog[data-evo-blog="results"] .evo-article__status--yellow{--status-dot:var(--color-warning)}
+.evo-blog[data-evo-blog="results"] .evo-article__status--red{--status-dot:var(--color-danger)}
+.evo-blog[data-evo-blog="results"] .evo-article__next-work{padding:.2rem 0 .15rem;font-size:.96em;line-height:1.76}
+.evo-blog[data-evo-blog="results"] .evo-article__next-work > span{display:block;margin-top:.12rem;color:var(--paper-muted)}
+
 .evo-blog .evo-article__question .evo-article__answer{font-weight:630;line-height:1.8}
 .evo-blog .evo-article__question p{max-width:80ch}
 .evo-blog .evo-article__question .evo-article__limit{color:var(--paper-muted)}
-.evo-blog .evo-article__measure{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.3rem;margin:1.25rem 0 1.7rem}
-.evo-blog .evo-article__measure>div{border-top:2px solid var(--paper-ink);padding:.8rem 0}
-.evo-blog .evo-article__measure strong{display:block;font-size:1.45em;line-height:1.3;font-variant-numeric:tabular-nums}
-.evo-blog .evo-article__measure span{display:block;color:var(--paper-muted);font-size:.89em}
 .evo-blog .evo-article__disclosure{border-block:1px solid var(--paper-line);margin:1.3rem 0;padding:.6rem 0}
 .evo-blog .evo-article__disclosure summary{cursor:pointer;font-weight:620;padding:.35rem 0}
 .evo-blog .evo-article__disclosure>div{padding:.1rem 0 1rem}
 .evo-blog .advisor-method__node{background:var(--paper);border-color:var(--paper-line)}
 .evo-blog .advisor-method__lane{border-color:var(--paper-line)}
 .evo-blog .advisor-method__lane>p{font-size:1em}
-.evo-blog .advisor-viz{max-width:100%}
+.evo-blog .advisor-viz{
+  max-width:100%;
+  border:1px solid var(--research-evidence-frame);
+  border-radius:.42rem;
+  background:var(--paper);
+  padding:var(--research-evidence-inset);
+  margin:1.4rem 0 1.8rem;
+  box-shadow:none;
+}
+.evo-blog .advisor-viz--q01{width:min(100%,var(--research-evidence-double-width))}
+.evo-blog .advisor-viz--q03{width:min(100%,43rem)}
+.evo-blog .advisor-viz:not(figure){
+  /* Evidence tables keep the booktabs open layout: one less nested box. */
+  width:fit-content;
+  max-width:100%;
+  padding:.15rem 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+.evo-blog .advisor-viz__heading strong{font-size:var(--research-evidence-title-size)}
+.evo-blog .advisor-viz figcaption,
+.evo-blog .advisor-viz__table-note{font-size:var(--research-evidence-caption-size);line-height:1.65;color:var(--paper-muted)}
+
 .evo-blog .advisor-viz__heading,.evo-blog .advisor-viz figcaption{font-size:.9em}
 .evo-blog .advisor-viz__name,.evo-blog .advisor-viz__value{font-size:.91em}
 .evo-blog .math-formula {max-width:100%}
@@ -101,12 +153,11 @@ html[data-theme="dark"] .evo-blog {
  .evo-blog .evo-article__siblings ol{grid-template-columns:1fr;gap:0}
  .evo-blog .evo-article__siblings a{padding:.45rem 0}
  .evo-blog .evo-article__section{padding:1.7rem 0;scroll-margin-top:4.5rem}
- .evo-blog .evo-article__measure{grid-template-columns:1fr;gap:.25rem}
- .evo-blog .evo-article__tablewrap th,.evo-blog .evo-article__tablewrap td{font-size:.91em}
+ .evo-blog .evo-article__tablewrap th,.evo-blog .evo-article__tablewrap td{;min-width:0}
 }
 
-.evo-blog .evo-article__flow-simple{display:grid;grid-template-columns:repeat(4,minmax(0,1fr) 18px);gap:.35rem;align-items:center;margin:.85rem 0}
-.evo-blog .evo-article__flow-simple>div{border:1px solid var(--paper-line);background:var(--paper);padding:.75rem .5rem;min-width:0;min-height:5.4rem}
+.evo-blog .evo-article__flow-simple{display:grid;grid-template-columns:minmax(0,1fr) 14px minmax(0,1fr) 14px minmax(0,1fr) 14px minmax(0,1fr);gap:.25rem;align-items:center;margin:1.15rem 0;padding:.8rem 0;border-block:1px solid var(--paper-line)}
+.evo-blog .evo-article__flow-simple>div{border:0;background:transparent;padding:.5rem .2rem;min-width:0;min-height:4rem}
 .evo-blog .evo-article__flow-simple>div strong,.evo-blog .evo-article__flow-simple>div small{display:block}
 .evo-blog .evo-article__flow-simple>div strong{font-size:.87rem;line-height:1.45}
 .evo-blog .evo-article__flow-simple>div small{font-size:.76rem;color:var(--paper-muted)}
@@ -126,6 +177,7 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .evo-article__question-header{display:flex;align-items:baseline;gap:.65rem;flex-wrap:wrap;margin:.25rem 0 .7rem}
 .evo-blog .evo-article__question-header h3{margin:0;line-height:1.38}
 .evo-blog .evo-article__qnum{font-size:.88rem;letter-spacing:.02em;color:var(--paper-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.evo-blog[data-evo-blog="results"] .evo-article__question-header h3 .evo-article__qnum{display:inline-block;margin-inline-end:.25rem;vertical-align:baseline}
 
 .evo-blog .evo-article__siblings .evo-current{display:block;font-size:.93em;line-height:1.5;padding:.6rem .25rem .7rem 0;border-bottom:2px solid var(--paper-ink);color:var(--paper-ink)}
 @media(max-width:720px){.evo-blog .evo-article__siblings .evo-current{padding:.45rem 0}}
@@ -134,4 +186,32 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .evo-article__experiment-guide>div{padding:.9rem 0;border-bottom:1px solid var(--paper-line)}
 .evo-blog .evo-article__experiment-guide>div:first-child{border-top:1px solid var(--paper-line)}
 .evo-blog .evo-article__experiment-guide dt{font-weight:700;line-height:1.6}
-.evo-blog .evo-article__experiment-guide dd{margin:.27rem 0 0;line-height:1.74;color:var(--paper-muted)}
+.evo-blog .evo-article__experiment-guide dd{margin:.27rem 0 0;line-height:1.74;color:var(--paper-muted)}/* Source-bound dated Q17 appendices; evidence is local to each question, not a dashboard. */
+
+
+.evo-blog .evo-article__followup{margin:1.15rem 0 1.3rem;border-top:1px solid var(--paper-line);padding-top:.65rem;max-width:100%}
+.evo-blog .evo-article__followup>p{max-width:80ch;line-height:1.7}
+.evo-blog .evo-article__followup>.evo-article__note{font-size:.87em}
+
+/* Narrow-width paper comparison: preserve method names; scroll the table, not the document. */
+@media (max-width: 640px) {
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] {
+    width: 650px;
+    min-width: 650px;
+    max-width: none;
+    table-layout: fixed;
+  ;min-width:0}
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:first-child {
+    width: 175px;
+    min-width: 175px;
+    max-width: 175px;
+    overflow-wrap: normal;
+    word-break: normal;
+  ;min-width:0}
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(2) { width: 150px; ;min-width:0}
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(3) { width: 135px; ;min-width:0}
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(4) { width: 190px; ;min-width:0}
+}
+@media (min-width: 641px) {
+  .evo-blog[data-evo-blog="results"] [data-seed-table-mobile-hint] { display: none; }
+}

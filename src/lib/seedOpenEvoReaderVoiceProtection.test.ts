@@ -110,7 +110,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
 
   it('keeps dense observations and confidence intervals behind the evidence disclosure', () => {
     const details = resultsQuestions.indexOf('<details class="evidence-details"');
-    const observationTable = resultsQuestions.indexOf('<table class="obs-table">');
+    const observationTable = resultsQuestions.indexOf('<ResearchPaperTable class="obs-table">');
     const transferFigure = resultsQuestions.indexOf('<figure class="transfer-figure"');
     expect(details).toBeGreaterThan(-1);
     expect(observationTable).toBeGreaterThan(details);

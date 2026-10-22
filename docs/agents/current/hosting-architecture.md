@@ -108,3 +108,20 @@ Only load or mention legacy hosting when:
 - live evidence shows unexpected provider activity.
 
 A still-required skip prefix is a silent compatibility safeguard until the external integration is disabled. It is not an ordinary release stage or completion-report item.
+
+
+### Scientific figure cloud evidence lane
+
+`cloud-figure-visual-review.yml` runs the existing full `test:ui:all` population in
+four native Playwright shards per browser (Chromium and WebKit), with one worker
+per shard, no retry and the lockfile-matched immutable browser image. This follows
+a real 30-minute monolithic timeout; it does not reduce visual or reader budgets.
+The 71-route first-screen contract case has a 600-second execution budget while
+keeping its existing content, overflow and geometry assertions.
+
+The two final `cloud-figure-{browser}` jobs require all shards to succeed, compare
+the exact union against each shard's complete unsharded canonical list, reject
+skips/retries/duplicates/missing cases, verify same-head PNG/JSON identity and
+round-trip the final artifact bytes through upload/download. Raw failure traces
+remain downloadable for three days. Artifact integrity is not a visual verdict;
+per-figure review and actual independent reader acceptance remain separate.

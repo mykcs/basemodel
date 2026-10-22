@@ -22,6 +22,10 @@ After root `AGENTS.md`, for any non-trivial task:
 
 Root [`/AGENTS.md`](../../AGENTS.md) is the unique bootstrap/invariant layer. [`../README.md`](../README.md) owns the documentation-system lifecycle and archive boundary. This file owns **navigation/task selection only**; durable rules live in their single current policy owner.
 
+## Quality standards / acceptance navigation
+
+When a task asks **what quality must be met or how its acceptance is proved**, consult [`docs/standards/README.md`](../standards/README.md) and [ACCEPTANCE_MAP](../standards/ACCEPTANCE_MAP.md). This is a short owner/check index, not a second Agent rule system or a universal pre-read. The [open gaps](../standards/OPEN_GAPS.md) route to their **existing** PR owners.
+
 ## Task bundles
 
 ### User-facing page, copy, navigation, explanation, or feature

@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
@@ -54,7 +55,8 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
       'After Bounded shared training finishes, the 112 rank128 module-compression units are independent. We tested that fact before assuming four GPUs would be faster. GPU0 reference vs GPU0/1/2/3 shards, and GPU3 reference vs mirrored GPU3/2/1/0 shards, both assembled to the same adapter SHA with elementwise tensor equality.',
     )}</p>
     <div class="ba-accel__table-wrap">
-      <table class="ba-accel__table">
+      <ResearchPaperTable class="ba-accel__table">
+<Fragment slot="caption">{t('四张卡算得一模一样，但没有更快', 'Four GPUs matched exactly, but did not run faster')}</Fragment>
         <thead><tr><th>{t('测法', 'Measurement')}</th><th>{t('结果', 'Result')}</th><th>{t('说明', 'Meaning')}</th></tr></thead>
         <tbody>
           <tr>
@@ -73,7 +75,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
             <td>{t('启动 Python / CUDA / Docker 的成本盖过了并行收益', 'Python / CUDA / Docker startup overwhelms the parallel work')}</td>
           </tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p>{t(
       '把每个 shard 的输入从完整 prior 预切成自己的 28 个 module 以后，四卡仍没有变快；换成单容器四 GPU 也只把冷启动缩短了一部分。问题不在“205 MB 输入读了四遍”这一件事上。',
@@ -94,7 +96,8 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
       <span>rank128 prior</span><b>+</b><span>rank8 current</span><b>→</b><span>136 × 136 core</span><b>→</b><span>top-128 SVD</span>
     </figure>
     <div class="ba-accel__table-wrap">
-      <table class="ba-accel__table ba-accel__table--numbers">
+      <ResearchPaperTable class="ba-accel__table ba-accel__table--numbers">
+<Fragment slot="caption">{t('Muon 给了方向感，但 SVD 不是主瓶颈', 'Muon suggested a direction, but SVD is not the main bottleneck')}</Fragment>
         <thead><tr><th>{t('GPU0 warm 路径', 'GPU0 warm path')}</th><th>{t('时间', 'Time')}</th></tr></thead>
         <tbody>
           <tr><th scope="row">{t('原始 serial compression · 112 modules', 'Original serial compression · 112 modules')}</th><td>{result.batchedSvd.serialWarm112Seconds.toFixed(3)} s</td></tr>
@@ -103,7 +106,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
           <tr><th scope="row">{t('重建并拷回 CPU', 'Reconstruction and CPU copy')}</th><td>{result.batchedSvd.reconstructSeconds.toFixed(3)} s</td></tr>
           <tr><th scope="row">{t('batched exact 总计', 'Batched exact total')}</th><td><strong>{result.batchedSvd.totalSeconds.toFixed(3)} s</strong></td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p>{t(
       `batched 版本最后所有 tensor 仍然 exact，最大绝对差是 ${result.batchedSvd.maxAbsDifference}；但总时间 ${result.batchedSvd.totalSeconds.toFixed(3)} 秒，没有打败原来的 ${result.batchedSvd.serialWarm112Seconds.toFixed(3)} 秒。真正的 batched SVD 本身只有 ${result.batchedSvd.svd112x136x136Seconds.toFixed(3)} 秒。继续把主要精力放在 SVD、Muon 或 Polar 类近似上，解决不了这条训练路径的大头。`,
@@ -117,7 +120,8 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
       'The compression smokes only measured the suffix. To see where a real Bounded update spends time, we ran two small training smokes with the frozen Qwen3-1.7B model, the same dataset, seed 1993, AdamW, and the original rank8 → rank128 path.',
     )}</p>
     <div class="ba-accel__table-wrap">
-      <table class="ba-accel__table ba-accel__table--numbers">
+      <ResearchPaperTable class="ba-accel__table ba-accel__table--numbers">
+<Fragment slot="caption">{t('真实 1.7B 路径里，时间花在训练', 'On the real 1.7B path, time goes into training')}</Fragment>
         <thead><tr><th>{t('路径', 'Path')}</th><th>{t('model load', 'model load')}</th><th>{t('训练', 'training')}</th><th>compression</th><th>{t('engine 总计', 'engine total')}</th></tr></thead>
         <tbody>
           <tr>
@@ -129,7 +133,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
             <td>{result.steadyTraining.modelLoadSeconds.toFixed(2)} s</td><td><strong>{result.steadyTraining.trainLoopSeconds.toFixed(2)} s</strong></td><td>{result.steadyTraining.compressionSeconds.toFixed(2)} s</td><td>{result.steadyTraining.engineTotalSeconds.toFixed(2)} s</td>
           </tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="ba-accel__result-line">{t(
       `steady-state 的训练 loop 是 compression 的 ${result.steadyTraining.trainToCompressionRatio.toFixed(1)}×；compression 只占 engine 时间的 ${pct(result.steadyTraining.compressionFractionOfEngineTotal)}。`,
@@ -171,14 +175,15 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
       'DeltaNet chunkwise execution works because its hidden-state recurrence can be written as generalized Householder transformations, then represented with compact WY / UT as composable matrix objects. The key is not simply that WY is fast; the recurrence first admits exact composition.',
     )}</p>
     <div class="ba-accel__table-wrap">
-      <table class="ba-accel__table">
+      <ResearchPaperTable class="ba-accel__table">
+<Fragment slot="caption">{t('FLA / WY 真正提醒我们：先证明状态可以组合', 'The real FLA / WY lesson: prove the state transition composes first')}</Fragment>
         <thead><tr><th>{t('对象', 'Object')}</th><th>{t('能否直接 composition', 'Directly composable?')}</th><th>{t('原因', 'Why')}</th></tr></thead>
         <tbody>
           <tr><th scope="row">DeltaNet / FLA</th><td><strong>{t('可以', 'Yes')}</strong></td><td>{t('recurrence 能改写成可组合的 Householder / WY 表示', 'the recurrence admits a composable Householder / WY representation')}</td></tr>
           <tr><th scope="row">{t('去掉训练与压缩的简化 Bounded', 'Simplified Bounded without training/compression')}</th><td><strong>{t('可以', 'Yes')}</strong></td><td><MathFormula latex={String.raw`M' = aM + B`} display={false} label={t('简化 Bounded 的 affine transfer', 'Affine transfer of simplified Bounded')} /> {t('本身就是 affine transfer', 'is already an affine transfer')}</td></tr>
           <tr><th scope="row">{t('现在的真实 Bounded', 'Current real Bounded')}</th><td><strong>{t('还没有', 'Not yet')}</strong></td><td>{t('下一步 gradient、AdamW moments、global clip、coefficient 和 GDR write 都依赖 incoming state', 'the next gradient, AdamW moments, global clipping, coefficient, and GDR write all depend on the incoming state')}</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p>{t(
       '因此 exact A 的研究问题不是“怎样把 SVD 再切一刀”，而是能不能找到一个 chunk object，把模型/LoRA 状态、AdamW 一二阶 moments、learned coefficient、global clipping / order 依赖、compression boundary，以及 GDR 开启时的 write-control 一起概括，并且按原顺序 exact composition。',
@@ -233,10 +238,11 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
 .ba-accel__section h2{max-width:24ch;margin:0;font-size:clamp(1.65rem,3.4vw,2.55rem);line-height:1.12;letter-spacing:-.025em}
 .ba-accel__section>p{max-width:52rem;margin:1rem 0 0;font-size:1.04rem;line-height:1.72}
 .ba-accel__section>.ba-accel__result-line{font-size:clamp(1.12rem,2.1vw,1.28rem);font-weight:720}
-.ba-accel__table-wrap{margin-top:1.35rem;overflow-x:auto}
-.ba-accel__table{width:100%;min-width:680px;border-collapse:collapse}
-.ba-accel__table th,.ba-accel__table td{padding:.78rem .72rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:1rem;line-height:1.5}
-.ba-accel__table thead th{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink);font-weight:760}.ba-accel__table tbody th{font-weight:680}.ba-accel__table--numbers td{font-variant-numeric:tabular-nums}
+.ba-accel__table-wrap{margin-top:1.35rem;overflow-x:auto;min-width:0}
+.ba-accel__table{min-width:680px}
+.ba-accel__table:not(:has(thead tr > :nth-child(4))){min-width:0;max-width:min(100%,46rem)}
+.ba-accel__table:has(thead tr > :nth-child(3)):not(:has(thead tr > :nth-child(4))){min-width:36rem;max-width:46rem}
+.ba-accel__table:has(thead tr > :nth-child(3)):not(:has(thead tr > :nth-child(4))) thead th:nth-child(2){white-space:nowrap}
 .ba-accel__equation{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;margin:1.4rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}
 .ba-accel__equation span{font-weight:720}.ba-accel__equation b{color:var(--accent-deep)}
 .ba-accel__order{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin:1.4rem 0 0;background:var(--line);border:1px solid var(--line)}
