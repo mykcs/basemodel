@@ -129,6 +129,7 @@ for(const width of [320,390,768,1440]){
             parentWidth:wrap.getBoundingClientRect().width,
             localScroll:wrap.scrollWidth-wrap.clientWidth,
             cellOverflow:Math.max(0,...cells.map(cell=>cell.scrollWidth-cell.clientWidth)),
+            overflowingCells:cells.map((cell,index)=>({index,text:cell.textContent?.trim().slice(0,110),extra:cell.scrollWidth-cell.clientWidth,client:cell.clientWidth,style:getComputedStyle(cell).overflowWrap})).filter(cell=>cell.extra>2),
             minFont:Math.min(...cells.map(cell=>parseFloat(getComputedStyle(cell).fontSize))),
             rowCount:table.querySelectorAll('tbody tr').length,
             columns:table.querySelectorAll('thead th').length,
@@ -139,7 +140,7 @@ for(const width of [320,390,768,1440]){
           expect(table.rowCount,route).toBeGreaterThanOrEqual(3);
           expect(table.width,route).toBeLessThanOrEqual(table.parentWidth+2);
           expect(table.localScroll,route).toBeLessThanOrEqual(2);
-          expect(table.cellOverflow,route).toBeLessThanOrEqual(2);
+          expect(table.cellOverflow,route+': '+JSON.stringify(table.overflowingCells)).toBeLessThanOrEqual(2);
           expect(table.minFont,route).toBeGreaterThanOrEqual(12);
         }
       }
