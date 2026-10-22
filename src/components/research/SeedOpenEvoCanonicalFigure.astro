@@ -126,4 +126,7 @@ const p = (path: string) => localePath(locale, path);
 .comparison-body figcaption{margin-top:.9rem;padding-top:.8rem;border-top:1px solid var(--line);color:var(--muted);font-size:.78rem;line-height:1.65}.comparison-body figcaption strong{color:var(--ink)}
 @media(max-width:900px){.framework-columns{grid-template-columns:1fr}.framework-columns:after{display:none}.carrier-note{grid-template-columns:1fr}}
 @media(max-width:620px){.comparison-figure{padding:.85rem;border-radius:17px}.framework-column{padding:.75rem}.carrier-note span{flex-wrap:wrap}.figure-actions a{width:100%;text-align:center}}
+
+@container article-figure (max-width:900px){.framework-columns{grid-template-columns:1fr}.framework-columns:after{display:none}.carrier-note{grid-template-columns:1fr}}
+@container article-figure (max-width:620px){.comparison-figure{padding:.85rem}.framework-column{padding:.75rem}.carrier-note span{flex-wrap:wrap}.figure-actions a{width:100%;text-align:center}}
 </style>

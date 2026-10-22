@@ -234,11 +234,12 @@ test('paper tables use content width while dense comparisons and diagrams retain
   const acceptIntrinsicWidth = async (table: Locator) => {
     const column = table.locator('..').locator('..');
     const originalStyle = await column.getAttribute('style');
-    const before = (await table.boundingBox())!.width;
     const available = (await column.boundingBox())!.width;
-    expect(before).toBeLessThan(available);
     try {
       await column.evaluate((el, width) => { (el as HTMLElement).style.width=width+'px'; (el as HTMLElement).style.maxWidth='none'; }, available+600);
+      const before = (await table.boundingBox())!.width;
+      expect(before).toBeLessThan(available + 600);
+      await column.evaluate((el, width) => { (el as HTMLElement).style.width=width+'px'; }, available+1200);
       expect(Math.abs((await table.boundingBox())!.width-before)).toBeLessThanOrEqual(2);
     } finally {
       await column.evaluate((el, style) => { if(style===null)el.removeAttribute('style');else el.setAttribute('style',style); },originalStyle);

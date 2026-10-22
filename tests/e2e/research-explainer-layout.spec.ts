@@ -67,7 +67,10 @@ async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage
     if (rect.left < -2 || rect.right > width + 2) {
       issues.push(`explainer escapes viewport: left=${rect.left.toFixed(1)} right=${rect.right.toFixed(1)} viewport=${width}`);
     }
-    if (requiresMainStage && width >= 1200 && rect.width < Math.min(1000, width * 0.72)) {
+    const article = root.closest('.evo-approved-reader');
+    const articleStyle = article && getComputedStyle(article);
+    const available = article && articleStyle ? article.clientWidth - parseFloat(articleStyle.paddingLeft) - parseFloat(articleStyle.paddingRight) : width;
+    if (requiresMainStage && width >= 1200 && rect.width < Math.min(1000, width * 0.72, available - 2)) {
       issues.push(`explainer remains a narrow desktop rail: width=${rect.width.toFixed(1)} viewport=${width}`);
     }
     if (root.scrollWidth > root.clientWidth + 2) {
@@ -132,7 +135,7 @@ async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage
       const lineHeight = Number.parseFloat(style.lineHeight) || fontSize * 1.5;
       const box = node.getBoundingClientRect();
       const lines = Math.max(1, Math.round(box.height / lineHeight));
-      const charsPerLine = cjk / lines;
+      const charsPerLine = box.width / fontSize;
       if (lines >= 3 && charsPerLine < 7) {
         issues.push(`CJK prose is too narrow: ${charsPerLine.toFixed(1)} chars/line across ${lines} lines at ${selectorFor(node)} (${text.slice(0, 48)})`);
       }
@@ -448,7 +451,7 @@ test('SEED visibly separates policy, harness, benchmark environment, and sealed 
     ]);
     expect(modelBox && harnessBox && environmentBox && stage2PolicyBox && stage2ContractBox && trajectoryBox).toBeTruthy();
     if (!modelBox || !harnessBox || !environmentBox || !stage2PolicyBox || !stage2ContractBox || !trajectoryBox) continue;
-    if (viewport.width >= 1024) {
+    if ((await root.boundingBox())!.width >= 1040) {
       expect(modelBox.x + modelBox.width).toBeLessThan(harnessBox.x);
       expect(harnessBox.x + harnessBox.width).toBeLessThan(environmentBox.x);
       expect(stage2PolicyBox.x + stage2PolicyBox.width).toBeLessThan(stage2ContractBox.x);

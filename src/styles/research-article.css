@@ -237,3 +237,6 @@ html[data-theme="dark"] .evo-approved-reader {
 .evo-approved-reader figure {margin-inline:0;}
 .evo-approved-reader > header > :is(p,div>p) {margin:12px 0;}
 @media(max-width:520px){.evo-approved-reader h3{font-size:17px;}}
+
+/* Figure layouts respond to the reading column as well as the viewport. */
+.evo-approved-reader .canonical-figure {container-type:inline-size;container-name:article-figure;}

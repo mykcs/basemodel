@@ -71,6 +71,9 @@
       opener?.focus();
     });
     canvas.addEventListener('keydown', (event) => scrollHorizontallyFromKeyboard(canvas, event));
+    document.querySelectorAll<HTMLElement>('.metric-evidence__viewport').forEach((viewport) => {
+      viewport.addEventListener('keydown', (event) => scrollHorizontallyFromKeyboard(viewport, event));
+    });
     document.querySelectorAll<HTMLImageElement>('.paper__derived-figure > img').forEach((img) => {
       const viewport = document.createElement('div');
       viewport.className = 'research-image-viewport';
