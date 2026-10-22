@@ -10,20 +10,23 @@ interface Props {
   alt: string;
   captionId: string;
   loading?: 'eager' | 'lazy';
+  widthTier?: 'single' | 'double';
+  naturalWidth?: number;
+  naturalHeight?: number;
 }
-const { id, src, alt, captionId, loading = 'lazy' } = Astro.props;
+const { id, src, alt, captionId, loading = 'lazy', widthTier = 'single', naturalWidth = 340, naturalHeight = 208 } = Astro.props;
 if(!id || !src.startsWith('/research/') || !src.endsWith('.svg') || !alt || !captionId) {
   throw new Error('PublicationPlot needs one vetted local SVG and a meaningful accessible caption');
 }
 ---
-<div class="publication-plot" data-publication-plot={id}>
+<div class:list={['publication-plot',widthTier==='double' && 'publication-plot--double']} data-publication-plot={id}>
   <img
     src={src}
     alt={alt}
     aria-describedby={captionId}
     data-pgfplot={id}
-    width="340"
-    height="208"
+    width={naturalWidth}
+    height={naturalHeight}
     loading={loading}
     decoding="async"
   />
@@ -38,6 +41,7 @@ if(!id || !src.startsWith('/research/') || !src.endsWith('.svg') || !alt || !cap
   border: 0;
   background: transparent;
 }
+.publication-plot--double { width: min(100%, 44rem); }
 .publication-plot img {
   display: block;
   width: 100%;
