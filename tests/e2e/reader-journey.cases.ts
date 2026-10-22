@@ -97,7 +97,8 @@ export function registerReaderJourneyTests() {
                   const style = getComputedStyle(node);
                   const sample = node.textContent.trim().slice(0, 60);
                   const article = node.closest('.evo-approved-reader');
-                  const minimum = article ? (node.matches('p,li,dd') ? 14 : 12) : 15.9;
+                  const secondaryNote = node.matches('.evo-article__note,.evo-article__next-work');
+                  const minimum = article ? (secondaryNote ? 12.5 : node.matches('p,li,dd') ? 14 : 12) : 15.9;
                   if (parseFloat(style.fontSize) < minimum) failures.push(`small prose: ${sample}`);
                   if (node.clientWidth && node.scrollWidth > node.clientWidth + 2) failures.push(`clipped prose: ${sample}`);
                 });

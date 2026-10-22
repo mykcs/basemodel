@@ -43,7 +43,7 @@ describe('SD-LoRA v2 publication', () => {
     expect(zhRoute).not.toContain('OpenEvoSdLoraHistorySkeleton');
     expect(enRoute).not.toContain('OpenEvoSdLoraHistorySkeleton');
     expect(contracts).toContain('Stable Reduction 的身份和它仍逐个保留历史 component');
-    expect(contracts).toContain("'.sdlora-v2__chapter'");
+    expect(contracts).toContain("'.sdlora-v2__lede'");
   });
 
   it('keeps the owner-facing plain-language conclusion visible', () => {
