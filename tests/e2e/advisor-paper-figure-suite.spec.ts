@@ -9,7 +9,16 @@ for (const width of [390,768,1440]) {
     await page.goto(result,{waitUntil:'domcontentloaded'});
     const original=page.locator('[data-report-figure="q01-horizon"]');
     await expect(original).toHaveAttribute('data-paper-figure','true');
+    const pgf=original.locator('img[data-pgfplot="q01-three-way"]');
+    await expect(pgf).toBeVisible();
+    await expect(pgf).toHaveAttribute('loading','eager');
+    await expect(pgf).toHaveAttribute('alt',/每条 11 个实测保存点/);
+    await expect(pgf).toHaveAttribute('src','/research/seed-openevo/figures/q01-three-way-pgfplots.svg');
+    const q01Detail=original.locator('[data-q01-raw-svg]');
+    await expect(q01Detail).not.toHaveAttribute('open','');
     const q01=width<=720 ? original.locator('.advisor-viz__q01-chart--phone') : original.locator('.advisor-viz__q01-chart--desktop');
+    await expect(q01).toBeHidden();
+    await q01Detail.locator('summary').click();
     await expect(q01).toBeVisible();
     await expect(q01.locator('[data-q01-phone-line], [data-q01-line]')).toHaveCount(3);
     await expect(q01.locator('.advisor-viz__q01-point')).toHaveCount(33);
