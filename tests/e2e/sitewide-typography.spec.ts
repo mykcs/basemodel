@@ -777,3 +777,134 @@ test('scientific metric SVG and source links remain available without JavaScript
     await context.close();
   }
 });
+
+
+// Historical Q17 frontier roadmap typography and scientific chart glyphs (WP-D6).
+// The historic Sept-10 investigation is not the later sealed same-task result.
+const frontierRoute='/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/';
+const frontierRoot='[data-reader-frontier]';
+const frontierRoles={
+  '.frontier-hero .eyebrow':16,
+  '.frontier-hero h2':28,
+  '.frontier-hero .lede':18,
+  '.frontier-section-kicker':16,
+  '.metric-grid article span':16,
+  '.metric-grid article strong':22,
+  '.metric-grid article p':16,
+  '.blank-card b':22,
+  '.experiment-list li>span':16,
+  '.experiment-list h3':17,
+  '.plateau-visual-head h3':20,
+  '.training-chart figcaption':16,
+  '.training-chart figcaption span':16,
+  '.plateau-source':16,
+} as const;
+type Q17ChartMeasure={width:number;height:number;labels:{text:string;size:number;family:string;weight:number;x:number;y:number;right:number;bottom:number}[]};
+type Q17Measure={roles:Record<string,{size:number;weight:number;family:string;style:string;leading:number;scroll:number;client:number;left:number;right:number;width:number}>;
+  rootLeft:number;rootRight:number;documentOverflow:number;metrics:number;placeholders:number;charts:Q17ChartMeasure[];text:string};
+async function measureQ17(page:import('@playwright/test').Page):Promise<Q17Measure>{
+  return page.evaluate((selectors)=>{
+    const root=document.querySelector<HTMLElement>('[data-reader-frontier]');
+    if(!root)throw Error('Historical Q17 frontier component missing');
+    const roles=Object.fromEntries(selectors.map(selector=>{
+      const el=root.querySelector<HTMLElement>(selector);
+      if(!el)throw Error('No historical reader role '+selector);
+      const s=getComputedStyle(el),r=el.getBoundingClientRect();
+      return [selector,{size:parseFloat(s.fontSize),weight:parseFloat(s.fontWeight),family:s.fontFamily,
+        style:s.fontStyle,leading:parseFloat(s.lineHeight),scroll:el.scrollWidth,client:el.clientWidth,
+        left:r.left,right:r.right,width:r.width}];
+    })) as Q17Measure['roles'];
+    const charts=[...root.querySelectorAll<SVGSVGElement>('.training-chart svg')].map(svg=>({
+      width:svg.viewBox.baseVal.width,height:svg.viewBox.baseVal.height,
+      labels:[...svg.querySelectorAll<SVGTextElement>('.chart-label')].map(el=>{
+        const css=getComputedStyle(el),rect=el.getBBox();
+        return {text:el.textContent?.trim()??'',size:parseFloat(css.fontSize),family:css.fontFamily,
+          weight:parseFloat(css.fontWeight),x:rect.x,y:rect.y,right:rect.x+rect.width,bottom:rect.y+rect.height};
+      })
+    }));
+    const r=root.getBoundingClientRect();
+    return {roles,charts,rootLeft:r.left,rootRight:r.right,
+      documentOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+      metrics:root.querySelectorAll('.metric-grid article').length,
+      placeholders:root.querySelectorAll('.blank-grid .blank-card').length,
+      text:root.textContent??''};
+  },Object.keys(frontierRoles));
+}
+function acceptQ17(m:Q17Measure,width:number){
+  expect(m.documentOverflow,'Q17 document overflow').toBeLessThanOrEqual(2);
+  expect(m.rootLeft).toBeGreaterThanOrEqual(-2);
+  expect(m.rootRight).toBeLessThanOrEqual(width+2);
+  for(const [key,min]of Object.entries(frontierRoles)){
+    const role=m.roles[key];
+    if(!role)throw Error('Missing measured Q17 role '+key);
+    expect(role.size,key+' minimum').toBeGreaterThanOrEqual(min);
+    expect(role.family,key+' standard interface family').toMatch(/Inter|PingFang|system-ui/);
+    expect(role.style,key+' regular presentation').toBe('normal');
+    expect(role.weight,key+' not heavy decorative text').toBeLessThanOrEqual(700);
+    expect(role.width,key+' visible width').toBeGreaterThan(0);
+    expect(role.scroll-role.client,key+' no clipped prose').toBeLessThanOrEqual(2);
+    expect(role.left,key+' left edge').toBeGreaterThanOrEqual(-2);
+    expect(role.right,key+' right edge').toBeLessThanOrEqual(width+2);
+  }
+  expect(m.roles['.frontier-hero h2']!.size).toBeGreaterThan(m.roles['.frontier-section-kicker']!.size);
+  expect(m.metrics,'historic four observed measures').toBe(4);
+  expect(m.placeholders,'unrun four plans must not become results').toBe(4);
+  expect(m.charts,'two original R0–R97 scientific plots').toHaveLength(2);
+  expect(m.charts[0]!.labels).toHaveLength(6);
+  expect(m.charts[1]!.labels).toHaveLength(5);
+  for(const [i,chart] of m.charts.entries()){
+    expect(chart.width).toBeGreaterThan(0);expect(chart.height).toBeGreaterThan(0);
+    for(const tick of chart.labels){
+      expect(tick.size,'tick '+tick.text+' size').toBeGreaterThanOrEqual(11.9);
+      expect(tick.family,'tick '+tick.text+' not mono').toMatch(/Inter|PingFang|system-ui/);
+      expect(tick.weight).toBeLessThanOrEqual(650);
+      expect(tick.x,'plot '+i+' left label '+tick.text).toBeGreaterThanOrEqual(-1);
+      expect(tick.y,'plot '+i+' top label '+tick.text).toBeGreaterThanOrEqual(-1);
+      expect(tick.right,'plot '+i+' right label '+tick.text).toBeLessThanOrEqual(chart.width+1);
+      expect(tick.bottom,'plot '+i+' bottom label '+tick.text).toBeLessThanOrEqual(chart.height+1);
+    }
+  }
+  for(const fact of ['111 / 122','49.90 → 63.52','25.62% → 34.38%','未运行','R70–79','SD-LoRA'])
+    expect(m.text,'unchanged historical evidence').toContain(fact);
+}
+for(const width of [390,768,1440]as const){
+  for(const theme of ['light','dark']as const){
+    test('Q17 historical roadmap and two original chart axes '+width+'/'+theme,async({page},info)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+      const response=await page.goto(frontierRoute,{waitUntil:'domcontentloaded'});
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await page.evaluate(()=>document.fonts.ready);
+      const measurement=await measureQ17(page);
+      acceptQ17(measurement,width);
+      writeFileSync(info.outputPath('q17-frontier-'+width+'-'+theme+'.json'),
+        JSON.stringify({width,theme,route:frontierRoute,head:process.env.CI_HEAD_SHA??'local',measurement},null,2));
+      await page.locator(frontierRoot+' .frontier-hero').screenshot({
+        path:info.outputPath('q17-frontier-hero-'+width+'-'+theme+'.png'),animations:'disabled',
+        style:'.site-header,.research-navigation{visibility:hidden}'});
+      await page.locator(frontierRoot+' .metric-grid').first().screenshot({
+        path:info.outputPath('q17-frontier-metrics-'+width+'-'+theme+'.png'),animations:'disabled',
+        style:'.site-header,.research-navigation{visibility:hidden}'});
+      await page.locator(frontierRoot+' .plateau-charts').screenshot({
+        path:info.outputPath('q17-frontier-charts-'+width+'-'+theme+'.png'),animations:'disabled',
+        style:'.site-header,.research-navigation{visibility:hidden}'});
+    });
+  }
+}
+test('Q17 retro 9px scientific title and 7px SVG ticks fail the SAME acceptance function',async({page})=>{
+  const width=390;
+  await page.setViewportSize({width,height:844});
+  const response=await page.goto(frontierRoute,{waitUntil:'domcontentloaded'});
+  expect(response?.status()).toBe(200);
+  acceptQ17(await measureQ17(page),width);
+  const style=await page.addStyleTag({content:
+    '.frontier-section-kicker{font:800 9px/1 monospace!important}'+
+    '.training-chart .chart-label{font:700 7px/1 monospace!important}'});
+  const wrong=await measureQ17(page);
+  expect(wrong.roles['.frontier-section-kicker']!.size).toBeLessThan(10);
+  expect(wrong.charts[0]!.labels[0]!.size).toBeLessThan(8);
+  expect(()=>acceptQ17(wrong,width)).toThrow();
+  await style.evaluate(el=>el.parentNode?.removeChild(el));
+  acceptQ17(await measureQ17(page),width);
+});
