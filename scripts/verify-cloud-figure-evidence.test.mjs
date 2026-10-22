@@ -74,9 +74,15 @@ test('real seal/aggregate/download path fails closed when a shard artifact is lo
     for(let i=0;i<4;i++) rmSync(join(raw,`part-${i+1}`,'test-results/.last-run.json'));
     run('aggregate',raw,join(root,'accepted'),env);
     const { readdirSync } = await import('node:fs');
-    const evidenceDir='shard-1/test-results';
-    const paths=readdirSync(join(root,'accepted',evidenceDir)).map(name=>`${evidenceDir}/${name}`);
-    for(const missing of paths) {
+    const collect=(dir,prefix='')=>readdirSync(join(root,'accepted',prefix),{withFileTypes:true}).flatMap(entry=>{
+      const path=join(prefix,entry.name);
+      return entry.isDirectory()?collect(rootRelative(path),path):[path];
+    });
+    const rootRelative=path=>path;
+    const paths=collect('');
+    const required=paths.filter(p=>/\/(?:q03-paper-(?:390|768|1440)-(?:light|dark)|q03-pgfplots-paper-(?:390|768|1440)-(?:light|dark)|q03-pgfplots-geometry-(?:390|768|1440)-(?:light|dark)|q01-paper-(?:390|1440)-(?:light|dark))\.png$|\/(?:q03-pgfplots-geometry-(?:390|768|1440)-(?:light|dark))\.json$/.test(p));
+    assert.equal(required.length,22);
+    for(const missing of required) {
       assert.throws(()=>verifyScientificEvidence(join(root,'accepted'),paths.filter(p=>p!==missing),sha,browser));
     }
     const geometry=paths.find(p=>p.endsWith('q03-pgfplots-geometry-390-light.json'));
