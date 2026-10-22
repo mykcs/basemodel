@@ -10,23 +10,30 @@ interface Props {
   alt: string;
   captionId: string;
   loading?: 'eager' | 'lazy';
+  widthTier?: 'single' | 'double';
+  naturalWidth?: number;
+  naturalHeight?: number;
+  mobileSrc?: string;
 }
-const { id, src, alt, captionId, loading = 'lazy' } = Astro.props;
-if(!id || !src.startsWith('/research/') || !src.endsWith('.svg') || !alt || !captionId) {
+const { id, src, alt, captionId, loading = 'lazy', widthTier = 'single', naturalWidth = 340, naturalHeight = 208, mobileSrc } = Astro.props;
+if(!id || !src.startsWith('/research/') || !src.endsWith('.svg') || !alt || !captionId || (mobileSrc && (!mobileSrc.startsWith('/research/') || !mobileSrc.endsWith('.svg')))) {
   throw new Error('PublicationPlot needs one vetted local SVG and a meaningful accessible caption');
 }
 ---
-<div class="publication-plot" data-publication-plot={id}>
-  <img
+<div class:list={['publication-plot',widthTier==='double' && 'publication-plot--double']} data-publication-plot={id}>
+  <picture>
+    {mobileSrc && <source media="(max-width: 720px)" type="image/svg+xml" srcset={mobileSrc} />}
+    <img
     src={src}
     alt={alt}
     aria-describedby={captionId}
     data-pgfplot={id}
-    width="340"
-    height="208"
+    width={naturalWidth}
+    height={naturalHeight}
     loading={loading}
     decoding="async"
-  />
+    />
+  </picture>
 </div>
 
 <style>
@@ -38,6 +45,8 @@ if(!id || !src.startsWith('/research/') || !src.endsWith('.svg') || !alt || !cap
   border: 0;
   background: transparent;
 }
+.publication-plot--double { width: min(100%, 44rem); }
+.publication-plot picture { display: block; width: 100%; }
 .publication-plot img {
   display: block;
   width: 100%;

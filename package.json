@@ -45,7 +45,7 @@
     "audit:v2:adversarial": "tsx scripts/audit-v2-adversarial.ts",
     "verify:deploy": "npm run lint && npm run verify:gates:negative && npm run check && npm run audit:css && npm run validate && npm run audit:semantic && npm run audit:claims && npm run audit:freshness && npm test && npm run audit:v2 && npm run audit:v2:adversarial && npm run audit:hardening && npm run audit:copy:strict && npm run audit:reader-contracts",
     "verify:v2": "npm run check && npm run audit:css && npm run validate && npm run audit && npm test && npm run build && npm run test:e2e && npm run audit:v2 && npm run audit:v2:adversarial && npm run audit:hardening",
-    "build": "node scripts/verify-q03-pgfplot.mjs && astro build && npm run date:normalize && npm run audit:date-format && npm run audit:headings && npm run audit:brand-links && npm run audit:math:rendered && npm run audit:human-expression:rendered && npm run audit:research-visual-scope",
+    "build": "node scripts/verify-q03-pgfplot.mjs && node scripts/verify-q01-pgfplot.mjs && astro build && npm run date:normalize && npm run audit:date-format && npm run audit:headings && npm run audit:brand-links && npm run audit:math:rendered && npm run audit:human-expression:rendered && npm run audit:research-visual-scope",
     "audit:research-visual-scope": "node scripts/audit-sitewide-research-figure-widths.mjs",
     "verify:payload": "node scripts/assert-payload-budget.mjs",
     "build:cloudflare": "node scripts/build-cloudflare.mjs",

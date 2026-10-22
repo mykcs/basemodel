@@ -17,11 +17,17 @@ for (const { width, theme } of [
     const fig=q01.locator('[data-report-figure="q01-horizon"]');
     await expect(fig.locator('[data-q01-axis-scope]')).toBeVisible();
     await expect(fig.locator('[data-q01-axis-scope]')).toContainText('横轴数字相同，不代表实际更新次数或计算成本相同');
+    const paper=fig.locator('img[data-pgfplot="q01-three-way"]');
+    await expect(paper).toBeVisible();
+    await expect(paper).toHaveAttribute('alt',/横轴刻度相同不代表同等实际更新次数/);
+    await expect(fig.locator('[data-q01-line]')).toHaveCount(3);
+    const original=fig.locator('[data-q01-raw-svg]');
+    await expect(original).not.toHaveAttribute('open','');
+    await original.locator('summary').click();
     const svg=fig.locator(width<=720?'.advisor-viz__q01-chart--phone':'.advisor-viz__q01-chart--desktop');
     await expect(svg).toBeVisible();
     await expect(svg.locator('.advisor-viz__q01-axis-label').last()).toContainText('训练进度');
     await expect(svg.locator('.advisor-viz__q01-axis-label').last()).not.toContainText('轮次 / 更新数');
-    await expect(fig.locator('[data-q01-line]')).toHaveCount(3);
     const capacity=page.locator('#capacity');
     await expect(capacity.locator('h4').first()).toContainText('训练末尾八轮的容量筛选与配对统计');
     await expect(capacity).toContainText('保存历史更新的 LoRA 参数文件');
