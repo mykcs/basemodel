@@ -90,6 +90,23 @@ const nextActions = [
     </div>
   </section>
 
+  <section class="home-section home-challenges" aria-labelledby="challenges-title">
+    <div class="home-section__heading">
+      <span>{t('近期复盘', 'Recent reflection')}</span>
+      <div>
+        <h2 id="challenges-title">{t('最近遇到的问题', 'Recent challenges')}</h2>
+        <p>{t('资源、技术、学习方法和沟通上确实遇到困难。这里说清楚发生了什么、我们仍在做什么，以及下一步如何改进。', 'A candid account of resource, technical, learning, and communication challenges—and what we are doing next.')}</p>
+      </div>
+    </div>
+    <a class="challenges-entry" href="/research/seed-openevo/recent-challenges/">
+      <div>
+        <strong>{t('读一份诚实的阶段性复盘', 'Read the research reflection')}</strong>
+        <p>{t('包括服务器与 Codex 执行问题、Agent 学习、AI 科研方法、汇报和时间安排，以及面对追问时的具体回应。', 'Includes server/Codex execution, learning Agent methods, research workflows, reporting expectations, and practical answers to questions.')}</p>
+      </div>
+      <span aria-hidden="true">→</span>
+    </a>
+  </section>
+
   <section class="home-section home-journey" aria-labelledby="journey-title">
     <div class="home-section__heading">
       <span>{t('研究路径', 'Research path')}</span>
@@ -161,6 +178,12 @@ const nextActions = [
   .answer-row h3 { margin: 0; font-size: clamp(1.08rem, 2vw, 1.38rem); line-height: 1.32; }
   .answer-row p { max-width: 66ch; margin: .55rem 0 0; color: var(--muted); line-height: 1.65; }
   .answer-row a { display: inline-block; margin-top: .7rem; font-size: .82rem; font-weight: 750; text-underline-offset: .22em; }
+
+  .challenges-entry { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1.4rem 1.5rem; border:1px solid var(--line); border-radius:var(--radius-panel); color:inherit; text-decoration:none; transition:border-color 140ms ease; }
+  .challenges-entry:hover, .challenges-entry:focus-visible { border-color:var(--accent-deep); }
+  .challenges-entry strong { font-size:1.08rem; }
+  .challenges-entry p { margin:.4rem 0 0; max-width:64ch; color:var(--muted); font-size:.88rem; line-height:1.6; }
+  .challenges-entry > span { color:var(--accent-deep); font-size:1.35rem; }
 
   .journey-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
   .journey-list li { border-bottom: 1px solid var(--line); }
