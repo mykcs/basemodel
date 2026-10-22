@@ -52,7 +52,7 @@ for (const {width,theme} of [
     }
     const fig=page.locator('#response-q01 [data-report-figure="q01-horizon"]');
     await expect(fig).not.toContainText('实用平台');
-    const details=fig.locator('details');
+    const details=fig.locator('.advisor-viz__details');
     await details.locator('summary').click();
     await expect(details).toContainText('2 分');
     await expect(details).toContainText('64 道题');
