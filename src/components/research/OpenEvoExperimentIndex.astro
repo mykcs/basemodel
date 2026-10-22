@@ -1,4 +1,5 @@
 ---
+import "../../styles/research-article.css";
 import { localePath, type Locale } from '../../i18n';
 import { OPEN_EVO_ADVISOR_MEETING } from '../../data/openEvoAdvisorMeeting';
 import ExternalBrandMark from '../common/ExternalBrandMark';
@@ -38,7 +39,7 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
 };
 ---
 
-<main class="experiment-index" data-ui-audit="layout" data-testid="experiment-first-study-index">
+<main class="experiment-index evo-approved-reader evo-reading-overview" data-ui-audit="layout" data-testid="experiment-first-study-index">
   <header class="study-hero">
     <h1>{zh ? 'OpenEVO × WebShop：七次实验的研究演进' : 'OpenEVO × WebShop: seven experiments in one research progression'}</h1>
     <p class="study-hero__lede">{zh
@@ -125,10 +126,10 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
 </main>
 
 <style>
-  .experiment-index{width:min(960px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--color-text)}
-  .study-hero{padding:2.7rem 0 1.8rem;border-bottom:1px solid var(--color-border)}
-  .study-hero h1{max-width:20ch;margin:0;font-size:clamp(2.35rem,5.4vw,4.25rem);line-height:1.02;letter-spacing:-.05em}
-  .study-hero__lede{max-width:44rem;margin:1.2rem 0 0;font-size:clamp(1.05rem,2vw,1.3rem);line-height:1.7;color:var(--color-text-muted)}
+  .experiment-index{color:var(--color-text)}
+  .study-hero{padding:0 0 1.4rem;border-bottom:1px solid var(--color-border)}
+  .study-hero h1{max-width:var(--article-title-measure, 20ch);margin:0;font-size:var(--article-title-size, clamp(2.35rem,5.4vw,4.25rem));line-height:var(--article-title-leading, 1.02);letter-spacing:var(--article-title-spacing, -.05em)}
+  .study-hero__lede{max-width:44rem;margin:1.2rem 0 0;font-size:var(--article-body-size, clamp(1.05rem,2vw,1.3rem));line-height:var(--article-body-leading, 1.7);color:var(--color-text-muted)}
   .study-hero__mobile-thread{display:none}
   .experiment-tree{list-style:none;margin:0;padding:0;counter-reset:none}
   .experiment-node{display:grid;grid-template-columns:4.25rem minmax(0,1fr);gap:1.1rem;padding:2rem 0;border-bottom:1px solid var(--color-border)}
@@ -137,7 +138,7 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
   .experiment-node:last-child .experiment-node__rail::after{display:none}
   .experiment-node__rail span{position:relative;z-index:1;display:grid;place-items:center;width:2.7rem;height:2.7rem;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);font:800 .86rem/1 var(--font-mono)}
   .experiment-node article{min-width:0}
-  .meeting-node h2{margin:0;font-size:clamp(1.35rem,2.6vw,2rem);line-height:1.2;letter-spacing:-.025em}
+  .meeting-node h2{margin:0;font-size:var(--article-section-size, clamp(1.35rem,2.6vw,2rem));line-height:1.2;letter-spacing:-.025em}
   .meeting-node time{display:block;margin-top:.5rem;color:var(--color-text-muted);font-size:.85rem}
   .meeting-node details{margin-top:.8rem}
   .meeting-node summary{cursor:pointer;font-weight:650}
@@ -149,11 +150,11 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
   .meeting-node .meeting-next{font-weight:650}
   summary:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px}
   .experiment-node__main{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;color:var(--color-text);text-decoration:none}
-  .experiment-node__main strong{font-size:clamp(1.35rem,2.6vw,2rem);line-height:1.2;letter-spacing:-.025em}
+  .experiment-node__main strong{font-size:var(--article-section-size,clamp(1.35rem,2.6vw,2rem));line-height:1.2;letter-spacing:-.025em}
   .experiment-node__main>span{font-size:1.35rem;color:var(--color-text-muted)}
-  .experiment-node p{max-width:48rem;margin:.65rem 0 0;line-height:1.7;color:var(--color-text-muted)}
+  .experiment-node p{max-width:48rem;margin:.65rem 0 0;line-height:var(--article-body-leading, 1.7);color:var(--color-text-muted)}
   .experiment-node__progression{max-width:50rem;margin:.9rem 0 0;border-top:1px solid var(--color-border)}
-  .experiment-node__progression p{display:grid;grid-template-columns:7.2rem minmax(0,1fr);gap:.85rem;margin:0;padding:.58rem 0;border-bottom:1px solid var(--color-border);line-height:1.6}
+  .experiment-node__progression p{display:grid;grid-template-columns:7.2rem minmax(0,1fr);gap:.85rem;margin:0;padding:.58rem 0;border-bottom:1px solid var(--color-border);line-height:var(--article-body-leading, 1.6)}
   .experiment-node__progression strong{font-size:.84rem;line-height:1.45;color:var(--color-text);letter-spacing:.01em}
   .experiment-node__progression span{color:var(--color-text-muted)}
   .experiment-node__progression [data-progression-step="next"] span{color:var(--color-text);font-weight:650}
@@ -172,10 +173,10 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
   .secondary-routes a{color:var(--color-text-muted);text-underline-offset:.22em}
   a:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px}
   @media(max-width:640px){
-    .experiment-index{width:calc(100% - 1.25rem)}
+    .experiment-index{}
     .study-hero{padding:1.25rem 0 .85rem}
-    .study-hero h1{font-size:2.15rem;line-height:1.02}
-    .study-hero__lede{margin-top:.7rem;font-size:.96rem;line-height:1.45}
+    .study-hero h1{font-size:var(--article-title-size, 2.15rem);line-height:var(--article-title-leading, 1.02)}
+    .study-hero__lede{margin-top:.7rem;font-size:var(--article-body-size, .96rem);line-height:var(--article-body-leading, 1.45)}
     .study-hero__mobile-thread{display:block;margin:.5rem 0 0;font-size:.72rem;line-height:1.35;color:var(--color-text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .experiment-node{grid-template-columns:2.35rem minmax(0,1fr);gap:.6rem;padding:.36rem 0}
     .experiment-node__rail{justify-content:flex-start}
@@ -183,7 +184,7 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
     .experiment-node__rail::after{left:1.05rem;top:2.05rem;bottom:-.62rem}
     .experiment-node__main strong{font-size:1.12rem;line-height:1.15}
     .meeting-node{padding:.3rem 0}
-    .meeting-node h2{font-size:1.12rem;line-height:1.15}
+    .meeting-node h2{font-size:var(--article-section-size, 1.12rem);line-height:1.15}
     .meeting-node time,.meeting-node>article>p{display:none}
     .meeting-node details{margin-top:.2rem}
     .experiment-node__progression,.experiment-node__relation,.experiment-children{display:none}

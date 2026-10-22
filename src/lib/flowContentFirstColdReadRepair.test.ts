@@ -42,7 +42,7 @@ describe('Flow content-first cold-read repair', () => {
     expect(hub).toContain('class="object-map__fact"');
     expect(hub).not.toContain("Qwen2.5-3B-Instruct', body:t('固定同一版模型参数（checkpoint，也就是模型参数快照）、数值精度和运行设置。','Pin the same model-parameter snapshot (checkpoint), numerical precision, and runtime settings.'), href:");
      expect(hub).toContain('aria-labelledby="research-objects-title"');
-    expect(hub).toContain('<strong id="research-objects-title">');
+    expect(hub).toContain('<h2 id="research-objects-title">');
     expect(hub).not.toContain("<h2>{t('研究对象', 'Research objects')}</h2>");
   });
 

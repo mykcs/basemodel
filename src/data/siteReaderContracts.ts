@@ -47,7 +47,7 @@ export const SITE_READER_CONTRACTS = [
   c('papers-index', '/papers/', '/papers/', 'choice', '找到与实验问题相关的论文', '先知道论文目录覆盖什么研究证据', '论文报道与本地复现不是同一证据层', '开始查找论文', '.papers-entry .button-primary', { maxInteractive: 1, maxHeadings: 1, maxTextChars: 400 }),
   c('paper-detail', '/papers/[id]/', '/papers/metagpt/', 'reference', '理解一篇论文做了什么以及本项目能复现什么', '先认出论文主张、方法和本项目关系', '论文原始主张与本地验证边界', '检查模型角色、设置或复现路径'),
   c('guide', '/guide/', '/guide/', 'choice', '找到适合自己的复现入口', '先理解 Agent 轨迹与 SEED / OpenEvo 的关系，再选择继续学习或直接看结果', '不同复现等级不能混写', '进入 Agent 流程或 WebShop 结果', '.guide-primary .button-primary', { maxInteractive: 2, maxHeadings: 1, maxTextChars: 480 }),
-  c('guide-today', '/guide/today/', '/guide/today/', 'operational', '完成当天需要执行的实验准备或运行步骤', '先看到现在该做什么和什么不能做', '当前授权与安全边界', '执行下一个明确步骤'),
+  c('guide-today', '/guide/today/', '/guide/today/', 'reference', '查阅历史四卡复现材料并找到当前实验指南', '先看到2026-08-12历史日期和不再代表当前环境的边界', '历史运行记录不能成为新的实验授权；当前状态需要回到实际科学仓库', '打开历史preflight或当前复现指南'),
   c('landscape', '/landscape/', '/landscape/', 'choice', '在模型与研究版图中找到相关对象', '先知道这张图按什么维度组织信息', '目录关系不等于能力排序', '进入模型关系总览', '.landscape-entry .button-primary', { maxInteractive: 1, maxHeadings: 1, maxTextChars: 400 }),
   c('methodology', '/methodology/', '/methodology/', 'reference', '理解站点如何区分事实、推断和未知', '先认出证据等级和比较边界', '未知必须保持未知', '按方法规则返回具体研究页面'),
   c('workspace', '/workspace/', '/workspace/', 'operational', '把模型、资源和实验约束组合成可执行决策', '先明确研究目标、模型角色、资源限制和开始入口', '约束与证据不能被自动补猜', '开始填写实验条件', '.workspace-primary .button-primary', { maxInteractive: 1, maxHeadings: 1, maxTextChars: 420 }),

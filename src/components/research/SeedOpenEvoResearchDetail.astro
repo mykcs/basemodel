@@ -44,7 +44,7 @@ const copy: Record<DetailPage, { title: string; lede: string }> = {
 
 const current = copy[page];
 ---
-<div class:list={['plain-detail', { 'evo-approved-reader': page !== 'results', 'plain-detail--results': page === 'results' }]} data-locale={locale}>
+<div class:list={['plain-detail', { 'evo-approved-reader': true, 'evo-reading-overview': page === 'results', 'plain-detail--results': page === 'results' }]} data-locale={locale}>
   {page !== 'results' && (
     <header class="plain-detail__header">
       <h1>{current.title}</h1>
@@ -57,8 +57,8 @@ const current = copy[page];
 </div>
 
 <style>
-  .plain-detail--results{width:min(1160px,calc(100% - 2rem));margin:1rem auto 4rem}
-  @media(max-width:720px){.plain-detail--results{width:min(100% - 1rem,1160px)}}
+
+  @media(max-width:720px){}
   .plain-detail__header{max-width:900px;padding:clamp(1.6rem,4vw,3.2rem) 0 1.3rem}
   .plain-detail__header p{margin:0;color:var(--muted)}
   .plain-detail__interactive{margin:0 0 2.6rem}

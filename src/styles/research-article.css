@@ -20,6 +20,8 @@ html[data-theme="dark"]:has(.evo-approved-reader) {
 .evo-approved-reader {
   --article-title-size: 28px;
   --article-title-leading: 1.32;
+  --article-title-spacing: -.023em;
+  --article-title-measure: none;
   --article-title-font: system-ui,-apple-system,"Segoe UI","PingFang SC",sans-serif;
   --article-body-size: 14px;
   --article-body-leading: 1.8;
@@ -240,3 +242,32 @@ html[data-theme="dark"] .evo-approved-reader {
 
 /* Figure layouts respond to the reading column as well as the viewport. */
 .evo-approved-reader .canonical-figure {container-type:inline-size;container-name:article-figure;}
+
+/* The chapter number is part of its heading, on the left at the same reading size. */
+.evo-approved-reader .evo-article__heading-number {
+  display:inline;
+  margin-inline-end:.35em;
+  font:inherit;
+  font-variant-numeric:tabular-nums;
+  color:inherit;
+  white-space:nowrap;
+}
+/* Entries and operational overviews share the paper grammar with room for their controls. */
+.evo-approved-reader.evo-reading-overview {
+  --article-section-size:21px;
+  --article-intro-columns:minmax(0,1fr);
+  --article-prose-measure:none;
+  --article-subsection-size:18px;
+  container-type:inline-size;
+  container-name:reading-overview;
+  width:min(960px,calc(100% - 24px));
+  max-width:960px;
+  margin:28px auto 70px;
+  padding:42px 48px 60px;
+}
+.evo-reading-overview.evo-paper-record {display:block;}
+.evo-paper-record > article,.evo-paper-record > aside {min-width:0;}
+.evo-paper-record > aside {position:static;margin-top:28px;padding-top:24px;padding-left:0;border-left:0;border-top:1px solid var(--paper-line);}
+.evo-reading-overview > :is(header,.mission-hero) {min-height:0;}
+@media(max-width:820px){.evo-approved-reader.evo-reading-overview {padding:30px clamp(20px,4vw,36px);margin:16px auto 48px;}}
+@media(max-width:520px){.evo-approved-reader.evo-reading-overview {padding:22px 14px 38px;}}

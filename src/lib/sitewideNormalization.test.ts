@@ -95,7 +95,7 @@ describe('sitewide normalization first repair batch', () => {
   it('removes only the redundant SD-LoRA overview eyebrow and preserves child sequence metadata', () => {
     expect(sdLoraHistory).not.toContain('SD-LoRA 专题总览');
     expect(sdLoraHistory).not.toContain('SD-LoRA SERIES OVERVIEW');
-    expect(sdLoraHistory).toContain('!overview && <p class="series-page__eyebrow">');
+    expect(sdLoraHistory).toContain('!overview && <span class="evo-article__heading-number" aria-hidden="true">');
     expect(sdLoraHistory).toContain('`${item!.number} / 07`');
   });
 
