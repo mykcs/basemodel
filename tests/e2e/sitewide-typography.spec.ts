@@ -875,6 +875,13 @@ for(const width of [390,768,1440]as const){
       const response=await page.goto(frontierRoute,{waitUntil:'domcontentloaded'});
       expect(response?.status()).toBe(200);
       await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      // This historical component is intentionally mounted beneath a closed
+      // native details. A reader must explicitly reveal it before visual review.
+      const historical=page.locator('.q17-roadmap-depth > details');
+      await expect(historical).not.toHaveAttribute('open','');
+      await historical.locator(':scope > summary').click();
+      await expect(historical).toHaveAttribute('open','');
+      await expect(page.locator(frontierRoot)).toBeVisible();
       await page.evaluate(()=>document.fonts.ready);
       const measurement=await measureQ17(page);
       acceptQ17(measurement,width);
@@ -897,6 +904,10 @@ test('Q17 retro 9px scientific title and 7px SVG ticks fail the SAME acceptance 
   await page.setViewportSize({width,height:844});
   const response=await page.goto(frontierRoute,{waitUntil:'domcontentloaded'});
   expect(response?.status()).toBe(200);
+  const historical=page.locator('.q17-roadmap-depth > details');
+  await historical.locator(':scope > summary').click();
+  await expect(historical).toHaveAttribute('open','');
+  await expect(page.locator(frontierRoot)).toBeVisible();
   acceptQ17(await measureQ17(page),width);
   const style=await page.addStyleTag({content:
     '.frontier-section-kicker{font:800 9px/1 monospace!important}'+
