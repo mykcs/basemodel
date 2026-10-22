@@ -10,6 +10,10 @@ Status: **The SEED × OpenEvo Results route is aligned to the closed Track A pai
 
 This file is a short current-state router. Detailed policy belongs under `docs/agents/current/`; historical rationale belongs under `docs/agents/history/`.
 
+## 2026-10-22 Q04 单轮 GPU 资源画像
+
+第三篇「我们的回应实验」Q04 新增一幅**实验为单位**、非 GPU0–3 设备列表的显存时间轴：`src/components/research/Q04GpuResourceTimeline.astro`；资料 owner 为 `src/data/research-evidence/advisor-q04-gpu-round140-20261022.ts`。2026-10-22 现场只读核查的 Cell1/rank128/round140 单轮历时 34分32秒，只有 2 MiB 与 4,586 MiB 两次 NVML 全卡快照和 PyTorch 更新阶段 6,136,238,080 bytes 的已分配峰值。无连续 NVML 采样，不能推导全轮真实峰值、GPU 利用率或 GPU·小时；界面「完整曲线示意」明确不是实测。调度 12/24/4 GiB 是预算门槛，不是观测值。源码、静态构建、单测与交互回归由任务 PR 的 exact HEAD 证明；上线状态以独立 CI / Vercel / Production 收据为准。原始现场日志未随公开网页发布，PR #631 只提供 Q04 实验背景，不能当作这一轮资源测量的公开原始证据。
+
 ## 2026-10-22 阅读风格扩展与章节编号
 
 续接已合入的 #932：19 个研究入口／指南固定路由及21个论文详情页接入共享阅读层，功能入口采用960px内容框；原44篇文章保留750.4px样板。章节数字移入原h2左侧，与标题同字号同行，移除独立小号数字眉题。范围与静态数据由 technicalArticleRoutes.ts 和原内容 owner 维护；本轮不更改实验、部署、模型目录或工作台结构。发布状态以本轮候选精确提交的CI/Vercel收据为准。
