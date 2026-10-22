@@ -559,3 +559,112 @@ test('stage2 historical typography rejects former heavy mono statuses and tiny e
   acceptHistoric7BType(await measureHistoric7BType(page),390);
 });
 
+
+
+// Capability lobby real-route typography gate (WP-D2).
+// The scoped source inventory alone cannot prove normal rendered fonts, visibility
+// or the absence of narrow-page clipping. This suite is wired to Public PR CI.
+const capabilityLobbyRoute='/research/seed-openevo/study/capability-exploration/';
+const lobbyRoot='[data-testid="openevo-capability-map-lobby"]';
+const lobbyRoles={
+  '.map-lobby__latest-evidence-meta':16,
+  '.map-lobby__latest-evidence strong':20,
+  '.map-lobby__latest-evidence>a':16,
+  '.map-lobby__latest-evidence p:not(.map-lobby__latest-evidence-meta)':16,
+  '.map-lobby__terms>summary':16,
+  '.map-lobby__terms dt':16,
+  '.map-lobby__terms dd':16,
+  '.map-lobby__current-ablation small':16,
+  '.map-lobby__current-ablation strong':16.9,
+  '.map-lobby__current-ablation p':16,
+  '.map-lobby__current-ablation>a':16,
+  '.map-lobby__deep-links small':16,
+  '.map-lobby__deep-links strong':16,
+  '.map-lobby__deep-links span':16,
+  '.map-lobby__archive-main':16,
+  '.map-lobby__archive nav a':16,
+} as const;
+type LobbyReading={
+  roles:Record<string,{size:number;family:string;weight:number;style:string;width:number;overflow:number;left:number;right:number}>;
+  documentOverflow:number;text:string;
+};
+async function measureLobby(page:import('@playwright/test').Page):Promise<LobbyReading>{
+  return page.evaluate((selectors)=>{
+    const root=document.querySelector<HTMLElement>('[data-testid="openevo-capability-map-lobby"]');
+    if(!root)throw Error('Real research entrance is missing');
+    const roles=Object.fromEntries(selectors.map(selector=>{
+      const el=root.querySelector<HTMLElement>(selector);
+      if(!el)throw Error('Missing research role: '+selector);
+      const s=getComputedStyle(el),r=el.getBoundingClientRect();
+      return [selector,{size:parseFloat(s.fontSize),family:s.fontFamily,weight:parseFloat(s.fontWeight),
+        style:s.fontStyle,width:r.width,overflow:el.scrollWidth-el.clientWidth,left:r.left,right:r.right}];
+    })) as LobbyReading['roles'];
+    return {roles,documentOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+      text:root.textContent??''};
+  },Object.keys(lobbyRoles));
+}
+function acceptLobby(m:LobbyReading,width:number){
+  expect(m.documentOverflow,'document-level horizontal overflow').toBeLessThanOrEqual(2);
+  for(const [selector,minimum] of Object.entries(lobbyRoles)){
+    const r=m.roles[selector];
+    if(!r)throw Error('Unmeasured research role: '+selector);
+    expect(r.size,selector+' min visible size').toBeGreaterThanOrEqual(minimum);
+    expect(r.family,selector+' interface font').toMatch(/Inter|PingFang|system-ui/);
+    expect(r.style,selector+' normal text').toBe('normal');
+    expect(r.weight,selector+' non-decorative weight').toBeLessThanOrEqual(700);
+    expect(r.width,selector+' visible').toBeGreaterThan(0);
+    expect(r.overflow,selector+' clipped').toBeLessThanOrEqual(2);
+    expect(r.left,selector+' left edge').toBeGreaterThanOrEqual(-2);
+    expect(r.right,selector+' right edge').toBeLessThanOrEqual(width+2);
+  }
+  for(const fact of ['Gated-Delta SD-LoRA','Vanilla 0.7051','GDR 0.7407','173 / 512','248 / 512','rank128'])
+    expect(m.text,'frozen scientific fact').toContain(fact);
+}
+async function revealLobbyDetails(page:import('@playwright/test').Page){
+  const root=page.locator(lobbyRoot);
+  await root.locator('.map-lobby__terms>summary').click();
+  for(const kind of ['method','history']){
+    const detail=root.locator('[data-research-depth="'+kind+'"]');
+    await detail.locator('summary').first().click();
+    await expect(detail).toHaveAttribute('open','');
+  }
+}
+for(const width of [390,768,1440] as const){
+  for(const theme of ['light','dark'] as const){
+    test('capability research entrance real typography '+width+'/'+theme,async({page},info)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+      const response=await page.goto(capabilityLobbyRoute,{waitUntil:'domcontentloaded'});
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await expect(page.locator(lobbyRoot)).toBeVisible();
+      await page.evaluate(()=>document.fonts.ready);
+      await revealLobbyDetails(page);
+      const good=await measureLobby(page);
+      acceptLobby(good,width);
+      writeFileSync(info.outputPath('capability-lobby-'+width+'-'+theme+'.json'),
+        JSON.stringify({sourceIdentity,width,theme,route:capabilityLobbyRoute,measurement:good},null,2));
+      await page.locator(lobbyRoot+' .map-lobby__latest-evidence').first().screenshot({
+        path:info.outputPath('capability-latest-'+width+'-'+theme+'.png'),animations:'disabled'});
+      await page.locator(lobbyRoot+' .map-lobby__current-ablation').screenshot({
+        path:info.outputPath('capability-ablation-'+width+'-'+theme+'.png'),animations:'disabled'});
+    });
+  }
+}
+test('capability lobby restores 9px status and terminology defects only to be rejected',async({page})=>{
+  const width=390;
+  await page.setViewportSize({width,height:844});
+  const response=await page.goto(capabilityLobbyRoute,{waitUntil:'domcontentloaded'});
+  expect(response?.status()).toBe(200);
+  await revealLobbyDetails(page);
+  acceptLobby(await measureLobby(page),width);
+  const poison=await page.addStyleTag({content:
+    '[data-testid="openevo-capability-map-lobby"] .map-lobby__current-ablation small{font:800 9px/1.2 monospace!important}'+
+    '[data-testid="openevo-capability-map-lobby"] .map-lobby__terms>summary{font-size:9px!important}'});
+  const broken=await measureLobby(page);
+  expect(broken.roles['.map-lobby__current-ablation small']!.size).toBeLessThan(10);
+  expect(broken.roles['.map-lobby__terms>summary']!.size).toBeLessThan(10);
+  expect(()=>acceptLobby(broken,width)).toThrow();
+  await poison.evaluate(el=>el.remove());
+  acceptLobby(await measureLobby(page),width);
+});
