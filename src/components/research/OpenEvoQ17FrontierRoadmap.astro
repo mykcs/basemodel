@@ -1,6 +1,7 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
+import NativeSvgChartReader from './NativeSvgChartReader.astro';
 import { OPEN_EVO_DIRECT_APPLY_R97_DYNAMICS } from '../../data/openEvoDirectApplyHistoricalR97';
 
 interface Props { locale: Locale }
@@ -70,6 +71,7 @@ const plateauCandidateRounds = plateauDynamics.loss.map((point) => point.round);
       <div class="plateau-charts">
         <figure class="training-chart score-chart">
           <figcaption>{t('每轮 WebShop Score', 'WebShop Score by round')} <span>{t('细线=每轮；粗线=12轮移动平均；底部短线=SD-LoRA 更新', 'thin=each round; thick=12-round moving average; bottom ticks=SD-LoRA updates')}</span></figcaption>
+          <NativeSvgChartReader id="q17-frontier-score-native" label={t('Q17 历史每轮 Score', 'Q17 historical Score')} nativeWidth={700}>
           <svg viewBox="0 0 700 248" role="img" aria-label={t('DirectApply 每轮 WebShop Score 与移动平均曲线', 'DirectApply WebShop Score and moving-average curve by round')}>
             <line x1="42" y1="220" x2="676" y2="220" class="chart-axis" /><line x1="42" y1="118" x2="676" y2="118" class="chart-gridline" /><line x1="42" y1="16" x2="676" y2="16" class="chart-gridline" />
             <text x="14" y="224" class="chart-label">0</text><text x="8" y="122" class="chart-label">40</text><text x="8" y="20" class="chart-label">80</text>
@@ -77,14 +79,17 @@ const plateauCandidateRounds = plateauDynamics.loss.map((point) => point.round);
             <polyline points={plateauScoreRawPoints} class="score-raw" /><polyline points={plateauScoreTrendPoints} class="score-trend" />
             {plateauCandidateRounds.map((round) => <line x1={plateauScoreX(round)} x2={plateauScoreX(round)} y1="220" y2="228" class="candidate-tick" />)}
           </svg>
+          </NativeSvgChartReader>
         </figure>
         <figure class="training-chart loss-chart">
           <figcaption>{t('SD-LoRA 训练损失', 'SD-LoRA training loss')} <span>{t('每个点=一次参数更新', 'each point=one parameter update')}</span></figcaption>
+          <NativeSvgChartReader id="q17-frontier-loss-native" label={t('Q17 历史 SD-LoRA 训练损失', 'Q17 historical SD-LoRA training loss')} nativeWidth={360}>
           <svg viewBox="0 0 360 248" role="img" aria-label={t('DirectApply SD-LoRA training loss 曲线', 'DirectApply SD-LoRA training-loss curve')}>
             <line x1="36" y1="220" x2="340" y2="220" class="chart-axis" /><line x1="36" y1="118" x2="340" y2="118" class="chart-gridline" /><line x1="36" y1="16" x2="340" y2="16" class="chart-gridline" />
             <text x="4" y="224" class="chart-label">0</text><text x="4" y="122" class="chart-label">0.55</text><text x="4" y="20" class="chart-label">1.10</text><text x="36" y="242" class="chart-label">R0</text><text x="310" y="242" class="chart-label">R97</text>
             <polyline points={plateauLossPoints} class="loss-line" />{plateauDynamics.loss.map((point) => <circle cx={plateauLossX(point.round)} cy={plateauLossY(point.loss)} r="2.4" class="loss-dot" />)}
           </svg>
+          </NativeSvgChartReader>
         </figure>
       </div>
       <p class="plateau-readout"><strong>{t('R70 后出现震荡：', 'After R70:')}</strong>{t('R70–79 / R80–89 / R90–97 的平均 Score 是 58.35 → 55.36 → 50.83。也就是说，SD-LoRA 还在训练，但能力没有稳定累积成更高分。后来的封口证据又显示 R110–119 恢复到 63.52，所以它证明的是一段“震荡平台”，不是永久卡死，也还不能证明平台由 SD-LoRA 本身造成。', 'Mean Score for R70–79 / R80–89 / R90–97 was 58.35 → 55.36 → 50.83. SD-LoRA was still training, but capability was not steadily accumulating into higher score. Later sealed evidence recovered to 63.52 at R110–119, so this is evidence of a noisy plateau, not a permanent stall, and it does not yet prove SD-LoRA itself caused the plateau.')}</p>

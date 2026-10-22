@@ -2,6 +2,7 @@
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
+import NativeSvgChartReader from './NativeSvgChartReader.astro';
 import MathFormula from '../common/MathFormula.astro';
 import { OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS } from '../../data/openEvoDirectApplyLiveDynamics';
 
@@ -124,19 +125,23 @@ const candidates = [
     <div class="q17-analysis__charts">
       <figure>
         <figcaption><strong>{t('每轮 WebShop Score', 'WebShop Score by round')}</strong><span>{t('细线=原始轮次 · 粗线=12轮移动平均', 'thin=raw rounds · thick=12-round moving average')}</span></figcaption>
+        <NativeSvgChartReader id="q17-score-native" label={t('Q17 WebShop Score', 'Q17 WebShop Score')} nativeWidth={760}>
         <svg viewBox="0 0 760 270" role="img" aria-label={t('R0 到 R159 的每轮 WebShop Score', 'WebShop Score from R0 through R159')}>
           <line x1="44" y1="238" x2="716" y2="238" class="axis"/><line x1="44" y1="128" x2="716" y2="128" class="grid"/><line x1="44" y1="18" x2="716" y2="18" class="grid"/>
           <text x="18" y="242">0</text><text x="10" y="132">42.5</text><text x="18" y="22">85</text><text x="44" y="260">R0</text><text x="365" y="260">R80</text><text x="684" y="260">R159</text>
           <polyline points={scoreRaw} class="score-raw"/><polyline points={scoreTrend} class="score-trend"/>
         </svg>
+        </NativeSvgChartReader>
       </figure>
       <figure>
         <figcaption><strong>SD-LoRA training loss</strong><span>{t('159 个真实更新点；R2 没有 candidate', '159 real update points; R2 had no candidate')}</span></figcaption>
+        <NativeSvgChartReader id="q17-loss-native" label="Q17 SD-LoRA training loss" nativeWidth={400}>
         <svg viewBox="0 0 400 270" role="img" aria-label={t('R0 到 R159 的 SD-LoRA training loss', 'SD-LoRA training loss from R0 through R159')}>
           <line x1="42" y1="238" x2="364" y2="238" class="axis"/><line x1="42" y1="128" x2="364" y2="128" class="grid"/><line x1="42" y1="18" x2="364" y2="18" class="grid"/>
           <text x="10" y="242">0</text><text x="5" y="132">0.55</text><text x="8" y="22">1.10</text><text x="42" y="260">R0</text><text x="330" y="260">R159</text>
           <polyline points={lossPoints} class="loss-line"/>{dynamics.loss.map((d) => <circle cx={lx(d.round)} cy={ly(d.loss)} r="2.1" class="loss-dot"/>)}
         </svg>
+        </NativeSvgChartReader>
       </figure>
     </div>
     <details class="q17-analysis__evidence"><summary>{t('展开训练与封存依据', 'Open training and seal evidence')}</summary><div><a href={dynamics.evidenceHref}>{t('网站封存曲线快照', 'Sealed website trajectory snapshot')}</a><a href={evidence.stage2Seal} target="_blank" rel="noreferrer"><ExternalBrandMark href={evidence.stage2Seal}/>{t('Stage2 seal @ ce942086', 'Stage2 seal @ ce942086')}</a><a href={evidence.finalAnalysis} target="_blank" rel="noreferrer"><ExternalBrandMark href={evidence.finalAnalysis}/>{t('最终分析 @ ce942086', 'Final analysis @ ce942086')}</a></div></details>

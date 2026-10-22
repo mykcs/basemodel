@@ -1,0 +1,64 @@
+{
+  "work_pr": 898,
+  "repository": "mykcs/basemodel",
+  "branch": "design/typography-catalog-workspace-20261020",
+  "stack_parent_pr": 895,
+  "stack_parent_branch": "design/sitewide-type-and-paper-figures-20261020",
+  "reviewed_candidate_parent": "391cae899a89bb881ee239376f1492f7a78af6e9",
+  "baseline_parent_before_concurrent_changes": "02950bbede0a00c704d4f004af57406e76354a75",
+  "scope": "new Q17 source-native SVG reader, live Landscape ECharts labels, own targeted browser/CI acceptance and evidence",
+  "files": [
+    {
+      "file": "src/components/research/NativeSvgChartReader.astro",
+      "decision": "SAFE_NEW_SCOPED_COMPONENT",
+      "other_open_pr_overlap": [],
+      "note": "Pure native checkbox/CSS; no scientific data, globals or client dependency"
+    },
+    {
+      "file": "src/components/research/OpenEvoQ17DirectApplyAnalysis.astro",
+      "decision": "SAFE_SCOPED_OWNER",
+      "other_open_pr_overlap": [],
+      "note": "Preserve full SVG point lists and viewBoxes"
+    },
+    {
+      "file": "src/components/research/OpenEvoQ17FrontierRoadmap.astro",
+      "decision": "SAFE_AFTER_SAME_BRANCH_RECONCILIATION",
+      "other_open_pr_overlap": [],
+      "note": "Same #898 branch added 12px/interface SVG tick label migration at cbc2bc5; preserved while adding native reader wrapper"
+    },
+    {
+      "file": "src/components/landscape/LandscapeECharts.tsx",
+      "decision": "SAFE_LOCAL_COMPONENT",
+      "other_open_pr_overlap": [],
+      "note": "Only plot legend/axis/tooltip textStyle, not model points"
+    },
+    {
+      "file": "tests/e2e/sitewide-typography.spec.ts",
+      "decision": "STACKED_DEPENDENCY_RECONCILED",
+      "other_open_pr_overlap": [895],
+      "note": "Kept same-branch Q17 historical role tests and append-only native/landscape checks; no old tests weakened"
+    },
+    {
+      "file": ".github/workflows/public-pr-ci.yml",
+      "decision": "CONCURRENT_DIFFERENT_HUNK_REQUIRES_RECHECK",
+      "other_open_pr_overlap": [814],
+      "note": "Append-only jobs conditional on #898 after existing public-ci-gate. #814 independently restructures upstream public builds; preserve and reconcile at merge. Repo invariant prohibits fourth workflow file. No Production/secret"
+    }
+  ],
+  "deferred_concurrent_components": [
+    {
+      "file": "src/components/research/SeedOpenEvoProgressBriefing.astro",
+      "decision": "CONCURRENT_PR_BLOCKER",
+      "other_open_pr_overlap": [805, 806, 818, 827],
+      "note": "8 fixed 16:9 slide figures; source changes excluded from this work package"
+    },
+    {
+      "file": "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro",
+      "decision": "CONCURRENT_PR_BLOCKER",
+      "other_open_pr_overlap": [806, 820, 827],
+      "note": "Derived evidence figures; source changes excluded from this work package"
+    }
+  ],
+  "prohibited": ["force-push", "reset", "retarget", "merge", "production-deploy", "science-value-edit", "shared-Mac-RDC"],
+  "visual_status": "NEEDS_HUMAN_REVIEW_UNTIL_EXACT_SHA_ARTIFACTS_INSPECTED"
+}

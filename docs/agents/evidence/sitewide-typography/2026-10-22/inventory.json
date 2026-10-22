@@ -1,0 +1,41 @@
+{
+  "kind": "sitewide_typography_candidate_triage",
+  "date": "2026-10-22",
+  "repository": "mykcs/basemodel",
+  "pr_number": 898,
+  "baseline_branch_parent": "02950bbede0a00c704d4f004af57406e76354a75",
+  "candidate_worktree_source_audit_dirty": true,
+  "full_exact_head_reaudit_required": true,
+  "reproduce": "npm run build && node scripts/audit-sitewide-typography.mjs --json <output-path>",
+  "rendered_snapshot": {
+    "routes": 268,
+    "figures": 73,
+    "tables": 130,
+    "independent_css_owners": 36,
+    "standalone_css_literal_size_candidates": 61,
+    "astro_literal_size_or_shorthand_candidates": 1981,
+    "scoped_selector_consumers_fully_classified": false,
+    "unclassified_zero_claim": false
+  },
+  "unresolved_surface_source_triage": {
+    "raw_hits": 58,
+    "justified_exception_geometry_timing_layout": 48,
+    "migrate_real_font_size_implemented": 1,
+    "audit_false_positive_not_a_style": 9,
+    "manual_visual_acceptance_for_exceptions_complete": false,
+    "detail": "INLINE_SURFACE_TRIAGE.md"
+  },
+  "high_priority_scoped_owners": [
+    {"owner":"src/components/research/SeedOpenEvoProgressBriefing.astro","candidates":277,"decision":"CONCURRENT_PR_BLOCKER","overlap_prs":[805,806,818,827]},
+    {"owner":"src/components/research/OpenEvoFairComparisonExplainer.astro","candidates":56,"decision":"NEEDS_CONSUMER_CLASSIFICATION"},
+    {"owner":"src/components/research/OpenEvoSuccessorReport.astro","candidates":44,"decision":"NEEDS_CONSUMER_CLASSIFICATION"},
+    {"owner":"src/components/research/OpenEvoFirstRunMap.astro","candidates":39,"decision":"NEEDS_CONSUMER_CLASSIFICATION"},
+    {"owner":"src/components/research/WebShopSeedSplitFigure.astro","candidates":39,"decision":"NEEDS_CONSUMER_CLASSIFICATION"},
+    {"owner":"src/components/research/OpenEvoQ17DirectApplyAnalysis.astro","candidates":36,"decision":"PARTIAL_NATIVE_SVG_READER_ADDED","visual_status":"PENDING_EXACT_HEAD"},
+    {"owner":"src/components/research/OpenEvoHarness2MiniStudy.astro","candidates":35,"decision":"NEEDS_CONSUMER_CLASSIFICATION"},
+    {"owner":"src/components/research/WebShopGoalGenerationFigure.astro","candidates":33,"decision":"NEEDS_CONSUMER_CLASSIFICATION"},
+    {"owner":"src/components/research/AdvisorTenEvidenceVisual.astro","candidates":30,"decision":"NEEDS_CONSUMER_CLASSIFICATION"},
+    {"owner":"src/components/research/OpenEvoExperimentAnalysisPlan.astro","candidates":30,"decision":"NEEDS_CONSUMER_CLASSIFICATION"}
+  ],
+  "next_evidence": ["exact_head_source_audit_json", "public_pr_ci_sha_bound_exit_codes", "full_webkit_four_shards", "390_768_1440_light_dark_png_review", "exact_head_vercel_review_preview_noindex"]
+}

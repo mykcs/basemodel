@@ -778,7 +778,6 @@ test('scientific metric SVG and source links remain available without JavaScript
   }
 });
 
-
 // Historical Q17 frontier roadmap typography and scientific chart glyphs (WP-D6).
 // The historic Sept-10 investigation is not the later sealed same-task result.
 const frontierRoute='/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/';
@@ -918,4 +917,180 @@ test('Q17 retro 9px scientific title and 7px SVG ticks fail the SAME acceptance 
   expect(()=>acceptQ17(wrong,width)).toThrow();
   await style.evaluate(el=>el.parentNode?.removeChild(el));
   acceptQ17(await measureQ17(page),width);
+});
+
+// The two Q17 owners use inline, source-preserving SVGs rather than an image.
+// Their original 10–12px plot labels can become ~4–7px after the 700/760px chart
+// is squeezed into a phone column. Compact previews remain visible; the same
+// scientific SVG must become legible at its native coordinate width on demand.
+const q17NativeReaders=[
+  {route:'/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/', widths:[760,400]},
+  {route:'/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/', widths:[700,360]},
+] as const;
+const readQ17Native=async (reader:import('@playwright/test').Locator)=>reader.evaluate(root=>{
+  const input=root.querySelector<HTMLInputElement>('.native-svg-reader__toggle');
+  const viewport=root.querySelector<HTMLElement>('.native-svg-reader__viewport');
+  const svg=viewport?.querySelector<SVGSVGElement>('svg');
+  const tick=svg?.querySelector<SVGTextElement>('text');
+  const hint=root.querySelector<HTMLElement>('.native-svg-reader__hint');
+  if(!input||!viewport||!svg||!tick||!hint)throw Error('Native Q17 scientific chart is missing');
+  const size=svg.getBoundingClientRect().width;
+  const intrinsic=svg.viewBox.baseVal.width;
+  return {
+    checked:input.checked,native:intrinsic,drawn:size,tickPixels:parseFloat(getComputedStyle(tick).fontSize)*size/intrinsic,
+    client:viewport.clientWidth,scroll:viewport.scrollWidth,overflow:getComputedStyle(viewport).overflowX,
+    tabindex:viewport.tabIndex,hintVisible:getComputedStyle(hint).display!=='none',
+    documentOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+    svgText:svg.textContent?.trim(),
+  };
+});
+type Q17NativeReceipt=Awaited<ReturnType<typeof readQ17Native>>;
+function acceptQ17Native(m:Q17NativeReceipt,nativeWidth:number,expanded:boolean){
+  expect(m.native,'scientific viewBox data stay unchanged').toBe(nativeWidth);
+  expect(m.documentOverflow,'no document-wide horizontal scrolling').toBeLessThanOrEqual(2);
+  expect(m.tabindex,'local chart supports keyboard scrolling').toBe(0);
+  expect(m.checked).toBe(expanded);
+  expect(m.hintVisible,'the scroll hint follows zoom state').toBe(expanded);
+  expect(m.svgText).toMatch(/R0|R159|R97/);
+  if(expanded){
+    expect(m.drawn,'render SVG at source-native width').toBeGreaterThanOrEqual(nativeWidth-1);
+    expect(m.drawn).toBeLessThanOrEqual(nativeWidth+1);
+    expect(m.tickPixels,'native 10px labels must remain physically readable').toBeGreaterThanOrEqual(9.8);
+    expect(m.overflow).toBe('auto');
+    expect(m.scroll).toBeGreaterThanOrEqual(m.client);
+  }else{
+    expect(m.drawn,'compact chart must fit its local preview column').toBeLessThanOrEqual(m.client+2);
+  }
+}
+for(const chart of q17NativeReaders){
+  for(const width of [390,768,1440] as const)for(const theme of ['light','dark'] as const){
+    test('Q17 native scientific SVG reader '+chart.route+' '+width+'/'+theme,async({page},info)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+      const response=await page.goto(chart.route,{waitUntil:'domcontentloaded'});
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await page.evaluate(()=>document.fonts.ready);
+      const readers=page.locator('[data-native-svg-reader]');
+      await expect(readers).toHaveCount(2);
+      const measurements=[];
+      for(let i=0;i<chart.widths.length;i++){
+        const nativeWidth=chart.widths[i]!;
+        const reader=readers.nth(i);
+        const toggle=reader.locator('input[type="checkbox"]');
+        const viewport=reader.locator('.native-svg-reader__viewport');
+        const hint=reader.locator('.native-svg-reader__hint');
+        await expect(hint).toBeHidden();
+        acceptQ17Native(await readQ17Native(reader),nativeWidth,false);
+        await reader.locator('label').click();
+        await expect(toggle).toBeChecked();
+        await expect(hint).toBeVisible();
+        await expect(hint).toContainText('左右滑动');
+        const expanded=await readQ17Native(reader);
+        acceptQ17Native(expanded,nativeWidth,true);
+        if(width===390 && i===0){
+          expect(expanded.scroll).toBeGreaterThan(expanded.client+30);
+          const localScroll=await viewport.evaluate(element=>{
+            element.scrollLeft=120;
+            const position=element.scrollLeft;
+            element.scrollLeft=0;
+            return position;
+          });
+          expect(localScroll).toBeGreaterThan(0);
+        }
+        measurements.push({index:i,...expanded});
+        // The complete Figure includes caption, toggle, hint, and the SVG.
+        await reader.locator('xpath=..').screenshot({
+          path:info.outputPath('q17-full-figure-'+nativeWidth+'-'+width+'-'+theme+'.png'),
+          animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}'
+        });
+        await reader.locator('label').click();
+        await expect(toggle).not.toBeChecked();
+        await expect(hint).toBeHidden();
+        acceptQ17Native(await readQ17Native(reader),nativeWidth,false);
+      }
+      await info.attach('q17-svg-reader.json',{body:Buffer.from(JSON.stringify({route:chart.route,width,theme,measurements},null,2)),contentType:'application/json'});
+      await page.evaluate(()=>window.scrollTo(0,0));
+      await page.screenshot({path:info.outputPath('q17-original-viewport-'+width+'-'+theme+'.png'),animations:'disabled'});
+    });
+  }
+}
+test('Q17 native-size readability gate rejects injected old mobile SVG squeeze',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(q17NativeReaders[0].route,{waitUntil:'domcontentloaded'});
+  const reader=page.locator('[data-native-svg-reader]').first();
+  await reader.locator('label').click();
+  acceptQ17Native(await readQ17Native(reader),760,true);
+  const injected=await page.addStyleTag({content:'.native-svg-reader__viewport svg {width:100% !important;max-width:100% !important}'});
+  const old=await readQ17Native(reader);
+  expect(old.tickPixels).toBeLessThan(7);
+  expect(()=>acceptQ17Native(old,760,true)).toThrow();
+  await injected.evaluate(node=>node.parentNode?.removeChild(node));
+  acceptQ17Native(await readQ17Native(reader),760,true);
+});
+test('Q17 native SVG zoom and local scroll work with JavaScript disabled',async({browser})=>{
+  const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
+  try{
+    const page=await context.newPage();
+    const response=await page.goto(q17NativeReaders[1].route,{waitUntil:'domcontentloaded'});
+    expect(response?.status()).toBe(200);
+    const reader=page.locator('[data-native-svg-reader]').first();
+    await expect(reader.locator('svg')).toBeVisible();
+    await reader.locator('input').focus();
+    await page.keyboard.press('Space');
+    await expect(reader.locator('input')).toBeChecked();
+    await expect(reader.locator('.native-svg-reader__hint')).toBeVisible();
+    acceptQ17Native(await readQ17Native(reader),700,true);
+    await page.keyboard.press('Space');
+    await expect(reader.locator('input')).not.toBeChecked();
+    acceptQ17Native(await readQ17Native(reader),700,false);
+  }finally{
+    await context.close();
+  }
+});
+
+// The landscape chart is ECharts/SVG, not HTML prose. A prior 11px legend was
+// unreadable on phones despite zero document overflow. Verify actual SVG text.
+const readLandscapeLabels=async(page:import('@playwright/test').Page)=>page.locator('.landscape-chart').evaluate(root=>{
+  const svg=root.querySelector('svg');
+  const nodes=[...root.querySelectorAll<SVGTextElement>('svg text')].filter(node=>node.textContent?.trim());
+  if(!svg||nodes.length<3)throw Error('Landscape ECharts labels did not render');
+  return {count:nodes.length,min:Math.min(...nodes.map(node=>parseFloat(getComputedStyle(node).fontSize))),
+    max:Math.max(...nodes.map(node=>parseFloat(getComputedStyle(node).fontSize))),
+    documentOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};
+});
+const acceptLandscapeLabels=(m:Awaited<ReturnType<typeof readLandscapeLabels>>)=>{
+  expect(m.count).toBeGreaterThanOrEqual(3);
+  expect(m.min,'ECharts axis and legend text must be readable').toBeGreaterThanOrEqual(12.9);
+  expect(m.max).toBeGreaterThanOrEqual(13.9);
+  expect(m.documentOverflow).toBeLessThanOrEqual(2);
+};
+for(const width of [390,1440] as const)for(const theme of ['light','dark'] as const){
+  test('Landscape ECharts legend and ticks '+width+'/'+theme,async({page},info)=>{
+    await page.setViewportSize({width,height:width===390?844:900});
+    await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+    const response=await page.goto('/landscape/',{waitUntil:'domcontentloaded'});
+    expect(response?.status()).toBe(200);
+    await page.getByRole('button',{name:'完整视图'}).click();
+    await expect(page.locator('.landscape-chart svg')).toBeVisible();
+    await expect.poll(async()=>page.locator('.landscape-chart svg text').count()).toBeGreaterThan(2);
+    const witness=await readLandscapeLabels(page);
+    acceptLandscapeLabels(witness);
+    await info.attach('landscape-svg-labels.json',{body:Buffer.from(JSON.stringify({width,theme,...witness},null,2)),contentType:'application/json'});
+    await page.locator('.landscape-chart-shell').screenshot({path:info.outputPath('landscape-figure-'+width+'-'+theme+'.png'),animations:'disabled',
+      style:'.site-header,.research-navigation{visibility:hidden}'});
+  });
+}
+test('Landscape label gate rejects injected 9px ECharts axis/legend text',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/landscape/',{waitUntil:'domcontentloaded'});
+  await page.getByRole('button',{name:'完整视图'}).click();
+  await expect.poll(async()=>page.locator('.landscape-chart svg text').count()).toBeGreaterThan(2);
+  acceptLandscapeLabels(await readLandscapeLabels(page));
+  const style=await page.addStyleTag({content:'.landscape-chart svg text {font-size:9px !important}'});
+  const bad=await readLandscapeLabels(page);
+  expect(bad.min).toBeLessThan(10);
+  expect(()=>acceptLandscapeLabels(bad)).toThrow();
+  await style.evaluate(node=>node.parentNode?.removeChild(node));
+  acceptLandscapeLabels(await readLandscapeLabels(page));
 });

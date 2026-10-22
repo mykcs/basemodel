@@ -44,12 +44,12 @@ export default function LandscapeECharts({ models, locale = 'zh', dimension = 'h
         animationDuration: 350,
         color: colorKeys.map((_, index) => colorForKey(colorKeys[index]!, colorBy, index)),
         grid: responsiveAxis.grid,
-        legend: { type: 'scroll', top: 0, textStyle: { color: muted, fontSize: 11 } },
+        legend: { type: 'scroll', top: 0, textStyle: { color: muted, fontSize: 14 } },
         tooltip: {
           trigger: 'item',
           backgroundColor: surface,
           borderColor: line,
-          textStyle: { color: ink },
+          textStyle: { color: ink, fontSize: 14 },
           formatter: (raw: unknown) => {
             const params = Array.isArray(raw) ? raw[0] : raw;
             const point = (params as { data?: { point?: (typeof points)[number] } }).data?.point;
@@ -59,7 +59,7 @@ export default function LandscapeECharts({ models, locale = 'zh', dimension = 'h
           },
         },
         xAxis: { type: 'time', name: locale === 'zh' ? '发布日期' : 'Release date', nameLocation: 'middle', nameGap: 30, splitNumber: responsiveAxis.splitNumber, axisLabel: responsiveAxis.axisLabel, axisLine: { lineStyle: { color: line } }, splitLine: { lineStyle: { color: line, opacity: .45 } } },
-        yAxis: { type: 'category', data: dimensionLabels, axisLabel: { color: muted }, axisLine: { lineStyle: { color: line } }, splitLine: { lineStyle: { color: line, opacity: .35 } } },
+        yAxis: { type: 'category', data: dimensionLabels, axisLabel: { color: muted, fontSize: 13 }, axisLine: { lineStyle: { color: line } }, splitLine: { lineStyle: { color: line, opacity: .35 } } },
         series: colorKeys.map((key) => ({
           name: key,
           type: 'scatter',
@@ -131,6 +131,7 @@ function landscapeAxisForWidth(width: number, locale: Locale, muted: string, lin
     splitNumber: compact ? 2 : width <= 768 ? 4 : 6,
     axisLabel: {
       color: muted,
+      fontSize: 13,
       hideOverlap: true,
       margin: compact ? 10 : 8,
       formatter: compact
