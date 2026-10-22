@@ -47,7 +47,22 @@ for(let i=0;i<3;i++)for(const actual of [plotCoords[i*2],plotCoords[i*2+1]]){
 }
 for(const name of ['Ordinary OpenEVO','Bounded','Historical beta/GDR'])
  assert.ok(tex.includes('\\addlegendentry{'+name+'}'),'missing legend '+name);
+const mobile=str(m.mobileLatexSource);
+assert.equal(sha(read(m.mobileLatexSource)),m.mobileLatexSha256);
+assert.equal(sha(read(m.mobileSvgAsset)),m.mobileSvgSha256);
+assert.match(mobile,/ymin=0,ymax=100/);
+assert.ok(mobile.includes('\\addlegendentry{Ordinary}')&&mobile.includes('\\addlegendentry{Bounded}')&&mobile.includes('\\addlegendentry{Beta/GDR}'));
+const mobilePlots=[...mobile.matchAll(/\\addplot\+\[[^\]]+\]\s*coordinates \{([^}]+)\};/g)];
+assert.equal(mobilePlots.length,6);
+for(let i=0;i<3;i++)for(const piece of [mobilePlots[i*2],mobilePlots[i*2+1]]){
+ const rows=[...piece[1].matchAll(/\((\d+),(\d+(?:\.\d+)?)\)/g)].map(p=>({round:Number(p[1]),score:Number(p[2])}));
+ assert.equal(rows.length,11);
+ rows.forEach((row,j)=>{assert.equal(row.round,groups[i][j].round);assert.ok(Math.abs(row.score-groups[i][j].score)<0.00001);});
+}
+const mobileSvg=str(m.mobileSvgAsset);
+assert.ok(mobileSvg.includes('<svg')&&mobileSvg.includes('<path')&&Buffer.byteLength(mobileSvg)<150000);
+assert.doesNotMatch(mobileSvg,/<script\b|<foreignObject\b|\bonload\s*=|\bonclick\s*=/i);
 const svg=str(m.svgAsset);
 assert.ok(svg.includes('<svg')&&svg.includes('<path')&&Buffer.byteLength(svg)<150000);
 assert.doesNotMatch(svg,/<script\b|<foreignObject\b|\bonload\s*=|\bonclick\s*=/i);
-console.log('[verify-q01-pgfplot] PASS: 33 frozen scores, distinct x-axis semantics, TeX/CSV and SVG hash parity');
+console.log('[verify-q01-pgfplot] PASS: 33 frozen scores, equivalent desktop/mobile TeX coordinates, and SVG hashes');
