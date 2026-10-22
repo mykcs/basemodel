@@ -124,7 +124,7 @@ for(const width of [390,768,1440] as const){
       await expect(plot).toHaveAttribute('alt',/A0 为 3\.71，A40 为 6\.43，A80 为 0\.69，A120 为 6\.62/);
       await expect(q03.locator('svg[role="img"],canvas')).toHaveCount(0);
       await plot.scrollIntoViewIfNeeded();
-      const imageMetrics=await plot.evaluate(async(img)=>{
+      const imageMetrics=await plot.evaluate(async(img,scores)=>{
         if(!(img instanceof HTMLImageElement))return null;
         await img.decode();
         const box=img.getBoundingClientRect();
@@ -137,10 +137,10 @@ for(const width of [390,768,1440] as const){
           left:box.left,right:box.right,
           figureLeft:outer.left,figureRight:outer.right,
           centeredBy:Math.abs((outer.left+outer.right)/2-(box.left+box.right)/2),
-          descriptive:checkpointScores.every(score=>text.includes(score)),
+          descriptive:scores.every(score=>text.includes(score)),
           externalRequests:img.currentSrc.startsWith(location.origin+'/research/'),
         };
-      });
+      },[...checkpointScores]);
       expect(imageMetrics).not.toBeNull();
       expect(imageMetrics!.loaded).toBe(true);
       expect(imageMetrics!.descriptive).toBe(true);
