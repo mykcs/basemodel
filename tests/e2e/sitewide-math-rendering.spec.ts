@@ -79,9 +79,12 @@ for (const [batchIndex, routeBatch] of mathRouteBatches.entries()) {
       const redirect = SITE_READER_CONTRACTS.find(contract => contract.sourceRoute === route)?.redirectsTo ?? primerTarget;
       if (redirect) {
         const target = new URL(redirect, page.url());
-        await page.waitForURL(url => url.pathname === target.pathname && (!target.hash || url.hash === target.hash));
+        // Commit the target URL before waiting for the document. Waiting for full
+        // load here can race a client-side replacement in Linux WebKit.
+        await page.waitForURL(url => url.pathname === target.pathname && (!target.hash || url.hash === target.hash), { waitUntil: 'commit' });
       }
-      await page.waitForLoadState('load');
+      // The math audit inspects server-rendered DOM, not image/font completion.
+      await page.waitForLoadState('domcontentloaded');
       const routeFindings = await page.evaluate(() => {
         const issues: Array<{ kind: string; detail: string }> = [];
         const mathCode = /(?:ΔW|θ|τ|λ|β|Σ|√|‖|≈|∈)/;
@@ -108,6 +111,8 @@ for (const [batchIndex, routeBatch] of mathRouteBatches.entries()) {
         return issues;
       });
       for (const finding of routeFindings) findings.push({ route, ...finding });
+    } catch (error) {
+      throw new Error(`Rendered-math route audit failed at ${route}: ${error instanceof Error ? error.message : String(error)}`, { cause: error });
     } finally {
       await page.close();
     }
