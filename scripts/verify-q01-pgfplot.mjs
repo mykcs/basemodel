@@ -34,7 +34,7 @@ const groups=m.groups.map(key=>data.filter(row=>row.key===key));
 assert.ok(groups.every(rows=>rows.length===11));
 const positions=groups[0].map(row=>row.round);
 for(const rows of groups)assert.deepEqual(rows.map(row=>row.round),positions);
-assert.deepEqual(groups.map((r,i)=>r[0].axis),['parameter_updates','completed_stage2_rounds','completed_stage2_rounds']);
+assert.deepEqual(groups.map(r=>r[0].axis),['parameter_updates','completed_stage2_rounds','completed_stage2_rounds']);
 const tex=str(m.latexSource);
 assert.match(tex,/\\usepackage\{pgfplots\}/);
 assert.match(tex,/ymin=0,ymax=100/);
