@@ -14,7 +14,18 @@ for (const width of [390,768,1440]) {
     await expect(pgf).toHaveAttribute('loading','eager');
     await expect(pgf).toHaveAttribute('alt',/各 11 个实测保存点/);
     await expect(pgf).toHaveAttribute('src','/research/seed-openevo/figures/q01-three-way-pgfplots.svg');
+    const q01Caption=original.locator('figcaption');
     const q01Detail=original.locator('[data-q01-raw-svg]');
+    const layout=await original.evaluate(node=>{
+      const graphic=node.querySelector('img[data-pgfplot="q01-three-way"]')!;
+      const caption=node.querySelector('figcaption')!;
+      const detail=node.querySelector('[data-q01-raw-svg]')!;
+      return {imageBottom:graphic.getBoundingClientRect().bottom,captionTop:caption.getBoundingClientRect().top,
+        captionBottom:caption.getBoundingClientRect().bottom,detailTop:detail.getBoundingClientRect().top};
+    });
+    expect(layout.captionTop).toBeGreaterThanOrEqual(layout.imageBottom-2);
+    expect(layout.detailTop).toBeGreaterThanOrEqual(layout.captionBottom-2);
+    await expect(q01Caption).toContainText('同一横轴刻度不是相同的训练计算量');
     await expect(q01Detail).not.toHaveAttribute('open','');
     const q01=width<=720 ? original.locator('.advisor-viz__q01-chart--phone') : original.locator('.advisor-viz__q01-chart--desktop');
     await expect(q01).toBeHidden();
