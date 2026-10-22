@@ -144,7 +144,11 @@ const seedTaskSampler = `${seedCodeRoot}/agent_system/environments/env_package/w
   .benchmark-facts small{display:block;margin-top:.35rem;color:var(--muted);font-size:.64rem;line-height:1.45}
   .benchmark-role{max-width:850px;margin:1rem 0 0;line-height:1.65}
   .source-row{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:.75rem}
-  .source-row a,.setting-table-wrap a{display:inline-flex;gap:.32rem;align-items:center;color:var(--ink);font-size:.7rem;font-weight:750;text-decoration:none}.source-stack{display:grid;gap:.42rem;justify-items:start}
+  .source-row a{display:inline-flex;gap:.32rem;align-items:center;color:var(--ink);font-size:.7rem;font-weight:750;text-decoration:none}
+  /* A source link in a narrow evidence cell must wrap its text, not behave like
+     an unbreakable inline-flex token. Keep every source and its brand mark. */
+  .setting-table-wrap a{display:inline;max-width:100%;color:var(--ink);font-size:.7rem;font-weight:750;text-decoration:none;white-space:normal;overflow-wrap:anywhere}
+  .source-stack{display:grid;grid-template-columns:minmax(0,1fr);gap:.42rem;min-width:0;justify-items:stretch}
   .source-row a:hover,.source-row a:focus-visible,.setting-table-wrap a:hover,.setting-table-wrap a:focus-visible{color:var(--accent);text-decoration:underline;text-underline-offset:.18em}
   .seed-setting{padding-top:.2rem}
   .setting-table-wrap{margin-top:1rem;max-width:100%;overflow:visible;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
