@@ -30,9 +30,11 @@ const hasCheckpointLink = typeof paper.checkpoint_url === 'string' && paper.chec
 ---
 <div class="shell detail-layout evo-approved-reader evo-reading-overview evo-paper-record">
   <article>
+    <header class="evo-article__header">
     <h1 class="detail-title">{paper.title}</h1>
     <p class="detail-subtitle">{paper.published_at} · <StatusBadge status={paper.data_status} locale={locale} /></p>
 
+    </header>
     <section class="detail-section paper-method-summary" aria-labelledby="paper-method-summary-title">
       <h2 id="paper-method-summary-title">{locale === 'zh' ? '方法摘要' : 'Method summary'}</h2>
       {methodSummary

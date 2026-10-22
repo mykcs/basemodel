@@ -141,3 +141,17 @@ test('number gate rejects the old small digit above its heading',async({page})=>
   await bad.evaluate(node=>node.parentNode?.removeChild(node));
   expect(await headingNumberErrors(page)).toEqual([]);
 });
+
+test('wide reading entries keep expanded contents in flow without covering the title',async({page})=>{
+  await page.setViewportSize({width:1440,height:1000});
+  for(const route of ['/papers/seed/','/research/seed-openevo/study/capability-exploration/']){
+    await page.goto(route);
+    const nav=page.locator('[data-article-outline]');
+    await nav.locator('summary').click();
+    expect(await nav.evaluate(el=>getComputedStyle(el).position)).toBe('static');
+    const title=await page.locator('#main-content h1').boundingBox();
+    const box=await nav.boundingBox();
+    expect(box!.y).toBeGreaterThan(title!.y+title!.height);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
+  }
+});

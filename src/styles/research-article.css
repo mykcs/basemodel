@@ -257,6 +257,9 @@ html[data-theme="dark"] .evo-approved-reader {
   --article-section-size:21px;
   --article-intro-columns:minmax(0,1fr);
   --article-prose-measure:none;
+  --article-orientation-padding:0 0 1rem;
+  --article-orientation-gap:.75rem;
+  --article-orientation-inset:0;
   --article-subsection-size:18px;
   container-type:inline-size;
   container-name:reading-overview;

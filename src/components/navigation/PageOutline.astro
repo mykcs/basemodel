@@ -78,6 +78,7 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
     const articleMode = root.hasAttribute('data-article-outline');
     if (articleMode && main.querySelector('.evo-article__toc')) return;
     const articleRoot = articleMode ? main.querySelector<HTMLElement>('.evo-approved-reader') : null;
+    root.classList.toggle('page-outline--overview',Boolean(articleRoot?.classList.contains('evo-reading-overview')));
     const headings = collectHeadings(articleRoot ?? main).slice(0, 48);
     const longEnough = main.scrollHeight >= Math.max(1400, window.innerHeight * 1.65);
     if (headings.length < (articleMode ? 2 : 4) || !longEnough) return;
@@ -176,7 +177,7 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
     root.hidden = false;
     root.classList.add('is-visible');
     if (articleMode && articleRoot) {
-      const header = articleRoot.querySelector('header');
+      const header = articleRoot.querySelector(':scope > header, :scope > article > header, :scope > div > header');
       if (header) header.after(root);
     }
     updateActive();
@@ -309,6 +310,8 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
   .page-outline--article .page-outline__item {border-bottom:1px solid var(--paper-line);}
   .page-outline--article .page-outline__link {display:block;width:auto;min-height:0;padding:7px 4px;font-size:12px;line-height:1.45;color:var(--paper-muted);}
   .page-outline--article .page-outline__link:is(:hover,[aria-current='location']) {color:var(--paper-ink);text-decoration:underline;}
+  .page-outline--article.page-outline--overview.is-visible {position:static;max-width:100%;margin:16px 0;}
+  .page-outline--overview .article-contents[open] {width:100%;max-height:min(460px,55vh);}
   @media(max-width:1100px){.page-outline--article.is-visible{left:12px;top:75px;}}
   @media(max-width:820px){
     .page-outline--article.is-visible{position:static;max-width:100%;margin:16px 0;}
