@@ -39,3 +39,43 @@ Run [39733958050](https://github.com/mykcs/basemodel/actions/runs/39733958050) c
 The sole other full-WebKit failure was OpenEvo 768px dark: the trace resolves a genuinely closed carrier details element (open=null), not a boolean-attribute serialization mismatch. Its preceding tall screenshot moved the page and restored sticky controls. The typography witness now activates the native summary with keyboard Enter, checks closed→open state and visible carrier content; it does not force open state, retry clicks or relax any font/geometry threshold. Existing pointer-interaction tests remain.
 
 This is a source correction, not a new PASS receipt. Fresh exact-head public and full-WebKit runs, screenshots and Preview acceptance remain required. Vercel Sandbox creation returned 402 Hobby quota exhausted; the scoped CLI fallback returned 403. No billing, permissions or Production settings were changed. GitHub Actions remains the authorized test lane.
+
+## R1 actual artifact review and evidence repair — 2026-10-22
+
+Reviewed source: `30a8d2ec0b090e77dcb33f1ba5159dbf15e8c885`;
+[Actions 39737273849](https://github.com/mykcs/basemodel/actions/runs/39737273849)
+was freshly confirmed successful: deterministic, 8 Chromium shards, 4 full-WebKit
+shards and both aggregate gates. **R1 overall remains PARTIAL until replacement
+artifacts below are reviewed.** No Production deployment, merge, retarget,
+scientific data, chart coordinates or production styling changed.
+
+| Surface / evidence | Actual review | Verdict |
+| --- | --- | --- |
+| Four native Q17 SVGs | Both engines × 390/768/1440 × light/dark: 48 distinct full-figure PNGs through eight six-image contact sheets. Controls, captions and expanded-scroll hints visible; phone right edge intentionally lives in the local scroll viewport. | ACCEPT for sampled visible state |
+| Q17 page-top witness | WebKit viewport images were still down-page after smooth scroll. This is evidence timing, not proof of a product rendering bug. | FIX |
+| Native-reader measurement JSON | `info.attach(body)` did not produce a retained JSON file in the downloaded ZIP. The predicate only measures the first text's scaled size, not every label's getBBox. | FIX retention; all-label geometry not claimed |
+| Landscape full view | Eight PNGs: both engines × 390/1440 × light/dark. Axes, legend, captions readable; phone legend pagination visible, no new typography clipping observed. | ACCEPT for sampled visible state |
+| Landscape tablet / measurement JSON | No 768 case existed; JSON likewise only reporter-attached. | FIX |
+| Briefing chart 0 / EffectiveState image 0 | Separate reviewer opened 24 source PNGs through four contact sheets, both engines × six width/theme combinations. Chart 0 visually readable; image 0 is captured at the far-right scroll state and cannot prove whole-image readability. Remaining chart/image indices were not inspected in this R1 sample. | chart 0 ACCEPT; image 0 NEEDS HUMAN REVIEW |
+
+Native images overlap the Q17 review recorded in D6: do not add 48 to its 108
+as unique images. Landscape eight and Briefing/EffectiveState 24 are separate.
+Artifacts: WebKit native + Landscape `12408360486`, Briefing `12408566483`;
+Chromium Landscape `12407254484`, `12406834254`, `12407263556`, `12407113941`.
+WebKit logs confirm the native-reader matrix, old-squeeze falsification and
+No-JS keyboard Space test passed; screenshots alone do not prove interactions.
+Landscape pagination/tooltip/theme-transition interaction is not newly accepted.
+
+The minimal test-only repair retains all original positive/negative predicates,
+writes SHA-bound native-reader and Landscape JSON into outputPath while retaining
+reporter attachments, adds Landscape 768 light/dark, and waits for scrollY=0 after
+an instant scroll before the unmodified viewport capture. Independent patch
+review and TypeScript syntax transpilation passed; full exact-head CI and actual
+replacement PNG/JSON review are pending. Briefing's separate reporter-only JSON
+and its uninspected figures remain explicit followup scope, not a fabricated PASS.
+
+Correction-to-action witness: missing retained JSON / premature scroll screenshot
+-> `tests/e2e/sitewide-typography.spec.ts` and current artifact-upload globs
+-> downloaded exact-SHA ZIPs plus source inspected
+-> repair outputPath retention and stable capture, rerun same predicates
+-> any new SHA, missing file or nonzero browser exit invalidates acceptance.

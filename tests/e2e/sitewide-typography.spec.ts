@@ -1014,8 +1014,11 @@ for(const chart of q17NativeReaders){
         await expect(hint).toBeHidden();
         acceptQ17Native(await readQ17Native(reader),nativeWidth,false);
       }
-      await info.attach('q17-svg-reader.json',{body:Buffer.from(JSON.stringify({route:chart.route,width,theme,measurements},null,2)),contentType:'application/json'});
-      await page.evaluate(()=>window.scrollTo(0,0));
+      const readerReceipt=JSON.stringify({route:chart.route,width,theme,head:process.env.CI_HEAD_SHA??'local',measurements},null,2);
+      writeFileSync(info.outputPath('q17-svg-reader.json'),readerReceipt);
+      await info.attach('q17-svg-reader.json',{body:Buffer.from(readerReceipt),contentType:'application/json'});
+      await page.evaluate(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
+      await expect.poll(()=>page.evaluate(()=>window.scrollY),'original viewport screenshot starts at the top').toBe(0);
       await page.screenshot({path:info.outputPath('q17-original-viewport-'+width+'-'+theme+'.png'),animations:'disabled'});
     });
   }
@@ -1073,7 +1076,7 @@ const acceptLandscapeLabels=(m:Awaited<ReturnType<typeof readLandscapeLabels>>)=
   expect(m.max).toBeGreaterThanOrEqual(13.9);
   expect(m.documentOverflow).toBeLessThanOrEqual(2);
 };
-for(const width of [390,1440] as const)for(const theme of ['light','dark'] as const){
+for(const width of [390,768,1440] as const)for(const theme of ['light','dark'] as const){
   test('Landscape ECharts legend and ticks '+width+'/'+theme,async({page},info)=>{
     await page.setViewportSize({width,height:width===390?844:900});
     await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
@@ -1088,7 +1091,9 @@ for(const width of [390,1440] as const)for(const theme of ['light','dark'] as co
     await expect.poll(async()=>page.locator('.landscape-chart svg text').count()).toBeGreaterThan(2);
     const witness=await readLandscapeLabels(page);
     acceptLandscapeLabels(witness);
-    await info.attach('landscape-svg-labels.json',{body:Buffer.from(JSON.stringify({width,theme,...witness},null,2)),contentType:'application/json'});
+    const landscapeReceipt=JSON.stringify({width,theme,head:process.env.CI_HEAD_SHA??'local',...witness},null,2);
+    writeFileSync(info.outputPath('landscape-svg-labels.json'),landscapeReceipt);
+    await info.attach('landscape-svg-labels.json',{body:Buffer.from(landscapeReceipt),contentType:'application/json'});
     await page.locator('.landscape-chart-shell').screenshot({path:info.outputPath('landscape-figure-'+width+'-'+theme+'.png'),animations:'disabled',
       style:'.site-header,.research-navigation{visibility:hidden}'});
   });
