@@ -61,6 +61,30 @@ export function verifyManifest(root, manifest, sha, browser) {
     if (!data.length || data.length !== item.bytes || hash(data) !== item.sha256) fail(`Downloaded bytes differ: ${item.path}`);
   }
 }
+
+export function verifyScientificEvidence(root, paths, sha, browser) {
+  const one = name => {
+    const matches = paths.filter(path => path.endsWith('/' + name));
+    if (matches.length !== 1) fail(`Require exactly one scientific evidence file: ${name}`);
+    return matches[0];
+  };
+  for (const width of [390,768,1440]) for (const theme of ['light','dark']) {
+    one(`q03-paper-${width}-${theme}.png`);
+    const geometry = one(`q03-pgfplots-geometry-${width}-${theme}.json`);
+    const item = json(safe(root,geometry));
+    identity(item,sha,browser);
+    if (item.width !== width || item.theme !== theme ||
+        item.route !== '/research/seed-openevo/study/parameter-memory-results/' ||
+        item.renderer !== 'XeLaTeX + PGFPlots -> committed SVG -> Astro img' ||
+        !item.tableMetrics || item.imageMetrics?.loaded !== true)
+      fail(`Invalid PGFPlots scientific measurement: ${geometry}`);
+    const png = one(`q03-pgfplots-paper-${width}-${theme}.png`);
+    if (resolve(root,png,'..') !== resolve(root,geometry,'..'))
+      fail('PGFPlots geometry and PNG must share their producer');
+    if (width !== 768) one(`q01-paper-${width}-${theme}.png`);
+  }
+}
+
 export function run(mode, root, output, env = process.env) {
   const sha = env.FIGURE_SOURCE_SHA, browser = env.FIGURE_BROWSER;
   identity({ sha, browser }, sha, browser);
@@ -103,13 +127,12 @@ export function run(mode, root, output, env = process.env) {
       const path = `shard-${manifest.shard}/${entry.path}`;
       const target = safe(output,path); mkdirSync(resolve(target,'..'),{recursive:true});
       copyFileSync(safe(source,entry.path),target); allPaths.push(path);
-      if (/q03-paper-geometry|sitewide-figure-table/.test(entry.path) && entry.path.endsWith('.json')) identity(json(target),sha,browser);
+      if (/q03-pgfplots-geometry|sitewide-figure-table/.test(entry.path) && entry.path.endsWith('.json')) identity(json(target),sha,browser);
       if (entry.path.endsWith('sitewide-figure-table.json')) routeEvidence.push({item:json(target),prefix:relative(output,resolve(target,'..'))});
     }
   }
   verifyCoverage(manifests[0].expected,manifests.map(m => m.executed));
-  for (const [pattern,count] of [[/q03-paper-\d+-.*\.png$/,6],[/q01-paper-\d+-.*\.png$/,4],[/q03-paper-geometry-.*\.json$/,6]])
-    if (allPaths.filter(path => pattern.test(path)).length !== count) fail(`Incomplete scientific evidence: ${pattern}`);
+  verifyScientificEvidence(output,allPaths,sha,browser);
   const inventory = inventories[0];
   if (inventories.some(item => JSON.stringify(item) !== JSON.stringify(inventory))) fail('Inventory differs across shards');
   const expectedRoutes = inventory.routes.filter(item => item.figures.length || item.tables || item.nonfigure_svgs.length).map(item => item.route).sort();
