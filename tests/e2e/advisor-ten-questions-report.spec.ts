@@ -114,8 +114,8 @@ test('third article answers all Q01–Q10 with experiments, measurements, limits
   const q03=page.locator('#response-q03 [data-report-figure="q03-custom-curve"]');
   await expect(q03).toHaveAttribute('data-evidence-shape','paper-static-observations');
   await expect(q03.locator('button, [data-q03-stage-selector], [data-stage-detail]')).toHaveCount(0);
-  const points=await q03.locator('[data-trend-point]').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-trend-point')));
-  expect(points).toEqual(['A0','A40','A80','A120']);
+  const compiledPlot=q03.locator('img[data-pgfplot="q03-stage2"]');
+  await expect(compiledPlot).toHaveAttribute('alt',/A0 为 3\.71，A40 为 6\.43，A80 为 0\.69，A120 为 6\.62/);
   const table=page.locator('#response-q03 [data-q03-paper-table]');
   await expect(table).toBeVisible();
   await expect(page.locator('#response-q03 [data-q03-trend-details]')).not.toHaveAttribute('open','');
@@ -392,9 +392,9 @@ for (const width of [390, 768, 1440]) {
     await disclosure.locator('summary').click();
     await expect(figure).toBeVisible();
     await expect(figure).toHaveAttribute('data-evidence-shape','paper-static-observations');
-    expect(await figure.locator('[data-trend-point]').evaluateAll(els=>els.map(el=>el.getAttribute('data-trend-point')))).toEqual(['A0','A40','A80','A120']);
+    await expect(figure.locator('img[data-pgfplot="q03-stage2"]')).toHaveAttribute('alt',/A0 为 3\.71，A40 为 6\.43，A80 为 0\.69，A120 为 6\.62/);
     await expect(figure.locator('figcaption')).toContainText('没有测量中间轮次');
-    await expect(width<=720?figure.locator('[data-q03-mobile-chart]'):figure.locator('[data-q03-desktop-chart]')).toBeVisible();
+    await expect(figure.locator('img[data-pgfplot="q03-stage2"]')).toBeVisible();
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(2);
     if(width!==768)await table.screenshot({path:testInfo.outputPath('q03-booktabs-'+width+'.png'),animations:'disabled'});
