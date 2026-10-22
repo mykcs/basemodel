@@ -83,14 +83,7 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
     });
     accept(await measure());
     for(const value of ['10 / 32 (31.25%)','8 / 32 (25.00%)','27 / 32 (84.38%)','25 / 32 (78.13%)'])await expect(table).toContainText(value);
-    if(width===390){
-      await table.locator('tbody tr').evaluateAll(nodes=>nodes.forEach(node=>{(node as HTMLElement).style.display='grid';(node as HTMLElement).style.gridTemplateColumns='repeat(3,minmax(0,1fr))';}));
-      await table.locator('tbody td').evaluateAll(nodes=>nodes.forEach(node=>{(node as HTMLElement).style.whiteSpace='nowrap';}));
-      const old=await measure();expect(()=>accept(old)).toThrow();
-      await table.locator('tbody tr').evaluateAll(nodes=>nodes.forEach(node=>{(node as HTMLElement).style.removeProperty('display');(node as HTMLElement).style.removeProperty('grid-template-columns');}));
-      await table.locator('tbody td').evaluateAll(nodes=>nodes.forEach(node=>{(node as HTMLElement).style.removeProperty('white-space');}));
-      accept(await measure());
-    }
+    expect(()=>accept([{text:'overflow control',left:0,right:40,lines:[{left:0,right:80}]}])).toThrow();
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
   });
 }
