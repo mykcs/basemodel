@@ -7,7 +7,7 @@ const css=source.split('<style>')[1]?.split('</style>')[0]??'';
 function classification(text:string){
   const direct=[...text.matchAll(/(?:^|[;{])font-size:\s*([^;}]+)/g)].map(x=>x[1]!.trim());
   const shorthand=[...text.matchAll(/(?:^|[;{])font:\s*([^;}]+)/g)].map(x=>x[1]!.trim());
-  return {direct,shorthand,unclassified:direct.filter(x=>!x.startsWith('var(--type-')))};
+  return {direct,shorthand,unclassified:direct.filter(x=>!x.startsWith('var(--type-'))};
 }
 describe('shared ResearchDepth semantic typography',()=>{
   it('uses interface roles for optional native summaries and intro, no decorative mono',()=>{
