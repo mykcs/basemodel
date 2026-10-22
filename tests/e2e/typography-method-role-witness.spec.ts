@@ -665,6 +665,6 @@ test('capability lobby restores 9px status and terminology defects only to be re
   expect(broken.roles['.map-lobby__current-ablation small']!.size).toBeLessThan(10);
   expect(broken.roles['.map-lobby__terms>summary']!.size).toBeLessThan(10);
   expect(()=>acceptLobby(broken,width)).toThrow();
-  await poison.evaluate(el=>el.remove());
+  await poison.evaluate(el=>el.parentNode?.removeChild(el));
   acceptLobby(await measureLobby(page),width);
 });
