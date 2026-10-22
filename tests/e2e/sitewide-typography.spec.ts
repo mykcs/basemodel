@@ -699,10 +699,18 @@ for(const width of [390,768,1440] as const){
       acceptCeiling(good,width);
       writeFileSync(info.outputPath('ceiling-7b-'+width+'-'+theme+'.json'),
         JSON.stringify({sha:process.env.CI_HEAD_SHA??'local',width,theme,route:ceilingRoute,good},null,2));
+      // Unmodified viewport witness preserves the real sticky navigation.
+      // Element screenshot auto-scroll can otherwise put a valid card under
+      // the sticky nav; hide ONLY chrome during the evidence crop (not tests).
+      await page.evaluate(()=>window.scrollTo(0,0));
+      await page.screenshot({
+        path:info.outputPath('ceiling-unmodified-viewport-'+width+'-'+theme+'.png'),animations:'disabled'});
       await page.locator(ceilingRoot+' .ceiling__arm-status').first().screenshot({
-        path:info.outputPath('ceiling-7b-final-'+width+'-'+theme+'.png'),animations:'disabled'});
+        path:info.outputPath('ceiling-7b-final-'+width+'-'+theme+'.png'),animations:'disabled',
+        style:'.site-header,.research-navigation{visibility:hidden}'});
       await page.locator(ceilingRoot+' .ceiling__compare').screenshot({
-        path:info.outputPath('ceiling-stage2-table-'+width+'-'+theme+'.png'),animations:'disabled'});
+        path:info.outputPath('ceiling-stage2-table-'+width+'-'+theme+'.png'),animations:'disabled',
+        style:'.site-header,.research-navigation{visibility:hidden}'});
     });
   }
 }
