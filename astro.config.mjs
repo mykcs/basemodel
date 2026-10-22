@@ -38,9 +38,9 @@ export default defineConfig({
   }), {
     name: 'basemodel-native-style-scope',
     hooks: {
-      // Starlight defaults the whole app to `where`. Preserve native pages'
-      // existing scoped specificity instead of patching individual consumers.
-      'astro:config:setup': ({ updateConfig }) => updateConfig({ scopedStyleStrategy: 'attribute' }),
+      // `class` preserves native scoped specificity while forwarding scope
+      // through Starlight's class-only child components (notably its icons).
+      'astro:config:setup': ({ updateConfig }) => updateConfig({ scopedStyleStrategy: 'class' }),
     },
   }],
   build: {

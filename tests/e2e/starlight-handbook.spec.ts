@@ -13,6 +13,17 @@ for (const width of [390, 1440]) for (const theme of ['light', 'dark'] as const)
     await expect(page.locator('a[href="/handbook/agent-harness/"]').first()).toHaveCount(1);
     await expect(page.locator('a[href="/handbook/openevo-gpu/"]').first()).toHaveCount(1);
     await expect(page.locator('button[data-open-modal]').first()).toBeEnabled();
+    if (width === 390) {
+      const menu = page.locator('button.sl-menu-button');
+      await expect(menu.locator('.open-menu')).toBeVisible();
+      await expect(menu.locator('.close-menu')).not.toBeVisible();
+      await menu.click();
+      await expect(page.locator('#starlight__sidebar')).toBeVisible();
+      await expect(menu.locator('.open-menu')).not.toBeVisible();
+      await expect(menu.locator('.close-menu')).toBeVisible();
+      await menu.click();
+      await expect(page.locator('#starlight__sidebar')).not.toBeVisible();
+    }
     await page.locator('button[data-open-modal]').first().click();
     const search = page.locator('site-search dialog');
     await expect(search).toBeVisible();
