@@ -14,6 +14,15 @@ for (const width of [390,768,1440]) {
     await expect(pgf).toHaveAttribute('loading','eager');
     await expect(pgf).toHaveAttribute('alt',/各 11 个实测保存点/);
     await expect(pgf).toHaveAttribute('src','/research/seed-openevo/figures/q01-three-way-pgfplots.svg');
+    const selected=await pgf.evaluate(async img=>{
+      if(!(img instanceof HTMLImageElement))return null;
+      await img.decode();
+      return {currentSrc:img.currentSrc,naturalWidth:img.naturalWidth,naturalHeight:img.naturalHeight};
+    });
+    expect(selected).not.toBeNull();
+    expect(selected!.naturalWidth).toBeGreaterThan(300);
+    expect(selected!.naturalHeight).toBeGreaterThan(180);
+    expect(selected!.currentSrc).toContain(width<=720?'q01-three-way-mobile-pgfplots.svg':'q01-three-way-pgfplots.svg');
     const q01Caption=original.locator('figcaption');
     const q01Detail=original.locator('[data-q01-raw-svg]');
     const layout=await original.evaluate(node=>{
