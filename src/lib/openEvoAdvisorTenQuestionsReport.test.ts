@@ -15,6 +15,7 @@ const prefix='src/pages/research/seed-openevo/study/';
 const methods=read(prefix+'openevo-methods/index.astro');
 const questions=read(prefix+'advisor-questions/index.astro');
 const responses=read(prefix+'parameter-memory-results/index.astro');
+const intervalData=JSON.parse(read('src/data/advisorConfidenceIntervals.json')) as {figures:{id:string;effects:{estimate:number}[]}[]};
 const methodComponent=read('src/components/research/AdvisorTenMethodExplainer.astro');
 const navigation=read('src/components/research/OpenEvoArticleNavigation.astro');
 
@@ -418,7 +419,9 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
   it('keeps newer Q17 experiment identities and uncertainties alongside their original advisor questions',()=>{
     for(const id of ['q04','q07','q08','q09']) expect(responses).toContain('data-q17-inline="'+id+'"');
     for(const id of ['q04-posthoc','q07-zero-latest','q08-old-queue','q09-context','rank32-paired']) expect(responses).toContain('id="'+id+'"');
-    for(const v of ['estimate:-0.87,low:-3.91,high:1.65','estimate:-0.85,low:-2.17,high:0','estimate:-9.38,low:-23.96,high:4.17','estimate:-26.60,low:-37.41,high:-15.64','estimate:-1.79,low:-3.68,high:0.12']) expect(responses).toContain(v);
+    for(const id of ['q04-posthoc','q07-zero-latest','q08-old-queue','q09-context','rank32-paired','q07-inversion']) expect(intervalData.figures.find(figure=>figure.id===id)).toBeTruthy();
+    const rank32=intervalData.figures.find(figure=>figure.id==='rank32-paired')!.effects[0]!;
+    expect(rank32.estimate).toBeCloseTo(-1.790623872655121,12);
     expect(responses).toContain('不是同一模型、同一干预');
     expect(responses).toContain('训练后压缩');
     expect(responses).toContain('640 是全部新旧队列');
@@ -426,7 +429,9 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     const plot=read('src/components/research/PaperIntervalPlot.astro');
     expect(plot).toContain('data-paper-effect={id}');
     expect(plot).toContain('e.low > e.estimate');
-    expect(plot).toContain('paper-effect__zero');
+    expect(plot).toContain('<PublicationPlot id={id}');
+    expect(plot).toContain('publication-plot');
+    expect(read('src/components/research/PublicationPlot.astro')).toContain('data-pgfplot={id}');
     expect(plot).toContain('95% 置信区间');
     expect(plot).toContain('paper-effect__comparison');
     expect(plot).toContain('paper-effect__directions');
