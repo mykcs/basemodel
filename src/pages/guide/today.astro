@@ -1,4 +1,5 @@
 ---
+import "../../styles/research-article.css";
 import ExternalBrandMark from '../../components/common/ExternalBrandMark';
 import AppLayout from '../../layouts/AppLayout.astro';
 import { localePath } from '../../i18n';
@@ -7,8 +8,8 @@ const seedRepo = 'https://github.com/mykcs/seed3090';
 const currentRepo = 'https://github.com/mykcs/openevo-experiment';
 ---
 <AppLayout title="历史四卡 RTX 3090 复现记录" description="2026-08-12 的 RTX6 / 4×RTX3090 复现运行手册已转为历史记录；实时 OpenEvo 状态由 openevo-experiment 实际工作分支的 current-campaign 与最新 reconciliation/result 决定。" locale="zh">
-  <div class="shell editorial-page historical-runbook">
-    <header class="page-header">
+  <div class="shell editorial-page historical-runbook evo-approved-reader evo-reading-overview">
+    <header class="evo-article__header">
       <span class="section-kicker">历史运行手册 · 2026-08-12</span>
       <h1>历史 RTX 3090 四卡复现记录</h1>
       <p class="lede">这条路线记录了 2026-08-12 历史 RTX6 平台（4×RTX3090）的 SEED / OpenEvo 环境准备与小规模验证。它仍有复现和迁移价值，但不再代表当前实验环境。</p>
@@ -35,5 +36,5 @@ const currentRepo = 'https://github.com/mykcs/openevo-experiment';
 </AppLayout>
 
 <style>
-.runbook-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin:0}.runbook-facts div{padding:.85rem;border:1px solid var(--line);border-radius:12px}.runbook-facts dt{color:var(--muted);font-size:.68rem}.runbook-facts dd{margin:.3rem 0 0;font-size:.8rem}.links{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}.section>p{max-width:78ch;color:var(--muted);line-height:1.65}.archive-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}.archive-grid article{padding:.85rem;border:1px solid var(--line);border-radius:12px}.archive-grid strong,.archive-grid span{display:block}.archive-grid span{margin-top:.35rem;color:var(--muted);font-size:.74rem;line-height:1.45}@media(max-width:700px){.runbook-facts,.archive-grid{grid-template-columns:1fr}}
+.runbook-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin:0}.runbook-facts div{padding:.85rem;border:1px solid var(--line);border-radius:12px}.runbook-facts dt{color:var(--muted);font-size:.68rem}.runbook-facts dd{margin:.3rem 0 0;font-size:.8rem}.links{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}.section>p{max-width:78ch;color:var(--muted);line-height:var(--article-body-leading, 1.65)}.archive-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}.archive-grid article{padding:.85rem;border:1px solid var(--line);border-radius:12px}.archive-grid strong,.archive-grid span{display:block}.archive-grid span{margin-top:.35rem;color:var(--muted);font-size:.74rem;line-height:1.45}@media(max-width:700px){.runbook-facts,.archive-grid{grid-template-columns:1fr}}
 </style>

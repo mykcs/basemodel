@@ -170,29 +170,30 @@ OPENAI_MODEL=glm-5.2`;
 
   {!compact && <>
     <section class="block" aria-labelledby="alf-title">
-      <span class="section-kicker">01 · ALFWorld</span>
-      <h3 id="alf-title">{t('ALFWorld 最小复现配置', 'ALFWorld minimal reproduction setup')}</h3>
+      <h3 id="alf-title"><span class="evo-article__heading-number" aria-hidden="true">01</span> {t('ALFWorld 最小复现配置', 'ALFWorld minimal reproduction setup')}</h3>
+<p class="evo-article__note">ALFWorld</p>
       <p class="muted">{t('这里的目标不是训练出论文分数，而是确认 observation → action → reward → terminal outcome 这条环境链完整。对 Qwen2.5-3B 的单条推理 smoke test，优先用智星云当前公开的 1×RTX 4090 24G；环境没通之前，不要租八卡。', 'The goal here is not paper scores; it is verifying a complete observation → action → reward → terminal-outcome path. For a single Qwen2.5-3B inference smoke test, start with AI Galaxy’s current public 1×RTX 4090 24G option; do not rent eight GPUs before the environment works.')}</p>
       <div class="cards two"><article><h4>{t('安装', 'Install')}</h4><pre><code>{alfworldInstall}</code></pre></article><article><h4>{t('进入训练链', 'Enter the training chain')}</h4><pre><code>{alfworldRun}</code></pre><p>{t('按顺序保存一条 vanilla rollout，检查 Stage 1 trajectory → skill，再进入 Stage 2；这个顺序让每层证据都能独立验收。', 'Save a vanilla rollout, inspect Stage 1 trajectory → skill, then enter Stage 2. This order makes each evidence layer independently verifiable.')}</p></article></div>
       <p class="protocol"><strong>{t('论文协议：', 'Paper protocol: ')}</strong>{t('SFT 180 tasks × 8 rollouts；RL 2,400；150 次策略更新；batch 16；rollout group 8；prompt 2048；response 512；最大交互 30。测试 140 seen + 134 unseen，并按 6 类任务等权平均。', 'SFT 180 tasks × 8 rollouts; RL 2,400; 150 updates; batch 16; rollout group 8; prompt 2048; response 512; max 30 interactions. Test 140 seen + 134 unseen, equally weighted over six task categories.')}</p>
     </section>
 
     <section class="block" aria-labelledby="webshop-title">
-      <span class="section-kicker">02 · WebShop</span>
-      <h3 id="webshop-title">{t('第二阶段：WebShop 单独建 Python 3.10 环境，不为了“统一”破坏官方依赖', 'Stage two: give WebShop its own Python 3.10 environment instead of forcing cosmetic uniformity')}</h3>
+      <h3 id="webshop-title"><span class="evo-article__heading-number" aria-hidden="true">02</span> {t('第二阶段：WebShop 单独建 Python 3.10 环境，不为了“统一”破坏官方依赖', 'Stage two: give WebShop its own Python 3.10 environment instead of forcing cosmetic uniformity')}</h3>
+<p class="evo-article__note">WebShop</p>
       <p class="muted">{t('主 SEED 环境用 Python 3.12，而官方 WebShop 路径要求 Python ≤3.10。这里继续先做单条 episode；只有两个环境都稳定后，才进入更贵的训练资源。', 'The main SEED environment uses Python 3.12 while the official WebShop path requires Python ≤3.10. Continue with a single episode first; move to more expensive training compute only after both environments are stable.')}</p>
       <div class="cards two"><article><h4>{t('安装', 'Install')}</h4><pre><code>{webshopInstall}</code></pre></article><article><h4>{t('进入训练链', 'Enter the training chain')}</h4><pre><code>{webshopRun}</code></pre><p>{t('先确认页面状态、action 与 reward 能形成完整 episode，再生成 SFT 数据和训练。', 'First confirm page state, actions, and rewards form a complete episode before generating SFT data and training.')}</p></article></div>
       <p class="protocol"><strong>{t('论文协议：', 'Paper protocol: ')}</strong>{t('SFT 180 tasks × 8 rollouts；RL 2,400；150 次策略更新；batch 16；rollout group 8；prompt 4096；response 512；最大交互 15；测试 128 个任务，报告 Score 与 Succ。', 'SFT 180 tasks × 8 rollouts; RL 2,400; 150 updates; batch 16; rollout group 8; prompt 4096; response 512; max 15 interactions; test 128 tasks and report Score and Succ.')}</p>
     </section>
 
     <section class="block" aria-labelledby="training-title">
-      <span class="section-kicker">03 · {t('缩小训练', 'Reduced training')}</span>
-      <h3 id="training-title">{t('单卡 A100 80G 训练配置', 'Single-A100 80G training setup')}</h3>
+      <h3 id="training-title"><span class="evo-article__heading-number" aria-hidden="true">03</span> {t('单卡 A100 80G 训练配置', 'Single-A100 80G training setup')}</h3>
+<p class="evo-article__note">{t('缩小训练', 'Reduced training')}</p>
       <p>{t('这一步才开始验证 SFT → GRPO / SEED 是否真正产生训练信号。保持 Qwen2.5-3B-Instruct，但缩小 batch、rollout 或任务数；你是在验证机制，不是在复现主表。80GB 的意义是减少因为显存不足而被迫改代码结构，而不是让实验自动变成严格复现。', 'This is where you start testing whether SFT → GRPO / SEED produces real training signals. Keep Qwen2.5-3B-Instruct but reduce batch, rollout count, or tasks; you are validating the mechanism, not reproducing the main table. The value of 80GB is reducing code distortions caused by memory pressure—not making the run strict automatically.')}</p>
     </section>
 
     <section class="block" aria-labelledby="env-title">
-      <span class="section-kicker">04 · Common training config</span><h3 id="env-title">{t('论文规模运行变量', 'Paper-scale runtime variables')}</h3>
+      <h3 id="env-title"><span class="evo-article__heading-number" aria-hidden="true">04</span> {t('论文规模运行变量', 'Paper-scale runtime variables')}</h3>
+<p class="evo-article__note">Common training config</p>
       <pre class="wide"><code>{envFile}</code></pre>
       <p class="protocol">{t('记录 repo commit、模型 revision、tokenizer/chat template、CUDA/driver、依赖锁定和实际 GPU 拓扑。换成 A100 时，GPU 型号与互联也必须进入 manifest，不能只写“8×80GB”。', 'Record repo commit, model revision, tokenizer/chat template, CUDA/driver, dependency lock state, and actual GPU topology. If substituting A100, record the GPU model and interconnect explicitly—not just “8×80GB.”')}</p>
     </section>
