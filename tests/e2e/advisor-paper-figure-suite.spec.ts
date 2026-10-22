@@ -54,7 +54,19 @@ for (const width of [390,768,1440]) {
       const plot=page.locator('[data-paper-effect="'+id+'"]');
       await expect(plot).toBeVisible();
       await expect(plot.locator('[data-effect-row]')).toHaveCount(count);
-      await expect(plot.locator('.paper-effect__zero')).toHaveCount(count);
+      const compiled=plot.locator('img[data-pgfplot="'+id+'"]');
+      await expect(compiled).toBeVisible();
+      await compiled.scrollIntoViewIfNeeded();
+      const rendered=await compiled.evaluate(async image=>{
+        const img=image as HTMLImageElement;
+        await img.decode();
+        return {width:img.naturalWidth,height:img.naturalHeight,currentSrc:img.currentSrc};
+      });
+      expect(rendered.width).toBeGreaterThan(200);
+      expect(rendered.height).toBeGreaterThan(50);
+      if(id==='q04-posthoc'||id==='q07-zero-latest'||id==='q09-context'){
+        expect(rendered.currentSrc).toContain(width<=720?`${id}-mobile.svg`:`${id}.svg`);
+      }
       await expect(plot.locator('.paper-effect__unit')).toContainText('95%');
     }
     const q04Interval=page.locator('[data-paper-effect="q04-posthoc"]');
@@ -64,19 +76,14 @@ for (const width of [390,768,1440]) {
     await expect(q04Interval.locator('.paper-effect__takeaway')).toContainText('不能确定压缩会稳定掉分');
     const frame=await q04Interval.evaluate(el=>{
       const css=getComputedStyle(el),box=el.getBoundingClientRect();
-      const axisLabels=[...el.querySelectorAll('.paper-effect__axis span')].map(label=>label.getBoundingClientRect());
-      return {width:css.borderTopWidth,side:css.borderLeftWidth,clipped:axisLabels.some(r=>r.left<box.left-1||r.right>box.right+1)};
+      const image=el.querySelector('img[data-pgfplot]')!.getBoundingClientRect();
+      return {width:css.borderTopWidth,side:css.borderLeftWidth,clipped:image.left<box.left-1||image.right>box.right+1};
     });
     expect(frame.width).toBe('1px');
     expect(frame.side).toBe('1px');
     expect(frame.clipped).toBe(false);
     await expect(q04Interval.locator('.paper-effect__directions span')).toHaveCount(2);
-    const zeroAligned=await q04Interval.evaluate(el=>{
-      const zero=el.querySelector('.paper-effect__zero')!.getBoundingClientRect();
-      const tick=[...el.querySelectorAll('.paper-effect__axis span')].find(x=>x.textContent?.trim()==='0')!.getBoundingClientRect();
-      return Math.abs((zero.left+zero.width/2)-(tick.left+tick.width/2));
-    });
-    expect(zeroAligned).toBeLessThan(2);
+    await expect(q04Interval.locator('img[data-pgfplot="q04-posthoc"]')).toHaveAttribute('aria-describedby','advisor-q04-posthoc-caption');
     const text=await page.locator('[data-q17-inline="q04"]').innerText();
     expect(text).toContain('训练后压缩');
     await expect(page.locator('[data-q17-inline="q07"]')).toContainText('不是同一模型、同一干预');

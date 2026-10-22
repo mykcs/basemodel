@@ -536,7 +536,7 @@ test('advisor numeric typography stays plain throughout prose, tables and plots'
     '#capacity .research-booktabs td[data-numeric]',
     '#response-q02 .advisor-viz .research-booktabs td',
     '#response-q07 .paper-effect__value strong',
-    '#capacity .paper-effect__axis',
+    '#capacity img[data-pgfplot]',
     '#main-results .evo-article__tablewrap table td',
   ];
   for(const selector of selectors){

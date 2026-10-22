@@ -17,6 +17,16 @@
     const caption = dialog.querySelector<HTMLElement>('.research-chart-caption')!;
     const context = dialog.querySelector<HTMLElement>('.research-chart-context')!;
     let opener: HTMLButtonElement | null = null;
+    const scrollHorizontallyFromKeyboard = (element: HTMLElement, event: KeyboardEvent) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      const maxScroll = element.scrollWidth - element.clientWidth;
+      const direction = event.key === 'ArrowRight' ? 1 : -1;
+      const next = Math.max(0, Math.min(maxScroll, element.scrollLeft + direction * Math.max(80, element.clientWidth * 0.8)));
+      if (next !== element.scrollLeft) {
+        element.scrollLeft = next;
+        event.preventDefault();
+      }
+    };
     document.querySelectorAll<HTMLElement>('.briefing-slide').forEach((slide) => {
       const figures = slide.querySelectorAll<HTMLElement>('.dynamics-chart');
       if (!figures.length) return;
@@ -60,12 +70,14 @@
       context.replaceChildren();
       opener?.focus();
     });
+    canvas.addEventListener('keydown', (event) => scrollHorizontallyFromKeyboard(canvas, event));
     document.querySelectorAll<HTMLImageElement>('.paper__derived-figure > img').forEach((img) => {
       const viewport = document.createElement('div');
       viewport.className = 'research-image-viewport';
       viewport.tabIndex = 0;
       viewport.setAttribute('role', 'region');
       viewport.setAttribute('aria-label', img.alt);
+      viewport.addEventListener('keydown', (event) => scrollHorizontallyFromKeyboard(viewport, event));
       img.before(viewport);
       viewport.append(img);
     });
