@@ -1,5 +1,9 @@
 # Typography #898 continuation handoff
 
+## 2026-10-22 cloud finding — never infer PASS from provisioned CI jobs
+
+Source [f7251f31](https://github.com/mykcs/basemodel/commit/f7251f31adcb2314f94db310fe1bf3a340873f0f) is genuinely committed on #898. Its [first complete 4-shard WebKit attempt](https://github.com/mykcs/basemodel/actions/runs/39731928649) ran but **FAILED**: WebKit shard 1 passed, 2–4 failed; public deterministic and Chromium gates also failed. The test-independent preview [`dpl_3uLwg12UqGJveN3krDcNqFYtyPzF`](https://basemodel-ui-preview-20260811-958p8onrr-wangrui92-team.vercel.app) is **READY**, SSO protected, noindex and SHA-bound to `f725`, but is not the final intended commit or a visual ACCEPT. Exact root causes and non-relaxed candidate repairs are detailed in [WP-D7 evidence](../../agents/evidence/sitewide-typography/2026-10-22/WP_D7_NATIVE_SVG_AND_LANDSCAPE.md). Re-run all four WebKit shards and eight Chromium shards after the repair; preserve all red records.
+
 ## 2026-10-22 live continuation — **in progress; preserve concurrent commits**
 
 - #898 remains **open/Draft**, stacked on #895. The user-supplied `487f5e76` and initially refreshed `02950bb` are historical, **not** destinations for reset. During this work the remote advanced to **`cbc2bc56682ed2647cf0d7b26afd326a986b76df`**; its three new commits (Action Wrapper readability and Q17 historical Frontier typography) were fetched and fast-forwarded, then the isolated local patch was reapplied and the test conflict reconciled. The existing 12px/interface Q17 SVG label change and 131 lines of same-branch browser tests are preserved.

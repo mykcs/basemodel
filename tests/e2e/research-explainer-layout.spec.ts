@@ -477,7 +477,10 @@ test('scroll-linked explainer updates do not pull a fast reader back to the stag
   await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
   const root = page.locator('[data-interactive-research-explainer="seed"]');
   await waitForHydratedExplainer(root);
-  await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'auto' }));
+  // This test isolates passive scroll-linked updates. `auto` inherits the site's
+  // `scroll-behavior: smooth` and WebKit can still be animating after 650 ms,
+  // making the animation's remaining distance look like an explainer jump.
+  await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'instant' }));
   await page.waitForTimeout(650);
   const before = await page.evaluate(() => window.scrollY);
   expect(before).toBeGreaterThan(900);

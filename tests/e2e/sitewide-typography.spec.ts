@@ -970,6 +970,11 @@ for(const chart of q17NativeReaders){
       const response=await page.goto(chart.route,{waitUntil:'domcontentloaded'});
       expect(response?.status()).toBe(200);
       await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      if(chart.route===frontierRoute){
+        const historical=page.locator('.q17-roadmap-depth > details');
+        await historical.locator(':scope > summary').click();
+        await expect(historical).toHaveAttribute('open','');
+      }
       await page.evaluate(()=>document.fonts.ready);
       const readers=page.locator('[data-native-svg-reader]');
       await expect(readers).toHaveCount(2);
@@ -1034,6 +1039,9 @@ test('Q17 native SVG zoom and local scroll work with JavaScript disabled',async(
     const page=await context.newPage();
     const response=await page.goto(q17NativeReaders[1].route,{waitUntil:'domcontentloaded'});
     expect(response?.status()).toBe(200);
+    const historical=page.locator('.q17-roadmap-depth > details');
+    await historical.locator(':scope > summary').click();
+    await expect(historical).toHaveAttribute('open','');
     const reader=page.locator('[data-native-svg-reader]').first();
     await expect(reader.locator('svg')).toBeVisible();
     await reader.locator('input').focus();
@@ -1071,7 +1079,11 @@ for(const width of [390,1440] as const)for(const theme of ['light','dark'] as co
     await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
     const response=await page.goto('/landscape/',{waitUntil:'domcontentloaded'});
     expect(response?.status()).toBe(200);
-    await page.getByRole('button',{name:'完整视图'}).click();
+    const fullView=page.getByRole('button',{name:'完整视图'});
+    await fullView.scrollIntoViewIfNeeded();
+    await expect(page.locator('.landscape-controls')).toHaveAttribute('aria-busy','false');
+    await expect(fullView).toBeEnabled();
+    await fullView.click();
     await expect(page.locator('.landscape-chart svg')).toBeVisible();
     await expect.poll(async()=>page.locator('.landscape-chart svg text').count()).toBeGreaterThan(2);
     const witness=await readLandscapeLabels(page);
@@ -1084,7 +1096,11 @@ for(const width of [390,1440] as const)for(const theme of ['light','dark'] as co
 test('Landscape label gate rejects injected 9px ECharts axis/legend text',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto('/landscape/',{waitUntil:'domcontentloaded'});
-  await page.getByRole('button',{name:'完整视图'}).click();
+  const fullView=page.getByRole('button',{name:'完整视图'});
+  await fullView.scrollIntoViewIfNeeded();
+  await expect(page.locator('.landscape-controls')).toHaveAttribute('aria-busy','false');
+  await expect(fullView).toBeEnabled();
+  await fullView.click();
   await expect.poll(async()=>page.locator('.landscape-chart svg text').count()).toBeGreaterThan(2);
   acceptLandscapeLabels(await readLandscapeLabels(page));
   const style=await page.addStyleTag({content:'.landscape-chart svg text {font-size:9px !important}'});

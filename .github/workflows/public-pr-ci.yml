@@ -207,7 +207,6 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/head
-          fetch-depth: 1
           persist-credentials: false
 
       - name: Setup Node 24
@@ -235,8 +234,10 @@ jobs:
         run: |
           set -uo pipefail
           mkdir -p evidence-logs
-          printf 'head=%s\nshard=%s/4\ncommand=npm run test:ui:all -- --project=webkit --shard=%s/4\n' "$CI_HEAD_SHA" "$WEBKIT_SHARD" "$WEBKIT_SHARD" > evidence-logs/identity.txt
-          npm run test:ui:all -- --project=webkit --shard="$WEBKIT_SHARD"/4 2>&1 | tee evidence-logs/webkit-results.txt
+          printf 'head=%s\nshard=%s/4\ncommand=npm run test:ui:all -- --project=webkit --shard=%s/4 --max-failures=0\n' "$CI_HEAD_SHA" "$WEBKIT_SHARD" "$WEBKIT_SHARD" > evidence-logs/identity.txt
+          # Override the normal script's fail-fast=1 only for this exhaustive
+          # acceptance run: preserve all 643 test outcomes, not one failure/shard.
+          npm run test:ui:all -- --project=webkit --shard="$WEBKIT_SHARD"/4 --max-failures=0 2>&1 | tee evidence-logs/webkit-results.txt
           code=${PIPESTATUS[0]}
           printf 'exit_code=%s\n' "$code" | tee evidence-logs/exit-status.txt
           exit "$code"

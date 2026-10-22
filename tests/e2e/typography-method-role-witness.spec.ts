@@ -194,10 +194,14 @@ test('a restored 9px stage explanation is caught by the same computed-style gate
 
 test('native Arial carrier control fails the same rendered role assertion', async ({page})=>{
   await page.goto('/research/seed-openevo/flow/openevo/');
-  const root=page.locator('[data-interactive-research-explainer="openevo"]');
+  const root=page.locator('[data-interactive-research-explainer="openevo"]').first();
+  await expect(root).toBeVisible();
   await waitForHydratedExplainer(root);
-  await root.locator('.irx-carrier-details > summary').click();
+  const details=root.locator('.irx-carrier-details');
+  await details.locator(':scope > summary').click();
+  await expect(details).toHaveAttribute('open','');
   const button=root.locator('.irx-carrier').first();
+  await expect(button).toBeVisible();
   const title=button.locator('strong');
   await assertReadableRole(title,13);
   await button.evaluate(node=>{(node as HTMLElement).style.fontFamily='Arial';});
