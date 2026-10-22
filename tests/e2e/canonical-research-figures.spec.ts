@@ -69,7 +69,8 @@ async function auditFigure(page: Page, selector: string, viewportWidth: number) 
       const lineHeight = Number.parseFloat(style.lineHeight) || fontSize * 1.5;
       const box = node.getBoundingClientRect();
       const lines = Math.max(1, Math.round(box.height / lineHeight));
-      const charsPerLine = cjk / lines;
+      // Measure actual column capacity; English words occupy lines too.
+      const charsPerLine = box.width / fontSize;
       if (lines >= 3 && charsPerLine < 7) {
         issues.push(`CJK prose is too narrow: ${charsPerLine.toFixed(1)} chars/line across ${lines} lines (${text.slice(0, 48)})`);
       }
@@ -200,4 +201,14 @@ test('legacy primer URLs stay stable but point readers to canonical ownership', 
     await expect(page.locator('#main-content h1').first()).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
   }
+});
+
+// A mixed-language caption is full prose; narrowing its real column must still fail.
+test('figure caption width gate accepts mixed prose and rejects a squeezed column', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/research/seed-openevo/flow/loops/', { waitUntil: 'domcontentloaded' });
+  const selector = '#fig-seed-openevo-update-target';
+  expect(await auditFigure(page, selector, 390)).toEqual([]);
+  await page.locator(selector + ' figcaption').evaluate(node => { (node as HTMLElement).style.width = '40px'; });
+  expect((await auditFigure(page, selector, 390)).some(issue => issue.includes('CJK prose is too narrow'))).toBe(true);
 });

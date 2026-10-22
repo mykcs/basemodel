@@ -2,6 +2,7 @@
 import type { Locale } from '../../i18n';
 import SeedOpenEvoResearchPageCore from './SeedOpenEvoResearchPageCore.astro';
 import ExplainerScrollLink from './ExplainerScrollLink.astro';
+import "../../styles/research-article.css";
 
 type DetailPage = 'seed' | 'openevo' | 'benchmarks' | 'webshop' | 'alfworld' | 'loops' | 'results';
 interface Props { locale: Locale; page: DetailPage }
@@ -43,7 +44,7 @@ const copy: Record<DetailPage, { title: string; lede: string }> = {
 
 const current = copy[page];
 ---
-<div class:list={['plain-detail', { 'plain-detail--results': page === 'results' }]} data-locale={locale}>
+<div class:list={['plain-detail', { 'evo-approved-reader': page !== 'results', 'plain-detail--results': page === 'results' }]} data-locale={locale}>
   {page !== 'results' && (
     <header class="plain-detail__header">
       <h1>{current.title}</h1>
@@ -56,10 +57,10 @@ const current = copy[page];
 </div>
 
 <style>
-  .plain-detail{width:min(1160px,calc(100% - 2rem));margin:1rem auto 4rem}
+  .plain-detail--results{width:min(1160px,calc(100% - 2rem));margin:1rem auto 4rem}
+  @media(max-width:720px){.plain-detail--results{width:min(100% - 1rem,1160px)}}
   .plain-detail__header{max-width:900px;padding:clamp(1.6rem,4vw,3.2rem) 0 1.3rem}
-  .plain-detail__header h1{margin:0 0 .7rem;letter-spacing:-.035em}
-  .plain-detail__header p{max-width:70ch;margin:0;color:var(--muted);font-size:1rem;line-height:1.72}
+  .plain-detail__header p{margin:0;color:var(--muted)}
   .plain-detail__interactive{margin:0 0 2.6rem}
   .plain-detail__interactive :global(.irx){width:100%;margin:0}
   .plain-detail-core{padding-top:.4rem;border-top:1px solid color-mix(in srgb,var(--line) 74%,transparent)}
@@ -67,7 +68,7 @@ const current = copy[page];
   .plain-detail-core :global(.mission-page__header),.plain-detail-core :global(.mission-tabs){display:none}
   .plain-detail__interactive :global(.irx + .irx){margin-top:1.5rem}
   .plain-detail-core{width:min(780px,100%);margin-inline:auto}
-  @media(max-width:720px){.plain-detail{width:min(100% - 1rem,1160px)}.plain-detail__header{padding-top:1.2rem}.plain-detail__header p{font-size:.9rem}.plain-detail__interactive{margin-bottom:1.6rem}}
+  @media(max-width:720px){.plain-detail__header{padding-top:1.2rem}.plain-detail__interactive{margin-bottom:1.6rem}}
 </style>
 
 <style is:global>

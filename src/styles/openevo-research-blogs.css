@@ -1,55 +1,12 @@
-/* OpenEVO three-article reading surface. Scoped to these articles.
-   Light body #f6f7f5 matches the owner-preferred round-7 HTML; the rest of BaseModel stays unchanged. */
-html[data-theme="light"]:has(.evo-blog) {
-  --color-bg:#f6f7f5;
-  --bg:#f6f7f5;
-  --color-surface:#ffffff;
-  --surface:#ffffff;
-  --color-surface-muted:#f1f5f2;
-  --surface-muted:#f1f5f2;
-}
-.evo-blog {
-  --paper:#fff;
-  --paper-line:#dde4df;
-  --paper-muted:#53635c;
-  --paper-ink:#1f2b29;
-  /* One hierarchy for evidence-bearing charts, intervals and tables in the study series. */
-  --research-evidence-frame:color-mix(in srgb,var(--paper-ink) 25%,var(--paper));
-  --research-evidence-title-size:1.06rem;
-  --research-evidence-caption-size:1rem;
-  --research-evidence-inset:clamp(.95rem,2vw,1.35rem);
-  --research-evidence-single-width:38rem;
-  --research-evidence-double-width:55.625rem;
-  width:min(1060px,calc(100% - 2rem));
-  margin:2.2rem auto 5rem;
-  padding:clamp(1.5rem,4.5vw,3.8rem);
-  background:var(--paper);
-  color:var(--paper-ink);
-  border:1px solid var(--paper-line);
-  border-radius:var(--radius-control);
-  font-size:17px;
-  line-height:1.8;
-  font-family:Inter,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
-  box-sizing:border-box;
-}
-html[data-theme="dark"] .evo-blog {
-  --paper:#1c2723;
-  --paper-line:#34463e;
-  --paper-muted:#aabdb3;
-  --paper-ink:#e8f0ea;
-}
+/* OpenEVO article-specific composition. Shared paper frame and prose are owned by research-article.css. */
 .evo-blog *, .evo-blog *::before, .evo-blog *::after {box-sizing:border-box}
-.evo-blog h1,.evo-blog h2,.evo-blog h3,.evo-blog h4 {color:var(--paper-ink);line-height:1.33;letter-spacing:-.018em}
-.evo-blog h1{font-size:clamp(2rem,3vw,2.65rem);letter-spacing:-.033em;margin:0 0 1.1rem;max-width:18ch}
-.evo-blog h2{font-size:clamp(1.5rem,2.1vw,1.88rem);margin:0 0 1rem}
-.evo-blog h3{font-size:1.28rem;margin:1.5rem 0 .6rem}
-.evo-blog h4{font-size:1.08rem}
-.evo-blog p,.evo-blog li{font-size:1em;line-height:1.8}
-.evo-blog p{max-width:81ch;margin:.85rem 0}
+.evo-blog h1{margin:0 0 1.1rem}
+.evo-blog h2{margin:0 0 1rem}
+.evo-blog h3{margin:1.5rem 0 .6rem}
+.evo-blog p{margin:.85rem 0}
 .evo-blog a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.22em}
 .evo-blog a:hover{color:var(--paper-muted)}
 .evo-blog strong{font-weight:690}
-.evo-blog .evo-article__lede {font-size:1.08em;max-width:80ch;color:var(--paper-ink);line-height:1.82}
 .evo-blog .evo-article__abstract {padding:1.3rem 0;border-block:1px solid var(--paper-line);margin:1.6rem 0}
 .evo-blog .evo-article__abstract h2 {font-size:1.3rem;margin:.1rem 0 .5rem}
 .evo-blog .evo-article__section{padding:2rem 0 2.2rem;border-top:1px solid var(--paper-line);scroll-margin-top:5.8rem}
@@ -147,8 +104,6 @@ html[data-theme="dark"] .evo-blog {
 .evo-blog .advisor-viz__name,.evo-blog .advisor-viz__value{font-size:.91em}
 .evo-blog .math-formula {max-width:100%}
 @media(max-width:720px){
- .evo-blog{width:calc(100% - 1.2rem);margin:1.1rem auto 3rem;padding:1.15rem .98rem;font-size:16.5px;line-height:1.75}
- .evo-blog h1{font-size:clamp(1.85rem,8vw,2.3rem)}
  .evo-blog .evo-article__toc ol{grid-template-columns:1fr}
  .evo-blog .evo-article__siblings ol{grid-template-columns:1fr;gap:0}
  .evo-blog .evo-article__siblings a{padding:.45rem 0}

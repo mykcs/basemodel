@@ -5,6 +5,7 @@ import OpenEvoArticleNavigation from '../../../../../components/research/OpenEvo
 import AdvisorTenMethodExplainer from '../../../../../components/research/AdvisorTenMethodExplainer.astro';
 import MathFormula from '../../../../../components/common/MathFormula.astro';
 import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
+import "../../../../../styles/research-article.css";
 ---
 
 <AppLayout
@@ -12,7 +13,7 @@ import ExternalBrandMark from '../../../../../components/common/ExternalBrandMar
   description="从 OpenEVO 的 BUNDLE 状态、LoRA/SD-LoRA 和普通参数累积，推导 Bounded 固定容量与 β/Gated Delta 的不同写入机制，并区分公式角色与实验身份。"
   locale="zh"
 >
-  <main class="evo-blog evo-article" data-evo-blog="methods" data-paper-citation-style="plain-text" data-reader-page="research-blog" data-copy-review>
+  <main class="evo-blog evo-article evo-approved-reader" data-evo-blog="methods" data-paper-citation-style="plain-text" data-reader-page="research-blog" data-copy-review>
     <header class="evo-article__intro">
       <h1>OpenEVO 怎样保存和更新经验</h1>
       <p class="evo-article__lede" data-reader-purpose>OpenEVO 让智能体从已完成的任务中提取经验，再把更新后的状态交给下一轮模型。我们在 WebShop 任务中研究三条主要的参数路线：保留每轮更新、限制长期参数容量，以及调节新经验的写入方式。</p>

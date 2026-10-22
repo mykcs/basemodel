@@ -47,7 +47,7 @@ describe('SD-LoRA v2 publication', () => {
   });
 
   it('keeps the owner-facing plain-language conclusion visible', () => {
-    expect(page).toContain('Stable Reduction 保留历史 component，训练约快 2×');
+    expect(page).toContain('Stable Reduction 保留历史参数组件，训练约快 2×');
     expect(page).toContain('目前的小规模真实 WebShop 检查没有发现它因为加速而明显变笨');
     expect(page).toContain('另一条并行线已经把增长历史折成固定 rank128');
   });

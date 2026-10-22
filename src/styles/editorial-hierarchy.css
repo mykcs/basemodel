@@ -3,15 +3,15 @@
  * Keep section headings quieter than page titles so supporting material never competes with the page topic.
  */
 
-:where(.page-header, .detail-layout, .plain-detail, .mission-page, .plain-mission-hub, .seed-benchmark-guide, .gateway, .agent-primer, .agent-bridge, .paper-learning-guide, .openevo-extension, .mechanism-section, .mechanism-dialogues, .trajectory-lab, .program, .parametric) h1 {
+:where(.page-header, .detail-layout, .plain-detail, .mission-page, .plain-mission-hub, .seed-benchmark-guide, .gateway, .agent-primer, .agent-bridge, .paper-learning-guide, .openevo-extension, .mechanism-section, .mechanism-dialogues, .trajectory-lab, .program, .parametric) h1:not(:where(.evo-approved-reader *)) {
   max-width: 24ch;
   font-size: clamp(2rem, 4.6vw, 3.55rem) !important;
   line-height: 1.04 !important;
   letter-spacing: -0.035em !important;
 }
 
-:where(.section-heading, .mission-section__heading, .oe-heading, .mechanism-heading, .trajectory-lab__header, .visual-primer-head, .program__header, .parametric__header) h2,
-:where(.detail-section, .section, .mission-section, .oe-section, .primer-section, .agent-bridge, .paper-learning-guide, .program, .parametric) > h2 {
+:where(.section-heading, .mission-section__heading, .oe-heading, .mechanism-heading, .trajectory-lab__header, .visual-primer-head, .program__header, .parametric__header) h2:not(:where(.evo-approved-reader *)),
+:where(.detail-section, .section, .mission-section, .oe-section, .primer-section, .agent-bridge, .paper-learning-guide, .program, .parametric) > h2:not(:where(.evo-approved-reader *)) {
   max-width: 34ch;
   font-size: clamp(1.3rem, 2.4vw, 2rem) !important;
   line-height: 1.15 !important;
@@ -19,7 +19,7 @@
   font-weight: 720 !important;
 }
 
-:where(.section-heading, .mission-section__heading, .oe-heading, .mechanism-heading, .bridge-title-row, .primer-section-head, .program, .parametric, .gateway, .trajectory-lab, .mechanism-dialogues) h3 {
+:where(.section-heading, .mission-section__heading, .oe-heading, .mechanism-heading, .bridge-title-row, .primer-section-head, .program, .parametric, .gateway, .trajectory-lab, .mechanism-dialogues) h3:not(:where(.evo-approved-reader *)) {
   max-width: 42ch;
   font-size: clamp(1rem, 1.7vw, 1.35rem) !important;
   line-height: 1.25 !important;
@@ -38,7 +38,7 @@
 }
 
 @media (max-width: 640px) {
-  :where(.page-header, .detail-layout, .plain-detail, .mission-page, .plain-mission-hub, .seed-benchmark-guide, .gateway, .agent-primer, .agent-bridge, .paper-learning-guide, .openevo-extension, .mechanism-section, .mechanism-dialogues, .trajectory-lab, .program, .parametric) h1 {
+  :where(.page-header, .detail-layout, .plain-detail, .mission-page, .plain-mission-hub, .seed-benchmark-guide, .gateway, .agent-primer, .agent-bridge, .paper-learning-guide, .openevo-extension, .mechanism-section, .mechanism-dialogues, .trajectory-lab, .program, .parametric) h1:not(:where(.evo-approved-reader *)) {
     font-size: clamp(1.9rem, 9.5vw, 2.85rem) !important;
   }
 }
