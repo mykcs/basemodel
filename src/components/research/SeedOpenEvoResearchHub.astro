@@ -1,4 +1,5 @@
 ---
+import "../../styles/research-article.css";
 import { localePath, type Locale } from '../../i18n';
 import SeedOpenEvoMissionHero from './SeedOpenEvoMissionHero.astro';
 import SeedOpenEvoTrainingDesignOverview from './SeedOpenEvoTrainingDesignOverview.astro';
@@ -32,11 +33,11 @@ const objectGroups = [
   },
 ];
 ---
-<div class="mission-page plain-mission-hub">
+<div class="mission-page plain-mission-hub evo-approved-reader evo-reading-overview">
   <SeedOpenEvoMissionHero locale={locale} compact />
 
   <section class="mission-section" id="questions" aria-labelledby="research-objects-title">
-    <div class="mission-section__heading"><span>01</span><strong id="research-objects-title">{t('模型、任务与比较范围', 'Models, tasks, and comparison scope')}</strong></div>
+    <div class="mission-section__heading"><h2 id="research-objects-title"><span class="evo-article__heading-number" aria-hidden="true">01</span> {t('模型、任务与比较范围', 'Models, tasks, and comparison scope')}</h2></div>
     <p class="section-intro">{t('完整系统比较先固定模型、任务和评分；只有要单独归因到第二阶段学习器时，才进一步要求两边共享第一阶段证据与同一个起点。','A full-system comparison first pins the model, tasks, and scoring. Only Stage-2 attribution additionally requires shared Stage-1 evidence and the same starting state.')}</p>
     <dl class="object-map">
       {objectGroups.map((group)=><div class="object-map__row"><dt>{group.label}</dt><dd>{group.items.map((item)=>'href' in item ? <a href={item.href}><strong>{item.title}</strong><span>{item.body}</span></a> : <div class="object-map__fact"><strong>{item.title}</strong><span>{item.body}</span></div>)}</dd></div>)}
@@ -44,22 +45,22 @@ const objectGroups = [
   </section>
 
   <section class="mission-section" id="training-design" aria-labelledby="training-design-title">
-    <div class="mission-section__heading"><span>02</span><h2 id="training-design-title">{t('WebShop 两阶段学习', 'WebShop two-stage learning')}</h2></div>
+    <div class="mission-section__heading"><h2 id="training-design-title"><span class="evo-article__heading-number" aria-hidden="true">02</span> {t('WebShop 两阶段学习', 'WebShop two-stage learning')}</h2></div>
     <p class="section-intro">{t('WebShop 使用两个阶段。OpenEvo 的任务先做完，再学习：第一阶段（Stage 1，做题与事后复盘）由 Qwen 自己完成购物任务，任务结束后 MiniMax（外部复盘模型，只在任务结束后回看轨迹的分析模型）只回看已保存轨迹，不替 Qwen 选动作。第二阶段（Stage 2，持续学习）才用这些轨迹和复盘去更新文字经验、可复用策略、行为与恢复规则和少量模型适配参数。外部模型不能在做题过程中替 Qwen 选动作；这六步只说明 WebShop，不自动代表 ALFWorld 使用同一交互流程。', 'WebShop uses two stages. OpenEvo finishes the task before learning from it: in Stage 1, Qwen completes the shopping task itself, and only after the task ends does MiniMax, an external review model, inspect the saved trace without choosing actions for Qwen. Stage 2 is continual learning, which uses those traces and reviews to update written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter. The external model never chooses actions during the task, and this six-step example describes WebShop only.')}</p>
     <SeedOpenEvoTrainingDesignOverview locale={locale} />
   </section>
 
   <section class="mission-section" id="site-map">
-    <div class="mission-section__heading"><span>03</span><h2>{t('实验运行与结果比较', 'Experiment execution and result comparison')}</h2></div>
+    <div class="mission-section__heading"><h2><span class="evo-article__heading-number" aria-hidden="true">03</span> {t('实验运行与结果比较', 'Experiment execution and result comparison')}</h2></div>
     <ol class="run-step-grid">
-      <li><span>1</span><h3>{t('对齐 SEED 的实验条件', 'Align SEED conditions')}</h3><p>{t('固定模型、ALFWorld / WebShop 环境和评测条件，避免把“方法差异”和“实验设置差异”混在一起。','Pin the model, ALFWorld / WebShop environments, and evaluation conditions so method differences are not confused with setup differences.')}</p><a href={p('/research/seed-openevo/flow/seed/')}>{t('SEED 方法','SEED method')} →</a></li>
-      <li><span>2</span><h3>{t('运行 OpenEvo', 'Run OpenEvo')}</h3><p>{t('正式科学状态以 openevo-experiment 为准；旧的 RTX6 路线保留为历史证据，不代表现在的运行状态。','Current formal scientific state is governed by openevo-experiment; the RTX6 path is retained as historical evidence, not live state.')}</p><a href={p('/research/seed-openevo/study/run/')}>{t('实验指南','Experiment guide')} →</a></li>
-      <li><span>3</span><h3>{t('比较结果与失败原因', 'Compare results and failures')}</h3><p>{t('比较任务分数、完整成功、交互轨迹和失败模式，再检查 LoRA（只训练少量适配参数的方法）等参数更新状态，决定下一轮真正能改变结论的实验。','Compare scores, exact success, trajectories, failure modes, and LoRA and other parameter-update state before choosing the next experiment that can change the conclusion.')}</p><a href={p('/research/seed-openevo/study/results/')}>{t('研究结果','Research findings')} →</a></li>
+      <li><h3 id={t('对齐-seed-的实验条件','align-seed-conditions')}><span class="evo-article__heading-number" aria-hidden="true">1</span> {t('对齐 SEED 的实验条件', 'Align SEED conditions')}</h3><p>{t('固定模型、ALFWorld / WebShop 环境和评测条件，避免把“方法差异”和“实验设置差异”混在一起。','Pin the model, ALFWorld / WebShop environments, and evaluation conditions so method differences are not confused with setup differences.')}</p><a href={p('/research/seed-openevo/flow/seed/')}>{t('SEED 方法','SEED method')} →</a></li>
+      <li><h3 id={t('运行-openevo','run-openevo')}><span class="evo-article__heading-number" aria-hidden="true">2</span> {t('运行 OpenEvo', 'Run OpenEvo')}</h3><p>{t('正式科学状态以 openevo-experiment 为准；旧的 RTX6 路线保留为历史证据，不代表现在的运行状态。','Current formal scientific state is governed by openevo-experiment; the RTX6 path is retained as historical evidence, not live state.')}</p><a href={p('/research/seed-openevo/study/run/')}>{t('实验指南','Experiment guide')} →</a></li>
+      <li><h3 id={t('比较结果与失败原因','compare-results-and-failures')}><span class="evo-article__heading-number" aria-hidden="true">3</span> {t('比较结果与失败原因', 'Compare results and failures')}</h3><p>{t('比较任务分数、完整成功、交互轨迹和失败模式，再检查 LoRA（只训练少量适配参数的方法）等参数更新状态，决定下一轮真正能改变结论的实验。','Compare scores, exact success, trajectories, failure modes, and LoRA and other parameter-update state before choosing the next experiment that can change the conclusion.')}</p><a href={p('/research/seed-openevo/study/results/')}>{t('研究结果','Research findings')} →</a></li>
     </ol>
   </section>
 
   <section class="mission-section" id="evidence">
-    <div class="mission-section__heading"><span>04</span><h2>{t('每轮都要留下可重建的证据', 'Every run must leave reconstructable evidence')}</h2></div>
+    <div class="mission-section__heading"><h2><span class="evo-article__heading-number" aria-hidden="true">04</span> {t('每轮都要留下可重建的证据', 'Every run must leave reconstructable evidence')}</h2></div>
     <p class="section-intro">{t('实验跑完不代表结论就可信。四类记录分别证明环境真的运行、模型是否更新、任务结果发生了什么，以及这一轮实验到底是哪一轮。','A completed run is not automatically a trustworthy scientific result. Four evidence groups show that the environment ran, whether the model changed, what happened on the tasks, and which run produced the evidence.')}</p>
     <ol class="evidence-grid">
       <li><span>01</span><strong>{t('环境与模型', 'Environment and model')}</strong><p>{t('真实环境重新开始一题（reset）、真实 CUDA 计算，以及明确的模型版本号（revision，也就是本次实验固定的模型版本）。','A real environment reset, real CUDA execution, and a pinned model revision.')}</p></li>
@@ -72,14 +73,14 @@ const objectGroups = [
 </div>
 
 <style>
-  .mission-page{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem}
+  .mission-page{}
   .mission-section{padding:clamp(1.8rem,4vw,3rem) 0;border-top:1px solid var(--line)}
   .plain-mission-hub>.mission-section:first-of-type{padding-top:1rem}
-  .mission-section__heading{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.65rem;margin-bottom:.55rem}
+  .mission-section__heading{display:grid;grid-template-columns:minmax(0,1fr);gap:.65rem;margin-bottom:.55rem}
   .mission-section__heading>span{color:var(--accent-deep);font:800 .72rem/1.4 var(--font-mono)}
   .mission-section__heading h2{margin:0}
   .mission-section__heading>strong{display:block;font-size:1.05rem;line-height:1.3;letter-spacing:-.01em}
-  .section-intro{max-width:72ch;margin:0 0 1.25rem 3.05rem;color:var(--muted);font-size:.9rem;line-height:1.65}
+  .section-intro{max-width:72ch;margin:0 0 1.25rem;color:var(--muted);font-size:var(--article-body-size, .9rem);line-height:var(--article-body-leading, 1.65)}
   .object-map{margin:0;padding:0;border-bottom:1px solid var(--line)}
   .object-map__row{display:grid;grid-template-columns:minmax(7.5rem,10rem) minmax(0,1fr);gap:1.25rem;padding:1rem 0;border-top:1px solid var(--line)}
   .object-map__row dt{color:var(--muted);font-size:.76rem;font-weight:760;line-height:1.5}
@@ -96,18 +97,18 @@ const objectGroups = [
   .run-step-grid li+li{padding-left:1.35rem;border-left:1px solid var(--line)}
   .run-step-grid li:not(:last-child)::after{content:'→';position:absolute;top:1.05rem;right:-.48rem;z-index:1;padding:0 .2rem;color:var(--muted);background:var(--canvas)}
   .run-step-grid li>span{color:var(--accent-deep);font:800 .72rem/1.4 var(--font-mono)}
-  .run-step-grid h3{margin:.55rem 0 .4rem;font-size:1rem}
-  .run-step-grid p{margin:0;color:var(--muted);font-size:.8rem;line-height:1.6}
+  .run-step-grid h3{margin:.55rem 0 .4rem;font-size:var(--article-subsection-size, 1rem)}
+  .run-step-grid p{margin:0;color:var(--muted);font-size:var(--article-body-size, .8rem);line-height:var(--article-body-leading, 1.6)}
   .run-step-grid a{margin-top:auto;padding-top:.85rem;font-size:.78rem;font-weight:750}
   .evidence-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:0;padding:0;border-top:1px solid var(--line);list-style:none}
   .evidence-grid li{padding:1rem 1.25rem 1rem 0;border-bottom:1px solid var(--line)}
   .evidence-grid li:nth-child(even){padding-left:1.25rem;border-left:1px solid var(--line)}
   .evidence-grid li>span{color:var(--accent-deep);font:800 .68rem/1 var(--font-mono)}
   .evidence-grid strong{display:block;margin-top:.55rem}
-  .evidence-grid p{margin:.4rem 0 0;color:var(--muted);font-size:.8rem;line-height:1.55}
+  .evidence-grid p{margin:.4rem 0 0;color:var(--muted);font-size:var(--article-body-size, .8rem);line-height:var(--article-body-leading, 1.55)}
   .evidence-model-link{margin:.85rem 0 0;font-size:.8rem}.evidence-model-link a{color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}
   @media(max-width:760px){
-    .mission-page{width:min(100% - 1rem,1120px)}
+    .mission-page{}
     .section-intro{margin-left:0}
     .object-map__row{grid-template-columns:1fr;gap:.6rem}
     .object-map__row dd,.object-map__row:first-child dd{grid-template-columns:1fr}
@@ -120,4 +121,9 @@ const objectGroups = [
     .evidence-grid{grid-template-columns:1fr}
     .evidence-grid li,.evidence-grid li:nth-child(even){padding:1rem 0;border-left:0}
   }
+@container reading-overview (max-width:900px){
+  .object-map__row dd{grid-template-columns:1fr}
+  .object-map__row a,.object-map__fact{grid-template-columns:1fr;gap:.25rem;padding:.8rem 0}
+  .object-map__row a+a{border-left:0;border-top:1px solid var(--line)}
+}
 </style>

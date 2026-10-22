@@ -332,8 +332,7 @@ const twentyRoundScoreWindows = finalResult
   </header>
 
   <section class="paper__section evo-article__section" id="motivation" aria-labelledby="motivation-title">
-    <p class="paper__section-number">1</p>
-    <h2 id="motivation-title">{t('我们先解决 SD-LoRA 越训练越慢', 'We first address SD-LoRA slowing down as history grows')}</h2>
+    <h2 id="motivation-title"><span class="evo-article__heading-number" aria-hidden="true">1</span> {t('我们先解决 SD-LoRA 越训练越慢', 'We first address SD-LoRA slowing down as history grows')}</h2>
     <p>{t(
       '普通 OpenEVO 的参数更新方式是：每轮训练得到一个新的 SD-LoRA component，并把过去的 component 一起保留到后续模型。这样参数历史会随轮数持续变长；到了后期，每一轮训练都要经过越来越多的低秩路径，所以参数更新越来越慢。',
       'Ordinary OpenEVO updates parameters by producing a new SD-LoRA component each round and retaining the earlier components in later model states. The parameter history therefore grows with round count, so late training must traverse more and more low-rank paths and parameter updates become slower.',
@@ -352,8 +351,7 @@ const twentyRoundScoreWindows = finalResult
   </section>
 
   <section class="paper__section evo-article__section" id="method" aria-labelledby="method-title">
-    <p class="paper__section-number">2</p>
-    <h2 id="method-title">{t('Bounded State 与 β 组件：固定容量与写入强度控制', 'Bounded State and the β component: fixed capacity and write-strength control')}</h2>
+    <h2 id="method-title"><span class="evo-article__heading-number" aria-hidden="true">2</span> {t('Bounded State 与 β 组件：固定容量与写入强度控制', 'Bounded State and the β component: fixed capacity and write-strength control')}</h2>
 
     <h3>2.1 {t('我们把长期参数历史固定在 rank128', 'We keep the long-term parameter history at rank128')}</h3>
     <p>{t(
@@ -580,8 +578,7 @@ delta_a = (beta_eff_a / c1_norm) * (da / da_norm)`}</code></pre>
   </section>
 
   <section class="paper__section evo-article__section" id="formal-design" data-result-stage="setup" aria-labelledby="experiment-title">
-    <p class="paper__section-number">3</p>
-    <h2 id="experiment-title">{t('实验设置：Qwen3-1.7B × WebShop', 'Experiments: Qwen3-1.7B × WebShop')}</h2>
+    <h2 id="experiment-title"><span class="evo-article__heading-number" aria-hidden="true">3</span> {t('实验设置：Qwen3-1.7B × WebShop', 'Experiments: Qwen3-1.7B × WebShop')}</h2>
     <p>{t(
       '这一节先说明三条实验各自改了什么、哪些条件保持相同。三条已完成实验都使用 Qwen3-1.7B 和 WebShop，Stage 2 都跑 160 轮。真正的正式匹配对照只有 Bounded Online Recurrence 与 Bounded Online Recurrence + β-gating（α 固定为 1）：它们每轮 128 个 rollout，并对齐任务、seed、sampling、horizon、replay 和 optimizer recipe。普通 OpenEVO 是更早完成的前序实验；动态 α + 动态 β 还没有运行。',
       'This section first states what each run changes and which conditions are held fixed. All three completed experiments use Qwen3-1.7B and WebShop and run Stage 2 for 160 rounds. The formal matched pair is Bounded Online Recurrence versus Bounded Online Recurrence + β-gating (α fixed at 1): both use 128 rollouts per round with matched tasks, seeds, sampling, horizon, replay, and optimizer recipe. Ordinary OpenEVO is an earlier predecessor run; dynamic α + dynamic β has not been run.',
@@ -726,8 +723,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   </section>
 
   <section class="paper__section esg__results evo-article__section" id="formal-result" data-result-stage="task-result-detail" aria-labelledby="result-title">
-  <p class="paper__section-number">4</p>
-  <h2 id="result-title">{t('实验结果：Task Score、成功率与计算代价', 'Results: Task Score, success, and compute')}</h2>
+  <h2 id="result-title"><span class="evo-article__heading-number" aria-hidden="true">4</span> {t('实验结果：Task Score、成功率与计算代价', 'Results: Task Score, success, and compute')}</h2>
   <p class="paper__lede">{t(
     '先把“模型做题表现怎样”讲清楚，再进入 loss、参数几何和行为诊断。这里依次看 160 轮原始 Task Score、每 20 轮平均、最后 20 轮平均、固定 128 题终评，以及后两组正式匹配对照的训练期成功率。',
     'We first establish task performance before moving into loss, parameter geometry, and behavior diagnostics. The sequence is the raw 160-round Task Score, non-overlapping 20-round means, the last-20 mean, the fixed 128-task final, and the matched training-period success statistics for the latter two runs.',
@@ -986,8 +982,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
 </section>
 
 <section class="paper__section evo-article__section" id="analysis" data-result-stage="diagnostics" aria-labelledby="analysis-title">
-  <p class="paper__section-number">5</p>
-  <h2 id="analysis-title">{t('训练过程中发生了什么？从 loss 到行为变化', 'What changed during training? From loss to behavior')}</h2>
+  <h2 id="analysis-title"><span class="evo-article__heading-number" aria-hidden="true">5</span> {t('训练过程中发生了什么？从 loss 到行为变化', 'What changed during training? From loss to behavior')}</h2>
   <p class="paper__lede">{t(
     '分数现象已经在上一节先摆出来，包括 R160–R199 的延长轨迹。这里再按“优化 → 参数大小 → Task Vector → 谱与方向 → 输出路径 → 行为分布”逐层往里看，并把原来只到 R159 的问题重新检查到 R199。每个指标都先解释它是什么，再放证据，最后才说它能解释到哪里。',
     'The previous section establishes the score pattern, including the R160–R199 continuation. We now move inward in a fixed order—optimization → parameter magnitude → Task Vector → spectrum and direction → output path → behavior distribution—and revisit the questions that previously stopped at R159 through R199. Each metric is defined before its evidence and interpretation.',
@@ -1245,8 +1240,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
 </section>
 
   <section class="paper__section evo-article__section" id="next-question" data-result-stage="next-question" aria-labelledby="next-question-title">
-    <p class="paper__section-number">6</p>
-    <h2 id="next-question-title">{t('现在真正卡在哪里，以及下一步先做什么', 'What is actually blocked now, and what should come next')}</h2>
+    <h2 id="next-question-title"><span class="evo-article__heading-number" aria-hidden="true">6</span> {t('现在真正卡在哪里，以及下一步先做什么', 'What is actually blocked now, and what should come next')}</h2>
     <p>{t(
       '现在最重要的研究判断已经变了：问题不是“还能给 Gated Delta 再加什么机制”，而是先把几个更基础的变量拆开。Bounded 已经证明固定容量有明确工程价值，但能力保持还不够；后验 rank95 又提示 128 可能远大于实际活跃维度；β 组的负结果则说明更复杂的 controller 不能默认带来更好任务表现。',
       'The main research judgment has changed: the question is no longer what extra mechanism can be added to Gated Delta, but how to separate more basic variables first. Bounded has clear engineering value but does not yet fully preserve capability; posterior rank95 suggests 128 may be far above the active dimensionality; and the negative β result shows that a more complex controller cannot be assumed to improve task performance.',
@@ -1292,8 +1286,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   </section>
 
   <section class="paper__section evo-article__section" id="evidence" data-result-stage="evidence" aria-labelledby="evidence-title">
-    <p class="paper__section-number">7</p>
-    <h2 id="evidence-title">{t('证据与复现身份：如何确认这些结果来自哪一组实验', 'Evidence and reproducibility identity: how to identify the exact experiments behind these results')}</h2>
+    <h2 id="evidence-title"><span class="evo-article__heading-number" aria-hidden="true">7</span> {t('证据与复现身份：如何确认这些结果来自哪一组实验', 'Evidence and reproducibility identity: how to identify the exact experiments behind these results')}</h2>
     <p>{t(
       '这一节不再解释实验结果，而是回答复现和审计问题：每条曲线、表格和结论究竟对应哪一个正式实验身份，应该去哪里查原始证据。网页上的易读名称可以调整，但底层实验 ID、封存结果和证据入口必须保持不变。',
       'This section no longer interprets results. It answers the reproducibility and audit question: which exact formal experiment identity each curve, table, and conclusion belongs to, and where the underlying evidence can be checked. Reader-facing names may improve, but the underlying experiment IDs, sealed results, and evidence entry points must remain unchanged.',
@@ -1362,7 +1355,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   .paper__analysis-summary{max-width:900px;margin:34px 0 0;padding:22px 24px;border:1px solid var(--border-color);border-radius:var(--radius-panel);background:var(--surface-muted)}
   .paper__analysis-summary p:last-child{margin-bottom:0}
 
-  .paper__section-number{margin:0 0 5px;color:var(--text-secondary);font:700 1rem/1.3 var(--font-mono)}
+
   .paper__links{display:flex;flex-wrap:wrap;gap:8px 18px}.paper a{color:var(--accent);font-weight:700;text-underline-offset:3px}
   .paper-table-figure{margin:18px 0 12px}
   .paper-table-figure .paper-table-wrap{margin:0;min-width:0}

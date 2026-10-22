@@ -100,8 +100,7 @@ const candidates = [
   </aside>
 
   <section class="q17-analysis__section q17-analysis__final evo-article__section" id="final" data-result-stage="direct-result" aria-labelledby="final-title">
-    <p class="q17-analysis__section-index">01 · {t('唯一一次冻结终评', 'The one frozen final')}</p>
-    <h2 id="final-title">{t('最终状态在 128 道冻结题上得到 60.72 / 100，50 道题完整成功', 'The sealed final state scored 60.72 / 100 with 50 exact successes out of 128')}</h2>
+    <h2 id="final-title"><span class="evo-article__heading-number" aria-hidden="true">01</span> {t('最终状态在 128 道冻结题上得到 60.72 / 100，50 道题完整成功', 'The sealed final state scored 60.72 / 100 with 50 exact successes out of 128')}</h2>
     <p class="q17-analysis__plain-bridge"><strong>{t('可以把它理解成一次封卷考试：', 'Think of it as a sealed one-shot exam:')}</strong>{t('训练期间看不到这 128 道 final 题，D1 也没有打开它们；训练和 D1 都结束以后，原始 R159 才把这套题打开一次。这样做是为了避免“看完考题或分数以后再挑模型”。', 'the 128 final tasks stayed hidden during training, and D1 did not open them either. Only after training and D1 were finished did the original R159 open that panel once. This prevents choosing a model after seeing the exam or its score.')}</p>
     <div class="q17-analysis__final-grid">
       <div class="q17-analysis__final-number"><span>{t('Final Task Score', 'Final Task Score')}</span><strong>60.716</strong><small>/ 100</small></div>
@@ -118,8 +117,7 @@ const candidates = [
   </section>
 
   <section class="q17-analysis__section evo-article__section" id="trajectory" data-result-stage="optimization" aria-labelledby="trajectory-title">
-    <p class="q17-analysis__section-index">02 · {t('完整训练轨迹', 'Complete training trajectory')}</p>
-    <h2 id="trajectory-title">{t('训练后段恢复了，但训练曲线不能替代最终考试', 'Training recovered late, but the training curve is not the final exam')}</h2>
+    <h2 id="trajectory-title"><span class="evo-article__heading-number" aria-hidden="true">02</span> {t('训练后段恢复了，但训练曲线不能替代最终考试', 'Training recovered late, but the training curve is not the final exam')}</h2>
     <p>{t(`前 20 轮平均 Score 是 41.83，最后 20 轮是 67.07；R159 是 72.90。与此同时，SD-LoRA training loss 从 1.046 降到 ${dynamics.loss.at(-1)?.loss.toFixed(3)}。这说明训练过程确实持续改变参数与任务表现，但每轮抽到的题不同，因此只能把它当成学习轨迹。`, `Mean Score was 41.83 over the first 20 rounds and 67.07 over the last 20; R159 reached 72.90. Meanwhile SD-LoRA training loss fell from 1.046 to ${dynamics.loss.at(-1)?.loss.toFixed(3)}. Training therefore kept changing both parameters and task behavior, but each round sampled different tasks, so this remains trajectory evidence rather than a fixed-panel endpoint.`)}</p>
     <p class="q17-analysis__interpretation" data-wandb-native-workspace><strong>{t('Q17 的 W&B 展示现在使用原生 Workspace LinePlot。', 'Q17 now uses native W&B Workspace LinePlot panels.')}</strong>{t(' 正式 160 轮运行本身没有 live W&B training run；2026-09-15 我们把同一份封存的 R0–R159 Score 和 159 个 SD-LoRA loss 点作为 scalar history 后补进 W&B，2026-09-19 再用两张原生 LinePlot 保存成 Workspace。这个 Workspace 只负责交互查看，不改变封存证据、Final 结果或科学权威。更早的 1.7B Stage2 W&B 仍保留为不同实验的历史观测。', ' The formal 160-round run itself had no live W&B training run. On 2026-09-15 we backfilled the same sealed R0–R159 Score series and 159 SD-LoRA loss points as scalar history, then on 2026-09-19 saved two native LinePlot panels in a W&B Workspace. This Workspace is an interactive observability view only; it does not change the sealed evidence, the Final result, or scientific authority. The earlier 1.7B Stage2 W&B run remains historical observability for a different experiment.')}</p>
     <p class="q17-analysis__related"><a href={q17WandbWorkspace} target="_blank" rel="noreferrer">{t('打开 Q17 原生 W&B Workspace ↗', 'Open the native Q17 W&B Workspace ↗')}</a><a href={q17WandbAuditHref}>{t('查看 Q17 W&B lineage 审计', 'Open the Q17 W&B lineage audit')}</a><a href={historicalWandb17} target="_blank" rel="noreferrer">{t('历史 1.7B Stage2 W&B（不同实验）↗', 'Historical 1.7B Stage2 W&B (different experiment) ↗')}</a></p>
@@ -145,8 +143,7 @@ const candidates = [
   </section>
 
   <section class="q17-analysis__section evo-article__section" id="reliability" data-result-stage="behavior" aria-labelledby="reliability-title">
-    <p class="q17-analysis__section-index">03 · {t('平台期里真正改善了什么', 'What actually improved through the plateau')}</p>
-    <h2 id="reliability-title">{t('同类题的稳定性提升更明显，覆盖范围只小幅扩大', 'Reliability improved more clearly than task coverage')}</h2>
+    <h2 id="reliability-title"><span class="evo-article__heading-number" aria-hidden="true">03</span> {t('同类题的稳定性提升更明显，覆盖范围只小幅扩大', 'Reliability improved more clearly than task coverage')}</h2>
     <p>{t('对 R70–R121 的离线诊断把每轮 8 次 rollout 拆成“第一次就做对”和“8 次里至少有一次做对”。R70–79 到 R120–121，Success@1 从 22.50% 升到 37.50%，Success@8 从 46.88% 升到 59.38%，best-of-8 从 77.78% 升到 84.65%。这更像是已有能力变稳定，同时覆盖面也在增长，但增长幅度较小。', 'Offline R70–R121 diagnostics separated first-try reliability from broader eight-rollout coverage. From R70–79 to R120–121, Success@1 rose from 22.50% to 37.50%, Success@8 from 46.88% to 59.38%, and best-of-8 from 77.78% to 84.65%. The clearest gain is therefore reliability on already-solvable tasks, with a smaller expansion in coverage.')}</p>
     <div class="q17-analysis__mini-table" role="table" aria-label={t('R70 到 R121 的可靠性与覆盖率', 'Reliability and coverage from R70 to R121')}>
       <div role="row"><b role="cell">R70–79</b><span role="cell">Score 58.35</span><span role="cell">Success@1 22.50%</span><span role="cell">Success@8 46.88%</span><span role="cell">best-of-8 77.78%</span></div>
@@ -159,8 +156,7 @@ const candidates = [
   </section>
 
   <section class="q17-analysis__section evo-article__section" id="before-final" data-result-stage="behavior-diagnostic" aria-labelledby="before-final-title">
-    <p class="q17-analysis__section-index">04 · {t('最终考试前已经看见的两个现象', 'Two observations before the final')}</p>
-    <h2 id="before-final-title">{t('R97 的平台后来恢复；R127→R128 的大跌也没有在同题重测里等比例出现', 'The R97 plateau later recovered, and the R127→R128 drop was much smaller on identical tasks')}</h2>
+    <h2 id="before-final-title"><span class="evo-article__heading-number" aria-hidden="true">04</span> {t('R97 的平台后来恢复；R127→R128 的大跌也没有在同题重测里等比例出现', 'The R97 plateau later recovered, and the R127→R128 drop was much smaller on identical tasks')}</h2>
     <div class="q17-analysis__diagnostic-ledger">
       <article><span>R70–R97</span><h3>{t('训练仍在继续，但分数进入震荡平台', 'Training continued through a noisy plateau')}</h3><p>{t('R70–79 / R80–89 / R90–97 的平均 Score 是 58.35 → 55.36 → 50.83。后来 R110–119 又恢复到 63.52，所以这段证据支持“震荡平台”，不支持“训练永久卡死”。', 'Mean Score over R70–79 / R80–89 / R90–97 was 58.35 → 55.36 → 50.83. R110–119 later recovered to 63.52, supporting a noisy plateau rather than a permanent stall.')}</p></article>
       <article><span>R127 → R128</span><h3>{t('训练轮分数骤降，不等于能力同幅度下降', 'A sharp round-score drop did not imply an equal capability drop')}</h3><p>{t('训练曲线从 76.1 掉到 48.9；但把两个 checkpoint 放到同样 32 道题上，Score 只从 63.58 变成 59.41，完整做对从 10 题变成 8 题。不同轮抽题带来的噪声解释了部分波动，但这项局部诊断也不能证明“完全没有遗忘”。', 'The training curve fell from 76.1 to 48.9. On the same 32 tasks, however, Score moved only from 63.58 to 59.41 and exact successes from 10 to 8. Different task samples explain part of the volatility, but this local diagnostic does not prove that forgetting was absent.')}</p><a href={sameTaskHref}>{t('查看完整 R127 / R128 同题诊断 →', 'Open the full R127 / R128 same-task diagnostic →')}</a></article>
@@ -180,8 +176,7 @@ const candidates = [
   </section>
 
   <section class="q17-analysis__section evo-article__section" id="carriers" data-result-stage="parameter-state" aria-labelledby="carriers-title">
-    <p class="q17-analysis__section-index">05 · {t('四种学习载体没有同步变化', 'The four learning carriers did not evolve at the same rate')}</p>
-    <h2 id="carriers-title">{t('最终状态里，SD-LoRA 到了 R159；Text Memory 仍来自 R95；Skill 仍来自 R0；Agent System 来自 R148', 'The final state mixes SD-LoRA from R159, Text Memory from R95, Skill from R0, and Agent System from R148')}</h2>
+    <h2 id="carriers-title"><span class="evo-article__heading-number" aria-hidden="true">05</span> {t('最终状态里，SD-LoRA 到了 R159；Text Memory 仍来自 R95；Skill 仍来自 R0；Agent System 来自 R148', 'The final state mixes SD-LoRA from R159, Text Memory from R95, Skill from R0, and Agent System from R148')}</h2>
     <p>{t('这是一条很重要但不能过度解释的事实：本实验同时维护参数、Text Memory、Skill 和 Agent System，但它们在 160 轮里没有同样频繁地成功更新。最终封存状态直接记录了不同载体来自不同轮次。它告诉我们“哪里真的发生过状态变化”，却不能单凭轮次归因“最后 60.72 到底是谁贡献的”。', 'This is important but easy to over-interpret. The run maintained parameters, Text Memory, Skill, and Agent System, yet they did not successfully update at the same frequency. The sealed final state directly points to different source rounds for different carriers. This tells us where state actually changed, but it does not causally attribute the final 60.72 score to any one carrier.')}</p>
     <div class="q17-analysis__carrier-grid">
       <div><b>SD-LoRA</b><strong>R159</strong><span>{t('159 次参数更新', '159 parameter updates')}</span></div>
@@ -196,8 +191,7 @@ const candidates = [
   </section>
 
   <section class="q17-analysis__section evo-article__section" id="latency" data-result-stage="mechanism" aria-labelledby="latency-title">
-    <p class="q17-analysis__section-index">06 · {t('为什么 SD-LoRA 后期越来越慢', 'Why SD-LoRA became slow late in the run')}</p>
-    <h2 id="latency-title">{t('真正变贵的是累计 component 参与 forward / backward，不是外层 copy 或保存文件', 'The dominant cost is accumulated-component forward/backward, not outer copying or serialization')}</h2>
+    <h2 id="latency-title"><span class="evo-article__heading-number" aria-hidden="true">06</span> {t('真正变贵的是累计 component 参与 forward / backward，不是外层 copy 或保存文件', 'The dominant cost is accumulated-component forward/backward, not outer copying or serialization')}</h2>
     <p>{t('R149 正式 SD-LoRA update 的 trainer 端到端时间是 919.48 秒（15.32 分钟）。随后做的隔离 profiler 在保持 loss、94 optimizer steps、149 components 和最终 adapter 一致的前提下，测到 forward 241.55 秒、backward 677.74 秒，两者合计约占 instrumented trainer 的 94.9%。prior load/validation、composition、PEFT construction、adapter/state serialization 都远小得多。', 'The formal R149 SD-LoRA trainer took 919.48 seconds end to end (15.32 minutes). A qualified isolated profiler then preserved the loss, 94 optimizer steps, 149 components, and final adapter while measuring 241.55 s in forward and 677.74 s in backward. Together they account for about 94.9% of instrumented trainer wall time; prior loading/validation, composition, PEFT construction, and adapter/state serialization were much smaller.')}</p>
     <p>{t('把 159 次正式 UPDATE 各自保存的 training_time_seconds 直接相加，整个 DirectApply Stage2 的参数 trainer 累计是 31.09 小时；其中仅 R120–R159 就占 11.44 小时。这个数字是参数更新阶段的累计时间，不等于整个 Stage2 的墙钟时间。', 'Summing the persisted training_time_seconds across all 159 formal UPDATEs gives 31.09 hours of DirectApply parameter-trainer time, with R120–R159 alone accounting for 11.44 hours. This is cumulative parameter-update time, not the full Stage2 wall-clock span.')}</p>
     <div class="q17-analysis__latency-grid" role="table" aria-label={t('固定 R149 工作量下的 component-count scaling', 'Component-count scaling under a fixed R149 workload')}>
@@ -218,8 +212,7 @@ const candidates = [
   </section>
 
   <section class="q17-analysis__section evo-article__section" id="geometry" data-result-stage="parameter-geometry" aria-labelledby="geometry-title">
-    <p class="q17-analysis__section-index">07 · D1 · {t('参数方向压缩', 'Parameter-direction compression')}</p>
-    <h2 id="geometry-title">{t('159 次更新在参数几何上存在明显冗余', 'The 159 updates contain substantial geometric redundancy')}</h2>
+    <h2 id="geometry-title"><span class="evo-article__heading-number" aria-hidden="true">07</span> D1 · {t('159 次更新在参数几何上存在明显冗余', 'The 159 updates contain substantial geometric redundancy')}</h2>
     <p class="q17-analysis__plain-bridge"><strong>{t('把 159 次更新想成 159 支箭头：', 'Think of the 159 updates as 159 arrows:')}</strong>{t('结果发现很多箭头其实朝着相近的主要方向。78 个方向就能解释 95% 的更新变化；只用 64 个方向重建最终参数时，误差约 4.15%，低于预注册的 10% 门槛。后 40 次更新里，“旧方向解释不了的那部分”中位残差能量是 0.203，也低于 0.25 门槛。所以 Geometry PASS 的意思只是“参数很可能可以被更少方向近似”，还不是“压缩模型已经可以安全替代原模型”。', 'many of those arrows point along similar major directions. Seventy-eight directions explain 95% of the update variation, and a 64-direction reconstruction ends only about 4.15% away from the final parameters, below the preregistered 10% threshold. Over the last 40 updates, the median residual energy left outside the existing directions was 0.203, also below the 0.25 threshold. Geometry PASS therefore means “the parameters look compressible,” not “the compressed model is already a safe replacement.”')}</p>
     <p>{t('每次 SD-LoRA 更新都可以写成一支参数箭头：', 'Each SD-LoRA update can be written as a parameter vector:')} <MathFormula latex={String.raw`v_t=\theta_t-\theta_{t-1}`} display={false} label={t('单次 SD-LoRA 参数更新向量', 'Single SD-LoRA parameter-update vector')} />。{t('D1 先问：后面的箭头是不是越来越能被前面已有的方向解释？如果只保留少量主要方向，最终参数位置还能不能近似回来？', 'D1 first asks whether later vectors increasingly lie inside the span of earlier directions, and whether a smaller basis can reconstruct the final parameter state.')}</p>
     <div class="q17-analysis__geometry-flow" role="img" aria-label={t('159 次更新的参数方向压缩关系', 'Geometric compression of 159 parameter updates')}>
@@ -233,8 +226,7 @@ const candidates = [
   </section>
 
   <section class="q17-analysis__section evo-article__section" id="function" data-result-stage="functional-check" aria-labelledby="function-title">
-    <p class="q17-analysis__section-index">08 · D1 · {t('行为保持', 'Function preservation')}</p>
-    <h2 id="function-title">{t('参数误差很小，但 K64 / K80 / K96 都不是原模型的无损替身', 'Small parameter error did not make K64 / K80 / K96 lossless behavioral substitutes')}</h2>
+    <h2 id="function-title"><span class="evo-article__heading-number" aria-hidden="true">08</span> D1 · {t('参数误差很小，但 K64 / K80 / K96 都不是原模型的无损替身', 'Small parameter error did not make K64 / K80 / K96 lossless behavioral substitutes')}</h2>
     <p class="q17-analysis__plain-bridge"><strong>{t('参数很像，不等于 AI 会做一样的决定：', 'Similar parameters do not guarantee the same decisions:')}</strong>{t('参数误差只是在说两个模型在巨大参数空间里的“位置”很接近；32 行行为探针才是在问：给它们同样的输入，会不会点同一个动作、给出同样的关键 token。K96 即使参数只差 2.22%、32 行里只改了 1 行动作，也仍然不是“无损替身”，因为我们事先要求的是 32 / 32 完全一致，而不是看到结果后再放宽标准。', 'parameter error only says the two models sit close together in a huge parameter space. The 32-row behavior probe asks the functional question: on the same inputs, do they choose the same action and key tokens? K96 still is not a lossless substitute even with only 2.22% parameter error and just 1 changed action out of 32, because the preregistered requirement was exact 32 / 32 agreement, not a threshold relaxed after seeing the result.')}</p>
     <p>{t('固定探针只用了训练阶段已经消费过的 16 个任务，每个任务取 2 行，共 32 行；没有新 WebShop 调用，也没有打开 final panel。预注册要求动作完全一致、top-1 token 完全一致，并限制 JS divergence、logit 相对误差和 NLL 变化。', 'The fixed probe used 16 tasks already consumed during training, two rows per task, for 32 rows total. It made no new WebShop calls and did not open the final panel. The preregistration required exact action agreement, exact top-1 token agreement, and tight JS-divergence, logit-error, and NLL-delta bounds.')}</p>
     <div class="q17-analysis__agreement">
@@ -260,8 +252,7 @@ const candidates = [
   </section>
 
   <section class="q17-analysis__section evo-article__section" id="meaning" data-result-stage="synthesis" aria-labelledby="meaning-title">
-    <p class="q17-analysis__section-index">09 · {t('当前可以下什么结论', 'What the evidence supports now')}</p>
-    <h2 id="meaning-title">{t('这次实验把“最终表现”和“参数结构”同时测清了，但还没有回答算法胜负', 'The experiment now has both an endpoint measurement and a parameter-structure diagnosis, but not an algorithmic winner')}</h2>
+    <h2 id="meaning-title"><span class="evo-article__heading-number" aria-hidden="true">09</span> {t('这次实验把“最终表现”和“参数结构”同时测清了，但还没有回答算法胜负', 'The experiment now has both an endpoint measurement and a parameter-structure diagnosis, but not an algorithmic winner')}</h2>
     <p class="q17-analysis__plain-bridge"><strong>{t('这次真正发现的是：', 'What this experiment actually found:')}</strong>{t('这条 DirectApply 训练轨迹确实跑完了，也得到了一次有效 Final；159 次参数更新里确实有很多重复方向，但目前试过的 K64 / K80 / K96 一压缩就会改变一部分行为。所以这次真正的新发现不是“压缩成功”，而是“参数里有可利用的冗余，但下一步必须把行为保持当成硬约束重新做实验”。', 'this DirectApply trajectory really completed and produced one valid final. The 159 parameter updates really do contain repeated directions, but every tested K64 / K80 / K96 compression changed some behavior. The new finding is therefore not “compression succeeded,” but “there is exploitable parameter redundancy, and the next experiment must treat behavior preservation as a hard constraint.”')}</p>
     <div class="q17-analysis__claims">
       <div><span>{t('支持', 'Supported')}</span><strong>{t('DirectApply 在冻结 treatment 下完整跑完 160 轮，并得到一次有效 final。', 'DirectApply completed all 160 rounds under the frozen treatment and produced one valid final.')}</strong></div>
@@ -279,7 +270,7 @@ const candidates = [
 </article>
 
 <style>
-.q17-analysis__eyebrow,.q17-analysis__section-index{margin:0 0 .7rem;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
+.q17-analysis__eyebrow{margin:0 0 .7rem;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
 .q17-analysis__lede{margin:1rem 0 0;color:var(--ink)}
 .q17-analysis__headline-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:1.15rem 0 0;border-block:1px solid var(--line)}
 .q17-analysis__headline-metrics>div{padding:.72rem .8rem .72rem 0;border-right:1px solid var(--line)}.q17-analysis__headline-metrics>div+div{padding-left:.8rem}.q17-analysis__headline-metrics>div:last-child{border-right:0}
