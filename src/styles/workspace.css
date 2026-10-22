@@ -175,7 +175,7 @@
 .excluded-candidates summary { color: var(--muted); cursor: pointer; font-weight: 700; font-size: var(--type-meta); }
 .excluded-row { border-left: 3px solid var(--warning, #805e2d); }
 .excluded-reasons { list-style: none; padding: 0; margin: 7px 0 0; display: grid; gap: 3px; color: var(--muted); font-size: var(--type-body-small); }
-.excluded-reasons span { color: var(--warning, #805e2d); font-weight: 800; }
+.excluded-reasons span { color: var(--warning, #805e2d); font-weight: var(--type-weight-heading); }
 
 .candidate-name-line strong { display: inline; font-size: var(--type-body-small); }
 .candidate-meta { margin-left: 6px; }

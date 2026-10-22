@@ -1,5 +1,8 @@
 # Typography #898 continuation handoff
 
+> Current isolated candidate: source/role evidence, exact remaining migration debt, local failures and current ownership boundaries are recorded in [the evidence README](../../agents/evidence/sitewide-typography/2026-10-22/README.md). The latest exact-head CI/Preview/PNG acceptance is recorded on [PR #898](https://github.com/mykcs/basemodel/pull/898). Historical SHA results below remain historical. Candidate publication does not authorize merge, retarget or Production.
+
+
 ## 2026-10-22 cloud finding — never infer PASS from provisioned CI jobs
 
 Source [f7251f31](https://github.com/mykcs/basemodel/commit/f7251f31adcb2314f94db310fe1bf3a340873f0f) is genuinely committed on #898. Its [first complete 4-shard WebKit attempt](https://github.com/mykcs/basemodel/actions/runs/39731928649) ran but **FAILED**: WebKit shard 1 passed, 2–4 failed; public deterministic and Chromium gates also failed. The test-independent preview [`dpl_3uLwg12UqGJveN3krDcNqFYtyPzF`](https://basemodel-ui-preview-20260811-958p8onrr-wangrui92-team.vercel.app) is **READY**, SSO protected, noindex and SHA-bound to `f725`, but is not the final intended commit or a visual ACCEPT. Exact root causes and non-relaxed candidate repairs are detailed in [WP-D7 evidence](../../agents/evidence/sitewide-typography/2026-10-22/WP_D7_NATIVE_SVG_AND_LANDSCAPE.md). Re-run all four WebKit shards and eight Chromium shards after the repair; preserve all red records.

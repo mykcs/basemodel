@@ -39,6 +39,6 @@
 
 @media (max-width: 640px) {
   :where(.page-header, .detail-layout, .plain-detail, .mission-page, .plain-mission-hub, .seed-benchmark-guide, .gateway, .agent-primer, .agent-bridge, .paper-learning-guide, .openevo-extension, .mechanism-section, .mechanism-dialogues, .trajectory-lab, .program, .parametric) h1 {
-    font-size: clamp(1.9rem, 8vw, 2.7rem) !important;
+    font-size: var(--type-page) !important;
   }
 }

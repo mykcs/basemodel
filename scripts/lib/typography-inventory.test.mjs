@@ -31,3 +31,12 @@ test('typography inventory includes readable leading and tracking without approv
   assert.deepEqual(entries[0].contexts,['@media (width < 700px)']);
   assert.ok(entries.every(entry=>entry.decision===null && entry.evidence.length===0));
 });
+
+test('Astro embedded scripts and frontmatter retain dynamic typography candidates',()=>{
+  const result=inventoryAstro('---\nconst style = {fontSize: 9};\n---\n<script>\n target.style.fontSize = "13px"; target.style.letterSpacing = "normal";\n</script>', 'script.astro');
+  assert.deepEqual(result.unresolved.filter(row=>row.kind==='javascript-style-candidate').map(row=>[row.kind,row.line]),[
+    ['javascript-style-candidate',5],['javascript-style-candidate',5],
+    ['javascript-style-candidate',2],['javascript-style-candidate',2],
+  ]);
+  assert.ok(result.unresolved.every(row=>row.status.startsWith('UNKNOWN')));
+});

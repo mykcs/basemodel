@@ -95,7 +95,7 @@ const gdr = {
 <style>
 .gdr-history{width:min(980px,calc(100% - 2rem));margin:0 auto;padding:2.3rem 0 5rem;color:var(--text)}
 .gdr-history__hero{padding:1rem 0 2.2rem;border-bottom:1px solid var(--line)}
-.gdr-history__back,.gdr-history__current,.gdr-history__links a{color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}
+.gdr-history__back,.gdr-history__current,.gdr-history__links a{color:var(--accent-deep);font-weight:var(--type-weight-heading);text-underline-offset:.2em}
 .gdr-history__hero h1{margin:.9rem 0 .8rem;font-size:clamp(2.5rem,6vw,4.6rem);line-height:1;letter-spacing:-.04em}
 .gdr-history__lede{max-width:52rem;margin:0;font-size:clamp(1.2rem,2.4vw,1.55rem);line-height:1.65}
 .gdr-history__current{display:inline-flex;margin-top:1rem}.gdr-history__current--end{margin-top:.5rem}
@@ -106,9 +106,9 @@ const gdr = {
 .gdr-history__compare{max-width:100%;margin-top:1.4rem;overflow-x:auto;border-block:1px solid var(--line)}
 .gdr-history__compare table{width:100%;min-width:720px;border-collapse:collapse}
 .gdr-history__compare th,.gdr-history__compare td{padding:.75rem .85rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:1rem;line-height:1.5}
-.gdr-history__compare thead th{color:var(--muted);font-size:1rem}.gdr-history__compare thead th strong,.gdr-history__compare thead th span{display:block}.gdr-history__compare thead th strong{color:var(--ink);font-size:1.05rem}.gdr-history__compare thead th span{margin-top:.2rem;font-size:1rem;font-weight:500}.gdr-history__compare tbody th{width:3rem;color:var(--accent-deep);font:800 1rem/1.4 var(--font-mono)}.gdr-history__compare tbody tr:last-child>*{border-bottom:0}
+.gdr-history__compare thead th{color:var(--muted);font-size:1rem}.gdr-history__compare thead th strong,.gdr-history__compare thead th span{display:block}.gdr-history__compare thead th strong{color:var(--ink);font-size:1.05rem}.gdr-history__compare thead th span{margin-top:.2rem;font-size:var(--type-body);font-weight:500}.gdr-history__compare tbody th{width:3rem;color:var(--accent-deep);font:var(--type-weight-heading) 1rem/1.4 var(--font-interface)}.gdr-history__compare tbody tr:last-child>*{border-bottom:0}
 .gdr-history__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.2rem 0 1rem;border-block:1px solid var(--line)}
-.gdr-history__metrics>div{padding:.85rem 1rem;border-right:1px solid var(--line)}.gdr-history__metrics>div:nth-child(3n){border-right:0}.gdr-history__metrics dt{color:var(--muted);font-size:.9rem}.gdr-history__metrics dd{margin:.2rem 0 0;font-size:1.35rem;font-weight:800}
-.gdr-history__evidence{margin-top:2rem;border-block:1px solid var(--line)}.gdr-history__evidence summary{padding:1rem 0;cursor:pointer;color:var(--accent-deep);font-weight:750}.gdr-history__evidence dl{margin:0 0 1rem}.gdr-history__evidence dl>div{display:grid;grid-template-columns:10rem 1fr;gap:1rem;padding:.6rem 0;border-top:1px solid var(--line)}.gdr-history__evidence dt{font-weight:800}.gdr-history__evidence dd{margin:0;line-height:1.55}.gdr-history code{overflow-wrap:anywhere}
+.gdr-history__metrics>div{padding:.85rem 1rem;border-right:1px solid var(--line)}.gdr-history__metrics>div:nth-child(3n){border-right:0}.gdr-history__metrics dt{color:var(--muted);font-size:.9rem}.gdr-history__metrics dd{margin:.2rem 0 0;font-size:1.35rem;font-weight:var(--type-weight-heading)}
+.gdr-history__evidence{margin-top:2rem;border-block:1px solid var(--line)}.gdr-history__evidence summary{padding:1rem 0;cursor:pointer;color:var(--accent-deep);font-weight:var(--type-weight-heading)}.gdr-history__evidence dl{margin:0 0 1rem}.gdr-history__evidence dl>div{display:grid;grid-template-columns:10rem 1fr;gap:1rem;padding:.6rem 0;border-top:1px solid var(--line)}.gdr-history__evidence dt{font-weight:var(--type-weight-label)}.gdr-history__evidence dd{margin:0;line-height:1.55}.gdr-history code{overflow-wrap:anywhere}
 @media(max-width:760px){.gdr-history{width:min(100% - 1rem,980px);padding-top:1.2rem}.gdr-history__metrics{grid-template-columns:1fr}.gdr-history__metrics>div{border-right:0;border-bottom:1px solid var(--line)}.gdr-history__metrics>div:last-child{border-bottom:0}.gdr-history__evidence dl>div{grid-template-columns:1fr;gap:.2rem}}
 </style>

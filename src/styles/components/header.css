@@ -75,7 +75,7 @@
 }
 
 .site-header nav a[aria-current='page'] {
-  font-weight: 750;
+  font-weight: var(--type-weight-heading);
 }
 
 .site-header .mission-nav {
@@ -351,7 +351,7 @@
 
   .site-header .command-search-trigger::before {
     content: '⌕';
-    font-size: 1rem;
+    font-size: var(--type-body);
     line-height: 1;
   }
 

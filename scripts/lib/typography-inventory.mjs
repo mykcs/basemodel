@@ -35,6 +35,13 @@ export function inventoryCSS(content, file, lineOffset = 0) {
   return entries;
 }
 
+export function inventoryJavaScript(content, file, lineOffset = 0) {
+  return [...content.matchAll(/\b(?:fontSize|fontFamily|fontWeight|fontStyle|lineHeight|letterSpacing|style)\s*[:=]/g)].map(match => ({
+    file, line:content.slice(0,match.index).split('\n').length+lineOffset,
+    kind:'javascript-style-candidate',status:'UNKNOWN: source expression, may be non-style data',
+  }));
+}
+
 export function inventoryAstro(content, file) {
   const entries = [];
   for (const match of content.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/g)) {
@@ -48,5 +55,11 @@ export function inventoryAstro(content, file) {
     file, line: content.slice(0, match.index).split('\n').length,
     kind: 'inline-style', status: 'UNKNOWN: inspect expression or attribute',
   }));
+  for (const match of content.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)) {
+    const start=match.index+match[0].indexOf('>')+1;
+    unresolved.push(...inventoryJavaScript(match[1],file,content.slice(0,start).split('\n').length-1));
+  }
+  const frontmatter=content.match(/^---\s*\n([\s\S]*?)\n---/);
+  if(frontmatter)unresolved.push(...inventoryJavaScript(frontmatter[1],file,1));
   return { entries, unresolved };
 }

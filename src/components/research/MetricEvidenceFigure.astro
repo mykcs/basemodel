@@ -59,6 +59,10 @@ const frameId = 'metric-evidence-' + item.src.split('/').at(-1)!.replace(/[^a-z0
     const symbol = button.querySelector('.metric-evidence__zoom-symbol');
     const hint = button.closest('.metric-evidence')?.querySelector('[data-metric-scroll-hint]');
     if (!(viewport instanceof HTMLElement) || !(label instanceof HTMLElement) || !(symbol instanceof HTMLElement) || !(hint instanceof HTMLElement)) return;
+    viewport.addEventListener('keydown', event => {
+      if (event.target !== viewport || !viewport.classList.contains('is-expanded') || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+      event.preventDefault();viewport.scrollLeft += event.key === 'ArrowRight' ? 80 : -80;
+    });
     button.hidden = false;
     button.addEventListener('click', () => {
       const expanded = !viewport.classList.contains('is-expanded');

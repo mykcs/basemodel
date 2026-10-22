@@ -47,9 +47,10 @@
  * can stay compact, but explanatory prose gets explicit floors so CJK text
  * cannot collapse into 8–9px multi-line columns. Long mixed CJK/Latin copy is
  * also allowed to break inside identifiers so one token cannot escape a card. */
-.irx p,.irx dd,.irx dt{font-size:var(--type-meta);line-height:1.55}
-.irx .irx-header p{font-size:.94rem;line-height:1.7}
-.irx .irx-node>small,.irx .irx-live,.irx .irx-paper-caption p,.irx .irx-visual-key li{font-size:var(--type-meta);line-height:1.55}
+.irx p,.irx dd{font-size:var(--type-body-small);line-height:var(--type-leading-body)}.irx dt{font-size:var(--type-meta);line-height:var(--type-leading-caption)}
+.irx .irx-header p{font-size:var(--type-body-small);line-height:1.7}
+.irx .irx-node>small,.irx .irx-live,.irx .irx-visual-key li{font-size:var(--type-meta);line-height:1.55}
+.irx .irx-paper-caption p{font-size:var(--type-caption);line-height:var(--type-leading-caption)}
 .irx p,.irx dd,.irx [data-ui-prose],.irx .irx-boundary-note>span{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:normal}
 .irx .irx-boundary-note>span{display:block}
 @media(max-width:760px){

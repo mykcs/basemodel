@@ -9,7 +9,7 @@
 import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { inventoryCSS, inventoryAstro } from './lib/typography-inventory.mjs';
+import { inventoryCSS, inventoryAstro, inventoryJavaScript } from './lib/typography-inventory.mjs';
 
 const repo=resolve(new URL('../',import.meta.url).pathname);
 const dist=join(repo,'dist');
@@ -54,11 +54,7 @@ for(const file of filesUnder(sourceRoot,['.astro'])) {
   unresolvedSurfaces.push(...result.unresolved);
 }
 for(const file of filesUnder(sourceRoot,['.tsx','.ts','.jsx','.js'])) {
-  const content=readFileSync(file,'utf8');
-  for(const match of content.matchAll(/\b(?:fontSize|fontFamily|fontWeight|fontStyle|style)\s*[:=]/g)) {
-    unresolvedSurfaces.push({file:relative(repo,file),line:content.slice(0,match.index).split('\n').length,
-      kind:'javascript-style-candidate',status:'UNKNOWN: source expression, may be non-style data'});
-  }
+  unresolvedSurfaces.push(...inventoryJavaScript(readFileSync(file,'utf8'),relative(repo,file)));
 }
 const invalidInheritedFonts=extendedDeclarations.filter(d=>d.invalidInheritedFontShorthand);
 for(const declaration of invalidInheritedFonts)errors.push(
@@ -86,17 +82,11 @@ for(const file of htmlFiles) {
   if(tables.length)routesWithTables++;
   if(page.includes('data-report-figure="q03-custom-curve"')) {
     q03++;
-    for(const kind of ['desktop','mobile']) {
-      const rx=new RegExp('<svg(?=[^>]*data-q03-'+kind+'-chart)[^>]*>([\\s\\S]*?)<\\/svg>','i');
-      const match=page.match(rx);
-      if(!match) {errors.push('Q03 '+kind+' svg not rendered');continue}
-      const whole=match[0];
-      if(!/aria-label="[^"]{8,}"/.test(whole)||!whole.includes('<desc'))
-        errors.push('Q03 '+kind+' lost screenreader text');
-      if(/<title(?:\s|>)/.test(whole))
-        errors.push('Q03 '+kind+' reintroduced obstructive native SVG tooltip');
-    }
-    if(!page.includes('中间轮次没有测量')) errors.push('Q03 paper caption lost unmeasured-round boundary');
+    const plot=page.match(/<img(?=[^>]*data-pgfplot="q03-stage2")[^>]*>/)?.[0];
+    if(!plot||!plot.includes('/research/seed-openevo/figures/q03-stage2-pgfplots.svg'))errors.push('Q03 source-bound PGFPlots image not rendered');
+    if(plot&&!/alt="[^"]{20,}"/.test(plot))errors.push('Q03 lost accessible scientific description');
+    if(!page.includes('data-q03-paper-table'))errors.push('Q03 default source-bound booktabs table missing');
+    if(!/没有测量中间轮次|中间轮次没有测量/.test(page))errors.push('Q03 paper caption lost unmeasured-round boundary');
     for(const num of ['3.71','6.43','0.69','6.62'])
       if(!page.includes(num))errors.push('Q03 lost actual measurement '+num);
   }

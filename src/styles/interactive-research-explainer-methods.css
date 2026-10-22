@@ -392,7 +392,7 @@
 .irx-seed-exchange-action > i {
   grid-row: 1/-1;
   grid-column: 2;
-  font-size: 1rem;
+  font-size: var(--type-body);
   font-style: normal;
   color: var(--irx-env-text);
 }
@@ -401,7 +401,7 @@
   color: var(--irx-readable-muted);
 }
 .irx-seed-exchange-return > i {
-  font-size: 1rem;
+  font-size: var(--type-body);
   font-style: normal;
   color: var(--irx-env-text);
 }

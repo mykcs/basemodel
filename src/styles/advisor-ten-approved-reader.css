@@ -313,7 +313,7 @@ html[data-theme="dark"] .evo-approved-reader {
 .evo-approved-reader .advisor-result-matrix tbody tr + tr > * {
   border-top: 1px solid var(--paper-line);
 }
-.evo-approved-reader .advisor-result-matrix th:first-child { min-width: 7.5em; }
+.evo-approved-reader .advisor-result-matrix:not([data-advisor-matrix="q03"]) th:first-child { min-width: 9em; }
 .evo-approved-reader .advisor-result-matrix [data-numeric] { text-align: right; white-space: nowrap; }
 .evo-approved-reader .advisor-result-matrix figcaption {
   margin: 9px 0 0;
@@ -459,7 +459,7 @@ html[data-theme="dark"] .evo-approved-reader {
     /* Keep the existing fixed-column reading grammar (#906 owns row labels),
        but stop squeezing native data into 13px / phone-width slivers. */
     width: 100%;
-    min-width: 26rem;
+    min-width: 36rem;
     max-width: none;
     table-layout: fixed;
     font-size: var(--type-table);
@@ -566,8 +566,8 @@ html[data-theme="dark"] .evo-approved-reader {
 }
 .evo-approved-reader .advisor-overview__count dd span { font-size: var(--type-meta); }
 .evo-approved-reader .advisor-overview__explanation {
-  font-size: var(--type-caption);
-  line-height: 1.65;
+  font-size: var(--type-body-small);
+  line-height: var(--type-leading-body);
   color: var(--paper-muted);
 }
 .evo-approved-reader .advisor-overview__jump {

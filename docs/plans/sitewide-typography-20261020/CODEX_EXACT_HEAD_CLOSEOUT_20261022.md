@@ -1,8 +1,18 @@
 # BaseModel Typography #898 — 2026-10-22 精确状态与剩余工作交接
 
+> Current isolated candidate: source/role evidence, exact remaining migration debt, local failures and current ownership boundaries are recorded in [the evidence README](../../agents/evidence/sitewide-typography/2026-10-22/README.md). The latest exact-head CI/Preview/PNG acceptance is recorded on [PR #898](https://github.com/mykcs/basemodel/pull/898). Historical SHA results below remain historical. Candidate publication does not authorize merge, retarget or Production.
+
+
 > **用途**：供 Codex 直接从当前代码继续收尾的执行看板，不是新 Typography Design System，不代替已有 [CODEX_EXECUTION_PLAN.md](CODEX_EXECUTION_PLAN.md)、[HANDOFF_CONTINUATION.md](HANDOFF_CONTINUATION.md)、`src/styles/tokens.css` 或 Current 规则。**按实际完成的工作打勾；已通过的历史 SHA、静态审计和截图的含义必须区分。**
 >
 > **证据采样点**：2026-10-22，PR [#898](https://github.com/mykcs/basemodel/pull/898) HEAD `3a91d498a4f6ffd3c3b12eb6f2a716508f2b0233`。本交接文件自身随后提交会使 HEAD 改变，因此下方的 3a91d498 自动门禁成功**只验证该旧 HEAD 的代码树**。Codex 启动时一律刷新 GitHub PR/CI、main、Vercel 与 Artifact。
+
+
+> **2026-10-22 当前整合进展（dirty preflight，尚非最终 SHA 验收）**：根 Codex 为唯一候选写入者。用户已明确授权整合 #840 相关改写；22 个相关文件按 `2a741b6b` 对账。另已保留 main@`06ac7367` 的 Q01/Q03 PGFPlots、Q03 默认 booktabs、六组置信区间九种资产及同源表依赖；没有合并 main、改变 stacked base 或发布 Production。后续以新 exact-head CI/Review Preview 替换本段的候选状态。
+>
+> 已完成候选：数百条实际消费者字体/字重迁移、24 页 Briefing 同源文字表格模式、原始 SVG/PGF 可选放大、局部滚动、无 JS 键盘、打印复位；科研单元格表达式和七图点位均有相等证明。最新 22 项定向 Chromium/WebKit 回归通过；受影响浏览器回归及其失败/定向复测已记录于最新 evidence README；最终完整 hosted CI 尚待新候选 SHA。`verify:deploy` 已通过（854 structural +37 behavior）；新的 source ledger 正在生成，未声明 unclassified=0。
+>
+> 历史 R1 状态校正：`3a91d498` 最新 Artifact 的独立有界审读已落在 [6337103766](https://github.com/mykcs/basemodel/pull/898#issuecomment-6337103766) 与 [6337150546](https://github.com/mykcs/basemodel/pull/898#issuecomment-6337150546)。本轮 PGF dirty 样本另有8图204分段PNG/12JSON独立有界 ACCEPT；均不能借给未来 SHA。旧运行曾因本 Agent 并发重建 dist 导致服务 ENOENT，已停止并标记无验收效力，保留红日志；以后冻结输出后再测。
 
 ## 0. 快速导航和真实快照
 

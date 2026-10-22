@@ -1,3 +1,13 @@
+# Current candidate inline/JS disposition
+
+The current source sweep has **81 raw discovery hits**, all individually identified in [inventory.json](inventory.json): 10 audit false positives, 40 non-typographic geometry/presentation expressions, four currently unreachable producers, 24 existing/migrated role bindings and three specific scientific SVG reader exceptions. The latest additional hit is Papers header minWidth120/overflowWrap normal, tested with and without JavaScript. None is silently removed from the raw UNKNOWN discovery output.
+
+The complete CSS/Astro role ledger and its limitations are in [README.md](README.md) and [source-disposition-ledger.json](source-disposition-ledger.json). Source classification, migration implementation and exact-head visual acceptance are separate statuses.
+
+---
+
+## Historical 58-hit snapshot (superseded counts)
+
 # Typography inline/JS candidate triage — 2026-10-22
 
 This is a **source-level triage**, not a claim of 58 accepted screenshots. Reproduce with `npm run build && node scripts/audit-sitewide-typography.mjs --json <output-path>` on the checked-out exact PR HEAD. The inventory's `unresolvedSurfaces` regex deliberately flags anything that looks like inline/JS `style`; it does not prove a dynamic `font-size` was emitted. The isolated candidate based on `02950bb` plus the independent four-chart reader returned **58** such hits in 23 file owners (57 in the parent), including the new `--native-svg-width` plot-geometry variable.

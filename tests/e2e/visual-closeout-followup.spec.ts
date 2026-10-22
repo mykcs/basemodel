@@ -1,3 +1,4 @@
+import { persistJsonAttachment } from './evidence-json';
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
 import { waitForHydratedExplainer } from './hydration-ready';
@@ -322,4 +323,101 @@ test('landscape catalog stats use a desktop row and mobile column', async ({ pag
       expect(boxes[2]!.y).toBeGreaterThan(boxes[1]!.y + 20);
     });
   }
+});
+
+
+
+/** Built-HTML inventory includes both paper matrices, but when JavaScript is
+ * enabled <noscript> is inert text. Verify the distinct no-JS reader state. */
+for (const width of [390, 768, 1440] as const) {
+  test('papers matrix no-JavaScript fallback really renders at ' + width + 'px', async ({ browser }, testInfo) => {
+    const context = await browser.newContext({
+      javaScriptEnabled: false,
+      viewport: { width, height: 900 },
+      colorScheme: 'light',
+    });
+    try {
+      const page = await context.newPage();
+      const response = await page.goto('/papers/', { waitUntil: 'domcontentloaded' });
+      expect(response?.status()).toBe(200);
+      const fallback = page.locator('.paper-matrix-noscript');
+      await expect(fallback).toBeVisible();
+      await expect(fallback).toContainText('JavaScript 已关闭');
+      const table = fallback.locator('table.matrix-table');
+      await expect(table).toBeVisible();
+      await expect(table.locator('thead tr')).toHaveCount(1);
+      expect(await table.locator('thead th').count()).toBeGreaterThan(1);
+      // A wide operational matrix must scroll locally; it must not compress
+      // every long model header into an unreadable vertical stack.
+      const header = table.locator('thead th').filter({ hasText: 'Claude 3.5 Sonnet' });
+      await expect(header).toHaveCount(1);
+      const normal = await header.boundingBox();
+      expect(normal!.width).toBeGreaterThanOrEqual(120);
+      expect(normal!.height).toBeLessThan(100);
+      if (width === 390) {
+        // Negative control: remove the native per-model width and original
+        // word grouping; the known 40px header/187px tall failure returns.
+        await table.locator('thead th:not(:first-child)').evaluateAll(nodes =>
+          nodes.forEach(node => {
+            (node as HTMLElement).style.removeProperty('min-width');
+            (node as HTMLElement).style.removeProperty('overflow-wrap');
+          }),
+        );
+        const old = await header.boundingBox();
+        expect(old!.height).toBeGreaterThan(normal!.height + 30);
+        expect(() => expect(old!.height).toBeLessThan(100)).toThrow();
+        await table.locator('thead th:not(:first-child)').evaluateAll(nodes =>
+          nodes.forEach(node => {
+            (node as HTMLElement).style.minWidth = '120px';
+            (node as HTMLElement).style.overflowWrap = 'normal';
+          }),
+        );
+        expect((await header.boundingBox())!.height).toBeLessThan(100);
+      }
+      expect(await table.locator('tbody tr').count()).toBeGreaterThan(0);
+      await expect(table.locator('tbody a[href^="/papers/"]').first()).toBeVisible();
+
+      // A second matrix is intentionally kept in closed disclosure; only
+      // the alternate is visible to a no-JS reader on initial page load.
+      await expect(page.locator('.paper-matrix-advanced')).not.toHaveAttribute('open', '');
+      await expect(page.locator('.paper-matrix-advanced .matrix-table')).not.toBeVisible();
+      await expect(page.locator('table.matrix-table')).toHaveCount(2);
+      expect(await page.evaluate(() =>
+        document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      )).toBeLessThanOrEqual(2);
+
+      const scroller = fallback.locator('.matrix-wrap');
+      const geometry = await scroller.evaluate(node => ({
+        clientWidth: node.clientWidth,
+        scrollWidth: node.scrollWidth,
+        overflowX: getComputedStyle(node).overflowX,
+      }));
+      expect(geometry.clientWidth).toBeGreaterThan(0);
+      if (width === 390) {
+        expect(geometry.scrollWidth).toBeGreaterThan(geometry.clientWidth);
+        await scroller.evaluate(node => node.scrollTo({ left: node.scrollWidth, behavior: 'instant' }));
+        expect(await scroller.evaluate(node => node.scrollLeft)).toBeGreaterThan(0);
+      }
+      await persistJsonAttachment(testInfo,'papers-noscript-'+width+'.json',{
+        body:Buffer.from(JSON.stringify({width,javaScriptEnabled:false,header:normal,geometry,negativeControlTested:width===390,rows:await table.locator('tbody tr').count(),documentOverflow:await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)})),contentType:'application/json',
+      });
+      await scroller.screenshot({
+        path: testInfo.outputPath('papers-noscript-' + width + '.png'),
+        animations: 'disabled',
+      });
+    } finally {
+      await context.close();
+    }
+  });
+}
+
+test('papers noscript matrix stays inert when JavaScript is enabled', async ({ page }) => {
+  await page.goto('/papers/', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.paper-matrix-noscript')).toHaveCount(0);
+  await expect(page.locator('table.matrix-table')).toHaveCount(1);
+  const advanced = page.locator('.paper-matrix-advanced');
+  await expect(advanced).not.toHaveAttribute('open', '');
+  await advanced.locator('summary').click();
+  await expect(advanced).toHaveAttribute('open', '');
+  await expect(advanced.locator('table.matrix-table')).toBeVisible();
 });

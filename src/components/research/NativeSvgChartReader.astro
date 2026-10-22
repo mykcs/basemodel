@@ -42,7 +42,12 @@ const { id, label, nativeWidth } = Astro.props;
   .native-svg-reader__toggle:checked + .native-svg-reader__action .native-svg-reader__minus{display:inline}
   .native-svg-reader__toggle:checked ~ .native-svg-reader__hint{display:inline;color:var(--color-text-muted);font-size:var(--type-meta);line-height:var(--type-leading-caption)}
   .native-svg-reader__viewport{flex-basis:100%;max-width:100%;min-width:0;overflow:hidden}
-  .native-svg-reader__viewport :global(svg){display:block;width:100%;height:auto}
+  .native-svg-reader__viewport :global(svg),.native-svg-reader__viewport :global(picture),.native-svg-reader__viewport :global(img){display:block;width:100%;height:auto}
   .native-svg-reader__toggle:checked ~ .native-svg-reader__viewport{overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin}
-  .native-svg-reader__toggle:checked ~ .native-svg-reader__viewport :global(svg){width:var(--native-svg-width);max-width:none}
+  .native-svg-reader__toggle:checked ~ .native-svg-reader__viewport :global(svg),.native-svg-reader__toggle:checked ~ .native-svg-reader__viewport :global(picture),.native-svg-reader__toggle:checked ~ .native-svg-reader__viewport :global(img){width:var(--native-svg-width);max-width:none}
+  @media print {
+    .native-svg-reader__toggle,.native-svg-reader__action,.native-svg-reader__toggle:checked ~ .native-svg-reader__hint{display:none}
+    .native-svg-reader__viewport,.native-svg-reader__toggle:checked ~ .native-svg-reader__viewport{overflow:visible}
+    .native-svg-reader__viewport :global(svg),.native-svg-reader__viewport :global(picture),.native-svg-reader__viewport :global(img),.native-svg-reader__toggle:checked ~ .native-svg-reader__viewport :global(svg),.native-svg-reader__toggle:checked ~ .native-svg-reader__viewport :global(picture),.native-svg-reader__toggle:checked ~ .native-svg-reader__viewport :global(img){width:100%;max-width:100%}
+  }
 </style>

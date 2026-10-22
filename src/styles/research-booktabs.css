@@ -1,80 +1,71 @@
 /*
- * Shared paper-table grammar for evidence-bearing research report tables.
- * HTML table semantics stay intact; this emulates LaTeX booktabs rather
- * than reproducing LaTeX output as a screenshot.
- * Tables use their natural content width rather than stretching to the page.
- * The wrapper alone scrolls on narrow screens when truly necessary.
- * Do not apply automatically to interactive workbench/data-entry grids.
+ * Canonical native research-table presentation, shared by ResearchPaperTable.
+ * This is paper/booktabs grammar, not a conference-page skin.
+ * Existing scientific values, source labels and comparison boundaries stay with callers.
  */
 .research-booktabs-wrap {
-  width: fit-content;
-  max-width: 100%;
-  overflow-x: auto;
-  margin: 1.3rem 0 1.5rem;
-  padding: .2rem 0 .15rem;
-  scrollbar-width: thin;
+  width:fit-content;max-width:100%;min-width:0;overflow-x:auto;
+  margin:var(--paper-table-margin,1.25rem 0 1.5rem);padding:var(--paper-table-window-padding,.2rem 0 .15rem);
+  overscroll-behavior-inline:contain;scrollbar-width:thin;
 }
-.research-booktabs-wrap:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-}
+.research-booktabs-wrap:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table],
 table.research-booktabs {
-  border-collapse: collapse;
-  width: auto;
-  min-width: 0;
-  max-width: 100%;
-  border-top: 1.6px solid var(--color-text);
-  border-bottom: 1.6px solid var(--color-text);
-  color: var(--color-text);
-  background: transparent;
+  border-collapse:collapse;border-spacing:0;table-layout:auto;
+  width:auto;max-width:none;margin:0;
+  border:0;border-top:1.5px solid var(--color-text);border-bottom:1.5px solid var(--color-text);
+  border-radius:0;box-shadow:none;background:transparent;color:var(--color-text);
   font-family: var(--font-interface);
-  font-variant-numeric: normal;
-  font-size: var(--type-table);
-  line-height: 1.48;
+  font-size: var(--type-table);font-weight:var(--type-weight-normal);font-style:normal;line-height:var(--paper-table-line-height,1.45);
+  font-variant-numeric:tabular-nums lining-nums;font-feature-settings:normal;
 }
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] caption,
 table.research-booktabs caption {
-  caption-side: top;
-  padding: 0 0 .68rem;
-  text-align: left;
-  line-height: 1.6;
-  font-weight: var(--type-weight-heading);
-  font-size: var(--type-caption);
-  color: var(--color-text);
+  display:table-caption;position:static;caption-side:top;
+  width:auto;height:auto;margin:0;padding:0 0 .6rem;
+  overflow:visible;clip:auto;clip-path:none;white-space:normal;
+  text-align:left;color:var(--color-text);background:transparent;
+  font-family:inherit;font-size: var(--type-table);font-weight:var(--type-weight-normal);line-height:1.5;
 }
-table.research-booktabs th,
-table.research-booktabs td {
-  text-align: left;
-  vertical-align: baseline;
-  font-size: inherit;
-  line-height: inherit;
-  padding: .64rem .7rem .64rem .25rem;
-  border: 0;
-  background: transparent;
-  overflow-wrap: normal;
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td),
+table.research-booktabs :is(th,td) {
+  padding:var(--paper-table-cell-padding,.42em .75em);border:0;border-radius:0;background:transparent;
+  box-shadow:none;color:inherit;font-family:inherit;font-size:inherit;
+  line-height:inherit;font-style:normal;letter-spacing:normal;
+  text-align:left;vertical-align:top;overflow-wrap:normal;word-break:normal;
+  font-variant-numeric:tabular-nums lining-nums;
 }
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] thead th,
 table.research-booktabs thead th {
-  border-bottom: 1px solid var(--color-text);
-  font-weight: var(--type-weight-label);
-  color: var(--color-text);
-  vertical-align: bottom;
+  padding-top:.5em;padding-bottom:.5em;font-weight:var(--type-weight-label);
+  border-bottom:.8px solid var(--color-text);vertical-align:bottom;
 }
-table.research-booktabs tbody th[scope="row"] { font-weight: var(--type-weight-label); }
-table.research-booktabs tbody tr + tr > * {
-  border-top: 0; /* LaTeX booktabs: avoid one rule per data row. */
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] tbody th,
+table.research-booktabs tbody th{font-weight:var(--type-weight-normal)}
+/* Preserve a readable column measure; dense evidence pans locally. */
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] tbody :is(th,td){min-width:12em}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] tbody .paper-table__mark{min-width:2em}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] tbody+tbody>tr:first-child>*,
+table.research-booktabs tbody+tbody>tr:first-child>*{border-top:.6px solid var(--color-text)}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td)[data-numeric],
+table.research-booktabs :is(th,td)[data-numeric]{
+  text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums lining-nums;min-width:7em;
 }
-table.research-booktabs :is(th,td)[data-numeric] {
-  text-align: right;
-  white-space: nowrap;
-  font-variant-numeric: normal;
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td):first-child,
+table.research-booktabs :is(th,td):first-child{padding-left:0;min-width:8em}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td):last-child,
+table.research-booktabs :is(th,td):last-child{padding-right:0}
+:root .research-booktabs-wrap--presentation>table.research-booktabs[data-research-paper-table]{font-size:var(--type-table)}
+:root .research-booktabs-wrap--presentation>table.research-booktabs[data-research-paper-table] caption{font-size:var(--type-table)}
+@media print {
+  .research-booktabs-wrap{overflow:visible;max-width:100%;break-inside:avoid}
+  :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table]{max-width:100%;font-size:10pt}
+  :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] caption{font-size:10pt}
 }
-table.research-booktabs td.paper-main-value {
-  font-weight: 700;
-  font-size: inherit;
-}
-@media(max-width: 640px) {
-  table.research-booktabs { font-size: var(--type-caption); }
-  table.research-booktabs :is(th,td) { padding: .56rem .6rem .56rem .15rem; }
-}
+
+/* Table text stays at one paper reading scale; mathematical glyphs and code keep their own owners. */
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(thead,tbody,tfoot,tr){background:transparent;border:0;box-shadow:none}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td) :is(span,strong,small,em,a):not(.katex):not(.katex *):not(.math-formula *){font-family:inherit;font-size:inherit;line-height:inherit;background:transparent;border:0;border-radius:0;box-shadow:none}
 
 /*
  * The long-form OpenEVO evidence article also has native semantic tables that

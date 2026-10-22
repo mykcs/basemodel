@@ -9,41 +9,53 @@ for (const width of [390,768,1440]) {
     await page.goto(result,{waitUntil:'domcontentloaded'});
     const original=page.locator('[data-report-figure="q01-horizon"]');
     await expect(original).toHaveAttribute('data-paper-figure','true');
+    const pgf=original.locator('img[data-pgfplot="q01-three-way"]');
+    await expect(pgf).toBeVisible();
+    await expect(pgf).toHaveAttribute('loading','eager');
+    await expect(pgf).toHaveAttribute('alt',/各 11 个实测保存点/);
+    await expect(pgf).toHaveAttribute('src','/research/seed-openevo/figures/q01-three-way-pgfplots.svg');
+    const selected=await pgf.evaluate(async img=>{
+      if(!(img instanceof HTMLImageElement))return null;
+      await img.decode();
+      return {currentSrc:img.currentSrc,naturalWidth:img.naturalWidth,naturalHeight:img.naturalHeight};
+    });
+    expect(selected).not.toBeNull();
+    expect(selected!.naturalWidth).toBeGreaterThan(300);
+    expect(selected!.naturalHeight).toBeGreaterThan(180);
+    expect(selected!.currentSrc).toContain(width<=720?'q01-three-way-mobile-pgfplots.svg':'q01-three-way-pgfplots.svg');
+    const q01Caption=original.locator('figcaption');
+    const q01Detail=original.locator('[data-q01-raw-svg]');
+    const layout=await original.evaluate(node=>{
+      const graphic=node.querySelector('img[data-pgfplot="q01-three-way"]')!;
+      const caption=node.querySelector('figcaption')!;
+      const detail=node.querySelector('[data-q01-raw-svg]')!;
+      return {imageBottom:graphic.getBoundingClientRect().bottom,captionTop:caption.getBoundingClientRect().top,
+        captionBottom:caption.getBoundingClientRect().bottom,detailTop:detail.getBoundingClientRect().top};
+    });
+    expect(layout.captionTop).toBeGreaterThanOrEqual(layout.imageBottom-2);
+    expect(layout.detailTop).toBeGreaterThanOrEqual(layout.captionBottom-2);
+    await expect(q01Caption).toContainText('同一横轴刻度不是相同的训练计算量');
+    await expect(q01Detail).not.toHaveAttribute('open','');
     const q01=width<=720 ? original.locator('.advisor-viz__q01-chart--phone') : original.locator('.advisor-viz__q01-chart--desktop');
+    await expect(q01).toBeHidden();
+    await q01Detail.locator('summary').click();
     await expect(q01).toBeVisible();
     await expect(q01.locator('[data-q01-phone-line], [data-q01-line]')).toHaveCount(3);
     await expect(q01.locator('.advisor-viz__q01-point')).toHaveCount(33);
     await expect(original.locator('.advisor-viz__q01-legend-item')).toHaveCount(3);
+    await expect(page.locator('[data-q03-paper-table]')).toBeVisible();
+    await page.locator('[data-q03-trend-details]').evaluate(el=>(el as HTMLDetailsElement).open=true);
     const q03=page.locator('[data-report-figure="q03-custom-curve"]');
-    await expect(width<=720 ? q03.locator('[data-q03-mobile-chart]') : q03.locator('.advisor-viz__q03-chart--desktop')).toBeVisible();
+    const plot=q03.locator('img[data-pgfplot="q03-stage2"]');
+    await expect(plot).toBeVisible();
+    await expect(plot).toHaveAttribute('src','/research/seed-openevo/figures/q03-stage2-pgfplots.svg');
     await expect(q03.locator('button')).toHaveCount(0);
-    // Regression for the owner's Q03 screenshot: paper figure, not a floating
-    // tooltip/card; value labels stay clear of the y-axis on phone and desktop.
-    const plot=width<=720 ? q03.locator('[data-q03-mobile-chart]') : q03.locator('[data-q03-desktop-chart]');
-    await expect(plot).toHaveAttribute('aria-label',/四个.*保存点/);
-    await expect(plot.locator('title')).toHaveCount(0);
     const q01Name=await q01.getAttribute('aria-label');
     expect(q01Name?.length).toBeGreaterThan(8);
     await expect(q01.locator('title')).toHaveCount(0);
-    const geometry=await plot.evaluate(svg=>{
-      const left=svg.querySelector('[data-trend-point="A0"] .advisor-viz__q03-score, [data-trend-point-phone="A0"] .advisor-viz__q03-score');
-      const axis=svg.querySelector('.advisor-viz__q03-axis-line');
-      if(!(left instanceof SVGGraphicsElement)||!(axis instanceof SVGGraphicsElement))return null;
-      const label=left.getBBox();
-      const origin=axis.getBBox().x;
-      return {leftEdge:label.x,axisX:origin};
-    });
-    expect(geometry).not.toBeNull();
-    expect(geometry!.leftEdge).toBeGreaterThan(geometry!.axisX+2);
-    // SVG source font-size alone is not the reader-visible size: a 625px
-    // viewBox squeezed to 384px makes its 13.5px labels render near 8px.
-    const renderedScorePx=await plot.evaluate(svg=>{
-      const label=svg.querySelector('.advisor-viz__q03-score');
-      if(!(label instanceof SVGTextElement)||!(svg instanceof SVGSVGElement))return 0;
-      return parseFloat(getComputedStyle(label).fontSize)
-        * svg.getBoundingClientRect().width/svg.viewBox.baseVal.width;
-    });
-    expect(renderedScorePx).toBeGreaterThanOrEqual(11.5);
+    // Immutable outlined PGFPlots glyphs replace the retired inline SVG text.
+    // Source/data/label placement hashes are verified before every build;
+    // the native reading path has its own real glyph geometry/negative gate.
     const paper=await q03.evaluate(node=>{
       const root=document.querySelector('.evo-approved-reader');
       const caption=node.querySelector('figcaption');
@@ -60,7 +72,19 @@ for (const width of [390,768,1440]) {
       const plot=page.locator('[data-paper-effect="'+id+'"]');
       await expect(plot).toBeVisible();
       await expect(plot.locator('[data-effect-row]')).toHaveCount(count);
-      await expect(plot.locator('.paper-effect__zero')).toHaveCount(count);
+      const compiled=plot.locator('img[data-pgfplot="'+id+'"]');
+      await expect(compiled).toBeVisible();
+      await compiled.scrollIntoViewIfNeeded();
+      const rendered=await compiled.evaluate(async image=>{
+        const img=image as HTMLImageElement;
+        await img.decode();
+        return {width:img.naturalWidth,height:img.naturalHeight,currentSrc:img.currentSrc};
+      });
+      expect(rendered.width).toBeGreaterThan(200);
+      expect(rendered.height).toBeGreaterThan(50);
+      if(id==='q04-posthoc'||id==='q07-zero-latest'||id==='q09-context'){
+        expect(rendered.currentSrc).toContain(width<=720?`${id}-mobile.svg`:`${id}.svg`);
+      }
       await expect(plot.locator('.paper-effect__unit')).toContainText('95%');
     }
     const q04Interval=page.locator('[data-paper-effect="q04-posthoc"]');
@@ -70,19 +94,14 @@ for (const width of [390,768,1440]) {
     await expect(q04Interval.locator('.paper-effect__takeaway')).toContainText('不能确定压缩会稳定掉分');
     const frame=await q04Interval.evaluate(el=>{
       const css=getComputedStyle(el),box=el.getBoundingClientRect();
-      const axisLabels=[...el.querySelectorAll('.paper-effect__axis span')].map(label=>label.getBoundingClientRect());
-      return {width:css.borderTopWidth,side:css.borderLeftWidth,clipped:axisLabels.some(r=>r.left<box.left-1||r.right>box.right+1)};
+      const image=el.querySelector('img[data-pgfplot]')!.getBoundingClientRect();
+      return {width:css.borderTopWidth,side:css.borderLeftWidth,clipped:image.left<box.left-1||image.right>box.right+1};
     });
     expect(frame.width).toBe('1px');
     expect(frame.side).toBe('1px');
     expect(frame.clipped).toBe(false);
     await expect(q04Interval.locator('.paper-effect__directions span')).toHaveCount(2);
-    const zeroAligned=await q04Interval.evaluate(el=>{
-      const zero=el.querySelector('.paper-effect__zero')!.getBoundingClientRect();
-      const tick=[...el.querySelectorAll('.paper-effect__axis span')].find(x=>x.textContent?.trim()==='0')!.getBoundingClientRect();
-      return Math.abs((zero.left+zero.width/2)-(tick.left+tick.width/2));
-    });
-    expect(zeroAligned).toBeLessThan(2);
+    await expect(q04Interval.locator('img[data-pgfplot="q04-posthoc"]')).toHaveAttribute('aria-describedby','advisor-q04-posthoc-caption');
     const text=await page.locator('[data-q17-inline="q04"]').innerText();
     expect(text).toContain('训练后压缩');
     await expect(page.locator('[data-q17-inline="q07"]')).toContainText('不是同一模型、同一干预');
@@ -125,5 +144,39 @@ for(const width of [390,1440]){
     const lanes=page.locator('.advisor-method__lane');
     await expect(lanes).toHaveCount(3);
     expect(await lanes.first().locator('.advisor-method__node').first().evaluate(x=>getComputedStyle(x).borderRadius)).toBe('0px');
+  });
+}
+
+for (const width of [390,768,1440]) for (const theme of ['light','dark']) {
+  test('Q01 legend text meets contrast and rejects its old palette inheritance: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto(result,{waitUntil:'load'});
+    const figure=page.locator('[data-report-figure="q01-horizon"]');
+    const labels=figure.locator('.advisor-viz__q01-legend-item > span');
+    await expect(labels).toHaveCount(3);
+    const measure=()=>labels.evaluateAll(nodes=>{
+      const rgb=(value:string)=>value.match(/[\d.]+/g)!.slice(0,3).map(Number);
+      const lum=(values:number[])=>values.map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((sum,v,i)=>sum+v*[.2126,.7152,.0722][i]!,0);
+      return nodes.map(node=>{
+        let owner:Element|null=node;
+        while(owner && ['transparent','rgba(0, 0, 0, 0)'].includes(getComputedStyle(owner).backgroundColor)) owner=owner.parentElement;
+        if(!owner)throw Error('Missing actual legend background');
+        const ink=lum(rgb(getComputedStyle(node).color)),paper=lum(rgb(getComputedStyle(owner).backgroundColor));
+        return (Math.max(ink,paper)+.05)/(Math.min(ink,paper)+.05);
+      });
+    });
+    for(const ratio of await measure())expect(ratio).toBeGreaterThanOrEqual(4.5);
+    if(theme==='dark'){
+      // Restore the exact old inherited series palette, on the real dark page.
+      await labels.evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.color=getComputedStyle(node.parentElement!).color));
+      const original=await measure();
+      expect(original.some(ratio=>ratio<4.5)).toBe(true);
+      expect(()=>original.forEach(ratio=>expect(ratio).toBeGreaterThanOrEqual(4.5))).toThrow();
+      await labels.evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.removeProperty('color')));
+      for(const ratio of await measure())expect(ratio).toBeGreaterThanOrEqual(4.5);
+    }
+    for(const sample of await figure.locator('.advisor-viz__q01-legend-item > svg').all())
+      await expect(sample).toHaveCSS('background-color','rgb(255, 255, 255)');
   });
 }

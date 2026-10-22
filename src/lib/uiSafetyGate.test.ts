@@ -205,7 +205,7 @@ describe('UI visual acceptance gate contract', () => {
     ]) expect(floatingTransportGate).toContain(term);
     expect(researchReadabilityStyles).toContain('.canonical-figure');
     // The shared research caption floor now follows #895's semantic metadata role.
-    expect(researchReadabilityStyles).toContain('font-size: max(var(--type-meta), 13px) !important');
+    expect(researchReadabilityStyles).toContain('font-size: var(--type-body-small) !important');
     expect(interactiveResearchStyles).not.toContain('>.irx-controls>.irx-transport{position:fixed');
     expect(geometryPolicy).toContain('at least **7 CJK characters per rendered line**');
     expect(geometryPolicy).toContain('becomes a bottom `position: fixed` dock');

@@ -12,7 +12,8 @@ for (const width of [390, 768, 1440]) {
     await expect(caseStudy).toHaveCount(1);
     await expect(caseStudy).toHaveAttribute('data-evidence-as-of', '2026-10-16');
     await expect(caseStudy.locator('h4')).toContainText('八卡工程训练已完成两轮更新');
-    await expect(q03.locator('[data-report-figure="q03-custom-curve"]')).toBeVisible();
+    await expect(q03.locator('[data-q03-paper-table]')).toBeVisible();
+    await expect(q03.locator('[data-report-figure="q03-custom-curve"]')).toBeHidden();
     await expect(caseStudy).toContainText('A0–A120');
     await expect(caseStudy).toContainText('正式 Stage2 计划训练 160 轮，目前尚未开始');
     await expect(caseStudy).toContainText('完整八卡保存、加载、继续取新题并更新仍未验收');

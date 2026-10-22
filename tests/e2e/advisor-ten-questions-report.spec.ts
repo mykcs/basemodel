@@ -114,10 +114,12 @@ test('third article answers all Q01–Q10 with experiments, measurements, limits
   const q03=page.locator('#response-q03 [data-report-figure="q03-custom-curve"]');
   await expect(q03).toHaveAttribute('data-evidence-shape','paper-static-observations');
   await expect(q03.locator('button, [data-q03-stage-selector], [data-stage-detail]')).toHaveCount(0);
-  const points=await q03.locator('[data-trend-point]').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-trend-point')));
-  expect(points).toEqual(['A0','A40','A80','A120']);
-  const table=q03.locator('.advisor-viz__q03-phone-table');
+  const compiledPlot=q03.locator('img[data-pgfplot="q03-stage2"]');
+  await expect(compiledPlot).toHaveAttribute('alt',/A0 为 3\.71，A40 为 6\.43，A80 为 0\.69，A120 为 6\.62/);
+  const table=page.locator('#response-q03 [data-q03-paper-table]');
   await expect(table).toBeVisible();
+  await expect(page.locator('#response-q03 [data-q03-trend-details]')).not.toHaveAttribute('open','');
+  await expect(q03).toBeHidden();
   await expect(table.locator('tbody tr')).toHaveCount(4);
   await expect(table).toContainText('0.69');
   await expect(table).toContainText('6.62');
@@ -224,13 +226,15 @@ test('Q17 diagnostics distinguish new measurements from dated history on mobile'
   expect(overflow).toBeLessThanOrEqual(2);
 });
 
-test('meeting date and primary RAW are visible where the reader first sees the account',async({page})=>{
+test('meeting date and original RAW remain reachable after the scientific first screen',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   const rawPath='2026-09-22-meeting-transcript.raw.md';
   await page.goto(prefix+'parameter-memory-results/');
   const lede=page.locator('[data-evo-blog="results"] .evo-article__lede');
-  await expect(lede).toContainText('2026 年 9 月 22 日，我们和学长开了一次');
-  const source=lede.getByRole('link',{name:/会议原始逐字记录/});
+  await expect(lede).toContainText('十个研究问题已经测到什么');
+  const provenance=page.locator('[data-meeting-provenance]');
+  await expect(provenance).toContainText('2026 年 9 月 22 日，我们和学长开了一次');
+  const source=provenance.getByRole('link',{name:/会议原始逐字记录/});
   await expect(source).toBeVisible();
   await expect(source).toHaveAttribute('href',new RegExp('85ee773d04f9949db369c8dd928dbbae12c68c8d/.+'+rawPath));
   const horizontalOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
@@ -310,7 +314,7 @@ test('Q01 shows measured Task Score curves and links each answer to the second-a
   }
   await expect(guide).toContainText('action-family entropy');
   await expect(guide).toContainText('ALFWorld');
-  await expect(guide).toContainText('十问速览：我们发现了什么，下一轮还想研究什么？');
+  await expect(guide).toContainText('十问速览与后续工作');
   const answer=page.locator('#response-q01');
   await expect(answer.locator('h3')).toHaveText('训练 160 轮会不会太多？');
   await expect(answer.locator('[data-question-number="q01"]')).toHaveText('Q01');
@@ -370,36 +374,30 @@ test('cross-article flow is method → questions → our response experiments',a
 
 
 for (const width of [390, 768, 1440]) {
-  test('Q03 paper figure displays all four checkpoints without clicks at ' + width + 'px', async ({page}, testInfo) => {
-    await page.setViewportSize({width, height:width===390?844:900});
-    await page.goto(prefix+'parameter-memory-results/', {waitUntil:'domcontentloaded'});
-    const figure=page.locator('#response-q03 [data-report-figure="q03-custom-curve"]');
+  test('Q03 booktabs is primary and original trend remains available at '+width+'px', async({page},testInfo)=>{
+    await page.setViewportSize({width,height:width===390?844:900});
+    await page.goto(prefix+'parameter-memory-results/',{waitUntil:'domcontentloaded'});
+    const paper=page.locator('#response-q03 [data-q03-report-paper]');
+    const table=paper.locator('[data-q03-paper-table]');
+    const disclosure=paper.locator('[data-q03-trend-details]');
+    const figure=paper.locator('[data-report-figure="q03-custom-curve"]');
+    await expect(table).toBeVisible();
+    await expect(table.locator('caption')).toContainText('补充表 S2');
+    await expect(table.locator('tbody tr')).toHaveCount(4);
+    const rows=await table.locator('tbody tr').evaluateAll(els=>els.map(el=>[...el.querySelectorAll('th,td')].map(cell=>cell.textContent?.trim())));
+    expect(rows).toEqual([['A0','3.71','0'],['A40','6.43','0'],['A80','0.69','0'],['A120','6.62','0']]);
+    await expect(paper.locator('.advisor-q03-paper__boundary a[href*="/pull/678"]')).toBeVisible();
+    await expect(disclosure).not.toHaveAttribute('open','');
+    await expect(figure).toBeHidden();
+    await disclosure.locator('summary').click();
+    await expect(figure).toBeVisible();
     await expect(figure).toHaveAttribute('data-evidence-shape','paper-static-observations');
-    await expect(figure.locator('button,[data-q03-stage-selector],[data-stage-detail],[aria-pressed]')).toHaveCount(0);
-    const labels=await figure.locator('[data-trend-point]').evaluateAll(nodes=>nodes.map(x=>x.getAttribute('data-trend-point')));
-    expect(labels).toEqual(['A0','A40','A80','A120']);
-    await expect(figure).toContainText('3.71');
-    await expect(figure).toContainText('6.43');
-    await expect(figure).toContainText('0.69');
-    await expect(figure).toContainText('6.62');
-    await expect(figure).toContainText('均没有完整成功的题目');
-    await expect(figure.locator('figcaption')).toContainText('中间轮次没有测量');
-    await expect(figure.locator('figcaption a[href*="/pull/678"]')).toBeVisible();
-    const plot=figure.locator('.advisor-viz__q03-chart');
-    const table=figure.locator('.advisor-viz__q03-phone-table');
-    if (width<=720) {
-      await expect(plot).toBeHidden();
-      await expect(table).toBeVisible();
-      await expect(table.locator('tbody tr')).toHaveCount(4);
-      const overflow=await table.evaluate(x=>x.scrollWidth-x.clientWidth);
-      expect(overflow,'mobile table must fit its own viewport').toBeLessThanOrEqual(2);
-    } else {
-      await expect(plot).toBeVisible();
-      await expect(table).toBeHidden();
-    }
-    const overall=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
-    expect(overall,'horizontal viewport overflow').toBeLessThanOrEqual(2);
-    if(width!==768) await figure.screenshot({path:testInfo.outputPath('q03-static-paper-'+width+'.png'),animations:'disabled'});
+    await expect(figure.locator('img[data-pgfplot="q03-stage2"]')).toHaveAttribute('alt',/A0 为 3\.71，A40 为 6\.43，A80 为 0\.69，A120 为 6\.62/);
+    await expect(figure.locator('figcaption')).toContainText('没有测量中间轮次');
+    await expect(figure.locator('img[data-pgfplot="q03-stage2"]')).toBeVisible();
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(2);
+    if(width!==768)await table.screenshot({path:testInfo.outputPath('q03-booktabs-'+width+'.png'),animations:'disabled'});
   });
 }
 
@@ -546,7 +544,7 @@ test('advisor numeric typography stays plain throughout prose, tables and plots'
     '#capacity .research-booktabs td[data-numeric]',
     '#response-q02 .advisor-viz .research-booktabs td',
     '#response-q07 .paper-effect__value strong',
-    '#capacity .paper-effect__axis',
+    '#capacity img[data-pgfplot]',
     '#main-results .evo-article__tablewrap table td',
   ];
   for(const selector of selectors){
@@ -586,7 +584,7 @@ test('Q10 ends the main question sequence and no historical topic restarts as ch
   await expect(responses).toHaveCount(10);
   await expect(responses.last()).toHaveAttribute('id','response-q10');
   const after=await article.locator('#responses ~ section > h2').allTextContents();
-  expect(after).toEqual(['研究总结与仍待回答的问题','科研来源与实验记录']);
+  expect(after).toEqual(['研究总结与关键缺口','科研来源与实验记录']);
   const noRepeatedChapters=(headings:string[])=>headings.every(x=> !/^(?:[4-9]|10)\s/.test(x));
   expect(noRepeatedChapters(after)).toBe(true);
   // Known-bad witness: a restored "4" after Q10 must be rejected.

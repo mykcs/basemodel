@@ -50,20 +50,6 @@
 /* Home: three intents first; secondary scenarios are progressively disclosed. */
 .novice-entry { margin: 18px 0 0; color: var(--muted); }
 .intent-grid { border-top: 1px solid var(--line); }
-.intent-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 24px;
-  align-items: center;
-  padding: 22px 2px;
-  border-bottom: 1px solid var(--line);
-  text-decoration: none;
-}
-.intent-row:hover h3,
-.intent-row:focus-visible h3 { color: var(--accent-deep); }
-.intent-row h3 { margin-bottom: 5px; }
-.intent-row p { margin: 0; max-width: 780px; color: var(--muted); }
-.intent-row > span { font-size: 1.4rem; color: var(--accent-deep); }
 .research-path-list { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .research-path-row { padding: 22px 22px 22px 0; }
 .research-path-row + .research-path-row { border-left: 1px solid var(--line); padding-left: 22px; }
@@ -93,7 +79,7 @@
 .paper-matrix-advanced > summary,
 .memo-source-preview > summary {
   cursor: pointer;
-  font-weight: 750;
+  font-weight: var(--type-weight-heading);
   color: var(--accent-deep);
 }
 .home-scenarios-advanced[open] > summary,
@@ -133,7 +119,6 @@
 }
 
 @media (max-width: 640px) {
-  .intent-row { grid-template-columns: 1fr auto; gap: 12px; }
   .family-current-row dl div { grid-template-columns: 86px 1fr; }
 }
 
@@ -204,7 +189,7 @@ summary:focus-visible {
 }
 .site-main > .hero .lede { max-width: 62ch; font-size: var(--type-lead); line-height: 1.72; }
 .site-main > .hero .hero-actions { margin-top: 28px; }
-.site-main > .hero .button-primary { min-height: 48px; padding: 12px 18px; border-radius: 12px; font-weight: 780; }
+.site-main > .hero .button-primary { min-height: 48px; padding: 12px 18px; border-radius: 12px; font-weight: var(--type-weight-heading); }
 
 /* Home choices: on desktop they read as a three-step decision board. */
 .intent-grid {
@@ -214,36 +199,6 @@ summary:focus-visible {
   gap: 14px;
   border-top: 0;
   margin-top: 22px;
-}
-.intent-row {
-  counter-increment: study-intent;
-  position: relative;
-  grid-template-columns: 1fr auto;
-  align-content: start;
-  min-height: 184px;
-  padding: 22px;
-  border: 1px solid var(--line);
-  border-radius: var(--study-radius);
-  background: var(--surface);
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--ink) 4%, transparent);
-  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-}
-.intent-row::before {
-  content: '0' counter(study-intent);
-  grid-column: 1 / -1;
-  color: var(--accent-deep);
-  font-size: var(--type-meta);
-  font-weight: 850;
-  letter-spacing: .09em;
-}
-.intent-row h3 { margin-top: 14px; font-size: var(--type-minor-heading); line-height: 1.24; }
-.intent-row p { font-size: var(--type-body-small); line-height: 1.62; }
-.intent-row > span { align-self: end; }
-.intent-row:hover,
-.intent-row:focus-visible {
-  transform: translateY(-3px);
-  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
-  box-shadow: 0 16px 34px color-mix(in srgb, var(--ink) 7%, transparent);
 }
 
 /* Supporting home sections: keep information scannable rather than dense. */
@@ -349,7 +304,6 @@ pre { max-width: 100%; }
   .nav-inner { min-height: 62px; }
   .brand { min-width: 0; }
   .site-main > .hero h1 { font-size: var(--type-display); }
-  .intent-row { min-height: 196px; }
   .guide-learning-page .route { top: 64px; }
 }
 
@@ -359,7 +313,6 @@ pre { max-width: 100%; }
   .guide-learning-page { width: min(100% - 32px, 760px); }
   .site-main > .hero h1 { max-width: 690px; }
   .intent-grid { grid-template-columns: 1fr; gap: 10px; }
-  .intent-row { min-height: 0; }
   .research-path-list { grid-template-columns: 1fr; }
   .family-current-row { grid-template-columns: 1fr; gap: 12px; }
 
@@ -377,7 +330,7 @@ pre { max-width: 100%; }
 
 @media (max-width: 640px) {
   :root { --study-radius: 14px; }
-  html { font-size: 16px; }
+  html { font-size: var(--type-body); }
   .shell { width: min(100% - 28px, var(--content-max)); }
   .site-header { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
   .nav-inner { min-height: 58px; gap: 8px; }
@@ -406,8 +359,6 @@ pre { max-width: 100%; }
 
   .section { padding-block: 30px; }
   .section-heading h2 { font-size: var(--type-section); }
-  .intent-row { padding: 18px; border-radius: 14px; }
-  .intent-row h3 { margin-top: 10px; }
   .research-path-row { padding: 18px !important; }
   .family-current-row { padding: 17px; }
   .family-current-row dl div { grid-template-columns: 80px minmax(0, 1fr); }
@@ -459,12 +410,11 @@ pre { max-width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .intent-row,
   .model-card,
-  .entry-card,
-  .scenario-card,
-  .paper-row,
-  .tree-checkpoint,
-  .landscape-learning-card { transition: none !important; transform: none !important; }
+.entry-card,
+.scenario-card,
+.paper-row,
+.tree-checkpoint,
+.landscape-learning-card { transition: none !important; transform: none !important; }
   html { scroll-behavior: auto !important; }
 }

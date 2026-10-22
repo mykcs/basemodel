@@ -79,7 +79,7 @@
     color: var(--muted);
     font-size: var(--type-body-small);
     line-height: 1.68;
-    letter-spacing: .002em;
+    letter-spacing: normal;
   }
 
   body .site-main .mission-hero__actions {
@@ -100,7 +100,7 @@
     font-size: var(--type-meta);
     font-weight: var(--type-weight-label);
     line-height: 1.24;
-    letter-spacing: -.006em;
+    letter-spacing: normal;
     text-align: center;
   }
 
@@ -378,11 +378,16 @@
     line-height: 1.25;
   }
 
-  body .site-main .family-current-row p,
+  
   body .site-main .family-current-row dt,
   body .site-main .family-current-row dd {
     font-size: var(--type-meta);
     line-height: 1.5;
+  }
+
+  body .site-main .family-current-row p {
+    font-size: var(--type-body-small);
+    line-height: var(--type-leading-body);
   }
 
   body .site-main .home-scenarios-advanced {

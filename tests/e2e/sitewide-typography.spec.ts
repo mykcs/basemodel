@@ -1,5 +1,6 @@
+import { persistJsonAttachment } from './evidence-json';
 import { expect, test } from '@playwright/test';
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 
 // Representative reader roles, not a claim that these paths are every static
 // route. The build audit separately walks all generated HTML.
@@ -69,25 +70,6 @@ for(const width of [390,1440] as const) {
   }
 }
 
-test('restoring the Q03 value-label collision actually fails the same geometry test',async({page})=>{
-  await page.setViewportSize({width:1440,height:900});
-  await page.goto('/research/seed-openevo/study/parameter-memory-results/');
-  const chart=page.locator('[data-q03-desktop-chart]');
-  const offsets=async()=>chart.evaluate(svg=>{
-    const node=svg.querySelector('[data-trend-point="A0"] .advisor-viz__q03-score');
-    const axis=svg.querySelector('.advisor-viz__q03-axis-line');
-    if(!(node instanceof SVGGraphicsElement)||!(axis instanceof SVGGraphicsElement))return null;
-    return {left:node.getBBox().x,axis:axis.getBBox().x};
-  });
-  const good=await offsets();
-  expect(good).not.toBeNull();
-  expect(good!.left).toBeGreaterThan(good!.axis+2);
-  // Old Q03 screenshot coordinates, deliberately reintroduced for one check.
-  await chart.locator('[data-trend-point="A0"] .advisor-viz__q03-score').evaluate(node=>node.setAttribute('x','88'));
-  const bad=await offsets();
-  expect(bad).not.toBeNull();
-  expect(bad!.left).toBeLessThanOrEqual(bad!.axis+2);
-});
 
 const knownUnreadableProse=[
   {route:'/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/',selector:'.harness-fairness__rows p'},
@@ -300,7 +282,7 @@ for(const width of [390,768,1440] as const) {
       const figure=page.locator('.reasoning-line').first();
       await figure.scrollIntoViewIfNeeded();
       await figure.screenshot({path:testInfo.outputPath('four-arm-reasoning-'+width+'-'+theme+'.png'),animations:'disabled',style:'.site-header{visibility:hidden}'});
-      await testInfo.attach('four-arm-type.json',{body:Buffer.from(JSON.stringify(receipt,null,2)),contentType:'application/json'});
+      await persistJsonAttachment(testInfo,'four-arm-type.json',{body:Buffer.from(JSON.stringify(receipt,null,2)),contentType:'application/json'});
     });
   }
 }
@@ -373,7 +355,7 @@ for(const width of [390,768,1440] as const) {
         animations:'disabled'});
       await region.screenshot({path:testInfo.outputPath('four-arm-evidence-'+width+'-'+theme+'.png'),
         animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}'});
-      await testInfo.attach('four-arm-evidence-computed.json',{
+      await persistJsonAttachment(testInfo,'four-arm-evidence-computed.json',{
         body:Buffer.from(JSON.stringify(r,null,2)),contentType:'application/json'});
     });
   }
@@ -494,7 +476,7 @@ for(const width of [390,768,1440] as const){
       await page.evaluate(()=>document.fonts.ready);
       const receipt=await readMinimaxTypography(page);
       acceptMinimaxTypography(receipt,width);
-      await testInfo.attach('minimax-roles.json',{body:Buffer.from(JSON.stringify(receipt,null,2)),contentType:'application/json'});
+      await persistJsonAttachment(testInfo,'minimax-roles.json',{body:Buffer.from(JSON.stringify(receipt,null,2)),contentType:'application/json'});
       await page.locator('.fit-chart').screenshot({path:testInfo.outputPath('minimax-fit-'+width+'-'+theme+'.png'),animations:'disabled'});
       await page.locator('.comparison .table-wrap').screenshot({path:testInfo.outputPath('minimax-table-'+width+'-'+theme+'.png'),animations:'disabled'});
       await page.locator('.frontier').screenshot({path:testInfo.outputPath('minimax-candidates-'+width+'-'+theme+'.png'),animations:'disabled'});
@@ -572,7 +554,7 @@ for(const width of [390,768,1440] as const) for(const theme of ['light','dark'] 
     await expect(hint).toContainText('左右滑动');
     const receipt=await readMetricZoom(first);
     acceptMetricZoom(receipt,true);
-    await testInfo.attach('metric-original-size.json',{body:Buffer.from(JSON.stringify({width,theme,...receipt},null,2)),contentType:'application/json'});
+    await persistJsonAttachment(testInfo,'metric-original-size.json',{body:Buffer.from(JSON.stringify({width,theme,...receipt},null,2)),contentType:'application/json'});
     const viewport=first.locator('.metric-evidence__viewport');
     const scrolled=await viewport.evaluate(node=>{
       (node as HTMLElement).scrollLeft=200;
@@ -955,7 +937,7 @@ function acceptQ17Native(m:Q17NativeReceipt,nativeWidth:number,expanded:boolean)
   if(expanded){
     expect(m.drawn,'render SVG at source-native width').toBeGreaterThanOrEqual(nativeWidth-1);
     expect(m.drawn).toBeLessThanOrEqual(nativeWidth+1);
-    expect(m.tickPixels,'native 10px labels must remain physically readable').toBeGreaterThanOrEqual(9.8);
+    expect(m.tickPixels,'expanded scientific labels remain physically readable').toBeGreaterThanOrEqual(12);
     expect(m.overflow).toBe('auto');
     expect(m.scroll).toBeGreaterThanOrEqual(m.client);
   }else{
@@ -1016,7 +998,7 @@ for(const chart of q17NativeReaders){
       }
       const readerReceipt=JSON.stringify({route:chart.route,width,theme,head:process.env.CI_HEAD_SHA??'local',measurements},null,2);
       writeFileSync(info.outputPath('q17-svg-reader.json'),readerReceipt);
-      await info.attach('q17-svg-reader.json',{body:Buffer.from(readerReceipt),contentType:'application/json'});
+      await persistJsonAttachment(info,'q17-svg-reader.json',{body:Buffer.from(readerReceipt),contentType:'application/json'});
       await page.evaluate(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
       await expect.poll(()=>page.evaluate(()=>window.scrollY),'original viewport screenshot starts at the top').toBe(0);
       await page.screenshot({path:info.outputPath('q17-original-viewport-'+width+'-'+theme+'.png'),animations:'disabled'});
@@ -1093,7 +1075,7 @@ for(const width of [390,768,1440] as const)for(const theme of ['light','dark'] a
     acceptLandscapeLabels(witness);
     const landscapeReceipt=JSON.stringify({width,theme,head:process.env.CI_HEAD_SHA??'local',...witness},null,2);
     writeFileSync(info.outputPath('landscape-svg-labels.json'),landscapeReceipt);
-    await info.attach('landscape-svg-labels.json',{body:Buffer.from(landscapeReceipt),contentType:'application/json'});
+    await persistJsonAttachment(info,'landscape-svg-labels.json',{body:Buffer.from(landscapeReceipt),contentType:'application/json'});
     await page.locator('.landscape-chart-shell').screenshot({path:info.outputPath('landscape-figure-'+width+'-'+theme+'.png'),animations:'disabled',
       style:'.site-header,.research-navigation{visibility:hidden}'});
   });
@@ -1115,3 +1097,316 @@ test('Landscape label gate rejects injected 9px ECharts axis/legend text',async(
   await style.evaluate(node=>node.parentNode?.removeChild(node));
   acceptLandscapeLabels(await readLandscapeLabels(page));
 });
+// These witnesses came from exact source-to-scoped-DOM matching, not a blanket
+// assumption that every literal size is a defect. Keep concurrent rewrites out.
+const scopedMigrationWitnesses = JSON.parse(readFileSync(new URL('../../docs/agents/evidence/sitewide-typography/2026-10-22/scoped-migration-witnesses.json', import.meta.url), 'utf8')).witnesses as Array<{file:string;selector:string;route:string;text:string;minimum:number;role:string;maximumVisibleWidth:number|null;minimumVisibleWidth:number|null;ordinaryFace?:boolean;maximumWeight?:number;localViewport?:boolean}>;
+const acceptScopedRole=(size:number,minimum:number,label:string)=>expect(size,label).toBeGreaterThanOrEqual(minimum);
+const acceptOrdinaryFace=(font:string,label:string)=>{expect(font,label+' interface family').toMatch(/^Inter\b/);expect(font,label+' ordinary reading').not.toMatch(/mono|Menlo|Consolas|Georgia|Times New Roman/i);};
+for (const route of [...new Set(scopedMigrationWitnesses.map(row=>row.route))]) {
+  test('confirmed scoped typography readers '+route, async ({page}, info)=>{
+    for (const width of [390,768,1440]) for (const theme of ['light','dark']) {
+      await page.setViewportSize({width,height:900});
+      await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+      expect((await page.goto(route,{waitUntil:'domcontentloaded'}))?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      await page.evaluate(()=>document.fonts.ready);
+      const receipts=[];let faceNegative=false,weightNegative=false;
+      for(const row of scopedMigrationWitnesses.filter(row=>row.route===route)){
+        const node=page.locator(row.selector).filter({hasText:row.text}).first();
+        await expect(node).toBeAttached();
+        if((row.maximumVisibleWidth!==null&&width>row.maximumVisibleWidth)||(row.minimumVisibleWidth!==null&&width<row.minimumVisibleWidth)){await expect(node).toBeHidden();receipts.push({...row,expectedHidden:true});continue;}
+        const ancestors=node.locator('xpath=ancestor::details');
+        for(let i=0;i<await ancestors.count();i++){
+          const disclosure=ancestors.nth(i);
+          if(!await disclosure.evaluate(n=>(n as HTMLDetailsElement).open)){
+            await disclosure.locator(':scope > summary').focus();
+            await page.keyboard.press('Enter');
+            await expect(disclosure).toHaveJSProperty('open',true);
+          }
+        }
+        await expect(node).toBeVisible();
+        const measured=await node.evaluate(n=>{const s=getComputedStyle(n);return {size:parseFloat(s.fontSize),font:s.fontFamily,weight:Number(s.fontWeight),fontStyle:s.fontStyle,lineHeight:s.lineHeight,letterSpacing:s.letterSpacing,fontVariantNumeric:s.fontVariantNumeric,width:n.getBoundingClientRect().width,overflow:n.scrollWidth-n.clientWidth};});
+        acceptScopedRole(measured.size,row.minimum,row.file+' '+row.selector);
+        if(row.maximumWeight)expect(measured.weight,row.selector+' semantic emphasis').toBeLessThanOrEqual(row.maximumWeight);
+        if(row.ordinaryFace)acceptOrdinaryFace(measured.font,row.selector);
+        if(width===390&&theme==='light'&&receipts.length===0){
+          const saved=await node.getAttribute('style');
+          await node.evaluate(n=>(n as HTMLElement).style.setProperty('font-size','9px','important'));
+          const bad=await node.evaluate(n=>parseFloat(getComputedStyle(n).fontSize));
+          expect(bad).toBe(9);
+          expect(()=>acceptScopedRole(bad,row.minimum,'injected unreadable label')).toThrow();
+          await node.evaluate((n,old)=>old===null?n.removeAttribute('style'):n.setAttribute('style',old),saved);
+          acceptScopedRole(await node.evaluate(n=>parseFloat(getComputedStyle(n).fontSize)),row.minimum,'restored reader');
+        }
+        if(width===390&&theme==='light'&&((row.ordinaryFace&&!faceNegative)||(row.maximumWeight&&!weightNegative))){
+          const saved=await node.getAttribute('style');
+          if(row.ordinaryFace&&!faceNegative){
+            await node.evaluate(n=>(n as HTMLElement).style.setProperty('font-family','monospace','important'));
+            const bad=await node.evaluate(n=>getComputedStyle(n).fontFamily);
+            expect(()=>acceptOrdinaryFace(bad,row.selector+' ordinary face negative')).toThrow();
+            await node.evaluate(n=>(n as HTMLElement).style.setProperty('font-family','Georgia, serif','important'));const serif=await node.evaluate(n=>getComputedStyle(n).fontFamily);expect(()=>acceptOrdinaryFace(serif,row.selector+' decorative serif negative')).toThrow();faceNegative=true;
+          }
+          if(row.maximumWeight&&!weightNegative){
+            await node.evaluate(n=>(n as HTMLElement).style.setProperty('font-weight','900','important'));
+            const bad=await node.evaluate(n=>Number(getComputedStyle(n).fontWeight));
+            expect(()=>expect(bad,row.selector+' emphasis negative').toBeLessThanOrEqual(row.maximumWeight!)).toThrow();weightNegative=true;
+          }
+          await node.evaluate((n,old)=>old===null?n.removeAttribute('style'):n.setAttribute('style',old),saved);
+          if(row.ordinaryFace)acceptOrdinaryFace(await node.evaluate(n=>getComputedStyle(n).fontFamily),row.selector);
+          if(row.maximumWeight)expect(await node.evaluate(n=>Number(getComputedStyle(n).fontWeight))).toBeLessThanOrEqual(row.maximumWeight);
+        }
+        if(row.localViewport){
+          expect(await node.evaluate(n=>getComputedStyle(n).overflowX)).toMatch(/auto|scroll/);
+          if(measured.overflow>2){await node.evaluate(n=>n.scrollLeft=80);expect(await node.evaluate(n=>n.scrollLeft)).toBeGreaterThan(0);await node.evaluate(n=>n.scrollLeft=0);}
+        }else expect(measured.overflow,row.selector+' clipped').toBeLessThanOrEqual(2);
+        receipts.push({...row,...measured});
+      }
+      expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+      await persistJsonAttachment(info,'scoped-roles-'+width+'-'+theme+'.json',{body:Buffer.from(JSON.stringify({sha:process.env.CI_HEAD_SHA??'local-dirty',route,width,theme,engine:info.project.name,receipts})),contentType:'application/json'});
+      await page.screenshot({path:info.outputPath('scoped-viewport-'+width+'-'+theme+'.png'),animations:'disabled'});
+    }
+  });
+}
+
+for(const width of [390,768,821,960,1440])for(const theme of ['light','dark'] as const){
+  test('WebShop split label containment '+width+'/'+theme,async({page},info)=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+    await page.goto('/research/seed-openevo/flow/webshop/');
+    await page.evaluate(()=>document.fonts.ready);
+    const figure=page.locator('.split-story');
+    await figure.locator('.webshop-legacy-split > summary').focus();
+    await page.keyboard.press('Enter');
+    await expect(figure.locator('.webshop-legacy-split')).toHaveJSProperty('open',true);
+    await expect(figure.locator('.orig-test span')).toBeVisible();
+    await expect(figure.locator('.seed-heldout span')).toBeVisible();
+    const receipts=await figure.locator('.heldout span,.orig-test span,.seed-heldout span').evaluateAll(nodes=>nodes.map(node=>{
+      const range=document.createRange();range.selectNodeContents(node);
+      const text=range.getBoundingClientRect(),segment=node.parentElement!.getBoundingClientRect();
+      return {text:node.textContent,size:parseFloat(getComputedStyle(node).fontSize),left:text.left-segment.left,right:segment.right-text.right,top:text.top-segment.top,bottom:segment.bottom-text.bottom};
+    }));
+    expect(receipts).toHaveLength(3);
+    for(const row of receipts){acceptScopedRole(row.size,13,row.text??'split label');for(const value of [row.left,row.right,row.top,row.bottom])expect(value,JSON.stringify(row)).toBeGreaterThanOrEqual(-2);}
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+    await persistJsonAttachment(info,'split-containment.json',{body:Buffer.from(JSON.stringify({width,theme,receipts})),contentType:'application/json'});
+    await figure.screenshot({path:info.outputPath('split-full-figure.png'),animations:'disabled'});
+  });
+}
+
+for(const width of [1100,1300,1440])for(const theme of ['light','dark'] as const){
+  test('Vanilla desktop readable nodes and connection labels '+width+'/'+theme,async({page},info)=>{
+    await page.setViewportSize({width,height:1000});
+    await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+    await page.goto('/research/seed-openevo/flow/sd-lora/');
+    await page.evaluate(()=>document.fonts.ready);
+    const diagram=page.locator('.sdlora-map__desktop');
+    await expect(diagram).toBeVisible();
+    const data=await diagram.evaluate(root=>{
+      const rect=(n:Element)=>{const r=n.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom}};
+      const nodes=[...root.querySelectorAll('.sdlora-node')].map(n=>({name:n.getAttribute('data-flow-node'),box:rect(n),overflow:n.scrollWidth-n.clientWidth}));
+      const labels=[...root.querySelectorAll('svg text')].map(n=>({text:n.textContent,box:rect(n),size:parseFloat(getComputedStyle(n).fontSize)*(n as SVGGraphicsElement).getScreenCTM()!.a}));
+      return {nodes,labels,outer:rect(root)};
+    });
+    const overlaps=(a:typeof data.outer,b:typeof data.outer)=>Math.min(a.right,b.right)-Math.max(a.left,b.left)>2&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>2;
+    expect(data.nodes).toHaveLength(9);
+    for(const [i,n] of data.nodes.entries()){
+      expect(n.overflow,n.name??'node').toBeLessThanOrEqual(2);
+      expect(n.box.bottom).toBeLessThanOrEqual(data.outer.bottom+2);
+      for(const other of data.nodes.slice(i+1))expect(overlaps(n.box,other.box),n.name+' overlaps '+other.name).toBe(false);
+    }
+    for(const label of data.labels){expect(label.size).toBeGreaterThanOrEqual(12);for(const node of data.nodes)expect(overlaps(label.box,node.box),label.text+' hidden by '+node.name).toBe(false);}
+    await persistJsonAttachment(info,'vanilla-layout.json',{body:Buffer.from(JSON.stringify({width,theme,...data})),contentType:'application/json'});
+    await page.locator('.sdlora-slide').screenshot({path:info.outputPath('vanilla-full-figure.png'),animations:'disabled'});
+  });
+}
+
+const readQ01Curve=async(reader:import('@playwright/test').Locator)=>reader.locator('svg.advisor-viz__q01-chart--desktop').evaluate(svg=>{
+  const scale=(svg as SVGGraphicsElement).getScreenCTM()!.a;
+  return {width:svg.getBoundingClientRect().width,axis:[...svg.querySelectorAll('text')].map(n=>({text:n.textContent,size:parseFloat(getComputedStyle(n).fontSize)*scale})),points:[...svg.querySelectorAll('polyline')].map(n=>n.getAttribute('points'))};
+});
+const acceptQ01Curve=(m:Awaited<ReturnType<typeof readQ01Curve>>)=>{expect(m.width).toBeGreaterThanOrEqual(888);expect(m.axis.length).toBeGreaterThan(5);for(const label of m.axis)expect(label.size,label.text??'axis').toBeGreaterThanOrEqual(13);expect(m.points).toHaveLength(3);};
+for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+  test('Q01 native curve reader '+width+'/'+theme,async({page},info)=>{
+    await page.setViewportSize({width,height:900});await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+    await page.goto('/research/seed-openevo/study/parameter-memory-results/');await page.evaluate(()=>document.fonts.ready);
+    const figure=page.locator('.advisor-viz--q01'),reader=figure.locator('.q01-native-reader [data-native-svg-reader]'),input=reader.locator('input');
+    await expect(figure).toBeAttached();await figure.locator('[data-q01-raw-svg] > summary').click();await expect(input).toBeAttached();
+    const before=await reader.locator('svg.advisor-viz__q01-chart--desktop polyline').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('points')));
+    await input.focus();await page.keyboard.press('Space');await expect(input).toBeChecked();
+    await expect(reader.locator('.native-svg-reader__hint')).toBeVisible();await expect(reader.locator('svg.advisor-viz__q01-chart--desktop')).toBeVisible();await expect(reader.locator('svg.advisor-viz__q01-chart--phone')).toBeHidden();
+    const reading=await readQ01Curve(reader);acceptQ01Curve(reading);expect(reading.points).toEqual(before);
+    await expect(figure.locator('figcaption')).toBeVisible();
+    await persistJsonAttachment(info,'q01-native.json',{body:Buffer.from(JSON.stringify({width,theme,reading})),contentType:'application/json'});
+    await figure.screenshot({path:info.outputPath('q01-full-figure.png'),animations:'disabled'});
+    if(width===390&&theme==='light'){
+      const style=await page.addStyleTag({content:'.q01-native-reader .native-svg-reader__viewport svg.advisor-viz__q01-chart--desktop {width:260px !important}'});
+      const bad=await readQ01Curve(reader);expect(()=>acceptQ01Curve(bad)).toThrow();
+      await style.evaluate(n=>n.parentNode?.removeChild(n));acceptQ01Curve(await readQ01Curve(reader));
+    }
+    await input.focus();await page.keyboard.press('Space');await expect(input).not.toBeChecked();await expect(reader.locator('.native-svg-reader__hint')).toBeHidden();
+  });
+}
+test('Q01 curve native keyboard reader works without JavaScript',async({browser})=>{
+  const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
+  try{const page=await context.newPage();await page.goto('/research/seed-openevo/study/parameter-memory-results/');await page.locator('.advisor-viz--q01 [data-q01-raw-svg] > summary').click();const reader=page.locator('.advisor-viz--q01 .q01-native-reader [data-native-svg-reader]');await reader.locator('input').focus();await page.keyboard.press('Space');await expect(reader.locator('input')).toBeChecked();await expect(reader.locator('svg.advisor-viz__q01-chart--desktop')).toBeVisible();acceptQ01Curve(await readQ01Curve(reader));}finally{await context.close();}
+});
+
+
+const remainingNativePlots=[
+  {route:'/research/seed-openevo/study/results/7b-self-analysis/',selector:'.checkpoint-viz',native:1152},
+  {route:'/research/seed-openevo/study/capability-exploration/sd-lora-scaling/',selector:'.scaling-chart',native:912},
+] as const;
+const readNativeText=async(reader:import('@playwright/test').Locator)=>reader.locator('svg text').evaluateAll(nodes=>nodes.map(node=>{const n=node as SVGTextElement,m=n.getScreenCTM()!,s=getComputedStyle(n);return{text:n.textContent,size:parseFloat(s.fontSize)*Math.hypot(m.a,m.b),font:s.fontFamily};}));
+const acceptNativeText=(rows:Awaited<ReturnType<typeof readNativeText>>)=>{expect(rows.length).toBeGreaterThan(5);for(const row of rows){expect(row.size,row.text??'scientific label').toBeGreaterThanOrEqual(12);expect(row.font).not.toMatch(/mono|Menlo|Consolas/i);}};
+for(const chart of remainingNativePlots)for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+  test('remaining scientific curve reading '+chart.selector+' '+width+'/'+theme,async({page},info)=>{
+    await page.setViewportSize({width,height:900});await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);await page.goto(chart.route);await page.evaluate(()=>document.fonts.ready);
+    const figure=page.locator(chart.selector),reader=figure.locator('[data-native-svg-reader]');
+    const points=await reader.locator('svg polyline').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('points')));
+    const input=reader.locator('input');await input.focus();await page.keyboard.press('Space');await expect(input).toBeChecked();
+    await expect(reader.locator('.native-svg-reader__hint')).toBeVisible();
+    const text=await readNativeText(reader);acceptNativeText(text);
+    expect(await reader.locator('svg polyline').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('points')))).toEqual(points);
+    expect(await reader.locator('svg').evaluate(n=>n.getBoundingClientRect().width)).toBeCloseTo(chart.native,0);
+    if(width===390&&theme==='light'){
+      const style=await page.addStyleTag({content:chart.selector+' svg text{font-size:5px !important}'});
+      const bad=await readNativeText(reader);expect(()=>acceptNativeText(bad)).toThrow();await style.evaluate(n=>n.parentNode?.removeChild(n));acceptNativeText(await readNativeText(reader));
+    }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+    await figure.screenshot({path:info.outputPath('full-scientific-figure.png'),animations:'disabled'});
+    await persistJsonAttachment(info,'native-scientific-labels.json',{body:Buffer.from(JSON.stringify({sha:process.env.CI_HEAD_SHA,width,theme,chart,text})),contentType:'application/json'});
+  });
+}
+
+// PGFPlots exports contain font outlines rather than SVGTextElement nodes.
+// Measure each real aria-labelled glyph group with its complete SVG transform
+// at the actual <img> size; retain the immutable asset and scientific data.
+const readPublicationGlyphs=async(plot:import('@playwright/test').Locator)=>{
+  const image=plot.locator('img[data-pgfplot]');
+  await image.scrollIntoViewIfNeeded();
+  await expect.poll(()=>image.evaluate((node:HTMLImageElement)=>node.complete&&node.naturalWidth>0)).toBe(true);
+  await image.evaluate((node:HTMLImageElement)=>node.decode());
+  const src=await image.evaluate((node:HTMLImageElement)=>node.currentSrc);
+  const response=await plot.page().request.get(src);expect(response.ok()).toBe(true);
+  const source=await response.text();
+  const path=new URL(src).pathname;
+  const file=path.split('/').at(-1)!.replace(/\.svg$/,'.tex');
+  const texPath='figures/latex/'+(path.includes('/advisor-confidence-intervals/')?'advisor-confidence-intervals/':'')+file;
+  const tex=readFileSync(new URL('../../'+texPath,import.meta.url),'utf8');
+  expect(tex).toMatch(/\\documentclass\[tikz,border=[\d.]+pt\]\{standalone\}/);
+  expect(tex).not.toMatch(/\\(?:resizebox|scalebox)\b/);
+  const fontSizes=[10,...[...tex.matchAll(/\\(tiny|scriptsize|footnotesize|small|normalsize)\b/g)].map(m=>({tiny:5,scriptsize:7,footnotesize:8,small:9,normalsize:10})[m[1] as 'tiny'|'scriptsize'|'footnotesize'|'small'|'normalsize']),...[...tex.matchAll(/\\fontsize\{([\d.]+)\}/g)].map(m=>Number(m[1]))];
+  const minimumEm=Math.min(...fontSizes);
+  return image.evaluate((node,{source,minimumEm,texPath})=>{
+    const image=node as HTMLImageElement,box=image.getBoundingClientRect();
+    const parsed=new DOMParser().parseFromString(source,'image/svg+xml');
+    const svg=document.importNode(parsed.documentElement,true) as unknown as SVGSVGElement;
+    const host=document.createElement('div');Object.assign(host.style,{position:'fixed',left:'-10000px',top:'0',visibility:'hidden',pointerEvents:'none'});
+    Object.assign(svg.style,{width:box.width+'px',height:box.height+'px',maxWidth:'none',maxHeight:'none'});host.append(svg);document.body.append(host);
+    try{const bounds=svg.getBoundingClientRect();return {src:image.currentSrc,width:box.width,natural:image.naturalWidth,texPath,minimumEm,labels:[...svg.querySelectorAll<SVGGraphicsElement>('[aria-label],use')].filter(n=>!n.closest('defs')&&n.getBBox().width>0).map(n=>{const m=n.getScreenCTM()!,r=n.getBoundingClientRect(),inlineEm=parseFloat((n as SVGElement).style.getPropertyValue('font-size'));return{text:n.getAttribute('aria-label')??n.getAttribute('xlink:href'),encoding:n.tagName==='use'?'glyph-reference':'labelled-outline',fontBasis:Number.isFinite(inlineEm)?'SVG inline size':'sealed TeX minimum',pixels:(Number.isFinite(inlineEm)?inlineEm:minimumEm*72/72.27)*Math.hypot(m.a,m.b),left:r.left-bounds.left,right:bounds.right-r.right,top:r.top-bounds.top,bottom:bounds.bottom-r.bottom};})};}
+    finally{host.remove();}
+  },{source,minimumEm,texPath});
+};
+const acceptPublicationGlyphs=(reading:Awaited<ReturnType<typeof readPublicationGlyphs>>)=>{
+  expect(reading.labels.length).toBeGreaterThan(3);
+  for(const row of reading.labels){expect(row.pixels,row.text??'outlined scientific label').toBeGreaterThanOrEqual(12);for(const edge of[row.left,row.right,row.top,row.bottom])expect(edge,row.text??'outlined label fits source canvas').toBeGreaterThanOrEqual(-2);}
+};
+for(const width of[390,768,1440])for(const theme of['light','dark']as const){
+  test('compiled scientific figures retain readable original glyphs '+width+'/'+theme,async({page},info)=>{
+    await page.setViewportSize({width,height:900});await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+    await page.goto('/research/seed-openevo/study/parameter-memory-results/');await page.evaluate(()=>document.fonts.ready);
+    const plots=page.locator('[data-publication-plot]');expect(await plots.count()).toBeGreaterThanOrEqual(8);const receipts=[];
+    for(let index=0;index<await plots.count();index++){
+      const plot=plots.nth(index),ancestors=plot.locator('xpath=ancestor::details');
+      for(let j=0;j<await ancestors.count();j++){const detail=ancestors.nth(j);if(!await detail.evaluate(n=>(n as HTMLDetailsElement).open)){await detail.locator(':scope > summary').focus();await page.keyboard.press('Enter');await expect(detail).toHaveJSProperty('open',true);}}
+      const reader=plot.locator('[data-native-svg-reader]');await reader.locator('input').focus();await page.keyboard.press('Space');await expect(reader.locator('input')).toBeChecked();
+      await expect(reader.locator('.native-svg-reader__hint')).toBeVisible();const reading=await readPublicationGlyphs(plot);acceptPublicationGlyphs(reading);
+      if(index===0&&width===390&&theme==='light'){
+        const image=plot.locator('img');const old=await image.getAttribute('style');await image.evaluate(n=>(n as HTMLElement).style.setProperty('width','50px','important'));
+        const bad=await readPublicationGlyphs(plot);expect(()=>acceptPublicationGlyphs(bad)).toThrow();await image.evaluate((n,old)=>old===null?n.removeAttribute('style'):n.setAttribute('style',old),old);acceptPublicationGlyphs(await readPublicationGlyphs(plot));
+      }
+      const viewport=reader.locator('.native-svg-reader__viewport');
+      const positions=await viewport.evaluate(n=>{const end=n.scrollWidth-n.clientWidth,step=Math.max(80,n.clientWidth*.8),positions=[0];for(let x=step;x<end;x+=step)positions.push(x);if(end>0)positions.push(end);return positions;});
+      const figure=plot.locator('xpath=ancestor::figure').last();
+      for(let part=0;part<positions.length;part++){await viewport.evaluate((n,x)=>n.scrollLeft=x,positions[part]!);await figure.screenshot({path:info.outputPath('publication-full-figure-'+index+'-part-'+part+'.png'),animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}'});}
+      if(width===390)expect(await viewport.evaluate(n=>n.scrollLeft)).toBeGreaterThan(0);
+      receipts.push({id:await plot.getAttribute('data-publication-plot'),...reading});
+    }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+    await persistJsonAttachment(info,'publication-glyphs.json',{body:Buffer.from(JSON.stringify({width,theme,receipts})),contentType:'application/json'});
+  });
+}
+
+// The same immutable figure must fit a printed page regardless of reader state.
+test('publication native reader resets expanded geometry for print',async({page})=>{
+  await page.setViewportSize({width:768,height:900});
+  await page.goto('/research/seed-openevo/study/parameter-memory-results/');
+  const plot=page.locator('[data-publication-plot]').first(),reader=plot.locator('[data-native-svg-reader]'),toggle=reader.locator('input');
+  await plot.evaluate(node=>{for(let p=node.parentElement;p;p=p.parentElement)if(p instanceof HTMLDetailsElement)p.open=true;});
+  await page.emulateMedia({media:'print'});
+  const dimensions=()=>reader.evaluate(root=>{const image=root.querySelector('img')!,viewport=root.querySelector('.native-svg-reader__viewport')!;return{image:image.getBoundingClientRect().width,viewport:viewport.getBoundingClientRect().width,overflow:getComputedStyle(viewport).overflowX};});
+  const compact=await dimensions();
+  await toggle.evaluate(n=>(n as HTMLInputElement).checked=true);
+  expect(await dimensions()).toEqual(compact);expect(compact.image).toBeLessThanOrEqual(compact.viewport+1);expect(compact.overflow).toBe('visible');
+  await expect(reader.locator('.native-svg-reader__action')).toBeHidden();await expect(reader.locator('.native-svg-reader__hint')).toBeHidden();
+});
+
+test('PageOutline tooltip uses the readable metadata face',async({page},info)=>{
+  await page.setViewportSize({width:1440,height:900});await page.goto('/research/seed-openevo/study/parameter-memory-results/');
+  const link=page.locator('[data-page-outline-list] a').first();await expect(link).toBeVisible();await link.hover();
+  const tip=page.locator('[data-page-outline-tooltip]');await expect(tip).toBeVisible();
+  const metrics=await tip.evaluate(n=>{const s=getComputedStyle(n);return{text:n.textContent,size:parseFloat(s.fontSize),font:s.fontFamily,fontStyle:s.fontStyle,lineHeight:s.lineHeight,letterSpacing:s.letterSpacing};});
+  expect(metrics.size).toBeGreaterThanOrEqual(13);acceptOrdinaryFace(metrics.font,'outline tooltip');
+  await persistJsonAttachment(info,'outline-tooltip.json',{body:Buffer.from(JSON.stringify(metrics)),contentType:'application/json'});
+});
+
+// These producers previously hid below the body role or borrowed compact-label
+// coverage. Exercise the ordinary source label and long explanation themselves.
+for (const width of [390, 768, 1440]) {
+  test('scientific explanation and noncompact evidence roles at '+width, async ({page}, testInfo) => {
+    await page.setViewportSize({width,height:1000});
+    const receipts=[];
+    for (const entry of [
+      {route:'/research/seed-openevo/study/results/',selector:'.evidence-refs:not(.evidence-refs--compact) small',minimum:13},
+      {route:'/research/seed-openevo/flow/webshop/',selector:'.canonical-figure p',minimum:15},
+      {route:'/research/seed-openevo/flow/webshop/',selector:'.irx p',minimum:15},
+      {route:'/research/seed-openevo/flow/webshop/',selector:'.irx-paper-caption p',minimum:14},
+    ]) {
+      await page.goto(entry.route,{waitUntil:'networkidle'});
+      await page.evaluate(async()=>{await document.fonts.ready;document.querySelectorAll('details').forEach(n=>n.open=true);});
+      const node=page.locator(entry.selector).filter({visible:true}).first();
+      await expect(node,entry.selector).toBeVisible();
+      const read=()=>node.evaluate(n=>({text:n.textContent?.trim(),size:parseFloat(getComputedStyle(n).fontSize),family:getComputedStyle(n).fontFamily}));
+      const result=await read();expect(result.size).toBeGreaterThanOrEqual(entry.minimum);expect(result.family).toMatch(/^Inter/);
+      await node.evaluate(n=>{(n as HTMLElement).style.setProperty('font-size','9px','important');});
+      expect((await read()).size>=entry.minimum,'same predicate rejects tiny prose/label injection').toBe(false);
+      await node.evaluate(n=>(n as HTMLElement).style.removeProperty('font-size'));
+      expect((await read()).size).toBeGreaterThanOrEqual(entry.minimum);
+      receipts.push({...entry,...result});
+    }
+    await persistJsonAttachment(testInfo,'semantic-body-source-labels.json',{body:Buffer.from(JSON.stringify(receipts)),contentType:'application/json'});
+  });
+}
+
+for (const theme of ['light','dark']) {
+  test('narrow server explanation uses the full reading row '+theme, async ({page},info)=>{
+    await page.setViewportSize({width:390,height:844});
+    await page.goto('/lab/',{waitUntil:'networkidle'});
+    await page.evaluate(theme=>document.documentElement.setAttribute('data-theme',theme),theme);
+    const root=page.locator('[data-interactive-research-explainer="server"]');
+    await root.scrollIntoViewIfNeeded();
+    await root.locator('.srv-workspace').click();
+    const box=root.locator('.irx-inspector-current');const prose=box.locator('p');
+    await expect(prose).toContainText('长期状态写入持久 workspace');
+    const read=()=>box.evaluate(n=>{const p=n.querySelector('p')!;const s=getComputedStyle(p),r=p.getBoundingClientRect();return {width:r.width,parent:n.clientWidth,size:parseFloat(s.fontSize),text:p.textContent,lines:Math.round(r.height/parseFloat(s.lineHeight))};});
+    const accepts=(r:{width:number,parent:number,size:number,lines:number})=>r.width>=r.parent-2&&r.size>=15&&r.lines<=2;
+    const receipt=await read();expect(accepts(receipt)).toBe(true);
+    await box.evaluate(n=>(n as HTMLElement).style.setProperty('grid-template-columns','auto minmax(0,1fr)'));
+    expect(accepts(await read()),'old badge/prose columns must fail the same reading predicate').toBe(false);
+    await box.evaluate(n=>(n as HTMLElement).style.removeProperty('grid-template-columns'));
+    expect(accepts(await read())).toBe(true);
+    await root.locator('.irx-inspector').scrollIntoViewIfNeeded();
+    await root.locator('.irx-inspector').screenshot({path:info.outputPath('server-current-explanation.png')});
+    await persistJsonAttachment(info,'server-current-explanation.json',{body:Buffer.from(JSON.stringify({theme,...receipt})),contentType:'application/json'});
+  });
+}
