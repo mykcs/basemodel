@@ -1,0 +1,255 @@
+---
+import {
+  Q04_GPU_ROUND140 as receipt,
+  q04GpuHasContinuousSampling,
+  q04GpuPeakGiB,
+  q04GpuSeconds,
+} from '../../data/research-evidence/advisor-q04-gpu-round140-20261022';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+
+// Geometry is one complete Q04 cycle, never GPU-indexed. All horizontal phase
+// boundaries come from the dated round receipt. No continuous sample exists.
+const x = (seconds: number) => 90 + 800 * seconds / q04GpuSeconds;
+const y = (gib: number) => 270 - 230 * gib / 32;
+const stamp = (seconds: number) => `${Math.floor(seconds / 60)}分${String(Math.round(seconds % 60)).padStart(2, '0')}秒`;
+const memoryUsedGiB = receipt.nvmlSnapshots[1].usedMiB / 1024;
+const peakGiB = q04GpuPeakGiB.toFixed(2);
+if (q04GpuHasContinuousSampling !== false || receipt.stages.at(-1)?.endSeconds !== 2072.125) {
+  throw new Error('Q04 resource chart evidence boundary changed unexpectedly');
+}
+---
+
+<section
+  class="q04-gpu"
+  id="q04-gpu-resources"
+  data-q04-gpu-resource
+  data-mode="observed"
+  aria-labelledby="q04-gpu-title"
+>
+  <header class="q04-gpu__head">
+    <div>
+      <p class="q04-gpu__eyebrow"><span class="q04-gpu__signal" aria-hidden="true"></span> Q04 · 单轮实验资源画像</p>
+      <h4 id="q04-gpu-title">这一轮学习，GPU 显存怎样变化？</h4>
+      <p class="q04-gpu__sub">{receipt.identity} · {receipt.model} · {receipt.device}</p>
+    </div>
+    <div class="q04-gpu__elapsed">
+      <span>这一轮实际历时</span>
+      <strong>34分32秒</strong>
+      <small>从做题开始到载体尝试结束</small>
+    </div>
+  </header>
+
+  <p class="q04-gpu__takeaway"><strong>读图重点：</strong>Agent 用约 <strong>26 分钟</strong>购物做题；已保存的显存快照在做题末尾约为 <strong>4.48 GiB</strong>，参数更新阶段 PyTorch 记录的峰值约 <strong>{peakGiB} GiB</strong>。目前只有离散证据，<strong>不知道整个 34 分钟内真实的全卡最高峰值。</strong></p>
+
+  <div class="q04-gpu__stats" aria-label="本轮 GPU 资源关键数字">
+    <div>
+      <span>RTX 5090 单卡容量</span>
+      <strong>32 <small>GB</small></strong>
+      <em>CUDA 显示 {Math.round(receipt.cudaVisibleMiB / 1024 * 100) / 100} GiB</em>
+    </div>
+    <div>
+      <span>做题末尾 · NVML 快照</span>
+      <strong>{memoryUsedGiB.toFixed(2)} <small>GiB</small></strong>
+      <em>当时 GPU 已用总显存</em>
+    </div>
+    <div>
+      <span>参数更新 · PyTorch 峰值</span>
+      <strong>{peakGiB} <small>GiB</small></strong>
+      <em>PyTorch 已分配峰值；非整卡峰值</em>
+    </div>
+  </div>
+
+  <div class="q04-gpu__chart-head">
+    <div>
+      <p class="q04-gpu__chart-title">GPU 显存占用随实验阶段的变化</p>
+      <p class="q04-gpu__chart-sub">横轴：本轮经过的时间 · 纵轴：单卡显存（GiB）</p>
+    </div>
+    <div class="q04-gpu__modes" role="group" aria-label="选择时间轴证据类型">
+      <button type="button" data-q04-gpu-mode="observed" aria-pressed="true">真实证据</button>
+      <button type="button" data-q04-gpu-mode="schematic" aria-pressed="false">完整曲线示意</button>
+    </div>
+  </div>
+
+  <div class="q04-gpu__plot-wrap" role="group" aria-label="GPU 显存实验阶段时间轴；窄屏可左右滚动" tabindex="0">
+    <svg viewBox="0 0 940 341" role="img" aria-label="Q04 训练一个循环从第 0 分钟到第 34 分半。真实证据模式显示零星两次 NVML 快照，以及参数更新阶段 PyTorch 最大分配值；示意模式演示可能的连续起落，不是测量数据。">
+      <defs>
+        <linearGradient id="q04-memory-demo-fill" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="#3b82f6" stop-opacity=".24" />
+          <stop offset="100%" stop-color="#3b82f6" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      {receipt.stages.map(stage => (
+        <g data-phase={stage.key}>
+          <rect x={x(stage.startSeconds)} y="40" width={x(stage.endSeconds) - x(stage.startSeconds)} height="230" fill={stage.color} fill-opacity=".095" />
+          <line x1={x(stage.startSeconds)} y1="40" x2={x(stage.startSeconds)} y2="270" stroke={stage.color} stroke-width="1.2" stroke-opacity=".5" stroke-dasharray="3 4" />
+        </g>
+      ))}
+      {[0, 8, 16, 24, 32].map(gib => (
+        <g>
+          <line x1="90" x2="890" y1={y(gib)} y2={y(gib)} stroke="currentColor" stroke-opacity=".16" stroke-dasharray={gib === 0 ? 'none' : '4 5'} />
+          <text x="74" y={y(gib) + 5} text-anchor="end" class="q04-gpu__axis-label">{gib}</text>
+        </g>
+      ))}
+      {[0, 5, 10, 15, 20, 25, 30, 34.5].map(min => (
+        <g>
+          <line x1={x(min * 60)} y1="270" x2={x(min * 60)} y2="277" stroke="currentColor" stroke-opacity=".36" />
+          <text x={x(min * 60)} y="295" text-anchor="middle" class="q04-gpu__axis-label">{min === 34.5 ? '34.5' : min}</text>
+        </g>
+      ))}
+      <text x="90" y="23" class="q04-gpu__axis-caption">显存 GiB</text>
+      <text x="890" y="326" text-anchor="end" class="q04-gpu__axis-caption">经过分钟 →</text>
+
+      <g class="q04-gpu__observations" data-q04-gpu-observed>
+        {receipt.nvmlSnapshots.map((sample, index) => (
+          <g data-q04-gpu-snapshot={index}>
+            <circle cx={x(sample.tSeconds)} cy={y(sample.usedMiB / 1024)} r="8" fill="#3385d7" fill-opacity=".14" />
+            <circle cx={x(sample.tSeconds)} cy={y(sample.usedMiB / 1024)} r="4.3" fill="#3385d7" stroke="var(--q04-paper)" stroke-width="1.4" />
+          </g>
+        ))}
+        <text x="100" y="258" class="q04-gpu__datum" fill="#2777b9">2 MiB</text>
+        <text x={x(1543.832) - 8} y={y(memoryUsedGiB) - 14} text-anchor="end" class="q04-gpu__datum" fill="#2777b9">4.48 GiB · NVML</text>
+        <line x1={x(receipt.stages[2].startSeconds)} x2={x(receipt.stages[2].endSeconds)} y1={y(q04GpuPeakGiB)} y2={y(q04GpuPeakGiB)} stroke="#c8791a" stroke-width="5" stroke-linecap="round" />
+        <text x={x(receipt.stages[2].endSeconds) + 8} y={y(q04GpuPeakGiB) - 8} class="q04-gpu__datum" fill="#c8791a">5.71 GiB · 更新阶段峰值</text>
+        <rect x="282" y="101" width="365" height="68" rx="11" class="q04-gpu__unknown-back" />
+        <text x="464" y="128" text-anchor="middle" class="q04-gpu__unknown-title">没有采集连续显存曲线</text>
+        <text x="464" y="152" text-anchor="middle" class="q04-gpu__unknown-sub">离散观测不能连成一条真实折线</text>
+      </g>
+
+      <g class="q04-gpu__schematic" data-q04-gpu-schematic>
+        <path d="M90 270 L101 237 C170 231 235 238 320 229 S490 236 575 231 S650 225 688 236 L697 269 L705 269 L711 210 L715 126 L720 97 L724 172 L729 260 L739 270 L746 239 C764 225 778 234 790 245 L798 270 L806 270 L817 220 Q830 205 840 241 L845 267 L850 270 L858 235 Q869 211 878 243 L890 270 L890 270 L90 270 Z" fill="url(#q04-memory-demo-fill)" />
+        <path d="M90 270 L101 237 C170 231 235 238 320 229 S490 236 575 231 S650 225 688 236 L697 269 L705 269 L711 210 L715 126 L720 97 L724 172 L729 260 L739 270 L746 239 C764 225 778 234 790 245 L798 270 L806 270 L817 220 Q830 205 840 241 L845 267 L850 270 L858 235 Q869 211 878 243 L890 270" fill="none" stroke="#3486d7" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+        <rect x="316" y="85" width="312" height="75" rx="12" class="q04-gpu__demo-watermark" />
+        <text x="472" y="116" text-anchor="middle" class="q04-gpu__demo-main">示意曲线 · 非实测</text>
+        <text x="472" y="141" text-anchor="middle" class="q04-gpu__demo-sub">24 GiB 尖峰只是说明可能的风险</text>
+      </g>
+    </svg>
+  </div>
+  <p class="q04-gpu__mobile-hint">在手机上可以左右滑动时间轴，查看全部阶段。</p>
+
+  <div class="q04-gpu__mode-copy" aria-live="polite">
+    <p data-q04-gpu-mode-copy="observed"><strong>真实证据：</strong>蓝点是两次 GPU 总显存快照，橙色短线表示参数更新阶段的 <em>PyTorch 已分配显存峰值</em>，其精确发生时刻未记录。两种指标口径不同，不直接比较为整轮峰值，也不连接成曲线。</p>
+    <p data-q04-gpu-mode-copy="schematic"><strong>纯教学示意：</strong>曲线上的归零、反复加载和 24 GiB 尖峰都是为了说明“显存会随 Agent 阶段变化”。<strong>它们不是这次 Q04 的测量结果</strong>，也不能用于申请 GPU 资源。</p>
+  </div>
+
+  <div class="q04-gpu__phase-head"><strong>这一轮 Agent 在做什么</strong><span>按真实阶段耗时占比排列</span></div>
+  <ol class="q04-gpu__phases">
+    {receipt.stages.map(stage => (
+      <li>
+        <span class="q04-gpu__phase-label"><i style={`background:${stage.color}`}></i>{stage.label}</span>
+        <span class="q04-gpu__track" aria-hidden="true"><span style={`width:${(stage.endSeconds - stage.startSeconds) / q04GpuSeconds * 100}%;background:${stage.color}`}></span></span>
+        <span class="q04-gpu__phase-time">{stamp(stage.endSeconds - stage.startSeconds)}</span>
+      </li>
+    ))}
+  </ol>
+  <p class="q04-gpu__budget"><strong>调度预留 ≠ 实际峰值：</strong>当前作业入口按做题阶段 {receipt.schedulerBudget.rolloutMiB / 1024} GiB、较高负载阶段 {receipt.schedulerBudget.highPhaseMiB / 1024} GiB、另外 {receipt.schedulerBudget.headroomMiB / 1024} GiB 余量保守规划。这是防止并发挤占的门槛，不能说实验已经用到 24 GiB。</p>
+  <p class="q04-gpu__footnote">核查日期：<time datetime={receipt.collectedOn}>{receipt.collectedOn}</time> · 单轮现场收据摘要（原始日志未随网页公开；连续 NVML 监控尚未接入） · <a href={receipt.experimentContextUrl} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={receipt.experimentContextUrl} />Q04 科研任务背景</a> · <a href="https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/" target="_blank" rel="noopener noreferrer">RTX 5090 官方规格</a>。GPU 利用率与实际 GPU·小时另需独立采样，不能由显存占用直接推算。</p>
+</section>
+
+<script>
+  function enhanceQ04GpuTimeline() {
+    document.querySelectorAll<HTMLElement>('[data-q04-gpu-resource]').forEach(root => {
+      if (root.dataset.enhanced) return;
+      const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-q04-gpu-mode]'));
+      buttons.forEach(button => button.addEventListener('click', () => {
+        const mode = button.dataset.q04GpuMode;
+        if (mode !== 'observed' && mode !== 'schematic') return;
+        root.dataset.mode = mode;
+        buttons.forEach(item => item.setAttribute('aria-pressed', String(item.dataset.q04GpuMode === mode)));
+      }));
+      root.dataset.enhanced = 'true';
+    });
+  }
+  enhanceQ04GpuTimeline();
+  document.addEventListener('astro:page-load', enhanceQ04GpuTimeline);
+</script>
+
+<style>
+  .q04-gpu {
+    --q04-paper:var(--paper);
+    --q04-ink:var(--paper-ink);
+    --q04-muted:var(--paper-muted);
+    --q04-line:var(--paper-line);
+    width:100%;min-width:0;margin:2rem 0 2.5rem;padding:1.3rem 1.4rem 1.2rem;
+    border:1px solid var(--q04-line);border-radius:17px;
+    background:color-mix(in srgb,var(--q04-paper) 94%,#deedfb);
+    color:var(--q04-ink);font-family:system-ui,-apple-system,"PingFang SC",sans-serif;
+    font-variant-numeric:normal;
+  }
+  .q04-gpu *{box-sizing:border-box}
+  .q04-gpu__head{display:flex;justify-content:space-between;align-items:flex-start;gap:1.5rem}
+  .q04-gpu__eyebrow{display:flex;align-items:center;gap:.45rem;font-size:.77rem!important;letter-spacing:.035em;font-weight:700;color:var(--q04-muted);margin:0 0 .45rem!important}
+  .q04-gpu__signal{width:.48rem;height:.48rem;flex:none;border-radius:50%;background:#3486d7;box-shadow:0 0 0 3px color-mix(in srgb,#3486d7 14%,transparent)}
+  .q04-gpu h4{margin:0 0 .35rem!important;font:650 clamp(1.1rem,2vw,1.3rem)/1.4 system-ui,-apple-system,"PingFang SC",sans-serif!important;color:var(--q04-ink)!important}
+  .q04-gpu__sub{margin:0!important;color:var(--q04-muted);font-size:.82rem!important;line-height:1.6}
+  .q04-gpu__elapsed{display:flex;flex-direction:column;align-items:flex-end;flex:none;gap:.2rem;text-align:right}
+  .q04-gpu__elapsed span,.q04-gpu__elapsed small{font-size:.72rem;color:var(--q04-muted)}
+  .q04-gpu__elapsed strong{font-size:1.65rem;line-height:1.3;font-weight:740;letter-spacing:-.03em;color:var(--q04-ink)}
+  .q04-gpu__takeaway{margin:1.1rem 0!important;padding:.8rem .95rem;border-left:3px solid #3486d7;background:color-mix(in srgb,#3486d7 6%,var(--q04-paper));font-size:.89rem!important;line-height:1.75!important}
+  .q04-gpu__takeaway strong{font-weight:700}
+  .q04-gpu__stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-block:1px solid var(--q04-line);padding:.95rem 0;gap:0}
+  .q04-gpu__stats>div{display:flex;flex-direction:column;gap:.32rem;min-width:0;padding:.25rem .95rem}
+  .q04-gpu__stats>div:first-child{padding-left:0}
+  .q04-gpu__stats>div+div{border-left:1px solid var(--q04-line)}
+  .q04-gpu__stats span,.q04-gpu__stats em{font-size:.72rem;line-height:1.5;font-style:normal;color:var(--q04-muted)}
+  .q04-gpu__stats strong{font-size:1.65rem;line-height:1.3;letter-spacing:-.035em;font-weight:730;color:var(--q04-ink)}
+  .q04-gpu__stats strong small{font-size:.48em;letter-spacing:0;font-weight:580}
+  .q04-gpu__chart-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.7rem;padding:1.2rem 0 .45rem}
+  .q04-gpu__chart-title{margin:0!important;font-size:.95rem!important;line-height:1.5;font-weight:720}
+  .q04-gpu__chart-sub{margin:.15rem 0 0!important;font-size:.74rem!important;color:var(--q04-muted)}
+  .q04-gpu__modes{display:none;gap:.2rem;flex:none;padding:.19rem;border:1px solid var(--q04-line);background:color-mix(in srgb,var(--q04-ink) 3%,var(--q04-paper));border-radius:10px}
+  .q04-gpu[data-enhanced] .q04-gpu__modes{display:flex}
+  .q04-gpu__modes button{appearance:none;min-height:34px;border:0;border-radius:7px;background:transparent;color:var(--q04-muted);cursor:pointer;padding:.36rem .68rem;font-family:inherit;font-size:.75rem;font-weight:620;line-height:1.3;white-space:nowrap}
+  .q04-gpu__modes button[aria-pressed="true"]{background:var(--q04-paper);color:var(--q04-ink);box-shadow:0 1px 5px rgb(0 0 0 / 10%)}
+  .q04-gpu__modes button:focus-visible,.q04-gpu__plot-wrap:focus-visible{outline:3px solid #3486d7;outline-offset:2px}
+  .q04-gpu__plot-wrap{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin}
+  .q04-gpu__plot-wrap svg{display:block;width:100%;min-width:675px;height:auto;max-width:none;overflow:visible;color:var(--q04-ink);font-family:system-ui,-apple-system,"PingFang SC",sans-serif}
+  .q04-gpu__axis-label{font:400 12px system-ui,sans-serif;fill:var(--q04-muted)}
+  .q04-gpu__axis-caption{font:580 12px system-ui,sans-serif;fill:var(--q04-muted)}
+  .q04-gpu__datum{font:690 13px system-ui,sans-serif}
+  .q04-gpu__unknown-back{fill:var(--q04-paper);stroke:var(--q04-line);stroke-width:1}
+  .q04-gpu__unknown-title{font:710 17px system-ui,-apple-system,"PingFang SC",sans-serif;fill:var(--q04-ink)}
+  .q04-gpu__unknown-sub{font:520 12px system-ui,-apple-system,"PingFang SC",sans-serif;fill:var(--q04-muted)}
+  .q04-gpu__demo-watermark{fill:var(--q04-paper);fill-opacity:.96;stroke:#3486d7;stroke-opacity:.4;stroke-dasharray:5 5}
+  .q04-gpu__demo-main{font:750 18px system-ui,-apple-system,"PingFang SC",sans-serif;fill:var(--q04-ink)}
+  .q04-gpu__demo-sub{font:540 12px system-ui,-apple-system,"PingFang SC",sans-serif;fill:var(--q04-muted)}
+  .q04-gpu__schematic,.q04-gpu[data-mode="schematic"] .q04-gpu__observations{display:none}
+  .q04-gpu[data-mode="schematic"] .q04-gpu__schematic{display:block}
+  .q04-gpu__mobile-hint{display:none;margin:0!important;font-size:.75rem!important;color:var(--q04-muted)}
+  .q04-gpu__mode-copy{min-height:3rem;padding:.1rem 0 .85rem;border-bottom:1px solid var(--q04-line)}
+  .q04-gpu__mode-copy p{margin:0!important;font-size:.78rem!important;line-height:1.7!important;color:var(--q04-muted)}
+  .q04-gpu__mode-copy strong{color:var(--q04-ink)}
+  .q04-gpu__mode-copy [data-q04-gpu-mode-copy="schematic"],.q04-gpu[data-mode="schematic"] [data-q04-gpu-mode-copy="observed"]{display:none}
+  .q04-gpu[data-mode="schematic"] [data-q04-gpu-mode-copy="schematic"]{display:block}
+  .q04-gpu__phase-head{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;margin:.95rem 0 .75rem}
+  .q04-gpu__phase-head strong{font-size:.88rem}
+  .q04-gpu__phase-head span{font-size:.73rem;color:var(--q04-muted)}
+  .q04-gpu__phases{list-style:none!important;margin:0!important;padding:0!important;display:grid;gap:.65rem}
+  .q04-gpu__phases li{display:grid;grid-template-columns:minmax(0,12rem) minmax(2rem,1fr) 5.3rem;align-items:center;gap:.7rem;margin:0!important;padding:0!important;font-size:.77rem;line-height:1.4}
+  .q04-gpu__phase-label{display:inline-flex;align-items:center;gap:.48rem;min-width:0}
+  .q04-gpu__phase-label i{width:.48rem;height:.48rem;border-radius:2px;flex:none}
+  .q04-gpu__track{display:block;position:relative;height:.52rem;border-radius:3rem;background:color-mix(in srgb,var(--q04-ink) 8%,transparent);overflow:hidden}
+  .q04-gpu__track>span{display:block;height:100%;border-radius:inherit;min-width:2px}
+  .q04-gpu__phase-time{text-align:right;font-variant-numeric:tabular-nums;font-weight:650;white-space:nowrap}
+  .q04-gpu__budget{margin:1.1rem 0 .6rem!important;padding:.7rem .8rem;border-radius:8px;background:color-mix(in srgb,#dfaa5b 10%,var(--q04-paper));font-size:.78rem!important;line-height:1.7!important}
+  .q04-gpu__footnote{margin:0!important;padding-top:.4rem;font-size:.72rem!important;line-height:1.65!important;color:var(--q04-muted)}
+  .q04-gpu__footnote a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+  @media(max-width:620px){
+    .q04-gpu{padding:1rem .75rem;border-radius:12px}
+    .q04-gpu__head{flex-direction:column;gap:.45rem}
+    .q04-gpu__elapsed{width:100%;flex-direction:row;align-items:baseline;gap:.5rem;text-align:left}
+    .q04-gpu__elapsed strong{font-size:1.35rem}
+    .q04-gpu__elapsed small{display:none}
+    .q04-gpu__stats{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:.75rem}
+    .q04-gpu__stats>div{padding:.1rem .5rem}
+    .q04-gpu__stats>div:nth-child(odd){padding-left:0;border-left:0}
+    .q04-gpu__stats>div:nth-child(3){grid-column:1/-1;border-top:1px solid var(--q04-line);padding-top:.7rem}
+    .q04-gpu__stats strong{font-size:1.45rem}
+    .q04-gpu__mobile-hint{display:block}
+    .q04-gpu__chart-head{align-items:stretch}
+    .q04-gpu__modes{width:100%}
+    .q04-gpu__modes button{flex:1}
+    .q04-gpu__phases li{grid-template-columns:minmax(0,8.8rem) minmax(1rem,1fr) 4.2rem;gap:.4rem;font-size:.7rem}
+    .q04-gpu__phase-head span{display:none}
+  }
+  @media print{.q04-gpu__modes{display:none!important}.q04-gpu__plot-wrap{overflow:visible}.q04-gpu__plot-wrap svg{min-width:0}.q04-gpu__mobile-hint{display:none}}
+</style>
