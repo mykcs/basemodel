@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
+import siteAcceptance from './scripts/site-acceptance-build.ts';
 
 const VERCEL_PRODUCTION_URL = 'https://basemodel-preview.vercel.app';
 const LEGACY_PAGES_URL = 'https://basemodel.pages.dev';
@@ -16,7 +17,7 @@ export default defineConfig({
   // meaningful spaces between adjacent inline elements. Preserve the Astro 6
   // HTML-aware behavior so the framework upgrade does not change rendered copy.
   compressHTML: true,
-  integrations: [react()],
+  integrations: [react(), siteAcceptance()],
   build: {
     format: 'directory',
   },

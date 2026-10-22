@@ -1,0 +1,3086 @@
+{
+  "schema": "basemodel.q01-dependency-audit.v1",
+  "observedAt": "2026-10-03T12:38:02.623279+00:00",
+  "candidateBeforeImplementation": "30449ea9428fd4075941f007456ad011fd833415",
+  "dependencies": [
+    {
+      "packet": "A01",
+      "pr": 814,
+      "head": "8d97bc293769ebef50a4877931716850ecb698c1",
+      "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "branch": "docs/site-upgrade-ci-artifact-20261002",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": ".github/workflows/public-pr-ci.yml",
+          "blob": "fd94aec0139131ac9754237cb00928a09f9a9fe4",
+          "status": "modified"
+        },
+        {
+          "path": ".gitignore",
+          "blob": "c09f1d2b97f83a1337bf8f561dd82fd96e689e4f",
+          "status": "modified"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/A01.md",
+          "blob": "12294a032ca6388875c5881d0909c4b7be90df86",
+          "status": "added"
+        },
+        {
+          "path": "scripts/ci-build-artifact.mjs",
+          "blob": "d31fa7a3da5d2293222b73408ef1a08f616d0875",
+          "status": "added"
+        },
+        {
+          "path": "scripts/ci-ui-gate.mjs",
+          "blob": "d5842fa4e14f1f2026b38e1e04c4267f64f8c920",
+          "status": "modified"
+        },
+        {
+          "path": "scripts/vercel-ui-plan.ts",
+          "blob": "283ea5447defe1030c470b06744aaad55428a782",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/publicGithubCi.test.ts",
+          "blob": "7bd662b4091c7c6a420b340e167befa54293be4a",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/vercelHostedUiGate.test.ts",
+          "blob": "486aa0db325ee75f13f3c9e4ca432fbdd250b6ca",
+          "status": "modified"
+        },
+        {
+          "path": "tests/ci-browser-budget.test.mjs",
+          "blob": "efa91831f61486dd8025685bd0fa13a902e7a941",
+          "status": "modified"
+        },
+        {
+          "path": "tests/ci-build-artifact.test.mjs",
+          "blob": "ec9b3ac18526b3d58ff4db766f7c05187e92671e",
+          "status": "added"
+        },
+        {
+          "path": "tests/ci-public-plan.test.mjs",
+          "blob": "9863b8326e7d79041a6f085fc6bf5fbc7ee58a15",
+          "status": "modified"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 37053905115,
+        "head_sha": "8d97bc293769ebef50a4877931716850ecb698c1",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37053905115"
+      }
+    },
+    {
+      "packet": "A02",
+      "pr": 815,
+      "head": "a52cebeb0726fb836d14136e5f1f487bde8d9943",
+      "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "branch": "docs/site-upgrade-static-first-20261002",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/plans/site-upgrade-20261002/evidence/A02_STATIC_FIRST_EVIDENCE_20261002.md",
+          "blob": "c7dfed41b31ccbee913ff3fcf434c52da0d2165d",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/A02.md",
+          "blob": "ca2398f7502a061e268371e1581900d0cebf7d7b",
+          "status": "added"
+        },
+        {
+          "path": "scripts/assert-payload-budget.mjs",
+          "blob": "b61c911dd67e1e9056d204dbf9fda9c1a0206001",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/ModelComparison.tsx",
+          "blob": "8afa0f7b6881dfa28ddc951c348f195939367263",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/ModelExplorer.tsx",
+          "blob": "55b17dad98123c2901ee5f966bac2007e51cb23d",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/landscape/LandscapePrototype.tsx",
+          "blob": "829ee9a0f0eb090cd66a25c8f1dfc80f5cd0935c",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/models/detail/ModelAlternatives.astro",
+          "blob": "1c9d58b506df5a63bcae51903d3ad1976f08eb46",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/papers/PaperExplorer.tsx",
+          "blob": "014205594fd9f5db73979eed25a8dfd620c756ca",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/workspace/ResearchWorkspace.tsx",
+          "blob": "100900b924502ba23ebf1460ba23bf223ed94bfd",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/catalogClient.ts",
+          "blob": "42f060b2a75f2d262945667cba460cb1d14d9fc5",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/optimizationPhase.test.ts",
+          "blob": "2fc9b03cc45f24d268f924cbf5f64cff9bd577c7",
+          "status": "modified"
+        },
+        {
+          "path": "src/pages/_bodies/compare.astro",
+          "blob": "c728dfb6856748abfff31ded5b555b25261c23b2",
+          "status": "modified"
+        },
+        {
+          "path": "src/pages/_bodies/landscape.astro",
+          "blob": "91a7eb69360070e411dafdc20831857b05cf2d04",
+          "status": "modified"
+        },
+        {
+          "path": "src/pages/_bodies/models-index.astro",
+          "blob": "b76ea027b1d0a28b4edb1f695ab5ecb3ef6fe3df",
+          "status": "modified"
+        },
+        {
+          "path": "src/pages/_bodies/paper-detail.astro",
+          "blob": "db3678d671f42186babf43ac3adc30e5f80bd40b",
+          "status": "modified"
+        },
+        {
+          "path": "src/pages/_bodies/papers-index.astro",
+          "blob": "e328c098e6f6e0484f6e8545943f6fa8ba15476b",
+          "status": "modified"
+        },
+        {
+          "path": "src/pages/workspace/index.astro",
+          "blob": "2e9c59bd6cb4888eea81aca26520970506d2565c",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/final-product-hardening.spec.ts",
+          "blob": "4d46d1a716da4bccbcc4ae65686cb249c38ff729",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/ordinary-tech-debt-round2.spec.ts",
+          "blob": "1338032816a32e28690a4a9b2dc3a23f96707993",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/research-path.spec.ts",
+          "blob": "350216748da7edb0d9ac75e9c2ee3ea2b2755d17",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/static-first-loading.spec.ts",
+          "blob": "74c85a71676bc34dbf82df522f785eccaa522dfd",
+          "status": "added"
+        },
+        {
+          "path": "tests/e2e/static-first.spec.ts",
+          "blob": "1397998c59b29d7f0165f1e17771df32ed6a4487",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/visual-regression.spec.ts",
+          "blob": "f685175c1bf5e7994feee4678a4a146cc036b595",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/workspace.spec.ts",
+          "blob": "bf00af1c4d79ca19e8b4d6db414c0be148b2cc25",
+          "status": "modified"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 37061792498,
+        "head_sha": "a52cebeb0726fb836d14136e5f1f487bde8d9943",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37061792498"
+      }
+    },
+    {
+      "packet": "A03",
+      "pr": 816,
+      "head": "dab55a699c7e690bfa6aef0d332d47895892bf70",
+      "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "branch": "docs/site-upgrade-module-css-20261002",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/plans/site-upgrade-20261002/evidence/A03_CSS_OWNERSHIP_EVIDENCE_20261002.md",
+          "blob": "926a794e7fc3088ef8d065941219a6dc6f0d5001",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/A03.md",
+          "blob": "3cbf24cf4a480677c186d968f059cd2e3bf5e545",
+          "status": "added"
+        },
+        {
+          "path": "scripts/audit-css-architecture.ts",
+          "blob": "0ac3ffe63f02bd8ca0486d557281fb0ab8629b32",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/SeedWebShopCanonicalFigure.astro",
+          "blob": "acbd95058c86aaf3e76dcc6e58de8c37b1d76a48",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/WebShopDatasetCanonicalFigure.astro",
+          "blob": "3b5963524b36a645ed7094d68a5e0e172b78cff9",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/WebShopEvaluationFigure.astro",
+          "blob": "ac2b3ca9b0546ae93ce2f4eb9096798755b0c257",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/WebShopGoalGenerationFigure.astro",
+          "blob": "27037af12876de961f34ab90e2d0a787a3d6b505",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/WebShopSeedDataUsageFigure.astro",
+          "blob": "a4e599a0763471885b6eb0ed1ece0e6e20ee1503",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/WebShopSeedSplitFigure.astro",
+          "blob": "46874366c0ce48ddec8a41af4ce48360d186b23d",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/WebShopSmallWorldFigure.astro",
+          "blob": "17b8edcdef60259f7244f2bfce003bc6360b5b6c",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/cssOwnershipConsolidation.test.ts",
+          "blob": "6d75fd729287fef84d144772925413c3232b5c05",
+          "status": "added"
+        },
+        {
+          "path": "src/styles/design-refinement.css",
+          "blob": "11a66f55d0fba8fe3a849b7c64a235b3813cb3dd",
+          "status": "modified"
+        },
+        {
+          "path": "src/styles/research-figure-readability.css",
+          "blob": "059dd8f59315ec713b29524376cae36c13861a84",
+          "status": "modified"
+        },
+        {
+          "path": "src/styles/site.css",
+          "blob": "f17c2e20c4f22daa129e3be52a897cbf899c7b9a",
+          "status": "modified"
+        },
+        {
+          "path": "src/styles/visual-upgrade.css",
+          "blob": "4a55332b955613f9e4817e21cd4a3c3293d031e1",
+          "status": "modified"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 37103117344,
+        "head_sha": "dab55a699c7e690bfa6aef0d332d47895892bf70",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37103117344"
+      }
+    },
+    {
+      "packet": "B01",
+      "pr": 817,
+      "head": "13282ac0a0c14f96eac19c441dc5a6342b255ba0",
+      "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "branch": "docs/site-upgrade-reader-journeys-20261002",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/plans/site-upgrade-20261002/evidence/B01_READER_ENTRY_EVIDENCE_20261003.md",
+          "blob": "fd05bfdf3db4b9f72982ba08a058c3d08560676b",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/B01.md",
+          "blob": "d0f00c1124a9e61a669f0a64c1350c14d7988cfd",
+          "status": "added"
+        },
+        {
+          "path": "scripts/audit-audience-copy.ts",
+          "blob": "e0cde00e49431647bd75d554c2e497852982c9ee",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoExperimentIndex.astro",
+          "blob": "2d1a7b56b95553a8269074f4ba667d36a2fed0bc",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/siteReaderContracts.ts",
+          "blob": "747a63b5c98dbbd7c858e130683bbb2ac4452882",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/readerEntryJourneys.test.ts",
+          "blob": "e11e584959f8e0f8ba17282632f54257a71253d6",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/siteReaderContracts.test.ts",
+          "blob": "4d164ea906137ee652f3ae8fe169cb5a0d97764d",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/studyOverviewStructure.test.ts",
+          "blob": "a310f3016b72b5d21ca6dc2b842b43c2c2e37538",
+          "status": "modified"
+        },
+        {
+          "path": "src/pages/_bodies/home-v2.astro",
+          "blob": "85bcac962e921e36958afd76a6dcde6937e44702",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/site-reader-contracts.spec.ts",
+          "blob": "858cd7ea01dcc725bcb1ecef525f0b4a1fe2b96a",
+          "status": "modified"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 37106126621,
+        "head_sha": "13282ac0a0c14f96eac19c441dc5a6342b255ba0",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37106126621"
+      }
+    },
+    {
+      "packet": "B02",
+      "pr": 818,
+      "head": "fc1ed61807ccffe07e462c10ab466b48c7722921",
+      "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "branch": "docs/site-upgrade-research-synthesis-20261002",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/agents/tasks/POST_ADVISOR_AB_BASEMODEL_PUBLICATION_20260928.md",
+          "blob": "d0abb58785d6b683efe59657fd2504c092938892",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/evidence/B02_RESEARCH_SYNTHESIS_EVIDENCE_20261003.md",
+          "blob": "5b5b2e88254acab3e388b7fc1881b5464564ac0b",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/B02.md",
+          "blob": "339764d1e64a7b561504650f5aa43b831d0e3d2e",
+          "status": "added"
+        },
+        {
+          "path": "public/research/seed-openevo/evidence/post-advisor-ab-final-20260928.json",
+          "blob": "592077493db9a6393e85d44a8271ffd28912d8a9",
+          "status": "added"
+        },
+        {
+          "path": "src/components/research/OpenEvoResearchSynthesis.astro",
+          "blob": "d7020f9eb63be38e455e3faadd2e9dfee977a03c",
+          "status": "added"
+        },
+        {
+          "path": "src/components/research/OpenEvoSdLoraBoundedRecurrence.astro",
+          "blob": "a814e469b4dc2535f142cb645897fdb9a700b7e7",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoStage1LearningObjectives.astro",
+          "blob": "39c765975d1cae23dd7803372aa1a223573f7546",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/SeedOpenEvoProgressBriefing.astro",
+          "blob": "404aa58db8f9d21a1107d29db259906373c7558e",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/openEvoExperimentNavigation.ts",
+          "blob": "b58f720491e3fe890e29f08c7ab871b8ad5783b7",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/siteReaderContracts.ts",
+          "blob": "c0ec0346a0b844e7766a1fa0a0ef5407d726045d",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/postAdvisorAbPublication.test.ts",
+          "blob": "76f813a2d6243d143b2266746a569779e6898cce",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchResultReadingContract.test.ts",
+          "blob": "a199d90d622a72964c426fbd041293a1c065a296",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/researchSynthesisArticles.test.ts",
+          "blob": "255a7527e32f22925d83565ec1b3c5bd85319fbf",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/seedOpenEvoProgressBriefing.test.ts",
+          "blob": "9193ff9dc07660ff53be777b2945d7dced07cb98",
+          "status": "modified"
+        },
+        {
+          "path": "src/pages/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/index.astro",
+          "blob": "6e5c0240aa0cedf45f2b928764099677edc78197",
+          "status": "modified"
+        },
+        {
+          "path": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/index.astro",
+          "blob": "89814043b0b84a1aa9873c043d462e311908b666",
+          "status": "modified"
+        },
+        {
+          "path": "src/pages/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/index.astro",
+          "blob": "9caf8ad2af243ef359d4638b74147f260b2be57f",
+          "status": "modified"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 37114531947,
+        "head_sha": "fc1ed61807ccffe07e462c10ab466b48c7722921",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37114531947"
+      }
+    },
+    {
+      "packet": "B03",
+      "pr": 819,
+      "head": "66eae9a9d7c0fd0b4eeb5dbe28c85c1ad27c53d4",
+      "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "branch": "docs/site-upgrade-content-lifecycle-20261002",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/plans/site-upgrade-20261002/evidence/B03_CONTENT_LIFECYCLE_EVIDENCE_20261003.md",
+          "blob": "294537d74dbdab8e9f796fb744e8a9c2bdf6c0a8",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/B03.md",
+          "blob": "71d3ddd96d2cc304cecaf7ce5bb4c0d897c9768b",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
+          "blob": "ad7568d1456dec111894a340527fc439e529dfe8",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D01.md",
+          "blob": "9dd5812ad6fae2057fd3534508ce83f314283b14",
+          "status": "added"
+        },
+        {
+          "path": "package.json",
+          "blob": "3ebe45f43fc3ef660cf4ae10c1b8dfadb80e99af",
+          "status": "modified"
+        },
+        {
+          "path": "scripts/audit-research-lifecycle.ts",
+          "blob": "18e2b711fd3400d27086298581cd7a7d079b28fc",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research-evidence-integrity.ts",
+          "blob": "17935710652351e3636efee6cabd2491bacc8000",
+          "status": "added"
+        },
+        {
+          "path": "scripts/validate-data.ts",
+          "blob": "a976e01e9ade3331b1425a395d9dc421bd81f7c7",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/OpenEvoSeedBenchmarksGuide.astro",
+          "blob": "9dc543a5dbc21ff72f1482aa8328c7ce6e62da6a",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoExperimentArchive.astro",
+          "blob": "b105eafed9c02fb188a65bf8f5f16c3aa9f199e4",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/ResearchContentLifecycle.astro",
+          "blob": "4de0b2afca8b0b68767fe6eeeb5cf1e9dc827cdc",
+          "status": "added"
+        },
+        {
+          "path": "src/data/effectiveStateGdrLoraStudy.ts",
+          "blob": "af1613dbbe5c5d3d9b06a5fb4811000f1fbd4a64",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/researchContentLifecycle.ts",
+          "blob": "ab2cbb1a9f4aa9c45c8775cf7d1f48458b0348f3",
+          "status": "added"
+        },
+        {
+          "path": "src/data/researchEvidenceIndex.ts",
+          "blob": "939590a623a596dcb830a7741118abb3f7b9745a",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchContentLifecycle.test.ts",
+          "blob": "bdb12a983edd70526179eb3066e7fabf7d93d7ff",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchEvidence.ts",
+          "blob": "b574549558dd2ff0cb4c5a6a9f229b30e44de64f",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/researchEvidenceSchema.test.ts",
+          "blob": "a79983e964b8d2d8d1c8379d6e0d0267bc1a486d",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchEvidenceSchema.ts",
+          "blob": "be328b14ae3ac8dcf8fb54934eacda392da21402",
+          "status": "added"
+        },
+        {
+          "path": "src/pages/research/seed-openevo/study/results.astro",
+          "blob": "7c3af9894983d68f1f33ee5c93876ea5512a4e02",
+          "status": "modified"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 37116263623,
+        "head_sha": "66eae9a9d7c0fd0b4eeb5dbe28c85c1ad27c53d4",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37116263623"
+      }
+    },
+    {
+      "packet": "C01",
+      "pr": 827,
+      "head": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
+      "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "branch": "docs/site-upgrade-scientific-tables-20261002",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/agents/tasks/POST_ADVISOR_AB_BASEMODEL_PUBLICATION_20260928.md",
+          "blob": "d0abb58785d6b683efe59657fd2504c092938892",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/evidence/C01_SCIENTIFIC_TABLE_EVIDENCE_20261003.md",
+          "blob": "29209a099ae1b409ecf3794206c10d80a61c0a01",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/C01.md",
+          "blob": "1b2e6278ec8f48d6f1448741489d6501148220ea",
+          "status": "added"
+        },
+        {
+          "path": "public/research/seed-openevo/evidence/post-advisor-ab-final-20260928.json",
+          "blob": "592077493db9a6393e85d44a8271ffd28912d8a9",
+          "status": "added"
+        },
+        {
+          "path": "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro",
+          "blob": "2ef11561b9403d2f5fdabae48c69c3a51444e90d",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoSdLoraBoundedRecurrence.astro",
+          "blob": "0181bf7f4a75c8e38d459ba263dda3f11e862e49",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoStage1LearningObjectives.astro",
+          "blob": "39c765975d1cae23dd7803372aa1a223573f7546",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/ScientificTable.astro",
+          "blob": "9f068ab43b060cb25dac0db9f7f204c6d9af201f",
+          "status": "added"
+        },
+        {
+          "path": "src/components/research/SeedOpenEvoProgressBriefing.astro",
+          "blob": "404aa58db8f9d21a1107d29db259906373c7558e",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/openEvoExperimentNavigation.ts",
+          "blob": "b58f720491e3fe890e29f08c7ab871b8ad5783b7",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/scientificResearchTables.ts",
+          "blob": "7ece556a74e121e24982ff5a92aa02044f00d899",
+          "status": "added"
+        },
+        {
+          "path": "src/data/siteReaderContracts.ts",
+          "blob": "338f014d8c609814bf3de8d368bad4a807c62d29",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/effectiveStateGdrLoraStudy.test.ts",
+          "blob": "bd804e85d09a230907b1614f747cb770c3d560cc",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/postAdvisorAbPublication.test.ts",
+          "blob": "714d8557985f23d2e2d166c658f5c1e9f423ed11",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchResultReadingContract.test.ts",
+          "blob": "a199d90d622a72964c426fbd041293a1c065a296",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/scientificTable.test.ts",
+          "blob": "01e82df1c28c3ce9f6bb5764e14379aea3d67d78",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/scientificTable.ts",
+          "blob": "227a6ef2fc684fe8511ceb19a8a0fd909fe85021",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/scientificTablePublication.test.ts",
+          "blob": "e07b7897f9badfe90c41e416e588a09908e484dd",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/seedOpenEvoProgressBriefing.test.ts",
+          "blob": "9193ff9dc07660ff53be777b2945d7dced07cb98",
+          "status": "modified"
+        },
+        {
+          "path": "src/pages/research/seed-openevo/exports/rank32-capacity.csv.ts",
+          "blob": "d5e542956bf57a4ec74f1aaa0867673bbe79acc8",
+          "status": "added"
+        },
+        {
+          "path": "src/pages/research/seed-openevo/exports/rank32-capacity.tex.ts",
+          "blob": "f7612e1a842ed14cf4340c86f12084f88c590c35",
+          "status": "added"
+        },
+        {
+          "path": "src/pages/research/seed-openevo/exports/same-panel-final.csv.ts",
+          "blob": "fb9557d269665da2d97caafcfa5bf857b3766f1f",
+          "status": "added"
+        },
+        {
+          "path": "src/pages/research/seed-openevo/exports/same-panel-final.tex.ts",
+          "blob": "72dd79b295ea137a204f21f67610a04bf808c5ea",
+          "status": "added"
+        },
+        {
+          "path": "tests/e2e/effective-state-gdr-lora.spec.ts",
+          "blob": "9de797f1c80c932354faf96aaa04980ae3b30611",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/scientific-tables.spec.ts",
+          "blob": "2a4e45081f06d4681e206cceb550d85c111e3225",
+          "status": "added"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 37123131162,
+        "head_sha": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37123131162"
+      }
+    },
+    {
+      "packet": "C02",
+      "pr": 820,
+      "head": "c31b6bef5d3d4a45c6849b64af5d51546c465f7f",
+      "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "branch": "docs/site-upgrade-research-figures-20261002",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/C02-IMPLEMENTATION.md",
+          "blob": "5f186adabc82d69ca5d06556e99a2129d0c371c4",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/C02-QUALIFICATION.json",
+          "blob": "8104ccfd0190e6bc9ef9dd5839c5ccc6c21dfcca",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/C02.md",
+          "blob": "a55ed46cb0515abfa931f828b593a302e24e376d",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
+          "blob": "ad7568d1456dec111894a340527fc439e529dfe8",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D01.md",
+          "blob": "9dd5812ad6fae2057fd3534508ce83f314283b14",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D02-IMPLEMENTATION.md",
+          "blob": "cfad7697a3b8c80abffcdb44ec23fdb2964da7cb",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D02-QUALIFICATION.json",
+          "blob": "356f2fc6867266d91bfc255bf011a4a5ce2d2ead",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D02.md",
+          "blob": "d2ff692afe089c99515d73d52780477dcb4e9435",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D03-IMPLEMENTATION.md",
+          "blob": "82bf828e9e0df2545f7b76b66af6fc7689579fb8",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D03-QUALIFICATION.json",
+          "blob": "7f84249388cd464a6d8eb824489014194af99a27",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D03.md",
+          "blob": "fc580a5570f6d819149f7706e89cca9c55e07d63",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D04-IMPLEMENTATION.md",
+          "blob": "1c3dec8df62532cd20d39fdcaf2b25517b3cc592",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D04-QUALIFICATION.json",
+          "blob": "3128bf28d69de016dbf1155c9d68b75507324f6e",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D04.md",
+          "blob": "6a8484b0e53d45e2c04b06ee262b5ac6cae0e649",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research-evidence-integrity.ts",
+          "blob": "17935710652351e3636efee6cabd2491bacc8000",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research/analyze-evidence.ts",
+          "blob": "2c89a935ad64e1f3147146819c9801dd142fef42",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research/history-sources.ts",
+          "blob": "778722bd28a6b089b6ab24851035cba041a6f670",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research/import-history.ts",
+          "blob": "0d9362a6a93811ddf7dd094b0db7b78ff17f7900",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research/verify-analysis-independent.py",
+          "blob": "3cfbfd28d19e42806de7f242436f3c5c8b839cd4",
+          "status": "added"
+        },
+        {
+          "path": "scripts/validate-data.ts",
+          "blob": "e9391770580dec896fa623d5530d27f1a7fa85ac",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/BetaTrainingEvidenceFigure.astro",
+          "blob": "1f5496276b3c4be056625a6e770cd956dc23fa53",
+          "status": "added"
+        },
+        {
+          "path": "src/components/research/CapacityTradeoffEvidenceFigure.astro",
+          "blob": "5d4df5c84569348dd82b544afdd9cec977b8eef6",
+          "status": "added"
+        },
+        {
+          "path": "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro",
+          "blob": "a0a984abd031831ef5bd9dbb5111d3d57f3fb83d",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/ResearchEvidenceFigure.astro",
+          "blob": "f0915fa01cee49a3d97c76c22e7c9b7592761e08",
+          "status": "added"
+        },
+        {
+          "path": "src/components/research/SamePanelFinalEvidenceFigure.astro",
+          "blob": "45624914e674d017a88958a91f7110b594fe1aa9",
+          "status": "added"
+        },
+        {
+          "path": "src/data/effectiveStateGdrLoraStudy.ts",
+          "blob": "af1613dbbe5c5d3d9b06a5fb4811000f1fbd4a64",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/researchAnalysisSnapshot.json",
+          "blob": "39cc0b95904a30be95ef939ef6105db23a5e6787",
+          "status": "added"
+        },
+        {
+          "path": "src/data/researchDecisionNotes.ts",
+          "blob": "f220658cb71ca0222165f1244f1e0d29a475ea20",
+          "status": "added"
+        },
+        {
+          "path": "src/data/researchEvidenceIndex.ts",
+          "blob": "939590a623a596dcb830a7741118abb3f7b9745a",
+          "status": "added"
+        },
+        {
+          "path": "src/data/researchFigureData.ts",
+          "blob": "3b366e9c1de8b2ed62c86173721449fec4b2fd18",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchComparisons.test.ts",
+          "blob": "fcb6f53d2f57df66a2df60cbb312bc060bec4c1b",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchComparisons.ts",
+          "blob": "f5e19e4fd607f6a7c0f097775320885298b5e231",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchDecisionNotes.test.ts",
+          "blob": "f5f74ed761b100b163dd4bb3a1f195586e8049d2",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchEvidence.ts",
+          "blob": "b574549558dd2ff0cb4c5a6a9f229b30e44de64f",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/researchEvidenceFigures.test.ts",
+          "blob": "7ddc821055023c28f41a33ac93130ab49f857715",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchEvidenceSchema.test.ts",
+          "blob": "a79983e964b8d2d8d1c8379d6e0d0267bc1a486d",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchEvidenceSchema.ts",
+          "blob": "be328b14ae3ac8dcf8fb54934eacda392da21402",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchFigureData.test.ts",
+          "blob": "35671c0b59159c2954b541f83108f65076c98998",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchHistory.test.ts",
+          "blob": "29568b4d88d31aaedaf962cd4d7beecf48e34045",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchHistory.ts",
+          "blob": "31cb46c136d163b9e8a44d606fe38bf2fed93aaa",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchStudyAnalyses.test.ts",
+          "blob": "53e62dc6d09d3c3565cdbfb48735cb0c0a2f62dd",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchStudyAnalyses.ts",
+          "blob": "55a1038cfcef3c20f0846d27e1e76c4a43e4fcb5",
+          "status": "added"
+        },
+        {
+          "path": "tests/e2e/canonical-research-figures.spec.ts",
+          "blob": "f592accfa0630d4a6b2eb248c44c424d3165eac4",
+          "status": "modified"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 37114943081,
+        "head_sha": "c31b6bef5d3d4a45c6849b64af5d51546c465f7f",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37114943081"
+      }
+    },
+    {
+      "packet": "C03",
+      "pr": 821,
+      "head": "cf3f371af5a005051a2848e6eec103958f4312a3",
+      "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "branch": "docs/site-upgrade-mechanism-flow-20261002",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/C03-IMPLEMENTATION.md",
+          "blob": "64b5e271c6b822fc0b9a5ba151632d17d1ec43b0",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/C03-QUALIFICATION.json",
+          "blob": "2d688ced796a9dc5de6984376fe9baf291fe4fbf",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/C03.md",
+          "blob": "e9fac45b80603cdc68d942166f7d451bf00868f4",
+          "status": "added"
+        },
+        {
+          "path": "src/components/research/OpenEvoVanillaSdLoraMechanism.astro",
+          "blob": "ca7be18a2e5210b0e37888936a0b153263c58027",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoVanillaSdLoraSlide.astro",
+          "blob": "088b70d64b5079d43ba398413438c17fdef44506",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/vanillaSdLoraMechanism.ts",
+          "blob": "77f90f113f5c081a162e04964b1f76d1b5924dcc",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/vanillaSdLoraMechanism.test.ts",
+          "blob": "288ddd0ab9e0b0e9b86a17d6b72a439c28d6e203",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/vanilla-sd-lora-mechanism.spec.ts",
+          "blob": "c84feb1502c1e4d0791fdb666ffed55349ba6cb6",
+          "status": "modified"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 37117605953,
+        "head_sha": "cf3f371af5a005051a2848e6eec103958f4312a3",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37117605953"
+      }
+    },
+    {
+      "packet": "D01",
+      "pr": 822,
+      "head": "618e4b65cbf3052e0503ea1d875d81015231aa33",
+      "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "branch": "docs/site-upgrade-evidence-contract-20261002",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
+          "blob": "ad7568d1456dec111894a340527fc439e529dfe8",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D01.md",
+          "blob": "9dd5812ad6fae2057fd3534508ce83f314283b14",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research-evidence-integrity.ts",
+          "blob": "17935710652351e3636efee6cabd2491bacc8000",
+          "status": "added"
+        },
+        {
+          "path": "scripts/validate-data.ts",
+          "blob": "a976e01e9ade3331b1425a395d9dc421bd81f7c7",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/effectiveStateGdrLoraStudy.ts",
+          "blob": "af1613dbbe5c5d3d9b06a5fb4811000f1fbd4a64",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/researchEvidenceIndex.ts",
+          "blob": "939590a623a596dcb830a7741118abb3f7b9745a",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchEvidence.ts",
+          "blob": "b574549558dd2ff0cb4c5a6a9f229b30e44de64f",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/researchEvidenceSchema.test.ts",
+          "blob": "a79983e964b8d2d8d1c8379d6e0d0267bc1a486d",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchEvidenceSchema.ts",
+          "blob": "be328b14ae3ac8dcf8fb54934eacda392da21402",
+          "status": "added"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 37053351493,
+        "head_sha": "618e4b65cbf3052e0503ea1d875d81015231aa33",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37053351493"
+      }
+    },
+    {
+      "packet": "D02",
+      "pr": 823,
+      "head": "bfdbb5c5a5a668055e45e4e718436660d87a2e77",
+      "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "branch": "docs/site-upgrade-history-import-20261002",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
+          "blob": "ad7568d1456dec111894a340527fc439e529dfe8",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D01.md",
+          "blob": "9dd5812ad6fae2057fd3534508ce83f314283b14",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D02-IMPLEMENTATION.md",
+          "blob": "cfad7697a3b8c80abffcdb44ec23fdb2964da7cb",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D02-QUALIFICATION.json",
+          "blob": "356f2fc6867266d91bfc255bf011a4a5ce2d2ead",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D02.md",
+          "blob": "d2ff692afe089c99515d73d52780477dcb4e9435",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research-evidence-integrity.ts",
+          "blob": "17935710652351e3636efee6cabd2491bacc8000",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research/history-sources.ts",
+          "blob": "778722bd28a6b089b6ab24851035cba041a6f670",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research/import-history.ts",
+          "blob": "0d9362a6a93811ddf7dd094b0db7b78ff17f7900",
+          "status": "added"
+        },
+        {
+          "path": "scripts/validate-data.ts",
+          "blob": "a976e01e9ade3331b1425a395d9dc421bd81f7c7",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/effectiveStateGdrLoraStudy.ts",
+          "blob": "af1613dbbe5c5d3d9b06a5fb4811000f1fbd4a64",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/researchEvidenceIndex.ts",
+          "blob": "939590a623a596dcb830a7741118abb3f7b9745a",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchEvidence.ts",
+          "blob": "b574549558dd2ff0cb4c5a6a9f229b30e44de64f",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/researchEvidenceSchema.test.ts",
+          "blob": "a79983e964b8d2d8d1c8379d6e0d0267bc1a486d",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchEvidenceSchema.ts",
+          "blob": "be328b14ae3ac8dcf8fb54934eacda392da21402",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchHistory.test.ts",
+          "blob": "29568b4d88d31aaedaf962cd4d7beecf48e34045",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchHistory.ts",
+          "blob": "31cb46c136d163b9e8a44d606fe38bf2fed93aaa",
+          "status": "added"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 37054932187,
+        "head_sha": "bfdbb5c5a5a668055e45e4e718436660d87a2e77",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37054932187"
+      }
+    },
+    {
+      "packet": "D03",
+      "pr": 824,
+      "head": "f738b67a018fe3a1b068fd210b367cafd649cc24",
+      "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "branch": "docs/site-upgrade-comparative-analysis-20261002",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
+          "blob": "ad7568d1456dec111894a340527fc439e529dfe8",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D01.md",
+          "blob": "9dd5812ad6fae2057fd3534508ce83f314283b14",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D02-IMPLEMENTATION.md",
+          "blob": "cfad7697a3b8c80abffcdb44ec23fdb2964da7cb",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D02-QUALIFICATION.json",
+          "blob": "356f2fc6867266d91bfc255bf011a4a5ce2d2ead",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D02.md",
+          "blob": "d2ff692afe089c99515d73d52780477dcb4e9435",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D03-IMPLEMENTATION.md",
+          "blob": "82bf828e9e0df2545f7b76b66af6fc7689579fb8",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D03-QUALIFICATION.json",
+          "blob": "7f84249388cd464a6d8eb824489014194af99a27",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D03.md",
+          "blob": "fc580a5570f6d819149f7706e89cca9c55e07d63",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research-evidence-integrity.ts",
+          "blob": "17935710652351e3636efee6cabd2491bacc8000",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research/analyze-evidence.ts",
+          "blob": "2c89a935ad64e1f3147146819c9801dd142fef42",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research/history-sources.ts",
+          "blob": "778722bd28a6b089b6ab24851035cba041a6f670",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research/import-history.ts",
+          "blob": "0d9362a6a93811ddf7dd094b0db7b78ff17f7900",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research/verify-analysis-independent.py",
+          "blob": "3cfbfd28d19e42806de7f242436f3c5c8b839cd4",
+          "status": "added"
+        },
+        {
+          "path": "scripts/validate-data.ts",
+          "blob": "8c54611856f4685a2491d6b65f13b4eff9a6eca9",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/effectiveStateGdrLoraStudy.ts",
+          "blob": "af1613dbbe5c5d3d9b06a5fb4811000f1fbd4a64",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/researchAnalysisSnapshot.json",
+          "blob": "39cc0b95904a30be95ef939ef6105db23a5e6787",
+          "status": "added"
+        },
+        {
+          "path": "src/data/researchEvidenceIndex.ts",
+          "blob": "939590a623a596dcb830a7741118abb3f7b9745a",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchComparisons.test.ts",
+          "blob": "fcb6f53d2f57df66a2df60cbb312bc060bec4c1b",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchComparisons.ts",
+          "blob": "f5e19e4fd607f6a7c0f097775320885298b5e231",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchEvidence.ts",
+          "blob": "b574549558dd2ff0cb4c5a6a9f229b30e44de64f",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/researchEvidenceSchema.test.ts",
+          "blob": "a79983e964b8d2d8d1c8379d6e0d0267bc1a486d",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchEvidenceSchema.ts",
+          "blob": "be328b14ae3ac8dcf8fb54934eacda392da21402",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchHistory.test.ts",
+          "blob": "29568b4d88d31aaedaf962cd4d7beecf48e34045",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchHistory.ts",
+          "blob": "31cb46c136d163b9e8a44d606fe38bf2fed93aaa",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchStudyAnalyses.test.ts",
+          "blob": "53e62dc6d09d3c3565cdbfb48735cb0c0a2f62dd",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchStudyAnalyses.ts",
+          "blob": "55a1038cfcef3c20f0846d27e1e76c4a43e4fcb5",
+          "status": "added"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 37061499113,
+        "head_sha": "f738b67a018fe3a1b068fd210b367cafd649cc24",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37061499113"
+      }
+    },
+    {
+      "packet": "D04",
+      "pr": 825,
+      "head": "40ea5b24e8ffad9597f6fdfc53eefe61b5511664",
+      "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "branch": "docs/site-upgrade-research-decisions-20261002",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D01-IMPLEMENTATION.md",
+          "blob": "ad7568d1456dec111894a340527fc439e529dfe8",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D01.md",
+          "blob": "9dd5812ad6fae2057fd3534508ce83f314283b14",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D02-IMPLEMENTATION.md",
+          "blob": "cfad7697a3b8c80abffcdb44ec23fdb2964da7cb",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D02-QUALIFICATION.json",
+          "blob": "356f2fc6867266d91bfc255bf011a4a5ce2d2ead",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D02.md",
+          "blob": "d2ff692afe089c99515d73d52780477dcb4e9435",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D03-IMPLEMENTATION.md",
+          "blob": "82bf828e9e0df2545f7b76b66af6fc7689579fb8",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D03-QUALIFICATION.json",
+          "blob": "7f84249388cd464a6d8eb824489014194af99a27",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D03.md",
+          "blob": "fc580a5570f6d819149f7706e89cca9c55e07d63",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D04-IMPLEMENTATION.md",
+          "blob": "1c3dec8df62532cd20d39fdcaf2b25517b3cc592",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D04-QUALIFICATION.json",
+          "blob": "3128bf28d69de016dbf1155c9d68b75507324f6e",
+          "status": "added"
+        },
+        {
+          "path": "docs/plans/site-upgrade-20261002/tasks/D04.md",
+          "blob": "6a8484b0e53d45e2c04b06ee262b5ac6cae0e649",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research-evidence-integrity.ts",
+          "blob": "17935710652351e3636efee6cabd2491bacc8000",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research/analyze-evidence.ts",
+          "blob": "2c89a935ad64e1f3147146819c9801dd142fef42",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research/history-sources.ts",
+          "blob": "778722bd28a6b089b6ab24851035cba041a6f670",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research/import-history.ts",
+          "blob": "0d9362a6a93811ddf7dd094b0db7b78ff17f7900",
+          "status": "added"
+        },
+        {
+          "path": "scripts/research/verify-analysis-independent.py",
+          "blob": "3cfbfd28d19e42806de7f242436f3c5c8b839cd4",
+          "status": "added"
+        },
+        {
+          "path": "scripts/validate-data.ts",
+          "blob": "e9391770580dec896fa623d5530d27f1a7fa85ac",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/effectiveStateGdrLoraStudy.ts",
+          "blob": "af1613dbbe5c5d3d9b06a5fb4811000f1fbd4a64",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/researchAnalysisSnapshot.json",
+          "blob": "39cc0b95904a30be95ef939ef6105db23a5e6787",
+          "status": "added"
+        },
+        {
+          "path": "src/data/researchDecisionNotes.ts",
+          "blob": "f220658cb71ca0222165f1244f1e0d29a475ea20",
+          "status": "added"
+        },
+        {
+          "path": "src/data/researchEvidenceIndex.ts",
+          "blob": "939590a623a596dcb830a7741118abb3f7b9745a",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchComparisons.test.ts",
+          "blob": "fcb6f53d2f57df66a2df60cbb312bc060bec4c1b",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchComparisons.ts",
+          "blob": "f5e19e4fd607f6a7c0f097775320885298b5e231",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchDecisionNotes.test.ts",
+          "blob": "f5f74ed761b100b163dd4bb3a1f195586e8049d2",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchEvidence.ts",
+          "blob": "b574549558dd2ff0cb4c5a6a9f229b30e44de64f",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/researchEvidenceSchema.test.ts",
+          "blob": "a79983e964b8d2d8d1c8379d6e0d0267bc1a486d",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchEvidenceSchema.ts",
+          "blob": "be328b14ae3ac8dcf8fb54934eacda392da21402",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchHistory.test.ts",
+          "blob": "29568b4d88d31aaedaf962cd4d7beecf48e34045",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchHistory.ts",
+          "blob": "31cb46c136d163b9e8a44d606fe38bf2fed93aaa",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchStudyAnalyses.test.ts",
+          "blob": "53e62dc6d09d3c3565cdbfb48735cb0c0a2f62dd",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchStudyAnalyses.ts",
+          "blob": "55a1038cfcef3c20f0846d27e1e76c4a43e4fcb5",
+          "status": "added"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 37096564987,
+        "head_sha": "40ea5b24e8ffad9597f6fdfc53eefe61b5511664",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/37096564987"
+      }
+    },
+    {
+      "packet": "X783",
+      "pr": 783,
+      "head": "90c7d46bde8447194d568aacce39de808aa59938",
+      "base": "48d6fbaa5b933c92da203bb04407bf503259c268",
+      "branch": "plan/resource-mission-bridges-20260922",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/plans/2026-09-22-pr-d-resource-mission-bridges.md",
+          "blob": "d8ff82534fdf585830f3753fcd18cf1d554a97f2",
+          "status": "added"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 35679062535,
+        "head_sha": "90c7d46bde8447194d568aacce39de808aa59938",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/35679062535"
+      }
+    },
+    {
+      "packet": "X805",
+      "pr": 805,
+      "head": "43fa2cbb3998824333826e8542cebf8265842f17",
+      "base": "f2d272bf697b5d121e233ceaf8b5af79c7b0cd3d",
+      "branch": "research/post-advisor-ab-final-results-20260928",
+      "draft": false,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/agents/tasks/POST_ADVISOR_AB_BASEMODEL_PUBLICATION_20260928.md",
+          "blob": "d0abb58785d6b683efe59657fd2504c092938892",
+          "status": "added"
+        },
+        {
+          "path": "public/research/seed-openevo/evidence/post-advisor-ab-final-20260928.json",
+          "blob": "592077493db9a6393e85d44a8271ffd28912d8a9",
+          "status": "added"
+        },
+        {
+          "path": "src/components/research/OpenEvoSdLoraBoundedRecurrence.astro",
+          "blob": "a814e469b4dc2535f142cb645897fdb9a700b7e7",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoStage1LearningObjectives.astro",
+          "blob": "39c765975d1cae23dd7803372aa1a223573f7546",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/SeedOpenEvoProgressBriefing.astro",
+          "blob": "404aa58db8f9d21a1107d29db259906373c7558e",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/openEvoExperimentNavigation.ts",
+          "blob": "b58f720491e3fe890e29f08c7ab871b8ad5783b7",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/siteReaderContracts.ts",
+          "blob": "c0ec0346a0b844e7766a1fa0a0ef5407d726045d",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/postAdvisorAbPublication.test.ts",
+          "blob": "76f813a2d6243d143b2266746a569779e6898cce",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/researchResultReadingContract.test.ts",
+          "blob": "a199d90d622a72964c426fbd041293a1c065a296",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/seedOpenEvoProgressBriefing.test.ts",
+          "blob": "9193ff9dc07660ff53be777b2945d7dced07cb98",
+          "status": "modified"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 36433951333,
+        "head_sha": "43fa2cbb3998824333826e8542cebf8265842f17",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/36433951333"
+      }
+    },
+    {
+      "packet": "X806",
+      "pr": 806,
+      "head": "8f976af80439f83fc4c9bfcf451e87ed60ad8126",
+      "base": "bcd9b6c06c31df2fe46b6473a4ebd01831548f2c",
+      "branch": "design/basemodel-design-system-v1-20260928",
+      "draft": false,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "AGENTS.md",
+          "blob": "9f99c9559bec93647894ccf15b9bcd19f710c37e",
+          "status": "modified"
+        },
+        {
+          "path": "docs/agents/current/seed-openevo-results-current-state-2026-08-26.md",
+          "blob": "60ad0ed5ccbc25e3957583728743c01c843c97ff",
+          "status": "modified"
+        },
+        {
+          "path": "docs/agents/tasks/BASEMODEL_DESIGN_SYSTEM_V1_20260928.md",
+          "blob": "30393655ba2110c2be64c3c7db517b90d721ed18",
+          "status": "added"
+        },
+        {
+          "path": "docs/agents/tasks/POST_ADVISOR_AB_BASEMODEL_PUBLICATION_20260928.md",
+          "blob": "d0abb58785d6b683efe59657fd2504c092938892",
+          "status": "added"
+        },
+        {
+          "path": "docs/design/ARCHIVE.md",
+          "blob": "24adf174372cbcb291be867b69b8c60a194406c5",
+          "status": "added"
+        },
+        {
+          "path": "docs/design/CODEX_LUNA_RUNBOOK.md",
+          "blob": "c0d2deefc5ef6b2ad295e4018770cb7da63a2768",
+          "status": "added"
+        },
+        {
+          "path": "docs/design/DELIVERY.md",
+          "blob": "2db4c190d6397189a188306bf990b8556c544495",
+          "status": "added"
+        },
+        {
+          "path": "docs/design/IMPLEMENTATION.md",
+          "blob": "ca5440158a658b7addb8f0f1a030fcad67bddd95",
+          "status": "added"
+        },
+        {
+          "path": "docs/design/LATEST.md",
+          "blob": "59b1393dc0ee0c5dfda140d31b249ca358b4b569",
+          "status": "added"
+        },
+        {
+          "path": "docs/design/PATTERNS.md",
+          "blob": "99925e15418390935790e7c7d585c30a3712c3fb",
+          "status": "added"
+        },
+        {
+          "path": "docs/design/README.md",
+          "blob": "f92e49885a133e007bbea5c7efcad5154b2a3303",
+          "status": "added"
+        },
+        {
+          "path": "docs/design/REFERENCE_PAGES.md",
+          "blob": "477ba2ce26a6257ce29856fdcaf560cfc4bcb3b7",
+          "status": "added"
+        },
+        {
+          "path": "docs/design/SYSTEM.md",
+          "blob": "4afcff9b1217e6f253c815dad4b34ca2da66cd63",
+          "status": "added"
+        },
+        {
+          "path": "public/research/seed-openevo/evidence/post-advisor-ab-final-20260928.json",
+          "blob": "592077493db9a6393e85d44a8271ffd28912d8a9",
+          "status": "added"
+        },
+        {
+          "path": "scripts/css-important-debt-baseline.json",
+          "blob": "ce797e73e6317e01e7c84c6324e26a4c1fbed1b6",
+          "status": "modified"
+        },
+        {
+          "path": "scripts/css-radius-debt-baseline.json",
+          "blob": "410056f5f892da6581c26dac48013aeb3f10a602",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/DevelopmentWorkflowPage.astro",
+          "blob": "334c121a80d298c57688b4d6fc99bdf9ef9a43de",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/ModelComparison.css",
+          "blob": "751e0c3bf8c93614178302ee4050d71eaaa5fb9c",
+          "status": "added"
+        },
+        {
+          "path": "src/components/ModelComparison.tsx",
+          "blob": "dc70f9306e9a4bfca36c33b730a23ee17abdfb71",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/models/ModelDecisionCard.css",
+          "blob": "87c2e5608f8cba6fc426d9a518dab4075864fdc5",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/papers/PaperExplorer.css",
+          "blob": "16cf1dd16b8dddb4b8392752a9d22f91263c925a",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/InteractiveResearchExplainer.tsx",
+          "blob": "b196df62b54dbf0dce88fdee02332a25dff436e3",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro",
+          "blob": "ac17c8e5efb42838ca732421e19aa2daac469ccd",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoExperimentIndex.astro",
+          "blob": "1e3ca8dda0bb14c7a1d477d81b0c09f0ac0f73b7",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoExperimentResultsScaffold.astro",
+          "blob": "76d756adb608e81521006921592eed7e5820a0e7",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoHarness2MiniStudy.astro",
+          "blob": "d6c017e3925f2fd1164cbdf80fc1fedd56de58c9",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoSdLoraBoundedRecurrence.astro",
+          "blob": "1676d47c3d46ee402dd14dbd817b4794895eb6e4",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoStage1LearningObjectives.astro",
+          "blob": "fc6b0e39a0d2546952c4c016080c4ffd0b9d4531",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoWebShopCurrentQ7.astro",
+          "blob": "bcf4e520174708993d7b7825e2df20b88529de5b",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoWebShopNextSteps.astro",
+          "blob": "ee404486f8e917810615d6718596709c48bf12b8",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoWebShopResultNote.astro",
+          "blob": "d86c60e46c835d68ae16f7724a85ef449406333b",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/OpenEvoWebShopResultsHero.astro",
+          "blob": "1d47b23833ffcb1d9800dd6f907c6d6de537b737",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/ResearchRouteContext.astro",
+          "blob": "46589e216fe77cf107a3838eebcdb4486458b23a",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/SeedOpenEvoCanonicalFigure.astro",
+          "blob": "b2a6efe55f79cd78277787756cc8737dd854dabc",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/SeedOpenEvoProgressBriefing.astro",
+          "blob": "c9ba97e780e9c659a335d5e8aeb43036c8e35808",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/WebShopReaderMap.astro",
+          "blob": "b045a88339f0ce0f2d968def7cc12081e2cd5360",
+          "status": "modified"
+        },
+        {
+          "path": "src/components/research/explainer/ResearchExplainerPrimitives.tsx",
+          "blob": "c6d7858cea31b9829bb1c52553910fa86575fd51",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/humanExpressionEnforcementRegistry.ts",
+          "blob": "f668797e6c751438102833949073a31b871337b9",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/openEvoExperimentNavigation.ts",
+          "blob": "b58f720491e3fe890e29f08c7ab871b8ad5783b7",
+          "status": "modified"
+        },
+        {
+          "path": "src/data/siteReaderContracts.ts",
+          "blob": "44cb7cb54dd2205636af74d5ee2fc37542fa5d4e",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/canonicalResearchFigures.test.ts",
+          "blob": "201a00a5b0540d1673eda29e8b631c9be4a331db",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/caseClusterReaderFollowthrough.test.ts",
+          "blob": "2f2bb74526b7bf53cb550ce1759e89e0c2cd995c",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/developmentWorkflow.test.ts",
+          "blob": "6249b961213397a0e1b09200ff05eec6056866fa",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/openEvoExperimentResultLanguage.test.ts",
+          "blob": "53ee5e90bc7b41f0bb0728cb964fd0a218fc7e64",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/openEvoWebShopResults.test.ts",
+          "blob": "28da0fd8cd1debba7ac8eb1aa322cfe89c169c1f",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/openEvoWrapperAuditCurrent.test.ts",
+          "blob": "50c067fae0e7a2d2a1124bce3a9ca8db27d47c5f",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/postAdvisorAbPublication.test.ts",
+          "blob": "b2fe1f6f9de0917b22cead92c65de38fba099029",
+          "status": "added"
+        },
+        {
+          "path": "src/lib/readerFirstCopyHierarchy.test.ts",
+          "blob": "0c6007ff19dffc668164ed5035f9d6e91d90c551",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/researchResultReadingContract.test.ts",
+          "blob": "1df1932581db0203bfcbf06952f2fe74fc7de732",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/sdLoraVrLineages.test.ts",
+          "blob": "5a73b3440713fbc537418930f35f61317100ddf7",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/seedOpenEvoCurrentState.test.ts",
+          "blob": "5f992a8ed1420da45fde7e8c73233bdca225688e",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/seedOpenEvoProgressBriefing.test.ts",
+          "blob": "87151b8d242e9b202e5443acb6267ab1dc7aedc9",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/seedOpenEvoReaderVoiceProtection.test.ts",
+          "blob": "a6d016f6debd496bc826dccd77d43727ac14aa4f",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/seedWebShopReproductionBoundary.test.ts",
+          "blob": "0b94d315815fe86d1536d4bf001e1832ca909b68",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/siteReaderContracts.test.ts",
+          "blob": "075a873cb9756a735ce0e2ea743c71ab17257a97",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/sitewideNormalization.test.ts",
+          "blob": "c98d7f3550718a360173c915c11f7029ed55009b",
+          "status": "modified"
+        },
+        {
+          "path": "src/lib/vercelHostedUiGate.test.ts",
+          "blob": "762455c733deed185a59c86f59dd3b1688fee3b7",
+          "status": "modified"
+        },
+        {
+          "path": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/index.astro",
+          "blob": "0469d0c4492314a0e7c2a602c187594d262dbd78",
+          "status": "modified"
+        },
+        {
+          "path": "src/pages/research/seed-openevo/study/results.astro",
+          "blob": "1674259c6eef3dab2e51e4a9ddcf53397d1297b2",
+          "status": "modified"
+        },
+        {
+          "path": "src/styles/final-hardening.css",
+          "blob": "427e58459e338f03219961fc1f6ab6f828a8f947",
+          "status": "modified"
+        },
+        {
+          "path": "src/styles/interactive-research-explainer-core.css",
+          "blob": "2e0d681af83e4386e999648d5f1962df318ba7ec",
+          "status": "modified"
+        },
+        {
+          "path": "src/styles/site.css",
+          "blob": "b0c16d83962d95d9538b997f99b73b0164d2f695",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/canonical-research-figures.spec.ts",
+          "blob": "6d05af061a2a809176ae486d8104cbb3b549aa1a",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/effective-state-gdr-lora.spec.ts",
+          "blob": "e22861252c0350f0688a2956afecc07b29948ad4",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/final-product-hardening.spec.ts",
+          "blob": "6178a00aecd44c8500e1a1a0d731f7457454461e",
+          "status": "removed"
+        },
+        {
+          "path": "tests/e2e/minimax-teacher-reproduction-disclosure.spec.ts",
+          "blob": "202fc031bd98132b200c31f895a39d44c97cc230",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/open-evo-webshop-program-report.spec.ts",
+          "blob": "b9273914dbbd7b520244503b5dcbe3ef8e5881f7",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/openevo-two-map.spec.ts",
+          "blob": "b0581ae24719535658ec78b362795c174ed1c4e5",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/openevo2-harness2-mini-study.spec.ts",
+          "blob": "e4ea83bce41b2429ce9e06d4abf3dc66e49bdeb1",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/public-reproduction-guide.spec.ts",
+          "blob": "bff5d9b9599a66c1652baed721ec89d492a29ef3",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/research-explainer-layout.spec.ts",
+          "blob": "0050ead76255e9f53188b5b045ee66b125cedfeb",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/research-result-reading-order.spec.ts",
+          "blob": "3a7c47a14ba5f6bca81097f8d62572a0220e4238",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/seed-openevo-briefing.spec.ts",
+          "blob": "a16036ece49a2ba01acdae24e46f534adfe933ba",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/site-reader-contracts.spec.ts",
+          "blob": "81ec4bd8bf4caf6e89a9f12c890d16a02e38094f",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/text-memory-research.spec.ts",
+          "blob": "94972b0d16df6092adbc1136875597675f579f3e",
+          "status": "modified"
+        },
+        {
+          "path": "tests/e2e/vanilla-sd-lora-mechanism.spec.ts",
+          "blob": "66aedc93020193d58bb69af5e6aa59afe5ca779e",
+          "status": "modified"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 36515477321,
+        "head_sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/36515477321"
+      }
+    },
+    {
+      "packet": "X812",
+      "pr": 812,
+      "head": "e94b1618760b9cbd201ff88ce61141e592989693",
+      "base": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+      "branch": "design/beta-sujianlin-reader-20261001",
+      "draft": true,
+      "merged": false,
+      "state": "open",
+      "files": [
+        {
+          "path": "docs/agents/tasks/BETA_SUJIANLIN_READER_REDESIGN_20261001.md",
+          "blob": "4d832ac6a84d0c21596e8139452eacb6186e00c6",
+          "status": "added"
+        }
+      ],
+      "includedInCandidate": false,
+      "individualPublicCI": {
+        "id": 36864386229,
+        "head_sha": "e94b1618760b9cbd201ff88ce61141e592989693",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mykcs/basemodel/actions/runs/36864386229"
+      }
+    }
+  ],
+  "c01": {
+    "planRef": "refs/heads/docs/site-upgrade-scientific-tables-20261002",
+    "head": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
+    "prs": [
+      {
+        "headRefOid": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
+        "number": 827,
+        "state": "OPEN"
+      }
+    ]
+  },
+  "overlaps": [
+    {
+      "path": "scripts/research-evidence-integrity.ts",
+      "participants": [
+        {
+          "packet": "B03",
+          "pr": 819,
+          "blob": "17935710652351e3636efee6cabd2491bacc8000",
+          "status": "added"
+        },
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "17935710652351e3636efee6cabd2491bacc8000",
+          "status": "added"
+        },
+        {
+          "packet": "D01",
+          "pr": 822,
+          "blob": "17935710652351e3636efee6cabd2491bacc8000",
+          "status": "added"
+        },
+        {
+          "packet": "D02",
+          "pr": 823,
+          "blob": "17935710652351e3636efee6cabd2491bacc8000",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "17935710652351e3636efee6cabd2491bacc8000",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "17935710652351e3636efee6cabd2491bacc8000",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "scripts/research/analyze-evidence.ts",
+      "participants": [
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "2c89a935ad64e1f3147146819c9801dd142fef42",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "2c89a935ad64e1f3147146819c9801dd142fef42",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "2c89a935ad64e1f3147146819c9801dd142fef42",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "scripts/research/history-sources.ts",
+      "participants": [
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "778722bd28a6b089b6ab24851035cba041a6f670",
+          "status": "added"
+        },
+        {
+          "packet": "D02",
+          "pr": 823,
+          "blob": "778722bd28a6b089b6ab24851035cba041a6f670",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "778722bd28a6b089b6ab24851035cba041a6f670",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "778722bd28a6b089b6ab24851035cba041a6f670",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "scripts/research/import-history.ts",
+      "participants": [
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "0d9362a6a93811ddf7dd094b0db7b78ff17f7900",
+          "status": "added"
+        },
+        {
+          "packet": "D02",
+          "pr": 823,
+          "blob": "0d9362a6a93811ddf7dd094b0db7b78ff17f7900",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "0d9362a6a93811ddf7dd094b0db7b78ff17f7900",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "0d9362a6a93811ddf7dd094b0db7b78ff17f7900",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "scripts/research/verify-analysis-independent.py",
+      "participants": [
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "3cfbfd28d19e42806de7f242436f3c5c8b839cd4",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "3cfbfd28d19e42806de7f242436f3c5c8b839cd4",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "3cfbfd28d19e42806de7f242436f3c5c8b839cd4",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "scripts/validate-data.ts",
+      "participants": [
+        {
+          "packet": "B03",
+          "pr": 819,
+          "blob": "a976e01e9ade3331b1425a395d9dc421bd81f7c7",
+          "status": "modified"
+        },
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "e9391770580dec896fa623d5530d27f1a7fa85ac",
+          "status": "modified"
+        },
+        {
+          "packet": "D01",
+          "pr": 822,
+          "blob": "a976e01e9ade3331b1425a395d9dc421bd81f7c7",
+          "status": "modified"
+        },
+        {
+          "packet": "D02",
+          "pr": 823,
+          "blob": "a976e01e9ade3331b1425a395d9dc421bd81f7c7",
+          "status": "modified"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "8c54611856f4685a2491d6b65f13b4eff9a6eca9",
+          "status": "modified"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "e9391770580dec896fa623d5530d27f1a7fa85ac",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/components/ModelComparison.tsx",
+      "participants": [
+        {
+          "packet": "A02",
+          "pr": 815,
+          "blob": "8afa0f7b6881dfa28ddc951c348f195939367263",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "dc70f9306e9a4bfca36c33b730a23ee17abdfb71",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro",
+      "participants": [
+        {
+          "packet": "C01",
+          "pr": 827,
+          "blob": "2ef11561b9403d2f5fdabae48c69c3a51444e90d",
+          "status": "modified"
+        },
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "a0a984abd031831ef5bd9dbb5111d3d57f3fb83d",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "ac17c8e5efb42838ca732421e19aa2daac469ccd",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/components/research/OpenEvoExperimentIndex.astro",
+      "participants": [
+        {
+          "packet": "B01",
+          "pr": 817,
+          "blob": "2d1a7b56b95553a8269074f4ba667d36a2fed0bc",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "1e3ca8dda0bb14c7a1d477d81b0c09f0ac0f73b7",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/components/research/OpenEvoSdLoraBoundedRecurrence.astro",
+      "participants": [
+        {
+          "packet": "B02",
+          "pr": 818,
+          "blob": "a814e469b4dc2535f142cb645897fdb9a700b7e7",
+          "status": "modified"
+        },
+        {
+          "packet": "C01",
+          "pr": 827,
+          "blob": "0181bf7f4a75c8e38d459ba263dda3f11e862e49",
+          "status": "modified"
+        },
+        {
+          "packet": "X805",
+          "pr": 805,
+          "blob": "a814e469b4dc2535f142cb645897fdb9a700b7e7",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "1676d47c3d46ee402dd14dbd817b4794895eb6e4",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/components/research/OpenEvoStage1LearningObjectives.astro",
+      "participants": [
+        {
+          "packet": "B02",
+          "pr": 818,
+          "blob": "39c765975d1cae23dd7803372aa1a223573f7546",
+          "status": "modified"
+        },
+        {
+          "packet": "C01",
+          "pr": 827,
+          "blob": "39c765975d1cae23dd7803372aa1a223573f7546",
+          "status": "modified"
+        },
+        {
+          "packet": "X805",
+          "pr": 805,
+          "blob": "39c765975d1cae23dd7803372aa1a223573f7546",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "fc6b0e39a0d2546952c4c016080c4ffd0b9d4531",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/components/research/SeedOpenEvoProgressBriefing.astro",
+      "participants": [
+        {
+          "packet": "B02",
+          "pr": 818,
+          "blob": "404aa58db8f9d21a1107d29db259906373c7558e",
+          "status": "modified"
+        },
+        {
+          "packet": "C01",
+          "pr": 827,
+          "blob": "404aa58db8f9d21a1107d29db259906373c7558e",
+          "status": "modified"
+        },
+        {
+          "packet": "X805",
+          "pr": 805,
+          "blob": "404aa58db8f9d21a1107d29db259906373c7558e",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "c9ba97e780e9c659a335d5e8aeb43036c8e35808",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/data/effectiveStateGdrLoraStudy.ts",
+      "participants": [
+        {
+          "packet": "B03",
+          "pr": 819,
+          "blob": "af1613dbbe5c5d3d9b06a5fb4811000f1fbd4a64",
+          "status": "modified"
+        },
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "af1613dbbe5c5d3d9b06a5fb4811000f1fbd4a64",
+          "status": "modified"
+        },
+        {
+          "packet": "D01",
+          "pr": 822,
+          "blob": "af1613dbbe5c5d3d9b06a5fb4811000f1fbd4a64",
+          "status": "modified"
+        },
+        {
+          "packet": "D02",
+          "pr": 823,
+          "blob": "af1613dbbe5c5d3d9b06a5fb4811000f1fbd4a64",
+          "status": "modified"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "af1613dbbe5c5d3d9b06a5fb4811000f1fbd4a64",
+          "status": "modified"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "af1613dbbe5c5d3d9b06a5fb4811000f1fbd4a64",
+          "status": "modified"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/data/openEvoExperimentNavigation.ts",
+      "participants": [
+        {
+          "packet": "B02",
+          "pr": 818,
+          "blob": "b58f720491e3fe890e29f08c7ab871b8ad5783b7",
+          "status": "modified"
+        },
+        {
+          "packet": "C01",
+          "pr": 827,
+          "blob": "b58f720491e3fe890e29f08c7ab871b8ad5783b7",
+          "status": "modified"
+        },
+        {
+          "packet": "X805",
+          "pr": 805,
+          "blob": "b58f720491e3fe890e29f08c7ab871b8ad5783b7",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "b58f720491e3fe890e29f08c7ab871b8ad5783b7",
+          "status": "modified"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/data/researchAnalysisSnapshot.json",
+      "participants": [
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "39cc0b95904a30be95ef939ef6105db23a5e6787",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "39cc0b95904a30be95ef939ef6105db23a5e6787",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "39cc0b95904a30be95ef939ef6105db23a5e6787",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/data/researchDecisionNotes.ts",
+      "participants": [
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "f220658cb71ca0222165f1244f1e0d29a475ea20",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "f220658cb71ca0222165f1244f1e0d29a475ea20",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/data/researchEvidenceIndex.ts",
+      "participants": [
+        {
+          "packet": "B03",
+          "pr": 819,
+          "blob": "939590a623a596dcb830a7741118abb3f7b9745a",
+          "status": "added"
+        },
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "939590a623a596dcb830a7741118abb3f7b9745a",
+          "status": "added"
+        },
+        {
+          "packet": "D01",
+          "pr": 822,
+          "blob": "939590a623a596dcb830a7741118abb3f7b9745a",
+          "status": "added"
+        },
+        {
+          "packet": "D02",
+          "pr": 823,
+          "blob": "939590a623a596dcb830a7741118abb3f7b9745a",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "939590a623a596dcb830a7741118abb3f7b9745a",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "939590a623a596dcb830a7741118abb3f7b9745a",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/data/siteReaderContracts.ts",
+      "participants": [
+        {
+          "packet": "B01",
+          "pr": 817,
+          "blob": "747a63b5c98dbbd7c858e130683bbb2ac4452882",
+          "status": "modified"
+        },
+        {
+          "packet": "B02",
+          "pr": 818,
+          "blob": "c0ec0346a0b844e7766a1fa0a0ef5407d726045d",
+          "status": "modified"
+        },
+        {
+          "packet": "C01",
+          "pr": 827,
+          "blob": "338f014d8c609814bf3de8d368bad4a807c62d29",
+          "status": "modified"
+        },
+        {
+          "packet": "X805",
+          "pr": 805,
+          "blob": "c0ec0346a0b844e7766a1fa0a0ef5407d726045d",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "44cb7cb54dd2205636af74d5ee2fc37542fa5d4e",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/lib/postAdvisorAbPublication.test.ts",
+      "participants": [
+        {
+          "packet": "B02",
+          "pr": 818,
+          "blob": "76f813a2d6243d143b2266746a569779e6898cce",
+          "status": "added"
+        },
+        {
+          "packet": "C01",
+          "pr": 827,
+          "blob": "714d8557985f23d2e2d166c658f5c1e9f423ed11",
+          "status": "added"
+        },
+        {
+          "packet": "X805",
+          "pr": 805,
+          "blob": "76f813a2d6243d143b2266746a569779e6898cce",
+          "status": "added"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "b2fe1f6f9de0917b22cead92c65de38fba099029",
+          "status": "added"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/lib/researchComparisons.test.ts",
+      "participants": [
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "fcb6f53d2f57df66a2df60cbb312bc060bec4c1b",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "fcb6f53d2f57df66a2df60cbb312bc060bec4c1b",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "fcb6f53d2f57df66a2df60cbb312bc060bec4c1b",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/lib/researchComparisons.ts",
+      "participants": [
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "f5e19e4fd607f6a7c0f097775320885298b5e231",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "f5e19e4fd607f6a7c0f097775320885298b5e231",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "f5e19e4fd607f6a7c0f097775320885298b5e231",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/lib/researchDecisionNotes.test.ts",
+      "participants": [
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "f5f74ed761b100b163dd4bb3a1f195586e8049d2",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "f5f74ed761b100b163dd4bb3a1f195586e8049d2",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/lib/researchEvidence.ts",
+      "participants": [
+        {
+          "packet": "B03",
+          "pr": 819,
+          "blob": "b574549558dd2ff0cb4c5a6a9f229b30e44de64f",
+          "status": "modified"
+        },
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "b574549558dd2ff0cb4c5a6a9f229b30e44de64f",
+          "status": "modified"
+        },
+        {
+          "packet": "D01",
+          "pr": 822,
+          "blob": "b574549558dd2ff0cb4c5a6a9f229b30e44de64f",
+          "status": "modified"
+        },
+        {
+          "packet": "D02",
+          "pr": 823,
+          "blob": "b574549558dd2ff0cb4c5a6a9f229b30e44de64f",
+          "status": "modified"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "b574549558dd2ff0cb4c5a6a9f229b30e44de64f",
+          "status": "modified"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "b574549558dd2ff0cb4c5a6a9f229b30e44de64f",
+          "status": "modified"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/lib/researchEvidenceSchema.test.ts",
+      "participants": [
+        {
+          "packet": "B03",
+          "pr": 819,
+          "blob": "a79983e964b8d2d8d1c8379d6e0d0267bc1a486d",
+          "status": "added"
+        },
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "a79983e964b8d2d8d1c8379d6e0d0267bc1a486d",
+          "status": "added"
+        },
+        {
+          "packet": "D01",
+          "pr": 822,
+          "blob": "a79983e964b8d2d8d1c8379d6e0d0267bc1a486d",
+          "status": "added"
+        },
+        {
+          "packet": "D02",
+          "pr": 823,
+          "blob": "a79983e964b8d2d8d1c8379d6e0d0267bc1a486d",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "a79983e964b8d2d8d1c8379d6e0d0267bc1a486d",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "a79983e964b8d2d8d1c8379d6e0d0267bc1a486d",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/lib/researchEvidenceSchema.ts",
+      "participants": [
+        {
+          "packet": "B03",
+          "pr": 819,
+          "blob": "be328b14ae3ac8dcf8fb54934eacda392da21402",
+          "status": "added"
+        },
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "be328b14ae3ac8dcf8fb54934eacda392da21402",
+          "status": "added"
+        },
+        {
+          "packet": "D01",
+          "pr": 822,
+          "blob": "be328b14ae3ac8dcf8fb54934eacda392da21402",
+          "status": "added"
+        },
+        {
+          "packet": "D02",
+          "pr": 823,
+          "blob": "be328b14ae3ac8dcf8fb54934eacda392da21402",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "be328b14ae3ac8dcf8fb54934eacda392da21402",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "be328b14ae3ac8dcf8fb54934eacda392da21402",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/lib/researchHistory.test.ts",
+      "participants": [
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "29568b4d88d31aaedaf962cd4d7beecf48e34045",
+          "status": "added"
+        },
+        {
+          "packet": "D02",
+          "pr": 823,
+          "blob": "29568b4d88d31aaedaf962cd4d7beecf48e34045",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "29568b4d88d31aaedaf962cd4d7beecf48e34045",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "29568b4d88d31aaedaf962cd4d7beecf48e34045",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/lib/researchHistory.ts",
+      "participants": [
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "31cb46c136d163b9e8a44d606fe38bf2fed93aaa",
+          "status": "added"
+        },
+        {
+          "packet": "D02",
+          "pr": 823,
+          "blob": "31cb46c136d163b9e8a44d606fe38bf2fed93aaa",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "31cb46c136d163b9e8a44d606fe38bf2fed93aaa",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "31cb46c136d163b9e8a44d606fe38bf2fed93aaa",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/lib/researchResultReadingContract.test.ts",
+      "participants": [
+        {
+          "packet": "B02",
+          "pr": 818,
+          "blob": "a199d90d622a72964c426fbd041293a1c065a296",
+          "status": "modified"
+        },
+        {
+          "packet": "C01",
+          "pr": 827,
+          "blob": "a199d90d622a72964c426fbd041293a1c065a296",
+          "status": "modified"
+        },
+        {
+          "packet": "X805",
+          "pr": 805,
+          "blob": "a199d90d622a72964c426fbd041293a1c065a296",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "1df1932581db0203bfcbf06952f2fe74fc7de732",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/lib/researchStudyAnalyses.test.ts",
+      "participants": [
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "53e62dc6d09d3c3565cdbfb48735cb0c0a2f62dd",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "53e62dc6d09d3c3565cdbfb48735cb0c0a2f62dd",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "53e62dc6d09d3c3565cdbfb48735cb0c0a2f62dd",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/lib/researchStudyAnalyses.ts",
+      "participants": [
+        {
+          "packet": "C02",
+          "pr": 820,
+          "blob": "55a1038cfcef3c20f0846d27e1e76c4a43e4fcb5",
+          "status": "added"
+        },
+        {
+          "packet": "D03",
+          "pr": 824,
+          "blob": "55a1038cfcef3c20f0846d27e1e76c4a43e4fcb5",
+          "status": "added"
+        },
+        {
+          "packet": "D04",
+          "pr": 825,
+          "blob": "55a1038cfcef3c20f0846d27e1e76c4a43e4fcb5",
+          "status": "added"
+        }
+      ],
+      "classification": "same-file-state"
+    },
+    {
+      "path": "src/lib/seedOpenEvoProgressBriefing.test.ts",
+      "participants": [
+        {
+          "packet": "B02",
+          "pr": 818,
+          "blob": "9193ff9dc07660ff53be777b2945d7dced07cb98",
+          "status": "modified"
+        },
+        {
+          "packet": "C01",
+          "pr": 827,
+          "blob": "9193ff9dc07660ff53be777b2945d7dced07cb98",
+          "status": "modified"
+        },
+        {
+          "packet": "X805",
+          "pr": 805,
+          "blob": "9193ff9dc07660ff53be777b2945d7dced07cb98",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "87151b8d242e9b202e5443acb6267ab1dc7aedc9",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/lib/siteReaderContracts.test.ts",
+      "participants": [
+        {
+          "packet": "B01",
+          "pr": 817,
+          "blob": "4d164ea906137ee652f3ae8fe169cb5a0d97764d",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "075a873cb9756a735ce0e2ea743c71ab17257a97",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/lib/vercelHostedUiGate.test.ts",
+      "participants": [
+        {
+          "packet": "A01",
+          "pr": 814,
+          "blob": "486aa0db325ee75f13f3c9e4ca432fbdd250b6ca",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "762455c733deed185a59c86f59dd3b1688fee3b7",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/index.astro",
+      "participants": [
+        {
+          "packet": "B02",
+          "pr": 818,
+          "blob": "89814043b0b84a1aa9873c043d462e311908b666",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "0469d0c4492314a0e7c2a602c187594d262dbd78",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/results.astro",
+      "participants": [
+        {
+          "packet": "B03",
+          "pr": 819,
+          "blob": "7c3af9894983d68f1f33ee5c93876ea5512a4e02",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "1674259c6eef3dab2e51e4a9ddcf53397d1297b2",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    },
+    {
+      "path": "src/styles/site.css",
+      "participants": [
+        {
+          "packet": "A03",
+          "pr": 816,
+          "blob": "f17c2e20c4f22daa129e3be52a897cbf899c7b9a",
+          "status": "modified"
+        },
+        {
+          "packet": "X806",
+          "pr": 806,
+          "blob": "b0c16d83962d95d9538b997f99b73b0164d2f695",
+          "status": "modified"
+        }
+      ],
+      "classification": "different-file-states-needs-owner-reconciliation"
+    }
+  ],
+  "status": "integration_pending",
+  "boundary": "File overlap is not a merge-conflict verdict; identical blobs often reflect stacked dependencies. Individual CI is not combined-candidate CI. No scientific or publication authority added."
+}
