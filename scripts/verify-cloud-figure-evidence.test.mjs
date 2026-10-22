@@ -4,7 +4,7 @@ import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
-import { population, verifyCoverage, verifyManifest } from './verify-cloud-figure-evidence.mjs';
+import { population, verifyCoverage, verifyManifest, verifyScientificEvidence } from './verify-cloud-figure-evidence.mjs';
 const sha = 'a'.repeat(40), browser='webkit';
 const report = status => ({suites:[{specs:[{file:'a.spec.ts',line:1,column:1,title:'reader',tests:[{projectName:browser,status,expectedStatus:'passed',results:[{status:'passed'}]}]}]}]});
 test('native shards cover the complete canonical population exactly once', () => {
@@ -57,17 +57,33 @@ test('real seal/aggregate/download path fails closed when a shard artifact is lo
       if(i===0) {
         // Test-only tiny PNG fixture; never emitted as browser evidence.
         const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j6X0AAAAASUVORK5CYII=','base64');
-        for(let n=0;n<6;n++) {
-          writeFileSync(join(results,`q03-paper-${n}-fixture.png`),png);
-          write(join(results,`q03-paper-geometry-${n}.json`),{sha,browser});
+        for(const width of [390,768,1440]) for(const theme of ['light','dark']) {
+          writeFileSync(join(results,`q03-paper-${width}-${theme}.png`),png);
+          writeFileSync(join(results,`q03-pgfplots-paper-${width}-${theme}.png`),png);
+          write(join(results,`q03-pgfplots-geometry-${width}-${theme}.json`),{
+            sha,browser,width,theme,tableMetrics:{},imageMetrics:{loaded:true},
+            renderer:'XeLaTeX + PGFPlots -> committed SVG -> Astro img',
+            route:'/research/seed-openevo/study/parameter-memory-results/',
+          });
+          if(width!==768) writeFileSync(join(results,`q01-paper-${width}-${theme}.png`),png);
         }
-        for(let n=0;n<4;n++) writeFileSync(join(results,`q01-paper-${n}-fixture.png`),png);
       }
       run('shard',dir,undefined,{...env,FIGURE_SHARD:String(i+1)});
     }
     // upload-artifact excludes hidden metadata by default; the seal must agree.
     for(let i=0;i<4;i++) rmSync(join(raw,`part-${i+1}`,'test-results/.last-run.json'));
     run('aggregate',raw,join(root,'accepted'),env);
+    const { readdirSync } = await import('node:fs');
+    const evidenceDir='shard-1/test-results';
+    const paths=readdirSync(join(root,'accepted',evidenceDir)).map(name=>`${evidenceDir}/${name}`);
+    for(const missing of paths) {
+      assert.throws(()=>verifyScientificEvidence(join(root,'accepted'),paths.filter(p=>p!==missing),sha,browser));
+    }
+    const geometry=paths.find(p=>p.endsWith('q03-pgfplots-geometry-390-light.json'));
+    assert.throws(()=>verifyScientificEvidence(join(root,'accepted'),[...paths,geometry],sha,browser));
+    assert.throws(()=>verifyScientificEvidence(join(root,'accepted'),paths.map(p=>p.replace('q03-pgfplots-geometry','q03-paper-geometry')),sha,browser));
+    assert.throws(()=>verifyScientificEvidence(join(root,'accepted'),paths,'b'.repeat(40),browser));
+    assert.throws(()=>verifyScientificEvidence(join(root,'accepted'),paths,sha,'chromium'));
     cpSync(join(root,'accepted'),join(root,'downloaded'),{recursive:true});
     run('roundtrip',join(root,'downloaded'),undefined,env);
     rmSync(join(raw,'part-4'),{recursive:true});
