@@ -169,22 +169,23 @@ if (q04GpuHasContinuousSampling !== false || receipt.stages.at(-1)?.endSeconds !
     --q04-ink:var(--paper-ink);
     --q04-muted:var(--paper-muted);
     --q04-line:var(--paper-line);
+    --q04-accent:#3486d7;
     width:100%;min-width:0;margin:2rem 0 2.5rem;padding:1.3rem 1.4rem 1.2rem;
-    border:1px solid var(--q04-line);border-radius:17px;
+    border:1px solid var(--q04-line);border-radius:var(--radius-feature);
     background:color-mix(in srgb,var(--q04-paper) 94%,#deedfb);
     color:var(--q04-ink);font-family:system-ui,-apple-system,"PingFang SC",sans-serif;
     font-variant-numeric:normal;
   }
   .q04-gpu *{box-sizing:border-box}
   .q04-gpu__head{display:flex;justify-content:space-between;align-items:flex-start;gap:1.5rem}
-  .q04-gpu__eyebrow{display:flex;align-items:center;gap:.45rem;font-size:.77rem!important;letter-spacing:.035em;font-weight:700;color:var(--q04-muted);margin:0 0 .45rem!important}
+  .q04-gpu .q04-gpu__eyebrow{display:flex;align-items:center;gap:.45rem;font-size:.77rem;letter-spacing:.035em;font-weight:700;color:var(--q04-muted);margin:0 0 .45rem}
   .q04-gpu__signal{width:.48rem;height:.48rem;flex:none;border-radius:50%;background:#3486d7;box-shadow:0 0 0 3px color-mix(in srgb,#3486d7 14%,transparent)}
-  .q04-gpu h4{margin:0 0 .35rem!important;font:650 clamp(1.1rem,2vw,1.3rem)/1.4 system-ui,-apple-system,"PingFang SC",sans-serif!important;color:var(--q04-ink)!important}
-  .q04-gpu__sub{margin:0!important;color:var(--q04-muted);font-size:.82rem!important;line-height:1.6}
+  .q04-gpu.q04-gpu h4{margin:0 0 .35rem;font:650 clamp(1.1rem,2vw,1.3rem)/1.4 system-ui,-apple-system,"PingFang SC",sans-serif;color:var(--q04-ink)}
+  .q04-gpu .q04-gpu__sub{margin:0;color:var(--q04-muted);font-size:.82rem;line-height:1.6}
   .q04-gpu__elapsed{display:flex;flex-direction:column;align-items:flex-end;flex:none;gap:.2rem;text-align:right}
   .q04-gpu__elapsed span,.q04-gpu__elapsed small{font-size:.72rem;color:var(--q04-muted)}
   .q04-gpu__elapsed strong{font-size:1.65rem;line-height:1.3;font-weight:740;letter-spacing:-.03em;color:var(--q04-ink)}
-  .q04-gpu__takeaway{margin:1.1rem 0!important;padding:.8rem .95rem;border-left:3px solid #3486d7;background:color-mix(in srgb,#3486d7 6%,var(--q04-paper));font-size:.89rem!important;line-height:1.75!important}
+  .q04-gpu .q04-gpu__takeaway{margin:1.1rem 0;padding:.8rem .95rem;border-left:3px solid #3486d7;background:color-mix(in srgb,#3486d7 6%,var(--q04-paper));font-size:.89rem;line-height:1.75}
   .q04-gpu__takeaway strong{font-weight:700}
   .q04-gpu__stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-block:1px solid var(--q04-line);padding:.95rem 0;gap:0}
   .q04-gpu__stats>div{display:flex;flex-direction:column;gap:.32rem;min-width:0;padding:.25rem .95rem}
@@ -194,11 +195,11 @@ if (q04GpuHasContinuousSampling !== false || receipt.stages.at(-1)?.endSeconds !
   .q04-gpu__stats strong{font-size:1.65rem;line-height:1.3;letter-spacing:-.035em;font-weight:730;color:var(--q04-ink)}
   .q04-gpu__stats strong small{font-size:.48em;letter-spacing:0;font-weight:580}
   .q04-gpu__chart-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.7rem;padding:1.2rem 0 .45rem}
-  .q04-gpu__chart-title{margin:0!important;font-size:.95rem!important;line-height:1.5;font-weight:720}
-  .q04-gpu__chart-sub{margin:.15rem 0 0!important;font-size:.74rem!important;color:var(--q04-muted)}
-  .q04-gpu__modes{display:none;gap:.2rem;flex:none;padding:.19rem;border:1px solid var(--q04-line);background:color-mix(in srgb,var(--q04-ink) 3%,var(--q04-paper));border-radius:10px}
+  .q04-gpu .q04-gpu__chart-title{margin:0;font-size:.95rem;line-height:1.5;font-weight:720}
+  .q04-gpu .q04-gpu__chart-sub{margin:.15rem 0 0;font-size:.74rem;color:var(--q04-muted)}
+  .q04-gpu__modes{display:none;gap:.2rem;flex:none;padding:.19rem;border:1px solid var(--q04-line);background:color-mix(in srgb,var(--q04-ink) 3%,var(--q04-paper));border-radius:var(--radius-panel)}
   .q04-gpu[data-enhanced] .q04-gpu__modes{display:flex}
-  .q04-gpu__modes button{appearance:none;min-height:34px;border:0;border-radius:7px;background:transparent;color:var(--q04-muted);cursor:pointer;padding:.36rem .68rem;font-family:inherit;font-size:.75rem;font-weight:620;line-height:1.3;white-space:nowrap}
+  .q04-gpu__modes button{appearance:none;min-height:34px;border:0;border-radius:var(--radius-control);background:transparent;color:var(--q04-muted);cursor:pointer;padding:.36rem .68rem;font-family:inherit;font-size:.75rem;font-weight:620;line-height:1.3;white-space:nowrap}
   .q04-gpu__modes button[aria-pressed="true"]{background:var(--q04-paper);color:var(--q04-ink);box-shadow:0 1px 5px rgb(0 0 0 / 10%)}
   .q04-gpu__modes button:focus-visible,.q04-gpu__plot-wrap:focus-visible{outline:3px solid #3486d7;outline-offset:2px}
   .q04-gpu__plot-wrap{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin}
@@ -209,32 +210,32 @@ if (q04GpuHasContinuousSampling !== false || receipt.stages.at(-1)?.endSeconds !
   .q04-gpu__unknown-back{fill:var(--q04-paper);stroke:var(--q04-line);stroke-width:1}
   .q04-gpu__unknown-title{font:710 17px system-ui,-apple-system,"PingFang SC",sans-serif;fill:var(--q04-ink)}
   .q04-gpu__unknown-sub{font:520 12px system-ui,-apple-system,"PingFang SC",sans-serif;fill:var(--q04-muted)}
-  .q04-gpu__demo-watermark{fill:var(--q04-paper);fill-opacity:.96;stroke:#3486d7;stroke-opacity:.4;stroke-dasharray:5 5}
+  .q04-gpu__demo-watermark{fill:var(--q04-paper);fill-opacity:.96;stroke:var(--q04-accent);stroke-opacity:.4;stroke-dasharray:5 5}
   .q04-gpu__demo-main{font:750 18px system-ui,-apple-system,"PingFang SC",sans-serif;fill:var(--q04-ink)}
   .q04-gpu__demo-sub{font:540 12px system-ui,-apple-system,"PingFang SC",sans-serif;fill:var(--q04-muted)}
   .q04-gpu__schematic,.q04-gpu[data-mode="schematic"] .q04-gpu__observations{display:none}
   .q04-gpu[data-mode="schematic"] .q04-gpu__schematic{display:block}
-  .q04-gpu__mobile-hint{display:none;margin:0!important;font-size:.75rem!important;color:var(--q04-muted)}
+  .q04-gpu .q04-gpu__mobile-hint{display:none;margin:0;font-size:.75rem;color:var(--q04-muted)}
   .q04-gpu__mode-copy{min-height:3rem;padding:.1rem 0 .85rem;border-bottom:1px solid var(--q04-line)}
-  .q04-gpu__mode-copy p{margin:0!important;font-size:.78rem!important;line-height:1.7!important;color:var(--q04-muted)}
+  .q04-gpu__mode-copy p{margin:0;font-size:.78rem;line-height:1.7;color:var(--q04-muted)}
   .q04-gpu__mode-copy strong{color:var(--q04-ink)}
   .q04-gpu__mode-copy [data-q04-gpu-mode-copy="schematic"],.q04-gpu[data-mode="schematic"] [data-q04-gpu-mode-copy="observed"]{display:none}
   .q04-gpu[data-mode="schematic"] [data-q04-gpu-mode-copy="schematic"]{display:block}
   .q04-gpu__phase-head{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;margin:.95rem 0 .75rem}
   .q04-gpu__phase-head strong{font-size:.88rem}
   .q04-gpu__phase-head span{font-size:.73rem;color:var(--q04-muted)}
-  .q04-gpu__phases{list-style:none!important;margin:0!important;padding:0!important;display:grid;gap:.65rem}
-  .q04-gpu__phases li{display:grid;grid-template-columns:minmax(0,12rem) minmax(2rem,1fr) 5.3rem;align-items:center;gap:.7rem;margin:0!important;padding:0!important;font-size:.77rem;line-height:1.4}
+  .q04-gpu__phases{list-style:none;margin:0;padding:0;display:grid;gap:.65rem}
+  .q04-gpu__phases li{display:grid;grid-template-columns:minmax(0,12rem) minmax(2rem,1fr) 5.3rem;align-items:center;gap:.7rem;margin:0;padding:0;font-size:.77rem;line-height:1.4}
   .q04-gpu__phase-label{display:inline-flex;align-items:center;gap:.48rem;min-width:0}
-  .q04-gpu__phase-label i{width:.48rem;height:.48rem;border-radius:2px;flex:none}
+  .q04-gpu__phase-label i{width:.48rem;height:.48rem;flex:none}
   .q04-gpu__track{display:block;position:relative;height:.52rem;border-radius:3rem;background:color-mix(in srgb,var(--q04-ink) 8%,transparent);overflow:hidden}
   .q04-gpu__track>span{display:block;height:100%;border-radius:inherit;min-width:2px}
   .q04-gpu__phase-time{text-align:right;font-variant-numeric:tabular-nums;font-weight:650;white-space:nowrap}
-  .q04-gpu__budget{margin:1.1rem 0 .6rem!important;padding:.7rem .8rem;border-radius:8px;background:color-mix(in srgb,#dfaa5b 10%,var(--q04-paper));font-size:.78rem!important;line-height:1.7!important}
-  .q04-gpu__footnote{margin:0!important;padding-top:.4rem;font-size:.72rem!important;line-height:1.65!important;color:var(--q04-muted)}
+  .q04-gpu .q04-gpu__budget{margin:1.1rem 0 .6rem;padding:.7rem .8rem;border-radius:var(--radius-control);background:color-mix(in srgb,#dfaa5b 10%,var(--q04-paper));font-size:.78rem;line-height:1.7}
+  .q04-gpu .q04-gpu__footnote{margin:0;padding-top:.4rem;font-size:.72rem;line-height:1.65;color:var(--q04-muted)}
   .q04-gpu__footnote a{color:inherit;text-decoration:underline;text-underline-offset:2px}
   @media(max-width:620px){
-    .q04-gpu{padding:1rem .75rem;border-radius:12px}
+    .q04-gpu{padding:1rem .75rem;border-radius:var(--radius-panel)}
     .q04-gpu__head{flex-direction:column;gap:.45rem}
     .q04-gpu__elapsed{width:100%;flex-direction:row;align-items:baseline;gap:.5rem;text-align:left}
     .q04-gpu__elapsed strong{font-size:1.35rem}
@@ -244,12 +245,12 @@ if (q04GpuHasContinuousSampling !== false || receipt.stages.at(-1)?.endSeconds !
     .q04-gpu__stats>div:nth-child(odd){padding-left:0;border-left:0}
     .q04-gpu__stats>div:nth-child(3){grid-column:1/-1;border-top:1px solid var(--q04-line);padding-top:.7rem}
     .q04-gpu__stats strong{font-size:1.45rem}
-    .q04-gpu__mobile-hint{display:block}
+    .q04-gpu .q04-gpu__mobile-hint{display:block}
     .q04-gpu__chart-head{align-items:stretch}
     .q04-gpu__modes{width:100%}
     .q04-gpu__modes button{flex:1}
     .q04-gpu__phases li{grid-template-columns:minmax(0,8.8rem) minmax(1rem,1fr) 4.2rem;gap:.4rem;font-size:.7rem}
     .q04-gpu__phase-head span{display:none}
   }
-  @media print{.q04-gpu__modes{display:none!important}.q04-gpu__plot-wrap{overflow:visible}.q04-gpu__plot-wrap svg{min-width:0}.q04-gpu__mobile-hint{display:none}}
+  @media print{.q04-gpu.q04-gpu .q04-gpu__modes{display:none}.q04-gpu__plot-wrap{overflow:visible}.q04-gpu__plot-wrap svg{min-width:0}.q04-gpu .q04-gpu__mobile-hint{display:none}}
 </style>

@@ -4,7 +4,7 @@ const route = '/research/seed-openevo/study/parameter-memory-results/#q04-gpu-re
 
 for (const width of [390, 768, 1440]) {
   for (const theme of ['light', 'dark'] as const) {
-    test(`Q04 phase-oriented GPU evidence and schematic are unambiguous at ${width}px ${theme}`, async ({ page }) => {
+    test(`Q04 phase-oriented GPU evidence and schematic are unambiguous at ${width}px ${theme}`, async ({ page }, testInfo) => {
       await page.setViewportSize({ width, height: 900 });
       await page.addInitScript(next => localStorage.setItem('atlas-theme', next), theme);
       await page.goto(route);
@@ -21,6 +21,13 @@ for (const width of [390, 768, 1440]) {
       await expect(root.locator('.q04-gpu__phases li')).toHaveCount(4);
       await expect(root).toContainText('调度预留 ≠ 实际峰值');
       await expect(root.locator('[data-q04-gpu-mode-copy="observed"]')).toBeVisible();
+      const plot = await root.locator('.q04-gpu__plot-wrap').evaluate(node => ({
+        scrollWidth: node.scrollWidth,
+        clientWidth: node.clientWidth,
+      }));
+      if (width === 390) expect(plot.scrollWidth).toBeGreaterThan(plot.clientWidth);
+      const capture = (width === 390 && theme === 'light') || (width === 1440 && theme === 'dark');
+      if (capture) await root.screenshot({ path: testInfo.outputPath(`q04-observed-${width}-${theme}.png`), animations: 'disabled' });
 
       const demo = root.getByRole('button', { name: '完整曲线示意' });
       await expect(demo).toBeVisible();
@@ -30,6 +37,7 @@ for (const width of [390, 768, 1440]) {
       await expect(root.locator('[data-q04-gpu-schematic]')).toBeVisible();
       await expect(root.locator('[data-q04-gpu-observed]')).toBeHidden();
       await expect(root.locator('[data-q04-gpu-mode-copy="schematic"]')).toContainText('不是这次 Q04 的测量结果');
+      if (capture) await root.screenshot({ path: testInfo.outputPath(`q04-schematic-${width}-${theme}.png`), animations: 'disabled' });
 
       await root.getByRole('button', { name: '真实证据' }).click();
       await expect(root.locator('[data-q04-gpu-snapshot]')).toHaveCount(2);
