@@ -77,6 +77,8 @@ for (const width of [320, 390, 768, 1440]) {
           caption: table.querySelector('caption')?.textContent,
           width: bounds.width,
           available: wrap.parentElement!.clientWidth,
+          cols: table.querySelector('thead tr')?.children.length ?? 0,
+          centerDelta: Math.abs((bounds.left+bounds.right)/2 - (()=>{ const p=wrap.parentElement!.getBoundingClientRect(); return (p.left+p.right)/2; })()),
           scroll: wrap.scrollWidth - wrap.clientWidth,
           overflow: getComputedStyle(wrap).overflowX,
           cellOverflow: Math.max(...Array.from(table.querySelectorAll('th,td')).map(cell => cell.scrollWidth - cell.clientWidth)),
@@ -92,7 +94,12 @@ for (const width of [320, 390, 768, 1440]) {
         expect(['hidden', 'clip']).not.toContain(table.overflow);
         expect(table.fontSize).toBeGreaterThanOrEqual(12);
       }
-      if (width === 1440) expect(tables.some(table => table.width < table.available * .8)).toBe(true);
+      const shortTables=tables.filter(table => table.cols>0 && table.cols<=3 && table.width < table.available*.85 && table.width>0);
+      for(const table of shortTables){
+        expect(table.centerDelta, 'short paper table should be centered: '+table.caption).toBeLessThanOrEqual(3);
+        if(width<=390)expect(table.fontSize,'short paper table should not inherit dense-matrix microtype').toBeGreaterThanOrEqual(14);
+      }
+      if (width === 1440) expect(shortTables.length).toBeGreaterThan(0);
     }
   });
 }

@@ -5,7 +5,8 @@
  */
 .research-booktabs-wrap {
   width:fit-content;max-width:100%;min-width:0;overflow:visible;
-  margin:var(--paper-table-margin,1.25rem 0 1.5rem);padding:var(--paper-table-window-padding,.2rem 0 .15rem);
+  margin:var(--paper-table-margin,1.25rem auto 1.5rem);margin-inline:auto;
+  padding:var(--paper-table-window-padding,.2rem 0 .15rem);
 }
 .research-booktabs-wrap:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px}
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table],
@@ -17,6 +18,11 @@ table.research-booktabs {
   font-family:"Times New Roman",Times,"Noto Serif SC","Noto Serif CJK SC","Songti SC",STSong,SimSun,serif;
   font-size:clamp(.75rem, .65rem + .45vw, 1rem);font-weight:400;font-style:normal;line-height:var(--paper-table-line-height,1.45);
   font-variant-numeric:tabular-nums lining-nums;font-feature-settings:normal;
+}
+/* Tables with at most three columns should not pay the tiny-type cost of dense matrices.
+   Width remains intrinsic; real multi-column tables keep the bounded responsive scale. */
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table]:not(:has(thead tr > :nth-child(4))) {
+  font-size:clamp(.875rem, .8rem + .25vw, 1rem);
 }
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] caption,
 table.research-booktabs caption {
