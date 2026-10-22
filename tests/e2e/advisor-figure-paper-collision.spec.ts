@@ -103,7 +103,14 @@ for(const width of [390,768,1440] as const){
       expect(tableMetrics.numericAlign).toBe('right');
       expect(tableMetrics.numericFontVariant).toContain('tabular-nums');
       expect(tableMetrics.pageOverflow).toBeLessThanOrEqual(2);
-      // Default screenshot is the actual LaTeX-style table, not the old SVG plot.
+      // Eagerly decode this small vector image even before opening its details:
+      // the evidence camera inspects all descendants of the Q03 reading block.
+      const hiddenPlot=q03.locator('img[data-pgfplot="q03-stage2"]');
+      await expect(hiddenPlot).toHaveAttribute('loading','eager');
+      await expect.poll(()=>hiddenPlot.evaluate(img=>
+        img instanceof HTMLImageElement && img.complete && img.naturalWidth>300
+      )).toBe(true);
+      // Default screenshot is still the real booktabs table; the figure is opt-in.
       await captureFigureEvidence(q03Paper,testInfo.outputPath('q03-paper-'+width+'-'+theme+'.png'));
       if(width!==768) await captureFigureEvidence(q01,testInfo.outputPath('q01-paper-'+width+'-'+theme+'.png'));
       await disclosure.evaluate(el=>(el as HTMLDetailsElement).open=true);
