@@ -26,6 +26,9 @@ for (const width of [390, 768, 1440]) {
         clientWidth: node.clientWidth,
       }));
       if (width === 390) expect(plot.scrollWidth).toBeGreaterThan(plot.clientWidth);
+      if (width === 1440) expect(plot.scrollWidth).toBeLessThanOrEqual(plot.clientWidth + 1);
+      if (width === 390) await expect(root.locator('.q04-gpu__overview')).toBeVisible();
+      if (width === 1440) await expect(root.locator('.q04-gpu__overview')).toBeHidden();
       const capture = (width === 390 && theme === 'light') || (width === 1440 && theme === 'dark');
       if (capture) await root.screenshot({ path: testInfo.outputPath(`q04-observed-${width}-${theme}.png`), animations: 'disabled' });
 
