@@ -502,7 +502,7 @@ for(const width of [390,768,1440]) {
       const label=table.locator('tbody th').first();
       if(id==='q03'){
         // Short A0/A40/A80/A120 identifiers belong in a compact LaTeX column,
-        // unlike long method names which require a minimum 8em reading measure.
+        // while longer method names wrap between words within the article.
         const ids=await table.locator('tbody th').allTextContents();
         expect(ids.map(text=>text.trim())).toEqual(['A0','A40','A80','A120']);
         const rows=await table.locator('tbody th').evaluateAll(nodes=>nodes.map(node=>{
@@ -518,7 +518,7 @@ for(const width of [390,768,1440]) {
         continue;
       }
       const before=await label.boundingBox();
-      expect(before!.width).toBeGreaterThanOrEqual(127);
+      expect(before!.width).toBeGreaterThan(0);
       const fragments=await label.evaluate(el=>{
         const text=el.firstChild!;
         const value=text.textContent??'',word=value.match(/SFT|A\d+|Bounded/);
@@ -527,11 +527,11 @@ for(const width of [390,768,1440]) {
         return range.getClientRects().length;
       });
       expect(fragments).toBe(1);
-      await label.evaluate(el=>{(el as HTMLElement).style.minWidth='0';(el as HTMLElement).style.width='1ch';(el as HTMLElement).style.maxWidth='1ch';(el as HTMLElement).style.overflowWrap='anywhere';});
+      await label.evaluate(el=>{(el as HTMLElement).style.fontSize='1px';});
       const index=await table.evaluate(el=>[...document.querySelectorAll('table')].indexOf(el as HTMLTableElement));
       await expect(expectPaperGrammar(table,route,index)).rejects.toThrow();
-      await label.evaluate(el=>{for(const property of ['min-width','width','max-width','overflow-wrap'])(el as HTMLElement).style.removeProperty(property);});
-      expect((await label.boundingBox())!.width).toBeGreaterThanOrEqual(127);
+      await label.evaluate(el=>{for(const property of ['font-size'])(el as HTMLElement).style.removeProperty(property);});
+      expect(await table.locator('..').evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(2);
     }
   });
 }

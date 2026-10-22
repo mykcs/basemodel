@@ -50,7 +50,7 @@ table.research-booktabs :is(th,td)[data-numeric]{
 }
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] tbody :is(th,td)[data-numeric]{overflow-wrap:normal}
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td):first-child,
-table.research-booktabs :is(th,td):first-child{padding-left:0;min-width:0}
+table.research-booktabs :is(th,td):first-child{padding-left:0;min-width:0;overflow-wrap:normal}
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td):last-child,
 table.research-booktabs :is(th,td):last-child{padding-right:0}
 :root .research-booktabs-wrap--presentation>table.research-booktabs[data-research-paper-table]{font-size:14px}
