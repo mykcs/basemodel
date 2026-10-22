@@ -60,7 +60,7 @@
       ]
     ],
     "exact_Q03_article_count": 1,
-    "source_declarations": 5774,
+    "source_declarations": 5773,
     "scoped_selector_consumers_fully_classified": true,
     "unclassified_zero_claim": true
   },
@@ -1306,20 +1306,20 @@
       }
     }
   ],
-  "sourceFingerprint": "49e986572da7cd57d721926bd951cea91aa8a718f952fc16f138d3738822c685",
+  "sourceFingerprint": "ca6d14d6f6947fe92790fc98c65527237d8419fd062fbd24cca1e517b2b04e08",
   "sourceDisposition": {
     "file": "source-disposition-ledger.json",
-    "sha256": "ed319d17c13420d02a9a351127d6ce63645f188c7907517624ae3543ba9f4182",
-    "sourceFingerprint": "49e986572da7cd57d721926bd951cea91aa8a718f952fc16f138d3738822c685",
-    "declarations": 5774,
+    "sha256": "6f17c20a8af463382f443769f2b3e5b3c6f1228c224546e0dee70eed9afe3b0d",
+    "sourceFingerprint": "ca6d14d6f6947fe92790fc98c65527237d8419fd062fbd24cca1e517b2b04e08",
+    "declarations": 5773,
     "counts": {
-      "MIGRATE": 4205,
+      "MIGRATE": 4204,
       "JUSTIFIED_EXCEPTION": 510,
       "DEAD_OR_SHADOWED": 1059
     },
     "executionCounts": {
-      "IMPLEMENTED_THIS_CHANGE": 1438,
-      "PLANNED_NOT_IMPLEMENTED": 1536,
+      "IMPLEMENTED_THIS_CHANGE": 1442,
+      "PLANNED_NOT_IMPLEMENTED": 1531,
       "SOURCE_RETAIN": 1569,
       "PREEXISTING_ROLE_BINDING": 1206,
       "PLANNED_SELECTOR_SPLIT_NOT_IMPLEMENTED": 25

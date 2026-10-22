@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
 import { SITE_READER_CONTRACTS, type ReaderAttentionMode } from '../../src/data/siteReaderContracts';
+import { persistJsonAttachment } from './evidence-json';
+
+const firstViewportMessageFits = (box: { y: number; height: number } | null, height: number) =>
+  box !== null && box.y < height && box.y + box.height <= height + 2;
 
 const viewports = [
   { name: 'desktop', width: 1280, height: 633 },
@@ -79,7 +83,7 @@ for (const viewport of viewports) {
           failures.push(`${contract.id}: declared first-viewport message is not visible`);
         } else {
           const box = await primary.boundingBox();
-          if (!box || box.y >= viewport.height || box.y + box.height > viewport.height + 2) failures.push(`${contract.id}: declared first-viewport message falls below the first screen`);
+          if (!firstViewportMessageFits(box, viewport.height)) failures.push(`${contract.id}: declared first-viewport message falls below the first screen`);
         }
       }
 
@@ -147,6 +151,34 @@ for (const viewport of viewports) {
     }
 
     expect(failures).toEqual([]);
+  });
+}
+
+for (const theme of ['light', 'dark'] as const) for (const variant of ['bounded-effective-state-gdr', 'sd-lora-scaling', 'q17-directapply-analysis'] as const) {
+  test(`research result remains in the first viewport: ${variant} ${theme}`, async ({ page }, info) => {
+    await page.setViewportSize({ width: 1280, height: 633 });
+    await page.addInitScript(mode => localStorage.setItem('atlas-theme', mode), theme);
+    await page.goto(`/research/seed-openevo/study/capability-exploration/${variant}/`, { waitUntil: 'networkidle' });
+    await page.evaluate(() => document.fonts.ready);
+    const selector = variant === 'sd-lora-scaling' ? '.scaling-hero__result' : variant === 'q17-directapply-analysis' ? '.q17-analysis__hero' : '.paper-table-wrap--hero';
+    const message = page.locator(selector);
+    const before = await message.boundingBox();
+    expect(firstViewportMessageFits(before, 633)).toBe(true);
+    await page.screenshot({ path: info.outputPath('first-viewport-result.png') });
+    const legacy = await page.addStyleTag({ content: variant === 'q17-directapply-analysis'
+      ? '.research-route-context[data-reader-route="q17-directapply-analysis"] [data-reader-purpose]{max-width:75px!important}'
+      : variant === 'sd-lora-scaling'
+      ? '.scaling-hero h1{max-width:18ch!important;font-size:clamp(2.25rem,6vw,4.9rem)!important;line-height:.98!important}'
+      : '.paper{padding-top:34px!important}.paper h1{font-size:clamp(2rem,4vw,3.5rem)!important;line-height:1.04!important}' });
+    let broken;
+    try {
+      broken = await message.boundingBox();
+      expect(firstViewportMessageFits(broken, 633)).toBe(false);
+      await page.screenshot({ path: info.outputPath('first-viewport-layout-negative.png') });
+    } finally { await legacy.evaluate(node => node.parentNode?.removeChild(node)); }
+    const restored = await message.boundingBox();
+    expect(firstViewportMessageFits(restored, 633)).toBe(true);
+    await persistJsonAttachment(info, 'first-viewport-result.json', { body: Buffer.from(JSON.stringify({ variant, theme, selector, viewport: { width: 1280, height: 633 }, before, broken, restored, negativeKind: variant === 'q17-directapply-analysis' ? 'constrained purpose column' : 'legacy heading geometry', negativeRejected: true })), contentType: 'application/json' });
   });
 }
 

@@ -597,13 +597,13 @@ test('runbook readability gate rejects restored tiny dated warning and recovers'
 });
 
 
-test('legacy guide rejects former one-column date wrap at tablet width',async({page})=>{
+test('legacy guide rejects a constrained date column wrapping at tablet width',async({page})=>{
   await page.setViewportSize({width:768,height:900});
   await page.goto('/guide/today/',{waitUntil:'domcontentloaded'});
   const before=await readLegacyRunbookTypography(page);
   assertLegacyRunbookTypography(before,768);
   const original=await page.addStyleTag({content:
-    '.legacy-runbook-notice{grid-template-columns:112px minmax(0,1fr)!important}' +
+    '.legacy-runbook-notice{grid-template-columns:80px minmax(0,1fr)!important}' +
     '.legacy-runbook-marker{white-space:normal!important}'});
   const bad=await readLegacyRunbookTypography(page);
   const oldDate=bad.roles['.legacy-runbook-marker'];

@@ -3208,8 +3208,8 @@
       "selector": ".h2study__paired td strong",
       "route": "/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/",
       "text": "29",
-      "minimum": 13,
-      "role": "ordinary-label-or-result",
+      "minimum": 15,
+      "role": "scientific-table-count",
       "ordinaryFace": true,
       "maximumVisibleWidth": null,
       "minimumVisibleWidth": null

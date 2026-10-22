@@ -2,11 +2,84 @@ import { expect, test, type Locator } from '@playwright/test';
 import { writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { waitForHydratedExplainer } from './hydration-ready';
+import { persistJsonAttachment } from './evidence-json';
 
 const sourceIdentity={
   sha:process.env.CI_HEAD_SHA??execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),
   dirty:Boolean(execFileSync('git',['status','--porcelain'],{encoding:'utf8'}).trim()),
 };
+
+for (const width of [390, 768, 1440]) for (const theme of ['light', 'dark'] as const) {
+  test(`research component role boundaries ${width}/${theme}`, async ({ page }, info) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.addInitScript(mode => localStorage.setItem('atlas-theme', mode), theme);
+    const profiles = [
+      { name: 'first-run', route: '/research/seed-openevo/study/capability-exploration/first-run/', root: '[data-first-run-map]', bodies: '[data-first-run-panel="7b"] .lineage-node > p', heading: '#arm-picker-title', crop: '[data-first-run-panel="7b"] .lineage-node--mainline', metric: '', caption: '', code: '' },
+      { name: 'successor-report', route: '/research/seed-openevo/study/capability-exploration/openevo-2-0/report/', root: '[data-testid="openevo-successor-report"]', bodies: '[data-final-score-meaning]', heading: '#q17-final-title', crop: '.q17-final__metrics', metric: '.q17-final__metrics article:first-child > strong', caption: '', code: '[data-paper-step="boundary"] .paper-step__technical code' },
+      { name: 'webshop-split', route: '/research/seed-openevo/flow/webshop/', root: '#fig-webshop-seed-split', bodies: '.paper-boundary p', heading: '#webshop-seed-split-title', crop: '.paper-boundary', metric: '.total > strong', caption: '.split-story > figcaption', code: '.code-lines code' },
+    ];
+    for (const profile of profiles) {
+      await page.goto(profile.route, { waitUntil: 'networkidle' });
+      await page.evaluate(() => document.fonts.ready);
+      const root = page.locator(profile.root);
+      await expect(root).toBeVisible();
+      if (profile.name === 'first-run') await root.locator('[data-research-depth="history"] > summary').click();
+      const measure = async (node: Locator) => {
+        await expect(node).toBeVisible();
+        return node.evaluate(element => {
+        const css = getComputedStyle(element), box = element.getBoundingClientRect();
+        const owner = element.closest('article,figure,section')!.getBoundingClientRect();
+        return { text: element.textContent, size: parseFloat(css.fontSize), font: css.fontFamily,
+          weight: css.fontWeight, style: css.fontStyle, leading: css.lineHeight, tracking: css.letterSpacing,
+          numeric: css.fontVariantNumeric, overflow: element.scrollWidth - element.clientWidth,
+          left: box.left - owner.left, right: owner.right - box.right, width: box.width };
+        });
+      };
+      const accept = (value: Awaited<ReturnType<typeof measure>>, minimum: number, code = false) => {
+        expect(value.size).toBeGreaterThanOrEqual(minimum - .1);
+        expect(value.font).toMatch(code ? /mono/i : /Inter|PingFang|system-ui/);
+        expect(value.left).toBeGreaterThanOrEqual(-2);
+        expect(value.right).toBeGreaterThanOrEqual(-2);
+        expect(value.overflow).toBeLessThanOrEqual(2);
+        expect(value.width).toBeGreaterThan(0);
+      };
+      const body = root.locator(profile.bodies).first();
+      const minimum = profile.name === 'webshop-split' ? 15 : 16;
+      const before = await measure(body); accept(before, minimum);
+      expect((await measure(root.locator(profile.heading))).size).toBeGreaterThanOrEqual(before.size);
+      const saved = await body.getAttribute('style');
+      let broken;
+      try {
+        await body.evaluate(node => (node as HTMLElement).style.setProperty('font-size', '9px', 'important'));
+        broken = await measure(body); expect(broken.size).toBe(9);
+        expect(() => accept(broken!, minimum)).toThrow();
+      } finally {
+        await body.evaluate((node, old) => old === null ? node.removeAttribute('style') : node.setAttribute('style', old), saved);
+      }
+      const restored = await measure(body); accept(restored, minimum);
+      expect(restored).toEqual(before);
+      const roles: Record<string, unknown> = { body: before };
+      for (const [role, selector, floor] of [['metric', profile.metric, 16], ['caption', profile.caption, 14], ['code', profile.code, 13]] as const) {
+        if (!selector) continue;
+        const node = root.locator(selector).first();
+        if (role === 'code') {
+          const details = root.locator(profile.name === 'successor-report' ? '[data-paper-step="boundary"] .paper-step__technical' : '.webshop-legacy-split');
+          if (await details.getAttribute('open') === null) await details.locator(':scope > summary').click();
+        }
+        const value = await measure(node); accept(value, floor, role === 'code'); roles[role] = value;
+      }
+      if (profile.name === 'first-run') {
+        await expect(root.locator('[data-first-run-panel="7b"] [data-node-state="frozen"] > p')).toContainText('19,072');
+        await root.locator('[data-first-run-arm="3b"]').click();
+        const arm3 = root.locator('[data-first-run-panel="3b"] .lineage-node > p').first();
+        const value = await measure(arm3); accept(value, 16); roles.arm3 = value;
+        await root.locator('[data-first-run-arm="7b"]').click();
+      }
+      await root.locator(profile.crop).first().screenshot({ path: info.outputPath(profile.name + '-component.png'), animations: 'disabled' });
+      await persistJsonAttachment(info, profile.name + '-roles.json', { body: Buffer.from(JSON.stringify({ sourceIdentity, route: profile.route, width, theme, engine: info.project.name, roles, broken, restored, negativeRejected: true })), contentType: 'application/json' });
+    }
+  });
+}
 
 async function assertReadableRole(node: Locator, minimum: number) {
   await expect(node).toBeVisible();

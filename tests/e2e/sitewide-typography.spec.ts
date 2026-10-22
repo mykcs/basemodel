@@ -1180,16 +1180,53 @@ for(const width of [390,768,821,960,1440])for(const theme of ['light','dark'] as
     await expect(figure.locator('.webshop-legacy-split')).toHaveJSProperty('open',true);
     await expect(figure.locator('.orig-test span')).toBeVisible();
     await expect(figure.locator('.seed-heldout span')).toBeVisible();
-    const receipts=await figure.locator('.heldout span,.orig-test span,.seed-heldout span').evaluateAll(nodes=>nodes.map(node=>{
+    const measure=()=>figure.locator('.heldout span,.orig-test span,.seed-heldout span').evaluateAll(nodes=>nodes.map(node=>{
       const range=document.createRange();range.selectNodeContents(node);
       const text=range.getBoundingClientRect(),segment=node.parentElement!.getBoundingClientRect();
       return {text:node.textContent,size:parseFloat(getComputedStyle(node).fontSize),left:text.left-segment.left,right:segment.right-text.right,top:text.top-segment.top,bottom:segment.bottom-text.bottom};
     }));
-    expect(receipts).toHaveLength(3);
-    for(const row of receipts){acceptScopedRole(row.size,13,row.text??'split label');for(const value of [row.left,row.right,row.top,row.bottom])expect(value,JSON.stringify(row)).toBeGreaterThanOrEqual(-2);}
+    const accept=(rows:Awaited<ReturnType<typeof measure>>)=>{
+      expect(rows).toHaveLength(3);
+      for(const row of rows){acceptScopedRole(row.size,13,row.text??'split label');for(const value of [row.left,row.right,row.top,row.bottom])expect(value,JSON.stringify(row)).toBeGreaterThanOrEqual(-2);}
+    };
+    const receipts=await measure();accept(receipts);
+    const negatives=[];
+    if(width===390&&theme==='light'){
+      const label=figure.locator('.heldout span'),segment=figure.locator('.heldout');
+      for(const [node,css] of [[label,'font-size:9px!important'],[segment,'width:1px!important;min-width:1px!important;max-width:1px!important;flex:0 0 1px!important']] as const){
+        const saved=await node.getAttribute('style');
+        try{
+          await node.evaluate((element,value)=>element.setAttribute('style',value),css);
+          const bad=await measure();
+          if(node===label)expect(bad.some(row=>row.size===9)).toBe(true);
+          else expect(bad.some(row=>[row.left,row.right,row.top,row.bottom].some(value=>value < -2))).toBe(true);
+          expect(()=>accept(bad)).toThrow();negatives.push({css,measurements:bad,rejected:true});
+        }finally{await node.evaluate((element,value)=>value===null?element.removeAttribute('style'):element.setAttribute('style',value),saved);}
+        accept(await measure());
+      }
+    }
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
-    await persistJsonAttachment(info,'split-containment.json',{body:Buffer.from(JSON.stringify({width,theme,receipts})),contentType:'application/json'});
-    await figure.screenshot({path:info.outputPath('split-full-figure.png'),animations:'disabled'});
+    const visibleText=await figure.locator('.reference-strip small,.reference-strip strong,.reference-strip span,.reference-strip a,.total > *, .paper-boundary p, :scope > figcaption').evaluateAll(nodes=>nodes.map(node=>{
+      const range=document.createRange();range.selectNodeContents(node);const text=range.getBoundingClientRect(),owner=node.closest('.split-story')!.getBoundingClientRect();
+      return{text:node.textContent,left:text.left-owner.left,right:owner.right-text.right,width:text.width};
+    }));
+    for(const row of visibleText){expect(row.width).toBeGreaterThan(0);expect(row.left).toBeGreaterThanOrEqual(-2);expect(row.right).toBeGreaterThanOrEqual(-2);}
+    expect(await page.evaluate(()=>window.scrollX)).toBe(0);
+    await figure.scrollIntoViewIfNeeded();
+    await page.screenshot({path:info.outputPath('split-unmodified-viewport.png'),animations:'disabled'});
+    await figure.screenshot({path:info.outputPath('split-full-figure.png'),animations:'disabled',style:'.site-header,.research-navigation,.webshop-story-nav{visibility:hidden}'});
+    const ruler=figure.locator('.ruler-wrap');
+    const localScroll=await ruler.evaluate(node=>({width:node.clientWidth,content:node.scrollWidth,overflow:getComputedStyle(node).overflowX,left:node.scrollLeft}));
+    if(localScroll.content>localScroll.width+2){
+      expect(localScroll.overflow).toMatch(/auto|scroll/);
+      await ruler.evaluate(node=>node.scrollLeft=node.scrollWidth-node.clientWidth);
+      expect(await ruler.evaluate(node=>node.scrollLeft)).toBeGreaterThan(0);
+      const end=await ruler.locator('.axis-end').evaluate(node=>{const a=node.getBoundingClientRect(),b=node.closest('.ruler-wrap')!.getBoundingClientRect();return{left:a.left-b.left,right:b.right-a.right};});
+      expect(end.left).toBeGreaterThanOrEqual(-2);expect(end.right).toBeGreaterThanOrEqual(-2);
+      await figure.screenshot({path:info.outputPath('split-ruler-right.png'),animations:'disabled',style:'.site-header,.research-navigation,.webshop-story-nav{visibility:hidden}'});
+      await ruler.evaluate(node=>node.scrollLeft=0);
+    }
+    await persistJsonAttachment(info,'split-containment.json',{body:Buffer.from(JSON.stringify({width,theme,receipts,negatives,localScroll,visibleText,componentCropHidesFloatingChrome:true,unmodifiedViewportRetained:true})),contentType:'application/json'});
   });
 }
 

@@ -83,6 +83,8 @@ const locale = 'zh' as const;
 </AppLayout>
 
 <style>
+  /* Native chapter links must finish scrolling before the next link is used. */
+  :global(html:has([data-webshop-story-nav])) { scroll-behavior: auto; }
   .webshop-story-nav {
     position: sticky;
     z-index: 11;

@@ -7,6 +7,7 @@ const chapters = [
   ['#webshop-sampling', 'SEED：500 条保留题，6,410 条训练候选'],
   ['#webshop-scoring', '得分看最终买了什么，比较还要看考的是哪一批题'],
 ] as const;
+const acceptNativeChapterScroll = (behavior: string) => expect(behavior).toBe('auto');
 
 async function open(page: Page, width: number, theme: 'light' | 'dark') {
   await page.setViewportSize({ width, height: width < 500 ? 844 : 900 });
@@ -89,6 +90,19 @@ test('the static WebShop reader path still works without client JavaScript', asy
     const page = await context.newPage();
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('[data-webshop-story-nav] a')).toHaveCount(4);
+    const scrollBehavior = () => page.locator('html').evaluate(node => getComputedStyle(node).scrollBehavior);
+    acceptNativeChapterScroll(await scrollBehavior());
+    await page.evaluate(() => { const style = document.createElement('style'); style.id = 'negative-native-scroll'; style.textContent = 'html{scroll-behavior:smooth!important}'; document.head.append(style); });
+    try {
+      const broken = await scrollBehavior();
+      expect(() => acceptNativeChapterScroll(broken)).toThrow();
+    } finally { await page.evaluate(() => document.getElementById('negative-native-scroll')?.remove()); }
+    acceptNativeChapterScroll(await scrollBehavior());
+    for (const [anchor] of chapters) {
+      await page.locator(`[data-webshop-story-nav] a[href="${anchor}"]`).click();
+      await expect(page).toHaveURL(new RegExp(`\\${anchor}$`));
+      expect(await page.locator(anchor).evaluate(node => node.getBoundingClientRect().top)).toBeGreaterThanOrEqual(50);
+    }
     await expect(page.locator('#fig-webshop-goal-generation table')).toBeVisible();
     await expect(page.locator('#fig-webshop-evaluation figcaption')).toBeVisible();
     await expect(page.locator('#webshop-seed-setting')).toContainText('论文报告 128 个测试样本');

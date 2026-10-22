@@ -1,7 +1,7 @@
 {
   "observedAt": "2026-10-22T11:43:19.755374+00:00",
   "workPR": 898,
-  "remoteHead": "9149e708812626b77f5b4418da597251ef9a2680",
+  "remoteHead": "d899f4cb693b0733d629e7c80ce191babac69b59",
   "base": "design/sitewide-type-and-paper-figures-20261020",
   "draft": true,
   "writer": "Codex root: sole source/test/formal-ledger writer for isolated PR898; independent reviewers read-only",
@@ -332,6 +332,49 @@
         "tests/e2e/webshop-journey-reader.spec.ts",
         "tests/e2e/webshop-reward-explorer.spec.ts"
       ]
+    },
+    {
+      "number": 935,
+      "files": [
+        "src/components/SeedReproductionPath.astro",
+        "src/components/navigation/PageOutline.astro",
+        "src/components/research/Lyg2171ServerOverview.astro",
+        "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro",
+        "src/components/research/OpenEvoExperimentArchive.astro",
+        "src/components/research/OpenEvoExperimentIndex.astro",
+        "src/components/research/OpenEvoFirstRunMap.astro",
+        "src/components/research/OpenEvoMechanismMap.astro",
+        "src/components/research/OpenEvoQ17AdvisorDiagnostics.astro",
+        "src/components/research/OpenEvoQ17DirectApplyAnalysis.astro",
+        "src/components/research/OpenEvoRedesignMap.astro",
+        "src/components/research/OpenEvoSdLoraHistorySkeleton.astro",
+        "src/components/research/OpenEvoSuccessorExplorationMap.astro",
+        "src/components/research/OpenEvoWebShopBenchmarkNote.astro",
+        "src/components/research/OpenEvoWebShopResultsHero.astro",
+        "src/components/research/ResearchOrientation.astro",
+        "src/components/research/SeedOpenEvoMissionHero.astro",
+        "src/components/research/SeedOpenEvoResearchDetail.astro",
+        "src/components/research/SeedOpenEvoResearchHub.astro",
+        "src/components/research/SeedOpenEvoTrainingDesignOverview.astro",
+        "src/data/siteReaderContracts.ts",
+        "src/pages/guide.astro",
+        "src/pages/guide/today.astro",
+        "src/pages/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.astro",
+        "src/pages/research/seed-openevo/study/minimax-teacher/index.astro",
+        "src/styles/site.css"
+      ]
+    },
+    {
+      "number": 936,
+      "files": [
+        "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro",
+        "src/components/research/OpenEvoExperimentResultsScaffold.astro",
+        "src/components/research/OpenEvoSdLoraBoundedAccelerationStudy.astro",
+        "src/lib/openEvoAdvisorTenQuestionsReport.test.ts",
+        "src/styles/research-booktabs.css",
+        "tests/e2e/advisor-paper-figure-suite.spec.ts",
+        "tests/e2e/sitewide-figure-width-scope.spec.ts"
+      ]
     }
   ],
   "historical_prior_work_package": {
@@ -425,11 +468,13 @@
     "816": "Open legacy shell consolidation overlaps840; preserve newer840 owner and semantic typography at later merge",
     "929": "New home recent-challenges branch not integrated; avoid feature hunk",
     "895": "stacked parent retained",
-    "main": "Related PGF/table source at06ac7367 integrated semantically; no whole-main merge"
+    "main": "Related PGF/table source at06ac7367 integrated semantically; no whole-main merge",
+    "935": "2026-10-22 live read: merged/head eaacb12aaa015b82c292e690fbdd395d3c4e2ac0;26 paths overlap candidate. Not imported or claimed accepted; preserve both semantic changes at later authorized integration.",
+    "936": "2026-10-22 live read: open/head cb1b771d2ad818b6ace8785dbfe6ae7a4698a4a2;7 paths overlap candidate. Separate mobile-table writer; no overwrite, merge or closure authorized."
   },
   "sourceBaseSha": "30a8d2ec0b090e77dcb33f1ba5159dbf15e8c885",
-  "publicationParentSha": "9149e708812626b77f5b4418da597251ef9a2680",
-  "latestObservedMain": "93d7f7ed867b3be78fc12b5583ce356c7ec89238",
+  "publicationParentSha": "d899f4cb693b0733d629e7c80ce191babac69b59",
+  "latestObservedMain": "df13da43ad5d4e89b03bf3b0832e642560d9623a",
   "integratedFollowups": {
     "930": "PaperModelMatrix 120px normal-wrap headers plus JS/no-JS geometry tests; 8 Chromium/WebKit tests passed, 6 PNG/JSON pairs reviewed on dirty candidate",
     "931": "Advisor first-screen researchQuestion explicitly says recommendation is not advisor approval; no science values changed",
