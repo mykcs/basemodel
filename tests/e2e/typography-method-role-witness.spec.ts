@@ -789,3 +789,129 @@ test('research disclosure 9px monospace regression fails the SAME role predicate
   await style.evaluate(node=>node.parentNode?.removeChild(node));
   acceptSharedDisclosure(await measureSharedDisclosure(depth),width,'method');
 });
+
+
+// Action-wrapper attribution real page typography (WP-D5).
+// This is a mounted, native details report, not a passive CSS source audit.
+const wrapperRoute='/research/seed-openevo/study/results/';
+const wrapperSelector='#action-wrapper-attribution';
+const wrapperRoles={
+  ':scope > summary small':16,
+  ':scope > summary strong':16,
+  '.wrapper-attribution__lead':16,
+  '.wrapper-attribution__incident':16,
+  '.wrapper-attribution__incident strong':16,
+  '.wrapper-attribution__responsibility':16,
+  '.wrapper-attribution__responsibility strong':16,
+  '.wrapper-attribution__facts dt':16,
+  '.wrapper-attribution__facts dd':16,
+  '.wrapper-attribution__facts dd strong':16,
+  '.wrapper-attribution__fact-link':16,
+  '.wrapper-attribution__index span':16,
+  '.wrapper-attribution__index small':16,
+  '.wrapper-attribution__copy h4':17,
+  '.wrapper-attribution__copy>p':16,
+  '.wrapper-attribution__lesson-grid h5':17,
+  '.wrapper-attribution__lesson-grid p':16,
+  '.wrapper-attribution__boundary':16,
+} as const;
+type WrapperWitness={
+  roles:Record<string,{px:number;family:string;weight:number;style:string;leading:number;scroll:number;client:number;left:number;right:number;width:number}>;
+  steps:number;facts:number;lessons:number;rootLeft:number;rootRight:number;documentOverflow:number;sourceText:string;
+};
+async function measureWrapper(page:import('@playwright/test').Page):Promise<WrapperWitness>{
+  return page.evaluate((selectors)=>{
+    const root=document.querySelector<HTMLDetailsElement>('#action-wrapper-attribution');
+    if(!root?.open)throw Error('Action-wrapper evidence is not expanded');
+    const roles=Object.fromEntries(selectors.map(selector=>{
+      const el=root.querySelector<HTMLElement>(selector);
+      if(!el)throw Error('Missing measured wrapper role: '+selector);
+      const c=getComputedStyle(el),rect=el.getBoundingClientRect();
+      return [selector,{px:parseFloat(c.fontSize),family:c.fontFamily,weight:parseFloat(c.fontWeight),
+        style:c.fontStyle,leading:parseFloat(c.lineHeight),scroll:el.scrollWidth,client:el.clientWidth,
+        left:rect.left,right:rect.right,width:rect.width}];
+    })) as WrapperWitness['roles'];
+    const box=root.getBoundingClientRect();
+    return {roles,steps:root.querySelectorAll('.wrapper-attribution__timeline article').length,
+      facts:root.querySelectorAll('.wrapper-attribution__facts>div').length,
+      lessons:root.querySelectorAll('.wrapper-attribution__lesson-grid article').length,
+      rootLeft:box.left,rootRight:box.right,
+      documentOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+      sourceText:root.textContent??''};
+  },Object.keys(wrapperRoles));
+}
+function acceptWrapper(m:WrapperWitness,width:number){
+  expect(m.documentOverflow,'no document horizontal overflow').toBeLessThanOrEqual(2);
+  expect(m.rootLeft).toBeGreaterThanOrEqual(-2);
+  expect(m.rootRight).toBeLessThanOrEqual(width+2);
+  for(const [name,min] of Object.entries(wrapperRoles)){
+    const v=m.roles[name];
+    if(!v)throw Error('No computed role '+name);
+    expect(v.px,name+' readable font').toBeGreaterThanOrEqual(min);
+    expect(v.family,name+' interface not decorative monospace').toMatch(/Inter|PingFang|system-ui/);
+    expect(v.style,name+' normal').toBe('normal');
+    expect(v.weight,name+' not 800-850 decor').toBeLessThanOrEqual(700);
+    expect(v.leading,name+' readable line-height').toBeGreaterThanOrEqual(18);
+    expect(v.width,name+' visible').toBeGreaterThan(0);
+    expect(v.scroll-v.client,name+' no clipping').toBeLessThanOrEqual(2);
+    expect(v.left,name+' left edge').toBeGreaterThanOrEqual(-2);
+    expect(v.right,name+' right edge').toBeLessThanOrEqual(width+2);
+  }
+  expect(m.steps,'all historical causal steps present').toBe(8);
+  expect(m.facts,'all model identity conditions present').toBe(4);
+  expect(m.lessons,'both science lessons present').toBe(2);
+  for(const phrase of ['128 × 2 = 256','3,672','119','adapter_loaded=false','H1.38B'])
+    expect(m.sourceText,'preserve research evidence').toContain(phrase);
+}
+for(const width of [390,768,1440] as const){
+  for(const theme of ['light','dark'] as const){
+    test('historical action-wrapper causal evidence readability '+width+'/'+theme,async({page},info)=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+      const response=await page.goto(wrapperRoute,{waitUntil:'domcontentloaded'});
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+      const root=page.locator(wrapperSelector);
+      await expect(root).toBeVisible();
+      await expect(root).not.toHaveAttribute('open','');
+      const summary=root.locator(':scope > summary');
+      await summary.focus();
+      await summary.press('Enter');
+      await expect(root).toHaveAttribute('open','');
+      await page.evaluate(()=>document.fonts.ready);
+      const good=await measureWrapper(page);
+      acceptWrapper(good,width);
+      writeFileSync(info.outputPath('action-wrapper-'+width+'-'+theme+'.json'),
+        JSON.stringify({head:sourceIdentity,route:wrapperRoute,width,theme,good},null,2));
+      await summary.screenshot({path:info.outputPath('action-wrapper-summary-'+width+'-'+theme+'.png'),
+        animations:'disabled',style:'.site-header,.research-navigation{visibility:hidden}'});
+      await root.locator('.wrapper-attribution__incident').screenshot({
+        path:info.outputPath('action-wrapper-incident-'+width+'-'+theme+'.png'),animations:'disabled',
+        style:'.site-header,.research-navigation{visibility:hidden}'});
+      await root.locator('.wrapper-attribution__facts').screenshot({
+        path:info.outputPath('action-wrapper-facts-'+width+'-'+theme+'.png'),animations:'disabled',
+        style:'.site-header,.research-navigation{visibility:hidden}'});
+      await summary.press('Enter');
+      await expect(root).not.toHaveAttribute('open','');
+    });
+  }
+}
+test('action-wrapper old 10px/monospace regresses the SAME live geometry gate',async({page})=>{
+  const width=390;
+  await page.setViewportSize({width,height:844});
+  const response=await page.goto(wrapperRoute,{waitUntil:'domcontentloaded'});
+  expect(response?.status()).toBe(200);
+  const root=page.locator(wrapperSelector);
+  await root.locator(':scope > summary').click();
+  await expect(root).toHaveAttribute('open','');
+  acceptWrapper(await measureWrapper(page),width);
+  const style=await page.addStyleTag({content:
+    '#action-wrapper-attribution > summary small{font:800 10px/1.2 monospace!important}'+
+    '#action-wrapper-attribution .wrapper-attribution__copy>p{font-size:10px!important}'});
+  const broken=await measureWrapper(page);
+  expect(broken.roles[':scope > summary small']!.px).toBeLessThan(11);
+  expect(broken.roles['.wrapper-attribution__copy>p']!.px).toBeLessThan(11);
+  expect(()=>acceptWrapper(broken,width)).toThrow();
+  await style.evaluate(el=>el.parentNode?.removeChild(el));
+  acceptWrapper(await measureWrapper(page),width);
+});
