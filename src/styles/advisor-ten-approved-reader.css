@@ -341,6 +341,26 @@
   font-weight: 500;
   color: var(--paper-ink);
 }
+.evo-approved-reader .advisor-response__answer[data-answer-level="main"] {
+  margin: 14px 0 18px;
+  padding: 10px 14px;
+  border-left: 3px solid var(--color-accent, var(--accent-deep));
+  background: color-mix(in srgb, var(--paper-ink) 3%, var(--paper));
+  font-size: clamp(0.98rem, 1.5vw, 1.12rem);
+  font-weight: 650;
+  line-height: 1.65;
+}
+.evo-approved-reader .advisor-response__answer[data-answer-level="main"] strong {
+  display: block;
+  font-size: .76rem;
+  margin-bottom: .15rem;
+  color: var(--paper-muted);
+}
+.evo-approved-reader .advisor-response__answer[data-answer-level="evidence-recap"] {
+  border-top: 1px solid var(--paper-line);
+  padding-top: .6rem;
+  font-size: .85rem;
+}
 .evo-approved-reader .advisor-response__stage,
 .evo-approved-reader .advisor-response__missing {
   margin: 7px 0;
