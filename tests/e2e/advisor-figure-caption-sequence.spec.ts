@@ -13,11 +13,14 @@ for (const width of [390, 768, 1440]) {
       await page.goto(route);
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
       const article = page.locator('[data-evo-blog="results"]');
-      // Seven complementary method×metric tables own their own explanatory figcaptions.
-      // Figure numbering still belongs to the nine actual scientific figures.
+      // Method diagrams may have unnumbered explanatory figcaptions. Only
+      // scientific figures receive the shared 图 N numbering sequence.
       const captions = (await article.locator('figure:not(.paper-table-figure) figcaption').allTextContents()).map(s => s.trim());
-      expect(captions).toHaveLength(9);
-      expect(captions.map(s => s.match(/^图\s*\d+｜/)?.[0])).toEqual(expectedFigures);
+      const numberedCaptions = captions.filter(s => /^图\s*\d+｜/.test(s));
+      expect(numberedCaptions).toHaveLength(9);
+      expect(numberedCaptions.map(s => s.match(/^图\s*\d+｜/)?.[0])).toEqual(expectedFigures);
+      await expect(article.locator('.advisor-intel__mechanism figcaption')).toContainText('两种路线共用起点');
+      await expect(article.locator('.advisor-intel__action figcaption')).toContainText('合法的点击目标');
       const tables = (await article.locator('table caption').allTextContents()).map(s => s.trim());
       expect(tables.filter(s => /^表\s*\d+｜/.test(s)).map(s => s.match(/^表\s*\d+｜/)?.[0])).toEqual(expectedTables);
       expect(tables.filter(s => /^补充表 S\d+｜/.test(s)).map(s => s.match(/^补充表 S\d+｜/)?.[0])).toEqual(supplemental);

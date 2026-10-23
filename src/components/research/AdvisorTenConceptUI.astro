@@ -15,11 +15,14 @@ import MathFormula from '../common/MathFormula.astro';
     <p class="advisor-intel__kicker">Q02 · 两种学习起点</p>
     <h4 id="advisor-intel-q02-title">给同一个学生打基础，两种教法谁更适合长期学习？</h4>
     <p class="advisor-intel__lead">目前两种教法的前期成绩接近，<strong>还不能选出赢家</strong>。要看的不只是谁一开始得分高，还包括继续学习后的表现。</p>
-    <div class="advisor-intel__seed">相同基础模型与经验来源 <span aria-hidden="true">↓</span></div>
-    <div class="advisor-intel__duo" role="group" aria-label="Q02 两种初始训练路线的机制示意">
-      <div class="advisor-intel__panel"><span class="advisor-intel__tag">路线 A · SFT</span><strong>学习示范的答案</strong><p>把经验变成模型要模仿的正确输出，训练它照着做。</p></div>
-      <div class="advisor-intel__panel"><span class="advisor-intel__tag">路线 B · OPSD</span><strong>学习经验中的指导</strong><p>使用教师给出的更多过程与经验信息，不只是最终答案。</p></div>
-    </div>
+    <figure class="advisor-intel__mechanism" aria-label="同一个学生起点，分成 SFT 和 OPSD 两种训练路线">
+      <div class="advisor-intel__seed">同一个学生模型 · 相同经验来源 <span aria-hidden="true">↓</span></div>
+      <div class="advisor-intel__fork" data-concept-fork="q02">
+        <div class="advisor-intel__panel"><span class="advisor-intel__tag">路线 A · SFT</span><strong>模仿示范答案</strong><p>经验 → 正确动作示范 → 学生模仿输出。</p></div>
+        <div class="advisor-intel__panel"><span class="advisor-intel__tag">路线 B · OPSD</span><strong>吸收教师指导</strong><p>经验 → 教师额外指导 → 学生学习。</p></div>
+      </div>
+      <figcaption>两种路线共用起点，但训练时接收的监督信息不同；机制图不代表长期成绩高低。</figcaption>
+    </figure>
     <div class="advisor-intel__foot"><strong>进展：15 / 18 个评测位置已有结果。</strong>还差 3 个评测位置，以及完成后在同题条件下比较长期学习表现。</div>
     <p class="advisor-intel__disclaimer">这里的两条路线是机制解释，不表示已经做完公平的长期比较；两者使用的信息并不完全等价。</p>
   </section>
@@ -30,9 +33,18 @@ import MathFormula from '../common/MathFormula.astro';
     <p class="advisor-intel__kicker">Q03 · 为什么还不能说复现成功</p>
     <h4 id="advisor-intel-q03-title">代码跑通、拿到分数，还不等于复现了论文。</h4>
     <p class="advisor-intel__lead">目前已经有真实开发题成绩。<strong>但测试卷和考试规则还没有与 SEED 论文严格对齐</strong>，分数不能直接相减。</p>
-    <div class="advisor-intel__duo" role="group" aria-label="工程开发题与论文协议的比较">
-      <div class="advisor-intel__panel"><span class="advisor-intel__tag">已完成 · 工程验证</span><strong>1,536 次开发题尝试</strong><p>核对程序、保存点和当前模型行为，确认工程链条确实能运行。</p></div>
-      <div class="advisor-intel__panel advisor-intel__panel--pending"><span class="advisor-intel__tag">尚缺 · 论文协议</span><strong>正式训练与对应终评</strong><p>对齐模型起点、训练数据、评测题单及环境规则，再报告可比结果。</p></div>
+    <div class="advisor-intel__protocol" role="region" aria-label="开发题与论文复现必须逐项对齐的条件">
+      <p class="advisor-intel__protocol-lead"><strong>1,536 次开发题尝试</strong><span>说明工程能运行；不自动成为论文同题对照。</span></p>
+      <table>
+        <caption>能否与 SEED 论文直接比较，先看这三项条件</caption>
+        <thead><tr><th scope="col">对齐条件</th><th scope="col">现有开发验证</th><th scope="col">正式可比结果需要</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">测试题单</th><td><strong>64 道开发题 × 每题 8 次</strong>（每个模型）</td><td><strong>论文原生 128 题</strong></td></tr>
+          <tr><th scope="row">提示与动作</th><td>历史路线的提示和动作规则与论文不同</td><td>须使用论文原生的提示与动作处理</td></tr>
+          <tr><th scope="row">起点与训练</th><td>历史训练路线不同；新复现线尚在工程诊断</td><td>须对齐论文模型起点、训练及终评</td></tr>
+        </tbody>
+      </table>
+      <p class="advisor-intel__protocol-boundary">旧路线与论文已有明确协议差异；右栏也是独立复现线仍需满足的<strong>正式可比条件</strong>，不能把工程分数直接排在论文旁边。</p>
     </div>
     <div class="advisor-intel__foot"><strong>下一道门槛：</strong>先按论文协议校准，再进行正式训练与终评；不同题单、不同起点的分数分开展示。</div>
   </section>
@@ -51,7 +63,8 @@ import MathFormula from '../common/MathFormula.astro';
     </fieldset>
     <div class="advisor-intel__scale" role="img" aria-label="教学数轴：从零写入到完整写入，选择不同 β 会改变向量长度；不对应真实模型性能">
       <div class="advisor-intel__scale-head"><span>0 · 不写入</span><span>1 · 完整写入</span></div>
-      <div class="advisor-intel__scale-rail"><span class="advisor-intel__scale-half" aria-hidden="true"></span><span class="advisor-intel__scale-arrow" aria-hidden="true"></span></div>
+      <div class="advisor-intel__scale-rail"><span class="advisor-intel__scale-quarter" aria-hidden="true"></span><span class="advisor-intel__scale-half" aria-hidden="true"></span><span class="advisor-intel__scale-three-quarter" aria-hidden="true"></span><span class="advisor-intel__scale-arrow" aria-hidden="true"></span><span class="advisor-intel__scale-choices" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
+      <div class="advisor-intel__scale-ticks" aria-hidden="true"><span>0</span><span>0.25</span><span>0.5</span><span>0.75</span><span>1</span></div>
       <p class="advisor-intel__scale-caption" data-q05-panel="full">选中 <MathFormula latex={String.raw`\beta=1`} display={false} />：原始更新完整写入，向量长度为 100%（仅是几何比例）。</p>
       <p class="advisor-intel__scale-caption" data-q05-panel="half">选中 <MathFormula latex={String.raw`\beta=0.5`} display={false} />：同一更新向量的写入长度减半；不代表成绩减半。</p>
       <p class="advisor-intel__scale-caption" data-q05-panel="adaptive">自适应：根据训练 NLL，从 <MathFormula latex={String.raw`\beta\in\{0.25,0.5,0.75,1\}`} display={false} /> 四档中选择；数轴没有唯一固定落点。</p>
@@ -65,17 +78,25 @@ import MathFormula from '../common/MathFormula.astro';
   <section class="advisor-intel" data-advisor-concept="q06" aria-labelledby="advisor-intel-q06-title">
     <p class="advisor-intel__kicker">Q06 · 候选动作的分叉</p>
     <h4 id="advisor-intel-q06-title">Agent 在“下一步点哪里”之间犹豫，我们能提前发现失误吗？</h4>
-    <p class="advisor-intel__lead">重点是同一个页面状态下的<strong>合法候选动作</strong>怎样竞争，而不只是模型最后点中了哪一个。</p>
-    <div class="advisor-intel__action" aria-label="购物页面的候选动作示意">
-      <div class="advisor-intel__seed">当前购物页：选择下一步操作 <span aria-hidden="true">↓</span></div>
-      <div class="advisor-intel__action-grid">
-        <div><span>候选 01</span><strong>打开商品 A</strong></div>
-        <div><span>候选 02</span><strong>打开商品 B</strong></div>
-        <div><span>候选 03</span><strong>筛选尺码</strong></div>
-        <div><span>其他候选</span><strong>其余合法动作</strong></div>
+    <p class="advisor-intel__lead">在一个已测保存点，模型给自己最终选中的合法点击目标的平均概率约 <strong>63%</strong>——这是模型当时的选择倾向，<strong>不是做对题的概率</strong>。要理解它有没有犹豫，必须看同一页面所有合法目标怎样分配概率。</p>
+    <figure class="advisor-intel__action" data-action-flow="connected" aria-labelledby="advisor-intel-q06-figure-title">
+      <figcaption id="advisor-intel-q06-figure-title">同一个页面状态下，所有合法的点击目标组成一个候选集合</figcaption>
+      <div class="advisor-intel__seed">购物页上，Agent 要决定下一次点击哪里 <span aria-hidden="true">↓</span></div>
+      <div class="advisor-intel__action-set" data-action-total="100">
+        <span class="advisor-intel__tag">同一个合法点击集合</span>
+        <strong>条件概率合计 100%</strong>
+        <small>整组的总和，不是每个选项各占 100%</small>
       </div>
-    </div>
-    <p class="advisor-intel__disclaimer">这些动作只是教学例子，没有声称旧 R159 当时恰好只有三项选择。旧轨迹未保存 logits，不能捏造概率、熵或“100% 的候选分母”。无效动作也不能未经定义混进合法动作的概率分母。</p>
+      <ol class="advisor-intel__action-grid" aria-label="从同一合法点击集合分出的候选目标">
+        <li><span>示例 01</span><strong>点击商品 A</strong></li>
+        <li><span>示例 02</span><strong>点击商品 B</strong></li>
+        <li><span>示例 03</span><strong>点击尺寸 M</strong></li>
+        <li><span>补足全集</span><strong>其余合法点击</strong></li>
+      </ol>
+      <div class="advisor-intel__action-outside"><span>集合之外</span><p>非法操作被排除；搜索等其他动作类型，不能悄悄混入这张「点击目标」图。</p></div>
+    </figure>
+    <details class="advisor-intel__math-detail"><summary>这里的“合计 100%”怎么算？</summary><div><MathFormula latex={String.raw`P(a\mid s,\,a\in L)=\frac{P(a\mid s)}{\sum_{b\in L}P(b\mid s)},\qquad \sum_{a\in L}P(a\mid s,\,a\in L)=1`} label="合法点击集合上的条件概率归一化" /><p><strong>L</strong> 表示当前页面全部合法的具体点击目标，前面三个只作举例；计算熵时也必须按各个真实目标计算，不能把“其余”作为一个真实动作。</p></div></details>
+    <p class="advisor-intel__disclaimer">100% 是定义合法候选集合后归一化得到的<strong>数学总量</strong>，不是旧 R159 轨迹实测的四项概率。该旧轨迹没有保存 logits，因此这里不填写每个分支的百分比或熵，也不声称恰好只有四个具体动作。</p>
     <div class="advisor-intel__foot"><strong>现阶段：</strong>已有其他保存点的候选概率与预测分析；“越犹豫越容易失败”还需要新题、独立模型起点来验证。</div>
   </section>
 )}
@@ -132,6 +153,28 @@ import MathFormula from '../common/MathFormula.astro';
   .advisor-intel__panel p{font-size:.78rem;margin:.38rem 0 0;line-height:1.6}
   .advisor-intel__panel small{display:block;color:var(--ai-muted);font-size:.7rem;line-height:1.5;margin-top:.48rem}
   .advisor-intel__panel b{font-variant-numeric:tabular-nums;font-size:1.05em}
+  .advisor-intel__mechanism{display:flow-root;margin:.55rem 0 .9rem}
+  .advisor-intel__mechanism figcaption,.advisor-intel__action figcaption{font-size:.73rem;line-height:1.55;color:var(--ai-muted);margin:.45rem 0 .7rem}
+  .advisor-intel__mechanism figcaption{text-align:center;margin-top:.7rem}
+  .advisor-intel__mechanism .advisor-intel__seed{position:relative;margin-bottom:1.28rem}
+  .advisor-intel__mechanism .advisor-intel__seed:after{content:"";position:absolute;top:100%;left:50%;height:.65rem;border-left:2px solid var(--ai-accent)}
+  .advisor-intel__fork{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(.5rem,1.5vw,1rem);position:relative}
+  .advisor-intel__fork:before{content:"";position:absolute;top:-.65rem;left:25%;right:25%;border-top:2px solid var(--ai-accent)}
+  .advisor-intel__fork>.advisor-intel__panel{position:relative;border-top-color:var(--ai-accent)}
+  .advisor-intel__fork>.advisor-intel__panel:before{content:"";position:absolute;bottom:100%;left:50%;height:.65rem;border-left:2px solid var(--ai-accent)}
+  .advisor-intel__protocol{margin:.6rem 0 1rem;border:1px solid var(--ai-line);border-radius:var(--radius-feature,.8rem);padding:clamp(.6rem,1.7vw,1.05rem);background:var(--ai-paper);min-width:0}
+  .advisor-intel .advisor-intel__protocol-lead{display:flex;align-items:baseline;flex-wrap:wrap;gap:.24rem .7rem;margin-bottom:.9rem}
+  .advisor-intel__protocol-lead strong{font-size:clamp(.92rem,1.8vw,1.16rem)}
+  .advisor-intel__protocol-lead span{font-size:.76rem;color:var(--ai-muted)}
+  .advisor-intel__protocol table{border-collapse:collapse;width:100%;table-layout:fixed;font-size:clamp(.66rem,1.5vw,.78rem);line-height:1.5}
+  .advisor-intel__protocol caption{text-align:left;font-size:.73rem;font-weight:720;margin-bottom:.4rem}
+  .advisor-intel__protocol th,.advisor-intel__protocol td{text-align:left;vertical-align:top;padding:.55rem .42rem;overflow-wrap:anywhere;border-bottom:1px solid var(--ai-line)}
+  .advisor-intel__protocol thead th{border-top:2px solid var(--ai-ink);border-bottom:1px solid var(--ai-ink)}
+  .advisor-intel__protocol tbody tr:last-child>*{border-bottom:2px solid var(--ai-ink)}
+  .advisor-intel__protocol th:first-child{width:24%;font-weight:730}
+  .advisor-intel__protocol th:nth-child(2){width:33%}
+  .advisor-intel__protocol td:last-child{background:color-mix(in srgb,var(--ai-paper) 94%,var(--warning))}
+  .advisor-intel .advisor-intel__protocol-boundary{margin-top:.55rem;font-size:.7rem;color:var(--ai-muted)}
   .advisor-intel__foot{border-left:3px solid var(--ai-accent);background:color-mix(in srgb,var(--ai-paper) 93%,var(--ai-accent));padding:.7rem .85rem;margin:.85rem 0 .5rem;font-size:.78rem;line-height:1.65}
   .advisor-intel .advisor-intel__disclaimer{font-size:.71rem;color:var(--ai-muted);line-height:1.7;margin:.55rem 0}
   .advisor-intel__picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem;border:0;margin:0;padding:0;min-width:0}
@@ -144,24 +187,43 @@ import MathFormula from '../common/MathFormula.astro';
   .advisor-intel__scale,.advisor-intel__vector{border:1px solid var(--ai-line);padding:.8rem clamp(.7rem,3vw,1.25rem);border-radius:var(--radius-feature,.8rem);margin:.65rem 0;background:var(--ai-paper)}
   .advisor-intel__scale-head{display:flex;justify-content:space-between;gap:.5rem;font-size:.71rem;color:var(--ai-muted)}
   .advisor-intel__scale-rail{position:relative;height:26px;margin:.4rem 10px .65rem;border-bottom:2px solid color-mix(in srgb,var(--ai-ink) 33%,transparent)}
-  .advisor-intel__scale-rail:before,.advisor-intel__scale-rail:after,.advisor-intel__scale-half{position:absolute;content:"";width:2px;height:11px;bottom:-5px;background:var(--ai-muted)}
-  .advisor-intel__scale-rail:before{left:0}.advisor-intel__scale-rail:after{right:0}.advisor-intel__scale-half{left:50%}
+  .advisor-intel__scale-rail:before,.advisor-intel__scale-rail:after,.advisor-intel__scale-half,.advisor-intel__scale-quarter,.advisor-intel__scale-three-quarter{position:absolute;content:"";width:2px;height:11px;bottom:-5px;background:var(--ai-muted)}
+  .advisor-intel__scale-rail:before{left:0}.advisor-intel__scale-rail:after{right:0}.advisor-intel__scale-quarter{left:25%}.advisor-intel__scale-half{left:50%}.advisor-intel__scale-three-quarter{left:75%}
+  .advisor-intel__scale-ticks{display:flex;justify-content:space-between;font-size:.68rem;font-variant-numeric:tabular-nums;color:var(--ai-muted);margin:0 5px .45rem}
   .advisor-intel__scale-arrow{position:absolute;left:0;bottom:4px;width:100%;height:4px;background:var(--ai-accent);border-radius:999px;transition:width .2s ease}
   .advisor-intel__scale-arrow:after{content:"";position:absolute;right:-1px;top:-5px;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:10px solid var(--ai-accent)}
   .advisor-intel:has(input[name="advisor-q05-beta"][value="half"]:checked) .advisor-intel__scale-arrow{width:50%}
-  .advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) .advisor-intel__scale-arrow{left:25%;width:75%;background:repeating-linear-gradient(90deg,var(--ai-accent) 0 9px,transparent 9px 14px)}
-  .advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) .advisor-intel__scale-arrow:after{display:none}
+  .advisor-intel__scale-choices{display:none;position:absolute;inset:0}
+  .advisor-intel__scale-choices i{position:absolute;bottom:0;width:10px;height:10px;border-radius:50%;background:var(--ai-accent);transform:translateX(-50%)}
+  .advisor-intel__scale-choices i:nth-child(1){left:25%}.advisor-intel__scale-choices i:nth-child(2){left:50%}.advisor-intel__scale-choices i:nth-child(3){left:75%}.advisor-intel__scale-choices i:nth-child(4){left:100%}
+  .advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) .advisor-intel__scale-arrow{display:none}
+  .advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) .advisor-intel__scale-choices{display:block}
   .advisor-intel__scale-caption{display:none;font-size:.75rem;min-height:2.4em}
   .advisor-intel:has(input[name="advisor-q05-beta"][value="full"]:checked) [data-q05-panel="full"],.advisor-intel:has(input[name="advisor-q05-beta"][value="half"]:checked) [data-q05-panel="half"],.advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) [data-q05-panel="adaptive"]{display:block}
   .advisor-intel .advisor-intel__formula{display:flex;flex-wrap:wrap;gap:.25rem .9rem;align-items:center;font-size:.77rem;margin:.7rem 0}
   .advisor-intel__formula :global(.math-formula){max-width:100%}
   .advisor-intel__formula p{color:var(--ai-muted);font-size:.77rem}
-  .advisor-intel__action-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.48rem;position:relative;margin-top:1.05rem}
-  .advisor-intel__action-grid:before{content:"";position:absolute;top:-.55rem;left:12.5%;width:75%;border-top:1px solid var(--ai-line)}
-  .advisor-intel__action-grid>div{position:relative;border:1px solid var(--ai-line);border-radius:var(--radius-control);padding:.62rem .42rem;min-width:0;text-align:center}
-  .advisor-intel__action-grid>div:before{content:"";position:absolute;left:50%;height:.56rem;border-left:1px solid var(--ai-line);top:-.56rem}
+  .advisor-intel__action{margin:.6rem 0 1rem;padding:clamp(.65rem,2vw,1.1rem);border:1px solid var(--ai-line);border-radius:var(--radius-feature,.8rem);background:var(--ai-paper);min-width:0}
+  .advisor-intel__action figcaption{text-align:center;margin:0 0 .8rem;font-weight:690;color:var(--ai-ink)}
+  .advisor-intel__action .advisor-intel__seed{font-size:.78rem;margin-bottom:.48rem;background:color-mix(in srgb,var(--ai-paper) 92%,var(--ai-accent))}
+  .advisor-intel__action-set{position:relative;width:min(100%,22rem);padding:.85rem .6rem;text-align:center;margin:0 auto;border:2px solid var(--ai-accent);border-radius:var(--radius-control,.6rem);background:color-mix(in srgb,var(--ai-paper) 88%,var(--ai-accent))}
+  .advisor-intel__action-set:after{content:"";position:absolute;top:100%;left:50%;height:.67rem;border-left:2px solid var(--ai-accent)}
+  .advisor-intel__action-set strong{display:block;font-size:clamp(.96rem,2vw,1.25rem);line-height:1.4;font-variant-numeric:tabular-nums}
+  .advisor-intel__action-set small{display:block;font-size:.69rem;color:var(--ai-muted);margin-top:.15rem}
+  .advisor-intel__action-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(.22rem,1.2vw,.65rem);position:relative;margin:1.3rem 0 0;padding:0;list-style:none}
+  .advisor-intel__action-grid:before{content:"";position:absolute;top:-.65rem;left:12.5%;width:75%;border-top:2px solid var(--ai-accent)}
+  .advisor-intel__action-grid>li{position:relative;border:1px solid var(--ai-line);border-top:3px solid var(--ai-accent);border-radius:var(--radius-control);padding:clamp(.46rem,1.1vw,.75rem) clamp(.2rem,.7vw,.55rem);min-width:0;text-align:center;background:color-mix(in srgb,var(--ai-paper) 95%,var(--ai-accent))}
+  .advisor-intel__action-grid>li:before{content:"";position:absolute;left:50%;height:.65rem;border-left:2px solid var(--ai-accent);bottom:100%}
   .advisor-intel__action-grid span{display:block;font-size:.67rem;color:var(--ai-muted)}
-  .advisor-intel__action-grid strong{display:block;font-size:.79rem;margin-top:.2rem;line-height:1.4}
+  .advisor-intel__action-grid strong{display:block;font-size:clamp(.7rem,1.4vw,.85rem);margin-top:.2rem;line-height:1.4}
+  .advisor-intel__action-outside{display:flex;align-items:baseline;gap:.55rem;margin:.9rem 0 0;padding:.6rem .7rem;border:1px dashed var(--ai-line);border-radius:var(--radius-control);color:var(--ai-muted)}
+  .advisor-intel__action-outside span{font-size:.68rem;flex:none;font-weight:700}
+  .advisor-intel__action-outside p{font-size:.72rem;line-height:1.5}
+  .advisor-intel__math-detail{font-size:.73rem;line-height:1.6;margin:.75rem 0;border-bottom:1px solid var(--ai-line);padding-bottom:.7rem}
+  .advisor-intel__math-detail summary{cursor:pointer;font-weight:700;color:var(--ai-ink)}
+  .advisor-intel__math-detail>div{padding:.7rem 0 0;min-width:0;overflow-wrap:anywhere}
+  .advisor-intel__math-detail :global(.math-formula){max-width:100%;overflow-x:auto}
+  .advisor-intel__math-detail p{font-size:.74rem;margin:.55rem 0 0}
   .advisor-intel__vector{padding-top:1rem}
   .advisor-intel__vector-neg,.advisor-intel__vector-pos{display:inline-block;width:50%;font-size:.69rem;color:var(--ai-muted)}
   .advisor-intel__vector-pos{text-align:right}
@@ -176,7 +238,7 @@ import MathFormula from '../common/MathFormula.astro';
   .advisor-intel:has(input[name="advisor-q07-vector"][value="reverse"]:checked) .advisor-intel__vector-arrow:after{left:-1px;right:auto;border-left:0;border-right:12px solid var(--warning)}
   .advisor-intel__vector-text{display:none;min-height:2.1em;margin-top:.8rem;font-size:.75rem;line-height:1.6}
   .advisor-intel:has(input[name="advisor-q07-vector"][value="original"]:checked) [data-q07-panel="original"],.advisor-intel:has(input[name="advisor-q07-vector"][value="zero"]:checked) [data-q07-panel="zero"],.advisor-intel:has(input[name="advisor-q07-vector"][value="reverse"]:checked) [data-q07-panel="reverse"]{display:block}
-  @media(max-width:530px){.advisor-intel__duo{grid-template-columns:minmax(0,1fr)}.advisor-intel__picker{grid-template-columns:minmax(0,1fr)}.advisor-intel__picker label{align-items:center}.advisor-intel__picker small{display:inline;margin-left:.25rem}.advisor-intel__action-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.advisor-intel__action-grid:before,.advisor-intel__action-grid>div:before{display:none}.advisor-intel__panel{padding:.8rem}.advisor-intel h4{font-size:1.15rem}}
+  @media(max-width:530px){.advisor-intel__duo{grid-template-columns:minmax(0,1fr)}.advisor-intel__picker{grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem}.advisor-intel__picker label{padding:.46rem .24rem;gap:.19rem;font-size:.68rem}.advisor-intel__picker small{display:block;margin-left:0;font-size:.63rem}.advisor-intel__action-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.advisor-intel__action-grid strong{font-size:.7rem}.advisor-intel__action-grid span{font-size:.62rem}.advisor-intel__action-outside{display:block}.advisor-intel__action-outside span{display:block;margin-bottom:.25rem}.advisor-intel__panel{padding:.7rem .45rem}.advisor-intel__fork .advisor-intel__panel p{font-size:.7rem}.advisor-intel__fork .advisor-intel__panel strong{font-size:.85rem}.advisor-intel__protocol th,.advisor-intel__protocol td{padding:.45rem .25rem}.advisor-intel h4{font-size:1.15rem}}
   @media(prefers-reduced-motion:reduce){.advisor-intel__scale-arrow,.advisor-intel__vector-arrow{transition:none}}
   @media(forced-colors:active){.advisor-intel__scale-arrow,.advisor-intel__vector-arrow{background:Highlight}.advisor-intel__panel{border:1px solid CanvasText}}
   @media print{.advisor-intel__picker{display:none}.advisor-intel__scale-caption,.advisor-intel__vector-text{display:block}}

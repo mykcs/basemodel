@@ -20,8 +20,12 @@ for(const width of [390,768,1440]){
       await expect(q02).toContainText('15 / 18');
       await expect(q02).toContainText('SFT');
       await expect(q02).toContainText('OPSD');
+      await expect(q02.locator('[data-concept-fork="q02"] > .advisor-intel__panel')).toHaveCount(2);
       await expect(q03).toContainText('1,536 次开发题尝试');
-      await expect(q03).toContainText('正式训练与对应终评');
+      await expect(q03.locator('.advisor-intel__protocol tbody tr')).toHaveCount(3);
+      await expect(q03).toContainText('论文原生 128 题');
+      await expect(q03).toContainText('64 道开发题');
+      await expect(q03).toContainText('正式可比条件');
 
       const beta=q05.locator('input[name="advisor-q05-beta"]');
       await expect(beta).toHaveCount(3);
@@ -31,15 +35,53 @@ for(const width of [390,768,1440]){
       await expect(q05.locator('[data-q05-panel="full"]')).toBeHidden();
       await q05.locator('input[value="adaptive"]').check();
       await expect(q05.locator('[data-q05-panel="adaptive"]')).toBeVisible();
+      await expect(q05.locator('.advisor-intel__scale-ticks > span')).toHaveCount(5);
+      await expect(q05.locator('.advisor-intel__scale-choices')).toBeVisible();
+      await expect(q05.locator('.advisor-intel__scale-choices i')).toHaveCount(4);
+      const policyColumns=await q05.locator('.advisor-intel__picker').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length);
+      expect(policyColumns).toBe(3);
       await expect(q05.locator('[data-math-formula-inline]')).toHaveCount(6);
       await expect(q05.locator('.katex-mathml math')).toHaveCount(7);
       await expect(q05).toContainText('0.25');
       await expect(q05).toContainText('0.75');
       await expect(q05).toContainText('不是同一试验');
 
-      await expect(q06.locator('.advisor-intel__action-grid>div')).toHaveCount(4);
-      await expect(q06).toContainText('其余合法动作');
-      await expect(q06).toContainText('不能捏造概率');
+      await expect(q06.locator('.advisor-intel__action-grid>li')).toHaveCount(4);
+      await expect(q06).toContainText('条件概率合计 100%');
+      await expect(q06).toContainText('63%');
+      await expect(q06).toContainText('其余合法点击');
+      await expect(q06).toContainText('数学总量');
+      await expect(q06).toContainText('非法操作被排除');
+      await expect(q06.locator('.advisor-intel__math-detail')).not.toHaveAttribute('open');
+      // A connected four-way decision figure must retain its branch rail and
+      // all four actual edges on phone, not only render four isolated cards.
+      const diagram=await q06.locator('.advisor-intel__action-grid').evaluate(el=>{
+        const rail=getComputedStyle(el,'::before');
+        const cards=Array.from(el.querySelectorAll(':scope > li'));
+        const edges=cards.map(card=>getComputedStyle(card,'::before'));
+        const columns=getComputedStyle(el).gridTemplateColumns.split(' ').length;
+        const hub=el.previousElementSibling;
+        const gridRect=el.getBoundingClientRect();
+        const hubRect=hub?.getBoundingClientRect();
+        const railLeft=gridRect.left+Number.parseFloat(rail.left);
+        const railRight=railLeft+Number.parseFloat(rail.width);
+        const centers=cards.map(card=>{const r=card.getBoundingClientRect();return r.left+r.width/2;});
+        return {
+          rail:rail.display!=='none' && Number.parseFloat(rail.borderTopWidth)>0,
+          edges:edges.every(edge=>edge.display!=='none' && Number.parseFloat(edge.borderLeftWidth)>0),
+          center:hub!==null && Number.parseFloat(getComputedStyle(hub,'::after').borderLeftWidth)>0,
+          joined:hubRect!==undefined && Math.abs((hubRect.left+hubRect.width/2)-(railLeft+railRight)/2)<4 &&
+            centers.every((x,i)=>Math.abs(x-(railLeft+(railRight-railLeft)*i/3))<8),
+          columns,
+        };
+      });
+      expect(diagram).toEqual({rail:true,edges:true,center:true,joined:true,columns:4});
+
+      const q02Rail=await q02.locator('[data-concept-fork="q02"]').evaluate(el=>{
+        const rail=getComputedStyle(el,'::before');
+        return rail.display!=='none' && Number.parseFloat(rail.borderTopWidth)>0;
+      });
+      expect(q02Rail).toBe(true);
 
       const vectors=q07.locator('input[name="advisor-q07-vector"]');
       await expect(vectors).toHaveCount(3);
@@ -70,6 +112,9 @@ for(const width of [390,768,1440]){
       if((width===390&&theme==='light')||(width===1440&&theme==='dark')){
         await q10.screenshot({path:testInfo.outputPath(`q10-${width}-${theme}.png`),animations:'disabled'});
         await q05.screenshot({path:testInfo.outputPath(`q05-${width}-${theme}.png`),animations:'disabled'});
+        for(const [name,section] of [['q02',q02],['q03',q03],['q06',q06],['q07',q07]] as const){
+          await section.screenshot({path:testInfo.outputPath(`${name}-${width}-${theme}.png`),animations:'disabled'});
+        }
       }
     });
   }
