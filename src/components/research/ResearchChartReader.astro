@@ -147,7 +147,10 @@
       localKeyboardScroll(viewport);
       viewport.setAttribute('role', 'region');
       viewport.setAttribute('aria-label', img.alt);
-      img.before(viewport);
+      const instruction = document.createElement('p');
+      instruction.className = 'research-chart-hint';
+      instruction.textContent = document.documentElement.lang.startsWith('zh') ? '左右滑动查看完整曲线。' : 'Scroll horizontally to read the complete chart.';
+      img.before(instruction, viewport);
       viewport.append(img);
     });
   }
@@ -171,6 +174,7 @@
   .research-chart-caption,.research-chart-context{font-size:var(--type-body);line-height:var(--type-leading-body)}
   .research-chart-reader .research-chart-context :is(.source-note,.dynamics-boundary,p,li,span,a){font-size:var(--type-body);line-height:var(--type-leading-body)}
   .research-chart-tools{display:flex;flex-wrap:wrap;gap:.5rem;padding:.6rem 1rem}
+  .paper__derived-figure{scroll-margin-top:calc(var(--site-header-height) + 88px)}
   .research-image-viewport{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
   .research-image-viewport img{display:block;width:100%;min-width:1200px;max-width:none;height:auto;border:1px solid var(--line);border-radius:var(--radius-panel);background:white}
   .research-chart-canvas:focus-visible,.research-image-viewport:focus-visible,.research-chart-tools button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}

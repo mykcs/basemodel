@@ -297,26 +297,7 @@ pre {
   box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
-/* Collision / overflow fixes. */
-
-.compare-tray {
-  z-index: 45;
-  padding-bottom: max(12px, env(safe-area-inset-bottom));
-}
-
-.tray-inner,
-.tray-chips,
-.tray-actions {
-  min-width: 0;
-}
-
-.tray-chips {
-  max-width: min(54vw, 680px);
-}
-
-.tray-chip {
-  max-width: 230px;
-}
+/* Collision / overflow fixes. Compare tray layout belongs to CompareTray.css. */
 
 .workspace-grid > *,
 .detail-layout > *,
@@ -392,45 +373,6 @@ table {
     flex-direction: column;
   }
 
-
-  .compare-tray {
-    padding: 9px 0 max(9px, env(safe-area-inset-bottom));
-  }
-
-  .tray-inner {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 8px 10px;
-  }
-
-  .tray-label {
-    align-self: center;
-  }
-
-  .tray-chips {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    display: flex;
-    max-width: 100%;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: 2px;
-  }
-
-  .tray-chip {
-    flex: 0 0 auto;
-    max-width: 70vw;
-  }
-
-  .tray-actions {
-    grid-column: 2;
-    grid-row: 1;
-    margin-left: 0;
-  }
-
-  .tray-actions .button {
-    padding: 7px 9px;
-  }
 
   .paper-row {
     grid-template-columns: 1fr;

@@ -1306,11 +1306,11 @@
       }
     }
   ],
-  "sourceFingerprint": "74755af21ee109eb8d11ca614c2330b1472f874de3287138d0677c251d1f5444",
+  "sourceFingerprint": "a73c8a0a52acfddec99418cd24b58420c6d1c5348dbc7ed47ae1714734ba8702",
   "sourceDisposition": {
     "file": "source-disposition-ledger.json",
-    "sha256": "89305ead542593fb03200f401549196beed30b3e28109dbb087a890587522c03",
-    "sourceFingerprint": "74755af21ee109eb8d11ca614c2330b1472f874de3287138d0677c251d1f5444",
+    "sha256": "13bbf19cdfe0e2c397e4642b1b687ab0bb8a318ea293f06dca3945ad21ac4084",
+    "sourceFingerprint": "a73c8a0a52acfddec99418cd24b58420c6d1c5348dbc7ed47ae1714734ba8702",
     "declarations": 5811,
     "counts": {
       "MIGRATE": 4244,
@@ -1328,7 +1328,7 @@
   },
   "historical_baseline_branch_parent": "9149e708812626b77f5b4418da597251ef9a2680",
   "continuationRenderedSnapshot": {
-    "sha": "eb0f875ae33797939d96507cccde730ea877cbe2",
+    "sha": "306bac7d0350cb5c20a49b432d81ad50446c8336",
     "dirtyTree": true,
     "summary": {
       "rendered_routes": 268,
@@ -3926,7 +3926,7 @@
       {
         "file": "src/components/workspace/CompareTray.css",
         "line": 2,
-        "column": 94,
+        "column": 107,
         "selector": ".tray-label",
         "contexts": [],
         "property": "font-size",
@@ -3944,7 +3944,7 @@
       {
         "file": "src/components/workspace/CompareTray.css",
         "line": 2,
-        "column": 129,
+        "column": 142,
         "selector": ".tray-label",
         "contexts": [],
         "property": "font-weight",
@@ -3962,7 +3962,7 @@
       {
         "file": "src/components/workspace/CompareTray.css",
         "line": 2,
-        "column": 345,
+        "column": 436,
         "selector": ".tray-chip",
         "contexts": [],
         "property": "font-size",
@@ -3980,7 +3980,7 @@
       {
         "file": "src/components/workspace/CompareTray.css",
         "line": 2,
-        "column": 479,
+        "column": 582,
         "selector": ".tray-actions .button",
         "contexts": [],
         "property": "font-size",
@@ -21055,7 +21055,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 463,
+        "line": 405,
         "column": 5,
         "selector": ".hero h1",
         "contexts": [
@@ -21075,7 +21075,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 464,
+        "line": 406,
         "column": 5,
         "selector": ".hero h1",
         "contexts": [
@@ -21095,7 +21095,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 468,
+        "line": 410,
         "column": 5,
         "selector": ".page-header h1",
         "contexts": [
@@ -21115,7 +21115,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 498,
+        "line": 440,
         "column": 5,
         "selector": ".command-search-trigger",
         "contexts": [
@@ -21135,7 +21135,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 503,
+        "line": 445,
         "column": 5,
         "selector": ".command-search-trigger::before",
         "contexts": [
@@ -21155,7 +21155,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 504,
+        "line": 446,
         "column": 5,
         "selector": ".command-search-trigger::before",
         "contexts": [
@@ -21175,7 +21175,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 539,
+        "line": 481,
         "column": 3,
         "selector": "h1",
         "contexts": [],
@@ -21193,7 +21193,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 540,
+        "line": 482,
         "column": 3,
         "selector": "h1",
         "contexts": [],
@@ -21211,7 +21211,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 544,
+        "line": 486,
         "column": 3,
         "selector": "h2",
         "contexts": [],
@@ -21229,7 +21229,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 548,
+        "line": 490,
         "column": 3,
         "selector": ".hero h1",
         "contexts": [],
@@ -21247,7 +21247,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 549,
+        "line": 491,
         "column": 3,
         "selector": ".hero h1",
         "contexts": [],
@@ -21265,7 +21265,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 578,
+        "line": 520,
         "column": 3,
         "selector": ".models-page-quick-entry",
         "contexts": [],
@@ -21283,7 +21283,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 588,
+        "line": 530,
         "column": 3,
         "selector": ".summary-specializations > span:first-child",
         "contexts": [],
@@ -21301,7 +21301,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 589,
+        "line": 531,
         "column": 3,
         "selector": ".summary-specializations > span:first-child",
         "contexts": [],
@@ -21319,7 +21319,7 @@
       },
       {
         "file": "src/styles/visual-upgrade.css",
-        "line": 590,
+        "line": 532,
         "column": 3,
         "selector": ".summary-specializations > span:first-child",
         "contexts": [],
@@ -76459,7 +76459,7 @@
       },
       {
         "file": "src/components/research/ResearchChartReader.astro",
-        "line": 159,
+        "line": 162,
         "column": 29,
         "selector": ".research-chart-reader h2",
         "contexts": [],
@@ -76477,7 +76477,7 @@
       },
       {
         "file": "src/components/research/ResearchChartReader.astro",
-        "line": 159,
+        "line": 162,
         "column": 65,
         "selector": ".research-chart-reader h2",
         "contexts": [],
@@ -76495,7 +76495,7 @@
       },
       {
         "file": "src/components/research/ResearchChartReader.astro",
-        "line": 162,
+        "line": 165,
         "column": 24,
         "selector": ".research-chart-hint",
         "contexts": [],
@@ -76513,7 +76513,7 @@
       },
       {
         "file": "src/components/research/ResearchChartReader.astro",
-        "line": 162,
+        "line": 165,
         "column": 51,
         "selector": ".research-chart-hint",
         "contexts": [],
@@ -76531,7 +76531,7 @@
       },
       {
         "file": "src/components/research/ResearchChartReader.astro",
-        "line": 164,
+        "line": 167,
         "column": 62,
         "selector": ".research-chart-reader button,.research-chart-tools button",
         "contexts": [],
@@ -76549,7 +76549,7 @@
       },
       {
         "file": "src/components/research/ResearchChartReader.astro",
-        "line": 164,
+        "line": 167,
         "column": 75,
         "selector": ".research-chart-reader button,.research-chart-tools button",
         "contexts": [],
@@ -76567,7 +76567,7 @@
       },
       {
         "file": "src/components/research/ResearchChartReader.astro",
-        "line": 169,
+        "line": 172,
         "column": 96,
         "selector": ".research-chart-figure-note",
         "contexts": [],
@@ -76585,7 +76585,7 @@
       },
       {
         "file": "src/components/research/ResearchChartReader.astro",
-        "line": 169,
+        "line": 172,
         "column": 123,
         "selector": ".research-chart-figure-note",
         "contexts": [],
@@ -76603,7 +76603,7 @@
       },
       {
         "file": "src/components/research/ResearchChartReader.astro",
-        "line": 170,
+        "line": 173,
         "column": 48,
         "selector": ".research-chart-figure-note p",
         "contexts": [],
@@ -76621,7 +76621,7 @@
       },
       {
         "file": "src/components/research/ResearchChartReader.astro",
-        "line": 170,
+        "line": 173,
         "column": 75,
         "selector": ".research-chart-figure-note p",
         "contexts": [],
@@ -76639,7 +76639,7 @@
       },
       {
         "file": "src/components/research/ResearchChartReader.astro",
-        "line": 171,
+        "line": 174,
         "column": 51,
         "selector": ".research-chart-caption,.research-chart-context",
         "contexts": [],
@@ -76657,7 +76657,7 @@
       },
       {
         "file": "src/components/research/ResearchChartReader.astro",
-        "line": 171,
+        "line": 174,
         "column": 78,
         "selector": ".research-chart-caption,.research-chart-context",
         "contexts": [],
@@ -76675,7 +76675,7 @@
       },
       {
         "file": "src/components/research/ResearchChartReader.astro",
-        "line": 172,
+        "line": 175,
         "column": 99,
         "selector": ".research-chart-reader .research-chart-context :is(.source-note,.dynamics-boundary,p,li,span,a)",
         "contexts": [],
@@ -76693,7 +76693,7 @@
       },
       {
         "file": "src/components/research/ResearchChartReader.astro",
-        "line": 172,
+        "line": 175,
         "column": 126,
         "selector": ".research-chart-reader .research-chart-context :is(.source-note,.dynamics-boundary,p,li,span,a)",
         "contexts": [],
@@ -108734,6 +108734,6 @@
       "Consumer, cascade and semantic role require browser and owner evidence; null decision is unclassified"
     ],
     "errors": [],
-    "sourceFingerprint": "74755af21ee109eb8d11ca614c2330b1472f874de3287138d0677c251d1f5444"
+    "sourceFingerprint": "a73c8a0a52acfddec99418cd24b58420c6d1c5348dbc7ed47ae1714734ba8702"
   }
 }

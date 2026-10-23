@@ -6,7 +6,7 @@ interface Props { labels: CompareTrayLabels; locale: Locale }
 const { labels, locale } = Astro.props;
 ---
 <div class="compare-tray" role="region" aria-label={labels.compareTray} data-compare-tray hidden data-compare-base={localePath(locale, '/compare/')}>
-  <div class="shell tray-inner"><span class="tray-label">{labels.compare}</span><div class="tray-chips" data-compare-chips></div><div class="tray-actions"><a class="button button-primary" href={localePath(locale, '/compare/')} data-compare-open>{labels.openCompare}</a><button type="button" class="button" data-compare-clear>{labels.clearCompare}</button></div></div>
+  <div class="shell tray-inner"><details class="tray-selection" open><summary class="tray-label">{labels.compare}<span data-compare-count></span></summary><div class="tray-chips" data-compare-chips></div></details><div class="tray-actions"><a class="button button-primary" href={localePath(locale, '/compare/')} data-compare-open>{labels.openCompare}</a><button type="button" class="button" data-compare-clear>{labels.clearCompare}</button></div></div>
 </div>
 <script>
   const tray = document.querySelector<HTMLElement>('[data-compare-tray]');
@@ -15,10 +15,15 @@ const { labels, locale } = Astro.props;
     document.documentElement.style.setProperty('--compare-tray-height', `${height}px`);
   };
   if (tray) new ResizeObserver(measure).observe(tray);
+  const selection = tray?.querySelector<HTMLDetailsElement>('.tray-selection');
+  const phone = matchMedia('(max-width:720px)');
+  const setDisclosure = () => { if (selection) selection.open = !phone.matches; measure(); };
+  setDisclosure(); phone.addEventListener('change', setDisclosure);
+  selection?.addEventListener('keydown', event => { if (event.key === 'Escape' && phone.matches && selection.open) { selection.open = false; selection.querySelector('summary')?.focus(); } });
   const normalize = (value: unknown) => Array.isArray(value) ? [...new Set(value.filter((v): v is string => typeof v === 'string').map((v) => v.trim()).filter(Boolean))].slice(0,5) : [];
   const read = () => { try { return normalize(JSON.parse(localStorage.getItem('atlas-compare') || '[]')); } catch { return []; } };
   let renderVersion = 0;
-  const render = async () => { const version=++renderVersion; const ids=read(); if (!tray) return; tray.hidden=!ids.length; if (!ids.length) { tray.querySelector('[data-compare-chips]')?.replaceChildren(); measure(); return; } const chips=tray.querySelector('[data-compare-chips]')!; chips.replaceChildren(); const names=await Promise.all(ids.map(async(id)=>{try{const r=await fetch(`/model-data/${encodeURIComponent(id)}.json`);if(!r.ok)throw new Error();const d=await r.json();return typeof d.name==='string'&&d.name.trim()?d.name:id}catch{return id}})); if(version!==renderVersion||ids.join()!==read().join())return; names.forEach((name)=>{const chip=document.createElement('span');chip.className='tray-chip';chip.textContent=name;chips.append(chip)}); const link=tray.querySelector<HTMLAnchorElement>('[data-compare-open]')!; link.href=`${tray.dataset.compareBase}?models=${encodeURIComponent(ids.join(','))}`; measure(); };
+  const render = async () => { const version=++renderVersion; const ids=read(); if (!tray) return; tray.hidden=!ids.length; if (!ids.length) { tray.querySelector('[data-compare-chips]')?.replaceChildren(); measure(); return; } const chips=tray.querySelector('[data-compare-chips]')!; chips.replaceChildren(); tray.querySelector('[data-compare-count]')!.textContent=` ${ids.length}`; const link=tray.querySelector<HTMLAnchorElement>('[data-compare-open]')!; link.href=`${tray.dataset.compareBase}?models=${encodeURIComponent(ids.join(','))}`; ids.forEach(id=>{const chip=document.createElement('span');chip.className='tray-chip';chip.textContent=id;chips.append(chip)}); measure(); const names=await Promise.all(ids.map(async(id)=>{try{const r=await fetch(`/model-data/${encodeURIComponent(id)}.json`);if(!r.ok)throw new Error();const d=await r.json();return typeof d.name==='string'&&d.name.trim()?d.name:id}catch{return id}})); if(version!==renderVersion||ids.join()!==read().join())return; chips.replaceChildren(); names.forEach((name)=>{const chip=document.createElement('span');chip.className='tray-chip';chip.textContent=name;chips.append(chip)}); measure(); };
   tray?.querySelector('[data-compare-clear]')?.addEventListener('click',()=>{localStorage.setItem('atlas-compare','[]');window.dispatchEvent(new Event('atlas:compare-change'));});
   window.addEventListener('atlas:compare-change',render); window.addEventListener('storage',(e)=>{if(e.key==='atlas-compare')render()}); void render();
 </script>

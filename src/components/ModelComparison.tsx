@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useStore } from '@nanostores/react';
 import { architectureLabel, checkpointLabel, displayBoolean, displayUnknown, licenseLabel, modalityLabel, roleLabel, specializationLabel, statusLabel, tierLabel } from '../lib/format';
 import { comparisonToCsv, comparisonToMarkdown, type CompareExportRow } from '../lib/research/compareExport';
 import type { CompareImpactCode } from '../lib/research/compareImpact';
@@ -18,7 +19,8 @@ type ComparisonRow = {
 
 export default function ModelComparison({ models, papers = [], locale = 'zh' }: { models: AtlasModel[]; papers?: AtlasPaper[]; locale?: Locale }) {
   const m = getMessages(locale);
-  const [selected, setSelected] = useState<string[]>([]);
+  const selected = useStore(compareIds);
+  const [initialized, setInitialized] = useState(false);
   const [query, setQuery] = useState('');
   const [onlyDifferences, setOnlyDifferences] = useState(false);
   const [onlyImpacts, setOnlyImpacts] = useState(false);
@@ -33,27 +35,27 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
     return models.filter((model) => [model.name, model.vendor, model.family, model.generation, model.id].some((value) => value.toLowerCase().includes(needle)));
   }, [models, query]);
   const canStart = selected.length >= 2;
-  const toggle = (id: string) => setSelected((current) => current.includes(id) ? current.filter((value) => value !== id) : current.length < 5 ? [...current, id] : current);
+  const toggle = (id: string) => replaceCompare(selected.includes(id) ? selected.filter((value) => value !== id) : selected.length < 5 ? [...selected, id] : selected);
 
   useEffect(() => {
     const requested = initialSelection(models);
-    setSelected(requested);
     replaceCompare(requested);
     const params = new URLSearchParams(window.location.search);
     setOnlyDifferences(params.get('diff') === '1');
     setOnlyImpacts(params.get('impact') === '1');
     setOnlyUnknown(params.get('unknown') === '1');
+    setInitialized(true);
   }, [models]);
 
   useEffect(() => {
+    if (!initialized) return;
     const next = new URLSearchParams(window.location.search);
     if (selected.length) next.set('models', selected.join(',')); else next.delete('models');
     if (onlyDifferences) next.set('diff', '1'); else next.delete('diff');
     if (onlyImpacts) next.set('impact', '1'); else next.delete('impact');
     if (onlyUnknown) next.set('unknown', '1'); else next.delete('unknown');
-    replaceCompare(selected);
     window.history.replaceState({}, '', `${window.location.pathname}${next.toString() ? `?${next}` : ''}`);
-  }, [selected, onlyDifferences, onlyImpacts, onlyUnknown]);
+  }, [initialized, selected, onlyDifferences, onlyImpacts, onlyUnknown]);
 
   const joiner = locale === 'zh' ? '、' : ', ';
   const paperRoles = (model: AtlasModel) => {
@@ -130,11 +132,11 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
     setExportNotice(locale === 'zh' ? 'BibTeX 已复制' : 'BibTeX copied');
   };
 
-  return <div className="comparison-shell">
+  return <div className="comparison-shell" aria-busy={!initialized}>
     <details className="comparison-picker" open={!canStart}>
       <summary><span>{m.compare.selectTitle}</span><span className="muted">{m.compare.selected} {selected.length} / 5</span></summary>
       <div className="comparison-picker-body">
-      <div><label className="field" htmlFor="compare-search"><span>{m.compare.searchLabel}</span><input id="compare-search" type="search" value={query} placeholder={m.compare.searchPlaceholder} onChange={(event) => setQuery(event.target.value)} /></label><div className="picker-list">{visibleModels.map((model) => <label className={`picker-item ${selected.includes(model.id) ? 'is-selected' : ''}`} key={model.id}><input type="checkbox" checked={selected.includes(model.id)} disabled={!selected.includes(model.id) && selected.length >= 5} onChange={() => toggle(model.id)} /><span>{model.name}</span></label>)}</div>{visibleModels.length === 0 && <p className="muted">{m.compare.noMatches}</p>}</div>
+      <div><label className="field" htmlFor="compare-search"><span>{m.compare.searchLabel}</span><input id="compare-search" disabled={!initialized} type="search" value={query} placeholder={m.compare.searchPlaceholder} onChange={(event) => setQuery(event.target.value)} /></label><div className="picker-list">{visibleModels.map((model) => <label className={`picker-item ${selected.includes(model.id) ? 'is-selected' : ''}`} key={model.id}><input type="checkbox" checked={selected.includes(model.id)} disabled={!initialized || (!selected.includes(model.id) && selected.length >= 5)} onChange={() => toggle(model.id)} /><span>{model.name}</span></label>)}</div>{visibleModels.length === 0 && <p className="muted">{m.compare.noMatches}</p>}</div>
         {canStart && <a className="button button-primary" href="#comparison-results" onClick={(event) => event.currentTarget.closest('details')?.removeAttribute('open')}>{locale === 'zh' ? '查看对比结果' : 'View comparison results'}</a>}
       </div>
     </details>

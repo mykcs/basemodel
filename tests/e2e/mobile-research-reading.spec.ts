@@ -336,3 +336,34 @@ for(const width of [390,760,761,820,821,1440])for(const theme of ['light','dark'
     await persistJsonAttachment(info,'adjacent-state-complete-table.json',{body:Buffer.from(JSON.stringify(await measure())),contentType:'application/json'});
   });
 }
+
+for(const theme of ['light','dark']as const){
+  test(`selected comparison stays compact while reading and exposes model names on demand ${theme}`,async({page},testInfo)=>{
+    await page.setViewportSize({width:390,height:844});
+    await page.addInitScript(({theme,models})=>{localStorage.clear();localStorage.setItem('atlas-theme',theme);localStorage.setItem('atlas-compare',JSON.stringify(models));},{theme,models});
+    await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/');
+    const tray=page.locator('[data-compare-tray]');await expect(tray).toBeVisible();
+    const chartHint=page.locator('.paper__derived-figure > .research-chart-hint').first();await expect(chartHint).toHaveText('左右滑动查看完整曲线。');expect(await chartHint.evaluate(node=>parseFloat(getComputedStyle(node).fontSize))).toBeGreaterThanOrEqual(16);
+    const compact=()=>tray.evaluate(node=>node.getBoundingClientRect().height<=76);
+    await expect.poll(compact).toBe(true);
+    const selection=tray.locator('details.tray-selection');await expect(selection).not.toHaveAttribute('open','');
+    const toggle=selection.locator('summary');await toggle.focus();await page.keyboard.press('Enter');
+    for(const name of ['Qwen2.5-3B-Instruct','Qwen2.5-7B-Instruct'])await expect(selection.locator('.tray-chip').filter({hasText:name})).toBeVisible();
+    await expect(tray.locator('[data-compare-open]')).toBeVisible();await expect(tray.locator('[data-compare-clear]')).toBeVisible();
+    for(const action of await tray.locator('.tray-actions .button').all()){expect(await action.evaluate(node=>{const box=node.getBoundingClientRect();const range=document.createRange();range.selectNodeContents(node);return [...range.getClientRects()].every(text=>text.left>=box.left-1&&text.right<=box.right+1&&text.top>=box.top-1&&text.bottom<=box.bottom+1);}),'complete action text fits its own button').toBe(true);}
+    await page.keyboard.press('Enter');await expect(selection).not.toHaveAttribute('open','');await expect.poll(compact).toBe(true);
+    const old=await tray.getAttribute('style');await tray.evaluate(node=>node.style.minHeight='130px');expect(await compact()).toBe(false);await tray.evaluate((node,value)=>value===null?node.removeAttribute('style'):node.setAttribute('style',value),old);await expect.poll(compact).toBe(true);
+    await testInfo.attach('compact-reading-tray',{body:await page.screenshot(),contentType:'image/png'});
+    await tray.locator('[data-compare-clear]').click();await expect(tray).toBeHidden();
+  });
+}
+
+test('comparison initialization never publishes a transient empty selection or drops its URL',async({page})=>{
+  await page.addInitScript(()=>{localStorage.clear();(window as unknown as {initialCompareCounts:number[]}).initialCompareCounts=[];window.addEventListener('atlas:compare-change',()=>{(window as unknown as {initialCompareCounts:number[]}).initialCompareCounts.push(JSON.parse(localStorage.getItem('atlas-compare')??'[]').length);});});
+  await page.goto('/compare/?models='+models.join(','));await expect(page.locator('#comparison-results')).toBeVisible();
+  await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('atlas-compare')??'[]'))).toEqual(models);
+  const counts=await page.evaluate(()=>(window as unknown as {initialCompareCounts:number[]}).initialCompareCounts);expect(counts.length).toBeGreaterThan(0);expect(counts.every(count=>count===2)).toBe(true);
+  expect(new URL(page.url()).searchParams.get('models')).toBe(models.join(','));
+  await page.locator('[data-compare-clear]').click();await expect(page.locator('#comparison-results')).toBeHidden();
+  await expect(page.locator('.picker-item input:checked')).toHaveCount(0);expect(new URL(page.url()).searchParams.has('models')).toBe(false);
+});
