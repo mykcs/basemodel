@@ -1,6 +1,5 @@
 ---
 import AppLayout from '../layouts/AppLayout.astro';
-import "../styles/research-article.css";
 
 interface Props { locale: 'zh' | 'en'; }
 const { locale } = Astro.props;
@@ -16,8 +15,8 @@ const t = (cn: string, en: string) => zh ? cn : en;
   )}
   locale={locale}
 >
-  <main class="development-page evo-approved-reader">
-    <header class="development-hero evo-article__header">
+  <div class="shell development-page">
+    <header class="development-hero page-header">
       <h1>{t('BaseModel 的开发与上线', 'How BaseModel is developed and shipped')}</h1>
       <p class="lede">
         {t(
@@ -27,7 +26,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
       </p>
     </header>
 
-    <section class="development-system evo-article__section" aria-labelledby="development-system-title">
+    <section class="development-system" aria-labelledby="development-system-title">
       <h2 id="development-system-title">{t('一条主线', 'The main path')}</h2>
       <ol class="development-flow" aria-label={t('BaseModel 开发与上线流程', 'BaseModel development and release flow')}>
         <li data-role="control"><span>01</span><div><strong>ChatGPT</strong><small>{t('说清目标、审阅结果', 'set the goal, review the result')}</small></div></li>
@@ -65,7 +64,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
       </div>
     </section>
 
-    <section class="ci-section evo-article__section" aria-labelledby="ci-title">
+    <section class="ci-section" aria-labelledby="ci-title">
       <h2 id="ci-title">{t('CI 方案', 'CI design')}</h2>
       <p class="section-lede">
         {t(
@@ -100,17 +99,17 @@ const t = (cn: string, en: string) => zh ? cn : en;
       </ol>
     </section>
 
-    <section class="docs-boundary evo-article__section" aria-labelledby="docs-boundary-title">
+    <section class="docs-boundary" aria-labelledby="docs-boundary-title">
       <h2 id="docs-boundary-title">{t('人看网页，Agent 看文档', 'Humans use this page; Agents use the docs')}</h2>
       <p>{t('这张页面只负责让人快速理解当前方案。Agent 开始工作时应该先读仓库里的 ', 'This page is the human-readable map. An Agent starting work should read ')}<code>AGENTS.md</code>、<code>docs/agents/current/ci-provider-decision.md</code>、<code>hosting-architecture.md</code> {t('和可执行配置。', 'and the executable configuration.')}</p>
       <p>{t('供应商额度、required checks、runner 状态都会变化，所以这里不把某个月的价格或次数写成永久规则。页面和文档如果与 live provider state 冲突，以 live state 和仓库可执行配置为准。', 'Provider quotas, required checks, and runner state can change. This page therefore does not freeze a monthly price or quota as permanent policy. If the page or docs disagree with live provider state, live state and executable repository configuration win.')}</p>
     </section>
-  </main>
+  </div>
 </AppLayout>
 
 <style>
   .development-hero .lede { margin: 1.35rem 0 0; color: var(--text); }
-  section { margin-block: clamp(3.5rem, 8vw, 7rem); }
+  section { margin-block: var(--space-7); }
   .development-flow { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 1.7rem); margin: 1.5rem 0; padding: 0; list-style: none; }
   .development-flow li { position: relative; min-width: 0; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius-panel); background: var(--surface); }
   .development-flow li:not(:last-child)::after { content: ''; position: absolute; top: 50%; left: calc(100% + 1px); width: clamp(1rem, 2vw, 1.7rem); height: 1px; background: var(--line-strong, var(--line)); }
@@ -120,7 +119,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
   .development-flow li[data-role='accept'] { border-top-color: color-mix(in srgb, #6d5bd0 58%, var(--line)); }
   .development-flow li[data-role='provider'], .development-flow li[data-role='ship'] { border-top-color: color-mix(in srgb, #2f8f5b 58%, var(--line)); }
   .development-flow li[data-role='observe'] { border-top-color: color-mix(in srgb, #2a72b8 58%, var(--line)); }
-  .development-flow span { display: block; margin-bottom: 1rem; color: var(--accent); font: 750 .72rem/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .development-flow span { display: block; margin-bottom: 1rem; color: var(--accent); font: 750 .72rem/1 var(--font-interface); }
   .development-flow strong, .development-flow small { display: block; }
   .development-flow strong { font-size: .98rem; }
   .development-flow small { margin-top: .35rem; color: var(--muted); line-height: 1.45; }
@@ -144,6 +143,10 @@ const t = (cn: string, en: string) => zh ? cn : en;
   .change-flow p { margin: .35rem 0 0; color: var(--muted); }
   .docs-boundary p { color: var(--muted); }
   code { font-size: .9em; overflow-wrap: anywhere; }
+  @media (min-width: 861px) and (max-width: 1080px) {
+    .development-flow { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .development-flow li:nth-child(3)::before, .development-flow li:nth-child(3)::after { display: none; }
+  }
   @media (max-width: 860px) {
     .development-flow { grid-template-columns: 1fr; gap: 1.5rem; }
     .development-flow li { padding: 1rem; }
