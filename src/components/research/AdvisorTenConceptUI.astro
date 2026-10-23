@@ -45,16 +45,16 @@ import MathFormula from '../common/MathFormula.astro';
     <p class="advisor-intel__lead">相同的一次原始参数更新，可以完整写入、写入一半，或让规则自适应选择比例。<strong>这是待比较的设计选择，不是三项已证实的收益。</strong></p>
     <fieldset class="advisor-intel__picker" data-q05-policies>
       <legend>选择一种写入规则，查看它对参数向量的影响</legend>
-      <label><input type="radio" name="advisor-q05-beta" value="full" checked /><span>完整写入 <small>β = 1</small></span></label>
-      <label><input type="radio" name="advisor-q05-beta" value="half" /><span>固定一半 <small>β = 0.5</small></span></label>
-      <label><input type="radio" name="advisor-q05-beta" value="adaptive" /><span>自适应 <small>β ∈ 候选集合</small></span></label>
+      <label><input type="radio" name="advisor-q05-beta" value="full" checked /><span>完整写入 <small><MathFormula latex={String.raw`\beta=1`} display={false} /></small></span></label>
+      <label><input type="radio" name="advisor-q05-beta" value="half" /><span>固定一半 <small><MathFormula latex={String.raw`\beta=0.5`} display={false} /></small></span></label>
+      <label><input type="radio" name="advisor-q05-beta" value="adaptive" /><span>自适应 <small><MathFormula latex={String.raw`\beta\in\{0.25,0.5,0.75,1\}`} display={false} /></small></span></label>
     </fieldset>
     <div class="advisor-intel__scale" role="img" aria-label="教学数轴：从零写入到完整写入，选择不同 β 会改变向量长度；不对应真实模型性能">
       <div class="advisor-intel__scale-head"><span>0 · 不写入</span><span>1 · 完整写入</span></div>
       <div class="advisor-intel__scale-rail"><span class="advisor-intel__scale-half" aria-hidden="true"></span><span class="advisor-intel__scale-arrow" aria-hidden="true"></span></div>
-      <p class="advisor-intel__scale-caption" data-q05-panel="full">选中 β = 1：原始更新完整写入，向量长度为 100%（仅是几何比例）。</p>
-      <p class="advisor-intel__scale-caption" data-q05-panel="half">选中 β = 0.5：同一更新向量的写入长度减半；不代表成绩减半。</p>
-      <p class="advisor-intel__scale-caption" data-q05-panel="adaptive">自适应：根据训练 NLL，从 β=0.25、β=0.5、β=0.75 或 β=1 四档中选择；数轴没有唯一固定落点。</p>
+      <p class="advisor-intel__scale-caption" data-q05-panel="full">选中 <MathFormula latex={String.raw`\beta=1`} display={false} />：原始更新完整写入，向量长度为 100%（仅是几何比例）。</p>
+      <p class="advisor-intel__scale-caption" data-q05-panel="half">选中 <MathFormula latex={String.raw`\beta=0.5`} display={false} />：同一更新向量的写入长度减半；不代表成绩减半。</p>
+      <p class="advisor-intel__scale-caption" data-q05-panel="adaptive">自适应：根据训练 NLL，从 <MathFormula latex={String.raw`\beta\in\{0.25,0.5,0.75,1\}`} display={false} /> 四档中选择；数轴没有唯一固定落点。</p>
     </div>
     <div class="advisor-intel__formula"><MathFormula latex={String.raw`\Delta_{\mathrm{write}}=\beta\,\Delta_{\mathrm{raw}}`} label="β 对原始更新向量的缩放" /><p>β 非负时，改变的是这一步的幅度，不是把方向倒过来。</p></div>
     <div class="advisor-intel__foot"><strong>研究边界：</strong>历史的复杂 β/GDR 实验与上面三种简化 β 政策不是同一试验。新规则只有局部测试，长期比较还没完成。</div>

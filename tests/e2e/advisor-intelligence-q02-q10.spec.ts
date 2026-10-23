@@ -31,8 +31,10 @@ for(const width of [390,768,1440]){
       await expect(q05.locator('[data-q05-panel="full"]')).toBeHidden();
       await q05.locator('input[value="adaptive"]').check();
       await expect(q05.locator('[data-q05-panel="adaptive"]')).toBeVisible();
-      await expect(q05).toContainText('β=0.25');
-      await expect(q05).toContainText('β=1');
+      await expect(q05.locator('[data-math-formula-inline]')).toHaveCount(6);
+      await expect(q05.locator('.katex-mathml math')).toHaveCount(7);
+      await expect(q05).toContainText('0.25');
+      await expect(q05).toContainText('0.75');
       await expect(q05).toContainText('不是同一试验');
 
       await expect(q06.locator('.advisor-intel__action-grid>div')).toHaveCount(4);
