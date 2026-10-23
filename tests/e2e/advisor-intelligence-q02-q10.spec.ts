@@ -120,7 +120,7 @@ for(const width of [320,390,768,1440]){
         expect(Math.max(...updateRows)-Math.min(...updateRows)).toBeLessThan(2);
       }
       if(width<=390){
-        const q05Table=await page.locator('#main-results [aria-label="历史三路线与SEED论文WebShop指标"]').evaluate(wrap=>{
+        const q05Table=await page.locator('#main-results [data-q05-history-paper-table]').evaluate(wrap=>{
           const table=wrap.querySelector('table')!;
           return {wrapScroll:wrap.scrollWidth-wrap.clientWidth,tableWidth:table.getBoundingClientRect().width,wrapWidth:wrap.getBoundingClientRect().width};
         });

@@ -282,7 +282,7 @@ test('SEED Table 1 appears with paper-only Score and Succ. without inventing a s
   const notice=page.locator('#main-results [data-seed-paper-evaluation-boundary]');
   await expect(notice).toContainText('题目身份');
   await expect(notice).toContainText('不能把这张表直接当作方法公平排名');
-  const wrap=page.locator('#main-results [aria-label="历史三路线与SEED论文WebShop指标"]');
+  const wrap=page.locator('#main-results [data-q05-history-paper-table]');
   const narrow=await wrap.evaluate(el=>{
     const first=el.querySelector('thead th:first-child')!;
     const paper=el.querySelector('[data-seed-paper-reference]')!;
@@ -603,7 +603,7 @@ test('Q10 ends the main question sequence and no historical topic restarts as ch
   await expect(article.locator('[data-conversation-detail]')).toHaveCount(0);
   await expect(article.locator('[data-advisor-matrix]')).toHaveCount(7);
   await expect(article.locator('#response-q04 [data-report-figure="q04-capacity"]')).toHaveCount(1);
-  await expect(article.locator('#response-q05 [aria-label="历史三路线与SEED论文WebShop指标"] table')).toHaveCount(1);
+  await expect(article.locator('#response-q05 [data-q05-history-paper-table] table')).toHaveCount(1);
   await expect(article.locator('#response-q09 [aria-label="BUNDLE 更新计数"] table')).toHaveCount(1);
   await expect(article.locator('#response-q03 [data-seed-eight-progress] table')).toHaveCount(1);
   await expect(article.locator('#checkpoint-evidence details')).toHaveCount(1);
