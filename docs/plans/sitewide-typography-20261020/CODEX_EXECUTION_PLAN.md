@@ -1,5 +1,8 @@
 # BaseModel 全站 Typography Design System — Codex 实施与验收计划
 
+> 最新验收修正：66e3 的 Chromium 八片虽绿，实跑856/计划861，缺少5项导入注册测试；完整验收不通过。已改用 Playwright 原生分片，清单回归验证8片并集完整且无重复；WebKit 的 Arial 字体负例在平滑滚动中点错移动目标，改用该文件既有的原生键盘展开方式，保留原有展开/字号/Arial拒绝/恢复断言，不将此用例冒充鼠标交互验收。最新精确HEAD终态仍以 PR #898 收据为准。
+
+
 > Current isolated candidate: source/role evidence, exact remaining migration debt, local failures and current ownership boundaries are recorded in [the evidence README](../../agents/evidence/sitewide-typography/2026-10-22/README.md). The latest exact-head CI/Preview/PNG acceptance is recorded on [PR #898](https://github.com/mykcs/basemodel/pull/898). Historical SHA results below remain historical. Candidate publication does not authorize merge, retarget or Production.
 
 > 2026-10-22 执行补齐：A 的展开提示/键盘/no-JS 已保留；B 的同源重排与原尺寸科学图阅读已实现；C 的5,773条来源声明和81处inline/JS候选逐项归类。角色未知为0，但仍有1,531项后续迁移和25项selector拆分，WP3不能写成全部迁移完成。当前浏览器回归补齐真实字号角色、三篇首屏、三处实际组件、原生章节点击及局部标尺坏例；本地6/6、32/32、20/20与12/12各有独立范围，不相加冒充全站完整套件。

@@ -277,7 +277,12 @@ test('native Arial carrier control fails the same rendered role assertion', asyn
   await expect(root).toBeVisible();
   await waitForHydratedExplainer(root);
   const details=root.locator('.irx-carrier-details');
-  await details.locator(':scope > summary').click();
+  // This case isolates the font boundary. Native keyboard activation avoids
+  // clicking a moving target during the page's smooth scroll (trace-confirmed).
+  // Pointer disclosure behavior is not acceptance evidence from this case.
+  await expect(details).toHaveJSProperty('open', false);
+  await details.locator(':scope > summary').focus();
+  await page.keyboard.press('Enter');
   await expect(details).toHaveAttribute('open','');
   const button=root.locator('.irx-carrier').first();
   await expect(button).toBeVisible();

@@ -1,5 +1,8 @@
 # Typography candidate: source and acceptance evidence
 
+> 最新验收修正：66e3 的 Chromium 八片虽绿，实跑856/计划861，缺少5项导入注册测试；完整验收不通过。已改用 Playwright 原生分片，清单回归验证8片并集完整且无重复；WebKit 的 Arial 字体负例在平滑滚动中点错移动目标，改用该文件既有的原生键盘展开方式，保留原有展开/字号/Arial拒绝/恢复断言，不将此用例冒充鼠标交互验收。最新精确HEAD终态仍以 PR #898 收据为准。
+
+
 The isolated #898 candidate preserves its Draft status and stacked base #895. It integrates the user-authorized #840 rewrite, current Q01/Q03 PGFPlots and booktabs assets, the #930 120px Papers headers/no-JS fallback, and #931's explicit recommendation-versus-advisor-approval boundary. No merge, retarget or Production deployment is authorized. The latest exact commit, CI run, artifact review and Review-only URL belong in the [PR status receipt](https://github.com/mykcs/basemodel/pull/898); historical local results below cannot substitute for them.
 
 ## Source classification
