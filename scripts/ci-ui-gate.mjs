@@ -190,24 +190,9 @@ if (plan.mode === 'focused') {
     },
   );
 } else if (shardTotal > 1) {
-  const testListPath = join(tmpdir(), `basemodel-playwright-tests-${head.replace(/[^A-Za-z0-9._-]/g, '_')}-${shardIndex}of${shardTotal}.txt`);
-  const primaryReserveSeconds = labRelevant ? 30 : 1;
-  run(
-    'node',
-    [
-      'scripts/ci-ui-test-list.mjs',
-      '--shard-index', String(shardIndex),
-      '--shard-total', String(shardTotal),
-      '--primary-reserve-seconds', String(primaryReserveSeconds),
-      '--output', testListPath,
-    ],
-    browserEnv,
-  );
-  run(
-    'npx',
-    ['playwright', 'test', '--project=chromium', '--max-failures=1', '--test-list', testListPath],
-    browserEnv,
-  );
+  // Native sharding retains importing specs for tests registered by helpers.
+  // --test-list otherwise silently filters out helper-only shard owners.
+  run('npm', ['run', 'test:ui', '--', `--shard=${shardIndex}/${shardTotal}`], browserEnv);
 } else {
   run('npm', ['run', 'test:ui'], browserEnv);
 }

@@ -38,6 +38,9 @@ const c = (
 // Reading entries keep their existing task links plus one collapsed contents control.
 // Compact paper headers allow the first substantive chapter into view; do not restore blank-screen spacers.
 export const SITE_READER_CONTRACTS = [
+  c('handbook', '/handbook/', '/handbook/', 'reference', '在 BaseModel 内找到可检索的操作文档', '保留全站研究导航，分清网站导航与手册目录，再选择 Harness 或 GPU 操作说明', '文档存在不代表实验已运行或已有 GPU 权限', '阅读操作说明或返回开发与研究页面', '.sl-markdown-content'),
+  c('handbook-harness', '/handbook/agent-harness/', '/handbook/agent-harness/', 'operational', '核对从 Prompt 到实际执行的各层', '在共享网站导航下理解三项执行核验', '文档不能证明每次会话正确执行', '核对 GitHub 当前标准或返回手册', '.sl-markdown-content'),
+  c('handbook-gpu', '/handbook/openevo-gpu/', '/handbook/openevo-gpu/', 'operational', '找到 GPU 调度的当前规则入口', '先知道调度需要适用权限，再阅读权威操作规则', '文档和排队均不授予执行或删除权限', '查看当前权威规则或返回手册', '.sl-markdown-content'),
   c('home', '/', '/', 'narrative', '用最短路径理解 SEED × OpenEvo 正在研究什么、目前能说到哪里，以及下一步从哪条研究入口继续', '先看到一个具体研究问题：固定同一 Base Model 与任务后，换一种自我改进方法是否真的学得更好；紧接着能进入当前结果或研究解释', '首页只复述已经由结果页和实验页拥有的科学边界：7B 同题测量仍包含无差异、三组 1.7B 冻结终评可描述性同题比较但动态 α+β 未运行、SEED 与 OpenEvo 方法对方法公平比较仍未完成', '先看当前证据，再沿七次实验演进继续，或进入研究解释 / 实验与结果 / 复现实验', '.mission-hero__lede', { maxInteractive: 2, maxHeadings: 1, maxTextChars: 560 }),
   c('recent-challenges', '/research/seed-openevo/recent-challenges/', '/research/seed-openevo/recent-challenges/', 'narrative', '理解近期 OpenEVO 研究实际遭遇的困难、个人投入和下一步改进方向', '先看到这是一份个人复盘：服务器资源阶段性受限，但文献、方法学习和实验准备仍在推进；准备不等于新实验结果', '10% 只是当事人的粗略工时估计；学习与工程准备不冒充正式实验结果；私人通话、他人评价和申请信息不公开', '阅读六类困难及四个常见提问的回应，然后回到实际实验与结果', '.intro .lead', { maxInteractive: 2, maxHeadings: 2, maxTextChars: 680 }),
   c('not-found', '/404/', '/404/', 'reference', '知道当前地址不存在并安全返回有效入口', '明确页面不存在，而不是让读者误以为内容加载失败', '错误状态和返回路径', '返回首页或主要导航'),

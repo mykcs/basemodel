@@ -3,8 +3,8 @@ import { getMessages, localePath, parsePath, type Locale } from '../i18n';
 import { localizedRoute } from '../lib/sitemapRoutes';
 import CommandMenu from './navigation/CommandMenu.astro';
 
-interface Props { locale: Locale; }
-const { locale } = Astro.props;
+interface Props { locale: Locale; as?: 'header' | 'div'; }
+const { locale, as: Tag = 'header' }: Props = Astro.props;
 const m = getMessages(locale);
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
@@ -50,6 +50,7 @@ const utilityLinks = [
   { path: '/data-status/', label: m.nav.dataStatus, description: t('数据更新、目录核验、未知字段与证据状态', 'Dataset updates, catalog checks, unknown fields, and evidence status') },
   { path: '/methodology/', label: t('方法与边界', 'Methodology'), description: t('事实来源、证据等级和比较边界', 'Sources, evidence levels, and comparison boundaries') },
   { path: '/development/', label: t('开发', 'Development'), description: t('这个网站怎么开发、检查和上线', 'How this site is developed, checked, and shipped') },
+  { path: '/handbook/', label: t('技术手册', 'Handbook'), description: t('Agent Harness 与科研操作文档', 'Agent Harness and research operations documentation') },
 ].map((link) => ({
   ...link,
   href: localePath(locale, link.path),
@@ -70,7 +71,7 @@ const commandMenuLabels = {
   searchGuide: m.nav.searchGuide,
 };
 ---
-<header class="site-header" data-site-header>
+<Tag class="site-header" data-site-header>
   <div class="shell nav-inner">
     <a class="brand" href={localePath(locale, '/')} aria-label={m.site.backHome}>
       <span class="brand-mark" aria-hidden="true">BM</span>
@@ -112,7 +113,7 @@ const commandMenuLabels = {
       </details>
     </nav>
 
-    <CommandMenu locale={locale} labels={commandMenuLabels} />
+    <slot name="search"><CommandMenu locale={locale} labels={commandMenuLabels} /></slot>
     {switchHref && <a class="lang-switch" href={switchHref} aria-label={m.nav.switchLangLabel} hreflang={otherLocale === 'zh' ? 'zh-CN' : 'en'}>{m.nav.switchLang}</a>}
     <button class="menu-toggle" type="button" aria-label={m.nav.openMenu} aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
       <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
@@ -153,7 +154,7 @@ const commandMenuLabels = {
       </div>
     </div>
   </div>
-</header>
+</Tag>
 
 <script>
   const menuToggle = document.querySelector<HTMLElement>('[data-menu-toggle]');

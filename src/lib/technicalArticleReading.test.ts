@@ -13,7 +13,7 @@ describe('technical article reading inventory', () => {
     }
   });
   it('keeps tools, catalog directories, presentations and moved pages out of the article treatment', () => {
-    for (const route of ['/','/models/','/compare/','/workspace/','/research/seed-openevo/study/run/','/research/seed-openevo/study/briefing/','/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/','/research/seed-openevo/study/results/webshop-training/']) {
+    for (const route of ['/','/development/','/en/development/','/models/','/compare/','/workspace/','/research/seed-openevo/study/run/','/research/seed-openevo/study/briefing/','/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/','/research/seed-openevo/study/results/webshop-training/']) {
       expect(isTechnicalArticleRoute(route), route).toBe(false);
     }
   });

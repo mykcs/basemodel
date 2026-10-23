@@ -1,0 +1,9 @@
+{/* Shared theme authority for native pages and documentation. */}
+<script is:inline>
+  try {
+    const storedTheme = localStorage.getItem('atlas-theme');
+    document.documentElement.dataset.theme = storedTheme === 'dark' ? 'dark' : 'light';
+  } catch {
+    document.documentElement.dataset.theme = 'light';
+  }
+</script>

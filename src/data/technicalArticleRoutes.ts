@@ -1,7 +1,6 @@
 /** Article reading surfaces; directories, workbenches, slides and route migrations retain their own layouts.
  * This explicit inventory also drives rendered acceptance, so new article routes cannot silently miss the shared treatment. */
 export const TECHNICAL_ARTICLE_ROUTES = [
-  "/development/",
   "/methodology/",
   "/research/seed-openevo/flow/alfworld/",
   "/research/seed-openevo/flow/benchmarks/",
