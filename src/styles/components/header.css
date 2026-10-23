@@ -184,6 +184,7 @@
 .site-header .mobile-menu {
   padding: 10px 0;
   border-top: 1px solid var(--line);
+  background: var(--bg);
 }
 
 /* Closed popovers must contribute no off-screen geometry. */
@@ -284,7 +285,7 @@
 
   body .site-header .mobile-menu {
     padding: 0;
-    background: color-mix(in srgb, var(--bg) 96%, transparent);
+    background: var(--bg);
     box-shadow: 0 14px 32px color-mix(in srgb, var(--ink) 9%, transparent);
   }
 

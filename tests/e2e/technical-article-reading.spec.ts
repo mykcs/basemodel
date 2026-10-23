@@ -165,3 +165,59 @@ test('moving a chapter number into its heading preserves old generated anchors',
   await expect(heading).toHaveAttribute('id',id);
   await expect(page.locator('[data-article-outline] a').first()).toHaveAttribute('data-outline-target',id);
 });
+
+// Page roles share sources; operational tools do not inherit scientific prose frames.
+async function developmentPresentationErrors(page: Page) {
+  return page.locator('.development-page').evaluate(root => {
+    const errors: string[] = [];
+    const frame = root.getBoundingClientRect();
+    const shell = document.querySelector('.site-footer .shell')!.getBoundingClientRect();
+    if (!root.classList.contains('shell') || root.classList.contains('evo-approved-reader')) errors.push('tool uses article frame');
+    if (Math.abs(frame.width - shell.width) > 1) errors.push('tool diverges from canonical shell');
+    if (document.querySelectorAll('main').length !== 1) errors.push('competing main landmarks');
+    const flow = root.querySelector<HTMLElement>('.development-flow')!;
+    const columns = getComputedStyle(flow).gridTemplateColumns.split(' ').length;
+    const expected = innerWidth <= 860 ? 1 : innerWidth <= 1080 ? 3 : 6;
+    if (columns !== expected) errors.push('steps do not fit their content band');
+    for (const card of flow.children) {
+      const text = card.querySelector('small')!;
+      if (text.getBoundingClientRect().width < 7 * parseFloat(getComputedStyle(text).fontSize)) errors.push('step explanation squeezed');
+    }
+    if (document.documentElement.scrollWidth > innerWidth + 1) errors.push('document overflow');
+    return errors;
+  });
+}
+
+for (const width of [390,768,861,1024,1440]) for (const theme of ['light','dark'] as const) {
+  test(`development uses shared operational shell at ${width}px ${theme}`,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(t=>localStorage.setItem('atlas-theme',t),theme);
+    await page.goto('/development/');
+    await expect(page.locator('body')).not.toHaveAttribute('data-technical-article','true');
+    expect(await developmentPresentationErrors(page)).toEqual([]);
+    await expect(page.locator('.development-flow li')).toHaveCount(6);
+    await expect(page.locator('.development-handbook a[href="/handbook/"]')).toBeVisible();
+    await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+  });
+}
+
+for (const width of [861,1440]) test(`same tool role gate rejects a squeezed legacy frame at ${width}px`,async({page})=>{
+  await page.setViewportSize({width,height:900});await page.goto('/development/');
+  expect(await developmentPresentationErrors(page)).toEqual([]);
+  const bad=await page.addStyleTag({content:'.development-page {width:620px !important;} .development-flow {grid-template-columns:repeat(6,minmax(0,1fr)) !important;}'});
+  const errors=await developmentPresentationErrors(page);
+  expect(errors).toContain('tool diverges from canonical shell');
+  expect(errors).toContain('step explanation squeezed');
+  await bad.evaluate(node=>node.parentNode?.removeChild(node));
+  expect(await developmentPresentationErrors(page)).toEqual([]);
+});
+
+for(const width of [390,1440])test(`operational development remains usable without JavaScript at ${width}px`,async({browser,baseURL})=>{
+  const context=await browser.newContext({baseURL,javaScriptEnabled:false,viewport:{width,height:900}});
+  const page=await context.newPage();await page.goto('/development/');
+  expect(await developmentPresentationErrors(page)).toEqual([]);
+  await expect(page.locator('h1')).toBeVisible();await expect(page.locator('.development-flow li')).toHaveCount(6);
+  await page.locator('.development-handbook a[href="/handbook/"]').click();
+  await expect(page).toHaveURL(/\/handbook\/$/);await expect(page.locator('h1')).toBeVisible();
+  await context.close();
+});
