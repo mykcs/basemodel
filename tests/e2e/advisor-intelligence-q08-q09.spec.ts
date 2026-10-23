@@ -55,8 +55,13 @@ for(const width of [390,768,1440]){
       await expect(root).toContainText('33 ÷ 64');
       await expect(root).toContainText('不是成绩提高了 52%');
       await expect(root.locator('[data-q09-update]')).toHaveCount(4);
-      await expect(root.locator('[data-q09-update="parameters"]')).toContainText('159 次更新');
-      await expect(root.locator('[data-q09-update="memory"]')).toContainText('2 次更新');
+      await expect(root.locator('[data-q09-update="parameters"]')).toContainText('159 次参数更新');
+      await expect(root.locator('[data-q09-update="memory"]')).toContainText('2 次文字记忆改写');
+      await expect(root.locator('[data-q09-update="skill"]')).toContainText('1 次技能指导改写');
+      await expect(root.locator('[data-q09-update="system"]')).toContainText('3 次系统指导改写');
+      await root.locator('.q09-text__details summary').click();
+      await expect(root.locator('.q09-text__details')).toContainText('不表示实际做了 130 次或 160 次参数更新');
+      await root.locator('.q09-text__details summary').click();
       await expect(root.locator('[data-q09-panel="r159"]')).toBeVisible();
       await expect(root.locator('[data-q09-panel="r129"]')).toBeHidden();
       await expect(root.locator('[data-q09-panel="r159"] [data-q09-kind="skill_guidance_removed"]')).toContainText('51.56%');

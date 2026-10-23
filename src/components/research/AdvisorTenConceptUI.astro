@@ -9,10 +9,10 @@ interface Props { variant: Variant }
 const {variant} = Astro.props;
 import MathFormula from '../common/MathFormula.astro';
 import ExternalBrandMark from '../common/ExternalBrandMark';
-const q07EvidenceHref = 'https://github.com/mykcs/openevo-experiment/blob/main/docs/evidence/advisor-q07-task-vector-causal-20261001/Q07_CAUSAL_EFFECTS.csv';
+const q07EvidenceHref = 'https://github.com/mykcs/openevo-experiment/blob/a64ca196765671ca14131aa4558a836133c8a6b3/docs/evidence/advisor-q07-task-vector-causal-20261001/Q07_CAUSAL_EFFECTS.csv';
 // Bounded OFF R152–R159 reverse-versus-intact Task Score differences, multiplied
 // by 100 from the sealed reward-scale CSV. Only R156 passes eight-way Holm.
-// https://github.com/mykcs/openevo-experiment/blob/main/docs/evidence/advisor-q07-task-vector-causal-20261001/Q07_CAUSAL_EFFECTS.csv
+// https://github.com/mykcs/openevo-experiment/blob/a64ca196765671ca14131aa4558a836133c8a6b3/docs/evidence/advisor-q07-task-vector-causal-20261001/Q07_CAUSAL_EFFECTS.csv
 const q07ReverseEffects = [
   {round: 152, decrease: '2.98', holm: false},
   {round: 153, decrease: '8.34', holm: false},
@@ -97,7 +97,7 @@ const q07ReverseEffects = [
     <p class="advisor-intel__kicker">Q06 · 候选动作的分叉</p>
     <h4 id="advisor-intel-q06-title">Agent 在“下一步点哪里”之间犹豫，我们能提前发现失误吗？</h4>
     <p class="advisor-intel__lead">重点是同一个页面状态下的<strong>合法候选动作</strong>怎样竞争，而不只是模型最后点中了哪一个。</p>
-    <figure class="advisor-intel__decision-tree" data-q06-fork aria-label="同一购物页面的合法动作候选共属一个决策分叉，三个显示动作仅是例子">
+    <div class="advisor-intel__decision-tree" data-q06-fork role="group" aria-label="同一购物页面的合法动作候选共属一个决策分叉，三个显示动作仅是例子">
       <div class="advisor-intel__fork-root" data-q06-fork-root>同一个购物页面：Agent 要决定下一步操作</div>
       <svg class="advisor-intel__decision-root-link" data-q06-root-link viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M50 0V24" /></svg>
       <div class="advisor-intel__legal-set" data-q06-legal-set>
@@ -113,8 +113,8 @@ const q07ReverseEffects = [
         <li data-q06-candidate="filter"><span>例子 03</span><strong>筛选尺码</strong></li>
       </ol>
       <div class="advisor-intel__decision-remainder" data-q06-remainder><span aria-hidden="true">···</span> 可能还有其他合法操作；上面三项不是完整清单，也不能把它们的概率当作已测得的 100%。</div>
-      <figcaption>这幅图解释的是<strong>一次决策的候选集合</strong>，不是一条旧轨迹的真实概率柱状图。</figcaption>
-    </figure>
+      <p class="advisor-intel__decision-caption">这幅示意解释的是<strong>一次决策的候选集合</strong>，不是一条旧轨迹的真实概率柱状图。</p>
+    </div>
     <p class="advisor-intel__disclaimer">非法动作不属于图中合法集合的条件概率分母；原始模型仍可能生成非法动作，需要另行统计。旧 R159 轨迹未保存 logits，不能还原这一时刻的概率或熵。</p>
     <div class="advisor-intel__foot"><strong>现阶段：</strong>已有其他保存点的候选概率与预测分析；“越犹豫越容易失败”还需要新题、独立模型起点来验证。</div>
   </section>
@@ -123,10 +123,10 @@ const q07ReverseEffects = [
 {variant === 'q07' && (
   <section class="advisor-intel" data-advisor-concept="q07" aria-labelledby="advisor-intel-q07-title">
     <p class="advisor-intel__kicker">Q07 · 参数向量的方向</p>
-    <h4 id="advisor-intel-q07-title">学习的方向真的有用：反着走一次，成绩低了约 10 分。</h4>
+    <h4 id="advisor-intel-q07-title">反转第 156 轮的更新，同一批题平均低了约 10 分。</h4>
     <p class="advisor-intel__lead">在 Bounded OFF 的第 156 轮，把真实更新向量反过来，同一批固定题上的平均 Task Score <strong>下降 10.06 分</strong>。这是一个有边界的局部因果结果。</p>
     <fieldset class="advisor-intel__picker" data-q07-directions>
-      <legend>沿数轴看同一轮更新的三种干预</legend>
+      <legend>固定用第 156 轮示意：同一条更新向量有三种处理办法</legend>
       <label><input type="radio" name="advisor-q07-vector" value="original" checked /><span>原始方向 <small>+ Δ</small></span></label>
       <label><input type="radio" name="advisor-q07-vector" value="zero" /><span>删除更新 <small>0</small></span></label>
       <label><input type="radio" name="advisor-q07-vector" value="reverse" /><span>方向反转 <small>− Δ</small></span></label>
@@ -140,7 +140,7 @@ const q07ReverseEffects = [
     </div>
     <div class="advisor-intel__round-evidence" data-q07-round-evidence>
       <fieldset class="advisor-intel__round-picker" data-q07-rounds>
-        <legend>真实比较：训练最后八轮中，反转哪一轮的更新？</legend>
+        <legend>独立查看八轮实测：选择另一轮只改变下面的成绩解释，不改变上方第 156 轮数轴示意</legend>
         {q07ReverseEffects.map(({round}) => (
           <label><input type="radio" name="advisor-q07-round" value={round} checked={round===156} /><span>{round}</span></label>
         ))}
@@ -202,7 +202,7 @@ const q07ReverseEffects = [
   .advisor-intel__picker input{flex:none;accent-color:var(--ai-accent);margin:.12rem 0 0}
   .advisor-intel__picker small{display:block;color:var(--ai-muted);font-size:.7rem;margin-top:.22rem}
   .advisor-intel__visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-  .advisor-intel__fork-instruction{font-size:.82rem;margin:.55rem 0 .75rem!important}
+  .advisor-intel .advisor-intel__fork-instruction{font-size:.82rem;margin:.55rem 0 .75rem}
   .advisor-intel__fork,.advisor-intel__decision-tree{margin:.75rem 0 .65rem;padding:clamp(.7rem,2.5vw,1rem);border:1px solid var(--ai-line);border-radius:var(--radius-feature,.8rem);min-width:0;background:var(--ai-paper)}
   .advisor-intel__fork-root{max-width:35rem;margin:0 auto;padding:.65rem .8rem;border:1px solid var(--ai-line);border-radius:var(--radius-control,.4rem);background:color-mix(in srgb,var(--ai-paper) 91%,var(--ai-accent));font-size:.81rem;font-weight:710;line-height:1.55;text-align:center}
   .advisor-intel__fork-root :global(.math-formula){display:inline;max-width:100%}
@@ -245,7 +245,7 @@ const q07ReverseEffects = [
   .advisor-intel__decision-options strong{display:block;font-size:.83rem;margin-top:.22rem;line-height:1.45}
   .advisor-intel__decision-remainder{border-left:2px dashed var(--ai-muted);padding:.2rem 0 .2rem .62rem;margin:.85rem 0 .5rem .3rem;color:var(--ai-muted);font-size:.76rem;line-height:1.65}
   .advisor-intel__decision-remainder span{font-size:1rem;letter-spacing:.17em;font-weight:700}
-  .advisor-intel__decision-tree figcaption{font-size:.76rem;line-height:1.6;margin:.45rem 0 0;color:var(--ai-ink)}
+  .advisor-intel .advisor-intel__decision-caption{font-size:.76rem;line-height:1.6;margin:.45rem 0 0;color:var(--ai-ink)}
   .advisor-intel__vector{padding-top:1rem}
   .advisor-intel__vector-neg,.advisor-intel__vector-pos{display:inline-block;width:50%;font-size:.69rem;color:var(--ai-muted)}
   .advisor-intel__vector-pos{text-align:right}

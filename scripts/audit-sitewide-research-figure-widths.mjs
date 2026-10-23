@@ -15,7 +15,7 @@ const assetNames = [
   'evo-article__figure','advisor-method__figure','q03-world4__flow',
   'exp-scaffold__gate-figure','reasoning-line','transfer-figure','task-example',
   'paper__derived-figure','paper-table-figure','training-chart','advisor-viz',
-  'dynamics-chart','scaling-chart','paper-effect','advisor-intel__decision-tree'
+  'dynamics-chart','scaling-chart','paper-effect'
 ];
 const known = new Set(assetNames);
 const problems = [];

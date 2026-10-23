@@ -80,6 +80,8 @@ for(const width of [320,390,768,1440]){
 
       const vectors=q07.locator('input[name="advisor-q07-vector"]');
       await expect(vectors).toHaveCount(3);
+      await expect(q07.locator('[data-q07-directions] legend')).toContainText('固定用第 156 轮示意');
+      await expect(q07.locator('[data-q07-rounds] legend')).toContainText('不改变上方第 156 轮数轴示意');
       await expect(q07.locator('[data-q07-panel="original"]')).toBeVisible();
       await q07.locator('input[value="zero"]').check();
       await expect(q07.locator('[data-q07-panel="zero"]')).toBeVisible();
@@ -110,6 +112,13 @@ for(const width of [320,390,768,1440]){
       await expect(page.locator('#response-q04 [data-q04-gpu-resource]')).toHaveCount(1);
       await expect(page.locator('#response-q08 [data-q08-retention]')).toHaveCount(1);
       await expect(page.locator('#response-q09 [data-q09-text-guidance]')).toHaveCount(1);
+      const q09Updates=page.locator('#response-q09 [data-q09-update]');
+      await expect(q09Updates).toHaveCount(4);
+      await expect(q09Updates.first()).toContainText('159 次参数更新');
+      if(width<=390){
+        const updateRows=await q09Updates.evaluateAll(items=>items.map(item=>item.getBoundingClientRect().top));
+        expect(Math.max(...updateRows)-Math.min(...updateRows)).toBeLessThan(2);
+      }
       if(width<=390){
         const q05Table=await page.locator('#main-results [aria-label="历史三路线与SEED论文WebShop指标"]').evaluate(wrap=>{
           const table=wrap.querySelector('table')!;
