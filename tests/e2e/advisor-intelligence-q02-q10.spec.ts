@@ -21,6 +21,38 @@ for(const width of [320,390,768,1440]){
       await expect(q02).toContainText('SFT');
       await expect(q02).toContainText('OPSD');
       await expect(q02.locator('[data-q02-fork-wires] path')).toHaveCount(1);
+      // Owner-approved Q02 was a paired training-mechanism comparison, not
+      // two generic summary cards. Both routes must use a shared task, keep
+      // their distinct supervision/loss, and finish with identical LoRA nodes.
+      await expect(q02.locator('[data-q02-common]')).toContainText('同一批 WebShop 离线训练记录');
+      const sft=q02.locator('[data-q02-track="sft"]');
+      const opsd=q02.locator('[data-q02-track="opsd"]');
+      await expect(sft).toContainText('模仿已有答案');
+      await expect(opsd).toContainText('蒸馏额外经验');
+      await expect(sft.locator('[data-q02-supervision]')).toContainText('历史答案');
+      await expect(sft.locator('[data-q02-objective]')).toContainText('逐 token 交叉熵（CE）');
+      await expect(opsd.locator('[data-q02-supervision]')).toContainText('冻结教师');
+      await expect(opsd.locator('[data-q02-supervision]')).toContainText('episode-skill');
+      await expect(opsd.locator('[data-q02-objective]')).toContainText('广义 JSD / 分布蒸馏');
+      const tasks=await q02.locator('[data-q02-task]').allTextContents();
+      expect(tasks.map(x=>x.trim())).toEqual(['同一任务 x','同一任务 x']);
+      const finalNodes=await q02.locator('[data-q02-update]').allTextContents();
+      expect(finalNodes.map(x=>x.trim())).toEqual(['更新学生 LoRA','更新学生 LoRA']);
+      await expect(q02.locator('.advisor-intel__q02-arrow')).toHaveCount(6);
+      const q02Layout=await q02.evaluate(root=>{
+        const tracks=[...root.querySelectorAll('[data-q02-track]')].map(el=>el.getBoundingClientRect());
+        const updates=[...root.querySelectorAll('[data-q02-update]')].map(el=>el.getBoundingClientRect());
+        const input=[...root.querySelectorAll('[data-q02-task]')].map(el=>el.getBoundingClientRect());
+        const arrows=[...root.querySelectorAll('.advisor-intel__q02-arrow')].map(el=>getComputedStyle(el).display);
+        return {xs:tracks.map(x=>x.x),tops:tracks.map(x=>x.top),bottoms:tracks.map(x=>x.bottom),updateTops:updates.map(x=>x.top),inputTops:input.map(x=>x.top),right:Math.max(...tracks.map(x=>x.right)),left:Math.min(...tracks.map(x=>x.left)),arrows};
+      });
+      expect(q02Layout.xs[0]!).toBeLessThan(q02Layout.xs[1]!);
+      expect(Math.abs(q02Layout.updateTops[0]!-q02Layout.updateTops[1]!)).toBeLessThan(2);
+      expect(Math.abs(q02Layout.inputTops[0]!-q02Layout.inputTops[1]!)).toBeLessThan(2);
+      expect(Math.abs(q02Layout.bottoms[0]!-q02Layout.bottoms[1]!)).toBeLessThan(2);
+      expect(q02Layout.arrows.every(x=>x!=='none')).toBe(true);
+      expect(q02Layout.left).toBeGreaterThanOrEqual(-1);
+      expect(q02Layout.right).toBeLessThanOrEqual(width+1);
       await expect(q03).toContainText('1,536 次开发题尝试');
       await expect(q03).toContainText('缺对应训练后的正式终评');
       await expect(q03.locator('[data-q03-protocol] tbody tr')).toHaveCount(4);
@@ -157,6 +189,7 @@ for(const width of [320,390,768,1440]){
         // auto-scroll superimpose the unrelated site header over the title.
         // The real sticky-header user path is independently asserted above.
         await page.addStyleTag({content:'.site-header{position:static!important}'});
+        await q02.screenshot({path:testInfo.outputPath(`q02-${width}-${theme}.png`),animations:'disabled'});
         await q10.screenshot({path:testInfo.outputPath(`q10-${width}-${theme}.png`),animations:'disabled'});
         await q05.screenshot({path:testInfo.outputPath(`q05-${width}-${theme}.png`),animations:'disabled'});
         await q06.screenshot({path:testInfo.outputPath(`q06-${width}-${theme}.png`),animations:'disabled'});
