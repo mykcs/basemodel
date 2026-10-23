@@ -25,7 +25,13 @@ export default defineConfig({
     title: { en: 'BaseModel · 技术手册', zh: 'BaseModel · 技术手册' },
     description: 'OpenEVO、Agent Harness 和科研资源的可检索操作文档',
     disable404Route: true,
-    customCss: ['./src/styles/starlight-handbook.css'],
+    customCss: ['./src/styles/app.css', './src/styles/starlight-handbook.css'],
+    components: {
+      Header: './src/components/handbook/Header.astro',
+      ThemeProvider: './src/components/common/ThemeInitialization.astro',
+      ThemeSelect: './src/components/handbook/ThemeSelect.astro',
+      MobileMenuToggle: './src/components/handbook/MobileMenuToggle.astro',
+    },
     head: [
       { tag: 'meta', attrs: { name: 'robots', content: 'noindex,nofollow' } },
       { tag: 'link', attrs: { rel: 'sitemap', href: '/sitemap.xml' } },

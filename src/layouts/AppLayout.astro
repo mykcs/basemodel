@@ -1,5 +1,6 @@
 ---
 import Header from '../components/Header.astro';
+import ThemeInitialization from '../components/common/ThemeInitialization.astro';
 import SeedOpenEvoResearchNav from '../components/research/SeedOpenEvoResearchNav.astro';
 import LegacyTodayRunbookNotice from '../components/LegacyTodayRunbookNotice.astro';
 import ActionableContentLayer from '../components/common/ActionableContentLayer.astro';
@@ -103,14 +104,7 @@ const compareTrayLabels = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <script is:inline>
-      try {
-        const storedTheme = localStorage.getItem('atlas-theme');
-        document.documentElement.dataset.theme = storedTheme === 'dark' ? 'dark' : 'light';
-      } catch {
-        document.documentElement.dataset.theme = 'light';
-      }
-    </script>
+    <ThemeInitialization />
     <meta name="description" content={description} />
     {shouldNoIndex && <meta name="robots" content="noindex,follow" />}
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f4ef" />

@@ -1,10 +1,49 @@
-/* Starlight-owned handbook only: do not import into the native AppLayout. */
-:root { --sl-content-width: 49rem; --sl-font: Inter, 'PingFang SC', system-ui, sans-serif; }
-:root[data-theme='light'] {
-  --sl-color-bg: #f6f7f5;
-  --sl-color-bg-nav: #f6f7f5;
-  --sl-color-bg-sidebar: #f6f7f5;
-  --sl-color-accent: #315c47;
-  --sl-color-accent-high: #254535;
-  --sl-color-accent-low: #d8ebdf;
+/* Documentation layout adapter: app.css and tokens.css remain the shared owners. */
+:root {
+  --sl-font: var(--font-interface);
+  --sl-font-mono: var(--font-mono);
+  --sl-content-width: var(--reading-width);
+  --sl-nav-height: calc(var(--site-header-height) + var(--space-7));
+  --sl-color-bg: var(--bg);
+  --sl-color-bg-nav: var(--bg);
+  --sl-color-bg-sidebar: var(--surface);
+  --sl-color-text: var(--ink);
+  --sl-color-text-accent: var(--accent-deep);
+  --sl-color-text-invert: var(--accent-on-fill);
+  --sl-color-hairline: var(--line);
+  --sl-color-hairline-light: var(--line);
+  --sl-color-hairline-shade: var(--line);
+  --sl-color-accent: var(--accent-fill);
+  --sl-color-accent-high: var(--accent-deep);
+  --sl-color-accent-low: var(--surface-muted);
+  --sl-color-gray-1: var(--ink);
+  --sl-color-gray-2: var(--ink);
+  --sl-color-gray-3: var(--muted);
+  --sl-color-gray-4: var(--line);
+  --sl-color-gray-5: var(--surface-muted);
+  --sl-color-gray-6: var(--surface);
+  --sl-color-black: var(--bg);
+  --sl-color-white: var(--ink);
+}
+/* Header internals stay in the same semantic owner used by native routes. */
+.page > header.header { padding: 0; height: var(--sl-nav-height); }
+.handbook-context { margin-inline: auto; display: flex; align-items: center; gap: var(--space-2); height: var(--space-7); font-size: 1rem; }
+.handbook-context a { color: var(--accent-deep); }
+.sl-menu-button { position: fixed; top: calc(var(--site-header-height) + var(--space-2)); inset-inline-end: var(--sl-nav-pad-x); padding: var(--space-2); min-height: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface); color: var(--ink); font: inherit; box-shadow: none; cursor: pointer; z-index: calc(var(--sl-z-index-navbar) + 1); }
+.sidebar-content a[aria-current='page'] { color: var(--accent-on-fill); background-color: var(--accent-fill); }
+html.mobile-nav-open .sl-menu-button { visibility: hidden; }
+.content-panel h1 { font-size: var(--sl-text-h1); line-height: var(--sl-line-height-headings); letter-spacing: -.02em; margin: 0; }
+.sl-markdown-content { font-family: var(--font-interface); }
+.sl-markdown-content :is(p, ul, ol) { margin-block: var(--space-4); }
+.sl-markdown-content h2 { font-size: var(--sl-text-h2); line-height: var(--sl-line-height-headings); }
+.sl-markdown-content h3 { font-size: var(--sl-text-h3); line-height: var(--sl-line-height-headings); }
+.pagination-links a { border-radius: var(--radius-panel); box-shadow: none; }
+.handbook-static-nav { margin-inline: auto; padding-block: var(--space-2); }
+@media (scripting: none) {
+  :root { --sl-nav-height: auto; }
+  .page > header.header { position: static; height: auto; }
+  .main-frame { padding-top: 0; }
+  .handbook-context { height: auto; min-height: var(--space-7); }
+  .sl-menu-button, site-search { display: none; }
+  .sidebar-pane { display: block; position: static; width: auto; }
 }
