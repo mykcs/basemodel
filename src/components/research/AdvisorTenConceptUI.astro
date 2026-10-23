@@ -80,12 +80,14 @@ const q07ReverseEffects = [
         <label data-q05-branch="adaptive"><input type="radio" name="advisor-q05-beta" value="adaptive" /><span><strong>自适应</strong><small>按训练 NLL 选 β</small><em>输出：四档之一</em></span></label>
       </fieldset>
     </div>
-    <div class="advisor-intel__scale" role="img" aria-label="教学数轴：从零写入到完整写入，选择不同 β 会改变向量长度；不对应真实模型性能">
+    <div class="advisor-intel__scale" role="group" aria-label="教学数轴：从零写入到完整写入，选择不同 β 会改变向量长度；不对应真实模型性能">
       <div class="advisor-intel__scale-head"><span>0 · 不写入</span><span>1 · 完整写入</span></div>
-      <div class="advisor-intel__scale-rail"><span class="advisor-intel__scale-half" aria-hidden="true"></span><span class="advisor-intel__scale-arrow" aria-hidden="true"></span></div>
-      <p class="advisor-intel__scale-caption" data-q05-panel="full">选中 <MathFormula latex={String.raw`\beta=1`} display={false} />：原始更新完整写入，向量长度为 100%（仅是几何比例）。</p>
-      <p class="advisor-intel__scale-caption" data-q05-panel="half">选中 <MathFormula latex={String.raw`\beta=0.5`} display={false} />：同一更新向量的写入长度减半；不代表成绩减半。</p>
-      <p class="advisor-intel__scale-caption" data-q05-panel="adaptive">自适应：根据训练 NLL，从 <MathFormula latex={String.raw`\beta\in\{0.25,0.5,0.75,1\}`} display={false} /> 四档中选择；数轴没有唯一固定落点。</p>
+      <div class="advisor-intel__scale-rail" aria-hidden="true"><span class="advisor-intel__scale-half"></span><span class="advisor-intel__scale-arrow"></span></div>
+      <div class="advisor-intel__scale-reading" aria-live="polite" aria-atomic="true">
+        <p class="advisor-intel__scale-caption" data-q05-panel="full">选中 <MathFormula latex={String.raw`\beta=1`} display={false} />：原始更新完整写入，向量长度为 100%（仅是几何比例）。</p>
+        <p class="advisor-intel__scale-caption" data-q05-panel="half">选中 <MathFormula latex={String.raw`\beta=0.5`} display={false} />：同一更新向量的写入长度减半；不代表成绩减半。</p>
+        <p class="advisor-intel__scale-caption" data-q05-panel="adaptive">自适应：根据训练 NLL，从 <MathFormula latex={String.raw`\beta\in\{0.25,0.5,0.75,1\}`} display={false} /> 四档中选择；数轴没有唯一固定落点。</p>
+      </div>
     </div>
     <div class="advisor-intel__formula"><MathFormula latex={String.raw`\Delta_{\mathrm{write}}=\beta\,\Delta_{\mathrm{raw}}`} label="β 对原始更新向量的缩放" /><p>β 非负时，改变的是这一步的幅度，不是把方向倒过来。</p></div>
     <div class="advisor-intel__foot"><strong>β 决定这一步走多远，不直接决定朝哪走。</strong>这里的三条分支互斥，不是一次训练叠加三次写入。历史复杂 β/GDR 与这些简化政策不是同一试验；压缩之后的方向与长期成绩仍需另测。</div>
@@ -131,12 +133,14 @@ const q07ReverseEffects = [
       <label><input type="radio" name="advisor-q07-vector" value="zero" /><span>删除更新 <small>0</small></span></label>
       <label><input type="radio" name="advisor-q07-vector" value="reverse" /><span>方向反转 <small>− Δ</small></span></label>
     </fieldset>
-    <div class="advisor-intel__vector" role="img" aria-label="参数更新的概念数轴：原始更新指向正方向、删除停在零点、反转指向负方向，长度为示意">
+    <div class="advisor-intel__vector" role="group" aria-label="参数更新的概念数轴：原始更新指向正方向、删除停在零点、反转指向负方向，长度为示意">
       <span class="advisor-intel__vector-neg">− 更新方向</span><span class="advisor-intel__vector-pos">+ 更新方向</span>
-      <div class="advisor-intel__vector-axis"><i class="advisor-intel__vector-center"></i><i class="advisor-intel__vector-arrow"></i></div>
-      <div class="advisor-intel__vector-text" data-q07-panel="original">原始：保留第 156 轮真实写入的更新向量。</div>
-      <div class="advisor-intel__vector-text" data-q07-panel="zero">删除：把这轮更新设为零，不等于回到上一个模型保存点。</div>
-      <div class="advisor-intel__vector-text" data-q07-panel="reverse">反转：把这轮向量乘以 −1；实测相对原始条件平均低 10.06 分。</div>
+      <div class="advisor-intel__vector-axis" aria-hidden="true"><i class="advisor-intel__vector-center"></i><i class="advisor-intel__vector-arrow"></i></div>
+      <div class="advisor-intel__vector-reading" aria-live="polite" aria-atomic="true">
+        <div class="advisor-intel__vector-text" data-q07-panel="original">原始：保留第 156 轮真实写入的更新向量。</div>
+        <div class="advisor-intel__vector-text" data-q07-panel="zero">删除：把这轮更新设为零，不等于回到上一个模型保存点。</div>
+        <div class="advisor-intel__vector-text" data-q07-panel="reverse">反转：把这轮向量乘以 −1；实测相对原始条件平均低 10.06 分。</div>
+      </div>
     </div>
     <div class="advisor-intel__round-evidence" data-q07-round-evidence>
       <fieldset class="advisor-intel__round-picker" data-q07-rounds>

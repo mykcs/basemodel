@@ -32,6 +32,9 @@ for(const width of [320,390,768,1440]){
       await expect(q05.locator('[data-q05-fork-wires] path')).toHaveCount(1);
       await expect(q05.locator('[data-q05-branch]')).toHaveCount(3);
       await expect(q05.locator('[data-q05-fork-wires]')).toBeVisible();
+      await expect(q05.locator('.advisor-intel__scale')).toHaveAttribute('role','group');
+      await expect(q05.locator('.advisor-intel__scale-reading')).toHaveAttribute('aria-live','polite');
+      await expect(q05.locator('.advisor-intel__scale-rail')).toHaveAttribute('aria-hidden','true');
       await expect(q05.locator('[data-q05-branch="full"]')).toContainText('输出：整段更新');
       await expect(q05.locator('[data-q05-panel="full"]')).toBeVisible();
       await q05.locator('input[value="half"]').check();
@@ -81,6 +84,9 @@ for(const width of [320,390,768,1440]){
       const vectors=q07.locator('input[name="advisor-q07-vector"]');
       await expect(vectors).toHaveCount(3);
       await expect(q07.locator('[data-q07-directions] legend')).toContainText('固定用第 156 轮示意');
+      await expect(q07.locator('.advisor-intel__vector')).toHaveAttribute('role','group');
+      await expect(q07.locator('.advisor-intel__vector-reading')).toHaveAttribute('aria-live','polite');
+      await expect(q07.locator('.advisor-intel__vector-axis')).toHaveAttribute('aria-hidden','true');
       await expect(q07.locator('[data-q07-rounds] legend')).toContainText('不改变上方第 156 轮数轴示意');
       await expect(q07.locator('[data-q07-panel="original"]')).toBeVisible();
       await q07.locator('input[value="zero"]').check();
