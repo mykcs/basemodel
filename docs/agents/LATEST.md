@@ -10,6 +10,14 @@ Status: **The SEED × OpenEvo Results route is aligned to the closed Track A pai
 
 This file is a short current-state router. Detailed policy belongs under `docs/agents/current/`; historical rationale belongs under `docs/agents/history/`.
 
+## 2026-10-23 Starlight 技术手册发布候选
+
+PR #933 延续 #860 的安装历史，提供 `/handbook/`、`/handbook/agent-harness/`、`/handbook/openevo-gpu/`，原生侧栏、Pagefind 搜索和 Development 入口。原生 sitemap 与 404 继续由既有 owner 维护；手册使用 noindex。全站样式采用等优先级的 class scoping，图表审计及 reader ownership 同步识别编译 scope；不改变科研数值、原有表格阈值或负例。
+
+候选 `f30d709d` 已包含 main `84db23c6` 的 #936–#938；Public CI `39902779990` 实际通过 493 项主 UI 和 6 项 Lab，完整 Chromium/WebKit `39902779991` 各通过 492 项首次测试，两个汇总均完成完整身份并集和各 1,787 个文件回读校验。受控 Review `39902798458` 的当前 28 张截图已独立查看；此证据不是正式供应商门禁、Production 或真人理解验收。
+
+本轮发布批准仅覆盖 #933。受控 Review、正式 Vercel 门禁、合并及 Production 验收分别记账；后续追加提交仍须取得对应 HEAD 的检查，不能把 `f30d709d` 的绿色结果直接搬给新提交。原 #860 待整合版本正式发布验收后再收束；全站排版与真人理解不因本手册候选通过而记作完成。当前 PR、检查和 Vercel 实时对象仍为发布状态权威。
+
 ## 2026-10-22 Q04 单轮 GPU 资源画像
 
 第三篇「我们的回应实验」Q04 新增一幅**实验为单位**、非 GPU0–3 设备列表的显存时间轴：`src/components/research/Q04GpuResourceTimeline.astro`；资料 owner 为 `src/data/research-evidence/advisor-q04-gpu-round140-20261022.ts`。2026-10-22 现场只读核查的 Cell1/rank128/round140 单轮历时 34分32秒，只有 2 MiB 与 4,586 MiB 两次 NVML 全卡快照和 PyTorch 更新阶段 6,136,238,080 bytes 的已分配峰值。无连续 NVML 采样，不能推导全轮真实峰值、GPU 利用率或 GPU·小时；界面「完整曲线示意」明确不是实测。调度 12/24/4 GiB 是预算门槛，不是观测值。源码、静态构建、单测与交互回归由任务 PR 的 exact HEAD 证明；上线状态以独立 CI / Vercel / Production 收据为准。原始现场日志未随公开网页发布，PR #631 只提供 Q04 实验背景，不能当作这一轮资源测量的公开原始证据。
