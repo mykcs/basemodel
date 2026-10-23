@@ -6,6 +6,8 @@ on:
     paths:
       - '.github/workflows/cloud-figure-visual-review.yml'
       - 'src/components/research/AdvisorTenEvidenceVisual.astro'
+      - 'src/components/research/AdvisorTenConceptUI.astro'
+      - 'tests/e2e/advisor-intelligence-q02-q10.spec.ts'
       - 'src/components/research/OpenEvoSdLoraScaling.astro'
       - 'src/components/research/OpenEvoCheckpointCurve.astro'
       - 'tests/e2e/open-evo-webshop-program-report.spec.ts'
