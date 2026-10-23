@@ -1,0 +1,183 @@
+---
+/**
+ * Reader-first conceptual displays for the advisor's ten questions.
+ * These are teaching diagrams, never substitutes for paper plots or sealed results.
+ * No numerical observation is synthesized by this component.
+ */
+type Variant = 'q02' | 'q03' | 'q05' | 'q06' | 'q07' | 'q10';
+interface Props { variant: Variant }
+const {variant} = Astro.props;
+import MathFormula from '../common/MathFormula.astro';
+---
+
+{variant === 'q02' && (
+  <section class="advisor-intel" data-advisor-concept="q02" aria-labelledby="advisor-intel-q02-title">
+    <p class="advisor-intel__kicker">Q02 · 两种学习起点</p>
+    <h4 id="advisor-intel-q02-title">给同一个学生打基础，两种教法谁更适合长期学习？</h4>
+    <p class="advisor-intel__lead">目前两种教法的前期成绩接近，<strong>还不能选出赢家</strong>。要看的不只是谁一开始得分高，还包括继续学习后的表现。</p>
+    <div class="advisor-intel__seed">相同基础模型与经验来源 <span aria-hidden="true">↓</span></div>
+    <div class="advisor-intel__duo" role="group" aria-label="Q02 两种初始训练路线的机制示意">
+      <div class="advisor-intel__panel"><span class="advisor-intel__tag">路线 A · SFT</span><strong>学习示范的答案</strong><p>把经验变成模型要模仿的正确输出，训练它照着做。</p></div>
+      <div class="advisor-intel__panel"><span class="advisor-intel__tag">路线 B · OPSD</span><strong>学习经验中的指导</strong><p>使用教师给出的更多过程与经验信息，不只是最终答案。</p></div>
+    </div>
+    <div class="advisor-intel__foot"><strong>进展：15 / 18 个评测位置已有结果。</strong>还差 3 个评测位置，以及完成后在同题条件下比较长期学习表现。</div>
+    <p class="advisor-intel__disclaimer">这里的两条路线是机制解释，不表示已经做完公平的长期比较；两者使用的信息并不完全等价。</p>
+  </section>
+)}
+
+{variant === 'q03' && (
+  <section class="advisor-intel" data-advisor-concept="q03" aria-labelledby="advisor-intel-q03-title">
+    <p class="advisor-intel__kicker">Q03 · 为什么还不能说复现成功</p>
+    <h4 id="advisor-intel-q03-title">代码跑通、拿到分数，还不等于复现了论文。</h4>
+    <p class="advisor-intel__lead">目前已经有真实开发题成绩。<strong>但测试卷和考试规则还没有与 SEED 论文严格对齐</strong>，分数不能直接相减。</p>
+    <div class="advisor-intel__duo" role="group" aria-label="工程开发题与论文协议的比较">
+      <div class="advisor-intel__panel"><span class="advisor-intel__tag">已完成 · 工程验证</span><strong>1,536 次开发题尝试</strong><p>核对程序、保存点和当前模型行为，确认工程链条确实能运行。</p></div>
+      <div class="advisor-intel__panel advisor-intel__panel--pending"><span class="advisor-intel__tag">尚缺 · 论文协议</span><strong>正式训练与对应终评</strong><p>对齐模型起点、训练数据、评测题单及环境规则，再报告可比结果。</p></div>
+    </div>
+    <div class="advisor-intel__foot"><strong>下一道门槛：</strong>先按论文协议校准，再进行正式训练与终评；不同题单、不同起点的分数分开展示。</div>
+  </section>
+)}
+
+{variant === 'q05' && (
+  <section class="advisor-intel" data-advisor-concept="q05" aria-labelledby="advisor-intel-q05-title">
+    <p class="advisor-intel__kicker">Q05 · 写入幅度 β</p>
+    <h4 id="advisor-intel-q05-title">写进多少新经验？三种策略，可以直接比较。</h4>
+    <p class="advisor-intel__lead">相同的一次原始参数更新，可以完整写入、写入一半，或让规则自适应选择比例。<strong>这是待比较的设计选择，不是三项已证实的收益。</strong></p>
+    <fieldset class="advisor-intel__picker" data-q05-policies>
+      <legend>选择一种写入规则，查看它对参数向量的影响</legend>
+      <label><input type="radio" name="advisor-q05-beta" value="full" checked /><span>完整写入 <small>β = 1</small></span></label>
+      <label><input type="radio" name="advisor-q05-beta" value="half" /><span>固定一半 <small>β = 0.5</small></span></label>
+      <label><input type="radio" name="advisor-q05-beta" value="adaptive" /><span>自适应 <small>β ∈ 候选集合</small></span></label>
+    </fieldset>
+    <div class="advisor-intel__scale" role="img" aria-label="教学数轴：从零写入到完整写入，选择不同 β 会改变向量长度；不对应真实模型性能">
+      <div class="advisor-intel__scale-head"><span>0 · 不写入</span><span>1 · 完整写入</span></div>
+      <div class="advisor-intel__scale-rail"><span class="advisor-intel__scale-half" aria-hidden="true"></span><span class="advisor-intel__scale-arrow" aria-hidden="true"></span></div>
+      <p class="advisor-intel__scale-caption" data-q05-panel="full">选中 β = 1：原始更新完整写入，向量长度为 100%（仅是几何比例）。</p>
+      <p class="advisor-intel__scale-caption" data-q05-panel="half">选中 β = 0.5：同一更新向量的写入长度减半；不代表成绩减半。</p>
+      <p class="advisor-intel__scale-caption" data-q05-panel="adaptive">自适应：根据训练 NLL，从 β=0.25、β=0.5、β=0.75 或 β=1 四档中选择；数轴没有唯一固定落点。</p>
+    </div>
+    <div class="advisor-intel__formula"><MathFormula latex={String.raw`\Delta_{\mathrm{write}}=\beta\,\Delta_{\mathrm{raw}}`} label="β 对原始更新向量的缩放" /><p>β 非负时，改变的是这一步的幅度，不是把方向倒过来。</p></div>
+    <div class="advisor-intel__foot"><strong>研究边界：</strong>历史的复杂 β/GDR 实验与上面三种简化 β 政策不是同一试验。新规则只有局部测试，长期比较还没完成。</div>
+  </section>
+)}
+
+{variant === 'q06' && (
+  <section class="advisor-intel" data-advisor-concept="q06" aria-labelledby="advisor-intel-q06-title">
+    <p class="advisor-intel__kicker">Q06 · 候选动作的分叉</p>
+    <h4 id="advisor-intel-q06-title">Agent 在“下一步点哪里”之间犹豫，我们能提前发现失误吗？</h4>
+    <p class="advisor-intel__lead">重点是同一个页面状态下的<strong>合法候选动作</strong>怎样竞争，而不只是模型最后点中了哪一个。</p>
+    <div class="advisor-intel__action" aria-label="购物页面的候选动作示意">
+      <div class="advisor-intel__seed">当前购物页：选择下一步操作 <span aria-hidden="true">↓</span></div>
+      <div class="advisor-intel__action-grid">
+        <div><span>候选 01</span><strong>打开商品 A</strong></div>
+        <div><span>候选 02</span><strong>打开商品 B</strong></div>
+        <div><span>候选 03</span><strong>筛选尺码</strong></div>
+        <div><span>其他候选</span><strong>其余合法动作</strong></div>
+      </div>
+    </div>
+    <p class="advisor-intel__disclaimer">这些动作只是教学例子，没有声称旧 R159 当时恰好只有三项选择。旧轨迹未保存 logits，不能捏造概率、熵或“100% 的候选分母”。无效动作也不能未经定义混进合法动作的概率分母。</p>
+    <div class="advisor-intel__foot"><strong>现阶段：</strong>已有其他保存点的候选概率与预测分析；“越犹豫越容易失败”还需要新题、独立模型起点来验证。</div>
+  </section>
+)}
+
+{variant === 'q07' && (
+  <section class="advisor-intel" data-advisor-concept="q07" aria-labelledby="advisor-intel-q07-title">
+    <p class="advisor-intel__kicker">Q07 · 参数向量的方向</p>
+    <h4 id="advisor-intel-q07-title">学习的方向真的有用：反着走一次，成绩低了约 10 分。</h4>
+    <p class="advisor-intel__lead">在 Bounded OFF 的第 156 轮，把真实更新向量反过来，同一批固定题上的平均 Task Score <strong>下降 10.06 分</strong>。这是一个有边界的局部因果结果。</p>
+    <fieldset class="advisor-intel__picker" data-q07-directions>
+      <legend>沿数轴看同一轮更新的三种干预</legend>
+      <label><input type="radio" name="advisor-q07-vector" value="original" checked /><span>原始方向 <small>+ Δ</small></span></label>
+      <label><input type="radio" name="advisor-q07-vector" value="zero" /><span>删除更新 <small>0</small></span></label>
+      <label><input type="radio" name="advisor-q07-vector" value="reverse" /><span>方向反转 <small>− Δ</small></span></label>
+    </fieldset>
+    <div class="advisor-intel__vector" role="img" aria-label="参数更新的概念数轴：原始更新指向正方向、删除停在零点、反转指向负方向，长度为示意">
+      <span class="advisor-intel__vector-neg">− 更新方向</span><span class="advisor-intel__vector-pos">+ 更新方向</span>
+      <div class="advisor-intel__vector-axis"><i class="advisor-intel__vector-center"></i><i class="advisor-intel__vector-arrow"></i></div>
+      <div class="advisor-intel__vector-text" data-q07-panel="original">原始：保留第 156 轮真实写入的更新向量。</div>
+      <div class="advisor-intel__vector-text" data-q07-panel="zero">删除：把这轮更新设为零，不等于回到上一个模型保存点。</div>
+      <div class="advisor-intel__vector-text" data-q07-panel="reverse">反转：把这轮向量乘以 −1；实测相对原始条件平均低 10.06 分。</div>
+    </div>
+    <p class="advisor-intel__disclaimer">向量长度是示意，不是实测参数范数；10.06 分只属于 Bounded OFF 第 156 轮的反转干预（配对 95% 区间为下降 5.60–15.02 分，且通过八次比较的校正），不能移植到 DirectApply R159。</p>
+  </section>
+)}
+
+{variant === 'q10' && (
+  <section class="advisor-intel advisor-intel--q10" data-advisor-concept="q10" aria-labelledby="advisor-intel-q10-title">
+    <p class="advisor-intel__kicker">Q10 · 新任务泛化的证据边界</p>
+    <h4 id="advisor-intel-q10-title">模型在新题上有过两次进步，但还不能宣布它学会了长期举一反三。</h4>
+    <p class="advisor-intel__lead">好消息是真实的：在另一组 7B 模型条件下，两次<strong>单次参数更新</strong>的新题配对测量都出现正向平均奖励变化。要回答这十问的终极问题，还差一场更严格的长期检验。</p>
+    <div class="advisor-intel__duo advisor-intel__duo--boundary" role="group" aria-label="Q10 已经知道和尚未证明的内容">
+      <div class="advisor-intel__panel advisor-intel__panel--known"><span class="advisor-intel__tag">已经测到 · 局部证据</span><strong>单次更新能迁移一些效果</strong><p>两次测量相对基础模型的平均奖励变化：<b>+0.124</b> 和 <b>+0.249</b>（奖励标度 0–1），各自的 95% 区间下界大于零。</p><small>这是此前另一组模型上的一次更新，不是 160 轮训练成绩。</small></div>
+      <div class="advisor-intel__panel advisor-intel__panel--pending"><span class="advisor-intel__tag">还不知道 · 正式 Q10</span><strong>学满 160 轮后，遇到全新题仍能进步吗？</strong><p>已冻结并排重 <b>128 道全新确认题</b>，但三条独立训练流及匹配对照尚未封存正式新题成绩。</p><small>任务身份冻结 ≠ 模型已经在这些题上通过评测。</small></div>
+    </div>
+    <div class="advisor-intel__foot"><strong>下一步：</strong>完成存储、恢复与资源门槛 → 同一起点执行独立训练及匹配对照 → 在 128 道新题上做逐题配对比较。ALFWorld 是未来不同环境的研究方向，不是本次已完成的数据。</div>
+  </section>
+)}
+
+<style>
+  .advisor-intel{--ai-ink:var(--paper-ink);--ai-muted:var(--paper-muted);--ai-line:var(--paper-line);--ai-paper:var(--paper);--ai-accent:var(--color-accent,var(--accent-deep));color:var(--ai-ink);min-width:0;margin:1.15rem 0 1.6rem;font-family:system-ui,-apple-system,"PingFang SC",sans-serif}
+  .advisor-intel :is(p,h4){margin-block:0;line-height:1.6}
+  .advisor-intel__kicker{font-size:.68rem;font-weight:760;letter-spacing:.1em;color:var(--ai-accent);text-transform:uppercase}
+  .advisor-intel h4{font-family:inherit;font-size:clamp(1.16rem,2.7vw,1.55rem);font-weight:770;letter-spacing:-.025em;line-height:1.38;margin:.32rem 0 .52rem;color:var(--ai-ink)}
+  .advisor-intel .advisor-intel__lead{font-size:.87rem;max-width:68ch;margin-bottom:1rem}
+  .advisor-intel__seed{border:1px solid var(--ai-line);border-radius:var(--radius-control,.6rem);padding:.6rem 1rem;text-align:center;background:color-mix(in srgb,var(--ai-paper) 90%,var(--ai-accent));font-size:.81rem;font-weight:690;max-width:31rem;margin:.2rem auto .8rem}
+  .advisor-intel__seed span{display:block;font-size:1.1rem;line-height:1.25;color:var(--ai-accent)}
+  .advisor-intel__duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(.45rem,1.7vw,1rem);margin:.55rem 0}
+  .advisor-intel__panel{border:1px solid var(--ai-line);border-radius:var(--radius-feature,.8rem);padding:clamp(.7rem,2vw,1.05rem);min-width:0;background:color-mix(in srgb,var(--ai-paper) 94%,#b7d9eb);border-top:3px solid #4587a6}
+  .advisor-intel__panel--pending{background:color-mix(in srgb,var(--ai-paper) 95%,#e9c976);border-top-color:#bc9a42}
+  .advisor-intel__panel--known{border-top-color:#518877;background:color-mix(in srgb,var(--ai-paper) 93%,#9bd8be)}
+  .advisor-intel__tag{display:block;color:var(--ai-muted);font-size:.69rem;font-weight:700;letter-spacing:.025em;margin-bottom:.36rem}
+  .advisor-intel__panel>strong{display:block;font-size:clamp(.9rem,1.7vw,1.1rem);line-height:1.4}
+  .advisor-intel__panel p{font-size:.78rem;margin:.38rem 0 0;line-height:1.6}
+  .advisor-intel__panel small{display:block;color:var(--ai-muted);font-size:.7rem;line-height:1.5;margin-top:.48rem}
+  .advisor-intel__panel b{font-variant-numeric:tabular-nums;font-size:1.05em}
+  .advisor-intel__foot{border-left:3px solid var(--ai-accent);background:color-mix(in srgb,var(--ai-paper) 93%,var(--ai-accent));padding:.7rem .85rem;margin:.85rem 0 .5rem;font-size:.78rem;line-height:1.65}
+  .advisor-intel .advisor-intel__disclaimer{font-size:.71rem;color:var(--ai-muted);line-height:1.7;margin:.55rem 0}
+  .advisor-intel__picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem;border:0;margin:0;padding:0;min-width:0}
+  .advisor-intel__picker legend{font-size:.76rem;font-weight:720;margin:0 0 .55rem;padding:0}
+  .advisor-intel__picker label{min-width:0;display:flex;gap:.4rem;align-items:start;cursor:pointer;border:1px solid var(--ai-line);padding:.62rem .54rem;border-radius:var(--radius-control,.6rem);font-size:.77rem;line-height:1.35}
+  .advisor-intel__picker label:has(input:checked){border-color:var(--ai-accent);background:color-mix(in srgb,var(--ai-paper) 91%,var(--ai-accent));box-shadow:inset 0 0 0 1px var(--ai-accent)}
+  .advisor-intel__picker label:focus-within{outline:2px solid var(--ai-accent);outline-offset:2px}
+  .advisor-intel__picker input{flex:none;accent-color:var(--ai-accent);margin:.12rem 0 0}
+  .advisor-intel__picker small{display:block;color:var(--ai-muted);font-size:.7rem;margin-top:.22rem}
+  .advisor-intel__scale,.advisor-intel__vector{border:1px solid var(--ai-line);padding:.8rem clamp(.7rem,3vw,1.25rem);border-radius:var(--radius-feature,.8rem);margin:.65rem 0;background:var(--ai-paper)}
+  .advisor-intel__scale-head{display:flex;justify-content:space-between;gap:.5rem;font-size:.71rem;color:var(--ai-muted)}
+  .advisor-intel__scale-rail{position:relative;height:26px;margin:.4rem 10px .65rem;border-bottom:2px solid color-mix(in srgb,var(--ai-ink) 33%,transparent)}
+  .advisor-intel__scale-rail:before,.advisor-intel__scale-rail:after,.advisor-intel__scale-half{position:absolute;content:"";width:2px;height:11px;bottom:-5px;background:var(--ai-muted)}
+  .advisor-intel__scale-rail:before{left:0}.advisor-intel__scale-rail:after{right:0}.advisor-intel__scale-half{left:50%}
+  .advisor-intel__scale-arrow{position:absolute;left:0;bottom:4px;width:100%;height:4px;background:var(--ai-accent);border-radius:3px;transition:width .2s ease}
+  .advisor-intel__scale-arrow:after{content:"";position:absolute;right:-1px;top:-5px;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:10px solid var(--ai-accent)}
+  .advisor-intel:has(input[name="advisor-q05-beta"][value="half"]:checked) .advisor-intel__scale-arrow{width:50%}
+  .advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) .advisor-intel__scale-arrow{left:25%;width:75%;background:repeating-linear-gradient(90deg,var(--ai-accent) 0 9px,transparent 9px 14px)}
+  .advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) .advisor-intel__scale-arrow:after{display:none}
+  .advisor-intel__scale-caption{display:none;font-size:.75rem;min-height:2.4em}
+  .advisor-intel:has(input[name="advisor-q05-beta"][value="full"]:checked) [data-q05-panel="full"],.advisor-intel:has(input[name="advisor-q05-beta"][value="half"]:checked) [data-q05-panel="half"],.advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) [data-q05-panel="adaptive"]{display:block}
+  .advisor-intel .advisor-intel__formula{display:flex;flex-wrap:wrap;gap:.25rem .9rem;align-items:center;font-size:.77rem;margin:.7rem 0}
+  .advisor-intel__formula :global(.math-formula){max-width:100%}
+  .advisor-intel__formula p{color:var(--ai-muted);font-size:.77rem}
+  .advisor-intel__action-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.48rem;position:relative;margin-top:1.05rem}
+  .advisor-intel__action-grid:before{content:"";position:absolute;top:-.55rem;left:12.5%;width:75%;border-top:1px solid var(--ai-line)}
+  .advisor-intel__action-grid>div{position:relative;border:1px solid var(--ai-line);border-radius:.55rem;padding:.62rem .42rem;min-width:0;text-align:center}
+  .advisor-intel__action-grid>div:before{content:"";position:absolute;left:50%;height:.56rem;border-left:1px solid var(--ai-line);top:-.56rem}
+  .advisor-intel__action-grid span{display:block;font-size:.67rem;color:var(--ai-muted)}
+  .advisor-intel__action-grid strong{display:block;font-size:.79rem;margin-top:.2rem;line-height:1.4}
+  .advisor-intel__vector{padding-top:1rem}
+  .advisor-intel__vector-neg,.advisor-intel__vector-pos{display:inline-block;width:50%;font-size:.69rem;color:var(--ai-muted)}
+  .advisor-intel__vector-pos{text-align:right}
+  .advisor-intel__vector-axis{position:relative;border-top:2px solid color-mix(in srgb,var(--ai-ink) 36%,transparent);height:26px;margin:1.05rem .4rem .35rem}
+  .advisor-intel__vector-center{position:absolute;left:50%;height:20px;width:2px;top:-11px;background:var(--ai-ink)}
+  .advisor-intel__vector-center:after{content:"0";position:absolute;left:-.22rem;top:20px;font-size:.7rem;font-style:normal}
+  .advisor-intel__vector-arrow{position:absolute;top:-5px;left:50%;width:36%;height:7px;border-radius:4px;background:#4587a6;transition:all .18s ease}
+  .advisor-intel__vector-arrow:after{position:absolute;content:"";right:-1px;top:-5px;border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:12px solid #4587a6}
+  .advisor-intel:has(input[name="advisor-q07-vector"][value="zero"]:checked) .advisor-intel__vector-arrow{width:5px;height:5px;top:-4px;left:calc(50% - 2px);border-radius:50%}
+  .advisor-intel:has(input[name="advisor-q07-vector"][value="zero"]:checked) .advisor-intel__vector-arrow:after{display:none}
+  .advisor-intel:has(input[name="advisor-q07-vector"][value="reverse"]:checked) .advisor-intel__vector-arrow{left:14%;background:#bd7654}
+  .advisor-intel:has(input[name="advisor-q07-vector"][value="reverse"]:checked) .advisor-intel__vector-arrow:after{left:-1px;right:auto;border-left:0;border-right:12px solid #bd7654}
+  .advisor-intel__vector-text{display:none;min-height:2.1em;margin-top:.8rem;font-size:.75rem;line-height:1.6}
+  .advisor-intel:has(input[name="advisor-q07-vector"][value="original"]:checked) [data-q07-panel="original"],.advisor-intel:has(input[name="advisor-q07-vector"][value="zero"]:checked) [data-q07-panel="zero"],.advisor-intel:has(input[name="advisor-q07-vector"][value="reverse"]:checked) [data-q07-panel="reverse"]{display:block}
+  @media(max-width:530px){.advisor-intel__duo{grid-template-columns:minmax(0,1fr)}.advisor-intel__picker{grid-template-columns:minmax(0,1fr)}.advisor-intel__picker label{align-items:center}.advisor-intel__picker small{display:inline;margin-left:.25rem}.advisor-intel__action-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.advisor-intel__action-grid:before,.advisor-intel__action-grid>div:before{display:none}.advisor-intel__panel{padding:.8rem}.advisor-intel h4{font-size:1.15rem}}
+  @media(prefers-reduced-motion:reduce){.advisor-intel__scale-arrow,.advisor-intel__vector-arrow{transition:none}}
+  @media(forced-colors:active){.advisor-intel__scale-arrow,.advisor-intel__vector-arrow{background:Highlight}.advisor-intel__panel{border:1px solid CanvasText}}
+  @media print{.advisor-intel__picker{display:none}.advisor-intel__scale-caption,.advisor-intel__vector-text{display:block}}
+</style>

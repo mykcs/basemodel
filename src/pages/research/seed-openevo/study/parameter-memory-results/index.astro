@@ -7,6 +7,7 @@ import '../../../../../styles/advisor-ten-approved-reader.css';
 import OpenEvoArticleNavigation from '../../../../../components/research/OpenEvoArticleNavigation.astro';
 import OpenEvoQuestionIndex from '../../../../../components/research/OpenEvoQuestionIndex.astro';
 import AdvisorTenEvidenceVisual from '../../../../../components/research/AdvisorTenEvidenceVisual.astro';
+import AdvisorTenConceptUI from '../../../../../components/research/AdvisorTenConceptUI.astro';
 import Q04GpuResourceTimeline from '../../../../../components/research/Q04GpuResourceTimeline.astro';
 import Q08SeenRetentionExplorer from '../../../../../components/research/Q08SeenRetentionExplorer.astro';
 import Q09TextGuidanceIntelligence from '../../../../../components/research/Q09TextGuidanceIntelligence.astro';
@@ -209,6 +210,12 @@ const intervalScale = (id: string) => {
           <p class="advisor-response__stage" data-progress-stage={q.id}><strong>目前进度：</strong>{q.progress.label}。{q.brief.done}</p>
           <p class="advisor-response__evidence" data-evidence-readiness={q.id} data-evidence-state={q.evidenceState}><strong>证据成熟度：</strong>{evidenceReadiness[q.evidenceState]}。</p>
           <p class="advisor-response__missing" data-progress-gap={q.id}><strong>还差什么才能回答：</strong>{q.brief.missing}</p>
+          {q.id==='q02' && <AdvisorTenConceptUI variant="q02" />}
+          {q.id==='q03' && <AdvisorTenConceptUI variant="q03" />}
+          {q.id==='q05' && <AdvisorTenConceptUI variant="q05" />}
+          {q.id==='q06' && <AdvisorTenConceptUI variant="q06" />}
+          {q.id==='q07' && <AdvisorTenConceptUI variant="q07" />}
+          {q.id==='q10' && <AdvisorTenConceptUI variant="q10" />}
           <p class="evo-article__note" data-question-origin-link={q.id}><a href={'/research/seed-openevo/study/advisor-questions/#'+q.id}>查看第二篇的 {q.id.toUpperCase()} 问题正文与背景</a>{q.id==='q10' && ' · 会后新增问题'}</p>
           {q.id!=='q01' && <p class="evo-article__question-setup" data-response-background={q.id}>{q.opening}</p>}
 
