@@ -52,6 +52,40 @@ for(const width of [390,768,1440]){
   }
 }
 
+test('each research blog exposes its question and explanation in the first viewport',async({page})=>{
+  // This is a rendered reading-order gate, not evidence of human comprehension.
+  // The separate article roles and scientific content are owned by BaseModel Wish and experiment receipts.
+  for(const width of [390,768,1440]){
+    const height=width===390?844:900;
+    await page.setViewportSize({width,height});
+    for(const item of articles){
+      await page.goto(prefix+item.slug+'/',{waitUntil:'domcontentloaded'});
+      const orientation=await page.locator('[data-evo-blog="'+item.type+'"]').evaluate(root=>{
+        const heading=root.querySelector('h1');
+        const lede=root.querySelector('[data-reader-purpose]');
+        if(!heading || !lede) return null;
+        const a=heading.getBoundingClientRect();
+        const b=lede.getBoundingClientRect();
+        return {
+          firstContentIsHeader:root.firstElementChild?.tagName==='HEADER',
+          headingTop:a.top,headingBottom:a.bottom,ledeTop:b.top,
+          headingVisible:a.width>0 && a.height>0,
+          ledeVisible:b.width>0 && b.height>0,
+          viewportHeight:window.innerHeight,
+        };
+      });
+      expect(orientation,'missing first-screen orientation for '+item.slug).not.toBeNull();
+      expect(orientation!.firstContentIsHeader).toBe(true);
+      expect(orientation!.headingVisible).toBe(true);
+      expect(orientation!.ledeVisible).toBe(true);
+      expect(orientation!.headingTop).toBeGreaterThanOrEqual(0);
+      expect(orientation!.ledeTop).toBeGreaterThan(orientation!.headingBottom);
+      // Not simply DOM-present: an initial visitor should see the opening explanation without scrolling.
+      expect(orientation!.ledeTop).toBeLessThan(orientation!.viewportHeight);
+    }
+  }
+});
+
 test('first article retains three equal method diagrams, mathematics, optional rank8 depth',async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await page.goto(prefix+'openevo-methods/');
