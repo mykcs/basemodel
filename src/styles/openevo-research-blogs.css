@@ -148,25 +148,26 @@
 .evo-blog .evo-article__followup>p{max-width:80ch;line-height:1.7}
 .evo-blog .evo-article__followup>.evo-article__note{font-size:.87em}
 
-/* Narrow-width paper comparison: preserve method names; scroll the table, not the document. */
+/* The Q05 four-column paper comparison must stay readable inside the article
+   on phones. No legacy 650px swipe-to-read table or hidden result columns. */
 @media (max-width: 640px) {
-  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] {
-    width: 650px;
-    min-width: 650px;
-    max-width: none;
-    table-layout: fixed;
-  ;min-width:0}
-  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:first-child {
-    width: 175px;
-    min-width: 175px;
-    max-width: 175px;
-    overflow-wrap: normal;
-    word-break: normal;
-  ;min-width:0}
-  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(2) { width: 150px; ;min-width:0}
-  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(3) { width: 135px; ;min-width:0}
-  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap [data-webshop-seed-paper-comparison] th:nth-child(4) { width: 190px; ;min-width:0}
-}
-@media (min-width: 641px) {
-  .evo-blog[data-evo-blog="results"] [data-seed-table-mobile-hint] { display: none; }
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap:has([data-webshop-seed-paper-comparison]) {
+    width:100%;max-width:100%;overflow:visible;
+  }
+  .evo-blog[data-evo-blog="results"] .research-booktabs-wrap:has([data-webshop-seed-paper-comparison]) {
+    width:100%;max-width:100%;overflow:visible;
+  }
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap .research-booktabs-wrap > table.research-booktabs[data-webshop-seed-paper-comparison] {
+    width:100%;min-width:0;max-width:100%;table-layout:fixed;
+    font-size:clamp(.8rem,calc(.3rem + 2.4vw),.92rem);
+  }
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap .research-booktabs-wrap > table.research-booktabs[data-webshop-seed-paper-comparison] :is(th,td) {
+    overflow-wrap:anywhere;word-break:normal;padding:.4em .25em;
+  }
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap .research-booktabs-wrap > table.research-booktabs[data-webshop-seed-paper-comparison] th:first-child {
+    width:28%;min-width:0;max-width:28%;overflow-wrap:anywhere;
+  }
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap .research-booktabs-wrap > table.research-booktabs[data-webshop-seed-paper-comparison] th:nth-child(2) {width:23%;min-width:0}
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap .research-booktabs-wrap > table.research-booktabs[data-webshop-seed-paper-comparison] th:nth-child(3) {width:20%;min-width:0}
+  .evo-blog[data-evo-blog="results"] .evo-article__tablewrap .research-booktabs-wrap > table.research-booktabs[data-webshop-seed-paper-comparison] th:nth-child(4) {width:29%;min-width:0}
 }

@@ -286,16 +286,21 @@ test('SEED Table 1 appears with paper-only Score and Succ. without inventing a s
   const narrow=await wrap.evaluate(el=>{
     const first=el.querySelector('thead th:first-child')!;
     const paper=el.querySelector('[data-seed-paper-reference]')!;
+    const table=el.querySelector('table')!;
+    const clipped=[...table.querySelectorAll('th,td')].filter(cell=>cell.scrollWidth>cell.clientWidth+3).map(cell=>cell.textContent?.trim());
     return {scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,
+      tableWidth:table.getBoundingClientRect().width,
       firstColumnWidth:first.getBoundingClientRect().width,
-      paperRowHeight:paper.getBoundingClientRect().height};
+      paperRowHeight:paper.getBoundingClientRect().height,clipped};
   });
-  expect(narrow.scrollWidth).toBeGreaterThan(narrow.clientWidth+180);
-  expect(narrow.firstColumnWidth).toBeGreaterThanOrEqual(170);
-  expect(narrow.paperRowHeight).toBeLessThan(145);
-  await expect(page.locator('[data-seed-table-mobile-hint]')).toBeVisible();
+  expect(narrow.scrollWidth).toBeLessThanOrEqual(narrow.clientWidth+2);
+  expect(narrow.tableWidth).toBeLessThanOrEqual(narrow.clientWidth+2);
+  expect(narrow.firstColumnWidth).toBeGreaterThanOrEqual(65);
+  expect(narrow.paperRowHeight).toBeLessThan(250);
+  expect(narrow.clipped).toEqual([]);
+  await expect(page.locator('[data-seed-table-mobile-hint]')).toHaveCount(0);
   const scrollLeft=await wrap.evaluate(el=>(el.scrollLeft=el.scrollWidth,el.scrollLeft));
-  expect(scrollLeft).toBeGreaterThan(180);
+  expect(scrollLeft).toBe(0);
   const globalOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
   expect(globalOverflow).toBeLessThanOrEqual(2);
 });
