@@ -246,7 +246,7 @@ const twentyRoundScoreWindows = finalResult
 
     <figure class="paper-table-figure paper-table-figure--hero" data-result-stage="direct-result">
       <div class="paper-table-wrap paper-table-wrap--hero" aria-label={t('三组已完成实验、一个未做实验位置，以及 SEED 论文参考', 'Three completed experiments, one unrun slot, and a SEED paper reference')}>
-        <ResearchPaperTable class="paper-table paper-table--ablation" aria-describedby="ablation-table-caption">
+        <ResearchPaperTable class="paper-table paper-table--ablation" style="font-size:clamp(.75rem, .65rem + .3vw, .875rem)" aria-describedby="ablation-table-caption">
 <Fragment slot="caption">{t("各组实验的设置与结果", "Experiment configurations and results")}</Fragment>
           <thead>
             <tr>
@@ -1361,11 +1361,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   .paper-table-figure .paper-table-wrap{margin:0;min-width:0}
   .paper-table__caption{max-width:1040px;margin:8px 0 0}
   .paper-table-wrap{overflow-x:auto;margin:18px 0 12px;min-width:0}
-  .paper-table{min-width:700px}/* Short scientific tables read like LaTeX columnwidth, not full-width report dashboards.
-     Dense/multi-column scientific comparisons retain the full page panel. */
-
-  .paper-table:not(.paper-table--dense-results):not(.paper-table--ablation):not(:has(thead tr > :nth-child(4))){min-width:0;max-width:min(100%,46rem)}
-  .paper-table--ablation{min-width:960px}
+  .paper-table--carrier-ledger :is(th,td){width:25%}
   .paper-table--ablation th:first-child,.paper-table--ablation td:first-child{width:31%}
   .paper-table--ablation th:nth-child(2),.paper-table--ablation td:nth-child(2){width:8%}
   .paper-table--ablation th:nth-child(3),.paper-table--ablation td:nth-child(3){width:8%}
@@ -1390,16 +1386,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   @media(max-width:760px){
     .paper__setup{grid-template-columns:1fr}
     .paper__hub-grid{grid-template-columns:1fr}
-    .paper-table{min-width:640px}
-    .paper-table--ablation{min-width:900px}
   }
   @media(prefers-reduced-motion:reduce){.paper *,.paper *::before,.paper *::after{scroll-behavior:auto;transition:none;animation:none}}
-  @media screen {
-    .paper-table th:first-child,.paper-table td:first-child{min-width:8rem}
-    .paper-table th:not(:first-child),.paper-table td:not(:first-child){min-width:6rem}
-  }
-  @media screen and (max-width:760px){
-    .paper-table:not(.paper-table--dense-results):not(.paper-table--ablation):not(:has(thead tr > :nth-child(4))){min-width:30rem;max-width:46rem}
-  }
 .paper-table-wrap--hero{--paper-table-margin:0;--paper-table-window-padding:0;--paper-table-cell-padding:4px 8px;--paper-table-line-height:1.2}
 </style>

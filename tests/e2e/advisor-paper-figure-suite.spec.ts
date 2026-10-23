@@ -109,7 +109,7 @@ for(const width of [390,1440]){
     expect(tableTags.row).toBe('table-row');
     expect(tableTags.caption).toBe('top');
     expect(tableTags.xOverflow).toBeLessThanOrEqual(2);
-    if(width===390)expect(tableTags.localScroll).toBe(true);
+    expect(tableTags.localScroll).toBe(false);
     const detail=page.locator('[data-seed-gpu-explainer]');
     await expect(detail).not.toHaveAttribute('open','');
     await expect(detail.locator('summary')).toHaveText('工程细节，你可能感兴趣...');

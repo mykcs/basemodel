@@ -527,7 +527,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(blog).toContain('border:0;');
     expect(booktabs).toContain('caption-side:top');
     expect(booktabs).toContain('font-family:"Times New Roman",Times');
-    expect(booktabs).toContain('font-size:1rem');
+    expect(booktabs).toContain('font-size:clamp(.75rem, .65rem + .45vw, 1rem)');
     expect(booktabs).not.toContain('tbody tr + tr > *');
     expect(plot).toContain('box-shadow:none');
     expect(plot).toContain('width:min(100%,var(--research-evidence-single-width,38rem))');

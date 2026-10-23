@@ -28,7 +28,7 @@ const responseQuestionRef = (id: string) => id.toUpperCase();
 // 科研回答状态与后续投入是本页的规划快照；不覆盖实验仓库的运行账本。
 // 人日是人工准备/核对的粗略估计，不是测得的训练耗时或资源承诺。
 const researchProgress = {
-  q01: { tone:'green', label:'已有局部回答', next:'换一批预先冻结的购物题，复核三条路线各自的停止时点。', effort:'人工约 0.5–1 人日；至少三条路线各做一轮新题评测，机器耗时待实测。' , source:'https://github.com/mykcs/openevo-experiment/blob/48e1368c7afc260a1745a49e6c7c173bfbb172b2/docs/evidence/advisor-q01-horizon-plateau-20261001/Q01_THREE_WAY_RESULT.json' },
+  q01: { tone:'green', label:'新题评测已完成，早停时点未确认', next:'不重复已完成的448条评测；独立审读现有配对统计和预注册停止判据，再决定是否需要独立题单或新模型起点确认。', effort:'7个保存模型各测同一批64道冻结新题，共448条真实任务记录；后续独立确认的资源预算尚未确定。', source:'https://github.com/mykcs/openevo-experiment/blob/877ade0e44568b29d0ad8c4fdf51f938f7a6f906/docs/evidence/advisor-fresh-canonical-20261020/FINAL_448_SCIENCE_READOUT_20261021.md' },
   q02: { tone:'yellow', label:'六组初始训练完成，三处评测待补', next:'按冻结协议核对 18 个开发集评测位置，复用已完成的 15 格，仅补足真正缺失的三个位置并完成配对统计；之后再比较不同起点对长期学习的影响。', effort:'计划的 6 组训练均已通过检查，15 个模型版本各完成 64 题评测；额外评测、人工核账与 GPU 小时依真实缺口计算。', source:'https://github.com/mykcs/openevo-experiment/pull/629' },
   q03: { tone:'red', label:'正式复现未完成', next:'先完成 A0、A40、A80、A120 四个保存点的原生 128 题只读校准，再推进正式数据 SFT、Stage2 和论文协议对应的终评；不同协议成绩分开报告。', effort:'至少一条正式训练链和一套终评；需先打通训练与存储，再实测 GPU 小时，不能用工程开发题耗时推算。' , source:'https://github.com/mykcs/openevo-experiment/pull/707' },
   q04: { tone:'yellow', label:'五档容量已筛选，后续长期训练待完成', next:'根据已完成的五档容量筛选，继续补齐 rank128、rank64 和 rank32 三组较长时间的学习比较；第一阶段已经测过，不重复计作新实验。', effort:'第一阶段计划的 640 次开发题评测已全部完成；Phase-B 有部分训练收据，剩余工作与 GPU 小时须按实际封存和运行状态复核。', source:'https://github.com/mykcs/openevo-experiment/pull/631' },
@@ -187,7 +187,7 @@ const intervalScale = (id: string) => {
     </section>
     <section class="evo-article__section" id="responses" data-response-experiments>
       <h2>3 十个问题的实验结果与证据</h2>
-      <p>Q01–Q10 对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。本节和前面的速览使用同一套绿、黄、红状态，每问明确写出实际完成的部分、实验发现、仍缺的关键证据和下一步。规划工作量与已经测得的 GPU 耗时严格区分。Q02、Q04、Q05、Q06、Q09 的后续实验进展于 2026 年 10 月 19 日只读核对对应实验收据；其他问题保留各自原始收据的时间边界。</p>
+      <p>Q01–Q10 对应<a href="/research/seed-openevo/study/advisor-questions/#question-index">第二篇《学长十问》的十个研究问题</a>。本节和前面的速览使用同一套绿、黄、红状态，每问明确写出实际完成的部分、实验发现、仍缺的关键证据和下一步。规划工作量与已经测得的 GPU 耗时严格区分。Q01 冻结新题复测于 2026 年 10 月 21 日封存；Q02、Q04、Q05、Q06、Q09 的后续实验进展于 2026 年 10 月 19 日只读核对对应实验收据；其他问题保留各自原始收据的时间边界。</p>
       <p class="evo-article__note" data-status-axes>每问分别记录实验进度、测得的结果与证据是否足够。即使训练已经完成，仍可能需要独立复现才能回答更大的科学问题。</p>
       <OpenEvoQuestionIndex questions={responseQuestions.map(q=>({...q,headingNumber:responseQuestionRef(q.id)}))} />
       {responseQuestions.map(q => (
@@ -211,6 +211,24 @@ const intervalScale = (id: string) => {
           <p><strong>更详细的实验设置：</strong>{q.experiment}</p>
           {q.id==='q01' && <p class="evo-article__note" data-q01-iteration-definition>这里的“轮”是 OpenEVO 反复执行购物任务、整理经验并继续学习的迭代，不是把同一份固定训练集完整遍历一次的 epoch。部分轮次没有实际更新参数；普通 OpenEVO 的曲线按实际更新次数统计。</p>}
           <p class="evo-article__answer" data-experiment-finding={q.id}><strong>已测结果：</strong>{q.finding.replaceAll('普通 DirectApply','普通 OpenEVO')}</p>
+          {q.id==='q01' && (
+            <div class="advisor-question-evidence" data-q01-fresh448>
+              <h4>新题复测：三条路线的停止时点均未确认</h4>
+              <p>2026 年 10 月 21 日，7 个保存模型已在<strong>同一批事先冻结的 64 道新 WebShop 题</strong>上各完成一次评测，共 448 条任务记录，<strong>不是 448 道不同题</strong>。下面比较后期模型减早期模型的 Task Score（满分 100），区间经过同一家族八个统计端点的多重比较校正。</p>
+              <div class="evo-article__tablewrap" aria-label="Q01 冻结新题早晚模型成绩差与校正区间">
+                <ResearchPaperTable>
+                  <caption>Q01｜冻结新题上的三组早晚模型对比</caption>
+                  <thead><tr><th scope="col">方法与保存点</th><th data-numeric>后期减早期（分）</th><th>校正 95% 区间（分）</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">普通 OpenEVO：160 − 120</th><td data-numeric>+4.59</td><td>−7.07 至 +16.73</td></tr>
+                    <tr><th scope="row">Bounded：160 − 150</th><td data-numeric>+2.52</td><td>−8.04 至 +13.84</td></tr>
+                    <tr><th scope="row">历史 β/GDR：160 − 130</th><td data-numeric>−5.16</td><td>−16.50 至 +5.29</td></tr>
+                  </tbody>
+                </ResearchPaperTable>
+              </div>
+              <p class="evo-article__note">三组区间均包含零，且<strong>都未达到预注册的早停确认门槛</strong>。这不是证明“继续训练一定有效”，也不是证明“继续训练没有用”；只能说原开发题上的候选停止轮次尚未在这批新题上得到确认。<a href="https://github.com/mykcs/openevo-experiment/blob/877ade0e44568b29d0ad8c4fdf51f938f7a6f906/docs/evidence/advisor-fresh-canonical-20261020/FINAL_448_SCIENCE_READOUT_20261021.md" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/blob/877ade0e44568b29d0ad8c4fdf51f938f7a6f906/docs/evidence/advisor-fresh-canonical-20261020/FINAL_448_SCIENCE_READOUT_20261021.md" />原始评测、校正区间与确认规则</a>。</p>
+            </div>
+          )}
           {q.id==='q05' && (
             <div class="advisor-question-evidence" id="main-results" data-response-historical-final>
               <h4>历史终评、SEED 论文参考与训练耗时</h4>
@@ -423,7 +441,7 @@ const intervalScale = (id: string) => {
     </section>
     <section id="sources" class="evo-article__section evo-article__sources">
       <h2>科研来源与实验记录</h2>
-      <p class="evo-article__note">Q01–Q10 的历史基线结果核对日期为 <time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>；Q02、Q04、Q05、Q06、Q09 的补充科研进展于 <time datetime="2026-10-19">2026-10-19</time> 核对对应训练或评测收据，保留其各自的科学边界。Q17 新诊断核对日期为 2026-10-15。Q03 三组工程模型的 1,536 次开发题诊断于 <time datetime="2026-10-16">2026-10-16</time> 00:45（新加坡时间）封存，八卡恢复与存储状态见带日期的实验收据。以下历史 R159 与 13×78 的核对日期为 <time datetime="2026-10-14">2026-10-14</time>。所有资源状态均为历史快照。</p>
+      <p class="evo-article__note">Q01–Q10 的历史基线结果核对日期为 <time datetime={ADVISOR_RESEARCH_AS_OF}>{ADVISOR_RESEARCH_AS_OF}</time>；Q01 冻结新题复测于 <time datetime="2026-10-21">2026-10-21</time> 核对封存评测；Q02、Q04、Q05、Q06、Q09 的补充科研进展于 <time datetime="2026-10-19">2026-10-19</time> 核对对应训练或评测收据，保留其各自的科学边界。Q17 新诊断核对日期为 2026-10-15。Q03 三组工程模型的 1,536 次开发题诊断于 <time datetime="2026-10-16">2026-10-16</time> 00:45（新加坡时间）封存，八卡恢复与存储状态见带日期的实验收据。以下历史 R159 与 13×78 的核对日期为 <time datetime="2026-10-14">2026-10-14</time>。所有资源状态均为历史快照。</p>
       <ol>
         {ADVISOR_QUESTIONS.map(q=>(
           <li id={'source-'+q.id} data-response-source={q.id}>
