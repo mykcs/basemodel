@@ -12,7 +12,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
   if ((html.match(/<body\b/g) ?? []).length !== 1 || (html.match(/<main\b/g) ?? []).length !== 1) {
     throw new Error('Handbook must retain one document body and primary main landmark');
   }
-  const output = html.replace(/<body\b/, `<body data-reader-contract-id="${contract.id}" data-reader-attention-mode="${contract.attentionMode}"`)
+  // Starlight seeds dark before its theme script. Native BaseModel defaults to
+  // light even without scripts; the shared initializer still restores saved dark.
+  const output = html.replace(/(<html\b[^>]*\bdata-theme=)(?:"(?:dark|light)"|'(?:dark|light)'|(?:dark|light))(?=[\s>])/, '$1"light"')
+    .replace(/<body\b/, `<body data-reader-contract-id="${contract.id}" data-reader-attention-mode="${contract.attentionMode}"`)
     .replace(/<main\b/, '<main id="main-content"');
   const headers = new Headers(response.headers);
   headers.delete('content-length');

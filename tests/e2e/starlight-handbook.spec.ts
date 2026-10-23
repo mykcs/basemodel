@@ -82,6 +82,7 @@ for (const width of [390,1440]) test('handbook content remains readable without 
     const page=await context.newPage();
     for(const [route,title] of [['/handbook/','BaseModel 技术手册'],['/handbook/agent-harness/','ChatGPT 网页端 Harness'],['/handbook/openevo-gpu/','OpenEVO GPU 调度']] as const){
       expect((await page.goto(route))?.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('data-theme','light');
       await expect(page.locator('h1')).toHaveText(title);
       await expect(page).not.toHaveTitle(/undefined/);
       expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(2);

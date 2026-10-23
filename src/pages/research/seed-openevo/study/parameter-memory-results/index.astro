@@ -8,6 +8,8 @@ import OpenEvoArticleNavigation from '../../../../../components/research/OpenEvo
 import OpenEvoQuestionIndex from '../../../../../components/research/OpenEvoQuestionIndex.astro';
 import AdvisorTenEvidenceVisual from '../../../../../components/research/AdvisorTenEvidenceVisual.astro';
 import Q04GpuResourceTimeline from '../../../../../components/research/Q04GpuResourceTimeline.astro';
+import Q08SeenRetentionExplorer from '../../../../../components/research/Q08SeenRetentionExplorer.astro';
+import Q09TextGuidanceIntelligence from '../../../../../components/research/Q09TextGuidanceIntelligence.astro';
 import AdvisorResponseMetricTable from '../../../../../components/research/AdvisorResponseMetricTable.astro';
 import PaperIntervalPlot from '../../../../../components/research/PaperIntervalPlot.astro';
 import OpenEvoSeedWorld4Reproduction from '../../../../../components/research/OpenEvoSeedWorld4Reproduction.astro';
@@ -201,7 +203,9 @@ const intervalScale = (id: string) => {
             </div>
             <h3 id={'response-'+q.id+'-title'}>{q.title}</h3>
           </header>
-          <p class="advisor-response__answer" data-detail-brief={q.id}><strong>目前最直接的回答：</strong>{q.brief.answer}</p>
+          {q.id==='q08' && <Q08SeenRetentionExplorer />}
+          {q.id==='q09' && <Q09TextGuidanceIntelligence />}
+          <p class="advisor-response__answer" data-detail-brief={q.id} data-answer-level={q.id==='q08'||q.id==='q09'?'evidence-recap':'main'}><strong>当前结论：</strong>{q.brief.answer}</p>
           <p class="advisor-response__stage" data-progress-stage={q.id}><strong>目前进度：</strong>{q.progress.label}。{q.brief.done}</p>
           <p class="advisor-response__evidence" data-evidence-readiness={q.id} data-evidence-state={q.evidenceState}><strong>证据成熟度：</strong>{evidenceReadiness[q.evidenceState]}。</p>
           <p class="advisor-response__missing" data-progress-gap={q.id}><strong>还差什么才能回答：</strong>{q.brief.missing}</p>
