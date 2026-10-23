@@ -25,8 +25,17 @@ for (const width of [390, 768, 1440]) {
         scrollWidth: node.scrollWidth,
         clientWidth: node.clientWidth,
       }));
-      if (width === 390) expect(plot.scrollWidth).toBeGreaterThan(plot.clientWidth);
-      if (width === 1440) expect(plot.scrollWidth).toBeLessThanOrEqual(plot.clientWidth + 1);
+      // Owner's accepted scientific-figure contract: never make a phone
+      // reader swipe a miniature chart to discover the rest of a time axis.
+      // A complete proportional axis stays visible; phase labels and values
+      // are repeated in normal-sized HTML immediately below the SVG.
+      expect(plot.scrollWidth).toBeLessThanOrEqual(plot.clientWidth + 1);
+      const axis = await root.locator('.q04-gpu__plot-wrap svg').evaluate(node => ({
+        width: node.getBoundingClientRect().width,
+        parent: node.parentElement!.getBoundingClientRect().width,
+      }));
+      expect(axis.width).toBeLessThanOrEqual(axis.parent + 1);
+      expect(Math.abs(axis.width - axis.parent)).toBeLessThanOrEqual(1);
       if (width === 390) await expect(root.locator('.q04-gpu__overview')).toBeVisible();
       if (width === 1440) await expect(root.locator('.q04-gpu__overview')).toBeHidden();
       const capture = (width === 390 && theme === 'light') || (width === 1440 && theme === 'dark');

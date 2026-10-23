@@ -78,7 +78,7 @@ if (q04GpuHasContinuousSampling !== false || receipt.stages.at(-1)?.endSeconds !
     </div>
   </div>
 
-  <div class="q04-gpu__plot-wrap" role="group" aria-label="GPU 显存实验阶段时间轴；窄屏可左右滚动" tabindex="0">
+  <div class="q04-gpu__plot-wrap" role="group" aria-label="GPU 显存实验阶段时间轴；窄屏按比例显示完整时间范围">
     <svg viewBox="0 0 940 341" role="img" aria-label="Q04 训练一个循环从第 0 分钟到第 34 分半。真实证据模式显示零星两次 NVML 快照，以及参数更新阶段 PyTorch 最大分配值；示意模式演示可能的连续起落，不是测量数据。">
       <defs>
         <linearGradient id="q04-memory-demo-fill" x1="0" x2="0" y1="0" y2="1">
@@ -136,7 +136,7 @@ if (q04GpuHasContinuousSampling !== false || receipt.stages.at(-1)?.endSeconds !
       </g>
     </svg>
   </div>
-  <p class="q04-gpu__mobile-hint">在手机上可以左右滑动时间轴，查看全部阶段。</p>
+  <p class="q04-gpu__mobile-hint">手机端完整缩放时间轴；下方阶段条和数值说明保留可直接阅读的细节，不必左右滑动。</p>
 
   <div class="q04-gpu__mode-copy" aria-live="polite">
     <p data-q04-gpu-mode-copy="observed"><strong>真实证据：</strong>蓝点是两次 GPU 总显存快照，橙色短线表示参数更新阶段的 <em>PyTorch 已分配显存峰值</em>，其精确发生时刻未记录。两种指标口径不同，不直接比较为整轮峰值，也不连接成曲线。</p>
@@ -213,10 +213,10 @@ if (q04GpuHasContinuousSampling !== false || receipt.stages.at(-1)?.endSeconds !
   .q04-gpu[data-enhanced] .q04-gpu__modes{display:flex}
   .q04-gpu__modes button{appearance:none;min-height:34px;border:0;border-radius:var(--radius-control);background:transparent;color:var(--q04-muted);cursor:pointer;padding:.36rem .68rem;font-family:inherit;font-size:.75rem;font-weight:620;line-height:1.3;white-space:nowrap}
   .q04-gpu__modes button[aria-pressed="true"]{background:var(--q04-paper);color:var(--q04-ink);box-shadow:0 1px 5px rgb(0 0 0 / 10%)}
-  .q04-gpu__modes button:focus-visible,.q04-gpu__plot-wrap:focus-visible{outline:3px solid #3486d7;outline-offset:2px}
-  .q04-gpu__plot-wrap{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin}
+  .q04-gpu__modes button:focus-visible{outline:3px solid #3486d7;outline-offset:2px}
+  .q04-gpu__plot-wrap{width:100%;max-width:100%;min-width:0}
   .q04-gpu__overview{display:none}
-  .q04-gpu__plot-wrap svg{display:block;width:100%;min-width:675px;height:auto;max-width:none;overflow:visible;color:var(--q04-ink);font-family:system-ui,-apple-system,"PingFang SC",sans-serif}
+  .q04-gpu__plot-wrap svg{display:block;width:100%;min-width:0;height:auto;max-width:100%;overflow:visible;color:var(--q04-ink);font-family:system-ui,-apple-system,"PingFang SC",sans-serif}
   .q04-gpu__axis-label{font:400 12px system-ui,sans-serif;fill:var(--q04-muted)}
   .q04-gpu__axis-caption{font:580 12px system-ui,sans-serif;fill:var(--q04-muted)}
   .q04-gpu__datum{font:690 13px system-ui,sans-serif}
@@ -264,8 +264,6 @@ if (q04GpuHasContinuousSampling !== false || receipt.stages.at(-1)?.endSeconds !
     .q04-gpu__overview-axis{display:flex;justify-content:space-between;font-size:.72rem;font-variant-numeric:tabular-nums;color:var(--q04-muted)}
     .q04-gpu__overview-track{display:flex;width:100%;height:.55rem;overflow:hidden;border-radius:var(--radius-control);margin-top:.22rem}
     .q04-gpu__overview-track>span{display:block;height:100%;min-width:2px}
-    .q04-gpu__unknown-callout{transform:translateX(-170px)}
-    .q04-gpu__demo-callout{transform:translateX(-170px)}
     .q04-gpu{padding:1rem .75rem;border-radius:var(--radius-panel)}
     .q04-gpu__head{flex-direction:column;gap:.45rem}
     .q04-gpu__elapsed{width:100%;flex-direction:row;align-items:baseline;gap:.5rem;text-align:left}

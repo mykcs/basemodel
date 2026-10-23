@@ -467,3 +467,21 @@ Do not lower broad readability thresholds to hide a bad proxy; repair the proxy 
 When the hosted command uses `--max-failures=1`, a repair that turns the first failing test green only unlocks the rest of the suite. Rerun until all tests execute. `N passed / 1 failed / M did not run` means the last `M` are unknown, not green.
 
 The detailed historical case is [`../history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md`](../history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md).
+
+---
+
+## 11. Advisor ten-question design fidelity: fast feedback without rewriting approved work
+
+When a user finds an error in one Q01–Q10 diagram, first recover the *current approved source*, the earlier owner decision, and the exact scientific evidence boundary. A fresh, plausible diagram is not a substitute for an approved composition. Preserve the chosen topology, option count, terminology and explanatory hierarchy unless the owner changes them. A passing build is not proof of fidelity to prior human feedback.
+
+For one-question iteration use the executable scoped lane already registered in the main advisor browser suite:
+
+```bash
+npx playwright test tests/e2e/advisor-intelligence-q02-q10.spec.ts --project=chromium --grep 'Focused Q02'
+```
+
+Replace `Q02` with any `Q01`–`Q10`. Each check binds to a question's mechanism, experimental scope, count, or interaction; all ten are also included in `test:ui` and `test:ui:all`. Run this short lane while editing, then the existing 320/390/768/1440 light/dark and Chromium/WebKit tests and `preflight:ui` before provider-triggering ref updates. **Never replace the full gate with the short lane.**
+
+Diagram-specific mobile policy for this research page: preserve the complete conceptual topology; prefer proportional scaling or an explicitly designed vertical composition over forcing a reader to swipe along a partial timeline. Check `scrollWidth` on the graphic's *own* wrapper and the document, not just absence of root overflow. Distinguish real observations from illustrative curves in both states. On an unsupported browser runner, use a clean, isolated checkout on an authorized supported macOS/Ubuntu machine; do not weaken assertions to turn an environmental failure green.
+
+Historical regression and per-question witness: [`../history/2026-10-23-advisor-q01-q10-fidelity-audit.md`](../history/2026-10-23-advisor-q01-q10-fidelity-audit.md).
