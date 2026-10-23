@@ -94,6 +94,9 @@ jobs:
       - name: Build static artifact
         run: npm run build
 
+      - name: Validate built browser discovery contracts
+        run: node --test tests/ci-ui-test-list.test.mjs
+
   browser:
     name: public-browser-${{ matrix.shard }}-of-${{ needs.plan.outputs.browser_total }}
     needs: plan
