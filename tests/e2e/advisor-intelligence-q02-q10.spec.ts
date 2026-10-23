@@ -1,6 +1,11 @@
 import {expect,test} from '@playwright/test';
+import {registerAdvisorFocusedChecks} from './advisor-intelligence-focused';
 
 const route='/research/seed-openevo/study/parameter-memory-results/';
+
+// One-question fast lane, all ten questions independently addressable via
+// --grep "Focused QNN"; the full 8-context matrix below remains unchanged.
+registerAdvisorFocusedChecks();
 
 for(const width of [320,390,768,1440]){
   for(const theme of ['light','dark'] as const){
