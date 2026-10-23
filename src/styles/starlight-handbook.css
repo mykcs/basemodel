@@ -3,6 +3,14 @@
   --sl-font: var(--font-interface);
   --sl-font-mono: var(--font-mono);
   --sl-content-width: var(--reading-width);
+  /* Consume the existing #895/#898 semantic roles when that stack integrates;
+   * framework defaults are a compatibility fallback, never another scale. */
+  --sl-text-h1: var(--type-article-page, var(--sl-text-4xl));
+  --sl-text-h2: var(--type-article-section, var(--sl-text-3xl));
+  --sl-text-h3: var(--type-article-subsection, var(--sl-text-2xl));
+  --sl-text-body: var(--type-body, var(--sl-text-base));
+  --sl-line-height: var(--type-leading-body, 1.75);
+  --sl-line-height-headings: var(--type-leading-heading, 1.2);
   --sl-nav-height: calc(var(--site-header-height) + var(--space-7));
   --sl-color-bg: var(--bg);
   --sl-color-bg-nav: var(--bg);

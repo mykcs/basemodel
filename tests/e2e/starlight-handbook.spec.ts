@@ -17,6 +17,9 @@ for (const width of [390, 1440]) for (const theme of ['light', 'dark'] as const)
     await page.goto('/handbook/',{waitUntil:'domcontentloaded'});
     await expect(page.locator('html')).toHaveAttribute('lang','zh');
     await expect(page.locator('h1')).toHaveText('BaseModel 技术手册');
+    await expect(page.locator('body')).toHaveAttribute('data-reader-contract-id','handbook');
+    await expect(page.locator('body')).toHaveAttribute('data-reader-attention-mode','reference');
+    await expect(page.locator('#main-content h1')).toBeVisible();
     await expect(page).toHaveTitle('BaseModel 技术手册 | BaseModel · 技术手册');
     await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
     expect(await sharedShell(page)).toBe(true);
@@ -147,4 +150,19 @@ test('existing BaseModel development page reaches installed Starlight docs',asyn
   await link.click();
   await expect(page).toHaveURL(/\/handbook\/$/);
   await expect(page.locator('h1')).toHaveText('BaseModel 技术手册');
+});
+
+for(const route of ['/papers/','/handbook/'])for(const width of [390,768,1080])for(const theme of ['light','dark'])test(`shared menu is opaque over ${route} at ${width} ${theme}`,async({page},testInfo)=>{
+  await page.setViewportSize({width,height:900});
+  await page.addInitScript(t=>localStorage.setItem('atlas-theme',t),theme);
+  await page.goto(route);await page.locator('[data-menu-toggle]').click();
+  const menu=page.locator('[data-mobile-menu]');await expect(menu).toBeVisible();
+  const opaque=()=>menu.evaluate(node=>{const color=getComputedStyle(node).backgroundColor;return color.startsWith('rgb(')||(/rgba\([^)]*,\s*1\)$/.test(color));});
+  expect(await opaque()).toBe(true);
+  await page.screenshot({path:testInfo.outputPath('opaque-shared-menu.png')});
+  const previous=await menu.getAttribute('style');
+  await menu.evaluate(node=>node.style.background='transparent');expect(await opaque()).toBe(false);
+  await menu.evaluate((node,value)=>{if(value===null)node.removeAttribute('style');else node.setAttribute('style',value);},previous);
+  expect(await opaque()).toBe(true);await page.keyboard.press('Escape');
+  await expect(page.locator('[data-menu-toggle]')).toHaveAttribute('aria-expanded','false');
 });
