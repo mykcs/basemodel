@@ -461,7 +461,7 @@ function acceptModelReproductionSetup(r:Awaited<ReturnType<typeof readModelRepro
     expect(role.scroll,selector).toBeLessThanOrEqual(role.client+2);
   }
   expect(r.wrapper.overflow).toBe('auto');
-  if(width===390)expect(r.wrapper.scroll).toBeGreaterThan(r.wrapper.client);
+  expect(r.wrapper.scroll,'all reproduction columns fit without horizontal drag').toBeLessThanOrEqual(r.wrapper.client+2);
 }
 for(const width of [390,768,1440] as const){
   for(const theme of ['light','dark'] as const){

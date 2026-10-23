@@ -160,7 +160,7 @@ for (const theme of ['light', 'dark'] as const) for (const variant of ['bounded-
     await page.addInitScript(mode => localStorage.setItem('atlas-theme', mode), theme);
     await page.goto(`/research/seed-openevo/study/capability-exploration/${variant}/`, { waitUntil: 'networkidle' });
     await page.evaluate(() => document.fonts.ready);
-    const selector = variant === 'sd-lora-scaling' ? '.scaling-hero__result' : variant === 'q17-directapply-analysis' ? '.q17-analysis__hero' : '.paper-table-wrap--hero';
+    const selector = variant === 'sd-lora-scaling' ? '.scaling-hero__result' : variant === 'q17-directapply-analysis' ? '.q17-analysis__hero' : '[data-gdr-first-result]';
     const message = page.locator(selector);
     const before = await message.boundingBox();
     expect(firstViewportMessageFits(before, 633)).toBe(true);
@@ -169,7 +169,7 @@ for (const theme of ['light', 'dark'] as const) for (const variant of ['bounded-
       ? '.research-route-context[data-reader-route="q17-directapply-analysis"] [data-reader-purpose]{max-width:75px!important}'
       : variant === 'sd-lora-scaling'
       ? '.scaling-hero h1{max-width:10ch!important;font-size:clamp(2.25rem,6vw,4.9rem)!important;line-height:.98!important}'
-      : '.paper{padding-top:34px!important}.paper h1{font-size:clamp(2rem,4vw,3.5rem)!important;line-height:1.04!important}' });
+      : '.paper{padding-top:34px!important}.paper h1{font-size:100px!important;max-width:10ch!important;line-height:1.04!important}' });
     let broken;
     let injectedHeading;
     try {
@@ -221,7 +221,7 @@ test('Study phone first screen exposes exactly the seven experiment parents', as
   const featured = page.locator('#main-content .experiment-mobile-featured--group');
   await expect(featured).toHaveCount(1);
   await expect(featured).toBeVisible();
-  await expect(featured.locator(':scope > strong')).toHaveText('SD-LoRA 加速');
+  await expect(featured.locator(':scope > strong')).toHaveText('05 · SD-LoRA 加速');
   const branchLinks = featured.locator('a');
   await expect(branchLinks).toHaveCount(3);
   await expect(branchLinks.nth(0)).toBeVisible();
@@ -363,3 +363,21 @@ test('briefing scales the whole 16:9 slide to iPhone width without horizontal sc
   expect(phoneAgainState.overflow).toBeLessThanOrEqual(2);
   expect(phoneAgainState.scale).toBeCloseTo(390 / 1280, 4);
 });
+
+for(const width of [390,1280])for(const theme of ['light','dark'] as const){
+  test(`same-panel first result retains every completed route and comparison boundary ${width} ${theme}`,async({page},info)=>{
+    const height=width===390?844:633;
+    await page.setViewportSize({width,height});await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+    await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',{waitUntil:'networkidle'});
+    const result=page.locator('[data-gdr-first-result]');
+    for(const row of [
+      {id:'directApply',label:'普通 OpenEVO',score:'60.72',exact:'50/128'},
+      {id:'off',label:'OpenEVO + Bounded Online Recurrence',score:'45.98',exact:'32/128'},
+      {id:'on',label:'OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）',score:'20.77',exact:'10/128'},
+    ]){const entry=result.locator(`[data-gdr-final-row="${row.id}"]`);await expect(entry.locator('dt')).toHaveText(row.label);await expect(entry.locator('dd strong')).toHaveText(row.score);await expect(entry.locator('dd')).toContainText(row.exact);}
+    for(const boundary of ['同一冻结 128 题 Final','普通 OpenEVO 是历史前驱','预注册对照仅为 Bounded 与 + β-gating','训练分数另列','SEED 是外部论文参考','动态 α + β 尚未运行'])await expect(result).toContainText(boundary);
+    expect(firstViewportMessageFits(await result.boundingBox(),height)).toBe(true);
+    await page.screenshot({path:info.outputPath('same-panel-first-result.png')});
+    const full=page.locator('.paper-table-wrap--hero');await full.scrollIntoViewIfNeeded();await expect(full.locator('tbody tr')).toHaveCount(5);
+  });
+}

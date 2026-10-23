@@ -284,8 +284,8 @@ const commandMenuLabels = {
   .journey-link__copy,
   .journey-link__copy strong,
   .journey-link__copy small { display: block; min-width: 0; }
-  .journey-link__copy strong { overflow-wrap: anywhere; font-size: var(--type-meta); font-family: var(--font-interface); line-height: 1.15; white-space: normal; }
-  .journey-link__copy small { margin-top: .2rem; overflow: hidden; color: var(--muted); font-size: var(--type-meta); font-family: var(--font-interface); line-height: 1.2; white-space: normal; }
+  .journey-link__copy strong { overflow-wrap: anywhere; font-size: var(--type-meta); font-family: var(--font-interface); line-height: var(--type-leading-heading); white-space: normal; }
+  .journey-link__copy small { margin-top: .2rem; overflow: hidden; color: var(--muted); font-size: var(--type-meta); font-family: var(--font-interface); line-height: var(--type-leading-caption); white-space: normal; }
 
   .resource-menu { position: relative; flex: 0 0 auto; }
   .resource-menu summary {
@@ -351,8 +351,8 @@ const commandMenuLabels = {
     align-items: baseline;
     padding: .45rem .55rem .75rem;
   }
-  .resource-menu__intro small { color: var(--nav-accent); font-size: var(--type-meta); font-weight: var(--type-weight-label); letter-spacing: .08em; text-transform: uppercase; }
-  .resource-menu__intro strong { min-width: 0; color: var(--ink); font-size: var(--type-meta); font-family: var(--font-interface); line-height: 1.4; overflow-wrap: anywhere; white-space: normal; }
+  .resource-menu__intro small { color: var(--nav-accent); font-size: var(--type-meta); font-weight: var(--type-weight-label); letter-spacing: normal; text-transform: uppercase; }
+  .resource-menu__intro strong { min-width: 0; color: var(--ink); font-size: var(--type-meta); font-family: var(--font-interface); line-height: var(--type-leading-heading); overflow-wrap: anywhere; white-space: normal; }
 
   .resource-menu__links {
     display: grid;
@@ -380,7 +380,7 @@ const commandMenuLabels = {
   .resource-menu__links strong,
   .resource-menu__links span { display: block; min-width: 0; white-space: normal; overflow-wrap: anywhere; }
   .resource-menu__links strong { color: var(--ink); font-size: var(--type-meta); font-family: var(--font-interface); }
-  .resource-menu__links span { margin-top: 0; color: var(--muted); font-size: var(--type-meta); font-family: var(--font-interface); line-height: 1.4; }
+  .resource-menu__links span { margin-top: 0; color: var(--muted); font-size: var(--type-meta); font-family: var(--font-interface); line-height: var(--type-leading-caption); }
 
   @media (max-width: 760px) {
     .resource-menu__panel { width: min(520px, calc(100vw - 1rem)); max-width: calc(100vw - 1rem); }
@@ -417,7 +417,7 @@ const commandMenuLabels = {
   .mobile-journeys > a > span { color: var(--nav-accent); font: var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface); }
   .mobile-journeys strong,
   .mobile-journeys small { display: block; }
-  .mobile-journeys strong { color: var(--ink); font-size: .86rem; }
+  .mobile-journeys strong { color: var(--ink); font-size: var(--type-body-small); }
   .mobile-journeys small { margin-top: .23rem; color: var(--muted); font-size: var(--type-meta); }
 
   .mobile-utility-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .42rem; }

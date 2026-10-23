@@ -104,11 +104,11 @@ const navItems = [
 <style>
   .results-hero{max-width:1160px;margin:0 auto;padding:36px 24px 12px;color:var(--color-text)}
   .results-first-screen{min-height:calc(100svh - 7rem)}
-  .results-hero h1{margin:0;max-width:940px;font-size:clamp(2.35rem,5vw,4.35rem);line-height:1.04;letter-spacing:-.05em}
-  .lede{max-width:800px;margin:22px 0 0;color:var(--color-text);font-size:1.02rem;line-height:1.75}
+  .results-hero h1{margin:0;max-width:940px;font-size:var(--type-page);line-height:var(--type-leading-heading);letter-spacing:normal}
+  .lede{max-width:800px;margin:22px 0 0;color:var(--color-text);font-size:var(--type-lead);line-height:var(--type-leading-body)}
   .results-primary{max-width:820px;margin-top:24px;padding:18px 0;border-block:2px solid var(--color-text)}
-  .results-primary>strong{display:block;color:var(--color-accent);font-size:var(--type-meta);font-family:var(--font-interface);letter-spacing:.03em}
-  .results-primary p{max-width:76ch;margin:8px 0 0;line-height:1.68}
+  .results-primary>strong{display:block;color:var(--color-accent);font-size:var(--type-meta);font-family:var(--font-interface);letter-spacing:normal}
+  .results-primary p{max-width:76ch;margin:8px 0 0;line-height:var(--type-leading-body)}
   .primary-result{font-size:var(--type-body);color:var(--color-text)}
   .primary-boundary{font-size:var(--type-body-small);color:var(--color-text-muted)}
   .primary-evidence{display:inline-block;margin-top:12px;color:var(--color-accent);font-size:var(--type-meta);font-family:var(--font-interface);font-weight:var(--type-weight-heading);text-decoration:none}.primary-evidence:hover,.primary-evidence:focus-visible{text-decoration:underline;text-underline-offset:3px}
@@ -117,18 +117,18 @@ const navItems = [
   .abstract-box{max-width:960px;margin-top:4px;border-block:1px solid var(--color-border)}
   .abstract-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;padding:18px 0}
   .abstract-row+.abstract-row{border-top:1px solid var(--color-border)}
-  .abstract-label{font-size:var(--type-meta);font-family:var(--font-interface);font-weight:var(--type-weight-label);letter-spacing:.04em;line-height:1.7}
+  .abstract-label{font-size:var(--type-meta);font-family:var(--font-interface);font-weight:var(--type-weight-label);letter-spacing:normal;line-height:var(--type-leading-caption)}
   .abstract-label.established{color:var(--color-accent)}
   .abstract-label.latest{color:var(--color-info)}
   .abstract-label.bottleneck{color:var(--color-text-muted)}
   .abstract-copy{display:grid;gap:8px}
-  .abstract-copy p{margin:0;max-width:76ch;line-height:1.72}
-  .abstract-copy .plain{font-size:.94rem;color:var(--color-text)}
+  .abstract-copy p{margin:0;max-width:76ch;line-height:var(--type-leading-body)}
+  .abstract-copy .plain{font-size:var(--type-body);color:var(--color-text)}
   .abstract-copy .detail{color:var(--color-text-muted);font-size:var(--type-body-small)}
   .abstract-evidence{justify-self:start;color:var(--color-accent);font-size:var(--type-meta);font-family:var(--font-interface);font-weight:var(--type-weight-heading);text-decoration:none}.abstract-evidence:hover,.abstract-evidence:focus-visible{text-decoration:underline;text-underline-offset:3px}
   .cutoff-note{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;max-width:960px;margin-top:20px;padding-top:16px;border-top:1px solid var(--color-border);font-size:var(--type-body-small);font-family:var(--font-interface)}
   .cutoff-note strong{color:var(--color-accent)}
-  .cutoff-note span{max-width:80ch;color:var(--color-text-muted);line-height:1.6}
+  .cutoff-note span{max-width:80ch;color:var(--color-text-muted);line-height:var(--type-leading-body)}
   .paper-nav{display:flex;flex-wrap:wrap;gap:.45rem 1.3rem;max-width:960px;margin-top:22px;padding:1rem 0;border-block:1px solid var(--color-border)}
   .paper-nav a{color:var(--color-text-muted);font-size:var(--type-meta);font-family:var(--font-interface);font-weight:var(--type-weight-label);text-decoration:none;text-underline-offset:.2em}
   .paper-nav a:hover,.paper-nav a:focus-visible{color:var(--color-text);text-decoration:underline}

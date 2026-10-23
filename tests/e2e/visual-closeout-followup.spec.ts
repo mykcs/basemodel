@@ -357,6 +357,7 @@ for (const width of [390, 768, 1440] as const) {
       if (width === 390) {
         // Negative control: remove the native per-model width and original
         // word grouping; the known 40px header/187px tall failure returns.
+        const originalHeaderStyles=await table.locator('thead th:not(:first-child)').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('style')));
         await table.locator('thead th:not(:first-child)').evaluateAll(nodes =>
           nodes.forEach(node => {
             (node as HTMLElement).style.removeProperty('min-width');
@@ -366,12 +367,9 @@ for (const width of [390, 768, 1440] as const) {
         const old = await header.boundingBox();
         expect(old!.height).toBeGreaterThan(normal!.height + 30);
         expect(() => expect(old!.height).toBeLessThan(100)).toThrow();
-        await table.locator('thead th:not(:first-child)').evaluateAll(nodes =>
-          nodes.forEach(node => {
-            (node as HTMLElement).style.minWidth = '120px';
-            (node as HTMLElement).style.overflowWrap = 'normal';
-          }),
-        );
+        await table.locator('thead th:not(:first-child)').evaluateAll((nodes,styles)=>nodes.forEach((node,index)=>{
+          const saved=styles[index];if(saved===null||saved===undefined)node.removeAttribute('style');else node.setAttribute('style',saved);
+        }),originalHeaderStyles);
         expect((await header.boundingBox())!.height).toBeLessThan(100);
       }
       expect(await table.locator('tbody tr').count()).toBeGreaterThan(0);

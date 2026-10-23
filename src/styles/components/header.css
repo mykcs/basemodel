@@ -315,8 +315,8 @@
     color: var(--ink);
     font-size: var(--type-caption);
     font-weight: 650;
-    line-height: 1.28;
-    letter-spacing: -.006em;
+    line-height: var(--type-leading-caption);
+    letter-spacing: normal;
   }
 
   body .site-header .mobile-menu a[aria-current='page'] {

@@ -20,7 +20,15 @@
 .paper-case-facts,
 .snapshot-change-notice {
   font-size: var(--type-body);
-  line-height: 1.58;
+}
+.paper-case-summary,.paper-case-scope {
+  line-height: var(--type-leading-body);
+}
+.paper-case-facts {
+  line-height: var(--type-leading-caption);
+}
+.snapshot-change-notice {
+  line-height: var(--type-leading-body);
 }
 .provenance-badge,
 .fit-dimensions dt,
@@ -103,7 +111,7 @@
 .provenance-estimated { color: var(--warning); border-color: color-mix(in srgb, var(--warning) 42%, var(--line)); }
 .paper-case-facts { gap: 9px; }
 .paper-case-facts dt { color: var(--muted); }
-.paper-case-facts dd { line-height: 1.5; }
+.paper-case-facts dd { line-height: var(--type-leading-body); }
 .paper-case-card { box-shadow: none !important; border-radius: 10px !important; }
 
 /* Landscape learning mode is the default low-cognitive-load path. */
@@ -231,7 +239,7 @@ summary:focus-visible {
 /* Guide page: readable measure, stronger progress cues, less visual fatigue. */
 .guide-learning-page { width: min(1120px, calc(100% - 48px)); max-width: 1120px !important; }
 .guide-learning-page > .page-header { max-width: 960px; padding-top: clamp(48px, 6vw, 76px); }
-.guide-learning-page > .page-header h1 { max-width: 880px; font-size: var(--type-page); line-height: 1; letter-spacing: -.045em; }
+.guide-learning-page > .page-header h1 { max-width: 880px; font-size: var(--type-page); line-height: var(--type-leading-heading); letter-spacing: normal; }
 .guide-learning-page > .page-header .lede { max-width: var(--study-reading); font-size: var(--type-lead); }
 .guide-learning-page .hardware-note {
   max-width: 780px;
@@ -368,7 +376,7 @@ pre { max-width: 100%; }
 
   .guide-learning-page > .page-header { padding-top: 38px; }
   .guide-learning-page > .page-header h1 { font-size: var(--type-page); }
-  .guide-learning-page > .page-header .lede { font-size: var(--type-lead); line-height: 1.67; }
+  .guide-learning-page > .page-header .lede { font-size: var(--type-lead); line-height: var(--type-leading-body); }
   .guide-learning-page .hardware-note { margin-top: 18px; padding: 13px 14px; }
   .guide-learning-page .agent-bridge { margin-top: 14px; padding: 18px !important; border-radius: 16px; }
   .guide-learning-page .agent-bridge-head h2 { font-size: var(--type-section); }

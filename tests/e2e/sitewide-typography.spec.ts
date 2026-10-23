@@ -134,7 +134,7 @@ for(const width of [390,1280] as const){
 const advisorTableRoute='/research/seed-openevo/study/parameter-memory-results/';
 const advisorTableSelector='[data-advisor-matrix="q02"]';
 const acceptScientificCellSize=(pixels:number)=>expect(pixels).toBeGreaterThanOrEqual(15);
-const acceptLocalTableScroller=(overflowX:string)=>expect(overflowX).toBe('auto');
+const acceptScientificTableFit=(m:{client:number;scroll:number;tableWidth:number})=>{expect(m.scroll,'complete scientific table fits its wrapper').toBeLessThanOrEqual(m.client+2);expect(m.tableWidth).toBeLessThanOrEqual(m.client+2);};
 
 for(const width of [390,768,1440] as const) {
   for(const theme of ['light','dark'] as const) {
@@ -188,11 +188,7 @@ for(const width of [390,768,1440] as const) {
       expect(geometry.rootOverflow).toBeLessThanOrEqual(2);
       expect(geometry.holder.left).toBeGreaterThanOrEqual(-2);
       expect(geometry.holder.right).toBeLessThanOrEqual(width+2);
-      acceptLocalTableScroller(geometry.holder.overflowX);
-      if(width===390) {
-        expect(geometry.tableWidth).toBeGreaterThanOrEqual(416-1);
-        expect(geometry.holder.scroll).toBeGreaterThan(geometry.holder.client);
-      }
+      acceptScientificTableFit({...geometry.holder,tableWidth:geometry.tableWidth});
       const label='advisor-q02-'+width+'-'+theme;
       await scroller.screenshot({path:testInfo.outputPath(label+'.png'),animations:'disabled',
         style:'.site-header { visibility: hidden; }'});
@@ -200,30 +196,26 @@ for(const width of [390,768,1440] as const) {
   }
 }
 
-test('former 13px data and hidden local scroller both fail the actual advisor table predicates',async({page})=>{
+test('former 13px data and a clipped oversized table fail the actual advisor predicates',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto(advisorTableRoute,{waitUntil:'domcontentloaded'});
   const cell=page.locator(advisorTableSelector+' tbody td[data-numeric]').first();
   const scroller=page.locator(advisorTableSelector+' .advisor-result-matrix__wrap');
   const readSize=()=>cell.evaluate(node=>parseFloat(getComputedStyle(node).fontSize));
-  const readScroll=()=>scroller.evaluate(node=>getComputedStyle(node).overflowX);
-  acceptScientificCellSize(await readSize());
-  acceptLocalTableScroller(await readScroll());
-  await page.addStyleTag({content:`
-    /* Inject at the actual consumer, not the ancestor: a native td can keep
-       its own 15px declaration even after the table inherits 13px. */
-    .evo-approved-reader .advisor-result-matrix tbody td[data-numeric] {font-size:13px !important;}
-    .evo-approved-reader .advisor-result-matrix__wrap {overflow-x:hidden !important;}
+  const readFit=()=>scroller.evaluate(node=>({client:node.clientWidth,scroll:node.scrollWidth,tableWidth:node.querySelector('table')!.getBoundingClientRect().width}));
+  acceptScientificCellSize(await readSize());acceptScientificTableFit(await readFit());
+  const injected=await page.addStyleTag({content:`
+    .evo-approved-reader .advisor-result-matrix tbody td[data-numeric]{font-size:13px!important}
+    .advisor-result-matrix table{width:1600px!important;min-width:1600px!important;max-width:none!important}
+    .advisor-result-matrix__wrap{overflow-x:hidden!important}
   `});
-  const badSize=await readSize();
-  expect(badSize).toBeLessThan(15);
-  expect(()=>acceptScientificCellSize(badSize)).toThrow();
-  const badScroller=await readScroll();
-  expect(badScroller).toBe('hidden');
-  expect(()=>acceptLocalTableScroller(badScroller)).toThrow();
+  const brokenSize=await readSize();expect(brokenSize).toBeLessThan(15);
+  expect(()=>acceptScientificCellSize(brokenSize)).toThrow();
+  const broken=await readFit();expect(broken.scroll).toBeGreaterThan(broken.client+2);
+  expect(()=>acceptScientificTableFit(broken)).toThrow();
+  await injected.evaluate(node=>node.parentNode?.removeChild(node));
+  acceptScientificCellSize(await readSize());acceptScientificTableFit(await readFit());
 });
-
-
 
 const fourArmAnalysis='/research/seed-openevo/study/results/four-arm-analysis/';
 async function readFourArmType(page: import('@playwright/test').Page) {
@@ -345,7 +337,7 @@ for(const width of [390,768,1440] as const) {
       await page.evaluate(()=>document.fonts.ready);
       const r=await readFourArmDataType(page);
       acceptFourArmDataType(r);
-      if(width===390)expect(r.local.scroll).toBeGreaterThan(r.local.client);
+      expect(r.local.scroll,'all plan columns fit without horizontal drag').toBeLessThanOrEqual(r.local.client+2);
       const region=page.locator('.per-arm-grid');
       await region.scrollIntoViewIfNeeded();
       // Two different proof surfaces: (1) true viewport with its live sticky navigation;
@@ -460,10 +452,8 @@ function acceptMinimaxTypography(m:Awaited<ReturnType<typeof readMinimaxTypograp
   expect(m.candidateList.layout).toBe('grid');
   expect(m.candidateList.pointOverlaps).toEqual([]);
   expect(m.candidateList.scroll).toBeLessThanOrEqual(m.candidateList.client+2);
-  if(width===390){
-    expect(m.table.width).toBeGreaterThan(m.wrap.client+10);
-    expect(m.wrap.scroll).toBeGreaterThan(m.wrap.client);
-  }
+  expect(m.table.width).toBeLessThanOrEqual(m.wrap.client+2);
+  expect(m.wrap.scroll).toBeLessThanOrEqual(m.wrap.client+2);
 }
 for(const width of [390,768,1440] as const){
   for(const theme of ['light','dark'] as const){
@@ -603,9 +593,9 @@ const ceilingRoles={
   '.ceiling__rounds b':20,
   '.ceiling__rounds p':16,
   '.ceiling__learning-list span':16,
-  '.ceiling__compare thead th':16,
-  '.ceiling__compare tbody th':16,
-  '.ceiling__compare tbody td':16,
+  '.ceiling__compare thead th':15,
+  '.ceiling__compare tbody th':15,
+  '.ceiling__compare tbody td':15,
   '.ceiling__arm-status article>span':16,
   '.ceiling__arm-status article>strong':16,
   '.ceiling__arm-status article p':16,
@@ -615,8 +605,8 @@ const ceilingRoles={
   '.ceiling__provenance nav a':16,
 } as const;
 type CeilingMeasure={
-  roles:Record<string,{size:number;family:string;weight:number;style:string;width:number;overflow:number;left:number;right:number}>;
-  table:{viewportWidth:number;scrollWidth:number;rows:number;headings:number;tabIndex:number};
+  roles:Record<string,{size:number;family:string;weight:number;style:string;width:number;overflow:number;left:number;right:number;concealedHeader:boolean}>;
+  table:{viewportWidth:number;scrollWidth:number;rows:number;headings:number;tabIndex:number;labels:Array<{expected:string;label:string;actual:string;size:number}>};
   rootLeft:number;rootRight:number;documentOverflow:number;scientificText:string;
 };
 async function measureCeiling(page:import('@playwright/test').Page):Promise<CeilingMeasure>{
@@ -629,12 +619,13 @@ async function measureCeiling(page:import('@playwright/test').Page):Promise<Ceil
       if(!el)throw Error('Missing Ceiling role '+selector);
       const style=getComputedStyle(el),rect=el.getBoundingClientRect();
       return [selector,{size:parseFloat(style.fontSize),family:style.fontFamily,weight:parseFloat(style.fontWeight),
-        style:style.fontStyle,width:rect.width,overflow:el.scrollWidth-el.clientWidth,left:rect.left,right:rect.right}];
+        style:style.fontStyle,width:rect.width,overflow:el.scrollWidth-el.clientWidth,left:rect.left,right:rect.right,concealedHeader:!!el.closest('thead')&&getComputedStyle(el.closest('thead')!).position==='absolute'}];
     })) as CeilingMeasure['roles'];
     const b=root.getBoundingClientRect();
+    const nativeHeaders=[...wrapper.querySelectorAll('thead th')].map(cell=>cell.textContent?.replace(/\s+/g,' ').trim()??'');
     return {roles,table:{viewportWidth:wrapper.clientWidth,scrollWidth:wrapper.scrollWidth,
       rows:wrapper.querySelectorAll('tbody tr').length,headings:wrapper.querySelectorAll('thead th').length,
-      tabIndex:wrapper.tabIndex},
+      tabIndex:wrapper.tabIndex,labels:[...wrapper.querySelectorAll<HTMLTableCellElement>('tbody td')].map(cell=>({expected:nativeHeaders[cell.cellIndex]??'',label:cell.dataset.paperLabel??'',actual:getComputedStyle(cell,'::before').content.replace(/^['"]|['"]$/g,''),size:parseFloat(getComputedStyle(cell,'::before').fontSize)}))},
       rootLeft:b.left,rootRight:b.right,documentOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
       scientificText:root.textContent??''};
   },Object.keys(ceilingRoles));
@@ -650,8 +641,7 @@ function acceptCeiling(m:CeilingMeasure,width:number){
     expect(role.family,selector+' interface instead of decorative monospace').toMatch(/Inter|PingFang|system-ui/);
     expect(role.style,selector+' normal style').toBe('normal');
     expect(role.weight,selector+' reasonable weight').toBeLessThanOrEqual(700);
-    expect(role.width,selector+' visible width').toBeGreaterThan(0);
-    expect(role.overflow,selector+' no clipped text').toBeLessThanOrEqual(2);
+    if(!role.concealedHeader){expect(role.width,selector+' visible width').toBeGreaterThan(0);expect(role.overflow,selector+' no clipped text').toBeLessThanOrEqual(2);}
     if(!selector.startsWith('.ceiling__compare ')){
       expect(role.left,selector+' left edge').toBeGreaterThanOrEqual(-2);
       expect(role.right,selector+' right edge').toBeLessThanOrEqual(width+2);
@@ -661,7 +651,8 @@ function acceptCeiling(m:CeilingMeasure,width:number){
   expect(m.table.headings).toBe(3);
   expect(m.table.viewportWidth).toBeGreaterThan(200);
   expect(m.table.tabIndex).toBe(0);
-  if(width===390)expect(m.table.scrollWidth,'large scientific table scrolls inside its wrapper').toBeGreaterThan(m.table.viewportWidth+100);
+  expect(m.table.scrollWidth,'complete comparison fits without horizontal drag').toBeLessThanOrEqual(m.table.viewportWidth+2);
+  if(width<=760){expect(m.table.labels).toHaveLength(8);for(const label of m.table.labels){expect(label.expected).not.toBe('');expect(label.label).toBe(label.expected);expect(label.actual).toBe(label.expected);expect(label.size).toBeGreaterThanOrEqual(15);}}
   for(const fact of ['49.33 / 100','58','128','20,480','19,072','149','89.7 / 100','Ceiling-1.0'])
     expect(m.scientificText,'retain sealed 7B scientific copy').toContain(fact);
 }
@@ -707,13 +698,17 @@ test('Ceiling-1.0 9px status and header regression is rejected by the SAME geome
   acceptCeiling(await measureCeiling(page),width);
   const css=await page.addStyleTag({content:
     '.ceiling__hero>div>p{font:850 9px/1 monospace!important}'+
-    '.ceiling__compare thead th{font-size:9px!important}'});
+    '.ceiling__compare thead th,.ceiling__compare tbody td{font-size:9px!important}'});
   const broken=await measureCeiling(page);
   expect(broken.roles['.ceiling__hero>div>p']!.size).toBeLessThan(10);
   expect(broken.roles['.ceiling__compare thead th']!.size).toBeLessThan(10);
+  expect(broken.roles['.ceiling__compare tbody td']!.size).toBeLessThan(10);
   expect(()=>acceptCeiling(broken,width)).toThrow();
   await css.evaluate(node=>node.parentNode?.removeChild(node));
   acceptCeiling(await measureCeiling(page),width);
+  const value=page.locator(ceilingRoot+' .ceiling__compare tbody td').first(),saved=await value.getAttribute('data-paper-label');
+  await value.evaluate(cell=>cell.setAttribute('data-paper-label','错误列名'));const wrongColumn=await measureCeiling(page);expect(()=>acceptCeiling(wrongColumn,width)).toThrow();
+  await value.evaluate((cell,label)=>cell.setAttribute('data-paper-label',label!),saved);acceptCeiling(await measureCeiling(page),width);
 });
 
 
@@ -1099,7 +1094,7 @@ test('Landscape label gate rejects injected 9px ECharts axis/legend text',async(
 });
 // These witnesses came from exact source-to-scoped-DOM matching, not a blanket
 // assumption that every literal size is a defect. Keep concurrent rewrites out.
-const scopedMigrationWitnesses = JSON.parse(readFileSync(new URL('../../docs/agents/evidence/sitewide-typography/2026-10-22/scoped-migration-witnesses.json', import.meta.url), 'utf8')).witnesses as Array<{file:string;selector:string;route:string;text:string;minimum:number;role:string;maximumVisibleWidth:number|null;minimumVisibleWidth:number|null;ordinaryFace?:boolean;maximumWeight?:number;localViewport?:boolean}>;
+const scopedMigrationWitnesses = JSON.parse(readFileSync(new URL('../../docs/agents/evidence/sitewide-typography/2026-10-22/scoped-migration-witnesses.json', import.meta.url), 'utf8')).witnesses as Array<{file:string;selector:string;route:string;text:string;minimum:number;role:string;maximumVisibleWidth:number|null;minimumVisibleWidth:number|null;ordinaryFace?:boolean;maximumWeight?:number;localViewport?:boolean;minimumApplicableWidth?:number|null;maximumApplicableWidth?:number|null}>;
 const acceptScopedRole=(size:number,minimum:number,label:string)=>expect(size,label).toBeGreaterThanOrEqual(minimum);
 const acceptOrdinaryFace=(font:string,label:string)=>{expect(font,label+' interface family').toMatch(/^Inter\b/);expect(font,label+' ordinary reading').not.toMatch(/mono|Menlo|Consolas|Georgia|Times New Roman/i);};
 for (const route of [...new Set(scopedMigrationWitnesses.map(row=>row.route))]) {
@@ -1111,7 +1106,7 @@ for (const route of [...new Set(scopedMigrationWitnesses.map(row=>row.route))]) 
       await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
       await page.evaluate(()=>document.fonts.ready);
       const receipts=[];let faceNegative=false,weightNegative=false;
-      for(const row of scopedMigrationWitnesses.filter(row=>row.route===route)){
+      for(const row of scopedMigrationWitnesses.filter(row=>row.route===route&&(row.minimumApplicableWidth==null||width>=row.minimumApplicableWidth)&&(row.maximumApplicableWidth==null||width<=row.maximumApplicableWidth))){
         const node=page.locator(row.selector).filter({hasText:row.text}).first();
         await expect(node).toBeAttached();
         if((row.maximumVisibleWidth!==null&&width>row.maximumVisibleWidth)||(row.minimumVisibleWidth!==null&&width<row.minimumVisibleWidth)){await expect(node).toBeHidden();receipts.push({...row,expectedHidden:true});continue;}

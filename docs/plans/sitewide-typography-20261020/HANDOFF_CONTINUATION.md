@@ -1,5 +1,8 @@
 # Typography #898 continuation handoff
 
+> **2026-10-23 current continuation:** the exact eb0f baseline's 1,531 pending migrations and 25 mixed-selector actions are implemented. The current 5,811-declaration ledger has zero planned entries and a required pinned 1,556-ID reconciliation; one originally correct `normal` is not counted as a fabricated source edit. Mobile task/compare journeys and article-table default fitting are repaired, retaining original scientific values and explicit unsaved-draft semantics. Source evidence and retained failures live in the evidence README; complete final-SHA CI, Preview and reader acceptance must be verified on [PR #898](https://github.com/mykcs/basemodel/pull/898). Root is the sole writer; Draft/base #895 and no-Production boundaries remain. All older dated counts and outcomes below are historical.
+
+
 > 最新验收修正：66e3 的 Chromium 八片虽绿，实跑856/计划861，缺少5项导入注册测试；完整验收不通过。已改用 Playwright 原生分片，清单回归验证8片并集完整且无重复；WebKit 的 Arial 字体负例在平滑滚动中点错移动目标，改用该文件既有的原生键盘展开方式，保留原有展开/字号/Arial拒绝/恢复断言，不将此用例冒充鼠标交互验收。最新精确HEAD终态仍以 PR #898 收据为准。
 
 

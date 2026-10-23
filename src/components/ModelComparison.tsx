@@ -4,7 +4,7 @@ import { comparisonToCsv, comparisonToMarkdown, type CompareExportRow } from '..
 import type { CompareImpactCode } from '../lib/research/compareImpact';
 import { getMessages, localePath, type Locale } from '../i18n';
 import type { AtlasModel, AtlasPaper } from '../lib/types';
-import { compareIds } from '../stores/compare';
+import { compareIds, replaceCompare } from '../stores/compare';
 
 const semanticUnknown = new Set(['not_disclosed', 'not_applicable', 'not_reported', 'not_verified', 'conflicting_evidence', 'not_published', 'unavailable', 'unknown']);
 
@@ -38,7 +38,7 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
   useEffect(() => {
     const requested = initialSelection(models);
     setSelected(requested);
-    compareIds.set(requested);
+    replaceCompare(requested);
     const params = new URLSearchParams(window.location.search);
     setOnlyDifferences(params.get('diff') === '1');
     setOnlyImpacts(params.get('impact') === '1');
@@ -51,7 +51,7 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
     if (onlyDifferences) next.set('diff', '1'); else next.delete('diff');
     if (onlyImpacts) next.set('impact', '1'); else next.delete('impact');
     if (onlyUnknown) next.set('unknown', '1'); else next.delete('unknown');
-    compareIds.set(selected);
+    replaceCompare(selected);
     window.history.replaceState({}, '', `${window.location.pathname}${next.toString() ? `?${next}` : ''}`);
   }, [selected, onlyDifferences, onlyImpacts, onlyUnknown]);
 
@@ -131,12 +131,15 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
   };
 
   return <div className="comparison-shell">
-    <div className="comparison-picker">
-      <div><span className="section-kicker">{m.compare.selectKicker}</span><h2>{m.compare.selectTitle}</h2><p className="muted">{m.compare.selected} {selected.length} / 5 {canStart ? '' : m.compare.minTwo}</p></div>
+    <details className="comparison-picker" open={!canStart}>
+      <summary><span>{m.compare.selectTitle}</span><span className="muted">{m.compare.selected} {selected.length} / 5</span></summary>
+      <div className="comparison-picker-body">
       <div><label className="field" htmlFor="compare-search"><span>{m.compare.searchLabel}</span><input id="compare-search" type="search" value={query} placeholder={m.compare.searchPlaceholder} onChange={(event) => setQuery(event.target.value)} /></label><div className="picker-list">{visibleModels.map((model) => <label className={`picker-item ${selected.includes(model.id) ? 'is-selected' : ''}`} key={model.id}><input type="checkbox" checked={selected.includes(model.id)} disabled={!selected.includes(model.id) && selected.length >= 5} onChange={() => toggle(model.id)} /><span>{model.name}</span></label>)}</div>{visibleModels.length === 0 && <p className="muted">{m.compare.noMatches}</p>}</div>
-    </div>
+        {canStart && <a className="button button-primary" href="#comparison-results" onClick={(event) => event.currentTarget.closest('details')?.removeAttribute('open')}>{locale === 'zh' ? '查看对比结果' : 'View comparison results'}</a>}
+      </div>
+    </details>
 
-    {active.length >= 2 ? <>
+    {active.length >= 2 ? <section id="comparison-results" aria-label={m.compare.title}>
       <div className="comparison-controls">
         <label className="comparison-mode"><input type="checkbox" checked={onlyDifferences} onChange={(event) => setOnlyDifferences(event.target.checked)} /><span>{onlyDifferences ? m.compare.allFields : m.compare.onlyDifferences}</span></label>
         <label className="comparison-mode"><input type="checkbox" checked={onlyImpacts} onChange={(event) => setOnlyImpacts(event.target.checked)} /><span>{m.compare.onlyImpacts}</span></label>
@@ -153,11 +156,12 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
       </div>
 
       {visibleRows.length ? <>
+        <nav className="comparison-section-nav comparison-desktop-nav" aria-label={locale === 'zh' ? '对比维度' : 'Comparison dimensions'}>{groupedRows.map(({group}) => <a href={'#compare-desktop-' + group} key={group}>{m.compareGroups[group]}</a>)}</nav>
         <div className="comparison-table-wrap comparison-desktop-table">
           <table className="comparison-table">
             <caption className="sr-only">{m.compare.title}</caption>
             <thead><tr><th scope="col">{m.compare.dimension}</th>{active.map((model) => <th scope="col" key={model.id}>{model.name}</th>)}</tr></thead>
-            {groupedRows.map((section) => <tbody key={section.group}>
+            {groupedRows.map((section) => <tbody key={section.group} id={"compare-desktop-" + section.group}>
               <tr className="comparison-group"><th scope="rowgroup" colSpan={active.length + 1}>{m.compareGroups[section.group]}</th></tr>
               {section.rows.map((row) => {
                 const state = rowState(row);
@@ -171,7 +175,8 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
         </div>
 
         <div className="comparison-mobile-cards" aria-label={locale === 'zh' ? '移动端模型对比' : 'Mobile model comparison'}>
-          {groupedRows.map((section) => <section className="comparison-mobile-group" key={section.group}>
+          <nav className="comparison-section-nav" aria-label={locale === 'zh' ? '对比维度' : 'Comparison dimensions'}>{groupedRows.map(({group}) => <a href={'#compare-mobile-' + group} key={group}>{m.compareGroups[group]}</a>)}</nav>
+          {groupedRows.map((section) => <section className="comparison-mobile-group" key={section.group} id={"compare-mobile-" + section.group}>
             <h3>{m.compareGroups[section.group]}</h3>
             {section.rows.map((row) => {
               const state = rowState(row);
@@ -186,7 +191,7 @@ export default function ModelComparison({ models, papers = [], locale = 'zh' }: 
           </section>)}
         </div>
       </> : <div className="empty-state">{m.compare.noDifferences}</div>}
-    </> : <div className="empty-state">{m.compare.empty}</div>}
+    </section> : <div className="empty-state">{m.compare.empty}</div>}
   </div>;
 }
 

@@ -3,6 +3,7 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { inventoryCSS, inventoryAstro } from './lib/typography-inventory.mjs';
+import { verifyTypographyReconciliation } from './lib/typography-reconciliation.mjs';
 
 const root = new URL('../', import.meta.url).pathname;
 const ledger = JSON.parse(fs.readFileSync(path.join(root, 'docs/agents/evidence/sitewide-typography/2026-10-22/source-disposition-ledger.json'), 'utf8'));
@@ -28,6 +29,8 @@ function decode(value) {
   return value;
 }
 const rows = ledger.rows.map(decode);
+assert(ledger.baselineReconciliation, 'Final migration ledger requires its pinned baseline reconciliation');
+verifyTypographyReconciliation(ledger.baselineReconciliation, rows);
 const walk = directory => fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => entry.isDirectory() ? walk(path.join(directory, entry.name)) : [path.join(directory, entry.name)]);
 const fingerprint = createHash('sha256');
 const source = [];

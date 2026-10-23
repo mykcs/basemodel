@@ -77,22 +77,22 @@ const rewardUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/web_agen
   .webshop-evaluation { width: 100%; margin: 1.5rem auto; padding: 1.1rem 0 1.5rem; border-top: 1px solid var(--line); }
   .figure-header { max-width: 880px; }
   .figure-label { color: var(--accent-deep); font: var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface); }
-  .figure-header h3 { margin: .4rem 0 .55rem; font-size: clamp(1.26rem, 2.7vw, 1.95rem); line-height: 1.26; letter-spacing: -.02em; }
-  .figure-header p { max-width: 75ch; margin: 0; color: var(--muted); font-size: var(--type-body-small); line-height: 1.65; }
+  .figure-header h3 { margin: .4rem 0 .55rem; font-size: var(--type-article-subsection); line-height: var(--type-leading-heading); letter-spacing: normal; }
+  .figure-header p { max-width: 75ch; margin: 0; color: var(--muted); font-size: var(--type-body-small); line-height: var(--type-leading-body); }
   .evaluation-story { margin: 1.05rem 0 0; }
   .checkout-ledger { display: grid; grid-template-columns: minmax(0, .88fr) minmax(0, .88fr) minmax(0, 1.24fr); gap: .8rem; align-items: stretch; }
   .checkout-ledger>section { min-width: 0; padding: .85rem; border: 1px solid var(--line); border-radius: var(--radius-panel); background: var(--surface); }
   .checkout-ledger small { color: var(--accent-deep); font: var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface); }
   .checkout-ledger strong { display: block; margin: .35rem 0 .65rem; font-size: var(--type-meta); }
   .checkout-input ul { display: grid; gap: .48rem; margin: 0; padding: 0; list-style: none; }
-  .checkout-input li { padding-top: .4rem; border-top: 1px solid var(--line); font-size: var(--type-body-small); line-height: 1.5; }
+  .checkout-input li { padding-top: .4rem; border-top: 1px solid var(--line); font-size: var(--type-body-small); line-height: var(--type-leading-body); }
   .checkout-output { border-color: color-mix(in srgb, var(--accent-deep) 40%, var(--line)) !important; }
   .checkout-output dl { display: grid; gap: .65rem; margin: 0; }
   .checkout-output dl>div { padding-top: .55rem; border-top: 1px solid var(--line); }
   .checkout-output dt { color: var(--muted); font-size: var(--type-meta); font-weight: var(--type-weight-label); }
   .checkout-output dd { margin: .25rem 0; font-size: var(--type-body-small); overflow-wrap: anywhere; }
-  .checkout-output p { margin: .25rem 0 0; font-size: var(--type-body-small); line-height: 1.48; }
-  .evaluation-interpretation { max-width: 89ch; margin: .9rem 0; font-size: var(--type-body-small); line-height: 1.7; }
+  .checkout-output p { margin: .25rem 0 0; font-size: var(--type-body-small); line-height: var(--type-leading-body); }
+  .evaluation-interpretation { max-width: 89ch; margin: .9rem 0; font-size: var(--type-body-small); line-height: var(--type-leading-body); }
   .evidence { margin-top: 1rem; border-top: 1px solid var(--line); }
   .evidence summary { cursor: pointer; padding: .65rem 0; color: var(--accent-deep); font-size: var(--type-meta); font-weight: var(--type-weight-heading); }
   .evidence summary:focus-visible { outline: 2px solid var(--focus-ring); }
@@ -100,9 +100,9 @@ const rewardUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/web_agen
   .evidence-grid>div { min-width: 0; }
   .evidence-grid strong { display: block; font-size: var(--type-meta); }
   .evidence-grid code { display: block; margin: .45rem 0; padding: .4rem; border-radius: var(--radius-control); background: var(--surface-muted); font-size: var(--type-meta); overflow-wrap: anywhere; }
-  .evidence-grid p { font-size: var(--type-body-small); color: var(--muted); line-height: 1.55; }
+  .evidence-grid p { font-size: var(--type-body-small); color: var(--muted); line-height: var(--type-leading-body); }
   .evidence-grid a { color: var(--accent-deep); font-size: var(--type-meta); font-weight: var(--type-weight-label); }
-  .evaluation-story figcaption { margin-top: .65rem; color: var(--muted); font-size: var(--type-caption); line-height: 1.6; }
+  .evaluation-story figcaption { margin-top: .65rem; color: var(--muted); font-size: var(--type-caption); line-height: var(--type-leading-caption); }
   @media(max-width:900px) { .checkout-ledger { grid-template-columns: repeat(2, minmax(0, 1fr)); } .checkout-output { grid-column: 1 / -1; } }
   @media(max-width:610px) { .checkout-ledger { grid-template-columns: minmax(0, 1fr); } .checkout-output { grid-column: auto; } .evidence-grid { grid-template-columns: 1fr; } }
 </style>

@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
@@ -49,19 +50,19 @@ const hypotheses = [
   <section class="tm-section" aria-labelledby="tm-cases-title">
     <h2 id="tm-cases-title">{t('五类记录，不能合写成一个 bug', 'Five records, not one interchangeable bug')}</h2>
     <p>{t('Stage1 是最初整理经验的阶段；Stage2 是训练中继续更新经验的阶段。R104、R122 是后者的轮次编号。输出上限写满、重复旧文和分块处理，是不同的观测或设计。', 'Stage1 builds the initial experience summaries; Stage2 updates experience during training. R104 and R122 identify rounds in Stage2. Saturation, repeated text and chunked processing are different observations or designs.')}</p>
-    <div class="tm-table-wrap" tabindex="0" aria-label={t('历史案例，可横向滚动', 'Historical cases, horizontally scrollable')}><table><caption>{t('历史 Text Memory 证据与解释边界', 'Historical Text Memory evidence and its limits')}</caption><thead><tr><th>{t('案例', 'Case')}</th><th>{t('收据或配置记录了什么', 'What receipts or policies record')}</th><th>{t('仍然不能证明什么', 'What remains unproven')}</th></tr></thead><tbody>{cases.map(([label, fact, limit]) => <tr><th scope="row">{label}</th><td>{fact}</td><td>{limit}</td></tr>)}</tbody></table></div>
+    <div class="tm-table-wrap" tabindex="0" aria-label={t('历史案例，可横向滚动', 'Historical cases, horizontally scrollable')}><ResearchPaperTable narrowRecords><caption>{t('历史 Text Memory 证据与解释边界', 'Historical Text Memory evidence and its limits')}</caption><thead><tr><th>{t('案例', 'Case')}</th><th>{t('收据或配置记录了什么', 'What receipts or policies record')}</th><th>{t('仍然不能证明什么', 'What remains unproven')}</th></tr></thead><tbody>{cases.map(([label, fact, limit]) => <tr><th scope="row">{label}</th><td>{fact}</td><td>{limit}</td></tr>)}</tbody></ResearchPaperTable></div>
     <p class="tm-scroll-hint">{t('左右滑动可查看完整对照。', 'Scroll sideways to view the full comparison.')}</p>
     <p class="tm-evidence"><a href={evidenceHref}>{t('案例摘要与候选文件哈希', 'Case summary and candidate hashes')}</a> · <a href={codeHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={codeHref} /> {t('完整历史分析及复现代码（需仓库权限）', 'Full lineage analysis and replay code (repository access required)')}</a></p>
   </section>
 
   <section class="tm-section" aria-labelledby="tm-rounds-title">
     <h2 id="tm-rounds-title">{t('Text Memory 的两种失败模式：重复旧笔记与输出饱和', 'Two Text Memory failure modes: prior-note duplication and output saturation')}</h2>
-    <div class="tm-table-wrap" tabindex="0" aria-label={t('R104 与 R122 对照', 'R104 and R122 comparison')}><table><thead><tr><th>{t('比较项', 'Comparison')}</th><th>R104</th><th>R122</th></tr></thead><tbody>
+    <div class="tm-table-wrap" tabindex="0" aria-label={t('R104 与 R122 对照', 'R104 and R122 comparison')}><ResearchPaperTable narrowRecords><Fragment slot="caption">{locale === 'zh' ? "R104 与 R122 的设置对照" : "R104 and R122 configuration comparison"}</Fragment><thead><tr><th>{t('比较项', 'Comparison')}</th><th>R104</th><th>R122</th></tr></thead><tbody>
       <tr><th scope="row">{t('第一次输出', 'First output')}</th><td>{t('117 token；旧笔记重复两遍；不合法', '117 tokens; prior note twice; invalid')}</td><td>{t('1024 token；写满上限；不合法', '1,024 tokens; saturated; invalid')}</td></tr>
       <tr><th scope="row">{t('唯一一次修复', 'Single repair')}</th><td>{t('117 token；仍是旧笔记重复两遍', '117 tokens; prior note twice again')}</td><td>{t('117 token；旧笔记重复两遍', '117 tokens; prior note twice')}</td></tr>
       <tr><th scope="row">{t('是否得到合法新笔记', 'Legal new note produced?')}</th><td>{t('没有', 'No')}</td><td>{t('没有', 'No')}</td></tr>
       <tr><th scope="row">{t('恢复处理', 'Recovery disposition')}</th><td>{t('按该轮批准范围保留旧笔记', 'Keep prior within the round-specific approval')}</td><td>{t('保留旧笔记；新增模型调用为 0', 'Keep prior; zero additional model calls')}</td></tr>
-    </tbody></table></div>
+    </tbody></ResearchPaperTable></div>
     <p class="tm-scroll-hint">{t('左右滑动可查看完整对照。', 'Scroll sideways to view the full comparison.')}</p>
     <p>{t('R122 的第一次输出并不等于 R104 的重复输出，所以不能直接套用同一个恢复理由。两轮都保留原始失败候选，没有人工挑几句拼成“成功”。', 'R122’s first output is not the duplicated output seen in R104, so the same recovery rationale cannot simply be reused. Both rounds retain the original failed candidates; no sentences were hand-picked into a successful replacement.')}</p>
   </section>
@@ -83,11 +84,11 @@ const hypotheses = [
 
   <section class="tm-section" aria-labelledby="tm-shadow-title">
     <h2 id="tm-shadow-title">{t('同一批经历，比较三种写法', 'Compare three writing methods on the same evidence')}</h2>
-    <div class="tm-table-wrap" tabindex="0" aria-label={t('计划中的三种写法', 'Three planned methods')}><table><thead><tr><th>{t('写法', 'Method')}</th><th>{t('改变什么', 'What changes')}</th><th>{t('结果', 'Result')}</th></tr></thead><tbody>
+    <div class="tm-table-wrap" tabindex="0" aria-label={t('计划中的三种写法', 'Three planned methods')}><ResearchPaperTable narrowRecords><Fragment slot="caption">{locale === 'zh' ? "计划中的三种文本处理写法" : "Three planned text-processing methods"}</Fragment><thead><tr><th>{t('写法', 'Method')}</th><th>{t('改变什么', 'What changes')}</th><th>{t('结果', 'Result')}</th></tr></thead><tbody>
       <tr><th scope="row">{t('20 条一次处理', '20 records in one pass')}</th><td>{t('作为对照写法', 'Baseline strategy')}</td><td>{t('待测', 'Not measured')}</td></tr>
       <tr><th scope="row">{t('20 条 + 更大输出上限', '20 records + larger cap')}</th><td>{t('只增加输出空间', 'Increase output room')}</td><td>{t('待测', 'Not measured')}</td></tr>
       <tr><th scope="row">10+10</th><td>{t('前后两半分别阅读，再合并；合并也计费', 'Read each ordered half, then consolidate; consolidation counts too')}</td><td>{t('待测', 'Not measured')}</td></tr>
-    </tbody></table></div>
+    </tbody></ResearchPaperTable></div>
     <p class="tm-scroll-hint">{t('左右滑动可查看完整对照。', 'Scroll sideways to view the full comparison.')}</p>
     <p>{t('先比较合法率、写满率、重复率、正常不更新比例、规则数量、单题事实混入情况及调用/token 成本。只有这一层取得真实证据，才考虑下一条独立 WebShop 实验；模型、任务、预算、停止条件和最终测试权限都需单独冻结。', 'First compare legality, saturation, duplication, normal no-update rate, rule counts, task-local leakage, and call/token cost. Only real evidence at this layer can motivate a separate WebShop experiment, with its own frozen model, tasks, budget, stopping rule and final-panel access policy.')}</p>
     <p class="tm-boundary">{t('这份正式实验快照不采用 10+10 或新的“不更新”规则，也没有重做 R122。', 'This formal-run snapshot did not adopt 10+10 or a new no-update rule, and R122 was not replayed.')}</p>
@@ -112,23 +113,26 @@ const hypotheses = [
 </main>
 <style>
   .tm-plan{width:min(1080px,calc(100% - 2rem));margin:0 auto;padding:1.5rem 0 4rem;color:var(--text)}
-  .tm-plan p,.tm-plan li,.tm-plan dd,.tm-plan td,.tm-plan small,.tm-plan span,.tm-plan strong,.tm-plan a{font-size:1rem}
+  .tm-hero>p.tm-boundary,.tm-section p:not(.tm-evidence):not(.tm-scroll-hint),.tm-progress>li,.tm-hypotheses>li{font-size:var(--type-body)}
+  .tm-plan td{font-size:var(--type-table)}
+  .tm-progress>li>strong{font-size:var(--type-minor-heading)}
+  .tm-plan .tm-evidence>a,.tm-plan .tm-links p>a{font-size:inherit}
   .tm-hero{padding:1.8rem 0 1.5rem;border-bottom:1px solid var(--line);max-width:58rem}
-  .tm-kicker{margin:0 0 .7rem;color:var(--muted);font-size:var(--type-body);font-weight:700}
-  .tm-hero h1{margin:0;font-size:clamp(2rem,4.4vw,3.5rem);line-height:1.18;letter-spacing:-.035em;max-width:55rem}
-  .tm-lede{max-width:51rem;margin:1rem 0 0;font-size:1.05rem;line-height:1.75}
-  .tm-boundary{padding-left:1rem;border-left:3px solid var(--accent-deep);font-weight:650;line-height:1.7}
+  .tm-kicker{margin:0 0 .7rem;color:var(--muted);font-size:var(--type-body);font-weight:var(--type-weight-label)}
+  .tm-hero h1{margin:0;font-size:var(--type-article-page);line-height:var(--type-leading-heading);letter-spacing:-.035em;max-width:55rem}
+  .tm-lede{max-width:51rem;margin:1rem 0 0;font-size:var(--type-lead);line-height:var(--type-leading-body)}
+  .tm-boundary{padding-left:1rem;border-left:3px solid var(--accent-deep);font-weight:650;line-height:var(--type-leading-body)}
   .tm-section{margin-top:2rem;padding-top:1.3rem;border-top:1px solid var(--line)}
-  .tm-section h2{margin:0 0 1rem;font-size:clamp(1.4rem,2.5vw,2rem);line-height:1.3;letter-spacing:-.025em}
-  .tm-section h3{margin:0 0 .6rem;font-size:1.1rem;line-height:1.4}
-  .tm-section p{font-size:var(--type-body);line-height:1.8;max-width:66rem}
+  .tm-section h2{margin:0 0 1rem;font-size:var(--type-article-section);line-height:var(--type-leading-heading);letter-spacing:normal}
+  .tm-section h3{margin:0 0 .6rem;font-size:var(--type-article-subsection);line-height:var(--type-leading-heading)}
+  .tm-section p{font-size:var(--type-body);line-height:var(--type-leading-body);max-width:66rem}
   .tm-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem}
   .tm-two article{padding:1rem 0;border-top:2px solid var(--accent-deep)}
   .tm-two article p{margin:.45rem 0}
   .tm-scroll-hint{display:none}
   @media(max-width:680px){.tm-scroll-hint{display:block;font-size:var(--type-body);color:var(--muted)}}
   .tm-table-wrap{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
-  table{width:100%;min-width:620px;border-collapse:collapse;font-size:1rem;line-height:1.7;text-align:left}
+  table{width:100%;min-width:620px;border-collapse:collapse;font-size:var(--type-table);line-height:var(--type-leading-caption);text-align:left}
   caption{text-align:left;font-size:var(--type-body);color:var(--muted);padding-bottom:.5rem}
   th,td{padding:.85rem .8rem;vertical-align:top;border-bottom:1px solid var(--line)}
   thead{border-top:2px solid var(--line);border-bottom:1px solid var(--line)}
@@ -138,12 +142,12 @@ const hypotheses = [
   a:focus-visible,summary:focus-visible,.tm-table-wrap:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}
   .tm-progress{padding-left:1.5rem;display:grid;gap:1rem}
   .tm-progress p{margin:.25rem 0}
-  .tm-hypotheses{padding-left:1.5rem;line-height:1.8}
+  .tm-hypotheses{padding-left:1.5rem;line-height:var(--type-leading-body)}
   .tm-hypotheses li{margin:.6rem 0}
   .tm-blank-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
-  .research-placeholder{padding:1rem;border:1px dashed var(--muted);background:var(--surface-muted);line-height:1.7;font-weight:650;min-height:5rem}
+  .research-placeholder{padding:1rem;border:1px dashed var(--muted);background:var(--surface-muted);line-height:var(--type-leading-body);font-weight:650;min-height:5rem}
   details{margin-top:1rem;padding:1rem;border:1px solid var(--line)}
-  summary{cursor:pointer;font-weight:650;line-height:1.6}
+  summary{cursor:pointer;font-weight:650;line-height:var(--type-leading-caption)}
   code{overflow-wrap:anywhere;word-break:break-word}
   @media(max-width:680px){.tm-two,.tm-blank-grid{grid-template-columns:1fr}.tm-hero{padding-top:1rem}.tm-lede{font-size:var(--type-body)}.tm-section{margin-top:1.5rem}.tm-plan{width:calc(100% - 1.5rem)}th,td{padding:.65rem}.tm-progress{padding-left:1.2rem}}
 </style>

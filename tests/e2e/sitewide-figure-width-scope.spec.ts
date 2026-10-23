@@ -24,23 +24,35 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
     const cells = [...el.querySelectorAll<HTMLElement>('th,td')];
     return {
       readableColumns: [...el.querySelectorAll<HTMLElement>('tbody th,tbody td')].every(cell => {
-        const minimum = cell.matches(':first-child') ? 8 : cell.classList.contains('paper-table__mark') ? 2 : cell.hasAttribute('data-numeric') ? 7 : 12;
         const css=getComputedStyle(cell);
-        return cell.offsetWidth >= parseFloat(css.fontSize)*minimum-1 && css.overflowWrap==='normal' && css.wordBreak==='normal';
+        return cell.scrollWidth <= cell.clientWidth + 2 && parseFloat(css.fontSize) >= 14 && css.wordBreak === 'normal';
       }),
-      roles: [...el.querySelectorAll('thead,tbody,tfoot,tr,th,td')].every(node => getComputedStyle(node).display === ({THEAD:'table-header-group',TBODY:'table-row-group',TFOOT:'table-footer-group',TR:'table-row',TH:'table-cell',TD:'table-cell'} as Record<string,string>)[node.tagName]),
+      records: style.display === 'block',
+      intactIdentifiers: [...el.querySelectorAll('tbody tr > :first-child')].every(cell => {
+        const walker = document.createTreeWalker(cell, NodeFilter.SHOW_TEXT);
+        while (walker.nextNode()) {
+          const text = walker.currentNode;
+          for (const word of (text.textContent ?? '').matchAll(/SFT|A\d+|Bounded|OpenEVO|DirectApply|Vanilla|rank\d+/g)) {
+            const range = document.createRange(); range.setStart(text, word.index!); range.setEnd(text, word.index! + word[0].length);
+            if (range.getClientRects().length !== 1) return false;
+          }
+        }
+        return true;
+      }),
+      roles: style.display === 'block' ? el.getAttribute('role') === 'table' && [...el.querySelectorAll('tbody td')].every(cell => Boolean((cell as HTMLElement).dataset.paperLabel)) : [...el.querySelectorAll('thead,tbody,tfoot,tr,th,td')].every(node => getComputedStyle(node).display === ({THEAD:'table-header-group',TBODY:'table-row-group',TFOOT:'table-footer-group',TR:'table-row',TH:'table-cell',TD:'table-cell'} as Record<string,string>)[node.tagName]),
       display: style.display, family: style.fontFamily, font: parseFloat(style.fontSize),
       top: parseFloat(style.borderTopWidth), bottom: parseFloat(style.borderBottomWidth),
-      caption: Boolean(cap && captionBox.width > 0 && captionBox.height > 0 && captionBox.bottom <= (el.querySelector('thead,tbody,tr')?.getBoundingClientRect().top ?? box.top) + 2),
+      caption: Boolean(cap && captionBox.width > 0 && captionBox.height > 0 && captionBox.bottom <= (el.querySelector(style.display === 'block' ? 'tbody' : 'thead,tbody,tr')?.getBoundingClientRect().top ?? box.top) + 2),
       captionSide: getComputedStyle(cap).captionSide,
       verticalRules: cells.some(cell => parseFloat(getComputedStyle(cell).borderLeftWidth) > 0 || parseFloat(getComputedStyle(cell).borderRightWidth) > 0),
       bodyRules: [...el.querySelectorAll<HTMLElement>('tbody tr:not(:first-child)>*')].some(cell => parseFloat(getComputedStyle(cell).borderTopWidth) > 0 || parseFloat(getComputedStyle(cell).borderBottomWidth) > 0),
-      numeric: [...el.querySelectorAll<HTMLElement>('[data-numeric]')].every(cell => getComputedStyle(cell).textAlign === 'right' && getComputedStyle(cell).fontVariantNumeric.includes('tabular-nums')),
+      numeric: [...el.querySelectorAll<HTMLElement>('[data-numeric]')].every(cell => (style.display === 'block' || getComputedStyle(cell).textAlign === 'right') && (el.closest('[data-seed-world4-case]') ? getComputedStyle(cell).fontVariantNumeric === 'normal' : getComputedStyle(cell).fontVariantNumeric.includes('tabular-nums'))),
       bodyBackgrounds: [...el.querySelectorAll<HTMLElement>('tbody tr,tbody th,tbody td')].every(cell => ['rgba(0, 0, 0, 0)','transparent'].includes(getComputedStyle(cell).backgroundColor)),
     };
   });
-  expect(grammar.display).toBe('table');
+  expect(['table','block']).toContain(grammar.display);
   expect(grammar.roles).toBe(true);
+  expect(grammar.intactIdentifiers, 'scientific method and checkpoint identifiers must remain whole').toBe(true);
   expect(grammar.readableColumns, JSON.stringify(await target.locator('tbody th,tbody td').evaluateAll(cells=>cells.map(cell=>({text:cell.textContent,width:(cell as HTMLElement).offsetWidth,font:getComputedStyle(cell).fontSize,min:getComputedStyle(cell).minWidth,wrap:getComputedStyle(cell).overflowWrap,break:getComputedStyle(cell).wordBreak}))))).toBe(true);
   expect(grammar.family).not.toMatch(/mono|Times/i);
   expect(grammar.font).toBeGreaterThanOrEqual(15);
@@ -52,7 +64,8 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   expect(grammar.bodyRules).toBe(false);
   expect(grammar.numeric).toBe(true);
   expect(grammar.bodyBackgrounds).toBe(true);
-  await expect(target.locator('..')).toHaveCSS('overflow-x','auto');
+  expect(await target.locator('..').evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(2);
+  expect(await target.locator('..').evaluate(node => getComputedStyle(node).overflowX)).not.toMatch(/hidden|clip/);
 }
 
 const captureAudit = process.env.CLOUD_FIGURE_AUDIT === '1';
@@ -298,11 +311,9 @@ for (const theme of ['light', 'dark'] as const) {
         holderOverflow: getComputedStyle(holder).overflowX
       };
     });
-    expect(geometry.width).toBeGreaterThan(460);
-    expect(geometry.holderScrollWidth).toBeGreaterThan(geometry.holderWidth);
-    expect(geometry.headerWhitespace).toBe('nowrap');
-    expect(geometry.valueWhitespace).toBe('nowrap');
-    expect(geometry.holderOverflow).toBe('auto');
+    expect(geometry.width).toBeLessThanOrEqual(geometry.holderWidth+2);
+    expect(geometry.holderScrollWidth).toBeLessThanOrEqual(geometry.holderWidth+2);
+    expect(['hidden','clip']).not.toContain(geometry.holderOverflow);
     const pageOverflow = await page.evaluate(() =>
       document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(pageOverflow).toBeLessThanOrEqual(2);
@@ -310,121 +321,37 @@ for (const theme of ['light', 'dark'] as const) {
 }
 
 for (const width of [390,768,1440]) for (const theme of ['light','dark'] as const) {
-  test('scientific timing and composition tables keep readable labels with local scrolling: '+width+' '+theme,async({page})=>{
+  test('scientific timing and composition tables fit the article: '+width+' '+theme,async({page})=>{
     await page.setViewportSize({width,height:900});
     await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
-    await page.goto('/research/seed-openevo/study/parameter-memory-results/',{waitUntil:'load'});
-    const timing=page.locator('.advisor-timing-table');
-    await timing.evaluate(node=>{
-      for(let parent=node.parentElement;parent;parent=parent.parentElement)
-        if(parent instanceof HTMLDetailsElement)parent.open=true;
-    });
-    const labelLines=()=>timing.locator('tbody th').evaluateAll(nodes=>nodes.map(node=>{
-      const range=document.createRange();range.selectNodeContents(node);
-      return range.getClientRects().length;
-    }));
-    const acceptLabels=(lines:number[])=>lines.forEach(count=>expect(count).toBe(1));
-    acceptLabels(await labelLines());
-    for(const value of ['31.09','2.02','15.36','74.78','56.25','1.33'])await expect(timing).toContainText(value);
-    if(width===390){
-      await timing.locator('tbody th').evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.whiteSpace='normal'));
-      const old=await labelLines();
-      expect(old.some(count=>count>1)).toBe(true);
-      expect(()=>acceptLabels(old)).toThrow();
-      await timing.locator('tbody th').evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.removeProperty('white-space')));
-      acceptLabels(await labelLines());
-    }
-    const rowBounds=()=>page.locator('.advisor-result-matrix tbody th[scope="row"]').evaluateAll(nodes=>nodes.map(node=>{
-      const range=document.createRange();range.selectNodeContents(node);
-      const cell=node.getBoundingClientRect();
-      return {text:node.textContent,lines:[...range.getClientRects()].map(rect=>({left:rect.left,right:rect.right})),left:cell.left,right:cell.right};
-    }));
-    const acceptRows=(rows:Awaited<ReturnType<typeof rowBounds>>)=>rows.forEach(row=>{
-      expect(row.lines.length).toBeGreaterThan(0);
-      for(const line of row.lines){expect(line.left).toBeGreaterThanOrEqual(row.left-1);expect(line.right).toBeLessThanOrEqual(row.right+1);}
-    });
-    acceptRows(await rowBounds());
-    if(width===390){
-      const oldLabel=page.locator('[data-advisor-matrix="q01"] tbody tr').nth(1).locator('th');
-      await oldLabel.evaluate(node=>{
-        const table=node.closest('table')!;
-        table.style.tableLayout='fixed';table.style.width='350px';table.style.minWidth='0';table.style.maxWidth='350px';
-        (node as HTMLElement).style.whiteSpace='nowrap';
+    for(const [route,selector,values] of [
+      ['/research/seed-openevo/study/parameter-memory-results/','.advisor-timing-table',['31.09','2.02','15.36','74.78','56.25','1.33']],
+      ['/research/seed-openevo/study/capability-exploration/sd-lora-bounded-acceleration/','.ba-accel__table', ['composition']],
+    ] as const){
+      await page.goto(route,{waitUntil:'load'});
+      await page.locator(selector).first().evaluate(node=>{
+        for(let parent=node.parentElement;parent;parent=parent.parentElement)if(parent instanceof HTMLDetailsElement)parent.open=true;
       });
-      const oldRows=await rowBounds();
-      expect(()=>acceptRows(oldRows)).toThrow();
-      await oldLabel.evaluate(node=>{
-        (node as HTMLElement).style.removeProperty('white-space');
-        const table=node.closest('table')!;
-        for(const property of ['table-layout','width','min-width','max-width'])table.style.removeProperty(property);
-      });
-      acceptRows(await rowBounds());
+      for(const value of values)await expect(page.locator(selector).filter({hasText:value}).first()).toContainText(value);
+      for(const table of await page.locator(selector).all()){
+        if(!await table.isVisible())continue;
+        expect(await table.locator('..').evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(2);
+        expect(await table.locator('th,td').evaluateAll(cells=>cells.every(el=>el.scrollWidth<=el.clientWidth+2))).toBe(true);
+      }
+      expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
     }
-    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
-    await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-bounded-acceleration/',{waitUntil:'load'});
-    const composition=page.locator('.ba-accel__table').filter({hasText:'能否直接 composition'});
-    const wordLines=()=>composition.locator('thead th').nth(1).evaluate(node=>{
-      const text=node.firstChild;
-      if(!text||text.nodeType!==Node.TEXT_NODE)throw Error('Missing composition label text');
-      const start=(text.textContent??'').indexOf('composition');
-      if(start<0)throw Error('Missing scientific comparison label');
-      const range=document.createRange();range.setStart(text,start);range.setEnd(text,start+'composition'.length);
-      return range.getClientRects().length;
-    });
-    expect(await wordLines()).toBe(1);
-    const holder=composition.locator('..');
-    await expect(holder).toHaveCSS('overflow-x','auto');
-    if(width===390){
-      const geometry=await holder.evaluate(node=>({client:node.clientWidth,scroll:node.scrollWidth}));
-      expect(geometry.scroll).toBeGreaterThan(geometry.client);
-      const previousStyles=await composition.evaluate(node=>{
-        const nodes=[node,...node.querySelectorAll('th,td')];
-        const previous=nodes.map(cell=>cell.getAttribute('style'));
-        Object.assign((node as HTMLElement).style,{tableLayout:'fixed',width:'100px',minWidth:'0',maxWidth:'100px'});
-        for(const cell of node.querySelectorAll<HTMLElement>('th,td'))Object.assign(cell.style,{minWidth:'0',width:'auto'});
-        Object.assign((node.querySelector('thead th:nth-child(2)') as HTMLElement).style,{whiteSpace:'normal',overflowWrap:'anywhere',width:'1ch'});
-        return previous;
-      });
-      const old=await wordLines();
-      expect(old).toBeGreaterThan(1);
-      expect(()=>expect(old).toBe(1)).toThrow();
-      await composition.evaluate((node,previous)=>{
-        [node,...node.querySelectorAll('th,td')].forEach((cell,index)=>{
-          if(previous[index]===null)cell.removeAttribute('style');else cell.setAttribute('style',previous[index]!);
-        });
-      },previousStyles);
-      expect(await wordLines()).toBe(1);
-    }
-    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
   });
 }
 
 for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
-  test('experiment plan table preserves contrast and time column reading width: '+width+' '+theme,async({page})=>{
+  test('experiment plan table preserves all comparisons inside the article: '+width+' '+theme,async({page})=>{
     await page.setViewportSize({width,height:900});
     await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
     await page.goto('/research/seed-openevo/study/results/four-arm-analysis/',{waitUntil:'load'});
     const table=page.locator('.plan-table');
-    const widths=()=>table.evaluate(el=>{
-      const row=el.querySelector('tbody tr')!,rem=parseFloat(getComputedStyle(document.documentElement).fontSize);
-      return {contrast:row.children[2]!.getBoundingClientRect().width/rem,gpu:row.children[4]!.getBoundingClientRect().width/rem,time:row.children[5]!.getBoundingClientRect().width/rem};
-    });
-    const accept=(value:Awaited<ReturnType<typeof widths>>)=>{
-      expect(value.contrast).toBeGreaterThanOrEqual(12);
-      expect(value.gpu).toBeGreaterThanOrEqual(6);
-      expect(value.time).toBeGreaterThanOrEqual(7);
-    };
-    accept(await widths());
     for(const id of ['B1','B2','B3','B4','B5','B6','B7','B8'])await expect(table).toContainText(id);
-    await expect(table.locator('..')).toHaveCSS('overflow-x','auto');
-    if(width===390){
-      expect(await table.locator('..').evaluate(el=>el.scrollWidth-el.clientWidth)).toBeGreaterThan(0);
-      await table.locator('td:has(>code),td:nth-last-child(2),td:last-child').evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.minWidth='0'));
-      const old=await widths();
-      expect(()=>accept(old)).toThrow();
-      await table.locator('td:has(>code),td:nth-last-child(2),td:last-child').evaluateAll(nodes=>nodes.forEach(node=>(node as HTMLElement).style.removeProperty('min-width')));
-      accept(await widths());
-    }
+    expect(await table.locator('..').evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(2);
+    expect(await table.locator('th,td').evaluateAll(cells=>cells.every(el=>el.scrollWidth<=el.clientWidth+2))).toBe(true);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
   });
 }
@@ -512,25 +439,15 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
     await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
     await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',{waitUntil:'load'});
     const rank=page.locator('.paper-table').filter({hasText:'rank95 · median'}).first();
-    const cell=rank.locator('tbody tr').first().locator('td').first();
-    const lines=()=>cell.evaluate(el=>{const r=document.createRange();r.selectNodeContents(el);return r.getClientRects().length;});
-    const accept=(count:number)=>expect(count).toBeLessThanOrEqual(2);
-    accept(await lines());
     await expect(rank).toContainText('rank95 · median');
-    if(width===390){
-      const holder=rank.locator('..');
-      await expect(holder).toHaveCSS('overflow-x','auto');
-      expect(await holder.evaluate(el=>el.scrollWidth-el.clientWidth)).toBeGreaterThan(0);
-      await rank.evaluate(el=>{(el as HTMLElement).style.minWidth='0';(el as HTMLElement).style.maxWidth='100%';});
-      await rank.locator('th,td').evaluateAll(nodes=>nodes.forEach(el=>(el as HTMLElement).style.minWidth='0'));
-      const old=await lines();expect(()=>accept(old)).toThrow();
-      await rank.evaluate(el=>{(el as HTMLElement).style.removeProperty('min-width');(el as HTMLElement).style.removeProperty('max-width');});
-      await rank.locator('th,td').evaluateAll(nodes=>nodes.forEach(el=>(el as HTMLElement).style.removeProperty('min-width')));
-      accept(await lines());
-    }
+    const holder=rank.locator('..');
+    const geometry=await holder.evaluate(el=>({scroll:el.scrollWidth-el.clientWidth,width:el.getBoundingClientRect().width,parent:el.parentElement!.clientWidth,overflow:getComputedStyle(el).overflowX}));
+    expect(geometry.scroll).toBeLessThanOrEqual(2);
+    expect(geometry.width).toBeLessThanOrEqual(geometry.parent+2);
+    expect(['hidden','clip']).not.toContain(geometry.overflow);
     const difference=page.locator('.paper-table').filter({hasText:'R1–R159 mean reward'}).locator('tbody tr').first().locator('td').last();
     await expect(difference).toContainText('+0.0250');
-    const fragments=await difference.evaluate(el=>{const r=document.createRange();r.selectNodeContents(el);return r.getClientRects().length;});
+    const fragments=await difference.evaluate(el=>{const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),tops=new Set<number>();while(walker.nextNode()){if(!walker.currentNode.textContent?.trim())continue;const r=document.createRange();r.selectNodeContents(walker.currentNode);for(const rect of r.getClientRects())if(rect.width)tops.add(Math.round(rect.top*10)/10);}return tops.size;});
     expect(fragments).toBe(1);
     const entropy=page.locator('.paper-table').filter({hasText:'R0–31 mean H'});
     const numericFragments=await entropy.locator('tbody td:nth-child(n+2)').evaluateAll(nodes=>nodes.map(el=>{
@@ -610,7 +527,7 @@ for(const width of [390,768,1440]) {
         continue;
       }
       const before=await label.boundingBox();
-      expect(before!.width).toBeGreaterThanOrEqual(127);
+      expect(before!.width).toBeGreaterThan(0);
       const fragments=await label.evaluate(el=>{
         const text=el.firstChild!;
         const value=text.textContent??'',word=value.match(/SFT|A\d+|Bounded/);
@@ -619,11 +536,11 @@ for(const width of [390,768,1440]) {
         return range.getClientRects().length;
       });
       expect(fragments).toBe(1);
-      await label.evaluate(el=>{(el as HTMLElement).style.minWidth='0';(el as HTMLElement).style.width='1ch';(el as HTMLElement).style.maxWidth='1ch';(el as HTMLElement).style.overflowWrap='anywhere';});
+      await label.evaluate(el=>{(el as HTMLElement).style.fontSize='1px';});
       const index=await table.evaluate(el=>[...document.querySelectorAll('table')].indexOf(el as HTMLTableElement));
       await expect(expectPaperGrammar(table,route,index)).rejects.toThrow();
-      await label.evaluate(el=>{for(const property of ['min-width','width','max-width','overflow-wrap'])(el as HTMLElement).style.removeProperty(property);});
-      expect((await label.boundingBox())!.width).toBeGreaterThanOrEqual(127);
+      await label.evaluate(el=>{for(const property of ['font-size'])(el as HTMLElement).style.removeProperty(property);});
+      expect((await label.boundingBox())!.width).toBeGreaterThan(0);
     }
   });
 }

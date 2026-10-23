@@ -104,10 +104,10 @@ const t = (cn: string, en: string) => zh ? cn : en;
 <style>
   .development-page { padding-block: clamp(2.5rem, 6vw, 5rem); }
   .development-hero { display: grid; align-content: center; min-height: calc(100svh - 80px); max-width: 860px; margin-bottom: clamp(3rem, 7vw, 6rem); }
-  .development-hero h1 { max-width: 14ch; margin: 0; font-size: clamp(2.35rem, 6vw, 5.5rem); line-height: .98; letter-spacing: -.045em; }
-  .development-hero .lede { max-width: 760px; margin: 1.35rem 0 0; color: var(--text); font-size: clamp(1.08rem, 2vw, 1.35rem); line-height: var(--type-leading-body); }
+  .development-hero h1 { max-width: 14ch; margin: 0; font-size: var(--type-page); line-height: var(--type-leading-heading); letter-spacing: normal; }
+  .development-hero .lede { max-width: 760px; margin: 1.35rem 0 0; color: var(--text); font-size: var(--type-lead); line-height: var(--type-leading-body); }
   section { margin-block: clamp(3.5rem, 8vw, 7rem); }
-  section > h2 { max-width: 760px; margin-bottom: 1.5rem; font-size: clamp(1.65rem, 3.3vw, 2.5rem); letter-spacing: -.025em; }
+  section > h2 { max-width: 760px; margin-bottom: 1.5rem; font-size: var(--type-section); letter-spacing: normal; }
   .development-system { margin-top: 0; }
   .development-flow { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 1.7rem); margin: 1.5rem 0; padding: 0; list-style: none; }
   .development-flow li { position: relative; min-width: 0; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius-panel); background: var(--surface); }
@@ -120,21 +120,21 @@ const t = (cn: string, en: string) => zh ? cn : en;
   .development-flow li[data-role='observe'] { border-top-color: color-mix(in srgb, #2a72b8 58%, var(--line)); }
   .development-flow span { display: block; margin-bottom: 1rem; color: var(--accent); font: var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface); }
   .development-flow strong, .development-flow small { display: block; }
-  .development-flow strong { font-size: .98rem; }
-  .development-flow small { margin-top: .35rem; color: var(--muted); line-height: 1.45; }
-  .system-boundary, .section-lede { max-width: 760px; color: var(--muted); font-size: 1.02rem; line-height: var(--type-leading-body); }
+  .development-flow strong { font-size: var(--type-body); }
+  .development-flow small { margin-top: .35rem; color: var(--muted); line-height: var(--type-leading-caption); }
+  .system-boundary, .section-lede { max-width: 760px; color: var(--muted); font-size: var(--type-body); line-height: var(--type-leading-body); }
   .tool-roles { border-top: 1px solid var(--line); }
   .tool-roles article { display: grid; grid-template-columns: minmax(170px, .7fr) minmax(0, 2fr); gap: 2rem; padding: 1.35rem 0; border-bottom: 1px solid var(--line); }
   .tool-roles h3, .tool-roles p { margin: 0; }
-  .tool-roles h3 { font-size: 1rem; }
+  .tool-roles h3 { font-size: var(--type-minor-heading); }
   .tool-roles p { max-width: 760px; color: var(--muted); line-height: var(--type-leading-body); }
   .ci-section { max-width: 980px; }
   .ci-steps { margin: 2rem 0; padding: 0; border-top: 1px solid var(--line); list-style: none; }
   .ci-steps li { display: grid; grid-template-columns: minmax(190px, .85fr) minmax(0, 1.8fr); gap: 2rem; padding: 1.2rem 0; border-bottom: 1px solid var(--line); }
   .ci-steps strong, .ci-steps span { display: block; }
-  .ci-steps span { color: var(--muted); line-height: 1.7; }
+  .ci-steps span { color: var(--muted); line-height: var(--type-leading-body); }
   .technical-detail { margin-top: 2rem; padding: 1rem 0; border-block: 1px solid var(--line); }
-  .technical-detail summary { cursor: pointer; font-weight: 700; }
+  .technical-detail summary { cursor: pointer; font-weight: var(--type-weight-label); }
   .technical-detail p { max-width: 780px; color: var(--muted); line-height: var(--type-leading-body); }
   .change-flow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2rem; margin: 0; padding: 0; border-top: 1px solid var(--line); list-style: none; }
   .change-flow li { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .8rem; padding: 1.3rem 0; border-bottom: 1px solid var(--line); }

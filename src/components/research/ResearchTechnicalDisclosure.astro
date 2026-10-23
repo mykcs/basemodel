@@ -42,16 +42,16 @@ const { summary, eyebrow = 'REPRODUCTION DETAIL', description } = Astro.props;
   .summary-copy small{
     color:var(--color-accent,var(--accent-deep,var(--accent)));
     font:var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface);
-    letter-spacing:.08em;
+    letter-spacing:normal;
   }
-  .summary-copy strong{margin-top:.28rem;font-size:.88rem;line-height:1.4}
+  .summary-copy strong{margin-top:.28rem;font-size:var(--type-meta);line-height:var(--type-leading-caption)}
   .summary-copy>span{
     max-width:72ch;
     margin-top:.22rem;
     color:var(--color-text-muted,var(--muted));
     font-size:var(--type-body-small);
     font-family:var(--font-interface);
-    line-height:1.55;
+    line-height:var(--type-leading-body);
   }
   .toggle{
     display:grid;

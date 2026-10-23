@@ -61,7 +61,7 @@ for (const width of [390, 768, 1440]) {
       const measuredOverflow = await measured.locator('.q03-world4__tablewrap').evaluate((el) =>
         el.scrollWidth - el.clientWidth
       );
-      expect(measuredOverflow, 'wide scientific table scrolls locally on phone').toBeGreaterThanOrEqual(0);
+      expect(measuredOverflow, 'complete scientific records fit the phone reading column').toBeLessThanOrEqual(1);
       await expect(measured.locator('td[data-label="待分配显存"]')).toHaveCount(2);
     }
 
@@ -131,7 +131,7 @@ for (const width of [390, 768, 1440] as const) {
       expect(actual.top).toBeGreaterThanOrEqual(1);
       expect(actual.bottom).toBeGreaterThanOrEqual(1);
       expect(actual.documentScroll).toBeLessThanOrEqual(2);
-      if (width === 390) expect(actual.localScroll).toBeGreaterThan(20);
+      expect(actual.localScroll).toBeLessThanOrEqual(1);
       const h4px = await area.locator('h4').first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
       expect(h4px).toBeGreaterThanOrEqual(20);
       const details=area.locator('[data-seed-gpu-explainer]');

@@ -16,7 +16,7 @@ const primaryReadingPaths = [
   `${root}openevo-2-0/exploration/`,
 ] as const;
 const fields = ['start', 'action', 'stop', 'output'] as const;
-const reviewedRoles = JSON.parse(readFileSync(new URL('../../docs/agents/evidence/sitewide-typography/2026-10-22/scoped-migration-witnesses.json', import.meta.url), 'utf8')).witnesses as Array<{ file: string; route: string; selector: string; minimum: number; role: string }>;
+const reviewedRoles = JSON.parse(readFileSync(new URL('../../docs/agents/evidence/sitewide-typography/2026-10-22/scoped-migration-witnesses.json', import.meta.url), 'utf8')).witnesses as Array<{ file: string; route: string; selector: string; minimum: number; role: string; minimumApplicableWidth?: number | null; maximumApplicableWidth?: number | null }>;
 
 async function assertVisibleReaderGeometry(page: Page) {
   const measured = await page.evaluate(() => {
@@ -92,9 +92,9 @@ export function registerReaderJourneyTests() {
                 let owned = 0;
                 const floors: Record<number, number> = {};
                 const probes = new Set<number>();
-                const host = owner as HTMLElement & { __readerFloors?: Map<Element, { minimum: number; role: string }> };
+                const host = owner as HTMLElement & { __readerFloors?: Map<Element, { minimum: number; role: string; minimumApplicableWidth?: number | null; maximumApplicableWidth?: number | null }> };
                 const frozen = host.__readerFloors ??= new Map();
-                const mapped = new Map<Element, { minimum: number; role: string }>();
+                const mapped = new Map<Element, { minimum: number; role: string; minimumApplicableWidth?: number | null; maximumApplicableWidth?: number | null }>();
                 for (const row of roles) for (const subject of owner.querySelectorAll(row.selector)) {
                   const previous = mapped.get(subject);
                   if (!previous || row.minimum > previous.minimum) mapped.set(subject, { minimum: row.minimum, role: row.role });
@@ -159,7 +159,7 @@ export function registerReaderJourneyTests() {
                 });
                 if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 2) failures.push('document overflow');
                 return { owned, count, failures, floors, probes: [...probes] };
-              }, reviewedRoles.filter(row => row.route === path && row.file.endsWith(`/${route.owner}.astro`)));
+              }, reviewedRoles.filter(row => row.route === path && row.file.endsWith(`/${route.owner}.astro`) && (row.minimumApplicableWidth == null || width >= row.minimumApplicableWidth) && (row.maximumApplicableWidth == null || width <= row.maximumApplicableWidth)));
               const measured = await measure();
               if (width === 390 && theme === 'light' && !expanded) {
                 for (const minimum of [16, 15, 14, 13]) {
@@ -327,8 +327,16 @@ export function registerReaderJourneyTests() {
             await page.goto(`${prefix}${path}`, { waitUntil: 'domcontentloaded' });
             await page.evaluate(() => document.fonts.ready);
             await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
-            const h1Size = await page.locator('h1').evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
-            expect(h1Size).toBeLessThanOrEqual(48);
+            const heading = await page.locator('h1').evaluate((node) => {
+              const orientation = node.closest('[data-research-orientation]');
+              const probe = document.createElement('span');probe.style.fontSize='var(--type-page)';probe.style.visibility='hidden';node.parentElement!.append(probe);
+              const expected = parseFloat(getComputedStyle(probe).fontSize);probe.remove();
+              const box=node.getBoundingClientRect();
+              return {size:parseFloat(getComputedStyle(node).fontSize),orientation:!!orientation,expected,left:box.left,right:box.right,overflow:node.scrollWidth-node.clientWidth};
+            });
+            if(heading.orientation)expect(heading.size,'shared orientation heading uses the canonical page role').toBeCloseTo(heading.expected,1);
+            else expect(heading.size).toBeLessThanOrEqual(48);
+            expect(heading.left).toBeGreaterThanOrEqual(-2);expect(heading.right).toBeLessThanOrEqual(width+2);expect(heading.overflow).toBeLessThanOrEqual(2);
             await assertVisibleReaderGeometry(page);
           }
         });

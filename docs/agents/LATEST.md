@@ -1,5 +1,10 @@
 # Latest Agent handoff
 
+## 2026-10-23 Typography source completion
+
+PR #898 remains Draft above #895. The eb0f baseline's remaining 1,531 migrations and 25 selector splits now have real source targets, with zero planned entries in the 5,811-declaration ledger. Mobile task/compare journeys and complete narrow scientific-table records are implemented. Current exact-head CI/Review-only Preview/image/reader acceptance belongs to the PR receipt and [evidence README](evidence/sitewide-typography/2026-10-22/README.md); historical green results do not transfer. No merge, retarget, final-gate or Production action.
+
+
 ## 2026-10-20 Typography continuation
 
 PR #898 remains the sole typography workline, Draft and stacked on #895. The

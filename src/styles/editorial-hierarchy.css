@@ -6,29 +6,29 @@
 :where(.page-header, .detail-layout, .plain-detail, .mission-page, .plain-mission-hub, .seed-benchmark-guide, .gateway, .agent-primer, .agent-bridge, .paper-learning-guide, .openevo-extension, .mechanism-section, .mechanism-dialogues, .trajectory-lab, .program, .parametric) h1 {
   max-width: 24ch;
   font-size: var(--type-page) !important;
-  line-height: 1.04 !important;
-  letter-spacing: -0.035em !important;
+  line-height: var(--type-leading-heading) !important;
+  letter-spacing: normal !important;
 }
 
 :where(.section-heading, .mission-section__heading, .oe-heading, .mechanism-heading, .trajectory-lab__header, .visual-primer-head, .program__header, .parametric__header) h2,
 :where(.detail-section, .section, .mission-section, .oe-section, .primer-section, .agent-bridge, .paper-learning-guide, .program, .parametric) > h2 {
   max-width: 34ch;
   font-size: var(--type-section) !important;
-  line-height: 1.15 !important;
-  letter-spacing: -0.02em !important;
+  line-height: var(--type-leading-heading) !important;
+  letter-spacing: normal !important;
   font-weight: var(--type-weight-heading) !important;
 }
 
 :where(.section-heading, .mission-section__heading, .oe-heading, .mechanism-heading, .bridge-title-row, .primer-section-head, .program, .parametric, .gateway, .trajectory-lab, .mechanism-dialogues) h3 {
   max-width: 42ch;
   font-size: var(--type-subsection) !important;
-  line-height: 1.25 !important;
-  letter-spacing: -0.012em !important;
+  line-height: var(--type-leading-heading) !important;
+  letter-spacing: normal !important;
   font-weight: var(--type-weight-heading) !important;
 }
 
 :where(.section-kicker, .guide-eyebrow, .eyebrow, .mission-page__eyebrow, .seed-guide-kicker, .program__header .eyebrow, .parametric__header .eyebrow) {
-  letter-spacing: 0.055em !important;
+  letter-spacing: normal !important;
 }
 
 /* Metadata and caveats are supporting information, not headline competitors. */

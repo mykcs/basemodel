@@ -3,7 +3,7 @@ import { expect, test, type Page } from '@playwright/test';
 /**
  * Historical Stage-2 research genealogy. Its narrative and experiment
  * diagnostics are readable scientific prose, not fixed-coordinate plot labels.
- * The single scientific comparison table must scroll in its own wrapper.
+ * The scientific comparison table preserves every field without default horizontal drag.
  */
 const route = '/research/seed-openevo/study/capability-exploration/stage2-256-window/';
 const rootSelector = '[data-testid="legacy-stage2-research-journey"]';
@@ -25,11 +25,12 @@ const roles = [
 
 async function inspectRole(page: Page, selector: string) {
   const node = page.locator(rootSelector).locator(selector).first();
-  await expect(node, selector + ' not rendered').toBeVisible();
-  return node.evaluate(element => {
+  await expect(node, selector + ' not rendered').toBeAttached();
+  const measured = await node.evaluate(element => {
     const style = getComputedStyle(element);
     const rect = element.getBoundingClientRect();
     return {
+      concealedHeader:!!element.closest('thead')&&getComputedStyle(element.closest('thead')!).position==='absolute',
       fontPx: Number.parseFloat(style.fontSize),
       linePx: Number.parseFloat(style.lineHeight),
       family: style.fontFamily,
@@ -39,6 +40,8 @@ async function inspectRole(page: Page, selector: string) {
       text: element.textContent?.trim().slice(0, 80) ?? '',
     };
   });
+  if(!measured.concealedHeader)await expect(node,selector+' remains painted').toBeVisible();
+  return measured;
 }
 
 for (const width of [390, 768, 1024, 1440] as const) {
@@ -58,7 +61,8 @@ for (const width of [390, 768, 1024, 1440] as const) {
           expect(computed.fontPx, role.role + ': ' + computed.text).toBeGreaterThanOrEqual(role.min);
           expect(computed.family, role.role).toMatch(/Inter|PingFang|system-ui/);
           expect(computed.italic, role.role).toBe('normal');
-          expect(computed.boxWidth, role.role).toBeGreaterThan(40);
+          if(role.selector.includes('thead'))expect(computed.concealedHeader,'native headers paint outside complete-record mode').toBe(width<=760);
+          if(!computed.concealedHeader)expect(computed.boxWidth, role.role).toBeGreaterThan(40);
           if (!role.selector.includes('table-wrap')) {
             expect(computed.contentOverflow, role.role).toBeLessThanOrEqual(2);
           }
@@ -69,10 +73,18 @@ for (const width of [390, 768, 1024, 1440] as const) {
           overflow: node.scrollWidth - node.clientWidth,
           width: node.clientWidth,
           fullTable: node.querySelector('table')!.getBoundingClientRect().width,
+          headers:[...node.querySelectorAll('thead th')].map(cell=>cell.textContent?.replace(/\s+/g,' ').trim()),
+          headerSpans:[...node.querySelectorAll<HTMLTableCellElement>('thead th')].map(cell=>[cell.rowSpan,cell.colSpan]),
+          labels:[...node.querySelectorAll<HTMLTableCellElement>('tbody td')].map(cell=>({column:cell.cellIndex,expected:cell.dataset.paperLabel??'',actual:getComputedStyle(cell,'::before').content.replace(/^['"]|['"]$/g,''),size:parseFloat(getComputedStyle(cell,'::before').fontSize)})),
         }));
         expect(tableGeometry.width).toBeGreaterThan(160);
-        expect(tableGeometry.fullTable).toBeGreaterThanOrEqual(950);
-        if (width <= 768) expect(tableGeometry.overflow).toBeGreaterThan(90);
+        expect(tableGeometry.fullTable).toBeLessThanOrEqual(tableGeometry.width+2);
+        expect(tableGeometry.overflow).toBeLessThanOrEqual(2);
+        const fields=['完整成功','非法动作提前结束','平均得分'];
+        expect(tableGeometry.headers).toEqual(['模型','旧 256-window Stage 2','Ceiling-1.0',...fields,...fields]);
+        expect(tableGeometry.headerSpans).toEqual([[2,1],[1,3],[1,3],...[...fields,...fields].map(()=>[1,1])]);
+        const expectedColumns=['模型',...['旧 256-window Stage 2','Ceiling-1.0'].flatMap(group=>fields.map(field=>`${group} · ${field}`))];
+        if(width<=760){expect(tableGeometry.labels.length).toBeGreaterThan(0);for(const label of tableGeometry.labels){expect(label.expected).toBe(expectedColumns[label.column]);expect(label.actual).toBe(expectedColumns[label.column]);expect(label.size).toBeGreaterThanOrEqual(15);}}
         expect(await table.locator('tbody tr').count()).toBeGreaterThanOrEqual(2);
         expect(await page.evaluate(() =>
           document.documentElement.scrollWidth - document.documentElement.clientWidth,

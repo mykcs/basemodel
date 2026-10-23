@@ -26,12 +26,12 @@ const t = (cn: string, en: string) => locale === 'zh' ? cn : en;
   .webshop-entry { min-width: 0; width: 100%; margin: 0 auto 1rem; }
   .shopping-brief { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(240px, .7fr); gap: clamp(1rem, 4vw, 2.4rem); align-items: start; border-top: 1px solid var(--line); padding: 1.1rem 0; }
   .shopping-brief__copy>span, .shopping-brief__receipt>span { color: var(--accent-deep); font: var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface); }
-  .shopping-brief__copy>strong { display: block; max-width: 28ch; margin: .6rem 0 .6rem; color: var(--ink); font-size: clamp(1.15rem, 2.5vw, 1.55rem); line-height: 1.4; font-weight: var(--type-weight-heading); }
-  .shopping-brief__copy p { max-width: 57ch; margin: 0; color: var(--muted); font-size: var(--type-body-small); line-height: 1.65; }
+  .shopping-brief__copy>strong { display: block; max-width: 28ch; margin: .6rem 0 .6rem; color: var(--ink); font-size: var(--type-lead); line-height: var(--type-leading-body); font-weight: var(--type-weight-heading); }
+  .shopping-brief__copy p { max-width: 57ch; margin: 0; color: var(--muted); font-size: var(--type-body-small); line-height: var(--type-leading-body); }
   .shopping-brief__receipt { min-width: 0; padding: .75rem 1rem; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface); }
   .shopping-brief__receipt ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .4rem .65rem; margin: .55rem 0 .6rem; padding: 0; list-style: none; }
   .shopping-brief__receipt li { padding: .45rem 0; border-bottom: 1px solid var(--line); font-size: var(--type-body-small); font-weight: var(--type-weight-label); }
-  .shopping-brief__receipt small { display: block; margin-top: .25rem; color: var(--muted); font-size: var(--type-meta); line-height: 1.5; }
+  .shopping-brief__receipt small { display: block; margin-top: .25rem; color: var(--muted); font-size: var(--type-meta); line-height: var(--type-leading-caption); }
   .shopping-brief__action { display:inline-flex; gap:.8rem; align-items:center; padding:.45rem 0; border-bottom:1px solid var(--accent-deep); color:var(--accent-deep); font-size:var(--type-meta); font-weight:var(--type-weight-heading); text-decoration:none; }
   .shopping-brief__action:hover, .shopping-brief__action:focus-visible { text-decoration:underline; text-underline-offset:4px; }
   @media(max-width:780px) {

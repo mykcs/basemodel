@@ -55,19 +55,19 @@ const officialSetupUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/s
   .webshop-small-world { width: 100%; margin: 1.5rem auto; padding: 1.1rem 0 1.5rem; border-top: 1px solid var(--line); }
   .figure-header { max-width: 860px; }
   .figure-label { color: var(--accent-deep); font: var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface); }
-  .figure-header h3 { margin: .4rem 0 .55rem; font-size: clamp(1.26rem, 2.7vw, 1.95rem); line-height: 1.26; letter-spacing: -.02em; }
-  .figure-header p { max-width: 75ch; margin: 0; color: var(--muted); font-size: var(--type-body-small); line-height: 1.65; }
+  .figure-header h3 { margin: .4rem 0 .55rem; font-size: var(--type-article-subsection); line-height: var(--type-leading-heading); letter-spacing: normal; }
+  .figure-header p { max-width: 75ch; margin: 0; color: var(--muted); font-size: var(--type-body-small); line-height: var(--type-leading-body); }
   .world-story { margin: 1rem 0 0; }
   .catalog-choice { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr); gap: .7rem; align-items: stretch; }
   .catalog-choice>div { display: grid; align-content: center; gap: .4rem; min-width: 0; padding: .85rem; border: 1px solid var(--line); border-radius: var(--radius-panel); }
   .catalog-choice__source,.catalog-choice__selected { background: var(--surface); }
   .catalog-choice__action { background: var(--surface-muted); }
   .catalog-choice span { color: var(--muted); font: var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface); }
-  .catalog-choice strong { font: var(--type-weight-heading) clamp(1.38rem, 3vw, 2.1rem)/1.2 var(--font-interface); letter-spacing: -.03em; overflow-wrap: anywhere; }
+  .catalog-choice strong { font: var(--type-weight-heading) clamp(1.38rem, 3vw, 2.1rem)/1.2 var(--font-interface); letter-spacing: normal; overflow-wrap: anywhere; }
   .catalog-choice__action strong { font: var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface); }
   .catalog-choice code { max-width: 100%; padding: .32rem .4rem; border-radius: var(--radius-control); background: var(--surface); font-size: var(--type-meta); overflow-wrap: anywhere; }
-  .catalog-choice small { color: var(--muted); font-size: var(--type-meta); line-height: 1.5; }
-  .file-proof { max-width: 82ch; margin: .8rem 0; color: var(--ink); font-size: var(--type-body-small); line-height: 1.58; }
+  .catalog-choice small { color: var(--muted); font-size: var(--type-meta); line-height: var(--type-leading-caption); }
+  .file-proof { max-width: 82ch; margin: .8rem 0; color: var(--ink); font-size: var(--type-body-small); line-height: var(--type-leading-body); }
   .file-proof code { font-size: var(--type-body-small); }
   .evidence { margin: 1rem 0 0; border-top: 1px solid var(--line); }
   .evidence summary { padding: .65rem 0; color: var(--accent-deep); font-size: var(--type-meta); font-weight: var(--type-weight-heading); cursor: pointer; }
@@ -76,9 +76,9 @@ const officialSetupUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/s
   .evidence-grid>div { min-width: 0; }
   .evidence-grid strong { display: block; font-size: var(--type-meta); }
   .evidence-grid code { display: block; margin: .5rem 0; padding: .4rem; background: var(--surface-muted); font-size: var(--type-meta); overflow-wrap: anywhere; }
-  .evidence-grid p { color: var(--muted); font-size: var(--type-body-small); line-height: 1.5; }
+  .evidence-grid p { color: var(--muted); font-size: var(--type-body-small); line-height: var(--type-leading-body); }
   .evidence-grid a { color: var(--accent-deep); font-size: var(--type-meta); font-weight: var(--type-weight-heading); }
-  .world-story figcaption { margin-top: .65rem; color: var(--muted); font-size: var(--type-caption); line-height: 1.62; }
+  .world-story figcaption { margin-top: .65rem; color: var(--muted); font-size: var(--type-caption); line-height: var(--type-leading-caption); }
   @media(max-width:760px) {
     .catalog-choice { grid-template-columns: minmax(0, 1fr); }
     .catalog-choice>div { padding: .75rem 1rem; }

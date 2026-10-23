@@ -65,8 +65,8 @@ const current = copy[page];
 <style>
   .plain-detail{width:min(1160px,calc(100% - 2rem));margin:1rem auto 4rem}
   .plain-detail__header{max-width:900px;padding:clamp(1.6rem,4vw,3.2rem) 0 1.3rem}
-  .plain-detail__header h1{margin:0 0 .7rem;letter-spacing:-.035em}
-  .plain-detail__header p{max-width:70ch;margin:0;color:var(--muted);font-size:var(--type-body);line-height:1.72}
+  .plain-detail__header h1{margin:0 0 .7rem;letter-spacing:normal}
+  .plain-detail__header p{max-width:70ch;margin:0;color:var(--muted);font-size:var(--type-body);line-height:var(--type-leading-body)}
   .plain-detail__interactive{margin:0 0 2.6rem}
   .plain-detail__interactive :global(.irx){width:100%;margin:0}
   .plain-detail-core{padding-top:.4rem;border-top:1px solid color-mix(in srgb,var(--line) 74%,transparent)}
@@ -88,7 +88,7 @@ const current = copy[page];
     border-right:1px solid var(--line);
     color:var(--ink);
     font:var(--type-weight-heading) .64rem/1.5 var(--font-mono);
-    letter-spacing:.06em;
+    letter-spacing:normal;
   }
   .plain-detail[data-locale='zh'] .paper-nav::before{content:'本页内容'}
   .plain-detail[data-locale='en'] .paper-nav::before{content:'On this page'}

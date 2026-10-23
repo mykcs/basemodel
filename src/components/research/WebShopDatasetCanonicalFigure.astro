@@ -36,20 +36,20 @@ const t = (cn: string, en: string) => locale === 'zh' ? cn : en;
   .webshop-dataset { width: 100%; margin: 1.5rem auto; padding: 1.1rem 0 1.5rem; border-top: 1px solid var(--line); }
   .figure-header { max-width: 860px; }
   .figure-label { color: var(--accent-deep); font: var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface); }
-  .figure-header h3 { margin: .4rem 0 .55rem; font-size: clamp(1.26rem, 2.7vw, 1.95rem); line-height: 1.26; letter-spacing: -.02em; }
-  .figure-header p { max-width: 75ch; margin: 0; color: var(--muted); font-size: var(--type-body-small); line-height: 1.65; }
+  .figure-header h3 { margin: .4rem 0 .55rem; font-size: var(--type-figure-title); line-height: var(--type-leading-caption); letter-spacing: normal; }
+  .figure-header p { max-width: 75ch; margin: 0; color: var(--muted); font-size: var(--type-body-small); line-height: var(--type-leading-body); }
   .dataset-world { margin: 1rem 0 0; }
   .dataset-columns { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: clamp(.6rem, 2vw, 1.4rem); align-items: start; }
   .product-ledger,.instruction-ledger { min-width: 0; padding: .9rem 1rem; border: 1px solid var(--line); border-radius: var(--radius-panel); background: var(--surface); }
   .ledger-kicker { display: block; color: var(--muted); font-size: var(--type-meta); font-weight: var(--type-weight-label); }
-  .product-ledger>strong,.instruction-ledger>strong { display: block; margin: .4rem 0 .25rem; font: var(--type-weight-heading) clamp(1.55rem, 3vw, 2.3rem)/1.1 var(--font-interface); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
-  .product-ledger>p,.instruction-ledger>p { margin: 0; color: var(--muted); font-size: var(--type-body-small); line-height: 1.58; }
+  .product-ledger>strong,.instruction-ledger>strong { display: block; margin: .4rem 0 .25rem; font: var(--type-weight-heading) clamp(1.55rem, 3vw, 2.3rem)/1.1 var(--font-interface); letter-spacing: normal; font-variant-numeric: tabular-nums; }
+  .product-ledger>p,.instruction-ledger>p { margin: 0; color: var(--muted); font-size: var(--type-body-small); line-height: var(--type-leading-body); }
   .dataset-plus { padding-top: 2.7rem; color: var(--muted); font-size: var(--type-meta); }
   .task-splits { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin: .85rem 0 0; border-top: 1px solid var(--line); }
   .task-splits>div { min-width: 0; padding: .6rem .3rem 0; }
   .task-splits dt { color: var(--muted); font-size: var(--type-meta); }
   .task-splits dd { margin: .2rem 0 0; color: var(--ink); font: var(--type-weight-medium) var(--type-body-small)/var(--type-leading-heading) var(--font-interface); }
-  .dataset-world figcaption { max-width: 90ch; margin-top: .75rem; color: var(--muted); font-size: var(--type-caption); line-height: 1.6; }
+  .dataset-world figcaption { max-width: 90ch; margin-top: .75rem; color: var(--muted); font-size: var(--type-caption); line-height: var(--type-leading-caption); }
   @media(max-width:680px) {
     .dataset-columns { grid-template-columns: minmax(0, 1fr); gap: .5rem; }
     .dataset-plus { justify-self: start; padding: 0 .75rem; }

@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from '../../research/ResearchPaperTable.astro';
 import type { Locale } from '../../../i18n';
 
 interface Props { locale: Locale }
@@ -54,19 +55,19 @@ const comparisonControls = [
   <div class="experiment-setup__group">
     <h3>{t('公平比较时固定什么', 'What to hold fixed for fair comparison')}</h3>
     <div class="experiment-table-wrap">
-      <table class="experiment-table">
+      <ResearchPaperTable narrowRecords class="experiment-table"><Fragment slot="caption">{locale === 'zh' ? "实验变量与控制方式" : "Experiment variables and controls"}</Fragment>
         <thead><tr><th>{t('变量', 'Variable')}</th><th>{t('影响', 'Impact')}</th><th>{t('处理', 'Treatment')}</th></tr></thead>
         <tbody>
           {comparisonControls.map((row) => <tr><td>{row.variable}</td><td>{row.impact}</td><td>{row.treatment}</td></tr>)}
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
   </div>
 </section>
 
 <style>
   .experiment-setup{scroll-margin-top:calc(var(--site-header-height) + 1.5rem)}
-  .experiment-setup__lede{max-width:76ch;margin:.55rem 0 0;color:var(--muted);line-height:1.7}
+  .experiment-setup__lede{max-width:76ch;margin:.55rem 0 0;color:var(--muted);line-height:var(--type-leading-body)}
   .experiment-setup__group{margin-top:1.55rem}
   .experiment-setup__group h3{margin:0 0 .65rem;font-size:var(--type-minor-heading);line-height:var(--type-leading-heading)}
   .model-name-anatomy,.experiment-fields{display:grid;margin:0;border-top:1px solid var(--line)}
@@ -82,7 +83,7 @@ const comparisonControls = [
   .experiment-fields dd{margin:.28rem 0 0;color:var(--muted);font-size:var(--type-body-small);line-height:var(--type-leading-caption)}
   .experiment-table-wrap{max-width:100%;overflow-x:auto;border-top:1px solid var(--line)}
   .experiment-table{width:100%;border-collapse:collapse;font-size:var(--type-table);font-family:var(--font-interface)}
-  .experiment-table th,.experiment-table td{padding:.72rem .7rem .72rem 0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5}
+  .experiment-table th,.experiment-table td{padding:.72rem .7rem .72rem 0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:var(--type-leading-caption)}
   .experiment-table th{color:var(--muted);font-size:var(--type-caption);font-weight:var(--type-weight-label)}
   .experiment-table td:first-child{font-weight:var(--type-weight-label)}
   @media(max-width:640px){

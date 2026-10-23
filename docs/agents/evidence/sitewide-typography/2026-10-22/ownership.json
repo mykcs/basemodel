@@ -8,7 +8,272 @@
   "userAuthorization": {
     "pr840": "Integrate relevant rewrite in isolated #898 branch and continue"
   },
-  "openPRs": [
+  "currentContinuationSnapshot": {
+    "mainSha": "db7417c5d57c3d24e58f2fe5a8c6d27226f13834",
+    "observedAt": "2026-10-23 11:41 UTC",
+    "workHead": "eb0f875ae33797939d96507cccde730ea877cbe2",
+    "base": "design/sitewide-type-and-paper-figures-20261020",
+    "openPRs": [
+      {
+        "number": 941,
+        "sha": "fa2f132579f73c0b58ef1c28132e266952e71e43",
+        "base": "main",
+        "title": "fix(site): align handbook and development with shared BaseModel page roles"
+      },
+      {
+        "number": 939,
+        "sha": "93fe8df5f86deb9720d9a71702a7cc2d21548601",
+        "base": "main",
+        "title": "chore(deps): bump the dev-minor-patch group across 1 directory with 8 updates"
+      },
+      {
+        "number": 898,
+        "sha": "eb0f875ae33797939d96507cccde730ea877cbe2",
+        "base": "design/sitewide-type-and-paper-figures-20261020",
+        "title": "design(typography): BaseModel 全站排版系统迁移与视觉验收（分阶段实施）"
+      },
+      {
+        "number": 895,
+        "sha": "9a18359d247ffcb89ffae30434d03a0cb28e02c9",
+        "base": "main",
+        "title": "design(research): repair Q03 publication figure and unify BaseModel typography roles"
+      },
+      {
+        "number": 866,
+        "sha": "2d4f9dc3801fa5f7b12990acd3b4d82f0145b05f",
+        "base": "main",
+        "title": "research: independent Muon-inspired OpenEVO direction study and Q17 cross-links"
+      },
+      {
+        "number": 865,
+        "sha": "181836a0185eb3bd884411515e069f463d96bb47",
+        "base": "main",
+        "title": "research: add OSA memory exploration after advisor questions"
+      },
+      {
+        "number": 858,
+        "sha": "b344a68c583af83a035382c621b9b1ee4d3e1d67",
+        "base": "main",
+        "title": "feat(reader): show static Q03 trend on phones with paper table"
+      },
+      {
+        "number": 856,
+        "sha": "1ffad1d311b216e7cd78177df2fa59c71d047a83",
+        "base": "main",
+        "title": "design(research): publication-style Q01 SVG curves aligned with booktabs"
+      },
+      {
+        "number": 855,
+        "sha": "ae6b73206fdee6f7df91830f303c1a87dbe7c315",
+        "base": "main",
+        "title": "test(reader): require real first-screen orientation across three OpenEVO blogs"
+      },
+      {
+        "number": 841,
+        "sha": "71c8f35ad91fc16617529c4dc3fc9b25e6620a3d",
+        "base": "main",
+        "title": "feat(reading): give BaseModel research pages short meaningful learning paths"
+      },
+      {
+        "number": 840,
+        "sha": "2a741b6b77e1d4c4cf1cf5744825b968d795cef2",
+        "base": "main",
+        "title": "feat(webshop): unify shopping, dataset, sampling and scoring into one reader journey"
+      },
+      {
+        "number": 832,
+        "sha": "f112b575626bde88a776e74e0932af9e29dd0b16",
+        "base": "main",
+        "title": "refactor(explainer): extract only primitives proven by multiple samples"
+      },
+      {
+        "number": 831,
+        "sha": "3f1942807eaa3c5173842dd6a231a6c01200c4f4",
+        "base": "main",
+        "title": "research(expression): clarify SEED vs OpenEVO with comparison and causal structure"
+      },
+      {
+        "number": 830,
+        "sha": "17346e991bfd05219e3b13c37ee2b375f1018324",
+        "base": "main",
+        "title": "research(expression): make Vanilla SD-LoRA rounds inspectable"
+      },
+      {
+        "number": 829,
+        "sha": "ab465f0831fbdcb802e76c67e857c3a48e2901ba",
+        "base": "main",
+        "title": "audit(expression): rank BaseModel medium mismatches sitewide"
+      },
+      {
+        "number": 827,
+        "sha": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
+        "base": "main",
+        "title": "feat(research): add accessible scientific tables with CSV/LaTeX parity"
+      },
+      {
+        "number": 826,
+        "sha": "86e910c972a770e8674b150d67c74c6c56677ea8",
+        "base": "main",
+        "title": "test(site): Q01 真实构建覆盖与分层验收保护"
+      },
+      {
+        "number": 825,
+        "sha": "40ea5b24e8ffad9597f6fdfc53eefe61b5511664",
+        "base": "main",
+        "title": "feat(research): D04 证据综合与下一阶段决策边界"
+      },
+      {
+        "number": 824,
+        "sha": "f738b67a018fe3a1b068fd210b367cafd649cc24",
+        "base": "main",
+        "title": "feat(research): D03 三项可复算分析与比较边界"
+      },
+      {
+        "number": 823,
+        "sha": "bfdbb5c5a5a668055e45e4e718436660d87a2e77",
+        "base": "main",
+        "title": "feat(research): D02 可核验、可重试的离线历史导入"
+      },
+      {
+        "number": 822,
+        "sha": "618e4b65cbf3052e0503ea1d875d81015231aa33",
+        "base": "main",
+        "title": "feat(research): D01 研究证据校验与单一数值来源"
+      },
+      {
+        "number": 821,
+        "sha": "cf3f371af5a005051a2848e6eec103958f4312a3",
+        "base": "main",
+        "title": "feat(research): C03 补齐 SD-LoRA NOOP 分支与逐步机制阅读"
+      },
+      {
+        "number": 820,
+        "sha": "c31b6bef5d3d4a45c6849b64af5d51546c465f7f",
+        "base": "main",
+        "title": "feat(research): C02 同源科研图表与离线可读交互"
+      },
+      {
+        "number": 819,
+        "sha": "66eae9a9d7c0fd0b4eeb5dbe28c85c1ad27c53d4",
+        "base": "main",
+        "title": "feat(content): make research evidence lifecycle auditable"
+      },
+      {
+        "number": 818,
+        "sha": "fc1ed61807ccffe07e462c10ab466b48c7722921",
+        "base": "main",
+        "title": "feat(research): synthesize Stage1, capacity, and beta evidence"
+      },
+      {
+        "number": 817,
+        "sha": "13282ac0a0c14f96eac19c441dc5a6342b255ba0",
+        "base": "main",
+        "title": "feat(reader): add purpose-first home and Study entry paths"
+      },
+      {
+        "number": 816,
+        "sha": "dab55a699c7e690bfa6aef0d332d47895892bf70",
+        "base": "main",
+        "title": "refactor(css): consolidate research section and figure owners"
+      },
+      {
+        "number": 815,
+        "sha": "a52cebeb0726fb836d14136e5f1f487bde8d9943",
+        "base": "main",
+        "title": "perf: make catalog-heavy research tools static-first"
+      },
+      {
+        "number": 814,
+        "sha": "8d97bc293769ebef50a4877931716850ecb698c1",
+        "base": "main",
+        "title": "ci: reuse one sealed static build across browser shards"
+      },
+      {
+        "number": 813,
+        "sha": "1b85f1cf00f032ce99eacd855cb17c2ad29762d7",
+        "base": "main",
+        "title": "docs(plan): BaseModel 3+1 upgrade program and 18 work packets"
+      },
+      {
+        "number": 812,
+        "sha": "e94b1618760b9cbd201ff88ce61141e592989693",
+        "base": "main",
+        "title": "design(research): turn β study into a scientific-blog reading page"
+      },
+      {
+        "number": 806,
+        "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126",
+        "base": "main",
+        "title": "docs(design): establish BaseModel Design System v1"
+      },
+      {
+        "number": 805,
+        "sha": "43fa2cbb3998824333826e8542cebf8265842f17",
+        "base": "main",
+        "title": "research(webshop): publish post-advisor learning-signal + rank32 results"
+      },
+      {
+        "number": 783,
+        "sha": "90c7d46bde8447194d568aacce39de808aa59938",
+        "base": "main",
+        "title": "plan(product): connect research resources to the active mission"
+      }
+    ],
+    "mergedRelated": [
+      {
+        "number": 932,
+        "head": "580e3e7f731da8e7f2ea3a6f3a92bac11f03e838",
+        "merge": "4dcc2a9bcad33e663fed33aaf82fc5fa39696629",
+        "merged": true
+      },
+      {
+        "number": 935,
+        "head": "eaacb12aaa015b82c292e690fbdd395d3c4e2ac0",
+        "merge": "df13da43ad5d4e89b03bf3b0832e642560d9623a",
+        "merged": true
+      },
+      {
+        "number": 936,
+        "head": "11a3f1240c10512e61e3e42c185a52d386698fc4",
+        "merge": "5813d23329b55fafdfc8a551af367465b14d7062",
+        "merged": true
+      }
+    ],
+    "semanticIntegration": "No rebase or wholesale main import. Adopt current #936 article-table fit semantics in existing owners while preserving PR898 interface typography and same native scientific values. Working #840 integration remains authorized. #941 handbook and unrelated dependency work stay separate.",
+    "mainDriftSincePriorSnapshot": {
+      "commits": [
+        {
+          "sha": "922087de4781aeb3f30528d7f45fcf00cb3d05ef",
+          "title": "feat(research): finish Q01–Q10 Intelligence UI with evidence-safe reader diagrams (#942)"
+        },
+        {
+          "sha": "6d587d427c9a8d4ca69ab45210ee94e082c61fa4",
+          "title": "fix(research): keep Q08 selected score tokens inline on mobile"
+        },
+        {
+          "sha": "21468fc56b06a2ef898a76c2a4bfc4ff7bbac938",
+          "title": "test(research): guard Q08 mobile score row wrapping"
+        },
+        {
+          "sha": "2d4f269e5cfc3bb8f01a0de5b5c93598095a1728",
+          "title": "test(research): type-safe inline row geometry assertion"
+        },
+        {
+          "sha": "db7417c5d57c3d24e58f2fe5a8c6d27226f13834",
+          "title": "Merge pull request #943 from mykcs/fix/q08-mobile-inline-score-20261023"
+        }
+      ],
+      "files": [
+        "src/components/research/AdvisorTenConceptUI.astro",
+        "src/components/research/Q08SeenRetentionExplorer.astro",
+        "src/pages/research/seed-openevo/study/parameter-memory-results/index.astro",
+        "tests/e2e/advisor-intelligence-q02-q10.spec.ts",
+        "tests/e2e/advisor-intelligence-q08-q09.spec.ts"
+      ],
+      "decision": "Separate main work owned by #942/#943 and #941. This existing Draft stack keeps its pinned #895 base and scientific-source baseline; no wholesale main import, rebase or combined acceptance is claimed. Exact-tree evidence applies only to #898."
+    }
+  },
+  "historicalOpenPRs": [
     {
       "number": 929,
       "sha": "8ea95effc7445e60285fda0d61b8457d01e41288",
@@ -758,5 +1023,272 @@
     ],
     "decision": "Keep isolated PR898 candidate; retain article PR ownership and compare actual hunks before future integration. File overlap alone is not a declaration blocker. HarnessFairness adds wrapper CSS with zero changed font lines; large advisor/blog rule retirement requires explicit future semantic merge. Final PR898 CI/Preview covers its exact tree, not combined PR932.",
     "mergeOrder": "No merge authorized. On later integration, preserve source-bound data/PGF, 120px matrix/no-JS fallback, advisor approval boundary, PR898 real prose/caption/native-reader fixes and PR932 article reading wrappers; rerun combined exact-head checks."
-  }
+  },
+  "historicalContinuationSnapshots": [
+    {
+      "mainSha": "db7417c5d57c3d24e58f2fe5a8c6d27226f13834",
+      "observedAt": "2026-10-23 11:41 UTC",
+      "workHead": "eb0f875ae33797939d96507cccde730ea877cbe2",
+      "base": "design/sitewide-type-and-paper-figures-20261020",
+      "openPRs": [
+        {
+          "number": 941,
+          "sha": "fa2f132579f73c0b58ef1c28132e266952e71e43",
+          "base": "main",
+          "title": "fix(site): align handbook and development with shared BaseModel page roles"
+        },
+        {
+          "number": 939,
+          "sha": "93fe8df5f86deb9720d9a71702a7cc2d21548601",
+          "base": "main",
+          "title": "chore(deps): bump the dev-minor-patch group across 1 directory with 8 updates"
+        },
+        {
+          "number": 898,
+          "sha": "eb0f875ae33797939d96507cccde730ea877cbe2",
+          "base": "design/sitewide-type-and-paper-figures-20261020",
+          "title": "design(typography): BaseModel 全站排版系统迁移与视觉验收（分阶段实施）"
+        },
+        {
+          "number": 895,
+          "sha": "9a18359d247ffcb89ffae30434d03a0cb28e02c9",
+          "base": "main",
+          "title": "design(research): repair Q03 publication figure and unify BaseModel typography roles"
+        },
+        {
+          "number": 866,
+          "sha": "2d4f9dc3801fa5f7b12990acd3b4d82f0145b05f",
+          "base": "main",
+          "title": "research: independent Muon-inspired OpenEVO direction study and Q17 cross-links"
+        },
+        {
+          "number": 865,
+          "sha": "181836a0185eb3bd884411515e069f463d96bb47",
+          "base": "main",
+          "title": "research: add OSA memory exploration after advisor questions"
+        },
+        {
+          "number": 858,
+          "sha": "b344a68c583af83a035382c621b9b1ee4d3e1d67",
+          "base": "main",
+          "title": "feat(reader): show static Q03 trend on phones with paper table"
+        },
+        {
+          "number": 856,
+          "sha": "1ffad1d311b216e7cd78177df2fa59c71d047a83",
+          "base": "main",
+          "title": "design(research): publication-style Q01 SVG curves aligned with booktabs"
+        },
+        {
+          "number": 855,
+          "sha": "ae6b73206fdee6f7df91830f303c1a87dbe7c315",
+          "base": "main",
+          "title": "test(reader): require real first-screen orientation across three OpenEVO blogs"
+        },
+        {
+          "number": 841,
+          "sha": "71c8f35ad91fc16617529c4dc3fc9b25e6620a3d",
+          "base": "main",
+          "title": "feat(reading): give BaseModel research pages short meaningful learning paths"
+        },
+        {
+          "number": 840,
+          "sha": "2a741b6b77e1d4c4cf1cf5744825b968d795cef2",
+          "base": "main",
+          "title": "feat(webshop): unify shopping, dataset, sampling and scoring into one reader journey"
+        },
+        {
+          "number": 832,
+          "sha": "f112b575626bde88a776e74e0932af9e29dd0b16",
+          "base": "main",
+          "title": "refactor(explainer): extract only primitives proven by multiple samples"
+        },
+        {
+          "number": 831,
+          "sha": "3f1942807eaa3c5173842dd6a231a6c01200c4f4",
+          "base": "main",
+          "title": "research(expression): clarify SEED vs OpenEVO with comparison and causal structure"
+        },
+        {
+          "number": 830,
+          "sha": "17346e991bfd05219e3b13c37ee2b375f1018324",
+          "base": "main",
+          "title": "research(expression): make Vanilla SD-LoRA rounds inspectable"
+        },
+        {
+          "number": 829,
+          "sha": "ab465f0831fbdcb802e76c67e857c3a48e2901ba",
+          "base": "main",
+          "title": "audit(expression): rank BaseModel medium mismatches sitewide"
+        },
+        {
+          "number": 827,
+          "sha": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
+          "base": "main",
+          "title": "feat(research): add accessible scientific tables with CSV/LaTeX parity"
+        },
+        {
+          "number": 826,
+          "sha": "86e910c972a770e8674b150d67c74c6c56677ea8",
+          "base": "main",
+          "title": "test(site): Q01 真实构建覆盖与分层验收保护"
+        },
+        {
+          "number": 825,
+          "sha": "40ea5b24e8ffad9597f6fdfc53eefe61b5511664",
+          "base": "main",
+          "title": "feat(research): D04 证据综合与下一阶段决策边界"
+        },
+        {
+          "number": 824,
+          "sha": "f738b67a018fe3a1b068fd210b367cafd649cc24",
+          "base": "main",
+          "title": "feat(research): D03 三项可复算分析与比较边界"
+        },
+        {
+          "number": 823,
+          "sha": "bfdbb5c5a5a668055e45e4e718436660d87a2e77",
+          "base": "main",
+          "title": "feat(research): D02 可核验、可重试的离线历史导入"
+        },
+        {
+          "number": 822,
+          "sha": "618e4b65cbf3052e0503ea1d875d81015231aa33",
+          "base": "main",
+          "title": "feat(research): D01 研究证据校验与单一数值来源"
+        },
+        {
+          "number": 821,
+          "sha": "cf3f371af5a005051a2848e6eec103958f4312a3",
+          "base": "main",
+          "title": "feat(research): C03 补齐 SD-LoRA NOOP 分支与逐步机制阅读"
+        },
+        {
+          "number": 820,
+          "sha": "c31b6bef5d3d4a45c6849b64af5d51546c465f7f",
+          "base": "main",
+          "title": "feat(research): C02 同源科研图表与离线可读交互"
+        },
+        {
+          "number": 819,
+          "sha": "66eae9a9d7c0fd0b4eeb5dbe28c85c1ad27c53d4",
+          "base": "main",
+          "title": "feat(content): make research evidence lifecycle auditable"
+        },
+        {
+          "number": 818,
+          "sha": "fc1ed61807ccffe07e462c10ab466b48c7722921",
+          "base": "main",
+          "title": "feat(research): synthesize Stage1, capacity, and beta evidence"
+        },
+        {
+          "number": 817,
+          "sha": "13282ac0a0c14f96eac19c441dc5a6342b255ba0",
+          "base": "main",
+          "title": "feat(reader): add purpose-first home and Study entry paths"
+        },
+        {
+          "number": 816,
+          "sha": "dab55a699c7e690bfa6aef0d332d47895892bf70",
+          "base": "main",
+          "title": "refactor(css): consolidate research section and figure owners"
+        },
+        {
+          "number": 815,
+          "sha": "a52cebeb0726fb836d14136e5f1f487bde8d9943",
+          "base": "main",
+          "title": "perf: make catalog-heavy research tools static-first"
+        },
+        {
+          "number": 814,
+          "sha": "8d97bc293769ebef50a4877931716850ecb698c1",
+          "base": "main",
+          "title": "ci: reuse one sealed static build across browser shards"
+        },
+        {
+          "number": 813,
+          "sha": "1b85f1cf00f032ce99eacd855cb17c2ad29762d7",
+          "base": "main",
+          "title": "docs(plan): BaseModel 3+1 upgrade program and 18 work packets"
+        },
+        {
+          "number": 812,
+          "sha": "e94b1618760b9cbd201ff88ce61141e592989693",
+          "base": "main",
+          "title": "design(research): turn β study into a scientific-blog reading page"
+        },
+        {
+          "number": 806,
+          "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126",
+          "base": "main",
+          "title": "docs(design): establish BaseModel Design System v1"
+        },
+        {
+          "number": 805,
+          "sha": "43fa2cbb3998824333826e8542cebf8265842f17",
+          "base": "main",
+          "title": "research(webshop): publish post-advisor learning-signal + rank32 results"
+        },
+        {
+          "number": 783,
+          "sha": "90c7d46bde8447194d568aacce39de808aa59938",
+          "base": "main",
+          "title": "plan(product): connect research resources to the active mission"
+        }
+      ],
+      "mergedRelated": [
+        {
+          "number": 932,
+          "head": "580e3e7f731da8e7f2ea3a6f3a92bac11f03e838",
+          "merge": "4dcc2a9bcad33e663fed33aaf82fc5fa39696629",
+          "merged": true
+        },
+        {
+          "number": 935,
+          "head": "eaacb12aaa015b82c292e690fbdd395d3c4e2ac0",
+          "merge": "df13da43ad5d4e89b03bf3b0832e642560d9623a",
+          "merged": true
+        },
+        {
+          "number": 936,
+          "head": "11a3f1240c10512e61e3e42c185a52d386698fc4",
+          "merge": "5813d23329b55fafdfc8a551af367465b14d7062",
+          "merged": true
+        }
+      ],
+      "semanticIntegration": "No rebase or wholesale main import. Adopt current #936 article-table fit semantics in existing owners while preserving PR898 interface typography and same native scientific values. Working #840 integration remains authorized. #941 handbook and unrelated dependency work stay separate.",
+      "mainDriftSincePriorSnapshot": {
+        "commits": [
+          {
+            "sha": "922087de4781aeb3f30528d7f45fcf00cb3d05ef",
+            "title": "feat(research): finish Q01–Q10 Intelligence UI with evidence-safe reader diagrams (#942)"
+          },
+          {
+            "sha": "6d587d427c9a8d4ca69ab45210ee94e082c61fa4",
+            "title": "fix(research): keep Q08 selected score tokens inline on mobile"
+          },
+          {
+            "sha": "21468fc56b06a2ef898a76c2a4bfc4ff7bbac938",
+            "title": "test(research): guard Q08 mobile score row wrapping"
+          },
+          {
+            "sha": "2d4f269e5cfc3bb8f01a0de5b5c93598095a1728",
+            "title": "test(research): type-safe inline row geometry assertion"
+          },
+          {
+            "sha": "db7417c5d57c3d24e58f2fe5a8c6d27226f13834",
+            "title": "Merge pull request #943 from mykcs/fix/q08-mobile-inline-score-20261023"
+          }
+        ],
+        "files": [
+          "src/components/research/AdvisorTenConceptUI.astro",
+          "src/components/research/Q08SeenRetentionExplorer.astro",
+          "src/pages/research/seed-openevo/study/parameter-memory-results/index.astro",
+          "tests/e2e/advisor-intelligence-q02-q10.spec.ts",
+          "tests/e2e/advisor-intelligence-q08-q09.spec.ts"
+        ],
+        "decision": "Separate main work owned by #942/#943 and #941. This existing Draft stack keeps its pinned #895 base and scientific-source baseline; no wholesale main import, rebase or combined acceptance is claimed. Exact-tree evidence applies only to #898."
+      }
+    }
+  ]
 }

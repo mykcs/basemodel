@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import '../../styles/openevo-seed-world4-repro.css';
 import ExternalBrandMark from '../common/ExternalBrandMark';
 
@@ -87,7 +88,7 @@ const technicalChecks = [
     <p>独立公开配方复现的 Stage1 已收集 <strong>1,440 条</strong>原始轨迹，其中 <strong>1,200 条</strong>获得有效 MiniMax 教师标注。八卡工程测试接着完成两轮原生 AdamW 更新（Step30 → Step60），分别用时约 <strong>296 秒和 309 秒</strong>，各保存约 <strong>20.4 GiB</strong> 的原生检查点，未发生 CUDA OOM。</p>
     <p>为了检查工程更新是否伴随任务能力变化，我们让 SFT 初始模型、Step30 与 Step60 工程模型分别在同一组 <strong>64 道冻结开发题</strong>上重复执行 <strong>8 次</strong>。共 <strong>1,536 次完整任务尝试</strong>，已按题目与重复序号核对原始轨迹。下面是 2026 年 10 月 16 日 00:45（新加坡时间）封存的完整结果：</p>
     <div class="q03-world4__tablewrap" tabindex="0" aria-label="三组工程模型的冻结开发题完整成绩">
-      <table>
+      <ResearchPaperTable narrowRecords>
         <caption>表 2｜工程诊断：每组测试相同的 64 道题，每题重复 8 次；Task Score 满分 100 分，完整成功按每组 512 次尝试统计</caption>
         <thead><tr><th scope="col">工程模型</th><th scope="col">评测完成次数（每组 512 次）</th><th scope="col">平均 Task Score（满分 100 分）</th><th scope="col">完整成功次数（每组 512 次尝试）</th></tr></thead>
         <tbody>
@@ -100,7 +101,7 @@ const technicalChecks = [
             </tr>
           ))}
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="q03-world4__table-note">Step30 比初始模型略低，Step60 又有所回升；三个模型的 Task Score 均低于 5 分（满分 100 分）。按 64 道任务为簇、每簇保留 8 次重复进行 Bootstrap，SFT 初始模型与 Step30、Step30 与 Step60 的两组配对均分差，其 95% 置信区间均包含零。<strong>这两轮工程更新还没有提供可信的任务能力改善证据</strong>，更不能充当正式 SEED 成绩。<a href={source.pairedEvidence} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.pairedEvidence}/>1,536 次原始轨迹与配对分析收据</a></p>
     <p>完整保存和恢复仍是工程门槛：早期运行遗漏任务随机数状态，出现重复选题；CPU 与 Ray 的任务分发核对已通过，但完整八卡保存、加载、继续取新题并更新仍未验收。原计划核查的 7 项工程备份中，有 <strong>5 项</strong>已完成匿名完整字节读回和 CPU 加载；另两项仍待完整证明。10 月 16 日凌晨（新加坡时间）的容量收据记录实验盘剩余 <strong>28.66 GB</strong>，下一次 SFT 工程保存连同余量需要 <strong>33.16 GB</strong>，尚缺约 <strong>4.50 GB</strong>。这些空间数字是当时快照，并非当前实时值。<a href={source.eight} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.eight}/>八卡恢复状态与存储限制 · PR #707</a></p>
@@ -109,28 +110,28 @@ const technicalChecks = [
   <h5>此前的四卡工程为何在反向传播失败？</h5>
 
   <div class="q03-world4__tablewrap q03-world4__hardware" tabindex="0" aria-label="原论文与四卡工程训练硬件对照">
-    <table>
+    <ResearchPaperTable narrowRecords>
       <caption>补充表 S3｜原论文与四卡工程的硬件条件（只比较 GPU 数量和显存）</caption>
       <thead><tr><th scope="col">实验条件</th><th scope="col">GPU 型号与数量</th><th scope="col">单卡显存</th></tr></thead>
       <tbody>
         <tr><th scope="row">SEED 论文</th><td>8 × A800</td><td>80 GB</td></tr>
         <tr><th scope="row">2026-10-14 四卡工程</th><td>4 × RTX 5090</td><td>约 32 GB</td></tr>
       </tbody>
-    </table>
+    </ResearchPaperTable>
   </div>
   <p class="q03-world4__context">两组硬件的单卡显存和 GPU 数量同时不同。FSDP 可以切分参数，不能把四张卡的显存合成一块供单次反向传播任意使用。论文还使用不同的教师模型及训练轮次；这里的比较说明资源约束，不能替代同协议的任务成绩对照。</p>
 
   <div class="q03-world4__evidence" aria-labelledby="q03-world4-measured">
     <h5 id="q03-world4-measured">10 月 14 日两次四卡实测，停在 <code>loss.backward()</code></h5>
     <div class="q03-world4__tablewrap" tabindex="0" aria-label="两次四卡 Stage2 显存不足的实际日志对照">
-      <table>
+      <ResearchPaperTable narrowRecords>
         <caption>补充表 S4｜原生 Stage2 工程测试 · 2026 年 10 月 14 日 · 单卡 GiB</caption>
         <thead><tr><th scope="col">测试</th><th scope="col">待分配显存</th><th scope="col">当时剩余</th><th scope="col">参数更新</th></tr></thead>
         <tbody>
           <tr><th scope="row">v3 · 默认预留</th><td data-label="待分配显存">5.80 GiB</td><td data-label="当时剩余">5.48 GiB</td><td data-label="参数更新">未完成</td></tr>
           <tr><th scope="row">v4 · 预留降至 0.50</th><td data-label="待分配显存">5.93 GiB</td><td data-label="当时剩余">5.11 GiB</td><td data-label="参数更新">未完成</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="q03-world4__table-note">“待分配”指报错时 PyTorch 申请的新显存，并非总共缺少这么多显存。两次容器均以错误码 1 退出，尚无成功保存的四卡原生优化器状态。<a href={source.findings} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source.findings}/>查看原始失败与代码核查记录</a></p>
   </div>

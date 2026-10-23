@@ -656,7 +656,7 @@ const capabilityLobbyRoute='/research/seed-openevo/study/capability-exploration/
 const lobbyRoot='[data-testid="openevo-capability-map-lobby"]';
 const lobbyRoles={
   '.map-lobby__latest-evidence-meta':16,
-  '.map-lobby__latest-evidence strong':20,
+  '.map-lobby__latest-evidence strong':18.4,
   '.map-lobby__latest-evidence>a':16,
   '.map-lobby__latest-evidence p:not(.map-lobby__latest-evidence-meta)':16,
   '.map-lobby__terms>summary':16,
@@ -674,7 +674,7 @@ const lobbyRoles={
 } as const;
 type LobbyReading={
   roles:Record<string,{size:number;family:string;weight:number;style:string;width:number;overflow:number;left:number;right:number}>;
-  documentOverflow:number;text:string;
+  documentOverflow:number;text:string;subsectionRole:number;
 };
 async function measureLobby(page:import('@playwright/test').Page):Promise<LobbyReading>{
   return page.evaluate((selectors)=>{
@@ -687,11 +687,13 @@ async function measureLobby(page:import('@playwright/test').Page):Promise<LobbyR
       return [selector,{size:parseFloat(s.fontSize),family:s.fontFamily,weight:parseFloat(s.fontWeight),
         style:s.fontStyle,width:r.width,overflow:el.scrollWidth-el.clientWidth,left:r.left,right:r.right}];
     })) as LobbyReading['roles'];
+    const probe=document.createElement('span');probe.style.fontSize='var(--type-subsection)';probe.style.visibility='hidden';root.append(probe);const subsectionRole=parseFloat(getComputedStyle(probe).fontSize);probe.remove();
     return {roles,documentOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
-      text:root.textContent??''};
+      text:root.textContent??'',subsectionRole};
   },Object.keys(lobbyRoles));
 }
 function acceptLobby(m:LobbyReading,width:number){
+  expect(m.roles['.map-lobby__latest-evidence strong']!.size,'evidence heading follows the canonical responsive subsection role').toBeCloseTo(m.subsectionRole,1);
   expect(m.documentOverflow,'document-level horizontal overflow').toBeLessThanOrEqual(2);
   for(const [selector,minimum] of Object.entries(lobbyRoles)){
     const r=m.roles[selector];

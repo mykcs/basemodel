@@ -156,20 +156,20 @@
   .research-chart-reader{box-sizing:border-box;width:min(1100px,calc(100vw - 2rem));max-height:calc(100dvh - 2rem);padding:1rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface);color:var(--ink);overflow:auto}
   .research-chart-reader::backdrop{background:rgb(0 0 0 / .65)}
   .research-chart-reader header{display:flex;align-items:start;justify-content:space-between;gap:1rem}
-  .research-chart-reader h2{font-size:1.2rem;line-height:1.5;margin:0}
+  .research-chart-reader h2{font-size:var(--type-minor-heading);line-height:var(--type-leading-heading);margin:0}
   .research-chart-reader form{margin:0;flex-shrink:0}
   .research-chart-reader h2{min-width:0}
-  .research-chart-hint{font-size:1rem;line-height:1.5}
+  .research-chart-hint{font-size:var(--type-body);line-height:var(--type-leading-caption)}
   @media(min-width:861px){.research-chart-hint{display:none}}
-  .research-chart-reader button,.research-chart-tools button{font:inherit;font-size:1rem;min-height:44px;padding:.5rem .8rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);color:var(--ink);cursor:pointer}
+  .research-chart-reader button,.research-chart-tools button{font:inherit;font-size:var(--type-body);min-height:44px;padding:.5rem .8rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);color:var(--ink);cursor:pointer}
   .research-chart-canvas{max-width:100%;overflow:auto;overscroll-behavior-x:contain}
   .research-chart-canvas svg{display:block;flex:none}
   .research-slide-text{max-width:860px}
   .research-text-table{max-width:100%;overflow-x:auto;margin:1rem 0}
-  .research-chart-figure-note{margin:1rem 0;padding:.7rem 0;border-block:1px solid var(--line);font-size:var(--type-body);line-height:1.7}
-  .research-chart-figure-note p{margin:.4rem 0;font-size:var(--type-body);line-height:1.7}
-  .research-chart-caption,.research-chart-context{font-size:var(--type-body);line-height:1.6}
-  .research-chart-reader .research-chart-context :is(.source-note,.dynamics-boundary,p,li,span,a){font-size:var(--type-body);line-height:1.6}
+  .research-chart-figure-note{margin:1rem 0;padding:.7rem 0;border-block:1px solid var(--line);font-size:var(--type-body);line-height:var(--type-leading-body)}
+  .research-chart-figure-note p{margin:.4rem 0;font-size:var(--type-body);line-height:var(--type-leading-body)}
+  .research-chart-caption,.research-chart-context{font-size:var(--type-body);line-height:var(--type-leading-body)}
+  .research-chart-reader .research-chart-context :is(.source-note,.dynamics-boundary,p,li,span,a){font-size:var(--type-body);line-height:var(--type-leading-body)}
   .research-chart-tools{display:flex;flex-wrap:wrap;gap:.5rem;padding:.6rem 1rem}
   .research-image-viewport{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
   .research-image-viewport img{display:block;width:100%;min-width:1200px;max-width:none;height:auto;border:1px solid var(--line);border-radius:var(--radius-panel);background:white}
