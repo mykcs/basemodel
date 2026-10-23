@@ -106,8 +106,15 @@ for (const route of routes) {
       const overflow = await page.evaluate(() =>
         document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow).toBeLessThanOrEqual(2);
-      const nativeTables = page.locator('table');
-      if (route === responseRoute) await expect(page.locator('[data-q01-fresh448] table')).toHaveCount(1);
+      // The new Q03 teaching/protocol comparison is native tabular markup but
+      // was never part of the sealed historical experimental table identities.
+      // Keep its own content/overflow guards; do not shift the ordinal hash
+      // mapping for the immutable preexisting paper tables.
+      const nativeTables = page.locator('table:not([data-advisor-protocol-table])');
+      if (route === responseRoute) {
+        await expect(page.locator('[data-q01-fresh448] table')).toHaveCount(1);
+        await expect(page.locator('[data-advisor-protocol-table]')).toHaveCount(1);
+      }
       for (let index = 0; index < await nativeTables.count(); index++) {
         const target = nativeTables.nth(index);
         if (await target.getAttribute('data-research-paper-table') !== null && await target.isVisible()) await expectPaperGrammar(target, route, index);
