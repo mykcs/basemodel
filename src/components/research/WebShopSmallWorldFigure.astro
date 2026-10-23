@@ -8,7 +8,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
 const officialSetupUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/setup.sh';
 ---
 
-<section id="fig-webshop-small-world" class="canonical-figure webshop-small-world" aria-labelledby="webshop-small-world-title" data-ui-audit="contrast layout overflow">
+<section id="fig-webshop-small-world" class="canonical-figure canonical-figure--paper webshop-small-world" aria-labelledby="webshop-small-world-title" data-ui-audit="contrast layout overflow">
   <header class="figure-header">
     <div class="figure-label">{t('第二步 · OFFICIAL SMALL MODE','STEP 2 · OFFICIAL SMALL MODE')}</div>
     <h2 id="webshop-small-world-title">{t('WebShop 官方 small 模式：商品世界固定为 1,000 个商品','WebShop official small mode fixes the product world at 1,000 products')}</h2>
@@ -80,7 +80,7 @@ const officialSetupUrl = 'https://github.com/princeton-nlp/WebShop/blob/master/s
 </section>
 
 <style>
-  .webshop-small-world{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+
   .figure-header{max-width:900px}.figure-label{color:var(--accent);font:800 .66rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.6rem,3.7vw,2.9rem);line-height:1.05;letter-spacing:-.045em}.figure-header p{margin:0;color:var(--muted);line-height:1.65}
   .world-story{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,.56fr) minmax(0,1fr);gap:1rem;align-items:stretch;margin:1.5rem 0 0}
   .world-panel{padding:1rem;border:1px solid var(--line);border-radius:14px;background:var(--surface-muted)}.panel-kicker{color:var(--muted);font:800 .6rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.world-panel strong{display:block;margin:.8rem 0 .12rem;font-size:clamp(2.1rem,5vw,4.4rem);line-height:.9;letter-spacing:-.06em}.world-panel>span{display:block;color:var(--muted);font-size:.75rem}.world-panel p{margin:.7rem 0 0;color:var(--muted);font-size:.78rem;line-height:1.55}.world-panel.original{border-top:5px solid var(--line-strong,var(--line))}.world-panel.small{border-top:5px solid var(--accent)}
