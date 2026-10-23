@@ -1,0 +1,53 @@
+---
+interface Props {
+  id: string;
+  label: string;
+  nativeWidth: number;
+}
+
+const { id, label, nativeWidth } = Astro.props;
+---
+
+<!-- A native checkbox keeps the original-size SVG readable without JavaScript. -->
+<div class="native-svg-reader" data-native-svg-reader data-native-width={nativeWidth}>
+  <input class="native-svg-reader__toggle" id={id} type="checkbox" aria-controls={`${id}-viewport`} aria-label={`原尺寸查看：${label}`} />
+  <label class="native-svg-reader__action" for={id}>
+    <span class="native-svg-reader__symbol" aria-hidden="true"><span class="native-svg-reader__plus">+</span><span class="native-svg-reader__minus">−</span></span>
+    <span class="native-svg-reader__open">放大查看刻度</span>
+    <span class="native-svg-reader__close">收起原尺寸图</span>
+  </label>
+  <span class="native-svg-reader__hint">已放大：左右滑动查看完整曲线和刻度</span>
+  <div
+    class="native-svg-reader__viewport"
+    id={`${id}-viewport`}
+    role="region"
+    tabindex="0"
+    aria-label={`${label}，可在图内左右滚动`}
+    style={`--native-svg-width:${nativeWidth}px`}
+  >
+    <slot />
+  </div>
+</div>
+
+<style>
+  .native-svg-reader{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .8rem;min-width:0}
+  .native-svg-reader__toggle{position:absolute;width:1px;height:1px;opacity:0;clip-path:inset(50%)}
+  .native-svg-reader__action{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .55rem;border:1px solid var(--color-border);border-radius:var(--radius-control);background:var(--color-surface);color:var(--color-text);font:var(--type-weight-medium) var(--type-meta)/var(--type-leading-caption) var(--font-interface);cursor:pointer}
+  .native-svg-reader__toggle:focus-visible + .native-svg-reader__action{outline:2px solid var(--focus-ring);outline-offset:2px}
+  .native-svg-reader__symbol{display:inline-grid;place-items:center;width:1.15rem;height:1.15rem;border:1px solid currentColor;border-radius:50%;font-size:var(--type-meta);line-height:1}
+  .native-svg-reader__minus,.native-svg-reader__close,.native-svg-reader__hint{display:none}
+  .native-svg-reader__toggle:checked + .native-svg-reader__action .native-svg-reader__open{display:none}
+  .native-svg-reader__toggle:checked + .native-svg-reader__action .native-svg-reader__close{display:inline}
+  .native-svg-reader__toggle:checked + .native-svg-reader__action .native-svg-reader__plus{display:none}
+  .native-svg-reader__toggle:checked + .native-svg-reader__action .native-svg-reader__minus{display:inline}
+  .native-svg-reader__toggle:checked ~ .native-svg-reader__hint{display:inline;color:var(--color-text-muted);font-size:var(--type-meta);line-height:var(--type-leading-caption)}
+  .native-svg-reader__viewport{flex-basis:100%;max-width:100%;min-width:0;overflow:hidden}
+  .native-svg-reader__viewport :global(svg),.native-svg-reader__viewport :global(picture),.native-svg-reader__viewport :global(img){display:block;width:100%;height:auto}
+  .native-svg-reader__toggle:checked ~ .native-svg-reader__viewport{overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin}
+  .native-svg-reader__toggle:checked ~ .native-svg-reader__viewport :global(svg),.native-svg-reader__toggle:checked ~ .native-svg-reader__viewport :global(picture),.native-svg-reader__toggle:checked ~ .native-svg-reader__viewport :global(img){width:var(--native-svg-width);max-width:none}
+  @media print {
+    .native-svg-reader__toggle,.native-svg-reader__action,.native-svg-reader__toggle:checked ~ .native-svg-reader__hint{display:none}
+    .native-svg-reader__viewport,.native-svg-reader__toggle:checked ~ .native-svg-reader__viewport{overflow:visible}
+    .native-svg-reader__viewport :global(svg),.native-svg-reader__viewport :global(picture),.native-svg-reader__viewport :global(img),.native-svg-reader__toggle:checked ~ .native-svg-reader__viewport :global(svg),.native-svg-reader__toggle:checked ~ .native-svg-reader__viewport :global(picture),.native-svg-reader__toggle:checked ~ .native-svg-reader__viewport :global(img){width:100%;max-width:100%}
+  }
+</style>

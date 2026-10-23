@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
 const timingReceipt = JSON.parse(
@@ -64,40 +64,10 @@ export const listCanonicalTests = () => {
   return parseCanonicalList(result.stdout);
 };
 
-const parseArgs = (argv) => {
-  const out = {};
-  for (let index = 0; index < argv.length; index += 1) {
-    const arg = argv[index];
-    if (!arg?.startsWith('--')) throw new Error(`unexpected argument: ${arg}`);
-    const value = argv[index + 1];
-    if (value === undefined || value.startsWith('--')) throw new Error(`${arg} requires a value`);
-    out[arg.slice(2)] = value;
-    index += 1;
-  }
-  return out;
-};
-
+// Retain the timing receipt and pure allocator for historical analysis only.
+// Native Playwright shards own current execution, including imported tests.
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  try {
-    const args = parseArgs(process.argv.slice(2));
-    const shardIndex = Number(args['shard-index']);
-    const shardTotal = Number(args['shard-total']);
-    const reserve = Number(args['primary-reserve-seconds'] ?? 0);
-    const output = args.output;
-    if (!Number.isInteger(shardIndex) || shardIndex < 1 || shardIndex > shardTotal) throw new Error('invalid shard index/total');
-    if (!output) throw new Error('--output is required');
-    const tests = listCanonicalTests();
-    const split = assignByTiming({ tests, shardTotal, primaryReserveSeconds: reserve });
-    const selected = split.assignments[shardIndex - 1];
-    writeFileSync(output, `${selected.join('\n')}\n`);
-    console.log(`[ci-ui-test-list] canonical=${tests.length} shard=${shardIndex}/${shardTotal} selected=${selected.length}`);
-    console.log(`[ci-ui-test-list] estimated loads=${split.loads.map((value) => value.toFixed(1)).join('/')}s`);
-    if (split.unknownTests.length > 0) {
-      console.log(`[ci-ui-test-list] conservative unknown weight ${split.unknownWeight.toFixed(1)}s for ${split.unknownTests.length} test(s)`);
-    }
-  } catch (error) {
-    console.error('[ci-ui-test-list]', error instanceof Error ? error.message : error);
-    process.exit(1);
-  }
+  console.error('[ci-ui-test-list] Retired execution CLI: use npm run test:ui -- --shard=i/n; helper locations cannot safely select importing specs.');
+  process.exit(2);
 }

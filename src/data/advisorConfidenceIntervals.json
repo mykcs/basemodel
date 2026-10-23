@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "frozen paired-effect summary; values retain the source scale and are plotted after the recorded factor",
+  "figures": [
+    {
+      "id": "rank32-paired",
+      "widthTier": "single",
+      "unit": "Task Score difference (points)",
+      "axis": { "min": -5, "max": 2, "ticks": [-4, -2, 0, 2] },
+      "scaleFactor": 100,
+      "source": {
+        "url": "https://github.com/mykcs/openevo-experiment/blob/fd7ef9e8d377b731407f7b2c923ba2616719a71d/docs/evidence/post-advisor-ab-20260928/FINAL_SCIENTIFIC_SUMMARY.json",
+        "revision": "fd7ef9e8d377b731407f7b2c923ba2616719a71d",
+        "gitBlobSha": "a8eaf29750ac4b25c432deb618f17c8ad2a9267f",
+        "field": "B.rank32_minus_rank128.mean_task_score_bootstrap95"
+      },
+      "effects": [{ "id": "rank32", "plotLabel": "rank32 -- rank128", "label": "rank32 − rank128", "estimate": -1.790623872655121, "low": -3.681200960497834, "high": 0.11839869115259744 }]
+    },
+    {
+      "id": "q04-posthoc",
+      "widthTier": "double",
+      "unit": "Task Score difference (points)",
+      "axis": { "min": -6, "max": 3, "ticks": [-6, -3, 0, 3] },
+      "scaleFactor": 100,
+      "source": {
+        "url": "https://github.com/mykcs/basemodel/blob/5d6476175bf48182dad409b7387f4096a6aa2f04/public/research/seed-openevo/evidence/q17-checkpoint-diagnostics-20261015.json",
+        "revision": "5d6476175bf48182dad409b7387f4096a6aa2f04",
+        "sha256": "6c497c3cea5c227fc1c4c2bc7d59b9bb00de671d85b625d04f913d864d952723",
+        "field": "rank.cohorts.primary.r159.rank_128.score"
+      },
+      "effects": [
+        { "id": "first", "plotLabel": "primary", "label": "首次测试", "estimate": -0.8680555555555554, "low": -3.906249999999999, "high": 1.6493055555555557 },
+        { "id": "seed", "plotLabel": "confirmation", "label": "更换随机设置", "estimate": -0.6076388888888892, "low": -1.475694444444445, "high": 0.05208333333333333 }
+      ]
+    },
+    {
+      "id": "q07-inversion",
+      "widthTier": "single",
+      "unit": "Task Score difference (points)",
+      "axis": { "min": -20, "max": 5, "ticks": [-20, -10, 0, 5] },
+      "scaleFactor": 100,
+      "source": {
+        "url": "https://github.com/mykcs/openevo-experiment/blob/85ee773d04f9949db369c8dd928dbbae12c68c8d/docs/evidence/advisor-q07-task-vector-causal-20261001/Q07_CAUSAL_EFFECTS.csv",
+        "revision": "85ee773d04f9949db369c8dd928dbbae12c68c8d",
+        "gitBlobSha": "576819dec71c3a502920477356b3bdb3fc7c785b",
+        "field": "reverse,round_index=156,mean_task_score_delta/ci_low/ci_high"
+      },
+      "effects": [{ "id": "inverse", "plotLabel": "R156 reverse", "label": "Bounded OFF · 方向反转", "estimate": -10.063976821789322, "low": -15.024818497474743, "high": -5.603453621031745 }]
+    },
+    {
+      "id": "q07-zero-latest",
+      "widthTier": "double",
+      "unit": "Task Score difference (points)",
+      "axis": { "min": -8, "max": 3, "ticks": [-8, -4, 0, 3] },
+      "scaleFactor": 100,
+      "source": {
+        "url": "https://github.com/mykcs/basemodel/blob/5d6476175bf48182dad409b7387f4096a6aa2f04/public/research/seed-openevo/evidence/q17-checkpoint-diagnostics-20261015.json",
+        "revision": "5d6476175bf48182dad409b7387f4096a6aa2f04",
+        "sha256": "6c497c3cea5c227fc1c4c2bc7d59b9bb00de671d85b625d04f913d864d952723",
+        "field": "direction.r129/r159.latest_component_loo"
+      },
+      "effects": [
+        { "id": "r129", "plotLabel": "R129", "label": "DirectApply R129", "estimate": -1.6353546626984128, "low": -6.022135416666666, "high": 1.9593253968253968 },
+        { "id": "r159", "plotLabel": "R159", "label": "DirectApply R159", "estimate": -0.8506944444444445, "low": -2.1705729166666665, "high": 0 }
+      ]
+    },
+    {
+      "id": "q08-old-queue",
+      "widthTier": "single",
+      "unit": "Exact success difference (percentage points)",
+      "axis": { "min": -30, "max": 10, "ticks": [-30, -20, -10, 0, 10] },
+      "scaleFactor": 100,
+      "source": {
+        "url": "https://github.com/mykcs/basemodel/blob/5d6476175bf48182dad409b7387f4096a6aa2f04/public/research/seed-openevo/evidence/q17-checkpoint-diagnostics-20261015.json",
+        "revision": "5d6476175bf48182dad409b7387f4096a6aa2f04",
+        "sha256": "6c497c3cea5c227fc1c4c2bc7d59b9bb00de671d85b625d04f913d864d952723",
+        "field": "retention.BWT_old.ACC_exact_success.paired_task_mean_delta/paired_task_cluster_bootstrap95"
+      },
+      "effects": [{ "id": "old", "plotLabel": "R159 -- R129", "label": "R159 − R129", "estimate": -9.375, "low": -23.958333333333336, "high": 4.166666666666667 }]
+    },
+    {
+      "id": "q09-context",
+      "widthTier": "double",
+      "unit": "Task Score difference (points)",
+      "axis": { "min": -40, "max": 15, "ticks": [-40, -20, 0, 15] },
+      "scaleFactor": 100,
+      "source": {
+        "url": "https://github.com/mykcs/basemodel/blob/5d6476175bf48182dad409b7387f4096a6aa2f04/public/research/seed-openevo/evidence/q17-checkpoint-diagnostics-20261015.json",
+        "revision": "5d6476175bf48182dad409b7387f4096a6aa2f04",
+        "sha256": "6c497c3cea5c227fc1c4c2bc7d59b9bb00de671d85b625d04f913d864d952723",
+        "field": "context.r159"
+      },
+      "effects": [
+        { "id": "memory", "plotLabel": "memory", "label": "Memory 指导文字中和", "estimate": 2.2221659780216555, "low": -3.990681085417647, "high": 8.748146926857862 },
+        { "id": "skill", "plotLabel": "skill", "label": "Skill 指导文字中和", "estimate": -4.111426767676768, "low": -9.608664772727273, "high": 0.2604166666666664 },
+        { "id": "agent", "plotLabel": "agent", "label": "Agent 指导文字中和", "estimate": 1.6393849206349207, "low": -1.4955357142857141, "high": 5.746527777777778 },
+        { "id": "order", "plotLabel": "order", "label": "结果页顺序反转", "estimate": -26.598203051731614, "low": -37.41421928093595, "high": -15.637328643578275 }
+      ]
+    }
+  ]
+}

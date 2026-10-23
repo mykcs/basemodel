@@ -1,4 +1,10 @@
 ---
+import PublicationPlot from './PublicationPlot.astro';
+import plotData from '../../data/advisorConfidenceIntervals.json';
+import manifest from '../../../figures/latex/advisor-confidence-intervals.manifest.json';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 /**
  * Static, print-friendly dot–whisker figure for source-bound paired estimates.
  * Zero is always the unchanged-condition reference; no generated observations.
@@ -22,12 +28,54 @@ interface Props {
   takeaway?: string;
 }
 const { id, title, unit, min, max, ticks, effects, caption, widthTier = 'single', comparison, negativeLabel = '前一个条件更低', positiveLabel = '前一个条件更高', takeaway } = Astro.props;
+const root = resolve(process.cwd());
+const sha256 = (bytes: Buffer | string) => createHash('sha256').update(bytes).digest('hex');
+const dataBytes = readFileSync(resolve(root, manifest.dataPath));
+if (sha256(dataBytes) !== manifest.dataSha256 || JSON.stringify(JSON.parse(dataBytes.toString('utf8'))) !== JSON.stringify(plotData)) {
+  throw new Error('Advisor confidence interval data changed without rebuilding its PGFPlots manifest');
+}
+const figure = plotData.figures.find(item => item.id === id);
+const figureBuild = manifest.figures.find(item => item.id === id);
+if (!figure || !figureBuild || figureBuild.variants.some(variant =>
+  sha256(readFileSync(resolve(root, variant.texPath))) !== variant.texSha256 ||
+  sha256(readFileSync(resolve(root, variant.svgPath))) !== variant.svgSha256)) {
+  throw new Error(`Advisor confidence interval PGFPlots assets are missing or stale for ${id}`);
+}
+if (figureBuild.widthTier !== widthTier || figure.axis.min !== min || figure.axis.max !== max || JSON.stringify(figure.axis.ticks) !== JSON.stringify(ticks) ||
+  JSON.stringify(figureBuild.source) !== JSON.stringify(figure.source) || figureBuild.scaleFactor !== figure.scaleFactor ||
+  figure.effects.length !== effects.length || figure.effects.some((item, index) => {
+    const supplied = effects[index];
+    return !supplied || item.id !== supplied.id || item.estimate.toFixed(2) !== supplied.estimate.toFixed(2) ||
+      item.low.toFixed(2) !== supplied.low.toFixed(2) || item.high.toFixed(2) !== supplied.high.toFixed(2);
+  })) {
+  throw new Error(`Rendered confidence interval summary disagrees with the frozen PGFPlots data for ${id}`);
+}
+const captionId = `advisor-${id}-caption`;
+const variants = Object.fromEntries(figureBuild.variants.map(variant => [variant.kind, variant]));
+const svgDimensions = (variant: typeof figureBuild.variants[number]) => {
+  const text = readFileSync(resolve(root, variant.svgPath), 'utf8').slice(0, 400);
+  const width = /width="([\d.]+)pt"/.exec(text)?.[1];
+  const height = /height="([\d.]+)pt"/.exec(text)?.[1];
+  if (!width || !height) throw new Error(`PGFPlots SVG has no intrinsic dimensions: ${variant.svgPath}`);
+  return { width: Math.round(Number(width)), height: Math.round(Number(height)) };
+};
+const desktop = variants.desktop;
+if (!desktop) throw new Error(`PGFPlots desktop variant missing for ${id}`);
+const coordinateText = (value: number) => Number(value).toPrecision(15).replace(/(?:\.0+|(?:(\.\d*?)0+))$/, '$1');
+for (const variant of figureBuild.variants) {
+  const tex = readFileSync(resolve(root, variant.texPath), 'utf8');
+  if (!tex.includes('\\usepackage{pgfplots}') || !tex.includes('axis cs:0,') || figure.effects.some(effect =>
+    ![effect.low, effect.estimate, effect.high].every(value => tex.includes(`(${coordinateText(value)},`)))) {
+    throw new Error(`PGFPlots TeX coordinates disagree with frozen estimates for ${id}/${variant.kind}`);
+  }
+}
+const dimensions = svgDimensions(desktop);
+const mobile = variants.mobile;
 if (!(min < 0 && max > 0 && min < max) || effects.length===0 ||
   effects.some(e => !Number.isFinite(e.estimate) || !Number.isFinite(e.low) || !Number.isFinite(e.high) ||
     e.low > e.estimate || e.estimate > e.high || e.low < min || e.high > max)) {
   throw new Error('PaperIntervalPlot needs real ordered confidence intervals and a zero reference');
 }
-const at = (n: number) => ((n-min)/(max-min)*100);
 const fmt = (n: number) => (n > 0 ? '+' : '') + n.toFixed(2).replace('-', '−');
 const ariaText = effects.map(e => `${e.label}: ${fmt(e.estimate)}, 95% CI [${fmt(e.low)}, ${fmt(e.high)}] ${unit}`).join('; ');
 ---
@@ -38,30 +86,21 @@ const ariaText = effects.map(e => `${e.label}: ${fmt(e.estimate)}, 95% CI [${fmt
     <span>← {negativeLabel}</span>
     <span>{positiveLabel} →</span>
   </div>
-  <div class="paper-effect__plot" role="img" aria-label={`${title}；${comparison ?? '前一种条件减后一种条件'}；${ariaText}；竖虚线为零差异`}>
+  <div class="paper-effect__summary" aria-label={`${title}；${comparison ?? '前一种条件减后一种条件'}；${ariaText}`}>
     {effects.map((e) => (
       <div class="paper-effect__item" data-effect-row={e.id}>
         <div class="paper-effect__row-heading">
           <span class="paper-effect__label">{e.label}</span>
           <span class="paper-effect__value"><strong>{fmt(e.estimate)}</strong><small>{unit} · 平均变化</small></span>
         </div>
-        <div class="paper-effect__track" aria-hidden="true">
-          <i class="paper-effect__zero" style={`left:${at(0)}%`}></i>
-          <i class="paper-effect__whisker" style={`left:${at(e.low)}%;width:${at(e.high)-at(e.low)}%`}></i>
-          <i class="paper-effect__start" style={`left:${at(e.low)}%`}></i>
-          <i class="paper-effect__end" style={`left:${at(e.high)}%`}></i>
-          <i class="paper-effect__dot" style={`left:${at(e.estimate)}%`}></i>
-        </div>
         <p class="paper-effect__interval"><strong>95% 置信区间：</strong>{fmt(e.low)} 至 {fmt(e.high)} {unit}{e.low <= 0 && e.high >= 0 && <span> · 区间包含 0</span>}</p>
       </div>
     ))}
-    <div class="paper-effect__axis" aria-hidden="true">
-      {ticks.map(tick => <span style={`left:${at(tick)}%;transform:${tick===min?'none':tick===max?'translateX(-100%)':'translateX(-50%)'}`}>{tick}</span>)}
-    </div>
   </div>
+  <PublicationPlot id={id} src={`/${desktop.svgPath.replace(/^public\//, '')}`} mobileSrc={mobile ? `/${mobile.svgPath.replace(/^public\//, '')}` : undefined} alt={`${title}；${comparison ?? '前一种条件减后一种条件'}；${ariaText}；虚线为零差异，圆点为估计值，横线为 95% 置信区间`} captionId={captionId} widthTier={widthTier} naturalWidth={dimensions.width} naturalHeight={dimensions.height} />
   <p class="paper-effect__unit"><strong>怎么看：</strong>圆点是两种条件的平均差值，横线是 95% 置信区间；与下方坐标轴的 0 刻度对齐的竖虚线表示没有平均变化。区间跨过 0 不能证明两种条件完全一样。</p>
   {takeaway && <p class="paper-effect__takeaway"><strong>目前能判断：</strong>{takeaway}</p>}
-  <figcaption>{caption}</figcaption>
+  <figcaption id={captionId}>{caption}</figcaption>
 </figure>
 
 <style>
@@ -80,41 +119,32 @@ const ariaText = effects.map(e => `${e.label}: ${fmt(e.estimate)}, 95% CI [${fmt
   font-variant-numeric:tabular-nums;
 }
 .paper-effect--double{width:min(100%,var(--research-evidence-double-width,55.625rem))}
-.paper-effect__title{font-family:Georgia,"Noto Serif SC","Songti SC",serif;font-size:var(--research-evidence-title-size,1.06rem);line-height:1.48;font-weight:650;margin:0 0 .5rem}
-.paper-effect p.paper-effect__comparison{margin:.25rem 0 .9rem;font-size:.95em;line-height:1.62;color:var(--paper-muted,var(--color-text-muted));overflow-wrap:anywhere}
+.paper-effect__title{font-family:var(--font-interface);font-size:var(--research-evidence-title-size,1.06rem);line-height:var(--type-leading-heading);font-weight:650;margin:0 0 .5rem}
+.paper-effect p.paper-effect__comparison{margin:.25rem 0 .9rem;font-size:var(--type-caption);line-height:var(--type-leading-caption);color:var(--paper-muted,var(--color-text-muted));overflow-wrap:anywhere}
 .paper-effect__comparison strong{color:var(--paper-ink,var(--color-text));font-weight:650}
-.paper-effect__directions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.55rem;align-items:center;font-size:.92em;line-height:1.45;color:var(--paper-muted,var(--color-text-muted));padding:.4rem .1rem .5rem;border-top:1px solid var(--paper-line,var(--color-border));}
+.paper-effect__directions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.55rem;align-items:center;font-size:var(--type-caption);line-height:var(--type-leading-caption);color:var(--paper-muted,var(--color-text-muted));padding:.4rem .1rem .5rem;border-top:1px solid var(--paper-line,var(--color-border));}
 .paper-effect__directions span:first-child{text-align:left}
 .paper-effect__directions span:last-child{text-align:right}
-.paper-effect__plot{display:grid;gap:0;min-width:0}
+.paper-effect__summary{display:grid;gap:0;min-width:0}
 .paper-effect__item{min-width:0;padding:.78rem 0 .65rem;border-top:1px solid var(--paper-line,var(--color-border))}
 .paper-effect__row-heading{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.15rem 1rem;min-width:0}
-.paper-effect__label{font-size:.9em;line-height:1.52;font-weight:650;overflow-wrap:anywhere}
-.paper-effect__value{display:inline-flex;gap:.4rem;align-items:baseline;flex-wrap:wrap;text-align:right;font-family:Georgia,"Songti SC",serif;font-variant-numeric:tabular-nums}
-.paper-effect__value strong{font-size:1.2em;line-height:1.2;font-weight:700;white-space:nowrap}
-.paper-effect__value small{font-family:inherit;font-size:.76em;font-weight:400;line-height:1.4;color:var(--paper-muted,var(--color-text-muted))}
-.paper-effect__track{height:2.05rem;position:relative;margin:.45rem .8rem .25rem;border-bottom:1px solid color-mix(in srgb,var(--paper-ink,currentColor) 28%,transparent)}
-.paper-effect__track i{position:absolute;display:block}
-.paper-effect__zero{top:0;bottom:0;border-left:1.5px dashed var(--paper-muted,currentColor);opacity:.95}
-.paper-effect__whisker{top:1.02rem;height:2px;background:var(--paper-ink,currentColor)}
-.paper-effect__start,.paper-effect__end{top:.72rem;height:.6rem;border-left:1.5px solid var(--paper-ink,currentColor)}
-.paper-effect__dot{top:.65rem;width:.76rem;height:.76rem;border:2px solid var(--paper-ink,currentColor);background:var(--paper,var(--color-surface,#fff));border-radius:50%;transform:translateX(-50%)}
-.paper-effect p.paper-effect__interval{max-width:100%;margin:.3rem 0 0;font-size:.95em;line-height:1.55;color:var(--paper-muted,var(--color-text-muted));overflow-wrap:anywhere}
+.paper-effect__label{font-size:var(--type-table);line-height:var(--type-leading-caption);font-weight:650;overflow-wrap:anywhere}
+.paper-effect__value{display:inline-flex;gap:.4rem;align-items:baseline;flex-wrap:wrap;text-align:right;font-family:var(--font-interface);font-variant-numeric:tabular-nums}
+.paper-effect__value strong{font-size:var(--type-table);line-height:var(--type-leading-caption);font-weight:var(--type-weight-normal);white-space:nowrap}
+.paper-effect__value small{font-family:inherit;font-size:var(--type-caption);font-weight:400;line-height:var(--type-leading-caption);color:var(--paper-muted,var(--color-text-muted))}
+.paper-effect p.paper-effect__interval{max-width:100%;margin:.3rem 0 0;font-size:var(--type-body-small);line-height:var(--type-leading-caption);color:var(--paper-muted,var(--color-text-muted));overflow-wrap:anywhere}
 .paper-effect__interval strong{font-weight:650;color:var(--paper-ink,var(--color-text))}
-.paper-effect__axis{height:1.3rem;position:relative;margin:0 .8rem;font:.75em Georgia,serif;color:var(--paper-muted,var(--color-text-muted))}
-.paper-effect__axis span{position:absolute;white-space:nowrap}
-.paper-effect p.paper-effect__unit{margin:.5rem 0 .35rem;padding-top:.7rem;border-top:1px solid var(--paper-line,var(--color-border));font-size:.94em;line-height:1.68;color:var(--paper-muted,var(--color-text-muted))}
-.paper-effect p.paper-effect__takeaway{max-width:100%;font-size:.9em;line-height:1.7;margin:.72rem 0 .3rem;color:var(--paper-ink,var(--color-text))}
-.paper-effect__takeaway strong{font-weight:700}
-.paper-effect figcaption{font:400 var(--research-evidence-caption-size,1rem)/1.68 var(--font-editorial),Georgia,serif;color:var(--paper-muted,var(--color-text-muted));margin:.75rem 0 0;max-width:82ch;overflow-wrap:anywhere}
+.paper-effect p.paper-effect__unit{margin:.5rem 0 .35rem;padding-top:.7rem;border-top:1px solid var(--paper-line,var(--color-border));font-size:var(--type-body-small);line-height:var(--type-leading-body);color:var(--paper-muted,var(--color-text-muted))}
+.paper-effect p.paper-effect__takeaway{max-width:100%;font-size:var(--type-body-small);line-height:var(--type-leading-body);margin:.72rem 0 .3rem;color:var(--paper-ink,var(--color-text))}
+.paper-effect__takeaway strong{font-weight:var(--type-weight-strong)}
+.paper-effect figcaption{font:var(--type-weight-normal) var(--research-evidence-caption-size,var(--type-caption))/1.68 var(--font-interface);color:var(--paper-muted,var(--color-text-muted));margin:.75rem 0 0;max-width:82ch;overflow-wrap:anywhere}
 @media(max-width:700px){
   .paper-effect{padding:1rem .9rem}
-  .paper-effect__directions{font-size:.9em;gap:.4rem}
-  .paper-effect__value{font-size:.95em}
-  .paper-effect__track,.paper-effect__axis{margin-inline:.75rem}
+  .paper-effect__directions{font-size:var(--type-caption);gap:.4rem}
+  .paper-effect__value{font-size:var(--type-table)}
 }
 @media print{
   .paper-effect{break-inside:avoid;box-shadow:none;border-color:#666}
-  .paper-effect__track{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .paper-effect :global(.publication-plot img){-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>

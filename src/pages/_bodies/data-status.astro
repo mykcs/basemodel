@@ -50,7 +50,7 @@ const recentEvents = [
 
   <section class="section" aria-labelledby="recent-changes-title">
     <div class="section-heading"><div><div class="section-kicker">{locale === 'zh' ? '数据记录' : 'Data records'}</div><h2 id="recent-changes-title">{locale === 'zh' ? '最近更新' : 'Recent updates'}</h2></div><span class="muted">{locale === 'zh' ? '这是数据集中的发布时间流，不等同于厂商实时动态。' : 'This is the dataset publication timeline, not a live vendor news feed.'}</span></div>
-    <ol class="model-timeline">{recentEvents.map((event) => <li><time datetime={event.date}>{event.date}</time><div><strong>{event.title}</strong><span>{event.note}</span><small>{event.kind === 'event' ? (locale === 'zh' ? '数据记录更新' : 'Data record update') : (locale === 'zh' ? '模型发布记录' : 'Model release record')}</small></div></li>)}</ol>
+    <ol class="model-timeline">{recentEvents.map((event) => <li><time datetime={event.date}>{event.date}</time><div><strong>{event.title}</strong><span data-timeline-note={event.kind === 'event' ? '' : undefined}>{event.note}</span><small>{event.kind === 'event' ? (locale === 'zh' ? '数据记录更新' : 'Data record update') : (locale === 'zh' ? '模型发布记录' : 'Model release record')}</small></div></li>)}</ol>
   </section>
 
   <section class="section" aria-labelledby="vendor-coverage-title">
@@ -90,4 +90,13 @@ const recentEvents = [
 
 <style>
   .comparison-table-wrap { contain: paint; }
+  .model-timeline :is(span, small) { display: block; }
+  .model-timeline span:not([data-timeline-note]), .model-timeline small {
+    font-size: var(--type-meta);
+    line-height: var(--type-leading-caption);
+  }
+  .model-timeline [data-timeline-note] {
+    font-size: var(--type-body);
+    line-height: var(--type-leading-body);
+  }
 </style>

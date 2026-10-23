@@ -18,7 +18,7 @@ for (const width of [390, 768, 1440]) {
         const figure = page.locator(`[data-paper-effect="${id}"]`);
         await expect(figure).toHaveAttribute('data-paper-width', 'single');
         await expect(figure).toHaveAttribute('data-paper-figure', 'interval');
-        await expect(figure.locator('.paper-effect__zero')).toHaveCount(await figure.locator('[data-effect-row]').count());
+        await expect(figure.locator('img[data-pgfplot]')).toHaveCount(1);
         compactWidths.push((await figure.boundingBox())!.width);
       }
       for (const id of wide) {

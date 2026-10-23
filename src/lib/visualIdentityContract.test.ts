@@ -7,6 +7,8 @@ const rootAgents = read('../../AGENTS.md');
 const principles = read('../../docs/agents/current/ui-design-principles.md');
 const tokens = read('../styles/tokens.css');
 const visualIdentity = read('../styles/visual-identity.css');
+const workspaceStyles = read('../styles/workspace.css');
+const compareTrayStyles = read('../components/workspace/CompareTray.css');
 const globalStyles = read('../styles/global.css');
 
 describe('visual identity non-drift contract', () => {
@@ -55,7 +57,10 @@ describe('visual identity non-drift contract', () => {
     expect(principles).toContain('Card budget: cards are scarce');
     expect(principles).toContain('at most **two persistent UI layers at the same time**');
     expect(principles).toContain('Do not solve a hierarchy problem by wrapping every idea in a new card.');
-    expect(visualIdentity).toContain('body:has(.compare-tray) .workspace-mobile-nav');
+    expect(workspaceStyles).toMatch(/\.workspace-mobile-nav\s*\{\s*position:\s*static;/);
+    expect(compareTrayStyles).toContain('--compare-tray-height');
+    expect(compareTrayStyles).toContain('[data-compare-tray]:not([hidden])');
+    expect(visualIdentity).not.toContain('body:has(.compare-tray) .workspace-mobile-nav');
   });
 
   it('loads the visual identity layer through the existing global stylesheet', () => {

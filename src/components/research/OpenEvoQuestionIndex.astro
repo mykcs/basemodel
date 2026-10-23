@@ -33,7 +33,7 @@ const { questions } = Astro.props;
   .advisor-question-index__heading {
     margin: 0 0 .65rem;
     color: var(--paper-muted);
-    font-size: .87em;
+    font-size: var(--type-meta);
     font-weight: 650;
   }
   .advisor-question-index ol {
@@ -56,7 +56,7 @@ const { questions } = Astro.props;
     min-height: 2.75rem;
     padding: .55rem .15rem;
     text-decoration: none;
-    line-height: 1.45;
+    line-height: var(--type-leading-caption);
   }
   .advisor-question-index a:hover {
     color: var(--paper-ink);
@@ -68,14 +68,14 @@ const { questions } = Astro.props;
   }
   .advisor-question-index__number {
     color: var(--paper-muted);
-    font-size: .88em;
+    font-size: var(--type-meta);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
   .advisor-question-index__question {
     min-width: 0;
     overflow-wrap: anywhere;
-    font-size: .93em;
+    font-size: var(--type-body-small);
   }
   @media (max-width: 700px) {
     .advisor-question-index ol { columns: 1; }

@@ -52,7 +52,7 @@ for (const {width,theme} of [
     }
     const fig=page.locator('#response-q01 [data-report-figure="q01-horizon"]');
     await expect(fig).not.toContainText('实用平台');
-    const details=fig.locator('details');
+    const details=fig.locator('.advisor-viz__details');
     await details.locator('summary').click();
     await expect(details).toContainText('2 分');
     await expect(details).toContainText('64 道题');
@@ -76,7 +76,7 @@ for (const {width,theme} of [
     await expect(q09).toContainText('完整消融还没有完成');
     await expect(q09).toContainText('95% 区间都包含零');
     await expect(page.locator('#response-q10')).toContainText('三条新随机流');
-    await expect(page.locator('.evo-article__lede a[href*="2026-09-22-meeting-transcript.raw.md"]')).toBeVisible();
+    await expect(page.locator('[data-meeting-provenance] a[href*="2026-09-22-meeting-transcript.raw.md"]')).toBeVisible();
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     expect(overflow,'no entire-page horizontal overflow').toBeLessThanOrEqual(2);
   });

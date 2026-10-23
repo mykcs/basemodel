@@ -62,34 +62,132 @@ const methods = [
 </div>
 
 <style>
-  .advisor-method h3{font-size:1.29rem;line-height:1.45;margin:1.65rem 0 .65rem}
-  .advisor-method>p{font-size:1.0625rem;line-height:1.82;max-width:78ch;margin:.8rem 0}
-  .advisor-method__figure{margin:1.4rem 0 1.5rem}
-  .advisor-method__lanes{display:grid;gap:1.5rem}
-  .advisor-method__lane{border-top:1px solid var(--paper-line,var(--color-border));padding-top:.9rem}
-  .advisor-method__lane-head{display:flex;align-items:baseline;gap:.55rem 1rem;justify-content:space-between;flex-wrap:wrap;margin-bottom:.6rem}
-  .advisor-method__lane-head h4{font-size:1.07rem;font-weight:730;line-height:1.5;margin:0}
-  .advisor-method__lane-head span{color:var(--color-text-muted);font-size:.88rem}
-  .advisor-method__flow{display:grid;grid-template-columns:minmax(0,1fr) 1rem minmax(0,1fr) 1rem minmax(0,1fr);align-items:stretch;gap:.45rem}
-  .advisor-method__node{border:1px solid var(--paper-line,var(--color-border));background:transparent;border-radius:0;padding:.58rem .55rem;min-width:0;min-height:4.3rem;display:flex;flex-direction:column;justify-content:center}
-  .advisor-method__node small{color:var(--color-text-muted);font-size:.82rem;line-height:1.4}
-  .advisor-method__node strong{font-size:.98rem;line-height:1.5;font-weight:620;margin-top:.2rem}
-  .advisor-method__arrow{align-self:center;text-align:center;color:var(--color-text-muted);font-size:1.18rem}
-  .advisor-method__lane>p{font-size:1rem;line-height:1.76;margin:.7rem 0 0}
-  .advisor-method__figure figcaption{color:var(--color-text-muted);font-size:.92rem;line-height:1.7;margin-top:1.2rem;max-width:80ch}
-  .advisor-method__rank{margin:1.4rem 0;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border);padding:.7rem 0}
-  .advisor-method__rank summary{cursor:pointer;font-size:1.02rem;font-weight:650;line-height:1.7;padding:.3rem .2rem}
-  .advisor-method__rank summary:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
-  .advisor-method__rank>div{padding:.2rem .2rem .8rem}
-  .advisor-method__rank p{font-size:1rem;line-height:1.78;max-width:76ch}
-  .advisor-method__rank p.advisor-method__rank-source{font-size:.89rem;color:var(--color-text-muted)}
-  @media(max-width:590px){
-    .advisor-method h3{font-size:1.2rem}
-    .advisor-method>p{font-size:1.025rem}
-    .advisor-method__flow{grid-template-columns:minmax(0,1fr);gap:.22rem}
-    .advisor-method__node{min-height:0;align-items:center;text-align:center;padding:.7rem .8rem}
-    .advisor-method__arrow{transform:rotate(90deg);line-height:1.1;margin:.06rem auto}
-    .advisor-method__lane-head{align-items:start;flex-direction:column;gap:.1rem}
-    .advisor-method__lane>p{font-size:1rem}
+  /* Three historical methods, one semantic type scale. Mathematical notation
+     still belongs to MathFormula; ordinary rank numbers remain interface text. */
+  .advisor-method h3 {
+    font-size: var(--type-article-subsection);
+    line-height: var(--type-leading-heading);
+    margin: 1.65rem 0 .65rem;
+  }
+  .advisor-method > p {
+    font-size: var(--type-lead);
+    line-height: var(--type-leading-body);
+    max-width: var(--type-reading-measure);
+    margin: .8rem 0;
+  }
+  .advisor-method__figure { margin: 1.4rem 0 1.5rem; }
+  .advisor-method__lanes { display: grid; gap: 1.5rem; }
+  .advisor-method__lane {
+    min-width: 0;
+    border-top: 1px solid var(--paper-line, var(--color-border));
+    padding-top: .9rem;
+  }
+  .advisor-method__lane-head {
+    display: flex;
+    align-items: baseline;
+    gap: .55rem 1rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: .6rem;
+  }
+  .advisor-method__lane-head h4 {
+    margin: 0;
+    font-size: var(--type-minor-heading);
+    font-weight: var(--type-weight-heading);
+    line-height: var(--type-leading-heading);
+  }
+  .advisor-method__lane-head span {
+    color: var(--color-text-muted);
+    font-size: var(--type-caption);
+    line-height: var(--type-leading-caption);
+  }
+  .advisor-method__flow {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 1rem minmax(0,1fr) 1rem minmax(0,1fr);
+    align-items: stretch;
+    gap: .45rem;
+  }
+  .advisor-method__node {
+    min-width: 0;
+    min-height: 4.3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid var(--paper-line, var(--color-border));
+    border-radius: 0;
+    padding: .58rem .55rem;
+    background: transparent;
+  }
+  .advisor-method__node small {
+    color: var(--color-text-muted);
+    font-size: var(--type-meta);
+    line-height: var(--type-leading-caption);
+  }
+  .advisor-method__node strong {
+    margin-top: .2rem;
+    font-size: var(--type-body);
+    font-weight: var(--type-weight-label);
+    line-height: var(--type-leading-caption);
+    overflow-wrap: anywhere;
+  }
+  .advisor-method__arrow {
+    align-self: center;
+    color: var(--color-text-muted);
+    font-size: var(--type-lead);
+    text-align: center;
+    line-height: 1;
+  }
+  .advisor-method__lane > p {
+    font-size: var(--type-body);
+    line-height: var(--type-leading-body);
+    margin: .7rem 0 0;
+  }
+  .advisor-method__figure figcaption {
+    color: var(--color-text-muted);
+    font-size: var(--type-caption);
+    line-height: var(--type-leading-caption);
+    margin-top: 1.2rem;
+    max-width: var(--type-reading-measure);
+  }
+  .advisor-method__rank {
+    margin: 1.4rem 0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    padding: .7rem 0;
+  }
+  .advisor-method__rank summary {
+    cursor: pointer;
+    font-size: var(--type-body);
+    font-weight: var(--type-weight-heading);
+    line-height: var(--type-leading-body);
+    padding: .3rem .2rem;
+  }
+  .advisor-method__rank summary:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+  .advisor-method__rank > div { padding: .2rem .2rem .8rem; }
+  .advisor-method__rank p {
+    font-size: var(--type-body);
+    line-height: var(--type-leading-body);
+    max-width: var(--type-reading-measure);
+  }
+  .advisor-method__rank p.advisor-method__rank-source {
+    color: var(--color-text-muted);
+    font-size: var(--type-caption);
+    line-height: var(--type-leading-caption);
+  }
+  /* At tablet as well as phone widths, three parallel columns compress
+     Chinese explanations into unreadable slivers. Preserve node order. */
+  @media (max-width: 900px) {
+    .advisor-method__flow { grid-template-columns: minmax(0,1fr); gap: .22rem; }
+    .advisor-method__node {
+      min-height: 0;
+      align-items: center;
+      text-align: center;
+      padding: .7rem .8rem;
+    }
+    .advisor-method__arrow { transform: rotate(90deg); line-height: 1; margin: .06rem auto; }
+    .advisor-method__lane-head { align-items: flex-start; flex-direction: column; gap: .1rem; }
   }
 </style>

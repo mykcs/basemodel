@@ -1,0 +1,48 @@
+\documentclass[tikz,border=2pt]{standalone}
+\usepackage{fontspec}
+\setmainfont{texgyretermes-regular.otf}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+  width=9.2cm,height=5.53cm,
+  xmin=-40,xmax=15,ymin=-0.5,ymax=3.5,
+  xtick={-40,-20,0,15},
+  ytick={},yticklabels={},
+  xlabel={Task Score difference (points)},
+  axis x line*=bottom,axis y line=none,
+  tick align=outside,
+  tick style={line width=0.35pt,color=black!65},
+  axis line style={line width=0.55pt,color=black!90},
+  tick label style={font=\small,color=black!88},
+  yticklabel style={font=\small,color=black!88},
+  label style={font=\small,color=black!88},
+  xlabel style={yshift=1mm},
+  yticklabel shift=1mm,
+  grid=none,clip=false,
+]
+\draw[densely dashed,line width=.55pt,color=black!62] (axis cs:0,-0.38) -- (axis cs:0,3.38);
+\addplot+[no markers,color=black!88,line width=.7pt] coordinates {(-3.99068108541765,3)(8.74814692685786,3)};
+\addplot+[only marks,mark=o,mark size=2.15pt,mark options={color=black!88,fill=white,line width=.8pt}] coordinates {(2.22216597802166,3)};
+\addplot+[no marks,color=black!88,line width=.7pt] coordinates {(-3.99068108541765,2.89)(-3.99068108541765,3.11)};
+\addplot+[no marks,color=black!88,line width=.7pt] coordinates {(8.74814692685786,2.89)(8.74814692685786,3.11)};
+\addplot+[no markers,color=black!88,line width=.7pt] coordinates {(-9.60866477272727,2)(0.260416666666666,2)};
+\addplot+[only marks,mark=o,mark size=2.15pt,mark options={color=black!88,fill=white,line width=.8pt}] coordinates {(-4.11142676767677,2)};
+\addplot+[no marks,color=black!88,line width=.7pt] coordinates {(-9.60866477272727,1.89)(-9.60866477272727,2.11)};
+\addplot+[no marks,color=black!88,line width=.7pt] coordinates {(0.260416666666666,1.89)(0.260416666666666,2.11)};
+\addplot+[no markers,color=black!88,line width=.7pt] coordinates {(-1.49553571428571,1)(5.74652777777778,1)};
+\addplot+[only marks,mark=o,mark size=2.15pt,mark options={color=black!88,fill=white,line width=.8pt}] coordinates {(1.63938492063492,1)};
+\addplot+[no marks,color=black!88,line width=.7pt] coordinates {(-1.49553571428571,0.89)(-1.49553571428571,1.11)};
+\addplot+[no marks,color=black!88,line width=.7pt] coordinates {(5.74652777777778,0.89)(5.74652777777778,1.11)};
+\addplot+[no markers,color=black!88,line width=.7pt] coordinates {(-37.414219280936,0)(-15.6373286435783,0)};
+\addplot+[only marks,mark=o,mark size=2.15pt,mark options={color=black!88,fill=white,line width=.8pt}] coordinates {(-26.5982030517316,0)};
+\addplot+[no marks,color=black!88,line width=.7pt] coordinates {(-37.414219280936,-0.11)(-37.414219280936,0.11)};
+\addplot+[no marks,color=black!88,line width=.7pt] coordinates {(-15.6373286435783,-0.11)(-15.6373286435783,0.11)};
+\node[anchor=east,font=\small,text=black!88] at ([xshift=-3mm]axis cs:-40,3) {memory};
+\node[anchor=east,font=\small,text=black!88] at ([xshift=-3mm]axis cs:-40,2) {skill};
+\node[anchor=east,font=\small,text=black!88] at ([xshift=-3mm]axis cs:-40,1) {agent};
+\node[anchor=east,font=\small,text=black!88] at ([xshift=-3mm]axis cs:-40,0) {order};
+\end{axis}
+\end{tikzpicture}
+\end{document}

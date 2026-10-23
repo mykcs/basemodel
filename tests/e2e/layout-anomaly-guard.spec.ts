@@ -149,3 +149,163 @@ for (const matrix of matrices) {
     }
   });
 }
+
+
+/**
+ * Typography migration witnesses for catalog/search/workbench owners.
+ * These check actual browser-computed styles and containment, not CSS string
+ * matches. The negative witness proves the same detector rejects an old 10px
+ * explanatory-text regression while accepting the restored semantic owner.
+ */
+const typographyWitnesses = [
+  { route: '/models/', selector: '.explorer-summary', minPx: 15 },
+  { route: '/workspace/?v=2&mode=modern', selector: '.candidate-board h2', minPx: 16 },
+  { route: '/', selector: '.command-hint', minPx: 13 },
+] as const;
+
+async function measureTextRole(page: Page, selector: string) {
+  const item = page.locator(selector).first();
+  await expect(item).toBeAttached();
+  return item.evaluate(element => {
+    const style = getComputedStyle(element);
+    const rect = element.getBoundingClientRect();
+    return {
+      px: Number.parseFloat(style.fontSize),
+      family: style.fontFamily,
+      weight: Number.parseFloat(style.fontWeight),
+      italic: style.fontStyle,
+      leading: Number.parseFloat(style.lineHeight),
+      left: rect.left,
+      right: rect.right,
+      width: rect.width,
+      pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    };
+  });
+}
+
+for (const width of [390, 768, 1440] as const) {
+  for (const theme of ['light', 'dark'] as const) {
+    test(`catalog and workbench text roles are readable at ${width}px / ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.addInitScript(mode => localStorage.setItem('atlas-theme', mode), theme);
+      for (const witness of typographyWitnesses) {
+        await page.goto(witness.route, { waitUntil: 'domcontentloaded' });
+        await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+        // On phones the trigger deliberately hides its text; inspect the visible dialog hint.
+        if (witness.selector === '.command-hint') {
+          await page.locator('.command-search-trigger').click();
+          await expect(page.locator('.command-menu[open]')).toBeVisible();
+        }
+        const actual = await measureTextRole(page, witness.selector);
+        expect(actual.px, `${witness.route} ${witness.selector} font size`).toBeGreaterThanOrEqual(witness.minPx);
+        expect(actual.family).toMatch(/Inter|PingFang|system-ui/);
+        expect(actual.weight).toBeGreaterThanOrEqual(400);
+        expect(actual.italic).toBe('normal');
+        expect(actual.leading).toBeGreaterThan(0);
+        expect(actual.pageOverflow, witness.route).toBeLessThanOrEqual(2);
+        // A hidden navigation trigger may still have a valid computed role on phones.
+        if (actual.width > 0) {
+          expect(actual.left).toBeGreaterThanOrEqual(-2);
+          expect(actual.right).toBeLessThanOrEqual(width + 2);
+        }
+      }
+      if (width <= 980) {
+        await page.goto('/workspace/?v=2&mode=modern');
+        const nav = page.locator('.workspace-mobile-nav button').first();
+        await expect(nav).toBeVisible();
+        expect((await measureTextRole(page, '.workspace-mobile-nav button')).px).toBeGreaterThanOrEqual(13);
+        expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+      }
+    });
+  }
+}
+
+test('computed-style gate rejects a reintroduced 10px catalog sentence', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/models/');
+  const sentence = page.locator('.explorer-summary').first();
+  await expect(sentence).toBeVisible();
+  const failsLegibility = async () => (await measureTextRole(page, '.explorer-summary')).px < 15;
+  expect(await failsLegibility()).toBe(false);
+  await sentence.evaluate(element => { (element as HTMLElement).style.fontSize = '10px'; });
+  expect(await failsLegibility()).toBe(true);
+  await sentence.evaluate(element => { (element as HTMLElement).style.removeProperty('font-size'); });
+  expect(await failsLegibility()).toBe(false);
+});
+
+
+test('mobile mission hero preserves semantic reading width and copy size', async ({ page }) => {
+  for (const theme of ['light', 'dark'] as const) {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.addInitScript(mode => localStorage.setItem('atlas-theme', mode), theme);
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    const description = page.locator('.mission-hero__lede').first();
+    await expect(description).toBeVisible();
+    const style = await description.evaluate(element => {
+      const computed = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return {
+        size: Number.parseFloat(computed.fontSize),
+        width: rect.width,
+        lineHeight: Number.parseFloat(computed.lineHeight),
+        pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      };
+    });
+    expect(style.size).toBeGreaterThanOrEqual(15);
+    expect(style.lineHeight).toBeGreaterThan(style.size * 1.45);
+    expect(style.width).toBeGreaterThanOrEqual(220);
+    expect(style.pageOverflow).toBeLessThanOrEqual(2);
+    const action = page.locator('.mission-hero__actions .button').first();
+    await expect(action).toBeVisible();
+    expect(await action.evaluate(node => Number.parseFloat(getComputedStyle(node).fontSize))).toBeGreaterThanOrEqual(13);
+  }
+});
+
+
+// Environment stages use the same semantic reading scale as adjacent prose.
+// Technical IDs are 12px minimum; explanatory sentences are 13px minimum.
+for(const width of [390,768,1440] as const){
+  for(const theme of ['light','dark'] as const){
+    test('WebShop and ALFWorld rendered typography at '+width+'px / '+theme,async({page})=>{
+      await page.setViewportSize({width,height:width===390?844:900});
+      await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+      for(const item of [
+        {route:'/research/seed-openevo/flow/webshop/',kind:'webshop',selectors:['.irx-shop-welcome p','.irx-event-tape dd','.irx-boundary-note']},
+        {route:'/research/seed-openevo/flow/alfworld/',kind:'alfworld',selectors:['.irx-action-console>p','.irx-world>header strong','.irx-action-set code']}
+      ]){
+        await page.goto(item.route,{waitUntil:'domcontentloaded'});
+        await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
+        const root=page.locator('[data-interactive-research-explainer="'+item.kind+'"]');
+        await expect(root).toBeVisible();
+        const nodes=await root.evaluate((el,selectors)=>{
+          const shown=(node:Element)=>{const s=getComputedStyle(node),r=node.getBoundingClientRect();
+            return s.display!=='none'&&s.visibility!=='hidden'&&r.width>1&&r.height>1;};
+          return selectors.flatMap(selector=>[...el.querySelectorAll(selector)].filter(shown).map(node=>{
+            const e=node as HTMLElement,s=getComputedStyle(e);
+            return {selector,size:parseFloat(s.fontSize),width:e.getBoundingClientRect().width,
+              italic:s.fontStyle,text:(e.textContent||'').trim()};
+          })).filter(x=>x.text.length>0);
+        },item.selectors as string[]);
+        expect(nodes.length,item.route+' has visible explanatory text').toBeGreaterThan(0);
+        for(const n of nodes){
+          expect(n.size,n.selector+' '+item.route).toBeGreaterThanOrEqual(n.selector.includes('code')?12:13);
+          expect(n.width).toBeGreaterThan(32);
+          expect(n.italic).toBe('normal');
+        }
+        expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+      }
+    });
+  }
+}
+test('environment readability checker rejects restored 9px prose',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/research/seed-openevo/flow/webshop/');
+  const node=page.locator('[data-interactive-research-explainer="webshop"] .irx-boundary-note').first();
+  await expect(node).toBeVisible();
+  const legible=async()=>node.evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=13);
+  expect(await legible()).toBe(true);
+  await node.evaluate(el=>(el as HTMLElement).style.fontSize='9px');
+  expect(await legible()).toBe(false);
+  await node.evaluate(el=>(el as HTMLElement).style.removeProperty('font-size'));
+  expect(await legible()).toBe(true);
+});

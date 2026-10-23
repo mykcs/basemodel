@@ -95,28 +95,28 @@ const frozenPanelHref = trackAManifest.href;
 <style>
   .current-q7{max-width:1160px;margin:-18px auto 0;padding:0 24px 36px;color:var(--color-text)}
   .current-question-card{display:grid;grid-template-columns:70px minmax(0,1fr);gap:24px;max-width:960px;padding:24px 0 4px;border-top:1px solid var(--color-border)}
-  .question-number{padding-top:4px;color:var(--color-text-muted);font:700 .78rem ui-monospace,SFMono-Regular,Menlo,monospace}
+  .question-number{padding-top:4px;color:var(--color-text-muted);font:var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface)}
   .question-copy{min-width:0}
   .question-meta{margin-bottom:9px}
-  .status-badge{display:inline-flex;align-items:center;gap:7px;color:var(--color-text-muted);font-size:.75rem;font-weight:760}
+  .status-badge{display:inline-flex;align-items:center;gap:7px;color:var(--color-text-muted);font-size:var(--type-meta);font-family:var(--font-interface);font-weight:var(--type-weight-label)}
   .status-badge i{width:7px;height:7px;border-radius:999px;background:var(--color-info)}
-  h3{margin:0 0 12px;font-size:clamp(1.15rem,2.2vw,1.55rem);letter-spacing:-.025em}
-  p{max-width:80ch;line-height:1.72}
-  .conclusion{margin:0;color:var(--color-text);font-size:.94rem}
+  h3{margin:0 0 12px;font-size:var(--type-article-subsection);letter-spacing:normal}
+  p{max-width:80ch;line-height:var(--type-leading-body)}
+  .conclusion{margin:0;color:var(--color-text);font-size:var(--type-body-small)}
   .manifest-callout{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;max-width:900px;margin-top:16px;padding:15px 16px;border:1px solid var(--color-border);border-left:3px solid var(--color-accent);border-radius:12px;background:color-mix(in srgb,var(--color-accent) 5%,var(--color-bg))}
   .manifest-copy{display:grid;gap:4px;min-width:0}
-  .manifest-copy strong{font-size:.84rem}
-  .manifest-copy span{max-width:72ch;color:var(--color-text-on-tint);font-size:.76rem;line-height:1.55}
-  .manifest-link{display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;border:1px solid var(--color-border);border-radius:9px;color:var(--color-accent);font-size:.78rem;font-weight:760;text-decoration:none;white-space:nowrap;background:var(--color-bg)}
+  .manifest-copy strong{font-size:var(--type-body-small)}
+  .manifest-copy span{max-width:72ch;color:var(--color-text-on-tint);font-size:var(--type-body-small);font-family:var(--font-interface);line-height:var(--type-leading-body)}
+  .manifest-link{display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;border:1px solid var(--color-border);border-radius:9px;color:var(--color-accent);font-size:var(--type-meta);font-family:var(--font-interface);font-weight:var(--type-weight-heading);text-decoration:none;white-space:nowrap;background:var(--color-bg)}
   .manifest-link:hover,.manifest-link:focus-visible{text-decoration:underline}
   .evidence-details{max-width:900px;margin-top:14px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg)}
-  summary{cursor:pointer;padding:13px 15px;font-size:.82rem;font-weight:760}
+  summary{cursor:pointer;padding:13px 15px;font-size:var(--type-body-small);font-weight:var(--type-weight-heading)}
   .evidence-detail-body{padding:0 15px 15px;border-top:1px solid var(--color-border)}
-  table{width:100%;border-collapse:collapse;font-size:.78rem}
-  th,td{padding:10px 8px;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;line-height:1.55}
-  th{width:150px;color:var(--color-text-muted);font-weight:720}
+  table{width:100%;border-collapse:collapse;font-size:var(--type-table);font-family:var(--font-interface)}
+  th,td{padding:10px 8px;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;line-height:var(--type-leading-body)}
+  th{width:150px;color:var(--color-text-muted);font-weight:var(--type-weight-label)}
   code{white-space:normal;overflow-wrap:anywhere}
-  .evidence-links{display:grid;gap:7px;margin:14px 0 0;padding-left:18px;font-size:.78rem}
+  .evidence-links{display:grid;gap:7px;margin:14px 0 0;padding-left:18px;font-size:var(--type-meta);font-family:var(--font-interface)}
   .evidence-links a{color:var(--color-accent);text-decoration:none}
   .evidence-links a:hover{text-decoration:underline}
   @media(max-width:720px){

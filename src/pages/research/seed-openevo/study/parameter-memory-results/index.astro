@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from '../../../../../components/research/ResearchPaperTable.astro';
 import AppLayout from '../../../../../layouts/AppLayout.astro';
 import '../../../../../styles/openevo-research-blogs.css';
 import '../../../../../styles/research-booktabs.css';
@@ -14,7 +15,9 @@ import ExternalBrandMark from '../../../../../components/common/ExternalBrandMar
 import { ADVISOR_QUESTIONS, ADVISOR_Q05_FROZEN, ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE, ADVISOR_Q09_UPDATES, ADVISOR_RESEARCH_AS_OF } from '../../../../../data/openEvoAdvisorTenQuestions';
 import { ADVISOR_REVIEWED_COPY } from '../../../../../data/openEvoAdvisorReviewedCopy';
 import { ADVISOR_READER_DIGEST } from '../../../../../data/openEvoAdvisorReaderDigest';
+import { ADVISOR_DECISION_BRIEF } from '../../../../../data/openEvoAdvisorDecisionBrief';
 import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeeting';
+import intervalData from '../../../../../data/advisorConfidenceIntervals.json';
 
 // Section 3 is the response chapter. Question identities stay Q01–Q10,
 // independent of chapter numbering, so the visible headings read naturally.
@@ -32,7 +35,7 @@ const researchProgress = {
   q07: { tone:'green', label:'已有局部因果回答', next:'对普通 OpenEVO、Bounded 和 Bounded + β 分别开展可比的更新删除、方向反转测试，再考虑是否设计在线方向控制器。', effort:'每新增一个保存点，至少再做一组原始/反向的同题评测；人工约半天起，GPU 耗时待测。' , source:'https://github.com/mykcs/openevo-experiment/pull/634' },
   q08: { tone:'yellow', label:'遗忘尚未判定', next:'先找回每道旧题刚学会时的可比测量和任务身份，再与长期训练后对照。', effort:'人工约 1–2 人日核对旧账本；若早期锚点缺失，需要重新训练与评测，卡时未知。' , source:'https://github.com/mykcs/openevo-experiment/pull/635' },
   q09: { tone:'yellow', label:'两条训练末尾模型已得，关闭文字经验的对照待完成', next:'先核对两组训练尚未完成的记录，再分别关闭文字记忆、技能指导和系统指导，在相同题目上比较做题成绩。', effort:'两条延伸流已有第 160 轮末端状态，但 canonical 40 轮封存仍未完成；原完整计划最多 40,960 次训练任务和 1,664 次评估，是预算上限而非本轮新增消耗。', source:'https://github.com/mykcs/openevo-experiment/pull/636' },
-  q10: { tone:'red', label:'独立复现尚未完成', next:'先在冻结的新 WebShop 题上完成独立随机流的复现；之后参考 SEED（arXiv:2607.14777）的 ALFWorld 实验，在这个模拟家庭任务环境中重新训练并对照三种 OpenEVO 方法。', effort:'计划上限为 3 条新训练流、122,880 次训练任务和 4,224 次评估；严格同源复用可减少净增量。人工准备约 1–2 人日；尚未启用，不应虚报训练小时。' , source:'https://github.com/mykcs/openevo-experiment/pull/637' },
+  q10: { tone:'red', label:'新确认题已冻结，正式复现尚未启动', next:'先验收完整存储恢复、热工作集容量与 GPU6 共卡资格，冻结同一个模型起点及简化配方；再运行三条新随机流（独立改变任务顺序和生成随机设置，各训练 160 轮）及匹配对照，在冻结的新 128 题上做逐题配对评测。ALFWorld 属于另一阶段。', effort:'当前设计通常为三条方法流加三条匹配对照，预算上限为 122,880 次训练任务和 4,224 次评估；科学身份完全相同时才可预先去重。实际 GPU 小时尚未测量，正式训练尚未激活。', source:'https://github.com/mykcs/openevo-experiment/pull/637' },
 } as const;
 // 单一状态语义：科研结论是否已回答；不代表训练任务、PR 或软件验收是否完成。
 const readerAnswerStatus = {
@@ -82,27 +85,12 @@ const checkpointEvidence = {
   direction: 'https://github.com/mykcs/openevo-experiment/pull/634',
 };
 
-// Dated Q17 diagnostics: these are distinct experiments from the original Q04/Q07/Q08/Q09 studies.
-// All values are copied from the already published source-bound Q17 summary in section 9.
-const q17Effects = {
-  capacity: [
-    { id:'first',label:'首次测试',estimate:-0.87,low:-3.91,high:1.65 },
-    { id:'seed',label:'更换随机设置',estimate:-0.61,low:-1.48,high:0.05 },
-  ],
-  direction: [
-    { id:'r129',label:'DirectApply R129',estimate:-1.64,low:-6.02,high:1.96 },
-    { id:'r159',label:'DirectApply R159',estimate:-0.85,low:-2.17,high:0 },
-  ],
-  retention: [
-    { id:'old',label:'旧队列完整成功率',estimate:-9.38,low:-23.96,high:4.17 },
-  ],
-  context: [
-    { id:'memory',label:'Memory 指导文字中和',estimate:2.22,low:-3.99,high:8.75 },
-    { id:'skill',label:'Skill 指导文字中和',estimate:-4.11,low:-9.61,high:0.26 },
-    { id:'agent',label:'Agent 指导文字中和',estimate:1.64,low:-1.50,high:5.75 },
-    { id:'order',label:'结果页顺序反转',estimate:-26.60,low:-37.41,high:-15.64 },
-  ],
-} as const;
+// Scientific effect values and axes come from the source-bound figure dataset.
+const intervalScale = (id: string) => {
+  const figure = intervalData.figures.find(item => item.id === id);
+  if (!figure) throw new Error(`Unknown source-bound confidence interval figure: ${id}`);
+  return { min: figure.axis.min, max: figure.axis.max, ticks: figure.axis.ticks, effects: figure.effects };
+};
 ---
 
 <AppLayout
@@ -113,11 +101,25 @@ const q17Effects = {
   <main class="evo-blog evo-article evo-approved-reader" data-evo-blog="results" data-paper-citation-style="plain-text" data-reader-page="research-blog" data-copy-review>
     <header>
       <h1>我们的回应实验：十个研究问题的证据</h1>
-      <p class="evo-article__lede" data-reader-purpose>2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会（<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />会议原始逐字记录（RAW）</a>）。我们的模型要在模拟网店里按要求找到商品、选对规格并完成购买；完成一批任务后，再尝试把有用经验变成下一轮的学习。学长希望知道：模型训练多久合适、长期参数该保存多大、更新方式会怎样影响做题成绩。会后我们把会议议题整理成 Q01–Q09，再增加独立复现问题 Q10；这十问不是学长当时逐字提出的十句话。这篇报告逐项给出已经测到的结果、尚缺的证据和下一步。</p>
+      <p class="evo-article__lede" data-reader-purpose>模型在模拟网店里练习购物，再尝试把完成任务的经验用于下一轮学习。这里先告诉你：十个研究问题已经测到什么、目前做到哪一步、下一步还缺什么。</p>
     </header>
     <section class="advisor-overview" data-advisor-overview aria-labelledby="advisor-overview-title">
-      <h2 id="advisor-overview-title">十项研究问题的进度</h2>
-      <p class="advisor-overview__lead">训练轮数和参数更新方向已有范围明确的局部结论；另外六问做过部分实验，关键答案仍需核实；SEED 的正式复现和跨新任务验证尚未完成。</p>
+      <h2 id="advisor-overview-title">OpenEVO 长期学习：现在知道什么，还缺什么？</h2>
+      <p class="advisor-overview__lead" data-advisor-scientific-question>{ADVISOR_DECISION_BRIEF.researchQuestion}</p>
+      <div class="advisor-overview__decisions" data-advisor-decisions>
+        <p data-advisor-key-findings><strong>已经测到的两个重要结果：</strong>
+          {ADVISOR_DECISION_BRIEF.evidence.map(item => (
+            <span data-advisor-executive-evidence={item.id}> <strong>{item.id.toUpperCase()}</strong>：{item.finding} {item.boundary}</span>
+          ))}
+        </p>
+        <p data-advisor-critical-gaps><strong>仍不能下的结论：</strong>
+          {ADVISOR_DECISION_BRIEF.unresolved.map(item => (
+            <span data-advisor-executive-gap={item.id}> <strong>{item.id.toUpperCase()}</strong>：{item.fact}</span>
+          ))}
+          {ADVISOR_DECISION_BRIEF.historicalBoundary}
+        </p>
+        <p data-advisor-priorities><strong>建议优先验证：</strong>{ADVISOR_DECISION_BRIEF.nextDecision} {ADVISOR_DECISION_BRIEF.decisionBoundary} <a href="#response-q10">查看 Q10 详细进展</a></p>
+      </div>
       <dl class="advisor-overview__counts" aria-label="十项研究问题的回答状态">
         {answerTones.map(tone => (
           <div class:list={['advisor-overview__count', 'advisor-overview__count--'+tone]} data-overview-status={tone}>
@@ -127,11 +129,6 @@ const q17Effects = {
         ))}
       </dl>
       <p class="advisor-overview__explanation">绿色表示已有范围明确的局部结论，并非整项研究全部结束；黄色表示做过实验，但关键答案还不确定；红色表示核心正式验证未完成，并非没有做过任何工作。</p>
-      <div class="advisor-overview__decisions" data-advisor-decisions>
-        <p data-advisor-key-findings><strong>已经测到的关键现象：</strong>历史普通 OpenEVO 的参数更新累计耗时 31.09 小时，固定容量模型为 2.02 小时；完整任务运行没有同等幅度的加速。另一次同题干预把固定容量模型第 156 轮的更新方向反过来，平均成绩下降约 10 分。三条历史训练路线并非严格随机对照，方向结果目前也只来自一个模型状态。<a href="#response-q05">查看历史成绩与耗时</a> · <a href="#response-q07">查看方向干预</a></p>
-        <p data-advisor-priorities><strong>接下来优先补的证据：</strong><a href="#response-q02">Q02</a> 的六组训练已完成，18 个评测位置还有 3 个缺口；<a href="#response-q03">Q03</a> 需要先对齐论文的评测条件，再完成正式复现。这是按现有证据缺口排列的阅读建议，不代表新的实验已经运行。</p>
-      </div>
-      <a class="advisor-overview__jump" href="#experiment">逐问查看：已有结果、做到哪里、还缺什么 ↓</a>
     </section>
     <div class="evo-article__abstract">
       <h2>摘要</h2>
@@ -139,6 +136,7 @@ const q17Effects = {
       <p>另外，在整个 160 轮训练快结束的第 152–159 轮，我们比较了 rank128 和更小的 rank32。这次只新增 rank32 在最后 8 轮的训练和做题记录，rank128 用已经封存的同轮次历史结果，没有重新训练。两者同题比较显示：长期 LoRA 参数更新文件缩小约 75%，rank32 平均低 1.79 分，但 95% 置信区间跨过 0。为什么选择末尾八轮、怎样理解统计结果，详见下文 Q04；它不是整段训练都用 rank32 的结论。</p>
       <p>我们还测了另一份 R159 在<strong>固定的 64 道研究用购物题</strong>上的成绩：Task Score 为 <strong>约 60.11 分</strong>（满分 100 分；原始精度见后文），64 道题中有 <strong>18 道完整做对</strong>，不能替代 128 题终评。旧任务遗忘、文字状态的独立收益和新任务复现还没有确定答案。公开 SEED 的独立复现中，三组工程模型共完成 1,536 次冻结开发题评测（使用事先固定的题单），两组前后模型在相同题上的平均分差，其 95% 区间均包含 0；正式 SFT 尚未启动，计划中的 160 轮正式 Stage2 训练也尚未开始。10 月 15 日还补入 Q17 R129/R159 的容量、方向、文字与旧队列测量，<a href="#response-q04">分别见 Q04、Q07、Q08 和 Q09 的补充测量</a>；它们不代表 13 份 checkpoint 已全部测完。<a href="/research/seed-openevo/study/advisor-questions/">学长十问的原始问题与背景</a>及每项实验的具体来源，分别在对应段落给出。</p>
     </div>
+    <p class="evo-article__note" data-meeting-provenance>2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会（<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />会议原始逐字记录（RAW）</a>）；Q01–Q09 根据会议议题整理，独立复现问题 Q10 为会后新增。这十问不是学长当时逐字提出的十句话。</p>
     <OpenEvoArticleNavigation current="results" />
     <nav class="evo-article__toc" aria-label="实验文章目录">
       <details class="advisor-ten-toc">
@@ -183,7 +181,7 @@ const q17Effects = {
           </div>
         ))}
       </dl>
-      <p class="evo-article__note">Q01–Q09 是由 2026 年 9 月 22 日会议议题整理出的研究问题，Q10 是会后新增的方向，并非学长当时逐字提出的十句话。后续实验的 GPU 数量、单卡显存、预计机器小时和人工投入将按实际方案核算；目前不填未经测量的数值。这里是研究进展导读，不取代后文的完整证据。</p>
+      <p class="evo-article__note">后续实验的 GPU 数量、单卡显存、预计机器小时和人工投入将按实际方案核算；目前不填未经测量的数值。这里是研究进展导读，不取代后文的完整证据。</p>
     </section>
     <section class="evo-article__section" id="responses" data-response-experiments>
       <h2>3 十个问题的实验结果与证据</h2>
@@ -217,7 +215,7 @@ const q17Effects = {
                     <p>前三条是我们已经运行的历史路线，使用同一批事先冻结的 128 道 WebShop 购物题；SEED 一行来自论文报告的另外一组 128 道测试题。没有证据证明两套题单相同，也不是四组严格对照实验。</p>
                     <p class="evo-article__note" data-seed-table-mobile-hint>在手机上向左滑动这张表，可以查看成功率和完整成功题数。</p>
                     <div class="evo-article__tablewrap" tabindex="0" aria-label="历史三路线与SEED论文WebShop指标">
-                      <table data-webshop-seed-paper-comparison>
+                      <ResearchPaperTable narrowRecords data-webshop-seed-paper-comparison>
                         <caption>表 5｜历史三路线与 SEED 论文 WebShop 指标（非同题对照）</caption>
                         <thead>
                           <tr>
@@ -240,25 +238,25 @@ const q17Effects = {
                             <td>—（论文仅报告成功率）</td>
                           </tr>
                         </tbody>
-                      </table>
+                      </ResearchPaperTable>
                     </div>
                     <p class="evo-article__note" data-seed-paper-evaluation-boundary>前三行的完整成功率都由各自的完整成功题数除以 128 得到，并保留一位小数。最后一行引用 <a href={ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.source} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={ADVISOR_SEED_PAPER_WEBSHOP_REFERENCE.source} />SEED 论文 Table 1</a> 的 Qwen3-1.7B-Instruct WebShop Score 和 Succ.；论文没有报告可直接核验的完整成功题数，因此保留「—」。两套评测的题目身份、训练起点和协议没有严格对齐，不能把这张表直接当作方法公平排名。</p>
                     <p class="evo-article__note">可直接核对两份冻结 128 题的原始收据：<a href={checkpointEvidence.directFinal} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.directFinal} />普通 OpenEVO 终评 JSON</a> · <a href={checkpointEvidence.boundedFinal} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.boundedFinal} />Bounded 与历史 β 终评 JSON</a>。三条历史路线的题单相同，但普通路线是更早的历史前驱。</p>
                     <div class="evo-article__tablewrap" tabindex="0" aria-label="历史参数更新与整段训练的耗时对照">
-                      <table>
+                      <ResearchPaperTable narrowRecords class="advisor-timing-table">
                         <caption>补充表 S5｜历史耗时对照：分别计时参数更新及含 rollout 的完整运行（小时）</caption>
                         <thead><tr><th scope="col">计时范围</th><th scope="col" data-numeric>普通 OpenEVO（小时）</th><th scope="col" data-numeric>Bounded（无历史 β，小时）</th><th scope="col" data-numeric>耗时比</th></tr></thead>
                         <tbody>
                           <tr><th scope="row">累计参数更新</th><td data-numeric>31.09 小时</td><td data-numeric>2.02 小时</td><td data-numeric>15.36 倍</td></tr>
                           <tr><th scope="row">完整运行（含 rollout）</th><td data-numeric>74.78 小时</td><td data-numeric>56.25 小时</td><td data-numeric>1.33 倍</td></tr>
                         </tbody>
-                      </table>
+                      </ResearchPaperTable>
                     </div>
                     <p>参数更新只占整个实验的一部分。WebShop 任务执行（rollout）的时间没有被这一容量改进同等加速，因此两种时间口径可以同时成立。<a href={checkpointEvidence.resourceAnalysis} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.resourceAnalysis} />核对累计耗时原始统计</a>。对本研究而言，更值得追问的是<strong>固定容量以后，任务成绩为什么不同</strong>。</p>
                     <p>这些实验不是完全严格对照，结果先作为大致判断。普通 OpenEVO 是更早的历史前序路线，和后来两组在起点与实验安排上有差别，所以不能把 60.72 与 45.98 的分差直接看成固定容量带来的影响；Bounded 与历史 β 的比较条件更接近，但也需要后续严格核实。</p>
             </div>
           )}
-          <AdvisorResponseMetricTable questionId={q.id} />
+          {q.id!=='q03' && <AdvisorResponseMetricTable questionId={q.id} />}
           {q.id==='q01' && <AdvisorTenEvidenceVisual variant="q01" />}
           {q.id==='q02' && <AdvisorTenEvidenceVisual variant="q02" />}
           {q.id==='q03' && <AdvisorTenEvidenceVisual variant="q03" />}
@@ -274,7 +272,7 @@ const q17Effects = {
                                   <p><strong>在这批任务上，rank32 的平均 Task Score 低 1.79 分。</strong>为了判断抽样波动，我们将同任务、同随机设置下的两个结果相减，对配对差值做多次有放回的重新抽样，并计算平均差。</p>
                                   <MathFormula latex={String.raw`d_i=\mathrm{Score}_{32,i}-\mathrm{Score}_{128,i}`} label="同题配对差值的定义" />
                                   <div data-capacity-ci>
-                                    <PaperIntervalPlot id="rank32-paired" title="第 152–159 轮的长期容量配对差异" unit="Task Score 得分变化（分）" min={-5} max={2} ticks={[-4,-2,0,2]} effects={[{id:'rank32',label:'rank32 − rank128',estimate:-1.79,low:-3.68,high:0.12}]} comparison="rank32 − rank128；第 152–159 轮的 1,024 组同题结果" negativeLabel="rank32 成绩更低" positiveLabel="rank32 成绩更高" takeaway="rank32 平均低 1.79 分，但 95% 区间包含 0；还不能确定缩小容量会稳定掉分，也不能证明它完全无损。" caption="图 4｜1,024 组相同任务与随机条件下，rank32 减 rank128 的同题平均 Task Score 分差及 95% 区间。区间跨 0，不能据此认定无损或严格等价；它与另一个冻结 128 题终评不属于同一统计窗口。" />
+                                    <PaperIntervalPlot id="rank32-paired" {...intervalScale('rank32-paired')} title="第 152–159 轮的长期容量配对差异" unit="Task Score 得分变化（分）" comparison="rank32 − rank128；第 152–159 轮的 1,024 组同题结果" negativeLabel="rank32 成绩更低" positiveLabel="rank32 成绩更高" takeaway="rank32 平均低 1.79 分，但 95% 区间包含 0；还不能确定缩小容量会稳定掉分，也不能证明它完全无损。" caption="图 4｜1,024 组相同任务与随机条件下，rank32 减 rank128 的同题平均 Task Score 分差及 95% 区间。区间跨 0，不能据此认定无损或严格等价；它与另一个冻结 128 题终评不属于同一统计窗口。" />
                                   </div>
                                   <p>得分差的 <strong>95% 置信区间从下降 3.68 分到提高 0.12 分</strong>：目前还没有足够证据确认 rank32 在类似任务上的平均分会稳定下降。同时，区间仍容许几个百分点的能力损失，因而不能证明容量缩小后影响可以忽略。<a href={checkpointEvidence.capacity} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.capacity} />查看 1,024 次配对统计与实验收据</a></p>
                                   <details class="evo-article__disclosure"><summary>按下展开：95% 置信区间怎样计算，有什么意义？</summary><div><p>把 1,024 组同题结果分别相减，再以“每组配对结果”为单位重复抽取、反复计算平均差。重采样均值形成一组统计波动范围，95% 区间是按既定覆盖率方法得到的结果。这里的 95% 指在重复使用同一种统计程序时，它长期覆盖固定真实差值的比例，并不表示这个已经算好的区间有 95% 的概率包含真实差值。</p><p>如果要宣称“减少容量没有造成不可接受的性能损失”，应在看实验结果前确定能够接受的最大损失，然后按照对应的单侧统计检验进行判断；不能看到区间后再选择宽松标准。</p></div></details>
@@ -284,7 +282,7 @@ const q17Effects = {
                             <h4 id="q17-capacity">训练后的参数压缩</h4>
                                     <p>对两个保存点各比较 15 种参数状态，在同一批固定的 64 道购物题上使用两组独立随机设置（随机种子），共 3,840 次做题记录。R159 截断到 rank128 后，以 BF16 因子表示作大小对照，参数文件从约 1,021 MB 缩至 102.8 MB（约保留 10.07%）；计入基础模型后，总文件大小约保留 79.42%。这里采用十进制 MB，只计权重文件；1,021 MB 是 BF16 因子对照，不是原始 FP32 checkpoint 的大小。</p>
                                     <div class="evo-article__tablewrap" tabindex="0" aria-label="R159 训练后 rank128 压缩得分差">
-                                      <table><caption>表 4｜R159：压缩版减原模型，Task Score 分差（满分 100）</caption><thead><tr><th scope="col">随机设置</th><th data-numeric>平均成绩变化</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">首次测量</th><td data-numeric>下降 0.87 分</td><td data-numeric>下降 3.91 分至提高 1.65 分</td></tr><tr><th scope="row">同题换随机设置复测</th><td data-numeric>下降 0.61 分</td><td data-numeric>下降 1.48 分至提高 0.05 分</td></tr></tbody></table>
+                                      <ResearchPaperTable narrowRecords><caption>表 4｜R159：压缩版减原模型，Task Score 分差（满分 100）</caption><thead><tr><th scope="col">随机设置</th><th data-numeric>平均成绩变化</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">首次测量</th><td data-numeric>下降 0.87 分</td><td data-numeric>下降 3.91 分至提高 1.65 分</td></tr><tr><th scope="row">同题换随机设置复测</th><td data-numeric>下降 0.61 分</td><td data-numeric>下降 1.48 分至提高 0.05 分</td></tr></tbody></ResearchPaperTable>
                                     </div>
                                     <p class="evo-article__note">读表方法：分差始终按「压缩后 − 原模型」计算。首次测量平均低 0.87 分，95% 置信区间从下降 3.91 分到提高 1.65 分，既包括可能的下降，也包括可能的上升。区间包含 0，不能据此说压缩已被证明无损。</p>
                                     <p>这支持继续研究更小的参数表示，但尚未证明压缩后性能等价。完整 SVD 的 BF16 重构对照在 R159 首次测量中也下降约 2.22 分，说明数值重构本身可能改变行为，rank128 相对原模型的差额不能全部归因于截断。区间是对 64 道题逐题配对重采样得到的单项区间；第二组只是更换随机设置，仍然测试同一批 64 道题，不是换了新题，也不能据此宣称独立新任务复现。实际生成保留原有补零矩阵形状，<strong>没有测得紧凑部署的加速或显存节省</strong>。它也不同于Q04 的容量实验“直接用 rank32 训练”的实验。</p>
@@ -294,8 +292,8 @@ const q17Effects = {
           {q.id==='q04' && (
             <div class="evo-article__followup" data-q17-inline="q04">
               <p><strong>10 月 15 日新增：</strong>在另一条普通 DirectApply 路线上，R159 训练结束后截断为 rank128/BF16，参数因子文件从约 1,021 MB 缩至 102.8 MB；下面测量的是<strong>训练后压缩</strong>，与上面的 rank32/rank128 续学实验不同。</p>
-              <PaperIntervalPlot id="q04-posthoc" widthTier="double" title="R159 训练后压缩对做题分数的影响" unit="Task Score 得分变化（分）" min={-6} max={3} ticks={[-6,-3,0,3]} effects={q17Effects.capacity} comparison="R159 训练后的 rank128/BF16 压缩版 − 未压缩原模型；固定 64 道购物题" negativeLabel="压缩后成绩更低" positiveLabel="压缩后成绩更高" takeaway="首次测量平均低 0.87 分；两次 95% 区间都包含 0。现有证据尚不能确定压缩会稳定掉分，也没有证明压缩完全无损。" caption="图 5｜Q04 训练后压缩：压缩版减原模型。两组随机设置都在事先固定的相同 64 道购物题上比较压缩前后的分数；第二次仍然使用同一批题。两个区间均包含零；BF16 数值重构本身也可能改变行为，尚无紧凑部署速度测量。" />
-              <p class="evo-article__note"><a href="#q17-capacity">查看完整 Q17 压缩表和原始收据 ↓</a></p>
+              <PaperIntervalPlot id="q04-posthoc" {...intervalScale('q04-posthoc')} widthTier="double" title="R159 训练后压缩对做题分数的影响" unit="Task Score 得分变化（分）" comparison="R159 训练后的 rank128/BF16 压缩版 − 未压缩原模型；固定 64 道购物题" negativeLabel="压缩后成绩更低" positiveLabel="压缩后成绩更高" takeaway="首次测量平均低 0.87 分；两次 95% 区间都包含 0。现有证据尚不能确定压缩会稳定掉分，也没有证明压缩完全无损。" caption="图 5｜Q04 训练后压缩：压缩版减原模型。两组随机设置都在事先固定的相同 64 道购物题上比较压缩前后的分数；第二次仍然使用同一批题。两个区间均包含零；BF16 数值重构本身也可能改变行为，尚无紧凑部署速度测量。" />
+              <p class="evo-article__note evo-article__note--navigation"><a href="#q17-capacity">查看完整 Q17 压缩表和原始收据 ↓</a></p>
             </div>
           )}
           {q.id==='q07' && (
@@ -316,15 +314,15 @@ const q17Effects = {
           {q.id==='q07' && (
             <div class="evo-article__followup" data-q17-inline="q07">
               <p><strong>10 月 15 日新增：</strong>对另一条 DirectApply 路线的 R129 和 R159 两个模型，将最新拟合参数组件系数置零，两模型各有 31.25% 的题出现动作变化；但得分差区间都包含 0。它与 Bounded OFF 第 156 轮的方向反转<strong>不是同一模型、同一干预</strong>。</p>
-              <PaperIntervalPlot id="q07-zero-latest" widthTier="double" title="DirectApply 最新组件置零的局部效果" unit="Task Score 得分变化（分）" min={-8} max={3} ticks={[-8,-4,0,3]} effects={q17Effects.direction} comparison="最新参数组件置零后 − 未修改模型；固定 64 道购物题" negativeLabel="置零后成绩更低" positiveLabel="置零后成绩更高" caption="图 7｜Q07 最新组件置零：相对原模型的平均得分变化；同一批固定的 64 道购物题，两个保存点的原始/置零/反向共 384 次任务测量。这里的零点是无净得分变化，不能代替旧 Q07 的 −10.06 分方向反转结果。" />
-              <p class="evo-article__note"><a href="#q17-direction">查看新组件干预的实验范围 ↓</a></p>
+              <PaperIntervalPlot id="q07-zero-latest" {...intervalScale('q07-zero-latest')} widthTier="double" title="DirectApply 最新组件置零的局部效果" unit="Task Score 得分变化（分）" comparison="最新参数组件置零后 − 未修改模型；固定 64 道购物题" negativeLabel="置零后成绩更低" positiveLabel="置零后成绩更高" caption="图 7｜Q07 最新组件置零：相对原模型的平均得分变化；同一批固定的 64 道购物题，两个保存点的原始/置零/反向共 384 次任务测量。这里的零点是无净得分变化，不能代替旧 Q07 的 −10.06 分方向反转结果。" />
+              <p class="evo-article__note evo-article__note--navigation"><a href="#q17-direction">查看新组件干预的实验范围 ↓</a></p>
             </div>
           )}
           {q.id==='q08' && (
             <div class="evo-article__followup" data-q17-inline="q08">
               <p><strong>10 月 15 日新增：</strong>旧队列 12 题、新队列 8 题，每题每条件重复 8 次，累计 640 次任务尝试。R159 比 R129 在旧队列上的完整成功率低 9.38 个百分点；独立统计单位仍只有 12 道旧题，区间跨 0，无法判定稳定遗忘。</p>
-              <PaperIntervalPlot id="q08-old-queue" title="旧队列任务保持：R159 减 R129" unit="完整成功率变化（百分点）" min={-30} max={10} ticks={[-30,-20,-10,0,10]} effects={q17Effects.retention} comparison="第 160 次更新的 R159 − 第 130 次更新的 R129；12 道旧队列任务" negativeLabel="R159 成功率更低" positiveLabel="R159 成功率更高" caption="图 8｜Q08 旧任务保持：12 道旧任务上两个模型的完整成功率差；每道题重复做 8 次，计算 95% 区间时按题目分组。640 是全部新旧队列、模型条件与重复尝试的总次数，不是 640 个独立旧任务。" />
-              <p class="evo-article__note"><a href="#q17-retention">查看旧队列奖励变化与迁移边界 ↓</a></p>
+              <PaperIntervalPlot id="q08-old-queue" {...intervalScale('q08-old-queue')} title="旧队列任务保持：R159 减 R129" unit="完整成功率变化（百分点）" comparison="第 160 次更新的 R159 − 第 130 次更新的 R129；12 道旧队列任务" negativeLabel="R159 成功率更低" positiveLabel="R159 成功率更高" caption="图 8｜Q08 旧任务保持：12 道旧任务上两个模型的完整成功率差；每道题重复做 8 次，计算 95% 区间时按题目分组。640 是全部新旧队列、模型条件与重复尝试的总次数，不是 640 个独立旧任务。" />
+              <p class="evo-article__note evo-article__note--navigation"><a href="#q17-retention">查看旧队列奖励变化与迁移边界 ↓</a></p>
             </div>
           )}
           {q.id==='q09' && (
@@ -333,11 +331,11 @@ const q17Effects = {
               <h4>三条长期路线的文字状态改写次数</h4>
                     <p>OpenEVO 把每轮学习后留下的经验状态合称为 BUNDLE，里面有参数更新，也可以有 Text Memory、Skill 和 Agent System 这三种文字经验。我们在这里统计的是各部分的内容被改写过多少次：长期实验中参数更新很频繁，文字内容实际改写得少得多。这些次数不等于读取次数，也不能直接说明某一部分带来多少任务收益。</p>
                     <div class="evo-article__tablewrap" tabindex="0" aria-label="BUNDLE 更新计数">
-                      <table>
+                      <ResearchPaperTable narrowRecords>
                         <caption>表 6｜三条历史路线中不同载体的内容更新次数</caption>
                         <thead><tr><th>路线</th><th data-numeric>参数</th><th data-numeric>Text Memory</th><th data-numeric>Skill</th><th data-numeric>Agent System</th></tr></thead>
                         <tbody>{ADVISOR_Q09_UPDATES.map((item) => <tr><th>{item.method}</th><td data-numeric>{item.parametric}</td><td data-numeric>{item.textMemory}</td><td data-numeric>{item.skill}</td><td data-numeric>{item.agent}</td></tr>)}</tbody>
-                      </table>
+                      </ResearchPaperTable>
                     </div>
                     <p><strong>很少改写文字，不等于文字状态没有作用。</strong>早期生成的文字可能在后续多轮被反复读取。必须单独关闭或替换载体，在其他条件尽量一致的任务上重新评测，才能判断它对能力的贡献。<a href={checkpointEvidence.resourceAnalysis} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.resourceAnalysis} />载体更新原始统计</a></p>
               </div>
@@ -345,7 +343,7 @@ const q17Effects = {
               <h4 id="q17-context">文字提示与结果页顺序</h4>
                       <p>分别将 memory、skill、agent 的指导文字中和为无具体指导的文字，保留原生载体权限；另测当前结果页顺序反转。两模型共 512 次新干预，加 128 次原生基线，共 640 条记录。以下为 R159 相对原生基线的分差：</p>
                       <div class="evo-article__tablewrap" tabindex="0" aria-label="R159 文字指导与结果页顺序干预">
-                        <table><caption>表 7｜R159：干预后减原模型，Task Score 分差（满分 100）</caption><thead><tr><th scope="col">干预对象</th><th data-numeric>平均成绩变化</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">memory 指导文字中和</th><td data-numeric>提高 2.22 分</td><td data-numeric>下降 3.99 分至提高 8.75 分</td></tr><tr><th scope="row">skill 指导文字中和</th><td data-numeric>下降 4.11 分</td><td data-numeric>下降 9.61 分至提高 0.26 分</td></tr><tr><th scope="row">agent 指导文字中和</th><td data-numeric>提高 1.64 分</td><td data-numeric>下降 1.50 分至提高 5.75 分</td></tr><tr><th scope="row">当前结果页顺序反转</th><td data-numeric>下降 26.60 分</td><td data-numeric>下降 15.64 至 37.41 分</td></tr></tbody></table>
+                        <ResearchPaperTable narrowRecords><caption>表 7｜R159：干预后减原模型，Task Score 分差（满分 100）</caption><thead><tr><th scope="col">干预对象</th><th data-numeric>平均成绩变化</th><th data-numeric>95% 置信区间</th></tr></thead><tbody><tr><th scope="row">memory 指导文字中和</th><td data-numeric>提高 2.22 分</td><td data-numeric>下降 3.99 分至提高 8.75 分</td></tr><tr><th scope="row">skill 指导文字中和</th><td data-numeric>下降 4.11 分</td><td data-numeric>下降 9.61 分至提高 0.26 分</td></tr><tr><th scope="row">agent 指导文字中和</th><td data-numeric>提高 1.64 分</td><td data-numeric>下降 1.50 分至提高 5.75 分</td></tr><tr><th scope="row">当前结果页顺序反转</th><td data-numeric>下降 26.60 分</td><td data-numeric>下降 15.64 至 37.41 分</td></tr></tbody></ResearchPaperTable>
                       </div>
                       <p>三个指导文字干预的平均分差区间均包含零，不能宣称它们无效；skill 干预仍改变了 51.56% 任务的第一步动作。结果页顺序反转明显降低得分，表明模型对当前页面排列敏感，但这与文字记忆收益是两个不同问题。<strong>完整关闭三种载体权限的消融仍未完成</strong>，Q10 的新任务流独立复现也没有由这些开发集实验代替。</p>
                       <p class="evo-article__note">参数与文字干预的区间均按同一批 64 题配对计算，未作整条曲线同时置信保证。<a href="/research/seed-openevo/evidence/q17-checkpoint-diagnostics-20261015.json">公开汇总数据、原始收据哈希与限制（JSON）</a>；<a href="https://huggingface.co/datasets/openevo-recovery/openevo-full-server-disaster-recovery-v1"><ExternalBrandMark href="https://huggingface.co/datasets/openevo-recovery/openevo-full-server-disaster-recovery-v1" />私有原始证据库（需授权）</a>。网页只发布汇总，不发布任务原文或轨迹。</p>
@@ -355,8 +353,8 @@ const q17Effects = {
           {q.id==='q09' && (
             <div class="evo-article__followup" data-q17-inline="q09">
               <p><strong>10 月 15 日新增：</strong>中和 Memory、Skill、Agent System 的具体指导文字，以及反转当前商品结果页顺序。三种文字中和的区间均跨 0；结果页顺序反转下降明显，属于<strong>当前页面顺序敏感性</strong>，不能当作长期文字记忆的收益。</p>
-              <PaperIntervalPlot id="q09-context" widthTier="double" title="R159 文字指导与结果页顺序的同题比较" unit="Task Score 得分变化（分）" min={-40} max={15} ticks={[-40,-20,0,15]} effects={q17Effects.context} comparison="改变指导文字或结果页顺序后 − 未改动的 R159；固定 64 道购物题" negativeLabel="改动后分数更低" positiveLabel="改动后分数更高" caption="图 9｜Q09 文字与结果页干预：R159 在同一批固定的 64 道购物题上，相对未改动条件的得分差。保留三类载体权限，仅中和指导文字；完整关闭载体权限的因果消融仍未完成。结果页顺序反转测试的是另一种行为敏感性。" />
-              <p class="evo-article__note"><a href="#q17-context">查看完整 Q17 文字干预表 ↓</a></p>
+              <PaperIntervalPlot id="q09-context" {...intervalScale('q09-context')} widthTier="double" title="R159 文字指导与结果页顺序的同题比较" unit="Task Score 得分变化（分）" comparison="改变指导文字或结果页顺序后 − 未改动的 R159；固定 64 道购物题" negativeLabel="改动后分数更低" positiveLabel="改动后分数更高" caption="图 9｜Q09 文字与结果页干预：R159 在同一批固定的 64 道购物题上，相对未改动条件的得分差。保留三类载体权限，仅中和指导文字；完整关闭载体权限的因果消融仍未完成。结果页顺序反转测试的是另一种行为敏感性。" />
+              <p class="evo-article__note evo-article__note--navigation"><a href="#q17-context">查看完整 Q17 文字干预表 ↓</a></p>
             </div>
           )}
           {q.id==='q05' && (
@@ -378,7 +376,7 @@ const q17Effects = {
               <h4>同一批题重复尝试，成功并不均匀</h4>
                     <p>历史上已对相同 64 题各尝试 8 次，共 512 次结果。按“每题在前 k 次中至少成功一次”统计的 Success@k 如下；这些数字来自旧数据的严格复用，并非本次写作重新运行 WebShop。</p>
                     <div class="evo-article__tablewrap" tabindex="0" aria-label="R159 重复八次的 Success at k">
-                      <table>
+                      <ResearchPaperTable narrowRecords>
                         <caption>补充表 S6｜R159 开发集 64 题：前 k 次至少成功一次的题数</caption>
                         <thead><tr><th>尝试次数 k</th><th data-numeric>至少成功一次的题数（共 64 题）</th></tr></thead>
                         <tbody>
@@ -387,7 +385,7 @@ const q17Effects = {
                           <tr><th scope="row">4 次</th><td data-numeric>27 题</td></tr>
                           <tr><th scope="row">8 次</th><td data-numeric>31 题</td></tr>
                         </tbody>
-                      </table>
+                      </ResearchPaperTable>
                     </div>
                     <p><strong>64 道题中有 31 道至少成功过一次，但并非每次都成功。</strong>其中只有 <strong>6 道题</strong>在八次尝试中全部成功，<strong>33 道题</strong>八次都失败，其余 25 道题存在波动。需要每题连续奖励的 Best-of-k 仍因缺少逐题连续分数而无法验收（BLOCKED），不能由组平均分倒推。<a href={checkpointEvidence.repeat8} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.repeat8} />M1 原始重复观察</a></p>
               </details>
@@ -406,7 +404,7 @@ const q17Effects = {
           <p data-supported-answer={q.id}><strong>目前回答了什么：</strong>{q.interpretation}</p>
           <p class="evo-article__limit"><strong>还缺什么：</strong>{q.unknown}</p>
           <p class="evo-article__next-work" data-next-work={q.id}><strong>下一步：</strong>{q.progress.next}<span><strong>工作量粗估：</strong>{q.progress.effort}</span> <a href={q.progress.source} target="_blank" rel="noopener noreferrer" data-question-plan-source={q.id}><ExternalBrandMark href={q.progress.source} />核对当前实验工作单</a></p>
-          <p class="evo-article__note">
+          <p class="evo-article__note evo-article__note--navigation">
             {q.evidence.slice(0, 1).map(e => <span><a href={e.href} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={e.href} />本问实验来源</a> · </span>)}
             <a href={'#source-'+q.id}>更多实验来源 ↓</a>
           </p>
@@ -460,6 +458,7 @@ const q17Effects = {
 
 <style>
   [data-q17-diagnostics] h4 { scroll-margin-top: 5.8rem; }
+  .advisor-timing-table th[scope="row"] { white-space: nowrap; }
 </style>
 
 <script>

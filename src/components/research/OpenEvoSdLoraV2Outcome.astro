@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
@@ -73,7 +74,7 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
       <b aria-hidden="true">→</b>
       <div><strong>{t('一起算', 'Grouped compute')}</strong><span>352 s · 2.75×</span></div>
       <b aria-hidden="true">→</b>
-      <div><strong>{t('训练轨迹变了', 'Trajectory changed')}</strong><span>BF16 backward</span></div>
+      <div><strong>{t('训练轨迹变了', 'Trajectory changed')}</strong><span class="dtype-token">BF16 backward</span></div>
       <b aria-hidden="true">→</b>
       <div class="strict-flow__stop"><strong>{t('严格等价路线停止', 'Strict-equivalence route stopped')}</strong><span>{t('候选没有保持严格等价', 'No strict-equivalence successor')}</span></div>
     </div>
@@ -94,9 +95,9 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
     <figure class="v2-rule" aria-labelledby="v2-rule-caption">
       <div><span>16 ×</span><strong>{t('BF16 component 计算', 'BF16 component compute')}</strong></div>
       <b aria-hidden="true">→</b>
-      <div><span>FP32</span><strong>{t('跨 component 累加', 'cross-component reduction')}</strong></div>
+      <div><span class="dtype-token">FP32</span><strong>{t('跨 component 累加', 'cross-component reduction')}</strong></div>
       <b aria-hidden="true">→</b>
-      <div><span>BF16</span><strong>{t('回到冻结运行 dtype', 'return to frozen runtime dtype')}</strong></div>
+      <div><span class="dtype-token">BF16</span><strong>{t('回到冻结运行 dtype', 'return to frozen runtime dtype')}</strong></div>
       <figcaption id="v2-rule-caption">{t(
         '这条规则不靠 Task Vector、reward、probe 或 GDR 来决定更新。v2 的正确性先看“自己的规则是否可重复、是否 finite、历史 prior 是否不动”，而不是再要求逐 bit 模仿 Vanilla。',
         'This rule does not use Task Vector, reward, probes, or GDR to decide the update. v2 is judged first by whether its own rule is deterministic and finite and keeps historical priors unchanged, rather than by bitwise imitation of Vanilla.',
@@ -113,14 +114,15 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
       )}</p>
     </div>
     <div class="comparison-table-wrap" role="region" tabindex="0" aria-label={t("Vanilla 与 SD-LoRA v2 的同题训练数值表，可在此区域内横向滚动", "Vanilla and SD-LoRA v2 paired training values; scroll this table region horizontally")}>
-      <table class="comparison-table">
+      <ResearchPaperTable class="comparison-table">
+<Fragment slot="caption">{t('v2 真的能继续学，而且 8 步大约快了 2×', 'v2 really keeps learning, and the matched eight-step trainer is about 2× faster')}</Fragment>
         <thead><tr><th scope="col">{t('同一 8-step 训练', 'Same eight-step training')}</th><th scope="col">Vanilla</th><th scope="col">SD-LoRA v2</th></tr></thead>
         <tbody>
           <tr><th scope="row">{t('Trainer 时间', 'Trainer time')}</th><td>{SD_LORA_V2_LOCAL.referenceEightStepSeconds.toFixed(2)} s</td><td><strong>{SD_LORA_V2_LOCAL.v2EightStepSeconds.toFixed(2)} s</strong></td></tr>
           <tr><th scope="row">{t('Optimizer steps', 'Optimizer steps')}</th><td>8 / 8</td><td>8 / 8</td></tr>
           <tr><th scope="row">{t('历史 prior', 'Historical priors')}</th><td>{t('不修改', 'unchanged')}</td><td>{SD_LORA_V2_LOCAL.priorTensorCount.toLocaleString()} {t('个 tensor 全部不变', 'tensors unchanged')}</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="sdlora-v2__plain-result">{t(
       `结果不是“v2 和 Vanilla 又变回一样了”。它们的 loss / 参数轨迹确实不同；这正是我们把 v2 明确当成新方法的原因。我们真正得到的是另一件更实用的结果：在同一小段学习里，v2 能正常更新，而且 trainer 从 ${SD_LORA_V2_LOCAL.referenceEightStepSeconds.toFixed(1)} 秒降到 ${SD_LORA_V2_LOCAL.v2EightStepSeconds.toFixed(1)} 秒，约 ${speedup}×。`,
@@ -191,14 +193,15 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
         `Stable Reduction asks how to compute a still-growing history more efficiently. Bounded Online Recurrence asks a different question: stop retaining historical components individually, learn a rank8 update each round, then fold it back into fixed rank128. Across R151–R159 it averaged about ${SD_LORA_BOUNDED_RECURRENCE_RESULT.formalSpeedupMean.toFixed(2)}× versus same-round Vanilla.`,
       )}</p>
     </div>
-    <table class="next-table">
+    <ResearchPaperTable class="next-table">
+<Fragment slot="caption">{t('另一条并行线已经把增长历史折成固定 rank128', 'A parallel line has already folded growing history into fixed rank128')}</Fragment>
       <thead><tr><th scope="col">{t('研究线', 'Line')}</th><th scope="col">{t('它真正改变什么', 'What it actually changes')}</th></tr></thead>
       <tbody>
         <tr><th scope="row">SD-LoRA v2 · Stable Reduction</th><td>{t('历史 component 继续逐个存在；改变跨 component 的 reduction rule。', 'Historical components remain individually present; the cross-component reduction rule changes.')}</td></tr>
         <tr><th scope="row">SD-LoRA · Bounded Online Recurrence</th><td>{t('历史折成固定 rank128；每轮新 update 是 rank8，再压回 rank128。', 'History is folded into fixed rank128; each new update is rank8 and is recompressed to rank128.')}</td></tr>
         <tr><th scope="row">GDR</th><td>{t('仍是独立 scientific treatment；不能用上面任一条线的结果替代 GDR 自己的前瞻证据。', 'Remains a separate scientific treatment; neither result above substitutes for prospective GDR evidence.')}</td></tr>
       </tbody>
-    </table>
+    </ResearchPaperTable>
     <p class="next-question">{t(
       '所以 2× 和约 37× 不能并排写成“同一个 v2 的两个测速结果”：它们来自不同 treatment、不同 workload、不同 claim。',
       'So ~2× and ~37× must not be presented as two timings of one v2 implementation: they come from different treatments, workloads, and claims.',
@@ -223,42 +226,43 @@ const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
 <style>
 .sdlora-v2{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--ink)}
 .sdlora-v2__hero{padding:clamp(2.5rem,7vw,5.8rem) 0 2.4rem;border-bottom:1px solid var(--line)}
-.sdlora-v2__chapter{margin:0 0 .65rem;color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}
-.sdlora-v2__hero h1{max-width:16ch;margin:0;font-family:var(--font-editorial);font-size:clamp(2.35rem,6vw,5rem);line-height:.98;letter-spacing:-.045em}
-.sdlora-v2__lede{max-width:52rem;margin:1.25rem 0 0;font-size:clamp(1.15rem,2vw,1.45rem);line-height:1.64}
+.sdlora-v2__chapter{margin:0 0 .65rem;color:var(--accent-deep);font:var(--type-weight-heading) 1rem/1.2 var(--font-interface)}
+.sdlora-v2__hero h1{max-width:16ch;margin:0;font-family:var(--font-editorial);font-size:var(--type-article-page);line-height:var(--type-leading-heading);letter-spacing:normal}
+.sdlora-v2__lede{max-width:52rem;margin:1.25rem 0 0;font-size:var(--type-lead);line-height:var(--type-leading-body)}
 .sdlora-v2__headline-metric{display:flex;flex-wrap:wrap;align-items:baseline;gap:.45rem 1rem;margin:1.6rem 0 0;padding:1rem 0;border-block:1px solid var(--line);font-variant-numeric:tabular-nums}
-.sdlora-v2__headline-metric span{font:800 clamp(1.45rem,3.2vw,2.35rem)/1.1 var(--font-mono)}
-.sdlora-v2__headline-metric b{color:var(--muted);font-size:1.35rem}.sdlora-v2__headline-metric strong{color:var(--accent-deep);font:800 1.1rem/1.2 var(--font-mono)}
-.sdlora-v2__hero-boundary{max-width:50rem;margin:1rem 0 0;color:var(--muted);line-height:1.6}
-.sdlora-v2__hero-links{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin-top:1rem}.sdlora-v2__hero-links a,.sdlora-v2__evidence a,.next-link a{color:var(--accent-deep);font-weight:750;text-underline-offset:.22em}
+.sdlora-v2__headline-metric span{font:var(--type-weight-heading) clamp(1.45rem,3.2vw,2.35rem)/1.1 var(--font-interface)}
+.sdlora-v2__headline-metric b{color:var(--muted);font-size:1.35rem}.sdlora-v2__headline-metric strong{color:var(--accent-deep);font:var(--type-weight-heading) 1.1rem/1.2 var(--font-interface)}
+.sdlora-v2__hero-boundary{max-width:50rem;margin:1rem 0 0;color:var(--muted);line-height:var(--type-leading-body)}
+.sdlora-v2__hero-links{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin-top:1rem}.sdlora-v2__hero-links a,.sdlora-v2__evidence a,.next-link a{color:var(--accent-deep);font-weight:var(--type-weight-heading);text-underline-offset:.22em}
 .sdlora-v2__section{padding:2.8rem 0;border-bottom:1px solid var(--line)}
-.sdlora-v2__copy{max-width:52rem}.sdlora-v2__section h2{margin:0;font-family:var(--font-editorial);font-size:clamp(1.7rem,3.4vw,2.65rem);line-height:1.08;letter-spacing:-.025em}
-.sdlora-v2__section p{line-height:1.68}.sdlora-v2__copy p{margin:.85rem 0 0;color:var(--ink)}
-.sdlora-v2__plain-result{max-width:54rem;margin:1.25rem 0 0;padding-left:1rem;border-left:3px solid var(--accent-deep);font-size:1.06rem}
+.sdlora-v2__copy{max-width:52rem}.sdlora-v2__section h2{margin:0;font-family:var(--font-editorial);font-size:var(--type-article-section);line-height:var(--type-leading-heading);letter-spacing:normal}
+.sdlora-v2__section p{line-height:var(--type-leading-body)}.sdlora-v2__copy p{margin:.85rem 0 0;color:var(--ink)}
+.sdlora-v2__plain-result{max-width:54rem;margin:1.25rem 0 0;padding-left:1rem;border-left:3px solid var(--accent-deep);font-size:var(--type-body)}
 
 .strict-flow,.v2-rule{display:flex;align-items:stretch;gap:.7rem;margin:1.5rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}
 .strict-flow>div,.v2-rule>div{min-width:0;flex:1;padding:.85rem .9rem;background:var(--surface-muted);border-radius:var(--radius-control)}
-.strict-flow>div{display:flex;flex-direction:column;gap:.35rem}.strict-flow>div span,.v2-rule>div span{color:var(--muted);font:700 1rem/1.35 var(--font-mono);overflow-wrap:anywhere}
+.strict-flow>div{display:flex;flex-direction:column;gap:.35rem}.strict-flow>div span,.v2-rule>div span{color:var(--muted);font:var(--type-weight-heading) 1rem/1.35 var(--font-interface);overflow-wrap:anywhere}
 .strict-flow>b,.v2-rule>b{align-self:center;color:var(--muted);font-size:1.25rem}.strict-flow__stop{border-left:3px solid var(--color-warning)}
-.v2-rule{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center}.v2-rule>div{display:grid;gap:.35rem;text-align:center}.v2-rule figcaption{grid-column:1/-1;margin-top:.35rem;padding-top:.85rem;border-top:1px solid var(--line);color:var(--muted);line-height:1.6}
+.v2-rule{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center}.v2-rule>div{display:grid;gap:.35rem;text-align:center}.v2-rule figcaption{grid-column:1/-1;margin-top:.35rem;padding-top:.85rem;border-top:1px solid var(--line);color:var(--muted);line-height:var(--type-leading-caption)}
 .comparison-table-wrap,.next-table{margin-top:1.35rem;overflow-x:auto}.comparison-table,.next-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.comparison-table{width:max-content;min-width:0;max-width:min(100%,46rem)}
-.comparison-table th,.comparison-table td,.next-table th,.next-table td{padding:.75rem .85rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:1rem}
-.comparison-table thead th,.next-table thead th{color:var(--muted);font-size:1rem}.comparison-table td strong{color:var(--accent-deep)}
+.comparison-table th,.comparison-table td,.next-table th,.next-table td{padding:.75rem .85rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:var(--type-table)}
+.comparison-table thead th,.next-table thead th{color:var(--muted);font-size:var(--type-table)}.comparison-table td strong{color:var(--accent-deep)}
 .webshop-compare{margin-top:1.35rem;border-block:1px solid var(--line)}.webshop-compare__row{display:grid;grid-template-columns:minmax(9rem,1.2fr) repeat(2,minmax(7rem,.8fr)) auto;gap:.75rem;align-items:baseline;padding:.9rem 0;border-bottom:1px solid var(--line)}
-.webshop-compare__row:last-child{border-bottom:0}.webshop-compare__row>div{display:flex;align-items:baseline;gap:.5rem}.webshop-compare__row span{color:var(--muted);font-size:1rem}.webshop-compare__row b{font:800 1.2rem/1.1 var(--font-mono)}.webshop-compare__row small{color:var(--accent-deep);font:800 1rem/1.2 var(--font-mono)}
-.paired-counts{max-width:52rem;margin:1rem 0 0;font-weight:700}.sdlora-v2__boundary{max-width:52rem;margin:.7rem 0 0;color:var(--muted)}
-.sdlora-v2__conclusion blockquote{max-width:52rem;margin:1.3rem 0 0;padding:0 0 0 1rem;border-left:4px solid var(--color-positive);font-family:var(--font-editorial);font-size:clamp(1.2rem,2.4vw,1.6rem);line-height:1.55}
-.sdlora-v2__conclusion>p{max-width:52rem}.boundary-list{max-width:50rem;margin:1rem 0 0;padding-left:1.2rem;color:var(--muted);line-height:1.6}
-.next-table th:first-child{width:12rem}.next-question{max-width:54rem;margin:1.25rem 0 0;font-size:1.08rem;font-weight:700}.next-link{margin:.8rem 0 0}
+.webshop-compare__row:last-child{border-bottom:0}.webshop-compare__row>div{display:flex;align-items:baseline;gap:.5rem}.webshop-compare__row span{color:var(--muted);font-size:var(--type-body)}.webshop-compare__row b{font:var(--type-weight-heading) 1.2rem/1.1 var(--font-interface)}.webshop-compare__row small{color:var(--accent-deep);font:var(--type-weight-heading) 1rem/1.2 var(--font-interface)}
+.paired-counts{max-width:52rem;margin:1rem 0 0;font-weight:var(--type-weight-label)}.sdlora-v2__boundary{max-width:52rem;margin:.7rem 0 0;color:var(--muted)}
+.sdlora-v2__conclusion blockquote{max-width:52rem;margin:1.3rem 0 0;padding:0 0 0 1rem;border-left:4px solid var(--color-positive);font-family:var(--font-interface);font-size:var(--type-lead);line-height:var(--type-leading-body)}
+.sdlora-v2__conclusion>p{max-width:52rem}.boundary-list{max-width:50rem;margin:1rem 0 0;padding-left:1.2rem;color:var(--muted);line-height:var(--type-leading-body)}
+.next-table th:first-child{width:12rem}.next-question{max-width:54rem;margin:1.25rem 0 0;font-size:var(--type-body);font-weight:var(--type-weight-label)}.next-link{margin:.8rem 0 0}
 
-.sdlora-v2__evidence{margin:2rem 0;border-block:1px solid var(--line)}.sdlora-v2__evidence>summary{padding:1rem 0;cursor:pointer;font-weight:800}.evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 1.5rem;padding-bottom:1rem}.evidence-grid>div{padding:.95rem 0;border-top:1px solid var(--line)}.evidence-grid p{margin:.4rem 0 .55rem;color:var(--muted);line-height:1.58}.evidence-links{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin:0 0 1.1rem}
+.sdlora-v2__evidence{margin:2rem 0;border-block:1px solid var(--line)}.sdlora-v2__evidence>summary{padding:1rem 0;cursor:pointer;font-weight:var(--type-weight-heading)}.evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 1.5rem;padding-bottom:1rem}.evidence-grid>div{padding:.95rem 0;border-top:1px solid var(--line)}.evidence-grid p{margin:.4rem 0 .55rem;color:var(--muted);line-height:var(--type-leading-body)}.evidence-links{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin:0 0 1.1rem}
 @media(max-width:760px){
-  .sdlora-v2{width:min(100% - 1rem,1120px)}.sdlora-v2__hero{padding-top:2rem}.sdlora-v2__hero h1{font-size:clamp(2.1rem,11vw,3.35rem)}
+  .sdlora-v2{width:min(100% - 1rem,1120px)}.sdlora-v2__hero{padding-top:2rem}.sdlora-v2__hero h1{font-size:var(--type-article-page)}
   .sdlora-v2__hero-links{display:grid}.strict-flow{display:grid;grid-template-columns:1fr}.strict-flow>b{transform:rotate(90deg);justify-self:center}.v2-rule{grid-template-columns:1fr}.v2-rule>b{transform:rotate(90deg);justify-self:center}.v2-rule figcaption{grid-column:auto}
-  .webshop-compare__row{grid-template-columns:1fr 1fr}.webshop-compare__row>strong,.webshop-compare__row>small{grid-column:1/-1}.comparison-table,.next-table{min-width:0;table-layout:fixed;font-size:1rem}.comparison-table th,.comparison-table td,.next-table th,.next-table td{padding:.62rem .45rem;overflow-wrap:anywhere}.next-table th:first-child{width:8.5rem}.evidence-grid{grid-template-columns:1fr}
+  .webshop-compare__row{grid-template-columns:1fr 1fr}.webshop-compare__row>strong,.webshop-compare__row>small{grid-column:1/-1}.comparison-table,.next-table{min-width:0;table-layout:fixed;font-size:var(--type-table)}.comparison-table th,.comparison-table td,.next-table th,.next-table td{padding:.62rem .45rem;overflow-wrap:anywhere}.next-table th:first-child{width:8.5rem}.evidence-grid{grid-template-columns:1fr}
   /* Keep scientific metric columns readable; let only the table scroll locally. */
   .comparison-table{width:max-content;min-width:31rem;max-width:none;table-layout:auto}
   .comparison-table thead th:nth-child(n+2),.comparison-table tbody td:nth-child(2){white-space:nowrap;overflow-wrap:normal}
   .comparison-table-wrap{scrollbar-width:thin;overscroll-behavior-inline:contain}
 }
+  .strict-flow .dtype-token,.v2-rule .dtype-token{font-family:var(--font-mono)}
 </style>

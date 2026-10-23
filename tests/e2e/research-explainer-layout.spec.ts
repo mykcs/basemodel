@@ -222,23 +222,20 @@ async function stepThrough(root: Locator, viewportWidth: number, requiresMainSta
 }
 
 for (const matrix of matrices) {
-  test(`${matrix.name} keeps research explainers geometrically attached and readable`, async ({ page }) => {
-    await page.setViewportSize(matrix.viewport);
-    await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
-
-    for (const route of routes.filter((route) => routeInScope(route.path))) {
-      await test.step(route.path, async () => {
-        await page.goto(route.path, { waitUntil: 'domcontentloaded' });
-        await settle(page);
-        expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
-        for (const kind of route.kinds) {
-          const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
-          await expect(root).toBeVisible();
-          await stepThrough(root, matrix.viewport.width, route.requiresMainStage);
-        }
-      });
-    }
-  });
+  for (const route of routes.filter((route) => routeInScope(route.path))) {
+    test(`${matrix.name} keeps research explainers geometrically attached and readable: ${route.path}`, async ({ page }) => {
+      await page.setViewportSize(matrix.viewport);
+      await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+      await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+      await settle(page);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+      for (const kind of route.kinds) {
+        const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
+        await expect(root).toBeVisible();
+        await stepThrough(root, matrix.viewport.width, route.requiresMainStage);
+      }
+    });
+  }
 }
 
 test('interactive transport stays local until explicit reader interaction', async ({ page }) => {
@@ -480,7 +477,10 @@ test('scroll-linked explainer updates do not pull a fast reader back to the stag
   await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
   const root = page.locator('[data-interactive-research-explainer="seed"]');
   await waitForHydratedExplainer(root);
-  await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'auto' }));
+  // This test isolates passive scroll-linked updates. `auto` inherits the site's
+  // `scroll-behavior: smooth` and WebKit can still be animating after 650 ms,
+  // making the animation's remaining distance look like an explainer jump.
+  await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'instant' }));
   await page.waitForTimeout(650);
   const before = await page.evaluate(() => window.scrollY);
   expect(before).toBeGreaterThan(900);
