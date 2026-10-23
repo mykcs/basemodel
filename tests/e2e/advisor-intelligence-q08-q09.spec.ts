@@ -17,6 +17,15 @@ for(const width of [390,768,1440]){
       await expect(root.locator('[data-q08-cell][data-q08-kind="score"]')).toHaveCount(96);
       await expect(root.locator('[data-q08-picked-id]')).toHaveText('6120');
       await expect(root.locator('[data-q08-picked-delta]')).toHaveText('−44.44 评分点');
+      // Nested R80/R160 score tokens must remain inline; block spans made the 390px summary vertical.
+      const scoreTokens = root.locator('[data-q08-picked-score80], [data-q08-picked-score160]');
+      const displays = await scoreTokens.evaluateAll(elements => elements.map(element => getComputedStyle(element).display));
+      expect(displays).toEqual(['inline', 'inline']);
+      if (width === 390) {
+        const rowTops = await scoreTokens.evaluateAll(elements => elements.map(element => element.getBoundingClientRect().top));
+        expect(rowTops).toHaveLength(2);
+        expect(Math.max(...rowTops) - Math.min(...rowTops)).toBeLessThanOrEqual(2);
+      }
       await expect(root.locator('[data-q08-cell][data-q08-index="4"][aria-pressed="true"]')).toHaveCount(2);
       if((width===390&&theme==='light')||(width===1440&&theme==='dark'))await root.screenshot({path:testInfo.outputPath(`q08-both-${width}-${theme}.png`),animations:'disabled'});
 
