@@ -15,6 +15,7 @@ import OpenEvoWebShopNextSteps from '../../../../components/research/OpenEvoWebS
 import OpenEvoExperimentAnalysisPlanIndex from '../../../../components/research/OpenEvoExperimentAnalysisPlanIndex.astro';
 import OpenEvoWebShopResultsAppendix from '../../../../components/research/OpenEvoWebShopResultsAppendix.astro';
 import OpenEvoWebShopResultsMobileSafety from '../../../../components/research/OpenEvoWebShopResultsMobileSafety.astro';
+import ResearchContentLifecycle from '../../../../components/research/ResearchContentLifecycle.astro';
 const locale = 'zh' as const;
 ---
 <AppLayout
@@ -25,6 +26,7 @@ const locale = 'zh' as const;
   <SeedOpenEvoResearchPage locale={locale} page="results">
     <div data-testid="openevo-webshop-result-index">
       <OpenEvoWebShopResultsHero locale={locale} />
+      <ResearchContentLifecycle locale={locale} mode="results" />
       <OpenEvo1p7bSamePanelResults locale={locale} />
       <OpenEvoWebShopResultsProtocol locale={locale} />
       <OpenEvoWebShopResultsQuestions locale={locale} />
