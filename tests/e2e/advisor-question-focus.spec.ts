@@ -82,12 +82,16 @@ async function assertQ02Mechanism(page: Page) {
 
   const pairedBounds = geometry.sftStages.map((left, index) => [left, geometry.opsdStages[index]] as const);
   for (const [left, right] of pairedBounds) {
+    if (!right) throw new Error('Missing mirrored OPSD stage geometry');
     expect(Math.abs(left.y - right.y), 'mirrored stages share a row').toBeLessThanOrEqual(2);
     expect(Math.abs((left.y + left.height) - (right.y + right.height)), 'mirrored stage bottoms align').toBeLessThanOrEqual(2);
   }
   for (let index = 1; index < pairedBounds.length; index += 1) {
-    expect(pairedBounds[index][0].y).toBeGreaterThan(pairedBounds[index - 1][0].y);
-    expect(pairedBounds[index][1].y).toBeGreaterThan(pairedBounds[index - 1][1].y);
+    const current = pairedBounds[index];
+    const previous = pairedBounds[index - 1];
+    if (!current || !previous || !current[1] || !previous[1]) throw new Error('Missing Q02 paired stage geometry');
+    expect(current[0].y).toBeGreaterThan(previous[0].y);
+    expect(current[1].y).toBeGreaterThan(previous[1].y);
   }
 
   const q02Link = page.locator('#response-index a[href="#response-q02"]');
