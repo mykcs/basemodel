@@ -17,19 +17,22 @@ const q01FreshCells = [
 
 async function expectPaperGrammar(target: Locator, route: string, index: number) {
 
-  // The Q03 repair replaces two redundant score tables with one native paper table.
-  // Preserve every unaffected, immutable pre-change cell hash by mapping the
-  // remaining downstream DOM positions back to their original receipt indices.
-  // The new Q03 table is separately checked, cell by cell, in the Q03 figure spec.
+  // Preserve the immutable hashes for all historical research tables. The
+  // Q03 paper repair replaced two tables with one, #938 inserted a fresh Q01
+  // comparison, and the advisor explanation now includes an *unnumbered*
+  // Q03 protocol matrix. New content has its own semantic tests; it must not
+  // shift the lookup onto a different sealed scientific table.
   const cellTexts = await target.locator('th,td').evaluateAll(cells => cells.map(cell => cell.textContent?.trim()));
   const freshQ01 = route === responseRoute && await target.evaluate(el => Boolean(el.closest('[data-q01-fresh448]')));
   if (freshQ01) {
     expect(cellTexts, 'sealed Q01 fresh-448 comparison').toEqual(q01FreshCells);
   } else {
-    // #938 inserted one table before all historical tables. Apply that offset
-    // first, then retain the existing Q03 replacement mapping without resealing.
-    const beforeQ01 = route === responseRoute ? index - 1 : index;
-    const originalIndex = route === responseRoute && beforeQ01 >= 5 ? beforeQ01 + 1 : beforeQ01;
+    const protocolBeforeTarget = route === responseRoute ? await target.evaluate(el => {
+      const protocol=document.querySelector('[data-q03-protocol]');
+      return protocol && Boolean(protocol.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) ? 1 : 0;
+    }) : 0;
+    const afterInsertions = route === responseRoute ? index - 1 - protocolBeforeTarget : index;
+    const originalIndex = route === responseRoute && afterInsertions >= 5 ? afterInsertions + 1 : afterInsertions;
     const expected = paperTableBaseline.routes.find(entry => entry.route === route)?.tables.find(entry => entry.index === originalIndex);
     expect(expected, 'sealed original table identity '+route+'#'+index).toBeTruthy();
     expect(createHash('sha256').update(JSON.stringify(cellTexts)).digest('hex')).toBe(expected!.hash);

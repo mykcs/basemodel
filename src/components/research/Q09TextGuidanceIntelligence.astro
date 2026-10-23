@@ -7,10 +7,10 @@ if (!original || original.parametric!==159 || original.textMemory!==2 || origina
   throw new Error('Q09 recorded update counts have changed; refresh the display and citation');
 }
 const updates=[
-  {name:'参数更新',count:original.parametric,kind:'parameters'},
-  {name:'文字记忆',count:original.textMemory,kind:'memory'},
-  {name:'技能指导',count:original.skill,kind:'skill'},
-  {name:'系统指导',count:original.agent,kind:'system'},
+  {name:'参数更新',count:original.parametric,unit:'次参数更新',kind:'parameters'},
+  {name:'文字记忆',count:original.textMemory,unit:'次文字记忆改写',kind:'memory'},
+  {name:'技能指导',count:original.skill,unit:'次技能指导改写',kind:'skill'},
+  {name:'系统指导',count:original.agent,unit:'次系统指导改写',kind:'system'},
 ];
 const checkpoints=[
   {id:'r129',label:'R129 · 较早保存点'},
@@ -41,8 +41,8 @@ if (!hero || changed(hero.firstActionChanged)!==33) throw new Error('Q09 33/64 f
     <div class="q09-text__update-grid">
       {updates.map(item=><div class="q09-text__update" data-q09-update={item.kind}>
         <span class="q09-text__update-label">{item.name}</span>
-        <strong><span>{item.count}</span> 次更新</strong>
-        <div class="q09-text__progress" role="progressbar" aria-label={`${item.name}：160 轮训练记录中的 ${item.count} 次更新`} aria-valuemin="0" aria-valuemax="160" aria-valuenow={item.count}><span style={`width:${item.count/160*100}%`}></span></div>
+        <strong><span>{item.count}</span> {item.unit}</strong>
+        <div class="q09-text__progress" role="progressbar" aria-label={`${item.name}：160 轮训练记录中的 ${item.count} ${item.unit}`} aria-valuemin="0" aria-valuemax="160" aria-valuenow={item.count}><span style={`width:${item.count/160*100}%`}></span></div>
         <small>{item.count} / 160 轮</small>
       </div>)}
     </div>
@@ -73,7 +73,7 @@ if (!hero || changed(hero.firstActionChanged)!==33) throw new Error('Q09 33/64 f
     <p>仍缺一个关键对照：真正禁止 Agent 读取文字记忆、技能指导和系统指导，再比较相同任务的成绩。没有完成的实验不画成已有结果。</p>
   </div>
   <details class="q09-text__details"><summary>52%、检查点和分差究竟怎样计算？</summary><div>
-    <p>52% 来自较晚的 <strong>R159</strong> 模型：64 道任务中有 33 道在 Skill 文字中和后改变第一步动作，33 ÷ 64 = 51.5625%，标题四舍五入成 52%。R129 和 R159 是保存的模型检查点编号，分别指第 130 次和第 160 次参数更新后的状态，不是 rollout 数、题目数或同一任务重复次数。</p>
+    <p>52% 来自较晚的 <strong>R159</strong> 模型：64 道任务中有 33 道在 Skill 文字中和后改变第一步动作，33 ÷ 64 = 51.5625%，标题四舍五入成 52%。R129 和 R159 是训练保存点编号（从 R0 开始），分别对应第 130 轮和第 160 轮的训练阶段，<strong>不表示实际做了 130 次或 160 次参数更新</strong>，也不是 rollout 数、题目数或同一任务重复次数。</p>
     <p>分差以相同任务逐题配对，使用 0–100 的 Task Score 标度；例如 R159 中和 Skill 的均值差约 −4.11 分，95% 区间约 −9.61 至 +0.26 分。区间跨零，既不能证明存在稳定收益，也不能宣称 Skill 没用。这里没有独立的新任务复现。</p>
     <p>三类文字的内容改写总计 6 次，但这是另一条较早普通 OpenEVO 长跑的统计，不能推出这 64 道评测中有多少次实际读取。</p>
   </div></details>
@@ -120,7 +120,7 @@ if (!hero || changed(hero.firstActionChanged)!==33) throw new Error('Q09 33/64 f
   .q09-text__update{min-width:0;display:flex;flex-direction:column;gap:.27rem;padding:0 clamp(.08rem,.5vw,.5rem)}
   .q09-text__update+.q09-text__update{border-left:1px solid var(--q09-line)}
   .q09-text__update-label{font-size:clamp(.69rem,1.35vw,.83rem);font-weight:650;white-space:nowrap}
-  .q09-text__update strong{font-size:clamp(.61rem,1.38vw,.82rem);font-weight:550;white-space:nowrap}
+  .q09-text__update strong{font-size:clamp(.61rem,1.38vw,.82rem);font-weight:550;white-space:normal;overflow-wrap:break-word;min-height:2.85rem;line-height:1.22}
   .q09-text__update strong span{font-size:clamp(1.22rem,3vw,1.75rem);font-weight:760;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
   .q09-text__progress{height:.48rem;border-radius:999px;background:color-mix(in srgb,var(--q09-ink) 10%,var(--q09-paper));overflow:hidden}
   .q09-text__progress>span{display:block;height:100%;min-width:3px;background:#458abb;border-radius:999px}

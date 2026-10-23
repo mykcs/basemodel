@@ -282,20 +282,25 @@ test('SEED Table 1 appears with paper-only Score and Succ. without inventing a s
   const notice=page.locator('#main-results [data-seed-paper-evaluation-boundary]');
   await expect(notice).toContainText('题目身份');
   await expect(notice).toContainText('不能把这张表直接当作方法公平排名');
-  const wrap=page.locator('#main-results [aria-label="历史三路线与SEED论文WebShop指标"]');
+  const wrap=page.locator('#main-results [data-q05-history-paper-table]');
   const narrow=await wrap.evaluate(el=>{
     const first=el.querySelector('thead th:first-child')!;
     const paper=el.querySelector('[data-seed-paper-reference]')!;
+    const table=el.querySelector('table')!;
+    const clipped=[...table.querySelectorAll('th,td')].filter(cell=>cell.scrollWidth>cell.clientWidth+3).map(cell=>cell.textContent?.trim());
     return {scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,
+      tableWidth:table.getBoundingClientRect().width,
       firstColumnWidth:first.getBoundingClientRect().width,
-      paperRowHeight:paper.getBoundingClientRect().height};
+      paperRowHeight:paper.getBoundingClientRect().height,clipped};
   });
-  expect(narrow.scrollWidth).toBeGreaterThan(narrow.clientWidth+180);
-  expect(narrow.firstColumnWidth).toBeGreaterThanOrEqual(170);
-  expect(narrow.paperRowHeight).toBeLessThan(145);
-  await expect(page.locator('[data-seed-table-mobile-hint]')).toBeVisible();
+  expect(narrow.scrollWidth).toBeLessThanOrEqual(narrow.clientWidth+2);
+  expect(narrow.tableWidth).toBeLessThanOrEqual(narrow.clientWidth+2);
+  expect(narrow.firstColumnWidth).toBeGreaterThanOrEqual(65);
+  expect(narrow.paperRowHeight).toBeLessThan(250);
+  expect(narrow.clipped).toEqual([]);
+  await expect(page.locator('[data-seed-table-mobile-hint]')).toHaveCount(0);
   const scrollLeft=await wrap.evaluate(el=>(el.scrollLeft=el.scrollWidth,el.scrollLeft));
-  expect(scrollLeft).toBeGreaterThan(180);
+  expect(scrollLeft).toBe(0);
   const globalOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
   expect(globalOverflow).toBeLessThanOrEqual(2);
 });
@@ -598,7 +603,7 @@ test('Q10 ends the main question sequence and no historical topic restarts as ch
   await expect(article.locator('[data-conversation-detail]')).toHaveCount(0);
   await expect(article.locator('[data-advisor-matrix]')).toHaveCount(7);
   await expect(article.locator('#response-q04 [data-report-figure="q04-capacity"]')).toHaveCount(1);
-  await expect(article.locator('#response-q05 [aria-label="历史三路线与SEED论文WebShop指标"] table')).toHaveCount(1);
+  await expect(article.locator('#response-q05 [data-q05-history-paper-table] table')).toHaveCount(1);
   await expect(article.locator('#response-q09 [aria-label="BUNDLE 更新计数"] table')).toHaveCount(1);
   await expect(article.locator('#response-q03 [data-seed-eight-progress] table')).toHaveCount(1);
   await expect(article.locator('#checkpoint-evidence details')).toHaveCount(1);
