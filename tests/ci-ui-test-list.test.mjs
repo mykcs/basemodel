@@ -67,3 +67,12 @@ test('native CI shards discover all canonical and imported tests exactly once', 
   assert.ok(gate.includes("['run', 'test:ui', '--', `--shard=${shardIndex}/${shardTotal}`]"));
   assert.ok(!gate.includes("'--test-list'"));
 });
+
+
+test('retired timing-list CLI fails closed instead of emitting unsafe execution lists', () => {
+  const result = spawnSync(process.execPath, ['scripts/ci-ui-test-list.mjs'], { encoding: 'utf8' });
+  assert.ifError(result.error);
+  assert.equal(result.status, 2);
+  assert.match(result.stderr, /Retired execution CLI/);
+  assert.match(result.stderr, /--shard=i\/n/);
+});

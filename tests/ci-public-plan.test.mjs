@@ -40,3 +40,14 @@ test('workflow binds exact event base without fetching every branch history', ()
   assert.equal((workflow.match(/fetch-depth: 1/g) ?? []).length, 3);
   assert.equal((workflow.match(/git fetch --no-tags --depth=1 origin "\$CI_BASE_SHA"/g) ?? []).length, 3);
 });
+
+
+test('browser discovery contracts run after dependency installation', () => {
+  const workflow = readFileSync(new URL('../.github/workflows/public-pr-ci.yml', import.meta.url), 'utf8');
+  const job = workflow.split('  deterministic:')[1].split('  browser:')[0];
+  const install = job.indexOf('run: npm ci');
+  const discovery = job.indexOf('run: node --test tests/ci-ui-test-list.test.mjs');
+  assert.ok(install >= 0 && discovery > install, 'Playwright discovery requires installed dependencies');
+  const bootstrap = job.split('- name: Validate CI contracts')[1].split('- name: Install dependencies')[0];
+  assert.ok(!bootstrap.includes('ci-ui-test-list.test.mjs'), 'dependency-free bootstrap must not invoke Playwright');
+});

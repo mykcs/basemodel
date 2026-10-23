@@ -100,7 +100,7 @@ Use this lane by default when the owner asks to repeatedly see the page after sm
 
 ### Required Public PR CI + provider-only Vercel gate
 
-Public PR CI and Vercel have different owners so they no longer repeat the same expensive work. Public PR CI owns deterministic repository validation and the risk-aware browser matrix. Its planner allocates browser runners before spend: skip=0, focused=1, full/global=8. Full/global work is timing-balanced over eight independent shards with one worker each; every allocated runner re-evaluates the plan, unknown ownership fails closed, and Lab/server-relevant diffs run the 6-case active-Lab gate on shard 1.
+Public PR CI and Vercel have different owners so they no longer repeat the same expensive work. Public PR CI owns deterministic repository validation and the risk-aware browser matrix. Its planner allocates browser runners before spend: skip=0, focused=1, full/global=8. Full/global work uses native Playwright sharding over eight independent shards with one worker each; canonical list-only union checks protect imported helper registrations, and the historical timing-list CLI is retired; every allocated runner re-evaluates the plan, unknown ownership fails closed, and Lab/server-relevant diffs run the 6-case active-Lab gate on shard 1.
 
 `public-ci-gate` is required merge evidence. `scripts/request-vercel-final-gate.mjs` refuses to spend Vercel compute unless that exact-head check is already completed/success from the expected GitHub Actions App. The Vercel final gate then answers a different question: can this exact accepted tree build and deploy through the real Production provider?
 
