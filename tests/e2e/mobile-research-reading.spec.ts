@@ -215,6 +215,22 @@ for (const theme of ['light', 'dark']) {
       const original=await tables.evaluateAll(tables=>tables.map(table=>[...table.querySelectorAll('th,td')].map(cell=>cell.textContent?.trim())));
       for (const width of [320,390,768,1440]) {
         await page.setViewportSize({width,height:1000});
+        const briefing = page.locator('[data-testid="progress-briefing"]');
+        if (await briefing.count()) {
+          // WebKit delivers resize after setViewportSize resolves. Observe the
+          // real fixed-slide transform before measuring its native table.
+          await expect.poll(() => briefing.evaluate(deck => {
+            const inner = deck.querySelector('.slide-inner')!;
+            const slide = deck.querySelector('.briefing-slide')!;
+            const expectedWidth = Math.min(1280, deck.clientWidth);
+            const matrix = new DOMMatrixReadOnly(getComputedStyle(inner).transform);
+            const box = slide.getBoundingClientRect();
+            return Math.abs(matrix.a - expectedWidth / 1280) < .0001
+              && Math.abs(matrix.d - expectedWidth / 1280) < .0001
+              && Math.abs(box.width - expectedWidth) < 1
+              && Math.abs(box.height - expectedWidth * 9 / 16) < 1;
+          })).toBe(true);
+        }
         const measured=[];
         for(const index of indices){
           const table=tables.nth(index);await expect(table,`${route} table ${index} exists`).toBeAttached();
