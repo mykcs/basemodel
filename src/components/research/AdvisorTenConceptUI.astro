@@ -124,9 +124,9 @@ import MathFormula from '../common/MathFormula.astro';
   .advisor-intel__seed{border:1px solid var(--ai-line);border-radius:var(--radius-control,.6rem);padding:.6rem 1rem;text-align:center;background:color-mix(in srgb,var(--ai-paper) 90%,var(--ai-accent));font-size:.81rem;font-weight:690;max-width:31rem;margin:.2rem auto .8rem}
   .advisor-intel__seed span{display:block;font-size:1.1rem;line-height:1.25;color:var(--ai-accent)}
   .advisor-intel__duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(.45rem,1.7vw,1rem);margin:.55rem 0}
-  .advisor-intel__panel{border:1px solid var(--ai-line);border-radius:var(--radius-feature,.8rem);padding:clamp(.7rem,2vw,1.05rem);min-width:0;background:color-mix(in srgb,var(--ai-paper) 94%,#b7d9eb);border-top:3px solid #4587a6}
-  .advisor-intel__panel--pending{background:color-mix(in srgb,var(--ai-paper) 95%,#e9c976);border-top-color:#bc9a42}
-  .advisor-intel__panel--known{border-top-color:#518877;background:color-mix(in srgb,var(--ai-paper) 93%,#9bd8be)}
+  .advisor-intel__panel{border:1px solid var(--ai-line);border-radius:var(--radius-feature,.8rem);padding:clamp(.7rem,2vw,1.05rem);min-width:0;background:color-mix(in srgb,var(--ai-paper) 94%,var(--ai-accent));border-top:3px solid var(--ai-accent)}
+  .advisor-intel__panel--pending{background:color-mix(in srgb,var(--ai-paper) 95%,var(--warning));border-top-color:var(--warning)}
+  .advisor-intel__panel--known{border-top-color:var(--positive);background:color-mix(in srgb,var(--ai-paper) 93%,var(--positive))}
   .advisor-intel__tag{display:block;color:var(--ai-muted);font-size:.69rem;font-weight:700;letter-spacing:.025em;margin-bottom:.36rem}
   .advisor-intel__panel>strong{display:block;font-size:clamp(.9rem,1.7vw,1.1rem);line-height:1.4}
   .advisor-intel__panel p{font-size:.78rem;margin:.38rem 0 0;line-height:1.6}
@@ -146,7 +146,7 @@ import MathFormula from '../common/MathFormula.astro';
   .advisor-intel__scale-rail{position:relative;height:26px;margin:.4rem 10px .65rem;border-bottom:2px solid color-mix(in srgb,var(--ai-ink) 33%,transparent)}
   .advisor-intel__scale-rail:before,.advisor-intel__scale-rail:after,.advisor-intel__scale-half{position:absolute;content:"";width:2px;height:11px;bottom:-5px;background:var(--ai-muted)}
   .advisor-intel__scale-rail:before{left:0}.advisor-intel__scale-rail:after{right:0}.advisor-intel__scale-half{left:50%}
-  .advisor-intel__scale-arrow{position:absolute;left:0;bottom:4px;width:100%;height:4px;background:var(--ai-accent);border-radius:3px;transition:width .2s ease}
+  .advisor-intel__scale-arrow{position:absolute;left:0;bottom:4px;width:100%;height:4px;background:var(--ai-accent);border-radius:999px;transition:width .2s ease}
   .advisor-intel__scale-arrow:after{content:"";position:absolute;right:-1px;top:-5px;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:10px solid var(--ai-accent)}
   .advisor-intel:has(input[name="advisor-q05-beta"][value="half"]:checked) .advisor-intel__scale-arrow{width:50%}
   .advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) .advisor-intel__scale-arrow{left:25%;width:75%;background:repeating-linear-gradient(90deg,var(--ai-accent) 0 9px,transparent 9px 14px)}
@@ -158,7 +158,7 @@ import MathFormula from '../common/MathFormula.astro';
   .advisor-intel__formula p{color:var(--ai-muted);font-size:.77rem}
   .advisor-intel__action-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.48rem;position:relative;margin-top:1.05rem}
   .advisor-intel__action-grid:before{content:"";position:absolute;top:-.55rem;left:12.5%;width:75%;border-top:1px solid var(--ai-line)}
-  .advisor-intel__action-grid>div{position:relative;border:1px solid var(--ai-line);border-radius:.55rem;padding:.62rem .42rem;min-width:0;text-align:center}
+  .advisor-intel__action-grid>div{position:relative;border:1px solid var(--ai-line);border-radius:var(--radius-control);padding:.62rem .42rem;min-width:0;text-align:center}
   .advisor-intel__action-grid>div:before{content:"";position:absolute;left:50%;height:.56rem;border-left:1px solid var(--ai-line);top:-.56rem}
   .advisor-intel__action-grid span{display:block;font-size:.67rem;color:var(--ai-muted)}
   .advisor-intel__action-grid strong{display:block;font-size:.79rem;margin-top:.2rem;line-height:1.4}
@@ -168,12 +168,12 @@ import MathFormula from '../common/MathFormula.astro';
   .advisor-intel__vector-axis{position:relative;border-top:2px solid color-mix(in srgb,var(--ai-ink) 36%,transparent);height:26px;margin:1.05rem .4rem .35rem}
   .advisor-intel__vector-center{position:absolute;left:50%;height:20px;width:2px;top:-11px;background:var(--ai-ink)}
   .advisor-intel__vector-center:after{content:"0";position:absolute;left:-.22rem;top:20px;font-size:.7rem;font-style:normal}
-  .advisor-intel__vector-arrow{position:absolute;top:-5px;left:50%;width:36%;height:7px;border-radius:4px;background:#4587a6;transition:all .18s ease}
-  .advisor-intel__vector-arrow:after{position:absolute;content:"";right:-1px;top:-5px;border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:12px solid #4587a6}
+  .advisor-intel__vector-arrow{position:absolute;top:-5px;left:50%;width:36%;height:7px;border-radius:999px;background:var(--ai-accent);transition:all .18s ease}
+  .advisor-intel__vector-arrow:after{position:absolute;content:"";right:-1px;top:-5px;border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:12px solid var(--ai-accent)}
   .advisor-intel:has(input[name="advisor-q07-vector"][value="zero"]:checked) .advisor-intel__vector-arrow{width:5px;height:5px;top:-4px;left:calc(50% - 2px);border-radius:50%}
   .advisor-intel:has(input[name="advisor-q07-vector"][value="zero"]:checked) .advisor-intel__vector-arrow:after{display:none}
-  .advisor-intel:has(input[name="advisor-q07-vector"][value="reverse"]:checked) .advisor-intel__vector-arrow{left:14%;background:#bd7654}
-  .advisor-intel:has(input[name="advisor-q07-vector"][value="reverse"]:checked) .advisor-intel__vector-arrow:after{left:-1px;right:auto;border-left:0;border-right:12px solid #bd7654}
+  .advisor-intel:has(input[name="advisor-q07-vector"][value="reverse"]:checked) .advisor-intel__vector-arrow{left:14%;background:var(--warning)}
+  .advisor-intel:has(input[name="advisor-q07-vector"][value="reverse"]:checked) .advisor-intel__vector-arrow:after{left:-1px;right:auto;border-left:0;border-right:12px solid var(--warning)}
   .advisor-intel__vector-text{display:none;min-height:2.1em;margin-top:.8rem;font-size:.75rem;line-height:1.6}
   .advisor-intel:has(input[name="advisor-q07-vector"][value="original"]:checked) [data-q07-panel="original"],.advisor-intel:has(input[name="advisor-q07-vector"][value="zero"]:checked) [data-q07-panel="zero"],.advisor-intel:has(input[name="advisor-q07-vector"][value="reverse"]:checked) [data-q07-panel="reverse"]{display:block}
   @media(max-width:530px){.advisor-intel__duo{grid-template-columns:minmax(0,1fr)}.advisor-intel__picker{grid-template-columns:minmax(0,1fr)}.advisor-intel__picker label{align-items:center}.advisor-intel__picker small{display:inline;margin-left:.25rem}.advisor-intel__action-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.advisor-intel__action-grid:before,.advisor-intel__action-grid>div:before{display:none}.advisor-intel__panel{padding:.8rem}.advisor-intel h4{font-size:1.15rem}}
