@@ -103,8 +103,9 @@ const q07ReverseEffects = [
       </fieldset>
     </div>
     <div class="advisor-intel__scale" role="group" aria-label="教学数轴：从零写入到完整写入，选择不同 β 会改变向量长度；不对应真实模型性能">
-      <div class="advisor-intel__scale-head"><span>0 · 不写入</span><span>1 · 完整写入</span></div>
-      <div class="advisor-intel__scale-rail" aria-hidden="true"><span class="advisor-intel__scale-half"></span><span class="advisor-intel__scale-arrow"></span></div>
+      <div class="advisor-intel__scale-head"><span>写入比例 β</span><span>箭头长度只表示更新幅度</span></div>
+      <div class="advisor-intel__scale-rail" aria-hidden="true"><span class="advisor-intel__scale-quarter"></span><span class="advisor-intel__scale-half"></span><span class="advisor-intel__scale-three-quarter"></span><span class="advisor-intel__scale-arrow"></span><span class="advisor-intel__scale-choices"><i></i><i></i><i></i><i></i></span></div>
+      <div class="advisor-intel__scale-ticks" aria-hidden="true"><span>0</span><span>0.25</span><span>0.5</span><span>0.75</span><span>1</span></div>
       <div class="advisor-intel__scale-reading" aria-live="polite" aria-atomic="true">
         <p class="advisor-intel__scale-caption" data-q05-panel="full">选中 <MathFormula latex={String.raw`\beta=1`} display={false} />：原始更新完整写入，向量长度为 100%（仅是几何比例）。</p>
         <p class="advisor-intel__scale-caption" data-q05-panel="half">选中 <MathFormula latex={String.raw`\beta=0.5`} display={false} />：同一更新向量的写入长度减半；不代表成绩减半。</p>
@@ -264,17 +265,27 @@ const q07ReverseEffects = [
   .advisor-intel__scale,.advisor-intel__vector{border:1px solid var(--ai-line);padding:.8rem clamp(.7rem,3vw,1.25rem);border-radius:var(--radius-feature,.8rem);margin:.65rem 0;background:var(--ai-paper)}
   .advisor-intel__scale-head{display:flex;justify-content:space-between;gap:.5rem;font-size:.71rem;color:var(--ai-muted)}
   .advisor-intel__scale-rail{position:relative;height:26px;margin:.4rem 10px .65rem;border-bottom:2px solid color-mix(in srgb,var(--ai-ink) 33%,transparent)}
-  .advisor-intel__scale-rail:before,.advisor-intel__scale-rail:after,.advisor-intel__scale-half{position:absolute;content:"";width:2px;height:11px;bottom:-5px;background:var(--ai-muted)}
-  .advisor-intel__scale-rail:before{left:0}.advisor-intel__scale-rail:after{right:0}.advisor-intel__scale-half{left:50%}
+  .advisor-intel__scale-rail:before,.advisor-intel__scale-rail:after,.advisor-intel__scale-quarter,.advisor-intel__scale-half,.advisor-intel__scale-three-quarter{position:absolute;content:"";width:2px;height:11px;bottom:-5px;background:var(--ai-muted)}
+  .advisor-intel__scale-rail:before{left:0}.advisor-intel__scale-rail:after{right:0}.advisor-intel__scale-quarter{left:25%}.advisor-intel__scale-half{left:50%}.advisor-intel__scale-three-quarter{left:75%}
+  .advisor-intel__scale-ticks{position:relative;height:1.2rem;margin:0 10px .45rem;font-size:.68rem;font-variant-numeric:tabular-nums;color:var(--ai-muted)}
+  .advisor-intel__scale-ticks span{position:absolute;top:0;transform:translateX(-50%)}
+  .advisor-intel__scale-ticks span:nth-child(1){left:0;transform:none}
+  .advisor-intel__scale-ticks span:nth-child(2){left:25%}
+  .advisor-intel__scale-ticks span:nth-child(3){left:50%}
+  .advisor-intel__scale-ticks span:nth-child(4){left:75%}
+  .advisor-intel__scale-ticks span:nth-child(5){left:100%;transform:translateX(-100%)}
   .advisor-intel__scale-arrow{position:absolute;left:0;bottom:4px;width:100%;height:4px;background:var(--ai-accent);border-radius:999px;transition:width .2s ease}
   .advisor-intel__scale-arrow:after{content:"";position:absolute;right:-1px;top:-5px;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:10px solid var(--ai-accent)}
   .advisor-intel:has(input[name="advisor-q05-beta"][value="half"]:checked) .advisor-intel__scale-arrow{width:50%}
-  .advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) .advisor-intel__scale-arrow{left:25%;width:75%;background:repeating-linear-gradient(90deg,var(--ai-accent) 0 9px,transparent 9px 14px)}
-  .advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) .advisor-intel__scale-arrow:after{display:none}
+  .advisor-intel__scale-choices{display:none;position:absolute;inset:0}
+  .advisor-intel__scale-choices i{position:absolute;bottom:0;width:10px;height:10px;border-radius:50%;background:var(--ai-accent);transform:translateX(-50%)}
+  .advisor-intel__scale-choices i:nth-child(1){left:25%}.advisor-intel__scale-choices i:nth-child(2){left:50%}.advisor-intel__scale-choices i:nth-child(3){left:75%}.advisor-intel__scale-choices i:nth-child(4){left:100%}
+  .advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) .advisor-intel__scale-arrow{display:none}
+  .advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) .advisor-intel__scale-choices{display:block}
   .advisor-intel__scale-caption{display:none;font-size:.75rem;min-height:2.4em}
   .advisor-intel:has(input[name="advisor-q05-beta"][value="full"]:checked) [data-q05-panel="full"],.advisor-intel:has(input[name="advisor-q05-beta"][value="half"]:checked) [data-q05-panel="half"],.advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) [data-q05-panel="adaptive"]{display:block}
   .advisor-intel .advisor-intel__formula{display:flex;flex-wrap:wrap;gap:.25rem .9rem;align-items:center;font-size:.77rem;margin:.7rem 0}
-  .advisor-intel__formula :global(.math-formula){max-width:100%}
+  .advisor-intel__formula :global(.math-formula){max-width:100%;margin:0;padding:.45rem .55rem}
   .advisor-intel__formula p{color:var(--ai-muted);font-size:.77rem}
   .advisor-intel__decision-tree{display:block}
   .advisor-intel__decision-root-link{display:block;width:100%;height:1.4rem;overflow:visible}
