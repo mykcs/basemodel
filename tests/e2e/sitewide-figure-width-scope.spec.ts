@@ -5,6 +5,15 @@ import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 const paperTableBaseline = JSON.parse(readFileSync(join(process.cwd(), 'tests/fixtures/research-paper-table-values.json'), 'utf8')) as { routes: { route: string; tables: { index: number; hash: string }[] }[] };
+const responseRoute = '/research/seed-openevo/study/parameter-memory-results/';
+// #938 / experiment 877ade0e: preserve the sealed new comparison explicitly;
+// never regenerate the immutable historical table receipt from current output.
+const q01FreshCells = [
+  '方法与保存点', '后期减早期（分）', '校正 95% 区间（分）',
+  '普通 OpenEVO：160 − 120', '+4.59', '−7.07 至 +16.73',
+  'Bounded：160 − 150', '+2.52', '−8.04 至 +13.84',
+  '历史 β/GDR：160 − 130', '−5.16', '−16.50 至 +5.29',
+];
 
 async function expectPaperGrammar(target: Locator, route: string, index: number) {
 
@@ -12,11 +21,19 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   // Preserve every unaffected, immutable pre-change cell hash by mapping the
   // remaining downstream DOM positions back to their original receipt indices.
   // The new Q03 table is separately checked, cell by cell, in the Q03 figure spec.
-  const originalIndex = route === '/research/seed-openevo/study/parameter-memory-results/' && index >= 5 ? index + 1 : index;
-  const expected = paperTableBaseline.routes.find(entry => entry.route === route)?.tables.find(entry => entry.index === originalIndex);
-  expect(expected, 'sealed original table identity '+route+'#'+index).toBeTruthy();
   const cellTexts = await target.locator('th,td').evaluateAll(cells => cells.map(cell => cell.textContent?.trim()));
-  expect(createHash('sha256').update(JSON.stringify(cellTexts)).digest('hex')).toBe(expected!.hash);
+  const freshQ01 = route === responseRoute && await target.evaluate(el => Boolean(el.closest('[data-q01-fresh448]')));
+  if (freshQ01) {
+    expect(cellTexts, 'sealed Q01 fresh-448 comparison').toEqual(q01FreshCells);
+  } else {
+    // #938 inserted one table before all historical tables. Apply that offset
+    // first, then retain the existing Q03 replacement mapping without resealing.
+    const beforeQ01 = route === responseRoute ? index - 1 : index;
+    const originalIndex = route === responseRoute && beforeQ01 >= 5 ? beforeQ01 + 1 : beforeQ01;
+    const expected = paperTableBaseline.routes.find(entry => entry.route === route)?.tables.find(entry => entry.index === originalIndex);
+    expect(expected, 'sealed original table identity '+route+'#'+index).toBeTruthy();
+    expect(createHash('sha256').update(JSON.stringify(cellTexts)).digest('hex')).toBe(expected!.hash);
+  }
   const grammar = await target.evaluate(el => {
     const style = getComputedStyle(el);
     const cap = el.querySelector('caption')!;
@@ -90,6 +107,7 @@ for (const route of routes) {
         document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow).toBeLessThanOrEqual(2);
       const nativeTables = page.locator('table');
+      if (route === responseRoute) await expect(page.locator('[data-q01-fresh448] table')).toHaveCount(1);
       for (let index = 0; index < await nativeTables.count(); index++) {
         const target = nativeTables.nth(index);
         if (await target.getAttribute('data-research-paper-table') !== null && await target.isVisible()) await expectPaperGrammar(target, route, index);
@@ -202,6 +220,21 @@ for (const route of routes) {
     },null,2)+'\n');
   });
 }
+
+test('Q01 table identity rejects a changed scientific value and accepts restoration', async ({ page }) => {
+  await page.goto(responseRoute);
+  const target = page.locator('[data-q01-fresh448] table');
+  await expectPaperGrammar(target, responseRoute, 0);
+  const cell = target.locator('tbody td').first();
+  const original = await cell.textContent();
+  try {
+    await cell.evaluate(el => { el.textContent = '+4.60'; });
+    await expect(expectPaperGrammar(target, responseRoute, 0)).rejects.toThrow(/sealed Q01 fresh-448 comparison/);
+  } finally {
+    await cell.evaluate((el, text) => { el.textContent = text; }, original);
+  }
+  await expectPaperGrammar(target, responseRoute, 0);
+});
 
 test('paper tables use content width while dense comparisons and diagrams retain their reading space', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });

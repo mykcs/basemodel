@@ -1,5 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { docsLoader } from '@astrojs/starlight/loaders';
+import { docsSchema } from '@astrojs/starlight/schema';
 import { z } from 'zod';
 import { modelSchema, paperSchema } from './lib/schemas';
 import { withStableSourceIds } from './lib/sourceIds.node';
@@ -51,4 +53,6 @@ const changeEvents = defineCollection({
   }),
 });
 
-export const collections = { models, papers, claims, benchmarkRuns, guides, changeEvents };
+const docs = defineCollection({ loader: docsLoader(), schema: docsSchema() });
+
+export const collections = { models, papers, claims, benchmarkRuns, guides, changeEvents, docs };

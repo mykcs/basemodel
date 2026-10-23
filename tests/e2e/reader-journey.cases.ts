@@ -89,7 +89,8 @@ export function registerReaderJourneyTests() {
                   // Nested components keep their own typography contracts.
                   // Astro's scope token identifies prose owned by this component.
                   const scope = owner.getAttributeNames().find((name) => name.startsWith('data-astro-cid-'));
-                  if (scope && !node.hasAttribute(scope)) return;
+                  const scopeClass = [...owner.classList].find((name) => /^astro-[a-z0-9]+$/i.test(name));
+                  if (scope ? !node.hasAttribute(scope) : scopeClass && !node.classList.contains(scopeClass)) return;
                   if (!node.textContent?.trim()) return;
                   owned++;
                   if (!node.checkVisibility({ checkVisibilityCSS: true }) || node.closest('details:not([open])')) return;
