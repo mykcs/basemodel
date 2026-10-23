@@ -202,7 +202,16 @@ for (const route of routes) {
               box:cell.getBoundingClientRect().toJSON(),fontSize:getComputedStyle(cell).fontSize})),
           }),index);
 
-          if (await target.getAttribute('data-research-paper-table') !== null && visible) await expectPaperGrammar(target, route, index);
+          if (await target.getAttribute('data-research-paper-table') !== null && visible) {
+            // Cloud capture walks every source table (including the new Q03
+            // teaching table). Its screenshot index is NOT the ordinal used by
+            // the immutable historical receipt. Use the same native-table
+            // selection as the pre-capture grammar pass, at every viewport.
+            const sealedIndex = await target.evaluate(el =>
+              [...document.querySelectorAll('table:not([data-advisor-protocol-table])')].indexOf(el));
+            expect(sealedIndex, 'sealed table ordinal excludes Q03 conceptual table').toBeGreaterThanOrEqual(0);
+            await expectPaperGrammar(target, route, sealedIndex);
+          }
           tables.push({...table,visible,state:visible?readingState:alternative.phone?'source-owned phone-only table; desktop data chart visible':'source-owned compact rental catalog excluded from this page'});
           if(visible) {
             await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`));
