@@ -23,7 +23,8 @@ for(const width of [390,768,1440]){
       expect(displays).toEqual(['inline', 'inline']);
       if (width === 390) {
         const rowTops = await scoreTokens.evaluateAll(elements => elements.map(element => element.getBoundingClientRect().top));
-        expect(Math.abs(rowTops[0] - rowTops[1])).toBeLessThanOrEqual(2);
+        expect(rowTops).toHaveLength(2);
+        expect(Math.max(...rowTops) - Math.min(...rowTops)).toBeLessThanOrEqual(2);
       }
       await expect(root.locator('[data-q08-cell][data-q08-index="4"][aria-pressed="true"]')).toHaveCount(2);
       if((width===390&&theme==='light')||(width===1440&&theme==='dark'))await root.screenshot({path:testInfo.outputPath(`q08-both-${width}-${theme}.png`),animations:'disabled'});
