@@ -285,8 +285,9 @@ const q07ReverseEffects = [
   .advisor-intel__scale-caption{display:none;font-size:.75rem;min-height:2.4em}
   .advisor-intel:has(input[name="advisor-q05-beta"][value="full"]:checked) [data-q05-panel="full"],.advisor-intel:has(input[name="advisor-q05-beta"][value="half"]:checked) [data-q05-panel="half"],.advisor-intel:has(input[name="advisor-q05-beta"][value="adaptive"]:checked) [data-q05-panel="adaptive"]{display:block}
   .advisor-intel .advisor-intel__formula{display:flex;flex-wrap:wrap;gap:.25rem .9rem;align-items:center;font-size:.77rem;margin:.7rem 0}
-  .advisor-intel__formula :global(.math-formula){max-width:100%;margin:0;padding:.45rem .4rem}
-  .advisor-intel__formula :global(.math-formula .katex){font-size:.94em}
+  .advisor-intel__formula :global(.math-formula){max-width:100%;margin:0;padding:.45rem .55rem}
+  /* KaTeX glyphs overhang their layout box by ~2px; give them the existing inset, not a tiny scrollbar. */
+  .advisor-intel__formula :global(.math-formula__scroll){overflow:visible}
   .advisor-intel__formula p{color:var(--ai-muted);font-size:.77rem}
   .advisor-intel__decision-tree{display:block}
   .advisor-intel__decision-root-link{display:block;width:100%;height:1.4rem;overflow:visible}
