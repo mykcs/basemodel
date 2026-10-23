@@ -27,19 +27,41 @@ const q07ReverseEffects = [
 
 {variant === 'q02' && (
   <section class="advisor-intel" data-advisor-concept="q02" aria-labelledby="advisor-intel-q02-title">
-    <p class="advisor-intel__kicker">Q02 · 两种学习起点</p>
-    <h4 id="advisor-intel-q02-title">给同一个学生打基础，两种教法谁更适合长期学习？</h4>
-    <p class="advisor-intel__lead">目前两种教法的前期成绩接近，<strong>还不能选出赢家</strong>。要看的不只是谁一开始得分高，还包括继续学习后的表现。</p>
-    <div class="advisor-intel__seed">相同基础模型与经验来源</div>
-    <svg class="advisor-intel__fork-wires advisor-intel__fork-wires--two" data-q02-fork-wires viewBox="0 0 900 70" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <path d="M450 0V26H225V68M450 26H675V68" />
-    </svg>
-    <div class="advisor-intel__duo advisor-intel__duo--routes" role="group" aria-label="Q02 同一个模型分成 SFT 与 OPSD 两条不同的学习路线">
-      <div class="advisor-intel__panel"><span class="advisor-intel__tag">路线 A · SFT</span><strong>学习示范的答案</strong><p>把经验变成模型要模仿的正确输出，训练它照着做。</p></div>
-      <div class="advisor-intel__panel"><span class="advisor-intel__tag">路线 B · OPSD</span><strong>学习经验中的指导</strong><p>使用教师给出的更多过程与经验信息，不只是最终答案。</p></div>
+    <p class="advisor-intel__kicker">Q02 · 初始参数训练机制示意</p>
+    <h4 id="advisor-intel-q02-title">SFT 和 OPSD 到底有什么不同？</h4>
+    <p class="advisor-intel__lead">SFT <strong>模仿已有答案</strong>，OPSD <strong>蒸馏额外经验</strong>；两条路线最终都更新学生 LoRA。前期 32 题成绩接近，<strong>目前还不能选出赢家</strong>。</p>
+    <div class="advisor-intel__q02-mechanism" data-q02-mechanism role="group" aria-label="同一批离线训练记录分别走 SFT 答案监督和 OPSD 冻结教师分布蒸馏，最终都更新学生 LoRA">
+      <div class="advisor-intel__seed advisor-intel__q02-common" data-q02-common>
+        <span>共同输入</span><strong>同一批 WebShop 离线训练记录</strong>
+      </div>
+      <svg class="advisor-intel__fork-wires advisor-intel__fork-wires--two" data-q02-fork-wires viewBox="0 0 900 70" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path d="M450 0V26H225V68M450 26H675V68" />
+      </svg>
+      <div class="advisor-intel__q02-tracks" data-q02-tracks role="group" aria-label="SFT 与 OPSD 的训练信息流并列对照">
+        <div class="advisor-intel__q02-route advisor-intel__q02-route--sft" data-q02-track="sft" role="group" aria-label="SFT：模仿已有答案">
+          <div class="advisor-intel__q02-route-head"><span>SFT</span><strong>模仿已有答案</strong></div>
+          <div class="advisor-intel__q02-node advisor-intel__q02-node--shared" data-q02-task>同一任务 <var>x</var></div>
+          <span class="advisor-intel__q02-arrow" aria-hidden="true">↓</span>
+          <div class="advisor-intel__q02-node" data-q02-supervision><strong>历史答案 <var>y</var></strong><small>直接使用已有回答作为监督目标</small></div>
+          <span class="advisor-intel__q02-arrow" aria-hidden="true">↓</span>
+          <div class="advisor-intel__q02-node" data-q02-objective><strong>逐 token 交叉熵（CE）</strong><small>学习复现参考答案的 token</small></div>
+          <span class="advisor-intel__q02-arrow" aria-hidden="true">↓</span>
+          <div class="advisor-intel__q02-node advisor-intel__q02-node--update" data-q02-update><strong>更新学生 LoRA</strong></div>
+        </div>
+        <div class="advisor-intel__q02-route advisor-intel__q02-route--opsd" data-q02-track="opsd" role="group" aria-label="OPSD：蒸馏额外经验">
+          <div class="advisor-intel__q02-route-head"><span>OPSD</span><strong>蒸馏额外经验</strong></div>
+          <div class="advisor-intel__q02-node advisor-intel__q02-node--shared" data-q02-task>同一任务 <var>x</var></div>
+          <span class="advisor-intel__q02-arrow" aria-hidden="true">↓</span>
+          <div class="advisor-intel__q02-node" data-q02-supervision><strong>经验摘要（episode-skill）</strong><small>冻结教师 → 目标 token 分布</small></div>
+          <span class="advisor-intel__q02-arrow" aria-hidden="true">↓</span>
+          <div class="advisor-intel__q02-node" data-q02-objective><strong>广义 JSD / 分布蒸馏</strong><small>学习教师给出的概率分布</small></div>
+          <span class="advisor-intel__q02-arrow" aria-hidden="true">↓</span>
+          <div class="advisor-intel__q02-node advisor-intel__q02-node--update" data-q02-update><strong>更新学生 LoRA</strong></div>
+        </div>
+      </div>
     </div>
     <div class="advisor-intel__foot"><strong>进展：15 / 18 个评测位置已有结果。</strong>还差 3 个评测位置，以及完成后在同题条件下比较长期学习表现。</div>
-    <p class="advisor-intel__disclaimer">这里的两条路线是机制解释，不表示已经做完公平的长期比较；两者使用的信息并不完全等价。</p>
+    <p class="advisor-intel__disclaimer">图中两条路线只比较训练信号：OPSD 的教师冻结、不被更新；两者都是更新学生 LoRA。它不是得分优劣图，早期 32 题与未闭合的正式匹配评测不能证明哪种起点更好。</p>
   </section>
 )}
 
@@ -181,6 +203,24 @@ const q07ReverseEffects = [
   .advisor-intel .advisor-intel__lead{font-size:.87rem;max-width:68ch;margin-bottom:1rem}
   .advisor-intel__seed{border:1px solid var(--ai-line);border-radius:var(--radius-control,.6rem);padding:.6rem 1rem;text-align:center;background:color-mix(in srgb,var(--ai-paper) 90%,var(--ai-accent));font-size:.81rem;font-weight:690;max-width:31rem;margin:.2rem auto .8rem}
   .advisor-intel__seed span{display:block;font-size:1.1rem;line-height:1.25;color:var(--ai-accent)}
+  .advisor-intel__q02-mechanism{border:1px solid var(--ai-line);border-radius:var(--radius-feature,.8rem);background:color-mix(in srgb,var(--ai-paper) 95%,#667f95);padding:clamp(.62rem,2vw,1rem);margin:.8rem 0;min-width:0}
+  .advisor-intel__q02-common{margin:.1rem auto 0;max-width:28rem;background:color-mix(in srgb,var(--ai-paper) 88%,#7890a1);border-color:color-mix(in srgb,var(--ai-line) 75%,#7890a1);font-size:.81rem}
+  .advisor-intel__q02-common span{font-size:.64rem;line-height:1.45;letter-spacing:.055em;color:var(--ai-muted);font-weight:650;margin-bottom:.22rem}
+  .advisor-intel__q02-common strong{font-weight:740}
+  .advisor-intel__q02-tracks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto minmax(2.45rem,auto) .9rem minmax(5rem,auto) .9rem minmax(4.8rem,auto) .9rem minmax(2.85rem,auto);column-gap:clamp(.45rem,2vw,1.15rem);min-width:0}
+  .advisor-intel__q02-route{--q02-tone:#60798e;display:grid;grid-row:1/-1;grid-template-rows:subgrid;min-width:0;border:1px solid color-mix(in srgb,var(--ai-line) 70%,var(--q02-tone));border-top:3px solid var(--q02-tone);border-radius:var(--radius-feature,.7rem);padding:clamp(.3rem,1.15vw,.65rem);background:color-mix(in srgb,var(--ai-paper) 95%,var(--q02-tone))}
+  .advisor-intel__q02-route--opsd{--q02-tone:#547a7e}
+  .advisor-intel__q02-route-head{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.13rem;text-align:center;padding:.48rem .15rem .6rem;min-width:0}
+  .advisor-intel__q02-route-head span{font-size:.72rem;font-weight:800;letter-spacing:.1em;color:var(--ai-muted)}
+  .advisor-intel__q02-route-head strong{font-size:clamp(.86rem,1.9vw,1.07rem);line-height:1.35}
+  .advisor-intel__q02-node{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.12rem;padding:.48rem .28rem;min-width:0;border:1px solid color-mix(in srgb,var(--ai-line) 74%,var(--q02-tone));border-radius:var(--radius-control,.4rem);background:var(--ai-paper);line-height:1.45;font-size:clamp(.7rem,1.5vw,.84rem);overflow-wrap:anywhere}
+  .advisor-intel__q02-node strong{font-weight:730;line-height:1.38}
+  .advisor-intel__q02-node small{font-size:clamp(.62rem,1.3vw,.73rem);font-weight:450;color:var(--ai-muted);line-height:1.4}
+  .advisor-intel__q02-node var{font-family:Georgia,serif;font-weight:600;font-style:italic}
+  .advisor-intel__q02-node--shared{background:color-mix(in srgb,var(--ai-paper) 94%,#7890a1)}
+  .advisor-intel__q02-node--update{background:color-mix(in srgb,var(--ai-paper) 88%,#809a92);border-color:color-mix(in srgb,var(--ai-line) 55%,#809a92);font-size:clamp(.73rem,1.6vw,.9rem)}
+  .advisor-intel__q02-arrow{display:flex;justify-content:center;align-items:center;color:var(--ai-muted);font-size:1rem;line-height:1}
+  @supports not (grid-template-rows:subgrid){.advisor-intel__q02-route{grid-template-rows:auto minmax(2.45rem,auto) .9rem minmax(5rem,auto) .9rem minmax(4.8rem,auto) .9rem minmax(2.85rem,auto)}}
   .advisor-intel__duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(.45rem,1.7vw,1rem);margin:.55rem 0}
   .advisor-intel__panel{border:1px solid var(--ai-line);border-radius:var(--radius-feature,.8rem);padding:clamp(.7rem,2vw,1.05rem);min-width:0;background:color-mix(in srgb,var(--ai-paper) 94%,var(--ai-accent));border-top:3px solid var(--ai-accent)}
   .advisor-intel__panel--pending{background:color-mix(in srgb,var(--ai-paper) 95%,var(--warning));border-top-color:var(--warning)}
@@ -284,6 +324,7 @@ const q07ReverseEffects = [
   .advisor-intel:has(input[name="advisor-q07-round"][value="158"]:checked) [data-q07-effect="158"],
   .advisor-intel:has(input[name="advisor-q07-round"][value="159"]:checked) [data-q07-effect="159"]{display:block}
   @media(max-width:530px){.advisor-intel__duo{grid-template-columns:minmax(0,1fr)}.advisor-intel__duo--routes{grid-template-columns:repeat(2,minmax(0,1fr))}.advisor-intel__picker{grid-template-columns:minmax(0,1fr)}.advisor-intel__picker--fork{grid-template-columns:repeat(3,minmax(0,1fr))}.advisor-intel__picker label{align-items:center}.advisor-intel__picker--fork label{align-items:flex-start;flex-direction:column;gap:.38rem;min-height:8rem}.advisor-intel__picker--fork label strong{font-size:.81rem}.advisor-intel__picker--fork label small{display:block;font-size:.72rem;margin-left:0}.advisor-intel__picker--fork label em{font-size:.68rem}.advisor-intel__picker small{margin-top:.25rem}.advisor-intel__round-picker{grid-template-columns:repeat(4,minmax(0,1fr))}.advisor-intel__panel{padding:.7rem}.advisor-intel h4{font-size:1.15rem}.advisor-intel__protocol{font-size:.8rem}.advisor-intel__protocol th,.advisor-intel__protocol td{padding:.48rem .26rem}}
+  @media(max-width:530px){.advisor-intel__q02-tracks{grid-template-rows:auto minmax(2.25rem,auto) .75rem minmax(5.6rem,auto) .75rem minmax(5.25rem,auto) .75rem minmax(2.8rem,auto);column-gap:.35rem}.advisor-intel__q02-route{padding:.28rem}.advisor-intel__q02-route-head{padding:.4rem .1rem}.advisor-intel__q02-route-head strong{font-size:.81rem}.advisor-intel__q02-node{font-size:.68rem;padding:.38rem .17rem}.advisor-intel__q02-node small{font-size:.6rem}.advisor-intel__q02-node--update{font-size:.7rem}}
   @media(prefers-reduced-motion:reduce){.advisor-intel__scale-arrow,.advisor-intel__vector-arrow{transition:none}}
   @media(forced-colors:active){.advisor-intel__scale-arrow,.advisor-intel__vector-arrow{background:Highlight}.advisor-intel__panel{border:1px solid CanvasText}.advisor-intel__fork-wires path,.advisor-intel__decision-root-link path{stroke:CanvasText}.advisor-intel__picker label:has(input:checked),.advisor-intel__round-picker label:has(input:checked) span{outline:2px solid Highlight}}
 </style>
