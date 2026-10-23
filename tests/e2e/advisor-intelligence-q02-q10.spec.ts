@@ -136,7 +136,27 @@ for(const width of [320,390,768,1440]){
       const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
       expect(overflow).toBeLessThanOrEqual(2);
 
+      if(width<=390){
+        // Verify the actual TOC/anchor arrival geometry with the real sticky
+        // header enabled. An element screenshot of a taller-than-viewport
+        // concept can reposition its top under the header; that artifact is
+        // not equivalent to a reader navigating to the question anchor.
+        for(const anchor of ['#response-q05','#response-q06','#response-q07']){
+          const gap=await page.evaluate(target=>{
+            const section=document.querySelector(target)!;
+            section.scrollIntoView({block:'start',behavior:'instant'});
+            const header=document.querySelector('.site-header')!;
+            return section.getBoundingClientRect().top-header.getBoundingClientRect().bottom;
+          },anchor);
+          expect(gap,`${anchor} must be readable below the sticky header at ${width}px`).toBeGreaterThanOrEqual(4);
+        }
+      }
+
       if((width===320&&theme==='light')||(width===390&&theme==='light')||(width===1440&&theme==='dark')){
+        // Diagram-only visual captures must not let Playwright's element
+        // auto-scroll superimpose the unrelated site header over the title.
+        // The real sticky-header user path is independently asserted above.
+        await page.addStyleTag({content:'.site-header{position:static!important}'});
         await q10.screenshot({path:testInfo.outputPath(`q10-${width}-${theme}.png`),animations:'disabled'});
         await q05.screenshot({path:testInfo.outputPath(`q05-${width}-${theme}.png`),animations:'disabled'});
         await q06.screenshot({path:testInfo.outputPath(`q06-${width}-${theme}.png`),animations:'disabled'});
