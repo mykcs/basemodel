@@ -137,6 +137,7 @@ run('npx', installArgs);
 
 const ciInfrastructureChanged = plan.changedFiles.some((file) => (
   file === 'scripts/ci-ui-gate.mjs'
+  || file === 'scripts/ci-build-artifact.mjs'
   || file === 'scripts/ci-public-plan.mjs'
   || file === 'scripts/ci-ui-test-list.mjs'
   || file === 'scripts/ci-ui-test-timings-202609061200.json'
