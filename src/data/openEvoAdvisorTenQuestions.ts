@@ -37,7 +37,7 @@ export const ADVISOR_QUESTIONS = [
     interpretation: '开发题上的趋势说明三条路线可能在不同阶段发生变化，不能统一按160轮或120轮停止；但新的冻结题单并未确认任何一个候选早停时点。三组比较的校正区间都包含可能的提升和下降，因此“不显著”不是“已证明后期没有收益”。',
     unknown: '事先冻结的新题验证已经完成，不能再把它列为尚未启动。其64题样本和校正区间仍不足以确认哪一轮适合停止；还需要独立审读评测与统计实现，并在新的独立题单或模型起点上预注册确认。当前448条记录只来自七个保存模型各测同一批64道题，不代表Q10的独立长程训练复现，也不能把历史β-gating 200轮轨迹当成新题泛化结果。',
     evidence: [
-      { label: 'Q01 · 真实三机制保存点曲线与停止判据', href: 'https://github.com/mykcs/openevo-experiment/blob/48e1368c7afc260a1745a49e6c7c173bfbb172b2/docs/evidence/advisor-q01-horizon-plateau-20261001/Q01_THREE_WAY_RESULT.json' }
+      { label: 'Q01 · 真实三机制保存点曲线与停止判据', href: 'https://github.com/mykcs/openevo-experiment/blob/48e1368c7afc260a1745a49e6c7c173bfbb172b2/docs/evidence/advisor-q01-horizon-plateau-20261001/Q01_THREE_WAY_RESULT.json' },
       { label: 'Q01 · 新冻结64题的448条评测和校正统计', href: 'https://github.com/mykcs/openevo-experiment/blob/877ade0e44568b29d0ad8c4fdf51f938f7a6f906/docs/evidence/advisor-fresh-canonical-20261020/FINAL_448_SCIENCE_READOUT_20261021.md' },
     ],
     evidenceState: 'bounded-answer',
