@@ -90,16 +90,25 @@ for(const width of [320,390,768,1440]){
         const labels=[...root.querySelectorAll('.advisor-intel__scale-ticks span')].map(el=>el.getBoundingClientRect());
         const dots=[...root.querySelectorAll('.advisor-intel__scale-choices i')].map(el=>el.getBoundingClientRect());
         const scroll=root.querySelector('.advisor-intel__formula .math-formula__scroll') as HTMLElement;
+        const formula=scroll.closest('.math-formula') as HTMLElement;
+        const formulaBox=formula.getBoundingClientRect();
+        const glyphRight=scroll.getBoundingClientRect().right+Math.max(0,scroll.scrollWidth-scroll.clientWidth);
         return {
           x:rail.x,width:rail.width,
           labels:labels.map((box,i)=>i===0?box.left:i===4?box.right:box.left+box.width/2),
           dots:dots.map(box=>box.left+box.width/2),
-          formulaOverflow:scroll.scrollWidth-scroll.clientWidth,
+          formulaOverflowMode:getComputedStyle(scroll).overflowX,
+          formulaInkMargin:formulaBox.right-glyphRight,
+          formulaPageMargin:root.getBoundingClientRect().right-formulaBox.right,
         };
       });
       for(let i=0;i<5;i++)expect(Math.abs(betaAxis.labels[i]!-(betaAxis.x+betaAxis.width*i/4))).toBeLessThanOrEqual(2);
       for(let i=0;i<4;i++)expect(Math.abs(betaAxis.dots[i]!-(betaAxis.x+betaAxis.width*(i+1)/4))).toBeLessThanOrEqual(2);
-      expect(betaAxis.formulaOverflow).toBeLessThanOrEqual(1);
+      // KaTeX's ~2px italic ink overhang fits inside the padded math container:
+      // no clipped glyph, no horizontal scrollbar, no article-edge overflow.
+      expect(betaAxis.formulaOverflowMode).toBe('visible');
+      expect(betaAxis.formulaInkMargin).toBeGreaterThanOrEqual(1);
+      expect(betaAxis.formulaPageMargin).toBeGreaterThanOrEqual(0);
       await expect(q05.locator('[data-math-formula-inline]')).toHaveCount(6);
       await expect(q05.locator('.katex-mathml math')).toHaveCount(7);
       await expect(q05).toContainText('0.25');
