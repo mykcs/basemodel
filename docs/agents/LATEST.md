@@ -1,9 +1,18 @@
 # Latest Agent handoff
 
-## 2026-10-23 Typography release integration
+## 2026-10-24 Typography release and Production closeout
 
-PR #898 was merged into its parent PR #895 at `276230acf15fea0aca3c35a1d2cd90073c09e286`; that did not merge the work to `main`. PR #895 remains open but is based on an older main and is not mergeable. The separate Q05 correction in PR #948 is now merged to `main@42e8e09bea18a1b36f3d88337699df4a899d2961`. Current-main successor PR #949 is being integrated onto that base so it preserves the new discrete β axis, formula fit, browser checks, workflow path triggers, and measured 65-minute Cloud Figure timeout together with sitewide typography. Candidate `4d83248c5e02479537449d587b86c3a3aa060bb9` passed exact-head Public PR CI and complete Cloud Figure Chromium/WebKit acceptance, but the Vercel gate correctly stopped before ref mutation because main advanced after its acceptance. Commit `54a0a3615f68eb98157d4997070dd6d6d6f6c048` narrows the gate's compare response to the three fields used by the existing fail-closed ancestry check. The live PR head and exact-head CI status are authoritative in [PR #949](https://github.com/mykcs/basemodel/pull/949); integrating the latest main creates a new candidate and invalidates earlier checks. No Vercel final gate, merge or Production deployment has occurred. Run fresh Public CI and Cloud Figure acceptance on the integrated candidate before requesting the Vercel gate.
+PR [#949](https://github.com/mykcs/basemodel/pull/949) squash-merged the sitewide Typography system to `main@dbda56cb3ca12c1956f0fb0a1876a6a10541bc84`, including Q05 PR #948's discrete β teaching axis, formula fit, browser checks, workflow triggers and qualified 65-minute Cloud Figure timeout. Exact-head Public PR CI (run `40060099546`), full Cloud Figure Visual Review (run `40060098996`, eight browser shards plus artifact round-trip checks), local `npm run verify:deploy`, `npm run build`, and the 2,096-case Chromium/WebKit matrix passed. The exact-head Vercel Preview was READY; the `main` Production deployment `dpl_3M8R7Sy9hsWknow5o671aPTTELut` is READY on the same SHA. Production `/` and `/research/seed-openevo/study/parameter-memory-results/` returned HTTP 200; the five-point Q05 axis and `--type-plot-label` are present in served output. Production `noindex,follow` is intentional while access protection is active; canonical and hreflang use `https://basemodel-preview.vercel.app/`. The source ledger covers 5,491 declarations; ten new/inherited identities remain explicitly unobserved in the incremental snapshot, so no full-site visual observation is claimed. Older SHA receipts below are historical.
 
+
+R1 screenshot review is closed for its requested D6/D7 surfaces. On the exact #949
+candidate, Q17 Frontier/DirectApply readers and all six Landscape viewport/theme
+states were visually opened alongside SHA-bound JSON. Publication SVG-reader segments
+were opened to verify local scrolling and label readability. See the current receipts
+in `evidence/sitewide-typography/2026-10-22/WP_D6_Q17_FRONTIER_TYPOGRAPHY.md` and
+`WP_D7_NATIVE_SVG_AND_LANDSCAPE.md`. The adjacent Briefing image-reader scope remains
+PARTIAL because its captures show only scrolled segments; it is not represented as
+accepted. No scientific values changed.
 
 ## 2026-10-20 Typography continuation
 

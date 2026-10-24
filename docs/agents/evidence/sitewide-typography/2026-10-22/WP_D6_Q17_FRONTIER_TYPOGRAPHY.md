@@ -1,6 +1,6 @@
 # D6 — Q17 historical research roadmap + original plot tick typography
 
-Status: **IMPLEMENTED / PENDING exact-head CI and hosted PNG review**; sole PR #898 Draft on #895.
+Status: **IMPLEMENTED / ACCEPTED for the bounded current-head visual review below**; production source shipped in PR #949.
 
 **Real public route** `/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/`, Astro source `src/components/research/OpenEvoQ17FrontierRoadmap.astro`. This is a *dated historical investigation plan* on September 10, not the later September 11 same-task evidence and not the frozen final panel. Its content and provenance cannot be rewritten in a typography batch.
 
@@ -10,9 +10,9 @@ Status: **IMPLEMENTED / PENDING exact-head CI and hosted PNG review**; sole PR #
 
 New `src/lib/q17FrontierTypography.test.ts`: 2 source ownership/falsification checks. Existing CI-wired `tests/e2e/sitewide-typography.spec.ts`: six 390/768/1440 × light/dark real-route cases measuring 14 text roles, original 2 SVG charts and all 11 axis annotations including SVG getBBox containment, four real metric cards and four intentionally unrun placeholders, preserved historic facts; PNG/JSON output. Same acceptance predicate rejects injected 9px mono metadata and 7px plot ticks and passes after restoration.
 
-Do NOT mark D6 accepted before exact-head Public CI and inspecting hosted PNG+JSON. Other pages, figure/reader cold acceptance, WebKit and final dedicated Vercel preview remain outstanding. No Production or RDC.
+Historical pre-release gate: do not mark D6 accepted before exact-head Public CI and hosted PNG+JSON review. At that point other pages, reader acceptance, WebKit and a dedicated Vercel Preview remained outstanding; the current bounded verdict is recorded below.
 
-## R1 actual artifact review — 2026-10-22
+## Historical R1 actual artifact review — 2026-10-22
 
 Reviewed source: `30a8d2ec0b090e77dcb33f1ba5159dbf15e8c885`,
 [Public PR CI 39737273849](https://github.com/mykcs/basemodel/actions/runs/39737273849).
@@ -35,10 +35,28 @@ Artifacts: all WebKit Q17 images/JSON are in `12408360486`; Chromium samples are
 in `12407263556`, `12406834254`, `12407254484`, `12407519016`, `12408215302`,
 `12407263613`, `12407519053`, `12407113941`. All belong to the run above.
 
-**D7 evidence FIX:** native-reader JSON was attached only to the test reporter,
+**Historical D7 evidence FIX:** native-reader JSON was attached only to the test reporter,
 not written into the uploaded test-results tree. WebKit original-viewport PNGs
 also captured before smooth scrolling reached the top. A test-only followup
 writes the JSON to outputPath and requires instant scroll plus scrollY=0 before
 capture. The followup must receive its own exact-head CI and artifact review;
 the earlier green run does not validate the new commit. Independent reader
 comprehension and whole-site acceptance remain outside this D6 verdict.
+
+## Current release-head R1 review — 2026-10-24
+
+Current source reviewed: `f674206d7fd91151103cdc1f2d0be0cf6c402640`, PR #949, with
+exact-head Public PR CI [run 40060099546](https://github.com/mykcs/basemodel/actions/runs/40060099546)
+and full Cloud Figure Visual Review [run 40060098996](https://github.com/mykcs/basemodel/actions/runs/40060098996).
+The latter's WebKit artifacts include the Q17 Frontier and DirectApply native-reader
+PNG/JSON matrix. I opened six Q17 Frontier chart states (390/768/1440 × light/dark)
+and six native-reader examples spanning both Q17 routes and phone/tablet/desktop.
+The original charts, captions, focusable controls and scroll hints are visible;
+mobile overflow stays inside the explicit local chart viewport. Retained JSON binds
+the same SHA, reports 12px plot labels and zero document overflow. No scientific
+value, chart coordinate or claim changed in this review.
+
+**Current bounded D6 verdict: ACCEPT.** This covers the named Q17 page/chart and
+native-reader samples only; it does not claim that every site route or typography
+declaration was visually reviewed. Production acceptance is separately recorded
+in the 2026-10-24 handoff in `docs/agents/LATEST.md`.
