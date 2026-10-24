@@ -70,6 +70,16 @@ for(const width of [320,390,768,1440]){
       expect(await q09FloorPasses()).toBe(false);
       if(oldStyle===null)await floorWitness.evaluate(element=>element.removeAttribute('style'));else await floorWitness.evaluate((element,value)=>element.setAttribute('style',value),oldStyle);
       await expect(root.locator('[data-q09-update]')).toHaveCount(4);
+      const gridColumns=await root.locator('.q09-text__update-grid').evaluate(grid=>getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).length);
+      expect(gridColumns,'Q09 must stay 1×4 at desktop and on narrow phones').toBe(4);
+      await expect(root.locator('[data-q09-update="parameters"] strong')).toHaveAttribute('aria-label','159 次参数更新');
+      if(width<=390){
+        await expect(root.locator('.q09-text__unit-full').first()).toBeHidden();
+        await expect(root.locator('.q09-text__unit-short').first()).toBeVisible();
+      }else{
+        await expect(root.locator('.q09-text__unit-full').first()).toBeVisible();
+        await expect(root.locator('.q09-text__unit-short').first()).toBeHidden();
+      }
       await expect(root.locator('[data-q09-update="parameters"]')).toContainText('159 次参数更新');
       await expect(root.locator('[data-q09-update="memory"]')).toContainText('2 次文字记忆改写');
       await expect(root.locator('[data-q09-update="skill"]')).toContainText('1 次技能指导改写');
