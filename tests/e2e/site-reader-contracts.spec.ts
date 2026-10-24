@@ -182,7 +182,7 @@ for (const theme of ['light', 'dark'] as const) for (const variant of ['bounded-
     const legacy = await page.addStyleTag({ content: variant === 'q17-directapply-analysis'
       ? '.research-route-context[data-reader-route="q17-directapply-analysis"] [data-reader-purpose]{max-width:75px!important}'
       : variant === 'sd-lora-scaling'
-      ? '.scaling-hero h1{max-width:10ch!important;font-size:clamp(2.25rem,6vw,4.9rem)!important;line-height:.98!important}'
+      ? '.scaling-hero h1{max-width:6ch!important;font-size:clamp(2.25rem,8vw,6rem)!important;line-height:.98!important}'
       : '.paper{padding-top:34px!important}.paper h1{font-size:100px!important;max-width:10ch!important;line-height:1.04!important}' });
     let broken;
     let injectedHeading;
@@ -201,7 +201,7 @@ for (const theme of ['light', 'dark'] as const) for (const variant of ['bounded-
     } finally { await legacy.evaluate(node => node.parentNode?.removeChild(node)); }
     const restored = await message.boundingBox();
     expect(firstViewportMessageFits(restored, 633)).toBe(true);
-    await persistJsonAttachment(info, 'first-viewport-result.json', { body: Buffer.from(JSON.stringify({ variant, theme, selector, viewport: { width: 1280, height: 633 }, before, broken, restored, injectedHeading, negativeKind: variant === 'q17-directapply-analysis' ? 'constrained purpose column' : variant === 'sd-lora-scaling' ? 'legacy heading size with a constrained10ch title measure' : 'legacy heading geometry', negativeRejected: true })), contentType: 'application/json' });
+    await persistJsonAttachment(info, 'first-viewport-result.json', { body: Buffer.from(JSON.stringify({ variant, theme, selector, viewport: { width: 1280, height: 633 }, before, broken, restored, injectedHeading, negativeKind: variant === 'q17-directapply-analysis' ? 'constrained purpose column' : variant === 'sd-lora-scaling' ? 'legacy heading size with a constrained 6ch title measure' : 'legacy heading geometry', negativeRejected: true })), contentType: 'application/json' });
   });
 }
 
