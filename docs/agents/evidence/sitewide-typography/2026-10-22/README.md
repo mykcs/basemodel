@@ -2,7 +2,7 @@
 
 ## Current successor status (2026-10-23)
 
-PR [#949](https://github.com/mykcs/basemodel/pull/949) is being integrated with the subsequently merged Q05 correction from PR #948 (`main@42e8e09bea18a1b36f3d88337699df4a899d2961`). The integration preserves #948's discrete beta-scale teaching diagram and 65-minute Cloud Figure review limit while retaining #949's typography tokens. Its current source tree has passed the static build and built-ledger gate; exact-head Public CI, the complete current-head Chromium/WebKit figure evidence, Vercel Preview acceptance, merge and Production verification remain outstanding. Use live PR/Actions/Vercel state as authority; older candidate receipts are stale after the main advance.
+PR [#949](https://github.com/mykcs/basemodel/pull/949) was squash-merged with the subsequently merged Q05 correction from PR #948 as `main@dbda56cb3ca12c1956f0fb0a1876a6a10541bc84`. The integrated release preserves #948's discrete beta-scale teaching diagram, 65-minute Cloud Figure review limit and test/path ownership while retaining #949's typography tokens. Exact-head Public PR CI and full Cloud Figure Visual Review passed; the final Preview and `main` Production deployments are READY on their respective exact SHAs, and the Production research route was checked. The source ledger covers 5,491 declarations, with ten new/inherited identities explicitly unobserved in the incremental snapshot. See PR #949's final receipt for run and deployment identities; older candidate checks do not transfer to the release SHA.
 
 > 最新验收修正：66e3 的 Chromium 八片虽绿，实跑856/计划861，缺少5项导入注册测试；完整验收不通过。已改用 Playwright 原生分片，清单回归验证8片并集完整且无重复；WebKit 的 Arial 字体负例在平滑滚动中点错移动目标，改用该文件既有的原生键盘展开方式，保留原有展开/字号/Arial拒绝/恢复断言，不将此用例冒充鼠标交互验收。最新精确HEAD终态仍以 PR #898 收据为准。
 
