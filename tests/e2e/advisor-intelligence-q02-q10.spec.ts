@@ -206,7 +206,7 @@ for(const width of [320,390,768,1440]){
       await expect(q09Updates.first()).toContainText('159 次参数更新');
       if(width<=390){
         const updateRows=await q09Updates.evaluateAll(items=>items.map(item=>item.getBoundingClientRect().top));
-        expect(new Set(updateRows.map(top=>Math.round(top))).size).toBe(2);
+        expect(new Set(updateRows.map(top=>Math.round(top))).size).toBe(1);
       }
       if(width<=390){
         const q05Table=await page.locator('#main-results [data-q05-history-paper-table]').evaluate(wrap=>{
