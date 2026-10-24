@@ -84,10 +84,6 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
       <a href={vanillaSdLoraHref}>{t('先看：Vanilla SD-LoRA 一轮怎么工作', 'First: how one Vanilla SD-LoRA round works')}</a>
     </nav>
   </header>
-  <details class="scaling-task-context">
-    <summary>{t('补充背景：模型如何完成 WebShop 购物任务', 'Background: how the model completes a WebShop shopping task')}</summary>
-    <ResearchTaskContext locale={locale} />
-  </details>
   <p class="sd-scale__purpose" data-reader-purpose>{t('这项诊断只回答计算问题：训练工作量不变时，历史 SD-LoRA component 为什么会让下一次更新越来越慢。', 'This diagnostic asks one compute question: with training workload fixed, why do accumulated SD-LoRA components make the next update progressively slower?')}</p>
   <section class="scaling-evidence evo-article__section" aria-labelledby="component-scaling-title">
     <div class="section-heading">
@@ -135,6 +131,10 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
       )}</p>
     </div>
   </section>
+  <details class="scaling-task-context">
+    <summary>{t('补充背景：模型如何完成 WebShop 购物任务', 'Background: how the model completes a WebShop shopping task')}</summary>
+    <ResearchTaskContext locale={locale} />
+  </details>
 
   <section class="profile-evidence evo-article__section" aria-labelledby="profile-title">
     <div class="section-heading">
