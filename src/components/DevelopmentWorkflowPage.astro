@@ -119,9 +119,9 @@ const t = (cn: string, en: string) => zh ? cn : en;
   .development-flow li[data-role='accept'] { border-top-color: color-mix(in srgb, #6d5bd0 58%, var(--line)); }
   .development-flow li[data-role='provider'], .development-flow li[data-role='ship'] { border-top-color: color-mix(in srgb, #2f8f5b 58%, var(--line)); }
   .development-flow li[data-role='observe'] { border-top-color: color-mix(in srgb, #2a72b8 58%, var(--line)); }
-  .development-flow span { display: block; margin-bottom: 1rem; color: var(--accent); font: 750 .72rem/1 var(--font-interface); }
+  .development-flow span { display: block; margin-bottom: 1rem; color: var(--accent); font: var(--type-weight-label) var(--type-meta)/1 var(--font-interface); }
   .development-flow strong, .development-flow small { display: block; }
-  .development-flow strong { font-size: .98rem; }
+  .development-flow strong { font-size: var(--type-body); }
   .development-flow small { margin-top: .35rem; color: var(--muted); line-height: 1.45; }
   .system-boundary, .section-lede { color: var(--muted); }
   .tool-roles { border-top: 1px solid var(--line); }
@@ -131,9 +131,9 @@ const t = (cn: string, en: string) => zh ? cn : en;
   .ci-steps { margin: 2rem 0; padding: 0; border-top: 1px solid var(--line); list-style: none; }
   .ci-steps li { display: grid; grid-template-columns: minmax(190px, .85fr) minmax(0, 1.8fr); gap: 2rem; padding: 1.2rem 0; border-bottom: 1px solid var(--line); }
   .ci-steps strong, .ci-steps span { display: block; }
-  .ci-steps span { color: var(--muted); line-height: 1.7; }
+  .ci-steps span { color: var(--muted); line-height: var(--type-leading-body); }
   .technical-detail { margin-top: 2rem; padding: 1rem 0; border-block: 1px solid var(--line); }
-  .technical-detail summary { cursor: pointer; font-weight: 700; }
+  .technical-detail summary { cursor: pointer; font-weight: var(--type-weight-label); }
   .technical-detail p { color: var(--muted); }
   .change-flow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2rem; margin: 0; padding: 0; border-top: 1px solid var(--line); list-style: none; }
   .change-flow li { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .8rem; padding: 1.3rem 0; border-bottom: 1px solid var(--line); }
@@ -142,7 +142,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
   .change-flow strong { display: block; }
   .change-flow p { margin: .35rem 0 0; color: var(--muted); }
   .docs-boundary p { color: var(--muted); }
-  code { font-size: .9em; overflow-wrap: anywhere; }
+  code { font-size: var(--type-meta); overflow-wrap: anywhere; }
   @media (min-width: 861px) and (max-width: 1080px) {
     .development-flow { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .development-flow li:nth-child(3)::before, .development-flow li:nth-child(3)::after { display: none; }

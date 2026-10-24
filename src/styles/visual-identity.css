@@ -151,7 +151,7 @@ body .site-main .home-mainline .home-path-card:hover {
 .site-main .workspace .inspector-section h3,
 .site-main .workspace .bucket-header h3 {
   text-transform: none;
-  letter-spacing: .01em;
+  letter-spacing: normal;
 }
 
 .site-main .workspace :is(.reason-chip, .risk-chip) {
@@ -176,61 +176,5 @@ body .compare-tray {
 
   .site-main .workspace .workspace-grid {
     grid-template-columns: 1fr;
-  }
-}
-
-/*
- * Phone persistence budget: global header + one contextual layer.
- * Compare remains available but is compact; if it coexists with the workspace
- * nav, the nav is moved above it instead of overlapping content.
- */
-@media (max-width: 720px) {
-  body .compare-tray {
-    left: 14px;
-    right: 14px;
-    bottom: 14px;
-    padding: 7px 0;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-feature);
-  }
-
-  body .compare-tray .tray-inner {
-    width: 100%;
-    gap: 8px;
-    flex-wrap: nowrap;
-  }
-
-  body .compare-tray .tray-label {
-    flex: 0 0 auto;
-  }
-
-  body .compare-tray .tray-chips {
-    min-width: 0;
-    flex: 1 1 auto;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  body .compare-tray .tray-chips::-webkit-scrollbar {
-    display: none;
-  }
-
-  body .compare-tray .tray-chip {
-    flex: 0 0 auto;
-    white-space: nowrap;
-  }
-
-  body .compare-tray .tray-actions {
-    flex: 0 0 auto;
-    margin-left: 0;
-  }
-
-  body .compare-tray .tray-actions button {
-    display: none;
-  }
-
-  body:has(.compare-tray) .workspace-mobile-nav {
-    bottom: 76px;
   }
 }

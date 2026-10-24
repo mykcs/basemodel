@@ -92,7 +92,9 @@ describe('Flow content-first cold-read repair', () => {
   });
 
   it('uses a shared-axis table for the attribution comparison rather than two equal-weight cards', () => {
-    expect(design).toContain('<ResearchPaperTable>');
+    expect(design).toContain('<ResearchPaperTable narrowRecords');
+    expect(design).toContain('<thead>');
+    expect(design).toContain('<tbody>');
     expect(design).toContain("t('比较口径', 'Comparison')");
     expect(design).toContain("t('哪些条件保持一致', 'What stays aligned')");
     expect(design).toContain("t('可以支持什么结论', 'What the result can support')");

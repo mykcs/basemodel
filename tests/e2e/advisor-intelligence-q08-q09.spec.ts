@@ -2,7 +2,7 @@ import {expect,test} from '@playwright/test';
 
 const route='/research/seed-openevo/study/parameter-memory-results/';
 
-for(const width of [390,768,1440]){
+for(const width of [320,390,768,1440]){
   for(const theme of ['light','dark'] as const){
     test(`Q08 maps keep fixed task identity, evidence and scores at ${width}px ${theme}`,async({page},testInfo)=>{
       await page.setViewportSize({width,height:900});
@@ -54,6 +54,21 @@ for(const width of [390,768,1440]){
       await expect(root).toBeVisible();
       await expect(root).toContainText('33 ÷ 64');
       await expect(root).toContainText('不是成绩提高了 52%');
+      const typography=await root.evaluate(element=>{
+        const body=['.q09-text__hero p','.q09-text__updates>p','.q09-text__context-note','.q09-text__reading','.q09-text__final p','.q09-text__details p'];
+        const caption=['.q09-text__hero-source','.q09-text__update-label','.q09-text__update small','.q09-text__column-head','.q09-text__row-name small','.q09-text__behavior small','.q09-text__score>span','.q09-text__sources'];
+        return {body:body.map(selector=>element.querySelector<HTMLElement>(selector)).filter((item):item is HTMLElement=>!!item).map(item=>getComputedStyle(item).fontSize),caption:caption.map(selector=>element.querySelector<HTMLElement>(selector)).filter((item):item is HTMLElement=>!!item).map(item=>getComputedStyle(item).fontSize)};
+      });
+      expect(typography.body.length).toBeGreaterThanOrEqual(5);
+      expect(typography.body.every(value=>Number.parseFloat(value)>=15),`Q09 explanatory text below 15px: ${typography.body}`).toBe(true);
+      expect(typography.caption.every(value=>Number.parseFloat(value)>=14),`Q09 evidence labels below 14px: ${typography.caption}`).toBe(true);
+      const floorWitness=root.locator('.q09-text__hero-source');
+      const q09FloorPasses=()=>floorWitness.evaluate(element=>Number.parseFloat(getComputedStyle(element).fontSize)>=14);
+      expect(await q09FloorPasses()).toBe(true);
+      const oldStyle=await floorWitness.getAttribute('style');
+      await floorWitness.evaluate(element=>element.setAttribute('style','font-size:9px'));
+      expect(await q09FloorPasses()).toBe(false);
+      if(oldStyle===null)await floorWitness.evaluate(element=>element.removeAttribute('style'));else await floorWitness.evaluate((element,value)=>element.setAttribute('style',value),oldStyle);
       await expect(root.locator('[data-q09-update]')).toHaveCount(4);
       await expect(root.locator('[data-q09-update="parameters"]')).toContainText('159 次参数更新');
       await expect(root.locator('[data-q09-update="memory"]')).toContainText('2 次文字记忆改写');

@@ -25,6 +25,22 @@ for(const width of [320,390,768,1440]){
       await expect(q02).toContainText('15 / 18');
       await expect(q02).toContainText('SFT');
       await expect(q02).toContainText('OPSD');
+      const q02Typography=await q02.evaluate(root=>['.advisor-intel__lead','.advisor-intel__q02-common span','.advisor-intel__q02-route-head span','.advisor-intel__q02-node','.advisor-intel__q02-node small','.advisor-intel__disclaimer'].map(selector=>{
+        const element=root.querySelector<HTMLElement>(selector)!;
+        return {selector,size:Number.parseFloat(getComputedStyle(element).fontSize)};
+      }));
+      expect(q02Typography.find(item=>item.selector==='.advisor-intel__lead')!.size).toBeGreaterThanOrEqual(15);
+      expect(q02Typography.filter(item=>item.selector!=='.advisor-intel__lead').every(item=>item.size>=14),`Q02 teaching labels below 14px: ${JSON.stringify(q02Typography)}`).toBe(true);
+      const conceptTypography=await page.locator('[data-advisor-concept]').evaluateAll(roots=>roots.flatMap(root=>[...root.querySelectorAll<HTMLElement>(['.advisor-intel__lead','.advisor-intel__foot','.advisor-intel__panel p','.advisor-intel__fork-instruction','.advisor-intel__formula p','.advisor-intel__decision-remainder','.advisor-intel__round-result p'].join(','))].map(element=>({role:element.className,size:Number.parseFloat(getComputedStyle(element).fontSize)}))));
+      expect(conceptTypography.length).toBeGreaterThan(10);
+      expect(conceptTypography.every(item=>item.size>=15),`Q02–Q10 explanatory text below 15px: ${JSON.stringify(conceptTypography.filter(item=>item.size<15))}`).toBe(true);
+      const q02Floor=q02.locator('.advisor-intel__q02-node small').first();
+      const q02FloorPasses=()=>q02Floor.evaluate(element=>Number.parseFloat(getComputedStyle(element).fontSize)>=14);
+      expect(await q02FloorPasses()).toBe(true);
+      const q02OldStyle=await q02Floor.getAttribute('style');
+      await q02Floor.evaluate(element=>element.setAttribute('style','font-size:9px'));
+      expect(await q02FloorPasses()).toBe(false);
+      if(q02OldStyle===null)await q02Floor.evaluate(element=>element.removeAttribute('style'));else await q02Floor.evaluate((element,value)=>element.setAttribute('style',value),q02OldStyle);
       await expect(q02.locator('[data-q02-fork-wires] path')).toHaveCount(1);
       // Owner-approved Q02 was a paired training-mechanism comparison, not
       // two generic summary cards. Both routes must use a shared task, keep
@@ -160,7 +176,7 @@ for(const width of [320,390,768,1440]){
       await expect(q09Updates.first()).toContainText('159 次参数更新');
       if(width<=390){
         const updateRows=await q09Updates.evaluateAll(items=>items.map(item=>item.getBoundingClientRect().top));
-        expect(Math.max(...updateRows)-Math.min(...updateRows)).toBeLessThan(2);
+        expect(new Set(updateRows.map(top=>Math.round(top))).size).toBe(2);
       }
       if(width<=390){
         const q05Table=await page.locator('#main-results [data-q05-history-paper-table]').evaluate(wrap=>{

@@ -11,6 +11,7 @@ Before changing user-facing source, read:
 - `../docs/agents/current/scientific-state-provenance.md`
 - `../docs/agents/current/ui-design-principles.md`
 - `../docs/agents/current/ui-change-visual-acceptance-gate.md`
+- `../docs/agents/current/sitewide-typography-standard.md` (all visible copy, charts and tables)
 
 ## Non-negotiable heading rule
 

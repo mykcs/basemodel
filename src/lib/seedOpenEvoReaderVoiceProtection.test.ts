@@ -103,7 +103,7 @@ describe('SEED × OpenEvo reader-voice protection', () => {
     expect(resultsProtocol).toContain('.task-range-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px;border-block:1px solid var(--color-border)}');
     expect(resultsProtocol).toContain('.metric-defs{margin-top:28px;padding:20px 0;border-block:1px solid var(--color-border)}');
     expect(resultsProtocol).toContain('border-left:3px solid var(--color-info)');
-    expect(experimentResultsScaffold).toContain('.exp-scaffold__contrast-grid{display:grid;margin-top:1.3rem;border-top:1px solid var(--color-border)}');
+    expect(experimentResultsScaffold).toContain('.exp-scaffold__contrast-grid{display:grid;margin-top:1.3rem;border-top:1px solid var(--color-border)');
     expect(experimentResultsScaffold).toContain('grid-template-columns:minmax(220px,.8fr) minmax(170px,.55fr) minmax(0,1.65fr)');
     expect(experimentResultsScaffold).not.toContain('.exp-scaffold__contrast-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem');
   });

@@ -112,7 +112,7 @@ for(const width of [320,390,768,1440]){
     for(const theme of themes){
       await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
       for(const [route,selector,expected] of [
-        ['/research/seed-openevo/flow/webshop/','.setting-table-wrap table, .webshop-seed-data-usage .table-wrap table',2],
+        ['/research/seed-openevo/flow/webshop/','.webshop-setting-table table, .webshop-seed-data-usage .table-wrap table',2],
         ['/models/qwen2-5-3b-instruct/','.experiment-table-wrap .experiment-table',1],
       ] as const){
         const response=await page.goto(route,{waitUntil:'domcontentloaded'});

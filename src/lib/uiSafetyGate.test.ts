@@ -188,7 +188,7 @@ describe('UI visual acceptance gate contract', () => {
   });
 
   it('makes readable research prose and intent-bound control ownership hard release conditions', () => {
-    for (const term of ['width: 390', 'width: 768', 'width: 1024', 'width: 1440', 'prose font too small', 'CJK prose is too narrow']) {
+    for (const term of ['width: 390', 'width: 768', 'width: 1024', 'width: 1440', 'prose font too small', 'mixed-script prose is too narrow']) {
       expect(canonicalFigureGate).toContain(term);
     }
     for (const term of ['prose font too small', 'CJK prose is too narrow', 'interactive transport stays local until explicit reader interaction', 'data-transport-docked']) {
@@ -204,7 +204,8 @@ describe('UI visual acceptance gate contract', () => {
       'SEED transport remains attached before interaction',
     ]) expect(floatingTransportGate).toContain(term);
     expect(researchReadabilityStyles).toContain('.canonical-figure');
-    expect(researchReadabilityStyles).toContain('font-size: max(.74rem, 11.8px) !important');
+    // The shared research caption floor now follows #895's semantic metadata role.
+    expect(researchReadabilityStyles).toContain('font-size: var(--type-body-small) !important');
     expect(interactiveResearchStyles).not.toContain('>.irx-controls>.irx-transport{position:fixed');
     expect(geometryPolicy).toContain('at least **7 CJK characters per rendered line**');
     expect(geometryPolicy).toContain('becomes a bottom `position: fixed` dock');

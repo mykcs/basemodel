@@ -69,9 +69,8 @@ test('print keeps single-panel confidence plot compact and multiple-effect figur
 });
 
 
-/** A chart's existence and page overflow are insufficient: 390px compressed
- * Q17 axes formerly rendered at ~3.71/4.47 CSS pixels. Keep the native data,
- * preserve legible labels, and prove horizontal movement stays within figure. */
+/** Compact Q17 chart previews fit their card; opening the native reader restores
+ * physical axis-label size and local scrolling without widening the page. */
 for (const { label, route, root, scoreSelector, lossSelector } of [
   {
     label: 'frontier',
@@ -113,28 +112,34 @@ for (const { label, route, root, scoreSelector, lossSelector } of [
           if (!(label instanceof SVGGraphicsElement)) throw Error('Missing scientific axis label');
           const m = label.getScreenCTM();
           if (!m) throw Error('Axis has no rendering matrix');
-          const figure = node.closest('figure')!;
+          const viewport = node.closest('.native-svg-reader__viewport')!;
           return {
             width: node.getBoundingClientRect().width,
             renderedFontPx: parseFloat(getComputedStyle(label).fontSize) * Math.hypot(m.a, m.b),
-            figureClientWidth: figure.clientWidth,
-            figureScrollWidth: figure.scrollWidth,
+            viewportClientWidth: viewport.clientWidth,
+            viewportScrollWidth: viewport.scrollWidth,
           };
         });
+        const compact = await measure();
+        expect(compact.width).toBeLessThanOrEqual(compact.viewportClientWidth + 2);
+        await figure.locator('.native-svg-reader__action').click();
         const normal = await measure();
         expect(normal.renderedFontPx).toBeGreaterThanOrEqual(11.5);
         if (width === 390) {
-          expect(normal.figureScrollWidth).toBeGreaterThan(normal.figureClientWidth + 50);
-          await figure.evaluate(node => node.scrollTo({ left: node.scrollWidth, behavior: 'instant' }));
-          expect(await figure.evaluate(node => node.scrollLeft)).toBeGreaterThan(50);
+          const viewport = figure.locator('.native-svg-reader__viewport');
+          expect(normal.viewportScrollWidth).toBeGreaterThan(normal.viewportClientWidth + 50);
+          await viewport.evaluate(node => node.scrollTo({ left: node.scrollWidth, behavior: 'instant' }));
+          expect(await viewport.evaluate(node => node.scrollLeft)).toBeGreaterThan(50);
 
-          // Negative control: replay the old phone shrink without hiding the
-          // labels. The exact same geometric contract must turn red.
+          // Negative control: replay the old phone shrink after opening the
+          // reader. The same physical-label-size contract must turn red.
+          await figure.locator('.native-svg-reader__action').click();
           await svg.evaluate(node => (node as SVGElement).style.minWidth = '0px');
           const old = await measure();
           expect(old.renderedFontPx).toBeLessThan(10);
           expect(() => expect(old.renderedFontPx).toBeGreaterThanOrEqual(11.5)).toThrow();
           await svg.evaluate(node => (node as SVGElement).style.removeProperty('min-width'));
+          await figure.locator('.native-svg-reader__action').click();
           expect((await measure()).renderedFontPx).toBeGreaterThanOrEqual(11.5);
         }
       }

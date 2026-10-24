@@ -50,6 +50,24 @@ for (const width of [390,768,1440]) {
     await expect(plot).toBeVisible();
     await expect(plot).toHaveAttribute('src','/research/seed-openevo/figures/q03-stage2-pgfplots.svg');
     await expect(q03.locator('button')).toHaveCount(0);
+    const q01Name=await q01.getAttribute('aria-label');
+    expect(q01Name?.length).toBeGreaterThan(8);
+    await expect(q01.locator('title')).toHaveCount(0);
+    // Immutable outlined PGFPlots glyphs replace the retired inline SVG text.
+    // Source/data/label placement hashes are verified before every build;
+    // the native reading path has its own real glyph geometry/negative gate.
+    const paper=await q03.evaluate(node=>{
+      const root=document.querySelector('.evo-approved-reader');
+      const caption=node.querySelector('figcaption');
+      return {
+        border:getComputedStyle(node).borderTopWidth,
+        caption:caption?parseFloat(getComputedStyle(caption).fontSize):0,
+        body:root?parseFloat(getComputedStyle(root).fontSize):0
+      };
+    });
+    expect(paper.border).toBe('0px');
+    expect(paper.caption).toBeGreaterThanOrEqual(13);
+    expect(paper.caption).toBeLessThanOrEqual(paper.body);
     for(const [id,count] of [['q04-posthoc',2],['q07-zero-latest',2],['q08-old-queue',1],['q09-context',4],['rank32-paired',1],['q07-inversion',1]] as const){
       const plot=page.locator('[data-paper-effect="'+id+'"]');
       await expect(plot).toBeVisible();
@@ -106,7 +124,9 @@ for(const width of [390,1440]){
       const localScroll=(node.parentElement!.scrollWidth > node.parentElement!.clientWidth);
       return {row,caption,xOverflow,localScroll};
     });
-    expect(tableTags.row).toBe('table-row');
+    expect(tableTags.row).toBe(width === 390 ? 'grid' : 'table-row');
+    await expect(table.locator('tbody tr').first()).toHaveAttribute('role', 'row');
+    expect(await table.locator('tbody td').evaluateAll(cells => cells.every(cell => Boolean((cell as HTMLElement).dataset.paperLabel)))).toBe(true);
     expect(tableTags.caption).toBe('top');
     expect(tableTags.xOverflow).toBeLessThanOrEqual(2);
     expect(tableTags.localScroll).toBe(false);

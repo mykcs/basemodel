@@ -176,6 +176,7 @@ Preserve Vercel Preview `noindex`, Production canonical/hreflang identity, repos
 ## Startup-visible contract routes
 
 - Every user-facing page treats `human-thinking-web-expression-contract.md` as **mandatory for every user-facing page**; also route material UI work through `ui-design-principles.md` and `sitewide-visual-knowledge-architecture.md`.
+- Any typography, scientific figure/table, caption, or CSS type-scale change must use `docs/agents/current/sitewide-typography-standard.md`, the single shared token owner and generated-route typography audit; a passing build does not replace screenshot and browser acceptance.
 - Research publication/analysis work must keep `research-site-presentation-contract.md`, `site-reader-attention-contract.md`, and `research-result-reading-contract.md` directly discoverable from this root.
 - For non-trivial work, scan scenario-trigger-registry; repeat-correction work uses `REPEAT-CORRECTION` and `project-agent-operating-principles.md#correction-to-action-witness`.
 - **Provider writes are noun-bound at dispatch:** `open PR -> create_pull_request`; file/ref/branch mutation is not an acceptable substitute.

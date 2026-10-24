@@ -160,8 +160,8 @@ for (const width of [390, 768, 1440]) {
       await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
       await page.goto('/research/seed-openevo/study/results/7b-self-analysis/');
       const svg=page.getByTestId('checkpoint-loss-capability-chart').locator('svg');
-      await expect(svg).toHaveAttribute('aria-label',/Loss 一直下降/);
-      await expect(svg.locator('title')).toHaveCount(0);
+      await expect(svg).toHaveAttribute('aria-labelledby','checkpoint-chart-title checkpoint-chart-desc');
+      await expect(svg.locator('title')).toContainText('Loss 一直下降');
       await expect(svg.locator('desc')).toContainText('training loss');
       await expect(svg.locator('.checkpoint-viz__value--loss')).toHaveText(['0.479','0.301','0.196','0.179','0.129','0.070','0.066','0.055']);
       await expect(svg.locator('.checkpoint-viz__value:not(.checkpoint-viz__value--loss)')).toHaveText(['13.33','17.13','18.41','13.67','17.63','16.51','22.01','20.72','25.66']);

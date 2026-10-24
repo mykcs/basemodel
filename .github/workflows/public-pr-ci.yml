@@ -156,6 +156,7 @@ jobs:
           name: basemodel-ui-pr-${{ github.event.pull_request.number }}-shard-${{ matrix.shard }}
           path: |
             test-results/**/*.png
+            test-results/**/*.json
             test-results/**/*.webm
             test-results/**/*.zip
             test-results/**/*.md
@@ -184,3 +185,90 @@ jobs:
           else
             test "$BROWSER_RESULT" = success
           fi
+
+  # An independent, read-only full WebKit acceptance for typography work.
+  # Match the semantic branch name so a current-base successor PR keeps the
+  # same browser contract without depending on historical PR numbers.
+  typography_full_webkit:
+    if: contains(github.head_ref, 'typography')
+    name: typography-full-webkit-${{ matrix.shard }}-of-4
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    env:
+      CI: '1'
+      CI_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+      PLAYWRIGHT_REUSE_BUILD: '1'
+      PLAYWRIGHT_WORKERS: '1'
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/head
+          persist-credentials: false
+
+      - name: Setup Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Bind source and install WebKit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          test "$(git rev-parse HEAD)" = "$CI_HEAD_SHA"
+          npm ci
+          npx playwright install webkit
+
+      - name: Build exact site once per shard
+        run: npm run build
+
+      - name: Run entire test:ui:all WebKit selection
+        shell: bash
+        env:
+          WEBKIT_SHARD: ${{ matrix.shard }}
+        run: |
+          set -uo pipefail
+          mkdir -p evidence-logs
+          printf 'head=%s\nshard=%s/4\ncommand=npm run test:ui:all -- --project=webkit --shard=%s/4 --max-failures=0\n' "$CI_HEAD_SHA" "$WEBKIT_SHARD" "$WEBKIT_SHARD" > evidence-logs/identity.txt
+          # Override the normal script's fail-fast=1 only for this exhaustive
+          # acceptance run: preserve all 643 test outcomes, not one failure/shard.
+          npm run test:ui:all -- --project=webkit --shard="$WEBKIT_SHARD"/4 --max-failures=0 2>&1 | tee evidence-logs/webkit-results.txt
+          code=${PIPESTATUS[0]}
+          printf 'exit_code=%s\n' "$code" | tee evidence-logs/exit-status.txt
+          exit "$code"
+
+      - name: Preserve source-bound PNG, JSON, logs and exit status
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: typography-${{ github.event.pull_request.number }}-full-webkit-shard-${{ matrix.shard }}
+          path: |
+            evidence-logs/**
+            test-results/**/*.png
+            test-results/**/*.json
+            test-results/**/*.webm
+            test-results/**/*.zip
+            test-results/**/*.md
+          if-no-files-found: error
+          retention-days: 7
+
+  typography_full_webkit_gate:
+    if: always() && contains(github.head_ref, 'typography')
+    name: typography-full-webkit-gate
+    needs: [typography_full_webkit]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Require all four full-suite WebKit shards
+        env:
+          WEBKIT_RESULT: ${{ needs.typography_full_webkit.result }}
+        run: test "$WEBKIT_RESULT" = success

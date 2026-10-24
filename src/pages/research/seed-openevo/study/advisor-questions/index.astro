@@ -67,10 +67,10 @@ const researchTargets = {
       {ADVISOR_QUESTIONS.map(q => (
         <article class="evo-article__question" id={q.id} data-research-question={q.id} aria-labelledby={q.id+'-title'}>
           <header class="evo-article__question-header"><span class="evo-article__qnum">{q.id.toUpperCase()}</span><h3 id={q.id+'-title'}>{q.title}</h3></header>
-          {q.id==='q10' && <p class="evo-article__note">会后新增的独立复现问题</p>}
+          {q.id==='q10' && <p class="evo-article__note evo-article__note--metadata">会后新增的独立复现问题</p>}
           <p>{q.opening}</p>
           <p class="evo-article__note" data-question-research-target={q.id}><strong>真正想检验：</strong>{researchTargets[q.id as keyof typeof researchTargets]}</p>
-          <p class="evo-article__note"><a href={responseHref(q.id)}>查看 {q.id.toUpperCase()} 已完成的实验、结果与未解问题 →</a></p>
+          <p class="evo-article__note evo-article__note--navigation"><a href={responseHref(q.id)}>查看 {q.id.toUpperCase()} 已完成的实验、结果与未解问题 →</a></p>
         </article>
       ))}
     </section>

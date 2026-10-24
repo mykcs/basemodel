@@ -425,7 +425,15 @@ for(const width of [320,390,1440]){
     await page.goto(prefix+'parameter-memory-results/',{waitUntil:'domcontentloaded'});
     const article=page.locator('[data-evo-blog="results"]');
     await expect(article).toHaveClass(/evo-approved-reader/);
-    await expect(article.locator('h1')).toHaveCSS('font-size',width<=520?'26px':'28px');
+    const typeSizes=await article.evaluate(el=>{
+      const h1=el.querySelector('h1'),h2=el.querySelector('h2');
+      if(!h1||!h2)return null;
+      return {h1:parseFloat(getComputedStyle(h1).fontSize),h2:parseFloat(getComputedStyle(h2).fontSize)};
+    });
+    expect(typeSizes).not.toBeNull();
+    expect(typeSizes!.h1).toBeGreaterThanOrEqual(28);
+    expect(typeSizes!.h1).toBeLessThanOrEqual(37);
+    expect(typeSizes!.h1).toBeGreaterThan(typeSizes!.h2);
     const references=article.locator('.advisor-approved-question-ref');
     await expect(references).toHaveCount(10);
     expect(await references.allTextContents()).toEqual(

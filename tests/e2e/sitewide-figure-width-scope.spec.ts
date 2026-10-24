@@ -45,24 +45,37 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
     return {
       readableColumns: [...el.querySelectorAll<HTMLElement>('tbody th,tbody td')].every(cell => {
         const css=getComputedStyle(cell);
-        return cell.scrollWidth <= cell.clientWidth+2 && parseFloat(css.fontSize)>=12 && css.wordBreak==='normal';
+        return cell.scrollWidth <= cell.clientWidth + 2 && parseFloat(css.fontSize) >= (style.display === 'block' ? 15 : el.closest('.research-booktabs-wrap--presentation') ? 14 : 12) && css.wordBreak === 'normal';
       }),
-      roles: [...el.querySelectorAll('thead,tbody,tfoot,tr,th,td')].every(node => getComputedStyle(node).display === ({THEAD:'table-header-group',TBODY:'table-row-group',TFOOT:'table-footer-group',TR:'table-row',TH:'table-cell',TD:'table-cell'} as Record<string,string>)[node.tagName]),
+      records: style.display === 'block',
+      intactIdentifiers: [...el.querySelectorAll('tbody tr > :first-child')].every(cell => {
+        const walker = document.createTreeWalker(cell, NodeFilter.SHOW_TEXT);
+        while (walker.nextNode()) {
+          const text = walker.currentNode;
+          for (const word of (text.textContent ?? '').matchAll(/SFT|A\d+|Bounded|OpenEVO|DirectApply|Vanilla|rank\d+/g)) {
+            const range = document.createRange(); range.setStart(text, word.index!); range.setEnd(text, word.index! + word[0].length);
+            if (range.getClientRects().length !== 1) return false;
+          }
+        }
+        return true;
+      }),
+      roles: style.display === 'block' ? el.getAttribute('role') === 'table' && [...el.querySelectorAll('tbody td')].every(cell => Boolean((cell as HTMLElement).dataset.paperLabel)) : [...el.querySelectorAll('thead,tbody,tfoot,tr,th,td')].every(node => getComputedStyle(node).display === ({THEAD:'table-header-group',TBODY:'table-row-group',TFOOT:'table-footer-group',TR:'table-row',TH:'table-cell',TD:'table-cell'} as Record<string,string>)[node.tagName]),
       display: style.display, family: style.fontFamily, font: parseFloat(style.fontSize),
       top: parseFloat(style.borderTopWidth), bottom: parseFloat(style.borderBottomWidth),
-      caption: Boolean(cap && captionBox.width > 0 && captionBox.height > 0 && captionBox.bottom <= (el.querySelector('thead,tbody,tr')?.getBoundingClientRect().top ?? box.top) + 2),
+      caption: Boolean(cap && captionBox.width > 0 && captionBox.height > 0 && captionBox.bottom <= (el.querySelector(style.display === 'block' ? 'tbody' : 'thead,tbody,tr')?.getBoundingClientRect().top ?? box.top) + 2),
       captionSide: getComputedStyle(cap).captionSide,
       verticalRules: cells.some(cell => parseFloat(getComputedStyle(cell).borderLeftWidth) > 0 || parseFloat(getComputedStyle(cell).borderRightWidth) > 0),
       bodyRules: [...el.querySelectorAll<HTMLElement>('tbody tr:not(:first-child)>*')].some(cell => parseFloat(getComputedStyle(cell).borderTopWidth) > 0 || parseFloat(getComputedStyle(cell).borderBottomWidth) > 0),
-      numeric: [...el.querySelectorAll<HTMLElement>('[data-numeric]')].every(cell => getComputedStyle(cell).textAlign === 'right' && getComputedStyle(cell).fontVariantNumeric.includes('tabular-nums')),
+      numeric: [...el.querySelectorAll<HTMLElement>('[data-numeric]')].every(cell => (style.display === 'block' || getComputedStyle(cell).textAlign === 'right') && (el.closest('[data-seed-world4-case]') ? getComputedStyle(cell).fontVariantNumeric === 'normal' : getComputedStyle(cell).fontVariantNumeric.includes('tabular-nums'))),
       bodyBackgrounds: [...el.querySelectorAll<HTMLElement>('tbody tr,tbody th,tbody td')].every(cell => ['rgba(0, 0, 0, 0)','transparent'].includes(getComputedStyle(cell).backgroundColor)),
     };
   });
-  expect(grammar.display).toBe('table');
+  expect(['table','block']).toContain(grammar.display);
   expect(grammar.roles).toBe(true);
+  expect(grammar.intactIdentifiers, 'scientific method and checkpoint identifiers must remain whole').toBe(true);
   expect(grammar.readableColumns, JSON.stringify(await target.locator('tbody th,tbody td').evaluateAll(cells=>cells.map(cell=>({text:cell.textContent,width:(cell as HTMLElement).offsetWidth,font:getComputedStyle(cell).fontSize,min:getComputedStyle(cell).minWidth,wrap:getComputedStyle(cell).overflowWrap,break:getComputedStyle(cell).wordBreak}))))).toBe(true);
   expect(grammar.family).toContain('Times');
-  expect(grammar.font).toBeGreaterThanOrEqual(route.includes('/briefing/') ? 14 : 12);
+  expect(grammar.font).toBeGreaterThanOrEqual(grammar.records ? 15 : route.includes('/briefing/') ? 14 : 12);
   expect(grammar.top).toBeGreaterThan(0);
   expect(grammar.bottom).toBeGreaterThan(0);
   expect(grammar.caption, JSON.stringify(grammar)).toBe(true);
@@ -71,9 +84,8 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   expect(grammar.bodyRules).toBe(false);
   expect(grammar.numeric).toBe(true);
   expect(grammar.bodyBackgrounds).toBe(true);
-  const window=target.locator('..');
-  expect(await window.evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(2);
-  expect(await window.evaluate(el=>getComputedStyle(el).overflowX)).not.toMatch(/hidden|clip/);
+  expect(await target.locator('..').evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(2);
+  expect(await target.locator('..').evaluate(node => getComputedStyle(node).overflowX)).not.toMatch(/hidden|clip/);
 }
 
 const captureAudit = process.env.CLOUD_FIGURE_AUDIT === '1';
@@ -300,9 +312,16 @@ test('paper tables use content width while dense comparisons and diagrams retain
 
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-scaling/');
   await expect(page.locator('.scaling-chart')).toHaveAttribute('data-research-figure-size', 'wide');
-  // Five annotated observations must not be reduced to unreadable tiny labels.
-  expect((await page.locator('.scaling-chart svg').boundingBox())!.width).toBeGreaterThan(950);
-  expect(await page.locator('.scaling-chart').evaluate(node => node.scrollWidth > node.clientWidth)).toBe(true);
+  // The compact default stays responsive; the native reader exposes the full
+  // source plot on demand, with scrolling owned by its labelled viewport.
+  const nativeReader = page.locator('.scaling-chart [data-native-svg-reader]');
+  const nativeToggle = nativeReader.locator('.native-svg-reader__toggle');
+  await nativeReader.locator('.native-svg-reader__action').click();
+  await expect(nativeToggle).toBeChecked();
+  const nativeViewport = nativeReader.locator('.native-svg-reader__viewport');
+  expect((await nativeReader.locator('svg').boundingBox())!.width).toBeGreaterThanOrEqual(912);
+  expect(await nativeViewport.evaluate(node => node.scrollWidth > node.clientWidth)).toBe(true);
+  expect(await page.locator('.scaling-chart').evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(2);
 });
 
 test('paper evidence width remains local to scientific plots; app catalog remains intact', async ({ page }) => {
@@ -474,7 +493,7 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
     expect(['hidden','clip']).not.toContain(geometry.overflow);
     const difference=page.locator('.paper-table').filter({hasText:'R1–R159 mean reward'}).locator('tbody tr').first().locator('td').last();
     await expect(difference).toContainText('+0.0250');
-    const fragments=await difference.evaluate(el=>{const r=document.createRange();r.selectNodeContents(el);return r.getClientRects().length;});
+    const fragments=await difference.evaluate(el=>{const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),tops=new Set<number>();while(walker.nextNode()){if(!walker.currentNode.textContent?.trim())continue;const r=document.createRange();r.selectNodeContents(walker.currentNode);for(const rect of r.getClientRects())if(rect.width)tops.add(Math.round(rect.top*10)/10);}return tops.size;});
     expect(fragments).toBe(1);
     const entropy=page.locator('.paper-table').filter({hasText:'R0–31 mean H'});
     const numericFragments=await entropy.locator('tbody td:nth-child(n+2)').evaluateAll(nodes=>nodes.map(el=>{
@@ -567,6 +586,7 @@ for(const width of [390,768,1440]) {
       const index=await table.evaluate(el=>[...document.querySelectorAll('table')].indexOf(el as HTMLTableElement));
       await expect(expectPaperGrammar(table,route,index)).rejects.toThrow();
       await label.evaluate(el=>{for(const property of ['font-size'])(el as HTMLElement).style.removeProperty(property);});
+      expect((await label.boundingBox())!.width).toBeGreaterThan(0);
       expect(await table.locator('..').evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(2);
     }
   });

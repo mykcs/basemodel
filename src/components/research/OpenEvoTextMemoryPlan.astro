@@ -50,14 +50,14 @@ const hypotheses = [
   <section class="tm-section evo-article__section" aria-labelledby="tm-cases-title">
     <h2 id="tm-cases-title">{t('五类记录，不能合写成一个 bug', 'Five records, not one interchangeable bug')}</h2>
     <p>{t('Stage1 是最初整理经验的阶段；Stage2 是训练中继续更新经验的阶段。R104、R122 是后者的轮次编号。输出上限写满、重复旧文和分块处理，是不同的观测或设计。', 'Stage1 builds the initial experience summaries; Stage2 updates experience during training. R104 and R122 identify rounds in Stage2. Saturation, repeated text and chunked processing are different observations or designs.')}</p>
-    <div class="tm-table-wrap" tabindex="0" aria-label={t('历史案例，可横向滚动', 'Historical cases, horizontally scrollable')}><ResearchPaperTable><caption>{t('历史 Text Memory 证据与解释边界', 'Historical Text Memory evidence and its limits')}</caption><thead><tr><th>{t('案例', 'Case')}</th><th>{t('收据或配置记录了什么', 'What receipts or policies record')}</th><th>{t('仍然不能证明什么', 'What remains unproven')}</th></tr></thead><tbody>{cases.map(([label, fact, limit]) => <tr><th scope="row">{label}</th><td>{fact}</td><td>{limit}</td></tr>)}</tbody></ResearchPaperTable></div>
+    <div class="tm-table-wrap" tabindex="0" aria-label={t('历史案例，可横向滚动', 'Historical cases, horizontally scrollable')}><ResearchPaperTable narrowRecords><caption>{t('历史 Text Memory 证据与解释边界', 'Historical Text Memory evidence and its limits')}</caption><thead><tr><th>{t('案例', 'Case')}</th><th>{t('收据或配置记录了什么', 'What receipts or policies record')}</th><th>{t('仍然不能证明什么', 'What remains unproven')}</th></tr></thead><tbody>{cases.map(([label, fact, limit]) => <tr><th scope="row">{label}</th><td>{fact}</td><td>{limit}</td></tr>)}</tbody></ResearchPaperTable></div>
     <p class="tm-scroll-hint">{t('左右滑动可查看完整对照。', 'Scroll sideways to view the full comparison.')}</p>
     <p class="tm-evidence"><a href={evidenceHref}>{t('案例摘要与候选文件哈希', 'Case summary and candidate hashes')}</a> · <a href={codeHref} target="_blank" rel="noreferrer"><ExternalBrandMark href={codeHref} /> {t('完整历史分析及复现代码（需仓库权限）', 'Full lineage analysis and replay code (repository access required)')}</a></p>
   </section>
 
   <section class="tm-section evo-article__section" aria-labelledby="tm-rounds-title">
     <h2 id="tm-rounds-title">{t('Text Memory 的两种失败模式：重复旧笔记与输出饱和', 'Two Text Memory failure modes: prior-note duplication and output saturation')}</h2>
-    <div class="tm-table-wrap" tabindex="0" aria-label={t('R104 与 R122 对照', 'R104 and R122 comparison')}><ResearchPaperTable>
+    <div class="tm-table-wrap" tabindex="0" aria-label={t('R104 与 R122 对照', 'R104 and R122 comparison')}><ResearchPaperTable narrowRecords>
 <Fragment slot="caption">{t('Text Memory 的两种失败模式：重复旧笔记与输出饱和', 'Two Text Memory failure modes: prior-note duplication and output saturation')}</Fragment><thead><tr><th>{t('比较项', 'Comparison')}</th><th>R104</th><th>R122</th></tr></thead><tbody>
       <tr><th scope="row">{t('第一次输出', 'First output')}</th><td>{t('117 token；旧笔记重复两遍；不合法', '117 tokens; prior note twice; invalid')}</td><td>{t('1024 token；写满上限；不合法', '1,024 tokens; saturated; invalid')}</td></tr>
       <tr><th scope="row">{t('唯一一次修复', 'Single repair')}</th><td>{t('117 token；仍是旧笔记重复两遍', '117 tokens; prior note twice again')}</td><td>{t('117 token；旧笔记重复两遍', '117 tokens; prior note twice')}</td></tr>
@@ -85,7 +85,7 @@ const hypotheses = [
 
   <section class="tm-section evo-article__section" aria-labelledby="tm-shadow-title">
     <h2 id="tm-shadow-title">{t('同一批经历，比较三种写法', 'Compare three writing methods on the same evidence')}</h2>
-    <div class="tm-table-wrap" tabindex="0" aria-label={t('计划中的三种写法', 'Three planned methods')}><ResearchPaperTable>
+    <div class="tm-table-wrap" tabindex="0" aria-label={t('计划中的三种写法', 'Three planned methods')}><ResearchPaperTable narrowRecords>
 <Fragment slot="caption">{t('同一批经历，比较三种写法', 'Compare three writing methods on the same evidence')}</Fragment><thead><tr><th>{t('写法', 'Method')}</th><th>{t('改变什么', 'What changes')}</th><th>{t('结果', 'Result')}</th></tr></thead><tbody>
       <tr><th scope="row">{t('20 条一次处理', '20 records in one pass')}</th><td>{t('作为对照写法', 'Baseline strategy')}</td><td>{t('待测', 'Not measured')}</td></tr>
       <tr><th scope="row">{t('20 条 + 更大输出上限', '20 records + larger cap')}</th><td>{t('只增加输出空间', 'Increase output room')}</td><td>{t('待测', 'Not measured')}</td></tr>
@@ -120,22 +120,22 @@ const hypotheses = [
   .tm-two article{padding:1rem 0;border-top:2px solid var(--accent-deep)}
   .tm-two article p{margin:.45rem 0}
   .tm-scroll-hint{display:none}
-  @media(max-width:680px){.tm-scroll-hint{display:block;font-size:1rem;color:var(--muted)}}
+  @media(max-width:680px){.tm-scroll-hint{display:block;font-size:var(--type-body);color:var(--muted)}}
   .tm-table-wrap{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;min-width:0}
   table{min-width:620px}
   tbody th{width:21%}
-  .tm-evidence{font-size:1rem;color:var(--muted);overflow-wrap:anywhere}
+  .tm-evidence{font-size:var(--type-body);color:var(--muted);overflow-wrap:anywhere}
   a{color:var(--accent-deep);text-underline-offset:.2em}
   a:focus-visible,summary:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}
 .tm-table-wrap:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px;min-width:0}
   .tm-progress{padding-left:1.5rem;display:grid;gap:1rem}
   .tm-progress p{margin:.25rem 0}
-  .tm-hypotheses{padding-left:1.5rem;line-height:1.8}
+  .tm-hypotheses{padding-left:1.5rem;line-height:var(--type-leading-body)}
   .tm-hypotheses li{margin:.6rem 0}
   .tm-blank-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
-  .research-placeholder{padding:1rem;border:1px dashed var(--muted);background:var(--surface-muted);line-height:1.7;font-weight:650;min-height:5rem}
+  .research-placeholder{padding:1rem;border:1px dashed var(--muted);background:var(--surface-muted);line-height:var(--type-leading-body);font-weight:650;min-height:5rem}
   details{margin-top:1rem;padding:1rem;border:1px solid var(--line)}
-  summary{cursor:pointer;font-weight:650;line-height:1.6}
+  summary{cursor:pointer;font-weight:650;line-height:var(--type-leading-caption)}
   code{overflow-wrap:anywhere;word-break:break-word}
   @media(max-width:680px){.tm-two,.tm-blank-grid{grid-template-columns:1fr}.tm-progress{padding-left:1.2rem}}
 </style>
