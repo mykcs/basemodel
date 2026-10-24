@@ -31,7 +31,25 @@ for (const width of [390, 768, 1440]) {
       expect(await page.locator('[data-report-figure="q04-capacity"]').evaluate(el => el.tagName)).toBe('DIV');
 
       // Existing model/panel boundaries remain in their associated figure captions.
-      await expect(article.locator('[data-report-figure="q03-custom-curve"] figcaption')).toContainText('没有测量中间轮次');
+      const q03Caption = article.locator('[data-report-figure="q03-custom-curve"] figcaption');
+      const unmeasuredRounds = /中间轮次没有测量|没有测量中间轮次/;
+      const assertQ03Boundary = async () => {
+        await expect(q03Caption).toContainText(unmeasuredRounds);
+        await expect(q03Caption).toContainText('不能视为完整训练曲线');
+        await expect(q03Caption).toContainText('64 题');
+        await expect(q03Caption).toContainText('128 题');
+      };
+      await assertQ03Boundary();
+      if (width === 390 && theme === 'light') {
+        const original = await q03Caption.textContent();
+        try {
+          await q03Caption.evaluate((node, text) => { node.textContent = text; }, original!.replace(unmeasuredRounds, '所有中间轮次都经过测量'));
+          await expect(assertQ03Boundary()).rejects.toThrow();
+        } finally {
+          await q03Caption.evaluate((node, text) => { node.textContent = text; }, original);
+        }
+        await assertQ03Boundary();
+      }
       await expect(page.locator('[data-paper-effect="rank32-paired"] figcaption')).toContainText('1,024');
       await expect(page.locator('[data-paper-effect="q07-inversion"] figcaption')).toContainText('第 156 轮');
       await expect(page.locator('[data-paper-effect="q04-posthoc"] figcaption')).toContainText('训练后压缩');

@@ -1,4 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { persistJsonAttachment } from './evidence-json';
 import { CAPABILITY_READER_ROUTES } from '../../src/data/capabilityReaderRoutes';
 import { OPEN_EVO_CANONICAL_ROUTE_OWNERS, OPEN_EVO_EXPERIMENTS } from '../../src/data/openEvoExperimentNavigation';
 import { OPEN_EVO_MECHANISM_EXPERIMENTS, mechanismDisplayState, mechanismStateSummary } from '../../src/data/openEvoMechanismNarrative';
@@ -14,6 +16,7 @@ const primaryReadingPaths = [
   `${root}openevo-2-0/exploration/`,
 ] as const;
 const fields = ['start', 'action', 'stop', 'output'] as const;
+const reviewedRoles = JSON.parse(readFileSync(new URL('../../docs/agents/evidence/sitewide-typography/2026-10-22/scoped-migration-witnesses.json', import.meta.url), 'utf8')).witnesses as Array<{ file: string; route: string; selector: string; minimum: number; role: string; minimumApplicableWidth?: number | null; maximumApplicableWidth?: number | null }>;
 
 async function assertVisibleReaderGeometry(page: Page) {
   const measured = await page.evaluate(() => {
@@ -68,11 +71,13 @@ export function registerReaderJourneyTests() {
   for (const locale of ['zh'] as const) {
     for (const width of [390, 1440]) {
       for (const theme of ['light', 'dark']) {
-        test(`capability copy ${locale} ${width}px ${theme}: historical prose stays readable when expanded`, async ({ page }) => {
+        test(`capability copy ${locale} ${width}px ${theme}: historical prose stays readable when expanded`, async ({ page }, info) => {
           test.setTimeout(120_000);
           await page.setViewportSize({ width, height: 1000 });
           await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
           const routeFailures: string[] = [];
+          const negativeFloors = new Set<number>();
+          const receipts = [];
           for (const route of CAPABILITY_READER_ROUTES) {
             const path = `${root}${route.route ? `${route.route}/` : ''}`;
             await page.goto(path, { waitUntil: 'domcontentloaded' });
@@ -81,10 +86,19 @@ export function registerReaderJourneyTests() {
               if (expanded) await page.locator('[data-copy-review] details').evaluateAll((nodes) => {
                 nodes.forEach((node) => { (node as HTMLDetailsElement).open = true; });
               });
-              const measured = await page.locator('[data-copy-review]').evaluate((owner) => {
+              const measure = () => page.locator('[data-copy-review]').evaluate((owner, roles) => {
                 const failures: string[] = [];
                 let count = 0;
                 let owned = 0;
+                const floors: Record<number, number> = {};
+                const probes = new Set<number>();
+                const host = owner as HTMLElement & { __readerFloors?: Map<Element, { minimum: number; role: string; minimumApplicableWidth?: number | null; maximumApplicableWidth?: number | null }> };
+                const frozen = host.__readerFloors ??= new Map();
+                const mapped = new Map<Element, { minimum: number; role: string; minimumApplicableWidth?: number | null; maximumApplicableWidth?: number | null }>();
+                for (const row of roles) for (const subject of owner.querySelectorAll(row.selector)) {
+                  const previous = mapped.get(subject);
+                  if (!previous || row.minimum > previous.minimum) mapped.set(subject, { minimum: row.minimum, role: row.role });
+                }
                 owner.querySelectorAll<HTMLElement>('p, li, dd, td, small, span, strong, a').forEach((node) => {
                   // Nested components keep their own typography contracts.
                   // Astro's scope token identifies prose owned by this component.
@@ -94,13 +108,48 @@ export function registerReaderJourneyTests() {
                   if (!node.textContent?.trim()) return;
                   owned++;
                   if (!node.checkVisibility({ checkVisibilityCSS: true }) || node.closest('details:not([open])')) return;
+                  if (node.closest('svg,math,.katex,[aria-hidden="true"]')) return;
                   count++;
                   const style = getComputedStyle(node);
                   const sample = node.textContent.trim().slice(0, 60);
-                  const article = node.closest('.evo-approved-reader');
-                  const secondaryNote = node.matches('.evo-article__note,.evo-article__next-work');
-                  const minimum = node.closest('[data-research-paper-table]') ? 12 : article ? (secondaryNote ? 12.5 : node.matches('p,li,dd') ? 14 : 12) : 15.9;
-                  if (parseFloat(style.fontSize) < minimum) failures.push(`small prose: ${sample}`);
+                  // Keep unclassified prose at body16. Only source-reviewed
+                  // producer roles or native table/caption/code semantics can
+                  // establish another floor; rendered size never chooses it.
+                  let minimum = 16;
+                  let role = 'body';
+                  let subject: Element | null = node;
+                  while (subject && subject !== owner) {
+                    const current: Element = subject;
+                    const reviewed = mapped.get(current);
+                    if (reviewed) {
+                      minimum = reviewed.minimum;
+                      role = reviewed.role;
+                      break;
+                    }
+                    if (current.matches('figcaption,caption')) { minimum = 14; role = 'caption'; break; }
+                    if (current.matches('td,th')) { minimum = 15; role = 'table'; break; }
+                    if (current.matches('p,li,dd')) break;
+                    subject = current.parentElement;
+                  }
+                  // Current user-selected article and paper-table owners override the
+                  // general product roles. Never derive this floor from rendered size.
+                  if (node.closest('[data-research-paper-table]')) {
+                    minimum = getComputedStyle(node.closest('table')!).display === 'block' ? 15 : 12;
+                    role = 'paper-table';
+                  } else if (node.closest('.evo-approved-reader')) {
+                    const note = node.closest('.evo-article__note,.evo-article__next-work');
+                    minimum = note ? 12.5 : node.matches('p,li,dd') ? 14 : 12;
+                    role = 'approved-article';
+                  }
+                  if (!frozen.has(node)) frozen.set(node, { minimum, role });
+                  ({ minimum, role } = frozen.get(node)!);
+                  floors[minimum] = (floors[minimum] ?? 0) + 1;
+                  const directText = [...node.childNodes].some(child => child.nodeType === Node.TEXT_NODE && child.textContent?.trim());
+                  if (!probes.has(minimum) && directText && (minimum !== 16 || sample.length > 40)) {
+                    node.setAttribute('data-reader-floor-probe', String(minimum));
+                    probes.add(minimum);
+                  }
+                  if (parseFloat(style.fontSize) < minimum - 0.1) failures.push(`small ${role} prose (${minimum}px): ${sample}`);
                   if (node.clientWidth && node.scrollWidth > node.clientWidth + 2) failures.push(`clipped prose: ${sample}`);
                 });
                 owner.querySelectorAll<HTMLElement>('.lineage-node, .patch-node').forEach((panel) => {
@@ -120,12 +169,30 @@ export function registerReaderJourneyTests() {
                   });
                 });
                 if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 2) failures.push('document overflow');
-                return { owned, count, failures };
-              });
+                return { owned, count, failures, floors, probes: [...probes] };
+              }, reviewedRoles.filter(row => row.route === path && row.file.endsWith(`/${route.owner}.astro`) && (row.minimumApplicableWidth == null || width >= row.minimumApplicableWidth) && (row.maximumApplicableWidth == null || width <= row.maximumApplicableWidth)));
+              const measured = await measure();
+              if (width === 390 && theme === 'light' && !expanded) {
+                for (const minimum of [16, 15, 14, 13, 12.5, 12]) {
+                  if (negativeFloors.has(minimum) || !measured.probes.includes(minimum)) continue;
+                  for (const size of [9, minimum - 1]) {
+                    const bad = await page.addStyleTag({ content: `[data-reader-floor-probe="${minimum}"] { font-size:${size}px !important; }` });
+                    try {
+                      const broken = await measure();
+                      expect(broken.failures.some(failure => failure.includes(`prose (${minimum}px):`))).toBe(true);
+                    } finally { await bad.evaluate(node => node.parentNode?.removeChild(node)); }
+                    expect((await measure()).failures).toEqual(measured.failures);
+                  }
+                  negativeFloors.add(minimum);
+                }
+              }
               if (measured.owned === 0 || (expanded && measured.count === 0)) routeFailures.push(`${path}: no owned prose measured`);
+              receipts.push({ route: path, expanded, ...measured });
               routeFailures.push(...measured.failures.map((failure) => `${path} expanded=${expanded}: ${failure}`));
             }
           }
+          if (width === 390 && theme === 'light') expect([...negativeFloors]).toEqual(expect.arrayContaining([12, 14]));
+          await persistJsonAttachment(info, 'historical-reader-role-floors.json', { body: Buffer.from(JSON.stringify({ locale, width, theme, negativeFloors: [...negativeFloors], receipts })), contentType: 'application/json' });
           expect(routeFailures).toEqual([]);
         });
       }
@@ -271,8 +338,16 @@ export function registerReaderJourneyTests() {
             await page.goto(`${prefix}${path}`, { waitUntil: 'domcontentloaded' });
             await page.evaluate(() => document.fonts.ready);
             await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
-            const h1Size = await page.locator('h1').evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
-            expect(h1Size).toBeLessThanOrEqual(48);
+            const heading = await page.locator('h1').evaluate((node) => {
+              const orientation = node.closest('[data-research-orientation]');
+              const probe = document.createElement('span');probe.style.fontSize='var(--article-title-size)';probe.style.visibility='hidden';node.parentElement!.append(probe);
+              const expected = parseFloat(getComputedStyle(probe).fontSize);probe.remove();
+              const box=node.getBoundingClientRect();
+              return {size:parseFloat(getComputedStyle(node).fontSize),orientation:!!orientation,expected,left:box.left,right:box.right,overflow:node.scrollWidth-node.clientWidth};
+            });
+            if(heading.orientation)expect(heading.size,'shared orientation heading uses the canonical page role').toBeCloseTo(heading.expected,1);
+            else expect(heading.size).toBeLessThanOrEqual(48);
+            expect(heading.left).toBeGreaterThanOrEqual(-2);expect(heading.right).toBeLessThanOrEqual(width+2);expect(heading.overflow).toBeLessThanOrEqual(2);
             await assertVisibleReaderGeometry(page);
           }
         });

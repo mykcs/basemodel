@@ -267,6 +267,11 @@
         {
           "index": 1,
           "hash": "23753947558660bcf59caefb81d46a90db308a49c60e84b0679a40f3bc263c0d"
+        },
+        {
+          "index": 2,
+          "hash": "15dacb53749ce86fc9c16382b49123a2fe186662b6c8eced4cfbcd1a037e32b8",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
         }
       ]
     },
@@ -576,6 +581,308 @@
           "hash": "e0ecd7558193ab2879809f32b42449c0ae60dcef248fadab94ffd5a357b5e467"
         }
       ]
+    },
+    {
+      "route": "/papers/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "457bd2c76a5fdb75f720cfd32cc88962d493c647a5fa5077bb57842f0ee7622c",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        },
+        {
+          "index": 1,
+          "hash": "457bd2c76a5fdb75f720cfd32cc88962d493c647a5fa5077bb57842f0ee7622c",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/lab/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "4eb844d44e31f00e90acbc9942ef024ca57f49e667732b17589125f7dac8d208",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/data-status/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "0b47e04c100366506bb7f588e7efcf300e7858157d192e7c64176acba277007a",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        },
+        {
+          "index": 1,
+          "hash": "e9b4ba174bb22b8e1f1406b6e5c52966b05b56066c815bdd156e8f3c7cc73ad8",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        },
+        {
+          "index": 2,
+          "hash": "d226cdcd54d8e76b7bd88311e3519b95ff901a779aae793be1940b85de626734",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        },
+        {
+          "index": 3,
+          "hash": "bb7e8a7f3f425444114f9f8259c8fda6fc39768a618c5f29c0b9678454e9a799",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        },
+        {
+          "index": 4,
+          "hash": "fea3f4b7b9e226d218391e26f4dc29c5eb8405ba186eacee4894e744625b5aeb",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        },
+        {
+          "index": 5,
+          "hash": "5b83f4022973f8312b984c40037b814e14620af4316d23f3ff36ec9f414ff4c5",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/landscape/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "43819122e62190007affcdb30611efb1c443ace43fbdebc905462e6276abdccd",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/models/qwen2-5-3b-instruct/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "9a15ce6c3ea243041734673219780214c531c7460992433b489d3062076a3f6d",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/dspy/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "791c9163c8c21da9ce859126c8e5a8ccb4762df405b2d0b8e037c2b1a396b77c",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/adaplanner/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "4d7b5353e6a7a4a934c13d792e78b0e27c91a964ed1949d2d7e6c0d500df0d1f",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/seed/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "88d18d12335189ede0372359ad80eef843654be07e2d7342e218d240aff1fcb0",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        },
+        {
+          "index": 1,
+          "hash": "81844f32216e72a890ca2387f9329802b43e74e71123d6bb7c8f5224399898f2",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        },
+        {
+          "index": 2,
+          "hash": "f1b694cb1c7dc872de293ac6cce06320c33c29a2c7a6a997b18fb4ed762445e2",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/swe-bench/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "92a6a82da6bd1fca64eacc5b8be0769c2372d4d85040b585065116191f196319",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/reflexion/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "10d27cb40fd54d92735a57db7b81ae2eb4f9f3947857112f5fe30998e9995835",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/chameleon/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "e17a3fa0ef4cc587edfa3f659b215f02af01545e5ae6dfabc6b6a38ce5397b1b",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/self-refine/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "faf304038ddb172e29c52638c4faafd0b5aeba2e99232f6b62b8851abcd3b357",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/generative-agents/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "b404a2cd799d38223ed175022548178193b849eaf27cd45831d349230d55c4aa",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/swe-agent/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "10d27cb40fd54d92735a57db7b81ae2eb4f9f3947857112f5fe30998e9995835",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/voyager/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "10d27cb40fd54d92735a57db7b81ae2eb4f9f3947857112f5fe30998e9995835",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/camel/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "850b1b01f41435147a35272cd813d44460f6af46e5b1da4eabaa1e6a45ded8f7",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/openhands/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "8562f39774ff309ffb4ace57c7d6dca3d27f8bd407d3ce9cab516853c408f00e",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/agentbench/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "0753e867ec1534e2389c06c0a570dac05b901fad2041ba8ed689a2d93d2d4f6a",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/metagpt/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "10d27cb40fd54d92735a57db7b81ae2eb4f9f3947857112f5fe30998e9995835",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/agentboard/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "15de11109b2290bfb469f48949e33051cf0810a3f7c80e76282358bbc0cfdd9b",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/osworld/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "923684e732b0fd62e708f197ebad4020ae0e246f64bfc28722e4c155e2f4b37a",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/appworld/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "0a882477c78f8fe4a2f4745b8daabf42ee97cfce9ef9b6544178bc3964939d85",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/expel/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "e525e811ab6f4af7881d7a8f547535cbc398c40240ec47165440274aa40d7f3e",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/critic/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "bc0d55ac9331e4f15446313fb7bf887293e4f7c64c113e835d61bce08d8aecb5",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/webarena/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "e749242ca7c80077831434786787187bcb6200ded4486b6d9476bcd4115d96bb",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
+    },
+    {
+      "route": "/papers/agentverse/",
+      "tables": [
+        {
+          "index": 0,
+          "hash": "12f715d01cffa6d1446ff32ddfd0661e570f4ac175ac7df4e3c45b5bf29bc174",
+          "sourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2"
+        }
+      ]
     }
-  ]
+  ],
+  "extensionSourceSha": "eb0f875ae33797939d96507cccde730ea877cbe2",
+  "extensionScope": "Newly adopted native table owners use immutable eb0f baseline cell text; all original fixture entries retained unchanged."
 }

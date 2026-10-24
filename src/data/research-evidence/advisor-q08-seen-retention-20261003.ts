@@ -118,4 +118,3 @@ export const Q08_SEEN_TASKS: readonly Q08SeenTask[] = [
   {"taskId":"seen:2356:d5447c13e8a79ffc7cba64b3c461bb026fd9dd31a73e5c0b030566f266f2df2c","cohort":"LATE_SEEN","score80":0.8333333333333334,"score160":0.8333333333333334,"status":"NO_EFFECTIVE_EXPOSURE","effectiveUpdates":0,"firstEffectiveUpdate":null},
   {"taskId":"seen:1488:515a0f297e6d059334cfe2b67854fa84a119259c6053e1e3b9e8ac803d8fa15f","cohort":"LATE_SEEN","score80":1,"score160":1,"status":"PARTIAL_MISSING_FIRST_POST_CHECKPOINT","effectiveUpdates":1,"firstEffectiveUpdate":108},
 ];
-

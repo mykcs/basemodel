@@ -88,7 +88,7 @@ const technicalChecks = [
     <p>独立公开配方复现的 Stage1 已收集 <strong>1,440 条</strong>原始轨迹，其中 <strong>1,200 条</strong>获得有效 MiniMax 教师标注。八卡工程测试接着完成两轮原生 AdamW 更新（Step30 → Step60），分别用时约 <strong>296 秒和 309 秒</strong>，各保存约 <strong>20.4 GiB</strong> 的原生检查点，未发生 CUDA OOM。</p>
     <p>为了检查工程更新是否伴随任务能力变化，我们让 SFT 初始模型、Step30 与 Step60 工程模型分别在同一组 <strong>64 道冻结开发题</strong>上重复执行 <strong>8 次</strong>。共 <strong>1,536 次完整任务尝试</strong>，已按题目与重复序号核对原始轨迹。下面是 2026 年 10 月 16 日 00:45（新加坡时间）封存的完整结果：</p>
     <div class="q03-world4__tablewrap" tabindex="0" aria-label="三组工程模型的冻结开发题完整成绩">
-      <ResearchPaperTable>
+      <ResearchPaperTable narrowRecords>
         <caption>表 2｜工程诊断：每组测试相同的 64 道题，每题重复 8 次；Task Score 满分 100 分，完整成功按每组 512 次尝试统计</caption>
         <thead><tr><th scope="col">工程模型</th><th scope="col">评测完成次数（每组 512 次）</th><th scope="col">平均 Task Score（满分 100 分）</th><th scope="col">完整成功次数（每组 512 次尝试）</th></tr></thead>
         <tbody>
@@ -110,7 +110,7 @@ const technicalChecks = [
   <h5>此前的四卡工程为何在反向传播失败？</h5>
 
   <div class="q03-world4__tablewrap q03-world4__hardware" tabindex="0" aria-label="原论文与四卡工程训练硬件对照">
-    <ResearchPaperTable>
+    <ResearchPaperTable narrowRecords>
       <caption>补充表 S3｜原论文与四卡工程的硬件条件（只比较 GPU 数量和显存）</caption>
       <thead><tr><th scope="col">实验条件</th><th scope="col">GPU 型号与数量</th><th scope="col">单卡显存</th></tr></thead>
       <tbody>
@@ -124,7 +124,7 @@ const technicalChecks = [
   <div class="q03-world4__evidence" aria-labelledby="q03-world4-measured">
     <h5 id="q03-world4-measured">10 月 14 日两次四卡实测，停在 <code>loss.backward()</code></h5>
     <div class="q03-world4__tablewrap" tabindex="0" aria-label="两次四卡 Stage2 显存不足的实际日志对照">
-      <ResearchPaperTable>
+      <ResearchPaperTable narrowRecords>
         <caption>补充表 S4｜原生 Stage2 工程测试 · 2026 年 10 月 14 日 · 单卡 GiB</caption>
         <thead><tr><th scope="col">测试</th><th scope="col">待分配显存</th><th scope="col">当时剩余</th><th scope="col">参数更新</th></tr></thead>
         <tbody>

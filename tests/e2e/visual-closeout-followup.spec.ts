@@ -1,3 +1,4 @@
+import { persistJsonAttachment } from './evidence-json';
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
 import { waitForHydratedExplainer } from './hydration-ready';
@@ -328,6 +329,7 @@ test('landscape catalog stats use a desktop row and mobile column', async ({ pag
 });
 
 
+
 /** Built-HTML inventory includes both paper matrices, but when JavaScript is
  * enabled <noscript> is inert text. Verify the distinct no-JS reader state. */
 for (const width of [390, 768, 1440] as const) {
@@ -358,6 +360,7 @@ for (const width of [390, 768, 1440] as const) {
       if (width === 390) {
         // Negative control: remove the native per-model width and original
         // word grouping; the known 40px header/187px tall failure returns.
+        const originalHeaderStyles=await table.locator('thead th:not(:first-child)').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('style')));
         await table.locator('thead th:not(:first-child)').evaluateAll(nodes =>
           nodes.forEach(node => {
             (node as HTMLElement).style.removeProperty('min-width');
@@ -367,12 +370,9 @@ for (const width of [390, 768, 1440] as const) {
         const old = await header.boundingBox();
         expect(old!.height).toBeGreaterThan(normal!.height + 30);
         expect(() => expect(old!.height).toBeLessThan(100)).toThrow();
-        await table.locator('thead th:not(:first-child)').evaluateAll(nodes =>
-          nodes.forEach(node => {
-            (node as HTMLElement).style.minWidth = '120px';
-            (node as HTMLElement).style.overflowWrap = 'normal';
-          }),
-        );
+        await table.locator('thead th:not(:first-child)').evaluateAll((nodes,styles)=>nodes.forEach((node,index)=>{
+          const saved=styles[index];if(saved===null||saved===undefined)node.removeAttribute('style');else node.setAttribute('style',saved);
+        }),originalHeaderStyles);
         expect((await header.boundingBox())!.height).toBeLessThan(100);
       }
       expect(await table.locator('tbody tr').count()).toBeGreaterThan(0);
@@ -399,6 +399,9 @@ for (const width of [390, 768, 1440] as const) {
         await scroller.evaluate(node => node.scrollTo({ left: node.scrollWidth, behavior: 'instant' }));
         expect(await scroller.evaluate(node => node.scrollLeft)).toBeGreaterThan(0);
       }
+      await persistJsonAttachment(testInfo,'papers-noscript-'+width+'.json',{
+        body:Buffer.from(JSON.stringify({width,javaScriptEnabled:false,header:normal,geometry,negativeControlTested:width===390,rows:await table.locator('tbody tr').count(),documentOverflow:await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)})),contentType:'application/json',
+      });
       await scroller.screenshot({
         path: testInfo.outputPath('papers-noscript-' + width + '.png'),
         animations: 'disabled',

@@ -21,7 +21,7 @@ table.research-booktabs {
 }
 /* Tables with at most three columns should not pay the tiny-type cost of dense matrices.
    Width remains intrinsic; real multi-column tables keep the bounded responsive scale. */
-:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table]:not(:has(thead tr > :nth-child(4))) {
+:root .research-booktabs-wrap:not(.research-booktabs-wrap--records)>table.research-booktabs[data-research-paper-table]:not(:has(thead tr > :nth-child(4))) {
   font-size:clamp(.875rem, .8rem + .25vw, 1rem);
 }
 :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] caption,
@@ -75,4 +75,39 @@ table.research-booktabs :is(th,td):last-child{padding-right:0}
   :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td) {padding:.4em .35em}
   :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td):first-child {padding-left:0}
   :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td):last-child {padding-right:0}
+}
+
+:root .site-main .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table]{font-size:var(--type-table)}
+
+/* A dense comparison retains its original native header/body and source values.
+   On phones each row becomes one complete, labelled record, without horizontal drag. */
+:root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] thead th {
+  overflow-wrap: normal;
+}
+@media screen and (max-width:760px){
+ :root .research-booktabs-wrap--records{width:100%}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table]{display:block;width:100%;min-width:0;max-width:100%;table-layout:auto;font-size:var(--type-table)}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] caption{display:block}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] thead{display:table-header-group;position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] tbody{display:block}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] tfoot,:root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] tfoot tr,:root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] tfoot td{display:block;width:auto;max-width:100%;white-space:normal}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr{display:grid;grid-template-columns:minmax(0,1fr);padding:.75rem 0;border-bottom:1px solid var(--color-border)}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr:last-child{border-bottom:0}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr>:is(th,td){display:grid;grid-template-columns:minmax(0,1fr);gap:.25rem;width:auto;min-width:0;max-width:none;padding:.35rem 0;text-align:left;white-space:normal;overflow-wrap:normal}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr>th[scope="row"]{display:block;font-weight:var(--type-weight-label);padding-bottom:.6rem}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr>td::before{text-align:left;content:attr(data-paper-label);color:var(--color-text-muted);font-weight:var(--type-weight-normal)}
+}
+
+@media screen and (min-width:761px) and (max-width:1100px){
+ :root .research-booktabs-wrap--tablet-records{width:100%}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table]{display:block;width:100%;min-width:0;max-width:100%;table-layout:auto;font-size:var(--type-table)}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] caption{display:block}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] thead{display:table-header-group;position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] tbody{display:block}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] tfoot,:root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] tfoot tr,:root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] tfoot td{display:block;width:auto;max-width:100%;white-space:normal}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr{display:grid;grid-template-columns:minmax(0,1fr);padding:.75rem 0;border-bottom:1px solid var(--color-border)}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr:last-child{border-bottom:0}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr>:is(th,td){display:grid;grid-template-columns:minmax(0,1fr);gap:.25rem;width:auto;min-width:0;max-width:none;padding:.35rem 0;text-align:left;white-space:normal;overflow-wrap:normal}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr>th[scope="row"]{display:block;font-weight:var(--type-weight-label);padding-bottom:.6rem}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr>td::before{text-align:left;content:attr(data-paper-label);color:var(--color-text-muted);font-weight:var(--type-weight-normal)}
 }

@@ -55,7 +55,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
       'After Bounded shared training finishes, the 112 rank128 module-compression units are independent. We tested that fact before assuming four GPUs would be faster. GPU0 reference vs GPU0/1/2/3 shards, and GPU3 reference vs mirrored GPU3/2/1/0 shards, both assembled to the same adapter SHA with elementwise tensor equality.',
     )}</p>
     <div class="ba-accel__table-wrap">
-      <ResearchPaperTable class="ba-accel__table">
+      <ResearchPaperTable class="ba-accel__table" narrowRecords>
 <Fragment slot="caption">{t('四张卡算得一模一样，但没有更快', 'Four GPUs matched exactly, but did not run faster')}</Fragment>
         <thead><tr><th>{t('测法', 'Measurement')}</th><th>{t('结果', 'Result')}</th><th>{t('说明', 'Meaning')}</th></tr></thead>
         <tbody>
@@ -96,7 +96,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
       <span>rank128 prior</span><b>+</b><span>rank8 current</span><b>→</b><span>136 × 136 core</span><b>→</b><span>top-128 SVD</span>
     </figure>
     <div class="ba-accel__table-wrap">
-      <ResearchPaperTable class="ba-accel__table ba-accel__table--numbers">
+      <ResearchPaperTable class="ba-accel__table ba-accel__table--numbers" narrowRecords>
 <Fragment slot="caption">{t('Muon 给了方向感，但 SVD 不是主瓶颈', 'Muon suggested a direction, but SVD is not the main bottleneck')}</Fragment>
         <thead><tr><th>{t('GPU0 warm 路径', 'GPU0 warm path')}</th><th>{t('时间', 'Time')}</th></tr></thead>
         <tbody>
@@ -120,7 +120,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
       'The compression smokes only measured the suffix. To see where a real Bounded update spends time, we ran two small training smokes with the frozen Qwen3-1.7B model, the same dataset, seed 1993, AdamW, and the original rank8 → rank128 path.',
     )}</p>
     <div class="ba-accel__table-wrap">
-      <ResearchPaperTable class="ba-accel__table ba-accel__table--numbers">
+      <ResearchPaperTable class="ba-accel__table ba-accel__table--numbers" narrowRecords>
 <Fragment slot="caption">{t('真实 1.7B 路径里，时间花在训练', 'On the real 1.7B path, time goes into training')}</Fragment>
         <thead><tr><th>{t('路径', 'Path')}</th><th>{t('model load', 'model load')}</th><th>{t('训练', 'training')}</th><th>compression</th><th>{t('engine 总计', 'engine total')}</th></tr></thead>
         <tbody>
@@ -175,7 +175,7 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
       'DeltaNet chunkwise execution works because its hidden-state recurrence can be written as generalized Householder transformations, then represented with compact WY / UT as composable matrix objects. The key is not simply that WY is fast; the recurrence first admits exact composition.',
     )}</p>
     <div class="ba-accel__table-wrap">
-      <ResearchPaperTable class="ba-accel__table">
+      <ResearchPaperTable class="ba-accel__table" narrowRecords>
 <Fragment slot="caption">{t('FLA / WY 真正提醒我们：先证明状态可以组合', 'The real FLA / WY lesson: prove the state transition composes first')}</Fragment>
         <thead><tr><th>{t('对象', 'Object')}</th><th>{t('能否直接 composition', 'Directly composable?')}</th><th>{t('原因', 'Why')}</th></tr></thead>
         <tbody>
@@ -228,26 +228,26 @@ const pct = (value: number) => `${(value * 100).toFixed(1)}%`;
 <style>
 .ba-accel__lede{margin:1.2rem 0 0}
 .ba-accel__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.8rem 0 0;border-block:1px solid var(--line)}
-.ba-accel__metrics div{padding:1rem 1rem 1rem 0}.ba-accel__metrics dt{color:var(--muted);font-size:1rem;line-height:1.4}.ba-accel__metrics dd{margin:.3rem 0 0}
+.ba-accel__metrics div{padding:1rem 1rem 1rem 0}.ba-accel__metrics dt{color:var(--muted);font-size:var(--type-body);line-height:var(--type-leading-caption)}.ba-accel__metrics dd{margin:.3rem 0 0}
 .ba-accel__boundary{margin:1rem 0 0;padding-left:.9rem;border-left:2px solid var(--accent-deep);color:var(--muted)}
 .ba-accel__section>p{margin:1rem 0 0}
-.ba-accel__section>.ba-accel__result-line{font-size:clamp(1.12rem,2.1vw,1.28rem);font-weight:720}
+.ba-accel__section>.ba-accel__result-line{font-size:var(--type-lead);font-weight:var(--type-weight-heading)}
 .ba-accel__table-wrap{margin-top:1.35rem;overflow-x:auto;min-width:0}
 .ba-accel__equation{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;margin:1.4rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}
-.ba-accel__equation span{font-weight:720}.ba-accel__equation b{color:var(--accent-deep)}
+.ba-accel__equation span{font-weight:var(--type-weight-heading)}.ba-accel__equation b{color:var(--accent-deep)}
 .ba-accel__order{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin:1.4rem 0 0;background:var(--line);border:1px solid var(--line)}
-.ba-accel__order div{display:grid;gap:.35rem;padding:1rem;background:var(--surface)}.ba-accel__order strong{font-size:1rem;color:var(--muted)}.ba-accel__order span{font:700 1.08rem/1.5 var(--font-mono)}
+.ba-accel__order div{display:grid;gap:.35rem;padding:1rem;background:var(--surface)}.ba-accel__order strong{font-size:var(--type-body);color:var(--muted)}.ba-accel__order span{font:var(--type-weight-heading) 1.08rem/1.5 var(--font-interface)}
 .ba-accel__findings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:1.4rem 0 0;border-block:1px solid var(--line)}
-.ba-accel__findings div{padding:1rem 1rem 1rem 0}.ba-accel__findings dt{color:var(--muted);font-size:1rem}.ba-accel__findings dd{margin:.28rem 0 0}
+.ba-accel__findings div{padding:1rem 1rem 1rem 0}.ba-accel__findings dt{color:var(--muted);font-size:var(--type-body)}.ba-accel__findings dd{margin:.28rem 0 0}
 .ba-accel__section>.ba-accel__boundary--inline{margin-top:1.25rem}
-.ba-accel__section>.ba-accel__formula{padding:.8rem 1rem;background:var(--surface-muted);border-left:3px solid var(--accent-deep);font-size:1rem}.ba-accel__formula code{white-space:normal}
+.ba-accel__section>.ba-accel__formula{padding:.8rem 1rem;background:var(--surface-muted);border-left:3px solid var(--accent-deep);font-size:var(--type-body)}.ba-accel__formula code{white-space:normal}
 .ba-accel__decision-list{margin-top:1.35rem;border-top:1px solid var(--line)}
 .ba-accel__decision-list>div{display:grid;grid-template-columns:minmax(190px,.8fr) minmax(0,1.8fr);gap:1rem;padding:1rem 0;border-bottom:1px solid var(--line)}
-.ba-accel__decision-list strong{font-size:1.02rem}.ba-accel__decision-list p{margin:0;color:var(--ink)}
-.ba-accel__next{display:flex;flex-wrap:wrap;gap:.7rem 1.2rem;margin-top:1.2rem}.ba-accel__next a,.ba-accel__evidence a{color:var(--accent-deep);font-weight:700;text-underline-offset:.2em}
-.ba-accel__evidence{margin:2.8rem 0 0;border-block:1px solid var(--line);padding:.9rem 0}.ba-accel__evidence summary{cursor:pointer;font-weight:780;line-height:1.5}
+.ba-accel__decision-list strong{font-size:var(--type-minor-heading)}.ba-accel__decision-list p{margin:0;color:var(--ink)}
+.ba-accel__next{display:flex;flex-wrap:wrap;gap:.7rem 1.2rem;margin-top:1.2rem}.ba-accel__next a,.ba-accel__evidence a{color:var(--accent-deep);font-weight:var(--type-weight-label);text-underline-offset:.2em}
+.ba-accel__evidence{margin:2.8rem 0 0;border-block:1px solid var(--line);padding:.9rem 0}.ba-accel__evidence summary{cursor:pointer;font-weight:var(--type-weight-heading);line-height:var(--type-leading-caption)}
 .ba-accel__evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 1.4rem;margin-top:1rem}.ba-accel__evidence-grid>div{padding:1rem 0;border-top:1px solid var(--line)}
-.ba-accel__evidence-grid p{margin:.35rem 0 .55rem;color:var(--muted)}.ba-accel__evidence-plan{margin:1rem 0 0}.ba-accel__provenance{max-width:52rem;margin:.8rem 0 0;color:var(--muted);font-size:1rem;line-height:1.6}
+.ba-accel__evidence-grid p{margin:.35rem 0 .55rem;color:var(--muted)}.ba-accel__evidence-plan{margin:1rem 0 0}.ba-accel__provenance{max-width:52rem;margin:.8rem 0 0;color:var(--muted);font-size:var(--type-body);line-height:var(--type-leading-body)}
 @media(max-width:760px){
   .ba-accel__metrics,.ba-accel__findings{grid-template-columns:1fr}
   .ba-accel__metrics div,.ba-accel__findings div{padding:.85rem 0;border-bottom:1px solid var(--line)}

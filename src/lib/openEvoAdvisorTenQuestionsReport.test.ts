@@ -456,6 +456,17 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
       expect(page).toContain('evo-article__sources');
     }
     expect(read('src/styles/tokens.css')).toContain('--color-bg: #f7f3eb;');
+    const tokens=read('src/styles/tokens.css');
+    for(const name of ['--type-article-page','--type-article-section','--type-article-subsection','--type-body','--type-caption','--type-plot-label']) {
+      expect(tokens).toContain(name+':');
+    }
+    expect(read('src/styles/editorial-hierarchy.css')).toContain('font-size: var(--type-section) !important;');
+    expect(read('src/styles/site.css')).toContain('h1 { font-size: var(--type-page);');
+    expect(read('src/styles/research-booktabs.css')).toContain('font-family:"Times New Roman",Times');
+    const visual=read('src/components/research/AdvisorTenEvidenceVisual.astro');
+    expect(visual).toContain('data-q03-paper-table');
+    expect(visual).toContain('src="/research/seed-openevo/figures/q03-stage2-pgfplots.svg"');
+    expect(visual).not.toContain('<title id="advisor-q03-title">');
   });
   it('rejects the owner-identified cold-read failures in the report and keeps a scoped green/yellow/red scientific ledger',()=>{
     // Negative probes: a previously-green page must not pass with these known bad claims.

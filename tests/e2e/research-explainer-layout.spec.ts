@@ -225,23 +225,20 @@ async function stepThrough(root: Locator, viewportWidth: number, requiresMainSta
 }
 
 for (const matrix of matrices) {
-  test(`${matrix.name} keeps research explainers geometrically attached and readable`, async ({ page }) => {
-    await page.setViewportSize(matrix.viewport);
-    await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
-
-    for (const route of routes.filter((route) => routeInScope(route.path))) {
-      await test.step(route.path, async () => {
-        await page.goto(route.path, { waitUntil: 'domcontentloaded' });
-        await settle(page);
-        expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
-        for (const kind of route.kinds) {
-          const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
-          await expect(root).toBeVisible();
-          await stepThrough(root, matrix.viewport.width, route.requiresMainStage);
-        }
-      });
-    }
-  });
+  for (const route of routes.filter((route) => routeInScope(route.path))) {
+    test(`${matrix.name} keeps research explainers geometrically attached and readable: ${route.path}`, async ({ page }) => {
+      await page.setViewportSize(matrix.viewport);
+      await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+      await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+      await settle(page);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+      for (const kind of route.kinds) {
+        const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
+        await expect(root).toBeVisible();
+        await stepThrough(root, matrix.viewport.width, route.requiresMainStage);
+      }
+    });
+  }
 }
 
 test('interactive transport stays local until explicit reader interaction', async ({ page }) => {
@@ -522,7 +519,7 @@ for (const width of [390,768,1440]) for (const theme of ['light','dark'] as cons
     const ruler=page.locator('#fig-webshop-seed-split .ruler');
     const heldout=ruler.locator('.heldout');
     const label=heldout.locator('span');
-    await expect(label).toHaveText('保留候选池');
+    await expect(label).toHaveText('500');
     const measure=()=>label.evaluate(node=>{
       const css=getComputedStyle(node),r=node.getBoundingClientRect(),segment=node.parentElement!.getBoundingClientRect();
       return {writingMode:css.writingMode,transform:css.transform,width:r.width,height:r.height,segmentWidth:segment.width};

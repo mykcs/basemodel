@@ -48,7 +48,9 @@ for (const viewport of [
         expect(tableGeometry.scrollWidth).toBeLessThanOrEqual(tableGeometry.clientWidth + 2);
         const readingWindow = page.locator('[data-paper-table-scroll]');
         expect(await readingWindow.evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(2);
-        await expect(page.locator('.table-wrap table')).toHaveCSS('display', 'table');
+        // The explicit --records presentation switches the native table to
+        // labeled full records on phones while retaining its table semantics.
+        await expect(page.locator('.table-wrap table')).toHaveCSS('display', 'block');
         const r128Cells = await page.locator('.table-wrap tbody tr td:nth-child(3)').evaluateAll((nodes) => nodes.map((node) => {
           const rect = node.getBoundingClientRect();
           return { left: rect.left, right: rect.right };

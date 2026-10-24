@@ -6,6 +6,7 @@ import { join, relative, sep } from 'node:path';
 
 const paperTableBaseline = JSON.parse(readFileSync(join(process.cwd(), 'tests/fixtures/research-paper-table-values.json'), 'utf8')) as { routes: { route: string; tables: { index: number; hash: string }[] }[] };
 const responseRoute = '/research/seed-openevo/study/parameter-memory-results/';
+const sdLoraScalingRoute = '/research/seed-openevo/study/capability-exploration/sd-lora-scaling/';
 // #938 / experiment 877ade0e: preserve the sealed new comparison explicitly;
 // never regenerate the immutable historical table receipt from current output.
 const q01FreshCells = [
@@ -13,6 +14,18 @@ const q01FreshCells = [
   '普通 OpenEVO：160 − 120', '+4.59', '−7.07 至 +16.73',
   'Bounded：160 − 150', '+2.52', '−8.04 至 +13.84',
   '历史 β/GDR：160 − 130', '−5.16', '−16.50 至 +5.29',
+];
+// This table deliberately changed from the older four-column receipt when
+// typography work grouped each stage's schedule and note into one readable
+// record cell. Keep its current evidence explicit without rewriting history.
+const webshopDataUsageCells = [
+  '阶段及 task 抽样', '轨迹数', '不同 goal 覆盖',
+  'Stage 1 · hindsight-skill SFT180 个不同 goal × 每个 8 条 rollout先固定抽出 180 个 goal；这 180 个内部不重复。',
+  '1,440', '2.8% 的 6,410-goal 训练候选池',
+  'Stage 2 · 论文设置150 policy updates × 每轮 16 个 goal × 每个 8 条 rollout跨 update 可以重新抽到旧 goal，因此不是把训练池顺序扫一遍。',
+  '19,200', '最多 2,400 个不同 goal；按 released sampler 的期望值约 2,004 个（31.3%）',
+  'Stage 2 · 当前公开脚本默认160 epochs/updates × 每轮 16 个 goal × 每个 8 条 rollout公开脚本的 total_epochs=160；官方技术说明把论文设置记为 150 policy updates。',
+  '20,480', '最多 2,560 个不同 goal；期望约 2,113 个（33.0%）',
 ];
 
 async function expectPaperGrammar(target: Locator, route: string, index: number) {
@@ -24,15 +37,22 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   // shift the lookup onto a different sealed scientific table.
   const cellTexts = await target.locator('th,td').evaluateAll(cells => cells.map(cell => cell.textContent?.trim()));
   const freshQ01 = route === responseRoute && await target.evaluate(el => Boolean(el.closest('[data-q01-fresh448]')));
+  const currentWebshopDataUsage = route === '/research/seed-openevo/flow/webshop/'
+    && await target.evaluate(el => Boolean(el.closest('.webshop-seed-data-usage')));
   if (freshQ01) {
     expect(cellTexts, 'sealed Q01 fresh-448 comparison').toEqual(q01FreshCells);
+  } else if (currentWebshopDataUsage) {
+    expect(cellTexts, 'current WebShop data-usage evidence after its documented readable-column redesign').toEqual(webshopDataUsageCells);
   } else {
     const protocolBeforeTarget = route === responseRoute ? await target.evaluate(el => {
       const protocol=document.querySelector('[data-q03-protocol]');
       return protocol && Boolean(protocol.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) ? 1 : 0;
     }) : 0;
     const afterInsertions = route === responseRoute ? index - 1 - protocolBeforeTarget : index;
-    const originalIndex = route === responseRoute && afterInsertions >= 5 ? afterInsertions + 1 : afterInsertions;
+    const reorderedSdLoraTableIndex = route === sdLoraScalingRoute && index < 2 ? 1 - index : index;
+    const originalIndex = route === sdLoraScalingRoute
+      ? reorderedSdLoraTableIndex
+      : route === responseRoute && afterInsertions >= 5 ? afterInsertions + 1 : afterInsertions;
     const expected = paperTableBaseline.routes.find(entry => entry.route === route)?.tables.find(entry => entry.index === originalIndex);
     expect(expected, 'sealed original table identity '+route+'#'+index).toBeTruthy();
     expect(createHash('sha256').update(JSON.stringify(cellTexts)).digest('hex')).toBe(expected!.hash);
@@ -45,24 +65,37 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
     return {
       readableColumns: [...el.querySelectorAll<HTMLElement>('tbody th,tbody td')].every(cell => {
         const css=getComputedStyle(cell);
-        return cell.scrollWidth <= cell.clientWidth+2 && parseFloat(css.fontSize)>=12 && css.wordBreak==='normal';
+        return cell.scrollWidth <= cell.clientWidth + 2 && parseFloat(css.fontSize) >= (style.display === 'block' ? 15 : el.closest('.research-booktabs-wrap--presentation') ? 14 : 12) && css.wordBreak === 'normal';
       }),
-      roles: [...el.querySelectorAll('thead,tbody,tfoot,tr,th,td')].every(node => getComputedStyle(node).display === ({THEAD:'table-header-group',TBODY:'table-row-group',TFOOT:'table-footer-group',TR:'table-row',TH:'table-cell',TD:'table-cell'} as Record<string,string>)[node.tagName]),
+      records: style.display === 'block',
+      intactIdentifiers: [...el.querySelectorAll('tbody tr > :first-child')].every(cell => {
+        const walker = document.createTreeWalker(cell, NodeFilter.SHOW_TEXT);
+        while (walker.nextNode()) {
+          const text = walker.currentNode;
+          for (const word of (text.textContent ?? '').matchAll(/SFT|A\d+|Bounded|OpenEVO|DirectApply|Vanilla|rank\d+/g)) {
+            const range = document.createRange(); range.setStart(text, word.index!); range.setEnd(text, word.index! + word[0].length);
+            if (range.getClientRects().length !== 1) return false;
+          }
+        }
+        return true;
+      }),
+      roles: style.display === 'block' ? el.getAttribute('role') === 'table' && [...el.querySelectorAll('tbody td')].every(cell => Boolean((cell as HTMLElement).dataset.paperLabel)) : [...el.querySelectorAll('thead,tbody,tfoot,tr,th,td')].every(node => getComputedStyle(node).display === ({THEAD:'table-header-group',TBODY:'table-row-group',TFOOT:'table-footer-group',TR:'table-row',TH:'table-cell',TD:'table-cell'} as Record<string,string>)[node.tagName]),
       display: style.display, family: style.fontFamily, font: parseFloat(style.fontSize),
       top: parseFloat(style.borderTopWidth), bottom: parseFloat(style.borderBottomWidth),
-      caption: Boolean(cap && captionBox.width > 0 && captionBox.height > 0 && captionBox.bottom <= (el.querySelector('thead,tbody,tr')?.getBoundingClientRect().top ?? box.top) + 2),
+      caption: Boolean(cap && captionBox.width > 0 && captionBox.height > 0 && captionBox.bottom <= (el.querySelector(style.display === 'block' ? 'tbody' : 'thead,tbody,tr')?.getBoundingClientRect().top ?? box.top) + 2),
       captionSide: getComputedStyle(cap).captionSide,
       verticalRules: cells.some(cell => parseFloat(getComputedStyle(cell).borderLeftWidth) > 0 || parseFloat(getComputedStyle(cell).borderRightWidth) > 0),
       bodyRules: [...el.querySelectorAll<HTMLElement>('tbody tr:not(:first-child)>*')].some(cell => parseFloat(getComputedStyle(cell).borderTopWidth) > 0 || parseFloat(getComputedStyle(cell).borderBottomWidth) > 0),
-      numeric: [...el.querySelectorAll<HTMLElement>('[data-numeric]')].every(cell => getComputedStyle(cell).textAlign === 'right' && getComputedStyle(cell).fontVariantNumeric.includes('tabular-nums')),
+      numeric: [...el.querySelectorAll<HTMLElement>('[data-numeric]')].every(cell => (style.display === 'block' || getComputedStyle(cell).textAlign === 'right') && (el.closest('[data-seed-world4-case]') ? getComputedStyle(cell).fontVariantNumeric === 'normal' : getComputedStyle(cell).fontVariantNumeric.includes('tabular-nums'))),
       bodyBackgrounds: [...el.querySelectorAll<HTMLElement>('tbody tr,tbody th,tbody td')].every(cell => ['rgba(0, 0, 0, 0)','transparent'].includes(getComputedStyle(cell).backgroundColor)),
     };
   });
-  expect(grammar.display).toBe('table');
+  expect(['table','block']).toContain(grammar.display);
   expect(grammar.roles).toBe(true);
+  expect(grammar.intactIdentifiers, 'scientific method and checkpoint identifiers must remain whole').toBe(true);
   expect(grammar.readableColumns, JSON.stringify(await target.locator('tbody th,tbody td').evaluateAll(cells=>cells.map(cell=>({text:cell.textContent,width:(cell as HTMLElement).offsetWidth,font:getComputedStyle(cell).fontSize,min:getComputedStyle(cell).minWidth,wrap:getComputedStyle(cell).overflowWrap,break:getComputedStyle(cell).wordBreak}))))).toBe(true);
   expect(grammar.family).toContain('Times');
-  expect(grammar.font).toBeGreaterThanOrEqual(route.includes('/briefing/') ? 14 : 12);
+  expect(grammar.font).toBeGreaterThanOrEqual(grammar.records ? 15 : route.includes('/briefing/') ? 14 : 12);
   expect(grammar.top).toBeGreaterThan(0);
   expect(grammar.bottom).toBeGreaterThan(0);
   expect(grammar.caption, JSON.stringify(grammar)).toBe(true);
@@ -71,9 +104,8 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   expect(grammar.bodyRules).toBe(false);
   expect(grammar.numeric).toBe(true);
   expect(grammar.bodyBackgrounds).toBe(true);
-  const window=target.locator('..');
-  expect(await window.evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(2);
-  expect(await window.evaluate(el=>getComputedStyle(el).overflowX)).not.toMatch(/hidden|clip/);
+  expect(await target.locator('..').evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(2);
+  expect(await target.locator('..').evaluate(node => getComputedStyle(node).overflowX)).not.toMatch(/hidden|clip/);
 }
 
 const captureAudit = process.env.CLOUD_FIGURE_AUDIT === '1';
@@ -300,9 +332,16 @@ test('paper tables use content width while dense comparisons and diagrams retain
 
   await page.goto('/research/seed-openevo/study/capability-exploration/sd-lora-scaling/');
   await expect(page.locator('.scaling-chart')).toHaveAttribute('data-research-figure-size', 'wide');
-  // Five annotated observations must not be reduced to unreadable tiny labels.
-  expect((await page.locator('.scaling-chart svg').boundingBox())!.width).toBeGreaterThan(950);
-  expect(await page.locator('.scaling-chart').evaluate(node => node.scrollWidth > node.clientWidth)).toBe(true);
+  // The compact default stays responsive; the native reader exposes the full
+  // source plot on demand, with scrolling owned by its labelled viewport.
+  const nativeReader = page.locator('.scaling-chart [data-native-svg-reader]');
+  const nativeToggle = nativeReader.locator('.native-svg-reader__toggle');
+  await nativeReader.locator('.native-svg-reader__action').click();
+  await expect(nativeToggle).toBeChecked();
+  const nativeViewport = nativeReader.locator('.native-svg-reader__viewport');
+  expect((await nativeReader.locator('svg').boundingBox())!.width).toBeGreaterThanOrEqual(912);
+  expect(await nativeViewport.evaluate(node => node.scrollWidth > node.clientWidth)).toBe(true);
+  expect(await page.locator('.scaling-chart').evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(2);
 });
 
 test('paper evidence width remains local to scientific plots; app catalog remains intact', async ({ page }) => {
@@ -474,7 +513,7 @@ for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
     expect(['hidden','clip']).not.toContain(geometry.overflow);
     const difference=page.locator('.paper-table').filter({hasText:'R1–R159 mean reward'}).locator('tbody tr').first().locator('td').last();
     await expect(difference).toContainText('+0.0250');
-    const fragments=await difference.evaluate(el=>{const r=document.createRange();r.selectNodeContents(el);return r.getClientRects().length;});
+    const fragments=await difference.evaluate(el=>{const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),tops=new Set<number>();while(walker.nextNode()){if(!walker.currentNode.textContent?.trim())continue;const r=document.createRange();r.selectNodeContents(walker.currentNode);for(const rect of r.getClientRects())if(rect.width)tops.add(Math.round(rect.top*10)/10);}return tops.size;});
     expect(fragments).toBe(1);
     const entropy=page.locator('.paper-table').filter({hasText:'R0–31 mean H'});
     const numericFragments=await entropy.locator('tbody td:nth-child(n+2)').evaluateAll(nodes=>nodes.map(el=>{
@@ -567,6 +606,7 @@ for(const width of [390,768,1440]) {
       const index=await table.evaluate(el=>[...document.querySelectorAll('table')].indexOf(el as HTMLTableElement));
       await expect(expectPaperGrammar(table,route,index)).rejects.toThrow();
       await label.evaluate(el=>{for(const property of ['font-size'])(el as HTMLElement).style.removeProperty(property);});
+      expect((await label.boundingBox())!.width).toBeGreaterThan(0);
       expect(await table.locator('..').evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(2);
     }
   });
