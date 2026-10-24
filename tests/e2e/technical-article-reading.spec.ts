@@ -68,7 +68,9 @@ test('article directory has real labels, valid anchors and no competing rail', a
   const target = await links.nth(1).getAttribute('href');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await links.nth(1).click();
-  await expect.poll(() => page.locator('[id=' + JSON.stringify(decodeURIComponent(target!.slice(1))) + ']').evaluate(node => Math.round(node.getBoundingClientRect().top))).toBe(96);
+  // The 96px scroll margin can round to 97px in WebKit; both values keep the heading below the sticky header.
+  await expect.poll(() => page.locator('[id=' + JSON.stringify(decodeURIComponent(target!.slice(1))) + ']').evaluate(node => Math.round(node.getBoundingClientRect().top))).toBeGreaterThanOrEqual(96);
+  await expect.poll(() => page.locator('[id=' + JSON.stringify(decodeURIComponent(target!.slice(1))) + ']').evaluate(node => Math.round(node.getBoundingClientRect().top))).toBeLessThanOrEqual(97);
   await expect(directory.locator('details')).not.toHaveAttribute('open', '');
   await page.goto('/research/seed-openevo/study/parameter-memory-results/');
   await expect(page.locator('[data-article-outline]')).toBeHidden();
