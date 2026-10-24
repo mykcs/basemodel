@@ -24,4 +24,3 @@ export const Q09_TEXT_COMPARISONS: readonly Q09TextComparison[] = [
   {"checkpoint":"r159","kind":"skill_guidance_removed","label":"技能指导","firstActionChanged":0.515625,"meanScoreDelta":-0.04111426767676768,"ci95":[-0.09608664772727273,0.0026041666666666644]},
   {"checkpoint":"r159","kind":"agent_guidance_removed","label":"系统指导","firstActionChanged":0.203125,"meanScoreDelta":0.016393849206349207,"ci95":[-0.014955357142857142,0.05746527777777778]},
 ];
-

@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from '../../research/ResearchPaperTable.astro';
 import type { Locale } from '../../../i18n';
 
 interface Props { locale: Locale }
@@ -54,37 +55,37 @@ const comparisonControls = [
   <div class="experiment-setup__group">
     <h3>{t('公平比较时固定什么', 'What to hold fixed for fair comparison')}</h3>
     <div class="experiment-table-wrap">
-      <table class="experiment-table">
+      <ResearchPaperTable narrowRecords class="experiment-table"><Fragment slot="caption">{locale === 'zh' ? "实验变量与控制方式" : "Experiment variables and controls"}</Fragment>
         <thead><tr><th>{t('变量', 'Variable')}</th><th>{t('影响', 'Impact')}</th><th>{t('处理', 'Treatment')}</th></tr></thead>
         <tbody>
           {comparisonControls.map((row) => <tr><td>{row.variable}</td><td>{row.impact}</td><td>{row.treatment}</td></tr>)}
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
   </div>
 </section>
 
 <style>
   .experiment-setup{scroll-margin-top:calc(var(--site-header-height) + 1.5rem)}
-  .experiment-setup__lede{max-width:76ch;margin:.55rem 0 0;color:var(--muted);line-height:1.7}
+  .experiment-setup__lede{max-width:76ch;margin:.55rem 0 0;color:var(--muted);line-height:var(--type-leading-body)}
   .experiment-setup__group{margin-top:1.55rem}
-  .experiment-setup__group h3{margin:0 0 .65rem;font-size:.9rem}
+  .experiment-setup__group h3{margin:0 0 .65rem;font-size:var(--type-minor-heading);line-height:var(--type-leading-heading)}
   .model-name-anatomy,.experiment-fields{display:grid;margin:0;border-top:1px solid var(--line)}
   .model-name-anatomy{grid-template-columns:repeat(4,minmax(0,1fr))}
   .model-name-anatomy div{padding:.8rem .7rem .75rem 0;border-bottom:1px solid var(--line)}
   .model-name-anatomy div+div{padding-left:.7rem;border-left:1px solid var(--line)}
-  .model-name-anatomy dt{font-size:.88rem;font-weight:800}
-  .model-name-anatomy dd{margin:.3rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.45}
+  .model-name-anatomy dt{font-size:var(--type-body);font-weight:var(--type-weight-label)}
+  .model-name-anatomy dd{margin:.3rem 0 0;color:var(--muted);font-size:var(--type-body-small);line-height:var(--type-leading-caption);overflow-wrap:anywhere}
   .experiment-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
   .experiment-fields div{padding:.8rem 0;border-bottom:1px solid var(--line)}
   .experiment-fields div:nth-child(even){padding-left:1rem;border-left:1px solid var(--line)}
-  .experiment-fields dt{font-size:.78rem;font-weight:800}
-  .experiment-fields dd{margin:.28rem 0 0;color:var(--muted);font-size:.75rem;line-height:1.55}
+  .experiment-fields dt{font-size:var(--type-body-small);font-weight:var(--type-weight-label)}
+  .experiment-fields dd{margin:.28rem 0 0;color:var(--muted);font-size:var(--type-body-small);line-height:var(--type-leading-caption)}
   .experiment-table-wrap{max-width:100%;min-width:0;overflow:visible;border-top:1px solid var(--line)}
-  .experiment-table{width:100%;max-width:100%;min-width:0;table-layout:fixed;margin-inline:auto;border-collapse:collapse;font-size:clamp(.75rem,.7rem + .2vw,.875rem)}
+  .experiment-table{width:100%;max-width:100%;min-width:0;table-layout:fixed;margin-inline:auto;border-collapse:collapse;font-size:var(--type-table)}
   .experiment-table th,.experiment-table td{min-width:0;padding:clamp(.3rem,1vw,.72rem) clamp(.2rem,.6vw,.7rem) clamp(.3rem,1vw,.72rem) 0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5;overflow-wrap:anywhere;word-break:normal}
-  .experiment-table th{color:var(--muted);font-size:clamp(.75rem,.7rem + .2vw,.82rem)}
-  .experiment-table td:first-child{font-weight:750}
+  .experiment-table th{color:var(--muted);font-size:var(--type-table)}
+  .experiment-table td:first-child{font-weight:var(--type-weight-label)}
   @media(max-width:640px){
     .model-name-anatomy,.experiment-fields{grid-template-columns:1fr}
     .model-name-anatomy div+div,.experiment-fields div:nth-child(even){padding-left:0;border-left:0}

@@ -1,5 +1,28 @@
 # Latest Agent handoff
 
+## 2026-10-24 Typography release and Production closeout
+
+PR [#949](https://github.com/mykcs/basemodel/pull/949) squash-merged the sitewide Typography system to `main@dbda56cb3ca12c1956f0fb0a1876a6a10541bc84`, including Q05 PR #948's discrete β teaching axis, formula fit, browser checks, workflow triggers and qualified 65-minute Cloud Figure timeout. Exact-head Public PR CI (run `40060099546`), full Cloud Figure Visual Review (run `40060098996`, eight browser shards plus artifact round-trip checks), local `npm run verify:deploy`, `npm run build`, and the 2,096-case Chromium/WebKit matrix passed. The exact-head Vercel Preview was READY; the `main` Production deployment `dpl_3M8R7Sy9hsWknow5o671aPTTELut` is READY on the same SHA. Production `/` and `/research/seed-openevo/study/parameter-memory-results/` returned HTTP 200; the five-point Q05 axis and `--type-plot-label` are present in served output. Production `noindex,follow` is intentional while access protection is active; canonical and hreflang use `https://basemodel-preview.vercel.app/`. The source ledger covers 5,491 declarations; ten new/inherited identities remain explicitly unobserved in the incremental snapshot, so no full-site visual observation is claimed. Older SHA receipts below are historical.
+
+
+R1 screenshot review is closed for its requested D6/D7 surfaces. On the exact #949
+candidate, Q17 Frontier/DirectApply readers and all six Landscape viewport/theme
+states were visually opened alongside SHA-bound JSON. Publication SVG-reader segments
+were opened to verify local scrolling and label readability. See the current receipts
+in `evidence/sitewide-typography/2026-10-22/WP_D6_Q17_FRONTIER_TYPOGRAPHY.md` and
+`WP_D7_NATIVE_SVG_AND_LANDSCAPE.md`. The adjacent Briefing image-reader scope remains
+PARTIAL because its captures show only scrolled segments; it is not represented as
+accepted. No scientific values changed.
+
+## 2026-10-20 Typography continuation
+
+The completed continuation inventories all open PR paths and extends the audit to Astro scoped
+styles and font shorthands; the historical 249 CSS literal count is not a complete
+source inventory. Method-diagram migration and remaining ownership/classification
+are recorded in `evidence/sitewide-typography/2026-10-20/README.md`. Current successor
+acceptance is pending and tracked in the 2026-10-23 handoff above; historical green
+CI/Preview receipts do not transfer to its SHA.
+
 Last updated: **2026-08-28** (research-state snapshot)
 
 CI architecture last verified: **2026-09-21**
@@ -74,7 +97,7 @@ mykcs/openevo-experiment         = scientific experiment/result authority
 
 **Live CI control plane (verified 2026-09-21 at `main@d747a658008566e8ba82df50d5dc35fb87e53534`):** protected `main` keeps strict current-base semantics and requires **both** `public-ci-gate` (GitHub Actions app 15368) and `Vercel` (app 8329). CircleCI has no ordinary merge authority.
 
-Ordinary working refs are not Vercel deployment-enabled. They receive automatic **Public PR CI**: read-only exact-head deterministic validation plus the shared risk-based browser planner; non-UI work allocates zero browser runners, bounded UI work allocates one, and full/global browser work is timing-balanced over eight independent Chromium shards with one worker each and retries=0. `public-ci-gate` is required merge evidence. Hosted Vercel acceptance is requested only after that exact-head check is green through `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`, which pins `ci/vercel-gate-base` to live `main` and moves persistent `ci/vercel-gate-final` to the exact PR head. Vercel then performs the static production build and proves provider deployability on that same SHA instead of rerunning the deterministic/browser suite. Proven docs/governance-only `main` changes remain ignored so they cannot replace Production. **Merge readiness therefore requires both `public-ci-gate` and `Vercel`.** CircleCI automatic PR/main workflows remain disabled; the self-hosted GitHub Actions workflow remains manual recovery only.
+Ordinary working refs are not Vercel deployment-enabled. They receive automatic **Public PR CI**: read-only exact-head deterministic validation plus the shared risk-based browser planner; non-UI work allocates zero browser runners, bounded UI work allocates one, and full/global browser work is native Playwright-sharded over eight independent Chromium shards with one worker each and retries=0. `public-ci-gate` is required merge evidence. Hosted Vercel acceptance is requested only after that exact-head check is green through `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`, which pins `ci/vercel-gate-base` to live `main` and moves persistent `ci/vercel-gate-final` to the exact PR head. Vercel then performs the static production build and proves provider deployability on that same SHA instead of rerunning the deterministic/browser suite. Proven docs/governance-only `main` changes remain ignored so they cannot replace Production. **Merge readiness therefore requires both `public-ci-gate` and `Vercel`.** CircleCI automatic PR/main workflows remain disabled; the self-hosted GitHub Actions workflow remains manual recovery only.
 
 Provider-selection rationale is `current/ci-provider-decision.md`; current hosting authority is `current/hosting-architecture.md`; release/deployment authority is `current/deployment-policy.md`. Cloudflare deployment and monitoring paths are legacy/rollback/provider-specific tooling; there is no active anonymous external Production monitor.
 

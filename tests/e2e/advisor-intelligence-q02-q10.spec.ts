@@ -25,6 +25,22 @@ for(const width of [320,390,768,1440]){
       await expect(q02).toContainText('15 / 18');
       await expect(q02).toContainText('SFT');
       await expect(q02).toContainText('OPSD');
+      const q02Typography=await q02.evaluate(root=>['.advisor-intel__lead','.advisor-intel__q02-common span','.advisor-intel__q02-route-head span','.advisor-intel__q02-node','.advisor-intel__q02-node small','.advisor-intel__disclaimer'].map(selector=>{
+        const element=root.querySelector<HTMLElement>(selector)!;
+        return {selector,size:Number.parseFloat(getComputedStyle(element).fontSize)};
+      }));
+      expect(q02Typography.find(item=>item.selector==='.advisor-intel__lead')!.size).toBeGreaterThanOrEqual(15);
+      expect(q02Typography.filter(item=>item.selector!=='.advisor-intel__lead').every(item=>item.size>=14),`Q02 teaching labels below 14px: ${JSON.stringify(q02Typography)}`).toBe(true);
+      const conceptTypography=await page.locator('[data-advisor-concept]').evaluateAll(roots=>roots.flatMap(root=>[...root.querySelectorAll<HTMLElement>(['.advisor-intel__lead','.advisor-intel__foot','.advisor-intel__panel p','.advisor-intel__fork-instruction','.advisor-intel__formula p','.advisor-intel__decision-remainder','.advisor-intel__round-result p'].join(','))].map(element=>({role:element.className,size:Number.parseFloat(getComputedStyle(element).fontSize)}))));
+      expect(conceptTypography.length).toBeGreaterThan(10);
+      expect(conceptTypography.every(item=>item.size>=15),`Q02–Q10 explanatory text below 15px: ${JSON.stringify(conceptTypography.filter(item=>item.size<15))}`).toBe(true);
+      const q02Floor=q02.locator('.advisor-intel__q02-node small').first();
+      const q02FloorPasses=()=>q02Floor.evaluate(element=>Number.parseFloat(getComputedStyle(element).fontSize)>=14);
+      expect(await q02FloorPasses()).toBe(true);
+      const q02OldStyle=await q02Floor.getAttribute('style');
+      await q02Floor.evaluate(element=>element.setAttribute('style','font-size:9px'));
+      expect(await q02FloorPasses()).toBe(false);
+      if(q02OldStyle===null)await q02Floor.evaluate(element=>element.removeAttribute('style'));else await q02Floor.evaluate((element,value)=>element.setAttribute('style',value),q02OldStyle);
       await expect(q02.locator('[data-q02-fork-wires] path')).toHaveCount(1);
       // Owner-approved Q02 was a paired training-mechanism comparison, not
       // two generic summary cards. Both routes must use a shared task, keep
@@ -79,6 +95,36 @@ for(const width of [320,390,768,1440]){
       await expect(q05.locator('[data-q05-panel="full"]')).toBeHidden();
       await q05.locator('input[value="adaptive"]').check();
       await expect(q05.locator('[data-q05-panel="adaptive"]')).toBeVisible();
+      await expect(q05.locator('.advisor-intel__scale-ticks span')).toHaveText(['0','0.25','0.5','0.75','1']);
+      await expect(q05.locator('.advisor-intel__scale-choices i')).toHaveCount(4);
+      await expect(q05.locator('.advisor-intel__scale-choices')).toBeVisible();
+      await expect(q05.locator('.advisor-intel__scale-arrow')).toBeHidden();
+      // A discrete four-level beta policy must never masquerade as a continuous band.
+      // Read the rendered geometry at every viewport/theme, not merely the text labels.
+      const betaAxis=await q05.evaluate(root=>{
+        const rail=root.querySelector('.advisor-intel__scale-rail')!.getBoundingClientRect();
+        const labels=[...root.querySelectorAll('.advisor-intel__scale-ticks span')].map(el=>el.getBoundingClientRect());
+        const dots=[...root.querySelectorAll('.advisor-intel__scale-choices i')].map(el=>el.getBoundingClientRect());
+        const scroll=root.querySelector('.advisor-intel__formula .math-formula__scroll') as HTMLElement;
+        const formula=scroll.closest('.math-formula') as HTMLElement;
+        const formulaBox=formula.getBoundingClientRect();
+        const glyphRight=scroll.getBoundingClientRect().right+Math.max(0,scroll.scrollWidth-scroll.clientWidth);
+        return {
+          x:rail.x,width:rail.width,
+          labels:labels.map((box,i)=>i===0?box.left:i===4?box.right:box.left+box.width/2),
+          dots:dots.map(box=>box.left+box.width/2),
+          formulaOverflowMode:getComputedStyle(scroll).overflowX,
+          formulaInkMargin:formulaBox.right-glyphRight,
+          formulaPageMargin:root.getBoundingClientRect().right-formulaBox.right,
+        };
+      });
+      for(let i=0;i<5;i++)expect(Math.abs(betaAxis.labels[i]!-(betaAxis.x+betaAxis.width*i/4))).toBeLessThanOrEqual(2);
+      for(let i=0;i<4;i++)expect(Math.abs(betaAxis.dots[i]!-(betaAxis.x+betaAxis.width*(i+1)/4))).toBeLessThanOrEqual(2);
+      // KaTeX's ~2px italic ink overhang fits inside the padded math container:
+      // no clipped glyph, no horizontal scrollbar, no article-edge overflow.
+      expect(betaAxis.formulaOverflowMode).toBe('visible');
+      expect(betaAxis.formulaInkMargin).toBeGreaterThanOrEqual(1);
+      expect(betaAxis.formulaPageMargin).toBeGreaterThanOrEqual(0);
       await expect(q05.locator('[data-math-formula-inline]')).toHaveCount(6);
       await expect(q05.locator('.katex-mathml math')).toHaveCount(7);
       await expect(q05).toContainText('0.25');
@@ -160,7 +206,7 @@ for(const width of [320,390,768,1440]){
       await expect(q09Updates.first()).toContainText('159 次参数更新');
       if(width<=390){
         const updateRows=await q09Updates.evaluateAll(items=>items.map(item=>item.getBoundingClientRect().top));
-        expect(Math.max(...updateRows)-Math.min(...updateRows)).toBeLessThan(2);
+        expect(new Set(updateRows.map(top=>Math.round(top))).size).toBe(1);
       }
       if(width<=390){
         const q05Table=await page.locator('#main-results [data-q05-history-paper-table]').evaluate(wrap=>{

@@ -40,7 +40,7 @@ const gdr = {
   <section class="gdr-history__section evo-article__section" id="admission-rule" aria-labelledby="admission-rule-title">
     <h2 id="admission-rule-title">{t('旧 GDR-v1：训练完，再筛一次', 'Old GDR-v1: train first, then screen the update')}</h2>
     <div class="gdr-history__compare" role="region" aria-label={t('旧 GDR-v1 与 DirectApply 每一步对照', 'Step-by-step comparison of old GDR-v1 and DirectApply')} tabindex="0">
-      <ResearchPaperTable>
+      <ResearchPaperTable narrowRecords="tablet">
 <Fragment slot="caption">{t('旧 GDR-v1：训练完，再筛一次', 'Old GDR-v1: train first, then screen the update')}</Fragment>
         <thead><tr><th scope="col">{t('步骤', 'Stage')}</th><th scope="col"><strong>GDR-v1</strong><span>{t('候选更新训练完，再做固定 16 题检查', 'run a fixed 16-task check after training the candidate update')}</span></th><th scope="col"><strong>DirectApply</strong><span>{t('不再用任务分数否决已训练的更新', 'stop using task score to veto a trained update')}</span></th></tr></thead>
         <tbody>
@@ -96,7 +96,7 @@ const gdr = {
   </details>
 </article>
 <style>
-.gdr-history__back,.gdr-history__current,.gdr-history__links a{color:var(--accent-deep);font-weight:750;text-underline-offset:.2em}
+.gdr-history__back,.gdr-history__current,.gdr-history__links a{color:var(--accent-deep);font-weight:var(--type-weight-heading);text-underline-offset:.2em}
 .gdr-history__lede{margin:0}
 .gdr-history__current{display:inline-flex;margin-top:1rem}.gdr-history__current--end{margin-top:.5rem}
 .gdr-history__section>p{margin:.75rem 0}
@@ -104,7 +104,7 @@ const gdr = {
 .gdr-history__compare{max-width:100%;margin-top:1.4rem;overflow-x:auto;}
 .gdr-history__compare table{min-width:720px}.gdr-history__compare thead th span{margin-top:.2rem}.gdr-history__compare tbody th{width:3rem}
 .gdr-history__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.2rem 0 1rem;border-block:1px solid var(--line)}
-.gdr-history__metrics>div{padding:.85rem 1rem;border-right:1px solid var(--line)}.gdr-history__metrics>div:nth-child(3n){border-right:0}.gdr-history__metrics dt{color:var(--muted);font-size:.9rem}.gdr-history__metrics dd{margin:.2rem 0 0}
-.gdr-history__evidence{margin-top:2rem;border-block:1px solid var(--line)}.gdr-history__evidence summary{padding:1rem 0;cursor:pointer;color:var(--accent-deep);font-weight:750}.gdr-history__evidence dl{margin:0 0 1rem}.gdr-history__evidence dl>div{display:grid;grid-template-columns:10rem 1fr;gap:1rem;padding:.6rem 0;border-top:1px solid var(--line)}.gdr-history__evidence dt{font-weight:800}.gdr-history__evidence dd{margin:0}.gdr-history code{overflow-wrap:anywhere}
+.gdr-history__metrics>div{padding:.85rem 1rem;border-right:1px solid var(--line)}.gdr-history__metrics>div:nth-child(3n){border-right:0}.gdr-history__metrics dt{color:var(--muted);font-size:var(--type-body-small)}.gdr-history__metrics dd{margin:.2rem 0 0}
+.gdr-history__evidence{margin-top:2rem;border-block:1px solid var(--line)}.gdr-history__evidence summary{padding:1rem 0;cursor:pointer;color:var(--accent-deep);font-weight:var(--type-weight-heading)}.gdr-history__evidence dl{margin:0 0 1rem}.gdr-history__evidence dl>div{display:grid;grid-template-columns:10rem 1fr;gap:1rem;padding:.6rem 0;border-top:1px solid var(--line)}.gdr-history__evidence dt{font-weight:var(--type-weight-label)}.gdr-history__evidence dd{margin:0}.gdr-history code{overflow-wrap:anywhere}
 @media(max-width:760px){.gdr-history__metrics{grid-template-columns:1fr}.gdr-history__metrics>div{border-right:0;border-bottom:1px solid var(--line)}.gdr-history__metrics>div:last-child{border-bottom:0}.gdr-history__evidence dl>div{grid-template-columns:1fr;gap:.2rem}}
 </style>

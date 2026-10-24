@@ -279,14 +279,14 @@ const commandMenuLabels = {
 
   .journey-link__index {
     color: var(--nav-accent);
-    font: 800 .58rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    font: var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface);
   }
 
   .journey-link__copy,
   .journey-link__copy strong,
   .journey-link__copy small { display: block; min-width: 0; }
-  .journey-link__copy strong { overflow: hidden; font-size: .75rem; line-height: 1.15; text-overflow: ellipsis; white-space: nowrap; }
-  .journey-link__copy small { margin-top: .2rem; overflow: hidden; color: var(--muted); font-size: .58rem; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+  .journey-link__copy strong { overflow-wrap: anywhere; font-size: var(--type-meta); font-family: var(--font-interface); line-height: var(--type-leading-heading); white-space: normal; }
+  .journey-link__copy small { margin-top: .2rem; overflow: hidden; color: var(--muted); font-size: var(--type-meta); font-family: var(--font-interface); line-height: var(--type-leading-caption); white-space: normal; }
 
   .resource-menu { position: relative; flex: 0 0 auto; }
   .resource-menu summary {
@@ -299,8 +299,8 @@ const commandMenuLabels = {
     border-radius: 10px;
     color: var(--muted);
     cursor: pointer;
-    font-size: .7rem;
-    font-weight: 800;
+    font-size: var(--type-meta);
+    font-weight: var(--type-weight-heading);
     list-style: none;
   }
   .resource-menu summary::-webkit-details-marker { display: none; }
@@ -352,8 +352,8 @@ const commandMenuLabels = {
     align-items: baseline;
     padding: .45rem .55rem .75rem;
   }
-  .resource-menu__intro small { color: var(--nav-accent); font-size: .62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-  .resource-menu__intro strong { min-width: 0; color: var(--ink); font-size: .72rem; line-height: 1.4; overflow-wrap: anywhere; white-space: normal; }
+  .resource-menu__intro small { color: var(--nav-accent); font-size: var(--type-meta); font-weight: var(--type-weight-label); letter-spacing: normal; text-transform: uppercase; }
+  .resource-menu__intro strong { min-width: 0; color: var(--ink); font-size: var(--type-meta); font-family: var(--font-interface); line-height: var(--type-leading-heading); overflow-wrap: anywhere; white-space: normal; }
 
   .resource-menu__links {
     display: grid;
@@ -380,8 +380,8 @@ const commandMenuLabels = {
   }
   .resource-menu__links strong,
   .resource-menu__links span { display: block; min-width: 0; white-space: normal; overflow-wrap: anywhere; }
-  .resource-menu__links strong { color: var(--ink); font-size: .73rem; }
-  .resource-menu__links span { margin-top: 0; color: var(--muted); font-size: .62rem; line-height: 1.4; }
+  .resource-menu__links strong { color: var(--ink); font-size: var(--type-meta); font-family: var(--font-interface); }
+  .resource-menu__links span { margin-top: 0; color: var(--muted); font-size: var(--type-meta); font-family: var(--font-interface); line-height: var(--type-leading-caption); }
 
   @media (max-width: 760px) {
     .resource-menu__panel { width: min(520px, calc(100vw - 1rem)); max-width: calc(100vw - 1rem); }
@@ -397,8 +397,8 @@ const commandMenuLabels = {
   }
   .mobile-menu__section + .mobile-menu__section { margin-top: 1.25rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
   .mobile-menu__heading { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; margin-bottom: .65rem; }
-  .mobile-menu__heading span { color: var(--ink); font-size: .74rem; font-weight: 850; }
-  .mobile-menu__heading small { color: var(--muted); font-size: .62rem; text-align: right; }
+  .mobile-menu__heading span { color: var(--ink); font-size: var(--type-meta); font-weight: var(--type-weight-heading); }
+  .mobile-menu__heading small { color: var(--muted); font-size: var(--type-meta); text-align: right; }
 
   .mobile-journeys { display: grid; gap: .5rem; }
   .mobile-journeys a {
@@ -415,11 +415,11 @@ const commandMenuLabels = {
   }
   .mobile-journeys a[aria-current='page'],
   .mobile-journeys a[data-active='true'] { border-color: color-mix(in srgb, var(--nav-accent) 40%, var(--line)); background: color-mix(in srgb, var(--nav-accent) 7%, transparent); }
-  .mobile-journeys > a > span { color: var(--nav-accent); font: 800 .62rem/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .mobile-journeys > a > span { color: var(--nav-accent); font: var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface); }
   .mobile-journeys strong,
   .mobile-journeys small { display: block; }
-  .mobile-journeys strong { color: var(--ink); font-size: .86rem; }
-  .mobile-journeys small { margin-top: .23rem; color: var(--muted); font-size: .67rem; }
+  .mobile-journeys strong { color: var(--ink); font-size: var(--type-body-small); }
+  .mobile-journeys small { margin-top: .23rem; color: var(--muted); font-size: var(--type-meta); }
 
   .mobile-utility-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .42rem; }
   .mobile-utility-links a {
@@ -430,8 +430,8 @@ const commandMenuLabels = {
     border: 1px solid var(--line);
     border-radius: 10px;
     color: var(--ink);
-    font-size: .72rem;
-    font-weight: 750;
+    font-size: var(--type-meta);
+    font-weight: var(--type-weight-heading);
     text-decoration: none;
   }
   .mobile-utility-links a[aria-current='page'] { border-color: var(--nav-accent); color: var(--nav-accent); }

@@ -435,7 +435,7 @@ const intervalScale = (id: string) => {
           <p data-supported-answer={q.id}><strong>目前回答了什么：</strong>{q.interpretation}</p>
           <p class="evo-article__limit"><strong>还缺什么：</strong>{q.unknown}</p>
           <p class="evo-article__next-work" data-next-work={q.id}><strong>下一步：</strong>{q.progress.next}<span><strong>工作量粗估：</strong>{q.progress.effort}</span> <a href={q.progress.source} target="_blank" rel="noopener noreferrer" data-question-plan-source={q.id}><ExternalBrandMark href={q.progress.source} />核对当前实验工作单</a></p>
-          <p class="evo-article__note">
+          <p class="evo-article__note evo-article__note--navigation">
             {q.evidence.slice(0, 1).map(e => <span><a href={e.href} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={e.href} />本问实验来源</a> · </span>)}
             <a href={'#source-'+q.id}>更多实验来源 ↓</a>
           </p>

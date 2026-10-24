@@ -133,7 +133,7 @@ const groups=matrices[questionId] ?? [];
 {groups.map(table=>(
   <figure class="paper-table-figure advisor-result-matrix" data-advisor-matrix={questionId} data-matrix-kind={table.id} data-paper-table="D1">
     <div class="advisor-result-matrix__wrap" tabindex="0" aria-label={table.title}>
-      <ResearchPaperTable>
+      <ResearchPaperTable narrowRecords>
         <caption class="advisor-result-matrix__sr-only">{table.title}</caption>
         <thead><tr>
           <th scope="col"><span class="advisor-result-matrix__sr-only">实验方法或条件</span></th>
@@ -153,6 +153,6 @@ const groups=matrices[questionId] ?? [];
 ))}
 
 <style>/* Method names share their fixed mobile column; they must wrap inside it. */
-  
+
   .advisor-result-matrix th[scope="row"] { white-space: normal;  }
 </style>

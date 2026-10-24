@@ -159,7 +159,7 @@
   }
   .evo-blog[data-evo-blog="results"] .evo-article__tablewrap .research-booktabs-wrap > table.research-booktabs[data-webshop-seed-paper-comparison] {
     width:100%;min-width:0;max-width:100%;table-layout:fixed;
-    font-size:clamp(.8rem,calc(.3rem + 2.4vw),.92rem);
+    font-size:var(--type-table);
   }
   .evo-blog[data-evo-blog="results"] .evo-article__tablewrap .research-booktabs-wrap > table.research-booktabs[data-webshop-seed-paper-comparison] :is(th,td) {
     overflow-wrap:anywhere;word-break:normal;padding:.4em .25em;

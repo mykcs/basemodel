@@ -4,6 +4,9 @@
  * Keeps Astro/HTML semantics and real source-bound captions outside the asset.
  * No browser-side TeX engine, canvas renderer or runtime code.
  */
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import NativeSvgChartReader from './NativeSvgChartReader.astro';
 interface Props {
   id: string;
   src: string;
@@ -19,8 +22,13 @@ const { id, src, alt, captionId, loading = 'lazy', widthTier = 'single', natural
 if(!id || !src.startsWith('/research/') || !src.endsWith('.svg') || !alt || !captionId || (mobileSrc && (!mobileSrc.startsWith('/research/') || !mobileSrc.endsWith('.svg')))) {
   throw new Error('PublicationPlot needs one vetted local SVG and a meaningful accessible caption');
 }
+const sourceSvg=readFileSync(resolve('public',src.slice(1)),'utf8');
+const intrinsicWidth=Number(sourceSvg.match(/\bviewBox\s*=\s*["']([^"']+)["']/)?.[1]?.trim().split(/\s+/)[2]??naturalWidth);
+if(!Number.isFinite(intrinsicWidth)||intrinsicWidth<=0)throw new Error('PublicationPlot needs finite source-native coordinates');
+const readingWidth=Math.ceil(intrinsicWidth*1.6);
 ---
 <div class:list={['publication-plot',widthTier==='double' && 'publication-plot--double']} data-publication-plot={id}>
+  <NativeSvgChartReader id={`${id}-pgf-native`} label={alt} nativeWidth={readingWidth}>
   <picture>
     {mobileSrc && <source media="(max-width: 720px)" type="image/svg+xml" srcset={mobileSrc} />}
     <img
@@ -34,6 +42,8 @@ if(!id || !src.startsWith('/research/') || !src.endsWith('.svg') || !alt || !cap
     decoding="async"
     />
   </picture>
+  </NativeSvgChartReader>
+  <a class="publication-plot__source" href={src} target="_blank" rel="noreferrer">查看原始矢量图</a>
 </div>
 
 <style>
@@ -59,6 +69,7 @@ if(!id || !src.startsWith('/research/') || !src.endsWith('.svg') || !alt || !cap
   border-radius: 0;
   box-shadow: none;
 }
+.publication-plot__source{display:inline-block;margin-top:.35rem;color:var(--color-text-muted);font:var(--type-weight-medium) var(--type-meta)/var(--type-leading-caption) var(--font-interface)}
 @media print {
   .publication-plot { break-inside: avoid; }
   .publication-plot img { print-color-adjust: exact; }

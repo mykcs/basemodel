@@ -1,8 +1,8 @@
 # BaseModel：学长十问科研图表、全站同类 Figure、云端浏览器与读者验收——Codex 工程交接
 
-> **接手入口**：[PR #901](https://github.com/mykcs/basemodel/pull/901)；主分支 `main`。  
-> **文档性质**：代码级执行计划、交付标准和阻塞检查，不是完成证明。  
-> **核查快照**：2026-10-20。执行前重新读取 PR/head、`main`、CI、Vercel；本文 SHA 均为有日期的历史记录，不能视为后续常量。  
+> **接手入口**：[PR #901](https://github.com/mykcs/basemodel/pull/901)；主分支 `main`。
+> **文档性质**：代码级执行计划、交付标准和阻塞检查，不是完成证明。
+> **核查快照**：2026-10-20。执行前重新读取 PR/head、`main`、CI、Vercel；本文 SHA 均为有日期的历史记录，不能视为后续常量。
 > **明确排除**：全站字体家族、字号系统、字重、斜体、type tokens、大范围 Typography CSS 重构。用户已交给另一窗口。**不要推进或合并含有该混合改造的 #895。**
 
 ## 0. 一句话目标、范围及已完成证据
@@ -50,7 +50,7 @@
 - [ ] **00.2 核对远端身份**：读取 PR #901 的 `state/base/head SHA`、live `main SHA`、`merge-base`、`main...HEAD` 文件清单、当前 check runs、开放的重叠 PR（特别是 #895 和科研 Q10 相关 PR）。产出 `BASE_SHA / HEAD_SHA / OVERLAP` 文字收据；更新前发现 head 改变则重新读取。
 - [ ] **00.3 锁定明确范围**：确认字体/字号/字重/斜体/Token 由另一个窗口负责，本 PR 只改科研 Figure 云端验收、非字体的图表质量与必要的测试/计划；将重叠路径和责任人/PR 链接写在 #901。
 - [ ] **00.4 做前置失败复现**：抓取 `Public PR CI` 上实际第一条失败断言、Cloud Figure 两浏览器运行/Artifact 及其 SHA；分类为代码、陈旧测试、环境或科学内容问题，并留日志 URL。**验收**：PR 中有可核查的基线与 blocker，而不是猜测。
-  
+
 ### WP-01｜修正 CI 架构白名单，不放宽安全约束（依赖 WP-00）
 
 - [ ] **01.1 修改准确 owner**：在 `src/lib/deploymentArchitecture.test.ts` 把 GitHub Workflows **精确允许列表**改为四项：`cloud-figure-visual-review.yml`、`public-pr-ci.yml`、`review-preview.yml`、`self-hosted-ci.yml`；保留对未知第五码 workflow 的 fail-closed 检查。
