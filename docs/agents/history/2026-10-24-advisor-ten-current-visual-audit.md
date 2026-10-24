@@ -25,6 +25,8 @@
 
 Q07 复用 `.advisor-intel__picker--fork`，只为选项加已有 class，避免另造 CSS。手机原本三个大行会切断“同一个向量三种处理”的空间关系；一行三选把单一数轴留在选择后面。Playwright 在 320/390px 验证三个控件同一行、每个宽度至少 64px、不溢出视口，其他 Q05/Q06 的交互保留。此修改不更动任何科学数据、题目结论、字体角色或数字。
 
+**反向检验揭示真实问题：** 初版一行三选在单题检查中 320/390px、Chromium/WebKit 4/4 通过，但全站 WebKit 科研表格巡检触发 `320px scrollWidth=399`，溢出 79px；独立 `main@4c8bc35` 对照在同项测试 PASS。元素级追踪明确唯一越界宽元素是 Q07 的可见 `<legend>`（WebKit 计算 372px，右缘 399px）。为不降低屏幕阅读器支持、不做全站 overflow 隐藏、不放松断言，复用 Q05 已有的 `visually-hidden legend + visible explanation outside fieldset` 模式，专门解决这一浏览器固有布局陷阱。必须再次用**原失败场景**验收，不能拿最初的 4/4 假装全套合格。
+
 发现“排版指纹门禁”后，没有删掉 `verify-typography-ledger.mjs` 或跳过构建：Astro 模板发生变化即刷新受约束的确切源码 SHA-256；用清单验证 **5,491 条** CSS/ASTRO 源声明的语义类别、实例 ID、多重集合及执行状态均未增减。源级门禁与真实截图分别验收，不互相冒充。
 
 下次用户指出某一题问题时：先恢复该题已批准的拓扑/文案和对应归档，再运行 `npx playwright test tests/e2e/advisor-intelligence-q02-q10.spec.ts --grep 'Focused QNN' --project=chromium` 作快速回归；对完整候选才执行 320/390/768/1440 浅/深主题及 WebKit、静态构建、`npm run preflight:ui`、精确 SHA 的 Vercel Preview 与 Production 比对。**人工实图与用户盲测高于“测试绿了”**。浏览器截图不作为存档 RAW 的替代品；若无精确原稿，标记不可证明，不自信声称“原封不动”。

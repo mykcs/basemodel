@@ -179,6 +179,8 @@ for(const width of [320,390,768,1440]){
         expect(vectorOptions.every(x=>x.width>=64&&x.left>=-1&&x.right<=width+1)).toBe(true);
       }
       await expect(q07.locator('[data-q07-directions] legend')).toContainText('固定用第 156 轮示意');
+      await expect(q07.locator('[data-q07-directions] legend')).toHaveClass(/advisor-intel__visually-hidden/);
+      await expect(q07.locator('.advisor-intel__fork-instruction')).toBeVisible();
       await expect(q07.locator('.advisor-intel__vector')).toHaveAttribute('role','group');
       await expect(q07.locator('.advisor-intel__vector-reading')).toHaveAttribute('aria-live','polite');
       await expect(q07.locator('.advisor-intel__vector-axis')).toHaveAttribute('aria-hidden','true');
