@@ -1,5 +1,10 @@
 # Typography candidate: source and acceptance evidence
 
+## 2026-10-24 Q07 mobile choice-row continuation
+
+Q07's three mutually exclusive operations (+Δ / 0 / −Δ) had been stacked into three large cards at phone widths, pushing the signed vector axis away from its controls. The current candidate reuses the **existing** `.advisor-intel__picker--fork` three-column mobile rule (already used by the owner-selected Q05 three-way branch). It introduces **no new typography declarations**, no new CSS exceptions, and no changes to measured Q07 data or signed-vector behavior. The source fingerprint is now `ecc393a27093b8fc5ab0085d83443b58db3253e649267360d96d9d599acb14f5`, still covering exactly **5,491 declarations** with the same decisions and execution classifications. The structural browser guard checks one row and minimum usable width at 320/390px. Historical Q09 source fingerprints and observation receipts below remain historical; this refreshed identity is not a claim of a new full static-consumer observation or final Production acceptance.
+
+
 ## 2026-10-24 Q09 mobile-fidelity continuation (PR #951)
 
 The owner-selected Q09 four-update comparison is a single 1×4 relationship, including on phones. The #949 typography release changed its narrow-width geometry to 2×2 while enforcing a 14px evidence-caption floor. PR #951 restores 1×4 without reducing this floor: the four full units remain in desktop text and accessible labels; the four mobile visual units shorten to “次”. Two responsive Playwright guards now reject a future row split. The source-bound fingerprint is refreshed after the precise CSS/markup change, with **no added, removed or reclassified typography declarations** (5,491 exact rows remain); inherited static observations are not falsely relabeled as freshly visually observed. Browser/Preview/Production verification is a separate release gate.
