@@ -1,6 +1,6 @@
 # WP-D7 · Native scientific SVG reading and Landscape labels
 
-**Work PR:** [#898](https://github.com/mykcs/basemodel/pull/898), Draft stacked above #895. **Status at authoring:** source + static build completed in an isolated candidate; exact-head cloud screenshots, full WebKit exit code, and protected Preview are pending. Do not write ACCEPT until the corresponding run and PNG are inspected.
+**Work PR:** historical implementation began in [#898](https://github.com/mykcs/basemodel/pull/898); production source shipped in [#949](https://github.com/mykcs/basemodel/pull/949). The dated authoring and iteration notes below are historical; current visual acceptance is recorded in the 2026-10-24 section.
 
 ## 2026-10-22 exact-SHA cloud iteration (after initial authoring)
 
@@ -66,16 +66,36 @@ WebKit logs confirm the native-reader matrix, old-squeeze falsification and
 No-JS keyboard Space test passed; screenshots alone do not prove interactions.
 Landscape pagination/tooltip/theme-transition interaction is not newly accepted.
 
-The minimal test-only repair retains all original positive/negative predicates,
+At the time this historical note was written, the minimal test-only repair retained all original positive/negative predicates,
 writes SHA-bound native-reader and Landscape JSON into outputPath while retaining
 reporter attachments, adds Landscape 768 light/dark, and waits for scrollY=0 after
 an instant scroll before the unmodified viewport capture. Independent patch
 review and TypeScript syntax transpilation passed; full exact-head CI and actual
 replacement PNG/JSON review are pending. Briefing's separate reporter-only JSON
-and its uninspected figures remain explicit followup scope, not a fabricated PASS.
+and its uninspected figures were explicit followup scope at that time, not a fabricated PASS.
 
 Correction-to-action witness: missing retained JSON / premature scroll screenshot
 -> `tests/e2e/sitewide-typography.spec.ts` and current artifact-upload globs
 -> downloaded exact-SHA ZIPs plus source inspected
 -> repair outputPath retention and stable capture, rerun same predicates
 -> any new SHA, missing file or nonzero browser exit invalidates acceptance.
+
+## Current release-head R1 visual review — 2026-10-24
+
+Reviewed source: `f674206d7fd91151103cdc1f2d0be0cf6c402640`, PR #949;
+exact-head Public PR CI [run 40060099546](https://github.com/mykcs/basemodel/actions/runs/40060099546)
+and full Cloud Figure Visual Review [run 40060098996](https://github.com/mykcs/basemodel/actions/runs/40060098996)
+passed. Current WebKit PNG/JSON artifacts are bound to that candidate.
+
+| Requested R1 surface | Actual review | Verdict |
+| --- | --- | --- |
+| Q17 Frontier and DirectApply native SVG readers | Six current PNG examples opened across both routes and phone/tablet/desktop, plus the six Q17 Frontier chart states. Controls, captions, labels and scroll hints are visible; mobile's wide scientific SVG scrolls inside its own reader. The full route matrix JSON reports 12px labels and zero document overflow. | ACCEPT for the requested samples |
+| Landscape full chart | All six current 390/768/1440 × light/dark full-chart PNGs opened. Axes, legend, caption and phone legend pagination are legible; JSON records 13–14px labels and no document overflow. | ACCEPT for the requested matrix |
+| Publication native-reader figures | Twelve segmented screenshots opened across mobile and desktop, including first/middle/end horizontal positions of the wide WebShop score plot and additional figure examples. The reader explicitly explains left/right scrolling; the wide SVG's axes and plotted points remain readable in the local viewport. Six `publication-glyphs.json` records bind the candidate SHA and cover all eight figures across viewport/theme combinations, with labels at least 12px and no page overflow. | ACCEPT for native-reader typography and local-scroll behavior |
+| Briefing chart/image readers outside the requested R1 page set | Twenty screenshots opened: eight chart readers and eight image readers at 390 light, plus indices 0 and 7 at 1440 light. Chart samples are readable. Image samples show only a horizontally scrolled segment, so full-span image legibility is not established; other indices/states were not reviewed. | PARTIAL; image span NEEDS HUMAN REVIEW |
+
+**R1 requested D7 scope: ACCEPT.** This does not clear the separately held
+Briefing/EffectiveState image-reader scope above, whose owners overlap other PRs.
+The review changed no production source or scientific data. The current PNG/JSON
+artifacts—not the 2022 historical SHA receipts—support these verdicts. Merge and
+Production receipts are recorded in `docs/agents/LATEST.md`.
