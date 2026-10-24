@@ -66,7 +66,12 @@ function assertPublicCiGate(headSha) {
 }
 
 function assertHeadContainsMain(mainSha, headSha) {
-  const comparison = json(['api', `repos/${REPO}/compare/${mainSha}...${headSha}`]);
+  const comparison = json([
+    'api',
+    `repos/${REPO}/compare/${mainSha}...${headSha}`,
+    '--jq',
+    '{merge_base_commit: {sha: .merge_base_commit.sha}, behind_by, status}',
+  ]);
   const mergeBase = comparison.merge_base_commit?.sha;
   const behindBy = comparison.behind_by;
   const status = comparison.status;
