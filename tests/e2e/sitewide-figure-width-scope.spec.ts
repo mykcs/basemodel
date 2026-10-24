@@ -6,6 +6,7 @@ import { join, relative, sep } from 'node:path';
 
 const paperTableBaseline = JSON.parse(readFileSync(join(process.cwd(), 'tests/fixtures/research-paper-table-values.json'), 'utf8')) as { routes: { route: string; tables: { index: number; hash: string }[] }[] };
 const responseRoute = '/research/seed-openevo/study/parameter-memory-results/';
+const sdLoraScalingRoute = '/research/seed-openevo/study/capability-exploration/sd-lora-scaling/';
 // #938 / experiment 877ade0e: preserve the sealed new comparison explicitly;
 // never regenerate the immutable historical table receipt from current output.
 const q01FreshCells = [
@@ -32,7 +33,10 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
       return protocol && Boolean(protocol.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) ? 1 : 0;
     }) : 0;
     const afterInsertions = route === responseRoute ? index - 1 - protocolBeforeTarget : index;
-    const originalIndex = route === responseRoute && afterInsertions >= 5 ? afterInsertions + 1 : afterInsertions;
+    const reorderedSdLoraTableIndex = route === sdLoraScalingRoute && index < 2 ? 1 - index : index;
+    const originalIndex = route === sdLoraScalingRoute
+      ? reorderedSdLoraTableIndex
+      : route === responseRoute && afterInsertions >= 5 ? afterInsertions + 1 : afterInsertions;
     const expected = paperTableBaseline.routes.find(entry => entry.route === route)?.tables.find(entry => entry.index === originalIndex);
     expect(expected, 'sealed original table identity '+route+'#'+index).toBeTruthy();
     expect(createHash('sha256').update(JSON.stringify(cellTexts)).digest('hex')).toBe(expected!.hash);
