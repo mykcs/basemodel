@@ -41,7 +41,7 @@ if (!hero || changed(hero.firstActionChanged)!==33) throw new Error('Q09 33/64 f
     <div class="q09-text__update-grid">
       {updates.map(item=><div class="q09-text__update" data-q09-update={item.kind}>
         <span class="q09-text__update-label">{item.name}</span>
-        <strong aria-label={`${item.count} ${item.unit}`}><span>{item.count}</span> <span class="q09-text__unit-full">{item.unit}</span><span class="q09-text__unit-short" aria-hidden="true">次</span></strong>
+        <strong aria-label={`${item.count} ${item.unit}`}><span>{item.count}</span> <output class="q09-text__unit-full">{item.unit}</output><output class="q09-text__unit-short" aria-hidden="true">次</output></strong>
         <div class="q09-text__progress" role="progressbar" aria-label={`${item.name}：160 轮训练记录中的 ${item.count} ${item.unit}`} aria-valuemin="0" aria-valuemax="160" aria-valuenow={item.count}><span style={`width:${item.count/160*100}%`}></span></div>
         <small>{item.count} / 160 轮</small>
       </div>)}
@@ -121,7 +121,7 @@ if (!hero || changed(hero.firstActionChanged)!==33) throw new Error('Q09 33/64 f
   .q09-text__update+.q09-text__update{border-left:1px solid var(--q09-line)}
   .q09-text__update-label{font-size:var(--type-caption);font-weight:650;white-space:normal;overflow-wrap:anywhere}
   .q09-text__update strong{font-size:var(--type-caption);font-weight:550;white-space:normal;overflow-wrap:break-word;min-height:2.85rem;line-height:1.35}
-  .q09-text__update strong > span:first-child{font-size:clamp(1.22rem,3vw,1.75rem);font-weight:760;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+  .q09-text__update strong span{font-size:clamp(1.22rem,3vw,1.75rem);font-weight:760;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
   .q09-text__unit-short{display:none}
   .q09-text__progress{height:.48rem;border-radius:999px;background:color-mix(in srgb,var(--q09-ink) 10%,var(--q09-paper));overflow:hidden}
   .q09-text__progress>span{display:block;height:100%;min-width:3px;background:#458abb;border-radius:999px}
@@ -159,7 +159,7 @@ if (!hero || changed(hero.firstActionChanged)!==33) throw new Error('Q09 33/64 f
   .q09-text__details p{font-size:var(--type-body-small);line-height:1.7}
   .q09-text .q09-text__sources{font-size:var(--type-caption);color:var(--q09-muted);margin:.8rem 0 0}
   .q09-text a{color:var(--color-accent,var(--accent-deep));text-underline-offset:3px}
-  @media(max-width:580px){.q09-text__hero{grid-template-columns:minmax(0,.37fr) minmax(0,1fr);gap:.65rem}.q09-text__hero-number strong{font-size:clamp(2.6rem,13vw,4rem)}.q09-text__hero-number small{font-size:var(--type-caption)}.q09-text .q09-text__hero h4{font-size:1.03rem}.q09-text__update-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:.13rem}.q09-text__update{padding:0 .1rem}.q09-text__update-label{font-size:var(--type-caption)}.q09-text__update strong{font-size:var(--type-caption)}.q09-text__update strong > span:first-child{font-size:1.22rem}.q09-text__unit-full{display:none}.q09-text__unit-short{display:inline;font-size:var(--type-caption)}.q09-text__update small{font-size:var(--type-caption)}.q09-text__comparison-heading{align-items:start;flex-wrap:wrap}.q09-text__column-head,.q09-text__row{grid-template-columns:minmax(0,.8fr) minmax(0,1.05fr) minmax(0,.9fr);gap:.3rem}.q09-text__row-name strong{font-size:var(--type-body-small)}.q09-text__row-name small{font-size:var(--type-caption)}.q09-text__score>span{font-size:var(--type-caption)}.q09-text__column-head{font-size:var(--type-caption)}.q09-text__row{padding:.72rem .1rem}.q09-text__bar{height:.52rem}}
+  @media(max-width:580px){.q09-text__hero{grid-template-columns:minmax(0,.37fr) minmax(0,1fr);gap:.65rem}.q09-text__hero-number strong{font-size:clamp(2.6rem,13vw,4rem)}.q09-text__hero-number small{font-size:var(--type-caption)}.q09-text .q09-text__hero h4{font-size:1.03rem}.q09-text__update-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:.13rem}.q09-text__update{padding:0 .1rem}.q09-text__update-label{font-size:var(--type-caption)}.q09-text__update strong{font-size:var(--type-caption)}.q09-text__update strong span{font-size:1.22rem}.q09-text__unit-full{display:none}.q09-text__unit-short{display:inline;font-size:var(--type-caption)}.q09-text__update small{font-size:var(--type-caption)}.q09-text__comparison-heading{align-items:start;flex-wrap:wrap}.q09-text__column-head,.q09-text__row{grid-template-columns:minmax(0,.8fr) minmax(0,1.05fr) minmax(0,.9fr);gap:.3rem}.q09-text__row-name strong{font-size:var(--type-body-small)}.q09-text__row-name small{font-size:var(--type-caption)}.q09-text__score>span{font-size:var(--type-caption)}.q09-text__column-head{font-size:var(--type-caption)}.q09-text__row{padding:.72rem .1rem}.q09-text__bar{height:.52rem}}
   @media(forced-colors:active){.q09-text__progress,.q09-text__bar{border:1px solid ButtonText}.q09-text__progress>span,.q09-text__bar>span{background:Highlight}}
   @media print{.q09-text__checkpoint-switch{display:none}.q09-text__panel[hidden]{display:block;opacity:.6}.q09-text__progress>span,.q09-text__bar>span{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
 </style>
