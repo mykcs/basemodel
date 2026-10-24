@@ -15,6 +15,18 @@ const q01FreshCells = [
   'Bounded：160 − 150', '+2.52', '−8.04 至 +13.84',
   '历史 β/GDR：160 − 130', '−5.16', '−16.50 至 +5.29',
 ];
+// This table deliberately changed from the older four-column receipt when
+// typography work grouped each stage's schedule and note into one readable
+// record cell. Keep its current evidence explicit without rewriting history.
+const webshopDataUsageCells = [
+  '阶段及 task 抽样', '轨迹数', '不同 goal 覆盖',
+  'Stage 1 · hindsight-skill SFT180 个不同 goal × 每个 8 条 rollout先固定抽出 180 个 goal；这 180 个内部不重复。',
+  '1,440', '2.8% 的 6,410-goal 训练候选池',
+  'Stage 2 · 论文设置150 policy updates × 每轮 16 个 goal × 每个 8 条 rollout跨 update 可以重新抽到旧 goal，因此不是把训练池顺序扫一遍。',
+  '19,200', '最多 2,400 个不同 goal；按 released sampler 的期望值约 2,004 个（31.3%）',
+  'Stage 2 · 当前公开脚本默认160 epochs/updates × 每轮 16 个 goal × 每个 8 条 rollout公开脚本的 total_epochs=160；官方技术说明把论文设置记为 150 policy updates。',
+  '20,480', '最多 2,560 个不同 goal；期望约 2,113 个（33.0%）',
+];
 
 async function expectPaperGrammar(target: Locator, route: string, index: number) {
 
@@ -25,8 +37,12 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   // shift the lookup onto a different sealed scientific table.
   const cellTexts = await target.locator('th,td').evaluateAll(cells => cells.map(cell => cell.textContent?.trim()));
   const freshQ01 = route === responseRoute && await target.evaluate(el => Boolean(el.closest('[data-q01-fresh448]')));
+  const currentWebshopDataUsage = route === '/research/seed-openevo/flow/webshop/'
+    && await target.evaluate(el => Boolean(el.closest('.webshop-seed-data-usage')));
   if (freshQ01) {
     expect(cellTexts, 'sealed Q01 fresh-448 comparison').toEqual(q01FreshCells);
+  } else if (currentWebshopDataUsage) {
+    expect(cellTexts, 'current WebShop data-usage evidence after its documented readable-column redesign').toEqual(webshopDataUsageCells);
   } else {
     const protocolBeforeTarget = route === responseRoute ? await target.evaluate(el => {
       const protocol=document.querySelector('[data-q03-protocol]');
