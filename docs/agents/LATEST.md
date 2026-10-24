@@ -2,7 +2,7 @@
 
 ## 2026-10-23 Typography release integration
 
-PR #898 was merged into its parent PR #895 at `276230acf15fea0aca3c35a1d2cd90073c09e286`; that did not merge the work to `main`. PR #895 remains open but is based on an older main and is not mergeable. The current successor candidate is being prepared on exact current `main` `a3efdeb8bf3817fcc9675a2ce3da6235cbb3e0d2` in an isolated worktree. The full local UI preflight is still running; no successor PR, final Vercel gate, merge or Production deployment exists yet. Do not treat historical CI, Preview, image or reader evidence as acceptance of the successor SHA. See the [typography evidence README](evidence/sitewide-typography/2026-10-22/README.md).
+PR #898 was merged into its parent PR #895 at `276230acf15fea0aca3c35a1d2cd90073c09e286`; that did not merge the work to `main`. PR #895 remains open but is based on an older main and is not mergeable. The current-main successor is PR #949, based on `main@a3efdeb8bf3817fcc9675a2ce3da6235cbb3e0d2`; its latest tested candidate was `3f822e49f71c5b13a7e85850cc1c2fa4b19eb5a0`. Public PR CI passed, but Cloud Figure Visual Review did not: seven of eight browser shards passed and WebKit shard 2 reached the 45-minute job timeout after 225 of 262 tests. No Vercel final gate, merge or Production deployment has occurred. The corrective candidate raises only that capture job's time allowance to 60 minutes while retaining all four shards, one worker and full coverage; acceptance must rerun on the resulting exact SHA before the final Vercel gate. See the [typography evidence README](evidence/sitewide-typography/2026-10-22/README.md) and [PR #949](https://github.com/mykcs/basemodel/pull/949).
 
 
 ## 2026-10-20 Typography continuation

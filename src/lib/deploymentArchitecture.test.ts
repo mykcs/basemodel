@@ -154,6 +154,7 @@ describe('Vercel production deployment architecture', () => {
     expect(cloud).toContain('npm run ui:overflow-preflight');
     expect(cloud).toContain('actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131');
     expect(cloud).toContain('--shard=${{ matrix.shard }}/4 --reporter=list,json');
+    expect(cloud).toContain('    timeout-minutes: 60');
     expect(cloud).toContain('--list --reporter=json');
     expect(readText('../../scripts/verify-cloud-figure-evidence.mjs')).toContain('Downloaded bytes differ:');
     expect(cloud).toContain('git config --global --add safe.directory "$GITHUB_WORKSPACE"');
