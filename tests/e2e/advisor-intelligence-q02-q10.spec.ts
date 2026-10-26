@@ -166,7 +166,21 @@ for(const width of [320,390,768,1440]){
 
       const vectors=q07.locator('input[name="advisor-q07-vector"]');
       await expect(vectors).toHaveCount(3);
+      if(width<=390){
+        // The signed-axis comparison is a single three-way decision, not
+        // three isolated cards on a phone. Preserve their common row while
+        // keeping every control readable and within the article viewport.
+        const vectorOptions=await q07.locator('[data-q07-directions] label').evaluateAll(labels=>labels.map(label=>{
+          const rect=label.getBoundingClientRect();
+          return {top:rect.top,left:rect.left,right:rect.right,width:rect.width};
+        }));
+        expect(vectorOptions).toHaveLength(3);
+        expect(Math.max(...vectorOptions.map(x=>x.top))-Math.min(...vectorOptions.map(x=>x.top))).toBeLessThan(2);
+        expect(vectorOptions.every(x=>x.width>=64&&x.left>=-1&&x.right<=width+1)).toBe(true);
+      }
       await expect(q07.locator('[data-q07-directions] legend')).toContainText('固定用第 156 轮示意');
+      await expect(q07.locator('[data-q07-directions] legend')).toHaveClass(/advisor-intel__visually-hidden/);
+      await expect(q07.locator('.advisor-intel__fork-instruction')).toBeVisible();
       await expect(q07.locator('.advisor-intel__vector')).toHaveAttribute('role','group');
       await expect(q07.locator('.advisor-intel__vector-reading')).toHaveAttribute('aria-live','polite');
       await expect(q07.locator('.advisor-intel__vector-axis')).toHaveAttribute('aria-hidden','true');
