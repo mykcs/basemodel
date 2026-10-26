@@ -13,8 +13,7 @@ const routes = [
 ] as const;
 
 const matrices = [
-  { name: 'mobile-light', theme: 'light' as Theme, viewport: { width: 390, height: 844 } },
-  { name: 'tablet-light', theme: 'light' as Theme, viewport: { width: 768, height: 1024 } },
+  { name: 'iphone18-pro-max-light', theme: 'light' as Theme, viewport: { width: 440, height: 956 } },
   { name: 'desktop-light', theme: 'light' as Theme, viewport: { width: 1440, height: 1000 } },
   { name: 'large-desktop-dark', theme: 'dark' as Theme, viewport: { width: 2048, height: 1468 } },
 ] as const;
@@ -183,7 +182,7 @@ async function measureTextRole(page: Page, selector: string) {
   });
 }
 
-for (const width of [390, 768, 1440] as const) {
+for (const width of [440, 1440] as const) {
   for (const theme of ['light', 'dark'] as const) {
     test(`catalog and workbench text roles are readable at ${width}px / ${theme}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
@@ -264,10 +263,10 @@ test('mobile mission hero preserves semantic reading width and copy size', async
 
 // Environment stages use the same semantic reading scale as adjacent prose.
 // Technical IDs are 12px minimum; explanatory sentences are 13px minimum.
-for(const width of [390,768,1440] as const){
+for(const width of [440,1440] as const){
   for(const theme of ['light','dark'] as const){
     test('WebShop and ALFWorld rendered typography at '+width+'px / '+theme,async({page})=>{
-      await page.setViewportSize({width,height:width===390?844:900});
+      await page.setViewportSize({width,height:width===440?956:900});
       await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
       for(const item of [
         {route:'/research/seed-openevo/flow/webshop/',kind:'webshop',selectors:['.irx-shop-welcome p','.irx-event-tape dd','.irx-boundary-note']},

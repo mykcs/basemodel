@@ -15,11 +15,11 @@ const routes = [
   { label: 'openevo-guide', path: '/research/seed-openevo/study/run/' },
 ] as const;
 
+// One owner-selected phone viewport. Separate, issue-specific specs may retain
+// older breakpoint fixtures for real regressions; they are not this default matrix.
 const matrices = [
-  { name: 'mobile-light', theme: 'light' as Theme, viewport: { width: 390, height: 844 } },
-  { name: 'mobile-dark', theme: 'dark' as Theme, viewport: { width: 390, height: 844 } },
-  { name: 'tablet-light', theme: 'light' as Theme, viewport: { width: 768, height: 1024 } },
-  { name: 'tablet-dark', theme: 'dark' as Theme, viewport: { width: 768, height: 1024 } },
+  { name: 'iphone18-pro-max-light', theme: 'light' as Theme, viewport: { width: 440, height: 956 } },
+  { name: 'iphone18-pro-max-dark', theme: 'dark' as Theme, viewport: { width: 440, height: 956 } },
   { name: 'desktop-light', theme: 'light' as Theme, viewport: { width: 1440, height: 1000 } },
   { name: 'desktop-dark', theme: 'dark' as Theme, viewport: { width: 1440, height: 1000 } },
 ] as const;
@@ -317,7 +317,7 @@ test('theme switching updates page and surface colors without a reload', async (
 
 
 test('SEED / OpenEVO model setup has one canonical model-detail owner', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
+  await page.setViewportSize({ width: 440, height: 956 });
   await page.goto('/models/', { waitUntil: 'domcontentloaded' });
   const entry = page.locator('.models-research-model');
   await expect(entry).toContainText('Qwen2.5-3B-Instruct');
@@ -329,7 +329,7 @@ test('SEED / OpenEVO model setup has one canonical model-detail owner', async ({
   await expect(setup).toContainText('SEED / OpenEVO 实验设置');
   await expect(setup).toContainText('Checkpoint / revision');
   await expect(setup).toContainText('prompt / parser');
-  await expect(page.locator('html')).toHaveJSProperty('scrollWidth', 390);
+  await expect(page.locator('html')).toHaveJSProperty('scrollWidth', 440);
 
   await page.goto('/models/qwen2-5-3b-instruct/#experiment-setup', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#experiment-setup')).toBeVisible();
