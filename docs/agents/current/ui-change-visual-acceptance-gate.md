@@ -119,7 +119,7 @@ Predicted failure:
 
 Required falsification:
 
-- run at 390px, 768px, and 1440px widths;
+- run the default phone check at **iPhone 18 Pro Max portrait 440 × 956 CSS px** and retain the desktop 1440px check; additional phone/tablet sizes only for a known failure or an explicitly required device;
 - assert no document-level horizontal overflow;
 - assert critical text is not clipped by `overflow: hidden/clip`;
 - assert audited sibling items do not geometrically overlap;
@@ -216,9 +216,9 @@ The browser gate uses representative routes rather than pretending every one of 
 
 ### Viewports
 
-- mobile: `390 × 844`;
-- tablet/narrow desktop: `768 × 1024`;
+- **one default phone**: iPhone 18 Pro Max portrait, `440 × 956` CSS px (standard Display Zoom);
 - desktop: `1440 × 1000`.
+- a second phone/tablet width is opt-in only for a documented regression, supported-device contract, or explicit owner request. Browser viewport emulation must not be called a physical iPhone Safari test.
 
 ### Locales
 
@@ -391,7 +391,7 @@ A valid report names the matrix actually tested, for example:
 
 ```text
 Pre-provider: risk class + exact candidate/base + PASS/FAIL
-UI safety: Chromium, light/dark, 390/768/1440, Chinese representative routes + English sample routes
+UI safety: Chromium, light/dark, iPhone 18 Pro Max 440×956 + desktop 1440, Chinese representative routes + English sample routes
 Cross-browser: WebKit included / not included and why
 Artifacts: no failures, or trace/screenshot path for the first failure
 Preview: exact commit and routes inspected
@@ -480,7 +480,7 @@ For one-question iteration use the executable scoped lane already registered in 
 npx playwright test tests/e2e/advisor-intelligence-q02-q10.spec.ts --project=chromium --grep 'Focused Q02'
 ```
 
-Replace `Q02` with any `Q01`–`Q10`. Each check binds to a question's mechanism, experimental scope, count, or interaction; all ten are also included in `test:ui` and `test:ui:all`. Run this short lane while editing, then the existing 320/390/768/1440 light/dark and Chromium/WebKit tests and `preflight:ui` before provider-triggering ref updates. **Never replace the full gate with the short lane.**
+Replace `Q02` with any `Q01`–`Q10`. Each check binds to a question's mechanism, experimental scope, count, or interaction; all ten are also included in `test:ui` and `test:ui:all`. Run this short lane while editing, then the actual project-required Chromium/WebKit suite and `preflight:ui` before provider-triggering ref updates. **Never replace the full gate with the short lane.** The separately maintained Q01–Q10 suite still has older 320/390/768/1440 fixtures and a known 320px legend-overflow negative control. Its real required checks remain in force until that suite is deliberately migrated by its test owner; do not claim the new 440px baseline already replaced those executable cases. Consolidate its routine phone sweep on the next safe owner-side edit, retaining only bug-specific widths with named reasons.
 
 Diagram-specific mobile policy for this research page: preserve the complete conceptual topology; prefer proportional scaling or an explicitly designed vertical composition over forcing a reader to swipe along a partial timeline. Check `scrollWidth` on the graphic's *own* wrapper and the document, not just absence of root overflow. Distinguish real observations from illustrative curves in both states. On an unsupported browser runner, use a clean, isolated checkout on an authorized supported macOS/Ubuntu machine; do not weaken assertions to turn an environmental failure green.
 
