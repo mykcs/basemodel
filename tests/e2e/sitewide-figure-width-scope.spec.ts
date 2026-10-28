@@ -47,7 +47,7 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
     if (index < RETROSPECTIVE_NUMERIC_CELLS.length) {
       expect(cellTexts, 'retrospective source-bound numeric table '+index).toEqual(RETROSPECTIVE_NUMERIC_CELLS[index]);
     } else {
-      expect(index, 'only the three evidence tables and the question map are declared').toBe(3);
+      expect(index, 'only the declared evidence tables and the question map are allowed').toBe(RETROSPECTIVE_NUMERIC_CELLS.length);
       expect(await target.locator('tbody th').allTextContents()).toEqual(RETROSPECTIVE_QUESTION_LABELS);
       await expect(target.locator('tbody tr')).toHaveCount(10);
       for (const row of await target.locator('tbody tr').all()) {

@@ -39,8 +39,8 @@ const researchProgress = {
   q06: { tone:'yellow', label:'预测分析已做，结果尚未确认', next:'核对已有的犹豫程度与实际错误记录，再换独立的模型起点和新题验证能否提前发现错误；已做的候选概率测量直接复用。', effort:'两条后续数据流已完成条件分析；独立确认需要的推理/训练成本尚未冻结，GPU 小时不虚报。', source:'https://github.com/mykcs/openevo-experiment/pull/633' },
   q07: { tone:'green', label:'已有局部因果回答', next:'对普通 OpenEVO、Bounded 和 Bounded + β 分别开展可比的更新删除、方向反转测试，再考虑是否设计在线方向控制器。', effort:'每新增一个保存点，至少再做一组原始/反向的同题评测；人工约半天起，GPU 耗时待测。' , source:'https://github.com/mykcs/openevo-experiment/pull/634' },
   q08: { tone:'yellow', label:'遗忘尚未判定', next:'先找回每道旧题刚学会时的可比测量和任务身份，再与长期训练后对照。', effort:'人工约 1–2 人日核对旧账本；若早期锚点缺失，需要重新训练与评测，卡时未知。' , source:'https://github.com/mykcs/openevo-experiment/pull/635' },
-  q09: { tone:'yellow', label:'两条训练末尾模型已得，关闭文字经验的对照待完成', next:'先核对两组训练尚未完成的记录，再分别关闭文字记忆、技能指导和系统指导，在相同题目上比较做题成绩。', effort:'两条延伸流已有第 160 轮末端状态，但 canonical 40 轮封存仍未完成；原完整计划最多 40,960 次训练任务和 1,664 次评估，是预算上限而非本轮新增消耗。', source:'https://github.com/mykcs/openevo-experiment/pull/636' },
-  q10: { tone:'red', label:'新确认题已冻结，正式复现尚未启动', next:'先验收完整存储恢复、热工作集容量与 GPU6 共卡资格，冻结同一个模型起点及简化配方；再运行三条新随机流（独立改变任务顺序和生成随机设置，各训练 160 轮）及匹配对照，在冻结的新 128 题上做逐题配对评测。ALFWorld 属于另一阶段。', effort:'当前设计通常为三条方法流加三条匹配对照，预算上限为 122,880 次训练任务和 4,224 次评估；科学身份完全相同时才可预先去重。实际 GPU 小时尚未测量，正式训练尚未激活。', source:'https://github.com/mykcs/openevo-experiment/pull/637' },
+  q09: { tone:'yellow', label:'第一条流已完成，文字未改变；第二条流第145轮后暂停', next:'先完成文字候选健康检查失败的同一合同诊断，保留已完成事务，不自动重启；再判断如何接续，并独立设计关闭文字的能力对照。', effort:'第一条流完成40轮；开发题与独立新题各完成128次评测，共新增256次评测。第二条流已封存至145轮，原健康规则阻止第146轮，40轮对照未闭合。原完整计划40,960 次训练任务和 1,664 次评估只是历史上限，不能据此推算剩余授权。', source:'https://github.com/mykcs/openevo-experiment/pull/768' },
+  q10: { tone:'red', label:'开发评测已完成，长期方案由用户暂停', next:'先讨论第12轮开发负结果，再由用户决定是否恢复原长期方案；若恢复，按原合同执行三条新随机流及匹配对照。完整新题确认尚未运行，不能自动接续。', effort:'三个保存模型各做相同64题，共192次开发评测，没有新增训练；原三流160轮及匹配对照计划尚未完成。新128题已冻结，未取得确认成绩。', source:'https://github.com/mykcs/openevo-experiment/pull/764' },
 } as const;
 // 单一状态语义：科研结论是否已回答；不代表训练任务、PR 或软件验收是否完成。
 const readerAnswerStatus = {

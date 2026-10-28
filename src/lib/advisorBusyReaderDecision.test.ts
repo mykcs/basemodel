@@ -43,14 +43,14 @@ describe('busy advisor first-read decision path', () => {
     expect(ADVISOR_DECISION_BRIEF.historicalBoundary).toContain('并非严格训练对照');
     // A professor's phone viewport may reveal only the first paragraph.
     // Scientific time scope and proposal/approval state must therefore be unambiguous there.
-    expect(ADVISOR_DECISION_BRIEF.researchQuestion).toContain('Q10 新题');
-    expect(ADVISOR_DECISION_BRIEF.researchQuestion).toContain('建议不代表导师已批准');
-    expect(ADVISOR_DECISION_BRIEF.researchQuestion).toContain('正式训练未据此启动');
+    expect(ADVISOR_DECISION_BRIEF.researchQuestion).toContain('Q10已有开发评测');
+    expect(ADVISOR_DECISION_BRIEF.researchQuestion).toContain('由用户暂停');
+    expect(ADVISOR_DECISION_BRIEF.researchQuestion).toContain('新题确认仍未完成');
     expect(ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q04')?.finding).toContain('152–159 轮');
     expect(ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q04')?.finding).toContain('同题比较');
     expect(ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q07')?.finding).toContain('方向反过来');
     const directionBound = ADVISOR_DECISION_BRIEF.evidence.find(x=>x.id==='q07')?.boundary ?? '';
-    expect(directionBound).toContain('已经通过 Holm 多重比较校正');
+    expect(directionBound).toContain('开发题局部结果通过Holm校正');
     expect(directionBound).not.toContain('未经多重比较校正');
   });
 
@@ -78,7 +78,7 @@ describe('busy advisor first-read decision path', () => {
 
     // Neighbor case: scientific reproduction and transfer questions both stay unresolved.
     for (const id of ['q03','q10']) {
-      expect(ADVISOR_DECISION_BRIEF.unresolved.find(x=>x.id===id)?.state).toBe('unrun');
+      expect(ADVISOR_DECISION_BRIEF.unresolved.find(x=>x.id===id)?.state).toBe(id==='q10'?'partial':'unrun');
     }
   });
 });
