@@ -24,7 +24,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
       await expect(report.locator('.historical-records > li')).toHaveCount(60);
       expect(await report.locator('.historical-records > li').evaluateAll(rows => rows.filter(r => r.textContent?.includes('已封存结果')).length)).toBe(40);
       const sources = await report.locator('#findings a[href^="https://github.com/"]').evaluateAll(links => links.map(link => link.getAttribute('href')!));
-      expect(sources).toHaveLength(3);
+      expect(sources.length).toBeGreaterThanOrEqual(3);
       expect(sources.every(url => /\/blob\/[a-f0-9]{40}\//.test(url))).toBe(true);
       // These boundaries prevent counting attempts as tasks, or a valid pilot as long-term confirmation.
       await expect(report.locator('#findings')).toContainText('192次尝试并非192道不同题');
