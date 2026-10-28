@@ -12,7 +12,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
       const lead = await report.locator('.intro .lead').boundingBox();
       expect(lead && lead.y + lead.height).toBeLessThan(viewport.height);
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(viewport.width);
-      await expect(report.locator('#findings table')).toHaveCount(2);
+      await expect(report.locator('#findings table')).toHaveCount(3);
       for (const table of await report.locator('#findings table').all()) {
         await table.scrollIntoViewIfNeeded();
         expect(await table.evaluate(el => [...el.querySelectorAll('th, td')].every(cell => {

@@ -4,7 +4,7 @@
  * 每条结果必须同时包含局部证据边界；未完成项不得呈现为已运行结果。
  */
 export const ADVISOR_DECISION_BRIEF = {
-  researchQuestion: '长期学习能否保留做题能力、控制长期参数体积与更新成本？建议先测 Q10 新题；建议不代表导师已批准，正式训练未据此启动。',
+  researchQuestion: '长期学习能否保留做题能力、控制长期参数体积与更新成本？Q10已有开发评测，完整长期方案由用户暂停；新题确认仍未完成。',
   evidence: [
     {
       id: 'q04',
@@ -15,15 +15,15 @@ export const ADVISOR_DECISION_BRIEF = {
     {
       id: 'q07',
       kind: 'bounded-answer',
-      finding: '把 Bounded 模型第 156 轮的参数更新方向反过来（幅度不变），重做同一批 64 题，均分下降 10.06 分。',
-      boundary: '局部因果结果已经通过 Holm 多重比较校正，但不能推广到其他轮次、方法或新题。',
+      finding: '在 Bounded 最终W159上把第 156 轮历史参数更新方向反过来（幅度不变），重做同一批 64 题，均分下降 10.06 分。',
+      boundary: '开发题局部结果通过Holm校正；已付128次新题评测中完整模型70.61分、反转62.79分，差−7.82分，联合八项校正区间为 −18.00 至 +1.46 分未确认。沿用同谱系、非独立起点，缺匹配删除对照，不能隔离方向与范数作用。',
     },
   ],
   unresolved: [
     {
       id: 'q10',
-      state: 'unrun',
-      fact: '新 128 题已冻结；三条独立长程训练流与正式新题成绩尚未完成。',
+      state: 'partial',
+      fact: 'Q10已启动过、当前OWNER_PAUSED。单流R12开发评测192次：起点26.66、参照45.22、配方33.90分；配方减参照−11.33分，探索性未校正区间为 −20.87 至 −1.86 分；减起点+7.23分，区间为 −1.74 至 +16.00 分。新128题已冻结，三流160轮及新题确认未完成；本次评测新增训练0。',
     },
     {
       id: 'q03',
@@ -32,9 +32,9 @@ export const ADVISOR_DECISION_BRIEF = {
     },
   ],
   historicalBoundary: '三条历史路线并非严格训练对照，不能凭终评分数排方法优劣。',
-  nextDecision: '先做 Q10 新题配对评测，再核对 Q03 的论文口径并正式复现，最后检验 Q04 的长期小容量学习。',
+  nextDecision: '先讨论Q10开发负结果及是否恢复；若用户明确恢复，再按原方案完成长期与新题配对验证。并核对Q03论文口径、Q04长期小容量学习的证据缺口。',
   decisionStatus: 'proposal',
-  decisionBoundary: '这是研究优先顺序建议；正式训练尚未据此启动，也不代表导师已经批准。',
+  decisionBoundary: '这是研究优先顺序建议；Q10已有历史启动和开发结果，当前暂停保持有效，建议不构成自动恢复或导师批准。',
 } as const;
 
 /**
@@ -54,7 +54,7 @@ export function validateAdvisorDecisionBrief(brief: typeof ADVISOR_DECISION_BRIE
     if (!['partial', 'bounded-answer'].includes(finding.kind)) errors.push(`unsupported evidence state: ${finding.id}`);
   }
   for (const gap of brief.unresolved) {
-    if (gap.state !== 'unrun' || !gap.fact.trim()) errors.push(`unverified work marked as done: ${gap.id}`);
+    if (!['unrun', 'partial'].includes(gap.state) || !gap.fact.trim()) errors.push(`unverified work marked as done: ${gap.id}`);
   }
   if (!['q03', 'q10'].every(id=>brief.unresolved.some(item=>item.id===id)))
     errors.push('formal reproduction or generalization gap missing');

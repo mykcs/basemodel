@@ -343,14 +343,16 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(q04.finding).toContain('全部 640 次');
     expect(q05.finding).toContain('512 次评测');
     expect(q06.finding).toContain('NOT_CONFIRMED');
-    expect(q09.finding).toContain('40 轮对照的完整科学验收');
+    expect(q09.finding).toContain('文字在40轮中未改变');
+    expect(q09.finding).toContain('尚未完成整轮');
+    expect(q09.finding).toContain('不能当作文字更新收益或完整消融验收');
     expect(q09.unknown).toContain('完整消融还没有完成');
 
     expect(q09.experiment).toContain('保留三类载体权限');
     expect(q09.finding).toContain('95% 区间都包含零');
     expect(q09.unknown).toContain('完整消融还没有完成');
     expect(q09.evidence.some(x=>x.href.includes('q17-checkpoint-diagnostics-20261015.json'))).toBe(true);
-    expect(ADVISOR_QUESTIONS[9]?.evidenceState).toBe('unrun');
+    expect(ADVISOR_QUESTIONS[9]?.evidenceState).toBe('partial');
     for(const phrase of ['实用平台','普通 SFT 和 OPSD 能替代持续学习吗','为什么我们的 SEED 分数只有','Text Memory、Skill、Agent System 真的有用吗'])
       expect(JSON.stringify(ADVISOR_QUESTIONS)+visual).not.toContain(phrase);
     expect(visual).toContain('原始英文收据把它称作 practical plateau');
@@ -521,7 +523,8 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(progress).toContain("source:'https://github.com/mykcs/openevo-experiment/pull/632'");
     expect(progress).toContain('计划的 6 组训练均已通过检查');
     expect(progress).toContain('40,960 次训练任务和 1,664 次评估');
-    expect(progress).toContain('122,880 次训练任务和 4,224 次评估');
+    expect(progress).toContain('三个保存模型各做相同64题，共192次开发评测');
+    expect(progress).toContain('长期方案由用户暂停');
     expect(responses).toContain('data-question-plan-source={q.id}');
     expect(responses).toContain('2026 年 10 月 19 日只读核对');
     expect(progress).toContain('GPU 小时');
