@@ -1,5 +1,6 @@
 import { expect, test, type Locator } from '@playwright/test';
 import { createHash } from 'node:crypto';
+import { RETROSPECTIVE_NUMERIC_CELLS, RETROSPECTIVE_QUESTION_LABELS } from '../fixtures/open-evo-research-retrospective-tables';
 import { captureFigureEvidence, revealEvidenceReadingState, settleFigureHydration } from './figure-evidence';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
@@ -39,7 +40,22 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   const freshQ01 = route === responseRoute && await target.evaluate(el => Boolean(el.closest('[data-q01-fresh448]')));
   const currentWebshopDataUsage = route === '/research/seed-openevo/flow/webshop/'
     && await target.evaluate(el => Boolean(el.closest('.webshop-seed-data-usage')));
-  if (freshQ01) {
+  const retrospective = route === '/research/seed-openevo/recent-challenges/'
+    && await target.evaluate(el => Boolean(el.closest('[data-research-retrospective]')));
+  if (retrospective) {
+    // New evidence is checked explicitly; do not rewrite the historical table seal.
+    if (index < RETROSPECTIVE_NUMERIC_CELLS.length) {
+      expect(cellTexts, 'retrospective source-bound numeric table '+index).toEqual(RETROSPECTIVE_NUMERIC_CELLS[index]);
+    } else {
+      expect(index, 'only the three evidence tables and the question map are declared').toBe(3);
+      expect(await target.locator('tbody th').allTextContents()).toEqual(RETROSPECTIVE_QUESTION_LABELS);
+      await expect(target.locator('tbody tr')).toHaveCount(10);
+      for (const row of await target.locator('tbody tr').all()) {
+        await expect(row.locator('td')).not.toHaveText('');
+        await expect(row.locator('a')).toHaveCount(1);
+      }
+    }
+  } else if (freshQ01) {
     expect(cellTexts, 'sealed Q01 fresh-448 comparison').toEqual(q01FreshCells);
   } else if (currentWebshopDataUsage) {
     expect(cellTexts, 'current WebShop data-usage evidence after its documented readable-column redesign').toEqual(webshopDataUsageCells);
