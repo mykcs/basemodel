@@ -40,7 +40,7 @@ const researchProgress = {
   q07: { tone:'green', label:'已有局部因果回答', next:'对普通 OpenEVO、Bounded 和 Bounded + β 分别开展可比的更新删除、方向反转测试，再考虑是否设计在线方向控制器。', effort:'每新增一个保存点，至少再做一组原始/反向的同题评测；人工约半天起，GPU 耗时待测。' , source:'https://github.com/mykcs/openevo-experiment/pull/634' },
   q08: { tone:'yellow', label:'遗忘尚未判定', next:'先找回每道旧题刚学会时的可比测量和任务身份，再与长期训练后对照。', effort:'人工约 1–2 人日核对旧账本；若早期锚点缺失，需要重新训练与评测，卡时未知。' , source:'https://github.com/mykcs/openevo-experiment/pull/635' },
   q09: { tone:'yellow', label:'第一条流已完成，文字内容未改变；第二条流待闭合', next:'先解释有效但无新内容及修复后仍未通过的候选，保留原政策结果；再按原合同完成第二条流，并独立设计关闭文字的能力对照。', effort:'第一条流完成40轮及同起点匹配开发评测，共新增128次评测；第二条流封存至142轮，143轮保留101条有效记录，未成整轮。原完整计划40,960 次训练任务和 1,664 次评估只是历史上限，不能据此推算剩余授权。', source:'https://github.com/mykcs/openevo-experiment/pull/768' },
-  q10: { tone:'red', label:'开发评测已完成，长期方案由用户暂停', next:'先讨论第12轮开发负结果，再由用户决定是否恢复原长期方案；完整新题确认尚未运行，不能自动接续。', effort:'三个保存模型各做相同64题，共192次开发评测，没有新增训练；原三流160轮及匹配对照计划尚未完成。新128题已冻结，未取得确认成绩。', source:'https://github.com/mykcs/openevo-experiment/pull/764' },
+  q10: { tone:'red', label:'开发评测已完成，长期方案由用户暂停', next:'先讨论第12轮开发负结果，再由用户决定是否恢复原长期方案；若恢复，按原合同执行三条新随机流及匹配对照。完整新题确认尚未运行，不能自动接续。', effort:'三个保存模型各做相同64题，共192次开发评测，没有新增训练；原三流160轮及匹配对照计划尚未完成。新128题已冻结，未取得确认成绩。', source:'https://github.com/mykcs/openevo-experiment/pull/764' },
 } as const;
 // 单一状态语义：科研结论是否已回答；不代表训练任务、PR 或软件验收是否完成。
 const readerAnswerStatus = {
