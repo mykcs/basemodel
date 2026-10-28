@@ -32,7 +32,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
         expect(q[k].length).toBeGreaterThan(12);
       expect(q.evidence.length).toBeGreaterThanOrEqual(1);
       for(const e of q.evidence) {
-        if(e.href === 'https://basemodel-preview.vercel.app/research/seed-openevo/evidence/q09-s2-r143-progress-20261028.json') {
+        if(e.href === 'https://basemodel-preview.vercel.app/research/seed-openevo/evidence/q09-s2-final-progress-20261028.json') {
           expect(q.id).toBe('q09');
           continue;
         }
