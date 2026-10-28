@@ -31,7 +31,13 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
       for(const k of ['opening','experiment','finding','interpretation','unknown'] as const)
         expect(q[k].length).toBeGreaterThan(12);
       expect(q.evidence.length).toBeGreaterThanOrEqual(1);
-      for(const e of q.evidence) expect(e.href).toMatch(q.id==='q10' ? /^https:\/\/(?:github\.com\/mykcs\/|arxiv\.org\/abs\/)/ : /^https:\/\/github\.com\/mykcs\//);
+      for(const e of q.evidence) {
+        if(e.href === 'https://basemodel-preview.vercel.app/research/seed-openevo/evidence/q09-s2-r143-progress-20261028.json') {
+          expect(q.id).toBe('q09');
+          continue;
+        }
+        expect(e.href).toMatch(q.id==='q10' ? /^https:\/\/(?:github\.com\/mykcs\/|arxiv\.org\/abs\/)/ : /^https:\/\/github\.com\/mykcs\//);
+      }
     }
     expect(ADVISOR_QUESTIONS[9]?.experiment).toContain('会后问题');
     expect(ADVISOR_RESEARCH_AS_OF).toBe('2026-10-09');
@@ -344,8 +350,9 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(q05.finding).toContain('512 次评测');
     expect(q06.finding).toContain('NOT_CONFIRMED');
     expect(q09.finding).toContain('文字在40轮中未改变');
-    expect(q09.finding).toContain('尚未完成整轮');
-    expect(q09.finding).toContain('不能当作文字更新收益或完整消融验收');
+    expect(q09.finding).toContain('第二条流40轮对照尚未闭合');
+    expect(q09.finding).toMatch(/不能当作文字更新收益.*完整消融验收/);
+    expect(q09.finding).toContain('独立训练复现');
     expect(q09.unknown).toContain('完整消融还没有完成');
 
     expect(q09.experiment).toContain('保留三类载体权限');
