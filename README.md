@@ -17,17 +17,37 @@ Agent 交接与历史研究工作台上下文：[`docs/agent-context/`](./docs/a
 
 ```text
 GitHub = source of truth
-non-main branch / PR -> Vercel Preview
-main                 -> Vercel Production
+ordinary PR         -> GitHub Actions public-ci-gate
+final accepted PR   -> ci/vercel-gate-final -> Vercel Preview
+main                -> Vercel Production
 Production           -> https://basemodel-preview.vercel.app
 Cloudflare Pages     -> frozen legacy rollback snapshot; normal Builds = 0
 ```
 
-Vercel 统一执行 `npm run verify:deploy && npm run build`。GitHub Actions 与 GitHub Pages 保持退役。Cloudflare Direct Upload、Pages build helper 和 Workers shadow 只保留作回滚/Cloudflare-specific 诊断，不是日常发布链路。
+当前验收分为两个独立环节：GitHub Actions 的 `public-ci-gate` 负责确定性检查及按风险选择的浏览器测试；Vercel 负责最终候选的构建／部署检查与 `main` 的 Production 发布。Vercel 当前实际构建命令是 `npm run build`，**不能把 Vercel 构建通过等同于全套 CI 通过**。GitHub Pages 已退出日常发布；Cloudflare Direct Upload、Pages build helper 和 Workers shadow 只保留作回滚或 Cloudflare-specific 诊断。
 
 直到 Cloudflare Pages 的 Git 自动部署能在账户侧关闭之前，分支和 release merge 使用 `[CF-Pages-Skip]`，避免旧 Pages 项目因 Git 提交再次消耗 Build。
 
 新的 Coding Agent 请从 `AGENTS.md`、`docs/agents/LATEST.md`、`docs/agents/current/hosting-architecture.md` 和 `docs/agents/current/deployment-policy.md` 开始。
+
+## 仓库隐私与构建频率：拟议方向（尚未切换）
+
+考虑到 BaseModel 的构建频率已明显下降，**倾向在完成脱敏及 CI 迁移验收后将 GitHub 源码仓库改为私有**。截至本说明形成时，仓库仍为公开；这里记录的是意向，**不是已经改为私有或已切换 CI 的声明**，也不自动授权更改可见性、订阅或仓库保护规则。
+
+按实际负载区分两种方案：
+
+- **膨胀期：一天明显超过 100 次部署。** 如果源码已经通过公开安全审查且确实需要开放，公开 GitHub 仓库可使用标准托管 Actions 运行所需测试；若源码必须私有，应保持私有并评估 Vercel Pro、更合理的合批策略与独立的 CI 计算预算，不能为获取免费额度自动公开源码。Vercel Pro 官方每日部署上限为 6,000 次，但仍有构建时间、并发与使用成本约束。
+- **平稳期：一天不超过约 100 次部署。** 倾向私有 GitHub 仓库，由 Vercel 负责网站构建、Preview 和 Production；独立的单元、浏览器、隐私与合并检查仍需要经过资格验证的 CI 执行环境。每天 100 次是内部预算目标；Vercel Hobby 官方部署上限才是 100 次／天，当前项目的付费方案不能仅凭这个数字判断。
+
+变更前必须核实：GitHub 私有仓库 Actions 额度和账单、Vercel 的私人 Git 仓库授权及当前套餐、现行 `public-ci-gate`／`Vercel` 必需检查如何交接、部署访问控制、旧公开 fork／历史副本、以及实际生成网站是否含个人身份信息。**仓库私有不等于已发布的网页、旧提交或既有公开副本自动私有。**
+
+详细决策、官方限额来源、迁移验收及回滚条件见 [`docs/dev/CI/README.md`](./docs/dev/CI/README.md)。当前真实部署架构仍以 [`hosting-architecture.md`](./docs/agents/current/hosting-architecture.md)、工作流、GitHub 规则与 Vercel 实际配置为准。
+
+## 人物称谓与隐私
+
+BaseModel 的公开科研沟通资料及可编辑仓库内容，只能用 **W 老师**、**L 学长** 指代对应的两位私人关系人物；其他具体个人不得直接写姓名、姓氏与头衔、可反查昵称或未获批准的个人识别信息。规则唯一权威为 [`人物称谓与姓名隐私规范`](./docs/agents/current/person-reference-privacy-standard.md)，从根 [`AGENTS.md`](./AGENTS.md) 和 Agent 导航均可找到。
+
+`npm run audit:person-privacy` 对仓库文本执行自动检测，并已纳入 `npm run verify:deploy` 与 `npm run build`；仍需要对图片、科研账号与外部 RAW 链接进行人工隐私审查。封存的旧版排版测量和两份历史路由清单保留当时原始通用称谓，不能据此认为现行网页允许不规范称呼，更不能把历史证据改写成新的测量。
 
 ## 本地运行与验证
 
@@ -38,6 +58,7 @@ npm install
 npm run dev
 npm run verify:deploy
 npm run build
+npm run audit:person-privacy
 npm run test:e2e
 npm run test:ui
 npm run test:ui:all

@@ -17,7 +17,7 @@ const zh = locale === 'zh';
 const t = (copy: LocalizedCopy) => zh ? copy.zh : copy.en;
 const p = (path: string) => localePath(locale, path);
 const studyIntro = zh
-      ? '上一轮留下的问题，决定下一轮为什么发生。第 07 项记录和学长开会时收敛的问题，第 08 项回到上游，重新检查 Stage1 到底该怎么学。'
+      ? '上一轮留下的问题，决定下一轮为什么发生。第 07 项记录和L 学长开会时收敛的问题，第 08 项回到上游，重新检查 Stage1 到底该怎么学。'
       : 'One experiment leaves the question for the next. Item 07 records the questions refined in the meeting; Item 08 moves upstream to re-check how Stage 1 should learn.';
 
 type DirectoryRow =
@@ -47,7 +47,7 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
     <h1>{zh ? 'OpenEVO × WebShop：七次实验的研究演进' : 'OpenEVO × WebShop: seven experiments in one research progression'}</h1>
     <p class="study-hero__lede">{studyIntro}</p>
     <p class="study-hero__mobile-thread" aria-label={zh ? '七次实验的研究演进' : 'Research progression across seven experiments'}>{zh
-      ? '参数没更新 → 长周期更新 → 小模型接口 → 候选准入 → 参数历史 → 固定 State / β → 和学长开会 → Stage1 学习方式'
+      ? '参数没更新 → 长周期更新 → 小模型接口 → 候选准入 → 参数历史 → 固定 State / β → 和L 学长开会 → Stage1 学习方式'
       : 'blocked updates → long run → smaller-model interface → candidate admission → parameter history → fixed State / β → meeting → Stage-1 learning'}</p>
   </header>
   <ol class="experiment-tree" aria-label={zh ? '主要实验目录' : 'Major experiment index'}>
@@ -57,11 +57,11 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
         <li class="experiment-node meeting-node" id="advisor-meeting" data-ui-audit-item data-advisor-meeting>
           <div class="experiment-node__rail" aria-hidden="true"><span>07</span></div>
           <article aria-labelledby="advisor-meeting-title">
-            <h2 id="advisor-meeting-title">和学长开会</h2>
+            <h2 id="advisor-meeting-title">和L 学长开会</h2>
             <time datetime={OPEN_EVO_ADVISOR_MEETING.date}>{OPEN_EVO_ADVISOR_MEETING.date}</time>
             <p>讨论普通 OpenEVO、Bounded 与 β-gating 的结果后，我们把下一步收敛为几个更基础、可验证的问题：先弄清参数怎样学、需要学多久、需要多大状态，再讨论更复杂的更新机制。</p>
             <details>
-              <summary><span class="meeting-mobile-label">和学长开会 · </span>当时精炼的六个问题</summary>
+              <summary><span class="meeting-mobile-label">和L 学长开会 · </span>当时精炼的六个问题</summary>
               <ul>
                 {OPEN_EVO_ADVISOR_MEETING.points.map((point) => <li><strong>{point.title}：</strong>{point.text}</li>)}
               </ul>
@@ -69,7 +69,7 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
             </details>
             <p class="meeting-next">因此，下一步先回答最基础的一问：给定相同模型与经验，SFT、OPSD 或 hindsight-skill SFT，哪一种更适合训练 Stage2 的起始参数？</p>
             <p class="meeting-next"><a href={p('/research/seed-openevo/study/openevo-methods/')}>第一篇：OpenEVO 方法与改进 →</a></p>
-            <p class="meeting-next" data-advisor-report-link><a href={p('/research/seed-openevo/study/advisor-questions/')}>第二篇：学长十问（问题与背景） →</a></p>
+            <p class="meeting-next" data-advisor-report-link><a href={p('/research/seed-openevo/study/advisor-questions/')}>第二篇：L 学长十问（问题与背景） →</a></p>
             <p class="meeting-next"><a href={p('/research/seed-openevo/study/parameter-memory-results/')}>第三篇：我们的回应实验（结果与证据） →</a></p>
           </article>
         </li>

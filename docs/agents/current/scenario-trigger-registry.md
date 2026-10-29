@@ -17,6 +17,18 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 
 ---
 
+## TRIGGER: 私人人物称谓 / 姓名脱敏 / 对外科研沟通
+
+**Cues:** 页面、报告、申请材料、采访、会议记录、图表、链接文字或测试涉及可识别的导师／前辈／第三方；用户要求统一化名、审查姓名或准备将仓库设为私有。
+
+**Automatic response:**
+
+1. 先读 [`person-reference-privacy-standard.md`](person-reference-privacy-standard.md)，全仓库相关两位人物只用 `W 老师` 和 `L 学长`。
+2. 在源码、文档、元数据、测试和必要的引用标签上执行相同规则；跑 `npm run audit:person-privacy`，未通过前不交付可发布候选。
+3. 对图片、外链、账号、历史、PR diff 与实际部署另做人工检查；已封存科研证据不得靠字符串替换伪造历史。源码通过不等于历史/外部记录匿名。
+
+---
+
 ## TRIGGER: remembered plan or current doc may be stale
 
 **Cues:** an earlier plan conflicts with repository state; two current docs disagree; provider behavior changed; the user challenges an assumption; the task depends on fast-moving models/APIs/frameworks/hosting.

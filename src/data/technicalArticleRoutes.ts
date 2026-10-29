@@ -43,7 +43,8 @@ export const TECHNICAL_ARTICLE_ROUTES = [
   "/research/seed-openevo/study/results/openevo-benchmark-design/",
   "/research/seed-openevo/study/results/second-generation/",
   "/research/seed-openevo/study/results/seed-faithful-benchmark/",
-  "/research/seed-openevo/study/results/why-it-kept-failing/"
+  "/research/seed-openevo/study/results/why-it-kept-failing/",
+  "/research/seed-openevo/study/w-advisor-call/"
 ] as const;
 
 /** Research entries keep their navigation/controls in a wider reading frame. */

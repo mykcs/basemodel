@@ -6,8 +6,11 @@
  * silently re-labelled as present-day browser measurements. This manifest
  * records every removed and added typography declaration in the one changed
  * Astro owner, keeping the unchanged 5,484 declarations fully reconciled.
- * A future source edit needs a new review; the fingerprint is deliberately
- * exact, and the browser acceptance lives in the PR's current-head CI.
+ * The original #959 full-source fingerprint is retained as a provenance
+ * receipt. After later editorial anonymization and an independently reviewed
+ * article page, the combined verifier requires exact SHA-256 for each changed
+ * #959 component and reconciles every declaration before browser acceptance.
+ * Any edit to these component owners still requires a new explicit review.
  */
 export const intelligenceTypographyDelta = {
   owner: 'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',
@@ -95,14 +98,17 @@ export const intelligenceTypographyDelta = {
   removedReason: 'The former Stage-1-only card sequence and bridge were replaced by aligned, two-stage method comparisons; they no longer render.',
   changedOwnerProofs: {
     'src/components/research/SeedOpenEvoMissionHero.astro': {
+      currentSourceSha256: 'ed53ab3bc49083fc41ec3c4bee432ab20ee335be4d9a0f54adcdbc1f74e7c1e6',
       reason: 'Compact hero subject and two-stage explanatory copy changed; existing font declarations are unchanged, but older text samples are historical.',
       transitions: ['0ceeb21fc307655242b7', '1a732f92ce37d65e6188', '58a21fd1504b8bf2787c', '8029de0c2ab00374c931', 'cdc689fb99035347c410'],
     },
     'src/components/research/SeedOpenEvoResearchHub.astro': {
+      currentSourceSha256: 'ab1a3ca61ee15c7d0b2195bf873381a5866760715a8f0628c628f3409a39edbc',
       reason: 'Method comparison moved ahead of the object map, section copy and two background color references changed; typography declarations are unchanged but old component snapshots no longer prove current output.',
       transitions: ['44b727d8d2f3175e76a3', 'a3a682b63a2ad821c8d3', 'bb1635d60ddf4f794948', 'c456cc9f9f70015ad0a2'],
     },
     'src/components/research/SeedOpenEvoTrainingDesignOverview.astro': {
+      currentSourceSha256: '5a730b803a8d0b53fafd89f1cd6df8c6b84844c506e1a8d639f8fcfb47f6bd6a',
       reason: 'Stage-1-only typography was replaced by the explicitly classified two-stage comparison declarations above.',
       transitions: ['37bd6e677ef57ecc4461', '741947e3fe960b60e49f'],
     },

@@ -1,6 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readdirSync } from 'node:fs';
 import { TECHNICAL_ARTICLE_ROUTES, READING_OVERVIEW_ROUTES } from '../../src/data/technicalArticleRoutes';
+// Local W-only article inherits this canonical long-form reading test bundle.
+import './w-advisor-call-brief.spec';
 
 const paperRoutes = readdirSync('src/content/papers').filter(file => file.endsWith('.json')).map(file => '/papers/' + file.slice(0,-5) + '/');
 const readingRoutes = [...TECHNICAL_ARTICLE_ROUTES, ...READING_OVERVIEW_ROUTES, ...paperRoutes];
