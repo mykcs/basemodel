@@ -8,7 +8,7 @@ permissions:
   contents: read
   deployments: read
 concurrency:
-  group: production-identity
+  group: ${{ github.event_name == 'deployment_status' && github.event.deployment.environment != 'Production' && format('production-identity-skip-{0}', github.run_id) || 'production-identity' }}
   cancel-in-progress: true
 jobs:
   identity:

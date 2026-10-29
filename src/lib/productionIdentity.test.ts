@@ -24,6 +24,8 @@ describe('read-only Production identity alarm', () => {
     expect(Object.keys(workflow.on).sort()).toEqual(['deployment_status', 'push', 'workflow_dispatch']);
     expect(workflow.on.push.branches).toEqual(['main']);
     expect(workflow.permissions).toEqual({ contents: 'read', deployments: 'read' });
+    expect(workflow.concurrency.group).toBe("${{ github.event_name == 'deployment_status' && github.event.deployment.environment != 'Production' && format('production-identity-skip-{0}', github.run_id) || 'production-identity' }}");
+    expect(workflow.concurrency['cancel-in-progress']).toBe(true);
     expect(workflow.jobs.identity['timeout-minutes']).toBe(8);
     const serialized = JSON.stringify(workflow);
     expect(serialized).not.toMatch(/secrets\.|vercel deploy|git push|write-all/);
