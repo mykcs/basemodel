@@ -15,7 +15,7 @@ This task is **not** satisfied by a new layout that merely communicates the same
 | Acceptance dimension | Current verdict | Evidence / precise limit |
 | --- | --- | --- |
 | `COPY_MATCH` | **Original/implementation alignment under re-test** | [PR #959](https://github.com/mykcs/basemodel/pull/959) established shared `sharedAction` and symmetric Stage-2 teacher boundaries. The original image reveals **nine** aligned operations, not the eight previously published. The visual-recovery candidate restores the missing Stage-1 initial-state operation and source-visible wording; exact-head tests remain required. |
-| `TOPOLOGY_MATCH` | **Candidate restored, rendered acceptance pending** | Two broad nested stages, five Stage-1 rows and four Stage-2 rows, SEED left/OpenEVO right; full-width grouping replaces separate mini-card borders. A screenshot of the candidate under the same conditions is still required. |
+| `TOPOLOGY_MATCH` | **Candidate restored; first hosted browser check PASS, matched-condition acceptance pending** | A protected Preview of `0d13f56` rendered two nested stages and nine rows at 1348 CSS px, with SEED left/OpenEVO right and no per-method mini-card borders. Original capture width/zoom is unknown; independent full-width/mobile CI remains necessary. |
 | `VISUAL_MATCH` | **ORIGINAL_REFERENCE_AVAILABLE / NOT_VERIFIED** | Two approved dark-mode captures now establish typography, grouping, color, radii, row spacing and the stage transition. They do not show the full continuous UI or prove pixel identity. Candidate site must still be captured and compared. |
 | `BEHAVIOR_MATCH` | **NOT_VERIFIED against original** | Current paired comparison is predominantly static. Cannot infer from the user's feedback whether the ChatGPT original contained controls or preserved changed state; verify when source is captured. |
 | `SOURCE_IDENTICAL` | **No** | The current version is hand-authored Astro markup/CSS using BaseModel design tokens, **not** the original ChatGPT native UI renderer or identical exported source. |
@@ -26,8 +26,8 @@ A CI PASS, site READY, screenshot capture, or a user's approval of **concept dir
 
 The page owns its executable copy in `src/data/seedOpenEvoIntelligenceComparison.ts`, renders it from `src/components/research/SeedOpenEvoTrainingDesignOverview.astro`, and tests it through `src/lib/seedOpenEvoIntelligenceComparison.test.ts`.
 
-- Stage 1: the identical action **“Qwen 自主采集 WebShop 任务轨迹”** in both columns.
-- Stage 1: the generic role **“外部高能力教师模型 API”** is identical, with provider implementations in parentheses: **（GLM-5.2）** / **（MiniMax-M3）**. Neither label suggests the model vendor is essential to the framework.
+- Stage 1: the identical action **“采集 WebShop 任务轨迹”** in both columns, with distinct descriptions of the 180-task × 8-sample source conditions.
+- Stage 1: the generic role **“调用外部高能力教师模型 API”** is identical, with provider implementations in parentheses: **（GLM-5.2）** / **（MiniMax-M3）**. Neither label suggests the model vendor is essential to the framework.
 - Stage 2: both sides show **“从新轨迹中构造学习信号”** and the same precise boundary **“本阶段不再调用 Stage 1 的外部高能力教师模型 API。”**; SEED does **not** silently become a GLM-assisted online learner.
 - Differences are explained within paired, corresponding rows (hindsight-skill/episode signal, SFT/OPSD, GRPO+OPD/SD-LoRA and admitted experience carriers), with method details separated from shared actions.
 
@@ -48,6 +48,17 @@ Both are **dark-mode partial scroll captures** with ChatGPT application chrome; 
 4. Strict paired shared titles, separate parenthetical replaceable-teacher names, and both sides' Stage-2 no-external-teacher boundary.
 
 This is a strong **partial visual reference**, not an export of the host renderer or full interaction state. Do not report `SOURCE_IDENTICAL` or full pixel parity from it.
+
+## First protected-Preview browser observation
+
+On 2026-10-29, Vercel built a non-production Preview for exact source `0d13f56bec2f82e39e8c6bb95f781e28a54008a5` (deployment `dpl_DR5tTnQRiZXyihJEcknX6FmnuFCK`). The browser accessed it using a time-limited Vercel share grant, not by disabling authentication. The share secret must not be added to this public file.
+
+- Browser CSS viewport: **1348 px**, document scroll width **1348 px** (no horizontal overflow); canvas rect x≈9 px / width≈1331 px; nested Stage rect x≈35 px / width≈1277 px.
+- Computed canvas background: `rgb(13, 13, 14)`; main text `rgb(237, 237, 238)`; heading ~30 CSS px; paired action text ~27 CSS px at that viewport.
+- The rendered accessibility tree showed **two stages and nine paired rows**. Stage 2 reached a nested bordered panel, carried the teacher-free explanation, and preserved both columns.
+- This is a **site-rendered first pass**, not matched-original or mobile verification. The ChatGPT screenshots do not establish CSS viewport, browser zoom or DPR; continue to distinguish topology/restoration from pixel approval.
+
+The first CI run against the older PR base built the route and passed deterministic tests but failed when newer GitHub Actions expected `scripts/ci-build-artifact.mjs`, absent in that outdated branch. The PR was then merged with `main` commit `126f9e135135cf11995bb58706a272faa83088a5` without conflicts; new exact-head CI is still required.
 
 ## Capture security
 
