@@ -43,16 +43,36 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   const retrospective = route === '/research/seed-openevo/recent-challenges/'
     && await target.evaluate(el => Boolean(el.closest('[data-research-retrospective]')));
   if (retrospective) {
-    // New evidence is checked explicitly; do not rewrite the historical table seal.
-    if (index < RETROSPECTIVE_NUMERIC_CELLS.length) {
-      expect(cellTexts, 'retrospective source-bound numeric table '+index).toEqual(RETROSPECTIVE_NUMERIC_CELLS[index]);
-    } else {
-      expect(index, 'only the declared evidence tables and the question map are allowed').toBe(RETROSPECTIVE_NUMERIC_CELLS.length);
+    // Bind frozen numeric cells to their evidence sections. An editorial
+    // summary inserted before them must not shift scientific table identity.
+    const identity = await target.evaluate(el => {
+      const root = el.closest('[data-research-retrospective]')!;
+      const header = [...el.querySelectorAll('thead th')].map(cell => cell.textContent?.trim());
+      const advisorSummaryHeader = ['需要回答的议题', '已经可检查的事实', '仍未过关的地方'];
+      if (el.closest('#advisor')) return { kind: 'advisor', numericIndex: -1 };
+      if (el.closest('#questions')) return { kind: 'questions', numericIndex: -1 };
+      if (JSON.stringify(header) === JSON.stringify(advisorSummaryHeader)) return { kind: 'advisor', numericIndex: -1 };
+      const numericTables = [...root.querySelectorAll('#findings table, #history table')]
+        .filter(table => JSON.stringify([...table.querySelectorAll('thead th')].map(cell => cell.textContent?.trim())) !== JSON.stringify(advisorSummaryHeader));
+      return { kind: 'numeric', numericIndex: numericTables.indexOf(el) };
+    });
+    if (identity.kind === 'numeric') {
+      expect(identity.numericIndex, 'only declared numeric evidence sections are allowed').toBeGreaterThanOrEqual(0);
+      expect(cellTexts, 'retrospective source-bound numeric table '+identity.numericIndex).toEqual(RETROSPECTIVE_NUMERIC_CELLS[identity.numericIndex]);
+    } else if (identity.kind === 'questions') {
       expect(await target.locator('tbody th').allTextContents()).toEqual(RETROSPECTIVE_QUESTION_LABELS);
       await expect(target.locator('tbody tr')).toHaveCount(10);
       for (const row of await target.locator('tbody tr').all()) {
         await expect(row.locator('td')).not.toHaveText('');
         await expect(row.locator('a')).toHaveCount(1);
+      }
+    } else {
+      expect(await target.locator('thead th').allTextContents()).toEqual(['需要回答的议题', '已经可检查的事实', '仍未过关的地方']);
+      expect(await target.locator('tbody th').allTextContents()).toEqual(['科研能力和推进速度', '怎样利用 AI 做科研', '方向是否值得继续', '继续讨论的机会与名额']);
+      await expect(target.locator('tbody tr')).toHaveCount(4);
+      for (const row of await target.locator('tbody tr').all()) {
+        await expect(row.locator('td')).toHaveCount(2);
+        for (const cell of await row.locator('td').all()) await expect(cell).not.toHaveText('');
       }
     }
   } else if (freshQ01) {
@@ -130,6 +150,13 @@ async function assertDefaultFigureSurface(page: Page, route: string) {
     document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(documentOverflowX).toBeLessThanOrEqual(2);
   const nativeTables = page.locator('table');
+  if (route === '/research/seed-openevo/recent-challenges/') {
+    await expect(nativeTables).toHaveCount(7);
+    await expect(page.locator('#advisor table')).toHaveCount(1);
+    await expect(page.locator('#findings table')).toHaveCount(4);
+    await expect(page.locator('#history table')).toHaveCount(1);
+    await expect(page.locator('#questions table')).toHaveCount(1);
+  }
   if (route === responseRoute) await expect(page.locator('[data-q01-fresh448] table')).toHaveCount(1);
   let paperTablesChecked = 0;
   for (let index = 0; index < await nativeTables.count(); index++) {

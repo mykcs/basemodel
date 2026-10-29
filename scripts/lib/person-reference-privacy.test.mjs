@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { createHash } from 'node:crypto';
+import { hasAccountFingerprint, identityViews } from './person-reference-privacy.mjs';
 import { SEALED_HISTORICAL_SNAPSHOTS, scanPersonReferences } from './person-reference-privacy.mjs';
 
 const senior = String.fromCodePoint(0x5b66, 0x957f);
@@ -26,4 +28,21 @@ test('sealed typography evidence preserves former role text, never direct identi
     assert.deepEqual(scanPersonReferences(path, senior), []);
     assert.deepEqual(scanPersonReferences(path, knownIdentity).map((x) => x.kind), ['direct-identity']);
   }
+});
+
+test('public observability locators are replaced with anonymous source IDs', () => {
+  for (const path of ['src/pages/example.astro', 'public/research/receipt.json']) {
+    assert.deepEqual(scanPersonReferences(path, 'https://wandb.ai/example-account/project/runs/run-1').map(x => x.kind), ['provider-account-locator']);
+    assert.deepEqual(scanPersonReferences(path, 'wandb:example-account/project/run-1').map(x => x.kind), ['provider-account-locator']);
+    assert.deepEqual(scanPersonReferences(path, '/research/seed-openevo/evidence/source-index.json#wb-001'), []);
+  }
+});
+
+test('account fingerprints cover JSON, HTML and percent-encoded presentation', () => {
+  const sample = 'exampleperson';
+  const digest = createHash('sha256').update(sample).digest('hex');
+  for (const value of [sample.toUpperCase(), [...sample].map(c => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`).join(''), [...sample].map(c => `&#${c.charCodeAt(0)};`).join(''), [...sample].map(c => `%${c.charCodeAt(0).toString(16)}`).join('')]) {
+    assert(identityViews(`width: 50%; ${value}`).some(view => hasAccountFingerprint(view, sample.length, digest)));
+  }
+  assert(!identityViews('safe role').some(view => hasAccountFingerprint(view, sample.length, digest)));
 });

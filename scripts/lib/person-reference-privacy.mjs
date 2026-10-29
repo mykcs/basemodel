@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 // Central executable check for the BaseModel-specific person-reference privacy policy.
 // Keep forbidden identities encoded as code points so the guard itself cannot publish them.
 export const SEALED_HISTORICAL_SNAPSHOTS = new Set([
@@ -43,10 +44,59 @@ function lineAt(text, index) {
   return text.slice(0, index).split('\n').length;
 }
 
+export function identityViews(content) {
+  const views = new Set([content.normalize('NFKC')]);
+  let value = content;
+  for (let i = 0; i < 2; i++) {
+    value = value.replace(/\\u(?:\{([a-f0-9]{1,6})\}|([a-f0-9]{4}))/gi, (match, wide, narrow) => {
+      const point = parseInt(wide ?? narrow, 16);
+      return point <= 0x10ffff ? String.fromCodePoint(point) : match;
+    }).replace(/\\x([a-f0-9]{2})/gi, (_, code) => String.fromCodePoint(parseInt(code, 16)))
+      .replace(/\\\//g, '/')
+      .replace(/&#(x[a-f0-9]+|[0-9]+);?/gi, (match, code) => {
+        const point = code[0].toLowerCase() === 'x' ? parseInt(code.slice(1), 16) : Number(code);
+        return point <= 0x10ffff ? String.fromCodePoint(point) : match;
+      }).replace(/[\u200b-\u200d\ufeff]/g, '');
+    value = value.replace(/(?:%[a-f0-9]{2})+/gi, encoded => {
+      try { return decodeURIComponent(encoded); } catch { return encoded; }
+    });
+    views.add(value.normalize('NFKC'));
+  }
+  return [...views];
+}
+
+export function hasAccountFingerprint(content, length, expectedDigest) {
+  for (const token of content.toLowerCase().match(/[a-z0-9_.@:/-]+/g) ?? []) {
+    for (let i = 0; i <= token.length - length; i++) {
+      if (createHash('sha256').update(token.slice(i, i + length)).digest('hex') === expectedDigest) return true;
+    }
+  }
+  return false;
+}
+
 export function scanPersonReferences(relativePath, content) {
   const findings = [];
   const normalized = content.normalize('NFKC');
   const known = new Set([...forbiddenKnownNames, ...titleVariants]);
+
+  // Public observability links use the anonymous source index. Provider account
+  // locators must not reappear in rendered source or downloadable evidence.
+  if (/^(?:src|public)\//.test(relativePath) && !/\.(?:test|spec)\.[cm]?[jt]sx?$/.test(relativePath)) {
+    const privateTokenLength = 7;
+    const privateTokenDigest = '29018d6564935fedf3713cc4f047b2da1a06586eee1b78b3fa3af29e2e4d255b';
+    const views = identityViews(normalized);
+    if (views.some(view => hasAccountFingerprint(view, privateTokenLength, privateTokenDigest))) {
+      findings.push({ path: relativePath, line: 1, kind: 'private-account-fingerprint' });
+    }
+    const providerLocator = /(?:https?:\/\/(?:www\.)?wandb\.ai\/|wandb:)[^\s"'<>]+/giu;
+    for (const view of views) {
+      const match = view.match(providerLocator);
+      if (match) {
+        findings.push({ path: relativePath, line: lineAt(normalized, normalized.indexOf(match[0])), kind: 'provider-account-locator' });
+        break;
+      }
+    }
+  }
 
   for (const identity of known) {
     const index = normalized.indexOf(identity);
