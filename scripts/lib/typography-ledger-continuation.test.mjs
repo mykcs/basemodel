@@ -1,7 +1,20 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { reviewedPrivacyProofs } from './typography-ledger-continuation.mjs';
 import test from 'node:test';
 import { createHash } from 'node:crypto';
 import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization } from './typography-ledger-continuation.mjs';
+
+test('privacy continuations accept only exact reviewed source pairs', () => {
+  assert.equal(Object.keys(reviewedPrivacyProofs).length, 4);
+  for (const [file, pair] of Object.entries(reviewedPrivacyProofs)) {
+    const bytes = readFileSync(new URL(`../../${file}`, import.meta.url));
+    const proof = { file, sha256: pair.before };
+    assert.deepEqual(verifySealedProofWithEditorialAnonymization(proof, bytes), { editorialPrivacyOnly: true });
+    assert.throws(() => verifySealedProofWithEditorialAnonymization(proof, Buffer.concat([bytes, Buffer.from(' ')])));
+    assert.throws(() => verifySealedProofWithEditorialAnonymization({ ...proof, sha256: '0'.repeat(64) }, bytes));
+  }
+});
 
 const baseline = { file: 'src/styles/old.css', selector: '.reader', contexts: [], property: 'font-size', value: 'var(--type-body)' };
 const newArticle = { file: 'src/pages/research/new/index.astro', selector: '.question', contexts: [], property: 'font-size', value: 'var(--type-meta)' };
