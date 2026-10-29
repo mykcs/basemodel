@@ -4,7 +4,7 @@
 
 共享的「说人话 / 去 AI 味」当前标准由中央 authority 负责：
 
-https://github.com/mykcs/.codex/blob/main/website-governance/HUMAN_EXPRESSION_STANDARD.md
+https://github.com/mykcs/.agents/blob/main/docs/agents/HUMAN_EXPRESSION_STANDARD.md
 
 真人 RAW、共享偏好和 BaseModel 专有 learned experience 分别位于：
 
@@ -131,6 +131,22 @@ Task Score、success rate、last-N 平均或 fixed-panel final 第一次出现�
 
 一个正确表格或阈值列表不等于读者已经理解“发生了什么、数字数什么、为什么、能推出什么、不能推出什么”。
 
+### 7.1 “说人话”先判断该不该继续写字
+
+在开始润色句子之前，先判断读者真正需要恢复的结构：
+
+- 单个事实、结论、边界、操作 -> 文字；
+- 对齐比较 -> 表格或比较图；
+- 因果、依赖、分支、反馈、拓扑 -> 语义图；
+- 筛选、回放、参数变化、反事实探索 -> 真正能回答问题的交互 HTML；
+- 时间/空间变化本身就是机制 -> 必要时用动画或讲解视频。
+
+这不是“文字 < 图 < 网页 < 视频”的升级阶梯。**选择认知成本最低、又不损失事实和边界的最小载体。**
+
+Agent 为一个很窄的问题临时生成一次性网页/解释器是允许的：只要它显著降低理解或核验成本，就不需要为了“值得做”而强行抽成永久组件。反过来，生成成本变低也不是增加动画、交互和视频的理由；没有具体理解收益就不要加。
+
+网页上的动态/交互不能成为主结论、claim-changing caveat 或证据边界的唯一载体。能用静态 HTML 保留完整含义时应保留。
+
 ## 8. 关系性结论先给参照物
 
 **关系性结论需要先给最小参照物。**
@@ -173,6 +189,7 @@ Task Score、success rate、last-N 平均或 fixed-panel final 第一次出现�
 1. 先读中央 Human Expression Standard；
 2. 读当前 Wish；
 3. 再读本 overlay 与任务对应的更窄科研/Reader Contract；
+4. 在写 copy / 选组件前先声明本段的表达载体（文字 / 表格 / 图 / 交互 / 时间媒体）及其具体理解收益；
 4. 先核实事实，再写文案；
 5. 通读受影响页面的完整阅读路径，而不是只修 owner 点名的一句；
 6. 对高置信同类问题做 sibling scan；
@@ -192,3 +209,15 @@ GitHub、Hugging Face 等品牌外链继续使用第一方官方 mark，并由 B
 - `public/brands/`
 
 不要为了中央表达规范把品牌资产或站点实现搬进 `.codex`。
+
+## 13. 技术文章的阅读样板（2026-10-22）
+
+用户指定 [《我们的回应实验》](https://basemodel-preview.vercel.app/research/seed-openevo/study/parameter-memory-results/) 为全站文章型页面的写作与排版样板，原话为：“整个贝斯 Model 网站里，所有关于技术博客的子网页，都要仿照我给你的这个网页的风格去写，越贴近越好。”随后明确选择覆盖全站研究解读、方法介绍、实验分析和技术长文；工具、目录、比较页面和运行工作台保持各自功能布局。
+
+共享实现是 `src/styles/research-article.css`，实际文章清单是 `src/data/technicalArticleRoutes.ts`。正文采用样板的窄幅纸面、字号层级、行距、留白、明暗配色和克制目录；科学表格、公式与图形继续由各自语义 owner 维护，必要的宽证据在局部滚动，不压缩成竖字。不要复制样板的具体研究结论、强行加入十问或虚构摘要/结果。
+
+写作顺序按实际对象选择：标题与简短导语建立研究对象；结果文章给出核心结果及限制，再展开摘要、分节解释与证据；方法文章先解释问题与机制。保留已经被用户接受的自然段落、原始数值、来源和未知。正文、图注、表头、目录与来源链接都要复读。新文章必须进入清单与渲染验收，不能只加一个样式文件就称覆盖全站。
+
+用户随后要求“尽可能把更多网页也按照我们这种风格去做”，并明确纠正：“一个大标题前面的序号‘4’，你把它放在标题上面，并且特别小。我不喜欢这样，你就直接把它放到标题左边就行。”章节编号因此放在原标题内，使用继承标题字号的左侧数字，与标题同一行自然换行，不能另起一行做小号眉题。共享 owner 为 research-article.css 的 evo-article__heading-number。
+
+研究入口、档案、指南和论文详情也沿用纸面、明暗配色、正文字体与标题层级；有导航、选择器或复杂图形的入口允许使用 960px 阅读框。清单继续由 technicalArticleRoutes.ts 维护，功能入口与来源关系必须保留。OpenClaude 细节参考核实的 [open-claude-ui](https://github.com/Caho1/open-claude-ui)：采用中性表面、克制边界、系统中文字体和清晰层级，不引入其聊天产品结构、品牌字体或运行依赖。

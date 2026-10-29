@@ -5,6 +5,11 @@ const baseURL = `http://127.0.0.1:${port}/`;
 
 export default defineConfig({
   testDir: '.',
+  // The canonical Chromium shard saves screenshots under root test-results/.
+  // Lab runs second in the same job. Give Lab its own nested output directory
+  // so Playwright cannot erase the shard's visual proof during cleanup.
+  // Playwright resolves this path relative to this config (tests/e2e/).
+  outputDir: '../../test-results/lab-gate',
   testMatch: 'lab-server-visual-qa.spec.ts',
   fullyParallel: false,
   forbidOnly: true,

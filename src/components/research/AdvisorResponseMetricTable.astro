@@ -1,0 +1,158 @@
+---
+import ResearchPaperTable from './ResearchPaperTable.astro';
+/**
+ * Compact method × metric research tables for the advisor-response article.
+ * This is a PRESENTATION projection of existing, source-bound experiments.
+ * It neither changes an upstream receipt nor manufactures unfinished results.
+ * The canonical Q03 SEED engineering, Q04 capacity, Q05 historical final and
+ * Q09 carrier tables are owned by their full source-linked evidence blocks.
+ * This component holds only complementary summaries, avoiding duplicates.
+ * The Q01 data is computed from the same checked-in CSV as the original chart.
+ */
+import { ADVISOR_Q03_CUSTOM_PANEL } from '../../data/openEvoAdvisorTenQuestions';
+import q01Csv from '../../data/research-evidence/advisor-q01-three-way-curve.csv?raw';
+
+interface Row {
+  label: string;
+  cells: string[];
+}
+interface Matrix {
+  id: string;
+  title: string;
+  headers: string[];
+  rows: Row[];
+  numeric?: number[];
+  how: string;
+  finding: string;
+  boundary: string;
+}
+interface Props { questionId: string }
+const { questionId } = Astro.props;
+
+const q01Records = q01Csv.trim().split('\n').slice(1).map(line=>{
+  const fields=line.split(',');
+  return {
+    method:fields[0],
+    checkpoint:Number(fields[2]),
+    score:Number(fields[4])*100,
+  };
+});
+const point = (method:string, round:number) => {
+  const found=q01Records.find(p=>p.method===method && p.checkpoint===round);
+  if(!found || !Number.isFinite(found.score)) throw new Error('Missing sealed Q01 CSV measurement');
+  return `第${round}${method==='ordinary_openevo'?'次更新':'轮'}：${found.score.toFixed(2)} 分`;
+};
+const matrices: Record<string, Matrix[]> = {
+  q01: [{
+    id:'time',
+    title:'三条历史路线的训练停止时点比较',
+    headers:['较早保存点的成绩','较晚保存点的成绩'],
+    rows:[
+      {label:'普通 OpenEVO', cells:[point('ordinary_openevo',120),point('ordinary_openevo',160)]},
+      {label:'Bounded（固定容量）', cells:[point('bounded_state',120),point('bounded_state',150)]},
+      {label:'历史 β/GDR', cells:[point('delta_beta_family',130),point('delta_beta_family',160)]},
+    ],
+    how:'每一行是一条实际运行过的路线；列出用于判断后段变化的两个保存点，Task Score 满分 100。',
+    finding:'普通 OpenEVO 在后段提升不明显，Bounded 到第 150 轮仍有提高，历史 β/GDR 到第 160 轮的成绩降低。',
+    boundary:'事先固定的同一批 64 道开发题；普通路线按实际参数更新次数计，另外两条按完成的 Stage2 轮次计。不同路线并非完全严格对照。',
+  }],
+  q02: [{
+    id:'initial-training',
+    title:'早期 SFT 与 OPSD 的初始能力',
+    headers:['Task Score（满分 100 分）','完整成功题数（共 32 题）'],
+    numeric:[0,1],
+    rows:[
+      {label:'SFT',cells:['34.96 分','3 题']},
+      {label:'OPSD',cells:['36.01 分','0 题']},
+    ],
+    how:'相同早期 32 道购物题上比较两种初始训练方式；平均分和完整成功题数分别衡量完成程度与完全做对。',
+    finding:'OPSD 的平均得分略高，SFT 的完整成功更多；两种指标没有给出统一赢家。',
+    boundary:'早期小样本比较，平均得分差的 95% 区间跨 0。另一个匹配训练工作包已经完成六组训练，但 18 个评测位置的完整配对统计尚未封存。',
+  }],
+  q03: [
+    {
+      id:'historic-checkpoints',
+      title:'历史 Q03：四个自定义 64 题保存点',
+      headers:['Task Score（满分 100 分）','完整成功题数（共 64 题）'],
+      numeric:[0,1],
+      rows: ADVISOR_Q03_CUSTOM_PANEL.map(item=>({label:item.update,cells:[item.score+' 分',item.exact.replace(/\s*\/\s*\d+$/, '').trim()+' 题']})),
+      how:'行表示训练时保存的不同模型版本；均测试同一套自定义 64 题。',
+      finding:'A120 的 Task Score 为 6.62 分（满分 100 分），四个保存点在各自的 64 道题中都没有完整成功的任务；中途的均分有回落。',
+      boundary:'属于历史自定义协议，不能直接与论文报告的 SEED 分数比较。',
+    },
+  ],
+  q05: [
+    {
+      id:'short-sensitivity',
+      title:'简单 β 的独立短程敏感性测量',
+      headers:['起点开发题得分','R127 后旧题得分'],
+      numeric:[0,1],
+      rows:[
+        {label:'R126 候选',cells:['55.53 分','67.78 分']},
+        {label:'R125 对照',cells:['62.29 分','64.75 分']},
+      ],
+      how:'同一敏感性计划包含 8 组各 64 题、共 512 次尝试。列的评测题集合与时点不同，比较应分别在各列内进行。',
+      finding:'两个时点的描述性排序发生变化。',
+      boundary:'属于独立的短程行为诊断，不能代替简单 β 多单元正式训练和 1,280 次评估的封存验收。',
+    },
+  ],
+  q06: [{
+    id:'click-entropy',
+    title:'合法点击候选的概率分布',
+    headers:['平均选择熵','选中候选概率','前三候选概率和'],
+    numeric:[0,1,2],
+    rows:[{label:'Bounded R120',cells:['0.763','约 63%','约 93%']}],
+    how:'观察模型面对多个合法点击选项时的概率分布，熵大表示选择更分散。',
+    finding:'这些值描述当时选项上的不确定程度。',
+    boundary:'后续两条数据流的整体预测检验为 NOT_CONFIRMED；不能宣称这个熵指标已经能提前预测未来掉分。',
+  }],
+  q07: [{
+    id:'direction-reversal',
+    title:'第 156 轮 Task Vector 方向反转',
+    headers:['平均成绩变化','95% 置信区间','配对题数'],
+    numeric:[0,1,2],
+    rows:[{label:'Bounded OFF · 反向更新',cells:['下降 10.06 分','下降 5.60 至 15.02 分','64 题']}],
+    how:'计算反转方向后的得分减去未干预 Bounded OFF 模型的得分；负值表示变差。',
+    finding:'这一轮反转在配对 64 题中平均下降 10.06 分，并通过八项比较的多重校正。',
+    boundary:'这属于 Bounded OFF 的单轮局部因果证据，不能套用到 DirectApply R159 或所有 OpenEVO 路线。',
+  }],
+  q08: [{
+    id:'retention-status',
+    title:'旧题保持评测执行情况',
+    headers:['任务尝试','早期可比锚点','遗忘量结论'],
+    rows:[{label:'旧任务保持计划',cells:['960 次','部分缺失','尚未判定']}],
+    how:'这里报告完成的评测量和判定所需证据是否齐备。',
+    finding:'评测已经运行，但无法确认所有旧题在当初确实学会。',
+    boundary:'后期做错不足以直接证明遗忘；另一条 R129/R159 旧队列测量只提供局部比较。',
+  }],
+
+};
+
+const groups=matrices[questionId] ?? [];
+---
+{groups.map(table=>(
+  <figure class="paper-table-figure advisor-result-matrix" data-advisor-matrix={questionId} data-matrix-kind={table.id} data-paper-table="D1">
+    <div class="advisor-result-matrix__wrap" tabindex="0" aria-label={table.title}>
+      <ResearchPaperTable narrowRecords>
+        <caption class="advisor-result-matrix__sr-only">{table.title}</caption>
+        <thead><tr>
+          <th scope="col"><span class="advisor-result-matrix__sr-only">实验方法或条件</span></th>
+          {table.headers.map((head,i)=><th scope="col" data-numeric={table.numeric?.includes(i) ? '' : undefined}>{head}</th>)}
+        </tr></thead>
+        <tbody>{table.rows.map(row=><tr>
+          <th scope="row">{row.label}</th>
+          {row.cells.map((cell,i)=><td data-numeric={table.numeric?.includes(i) ? '' : undefined}>{cell}</td>)}
+        </tr>)}</tbody>
+      </ResearchPaperTable>
+    </div>
+    <figcaption>
+      <p><strong>{table.title}</strong>。{table.finding}</p>
+      <p>{table.how} {table.boundary}</p>
+    </figcaption>
+  </figure>
+))}
+
+<style>/* Method names share their fixed mobile column; they must wrap inside it. */
+
+  .advisor-result-matrix th[scope="row"] { white-space: normal;  }
+</style>

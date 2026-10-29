@@ -134,6 +134,25 @@ test('create rejects tracked working-tree drift that is not represented by HEAD'
   assert.match(result.stderr, /tracked worktree must be clean/);
 });
 
+test('verify rejects artifacts from another workflow run or rerun attempt', (t) => {
+  const state = fixture(t);
+  create(state, { GITHUB_RUN_ID: '100', GITHUB_RUN_ATTEMPT: '1' });
+  assert.equal(run(state, 'verify', { GITHUB_RUN_ID: '100', GITHUB_RUN_ATTEMPT: '1' }).status, 0);
+  for (const extra of [
+    { GITHUB_RUN_ID: '101', GITHUB_RUN_ATTEMPT: '1' },
+    { GITHUB_RUN_ID: '100', GITHUB_RUN_ATTEMPT: '2' },
+  ]) {
+    const result = run(state, 'verify', extra);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /workflow execution mismatch/);
+  }
+  // A failed consumer may be retried while its successful producer is retained.
+  // The DAG supplies that producer's attempt, never a latest-artifact lookup.
+  assert.equal(run(state, 'verify', {
+    GITHUB_RUN_ID: '100', GITHUB_RUN_ATTEMPT: '2', CI_BUILD_RUN_ATTEMPT: '1',
+  }).status, 0);
+});
+
 test('create fails closed on missing identities, empty roots and symlinks', (t) => {
   const missingIdentity = fixture(t);
   const noHead = run(missingIdentity, 'create', { CI_HEAD_SHA: '' });

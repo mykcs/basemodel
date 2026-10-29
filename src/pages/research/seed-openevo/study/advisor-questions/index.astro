@@ -1,0 +1,95 @@
+---
+import AppLayout from '../../../../../layouts/AppLayout.astro';
+import '../../../../../styles/openevo-research-blogs.css';
+import OpenEvoArticleNavigation from '../../../../../components/research/OpenEvoArticleNavigation.astro';
+import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
+import { ADVISOR_QUESTIONS } from '../../../../../data/openEvoAdvisorTenQuestions';
+import { OPEN_EVO_ADVISOR_MEETING } from '../../../../../data/openEvoAdvisorMeeting';
+import "../../../../../styles/research-article.css";
+
+const responseHref = (id: string) =>
+  '/research/seed-openevo/study/parameter-memory-results/#response-' + id;
+
+// Each entry is a question to test, not an experiment result or a promised outcome.
+const researchTargets = {
+  q01: '三种方法是否应该在不同的轮次停止训练？在新题上还成立吗？',
+  q02: 'SFT 和 OPSD 哪种初始训练更合适？不同起点会改变以后的长期学习吗？',
+  q03: '按 SEED 原生题单、提示和训练流程评测后，成绩差距还有多大？',
+  q04: '减小 LoRA rank 后，眼前的成绩与后续持续学习能力分别受到什么影响？',
+  q05: '只调节参数写入强度的简单 β，能否比历史复杂 β 取得更好的长期成绩？',
+  q06: '逐 token 熵和具体点击候选的熵，能否比 search/click 动作类型更好地解释错误？',
+  q07: '反转或删除某次 Task Vector 更新，对普通 OpenEVO、Bounded 与 Bounded + β 分别有什么影响？',
+  q08: '有证据确认模型曾经学会的旧题，长期训练后究竟保留了多少？',
+  q09: '真正关闭 Text Memory、Skill、Agent System 中任意一种，会改变多少做题能力？',
+  q10: '换新 WebShop 题、换训练随机设置、再换到 ALFWorld，原来的判断分别能复现吗？',
+} as const;
+---
+<AppLayout
+  title="学长十问：OpenEVO 持续学习需要回答的研究问题"
+  description="独立介绍学长讨论的六个原始方向和整理后的十个可检验研究问题；只讲问题是什么、为什么重要，不混入后续实验的回答。"
+  locale="zh"
+>
+  <main class="evo-blog evo-article evo-approved-reader" data-evo-blog="questions" data-advisor-ten-questions data-question-only data-paper-citation-style="plain-text" data-reader-page="research-blog" data-copy-review>
+    <header>
+      <h1>学长十问：OpenEVO 还有哪些问题需要回答</h1>
+      <p class="evo-article__lede" data-reader-purpose>OpenEVO 能让智能体把过去的任务经验带到下一轮。但训练多少轮才够？更新的参数应该保存多大？学过的任务还记得吗？这些问题决定了我们下一步应该测量什么。</p>
+    </header>
+    <section class="evo-article__abstract" aria-label="摘要">
+      <h2>摘要</h2>
+      <p>2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会（<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />会议原始逐字记录（RAW）↗</a>）。会后，我们将讨论归纳为六个方向，再整理成 Q01–Q09 九个可检验问题，并另外加入 Q10：换一批新任务能否重复得到相同结论。这篇文章说明这些问题从哪里来、会后怎样拆分成十问。第三篇《我们的回应实验》逐项介绍实际完成的实验、结果和仍缺少的证据。</p>
+    </section>
+    <OpenEvoArticleNavigation current="questions" />
+    <nav class="evo-article__toc" aria-label="学长十问目录">
+      <h2>目录</h2>
+      <ol>
+        <li><a href="#origin">1 学长原本提出的六个方向</a></li>
+        <li><a href="#question-index">2 整理出的十个问题</a></li>
+        {ADVISOR_QUESTIONS.map(q => (
+          <li><a href={'#'+q.id}>{q.id.toUpperCase()} {q.title}</a></li>
+        ))}
+        <li><a href="#relationship">3 这些问题如何组成研究路线</a></li>
+        <li><a href="#sources">来源与编目</a></li>
+      </ol>
+    </nav>
+    <section class="evo-article__section" id="origin">
+      <h2>1 学长原本提出的六个方向</h2>
+      <p>这些问题围绕 OpenEVO 的持续学习能力展开。WebShop 是我们当时使用的交互评测环境；OpenEVO 的参数更新、文字记忆与行为规则，才是研究对象。根据当时的逐字记录与会后分析，我们归纳出六个讨论方向：</p>
+      <ol class="evo-article__meeting-questions">
+        {OPEN_EVO_ADVISOR_MEETING.points.map((point,i) => (
+          <li><strong>{i+1}. {point.title}</strong><p>{point.text}</p></li>
+        ))}
+      </ol>
+      <p class="evo-article__note">六个方向来自会后整理记录。下面的 Q01–Q10 是我们为实验设计而做的进一步拆解，不能当作学长当时逐字提出的十句话。Q10 是会后另行增加的独立复现问题。</p>
+    </section>
+    <section class="evo-article__section" id="question-index">
+      <h2>2 把研究方向拆解成十个可检验的问题</h2>
+      <p>一个大问题往往包含几项不同的判断。比如“模型学会了吗”既涉及训练是否继续带来收益，也涉及训练方式、旧任务保持以及新任务效果。我们因此将问题拆开，每个问题都可以有自己的实验和证据。下面的标题描述具体要检验哪一步；有些实验尚未完成，标题不会预先替实验宣布结果。</p>
+      {ADVISOR_QUESTIONS.map(q => (
+        <article class="evo-article__question" id={q.id} data-research-question={q.id} aria-labelledby={q.id+'-title'}>
+          <header class="evo-article__question-header"><span class="evo-article__qnum">{q.id.toUpperCase()}</span><h3 id={q.id+'-title'}>{q.title}</h3></header>
+          {q.id==='q10' && <p class="evo-article__note evo-article__note--metadata">会后新增的独立复现问题</p>}
+          <p>{q.opening}</p>
+          <p class="evo-article__note" data-question-research-target={q.id}><strong>真正想检验：</strong>{researchTargets[q.id as keyof typeof researchTargets]}</p>
+          <p class="evo-article__note evo-article__note--navigation"><a href={responseHref(q.id)}>查看 {q.id.toUpperCase()} 已完成的实验、结果与未解问题 →</a></p>
+        </article>
+      ))}
+    </section>
+    <section class="evo-article__section" id="relationship">
+      <h2>3 这十个问题怎样连接起来</h2>
+      <p><strong>Q01–Q03</strong> 依次研究三个不同的环节：训练多久才有明显收益；开始逐轮学习前，SFT 和 OPSD 怎样训练初始模型；我们的 SEED 复现实验能否按论文的条件公平比较。三者不能用一次实验互相替代。</p>
+      <p><strong>Q04–Q07</strong> 进一步追问参数记忆需要多大容量、写入幅度和方向能否影响能力，以及如何通过行为指标理解模型状态。</p>
+      <p><strong>Q08–Q10</strong> 最后考察旧任务保持、Text Memory / Skill / Agent System 的作用，以及换一批新任务能否重复关键结论。</p>
+      <p class="evo-article__note" data-question-q10-environment>跨任务环境的候选参照是 <a href="https://arxiv.org/abs/2607.14777" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2607.14777" />SEED（arXiv:2607.14777）</a> 使用的 <strong>ALFWorld</strong>：在模拟家庭环境中按文字指令完成任务。这里提出的是后续想验证的科学问题，还没有报告新的 ALFWorld 实验成绩。</p>
+      <p>这十个问题确定了下一步想检验什么。<a href="/research/seed-openevo/study/parameter-memory-results/">第三篇《我们的回应实验》</a>逐项说明已经做过的实验、测到的结果和还没有回答的部分。关于普通 OpenEVO、Bounded 和 β 的公式，则在<a href="/research/seed-openevo/study/openevo-methods/">第一篇方法介绍</a>中详细说明。</p>
+    </section>
+    <section class="evo-article__section evo-article__sources" id="sources">
+      <h2>会议原文、会后解释与问题编目</h2>
+      <ol>
+        <li>2026 年 9 月 22 日的会议逐字记录：<a href={OPEN_EVO_ADVISOR_MEETING.rawHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.rawHref} />原始记录（RAW）↗</a></li>
+        <li>2026 年 9 月 28 日的会后研究整理：<a href={OPEN_EVO_ADVISOR_MEETING.reconciliationHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={OPEN_EVO_ADVISOR_MEETING.reconciliationHref} />后续分析（非 RAW）↗</a></li>
+        <li>Q01–Q10 的问题与实验证据结构化档案：<a href="https://github.com/mykcs/basemodel/blob/main/src/data/openEvoAdvisorTenQuestions.ts" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/basemodel/blob/main/src/data/openEvoAdvisorTenQuestions.ts" />问题编目源码 ↗</a></li>
+      </ol>
+      <p class="evo-article__note">此页是研究问题的导读，不报告新的实验成绩。问题与回应的编号一一对应，便于之后独立更新实验，不影响这份问题目录的历史来源。</p>
+    </section>
+  </main>
+</AppLayout>

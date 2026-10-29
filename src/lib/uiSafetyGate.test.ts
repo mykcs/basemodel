@@ -77,8 +77,7 @@ describe('UI visual acceptance gate contract', () => {
     for (const term of [
       "theme: 'light'",
       "theme: 'dark'",
-      'width: 390',
-      'width: 768',
+      'width: 440',
       'width: 1440',
       'document horizontal overflow',
       'clipped horizontally',
@@ -114,8 +113,7 @@ describe('UI visual acceptance gate contract', () => {
       '#main-content.site-main',
       "theme: 'light'",
       "theme: 'dark'",
-      'width: 390',
-      'width: 768',
+      'width: 440',
       'width: 1440',
       '.desktop-nav',
       '[data-menu-toggle]',
@@ -180,7 +178,7 @@ describe('UI visual acceptance gate contract', () => {
   });
 
   it('locks research connector geometry to live DOM anchors across the visual matrix', () => {
-    for (const term of ['width: 390', 'width: 768', 'width: 1440', "theme: 'light'", "theme: 'dark'", 'connector start drift', 'connector end drift']) {
+    for (const term of ['width: 440', 'width: 1440', "theme: 'light'", "theme: 'dark'", 'connector start drift', 'connector end drift']) {
       expect(researchGeometryGate).toContain(term);
     }
     expect(geometryPolicy).toContain('connector endpoint error must be <= 5px');
@@ -188,7 +186,7 @@ describe('UI visual acceptance gate contract', () => {
   });
 
   it('makes readable research prose and intent-bound control ownership hard release conditions', () => {
-    for (const term of ['width: 390', 'width: 768', 'width: 1024', 'width: 1440', 'prose font too small', 'CJK prose is too narrow']) {
+    for (const term of ['width: 440', 'width: 1440', 'prose font too small', 'mixed-script prose is too narrow']) {
       expect(canonicalFigureGate).toContain(term);
     }
     for (const term of ['prose font too small', 'CJK prose is too narrow', 'interactive transport stays local until explicit reader interaction', 'data-transport-docked']) {
@@ -204,7 +202,8 @@ describe('UI visual acceptance gate contract', () => {
       'SEED transport remains attached before interaction',
     ]) expect(floatingTransportGate).toContain(term);
     expect(researchReadabilityStyles).toContain('.canonical-figure');
-    expect(researchReadabilityStyles).toContain('font-size: max(.74rem, 11.8px) !important');
+    // The shared research caption floor now follows #895's semantic metadata role.
+    expect(researchReadabilityStyles).toContain('font-size: var(--type-body-small) !important');
     expect(interactiveResearchStyles).not.toContain('>.irx-controls>.irx-transport{position:fixed');
     expect(geometryPolicy).toContain('at least **7 CJK characters per rendered line**');
     expect(geometryPolicy).toContain('becomes a bottom `position: fixed` dock');
@@ -230,6 +229,6 @@ describe('UI visual acceptance gate contract', () => {
     expect(policy).toContain('npm run test:ui');
     expect(policy).toContain('npm run test:ui:all');
     expect(policy).toContain('light → dark → light');
-    expect(policy).toContain('390 × 844');
+    expect(policy).toContain('440 × 956');
   });
 });

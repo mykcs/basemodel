@@ -50,7 +50,7 @@ describe('H1.46 MiniMax teacher evidence boundary', () => {
 
   it('makes the user-facing page answer the benchmark question before the cost accounting', () => {
     const benchmark = page.indexOf('教师能力需要在同一轨迹上直接比较');
-    const resources = page.indexOf('04 · 实际消耗');
+    const resources = page.indexOf('id="resource-title"');
     expect(benchmark).toBeGreaterThanOrEqual(0);
     expect(resources).toBeGreaterThan(benchmark);
     expect(page).toContain('WHTB · WebShop Hindsight Teacher Bench');
@@ -66,7 +66,11 @@ describe('H1.46 MiniMax teacher evidence boundary', () => {
 
   it('does not fabricate a current cross-provider intelligence ranking', () => {
     expect(page).toContain('本页不填未经当前一手来源固定的分数/价格');
-    expect(page).toContain('纵向位置不是能力排名');
+    expect(page).toContain('四位候选教师尚未完成同一批 WebShop 轨迹上的质量对比');
+    expect(page).toContain('候选顺序不表示教师质量排名');
+    expect(page).toContain('class="frontier__candidates"');
+    expect(page).not.toMatch(/class="point[^"]*"\s+style="left:/);
+    expect(page).not.toContain('class="axis-y"');
     expect(page).not.toContain('MiniMax-M3 比 GLM-5.2 更聪明');
     expect(page).not.toContain('Kimi K3 比 MiniMax-M3 更聪明');
   });

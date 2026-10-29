@@ -32,6 +32,27 @@ describe('research result reading contract', () => {
     }
   });
 
+  it('makes reader questions, numeric scales, protocol comparability and real explanations explicit', () => {
+    const policy = read('docs/agents/current/research-result-reading-contract.md');
+    expect(policy).toContain('Project Report Skill');
+    expect(policy).toContain('Reader Question Check');
+    expect(policy).toContain('Presentation normalization does not establish protocol comparability');
+    expect(policy).toContain('6.62 / 100');
+    expect(policy).toContain('what remains unknown');
+    expect(policy).toContain('An unexecuted future experiment is not the explanation');
+    expect(policy).toContain('static reading path');
+
+    const scaffold = read('src/components/research/OpenEvoExperimentResultsScaffold.astro');
+    const direct = at(scaffold, 'data-result-stage="direct-result" aria-labelledby="slots-title"');
+    const meaning = at(scaffold, 'aria-labelledby="known-title"');
+    const mechanism = at(scaffold, 'data-result-stage="mechanism" aria-labelledby="counting-title"');
+    expect(direct).toBeLessThan(meaning);
+    expect(meaning).toBeLessThan(mechanism);
+    expect(scaffold).not.toContain('最终解释先留空');
+    expect(scaffold).toContain('data-historical-arm-comparison');
+    expect(scaffold).toContain('data-reader-gap-explanation');
+  });
+
   it('puts Q17 frozen final before trajectory and geometry', () => {
     const source = read('src/components/research/OpenEvoQ17DirectApplyAnalysis.astro');
     const final = at(source, 'id="final" data-result-stage="direct-result"');

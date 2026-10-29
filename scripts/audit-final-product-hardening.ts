@@ -102,7 +102,7 @@ const workspaceStyles = read('src/styles/workspace.css');
 const layout = read('src/layouts/AppLayout.astro');
 const appStyles = read('src/styles/app.css');
 assert('HARDEN-A11Y-001', tokens.includes('--color-accent-fill: #8f3d2a') && tokens.includes('--color-accent-on-fill: #ffffff') && tokens.includes('--color-accent-on-fill: #151a1a'), 'filled accent tokens preserve the current Research Editorial × Experimental Workbench identity with dedicated light/dark foreground pairs');
-assert('HARDEN-VISUAL-001', workspaceStyles.includes('.reason-line') && workspaceStyles.includes('.workspace-grid') && workspaceStyles.includes('.memo-readable') && hardening.includes('.intent-row') && hardening.includes('.paper-case-summary'), 'research-critical typography, workbench density, and editorial hierarchy are hardened in their live semantic owners');
+assert('HARDEN-VISUAL-001', workspaceStyles.includes('.reason-line') && workspaceStyles.includes('.workspace-grid') && workspaceStyles.includes('.memo-readable') && !hardening.includes('.intent-row') && hardening.includes('.paper-case-summary') && read('src/components/papers/PaperExplorer.tsx').includes('paper-case-summary'), 'research-critical typography and workbench density retain live owners; retired intent-row styles stay absent and the paper summary retains its producer');
 assert(
   'HARDEN-VISUAL-002',
   layout.includes("import '../styles/app.css';")

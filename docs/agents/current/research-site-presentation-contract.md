@@ -2,7 +2,7 @@
 
 Status: **current project-wide research publication and progressive-disclosure contract**
 Decision date: **2026-08-30**
-Last reviewed: **2026-09-20**
+Last reviewed: **2026-10-03**
 
 This document consolidates durable owner preferences for how BaseModel presents scientific research to people who did not personally run every experiment. It is a content-and-presentation contract, not a replacement for the existing visual, evidence, or browser-acceptance policies.
 
@@ -224,6 +224,37 @@ observation
 
 Do not merge different evidence layers into one causal claim merely because the numbers sit on the same page.
 
+### 7.1 When a reader asks “where did this come from?”, show the actual path
+
+For implementation-, data-, or calculation-specific claims, BaseModel uses the shared account-level evidence-addressable pattern and specializes it for research publication:
+
+```text
+reader question / claim
+-> immutable source or raw artifact link
+-> short source excerpt / raw fields
+-> human explanation, pseudocode, equation, or compact table
+-> runtime/result evidence when behavior is being claimed
+-> claim boundary
+```
+
+Examples:
+
+- **“β 代码是怎么写的？”** Link the exact implementation at an immutable commit, show only the core lines that compute/apply β, then explain the state transition in plain language or pseudocode. If the page claims how β behaved in a run, also link the corresponding raw receipt/trace/result; source code alone does not prove runtime behavior.
+- **“这个数据从哪里来？”** Link the source dataset/task manifest/raw episode, show the exact fields or sample definition that matter, then explain selection/filtering and the denominator. A screenshot of a table is supporting presentation, not the sole provenance when raw data exists.
+- **“这个数怎么算的？”** Link the raw inputs and the analysis script/function, show the formula or aggregation in real math/table form, and link the machine-produced output. The reader should be able to reconstruct the transformation path without reverse-engineering prose.
+
+On web pages, keep the main explanation readable and use a nearby evidence disclosure for longer raw material. The disclosure should normally contain:
+
+1. **源码 / 原始数据 / 原始结果** — exact immutable link, with line range or artifact identity when available;
+2. **核心原文** — a small code/data/result excerpt, not a whole file dump;
+3. **怎么读** — explanation of variables, rows, formula, or transformation;
+4. **验证** — test/receipt/runtime output when the claim is about executed behavior;
+5. **边界** — what this evidence establishes and what remains inference or unknown.
+
+Do not create a detached “参考链接” wall. Each evidence capsule belongs next to the claim it supports. Do not silently copy code into prose without the owning source identity, and do not use a moving `main` link for a historical statement when an immutable commit is known.
+
+GitHub/source links and raw-artifact links should remain direct reader actions. Brand treatment may make the destination recognizable, but UI decoration must not obscure the exact destination or replace the source text.
+
 ## 8. Scientific wording boundaries
 
 Never upgrade evidence strength for rhetorical neatness.
@@ -247,11 +278,19 @@ For quantitative scientific relationships, prefer real web-native structure over
 - HTML/SVG/data-driven plots for curves, bars, state transitions, and comparisons;
 - longitudinal run/progress figures that claim a whole run or sealed snapshot must preserve the full relevant time axis and the actual earlier trajectory; recent-window block means, plateau windows, or recovery summaries may be overlays, annotations, or secondary panels, not silent replacements for earlier history. If a figure intentionally narrows to a recent window, say that scope in the title/caption instead of implying a whole-run view;
 - real tables when row/column alignment carries meaning;
-- within one experiment-report series, use one consistent paper-like table grammar for benchmark/result tables: serif editorial typography, compact rows, restrained `booktabs`-style horizontal rules, aligned numeric columns, and theme-safe emphasis; sibling reports should not alternate between dashboard-card tables and paper tables unless the semantic object genuinely differs;
+- within one experiment-report series, use one consistent LaTeX / `booktabs`-like table grammar for all research evidence tables: **native semantic HTML** with a real caption, top/header/bottom horizontal rules, compact rows, column headings aligned with their data, units in headings, right-aligned tabular numerals. **Short tables stay as narrow as their actual content and are centered**, instead of being stretched across a single-column blog. **Wide tables fit inside the available article column on desktop and phone, without a default horizontal scroll requirement**, by adjusting column widths, intentional cell wrapping, padding and a modest, bounded responsive font scale. Do not cut off column headings, numeric signs, scientific names, uncertainties, `not measured` states or whole data columns. If the data cannot fit legibly, provide a deliberately restructured narrow-screen reading mode with equivalent semantic data rather than invisible horizontal overflow; an optional zoom/detail view is permitted as a supplement. This rule covers main results, ablations, appendices and nested evidence-component tables; audit all rendered research/article tables and test column alignment and content containment at 320/390/768/1440px. Keep genuine trend/interval charts as figures, while avoiding two decorative side-by-side bar strips that function as a misaligned table. The shared research table style does not automatically restyle application/workbench grids;
+- within one study-report article, **scientific evidence has two clear visual roles**: curves/paired interval plots are quiet paper figures with a readable full boundary, a small figure-level title and an equally readable caption; numerical comparisons are naturally sized open `booktabs` tables with a clearly styled caption and no second decorative enclosing card. Both use the same spacing, ink/frame and caption-size tokens, while section H2 and question H3 remain visibly larger than the figures. A compact single-estimate graphic stays single-column-like; multirow comparisons may be wider. The OpenEVO series implements these shared values through `openevo-research-blogs.css`, `PaperIntervalPlot.astro` and `research-booktabs.css`. Status indicators for Q01–Q10 refer to **scientific answer maturity**, not CI build success; per-question missing experiment and human/GPU effort are explicitly labeled estimates, never manufactured measurements;
 - labeled axes, units, sample counts, uncertainty, and evidence provenance when they affect interpretation;
+- Interpret each experimental result in the order **observed fact → calculation/mechanism and statistical reason → practical/scientific consequence**. A reported 95% interval must identify its statistical kind, calculation method when supported by receipts, and meaning of the zero reference; sample-window vs final-panel differences must explain their consequence for the attempted claim. State findings positively before a scientifically necessary exclusion; habitual unexplained “不是/不能/是不是” scaffolding adds attention cost.
 - generated or illustrative images only when they explain a visual concept that is not better represented by actual data geometry.
 
+**Owner-example-driven sibling review (2026-10-18):** Do not treat a reader's proposed rewrite as a request to bold or otherwise decorate the quoted phrases. For a research result page, preserve the owner's **exact before → requested correction** examples in central RAW (the source is [RAW-20261018-972](https://github.com/mykcs/.agents/blob/main/docs/learning/raw/2026/2026-10-18-basemodel-advisor-ten-result-clarity-and-visual-hierarchy.md)), extract the testable information problem, then inspect every same-family sibling for that mechanism. Example of a failure: replacing “三条长期路线在同一冻结 128 题上的 Task Score 分别为……” with the same unintroduced numbers but bold method names. A better repair is to name what experiments were actually done and why, before scores; identify a late comparison as the final eight of 160 rounds and link its matched historical source where cited. A second sibling example is a questions-only article saying “我们已经知道**为什么要做这些实验**” with emphasis but no usable transition; give the reader an ordinary link to the actual experiment answers. A legitimate counterexample is bold scientific results or glossary terms when emphasis truly marks semantic objects. **Bold text by itself does not establish comprehension, and a single corrected route does not prove sitewide quality.** The required review records concrete observed before/after cases, same-family inspected surfaces, what was fixed/kept, machine-guard evidence, and whether independent reader comprehension was actually tested. Do not turn this into a literal global ban on `<strong>`.
+
 A chart is successful when the reader can understand the relation it encodes, not when it merely looks more polished than the underlying evidence.
+
+**Report navigation and sources follow the object, not a publication costume.** An unpublished research report uses the plain heading “目录”, not “论文结构”. Include its principal chapters, references, appendix, and a few high-value appendix anchors (such as capacity/SEED/Task Vector/new-task evidence) that materially help navigation; avoid pasting the whole appendix twice. Display scholarly references as separate list items, not multiple citations crammed into a single semicolon-delimited paragraph. Preserve source links and evidence roles.
+
+**研究图的占宽按科研对象选择**：一张简单曲线、一组置信区间和短量化表保持单栏式紧凑宽度；多面板、并排推理机制与多组效果比较才采用更宽的跨双栏式空间。这里只借鉴论文图表的 LaTeX 观感，不强制 BaseModel 网页布局、导师汇报正文或产品 UI 成为双栏论文。设计 owner 是 [UI design principles](ui-design-principles.md#research-figure-and-quantitative-table-width-borrow-the-paper-object-retain-the-website)；科研实测、来源和边界仍由本合同控制。
 
 ## 10. Responsive, theme, and accessibility requirements
 
@@ -267,7 +306,7 @@ At minimum check 390px, 768px, and 1440px pressure points when the changed surfa
 - links need readable text, not only a `↗` icon;
 - color never carries evidence state alone;
 - scientific meaning must not be hidden in microcopy: if a table cell, figure caption, helper label, status word, or metric qualifier changes interpretation, treat it as primary research prose and keep it at the repository's readable-prose size on desktop and mobile rather than shrinking it to 13–15px helper text;
-- wide scientific tables may scroll locally on narrow screens, but their cells and thresholds must remain readable and the page itself must stay overflow-safe;
+- scientific/article tables must keep every column and meaningful cell readable within their article column at desktop and narrow-screen sizes, without default local or page-level horizontal scrolling. Check that this is achieved by layout, not clipping/masking or shrinking below a legible floor. Workbench/operational data grids are a separately classified interaction, not an excuse to re-enable horizontal drag in a research report;
 - opening or closing `<details>` must not break layout or reading order.
 
 ## 11. Sitewide back-audit baseline — 2026-08-30
@@ -302,13 +341,15 @@ Before merge, answer yes to all of the following:
 2. Are decisive numbers and caveats visible without opening disclosures?
 3. Are unfamiliar Stage labels, thresholds, negative labels, and acronyms explained where first used?
 4. Does each important claim have nearby provenance that actually supports it?
-5. Are commands, scripts, configs, secrets setup, and logs optional depth unless they change interpretation?
-6. Does every disclosure have a meaningful summary and keyboard-visible focus?
-7. Are result, interpretation, and “cannot prove” boundaries separated?
-8. Does navigation reflect conceptual hierarchy rather than internal repository structure, and do display-only parent groups stay separate from child scientific identity/provenance?
-9. Are real quantitative relationships represented with truthful web-native geometry rather than decorative art?
-10. Do the route body, `<title>`, description, Open Graph/Twitter metadata, and other search/share summaries describe the same scientific state with the same claim boundary?
-11. Has the affected route passed the required light/dark and responsive acceptance matrix?
+5. When a claim depends on code, data, or a calculation, can the reader reach the primary source, inspect the smallest useful raw excerpt, and understand the transformation without asking the author?
+6. If runtime behavior is claimed, is there runtime/result evidence in addition to source code?
+7. Are commands, scripts, configs, secrets setup, and logs optional depth unless they change interpretation?
+8. Does every disclosure have a meaningful summary and keyboard-visible focus?
+9. Are result, interpretation, and “cannot prove” boundaries separated?
+10. Does navigation reflect conceptual hierarchy rather than internal repository structure, and do display-only parent groups stay separate from child scientific identity/provenance?
+11. Are real quantitative relationships represented with truthful web-native geometry rather than decorative art?
+12. Do the route body, `<title>`, description, Open Graph/Twitter metadata, and other search/share summaries describe the same scientific state with the same claim boundary?
+13. Has the affected route passed the required light/dark and responsive acceptance matrix?
 
 ## Relationship to current policy owners
 

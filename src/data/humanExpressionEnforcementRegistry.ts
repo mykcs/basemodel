@@ -6,6 +6,10 @@ export type HumanExpressionEnforcementRecord = {
 };
 
 export const HUMAN_EXPRESSION_ENFORCEMENT_REGISTRY: HumanExpressionEnforcementRecord[] = [
+  { family: 'prose-default-medium-mismatch', guards: [
+    { kind: 'policy-test', path: 'src/lib/humanThinkingWebExpressionContract.test.ts', note: 'requires explicit medium choice and a concrete comprehension gain before richer representation' },
+    { kind: 'policy-test', path: '.github/pull_request_template.md', note: 'makes medium choice visible in every user-facing Page Expression Brief' },
+  ]},
   { family: 'card-adjacency-masquerading-as-flow', guards: [
     { kind: 'policy-test', path: 'src/lib/humanThinkingWebExpressionContract.test.ts', note: 'requires FLOW-WITNESS and rejects card adjacency as proof of non-linear flow' },
     { kind: 'browser-gate', path: 'tests/e2e/vanilla-sd-lora-mechanism.spec.ts', note: 'checks real replay, branch/join, and round-return topology on desktop and mobile' },

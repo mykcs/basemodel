@@ -1,0 +1,183 @@
+---
+/** Optional detailed reading preserves the original scientific chart and slide geometry. */
+---
+<dialog id="research-chart-reader" class="research-chart-reader" aria-labelledby="research-chart-title">
+  <header><h2 id="research-chart-title">图表</h2><form method="dialog"><button aria-label="关闭图表">关闭</button></form></header>
+  <p class="research-chart-caption"></p>
+  <p class="research-chart-hint">左右滑动查看完整坐标。</p>
+  <div class="research-chart-canvas" tabindex="0" role="region" aria-label="图表，左右滚动查看"></div>
+  <div class="research-chart-context"></div>
+</dialog>
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#research-chart-reader');
+  if (dialog && !dialog.dataset.initialized) {
+    dialog.dataset.initialized = 'true';
+    const canvas = dialog.querySelector<HTMLElement>('.research-chart-canvas')!;
+    const title = dialog.querySelector<HTMLElement>('h2')!;
+    const caption = dialog.querySelector<HTMLElement>('.research-chart-caption')!;
+    const context = dialog.querySelector<HTMLElement>('.research-chart-context')!;
+    const hint = dialog.querySelector<HTMLElement>('.research-chart-hint')!;
+    // Explicit local keyboard scrolling is consistent across native WebKit and Chromium.
+    const localKeyboardScroll = (region: HTMLElement) => region.addEventListener('keydown', event => {
+      if (event.target !== region || !['ArrowLeft', 'ArrowRight'].includes(event.key) || region.scrollWidth <= region.clientWidth) return;
+      const direction=event.key==='ArrowRight'?1:-1;
+      const next=Math.max(0,Math.min(region.scrollWidth-region.clientWidth,region.scrollLeft+direction*Math.max(80,region.clientWidth*.8)));
+      if(next!==region.scrollLeft){region.scrollLeft=next;event.preventDefault();}
+    });
+    localKeyboardScroll(canvas);
+    let opener: HTMLButtonElement | null = null;
+    const chartButtons = new Map<SVGSVGElement, HTMLButtonElement>();
+    const readSlideText = (slide: HTMLElement, button: HTMLButtonElement) => {
+      const source = slide.querySelector<HTMLElement>('.slide-inner');
+      if (!source) return;
+      const clone = source.cloneNode(true) as HTMLElement;
+      const originals = [source, ...source.querySelectorAll<HTMLElement>('*')];
+      const targets = [clone, ...clone.querySelectorAll<HTMLElement>('*')];
+      const ids = new Map<string,string>();
+      originals.forEach((node,index) => { if(node.id&&!ids.has(node.id)&&(node.closest('.katex,math')||!node.closest('svg,script,style,button,input,select,textarea,form,[aria-hidden="true"],[hidden]'))) ids.set(node.id, 'reader-text-'+index+'-'+node.id); });
+      originals.forEach((node,index) => {
+        const target = targets[index]!;
+        if(node.id){if(ids.has(node.id))target.id='reader-text-'+index+'-'+node.id;else target.removeAttribute('id');}
+        for(const attribute of ['for','aria-labelledby','aria-describedby','aria-controls']){
+          const references=node.getAttribute(attribute);
+          if(references){const mapped=references.split(/\s+/).map(id=>ids.get(id)).filter(Boolean).join(' ');if(mapped)target.setAttribute(attribute,mapped);else target.removeAttribute(attribute);}
+        }
+        // Preserve KaTeX's internal SVG stretchers and MathML along with its type.
+        if(node.closest('.katex,math')) return;
+        if(node instanceof SVGSVGElement){
+          if(node.getAttribute('aria-hidden')==='true'){target.remove();return;}
+          const note=document.createElement('aside');
+          note.className='research-chart-figure-note';
+          const description=node.querySelector('desc')?.textContent?.trim();
+          const name=node.getAttribute('aria-label')||node.closest('figure')?.querySelector('figcaption')?.textContent?.trim()||'原幻灯片图形';
+          const text=document.createElement('p');text.textContent=[name,description].filter(Boolean).join(' · ');note.append(text);
+          const chart=chartButtons.get(node);
+          if(chart){const open=document.createElement('button');open.type='button';open.className='research-chart-source-link';open.textContent='放大阅读这张原始曲线';open.addEventListener('click',()=>{dialog.addEventListener('close',()=>chart.click(),{once:true});dialog.close();});note.append(open);}
+          else{const reminder=document.createElement('p');reminder.textContent='形状与连接关系请看原幻灯片。';note.append(reminder);}
+          target.replaceWith(note);return;
+        }
+        if(node.closest('svg')) return;
+        if(node.matches('script,style,button,input,select,textarea,form,[aria-hidden="true"],[hidden]')){target.remove();return;}
+        if(!(target instanceof HTMLElement)) return;
+        const tag=node.tagName;
+        const display=({TABLE:'table',THEAD:'table-header-group',TBODY:'table-row-group',TFOOT:'table-footer-group',TR:'table-row',TH:'table-cell',TD:'table-cell',LI:'list-item'} as Record<string,string>)[tag]||(/^(SPAN|A|B|STRONG|EM|I|SMALL|CODE|KBD|SUB|SUP)$/.test(tag)?'inline':'block');
+        target.removeAttribute('style');
+        Object.assign(target.style,{position:'static',inset:'auto',transform:'none',float:'none',display,width:'auto',minWidth:'0',maxWidth:'100%',height:'auto',minHeight:'0',maxHeight:'none',overflow:'visible',margin:'0',padding:'0',border:'0',borderRadius:'0',background:'transparent',boxShadow:'none',color:'inherit',fontFamily:'var(--font-interface)',fontSize:'var(--type-body)',fontWeight:'var(--type-weight-normal)',fontStyle:getComputedStyle(node).fontStyle,lineHeight:'var(--type-leading-body)',letterSpacing:'normal',fontVariantNumeric:'lining-nums tabular-nums',whiteSpace:'normal',textAlign:'start',textTransform:'none',textIndent:'0',overflowWrap:'anywhere',boxSizing:'border-box',pointerEvents:'auto'});
+        if(/^(H1|H2|H3|H4)$/.test(tag)) Object.assign(target.style,{fontSize:({H1:'var(--type-article-page)',H2:'var(--type-article-section)',H3:'var(--type-article-subsection)',H4:'var(--type-minor-heading)'} as Record<string,string>)[tag],fontWeight:'var(--type-weight-heading)',lineHeight:'var(--type-leading-heading)',margin:'1rem 0 .5rem'});
+        else if(tag==='P'||tag==='FIGCAPTION') target.style.margin='.6rem 0';
+        else if(tag==='DIV'||tag==='SECTION'||tag==='ARTICLE'||tag==='ASIDE') target.style.margin='.5rem 0';
+        if(tag==='STRONG'||tag==='B') target.style.fontWeight='var(--type-weight-strong)';
+        if(tag==='SMALL') target.style.fontSize='var(--type-caption)';
+        if(tag==='A'){target.dataset.originalHref=node.getAttribute('href')||'';target.style.color='var(--accent-deep)';target.style.textDecoration='underline';const href=node.getAttribute('href');if(href?.startsWith('#')&&ids.has(href.slice(1)))target.setAttribute('href','#'+ids.get(href.slice(1)));}
+        if(tag==='UL'||tag==='OL'){target.style.paddingInlineStart='1.5rem';target.style.listStyleType=tag==='OL'?'decimal':'disc';}
+        if(tag==='CODE'||tag==='PRE'||tag==='KBD')Object.assign(target.style,{fontFamily:'var(--font-mono)',fontSize:'var(--type-meta)',whiteSpace:'pre-wrap'});
+        if(tag==='TH'||tag==='TD')Object.assign(target.style,{fontSize:'var(--type-table)',padding:'.6rem .7rem',borderBottom:'1px solid var(--line)',fontWeight:tag==='TH'?'var(--type-weight-label)':'var(--type-weight-normal)',verticalAlign:'top'});
+        if(tag==='TABLE')Object.assign(target.style,{borderCollapse:'collapse',minWidth:'640px',maxWidth:'none',borderTop:'2px solid var(--line)',borderBottom:'2px solid var(--line)'});
+        if(target instanceof HTMLDetailsElement) target.open=true;
+      });
+      clone.querySelectorAll('table').forEach(table=>{const viewport=document.createElement('div');viewport.className='research-text-table';viewport.tabIndex=0;viewport.setAttribute('role','region');viewport.setAttribute('aria-label','本页原始数据表，可左右滚动');table.before(viewport);viewport.append(table);});
+      clone.classList.add('research-slide-text');
+      hint.textContent='表格较宽时，可在表格内左右滑动。';
+      opener=button;title.textContent=source.querySelector('h1,h2')?.textContent?.trim()||'本页文字与表格';
+      caption.textContent='本视图展开原页文字、公式和表格。曲线另有放大入口；图形的形状与连接关系保留在原幻灯片中。';
+      canvas.setAttribute('aria-label','本页文字、公式和表格');canvas.replaceChildren(clone);context.replaceChildren();dialog.showModal();canvas.scrollLeft=0;canvas.focus();
+    };
+    document.querySelectorAll<HTMLElement>('.briefing-slide').forEach((slide) => {
+      const figures = slide.querySelectorAll<HTMLElement>('.dynamics-chart');
+      const toolbar = document.createElement('div');
+      toolbar.className = 'research-chart-tools';
+      const textButton=document.createElement('button');textButton.type='button';textButton.textContent='阅读本页文字与表格';textButton.dataset.briefingText='';textButton.setAttribute('aria-controls',dialog.id);textButton.addEventListener('click',()=>readSlideText(slide,textButton));toolbar.append(textButton);
+      figures.forEach((figure) => {
+        const svg = figure.querySelector<SVGSVGElement>('svg');
+        if (!svg) return;
+        const button = document.createElement('button');
+        const label = figure.querySelector('figcaption')?.textContent?.trim() || '图表';
+        button.type = 'button';
+        button.textContent = '放大阅读 · ' + (label.includes('Loss') || label.includes('loss') ? 'Loss' : 'Score');
+        button.setAttribute('aria-controls', dialog.id);
+        button.dataset.briefingChart = '';
+        chartButtons.set(svg,button);
+        button.addEventListener('click', () => {
+          opener = button;
+          hint.textContent='左右滑动查看完整坐标。';
+          const clone = svg.cloneNode(true) as SVGSVGElement;
+          clone.removeAttribute('id');
+          clone.style.width = (svg.viewBox.baseVal.width * 1.2) + 'px';
+          clone.style.height = 'auto';
+          clone.style.maxWidth = 'none';
+          // Read connected source nodes: detached clones have no inherited slide palette.
+          const originalNodes = [svg, ...svg.querySelectorAll<SVGElement>('*')];
+          const clonedNodes = [clone, ...clone.querySelectorAll<SVGElement>('*')];
+          originalNodes.forEach((node, index) => {
+            const target = clonedNodes[index]!;
+            const computed = getComputedStyle(node);
+            for (const property of ['fill', 'stroke', 'stroke-width', 'stroke-dasharray', 'opacity', 'font-family', 'font-weight', 'font-style']) {
+              target.style.setProperty(property, computed.getPropertyValue(property));
+            }
+            if (target instanceof SVGTextElement) {
+              target.style.fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-interface').trim();
+              target.style.fontWeight = '400';
+              target.style.fontSize = Math.max(12, parseFloat(computed.fontSize) || 10) + 'px';
+            }
+          });
+          const sourceCaption = figure.querySelector('figcaption');
+          title.textContent = sourceCaption?.firstChild?.textContent?.trim() || '图表';
+          caption.textContent = sourceCaption?.querySelector('span')?.textContent?.trim() || '';
+          canvas.setAttribute('aria-label','图表，左右滚动查看');
+          canvas.replaceChildren(clone);
+          context.replaceChildren();
+          slide.querySelectorAll('.source-note, .dynamics-boundary').forEach((note) => context.append(note.cloneNode(true)));
+          dialog.showModal();
+          canvas.scrollLeft = 0;
+          canvas.focus();
+        });
+        toolbar.append(button);
+      });
+      slide.after(toolbar);
+    });
+    dialog.addEventListener('close', () => {
+      canvas.replaceChildren();
+      context.replaceChildren();
+      opener?.focus();
+    });
+
+    document.querySelectorAll<HTMLImageElement>('.paper__derived-figure > img').forEach((img) => {
+      const viewport = document.createElement('div');
+      viewport.className = 'research-image-viewport';
+      viewport.tabIndex = 0;
+      localKeyboardScroll(viewport);
+      viewport.setAttribute('role', 'region');
+      viewport.setAttribute('aria-label', img.alt);
+      const instruction = document.createElement('p');
+      instruction.className = 'research-chart-hint';
+      instruction.textContent = document.documentElement.lang.startsWith('zh') ? '左右滑动查看完整曲线。' : 'Scroll horizontally to read the complete chart.';
+      img.before(instruction, viewport);
+      viewport.append(img);
+    });
+  }
+</script>
+<style is:global>
+  .research-chart-reader{box-sizing:border-box;width:min(1100px,calc(100vw - 2rem));max-height:calc(100dvh - 2rem);padding:1rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface);color:var(--ink);overflow:auto}
+  .research-chart-reader::backdrop{background:rgb(0 0 0 / .65)}
+  .research-chart-reader header{display:flex;align-items:start;justify-content:space-between;gap:1rem}
+  .research-chart-reader h2{font-size:var(--type-minor-heading);line-height:var(--type-leading-heading);margin:0}
+  .research-chart-reader form{margin:0;flex-shrink:0}
+  .research-chart-reader h2{min-width:0}
+  .research-chart-hint{font-size:var(--type-body);line-height:var(--type-leading-caption)}
+  @media(min-width:861px){.research-chart-hint{display:none}}
+  .research-chart-reader button,.research-chart-tools button{font:inherit;font-size:var(--type-body);min-height:44px;padding:.5rem .8rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);color:var(--ink);cursor:pointer}
+  .research-chart-canvas{max-width:100%;overflow:auto;overscroll-behavior-x:contain}
+  .research-chart-canvas svg{display:block;flex:none}
+  .research-slide-text{max-width:860px}
+  .research-text-table{max-width:100%;overflow-x:auto;margin:1rem 0}
+  .research-chart-figure-note{margin:1rem 0;padding:.7rem 0;border-block:1px solid var(--line);font-size:var(--type-body);line-height:var(--type-leading-body)}
+  .research-chart-figure-note p{margin:.4rem 0;font-size:var(--type-body);line-height:var(--type-leading-body)}
+  .research-chart-caption,.research-chart-context{font-size:var(--type-body);line-height:var(--type-leading-body)}
+  .research-chart-reader .research-chart-context :is(.source-note,.dynamics-boundary,p,li,span,a){font-size:var(--type-body);line-height:var(--type-leading-body)}
+  .research-chart-tools{display:flex;flex-wrap:wrap;gap:.5rem;padding:.6rem 1rem}
+  .paper__derived-figure{scroll-margin-top:calc(var(--site-header-height) + 88px)}
+  .research-image-viewport{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+  .research-image-viewport img{display:block;width:100%;min-width:1200px;max-width:none;height:auto;border:1px solid var(--line);border-radius:var(--radius-panel);background:white}
+  .research-chart-canvas:focus-visible,.research-image-viewport:focus-visible,.research-chart-tools button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+  @media print{.research-chart-tools,.research-chart-reader{display:none}.research-image-viewport{overflow:visible}.research-image-viewport img{width:100%;min-width:0;max-width:100%}}
+</style>

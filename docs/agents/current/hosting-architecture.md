@@ -40,6 +40,8 @@ manual CI recovery only
 
 Public PR CI owns required **repository/browser acceptance**, while Vercel owns required **provider build/deploy acceptance**. The live cutover was verified on 2026-09-21: exact-head Vercel provider time was **14.170 s** versus the **507.7 s** control, and Production was **16.608 s** versus **633.3 s**, with the build-machine tier unchanged. The stable Production identity remains `https://basemodel-preview.vercel.app`. CircleCI and the self-hosted Mac workflow remain explicit recovery paths and never own ordinary merge readiness.
 
+Performance implementation and qualification are recorded in [`docs/dev/CI/README.md`](../../dev/CI/README.md). Candidate mechanisms there are not effective until merged; executable workflows and live exact-head evidence determine acceptance.
+
 ## Public GitHub Actions preflight
 
 `.github/workflows/public-pr-ci.yml` runs on `pull_request` with `contents: read`, no secrets, immutable-SHA-pinned Actions, exact PR-head binding, and same-PR auto-cancellation. A dependency-free planning job allocates browser compute before runner start: zero runners for skip, one for focused, and eight independent public Linux runners for full/global work; every browser runner re-evaluates the same plan before npm/browser spend. Full work uses the repository timing scheduler with one Playwright worker per shard; the browser runtime is the digest-pinned official Playwright 1.62.1 Noble image. The workflow shares `scripts/vercel-ui-plan.ts` and `scripts/ci-ui-gate.mjs`, so it does not own a weaker provider-specific risk taxonomy.
@@ -108,3 +110,20 @@ Only load or mention legacy hosting when:
 - live evidence shows unexpected provider activity.
 
 A still-required skip prefix is a silent compatibility safeguard until the external integration is disabled. It is not an ordinary release stage or completion-report item.
+
+
+### Scientific figure cloud evidence lane
+
+`cloud-figure-visual-review.yml` runs the existing full `test:ui:all` population in
+four native Playwright shards per browser (Chromium and WebKit), with one worker
+per shard, no retry and the lockfile-matched immutable browser image. This follows
+a real 30-minute monolithic timeout; it does not reduce visual or reader budgets.
+The 71-route first-screen contract case has a 600-second execution budget while
+keeping its existing content, overflow and geometry assertions.
+
+The two final `cloud-figure-{browser}` jobs require all shards to succeed, compare
+the exact union against each shard's complete unsharded canonical list, reject
+skips/retries/duplicates/missing cases, verify same-head PNG/JSON identity and
+round-trip the final artifact bytes through upload/download. Raw failure traces
+remain downloadable for three days. Artifact integrity is not a visual verdict;
+per-figure review and actual independent reader acceptance remain separate.

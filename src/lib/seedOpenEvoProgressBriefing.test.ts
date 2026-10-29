@@ -91,7 +91,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(briefing).toContain('SEED 论文分数与 OpenEVO 本地终评来自不同评测口径');
     expect(briefing).toContain('SEED 89.7 是论文报告值；OpenEVO 49.33 来自我们本地冻结 128 题终评');
     expect(briefing).toContain('89.7 − 49.33 不能当作最终能力差距');
-    expect(briefing.indexOf('两组数字回答的评测问题不同')).toBeLessThan(briefing.indexOf('<table class="paper-table">'));
+    expect(briefing.indexOf('两组数字回答的评测问题不同')).toBeLessThan(briefing.indexOf('<ResearchPaperTable class="paper-table" presentation>'));
     expect(briefing).toContain('https://arxiv.org/abs/2207.01206');
     expect(briefing).toContain('https://arxiv.org/abs/2607.14777');
     expect(briefing).toContain('本地 GDR-v1 的名字来自 Gated Delta Rule，但实现层级不同');

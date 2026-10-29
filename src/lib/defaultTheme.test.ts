@@ -1,9 +1,16 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const layout = readFileSync(new URL('../../src/layouts/AppLayout.astro', import.meta.url), 'utf8');
+const layout = readFileSync(new URL('../components/common/ThemeInitialization.astro', import.meta.url), 'utf8');
 
 describe('site theme bootstrap', () => {
+  it('is shared by native layout and Starlight without a second persistent theme owner', () => {
+    const native = readFileSync(new URL('../layouts/AppLayout.astro', import.meta.url), 'utf8');
+    const config = readFileSync(new URL('../../astro.config.mjs', import.meta.url), 'utf8');
+    expect(native).toContain('<ThemeInitialization />');
+    expect(config).toContain("ThemeProvider: './src/components/common/ThemeInitialization.astro'");
+    expect(layout).not.toContain('starlight-theme');
+  });
   it('defaults a first visit to light instead of following the operating system', () => {
     expect(layout).toContain("const storedTheme = localStorage.getItem('atlas-theme');");
     expect(layout).toContain("document.documentElement.dataset.theme = storedTheme === 'dark' ? 'dark' : 'light';");

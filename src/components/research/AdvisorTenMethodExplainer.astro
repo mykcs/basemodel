@@ -1,0 +1,193 @@
+---
+import MathFormula from '../common/MathFormula.astro';
+
+const methods = [
+  {
+    name: '普通 OpenEVO',
+    rule: '逐轮保存低秩参数增量',
+    explanation: '每轮新增的参数组件会和过去的组件一起保留，长期历史会随更新次数增长。文字记忆、Skill 和 Agent System 没有因此关闭。',
+    scope: '历史 160 轮前序路线',
+  },
+  {
+    name: '固定容量 OpenEVO（Bounded）',
+    rule: '将历史更新整合到固定容量',
+    explanation: '每轮仍然学习新的参数增量，再把它和历史状态整合。历史容量设有上限，原长期实验为 rank128；后段还比较了 rank32。',
+    scope: '长期容量研究',
+  },
+  {
+    name: '固定容量与写入控制',
+    rule: '固定容量，再控制写入',
+    explanation: '在 Bounded 基础上加入当时的复杂 β/GDR 写入规则。这是历史长跑所采用的控制方法，与后来设计的简单非负 β 不属于同一次实验。',
+    scope: '历史 160 轮处理组',
+  },
+] as const;
+---
+
+<div class="advisor-method" data-advisor-method-explainer>
+  <p>OpenEVO 在任务结束后从交互轨迹整理经验，并让后续的 Qwen 模型使用更新后的状态。下面比较的是其中<strong>参数记忆如何保留和写入</strong>的三种历史研究路线；Text Memory、Skill 与 Agent System 仍是框架内的其他状态。</p>
+
+  <h3>3.1 LoRA 怎样表示一次参数更新</h3>
+  <p>LoRA（低秩适配）通常保留基础模型的大部分原有权重，只训练两组较小矩阵来表示需要增加的参数变化。低秩维度用 <MathFormula latex={String.raw`r`} display={false} /> 表示。两组小矩阵相乘后，形状与所适配的原始权重矩阵一致：</p>
+  <MathFormula latex={String.raw`\begin{aligned}\Delta W&=BA\\A&\in\mathbb{R}^{r\times d_{\mathrm{in}}}\\B&\in\mathbb{R}^{d_{\mathrm{out}}\times r}\end{aligned}`} label="标准 LoRA 的低秩参数更新" />
+  <p>这里的 rank 描述低秩矩阵之间的内部维度。数值越大，通常意味着可表达的更新方向和参数存储空间更多；真实任务成绩仍需要单独测量。一次新更新的 rank 与长期积累的容量 rank 是两个不同的实验选择。</p>
+
+  <h3>3.2 普通 OpenEVO 与参数改进方案</h3>
+  <figure class="advisor-method__figure" data-paper-figure="method">
+    <div class="advisor-method__lanes">
+      {methods.map((method) => (
+        <article class="advisor-method__lane">
+          <header class="advisor-method__lane-head"><h4>{method.name}</h4><span>{method.scope}</span></header>
+          <div class="advisor-method__flow">
+            <div class="advisor-method__node"><small>输入</small><strong>任务轨迹与本轮学习信号</strong></div>
+            <span class="advisor-method__arrow" aria-hidden="true">→</span>
+            <div class="advisor-method__node"><small>参数处理</small><strong>{method.rule}</strong></div>
+            <span class="advisor-method__arrow" aria-hidden="true">→</span>
+            <div class="advisor-method__node"><small>输出</small><strong>下一轮模型参数状态</strong></div>
+          </div>
+          <p>{method.explanation}</p>
+        </article>
+      ))}
+    </div>
+    <figcaption><strong>图 2.</strong> 三条历史参数路线的统一流程。输入与下一轮继承状态一致，差异集中在中间的参数处理规则；本图是方法关系示意，独立 Gated Delta 四轮资格研究不是第四条长跑。</figcaption>
+  </figure>
+
+  <details class="advisor-method__rank" data-rank8-disclosure>
+    <summary>为什么这组实验每轮采用 rank8？</summary>
+    <div>
+      <p>Q17 长期实验把<strong>每次新增的 SD-LoRA 参数组件</strong>设为 rank8，后续的 Bounded 容量实验沿用这一已冻结的训练条件，才能更清楚地比较长期状态容量。这里的 8 是<strong>这组实验的配置选择</strong>，没有证据证明它是 LoRA 或 OpenEVO 的全局上限或最优值。</p>
+      <p>更早的 H1.38B 方法对照曾使用每个 SD-LoRA 组件 rank4。rank8 约束的是<strong>单次新增组件</strong>；rank32 和 rank128 约束的是<strong>长期保存的状态容量</strong>。两者不能看成同一个参数，也不能把固定 rank8 理解为模型只能学习八轮。</p>
+      <p class="advisor-method__rank-source">实验配置及代码来源统一列在文末“参考文献与原始实验来源”。</p>
+    </div>
+  </details>
+</div>
+
+<style>
+  /* Three historical methods, one semantic type scale. Mathematical notation
+     still belongs to MathFormula; ordinary rank numbers remain interface text. */
+  .advisor-method h3 {
+    font-size: var(--type-article-subsection);
+    line-height: var(--type-leading-heading);
+    margin: 1.65rem 0 .65rem;
+  }
+  .advisor-method > p {
+    font-size: var(--type-lead);
+    line-height: var(--type-leading-body);
+    max-width: var(--type-reading-measure);
+    margin: .8rem 0;
+  }
+  .advisor-method__figure { margin: 1.4rem 0 1.5rem; }
+  .advisor-method__lanes { display: grid; gap: 1.5rem; }
+  .advisor-method__lane {
+    min-width: 0;
+    border-top: 1px solid var(--paper-line, var(--color-border));
+    padding-top: .9rem;
+  }
+  .advisor-method__lane-head {
+    display: flex;
+    align-items: baseline;
+    gap: .55rem 1rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: .6rem;
+  }
+  .advisor-method__lane-head h4 {
+    margin: 0;
+    font-size: var(--type-minor-heading);
+    font-weight: var(--type-weight-heading);
+    line-height: var(--type-leading-heading);
+  }
+  .advisor-method__lane-head span {
+    color: var(--color-text-muted);
+    font-size: var(--type-caption);
+    line-height: var(--type-leading-caption);
+  }
+  .advisor-method__flow {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 1rem minmax(0,1fr) 1rem minmax(0,1fr);
+    align-items: stretch;
+    gap: .45rem;
+  }
+  .advisor-method__node {
+    min-width: 0;
+    min-height: 4.3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid var(--paper-line, var(--color-border));
+    border-radius: 0;
+    padding: .58rem .55rem;
+    background: transparent;
+  }
+  .advisor-method__node small {
+    color: var(--color-text-muted);
+    font-size: var(--type-meta);
+    line-height: var(--type-leading-caption);
+  }
+  .advisor-method__node strong {
+    margin-top: .2rem;
+    font-size: var(--type-body);
+    font-weight: var(--type-weight-label);
+    line-height: var(--type-leading-caption);
+    overflow-wrap: anywhere;
+  }
+  .advisor-method__arrow {
+    align-self: center;
+    color: var(--color-text-muted);
+    font-size: var(--type-lead);
+    text-align: center;
+    line-height: 1;
+  }
+  .advisor-method__lane > p {
+    font-size: var(--type-body);
+    line-height: var(--type-leading-body);
+    margin: .7rem 0 0;
+  }
+  .advisor-method__figure figcaption {
+    color: var(--color-text-muted);
+    font-size: var(--type-caption);
+    line-height: var(--type-leading-caption);
+    margin-top: 1.2rem;
+    max-width: var(--type-reading-measure);
+  }
+  .advisor-method__rank {
+    margin: 1.4rem 0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    padding: .7rem 0;
+  }
+  .advisor-method__rank summary {
+    cursor: pointer;
+    font-size: var(--type-body);
+    font-weight: var(--type-weight-heading);
+    line-height: var(--type-leading-body);
+    padding: .3rem .2rem;
+  }
+  .advisor-method__rank summary:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+  .advisor-method__rank > div { padding: .2rem .2rem .8rem; }
+  .advisor-method__rank p {
+    font-size: var(--type-body);
+    line-height: var(--type-leading-body);
+    max-width: var(--type-reading-measure);
+  }
+  .advisor-method__rank p.advisor-method__rank-source {
+    color: var(--color-text-muted);
+    font-size: var(--type-caption);
+    line-height: var(--type-leading-caption);
+  }
+  /* At tablet as well as phone widths, three parallel columns compress
+     Chinese explanations into unreadable slivers. Preserve node order. */
+  @media (max-width: 900px) {
+    .advisor-method__flow { grid-template-columns: minmax(0,1fr); gap: .22rem; }
+    .advisor-method__node {
+      min-height: 0;
+      align-items: center;
+      text-align: center;
+      padding: .7rem .8rem;
+    }
+    .advisor-method__arrow { transform: rotate(90deg); line-height: 1; margin: .06rem auto; }
+    .advisor-method__lane-head { align-items: flex-start; flex-direction: column; gap: .1rem; }
+  }
+</style>

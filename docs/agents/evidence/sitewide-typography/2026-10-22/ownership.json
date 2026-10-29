@@ -1,0 +1,1559 @@
+{
+  "observedAt": "2026-10-22T11:43:19.755374+00:00",
+  "workPR": 898,
+  "remoteHead": "f19f6ba57b840f49c1e68c9400c809fbe84180be",
+  "base": "design/sitewide-type-and-paper-figures-20261020",
+  "draft": true,
+  "writer": "Codex root: sole source/test/formal-ledger writer for isolated PR898; independent reviewers read-only",
+  "userAuthorization": {
+    "pr840": "Integrate relevant rewrite in isolated #898 branch and continue"
+  },
+  "currentContinuationSnapshot": {
+    "mainSha": "db7417c5d57c3d24e58f2fe5a8c6d27226f13834",
+    "observedAt": "2026-10-23 12:27 UTC",
+    "workHead": "306bac7d0350cb5c20a49b432d81ad50446c8336",
+    "base": "design/sitewide-type-and-paper-figures-20261020",
+    "openPRs": [
+      {
+        "number": 941,
+        "sha": "fa2f132579f73c0b58ef1c28132e266952e71e43",
+        "base": "main",
+        "title": "fix(site): align handbook and development with shared BaseModel page roles"
+      },
+      {
+        "number": 939,
+        "sha": "93fe8df5f86deb9720d9a71702a7cc2d21548601",
+        "base": "main",
+        "title": "chore(deps): bump the dev-minor-patch group across 1 directory with 8 updates"
+      },
+      {
+        "number": 898,
+        "sha": "eb0f875ae33797939d96507cccde730ea877cbe2",
+        "base": "design/sitewide-type-and-paper-figures-20261020",
+        "title": "design(typography): BaseModel 全站排版系统迁移与视觉验收（分阶段实施）"
+      },
+      {
+        "number": 895,
+        "sha": "9a18359d247ffcb89ffae30434d03a0cb28e02c9",
+        "base": "main",
+        "title": "design(research): repair Q03 publication figure and unify BaseModel typography roles"
+      },
+      {
+        "number": 866,
+        "sha": "2d4f9dc3801fa5f7b12990acd3b4d82f0145b05f",
+        "base": "main",
+        "title": "research: independent Muon-inspired OpenEVO direction study and Q17 cross-links"
+      },
+      {
+        "number": 865,
+        "sha": "181836a0185eb3bd884411515e069f463d96bb47",
+        "base": "main",
+        "title": "research: add OSA memory exploration after advisor questions"
+      },
+      {
+        "number": 858,
+        "sha": "b344a68c583af83a035382c621b9b1ee4d3e1d67",
+        "base": "main",
+        "title": "feat(reader): show static Q03 trend on phones with paper table"
+      },
+      {
+        "number": 856,
+        "sha": "1ffad1d311b216e7cd78177df2fa59c71d047a83",
+        "base": "main",
+        "title": "design(research): publication-style Q01 SVG curves aligned with booktabs"
+      },
+      {
+        "number": 855,
+        "sha": "ae6b73206fdee6f7df91830f303c1a87dbe7c315",
+        "base": "main",
+        "title": "test(reader): require real first-screen orientation across three OpenEVO blogs"
+      },
+      {
+        "number": 841,
+        "sha": "71c8f35ad91fc16617529c4dc3fc9b25e6620a3d",
+        "base": "main",
+        "title": "feat(reading): give BaseModel research pages short meaningful learning paths"
+      },
+      {
+        "number": 840,
+        "sha": "2a741b6b77e1d4c4cf1cf5744825b968d795cef2",
+        "base": "main",
+        "title": "feat(webshop): unify shopping, dataset, sampling and scoring into one reader journey"
+      },
+      {
+        "number": 832,
+        "sha": "f112b575626bde88a776e74e0932af9e29dd0b16",
+        "base": "main",
+        "title": "refactor(explainer): extract only primitives proven by multiple samples"
+      },
+      {
+        "number": 831,
+        "sha": "3f1942807eaa3c5173842dd6a231a6c01200c4f4",
+        "base": "main",
+        "title": "research(expression): clarify SEED vs OpenEVO with comparison and causal structure"
+      },
+      {
+        "number": 830,
+        "sha": "17346e991bfd05219e3b13c37ee2b375f1018324",
+        "base": "main",
+        "title": "research(expression): make Vanilla SD-LoRA rounds inspectable"
+      },
+      {
+        "number": 829,
+        "sha": "ab465f0831fbdcb802e76c67e857c3a48e2901ba",
+        "base": "main",
+        "title": "audit(expression): rank BaseModel medium mismatches sitewide"
+      },
+      {
+        "number": 827,
+        "sha": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
+        "base": "main",
+        "title": "feat(research): add accessible scientific tables with CSV/LaTeX parity"
+      },
+      {
+        "number": 826,
+        "sha": "86e910c972a770e8674b150d67c74c6c56677ea8",
+        "base": "main",
+        "title": "test(site): Q01 真实构建覆盖与分层验收保护"
+      },
+      {
+        "number": 825,
+        "sha": "40ea5b24e8ffad9597f6fdfc53eefe61b5511664",
+        "base": "main",
+        "title": "feat(research): D04 证据综合与下一阶段决策边界"
+      },
+      {
+        "number": 824,
+        "sha": "f738b67a018fe3a1b068fd210b367cafd649cc24",
+        "base": "main",
+        "title": "feat(research): D03 三项可复算分析与比较边界"
+      },
+      {
+        "number": 823,
+        "sha": "bfdbb5c5a5a668055e45e4e718436660d87a2e77",
+        "base": "main",
+        "title": "feat(research): D02 可核验、可重试的离线历史导入"
+      },
+      {
+        "number": 822,
+        "sha": "618e4b65cbf3052e0503ea1d875d81015231aa33",
+        "base": "main",
+        "title": "feat(research): D01 研究证据校验与单一数值来源"
+      },
+      {
+        "number": 821,
+        "sha": "cf3f371af5a005051a2848e6eec103958f4312a3",
+        "base": "main",
+        "title": "feat(research): C03 补齐 SD-LoRA NOOP 分支与逐步机制阅读"
+      },
+      {
+        "number": 820,
+        "sha": "c31b6bef5d3d4a45c6849b64af5d51546c465f7f",
+        "base": "main",
+        "title": "feat(research): C02 同源科研图表与离线可读交互"
+      },
+      {
+        "number": 819,
+        "sha": "66eae9a9d7c0fd0b4eeb5dbe28c85c1ad27c53d4",
+        "base": "main",
+        "title": "feat(content): make research evidence lifecycle auditable"
+      },
+      {
+        "number": 818,
+        "sha": "fc1ed61807ccffe07e462c10ab466b48c7722921",
+        "base": "main",
+        "title": "feat(research): synthesize Stage1, capacity, and beta evidence"
+      },
+      {
+        "number": 817,
+        "sha": "13282ac0a0c14f96eac19c441dc5a6342b255ba0",
+        "base": "main",
+        "title": "feat(reader): add purpose-first home and Study entry paths"
+      },
+      {
+        "number": 816,
+        "sha": "dab55a699c7e690bfa6aef0d332d47895892bf70",
+        "base": "main",
+        "title": "refactor(css): consolidate research section and figure owners"
+      },
+      {
+        "number": 815,
+        "sha": "a52cebeb0726fb836d14136e5f1f487bde8d9943",
+        "base": "main",
+        "title": "perf: make catalog-heavy research tools static-first"
+      },
+      {
+        "number": 814,
+        "sha": "8d97bc293769ebef50a4877931716850ecb698c1",
+        "base": "main",
+        "title": "ci: reuse one sealed static build across browser shards"
+      },
+      {
+        "number": 813,
+        "sha": "1b85f1cf00f032ce99eacd855cb17c2ad29762d7",
+        "base": "main",
+        "title": "docs(plan): BaseModel 3+1 upgrade program and 18 work packets"
+      },
+      {
+        "number": 812,
+        "sha": "e94b1618760b9cbd201ff88ce61141e592989693",
+        "base": "main",
+        "title": "design(research): turn β study into a scientific-blog reading page"
+      },
+      {
+        "number": 806,
+        "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126",
+        "base": "main",
+        "title": "docs(design): establish BaseModel Design System v1"
+      },
+      {
+        "number": 805,
+        "sha": "43fa2cbb3998824333826e8542cebf8265842f17",
+        "base": "main",
+        "title": "research(webshop): publish post-advisor learning-signal + rank32 results"
+      },
+      {
+        "number": 783,
+        "sha": "90c7d46bde8447194d568aacce39de808aa59938",
+        "base": "main",
+        "title": "plan(product): connect research resources to the active mission"
+      }
+    ],
+    "mergedRelated": [
+      {
+        "number": 932,
+        "head": "580e3e7f731da8e7f2ea3a6f3a92bac11f03e838",
+        "merge": "4dcc2a9bcad33e663fed33aaf82fc5fa39696629",
+        "merged": true
+      },
+      {
+        "number": 935,
+        "head": "eaacb12aaa015b82c292e690fbdd395d3c4e2ac0",
+        "merge": "df13da43ad5d4e89b03bf3b0832e642560d9623a",
+        "merged": true
+      },
+      {
+        "number": 936,
+        "head": "11a3f1240c10512e61e3e42c185a52d386698fc4",
+        "merge": "5813d23329b55fafdfc8a551af367465b14d7062",
+        "merged": true
+      }
+    ],
+    "semanticIntegration": "No rebase or wholesale main import. Adopt current #936 article-table fit semantics in existing owners while preserving PR898 interface typography and same native scientific values. Working #840 integration remains authorized. #941 handbook and unrelated dependency work stay separate. Root remains sole writer after authorized coordinator handoff. The306 reader exposed mobile tray/selection issues; its all-green CI does not close that UI defect. This corrective tree keeps the same Draft/base boundary; exact final acceptance is read from PR898.",
+    "mainDriftSincePriorSnapshot": {
+      "commits": [
+        {
+          "sha": "922087de4781aeb3f30528d7f45fcf00cb3d05ef",
+          "title": "feat(research): finish Q01–Q10 Intelligence UI with evidence-safe reader diagrams (#942)"
+        },
+        {
+          "sha": "6d587d427c9a8d4ca69ab45210ee94e082c61fa4",
+          "title": "fix(research): keep Q08 selected score tokens inline on mobile"
+        },
+        {
+          "sha": "21468fc56b06a2ef898a76c2a4bfc4ff7bbac938",
+          "title": "test(research): guard Q08 mobile score row wrapping"
+        },
+        {
+          "sha": "2d4f269e5cfc3bb8f01a0de5b5c93598095a1728",
+          "title": "test(research): type-safe inline row geometry assertion"
+        },
+        {
+          "sha": "db7417c5d57c3d24e58f2fe5a8c6d27226f13834",
+          "title": "Merge pull request #943 from mykcs/fix/q08-mobile-inline-score-20261023"
+        }
+      ],
+      "files": [
+        "src/components/research/AdvisorTenConceptUI.astro",
+        "src/components/research/Q08SeenRetentionExplorer.astro",
+        "src/pages/research/seed-openevo/study/parameter-memory-results/index.astro",
+        "tests/e2e/advisor-intelligence-q02-q10.spec.ts",
+        "tests/e2e/advisor-intelligence-q08-q09.spec.ts"
+      ],
+      "decision": "Separate main work owned by #942/#943 and #941. This existing Draft stack keeps its pinned #895 base and scientific-source baseline; no wholesale main import, rebase or combined acceptance is claimed. Exact-tree evidence applies only to #898."
+    }
+  },
+  "historicalOpenPRs": [
+    {
+      "number": 929,
+      "sha": "8ea95effc7445e60285fda0d61b8457d01e41288",
+      "base": "main",
+      "title": "feat(research): 首页新增「最近遇到的问题」阶段复盘入口"
+    },
+    {
+      "number": 917,
+      "sha": "048b6b3761834757a8fcdd6c044d4b6cba233463",
+      "base": "main",
+      "title": "chore(deps): bump the dev-minor-patch group across 1 directory with 7 updates"
+    },
+    {
+      "number": 916,
+      "sha": "d09e14e173d461a9e06384aebc2480e3c4bbba05",
+      "base": "main",
+      "title": "fix(papers): readable model columns and tested no-JS matrix fallback"
+    },
+    {
+      "number": 898,
+      "sha": "9149e708812626b77f5b4418da597251ef9a2680",
+      "base": "design/sitewide-type-and-paper-figures-20261020",
+      "title": "design(typography): BaseModel 全站排版系统迁移与视觉验收（分阶段实施）"
+    },
+    {
+      "number": 895,
+      "sha": "9a18359d247ffcb89ffae30434d03a0cb28e02c9",
+      "base": "main",
+      "title": "design(research): repair Q03 publication figure and unify BaseModel typography roles"
+    },
+    {
+      "number": 866,
+      "sha": "2d4f9dc3801fa5f7b12990acd3b4d82f0145b05f",
+      "base": "main",
+      "title": "research: independent Muon-inspired OpenEVO direction study and Q17 cross-links"
+    },
+    {
+      "number": 865,
+      "sha": "181836a0185eb3bd884411515e069f463d96bb47",
+      "base": "main",
+      "title": "research: add OSA memory exploration after advisor questions"
+    },
+    {
+      "number": 860,
+      "sha": "fbf2fe679245dcf2bcf59ba3aa2571942bf1423d",
+      "base": "main",
+      "title": "feat(site): install Starlight and publish a searchable technical handbook"
+    },
+    {
+      "number": 858,
+      "sha": "b344a68c583af83a035382c621b9b1ee4d3e1d67",
+      "base": "main",
+      "title": "feat(reader): show static Q03 trend on phones with paper table"
+    },
+    {
+      "number": 856,
+      "sha": "1ffad1d311b216e7cd78177df2fa59c71d047a83",
+      "base": "main",
+      "title": "design(research): publication-style Q01 SVG curves aligned with booktabs"
+    },
+    {
+      "number": 855,
+      "sha": "ae6b73206fdee6f7df91830f303c1a87dbe7c315",
+      "base": "main",
+      "title": "test(reader): require real first-screen orientation across three OpenEVO blogs"
+    },
+    {
+      "number": 841,
+      "sha": "71c8f35ad91fc16617529c4dc3fc9b25e6620a3d",
+      "base": "main",
+      "title": "feat(reading): give BaseModel research pages short meaningful learning paths"
+    },
+    {
+      "number": 840,
+      "sha": "2a741b6b77e1d4c4cf1cf5744825b968d795cef2",
+      "base": "main",
+      "title": "feat(webshop): unify shopping, dataset, sampling and scoring into one reader journey"
+    },
+    {
+      "number": 832,
+      "sha": "f112b575626bde88a776e74e0932af9e29dd0b16",
+      "base": "main",
+      "title": "refactor(explainer): extract only primitives proven by multiple samples"
+    },
+    {
+      "number": 831,
+      "sha": "3f1942807eaa3c5173842dd6a231a6c01200c4f4",
+      "base": "main",
+      "title": "research(expression): clarify SEED vs OpenEVO with comparison and causal structure"
+    },
+    {
+      "number": 830,
+      "sha": "17346e991bfd05219e3b13c37ee2b375f1018324",
+      "base": "main",
+      "title": "research(expression): make Vanilla SD-LoRA rounds inspectable"
+    },
+    {
+      "number": 829,
+      "sha": "ab465f0831fbdcb802e76c67e857c3a48e2901ba",
+      "base": "main",
+      "title": "audit(expression): rank BaseModel medium mismatches sitewide"
+    },
+    {
+      "number": 827,
+      "sha": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
+      "base": "main",
+      "title": "feat(research): add accessible scientific tables with CSV/LaTeX parity"
+    },
+    {
+      "number": 826,
+      "sha": "86e910c972a770e8674b150d67c74c6c56677ea8",
+      "base": "main",
+      "title": "test(site): Q01 真实构建覆盖与分层验收保护"
+    },
+    {
+      "number": 825,
+      "sha": "40ea5b24e8ffad9597f6fdfc53eefe61b5511664",
+      "base": "main",
+      "title": "feat(research): D04 证据综合与下一阶段决策边界"
+    },
+    {
+      "number": 824,
+      "sha": "f738b67a018fe3a1b068fd210b367cafd649cc24",
+      "base": "main",
+      "title": "feat(research): D03 三项可复算分析与比较边界"
+    },
+    {
+      "number": 823,
+      "sha": "bfdbb5c5a5a668055e45e4e718436660d87a2e77",
+      "base": "main",
+      "title": "feat(research): D02 可核验、可重试的离线历史导入"
+    },
+    {
+      "number": 822,
+      "sha": "618e4b65cbf3052e0503ea1d875d81015231aa33",
+      "base": "main",
+      "title": "feat(research): D01 研究证据校验与单一数值来源"
+    },
+    {
+      "number": 821,
+      "sha": "cf3f371af5a005051a2848e6eec103958f4312a3",
+      "base": "main",
+      "title": "feat(research): C03 补齐 SD-LoRA NOOP 分支与逐步机制阅读"
+    },
+    {
+      "number": 820,
+      "sha": "c31b6bef5d3d4a45c6849b64af5d51546c465f7f",
+      "base": "main",
+      "title": "feat(research): C02 同源科研图表与离线可读交互"
+    },
+    {
+      "number": 819,
+      "sha": "66eae9a9d7c0fd0b4eeb5dbe28c85c1ad27c53d4",
+      "base": "main",
+      "title": "feat(content): make research evidence lifecycle auditable"
+    },
+    {
+      "number": 818,
+      "sha": "fc1ed61807ccffe07e462c10ab466b48c7722921",
+      "base": "main",
+      "title": "feat(research): synthesize Stage1, capacity, and beta evidence"
+    },
+    {
+      "number": 817,
+      "sha": "13282ac0a0c14f96eac19c441dc5a6342b255ba0",
+      "base": "main",
+      "title": "feat(reader): add purpose-first home and Study entry paths"
+    },
+    {
+      "number": 816,
+      "sha": "dab55a699c7e690bfa6aef0d332d47895892bf70",
+      "base": "main",
+      "title": "refactor(css): consolidate research section and figure owners"
+    },
+    {
+      "number": 815,
+      "sha": "a52cebeb0726fb836d14136e5f1f487bde8d9943",
+      "base": "main",
+      "title": "perf: make catalog-heavy research tools static-first"
+    },
+    {
+      "number": 814,
+      "sha": "8d97bc293769ebef50a4877931716850ecb698c1",
+      "base": "main",
+      "title": "ci: reuse one sealed static build across browser shards"
+    },
+    {
+      "number": 813,
+      "sha": "811e77ebb1dfad03c8bbd3d7538244ebbdce5d5d",
+      "base": "main",
+      "title": "docs(plan): BaseModel 3+1 upgrade program and 18 work packets"
+    },
+    {
+      "number": 812,
+      "sha": "e94b1618760b9cbd201ff88ce61141e592989693",
+      "base": "main",
+      "title": "design(research): turn β study into a scientific-blog reading page"
+    },
+    {
+      "number": 806,
+      "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126",
+      "base": "main",
+      "title": "docs(design): establish BaseModel Design System v1"
+    },
+    {
+      "number": 805,
+      "sha": "43fa2cbb3998824333826e8542cebf8265842f17",
+      "base": "main",
+      "title": "research(webshop): publish post-advisor learning-signal + rank32 results"
+    },
+    {
+      "number": 783,
+      "sha": "90c7d46bde8447194d568aacce39de808aa59938",
+      "base": "main",
+      "title": "plan(product): connect research resources to the active mission"
+    }
+  ],
+  "overlaps": [
+    {
+      "number": 929,
+      "files": [
+        "src/data/siteReaderContracts.ts",
+        "src/pages/_bodies/home-v2.astro",
+        "src/pages/research/seed-openevo/recent-challenges/index.astro"
+      ]
+    },
+    {
+      "number": 821,
+      "files": [
+        "docs/plans/site-upgrade-20261002/tasks/C03-IMPLEMENTATION.md",
+        "docs/plans/site-upgrade-20261002/tasks/C03-QUALIFICATION.json",
+        "docs/plans/site-upgrade-20261002/tasks/C03.md",
+        "src/components/research/OpenEvoVanillaSdLoraMechanism.astro",
+        "src/components/research/OpenEvoVanillaSdLoraSlide.astro",
+        "src/data/vanillaSdLoraMechanism.ts",
+        "src/lib/vanillaSdLoraMechanism.test.ts",
+        "tests/e2e/vanilla-sd-lora-mechanism.spec.ts"
+      ]
+    },
+    {
+      "number": 916,
+      "files": [
+        "src/components/PaperModelMatrix.tsx",
+        "tests/e2e/visual-closeout-followup.spec.ts"
+      ]
+    },
+    {
+      "number": 816,
+      "files": [
+        "docs/plans/site-upgrade-20261002/evidence/A03_CSS_OWNERSHIP_EVIDENCE_20261002.md",
+        "docs/plans/site-upgrade-20261002/tasks/A03.md",
+        "scripts/audit-css-architecture.ts",
+        "src/components/research/SeedWebShopCanonicalFigure.astro",
+        "src/components/research/WebShopDatasetCanonicalFigure.astro",
+        "src/components/research/WebShopEvaluationFigure.astro",
+        "src/components/research/WebShopGoalGenerationFigure.astro",
+        "src/components/research/WebShopSeedDataUsageFigure.astro",
+        "src/components/research/WebShopSeedSplitFigure.astro",
+        "src/components/research/WebShopSmallWorldFigure.astro",
+        "src/lib/cssOwnershipConsolidation.test.ts",
+        "src/styles/design-refinement.css",
+        "src/styles/research-figure-readability.css",
+        "src/styles/site.css",
+        "src/styles/visual-upgrade.css"
+      ]
+    },
+    {
+      "number": 895,
+      "files": [
+        "AGENTS.md",
+        "docs/agents/current/sitewide-typography-standard.md",
+        "package.json",
+        "scripts/audit-sitewide-typography.mjs",
+        "src/AGENTS.md",
+        "src/components/research/AdvisorTenEvidenceVisual.astro",
+        "src/components/research/OpenEvoExperimentResultsScaffold.astro",
+        "src/components/research/OpenEvoHarnessFairnessPanel.astro",
+        "src/components/research/OpenEvoStage2StrategyChooser.astro",
+        "src/components/research/OpenEvoVanillaSdLoraSlide.astro",
+        "src/lib/openEvoAdvisorTenQuestionsReport.test.ts",
+        "src/pages/lab.astro",
+        "src/styles/advisor-ten-approved-reader.css",
+        "src/styles/components/header.css",
+        "src/styles/components/research-content-primitives.css",
+        "src/styles/editorial-hierarchy.css",
+        "src/styles/interactive-research-explainer.css",
+        "src/styles/openevo-research-blogs.css",
+        "src/styles/research-booktabs.css",
+        "src/styles/research-figure-readability.css",
+        "src/styles/site.css",
+        "src/styles/tokens.css",
+        "tests/e2e/advisor-figure-caption-sequence.spec.ts",
+        "tests/e2e/advisor-paper-figure-suite.spec.ts",
+        "tests/e2e/advisor-ten-questions-report.spec.ts",
+        "tests/e2e/sitewide-typography.spec.ts"
+      ]
+    },
+    {
+      "number": 840,
+      "files": [
+        "package.json",
+        "src/components/research/SeedOpenEvoResearchDetail.astro",
+        "src/components/research/SeedWebShopCanonicalFigure.astro",
+        "src/components/research/WebShopDatasetCanonicalFigure.astro",
+        "src/components/research/WebShopEvaluationFigure.astro",
+        "src/components/research/WebShopGoalGenerationFigure.astro",
+        "src/components/research/WebShopReaderMap.astro",
+        "src/components/research/WebShopResearchSources.astro",
+        "src/components/research/WebShopRewardExplorer.tsx",
+        "src/components/research/WebShopSeedDataUsageFigure.astro",
+        "src/components/research/WebShopSeedSplitFigure.astro",
+        "src/components/research/WebShopSmallWorldFigure.astro",
+        "src/components/research/explainer/EnvironmentExplainers.tsx",
+        "src/data/siteReaderContracts.ts",
+        "src/lib/canonicalResearchFigures.test.ts",
+        "src/lib/interactiveResearchExplainers.test.ts",
+        "src/lib/webshopRewardExample.test.ts",
+        "src/lib/webshopRewardExample.ts",
+        "src/pages/research/seed-openevo/flow/webshop.astro",
+        "src/styles/components/webshop-reward-explorer.css",
+        "tests/e2e/webshop-journey-reader.spec.ts",
+        "tests/e2e/webshop-reward-explorer.spec.ts"
+      ]
+    },
+    {
+      "number": 935,
+      "files": [
+        "src/components/SeedReproductionPath.astro",
+        "src/components/navigation/PageOutline.astro",
+        "src/components/research/Lyg2171ServerOverview.astro",
+        "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro",
+        "src/components/research/OpenEvoExperimentArchive.astro",
+        "src/components/research/OpenEvoExperimentIndex.astro",
+        "src/components/research/OpenEvoFirstRunMap.astro",
+        "src/components/research/OpenEvoMechanismMap.astro",
+        "src/components/research/OpenEvoQ17AdvisorDiagnostics.astro",
+        "src/components/research/OpenEvoQ17DirectApplyAnalysis.astro",
+        "src/components/research/OpenEvoRedesignMap.astro",
+        "src/components/research/OpenEvoSdLoraHistorySkeleton.astro",
+        "src/components/research/OpenEvoSuccessorExplorationMap.astro",
+        "src/components/research/OpenEvoWebShopBenchmarkNote.astro",
+        "src/components/research/OpenEvoWebShopResultsHero.astro",
+        "src/components/research/ResearchOrientation.astro",
+        "src/components/research/SeedOpenEvoMissionHero.astro",
+        "src/components/research/SeedOpenEvoResearchDetail.astro",
+        "src/components/research/SeedOpenEvoResearchHub.astro",
+        "src/components/research/SeedOpenEvoTrainingDesignOverview.astro",
+        "src/data/siteReaderContracts.ts",
+        "src/pages/guide.astro",
+        "src/pages/guide/today.astro",
+        "src/pages/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.astro",
+        "src/pages/research/seed-openevo/study/minimax-teacher/index.astro",
+        "src/styles/site.css"
+      ]
+    },
+    {
+      "number": 936,
+      "files": [
+        "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro",
+        "src/components/research/OpenEvoExperimentResultsScaffold.astro",
+        "src/components/research/OpenEvoSdLoraBoundedAccelerationStudy.astro",
+        "src/lib/openEvoAdvisorTenQuestionsReport.test.ts",
+        "src/styles/research-booktabs.css",
+        "tests/e2e/advisor-paper-figure-suite.spec.ts",
+        "tests/e2e/sitewide-figure-width-scope.spec.ts"
+      ]
+    }
+  ],
+  "historical_prior_work_package": {
+    "work_pr": 898,
+    "repository": "mykcs/basemodel",
+    "branch": "design/typography-catalog-workspace-20261020",
+    "stack_parent_pr": 895,
+    "stack_parent_branch": "design/sitewide-type-and-paper-figures-20261020",
+    "reviewed_candidate_parent": "391cae899a89bb881ee239376f1492f7a78af6e9",
+    "baseline_parent_before_concurrent_changes": "02950bbede0a00c704d4f004af57406e76354a75",
+    "scope": "new Q17 source-native SVG reader, live Landscape ECharts labels, own targeted browser/CI acceptance and evidence",
+    "files": [
+      {
+        "file": "src/components/research/NativeSvgChartReader.astro",
+        "decision": "SAFE_NEW_SCOPED_COMPONENT",
+        "other_open_pr_overlap": [],
+        "note": "Pure native checkbox/CSS; no scientific data, globals or client dependency"
+      },
+      {
+        "file": "src/components/research/OpenEvoQ17DirectApplyAnalysis.astro",
+        "decision": "SAFE_SCOPED_OWNER",
+        "other_open_pr_overlap": [],
+        "note": "Preserve full SVG point lists and viewBoxes"
+      },
+      {
+        "file": "src/components/research/OpenEvoQ17FrontierRoadmap.astro",
+        "decision": "SAFE_AFTER_SAME_BRANCH_RECONCILIATION",
+        "other_open_pr_overlap": [],
+        "note": "Same #898 branch added 12px/interface SVG tick label migration at cbc2bc5; preserved while adding native reader wrapper"
+      },
+      {
+        "file": "src/components/landscape/LandscapeECharts.tsx",
+        "decision": "SAFE_LOCAL_COMPONENT",
+        "other_open_pr_overlap": [],
+        "note": "Only plot legend/axis/tooltip textStyle, not model points"
+      },
+      {
+        "file": "tests/e2e/sitewide-typography.spec.ts",
+        "decision": "STACKED_DEPENDENCY_RECONCILED",
+        "other_open_pr_overlap": [
+          895
+        ],
+        "note": "Kept same-branch Q17 historical role tests and append-only native/landscape checks; no old tests weakened"
+      },
+      {
+        "file": ".github/workflows/public-pr-ci.yml",
+        "decision": "CONCURRENT_DIFFERENT_HUNK_REQUIRES_RECHECK",
+        "other_open_pr_overlap": [
+          814
+        ],
+        "note": "Append-only jobs conditional on #898 after existing public-ci-gate. #814 independently restructures upstream public builds; preserve and reconcile at merge. Repo invariant prohibits fourth workflow file. No Production/secret"
+      }
+    ],
+    "deferred_concurrent_components": [
+      {
+        "file": "src/components/research/SeedOpenEvoProgressBriefing.astro",
+        "decision": "CONCURRENT_PR_BLOCKER",
+        "other_open_pr_overlap": [
+          805,
+          806,
+          818,
+          827
+        ],
+        "note": "8 fixed 16:9 slide figures; source changes excluded from this work package"
+      },
+      {
+        "file": "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro",
+        "decision": "CONCURRENT_PR_BLOCKER",
+        "other_open_pr_overlap": [
+          806,
+          820,
+          827
+        ],
+        "note": "Derived evidence figures; source changes excluded from this work package"
+      }
+    ],
+    "prohibited": [
+      "force-push",
+      "reset",
+      "retarget",
+      "merge",
+      "production-deploy",
+      "science-value-edit",
+      "shared-Mac-RDC"
+    ],
+    "visual_status": "NEEDS_HUMAN_REVIEW_UNTIL_EXACT_SHA_ARTIFACTS_INSPECTED"
+  },
+  "boundaries": {
+    "840": "Authorized relevant rewrite integrated; no longer blocker for these35 sizes",
+    "821": "Open newer NOOP/stepper changes remain independently owned; preserve during later integration. Own typography/native reader/table changes do not claim821 integration",
+    "816": "Open legacy shell consolidation overlaps840; preserve newer840 owner and semantic typography at later merge",
+    "929": "New home recent-challenges branch not integrated; avoid feature hunk",
+    "895": "stacked parent retained",
+    "main": "Related PGF/table source at06ac7367 integrated semantically; no whole-main merge",
+    "935": "2026-10-22 live read: merged/head eaacb12aaa015b82c292e690fbdd395d3c4e2ac0;26 paths overlap candidate. Not imported or claimed accepted; preserve both semantic changes at later authorized integration.",
+    "936": "2026-10-22 live read: open/head cb1b771d2ad818b6ace8785dbfe6ae7a4698a4a2;7 paths overlap candidate. Separate mobile-table writer; no overwrite, merge or closure authorized."
+  },
+  "sourceBaseSha": "30a8d2ec0b090e77dcb33f1ba5159dbf15e8c885",
+  "publicationParentSha": "f19f6ba57b840f49c1e68c9400c809fbe84180be",
+  "latestObservedMain": "8a6d2d77ebb046baa9f079945a23415ce37b5527",
+  "integratedFollowups": {
+    "930": "PaperModelMatrix 120px normal-wrap headers plus JS/no-JS geometry tests; 8 Chromium/WebKit tests passed, 6 PNG/JSON pairs reviewed on dirty candidate",
+    "931": "Advisor first-screen researchQuestion explicitly says recommendation is not advisor approval; no science values changed",
+    "929": "Unrelated recent-challenges feature not imported into isolated typography stack"
+  },
+  "article932Boundary": {
+    "head": "fb357805f8540011ced2314527bcf1e895815ee9",
+    "state": "separate active writer; not integrated, merged or retargeted by PR898",
+    "changedFiles": 69,
+    "sharedPaths": [
+      {
+        "path": "package.json",
+        "added": 2,
+        "removed": 2,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "src/components/DevelopmentWorkflowPage.astro",
+        "added": 13,
+        "removed": 20,
+        "changedTypographyLines": 10
+      },
+      {
+        "path": "src/components/navigation/PageOutline.astro",
+        "added": 38,
+        "removed": 6,
+        "changedTypographyLines": 3
+      },
+      {
+        "path": "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro",
+        "added": 15,
+        "removed": 25,
+        "changedTypographyLines": 9
+      },
+      {
+        "path": "src/components/research/OpenEvoExperimentResultsScaffold.astro",
+        "added": 15,
+        "removed": 19,
+        "changedTypographyLines": 20
+      },
+      {
+        "path": "src/components/research/OpenEvoGatedDeltaSdLoraExplainer.astro",
+        "added": 16,
+        "removed": 17,
+        "changedTypographyLines": 9
+      },
+      {
+        "path": "src/components/research/OpenEvoGdrDirectApplyExplainer.astro",
+        "added": 14,
+        "removed": 18,
+        "changedTypographyLines": 9
+      },
+      {
+        "path": "src/components/research/OpenEvoHarness2MiniStudy.astro",
+        "added": 13,
+        "removed": 15,
+        "changedTypographyLines": 10
+      },
+      {
+        "path": "src/components/research/OpenEvoHarnessFairnessPanel.astro",
+        "added": 4,
+        "removed": 0,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "src/components/research/OpenEvoLegacyStage1Archive.astro",
+        "added": 9,
+        "removed": 12,
+        "changedTypographyLines": 5
+      },
+      {
+        "path": "src/components/research/OpenEvoQ17DirectApplyAnalysis.astro",
+        "added": 30,
+        "removed": 25,
+        "changedTypographyLines": 18
+      },
+      {
+        "path": "src/components/research/OpenEvoSdLoraBoundedAccelerationStudy.astro",
+        "added": 16,
+        "removed": 24,
+        "changedTypographyLines": 14
+      },
+      {
+        "path": "src/components/research/OpenEvoSdLoraBoundedRecurrence.astro",
+        "added": 11,
+        "removed": 11,
+        "changedTypographyLines": 4
+      },
+      {
+        "path": "src/components/research/OpenEvoSdLoraScaling.astro",
+        "added": 18,
+        "removed": 20,
+        "changedTypographyLines": 18
+      },
+      {
+        "path": "src/components/research/OpenEvoSdLoraV2Outcome.astro",
+        "added": 17,
+        "removed": 26,
+        "changedTypographyLines": 16
+      },
+      {
+        "path": "src/components/research/OpenEvoStage1LearningObjectives.astro",
+        "added": 10,
+        "removed": 10,
+        "changedTypographyLines": 2
+      },
+      {
+        "path": "src/components/research/OpenEvoSuccessorReport.astro",
+        "added": 9,
+        "removed": 11,
+        "changedTypographyLines": 6
+      },
+      {
+        "path": "src/components/research/OpenEvoTextMemoryPlan.astro",
+        "added": 14,
+        "removed": 23,
+        "changedTypographyLines": 9
+      },
+      {
+        "path": "src/components/research/OpenEvoVanillaSdLoraMechanism.astro",
+        "added": 15,
+        "removed": 12,
+        "changedTypographyLines": 4
+      },
+      {
+        "path": "src/components/research/OpenEvoVanillaSdLoraSlide.astro",
+        "added": 3,
+        "removed": 3,
+        "changedTypographyLines": 4
+      },
+      {
+        "path": "src/components/research/OpenEvoWebShopBenchmarkNote.astro",
+        "added": 8,
+        "removed": 8,
+        "changedTypographyLines": 8
+      },
+      {
+        "path": "src/components/research/OpenEvoWebShopResultNote.astro",
+        "added": 7,
+        "removed": 9,
+        "changedTypographyLines": 7
+      },
+      {
+        "path": "src/components/research/ResearchChartReader.astro",
+        "added": 3,
+        "removed": 0,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "src/components/research/ResearchOrientation.astro",
+        "added": 6,
+        "removed": 6,
+        "changedTypographyLines": 12
+      },
+      {
+        "path": "src/components/research/ResearchRouteContext.astro",
+        "added": 5,
+        "removed": 0,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "src/components/research/SeedOpenEvoBriefingTechnicalNotes.astro",
+        "added": 17,
+        "removed": 21,
+        "changedTypographyLines": 9
+      },
+      {
+        "path": "src/components/research/SeedOpenEvoCanonicalFigure.astro",
+        "added": 3,
+        "removed": 0,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "src/components/research/SeedOpenEvoResearchDetail.astro",
+        "added": 6,
+        "removed": 5,
+        "changedTypographyLines": 3
+      },
+      {
+        "path": "src/components/research/SeedWebShopCanonicalFigure.astro",
+        "added": 2,
+        "removed": 0,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "src/components/research/WebShopDatasetCanonicalFigure.astro",
+        "added": 2,
+        "removed": 0,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "src/components/research/WebShopEvaluationFigure.astro",
+        "added": 3,
+        "removed": 0,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "src/components/research/WebShopGoalGenerationFigure.astro",
+        "added": 3,
+        "removed": 0,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "src/components/research/WebShopReaderMap.astro",
+        "added": 3,
+        "removed": 0,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "src/components/research/WebShopSeedSplitFigure.astro",
+        "added": 9,
+        "removed": 0,
+        "changedTypographyLines": 1
+      },
+      {
+        "path": "src/components/research/WebShopSmallWorldFigure.astro",
+        "added": 2,
+        "removed": 0,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "src/data/siteReaderContracts.ts",
+        "added": 9,
+        "removed": 9,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "src/lib/openEvoAdvisorTenQuestionsReport.test.ts",
+        "added": 7,
+        "removed": 8,
+        "changedTypographyLines": 3
+      },
+      {
+        "path": "src/pages/research/seed-openevo/study/minimax-teacher/index.astro",
+        "added": 23,
+        "removed": 31,
+        "changedTypographyLines": 17
+      },
+      {
+        "path": "src/pages/research/seed-openevo/study/parameter-memory-results/index.astro",
+        "added": 1,
+        "removed": 0,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "src/styles/advisor-ten-approved-reader.css",
+        "added": 3,
+        "removed": 206,
+        "changedTypographyLines": 27
+      },
+      {
+        "path": "src/styles/editorial-hierarchy.css",
+        "added": 5,
+        "removed": 5,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "src/styles/openevo-research-blogs.css",
+        "added": 5,
+        "removed": 50,
+        "changedTypographyLines": 12
+      },
+      {
+        "path": "src/styles/visual-upgrade.css",
+        "added": 4,
+        "removed": 4,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "tests/e2e/sitewide-figure-width-scope.spec.ts",
+        "added": 3,
+        "removed": 2,
+        "changedTypographyLines": 0
+      },
+      {
+        "path": "tests/e2e/visual-closeout-followup.spec.ts",
+        "added": 4,
+        "removed": 1,
+        "changedTypographyLines": 0
+      }
+    ],
+    "decision": "Keep isolated PR898 candidate; retain article PR ownership and compare actual hunks before future integration. File overlap alone is not a declaration blocker. HarnessFairness adds wrapper CSS with zero changed font lines; large advisor/blog rule retirement requires explicit future semantic merge. Final PR898 CI/Preview covers its exact tree, not combined PR932.",
+    "mergeOrder": "No merge authorized. On later integration, preserve source-bound data/PGF, 120px matrix/no-JS fallback, advisor approval boundary, PR898 real prose/caption/native-reader fixes and PR932 article reading wrappers; rerun combined exact-head checks."
+  },
+  "historicalContinuationSnapshots": [
+    {
+      "mainSha": "db7417c5d57c3d24e58f2fe5a8c6d27226f13834",
+      "observedAt": "2026-10-23 11:41 UTC",
+      "workHead": "eb0f875ae33797939d96507cccde730ea877cbe2",
+      "base": "design/sitewide-type-and-paper-figures-20261020",
+      "openPRs": [
+        {
+          "number": 941,
+          "sha": "fa2f132579f73c0b58ef1c28132e266952e71e43",
+          "base": "main",
+          "title": "fix(site): align handbook and development with shared BaseModel page roles"
+        },
+        {
+          "number": 939,
+          "sha": "93fe8df5f86deb9720d9a71702a7cc2d21548601",
+          "base": "main",
+          "title": "chore(deps): bump the dev-minor-patch group across 1 directory with 8 updates"
+        },
+        {
+          "number": 898,
+          "sha": "eb0f875ae33797939d96507cccde730ea877cbe2",
+          "base": "design/sitewide-type-and-paper-figures-20261020",
+          "title": "design(typography): BaseModel 全站排版系统迁移与视觉验收（分阶段实施）"
+        },
+        {
+          "number": 895,
+          "sha": "9a18359d247ffcb89ffae30434d03a0cb28e02c9",
+          "base": "main",
+          "title": "design(research): repair Q03 publication figure and unify BaseModel typography roles"
+        },
+        {
+          "number": 866,
+          "sha": "2d4f9dc3801fa5f7b12990acd3b4d82f0145b05f",
+          "base": "main",
+          "title": "research: independent Muon-inspired OpenEVO direction study and Q17 cross-links"
+        },
+        {
+          "number": 865,
+          "sha": "181836a0185eb3bd884411515e069f463d96bb47",
+          "base": "main",
+          "title": "research: add OSA memory exploration after advisor questions"
+        },
+        {
+          "number": 858,
+          "sha": "b344a68c583af83a035382c621b9b1ee4d3e1d67",
+          "base": "main",
+          "title": "feat(reader): show static Q03 trend on phones with paper table"
+        },
+        {
+          "number": 856,
+          "sha": "1ffad1d311b216e7cd78177df2fa59c71d047a83",
+          "base": "main",
+          "title": "design(research): publication-style Q01 SVG curves aligned with booktabs"
+        },
+        {
+          "number": 855,
+          "sha": "ae6b73206fdee6f7df91830f303c1a87dbe7c315",
+          "base": "main",
+          "title": "test(reader): require real first-screen orientation across three OpenEVO blogs"
+        },
+        {
+          "number": 841,
+          "sha": "71c8f35ad91fc16617529c4dc3fc9b25e6620a3d",
+          "base": "main",
+          "title": "feat(reading): give BaseModel research pages short meaningful learning paths"
+        },
+        {
+          "number": 840,
+          "sha": "2a741b6b77e1d4c4cf1cf5744825b968d795cef2",
+          "base": "main",
+          "title": "feat(webshop): unify shopping, dataset, sampling and scoring into one reader journey"
+        },
+        {
+          "number": 832,
+          "sha": "f112b575626bde88a776e74e0932af9e29dd0b16",
+          "base": "main",
+          "title": "refactor(explainer): extract only primitives proven by multiple samples"
+        },
+        {
+          "number": 831,
+          "sha": "3f1942807eaa3c5173842dd6a231a6c01200c4f4",
+          "base": "main",
+          "title": "research(expression): clarify SEED vs OpenEVO with comparison and causal structure"
+        },
+        {
+          "number": 830,
+          "sha": "17346e991bfd05219e3b13c37ee2b375f1018324",
+          "base": "main",
+          "title": "research(expression): make Vanilla SD-LoRA rounds inspectable"
+        },
+        {
+          "number": 829,
+          "sha": "ab465f0831fbdcb802e76c67e857c3a48e2901ba",
+          "base": "main",
+          "title": "audit(expression): rank BaseModel medium mismatches sitewide"
+        },
+        {
+          "number": 827,
+          "sha": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
+          "base": "main",
+          "title": "feat(research): add accessible scientific tables with CSV/LaTeX parity"
+        },
+        {
+          "number": 826,
+          "sha": "86e910c972a770e8674b150d67c74c6c56677ea8",
+          "base": "main",
+          "title": "test(site): Q01 真实构建覆盖与分层验收保护"
+        },
+        {
+          "number": 825,
+          "sha": "40ea5b24e8ffad9597f6fdfc53eefe61b5511664",
+          "base": "main",
+          "title": "feat(research): D04 证据综合与下一阶段决策边界"
+        },
+        {
+          "number": 824,
+          "sha": "f738b67a018fe3a1b068fd210b367cafd649cc24",
+          "base": "main",
+          "title": "feat(research): D03 三项可复算分析与比较边界"
+        },
+        {
+          "number": 823,
+          "sha": "bfdbb5c5a5a668055e45e4e718436660d87a2e77",
+          "base": "main",
+          "title": "feat(research): D02 可核验、可重试的离线历史导入"
+        },
+        {
+          "number": 822,
+          "sha": "618e4b65cbf3052e0503ea1d875d81015231aa33",
+          "base": "main",
+          "title": "feat(research): D01 研究证据校验与单一数值来源"
+        },
+        {
+          "number": 821,
+          "sha": "cf3f371af5a005051a2848e6eec103958f4312a3",
+          "base": "main",
+          "title": "feat(research): C03 补齐 SD-LoRA NOOP 分支与逐步机制阅读"
+        },
+        {
+          "number": 820,
+          "sha": "c31b6bef5d3d4a45c6849b64af5d51546c465f7f",
+          "base": "main",
+          "title": "feat(research): C02 同源科研图表与离线可读交互"
+        },
+        {
+          "number": 819,
+          "sha": "66eae9a9d7c0fd0b4eeb5dbe28c85c1ad27c53d4",
+          "base": "main",
+          "title": "feat(content): make research evidence lifecycle auditable"
+        },
+        {
+          "number": 818,
+          "sha": "fc1ed61807ccffe07e462c10ab466b48c7722921",
+          "base": "main",
+          "title": "feat(research): synthesize Stage1, capacity, and beta evidence"
+        },
+        {
+          "number": 817,
+          "sha": "13282ac0a0c14f96eac19c441dc5a6342b255ba0",
+          "base": "main",
+          "title": "feat(reader): add purpose-first home and Study entry paths"
+        },
+        {
+          "number": 816,
+          "sha": "dab55a699c7e690bfa6aef0d332d47895892bf70",
+          "base": "main",
+          "title": "refactor(css): consolidate research section and figure owners"
+        },
+        {
+          "number": 815,
+          "sha": "a52cebeb0726fb836d14136e5f1f487bde8d9943",
+          "base": "main",
+          "title": "perf: make catalog-heavy research tools static-first"
+        },
+        {
+          "number": 814,
+          "sha": "8d97bc293769ebef50a4877931716850ecb698c1",
+          "base": "main",
+          "title": "ci: reuse one sealed static build across browser shards"
+        },
+        {
+          "number": 813,
+          "sha": "1b85f1cf00f032ce99eacd855cb17c2ad29762d7",
+          "base": "main",
+          "title": "docs(plan): BaseModel 3+1 upgrade program and 18 work packets"
+        },
+        {
+          "number": 812,
+          "sha": "e94b1618760b9cbd201ff88ce61141e592989693",
+          "base": "main",
+          "title": "design(research): turn β study into a scientific-blog reading page"
+        },
+        {
+          "number": 806,
+          "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126",
+          "base": "main",
+          "title": "docs(design): establish BaseModel Design System v1"
+        },
+        {
+          "number": 805,
+          "sha": "43fa2cbb3998824333826e8542cebf8265842f17",
+          "base": "main",
+          "title": "research(webshop): publish post-advisor learning-signal + rank32 results"
+        },
+        {
+          "number": 783,
+          "sha": "90c7d46bde8447194d568aacce39de808aa59938",
+          "base": "main",
+          "title": "plan(product): connect research resources to the active mission"
+        }
+      ],
+      "mergedRelated": [
+        {
+          "number": 932,
+          "head": "580e3e7f731da8e7f2ea3a6f3a92bac11f03e838",
+          "merge": "4dcc2a9bcad33e663fed33aaf82fc5fa39696629",
+          "merged": true
+        },
+        {
+          "number": 935,
+          "head": "eaacb12aaa015b82c292e690fbdd395d3c4e2ac0",
+          "merge": "df13da43ad5d4e89b03bf3b0832e642560d9623a",
+          "merged": true
+        },
+        {
+          "number": 936,
+          "head": "11a3f1240c10512e61e3e42c185a52d386698fc4",
+          "merge": "5813d23329b55fafdfc8a551af367465b14d7062",
+          "merged": true
+        }
+      ],
+      "semanticIntegration": "No rebase or wholesale main import. Adopt current #936 article-table fit semantics in existing owners while preserving PR898 interface typography and same native scientific values. Working #840 integration remains authorized. #941 handbook and unrelated dependency work stay separate.",
+      "mainDriftSincePriorSnapshot": {
+        "commits": [
+          {
+            "sha": "922087de4781aeb3f30528d7f45fcf00cb3d05ef",
+            "title": "feat(research): finish Q01–Q10 Intelligence UI with evidence-safe reader diagrams (#942)"
+          },
+          {
+            "sha": "6d587d427c9a8d4ca69ab45210ee94e082c61fa4",
+            "title": "fix(research): keep Q08 selected score tokens inline on mobile"
+          },
+          {
+            "sha": "21468fc56b06a2ef898a76c2a4bfc4ff7bbac938",
+            "title": "test(research): guard Q08 mobile score row wrapping"
+          },
+          {
+            "sha": "2d4f269e5cfc3bb8f01a0de5b5c93598095a1728",
+            "title": "test(research): type-safe inline row geometry assertion"
+          },
+          {
+            "sha": "db7417c5d57c3d24e58f2fe5a8c6d27226f13834",
+            "title": "Merge pull request #943 from mykcs/fix/q08-mobile-inline-score-20261023"
+          }
+        ],
+        "files": [
+          "src/components/research/AdvisorTenConceptUI.astro",
+          "src/components/research/Q08SeenRetentionExplorer.astro",
+          "src/pages/research/seed-openevo/study/parameter-memory-results/index.astro",
+          "tests/e2e/advisor-intelligence-q02-q10.spec.ts",
+          "tests/e2e/advisor-intelligence-q08-q09.spec.ts"
+        ],
+        "decision": "Separate main work owned by #942/#943 and #941. This existing Draft stack keeps its pinned #895 base and scientific-source baseline; no wholesale main import, rebase or combined acceptance is claimed. Exact-tree evidence applies only to #898."
+      }
+    },
+    {
+      "mainSha": "db7417c5d57c3d24e58f2fe5a8c6d27226f13834",
+      "observedAt": "2026-10-23 11:41 UTC",
+      "workHead": "eb0f875ae33797939d96507cccde730ea877cbe2",
+      "base": "design/sitewide-type-and-paper-figures-20261020",
+      "openPRs": [
+        {
+          "number": 941,
+          "sha": "fa2f132579f73c0b58ef1c28132e266952e71e43",
+          "base": "main",
+          "title": "fix(site): align handbook and development with shared BaseModel page roles"
+        },
+        {
+          "number": 939,
+          "sha": "93fe8df5f86deb9720d9a71702a7cc2d21548601",
+          "base": "main",
+          "title": "chore(deps): bump the dev-minor-patch group across 1 directory with 8 updates"
+        },
+        {
+          "number": 898,
+          "sha": "eb0f875ae33797939d96507cccde730ea877cbe2",
+          "base": "design/sitewide-type-and-paper-figures-20261020",
+          "title": "design(typography): BaseModel 全站排版系统迁移与视觉验收（分阶段实施）"
+        },
+        {
+          "number": 895,
+          "sha": "9a18359d247ffcb89ffae30434d03a0cb28e02c9",
+          "base": "main",
+          "title": "design(research): repair Q03 publication figure and unify BaseModel typography roles"
+        },
+        {
+          "number": 866,
+          "sha": "2d4f9dc3801fa5f7b12990acd3b4d82f0145b05f",
+          "base": "main",
+          "title": "research: independent Muon-inspired OpenEVO direction study and Q17 cross-links"
+        },
+        {
+          "number": 865,
+          "sha": "181836a0185eb3bd884411515e069f463d96bb47",
+          "base": "main",
+          "title": "research: add OSA memory exploration after advisor questions"
+        },
+        {
+          "number": 858,
+          "sha": "b344a68c583af83a035382c621b9b1ee4d3e1d67",
+          "base": "main",
+          "title": "feat(reader): show static Q03 trend on phones with paper table"
+        },
+        {
+          "number": 856,
+          "sha": "1ffad1d311b216e7cd78177df2fa59c71d047a83",
+          "base": "main",
+          "title": "design(research): publication-style Q01 SVG curves aligned with booktabs"
+        },
+        {
+          "number": 855,
+          "sha": "ae6b73206fdee6f7df91830f303c1a87dbe7c315",
+          "base": "main",
+          "title": "test(reader): require real first-screen orientation across three OpenEVO blogs"
+        },
+        {
+          "number": 841,
+          "sha": "71c8f35ad91fc16617529c4dc3fc9b25e6620a3d",
+          "base": "main",
+          "title": "feat(reading): give BaseModel research pages short meaningful learning paths"
+        },
+        {
+          "number": 840,
+          "sha": "2a741b6b77e1d4c4cf1cf5744825b968d795cef2",
+          "base": "main",
+          "title": "feat(webshop): unify shopping, dataset, sampling and scoring into one reader journey"
+        },
+        {
+          "number": 832,
+          "sha": "f112b575626bde88a776e74e0932af9e29dd0b16",
+          "base": "main",
+          "title": "refactor(explainer): extract only primitives proven by multiple samples"
+        },
+        {
+          "number": 831,
+          "sha": "3f1942807eaa3c5173842dd6a231a6c01200c4f4",
+          "base": "main",
+          "title": "research(expression): clarify SEED vs OpenEVO with comparison and causal structure"
+        },
+        {
+          "number": 830,
+          "sha": "17346e991bfd05219e3b13c37ee2b375f1018324",
+          "base": "main",
+          "title": "research(expression): make Vanilla SD-LoRA rounds inspectable"
+        },
+        {
+          "number": 829,
+          "sha": "ab465f0831fbdcb802e76c67e857c3a48e2901ba",
+          "base": "main",
+          "title": "audit(expression): rank BaseModel medium mismatches sitewide"
+        },
+        {
+          "number": 827,
+          "sha": "94ac62cf0fe81216c6c65c07974fc74bf780655f",
+          "base": "main",
+          "title": "feat(research): add accessible scientific tables with CSV/LaTeX parity"
+        },
+        {
+          "number": 826,
+          "sha": "86e910c972a770e8674b150d67c74c6c56677ea8",
+          "base": "main",
+          "title": "test(site): Q01 真实构建覆盖与分层验收保护"
+        },
+        {
+          "number": 825,
+          "sha": "40ea5b24e8ffad9597f6fdfc53eefe61b5511664",
+          "base": "main",
+          "title": "feat(research): D04 证据综合与下一阶段决策边界"
+        },
+        {
+          "number": 824,
+          "sha": "f738b67a018fe3a1b068fd210b367cafd649cc24",
+          "base": "main",
+          "title": "feat(research): D03 三项可复算分析与比较边界"
+        },
+        {
+          "number": 823,
+          "sha": "bfdbb5c5a5a668055e45e4e718436660d87a2e77",
+          "base": "main",
+          "title": "feat(research): D02 可核验、可重试的离线历史导入"
+        },
+        {
+          "number": 822,
+          "sha": "618e4b65cbf3052e0503ea1d875d81015231aa33",
+          "base": "main",
+          "title": "feat(research): D01 研究证据校验与单一数值来源"
+        },
+        {
+          "number": 821,
+          "sha": "cf3f371af5a005051a2848e6eec103958f4312a3",
+          "base": "main",
+          "title": "feat(research): C03 补齐 SD-LoRA NOOP 分支与逐步机制阅读"
+        },
+        {
+          "number": 820,
+          "sha": "c31b6bef5d3d4a45c6849b64af5d51546c465f7f",
+          "base": "main",
+          "title": "feat(research): C02 同源科研图表与离线可读交互"
+        },
+        {
+          "number": 819,
+          "sha": "66eae9a9d7c0fd0b4eeb5dbe28c85c1ad27c53d4",
+          "base": "main",
+          "title": "feat(content): make research evidence lifecycle auditable"
+        },
+        {
+          "number": 818,
+          "sha": "fc1ed61807ccffe07e462c10ab466b48c7722921",
+          "base": "main",
+          "title": "feat(research): synthesize Stage1, capacity, and beta evidence"
+        },
+        {
+          "number": 817,
+          "sha": "13282ac0a0c14f96eac19c441dc5a6342b255ba0",
+          "base": "main",
+          "title": "feat(reader): add purpose-first home and Study entry paths"
+        },
+        {
+          "number": 816,
+          "sha": "dab55a699c7e690bfa6aef0d332d47895892bf70",
+          "base": "main",
+          "title": "refactor(css): consolidate research section and figure owners"
+        },
+        {
+          "number": 815,
+          "sha": "a52cebeb0726fb836d14136e5f1f487bde8d9943",
+          "base": "main",
+          "title": "perf: make catalog-heavy research tools static-first"
+        },
+        {
+          "number": 814,
+          "sha": "8d97bc293769ebef50a4877931716850ecb698c1",
+          "base": "main",
+          "title": "ci: reuse one sealed static build across browser shards"
+        },
+        {
+          "number": 813,
+          "sha": "1b85f1cf00f032ce99eacd855cb17c2ad29762d7",
+          "base": "main",
+          "title": "docs(plan): BaseModel 3+1 upgrade program and 18 work packets"
+        },
+        {
+          "number": 812,
+          "sha": "e94b1618760b9cbd201ff88ce61141e592989693",
+          "base": "main",
+          "title": "design(research): turn β study into a scientific-blog reading page"
+        },
+        {
+          "number": 806,
+          "sha": "8f976af80439f83fc4c9bfcf451e87ed60ad8126",
+          "base": "main",
+          "title": "docs(design): establish BaseModel Design System v1"
+        },
+        {
+          "number": 805,
+          "sha": "43fa2cbb3998824333826e8542cebf8265842f17",
+          "base": "main",
+          "title": "research(webshop): publish post-advisor learning-signal + rank32 results"
+        },
+        {
+          "number": 783,
+          "sha": "90c7d46bde8447194d568aacce39de808aa59938",
+          "base": "main",
+          "title": "plan(product): connect research resources to the active mission"
+        }
+      ],
+      "mergedRelated": [
+        {
+          "number": 932,
+          "head": "580e3e7f731da8e7f2ea3a6f3a92bac11f03e838",
+          "merge": "4dcc2a9bcad33e663fed33aaf82fc5fa39696629",
+          "merged": true
+        },
+        {
+          "number": 935,
+          "head": "eaacb12aaa015b82c292e690fbdd395d3c4e2ac0",
+          "merge": "df13da43ad5d4e89b03bf3b0832e642560d9623a",
+          "merged": true
+        },
+        {
+          "number": 936,
+          "head": "11a3f1240c10512e61e3e42c185a52d386698fc4",
+          "merge": "5813d23329b55fafdfc8a551af367465b14d7062",
+          "merged": true
+        }
+      ],
+      "semanticIntegration": "No rebase or wholesale main import. Adopt current #936 article-table fit semantics in existing owners while preserving PR898 interface typography and same native scientific values. Working #840 integration remains authorized. #941 handbook and unrelated dependency work stay separate.",
+      "mainDriftSincePriorSnapshot": {
+        "commits": [
+          {
+            "sha": "922087de4781aeb3f30528d7f45fcf00cb3d05ef",
+            "title": "feat(research): finish Q01–Q10 Intelligence UI with evidence-safe reader diagrams (#942)"
+          },
+          {
+            "sha": "6d587d427c9a8d4ca69ab45210ee94e082c61fa4",
+            "title": "fix(research): keep Q08 selected score tokens inline on mobile"
+          },
+          {
+            "sha": "21468fc56b06a2ef898a76c2a4bfc4ff7bbac938",
+            "title": "test(research): guard Q08 mobile score row wrapping"
+          },
+          {
+            "sha": "2d4f269e5cfc3bb8f01a0de5b5c93598095a1728",
+            "title": "test(research): type-safe inline row geometry assertion"
+          },
+          {
+            "sha": "db7417c5d57c3d24e58f2fe5a8c6d27226f13834",
+            "title": "Merge pull request #943 from mykcs/fix/q08-mobile-inline-score-20261023"
+          }
+        ],
+        "files": [
+          "src/components/research/AdvisorTenConceptUI.astro",
+          "src/components/research/Q08SeenRetentionExplorer.astro",
+          "src/pages/research/seed-openevo/study/parameter-memory-results/index.astro",
+          "tests/e2e/advisor-intelligence-q02-q10.spec.ts",
+          "tests/e2e/advisor-intelligence-q08-q09.spec.ts"
+        ],
+        "decision": "Separate main work owned by #942/#943 and #941. This existing Draft stack keeps its pinned #895 base and scientific-source baseline; no wholesale main import, rebase or combined acceptance is claimed. Exact-tree evidence applies only to #898."
+      }
+    }
+  ]
+}

@@ -115,6 +115,7 @@ export function buildManifest({ rootPath = DEFAULT_ARTIFACT_ROOT, env = process.
     schemaVersion: BUILD_ARTIFACT_SCHEMA_VERSION,
     artifactKind: 'public-static-build',
     repository: env.GITHUB_REPOSITORY ?? null,
+    execution: { run: env.GITHUB_RUN_ID ?? null, attempt: env.GITHUB_RUN_ATTEMPT ?? null },
     repositoryIdentity: currentRepositoryIdentity(env),
     toolchain: currentToolchain(),
     sourceInputs: currentSourceInputs(env),
@@ -198,6 +199,9 @@ export function verifyManifest(manifest, { rootPath = DEFAULT_ARTIFACT_ROOT, env
   };
 
   assertDeepEqual('repository identity', manifest.repositoryIdentity, repositoryIdentity);
+  assertDeepEqual('workflow execution', manifest.execution, {
+    run: env.GITHUB_RUN_ID ?? null, attempt: env.CI_BUILD_RUN_ATTEMPT ?? env.GITHUB_RUN_ATTEMPT ?? null,
+  });
   assertDeepEqual('toolchain', manifest.toolchain, toolchain);
   assertDeepEqual('source inputs', manifest.sourceInputs, sourceInputs);
   assertDeepEqual('artifact file inventory', manifest.artifact, artifact);

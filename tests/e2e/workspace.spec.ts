@@ -58,9 +58,12 @@ test('mobile workspace switches between task, candidate, evidence, and compare p
 
   const nav = page.locator('.workspace-mobile-nav');
   await expect(nav).toBeVisible();
-  await expect(nav.getByRole('button', { name: '候选' })).toHaveAttribute('aria-current', 'page');
+  await expect(nav.getByRole('button', { name: '任务' })).toHaveAttribute('aria-current', 'page');
+  await expect(page.locator('.workspace-pane-task')).toBeVisible();
+  await expect(page.locator('.workspace-pane-candidates')).not.toBeVisible();
+
+  await nav.getByRole('button', { name: '候选' }).click();
   await expect(page.locator('.workspace-pane-candidates')).toBeVisible();
-  await expect(page.locator('.workspace-pane-task')).not.toBeVisible();
 
   await nav.getByRole('button', { name: '任务' }).click();
   await expect(page.locator('.workspace-pane-task')).toBeVisible();
@@ -75,6 +78,7 @@ test('mobile workspace switches between task, candidate, evidence, and compare p
 test('mobile candidate quick view opens a native dialog and supports Escape', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('workspace/?v=2&mode=modern');
+  await page.locator('.workspace-mobile-nav').getByRole('button', { name: '候选' }).click();
 
   await page.locator('.candidate-row').first().getByRole('button', { name: '一眼概览' }).click();
   await expect(page.locator('.quick-view-dialog[open]')).toBeVisible();

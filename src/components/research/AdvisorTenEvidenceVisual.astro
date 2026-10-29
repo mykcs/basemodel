@@ -1,0 +1,467 @@
+---
+import ResearchPaperTable from './ResearchPaperTable.astro';
+import {
+  ADVISOR_Q03_CUSTOM_PANEL,
+  ADVISOR_Q04_CAPACITY,
+  ADVISOR_Q05_FROZEN,
+} from '../../data/openEvoAdvisorTenQuestions';
+import q01Csv from '../../data/research-evidence/advisor-q01-three-way-curve.csv?raw';
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import PaperIntervalPlot from './PaperIntervalPlot.astro';
+import PublicationPlot from './PublicationPlot.astro';
+import NativeSvgChartReader from './NativeSvgChartReader.astro';
+
+type Variant = 'q01' | 'q02' | 'q03' | 'q04' | 'q05' | 'q07';
+interface Props { variant: Variant }
+const { variant } = Astro.props;
+// This committed CSV has the exact same Git blob SHA as PR #628's sealed science output.
+// Only existing, fixed held-out checkpoint scores are read. No evaluation runs here.
+const q01CurveHref = 'https://github.com/mykcs/openevo-experiment/blob/48e1368c7afc260a1745a49e6c7c173bfbb172b2/docs/evidence/advisor-q01-horizon-plateau-20261001/three-way-curve.csv';
+const q01ResultHref = 'https://github.com/mykcs/openevo-experiment/blob/48e1368c7afc260a1745a49e6c7c173bfbb172b2/docs/evidence/advisor-q01-horizon-plateau-20261001/Q01_THREE_WAY_RESULT.json';
+
+const q01Data = q01Csv.trim().split('\n').slice(1).map((line) => {
+  const columns = line.split(',');
+  return { key: columns[0] ?? '', round: Number(columns[2]), actualUpdates: Number(columns[3]), score: Number(columns[4])*100, exact: Number(columns[5]) };
+});
+const q01Specs = [
+  { key:'ordinary_openevo',name:'普通 OpenEVO',takeaway:'第 120 次更新约 60.40 分，第 160 次约 60.11 分；额外训练没有带来明显增分。' },
+  { key:'bounded_state',name:'Bounded',takeaway:'第 120 轮约 58.72 分，到第 150 轮约 67.25 分；后段仍有收益。' },
+  { key:'delta_beta_family',name:'历史 β/GDR',takeaway:'第 130 轮约 58.16 分，到第 160 轮约 45.24 分；后段下降约 12.93 分。' },
+] as const;
+const q01Series = q01Specs.map((spec)=>({ ...spec,values:q01Data.filter((item)=>item.key===spec.key) }));
+const q01Rounds = q01Series[0]?.values.map((item)=>item.round) ?? [];
+if(q01Data.length !== 33 || q01Series.some((series)=>series.values.length!==11 || series.values.some((point,index)=>point.round!==q01Rounds[index] || !Number.isFinite(point.score)))){
+  throw new Error('Q01 frozen curve has unexpected source coverage');
+}
+const q01X = (round:number) => 63 + (round-1)/159*650;
+const q01Y = (score:number) => 28 + (100-score)*2.22;
+const q01PhoneX = (round:number) => 32 + (round-1)/159*294;
+const q01PhoneY = (score:number) => 21 + (100-score)*1.68;
+const earlySft = [
+  { name: 'SFT · 1 遍', score: 35.53 },
+  { name: 'SFT · 2 遍', score: 28.30 },
+  { name: 'SFT · 3 遍', score: 24.10 },
+];
+// Q03: the source-bound HTML table and the precompiled PGFPlots file share
+// the same frozen data; scripts/verify-q03-pgfplot.mjs checks data/source hashes.
+---
+{variant === 'q01' && (
+  <figure class="advisor-viz advisor-viz--q01" data-report-figure="q01-horizon" data-evidence-shape="measured-score-curves" data-paper-figure="true">
+    <header class="advisor-viz__heading">
+      <strong>训练进度与 WebShop Task Score</strong>
+      <span>冻结 64 题 · 每种方法 11 个实际保存点</span>
+    </header>
+    <p class="advisor-viz__q01-axis-explainer" data-q01-axis-scope><strong>横轴使用两种计数：</strong>普通 OpenEVO 按实际参数更新次数统计；Bounded 和历史 β/GDR 按已完成的 Stage2 轮数统计，其中一些轮次没有真正更新参数。<strong>横轴数字相同，不代表实际更新次数或计算成本相同。</strong></p>
+    <PublicationPlot
+      id="q01-three-way"
+      src="/research/seed-openevo/figures/q01-three-way-pgfplots.svg"
+      mobileSrc="/research/seed-openevo/figures/q01-three-way-mobile-pgfplots.svg"
+      captionId="advisor-q01-paper-caption"
+      widthTier="double"
+      naturalWidth={462}
+      naturalHeight={273}
+      loading="eager"
+      alt="同一冻结 64 道 WebShop 题上三条历史路线各 11 个实测保存点的 Task Score 曲线，纵轴 0 至 100。普通 OpenEVO 按参数更新次数，Bounded 与历史 β/GDR 按 Stage2 完成轮数；横轴刻度相同不代表同等实际更新次数。普通方法后段变化较小，Bounded 至 150 轮继续提升，历史 β/GDR 后段下降。"
+    />
+    <figcaption id="advisor-q01-paper-caption"><strong>图 1｜</strong>三种参数更新方法在同一冻结 64 题上的 Task Score（满分 100）。每条曲线包含 11 个真实保存点，线段只连接已测点。普通 OpenEVO 横轴为实际参数更新次数；Bounded 和历史 β/GDR 横轴为已完成的 Stage2 轮数，后两组包含未实际更新参数的轮次。同一横轴刻度不是相同的训练计算量，不应据此进行等成本排名。</figcaption>
+    <details class="advisor-viz__q01-raw-svg" data-q01-raw-svg>
+      <summary>展开查看原始 33 个保存点的 SVG（技术核查）</summary>
+    <div class="advisor-viz__q01-legend" role="group" aria-label="三种方法的线型和点形图例">
+      {q01Series.map((item) => (
+        <span class={'advisor-viz__q01-legend-item advisor-viz__q01-series--'+item.key}>
+          <svg viewBox="0 0 34 14" focusable="false" aria-hidden="true">
+            <line class="advisor-viz__q01-curve" x1="2" x2="32" y1="7" y2="7" />
+            {item.key === 'ordinary_openevo'
+              ? <circle class="advisor-viz__q01-point" cx="17" cy="7" r="3" />
+              : item.key === 'bounded_state'
+                ? <rect class="advisor-viz__q01-point" x="14" y="4" width="6" height="6" />
+                : <polygon class="advisor-viz__q01-point" points="17,3 20.6,10 13.4,10" />}
+          </svg>
+          <span>{item.name}</span>
+        </span>
+      ))}
+    </div>
+    <div class="q01-native-reader">
+    <NativeSvgChartReader id="q01-native-curve" label="三种方法的原始技术核查曲线" nativeWidth={888}>
+    <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--desktop" viewBox="0 0 740 310" role="img" aria-label="三种方法的真实开发集任务成绩随训练进度变化" aria-describedby="advisor-q01-chart-desc">
+      <desc id="advisor-q01-chart-desc">每条曲线来自十一个真实保存的模型版本，在同一批事先固定的六十四道购物题上测试。普通 OpenEVO 第一百二十次更新后的成绩几乎没有提高；Bounded 一百五十轮之前还在提高；历史 beta GDR 一百三十轮之后下降。纵轴是零到一百的 Task Score。</desc>
+      {[0,25,50,75,100].map((tick) => (
+        <g>
+          {tick > 0 && tick < 100 && <line class="advisor-viz__q01-grid" x1="63" x2="713" y1={q01Y(tick)} y2={q01Y(tick)} />}
+          <text class="advisor-viz__q01-axis" x="52" y={q01Y(tick)+4} text-anchor="end">{tick}</text>
+        </g>
+      ))}
+      <path class="advisor-viz__q01-axes" d="M63 28 V250 H713" />
+      {[1,40,80,120,160].map((tick) => (
+        <g>
+          <line class="advisor-viz__q01-tick" x1={q01X(tick)} x2={q01X(tick)} y1="250" y2="254" />
+          <text class="advisor-viz__q01-axis" x={q01X(tick)} y="273" text-anchor="middle">{tick}</text>
+        </g>
+      ))}
+      {q01Series.map((item) => (
+        <g class={'advisor-viz__q01-series advisor-viz__q01-series--'+item.key} data-q01-line={item.key}>
+          <polyline class="advisor-viz__q01-curve" points={item.values.map((v) => q01X(v.round)+','+q01Y(v.score)).join(' ')} />
+          {item.values.map((v) => (
+            item.key === 'ordinary_openevo'
+              ? <circle class="advisor-viz__q01-point" cx={q01X(v.round)} cy={q01Y(v.score)} r="3" />
+              : item.key === 'bounded_state'
+                ? <rect class="advisor-viz__q01-point" x={q01X(v.round)-2.8} y={q01Y(v.score)-2.8} width="5.6" height="5.6" />
+                : <polygon class="advisor-viz__q01-point" points={[q01X(v.round)+','+(q01Y(v.score)-3.5),(q01X(v.round)+3.6)+','+(q01Y(v.score)+3),(q01X(v.round)-3.6)+','+(q01Y(v.score)+3)].join(' ')} />
+          ))}
+        </g>
+      ))}
+      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="63" y="15">Task Score（满分 100 分）</text>
+      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="713" y="301" text-anchor="end">训练进度（口径见上）</text>
+    </svg>
+    <svg class="advisor-viz__q01-chart advisor-viz__q01-chart--phone" viewBox="0 0 340 232" role="img" aria-label="三条方法的真实训练成绩变化，手机视图" aria-describedby="advisor-q01-phone-desc">
+      <desc id="advisor-q01-phone-desc">每种方法十一个已测模型版本的做题成绩。普通 OpenEVO 一百二十次更新之后进步很少，Bounded 到一百五十轮仍有提升，历史 beta GDR 一百三十轮后开始下降。</desc>
+      {[0,25,50,75,100].map((tick) => (
+        <g>
+          {tick > 0 && tick < 100 && <line class="advisor-viz__q01-grid" x1="32" x2="326" y1={q01PhoneY(tick)} y2={q01PhoneY(tick)} />}
+          <text class="advisor-viz__q01-axis" x="26" y={q01PhoneY(tick)+4} text-anchor="end">{tick}</text>
+        </g>
+      ))}
+      <path class="advisor-viz__q01-axes" d="M32 21 V189 H326" />
+      {[1,80,120,160].map((tick) => (
+        <g>
+          <line class="advisor-viz__q01-tick" x1={q01PhoneX(tick)} x2={q01PhoneX(tick)} y1="189" y2="193" />
+          <text class="advisor-viz__q01-axis" x={q01PhoneX(tick)} y="208" text-anchor="middle">{tick}</text>
+        </g>
+      ))}
+      {q01Series.map((item) => (
+        <g class={'advisor-viz__q01-series advisor-viz__q01-series--'+item.key} data-q01-phone-line={item.key}>
+          <polyline class="advisor-viz__q01-curve" points={item.values.map((v) => q01PhoneX(v.round)+','+q01PhoneY(v.score)).join(' ')} />
+          {item.values.map((v) => (
+            item.key === 'ordinary_openevo'
+              ? <circle class="advisor-viz__q01-point" cx={q01PhoneX(v.round)} cy={q01PhoneY(v.score)} r="2.7" />
+              : item.key === 'bounded_state'
+                ? <rect class="advisor-viz__q01-point" x={q01PhoneX(v.round)-2.6} y={q01PhoneY(v.score)-2.6} width="5.2" height="5.2" />
+                : <polygon class="advisor-viz__q01-point" points={[q01PhoneX(v.round)+','+(q01PhoneY(v.score)-3.1),(q01PhoneX(v.round)+3.2)+','+(q01PhoneY(v.score)+2.9),(q01PhoneX(v.round)-3.2)+','+(q01PhoneY(v.score)+2.9)].join(' ')} />
+          ))}
+        </g>
+      ))}
+      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="33" y="12">Task Score（满分 100 分）</text>
+      <text class="advisor-viz__q01-axis advisor-viz__q01-axis-label" x="326" y="227" text-anchor="end">训练进度（计数不同）</text>
+    </svg>
+    </NativeSvgChartReader></div>
+
+    </details>
+    <div class="advisor-viz__q01-reading">
+      {q01Series.map((item) => <p><strong>{item.name}：</strong>{item.takeaway}</p>)}
+    </div>
+    <p class="advisor-viz__q01-source">数据与规则：<a href={q01CurveHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01CurveHref} />11 个保存点的原始 CSV</a> · <a href={q01ResultHref} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q01ResultHref} />判断何时停止的规则与原始结果</a></p>
+    <details class="advisor-viz__details">
+      <summary>怎样判断继续训练是否还值得？各个版本是多少分？</summary>
+      <p>研究开始前，我们约定了一条挑选模型版本的规则：从已测的 11 个版本里，寻找最早的一个，使后面所有已测版本的平均分都没有比它高出超过 2 分（满分 100），完整成功的题数也没有多出超过 2 道（共 64 道）。原始英文收据把它称作 practical plateau；这只是“后面的版本没有明显超过它”的判断规则。历史 β/GDR 在第 130 轮后成绩下降，不能被理解成成绩始终平稳。这里的结论只适用于这批事先固定的 64 道题。</p>
+      <div class="advisor-viz__table research-booktabs-wrap" tabindex="0">
+        <ResearchPaperTable class="research-booktabs" data-q01-measured-table narrowRecords>
+          <caption>补充表 S1｜同一冻结 64 题；Task Score（满分 100 分）（仅列出已实际测量的保存点）</caption>
+          <thead><tr><th scope="col">轮次或更新数</th><th scope="col" data-numeric>普通 OpenEVO</th><th scope="col" data-numeric>Bounded</th><th scope="col" data-numeric>历史 β/GDR</th></tr></thead>
+          <tbody>
+            {q01Rounds.map((round) => (
+              <tr>
+                <th scope="row">{round}</th>
+                {q01Series.map((item) => (
+                  <td data-numeric>{item.values.find((row) => row.round===round)?.score.toFixed(2)} 分</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </ResearchPaperTable>
+      </div>
+    </details>
+  </figure>
+)}
+{variant === 'q02' && (
+  <div class="advisor-viz" data-report-visual="q02-early-sft" data-evidence-shape="measured-paper-table">
+    <div class="advisor-viz__table research-booktabs-wrap" tabindex="0">
+      <ResearchPaperTable class="research-booktabs" narrowRecords>
+        <caption>表 1｜早期 SFT 在同一批固定购物题上的成绩</caption>
+        <thead><tr><th scope="col">训练条件</th><th scope="col" data-numeric>Task Score（满分 100 分）</th></tr></thead>
+        <tbody>{earlySft.map(item => (
+          <tr><th scope="row">{item.name}</th><td data-numeric>{item.score.toFixed(2)} 分</td></tr>
+        ))}</tbody>
+      </ResearchPaperTable>
+    </div>
+    <p class="advisor-viz__table-note">单条历史 SFT 路线的已测得分。六格重复训练的统一配对科学评测尚未封存；这张表不用于判定 SFT 与 OPSD 的最终胜负。</p>
+  </div>
+)}
+{variant === 'q03' && (
+  <div class="advisor-q03-paper" data-q03-report-paper data-report-table="q03-checkpoints" data-advisor-matrix="q03" data-matrix-kind="historic-checkpoints" data-protocol="custom-q17-64">
+    <div class="advisor-q03-paper__scroll research-booktabs-wrap" tabindex="0" aria-label="四个 Stage2 保存点的 LaTeX 论文式成绩表">
+      <table class="research-booktabs advisor-q03-paper__table" data-q03-paper-table>
+        <caption>补充表 S2｜四个 Stage2 保存点成绩</caption>
+        <thead><tr>
+          <th scope="col">保存点</th>
+          <th scope="col" data-numeric>Task Score / 100</th>
+          <th scope="col" data-numeric>完整成功 / 64 题</th>
+        </tr></thead>
+        <tbody>{ADVISOR_Q03_CUSTOM_PANEL.map((point) => (
+          <tr data-q03-checkpoint={point.update}>
+            <th scope="row">{point.update}</th>
+            <td data-numeric>{point.score}</td>
+            <td data-numeric>{point.exact.replace(/\s*\/\s*\d+$/, '').trim()}</td>
+          </tr>
+        ))}</tbody>
+      </table>
+    </div>
+    <p class="advisor-q03-paper__reading">四次实测成绩先升、后降、再回升。每个保存点评测了 64 道题，<strong>均没有完整成功的题目</strong>。没有测量中间轮次，不能当成完整训练曲线。</p>
+    <p class="advisor-q03-paper__boundary">这组自定义测试与 SEED 论文的 128 题评测协议不同，不能直接相减排名。<a href="https://github.com/mykcs/openevo-experiment/pull/678" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/678" />原始评测记录</a></p>
+    <details class="advisor-q03-paper__trend" data-q03-trend-details>
+      <summary>展开查看折线图（只连接四个实测点）</summary>
+      <figure class="advisor-viz advisor-viz--q03" data-report-figure="q03-custom-curve" data-paper-width="single" data-evidence-shape="paper-static-observations" data-protocol="custom-q17-64">
+      <PublicationPlot
+        id="q03-stage2"
+        src="/research/seed-openevo/figures/q03-stage2-pgfplots.svg"
+        captionId="advisor-q03-publication-caption"
+        loading="eager"
+        alt="自定义 64 道 WebShop 任务中四个已测 Stage2 保存点的 Task Score：A0 为 3.71，A40 为 6.43，A80 为 0.69，A120 为 6.62；满分 100，此图仅展示 0 至 10 的局部纵轴。虚线只连接已测保存点。"
+      />
+      <figcaption id="advisor-q03-publication-caption"><strong>图 2｜</strong>四个 Stage2 实测保存点的 Task Score（自定义 64 题）。纵轴局部显示 0–10 分，实际满分 100；虚线只连接已测点，<strong>没有测量中间轮次</strong>。不能视为完整训练曲线，亦不同于 SEED 论文的 128 题评测协议。</figcaption>
+      </figure>
+    </details>
+  </div>
+)}
+{variant === 'q04' && (
+  <div class="advisor-viz" data-report-figure="q04-capacity" data-evidence-shape="paired-paper-table">
+    <div class="advisor-viz__table research-booktabs-wrap" tabindex="0" aria-label="长期状态容量和 WebShop 得分对照表">
+      <ResearchPaperTable class="research-booktabs" narrowRecords>
+        <caption>表 3｜固定容量与后段任务表现</caption>
+        <thead>
+          <tr>
+            <th scope="col">长期参数状态</th>
+            <th scope="col" data-numeric>参数文件（MB）</th>
+            <th scope="col" data-numeric>Task Score（满分 100 分）</th>
+            <th scope="col" data-numeric>完整成功率</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ADVISOR_Q04_CAPACITY.map((item) => (
+            <tr>
+              <th scope="row">{item.method}</th>
+              <td data-numeric>{item.bytes.replace(' MB', '')}</td>
+              <td data-numeric>{item.score}</td>
+              <td data-numeric>{item.exact}</td>
+            </tr>
+          ))}
+        </tbody>
+      </ResearchPaperTable>
+    </div>
+    <p class="advisor-viz__table-note">两种容量使用第 152–159 轮的 1,024 组同任务、同随机条件配对尝试；参数文件大小测于第 159 轮末。表中的得分和成功率均来自该后段窗口。</p>
+  </div>
+)}
+{variant === 'q05' && (
+  <div class="advisor-viz" data-report-figure="q05-same-final" data-evidence-shape="frozen-paper-table">
+    <div class="advisor-viz__table research-booktabs-wrap" tabindex="0">
+      <ResearchPaperTable class="research-booktabs" narrowRecords>
+        <caption>补充表 S5｜三条历史路线在固定 128 题上的训练后成绩</caption>
+        <thead><tr><th scope="col">历史路线</th><th scope="col" data-numeric>Task Score（满分 100 分）</th><th scope="col" data-numeric>完整成功题数（共 128 题）</th></tr></thead>
+        <tbody>{ADVISOR_Q05_FROZEN.map(item => (
+          <tr><th scope="row">{item.method.replace(' / DirectApply','')}</th><td data-numeric>{item.score} 分</td><td data-numeric>{item.exact.replace(/\s*\/\s*\d+$/, '').trim()} 题</td></tr>
+        ))}</tbody>
+      </ResearchPaperTable>
+    </div>
+    <p class="advisor-viz__table-note">普通 OpenEVO 是较早的历史前序路线。三个终点使用同一冻结题单，但训练起点没有构成完全匹配的随机三臂试验。</p>
+  </div>
+)}
+{variant === 'q07' && (
+  <div data-report-visual="q07-confidence-interval" data-evidence-shape="confidence-interval">
+    <PaperIntervalPlot id="q07-inversion" title="第 156 轮反转一次 Task Vector 的局部效果" unit="Task Score 成绩变化（分）" min={-20} max={5} ticks={[-20,-10,0,5]} effects={[{id:'inverse',label:'Bounded OFF · 方向反转',estimate:-10.06,low:-15.02,high:-5.60}]} comparison="第 156 轮的更新方向反转后 − 原始 Bounded OFF 模型；相同 64 道购物题" negativeLabel="反转后分数更低" positiveLabel="反转后分数更高" caption="图 6｜Q07 第 156 轮方向反转：同一冻结 64 题的配对 Task Score 变化；95% 置信区间对应下降 5.60 至 15.02 分，没有包含零。这是八次方向反转中通过预设多重比较校正的一次，不能推广成普适的在线方向控制规则。" />
+  </div>
+)}
+<style>
+.advisor-viz{border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border);padding:1rem 0 .8rem;margin:1.4rem 0 1.7rem;max-width:930px;font-variant-numeric:tabular-nums lining-nums}
+.advisor-viz__heading{display:flex;flex-wrap:wrap;gap:.2rem 1rem;justify-content:space-between;align-items:baseline;margin-bottom:1.05rem}
+.advisor-viz__heading strong{font-size:var(--type-figure-title);line-height:var(--type-leading-heading);font-weight:var(--type-weight-heading)}
+.advisor-viz__heading span{font-size:var(--type-caption);line-height:var(--type-leading-caption);color:var(--color-text-muted)}
+.advisor-viz figcaption,.advisor-viz__table-note{font-size:var(--type-caption);line-height:var(--type-leading-caption);color:var(--color-text-muted);margin:.8rem 0 .3rem;max-width:82ch}
+.advisor-viz__rows,.advisor-viz__bars{display:grid;gap:.95rem}
+.advisor-viz__item{display:grid;grid-template-columns:minmax(9rem,1fr) minmax(8rem,1.4fr) minmax(5rem,.6fr);gap:.3rem .9rem;align-items:center}
+.advisor-viz__name{font-size:.91rem;line-height:1.55;font-weight:590;overflow-wrap:anywhere}
+.advisor-viz__track{height:1.3rem;position:relative;border-bottom:1px solid var(--color-border);background:repeating-linear-gradient(to right,transparent,transparent calc(25% - 1px),var(--color-border) calc(25% - 1px),var(--color-border) 25%)}
+.advisor-viz__marker{position:absolute;top:50%;transform:translate(-50%,-50%);width:.82rem;height:.82rem;border-radius:50%;background:var(--color-text)}
+.advisor-viz__item small{grid-column:2/-1;font-size:.84rem;line-height:1.45;color:var(--color-text-muted)}
+.advisor-viz__value{text-align:right;font-size:.95rem;font-weight:var(--type-weight-heading);white-space:nowrap}
+.advisor-viz__ticks{display:flex;justify-content:space-between;padding-left:36%;padding-right:5rem;margin:.85rem 0 0;color:var(--color-text-muted);font-size:.78rem}
+.advisor-viz__bar-row{display:grid;grid-template-columns:minmax(9rem,1fr) minmax(6rem,1.4fr) 4.6rem;align-items:center;gap:.7rem}
+.advisor-viz__bar{height:1.05rem;background:var(--color-border);overflow:hidden}
+.advisor-viz__bar i{height:100%;background:var(--color-text);display:block;min-width:1px}
+
+
+
+
+.advisor-viz__trend{display:block;width:100%;max-width:680px}
+.advisor-viz__grid{stroke:var(--color-border);stroke-width:1}
+.advisor-viz__axis{fill:var(--color-text-muted);font-size:14px}
+.advisor-viz__polyline{fill:none;stroke:var(--color-text);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.advisor-viz__point{fill:var(--color-text)}
+.advisor-viz__number{fill:var(--color-text);font-size:16px;font-weight:710}
+.advisor-viz__zoom{margin:.35rem 0 .7rem;color:var(--color-text-muted);font-size:.9rem;line-height:1.65}
+.advisor-viz__zoom strong{color:var(--color-text)}
+.advisor-viz--q03{max-width:32rem;border:0;padding:0;margin:1rem auto 1.5rem;background:transparent}
+/* Q03's table is the default scientific object; the original curve is secondary evidence. */
+.advisor-q03-paper{width:min(100%,32rem);max-width:100%;margin:1.4rem auto 1.8rem;color:var(--color-text)}
+.advisor-q03-paper__scroll{width:fit-content;max-width:100%;margin:0 auto .6rem;overflow-x:auto;overscroll-behavior-inline:contain}
+.advisor-q03-paper__reading,.advisor-q03-paper__boundary{margin:.5rem 0 .35rem;font-size:var(--type-body);line-height:var(--type-leading-body)}
+.advisor-q03-paper__trend{margin-top:.45rem}
+.advisor-q03-paper__trend summary{cursor:pointer;width:fit-content;font-size:var(--type-body-small);line-height:var(--type-leading-caption);color:var(--color-text-muted);text-decoration:underline;text-underline-offset:.19rem}
+.advisor-q03-paper__trend summary:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+.advisor-viz__details{margin:.85rem 0 .2rem}
+.advisor-viz__details summary{cursor:pointer;text-decoration:underline;text-underline-offset:.18rem;padding:.35rem 0;font-size:var(--type-body-small)}
+
+
+
+.advisor-viz__interval-summary{display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:baseline;margin:0;line-height:1.7}
+.advisor-viz__interval-summary strong{font-size:1.4rem}
+.advisor-viz__interval-summary span{font-size:.9rem;color:var(--color-text-muted)}
+.advisor-viz__trend--ci{max-width:630px}
+.advisor-viz__baseline{stroke:var(--color-border);stroke-width:2}
+.advisor-viz__ci,.advisor-viz__cap{stroke:var(--color-text);stroke-width:5;stroke-linecap:round}
+.advisor-viz__cap{stroke-width:2}
+.advisor-viz__ci-point{fill:var(--color-text)}/* Q01 scientific figure: publication-oriented typesetting, vector geometry,
+ * grayscale-safe line/marker combinations, and the same editorial voice as
+ * the neighboring research-booktabs tables. No generated image assets.
+ */
+
+
+.advisor-viz--q01{max-width:800px;border:0;padding:0;margin:1.4rem 0 1.8rem;background:transparent;color:var(--color-text)}
+.advisor-viz--q01 .advisor-viz__heading{margin-bottom:.6rem;gap:.1rem .8rem}
+.advisor-viz--q01 .advisor-viz__heading strong{font:var(--type-weight-heading) var(--type-figure-title)/1.45 var(--font-interface)}
+.advisor-viz--q01 .advisor-viz__heading span{font-size:var(--type-meta);letter-spacing:0}
+.advisor-viz__q01-legend{display:flex;flex-wrap:wrap;gap:.35rem 1.2rem;margin:.4rem 0 .25rem;font-family:var(--font-editorial),Georgia,serif;font-size:var(--type-meta);line-height:var(--type-leading-caption)}
+.advisor-viz__q01-legend-item{display:inline-flex;gap:.35rem;align-items:center;white-space:nowrap}/* Text follows the page theme; palette samples retain the white chart canvas. */
+
+.advisor-viz__q01-legend-item > span{color:var(--color-text)}
+.advisor-viz__q01-legend-item > svg{background:#fff}
+.advisor-viz__q01-legend-item svg{width:34px;height:14px;flex:0 0 34px;overflow:visible}
+.advisor-viz__q01-axis-explainer{max-width:79ch;margin:.45rem 0 .6rem;color:var(--color-text);font-size:var(--type-body-small);line-height:var(--type-leading-body)}
+.advisor-viz__q01-axis-explainer strong{font-weight:var(--type-weight-heading)}
+.advisor-viz__q01-chart{display:block;width:100%;max-width:740px;height:auto;margin:.25rem 0 .1rem;background:#fff;color:#29343b;font-family:var(--font-interface);font-variant-numeric:tabular-nums lining-nums}
+.advisor-viz__q01-chart--phone{display:none}
+.advisor-viz__q01-grid{stroke:#dededb;stroke-width:.7;stroke-linecap:butt}
+.advisor-viz__q01-axes{stroke:#44494c;stroke-width:.95;fill:none}
+.advisor-viz__q01-tick{stroke:#51575a;stroke-width:.85}
+.advisor-viz__q01-axis{fill:#454b4e;font-size:12px;font-weight:400}
+.advisor-viz__q01-axis-label{font-size:12.5px}
+.advisor-viz__q01-curve{stroke:currentColor;stroke-width:1.85;stroke-linejoin:round;stroke-linecap:round;fill:none}
+.advisor-viz__q01-point{stroke:currentColor;stroke-width:1.2;fill:#fff;stroke-linejoin:round}
+.advisor-viz__q01-series--ordinary_openevo{color:#303a41}
+.advisor-viz__q01-series--bounded_state{color:#57758a}
+.advisor-viz__q01-series--delta_beta_family{color:#98655b}
+.advisor-viz__q01-series--bounded_state .advisor-viz__q01-curve{stroke-dasharray:7 4}
+.advisor-viz__q01-series--delta_beta_family .advisor-viz__q01-curve{stroke-dasharray:2.5 4}
+.advisor-viz--q01 figcaption{max-width:80ch;margin:.55rem 0 .65rem;font:400 var(--type-caption)/1.63 var(--font-interface);color:var(--color-text)}
+.advisor-viz--q01 figcaption strong{font-weight:var(--type-weight-heading)}
+.advisor-viz__q01-raw-svg{margin:.55rem 0 .8rem;padding:0}
+.advisor-viz__q01-raw-svg summary{cursor:pointer;width:fit-content;line-height:var(--type-leading-caption);font-size:var(--type-body-small);color:var(--color-text-muted);text-decoration:underline;text-underline-offset:.18rem}
+.advisor-viz__q01-raw-svg summary:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px}
+.advisor-viz__q01-raw-svg .advisor-viz__q01-legend{margin-top:.55rem}
+.advisor-viz__q01-reading{display:grid;gap:.28rem;margin:.75rem 0 .65rem;max-width:80ch;font-size:var(--type-body-small)}
+.advisor-viz__q01-reading p{margin:0;line-height:var(--type-leading-body)}
+.advisor-viz__q01-reading strong{font-weight:650}
+.advisor-viz__q01-source{margin:.3rem 0 .8rem;font-size:var(--type-caption);line-height:var(--type-leading-caption)}
+.advisor-viz__q01-source a{color:var(--color-text);text-underline-offset:.2rem}
+.advisor-viz--q01 .advisor-viz__details{margin-top:.5rem}
+@media(max-width:720px){
+  .advisor-viz__q01-chart--desktop{display:none}
+  .advisor-viz__q01-chart--phone{display:block;max-width:340px}
+  .advisor-viz__q01-chart--phone .advisor-viz__q01-axis{font-size:11px}
+  .advisor-viz__q01-chart--phone .advisor-viz__q01-axis-label{font-size:11.5px}
+  .advisor-viz__q01-chart--phone .advisor-viz__q01-curve{stroke-width:1.6}
+  .advisor-viz__q01-legend{gap:.3rem .8rem;font-size:var(--type-meta);font-family:var(--font-interface)}
+}
+@media(max-width:720px){
+
+.advisor-viz__item{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(4.6rem,.5fr);gap:.4rem}
+.advisor-viz__item small{grid-column:1/-1}
+.advisor-viz__ticks{padding-left:0;padding-right:0}
+.advisor-viz__bar-row{grid-template-columns:minmax(7rem,1fr) minmax(4rem,1.1fr) 4.4rem;gap:.4rem}
+}
+@media(max-width:430px){.advisor-viz__name{font-size:.84rem}.advisor-viz__bar-row{grid-template-columns:minmax(6.5rem,1fr) minmax(3rem,.9fr) 4.3rem}.advisor-viz__value{font-size:.84rem}}
+.q01-native-reader :global(.native-svg-reader__viewport svg.advisor-viz__q01-chart--phone){display:none}
+.q01-native-reader :global(.native-svg-reader__viewport svg.advisor-viz__q01-chart--desktop){display:block}
+@media(max-width:720px){
+  .q01-native-reader :global(.native-svg-reader__viewport svg.advisor-viz__q01-chart--desktop){display:none}
+  .q01-native-reader :global(.native-svg-reader__viewport svg.advisor-viz__q01-chart--phone){display:block}
+}
+:global(.q01-native-reader:has(input:checked)) :global(.native-svg-reader__viewport svg.advisor-viz__q01-chart--desktop){display:block}
+:global(.q01-native-reader:has(input:checked)) :global(.native-svg-reader__viewport svg.advisor-viz__q01-chart--phone){display:none}
+</style>
+
+
+
+<style is:global>/* Q03-only ICLR/booktabs table rules; never applied to other scientific tables. */
+.evo-blog.evo-approved-reader [data-q03-report-paper] {width:min(100%,32rem);margin:1.4rem auto 1.8rem}
+.evo-blog.evo-approved-reader [data-q03-report-paper] .advisor-q03-paper__scroll {
+  display:block;width:fit-content;max-width:100%;min-width:0;margin:0 auto .6rem;padding:0;overflow-x:auto;
+  border:0;border-radius:0;box-shadow:none;background:transparent;
+}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] {
+  border-collapse:collapse;border-spacing:0;table-layout:auto;width:auto;max-width:100%;
+  border:0;border-top:1.5px solid var(--color-text);border-bottom:1.5px solid var(--color-text);
+  border-radius:0;box-shadow:none;background:transparent;color:var(--color-text);
+  font-family:"Times New Roman",Times,"Songti SC",STSong,Georgia,serif;
+  font-size:1rem;line-height:1.4;font-weight:400;font-style:normal;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] caption {
+  display:table-caption;caption-side:top;position:static;text-align:left;
+  padding:0 0 .6rem;margin:0;color:var(--color-text);
+  font:400 .875rem/1.45 "Times New Roman",Times,"Songti SC",STSong,Georgia,serif;
+}
+/* The visible native caption is deliberately short enough to sit above the intrinsic-width
+ * tabular, just like a compact LaTeX booktabs object. Task scope stays in visible prose. */
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td) {
+  border:0;padding:.17rem .6rem;background:transparent;box-shadow:none;
+  color:var(--color-text);font-family:inherit;font-size:inherit;line-height:inherit;font-weight:400;
+  min-width:0;vertical-align:baseline;
+}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td):first-child {padding-left:0}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td):last-child {padding-right:0}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] thead th {
+  border-bottom:1px solid var(--color-text);font-weight:400;vertical-align:bottom;
+}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] tbody tr + tr > * {border-top:0;border-bottom:0}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] :is(th,td)[data-numeric] {
+  min-width:0;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums lining-nums;
+}
+.evo-blog.evo-approved-reader [data-q03-report-paper] :is(.advisor-q03-paper__reading,.advisor-q03-paper__boundary,.advisor-q03-paper__trend summary) {
+  font-family:var(--font-editorial),Georgia,serif;
+}
+.evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] thead th[data-numeric]{white-space:normal;overflow-wrap:normal}
+@media print {
+  .evo-blog.evo-approved-reader [data-q03-report-paper] .advisor-q03-paper__scroll {overflow:visible}
+  .evo-blog.evo-approved-reader [data-q03-report-paper] [data-q03-paper-table] {font-size:10pt}
+}
+/* Paper figure ownership for the advisor's Q03 observation curve.
+   Deliberately local to this evidence object: no sitewide typography change.
+   The original large border/padding belonged to UI cards, not LaTeX figures. */
+
+.evo-blog.evo-approved-reader :is([data-report-figure="q01-horizon"],[data-report-figure="q03-custom-curve"]) {
+  max-width: 100%;
+  margin: 1.5rem 0 1.8rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.evo-blog.evo-approved-reader [data-report-figure="q01-horizon"] {
+  width: min(100%, 55.625rem);
+}
+.evo-blog.evo-approved-reader [data-report-figure="q03-custom-curve"] {
+  /* One centered, single-column paper figure rather than a full-width dashboard card. */
+  width: min(100%, 32rem);
+  margin: 1.5rem auto 1.8rem;
+}
+.evo-blog.evo-approved-reader [data-report-figure="q03-custom-curve"] figcaption {
+  margin: .55rem 0 .35rem;
+  max-width: 68ch;
+  font-size: .875rem;
+  line-height: 1.65;
+  color: var(--paper-muted);
+}
+.evo-blog.evo-approved-reader [data-report-figure="q03-custom-curve"] figcaption strong {
+  font-weight: 600;
+}
+</style>

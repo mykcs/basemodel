@@ -27,9 +27,14 @@ docs/
 │  ├─ LATEST.md                      current handoff
 │  ├─ current/                       authoritative current owners + explicit compatibility shims
 │  └─ history/                       incidents, completed audits/pilots/migrations/closeouts
+├─ standards/                        quality targets + canonical owner/check index (navigation only)
 ├─ agent-context/                    compatibility entrypoint for older links
 └─ archive/                          superseded pre-current product/context snapshots
 ```
+
+### `standards/`
+
+[Standards](standards/README.md) provides a lightweight quality bar, acceptance map and open-gap ledger. It **does not** own a second current policy, a new CI harness, a public website route, or product goals. Resolve conflicts in the real owners under `agents/current/`, in source/tests or against live scientific/provider evidence.
 
 ### `agents/current/`
 
