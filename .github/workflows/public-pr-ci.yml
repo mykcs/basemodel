@@ -187,6 +187,7 @@ jobs:
         with:
           name: basemodel-ui-pr-${{ github.event.pull_request.number }}-shard-${{ matrix.shard }}
           path: |
+            ci-browser-inventory/*.json
             test-results/**/*.png
             test-results/**/*.json
             test-results/**/*.webm

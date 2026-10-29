@@ -3,25 +3,6 @@ name: Cloud Figure Visual Review
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    paths:
-      - '.github/workflows/cloud-figure-visual-review.yml'
-      - 'src/components/research/AdvisorTenEvidenceVisual.astro'
-      - 'src/components/research/AdvisorTenConceptUI.astro'
-      - 'tests/e2e/advisor-intelligence-q02-q10.spec.ts'
-      - 'src/components/research/OpenEvoSdLoraScaling.astro'
-      - 'src/components/research/OpenEvoCheckpointCurve.astro'
-      - 'tests/e2e/open-evo-webshop-program-report.spec.ts'
-      - 'tests/e2e/research-explainer-layout.spec.ts'
-      - 'tests/e2e/advisor-figure-paper-collision.spec.ts'
-      - 'tests/e2e/advisor-paper-figure-suite.spec.ts'
-      - 'tests/e2e/figure-evidence.ts'
-      - 'tests/e2e/sitewide-figure-width-scope.spec.ts'
-      - 'scripts/audit-sitewide-research-figure-widths.mjs'
-      - 'scripts/verify-cloud-figure-evidence*'
-      - 'tests/e2e/site-reader-contracts.spec.ts'
-      - 'tests/e2e/sitewide-math-rendering.spec.ts'
-      - 'package.json'
-      - 'package-lock.json'
   workflow_dispatch:
     inputs:
       pr_number:
@@ -45,6 +26,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     outputs:
+      mode: ${{ steps.plan.outputs.mode }}
       build_attempt: ${{ github.run_attempt }}
       sha: ${{ steps.candidate.outputs.sha }}
       base: ${{ steps.candidate.outputs.base }}
@@ -96,28 +78,47 @@ jobs:
           echo "- Exact commit: \`$(git rev-parse HEAD)\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- PR: ${{ github.event.pull_request.number || inputs.pr_number }}" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Fetch exact build base
         env:
           CI_BASE_SHA: ${{ steps.candidate.outputs.base }}
         run: git fetch --no-tags --depth=1 origin "$CI_BASE_SHA"
 
+      - name: Plan figure work using the shared risk owner
+        id: plan
+        env:
+          CI_BASE_SHA: ${{ steps.candidate.outputs.base }}
+          CI_HEAD_SHA: ${{ steps.candidate.outputs.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/ci-public-plan.mjs --github-output
+          # Explicit manual review keeps its original full-population contract.
+          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
+            printf 'mode=full\n' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install dependencies
+        if: steps.plan.outputs.mode == 'full'
+        run: npm ci
+
       - name: Deterministic repository gate
+        if: steps.plan.outputs.mode == 'full'
         run: npm run verify:deploy
 
       - name: Build fresh static routes
+        if: steps.plan.outputs.mode == 'full'
         run: npm run build
 
 
       - name: Seal exact-head static artifact
+        if: steps.plan.outputs.mode == 'full'
         env:
           CI_BASE_SHA: ${{ steps.candidate.outputs.base }}
           CI_HEAD_SHA: ${{ steps.candidate.outputs.sha }}
         run: node scripts/ci-build-artifact.mjs create
 
       - name: Upload exact-head static artifact
+        if: steps.plan.outputs.mode == 'full'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: static-build-${{ github.run_id }}-${{ github.run_attempt }}
@@ -130,6 +131,7 @@ jobs:
 
   cloud-figure-browsers:
     needs: preflight
+    if: needs.preflight.result == 'success' && needs.preflight.outputs.mode == 'full'
     name: cloud-figure-${{ matrix.browser }}-${{ matrix.shard }}-of-4
     outputs:
       sha: ${{ steps.candidate.outputs.sha }}
@@ -231,7 +233,7 @@ jobs:
         env:
           FIGURE_SOURCE_SHA: ${{ steps.candidate.outputs.sha }}
           PLAYWRIGHT_JSON_OUTPUT_FILE: figure-inventory/playwright-run.json
-        run: npm run test:ui:all -- --project=${{ matrix.browser }} --workers=1 --shard=${{ matrix.shard }}/4 --reporter=list,json
+        run: node scripts/ci-ui-test-list.mjs timed test:ui:all ${{ matrix.browser }} ${{ matrix.shard }} 4 figure-inventory/expected-playwright.json scripts/ci-ui-test-timings-20261029-figure.json figure-inventory/playwright-run.json
 
       - name: Seal successful shard evidence
         env:
@@ -260,7 +262,7 @@ jobs:
     permissions:
       actions: read
       contents: read
-    needs: cloud-figure-browsers
+    needs: [preflight, cloud-figure-browsers]
     if: always()
     runs-on: ubuntu-24.04
     timeout-minutes: 15
@@ -272,21 +274,33 @@ jobs:
       - name: Require every browser shard to succeed
         env:
           SHARD_RESULT: ${{ needs.cloud-figure-browsers.result }}
-        run: test "$SHARD_RESULT" = success
+          PREFLIGHT_RESULT: ${{ needs.preflight.result }}
+          FIGURE_MODE: ${{ needs.preflight.outputs.mode }}
+        run: |
+          set -euo pipefail
+          test "$PREFLIGHT_RESULT" = success
+          case "$FIGURE_MODE" in
+            full) test "$SHARD_RESULT" = success ;;
+            skip|focused) test "$SHARD_RESULT" = skipped ;;
+            *) exit 1 ;;
+          esac
 
       - name: Checkout the tested immutable candidate
+        if: needs.preflight.outputs.mode == 'full'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: ${{ needs.cloud-figure-browsers.outputs.sha }}
           persist-credentials: false
 
       - name: Setup Node 24
+        if: needs.preflight.outputs.mode == 'full'
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: '24'
           package-manager-cache: false
 
-      - name: Download all four native shards
+      - name: Download all four timed shards
+        if: needs.preflight.outputs.mode == 'full'
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:
           pattern: figure-raw-${{ github.event.pull_request.number || inputs.pr_number }}-${{ matrix.browser }}-*-${{ needs.cloud-figure-browsers.outputs.sha }}
@@ -294,12 +308,14 @@ jobs:
           merge-multiple: false
 
       - name: Verify exact population and evidence bytes
+        if: needs.preflight.outputs.mode == 'full'
         env:
           FIGURE_SOURCE_SHA: ${{ needs.cloud-figure-browsers.outputs.sha }}
           FIGURE_BROWSER: ${{ matrix.browser }}
         run: node scripts/verify-cloud-figure-evidence.mjs aggregate raw-shards accepted-evidence
 
       - name: Upload complete verified browser evidence
+        if: needs.preflight.outputs.mode == 'full'
         id: evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
@@ -309,17 +325,20 @@ jobs:
           retention-days: 3
 
       - name: Wait until exact evidence artifact ID is indexed by GitHub Actions
+        if: needs.preflight.outputs.mode == 'full'
         env:
           GH_TOKEN: ${{ github.token }}
           FIGURE_ACCEPTED_ARTIFACT_ID: ${{ steps.evidence.outputs.artifact-id }}
         run: node scripts/wait-for-cloud-figure-artifact.mjs
       - name: Download the uploaded artifact for round-trip verification
+        if: needs.preflight.outputs.mode == 'full'
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:
           artifact-ids: ${{ steps.evidence.outputs.artifact-id }}
           path: artifact-roundtrip
 
       - name: Verify downloaded PNG and JSON bytes against manifest
+        if: needs.preflight.outputs.mode == 'full'
         env:
           FIGURE_SOURCE_SHA: ${{ needs.cloud-figure-browsers.outputs.sha }}
           FIGURE_BROWSER: ${{ matrix.browser }}

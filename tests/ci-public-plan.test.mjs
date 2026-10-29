@@ -45,7 +45,7 @@ test('actual final gate shell rejects failed prerequisites and accepts only inte
   assert.notEqual(run({ BROWSER_TOTAL: '0', BROWSER_RESULT: 'success' }), 0);
   const cloudGate = read('.github/workflows/cloud-figure-visual-review.yml').split('\n  cloud-figure-evidence:')[1];
   assert.match(cloudGate, /if: always\(\)/);
-  assert.match(cloudGate, /run: test "\$SHARD_RESULT" = success/);
+  assert.match(cloudGate, /full\) test "\$SHARD_RESULT" = success/);
   for (const result of ['failure', 'cancelled', 'skipped']) {
     assert.notEqual(spawnSync('/bin/bash', ['-c', 'test "$SHARD_RESULT" = success'], { env: { ...process.env, SHARD_RESULT: result } }).status, 0);
   }
@@ -110,4 +110,27 @@ test('each workflow builds once and consumers verify only their successful produ
     assert.doesNotMatch(job, /run: npm run build/);
     assert.doesNotMatch(job, /run-id:|github-token:|continue-on-error:/);
   }
+});
+
+test('figure risk routing keeps an always-present gate and rejects missing or failed work', () => {
+  const workflow = read('.github/workflows/cloud-figure-visual-review.yml');
+  assert.doesNotMatch(workflow.split('permissions:')[0], /paths:/);
+  const preflight = workflow.split('\n  preflight:')[1].split('\n  cloud-figure-browsers:')[0];
+  assert.match(preflight, /node scripts\/ci-public-plan.mjs --github-output/);
+  for (const step of ['Install dependencies', 'Deterministic repository gate', 'Build fresh static routes']) {
+    assert.ok(preflight.includes(`- name: ${step}\n        if: steps.plan.outputs.mode == 'full'`));
+  }
+  const gate = workflow.split('\n  cloud-figure-evidence:')[1];
+  const script = gate.split('        run: |\n')[1].split('\n      - name:')[0].split('\n').map(line => line.slice(10)).join('\n');
+  const run = (mode, shard, preflight = 'success') => spawnSync('/bin/bash', ['-c', script], {
+    env: { ...process.env, FIGURE_MODE: mode, SHARD_RESULT: shard, PREFLIGHT_RESULT: preflight },
+  }).status;
+  assert.equal(run('full', 'success'), 0);
+  for (const mode of ['skip', 'focused']) assert.equal(run(mode, 'skipped'), 0);
+  for (const mode of ['full', 'skip', 'focused', '', 'unknown']) {
+    for (const result of ['failure', 'cancelled']) assert.notEqual(run(mode, result), 0);
+    for (const result of ['failure', 'cancelled', 'skipped']) assert.notEqual(run(mode, 'skipped', result), 0);
+  }
+  assert.notEqual(run('full', 'skipped'), 0);
+  assert.notEqual(run('unknown', 'skipped'), 0);
 });
