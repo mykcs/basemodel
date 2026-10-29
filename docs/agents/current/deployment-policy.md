@@ -204,6 +204,12 @@ The Mac/OrbStack architecture was the accepted 2026-08-29 baseline and the 20–
 
 ## Vercel build-budget discipline
 
+### Read-only post-merge identity alarm
+
+`.github/workflows/production-identity.yml` runs after `main` changes and Production deployment-status events. `scripts/verify-production-identity.mjs` compares a stable live `main` with the latest successful Production deployment/status reported by the pinned Vercel bot identity. It needs only GitHub read permissions, polls existing records, and never creates a deployment, changes protection, or spends build compute. A moved main is re-observed; missing/untrusted evidence fails closed. A proven docs-only difference is explicitly `INTENTIONAL_NON_DEPLOY_DIFF`, not an exact SHA match.
+
+`MIRROR_MATCH` proves only GitHub's Vercel mirror. Final release acceptance still reads the Vercel READY Production SHA and verifies that the canonical alias points to that same deployment, followed by protected real-page checks. `MIRROR_MISMATCH` / `UNKNOWN` produces a failed Action and a recovery instruction for #964; inspect existing queued/building deployments before using the already-approved exact-main recovery below. Do not promote Preview or create duplicate recovery jobs. The historical missing event remains unclassified while Vercel user-event access is denied; a green alarm does not prove that historical root cause was fixed.
+
 Vercel deployments/builds are finite resources. Optimize the **number of provider-triggering ref updates**, not only the runtime of each build.
 
 Default target for a coherent feature:

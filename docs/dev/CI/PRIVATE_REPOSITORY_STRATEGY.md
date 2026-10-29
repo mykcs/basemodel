@@ -77,6 +77,18 @@
 - `npm run audit:person-privacy` 执行已知私人姓名与角色称谓扫描；`scripts/lib/person-reference-privacy.test.mjs` 具备正反样例，`verify:deploy` 和 `build` 均在构建前运行。历史排版取样与历史路由清单只保留原有非姓名通用称谓，不授权现行页面继续沿用。
 - 正式私有化前仍须做**人工／语义复核**：自动字符串检查不能保证识别未知姓名、罗马化拼写、图片截图、可反查的昵称／账号或既有外部副本。尤其 `public/` 的 W&B 链接可能包含研究账号标识，这与真实个人姓名不同，但同样值得明确决定是否继续公开。
 
+## 2026-10-29 追加核查：实际负载与决策依据
+
+仓库仍为 Public，GitHub 标准 Linux runner 的公开仓库计算免费；源码可见性仍须由隐私需求决定。[GitHub 当前计费说明](https://docs.github.com/en/billing/concepts/product-billing/github-actions) 将私有仓库 compute 与 artifact/cache 存储分别计量。本次未取得账号账单额度：已有 CLI 对用户计费接口返回 404 并要求额外 `user` scope，未扩大权限。因此下面是工作量测量和情景估计，不是私人账单。
+
+对已合并 #958 的准确候选，两套完整成功运行分别是 [Public 40909309072](https://github.com/mykcs/basemodel/actions/runs/40909309072) 与 [Cloud Figure 40909309079](https://github.com/mykcs/basemodel/actions/runs/40909309079)。按每个实际执行 job 的开始/结束时间相加，Public 为 **47.15 runner-minutes**，Figure 为 **183.85 runner-minutes**，合计 **231.00 runner-minutes**。这不是墙钟等待时间，也未包含所有仓库整月运行；跳过的 job 不计作执行。八个 Figure 浏览器消费者约占本次总执行量的 78%，是主要计算来源。并行能缩短等待，不自动降低总分钟。
+
+若每天 100 次都跑同样的完整双工作流，30 天约 **693,000 runner-minutes**。按官方 Linux 2-core 基准 **$0.006/分钟**估算，未扣套餐包含量、未计存储的私有运行成本约 **$4,158/月**；实际私有 runner 规格和单价必须在资格测试中重新匹配。此例只是说明“100 次完整 CI”可能很贵，不代表每天 100 次提交或网页部署都会运行这个矩阵。docs/focused/full 风险分级、合批和一次最终 Vercel gate 应保留；#962/#965 的成本资格工作由原工作线拥有，不在此重复改写。
+
+Vercel 在 `2026-10-28T17:44Z` 至核查时的项目列表中有 **19 个 READY 部署：5 Production、14 Preview**；不是每天 100 次的实测。团队计费接口返回的可用明细区间截至 `2026-10-26T07:00Z`，合计 **$17.33 Pro 订阅**，没有返回可归属本项目的构建用量费用；不能据此宣称本项目全月构建零成本。当前 [官方限额](https://vercel.com/docs/limits) 仍列 Hobby 100 次/日、Pro 6,000 次/日。每天约 100 次本身不要求更换当前 Pro 发布架构。
+
+高负载阶段先继续使用已经合格的风险分级和现有云资源，测量完整矩阵实际占比；低负载私有化阶段先验证所购/包含额度、GitHub 规则功能、私有仓库 Git App 授权及等价检查，再由 owner 决定可见性。公开网站是否可访问由 Vercel 控制，科研 GitHub/RAW 链接在私有化后可能要求授权；现有公开 fork、历史克隆与外部缓存不会随之收回，见 [GitHub 可见性后果](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/setting-repository-visibility)。协作者的 repo 与 Vercel 权限须分别核对。本次没有更改可见性、套餐、费用上限、域名或访问保护。
+
 ## 当前阶段不能做的事
 
 - 不因本方案立即把公开仓库改私有，也不反复私有／公开切换。

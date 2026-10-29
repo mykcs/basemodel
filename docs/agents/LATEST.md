@@ -1,6 +1,10 @@
 # Latest Agent handoff
 
-## 2026-10-29 人物称谓隐私：待合入的标准候选
+## 2026-10-29 隐私后续与发布身份检查
+
+#958 已合入 `main@1ed126cb`，#959 研究页面保留。#963 后续候选恢复现有 SVG 的分享 PNG、将当前 W&B 账号入口改为匿名来源索引，并保留逐字节原件、哈希与未改动的科研 payload；[`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md) 拥有语义与风险清单入口。图片人工确认、历史公开副本、外部账号与平台别名仍是明确残余，不宣称完全匿名。#964 的只读 GitHub 部署镜像告警与 Vercel 实际 alias/READY 验收各司其职，执行及恢复由 [`current/deployment-policy.md`](current/deployment-policy.md) 拥有。当前候选的合并/发布状态以准确 HEAD 的 CI 和 Vercel 实时对象为准。
+
+## 2026-10-29 人物称谓隐私：历史候选记录
 
 BaseModel 当前任务分支正在把公开科研沟通中的人物引用统一为 `W 老师` 与 `L 学长`，以 [`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md) 为唯一称谓 owner；根入口、`src/AGENTS.md`、站点 README、质量验收索引和 `npm run audit:person-privacy` 都指向/执行这一规则。当前源码对已知私人身份做失败即停止审查，正式发布仍须看 PR 精确 HEAD 的 CI / Vercel 及真实网页；此段是候选状态记录，不能当作已经合入 `main` 或撤回公共 Git 历史的证明。
 

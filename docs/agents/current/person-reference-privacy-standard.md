@@ -23,6 +23,10 @@
 
 ## 验收口径
 
+当前公开 W&B 入口使用 `public/research/seed-openevo/evidence/source-index.json` 的匿名来源 ID。三份下载 JSON 明确标为展示副本，只隐藏列明的账号／访问定位字段；科研数值、run ID、source SHA、封存 artifact hash 和 authority 标记保留。索引记录原件 SHA-256、基线提交及科学 payload 承诺，单测拒绝测量字段漂移。原件已在本次任务的仅用户可读本地归档中逐字节保存并回读验 hash；该归档尚无远端灾难恢复认证，历史公开 Git 对象仍然存在。
+
+`audit:person-privacy` 另外拒绝 `src/`、`public/` 中的直接 W&B 账号链接。全仓姓名检查与三个历史例外不变。图片解码、元数据检查与人工签字分别记录；现有 SVG 是分享 PNG 的可信原稿。逐路径风险及全部图片待人工验收清单见 [`EXPOSURE_INVENTORY.json`](../evidence/person-privacy/2026-10-29/EXPOSURE_INVENTORY.json)。该清单不等于全站或历史完全匿名。
+
 - 当前可编辑正文和站点源码中，指上述两个人时分别只出现 **W 老师** / **L 学长**。
 - 仓库文本没有已知真实姓名直接写法；以上三份封存取样/清单中的未冠名旧称谓是明确、非姓名的历史例外。
 - `npm run audit:person-privacy` 通过，相关结构/页面测试通过，实际发布另需原有 exact-head CI、Vercel 与网页检查。
