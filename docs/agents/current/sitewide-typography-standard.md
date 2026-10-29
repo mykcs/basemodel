@@ -18,7 +18,8 @@ BaseModel 仍采用 Research Editorial × Experimental Workbench。参考苏剑�
 | 普通页面标题 | `--type-page` | 目录、模型/论文页面 H1 |
 | 长文标题 | `--type-article-page` | 技术博客、研究长文 H1 |
 | 页面分节 | `--type-section`、`--type-article-section` | 有层次的 H2 |
-| 子问题 | `--type-subsection`、`--type-article-subsection` | H3 |
+| 子问题 | `--type-subsection`、`--type-article-subsection` | 普通 H3 |
+| 编号研究问题 | `--type-article-question` | 已批准十问样板的 1.28rem 问题标题；新 W 沟通问答沿用相同角色，不把普通 H3 强制放大 |
 | 次级标题 | `--type-minor-heading` | H4 / 实验小节 |
 | 导语与正文 | `--type-lead`、`--type-body`、`--type-body-small` | 自然说明文本 |
 | 真实科研表 | `--type-table` | 原生 HTML table，booktabs 风格 |

@@ -63,6 +63,8 @@
   --type-article-page: clamp(1.75rem, 2.4vw, 2.25rem);
   --type-article-section: clamp(1.4rem, 1.8vw, 1.65rem);
   --type-article-subsection: 1.25rem;
+  /* Exact question-title role in the approved ten-question research article (1.28rem). */
+  --type-article-question: 1.28rem;
   --type-section: clamp(1.45rem, 2.2vw, 1.95rem);
   --type-subsection: clamp(1.15rem, 1.65vw, 1.4rem);
   --type-minor-heading: 1.0625rem;

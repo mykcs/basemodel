@@ -18,8 +18,8 @@ interface ReaderGeometry {
   overflow: number;
 }
 
-async function readArticleGeometry(page: import('@playwright/test').Page): Promise<ReaderGeometry> {
-  return page.evaluate(() => {
+async function readArticleGeometry(page: import('@playwright/test').Page, questionHeadingSelector: string): Promise<ReaderGeometry> {
+  return page.evaluate((questionHeadingSelector) => {
     const article = document.querySelector('.evo-approved-reader');
     if (!article) throw new Error('Approved reader missing');
     const articleStyle = getComputedStyle(article);
@@ -35,14 +35,16 @@ async function readArticleGeometry(page: import('@playwright/test').Page): Promi
       h1Size: style('h1').fontSize,
       h1Leading: style('h1').lineHeight,
       h2Size: style('h2').fontSize,
-      h3Size: style('h3').fontSize,
+      // Compare the same semantic role: a numbered question, not an arbitrary
+      // first H3 (the W page also has small introductory subheadings).
+      h3Size: style(questionHeadingSelector).fontSize,
       bodySize: style('p').fontSize,
       bodyLeading: style('p').lineHeight,
       background: articleStyle.backgroundColor,
       foreground: articleStyle.color,
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     };
-  });
+  }, questionHeadingSelector);
 }
 
 for (const viewport of [
@@ -56,7 +58,7 @@ for (const viewport of [
 
       const sourceResponse = await page.goto(REFERENCE_ROUTE, { waitUntil: 'domcontentloaded' });
       expect(sourceResponse?.status()).toBe(200);
-      const baseline = await readArticleGeometry(page);
+      const baseline = await readArticleGeometry(page, '.evo-article__question-header h3');
 
       const targetResponse = await page.goto(W_ROUTE, { waitUntil: 'domcontentloaded' });
       expect(targetResponse?.status()).toBe(200);
@@ -66,7 +68,7 @@ for (const viewport of [
       await expect(page.locator('.wcall-reactions > li')).toHaveCount(5);
       await expect(page.getByRole('navigation', { name: '快速定位十二道 W 老师可能追问' })).toBeVisible();
 
-      const actual = await readArticleGeometry(page);
+      const actual = await readArticleGeometry(page, '.wcall-question h3');
       expect(actual.width).toBeCloseTo(baseline.width, 1);
       expect(actual.paddingLeft).toBe(baseline.paddingLeft);
       expect(actual.paddingRight).toBe(baseline.paddingRight);
