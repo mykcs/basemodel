@@ -137,7 +137,7 @@ export const contentReorganizationProofs = {
     "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. Historical rendered text/geometry is invalidated; current cloud browser evidence is required."
   },
   "src/components/research/OpenEvoExperimentIndex.astro": {
-    "currentSourceSha256": "a9f071e23b04e59c3ea8f287bbbc13535ce1d96e2862c36b7c1c2a6bbbf5a304",
+    "currentSourceSha256": "551d54025dc98b4dce4ffc89acb2ac5e30150d68e84837b7e56dd76d18f927da",
     "priorSourceSha256": "455b90e842f5e920d52fb4ce012699243a83f3943e04a81130acf8fdcdb80e21",
     "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. Historical rendered text/geometry is invalidated; current cloud browser evidence is required."
   },

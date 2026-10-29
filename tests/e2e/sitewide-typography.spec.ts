@@ -1119,7 +1119,15 @@ const currentFlowWitnesses: ScopedMigrationWitness[] = [
   {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-method__boundary',route:flowRoute,text:'本阶段不再调用 Stage 1 的外部高能力教师模型 API。',minimum:12,role:'boundary',minimumVisibleWidth:null,maximumVisibleWidth:null},
   {file:'src/components/research/SeedOpenEvoMissionHero.astro',selector:'.mission-hero.mission-hero--compact .mission-hero__lede',route:flowRoute,text:'两套方法都先借助外部高能力教师',minimum:14,role:'prose',minimumVisibleWidth:null,maximumVisibleWidth:null},
 ];
-const scopedMigrationWitnesses = [...historicalScopedMigrationWitnesses.filter(row=>!obsoleteFlowWitness(row)),...currentFlowWitnesses];
+// These exact roles were removed with duplicate directory content; retain their
+// immutable historical receipt and measure the replacement Study lede instead.
+const obsoleteContentWitness = (row: ScopedMigrationWitness) =>
+  (row.file === 'src/pages/_bodies/home-v2.astro' && ['.journey-number', '.journey-list p'].includes(row.selector)) ||
+  (row.file === 'src/components/research/OpenEvoExperimentIndex.astro' && row.selector === '.study-hero__mobile-thread');
+const currentContentWitnesses: ScopedMigrationWitness[] = [
+  {file:'src/components/research/OpenEvoExperimentIndex.astro',selector:'.study-hero__lede',route:'/research/seed-openevo/study/',text:'OpenEVO 在 WebShop 中怎样学习',minimum:14,role:'prose',minimumVisibleWidth:null,maximumVisibleWidth:null,readerOwner:'article',faceOwner:'system-sans'},
+];
+const scopedMigrationWitnesses = [...historicalScopedMigrationWitnesses.filter(row=>!obsoleteFlowWitness(row)&&!obsoleteContentWitness(row)),...currentFlowWitnesses,...currentContentWitnesses];
 const acceptScopedRole=(size:number,minimum:number,label:string)=>expect(size,label).toBeGreaterThanOrEqual(minimum);
 type FaceOwner='interface'|'system-sans'|'paper-serif';
 const acceptOrdinaryFace=(font:string,label:string,owner:FaceOwner='interface')=>{
@@ -1147,7 +1155,7 @@ for (const route of [...new Set(scopedMigrationWitnesses.map(row=>row.route))]) 
       const receipts=[];let faceNegative=false,weightNegative=false;
       for(const row of routeWitnesses.filter(row=>(row.minimumApplicableWidth==null||width>=row.minimumApplicableWidth)&&(row.maximumApplicableWidth==null||width<=row.maximumApplicableWidth))){
         const checksFace=row.ordinaryFace!==false && Boolean(row.faceOwner || row.ordinaryFace);
-        const liveText=route==='/research/seed-openevo/flow/webshop/'&&row.selector==='.heldout span'&&row.text==='保留候选池'?'500':row.text;
+        const liveText=row.text==='OpenEVO 基础能力探索实验'?'研究专题':route==='/research/seed-openevo/flow/webshop/'&&row.selector==='.heldout span'&&row.text==='保留候选池'?'500':row.text;
         const node=page.locator(row.selector).filter({hasText:liveText}).first();
         await expect(node).toBeAttached();
         const container=row.visibilityContainerSelector

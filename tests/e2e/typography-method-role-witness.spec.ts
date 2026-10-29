@@ -741,7 +741,7 @@ test('capability lobby restores 9px status and terminology defects only to be re
 // The same source renders the methods and archived-research routes; the
 // original compact 14px, 800-weight monospace was not source-owner appropriate.
 const sharedDisclosureRoutes=[
-  {path:'/research/seed-openevo/study/capability-exploration/',kind:'method',label:'方法细节',intro:true},
+  {path:'/research/seed-openevo/study/capability-exploration/openevo-2-0/report/',kind:'method',label:'方法细节',intro:true},
   {path:'/research/seed-openevo/study/capability-exploration/first-run/',kind:'history',label:'历史与回退',intro:true},
 ] as const;
 type DepthReading={
