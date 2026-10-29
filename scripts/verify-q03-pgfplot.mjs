@@ -1,3 +1,4 @@
+if (process.env.npm_lifecycle_event === 'build') throw new Error('INTENTIONAL_CI_BUILD_FAILURE_QUALIFICATION');
 /**
  * Verify that the committed PGFPlots SVG and its TeX source still describe the
  * frozen Q03 experimental data. Runs before Astro/Vercel builds; TeX itself is
