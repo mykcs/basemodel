@@ -29,7 +29,8 @@ for (const colorScheme of ['light', 'dark'] as const) {
       // These boundaries prevent counting attempts as tasks, or a valid pilot as long-term confirmation.
       await expect(report.locator('#findings')).toContainText('192次尝试并非192道不同题');
       await expect(report.locator('#history')).toContainText('冻结的 128 题终评没有运行');
-      await expect(report.locator('#ability')).toContainText('仍需要正式沟通');
+      await expect(report.locator('#ability')).toContainText(/导师接收意愿与招生指标分别通过何种正式程序/);
+      await expect(report.locator('#ability')).toContainText('科研检验与招生决定不能相互替代');
       await expect(report.locator('#spoken')).toBeVisible();
       await context.close();
     });

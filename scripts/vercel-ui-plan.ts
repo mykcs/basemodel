@@ -93,6 +93,10 @@ export function pageFileToRoute(file: string): string | undefined {
 function focusedSpecsForRoutes(routes: string[]): string[] {
   const specs = new Set<string>();
 
+  if (routes.includes('/research/seed-openevo/recent-challenges/')) {
+    specs.add('tests/e2e/research-retrospective.spec.ts');
+  }
+
   if (routes.some((route) => RESULTS_ROUTE.test(route))) {
     specs.add('tests/e2e/results-mobile-overflow.spec.ts');
     specs.add('tests/e2e/results-reference-visual.spec.ts');
