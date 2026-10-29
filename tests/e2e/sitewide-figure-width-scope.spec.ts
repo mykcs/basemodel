@@ -43,11 +43,35 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   const retrospective = route === '/research/seed-openevo/recent-challenges/'
     && await target.evaluate(el => Boolean(el.closest('[data-research-retrospective]')));
   if (retrospective) {
-    // New evidence is checked explicitly; do not rewrite the historical table seal.
-    if (index < RETROSPECTIVE_NUMERIC_CELLS.length) {
-      expect(cellTexts, 'retrospective source-bound numeric table '+index).toEqual(RETROSPECTIVE_NUMERIC_CELLS[index]);
+    // Section identity keeps an inserted discussion table from shifting the
+    // immutable numeric fixtures onto a different table.
+    const identity = await target.evaluate(el => {
+      const scope = document.querySelector('[data-research-retrospective]')!;
+      const numericTables = [...scope.querySelectorAll('#findings table, #history table')];
+      return {
+        advisor: Boolean(el.closest('#advisor')),
+        questions: Boolean(el.closest('#questions')),
+        numericIndex: numericTables.indexOf(el),
+        numericCount: numericTables.length,
+        advisorCount: scope.querySelectorAll('#advisor table').length,
+        questionCount: scope.querySelectorAll('#questions table').length,
+        tableCount: scope.querySelectorAll('table').length,
+      };
+    });
+    expect(identity.numericCount).toBe(RETROSPECTIVE_NUMERIC_CELLS.length);
+    expect(identity.advisorCount).toBe(1);
+    expect(identity.questionCount).toBe(1);
+    expect(identity.tableCount).toBe(RETROSPECTIVE_NUMERIC_CELLS.length + 2);
+    if (identity.advisor) {
+      expect(await target.locator('thead th').allTextContents()).toEqual(['需要回答的议题', '已经可检查的事实', '仍未过关的地方']);
+      expect(await target.locator('tbody th').allTextContents()).toEqual(['科研能力和推进速度', '怎样利用 AI 做科研', '方向是否值得继续', '继续讨论的机会与名额']);
+      await expect(target.locator('tbody tr')).toHaveCount(4);
+      await expect(target).toContainText('必须分开正式确认');
+      await expect(target).toContainText('现有转写不构成录取承诺');
+    } else if (identity.numericIndex >= 0) {
+      expect(cellTexts, 'retrospective source-bound numeric table '+identity.numericIndex).toEqual(RETROSPECTIVE_NUMERIC_CELLS[identity.numericIndex]);
     } else {
-      expect(index, 'only the declared evidence tables and the question map are allowed').toBe(RETROSPECTIVE_NUMERIC_CELLS.length);
+      expect(identity.questions, 'only the declared evidence tables, discussion table and question map are allowed').toBe(true);
       expect(await target.locator('tbody th').allTextContents()).toEqual(RETROSPECTIVE_QUESTION_LABELS);
       await expect(target.locator('tbody tr')).toHaveCount(10);
       for (const row of await target.locator('tbody tr').all()) {
