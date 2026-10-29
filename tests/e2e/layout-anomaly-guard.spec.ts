@@ -149,6 +149,59 @@ for (const matrix of matrices) {
   });
 }
 
+for (const matrix of [
+  { name: 'iPhone 18 Pro Max light', theme: 'light' as Theme, width: 440, height: 956 },
+  { name: 'iPhone 18 Pro Max dark', theme: 'dark' as Theme, width: 440, height: 956 },
+  { name: 'desktop light', theme: 'light' as Theme, width: 1440, height: 1000 },
+  { name: 'desktop dark', theme: 'dark' as Theme, width: 1440, height: 1000 },
+]) {
+  test(`SEED × OpenEVO Intelligence UI aligns the exact same learning axes: ${matrix.name}`, async ({ page }, info) => {
+    await page.setViewportSize({ width: matrix.width, height: matrix.height });
+    await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+    await page.goto('/research/seed-openevo/flow/', { waitUntil: 'domcontentloaded' });
+    await settle(page);
+
+    const diagram = page.locator('[data-intelligence-comparison]');
+    await expect(diagram).toBeVisible();
+    await expect(diagram.locator('[data-stage]')).toHaveCount(2);
+    const rows = diagram.locator('[data-axis]');
+    await expect(rows).toHaveCount(8);
+
+    const witness = await diagram.evaluate((root) => {
+      const issues: string[] = [];
+      const stageRects = Array.from(root.querySelectorAll<HTMLElement>('[data-stage]')).map((node) => node.getBoundingClientRect());
+      if (stageRects[0]!.bottom >= stageRects[1]!.top) issues.push('Stage 1 and Stage 2 overlap or are unordered');
+      const result = [];
+      for (const row of root.querySelectorAll<HTMLElement>('[data-axis]')) {
+        const panels = Array.from(row.querySelectorAll<HTMLElement>('[data-framework]'));
+        const titles = panels.map((panel) => panel.querySelector('.intelligence-method__action')?.textContent?.trim() ?? '');
+        if (panels.length !== 2 || !titles[0] || !titles[1]) issues.push(`missing side: ${row.dataset.axis}`);
+        if (titles.length === 2 && titles[0]!.replace(/（[^）]+）/g, '') !== titles[1]!.replace(/（[^）]+）/g, '')) issues.push(`unequal common action: ${row.dataset.axis}`);
+        const left = panels[0]?.getBoundingClientRect();
+        const right = panels[1]?.getBoundingClientRect();
+        if (left && right) {
+          if (window.innerWidth > 720 && (left.right > right.left + 1 || Math.abs(left.top - right.top) > 2)) issues.push(`desktop columns not aligned: ${row.dataset.axis}`);
+          if (window.innerWidth <= 720 && left.bottom > right.top + 1) issues.push(`mobile pair not stacked: ${row.dataset.axis}`);
+          for (const [index, rect] of [left, right].entries()) {
+            if (rect.left < -2 || rect.right > window.innerWidth + 2) issues.push(`panel outside viewport: ${row.dataset.axis}/${index}`);
+          }
+        }
+        result.push({ axis: row.dataset.axis, titles });
+      }
+      const signal = root.querySelector('[data-axis="online-signal"]');
+      const teacherNotes = Array.from(signal?.querySelectorAll('.intelligence-method__boundary') ?? []).map((item) => item.textContent?.trim());
+      if (teacherNotes.length !== 2 || teacherNotes[0] !== teacherNotes[1]) issues.push('asymmetric Stage-2 teacher boundary');
+      if (document.documentElement.scrollWidth > window.innerWidth + 2) issues.push('root document overflow');
+      return { issues, result, teacherNotes };
+    });
+
+    expect(witness.issues, witness.issues.join('\n')).toEqual([]);
+    expect(witness.teacherNotes[0]).toContain('本阶段不再调用 Stage 1 的外部高能力教师模型 API');
+    await diagram.locator('[data-axis="external-teacher"]').screenshot({ path: info.outputPath(`teacher-${matrix.theme}-${matrix.width}.png`), animations: 'disabled' });
+    await diagram.locator('[data-axis="online-signal"]').screenshot({ path: info.outputPath(`feedback-${matrix.theme}-${matrix.width}.png`), animations: 'disabled' });
+  });
+}
+
 
 /**
  * Typography migration witnesses for catalog/search/workbench owners.

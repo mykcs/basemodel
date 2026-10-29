@@ -181,10 +181,11 @@ describe('sitewide normalization first repair batch', () => {
     expect(legacyStage2Journey).not.toContain("content:'→'");
     expect(legacyStage2Journey).not.toContain('grid-template-columns:repeat(2,minmax(0,1fr))}.legacy-journey__timeline');
 
-    expect(trainingDesign).toContain('.responsibility-flow li:not(:last-child)::before');
-    expect(trainingDesign).toContain('@container reading-overview (max-width:900px)');
-    expect(trainingDesign).toContain('.responsibility-flow{grid-template-columns:1fr;gap:.75rem}');
-    expect(trainingDesign).not.toContain("content:'↓'");
+    expect(trainingDesign).toContain('.intelligence-stage--stage-1::after');
+    expect(trainingDesign).toContain('.intelligence-stage--stage-1::before');
+    expect(trainingDesign).toContain('@container reading-overview (max-width:650px)');
+    expect(trainingDesign).toContain('.intelligence-row__pair,.intelligence-columns{grid-template-columns:1fr}');
+    expect(trainingDesign).not.toContain('responsibility-flow');
 
     expect(experimentSelector).toContain('@media(max-width:980px){.experiment-selector__flow{grid-template-columns:1fr}');
     expect(experimentSelector).not.toContain('.experiment-selector__flow>.experiment-selector__arrow:nth-of-type(2){display:none}');
@@ -199,7 +200,7 @@ describe('sitewide normalization first repair batch', () => {
     expect(seedPaper).not.toContain('Read the problem before the equations');
 
     expect(researchHub).toContain("t('模型、任务与比较范围', 'Models, tasks, and comparison scope')");
-    expect(researchHub).toContain("t('WebShop 两阶段学习', 'WebShop two-stage learning')");
+    expect(researchHub).toContain("t('SEED × OpenEVO 两阶段学习范式', 'SEED × OpenEVO two-stage learning paradigm')");
     expect(researchHub).toContain("t('实验运行与结果比较', 'Experiment execution and result comparison')");
     expect(researchHub).not.toContain('下面用 WebShop 展开两阶段');
 

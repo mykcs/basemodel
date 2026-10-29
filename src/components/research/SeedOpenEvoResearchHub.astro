@@ -20,8 +20,8 @@ const objectGroups = [
   {
     label: t('学习方法', 'Learning methods'),
     items: [
-      { title:'SEED', body:t('把任务后的成功经验整理成技能，再通过后续参数优化更新模型；具体优化方法留到 SEED 方法页。','Turns successful hindsight experience into skills, then updates the model through later parameter optimization; the SEED method page explains the specific optimizer.'), href:p('/research/seed-openevo/flow/seed/') },
-      { title:'OpenEvo', body:t('先封存任务证据；后续第二阶段（Stage 2，持续学习）会分别更新文字经验、可复用技能、全局行为与恢复规则和少量模型适配参数（SD-LoRA，基础模型不动、只训练适配参数的更新方法），通过既定检查的新版本才进入下一批任务。','Seals task evidence first; the later Stage-2 continual-learning phase separately updates written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter, and only versions that pass the frozen checks enter the next task batch.'), href:p('/research/seed-openevo/flow/openevo/') },
+      { title:'SEED', body:t('Stage 1 用外部教师提供事后技能，做三轮 SFT；Stage 2 由当前策略自行复盘，用 GRPO + OPD 持续更新参数。','Stage 1 uses an external teacher to produce hindsight skills and performs three-epoch SFT. In Stage 2, the current policy self-reviews and updates parameters with GRPO + OPD.'), href:p('/research/seed-openevo/flow/seed/') },
+      { title:'OpenEVO', body:t('Stage 1 用外部教师分析完整轨迹并进行初始参数蒸馏；Stage 2 用内部任务反馈继续更新参数和可复用经验，通过准入检查后才进入下一轮。','Stage 1 uses an external teacher to analyze full trajectories and distill initial parameters. Stage 2 uses internal feedback to update parameters and reusable experience, admitting changes only after checks.'), href:p('/research/seed-openevo/flow/openevo/') },
     ],
   },
   {
@@ -36,18 +36,18 @@ const objectGroups = [
 <div class="mission-page plain-mission-hub evo-approved-reader evo-reading-overview">
   <SeedOpenEvoMissionHero locale={locale} compact />
 
+  <section class="mission-section" id="training-design" aria-labelledby="training-design-title">
+    <div class="mission-section__heading"><h2 id="training-design-title"><span class="evo-article__heading-number" aria-hidden="true">01</span> {t('SEED × OpenEVO 两阶段学习范式', 'SEED × OpenEVO two-stage learning paradigm')}</h2></div>
+    <p class="section-intro">{t('左边是 SEED，右边是 OpenEVO；每一行都在回答同一个问题。第一阶段都采集 WebShop 轨迹、请外部高能力教师模型 API 事后分析并训练初始参数；第二阶段都从新任务中获取反馈，但各自构造学习信号、更新状态的机制不同。此处只比较 WebShop 方法，不把它自动推广到 ALFWorld。', 'SEED is on the left and OpenEVO on the right; each row answers the same question. In Stage 1, both collect WebShop trajectories, use an external high-capability teacher-model API after task completion, and train initial parameters. In Stage 2, both learn from new task feedback, but construct signals and update state differently. This is a WebShop method comparison, not an automatic description of ALFWorld.')}</p>
+    <SeedOpenEvoTrainingDesignOverview locale={locale} />
+  </section>
+
   <section class="mission-section" id="questions" aria-labelledby="research-objects-title">
-    <div class="mission-section__heading"><h2 id="research-objects-title"><span class="evo-article__heading-number" aria-hidden="true">01</span> {t('模型、任务与比较范围', 'Models, tasks, and comparison scope')}</h2></div>
+    <div class="mission-section__heading"><h2 id="research-objects-title"><span class="evo-article__heading-number" aria-hidden="true">02</span> {t('模型、任务与比较范围', 'Models, tasks, and comparison scope')}</h2></div>
     <p class="section-intro">{t('完整系统比较先固定模型、任务和评分；只有要单独归因到第二阶段学习器时，才进一步要求两边共享第一阶段证据与同一个起点。','A full-system comparison first pins the model, tasks, and scoring. Only Stage-2 attribution additionally requires shared Stage-1 evidence and the same starting state.')}</p>
     <dl class="object-map">
       {objectGroups.map((group)=><div class="object-map__row"><dt>{group.label}</dt><dd>{group.items.map((item)=>'href' in item ? <a href={item.href}><strong>{item.title}</strong><span>{item.body}</span></a> : <div class="object-map__fact"><strong>{item.title}</strong><span>{item.body}</span></div>)}</dd></div>)}
     </dl>
-  </section>
-
-  <section class="mission-section" id="training-design" aria-labelledby="training-design-title">
-    <div class="mission-section__heading"><h2 id="training-design-title"><span class="evo-article__heading-number" aria-hidden="true">02</span> {t('WebShop 两阶段学习', 'WebShop two-stage learning')}</h2></div>
-    <p class="section-intro">{t('WebShop 使用两个阶段。OpenEvo 的任务先做完，再学习：第一阶段（Stage 1，做题与事后复盘）由 Qwen 自己完成购物任务，任务结束后 MiniMax（外部复盘模型，只在任务结束后回看轨迹的分析模型）只回看已保存轨迹，不替 Qwen 选动作。第二阶段（Stage 2，持续学习）才用这些轨迹和复盘去更新文字经验、可复用策略、行为与恢复规则和少量模型适配参数。外部模型不能在做题过程中替 Qwen 选动作；这六步只说明 WebShop，不自动代表 ALFWorld 使用同一交互流程。', 'WebShop uses two stages. OpenEvo finishes the task before learning from it: in Stage 1, Qwen completes the shopping task itself, and only after the task ends does MiniMax, an external review model, inspect the saved trace without choosing actions for Qwen. Stage 2 is continual learning, which uses those traces and reviews to update written experience, reusable strategies, behavior and recovery rules, and a small parameter adapter. The external model never chooses actions during the task, and this six-step example describes WebShop only.')}</p>
-    <SeedOpenEvoTrainingDesignOverview locale={locale} />
   </section>
 
   <section class="mission-section" id="site-map">
@@ -95,7 +95,7 @@ const objectGroups = [
   .run-step-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0;padding:0;border-block:1px solid var(--line);list-style:none}
   .run-step-grid li{position:relative;display:flex;min-width:0;flex-direction:column;padding:1.1rem 1.35rem 1.1rem 0}
   .run-step-grid li+li{padding-left:1.35rem;border-left:1px solid var(--line)}
-  .run-step-grid li:not(:last-child)::after{content:'→';position:absolute;top:1.05rem;right:-.48rem;z-index:1;padding:0 .2rem;color:var(--muted);background:var(--canvas)}
+  .run-step-grid li:not(:last-child)::after{content:'→';position:absolute;top:1.05rem;right:-.48rem;z-index:1;padding:0 .2rem;color:var(--muted);background:var(--bg)}
   .run-step-grid li>span{color:var(--accent-deep);font:var(--type-weight-label) var(--type-meta)/1.4 var(--font-interface)}
   .run-step-grid h3{margin:.55rem 0 .4rem;font-size:var(--article-subsection-size, 1rem)}
   .run-step-grid p{margin:0;color:var(--muted);font-size:var(--article-body-size, .8rem);line-height:var(--article-body-leading, 1.6)}
@@ -117,7 +117,7 @@ const objectGroups = [
     .run-step-grid{grid-template-columns:1fr}
     .run-step-grid li,.run-step-grid li+li{padding:1rem 0;border-left:0;border-bottom:1px solid var(--line)}
     .run-step-grid li:last-child{border-bottom:0}
-    .run-step-grid li:not(:last-child)::after{content:'↓';top:auto;right:auto;bottom:-.55rem;left:.25rem;background:var(--canvas)}
+    .run-step-grid li:not(:last-child)::after{content:'↓';top:auto;right:auto;bottom:-.55rem;left:.25rem;background:var(--bg)}
     .evidence-grid{grid-template-columns:1fr}
     .evidence-grid li,.evidence-grid li:nth-child(even){padding:1rem 0;border-left:0}
   }

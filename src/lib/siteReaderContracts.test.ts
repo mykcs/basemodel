@@ -38,7 +38,7 @@ describe('site-wide reader attention contracts', () => {
 
   it('keeps the four redesign pilots as distinct reader modes with exact route owners', () => {
     const pilots = [
-      ['flow', '/research/seed-openevo/flow/', 'choice', '.mission-hero__lede'],
+      ['flow', '/research/seed-openevo/flow/', 'comparison', '.mission-hero__lede'],
       ['flow-sd-lora', '/research/seed-openevo/flow/sd-lora/', 'narrative', '.sdlora-intro__lede'],
       ['flow-server', '/research/seed-openevo/flow/server/', 'operational', '.server-hero__status'],
       ['capability-q17-frontier', '/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/', 'focus', '[data-q17-advisor-diagnostics] .lede'],
